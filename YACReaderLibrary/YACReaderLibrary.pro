@@ -6,10 +6,11 @@ TEMPLATE = app
 TARGET = 
 DEPENDPATH += .
 INCLUDEPATH += .
-INCLUDEPATH += ../common
+INCLUDEPATH += ../common \
+	           ./server 
 CONFIG += release
 CONFIG -= flat
-QT += sql
+QT += sql network
 
 # Input
 HEADERS += comic_flow.h \
@@ -45,6 +46,10 @@ SOURCES += comic_flow.cpp \
 		   ../common/qnaturalsorting.cpp \
 		   data_base_management.cpp \
 		   bundle_creator.cpp
+		   
+include(./server/server.pri)
+
+
 RESOURCES += images.qrc files.qrc
 RC_FILE = icon.rc
 
@@ -52,3 +57,4 @@ TRANSLATIONS    = yacreaderlibrary_es.ts
 
 Release:DESTDIR = ../release
 Debug:DESTDIR = ../debug
+
