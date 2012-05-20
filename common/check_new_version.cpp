@@ -1,0 +1,93 @@
+#include "check_new_version.h"
+#include <QMessageBox>
+#include <QUrl>
+#include <QtGlobal>
+#include <QStringList>
+
+#define VERSION "0.4.5"
+
+HttpVersionChecker::HttpVersionChecker()
+        :QWidget()
+{
+    http = new QHttp(this);
+
+    connect(http, SIGNAL(requestFinished(int, bool)),
+             this, SLOT(httpRequestFinished(int, bool)));
+
+    connect(http, SIGNAL(responseHeaderReceived(const QHttpResponseHeader &)),
+             this, SLOT(readResponseHeader(const QHttpResponseHeader &)));
+
+    connect(http, SIGNAL(readyRead(const QHttpResponseHeader &)),
+            this, SLOT(read(const QHttpResponseHeader &)));
+}
+
+void HttpVersionChecker::get()
+{
+    QUrl url("http://code.google.com/p/yacreader/downloads/list");
+    QHttp::ConnectionMode mode = QHttp::ConnectionModeHttp;
+    http->setHost(url.host(), mode, url.port() == -1 ? 0 : url.port());
+    QByteArray path = QUrl::toPercentEncoding(url.path(), "!$&'()*+,;=:@/");
+    if (path.isEmpty())
+         path = "/";
+    httpGetId = http->get(path, 0);
+}
+void HttpVersionChecker::readResponseHeader(const QHttpResponseHeader &responseHeader)
+{
+
+}
+
+void HttpVersionChecker::read(const QHttpResponseHeader &){
+    content.append(http->readAll());
+}
+
+void HttpVersionChecker::httpRequestFinished(int requestId, bool error)
+{
+
+    QString response(content);
+#ifdef Q_WS_WIN
+    QRegExp rx(".*YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}win32.*");
+#endif
+
+#ifdef  Q_WS_X11
+    QRegExp rx(".*YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}X11.*");
+#endif
+
+#ifdef  Q_WS_MAC
+    QRegExp rx(".*YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}Mac.*");
+#endif
+
+    int index = 0;
+    bool newVersion = false;
+    bool sameVersion = true;
+	//bool currentVersionIsNewer = false;
+
+    QString version(VERSION);
+    QStringList sl = version.split(".");
+    if((index = rx.indexIn(response))!=-1)
+    {
+        int length = qMin(sl.size(),(rx.cap(4)!="")?4:3);
+        for(int i=0;i<length;i++)
+        {
+			if(rx.cap(i+1).toInt()<sl.at(i).toInt())
+			{
+				return;
+			}
+            if(rx.cap(i+1).toInt()>sl.at(i).toInt()){
+                newVersion=true;
+                break;
+            }
+	    else
+		sameVersion = sameVersion && rx.cap(i+1).toInt()==sl.at(i).toInt();
+        }
+        if(!newVersion && sameVersion)
+{
+    if((sl.size()==3)&&(rx.cap(4)!=""))
+	newVersion = true;
+}
+
+
+    }
+
+    if(newVersion == true)
+        emit newVersionDetected();
+}

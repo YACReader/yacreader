@@ -1,0 +1,15 @@
+<RCC>
+<qresource>
+	<file>../files/about.html</file>
+	<file>../files/helpYACReader.html</file>
+	<file>../files/shortcuts.html</file>
+	<file>../files/shortcuts2.html</file>
+  <file>../files/translator.html</file>
+	<file>./yacreader_es.qm</file>
+</qresource> 
+
+<qresource lang="es_ES">
+	<file alias="/files/about.html">../files/about_es_ES.html</file>
+	<file alias="/files/helpYACReader.html">../files/helpYACReader_es_ES.html</file>
+</qresource>
+</RCC> 
