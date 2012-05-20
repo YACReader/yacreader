@@ -1,7 +1,7 @@
 #include "library_window.h"
 
 #include <QApplication>
-
+#include "startup.h"
 #define PICTUREFLOW_QT4 1
 
 int main( int argc, char ** argv )
@@ -17,6 +17,9 @@ int main( int argc, char ** argv )
   QMainWindow * mw = new LibraryWindow();
   mw->resize(800,480);
   mw->showMaximized();
+
+  Startup * s = new Startup();
+  s->start();
 
   return app.exec();
 }
