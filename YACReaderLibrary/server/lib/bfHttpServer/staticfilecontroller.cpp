@@ -56,11 +56,20 @@ void StaticFileController::service(HttpRequest& request, HttpResponse& response)
         if (QFileInfo(docroot+path).isDir()) {
             path+="/index.html";
         }
-        QFile file(docroot+path);
+
+		//TODO(DONE) carga sensible a la localización
+		QString stringPath = path;
+		QStringList paths = QString(path).split('/');
+		QString fileName = paths.last();
+		stringPath.remove(fileName);
+		fileName = getLocalizedFileName(fileName, request.getHeader("Accept-Language"), stringPath);
+		QString newPath = stringPath.append(fileName);
+		//END_TODO
+        QFile file(docroot+newPath);
         if (file.exists()) {
             qDebug("StaticFileController: Open file %s",qPrintable(file.fileName()));
             if (file.open(QIODevice::ReadOnly)) {
-                setContentType(path,response);
+                setContentType(newPath,response);
                 response.setHeader("Cache-Control","max-age="+QByteArray::number(maxAge/1000));
                 if (file.size()<=maxCachedFileSize) {
                     // Return the file content and store it also in the cache
@@ -112,3 +121,45 @@ void StaticFileController::setContentType(QString fileName, HttpResponse& respon
     }
     // Todo: add all of your content types
 }
+
+bool StaticFileController::exists(QString localizedName, QString path) const
+{
+    QString fileName=docroot+"/"+path + localizedName;
+    QFile file(fileName);
+    return file.exists();
+}
+
+//retorna fileName si no se encontró alternativa traducida ó fileName-locale.extensión si se encontró
+QString StaticFileController::getLocalizedFileName(QString fileName, QString locales, QString path) const
+{
+	QSet<QString> tried; // used to suppress duplicate attempts
+	QStringList locs=locales.split(',',QString::SkipEmptyParts);
+	QStringList fileNameParts = fileName.split('.');
+	QString file = fileNameParts.first();
+	QString extension = fileNameParts.last();
+	// Search for exact match
+	foreach (QString loc,locs) {
+		loc.replace(QRegExp(";.*"),"");
+		loc.replace('-','_');
+		QString localizedName=file+"-"+loc.trimmed()+"."+extension;
+		if (!tried.contains(localizedName)) {
+			if(exists(localizedName, path))
+				return localizedName;
+			tried.insert(localizedName);
+		}
+	}
+
+	// Search for correct language but any country
+	foreach (QString loc,locs) {
+		loc.replace(QRegExp("[;_-].*"),"");
+		QString localizedName=file+"-"+loc.trimmed()+"."+extension;
+		if (!tried.contains(localizedName)) {
+			if(exists(localizedName, path))
+				return localizedName;
+			tried.insert(localizedName);
+		}
+	}
+
+	return fileName;
+}
+	 

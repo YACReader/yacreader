@@ -76,6 +76,10 @@ private:
 
     /** Set a content-type header in the response depending on the ending of the filename */
     void setContentType(QString file, HttpResponse& response) const;
+
+	QString getLocalizedFileName(QString fileName, QString locales, QString path) const;
+
+	bool StaticFileController::exists(QString localizedName, QString path) const;
 };
 
 #endif // STATICFILECONTROLLER_H
