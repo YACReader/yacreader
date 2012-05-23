@@ -79,7 +79,7 @@ private:
 
 	QString getLocalizedFileName(QString fileName, QString locales, QString path) const;
 
-	bool StaticFileController::exists(QString localizedName, QString path) const;
+	bool exists(QString localizedName, QString path) const;
 };
 
 #endif // STATICFILECONTROLLER_H
