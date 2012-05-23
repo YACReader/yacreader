@@ -52,3 +52,6 @@ RESOURCES += images.qrc \
 RC_FILE = icon.rc
 TRANSLATIONS = yacreader_es.ts \ yacreader_fr.ts
 FORMS += 
+
+Release:DESTDIR = ../release
+Debug:DESTDIR = ../debug

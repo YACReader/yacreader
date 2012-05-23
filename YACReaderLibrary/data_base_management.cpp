@@ -11,7 +11,7 @@ DataBaseManagement::DataBaseManagement()
 bool DataBaseManagement::createDataBase(QString name, QString path)
 {
 	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(name + ".ydb");
+	db.setDatabaseName(QDir::cleanPath(path) + "/" + name + ".ydb");
     if (!db.open())
         qDebug() << db.lastError();
     else {
