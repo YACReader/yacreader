@@ -3,6 +3,9 @@
 
 #include <QtCore>
 #include <QtSql>
+#include <QSqlDatabase>
+
+#include "treemodel.h"
 
 class DataBaseManagement : public QObject
 {
@@ -11,8 +14,9 @@ private:
 	QList<QString> dataBasesList;
 public:
 	DataBaseManagement();
-	bool createDataBase(QString name, QString path);
-
+	TreeModel * newTreeModel(QString path);
+	QSqlDatabase createDatabase(QString name, QString path);
+	QSqlDatabase loadDatabase(QString path);
 };
 
 #endif

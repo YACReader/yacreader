@@ -7,7 +7,8 @@ TARGET =
 DEPENDPATH += .
 INCLUDEPATH += .
 INCLUDEPATH += ../common \
-	           ./server 
+	           ./server \
+			   ./db
 CONFIG += release
 CONFIG -= flat
 QT += sql network
@@ -27,8 +28,10 @@ HEADERS += comic_flow.h \
 		   import_library_dialog.h \
 		   package_manager.h \
 		   ../common/qnaturalsorting.h \
-		   data_base_management.h \
-		   bundle_creator.h
+		   bundle_creator.h \
+		   ./db/data_base_management.h \
+		   ./db/treeitem.h \
+		   ./db/treemodel.h
 SOURCES += comic_flow.cpp \
            create_library_dialog.cpp \
            library_creator.cpp \
@@ -44,8 +47,10 @@ SOURCES += comic_flow.cpp \
 		   import_library_dialog.cpp \
 		   package_manager.cpp \
 		   ../common/qnaturalsorting.cpp \
-		   data_base_management.cpp \
-		   bundle_creator.cpp
+		   bundle_creator.cpp \
+		   ./db/data_base_management.cpp \
+		   ./db/treeitem.cpp \
+		   ./db/treemodel.cpp
 		   
 include(./server/server.pri)
 
