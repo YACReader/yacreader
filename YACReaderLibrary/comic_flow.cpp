@@ -29,7 +29,7 @@ ComicFlow::~ComicFlow()
 
 QString ComicFlow::getImagePath() const
 {
-	return imagePath;
+	return "";//imagePath;
 }
 
 QStringList ComicFlow::getImageFiles() const
@@ -83,12 +83,12 @@ static QStringList filterImages(const QStringList& files)
 	return imageFiles;
 }
 
-void ComicFlow::setImagePath(const QString& path)
+void ComicFlow::setImagePaths(const QStringList& paths)
 {
 	clear();
 
-	imagePath = path;
-	imageFiles = findFiles(path);
+	//imagePath = path;
+	imageFiles = paths;
 	imagesLoaded.clear();
 	imagesLoaded.fill(false,imageFiles.size());
 	numImagesLoaded = 0;

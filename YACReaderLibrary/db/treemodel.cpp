@@ -50,10 +50,16 @@
 
 #include "treeitem.h"
 #include "treemodel.h"
+#include "data_base_management.h"
+
+TreeModel::TreeModel(QObject *parent)
+    : QAbstractItemModel(parent)
+{
+}
 
 //! [0]
 TreeModel::TreeModel( QSqlQuery &sqlquery, QObject *parent)
-    : QAbstractItemModel(parent)
+    : QAbstractItemModel(parent),rootItem(0)
 {
 	//lo más probable es que el nodo raíz no necesite tener información
     QList<QVariant> rootData;
@@ -86,6 +92,9 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
         return QVariant();
+
+	if (role == Qt::DecorationRole)
+		return QVariant(QIcon(":/images/folder.png"));
 
     if (role != Qt::DisplayRole)
         return QVariant();
@@ -171,6 +180,25 @@ int TreeModel::rowCount(const QModelIndex &parent) const
 }
 //! [8]
 
+void TreeModel::setupModelData(QString path)
+{
+	if(rootItem == 0)
+		delete rootItem; //TODO comprobar que se libera bien la memoria
+
+	//inicializar el nodo raíz
+	QList<QVariant> rootData;
+	rootData << "root"; //id 0, padre 0, title "root" (el id, y el id del padre van a ir en la clase TreeItem)
+	rootItem = new TreeItem(rootData);
+	rootItem->id = 0;
+
+	//cargar la base de datos
+	_database = DataBaseManagement::loadDatabase(path);
+	//crear la consulta
+	QSqlQuery selectQuery("select * from folder order by parentId,name",_database);
+
+	setupModelData(selectQuery,rootItem);
+}
+
 void TreeModel::setupModelData(QSqlQuery &sqlquery, TreeItem *parent)
 {
 	//64 bits para la primary key, es decir la misma precisión que soporta sqlit 2^64
@@ -189,4 +217,9 @@ void TreeModel::setupModelData(QSqlQuery &sqlquery, TreeItem *parent)
 		//se añade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
 		items.insert(item->id,item);
 	}
+}
+
+QSqlDatabase & TreeModel::getDatabase()
+{
+	return _database;
 }

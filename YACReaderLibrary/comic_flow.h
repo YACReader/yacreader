@@ -20,9 +20,9 @@ public:
 	virtual ~ComicFlow();
 
 	//void render();
-	QString getImagePath() const;
+	QString getImagePath() const; //TOTO quitar no se usa
 	QStringList getImageFiles() const;
-	void setImagePath(const QString& path);
+	void setImagePaths(const QStringList& paths);
 	//bool eventFilter(QObject *target, QEvent *event);
 	void keyPressEvent(QKeyEvent* event);
 
@@ -31,7 +31,7 @@ private slots:
   void updateImageData();
 
 private:
-  QString imagePath;
+  //QString imagePath;
   QStringList imageFiles;
   QVector<bool> imagesLoaded;
   QVector<bool> imagesSetted;

@@ -1,5 +1,6 @@
 #include "library_window.h"
 #include "custom_widgets.h"
+#include "treeitem.h"
 
 #include <QHBoxLayout>
 #include <QSplitter>
@@ -19,7 +20,7 @@
 //
 
 LibraryWindow::LibraryWindow()
-:QMainWindow(),skip(0),fullscreen(false),fetching(false)
+	:QMainWindow(),skip(0),fullscreen(false),fetching(false)
 {
 	setupUI();
 	loadLibraries();
@@ -27,24 +28,28 @@ LibraryWindow::LibraryWindow()
 
 void LibraryWindow::setupUI()
 {
-	createLibraryDialog = new CreateLibraryDialog(this);
-	updateLibraryDialog = new UpdateLibraryDialog(this);
-	renameLibraryDialog = new RenameLibraryDialog(this);
-	propertiesDialog = new PropertiesDialog(this);
-	exportLibraryDialog = new ExportLibraryDialog(this);
-	importLibraryDialog = new ImportLibraryDialog(this);
-
 	libraryCreator = new LibraryCreator();
 	packageManager = new PackageManager();
 
-	addLibraryDialog = new AddLibraryDialog(this);
+	doModels();
+	doLayout();
+	doDialogs();
+	createActions();
+	createToolBars();
+	createMenus();
+	createConnections();
 
+	setWindowTitle(tr("YACReader Library"));
+}
+
+void LibraryWindow::doLayout()
+{
 	QSplitter * sVertical = new QSplitter(Qt::Vertical);
 	QSplitter * sHorizontal = new QSplitter(Qt::Horizontal);
 	//TODO: flowType is a global variable
 	optionsDialog = new OptionsDialog(this);
 	optionsDialog->restoreOptions();
-    comicFlow = new ComicFlow(0,flowType);
+	comicFlow = new ComicFlow(0,flowType);
 
 	comicFlow->setFocusPolicy(Qt::StrongFocus);
 	comicFlow->setShowMarks(true);
@@ -83,19 +88,19 @@ void LibraryWindow::setupUI()
 	treeActions->setIconSize(QSize(16,16));
 	l->addWidget(treeActions);
 	l->addWidget(foldersView);
-	
+
 	QVBoxLayout * searchLayout = new QVBoxLayout;
-	
+
 	QHBoxLayout * filter = new QHBoxLayout;
 	filter->addWidget(foldersFilter = new QLineEdit());
 	previousFilter = "";
 	filter->addWidget(clearFoldersFilter = new QPushButton(tr("Clear")));
-	
+
 	searchLayout->addWidget(new QLabel(tr("Search folders/comics"),this));
 
 	searchLayout->addLayout(filter);
 	searchLayout->addWidget(includeComicsCheckBox = new QCheckBox(tr("Include files (slower)"),this));
-	
+
 	l->addLayout(searchLayout);
 	l->setSpacing(1);
 	left->setLayout(l);
@@ -106,45 +111,35 @@ void LibraryWindow::setupUI()
 	sHorizontal->setStretchFactor(1,1);
 	setCentralWidget(sHorizontal);
 
-	//dirmodels
-	dm = new QFileSystemModel();
-	dm->setFilter(QDir::Dirs|QDir::NoDotAndDotDot);
-	dm->sort(0);//,QDir::Name|QDir::IgnoreCase|QDir::LocaleAware);
-	dmCV =  new QFileSystemModel();
-	dmCV->setNameFilters(QStringList() << "*jpg");
-	dmCV->setFilter(QDir::Files|QDir::CaseSensitive|QDir::NoDotAndDotDot);//,QDir::Name|QDir::IgnoreCase|QDir::LocaleAware);
-	dmCV->setNameFilterDisables(true);
-
-	dm->setReadOnly(true);
-	//dm->setLazyChildCount(false);
-	dmCV->setReadOnly(true);
-
-	dm->setIconProvider(&fip);
-	dmCV->setIconProvider(&fip);
-	//dmCV->sort(1);
-
-	proxyFilter = new  YACReaderTreeSearch();
-	proxyFilter->setSourceModel(dm);
-	proxyFilter->setFilterRole(Qt::DisplayRole);
-
-	/*proxySort = new YACReaderSortComics();
-	proxySort->setSourceModel(dmCV);
-	proxySort->setFilterRole(Qt::DisplayRole);*/
-
 	//views
-	foldersView->header()->hideSection(1);
-	foldersView->header()->hideSection(2);
-	foldersView->header()->hideSection(3);
-	foldersView->header()->adjustSize();
-	foldersView->header()->hide();
 	foldersView->setAnimated(true);
 	foldersView->setContextMenuPolicy(Qt::ActionsContextMenu);
 	foldersView->setContextMenuPolicy(Qt::ActionsContextMenu);
 
 	comicView->setAlternatingRowColors(true);
-	comicView->setItemDelegate(new YACReaderComicViewDelegate());
+	//comicView->setItemDelegate(new YACReaderComicViewDelegate());
 	comicView->setContextMenuPolicy(Qt::ActionsContextMenu);
 
+	fullScreenToolTip = new QLabel(this);
+	fullScreenToolTip->setText(tr("<font color='white'> press 'F' to close fullscreen mode </font>"));
+	fullScreenToolTip->setPalette(QPalette(QColor(0,0,0)));
+	fullScreenToolTip->setFont(QFont("courier new",15,234));
+	fullScreenToolTip->setAutoFillBackground(true);
+	fullScreenToolTip->hide();
+	fullScreenToolTip->adjustSize();
+
+	comicFlow->setFocus(Qt::OtherFocusReason);
+}
+
+void LibraryWindow::doDialogs()
+{
+	createLibraryDialog = new CreateLibraryDialog(this);
+	updateLibraryDialog = new UpdateLibraryDialog(this);
+	renameLibraryDialog = new RenameLibraryDialog(this);
+	propertiesDialog = new PropertiesDialog(this);
+	exportLibraryDialog = new ExportLibraryDialog(this);
+	importLibraryDialog = new ImportLibraryDialog(this);
+	addLibraryDialog = new AddLibraryDialog(this);
 	had = new HelpAboutDialog(this); //TODO load data.
 	QString sufix = QLocale::system().name();
 	if(QFile(":/files/about_"+sufix+".html").exists())
@@ -156,25 +151,23 @@ void LibraryWindow::setupUI()
 		had->loadHelp(":/files/helpYACReaderLibrary_"+sufix+".html");
 	else
 		had->loadHelp(":/files/helpYACReaderLibrary.html");
+}
 
-        fullScreenToolTip = new QLabel(this);
-        fullScreenToolTip->setText(tr("<font color='white'> press 'F' to close fullscreen mode </font>"));
-        fullScreenToolTip->setPalette(QPalette(QColor(0,0,0)));
-        fullScreenToolTip->setFont(QFont("courier new",15,234));
-        fullScreenToolTip->setAutoFillBackground(true);
-        fullScreenToolTip->hide();
-        fullScreenToolTip->adjustSize();
+void LibraryWindow::doModels()
+{
+	//dirmodels
+	dm = new TreeModel();
+	dmCV =  new QSqlQueryModel();
 
-	createActions();
-	createToolBars();
-	createMenus();
-	createConnections();
 
+	/*proxyFilter = new  YACReaderTreeSearch();
+	proxyFilter->setSourceModel(dm);
+	proxyFilter->setFilterRole(Qt::DisplayRole);*/
+
+	/*proxySort = new YACReaderSortComics();
+	proxySort->setSourceModel(dmCV);
+	proxySort->setFilterRole(Qt::DisplayRole);*/
 	setFoldersFilter("");
-
-	comicFlow->setFocus(Qt::OtherFocusReason);
-
-	setWindowTitle(tr("YACReader Library"));
 }
 
 void LibraryWindow::createActions()
@@ -219,19 +212,19 @@ void LibraryWindow::createActions()
 	openComicAction->setToolTip(tr("Open current comic on YACReader"));
 	openComicAction->setShortcut(Qt::Key_Return);
 	openComicAction->setIcon(QIcon(":/images/icon.png"));
-	
+
 	setAsReadAction = new QAction(tr("Set as read"),this);
 	setAsReadAction->setToolTip(tr("Set comic as read"));
 	setAsReadAction->setIcon(QIcon(":/images/setRead.png"));
-	
+
 	setAsNonReadAction = new QAction(tr("Set as unread"),this);
 	setAsNonReadAction->setToolTip(tr("Set comic as unread"));
 	setAsNonReadAction->setIcon(QIcon(":/images/setUnread.png"));
-	
+
 	setAllAsReadAction = new QAction(tr("Set all as read"),this);
 	setAllAsReadAction->setToolTip(tr("Set all comics as read"));
 	setAllAsReadAction->setIcon(QIcon(":/images/setAllRead.png"));
-	
+
 	setAllAsNonReadAction = new QAction(tr("Set all as unread"),this);
 	setAllAsNonReadAction->setToolTip(tr("Set all comics as unread"));
 	setAllAsNonReadAction->setIcon(QIcon(":/images/setAllUnread.png"));
@@ -296,6 +289,16 @@ void LibraryWindow::createActions()
 	openContainingFolderComicAction->setIcon(QIcon(":/images/open.png"));
 }
 
+void LibraryWindow::disableActions()
+{
+}
+void LibraryWindow::enableActions()
+{
+}
+void LibraryWindow::enableLibraryActions()
+{
+}
+
 void LibraryWindow::createToolBars()
 {
 	libraryToolBar = addToolBar(tr("Library"));
@@ -314,7 +317,7 @@ void LibraryWindow::createToolBars()
 	libraryToolBar->addSeparator();
 	libraryToolBar->addAction(openComicAction);
 	libraryToolBar->addAction(showPropertiesAction);
-	
+
 	QToolButton * tb = new QToolButton();
 	tb->addAction(setAsReadAction);
 	tb->addAction(setAllAsReadAction);
@@ -338,7 +341,7 @@ void LibraryWindow::createToolBars()
 	libraryToolBar->addWidget(new QToolBarStretch());
 	libraryToolBar->addAction(optionsAction);
 	libraryToolBar->addAction(helpAboutAction);
-	
+
 
 	libraryToolBar->setMovable(false);
 
@@ -352,8 +355,8 @@ void LibraryWindow::createToolBars()
 
 void LibraryWindow::createMenus()
 {
-    comicView->addAction(openContainingFolderComicAction);
-    foldersView->addAction(openContainingFolderAction);
+	comicView->addAction(openContainingFolderComicAction);
+	foldersView->addAction(openContainingFolderAction);
 }
 
 void LibraryWindow::createConnections()
@@ -375,7 +378,7 @@ void LibraryWindow::createConnections()
 	connect(importLibraryDialog,SIGNAL(rejected()),this,SLOT(deleteCurrentLibrary()));
 	connect(packageManager,SIGNAL(imported()),importLibraryDialog,SLOT(hide()));
 	connect(packageManager,SIGNAL(imported()),this,SLOT(openLastCreated()));
-	
+
 
 	//create and update dialogs
 	connect(createLibraryDialog,SIGNAL(cancelCreate()),this,SLOT(cancelCreating()));
@@ -399,7 +402,7 @@ void LibraryWindow::createConnections()
 	connect(createLibraryAction,SIGNAL(triggered()),this,SLOT(createLibrary()));
 	connect(exportLibraryAction,SIGNAL(triggered()),exportLibraryDialog,SLOT(show()));
 	connect(importLibraryAction,SIGNAL(triggered()),importLibraryDialog,SLOT(show()));
-	
+
 	connect(openLibraryAction,SIGNAL(triggered()),this,SLOT(showAddLibrary()));
 	connect(showPropertiesAction,SIGNAL(triggered()),this,SLOT(showProperties()));
 	connect(setAsReadAction,SIGNAL(triggered()),this,SLOT(setCurrentComicReaded()));
@@ -408,7 +411,7 @@ void LibraryWindow::createConnections()
 	connect(setAllAsNonReadAction,SIGNAL(triggered()),this,SLOT(setComicsUnreaded()));
 
 	connect(showHideMarksAction,SIGNAL(toggled(bool)),comicFlow,SLOT(setShowMarks(bool)));
-	
+
 
 	connect(updateLibraryAction,SIGNAL(triggered()),this,SLOT(updateLibrary()));
 	connect(renameLibraryAction,SIGNAL(triggered()),this,SLOT(renameLibrary()));
@@ -429,13 +432,13 @@ void LibraryWindow::createConnections()
 	connect(clearFoldersFilter,SIGNAL(clicked()),foldersFilter,SLOT(clear()));
 	connect(foldersFilter,SIGNAL(textChanged(QString)),this,SLOT(setFoldersFilter(QString)));
 	connect(includeComicsCheckBox,SIGNAL(stateChanged(int)),this,SLOT(searchInFiles(int)));
-	
+
 	//ContextMenus
 	connect(openContainingFolderComicAction,SIGNAL(triggered()),this,SLOT(openContainingFolderComic()));
 	connect(openContainingFolderAction,SIGNAL(triggered()),this,SLOT(openContainingFolder()));
 
 	//connect(dm,SIGNAL(directoryLoaded(QString)),foldersView,SLOT(expandAll()));
-	connect(dm,SIGNAL(directoryLoaded(QString)),this,SLOT(updateFoldersView(QString)));
+	//connect(dm,SIGNAL(directoryLoaded(QString)),this,SLOT(updateFoldersView(QString)));
 }
 
 void LibraryWindow::loadLibrary(const QString & name)
@@ -446,57 +449,10 @@ void LibraryWindow::loadLibrary(const QString & name)
 		QDir d; //TODO change this by static methods (utils class?? with delTree for example) 
 		if(d.exists(path))
 		{
-			//renew dirmodels (because QFileSystemModel is.......crap ;) )
-			QFileSystemModel * oldDm = dm;
-			QFileSystemModel * oldDmCV = dmCV;
-			YACReaderTreeSearch * oldTreeSearch = proxyFilter;
-			//YACReaderSortComics * oldSortProxy = proxySort;
-
-			dm = new QFileSystemModel();
-			dm->setFilter(QDir::Dirs|QDir::NoDotAndDotDot);
-			dm->sort(0);//,QDir::Name|QDir::IgnoreCase|QDir::LocaleAware);
-			dmCV =  new QFileSystemModel();
-			dmCV->setNameFilters(QStringList() << "*jpg");
-			dmCV->setFilter(QDir::Files|QDir::CaseSensitive|QDir::NoDotAndDotDot);//,QDir::Name|QDir::IgnoreCase|QDir::LocaleAware);
-			dmCV->setNameFilterDisables(true);
-
-			dm->setReadOnly(true);
-			//dm->setLazyChildCount(false);
-			dmCV->setReadOnly(true);
-
-			dm->setIconProvider(&fip);
-			dmCV->setIconProvider(&fip);
-			//dmCV->sort(1);
-
-			proxyFilter = new  YACReaderTreeSearch();
-			proxyFilter->setSourceModel(dm);
-			proxyFilter->setFilterRole(Qt::DisplayRole);
-
-			/*proxySort = new YACReaderSortComics();
-			proxySort->setSourceModel(dmCV);
-			proxySort->setFilterRole(Qt::DisplayRole);*/
-
-			connect(dm,SIGNAL(directoryLoaded(QString)),this,SLOT(updateFoldersView(QString)));
-
-			includeComicsCheckBox->setCheckState(Qt::Unchecked);
-
-			if(oldDm !=0)
-				delete oldDm;
-			if(oldDmCV !=0)
-				delete oldDmCV;
-			if(oldTreeSearch !=0)
-				delete oldTreeSearch;
-			/*if(oldSortProxy !=0)
-				delete oldSortProxy;*/
-			//end renew dirmodels
-			//TODO review this code, some sentences could be not necessary
-			foldersView->setModel(proxyFilter);
-			comicView->setModel(dmCV);
-			_rootIndex = dm->setRootPath(path);
-			i=0;
-
-			comicView->setRootIndex(dmCV->setRootPath(path));
-			foldersView->setRootIndex(proxyFilter->mapFromSource(_rootIndex));//dm->setRootPath(path)));
+			TreeModel * oldTM = dm;
+			dm = new TreeModel();
+			dm->setupModelData(path);
+			foldersView->setModel(dm);
 
 			foldersView->header()->hideSection(1);
 			foldersView->header()->hideSection(2);
@@ -504,9 +460,20 @@ void LibraryWindow::loadLibrary(const QString & name)
 			foldersView->header()->adjustSize();
 			foldersView->header()->hide();
 
-			loadCovers(proxyFilter->mapFromSource(dm->index(path)));
+			loadCovers(QModelIndex());
+
+			/*proxyFilter = new  YACReaderTreeSearch();
+			proxyFilter->setSourceModel(dm);
+			proxyFilter->setFilterRole(Qt::DisplayRole);*/
+
+			//connect(dm,SIGNAL(directoryLoaded(QString)),this,SLOT(updateFoldersView(QString)));
+
+			includeComicsCheckBox->setCheckState(Qt::Unchecked);
+
 			//foldersView->expandAll();
 
+			/*if(oldTM!=0)
+			delete oldTM;*/ //TODO corregir error al liberar memoria
 		}
 		else
 		{
@@ -566,55 +533,59 @@ void LibraryWindow::loadLibrary(const QString & name)
 
 void LibraryWindow::loadCovers(const QModelIndex & mi)
 {
-if(foldersFilter->text()!="")
-{
-	setFoldersFilter("");
-	foldersFilter->clear();
-}
-	QString path = dm->filePath(proxyFilter->mapToSource(mi));
-	delete dmCV;
-	dmCV = new QFileSystemModel();
-	dmCV->setFilter(QDir::Files|QDir::CaseSensitive|QDir::NoDotAndDotDot);
-	dmCV->setNameFilters(QStringList() << "*jpg");
-	dmCV->setNameFilterDisables(false);
-	dmCV->setReadOnly(true);
-
-	dmCV->setIconProvider(&fip);
-	//dmCV->sort(1);
-	//delete proxySort;
-
-	//TODO
-	/*proxySort = new YACReaderSortComics();
-	proxySort->setSourceModel(dmCV);
-	proxySort->setFilterRole(Qt::DisplayRole);*/
-
+	if(foldersFilter->text()!="")
+	{
+		setFoldersFilter("");
+		foldersFilter->clear();
+	}
+	unsigned long long int folderId = 0;
+	if(mi.isValid())
+	{
+		TreeItem *item = static_cast<TreeItem*>(mi.internalPointer());
+		folderId = item->id;
+	}
+	QSqlQuery selectQuery(dm->getDatabase()); //TODO check
+	selectQuery.prepare("select fileName from comic where comic.parentId = :parentId");
+	selectQuery.bindValue(":parentId", folderId);
+	selectQuery.exec();
+	dmCV->setQuery(selectQuery);
 	comicView->setModel(dmCV);
-	comicView->setRootIndex(dmCV->setRootPath(path));
+	//TODO
+	QSqlQuery selectQueryPaths(dm->getDatabase()); //TODO check
+	selectQueryPaths.prepare("select ci.hash from comic c inner join comic_info ci  on (c.comicInfoId = ci.id) where c.parentId = :parentId");
+	selectQueryPaths.bindValue(":parentId", folderId);
+	selectQueryPaths.exec();
+	QStringList paths;
+	QString currentLibrary = selectedLibrary->currentText();
+	QString path = libraries.value(currentLibrary);
+	path = path + "/.yacreaderlibrary/covers/";
+	while (selectQueryPaths.next()) {
+		paths << path+selectQueryPaths.value(0).toString()+".jpg";
+	}
 
-	comicFlow->setImagePath(path);
+	comicFlow->setImagePaths(paths);
 	comicFlow->setFocus(Qt::OtherFocusReason);
 	paths = comicFlow->getImageFiles();
 	if(paths.size()>0 && !importedCovers)
 	{
 		openComicAction->setEnabled(true);
 		showPropertiesAction->setEnabled(true);
-					setAsReadAction->setEnabled(true);
-			setAsNonReadAction->setEnabled(true);
-			setAllAsReadAction->setEnabled(true);
-			setAllAsNonReadAction->setEnabled(true);
+		setAsReadAction->setEnabled(true);
+		setAsNonReadAction->setEnabled(true);
+		setAllAsReadAction->setEnabled(true);
+		setAllAsNonReadAction->setEnabled(true);
 	}
 	else
 	{
 		openComicAction->setEnabled(false);
 		showPropertiesAction->setEnabled(false);
-				setAsReadAction->setEnabled(false);
+		setAsReadAction->setEnabled(false);
 		setAsNonReadAction->setEnabled(false);
 		setAllAsReadAction->setEnabled(false);
 		setAllAsNonReadAction->setEnabled(false);
 	}
-	if(paths.size()>0)
-		comicView->setCurrentIndex(dmCV->index(paths[0]));
-	
+	/*if(paths.size()>0)
+	comicView->setCurrentIndex(dmCV->index(paths[0]));*/
 }
 
 void LibraryWindow::centerComicFlow(const QModelIndex & mi)
@@ -637,8 +608,8 @@ void LibraryWindow::centerComicFlow(const QModelIndex & mi)
 void LibraryWindow::updateComicView(int i)
 {
 
-	if((paths.size()>0)&&skip==0)
-		comicView->setCurrentIndex(dmCV->index(paths[i]));
+	/*if((paths.size()>0)&&skip==0)
+	comicView->setCurrentIndex(dmCV->index(paths[i]));*/
 	skip?(--skip):0;
 }
 
@@ -648,8 +619,8 @@ void LibraryWindow::openComic()
 	if(!importedCovers)
 	{
 		QModelIndex mi = comicView->currentIndex();
-		QString path = QDir::cleanPath(dmCV->filePath(mi));
-		
+		QString path;// = QDir::cleanPath(dmCV->filePath(mi));
+
 		path.remove("/.yacreaderlibrary");
 		path.remove(path.size()-4,4);
 		QProcess::startDetached(QDir::cleanPath(QCoreApplication::applicationDirPath())+"/YACReader",QStringList() << path);
@@ -663,24 +634,18 @@ void LibraryWindow::openComic()
 void LibraryWindow::setCurrentComicReaded()
 {
 	comicFlow->markSlide(comicFlow->centerIndex());
-	QModelIndex mi = comicView->currentIndex();
-	QString path = QDir::cleanPath(dmCV->filePath(mi));
-	QFile f(path.remove(path.size()-3,3)+"r");
-	f.open(QIODevice::WriteOnly);
-	f.close();
-
 	comicFlow->updateMarks();
 }
 
 void LibraryWindow::setComicsReaded()
 {
-	QModelIndex mi = proxyFilter->mapToSource(foldersView->currentIndex());
+	/*QModelIndex mi = proxyFilter->mapToSource(foldersView->currentIndex());
 	QString path;
-	
+
 	if(mi.isValid())
-		path = QDir::cleanPath(dm->filePath(mi));
+	path = QDir::cleanPath(dm->filePath(mi));
 	else
-		path = dm->rootPath();
+	path = dm->rootPath();
 
 	QDir d(path,"*.jpg");
 	d.setFilter(QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot);
@@ -688,13 +653,13 @@ void LibraryWindow::setComicsReaded()
 	int nFiles = list.size();
 	for(int i=0;i<nFiles;i++)
 	{
-		QFileInfo info = list.at(i);
-		QString filePath = info.absoluteFilePath();
-		QFile f(filePath.remove(filePath.size()-3,3)+"r");
-		f.open(QIODevice::WriteOnly);
-		f.close();
-		comicFlow->markSlide(i);
-	}
+	QFileInfo info = list.at(i);
+	QString filePath = info.absoluteFilePath();
+	QFile f(filePath.remove(filePath.size()-3,3)+"r");
+	f.open(QIODevice::WriteOnly);
+	f.close();
+	comicFlow->markSlide(i);
+	}*/
 
 	comicFlow->updateMarks();
 }
@@ -702,25 +667,25 @@ void LibraryWindow::setComicsReaded()
 void LibraryWindow::setCurrentComicUnreaded()
 {
 	comicFlow->unmarkSlide(comicFlow->centerIndex());
-	QModelIndex mi = comicView->currentIndex();
+	/*QModelIndex mi = comicView->currentIndex();
 	QString path = QDir::cleanPath(dmCV->filePath(mi));
 	QFile f(path.remove(path.size()-3,3)+"r");
 	f.open(QIODevice::WriteOnly);
 	f.remove();
-	f.close();
+	f.close();*/
 
 	comicFlow->updateMarks();
 }
 
 void LibraryWindow::setComicsUnreaded()
 {
-	QModelIndex mi = proxyFilter->mapToSource(foldersView->currentIndex());
+	/*QModelIndex mi = proxyFilter->mapToSource(foldersView->currentIndex());
 	QString path;
-	
+
 	if(mi.isValid())
-		path = QDir::cleanPath(dm->filePath(mi));
+	path = QDir::cleanPath(dm->filePath(mi));
 	else
-		path = dm->rootPath();
+	path = dm->rootPath();
 
 	QDir d(path,"*.jpg");
 	d.setFilter(QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot);
@@ -728,15 +693,15 @@ void LibraryWindow::setComicsUnreaded()
 	int nFiles = list.size();
 	for(int i=0;i<nFiles;i++)
 	{
-		QFileInfo info = list.at(i);
-		QString filePath = info.absoluteFilePath();
-		QFile f(filePath.remove(filePath.size()-3,3)+"r");
-		f.open(QIODevice::WriteOnly);
-		f.remove();
-		f.close();
-		comicFlow->unmarkSlide(i);
+	QFileInfo info = list.at(i);
+	QString filePath = info.absoluteFilePath();
+	QFile f(filePath.remove(filePath.size()-3,3)+"r");
+	f.open(QIODevice::WriteOnly);
+	f.remove();
+	f.close();
+	comicFlow->unmarkSlide(i);
 	}
-
+	*/
 	comicFlow->updateMarks();
 }
 
@@ -802,19 +767,19 @@ void LibraryWindow::loadLibraries()
 void LibraryWindow::saveLibraries()
 {
 	QFile f(QCoreApplication::applicationDirPath()+"/libraries.yacr");
-        if(!f.open(QIODevice::WriteOnly))
-        {
-            QMessageBox::critical(NULL,tr("Saving libraries file...."),tr("There was a problem saving YACReaderLibrary libraries file. Please, check if you have enough permissions in the YACReader root folder."));
-        }
-        else
-        {
-	QTextStream txtS(&f);
-	for(QMap<QString,QString>::iterator i = libraries.begin();i!=libraries.end();i++)
+	if(!f.open(QIODevice::WriteOnly))
 	{
-		txtS << i.key() << "\n";
-		txtS << i.value() << "\n";
+		QMessageBox::critical(NULL,tr("Saving libraries file...."),tr("There was a problem saving YACReaderLibrary libraries file. Please, check if you have enough permissions in the YACReader root folder."));
 	}
-    }
+	else
+	{
+		QTextStream txtS(&f);
+		for(QMap<QString,QString>::iterator i = libraries.begin();i!=libraries.end();i++)
+		{
+			txtS << i.key() << "\n";
+			txtS << i.value() << "\n";
+		}
+	}
 }
 
 void LibraryWindow::updateLibrary()
@@ -839,27 +804,27 @@ void LibraryWindow::deleteLibrary()
 	QString currentLibrary = selectedLibrary->currentText();
 	if(QMessageBox::question(this,tr("Are you sure?"),tr("Do you want delete ")+currentLibrary+" library?",QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
 	{
-	    deleteCurrentLibrary();
+		deleteCurrentLibrary();
 	}
 }
 
 void LibraryWindow::deleteCurrentLibrary()
 {
-    QString path = libraries.value(selectedLibrary->currentText());
-    libraries.remove(selectedLibrary->currentText());
-    selectedLibrary->removeItem(selectedLibrary->currentIndex());
-    selectedLibrary->setCurrentIndex(0);
-    path = path+"/.yacreaderlibrary";
-    QDir d(path);
-    delTree(d);
-    d.rmdir(path);
-    if(libraries.size()==0)//no more libraries avaliable.
-    {
-	    comicView->setModel(NULL);
-	    foldersView->setModel(NULL);
-	    comicFlow->clear();
-    }
-    saveLibraries();
+	QString path = libraries.value(selectedLibrary->currentText());
+	libraries.remove(selectedLibrary->currentText());
+	selectedLibrary->removeItem(selectedLibrary->currentIndex());
+	selectedLibrary->setCurrentIndex(0);
+	path = path+"/.yacreaderlibrary";
+	QDir d(path);
+	delTree(d);
+	d.rmdir(path);
+	if(libraries.size()==0)//no more libraries avaliable.
+	{
+		comicView->setModel(NULL);
+		foldersView->setModel(NULL);
+		comicFlow->clear();
+	}
+	saveLibraries();
 }
 
 void LibraryWindow::removeLibrary()
@@ -918,8 +883,8 @@ void LibraryWindow::setRootIndex()
 		if(d.exists(path))
 		{
 			//dmCV->refresh(dmCV->index(path));
-			comicView->setRootIndex(dmCV->index(path));
-                        loadCovers(proxyFilter->mapFromSource(dm->index(path)));
+			/*comicView->setRootIndex(dmCV->index(path));
+			loadCovers(proxyFilter->mapFromSource(dm->index(path)));*/
 		}
 		else
 		{
@@ -962,37 +927,37 @@ void LibraryWindow::toNormal()
 	comicFlow->render();
 	comicView->show();
 	left->show();
-    fullScreenToolTip->hide();
+	fullScreenToolTip->hide();
 	libraryToolBar->show();
 	comicFlow->show();
-	
+
 	showMaximized();
 }
 
 void LibraryWindow::setFoldersFilter(QString filter)
 {
-	if(filter.contains(previousFilter))
-		proxyFilter->softReset();
+	/*if(filter.contains(previousFilter))
+	proxyFilter->softReset();
 	else
-		proxyFilter->reset();
+	proxyFilter->reset();
 	previousFilter = filter;
 	if(!filter.isEmpty())
 	{
-		proxyFilter->setFilterRegExp(QRegExp(filter,Qt::CaseInsensitive,QRegExp::FixedString));
-        foldersView->expandAll();
+	proxyFilter->setFilterRegExp(QRegExp(filter,Qt::CaseInsensitive,QRegExp::FixedString));
+	foldersView->expandAll();
 	}
 	else
 	{
-		proxyFilter->setFilterRegExp(QRegExp());
-		foldersView->scrollTo(foldersView->currentIndex(),QAbstractItemView::PositionAtTop);
-        foldersView->collapseAll();
-	}
+	proxyFilter->setFilterRegExp(QRegExp());
+	foldersView->scrollTo(foldersView->currentIndex(),QAbstractItemView::PositionAtTop);
+	foldersView->collapseAll();
+	}*/
 }
 
 void LibraryWindow::showProperties()
 {
 	//TODO create a new method for this
-	QModelIndex mi = comicView->currentIndex();
+	/*QModelIndex mi = comicView->currentIndex();
 	QString path = QDir::cleanPath(dmCV->filePath(mi)).remove("/.yacreaderlibrary");
 	path.remove(path.size()-4,4);
 
@@ -1004,21 +969,21 @@ void LibraryWindow::showProperties()
 	QFile file(path);
 	propertiesDialog->setSize(file.size()/(1024.0*1024));
 	file.close();
-	propertiesDialog->show();
+	propertiesDialog->show();*/
 }
 
 void LibraryWindow::openContainingFolderComic()
 {
-    QModelIndex modelIndex = comicView->currentIndex();
-    QString path = QDir::cleanPath(dmCV->fileInfo(modelIndex).absolutePath()).remove("/.yacreaderlibrary");
-    QDesktopServices::openUrl(QUrl("file:///"+path, QUrl::TolerantMode));
+	QModelIndex modelIndex = comicView->currentIndex();
+	//QString path = QDir::cleanPath(dmCV->fileInfo(modelIndex).absolutePath()).remove("/.yacreaderlibrary");
+	//QDesktopServices::openUrl(QUrl("file:///"+path, QUrl::TolerantMode));
 }
 
 void LibraryWindow::openContainingFolder()
 {
-    QModelIndex modelIndex = foldersView->currentIndex();
-    QString path = QDir::cleanPath(dm->filePath(proxyFilter->mapToSource(modelIndex))).remove("/.yacreaderlibrary");
-    QDesktopServices::openUrl(QUrl("file:///"+path, QUrl::TolerantMode));
+	QModelIndex modelIndex = foldersView->currentIndex();
+	//QString path = QDir::cleanPath(dm->filePath(proxyFilter->mapToSource(modelIndex))).remove("/.yacreaderlibrary");
+	//QDesktopServices::openUrl(QUrl("file:///"+path, QUrl::TolerantMode));
 }
 
 void LibraryWindow::exportLibrary(QString destPath)
@@ -1041,20 +1006,20 @@ void LibraryWindow::reloadOptions()
 
 void LibraryWindow::updateFoldersView(QString path)
 {
-	QModelIndex mi = dm->index(path);
-	int rowCount = dm->rowCount(mi);
-	if(!fetching)
-	{
-		//fetching = true;
-		for(int i=0;i<rowCount;i++)
-		{
-			dm->fetchMore(dm->index(i,0,mi));
-			//int childCount = dm->rowCount(dm->index(i,0,mi));
-			//if(childCount>0)
-			//	QMessageBox::critical(NULL,tr("..."),tr("-----"));
-			fetching = false;
-		}
-	}
+	//QModelIndex mi = dm->index(path);
+	//int rowCount = dm->rowCount(mi);
+	//if(!fetching)
+	//{
+	//	//fetching = true;
+	//	for(int i=0;i<rowCount;i++)
+	//	{
+	//		dm->fetchMore(dm->index(i,0,mi));
+	//		//int childCount = dm->rowCount(dm->index(i,0,mi));
+	//		//if(childCount>0)
+	//		//	QMessageBox::critical(NULL,tr("..."),tr("-----"));
+	//		fetching = false;
+	//	}
+	//}
 
 }
 
@@ -1063,11 +1028,11 @@ void LibraryWindow::searchInFiles(int state)
 
 	if(state == Qt::Checked)
 	{
-		dm->setFilter(QDir::Dirs|QDir::Files|QDir::NoDotAndDotDot); //crash, after update proxy filter
+		//dm->setFilter(QDir::Dirs|QDir::Files|QDir::NoDotAndDotDot); //crash, after update proxy filter
 	}
 	else
 	{
-		dm->setFilter(QDir::Dirs|QDir::NoDotAndDotDot); //crash
+		//dm->setFilter(QDir::Dirs|QDir::NoDotAndDotDot); //crash
 	}
 }
 

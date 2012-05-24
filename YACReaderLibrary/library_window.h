@@ -12,6 +12,7 @@
 #include <QThread>
 #include <QFileInfoList>
 #include <QFileSystemModel>
+#include <QSqlQueryModel>
 
 #include "create_library_dialog.h"
 #include "add_library_dialog.h"
@@ -24,7 +25,7 @@
 #include "export_library_dialog.h"
 #include "import_library_dialog.h"
 #include "package_manager.h"
-
+#include "treemodel.h"
 
 class LibraryWindow : public QMainWindow
 {
@@ -58,11 +59,11 @@ private:
 	QListView * comicView;
 	QTreeView * foldersView;
 	QComboBox * selectedLibrary;
-	QFileSystemModel * dm;
-	QFileSystemModel * dmCV;
+	TreeModel * dm;
+	QSqlQueryModel * dmCV;
 	QStringList paths;
 	QMap<QString,QString> libraries;
-        QLabel * fullScreenToolTip;
+	QLabel * fullScreenToolTip;
 	YACReaderIconProvider fip;
 
 	bool fetching;
@@ -116,46 +117,54 @@ private:
 	void createToolBars();
 	void createMenus();
 	void createConnections();
+	void doLayout();
+	void doDialogs();
+	void doModels();
+
+	void disableActions();
+	void enableActions();
+	void enableLibraryActions();
+
 public:
 	LibraryWindow();
-public slots:
-	void loadLibrary(const QString & path);
-	void loadCovers(const QModelIndex & mi);
-	void centerComicFlow(const QModelIndex & mi);
-	void updateComicView(int i);
-	void openComic();
-	void createLibrary();
-	void create(QString source,QString dest, QString name);
-	void showAddLibrary();
-	void openLibrary(QString path, QString name);
-	void loadLibraries();
-	void saveLibraries();
-	void openLastCreated();
-	void updateLibrary();
-	void deleteLibrary();
-	void openContainingFolder();
-	void openContainingFolderComic();
-	void deleteCurrentLibrary();
-    void removeLibrary();
-	void renameLibrary();
-	void rename(QString newName);
-    void cancelCreating();
-    void stopLibraryCreator();
-	void setRootIndex();
-	void toggleFullScreen();
-	void toNormal();
-	void toFullScreen();
-	void setFoldersFilter(QString filter);
-	void showProperties();
-	void exportLibrary(QString destPath);
-	void importLibrary(QString clc,QString destPath,QString name);
-	void reloadOptions();
-	void updateFoldersView(QString);
-	void setCurrentComicReaded();
-	void setCurrentComicUnreaded();
-	void setComicsReaded();
-	void setComicsUnreaded();
-	void searchInFiles(int);
+	public slots:
+		void loadLibrary(const QString & path);
+		void loadCovers(const QModelIndex & mi);
+		void centerComicFlow(const QModelIndex & mi);
+		void updateComicView(int i);
+		void openComic();
+		void createLibrary();
+		void create(QString source,QString dest, QString name);
+		void showAddLibrary();
+		void openLibrary(QString path, QString name);
+		void loadLibraries();
+		void saveLibraries();
+		void openLastCreated();
+		void updateLibrary();
+		void deleteLibrary();
+		void openContainingFolder();
+		void openContainingFolderComic();
+		void deleteCurrentLibrary();
+		void removeLibrary();
+		void renameLibrary();
+		void rename(QString newName);
+		void cancelCreating();
+		void stopLibraryCreator();
+		void setRootIndex();
+		void toggleFullScreen();
+		void toNormal();
+		void toFullScreen();
+		void setFoldersFilter(QString filter);
+		void showProperties();
+		void exportLibrary(QString destPath);
+		void importLibrary(QString clc,QString destPath,QString name);
+		void reloadOptions();
+		void updateFoldersView(QString);
+		void setCurrentComicReaded();
+		void setCurrentComicUnreaded();
+		void setComicsReaded();
+		void setComicsUnreaded();
+		void searchInFiles(int);
 };
 
 #endif

@@ -45,6 +45,7 @@
 #include <QModelIndex>
 #include <QVariant>
 #include <QSqlQuery>
+#include <QSqlDatabase>
 
 class TreeItem;
 
@@ -54,6 +55,7 @@ class TreeModel : public QAbstractItemModel
     Q_OBJECT
 
 public:
+	TreeModel(QObject *parent = 0);
     TreeModel( QSqlQuery &sqlquery, QObject *parent = 0);
     ~TreeModel();
 
@@ -66,11 +68,14 @@ public:
     QModelIndex parent(const QModelIndex &index) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
-
+	void setupModelData(QString path);
+	QSqlDatabase & getDatabase();
 private:
     void setupModelData( QSqlQuery &sqlquery, TreeItem *parent);
 
     TreeItem *rootItem; //el árbol
+
+	QSqlDatabase _database;
 };
 //! [0]
 
