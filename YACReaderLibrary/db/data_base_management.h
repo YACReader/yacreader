@@ -15,8 +15,8 @@ private:
 public:
 	DataBaseManagement();
 	TreeModel * newTreeModel(QString path);
-	QSqlDatabase createDatabase(QString name, QString path);
-	QSqlDatabase loadDatabase(QString path);
+	static QSqlDatabase createDatabase(QString name, QString path);
+	static QSqlDatabase loadDatabase(QString path);
 };
 
 #endif

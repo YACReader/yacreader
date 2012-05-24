@@ -34,7 +34,7 @@ QSqlDatabase DataBaseManagement::loadDatabase(QString path)
 {
 	//TODO check path
 	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-	db.setDatabaseName(path);
+	db.setDatabaseName(path+"/library.ydb");
 	if (!db.open()) {
 		/*QMessageBox::critical(	0, QObject::tr("Cannot open database"),
 			QObject::tr("Unable to establish a database connection.\n"
