@@ -2,7 +2,7 @@
 #define __LIBRARYWINDOW_H
 
 #include <QMainWindow>
-#include <QListView>
+#include <QTableView>
 #include <QTreeView>
 #include <QModelIndex>
 #include <QDirModel>
@@ -11,8 +11,6 @@
 #include <QComboBox>
 #include <QThread>
 #include <QFileInfoList>
-#include <QFileSystemModel>
-#include <QSqlQueryModel>
 
 #include "create_library_dialog.h"
 #include "add_library_dialog.h"
@@ -26,6 +24,7 @@
 #include "import_library_dialog.h"
 #include "package_manager.h"
 #include "treemodel.h"
+#include "tablemodel.h"
 
 class LibraryWindow : public QMainWindow
 {
@@ -56,12 +55,12 @@ private:
 	QPushButton * clearFoldersFilter;
 	QCheckBox * includeComicsCheckBox;
 	//-------------
-	QListView * comicView;
+	QTableView * comicView;
 	QTreeView * foldersView;
 	QComboBox * selectedLibrary;
 	TreeModel * dm;
-	QSqlQueryModel * dmCV;
-	QStringList paths;
+	TableModel * dmCV;
+	//QStringList paths;
 	QMap<QString,QString> libraries;
 	QLabel * fullScreenToolTip;
 	YACReaderIconProvider fip;
@@ -121,10 +120,12 @@ private:
 	void doDialogs();
 	void doModels();
 
+	void disableAllActions();
 	void disableActions();
 	void enableActions();
 	void enableLibraryActions();
 
+	QString currentPath();
 public:
 	LibraryWindow();
 	public slots:
