@@ -76,6 +76,9 @@ private:
     TreeItem *rootItem; //el árbol
 
 	QSqlDatabase _database;
+signals:
+	void beforeReset();
+	void reset();
 };
 //! [0]
 

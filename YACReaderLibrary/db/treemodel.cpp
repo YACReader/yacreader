@@ -55,6 +55,8 @@
 TreeModel::TreeModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
+	connect(this,SIGNAL(beforeReset()),this,SIGNAL(modelAboutToBeReset()));
+	connect(this,SIGNAL(reset()),this,SIGNAL(modelReset()));
 }
 
 //! [0]
@@ -182,6 +184,7 @@ int TreeModel::rowCount(const QModelIndex &parent) const
 
 void TreeModel::setupModelData(QString path)
 {
+	emit(beforeReset());
 	if(rootItem == 0)
 		delete rootItem; //TODO comprobar que se libera bien la memoria
 
@@ -197,6 +200,7 @@ void TreeModel::setupModelData(QString path)
 	QSqlQuery selectQuery("select * from folder order by parentId,name",_database);
 
 	setupModelData(selectQuery,rootItem);
+	emit(reset());
 }
 
 void TreeModel::setupModelData(QSqlQuery &sqlquery, TreeItem *parent)

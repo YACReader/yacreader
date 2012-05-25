@@ -16,12 +16,9 @@ class ComicFlow : public YACReaderFlow
 {
 	Q_OBJECT
 public:
-        ComicFlow(QWidget* parent = 0,FlowType flowType = CoverFlowLike);
+    ComicFlow(QWidget* parent = 0,FlowType flowType = CoverFlowLike);
 	virtual ~ComicFlow();
 
-	//void render();
-	QString getImagePath() const; //TOTO quitar no se usa
-	QStringList getImageFiles() const;
 	void setImagePaths(const QStringList& paths);
 	//bool eventFilter(QObject *target, QEvent *event);
 	void keyPressEvent(QKeyEvent* event);

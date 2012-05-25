@@ -5,10 +5,6 @@
 #include <QImageReader>
 #include <algorithm>
 
-
-
-
-
 ComicFlow::ComicFlow(QWidget* parent,FlowType flowType)
 :YACReaderFlow(parent,flowType)
 {
@@ -25,62 +21,6 @@ ComicFlow::~ComicFlow()
 {
 	delete worker;
 	delete updateTimer;
-}
-
-QString ComicFlow::getImagePath() const
-{
-	return "";//imagePath;
-}
-
-QStringList ComicFlow::getImageFiles() const
-{
-	return imageFiles;
-}
-
-// get list of all files in a directory (will be filtered later)
-// this is usually very fast so no need to put it in a separate thread
-static QStringList findFiles(const QString& path = QString())
-{
-	//list<QString> files;
-	QStringList files;
-
-	QDir dir = QDir::current();
-	if(!path.isEmpty())
-		dir = QDir(path);
-
-	dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
-	dir.setNameFilters(QStringList() << "*.jpg");
-	//dir.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware);
-	QFileInfoList list = dir.entryInfoList();
-
-	qSort(list.begin(),list.end(),naturalSortLessThanCIFileInfo);
-
-	for (int i = 0; i < list.size(); ++i) 
-	{
-		QFileInfo fileInfo = list.at(i);
-		files.append(dir.absoluteFilePath(fileInfo.fileName()));
-	}
-
-	//std::sort(files.begin(), files.end(), naturalSortLessThanCI);
-
-	return files;
-}
-
-// take only files which are readable (as images)
-// also seems to be fast as it does a quick check only
-static QStringList filterImages(const QStringList& files)
-{
-	QStringList imageFiles;
-
-	QImageReader reader;
-	foreach(QString fname, files)
-	{
-		reader.setFileName(fname);
-		if(reader.canRead())
-			imageFiles += fname;
-	}
-
-	return imageFiles;
 }
 
 void ComicFlow::setImagePaths(const QStringList& paths)
@@ -135,7 +75,6 @@ void ComicFlow::updateImageData()
 			imagesSetted[idx] = true;
 			numImagesLoaded++;
 		}
-
 	}
 
 	// try to load only few images on the left and right side 
