@@ -56,7 +56,7 @@ void ComicFlow::setImagePaths(const QStringList& paths)
 void ComicFlow::preload()
 {
 	if(numImagesLoaded < imagesLoaded.size())
-		updateTimer->start(70);
+		updateTimer->start(30); //TODO comprobar rendimiento, originalmente era 70
 }
 
 void ComicFlow::updateImageData()

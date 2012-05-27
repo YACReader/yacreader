@@ -70,6 +70,9 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
 	void setupModelData(QString path);
 	QSqlDatabase & getDatabase();
+
+	//Métodos de conveniencia
+	QString getFolderPath(const QModelIndex &folder);
 private:
     void setupModelData( QSqlQuery &sqlquery, TreeItem *parent);
 

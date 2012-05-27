@@ -81,6 +81,7 @@ void delTree(QDir dir)
 	for (int i = 0; i < list.size(); ++i)
 	{
 		QFileInfo fileInfo = list.at(i);
+		QString path = fileInfo.filePath();
 		if(fileInfo.isDir())
 		{
 			delTree(QDir(fileInfo.absoluteFilePath()));

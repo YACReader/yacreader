@@ -36,13 +36,6 @@ QSqlDatabase DataBaseManagement::loadDatabase(QString path)
 	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
 	db.setDatabaseName(path+"/library.ydb");
 	if (!db.open()) {
-		/*QMessageBox::critical(	0, QObject::tr("Cannot open database"),
-			QObject::tr("Unable to establish a database connection.\n"
-			"This example needs SQLite support. Please read "
-			"the Qt SQL driver documentation for information how "
-			"to build it.\n\n"
-			"Click Cancel to exit."), QMessageBox::Cancel);*/
-
 		//se devuelve una base de datos vacía e inválida
 		return QSqlDatabase();
 	}

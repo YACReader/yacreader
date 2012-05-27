@@ -195,12 +195,16 @@ void TreeModel::setupModelData(QString path)
 	rootItem->id = 0;
 
 	//cargar la base de datos
+	if(_database.isOpen())
+		_database.close();
 	_database = DataBaseManagement::loadDatabase(path);
 	//crear la consulta
 	QSqlQuery selectQuery("select * from folder order by parentId,name",_database);
 
 	setupModelData(selectQuery,rootItem);
+	_database.close();
 	emit(reset());
+
 }
 
 void TreeModel::setupModelData(QSqlQuery &sqlquery, TreeItem *parent)
@@ -215,6 +219,7 @@ void TreeModel::setupModelData(QSqlQuery &sqlquery, TreeItem *parent)
 	while (sqlquery.next()) {
 		QList<QVariant> data;
 		data << sqlquery.value(2).toString();
+		data << sqlquery.value(3).toString();
 		TreeItem * item = new TreeItem(data);
 		item->id = sqlquery.value(0).toLongLong();
 		items.value(sqlquery.value(1).toLongLong())->appendChild(item);
@@ -226,4 +231,9 @@ void TreeModel::setupModelData(QSqlQuery &sqlquery, TreeItem *parent)
 QSqlDatabase & TreeModel::getDatabase()
 {
 	return _database;
+}
+
+QString TreeModel::getFolderPath(const QModelIndex &folder)
+{
+	return static_cast<TreeItem*>(folder.internalPointer())->data(1).toString();
 }
