@@ -116,16 +116,21 @@ void LibraryWindow::doLayout()
 	foldersView->setContextMenuPolicy(Qt::ActionsContextMenu);
 	foldersView->setContextMenuPolicy(Qt::ActionsContextMenu);
 	foldersView->header()->hide();
+	foldersView->setUniformRowHeights(true);
 
 	comicView->setAlternatingRowColors(true);
-	comicView->setStyleSheet("alternate-background-color: #e7e7d7;background-color: white;");
+	//comicView->setStyleSheet("alternate-background-color: #e7e7d7;background-color: white;");
 	//comicView->setItemDelegate(new YACReaderComicViewDelegate());
 	comicView->setContextMenuPolicy(Qt::ActionsContextMenu);
-	//comicView->verticalHeader()->hide();
 	comicView->setShowGrid(false);
 	comicView->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 	comicView->horizontalHeader()->setStretchLastSection(true);
-	comicView->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+	//comicView->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+	comicView->verticalHeader()->setDefaultSectionSize(24);
+//	comicView->verticalHeader()->setStyleSheet("QHeaderView::section"
+//"{"
+//    "background-color: white /* steelblue      */"
+//"}");
 	comicView->setSelectionBehavior(QAbstractItemView::SelectRows);
 	comicView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
@@ -550,8 +555,8 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 	dmCV->setupModelData(folderId,dm->getDatabase());
 	comicView->setModel(dmCV);
 	//TODO automatizar (valorar si se deja al modelo)
-	comicView->horizontalHeader()->hideSection(0);
 	comicView->horizontalHeader()->hideSection(1);
+	comicView->horizontalHeader()->hideSection(4);
 	comicView->horizontalHeader()->hideSection(3);
 	//TODO
 
@@ -775,19 +780,20 @@ void LibraryWindow::saveLibraries()
 
 void LibraryWindow::updateLibrary()
 {
-	delete dm;
+	/*delete dm;
 	delete dmCV;
 	delete proxyFilter;
 	dm = 0;
 	dmCV = 0;
-	proxyFilter = 0;
+	proxyFilter = 0;*/
 
 	QString currentLibrary = selectedLibrary->currentText();
 	QString path = libraries.value(currentLibrary);
 	_lastAdded = currentLibrary;
+	updateLibraryDialog->show();
 	libraryCreator->updateLibrary(path,path+"/.yacreaderlibrary");
 	libraryCreator->start();
-	updateLibraryDialog->show();
+	
 }
 
 void LibraryWindow::deleteLibrary()
@@ -806,6 +812,7 @@ void LibraryWindow::deleteCurrentLibrary()
 	selectedLibrary->removeItem(selectedLibrary->currentIndex());
 	selectedLibrary->setCurrentIndex(0);
 	path = path+"/.yacreaderlibrary";
+	dm->getDatabase().close();
 	QDir d(path);
 	delTree(d);
 	d.rmdir(path);
@@ -873,9 +880,7 @@ void LibraryWindow::setRootIndex()
 		QDir d; //TODO change this by static methods (utils class?? with delTree for example) 
 		if(d.exists(path))
 		{
-			//dmCV->refresh(dmCV->index(path));
-			/*comicView->setRootIndex(dmCV->index(path));
-			loadCovers(proxyFilter->mapFromSource(dm->index(path)));*/
+			loadCovers(QModelIndex());
 		}
 		else
 		{
@@ -947,10 +952,8 @@ void LibraryWindow::setFoldersFilter(QString filter)
 
 void LibraryWindow::showProperties()
 {
-	//TODO create a new method for this
-	/*QModelIndex mi = comicView->currentIndex();
-	QString path = QDir::cleanPath(dmCV->filePath(mi)).remove("/.yacreaderlibrary");
-	path.remove(path.size()-4,4);
+	QModelIndex mi = comicView->currentIndex();
+	QString path = QDir::cleanPath(currentPath()+dmCV->getComicPath(mi));
 
 	ThumbnailCreator tc(path,"");
 	tc.create();
@@ -960,21 +963,22 @@ void LibraryWindow::showProperties()
 	QFile file(path);
 	propertiesDialog->setSize(file.size()/(1024.0*1024));
 	file.close();
-	propertiesDialog->show();*/
+	propertiesDialog->show();
 }
 
 void LibraryWindow::openContainingFolderComic()
 {
 	QModelIndex modelIndex = comicView->currentIndex();
-	//QString path = QDir::cleanPath(dmCV->fileInfo(modelIndex).absolutePath()).remove("/.yacreaderlibrary");
-	//QDesktopServices::openUrl(QUrl("file:///"+path, QUrl::TolerantMode));
+	QFileInfo file = QDir::cleanPath(currentPath() + dmCV->getComicPath(modelIndex)); 
+	QString path = file.absolutePath();
+	QDesktopServices::openUrl(QUrl("file:///"+path, QUrl::TolerantMode));
 }
 
 void LibraryWindow::openContainingFolder()
 {
 	QModelIndex modelIndex = foldersView->currentIndex();
-	//QString path = QDir::cleanPath(dm->filePath(proxyFilter->mapToSource(modelIndex))).remove("/.yacreaderlibrary");
-	//QDesktopServices::openUrl(QUrl("file:///"+path, QUrl::TolerantMode));
+	QString path = QDir::cleanPath(currentPath() + dm->getFolderPath(modelIndex));
+	QDesktopServices::openUrl(QUrl("file:///"+path, QUrl::TolerantMode));
 }
 
 void LibraryWindow::exportLibrary(QString destPath)

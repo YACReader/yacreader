@@ -4,6 +4,7 @@
 #include <QMutex>
 #include <QDebug>
 #include <QSqlQuery>
+#include <QSqlRecord>
 //QMutex mutex;
 
 
@@ -13,38 +14,153 @@ QWaitCondition waitCondition;
 QMutex mutex;
 */
 
-class Folder
+
+
+qint64 Folder::insert(QSqlDatabase & db)
 {
-public:
-	bool knownParent;
-	bool knownId;
-	unsigned long long int id;
-	unsigned long long int parentId;
-	QString name;
-	QString path;
+	QSqlQuery query(db);
+	query.prepare("INSERT INTO folder (parentId, name, path) "
+                   "VALUES (:parentId, :name, :path)");
+    query.bindValue(":parentId", parentId);
+    query.bindValue(":name", name);
+	query.bindValue(":path", path);
+	query.exec();
+	return query.lastInsertId().toLongLong();
+}
 
-	Folder():knownParent(false), knownId(false){};
-	Folder(unsigned long long int sid, unsigned long long int pid,QString fn, QString fp):id(sid), parentId(pid),name(fn),path(fp),knownParent(true), knownId(true){};
-	Folder(QString fn, QString fp):name(fn),path(fp),knownParent(false), knownId(false){};
-	void setId(unsigned long long int sid){id = sid;knownId = true;};
-	void setFather(unsigned long long int pid){parentId = pid;knownParent = true;};
-};
-
-class Comic
+QList<LibraryItem *> Folder::getFoldersFromParent(qint64 parentId, QSqlDatabase & db)
 {
-public:
-	unsigned long long int comicInfoId;
-	unsigned long long int parentId;
-	QString name;
-	QString path;
-	QString hash;
+	QList<LibraryItem *> list;
 
-	Comic(){};
-	Comic(unsigned long long int cparentId, unsigned long long int ccomicInfoId, QString cname, QString cpath, QString chash)
-		:parentId(cparentId),comicInfoId(ccomicInfoId),name(cname),path(cpath),hash(chash){};
-	//Comic(QString fn, QString fp):name(fn),path(fp),knownParent(false), knownId(false){};
-};
+	QSqlQuery selectQuery(db); //TODO check
+	selectQuery.prepare("SELECT * FROM folder WHERE parentId = :parentId");
+	selectQuery.bindValue(":parentId", parentId);
+	selectQuery.exec();
 
+	Folder * currentItem;
+	while (selectQuery.next()) 
+	{
+		QList<QVariant> data;
+		QSqlRecord record = selectQuery.record();
+		for(int i=0;i<record.count();i++)
+			data << record.value(i);
+		//TODO sort by sort indicator and name
+		currentItem = new Folder(record.value(0).toLongLong(),record.value(1).toLongLong(),record.value(2).toString(),record.value(2).toString());
+		int lessThan = 0;
+		if(list.isEmpty())
+			list.append(currentItem);
+		else
+		{
+			Folder * last = static_cast<Folder *>(list.back());
+			QString nameLast = last->name; //TODO usar info name si está disponible, sino el nombre del fichero.....
+			QString nameCurrent = currentItem->name;
+			QList<LibraryItem *>::iterator i;
+			i = list.end();
+			i--;
+			while ((0 > (lessThan = nameCurrent.localeAwareCompare(nameLast))) && i != list.begin())
+			{
+				i--;
+				nameLast = (*i)->name;
+			}
+			if(lessThan>0) //si se ha encontrado un elemento menor que current, se inserta justo después
+				list.insert(++i,currentItem);
+			else
+				list.insert(i,currentItem);
+
+		}
+	}
+
+	return list;
+}
+
+void Folder::removeFromDB(QSqlDatabase & db)
+{
+	QSqlQuery query(db);
+	query.prepare("DELETE FROM folder WHERE id = :id");
+    query.bindValue(":id", id);
+	query.exec();
+}
+
+
+
+qint64 Comic::insert(QSqlDatabase & db)
+{
+	//TODO comprobar si ya hay comic info con ese hash
+	QSqlQuery comicInfoInsert(db);
+	comicInfoInsert.prepare("INSERT INTO comic_info (hash) "
+		"VALUES (:hash)");
+	comicInfoInsert.bindValue(":hash", hash);
+	 comicInfoInsert.exec();
+	 qint64 comicInfoId =comicInfoInsert.lastInsertId().toLongLong();
+
+	QSqlQuery query(db);
+	query.prepare("INSERT INTO comic (parentId, comicInfoId, fileName, path) "
+                   "VALUES (:parentId,:comicInfoId,:name, :path)");
+    query.bindValue(":parentId", parentId);
+	query.bindValue(":comicInfoId", comicInfoId);
+    query.bindValue(":name", name);
+	query.bindValue(":path", path);
+	query.exec();
+	return query.lastInsertId().toLongLong();
+}
+
+QList<LibraryItem *> Comic::getComicsFromParent(qint64 parentId, QSqlDatabase & db)
+{
+	QList<LibraryItem *> list;
+
+	QSqlQuery selectQuery(db); //TODO check
+	selectQuery.prepare("select c.id,c.parentId,c.fileName,c.path,ci.hash from comic c inner join comic_info ci on (c.comicInfoId = ci.id) where c.parentId = :parentId");
+	selectQuery.bindValue(":parentId", parentId);
+	selectQuery.exec();
+
+	Comic * currentItem;
+	while (selectQuery.next()) 
+	{
+		QList<QVariant> data;
+		QSqlRecord record = selectQuery.record();
+		for(int i=0;i<record.count();i++)
+			data << record.value(i);
+		//TODO sort by sort indicator and name
+		currentItem = new Comic;
+		currentItem->id = record.value(0).toLongLong();
+		currentItem->parentId = record.value(1).toLongLong();
+		currentItem->name = record.value(2).toString();
+		currentItem->hash = record.value(3).toString();
+		int lessThan = 0;
+		if(list.isEmpty())
+			list.append(currentItem);
+		else
+		{
+			Comic * last = static_cast<Comic *>(list.back());
+			QString nameLast = last->name; 
+			QString nameCurrent = currentItem->name;
+			QList<LibraryItem *>::iterator i;
+			i = list.end();
+			i--;
+			while ((0 > (lessThan = nameCurrent.localeAwareCompare(nameLast))) && i != list.begin())  //se usa la misma ordenación que en QDir
+			{
+				i--;
+				nameLast = (*i)->name;
+			}
+			if(lessThan>0) //si se ha encontrado un elemento menor que current, se inserta justo después
+				list.insert(++i,currentItem);
+			else
+				list.insert(i,currentItem);
+
+		}
+	}
+
+	return list;
+}
+
+void Comic::removeFromDB(QSqlDatabase & db)
+{
+	QSqlQuery query(db);
+	query.prepare("DELETE FROM comic WHERE id = :id");
+    query.bindValue(":id", id);
+	query.exec();
+}
+//--------------------------------------------------------------------------------
 LibraryCreator::LibraryCreator()
 {
 	_nameFilter << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar";
@@ -73,7 +189,7 @@ bool LibraryCreator::createTables()
 
 	//FOLDER (representa una carpeta en disco)
 	QSqlQuery queryFolder(_database);
-	queryFolder.prepare("CREATE TABLE folder (id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, name TEXT NOT NULL, path TEXT NOT NULL, FOREIGN KEY(parentId) REFERENCES folder(id))");
+	queryFolder.prepare("CREATE TABLE folder (id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, name TEXT NOT NULL, path TEXT NOT NULL, FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE)");
 	success = success && queryFolder.exec();
 
 		//COMIC INFO (representa la información de un cómic, cada cómic tendrá un idéntificador único formado por un hash sha1'de los primeros 512kb' + su tamaño en bytes)
@@ -83,7 +199,7 @@ bool LibraryCreator::createTables()
 
 	//COMIC (representa un cómic en disco, contiene el nombre de fichero)
 	QSqlQuery queryComic(_database);
-	queryComic.prepare("CREATE TABLE comic (id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, comicInfoId INTEGER NOT NULL,  fileName TEXT NOT NULL, path TEXT, FOREIGN KEY(parentId) REFERENCES folder(id), FOREIGN KEY(comicInfoId) REFERENCES comic_info(id))");
+	queryComic.prepare("CREATE TABLE comic (id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, comicInfoId INTEGER NOT NULL,  fileName TEXT NOT NULL, path TEXT, FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE, FOREIGN KEY(comicInfoId) REFERENCES comic_info(id))");
 	success = success && queryComic.exec();
 
 	return success;
@@ -101,6 +217,7 @@ void LibraryCreator::run()
 		_database.setDatabaseName(_target+"/library.ydb");
 		if(!_database.open())
 			return; //TODO avisar del problema
+		_database.transaction();
 		_currentPathFolders.clear();
 		_currentPathFolders.append(Folder(0,0,"root","/"));
 		if(!createTables())
@@ -117,18 +234,22 @@ void LibraryCreator::run()
 		_database.setDatabaseName(_target+"/library.ydb");
 		if(!_database.open())
 			return; //TODO avisar del problema
-		update(QDir(_source),QDir(_target));
+		_database.transaction();
+		update(QDir(_source));
+		_database.commit();
+		_database.close();
 	}
 	emit(finished());
 }
 
 void LibraryCreator::stop()
 {
+	_database.commit(); //TODO check
 	stopRunning = true;
 }
 
 //retorna el id del ultimo de los folders
-unsigned long long int LibraryCreator::insertFolders()
+qint64 LibraryCreator::insertFolders()
 {
 	QList<Folder>::iterator i;
 	int currentId = 0;
@@ -137,7 +258,7 @@ unsigned long long int LibraryCreator::insertFolders()
 		if(!(i->knownId))
 		{
 			i->setFather(currentId);
-			currentId = insertFolder(currentId,*i);
+			currentId = i->insert(_database);//insertFolder(currentId,*i);
 			i->setId(currentId);
 		}
 		else
@@ -148,7 +269,7 @@ unsigned long long int LibraryCreator::insertFolders()
 	return 0;
 }
 
-unsigned long long int LibraryCreator::insertFolder(unsigned long long int parentId,const Folder & folder)
+/*qint64 LibraryCreator::insertFolder(qint64 parentId,const Folder & folder)
 {
 	QSqlQuery query(_database);
 	query.prepare("INSERT INTO folder (parentId, name, path) "
@@ -158,9 +279,9 @@ unsigned long long int LibraryCreator::insertFolder(unsigned long long int paren
 	query.bindValue(":path", folder.path);
 	query.exec();
 	return query.lastInsertId().toLongLong();
-}
+}*/
 
-unsigned long long int LibraryCreator::insertComic(const Comic & comic)
+/*qint64 LibraryCreator::insertComic(const Comic & comic)
 {
 	//TODO comprobar si ya hay comic info con ese hash
 	QSqlQuery comicInfoInsert(_database);
@@ -168,7 +289,7 @@ unsigned long long int LibraryCreator::insertComic(const Comic & comic)
 		"VALUES (:hash)");
 	comicInfoInsert.bindValue(":hash", comic.hash);
 	 comicInfoInsert.exec();
-	 unsigned long long int comicInfoId =comicInfoInsert.lastInsertId().toLongLong();
+	 qint64 comicInfoId =comicInfoInsert.lastInsertId().toLongLong();
 
 	QSqlQuery query(_database);
 	query.prepare("INSERT INTO comic (parentId, comicInfoId, fileName, path) "
@@ -179,7 +300,7 @@ unsigned long long int LibraryCreator::insertComic(const Comic & comic)
 	query.bindValue(":path", comic.path);
 	query.exec();
 	return query.lastInsertId().toLongLong();
-}
+}*/
 
 void LibraryCreator::create(QDir dir)
 {
@@ -203,40 +324,46 @@ void LibraryCreator::create(QDir dir)
 		}
 		else
 		{
-			//dir.mkpath(_target+(QDir::cleanPath(fileInfo.absolutePath()).remove(_source)));
-			
-			//en este punto sabemos que todos los folders que hay en _currentPath, deberían estar añadidos a la base de datos
-			insertFolders();
-			emit(coverExtracted(relativePath));
-
-			//Se calcula el hash del cómic
-
-			QCryptographicHash crypto(QCryptographicHash::Sha1);
-			QFile file(fileInfo.absoluteFilePath());
-			file.open(QFile::ReadOnly);
-			crypto.addData(file.read(524288));
-			//hash Sha1 del primer 0.5MB + filesize
-			QString hash = QString(crypto.result().toHex().constData()) + QString::number(fileInfo.size());
-			insertComic(Comic(_currentPathFolders.last().id,0,fileName,relativePath,hash));
-			ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+hash+".jpg");
-			//ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+fileInfo.fileName()+".jpg");
-			tc.create();
-
+			insertComic(relativePath,fileInfo);
 		}
 	}
 }
 
-void LibraryCreator::update(QDir dirS,QDir dirD)
+void LibraryCreator::insertComic(const QString & relativePath,const QFileInfo & fileInfo)
+{
+	//en este punto sabemos que todos los folders que hay en _currentPath, deberían estar añadidos a la base de datos
+	insertFolders();
+	emit(coverExtracted(relativePath));
+
+	//Se calcula el hash del cómic
+
+	QCryptographicHash crypto(QCryptographicHash::Sha1);
+	QFile file(fileInfo.absoluteFilePath());
+	file.open(QFile::ReadOnly);
+	crypto.addData(file.read(524288));
+	file.close();
+	//hash Sha1 del primer 0.5MB + filesize
+	QString hash = QString(crypto.result().toHex().constData()) + QString::number(fileInfo.size());
+	Comic(_currentPathFolders.last().id,0,fileInfo.fileName(),relativePath,hash).insert(_database);
+	ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+hash+".jpg");
+	//ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+fileInfo.fileName()+".jpg");
+	tc.create();
+}
+
+void LibraryCreator::update(QDir dirS)
 {
 	dirS.setNameFilters(_nameFilter);
 	dirS.setFilter(QDir::AllDirs|QDir::Files|QDir::NoDotAndDotDot);
-	dirS.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware|QDir::DirsFirst);
+	dirS.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware|QDir::DirsFirst); //TODO la ordenación debe ser igual que en la base de datos
+	//TODO obtener primero los directorios, después los ficheros, ordenar por separado y concatenar
 	QFileInfoList listS = dirS.entryInfoList();
 
-	dirD.setNameFilters(QStringList()<<"*.jpg");
-	dirD.setFilter(QDir::AllDirs|QDir::Files|QDir::NoDotAndDotDot);
-	dirD.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware|QDir::DirsFirst);
-	QFileInfoList listD = dirD.entryInfoList();
+	QList<LibraryItem *> folders = Folder::getFoldersFromParent(_currentPathFolders.last().id,_database);
+	QList<LibraryItem *> comics = Comic::getComicsFromParent(_currentPathFolders.last().id,_database);
+
+	QList <LibraryItem *> listD;
+	listD.append(folders);
+	listD.append(comics);
 
 	int lenghtS = listS.size();
 	int lenghtD = listD.size();
@@ -256,14 +383,7 @@ void LibraryCreator::update(QDir dirS,QDir dirD)
 			{
 				if(stopRunning)
 					return;
-				QFileInfo fileInfoD = listD.at(j);
-				if(fileInfoD.isDir())
-				{
-					delTree(QDir(fileInfoD.absoluteFilePath()));
-					dirD.rmdir(fileInfoD.absoluteFilePath());
-				}
-				else
-					dirD.remove(fileInfoD.absoluteFilePath());
+				listD.at(j)->removeFromDB(_database);
 			}
 			updated = true;
 		}
@@ -275,14 +395,15 @@ void LibraryCreator::update(QDir dirS,QDir dirD)
 				if(stopRunning)
 					return;
 				QFileInfo fileInfoS = listS.at(i);
-				if(fileInfoS.isDir())
-					create(QDir(fileInfoS.absoluteFilePath()));
-				else
+				if(fileInfoS.isDir()) //create folder
 				{
-					dirD.mkpath(_target+(QDir::cleanPath(fileInfoS.absolutePath()).remove(_source)));
-					emit(coverExtracted(QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source)));
-					ThumbnailCreator tc(QDir::cleanPath(fileInfoS.absoluteFilePath()),_target+(QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source))+".jpg");
-					tc.create();
+					_currentPathFolders.append(Folder(fileInfoS.fileName(),QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source)));  //folder actual no está en la BD
+					create(QDir(fileInfoS.absoluteFilePath()));
+					_currentPathFolders.pop_back();
+				}
+				else //create comic
+				{
+					insertComic(QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source),fileInfoS);
 				}
 			}
 			updated = true;
@@ -290,31 +411,36 @@ void LibraryCreator::update(QDir dirS,QDir dirD)
 		if(!updated)
 		{
 			QFileInfo fileInfoS = listS.at(i);
-			QFileInfo fileInfoD = listD.at(j);
+			LibraryItem * fileInfoD = listD.at(j);
 			QString nameS = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(QDir::cleanPath(fileInfoS.absolutePath())); //remove source
-			QString nameD = QDir::cleanPath(fileInfoD.absoluteFilePath()).remove(QDir::cleanPath(fileInfoD.absolutePath())); //remove target
+			QString nameD = "/"+fileInfoD->name;
 
 			int comparation = QString::localeAwareCompare(nameS,nameD);
-			if(fileInfoS.isDir()&&fileInfoD.isDir())
+			if(fileInfoS.isDir()&&fileInfoD->isDir())
 				if(comparation == 0)//same folder, update
 				{
-					update(QDir(fileInfoS.absoluteFilePath()),QDir(fileInfoD.absoluteFilePath()));
+					_currentPathFolders.append(*static_cast<Folder *>(fileInfoD));//fileInfoD conoce su padre y su id
+					update(QDir(fileInfoS.absoluteFilePath()));
+					_currentPathFolders.pop_back();
 					i++;
 					j++;
 				}
 				else
-					if(comparation < 0) //nameS doesn't exist on Target folder...
+					if(comparation < 0) //nameS doesn't exist on DB
 					{
 						if(nameS!="/.yacreaderlibrary")
+						{
+							_currentPathFolders.append(Folder(fileInfoS.fileName(),QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source)));
 							create(QDir(fileInfoS.absoluteFilePath()));
+							_currentPathFolders.pop_back();
+						}
 						i++;
 					}
 					else //nameD no longer avaliable on Source folder...
 					{
 						if(nameS!="/.yacreaderlibrary")
 						{
-							delTree(QDir(fileInfoD.absoluteFilePath()));
-							dirD.rmdir(fileInfoD.absoluteFilePath());
+							fileInfoD->removeFromDB(_database);
 							j++;
 						}
 						else
@@ -324,49 +450,47 @@ void LibraryCreator::update(QDir dirS,QDir dirD)
 				if(fileInfoS.isDir()) //this folder doesn't exist on library
 				{
 					if(nameS!="/.yacreaderlibrary") //skip .yacreaderlibrary folder
+					{
+						_currentPathFolders.append(Folder(fileInfoS.fileName(),QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source)));
 						create(QDir(fileInfoS.absoluteFilePath()));
+						_currentPathFolders.pop_back();
+					}
 					i++;
 				}
 				else
-					if(fileInfoD.isDir()) //delete this folder from library
+					if(fileInfoD->isDir()) //delete this folder from library
 					{
-						delTree(QDir(fileInfoD.absoluteFilePath()));
-						dirD.rmdir(fileInfoD.absoluteFilePath());
+						fileInfoD->removeFromDB(_database);
 						j++;
 					}
 					else //both are files  //BUG on windows (no case sensitive)
 					{
-						nameD.remove(nameD.size()-4,4);
+						//nameD.remove(nameD.size()-4,4);
 						int comparation = QString::localeAwareCompare(nameS,nameD);
 						if(comparation < 0) //create new thumbnail
 						{
-							dirD.mkpath(_target+(QDir::cleanPath(fileInfoS.absolutePath()).remove(_source)));
-							emit(coverExtracted(QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source)));
-							ThumbnailCreator tc(QDir::cleanPath(fileInfoS.absoluteFilePath()),_target+(QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source))+".jpg");
-							tc.create();
+							insertComic(QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source),fileInfoS);
 							i++;
 						}
 						else
 						{
 							if(comparation > 0) //delete thumbnail
 							{
-								dirD.remove(fileInfoD.absoluteFilePath());
-								QString tick = fileInfoD.absoluteFilePath();
-								dirD.remove(tick.remove(tick.size()-3,3));
-								dirD.remove(tick+"r");
+								fileInfoD->removeFromDB(_database);
 								j++;
 							}
 							else //same file
 							{
-								if(fileInfoS.isFile() && fileInfoD.isFile())
+								if(fileInfoS.isFile() && !fileInfoD->isDir())
 								{
-									if(fileInfoS.lastModified()>fileInfoD.lastModified())
-									{
-										dirD.mkpath(_target+(QDir::cleanPath(fileInfoS.absolutePath()).remove(_source)));
-										emit(coverExtracted(QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source)));
-										ThumbnailCreator tc(QDir::cleanPath(fileInfoS.absoluteFilePath()),_target+(QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source))+".jpg");
-										tc.create();
-									}
+									//TODO comprobar fechas + tamaño
+									//if(fileInfoS.lastModified()>fileInfoD.lastModified())
+									//{
+									//	dirD.mkpath(_target+(QDir::cleanPath(fileInfoS.absolutePath()).remove(_source)));
+									//	emit(coverExtracted(QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source)));
+									//	ThumbnailCreator tc(QDir::cleanPath(fileInfoS.absoluteFilePath()),_target+(QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source))+".jpg");
+									//	tc.create();
+									//}
 								}
 								i++;j++;
 							}

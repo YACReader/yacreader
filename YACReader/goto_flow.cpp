@@ -169,7 +169,7 @@ void GoToFlow::setImageReady(int index,const QByteArray & image)
 void GoToFlow::preload()
 {
 	if(numImagesLoaded < imagesLoaded.size())
-		updateTimer->start(70);
+		updateTimer->start(30); //TODO comprobar rendimiento, antes era 70
 }
 
 void GoToFlow::updateImageData()

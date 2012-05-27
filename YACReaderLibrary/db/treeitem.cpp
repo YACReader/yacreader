@@ -47,6 +47,7 @@
 #include <QStringList>
 
 #include "treeitem.h"
+#include "qnaturalsorting.h"
 
 //! [0]
 TreeItem::TreeItem(const QList<QVariant> &data, TreeItem *parent)
@@ -68,7 +69,29 @@ void TreeItem::appendChild(TreeItem *item)
 {
 	item->parentItem = this;
 	//TODO insertar odernado
-    childItems.append(item);
+	if(childItems.isEmpty())
+		childItems.append(item);
+	else
+	{
+		TreeItem * last = childItems.back();
+		QString nameLast = last->data(1).toString(); //TODO usar info name si está disponible, sino el nombre del fichero.....
+		QString nameCurrent = item->data(1).toString();
+		QList<TreeItem *>::iterator i;
+		i = childItems.end();
+		i--;
+		while (naturalSortLessThanCI(nameCurrent,nameLast) && i != childItems.begin())
+		{
+			i--;
+			nameLast = (*i)->data(1).toString();
+		}
+		if(!naturalSortLessThanCI(nameCurrent,nameLast)) //si se ha encontrado un elemento menor que current, se inserta justo después
+			childItems.insert(++i,item);
+		else
+			childItems.insert(i,item);
+
+	}
+
+    //childItems.append(item);
 }
 //! [2]
 

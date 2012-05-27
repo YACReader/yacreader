@@ -14,8 +14,52 @@
 #include <QThread>
 #include <QSqlDatabase>
 
-class Folder;
-class Comic;
+
+class LibraryItem
+{
+public:
+	virtual bool isDir() = 0;
+	virtual void removeFromDB(QSqlDatabase & db) = 0;
+	QString name;
+	QString path;
+	qint64 parentId;
+	qint64 id;
+};
+
+class Folder : public LibraryItem
+{
+public:
+	bool knownParent;
+	bool knownId;
+	
+	Folder():knownParent(false), knownId(false){};
+	Folder(qint64 sid, qint64 pid,QString fn, QString fp):knownParent(true), knownId(true){id = sid; parentId = pid;name = fn; path = fp;};
+	Folder(QString fn, QString fp):knownParent(false), knownId(false){name = fn; path = fp;};
+	void setId(qint64 sid){id = sid;knownId = true;};
+	void setFather(qint64 pid){parentId = pid;knownParent = true;};
+	static QList<LibraryItem *> getFoldersFromParent(qint64 parentId, QSqlDatabase & db);
+	qint64 insert(QSqlDatabase & db);
+	bool isDir(){return true;};
+	void removeFromDB(QSqlDatabase & db);
+};
+
+class Comic : public LibraryItem
+{
+public:
+	qint64 comicInfoId;
+	QString hash;
+
+	Comic(){};
+	Comic(qint64 cparentId, qint64 ccomicInfoId, QString cname, QString cpath, QString chash)
+		:comicInfoId(ccomicInfoId),hash(chash){parentId = cparentId;name = cname; path = cpath;};
+	//Comic(QString fn, QString fp):name(fn),path(fp),knownParent(false), knownId(false){};
+	qint64 insert(QSqlDatabase & db);
+	static QList<LibraryItem *> getComicsFromParent(qint64 parentId, QSqlDatabase & db);
+	bool isDir(){return false;};
+	void removeFromDB(QSqlDatabase & db);
+};
+
+
 
 	class LibraryCreator : public QThread
 	{
@@ -36,12 +80,13 @@ class Comic;
 		QList<Folder> _currentPathFolders; //lista de folders en el orden en el que están siendo explorados, el último es el folder actual
 		//recursive method
 		void create(QDir currentDirectory);
-		void update(QDir currentDirectory,QDir libraryCurrentDirectory);
+		void update(QDir currentDirectory);
         void run();
 		bool createTables();
-		unsigned long long int insertFolders();
-		unsigned long long int insertFolder(unsigned long long int parentId,const Folder & folder);
-		unsigned long long int insertComic(const Comic & comic);
+		qint64 insertFolders();//devuelve el id del último folder añadido (último en la ruta)
+		void insertComic(const QString & relativePath,const QFileInfo & fileInfo);
+		//qint64 insertFolder(qint64 parentId,const Folder & folder);
+		//qint64 insertComic(const Comic & comic);
         bool stopRunning;
 	signals:
 		void finished();

@@ -365,7 +365,7 @@ void PictureFlowAnimator::start(int slide)
   if(!animateTimer.isActive() && state)
   {
     step = (target < state->centerSlide.slideIndex) ? -1 : 1;
-    animateTimer.start(30);
+    animateTimer.start(10); //TODO comprobar rendimiento, originalmente era 30
   }
 }
 
@@ -386,11 +386,11 @@ void PictureFlowAnimator::update()
   if(!state)
     return;
 
-  int speed = 16384/4;
+  int speed = 16384/8; //TODO comprobar rendimiento, originalmente era /4
 
 #if 1
   // deaccelerate when approaching the target
-  const int max = 2 * 65536;
+  const int max = 4 * 65536; //TODO cambiado de 2 * a 4 * comprobar rendimiento
 
   int fi = frame;
   fi -= (target << 16);
