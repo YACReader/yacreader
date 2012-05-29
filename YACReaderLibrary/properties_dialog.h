@@ -7,6 +7,8 @@
 #include <QPushButton>
 #include <QScrollArea>
 
+#include "comic.h"
+
 	class PropertiesDialog : public QDialog
 	{
 		Q_OBJECT
@@ -20,6 +22,10 @@
 	public:
 		PropertiesDialog(QWidget * parent = 0);
 	public slots:
+		void setComics(QList<Comic> comics);
+		void updateComics(QList<Comic> comics);
+
+		//Deprecated
 		void setCover(const QPixmap & cover);
 		void setFilename(const QString & name);
 		void setNumpages(int pages);

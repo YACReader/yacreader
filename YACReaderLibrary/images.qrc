@@ -29,5 +29,8 @@
   <file>../images/setUnread.png</file>
   <file>../images/setAllUnread.png</file>
   <file>../images/showMarks.png</file>
+  <file>../images/importCover.png</file>
+  <file>../images/editComic.png</file>
+  <file>../images/selectAll.png</file>
     </qresource>
 </RCC>

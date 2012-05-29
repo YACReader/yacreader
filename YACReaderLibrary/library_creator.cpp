@@ -15,151 +15,6 @@ QMutex mutex;
 */
 
 
-
-qint64 Folder::insert(QSqlDatabase & db)
-{
-	QSqlQuery query(db);
-	query.prepare("INSERT INTO folder (parentId, name, path) "
-                   "VALUES (:parentId, :name, :path)");
-    query.bindValue(":parentId", parentId);
-    query.bindValue(":name", name);
-	query.bindValue(":path", path);
-	query.exec();
-	return query.lastInsertId().toLongLong();
-}
-
-QList<LibraryItem *> Folder::getFoldersFromParent(qint64 parentId, QSqlDatabase & db)
-{
-	QList<LibraryItem *> list;
-
-	QSqlQuery selectQuery(db); //TODO check
-	selectQuery.prepare("SELECT * FROM folder WHERE parentId = :parentId");
-	selectQuery.bindValue(":parentId", parentId);
-	selectQuery.exec();
-
-	Folder * currentItem;
-	while (selectQuery.next()) 
-	{
-		QList<QVariant> data;
-		QSqlRecord record = selectQuery.record();
-		for(int i=0;i<record.count();i++)
-			data << record.value(i);
-		//TODO sort by sort indicator and name
-		currentItem = new Folder(record.value(0).toLongLong(),record.value(1).toLongLong(),record.value(2).toString(),record.value(2).toString());
-		int lessThan = 0;
-		if(list.isEmpty())
-			list.append(currentItem);
-		else
-		{
-			Folder * last = static_cast<Folder *>(list.back());
-			QString nameLast = last->name; //TODO usar info name si está disponible, sino el nombre del fichero.....
-			QString nameCurrent = currentItem->name;
-			QList<LibraryItem *>::iterator i;
-			i = list.end();
-			i--;
-			while ((0 > (lessThan = nameCurrent.localeAwareCompare(nameLast))) && i != list.begin())
-			{
-				i--;
-				nameLast = (*i)->name;
-			}
-			if(lessThan>0) //si se ha encontrado un elemento menor que current, se inserta justo después
-				list.insert(++i,currentItem);
-			else
-				list.insert(i,currentItem);
-
-		}
-	}
-
-	return list;
-}
-
-void Folder::removeFromDB(QSqlDatabase & db)
-{
-	QSqlQuery query(db);
-	query.prepare("DELETE FROM folder WHERE id = :id");
-    query.bindValue(":id", id);
-	query.exec();
-}
-
-
-
-qint64 Comic::insert(QSqlDatabase & db)
-{
-	//TODO comprobar si ya hay comic info con ese hash
-	QSqlQuery comicInfoInsert(db);
-	comicInfoInsert.prepare("INSERT INTO comic_info (hash) "
-		"VALUES (:hash)");
-	comicInfoInsert.bindValue(":hash", hash);
-	 comicInfoInsert.exec();
-	 qint64 comicInfoId =comicInfoInsert.lastInsertId().toLongLong();
-
-	QSqlQuery query(db);
-	query.prepare("INSERT INTO comic (parentId, comicInfoId, fileName, path) "
-                   "VALUES (:parentId,:comicInfoId,:name, :path)");
-    query.bindValue(":parentId", parentId);
-	query.bindValue(":comicInfoId", comicInfoId);
-    query.bindValue(":name", name);
-	query.bindValue(":path", path);
-	query.exec();
-	return query.lastInsertId().toLongLong();
-}
-
-QList<LibraryItem *> Comic::getComicsFromParent(qint64 parentId, QSqlDatabase & db)
-{
-	QList<LibraryItem *> list;
-
-	QSqlQuery selectQuery(db); //TODO check
-	selectQuery.prepare("select c.id,c.parentId,c.fileName,c.path,ci.hash from comic c inner join comic_info ci on (c.comicInfoId = ci.id) where c.parentId = :parentId");
-	selectQuery.bindValue(":parentId", parentId);
-	selectQuery.exec();
-
-	Comic * currentItem;
-	while (selectQuery.next()) 
-	{
-		QList<QVariant> data;
-		QSqlRecord record = selectQuery.record();
-		for(int i=0;i<record.count();i++)
-			data << record.value(i);
-		//TODO sort by sort indicator and name
-		currentItem = new Comic;
-		currentItem->id = record.value(0).toLongLong();
-		currentItem->parentId = record.value(1).toLongLong();
-		currentItem->name = record.value(2).toString();
-		currentItem->hash = record.value(3).toString();
-		int lessThan = 0;
-		if(list.isEmpty())
-			list.append(currentItem);
-		else
-		{
-			Comic * last = static_cast<Comic *>(list.back());
-			QString nameLast = last->name; 
-			QString nameCurrent = currentItem->name;
-			QList<LibraryItem *>::iterator i;
-			i = list.end();
-			i--;
-			while ((0 > (lessThan = nameCurrent.localeAwareCompare(nameLast))) && i != list.begin())  //se usa la misma ordenación que en QDir
-			{
-				i--;
-				nameLast = (*i)->name;
-			}
-			if(lessThan>0) //si se ha encontrado un elemento menor que current, se inserta justo después
-				list.insert(++i,currentItem);
-			else
-				list.insert(i,currentItem);
-
-		}
-	}
-
-	return list;
-}
-
-void Comic::removeFromDB(QSqlDatabase & db)
-{
-	QSqlQuery query(db);
-	query.prepare("DELETE FROM comic WHERE id = :id");
-    query.bindValue(":id", id);
-	query.exec();
-}
 //--------------------------------------------------------------------------------
 LibraryCreator::LibraryCreator()
 {
@@ -249,7 +104,7 @@ void LibraryCreator::stop()
 }
 
 //retorna el id del ultimo de los folders
-qint64 LibraryCreator::insertFolders()
+qulonglong LibraryCreator::insertFolders()
 {
 	QList<Folder>::iterator i;
 	int currentId = 0;
@@ -269,7 +124,7 @@ qint64 LibraryCreator::insertFolders()
 	return 0;
 }
 
-/*qint64 LibraryCreator::insertFolder(qint64 parentId,const Folder & folder)
+/*qulonglong LibraryCreator::insertFolder(qulonglong parentId,const Folder & folder)
 {
 	QSqlQuery query(_database);
 	query.prepare("INSERT INTO folder (parentId, name, path) "
@@ -281,7 +136,7 @@ qint64 LibraryCreator::insertFolders()
 	return query.lastInsertId().toLongLong();
 }*/
 
-/*qint64 LibraryCreator::insertComic(const Comic & comic)
+/*qulonglong LibraryCreator::insertComic(const Comic & comic)
 {
 	//TODO comprobar si ya hay comic info con ese hash
 	QSqlQuery comicInfoInsert(_database);
@@ -289,7 +144,7 @@ qint64 LibraryCreator::insertFolders()
 		"VALUES (:hash)");
 	comicInfoInsert.bindValue(":hash", comic.hash);
 	 comicInfoInsert.exec();
-	 qint64 comicInfoId =comicInfoInsert.lastInsertId().toLongLong();
+	 qulonglong comicInfoId =comicInfoInsert.lastInsertId().toLongLong();
 
 	QSqlQuery query(_database);
 	query.prepare("INSERT INTO comic (parentId, comicInfoId, fileName, path) "

@@ -221,6 +221,15 @@ void TreeModel::setupModelData(QSqlQuery &sqlquery, TreeItem *parent)
 		data << sqlquery.value(2).toString();
 		data << sqlquery.value(3).toString();
 		TreeItem * item = new TreeItem(data);
+
+		/*QSqlQuery selectQuery(_database); //TODO check
+		selectQuery.prepare("select fileName from comic where parentId = :parentId");
+		selectQuery.bindValue(":parentId", sqlquery.value(0).toLongLong());
+		selectQuery.exec();
+		while (selectQuery.next()) {
+			item->comicNames.append(sqlquery.value(0).toString());
+		}*/
+
 		item->id = sqlquery.value(0).toLongLong();
 		items.value(sqlquery.value(1).toLongLong())->appendChild(item);
 		//se añade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones

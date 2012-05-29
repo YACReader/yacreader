@@ -44,13 +44,11 @@ void LibraryWindow::setupUI()
 
 void LibraryWindow::doLayout()
 {
-	QSplitter * sVertical = new QSplitter(Qt::Vertical);
-	QSplitter * sHorizontal = new QSplitter(Qt::Horizontal);
+	QSplitter * sVertical = new QSplitter(Qt::Vertical);  //spliter derecha
+	QSplitter * sHorizontal = new QSplitter(Qt::Horizontal);  //spliter principal
 	//TODO: flowType is a global variable
-	optionsDialog = new OptionsDialog(this);
-	optionsDialog->restoreOptions();
+	//CONFIG COMIC_FLOW--------------------------------------------------------
 	comicFlow = new ComicFlow(0,flowType);
-
 	comicFlow->setFocusPolicy(Qt::StrongFocus);
 	comicFlow->setShowMarks(true);
 	QMatrix m;
@@ -67,17 +65,46 @@ void LibraryWindow::doLayout()
 	slideSizeF = QSize(width,height);
 	comicFlow->setSlideSize(slideSizeW);
 	setFocusProxy(comicFlow);
+	//-------------------------------------------------------------------------
 
+	//CONFIG TREE/TABLE VIEWS--------------------------------------------------
 	comicView = new QTableView;
 	foldersView = new QTreeView;
+	//-------------------------------------------------------------------------
 
-
-	sVertical->addWidget(comicFlow);
-	sVertical->addWidget(comicView);
+	//CONFIG FLOW/COMICS-------------------------------------------------------
 	/*sVertical->setStretchFactor(0,1);
 	sVertical->setStretchFactor(1,0);
 	*/
+		//views
+	foldersView->setAnimated(true);
+	foldersView->setContextMenuPolicy(Qt::ActionsContextMenu);
+	foldersView->setContextMenuPolicy(Qt::ActionsContextMenu);
+	foldersView->header()->hide();
+	foldersView->setUniformRowHeights(true);
 
+	comicView->setAlternatingRowColors(true);
+	//comicView->setStyleSheet("alternate-background-color: #e7e7d7;background-color: white;");
+	//comicView->setItemDelegate(new YACReaderComicViewDelegate());
+	comicView->setContextMenuPolicy(Qt::ActionsContextMenu);
+	comicView->setShowGrid(false);
+	comicView->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+	comicView->horizontalHeader()->setStretchLastSection(true);
+	comicView->horizontalHeader()->setClickable(false);
+	//comicView->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+	comicView->verticalHeader()->setDefaultSectionSize(24);
+	comicView->verticalHeader()->setClickable(false); //TODO comportamiento anómalo
+	comicView->setCornerButtonEnabled(false);
+	comicView->setStyleSheet("QTableView {selection-background-color: #d7d7c7; selection-color: #000000;}");
+//	comicView->verticalHeader()->setStyleSheet("QHeaderView::section"
+//"{"
+//    "background-color: white /* steelblue      */"
+//"}");
+	comicView->setSelectionBehavior(QAbstractItemView::SelectRows);
+	comicView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	//-------------------------------------------------------------------------
+
+	//CONFIG NAVEGACIÓN/BÚSQUEDA-----------------------------------------------
 	left = new QWidget;
 	QVBoxLayout * l = new QVBoxLayout;
 	selectedLibrary = new QComboBox;
@@ -104,37 +131,23 @@ void LibraryWindow::doLayout()
 	l->addLayout(searchLayout);
 	l->setSpacing(1);
 	left->setLayout(l);
+	//-------------------------------------------------------------------------
 
+	//FINAL LAYOUT-------------------------------------------------------------
+	sVertical->addWidget(comicFlow);
+	QWidget *comics = new QWidget;
+	QVBoxLayout * comicsLayout = new QVBoxLayout;
+	comicsLayout->setContentsMargins(2,2,0,0);
+	comicsLayout->addWidget(editInfoToolBar = new QToolBar(comics));
+	comicsLayout->addWidget(comicView);
+	comics->setLayout(comicsLayout);
+	sVertical->addWidget(comics);
 	sHorizontal->addWidget(left);
 	sHorizontal->addWidget(sVertical);
 	sHorizontal->setStretchFactor(0,0);
 	sHorizontal->setStretchFactor(1,1);
 	setCentralWidget(sHorizontal);
-
-	//views
-	foldersView->setAnimated(true);
-	foldersView->setContextMenuPolicy(Qt::ActionsContextMenu);
-	foldersView->setContextMenuPolicy(Qt::ActionsContextMenu);
-	foldersView->header()->hide();
-	foldersView->setUniformRowHeights(true);
-
-	comicView->setAlternatingRowColors(true);
-	//comicView->setStyleSheet("alternate-background-color: #e7e7d7;background-color: white;");
-	//comicView->setItemDelegate(new YACReaderComicViewDelegate());
-	comicView->setContextMenuPolicy(Qt::ActionsContextMenu);
-	comicView->setShowGrid(false);
-	comicView->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
-	comicView->horizontalHeader()->setStretchLastSection(true);
-	//comicView->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
-	comicView->verticalHeader()->setDefaultSectionSize(24);
-//	comicView->verticalHeader()->setStyleSheet("QHeaderView::section"
-//"{"
-//    "background-color: white /* steelblue      */"
-//"}");
-	comicView->setSelectionBehavior(QAbstractItemView::SelectRows);
-	comicView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-
-
+	//FINAL LAYOUT-------------------------------------------------------------
 
 	fullScreenToolTip = new QLabel(this);
 	fullScreenToolTip->setText(tr("<font color='white'> press 'F' to close fullscreen mode </font>"));
@@ -156,6 +169,8 @@ void LibraryWindow::doDialogs()
 	exportLibraryDialog = new ExportLibraryDialog(this);
 	importLibraryDialog = new ImportLibraryDialog(this);
 	addLibraryDialog = new AddLibraryDialog(this);
+	optionsDialog = new OptionsDialog(this);
+	optionsDialog->restoreOptions();
 	had = new HelpAboutDialog(this); //TODO load data.
 	QString sufix = QLocale::system().name();
 	if(QFile(":/files/about_"+sufix+".html").exists())
@@ -303,6 +318,24 @@ void LibraryWindow::createActions()
 	openContainingFolderComicAction = new QAction(this);
 	openContainingFolderComicAction->setText(tr("Open containing folder..."));
 	openContainingFolderComicAction->setIcon(QIcon(":/images/open.png"));
+
+	//Edit comics actions------------------------------------------------------
+	selectAllComicsAction = new QAction(this);
+	selectAllComicsAction->setText(tr("Select all comics"));
+	selectAllComicsAction->setIcon(QIcon(":/images/selectAll.png"));
+
+	editSelectedComicsAction = new QAction(this);
+	editSelectedComicsAction->setText(tr("Edit"));
+	editSelectedComicsAction->setIcon(QIcon(":/images/editComic.png"));
+
+	asignOrderActions = new QAction(this);
+	asignOrderActions->setText(tr("Asign current order to comics"));
+	asignOrderActions->setIcon(QIcon(":/images/fit.png"));
+
+	forceConverExtractedAction = new QAction(this);
+	forceConverExtractedAction->setText(tr("Update cover"));
+	forceConverExtractedAction->setIcon(QIcon(":/images/importCover.png"));
+	//-------------------------------------------------------------------------
 }
 
 //TODO unificar con disableActions
@@ -407,6 +440,13 @@ void LibraryWindow::createToolBars()
 
 	comicFlow->addAction(toggleFullScreenAction);
 	comicFlow->addAction(openComicAction);
+
+	editInfoToolBar->addAction(openComicAction);
+	editInfoToolBar->addSeparator();
+	editInfoToolBar->addAction(editSelectedComicsAction);
+	editInfoToolBar->addAction(selectAllComicsAction);
+	editInfoToolBar->addSeparator();
+	editInfoToolBar->addAction(forceConverExtractedAction);
 }
 
 void LibraryWindow::createMenus()
@@ -495,6 +535,9 @@ void LibraryWindow::createConnections()
 
 	//connect(dm,SIGNAL(directoryLoaded(QString)),foldersView,SLOT(expandAll()));
 	//connect(dm,SIGNAL(directoryLoaded(QString)),this,SLOT(updateFoldersView(QString)));
+	//Comicts edition
+	connect(selectAllComicsAction,SIGNAL(triggered()),comicView,SLOT(selectAll()));
+
 }
 
 void LibraryWindow::loadLibrary(const QString & name)
