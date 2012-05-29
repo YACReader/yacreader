@@ -96,10 +96,16 @@ private:
 	QAction * setAllAsNonReadAction;
 	QAction * showHideMarksAction;
 
+	QAction * selectAllComicsAction;
+	QAction * editSelectedComicsAction;
+	QAction * asignOrderActions;
+	QAction * forceConverExtractedAction;
+
 
 	QToolBar * libraryToolBar;
 	QToolBar * treeActions;
 	QToolBar * comicsToolBar;
+	QToolBar * editInfoToolBar;
 
 	OptionsDialog * optionsDialog;
 

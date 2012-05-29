@@ -61,9 +61,11 @@ public:
     TreeItem *parent();
 	TreeItem *parentItem;
 	unsigned long long int id;
+	QList<QString> comicNames;
 private:
     QList<TreeItem*> childItems;
     QList<QVariant> itemData;
+	
     
 	
 };

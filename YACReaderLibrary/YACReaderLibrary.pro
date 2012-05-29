@@ -33,7 +33,10 @@ HEADERS += comic_flow.h \
 		   ./db/treeitem.h \
 		   ./db/treemodel.h \
 		   ./db/tablemodel.h \
-		   ./db/tableitem.h
+		   ./db/tableitem.h \
+		   ./db/comic.h \
+		   ./db/folder.h \
+		   ./db/library_item.h
 SOURCES += comic_flow.cpp \
            create_library_dialog.cpp \
            library_creator.cpp \
@@ -54,7 +57,10 @@ SOURCES += comic_flow.cpp \
 		   ./db/treeitem.cpp \
 		   ./db/treemodel.cpp \
 		   ./db/tablemodel.cpp \
-		   ./db/tableitem.cpp
+		   ./db/tableitem.cpp \
+		   ./db/comic.cpp \
+		   ./db/folder.cpp \
+		   ./db/library_item.cpp
 		   
 include(./server/server.pri)
 
