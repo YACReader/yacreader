@@ -217,6 +217,7 @@ private:
   PictureFlowPrivate* d;
   QImage mark;
   QVector<bool> marks;
+  int framesSkip;
 };
 
 #endif // PICTUREFLOW_H
