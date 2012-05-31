@@ -223,6 +223,7 @@ public:
   int step;
   int frame;
   QTimer animateTimer;
+  bool animating;
 };
 
 class PictureFlowAbstractRenderer
@@ -355,7 +356,7 @@ void PictureFlowState::reset()
 // ------------- PictureFlowAnimator  ---------------------------------------
 
 PictureFlowAnimator::PictureFlowAnimator():
-state(0), target(0), step(0), frame(0)
+state(0), target(0), step(0), frame(0), animating(false)
 {
 }
 
@@ -365,7 +366,9 @@ void PictureFlowAnimator::start(int slide)
   if(!animateTimer.isActive() && state)
   {
     step = (target < state->centerSlide.slideIndex) ? -1 : 1;
-    animateTimer.start(10); //TODO comprobar rendimiento, originalmente era 30
+	animateTimer.setSingleShot(true);
+    animateTimer.start(0); //TODO comprobar rendimiento, originalmente era 30
+	animating = true;
   }
 }
 
@@ -375,22 +378,23 @@ void PictureFlowAnimator::stop(int slide)
   target = slide;
   frame = slide << 16;
   animateTimer.stop();
+  animating = false;
 }
 
 void PictureFlowAnimator::update()
 {
-  if(!animateTimer.isActive())
-    return;
+  /*if(!animateTimer.isActive())
+    return;*/
   if(step == 0)
     return;
   if(!state)
     return;
 
-  int speed = 16384/8; //TODO comprobar rendimiento, originalmente era /4
+  int speed = 16384/4; //TODO comprobar rendimiento, originalmente era /4
 
 #if 1
   // deaccelerate when approaching the target
-  const int max = 4 * 65536; //TODO cambiado de 2 * a 4 * comprobar rendimiento
+  const int max = 2 * 65536; //TODO cambiado de 2 * a 4 * comprobar rendimiento
 
   int fi = frame;
   fi -= (target << 16);
@@ -670,6 +674,8 @@ PictureFlow::ReflectionEffect reflectionEffect)
             color = bgcolor;
         result->setPixel(h+hofs + y, x,blendColor(color,bgcolor,80*(hte-y)/hte));
       }
+
+
   }
 
   return result;
@@ -974,6 +980,8 @@ PictureFlow::PictureFlow(QWidget* parent,FlowType flowType): QWidget(parent)
       break;
   }
 
+  framesSkip = 0;
+
   d->state->reset();
   d->state->reposition();
 
@@ -1222,14 +1230,38 @@ void PictureFlow::resizeEvent(QResizeEvent* event)
   triggerRender();
   QWidget::resizeEvent(event);
 }
-
-void PictureFlow::updateAnimation()
+#include <QTime>
+void PictureFlow::updateAnimation()  //bucle principal
 {
+  QTime now;
+  now.start();
+  bool frameSkiped = false;
+
   int old_center = d->state->centerIndex;
   d->animator->update();
-  triggerRender();
+  if(framesSkip == 0)
+	render();//triggerRender();
+  else
+  {
+	  framesSkip--;
+	  frameSkiped = true;
+  }
+
   if(d->state->centerIndex != old_center)
     emit centerIndexChanged(d->state->centerIndex);
+  if(d->animator->animating == true)
+  {
+	  int difference = 10-now.elapsed();
+	  if(difference >= 0 && !frameSkiped)
+		QTimer::singleShot(difference, this, SLOT(updateAnimation()));
+	  else
+	  {
+		  QTimer::singleShot(0, this, SLOT(updateAnimation()));
+		  if(!frameSkiped)
+			framesSkip = -( (difference - 10) / 10); 
+	  }
+  }
+
 }
 
 void PictureFlow::setFlowType(FlowType flowType)
