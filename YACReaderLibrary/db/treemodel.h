@@ -73,12 +73,26 @@ public:
 
 	//Métodos de conveniencia
 	QString getFolderPath(const QModelIndex &folder);
+
+	void setFilter(QString filter, bool includeComics);
+	void resetFilter();
+	bool isFilterEnabled(){return filterEnabled;};
 private:
     void setupModelData( QSqlQuery &sqlquery, TreeItem *parent);
+	void setupFilteredModelData( QSqlQuery &sqlquery, TreeItem *parent);
+	void setupFilteredModelData();
 
     TreeItem *rootItem; //el árbol
+	QMap<unsigned long long int, TreeItem *> items; //relación entre folders
+
+	TreeItem *rootBeforeFilter;
+	QMap<unsigned long long int, TreeItem *> filteredItems; //relación entre folders
 
 	QSqlDatabase _database;
+
+	bool includeComics;
+	QString filter;
+	bool filterEnabled;
 signals:
 	void beforeReset();
 	void reset();
