@@ -32,8 +32,8 @@ void LibraryWindow::setupUI()
 	packageManager = new PackageManager();
 
 	doModels();
-	doLayout();
 	doDialogs();
+	doLayout();
 	createActions();
 	createToolBars();
 	createMenus();
@@ -72,7 +72,7 @@ void LibraryWindow::doLayout()
 	foldersView = new QTreeView;
 	//-------------------------------------------------------------------------
 
-	//CONFIG FLOW/COMICS-------------------------------------------------------
+	//CONFIG FOLDERS/COMICS-------------------------------------------------------
 	/*sVertical->setStretchFactor(0,1);
 	sVertical->setStretchFactor(1,0);
 	*/
@@ -586,7 +586,9 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 {
 	if(foldersFilter->text()!="")
 	{
-		setFoldersFilter("");
+		//setFoldersFilter("");
+		row = static_cast<TreeItem *>(mi.internalPointer())->originalRow;
+		column = static_cast<TreeItem *>(mi.internalPointer())->originalColumn;
 		foldersFilter->clear();
 	}
 	unsigned long long int folderId = 0;
@@ -991,6 +993,20 @@ void LibraryWindow::setFoldersFilter(QString filter)
 	foldersView->scrollTo(foldersView->currentIndex(),QAbstractItemView::PositionAtTop);
 	foldersView->collapseAll();
 	}*/
+	if(filter.isEmpty() && dm->isFilterEnabled())
+	{
+		dm->resetFilter();
+		foldersView->collapseAll();
+		foldersView->scrollTo(dm->index(row,column),QAbstractItemView::PositionAtTop);
+	}
+	else
+	{
+		if(!filter.isEmpty())
+		{
+			dm->setFilter(filter, false);
+			foldersView->expandAll();
+		}
+	}
 }
 
 void LibraryWindow::showProperties()

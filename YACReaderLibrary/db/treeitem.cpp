@@ -139,3 +139,9 @@ int TreeItem::row() const
     return 0;
 }
 //! [8]
+
+
+QList<QVariant> TreeItem::getData() const
+{
+	return itemData;
+}

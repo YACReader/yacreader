@@ -53,7 +53,7 @@
 #include "data_base_management.h"
 
 TreeModel::TreeModel(QObject *parent)
-    : QAbstractItemModel(parent)
+    : QAbstractItemModel(parent),rootItem(0),rootBeforeFilter(0),filterEnabled(false),includeComics(false)
 {
 	connect(this,SIGNAL(beforeReset()),this,SIGNAL(modelAboutToBeReset()));
 	connect(this,SIGNAL(reset()),this,SIGNAL(modelReset()));
@@ -61,7 +61,7 @@ TreeModel::TreeModel(QObject *parent)
 
 //! [0]
 TreeModel::TreeModel( QSqlQuery &sqlquery, QObject *parent)
-    : QAbstractItemModel(parent),rootItem(0)
+    : QAbstractItemModel(parent),rootItem(0),rootBeforeFilter(0),filterEnabled(false),includeComics(false)
 {
 	//lo más probable es que el nodo raíz no necesite tener información
     QList<QVariant> rootData;
@@ -144,7 +144,10 @@ QModelIndex TreeModel::index(int row, int column, const QModelIndex &parent)
 
     TreeItem *childItem = parentItem->child(row);
     if (childItem)
+	{
+		childItem->column = column;
         return createIndex(row, column, childItem);
+	}
     else
         return QModelIndex();
 }
@@ -207,11 +210,11 @@ void TreeModel::setupModelData(QString path)
 
 }
 
+
 void TreeModel::setupModelData(QSqlQuery &sqlquery, TreeItem *parent)
 {
 	//64 bits para la primary key, es decir la misma precisión que soporta sqlit 2^64
 	//el diccionario permitirá encontrar cualquier nodo del árbol rápidamente, de forma que añadir un hijo a un padre sea O(1)
-	QMap<unsigned long long int, TreeItem *> items;
 
 	//se añade el nodo 0
 	items.insert(parent->id,parent);
@@ -222,20 +225,116 @@ void TreeModel::setupModelData(QSqlQuery &sqlquery, TreeItem *parent)
 		data << sqlquery.value(3).toString();
 		TreeItem * item = new TreeItem(data);
 
-		/*QSqlQuery selectQuery(_database); //TODO check
-		selectQuery.prepare("select fileName from comic where parentId = :parentId");
-		selectQuery.bindValue(":parentId", sqlquery.value(0).toLongLong());
-		selectQuery.exec();
-		while (selectQuery.next()) {
-			item->comicNames.append(sqlquery.value(0).toString());
-		}*/
-
 		item->id = sqlquery.value(0).toLongLong();
+		//la inserción de hijos se hace de forma ordenada
 		items.value(sqlquery.value(1).toLongLong())->appendChild(item);
 		//se añade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
 		items.insert(item->id,item);
 	}
 }
+
+void TreeModel::setupFilteredModelData()
+{
+	emit(beforeReset());
+	
+	//TODO hay que liberar memoria de anteriores filtrados
+
+	//inicializar el nodo raíz
+
+	if(rootBeforeFilter == 0)
+		rootBeforeFilter = rootItem;
+
+	QList<QVariant> rootData;
+	rootData << "root"; //id 0, padre 0, title "root" (el id, y el id del padre van a ir en la clase TreeItem)
+	rootItem = new TreeItem(rootData);
+	rootItem->id = 0;
+
+	//cargar la base de datos
+	if(_database.isValid())
+		_database.open();
+	//crear la consulta
+	QSqlQuery selectQuery(_database); //TODO check
+	selectQuery.prepare("select * from folder where upper(name) like upper(:filter) order by parentId,name ");
+	selectQuery.bindValue(":filter", "%%"+filter+"%%");
+	selectQuery.exec();
+	setupFilteredModelData(selectQuery,rootItem);
+	_database.close();
+	emit(reset());
+}
+
+void TreeModel::setupFilteredModelData(QSqlQuery &sqlquery, TreeItem *parent)
+{
+	//64 bits para la primary key, es decir la misma precisión que soporta sqlit 2^64
+	filteredItems.clear();
+
+	//se añade el nodo 0 al modelo que representa el arbol de elementos que cumplen con el filtro
+	filteredItems.insert(parent->id,parent);
+
+	while (sqlquery.next()) {  //se procesan todos los folders que cumplen con el filtro
+		//datos de la base de datos
+		QList<QVariant> data;
+		data << sqlquery.value(2).toString();
+		data << sqlquery.value(3).toString();
+		TreeItem * item = new TreeItem(data);
+		item->id = sqlquery.value(0).toLongLong();
+
+		//id del padre
+		quint64 parentId = sqlquery.value(1).toLongLong();
+
+		//se añade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
+		if(!filteredItems.contains(item->id))
+			filteredItems.insert(item->id,item);
+
+		//es necesario conocer las coordenadas de origen para poder realizar scroll automático en la vista
+		item->originalRow = items.value(item->id)->row();
+		item->originalColumn = items.value(item->id)->column;
+
+		//si el padre ya existe en el modelo, el item se añade como hijo
+		if(filteredItems.contains(parentId))
+			filteredItems.value(parentId)->appendChild(item);
+		else//si el padre aún no se ha añadido, hay que añadirlo a él y todos los padres hasta el nodo raíz
+		{
+			//comprobamos con esta variable si el último de los padres (antes del nodo raíz) ya existía en el modelo
+			bool parentPreviousInserted = false;
+
+			//mientras no se alcance el nodo raíz se procesan todos los padres (de abajo a arriba)
+			while(parentId !=0 )
+			{
+				//el padre no estaba en el modelo filtrado, así que se rescata del modelo original
+				TreeItem * parentItem = items.value(parentId);
+				//se debe crear un nuevo nodo (para no compartir los hijos con el nodo original)
+				TreeItem * newparentItem = new TreeItem(parentItem->getData()); //padre que se añadirá a la estructura de directorios filtrados
+				newparentItem->id = parentId;
+
+				//si el modelo contiene al padre, se añade el item actual como hijo
+				if(filteredItems.contains(parentId))
+				{
+					filteredItems.value(parentId)->appendChild(item);
+					parentPreviousInserted = true;
+				}
+				//sino se registra el nodo para poder encontrarlo con posterioridad y se añade el item actual como hijo
+				else
+				{
+					newparentItem->appendChild(item);
+					filteredItems.insert(newparentItem->id,newparentItem);
+					parentPreviousInserted = false;
+				}
+
+				//variables de control del bucle, se avanza hacia el nodo padre
+				item = newparentItem;
+				parentId = parentItem->parentItem->id;
+			}
+
+			//si el nodo hijo de 0, no había sido previamente insertado como hijo, se añade como tal
+			if(!parentPreviousInserted)
+				filteredItems.value(0)->appendChild(item);
+		}
+		
+		
+	}
+}
+
+
 
 QSqlDatabase & TreeModel::getDatabase()
 {
@@ -245,4 +344,24 @@ QSqlDatabase & TreeModel::getDatabase()
 QString TreeModel::getFolderPath(const QModelIndex &folder)
 {
 	return static_cast<TreeItem*>(folder.internalPointer())->data(1).toString();
+}
+
+void TreeModel::setFilter(QString filter, bool includeComics)
+{
+	this->filter = filter;
+	this->includeComics = includeComics;
+	filterEnabled = true;
+	setupFilteredModelData();
+}
+
+void TreeModel::resetFilter()
+{
+	emit(beforeReset());
+	filter = "";
+	includeComics = false;
+	//TODO hay que liberar la memoria reservada para el filtrado
+	rootItem = rootBeforeFilter; //TODO si no se aplica el filtro previamente, esto invalidaría en modelo
+	filterEnabled = false;
+	emit(reset());
+
 }

@@ -57,14 +57,19 @@ public:
     int childCount() const;
     int columnCount() const;
     QVariant data(int column) const;
+	QList<QVariant> getData() const;
     int row() const;
     TreeItem *parent();
 	TreeItem *parentItem;
 	unsigned long long int id;
 	QList<QString> comicNames;
+	int originalRow; //usado en los TreeItem filtrados //TODO crear clase específica.....
+	int originalColumn; //usado en los TreeItem filtrados //TODO crear clase específica.....
+	int column;
 private:
     QList<TreeItem*> childItems;
     QList<QVariant> itemData;
+	
 	
     
 	

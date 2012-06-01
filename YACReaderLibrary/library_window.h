@@ -51,6 +51,8 @@ private:
 	QSize slideSizeF;
 	//search filter
 	QLineEdit * foldersFilter;
+	int row; //row a la que hay que hacer scroll automático después de limpiar el filtro
+	int column; //column a la que hay que hacer scroll automático después de limpiar el filtro
 	QString previousFilter;
 	QPushButton * clearFoldersFilter;
 	QCheckBox * includeComicsCheckBox;
