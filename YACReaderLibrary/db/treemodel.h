@@ -66,6 +66,10 @@ public:
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const;
     QModelIndex parent(const QModelIndex &index) const;
+	QModelIndex indexFromItem(TreeItem * item, int column);
+	/*QModelIndex _indexFromItem(TreeItem * item, int column);
+	int column;*/
+
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
 	void setupModelData(QString path);

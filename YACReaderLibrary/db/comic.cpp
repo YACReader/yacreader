@@ -48,7 +48,8 @@ QList<LibraryItem *> Comic::getComicsFromParent(qulonglong parentId, QSqlDatabas
 		currentItem->id = record.value(0).toLongLong();
 		currentItem->parentId = record.value(1).toLongLong();
 		currentItem->name = record.value(2).toString();
-		currentItem->info.load(record.value(3).toString(),db);
+		currentItem->path = record.value(3).toString();
+		currentItem->info.load(record.value(4).toString(),db);
 		int lessThan = 0;
 		if(list.isEmpty())
 			list.append(currentItem);
@@ -78,7 +79,23 @@ QList<LibraryItem *> Comic::getComicsFromParent(qulonglong parentId, QSqlDatabas
 
 bool Comic::load(qulonglong id, QSqlDatabase & db)
 {
-	return true;
+
+	QSqlQuery selectQuery(db); //TODO check
+	selectQuery.prepare("select c.id,c.parentId,c.fileName,c.path,ci.hash from comic c inner join comic_info ci on (c.comicInfoId = ci.id) where c.id = :id");
+	selectQuery.bindValue(":id", id);
+	selectQuery.exec();
+
+	if(selectQuery.next())
+	{
+		QSqlRecord record = selectQuery.record();
+		id = record.value(0).toLongLong();
+		parentId = record.value(1).toLongLong();
+		name = record.value(2).toString();
+		info.load(record.value(4).toString(),db);
+		return true;
+	}
+	return false;
+
 }
 
 qulonglong Comic::insert(QSqlDatabase & db)
@@ -170,5 +187,12 @@ void ComicInfo::removeFromDB(QSqlDatabase & db)
 }
 void ComicInfo::update(QSqlDatabase & db)
 {
-
+	//db.open();
+	QSqlQuery findComicInfo(db);
+	findComicInfo.prepare("UPDATE comic_info SET name = :name, read = :read WHERE id = :id ");
+	findComicInfo.bindValue(":name", name);
+	findComicInfo.bindValue(":read", read?1:0);
+	findComicInfo.bindValue(":id", id);
+	findComicInfo.exec();
+	//db.close();
 }

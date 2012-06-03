@@ -82,6 +82,7 @@ void LibraryWindow::doLayout()
 	foldersView->setContextMenuPolicy(Qt::ActionsContextMenu);
 	foldersView->header()->hide();
 	foldersView->setUniformRowHeights(true);
+	foldersView->setSelectionBehavior(QAbstractItemView::SelectRows);
 
 	comicView->setAlternatingRowColors(true);
 	//comicView->setStyleSheet("alternate-background-color: #e7e7d7;background-color: white;");
@@ -126,7 +127,9 @@ void LibraryWindow::doLayout()
 	searchLayout->addWidget(new QLabel(tr("Search folders/comics"),this));
 
 	searchLayout->addLayout(filter);
-	searchLayout->addWidget(includeComicsCheckBox = new QCheckBox(tr("Include files (slower)"),this));
+	includeComicsCheckBox = new QCheckBox(tr("Include files (slower)"),this);
+	includeComicsCheckBox->setChecked(true);
+	searchLayout->addWidget(includeComicsCheckBox);
 
 	l->addLayout(searchLayout);
 	l->setSpacing(1);
@@ -189,6 +192,7 @@ void LibraryWindow::doModels()
 	//dirmodels
 	dm = new TreeModel();
 	dmCV =  new TableModel();
+	sm = new QItemSelectionModel(dm);
 
 
 	/*proxyFilter = new  YACReaderTreeSearch();
@@ -558,6 +562,8 @@ void LibraryWindow::loadLibrary(const QString & name)
 		QDir d; //TODO change this by static methods (utils class?? with delTree for example) 
 		if(d.exists(path))
 		{
+			index = 0;
+			sm->clear();
 			dm->setupModelData(path);
 			foldersView->setModel(dm);
 
@@ -600,10 +606,17 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 		//setFoldersFilter("");
 		if(mi.isValid())
 		{
-			index = static_cast<TreeItem *>(mi.internalPointer())->originalIndex;
+			index = static_cast<TreeItem *>(mi.internalPointer())->originalItem;
+			column = mi.column();
 			foldersFilter->clear();
 		}
 	}
+	else
+	{
+		index = static_cast<TreeItem *>(mi.internalPointer());
+		column = mi.column();
+	}
+
 	unsigned long long int folderId = 0;
 	if(mi.isValid())
 	{
@@ -620,6 +633,7 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 
 	QStringList paths = dmCV->getPaths(currentPath());
 	comicFlow->setImagePaths(paths);
+	comicFlow->setMarks(dmCV->getReadList());
 	comicFlow->setFocus(Qt::OtherFocusReason);
 
 	if(paths.size()>0 && !importedCovers)
@@ -689,73 +703,38 @@ void LibraryWindow::setCurrentComicReaded()
 {
 	comicFlow->markSlide(comicFlow->centerIndex());
 	comicFlow->updateMarks();
+
+	Comic c = dmCV->getComic(comicView->currentIndex());
+	c.info.read = true;
+	QSqlDatabase db = dm->getDatabase();
+	db.open();
+	c.info.update(db);
+	db.close();
 }
 
 void LibraryWindow::setComicsReaded()
 {
-	/*QModelIndex mi = proxyFilter->mapToSource(foldersView->currentIndex());
-	QString path;
-
-	if(mi.isValid())
-	path = QDir::cleanPath(dm->filePath(mi));
-	else
-	path = dm->rootPath();
-
-	QDir d(path,"*.jpg");
-	d.setFilter(QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot);
-	QFileInfoList list = d.entryInfoList();
-	int nFiles = list.size();
-	for(int i=0;i<nFiles;i++)
-	{
-	QFileInfo info = list.at(i);
-	QString filePath = info.absoluteFilePath();
-	QFile f(filePath.remove(filePath.size()-3,3)+"r");
-	f.open(QIODevice::WriteOnly);
-	f.close();
-	comicFlow->markSlide(i);
-	}*/
-
+	comicFlow->setMarks(dmCV->setAllComicsRead(true));
 	comicFlow->updateMarks();
 }
 
 void LibraryWindow::setCurrentComicUnreaded()
 {
 	comicFlow->unmarkSlide(comicFlow->centerIndex());
-	/*QModelIndex mi = comicView->currentIndex();
-	QString path = QDir::cleanPath(dmCV->filePath(mi));
-	QFile f(path.remove(path.size()-3,3)+"r");
-	f.open(QIODevice::WriteOnly);
-	f.remove();
-	f.close();*/
-
 	comicFlow->updateMarks();
+
+	Comic c = dmCV->getComic(comicView->currentIndex());
+	c.info.read = false;
+	QSqlDatabase db = dm->getDatabase();
+	db.open();
+	c.info.update(db);
+	db.close();
+
 }
 
 void LibraryWindow::setComicsUnreaded()
 {
-	/*QModelIndex mi = proxyFilter->mapToSource(foldersView->currentIndex());
-	QString path;
-
-	if(mi.isValid())
-	path = QDir::cleanPath(dm->filePath(mi));
-	else
-	path = dm->rootPath();
-
-	QDir d(path,"*.jpg");
-	d.setFilter(QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot);
-	QFileInfoList list = d.entryInfoList();
-	int nFiles = list.size();
-	for(int i=0;i<nFiles;i++)
-	{
-	QFileInfo info = list.at(i);
-	QString filePath = info.absoluteFilePath();
-	QFile f(filePath.remove(filePath.size()-3,3)+"r");
-	f.open(QIODevice::WriteOnly);
-	f.remove();
-	f.close();
-	comicFlow->unmarkSlide(i);
-	}
-	*/
+	comicFlow->setMarks(dmCV->setAllComicsRead(false));
 	comicFlow->updateMarks();
 }
 
@@ -838,20 +817,13 @@ void LibraryWindow::saveLibraries()
 
 void LibraryWindow::updateLibrary()
 {
-	/*delete dm;
-	delete dmCV;
-	delete proxyFilter;
-	dm = 0;
-	dmCV = 0;
-	proxyFilter = 0;*/
-
 	QString currentLibrary = selectedLibrary->currentText();
 	QString path = libraries.value(currentLibrary);
 	_lastAdded = currentLibrary;
 	updateLibraryDialog->show();
 	libraryCreator->updateLibrary(path,path+"/.yacreaderlibrary");
 	libraryCreator->start();
-	
+
 }
 
 void LibraryWindow::deleteLibrary()
@@ -990,27 +962,17 @@ void LibraryWindow::toNormal()
 
 void LibraryWindow::setFoldersFilter(QString filter)
 {
-	/*if(filter.contains(previousFilter))
-	proxyFilter->softReset();
-	else
-	proxyFilter->reset();
-	previousFilter = filter;
-	if(!filter.isEmpty())
-	{
-	proxyFilter->setFilterRegExp(QRegExp(filter,Qt::CaseInsensitive,QRegExp::FixedString));
-	foldersView->expandAll();
-	}
-	else
-	{
-	proxyFilter->setFilterRegExp(QRegExp());
-	foldersView->scrollTo(foldersView->currentIndex(),QAbstractItemView::PositionAtTop);
-	foldersView->collapseAll();
-	}*/
 	if(filter.isEmpty() && dm->isFilterEnabled())
 	{
 		dm->resetFilter();
-		foldersView->collapseAll(); 
-		foldersView->scrollTo(index,QAbstractItemView::PositionAtTop);
+		//foldersView->collapseAll();
+		if(index != 0)
+		{
+			QModelIndex mi = dm->indexFromItem(index,column);
+			foldersView->scrollTo(mi,QAbstractItemView::PositionAtTop);
+			sm->select(mi,QItemSelectionModel::Select);
+			foldersView->setSelectionModel(sm);
+		}
 	}
 	else
 	{

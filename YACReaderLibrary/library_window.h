@@ -25,6 +25,7 @@
 #include "package_manager.h"
 #include "treemodel.h"
 #include "tablemodel.h"
+#include "treeitem.h"
 
 class LibraryWindow : public QMainWindow
 {
@@ -52,7 +53,8 @@ private:
 	QSize slideSizeF;
 	//search filter
 	QLineEdit * foldersFilter;
-	QModelIndex index; //index al que hay que hacer scroll después de pulsar sobre un folder filtrado
+	TreeItem * index; //index al que hay que hacer scroll después de pulsar sobre un folder filtrado
+	int column;
 	QString previousFilter;
 	QPushButton * clearFoldersFilter;
 	QCheckBox * includeComicsCheckBox;
@@ -61,6 +63,7 @@ private:
 	QTreeView * foldersView;
 	QComboBox * selectedLibrary;
 	TreeModel * dm;
+	QItemSelectionModel * sm;
 	TableModel * dmCV;
 	//QStringList paths;
 	QMap<QString,QString> libraries;

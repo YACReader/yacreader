@@ -70,6 +70,7 @@ TreeModel::TreeModel( QSqlQuery &sqlquery, QObject *parent)
     rootData << "root"; //id 0, padre 0, title "root" (el id, y el id del padre van a ir en la clase TreeItem)
     rootItem = new TreeItem(rootData);
 	rootItem->id = ROOT;
+	rootItem->parentItem = 0;
     setupModelData(sqlquery, rootItem);
 }
 //! [0]
@@ -146,10 +147,7 @@ QModelIndex TreeModel::index(int row, int column, const QModelIndex &parent)
 
     TreeItem *childItem = parentItem->child(row);
     if (childItem)
-	{
-		childItem->index = createIndex(row, column, childItem);
-        return childItem->index;
-	}
+        return createIndex(row, column, childItem);
     else
         return QModelIndex();
 }
@@ -167,10 +165,19 @@ QModelIndex TreeModel::parent(const QModelIndex &index) const
     if (parentItem == rootItem)
         return QModelIndex();
 
-	parentItem->index = createIndex(parentItem->row(), 0, parentItem);
-    return parentItem->index;
+    return createIndex(parentItem->row(), 0, parentItem);
 }
 //! [7]
+
+QModelIndex TreeModel::indexFromItem(TreeItem * item,int column)
+{
+	//if(item->parent() != 0)
+	//	return index(item->row(),column,parent(indexFromItem(item->parent(),column-1)));
+	//else
+	//	return index(item->row(),0,QModelIndex());
+	return createIndex(item->row(), column, item);
+}
+
 
 //! [8]
 int TreeModel::rowCount(const QModelIndex &parent) const
@@ -201,6 +208,7 @@ void TreeModel::setupModelData(QString path)
 	rootData << "root"; //id 0, padre 0, title "root" (el id, y el id del padre van a ir en la clase TreeItem)
 	rootItem = new TreeItem(rootData);
 	rootItem->id = ROOT;
+	rootItem->parentItem = 0;
 
 	//cargar la base de datos
 	if(_database.isOpen())
@@ -255,6 +263,7 @@ void TreeModel::setupFilteredModelData()
 	rootData << "root"; //id 1, padre 1, title "root" (el id, y el id del padre van a ir en la clase TreeItem)
 	rootItem = new TreeItem(rootData);
 	rootItem->id = ROOT;
+	rootItem->parentItem = 0;
 
 	//cargar la base de datos
 	if(_database.isValid())
@@ -268,8 +277,9 @@ void TreeModel::setupFilteredModelData()
 	}
 	else
 	{
-		selectQuery.prepare("select distinct f.id, f.parentId, f.name, f.path from folder f inner join comic c on (f.id = c.parentId) where f.id <> 1 and upper(c.fileName) like upper(:filter) order by f.parentId,f.name");
+		selectQuery.prepare("SELECT DISTINCT f.id, f.parentId, f.name, f.path FROM folder f INNER JOIN comic c ON (f.id = c.parentId) WHERE f.id <> 1 AND ((UPPER(c.fileName) like UPPER(:filter)) OR (UPPER(f.name) like UPPER(:filter2))) ORDER BY f.parentId,f.name");
 		selectQuery.bindValue(":filter", "%%"+filter+"%%");
+		selectQuery.bindValue(":filter2", "%%"+filter+"%%");
 	}
 		selectQuery.exec();
 	setupFilteredModelData(selectQuery,rootItem);
@@ -301,7 +311,7 @@ void TreeModel::setupFilteredModelData(QSqlQuery &sqlquery, TreeItem *parent)
 			filteredItems.insert(item->id,item);
 
 		//es necesario conocer las coordenadas de origen para poder realizar scroll automático en la vista
-		item->originalIndex = items.value(item->id)->index;
+		item->originalItem = items.value(item->id);
 
 		//si el padre ya existe en el modelo, el item se añade como hijo
 		if(filteredItems.contains(parentId))
@@ -320,7 +330,7 @@ void TreeModel::setupFilteredModelData(QSqlQuery &sqlquery, TreeItem *parent)
 				TreeItem * newparentItem = new TreeItem(parentItem->getData()); //padre que se añadirá a la estructura de directorios filtrados
 				newparentItem->id = parentId;
 
-				newparentItem->originalIndex = parentItem->index;
+				newparentItem->originalItem = parentItem;
 
 				//si el modelo contiene al padre, se añade el item actual como hijo
 				if(filteredItems.contains(parentId))
