@@ -569,6 +569,8 @@ void PictureFlowSoftwareRenderer::init()
   int wh = size.height();
   int w = (ww+1)/2;
   int h = (wh+1)/2;
+  if(h<10)//TODO a partir de qué h es seguro??
+	  return;
 
 #ifdef PICTUREFLOW_QT4
   buffer = QImage(ww, wh, QImage::Format_RGB32);

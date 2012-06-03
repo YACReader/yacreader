@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QSqlQuery>
 #include <QSqlRecord>
+#include "data_base_management.h"
 //QMutex mutex;
 
 
@@ -38,27 +39,7 @@ void LibraryCreator::updateLibrary(const QString &source, const QString &target)
 	_mode = UPDATER;
 }
 
-bool LibraryCreator::createTables()
-{
-	bool success = true;
 
-	//FOLDER (representa una carpeta en disco)
-	QSqlQuery queryFolder(_database);
-	queryFolder.prepare("CREATE TABLE folder (id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, name TEXT NOT NULL, path TEXT NOT NULL, FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE)");
-	success = success && queryFolder.exec();
-
-		//COMIC INFO (representa la información de un cómic, cada cómic tendrá un idéntificador único formado por un hash sha1'de los primeros 512kb' + su tamaño en bytes)
-	QSqlQuery queryComicInfo(_database);
-	queryComicInfo.prepare("CREATE TABLE comic_info (id INTEGER PRIMARY KEY, hash TEXT NOT NULL, name TEXT)");
-	success = success && queryComicInfo.exec();
-
-	//COMIC (representa un cómic en disco, contiene el nombre de fichero)
-	QSqlQuery queryComic(_database);
-	queryComic.prepare("CREATE TABLE comic (id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, comicInfoId INTEGER NOT NULL,  fileName TEXT NOT NULL, path TEXT, FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE, FOREIGN KEY(comicInfoId) REFERENCES comic_info(id))");
-	success = success && queryComic.exec();
-
-	return success;
-}
 //
 void LibraryCreator::run()
 {
@@ -66,17 +47,20 @@ void LibraryCreator::run()
 
 	if(_mode == CREATOR)
 	{
+		_currentPathFolders.clear();
+		_currentPathFolders.append(Folder(1,1,"root","/"));
+		//se crean los directorios .yacreaderlibrary y .yacreaderlibrary/covers
 		QDir dir;
 		dir.mkpath(_target+"/covers");
-		_database = QSqlDatabase::addDatabase("QSQLITE");
-		_database.setDatabaseName(_target+"/library.ydb");
-		if(!_database.open())
+
+		//se crea la base de datos .yacreaderlibrary/library.ydb
+		_database = DataBaseManagement::createDatabase("library",_target);//
+		/*if(!_database.open())
 			return; //TODO avisar del problema
+
+		QSqlQuery pragma("PRAGMA foreign_keys = ON",_database);*/
 		_database.transaction();
-		_currentPathFolders.clear();
-		_currentPathFolders.append(Folder(0,0,"root","/"));
-		if(!createTables())
-			return;
+		//se crea la librería
 		create(QDir(_source));
 		_database.commit();
 		_database.close();
@@ -84,11 +68,12 @@ void LibraryCreator::run()
 	else
 	{
 		_currentPathFolders.clear();
-		_currentPathFolders.append(Folder(0,0,"root","/"));
-		_database = QSqlDatabase::addDatabase("QSQLITE");
-		_database.setDatabaseName(_target+"/library.ydb");
-		if(!_database.open())
-			return; //TODO avisar del problema
+		_currentPathFolders.append(Folder(1,1,"root","/"));
+		_database = DataBaseManagement::loadDatabase(_target);
+		//_database.setDatabaseName(_target+"/library.ydb");
+		/*if(!_database.open())
+			return; //TODO avisar del problema*/
+		//QSqlQuery pragma("PRAGMA foreign_keys = ON",_database);
 		_database.transaction();
 		update(QDir(_source));
 		_database.commit();
@@ -199,10 +184,14 @@ void LibraryCreator::insertComic(const QString & relativePath,const QFileInfo & 
 	file.close();
 	//hash Sha1 del primer 0.5MB + filesize
 	QString hash = QString(crypto.result().toHex().constData()) + QString::number(fileInfo.size());
-	Comic(_currentPathFolders.last().id,0,fileInfo.fileName(),relativePath,hash).insert(_database);
-	ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+hash+".jpg");
-	//ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+fileInfo.fileName()+".jpg");
-	tc.create();
+	Comic comic(_currentPathFolders.last().id,fileInfo.fileName(),relativePath,hash,_database);
+	comic.insert(_database);
+	if(!comic.hasCover())
+	{
+		ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+hash+".jpg");
+		//ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+fileInfo.fileName()+".jpg");
+		tc.create();
+	}
 }
 
 void LibraryCreator::update(QDir dirS)

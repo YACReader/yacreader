@@ -5,6 +5,7 @@
 
 //! [0]
 TableItem::TableItem(const QList<QVariant> &data)
+	
 {
     itemData = data;
 }

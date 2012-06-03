@@ -21,7 +21,7 @@ QList<LibraryItem *> Folder::getFoldersFromParent(qulonglong parentId, QSqlDatab
 	QList<LibraryItem *> list;
 
 	QSqlQuery selectQuery(db); //TODO check
-	selectQuery.prepare("SELECT * FROM folder WHERE parentId = :parentId");
+	selectQuery.prepare("SELECT * FROM folder WHERE parentId = :parentId and id <> 1");
 	selectQuery.bindValue(":parentId", parentId);
 	selectQuery.exec();
 

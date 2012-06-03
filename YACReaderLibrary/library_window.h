@@ -31,6 +31,7 @@ class LibraryWindow : public QMainWindow
 	Q_OBJECT
 private:
 	QWidget * left;
+	QSplitter * sVertical;
 	CreateLibraryDialog * createLibraryDialog;
 	UpdateLibraryDialog * updateLibraryDialog;
 	ExportLibraryDialog * exportLibraryDialog;
@@ -51,8 +52,7 @@ private:
 	QSize slideSizeF;
 	//search filter
 	QLineEdit * foldersFilter;
-	int row; //row a la que hay que hacer scroll automático después de limpiar el filtro
-	int column; //column a la que hay que hacer scroll automático después de limpiar el filtro
+	QModelIndex index; //index al que hay que hacer scroll después de pulsar sobre un folder filtrado
 	QString previousFilter;
 	QPushButton * clearFoldersFilter;
 	QCheckBox * includeComicsCheckBox;
@@ -86,6 +86,7 @@ private:
 	QAction * toggleFullScreenAction;
 	QAction * optionsAction;
 
+	//tree actions
 	QAction * setRootIndexAction;
 	QAction * expandAllNodesAction;
 	QAction * colapseAllNodesAction;
@@ -98,10 +99,12 @@ private:
 	QAction * setAllAsNonReadAction;
 	QAction * showHideMarksAction;
 
+	//edit info actions
 	QAction * selectAllComicsAction;
 	QAction * editSelectedComicsAction;
 	QAction * asignOrderActions;
 	QAction * forceConverExtractedAction;
+	QAction * hideComicViewAction;
 
 
 	QToolBar * libraryToolBar;
@@ -174,6 +177,7 @@ public:
 		void setComicsReaded();
 		void setComicsUnreaded();
 		void searchInFiles(int);
+		void hideComicFlow(bool hide);
 };
 
 #endif

@@ -4,38 +4,27 @@
 #include <QSqlRecord>
 #include <QVariant>
 
+//-----------------------------------------------------------------------------
+//COMIC------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 Comic::Comic()
 {
 
 }
 
-Comic::Comic(qulonglong cparentId, qulonglong ccomicInfoId, QString cname, QString cpath, QString chash)
-		:comicInfoId(ccomicInfoId),hash(chash)
+Comic::Comic(qulonglong cparentId, QString cname, QString cpath, QString chash, QSqlDatabase & database)
 {
 	parentId = cparentId;
 	name = cname;
 	path = cpath;
-}
 
-qulonglong Comic::insert(QSqlDatabase & db)
-{
-	//TODO comprobar si ya hay comic info con ese hash
-	QSqlQuery comicInfoInsert(db);
-	comicInfoInsert.prepare("INSERT INTO comic_info (hash) "
-		"VALUES (:hash)");
-	comicInfoInsert.bindValue(":hash", hash);
-	 comicInfoInsert.exec();
-	 qulonglong comicInfoId =comicInfoInsert.lastInsertId().toLongLong();
-
-	QSqlQuery query(db);
-	query.prepare("INSERT INTO comic (parentId, comicInfoId, fileName, path) "
-                   "VALUES (:parentId,:comicInfoId,:name, :path)");
-    query.bindValue(":parentId", parentId);
-	query.bindValue(":comicInfoId", comicInfoId);
-    query.bindValue(":name", name);
-	query.bindValue(":path", path);
-	query.exec();
-	return query.lastInsertId().toLongLong();
+	if(!info.load(chash,database))
+	{
+		info.hash = chash;
+		_hasCover = false;
+	}
+	else
+		_hasCover = true;
 }
 
 QList<LibraryItem *> Comic::getComicsFromParent(qulonglong parentId, QSqlDatabase & db)
@@ -59,7 +48,7 @@ QList<LibraryItem *> Comic::getComicsFromParent(qulonglong parentId, QSqlDatabas
 		currentItem->id = record.value(0).toLongLong();
 		currentItem->parentId = record.value(1).toLongLong();
 		currentItem->name = record.value(2).toString();
-		currentItem->hash = record.value(3).toString();
+		currentItem->info.load(record.value(3).toString(),db);
 		int lessThan = 0;
 		if(list.isEmpty())
 			list.append(currentItem);
@@ -87,6 +76,44 @@ QList<LibraryItem *> Comic::getComicsFromParent(qulonglong parentId, QSqlDatabas
 	return list;
 }
 
+bool Comic::load(qulonglong id, QSqlDatabase & db)
+{
+	return true;
+}
+
+qulonglong Comic::insert(QSqlDatabase & db)
+{
+	//TODO comprobar si ya hay comic info con ese hash
+
+	if(!info.existOnDb)
+	{
+		QSqlQuery comicInfoInsert(db);
+		comicInfoInsert.prepare("INSERT INTO comic_info (hash) "
+			"VALUES (:hash)");
+		comicInfoInsert.bindValue(":hash", info.hash);
+		comicInfoInsert.exec();
+		info.id =comicInfoInsert.lastInsertId().toLongLong();
+		_hasCover = false;
+	}
+	else
+		_hasCover = true; //TODO check on disk...
+	
+	QSqlQuery query(db);
+	query.prepare("INSERT INTO comic (parentId, comicInfoId, fileName, path) "
+                   "VALUES (:parentId,:comicInfoId,:name, :path)");
+    query.bindValue(":parentId", parentId);
+	query.bindValue(":comicInfoId", info.id);
+    query.bindValue(":name", name);
+	query.bindValue(":path", path);
+	query.exec();
+	return query.lastInsertId().toLongLong();
+}
+
+void Comic::update(QSqlDatabase & db)
+{
+
+}
+
 void Comic::removeFromDB(QSqlDatabase & db)
 {
 	QSqlQuery query(db);
@@ -98,4 +125,50 @@ void Comic::removeFromDB(QSqlDatabase & db)
 bool Comic::isDir()
 {
 	return false;
+}
+
+//-----------------------------------------------------------------------------
+//COMIC_INFO-------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+ComicInfo::ComicInfo()
+	:existOnDb(false)
+{
+
+}
+
+bool ComicInfo::load(QString hash, QSqlDatabase & db)
+{
+	QSqlQuery findComicInfo(db);
+	findComicInfo.prepare("SELECT * FROM comic_info WHERE hash = :hash");
+	findComicInfo.bindValue(":hash", hash);
+	findComicInfo.exec();
+
+
+	if(findComicInfo.next())
+	{
+	QSqlRecord record = findComicInfo.record();
+
+	this->hash = hash;
+	this->id = record.value(0).toLongLong();
+	this->name = record.value(2).toString();
+	this->read = record.value(3).toBool();
+	existOnDb = true;
+	return true;
+	}
+
+	existOnDb = false;
+	return false;
+}
+
+qulonglong ComicInfo::insert(QSqlDatabase & db)
+{
+	return 0;
+}
+void ComicInfo::removeFromDB(QSqlDatabase & db)
+{
+
+}
+void ComicInfo::update(QSqlDatabase & db)
+{
+
 }
