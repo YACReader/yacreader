@@ -43,6 +43,7 @@
 
 #include <QList>
 #include <QVariant>
+#include <QModelIndex>
 
 //! [0]
 class TreeItem
@@ -63,9 +64,8 @@ public:
 	TreeItem *parentItem;
 	unsigned long long int id;
 	QList<QString> comicNames;
-	int originalRow; //usado en los TreeItem filtrados //TODO crear clase específica.....
-	int originalColumn; //usado en los TreeItem filtrados //TODO crear clase específica.....
-	int column;
+	QModelIndex index;
+	QModelIndex originalIndex;
 private:
     QList<TreeItem*> childItems;
     QList<QVariant> itemData;

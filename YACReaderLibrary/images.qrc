@@ -32,5 +32,6 @@
   <file>../images/importCover.png</file>
   <file>../images/editComic.png</file>
   <file>../images/selectAll.png</file>
+  <file>../images/hideComicFlow.png</file>
     </qresource>
 </RCC>

@@ -44,7 +44,7 @@ void LibraryWindow::setupUI()
 
 void LibraryWindow::doLayout()
 {
-	QSplitter * sVertical = new QSplitter(Qt::Vertical);  //spliter derecha
+	sVertical = new QSplitter(Qt::Vertical);  //spliter derecha
 	QSplitter * sHorizontal = new QSplitter(Qt::Horizontal);  //spliter principal
 	//TODO: flowType is a global variable
 	//CONFIG COMIC_FLOW--------------------------------------------------------
@@ -77,7 +77,7 @@ void LibraryWindow::doLayout()
 	sVertical->setStretchFactor(1,0);
 	*/
 		//views
-	foldersView->setAnimated(true);
+	//foldersView->setAnimated(true);
 	foldersView->setContextMenuPolicy(Qt::ActionsContextMenu);
 	foldersView->setContextMenuPolicy(Qt::ActionsContextMenu);
 	foldersView->header()->hide();
@@ -335,6 +335,12 @@ void LibraryWindow::createActions()
 	forceConverExtractedAction = new QAction(this);
 	forceConverExtractedAction->setText(tr("Update cover"));
 	forceConverExtractedAction->setIcon(QIcon(":/images/importCover.png"));
+
+	hideComicViewAction = new QAction(this);
+	hideComicViewAction->setText(tr("Hide comic flow"));
+	hideComicViewAction->setIcon(QIcon(":/images/hideComicFlow.png"));
+	hideComicViewAction->setCheckable(true);
+	hideComicViewAction->setChecked(false);
 	//-------------------------------------------------------------------------
 }
 
@@ -447,6 +453,8 @@ void LibraryWindow::createToolBars()
 	editInfoToolBar->addAction(selectAllComicsAction);
 	editInfoToolBar->addSeparator();
 	editInfoToolBar->addAction(forceConverExtractedAction);
+	editInfoToolBar->addWidget(new QToolBarStretch());
+	editInfoToolBar->addAction(hideComicViewAction);
 }
 
 void LibraryWindow::createMenus()
@@ -538,6 +546,8 @@ void LibraryWindow::createConnections()
 	//Comicts edition
 	connect(selectAllComicsAction,SIGNAL(triggered()),comicView,SLOT(selectAll()));
 
+	connect(hideComicViewAction, SIGNAL(toggled(bool)),this, SLOT(hideComicFlow(bool)));
+
 }
 
 void LibraryWindow::loadLibrary(const QString & name)
@@ -553,7 +563,8 @@ void LibraryWindow::loadLibrary(const QString & name)
 
 			loadCovers(QModelIndex());
 
-			includeComicsCheckBox->setCheckState(Qt::Unchecked);
+			//includeComicsCheckBox->setCheckState(Qt::Unchecked);
+			foldersFilter->clear();
 		}
 		else
 		{
@@ -587,9 +598,11 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 	if(foldersFilter->text()!="")
 	{
 		//setFoldersFilter("");
-		row = static_cast<TreeItem *>(mi.internalPointer())->originalRow;
-		column = static_cast<TreeItem *>(mi.internalPointer())->originalColumn;
-		foldersFilter->clear();
+		if(mi.isValid())
+		{
+			index = static_cast<TreeItem *>(mi.internalPointer())->originalIndex;
+			foldersFilter->clear();
+		}
 	}
 	unsigned long long int folderId = 0;
 	if(mi.isValid())
@@ -996,14 +1009,14 @@ void LibraryWindow::setFoldersFilter(QString filter)
 	if(filter.isEmpty() && dm->isFilterEnabled())
 	{
 		dm->resetFilter();
-		foldersView->collapseAll();
-		foldersView->scrollTo(dm->index(row,column),QAbstractItemView::PositionAtTop);
+		foldersView->collapseAll(); 
+		foldersView->scrollTo(index,QAbstractItemView::PositionAtTop);
 	}
 	else
 	{
 		if(!filter.isEmpty())
 		{
-			dm->setFilter(filter, false);
+			dm->setFilter(filter, includeComicsCheckBox->isChecked());
 			foldersView->expandAll();
 		}
 	}
@@ -1083,15 +1096,44 @@ void LibraryWindow::searchInFiles(int state)
 
 	if(state == Qt::Checked)
 	{
-		//dm->setFilter(QDir::Dirs|QDir::Files|QDir::NoDotAndDotDot); //crash, after update proxy filter
+		if(!foldersFilter->text().isEmpty())
+		{
+			dm->setFilter(foldersFilter->text(), true);
+			foldersView->expandAll();
+		}
 	}
 	else
 	{
-		//dm->setFilter(QDir::Dirs|QDir::NoDotAndDotDot); //crash
+		if(!foldersFilter->text().isEmpty())
+		{
+			dm->setFilter(foldersFilter->text(), false);
+			foldersView->expandAll();
+		}
 	}
 }
 
 QString LibraryWindow::currentPath()
 {
 	return libraries.value(selectedLibrary->currentText());
+}
+
+void LibraryWindow::hideComicFlow(bool hide)
+{
+	if(hide)
+	{
+		QList<int> sizes;
+		sizes.append(0);
+		int total = sVertical->sizes().at(0) + sVertical->sizes().at(1);
+		sizes.append(total);
+		sVertical->setSizes(sizes);	
+	}
+	else
+	{
+		QList<int> sizes;
+		int total = sVertical->sizes().at(0) + sVertical->sizes().at(1);
+		sizes.append(2*total/3);
+		sizes.append(total/3);
+		sVertical->setSizes(sizes);	
+	}
+
 }

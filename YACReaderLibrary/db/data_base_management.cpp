@@ -25,8 +25,15 @@ QSqlDatabase DataBaseManagement::createDatabase(QString name, QString path)
 		qDebug() << db.lastError();
 	else {
 		qDebug() << db.tables();
-		db.close();
 	}
+	QSqlQuery pragma("PRAGMA foreign_keys = ON",db);
+	DataBaseManagement::createTables(db);
+	
+	QSqlQuery query("INSERT INTO folder (parentId, name, path) "
+                   "VALUES (1,'root', '/')",db);
+
+	//db.close();
+
 	return db;
 }
 
@@ -37,9 +44,32 @@ QSqlDatabase DataBaseManagement::loadDatabase(QString path)
 	db.setDatabaseName(path+"/library.ydb");
 	if (!db.open()) {
 		//se devuelve una base de datos vacía e inválida
+		
 		return QSqlDatabase();
 	}
-
+	QSqlQuery pragma("PRAGMA foreign_keys = ON",db);
 	//devuelve la base de datos
 	return db;
+}
+
+bool DataBaseManagement::createTables(QSqlDatabase & database)
+{
+	bool success = true;
+
+	//FOLDER (representa una carpeta en disco)
+	QSqlQuery queryFolder(database);
+	queryFolder.prepare("CREATE TABLE folder (id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, name TEXT NOT NULL, path TEXT NOT NULL, FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE)");
+	success = success && queryFolder.exec();
+
+		//COMIC INFO (representa la información de un cómic, cada cómic tendrá un idéntificador único formado por un hash sha1'de los primeros 512kb' + su tamaño en bytes)
+	QSqlQuery queryComicInfo(database);
+	queryComicInfo.prepare("CREATE TABLE comic_info (id INTEGER PRIMARY KEY, hash TEXT NOT NULL, name TEXT, read BOOLEAN)");
+	success = success && queryComicInfo.exec();
+
+	//COMIC (representa un cómic en disco, contiene el nombre de fichero)
+	QSqlQuery queryComic(database);
+	queryComic.prepare("CREATE TABLE comic (id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, comicInfoId INTEGER NOT NULL,  fileName TEXT NOT NULL, path TEXT, FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE, FOREIGN KEY(comicInfoId) REFERENCES comic_info(id))");
+	success = success && queryComic.exec();
+
+	return success;
 }

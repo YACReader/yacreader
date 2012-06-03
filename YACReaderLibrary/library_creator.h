@@ -39,7 +39,6 @@
 		void create(QDir currentDirectory);
 		void update(QDir currentDirectory);
         void run();
-		bool createTables();
 		qulonglong insertFolders();//devuelve el id del último folder añadido (último en la ruta)
 		void insertComic(const QString & relativePath,const QFileInfo & fileInfo);
 		//qulonglong insertFolder(qulonglong parentId,const Folder & folder);
