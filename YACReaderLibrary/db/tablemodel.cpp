@@ -156,7 +156,7 @@ void TableModel::setupModelData(unsigned long long int folderId,QSqlDatabase & d
 	//crear la consulta
 	//timer.restart();
 	QSqlQuery selectQuery(db); //TODO check
-	selectQuery.prepare("select c.id,c.parentId,c.fileName,c.path,ci.hash from comic c inner join comic_info ci on (c.comicInfoId = ci.id) where c.parentId = :parentId");
+	selectQuery.prepare("select c.id,c.parentId,c.fileName,c.path,ci.hash,ci.read from comic c inner join comic_info ci on (c.comicInfoId = ci.id) where c.parentId = :parentId");
 	selectQuery.bindValue(":parentId", folderId);
 	selectQuery.exec();
 	//txtS << "TABLEMODEL: Tiempo de consulta: " << timer.elapsed() << "ms\r\n";
@@ -164,6 +164,7 @@ void TableModel::setupModelData(unsigned long long int folderId,QSqlDatabase & d
 	setupModelData(selectQuery);
 	//txtS << "TABLEMODEL: Tiempo de creación del modelo: " << timer.elapsed() << "ms\r\n";
 	db.close();
+	_database = db;
 	emit(reset());
 	//f.close();
 }
@@ -208,4 +209,47 @@ void TableModel::setupModelData(QSqlQuery &sqlquery)
 
 		}
 	}
+}
+
+Comic TableModel::getComic(QModelIndex & mi)
+{
+	Comic c;
+	_database.open();
+	c.load(_data.at(mi.row())->data(0).toLongLong(),_database);
+	_database.close();
+	return c;
+}
+
+QVector<bool> TableModel::getReadList()
+{
+	int numComics = _data.count();
+	QVector<bool> readList(numComics);
+	for(int i=0;i<numComics;i++)
+	{
+		//TODO reemplazar el acceso a las columnas con enteros por defines
+		readList[i] = _data.value(i)->data(5).toBool();
+	}
+	return readList;
+}
+
+QVector<bool> TableModel::setAllComicsRead(bool read)
+{
+	_database.open();
+	_database.transaction();
+	int numComics = _data.count();
+	QVector<bool> readList(numComics);
+	for(int i=0;i<numComics;i++)
+	{
+		//TODO reemplazar el acceso a las columnas con enteros por defines
+		readList[i] = read; 
+		_data.value(i)->data(5) = QVariant(true);
+		Comic c;
+		c.load(_data.value(i)->data(0).toLongLong(),_database);
+		c.info.read = read;
+		c.info.update(_database);
+	}
+	_database.commit();
+	_database.close();
+
+	return readList;
 }
