@@ -78,7 +78,8 @@ TreeModel::TreeModel( QSqlQuery &sqlquery, QObject *parent)
 //! [1]
 TreeModel::~TreeModel()
 {
-    delete rootItem;
+	if(rootItem != 0)
+		delete rootItem;
 }
 //! [1]
 
