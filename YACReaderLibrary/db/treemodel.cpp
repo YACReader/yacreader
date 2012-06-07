@@ -198,7 +198,7 @@ int TreeModel::rowCount(const QModelIndex &parent) const
 
 void TreeModel::setupModelData(QString path)
 {
-	emit(beforeReset());
+	beginResetModel();
 	if(rootItem != 0)
 		delete rootItem; //TODO comprobar que se libera bien la memoria
 	filterEnabled = false;
@@ -220,7 +220,7 @@ void TreeModel::setupModelData(QString path)
 
 	setupModelData(selectQuery,rootItem);
 	_database.close();
-	emit(reset());
+	endResetModel();
 
 }
 
@@ -249,7 +249,7 @@ void TreeModel::setupModelData(QSqlQuery &sqlquery, TreeItem *parent)
 
 void TreeModel::setupFilteredModelData()
 {
-	emit(beforeReset());
+	beginResetModel();
 	
 	//TODO hay que liberar memoria de anteriores filtrados
 
@@ -285,7 +285,8 @@ void TreeModel::setupFilteredModelData()
 		selectQuery.exec();
 	setupFilteredModelData(selectQuery,rootItem);
 	_database.close();
-	emit(reset());
+
+	endResetModel();
 }
 
 void TreeModel::setupFilteredModelData(QSqlQuery &sqlquery, TreeItem *parent)
@@ -381,7 +382,7 @@ void TreeModel::setFilter(QString filter, bool includeComics)
 
 void TreeModel::resetFilter()
 {
-	emit(beforeReset());
+	beginResetModel();
 	filter = "";
 	includeComics = false;
 	//TODO hay que liberar la memoria reservada para el filtrado
@@ -389,10 +390,12 @@ void TreeModel::resetFilter()
 	filteredItems.clear();
 	TreeItem * root = rootItem;
 	rootItem = rootBeforeFilter; //TODO si no se aplica el filtro previamente, esto invalidaría en modelo
-	//if(root !=0)
-	//	delete root;
+	if(root !=0)
+		delete root;
+
 	rootBeforeFilter = 0;
 	filterEnabled = false;
-	emit(reset());
+	endResetModel();
+
 
 }

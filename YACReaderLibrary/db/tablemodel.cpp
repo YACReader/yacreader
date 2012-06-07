@@ -144,7 +144,7 @@ void TableModel::setupModelData(unsigned long long int folderId,QSqlDatabase & d
 {
 	//QFile f(QCoreApplication::applicationDirPath()+"/performance.txt");
 	//f.open(QIODevice::Append);
-	emit(beforeReset());
+	beginResetModel();
 	//QElapsedTimer timer;
 	//timer.start();
 	qDeleteAll(_data);
@@ -165,7 +165,7 @@ void TableModel::setupModelData(unsigned long long int folderId,QSqlDatabase & d
 	//txtS << "TABLEMODEL: Tiempo de creación del modelo: " << timer.elapsed() << "ms\r\n";
 	db.close();
 	_database = db;
-	emit(reset());
+	endResetModel();
 	//f.close();
 }
 
