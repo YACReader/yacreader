@@ -564,8 +564,8 @@ void LibraryWindow::loadLibrary(const QString & name)
 		{
 			index = 0;
 			sm->clear();
-			foldersView->setModel(NULL); //TODO comprobar pq no sirve con usar simplemente las señales beforeReset y reset
-			comicView->setModel(NULL);
+			//foldersView->setModel(NULL); //TODO comprobar pq no sirve con usar simplemente las señales beforeReset y reset
+			//comicView->setModel(NULL);
 
 			dm->setupModelData(path);
 			foldersView->setModel(dm);
@@ -604,6 +604,15 @@ void LibraryWindow::loadLibrary(const QString & name)
 
 void LibraryWindow::loadCovers(const QModelIndex & mi)
 {
+
+	unsigned long long int folderId = 0;
+	if(mi.isValid())
+	{
+		TreeItem *item = static_cast<TreeItem*>(mi.internalPointer());
+		folderId = item->id;
+	}
+
+	//cambiado de orden, ya que al llamar a foldersFilter->clear() se invalidan los model index
 	if(foldersFilter->text()!="")
 	{
 		//setFoldersFilter("");
@@ -620,13 +629,7 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 		column = mi.column();
 	}
 
-	unsigned long long int folderId = 0;
-	if(mi.isValid())
-	{
-		TreeItem *item = static_cast<TreeItem*>(mi.internalPointer());
-		folderId = item->id;
-	}
-	comicView->setModel(NULL);
+	//comicView->setModel(NULL);
 	dmCV->setupModelData(folderId,dm->getDatabase());
 	comicView->setModel(dmCV);
 	//TODO automatizar (valorar si se deja al modelo)
