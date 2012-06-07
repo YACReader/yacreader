@@ -570,6 +570,21 @@ void LibraryWindow::loadLibrary(const QString & name)
 			dm->setupModelData(path);
 			foldersView->setModel(dm);
 			
+			d.setCurrent(libraries.value(name));
+			d.setFilter(QDir::AllDirs | QDir::Files | QDir::Hidden | QDir::NoSymLinks | QDir::NoDotAndDotDot);
+			if(d.count()<=1) //librería de sólo lectura
+			{
+				//QMessageBox::critical(NULL,QString::number(d.count()),QString::number(d.count()));
+				disableActions();
+				importedCovers = true;
+			}
+			else //librería normal abierta
+			{
+				enableActions();
+				importedCovers = false;
+			}
+			enableLibraryActions();
+
 			loadCovers(QModelIndex());
 
 			//includeComicsCheckBox->setCheckState(Qt::Unchecked);
@@ -580,21 +595,8 @@ void LibraryWindow::loadLibrary(const QString & name)
 			comicView->setModel(NULL);
 			foldersView->setModel(NULL);
 			comicFlow->clear();
+			disableAllActions();//TODO comprobar que se deben deshabilitar
 		}
-		d.setCurrent(libraries.value(name));
-		d.setFilter(QDir::AllDirs | QDir::Files | QDir::Hidden | QDir::NoSymLinks | QDir::NoDotAndDotDot);
-		if(d.count()<=1) //librería de sólo lectura
-		{
-			//QMessageBox::critical(NULL,QString::number(d.count()),QString::number(d.count()));
-			disableActions();
-			importedCovers = true;
-		}
-		else //librería normal abierta
-		{
-			enableActions();
-			importedCovers = false;
-		}
-		enableLibraryActions();
 	}
 	else
 	{
