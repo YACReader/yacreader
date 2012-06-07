@@ -605,7 +605,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 void LibraryWindow::loadCovers(const QModelIndex & mi)
 {
 
-	unsigned long long int folderId = 0;
+	unsigned long long int folderId = 1;
 	if(mi.isValid())
 	{
 		TreeItem *item = static_cast<TreeItem*>(mi.internalPointer());
