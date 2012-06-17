@@ -35,16 +35,16 @@ public:
 	//Métodos de conveniencia
 	QStringList getPaths(const QString & _source);
 	QString getComicPath(QModelIndex & mi);
-	Comic getComic(QModelIndex & mi); //--> para la edición
+	Comic getComic(const QModelIndex & mi); //--> para la edición
 	QVector<bool> getReadList();
 	QVector<bool> setAllComicsRead(bool read);
-	//getComicsInfo(QList<QModelIndex> list); --> recupera la información común a los comics seleccionados
+	QList<Comic> getComics(QList<QModelIndex> list); //--> recupera la información común a los comics seleccionados
 	//setcomicInfo(QModelIndex & mi); --> inserta en la base datos
 	//setComicInfoForAllComics(); --> inserta la información común a todos los cómics de una sola vez.
 	//setComicInfoForSelectedComis(QList<QModelIndex> list); -->inserta la información común para los comics seleccionados
 private:
     void setupModelData( QSqlQuery &sqlquery);
-
+	Comic _getComic(const QModelIndex & mi);
     QList<TableItem *> _data;
 
 	QSqlDatabase _database;

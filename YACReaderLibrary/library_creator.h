@@ -27,6 +27,7 @@
                 void updateLibrary(const QString & source, const QString & target);
                 void stop();
 	private:
+		void processLibrary(const QString & source, const QString & target);
 		enum Mode {CREATOR,UPDATER};
 		//atributos "globales" durante el proceso de creación y actualización
 		enum Mode _mode;

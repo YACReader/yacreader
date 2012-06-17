@@ -4,7 +4,8 @@
 #include <QtGlobal>
 #include <QStringList>
 
-#define VERSION "0.4.5"
+#define VERSION "5.0"
+#define PREVIOUS_VERSION "0.4.5"
 
 HttpVersionChecker::HttpVersionChecker()
         :QWidget()
@@ -42,9 +43,18 @@ void HttpVersionChecker::read(const QHttpResponseHeader &){
 
 void HttpVersionChecker::httpRequestFinished(int requestId, bool error)
 {
+#ifdef QT_DEBUG
+    QString response("YACReader-5.0.0 win32.exe");
+#else
+	QString response(content);
+#endif
+	checkNewVersion(response);
+}
 
-    QString response(content);
-#ifdef Q_WS_WIN
+//TODO escribir prueba unitaria
+bool HttpVersionChecker::checkNewVersion(QString sourceContent)
+{
+	#ifdef Q_WS_WIN
     QRegExp rx(".*YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}win32.*");
 #endif
 
@@ -60,34 +70,44 @@ void HttpVersionChecker::httpRequestFinished(int requestId, bool error)
     bool newVersion = false;
     bool sameVersion = true;
 	//bool currentVersionIsNewer = false;
-
+#ifdef QT_DEBUG
+	QString version(PREVIOUS_VERSION);
+#else
     QString version(VERSION);
-    QStringList sl = version.split(".");
-    if((index = rx.indexIn(response))!=-1)
-    {
-        int length = qMin(sl.size(),(rx.cap(4)!="")?4:3);
-        for(int i=0;i<length;i++)
-        {
+#endif
+	QStringList sl = version.split(".");
+	if((index = rx.indexIn(sourceContent))!=-1)
+	{
+		int length = qMin(sl.size(),(rx.cap(4)!="")?4:3);
+		for(int i=0;i<length;i++)
+		{
 			if(rx.cap(i+1).toInt()<sl.at(i).toInt())
 			{
-				return;
+				return false;
 			}
-            if(rx.cap(i+1).toInt()>sl.at(i).toInt()){
-                newVersion=true;
-                break;
-            }
-	    else
-		sameVersion = sameVersion && rx.cap(i+1).toInt()==sl.at(i).toInt();
-        }
-        if(!newVersion && sameVersion)
-{
-    if((sl.size()==3)&&(rx.cap(4)!=""))
-	newVersion = true;
-}
+			if(rx.cap(i+1).toInt()>sl.at(i).toInt()){
+				newVersion=true;
+				break;
+			}
+			else
+				sameVersion = sameVersion && rx.cap(i+1).toInt()==sl.at(i).toInt();
+		}
+		if(!newVersion && sameVersion)
+		{
+			if((sl.size()==3)&&(rx.cap(4)!=""))
+				newVersion = true;
+		}
 
 
-    }
+	}
 
-    if(newVersion == true)
-        emit newVersionDetected();
+	if(newVersion == true)
+	{
+		emit newVersionDetected();
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

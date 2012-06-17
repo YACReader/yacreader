@@ -22,6 +22,7 @@
         int httpGetId;
         QByteArray content;
         bool found;
+		bool checkNewVersion(QString sourceContent);
 	signals:
 		void newVersionDetected();
  };

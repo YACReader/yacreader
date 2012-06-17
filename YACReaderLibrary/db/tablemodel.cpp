@@ -211,7 +211,7 @@ void TableModel::setupModelData(QSqlQuery &sqlquery)
 	}
 }
 
-Comic TableModel::getComic(QModelIndex & mi)
+Comic TableModel::getComic(const QModelIndex & mi)
 {
 	Comic c;
 	_database.open();
@@ -219,6 +219,16 @@ Comic TableModel::getComic(QModelIndex & mi)
 	_database.close();
 	return c;
 }
+
+Comic TableModel::_getComic(const QModelIndex & mi)
+{
+	Comic c;
+
+	c.load(_data.at(mi.row())->data(0).toLongLong(),_database);
+
+	return c;
+}
+
 
 QVector<bool> TableModel::getReadList()
 {
@@ -252,4 +262,20 @@ QVector<bool> TableModel::setAllComicsRead(bool read)
 	_database.close();
 
 	return readList;
+}
+
+QList<Comic> TableModel::getComics(QList<QModelIndex> list)
+{
+	QList<Comic> comics;
+
+	_database.open();
+	_database.transaction();
+	QList<QModelIndex>::const_iterator itr;
+	for(itr = list.constBegin(); itr!= list.constEnd();itr++)
+	{
+		comics.append(_getComic(*itr));
+	}
+	_database.commit();
+	_database.close();
+	return comics;
 }
