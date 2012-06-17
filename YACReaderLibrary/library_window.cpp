@@ -361,6 +361,9 @@ void LibraryWindow::disableAllActions()
 	setAsNonReadAction->setEnabled(false);
 	setAllAsReadAction->setEnabled(false);
 	setAllAsNonReadAction->setEnabled(false);
+	selectAllComicsAction->setEnabled(false);
+	editSelectedComicsAction->setEnabled(false);
+	asignOrderActions->setEnabled(false);
 }
 
 //librería de sólo lectura
@@ -375,6 +378,9 @@ void LibraryWindow::disableActions()
 	setAsNonReadAction->setEnabled(false);
 	setAllAsReadAction->setEnabled(false);
 	setAllAsNonReadAction->setEnabled(false);
+	selectAllComicsAction->setEnabled(false);
+	editSelectedComicsAction->setEnabled(false);
+	asignOrderActions->setEnabled(false);
 }
 //librería abierta
 void LibraryWindow::enableActions()
@@ -456,7 +462,7 @@ void LibraryWindow::createToolBars()
 	editInfoToolBar->addAction(editSelectedComicsAction);
 	editInfoToolBar->addAction(selectAllComicsAction);
 	editInfoToolBar->addSeparator();
-	editInfoToolBar->addAction(forceConverExtractedAction);
+	//editInfoToolBar->addAction(forceConverExtractedAction);
 	editInfoToolBar->addWidget(new QToolBarStretch());
 	editInfoToolBar->addAction(hideComicViewAction);
 }
@@ -549,6 +555,7 @@ void LibraryWindow::createConnections()
 	//connect(dm,SIGNAL(directoryLoaded(QString)),this,SLOT(updateFoldersView(QString)));
 	//Comicts edition
 	connect(selectAllComicsAction,SIGNAL(triggered()),comicView,SLOT(selectAll()));
+	connect(editSelectedComicsAction,SIGNAL(triggered()),this,SLOT(showProperties()));
 
 	connect(hideComicViewAction, SIGNAL(toggled(bool)),this, SLOT(hideComicFlow(bool)));
 
@@ -653,6 +660,9 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 		setAsNonReadAction->setEnabled(true);
 		setAllAsReadAction->setEnabled(true);
 		setAllAsNonReadAction->setEnabled(true);
+		selectAllComicsAction->setEnabled(true);
+		editSelectedComicsAction->setEnabled(true);
+		asignOrderActions->setEnabled(true);
 	}
 	else
 	{
@@ -662,6 +672,9 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 		setAsNonReadAction->setEnabled(false);
 		setAllAsReadAction->setEnabled(false);
 		setAllAsNonReadAction->setEnabled(false);
+		selectAllComicsAction->setEnabled(false);
+		editSelectedComicsAction->setEnabled(false);
+		asignOrderActions->setEnabled(false);
 	}
 	if(paths.size()>0)
 		comicView->setCurrentIndex(dmCV->index(0,0));
@@ -995,17 +1008,22 @@ void LibraryWindow::setFoldersFilter(QString filter)
 
 void LibraryWindow::showProperties()
 {
-	QModelIndex mi = comicView->currentIndex();
-	QString path = QDir::cleanPath(currentPath()+dmCV->getComicPath(mi));
+	QModelIndexList indexList = comicView->selectionModel()->selectedRows();
 
-	ThumbnailCreator tc(path,"");
-	tc.create();
-	propertiesDialog->setCover(tc.getCover());
+	QList<Comic> comics = dmCV->getComics(indexList);
+
+	//QModelIndex mi = comicView->currentIndex();
+	//QString path = QDir::cleanPath(currentPath()+dmCV->getComicPath(mi));
+
+	//ThumbnailCreator tc(path,"");
+	//tc.create();
+	propertiesDialog->setComics(comics);
+	/*propertiesDialog->setCover(tc.getCover());
 	propertiesDialog->setFilename(path.split("/").last());
 	propertiesDialog->setNumpages(tc.getNumPages());
 	QFile file(path);
 	propertiesDialog->setSize(file.size()/(1024.0*1024));
-	file.close();
+	file.close();*/
 	propertiesDialog->show();
 }
 

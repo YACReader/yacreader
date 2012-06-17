@@ -24,19 +24,22 @@ LibraryCreator::LibraryCreator()
 
 void LibraryCreator::createLibrary(const QString &source, const QString &target)
 {
-	_source = source;
-	_target = target;
-	if(!QDir(target+"/library.ydb").exists())
-		_mode = CREATOR;
-	else
-		_mode = UPDATER;
+	processLibrary(source,target);
 }
 
 void LibraryCreator::updateLibrary(const QString &source, const QString &target)
 {
+	processLibrary(source,target);
+}
+
+void LibraryCreator::processLibrary(const QString & source, const QString & target)
+{
 	_source = source;
 	_target = target;
-	_mode = UPDATER;
+	if(!(QFile(target+"/library.ydb").exists())) //TODO, no sirve sólo con realizar el update, hay que validar la base de datos y determinar si existe "/covers"
+		_mode = CREATOR;
+	else
+		_mode = UPDATER;
 }
 
 

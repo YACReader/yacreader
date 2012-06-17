@@ -231,7 +231,14 @@ void PropertiesDialog::createButtonBox()
 
 void PropertiesDialog::setComics(QList<Comic> comics)
 {
-
+	if(comics.length() > 1)
+	{
+	}
+	else
+	{
+		Comic comic = comics.at(0);
+		title->setText(comic.name);
+	}
 }
 
 

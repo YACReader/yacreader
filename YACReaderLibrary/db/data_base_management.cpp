@@ -71,5 +71,14 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
 	queryComic.prepare("CREATE TABLE comic (id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, comicInfoId INTEGER NOT NULL,  fileName TEXT NOT NULL, path TEXT, FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE, FOREIGN KEY(comicInfoId) REFERENCES comic_info(id))");
 	success = success && queryComic.exec();
 
+	//DB INFO
+	QSqlQuery queryDBInfo(database);
+	queryDBInfo.prepare("CREATE TABLE db_info (version TEXT NOT NULL)");
+	success = success && queryDBInfo.exec();
+
+	QSqlQuery query("INSERT INTO db_info (version) "
+                   "VALUES ('5.0.0')",database);
+
+
 	return success;
 }
