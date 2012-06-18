@@ -79,8 +79,13 @@ private:
 	QAction * showPropertiesAction;
 	QAction * createLibraryAction;
 	QAction * openLibraryAction;
+	
+	QAction * exportComicsInfo;
+	QAction * importComicsInfo;
+
 	QAction * exportLibraryAction;
 	QAction * importLibraryAction;
+
 	QAction * updateLibraryAction;
 	QAction * deleteLibraryAction;
 	QAction * removeLibraryAction;
