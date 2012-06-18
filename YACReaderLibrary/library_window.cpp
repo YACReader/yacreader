@@ -217,11 +217,19 @@ void LibraryWindow::createActions()
 	openLibraryAction->setShortcut(Qt::Key_O);
 	openLibraryAction->setIcon(QIcon(":/images/openLibrary.png"));
 
-	exportLibraryAction = new QAction(this);
+	exportComicsInfo = new QAction(tr("Export comics info"),this);
+	exportComicsInfo->setToolTip(tr("Export comics info"));
+	exportComicsInfo->setIcon(QIcon(":/images/exportComicsInfo.png"));
+
+	importComicsInfo = new QAction(tr("Import comics info"),this);
+	importComicsInfo->setToolTip(tr("Import comics info"));
+	importComicsInfo->setIcon(QIcon(":/images/importComicsInfo.png"));
+
+	exportLibraryAction = new QAction(tr("Pack covers"),this);
 	exportLibraryAction->setToolTip(tr("Pack the covers of the selected library"));
 	exportLibraryAction->setIcon(QIcon(":/images/exportLibrary.png"));
 
-	importLibraryAction = new QAction(this);
+	importLibraryAction = new QAction(tr("Unpack covers"),this);
 	importLibraryAction->setToolTip(tr("Unpack a catalog"));
 	importLibraryAction->setIcon(QIcon(":/images/importLibrary.png"));
 
@@ -410,8 +418,16 @@ void LibraryWindow::createToolBars()
 	libraryToolBar->setIconSize(QSize(32,32)); //TODO make icon size dynamic
 	libraryToolBar->addAction(createLibraryAction);
 	libraryToolBar->addAction(openLibraryAction);
-	libraryToolBar->addAction(exportLibraryAction);
+
+	libraryToolBar->addSeparator();
+
+	libraryToolBar->addAction(exportComicsInfo);
+	libraryToolBar->addAction(importComicsInfo);
+
+	libraryToolBar->addSeparator();
+
 	libraryToolBar->addAction(importLibraryAction);
+	libraryToolBar->addAction(exportLibraryAction);
 
 	libraryToolBar->addSeparator();
 	libraryToolBar->addAction(updateLibraryAction); 
