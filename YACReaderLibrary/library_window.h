@@ -20,6 +20,8 @@
 #include "rename_library_dialog.h"
 #include "properties_dialog.h"
 #include "options_dialog.h"
+#include "export_comics_info_dialog.h"
+#include "import_comics_info_dialog.h"
 #include "export_library_dialog.h"
 #include "import_library_dialog.h"
 #include "package_manager.h"
@@ -37,6 +39,8 @@ private:
 	UpdateLibraryDialog * updateLibraryDialog;
 	ExportLibraryDialog * exportLibraryDialog;
 	ImportLibraryDialog * importLibraryDialog;
+	ExportComicsInfoDialog * exportComicsInfoDialog;
+	ImportComicsInfoDialog * importComicsInfoDialog;
 	AddLibraryDialog * addLibraryDialog;
 	LibraryCreator * libraryCreator;
 	HelpAboutDialog * had;
@@ -186,6 +190,8 @@ public:
 		void setComicsUnreaded();
 		void searchInFiles(int);
 		void hideComicFlow(bool hide);
+		void showExportComicsInfo();
+		void showImportComicsInfo();
 };
 
 #endif

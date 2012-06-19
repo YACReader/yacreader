@@ -35,5 +35,6 @@
   <file>../images/hideComicFlow.png</file>
     <file>../images/exportComicsInfo.png</file>
   <file>../images/importComicsInfo.png</file>
+  <file>../images/db.png</file>
     </qresource>
 </RCC>
