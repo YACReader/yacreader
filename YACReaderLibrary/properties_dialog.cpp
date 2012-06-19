@@ -237,7 +237,7 @@ void PropertiesDialog::setComics(QList<Comic> comics)
 	else
 	{
 		Comic comic = comics.at(0);
-		title->setText(comic.name);
+		title->setText(comic.info.name);
 	}
 }
 

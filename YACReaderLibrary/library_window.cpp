@@ -171,6 +171,8 @@ void LibraryWindow::doDialogs()
 	propertiesDialog = new PropertiesDialog(this);
 	exportLibraryDialog = new ExportLibraryDialog(this);
 	importLibraryDialog = new ImportLibraryDialog(this);
+	exportComicsInfoDialog = new ExportComicsInfoDialog(this);
+	importComicsInfoDialog = new ImportComicsInfoDialog(this);
 	addLibraryDialog = new AddLibraryDialog(this);
 	optionsDialog = new OptionsDialog(this);
 	optionsDialog->restoreOptions();
@@ -541,7 +543,10 @@ void LibraryWindow::createConnections()
 	connect(setAllAsNonReadAction,SIGNAL(triggered()),this,SLOT(setComicsUnreaded()));
 
 	connect(showHideMarksAction,SIGNAL(toggled(bool)),comicFlow,SLOT(setShowMarks(bool)));
-
+	
+	//comicsInfoManagement
+	connect(exportComicsInfo,SIGNAL(triggered()),this,SLOT(showExportComicsInfo()));
+	connect(importComicsInfo,SIGNAL(triggered()),this,SLOT(showImportComicsInfo()));
 
 	connect(updateLibraryAction,SIGNAL(triggered()),this,SLOT(updateLibrary()));
 	connect(renameLibraryAction,SIGNAL(triggered()),this,SLOT(renameLibrary()));
@@ -1141,4 +1146,14 @@ void LibraryWindow::hideComicFlow(bool hide)
 		sVertical->setSizes(sizes);	
 	}
 
+}
+
+void LibraryWindow::showExportComicsInfo()
+{
+	exportComicsInfoDialog->show();
+}
+
+void LibraryWindow::showImportComicsInfo()
+{
+	importComicsInfoDialog->show();
 }

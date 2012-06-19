@@ -36,7 +36,10 @@ HEADERS += comic_flow.h \
 		   ./db/tableitem.h \
 		   ./db/comic.h \
 		   ./db/folder.h \
-		   ./db/library_item.h
+		   ./db/library_item.h \
+		   export_comics_info_dialog.h \
+		   import_comics_info_dialog.h 
+		   
 SOURCES += comic_flow.cpp \
            create_library_dialog.cpp \
            library_creator.cpp \
@@ -60,7 +63,9 @@ SOURCES += comic_flow.cpp \
 		   ./db/tableitem.cpp \
 		   ./db/comic.cpp \
 		   ./db/folder.cpp \
-		   ./db/library_item.cpp
+		   ./db/library_item.cpp \
+		   export_comics_info_dialog.cpp \
+		   import_comics_info_dialog.cpp 
 		   
 include(./server/server.pri)
 

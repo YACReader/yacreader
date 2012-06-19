@@ -82,3 +82,16 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
 
 	return success;
 }
+
+void DataBaseManagement::exportComicsInfo(QString source, QString dest)
+{
+	QSqlDatabase source = loadDatabase(source);
+	QSqlDatabase dest = loadDatabase(dest);
+
+}
+void DataBaseManagement::importComicsInfo(QString source, QString dest)
+{
+	QSqlDatabase source = loadDatabase(source);
+	QSqlDatabase dest = loadDatabase(dest);
+
+}

@@ -20,6 +20,9 @@ public:
 	//carga una base de datos desde la ruta path
 	static QSqlDatabase loadDatabase(QString path);
 	static bool createTables(QSqlDatabase & database);
+
+	void exportComicsInfo(QString source, QString dest);
+	void importComicsInfo(QString source, QString dest);
 };
 
 #endif
