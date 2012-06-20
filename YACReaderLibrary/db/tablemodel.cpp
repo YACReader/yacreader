@@ -169,7 +169,7 @@ void TableModel::setupModelData(unsigned long long int folderId,QSqlDatabase & d
 	//f.close();
 }
 
-QString TableModel::getComicPath(QModelIndex & mi)
+QString TableModel::getComicPath(QModelIndex mi)
 {
 	if(mi.isValid())
 		return _data.at(mi.row())->data(3).toString();

@@ -45,7 +45,7 @@ QList<LibraryItem *> Comic::getComicsFromParent(qulonglong parentId, QSqlDatabas
 			data << record.value(i);
 		//TODO sort by sort indicator and name
 		currentItem = new Comic();
-		currentItem->id = record.value(0).toLongLong();
+		currentItem->id = record.value("id").toLongLong();
 		currentItem->parentId = record.value(1).toLongLong();
 		currentItem->name = record.value(2).toString();
 		currentItem->path = record.value(3).toString();
@@ -88,10 +88,10 @@ bool Comic::load(qulonglong id, QSqlDatabase & db)
 	if(selectQuery.next())
 	{
 		QSqlRecord record = selectQuery.record();
-		id = record.value(0).toLongLong();
-		parentId = record.value(1).toLongLong();
-		name = record.value(2).toString();
-		info.load(record.value(4).toString(),db);
+		id = record.value("id").toLongLong();
+		parentId = record.value("parentId").toLongLong();
+		name = record.value("name").toString();
+		info.load(record.value("hash").toString(),db);
 		return true;
 	}
 	return false;
@@ -101,6 +101,7 @@ bool Comic::load(qulonglong id, QSqlDatabase & db)
 qulonglong Comic::insert(QSqlDatabase & db)
 {
 	//TODO comprobar si ya hay comic info con ese hash
+	//TODO cambiar por info.insert(db)
 
 	if(!info.existOnDb)
 	{
@@ -166,9 +167,10 @@ bool ComicInfo::load(QString hash, QSqlDatabase & db)
 	QSqlRecord record = findComicInfo.record();
 
 	this->hash = hash;
-	this->id = record.value(0).toLongLong();
-	this->name = record.value(2).toString();
-	this->read = record.value(3).toBool();
+	this->id = record.value("id").toLongLong();
+	this->title = record.value("title").toString();
+	this->read = record.value("read").toBool();
+	this->edited = record.value("edited").toBool();
 	existOnDb = true;
 	return true;
 	}
@@ -189,8 +191,8 @@ void ComicInfo::update(QSqlDatabase & db)
 {
 	//db.open();
 	QSqlQuery findComicInfo(db);
-	findComicInfo.prepare("UPDATE comic_info SET name = :name, read = :read WHERE id = :id ");
-	findComicInfo.bindValue(":name", name);
+	findComicInfo.prepare("UPDATE comic_info SET title = :title, read = :read WHERE id = :id ");
+	findComicInfo.bindValue(":title", title);
 	findComicInfo.bindValue(":read", read?1:0);
 	findComicInfo.bindValue(":id", id);
 	findComicInfo.exec();

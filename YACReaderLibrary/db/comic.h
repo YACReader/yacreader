@@ -17,8 +17,9 @@ public:
 
 	qulonglong id;
 	bool read;
+	bool edited;
 	QString hash;
-	QString name;
+	QString title;
 
 	bool existOnDb;
 };

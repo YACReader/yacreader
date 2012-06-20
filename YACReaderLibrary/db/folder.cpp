@@ -33,7 +33,7 @@ QList<LibraryItem *> Folder::getFoldersFromParent(qulonglong parentId, QSqlDatab
 		for(int i=0;i<record.count();i++)
 			data << record.value(i);
 		//TODO sort by sort indicator and name
-		currentItem = new Folder(record.value(0).toLongLong(),record.value(1).toLongLong(),record.value(2).toString(),record.value(2).toString());
+		currentItem = new Folder(record.value("id").toLongLong(),record.value("parentId").toLongLong(),record.value("name").toString(),record.value("path").toString());
 		int lessThan = 0;
 		if(list.isEmpty())
 			list.append(currentItem);

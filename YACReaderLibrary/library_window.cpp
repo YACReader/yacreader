@@ -1150,6 +1150,7 @@ void LibraryWindow::hideComicFlow(bool hide)
 
 void LibraryWindow::showExportComicsInfo()
 {
+	exportComicsInfoDialog->source = currentPath() + "/.yacreaderlibrary/library.ydb";
 	exportComicsInfoDialog->show();
 }
 

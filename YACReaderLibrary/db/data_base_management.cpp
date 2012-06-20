@@ -19,8 +19,13 @@ TreeModel * DataBaseManagement::newTreeModel(QString path)
 
 QSqlDatabase DataBaseManagement::createDatabase(QString name, QString path)
 {
+	return createDatabase(QDir::cleanPath(path) + "/" + name + ".ydb");
+}
+
+QSqlDatabase DataBaseManagement::createDatabase(QString dest)
+{
 	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-	db.setDatabaseName(QDir::cleanPath(path) + "/" + name + ".ydb");
+	db.setDatabaseName(dest);
 	if (!db.open())
 		qDebug() << db.lastError();
 	else {
@@ -63,7 +68,7 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
 
 		//COMIC INFO (representa la información de un cómic, cada cómic tendrá un idéntificador único formado por un hash sha1'de los primeros 512kb' + su tamaño en bytes)
 	QSqlQuery queryComicInfo(database);
-	queryComicInfo.prepare("CREATE TABLE comic_info (id INTEGER PRIMARY KEY, hash TEXT NOT NULL, name TEXT, read BOOLEAN)");
+	queryComicInfo.prepare("CREATE TABLE comic_info (id INTEGER PRIMARY KEY, hash TEXT NOT NULL, edited BOOLEAN DEFAULT 0, title TEXT, read BOOLEAN)");
 	success = success && queryComicInfo.exec();
 
 	//COMIC (representa un cómic en disco, contiene el nombre de fichero)
@@ -85,13 +90,80 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
 
 void DataBaseManagement::exportComicsInfo(QString source, QString dest)
 {
-	QSqlDatabase source = loadDatabase(source);
-	QSqlDatabase dest = loadDatabase(dest);
+	QSqlDatabase sourceDB = loadDatabase(source);
+	QSqlDatabase destDB = QSqlDatabase::addDatabase("QSQLITE");
+	destDB.setDatabaseName(dest);
+	destDB.open();
+	sourceDB.open();
+
+	QSqlQuery attach(sourceDB);
+	attach.prepare("ATTACH DATABASE '"+QDir().toNativeSeparators(dest) +"' AS dest;");
+	//attach.bindValue(":dest",QDir().toNativeSeparators(dest));
+	attach.exec();
+
+	QSqlQuery attach2(sourceDB);
+	attach2.prepare("ATTACH DATABASE '"+QDir().toNativeSeparators(source) +"' AS source;");
+	attach2.exec();
+
+	//sourceDB.close();
+	QSqlQuery queryDBInfo(sourceDB);
+	queryDBInfo.prepare("CREATE TABLE dest.db_info (version TEXT NOT NULL)");
+	queryDBInfo.exec();
+
+	/*QSqlQuery queryComicsInfo(sourceDB);
+	queryComicsInfo.prepare("CREATE TABLE dest.comic_info (id INTEGER PRIMARY KEY, hash TEXT NOT NULL, edited BOOLEAN DEFAULT FALSE, title TEXT, read BOOLEAN)");
+	queryComicsInfo.exec();*/
+
+	QSqlQuery query("INSERT INTO dest.db_info (version) "
+		"VALUES ('5.0.0')",sourceDB);
+
+	QSqlQuery exportData(sourceDB);
+	exportData.prepare("create table dest.comic_info as select * from source.comic_info where source.comic_info.edited = 1");
+	exportData.exec();
+
+	QString error = exportData.lastError().databaseText();
+	QString error2 = exportData.lastError().text();
+
+	sourceDB.close();
+	destDB.close();
 
 }
 void DataBaseManagement::importComicsInfo(QString source, QString dest)
 {
-	QSqlDatabase source = loadDatabase(source);
-	QSqlDatabase dest = loadDatabase(dest);
+	QSqlDatabase sourceDB = loadDatabase(source);
+	QSqlDatabase destDB = loadDatabase(dest);
+
+}
+
+//COMICS_INFO_EXPORTER
+ComicsInfoExporter::ComicsInfoExporter()
+:QThread()
+{
+}
+
+void ComicsInfoExporter::exportComicsInfo(QSqlDatabase & source, QSqlDatabase & dest)
+{
+
+}
+
+void ComicsInfoExporter::run()
+{
+
+}
+
+
+//COMICS_INFO_IMPORTER
+ComicsInfoImporter::ComicsInfoImporter()
+:QThread()
+{
+}
+
+void ComicsInfoImporter::importComicsInfo(QSqlDatabase & source, QSqlDatabase & dest)
+{
+
+}
+
+void ComicsInfoImporter::run()
+{
 
 }
