@@ -235,13 +235,15 @@ void TreeModel::setupModelData(QSqlQuery &sqlquery, TreeItem *parent)
 
 	while (sqlquery.next()) {
 		QList<QVariant> data;
-		data << sqlquery.value(2).toString();
-		data << sqlquery.value(3).toString();
+		QSqlRecord record = sqlquery.record();
+
+		data << record.value("name").toString();
+		data << record.value("path").toString();
 		TreeItem * item = new TreeItem(data);
 
-		item->id = sqlquery.value(0).toLongLong();
+		item->id = record.value("id").toLongLong();
 		//la inserción de hijos se hace de forma ordenada
-		items.value(sqlquery.value(1).toLongLong())->appendChild(item);
+		items.value(record.value("parentId").toLongLong())->appendChild(item);
 		//se añade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
 		items.insert(item->id,item);
 	}
@@ -300,13 +302,15 @@ void TreeModel::setupFilteredModelData(QSqlQuery &sqlquery, TreeItem *parent)
 	while (sqlquery.next()) {  //se procesan todos los folders que cumplen con el filtro
 		//datos de la base de datos
 		QList<QVariant> data;
-		data << sqlquery.value(2).toString();
-		data << sqlquery.value(3).toString();
+		QSqlRecord record = sqlquery.record();
+
+		data << record.value("name").toString();
+		data << record.value("path").toString();
 		TreeItem * item = new TreeItem(data);
 		item->id = sqlquery.value(0).toLongLong();
 
 		//id del padre
-		quint64 parentId = sqlquery.value(1).toLongLong();
+		quint64 parentId = record.value("parentId").toLongLong();
 
 		//se añade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
 		if(!filteredItems.contains(item->id))

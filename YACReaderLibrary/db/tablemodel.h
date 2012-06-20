@@ -34,7 +34,7 @@ public:
 	
 	//Métodos de conveniencia
 	QStringList getPaths(const QString & _source);
-	QString getComicPath(QModelIndex & mi);
+	QString getComicPath(QModelIndex mi);
 	Comic getComic(const QModelIndex & mi); //--> para la edición
 	QVector<bool> getReadList();
 	QVector<bool> setAllComicsRead(bool read);
