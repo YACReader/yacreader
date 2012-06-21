@@ -7,7 +7,7 @@
 #include <QCheckBox>
 #include <QLineEdit>
 #include <QTabWidget>
-#include <QPlainTextEdit>
+
 
 PropertiesDialog::PropertiesDialog(QWidget * parent)
 :QDialog(parent)
@@ -74,7 +74,7 @@ void PropertiesDialog::createCoverBox()
 
 	QVBoxLayout * coverLayout = new QVBoxLayout();
 	coverLayout->addWidget(cover);
-	coverLayout->addWidget(new QLineEdit());
+	coverLayout->addWidget(coverPageEdit = new QLineEdit());
 
 	coverBox->setLayout(coverLayout);
 }
@@ -105,28 +105,28 @@ void PropertiesDialog::createGeneralInfoBox()
 	
 
 	QHBoxLayout * number = new QHBoxLayout;
-	number->addWidget(new QLineEdit());
+	number->addWidget(numberEdit = new QLineEdit());
 	number->addWidget(new QLabel("Bis:"));
-	number->addWidget(new QCheckBox());
+	number->addWidget(isBisCheck = new QCheckBox());
 	number->addWidget(new QLabel("of:"));
-	number->addWidget(new QLineEdit());
+	number->addWidget(countEdit = new QLineEdit());
 	number->addStretch(1);
 	/*generalInfoLayout->addRow(tr("&Issue number:"), );
 	generalInfoLayout->addRow(tr("&Bis:"), );*/
 	generalInfoLayout->addRow(tr("Issue number:"), number);
 	
-	generalInfoLayout->addRow(tr("&Volume:"), pages = new QLineEdit());
+	generalInfoLayout->addRow(tr("&Volume:"), volumeEdit = new QLineEdit());
 
 	QHBoxLayout * arc = new QHBoxLayout;
-	arc->addWidget(new QLineEdit());
+	arc->addWidget(storyArcEdit = new QLineEdit());
 	arc->addWidget(new QLabel("Arc number:"));
-	arc->addWidget(new QLineEdit());
+	arc->addWidget(arcNumberEdit = new QLineEdit());
 	arc->addWidget(new QLabel("of:"));
-	arc->addWidget(new QLineEdit());
+	arc->addWidget(arcCountEdit = new QLineEdit());
 	arc->addStretch(1);
 	generalInfoLayout->addRow(tr("&Story arc:"), arc);
 	
-	generalInfoLayout->addRow(tr("&Genere:"),  new QLineEdit());
+	generalInfoLayout->addRow(tr("&Genere:"),  genereEdit = new QLineEdit());
 	
 	generalInfoLayout->addRow(tr("&Size:"), size = new QLabel("size"));
 
@@ -144,10 +144,10 @@ void PropertiesDialog::createAuthorsBox()
 	QVBoxLayout * vl1 = new QVBoxLayout;
 	QVBoxLayout * vr1 = new QVBoxLayout;
 	vl1->addWidget(new QLabel(tr("Writer(s):")));
-	vl1->addWidget(new QPlainTextEdit());
+	vl1->addWidget(writer = new QPlainTextEdit());
 	h1->addLayout(vl1);
 	vr1->addWidget(new QLabel(tr("Penciller(s):")));
-	vr1->addWidget(new QPlainTextEdit());
+	vr1->addWidget(penciller = new QPlainTextEdit());
 	h1->addLayout(vr1);
 	//authorsLayout->addRow(tr("Writer(s):"), new QPlainTextEdit());
 	//authorsLayout->addRow(tr("Penciller(s):"), new QPlainTextEdit());
@@ -155,10 +155,10 @@ void PropertiesDialog::createAuthorsBox()
 	QVBoxLayout * vl2 = new QVBoxLayout;
 	QVBoxLayout * vr2 = new QVBoxLayout;
 	vl2->addWidget(new QLabel(tr("Inker(s):")));
-	vl2->addWidget(new QPlainTextEdit());
+	vl2->addWidget(inker = new QPlainTextEdit());
 	h2->addLayout(vl2);
 	vr2->addWidget(new QLabel(tr("Colorist(s):")));
-	vr2->addWidget(new QPlainTextEdit());
+	vr2->addWidget(colorist = new QPlainTextEdit());
 	h2->addLayout(vr2);
 	
 	//authorsLayout->addRow(tr("Inker(s):"), new QPlainTextEdit());
@@ -168,10 +168,10 @@ void PropertiesDialog::createAuthorsBox()
 	QVBoxLayout * vl3 = new QVBoxLayout;
 	QVBoxLayout * vr3 = new QVBoxLayout;
 	vl3->addWidget(new QLabel(tr("Letterer(es):")));
-	vl3->addWidget(new QPlainTextEdit());
+	vl3->addWidget(letterer = new QPlainTextEdit());
 	h3->addLayout(vl3);
 	vr3->addWidget(new QLabel(tr("Cover Artist(s):")));
-	vr3->addWidget(new QPlainTextEdit());
+	vr3->addWidget(coverArtist = new QPlainTextEdit());
 	h3->addLayout(vr3);
 	//authorsLayout->addRow(tr("Letterer(es):"), new QPlainTextEdit());
 	//authorsLayout->addRow(tr("Cover Artist(s):"), new QPlainTextEdit());
@@ -190,13 +190,21 @@ void PropertiesDialog::createPublishingBox()
 	
 	QFormLayout *publishingLayout = new QFormLayout;
 
+	QHBoxLayout * date = new QHBoxLayout;
+	date->addWidget(new QLabel(tr("Day:")));
+	date->addWidget(dayEdit = new QLineEdit());
+	date->addWidget(new QLabel(tr("Month:")));
+	date->addWidget(monthEdit = new QLineEdit());
+	date->addWidget(new QLabel(tr("Year:")));
+	date->addWidget(yearEdit = new QLineEdit());
+	date->addStretch(1);
+
 	publishingLayout->setRowWrapPolicy(QFormLayout::WrapAllRows);
-	publishingLayout->addRow(tr("Year:"), new QLineEdit());
-	publishingLayout->addRow(tr("Month:"), new QLineEdit());
-	publishingLayout->addRow(tr("Publisher:"), new QLineEdit());
-	publishingLayout->addRow(tr("Format:"), new QLineEdit());
-	publishingLayout->addRow(tr("Color/BW:"), new QLineEdit());
-	publishingLayout->addRow(tr("Age rating:"), new QLineEdit());
+	publishingLayout->addRow(date);
+	publishingLayout->addRow(tr("Publisher:"), publisherEdit = new QLineEdit());
+	publishingLayout->addRow(tr("Format:"), formatEdit = new QLineEdit());
+	publishingLayout->addRow(tr("Color/BW:"), colorCheck = new QCheckBox());
+	publishingLayout->addRow(tr("Age rating:"), ageRatingEdit = new QLineEdit());
 
 	publishingBox->setLayout(publishingLayout);
 }
@@ -208,9 +216,9 @@ void PropertiesDialog::createPlotBox()
 	QFormLayout *plotLayout = new QFormLayout;
 
 	plotLayout->setRowWrapPolicy(QFormLayout::WrapAllRows);
-	plotLayout->addRow(tr("Synopsis:"), new QPlainTextEdit());
-	plotLayout->addRow(tr("Characters:"), new QPlainTextEdit());
-	plotLayout->addRow(tr("Notes:"), new QPlainTextEdit());
+	plotLayout->addRow(tr("Synopsis:"), synopsis = new QPlainTextEdit());
+	plotLayout->addRow(tr("Characters:"), characters = new QPlainTextEdit());
+	plotLayout->addRow(tr("Notes:"), notes = new QPlainTextEdit());
 
 	plotBox->setLayout(plotLayout);
 
@@ -231,21 +239,29 @@ void PropertiesDialog::createButtonBox()
 
 void PropertiesDialog::setComics(QList<Comic> comics)
 {
+	this->comics = comics;
 	if(comics.length() > 1)
 	{
+		setDisableUniqueValues(true);
 	}
 	else
 	{
 		Comic comic = comics.at(0);
 		title->setText(comic.info.title);
+
+		numberEdit->setText(QString::number(comic.info.number));
+
+		setDisableUniqueValues(false);
 	}
 }
 
 
 
-void PropertiesDialog::updateComics(QList<Comic> comics)
+void PropertiesDialog::updateComics()
 {
-
+	database.open();
+		comics[0].info.update(database);
+		database.close();
 }
 //Deprecated
 void PropertiesDialog::setCover(const QPixmap & coverImage)
@@ -291,4 +307,20 @@ void PropertiesDialog::setSize(float sizeFloat)
 {
 	 
 	size->setText(QString::number(sizeFloat,'f',2) + " MB");
+}
+
+void PropertiesDialog::save()
+{
+
+	comics[0].info.title = title->text();
+	comics[0].info.edited = true;
+	updateComics();
+}
+
+void PropertiesDialog::setDisableUniqueValues(bool disabled)
+{
+	coverPageEdit->setDisabled(disabled);
+	numberEdit->setDisabled(disabled);
+	isBisCheck->setDisabled(disabled);
+	arcNumberEdit->setDisabled(disabled);
 }

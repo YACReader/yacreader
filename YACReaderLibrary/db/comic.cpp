@@ -166,17 +166,51 @@ bool ComicInfo::load(QString hash, QSqlDatabase & db)
 	{
 	QSqlRecord record = findComicInfo.record();
 
-	this->hash = hash;
-	this->id = record.value("id").toLongLong();
-	this->title = record.value("title").toString();
-	this->read = record.value("read").toBool();
-	this->edited = record.value("edited").toBool();
-	existOnDb = true;
-	return true;
+	hash = hash;
+	id = record.value("id").toLongLong();
+	read = record.value("read").toBool();
+	edited = record.value("edited").toBool();
+
+	title = record.value("title").toString();
+	pages = record.value("pages").toInt();
+	
+	coverPage = record.value("coverPage").toInt();
+
+	if(!record.value("number").isNull())
+		number = record.value("number").toInt();
+	else
+		number = -1;
+	isBis = record.value("isBis").toBool();
+	count = record.value("count").toInt();
+
+	volume = record.value("volume").toString();
+	storyArc = record.value("storyArc").toString();
+	arcNumber = record.value("arcNumber").toInt(); 
+	arcCount = record.value("arcCount").toInt();
+
+	genere = record.value("genere").toString();
+
+	writer = record.value("writer").toString();
+	penciller = record.value("penciller").toString();
+	inker = record.value("inker").toString();
+	colorist = record.value("colorist").toString();
+	letterer = record.value("letterer").toString();
+	coverArtist = record.value("coverArtist").toString();
+
+	date = record.value("date").toString();
+	publisher = record.value("publisher").toString();
+	format = record.value("format").toString();
+	color = record.value("color").toBool();
+	ageRating = record.value("ageRating").toString();
+
+	synopsis = record.value("synopsis").toString();
+	characters = record.value("characters").toString();
+	notes = record.value("notes").toString();
+
+	return existOnDb = true;
 	}
 
-	existOnDb = false;
-	return false;
+	return existOnDb = false;
 }
 
 qulonglong ComicInfo::insert(QSqlDatabase & db)
@@ -191,10 +225,11 @@ void ComicInfo::update(QSqlDatabase & db)
 {
 	//db.open();
 	QSqlQuery findComicInfo(db);
-	findComicInfo.prepare("UPDATE comic_info SET title = :title, read = :read WHERE id = :id ");
+	findComicInfo.prepare("UPDATE comic_info SET title = :title, read = :read, edited = :edited WHERE id = :id ");
 	findComicInfo.bindValue(":title", title);
 	findComicInfo.bindValue(":read", read?1:0);
 	findComicInfo.bindValue(":id", id);
+	findComicInfo.bindValue(":edited", edited?1:0);
 	findComicInfo.exec();
 	//db.close();
 }

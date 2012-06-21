@@ -1039,6 +1039,7 @@ void LibraryWindow::showProperties()
 	//ThumbnailCreator tc(path,"");
 	//tc.create();
 	propertiesDialog->setComics(comics);
+	propertiesDialog->database = dm->getDatabase();
 	/*propertiesDialog->setCover(tc.getCover());
 	propertiesDialog->setFilename(path.split("/").last());
 	propertiesDialog->setNumpages(tc.getNumPages());
