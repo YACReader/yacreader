@@ -10,6 +10,8 @@
 #include <QDialogButtonBox>
 #include <QGridLayout>
 #include <QTabWidget>
+#include <QCheckBox>
+#include <QPlainTextEdit>
 
 #include "comic.h"
 
@@ -30,6 +32,37 @@
 		QLineEdit * pages;
 		QLabel * size;
 
+		QLineEdit * coverPageEdit;
+
+		QLineEdit * numberEdit;
+		QCheckBox * isBisCheck;
+		QLineEdit * countEdit;
+
+		QLineEdit * volumeEdit;
+		QLineEdit * storyArcEdit;
+		QLineEdit * arcNumberEdit;
+		QLineEdit * arcCountEdit;
+
+		QLineEdit * genereEdit;
+
+		QPlainTextEdit * writer;
+		QPlainTextEdit * penciller;
+		QPlainTextEdit * inker;
+		QPlainTextEdit * colorist;
+		QPlainTextEdit * letterer;
+		QPlainTextEdit * coverArtist;
+
+		QLineEdit * dayEdit;
+		QLineEdit * monthEdit;
+		QLineEdit * yearEdit;
+		QLineEdit * publisherEdit;
+		QLineEdit * formatEdit;
+		QCheckBox * colorCheck;
+		QLineEdit * ageRatingEdit;
+
+		QPlainTextEdit * synopsis;
+		QPlainTextEdit * characters;
+		QPlainTextEdit * notes;
 
 		QWidget * authorsBox;
 
@@ -51,17 +84,23 @@
 
 		void createButtonBox();
 
+		void setDisableUniqueValues(bool disabled);
+
+		QList<Comic> comics;
+
 	public:
 		PropertiesDialog(QWidget * parent = 0);
+		QSqlDatabase database;
 	public slots:
 		void setComics(QList<Comic> comics);
-		void updateComics(QList<Comic> comics);
+		void updateComics();
 
 		//Deprecated
 		void setCover(const QPixmap & cover);
 		void setFilename(const QString & name);
 		void setNumpages(int pages);
 		void setSize(float size);
+		void save();
 	};
 #endif
 

@@ -19,7 +19,40 @@ public:
 	bool read;
 	bool edited;
 	QString hash;
+
 	QString title;
+	int pages;
+
+	int coverPage;
+
+	int number;
+	bool isBis;
+	int count;
+
+	QString volume;
+	QString storyArc;
+	int arcNumber;
+	int arcCount;
+
+	QString genere;
+
+	QString writer;
+	QString penciller;
+	QString inker;
+	QString colorist;
+	QString letterer;
+	QString coverArtist;
+
+	QString date;
+	QString publisher;
+	QString format;
+	bool color;
+	QString ageRating;
+
+	QString synopsis;
+	QString characters;
+	QString notes;
+
 
 	bool existOnDb;
 };

@@ -68,7 +68,44 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
 
 		//COMIC INFO (representa la información de un cómic, cada cómic tendrá un idéntificador único formado por un hash sha1'de los primeros 512kb' + su tamaño en bytes)
 	QSqlQuery queryComicInfo(database);
-	queryComicInfo.prepare("CREATE TABLE comic_info (id INTEGER PRIMARY KEY, hash TEXT NOT NULL, edited BOOLEAN DEFAULT 0, title TEXT, read BOOLEAN)");
+	queryComicInfo.prepare("CREATE TABLE comic_info ("
+		"id INTEGER PRIMARY KEY,"
+		"title TEXT,"
+
+		"coverPage INTEGER,"
+		"numPages INTEGER,"
+
+		"number INTEGER,"
+		"isBis BOOLEAN,"
+		"count INTEGER,"
+
+		"volume TEXT,"
+		"storyArc TEXT,"
+		"arcNumber INTEGER,"
+		"arcCount INTEGER,"
+
+		"genere TEXT,"
+
+		"writer TEXT,"
+		"penciller TEXT,"
+		"inker TEXT,"
+		"colorist TEXT,"
+		"letterer TEXT,"
+		"coverArtist TEXT,"
+
+		"date TEXT," //dd/mm/yyyy --> se mostrará en 3 campos diferentes
+		"publisher TEXT,"
+		"format TEXT,"
+		"color BOOLEAN,"
+		"ageRating BOOLEAN,"
+
+		"synopsis TEXT,"
+		"characters TEXT,"
+		"notes TEXT,"
+
+		"hash TEXT NOT NULL,"
+		"edited BOOLEAN DEFAULT 0,"
+		"read BOOLEAN)");
 	success = success && queryComicInfo.exec();
 
 	//COMIC (representa un cómic en disco, contiene el nombre de fichero)
