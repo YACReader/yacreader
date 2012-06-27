@@ -43,7 +43,7 @@ public:
 	static bool createTables(QSqlDatabase & database);
 
 	static void exportComicsInfo(QString source, QString dest);
-	static void importComicsInfo(QString source, QString dest);
+	static bool importComicsInfo(QString source, QString dest);
 };
 
 #endif

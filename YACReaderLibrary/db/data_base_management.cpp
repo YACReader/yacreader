@@ -14,6 +14,7 @@ TreeModel * DataBaseManagement::newTreeModel(QString path)
 	QSqlQuery selectQuery(loadDatabase(path));
 	selectQuery.setForwardOnly(true);
 	selectQuery.exec("select * from folder order by parentId,name");
+	//selectQuery.finish();
 	return new TreeModel(selectQuery);
 }
 
@@ -32,11 +33,12 @@ QSqlDatabase DataBaseManagement::createDatabase(QString dest)
 		qDebug() << db.tables();
 	}
 	QSqlQuery pragma("PRAGMA foreign_keys = ON",db);
+	//pragma.finish();
 	DataBaseManagement::createTables(db);
 	
 	QSqlQuery query("INSERT INTO folder (parentId, name, path) "
                    "VALUES (1,'root', '/')",db);
-
+	//query.finish();
 	//db.close();
 
 	return db;
@@ -45,7 +47,7 @@ QSqlDatabase DataBaseManagement::createDatabase(QString dest)
 QSqlDatabase DataBaseManagement::loadDatabase(QString path)
 {
 	//TODO check path
-	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE",path);
 	db.setDatabaseName(path+"/library.ydb");
 	if (!db.open()) {
 		//se devuelve una base de datos vacía e inválida
@@ -53,6 +55,7 @@ QSqlDatabase DataBaseManagement::loadDatabase(QString path)
 		return QSqlDatabase();
 	}
 	QSqlQuery pragma("PRAGMA foreign_keys = ON",db);
+	//pragma.finish();
 	//devuelve la base de datos
 	return db;
 }
@@ -65,7 +68,7 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
 	QSqlQuery queryFolder(database);
 	queryFolder.prepare("CREATE TABLE folder (id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, name TEXT NOT NULL, path TEXT NOT NULL, FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE)");
 	success = success && queryFolder.exec();
-
+	//queryFolder.finish();
 		//COMIC INFO (representa la información de un cómic, cada cómic tendrá un idéntificador único formado por un hash sha1'de los primeros 512kb' + su tamaño en bytes)
 	QSqlQuery queryComicInfo(database);
 	queryComicInfo.prepare("CREATE TABLE comic_info ("
@@ -107,19 +110,22 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
 		"edited BOOLEAN DEFAULT 0,"
 		"read BOOLEAN)");
 	success = success && queryComicInfo.exec();
+	//queryComicInfo.finish();
 
 	//COMIC (representa un cómic en disco, contiene el nombre de fichero)
 	QSqlQuery queryComic(database);
 	queryComic.prepare("CREATE TABLE comic (id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, comicInfoId INTEGER NOT NULL,  fileName TEXT NOT NULL, path TEXT, FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE, FOREIGN KEY(comicInfoId) REFERENCES comic_info(id))");
 	success = success && queryComic.exec();
-
+	//queryComic.finish();
 	//DB INFO
 	QSqlQuery queryDBInfo(database);
 	queryDBInfo.prepare("CREATE TABLE db_info (version TEXT NOT NULL)");
 	success = success && queryDBInfo.exec();
+	//queryDBInfo.finish();
 
 	QSqlQuery query("INSERT INTO db_info (version) "
                    "VALUES ('5.0.0')",database);
+	//query.finish();
 
 
 	return success;
@@ -137,15 +143,18 @@ void DataBaseManagement::exportComicsInfo(QString source, QString dest)
 	attach.prepare("ATTACH DATABASE '"+QDir().toNativeSeparators(dest) +"' AS dest;");
 	//attach.bindValue(":dest",QDir().toNativeSeparators(dest));
 	attach.exec();
+	//attach.finish();
 
 	QSqlQuery attach2(sourceDB);
 	attach2.prepare("ATTACH DATABASE '"+QDir().toNativeSeparators(source) +"' AS source;");
 	attach2.exec();
+	//attach2.finish();
 
 	//sourceDB.close();
 	QSqlQuery queryDBInfo(sourceDB);
 	queryDBInfo.prepare("CREATE TABLE dest.db_info (version TEXT NOT NULL)");
 	queryDBInfo.exec();
+	//queryDBInfo.finish();
 
 	/*QSqlQuery queryComicsInfo(sourceDB);
 	queryComicsInfo.prepare("CREATE TABLE dest.comic_info (id INTEGER PRIMARY KEY, hash TEXT NOT NULL, edited BOOLEAN DEFAULT FALSE, title TEXT, read BOOLEAN)");
@@ -153,10 +162,12 @@ void DataBaseManagement::exportComicsInfo(QString source, QString dest)
 
 	QSqlQuery query("INSERT INTO dest.db_info (version) "
 		"VALUES ('5.0.0')",sourceDB);
+	//query.finish();
 
 	QSqlQuery exportData(sourceDB);
 	exportData.prepare("create table dest.comic_info as select * from source.comic_info where source.comic_info.edited = 1");
 	exportData.exec();
+	//exportData.finish();
 
 	QString error = exportData.lastError().databaseText();
 	QString error2 = exportData.lastError().text();
@@ -165,10 +176,53 @@ void DataBaseManagement::exportComicsInfo(QString source, QString dest)
 	destDB.close();
 
 }
-void DataBaseManagement::importComicsInfo(QString source, QString dest)
+#include <qmessagebox.h>
+bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 {
-	QSqlDatabase sourceDB = loadDatabase(source);
-	QSqlDatabase destDB = loadDatabase(dest);
+	QString error;
+	QString driver;
+
+	bool b = false;
+
+	QSqlDatabase destDB = QSqlDatabase::addDatabase("QSQLITE",dest);
+	destDB.setDatabaseName(dest);
+	if(destDB.open())
+	{
+	QSqlQuery pragma("PRAGMA foreign_keys = ON",destDB);
+
+	QSqlQuery attach(destDB);
+	attach.prepare("ATTACH DATABASE '"+QDir().toNativeSeparators(dest) +"' AS dest;");
+	attach.exec();
+	
+	error = attach.lastError().databaseText();
+	driver = attach.lastError().driverText();
+
+	QMessageBox::critical(NULL,tr("db error"),error);
+	QMessageBox::critical(NULL,tr("db error"),driver);
+
+	QSqlQuery attach2(destDB);
+	attach2.prepare("ATTACH DATABASE '"+QDir().toNativeSeparators(source) +"' AS source;");
+	attach2.exec();
+	
+	error = attach2.lastError().databaseText();
+	driver = attach2.lastError().driverText();
+
+	QMessageBox::critical(NULL,tr("db error"),error);
+	QMessageBox::critical(NULL,tr("db error"),driver);
+	//TODO check versions...
+
+	QSqlQuery import(destDB);
+	import.prepare("insert or replace into dest.comic_info select * from source.comic_info;");
+	bool b = import.exec();
+	error = import.lastError().databaseText();
+	driver = import.lastError().driverText();
+
+	QMessageBox::critical(NULL,tr("db error"),error);
+	QMessageBox::critical(NULL,tr("db error"),driver);
+
+	destDB.close();
+	}
+	return b;
 
 }
 

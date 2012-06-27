@@ -63,6 +63,7 @@ private:
 	QPushButton * clearFoldersFilter;
 	QCheckBox * includeComicsCheckBox;
 	//-------------
+	QWidget *comics;
 	QTableView * comicView;
 	QTreeView * foldersView;
 	QComboBox * selectedLibrary;

@@ -369,3 +369,78 @@ bool YACReaderSortComics::lessThan(const QModelIndex &left, const QModelIndex &r
 
 	return naturalSortLessThanCI(leftString,rightString);
 }
+
+
+//--------------------------------------------
+
+YACReaderFieldEdit::YACReaderFieldEdit(QWidget * parent)
+	:QLineEdit(parent)
+{
+	setPlaceholderText(tr("Click to overwrite"));
+	setModified(false);
+	restore = new QAction(tr("Restore to default"),this);
+	this->addAction(restore);
+	//this->setContextMenuPolicy(Qt::ActionsContextMenu);
+}
+
+void YACReaderFieldEdit::focusInEvent(QFocusEvent* e)
+{
+	if (e->reason() == Qt::MouseFocusReason)
+    {
+      setModified(true);
+	  setPlaceholderText("");
+    }
+
+    QLineEdit::focusInEvent(e);
+}
+
+void YACReaderFieldEdit::clear()
+{
+	setModified(false);
+	setPlaceholderText(tr("Click to overwrite"));
+	QLineEdit::clear();
+}
+
+void YACReaderFieldEdit::setDisabled(bool disabled)
+{
+	if(disabled)
+		setPlaceholderText("");
+	QLineEdit::setDisabled(disabled);
+}
+
+//--------------------------------------------
+
+YACReaderFieldPlainTextEdit::YACReaderFieldPlainTextEdit(QWidget * parent)
+	:QPlainTextEdit(parent)
+{
+	document()->setModified(false);
+	setPlainText(tr("Click to overwrite"));
+	restore = new QAction(tr("Restore to default"),this);
+	this->addAction(restore);
+	//this->setContextMenuPolicy(Qt::ActionsContextMenu);
+}
+
+void YACReaderFieldPlainTextEdit::focusInEvent(QFocusEvent* e)
+{
+	if (e->reason() == Qt::MouseFocusReason)
+    {
+      document()->setModified(true);
+	  setPlainText("");
+    }
+
+    QPlainTextEdit::focusInEvent(e);
+}
+
+void YACReaderFieldPlainTextEdit::clear()
+{
+	QPlainTextEdit::clear();
+	document()->setModified(false);
+	setPlainText(tr("Click to overwrite"));
+}
+
+void YACReaderFieldPlainTextEdit::setDisabled(bool disabled)
+{
+	if(disabled)
+		setPlainText(tr("Click to overwrite"));
+	QPlainTextEdit::setDisabled(disabled);
+}

@@ -138,7 +138,7 @@ void LibraryWindow::doLayout()
 
 	//FINAL LAYOUT-------------------------------------------------------------
 	sVertical->addWidget(comicFlow);
-	QWidget *comics = new QWidget;
+	comics = new QWidget;
 	QVBoxLayout * comicsLayout = new QVBoxLayout;
 	comicsLayout->setContentsMargins(2,2,0,0);
 	comicsLayout->addWidget(editInfoToolBar = new QToolBar(comics));
@@ -586,6 +586,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 {
 	if(libraries.size()>0)
 	{	
+		dm->getDatabase().close();
 		QString path=libraries.value(name)+"/.yacreaderlibrary";
 		QDir d; //TODO change this by static methods (utils class?? with delTree for example) 
 		if(d.exists(path))
@@ -751,7 +752,7 @@ void LibraryWindow::setCurrentComicReaded()
 	c.info.read = true;
 	QSqlDatabase db = dm->getDatabase();
 	db.open();
-	c.info.update(db);
+	c.info.updateRead(db);
 	db.close();
 }
 
@@ -770,7 +771,7 @@ void LibraryWindow::setCurrentComicUnreaded()
 	c.info.read = false;
 	QSqlDatabase db = dm->getDatabase();
 	db.open();
-	c.info.update(db);
+	c.info.updateRead(db);
 	db.close();
 
 }
@@ -880,12 +881,16 @@ void LibraryWindow::deleteLibrary()
 
 void LibraryWindow::deleteCurrentLibrary()
 {
+
+	dm->getDatabase().close();
+	if(!dm->getDatabase().isOpen())
+	{
 	QString path = libraries.value(selectedLibrary->currentText());
 	libraries.remove(selectedLibrary->currentText());
 	selectedLibrary->removeItem(selectedLibrary->currentIndex());
 	selectedLibrary->setCurrentIndex(0);
 	path = path+"/.yacreaderlibrary";
-	dm->getDatabase().close();
+
 	QDir d(path);
 	delTree(d);
 	d.rmdir(path);
@@ -896,6 +901,7 @@ void LibraryWindow::deleteCurrentLibrary()
 		comicFlow->clear();
 	}
 	saveLibraries();
+	}
 }
 
 void LibraryWindow::removeLibrary()
@@ -975,7 +981,7 @@ void LibraryWindow::toFullScreen()
 	comicFlow->hide();
 	comicFlow->setSlideSize(slideSizeF);
 	comicFlow->setCenterIndex(comicFlow->centerIndex());
-	comicView->hide();
+	comics->hide();
 	left->hide();
 	libraryToolBar->hide();
 
@@ -994,7 +1000,7 @@ void LibraryWindow::toNormal()
 	comicFlow->setSlideSize(slideSizeW);
 	comicFlow->setCenterIndex(comicFlow->centerIndex());
 	comicFlow->render();
-	comicView->show();
+	comics->show();
 	left->show();
 	fullScreenToolTip->hide();
 	libraryToolBar->show();
@@ -1038,8 +1044,10 @@ void LibraryWindow::showProperties()
 
 	//ThumbnailCreator tc(path,"");
 	//tc.create();
-	propertiesDialog->setComics(comics);
 	propertiesDialog->database = dm->getDatabase();
+	propertiesDialog->basePath = currentPath();
+	propertiesDialog->setComics(comics);
+	
 	/*propertiesDialog->setCover(tc.getCover());
 	propertiesDialog->setFilename(path.split("/").last());
 	propertiesDialog->setNumpages(tc.getNumPages());
@@ -1157,5 +1165,6 @@ void LibraryWindow::showExportComicsInfo()
 
 void LibraryWindow::showImportComicsInfo()
 {
+	importComicsInfoDialog->dest = currentPath() + "/.yacreaderlibrary/library.ydb";
 	importComicsInfoDialog->show();
 }
