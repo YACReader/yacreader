@@ -72,6 +72,7 @@ TreeModel::TreeModel( QSqlQuery &sqlquery, QObject *parent)
 	rootItem->id = ROOT;
 	rootItem->parentItem = 0;
     setupModelData(sqlquery, rootItem);
+	//sqlquery.finish();
 }
 //! [0]
 
@@ -219,6 +220,7 @@ void TreeModel::setupModelData(QString path)
 	QSqlQuery selectQuery("select * from folder where id <> 1 order by parentId,name",_database);
 
 	setupModelData(selectQuery,rootItem);
+	//selectQuery.finish();
 	_database.close();
 	endResetModel();
 
@@ -285,7 +287,10 @@ void TreeModel::setupFilteredModelData()
 		selectQuery.bindValue(":filter2", "%%"+filter+"%%");
 	}
 		selectQuery.exec();
+		
 	setupFilteredModelData(selectQuery,rootItem);
+	
+	//selectQuery.finish();
 	_database.close();
 
 	endResetModel();

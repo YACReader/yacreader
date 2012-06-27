@@ -17,7 +17,9 @@
 #include <QModelIndex>
 #include <QRegExp>
 #include <QHash>
-
+#include <QLineEdit>
+#include <QAction>
+#include <QPlainTextEdit>
 
 #include "pictureflow.h"
 
@@ -134,5 +136,34 @@ class YACReaderSortComics : public QSortFilterProxyModel
 };
 
 void delTree(QDir dir);
+
+
+class YACReaderFieldEdit : public QLineEdit
+{
+  Q_OBJECT
+	public:
+		YACReaderFieldEdit(QWidget * parent = 0);
+		void clear();
+		void setDisabled(bool disabled);
+	protected:
+		void focusInEvent(QFocusEvent* e);
+private:
+	QAction * restore;
+
+};
+
+class YACReaderFieldPlainTextEdit : public QPlainTextEdit
+{
+  Q_OBJECT
+	public:
+		YACReaderFieldPlainTextEdit(QWidget * parent = 0);
+		void clear();
+		void setDisabled(bool disabled);
+	protected:
+		void focusInEvent(QFocusEvent* e);
+private:
+	QAction * restore;
+
+};
 #endif
 

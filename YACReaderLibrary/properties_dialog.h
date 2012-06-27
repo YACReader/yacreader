@@ -3,7 +3,6 @@
 
 #include <QDialog>
 #include <QLabel>
-#include <QLineEdit>
 #include <QPushButton>
 #include <QScrollArea>
 #include <QGroupBox>
@@ -11,9 +10,9 @@
 #include <QGridLayout>
 #include <QTabWidget>
 #include <QCheckBox>
-#include <QPlainTextEdit>
 
 #include "comic.h"
+#include "custom_widgets.h"
 
 	class PropertiesDialog : public QDialog
 	{
@@ -28,41 +27,41 @@
 		QScrollArea * sa;
 
 		QWidget * generalInfoBox;
-		QLineEdit * title;
-		QLineEdit * pages;
+		YACReaderFieldEdit * title;
+		YACReaderFieldEdit * numPagesEdit;
 		QLabel * size;
 
-		QLineEdit * coverPageEdit;
+		YACReaderFieldEdit * coverPageEdit;
 
-		QLineEdit * numberEdit;
+		YACReaderFieldEdit * numberEdit;
 		QCheckBox * isBisCheck;
-		QLineEdit * countEdit;
+		YACReaderFieldEdit * countEdit;
 
-		QLineEdit * volumeEdit;
-		QLineEdit * storyArcEdit;
-		QLineEdit * arcNumberEdit;
-		QLineEdit * arcCountEdit;
+		YACReaderFieldEdit * volumeEdit;
+		YACReaderFieldEdit * storyArcEdit;
+		YACReaderFieldEdit * arcNumberEdit;
+		YACReaderFieldEdit * arcCountEdit;
 
-		QLineEdit * genereEdit;
+		YACReaderFieldEdit * genereEdit;
 
-		QPlainTextEdit * writer;
-		QPlainTextEdit * penciller;
-		QPlainTextEdit * inker;
-		QPlainTextEdit * colorist;
-		QPlainTextEdit * letterer;
-		QPlainTextEdit * coverArtist;
+		YACReaderFieldPlainTextEdit * writer;
+		YACReaderFieldPlainTextEdit * penciller;
+		YACReaderFieldPlainTextEdit * inker;
+		YACReaderFieldPlainTextEdit * colorist;
+		YACReaderFieldPlainTextEdit * letterer;
+		YACReaderFieldPlainTextEdit * coverArtist;
 
-		QLineEdit * dayEdit;
-		QLineEdit * monthEdit;
-		QLineEdit * yearEdit;
-		QLineEdit * publisherEdit;
-		QLineEdit * formatEdit;
+		YACReaderFieldEdit * dayEdit;
+		YACReaderFieldEdit * monthEdit;
+		YACReaderFieldEdit * yearEdit;
+		YACReaderFieldEdit * publisherEdit;
+		YACReaderFieldEdit * formatEdit;
 		QCheckBox * colorCheck;
-		QLineEdit * ageRatingEdit;
+		YACReaderFieldEdit * ageRatingEdit;
 
-		QPlainTextEdit * synopsis;
-		QPlainTextEdit * characters;
-		QPlainTextEdit * notes;
+		YACReaderFieldPlainTextEdit * synopsis;
+		YACReaderFieldPlainTextEdit * characters;
+		YACReaderFieldPlainTextEdit * notes;
 
 		QWidget * authorsBox;
 
@@ -74,7 +73,7 @@
 		QPushButton *closeButton;
 		QPushButton *saveButton;
 		QPushButton *restoreButton; //??
-		
+
 		void createTabBar();
 		void createCoverBox();
 		void createGeneralInfoBox();
@@ -87,10 +86,12 @@
 		void setDisableUniqueValues(bool disabled);
 
 		QList<Comic> comics;
-
+		void closeEvent ( QCloseEvent * e );
 	public:
 		PropertiesDialog(QWidget * parent = 0);
 		QSqlDatabase database;
+		QString basePath;
+
 	public slots:
 		void setComics(QList<Comic> comics);
 		void updateComics();

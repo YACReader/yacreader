@@ -163,6 +163,7 @@ void TableModel::setupModelData(unsigned long long int folderId,QSqlDatabase & d
 	//timer.restart();
 	setupModelData(selectQuery);
 	//txtS << "TABLEMODEL: Tiempo de creación del modelo: " << timer.elapsed() << "ms\r\n";
+	//selectQuery.finish();
 	db.close();
 	_database = db;
 	endResetModel();
