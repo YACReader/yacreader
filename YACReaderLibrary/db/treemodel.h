@@ -73,7 +73,7 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
 	void setupModelData(QString path);
-	QSqlDatabase & getDatabase();
+	QString getDatabase();
 
 	//Métodos de conveniencia
 	QString getFolderPath(const QModelIndex &folder);
@@ -92,7 +92,7 @@ private:
 	TreeItem *rootBeforeFilter;
 	QMap<unsigned long long int, TreeItem *> filteredItems; //relación entre folders
 
-	QSqlDatabase _database;
+	QString _databasePath;
 
 	bool includeComics;
 	QString filter;

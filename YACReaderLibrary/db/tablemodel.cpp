@@ -140,7 +140,7 @@ QStringList TableModel::getPaths(const QString & _source)
 	return paths;
 }
 
-void TableModel::setupModelData(unsigned long long int folderId,QSqlDatabase & db)
+void TableModel::setupModelData(unsigned long long int folderId,const QString & databasePath)
 {
 	//QFile f(QCoreApplication::applicationDirPath()+"/performance.txt");
 	//f.open(QIODevice::Append);
@@ -152,7 +152,9 @@ void TableModel::setupModelData(unsigned long long int folderId,QSqlDatabase & d
 
 	//QTextStream txtS(&f);
 	//txtS << "TABLEMODEL: Tiempo de borrado: " << timer.elapsed() << "ms\r\n";
-	db.open();
+	_databasePath = databasePath;
+	QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+	{
 	//crear la consulta
 	//timer.restart();
 	QSqlQuery selectQuery(db); //TODO check
@@ -164,8 +166,9 @@ void TableModel::setupModelData(unsigned long long int folderId,QSqlDatabase & d
 	setupModelData(selectQuery);
 	//txtS << "TABLEMODEL: Tiempo de creación del modelo: " << timer.elapsed() << "ms\r\n";
 	//selectQuery.finish();
+	}
 	db.close();
-	_database = db;
+	QSqlDatabase::removeDatabase(_databasePath);
 	endResetModel();
 	//f.close();
 }
@@ -215,9 +218,12 @@ void TableModel::setupModelData(QSqlQuery &sqlquery)
 Comic TableModel::getComic(const QModelIndex & mi)
 {
 	Comic c;
-	_database.open();
-	c.load(_data.at(mi.row())->data(0).toLongLong(),_database);
-	_database.close();
+
+	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+	c.load(_data.at(mi.row())->data(0).toLongLong(),db);
+	db.close();
+	QSqlDatabase::removeDatabase(_databasePath);
+
 	return c;
 }
 
@@ -225,7 +231,10 @@ Comic TableModel::_getComic(const QModelIndex & mi)
 {
 	Comic c;
 
-	c.load(_data.at(mi.row())->data(0).toLongLong(),_database);
+	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+	c.load(_data.at(mi.row())->data(0).toLongLong(),db);
+	db.close();
+	QSqlDatabase::removeDatabase(_databasePath);
 
 	return c;
 }
@@ -245,8 +254,8 @@ QVector<bool> TableModel::getReadList()
 
 QVector<bool> TableModel::setAllComicsRead(bool read)
 {
-	_database.open();
-	_database.transaction();
+	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+	db.transaction();
 	int numComics = _data.count();
 	QVector<bool> readList(numComics);
 	for(int i=0;i<numComics;i++)
@@ -255,12 +264,13 @@ QVector<bool> TableModel::setAllComicsRead(bool read)
 		readList[i] = read; 
 		_data.value(i)->data(5) = QVariant(true);
 		Comic c;
-		c.load(_data.value(i)->data(0).toLongLong(),_database);
+		c.load(_data.value(i)->data(0).toLongLong(),db);
 		c.info.read = read;
-		c.info.update(_database);
+		c.info.update(db);
 	}
-	_database.commit();
-	_database.close();
+	db.commit();
+	db.close();
+	QSqlDatabase::removeDatabase(_databasePath);
 
 	return readList;
 }
@@ -269,14 +279,15 @@ QList<Comic> TableModel::getComics(QList<QModelIndex> list)
 {
 	QList<Comic> comics;
 
-	_database.open();
-	_database.transaction();
+	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+	db.transaction();
 	QList<QModelIndex>::const_iterator itr;
 	for(itr = list.constBegin(); itr!= list.constEnd();itr++)
 	{
 		comics.append(_getComic(*itr));
 	}
-	_database.commit();
-	_database.close();
+	db.commit();
+	db.close();
+	QSqlDatabase::removeDatabase(_databasePath);
 	return comics;
 }

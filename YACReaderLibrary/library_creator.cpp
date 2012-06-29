@@ -67,6 +67,7 @@ void LibraryCreator::run()
 		create(QDir(_source));
 		_database.commit();
 		_database.close();
+		QSqlDatabase::removeDatabase(_database.connectionName());
 	}
 	else
 	{
@@ -81,6 +82,7 @@ void LibraryCreator::run()
 		update(QDir(_source));
 		_database.commit();
 		_database.close();
+		QSqlDatabase::removeDatabase(_target);
 	}
 	emit(finished());
 }

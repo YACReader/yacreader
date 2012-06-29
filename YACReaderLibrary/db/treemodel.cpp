@@ -213,17 +213,16 @@ void TreeModel::setupModelData(QString path)
 	rootItem->parentItem = 0;
 
 	//cargar la base de datos
-	if(_database.isOpen())
-		_database.close();
-	_database = DataBaseManagement::loadDatabase(path);
+	_databasePath = path;
+	QSqlDatabase db = DataBaseManagement::loadDatabase(path);
 	//crear la consulta
 	{
-	QSqlQuery selectQuery("select * from folder where id <> 1 order by parentId,name",_database);
+	QSqlQuery selectQuery("select * from folder where id <> 1 order by parentId,name",db);
 
 	setupModelData(selectQuery,rootItem);
 	}
 	//selectQuery.finish();
-	_database.close();
+	db.close();
 	QSqlDatabase::removeDatabase(path);
 	endResetModel();
 
@@ -274,10 +273,10 @@ void TreeModel::setupFilteredModelData()
 	rootItem->parentItem = 0;
 
 	//cargar la base de datos
-	if(_database.isValid())
-		_database.open();
+	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 	//crear la consulta
-	QSqlQuery selectQuery(_database); //TODO check
+	{
+	QSqlQuery selectQuery(db); //TODO check
 	if(!includeComics)
 	{
 		selectQuery.prepare("select * from folder where id <> 1 and upper(name) like upper(:filter) order by parentId,name ");
@@ -292,9 +291,10 @@ void TreeModel::setupFilteredModelData()
 		selectQuery.exec();
 		
 	setupFilteredModelData(selectQuery,rootItem);
-	
+	}
 	//selectQuery.finish();
-	_database.close();
+	db.close();
+	QSqlDatabase::removeDatabase(_databasePath);
 
 	endResetModel();
 }
@@ -374,9 +374,9 @@ void TreeModel::setupFilteredModelData(QSqlQuery &sqlquery, TreeItem *parent)
 
 
 
-QSqlDatabase & TreeModel::getDatabase()
+QString TreeModel::getDatabase()
 {
-	return _database;
+	return _databasePath;
 }
 
 QString TreeModel::getFolderPath(const QModelIndex &folder)

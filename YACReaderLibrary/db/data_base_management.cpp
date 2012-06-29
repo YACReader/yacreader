@@ -60,7 +60,7 @@ QSqlDatabase DataBaseManagement::createDatabase(QString name, QString path)
 
 QSqlDatabase DataBaseManagement::createDatabase(QString dest)
 {
-	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE",dest);
 	db.setDatabaseName(dest);
 	if (!db.open())
 		qDebug() << db.lastError();
@@ -242,77 +242,9 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 	QSqlDatabase sourceDB = loadDatabaseFromFile(source);
 	QSqlDatabase destDB = loadDatabaseFromFile(dest);
 
+	{
 	QSqlQuery pragma("PRAGMA synchronous=OFF",destDB);
 	
-	
-	//QSqlQuery attach(destDB);
-	//attach.prepare("ATTACH DATABASE '"+QDir().toNativeSeparators(dest) +"' AS dest;");
-	//attach.exec();
-	
-	//error = attach.lastError().databaseText();
-	//driver = attach.lastError().driverText();
-
-	//QMessageBox::critical(NULL,tr("db error"),error);
-	//QMessageBox::critical(NULL,tr("db error"),driver);
-
-	//QSqlQuery attach2(destDB);
-	//attach2.prepare("ATTACH DATABASE '"+QDir().toNativeSeparators(source) +"' AS source;");
-	//attach2.exec();
-	//
-	//error = attach2.lastError().databaseText();
-	//driver = attach2.lastError().driverText();
-
-	//QMessageBox::critical(NULL,tr("db error"),error);
-	//QMessageBox::critical(NULL,tr("db error"),driver);
-	//TODO check versions...
-	//QSqlQuery update(destDB);
-	//update.prepare("UPDATE dest.comic_info"
- //   "SET"
-	//"title = coalesce(title , (select source.comic_info.title from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"coverPage = coalesce(coverPage , (select source.comic_info.coverPage from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"numPages = coalesce(numPages , (select source.comic_info.numPages from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"number = coalesce(number , (select source.comic_info.number from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"isBis = coalesce(isBis , (select source.comic_info.isBis from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"count = coalesce(count , (select source.comic_info.count from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"volume = coalesce(volume , (select source.comic_info.volume from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"storyArc = coalesce(storyArc , (select source.comic_info.storyArc from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"arcNumber = coalesce(arcNumber , (select source.comic_info.arcNumber from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"arcCount = coalesce(arcCount , (select source.comic_info.arcCount from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"genere = coalesce(genere , (select source.comic_info.genere from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"writer = coalesce(writer , (select source.comic_info.writer from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"penciller = coalesce(penciller , (select source.comic_info.penciller from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"inker = coalesce(inker , (select source.comic_info.inker from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"colorist = coalesce(colorist , (select source.comic_info.colorist from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"letterer = coalesce(letterer , (select source.comic_info.letterer from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"coverArtist = coalesce(coverArtist , (select source.comic_info.coverArtist from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"date = coalesce(date , (select source.comic_info.date from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"publisher = coalesce(publisher , (select source.comic_info.publisher from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"format = coalesce(format , (select source.comic_info.format from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"color = coalesce(color , (select source.comic_info.color from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"ageRating = coalesce(ageRating , (select source.comic_info.ageRating from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"synopsis = coalesce(synopsis , (select source.comic_info.synopsis from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"characters = coalesce(characters , (select source.comic_info.characters from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"notes = coalesce(notes , (select source.comic_info.notes from source.comic_info where dest.comic_info.hash = source.comic_info.hash)),"
-	//"edited = 1"
-	//	);
-	//b = b || update.exec();
-
-	//error = update.lastError().databaseText();
-	//driver = update.lastError().driverText();
-
-	//QMessageBox::critical(NULL,tr("db error"),error);
-	//QMessageBox::critical(NULL,tr("db error"),driver);
-
-	//QSqlQuery import(destDB);
-	//import.prepare("insert or ignore into dest.comic_info (" +fields + ",edited,read) select " + fields + ",1 as edited, 0 as read from source.comic_info;");
-	////import.prepare("insert into dest.comic_info (" +fields + ",edited,read) select " + fields + ",1 as edited, 0 as read from source.comic_info where sourc.comic_info.hash not in (select dest.comic_info.hash from dest.comic_info);");
-	//b = b || import.exec();
-	//error = import.lastError().databaseText();
-	//driver = import.lastError().driverText();
-
-	//QMessageBox::critical(NULL,tr("db error"),error);
-	//QMessageBox::critical(NULL,tr("db error"),driver);
-
 	QSqlQuery update(destDB);
 	update.prepare("UPDATE comic_info SET "
 		"title = :title,"
@@ -484,9 +416,14 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 		insert.finish();
 		}
 	}
-	
-	destDB.commit();
+	}
 
+	destDB.commit();
+	destDB.close();
+	sourceDB.close();
+
+	QSqlDatabase::removeDatabase(source);
+	QSqlDatabase::removeDatabase(dest);
 	return b;
 
 }

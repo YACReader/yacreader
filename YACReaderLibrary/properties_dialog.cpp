@@ -7,6 +7,7 @@
 #include <QCheckBox>
 #include <QTabWidget>
 
+#include "data_base_management.h"
 
 PropertiesDialog::PropertiesDialog(QWidget * parent)
 :QDialog(parent)
@@ -393,16 +394,18 @@ void PropertiesDialog::setComics(QList<Comic> comics)
 
 void PropertiesDialog::updateComics()
 {
-	database.open();
-	database.transaction();
+	QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+	db.open();
+	db.transaction();
 	QList<Comic>::iterator itr;
 	for(itr = comics.begin();itr!=comics.end();itr++)
 	{
 		if(itr->info.edited)
-			itr->info.update(database);
+			itr->info.update(db);
 	}
-	database.commit();
-	database.close();
+	db.commit();
+	db.close();
+	QSqlDatabase::removeDatabase(databasePath);
 }
 //Deprecated
 void PropertiesDialog::setCover(const QPixmap & coverImage)
