@@ -95,13 +95,13 @@
 	public slots:
 		void setComics(QList<Comic> comics);
 		void updateComics();
-
+		void save();
 		//Deprecated
 		void setCover(const QPixmap & cover);
 		void setFilename(const QString & name);
 		void setNumpages(int pages);
 		void setSize(float size);
-		void save();
+
 	};
 #endif
 

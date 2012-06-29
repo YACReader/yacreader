@@ -7,7 +7,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QThread>
-#include <QTimer>
+#include <QProgressBar>
 
 	class ImportLibraryDialog : public QDialog
 	{
@@ -25,9 +25,8 @@
 		QPushButton * findDest;
 		QPushButton * accept;
 		QPushButton * cancel;
-		QLabel * progress;
+		QProgressBar *progressBar;
 		void setupUI();
-		QTimer t;
 		int progressCount;
 		void closeEvent ( QCloseEvent * e );
 	public slots:
@@ -35,7 +34,6 @@
 		void findPath();
 		void findDestination();
 		void close();
-		void updateProgress();
 		void nameEntered();
 
 	signals:
