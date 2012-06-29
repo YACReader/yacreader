@@ -17,6 +17,8 @@
 
 #include <iterator>
 
+#include "data_base_management.h"
+
 //
 
 LibraryWindow::LibraryWindow()
@@ -586,7 +588,6 @@ void LibraryWindow::loadLibrary(const QString & name)
 {
 	if(libraries.size()>0)
 	{	
-		dm->getDatabase().close();
 		QString path=libraries.value(name)+"/.yacreaderlibrary";
 		QDir d; //TODO change this by static methods (utils class?? with delTree for example) 
 		if(d.exists(path))
@@ -625,6 +626,12 @@ void LibraryWindow::loadLibrary(const QString & name)
 			foldersView->setModel(NULL);
 			comicFlow->clear();
 			disableAllActions();//TODO comprobar que se deben deshabilitar
+
+			QString currentLibrary = selectedLibrary->currentText();
+			if(QMessageBox::question(this,tr("Library not available"),tr("Library ")+currentLibrary+tr(" is no longer available. Do you want to remove it?"),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
+			{
+				deleteCurrentLibrary();
+			}
 		}
 	}
 	else
@@ -750,10 +757,11 @@ void LibraryWindow::setCurrentComicReaded()
 
 	Comic c = dmCV->getComic(comicView->currentIndex());
 	c.info.read = true;
-	QSqlDatabase db = dm->getDatabase();
+	QSqlDatabase db = DataBaseManagement::loadDatabase(dm->getDatabase());
 	db.open();
 	c.info.updateRead(db);
 	db.close();
+	QSqlDatabase::removeDatabase(dm->getDatabase());
 }
 
 void LibraryWindow::setComicsReaded()
@@ -769,10 +777,11 @@ void LibraryWindow::setCurrentComicUnreaded()
 
 	Comic c = dmCV->getComic(comicView->currentIndex());
 	c.info.read = false;
-	QSqlDatabase db = dm->getDatabase();
+	QSqlDatabase db = DataBaseManagement::loadDatabase(dm->getDatabase());
 	db.open();
 	c.info.updateRead(db);
 	db.close();
+	QSqlDatabase::removeDatabase(dm->getDatabase());
 
 }
 
@@ -881,12 +890,12 @@ void LibraryWindow::deleteLibrary()
 
 void LibraryWindow::deleteCurrentLibrary()
 {
-	QSqlDatabase db = dm->getDatabase();
-	db.commit();
-	db.close();
-	QSqlDatabase::removeDatabase(db.connectionName());
-	if(!dm->getDatabase().isOpen())
-	{
+	//QSqlDatabase db = dm->getDatabase();
+	//db.commit();
+	//db.close();
+	//QSqlDatabase::removeDatabase(db.connectionName());
+	//if(!dm->getDatabase().isOpen())
+	//{
 	QString path = libraries.value(selectedLibrary->currentText());
 	libraries.remove(selectedLibrary->currentText());
 	selectedLibrary->removeItem(selectedLibrary->currentIndex());
@@ -903,7 +912,7 @@ void LibraryWindow::deleteCurrentLibrary()
 		comicFlow->clear();
 	}
 	saveLibraries();
-	}
+	//}
 }
 
 void LibraryWindow::removeLibrary()
@@ -1046,7 +1055,7 @@ void LibraryWindow::showProperties()
 
 	//ThumbnailCreator tc(path,"");
 	//tc.create();
-	propertiesDialog->database = dm->getDatabase();
+	propertiesDialog->databasePath = dm->getDatabase();
 	propertiesDialog->basePath = currentPath();
 	propertiesDialog->setComics(comics);
 	

@@ -30,7 +30,7 @@ public:
     QModelIndex parent(const QModelIndex &index) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
-	void setupModelData(unsigned long long int parentFolder,QSqlDatabase & db);
+	void setupModelData(unsigned long long int parentFolder,const QString & databasePath);
 	
 	//Métodos de conveniencia
 	QStringList getPaths(const QString & _source);
@@ -47,7 +47,7 @@ private:
 	Comic _getComic(const QModelIndex & mi);
     QList<TableItem *> _data;
 
-	QSqlDatabase _database;
+	QString _databasePath;
 
 signals:
 	void beforeReset();

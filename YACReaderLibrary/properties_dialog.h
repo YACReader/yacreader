@@ -89,7 +89,7 @@
 		void closeEvent ( QCloseEvent * e );
 	public:
 		PropertiesDialog(QWidget * parent = 0);
-		QSqlDatabase database;
+		QString databasePath;
 		QString basePath;
 
 	public slots:
