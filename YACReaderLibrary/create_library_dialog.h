@@ -6,6 +6,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QThread>
+#include <QProgressBar>
 
 	class CreateLibraryDialog : public QDialog
 	{
@@ -15,7 +16,7 @@
 	private:
 		QLabel * nameLabel;
 		QLabel * textLabel;
-		QLabel * processLabel;
+		QProgressBar *progressBar;
 		QLabel * currentFileLabel;
 		QLineEdit * path;
 		QLineEdit * nameEdit;
@@ -41,6 +42,7 @@
 	private:
 		QLabel * message;
 		QLabel * currentFileLabel;
+		QProgressBar *progressBar;
 		QPushButton * cancel;
 		public slots:
 			void showCurrentFile(QString file);

@@ -34,10 +34,16 @@ ExportLibraryDialog::ExportLibraryDialog(QWidget * parent)
 	bottomLayout->addWidget(accept);
 	bottomLayout->addWidget(cancel);
 
+	progressBar = new QProgressBar(this);
+	progressBar->setMinimum(0);
+	progressBar->setMaximum(0);
+	progressBar->setTextVisible(false);
+	progressBar->hide();
+
 	QVBoxLayout *mainLayout = new QVBoxLayout;
 	mainLayout->addLayout(libraryLayout);
-	mainLayout->addWidget(progress=new QLabel());
 	mainLayout->addStretch();
+	mainLayout->addWidget(progressBar);
 	mainLayout->addLayout(bottomLayout);
 
 	QHBoxLayout * imgMainLayout = new QHBoxLayout;
@@ -57,6 +63,7 @@ ExportLibraryDialog::ExportLibraryDialog(QWidget * parent)
 
 void ExportLibraryDialog::exportLibrary()
 {
+	progressBar->show();
 	accept->setEnabled(false);
 	emit exportPath(QDir::cleanPath(path->text()));
 	t.start();
@@ -75,10 +82,10 @@ void ExportLibraryDialog::findPath()
 void ExportLibraryDialog::close()
 {
 	path->clear();
+	progressBar->hide();
 	accept->setEnabled(false);
 	t.stop();
 	progressCount=0;
-	progress->setText("");
 	QDialog::close();
 }
 
@@ -87,14 +94,3 @@ void ExportLibraryDialog::run()
 
 }
 
-void ExportLibraryDialog::updateProgress()
-{
-	if(progressCount == 0)
-		progress->setText(tr("Creating package ."));
-	else
-		progress->setText(progress->text()+" .");
-	progressCount++;
-	if(progressCount == 15)
-		progressCount = 0;
-	
-}

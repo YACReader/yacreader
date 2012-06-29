@@ -217,11 +217,14 @@ void TreeModel::setupModelData(QString path)
 		_database.close();
 	_database = DataBaseManagement::loadDatabase(path);
 	//crear la consulta
+	{
 	QSqlQuery selectQuery("select * from folder where id <> 1 order by parentId,name",_database);
 
 	setupModelData(selectQuery,rootItem);
+	}
 	//selectQuery.finish();
 	_database.close();
+	QSqlDatabase::removeDatabase(path);
 	endResetModel();
 
 }

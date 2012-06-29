@@ -66,12 +66,19 @@ void ImportLibraryDialog::setupUI()
 	bottomLayout->addWidget(accept);
 	bottomLayout->addWidget(cancel);
 
+	progressBar = new QProgressBar(this);
+	progressBar->setMinimum(0);
+	progressBar->setMaximum(0);
+	progressBar->setTextVisible(false);
+	progressBar->hide();
+
 	QVBoxLayout *mainLayout = new QVBoxLayout;
 	mainLayout->addLayout(nameLayout);
 	mainLayout->addLayout(libraryLayout);
 	mainLayout->addLayout(destLayout);
-	mainLayout->addWidget(progress = new QLabel());
+	//mainLayout->addWidget(progress = new QLabel());
 	mainLayout->addStretch();
+	mainLayout->addWidget(progressBar);
 	mainLayout->addLayout(bottomLayout);
 
 	QHBoxLayout * imgMainLayout = new QHBoxLayout;
@@ -85,16 +92,12 @@ void ImportLibraryDialog::setupUI()
 
 	setModal(true);
 	setWindowTitle(tr("Extract a catalog"));
-
-	t.setInterval(500);
-	t.stop();
-	connect(&t,SIGNAL(timeout()),this,SLOT(updateProgress()));
 }
 
 void ImportLibraryDialog::add()
 {
 	accept->setEnabled(false);
-	t.start();
+	progressBar->show();
 	emit(unpackCLC(QDir::cleanPath(path->text()),QDir::cleanPath(destPath->text()),nameEdit->text()));
 }
 
@@ -138,24 +141,8 @@ void ImportLibraryDialog::close()
 	destPath->clear();
 	nameEdit->clear();
 	accept->setEnabled(false);
-	if(t.isActive())
-	{
-	    t.stop();
-	    emit rejected();
-	}
-	progress->setText("");
+	progressBar->hide();
 	QDialog::hide();
-}
-
-void ImportLibraryDialog::updateProgress()
-{
-    if(progressCount == 0)
-	    progress->setText(tr("Importing package ."));
-    else
-	    progress->setText(progress->text()+" .");
-    progressCount++;
-    if(progressCount == 15)
-	    progressCount = 0;
 }
 
 void ImportLibraryDialog::closeEvent ( QCloseEvent * e )

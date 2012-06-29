@@ -881,8 +881,10 @@ void LibraryWindow::deleteLibrary()
 
 void LibraryWindow::deleteCurrentLibrary()
 {
-
-	dm->getDatabase().close();
+	QSqlDatabase db = dm->getDatabase();
+	db.commit();
+	db.close();
+	QSqlDatabase::removeDatabase(db.connectionName());
 	if(!dm->getDatabase().isOpen())
 	{
 	QString path = libraries.value(selectedLibrary->currentText());

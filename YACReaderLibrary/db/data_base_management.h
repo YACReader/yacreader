@@ -34,12 +34,13 @@ private:
 	QList<QString> dataBasesList;
 public:
 	DataBaseManagement();
-	TreeModel * newTreeModel(QString path);
+	//TreeModel * newTreeModel(QString path);
 	//crea una base de datos y todas sus tablas
 	static QSqlDatabase createDatabase(QString name, QString path);
 	static QSqlDatabase createDatabase(QString dest);
 	//carga una base de datos desde la ruta path
 	static QSqlDatabase loadDatabase(QString path);
+	static QSqlDatabase loadDatabaseFromFile(QString path);
 	static bool createTables(QSqlDatabase & database);
 
 	static void exportComicsInfo(QString source, QString dest);

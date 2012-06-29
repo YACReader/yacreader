@@ -47,9 +47,13 @@ void CreateLibraryDialog::setupUI()
 
 	QHBoxLayout *middleLayout = new QHBoxLayout;
 
-	processLabel = new QLabel("Procesing : ");
+	progressBar = new QProgressBar(this);
+	progressBar->setMinimum(0);
+	progressBar->setMaximum(0);
+	progressBar->setTextVisible(false);
+	progressBar->hide();
+
 	currentFileLabel = new QLabel("");
-	middleLayout->addWidget(processLabel);
 	middleLayout->addWidget(currentFileLabel);
 	middleLayout->addStretch();
 
@@ -63,6 +67,7 @@ void CreateLibraryDialog::setupUI()
 	mainLayout->addLayout(libraryLayout);
 	mainLayout->addLayout(middleLayout);
 	mainLayout->addStretch();
+	mainLayout->addWidget(progressBar);
 	mainLayout->addLayout(bottomLayout);
 
 	QHBoxLayout * imgMainLayout = new QHBoxLayout;
@@ -80,6 +85,7 @@ void CreateLibraryDialog::setupUI()
 
 void CreateLibraryDialog::create()
 {
+	progressBar->show();
 	accept->setEnabled(false);
 	emit(createLibrary(QDir::cleanPath(path->text()),QDir::cleanPath(path->text())+"/.yacreaderlibrary",nameEdit->text()));
 }
@@ -102,6 +108,7 @@ void CreateLibraryDialog::showCurrentFile(QString file)
 }
 void CreateLibraryDialog::close()
 {
+	progressBar->hide();
 	path->clear();
 	nameEdit->clear();
 	currentFileLabel->setText("");
@@ -126,6 +133,13 @@ UpdateLibraryDialog::UpdateLibraryDialog(QWidget * parent)
 	connect(cancel,SIGNAL(clicked()),this,SLOT(close()));
 	
 	mainLayout->addStretch();
+	
+	progressBar = new QProgressBar(this);
+	progressBar->setMinimum(0);
+	progressBar->setMaximum(0);
+	progressBar->setTextVisible(false);
+
+	mainLayout->addWidget(progressBar);
 	mainLayout->addLayout(bottom);
 
 	QHBoxLayout * imgMainLayout = new QHBoxLayout;

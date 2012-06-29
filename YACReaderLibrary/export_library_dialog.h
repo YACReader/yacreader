@@ -8,6 +8,7 @@
 #include <QString>
 #include <QThread>
 #include <QTimer>
+#include <QProgressBar>
 
 class ExportLibraryDialog : public QDialog 
 {
@@ -18,10 +19,9 @@ public slots:
 		void exportLibrary();
 		void findPath();
 		void close();
-		void updateProgress();
 private:
 		int progressCount;
-		QLabel * progress;
+		QProgressBar *progressBar;
 		QLabel * textLabel;
 		QLineEdit * path;
 		QPushButton * find;
