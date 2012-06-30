@@ -550,6 +550,9 @@ void LibraryWindow::createConnections()
 	connect(exportComicsInfo,SIGNAL(triggered()),this,SLOT(showExportComicsInfo()));
 	connect(importComicsInfo,SIGNAL(triggered()),this,SLOT(showImportComicsInfo()));
 
+	//properties
+	connect(propertiesDialog,SIGNAL(accepted()),this,SLOT(reloadCovers()));
+
 	connect(updateLibraryAction,SIGNAL(triggered()),this,SLOT(updateLibrary()));
 	connect(renameLibraryAction,SIGNAL(triggered()),this,SLOT(renameLibrary()));
 	connect(deleteLibraryAction,SIGNAL(triggered()),this,SLOT(deleteLibrary()));
@@ -642,7 +645,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 
 void LibraryWindow::loadCovers(const QModelIndex & mi)
 {
-
+	_rootIndexCV = mi;
 	unsigned long long int folderId = 1;
 	if(mi.isValid())
 	{
@@ -670,11 +673,12 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 	//comicView->setModel(NULL);
 	dmCV->setupModelData(folderId,dm->getDatabase());
 	comicView->setModel(dmCV);
-	//TODO automatizar (valorar si se deja al modelo)
-	comicView->horizontalHeader()->hideSection(1);
+
 	comicView->horizontalHeader()->hideSection(4);
-	comicView->horizontalHeader()->hideSection(3);
-	//TODO
+	comicView->horizontalHeader()->hideSection(5);
+	comicView->horizontalHeader()->hideSection(6);
+	comicView->horizontalHeader()->hideSection(7);
+	comicView->horizontalHeader()->hideSection(8);
 
 	QStringList paths = dmCV->getPaths(currentPath());
 	comicFlow->setImagePaths(paths);
@@ -707,6 +711,11 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 	}
 	if(paths.size()>0)
 		comicView->setCurrentIndex(dmCV->index(0,0));
+}
+
+void LibraryWindow::reloadCovers()
+{
+	loadCovers(_rootIndexCV);
 }
 
 void LibraryWindow::centerComicFlow(const QModelIndex & mi)

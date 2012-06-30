@@ -7,6 +7,17 @@
 #include "data_base_management.h"
 #include "qnaturalsorting.h"
 
+//ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read
+#define NUMBER 0
+#define TITLE 1
+#define FILE_NAME 2
+#define NUM_PAGES 3
+#define ID 4
+#define PARENT_ID 5
+#define PATH 6
+#define HASH 7
+#define READ 8
+
 TableModel::TableModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
@@ -77,13 +88,13 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation,
 		switch(section)//TODO obtener esto de la query
 		{
 		case 0:
-			return QVariant(QString("Id"));
+			return QVariant(QString("#"));
 		case 1:
-			return QVariant(QString("ParentId"));
+			return QVariant(QString(tr("Title")));
 		case 2:
-			return QVariant(QString("File Name"));
+			return QVariant(QString(tr("File Name")));
 		case 3:
-			return QVariant(QString("Path"));
+			return QVariant(QString(tr("Pages")));
 		}
 	}
 
@@ -133,8 +144,8 @@ QStringList TableModel::getPaths(const QString & _source)
 	QList<TableItem *>::ConstIterator itr;
 	for(itr = _data.constBegin();itr != _data.constEnd();itr++)
 	{
-		QString path = (*itr)->data(4).toString();
-		paths << source+ path +".jpg";
+		QString hash = (*itr)->data(HASH).toString();
+		paths << source+ hash +".jpg";
 	}
 
 	return paths;
@@ -158,7 +169,7 @@ void TableModel::setupModelData(unsigned long long int folderId,const QString & 
 	//crear la consulta
 	//timer.restart();
 	QSqlQuery selectQuery(db); //TODO check
-	selectQuery.prepare("select c.id,c.parentId,c.fileName,c.path,ci.hash,ci.read from comic c inner join comic_info ci on (c.comicInfoId = ci.id) where c.parentId = :parentId");
+	selectQuery.prepare("select ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read from comic c inner join comic_info ci on (c.comicInfoId = ci.id) where c.parentId = :parentId");
 	selectQuery.bindValue(":parentId", folderId);
 	selectQuery.exec();
 	//txtS << "TABLEMODEL: Tiempo de consulta: " << timer.elapsed() << "ms\r\n";
@@ -176,7 +187,7 @@ void TableModel::setupModelData(unsigned long long int folderId,const QString & 
 QString TableModel::getComicPath(QModelIndex mi)
 {
 	if(mi.isValid())
-		return _data.at(mi.row())->data(3).toString();
+		return _data.at(mi.row())->data(6).toString();
 	return "";
 }
 void TableModel::setupModelData(QSqlQuery &sqlquery)
@@ -196,15 +207,15 @@ void TableModel::setupModelData(QSqlQuery &sqlquery)
 		else
 		{
 			TableItem * last = _data.back();
-			QString nameLast = last->data(2).toString(); //TODO usar info name si está disponible, sino el nombre del fichero.....
-			QString nameCurrent = currentItem->data(2).toString();
+			QString nameLast = last->data(FILE_NAME).toString(); //TODO usar info name si está disponible, sino el nombre del fichero.....
+			QString nameCurrent = currentItem->data(FILE_NAME).toString();
 			QList<TableItem *>::iterator i;
 			i = _data.end();
 			i--;
 			while ((lessThan = naturalSortLessThanCI(nameCurrent,nameLast)) && i != _data.begin())
 			{
 				i--;
-				nameLast = (*i)->data(2).toString();
+				nameLast = (*i)->data(FILE_NAME).toString();
 			}
 			if(!lessThan) //si se ha encontrado un elemento menor que current, se inserta justo después
 				_data.insert(++i,currentItem);
@@ -220,7 +231,7 @@ Comic TableModel::getComic(const QModelIndex & mi)
 	Comic c;
 
 	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-	c.load(_data.at(mi.row())->data(0).toLongLong(),db);
+	c.load(_data.at(mi.row())->data(ID).toLongLong(),db);
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
 
@@ -232,7 +243,7 @@ Comic TableModel::_getComic(const QModelIndex & mi)
 	Comic c;
 
 	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-	c.load(_data.at(mi.row())->data(0).toLongLong(),db);
+	c.load(_data.at(mi.row())->data(ID).toLongLong(),db);
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
 
@@ -247,7 +258,7 @@ QVector<bool> TableModel::getReadList()
 	for(int i=0;i<numComics;i++)
 	{
 		//TODO reemplazar el acceso a las columnas con enteros por defines
-		readList[i] = _data.value(i)->data(5).toBool();
+		readList[i] = _data.value(i)->data(READ).toBool();
 	}
 	return readList;
 }
@@ -262,9 +273,9 @@ QVector<bool> TableModel::setAllComicsRead(bool read)
 	{
 		//TODO reemplazar el acceso a las columnas con enteros por defines
 		readList[i] = read; 
-		_data.value(i)->data(5) = QVariant(true);
+		_data.value(i)->data(READ) = QVariant(true);
 		Comic c;
-		c.load(_data.value(i)->data(0).toLongLong(),db);
+		c.load(_data.value(i)->data(ID).toLongLong(),db);
 		c.info.read = read;
 		c.info.update(db);
 	}

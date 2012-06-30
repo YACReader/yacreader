@@ -155,6 +155,7 @@ public:
 	public slots:
 		void loadLibrary(const QString & path);
 		void loadCovers(const QModelIndex & mi);
+		void reloadCovers();
 		void centerComicFlow(const QModelIndex & mi);
 		void updateComicView(int i);
 		void openComic();
