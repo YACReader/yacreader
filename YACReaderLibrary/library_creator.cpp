@@ -123,7 +123,7 @@ qulonglong LibraryCreator::insertFolders()
     query.bindValue(":name", folder.name);
 	query.bindValue(":path", folder.path);
 	query.exec();
-	return query.lastInsertId().toLongLong();
+	return query.lastInsertId().toULongLong();
 }*/
 
 /*qulonglong LibraryCreator::insertComic(const Comic & comic)
@@ -134,7 +134,7 @@ qulonglong LibraryCreator::insertFolders()
 		"VALUES (:hash)");
 	comicInfoInsert.bindValue(":hash", comic.hash);
 	 comicInfoInsert.exec();
-	 qulonglong comicInfoId =comicInfoInsert.lastInsertId().toLongLong();
+	 qulonglong comicInfoId =comicInfoInsert.lastInsertId().toULongLong();
 
 	QSqlQuery query(_database);
 	query.prepare("INSERT INTO comic (parentId, comicInfoId, fileName, path) "
@@ -144,7 +144,7 @@ qulonglong LibraryCreator::insertFolders()
     query.bindValue(":name", comic.name);
 	query.bindValue(":path", comic.path);
 	query.exec();
-	return query.lastInsertId().toLongLong();
+	return query.lastInsertId().toULongLong();
 }*/
 
 void LibraryCreator::create(QDir dir)
@@ -190,13 +190,17 @@ void LibraryCreator::insertComic(const QString & relativePath,const QFileInfo & 
 	//hash Sha1 del primer 0.5MB + filesize
 	QString hash = QString(crypto.result().toHex().constData()) + QString::number(fileInfo.size());
 	Comic comic(_currentPathFolders.last().id,fileInfo.fileName(),relativePath,hash,_database);
-	comic.insert(_database);
+	int numPages;
+	
 	if(!comic.hasCover())
 	{
 		ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+hash+".jpg");
 		//ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+fileInfo.fileName()+".jpg");
 		tc.create();
+		numPages = tc.getNumPages();
 	}
+	comic.info.setNumPages(numPages);
+	comic.insert(_database);
 }
 
 void LibraryCreator::update(QDir dirS)

@@ -131,9 +131,12 @@ private:
 	QString comicsPath;
 
 	QString _lastAdded;
+	QString _sourceLastAdded;
 
 	QModelIndex _rootIndex;
 	QModelIndex _rootIndexCV;
+
+	quint64 _comicIdEdited;
 
 	void setupUI();
 	void createActions();

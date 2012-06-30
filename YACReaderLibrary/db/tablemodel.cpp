@@ -187,7 +187,7 @@ void TableModel::setupModelData(unsigned long long int folderId,const QString & 
 QString TableModel::getComicPath(QModelIndex mi)
 {
 	if(mi.isValid())
-		return _data.at(mi.row())->data(6).toString();
+		return _data.at(mi.row())->data(PATH).toString();
 	return "";
 }
 void TableModel::setupModelData(QSqlQuery &sqlquery)
@@ -231,7 +231,7 @@ Comic TableModel::getComic(const QModelIndex & mi)
 	Comic c;
 
 	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-	c.load(_data.at(mi.row())->data(ID).toLongLong(),db);
+	c.load(_data.at(mi.row())->data(ID).toULongLong(),db);
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
 
@@ -243,7 +243,7 @@ Comic TableModel::_getComic(const QModelIndex & mi)
 	Comic c;
 
 	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-	c.load(_data.at(mi.row())->data(ID).toLongLong(),db);
+	c.load(_data.at(mi.row())->data(ID).toULongLong(),db);
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
 
@@ -275,7 +275,7 @@ QVector<bool> TableModel::setAllComicsRead(bool read)
 		readList[i] = read; 
 		_data.value(i)->data(READ) = QVariant(true);
 		Comic c;
-		c.load(_data.value(i)->data(ID).toLongLong(),db);
+		c.load(_data.value(i)->data(ID).toULongLong(),db);
 		c.info.read = read;
 		c.info.update(db);
 	}
@@ -301,4 +301,18 @@ QList<Comic> TableModel::getComics(QList<QModelIndex> list)
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
 	return comics;
+}
+
+QModelIndex TableModel::getIndexFromId(quint64 id)
+{
+	QList<TableItem *>::ConstIterator itr;
+	int i=0;
+	for(itr = _data.constBegin();itr != _data.constEnd();itr++)
+	{
+		if((*itr)->data(ID).toULongLong() == id)
+			break;
+		i++;
+	}
+
+	return index(i,0);
 }

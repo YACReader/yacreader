@@ -20,6 +20,7 @@
 #include <QLineEdit>
 #include <QAction>
 #include <QPlainTextEdit>
+#include <QTableView>
 
 #include "pictureflow.h"
 
@@ -165,5 +166,22 @@ private:
 	QAction * restore;
 
 };
+
+
+//class YACReaderTableView : public QTableView
+//{
+//    Q_OBJECT
+//public:
+//    YACReaderTableView(QWidget *parent = 0)
+//    :  QTableView(parent)  {}
+//
+//protected:
+//    bool viewportEvent ( QEvent * event )
+//    {
+//        resizeColumnsToContents();
+//        return QTableView::viewportEvent(event);
+//    }
+//};
+
 #endif
 
