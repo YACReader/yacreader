@@ -13,7 +13,7 @@ qulonglong Folder::insert(QSqlDatabase & db)
     query.bindValue(":name", name);
 	query.bindValue(":path", path);
 	query.exec();
-	return query.lastInsertId().toLongLong();
+	return query.lastInsertId().toULongLong();
 }
 
 QList<LibraryItem *> Folder::getFoldersFromParent(qulonglong parentId, QSqlDatabase & db)
@@ -33,7 +33,7 @@ QList<LibraryItem *> Folder::getFoldersFromParent(qulonglong parentId, QSqlDatab
 		for(int i=0;i<record.count();i++)
 			data << record.value(i);
 		//TODO sort by sort indicator and name
-		currentItem = new Folder(record.value("id").toLongLong(),record.value("parentId").toLongLong(),record.value("name").toString(),record.value("path").toString());
+		currentItem = new Folder(record.value("id").toULongLong(),record.value("parentId").toULongLong(),record.value("name").toString(),record.value("path").toString());
 		int lessThan = 0;
 		if(list.isEmpty())
 			list.append(currentItem);

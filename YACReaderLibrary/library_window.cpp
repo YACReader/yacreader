@@ -91,14 +91,18 @@ void LibraryWindow::doLayout()
 	//comicView->setItemDelegate(new YACReaderComicViewDelegate());
 	comicView->setContextMenuPolicy(Qt::ActionsContextMenu);
 	comicView->setShowGrid(false);
-	comicView->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+	//comicView->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 	comicView->horizontalHeader()->setStretchLastSection(true);
 	comicView->horizontalHeader()->setClickable(false);
 	//comicView->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 	comicView->verticalHeader()->setDefaultSectionSize(24);
 	comicView->verticalHeader()->setClickable(false); //TODO comportamiento anómalo
 	comicView->setCornerButtonEnabled(false);
-	comicView->setStyleSheet("QTableView {selection-background-color: #d7d7c7; selection-color: #000000;}");
+	comicView->setStyleSheet("QTableView {selection-background-color: #d7d7c7; selection-color: #000000;}\n QTableView QTableView::item{"
+"border-right-style:solid;"
+"border-width:1;"
+"border-color: #9B9B9B;"
+"}");
 //	comicView->verticalHeader()->setStyleSheet("QHeaderView::section"
 //"{"
 //    "background-color: white /* steelblue      */"
@@ -673,12 +677,17 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 	//comicView->setModel(NULL);
 	dmCV->setupModelData(folderId,dm->getDatabase());
 	comicView->setModel(dmCV);
-
+	comicView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 	comicView->horizontalHeader()->hideSection(4);
 	comicView->horizontalHeader()->hideSection(5);
 	comicView->horizontalHeader()->hideSection(6);
 	comicView->horizontalHeader()->hideSection(7);
 	comicView->horizontalHeader()->hideSection(8);
+
+	//debido a un bug, qt4 no es capaz de ajustar el ancho teniendo en cuenta todas la filas (no sólo las visibles)
+	//así que se ecala la primera vez y después se deja el control al usuario.
+	comicView->resizeColumnsToContents();
+	comicView->horizontalHeader()->setStretchLastSection(true);
 
 	QStringList paths = dmCV->getPaths(currentPath());
 	comicFlow->setImagePaths(paths);
@@ -716,6 +725,11 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 void LibraryWindow::reloadCovers()
 {
 	loadCovers(_rootIndexCV);
+
+	QModelIndex mi = dmCV->getIndexFromId(_comicIdEdited);
+	comicView->setCurrentIndex(mi);
+	//centerComicFlow(mi);
+	comicFlow->setCenterIndex(mi.row());
 }
 
 void LibraryWindow::centerComicFlow(const QModelIndex & mi)
@@ -807,18 +821,27 @@ void LibraryWindow::createLibrary()
 
 void LibraryWindow::create(QString source, QString dest, QString name)
 {
-	_lastAdded = name;
-	libraries.insert(name,source);
-	selectedLibrary->addItem(name,source);
 	libraryCreator->createLibrary(source,dest);
 	libraryCreator->start();
-	saveLibraries();
+	_lastAdded = name;
+	_sourceLastAdded = source;
+
 }
 
 void LibraryWindow::openLastCreated()
 {
-	loadLibrary(_lastAdded);
+	
+	selectedLibrary->disconnect();
+
 	selectedLibrary->setCurrentIndex(selectedLibrary->findText(_lastAdded));
+	libraries.insert(_lastAdded,_sourceLastAdded);
+	selectedLibrary->addItem(_lastAdded,_sourceLastAdded);
+	selectedLibrary->setCurrentIndex(selectedLibrary->findText(_lastAdded));
+	saveLibraries();
+
+	connect(selectedLibrary,SIGNAL(currentIndexChanged(QString)),this,SLOT(loadLibrary(QString)));
+	
+	loadLibrary(_lastAdded);
 }
 
 void LibraryWindow::showAddLibrary()
@@ -829,10 +852,8 @@ void LibraryWindow::showAddLibrary()
 void LibraryWindow::openLibrary(QString path, QString name)
 {	
 	_lastAdded = name;
-	libraries.insert(name,path);
-	selectedLibrary->addItem(name,path);
+	_sourceLastAdded = path;
 	openLastCreated();
-	saveLibraries();
 }
 
 void LibraryWindow::loadLibraries()
@@ -1052,12 +1073,14 @@ void LibraryWindow::setFoldersFilter(QString filter)
 		}
 	}
 }
-
+#include "tableitem.h"
 void LibraryWindow::showProperties()
 {
 	QModelIndexList indexList = comicView->selectionModel()->selectedRows();
 
 	QList<Comic> comics = dmCV->getComics(indexList);
+	Comic c = comics[0];
+	_comicIdEdited = c.id;//static_cast<TableItem*>(indexList[0].internalPointer())->data(4).toULongLong();
 
 	//QModelIndex mi = comicView->currentIndex();
 	//QString path = QDir::cleanPath(currentPath()+dmCV->getComicPath(mi));

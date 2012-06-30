@@ -45,8 +45,8 @@ QList<LibraryItem *> Comic::getComicsFromParent(qulonglong parentId, QSqlDatabas
 			data << record.value(i);
 		//TODO sort by sort indicator and name
 		currentItem = new Comic();
-		currentItem->id = record.value("id").toLongLong();
-		currentItem->parentId = record.value(1).toLongLong();
+		currentItem->id = record.value("id").toULongLong();
+		currentItem->parentId = record.value(1).toULongLong();
 		currentItem->name = record.value(2).toString();
 		currentItem->path = record.value(3).toString();
 		currentItem->info.load(record.value(4).toString(),db);
@@ -77,19 +77,19 @@ QList<LibraryItem *> Comic::getComicsFromParent(qulonglong parentId, QSqlDatabas
 	return list;
 }
 
-bool Comic::load(qulonglong id, QSqlDatabase & db)
+bool Comic::load(qulonglong idc, QSqlDatabase & db)
 {
 
 	QSqlQuery selectQuery(db); //TODO check
 	selectQuery.prepare("select c.id,c.parentId,c.fileName,c.path,ci.hash from comic c inner join comic_info ci on (c.comicInfoId = ci.id) where c.id = :id");
-	selectQuery.bindValue(":id", id);
+	selectQuery.bindValue(":id", idc);
 	selectQuery.exec();
-
+	this->id = idc;
 	if(selectQuery.next())
 	{
 		QSqlRecord record = selectQuery.record();
-		id = record.value("id").toLongLong();
-		parentId = record.value("parentId").toLongLong();
+		//id = record.value("id").toULongLong();
+		parentId = record.value("parentId").toULongLong();
 		name = record.value("name").toString();
 		info.load(record.value("hash").toString(),db);
 		return true;
@@ -107,11 +107,12 @@ qulonglong Comic::insert(QSqlDatabase & db)
 	if(!info.existOnDb)
 	{
 		QSqlQuery comicInfoInsert(db);
-		comicInfoInsert.prepare("INSERT INTO comic_info (hash) "
-			"VALUES (:hash)");
+		comicInfoInsert.prepare("INSERT INTO comic_info (hash,numPages) "
+			"VALUES (:hash,:numPages)");
 		comicInfoInsert.bindValue(":hash", info.hash);
+		comicInfoInsert.bindValue(":numPages", *info.numPages);
 		comicInfoInsert.exec();
-		info.id =comicInfoInsert.lastInsertId().toLongLong();
+		info.id =comicInfoInsert.lastInsertId().toULongLong();
 		_hasCover = false;
 	}
 	else
@@ -125,7 +126,7 @@ qulonglong Comic::insert(QSqlDatabase & db)
     query.bindValue(":name", name);
 	query.bindValue(":path", path);
 	query.exec();
-	return query.lastInsertId().toLongLong();
+	return query.lastInsertId().toULongLong();
 }
 
 void Comic::update(QSqlDatabase & db)
@@ -376,7 +377,7 @@ bool ComicInfo::load(QString hash, QSqlDatabase & db)
 	QSqlRecord record = findComicInfo.record();
 
 	hash = hash;
-	id = record.value("id").toLongLong();
+	id = record.value("id").toULongLong();
 	read = record.value("read").toBool();
 	edited = record.value("edited").toBool();
 
