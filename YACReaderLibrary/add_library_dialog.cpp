@@ -3,7 +3,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QFileDialog>
-
+#include <QGridLayout>
 
 
 AddLibraryDialog::AddLibraryDialog(QWidget * parent)
@@ -32,18 +32,15 @@ void AddLibraryDialog::setupUI()
 	find = new QPushButton(QIcon(":/images/comicFolder.png"),"");
 	connect(find,SIGNAL(clicked()),this,SLOT(findPath()));
 
-	QHBoxLayout *nameLayout = new QHBoxLayout;
+	QGridLayout * content = new QGridLayout;
 
-	nameLayout->addWidget(nameLabel);
-	nameLayout->addWidget(nameEdit);
+	content->addWidget(nameLabel,0,0);
+	content->addWidget(nameEdit,0,1);
 
-	QHBoxLayout *libraryLayout = new QHBoxLayout;
-
-	libraryLayout->addWidget(textLabel);
-	libraryLayout->addWidget(path);
-	libraryLayout->addWidget(find);
-	libraryLayout->setStretchFactor(find,0); //TODO
-
+	content->addWidget(textLabel,1,0);
+	content->addWidget(path,1,1);
+	content->addWidget(find,1,2);
+	content->setColumnStretch(2,0);
 
 	QHBoxLayout *bottomLayout = new QHBoxLayout;
 	bottomLayout->addStretch();
@@ -51,8 +48,7 @@ void AddLibraryDialog::setupUI()
 	bottomLayout->addWidget(cancel);
 
 	QVBoxLayout *mainLayout = new QVBoxLayout;
-	mainLayout->addLayout(nameLayout);
-	mainLayout->addLayout(libraryLayout);
+	mainLayout->addLayout(content);
 	mainLayout->addStretch();
 	mainLayout->addLayout(bottomLayout);
 

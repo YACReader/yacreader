@@ -3,7 +3,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QFileDialog>
-
+#include <QGridLayout>
 
 
 ImportLibraryDialog::ImportLibraryDialog(QWidget * parent)
@@ -41,25 +41,20 @@ void ImportLibraryDialog::setupUI()
 	findDest = new QPushButton(QIcon(":/images/open.png"),"");
 	connect(findDest,SIGNAL(clicked()),this,SLOT(findDestination()));
 
-	QHBoxLayout *nameLayout = new QHBoxLayout;
+	QGridLayout * content = new QGridLayout;
 
-	nameLayout->addWidget(nameLabel);
-	nameLayout->addWidget(nameEdit);
+	content->addWidget(nameLabel,0,0);
+	content->addWidget(nameEdit,0,1);
 
-	QHBoxLayout *libraryLayout = new QHBoxLayout;
+	content->addWidget(textLabel,1,0);
+	content->addWidget(path,1,1);
+	content->addWidget(find,1,2);
+	content->setColumnStretch(2,0); //TODO
 
-	libraryLayout->addWidget(textLabel);
-	libraryLayout->addWidget(path);
-	libraryLayout->addWidget(find);
-	libraryLayout->setStretchFactor(find,0); //TODO
-
-	QHBoxLayout *destLayout = new QHBoxLayout;
-
-	destLayout->addWidget(destLabel);
-	destLayout->addWidget(destPath);
-	destLayout->addWidget(findDest);
-	destLayout->setStretchFactor(findDest,0); //TODO
-
+	content->addWidget(destLabel,2,0);
+	content->addWidget(destPath,2,1);
+	content->addWidget(findDest,2,2);
+	//destLayout->setStretchFactor(findDest,0); //TODO
 
 	QHBoxLayout *bottomLayout = new QHBoxLayout;
 	bottomLayout->addStretch();
@@ -73,9 +68,7 @@ void ImportLibraryDialog::setupUI()
 	progressBar->hide();
 
 	QVBoxLayout *mainLayout = new QVBoxLayout;
-	mainLayout->addLayout(nameLayout);
-	mainLayout->addLayout(libraryLayout);
-	mainLayout->addLayout(destLayout);
+	mainLayout->addLayout(content);
 	//mainLayout->addWidget(progress = new QLabel());
 	mainLayout->addStretch();
 	mainLayout->addWidget(progressBar);
