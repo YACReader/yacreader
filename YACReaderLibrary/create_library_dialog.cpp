@@ -3,7 +3,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QFileDialog>
-
+#include <QSizePolicy>
 
 
 CreateLibraryDialog::CreateLibraryDialog(QWidget * parent)
@@ -33,17 +33,19 @@ void CreateLibraryDialog::setupUI()
 	find = new QPushButton(QIcon(":/images/comicFolder.png"),"");
 	connect(find,SIGNAL(clicked()),this,SLOT(findPath()));
 
-	QHBoxLayout *nameLayout = new QHBoxLayout;
+	QGridLayout * content = new QGridLayout;
 
-	nameLayout->addWidget(nameLabel);
-	nameLayout->addWidget(nameEdit);
+	//QHBoxLayout *nameLayout = new QHBoxLayout;
 
-	QHBoxLayout *libraryLayout = new QHBoxLayout;
+	content->addWidget(nameLabel,0,0);
+	content->addWidget(nameEdit,0,1);
 
-	libraryLayout->addWidget(textLabel);
-	libraryLayout->addWidget(path);
-	libraryLayout->addWidget(find);
-	libraryLayout->setStretchFactor(find,0); //TODO
+	//QHBoxLayout *libraryLayout = new QHBoxLayout;
+
+	content->addWidget(textLabel,1,0);
+	content->addWidget(path,1,1);
+	content->addWidget(find,1,2);
+	content->setColumnMinimumWidth(2,0); //TODO
 
 	QHBoxLayout *middleLayout = new QHBoxLayout;
 
@@ -54,17 +56,23 @@ void CreateLibraryDialog::setupUI()
 	progressBar->hide();
 
 	currentFileLabel = new QLabel("");
+	currentFileLabel->setWordWrap(true);
 	middleLayout->addWidget(currentFileLabel);
 	middleLayout->addStretch();
+	middleLayout->setSizeConstraint(QLayout::SetMaximumSize);
+
 
 	QHBoxLayout *bottomLayout = new QHBoxLayout;
+	bottomLayout->addWidget(message = new QLabel(tr("Create a library could take several minutes. You can stop the process and update the library later for completing the task.")));
+	message->setWordWrap(true);
+	//message->hide();
 	bottomLayout->addStretch();
 	bottomLayout->addWidget(accept);
 	bottomLayout->addWidget(cancel);
 
 	QVBoxLayout *mainLayout = new QVBoxLayout;
-	mainLayout->addLayout(nameLayout);
-	mainLayout->addLayout(libraryLayout);
+	mainLayout->addLayout(content);
+
 	mainLayout->addLayout(middleLayout);
 	mainLayout->addStretch();
 	mainLayout->addWidget(progressBar);
@@ -86,6 +94,9 @@ void CreateLibraryDialog::setupUI()
 void CreateLibraryDialog::create()
 {
 	progressBar->show();
+	message->show();
+	currentFileLabel->setText("Importing : \n\n\n\n\n");
+	this->adjustSize();
 	accept->setEnabled(false);
 	emit(createLibrary(QDir::cleanPath(path->text()),QDir::cleanPath(path->text())+"/.yacreaderlibrary",nameEdit->text()));
 }
@@ -102,9 +113,10 @@ void CreateLibraryDialog::findPath()
 
 void CreateLibraryDialog::showCurrentFile(QString file)
 {
-	currentFileLabel->setText(file);
+	currentFileLabel->setText(tr("Importing : \n") + file);
 	currentFileLabel->update();
-	this->update();
+	//this->adjustSize();
+	//is->update();
 }
 void CreateLibraryDialog::close()
 {
@@ -112,6 +124,7 @@ void CreateLibraryDialog::close()
 	path->clear();
 	nameEdit->clear();
 	currentFileLabel->setText("");
+	this->adjustSize();
 	accept->setEnabled(true);
 	QDialog::close();
 }
@@ -123,7 +136,8 @@ UpdateLibraryDialog::UpdateLibraryDialog(QWidget * parent)
 {
 	QVBoxLayout * mainLayout = new QVBoxLayout;
 	mainLayout->addWidget(message = new QLabel(tr("Updating....")));
-	mainLayout->addWidget(currentFileLabel = new QLabel(""));
+	mainLayout->addWidget(currentFileLabel = new QLabel("\n\n\n\n"));
+	currentFileLabel->setWordWrap(true);
 
 	QHBoxLayout * bottom = new QHBoxLayout;
 	bottom->addStretch();
@@ -164,5 +178,6 @@ void UpdateLibraryDialog::showCurrentFile(QString file)
 void UpdateLibraryDialog::close()
 {
 	currentFileLabel->setText("");
+	this->adjustSize();
 	QDialog::close();
 }

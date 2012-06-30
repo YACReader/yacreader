@@ -16,6 +16,7 @@
 	private:
 		QLabel * nameLabel;
 		QLabel * textLabel;
+		QLabel * message;
 		QProgressBar *progressBar;
 		QLabel * currentFileLabel;
 		QLineEdit * path;
