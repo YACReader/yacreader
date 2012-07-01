@@ -197,6 +197,7 @@ public:
 		void hideComicFlow(bool hide);
 		void showExportComicsInfo();
 		void showImportComicsInfo();
+		void asignNumbers();
 };
 
 #endif

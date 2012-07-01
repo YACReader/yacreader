@@ -17,6 +17,7 @@
 #define PATH 6
 #define HASH 7
 #define READ 8
+#define IS_BIS 9
 
 TableModel::TableModel(QObject *parent)
     : QAbstractItemModel(parent)
@@ -169,7 +170,7 @@ void TableModel::setupModelData(unsigned long long int folderId,const QString & 
 	//crear la consulta
 	//timer.restart();
 	QSqlQuery selectQuery(db); //TODO check
-	selectQuery.prepare("select ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read from comic c inner join comic_info ci on (c.comicInfoId = ci.id) where c.parentId = :parentId");
+	selectQuery.prepare("select ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis from comic c inner join comic_info ci on (c.comicInfoId = ci.id) where c.parentId = :parentId");
 	selectQuery.bindValue(":parentId", folderId);
 	selectQuery.exec();
 	//txtS << "TABLEMODEL: Tiempo de consulta: " << timer.elapsed() << "ms\r\n";
@@ -190,6 +191,7 @@ QString TableModel::getComicPath(QModelIndex mi)
 		return _data.at(mi.row())->data(PATH).toString();
 	return "";
 }
+#define NUMBER_MAX 99999999
 void TableModel::setupModelData(QSqlQuery &sqlquery)
 {
 	TableItem * currentItem;
@@ -209,18 +211,64 @@ void TableModel::setupModelData(QSqlQuery &sqlquery)
 			TableItem * last = _data.back();
 			QString nameLast = last->data(FILE_NAME).toString(); //TODO usar info name si está disponible, sino el nombre del fichero.....
 			QString nameCurrent = currentItem->data(FILE_NAME).toString();
+			int numberLast,numberCurrent;
+			numberLast = numberCurrent = NUMBER_MAX; //TODO change by std limit
+
+			if(!last->data(NUMBER).isNull())
+			numberLast = last->data(NUMBER).toInt();
+			
+			if(!currentItem->data(NUMBER).isNull())
+			numberCurrent = currentItem->data(NUMBER).toInt();
+			
 			QList<TableItem *>::iterator i;
 			i = _data.end();
 			i--;
-			while ((lessThan = naturalSortLessThanCI(nameCurrent,nameLast)) && i != _data.begin())
+
+			if(numberCurrent != NUMBER_MAX)
 			{
-				i--;
-				nameLast = (*i)->data(FILE_NAME).toString();
+				while ((lessThan =numberCurrent < numberLast) && i != _data.begin())
+				{
+					i--;
+					numberLast = NUMBER_MAX; //TODO change by std limit
+
+					if(!(*i)->data(NUMBER).isNull())
+						numberLast = (*i)->data(NUMBER).toInt();
+				}
+			}
+			else
+			{
+				while ((lessThan = naturalSortLessThanCI(nameCurrent,nameLast)) && i != _data.begin() && numberLast == 99999999)
+				{
+					i--;
+					nameLast = (*i)->data(FILE_NAME).toString();
+					numberLast = NUMBER_MAX; //TODO change by std limit
+
+					if(!(*i)->data(NUMBER).isNull())
+						numberLast = (*i)->data(NUMBER).toInt();
+				}
+
 			}
 			if(!lessThan) //si se ha encontrado un elemento menor que current, se inserta justo después
-				_data.insert(++i,currentItem);
+			{
+				if(numberCurrent != NUMBER_MAX)
+				{
+					if(numberCurrent == numberLast)
+						if(currentItem->data(IS_BIS).toBool())
+						{
+							_data.insert(++i,currentItem);
+						}
+						else
+							_data.insert(i,currentItem);
+					else
+						_data.insert(++i,currentItem);
+				}
+				else
+					_data.insert(++i,currentItem);
+			}
 			else
+			{
 				_data.insert(i,currentItem);
+			}
 
 		}
 	}

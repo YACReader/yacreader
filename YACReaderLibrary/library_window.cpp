@@ -98,11 +98,14 @@ void LibraryWindow::doLayout()
 	comicView->verticalHeader()->setDefaultSectionSize(24);
 	comicView->verticalHeader()->setClickable(false); //TODO comportamiento anómalo
 	comicView->setCornerButtonEnabled(false);
-	comicView->setStyleSheet("QTableView {selection-background-color: #d7d7c7; selection-color: #000000;}\n QTableView QTableView::item{"
+	qApp->setStyleSheet ( qApp->styleSheet() +"  QTableView::item{border-right-style:solid;border-width:1;border-color: #d7d7c7;} QTableView::item:selected{background-color: #d7d7c7; color:#000000; border-right-style:solid;border-width:1;border-color: #8c8590;}");
+	//qApp->setStyleSheet ( qApp->styleSheet() +" QTableView {selection-background-color: #d7d7c7; selection-color: #000000;}" );
+
+	/*comicView->setStyleSheet("QTableView {selection-background-color: #d7d7c7; selection-color: #000000; selection-border: 1px solid;}\n  QTableView::item{"
 "border-right-style:solid;"
 "border-width:1;"
-"border-color: #9B9B9B;"
-"}");
+"border-color: #DEDEDE;"
+"}");*/
 //	comicView->verticalHeader()->setStyleSheet("QHeaderView::section"
 //"{"
 //    "background-color: white /* steelblue      */"
@@ -486,7 +489,7 @@ void LibraryWindow::createToolBars()
 	editInfoToolBar->addAction(editSelectedComicsAction);
 	editInfoToolBar->addAction(selectAllComicsAction);
 	editInfoToolBar->addSeparator();
-	//editInfoToolBar->addAction(forceConverExtractedAction);
+	editInfoToolBar->addAction(asignOrderActions);
 	editInfoToolBar->addWidget(new QToolBarStretch());
 	editInfoToolBar->addAction(hideComicViewAction);
 }
@@ -586,6 +589,7 @@ void LibraryWindow::createConnections()
 	//Comicts edition
 	connect(selectAllComicsAction,SIGNAL(triggered()),comicView,SLOT(selectAll()));
 	connect(editSelectedComicsAction,SIGNAL(triggered()),this,SLOT(showProperties()));
+	connect(asignOrderActions,SIGNAL(triggered()),this,SLOT(asignNumbers()));
 
 	connect(hideComicViewAction, SIGNAL(toggled(bool)),this, SLOT(hideComicFlow(bool)));
 
@@ -678,11 +682,9 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 	dmCV->setupModelData(folderId,dm->getDatabase());
 	comicView->setModel(dmCV);
 	comicView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
-	comicView->horizontalHeader()->hideSection(4);
-	comicView->horizontalHeader()->hideSection(5);
-	comicView->horizontalHeader()->hideSection(6);
-	comicView->horizontalHeader()->hideSection(7);
-	comicView->horizontalHeader()->hideSection(8);
+	for(int i = 4;i<comicView->horizontalHeader()->count();i++)
+		comicView->horizontalHeader()->hideSection(i);
+
 
 	//debido a un bug, qt4 no es capaz de ajustar el ancho teniendo en cuenta todas la filas (no sólo las visibles)
 	//así que se ecala la primera vez y después se deja el control al usuario.
@@ -727,6 +729,7 @@ void LibraryWindow::reloadCovers()
 	loadCovers(_rootIndexCV);
 
 	QModelIndex mi = dmCV->getIndexFromId(_comicIdEdited);
+	comicView->scrollTo(mi,QAbstractItemView::PositionAtCenter);
 	comicView->setCurrentIndex(mi);
 	//centerComicFlow(mi);
 	comicFlow->setCenterIndex(mi.row());
@@ -1073,7 +1076,7 @@ void LibraryWindow::setFoldersFilter(QString filter)
 		}
 	}
 }
-#include "tableitem.h"
+
 void LibraryWindow::showProperties()
 {
 	QModelIndexList indexList = comicView->selectionModel()->selectedRows();
@@ -1098,6 +1101,46 @@ void LibraryWindow::showProperties()
 	propertiesDialog->setSize(file.size()/(1024.0*1024));
 	file.close();*/
 	propertiesDialog->show();
+}
+
+void LibraryWindow::asignNumbers()
+{
+	QModelIndexList indexList = comicView->selectionModel()->selectedRows();
+
+	QList<Comic> comics = dmCV->getComics(indexList);
+	Comic c = comics[0];
+	_comicIdEdited = c.id;
+
+	int startingNumber = dmCV->getIndexFromId(comics[0].id).row()+1;
+	if(comics.count()>1)
+	{
+		bool ok;
+		int n = QInputDialog::getInt(this, tr("Asign comics numbers"),
+			tr("Asign numbers starting in:"), dmCV->getIndexFromId(comics[0].id).row()+1,0,2147483647,1,&ok);
+		if (ok)
+			startingNumber = n;
+		else
+			return;
+	}
+
+	QSqlDatabase db = DataBaseManagement::loadDatabase(dm->getDatabase());
+	db.transaction();
+
+	for(int i = 0;i<comics.length();i++)
+	{
+		Comic c = comics[i];
+		c.info.setNumber(startingNumber+i);
+		c.info.update(db);
+		/*QString hash = comics[i].info.hash;
+		comics[i].info.setNumber(i+1);
+		comics[i].info.update(db);*/
+	}
+
+	db.commit();
+	db.close();
+	QSqlDatabase::removeDatabase(dm->getDatabase());
+	
+	reloadCovers();
 }
 
 void LibraryWindow::openContainingFolderComic()
