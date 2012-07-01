@@ -132,7 +132,7 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
 		"id INTEGER PRIMARY KEY,"
 		"title TEXT,"
 
-		"coverPage INTEGER,"
+		"coverPage INTEGER DEFAULT 1,"
 		"numPages INTEGER,"
 
 		"number INTEGER,"

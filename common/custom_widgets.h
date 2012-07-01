@@ -162,6 +162,7 @@ class YACReaderFieldPlainTextEdit : public QPlainTextEdit
 		void setDisabled(bool disabled);
 	protected:
 		void focusInEvent(QFocusEvent* e);
+		void focusOutEvent(QFocusEvent* e);
 private:
 	QAction * restore;
 
@@ -184,4 +185,5 @@ private:
 //};
 
 #endif
+
 

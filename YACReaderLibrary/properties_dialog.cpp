@@ -41,7 +41,9 @@ PropertiesDialog::PropertiesDialog(QWidget * parent)
 	setCover(QPixmap(":/images/notCover.png"));
 	this->resize(sWidth,this->height());
 	this->move(QPoint((widthDesktopResolution-sWidth)/2,((heightDesktopResolution-sHeight)-40)/2));
+	setModal(true);
 	repaint();
+
 }
 
 void PropertiesDialog::createTabBar()
@@ -73,7 +75,13 @@ void PropertiesDialog::createCoverBox()
 
 	QVBoxLayout * coverLayout = new QVBoxLayout();
 	coverLayout->addWidget(cover);
-	coverLayout->addWidget(coverPageEdit = new YACReaderFieldEdit());
+	
+	QHBoxLayout * coverPageLayout = new QHBoxLayout;
+	coverPageLayout->addWidget(new QLabel(tr("Cover page : ")));
+	coverPageLayout->addWidget(coverPageEdit = new YACReaderFieldEdit());
+	coverPageLayout->setStretch(1,0);
+
+	coverLayout->addLayout(coverPageLayout);
 
 	coverBox->setLayout(coverLayout);
 }
@@ -298,6 +306,9 @@ void PropertiesDialog::setComics(QList<Comic> comics)
 		formatEdit->setText(*comic.info.format);
 	if(comic.info.color != NULL)
 		colorCheck->setChecked(*comic.info.color);
+	else
+		colorCheck->setCheckState(Qt::PartiallyChecked);
+
 	if(comic.info.ageRating != NULL)
 		ageRatingEdit->setText(*comic.info.ageRating);
 
@@ -319,9 +330,8 @@ void PropertiesDialog::setComics(QList<Comic> comics)
 		for(itr = ++comics.begin();itr!=comics.end();itr++)
 		{
 			if(itr->info.title == NULL || *(itr->info.title) != title->text())
-			{
 				title->clear();
-			}
+			
 			if(itr->info.count == NULL || *(itr->info.count) != countEdit->text().toInt()) //TODO esto está mal
 				countEdit->clear();
 
@@ -370,7 +380,7 @@ void PropertiesDialog::setComics(QList<Comic> comics)
 			if(itr->info.format == NULL || *(itr->info.format) != formatEdit->text())
 				formatEdit->clear();
 			if(itr->info.color == NULL || *(itr->info.color) != colorCheck->isChecked())
-				colorCheck->setChecked(false);
+				colorCheck->setCheckState(Qt::PartiallyChecked);
 			if(itr->info.ageRating == NULL || *(itr->info.ageRating) != ageRatingEdit->text())
 				ageRatingEdit->clear();
 
@@ -467,7 +477,8 @@ void PropertiesDialog::save()
 			edited = true;
 		}
 
-		if(itr->info.coverPage != NULL || !coverPageEdit->text().isEmpty())
+		if(comics.size()==1)
+		if(coverPageEdit->isModified() && !coverPageEdit->text().isEmpty())
 		{
 			itr->info.setCoverPage(coverPageEdit->text().toInt());
 			edited = true;
@@ -475,118 +486,121 @@ void PropertiesDialog::save()
 
 		/*if(comic.info.numPages != NULL)
 		numPagesEdit->setText(QString::number(*comic.info.numPages));*/
-
-		if(itr->info.number != NULL || !numberEdit->text().isEmpty())
+		if(comics.size()==1)
+		if(numberEdit->isModified()  && !numberEdit->text().isEmpty())
 		{
 			itr->info.setNumber(numberEdit->text().toInt());
 			edited = true;
 		}
+		if(comics.size()==1)
 		if(itr->info.isBis != NULL || isBisCheck->isChecked())
 		{
 			itr->info.setIsBis(isBisCheck->isChecked());
 			edited = true;
 		}
-		if(itr->info.count != NULL || !countEdit->text().isEmpty())
+
+		if(countEdit->isModified())
 		{
 			itr->info.setCount(countEdit->text().toInt());
 			edited = true;
 		}
 
-		if(itr->info.volume != NULL || !volumeEdit->text().isEmpty())
+		if(volumeEdit->isModified())
 		{
 			itr->info.setVolume(volumeEdit->text());
 			edited = true;
 		}
-		if(itr->info.storyArc != NULL || !storyArcEdit->text().isEmpty())
+		if(storyArcEdit->isModified())
 		{
 			itr->info.setStoryArc(storyArcEdit->text());
 			edited = true;
 		}
-		if(itr->info.arcNumber != NULL || !arcNumberEdit->text().isEmpty())
+		if(comics.size()==1)
+		if(arcNumberEdit->isModified() && !arcNumberEdit->text().isEmpty())
 		{
 			itr->info.setArcNumber(arcNumberEdit->text().toInt());
 			edited = true;
 		}
-		if(itr->info.arcCount != NULL || !arcCountEdit->text().isEmpty())
+		if(arcCountEdit->isModified())
 		{
 			itr->info.setArcCount(arcCountEdit->text().toInt());
 			edited = true;
 		}
 
-		if(itr->info.genere != NULL || !genereEdit->text().isEmpty())
+		if(genereEdit->isModified())
 		{
 			itr->info.setGenere(genereEdit->text());
 			edited = true;
 		}
 
-		if(itr->info.writer != NULL || writer->document()->isModified())
+		if(writer->document()->isModified())
 		{
 			itr->info.setWriter(writer->toPlainText());
 			edited = true;
 		}
-		if(itr->info.penciller != NULL || penciller->document()->isModified())
+		if(penciller->document()->isModified())
 		{
 			itr->info.setPenciller(penciller->toPlainText());
 			edited = true;
 		}
-		if(itr->info.inker != NULL || inker->document()->isModified())
+		if(inker->document()->isModified())
 		{
 			itr->info.setInker(inker->toPlainText());
 			edited = true;
 		}
-		if(itr->info.colorist != NULL || colorist->document()->isModified())
+		if(colorist->document()->isModified())
 		{
 			itr->info.setColorist(colorist->toPlainText());
 			edited = true;
 		}
-		if(itr->info.letterer != NULL || letterer->document()->isModified())
+		if(letterer->document()->isModified())
 		{
 			itr->info.setLetterer(letterer->toPlainText());
 			edited = true;
 		}
-		if(itr->info.coverArtist != NULL || coverArtist->document()->isModified())
+		if(coverArtist->document()->isModified())
 		{
 			itr->info.setCoverArtist(coverArtist->toPlainText());
 			edited = true;
 		}
 
-		if(itr->info.date != NULL || !dayEdit->text().isEmpty() || !monthEdit->text().isEmpty() || !yearEdit->text().isEmpty())
+		if(dayEdit->isModified() || monthEdit->isModified()  || yearEdit->isModified() )
 		{
 			itr->info.setDate(dayEdit->text()+"/"+monthEdit->text()+"/"+yearEdit->text());
 			edited = true;
 		}
-		if(itr->info.publisher != NULL || !publisherEdit->text().isEmpty())
+		if(publisherEdit->isModified())
 		{
 			itr->info.setPublisher(publisherEdit->text());
 			edited = true;
 		}
-		if(itr->info.format != NULL || !formatEdit->text().isEmpty())
+		if(formatEdit->isModified())
 		{
 			itr->info.setFormat(formatEdit->text());
 			edited = true;
 		}
-		if(itr->info.color != NULL || colorCheck->isChecked())
+		if(colorCheck->checkState() != Qt::PartiallyChecked)
 		{
 			itr->info.setColor(colorCheck->isChecked());
 			edited = true;
 		}
-		if(itr->info.ageRating != NULL || !ageRatingEdit->text().isEmpty())
+		if(ageRatingEdit->isModified())
 		{
 			itr->info.setAgeRating(ageRatingEdit->text());
 			edited = true;
 		}
 
-		if(itr->info.synopsis != NULL || synopsis->document()->isModified())
+		if(synopsis->document()->isModified())
 		{
 			itr->info.setSynopsis(synopsis->toPlainText());
 			edited = true;
 		}
-		if(itr->info.characters != NULL || characters->document()->isModified())
+		if(characters->document()->isModified())
 		{
 			itr->info.setCharacters(characters->toPlainText());
 			edited = true;
 		}
-		if(itr->info.notes != NULL || notes->document()->isModified())
+		if(notes->document()->isModified())
 		{
 			itr->info.setNotes(notes->toPlainText());
 			edited = true;
@@ -602,9 +616,13 @@ void PropertiesDialog::save()
 void PropertiesDialog::setDisableUniqueValues(bool disabled)
 {
 	coverPageEdit->setDisabled(disabled);
+	coverPageEdit->clear();
 	numberEdit->setDisabled(disabled);
+	numberEdit->clear();
 	isBisCheck->setDisabled(disabled);
+	isBisCheck->setChecked(false);
 	arcNumberEdit->setDisabled(disabled);
+	arcNumberEdit->clear();
 }
 
 void PropertiesDialog::closeEvent ( QCloseEvent * e )
@@ -633,13 +651,15 @@ void PropertiesDialog::closeEvent ( QCloseEvent * e )
 	yearEdit->clear();
 	publisherEdit->clear();
 	formatEdit->clear();
-	colorCheck->setChecked(false);
+	colorCheck->setCheckState(Qt::PartiallyChecked);
 	ageRatingEdit->clear();
 	synopsis->clear();
 	characters->clear();
 	notes->clear();
 	
 	setDisableUniqueValues(false);
+
+	tabBar->setCurrentIndex(0);
 
 	QDialog::closeEvent(e);
 }
