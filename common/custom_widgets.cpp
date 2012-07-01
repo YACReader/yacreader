@@ -396,9 +396,9 @@ void YACReaderFieldEdit::focusInEvent(QFocusEvent* e)
 
 void YACReaderFieldEdit::clear()
 {
-	setModified(false);
 	setPlaceholderText(tr("Click to overwrite"));
 	QLineEdit::clear();
+	QLineEdit::setModified(false);
 }
 
 void YACReaderFieldEdit::setDisabled(bool disabled)
@@ -422,13 +422,28 @@ YACReaderFieldPlainTextEdit::YACReaderFieldPlainTextEdit(QWidget * parent)
 
 void YACReaderFieldPlainTextEdit::focusInEvent(QFocusEvent* e)
 {
-	if (e->reason() == Qt::MouseFocusReason)
+	if (e->reason() == Qt::MouseFocusReason  || e->reason() == Qt::TabFocusReason)
     {
       document()->setModified(true);
-	  setPlainText("");
+	  if(toPlainText()==tr("Click to overwrite"))
+		setPlainText("");
     }
 
     QPlainTextEdit::focusInEvent(e);
+}
+
+void YACReaderFieldPlainTextEdit::focusOutEvent(QFocusEvent* e)
+{
+	/*if (e->reason() == Qt::MouseFocusReason  || e->reason() == Qt::TabFocusReason)
+	{
+		if(toPlainText().isEmpty())
+		{
+			setPlainText(tr("Click to overwrite"));
+			document()->setModified(false);
+		}
+	}
+	*/
+	QPlainTextEdit::focusOutEvent(e);
 }
 
 void YACReaderFieldPlainTextEdit::clear()
