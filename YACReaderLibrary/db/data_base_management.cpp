@@ -1,6 +1,8 @@
 #include "data_base_management.h"
 
 #include <QtCore>
+#include "library_creator.h"
+#include "check_new_version.h"
 
 static QString fields = 		"title ,"
 
@@ -181,7 +183,7 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
 	//queryDBInfo.finish();
 
 	QSqlQuery query("INSERT INTO db_info (version) "
-                   "VALUES ('5.0.0')",database);
+                   "VALUES ('"VERSION"')",database);
 	//query.finish();
 	}
 
@@ -236,6 +238,7 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 {
 	QString error;
 	QString driver;
+	QStringList hashes;
 
 	bool b = false;
 
@@ -285,147 +288,251 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 		" WHERE hash = :hash ");
 
 		QSqlQuery insert(destDB);
-	insert.prepare("INSERT INTO comic_info SET "
-		"title = :title,"
+	insert.prepare("INSERT INTO comic_info "
+		"(title,"
+		"coverPage,"
+		"numPages,"
+		"number,"
+		"isBis,"
+		"count,"
+		"volume,"
+		"storyArc,"
+		"arcNumber,"
+		"arcCount,"
+		"genere,"
+		"writer,"
+		"penciller,"
+		"inker,"
+		"colorist,"
+		"letterer,"
+		"coverArtist,"
+		"date,"
+		"publisher,"
+		"format,"
+		"color,"
+		"ageRating,"
+		"synopsis,"
+		"characters,"
+		"notes,"
+		"read,"
+		"edited,"
+		"hash)"
+
+		"VALUES (:title,"
+		":coverPage,"
+		":numPages,"
+		":number,"
+		":isBis,"
+		":count,"
+
+		":volume,"
+		":storyArc,"
+		":arcNumber,"
+		":arcCount,"
+
+		":genere,"
 		
-		"coverPage = :coverPage,"
-		"numPages = :numPages,"
+		":writer,"
+		":penciller,"
+		":inker,"
+		":colorist,"
+		":letterer,"
+		":coverArtist,"
 
-		"number = :number,"
-		"isBis = :isBis,"
-		"count = :count,"
+		":date,"
+		":publisher,"
+		":format,"
+		":color,"
+		":ageRating,"
 
-		"volume = :volume,"
-		"storyArc = :storyArc,"
-		"arcNumber = :arcNumber,"
-		"arcCount = :arcCount,"
-
-		"genere = :genere,"
+		":synopsis,"
+		":characters,"
+		":notes,"
 		
-		"writer = :writer,"
-		"penciller = :penciller,"
-		"inker = :inker,"
-		"colorist = :colorist,"
-		"letterer = :letterer,"
-		"coverArtist = :coverArtist,"
-
-		"date = :date,"
-		"publisher = :publisher,"
-		"format = :format,"
-		"color = :color,"
-		"ageRating = :ageRating,"
-
-		"synopsis = :synopsis,"
-		"characters = :characters,"
-		"notes = :notes,"
+		":read,"
+		":edited,"
 		
-		"read = :read,"
-		"edited = :edited,"
-		
-		"hash = :hash ");
+		":hash )");
 	QSqlQuery newInfo(sourceDB);
 	newInfo.prepare("SELECT * FROM comic_info");
 	newInfo.exec();
 	destDB.transaction();
+	int cp;
 	while (newInfo.next()) //cada tupla deberá ser insertada o actualizada
 	{
-		for(int i = 0; i<10000; i++)
-		{
 		QSqlRecord record = newInfo.record();
-		
-		update.bindValue(":title",record.value("title").toString());
+		cp = record.value("coverPage").toInt();
+		if(cp>1)
+		{
+			QSqlQuery checkCoverPage(destDB);
+			checkCoverPage.prepare("SELECT coverPage FROM comic_info where hash = :hash");
+			checkCoverPage.bindValue(":hash",record.value("hash").toString());
+			checkCoverPage.exec();
+			bool extract = false;
+			if(checkCoverPage.next())
+			{
+				extract = checkCoverPage.record().value("coverPage").toInt() != cp;
+			}
+			if(extract)
+				hashes.append(record.value("hash").toString());
+		}
 
-		update.bindValue(":coverPage",record.value("coverPage").toInt());
-		update.bindValue(":numPages",record.value("numPages").toInt());
-
-		update.bindValue(":number",record.value("number").toInt());
-		update.bindValue(":isBis",record.value("isBis").toInt());
-		update.bindValue(":count",record.value("count").toInt());
-
-		update.bindValue(":volume",record.value("volume").toString());
-		update.bindValue(":storyArc",record.value("storyArc").toString());
-		update.bindValue(":arcNumber",record.value("arcNumber").toString());
-		update.bindValue(":arcCount",record.value("arcCount").toString());
-
-		update.bindValue(":genere",record.value("genere").toString());
-
-		update.bindValue(":writer",record.value("writer").toString());
-		update.bindValue(":penciller",record.value("penciller").toString());
-		update.bindValue(":inker",record.value("inker").toString());
-		update.bindValue(":colorist",record.value("colorist").toString());
-		update.bindValue(":letterer",record.value("letterer").toString());
-		update.bindValue(":coverArtist",record.value("coverArtist").toString());
-
-		update.bindValue(":date",record.value("date").toString());
-		update.bindValue(":publisher",record.value("publisher").toString());
-		update.bindValue(":format",record.value("format").toString());
-		update.bindValue(":color",record.value("color").toInt());
-		update.bindValue(":ageRating",record.value("ageRating").toString());
-		
-		update.bindValue(":synopsis",record.value("synopsis").toString());
-		update.bindValue(":characters",record.value("characters").toString());
-		update.bindValue(":notes",record.value("notes").toString());
+		bindValuesFromRecord(record,update);
 
 		update.bindValue(":edited",1);
 
-		update.bindValue(":hash",record.value("hash").toString());
+		
 		update.exec();
 
 		if(update.numRowsAffected() == 0)
 		{
-			insert.bindValue(":title",record.value("title").toString());
 
-			insert.bindValue(":coverPage",record.value("coverPage").toInt());
-			insert.bindValue(":numPages",record.value("numPages").toInt());
-
-			insert.bindValue(":number",record.value("number").toInt());
-			insert.bindValue(":isBis",record.value("isBis").toInt());
-			insert.bindValue(":count",record.value("count").toInt());
-
-			insert.bindValue(":volume",record.value("volume").toString());
-			insert.bindValue(":storyArc",record.value("storyArc").toString());
-			insert.bindValue(":arcNumber",record.value("arcNumber").toString());
-			insert.bindValue(":arcCount",record.value("arcCount").toString());
-
-			insert.bindValue(":genere",record.value("genere").toString());
-
-			insert.bindValue(":writer",record.value("writer").toString());
-			insert.bindValue(":penciller",record.value("penciller").toString());
-			insert.bindValue(":inker",record.value("inker").toString());
-			insert.bindValue(":colorist",record.value("colorist").toString());
-			insert.bindValue(":letterer",record.value("letterer").toString());
-			insert.bindValue(":coverArtist",record.value("coverArtist").toString());
-
-			insert.bindValue(":date",record.value("date").toString());
-			insert.bindValue(":publisher",record.value("publisher").toString());
-			insert.bindValue(":format",record.value("format").toString());
-			insert.bindValue(":color",record.value("color").toInt());
-			insert.bindValue(":ageRating",record.value("ageRating").toString());
-
-			insert.bindValue(":synopsis",record.value("synopsis").toString());
-			insert.bindValue(":characters",record.value("characters").toString());
-			insert.bindValue(":notes",record.value("notes").toString());
-
+			bindValuesFromRecord(record,insert);
 			insert.bindValue(":edited",1);
 			insert.bindValue(":read",0);
 
-			insert.bindValue(":hash",record.value("hash").toString());
 			insert.exec();
+
+			QString error1 = insert.lastError().databaseText();
+			QString error2 = insert.lastError().driverText();
+
+			QMessageBox::critical(NULL,"db",error1);
+			QMessageBox::critical(NULL,"driver",error2);
 		}
 		update.finish();
 		insert.finish();
 		}
 	}
-	}
 
 	destDB.commit();
+	QString hash;
+	foreach(hash, hashes)
+	{
+		QSqlQuery getComic(destDB);
+		getComic.prepare("SELECT c.path,ci.coverPage FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) where ci.hash = :hash");
+		getComic.bindValue(":hash",hash);
+		getComic.exec();
+		if(getComic.next())
+		{
+			QString basePath = QString(dest).remove("/.yacreaderlibrary/library.ydb");
+			QString path = basePath + getComic.record().value("path").toString();
+			int coverPage =  getComic.record().value("coverPage").toInt();
+			ThumbnailCreator tc(path,basePath+"/.yacreaderlibrary/covers/"+hash+".jpg",coverPage);
+			tc.create();
+
+		}
+	}
+
 	destDB.close();
 	sourceDB.close();
-
 	QSqlDatabase::removeDatabase(source);
 	QSqlDatabase::removeDatabase(dest);
 	return b;
 
+}
+
+void DataBaseManagement::bindValuesFromRecord(const QSqlRecord & record, QSqlQuery & query)
+{
+	bindString("title",record,query);
+
+	bindInt("coverPage",record,query);
+	bindInt("numPages",record,query);
+
+	bindInt("number",record,query);
+	bindInt("isBis",record,query);
+	bindInt("count",record,query);
+
+	bindString("volume",record,query);
+	bindString("storyArc",record,query);
+	bindInt("arcNumber",record,query);
+	bindInt("arcCount",record,query);
+
+	bindString("genere",record,query);
+
+	bindString("writer",record,query);
+	bindString("penciller",record,query);
+	bindString("inker",record,query);
+	bindString("colorist",record,query);
+	bindString("letterer",record,query);
+	bindString("coverArtist",record,query);
+
+	bindString("date",record,query);
+	bindString("publisher",record,query);
+	bindString("format",record,query);
+	bindInt("color",record,query);
+	bindString("ageRating",record,query);
+
+	bindString("synopsis",record,query);
+	bindString("characters",record,query);
+	bindString("notes",record,query);
+
+	bindString("hash",record,query);
+}
+
+void DataBaseManagement::bindString(const QString & name, const QSqlRecord & record, QSqlQuery & query)
+{
+	if(!record.value(name).isNull())
+	{
+		query.bindValue(":"+name,record.value(name).toString());
+	}
+}
+void DataBaseManagement::bindInt(const QString & name, const QSqlRecord & record, QSqlQuery & query)
+{
+	if(!record.value(name).isNull())
+	{
+		query.bindValue(":"+name,record.value(name).toInt());
+	}
+}
+
+QString DataBaseManagement::checkValidDB(const QString & fullPath)
+{
+	QSqlDatabase db = loadDatabaseFromFile(fullPath);
+	if(db.isValid() && db.isOpen())
+	{
+		QSqlQuery version(db);
+		version.prepare("SELECT * FROM db_info");
+		version.exec();
+		if(version.next())
+		{
+			return version.record().value("version").toString();
+		}
+		else
+			return "";
+
+	}
+	else
+	return "";
+}
+
+int DataBaseManagement::compareVersions(const QString & v1, const QString v2)
+{
+	QStringList v1l = v1.split('.');
+	QStringList v2l = v2.split('.');
+	QList<int> v1il;
+	QList<int> v2il;
+
+	foreach(QString s, v1l)
+		v1il.append(s.toInt());
+	
+	foreach(QString s,v2l)
+		v2il.append(s.toInt());
+
+	for(int i=0;i<qMin(v1il.length(),v2il.length());i++)
+	{
+		if(v1il[i]<v2il[i])
+			return -1;
+		if(v1il[i]>v2il[i])
+			return 1;
+	}
+
+	if(v1il.length() < v2il.length())
+		return -1;
+	if(v1il.length() == v2il.length())
+		return 0;
+	if(v1il.length() > v2il.length())
+		return 1;
+
+	return 0;
 }
 
 //COMICS_INFO_EXPORTER

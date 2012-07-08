@@ -166,6 +166,7 @@ UpdateLibraryDialog::UpdateLibraryDialog(QWidget * parent)
 	setLayout(imgMainLayout);
 
 	setModal(true);
+	setWindowTitle(tr("Update library"));
 }
 
 void UpdateLibraryDialog::showCurrentFile(QString file)

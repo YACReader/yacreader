@@ -6,6 +6,8 @@
 #include <QHttpResponseHeader>
 #include <QByteArray>
 
+#define VERSION "5.0.0"
+
  class HttpVersionChecker : public QWidget
  {
          Q_OBJECT

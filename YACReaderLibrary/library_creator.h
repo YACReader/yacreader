@@ -41,6 +41,7 @@
 		void update(QDir currentDirectory);
         void run();
 		qulonglong insertFolders();//devuelve el id del último folder añadido (último en la ruta)
+		bool checkCover(const QString & hash);
 		void insertComic(const QString & relativePath,const QFileInfo & fileInfo);
 		//qulonglong insertFolder(qulonglong parentId,const Folder & folder);
 		//qulonglong insertComic(const Comic & comic);
@@ -49,6 +50,8 @@
 		void finished();
         void coverExtracted(QString);
         void folderUpdated(QString);
+		void updated();
+		void created();
 	};
 
 	class ThumbnailCreator : public QObject
@@ -56,7 +59,7 @@
 		Q_OBJECT
 
 	public:
-		ThumbnailCreator(QString fileSource, QString target);
+		ThumbnailCreator(QString fileSource, QString target, int coverPage = 1);
 	private:
 		QProcess * _7z;
 		QString _fileSource;
@@ -64,6 +67,7 @@
 		QString _currentName;
 		int _numPages;
 		QPixmap _cover;
+		int _coverPage;
 
 	public slots:
 		void create();		

@@ -168,6 +168,7 @@ public:
 		void openLibrary(QString path, QString name);
 		void loadLibraries();
 		void saveLibraries();
+		void reloadCurrentLibrary();
 		void openLastCreated();
 		void updateLibrary();
 		void deleteLibrary();
