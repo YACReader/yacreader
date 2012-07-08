@@ -100,6 +100,7 @@ void ImportComicsInfoDialog::close()
 	progressBar->hide();
 	accept->setDisabled(true);
 	QDialog::close();
+	emit(finished(0));
 }
 
 void Importer::run()

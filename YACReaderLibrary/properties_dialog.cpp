@@ -6,8 +6,10 @@
 #include <QFormLayout>
 #include <QCheckBox>
 #include <QTabWidget>
+#include <QIntValidator>
 
 #include "data_base_management.h"
+#include "library_creator.h"
 
 PropertiesDialog::PropertiesDialog(QWidget * parent)
 :QDialog(parent)
@@ -88,7 +90,7 @@ void PropertiesDialog::createCoverBox()
 
 QFrame * createLine()
 {
-		QFrame * line = new QFrame();
+	QFrame * line = new QFrame();
     line->setObjectName(QString::fromUtf8("line"));
     //line->setGeometry(QRect(320, 150, 118, 3));
     line->setFrameShape(QFrame::HLine);
@@ -103,20 +105,20 @@ void PropertiesDialog::createGeneralInfoBox()
 
 	QFormLayout *generalInfoLayout = new QFormLayout;
 
-
-
-
-
 	//generalInfoLayout->setRowWrapPolicy(QFormLayout::WrapAllRows);
 	generalInfoLayout->addRow(tr("Title:"), title = new YACReaderFieldEdit());
 	
 
 	QHBoxLayout * number = new QHBoxLayout;
 	number->addWidget(numberEdit = new YACReaderFieldEdit());
+	numberValidator.setBottom(0);
+	numberEdit->setValidator(&numberValidator);
 	number->addWidget(new QLabel("Bis:"));
 	number->addWidget(isBisCheck = new QCheckBox());
 	number->addWidget(new QLabel("of:"));
 	number->addWidget(countEdit = new YACReaderFieldEdit());
+	countValidator.setBottom(0);
+	countEdit->setValidator(&countValidator);
 	number->addStretch(1);
 	/*generalInfoLayout->addRow(tr("&Issue number:"), );
 	generalInfoLayout->addRow(tr("&Bis:"), );*/
@@ -128,8 +130,12 @@ void PropertiesDialog::createGeneralInfoBox()
 	arc->addWidget(storyArcEdit = new YACReaderFieldEdit());
 	arc->addWidget(new QLabel("Arc number:"));
 	arc->addWidget(arcNumberEdit = new YACReaderFieldEdit());
+	arcNumberValidator.setBottom(0);
+	arcNumberEdit->setValidator(&arcNumberValidator);
 	arc->addWidget(new QLabel("of:"));
 	arc->addWidget(arcCountEdit = new YACReaderFieldEdit());
+	arcCountValidator.setBottom(0);
+	arcCountEdit->setValidator(&arcCountValidator);
 	arc->addStretch(1);
 	generalInfoLayout->addRow(tr("Story arc:"), arc);
 	
@@ -200,10 +206,16 @@ void PropertiesDialog::createPublishingBox()
 	QHBoxLayout * date = new QHBoxLayout;
 	date->addWidget(new QLabel(tr("Day:")));
 	date->addWidget(dayEdit = new YACReaderFieldEdit());
+	dayValidator.setRange(1,31);
+	dayEdit->setValidator(&dayValidator);
 	date->addWidget(new QLabel(tr("Month:")));
 	date->addWidget(monthEdit = new YACReaderFieldEdit());
+	monthValidator.setRange(1,12);
+	monthEdit->setValidator(&monthValidator);
 	date->addWidget(new QLabel(tr("Year:")));
 	date->addWidget(yearEdit = new YACReaderFieldEdit());
+	yearValidator.setRange(1,9999);
+	yearEdit->setValidator(&yearValidator);
 	date->addStretch(1);
 
 	publishingLayout->setRowWrapPolicy(QFormLayout::WrapAllRows);
@@ -256,7 +268,11 @@ void PropertiesDialog::setComics(QList<Comic> comics)
 		title->setText(*comic.info.title);
 
 	if(comic.info.coverPage != NULL)
+	{
 		coverPageEdit->setText(QString::number(*comic.info.coverPage));
+		coverPageValidator.setRange(1,*comic.info.numPages);
+		coverPageEdit->setValidator(&coverPageValidator);
+	}
 	/*if(comic.info.numPages != NULL)
 	numPagesEdit->setText(QString::number(*comic.info.numPages));*/
 
@@ -292,6 +308,8 @@ void PropertiesDialog::setComics(QList<Comic> comics)
 		letterer->setPlainText(*comic.info.letterer);
 	if(comic.info.coverArtist != NULL)
 		coverArtist->setPlainText(*comic.info.coverArtist);
+
+	size->setText(QString::number(comic.info.hash.right(comic.info.hash.length()-40).toInt()/1024.0/1024.0,'f',2)+"Mb");
 
 	if(comic.info.date != NULL)
 	{
@@ -478,7 +496,7 @@ void PropertiesDialog::save()
 		}
 
 		if(comics.size()==1)
-		if(coverPageEdit->isModified() && !coverPageEdit->text().isEmpty())
+		if(coverPageEdit->isModified() && !coverPageEdit->text().isEmpty() && coverPageEdit->text().toInt() != 0)
 		{
 			itr->info.setCoverPage(coverPageEdit->text().toInt());
 			edited = true;
@@ -609,6 +627,14 @@ void PropertiesDialog::save()
 		itr->info.edited = edited;
 	}
 	updateComics();
+	if(comics.count() == 1)
+	{
+		if(coverPageEdit->isModified())// && coverPageEdit->text().toInt() != *comics[0].info.coverPage)
+		{
+			ThumbnailCreator tc(basePath+comics[0].path,basePath+"/.yacreaderlibrary/covers/"+comics[0].info.hash+".jpg",*comics[0].info.coverPage);
+			tc.create();
+		}
+	}
 	close();
 	emit(accepted());
 }

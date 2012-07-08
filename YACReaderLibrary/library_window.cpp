@@ -18,6 +18,7 @@
 #include <iterator>
 
 #include "data_base_management.h"
+#include "check_new_version.h"
 
 //
 
@@ -504,11 +505,13 @@ void LibraryWindow::createConnections()
 {
 	//libraryCreator connections
 	connect(createLibraryDialog,SIGNAL(createLibrary(QString,QString,QString)),this,SLOT(create(QString,QString,QString)));
+	connect(importComicsInfoDialog,SIGNAL(finished(int)),this,SLOT(reloadCurrentLibrary()));
 	connect(libraryCreator,SIGNAL(coverExtracted(QString)),createLibraryDialog,SLOT(showCurrentFile(QString)));
 	connect(libraryCreator,SIGNAL(finished()),createLibraryDialog,SLOT(close()));
 	connect(libraryCreator,SIGNAL(coverExtracted(QString)),updateLibraryDialog,SLOT(showCurrentFile(QString)));
 	connect(libraryCreator,SIGNAL(finished()),updateLibraryDialog,SLOT(close()));
-	connect(libraryCreator,SIGNAL(finished()),this,SLOT(openLastCreated()));
+	connect(libraryCreator,SIGNAL(updated()),this,SLOT(reloadCurrentLibrary()));
+	connect(libraryCreator,SIGNAL(created()),this,SLOT(openLastCreated()));
 
 	//packageManager connections
 	connect(exportLibraryDialog,SIGNAL(exportPath(QString)),this,SLOT(exportLibrary(QString)));
@@ -600,9 +603,13 @@ void LibraryWindow::loadLibrary(const QString & name)
 	if(libraries.size()>0)
 	{	
 		QString path=libraries.value(name)+"/.yacreaderlibrary";
-		QDir d; //TODO change this by static methods (utils class?? with delTree for example) 
-		if(d.exists(path))
+		QDir d; //TODO change this by static methods (utils class?? with delTree for example)
+		QString dbVersion;
+		if(d.exists(path) && (dbVersion = DataBaseManagement::checkValidDB(path+"/library.ydb")) != "")
 		{
+			int comparation;
+			if((comparation = DataBaseManagement::compareVersions(dbVersion,VERSION)) == 0)
+			{
 			index = 0;
 			sm->clear();
 			//foldersView->setModel(NULL); //TODO comprobar pq no sirve con usar simplemente las señales beforeReset y reset
@@ -630,6 +637,36 @@ void LibraryWindow::loadLibrary(const QString & name)
 
 			//includeComicsCheckBox->setCheckState(Qt::Unchecked);
 			foldersFilter->clear();
+			}
+			else
+			{
+				if(comparation < 0)
+				{
+					int ret = QMessageBox::question(this,tr("Update needed"),tr("This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?"));
+					if(ret == QMessageBox::Yes)
+					{
+					}
+					else
+					{
+						comicView->setModel(NULL);
+						foldersView->setModel(NULL);
+						comicFlow->clear();
+						disableAllActions();//TODO comprobar que se deben deshabilitar
+					}
+				}
+				else
+				{
+					int ret = QMessageBox::question(this,tr("Download new version"),tr("This library was created with a newer version of YACReaderLibrary. Download the new version now?"),QMessageBox::Yes,QMessageBox::No);
+					if(ret == QMessageBox::Yes)
+						QDesktopServices::openUrl(QUrl("http://code.google.com/p/yacreader/"));
+
+					comicView->setModel(NULL);
+					foldersView->setModel(NULL);
+					comicFlow->clear();
+					disableAllActions();//TODO comprobar que se deben deshabilitar
+
+				}
+			}
 		}
 		else
 		{
@@ -831,6 +868,11 @@ void LibraryWindow::create(QString source, QString dest, QString name)
 
 }
 
+void LibraryWindow::reloadCurrentLibrary()
+{
+	loadLibrary(selectedLibrary->currentText());
+}
+
 void LibraryWindow::openLastCreated()
 {
 	
@@ -854,9 +896,16 @@ void LibraryWindow::showAddLibrary()
 
 void LibraryWindow::openLibrary(QString path, QString name)
 {	
-	_lastAdded = name;
-	_sourceLastAdded = path;
-	openLastCreated();
+	path.remove("/.yacreaderlibrary");
+	QDir d; //TODO change this by static methods (utils class?? with delTree for example) 
+	if(d.exists(path + "/.yacreaderlibrary"))
+	{
+		_lastAdded = name;
+		_sourceLastAdded = path;
+		openLastCreated();
+	}
+	else
+		QMessageBox::warning(this,tr("Library not found"),tr("The selected folder doesn't contain any library."));
 }
 
 void LibraryWindow::loadLibraries()
@@ -903,13 +952,12 @@ void LibraryWindow::saveLibraries()
 
 void LibraryWindow::updateLibrary()
 {
+	updateLibraryDialog->show();
 	QString currentLibrary = selectedLibrary->currentText();
 	QString path = libraries.value(currentLibrary);
 	_lastAdded = currentLibrary;
-	updateLibraryDialog->show();
 	libraryCreator->updateLibrary(path,path+"/.yacreaderlibrary");
 	libraryCreator->start();
-
 }
 
 void LibraryWindow::deleteLibrary()

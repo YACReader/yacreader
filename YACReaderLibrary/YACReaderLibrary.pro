@@ -38,7 +38,8 @@ HEADERS += comic_flow.h \
 		   ./db/folder.h \
 		   ./db/library_item.h \
 		   export_comics_info_dialog.h \
-		   import_comics_info_dialog.h 
+		   import_comics_info_dialog.h \
+		   ../common/check_new_version.h
 		   
 SOURCES += comic_flow.cpp \
            create_library_dialog.cpp \
@@ -65,7 +66,8 @@ SOURCES += comic_flow.cpp \
 		   ./db/folder.cpp \
 		   ./db/library_item.cpp \
 		   export_comics_info_dialog.cpp \
-		   import_comics_info_dialog.cpp 
+		   import_comics_info_dialog.cpp \
+		   ../common/check_new_version.cpp
 		   
 include(./server/server.pri)
 

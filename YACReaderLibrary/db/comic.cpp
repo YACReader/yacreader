@@ -21,6 +21,7 @@ Comic::Comic(qulonglong cparentId, QString cname, QString cpath, QString chash, 
 	if(!info.load(chash,database))
 	{
 		info.hash = chash;
+		info.coverPage = new int(1);
 		_hasCover = false;
 	}
 	else
@@ -91,7 +92,9 @@ bool Comic::load(qulonglong idc, QSqlDatabase & db)
 		//id = record.value("id").toULongLong();
 		parentId = record.value("parentId").toULongLong();
 		name = record.value("name").toString();
+		path = record.value("path").toString();
 		info.load(record.value("hash").toString(),db);
+		
 		return true;
 	}
 	//selectQuery.finish();

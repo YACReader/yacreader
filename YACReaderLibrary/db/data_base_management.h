@@ -25,6 +25,7 @@ public:
 	void importComicsInfo(QSqlDatabase & source, QSqlDatabase & dest);
 private:
 	void run();
+
 };
 
 class DataBaseManagement : public QObject
@@ -32,6 +33,10 @@ class DataBaseManagement : public QObject
 	Q_OBJECT
 private:
 	QList<QString> dataBasesList;
+	static void bindString(const QString & name, const QSqlRecord & record, QSqlQuery & query);
+	static void bindInt(const QString & name, const QSqlRecord & record, QSqlQuery & query);
+	static void bindValuesFromRecord(const QSqlRecord & record, QSqlQuery & query);
+
 public:
 	DataBaseManagement();
 	//TreeModel * newTreeModel(QString path);
@@ -45,6 +50,9 @@ public:
 
 	static void exportComicsInfo(QString source, QString dest);
 	static bool importComicsInfo(QString source, QString dest);
+
+	static QString checkValidDB(const QString & fullPath); //retorna "" si la DB es inválida ó la versión si es válida.
+	static int compareVersions(const QString & v1, const QString v2); //retorna <0 si v1 < v2, 0 si v1 = v2 y >0 si v1 > v2
 };
 
 #endif

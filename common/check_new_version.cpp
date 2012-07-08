@@ -4,7 +4,6 @@
 #include <QtGlobal>
 #include <QStringList>
 
-#define VERSION "5.0"
 #define PREVIOUS_VERSION "0.4.5"
 
 HttpVersionChecker::HttpVersionChecker()

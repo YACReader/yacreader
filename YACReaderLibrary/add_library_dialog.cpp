@@ -56,7 +56,7 @@ void AddLibraryDialog::setupUI()
 	QLabel * imgLabel = new QLabel(this);
 	QPixmap p(":/images/openLibrary.png");
 	imgLabel->setPixmap(p);
-	imgMainLayout->addWidget(imgLabel);
+	imgMainLayout->addWidget(imgLabel);//,0,Qt::AlignTop);
 	imgMainLayout->addLayout(mainLayout);
 	
 	setLayout(imgMainLayout);

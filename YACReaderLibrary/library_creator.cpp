@@ -6,6 +6,11 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include "data_base_management.h"
+#include "qnaturalsorting.h"
+
+#include <algorithm>
+using namespace std;
+
 //QMutex mutex;
 
 
@@ -68,6 +73,7 @@ void LibraryCreator::run()
 		_database.commit();
 		_database.close();
 		QSqlDatabase::removeDatabase(_database.connectionName());
+		emit(created());
 	}
 	else
 	{
@@ -83,7 +89,9 @@ void LibraryCreator::run()
 		_database.commit();
 		_database.close();
 		QSqlDatabase::removeDatabase(_target);
+		emit(updated());
 	}
+	msleep(100);//TODO try to solve the problem with the udpate dialog
 	emit(finished());
 }
 
@@ -174,6 +182,11 @@ void LibraryCreator::create(QDir dir)
 	}
 }
 
+bool LibraryCreator::checkCover(const QString & hash)
+{
+	return QFile::exists(_target+"/covers/"+hash+".jpg");
+}
+
 void LibraryCreator::insertComic(const QString & relativePath,const QFileInfo & fileInfo)
 {
 	//en este punto sabemos que todos los folders que hay en _currentPath, deberían estar añadidos a la base de datos
@@ -191,10 +204,10 @@ void LibraryCreator::insertComic(const QString & relativePath,const QFileInfo & 
 	QString hash = QString(crypto.result().toHex().constData()) + QString::number(fileInfo.size());
 	Comic comic(_currentPathFolders.last().id,fileInfo.fileName(),relativePath,hash,_database);
 	int numPages;
-	
-	if(!comic.hasCover())
+
+	if(! ( comic.hasCover() && checkCover(hash)))
 	{
-		ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+hash+".jpg");
+		ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+hash+".jpg",*comic.info.coverPage);
 		//ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+fileInfo.fileName()+".jpg");
 		tc.create();
 		numPages = tc.getNumPages();
@@ -352,8 +365,8 @@ void LibraryCreator::update(QDir dirS)
 		}	
 	}
 }
-ThumbnailCreator::ThumbnailCreator(QString fileSource, QString target="")
-:_fileSource(fileSource),_target(target),_numPages(0)
+ThumbnailCreator::ThumbnailCreator(QString fileSource, QString target="", int coverPage)
+:_fileSource(fileSource),_target(target),_numPages(0),_coverPage(coverPage)
 {
 }
 
@@ -374,15 +387,32 @@ void ThumbnailCreator::create()
 	QString line;
 	_currentName = "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"; //TODO 
 	QString name;
-	foreach(line,lines)
+	if(_coverPage == 1)
 	{
-		if(rx.indexIn(line)!=-1)
+		foreach(line,lines)
 		{
-			name = rx.cap(3).trimmed();
-			if(0 > QString::localeAwareCompare(name,_currentName))
-				_currentName = name;
-			_numPages++;
-		}	
+			if(rx.indexIn(line)!=-1)
+			{
+				name = rx.cap(3).trimmed();
+				if(naturalSortLessThanCI(name,_currentName))
+					_currentName = name;
+				_numPages++;
+			}	
+		}
+	}
+	else
+	{
+		QList<QString> names;
+		foreach(line,lines)
+		{
+			if(rx.indexIn(line)!=-1)
+			{
+				name = rx. cap(3).trimmed();
+				names.append(name);
+			}	
+		}
+		std::sort(names.begin(),names.end(),naturalSortLessThanCI);
+		_currentName = names[_coverPage-1];
 	}
 	delete _7z;
 	attributes.clear();

@@ -10,6 +10,7 @@
 #include <QGridLayout>
 #include <QTabWidget>
 #include <QCheckBox>
+#include <QIntValidator>
 
 #include "comic.h"
 #include "custom_widgets.h"
@@ -32,15 +33,20 @@
 		QLabel * size;
 
 		YACReaderFieldEdit * coverPageEdit;
+		QIntValidator coverPageValidator;
 
 		YACReaderFieldEdit * numberEdit;
+		QIntValidator numberValidator;
 		QCheckBox * isBisCheck;
 		YACReaderFieldEdit * countEdit;
+		QIntValidator countValidator;
 
 		YACReaderFieldEdit * volumeEdit;
 		YACReaderFieldEdit * storyArcEdit;
 		YACReaderFieldEdit * arcNumberEdit;
+		QIntValidator arcNumberValidator;
 		YACReaderFieldEdit * arcCountEdit;
+		QIntValidator arcCountValidator;
 
 		YACReaderFieldEdit * genereEdit;
 
@@ -52,8 +58,11 @@
 		YACReaderFieldPlainTextEdit * coverArtist;
 
 		YACReaderFieldEdit * dayEdit;
+		QIntValidator dayValidator;
 		YACReaderFieldEdit * monthEdit;
+		QIntValidator monthValidator;
 		YACReaderFieldEdit * yearEdit;
+		QIntValidator yearValidator;
 		YACReaderFieldEdit * publisherEdit;
 		YACReaderFieldEdit * formatEdit;
 		QCheckBox * colorCheck;
