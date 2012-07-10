@@ -41,8 +41,13 @@ void LibraryCreator::processLibrary(const QString & source, const QString & targ
 {
 	_source = source;
 	_target = target;
-	if(!(QFile(target+"/library.ydb").exists())) //TODO, no sirve sólo con realizar el update, hay que validar la base de datos y determinar si existe "/covers"
+	//if(!(QFile(target+"/library.ydb").exists())) //TODO, no sirve sólo con realizar el update, hay que validar la base de datos y determinar si existe "/covers"
+	if(DataBaseManagement::checkValidDB(target+"/library.ydb")=="")
+	{
+		//se limpia el directorio ./yacreaderlibrary
+		delTree(target);
 		_mode = CREATOR;
+	}
 	else
 		_mode = UPDATER;
 }

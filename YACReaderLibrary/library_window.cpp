@@ -600,43 +600,43 @@ void LibraryWindow::createConnections()
 
 void LibraryWindow::loadLibrary(const QString & name)
 {
-	if(libraries.size()>0)
+	if(libraries.size()>0)  //si hay bibliotecas...
 	{	
 		QString path=libraries.value(name)+"/.yacreaderlibrary";
 		QDir d; //TODO change this by static methods (utils class?? with delTree for example)
 		QString dbVersion;
-		if(d.exists(path) && (dbVersion = DataBaseManagement::checkValidDB(path+"/library.ydb")) != "")
+		if(d.exists(path) && (dbVersion = DataBaseManagement::checkValidDB(path+"/library.ydb")) != "") //si existe en disco la biblioteca seleccionada, y es válida..
 		{
 			int comparation;
-			if((comparation = DataBaseManagement::compareVersions(dbVersion,VERSION)) == 0)
+			if((comparation = DataBaseManagement::compareVersions(dbVersion,VERSION)) == 0) //en caso de que la versión se igual que la actual
 			{
-			index = 0;
-			sm->clear();
-			//foldersView->setModel(NULL); //TODO comprobar pq no sirve con usar simplemente las señales beforeReset y reset
-			//comicView->setModel(NULL);
+				index = 0;
+				sm->clear();
+				//foldersView->setModel(NULL); //TODO comprobar pq no sirve con usar simplemente las señales beforeReset y reset
+				//comicView->setModel(NULL);
 
-			dm->setupModelData(path);
-			foldersView->setModel(dm);
-			
-			d.setCurrent(libraries.value(name));
-			d.setFilter(QDir::AllDirs | QDir::Files | QDir::Hidden | QDir::NoSymLinks | QDir::NoDotAndDotDot);
-			if(d.count()<=1) //librería de sólo lectura
-			{
-				//QMessageBox::critical(NULL,QString::number(d.count()),QString::number(d.count()));
-				disableActions();
-				importedCovers = true;
-			}
-			else //librería normal abierta
-			{
-				enableActions();
-				importedCovers = false;
-			}
-			enableLibraryActions();
+				dm->setupModelData(path);
+				foldersView->setModel(dm);
 
-			loadCovers(QModelIndex());
+				d.setCurrent(libraries.value(name));
+				d.setFilter(QDir::AllDirs | QDir::Files | QDir::Hidden | QDir::NoSymLinks | QDir::NoDotAndDotDot);
+				if(d.count()<=1) //librería de sólo lectura
+				{
+					//QMessageBox::critical(NULL,QString::number(d.count()),QString::number(d.count()));
+					disableActions();
+					importedCovers = true;
+				}
+				else //librería normal abierta
+				{
+					enableActions();
+					importedCovers = false;
+				}
+				enableLibraryActions();
 
-			//includeComicsCheckBox->setCheckState(Qt::Unchecked);
-			foldersFilter->clear();
+				loadCovers(QModelIndex());
+
+				//includeComicsCheckBox->setCheckState(Qt::Unchecked);
+				foldersFilter->clear();
 			}
 			else
 			{
@@ -675,14 +675,31 @@ void LibraryWindow::loadLibrary(const QString & name)
 			comicFlow->clear();
 			disableAllActions();//TODO comprobar que se deben deshabilitar
 
-			QString currentLibrary = selectedLibrary->currentText();
-			if(QMessageBox::question(this,tr("Library not available"),tr("Library ")+currentLibrary+tr(" is no longer available. Do you want to remove it?"),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
+			//si la librería no existe en disco, se ofrece al usuario la posibiliad de eliminarla
+			if(!d.exists(path))
 			{
-				deleteCurrentLibrary();
+				QString currentLibrary = selectedLibrary->currentText();
+				if(QMessageBox::question(this,tr("Library not available"),tr("Library ")+currentLibrary+tr(" is no longer available. Do you want to remove it?"),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
+				{
+					deleteCurrentLibrary();
+				}
+			}
+			else//si existe el path, puede ser que la librería sea alguna versión pre-5.0 ó que esté corrupta
+			{
+				QString currentLibrary = selectedLibrary->currentText();
+				QString path = libraries.value(selectedLibrary->currentText());
+				if(QMessageBox::question(this,tr("Old library or corrupted"),tr("Library ")+currentLibrary+tr(" is corrupted or has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?"),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
+				{
+					QDir d(path+"/.yacreaderlibrary");
+					delTree(d);
+					d.rmdir(path+"/.yacreaderlibrary");
+					createLibraryDialog->setDataAndStart(currentLibrary,path);
+					//create(path,path+"/.yacreaderlibrary",currentLibrary);
+				}
 			}
 		}
 	}
-	else
+	else //en caso de que no exista ninguna biblioteca se desactivan los botones pertinentes
 	{
 		disableAllActions();
 	}

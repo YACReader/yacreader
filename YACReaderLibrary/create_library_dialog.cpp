@@ -128,6 +128,14 @@ void CreateLibraryDialog::close()
 	accept->setEnabled(true);
 	QDialog::close();
 }
+
+void CreateLibraryDialog::setDataAndStart(QString name, QString path)
+{
+	this->path->setText(path);
+	this->nameEdit->setText(name);
+	show();
+	create();
+}
 //-----------------------------------------------------------------------------
 // UpdateLibraryDialog
 //-----------------------------------------------------------------------------
