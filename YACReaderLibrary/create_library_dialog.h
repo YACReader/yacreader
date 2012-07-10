@@ -30,6 +30,7 @@
 		void findPath();
 		void showCurrentFile(QString file);
 		void close();
+		void setDataAndStart(QString name, QString paht);
 	signals:
 		void createLibrary(QString source, QString target, QString name);
 		void cancelCreate();

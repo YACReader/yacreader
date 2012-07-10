@@ -494,14 +494,24 @@ QString DataBaseManagement::checkValidDB(const QString & fullPath)
 		version.exec();
 		if(version.next())
 		{
+			db.close();
+			QSqlDatabase::removeDatabase(fullPath);
 			return version.record().value("version").toString();
 		}
 		else
+		{
+			db.close();
+			QSqlDatabase::removeDatabase(fullPath);
 			return "";
+		}
 
 	}
 	else
-	return "";
+	{
+		db.close();
+		QSqlDatabase::removeDatabase(fullPath);
+		return "";
+	}
 }
 
 int DataBaseManagement::compareVersions(const QString & v1, const QString v2)
