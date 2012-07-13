@@ -354,7 +354,7 @@ void LibraryWindow::createActions()
 
 	asignOrderActions = new QAction(this);
 	asignOrderActions->setText(tr("Asign current order to comics"));
-	asignOrderActions->setIcon(QIcon(":/images/fit.png"));
+	asignOrderActions->setIcon(QIcon(":/images/asignNumber.png"));
 
 	forceConverExtractedAction = new QAction(this);
 	forceConverExtractedAction->setText(tr("Update cover"));
@@ -934,6 +934,7 @@ void LibraryWindow::loadLibraries()
 	QStringList lines = content.split('\n');
 	QString line,name;
 	int i=0;
+	bool librariesAvailable = false;
 	foreach(line,lines)
 	{
 		if((i%2)==0)
@@ -942,10 +943,16 @@ void LibraryWindow::loadLibraries()
 		}
 		else
 		{
+			librariesAvailable = true;
 			libraries.insert(name.trimmed(),line.trimmed());
 			selectedLibrary->addItem(name.trimmed(),line.trimmed());
 		}
 		i++;
+	}
+
+	if(!librariesAvailable)
+	{
+		disableAllActions();
 	}
 }
 
