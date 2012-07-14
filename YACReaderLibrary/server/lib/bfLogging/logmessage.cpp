@@ -49,7 +49,7 @@ QString LogMessage::toString(const QString& msgFormat, const QString& timestampF
     }
 
     QString threadId;
-    threadId.setNum((unsigned int)QThread::currentThreadId());
+    threadId.setNum((qint64)QThread::currentThreadId());
     decorated.replace("{thread}",threadId);
 
     // Fill in variables
