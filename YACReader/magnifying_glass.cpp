@@ -20,7 +20,7 @@ void MagnifyingGlass::setup(const QSize & size)
 	resize(size);
 	setScaledContents(true);
 	setMouseTracking(true);
-	setCursor(QCursor(Qt::BlankCursor));
+	setCursor(QCursor(QBitmap(1,1),QBitmap(1,1)));
 }
 
 void MagnifyingGlass::mouseMoveEvent(QMouseEvent * event)

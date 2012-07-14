@@ -595,7 +595,7 @@ void Viewer::configureContent(QString msg)
 void Viewer::hideCursor()
 {
 #ifdef Q_WS_MAC
-	setCursor(Qt::CrossCursor);
+	setCursor(QCursor(QBitmap(1,1),QBitmap(1,1)));
 #else
 	setCursor(Qt::BlankCursor);
 #endif
