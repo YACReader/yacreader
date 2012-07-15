@@ -824,7 +824,14 @@ void LibraryWindow::openComic()
 	{
 		QString path = currentPath() + dmCV->getComicPath(comicView->currentIndex());
 		
+#ifdef Q_WS_MAC
+		
+		QProcess::startDetached("open", QStringList() << "-n" << QDir::cleanPath(QCoreApplication::applicationDirPath()+"/../../../YACReader.app") << "--args" << path);//,QStringList() << path);
+		//Comic is readed
+#else
+        
 		QProcess::startDetached(QDir::cleanPath(QCoreApplication::applicationDirPath())+"/YACReader",QStringList() << path);
+#endif        
 		//Comic is readed
 		setCurrentComicReaded();
 	}
