@@ -171,7 +171,18 @@ void LibraryCreator::create(QDir dir)
 			return;
 		QFileInfo fileInfo = list.at(i);
 		QString fileName = fileInfo.fileName();
+#ifdef Q_WS_MAC
+        QStringList src = _source.split("/");
+		QString filePath = fileInfo.absoluteFilePath();
+        QStringList fp = filePath.split("/");
+        for(int i = 0; i< src.count();i++)
+        {
+            fp.removeFirst();
+        }
+        QString relativePath = "/" + fp.join("/");
+#else
 		QString relativePath = QDir::cleanPath(fileInfo.absoluteFilePath()).remove(_source);
+#endif        
 		if(fileInfo.isDir())
 		{
 			//se añade al path actual el folder, aún no se sabe si habrá que añadirlo a la base de datos
