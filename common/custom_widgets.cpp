@@ -15,6 +15,7 @@
 #include <QApplication>
 #include <QPushButton>
 #include <QFileSystemModel>
+#include <QTextCodec>
 
 #include "qnaturalsorting.h"
 
@@ -68,6 +69,9 @@ QString HelpAboutDialog::fileToString(const QString & path)
 	QFile f(path);
 	f.open(QIODevice::ReadOnly);
 	QTextStream txtS(&f);
+
+	txtS.setCodec(QTextCodec::codecForName("UTF-8"));
+
 	QString content = txtS.readAll();
 	f.close();
 

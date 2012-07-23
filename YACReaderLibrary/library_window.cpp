@@ -612,8 +612,6 @@ void LibraryWindow::loadLibrary(const QString & name)
 			{
 				index = 0;
 				sm->clear();
-				//foldersView->setModel(NULL); //TODO comprobar pq no sirve con usar simplemente las señales beforeReset y reset
-				//comicView->setModel(NULL);
 
 				dm->setupModelData(path);
 				foldersView->setModel(dm);
@@ -658,7 +656,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 				{
 					int ret = QMessageBox::question(this,tr("Download new version"),tr("This library was created with a newer version of YACReaderLibrary. Download the new version now?"),QMessageBox::Yes,QMessageBox::No);
 					if(ret == QMessageBox::Yes)
-						QDesktopServices::openUrl(QUrl("http://code.google.com/p/yacreader/"));
+						QDesktopServices::openUrl(QUrl("http://www.yacreader.com"));
 
 					comicView->setModel(NULL);
 					foldersView->setModel(NULL);
@@ -1065,7 +1063,6 @@ void LibraryWindow::rename(QString newName)
 void LibraryWindow::cancelCreating()
 {
 	stopLibraryCreator();
-	//TODO delete library.
 }
 
 void LibraryWindow::stopLibraryCreator()

@@ -32,7 +32,7 @@ QList<LibraryItem *> Comic::getComicsFromParent(qulonglong parentId, QSqlDatabas
 {
 	QList<LibraryItem *> list;
 
-	QSqlQuery selectQuery(db); //TODO check
+	QSqlQuery selectQuery(db);
 	selectQuery.prepare("select c.id,c.parentId,c.fileName,c.path,ci.hash from comic c inner join comic_info ci on (c.comicInfoId = ci.id) where c.parentId = :parentId");
 	selectQuery.bindValue(":parentId", parentId);
 	selectQuery.exec();
@@ -44,7 +44,7 @@ QList<LibraryItem *> Comic::getComicsFromParent(qulonglong parentId, QSqlDatabas
 		QSqlRecord record = selectQuery.record();
 		for(int i=0;i<record.count();i++)
 			data << record.value(i);
-		//TODO sort by sort indicator and name
+
 		currentItem = new Comic();
 		currentItem->id = record.value("id").toULongLong();
 		currentItem->parentId = record.value(1).toULongLong();
@@ -81,7 +81,7 @@ QList<LibraryItem *> Comic::getComicsFromParent(qulonglong parentId, QSqlDatabas
 bool Comic::load(qulonglong idc, QSqlDatabase & db)
 {
 
-	QSqlQuery selectQuery(db); //TODO check
+	QSqlQuery selectQuery(db); 
 	selectQuery.prepare("select c.id,c.parentId,c.fileName,c.path,ci.hash from comic c inner join comic_info ci on (c.comicInfoId = ci.id) where c.id = :id");
 	selectQuery.bindValue(":id", idc);
 	selectQuery.exec();
@@ -104,7 +104,6 @@ bool Comic::load(qulonglong idc, QSqlDatabase & db)
 
 qulonglong Comic::insert(QSqlDatabase & db)
 {
-	//TODO comprobar si ya hay comic info con ese hash
 	//TODO cambiar por info.insert(db)
 
 	if(!info.existOnDb)
@@ -119,7 +118,7 @@ qulonglong Comic::insert(QSqlDatabase & db)
 		_hasCover = false;
 	}
 	else
-		_hasCover = true; //TODO check on disk...
+		_hasCover = true;
 	
 	QSqlQuery query(db);
 	query.prepare("INSERT INTO comic (parentId, comicInfoId, fileName, path) "

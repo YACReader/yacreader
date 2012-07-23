@@ -6,6 +6,7 @@
 #include <QPixmap>
 #include <QFile>
 #include <QTextStream>
+#include <QTextCodec>
 
 ShortcutsDialog::ShortcutsDialog(QWidget * parent)
     :QDialog(parent)//,Qt::FramelessWindowHint)
@@ -26,14 +27,12 @@ ShortcutsDialog::ShortcutsDialog(QWidget * parent)
 	QHBoxLayout * shortcutsLayout = new QHBoxLayout;
 
     shortcuts = new QTextEdit();
-	QTextEdit * shortcuts2 = new QTextEdit();
 	shortcuts->setFrameStyle(QFrame::NoFrame);
-	shortcuts2->setFrameStyle(QFrame::NoFrame);
+	
     //"<p><b>General functions:</b><hr/><b>O</b> : Open comic<br/><b>Esc</b> : Exit</p>"
     shortcuts->setReadOnly(true);
-	shortcuts2->setReadOnly(true);
     shortcutsLayout->addWidget(shortcuts);
-	shortcutsLayout->addWidget(shortcuts2);
+	//shortcutsLayout->addWidget(shortcuts2);
 	shortcutsLayout->setSpacing(0);
 	mainLayout->addLayout(shortcutsLayout);
     mainLayout->addLayout(bottomLayout);
@@ -57,18 +56,12 @@ ShortcutsDialog::ShortcutsDialog(QWidget * parent)
     QFile f(":/files/shortcuts.html");
     f.open(QIODevice::ReadOnly);
     QTextStream txtS(&f);
+	txtS.setCodec(QTextCodec::codecForName("UTF-8"));
     QString content = txtS.readAll();
+
     f.close();
 
     shortcuts->setHtml(content);
-	
-    QFile f2(":/files/shortcuts2.html");
-    f2.open(QIODevice::ReadOnly);
-    QTextStream txtS2(&f2);
-    content = txtS2.readAll();
-    f2.close();
-
-    shortcuts2->setHtml(content);
 
 	setWindowTitle(tr("Keyboard Shortcuts"));
 }

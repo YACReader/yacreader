@@ -201,7 +201,7 @@ void TableModel::setupModelData(QSqlQuery &sqlquery)
 		QSqlRecord record = sqlquery.record();
 		for(int i=0;i<record.count();i++)
 			data << record.value(i);
-		//TODO sort by sort indicator and name
+
 		currentItem = new TableItem(data);
 		bool lessThan = false;
 		if(_data.isEmpty())
@@ -209,7 +209,7 @@ void TableModel::setupModelData(QSqlQuery &sqlquery)
 		else
 		{
 			TableItem * last = _data.back();
-			QString nameLast = last->data(FILE_NAME).toString(); //TODO usar info name si está disponible, sino el nombre del fichero.....
+			QString nameLast = last->data(FILE_NAME).toString();
 			QString nameCurrent = currentItem->data(FILE_NAME).toString();
 			int numberLast,numberCurrent;
 			numberLast = numberCurrent = NUMBER_MAX; //TODO change by std limit
@@ -305,7 +305,6 @@ QVector<bool> TableModel::getReadList()
 	QVector<bool> readList(numComics);
 	for(int i=0;i<numComics;i++)
 	{
-		//TODO reemplazar el acceso a las columnas con enteros por defines
 		readList[i] = _data.value(i)->data(READ).toBool();
 	}
 	return readList;
@@ -319,7 +318,6 @@ QVector<bool> TableModel::setAllComicsRead(bool read)
 	QVector<bool> readList(numComics);
 	for(int i=0;i<numComics;i++)
 	{
-		//TODO reemplazar el acceso a las columnas con enteros por defines
 		readList[i] = read; 
 		_data.value(i)->data(READ) = QVariant(true);
 		Comic c;
