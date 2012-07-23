@@ -10,6 +10,7 @@
 #include <QFile>
 #include <QPoint>
 #include <QWidget>
+#include <QTextCodec>
 
 #include "translator.h"
 
@@ -28,6 +29,7 @@ YACReaderTranslator::YACReaderTranslator(QWidget * parent)
 	QFile f(":/files/translator.html");
 	f.open(QIODevice::ReadOnly);
 	QTextStream txtS(&f);
+	txtS.setCodec(QTextCodec::codecForName("UTF-8"));
 	QString contentHTML = txtS.readAll();
 	view->setHtml(contentHTML);
 	view->page()->setLinkDelegationPolicy(QWebPage::DelegateExternalLinks);

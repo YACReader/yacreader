@@ -41,7 +41,6 @@ void LibraryCreator::processLibrary(const QString & source, const QString & targ
 {
 	_source = source;
 	_target = target;
-	//if(!(QFile(target+"/library.ydb").exists())) //TODO, no sirve sólo con realizar el update, hay que validar la base de datos y determinar si existe "/covers"
 	if(DataBaseManagement::checkValidDB(target+"/library.ydb")=="")
 	{
 		//se limpia el directorio ./yacreaderlibrary
@@ -102,7 +101,7 @@ void LibraryCreator::run()
 
 void LibraryCreator::stop()
 {
-	_database.commit(); //TODO check
+	_database.commit();
 	stopRunning = true;
 }
 
@@ -236,8 +235,7 @@ void LibraryCreator::update(QDir dirS)
 {
 	dirS.setNameFilters(_nameFilter);
 	dirS.setFilter(QDir::AllDirs|QDir::Files|QDir::NoDotAndDotDot);
-	dirS.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware|QDir::DirsFirst); //TODO la ordenación debe ser igual que en la base de datos
-	//TODO obtener primero los directorios, después los ficheros, ordenar por separado y concatenar
+	dirS.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware|QDir::DirsFirst); 
 	QFileInfoList listS = dirS.entryInfoList();
 
 	QList<LibraryItem *> folders = Folder::getFoldersFromParent(_currentPathFolders.last().id,_database);
@@ -456,7 +454,6 @@ void ThumbnailCreator::create()
 	{
 		if(p.loadFromData(image))
 		{
-			//TODO calculate aspect ratio
 			QImage scaled;
 			if(p.width()>p.height()) //landscape??
 				scaled = p.scaledToWidth(640,Qt::SmoothTransformation);
@@ -468,7 +465,6 @@ void ThumbnailCreator::create()
 		{
 			p.load(":/images/notCover.png");
 			p.save(_target);
-			//TODO save a default image.
 		}
 	}
 	delete _7z;

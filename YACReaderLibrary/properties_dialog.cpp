@@ -350,7 +350,7 @@ void PropertiesDialog::setComics(QList<Comic> comics)
 			if(itr->info.title == NULL || *(itr->info.title) != title->text())
 				title->clear();
 			
-			if(itr->info.count == NULL || *(itr->info.count) != countEdit->text().toInt()) //TODO esto está mal
+			if(itr->info.count == NULL || *(itr->info.count) != countEdit->text().toInt())
 				countEdit->clear();
 
 			if(itr->info.volume == NULL || *(itr->info.volume) != volumeEdit->text())

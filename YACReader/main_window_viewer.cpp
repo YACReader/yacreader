@@ -537,7 +537,7 @@ void MainWindowViewer::newVersion()
 	int ret = msgBox.exec();
 
 	if(ret==QMessageBox::Yes){
-		QDesktopServices::openUrl(QUrl("http://code.google.com/p/yacreader/"));
+		QDesktopServices::openUrl(QUrl("http://www.yacreader.com"));
 	}
 }
 

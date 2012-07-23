@@ -40,7 +40,7 @@ QList<LibraryItem *> Folder::getFoldersFromParent(qulonglong parentId, QSqlDatab
 		else
 		{
 			Folder * last = static_cast<Folder *>(list.back());
-			QString nameLast = last->name; //TODO usar info name si está disponible, sino el nombre del fichero.....
+			QString nameLast = last->name; 
 			QString nameCurrent = currentItem->name;
 			QList<LibraryItem *>::iterator i;
 			i = list.end();
