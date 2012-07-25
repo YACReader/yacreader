@@ -51,8 +51,7 @@ RESOURCES += images.qrc \
     files.qrc 
 RC_FILE = icon.rc
 
-macx
-{
+macx {
 	ICON = icon.icns
 }
 
