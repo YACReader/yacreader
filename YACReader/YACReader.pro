@@ -52,7 +52,7 @@ RESOURCES += images.qrc \
 RC_FILE = icon.rc
 
 macx {
-	ICON = icon.icns
+	ICON = YACReader.icns
 }
 
 TRANSLATIONS = yacreader_es.ts \ yacreader_fr.ts
