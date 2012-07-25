@@ -13,7 +13,10 @@ make
 cd ..
 
 mkdir ./bin
-cp -R ./YACReader/YACReader.app ./bin/YACReader.app
-cp -R ./YACReaderLibrary/YACReaderLibrary.app ./bin/YACReaderLibrary.app
+cp -R ./YACReader/YACReader.app ./YACReader.app
+cp -R ./YACReaderLibrary/YACReaderLibrary.app ./YACReaderLibrary.app
+
+echo "Configuring release apps"
+./releaseOSX.sh
 
 echo "Done!"
