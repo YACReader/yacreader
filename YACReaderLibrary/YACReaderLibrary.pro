@@ -75,6 +75,11 @@ include(./server/server.pri)
 RESOURCES += images.qrc files.qrc
 RC_FILE = icon.rc
 
+macx
+{
+	ICON = icon.icns
+}
+
 TRANSLATIONS    = yacreaderlibrary_es.ts
 
 Release:DESTDIR = ../release

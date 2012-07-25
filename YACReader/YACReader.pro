@@ -50,6 +50,12 @@ SOURCES += comic.cpp \
 RESOURCES += images.qrc \
     files.qrc 
 RC_FILE = icon.rc
+
+macx
+{
+	ICON = icon.icns
+}
+
 TRANSLATIONS = yacreader_es.ts \ yacreader_fr.ts
 FORMS += 
 
