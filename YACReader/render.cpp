@@ -403,6 +403,7 @@ void Render::load(const QString & path)
 	previousIndex = currentIndex = 0;
 
 	connect(comic,SIGNAL(errorOpening()),this,SIGNAL(errorOpening()));
+	connect(comic,SIGNAL(errorOpening()),this,SLOT(reset()));
 	connect(comic,SIGNAL(imageLoaded(int)),this,SIGNAL(imageLoaded(int)));
 	connect(comic,SIGNAL(imageLoaded(int)),this,SLOT(pageRawDataReady(int)));
 	//connect(comic,SIGNAL(pageChanged(int)),this,SIGNAL(pageChanged(int)));
@@ -412,9 +413,19 @@ void Render::load(const QString & path)
 	connect(comic,SIGNAL(isBookmark(bool)),this,SIGNAL(currentPageIsBookmark(bool)));
 	connect(comic,SIGNAL(bookmarksLoaded(const Bookmarks &)),this,SIGNAL(bookmarksLoaded(const Bookmarks &)));
 	pagesReady.clear();
-	comic->load(path);
+	if(comic->load(path)) //garantiza que se va a intentar abrir el cómic
+	{
+		invalidate();
+		loadedComic = true;
+		update();
+	}
+	
+}
+
+void Render::reset()
+{
+	loadedComic = false;
 	invalidate();
-	loadedComic = true; //TODO reset if an error occurs while opening
 }
 //si se solicita la siguiente página, se calcula cuál debe ser en función de si se lee en modo a doble página o no.
 //la página sólo se renderiza, si realmente ha cambiado.

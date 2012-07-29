@@ -138,6 +138,7 @@ public slots:
 	void setBookmark();
 	void removeBookmark();
 	void save();
+	void reset();
 
 signals:
 	void currentPageReady();
