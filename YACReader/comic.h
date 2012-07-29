@@ -33,7 +33,7 @@
 		Comic(const QString pathFile);
 		void setup();
 		//Load pages from file
-		void load(const QString & path);
+		bool load(const QString & path);
 		void loadFromFile(const QString & pathFile);
 		void loadFromDir(const QString & pathDir);
 		int nextPage();

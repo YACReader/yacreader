@@ -31,22 +31,33 @@ void Comic::setup()
 	connect(this,SIGNAL(imageLoaded(int)),this,SLOT(updateBookmarkImage(int)));
 }
 //-----------------------------------------------------------------------------
-void Comic::load(const QString & path)
+bool Comic::load(const QString & path)
 {
-    QFileInfo fi(path);
-    bm->newComic(path);
-	emit bookmarksLoaded(*bm);
-    if(fi.isFile())
-    {
-	loadFromFile(path);
-    }
-    else
-    {
-	if(fi.isDir())
+	QFileInfo fi(path);
+	if(fi.exists())
 	{
-	    loadFromDir(path);
+		bm->newComic(path);
+		emit bookmarksLoaded(*bm);
+		
+		if(fi.isFile())
+		{
+			loadFromFile(path);
+		}
+		else
+		{
+			if(fi.isDir())
+			{
+				loadFromDir(path);
+			}
+		}
+		return true;
 	}
-    }
+	else
+	{
+		QMessageBox::critical(NULL,tr("Not found"),tr("Comic not found"));
+		emit errorOpening();
+		return false;
+	}
 }
 //-----------------------------------------------------------------------------
 void Comic::loadFromFile(const QString & pathFile)

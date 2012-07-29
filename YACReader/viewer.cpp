@@ -130,7 +130,7 @@ void Viewer::open(QString pathFile)
 
 	goToFlow->reset();
 	render->load(pathFile);
-	render->update();
+	//render->update();
 
 	verticalScrollBar()->setSliderPosition(verticalScrollBar()->minimum());
 }
