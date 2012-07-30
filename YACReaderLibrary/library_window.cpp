@@ -438,8 +438,9 @@ void LibraryWindow::createToolBars()
 
 	libraryToolBar->addSeparator();
 
-	libraryToolBar->addAction(importLibraryAction);
 	libraryToolBar->addAction(exportLibraryAction);
+	libraryToolBar->addAction(importLibraryAction);
+	
 
 	libraryToolBar->addSeparator();
 	libraryToolBar->addAction(updateLibraryAction); 

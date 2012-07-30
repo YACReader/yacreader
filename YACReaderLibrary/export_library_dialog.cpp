@@ -2,6 +2,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QDir>
 
 ExportLibraryDialog::ExportLibraryDialog(QWidget * parent)
@@ -63,10 +64,17 @@ ExportLibraryDialog::ExportLibraryDialog(QWidget * parent)
 
 void ExportLibraryDialog::exportLibrary()
 {
-	progressBar->show();
-	accept->setEnabled(false);
-	emit exportPath(QDir::cleanPath(path->text()));
-	t.start();
+	QFileInfo f(path->text());
+	if(f.exists() && f.isDir() && f.isWritable())
+	{
+		progressBar->show();
+		accept->setEnabled(false);
+		emit exportPath(QDir::cleanPath(path->text()));
+		t.start();
+	}
+	else
+		QMessageBox::critical(NULL,tr("Problem found while writing"),tr("The selected path for the output file does not exist or is not a valid path. Be sure that you have write access to this folder"));
+
 }
 
 void ExportLibraryDialog::findPath()
