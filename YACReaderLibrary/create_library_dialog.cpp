@@ -4,7 +4,7 @@
 #include <QVBoxLayout>
 #include <QFileDialog>
 #include <QSizePolicy>
-
+#include <QMessageBox>
 
 CreateLibraryDialog::CreateLibraryDialog(QWidget * parent)
 :QDialog(parent)
@@ -93,12 +93,19 @@ void CreateLibraryDialog::setupUI()
 
 void CreateLibraryDialog::create()
 {
-	progressBar->show();
-	message->show();
-	currentFileLabel->setText("Importing : \n\n\n\n\n");
-	this->adjustSize();
-	accept->setEnabled(false);
-	emit(createLibrary(QDir::cleanPath(path->text()),QDir::cleanPath(path->text())+"/.yacreaderlibrary",nameEdit->text()));
+
+	QFileInfo f(path->text());
+	if(f.exists() && f.isDir() && f.isWritable())
+	{
+		progressBar->show();
+		message->show();
+		currentFileLabel->setText("Importing : \n\n\n\n\n");
+		this->adjustSize();
+		accept->setEnabled(false);
+		emit(createLibrary(QDir::cleanPath(path->text()),QDir::cleanPath(path->text())+"/.yacreaderlibrary",nameEdit->text()));
+	}
+	else
+		QMessageBox::critical(NULL,tr("Path not found"),tr("The selected path does not exist or is not a valid path. Be sure that you have write access to this folder"));
 }
 
 void CreateLibraryDialog::findPath()
@@ -125,7 +132,7 @@ void CreateLibraryDialog::close()
 	nameEdit->clear();
 	currentFileLabel->setText("");
 	this->adjustSize();
-	accept->setEnabled(true);
+	accept->setEnabled(false);
 	QDialog::close();
 }
 
