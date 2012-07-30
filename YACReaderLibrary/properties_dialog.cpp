@@ -687,5 +687,7 @@ void PropertiesDialog::closeEvent ( QCloseEvent * e )
 
 	tabBar->setCurrentIndex(0);
 
+	coverPageEdit->setFocus();
+
 	QDialog::closeEvent(e);
 }

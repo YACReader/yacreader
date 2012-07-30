@@ -4,6 +4,7 @@
 #include <QVBoxLayout>
 #include <QFileDialog>
 #include <QDir>
+#include <QMessageBox>
 
 #include "data_base_management.h"
 
@@ -73,8 +74,15 @@ void ExportComicsInfoDialog::findPath()
 
 void ExportComicsInfoDialog::exportComicsInfo()
 {
-	DataBaseManagement::exportComicsInfo(source,path->text());
-	close();
+	QFileInfo f(path->text());
+	QFileInfo fPath(f.absoluteDir().path());
+	if(fPath.exists() && fPath.isDir() && fPath.isWritable())
+	{
+		DataBaseManagement::exportComicsInfo(source,path->text());
+		close();
+	}
+	else
+		QMessageBox::critical(NULL,tr("Problem found while writing"),tr("The selected path for the output file does not exist or is not a valid path. Be sure that you have write access to this folder"));
 }
 
 void ExportComicsInfoDialog::close()
