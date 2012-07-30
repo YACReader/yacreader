@@ -487,31 +487,20 @@ void DataBaseManagement::bindInt(const QString & name, const QSqlRecord & record
 QString DataBaseManagement::checkValidDB(const QString & fullPath)
 {
 	QSqlDatabase db = loadDatabaseFromFile(fullPath);
+	QString versionString = "";
 	if(db.isValid() && db.isOpen())
 	{
 		QSqlQuery version(db);
 		version.prepare("SELECT * FROM db_info");
 		version.exec();
-		if(version.next())
-		{
-			db.close();
-			QSqlDatabase::removeDatabase(fullPath);
-			return version.record().value("version").toString();
-		}
-		else
-		{
-			db.close();
-			QSqlDatabase::removeDatabase(fullPath);
-			return "";
-		}
 
+		if(version.next())
+			versionString = version.record().value("version").toString();
 	}
-	else
-	{
-		db.close();
-		QSqlDatabase::removeDatabase(fullPath);
-		return "";
-	}
+
+	db.close();
+	QSqlDatabase::removeDatabase(fullPath);
+	return versionString;
 }
 
 int DataBaseManagement::compareVersions(const QString & v1, const QString v2)
