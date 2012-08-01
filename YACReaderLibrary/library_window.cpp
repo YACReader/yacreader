@@ -1207,6 +1207,7 @@ void LibraryWindow::asignNumbers()
 	{
 		Comic c = comics[i];
 		c.info.setNumber(startingNumber+i);
+		c.info.edited = true;
 		c.info.update(db);
 		/*QString hash = comics[i].info.hash;
 		comics[i].info.setNumber(i+1);

@@ -248,111 +248,7 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 	{
 	QSqlQuery pragma("PRAGMA synchronous=OFF",destDB);
 	
-	QSqlQuery update(destDB);
-	update.prepare("UPDATE comic_info SET "
-		"title = :title,"
-		
-		"coverPage = :coverPage,"
-		"numPages = :numPages,"
 
-		"number = :number,"
-		"isBis = :isBis,"
-		"count = :count,"
-
-		"volume = :volume,"
-		"storyArc = :storyArc,"
-		"arcNumber = :arcNumber,"
-		"arcCount = :arcCount,"
-
-		"genere = :genere,"
-		
-		"writer = :writer,"
-		"penciller = :penciller,"
-		"inker = :inker,"
-		"colorist = :colorist,"
-		"letterer = :letterer,"
-		"coverArtist = :coverArtist,"
-
-		"date = :date,"
-		"publisher = :publisher,"
-		"format = :format,"
-		"color = :color,"
-		"ageRating = :ageRating,"
-
-		"synopsis = :synopsis,"
-		"characters = :characters,"
-		"notes = :notes,"
-		
-		"edited = :edited"
-		
-		" WHERE hash = :hash ");
-
-		QSqlQuery insert(destDB);
-	insert.prepare("INSERT INTO comic_info "
-		"(title,"
-		"coverPage,"
-		"numPages,"
-		"number,"
-		"isBis,"
-		"count,"
-		"volume,"
-		"storyArc,"
-		"arcNumber,"
-		"arcCount,"
-		"genere,"
-		"writer,"
-		"penciller,"
-		"inker,"
-		"colorist,"
-		"letterer,"
-		"coverArtist,"
-		"date,"
-		"publisher,"
-		"format,"
-		"color,"
-		"ageRating,"
-		"synopsis,"
-		"characters,"
-		"notes,"
-		"read,"
-		"edited,"
-		"hash)"
-
-		"VALUES (:title,"
-		":coverPage,"
-		":numPages,"
-		":number,"
-		":isBis,"
-		":count,"
-
-		":volume,"
-		":storyArc,"
-		":arcNumber,"
-		":arcCount,"
-
-		":genere,"
-		
-		":writer,"
-		":penciller,"
-		":inker,"
-		":colorist,"
-		":letterer,"
-		":coverArtist,"
-
-		":date,"
-		":publisher,"
-		":format,"
-		":color,"
-		":ageRating,"
-
-		":synopsis,"
-		":characters,"
-		":notes,"
-		
-		":read,"
-		":edited,"
-		
-		":hash )");
 	QSqlQuery newInfo(sourceDB);
 	newInfo.prepare("SELECT * FROM comic_info");
 	newInfo.exec();
@@ -360,6 +256,112 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 	int cp;
 	while (newInfo.next()) //cada tupla deberá ser insertada o actualizada
 	{
+		QSqlQuery update(destDB);
+		update.prepare("UPDATE comic_info SET "
+			"title = :title,"
+
+			"coverPage = :coverPage,"
+			"numPages = :numPages,"
+
+			"number = :number,"
+			"isBis = :isBis,"
+			"count = :count,"
+
+			"volume = :volume,"
+			"storyArc = :storyArc,"
+			"arcNumber = :arcNumber,"
+			"arcCount = :arcCount,"
+
+			"genere = :genere,"
+
+			"writer = :writer,"
+			"penciller = :penciller,"
+			"inker = :inker,"
+			"colorist = :colorist,"
+			"letterer = :letterer,"
+			"coverArtist = :coverArtist,"
+
+			"date = :date,"
+			"publisher = :publisher,"
+			"format = :format,"
+			"color = :color,"
+			"ageRating = :ageRating,"
+
+			"synopsis = :synopsis,"
+			"characters = :characters,"
+			"notes = :notes,"
+
+			"edited = :edited"
+
+			" WHERE hash = :hash ");
+
+		QSqlQuery insert(destDB);
+		insert.prepare("INSERT INTO comic_info "
+			"(title,"
+			"coverPage,"
+			"numPages,"
+			"number,"
+			"isBis,"
+			"count,"
+			"volume,"
+			"storyArc,"
+			"arcNumber,"
+			"arcCount,"
+			"genere,"
+			"writer,"
+			"penciller,"
+			"inker,"
+			"colorist,"
+			"letterer,"
+			"coverArtist,"
+			"date,"
+			"publisher,"
+			"format,"
+			"color,"
+			"ageRating,"
+			"synopsis,"
+			"characters,"
+			"notes,"
+			"read,"
+			"edited,"
+			"hash)"
+
+			"VALUES (:title,"
+			":coverPage,"
+			":numPages,"
+			":number,"
+			":isBis,"
+			":count,"
+
+			":volume,"
+			":storyArc,"
+			":arcNumber,"
+			":arcCount,"
+
+			":genere,"
+
+			":writer,"
+			":penciller,"
+			":inker,"
+			":colorist,"
+			":letterer,"
+			":coverArtist,"
+
+			":date,"
+			":publisher,"
+			":format,"
+			":color,"
+			":ageRating,"
+
+			":synopsis,"
+			":characters,"
+			":notes,"
+
+			":read,"
+			":edited,"
+
+			":hash )");
+
 		QSqlRecord record = newInfo.record();
 		cp = record.value("coverPage").toInt();
 		if(cp>1)
@@ -396,11 +398,11 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 			QString error1 = insert.lastError().databaseText();
 			QString error2 = insert.lastError().driverText();
 
-			QMessageBox::critical(NULL,"db",error1);
-			QMessageBox::critical(NULL,"driver",error2);
+			//QMessageBox::critical(NULL,"db",error1);
+			//QMessageBox::critical(NULL,"driver",error2);
 		}
-		update.finish();
-		insert.finish();
+		//update.finish();
+		//insert.finish();
 		}
 	}
 
