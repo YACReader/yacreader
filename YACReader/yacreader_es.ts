@@ -28,62 +28,72 @@
 <context>
     <name>Comic</name>
     <message>
-        <location filename="comic.cpp" line="87"/>
+        <location filename="comic.cpp" line="57"/>
+        <source>Not found</source>
+        <translation>No encontrado</translation>
+    </message>
+    <message>
+        <location filename="comic.cpp" line="57"/>
+        <source>Comic not found</source>
+        <translation>Cómic no encontrado</translation>
+    </message>
+    <message>
+        <location filename="comic.cpp" line="98"/>
         <source>No images found</source>
         <translation>No se han encontrado imágenes</translation>
     </message>
     <message>
-        <location filename="comic.cpp" line="87"/>
+        <location filename="comic.cpp" line="98"/>
         <source>There are not images on the selected folder</source>
         <translation>No hay imágenes en el directorio seleccionado</translation>
     </message>
     <message>
-        <location filename="comic.cpp" line="128"/>
+        <location filename="comic.cpp" line="139"/>
         <source>File error</source>
         <translation>Error en archivo</translation>
     </message>
     <message>
-        <location filename="comic.cpp" line="128"/>
+        <location filename="comic.cpp" line="139"/>
         <source>File not found or not images in file</source>
         <translation>Archivo no encontrado o no hay imágenes en él</translation>
     </message>
     <message>
-        <location filename="comic.cpp" line="181"/>
+        <location filename="comic.cpp" line="192"/>
         <source>7z not found</source>
         <translation>7z no encontrado</translation>
     </message>
     <message>
-        <location filename="comic.cpp" line="181"/>
+        <location filename="comic.cpp" line="192"/>
         <source>7z wasn&apos;t found in your PATH.</source>
         <translation>7z no se ha encontrado en el PATH.</translation>
     </message>
     <message>
-        <location filename="comic.cpp" line="184"/>
+        <location filename="comic.cpp" line="195"/>
         <source>7z crashed</source>
         <translation>7z falló</translation>
     </message>
     <message>
-        <location filename="comic.cpp" line="184"/>
+        <location filename="comic.cpp" line="195"/>
         <source>7z crashed.</source>
         <translation>7z falló.</translation>
     </message>
     <message>
-        <location filename="comic.cpp" line="187"/>
+        <location filename="comic.cpp" line="198"/>
         <source>7z reading</source>
         <translation>7z leyendo</translation>
     </message>
     <message>
-        <location filename="comic.cpp" line="187"/>
+        <location filename="comic.cpp" line="198"/>
         <source>problem reading from 7z</source>
         <translation>Problema leyendo desde 7z</translation>
     </message>
     <message>
-        <location filename="comic.cpp" line="190"/>
+        <location filename="comic.cpp" line="201"/>
         <source>7z problem</source>
         <translation>7z problema</translation>
     </message>
     <message>
-        <location filename="comic.cpp" line="190"/>
+        <location filename="comic.cpp" line="201"/>
         <source>Unknown error 7z</source>
         <translation>Error desconocido 7z</translation>
     </message>
@@ -120,7 +130,7 @@
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="41"/>
-        <location filename="goto_dialog.cpp" line="69"/>
+        <location filename="goto_dialog.cpp" line="73"/>
         <source>Total pages : </source>
         <translation>Páginas totales:</translation>
     </message>
@@ -145,12 +155,12 @@
 <context>
     <name>HelpAboutDialog</name>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="31"/>
+        <location filename="../common/custom_widgets.cpp" line="32"/>
         <source>About</source>
         <translation>Acerca de</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="34"/>
+        <location filename="../common/custom_widgets.cpp" line="35"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
@@ -529,17 +539,17 @@
 <context>
     <name>ShortcutsDialog</name>
     <message>
-        <location filename="shortcuts_dialog.cpp" line="15"/>
+        <location filename="shortcuts_dialog.cpp" line="16"/>
         <source>YACReader keyboard shortcuts</source>
         <translation>Atajos de teclado de YACReader</translation>
     </message>
     <message>
-        <location filename="shortcuts_dialog.cpp" line="19"/>
+        <location filename="shortcuts_dialog.cpp" line="20"/>
         <source>Close</source>
         <translation>Cerrar</translation>
     </message>
     <message>
-        <location filename="shortcuts_dialog.cpp" line="73"/>
+        <location filename="shortcuts_dialog.cpp" line="66"/>
         <source>Keyboard Shortcuts</source>
         <translation>Atajos de teclado</translation>
     </message>
@@ -564,6 +574,36 @@
         <location filename="viewer.cpp" line="580"/>
         <source>Loading...please wait!</source>
         <translation>Cargando...espere, por favor!</translation>
+    </message>
+</context>
+<context>
+    <name>YACReaderFieldEdit</name>
+    <message>
+        <location filename="../common/custom_widgets.cpp" line="383"/>
+        <location filename="../common/custom_widgets.cpp" line="403"/>
+        <source>Click to overwrite</source>
+        <translation>Click para sobreescribir</translation>
+    </message>
+    <message>
+        <location filename="../common/custom_widgets.cpp" line="385"/>
+        <source>Restore to default</source>
+        <translation>Restaurar valor por defecto</translation>
+    </message>
+</context>
+<context>
+    <name>YACReaderFieldPlainTextEdit</name>
+    <message>
+        <location filename="../common/custom_widgets.cpp" line="421"/>
+        <location filename="../common/custom_widgets.cpp" line="432"/>
+        <location filename="../common/custom_widgets.cpp" line="457"/>
+        <location filename="../common/custom_widgets.cpp" line="463"/>
+        <source>Click to overwrite</source>
+        <translation>Click para sobreescribir</translation>
+    </message>
+    <message>
+        <location filename="../common/custom_widgets.cpp" line="422"/>
+        <source>Restore to default</source>
+        <translation>Restaurar valor por defecto</translation>
     </message>
 </context>
 </TS>
