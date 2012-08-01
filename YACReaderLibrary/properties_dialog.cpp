@@ -180,7 +180,7 @@ void PropertiesDialog::createAuthorsBox()
 	QHBoxLayout * h3 = new QHBoxLayout;
 	QVBoxLayout * vl3 = new QVBoxLayout;
 	QVBoxLayout * vr3 = new QVBoxLayout;
-	vl3->addWidget(new QLabel(tr("Letterer(es):")));
+	vl3->addWidget(new QLabel(tr("Letterer(s):")));
 	vl3->addWidget(letterer = new YACReaderFieldPlainTextEdit());
 	h3->addLayout(vl3);
 	vr3->addWidget(new QLabel(tr("Cover Artist(s):")));
