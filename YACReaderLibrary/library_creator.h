@@ -46,6 +46,8 @@
 		//qulonglong insertFolder(qulonglong parentId,const Folder & folder);
 		//qulonglong insertComic(const Comic & comic);
         bool stopRunning;
+		//LibraryCreator está en modo creación si creation == true;
+		bool creation;
 	signals:
 		void finished();
         void coverExtracted(QString);
