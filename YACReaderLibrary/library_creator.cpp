@@ -23,12 +23,14 @@ QMutex mutex;
 
 //--------------------------------------------------------------------------------
 LibraryCreator::LibraryCreator()
+	:creation(false)
 {
 	_nameFilter << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar";
 }
 
 void LibraryCreator::createLibrary(const QString &source, const QString &target)
 {
+	creation = true;
 	processLibrary(source,target);
 }
 
@@ -47,7 +49,7 @@ void LibraryCreator::processLibrary(const QString & source, const QString & targ
 		delTree(target);
 		_mode = CREATOR;
 	}
-	else
+	else //
 		_mode = UPDATER;
 }
 
@@ -93,10 +95,15 @@ void LibraryCreator::run()
 		_database.commit();
 		_database.close();
 		QSqlDatabase::removeDatabase(_target);
-		emit(updated());
+		//si estabamos en modo creación, se está añadiendo una librería que ya existía y se ha actualizado antes de añadirse.
+		if(!creation)
+			emit(updated());
+		else
+			emit(created());
 	}
 	msleep(100);//TODO try to solve the problem with the udpate dialog
 	emit(finished());
+	creation = false;
 }
 
 void LibraryCreator::stop()
