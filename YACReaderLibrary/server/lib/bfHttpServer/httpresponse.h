@@ -83,6 +83,7 @@ public:
       @param lastPart Indicator, if this is the last part of the response.
     */
     void write(QByteArray data, bool lastPart=false);
+	void writeText(QString text, bool lastPart=false);
 
     /**
       Indicates wheter the body has been sent completely. Used by the connection
