@@ -4,6 +4,23 @@
 #include <QSqlRecord>
 #include <QVariant>
 
+Folder::Folder(qulonglong id, QSqlDatabase & db)
+{
+	QSqlQuery query(db);
+	query.prepare("SELECT * FROM folder WHERE id = :id");
+	query.bindValue(":id",id);
+	query.exec();
+	this->id = id;
+	this->parentId = 0;
+	if(query.next())
+	{
+		QSqlRecord record = query.record();
+		this->parentId = record.value("parentId").toULongLong();
+		this->name = record.value("name").toString();
+		this->path = record.value("path").toString();
+	}
+}
+
 qulonglong Folder::insert(QSqlDatabase & db)
 {
 	QSqlQuery query(db);

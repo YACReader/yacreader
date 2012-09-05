@@ -199,6 +199,12 @@ public:
 		void showExportComicsInfo();
 		void showImportComicsInfo();
 		void asignNumbers();
+
+		//server interface
+		QMap<QString,QString> getLibraries(){return libraries;};
+		QList<LibraryItem *> getFolderContentFromLibrary(const QString & libraryName, qulonglong folderId);
+		QList<LibraryItem *> getFolderComicsFromLibrary(const QString & libraryName, qulonglong folderId);
+		qulonglong getParentFromComicFolderId(const QString & libraryName, qulonglong id);
 };
 
 #endif

@@ -26,7 +26,8 @@ HttpConnectionHandler* HttpConnectionHandlerPool::getConnectionHandler() {
         }
     }
     if (!freeHandler) {
-        int maxConnectionHandlers=settings->value("maxThreads",10).toInt();
+		//CAMBIADO
+        int maxConnectionHandlers= 100;//settings->value("maxThreads",10).toInt();
         if (pool.count()<maxConnectionHandlers) {
             freeHandler=new HttpConnectionHandler(settings,requestHandler);
             pool.append(freeHandler);

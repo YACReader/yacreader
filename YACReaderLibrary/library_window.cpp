@@ -1332,3 +1332,37 @@ void LibraryWindow::showImportComicsInfo()
 	importComicsInfoDialog->dest = currentPath() + "/.yacreaderlibrary/library.ydb";
 	importComicsInfoDialog->show();
 }
+
+QList<LibraryItem *> LibraryWindow::getFolderContentFromLibrary(const QString & libraryName, qulonglong folderId)
+{
+	QSqlDatabase db = DataBaseManagement::loadDatabase(libraries.value(libraryName)+"/.yacreaderlibrary");
+	
+	QList<LibraryItem *> list = Folder::getFoldersFromParent(folderId,db);
+	
+	db.close();
+	QSqlDatabase::removeDatabase(libraries.value(libraryName));
+	return list;
+
+}
+
+QList<LibraryItem *> LibraryWindow::getFolderComicsFromLibrary(const QString & libraryName, qulonglong folderId)
+{
+	QSqlDatabase db = DataBaseManagement::loadDatabase(libraries.value(libraryName)+"/.yacreaderlibrary");
+
+	QList<LibraryItem *> list = Comic::getComicsFromParent(folderId,db);
+
+	db.close();
+	QSqlDatabase::removeDatabase(libraries.value(libraryName));
+	return list;
+}
+
+qulonglong LibraryWindow::getParentFromComicFolderId(const QString & libraryName, qulonglong id)
+{
+	QSqlDatabase db = DataBaseManagement::loadDatabase(libraries.value(libraryName)+"/.yacreaderlibrary");
+
+	Folder f(id,db);
+
+	db.close();
+	QSqlDatabase::removeDatabase(libraries.value(libraryName));
+	return f.parentId;
+}
