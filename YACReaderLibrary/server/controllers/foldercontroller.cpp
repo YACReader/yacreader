@@ -103,7 +103,7 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 
 	while(j<numComicsAtCurrentPage)
 	{
-		const Comic * comic = (Comic *)folderComics.at(j+comicsOffset);
+		const ComicDB * comic = (ComicDB *)folderComics.at(j+comicsOffset);
 		//if(comic->info.title == 0 || comic->info.title->isEmpty())
 			t.setVariable(QString("elementcomic%1.name").arg(j),comic->name);
 		//else

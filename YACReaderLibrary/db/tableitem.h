@@ -3,7 +3,7 @@
 
 #include <QList>
 #include <QVariant>
-#include "comic.h"
+#include "comic_db.h"
 
 //! [0]
 class TableItem

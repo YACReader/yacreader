@@ -34,12 +34,14 @@ HEADERS += comic_flow.h \
 		   ./db/treemodel.h \
 		   ./db/tablemodel.h \
 		   ./db/tableitem.h \
-		   ./db/comic.h \
+		   ./db/comic_db.h \
 		   ./db/folder.h \
 		   ./db/library_item.h \
 		   export_comics_info_dialog.h \
 		   import_comics_info_dialog.h \
-		   ../common/check_new_version.h
+		   ../common/check_new_version.h \
+		   ../YACReader/comic.h \
+		   ../YACReader/bookmarks.h
 		   
 SOURCES += comic_flow.cpp \
            create_library_dialog.cpp \
@@ -62,12 +64,14 @@ SOURCES += comic_flow.cpp \
 		   ./db/treemodel.cpp \
 		   ./db/tablemodel.cpp \
 		   ./db/tableitem.cpp \
-		   ./db/comic.cpp \
+		   ./db/comic_db.cpp \
 		   ./db/folder.cpp \
 		   ./db/library_item.cpp \
 		   export_comics_info_dialog.cpp \
 		   import_comics_info_dialog.cpp \
-		   ../common/check_new_version.cpp
+		   ../common/check_new_version.cpp \
+		   ../YACReader/comic.cpp \
+		   ../YACReader/bookmarks.cpp
 		   
 include(./server/server.pri)
 

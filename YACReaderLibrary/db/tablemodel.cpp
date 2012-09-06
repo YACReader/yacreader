@@ -274,9 +274,9 @@ void TableModel::setupModelData(QSqlQuery &sqlquery)
 	}
 }
 
-Comic TableModel::getComic(const QModelIndex & mi)
+ComicDB TableModel::getComic(const QModelIndex & mi)
 {
-	Comic c;
+	ComicDB c;
 
 	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 	c.load(_data.at(mi.row())->data(ID).toULongLong(),db);
@@ -286,9 +286,9 @@ Comic TableModel::getComic(const QModelIndex & mi)
 	return c;
 }
 
-Comic TableModel::_getComic(const QModelIndex & mi)
+ComicDB TableModel::_getComic(const QModelIndex & mi)
 {
-	Comic c;
+	ComicDB c;
 
 	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 	c.load(_data.at(mi.row())->data(ID).toULongLong(),db);
@@ -320,7 +320,7 @@ QVector<bool> TableModel::setAllComicsRead(bool read)
 	{
 		readList[i] = read; 
 		_data.value(i)->data(READ) = QVariant(true);
-		Comic c;
+		ComicDB c;
 		c.load(_data.value(i)->data(ID).toULongLong(),db);
 		c.info.read = read;
 		c.info.update(db);
@@ -332,9 +332,9 @@ QVector<bool> TableModel::setAllComicsRead(bool read)
 	return readList;
 }
 
-QList<Comic> TableModel::getComics(QList<QModelIndex> list)
+QList<ComicDB> TableModel::getComics(QList<QModelIndex> list)
 {
-	QList<Comic> comics;
+	QList<ComicDB> comics;
 
 	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 	db.transaction();

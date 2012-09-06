@@ -15,7 +15,7 @@
 #include <QSqlDatabase>
 
 #include "folder.h"
-#include "comic.h"
+#include "comic_db.h"
 
 
 	class LibraryCreator : public QThread
