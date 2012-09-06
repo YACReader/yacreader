@@ -16,6 +16,7 @@
 #include "controllers/foldercontroller.h"
 #include "controllers/covercontroller.h"
 #include "controllers/comiccontroller.h"
+#include "controllers/folderinfocontroller.h"
 
 RequestMapper::RequestMapper(QObject* parent)
     :HttpRequestHandler(parent) {}
@@ -35,7 +36,10 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 	{
 		FolderController().service(request, response);
 	}
-
+	else if (path.contains("folder") && path.contains("info"))
+	{
+		FolderInfoController().service(request, response);
+	}
 	else if(path.contains("cover") )
 	{
 		CoverController().service(request, response);

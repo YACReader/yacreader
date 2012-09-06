@@ -7,6 +7,7 @@
 #include <QDateTime>
 #include <QUuid>
 
+#include "comic.h"
 
 HttpSession::HttpSession(bool canStore) {
     if (canStore) {
@@ -155,4 +156,71 @@ void HttpSession::setLastAccess() {
         dataPtr->lastAccess=QDateTime::currentMSecsSinceEpoch();
         dataPtr->lock.unlock();
     }
+}
+
+
+//AÑADIDO
+bool HttpSession::isComicOnDevice(const QString & hash)
+{
+	if(dataPtr)
+		return dataPtr->yacreaderSessionData.downloadedComics.contains(hash);
+	else
+		return false;
+}
+bool HttpSession::isComicDownloaded(const QString & hash)
+{
+	if(dataPtr)
+		return dataPtr->yacreaderSessionData.downloadedComics.contains(hash);
+	else
+		return false;
+}
+qulonglong HttpSession::getCurrentComicId()
+{
+	if(dataPtr)
+		return dataPtr->yacreaderSessionData.comicId ;
+	else
+		return 0;
+}
+Comic * HttpSession::getCurrentComic()
+{
+	if(dataPtr)
+	{
+		return dataPtr->yacreaderSessionData.comic ;
+	}
+	else
+		return 0;
+}
+void HttpSession::dismissCurrentComic()
+{
+	if(dataPtr)
+	{
+		if(dataPtr->yacreaderSessionData.comic != 0)
+		{
+			delete dataPtr->yacreaderSessionData.comic;
+		}
+		dataPtr->yacreaderSessionData.comicId = 0;
+	}
+}
+
+void HttpSession::setComicsOnDevice(const QSet<QString> & set)
+{
+	if(dataPtr)
+	{
+		dataPtr->yacreaderSessionData.comicsOnDevice = set;
+	}
+}
+void HttpSession::setDownloadedComic(const QString & hash)
+{
+	if(dataPtr)
+	{
+		dataPtr->yacreaderSessionData.downloadedComics.insert(hash);
+	}
+}
+void HttpSession::setCurrentComic(qulonglong id, Comic * comic)
+{
+	if(dataPtr)
+	{
+		dataPtr->yacreaderSessionData.comicId = id;
+		dataPtr->yacreaderSessionData.comic = comic;
+	}
 }

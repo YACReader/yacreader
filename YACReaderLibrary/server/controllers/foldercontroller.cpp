@@ -65,6 +65,7 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	{
 		t.setVariable(QString("element%1.name").arg(i),folderContent.at(i + (page*10))->name);
 		t.setVariable(QString("element%1.url").arg(i),"/library/"+libraryName+"/folder/"+QString("%1").arg(folderContent.at(i + (page*10))->id));
+		t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/folder/"+QString("%1/info").arg(folderContent.at(i + (page*10))->id));
 		i++;
 	}
 

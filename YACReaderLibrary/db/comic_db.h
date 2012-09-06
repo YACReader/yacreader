@@ -1,5 +1,5 @@
-#ifndef __COMIC_H
-#define __COMIC_H
+#ifndef __COMICDB_H
+#define __COMICDB_H
 
 #include "library_item.h"
 #include <QSqlDatabase>
