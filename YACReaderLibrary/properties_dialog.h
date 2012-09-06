@@ -12,7 +12,7 @@
 #include <QCheckBox>
 #include <QIntValidator>
 
-#include "comic.h"
+#include "comic_db.h"
 #include "custom_widgets.h"
 
 	class PropertiesDialog : public QDialog
@@ -94,7 +94,7 @@
 
 		void setDisableUniqueValues(bool disabled);
 
-		QList<Comic> comics;
+		QList<ComicDB> comics;
 		void closeEvent ( QCloseEvent * e );
 	public:
 		PropertiesDialog(QWidget * parent = 0);
@@ -102,7 +102,7 @@
 		QString basePath;
 
 	public slots:
-		void setComics(QList<Comic> comics);
+		void setComics(QList<ComicDB> comics);
 		void updateComics();
 		void save();
 		//Deprecated

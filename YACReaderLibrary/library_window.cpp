@@ -841,7 +841,7 @@ void LibraryWindow::setCurrentComicReaded()
 	comicFlow->markSlide(comicFlow->centerIndex());
 	comicFlow->updateMarks();
 
-	Comic c = dmCV->getComic(comicView->currentIndex());
+	ComicDB c = dmCV->getComic(comicView->currentIndex());
 	c.info.read = true;
 	QSqlDatabase db = DataBaseManagement::loadDatabase(dm->getDatabase());
 	db.open();
@@ -861,7 +861,7 @@ void LibraryWindow::setCurrentComicUnreaded()
 	comicFlow->unmarkSlide(comicFlow->centerIndex());
 	comicFlow->updateMarks();
 
-	Comic c = dmCV->getComic(comicView->currentIndex());
+	ComicDB c = dmCV->getComic(comicView->currentIndex());
 	c.info.read = false;
 	QSqlDatabase db = DataBaseManagement::loadDatabase(dm->getDatabase());
 	db.open();
@@ -1158,8 +1158,8 @@ void LibraryWindow::showProperties()
 {
 	QModelIndexList indexList = comicView->selectionModel()->selectedRows();
 
-	QList<Comic> comics = dmCV->getComics(indexList);
-	Comic c = comics[0];
+	QList<ComicDB> comics = dmCV->getComics(indexList);
+	ComicDB c = comics[0];
 	_comicIdEdited = c.id;//static_cast<TableItem*>(indexList[0].internalPointer())->data(4).toULongLong();
 
 	//QModelIndex mi = comicView->currentIndex();
@@ -1184,8 +1184,8 @@ void LibraryWindow::asignNumbers()
 {
 	QModelIndexList indexList = comicView->selectionModel()->selectedRows();
 
-	QList<Comic> comics = dmCV->getComics(indexList);
-	Comic c = comics[0];
+	QList<ComicDB> comics = dmCV->getComics(indexList);
+	ComicDB c = comics[0];
 	_comicIdEdited = c.id;
 
 	int startingNumber = dmCV->getIndexFromId(comics[0].id).row()+1;
@@ -1205,7 +1205,7 @@ void LibraryWindow::asignNumbers()
 
 	for(int i = 0;i<comics.length();i++)
 	{
-		Comic c = comics[i];
+		ComicDB c = comics[i];
 		c.info.setNumber(startingNumber+i);
 		c.info.edited = true;
 		c.info.update(db);
@@ -1349,7 +1349,7 @@ QList<LibraryItem *> LibraryWindow::getFolderComicsFromLibrary(const QString & l
 {
 	QSqlDatabase db = DataBaseManagement::loadDatabase(libraries.value(libraryName)+"/.yacreaderlibrary");
 
-	QList<LibraryItem *> list = Comic::getComicsFromParent(folderId,db);
+	QList<LibraryItem *> list = ComicDB::getComicsFromParent(folderId,db);
 
 	db.close();
 	QSqlDatabase::removeDatabase(libraries.value(libraryName));
@@ -1365,4 +1365,16 @@ qulonglong LibraryWindow::getParentFromComicFolderId(const QString & libraryName
 	db.close();
 	QSqlDatabase::removeDatabase(libraries.value(libraryName));
 	return f.parentId;
+}
+
+ComicDB LibraryWindow::getComicInfo(const QString & libraryName, qulonglong id)
+{
+	QSqlDatabase db = DataBaseManagement::loadDatabase(libraries.value(libraryName)+"/.yacreaderlibrary");
+
+	ComicDB comic;
+	comic.load(id,db);
+
+	db.close();
+	QSqlDatabase::removeDatabase(libraries.value(libraryName));
+	return comic;
 }

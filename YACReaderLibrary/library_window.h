@@ -205,6 +205,7 @@ public:
 		QList<LibraryItem *> getFolderContentFromLibrary(const QString & libraryName, qulonglong folderId);
 		QList<LibraryItem *> getFolderComicsFromLibrary(const QString & libraryName, qulonglong folderId);
 		qulonglong getParentFromComicFolderId(const QString & libraryName, qulonglong id);
+		ComicDB getComicInfo(const QString & libraryName, qulonglong id);
 };
 
 #endif

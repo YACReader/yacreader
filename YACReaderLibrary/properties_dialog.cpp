@@ -258,11 +258,11 @@ void PropertiesDialog::createButtonBox()
 
 
 
-void PropertiesDialog::setComics(QList<Comic> comics)
+void PropertiesDialog::setComics(QList<ComicDB> comics)
 {
 	this->comics = comics;
 
-	Comic comic = comics.at(0);
+	ComicDB comic = comics.at(0);
 
 	if(comic.info.title != NULL)
 		title->setText(*comic.info.title);
@@ -344,7 +344,7 @@ void PropertiesDialog::setComics(QList<Comic> comics)
 		this->setWindowTitle(tr("Edit selected comics information"));
 		setCover(QPixmap(":/images/editComic.png"));
 
-		QList<Comic>::iterator itr;
+		QList<ComicDB>::iterator itr;
 		for(itr = ++comics.begin();itr!=comics.end();itr++)
 		{
 			if(itr->info.title == NULL || *(itr->info.title) != title->text())
@@ -425,7 +425,7 @@ void PropertiesDialog::updateComics()
 	QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
 	db.open();
 	db.transaction();
-	QList<Comic>::iterator itr;
+	QList<ComicDB>::iterator itr;
 	for(itr = comics.begin();itr!=comics.end();itr++)
 	{
 		if(itr->info.edited)
@@ -483,7 +483,7 @@ void PropertiesDialog::setSize(float sizeFloat)
 
 void PropertiesDialog::save()
 {
-	QList<Comic>::iterator itr;
+	QList<ComicDB>::iterator itr;
 	for(itr = comics.begin();itr!=comics.end();itr++)
 	{
 		//Comic & comic = comics[0];

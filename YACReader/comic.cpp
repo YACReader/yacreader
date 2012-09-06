@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <QDir>
 #include <QFileInfoList>
-#include "bookmarks.h"
+#include "bookmarks.h" //TODO desacoplar la dependencia con bookmarks
 #include "qnaturalsorting.h"
 
 #define EXTENSIONS << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp"

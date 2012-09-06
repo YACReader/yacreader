@@ -1,4 +1,4 @@
-#include "comic.h"
+#include "comic_db.h"
 
 #include <QSqlQuery>
 #include <QSqlRecord>
@@ -7,12 +7,12 @@
 //-----------------------------------------------------------------------------
 //COMIC------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-Comic::Comic()
+ComicDB::ComicDB()
 {
 
 }
 
-Comic::Comic(qulonglong cparentId, QString cname, QString cpath, QString chash, QSqlDatabase & database)
+ComicDB::ComicDB(qulonglong cparentId, QString cname, QString cpath, QString chash, QSqlDatabase & database)
 {
 	parentId = cparentId;
 	name = cname;
@@ -28,7 +28,7 @@ Comic::Comic(qulonglong cparentId, QString cname, QString cpath, QString chash, 
 		_hasCover = true;
 }
 
-QList<LibraryItem *> Comic::getComicsFromParent(qulonglong parentId, QSqlDatabase & db)
+QList<LibraryItem *> ComicDB::getComicsFromParent(qulonglong parentId, QSqlDatabase & db)
 {
 	QList<LibraryItem *> list;
 
@@ -37,7 +37,7 @@ QList<LibraryItem *> Comic::getComicsFromParent(qulonglong parentId, QSqlDatabas
 	selectQuery.bindValue(":parentId", parentId);
 	selectQuery.exec();
 
-	Comic * currentItem;
+	ComicDB * currentItem;
 	while (selectQuery.next()) 
 	{
 		QList<QVariant> data;
@@ -45,7 +45,7 @@ QList<LibraryItem *> Comic::getComicsFromParent(qulonglong parentId, QSqlDatabas
 		for(int i=0;i<record.count();i++)
 			data << record.value(i);
 
-		currentItem = new Comic();
+		currentItem = new ComicDB();
 		currentItem->id = record.value("id").toULongLong();
 		currentItem->parentId = record.value(1).toULongLong();
 		currentItem->name = record.value(2).toString();
@@ -56,7 +56,7 @@ QList<LibraryItem *> Comic::getComicsFromParent(qulonglong parentId, QSqlDatabas
 			list.append(currentItem);
 		else
 		{
-			Comic * last = static_cast<Comic *>(list.back());
+			ComicDB * last = static_cast<ComicDB *>(list.back());
 			QString nameLast = last->name; 
 			QString nameCurrent = currentItem->name;
 			QList<LibraryItem *>::iterator i;
@@ -78,7 +78,7 @@ QList<LibraryItem *> Comic::getComicsFromParent(qulonglong parentId, QSqlDatabas
 	return list;
 }
 
-bool Comic::load(qulonglong idc, QSqlDatabase & db)
+bool ComicDB::load(qulonglong idc, QSqlDatabase & db)
 {
 
 	QSqlQuery selectQuery(db); 
@@ -102,7 +102,7 @@ bool Comic::load(qulonglong idc, QSqlDatabase & db)
 
 }
 
-qulonglong Comic::insert(QSqlDatabase & db)
+qulonglong ComicDB::insert(QSqlDatabase & db)
 {
 	//TODO cambiar por info.insert(db)
 
@@ -131,12 +131,12 @@ qulonglong Comic::insert(QSqlDatabase & db)
 	return query.lastInsertId().toULongLong();
 }
 
-void Comic::update(QSqlDatabase & db)
+void ComicDB::update(QSqlDatabase & db)
 {
 
 }
 
-void Comic::removeFromDB(QSqlDatabase & db)
+void ComicDB::removeFromDB(QSqlDatabase & db)
 {
 	QSqlQuery query(db);
 	query.prepare("DELETE FROM comic WHERE id = :id");
@@ -145,7 +145,7 @@ void Comic::removeFromDB(QSqlDatabase & db)
 	//query.finish();
 }
 
-bool Comic::isDir()
+bool ComicDB::isDir()
 {
 	return false;
 }
