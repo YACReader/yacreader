@@ -10,7 +10,9 @@
 #include <QVariant>
 #include <QReadWriteLock>
 
-
+#include <QSet>
+#include <QString>
+class Comic;
 /**
   This class stores data for a single HTTP session.
   A session can store any number of key/value pairs. This class uses implicit
@@ -89,7 +91,28 @@ public:
     */
     void setLastAccess();
 
+	//AÑADIDO
+	bool isComicOnDevice(const QString & hash);
+	bool isComicDownloaded(const QString & hash);
+	qulonglong getCurrentComicId();
+	Comic * getCurrentComic();
+	void dismissCurrentComic();
+
+	void setComicsOnDevice(const QSet<QString> & set);
+	void setDownloadedComic(const QString & hash);
+	void setCurrentComic(qulonglong id, Comic * comic);
+
 private:
+
+	struct YACReaderSessionData {
+		//cómics disponibles en dispositivo
+		QSet<QString> comicsOnDevice;
+		//cómics que han sido descargados o están siendo descargados en esta sesión
+		QSet<QString> downloadedComics;
+		//cómic actual que está siendo descargado
+		qulonglong comicId;
+		Comic * comic;
+	};
 
     struct HttpSessionData {
 
@@ -107,6 +130,8 @@ private:
 
         /** Storage for the key/value pairs; */
         QMap<QByteArray,QVariant> values;
+
+		YACReaderSessionData yacreaderSessionData;
 
     };
 

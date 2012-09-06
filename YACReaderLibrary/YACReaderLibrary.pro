@@ -8,7 +8,8 @@ DEPENDPATH += .
 INCLUDEPATH += .
 INCLUDEPATH += ../common \
 	           ./server \
-			   ./db
+			   ./db \
+			   ../YACReader
 CONFIG += release
 CONFIG -= flat
 QT += sql network

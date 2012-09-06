@@ -5,7 +5,7 @@
 
 			<ul id="itemContainer">
 				{loop element}
-					<li><a href="{element.url}">{element.name}</a></li>
+					<li><a href="{element.url}">{element.name}</a> - <a href="{element.downloadurl}">Download</a></li>
 				{end element}
 				
 				{loop elementcomic}
