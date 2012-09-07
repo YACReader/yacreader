@@ -12,6 +12,10 @@ void LibrariesController::service(HttpRequest& request, HttpResponse& response)
 {
 	response.setHeader("Content-Type", "text/html; charset=ISO-8859-1");
 
+	HttpSession session=Static::sessionStore->getSession(request,response);
+
+	session.set("xxx","yyy");
+
 	Template t=Static::templateLoader->getTemplate("libraries",request.getHeader("Accept-Language"));
 	t.enableWarnings();
 

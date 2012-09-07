@@ -42,7 +42,8 @@ HEADERS += comic_flow.h \
 		   import_comics_info_dialog.h \
 		   ../common/check_new_version.h \
 		   ../YACReader/comic.h \
-		   ../YACReader/bookmarks.h
+		   ../YACReader/bookmarks.h \
+		   server_config_dialog.h
 		   
 SOURCES += comic_flow.cpp \
            create_library_dialog.cpp \
@@ -72,7 +73,8 @@ SOURCES += comic_flow.cpp \
 		   import_comics_info_dialog.cpp \
 		   ../common/check_new_version.cpp \
 		   ../YACReader/comic.cpp \
-		   ../YACReader/bookmarks.cpp
+		   ../YACReader/bookmarks.cpp \
+		   server_config_dialog.cpp
 		   
 include(./server/server.pri)
 
