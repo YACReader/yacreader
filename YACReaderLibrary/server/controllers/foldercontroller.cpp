@@ -14,6 +14,11 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 {
 	response.setHeader("Content-Type", "text/html; charset=ISO-8859-1");
 
+	HttpSession session=Static::sessionStore->getSession(request,response);
+
+	QString y = session.get("xxx").toString();
+	response.writeText(QString("session xxx : %1 <br/>").arg(y));
+
 	Template t=Static::templateLoader->getTemplate("folder",request.getHeader("Accept-Language"));
 	t.enableWarnings();
 	QString path = request.getPath();

@@ -186,6 +186,8 @@ void LibraryWindow::doDialogs()
 	addLibraryDialog = new AddLibraryDialog(this);
 	optionsDialog = new OptionsDialog(this);
 	optionsDialog->restoreOptions();
+	serverConfigDialog = new ServerConfigDialog(this);
+
 	had = new HelpAboutDialog(this); //TODO load data.
 	QString sufix = QLocale::system().name();
 	if(QFile(":/files/about_"+sufix+".html").exists())
@@ -197,6 +199,8 @@ void LibraryWindow::doDialogs()
 		had->loadHelp(":/files/helpYACReaderLibrary_"+sufix+".html");
 	else
 		had->loadHelp(":/files/helpYACReaderLibrary.html");
+
+
 }
 
 void LibraryWindow::doModels()
@@ -322,6 +326,10 @@ void LibraryWindow::createActions()
 	optionsAction = new QAction(this);
 	optionsAction->setToolTip(tr("Show options dialog"));
 	optionsAction->setIcon(QIcon(":/images/options.png"));
+
+	serverConfigAction = new QAction(this);
+	serverConfigAction->setToolTip(tr("Show comics server options dialog"));
+	serverConfigAction->setIcon(QIcon(":/images/options.png"));
 
 	//disable actions
 	updateLibraryAction->setEnabled(false);
@@ -473,6 +481,7 @@ void LibraryWindow::createToolBars()
 	libraryToolBar->addAction(toggleFullScreenAction);
 
 	libraryToolBar->addWidget(new QToolBarStretch());
+	libraryToolBar->addAction(serverConfigAction);
 	libraryToolBar->addAction(optionsAction);
 	libraryToolBar->addAction(helpAboutAction);
 
@@ -561,7 +570,7 @@ void LibraryWindow::createConnections()
 	connect(exportComicsInfo,SIGNAL(triggered()),this,SLOT(showExportComicsInfo()));
 	connect(importComicsInfo,SIGNAL(triggered()),this,SLOT(showImportComicsInfo()));
 
-	//properties
+	//properties & config
 	connect(propertiesDialog,SIGNAL(accepted()),this,SLOT(reloadCovers()));
 
 	connect(updateLibraryAction,SIGNAL(triggered()),this,SLOT(updateLibrary()));
@@ -575,6 +584,7 @@ void LibraryWindow::createConnections()
 	connect(colapseAllNodesAction,SIGNAL(triggered()),foldersView,SLOT(collapseAll()));
 	connect(toggleFullScreenAction,SIGNAL(triggered()),this,SLOT(toggleFullScreen()));
 	connect(optionsAction, SIGNAL(triggered()),optionsDialog,SLOT(show()));
+	connect(serverConfigAction, SIGNAL(triggered()), serverConfigDialog, SLOT(show()));
 	connect(optionsDialog, SIGNAL(optionsChanged()),this,SLOT(reloadOptions()));
 	//ComicFlow
 	connect(comicFlow,SIGNAL(selected(unsigned int)),this,SLOT(openComic()));

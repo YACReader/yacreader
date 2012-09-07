@@ -28,6 +28,7 @@
 #include "treemodel.h"
 #include "tablemodel.h"
 #include "treeitem.h"
+#include "server_config_dialog.h"
 
 class LibraryWindow : public QMainWindow
 {
@@ -98,6 +99,7 @@ private:
 	QAction * renameLibraryAction;
 	QAction * toggleFullScreenAction;
 	QAction * optionsAction;
+	QAction * serverConfigAction;
 
 	//tree actions
 	QAction * setRootIndexAction;
@@ -126,6 +128,7 @@ private:
 	QToolBar * editInfoToolBar;
 
 	OptionsDialog * optionsDialog;
+	ServerConfigDialog * serverConfigDialog;
 
 	QString libraryPath;
 	QString comicsPath;

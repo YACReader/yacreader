@@ -220,6 +220,7 @@ void HttpSession::setCurrentComic(qulonglong id, Comic * comic)
 {
 	if(dataPtr)
 	{
+		dismissCurrentComic();
 		dataPtr->yacreaderSessionData.comicId = id;
 		dataPtr->yacreaderSessionData.comic = comic;
 	}
