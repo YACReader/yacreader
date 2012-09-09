@@ -53,7 +53,8 @@ QString Static::getConfigDir() {
     foreach (QString dir, searchList) {
         qWarning("%s/%s not found",qPrintable(dir),qPrintable(configFileName));
     }
-    qFatal("Cannot find config file %s",qPrintable(configFileName));
+    qWarning("Cannot find config file %s",qPrintable(configFileName)); //TODO establecer los valores por defecto
+
     return 0;
 }
 

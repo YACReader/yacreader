@@ -41,7 +41,7 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 	}
 	else
 	{
-		delete comicFile;
+		//delete comicFile;
 		response.setStatus(404,"not found");
 		response.write("404 not found",true);
 	}

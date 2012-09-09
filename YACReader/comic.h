@@ -45,6 +45,7 @@
 		bool loaded();
 		QPixmap * operator[](unsigned int index);
 		QVector<QByteArray> * getRawData(){return &_pages;};
+		QByteArray getRawPage(int page){return _pages[page];};
 	public slots:
 		void loadImages();
 		void loadSizes();

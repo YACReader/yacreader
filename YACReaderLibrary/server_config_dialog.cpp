@@ -21,8 +21,8 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	mainLayout->addWidget(accept,0,0);
 	mainLayout->addWidget(qrCode,0,1);
 
-
 	this->setLayout(mainLayout);
+	generateQR();
 }
 
 void ServerConfigDialog::generateQR()
@@ -42,11 +42,19 @@ void ServerConfigDialog::generateQR()
 	QList<QHostAddress> list = QHostInfo::fromName( QHostInfo::localHostName()  ).addresses();
 	foreach(QHostAddress add, list)
 	{
-		dir = add.toString();
-		if(dir.contains("."))
+		QString tmp = add.toString();
+		if(tmp.contains(".") && tmp != "127.0.0.1")
+		{
+			dir = tmp;
 			break;
+		}
 	}
-	generateQR(dir+":"+s->getPort());
+	if(!dir.isEmpty())
+		generateQR(dir+":"+s->getPort());
+	else
+	{
+
+	}
 	//qrCode->setText(dir+":8080");
 	
 }
@@ -58,7 +66,7 @@ void ServerConfigDialog::generateQR(const QString & serverAddress)
 	attributes << "-o" << QCoreApplication::applicationDirPath()+"/utils/tmp.png" << "-s" << "8" << "-l" << "H" << serverAddress;
 	connect(qrGenerator,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(updateImage(void)));
 	connect(qrGenerator,SIGNAL(error(QProcess::ProcessError)),this,SLOT(openingError(QProcess::ProcessError)));
-	qrGenerator->start(QCoreApplication::applicationDirPath()+"/utils/qrcode",attributes);
+	qrGenerator->start(QCoreApplication::applicationDirPath()+"/utils/qrencode",attributes);
 }
 
 void ServerConfigDialog::updateImage()
