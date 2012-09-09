@@ -13,6 +13,7 @@
 #include <QSet>
 #include <QString>
 class Comic;
+
 /**
   This class stores data for a single HTTP session.
   A session can store any number of key/value pairs. This class uses implicit
@@ -114,26 +115,26 @@ private:
 		Comic * comic;
 	};
 
-    struct HttpSessionData {
+	struct HttpSessionData {
 
-        /** Unique ID */
-        QByteArray id;
+		/** Unique ID */
+		QByteArray id;
 
-        /** Timestamp of last access, set by the HttpSessionStore */
-        qint64 lastAccess;
+		/** Timestamp of last access, set by the HttpSessionStore */
+		qint64 lastAccess;
 
-        /** Reference counter */
-        int refCount;
+		/** Reference counter */
+		int refCount;
 
-        /** Used to synchronize threads */
-        QReadWriteLock lock;
+		/** Used to synchronize threads */
+		QReadWriteLock lock;
 
-        /** Storage for the key/value pairs; */
-        QMap<QByteArray,QVariant> values;
+		/** Storage for the key/value pairs; */
+		QMap<QByteArray,QVariant> values;
 
 		YACReaderSessionData yacreaderSessionData;
 
-    };
+	};
 
     /** Pointer to the shared data. */
     HttpSessionData* dataPtr;

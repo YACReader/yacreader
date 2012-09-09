@@ -16,7 +16,7 @@ HttpConnectionHandler::HttpConnectionHandler(QSettings* settings, HttpRequestHan
     this->settings=settings;
     this->requestHandler=requestHandler;
     currentRequest=0;
-    busy = false;   // pdiener: it is not busy if it is new
+    busy = false;
     // execute signals in my own thread
     moveToThread(this);
     socket.moveToThread(this);
@@ -60,13 +60,14 @@ void HttpConnectionHandler::handleConnection(int socketDescriptor) {
     // Start timer for read timeout
     int readTimeout=settings->value("readTimeout",10000).toInt();
     readTimer.start(readTimeout);
+    // delete previous request
+    delete currentRequest;
     currentRequest=0;
 }
 
 
 bool HttpConnectionHandler::isBusy() {
-    //return socket.isOpen();
-    return busy;    // pdiener: changed this from socket readout to bool variable
+    return busy;
 }
 
 void HttpConnectionHandler::setBusy() {
@@ -76,7 +77,10 @@ void HttpConnectionHandler::setBusy() {
 
 void HttpConnectionHandler::readTimeout() {
     qDebug("HttpConnectionHandler (%p): read timeout occured",this);
-    socket.write("HTTP/1.1 408 request timeout\r\nConnection: close\r\n\r\n408 request timeout\r\n");
+
+    //Commented out because QWebView cannot handle this.
+    //socket.write("HTTP/1.1 408 request timeout\r\nConnection: close\r\n\r\n408 request timeout\r\n");
+
     socket.disconnectFromHost();
     delete currentRequest;
     currentRequest=0;
@@ -86,15 +90,13 @@ void HttpConnectionHandler::readTimeout() {
 void HttpConnectionHandler::disconnected() {
     qDebug("HttpConnectionHandler (%p): disconnected", this);
     socket.close();
-    delete currentRequest;
-    currentRequest=0;
     readTimer.stop();
-    busy = false; // pdiener: now we have finished
+    busy = false;
 }
 
 void HttpConnectionHandler::read() {
 #ifdef SUPERVERBOSE
-    qDebug("HttpConnectionHandler (%x): read input",(unsigned int) this);
+    qDebug("HttpConnectionHandler (%p): read input",this);
 #endif
 
     // Create new HttpRequest object if necessary

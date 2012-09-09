@@ -42,14 +42,18 @@ void StaticFileController::service(HttpRequest& request, HttpResponse& response)
     }
     // Check if we have the file in cache
     qint64 now=QDateTime::currentMSecsSinceEpoch();
+    mutex.lock();
     CacheEntry* entry=cache.object(path);
-    if (entry && (cacheTimeout==0 || entry->created>now-cacheTimeout)) {
+    if (entry && (cacheTimeout==0 || entry->created>now-cacheTimeout)) {       
+        QByteArray document=entry->document; //copy the cached document, because other threads may destroy the cached entry immediately after mutex unlock.
+        mutex.unlock();
         qDebug("StaticFileController: Cache hit for %s",path.data());
         setContentType(path,response);
         response.setHeader("Cache-Control","max-age="+QByteArray::number(maxAge/1000));
-        response.write(entry->document);
+        response.write(document);
     }
     else {
+        mutex.unlock();
         qDebug("StaticFileController: Cache miss for %s",path.data());
         // The file is not in cache.
         // If the filename is a directory, append index.html.
@@ -65,11 +69,11 @@ void StaticFileController::service(HttpRequest& request, HttpResponse& response)
 		fileName = getLocalizedFileName(fileName, request.getHeader("Accept-Language"), stringPath);
 		QString newPath = stringPath.append(fileName);
 		//END_TODO
-        QFile file(docroot+newPath);
+        QFile file(docroot+path);
         if (file.exists()) {
             qDebug("StaticFileController: Open file %s",qPrintable(file.fileName()));
             if (file.open(QIODevice::ReadOnly)) {
-                setContentType(newPath,response);
+                setContentType(path,response);
                 response.setHeader("Cache-Control","max-age="+QByteArray::number(maxAge/1000));
                 if (file.size()<=maxCachedFileSize) {
                     // Return the file content and store it also in the cache
@@ -80,7 +84,9 @@ void StaticFileController::service(HttpRequest& request, HttpResponse& response)
                         entry->document.append(buffer);
                     }
                     entry->created=now;
+                    mutex.lock();
                     cache.insert(request.getPath(),entry,entry->document.size());
+                    mutex.unlock();
                 }
                 else {
                     // Return the file content, do not store in cache
@@ -113,22 +119,23 @@ void StaticFileController::setContentType(QString fileName, HttpResponse& respon
     else if (fileName.endsWith(".gif")) {
         response.setHeader("Content-Type", "image/gif");
     }
+    else if (fileName.endsWith(".pdf")) {
+        response.setHeader("Content-Type", "application/pdf");
+    }
     else if (fileName.endsWith(".txt")) {
         response.setHeader("Content-Type", qPrintable("text/plain; charset="+encoding));
     }
     else if (fileName.endsWith(".html") || fileName.endsWith(".htm")) {
-        response.setHeader("Content-Type", qPrintable("text/html; charset=charset="+encoding));
+        response.setHeader("Content-Type", qPrintable("text/html; charset="+encoding));
     }
-	else if (fileName.endsWith(".js"))
-		response.setHeader("Content-Type", qPrintable("text/javascript; charset=charset="+encoding));
     // Todo: add all of your content types
 }
 
 bool StaticFileController::exists(QString localizedName, QString path) const
 {
-    QString fileName=docroot+"/"+path + localizedName;
-    QFile file(fileName);
-    return file.exists();
+	QString fileName=docroot+"/"+path + localizedName;
+	QFile file(fileName);
+	return file.exists();
 }
 
 //retorna fileName si no se encontró alternativa traducida ó fileName-locale.extensión si se encontró
@@ -164,4 +171,3 @@ QString StaticFileController::getLocalizedFileName(QString fileName, QString loc
 
 	return fileName;
 }
-	 

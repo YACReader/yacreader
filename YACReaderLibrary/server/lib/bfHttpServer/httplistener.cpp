@@ -50,7 +50,6 @@ void HttpListener::incomingConnection(int socketDescriptor) {
         QTcpSocket* socket=new QTcpSocket(this);
         socket->setSocketDescriptor(socketDescriptor);
         connect(socket, SIGNAL(disconnected()), socket, SLOT(deleteLater()));
-		//CAMBIADO 503 por 429
         socket->write("HTTP/1.1 503 too many connections\r\nConnection: close\r\n\r\nToo many connections\r\n");
         socket->disconnectFromHost();
     }

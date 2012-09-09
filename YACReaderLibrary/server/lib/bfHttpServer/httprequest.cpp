@@ -14,17 +14,6 @@ HttpRequest::HttpRequest(QSettings* settings) {
     expectedBodySize=0;
     maxSize=settings->value("maxRequestSize","16000").toInt();
     maxMultiPartSize=settings->value("maxMultiPartSize","1000000").toInt();
-
-    // Convert relative path to absolute, based on the directory of the config file.
-#ifdef Q_OS_WIN32
-    if (QDir::isRelativePath(tempDir) && settings->format()!=QSettings::NativeFormat)
-#else
-        if (QDir::isRelativePath(tempDir))
-#endif
-        {
-        QFileInfo configFile(settings->fileName());
-        tempDir=QFileInfo(configFile.absolutePath(),tempDir).absoluteFilePath();
-    }
 }
 
 void HttpRequest::readRequest(QTcpSocket& socket) {
@@ -170,15 +159,22 @@ void HttpRequest::decodeRequestParams() {
 #ifdef SUPERVERBOSE
     qDebug("HttpRequest: extract and decode request parameters");
 #endif
+    // Get URL parameters
     QByteArray rawParameters;
-    if (headers.value("Content-Type")=="application/x-www-form-urlencoded") {
-        rawParameters=bodyData;
+    int questionMark=path.indexOf('?');
+    if (questionMark>=0) {        
+        rawParameters=path.mid(questionMark+1);
+        path=path.left(questionMark);
     }
-    else {
-        int questionMark=path.indexOf('?');
-        if (questionMark>=0) {
-            rawParameters=path.mid(questionMark+1);
-            path=path.left(questionMark);
+    // Get request body parameters
+    QByteArray contentType=headers.value("Content-Type");
+    if (!bodyData.isEmpty() && (contentType.isEmpty() || contentType.startsWith("application/x-www-form-urlencoded"))) {
+        if (rawParameters.isEmpty()) {
+            rawParameters.append('&');
+            rawParameters.append(bodyData);
+        }
+        else {
+            rawParameters=bodyData;
         }
     }
     // Split the parameters into pairs of value and name
