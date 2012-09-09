@@ -24,6 +24,8 @@ public:
     void start();
 	/** Stop the server */
     void stop();
+
+	QString getPort();
 protected:
 };
 
