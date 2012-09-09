@@ -12,6 +12,7 @@
 HttpSession::HttpSession(bool canStore) {
     if (canStore) {
         dataPtr=new HttpSessionData();
+		dataPtr->yacreaderSessionData.comic = 0;
         dataPtr->refCount=1;
         dataPtr->lastAccess=QDateTime::currentMSecsSinceEpoch();
         dataPtr->id=QUuid::createUuid().toString().toAscii();

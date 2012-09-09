@@ -17,6 +17,7 @@
 #include "controllers/covercontroller.h"
 #include "controllers/comiccontroller.h"
 #include "controllers/folderinfocontroller.h"
+#include "controllers/pagecontroller.h"
 
 RequestMapper::RequestMapper(QObject* parent)
     :HttpRequestHandler(parent) {}
@@ -50,7 +51,7 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 	}
 	else if(path.contains("page"))
 	{
-
+		PageController().service(request,response);
 	}
 	else
 	{
