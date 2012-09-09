@@ -1,7 +1,13 @@
 #include "server_config_dialog.h"
 #include <QCoreApplication>
 #include <QGridLayout>
+#include <QNetworkInterface>
+#include <QHostInfo>
+#include <QHostAddress>
 
+#include "startup.h"
+
+extern Startup * s;
 
 ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	:QDialog(parent)	
@@ -21,7 +27,28 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 
 void ServerConfigDialog::generateQR()
 {
-	generateQR("192.168.2.110:8080");
+	//QString items;
+	//foreach(QNetworkInterface interface, QNetworkInterface::allInterfaces())
+	//{
+	//	if (~interface.flags() & QNetworkInterface::IsLoopBack)//interface.flags().testFlag(QNetworkInterface::IsRunning))
+	//		foreach (QNetworkAddressEntry entry, interface.addressEntries())
+	//		{
+	//			if ( interface.hardwareAddress() != "00:00:00:00:00:00" &&     entry.ip().toString().contains("."))
+	//				items.append(interface.name() + entry.ip().toString());
+	//		}
+	//}
+	
+	QString dir;
+	QList<QHostAddress> list = QHostInfo::fromName( QHostInfo::localHostName()  ).addresses();
+	foreach(QHostAddress add, list)
+	{
+		dir = add.toString();
+		if(dir.contains("."))
+			break;
+	}
+	generateQR(dir+":"+s->getPort());
+	//qrCode->setText(dir+":8080");
+	
 }
 
 void ServerConfigDialog::generateQR(const QString & serverAddress)

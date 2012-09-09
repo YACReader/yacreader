@@ -73,5 +73,9 @@ Startup::Startup()
 
 }
 
+QString Startup::getPort()
+{
+	return QString("%1").arg(listener->serverPort());
+}
 
 
