@@ -4,6 +4,7 @@
 #include <QList>
 #include <QTimer>
 #include <QObject>
+#include <QMutex>
 #include "httpconnectionhandler.h"
 
 /**
@@ -13,14 +14,14 @@
   Example for the required configuration settings:
   <code><pre>
   minThreads=1
-  maxThreads=10
+  maxThreads=100
   cleanupInterval=1000
   maxRequestSize=16000
   maxMultiPartSize=1000000
   </pre></code>
   The pool is empty initially and grows with the number of concurrent
   connections. A timer removes one idle connection handler at each
-  interval, but a it leaves some spare handlers in memory to improve
+  interval, but it leaves some spare handlers in memory to improve
   performance.
   @see HttpConnectionHandler for description of config settings readTimeout
   @see HttpRequest for description of config settings maxRequestSize and maxMultiPartSize
@@ -58,6 +59,9 @@ private:
 
     /** Timer to clean-up unused connection handler */
     QTimer cleanupTimer;
+
+    /** Used to synchronize threads */
+    QMutex mutex;
 
 private slots:
 

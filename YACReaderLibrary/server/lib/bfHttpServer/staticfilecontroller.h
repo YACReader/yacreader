@@ -10,6 +10,7 @@
 #include "httpresponse.h"
 #include "httprequesthandler.h"
 #include <QCache>
+#include <QMutex>
 
 /**
   Delivers static files. It is usually called by the applications main request handler when
@@ -74,10 +75,13 @@ private:
     /** Cache storage */
     QCache<QString,CacheEntry> cache;
 
+    /** Used to synchronize cache access for threads */
+    QMutex mutex;
+
     /** Set a content-type header in the response depending on the ending of the filename */
     void setContentType(QString file, HttpResponse& response) const;
 
-	QString getLocalizedFileName(QString fileName, QString locales, QString path) const;
+	QString StaticFileController::getLocalizedFileName(QString fileName, QString locales, QString path) const;
 
 	bool exists(QString localizedName, QString path) const;
 };

@@ -33,7 +33,7 @@ int Template::setVariable(QString name, QString value) {
     while (start>=0) {
         replace(start, variable.length(), value);
         count++;
-        start=indexOf(variable,start+variable.length());
+        start=indexOf(variable,start+value.length());
     }
     if (count==0 && warnings) {
         qWarning("Template: missing variable %s in %s",qPrintable(variable),qPrintable(sourceName));

@@ -13,27 +13,33 @@ HttpConnectionHandlerPool::HttpConnectionHandlerPool(QSettings* settings, HttpRe
 
 HttpConnectionHandlerPool::~HttpConnectionHandlerPool() {    
     foreach(HttpConnectionHandler* handler, pool) {
-        delete handler;
+        connect(handler,SIGNAL(finished()),handler,SLOT(deleteLater()));
+        handler->quit();
     }
 }
 
 
-HttpConnectionHandler* HttpConnectionHandlerPool::getConnectionHandler() {
+HttpConnectionHandler* HttpConnectionHandlerPool::getConnectionHandler() {   
     HttpConnectionHandler* freeHandler=0;
+    mutex.lock();
+    // find a free handler in pool
     foreach(HttpConnectionHandler* handler, pool) {
         if (!handler->isBusy()) {
             freeHandler=handler;
+            freeHandler->setBusy();
+            break;
         }
     }
+    // create a new handler, if necessary
     if (!freeHandler) {
-		//CAMBIADO
-        int maxConnectionHandlers= 100;//settings->value("maxThreads",10).toInt();
+        int maxConnectionHandlers=settings->value("maxThreads",100).toInt();
         if (pool.count()<maxConnectionHandlers) {
             freeHandler=new HttpConnectionHandler(settings,requestHandler);
+            freeHandler->setBusy();
             pool.append(freeHandler);
         }
     }
-    if (freeHandler) freeHandler->busy = true; // pdiener: set it to busy-state immediately
+    mutex.unlock();
     return freeHandler;
 }
 
@@ -42,6 +48,7 @@ HttpConnectionHandler* HttpConnectionHandlerPool::getConnectionHandler() {
 void HttpConnectionHandlerPool::cleanup() {
     int maxIdleHandlers=settings->value("minThreads",1).toInt();
     int idleCounter=0;
+    mutex.lock();
     foreach(HttpConnectionHandler* handler, pool) {
         if (!handler->isBusy()) {
             if (++idleCounter > maxIdleHandlers) {
@@ -53,4 +60,5 @@ void HttpConnectionHandlerPool::cleanup() {
             }
         }
     }
+    mutex.unlock();
 }

@@ -31,7 +31,7 @@
 
 class HttpSessionStore : public QObject {
     Q_OBJECT
-    Q_DISABLE_COPY(HttpSessionStore);
+    Q_DISABLE_COPY(HttpSessionStore)
 public:
 
     /** Constructor. */

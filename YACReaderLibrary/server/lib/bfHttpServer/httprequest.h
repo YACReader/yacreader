@@ -111,8 +111,9 @@ public:
 
     /**
       Decode an URL parameter.
-      E.g. replace "%23" by '#' and replace '+' by ' '
-      @param source The url encoded string
+      E.g. replace "%23" by '#' and replace '+' by ' '.
+      @param source The url encoded strings
+      @see QUrl::toPercentEncoding for the reverse direction
     */
     static QByteArray urlDecode(const QByteArray source);
 
@@ -172,9 +173,6 @@ private:
 
     /** Maximum allowed size of multipart forms in bytes. */
     int maxMultiPartSize;
-
-    /** Directory for temp files */
-    QString tempDir;
 
     /** Current size */
     int currentSize;

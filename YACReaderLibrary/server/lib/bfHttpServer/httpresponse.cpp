@@ -109,7 +109,6 @@ void HttpResponse::writeText(QString text, bool lastPart)
 	write(text.toAscii(),lastPart);
 }
 
-
 bool HttpResponse::hasSentLastPart() const {
     return sentLastPart;
 }

@@ -44,14 +44,11 @@ public:
     /** Destructor */
     virtual ~HttpConnectionHandler();
 
-    /** Returns true, if this handler is busy */
+    /** Returns true, if this handler is in use. */
     bool isBusy();
 
     /** Mark this handler as busy */
     void setBusy();
-
-    /** This shows the busy-state from a very early time */
-    bool busy;
 
 private:
 
@@ -69,6 +66,9 @@ private:
 
     /** Dispatches received requests to services */
     HttpRequestHandler* requestHandler;
+
+    /** This shows the busy-state from a very early time */
+    bool busy;
 
     /** Executes the htreads own event loop */
     void run();

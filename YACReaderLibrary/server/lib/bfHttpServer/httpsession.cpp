@@ -7,15 +7,14 @@
 #include <QDateTime>
 #include <QUuid>
 
-#include "comic.h"
 
 HttpSession::HttpSession(bool canStore) {
     if (canStore) {
         dataPtr=new HttpSessionData();
-		dataPtr->yacreaderSessionData.comic = 0;
         dataPtr->refCount=1;
         dataPtr->lastAccess=QDateTime::currentMSecsSinceEpoch();
         dataPtr->id=QUuid::createUuid().toString().toAscii();
+		dataPtr->yacreaderSessionData.comic = 0;
 #ifdef SUPERVERBOSE
         qDebug("HttpSession: created new session data with id %s",dataPtr->id.data());
 #endif
@@ -158,7 +157,6 @@ void HttpSession::setLastAccess() {
         dataPtr->lock.unlock();
     }
 }
-
 
 //AÑADIDO
 bool HttpSession::isComicOnDevice(const QString & hash)
