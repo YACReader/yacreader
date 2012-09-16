@@ -15,6 +15,7 @@ HttpSession::HttpSession(bool canStore) {
         dataPtr->lastAccess=QDateTime::currentMSecsSinceEpoch();
         dataPtr->id=QUuid::createUuid().toString().toAscii();
 		dataPtr->yacreaderSessionData.comic = 0;
+		dataPtr->yacreaderSessionData.comicId = 0;
 #ifdef SUPERVERBOSE
         qDebug("HttpSession: created new session data with id %s",dataPtr->id.data());
 #endif
@@ -180,7 +181,7 @@ qulonglong HttpSession::getCurrentComicId()
 	else
 		return 0;
 }
-Comic * HttpSession::getCurrentComic()
+Comic2* HttpSession::getCurrentComic()
 {
 	if(dataPtr)
 	{
@@ -196,6 +197,7 @@ void HttpSession::dismissCurrentComic()
 		if(dataPtr->yacreaderSessionData.comic != 0)
 		{
 			delete dataPtr->yacreaderSessionData.comic;
+			dataPtr->yacreaderSessionData.comic = 0;
 		}
 		dataPtr->yacreaderSessionData.comicId = 0;
 	}
@@ -215,7 +217,7 @@ void HttpSession::setDownloadedComic(const QString & hash)
 		dataPtr->yacreaderSessionData.downloadedComics.insert(hash);
 	}
 }
-void HttpSession::setCurrentComic(qulonglong id, Comic * comic)
+void HttpSession::setCurrentComic(qulonglong id, Comic2 * comic)
 {
 	if(dataPtr)
 	{

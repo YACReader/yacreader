@@ -12,7 +12,7 @@
 
 #include <QSet>
 #include <QString>
-class Comic;
+#include "comic.h"
 
 /**
   This class stores data for a single HTTP session.
@@ -96,12 +96,12 @@ public:
 	bool isComicOnDevice(const QString & hash);
 	bool isComicDownloaded(const QString & hash);
 	qulonglong getCurrentComicId();
-	Comic * getCurrentComic();
+	Comic2 * getCurrentComic();
 	void dismissCurrentComic();
 
 	void setComicsOnDevice(const QSet<QString> & set);
 	void setDownloadedComic(const QString & hash);
-	void setCurrentComic(qulonglong id, Comic * comic);
+	void setCurrentComic(qulonglong id, Comic2 * comic);
 
 private:
 
@@ -112,7 +112,7 @@ private:
 		QSet<QString> downloadedComics;
 		//cómic actual que está siendo descargado
 		qulonglong comicId;
-		Comic * comic;
+		Comic2 * comic;
 	};
 
 	struct HttpSessionData {
