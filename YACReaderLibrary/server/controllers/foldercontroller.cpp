@@ -16,6 +16,8 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 
 	HttpSession session=Static::sessionStore->getSession(request,response);
 
+
+
 	QString y = session.get("xxx").toString();
 	response.writeText(QString("session xxx : %1 <br/>").arg(y));
 
@@ -29,15 +31,35 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	QList<LibraryItem *> folderComics = mw->getFolderComicsFromLibrary(libraryName,parentId);
 
 	qulonglong backId = mw->getParentFromComicFolderId(libraryName,parentId);
-	if(backId == 1 && parentId == 1)
-		t.setVariable(QString("upurl"),"/");
-	else
-		t.setVariable(QString("upurl"),"/library/" + libraryName + "/folder/" +QString("%1").arg(backId));		
+
 
 	int page = 0;
 	QByteArray p = request.getParameter("page");
 	if(p.length() != 0)
 		page = p.toInt();
+
+	// /comicIdi/pagei/comicIdj/pagej/....../comicIdn/pagen
+	//QString currentPath = session.get("currentPath").toString();
+	//QStringList pathSize = currentPath.split("/").last().toInt;
+
+
+	if(backId == 1 && parentId == 1)
+		t.setVariable(QString("upurl"),"/?page=0");
+	else
+		t.setVariable(QString("upurl"),"/library/" + libraryName + "/folder/" +QString("%1").arg(backId));//.arg(upPage));		
+
+	/*if(currentPath.length()>0)
+	{
+		if(currentPath.contains(QString("%1").arg(parentId))
+		{
+
+		}
+		else
+		{
+			session.set("currentPath",currentPath+QString("/%1/%2").arg(parentId).arg(page);
+		}
+	}*/
+
 
 	//t.loop("element",folderContent.length());
 
