@@ -16,14 +16,12 @@
 		
 			<ul id="itemContainer">
 				{loop element}
-					<li><img style="width: 92px" src="/images/f.png"/><a href="{element.url}">{element.name}</a> - <a href="{element.downloadurl}">Download</a></li>
+					<li><img style="width: {element.image.width}" src="{element.image.url}"/> <p>{element.name}</p> {element.browse} - <a href="{element.downloadurl}">Download</a></li>
 				{end element}
-				
-				{loop elementcomic}
-					<li><img style="width: 80px" src="{elementcomic.coverulr}" /> <a href="{elementcomic.url}">{elementcomic.name}</a></li>
-				{end elementcomic}
 			</ul>
 			
+			<div>{loop index} <a href="{index.url}"> {index.indexname} </a> {end index}</div>
+			<br />
 			<div>{loop page} <a href="{page.url}"> {page.number} </a> {end page}</div>
 					
 	</div>

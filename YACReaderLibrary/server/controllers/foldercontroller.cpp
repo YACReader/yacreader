@@ -6,6 +6,16 @@
 #include "template.h"
 #include "../static.h"
 
+#include "qnaturalsorting.h"
+
+struct LibraryItemSorter
+{
+	bool operator()(const LibraryItem * a,const LibraryItem * b) const
+	{
+		return naturalSortLessThanCI(a->name,b->name);
+	} 
+};
+
 extern LibraryWindow * mw;
 
 FolderController::FolderController() {}
@@ -16,10 +26,8 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 
 	HttpSession session=Static::sessionStore->getSession(request,response);
 
-
-
 	QString y = session.get("xxx").toString();
-	response.writeText(QString("session xxx : %1 <br/>").arg(y));
+	//response.writeText(QString("session xxx : %1 <br/>").arg(y));
 
 	Template t=Static::templateLoader->getTemplate("folder",request.getHeader("Accept-Language"));
 	t.enableWarnings();
@@ -29,6 +37,13 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	qulonglong parentId = pathElements.at(4).toULongLong();
 	QList<LibraryItem *> folderContent = mw->getFolderContentFromLibrary(libraryName,parentId);
 	QList<LibraryItem *> folderComics = mw->getFolderComicsFromLibrary(libraryName,parentId);
+
+	folderContent.append(folderComics);
+
+	qSort(folderContent.begin(),folderContent.end(),LibraryItemSorter());
+	folderComics.clear();
+
+
 
 	qulonglong backId = mw->getParentFromComicFolderId(libraryName,parentId);
 
@@ -72,7 +87,7 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	int numFolderPages = numFolders / 10 + ((numFolders%10)>0?1:0);
 	int numPages = totalLength / 10 + ((totalLength%10)>0?1:0);
 
-	response.writeText(QString("Number of pages : %1 <br/>").arg(numPages));
+	//response.writeText(QString("Number of pages : %1 <br/>").arg(numPages));
 
 	if(page < 0)
 		page = 0;
@@ -90,9 +105,27 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	int i = 0;
 	while(i<numFoldersAtCurrentPage)
 	{
+		LibraryItem * item = folderContent.at(i + (page*10));
 		t.setVariable(QString("element%1.name").arg(i),folderContent.at(i + (page*10))->name);
-		t.setVariable(QString("element%1.url").arg(i),"/library/"+libraryName+"/folder/"+QString("%1").arg(folderContent.at(i + (page*10))->id));
-		t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/folder/"+QString("%1/info").arg(folderContent.at(i + (page*10))->id));
+		if(item->isDir())
+		{
+			t.setVariable(QString("element%1.image.width").arg(i),"92px");
+			t.setVariable(QString("element%1.image.url").arg(i),"/images/f.png");
+
+			t.setVariable(QString("element%1.browse").arg(i),QString("<a href=\"%1\">Browse</a>").arg(QString("/library/%1/folder/%2").arg(libraryName).arg(item->id)));
+
+			//t.setVariable(QString("element%1.url").arg(i),"/library/"+libraryName+"/folder/"+QString("%1").arg(folderContent.at(i + (page*10))->id));
+			t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/folder/"+QString("%1/info").arg(folderContent.at(i + (page*10))->id));
+		}
+		else
+		{
+			const ComicDB * comic = (ComicDB *)item;
+			t.setVariable(QString("element%1.browse").arg(i),"");
+			t.setVariable(QString("element%1.image.width").arg(i),"80px");
+			t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/comic/"+QString("%1").arg(comic->id));
+			//t.setVariable(QString("element%1.image.url").arg(i),"/images/f.png");
+			t.setVariable(QString("element%1.image.url").arg(i),QString("/library/%1/cover/%2.jpg").arg(libraryName).arg(comic->info.hash));
+		}
 		i++;
 	}
 
@@ -122,8 +155,8 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 
 	if(numComics == 0)
 		numComicsAtCurrentPage = 0;
-	response.writeText(QString("numComicsAtCurrentPage : %1 <br/>").arg(numComicsAtCurrentPage));
-	response.writeText(QString("comicsOffset : %1 <br/>").arg(comicsOffset));
+	//response.writeText(QString("numComicsAtCurrentPage : %1 <br/>").arg(numComicsAtCurrentPage));
+	//response.writeText(QString("comicsOffset : %1 <br/>").arg(comicsOffset));
 
 	t.loop("elementcomic",numComicsAtCurrentPage);
 	//
@@ -143,21 +176,62 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 
 	if(numPages > 1)
 	{
-	t.loop("page",numPages);
-	int z = 0;
-	while(z < numPages)
-	{
-		
-		t.setVariable(QString("page%1.url").arg(z),"/library/"+libraryName+"/folder/"+QString("%1").arg(parentId)+QString("?page=%1").arg(z));
-		if(page == z)
-			t.setVariable(QString("page%1.number").arg(z),QString("<strong>%1</strong>").arg(z));
-		else
-			t.setVariable(QString("page%1.number").arg(z),QString("%1").arg(z));
-		z++;
-	}
+		QMap<QString,int> indexCount;
+
+		QString firstChar;
+		int xyz = 1;
+		for(QList<LibraryItem *>::const_iterator itr=folderContent.constBegin();itr!=folderContent.constEnd();itr++)
+		{
+			firstChar = QString((*itr)->name[0]).toUpper();
+			firstChar = firstChar.normalized(QString::NormalizationForm_D).at(0);//TODO _D or _KD??
+			bool ok;
+			int dec = firstChar.toInt(&ok, 10);
+			if(ok)
+				firstChar = "#";
+			//response.writeText(QString("%1 - %2 <br />").arg((*itr)->name).arg(xyz));
+			if(indexCount.contains(firstChar))
+				indexCount.insert(firstChar, indexCount.value(firstChar)+1);
+			else
+				indexCount.insert(firstChar, 1);
+
+			xyz++;
+		}
+
+		QList<QString> index = indexCount.keys();
+		qSort(index.begin(),index.end(),naturalSortLessThanCI);
+		t.loop("index",index.length());
+		int i=0;
+		int count=0;
+		int indexPage=0;
+		for(QList<QString>::const_iterator itr=index.constBegin();itr!=index.constEnd();itr++)
+		{
+			//response.writeText(QString("%1 - %2 <br />").arg(*itr).arg(count));
+			t.setVariable(QString("index%1.indexname").arg(i), *itr);
+			t.setVariable(QString("index%1.url").arg(i),QString("/library/%1/folder/%2?page=%3").arg(libraryName).arg(parentId).arg(indexPage));
+			i++;
+			count += indexCount.value(*itr);
+			indexPage = count/elementsPerPage;
+			
+		}
+
+		t.loop("page",numPages);
+		int z = 0;
+		while(z < numPages)
+		{
+
+			t.setVariable(QString("page%1.url").arg(z),QString("/library/%1/folder/%2?page=%3").arg(libraryName).arg(parentId).arg(z));
+			if(page == z)
+				t.setVariable(QString("page%1.number").arg(z),QString("<strong>%1</strong>").arg(z));
+			else
+				t.setVariable(QString("page%1.number").arg(z),QString("%1").arg(z));
+			z++;
+		}
 	}
 	else
+	{
 		t.loop("page",0);
+		t.loop("index",0);
+	}
 
 	response.write(t.toLatin1(),true);
 

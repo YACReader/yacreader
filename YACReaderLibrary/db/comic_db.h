@@ -123,7 +123,7 @@ public:
 	ComicDB(qulonglong cparentId, QString cname, QString cpath, QString chash, QSqlDatabase & database);
 	//Comic(QString fn, QString fp):name(fn),path(fp),knownParent(false), knownId(false){};
 	
-	static QList<LibraryItem *> getComicsFromParent(qulonglong parentId, QSqlDatabase & db);
+	static QList<LibraryItem *> getComicsFromParent(qulonglong parentId, QSqlDatabase & db, bool sort = true);
 	bool isDir();
 
 	bool load(qulonglong id, QSqlDatabase & db);

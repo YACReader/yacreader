@@ -28,7 +28,7 @@ ComicDB::ComicDB(qulonglong cparentId, QString cname, QString cpath, QString cha
 		_hasCover = true;
 }
 
-QList<LibraryItem *> ComicDB::getComicsFromParent(qulonglong parentId, QSqlDatabase & db)
+QList<LibraryItem *> ComicDB::getComicsFromParent(qulonglong parentId, QSqlDatabase & db, bool sort)
 {
 	QList<LibraryItem *> list;
 
@@ -52,7 +52,7 @@ QList<LibraryItem *> ComicDB::getComicsFromParent(qulonglong parentId, QSqlDatab
 		currentItem->path = record.value(3).toString();
 		currentItem->info.load(record.value(4).toString(),db);
 		int lessThan = 0;
-		if(list.isEmpty())
+		if(list.isEmpty() || !sort)
 			list.append(currentItem);
 		else
 		{
