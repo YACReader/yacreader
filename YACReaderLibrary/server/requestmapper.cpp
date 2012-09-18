@@ -26,30 +26,36 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
     QByteArray path=request.getPath();
     qDebug("RequestMapper: path=%s",path.data());
 
+	QRegExp folder("/library/.+/folder/[0-9]+/?");//(?page=[0-9]+)?
+	QRegExp folderInfo("/library/.+/folder/[0-9]+/info/?");
+	QRegExp comic("/library/.+/comic/[0-9]+/?");
+	QRegExp comicClose("/library/.+/comic/[0-9]+/close/?");
+	QRegExp cover("/library/.+/cover/[0-9a-f]+.jpg");
+	QRegExp comicPage("/library/.+/comic/[0-9]+/page/[0-9]+/?");
+
 	//primera petición, se ha hecho un post, se sirven las bibliotecas si la seguridad mediante login no está habilitada
 	if(path == "/")
 	{
 		LibrariesController().service(request, response);
 	}
-
 	//listar el contenido del folder
-	else if(path.contains("folder") && !path.contains("info"))
+	else if(folder.exactMatch(path))
 	{
 		FolderController().service(request, response);
 	}
-	else if (path.contains("folder") && path.contains("info"))
+	else if (folderInfo.exactMatch(path))
 	{
 		FolderInfoController().service(request, response);
 	}
-	else if(path.contains("cover") )
+	else if(cover.exactMatch(path))
 	{
 		CoverController().service(request, response);
 	}
-	else if(path.contains("comic") && !path.contains("page"))
+	else if(comic.exactMatch(path))
 	{
 		ComicController().service(request, response);
 	}
-	else if(path.contains("page"))
+	else if(comicPage.exactMatch(path))
 	{
 		PageController().service(request,response);
 	}

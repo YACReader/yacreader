@@ -18,7 +18,7 @@ public:
 	Folder(qulonglong id, QSqlDatabase & db);//loads a folder from db;
 	void setId(qulonglong sid){id = sid;knownId = true;};
 	void setFather(qulonglong pid){parentId = pid;knownParent = true;};
-	static QList<LibraryItem *> getFoldersFromParent(qulonglong parentId, QSqlDatabase & db);
+	static QList<LibraryItem *> getFoldersFromParent(qulonglong parentId, QSqlDatabase & db, bool sort = true);
 	qulonglong insert(QSqlDatabase & db);
 	bool isDir(){return true;};
 	void removeFromDB(QSqlDatabase & db);

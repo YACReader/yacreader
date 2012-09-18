@@ -1347,7 +1347,7 @@ QList<LibraryItem *> LibraryWindow::getFolderContentFromLibrary(const QString & 
 {
 	QSqlDatabase db = DataBaseManagement::loadDatabase(libraries.value(libraryName)+"/.yacreaderlibrary");
 	
-	QList<LibraryItem *> list = Folder::getFoldersFromParent(folderId,db);
+	QList<LibraryItem *> list = Folder::getFoldersFromParent(folderId,db,false);
 	
 	db.close();
 	QSqlDatabase::removeDatabase(libraries.value(libraryName));
@@ -1359,7 +1359,7 @@ QList<LibraryItem *> LibraryWindow::getFolderComicsFromLibrary(const QString & l
 {
 	QSqlDatabase db = DataBaseManagement::loadDatabase(libraries.value(libraryName)+"/.yacreaderlibrary");
 
-	QList<LibraryItem *> list = ComicDB::getComicsFromParent(folderId,db);
+	QList<LibraryItem *> list = ComicDB::getComicsFromParent(folderId,db,false);
 
 	db.close();
 	QSqlDatabase::removeDatabase(libraries.value(libraryName));
