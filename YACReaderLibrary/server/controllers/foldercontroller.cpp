@@ -78,14 +78,14 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 
 	//t.loop("element",folderContent.length());
 
-	int elementsPerPage = 10;
+	int elementsPerPage = 20;
 
 	int numFolders = folderContent.length();
 	int numComics = folderComics.length();
 	int totalLength = folderContent.length() + folderComics.length();
 
-	int numFolderPages = numFolders / 10 + ((numFolders%10)>0?1:0);
-	int numPages = totalLength / 10 + ((totalLength%10)>0?1:0);
+	int numFolderPages = numFolders / elementsPerPage + ((numFolders%elementsPerPage)>0?1:0);
+	int numPages = totalLength / elementsPerPage + ((totalLength%elementsPerPage)>0?1:0);
 
 	//response.writeText(QString("Number of pages : %1 <br/>").arg(numPages));
 
@@ -94,8 +94,8 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	else if(page >= numPages)
 		page = numPages-1;
 
-	int indexCurrentPage = page*10;
-	int numFoldersAtCurrentPage = qMax(0,qMin(numFolders - indexCurrentPage, 10));
+	int indexCurrentPage = page*elementsPerPage;
+	int numFoldersAtCurrentPage = qMax(0,qMin(numFolders - indexCurrentPage, elementsPerPage));
 
 	//response.writeText(QString("indexCurrentPage : %1 <br/>").arg(indexCurrentPage));
 	//response.writeText(QString("numFoldersAtCurrentPage : %1 <br/>").arg(numFoldersAtCurrentPage));
@@ -105,17 +105,17 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	int i = 0;
 	while(i<numFoldersAtCurrentPage)
 	{
-		LibraryItem * item = folderContent.at(i + (page*10));
-		t.setVariable(QString("element%1.name").arg(i),folderContent.at(i + (page*10))->name);
+		LibraryItem * item = folderContent.at(i + (page*elementsPerPage));
+		t.setVariable(QString("element%1.name").arg(i),folderContent.at(i + (page*elementsPerPage))->name);
 		if(item->isDir())
 		{
-			t.setVariable(QString("element%1.image.width").arg(i),"92px");
+			t.setVariable(QString("element%1.image.width").arg(i),"89px");
 			t.setVariable(QString("element%1.image.url").arg(i),"/images/f.png");
 
 			t.setVariable(QString("element%1.browse").arg(i),QString("<a href=\"%1\">Browse</a>").arg(QString("/library/%1/folder/%2").arg(libraryName).arg(item->id)));
 
 			//t.setVariable(QString("element%1.url").arg(i),"/library/"+libraryName+"/folder/"+QString("%1").arg(folderContent.at(i + (page*10))->id));
-			t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/folder/"+QString("%1/info").arg(folderContent.at(i + (page*10))->id));
+			t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/folder/"+QString("%1/info").arg(folderContent.at(i + (page*elementsPerPage))->id));
 		}
 		else
 		{
@@ -135,23 +135,23 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 
 	if(comicPage > 0)
 	{
-		comicsOffset = 10 - (numFolders%10);
-		comicsOffset += (comicPage-1) *10;
+		comicsOffset = elementsPerPage - (numFolders%elementsPerPage);
+		comicsOffset += (comicPage-1) *elementsPerPage;
 	}
 	else
 		comicsOffset = 0;
 
 	
 
-	int globalComicsOffset = 10 - (numFolders%10);
+	int globalComicsOffset = elementsPerPage - (numFolders%elementsPerPage);
 	int numComicsAtCurrentPage = 0;
 
 	if(comicPage == 0) //primera página de los cómics
 			numComicsAtCurrentPage = qMin(globalComicsOffset,numComics);
 		else if (page == (numPages-1)) //última página de los cómics
-			numComicsAtCurrentPage = 10-globalComicsOffset + (numComics%10);
+			numComicsAtCurrentPage = elementsPerPage-globalComicsOffset + (numComics%elementsPerPage);
 		else
-			numComicsAtCurrentPage = 10 - numFoldersAtCurrentPage;
+			numComicsAtCurrentPage = elementsPerPage - numFoldersAtCurrentPage;
 
 	if(numComics == 0)
 		numComicsAtCurrentPage = 0;
