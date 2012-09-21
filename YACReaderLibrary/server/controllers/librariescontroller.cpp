@@ -15,6 +15,17 @@ void LibrariesController::service(HttpRequest& request, HttpResponse& response)
 	HttpSession session=Static::sessionStore->getSession(request,response);
 
 	session.set("xxx","yyy");
+	QString postData = QString::fromUtf8(request.getBody());
+	response.writeText(postData);
+
+	QList<QString> data = postData.split("\n");
+	session.setDeviceType(data.at(0).split(":").at(1));
+	session.setDisplayType(data.at(1).split(":").at(1));
+	QList<QString> comics = data.at(2).split(":").at(1).split("\t");
+	foreach(QString hash,comics)
+	{
+		session.setComicOnDevice(hash);
+	}
 
 	Template t=Static::templateLoader->getTemplate("libraries",request.getHeader("Accept-Language"));
 	t.enableWarnings();

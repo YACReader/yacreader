@@ -93,15 +93,26 @@ public:
     void setLastAccess();
 
 	//AÑADIDO
+	//sets
+	void setComicsOnDevice(const QSet<QString> & set);
+	void setComicOnDevice(const QString & hash);
+	void setDownloadedComic(const QString & hash);
 	bool isComicOnDevice(const QString & hash);
 	bool isComicDownloaded(const QString & hash);
+	QSet<QString> getComicsOnDevice();
+	QSet<QString> getDownloadedComics();
+
+	//current comic
 	qulonglong getCurrentComicId();
 	Comic2 * getCurrentComic();
 	void dismissCurrentComic();
-
-	void setComicsOnDevice(const QSet<QString> & set);
-	void setDownloadedComic(const QString & hash);
 	void setCurrentComic(qulonglong id, Comic2 * comic);
+	
+	//device identification
+	QString getDeviceType();
+	QString getDisplayType();
+	void setDeviceType(const QString & device);
+	void setDisplayType(const QString & display);
 
 private:
 
@@ -111,6 +122,8 @@ private:
 		//cómics que han sido descargados o están siendo descargados en esta sesión
 		QSet<QString> downloadedComics;
 		//cómic actual que está siendo descargado
+		QString device;
+		QString display;
 		qulonglong comicId;
 		Comic2 * comic;
 	};
