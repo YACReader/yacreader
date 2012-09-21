@@ -18,13 +18,14 @@
 #include "controllers/comiccontroller.h"
 #include "controllers/folderinfocontroller.h"
 #include "controllers/pagecontroller.h"
+#include "controllers/errorcontroller.h"
 
 RequestMapper::RequestMapper(QObject* parent)
     :HttpRequestHandler(parent) {}
 
 void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
-    QByteArray path=request.getPath();
-    qDebug("RequestMapper: path=%s",path.data());
+	QByteArray path=request.getPath();
+	qDebug("RequestMapper: path=%s",path.data());
 
 	QRegExp folder("/library/.+/folder/[0-9]+/?");//(?page=[0-9]+)?
 	QRegExp folderInfo("/library/.+/folder/[0-9]+/info/?");
@@ -38,30 +39,45 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 	{
 		LibrariesController().service(request, response);
 	}
-	//listar el contenido del folder
-	else if(folder.exactMatch(path))
+
+	else 
+
 	{
-		FolderController().service(request, response);
+		//se comprueba que la sesión sea la correcta con el fin de evitar accesos no autorizados
+		HttpSession session=Static::sessionStore->getSession(request,response);
+		if(session.contains("xxx"))
+		{
+
+			//listar el contenido del folder
+			if(folder.exactMatch(path))
+			{
+				FolderController().service(request, response);
+			}
+			else if (folderInfo.exactMatch(path))
+			{
+				FolderInfoController().service(request, response);
+			}
+			else if(cover.exactMatch(path))
+			{
+				CoverController().service(request, response);
+			}
+			else if(comic.exactMatch(path))
+			{
+				ComicController().service(request, response);
+			}
+			else if(comicPage.exactMatch(path))
+			{
+				PageController().service(request,response);
+			}
+			else
+			{
+				Static::staticFileController->service(request, response);
+			}
+		}
+		else //acceso no autorizado
+		{
+			ErrorController(403).service(request,response);
+		}
 	}
-	else if (folderInfo.exactMatch(path))
-	{
-		FolderInfoController().service(request, response);
-	}
-	else if(cover.exactMatch(path))
-	{
-		CoverController().service(request, response);
-	}
-	else if(comic.exactMatch(path))
-	{
-		ComicController().service(request, response);
-	}
-	else if(comicPage.exactMatch(path))
-	{
-		PageController().service(request,response);
-	}
-	else
-	{
-			Static::staticFileController->service(request, response);
-	}
-	
+
 }

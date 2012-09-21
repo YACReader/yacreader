@@ -124,7 +124,10 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 			t.setVariable(QString("element%1.image.width").arg(i),"80px");
 			t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/comic/"+QString("%1").arg(comic->id));
 			//t.setVariable(QString("element%1.image.url").arg(i),"/images/f.png");
-			t.setVariable(QString("element%1.image.url").arg(i),QString("/library/%1/cover/%2.jpg").arg(libraryName).arg(comic->info.hash));
+			if(session.isComicOnDevice(comic->info.hash))
+				t.setVariable(QString("element%1.image.url").arg(i),"/images/f.png");
+			else
+				t.setVariable(QString("element%1.image.url").arg(i),QString("/library/%1/cover/%2.jpg").arg(libraryName).arg(comic->info.hash));
 		}
 		i++;
 	}

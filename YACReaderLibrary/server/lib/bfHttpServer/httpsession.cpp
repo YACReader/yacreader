@@ -160,10 +160,11 @@ void HttpSession::setLastAccess() {
 }
 
 //AÑADIDO
+//sets
 bool HttpSession::isComicOnDevice(const QString & hash)
 {
 	if(dataPtr)
-		return dataPtr->yacreaderSessionData.downloadedComics.contains(hash);
+		return dataPtr->yacreaderSessionData.comicsOnDevice.contains(hash);
 	else
 		return false;
 }
@@ -174,6 +175,42 @@ bool HttpSession::isComicDownloaded(const QString & hash)
 	else
 		return false;
 }
+void HttpSession::setComicOnDevice(const QString & hash)
+{
+	if(dataPtr)
+	{
+		dataPtr->yacreaderSessionData.comicsOnDevice.insert(hash);
+	}
+}
+void HttpSession::setComicsOnDevice(const QSet<QString> & set)
+{
+	if(dataPtr)
+	{
+		dataPtr->yacreaderSessionData.comicsOnDevice = set;
+	}
+}
+void HttpSession::setDownloadedComic(const QString & hash)
+{
+	if(dataPtr)
+	{
+		dataPtr->yacreaderSessionData.downloadedComics.insert(hash);
+	}
+}
+QSet<QString> HttpSession::getComicsOnDevice()
+{
+	if(dataPtr)
+		return dataPtr->yacreaderSessionData.comicsOnDevice ;
+	else
+		return QSet<QString>();
+}
+QSet<QString> HttpSession::getDownloadedComics()
+{
+	if(dataPtr)
+		return dataPtr->yacreaderSessionData.downloadedComics ;
+	else
+		return QSet<QString>();
+}
+//current comic
 qulonglong HttpSession::getCurrentComicId()
 {
 	if(dataPtr)
@@ -202,21 +239,6 @@ void HttpSession::dismissCurrentComic()
 		dataPtr->yacreaderSessionData.comicId = 0;
 	}
 }
-
-void HttpSession::setComicsOnDevice(const QSet<QString> & set)
-{
-	if(dataPtr)
-	{
-		dataPtr->yacreaderSessionData.comicsOnDevice = set;
-	}
-}
-void HttpSession::setDownloadedComic(const QString & hash)
-{
-	if(dataPtr)
-	{
-		dataPtr->yacreaderSessionData.downloadedComics.insert(hash);
-	}
-}
 void HttpSession::setCurrentComic(qulonglong id, Comic2 * comic)
 {
 	if(dataPtr)
@@ -224,5 +246,36 @@ void HttpSession::setCurrentComic(qulonglong id, Comic2 * comic)
 		dismissCurrentComic();
 		dataPtr->yacreaderSessionData.comicId = id;
 		dataPtr->yacreaderSessionData.comic = comic;
+	}
+}
+
+QString HttpSession::getDeviceType()
+{
+	if(dataPtr)
+	{
+		return dataPtr->yacreaderSessionData.device;
+	}
+	return "";
+}
+QString HttpSession::getDisplayType()
+{
+	if(dataPtr)
+	{
+		return dataPtr->yacreaderSessionData.display;
+	}
+	return "";
+}
+void HttpSession::setDeviceType(const QString & device)
+{
+	if(dataPtr)
+	{
+		dataPtr->yacreaderSessionData.device = device;
+	}
+}
+void HttpSession::setDisplayType(const QString & display)
+{
+	if(dataPtr)
+	{
+		dataPtr->yacreaderSessionData.display = display;
 	}
 }
