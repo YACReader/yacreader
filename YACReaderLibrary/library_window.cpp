@@ -51,7 +51,7 @@ void LibraryWindow::doLayout()
 	QSplitter * sHorizontal = new QSplitter(Qt::Horizontal);  //spliter principal
 	//TODO: flowType is a global variable
 	//CONFIG COMIC_FLOW--------------------------------------------------------
-	comicFlow = new ComicFlow(0,flowType);
+	comicFlow = new ComicFlowWidgetGL(0);
 	comicFlow->setFocusPolicy(Qt::StrongFocus);
 	comicFlow->setShowMarks(true);
 	QMatrix m;

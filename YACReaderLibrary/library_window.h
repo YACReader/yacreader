@@ -15,7 +15,8 @@
 #include "create_library_dialog.h"
 #include "add_library_dialog.h"
 #include "library_creator.h"
-#include "comic_flow.h"
+//#include "comic_flow.h"
+#include "comic_flow_widget.h"
 #include "custom_widgets.h"
 #include "rename_library_dialog.h"
 #include "properties_dialog.h"
@@ -53,7 +54,7 @@ private:
 	YACReaderSortComics * proxySort;
 	PackageManager * packageManager;
 
-	ComicFlow * comicFlow;
+	ComicFlowWidget * comicFlow;
 	QSize slideSizeW;
 	QSize slideSizeF;
 	//search filter

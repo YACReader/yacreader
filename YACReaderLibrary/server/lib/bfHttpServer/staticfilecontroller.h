@@ -69,6 +69,7 @@ private:
     /** Timeout for each cached file */
     int cacheTimeout;
 
+
     /** Maximum size of files in cache, larger files are not cached */
     int maxCachedFileSize;
 
@@ -81,7 +82,8 @@ private:
     /** Set a content-type header in the response depending on the ending of the filename */
     void setContentType(QString file, HttpResponse& response) const;
 
-	QString StaticFileController::getLocalizedFileName(QString fileName, QString locales, QString path) const;
+	QString getLocalizedFileName(QString fileName, QString locales, QString path) const;
+	QString getDeviceAwareFileName(QString fileName, QString device, QString locales, QString path) const;
 
 	bool exists(QString localizedName, QString path) const;
 };

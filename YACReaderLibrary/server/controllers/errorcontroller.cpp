@@ -12,6 +12,16 @@ ErrorController::ErrorController(int errorCode)
 
 void ErrorController::service(HttpRequest& request, HttpResponse& response)
 {
-	response.setStatus(300,"redirect");
-	response.write("<html> <head> <meta http-equiv=\"refresh\" content=\"0; URL=/\"> </head> <body> </body> </html>", true);
+	switch(error)
+	{
+	case 300:
+		response.setStatus(300,"redirect");
+		response.write("<html> <head> <meta http-equiv=\"refresh\" content=\"0; URL=/\"> </head> <body> </body> </html>", true);
+		break;
+	case 404:
+		response.setStatus(404,"not found");
+		response.write("404 not found",true);
+		break;
+	}
+
 }

@@ -12,7 +12,7 @@ INCLUDEPATH += ../common \
 			   ../YACReader
 CONFIG += release
 CONFIG -= flat
-QT += sql network
+QT += sql network opengl
 
 # Input
 HEADERS += comic_flow.h \
@@ -43,7 +43,9 @@ HEADERS += comic_flow.h \
 		   ../common/check_new_version.h \
 		   ../YACReader/comic.h \
 		   ../YACReader/bookmarks.h \
-		   server_config_dialog.h
+		   server_config_dialog.h \
+		   ../common/comic_flow_widget.h \
+		   ../common/yacreader_flow_gl.h
 		   
 SOURCES += comic_flow.cpp \
            create_library_dialog.cpp \
@@ -74,7 +76,9 @@ SOURCES += comic_flow.cpp \
 		   ../common/check_new_version.cpp \
 		   ../YACReader/comic.cpp \
 		   ../YACReader/bookmarks.cpp \
-		   server_config_dialog.cpp
+		   server_config_dialog.cpp \
+		   ../common/comic_flow_widget.cpp \
+		   ../common/yacreader_flow_gl.cpp
 		   
 include(./server/server.pri)
 

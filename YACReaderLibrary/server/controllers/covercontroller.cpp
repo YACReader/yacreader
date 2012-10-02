@@ -16,7 +16,7 @@ void CoverController::service(HttpRequest& request, HttpResponse& response)
 
 	QMap<QString,QString> libraries = mw->getLibraries();
 
-	QString path = request.getPath();
+	QString path = QUrl::fromPercentEncoding(request.getPath()).toLatin1();
 	QStringList pathElements = path.split('/');
 	QString libraryName = pathElements.at(2);
 	QString fileName = pathElements.at(4);

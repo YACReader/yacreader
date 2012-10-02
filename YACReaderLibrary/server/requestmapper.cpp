@@ -20,6 +20,10 @@
 #include "controllers/pagecontroller.h"
 #include "controllers/errorcontroller.h"
 
+#include "library_window.h"
+
+extern LibraryWindow * mw;
+
 RequestMapper::RequestMapper(QObject* parent)
     :HttpRequestHandler(parent) {}
 
@@ -34,6 +38,10 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 	QRegExp cover("/library/.+/cover/[0-9a-f]+.jpg");
 	QRegExp comicPage("/library/.+/comic/[0-9]+/page/[0-9]+/?");
 
+	QRegExp library("/library/([^/.]+)/.+");
+
+	path = QUrl::fromPercentEncoding(path).toLatin1();
+
 	//primera petición, se ha hecho un post, se sirven las bibliotecas si la seguridad mediante login no está habilitada
 	if(path == "/")
 	{
@@ -41,42 +49,44 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 	}
 
 	else 
-
 	{
 		//se comprueba que la sesión sea la correcta con el fin de evitar accesos no autorizados
 		HttpSession session=Static::sessionStore->getSession(request,response);
-		if(session.contains("xxx"))
+		if(session.contains("ySession"))
 		{
-
-			//listar el contenido del folder
-			if(folder.exactMatch(path))
+			if(library.indexIn(path)!=-1 && mw->getLibraries().contains(library.cap(1)) )
 			{
-				FolderController().service(request, response);
-			}
-			else if (folderInfo.exactMatch(path))
-			{
-				FolderInfoController().service(request, response);
-			}
-			else if(cover.exactMatch(path))
-			{
-				CoverController().service(request, response);
-			}
-			else if(comic.exactMatch(path))
-			{
-				ComicController().service(request, response);
-			}
-			else if(comicPage.exactMatch(path))
-			{
-				PageController().service(request,response);
+				//listar el contenido del folder
+				if(folder.exactMatch(path))
+				{
+					FolderController().service(request, response);
+				}
+				else if (folderInfo.exactMatch(path))
+				{
+					FolderInfoController().service(request, response);
+				}
+				else if(cover.exactMatch(path))
+				{
+					CoverController().service(request, response);
+				}
+				else if(comic.exactMatch(path))
+				{
+					ComicController().service(request, response);
+				}
+				else if(comicPage.exactMatch(path))
+				{
+					PageController().service(request,response);
+				}
 			}
 			else
 			{
+				response.writeText(library.cap(1));
 				Static::staticFileController->service(request, response);
 			}
 		}
-		else //acceso no autorizado
+		else //acceso no autorizado, redirección
 		{
-			ErrorController(403).service(request,response);
+			ErrorController(300).service(request,response);
 		}
 	}
 

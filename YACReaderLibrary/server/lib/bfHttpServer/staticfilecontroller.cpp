@@ -7,6 +7,8 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QDateTime>
+#include "httpsession.h"
+#include "static.h"
 
 StaticFileController::StaticFileController(QSettings* settings, QObject* parent)
     :HttpRequestHandler(parent)
@@ -61,12 +63,14 @@ void StaticFileController::service(HttpRequest& request, HttpResponse& response)
             path+="/index.html";
         }
 
-		//TODO(DONE) carga sensible a la localización
+		//TODO(DONE) carga sensible al dispositivo y a la localización
 		QString stringPath = path;
 		QStringList paths = QString(path).split('/');
 		QString fileName = paths.last();
 		stringPath.remove(fileName);
-		fileName = getLocalizedFileName(fileName, request.getHeader("Accept-Language"), stringPath);
+		HttpSession session=Static::sessionStore->getSession(request,response);
+		QString device = session.getDeviceType();
+		fileName = getDeviceAwareFileName(fileName, device, request.getHeader("Accept-Language"), stringPath);
 		QString newPath = stringPath.append(fileName);
 		//END_TODO
         QFile file(docroot+path);
@@ -170,4 +174,18 @@ QString StaticFileController::getLocalizedFileName(QString fileName, QString loc
 	}
 
 	return fileName;
+}
+
+QString StaticFileController::getDeviceAwareFileName(QString fileName, QString device, QString locales, QString path) const
+{
+	QFileInfo fi(fileName);
+	QString baseName = fi.baseName();
+	QString extension = fi.completeSuffix();
+
+	QString completeFileName = getLocalizedFileName(fileName+"_"+device+"."+extension,locales,path);
+
+	if(QFile(docroot+"/"+path+completeFileName).exists())
+		return completeFileName; //existe un archivo específico para este dispositivo y locales
+	else
+		return getLocalizedFileName(fileName,locales,path); //no hay archivo específico para el dispositivo, pero puede haberlo para estas locales
 }

@@ -16,7 +16,7 @@
 		
 			<ul id="itemContainer">
 				{loop element}
-					<li><img style="width: {element.image.width}" src="{element.image.url}"/> <p>{element.name}</p> {element.browse} - <a href="{element.downloadurl}">Download</a></li>
+					<li><img style="width: {element.image.width}" src="{element.image.url}"/> <p>{element.name}</p> {element.browse} - {element.download} </li>
 				{end element}
 			</ul>
 			
