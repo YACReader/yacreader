@@ -204,7 +204,7 @@ public slots:
 signals:
   void centerIndexChanged(int index);
 
-protected:
+public:
   void paintEvent(QPaintEvent *event);
   void keyPressEvent(QKeyEvent* event);
   void mousePressEvent(QMouseEvent* event);

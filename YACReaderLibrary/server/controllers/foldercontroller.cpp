@@ -29,24 +29,23 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	QString y = session.get("xxx").toString();
 	//response.writeText(QString("session xxx : %1 <br/>").arg(y));
 
-	Template t=Static::templateLoader->getTemplate("folder",request.getHeader("Accept-Language"));
+	Template t=Static::templateLoader->getTemplate("folder_"+session.getDeviceType(),request.getHeader("Accept-Language"));
 	t.enableWarnings();
-	QString path = request.getPath();
+	QString path = QUrl::fromPercentEncoding(request.getPath()).toLatin1();
 	QStringList pathElements = path.split('/');
 	QString libraryName = pathElements.at(2);
 	qulonglong parentId = pathElements.at(4).toULongLong();
 	QList<LibraryItem *> folderContent = mw->getFolderContentFromLibrary(libraryName,parentId);
 	QList<LibraryItem *> folderComics = mw->getFolderComicsFromLibrary(libraryName,parentId);
 
+	response.writeText(libraryName);
+
 	folderContent.append(folderComics);
 
 	qSort(folderContent.begin(),folderContent.end(),LibraryItemSorter());
 	folderComics.clear();
 
-
-
 	qulonglong backId = mw->getParentFromComicFolderId(libraryName,parentId);
-
 
 	int page = 0;
 	QByteArray p = request.getParameter("page");
@@ -57,11 +56,10 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	//QString currentPath = session.get("currentPath").toString();
 	//QStringList pathSize = currentPath.split("/").last().toInt;
 
-
 	if(backId == 1 && parentId == 1)
 		t.setVariable(QString("upurl"),"/?page=0");
 	else
-		t.setVariable(QString("upurl"),"/library/" + libraryName + "/folder/" +QString("%1").arg(backId));//.arg(upPage));		
+		t.setVariable(QString("upurl"),"/library/" + QUrl::toPercentEncoding(libraryName) + "/folder/" +QString("%1").arg(backId));//.arg(upPage));		
 
 	/*if(currentPath.length()>0)
 	{
@@ -115,19 +113,23 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 			t.setVariable(QString("element%1.browse").arg(i),QString("<a href=\"%1\">Browse</a>").arg(QString("/library/%1/folder/%2").arg(libraryName).arg(item->id)));
 
 			//t.setVariable(QString("element%1.url").arg(i),"/library/"+libraryName+"/folder/"+QString("%1").arg(folderContent.at(i + (page*10))->id));
-			t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/folder/"+QString("%1/info").arg(folderContent.at(i + (page*elementsPerPage))->id));
+			//t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/folder/"+QString("%1/info").arg(folderContent.at(i + (page*elementsPerPage))->id));
+			t.setVariable(QString("element%1.download").arg(i),QString("<a href=\"%1\">Download</a>").arg("/library/"+QUrl::toPercentEncoding(libraryName)+"/folder/"+QString("%1/info").arg(folderContent.at(i + (page*elementsPerPage))->id)));
 		}
 		else
 		{
 			const ComicDB * comic = (ComicDB *)item;
 			t.setVariable(QString("element%1.browse").arg(i),"");
 			t.setVariable(QString("element%1.image.width").arg(i),"80px");
-			t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/comic/"+QString("%1").arg(comic->id));
-			//t.setVariable(QString("element%1.image.url").arg(i),"/images/f.png");
-			if(session.isComicOnDevice(comic->info.hash))
-				t.setVariable(QString("element%1.image.url").arg(i),"/images/f.png");
+			//t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/comic/"+QString("%1").arg(comic->id));
+			if(!session.isComicOnDevice(comic->info.hash))
+				t.setVariable(QString("element%1.download").arg(i),QString("<a href=\"%1\">Download</a>").arg("/library/"+QUrl::toPercentEncoding(libraryName)+"/comic/"+QString("%1").arg(comic->id)));
 			else
-				t.setVariable(QString("element%1.image.url").arg(i),QString("/library/%1/cover/%2.jpg").arg(libraryName).arg(comic->info.hash));
+				t.setVariable(QString("element%1.download").arg(i),QString(""));
+			
+			//t.setVariable(QString("element%1.image.url").arg(i),"/images/f.png");
+
+			t.setVariable(QString("element%1.image.url").arg(i),QString("/library/%1/cover/%2.jpg").arg(QString(QUrl::toPercentEncoding(libraryName))).arg(comic->info.hash));
 		}
 		i++;
 	}
@@ -172,8 +174,8 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 			t.setVariable(QString("elementcomic%1.name").arg(j),comic->name);
 		//else
 		//	t.setVariable(QString("elementcomic%1.name").arg(i),*comic->info.title);
-		t.setVariable(QString("elementcomic%1.url").arg(j),"/library/"+libraryName+"/comic/"+QString("%1").arg(comic->id));
-		t.setVariable(QString("elementcomic%1.coverulr").arg(j),"/library/"+libraryName+"/cover/"+QString("%1").arg(comic->info.hash + ".jpg"));
+		t.setVariable(QString("elementcomic%1.url").arg(j),"/library/"+QUrl::toPercentEncoding(libraryName)+"/comic/"+QString("%1").arg(comic->id));
+		t.setVariable(QString("elementcomic%1.coverulr").arg(j),"/library/"+QUrl::toPercentEncoding(libraryName)+"/cover/"+QString("%1").arg(comic->info.hash + ".jpg"));
 		j++;
 	}
 
@@ -210,7 +212,7 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 		{
 			//response.writeText(QString("%1 - %2 <br />").arg(*itr).arg(count));
 			t.setVariable(QString("index%1.indexname").arg(i), *itr);
-			t.setVariable(QString("index%1.url").arg(i),QString("/library/%1/folder/%2?page=%3").arg(libraryName).arg(parentId).arg(indexPage));
+			t.setVariable(QString("index%1.url").arg(i),QString("/library/%1/folder/%2?page=%3").arg(QString(QUrl::toPercentEncoding(libraryName))).arg(parentId).arg(indexPage));
 			i++;
 			count += indexCount.value(*itr);
 			indexPage = count/elementsPerPage;
@@ -222,13 +224,19 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 		while(z < numPages)
 		{
 
-			t.setVariable(QString("page%1.url").arg(z),QString("/library/%1/folder/%2?page=%3").arg(libraryName).arg(parentId).arg(z));
+			t.setVariable(QString("page%1.url").arg(z),QString("/library/%1/folder/%2?page=%3").arg(QString(QUrl::toPercentEncoding(libraryName))).arg(parentId).arg(z));
+			t.setVariable(QString("page%1.number").arg(z),QString("%1").arg(z));
 			if(page == z)
-				t.setVariable(QString("page%1.number").arg(z),QString("<strong>%1</strong>").arg(z));
+				t.setVariable(QString("page%1.current").arg(z),"current");
 			else
-				t.setVariable(QString("page%1.number").arg(z),QString("%1").arg(z));
+				t.setVariable(QString("page%1.current").arg(z),"");
 			z++;
 		}
+
+		t.setVariable("page.first",QString("/library/%1/folder/%2?page=%3").arg(QString(QUrl::toPercentEncoding(libraryName))).arg(parentId).arg(0));
+		t.setVariable("page.previous",QString("/library/%1/folder/%2?page=%3").arg(QString(QUrl::toPercentEncoding(libraryName))).arg(parentId).arg((page==0)?page:page-1));
+		t.setVariable("page.next",QString("/library/%1/folder/%2?page=%3").arg(QString(QUrl::toPercentEncoding(libraryName))).arg(parentId).arg((page==numPages-1)?page:page+1));
+		t.setVariable("page.last",QString("/library/%1/folder/%2?page=%3").arg(QString(QUrl::toPercentEncoding(libraryName))).arg(parentId).arg(numPages-1));
 	}
 	else
 	{

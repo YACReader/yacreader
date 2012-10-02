@@ -42,7 +42,8 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 {
 	HttpSession session=Static::sessionStore->getSession(request,response);
 
-	QStringList pathElements = ((QString)request.getPath()).split('/');
+	QString path = QUrl::fromPercentEncoding(request.getPath()).toLatin1();
+	QStringList pathElements = path.split('/');
 	QString libraryName = pathElements.at(2);
 	qulonglong comicId = pathElements.at(4).toULongLong();
 

@@ -66,7 +66,7 @@ class YACReaderFlow : public PictureFlow
 Q_OBJECT
 public:
         YACReaderFlow(QWidget * parent,FlowType flowType = CoverFlowLike);
-protected:
+
 	void mousePressEvent(QMouseEvent* event);
 	void mouseDoubleClickEvent(QMouseEvent* event);
 
