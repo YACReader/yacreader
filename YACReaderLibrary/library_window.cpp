@@ -52,6 +52,7 @@ void LibraryWindow::doLayout()
 	//TODO: flowType is a global variable
 	//CONFIG COMIC_FLOW--------------------------------------------------------
 	comicFlow = new ComicFlowWidgetGL(0);
+	comicFlow->setFlowType(flowType);
 	comicFlow->setFocusPolicy(Qt::StrongFocus);
 	comicFlow->setShowMarks(true);
 	QMatrix m;
