@@ -228,7 +228,7 @@ public:
 	void showSlide(int index);
 	int centerIndex();
 	void updateMarks();
-	void setFlowType(PictureFlow::FlowType flowType);
+	//void setFlowType(PictureFlow::FlowType flowType);
 	void render();
 
 	//void paintEvent(QPaintEvent *event);

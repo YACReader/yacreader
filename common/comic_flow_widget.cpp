@@ -200,7 +200,14 @@ void ComicFlowWidgetGL::updateMarks()
 }
 void ComicFlowWidgetGL::setFlowType(PictureFlow::FlowType flowType)
 {
-	flow->setFlowType(flowType);
+		if(flowType == PictureFlow::CoverFlowLike)
+			flow->setPreset(presetYACReaderFlowClassicConfig);
+		else if(flowType == PictureFlow::Strip)
+			flow->setPreset(presetYACReaderFlowStripeConfig);
+		else if(flowType == PictureFlow::StripOverlapped)
+			flow->setPreset(presetYACReaderFlowOverlappedStripeConfig);
+		else
+			flow->setPreset(defaultYACReaderFlowConfig);
 }
 void ComicFlowWidgetGL::render()
 {

@@ -437,7 +437,7 @@ void YACReaderFlowGL::drawCover(CFImage *CF)
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 	
-	if(loaded[CF->index] && marks[CF->index])
+	if(showMarks && loaded[CF->index] && marks[CF->index])
 	{
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, markTexture);
@@ -898,10 +898,10 @@ void YACReaderFlowGL::updateMarks()
 {
 	//do nothing
 }
-void YACReaderFlowGL::setFlowType(PictureFlow::FlowType flowType)
+/*void YACReaderFlowGL::setFlowType(PictureFlow::FlowType flowType)
 {
 	//TODO esperar a que se reimplemente flowtype
-}
+}*/
 void YACReaderFlowGL::render()
 {
 	//do nothing
@@ -965,7 +965,7 @@ void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 
 		gluUnProject( winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
 
-		if(posX >= 0)
+		if(posX >= 0.5)
 		{
 			//int index = currentSelected+1;
 			//while((cfImages[index].current.x-cfImages[index].width/(2.0*config.rotation)) < posX)
@@ -973,7 +973,7 @@ void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 			//setCurrentIndex(index-1);
 			showNext();
 		}
-		else
+		else if(posX <=-0.5)
 			showPrevious();
 	} else if(event->button() == Qt::RightButton)
 	{
