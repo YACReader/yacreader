@@ -37,5 +37,6 @@
     <file>../images/importComicsInfo.png</file>
     <file>../images/db.png</file>
     <file>../images/asignNumber.png</file>
+	<file>../images/defaultCover.png</file>
   </qresource>
 </RCC>

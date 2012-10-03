@@ -204,9 +204,6 @@ YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
 	viewRotateActive = 0;
 	stepBackup = config.animationStep/config.animationSpeedUp;
 
-	worker = new ImageLoaderGL(this);
-	worker->flow = this;
-	
 	/*QTimer * timer = new QTimer();
 	connect(timer, SIGNAL(timeout()), this, SLOT(updateImageData()));
 	timer->start(70);
@@ -679,7 +676,7 @@ void YACReaderFlowGL::populate(int n)
 	float x = 1;
 	float y = 1 * (700/480.0);
 	int i;
-	GLuint cover = bindTexture(QImage(":/images/notCover.png"),GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
+	GLuint cover = bindTexture(QImage(":/images/defaultCover.png"),GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
 	markTexture = bindTexture(QImage(":/images/setRead.png"),GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
 	for(i = 0;i<n;i++){
 		insert("cover", cover, x, y);
@@ -774,69 +771,6 @@ void YACReaderFlowGL::setY_Distance(int value)
 {
 	config.yDistance = value / 100.0;
 }
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-
-void YACReaderFlowGL::updateImageData()
-{
-	// can't do anything, wait for the next possibility
-	if(worker->busy())
-		return;
-
-	// set image of last one
-	int idx = worker->index();
-	if( idx >= 0 && !worker->result().isNull())
-	{
-		if(!loaded[idx])
-		{
-			float x = 1;
-			QImage img = worker->result();
-			GLuint cover = bindTexture(img, GL_TEXTURE_2D,GL_RGB,QGLContext::LinearFilteringBindOption);
-			float y = 1 * (float(img.height())/img.width());
-			replace("cover", cover, x, y,idx);
-			/*CFImages[idx].width = x;
-			CFImages[idx].height = y;
-			CFImages[idx].img = worker->resultTexture;
-			strcpy(CFImages[idx].name,"cover");*/
-			loaded[idx] = true;
-			//numImagesLoaded++;
-		}
-	}
-
-	// try to load only few images on the left and right side 
-	// i.e. all visible ones plus some extra
-#define COUNT 8  
-	int indexes[2*COUNT+1];
-	int center = currentSelected;
-	indexes[0] = center;
-	for(int j = 0; j < COUNT; j++)
-	{
-		indexes[j*2+1] = center+j+1;
-		indexes[j*2+2] = center-j-1;
-	}  
-	for(int c = 0; c < 2*COUNT+1; c++)
-	{
-		int i = indexes[c];
-		if((i >= 0) && (i < numObjects))
-			if(!loaded[i])//slide(i).isNull())
-			{
-				//loader->loadTexture(i);
-				//loaded[i]=true;
-				// schedule thumbnail generation
-				if(paths.size()>0)
-				{
-					QString fname = paths.at(i);
-					//loaded[i]=true;
-
-					worker->generate(i, fname);
-				}
-				return;
-			}
-	}
-}
 
 void YACReaderFlowGL::setPreset(const Preset & p)
 {
@@ -873,15 +807,7 @@ void YACReaderFlowGL::clear()
 {
 	reset();
 }
-void YACReaderFlowGL::setImagePaths(QStringList paths)
-{
-	worker->reset();
-	reset();
-	numObjects = 0;
-	populate(paths.size());
-	this->paths = paths;
-	numObjects = paths.size();
-}
+
 void YACReaderFlowGL::setCenterIndex(int index)
 {
 	setCurrentIndex(index);
@@ -986,6 +912,170 @@ void YACReaderFlowGL::mouseDoubleClickEvent(QMouseEvent* event)
 		emit selected(centerIndex());
 }
 
+YACReaderComicFlowGL::YACReaderComicFlowGL(QWidget *parent,struct Preset p )
+	:YACReaderFlowGL(parent,p)
+{
+	worker = new ImageLoaderGL(this);
+	worker->flow = this;
+}
+
+void YACReaderComicFlowGL::setImagePaths(QStringList paths)
+{
+	worker->reset();
+	reset();
+	numObjects = 0;
+	populate(paths.size());
+	this->paths = paths;
+	numObjects = paths.size();
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+void YACReaderComicFlowGL::updateImageData()
+{
+	// can't do anything, wait for the next possibility
+	if(worker->busy())
+		return;
+
+	// set image of last one
+	int idx = worker->index();
+	if( idx >= 0 && !worker->result().isNull())
+	{
+		if(!loaded[idx])
+		{
+			float x = 1;
+			QImage img = worker->result();
+			GLuint cover = bindTexture(img, GL_TEXTURE_2D,GL_RGB,QGLContext::LinearFilteringBindOption);
+			float y = 1 * (float(img.height())/img.width());
+			replace("cover", cover, x, y,idx);
+			/*CFImages[idx].width = x;
+			CFImages[idx].height = y;
+			CFImages[idx].img = worker->resultTexture;
+			strcpy(CFImages[idx].name,"cover");*/
+			loaded[idx] = true;
+			//numImagesLoaded++;
+		}
+	}
+
+	// try to load only few images on the left and right side 
+	// i.e. all visible ones plus some extra
+#define COUNT 8  
+	int indexes[2*COUNT+1];
+	int center = currentSelected;
+	indexes[0] = center;
+	for(int j = 0; j < COUNT; j++)
+	{
+		indexes[j*2+1] = center+j+1;
+		indexes[j*2+2] = center-j-1;
+	}  
+	for(int c = 0; c < 2*COUNT+1; c++)
+	{
+		int i = indexes[c];
+		if((i >= 0) && (i < numObjects))
+			if(!loaded[i])//slide(i).isNull())
+			{
+				//loader->loadTexture(i);
+				//loaded[i]=true;
+				// schedule thumbnail generation
+				if(paths.size()>0)
+				{
+					QString fname = paths.at(i);
+					//loaded[i]=true;
+
+					worker->generate(i, fname);
+				}
+				return;
+			}
+	}
+}
+
+
+YACReaderPageFlowGL::YACReaderPageFlowGL(QWidget *parent,struct Preset p )
+	:YACReaderFlowGL(parent,p)
+{
+	worker = new ImageLoaderByteArrayGL(this);
+	worker->flow = this;
+}
+
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+void YACReaderPageFlowGL::updateImageData()
+{
+		// can't do anything, wait for the next possibility
+	if(worker->busy())
+		return;
+
+	// set image of last one
+	int idx = worker->index();
+	if( idx >= 0 && !worker->result().isNull())
+	{
+		if(!loaded[idx])
+		{
+			float x = 1;
+			QImage img = worker->result();
+			GLuint cover = bindTexture(img, GL_TEXTURE_2D,GL_RGB,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
+			float y = 1 * (float(img.height())/img.width());
+			replace("cover", cover, x, y,idx);
+			/*CFImages[idx].width = x;
+			CFImages[idx].height = y;
+			CFImages[idx].img = worker->resultTexture;
+			strcpy(CFImages[idx].name,"cover");*/
+			loaded[idx] = true;
+			//numImagesLoaded++;
+		}
+	}
+
+	// try to load only few images on the left and right side 
+	// i.e. all visible ones plus some extra
+#define COUNT 8  
+	int indexes[2*COUNT+1];
+	int center = currentSelected;
+	indexes[0] = center;
+	for(int j = 0; j < COUNT; j++)
+	{
+		indexes[j*2+1] = center+j+1;
+		indexes[j*2+2] = center-j-1;
+	}  
+	for(int c = 0; c < 2*COUNT+1; c++)
+	{
+		int i = indexes[c];
+		if((i >= 0) && (i < numObjects))
+			if(rawImages.size()>0)
+			
+			if(!loaded[i]&&imagesReady[i])//slide(i).isNull())
+			{
+				//loader->loadTexture(i);
+				//loaded[i]=true;
+				// schedule thumbnail generation
+
+					//loaded[i]=true;
+
+				worker->generate(i, rawImages.at(i));
+				
+				return;
+			}
+	}
+}
+
+void YACReaderPageFlowGL::populate(int n)
+{
+	YACReaderFlowGL::populate(n);
+	imagesReady = QVector<bool> (n,false);
+	rawImages = QVector<QByteArray> (n);
+	imagesSetted = QVector<bool> (n,false); //puede sobrar
+
+}
+
+
 //-----------------------------------------------------------------------------
 //ImageLoader
 //-----------------------------------------------------------------------------
@@ -1079,17 +1169,110 @@ QImage ImageLoaderGL::result()
 	return img; 
 }
 
-WidgetLoader::WidgetLoader(QWidget *parent, QGLWidget * shared)
-	:QGLWidget(parent,shared)
-{
-}
-
-void WidgetLoader::loadTexture(int index)
+//-----------------------------------------------------------------------------
+//ImageLoader
+//-----------------------------------------------------------------------------
+QImage ImageLoaderByteArrayGL::loadImage(const QByteArray& raw)
 {
 	QImage image;
-	bool result = image.load(QString("./cover%1.jpg").arg(index+1));
-	//image = image.scaledToWidth(128,Qt::SmoothTransformation); //TODO parametrizar
-	flow->cfImages[index].width = 0.5;
-	flow->cfImages[index].height  = 0.5 * (float(image.height())/image.width());
-	flow->cfImages[index].img = bindTexture(image, GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
+	bool result = image.loadFromData(raw);
+
+	//QGLPixelBuffer * pb = new QGLPixelBuffer(image.size(),flow->format(),flow);
+	//resultTexture = pb->bindTexture(image,GL_TEXTURE_2D);
+
+	//resultTexture = flow->bindTexture(image,GL_TEXTURE_2D);
+
+	//TODO parametrizar
+	image = image.scaledToWidth(128,Qt::SmoothTransformation);
+
+
+	if(!result)
+		return QImage();
+
+	return image;
 }
+
+ImageLoaderByteArrayGL::ImageLoaderByteArrayGL(YACReaderFlowGL * flow): 
+QThread(),flow(flow),restart(false), working(false), idx(-1)
+{
+
+}
+
+ImageLoaderByteArrayGL::~ImageLoaderByteArrayGL()
+{
+	mutex.lock();
+	condition.wakeOne();
+	mutex.unlock();
+	wait();
+}
+
+bool ImageLoaderByteArrayGL::busy() const
+{
+	return isRunning() ? working : false;
+}  
+
+void ImageLoaderByteArrayGL::generate(int index, const QByteArray& raw)
+{
+	mutex.lock();
+	this->idx = index;
+	this->rawData = raw;
+	this->size = size;
+	this->img = QImage();
+	mutex.unlock();
+
+	if (!isRunning())
+		start();
+	else
+	{
+		// already running, wake up whenever ready
+		restart = true;
+		condition.wakeOne();
+	}
+}
+
+void ImageLoaderByteArrayGL::run()
+{
+	for(;;)
+	{
+		// copy necessary data
+		mutex.lock();
+		this->working = true;
+		QByteArray raw = this->rawData;
+		mutex.unlock();
+
+		QImage image = loadImage(raw);
+
+		// let everyone knows it is ready
+		mutex.lock();
+		this->working = false;
+		this->img = image;
+		mutex.unlock();
+
+		// put to sleep
+		mutex.lock();
+		if (!this->restart)
+			condition.wait(&mutex);
+		restart = false;
+		mutex.unlock();
+	}
+}
+
+QImage ImageLoaderByteArrayGL::result() 
+{ 
+	return img; 
+}
+
+//WidgetLoader::WidgetLoader(QWidget *parent, QGLWidget * shared)
+//	:QGLWidget(parent,shared)
+//{
+//}
+//
+//void WidgetLoader::loadTexture(int index)
+//{
+//	QImage image;
+//	bool result = image.load(QString("./cover%1.jpg").arg(index+1));
+//	//image = image.scaledToWidth(128,Qt::SmoothTransformation); //TODO parametrizar
+//	flow->cfImages[index].width = 0.5;
+//	flow->cfImages[index].height  = 0.5 * (float(image.height())/image.width());
+//	flow->cfImages[index].img = bindTexture(image, GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
+//}
