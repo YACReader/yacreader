@@ -62,6 +62,7 @@
 	<file>../images/helpImages/shortcuts.png</file>
 	<file>../images/helpImages/keyboard.png</file>
 	<file>../images/helpImages/mouse.png</file>
-  <file>../images/helpImages/speaker.png</file> 
+	<file>../images/helpImages/speaker.png</file> 
+	<file>../images/defaultCover.png</file>
 </qresource>
 </RCC>

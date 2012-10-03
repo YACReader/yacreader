@@ -16,6 +16,7 @@
 class ImageLoaderGL;
 class QGLContext;
 class WidgetLoader;
+class ImageLoaderByteArrayGL;
 
 //Cover Vector
 typedef struct RVect{
@@ -109,7 +110,7 @@ private:
 	void calcRV(RVect *RV,int pos);
 	void animate(RVect *Current,RVect to);
 	void drawCover(CFImage *CF);
-	ImageLoaderGL * worker;
+	
 	int updateCount;
 	WidgetLoader * loader;
 	int fontSize;
@@ -211,7 +212,7 @@ public:
 
 	void setPreset(const Preset & p);
 
-	void updateImageData();
+	virtual void updateImageData() = 0;
 
 	void reset();
 
@@ -223,7 +224,6 @@ public:
 	void unmarkSlide(int index);
 	void setSlideSize(QSize size);
 	void clear();
-	void setImagePaths(QStringList paths);
 	void setCenterIndex(int index);
 	void showSlide(int index);
 	int centerIndex();
@@ -243,15 +243,40 @@ signals:
 	void selected(unsigned int);
 };
 
-class WidgetLoader : public QGLWidget
-{
-	Q_OBJECT
-public:
-	WidgetLoader(QWidget *parent, QGLWidget * shared);
-	YACReaderFlowGL * flow;
-public slots:
-	void loadTexture(int index);
+//class WidgetLoader : public QGLWidget
+//{
+//	Q_OBJECT
+//public:
+//	WidgetLoader(QWidget *parent, QGLWidget * shared);
+//	YACReaderFlowGL * flow;
+//public slots:
+//	void loadTexture(int index);
+//
+//};
 
+class YACReaderComicFlowGL : public YACReaderFlowGL
+{
+public:
+	YACReaderComicFlowGL(QWidget *parent = 0,struct Preset p = defaultYACReaderFlowConfig);
+	void setImagePaths(QStringList paths);
+	void updateImageData();
+
+private:
+	ImageLoaderGL * worker;
+
+};
+
+class YACReaderPageFlowGL : public YACReaderFlowGL
+{
+public:
+	YACReaderPageFlowGL(QWidget *parent = 0,struct Preset p = defaultYACReaderFlowConfig);
+	void updateImageData();
+	void populate(int n);
+	QVector<bool> imagesReady;
+	QVector<QByteArray> rawImages;
+	QVector<bool> imagesSetted;
+private:
+	ImageLoaderByteArrayGL * worker;
 };
 
 class ImageLoaderGL : public QThread
@@ -281,6 +306,37 @@ private:
 	bool working;
 	int idx;
 	QString fileName;
+	QSize size;
+	QImage img;
+};
+
+class ImageLoaderByteArrayGL : public QThread
+{
+public:
+	ImageLoaderByteArrayGL(YACReaderFlowGL * flow);
+	~ImageLoaderByteArrayGL();
+	// returns FALSE if worker is still busy and can't take the task
+	bool busy() const;
+	void generate(int index, const QByteArray& raw);
+	void reset(){idx = -1;};
+	int index() const { return idx; };
+	QImage result();
+	YACReaderFlowGL * flow;
+	GLuint resultTexture;
+	QImage loadImage(const QByteArray& rawData);
+
+protected:
+	void run();
+
+private:
+	QMutex mutex;
+	QWaitCondition condition;
+
+
+	bool restart;
+	bool working;
+	int idx;
+	QByteArray rawData;
 	QSize size;
 	QImage img;
 };

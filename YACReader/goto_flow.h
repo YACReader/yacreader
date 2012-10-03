@@ -12,12 +12,13 @@
 #include <QEvent>
 #include <QLabel>
 #include "custom_widgets.h"
+#include "goto_flow_widget.h"
 class Comic;
 
 class SlideInitializer;
 class PageLoader;
 
-class GoToFlow : public QWidget
+class GoToFlow : public GoToFlowWidget
 {
 	Q_OBJECT
 public:
@@ -31,7 +32,7 @@ private:
 	QIntValidator * v;
 	QPushButton * centerButton;
 	QPushButton * goToButton;
-	Comic * comic;
+	//Comic * comic;
 	QSize imageSize;
 
 	QVector<bool> imagesLoaded;

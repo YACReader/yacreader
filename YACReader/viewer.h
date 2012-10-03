@@ -24,6 +24,7 @@ class BookmarksDialog;
 class Render;
 class GoToDialog;
 class YACReaderTranslator;
+class GoToFlowWidget;
 
 	class Viewer : public QScrollArea
 	{
@@ -78,7 +79,7 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		QTimer * scroller;
 		int posByStep;
 		int nextPos;
-		GoToFlow * goToFlow;
+		GoToFlowWidget * goToFlow;
 		QPropertyAnimation * showGoToFlowAnimation;
 		GoToDialog * goToDialog;
 		//!Image properties

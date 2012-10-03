@@ -69,7 +69,7 @@ class ComicFlowWidgetGL : public ComicFlowWidget
 {
 	Q_OBJECT
 private:
-	YACReaderFlowGL * flow;
+	YACReaderComicFlowGL * flow;
 public:
 	ComicFlowWidgetGL(QWidget * parent = 0);
 

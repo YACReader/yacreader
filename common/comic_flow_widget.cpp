@@ -124,7 +124,7 @@ void ComicFlowWidgetSW::mouseDoubleClickEvent(QMouseEvent* event)
 ComicFlowWidgetGL::ComicFlowWidgetGL(QWidget * parent)
 	:ComicFlowWidget(parent)
 {
-	flow = new YACReaderFlowGL(parent);
+	flow = new YACReaderComicFlowGL(parent);
 
 	connect(flow,SIGNAL(centerIndexChanged(int)),this,SIGNAL(centerIndexChanged(int)));
 	connect(flow,SIGNAL(selected(unsigned int)),this,SIGNAL(selected(unsigned int)));

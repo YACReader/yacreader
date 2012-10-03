@@ -7,7 +7,7 @@ DEPENDPATH += . \
     release
 INCLUDEPATH += .
 INCLUDEPATH += ../common
-QT += network webkit phonon
+QT += network webkit phonon opengl
 CONFIG += release
 CONFIG -= flat
 
@@ -28,7 +28,11 @@ HEADERS += comic.h \
     bookmarks_dialog.h \
     render.h \
     shortcuts_dialog.h \
-	translator.h
+	translator.h \
+	../common/goto_flow_widget.h \
+	goto_flow_gl.h \
+	../common/yacreader_flow_gl.h
+	
 SOURCES += comic.cpp \
     configuration.cpp \
     goto_dialog.cpp \
@@ -46,7 +50,11 @@ SOURCES += comic.cpp \
     bookmarks_dialog.cpp \
     render.cpp \
     shortcuts_dialog.cpp \
-	translator.cpp
+	translator.cpp \
+	../common/goto_flow_widget.cpp \
+	goto_flow_gl.cpp \
+	../common/yacreader_flow_gl.cpp
+	
 RESOURCES += images.qrc \
     files.qrc 
 RC_FILE = icon.rc

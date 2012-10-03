@@ -3,6 +3,7 @@
 #include "configuration.h"
 #include "magnifying_glass.h"
 #include "goto_flow.h"
+#include "goto_flow_gl.h"
 #include "bookmarks_dialog.h"
 #include "render.h"
 #include "goto_dialog.h"
@@ -65,7 +66,7 @@ drag(false)
 
 	goToDialog = new GoToDialog(this);
 
-	goToFlow = new GoToFlow(this,Configuration::getConfiguration().getFlowType());
+	goToFlow = new GoToFlowGL(this,Configuration::getConfiguration().getFlowType());
 	goToFlow->hide();
 	showGoToFlowAnimation = new QPropertyAnimation(goToFlow,"pos");
 	showGoToFlowAnimation->setDuration(150);
