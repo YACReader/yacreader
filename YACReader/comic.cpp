@@ -27,7 +27,7 @@ Comic::Comic(const QString pathFile)
 //-----------------------------------------------------------------------------
 Comic::~Comic()
 {
-	QThread::~QThread();
+	//QThread::~QThread();
 	/*delete _7z;
 	delete _7ze;
 	delete bm;*/ //TODO safe delete
