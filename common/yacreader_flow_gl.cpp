@@ -179,7 +179,7 @@ struct Preset pressetYACReaderFlowDownConfig = {
 };
 /*Constructor*/
 YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
-	:QGLWidget(QGLFormat(QGL::DoubleBuffer), parent),numObjects(0)
+	:QGLWidget(QGLFormat(QGL::DoubleBuffer), parent),numObjects(0),lazyPopulateObjects(-1)
 {
 	updateCount = 0;
 	config = p;
@@ -217,6 +217,7 @@ YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
 
 	loaderThread->start();*/
 	timerId = startTimer(16);
+
 }
 
 void YACReaderFlowGL::timerEvent(QTimerEvent * event)
@@ -254,7 +255,10 @@ void YACReaderFlowGL::initializeGL()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	//populate(284); //TODO esto es responsabilidad del usuario de la clase
+	defaultTexture = bindTexture(QImage(":/images/defaultCover.png"),GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
+	markTexture = bindTexture(QImage(":/images/setRead.png"),GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
+	if(lazyPopulateObjects!=-1)
+		populate(lazyPopulateObjects); //TODO esto es responsabilidad del usuario de la clase
 
 	//float x = 0.5;
 	//int i;
@@ -512,7 +516,7 @@ void YACReaderFlowGL::draw()
 	glColor4f( 1.0, 1.0, 1.0, 1.0 );	
 	glVertex2f( -0.03, 0.98);
 	glVertex2f( 0.03, 0.98);
-	glVertex2f( 0, 0.95);
+	glVertex2f( 0, 0.949);
 
 	glEnd();
 
@@ -676,10 +680,9 @@ void YACReaderFlowGL::populate(int n)
 	float x = 1;
 	float y = 1 * (700/480.0);
 	int i;
-	GLuint cover = bindTexture(QImage(":/images/defaultCover.png"),GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
-	markTexture = bindTexture(QImage(":/images/setRead.png"),GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
+
 	for(i = 0;i<n;i++){
-		insert("cover", cover, x, y);
+		insert("cover", defaultTexture, x, y);
 	}
 
 	/*
@@ -698,11 +701,12 @@ void YACReaderFlowGL::populate(int n)
 	//worker->start();
 }
 
-void YACReaderFlowGL::reset() //TODO unbind textures
+void YACReaderFlowGL::reset()
 {
 	loaded.clear();
 	for(int i = 0;i<numObjects;i++){
-		deleteTexture(cfImages[i].img);
+		if(cfImages[i].img != defaultTexture)
+			deleteTexture(cfImages[i].img);
 	}
 	if(numObjects>0)
 		delete[] cfImages;
@@ -848,7 +852,7 @@ void YACReaderFlowGL::keyPressEvent(QKeyEvent *event)
 	if(event->key() == Qt::Key_Left)
 	{
 		if(event->modifiers() == Qt::ControlModifier)
-			setCurrentIndex(currentSelected-10);
+			setCurrentIndex((currentSelected-10<0)?0:currentSelected-10);
 		else
 			showPrevious();
 		event->accept();
@@ -858,7 +862,7 @@ void YACReaderFlowGL::keyPressEvent(QKeyEvent *event)
 	if(event->key() == Qt::Key_Right)
 	{
 		if(event->modifiers() == Qt::ControlModifier)
-			setCurrentIndex(currentSelected+10);
+			setCurrentIndex((currentSelected+10>=numObjects)?numObjects-1:currentSelected+10);
 		else
 			showNext();
 		event->accept();
@@ -1068,11 +1072,13 @@ void YACReaderPageFlowGL::updateImageData()
 
 void YACReaderPageFlowGL::populate(int n)
 {
-	YACReaderFlowGL::populate(n);
+	worker->reset();
+	if(lazyPopulateObjects!=-1)
+		YACReaderFlowGL::populate(n);
+	lazyPopulateObjects = n;
 	imagesReady = QVector<bool> (n,false);
 	rawImages = QVector<QByteArray> (n);
 	imagesSetted = QVector<bool> (n,false); //puede sobrar
-
 }
 
 

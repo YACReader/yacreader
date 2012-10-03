@@ -96,14 +96,12 @@ extern struct Preset pressetYACReaderFlowDownConfig;
 class YACReaderFlowGL : public QGLWidget
 {
 	Q_OBJECT
-private:
+protected:
 	int timerId;
 	/*** System variables ***/
 	CFImage dummy;
 	int viewRotateActive;
 	float stepBackup;
-
-	GLuint markTexture;
 
 	/*functions*/
 	void calcPos(CFImage *CF,int pos);
@@ -115,7 +113,8 @@ private:
 	WidgetLoader * loader;
 	int fontSize;
 
-protected:
+	GLuint defaultTexture;
+	GLuint markTexture;
     void initializeGL();
     void paintGL();
 	void timerEvent(QTimerEvent *);
@@ -124,6 +123,7 @@ protected:
 public:
 	//number of Covers
 	int numObjects;
+	int lazyPopulateObjects;
 	bool showMarks;
 	QVector<bool> loaded;
 	QVector<bool> marks;
@@ -287,7 +287,7 @@ public:
 	// returns FALSE if worker is still busy and can't take the task
 	bool busy() const;
 	void generate(int index, const QString& fileName);
-	void reset(){idx = -1;};
+	void reset(){idx = -1;fileName="";};
 	int index() const { return idx; };
 	QImage result();
 	YACReaderFlowGL * flow;
@@ -318,7 +318,7 @@ public:
 	// returns FALSE if worker is still busy and can't take the task
 	bool busy() const;
 	void generate(int index, const QByteArray& raw);
-	void reset(){idx = -1;};
+	void reset(){idx = -1; rawData.clear();};
 	int index() const { return idx; };
 	QImage result();
 	YACReaderFlowGL * flow;
