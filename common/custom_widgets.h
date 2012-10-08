@@ -21,6 +21,9 @@
 #include <QAction>
 #include <QPlainTextEdit>
 #include <QTableView>
+#include <QLabel>
+#include <QSpinBox>
+#include <QSlider>
 
 #include "pictureflow.h"
 
@@ -183,6 +186,26 @@ private:
 //        return QTableView::viewportEvent(event);
 //    }
 //};
+
+class YACReaderSpinSliderWidget : public QWidget
+{
+	Q_OBJECT
+private:
+	QLabel * label;
+	QSpinBox * spinBox;
+	QSlider * slider;
+public:
+	YACReaderSpinSliderWidget(QWidget * parent = 0);
+public slots:
+	void setRange(int lowValue, int topValue, int step=1);
+	void setValue(int value);
+	void setText(const QString & text);
+	int getValue();
+	QSize minimumSizeHint() const;
+signals:
+	void valueChanged(int);
+
+};
 
 #endif
 

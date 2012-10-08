@@ -63,7 +63,10 @@ public:
   {
     CoverFlowLike,
     Strip,
-    StripOverlapped
+    StripOverlapped,
+	Modern,
+	Roulette,
+	Custom
   };
 
   /*!

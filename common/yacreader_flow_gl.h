@@ -18,6 +18,14 @@ class QGLContext;
 class WidgetLoader;
 class ImageLoaderByteArrayGL;
 
+typedef enum Performance
+{
+	low=0,
+	medium,
+	high,
+	ultraHigh
+};
+
 //Cover Vector
 typedef struct RVect{
 	float x;
@@ -84,6 +92,8 @@ struct Preset{
 	float zDistance;
 	//sets the elevation amount
 	float yDistance;
+
+	float zoom;
 };
 
 extern struct Preset defaultYACReaderFlowConfig;
@@ -118,9 +128,7 @@ protected:
     void initializeGL();
     void paintGL();
 	void timerEvent(QTimerEvent *);
-	
 
-public:
 	//number of Covers
 	int numObjects;
 	int lazyPopulateObjects;
@@ -129,6 +137,8 @@ public:
 	QVector<bool> marks;
 	QList<QString> paths;
 	CFImage * cfImages;
+
+	Performance performance;
 
 	/*** Animation Settings ***/
 	Preset config;
@@ -150,9 +160,12 @@ public:
 
 	/*** System info ***/
 	float viewRotate;
+	
+public:
+
 
 	/*Constructor*/
-	YACReaderFlowGL(QWidget *parent = 0,struct Preset p = defaultYACReaderFlowConfig);
+	YACReaderFlowGL(QWidget *parent = 0,struct Preset p = pressetYACReaderFlowDownConfig);
     ~YACReaderFlowGL();
 
 	//size;
@@ -207,10 +220,21 @@ public:
 	void setZ_Distance(int distance);
 
 	void setCF_Y(int value);
+	void setCF_Z(int value);
 
 	void setY_Distance(int value);
 
+	void setFadeOutDist(int value);
+
+	void setLightStrenght(int value);
+
+	void setMaxAngle(int value);
+
 	void setPreset(const Preset & p);
+
+	void setPerformance(Performance performance);
+
+	
 
 	virtual void updateImageData() = 0;
 
@@ -237,6 +261,8 @@ public:
 	void wheelEvent(QWheelEvent * event);
 	void keyPressEvent(QKeyEvent *event);
 	void resizeGL(int width, int height);
+	friend class ImageLoaderGL;
+	friend class ImageLoaderByteArrayGL;
 
 signals:
 	void centerIndexChanged(int);
@@ -260,7 +286,7 @@ public:
 	YACReaderComicFlowGL(QWidget *parent = 0,struct Preset p = defaultYACReaderFlowConfig);
 	void setImagePaths(QStringList paths);
 	void updateImageData();
-
+	friend class ImageLoaderGL;
 private:
 	ImageLoaderGL * worker;
 
@@ -275,6 +301,7 @@ public:
 	QVector<bool> imagesReady;
 	QVector<QByteArray> rawImages;
 	QVector<bool> imagesSetted;
+	friend class ImageLoaderByteArrayGL;
 private:
 	ImageLoaderByteArrayGL * worker;
 };

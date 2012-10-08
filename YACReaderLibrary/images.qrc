@@ -38,5 +38,8 @@
     <file>../images/db.png</file>
     <file>../images/asignNumber.png</file>
 	<file>../images/defaultCover.png</file>
+	<file>../images/server.png</file>
+	<file>../images/iphoneConfig.png</file>
+	<file>../images/qrMessage.png</file>
   </qresource>
 </RCC>
