@@ -111,8 +111,10 @@ void ComicFlowWidgetSW::mouseDoubleClickEvent(QMouseEvent* event)
 {
 	flow->mouseDoubleClickEvent(event);
 }
-
-
+void ComicFlowWidgetSW::updateConfig(QSettings * settings)
+{
+	//flow->setFlowType(flowType);
+}
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -131,6 +133,7 @@ ComicFlowWidgetGL::ComicFlowWidgetGL(QWidget * parent)
 
 	QVBoxLayout * l = new QVBoxLayout;
 	l->addWidget(flow);
+	l->setContentsMargins(0,0,0,0);
 	setLayout(l);
 
 	//TODO eleminar "padding"
@@ -233,3 +236,76 @@ void ComicFlowWidgetGL::mouseDoubleClickEvent(QMouseEvent* event)
 {
 	flow->mouseDoubleClickEvent(event);
 }
+
+void ComicFlowWidgetGL::updateConfig(QSettings * settings)
+{
+	Performance performance = medium;
+
+	switch (settings->value("performance").toInt())
+	{
+	case 0:
+		performance = low;
+		break;
+	case 1:
+		performance = medium;
+		break;
+	case 2:
+		performance = high;
+		break;
+	case 3:
+		performance = ultraHigh;
+		break;
+	}
+
+	flow->setPerformance(performance);
+
+	switch (settings->value("flowType").toInt())
+	{
+	case 0:
+		flow->setPreset(presetYACReaderFlowClassicConfig);
+		return;
+	case 1:
+		flow->setPreset(presetYACReaderFlowStripeConfig);
+		return;
+	case 2:
+		flow->setPreset(presetYACReaderFlowOverlappedStripeConfig);
+		return;
+	case 3:
+		flow->setPreset(defaultYACReaderFlowConfig);
+		return;
+	case 4:
+		flow->setPreset(pressetYACReaderFlowDownConfig);
+		return;
+	}
+
+
+	//custom config
+
+	flow->setCF_RX(settings->value("xRotation").toInt());
+	flow->setCF_Y(settings->value("yPosition").toInt());
+	flow->setX_Distance(settings->value("coverDistance").toInt());
+	flow->setCenter_Distance(settings->value("centralDistance").toInt());
+	flow->setCF_Z(settings->value("zoomLevel").toInt());
+	flow->setY_Distance(settings->value("yCoverOffset").toInt());
+	flow->setZ_Distance(settings->value("zCoverOffset").toInt());
+	flow->setRotation(settings->value("coverRotation").toInt());
+	flow->setFadeOutDist(settings->value("fadeOutDist").toInt());
+	flow->setLightStrenght(settings->value("lightStrength").toInt());
+	flow->setMaxAngle(settings->value("maxAngle").toInt());
+
+/*	flow->setVisibility(settings->value("visibilityDistance").toInt());
+	flow->setLightStrenght(settings->value("lightStrength").toInt())*/;
+
+}
+
+//void ComicFlowWidgetGL::setCF_RX(int value){				flow->setCF_RX(value);}
+//void ComicFlowWidgetGL::setCF_RY(int value){				flow->setCF_RY(value);}
+//void ComicFlowWidgetGL::setCF_RZ(int value){				flow->setCF_RZ(value);}
+//void ComicFlowWidgetGL::setZoom(int zoom){					flow->setZoom(zoom);}
+//void ComicFlowWidgetGL::setRotation(int angle){				flow->setRotation(angle);}
+//void ComicFlowWidgetGL::setX_Distance(int distance){		flow->setX_Distance(distance);}
+//void ComicFlowWidgetGL::setCenter_Distance(int distance){	flow->setCenter_Distance(distance);}
+//void ComicFlowWidgetGL::setZ_Distance(int distance){		flow->setZ_Distance(distance);}
+//void ComicFlowWidgetGL::setCF_Y(int value){					flow->setCF_Y(value);}
+//void ComicFlowWidgetGL::setY_Distance(int value){			flow->setY_Distance(value);}
+//void ComicFlowWidgetGL::setPreset(const Preset & p){		flow->setPreset(p);}

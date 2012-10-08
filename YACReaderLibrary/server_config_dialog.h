@@ -15,9 +15,8 @@ Q_OBJECT
 	public:
 		ServerConfigDialog(QWidget * parent = 0);
 	private:
-		QLabel * ipLabel;
-		QLabel * portLabel;
-		QLineEdit * portEdit;
+		QLineEdit * ip;
+		QLineEdit * port;
 		QPushButton * close;
 		QPushButton * accept;
 		QLabel * qrCode;

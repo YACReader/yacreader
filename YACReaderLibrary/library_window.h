@@ -157,6 +157,9 @@ private:
 	void enableLibraryActions();
 
 	QString currentPath();
+
+	//settings
+	QSettings * settings;
 public:
 	LibraryWindow();
 	public slots:

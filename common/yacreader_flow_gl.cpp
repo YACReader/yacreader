@@ -25,7 +25,7 @@ struct Preset defaultYACReaderFlowConfig = {
 
 	0,    //CF_X the X Position of the Coverflow 
 	0,    //CF_Y the Y Position of the Coverflow
-	-10,  //CF_Z the Z Position of the Coverflow
+	-12,  //CF_Z the Z Position of the Coverflow
 
 	15,   //CF_RX the X Rotation of the Coverflow
 	0,    //CF_RY the Y Rotation of the Coverflow
@@ -35,7 +35,9 @@ struct Preset defaultYACReaderFlowConfig = {
 	0.18, //X_Distance sets the distance between the covers
 	1,    //Center_Distance sets the distance between the centered and the non centered covers
 	0.1,  //Z_Distance sets the pushback amount 
-	0.0  //Y_Distance sets the elevation amount
+	0.0,  //Y_Distance sets the elevation amount
+
+	30    //zoom level
 
 };
 
@@ -63,7 +65,9 @@ struct Preset presetYACReaderFlowClassicConfig = {
 	0.18, //X_Distance sets the distance between the covers
 	1,	  //Center_Distance sets the distance between the centered and the non centered covers
 	0.1,  //Z_Distance sets the pushback amount 
-	0.0  //Y_Distance sets the elevation amount
+	0.0,  //Y_Distance sets the elevation amount
+	
+	22    //zoom level
 
 };
 
@@ -91,7 +95,9 @@ struct Preset presetYACReaderFlowStripeConfig = {
 	1.1, //X_Distance sets the distance between the covers
 	0.2,	  //Center_Distance sets the distance between the centered and the non centered covers
 	0.01,  //Z_Distance sets the pushback amount 
-	0.0  //Y_Distance sets the elevation amount
+	0.0,  //Y_Distance sets the elevation amount
+
+	22    //zoom level
 
 };
 
@@ -119,7 +125,9 @@ struct Preset presetYACReaderFlowOverlappedStripeConfig = {
 	0.18, //X_Distance sets the distance between the covers
 	1,	  //Center_Distance sets the distance between the centered and the non centered covers
 	0.1,  //Z_Distance sets the pushback amount 
-	0.0  //Y_Distance sets the elevation amount
+	0.0,  //Y_Distance sets the elevation amount
+
+	22    //zoom level
 
 };
 
@@ -133,7 +141,7 @@ struct Preset pressetYACReaderFlowUpConfig = {
 	3,	  //View_rotate_light_strenght sets the light strenght on rotation
 	0.08, //View_rotate_add sets the speed of the rotation 
 	0.08, //View_rotate_sub sets the speed of reversing the rotation 
-	30,	  //View_angle sets the maximum view angle
+	5,	  //View_angle sets the maximum view angle
 
 	0,	  //CF_X the X Position of the Coverflow 
 	-0.2, //CF_Y the Y Position of the Coverflow
@@ -147,7 +155,9 @@ struct Preset pressetYACReaderFlowUpConfig = {
 	0.18, //X_Distance sets the distance between the covers
 	1,	  //Center_Distance sets the distance between the centered and the non centered covers
 	0.1,  //Z_Distance sets the pushback amount 
-	-0.1  //Y_Distance sets the elevation amount
+	-0.1,  //Y_Distance sets the elevation amount
+
+	22    //zoom level
 
 };
 
@@ -161,7 +171,7 @@ struct Preset pressetYACReaderFlowDownConfig = {
 	3,	  //View_rotate_light_strenght sets the light strenght on rotation
 	0.08, //View_rotate_add sets the speed of the rotation 
 	0.08, //View_rotate_sub sets the speed of reversing the rotation 
-	30,	  //View_angle sets the maximum view angle
+	5,	  //View_angle sets the maximum view angle
 
 	0,	  //CF_X the X Position of the Coverflow 
 	-0.2, //CF_Y the Y Position of the Coverflow
@@ -175,11 +185,13 @@ struct Preset pressetYACReaderFlowDownConfig = {
 	0.18, //X_Distance sets the distance between the covers
 	1,	  //Center_Distance sets the distance between the centered and the non centered covers
 	0.1,  //Z_Distance sets the pushback amount 
-	0.1  //Y_Distance sets the elevation amount
+	0.1,  //Y_Distance sets the elevation amount
+
+	22    //zoom level
 };
 /*Constructor*/
 YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
-	:QGLWidget(QGLFormat(QGL::DoubleBuffer), parent),numObjects(0),lazyPopulateObjects(-1)
+	:QGLWidget(QGLFormat(QGL::SampleBuffers), parent),numObjects(0),lazyPopulateObjects(-1)
 {
 	updateCount = 0;
 	config = p;
@@ -217,7 +229,6 @@ YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
 
 	loaderThread->start();*/
 	timerId = startTimer(16);
-
 }
 
 void YACReaderFlowGL::timerEvent(QTimerEvent * event)
@@ -257,19 +268,9 @@ void YACReaderFlowGL::initializeGL()
 
 	defaultTexture = bindTexture(QImage(":/images/defaultCover.png"),GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
 	markTexture = bindTexture(QImage(":/images/setRead.png"),GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
+
 	if(lazyPopulateObjects!=-1)
 		populate(lazyPopulateObjects); //TODO esto es responsabilidad del usuario de la clase
-
-	//float x = 0.5;
-	//int i;
-	//int n = 20;
-	//for(i = 0;i<n;i++){
-	//	QPixmap p = QPixmap(QString("./cover%1.jpg").arg(i+1));
-	//	GLuint cover = bindTexture(p, GL_TEXTURE_2D);
-	//	float y = 0.5 * (float(p.height())/p.width());
-	//	coverflow->Insert("cover", cover, x, y);
-	//}
-
 }
 
 void YACReaderFlowGL::paintGL()
@@ -600,7 +601,8 @@ void YACReaderFlowGL::updatePositions()
 	if(!viewRotateActive){
 		viewRotate += (0-viewRotate)*config.viewRotateSub;
 	}
-	if(viewRotate < 0.2)
+
+	if(abs (cfImages[currentSelected].current.x - cfImages[currentSelected].animEnd.x) < 1)//viewRotate < 0.2)
 	{
 		if(updateCount >= 0) //TODO parametrizar
 		{
@@ -677,6 +679,7 @@ void YACReaderFlowGL::replace(char *name, GLuint Tex, float x, float y,int item)
 
 void YACReaderFlowGL::populate(int n)
 {
+	emit centerIndexChanged(0);
 	float x = 1;
 	float y = 1 * (700/480.0);
 	int i;
@@ -696,13 +699,14 @@ void YACReaderFlowGL::populate(int n)
 	loaded = QVector<bool>(n,false);
 	marks = QVector<bool>(n,false);
 
-	emit centerIndexChanged(0);
+	
 
 	//worker->start();
 }
 
 void YACReaderFlowGL::reset()
 {
+	currentSelected = 0;
 	loaded.clear();
 	for(int i = 0;i<numObjects;i++){
 		if(cfImages[i].img != defaultTexture)
@@ -711,7 +715,7 @@ void YACReaderFlowGL::reset()
 	if(numObjects>0)
 		delete[] cfImages;
 	numObjects = 0;
-	currentSelected = 0;
+	
 }
 
 //slots
@@ -771,14 +775,52 @@ void YACReaderFlowGL::setCF_Y(int value)
 	config.cfY = value/100.0;
 }
 
+void YACReaderFlowGL::setCF_Z(int value)
+{
+	config.cfZ = value;
+}
+
 void YACReaderFlowGL::setY_Distance(int value)
 {
 	config.yDistance = value / 100.0;
 }
 
+void YACReaderFlowGL::setFadeOutDist(int value)
+{
+	config.animationFadeOutDist = value;
+}
+
+void YACReaderFlowGL::setLightStrenght(int value)
+{
+	config.viewRotateLightStrenght = value;
+}
+
+void YACReaderFlowGL::setMaxAngle(int value)
+{
+	config.viewAngle = value;
+}
+
 void YACReaderFlowGL::setPreset(const Preset & p)
 {
 	config = p;
+}
+
+void YACReaderFlowGL::setPerformance(Performance performance)
+{
+	this->performance = performance;
+
+	//if(performance = ultraHigh)
+	//{
+	//	QGLFormat f = format();
+	//	f.setSwapInterval(1);
+	//	setFormat(f);
+	//}
+	//else
+	//{
+	//	QGLFormat f = format();
+	//	f.setSwapInterval(0);
+	//	setFormat(f);
+	//}
 }
 
 void YACReaderFlowGL::setShowMarks(bool value)
@@ -954,7 +996,11 @@ void YACReaderComicFlowGL::updateImageData()
 		{
 			float x = 1;
 			QImage img = worker->result();
-			GLuint cover = bindTexture(img, GL_TEXTURE_2D,GL_RGB,QGLContext::LinearFilteringBindOption);
+			GLuint cover;
+			if(performance == high || performance == ultraHigh)
+				cover = bindTexture(img, GL_TEXTURE_2D,GL_RGB,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
+			else
+				cover = bindTexture(img, GL_TEXTURE_2D,GL_RGB,QGLContext::LinearFilteringBindOption);
 			float y = 1 * (float(img.height())/img.width());
 			replace("cover", cover, x, y,idx);
 			/*CFImages[idx].width = x;
@@ -968,16 +1014,31 @@ void YACReaderComicFlowGL::updateImageData()
 
 	// try to load only few images on the left and right side 
 	// i.e. all visible ones plus some extra
-#define COUNT 8  
-	int indexes[2*COUNT+1];
+	int count=8;
+	switch(performance)
+	{
+	case low:
+		count = 8;
+		break;
+	case medium:
+		count = 10;
+		break;
+	case high:
+		count = 12;
+		break;
+	case ultraHigh:
+		count = 14;
+		break;
+	}
+	int * indexes = new int[2*count+1];
 	int center = currentSelected;
 	indexes[0] = center;
-	for(int j = 0; j < COUNT; j++)
+	for(int j = 0; j < count; j++)
 	{
 		indexes[j*2+1] = center+j+1;
 		indexes[j*2+2] = center-j-1;
 	}  
-	for(int c = 0; c < 2*COUNT+1; c++)
+	for(int c = 0; c < 2*count+1; c++)
 	{
 		int i = indexes[c];
 		if((i >= 0) && (i < numObjects))
@@ -993,6 +1054,7 @@ void YACReaderComicFlowGL::updateImageData()
 
 					worker->generate(i, fname);
 				}
+				delete[] indexes;
 				return;
 			}
 	}
@@ -1026,7 +1088,11 @@ void YACReaderPageFlowGL::updateImageData()
 		{
 			float x = 1;
 			QImage img = worker->result();
-			GLuint cover = bindTexture(img, GL_TEXTURE_2D,GL_RGB,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
+			GLuint cover;
+			if(performance == high || performance == ultraHigh)
+				cover = bindTexture(img, GL_TEXTURE_2D,GL_RGB,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
+			else
+				cover = bindTexture(img, GL_TEXTURE_2D,GL_RGB,QGLContext::LinearFilteringBindOption);
 			float y = 1 * (float(img.height())/img.width());
 			replace("cover", cover, x, y,idx);
 			/*CFImages[idx].width = x;
@@ -1040,16 +1106,31 @@ void YACReaderPageFlowGL::updateImageData()
 
 	// try to load only few images on the left and right side 
 	// i.e. all visible ones plus some extra
-#define COUNT 8  
-	int indexes[2*COUNT+1];
+	int count=8;
+	switch(performance)
+	{
+	case low:
+		count = 8;
+		break;
+	case medium:
+		count = 10;
+		break;
+	case high:
+		count = 12;
+		break;
+	case ultraHigh:
+		count = 14;
+		break;
+	}
+	int * indexes = new int[2*count+1];
 	int center = currentSelected;
 	indexes[0] = center;
-	for(int j = 0; j < COUNT; j++)
+	for(int j = 0; j < count; j++)
 	{
 		indexes[j*2+1] = center+j+1;
 		indexes[j*2+2] = center-j-1;
 	}  
-	for(int c = 0; c < 2*COUNT+1; c++)
+	for(int c = 0; c < 2*count+1; c++)
 	{
 		int i = indexes[c];
 		if((i >= 0) && (i < numObjects))
@@ -1065,6 +1146,7 @@ void YACReaderPageFlowGL::updateImageData()
 
 				worker->generate(i, rawImages.at(i));
 				
+				delete[] indexes;
 				return;
 			}
 	}
@@ -1096,8 +1178,19 @@ QImage ImageLoaderGL::loadImage(const QString& fileName)
 	//resultTexture = flow->bindTexture(image,GL_TEXTURE_2D);
 
 	//TODO parametrizar
-	image = image.scaledToWidth(256,Qt::SmoothTransformation);
-		
+	switch(flow->performance)
+	{
+	case low:
+		image = image.scaledToWidth(200,Qt::SmoothTransformation);
+		break;
+	case medium:
+		image = image.scaledToWidth(256,Qt::SmoothTransformation);
+		break;
+	case high:
+		image = image.scaledToWidth(320,Qt::SmoothTransformation);
+		break;
+
+	}
 
 	if(!result)
 		return QImage();

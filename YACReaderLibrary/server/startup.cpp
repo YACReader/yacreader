@@ -16,16 +16,16 @@
 #define APPNAME "YACReaderLibrary"
 
 /** Publisher of this application */
-#define ORGANISATION "Butterfly"
+#define ORGANISATION "YACReader"
 
 /** Short description of this application */
-#define DESCRIPTION "Web service based on Qt"
+#define DESCRIPTION "Comic reader and organizer"
 
 void Startup::start() {
     // Initialize the core application
     QCoreApplication* app = QApplication::instance();
     app->setApplicationName(APPNAME);
-    //app->setOrganizationName(ORGANISATION);
+    app->setOrganizationName(ORGANISATION);
     QString configFileName=Static::getConfigDir()+"/"+QCoreApplication::applicationName()+".ini";
 
     // Configure logging into files

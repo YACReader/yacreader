@@ -27,6 +27,7 @@ public slots:
 	virtual void updateMarks() = 0;
 	virtual void setFlowType(PictureFlow::FlowType flowType) = 0;
 	virtual void render() = 0;
+	virtual void updateConfig(QSettings * settings) = 0;
 signals:
 	void centerIndexChanged(int);
 	void selected(unsigned int);
@@ -55,6 +56,7 @@ public:
 	void updateMarks();
 	void setFlowType(PictureFlow::FlowType flowType);
 	void render();
+	void updateConfig(QSettings * settings);
 protected:
 	void keyPressEvent(QKeyEvent* event);
 	void paintEvent(QPaintEvent *event);
@@ -87,6 +89,25 @@ public:
 	void updateMarks();
 	void setFlowType(PictureFlow::FlowType flowType);
 	void render();
+	void updateConfig(QSettings * settings);
+//public slots:
+//	void setCF_RX(int value);
+//	//the Y Rotation of the Coverflow 
+//	void setCF_RY(int value);
+//	//the Z Rotation of the Coverflow 
+//	void setCF_RZ(int value);
+//	//perspective
+//	void setZoom(int zoom);
+//	void setRotation(int angle);
+//	//sets the distance between the covers
+//	void setX_Distance(int distance);
+//	//sets the distance between the centered and the non centered covers
+//	void setCenter_Distance(int distance);
+//	//sets the pushback amount 
+//	void setZ_Distance(int distance);
+//	void setCF_Y(int value);
+//	void setY_Distance(int value);
+//	void setPreset(const Preset & p);
 protected:
 	void keyPressEvent(QKeyEvent* event);
 	void paintEvent(QPaintEvent *event);

@@ -17,12 +17,60 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	qrCodeImage = new QPixmap();
 	qrCode = new QLabel("xxxx",this);
 
-	QGridLayout *	mainLayout = new QGridLayout;
-	mainLayout->addWidget(accept,0,0);
-	mainLayout->addWidget(qrCode,0,1);
+
+
+	
+
+	QGridLayout * gridEdits = new QGridLayout;
+	gridEdits->addWidget(new QLabel(tr("IP")),0,0);
+	gridEdits->addWidget(new QLabel(tr("Port")),0,1);
+	ip = new QLineEdit(". . .");
+	gridEdits->addWidget(ip,1,0);
+	port = new QLineEdit("8080");
+	port->setMaximumWidth(50);
+	gridEdits->addWidget(port,1,1);
+	gridEdits->setColumnStretch(0,1);
+	gridEdits->setColumnStretch(1,0);
+
+	QHBoxLayout * codeLayout = new QHBoxLayout;
+	codeLayout->addStretch();
+	QLabel * qrMessage = new QLabel();
+	qrMessage->setPixmap(QPixmap(":/images/qrMessage.png"));
+	codeLayout->addWidget(qrMessage);
+	codeLayout->addWidget(qrCode);
+
+	QVBoxLayout * configLayout = new QVBoxLayout;
+	configLayout->addLayout(gridEdits);
+	configLayout->addLayout(codeLayout);
+	configLayout->addStretch();
+	configLayout->setSpacing(5);
+
+	QHBoxLayout * elementsLayout = new QHBoxLayout;
+
+	QLabel * iphone = new QLabel();
+	iphone->setPixmap(QPixmap(":/images/iphoneConfig.png"));
+	elementsLayout->setSpacing(40);
+	elementsLayout->addWidget(iphone);
+	elementsLayout->addStretch();
+	elementsLayout->addLayout(configLayout);
+
+	QHBoxLayout * buttons = new QHBoxLayout;
+	buttons->addStretch();
+	buttons->addWidget(accept);
+
+	QVBoxLayout *	mainLayout = new QVBoxLayout;
+	mainLayout->addLayout(elementsLayout);
+	mainLayout->addLayout(buttons);
+	//mainLayout->addWidget(qrCode,0,1);
 
 	this->setLayout(mainLayout);
 	generateQR();
+
+	QPalette Pal(palette()); 
+	// set black background
+	Pal.setColor(QPalette::Background, Qt::white);
+	setAutoFillBackground(true);
+	setPalette(Pal);
 }
 
 void ServerConfigDialog::generateQR()
@@ -50,12 +98,17 @@ void ServerConfigDialog::generateQR()
 		}
 	}
 	if(!dir.isEmpty())
+	{
 		generateQR(dir+":"+s->getPort());
+		ip->setText(dir);
+		port->setText(s->getPort());
+	}
 	else
 	{
 
 	}
 	//qrCode->setText(dir+":8080");
+
 	
 }
 
@@ -63,7 +116,7 @@ void ServerConfigDialog::generateQR(const QString & serverAddress)
 {
 	qrGenerator = new QProcess();
 	QStringList attributes;
-	attributes << "-o" << QCoreApplication::applicationDirPath()+"/utils/tmp.png" << "-s" << "8" << "-l" << "H" << serverAddress;
+	attributes << "-o" << "-" /*QCoreApplication::applicationDirPath()+"/utils/tmp.png"*/ << "-s" << "8" << "-l" << "H" << serverAddress;
 	connect(qrGenerator,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(updateImage(void)));
 	connect(qrGenerator,SIGNAL(error(QProcess::ProcessError)),this,SLOT(openingError(QProcess::ProcessError)));
 	qrGenerator->start(QCoreApplication::applicationDirPath()+"/utils/qrencode",attributes);
@@ -71,17 +124,20 @@ void ServerConfigDialog::generateQR(const QString & serverAddress)
 
 void ServerConfigDialog::updateImage()
 {
-	//QByteArray imgBinary = qrGenerator->readAllStandardOutput();
+	QByteArray imgBinary = qrGenerator->readAllStandardOutput();
 	//imgBinary = imgBinary.replace(0x0D0A,0x0A);
-	//qrCodeImage->loadFromData(imgBinary);
-	//if(imgBinary.isEmpty())
-	//	qrCode->setText("yyyyy");
-	//else
-	//	qrCode->setText("")
-	//delete qrGenerator;
 
-	qrCodeImage->load(QCoreApplication::applicationDirPath()+"/utils/tmp.png");
+	if(!qrCodeImage->loadFromData(imgBinary))
+		qrCode->setText(tr("QR generator error!"));
+	else
+		qrCode->setPixmap(*qrCodeImage);
+	
+	delete qrGenerator;
+
+	
+
+/*	qrCodeImage->load(QCoreApplication::applicationDirPath()+"/utils/tmp.png");
 	qrCode->setPixmap(*qrCodeImage);
 
-	delete qrGenerator;
+	delete qrGenerator;*/
 }

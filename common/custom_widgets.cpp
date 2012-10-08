@@ -16,6 +16,8 @@
 #include <QPushButton>
 #include <QFileSystemModel>
 #include <QTextCodec>
+#include <QSpinBox>
+#include <QLabel>
 
 #include "qnaturalsorting.h"
 
@@ -462,4 +464,55 @@ void YACReaderFieldPlainTextEdit::setDisabled(bool disabled)
 	if(disabled)
 		setPlainText(tr("Click to overwrite"));
 	QPlainTextEdit::setDisabled(disabled);
+}
+
+
+YACReaderSpinSliderWidget::YACReaderSpinSliderWidget(QWidget * parent)
+	:QWidget(parent)
+{
+	QHBoxLayout * layout = new QHBoxLayout;
+	layout->addWidget(label = new QLabel(this));
+	layout->addStretch();
+	spinBox = new QSpinBox(this);
+	layout->addWidget(spinBox);
+	slider = new QSlider(Qt::Horizontal,this);
+	layout->addWidget(slider);
+
+	connect(spinBox, SIGNAL(valueChanged(int)), slider,  SLOT(setValue(int)));
+	connect(slider,  SIGNAL(valueChanged(int)), spinBox, SLOT(setValue(int)));
+
+	connect(spinBox, SIGNAL(valueChanged(int)), this, SIGNAL(valueChanged(int)));
+
+	setLayout(layout);
+}
+
+void YACReaderSpinSliderWidget::setRange(int lowValue, int topValue, int step)
+{
+	spinBox->setMinimum(lowValue);
+	spinBox->setMaximum(topValue);
+	spinBox->setSingleStep(step);
+
+	slider->setMinimum(lowValue);
+	slider->setMaximum(topValue);
+	slider->setSingleStep(step);
+}
+
+void YACReaderSpinSliderWidget::setValue(int value)
+{
+	spinBox->setValue(value);
+}
+
+void YACReaderSpinSliderWidget::setText(const QString & text)
+{
+	label->setText(text);
+}
+
+int YACReaderSpinSliderWidget::getValue()
+{
+	return spinBox->value();
+}
+
+QSize YACReaderSpinSliderWidget::minimumSizeHint() const
+{
+	return QSize(220, 25);
 }

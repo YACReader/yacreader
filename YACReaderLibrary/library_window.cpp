@@ -34,6 +34,9 @@ void LibraryWindow::setupUI()
 	libraryCreator = new LibraryCreator();
 	packageManager = new PackageManager();
 
+	settings = new QSettings("YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+	settings->beginGroup("libraryConfig");
+
 	doModels();
 	doDialogs();
 	doLayout();
@@ -51,8 +54,12 @@ void LibraryWindow::doLayout()
 	QSplitter * sHorizontal = new QSplitter(Qt::Horizontal);  //spliter principal
 	//TODO: flowType is a global variable
 	//CONFIG COMIC_FLOW--------------------------------------------------------
-	comicFlow = new ComicFlowWidgetGL(0);
-	comicFlow->setFlowType(flowType);
+	if(settings->contains("useOpenGL") && settings->value("useOpenGL").toBool() == true)
+		comicFlow = new ComicFlowWidgetGL(0);
+	else
+		comicFlow = new ComicFlowWidgetSW(0);
+	//comicFlow->setFlowType(flowType);
+	comicFlow->updateConfig(settings);
 	comicFlow->setFocusPolicy(Qt::StrongFocus);
 	comicFlow->setShowMarks(true);
 	QMatrix m;
@@ -186,7 +193,7 @@ void LibraryWindow::doDialogs()
 	importComicsInfoDialog = new ImportComicsInfoDialog(this);
 	addLibraryDialog = new AddLibraryDialog(this);
 	optionsDialog = new OptionsDialog(this);
-	optionsDialog->restoreOptions();
+	optionsDialog->restoreOptions(settings);
 	serverConfigDialog = new ServerConfigDialog(this);
 
 	had = new HelpAboutDialog(this); //TODO load data.
@@ -330,7 +337,7 @@ void LibraryWindow::createActions()
 
 	serverConfigAction = new QAction(this);
 	serverConfigAction->setToolTip(tr("Show comics server options dialog"));
-	serverConfigAction->setIcon(QIcon(":/images/options.png"));
+	serverConfigAction->setIcon(QIcon(":/images/server.png"));
 
 	//disable actions
 	updateLibraryAction->setEnabled(false);
@@ -1262,7 +1269,8 @@ void LibraryWindow::importLibrary(QString clc,QString destPath,QString name)
 
 void LibraryWindow::reloadOptions()
 {
-	comicFlow->setFlowType(flowType);
+	//comicFlow->setFlowType(flowType);
+	comicFlow->updateConfig(settings);
 }
 
 //TODO esto sobra
