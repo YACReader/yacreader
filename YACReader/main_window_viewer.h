@@ -7,6 +7,7 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QCloseEvent>
+#include <QSettings>
 
 class Comic;
 class Viewer;
@@ -41,6 +42,7 @@ class ShortcutsDialog;
 		void openFolderFromPath(QString pathDir);
 		void alwaysOnTopSwitch();
 		void adjustToFullSizeSwitch();
+		void reloadOptions();
 		/*void viewComic();
 		void prev();
 		void next();
@@ -106,6 +108,7 @@ class ShortcutsDialog;
 		void dropEvent(QDropEvent *event);
 		void dragEnterEvent(QDragEnterEvent *event);
 
+		QSettings * settings;
 	protected:
 		virtual void closeEvent ( QCloseEvent * event );
 	public:

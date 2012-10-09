@@ -10,7 +10,9 @@
 #include <QRadioButton>
 #include <QColorDialog>
 
-class OptionsDialog : public QDialog
+#include "custom_widgets.h"
+
+class OptionsDialog : public YACReaderOptionsDialog
 {
 Q_OBJECT
 	public:
@@ -26,14 +28,7 @@ Q_OBJECT
 
 		//QLabel * slideSizeLabel;
 		QSlider * slideSize;
-
-		QPushButton * accept;
-		QPushButton * cancel;
-
-		QRadioButton *radio1; 
-		QRadioButton *radio2;
-		QRadioButton *radio3;
-
+		
 		//QLabel * fitToWidthRatioLabel;
 		QSlider * fitToWidthRatioS;
 
@@ -44,12 +39,14 @@ Q_OBJECT
 
 	public slots:
 		void saveOptions();
-		void restoreOptions();
+		void restoreOptions(QSettings * settings);
 		void findFolder();
 		void updateColor(const QColor & color);
+		void fitToWidthRatio(int value);
 
 signals:
 		void changedOptions();
+		void fitToWidthRatioChanged(float ratio);
 
 };
 

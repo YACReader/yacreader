@@ -26,6 +26,8 @@ void MainWindowViewer::loadConfiguration()
 
 void MainWindowViewer::setupUI()
 {
+	settings = new QSettings("YACReader.ini",QSettings::IniFormat);
+	settings->beginGroup("config");
 
 	setWindowIcon(QIcon(":/images/icon.png"));
 
@@ -59,7 +61,10 @@ void MainWindowViewer::setupUI()
 
 	optionsDialog = new OptionsDialog(this);
 	connect(optionsDialog,SIGNAL(accepted()),viewer,SLOT(updateOptions()));
+	connect(optionsDialog,SIGNAL(fitToWidthRatioChanged(float)),viewer,SLOT(updateFitToWidthRatio(float)));
+	connect(optionsDialog, SIGNAL(optionsChanged()),this,SLOT(reloadOptions()));
 
+	optionsDialog->restoreOptions(settings);
 	shortcutsDialog = new ShortcutsDialog(this);
 
 	createActions();
@@ -286,6 +291,22 @@ void MainWindowViewer::createToolBars()
 	comicToolBar->addAction(alwaysOnTopAction);
 
 	comicToolBar->addSeparator();
+
+	//QWidget * widget = new QWidget();
+
+	//QToolButton * tbW = new QToolButton(widget);
+	//tbW->addAction(adjustWidth);
+	//tbW->setPopupMode(QToolButton::MenuButtonPopup);
+	//tbW->setDefaultAction(adjustWidth);
+
+	//QHBoxLayout *layout = new QHBoxLayout;
+	//layout->addWidget(tbW);
+	//layout->setContentsMargins(0,0,0,0);
+	//widget->setLayout(layout);
+	//widget->setContentsMargins(0,0,0,0);
+
+	//comicToolBar->addWidget(widget);
+
 	comicToolBar->addAction(adjustWidth);
 	comicToolBar->addAction(adjustToFullSizeAction);
 	comicToolBar->addAction(leftRotationAction);
@@ -354,6 +375,11 @@ void MainWindowViewer::createToolBars()
 	viewer->addAction(closeAction);
 
 	viewer->setContextMenuPolicy(Qt::ActionsContextMenu);
+}
+
+void MainWindowViewer::reloadOptions()
+{
+	viewer->updateConfig(settings);
 }
 
 void MainWindowViewer::open()

@@ -14,7 +14,7 @@
 #include <QMouseEvent>
 #include <QCloseEvent>
 #include <QPropertyAnimation>
-
+#include <QSettings>
 
 
 class Comic;
@@ -71,6 +71,8 @@ class GoToFlowWidget;
 virtual void mousePressEvent ( QMouseEvent * event );
 virtual void mouseReleaseEvent ( QMouseEvent * event );
 		void updateBackgroundColor(const QColor & color);
+		void updateFitToWidthRatio(float ratio);
+		void updateConfig(QSettings * settings);
 
 	private:
 		bool information;

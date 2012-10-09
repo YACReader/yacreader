@@ -280,6 +280,12 @@ void GoToFlow::updateSize() //TODO : fix. it doesn't work.
 	flow->setSlideSize(imageSize);
 	resize(static_cast<int>(5*imageSize.width()),static_cast<int>(imageSize.height()*1.7));
 }
+
+void GoToFlow::updateConfig(QSettings * settings)
+{
+
+
+}
 //-----------------------------------------------------------------------------
 //SlideInitializer
 //-----------------------------------------------------------------------------

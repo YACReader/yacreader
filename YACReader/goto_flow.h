@@ -58,6 +58,7 @@ private:
 			void setImageReady(int index,const QByteArray & image);
 			void setFlowType(PictureFlow::FlowType flowType);
 			void updateSize();
+			void updateConfig(QSettings * settings);
 signals:
 			void goToPage(unsigned int page);
 
