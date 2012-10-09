@@ -24,8 +24,11 @@
 #include <QLabel>
 #include <QSpinBox>
 #include <QSlider>
+#include <QRadioButton>
 
 #include "pictureflow.h"
+
+#include "yacreader_flow_gl.h"
 
 class QToolBarStretch : public QWidget
 {
@@ -205,6 +208,92 @@ public slots:
 signals:
 	void valueChanged(int);
 
+};
+
+class YACReaderFlowConfigWidget : public QWidget
+{
+	Q_OBJECT
+public:
+	QRadioButton *radio1; 
+	QRadioButton *radio2;
+	QRadioButton *radio3;
+
+	YACReaderFlowConfigWidget(QWidget * parent = 0);
+};
+
+class YACReaderGLFlowConfigWidget : public QWidget
+{
+	Q_OBJECT
+public:
+	YACReaderGLFlowConfigWidget(QWidget * parent = 0);
+
+		//GL.........................
+		QRadioButton *radioClassic; 
+		QRadioButton *radioStripe;
+		QRadioButton *radioOver;
+		QRadioButton *radionModern;
+		QRadioButton *radioDown;
+
+		YACReaderSpinSliderWidget * xRotation;
+		YACReaderSpinSliderWidget * yPosition;
+		YACReaderSpinSliderWidget * coverDistance;
+		YACReaderSpinSliderWidget * centralDistance;
+		YACReaderSpinSliderWidget * zoomLevel;
+		YACReaderSpinSliderWidget * yCoverOffset;
+		YACReaderSpinSliderWidget * zCoverOffset;
+		YACReaderSpinSliderWidget * coverRotation;
+		YACReaderSpinSliderWidget * fadeOutDist;
+		YACReaderSpinSliderWidget * lightStrength;
+		YACReaderSpinSliderWidget * maxAngle;
+
+		QSlider * performanceSlider;
+
+public slots:
+		void setValues(Preset preset);
+};
+
+class YACReaderOptionsDialog : public QDialog
+{
+	Q_OBJECT
+protected:
+	YACReaderFlowConfigWidget * sw;
+	YACReaderGLFlowConfigWidget * gl;
+	QCheckBox * useGL;
+
+	QPushButton * accept;
+	QPushButton * cancel;
+
+	QSettings * settings;
+	QSettings * previousSettings;
+
+public:
+	YACReaderOptionsDialog(QWidget * parent);
+public slots:
+	void restoreOptions(QSettings * settings);
+	void saveOptions();
+protected slots:
+	void savePerformance(int value);
+	void saveUseGL(int b);
+	void saveXRotation(int value);
+	void saveYPosition(int value);
+	void saveCoverDistance(int value);
+	void saveCentralDistance(int value);
+	void saveZoomLevel(int value);
+	void saveYCoverOffset(int value);
+	void saveZCoverOffset(int value);
+	void saveCoverRotation(int value);
+	void saveFadeOutDist(int value);
+	void saveLightStrength(int value);
+	void saveMaxAngle(int value);
+	void loadConfig();
+	void setClassicConfig();
+	void setStripeConfig();
+	void setOverlappedStripeConfig();
+	void setModernConfig();
+	void setRouletteConfig();
+
+signals:
+	void optionsChanged();
 };
 
 #endif

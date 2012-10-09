@@ -44,7 +44,7 @@ HEADERS += comic_flow.h \
 		   ../YACReader/comic.h \
 		   ../YACReader/bookmarks.h \
 		   server_config_dialog.h \
-		   ../common/comic_flow_widget.h \
+		   comic_flow_widget.h \
 		   ../common/yacreader_flow_gl.h
 		   
 SOURCES += comic_flow.cpp \
@@ -77,7 +77,7 @@ SOURCES += comic_flow.cpp \
 		   ../YACReader/comic.cpp \
 		   ../YACReader/bookmarks.cpp \
 		   server_config_dialog.cpp \
-		   ../common/comic_flow_widget.cpp \
+		   comic_flow_widget.cpp \
 		   ../common/yacreader_flow_gl.cpp
 		   
 include(./server/server.pri)

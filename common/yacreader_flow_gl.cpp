@@ -309,7 +309,8 @@ void YACReaderFlowGL::resizeGL(int width, int height)
 #endif
 	glMatrixMode(GL_MODELVIEW);
 
-	updatePositions();
+	if(numObjects>0)
+		updatePositions();
 }
 
 //-----------------------------------------------------------------------------

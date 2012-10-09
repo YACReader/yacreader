@@ -58,6 +58,7 @@ void LibraryWindow::doLayout()
 		comicFlow = new ComicFlowWidgetGL(0);
 	else
 		comicFlow = new ComicFlowWidgetSW(0);
+
 	//comicFlow->setFlowType(flowType);
 	comicFlow->updateConfig(settings);
 	comicFlow->setFocusPolicy(Qt::StrongFocus);

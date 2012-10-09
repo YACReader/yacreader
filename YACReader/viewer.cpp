@@ -65,8 +65,16 @@ drag(false)
 	showCursor();
 
 	goToDialog = new GoToDialog(this);
+	
+	QSettings * settings = new QSettings("YACReader.ini",QSettings::IniFormat);
+	settings->beginGroup("config");
 
-	goToFlow = new GoToFlowGL(this,Configuration::getConfiguration().getFlowType());
+	//CONFIG GOTO_FLOW--------------------------------------------------------
+	if(settings->contains("useOpenGL") && settings->value("useOpenGL").toBool() == true)
+		goToFlow = new GoToFlowGL(this,Configuration::getConfiguration().getFlowType());
+	else
+		goToFlow = new GoToFlow(this,Configuration::getConfiguration().getFlowType());
+
 	goToFlow->hide();
 	showGoToFlowAnimation = new QPropertyAnimation(goToFlow,"pos");
 	showGoToFlowAnimation->setDuration(150);
@@ -673,4 +681,15 @@ void Viewer::mouseReleaseEvent ( QMouseEvent * event )
 {
 	drag = false;
 	setCursor(Qt::OpenHandCursor);
+}
+
+void Viewer::updateFitToWidthRatio(float ratio)
+{
+	adjustToWidthRatio = ratio;
+	updateContentSize();
+}
+
+void Viewer::updateConfig(QSettings * settings)
+{
+	goToFlow->updateConfig(settings);
 }
