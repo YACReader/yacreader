@@ -13,7 +13,7 @@
 #include "custom_widgets.h"
 #include "yacreader_flow_gl.h"
 
-PictureFlow::FlowType flowType = PictureFlow::Strip;
+FlowType flowType = Strip;
 
 OptionsDialog::OptionsDialog(QWidget * parent)
 :YACReaderOptionsDialog(parent)

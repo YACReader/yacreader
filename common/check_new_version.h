@@ -6,7 +6,7 @@
 #include <QHttpResponseHeader>
 #include <QByteArray>
 
-#define VERSION "5.0.0"
+#include "yacreader_global.h"
 
  class HttpVersionChecker : public QWidget
  {

@@ -109,6 +109,7 @@ class ShortcutsDialog;
 		void dragEnterEvent(QDragEnterEvent *event);
 
 		QSettings * settings;
+		
 	protected:
 		virtual void closeEvent ( QCloseEvent * event );
 	public:

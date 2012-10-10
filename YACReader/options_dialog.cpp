@@ -96,18 +96,19 @@ void OptionsDialog::findFolder()
 
 void OptionsDialog::saveOptions()
 {
-	Configuration & conf = Configuration::getConfiguration();
-	conf.setDefaultPath(pathEdit->text());
-	conf.setGotoSlideSize(QSize(static_cast<int>(slideSize->sliderPosition()*SLIDE_ASPECT_RATIO),slideSize->sliderPosition()));
+	settings->setValue("goToFlowSize",QSize(static_cast<int>(slideSize->sliderPosition()*SLIDE_ASPECT_RATIO),slideSize->sliderPosition()));
 	if(sw->radio1->isChecked())
-		conf.setFlowType(PictureFlow::CoverFlowLike);
+		settings->setValue("flowTypeSW",0);
 	if(sw->radio2->isChecked())
-		conf.setFlowType(PictureFlow::Strip);
+		settings->setValue("flowTypeSW",1);
 	if(sw->radio3->isChecked())
-		conf.setFlowType(PictureFlow::StripOverlapped);
-	conf.setFitToWidthRatio(fitToWidthRatioS->sliderPosition()/100.0);
-	conf.setBackgroundColor(colorDialog->currentColor());
-	conf.save();
+		settings->setValue("flowTypeSW",2);
+
+	settings->setValue("path",pathEdit->text());
+
+	settings->setValue("color",colorDialog->currentColor());
+	settings->setValue("adjustToWidthRatio",fitToWidthRatioS->sliderPosition()/100.0);
+
 	close();
 	emit(accepted());
 }
@@ -115,24 +116,28 @@ void OptionsDialog::saveOptions()
 void OptionsDialog::restoreOptions(QSettings * settings)
 {
 	YACReaderOptionsDialog::restoreOptions(settings);
-
-	Configuration & conf = Configuration::getConfiguration();
-
-	slideSize->setSliderPosition(conf.getGotoSlideSize().height());
-	fitToWidthRatioS->setSliderPosition(conf.getFitToWidthRatio()*100);
-	pathEdit->setText(conf.getDefaultPath());
-	updateColor(Configuration::getConfiguration().getBackgroundColor());
-	switch(conf.getFlowType()){
-		case PictureFlow::CoverFlowLike:
+	
+	slideSize->setSliderPosition(settings->value("goToFlowSize").toSize().height());
+	switch(settings->value("flowTypeSW").toInt())
+	{
+		case 0:
 			sw->radio1->setChecked(true);
 			break;
-		case PictureFlow::Strip:
+		case 1:
 			sw->radio2->setChecked(true);
 			break;
-		case PictureFlow::StripOverlapped:
+		case 2:
 			sw->radio3->setChecked(true);
 			break;
+		default:
+			sw->radio1->setChecked(true);
+			break;
 	}
+
+	pathEdit->setText(settings->value("path").toString());
+
+	updateColor(settings->value("color").value<QColor>());
+	fitToWidthRatioS->setSliderPosition(settings->value("adjustToWidthRatio").toFloat()*100);
 }
 
 

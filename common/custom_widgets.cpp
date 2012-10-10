@@ -535,6 +535,11 @@ YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget * parent)
 	useGL = useGL = new QCheckBox(tr("Use hardware acceleration (restart needed)"));
 	connect(useGL,SIGNAL(stateChanged(int)),this,SLOT(saveUseGL(int)));
 
+	//sw CONNECTIONS
+	connect(sw->radio1,SIGNAL(toggled(bool)),this,SLOT(setClassicConfig()));
+	connect(sw->radio2,SIGNAL(toggled(bool)),this,SLOT(setStripeConfig()));
+	connect(sw->radio3,SIGNAL(toggled(bool)),this,SLOT(setOverlappedStripeConfig()));
+
 	//gl CONNECTIONS
 	connect(gl->radioClassic,SIGNAL(toggled(bool)),this,SLOT(setClassicConfig()));
 	connect(gl->radioStripe,SIGNAL(toggled(bool)),this,SLOT(setStripeConfig()));
@@ -604,69 +609,73 @@ void YACReaderOptionsDialog::saveUseGL(int b)
 		sw->setVisible(true);
 	}
 	resize(0,0);
+
 	settings->setValue("useOpenGL",b);
+
 }
 
 void YACReaderOptionsDialog::saveXRotation(int value)
 {
-	settings->setValue("flowType",PictureFlow::Custom);
+	settings->setValue("flowType",Custom);
 	settings->setValue("xRotation",gl->xRotation->getValue());
 }
 void YACReaderOptionsDialog::saveYPosition(int value)
 {
-	settings->setValue("flowType",PictureFlow::Custom);
+	settings->setValue("flowType",Custom);
 	settings->setValue("yPosition",gl->yPosition->getValue());
 }
 void YACReaderOptionsDialog::saveCoverDistance(int value)
 {
-	settings->setValue("flowType",PictureFlow::Custom);
+	settings->setValue("flowType",Custom);
 	settings->setValue("coverDistance",gl->coverDistance->getValue());
 }
 void YACReaderOptionsDialog::saveCentralDistance(int value)
 {
-	settings->setValue("flowType",PictureFlow::Custom);
+	settings->setValue("flowType",Custom);
 	settings->setValue("centralDistance",gl->centralDistance->getValue());
 }
 void YACReaderOptionsDialog::saveZoomLevel(int value)
 {
-	settings->setValue("flowType",PictureFlow::Custom);
+	settings->setValue("flowType",Custom);
 	settings->setValue("zoomLevel",gl->zoomLevel->getValue());
 }
 void YACReaderOptionsDialog::saveYCoverOffset(int value)
 {
-	settings->setValue("flowType",PictureFlow::Custom);
+	settings->setValue("flowType",Custom);
 	settings->setValue("yCoverOffset",gl->yCoverOffset->getValue());
 }
 void YACReaderOptionsDialog::saveZCoverOffset(int value)
 {
-	settings->setValue("flowType",PictureFlow::Custom);
+	settings->setValue("flowType",Custom);
 	settings->setValue("zCoverOffset",gl->zCoverOffset->getValue());
 }
 void YACReaderOptionsDialog::saveCoverRotation(int value)
 {
-	settings->setValue("flowType",PictureFlow::Custom);
+	settings->setValue("flowType",Custom);
 	settings->setValue("coverRotation",gl->coverRotation->getValue());
 }
 void YACReaderOptionsDialog::saveFadeOutDist(int value)
 {
-	settings->setValue("flowType",PictureFlow::Custom);
+	settings->setValue("flowType",Custom);
 	settings->setValue("fadeOutDist",gl->fadeOutDist->getValue());
 }
 void YACReaderOptionsDialog::saveLightStrength(int value)
 {
-	settings->setValue("flowType",PictureFlow::Custom);
+	settings->setValue("flowType",Custom);
 	settings->setValue("lightStrength",gl->lightStrength->getValue());
 }
 
 void YACReaderOptionsDialog::saveMaxAngle(int value)
 {
-	settings->setValue("flowType",PictureFlow::Custom);
+	settings->setValue("flowType",Custom);
 	settings->setValue("maxAngle",gl->maxAngle->getValue());
 }
 
 void YACReaderOptionsDialog::restoreOptions(QSettings * settings)
 {
 	this->settings = settings;
+
+	//FLOW CONFIG
 
 	if(settings->contains("useOpenGL") && settings->value("useOpenGL").toInt() == Qt::Checked)
 	{
@@ -691,70 +700,72 @@ void YACReaderOptionsDialog::restoreOptions(QSettings * settings)
 	}
 
 	gl->performanceSlider->setValue(settings->value("performance").toInt());
-	PictureFlow::FlowType flowType;
+	FlowType flowType;
 	switch(settings->value("flowType").toInt())
 	{
 	case 0:
-		flowType = PictureFlow::CoverFlowLike;
+		flowType = CoverFlowLike;
 		break;
 	case 1:
-		flowType = PictureFlow::Strip;
+		flowType = Strip;
 		break;
 	case 2:
-		flowType = PictureFlow::StripOverlapped;
+		flowType = StripOverlapped;
 		break;
 	case 3:
-		flowType = PictureFlow::Modern;
+		flowType = Modern;
 		break;
 	case 4:
-		flowType = PictureFlow::Roulette;
+		flowType = Roulette;
 		break;
 	case 5:
-		flowType = PictureFlow::Custom;
+		flowType = Custom;
 		break;
 	}
 	
 
-	if(flowType == PictureFlow::Custom)
+	if(flowType == Custom)
 	{
 		loadConfig();
 		return;
 	}
 
-	if(flowType == PictureFlow::CoverFlowLike)
+	if(flowType == CoverFlowLike)
 	{
 		setClassicConfig();
 		gl->radioClassic->setChecked(true);
 		return;
 	}
 
-	if(flowType == PictureFlow::Strip)
+	if(flowType == Strip)
 	{
 		setStripeConfig();
 		gl->radioStripe->setChecked(true);
 		return;
 	}
 
-	if(flowType == PictureFlow::StripOverlapped)
+	if(flowType == StripOverlapped)
 	{
 		setOverlappedStripeConfig();
 		gl->radioOver->setChecked(true);
 		return;
 	}
 
-	if(flowType == PictureFlow::Modern)
+	if(flowType == Modern)
 	{
 		setModernConfig();
 		gl->radionModern->setChecked(true);
 		return;
 	}
 	
-	if(flowType == PictureFlow::Roulette)
+	if(flowType == Roulette)
 	{
 		setRouletteConfig();
 		gl->radioDown->setChecked(true);
 		return;
 	}
+
+	//END FLOW CONFIG
 }
 
 void YACReaderOptionsDialog::loadConfig()
@@ -773,35 +784,35 @@ void YACReaderOptionsDialog::loadConfig()
 }
 void YACReaderOptionsDialog::setClassicConfig()
 {
-	settings->setValue("flowType",PictureFlow::CoverFlowLike);
+	settings->setValue("flowType",CoverFlowLike);
 
 	gl->setValues(presetYACReaderFlowClassicConfig);
 }
 
 void YACReaderOptionsDialog::setStripeConfig()
 {
-	settings->setValue("flowType",PictureFlow::Strip);
+	settings->setValue("flowType",Strip);
 
 	gl->setValues(presetYACReaderFlowStripeConfig);
 }
 
 void YACReaderOptionsDialog::setOverlappedStripeConfig()
 {
-	settings->setValue("flowType",PictureFlow::StripOverlapped);
+	settings->setValue("flowType",StripOverlapped);
 
 	gl->setValues(presetYACReaderFlowOverlappedStripeConfig);
 }
 
 void YACReaderOptionsDialog::setModernConfig()
 {
-	settings->setValue("flowType",PictureFlow::Modern);
+	settings->setValue("flowType",Modern);
 
 	gl->setValues(defaultYACReaderFlowConfig);
 }
 
 void YACReaderOptionsDialog::setRouletteConfig()
 {
-	settings->setValue("flowType",PictureFlow::Roulette);
+	settings->setValue("flowType",Roulette);
 
 	gl->setValues(pressetYACReaderFlowDownConfig);
 }

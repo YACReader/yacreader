@@ -47,7 +47,7 @@ void Configuration::load(const QString & path)
 	//gotoSlideSize = QSize(220,350); //huge
 	zoomLevel = 0.5;
 	adjustToWidth = true;
-    flowType = PictureFlow::Strip;
+    flowType = Strip;
 	fullScreen = false;
 	fitToWidthRatio = 1;
 	windowSize = QSize(0,0);
@@ -95,7 +95,7 @@ void Configuration::load(const QString & path)
 								adjustToWidth = line.toInt();
 							else
 								if(name==FLOW_TYPE)
-									flowType = (PictureFlow::FlowType)line.toInt();
+									flowType = (FlowType)line.toInt();
 								else
 									if(name==FULLSCREEN)
 										fullScreen = line.toInt();

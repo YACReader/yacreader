@@ -26,6 +26,8 @@
 #include <QSlider>
 #include <QRadioButton>
 
+#include "yacreader_global.h"
+
 #include "pictureflow.h"
 
 #include "yacreader_flow_gl.h"
@@ -269,28 +271,28 @@ protected:
 public:
 	YACReaderOptionsDialog(QWidget * parent);
 public slots:
-	void restoreOptions(QSettings * settings);
-	void saveOptions();
+	virtual void restoreOptions(QSettings * settings);
+	virtual void saveOptions();
 protected slots:
-	void savePerformance(int value);
-	void saveUseGL(int b);
-	void saveXRotation(int value);
-	void saveYPosition(int value);
-	void saveCoverDistance(int value);
-	void saveCentralDistance(int value);
-	void saveZoomLevel(int value);
-	void saveYCoverOffset(int value);
-	void saveZCoverOffset(int value);
-	void saveCoverRotation(int value);
-	void saveFadeOutDist(int value);
-	void saveLightStrength(int value);
-	void saveMaxAngle(int value);
-	void loadConfig();
-	void setClassicConfig();
-	void setStripeConfig();
-	void setOverlappedStripeConfig();
-	void setModernConfig();
-	void setRouletteConfig();
+	virtual void savePerformance(int value);
+	virtual void saveUseGL(int b);
+	virtual void saveXRotation(int value);
+	virtual void saveYPosition(int value);
+	virtual void saveCoverDistance(int value);
+	virtual void saveCentralDistance(int value);
+	virtual void saveZoomLevel(int value);
+	virtual void saveYCoverOffset(int value);
+	virtual void saveZCoverOffset(int value);
+	virtual void saveCoverRotation(int value);
+	virtual void saveFadeOutDist(int value);
+	virtual void saveLightStrength(int value);
+	virtual void saveMaxAngle(int value);
+	virtual void loadConfig();
+	virtual void setClassicConfig();
+	virtual void setStripeConfig();
+	virtual void setOverlappedStripeConfig();
+	virtual void setModernConfig();
+	virtual void setRouletteConfig();
 
 signals:
 	void optionsChanged();

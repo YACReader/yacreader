@@ -3,7 +3,9 @@
 #include <QString>
 #include <QSize>
 #include <QObject>
-#include "pictureflow.h"
+#include <QPoint>
+#include <QColor>
+#include "yacreader_global.h"
 
 #define CONF_FILE_PATH "."
 #define SLIDE_ASPECT_RATIO 1.585
@@ -20,7 +22,7 @@
 		float zoomLevel;
 		bool adjustToWidth;
 		bool fullScreen;
-		PictureFlow::FlowType flowType;
+		FlowType flowType;
 		float fitToWidthRatio;
 		QPoint windowPos;
 		QSize windowSize;
@@ -50,8 +52,8 @@
 		void setZoomLevel(float zl) { zoomLevel = zl;};
 		bool getAdjustToWidth() {return adjustToWidth;};
 		void setAdjustToWidth(bool atw=true) {adjustToWidth = atw;};
-		PictureFlow::FlowType getFlowType(){return flowType;};
-		void setFlowType(PictureFlow::FlowType type){flowType = type;};
+		FlowType getFlowType(){return flowType;};
+		void setFlowType(FlowType type){flowType = type;};
 		bool getFullScreen(){return fullScreen;};
 		void setFullScreen(bool f){fullScreen = f;};
 		float getFitToWidthRatio(){return fitToWidthRatio;};
