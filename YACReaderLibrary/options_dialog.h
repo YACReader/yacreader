@@ -14,7 +14,7 @@
 
 #include "custom_widgets.h"
 
-extern PictureFlow::FlowType flowType;
+extern FlowType flowType;
 
 class OptionsDialog : public YACReaderOptionsDialog
 {

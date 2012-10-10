@@ -18,7 +18,7 @@ QMutex mutexGoToFlow;
 
 
 
-GoToFlow::GoToFlow(QWidget *parent,PictureFlow::FlowType flowType)
+GoToFlow::GoToFlow(QWidget *parent,FlowType flowType)
 :GoToFlowWidget(parent),ready(false)
 {
 	updateTimer = new QTimer;
@@ -269,7 +269,7 @@ void GoToFlow::wheelEvent(QWheelEvent * event)
 	event->accept();
 }
 
-void GoToFlow::setFlowType(PictureFlow::FlowType flowType)
+void GoToFlow::setFlowType(FlowType flowType)
 {
 	flow->setFlowType(flowType);
 }

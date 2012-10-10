@@ -28,6 +28,7 @@
 #define PICTUREFLOW_H
 
 #include <qwidget.h>
+#include "yacreader_global.h" //FlowType
 
 class PictureFlowPrivate;
 
@@ -59,15 +60,7 @@ public:
     BlurredReflection
   };
 
-  enum FlowType
-  {
-    CoverFlowLike,
-    Strip,
-    StripOverlapped,
-	Modern,
-	Roulette,
-	Custom
-  };
+ 
 
   /*!
     Creates a new PictureFlow widget.

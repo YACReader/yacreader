@@ -19,6 +19,8 @@ MainWindowViewer::MainWindowViewer()
 
 void MainWindowViewer::loadConfiguration()
 {
+	settings = new QSettings("YACReader.ini",QSettings::IniFormat);
+
 	Configuration & config = Configuration::getConfiguration();
 	currentDirectory = config.getDefaultPath();
 	fullscreen = config.getFullScreen();
@@ -26,9 +28,6 @@ void MainWindowViewer::loadConfiguration()
 
 void MainWindowViewer::setupUI()
 {
-	settings = new QSettings("YACReader.ini",QSettings::IniFormat);
-	settings->beginGroup("config");
-
 	setWindowIcon(QIcon(":/images/icon.png"));
 
 	viewer = new Viewer(this);

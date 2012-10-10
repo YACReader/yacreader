@@ -18,10 +18,6 @@ HEADERS += comic.h \
     magnifying_glass.h \
     main_window_viewer.h \
     viewer.h \
-    ../common/pictureflow.h \
-    ../common/custom_widgets.h \
-    ../common/check_new_version.h \
-	../common/qnaturalsorting.h \
     goto_flow.h \
     options_dialog.h \
     bookmarks.h \
@@ -29,9 +25,14 @@ HEADERS += comic.h \
     render.h \
     shortcuts_dialog.h \
 	translator.h \
-	../common/goto_flow_widget.h \
 	goto_flow_gl.h \
-	../common/yacreader_flow_gl.h
+	goto_flow_widget.h \
+	../common/pictureflow.h \
+    ../common/custom_widgets.h \
+    ../common/check_new_version.h \
+	../common/qnaturalsorting.h \
+	../common/yacreader_flow_gl.h \
+	../common/yacreader_global.h
 	
 SOURCES += comic.cpp \
     configuration.cpp \
@@ -40,10 +41,6 @@ SOURCES += comic.cpp \
     main.cpp \
     main_window_viewer.cpp \
     viewer.cpp \
-    ../common/pictureflow.cpp \
-    ../common/custom_widgets.cpp \
-    ../common/check_new_version.cpp \
-	../common/qnaturalsorting.cpp \
     goto_flow.cpp \
     options_dialog.cpp \
     bookmarks.cpp \
@@ -51,8 +48,12 @@ SOURCES += comic.cpp \
     render.cpp \
     shortcuts_dialog.cpp \
 	translator.cpp \
-	../common/goto_flow_widget.cpp \
 	goto_flow_gl.cpp \
+	goto_flow_widget.cpp \
+    ../common/pictureflow.cpp \
+    ../common/custom_widgets.cpp \
+    ../common/check_new_version.cpp \
+	../common/qnaturalsorting.cpp \
 	../common/yacreader_flow_gl.cpp
 	
 RESOURCES += images.qrc \

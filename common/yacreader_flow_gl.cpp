@@ -871,7 +871,7 @@ void YACReaderFlowGL::updateMarks()
 {
 	//do nothing
 }
-/*void YACReaderFlowGL::setFlowType(PictureFlow::FlowType flowType)
+/*void YACReaderFlowGL::setFlowType(FlowType flowType)
 {
 	//TODO esperar a que se reimplemente flowtype
 }*/

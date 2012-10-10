@@ -22,7 +22,7 @@ class GoToFlow : public GoToFlowWidget
 {
 	Q_OBJECT
 public:
-	GoToFlow(QWidget* parent = 0,PictureFlow::FlowType flowType = PictureFlow::CoverFlowLike);
+	GoToFlow(QWidget* parent = 0,FlowType flowType = CoverFlowLike);
 	bool ready; //comic is ready for read.
 	void keyPressEvent(QKeyEvent* event);
 	bool eventFilter(QObject *target, QEvent *event);
@@ -56,7 +56,7 @@ private:
 			void reset();
 			void setNumSlides(unsigned int slides);
 			void setImageReady(int index,const QByteArray & image);
-			void setFlowType(PictureFlow::FlowType flowType);
+			void setFlowType(FlowType flowType);
 			void updateSize();
 			void updateConfig(QSettings * settings);
 signals:

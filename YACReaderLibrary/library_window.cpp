@@ -18,7 +18,7 @@
 #include <iterator>
 
 #include "data_base_management.h"
-#include "check_new_version.h"
+#include "yacreader_global.h"
 
 //
 

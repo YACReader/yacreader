@@ -19,17 +19,18 @@ HEADERS += comic_flow.h \
            create_library_dialog.h \
            library_creator.h \
            library_window.h \
-           ../common/pictureflow.h \
            add_library_dialog.h \
-           ../common/custom_widgets.h \
 		   rename_library_dialog.h \
 		   properties_dialog.h \
 		   options_dialog.h \
 		   export_library_dialog.h \
 		   import_library_dialog.h \
 		   package_manager.h \
-		   ../common/qnaturalsorting.h \
 		   bundle_creator.h \
+		   export_comics_info_dialog.h \
+		   import_comics_info_dialog.h \
+		   server_config_dialog.h \
+		   comic_flow_widget.h \
 		   ./db/data_base_management.h \
 		   ./db/treeitem.h \
 		   ./db/treemodel.h \
@@ -38,31 +39,31 @@ HEADERS += comic_flow.h \
 		   ./db/comic_db.h \
 		   ./db/folder.h \
 		   ./db/library_item.h \
-		   export_comics_info_dialog.h \
-		   import_comics_info_dialog.h \
-		   ../common/check_new_version.h \
 		   ../YACReader/comic.h \
 		   ../YACReader/bookmarks.h \
-		   server_config_dialog.h \
-		   comic_flow_widget.h \
-		   ../common/yacreader_flow_gl.h
+		   ../common/pictureflow.h \
+           ../common/custom_widgets.h \
+		   ../common/qnaturalsorting.h \
+		   ../common/yacreader_flow_gl.h \
+		   ../common/yacreader_global.h
 		   
 SOURCES += comic_flow.cpp \
            create_library_dialog.cpp \
            library_creator.cpp \
            library_window.cpp \
            main.cpp \
-           ../common/pictureflow.cpp \
            add_library_dialog.cpp \
-           ../common/custom_widgets.cpp \
 		   rename_library_dialog.cpp \
 		   properties_dialog.cpp \
 		   options_dialog.cpp \
 		   export_library_dialog.cpp \
 		   import_library_dialog.cpp \
 		   package_manager.cpp \
-		   ../common/qnaturalsorting.cpp \
 		   bundle_creator.cpp \
+		   export_comics_info_dialog.cpp \
+		   import_comics_info_dialog.cpp \
+		   server_config_dialog.cpp \
+		   comic_flow_widget.cpp \
 		   ./db/data_base_management.cpp \
 		   ./db/treeitem.cpp \
 		   ./db/treemodel.cpp \
@@ -71,13 +72,11 @@ SOURCES += comic_flow.cpp \
 		   ./db/comic_db.cpp \
 		   ./db/folder.cpp \
 		   ./db/library_item.cpp \
-		   export_comics_info_dialog.cpp \
-		   import_comics_info_dialog.cpp \
-		   ../common/check_new_version.cpp \
 		   ../YACReader/comic.cpp \
 		   ../YACReader/bookmarks.cpp \
-		   server_config_dialog.cpp \
-		   comic_flow_widget.cpp \
+           ../common/pictureflow.cpp \
+           ../common/custom_widgets.cpp \
+		   ../common/qnaturalsorting.cpp \
 		   ../common/yacreader_flow_gl.cpp
 		   
 include(./server/server.pri)

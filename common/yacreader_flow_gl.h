@@ -1,6 +1,6 @@
 //OpenGL Coverflow API by J.Roth
-
-#pragma once
+#ifndef __YACREADER_FLOW_GL_H
+#define __YACREADER_FLOW_GL_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -381,3 +381,5 @@ private:
 //	void run();
 //
 //};
+
+#endif
