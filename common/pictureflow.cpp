@@ -367,7 +367,7 @@ void PictureFlowAnimator::start(int slide)
   {
     step = (target < state->centerSlide.slideIndex) ? -1 : 1;
 	animateTimer.setSingleShot(true);
-    animateTimer.start(0); //TODO comprobar rendimiento, originalmente era 30
+    animateTimer.start(30); //TODO comprobar rendimiento, originalmente era 30
 	animating = true;
   }
 }

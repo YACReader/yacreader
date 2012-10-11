@@ -96,29 +96,30 @@ void OptionsDialog::findFolder()
 
 void OptionsDialog::saveOptions()
 {
-	settings->setValue("goToFlowSize",QSize(static_cast<int>(slideSize->sliderPosition()*SLIDE_ASPECT_RATIO),slideSize->sliderPosition()));
+	
+	settings->setValue(GO_TO_FLOW_SIZE,QSize(static_cast<int>(slideSize->sliderPosition()/SLIDE_ASPECT_RATIO),slideSize->sliderPosition()));
+
 	if(sw->radio1->isChecked())
-		settings->setValue("flowTypeSW",0);
+		settings->setValue(FLOW_TYPE_SW,0);
 	if(sw->radio2->isChecked())
-		settings->setValue("flowTypeSW",1);
+		settings->setValue(FLOW_TYPE_SW,1);
 	if(sw->radio3->isChecked())
-		settings->setValue("flowTypeSW",2);
+		settings->setValue(FLOW_TYPE_SW,2);
 
-	settings->setValue("path",pathEdit->text());
+	settings->setValue(PATH,pathEdit->text());
 
-	settings->setValue("color",colorDialog->currentColor());
-	settings->setValue("adjustToWidthRatio",fitToWidthRatioS->sliderPosition()/100.0);
+	settings->setValue(BACKGROUND_COLOR,colorDialog->currentColor());
+	settings->setValue(FIT_TO_WIDTH_RATIO,fitToWidthRatioS->sliderPosition()/100.0);
 
-	close();
-	emit(accepted());
+	YACReaderOptionsDialog::saveOptions();
 }
 
 void OptionsDialog::restoreOptions(QSettings * settings)
 {
 	YACReaderOptionsDialog::restoreOptions(settings);
 	
-	slideSize->setSliderPosition(settings->value("goToFlowSize").toSize().height());
-	switch(settings->value("flowTypeSW").toInt())
+	slideSize->setSliderPosition(settings->value(GO_TO_FLOW_SIZE).toSize().height());
+	switch(settings->value(FLOW_TYPE_SW).toInt())
 	{
 		case 0:
 			sw->radio1->setChecked(true);
@@ -134,10 +135,10 @@ void OptionsDialog::restoreOptions(QSettings * settings)
 			break;
 	}
 
-	pathEdit->setText(settings->value("path").toString());
+	pathEdit->setText(settings->value(PATH).toString());
 
-	updateColor(settings->value("color").value<QColor>());
-	fitToWidthRatioS->setSliderPosition(settings->value("adjustToWidthRatio").toFloat()*100);
+	updateColor(settings->value(BACKGROUND_COLOR).value<QColor>());
+	fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
 }
 
 

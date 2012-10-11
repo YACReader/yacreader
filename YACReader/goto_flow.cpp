@@ -77,6 +77,8 @@ GoToFlow::GoToFlow(QWidget *parent,FlowType flowType)
 	connect(edit,SIGNAL(returnPressed()),goToButton,SIGNAL(clicked()));
 
 	this->setCursor(QCursor(Qt::ArrowCursor));
+	
+
 }
 
 void GoToFlow::goTo()

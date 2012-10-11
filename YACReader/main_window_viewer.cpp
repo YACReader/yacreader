@@ -22,6 +22,7 @@ void MainWindowViewer::loadConfiguration()
 	settings = new QSettings("YACReader.ini",QSettings::IniFormat);
 
 	Configuration & config = Configuration::getConfiguration();
+	config.load(settings);
 	currentDirectory = config.getDefaultPath();
 	fullscreen = config.getFullScreen();
 }

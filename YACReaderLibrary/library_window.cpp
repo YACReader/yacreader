@@ -54,7 +54,7 @@ void LibraryWindow::doLayout()
 	QSplitter * sHorizontal = new QSplitter(Qt::Horizontal);  //spliter principal
 	//TODO: flowType is a global variable
 	//CONFIG COMIC_FLOW--------------------------------------------------------
-	if(settings->contains("useOpenGL") && settings->value("useOpenGL").toBool() == true)
+	if(settings->contains(USE_OPEN_GL) && settings->value(USE_OPEN_GL).toBool() == true)
 		comicFlow = new ComicFlowWidgetGL(0);
 	else
 		comicFlow = new ComicFlowWidgetSW(0);

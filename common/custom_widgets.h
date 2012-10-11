@@ -293,6 +293,9 @@ protected slots:
 	virtual void setOverlappedStripeConfig();
 	virtual void setModernConfig();
 	virtual void setRouletteConfig();
+	virtual void setClassicConfigSW();
+	virtual void setStripeConfigSW();
+	virtual void setOverlappedStripeConfigSW();
 
 signals:
 	void optionsChanged();
