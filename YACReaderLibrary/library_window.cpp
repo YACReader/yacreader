@@ -19,6 +19,7 @@
 
 #include "data_base_management.h"
 #include "yacreader_global.h"
+#include "onstart_flow_selection_dialog.h"
 
 //
 
@@ -38,8 +39,8 @@ void LibraryWindow::setupUI()
 	settings->beginGroup("libraryConfig");
 
 	doModels();
-	doDialogs();
 	doLayout();
+	doDialogs();
 	createActions();
 	createToolBars();
 	createMenus();
@@ -54,7 +55,21 @@ void LibraryWindow::doLayout()
 	QSplitter * sHorizontal = new QSplitter(Qt::Horizontal);  //spliter principal
 	//TODO: flowType is a global variable
 	//CONFIG COMIC_FLOW--------------------------------------------------------
-	if(settings->contains(USE_OPEN_GL) && settings->value(USE_OPEN_GL).toBool() == true)
+
+	if(QGLFormat::hasOpenGL() && !settings->contains(USE_OPEN_GL))
+	{
+		OnStartFlowSelectionDialog * flowSelDialog = new OnStartFlowSelectionDialog();
+
+		flowSelDialog->exec();
+		if(flowSelDialog->result() == QDialog::Accepted)
+			settings->setValue(USE_OPEN_GL,2);
+		else
+			settings->setValue(USE_OPEN_GL,0);
+
+		delete flowSelDialog;
+	}
+
+	if(QGLFormat::hasOpenGL() && (settings->value(USE_OPEN_GL).toBool() == true))
 		comicFlow = new ComicFlowWidgetGL(0);
 	else
 		comicFlow = new ComicFlowWidgetSW(0);

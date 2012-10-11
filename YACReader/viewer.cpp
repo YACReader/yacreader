@@ -8,6 +8,7 @@
 #include "render.h"
 #include "goto_dialog.h"
 #include "translator.h"
+#include "onstart_flow_selection_dialog.h"
 
 #include <QWebView>
 #include <QFile>
@@ -69,7 +70,20 @@ drag(false)
 	QSettings * settings = new QSettings("YACReader.ini",QSettings::IniFormat);
 
 	//CONFIG GOTO_FLOW--------------------------------------------------------
-	if(settings->contains(USE_OPEN_GL) && settings->value(USE_OPEN_GL).toBool() == true)
+	if(QGLFormat::hasOpenGL() && !settings->contains(USE_OPEN_GL))
+	{
+		OnStartFlowSelectionDialog * flowSelDialog = new OnStartFlowSelectionDialog();
+
+		flowSelDialog->exec();
+		if(flowSelDialog->result() == QDialog::Accepted)
+			settings->setValue(USE_OPEN_GL,2);
+		else
+			settings->setValue(USE_OPEN_GL,0);
+
+		delete flowSelDialog;
+	}
+
+	if(QGLFormat::hasOpenGL() && (settings->value(USE_OPEN_GL).toBool() == true))
 		goToFlow = new GoToFlowGL(this,Configuration::getConfiguration().getFlowType());
 	else
 		goToFlow = new GoToFlow(this,Configuration::getConfiguration().getFlowType());

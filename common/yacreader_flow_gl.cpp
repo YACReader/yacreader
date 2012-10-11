@@ -270,7 +270,7 @@ void YACReaderFlowGL::initializeGL()
 	markTexture = bindTexture(QImage(":/images/setRead.png"),GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
 
 	if(lazyPopulateObjects!=-1)
-		populate(lazyPopulateObjects); //TODO esto es responsabilidad del usuario de la clase
+		populate(lazyPopulateObjects);
 }
 
 void YACReaderFlowGL::paintGL()
@@ -1158,8 +1158,8 @@ void YACReaderPageFlowGL::updateImageData()
 void YACReaderPageFlowGL::populate(int n)
 {
 	worker->reset();
-	if(lazyPopulateObjects!=-1)
-		YACReaderFlowGL::populate(n);
+	//if(lazyPopulateObjects!=-1)
+		//YACReaderFlowGL::populate(n);
 	lazyPopulateObjects = n;
 	imagesReady = QVector<bool> (n,false);
 	rawImages = QVector<QByteArray> (n);
