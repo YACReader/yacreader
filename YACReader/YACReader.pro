@@ -32,7 +32,8 @@ HEADERS += comic.h \
     ../common/check_new_version.h \
 	../common/qnaturalsorting.h \
 	../common/yacreader_flow_gl.h \
-	../common/yacreader_global.h
+	../common/yacreader_global.h \
+	../common/onstart_flow_selection_dialog.h
 	
 SOURCES += comic.cpp \
     configuration.cpp \
@@ -54,7 +55,8 @@ SOURCES += comic.cpp \
     ../common/custom_widgets.cpp \
     ../common/check_new_version.cpp \
 	../common/qnaturalsorting.cpp \
-	../common/yacreader_flow_gl.cpp
+	../common/yacreader_flow_gl.cpp \
+	../common/onstart_flow_selection_dialog.cpp
 	
 RESOURCES += images.qrc \
     files.qrc 

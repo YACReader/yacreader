@@ -41,5 +41,8 @@
 	<file>../images/server.png</file>
 	<file>../images/iphoneConfig.png</file>
 	<file>../images/qrMessage.png</file>
+	<file>../images/onStartFlowSelection.png</file>
+	<file>../images/useNewFlowButton.png</file>
+	<file>../images/useOldFlowButton.png</file>
   </qresource>
 </RCC>
