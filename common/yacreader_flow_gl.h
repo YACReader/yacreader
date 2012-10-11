@@ -18,7 +18,7 @@ class QGLContext;
 class WidgetLoader;
 class ImageLoaderByteArrayGL;
 
-typedef enum Performance
+enum Performance
 {
 	low=0,
 	medium,
@@ -27,7 +27,7 @@ typedef enum Performance
 };
 
 //Cover Vector
-typedef struct RVect{
+struct RVect{
 	float x;
 	float y;
 	float z;
@@ -35,7 +35,7 @@ typedef struct RVect{
 };
 
 //the cover info struct
-typedef struct CFImage{
+struct CFImage{
 	GLuint img;
 	char name[256];
 

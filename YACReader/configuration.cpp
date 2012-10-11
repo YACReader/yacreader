@@ -7,33 +7,50 @@
 #include <QStringList>
 #include <QMessageBox>
 
-
-
-#define PATH "PATH"
-#define MAG_GLASS_SIZE "MAG_GLASS_SIZE"
-#define ZOOM_LEVEL "ZOOM_LEVEL"
-#define SLIDE_SIZE "SLIDE_SIZE"
-#define FIT "FIT"
-#define FLOW_TYPE "FLOW_TYPE"
-#define FULLSCREEN "FULLSCREEN"
-#define FIT_TO_WIDTH_RATIO "FIT_TO_WIDTH_RATIO"
-#define POS "POS"
-#define SIZE "SIZE"
-#define MAXIMIZED "MAXIMIZED"
-#define DOUBLE_PAGE "DOUBLE_PAGE"
-#define ADJUST_TO_FULL_SIZE "ADJUST_TO_FULL_SIZE"
-#define BACKGROUND_COLOR "BACKGROUND_COLOR"
-#define ALWAYS_ON_TOP "ALWAYS_ON_TOP"
-
 Configuration::Configuration()
 {
 	//read configuration
-	load("/YACReader.conf");
+	//load("/YACReader.conf");
 }
 
 Configuration::Configuration(const Configuration & conf)
 {
 	//nothing
+}
+
+void Configuration::load(QSettings * settings)
+{
+	this->settings = settings;
+
+	//TODO set defaults
+	if(!settings->contains(PATH))
+		settings->setValue(PATH,".");
+	if(!settings->contains(GO_TO_FLOW_SIZE))
+		settings->setValue(GO_TO_FLOW_SIZE,QSize(126,200));
+	if(!settings->contains(MAG_GLASS_SIZE))
+		settings->setValue(MAG_GLASS_SIZE,QSize(350,175));
+	if(!settings->contains(ZOOM_LEVEL))
+		settings->setValue(MAG_GLASS_SIZE,QSize(350,175));
+	if(!settings->contains(FIT))
+		settings->setValue(FIT,true);
+	if(!settings->contains(FLOW_TYPE))
+		settings->setValue(FLOW_TYPE,0);
+	if(!settings->contains(FULLSCREEN))
+		settings->setValue(FULLSCREEN,false);
+	if(!settings->contains(FIT_TO_WIDTH_RATIO))
+		settings->setValue(FIT_TO_WIDTH_RATIO,1);
+	if(!settings->contains(Y_WINDOW_SIZE))
+		settings->setValue(Y_WINDOW_SIZE,QSize(0,0));
+	if(!settings->contains(MAXIMIZED))
+		settings->setValue(MAXIMIZED,false);
+	if(!settings->contains(DOUBLE_PAGE))
+		settings->setValue(DOUBLE_PAGE,false);
+	if(!settings->contains(ADJUST_TO_FULL_SIZE))
+		settings->setValue(ADJUST_TO_FULL_SIZE,false);
+	if(!settings->contains(BACKGROUND_COLOR))
+		settings->setValue(BACKGROUND_COLOR,QColor(0,0,0));
+	if(!settings->contains(ALWAYS_ON_TOP))
+		settings->setValue(ALWAYS_ON_TOP,false);
 }
 
 void Configuration::load(const QString & path)
@@ -103,13 +120,13 @@ void Configuration::load(const QString & path)
 										if(name==FIT_TO_WIDTH_RATIO)
 											fitToWidthRatio = line.toFloat();
 										else
-											if(name==POS)
+											if(name==Y_WINDOW_POS)
 											{
 												QStringList l = line.split(',');
 												windowPos = QPoint(l[0].toInt(),l[1].toInt());
 											}
 											else
-												if(name==SIZE)
+												if(name==Y_WINDOW_SIZE)
 												{
 													QStringList l = line.split(',');
 													windowSize = QSize(l[0].toInt(),l[1].toInt());
@@ -175,10 +192,10 @@ void Configuration::save()
 	txtS << FIT_TO_WIDTH_RATIO << "\n";
 	txtS << fitToWidthRatio << "\n";
 
-	txtS << POS << "\n";
+	txtS << Y_WINDOW_POS << "\n";
 	txtS << windowPos.x() << "," << windowPos.y() << "\n";
 
-	txtS << SIZE << "\n";
+	txtS << Y_WINDOW_SIZE << "\n";
 	txtS << windowSize.width() << "," << windowSize.height() << "\n";
 
 	txtS << MAXIMIZED << "\n";

@@ -5,6 +5,8 @@
 #include <QObject>
 #include <QPoint>
 #include <QColor>
+#include <QSettings>
+
 #include "yacreader_global.h"
 
 #define CONF_FILE_PATH "."
@@ -15,6 +17,8 @@
 		Q_OBJECT
 		
 	private:
+		QSettings * settings;
+
 		QString defaultPath;
 		//configuration properties
 		QSize magnifyingGlassSize;
@@ -36,42 +40,45 @@
 		Configuration(const Configuration & conf);
 		void load(const QString & path = CONF_FILE_PATH);
 		
+		
 	public:
 		static Configuration & getConfiguration()
 		{
 			static Configuration configuration;
 			return configuration;
 		};
-		QString getDefaultPath() { return defaultPath; };
-		void setDefaultPath(QString defaultPath){this->defaultPath = defaultPath;};
-		QSize getMagnifyingGlassSize() { return magnifyingGlassSize;};
-		void setMagnifyingGlassSize(const QSize & mgs) { magnifyingGlassSize = mgs;};
-		QSize getGotoSlideSize() { return gotoSlideSize;};
-		void setGotoSlideSize(const QSize & gss) { gotoSlideSize = gss;};
-		float getZoomLevel() { return zoomLevel;};
-		void setZoomLevel(float zl) { zoomLevel = zl;};
-		bool getAdjustToWidth() {return adjustToWidth;};
-		void setAdjustToWidth(bool atw=true) {adjustToWidth = atw;};
-		FlowType getFlowType(){return flowType;};
-		void setFlowType(FlowType type){flowType = type;};
-		bool getFullScreen(){return fullScreen;};
-		void setFullScreen(bool f){fullScreen = f;};
-		float getFitToWidthRatio(){return fitToWidthRatio;};
-		void setFitToWidthRatio(float r){fitToWidthRatio = r;};
-		QPoint getPos(){return windowPos;};
-		void setPos(QPoint p){windowPos = p;};
-		QSize getSize(){return windowSize;};
-		void setSize(QSize s){windowSize = s;};
-		bool getMaximized(){return maximized;};
-		void setMaximized(bool b){maximized = b;};
-		bool getDoublePage(){return doublePage;};
-		void setDoublePage(bool b){doublePage = b;};
-		void setAdjustToFullSize(bool b){adjustToFullSize = b;};
-		bool getAdjustToFullSize(){return adjustToFullSize;};
-		void setBackgroundColor(const QColor& color){backgroundColor = color;};
-		QColor getBackgroundColor(){return backgroundColor;};
-		void setAlwaysOnTop(bool b){alwaysOnTop = b;};
-		bool getAlwaysOnTop(){return alwaysOnTop;};
+		void load(QSettings * settings);
+		QString getDefaultPath() { return settings->value(PATH).toString(); };
+		void setDefaultPath(QString defaultPath){settings->setValue(PATH,defaultPath);};
+		QSize getMagnifyingGlassSize() { return settings->value(MAG_GLASS_SIZE).toSize();};
+		void setMagnifyingGlassSize(const QSize & mgs) { settings->setValue(MAG_GLASS_SIZE,mgs);};
+		QSize getGotoSlideSize() { return settings->value(GO_TO_FLOW_SIZE).toSize();};
+		void setGotoSlideSize(const QSize & gss) { settings->setValue(GO_TO_FLOW_SIZE,gss);};
+		float getZoomLevel() { return settings->value(ZOOM_LEVEL).toFloat();};
+		void setZoomLevel(float zl) { settings->setValue(ZOOM_LEVEL,zl);};
+		bool getAdjustToWidth() {return settings->value(FIT).toBool();};
+		void setAdjustToWidth(bool atw=true) {settings->setValue(FIT,atw);};
+		FlowType getFlowType(){return (FlowType)settings->value(FLOW_TYPE_SW).toInt();};
+		void setFlowType(FlowType type){settings->setValue(FLOW_TYPE_SW,type);};
+		bool getFullScreen(){return settings->value(FULLSCREEN).toBool();};
+		void setFullScreen(bool f){settings->setValue(FULLSCREEN,f);};
+		float getFitToWidthRatio(){return settings->value(FIT_TO_WIDTH_RATIO).toFloat();};
+		void setFitToWidthRatio(float r){settings->setValue(FIT_TO_WIDTH_RATIO,r);};
+		QPoint getPos(){return settings->value(Y_WINDOW_POS).toPoint();};
+		void setPos(QPoint p){settings->setValue(Y_WINDOW_POS,p);};
+		QSize getSize(){return settings->value(Y_WINDOW_SIZE).toSize();};
+		void setSize(QSize s){settings->setValue(Y_WINDOW_SIZE,s);};
+		bool getMaximized(){return settings->value(MAXIMIZED).toBool();};
+		void setMaximized(bool b){settings->setValue(MAXIMIZED,b);};
+		bool getDoublePage(){return settings->value(DOUBLE_PAGE).toBool();};
+		void setDoublePage(bool b){settings->setValue(DOUBLE_PAGE,b);};
+		bool getAdjustToFullSize(){return settings->value(ADJUST_TO_FULL_SIZE).toBool();};
+		void setAdjustToFullSize(bool b){settings->setValue(ADJUST_TO_FULL_SIZE,b);};
+		QColor getBackgroundColor(){return settings->value(BACKGROUND_COLOR).value<QColor>();};
+		void setBackgroundColor(const QColor& color){settings->value(BACKGROUND_COLOR,color);};
+		bool getAlwaysOnTop(){return settings->value(ALWAYS_ON_TOP).toBool();};
+		void setAlwaysOnTop(bool b){ settings->setValue(ALWAYS_ON_TOP,b);};
+		
 		void save();
 
 	};

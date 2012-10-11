@@ -67,10 +67,9 @@ drag(false)
 	goToDialog = new GoToDialog(this);
 	
 	QSettings * settings = new QSettings("YACReader.ini",QSettings::IniFormat);
-	settings->beginGroup("config");
 
 	//CONFIG GOTO_FLOW--------------------------------------------------------
-	if(settings->contains("useOpenGL") && settings->value("useOpenGL").toBool() == true)
+	if(settings->contains(USE_OPEN_GL) && settings->value(USE_OPEN_GL).toBool() == true)
 		goToFlow = new GoToFlowGL(this,Configuration::getConfiguration().getFlowType());
 	else
 		goToFlow = new GoToFlow(this,Configuration::getConfiguration().getFlowType());

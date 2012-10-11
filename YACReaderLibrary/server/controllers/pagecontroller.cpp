@@ -29,7 +29,6 @@ void PageController::service(HttpRequest& request, HttpResponse& response)
 				response.setHeader("Content-Type", "yacreader/page");
 				QByteArray pageData = comicFile->getRawPage(page);
 				QDataStream data(pageData);
-				int i=0;
 				char buffer[65536];
 				while (!data.atEnd()) {
 					int len = data.readRawData(buffer,65536);
