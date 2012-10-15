@@ -69,6 +69,9 @@ void MainWindowViewer::setupUI()
 
 	createActions();
 	createToolBars();
+
+	setWindowTitle("YACReader");
+
 	if(QCoreApplication::argc()>1)
 	{
 		//TODO: new method open(QString)
@@ -76,6 +79,9 @@ void MainWindowViewer::setupUI()
 		currentDirectory = pathFile;
 		QFileInfo fi(pathFile);
 		getSiblingComics(fi.absolutePath(),fi.fileName());
+
+		setWindowTitle("YACReader - " + fi.fileName());
+
 		viewer->open(pathFile);
 		enableActions();
 	}
@@ -89,7 +95,6 @@ void MainWindowViewer::setupUI()
 	
 	viewer->setFocusPolicy(Qt::StrongFocus);
 	
-	setWindowTitle("YACReader");
 
 	if(Configuration::getConfiguration().getAlwaysOnTop())
 	{
@@ -397,6 +402,9 @@ void MainWindowViewer::openComicFromPath(QString pathFile)
 	currentDirectory = pathFile;
 	QFileInfo fi(pathFile);
 	getSiblingComics(fi.absolutePath(),fi.fileName());
+
+	setWindowTitle("YACReader - " + fi.fileName());
+
 	viewer->open(pathFile);
 	enableActions();
 }
@@ -416,6 +424,9 @@ void MainWindowViewer::openFolderFromPath(QString pathDir)
 	currentDirectory = pathDir; //TODO ??
 	QFileInfo fi(pathDir);
 	getSiblingComics(fi.absolutePath(),fi.fileName());
+
+	setWindowTitle("YACReader - " + fi.fileName());
+
 	viewer->open(pathDir);
 	enableActions();
 }
@@ -590,6 +601,8 @@ void MainWindowViewer::openPreviousComic()
 		viewer->open(previousComicPath);
 		QFileInfo fi(previousComicPath);
 		getSiblingComics(fi.absolutePath(),fi.fileName());
+
+		setWindowTitle("YACReader - " + fi.fileName());
 	}
 }
 
@@ -600,6 +613,8 @@ void MainWindowViewer::openNextComic()
 		viewer->open(nextComicPath);
 		QFileInfo fi(nextComicPath);
 		getSiblingComics(fi.absolutePath(),fi.fileName());
+
+		setWindowTitle("YACReader - " + fi.fileName());
 	}
 }
 

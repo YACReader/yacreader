@@ -139,6 +139,7 @@ protected:
 	CFImage * cfImages;
 
 	Performance performance;
+	bool bUseVSync;
 
 	/*** Animation Settings ***/
 	Preset config;
@@ -234,11 +235,12 @@ public:
 
 	void setPerformance(Performance performance);
 
-	
+	void useVSync(bool b);
 
 	virtual void updateImageData() = 0;
 
 	void reset();
+	void reload();
 
 	//interface with yacreaderlibrary, compatibility
 	void setShowMarks(bool value);
