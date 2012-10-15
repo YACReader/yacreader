@@ -23,7 +23,10 @@
 
 
 
-
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 HelpAboutDialog::HelpAboutDialog(QWidget * parent)
 :QDialog(parent)
 {
@@ -80,6 +83,10 @@ QString HelpAboutDialog::fileToString(const QString & path)
 	return content;
 }
 
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 void delTree(QDir dir)
 {
 	dir.setFilter(QDir::AllDirs|QDir::Files|QDir::Hidden|QDir::NoDotAndDotDot);
@@ -100,6 +107,10 @@ void delTree(QDir dir)
 	}
 }
 
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 YACReaderIconProvider::YACReaderIconProvider()
 :QFileIconProvider()
 {
@@ -133,6 +144,10 @@ QString YACReaderIconProvider::type(const QFileInfo & info) const
 	return  QFileIconProvider::type(info);
 }
 
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 YACReaderFlow::YACReaderFlow(QWidget * parent,FlowType flowType) : PictureFlow(parent,flowType) {}
 
 void YACReaderFlow::mousePressEvent(QMouseEvent* event)
@@ -151,6 +166,10 @@ void YACReaderFlow::mouseDoubleClickEvent(QMouseEvent* event)
 		emit selected(centerIndex());
 }
 
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 YACReaderComicDirModel::YACReaderComicDirModel( const QStringList & nameFilters, QDir::Filters filters, QDir::SortFlags sort, QObject * parent )
 :QDirModel(nameFilters,filters,sort,parent)
 {
@@ -173,7 +192,10 @@ QFileInfo YACReaderComicDirModel::fileInfo ( const QModelIndex & index ) const
     return fileInfo;
 }
 
-
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 YACReaderComicViewDelegate::YACReaderComicViewDelegate(QObject * parent)
 :QItemDelegate(parent)
 {
@@ -269,6 +291,10 @@ QRect YACReaderComicViewDelegate::textLayoutBounds(const QStyleOptionViewItemV2 
     return rect;
 }
 
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 YACReaderTreeSearch::YACReaderTreeSearch(QObject * parent)
 :QSortFilterProxyModel(parent),cache(new ModelIndexCache())
 {
@@ -334,6 +360,10 @@ void YACReaderTreeSearch::softReset()
 	//invalidateFilter();
 }
 
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 ModelIndexCache::ModelIndexCache()
 :cache()
 {
@@ -361,6 +391,10 @@ void ModelIndexCache::clear()
 	cache.clear();
 }
 
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 YACReaderSortComics::YACReaderSortComics(QObject * parent)
 :QSortFilterProxyModel(parent)
 {
@@ -379,7 +413,10 @@ bool YACReaderSortComics::lessThan(const QModelIndex &left, const QModelIndex &r
 }
 
 
-//--------------------------------------------
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 
 YACReaderFieldEdit::YACReaderFieldEdit(QWidget * parent)
 	:QLineEdit(parent)
@@ -416,7 +453,10 @@ void YACReaderFieldEdit::setDisabled(bool disabled)
 	QLineEdit::setDisabled(disabled);
 }
 
-//--------------------------------------------
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 
 YACReaderFieldPlainTextEdit::YACReaderFieldPlainTextEdit(QWidget * parent)
 	:QPlainTextEdit(parent)
@@ -468,7 +508,10 @@ void YACReaderFieldPlainTextEdit::setDisabled(bool disabled)
 	QPlainTextEdit::setDisabled(disabled);
 }
 
-
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 YACReaderSpinSliderWidget::YACReaderSpinSliderWidget(QWidget * parent)
 	:QWidget(parent)
 {
@@ -501,7 +544,9 @@ void YACReaderSpinSliderWidget::setRange(int lowValue, int topValue, int step)
 
 void YACReaderSpinSliderWidget::setValue(int value)
 {
+	disconnect(spinBox, SIGNAL(valueChanged(int)), this, SIGNAL(valueChanged(int)));
 	spinBox->setValue(value);
+	connect(spinBox, SIGNAL(valueChanged(int)), this, SIGNAL(valueChanged(int)));
 }
 
 void YACReaderSpinSliderWidget::setText(const QString & text)
@@ -519,8 +564,10 @@ QSize YACReaderSpinSliderWidget::minimumSizeHint() const
 	return QSize(220, 25);
 }
 
-//----------------------------------------------------------------------------
-
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget * parent)
 	:QDialog(parent)
 {
@@ -548,6 +595,12 @@ YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget * parent)
 	connect(gl->radioOver,SIGNAL(toggled(bool)),this,SLOT(setOverlappedStripeConfig()));
 	connect(gl->radionModern,SIGNAL(toggled(bool)),this,SLOT(setModernConfig()));
 	connect(gl->radioDown,SIGNAL(toggled(bool)),this,SLOT(setRouletteConfig()));
+
+	connect(gl->radioClassic,SIGNAL(toggled(bool)),this,SIGNAL(optionsChanged()));
+	connect(gl->radioStripe,SIGNAL(toggled(bool)),this,SIGNAL(optionsChanged()));
+	connect(gl->radioOver,SIGNAL(toggled(bool)),this,SIGNAL(optionsChanged()));
+	connect(gl->radionModern,SIGNAL(toggled(bool)),this,SIGNAL(optionsChanged()));
+	connect(gl->radioDown,SIGNAL(toggled(bool)),this,SIGNAL(optionsChanged()));
 
 	connect(gl->xRotation,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
 	connect(gl->xRotation,SIGNAL(valueChanged(int)),this,SLOT(saveXRotation(int)));
@@ -585,11 +638,32 @@ YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget * parent)
 	connect(gl->performanceSlider, SIGNAL(valueChanged(int)),this,SLOT(savePerformance(int)));
 	connect(gl->performanceSlider, SIGNAL(valueChanged(int)),this,SLOT(optionsChanged()));
 
+	connect(gl->vSyncCheck,SIGNAL(stateChanged(int)),this,SLOT(saveUseVSync(int)));
 }
 
 void YACReaderOptionsDialog::savePerformance(int value)
 {
 	settings->setValue(PERFORMANCE,value);
+}
+
+void YACReaderOptionsDialog::saveUseVSync(int b)
+{
+	settings->setValue(V_SYNC,b);
+}
+
+void YACReaderOptionsDialog::saveFlowParameters()
+{
+	settings->setValue(X_ROTATION,gl->xRotation->getValue());
+	settings->setValue(Y_POSITION,gl->yPosition->getValue());
+	settings->setValue(COVER_DISTANCE,gl->coverDistance->getValue());
+	settings->setValue(CENTRAL_DISTANCE,gl->centralDistance->getValue());
+	settings->setValue(ZOOM_LEVEL,gl->zoomLevel->getValue());
+	settings->setValue(Y_COVER_OFFSET,gl->yCoverOffset->getValue());
+	settings->setValue(Z_COVER_OFFSET,gl->zCoverOffset->getValue());
+	settings->setValue(COVER_ROTATION,gl->coverRotation->getValue());
+	settings->setValue(FADE_OUT_DIST,gl->fadeOutDist->getValue());
+	settings->setValue(LIGHT_STRENGTH,gl->lightStrength->getValue());
+	settings->setValue(MAX_ANGLE,gl->maxAngle->getValue());
 }
 
 void YACReaderOptionsDialog::saveOptions()
@@ -701,7 +775,13 @@ void YACReaderOptionsDialog::restoreOptions(QSettings * settings)
 		return;
 	}
 
+	if(settings->contains(V_SYNC) && settings->value(V_SYNC).toInt() == Qt::Checked)
+		gl->vSyncCheck->setChecked(true);
+	else
+		gl->vSyncCheck->setChecked(false);
+
 	gl->performanceSlider->setValue(settings->value(PERFORMANCE).toInt());
+	
 	FlowType flowType;
 	switch(settings->value(FLOW_TYPE_GL).toInt())
 	{
@@ -805,6 +885,8 @@ void YACReaderOptionsDialog::setClassicConfig()
 	settings->setValue(FLOW_TYPE_GL,CoverFlowLike);
 
 	gl->setValues(presetYACReaderFlowClassicConfig);
+
+	saveFlowParameters();
 }
 
 void YACReaderOptionsDialog::setStripeConfig()
@@ -812,6 +894,8 @@ void YACReaderOptionsDialog::setStripeConfig()
 	settings->setValue(FLOW_TYPE_GL,Strip);
 
 	gl->setValues(presetYACReaderFlowStripeConfig);
+
+	saveFlowParameters();
 }
 
 void YACReaderOptionsDialog::setOverlappedStripeConfig()
@@ -819,6 +903,8 @@ void YACReaderOptionsDialog::setOverlappedStripeConfig()
 	settings->setValue(FLOW_TYPE_GL,StripOverlapped);
 
 	gl->setValues(presetYACReaderFlowOverlappedStripeConfig);
+
+	saveFlowParameters();
 }
 
 void YACReaderOptionsDialog::setModernConfig()
@@ -826,6 +912,8 @@ void YACReaderOptionsDialog::setModernConfig()
 	settings->setValue(FLOW_TYPE_GL,Modern);
 
 	gl->setValues(defaultYACReaderFlowConfig);
+
+	saveFlowParameters();
 }
 
 void YACReaderOptionsDialog::setRouletteConfig()
@@ -833,10 +921,15 @@ void YACReaderOptionsDialog::setRouletteConfig()
 	settings->setValue(FLOW_TYPE_GL,Roulette);
 
 	gl->setValues(pressetYACReaderFlowDownConfig);
+	
+	saveFlowParameters();
 }
 
 
-///----------------------------------------------------------
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 YACReaderGLFlowConfigWidget::YACReaderGLFlowConfigWidget(QWidget * parent /* = 0 */)
 	:QWidget(parent)
 {
@@ -962,7 +1055,7 @@ YACReaderGLFlowConfigWidget::YACReaderGLFlowConfigWidget(QWidget * parent /* = 0
 
 	lightStrength = new YACReaderSpinSliderWidget(this);
 	lightStrength->setText(tr("Light"));
-	lightStrength->setRange(-10,10);
+	lightStrength->setRange(0,10);
 	//connect(lightStrength,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
 	//connect(lightStrength,SIGNAL(valueChanged(int)),this,SLOT(saveLightStrength(int)));
 
@@ -996,10 +1089,10 @@ YACReaderGLFlowConfigWidget::YACReaderGLFlowConfigWidget(QWidget * parent /* = 0
 	groupBoxesLayout->addWidget(groupBox);
 	groupBoxesLayout->addWidget(optionsGroupBox);
 
-	QHBoxLayout * performance = new QHBoxLayout;
-	performance->addWidget(new QLabel(tr("Low Performance")));
-	performance->addWidget(performanceSlider = new QSlider(Qt::Horizontal));
-	performance->addWidget(new QLabel(tr("High Performance")));
+	QHBoxLayout * performanceSliderLayout = new QHBoxLayout;
+	performanceSliderLayout->addWidget(new QLabel(tr("Low Performance")));
+	performanceSliderLayout->addWidget(performanceSlider = new QSlider(Qt::Horizontal));
+	performanceSliderLayout->addWidget(new QLabel(tr("High Performance")));
 
 	performanceSlider->setMinimum(0);
 	performanceSlider->setMaximum(3);
@@ -1008,12 +1101,25 @@ YACReaderGLFlowConfigWidget::YACReaderGLFlowConfigWidget(QWidget * parent /* = 0
 	performanceSlider->setTickInterval(1);
 	performanceSlider->setTickPosition(QSlider::TicksRight);
 
+	QHBoxLayout * vSyncLayout = new QHBoxLayout;
+
+	vSyncCheck = new QCheckBox(tr("Use VSync (improve the image quality in fullscreen mode, worse performance)"));
+	vSyncLayout->addStretch();
+	vSyncLayout->addWidget(vSyncCheck);
+
+	QVBoxLayout * performanceLayout = new QVBoxLayout;
+	performanceLayout->addLayout(performanceSliderLayout);
+	performanceLayout->addLayout(vSyncLayout);
+
+	QGroupBox *performanceGroupBox = new QGroupBox(tr("Performance:"));
+
 	//connect(performanceSlider, SIGNAL(valueChanged(int)),this,SLOT(savePerformance(int)));
 	//connect(performanceSlider, SIGNAL(valueChanged(int)),this,SLOT(optionsChanged()));
 
+	performanceGroupBox->setLayout(performanceLayout);
 
 	layout->addLayout(groupBoxesLayout);
-	layout->addLayout(performance);
+	layout->addWidget(performanceGroupBox);
 
 	layout->setContentsMargins(0,0,0,0);
 
@@ -1037,7 +1143,10 @@ void YACReaderGLFlowConfigWidget::setValues(Preset preset)
 	maxAngle->setValue(preset.viewAngle);
 }
 
-//-----------------------------------------------------------------------------
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 YACReaderFlowConfigWidget::YACReaderFlowConfigWidget(QWidget * parent )
 	:QWidget(parent)
 {

@@ -99,7 +99,10 @@ void GoToFlowGL::keyPressEvent(QKeyEvent* event)
 		QCoreApplication::sendEvent(this->parent(),event);
 		break;
 	case Qt::Key_Left: case Qt::Key_Right:
-		QCoreApplication::sendEvent(flow,event);
+		//if(event->modifiers() == Qt::ControlModifier)
+			//flow->keyPressEvent(event);
+			//QCoreApplication::sendEvent(flow,event);
+		break;
 	}
 
 	event->accept();

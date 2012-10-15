@@ -186,7 +186,7 @@ void LibraryWindow::doLayout()
 	setCentralWidget(sHorizontal);
 	//FINAL LAYOUT-------------------------------------------------------------
 
-	fullScreenToolTip = new QLabel(this);
+	fullScreenToolTip = new QLabel(comicFlow);
 	fullScreenToolTip->setText(tr("<font color='white'> press 'F' to close fullscreen mode </font>"));
 	fullScreenToolTip->setPalette(QPalette(QColor(0,0,0)));
 	fullScreenToolTip->setFont(QFont("courier new",15,234));
@@ -291,7 +291,7 @@ void LibraryWindow::createActions()
 	removeLibraryAction->setToolTip(tr("Remove current library from your collection"));
 	removeLibraryAction->setIcon(QIcon(":/images/removeLibrary.png"));
 
-	openComicAction = new QAction(this);
+	openComicAction = new QAction(tr("Open current comic"),this);
 	openComicAction->setToolTip(tr("Open current comic on YACReader"));
 	openComicAction->setShortcut(Qt::Key_Return);
 	openComicAction->setIcon(QIcon(":/images/icon.png"));
@@ -325,7 +325,7 @@ void LibraryWindow::createActions()
 	showPropertiesAction->setShortcut(Qt::Key_P);
 	showPropertiesAction->setIcon(QIcon(":/images/properties.png"));
 
-	toggleFullScreenAction = new QAction(this);
+	toggleFullScreenAction = new QAction(tr("Fullscreen mode on/off"),this);
 	toggleFullScreenAction->setToolTip(tr("Fullscreen mode on/off (F)"));
 	toggleFullScreenAction->setShortcut(Qt::Key_F);
 	toggleFullScreenAction->setIcon(QIcon(":/images/fit.png"));
@@ -398,6 +398,12 @@ void LibraryWindow::createActions()
 	hideComicViewAction->setCheckable(true);
 	hideComicViewAction->setChecked(false);
 	//-------------------------------------------------------------------------
+
+	comicFlow->addAction(toggleFullScreenAction);
+	comicFlow->addAction(openComicAction);
+	
+
+	comicFlow->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
 //TODO unificar con disableActions
@@ -1144,6 +1150,7 @@ void LibraryWindow::toFullScreen()
 
 	comicFlow->show();
 	comicFlow->setFocus(Qt::OtherFocusReason);
+
 	fullScreenToolTip->move((width()-fullScreenToolTip->width())/2,0);
 	fullScreenToolTip->adjustSize();
 	fullScreenToolTip->show();
@@ -1151,13 +1158,14 @@ void LibraryWindow::toFullScreen()
 
 void LibraryWindow::toNormal()
 {
+	fullScreenToolTip->hide();
 	comicFlow->hide();
 	comicFlow->setSlideSize(slideSizeW);
 	comicFlow->setCenterIndex(comicFlow->centerIndex());
 	comicFlow->render();
 	comics->show();
 	left->show();
-	fullScreenToolTip->hide();
+	
 	libraryToolBar->show();
 	comicFlow->show();
 

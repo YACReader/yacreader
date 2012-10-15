@@ -79,6 +79,9 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 
 	setLayout(layout);
 
+	//disable vSyncCheck
+	gl->vSyncCheck->hide();
+
 	//restoreOptions(); //load options
 	resize(400,0);
 	setModal (true);

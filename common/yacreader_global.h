@@ -35,6 +35,7 @@
 #define USE_OPEN_GL "USE_OPEN_GL"
 #define X_ROTATION "X_ROTATION"
 #define Y_COVER_OFFSET "Y_COVER_OFFSET"
+#define V_SYNC "V_SYNC"
 
  enum FlowType
   {

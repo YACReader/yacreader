@@ -269,6 +269,10 @@ void ComicFlowWidgetGL::updateConfig(QSettings * settings)
 	}
 
 	flow->setPerformance(performance);
+	if(!settings->contains(V_SYNC))
+		flow->useVSync(false);
+	else
+		flow->useVSync(settings->value(V_SYNC).toBool());
 
 	switch (settings->value(FLOW_TYPE_GL).toInt())
 	{

@@ -191,7 +191,7 @@ struct Preset pressetYACReaderFlowDownConfig = {
 };
 /*Constructor*/
 YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
-	:QGLWidget(QGLFormat(QGL::SampleBuffers), parent),numObjects(0),lazyPopulateObjects(-1)
+	:QGLWidget(QGLFormat(QGL::SampleBuffers), parent),numObjects(0),lazyPopulateObjects(-1),bUseVSync(false)
 {
 	updateCount = 0;
 	config = p;
@@ -512,7 +512,6 @@ void YACReaderFlowGL::draw()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-
 	glBegin( GL_TRIANGLES );
 
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );	
@@ -528,7 +527,6 @@ void YACReaderFlowGL::draw()
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
-
 }
 
 void YACReaderFlowGL::showPrevious()
@@ -720,6 +718,13 @@ void YACReaderFlowGL::reset()
 	
 }
 
+void YACReaderFlowGL::reload()
+{
+	int n = numObjects;
+	reset();
+	populate(n);
+}
+
 //slots
 void YACReaderFlowGL::setCF_RX(int value)
 {
@@ -809,22 +814,33 @@ void YACReaderFlowGL::setPreset(const Preset & p)
 
 void YACReaderFlowGL::setPerformance(Performance performance)
 {
-	this->performance = performance;
-
-	//if(performance = ultraHigh)
-	//{
-	//	QGLFormat f = format();
-	//	f.setSwapInterval(1);
-	//	setFormat(f);
-	//}
-	//else
-	//{
-	//	QGLFormat f = format();
-	//	f.setSwapInterval(0);
-	//	setFormat(f);
-	//}
+	if(this->performance != performance)
+	{
+		this->performance = performance;
+		reload();
+	}
 }
 
+void YACReaderFlowGL::useVSync(bool b)
+{
+	if(bUseVSync != b)
+	{
+		bUseVSync = b;
+		if(b)
+		{
+			QGLFormat f = format();
+			f.setSwapInterval(1);
+			setFormat(f);
+		}
+		else
+		{
+			QGLFormat f = format();
+			f.setSwapInterval(0);
+			setFormat(f);
+		}
+		reload();
+	}
+}
 void YACReaderFlowGL::setShowMarks(bool value)
 {
 	showMarks = value;
@@ -949,10 +965,8 @@ void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 		}
 		else if(posX <=-0.5)
 			showPrevious();
-	} else if(event->button() == Qt::RightButton)
-	{
-		marks[currentSelected] = !marks[currentSelected];
-	}
+	} else
+		QGLWidget::mousePressEvent(event);
 }
 
 void YACReaderFlowGL::mouseDoubleClickEvent(QMouseEvent* event)
@@ -973,9 +987,11 @@ void YACReaderComicFlowGL::setImagePaths(QStringList paths)
 	worker->reset();
 	reset();
 	numObjects = 0;
-	populate(paths.size());
+	if(lazyPopulateObjects!=-1)
+		YACReaderFlowGL::populate(paths.size());
+	lazyPopulateObjects = paths.size();
 	this->paths = paths;
-	numObjects = paths.size();
+	//numObjects = paths.size();
 }
 
 
@@ -1158,8 +1174,8 @@ void YACReaderPageFlowGL::updateImageData()
 void YACReaderPageFlowGL::populate(int n)
 {
 	worker->reset();
-	//if(lazyPopulateObjects!=-1)
-		//YACReaderFlowGL::populate(n);
+	if(lazyPopulateObjects!=-1)
+		YACReaderFlowGL::populate(n);
 	lazyPopulateObjects = n;
 	imagesReady = QVector<bool> (n,false);
 	rawImages = QVector<QByteArray> (n);
