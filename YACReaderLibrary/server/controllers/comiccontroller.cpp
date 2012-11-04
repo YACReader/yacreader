@@ -40,7 +40,7 @@ ComicController::ComicController() {}
 
 void ComicController::service(HttpRequest& request, HttpResponse& response)
 {
-	HttpSession session=Static::sessionStore->getSession(request,response);
+	HttpSession session=Static::sessionStore->getSession(request,response,false);
 
 	QString path = QUrl::fromPercentEncoding(request.getPath()).toLatin1();
 	QStringList pathElements = path.split('/');

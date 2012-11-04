@@ -42,61 +42,69 @@ void StaticFileController::service(HttpRequest& request, HttpResponse& response)
         response.setStatus(403,"forbidden");
         response.write("403 forbidden",true);
     }
+
+	//TODO(DONE) carga sensible al dispositivo y a la localización
+	QString stringPath = path;
+	QStringList paths = QString(path).split('/');
+	QString fileName = paths.last();
+	stringPath.remove(fileName);
+	HttpSession session=Static::sessionStore->getSession(request,response,false);
+	QString device = session.getDeviceType();
+	fileName = getDeviceAwareFileName(fileName, device, request.getHeader("Accept-Language"), stringPath);
+	QString newPath = stringPath.append(fileName);
+	path = newPath.toLocal8Bit();
+
+	//CAMBIADO
+	response.setHeader("Connection","close");
+	//END_TODO
+
     // Check if we have the file in cache
-    qint64 now=QDateTime::currentMSecsSinceEpoch();
-    mutex.lock();
-    CacheEntry* entry=cache.object(path);
-    if (entry && (cacheTimeout==0 || entry->created>now-cacheTimeout)) {       
-        QByteArray document=entry->document; //copy the cached document, because other threads may destroy the cached entry immediately after mutex unlock.
-        mutex.unlock();
-        qDebug("StaticFileController: Cache hit for %s",path.data());
-        setContentType(path,response);
-        response.setHeader("Cache-Control","max-age="+QByteArray::number(maxAge/1000));
-        response.write(document);
-    }
-    else {
-        mutex.unlock();
-        qDebug("StaticFileController: Cache miss for %s",path.data());
+    //qint64 now=QDateTime::currentMSecsSinceEpoch();
+   // mutex.lock();
+   // CacheEntry* entry=cache.object(path);
+    //if (entry && (cacheTimeout==0 || entry->created>now-cacheTimeout)) {       
+    //    QByteArray document=entry->document; //copy the cached document, because other threads may destroy the cached entry immediately after mutex unlock.
+    //    mutex.unlock();
+    //    qDebug("StaticFileController: Cache hit for %s",path.data());
+    //    setContentType(path,response);
+    //    response.setHeader("Cache-Control","max-age="+QByteArray::number(maxAge/1000));
+    //    response.write(document);
+    //}
+    //else {
+		
+    //    mutex.unlock();
+        //qDebug("StaticFileController: Cache miss for %s",path.data());
         // The file is not in cache.
         // If the filename is a directory, append index.html.
         if (QFileInfo(docroot+path).isDir()) {
             path+="/index.html";
         }
 
-		//TODO(DONE) carga sensible al dispositivo y a la localización
-		QString stringPath = path;
-		QStringList paths = QString(path).split('/');
-		QString fileName = paths.last();
-		stringPath.remove(fileName);
-		HttpSession session=Static::sessionStore->getSession(request,response);
-		QString device = session.getDeviceType();
-		fileName = getDeviceAwareFileName(fileName, device, request.getHeader("Accept-Language"), stringPath);
-		QString newPath = stringPath.append(fileName);
-		//END_TODO
+
         QFile file(docroot+path);
         if (file.exists()) {
             qDebug("StaticFileController: Open file %s",qPrintable(file.fileName()));
             if (file.open(QIODevice::ReadOnly)) {
                 setContentType(path,response);
-                response.setHeader("Cache-Control","max-age="+QByteArray::number(maxAge/1000));
-                if (file.size()<=maxCachedFileSize) {
-                    // Return the file content and store it also in the cache
-                    entry=new CacheEntry();
+                //response.setHeader("Cache-Control","max-age="+QByteArray::number(maxAge/1000));
+                //if (file.size()<=maxCachedFileSize) {
+                //    // Return the file content and store it also in the cache
+                //    entry=new CacheEntry();
+                //    while (!file.atEnd() && !file.error()) {
+                //        QByteArray buffer=file.read(65536);
+                //        response.write(buffer);
+                //        entry->document.append(buffer);
+                //    }
+                //    entry->created=now;
+                //    mutex.lock();
+                //    cache.insert(request.getPath(),entry,entry->document.size());
+                //    mutex.unlock();
+                //}
+                //else {
+                    // Return the file content, do not store in cache*/
                     while (!file.atEnd() && !file.error()) {
-                        QByteArray buffer=file.read(65536);
-                        response.write(buffer);
-                        entry->document.append(buffer);
-                    }
-                    entry->created=now;
-                    mutex.lock();
-                    cache.insert(request.getPath(),entry,entry->document.size());
-                    mutex.unlock();
-                }
-                else {
-                    // Return the file content, do not store in cache
-                    while (!file.atEnd() && !file.error()) {
-                        response.write(file.read(65536));
-                    }
+                        response.write(file.read(131072));
+                    //}
                 }
                 file.close();
             }
@@ -110,7 +118,7 @@ void StaticFileController::service(HttpRequest& request, HttpResponse& response)
             response.setStatus(404,"not found");
             response.write("404 not found",true);
         }
-    }
+    //}
 }
 
 void StaticFileController::setContentType(QString fileName, HttpResponse& response) const {
@@ -182,7 +190,7 @@ QString StaticFileController::getDeviceAwareFileName(QString fileName, QString d
 	QString baseName = fi.baseName();
 	QString extension = fi.completeSuffix();
 
-	QString completeFileName = getLocalizedFileName(fileName+"_"+device+"."+extension,locales,path);
+	QString completeFileName = getLocalizedFileName(baseName+"_"+device+"."+extension,locales,path);
 
 	if(QFile(docroot+"/"+path+completeFileName).exists())
 		return completeFileName; //existe un archivo específico para este dispositivo y locales

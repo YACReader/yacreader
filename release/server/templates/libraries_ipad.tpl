@@ -6,17 +6,17 @@
 	<title>Login</title>	
 </head>
 <body>
-	<div id="content">
+	<div id="contentLibraries">
 		<h1>LIBRARIES</h1>
 		<h2>Select a comic library</h2>
 		<p>
-			<ul>
+			<ul id="librariesList"> 
 				{loop library}
 					<li><a href="/library/{library.name}/folder/1">{library.label}</a></li>
 				{end library}
 			</ul>
 		</p>
 	</div>
-	<div class="sombra">&nbsp;</div>
+	<div class="sombraLibraries">&nbsp;</div>
 	</body>
 </html>

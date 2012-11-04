@@ -1421,3 +1421,27 @@ ComicDB LibraryWindow::getComicInfo(const QString & libraryName, qulonglong id)
 	QSqlDatabase::removeDatabase(libraries.value(libraryName));
 	return comic;
 }
+
+QString LibraryWindow::getFolderName(const QString & libraryName, qulonglong id)
+{
+	QSqlDatabase db = DataBaseManagement::loadDatabase(libraries.value(libraryName)+"/.yacreaderlibrary");
+
+	QString name="";
+
+	{
+		QSqlQuery selectQuery(db); //TODO check
+		selectQuery.prepare("SELECT name FROM folder WHERE id = :id");
+		selectQuery.bindValue(":id", id);
+		selectQuery.exec();
+
+		if(selectQuery.next()) 
+		{
+			QSqlRecord record = selectQuery.record();
+			name = record.value(0).toString();
+		}
+	}
+
+	db.close();
+	QSqlDatabase::removeDatabase(libraries.value(libraryName));
+	return name;
+}

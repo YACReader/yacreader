@@ -129,6 +129,7 @@ void HttpConnectionHandler::read() {
         readTimer.stop();
         qDebug("HttpConnectionHandler (%p): received request",this);
         HttpResponse response(&socket);
+		//response.setHeader("Connection","close"); No funciona bien con NSURLConnection
         try {
             requestHandler->service(*currentRequest, response);
         }
@@ -140,15 +141,18 @@ void HttpConnectionHandler::read() {
         if (!response.hasSentLastPart()) {
             response.write(QByteArray(),true);
         }
+
+		socket.disconnectFromHost(); //CAMBIADO sólo se van a soportar conexiones NO persistentes
+
         // Close the connection after delivering the response, if requested
-        if (QString::compare(currentRequest->getHeader("Connection"),"close",Qt::CaseInsensitive)==0) {
-            socket.disconnectFromHost();
-        }
-        else {
-            // Start timer for next request
-            int readTimeout=settings->value("readTimeout",10000).toInt();
-            readTimer.start(readTimeout);
-        }
+        //if (QString::compare(currentRequest->getHeader("Connection"),"close",Qt::CaseInsensitive)==0) {
+        //    socket.disconnectFromHost();
+        //}
+        //else {
+        //    // Start timer for next request
+        //    int readTimeout=settings->value("readTimeout",10000).toInt();
+        //    readTimer.start(readTimeout);
+        //}
         // Prepare for next request
         delete currentRequest;
         currentRequest=0;

@@ -16,9 +16,16 @@ HttpListener::HttpListener(QSettings* settings, HttpRequestHandler* requestHandl
     // Start listening
     int port=settings->value("port").toInt();
     listen(QHostAddress::Any, port);
-    if (!isListening()) {
-        qCritical("HttpListener: Cannot bind on port %i: %s",port,qPrintable(errorString()));
+	//Cambiado
+	int i = 0;
+    while (!isListening() && i < 1000) {
+        listen(QHostAddress::Any, (rand() % 45535)+20000);
+		i++;
     }
+	if(!isListening())
+	{
+		qCritical("HttpListener: Cannot bind on port %i: %s",port,qPrintable(errorString()));
+	}
     else {
         qDebug("HttpListener: Listening on port %i",port);
     }

@@ -114,7 +114,7 @@ int Template::setCondition(QString name, bool value) {
 }
 
 int Template::loop(QString name, int repetitions) {
-    Q_ASSERT(repetitions>=0);
+    //Q_ASSERT(repetitions>=0);
     int count=0;
     QString startTag="{loop "+name+"}";
     QString elseTag="{else "+name+"}";
