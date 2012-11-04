@@ -10,12 +10,15 @@ LibrariesController::LibrariesController() {}
 
 void LibrariesController::service(HttpRequest& request, HttpResponse& response)
 {
-	response.setHeader("Content-Type", "text/html; charset=ISO-8859-1");
-
 	HttpSession session=Static::sessionStore->getSession(request,response);
 	session.set("ySession","ok");
+
+	response.setHeader("Content-Type", "text/html; charset=ISO-8859-1");
+	response.setHeader("Connection","close");
+	
+	
 	QString postData = QString::fromUtf8(request.getBody());
-	response.writeText(postData);
+	//response.writeText(postData);
 
 	QList<QString> data = postData.split("\n");
 	if(data.length() > 2)
@@ -30,7 +33,7 @@ void LibrariesController::service(HttpRequest& request, HttpResponse& response)
 	}
 	else //valores por defecto, con propositos de depuración
 	{
-		session.setDeviceType("iphone");
+		session.setDeviceType("ipad");
 		session.setDisplayType("retina");
 	}
 

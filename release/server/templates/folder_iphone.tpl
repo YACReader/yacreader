@@ -9,19 +9,22 @@
 	<div id="content">
 		
 		<h1>BROWSE AND IMPORT</h1>
-		<h2>nombre folder?</h2>
+		<h2>{folder.name} {if pageIndex} - PAGE {page} OF {pages} {end pageIndex}</h2>
 		
-		<a href="/">Libraries</a> <a href="{upurl}">up</a>
+		<div id="topIndex"> <a class="libraries" href="/">Libraries</a> <a class="up" href="{upurl}">up</a> {if pageIndex} <a class="previous" href="{page.previous}">previous</a><a class="next" href="{page.next}">next</a>  {end pageIndex}   </div>
 		<!--<a href="javascript:javascript:history.go(-1)">up</a>-->
-		
+		<div class="folderContent">
 			<ul id="itemContainer">
 				{loop element}
-					<li><img style="width: {element.image.width}" src="{element.image.url}"/> <p>{element.name}</p> {element.browse} - {element.download} </li>
+					<li><div class="{element.class}"><img style="width: {element.image.width}" src="{element.image.url}"/></div> <div class="info"> <div class="title" > <p>{element.name}</p> </div> <div class="buttons"> {element.download} {element.browse}  </div></div></li>
 				{end element}
-			</ul>		
+			</ul>
+			<div class="clear">&nbsp;</div>
+		</div>	
 	</div>
 	<div class="sombra">&nbsp;</div>
 	
+	{if alphaIndex}
 	<div class="index">
 	<ul id="alphaIndex">
 	{loop index} 
@@ -34,6 +37,10 @@
 	</div>
 	<div class="sombra">&nbsp;</div>
 	
+	{end alphaIndex}
+	
+	
+	{if pageIndex}
 			
 	<div class="index">
 	<ul id="pageIndex">
@@ -48,6 +55,8 @@
 	<div class="clear">&nbsp;</div>
 	</div>
 	<div class="sombra">&nbsp;</div>
+	
+	{end pageIndex}
 	
 </body>
 </html>

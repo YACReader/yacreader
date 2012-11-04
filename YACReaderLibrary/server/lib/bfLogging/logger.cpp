@@ -61,7 +61,7 @@ void Logger::msgHandler(const QtMsgType type, const char* message) {
 
     // Abort the program after logging a fatal message
     if (type>=QtFatalMsg) {
-        abort();
+        //abort();
     }
 
     recursiveMutex.unlock();

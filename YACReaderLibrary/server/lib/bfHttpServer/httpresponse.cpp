@@ -14,12 +14,12 @@ HttpResponse::HttpResponse(QTcpSocket* socket) {
 }
 
 void HttpResponse::setHeader(QByteArray name, QByteArray value) {
-    Q_ASSERT(sentHeaders==false);
+    //Q_ASSERT(sentHeaders==false);
     headers.insert(name,value);
 }
 
 void HttpResponse::setHeader(QByteArray name, int value) {
-    Q_ASSERT(sentHeaders==false);
+    //Q_ASSERT(sentHeaders==false);
     headers.insert(name,QByteArray::number(value));
 }
 
@@ -33,7 +33,7 @@ void HttpResponse::setStatus(int statusCode, QByteArray description) {
 }
 
 void HttpResponse::writeHeaders() {
-    Q_ASSERT(sentHeaders==false);
+    //Q_ASSERT(sentHeaders==false);
     QByteArray buffer;
     buffer.append("HTTP/1.1 ");
     buffer.append(QByteArray::number(statusCode));
@@ -67,7 +67,7 @@ void HttpResponse::writeToSocket(QByteArray data) {
 }
 
 void HttpResponse::write(QByteArray data, bool lastPart) {
-    Q_ASSERT(sentLastPart==false);
+    //Q_ASSERT(sentLastPart==false);
     if (sentHeaders==false) {
         QByteArray connectionMode=headers.value("Connection");
         if (!headers.contains("Content-Length") && !headers.contains("Transfer-Encoding") && connectionMode!="close" && connectionMode!="Close") {
@@ -115,7 +115,7 @@ bool HttpResponse::hasSentLastPart() const {
 
 
 void HttpResponse::setCookie(const HttpCookie& cookie) {
-    Q_ASSERT(sentHeaders==false);
+    //Q_ASSERT(sentHeaders==false);
     if (!cookie.getName().isEmpty()) {
         cookies.insert(cookie.getName(),cookie);
     }

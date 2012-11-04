@@ -53,8 +53,8 @@ void FileLogger::refreshSettings() {
 FileLogger::FileLogger(QSettings* settings, const int refreshInterval, QObject* parent)
     : Logger(parent)
 {
-    Q_ASSERT(settings!=0);
-    Q_ASSERT(refreshInterval>=0);
+    //Q_ASSERT(settings!=0);
+    //Q_ASSERT(refreshInterval>=0);
     this->settings=settings;
     file=0;
     if (refreshInterval>0)

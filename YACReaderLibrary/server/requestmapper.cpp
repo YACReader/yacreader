@@ -31,14 +31,15 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 	QByteArray path=request.getPath();
 	qDebug("RequestMapper: path=%s",path.data());
 
-	QRegExp folder("/library/.+/folder/[0-9]+/?");//(?page=[0-9]+)?
-	QRegExp folderInfo("/library/.+/folder/[0-9]+/info/?");
-	QRegExp comic("/library/.+/comic/[0-9]+/?");
-	QRegExp comicClose("/library/.+/comic/[0-9]+/close/?");
-	QRegExp cover("/library/.+/cover/[0-9a-f]+.jpg");
-	QRegExp comicPage("/library/.+/comic/[0-9]+/page/[0-9]+/?");
+	QRegExp folder("/library/.+/folder/[0-9]+/?");//get comic content
+	QRegExp folderInfo("/library/.+/folder/[0-9]+/info/?"); //get folder info
+	QRegExp comic("/library/.+/comic/[0-9]+/?"); //get comic info
+	QRegExp comicOpen("/library/.+/comic/[0-9]+/open/?"); //the server will open for reading the comic
+	QRegExp comicClose("/library/.+/comic/[0-9]+/close/?"); //the server will close the comic and free memory
+	QRegExp cover("/library/.+/cover/[0-9a-f]+.jpg"); //get comic cover (navigation)
+	QRegExp comicPage("/library/.+/comic/[0-9]+/page/[0-9]+/?"); //get comic page
 
-	QRegExp library("/library/([^/.]+)/.+");
+	QRegExp library("/library/([^/.]+)/.+"); //permite verificar que la biblioteca solicitada existe
 
 	path = QUrl::fromPercentEncoding(path).toLatin1();
 
@@ -51,8 +52,8 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 	else 
 	{
 		//se comprueba que la sesión sea la correcta con el fin de evitar accesos no autorizados
-		HttpSession session=Static::sessionStore->getSession(request,response);
-		if(session.contains("ySession"))
+		HttpSession session=Static::sessionStore->getSession(request,response,false);
+		if(!session.isNull() && session.contains("ySession"))
 		{
 			if(library.indexIn(path)!=-1 && mw->getLibraries().contains(library.cap(1)) )
 			{
@@ -80,7 +81,7 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 			}
 			else
 			{
-				response.writeText(library.cap(1));
+				//response.writeText(library.cap(1));
 				Static::staticFileController->service(request, response);
 			}
 		}

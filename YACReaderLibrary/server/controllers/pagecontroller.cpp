@@ -11,7 +11,7 @@ PageController::PageController() {}
 
 void PageController::service(HttpRequest& request, HttpResponse& response)
 {
-	HttpSession session=Static::sessionStore->getSession(request,response);
+	HttpSession session=Static::sessionStore->getSession(request,response,false);
 
 	QString path = QUrl::fromPercentEncoding(request.getPath()).toLatin1();
 	QStringList pathElements = path.split('/');
@@ -26,15 +26,15 @@ void PageController::service(HttpRequest& request, HttpResponse& response)
 		{
 			if(comicFile->pageIsLoaded(page))
 			{
-				response.setHeader("Content-Type", "yacreader/page");
+				response.setHeader("Content-Type", "image/jpeg");
 				QByteArray pageData = comicFile->getRawPage(page);
 				QDataStream data(pageData);
-				char buffer[65536];
+				char buffer[4096];
 				while (!data.atEnd()) {
-					int len = data.readRawData(buffer,65536);
+					int len = data.readRawData(buffer,4096);
 					response.write(QByteArray(buffer,len));
 				}
-				//response.write(pageData);
+				response.write(pageData);
 			}
 			else
 			{
