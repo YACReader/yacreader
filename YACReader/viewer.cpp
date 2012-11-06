@@ -96,8 +96,6 @@ drag(false)
 	
 	render = new Render();
 
-	scroller = new QTimer(this);
-
 	hideCursorTimer = new QTimer();
 	hideCursorTimer->setSingleShot(true); 
 
@@ -109,6 +107,9 @@ drag(false)
 	hideCursorTimer->start(2500);
 
 	setMouseTracking(true);
+
+	//animations
+	verticalScroller = new QPropertyAnimation(verticalScrollBar(), "sliderPosition");
 }
 
 void Viewer::createConnections()
@@ -249,15 +250,16 @@ void Viewer::scrollDown()
 	if(verticalScrollBar()->sliderPosition()==verticalScrollBar()->maximum())
 	{
 		next();
-		scroller->stop();
 	}
 	else
 	{
 		int currentPos = verticalScrollBar()->sliderPosition();
-		verticalScrollBar()->setSliderPosition(currentPos=currentPos+posByStep);
-		if((verticalScrollBar()->sliderPosition()==verticalScrollBar()->maximum())
-			||(verticalScrollBar()->sliderPosition()>=nextPos))
-			scroller->stop();
+		verticalScroller->setDuration(250);
+		verticalScroller->setStartValue(currentPos);
+		verticalScroller->setEndValue(nextPos);
+
+		verticalScroller->start();
+
 		emit backgroundChanges();
 	}
 }
@@ -267,15 +269,16 @@ void Viewer::scrollUp()
 	if(verticalScrollBar()->sliderPosition()==verticalScrollBar()->minimum())
 	{
 		prev();
-		scroller->stop();
 	}
 	else
 	{
 		int currentPos = verticalScrollBar()->sliderPosition();
-		verticalScrollBar()->setSliderPosition(currentPos=currentPos-posByStep);
-		if((verticalScrollBar()->sliderPosition()==verticalScrollBar()->minimum())
-			||(verticalScrollBar()->sliderPosition()<=nextPos))
-			scroller->stop();
+		verticalScroller->setDuration(250);
+		verticalScroller->setStartValue(currentPos);
+		verticalScroller->setEndValue(nextPos);
+
+		verticalScroller->start();
+
 		emit backgroundChanges();
 	}
 }
@@ -290,18 +293,14 @@ void Viewer::keyPressEvent(QKeyEvent *event)
 			switch (event->key())
 		{
 			case Qt::Key_Space:
-				disconnect(scroller,SIGNAL(timeout()),this,0);
-				connect(scroller,SIGNAL(timeout()),this,SLOT(scrollDown()));
 				posByStep = height()/STEPS;
 				nextPos=verticalScrollBar()->sliderPosition()+static_cast<int>((height()*0.80));
-				scroller->start(20);
+				scrollDown();
 				break;
 			case Qt::Key_B:
-				disconnect(scroller,SIGNAL(timeout()),this,0);
-				connect(scroller,SIGNAL(timeout()),this,SLOT(scrollUp()));
 				posByStep = height()/STEPS;
 				nextPos=verticalScrollBar()->sliderPosition()-static_cast<int>((height()*0.80));
-				scroller->start(20);
+				scrollUp();
 				break;
 			case Qt::Key_S:
 				goToFlowSwitch();
