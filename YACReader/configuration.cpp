@@ -51,6 +51,8 @@ void Configuration::load(QSettings * settings)
 		settings->setValue(BACKGROUND_COLOR,QColor(0,0,0));
 	if(!settings->contains(ALWAYS_ON_TOP))
 		settings->setValue(ALWAYS_ON_TOP,false);
+	if(!settings->contains(SHOW_TOOLBARS))
+		settings->setValue(SHOW_TOOLBARS, true);
 }
 
 void Configuration::load(const QString & path)

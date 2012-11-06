@@ -78,6 +78,8 @@
 		void setBackgroundColor(const QColor& color){settings->value(BACKGROUND_COLOR,color);};
 		bool getAlwaysOnTop(){return settings->value(ALWAYS_ON_TOP).toBool();};
 		void setAlwaysOnTop(bool b){ settings->setValue(ALWAYS_ON_TOP,b);};
+		bool getShowToolbars(){return settings->value(SHOW_TOOLBARS).toBool();};
+		void setShowToolbars(bool b){return settings->setValue(SHOW_TOOLBARS,b);};
 		
 		void save();
 

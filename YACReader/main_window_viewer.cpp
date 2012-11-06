@@ -107,6 +107,11 @@ void MainWindowViewer::setupUI()
 		showMaximized();
 
 	setAcceptDrops(true);
+
+	if(Configuration::getConfiguration().getShowToolbars() && !Configuration::getConfiguration().getFullScreen())
+		showToolBars();
+	else
+		hideToolBars();
 }
 
 void MainWindowViewer::createActions()
@@ -535,7 +540,8 @@ void MainWindowViewer::toNormal()
 	viewer->fullscreen = false;//TODO, change by the right use of windowState();
 	//viewer->hideMagnifyingGlass();
 	showNormal();
-	showToolBars();
+	if(Configuration::getConfiguration().getShowToolbars())
+		showToolBars();
 	viewer->show();
 	if(viewer->magnifyingGlassIsVisible())
 		viewer->showMagnifyingGlass();
@@ -543,6 +549,8 @@ void MainWindowViewer::toNormal()
 void MainWindowViewer::toggleToolBars()
 {
 	toolbars?hideToolBars():showToolBars();
+
+	Configuration::getConfiguration().setShowToolbars(toolbars);
 }
 void MainWindowViewer::hideToolBars()
 {

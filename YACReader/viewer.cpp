@@ -110,6 +110,7 @@ drag(false)
 
 	//animations
 	verticalScroller = new QPropertyAnimation(verticalScrollBar(), "sliderPosition");
+	connect(verticalScroller,SIGNAL(valueChanged (const QVariant &)),this,SIGNAL(backgroundChanges()));
 }
 
 void Viewer::createConnections()
@@ -343,26 +344,14 @@ void Viewer::keyPressEvent(QKeyEvent *event)
 
 void Viewer::wheelEvent(QWheelEvent * event)
 {
-    if(render->hasLoadedComic())
-    {
-	if((event->delta()<0)&&(verticalScrollBar()->sliderPosition()==verticalScrollBar()->maximum()))
+	if(render->hasLoadedComic())
 	{
-		if(wheelStop)
+		if((event->delta()<0)&&(verticalScrollBar()->sliderPosition()==verticalScrollBar()->maximum()))
 		{
-			next();
-			event->accept();
-			wheelStop = false;
-			return;
-		}
-		else
-			wheelStop = true;
-	}
-	else
-		if((event->delta()>0)&&(verticalScrollBar()->sliderPosition()==verticalScrollBar()->minimum()))
-		{
-		    if(wheelStop)
+			if(wheelStop)
 			{
-				prev();
+				next();
+				verticalScroller->stop();
 				event->accept();
 				wheelStop = false;
 				return;
@@ -370,10 +359,40 @@ void Viewer::wheelEvent(QWheelEvent * event)
 			else
 				wheelStop = true;
 		}
+		else
+		{
+			if((event->delta()>0)&&(verticalScrollBar()->sliderPosition()==verticalScrollBar()->minimum()))
+			{
+				if(wheelStop)
+				{
+					prev();
+					verticalScroller->stop();
+					event->accept();
+					wheelStop = false;
+					return;
+				}
+				else
+					wheelStop = true;
+			}
+		}
 
-		QAbstractScrollArea::wheelEvent(event);
-		emit backgroundChanges();
-    }
+		int deltaNotFinished = 0;
+		if(verticalScroller->state() == QAbstractAnimation::Running)
+		{
+			deltaNotFinished = verticalScroller->startValue().toInt() - verticalScroller->endValue().toInt();
+			verticalScroller->stop();
+		}
+
+
+		int currentPos = verticalScrollBar()->sliderPosition();
+		verticalScroller->setDuration(250);
+		verticalScroller->setStartValue(currentPos);
+		verticalScroller->setEndValue(currentPos - event->delta() - deltaNotFinished);
+
+		verticalScroller->start();
+
+		//QAbstractScrollArea::wheelEvent(event);
+	}
 }
 
 void Viewer::resizeEvent(QResizeEvent * event)
