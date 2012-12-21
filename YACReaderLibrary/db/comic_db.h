@@ -131,6 +131,8 @@ public:
 	void removeFromDB(QSqlDatabase & db);
 	void update(QSqlDatabase & db);
 	bool hasCover() {return _hasCover;};
+
+	QString toTXT();
 	
 	ComicInfo info;
 };

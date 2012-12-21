@@ -150,6 +150,89 @@ bool ComicDB::isDir()
 	return false;
 }
 
+QString ComicDB::toTXT()
+{
+	QString txt;
+
+	//Legacy info
+	txt.append(QString("comicid:%1\r\n").arg(id));
+	txt.append(QString("hash:%1\r\n").arg(info.hash));
+	txt.append(QString("path:%1\r\n").arg(path));
+	txt.append(QString("numpages:%1\r\n").arg(*info.numPages));
+
+	//Información general
+	if(info.coverPage != NULL)
+		txt.append(QString("coverPage:%1\r\n").arg(*info.coverPage));
+
+	if(info.title != NULL)
+		txt.append(QString("title:%1\r\n").arg(*info.title));
+
+	if(info.number != NULL)
+		txt.append(QString("number:%1\r\n").arg(*info.number));
+
+	if(info.count != NULL)
+		txt.append(QString("count:%1\r\n").arg(*info.count));
+
+	if(info.volume != NULL)
+		txt.append(QString("volume:%1\r\n").arg(*info.volume));
+
+	if(info.storyArc != NULL)
+		txt.append(QString("storyArc:%1\r\n").arg(*info.storyArc));
+
+	if(info.arcNumber != NULL)
+		txt.append(QString("arcNumber:%1\r\n").arg(*info.arcNumber));
+
+	if(info.arcCount != NULL)
+		txt.append(QString("arcCount:%1\r\n").arg(*info.arcCount));
+
+	if(info.genere != NULL)
+		txt.append(QString("genere:%1\r\n").arg(*info.genere));
+
+	//Autores
+	if(info.writer != NULL)
+		txt.append(QString("writer:%1\r\n").arg(*info.writer));
+
+	if(info.penciller != NULL)
+		txt.append(QString("penciller:%1\r\n").arg(*info.penciller));
+
+	if(info.inker != NULL)
+		txt.append(QString("inker:%1\r\n").arg(*info.inker));
+
+	if(info.colorist != NULL)
+		txt.append(QString("colorist:%1\r\n").arg(*info.colorist));
+
+	if(info.letterer != NULL)
+		txt.append(QString("letterer:%1\r\n").arg(*info.letterer));
+
+	if(info.coverArtist != NULL)
+		txt.append(QString("coverArtist:%1\r\n").arg(*info.coverArtist));
+	//Publicación
+	if(info.date != NULL)
+		txt.append(QString("date:%1\r\n").arg(*info.date));
+	
+	if(info.publisher != NULL)
+		txt.append(QString("publisher:%1\r\n").arg(*info.publisher));
+
+	if(info.format != NULL)
+		txt.append(QString("format:%1\r\n").arg(*info.format));
+
+	if(info.color != NULL)
+		txt.append(QString("color:%1\r\n").arg(*info.color));
+
+	if(info.ageRating != NULL)
+		txt.append(QString("ageRating:%1\r\n").arg(*info.ageRating));
+	//Argumento
+	if(info.synopsis != NULL)
+		txt.append(QString("synopsis:%1\r\n").arg(*info.synopsis));
+
+	if(info.characters != NULL)
+		txt.append(QString("characters:%1\r\n").arg(*info.characters));
+
+	if(info.notes != NULL)
+		txt.append(QString("notes:%1\r\n").arg(*info.notes));
+
+	return txt;
+}
 //-----------------------------------------------------------------------------
 //COMIC_INFO-------------------------------------------------------------------
 //-----------------------------------------------------------------------------
