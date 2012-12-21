@@ -78,11 +78,9 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 		session.setCurrentComic(comic.id, comicFile);
 		
 		response.setHeader("Content-Type", "plain/text; charset=ISO-8859-1");
-		response.writeText(QString("comicid:%1\n").arg(comic.id));
-		response.writeText(QString("hash:%1\n").arg(comic.info.hash));
-		response.writeText(QString("path:%1\n").arg(comic.path));
-		response.writeText(QString("numpages:%1\n").arg(*comic.info.numPages));
-		response.writeText(QString("library:%1\n").arg(libraryName),true);
+		
+		response.writeText(QString("library:%1\r\n").arg(libraryName));
+		response.writeText(comic.toTXT(),true);
 	}
 	else
 	{
