@@ -170,6 +170,9 @@ QString ComicDB::toTXT()
 	if(info.number != NULL)
 		txt.append(QString("number:%1\r\n").arg(*info.number));
 
+	if(info.isBis != NULL)
+		txt.append(QString("isBis:%1\r\n").arg(*info.isBis));
+
 	if(info.count != NULL)
 		txt.append(QString("count:%1\r\n").arg(*info.count));
 
