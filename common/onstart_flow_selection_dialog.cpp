@@ -2,7 +2,7 @@
 
 #include <QPushButton>
 #include <QHBoxLayout>
-#include <QLocale.h>
+#include <qlocale.h>
 
 OnStartFlowSelectionDialog::OnStartFlowSelectionDialog(QWidget * parent)
 	:QDialog(parent)
