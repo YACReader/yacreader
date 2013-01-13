@@ -18,8 +18,10 @@ int main( int argc, char ** argv )
   app.installTranslator(&translator);
   app.setApplicationName("YACReaderLibrary");
 
+#ifdef SERVER_RELEASE
   s = new Startup();
   s->start();
+#endif
 
   mw = new LibraryWindow();
   mw->resize(800,480);

@@ -395,7 +395,7 @@ void MainWindowViewer::reloadOptions()
 void MainWindowViewer::open()
 {
 	QFileDialog openDialog;
-	QString pathFile = openDialog.getOpenFileName(this,tr("Open Comic"),currentDirectory,tr("Comic files (*.cbr *.cbz *.rar *.zip *.tar *.arj)"));
+	QString pathFile = openDialog.getOpenFileName(this,tr("Open Comic"),currentDirectory,tr("Comic files (*.cbr *.cbz *.rar *.zip *.pdf *.tar *.arj)"));
 	if (!pathFile.isEmpty())
 	{
 		openComicFromPath(pathFile);

@@ -3,7 +3,7 @@
 #include <QtGui>
 #include <QtOpenGL>
 #include <math.h>
-#include <gl/GLU.h>
+#include <GL/glu.h>
 #include <QGLContext>
 #include <QGLPixelBuffer>
 

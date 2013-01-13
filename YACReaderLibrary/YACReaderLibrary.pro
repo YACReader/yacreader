@@ -9,10 +9,30 @@ INCLUDEPATH += .
 INCLUDEPATH += ../common \
 	           ./server \
 			   ./db \
-			   ../YACReader
+			   ../YACReader 
+			   
+win32 {
+INCLUDEPATH += ../dependencies/poppler/include
+LIBS += -L../dependencies/poppler/lib -lpoppler-qt4
+}
+
+unix:!macx{
+INCLUDEPATH  += /usr/include/poppler/qt4
+LIBS         += -L/usr/lib -lpoppler-qt4
+LIBS	     += -lGLU
+}
+
+macx{
+INCLUDEPATH  += "/Volumes/Mac OS X Lion/usr/X11/include"
+INCLUDEPATH  += /usr/local/include/poppler/qt4
+LIBS         += -L/usr/local/lib -lpoppler-qt4
+}
+
 CONFIG += release
 CONFIG -= flat
 QT += sql network opengl
+
+
 
 # Input
 HEADERS += comic_flow.h \

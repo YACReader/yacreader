@@ -516,7 +516,7 @@ YACReaderSpinSliderWidget::YACReaderSpinSliderWidget(QWidget * parent)
 	:QWidget(parent)
 {
 	QHBoxLayout * layout = new QHBoxLayout;
-	layout->addWidget(label = new QLabel(this));
+	layout->addWidget(label = new QLabel(this),1);
 	layout->addStretch();
 	spinBox = new QSpinBox(this);
 	layout->addWidget(spinBox);
@@ -561,7 +561,7 @@ int YACReaderSpinSliderWidget::getValue()
 
 QSize YACReaderSpinSliderWidget::minimumSizeHint() const
 {
-	return QSize(220, 25);
+	return QSize(270, 25);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -602,39 +602,39 @@ YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget * parent)
 	connect(gl->radionModern,SIGNAL(toggled(bool)),this,SIGNAL(optionsChanged()));
 	connect(gl->radioDown,SIGNAL(toggled(bool)),this,SIGNAL(optionsChanged()));
 
-	connect(gl->xRotation,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
 	connect(gl->xRotation,SIGNAL(valueChanged(int)),this,SLOT(saveXRotation(int)));
-
-	connect(gl->yPosition,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
+	connect(gl->xRotation,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
+	
 	connect(gl->yPosition,SIGNAL(valueChanged(int)),this,SLOT(saveYPosition(int)));
-
-	connect(gl->coverDistance,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
+	connect(gl->yPosition,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
+	
 	connect(gl->coverDistance,SIGNAL(valueChanged(int)),this,SLOT(saveCoverDistance(int)));
-
-	connect(gl->centralDistance,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
+	connect(gl->coverDistance,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
+	
 	connect(gl->centralDistance,SIGNAL(valueChanged(int)),this,SLOT(saveCentralDistance(int)));
-
-	connect(gl->zoomLevel,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
+	connect(gl->centralDistance,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
+	
 	connect(gl->zoomLevel,SIGNAL(valueChanged(int)),this,SLOT(saveZoomLevel(int)));
-
-	connect(gl->yCoverOffset,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
+	connect(gl->zoomLevel,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
+	
 	connect(gl->yCoverOffset,SIGNAL(valueChanged(int)),this,SLOT(saveYCoverOffset(int)));
-
-	connect(gl->zCoverOffset,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
+	connect(gl->yCoverOffset,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
+	
 	connect(gl->zCoverOffset,SIGNAL(valueChanged(int)),this,SLOT(saveZCoverOffset(int)));
-
-	connect(gl->coverRotation,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
+	connect(gl->zCoverOffset,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
+	
 	connect(gl->coverRotation,SIGNAL(valueChanged(int)),this,SLOT(saveCoverRotation(int)));
-
-	connect(gl->fadeOutDist,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
+	connect(gl->coverRotation,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
+	
 	connect(gl->fadeOutDist,SIGNAL(valueChanged(int)),this,SLOT(saveFadeOutDist(int)));
-
-	connect(gl->lightStrength,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
+	connect(gl->fadeOutDist,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
+	
 	connect(gl->lightStrength,SIGNAL(valueChanged(int)),this,SLOT(saveLightStrength(int)));
-
-	connect(gl->maxAngle,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
+	connect(gl->lightStrength,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
+	
 	connect(gl->maxAngle,SIGNAL(valueChanged(int)),this,SLOT(saveMaxAngle(int)));
-
+	connect(gl->maxAngle,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
+	
 	connect(gl->performanceSlider, SIGNAL(valueChanged(int)),this,SLOT(savePerformance(int)));
 	connect(gl->performanceSlider, SIGNAL(valueChanged(int)),this,SLOT(optionsChanged()));
 
@@ -981,7 +981,7 @@ YACReaderGLFlowConfigWidget::YACReaderGLFlowConfigWidget(QWidget * parent /* = 0
 	QHBoxLayout * opt4 = new QHBoxLayout;
 	opt4->addWidget(radionModern);
 	QLabel * lOpt4 = new QLabel();
-	lOpt4->setPixmap(QPixmap(":/images/flow3.png"));
+	lOpt4->setPixmap(QPixmap(":/images/flow4.png"));
 	opt4->addStretch();
 	opt4->addWidget(lOpt4);
 	vbox->addLayout(opt4);
@@ -989,7 +989,7 @@ YACReaderGLFlowConfigWidget::YACReaderGLFlowConfigWidget(QWidget * parent /* = 0
 	QHBoxLayout * opt5 = new QHBoxLayout;
 	opt5->addWidget(radioDown);
 	QLabel * lOpt5 = new QLabel();
-	lOpt5->setPixmap(QPixmap(":/images/flow3.png"));
+	lOpt5->setPixmap(QPixmap(":/images/flow5.png"));
 	opt5->addStretch();
 	opt5->addWidget(lOpt5);
 	vbox->addLayout(opt5);

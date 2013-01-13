@@ -85,7 +85,7 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 	//restoreOptions(); //load options
 	resize(400,0);
 	setModal (true);
-	setWindowTitle("Options");
+	setWindowTitle(tr("Options"));
 }
 
 void OptionsDialog::findFolder()

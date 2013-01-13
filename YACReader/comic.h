@@ -8,6 +8,8 @@
 
 #include "bookmarks.h"
 
+#include "poppler-qt4.h"
+
 	class Comic : public QThread
 	{
 	Q_OBJECT
@@ -28,6 +30,9 @@
 		QString _pathDir;
 		Bookmarks * bm;
 		void run();
+		//pdf
+		Poppler::Document * pdfComic;
+		bool _isPDF;
 	public:
 		//Constructors
 		Comic();
@@ -38,6 +43,7 @@
 		bool load(const QString & path);
 		void loadFromFile(const QString & pathFile);
 		void loadFromDir(const QString & pathDir);
+		void loadFromPDF(const QString & pathPDF);
 		int nextPage();
 		int previousPage();
 		void setIndex(unsigned int index);

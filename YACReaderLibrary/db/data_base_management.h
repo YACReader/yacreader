@@ -53,6 +53,7 @@ public:
 
 	static QString checkValidDB(const QString & fullPath); //retorna "" si la DB es inválida ó la versión si es válida.
 	static int compareVersions(const QString & v1, const QString v2); //retorna <0 si v1 < v2, 0 si v1 = v2 y >0 si v1 > v2
+	static bool updateToCurrentVersion(const QString & path);
 };
 
 #endif

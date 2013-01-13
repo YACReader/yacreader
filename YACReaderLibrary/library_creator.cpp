@@ -12,7 +12,7 @@
 using namespace std;
 
 //QMutex mutex;
-
+#include "poppler-qt4.h"
 
 
 /*int numThreads = 0;
@@ -25,7 +25,7 @@ QMutex mutex;
 LibraryCreator::LibraryCreator()
 	:creation(false)
 {
-	_nameFilter << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar";
+	_nameFilter << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf";
 }
 
 void LibraryCreator::createLibrary(const QString &source, const QString &target)
@@ -393,74 +393,25 @@ ThumbnailCreator::ThumbnailCreator(QString fileSource, QString target="", int co
 
 void ThumbnailCreator::create()
 {
-	_7z = new QProcess();
-	QStringList attributes;
-	attributes << "l" << "-ssc-" << "-r" << _fileSource << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp"; 
-	//connect(_7z,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(loadFirstImage(void)));
-	connect(_7z,SIGNAL(error(QProcess::ProcessError)),this,SIGNAL(openingError(QProcess::ProcessError)));
-	_7z->start(QCoreApplication::applicationDirPath()+"/utils/7z",attributes);
-	_7z->waitForFinished(60000);
-
-	QRegExp rx("[0-9]{4}-[0-9]{2}-[0-9]{2}[ ]+[0-9]{2}:[0-9]{2}:[0-9]{2}[ ]+.{5}[ ]+([0-9]+)[ ]+([0-9]+)[ ]+(.+)");
-
-	QString ba = QString::fromUtf8(_7z->readAllStandardOutput());
-	QList<QString> lines = ba.split('\n');
-	QString line;
-	_currentName = "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"; //TODO 
-	QString name;
-	if(_coverPage == 1)
+	QFileInfo fi(_fileSource);
+	if(fi.suffix().compare("pdf",Qt::CaseInsensitive) == 0)
 	{
-		foreach(line,lines)
+		Poppler::Document * pdfComic = Poppler::Document::load(_fileSource);
+		if (!pdfComic)
 		{
-			if(rx.indexIn(line)!=-1)
-			{
-				name = rx.cap(3).trimmed();
-				if(naturalSortLessThanCI(name,_currentName))
-					_currentName = name;
-				_numPages++;
-			}	
+			delete pdfComic;
+			pdfComic = 0;
+			QImage p;
+			p.load(":/images/notCover.png");
+			p.save(_target);
+			return;
 		}
-	}
-	else
-	{
-		QList<QString> names;
-		foreach(line,lines)
+		_numPages = pdfComic->numPages();
+		if(_numPages >= _coverPage)
 		{
-			if(rx.indexIn(line)!=-1)
-			{
-				name = rx. cap(3).trimmed();
-				names.append(name);
-			}	
-		}
-		std::sort(names.begin(),names.end(),naturalSortLessThanCI);
-		_currentName = names[_coverPage-1];
-	}
-	delete _7z;
-	attributes.clear();
-	_currentName = QDir::fromNativeSeparators(_currentName).split('/').last(); //separator fixed. 
-#ifdef Q_WS_WIN
-	attributes << "e" << "-so" << "-r" << _fileSource << QString(_currentName.toLocal8Bit().constData()); //TODO platform dependency?? OEM 437
-#else
-	attributes << "e" << "-so" << "-r" << _fileSource << _currentName; //TODO platform dependency?? OEM 437
-#endif
-	_7z = new QProcess();
-	connect(_7z,SIGNAL(error(QProcess::ProcessError)),this,SIGNAL(openingError(QProcess::ProcessError)));
-	//connect(_7z,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(writeThumbnail(void)));
-	_7z->start(QCoreApplication::applicationDirPath()+"/utils/7z",attributes);
-	_7z->waitForFinished(60000);
 
-	QByteArray image = _7z->readAllStandardOutput();
-	QString error = _7z->readAllStandardError();
-	QImage p;
-	if(_target=="")
-	{
-		if(!_cover.loadFromData(image))
-			_cover.load(":/images/notCover.png");
-	}
-	else
-	{
-		if(p.loadFromData(image))
-		{
+			QImage p = pdfComic->page(_coverPage-1)->renderToImage(72,72); //TODO check if the the page is valid
+			_cover = QPixmap::fromImage(p);
 			QImage scaled;
 			if(p.width()>p.height()) //landscape??
 				scaled = p.scaledToWidth(640,Qt::SmoothTransformation);
@@ -470,11 +421,97 @@ void ThumbnailCreator::create()
 		}
 		else
 		{
+			QImage p;
 			p.load(":/images/notCover.png");
 			p.save(_target);
 		}
 	}
-	delete _7z;
+	else
+	{
+
+		_7z = new QProcess();
+		QStringList attributes;
+		attributes << "l" << "-ssc-" << "-r" << _fileSource << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp"; 
+		//connect(_7z,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(loadFirstImage(void)));
+		connect(_7z,SIGNAL(error(QProcess::ProcessError)),this,SIGNAL(openingError(QProcess::ProcessError)));
+		_7z->start(QCoreApplication::applicationDirPath()+"/utils/7z",attributes);
+		_7z->waitForFinished(60000);
+
+		QRegExp rx("[0-9]{4}-[0-9]{2}-[0-9]{2}[ ]+[0-9]{2}:[0-9]{2}:[0-9]{2}[ ]+.{5}[ ]+([0-9]+)[ ]+([0-9]+)[ ]+(.+)");
+
+		QString ba = QString::fromUtf8(_7z->readAllStandardOutput());
+		QList<QString> lines = ba.split('\n');
+		QString line;
+		_currentName = "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"; //TODO 
+		QString name;
+		if(_coverPage == 1)
+		{
+			foreach(line,lines)
+			{
+				if(rx.indexIn(line)!=-1)
+				{
+					name = rx.cap(3).trimmed();
+					if(naturalSortLessThanCI(name,_currentName))
+						_currentName = name;
+					_numPages++;
+				}	
+			}
+		}
+		else
+		{
+			QList<QString> names;
+			foreach(line,lines)
+			{
+				if(rx.indexIn(line)!=-1)
+				{
+					name = rx. cap(3).trimmed();
+					names.append(name);
+				}	
+			}
+			std::sort(names.begin(),names.end(),naturalSortLessThanCI);
+			_currentName = names[_coverPage-1];
+		}
+		delete _7z;
+		attributes.clear();
+		_currentName = QDir::fromNativeSeparators(_currentName).split('/').last(); //separator fixed. 
+#ifdef Q_WS_WIN
+		attributes << "e" << "-so" << "-r" << _fileSource << QString(_currentName.toLocal8Bit().constData()); //TODO platform dependency?? OEM 437
+#else
+		attributes << "e" << "-so" << "-r" << _fileSource << _currentName; //TODO platform dependency?? OEM 437
+#endif
+		_7z = new QProcess();
+		connect(_7z,SIGNAL(error(QProcess::ProcessError)),this,SIGNAL(openingError(QProcess::ProcessError)));
+		//connect(_7z,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(writeThumbnail(void)));
+		_7z->start(QCoreApplication::applicationDirPath()+"/utils/7z",attributes);
+		_7z->waitForFinished(60000);
+
+		QByteArray image = _7z->readAllStandardOutput();
+		QString error = _7z->readAllStandardError();
+		QImage p;
+		if(_target=="")
+		{
+			if(!_cover.loadFromData(image))
+				_cover.load(":/images/notCover.png");
+		}
+		else
+		{
+			if(p.loadFromData(image))
+			{
+				QImage scaled;
+				if(p.width()>p.height()) //landscape??
+					scaled = p.scaledToWidth(640,Qt::SmoothTransformation);
+				else
+					scaled = p.scaledToWidth(480,Qt::SmoothTransformation);
+				scaled.save(_target,0,75);
+			}
+			else
+			{
+				p.load(":/images/notCover.png");
+				p.save(_target);
+			}
+		}
+		delete _7z;
+	}
 }
 
 /*void ThumbnailCreator::openingError(QProcess::ProcessError error)
