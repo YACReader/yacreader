@@ -7,6 +7,24 @@ DEPENDPATH += . \
     release
 INCLUDEPATH += .
 INCLUDEPATH += ../common
+
+win32 {
+INCLUDEPATH += ../dependencies/poppler/include
+LIBS += -L../dependencies/poppler/lib -lpoppler-qt4
+}
+
+unix:!macx{
+INCLUDEPATH  += /usr/include/poppler/qt4
+LIBS         += -L/usr/lib -lpoppler-qt4
+LIBS	     += -lGLU
+}
+
+macx{
+INCLUDEPATH  += "/Volumes/Mac OS X Lion/usr/X11/include"
+INCLUDEPATH  += /usr/local/include/poppler/qt4
+LIBS         += -L/usr/local/lib -lpoppler-qt4
+}
+
 QT += network webkit phonon opengl
 CONFIG += release
 CONFIG -= flat

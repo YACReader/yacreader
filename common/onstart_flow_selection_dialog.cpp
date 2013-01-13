@@ -2,6 +2,7 @@
 
 #include <QPushButton>
 #include <QHBoxLayout>
+#include <QLocale.h>
 
 OnStartFlowSelectionDialog::OnStartFlowSelectionDialog(QWidget * parent)
 	:QDialog(parent)
@@ -20,17 +21,30 @@ OnStartFlowSelectionDialog::OnStartFlowSelectionDialog(QWidget * parent)
 	rejectHW->setAutoFillBackground(true);
 
 	QPalette paletteHW;
-	paletteHW.setBrush(acceptHW->backgroundRole(), QBrush(QImage(":/images/useNewFlowButton.png")));
+	QLocale locale = this->locale();
+	QLocale::Language language = locale.language();
+
+	/*if(language == QLocale::Spanish)
+		paletteHW.setBrush(acceptHW->backgroundRole(), QBrush(QImage(":/images/useNewFlowButton_es.png")));
+	else
+		paletteHW.setBrush(acceptHW->backgroundRole(), QBrush(QImage(":/images/useNewFlowButton.png")));*/
+
+
+	paletteHW.setBrush(acceptHW->backgroundRole(), QBrush(QImage(":/images/nonexxx.png")));
 	acceptHW->setPalette(paletteHW);
 	QPalette paletteSW;
-	paletteSW.setBrush(rejectHW->backgroundRole(), QBrush(QImage(":/images/useOldFlowButton.png")));
+	paletteSW.setBrush(rejectHW->backgroundRole(), QBrush(QImage(":/images/nonexxx.png")));
 	rejectHW->setPalette(paletteSW);
 	//QHBoxLayout * layout = new QHBoxLayout;
 	//layout->addWidget(acceptHW);
 	//layout->addWidget(rejectHW);
 
 	QPalette palette;
-	palette.setBrush(this->backgroundRole(), QBrush(QImage(":/images/onStartFlowSelection.png")));
+	if(language == QLocale::Spanish)
+		palette.setBrush(this->backgroundRole(), QBrush(QImage(":/images/onStartFlowSelection_es.png")));
+	else
+		palette.setBrush(this->backgroundRole(), QBrush(QImage(":/images/onStartFlowSelection.png")));
+
 	setPalette(palette);
 
 

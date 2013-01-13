@@ -13,13 +13,13 @@
 
 //-----------------------------------------------------------------------------
 Comic::Comic()
-:_pages(),_index(0),_path(),_loaded(false),bm(new Bookmarks()),_loadedPages()
+:_pages(),_index(0),_path(),_loaded(false),bm(new Bookmarks()),_loadedPages(),_isPDF(false)
 {
     setup();
 }
 //-----------------------------------------------------------------------------
 Comic::Comic(const QString pathFile)
-:_pages(),_index(0),_path(pathFile),_loaded(false),bm(new Bookmarks()),_loadedPages()
+:_pages(),_index(0),_path(pathFile),_loaded(false),bm(new Bookmarks()),_loadedPages(),_isPDF(false)
 {
     setup();
     loadFromFile(pathFile);
@@ -50,7 +50,13 @@ bool Comic::load(const QString & path)
 		
 		if(fi.isFile())
 		{
-			loadFromFile(path);
+			if(fi.suffix().compare("pdf",Qt::CaseInsensitive) == 0)
+			{
+				_isPDF = true;
+				loadFromPDF(path);
+			}
+			else
+				loadFromFile(path);
 		}
 		else
 		{
@@ -87,43 +93,96 @@ void Comic::loadFromDir(const QString & pathDir)
 	start();
 }
 //-----------------------------------------------------------------------------
+void Comic::loadFromPDF(const QString & pathPdf)
+{
+	_path = pathPdf;
+	start();
+}
+//-----------------------------------------------------------------------------
 void Comic::run()
 {
-	QDir d(_pathDir);
-	QStringList l;
-	l EXTENSIONS;
-	d.setNameFilters(l);
-	d.setFilter(QDir::Files|QDir::NoDotAndDotDot);
-	//d.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware);
-	QFileInfoList list = d.entryInfoList();
-
-	qSort(list.begin(),list.end(),naturalSortLessThanCIFileInfo);
-
-	int nPages = list.size();
-	_pages.clear();
-	_pages.resize(nPages);
-	_loadedPages = QVector<bool>(nPages,false);
-	if(nPages==0)
+	if(_isPDF)
 	{
-	    QMessageBox::critical(NULL,tr("No images found"),tr("There are not images on the selected folder"));
-	    emit errorOpening();
+		pdfComic = Poppler::Document::load(_path);
+		if (!pdfComic)
+		{
+			delete pdfComic;
+			pdfComic = 0;
+			QMessageBox::critical(NULL,tr("Bad PDF File"),tr("Invalid PDF file"));
+			emit errorOpening();
+			return;
+		}
+
+		//pdfComic->setRenderHint(Poppler::Document::Antialiasing, true);
+		pdfComic->setRenderHint(Poppler::Document::TextAntialiasing, true);
+		int nPages = pdfComic->numPages();
+		emit pageChanged(0); // this indicates new comic, index=0
+		emit numPages(nPages);
+		_loaded = true;
+		//QMessageBox::critical(NULL,QString("%1").arg(nPages),tr("Invalid PDF file"));
+
+		_pages.clear();
+		_pages.resize(nPages);
+		_loadedPages = QVector<bool>(nPages,false);
+		for(int i=0;i<nPages;i++)
+		{
+
+			Poppler::Page* pdfpage = pdfComic->page(i);
+			if (pdfpage)
+			{
+				QImage img = pdfpage->renderToImage(150,150); //TODO use defaults if not using X11 (e.g. MS Win)
+				delete pdfpage;
+				QByteArray ba;
+				QBuffer buf(&ba);
+				img.save(&buf, "jpg");
+				_pages[i] = ba;
+				emit imageLoaded(i);
+				emit imageLoaded(i,_pages[i]);
+
+			}
+
+		}
+		delete pdfComic;
+		emit imagesLoaded();
 	}
 	else
 	{
-	emit pageChanged(0); // this indicates new comic, index=0
-	emit numPages(_pages.size());
-	_loaded = true;
-	
-	for(int i=0;i<nPages;i++)
-	    {
-		QFile f(list.at(i).absoluteFilePath());
-		f.open(QIODevice::ReadOnly);
-		_pages[i]=f.readAll();
-		emit imageLoaded(i);
-		emit imageLoaded(i,_pages[i]);
-	    }
+		QDir d(_pathDir);
+		QStringList l;
+		l EXTENSIONS;
+		d.setNameFilters(l);
+		d.setFilter(QDir::Files|QDir::NoDotAndDotDot);
+		//d.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware);
+		QFileInfoList list = d.entryInfoList();
+
+		qSort(list.begin(),list.end(),naturalSortLessThanCIFileInfo);
+
+		int nPages = list.size();
+		_pages.clear();
+		_pages.resize(nPages);
+		_loadedPages = QVector<bool>(nPages,false);
+		if(nPages==0)
+		{
+			QMessageBox::critical(NULL,tr("No images found"),tr("There are not images on the selected folder"));
+			emit errorOpening();
+		}
+		else
+		{
+			emit pageChanged(0); // this indicates new comic, index=0
+			emit numPages(_pages.size());
+			_loaded = true;
+
+			for(int i=0;i<nPages;i++)
+			{
+				QFile f(list.at(i).absoluteFilePath());
+				f.open(QIODevice::ReadOnly);
+				_pages[i]=f.readAll();
+				emit imageLoaded(i);
+				emit imageLoaded(i,_pages[i]);
+			}
+		}
+		emit imagesLoaded();
 	}
-	emit imagesLoaded();
 }
 //-----------------------------------------------------------------------------
 void Comic::loadSizes()

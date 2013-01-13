@@ -218,7 +218,7 @@ void DataBaseManagement::exportComicsInfo(QString source, QString dest)
 	queryComicsInfo.exec();*/
 
 	QSqlQuery query("INSERT INTO dest.db_info (version) "
-		"VALUES ('5.0.0')",destDB);
+		"VALUES ('"VERSION"')",destDB);
 	//query.finish();
 
 	QSqlQuery exportData(destDB);
@@ -534,6 +534,27 @@ int DataBaseManagement::compareVersions(const QString & v1, const QString v2)
 		return 1;
 
 	return 0;
+}
+
+bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
+{
+	QSqlDatabase db = loadDatabaseFromFile(fullPath);
+	bool returnValue = false;
+	if(db.isValid() && db.isOpen())
+	{
+		QSqlQuery updateVersion(db);
+		updateVersion.prepare("UPDATE db_info SET "
+			"version = :version");
+		updateVersion.bindValue(":version",VERSION);
+		updateVersion.exec();
+
+		if(updateVersion.numRowsAffected() > 0)
+			returnValue = true;
+	}
+
+	db.close();
+	QSqlDatabase::removeDatabase(fullPath);
+	return returnValue;
 }
 
 //COMICS_INFO_EXPORTER

@@ -81,7 +81,9 @@ void LibraryWindow::doLayout()
 	QMatrix m;
 	m.rotate(-90);
 	m.scale(-1,1);
-	comicFlow->setMarkImage(QImage(":/images/setRead.png").transformed(m,Qt::SmoothTransformation));
+	QImage image(":/images/setRead.png");
+	image.transformed(m,Qt::SmoothTransformation);
+	comicFlow->setMarkImage(image);
 	int heightDesktopResolution = QApplication::desktop()->screenGeometry().height();
 	int height,width;
 	height = heightDesktopResolution*0.39;
@@ -210,7 +212,10 @@ void LibraryWindow::doDialogs()
 	addLibraryDialog = new AddLibraryDialog(this);
 	optionsDialog = new OptionsDialog(this);
 	optionsDialog->restoreOptions(settings);
+
+#ifdef SERVER_RELEASE
 	serverConfigDialog = new ServerConfigDialog(this);
+#endif
 
 	had = new HelpAboutDialog(this); //TODO load data.
 	QString sufix = QLocale::system().name();
@@ -511,7 +516,10 @@ void LibraryWindow::createToolBars()
 	libraryToolBar->addAction(toggleFullScreenAction);
 
 	libraryToolBar->addWidget(new QToolBarStretch());
+
+#ifdef SERVER_RELEASE
 	libraryToolBar->addAction(serverConfigAction);
+#endif
 	libraryToolBar->addAction(optionsAction);
 	libraryToolBar->addAction(helpAboutAction);
 
@@ -614,7 +622,9 @@ void LibraryWindow::createConnections()
 	connect(colapseAllNodesAction,SIGNAL(triggered()),foldersView,SLOT(collapseAll()));
 	connect(toggleFullScreenAction,SIGNAL(triggered()),this,SLOT(toggleFullScreen()));
 	connect(optionsAction, SIGNAL(triggered()),optionsDialog,SLOT(show()));
+#ifdef SERVER_RELEASE
 	connect(serverConfigAction, SIGNAL(triggered()), serverConfigDialog, SLOT(show()));
+#endif
 	connect(optionsDialog, SIGNAL(optionsChanged()),this,SLOT(reloadOptions()));
 	//ComicFlow
 	connect(comicFlow,SIGNAL(selected(unsigned int)),this,SLOT(openComic()));
@@ -648,8 +658,28 @@ void LibraryWindow::loadLibrary(const QString & name)
 		QString dbVersion;
 		if(d.exists(path) && (dbVersion = DataBaseManagement::checkValidDB(path+"/library.ydb")) != "") //si existe en disco la biblioteca seleccionada, y es válida..
 		{
-			int comparation;
-			if((comparation = DataBaseManagement::compareVersions(dbVersion,VERSION)) == 0) //en caso de que la versión se igual que la actual
+			int comparation = DataBaseManagement::compareVersions(dbVersion,VERSION);
+			bool updated = false;
+			if(comparation < 0)
+				{
+					int ret = QMessageBox::question(this,tr("Update needed"),tr("This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?"),QMessageBox::Yes,QMessageBox::No);
+					if(ret == QMessageBox::Yes)
+					{
+						//TODO update to new version
+						updated = DataBaseManagement::updateToCurrentVersion(path+"/library.ydb");
+						if(!updated)
+							QMessageBox::critical(this,tr("Update failed"), tr("The current library can't be udpated. Check for write write permissions on: ") + path+"/library.ydb");
+					}
+					else
+					{
+						comicView->setModel(NULL);
+						foldersView->setModel(NULL);
+						comicFlow->clear();
+						disableAllActions();//TODO comprobar que se deben deshabilitar
+					}
+				}
+
+			if(comparation == 0 || updated) //en caso de que la versión se igual que la actual
 			{
 				index = 0;
 				sm->clear();
@@ -677,24 +707,8 @@ void LibraryWindow::loadLibrary(const QString & name)
 				//includeComicsCheckBox->setCheckState(Qt::Unchecked);
 				foldersFilter->clear();
 			}
-			else
+			else if(comparation > 0)
 			{
-				if(comparation < 0)
-				{
-					int ret = QMessageBox::question(this,tr("Update needed"),tr("This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?"));
-					if(ret == QMessageBox::Yes)
-					{
-					}
-					else
-					{
-						comicView->setModel(NULL);
-						foldersView->setModel(NULL);
-						comicFlow->clear();
-						disableAllActions();//TODO comprobar que se deben deshabilitar
-					}
-				}
-				else
-				{
 					int ret = QMessageBox::question(this,tr("Download new version"),tr("This library was created with a newer version of YACReaderLibrary. Download the new version now?"),QMessageBox::Yes,QMessageBox::No);
 					if(ret == QMessageBox::Yes)
 						QDesktopServices::openUrl(QUrl("http://www.yacreader.com"));
@@ -703,8 +717,6 @@ void LibraryWindow::loadLibrary(const QString & name)
 					foldersView->setModel(NULL);
 					comicFlow->clear();
 					disableAllActions();//TODO comprobar que se deben deshabilitar
-
-				}
 			}
 		}
 		else

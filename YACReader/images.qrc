@@ -18,6 +18,8 @@
 	<file>../images/flow1.png</file>
 	<file>../images/flow2.png</file>
 	<file>../images/flow3.png</file>
+	<file>../images/flow4.png</file>
+	<file>../images/flow5.png</file> 
 	<file>../images/bookmark.png</file>
 	<file>../images/setBookmark.png</file>
 	<file>../images/notCover.png</file>
@@ -64,7 +66,8 @@
 	<file>../images/helpImages/mouse.png</file>
 	<file>../images/helpImages/speaker.png</file> 
 	<file>../images/defaultCover.png</file> 
-	<file>../images/onStartFlowSelection.png</file> 
+	<file>../images/onStartFlowSelection.png</file>
+	<file>../images/onStartFlowSelection_es.png</file>  
 	<file>../images/useNewFlowButton.png</file>
 	<file>../images/useOldFlowButton.png</file>
 </qresource>
