@@ -67,7 +67,7 @@ drag(false)
 
 	goToDialog = new GoToDialog(this);
 	
-	QSettings * settings = new QSettings("YACReader.ini",QSettings::IniFormat);
+	QSettings * settings = new QSettings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
 
 	//CONFIG GOTO_FLOW--------------------------------------------------------
 	if(QGLFormat::hasOpenGL() && !settings->contains(USE_OPEN_GL))
