@@ -35,7 +35,7 @@ void LibraryWindow::setupUI()
 	libraryCreator = new LibraryCreator();
 	packageManager = new PackageManager();
 
-	settings = new QSettings("YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+	settings = new QSettings(QCoreApplication::applicationDirPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
 	settings->beginGroup("libraryConfig");
 
 	doModels();
