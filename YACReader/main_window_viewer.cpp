@@ -19,7 +19,7 @@ MainWindowViewer::MainWindowViewer()
 
 void MainWindowViewer::loadConfiguration()
 {
-	settings = new QSettings("YACReader.ini",QSettings::IniFormat);
+	settings = new QSettings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
 
 	Configuration & config = Configuration::getConfiguration();
 	config.load(settings);
