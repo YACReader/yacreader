@@ -180,7 +180,7 @@
     <message>
         <location filename="create_library_dialog.cpp" line="66"/>
         <source>Create a library could take several minutes. You can stop the process and update the library later for completing the task.</source>
-        <translation>Crear una biblioteca puede llevar varios minutos. Puedesde parar el proceso en cualquier momento y completar la tarea más tarde.</translation>
+        <translation>Crear una biblioteca puede llevar varios minutos. Puedes parar el proceso en cualquier momento y completar la tarea más tarde.</translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="91"/>
