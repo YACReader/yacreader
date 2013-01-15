@@ -2,10 +2,11 @@
 
 #include <QtGui>
 #include <QtOpenGL>
-#include <math.h>
+//#include <math.h>
 #include <GL/glu.h>
 #include <QGLContext>
 #include <QGLPixelBuffer>
+#include <cmath>
 
 /*** Animation Settings ***/
 
@@ -351,7 +352,7 @@ void YACReaderFlowGL::animate(RVect *Current,RVect to)
 	Current->y = Current->y+(to.y-Current->y)*config.animationStep;
 	Current->z = Current->z+(to.z-Current->z)*config.animationStep;
 
-	if(abs(to.rot-Current->rot) > 0.01){
+	if(fabs(to.rot-Current->rot) > 0.01){
 		Current->rot = Current->rot+(to.rot-Current->rot)*(config.animationStep*config.preRotation);
 	}
 	else
@@ -364,7 +365,7 @@ void YACReaderFlowGL::drawCover(CFImage *CF)
 	float h = CF->height;
 
 	//fadeout 
-	float opacity = 1-1/(config.animationFadeOutDist+config.viewRotateLightStrenght*abs(viewRotate))*abs(0-CF->current.x);
+	float opacity = 1-1/(config.animationFadeOutDist+config.viewRotateLightStrenght*fabs(viewRotate))*fabs(0-CF->current.x);
 
 	glLoadIdentity();
 	glTranslatef(config.cfX,config.cfY,config.cfZ);
@@ -601,7 +602,7 @@ void YACReaderFlowGL::updatePositions()
 		viewRotate += (0-viewRotate)*config.viewRotateSub;
 	}
 
-	if(abs (cfImages[currentSelected].current.x - cfImages[currentSelected].animEnd.x) < 1)//viewRotate < 0.2)
+	if(fabs (cfImages[currentSelected].current.x - cfImages[currentSelected].animEnd.x) < 1)//viewRotate < 0.2)
 	{
 		cleanupAnimation();
 		if(updateCount >= 0) //TODO parametrizar
