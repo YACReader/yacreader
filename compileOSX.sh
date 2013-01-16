@@ -19,6 +19,8 @@ cp -R ./YACReaderLibrary/YACReaderLibrary.app ./YACReaderLibrary.app
 
 ./releaseOSX.sh
 
+cp -R ./PlugInsYACReader ./YACReader.app/Contents/PlugIns
+cp -R ./PlugInsLibrary ./YACReaderLibrary.app/Contents/PlugIns
 
 echo "Copying to destination folder"
 dest='YACReader-'$1' MacOSX-Intel'
