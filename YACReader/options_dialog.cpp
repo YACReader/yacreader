@@ -5,12 +5,21 @@
 #include <QFileDialog>
 #include <QGroupBox>
 #include <QRadioButton>
+#include <QTabWidget>
 
 
 OptionsDialog::OptionsDialog(QWidget * parent)
 :YACReaderOptionsDialog(parent)
 {
+
+	QTabWidget * tabWidget = new QTabWidget();
+
 	QVBoxLayout * layout = new QVBoxLayout(this);
+
+	QWidget * pageGeneral = new QWidget();
+	QWidget * pageFlow = new QWidget();
+	QVBoxLayout * layoutGeneral = new QVBoxLayout();
+	QVBoxLayout * layoutFlow = new QVBoxLayout();;
 
 	QGroupBox *slideSizeBox = new QGroupBox(tr("\"Go to flow\" size"));
 	//slideSizeLabel = new QLabel(,this);
@@ -68,13 +77,23 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 	buttons->addWidget(accept);
 	buttons->addWidget(cancel);
 
-	layout->addWidget(pathBox);
-	layout->addWidget(slideSizeBox);
-	layout->addWidget(fitBox);
-	layout->addWidget(colorBox);
-	layout->addWidget(sw);
-	layout->addWidget(gl);
-	layout->addWidget(useGL);
+	layoutGeneral->addWidget(pathBox);
+	layoutGeneral->addWidget(slideSizeBox);
+	layoutGeneral->addWidget(fitBox);
+	layoutGeneral->addWidget(colorBox);
+	layoutGeneral->addStretch();
+	layoutFlow->addWidget(sw);
+	layoutFlow->addWidget(gl);
+	layoutFlow->addWidget(useGL);
+	layoutFlow->addStretch();
+
+	pageGeneral->setLayout(layoutGeneral);
+	pageFlow->setLayout(layoutFlow);
+
+	tabWidget->addTab(pageGeneral,tr("General"));
+	tabWidget->addTab(pageFlow,tr("Page Flow"));
+
+	layout->addWidget(tabWidget);
 	layout->addLayout(buttons);
 
 	setLayout(layout);
@@ -86,6 +105,8 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 	resize(400,0);
 	setModal (true);
 	setWindowTitle(tr("Options"));
+
+	this->layout()->setSizeConstraint(QLayout::SetFixedSize);
 }
 
 void OptionsDialog::findFolder()
