@@ -23,7 +23,7 @@ LIBS	     += -lGLU
 }
 
 macx{
-INCLUDEPATH  += "/Volumes/Mac OS X Lion/usr/X11/include"
+#INCLUDEPATH  += "/Volumes/Mac OS X Lion/usr/X11/include"
 INCLUDEPATH  += /usr/local/include/poppler/qt4
 LIBS         += -L/usr/local/lib -lpoppler-qt4
 }

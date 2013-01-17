@@ -3,7 +3,13 @@
 #include <QtGui>
 #include <QtOpenGL>
 //#include <math.h>
-#include <GL/glu.h>
+
+#ifdef Q_WS_MAC
+	#include <OpenGL/glu.h>
+#else
+	#include <GL/glu.h>
+#endif
+
 #include <QGLContext>
 #include <QGLPixelBuffer>
 #include <cmath>
@@ -246,7 +252,7 @@ YACReaderFlowGL::~YACReaderFlowGL()
 
 }
 
-QSize YACReaderFlowGL::minimumSizeHint() const
+/*QSize YACReaderFlowGL::minimumSizeHint() const
 {
 	return QSize(800, 480);
 }
@@ -254,7 +260,7 @@ QSize YACReaderFlowGL::minimumSizeHint() const
 QSize YACReaderFlowGL::sizeHint() const
 {
 	return QSize(800, 480);
-}
+}*/
 
 void YACReaderFlowGL::initializeGL()
 {
@@ -285,6 +291,7 @@ void YACReaderFlowGL::paintGL()
 	if(numObjects>0)
 	{
 		updatePositions();
+		udpatePerspective(width(),height());
 		draw();
 	}
 }
@@ -295,23 +302,22 @@ void YACReaderFlowGL::resizeGL(int width, int height)
 	fontSize = width * 0.02;
 
 	//int side = qMin(width, height);
+	udpatePerspective(width,height);
+
+	if(numObjects>0)
+		updatePositions();
+}
+
+void YACReaderFlowGL::udpatePerspective(int width, int height)
+{
 	glViewport(0, 0, width, height);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-#ifdef QT_OPENGL_ES_1
-	//glOrthof(-0.5, +0.5, -0.5, +0.5, 4.0, 15.0);
-#else
-	//float sideX = ((float(width)/height)/2)*1.5;
-	//float sideY = 0.5*1.5;
-	gluPerspective(20.0, (float)width / (float)height, 1.0, 200.0);
-	//glOrtho(-sideX, sideX, -sideY+0.2, +sideY+0.2, 4, 11.0);
 
-#endif
+	gluPerspective(20.0, GLdouble(width) / (float)height, 1.0, 200.0);
+
 	glMatrixMode(GL_MODELVIEW);
-
-	if(numObjects>0)
-		updatePositions();
 }
 
 //-----------------------------------------------------------------------------

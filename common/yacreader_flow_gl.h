@@ -118,6 +118,8 @@ protected:
 	void calcRV(RVect *RV,int pos);
 	void animate(RVect *Current,RVect to);
 	void drawCover(CFImage *CF);
+
+	void udpatePerspective(int width, int height);
 	
 	int updateCount;
 	WidgetLoader * loader;
@@ -170,8 +172,8 @@ public:
     ~YACReaderFlowGL();
 
 	//size;
-    QSize minimumSizeHint() const;
-    QSize sizeHint() const;
+    //QSize minimumSizeHint() const;
+    //QSize sizeHint() const;
 
 	/*functions*/
 
