@@ -48,9 +48,9 @@
 		void setIndex(unsigned int index);
 		unsigned int getIndex(){return _index;};
 		unsigned int numPages(){return _pages.size();}
-		QPixmap * currentPage();
+		//QPixmap * currentPage();
 		bool loaded();
-		QPixmap * operator[](unsigned int index);
+		//QPixmap * operator[](unsigned int index);
 		QVector<QByteArray> * getRawData(){return &_pages;};
 		QByteArray getRawPage(int page);
 		bool pageIsLoaded(int page);
