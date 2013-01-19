@@ -66,7 +66,7 @@ void Comic::setIndex(unsigned int index)
 	emit pageChanged(_index);
 }
 //-----------------------------------------------------------------------------
-QPixmap * Comic::currentPage()
+/*QPixmap * Comic::currentPage()
 {
 	QPixmap * p = new QPixmap();
 	p->loadFromData(_pages[_index]);
@@ -78,7 +78,7 @@ QPixmap * Comic::operator[](unsigned int index)
 	QPixmap * p = new QPixmap();
 	p->loadFromData(_pages[index]);
 	return p;
-}
+}*/
 //-----------------------------------------------------------------------------
 bool Comic::loaded()
 {
@@ -92,7 +92,9 @@ void Comic::loadFinished()
 //-----------------------------------------------------------------------------
 void Comic::setBookmark()
 {
-    bm->setBookmark(_index,*operator[](_index));
+	QPixmap p;
+	p.loadFromData(_pages[_index]);
+    bm->setBookmark(_index,p);
 	emit bookmarksLoaded(*bm);
 }
 //-----------------------------------------------------------------------------
@@ -104,7 +106,9 @@ void Comic::removeBookmark()
 //-----------------------------------------------------------------------------
 void Comic::saveBookmarks()
 {
-	bm->setLastPage(_index,*operator[](_index));
+	QPixmap p;
+	p.loadFromData(_pages[_index]);
+	bm->setLastPage(_index,p);
 	bm->save();
 }
 //-----------------------------------------------------------------------------
@@ -117,15 +121,19 @@ void Comic::updateBookmarkImage(int index)
 {
 	if(bm->isBookmark(index))
 	{
-		bm->setBookmark(index,*operator[](index));
+		QPixmap p;
+		p.loadFromData(_pages[_index]);
+		bm->setBookmark(index,p);
 		emit bookmarksLoaded(*bm);
 	}
 	if(bm->getLastPage() == index)
 	{
-		bm->setLastPage(index,*operator[](index));
+		QPixmap p;
+		p.loadFromData(_pages[_index]);
+		bm->setLastPage(index,p);
 		emit bookmarksLoaded(*bm);
 	}
-	
+
 }
 //-----------------------------------------------------------------------------
 void Comic::setPageLoaded(int page)

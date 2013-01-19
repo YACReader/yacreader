@@ -74,6 +74,7 @@ void ComicFlow::updateImageData()
 			setSlide(idx, worker->result());
 			imagesSetted[idx] = true;
 			numImagesLoaded++;
+			imagesLoaded[idx]=true;
 		}
 	}
 
@@ -96,7 +97,7 @@ void ComicFlow::updateImageData()
 			{
 				// schedule thumbnail generation
 				QString fname = imageFiles[i];
-				imagesLoaded[i]=true;
+				
 				
 				worker->generate(i, fname, slideSize());
 				return;

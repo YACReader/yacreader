@@ -190,6 +190,7 @@ void GoToFlow::updateImageData()
 			imagesSetted[idx] = true;
 			numImagesLoaded++;
 			rawImages[idx].clear();; //release memory
+			imagesLoaded[idx]=true;
 		}
 
 	} 
@@ -212,7 +213,7 @@ void GoToFlow::updateImageData()
 			if(!imagesLoaded[i]&&imagesReady[i])//slide(i).isNull())
 			{
 				// schedule thumbnail generation
-				imagesLoaded[i]=true;
+				
 				worker->generate(i, flow->slideSize(),rawImages[i]);
 				return;
 			}
