@@ -10,31 +10,6 @@ extern LibraryWindow * mw;
 #include "comic_db.h"
 #include "comic.h"
 
-Synchronizer::Synchronizer(Comic2 * c,QString p,QThread * f)
-	:QThread(),comic(c),path(p),from(f)
-{
-
-}
-
-void Synchronizer::run()
-{
-	connect(comic,SIGNAL(numPages(unsigned int)),this,SLOT(waitedSignal()));
-	loaded = comic->load(path);
-}
-
-void Synchronizer::waitedSignal()
-{
-	if(loaded)
-	{
-		comic->moveToThread(from);
-		quit();
-	}
-	else
-	{
-		exit(-1);
-	}
-}
-
 
 ComicController::ComicController() {}
 
@@ -64,21 +39,31 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 
 	ComicDB comic = mw->getComicInfo(libraryName, comicId);
 
-	Comic2 * comicFile = new Comic2;
-	//Synchronizer * synchronizer = new Synchronizer(comicFile,libraries.value(libraryName)+comic.path, this->thread());
-	//comicFile->moveToThread(synchronizer);
-	
+	Comic * comicFile = FactoryComic::newComic(libraries.value(libraryName)+comic.path);
 
-	//synchronizer->start();
-	//QApplication::instance()->exec();
-	//synchronizer->wait(20000);
-
-	if(comicFile->load(libraries.value(libraryName)+comic.path))
+	if(comicFile != NULL)
 	{
+		QThread * thread = NULL;
+		if (typeid(*comicFile) != typeid(FileComic))
+		{
+			thread = new QThread();
+
+			comicFile->moveToThread(thread);
+
+			connect(thread, SIGNAL(started()), comicFile, SLOT(process()));
+			connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+
+		}
+
+		comicFile->load(libraries.value(libraryName)+comic.path);
+
+		if(thread != NULL)
+			thread->start();
+
 		session.setCurrentComic(comic.id, comicFile);
-		
+
 		response.setHeader("Content-Type", "plain/text; charset=ISO-8859-1");
-		
+
 		response.writeText(QString("library:%1\r\n").arg(libraryName));
 		response.writeText(comic.toTXT(),true);
 	}

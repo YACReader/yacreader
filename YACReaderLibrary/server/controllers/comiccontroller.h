@@ -6,7 +6,7 @@
 #include "httprequesthandler.h"
 
 #include <QThread>
-class Comic2;
+class Comic;
 class QString;
 
 class ComicController : public HttpRequestHandler {
@@ -18,23 +18,6 @@ public:
 
 	/** Generates the response */
 	void service(HttpRequest& request, HttpResponse& response);
-};
-
-class Synchronizer : public QThread
-{
-
-	Q_OBJECT
-public:
-		Synchronizer(Comic2 * c, QString p, QThread * f);
-	bool loaded;
-private:
-	Comic2 * comic;
-	QString path;
-	QThread * from;
-	
-	void run();
-	public slots:
-		void waitedSignal();
 };
 
 #endif // COMICCONTROLLER_H

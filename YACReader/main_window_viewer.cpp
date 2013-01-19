@@ -630,7 +630,7 @@ void MainWindowViewer::getSiblingComics(QString path,QString currentComic)
 {
 	QDir d(path);
 	d.setFilter(QDir::Files|QDir::NoDotAndDotDot);
-	d.setNameFilters(QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar");
+	d.setNameFilters(QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf");
 	d.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware);
 	QStringList list = d.entryList();
 	int index = list.indexOf(currentComic);

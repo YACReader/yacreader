@@ -378,7 +378,11 @@ void Render::setRotation(int degrees)
 void Render::setComic(Comic * c)
 {
 	if(comic !=0)
-		delete comic;
+	{
+		comic->moveToThread(QApplication::instance()->thread());
+		comic->disconnect();
+		comic->deleteLater();
+	}
 	comic = c;
 }
 
@@ -398,9 +402,29 @@ void Render::update()
 void Render::load(const QString & path)
 {
 	if(comic!=0)
-		delete comic;
-	comic = new Comic();
+	{
+		comic->moveToThread(QApplication::instance()->thread());
+		comic->disconnect();
+		comic->deleteLater();
+	}
+		//comic->moveToThread(QApplication::instance()->thread());
+	comic = FactoryComic::newComic(path);
+
+	if(comic == NULL) //archivo no encontrado o no válido
+		return;
+
 	previousIndex = currentIndex = 0;
+	QThread * thread = NULL;
+	if (typeid(*comic) != typeid(FileComic))
+	{
+	thread = new QThread();
+
+	comic->moveToThread(thread);
+
+	connect(thread, SIGNAL(started()), comic, SLOT(process()));
+	connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+
+	}
 
 	connect(comic,SIGNAL(errorOpening()),this,SIGNAL(errorOpening()));
 	connect(comic,SIGNAL(errorOpening()),this,SLOT(reset()));
@@ -413,12 +437,18 @@ void Render::load(const QString & path)
 	connect(comic,SIGNAL(isBookmark(bool)),this,SIGNAL(currentPageIsBookmark(bool)));
 	connect(comic,SIGNAL(bookmarksLoaded(const Bookmarks &)),this,SIGNAL(bookmarksLoaded(const Bookmarks &)));
 	pagesReady.clear();
-	if(comic->load(path)) //garantiza que se va a intentar abrir el cómic
-	{
-		invalidate();
-		loadedComic = true;
-		update();
-	}
+
+
+
+	comic->load(path); //garantiza que se va a intentar abrir el cómic
+
+	if(thread != NULL)
+		thread->start();
+
+	invalidate();
+	loadedComic = true;
+	update();
+
 	
 }
 

@@ -198,7 +198,7 @@ struct Preset pressetYACReaderFlowDownConfig = {
 };
 /*Constructor*/
 YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
-	:QGLWidget(QGLFormat(QGL::SampleBuffers), parent),numObjects(0),lazyPopulateObjects(-1),bUseVSync(false)
+	:QGLWidget(QGLFormat(QGL::SampleBuffers), parent),numObjects(0),lazyPopulateObjects(-1),bUseVSync(false),hasBeenInitialized(false)
 {
 	updateCount = 0;
 	config = p;
@@ -278,6 +278,8 @@ void YACReaderFlowGL::initializeGL()
 
 	if(lazyPopulateObjects!=-1)
 		populate(lazyPopulateObjects);
+
+	hasBeenInitialized = true;
 }
 
 void YACReaderFlowGL::paintGL()
@@ -690,7 +692,7 @@ void YACReaderFlowGL::populate(int n)
 	float x = 1;
 	float y = 1 * (700.f/480.0f);
 	int i;
-
+	
 	for(i = 0;i<n;i++){
 		insert("cover", defaultTexture, x, y);
 	}
@@ -715,6 +717,7 @@ void YACReaderFlowGL::reset()
 {
 	currentSelected = 0;
 	loaded.clear();
+
 	for(int i = 0;i<numObjects;i++){
 		if(cfImages[i].img != defaultTexture)
 			deleteTexture(cfImages[i].img);
@@ -723,6 +726,8 @@ void YACReaderFlowGL::reset()
 		delete[] cfImages;
 	numObjects = 0;
 	
+	if(!hasBeenInitialized)
+		lazyPopulateObjects = -1;
 }
 
 void YACReaderFlowGL::reload()
