@@ -104,9 +104,9 @@ public:
 
 	//current comic
 	qulonglong getCurrentComicId();
-	Comic2 * getCurrentComic();
+	Comic * getCurrentComic();
 	void dismissCurrentComic();
-	void setCurrentComic(qulonglong id, Comic2 * comic);
+	void setCurrentComic(qulonglong id, Comic * comic);
 	
 	//device identification
 	QString getDeviceType();
@@ -125,7 +125,7 @@ private:
 		QString device;
 		QString display;
 		qulonglong comicId;
-		Comic2 * comic;
+		Comic * comic;
 	};
 
 	struct HttpSessionData {

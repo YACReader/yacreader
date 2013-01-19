@@ -218,7 +218,7 @@ qulonglong HttpSession::getCurrentComicId()
 	else
 		return 0;
 }
-Comic2* HttpSession::getCurrentComic()
+Comic* HttpSession::getCurrentComic()
 {
 	if(dataPtr)
 	{
@@ -233,13 +233,13 @@ void HttpSession::dismissCurrentComic()
 	{
 		if(dataPtr->yacreaderSessionData.comic != 0)
 		{
-			delete dataPtr->yacreaderSessionData.comic;
+			dataPtr->yacreaderSessionData.comic->deleteLater();
 			dataPtr->yacreaderSessionData.comic = 0;
 		}
 		dataPtr->yacreaderSessionData.comicId = 0;
 	}
 }
-void HttpSession::setCurrentComic(qulonglong id, Comic2 * comic)
+void HttpSession::setCurrentComic(qulonglong id, Comic * comic)
 {
 	if(dataPtr)
 	{

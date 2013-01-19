@@ -19,8 +19,8 @@ void PageController::service(HttpRequest& request, HttpResponse& response)
 	qulonglong comicId = pathElements.at(4).toULongLong();
 	unsigned int page = pathElements.at(6).toUInt();
 
-	Comic2 * comicFile = session.getCurrentComic();
-	if(session.getCurrentComicId() != 0 && !QPointer<Comic2>(comicFile).isNull())
+	Comic * comicFile = session.getCurrentComic();
+	if(session.getCurrentComicId() != 0 && !QPointer<Comic>(comicFile).isNull())
 	{
 		if(comicId == session.getCurrentComicId() && page < comicFile->numPages())
 		{

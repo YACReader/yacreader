@@ -139,6 +139,7 @@ protected:
 	QVector<bool> marks;
 	QList<QString> paths;
 	CFImage * cfImages;
+	bool hasBeenInitialized;
 
 	Performance performance;
 	bool bUseVSync;
