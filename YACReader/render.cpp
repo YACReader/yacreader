@@ -410,10 +410,29 @@ void Render::load(const QString & path)
 		//comic->moveToThread(QApplication::instance()->thread());
 	comic = FactoryComic::newComic(path);
 
-	if(comic == NULL) //archivo no encontrado o no válido
+	
+	if(comic == NULL)//archivo no encontrado o no válido
+	{
+		emit errorOpening();
+		reset();
 		return;
+	}
 
 	previousIndex = currentIndex = 0;
+
+	connect(comic,SIGNAL(errorOpening()),this,SIGNAL(errorOpening()));
+	connect(comic,SIGNAL(errorOpening()),this,SLOT(reset()));
+	connect(comic,SIGNAL(imageLoaded(int)),this,SIGNAL(imageLoaded(int)));
+	connect(comic,SIGNAL(imageLoaded(int)),this,SLOT(pageRawDataReady(int)));
+	//connect(comic,SIGNAL(pageChanged(int)),this,SIGNAL(pageChanged(int)));
+	connect(comic,SIGNAL(numPages(unsigned int)),this,SIGNAL(numPages(unsigned int)));
+	connect(comic,SIGNAL(numPages(unsigned int)),this,SLOT(setNumPages(unsigned int)));
+	connect(comic,SIGNAL(imageLoaded(int,QByteArray)),this,SIGNAL(imageLoaded(int,QByteArray)));
+	connect(comic,SIGNAL(isBookmark(bool)),this,SIGNAL(currentPageIsBookmark(bool)));
+	connect(comic,SIGNAL(isBookmark(bool)),this,SLOT(pageIsBookmark(bool)));
+
+	connect(comic,SIGNAL(bookmarksUpdated()),this,SIGNAL(bookmarksUpdated()));
+
 	QThread * thread = NULL;
 	if (typeid(*comic) != typeid(FileComic))
 	{
@@ -426,19 +445,7 @@ void Render::load(const QString & path)
 
 	}
 
-	connect(comic,SIGNAL(errorOpening()),this,SIGNAL(errorOpening()));
-	connect(comic,SIGNAL(errorOpening()),this,SLOT(reset()));
-	connect(comic,SIGNAL(imageLoaded(int)),this,SIGNAL(imageLoaded(int)));
-	connect(comic,SIGNAL(imageLoaded(int)),this,SLOT(pageRawDataReady(int)));
-	//connect(comic,SIGNAL(pageChanged(int)),this,SIGNAL(pageChanged(int)));
-	connect(comic,SIGNAL(numPages(unsigned int)),this,SIGNAL(numPages(unsigned int)));
-	connect(comic,SIGNAL(numPages(unsigned int)),this,SLOT(setNumPages(unsigned int)));
-	connect(comic,SIGNAL(imageLoaded(int,QByteArray)),this,SIGNAL(imageLoaded(int,QByteArray)));
-	connect(comic,SIGNAL(isBookmark(bool)),this,SIGNAL(currentPageIsBookmark(bool)));
-	connect(comic,SIGNAL(bookmarksLoaded(const Bookmarks &)),this,SIGNAL(bookmarksLoaded(const Bookmarks &)));
 	pagesReady.clear();
-
-
 
 	comic->load(path); //garantiza que se va a intentar abrir el cómic
 
@@ -784,4 +791,9 @@ void Render::removeBookmark()
 void Render::save()
 {
 	comic->saveBookmarks();
+}
+
+Bookmarks * Render::getBookmarks()
+{
+	return comic->bm;
 }

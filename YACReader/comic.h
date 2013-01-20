@@ -27,11 +27,13 @@
 
 		int _cfi;
 
-		Bookmarks * bm;
+		
 		
 
 		bool _isPDF;
 	public:
+		Bookmarks * bm;
+
 		//Constructors
 		Comic();
 		Comic(const QString & pathFile);
@@ -71,7 +73,7 @@
 		void numPages(unsigned int numPages);
 		void errorOpening();
 		void isBookmark(bool);
-		void bookmarksLoaded(const Bookmarks &);
+		void bookmarksUpdated();
 		
 	};
 

@@ -92,21 +92,23 @@ void Comic::loadFinished()
 //-----------------------------------------------------------------------------
 void Comic::setBookmark()
 {
-	QPixmap p;
+	QImage p;
 	p.loadFromData(_pages[_index]);
     bm->setBookmark(_index,p);
-	emit bookmarksLoaded(*bm);
+	//emit bookmarksLoaded(*bm);
+	emit bookmarksUpdated();
 }
 //-----------------------------------------------------------------------------
 void Comic::removeBookmark()
 {
 	bm->removeBookmark(_index);
-	emit bookmarksLoaded(*bm);
+	//emit bookmarksLoaded(*bm);
+	emit bookmarksUpdated();
 }
 //-----------------------------------------------------------------------------
 void Comic::saveBookmarks()
 {
-	QPixmap p;
+	QImage p;
 	p.loadFromData(_pages[_index]);
 	bm->setLastPage(_index,p);
 	bm->save();
@@ -121,17 +123,20 @@ void Comic::updateBookmarkImage(int index)
 {
 	if(bm->isBookmark(index))
 	{
-		QPixmap p;
-		p.loadFromData(_pages[_index]);
+		QImage p;
+		p.loadFromData(_pages[index]);
 		bm->setBookmark(index,p);
-		emit bookmarksLoaded(*bm);
+		emit bookmarksUpdated();
+		//emit bookmarksLoaded(*bm);
+		
 	}
 	if(bm->getLastPage() == index)
 	{
-		QPixmap p;
-		p.loadFromData(_pages[_index]);
+		QImage p;
+		p.loadFromData(_pages[index]);
 		bm->setLastPage(index,p);
-		emit bookmarksLoaded(*bm);
+		emit bookmarksUpdated();
+		//emit bookmarksLoaded(*bm);
 	}
 
 }
@@ -183,7 +188,8 @@ bool FileComic::load(const QString & path)
 	if(fi.exists())
 	{
 		bm->newComic(path);
-		emit bookmarksLoaded(*bm);
+		emit bookmarksUpdated();
+		//emit bookmarksLoaded(*bm);
 
 		_path = QDir::cleanPath(path);
 		//load files size
@@ -322,6 +328,9 @@ FolderComic::~FolderComic()
 bool FolderComic::load(const QString & path)
 {
 	_path = path;
+	bm->newComic(_path);
+	emit bookmarksUpdated();
+	//emit bookmarksLoaded(*bm);
 	return true;
 }
 
@@ -363,8 +372,6 @@ void FolderComic::process()
 		}
 	}
 	emit imagesLoaded();
-
-	moveToThread(QApplication::instance()->thread());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -391,6 +398,9 @@ PDFComic::~PDFComic()
 bool PDFComic::load(const QString & path)
 {
 	_path = path;
+	bm->newComic(_path);
+	emit bookmarksUpdated();
+	//emit bookmarksLoaded(*bm);
 	return true;
 }
 
@@ -406,6 +416,7 @@ void PDFComic::process()
 		emit errorOpening();
 		return;
 	}
+	
 
 	//pdfComic->setRenderHint(Poppler::Document::Antialiasing, true);
 	pdfComic->setRenderHint(Poppler::Document::TextAntialiasing, true);
@@ -424,7 +435,7 @@ void PDFComic::process()
 		Poppler::Page* pdfpage = pdfComic->page(i);
 		if (pdfpage)
 		{
-			QImage img = pdfpage->renderToImage(150,150); //TODO use defaults if not using X11 (e.g. MS Win)
+			QImage img = pdfpage->renderToImage(150,150);
 			delete pdfpage;
 			QByteArray ba;
 			QBuffer buf(&ba);
@@ -438,8 +449,6 @@ void PDFComic::process()
 	}
 	delete pdfComic;
 	emit imagesLoaded();
-
-	moveToThread(QApplication::instance()->thread());
 }
 
 
@@ -448,14 +457,22 @@ Comic * FactoryComic::newComic(const QString & path)
 
 	QFileInfo fi(path);
 	if(fi.exists())
+	{
 		if(fi.isFile())
+		{
 			if(fi.suffix().compare("pdf",Qt::CaseInsensitive) == 0)
 				return new PDFComic();
 			else
 				return new FileComic();
+		}
 		else
+		{
 			if(fi.isDir())
 				return new FolderComic();
+			else
+				return NULL;
+		}
+	}
 	else
 		return NULL;
 

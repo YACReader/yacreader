@@ -137,13 +137,16 @@ void Viewer::createConnections()
 
 	//render
 	connect(render,SIGNAL(errorOpening()),this,SLOT(resetContent()));
+	connect(render,SIGNAL(errorOpening()),this,SLOT(showMessageErrorOpening()));
 	connect(render,SIGNAL(numPages(unsigned int)),goToFlow,SLOT(setNumSlides(unsigned int)));
 	connect(render,SIGNAL(numPages(unsigned int)),goToDialog,SLOT(setNumPages(unsigned int)));
 	connect(render,SIGNAL(imageLoaded(int,QByteArray)),goToFlow,SLOT(setImageReady(int,QByteArray)));
 	connect(render,SIGNAL(currentPageReady()),this,SLOT(updatePage()));
 	connect(render,SIGNAL(processingPage()),this,SLOT(setLoadingMessage()));
 	connect(render,SIGNAL(currentPageIsBookmark(bool)),this,SIGNAL(pageIsBookmark(bool)));
-	connect(render,SIGNAL(bookmarksLoaded(const Bookmarks &)),bd,SLOT(setBookmarks(const Bookmarks &)));
+	//connect(render,SIGNAL(bookmarksLoaded(Bookmarks)),this,SLOT(setBookmarks(Bookmarks)));
+
+	connect(render,SIGNAL(bookmarksUpdated()),this,SLOT(setBookmarks()));
 }
 
 void Viewer::open(QString pathFile)
@@ -157,6 +160,11 @@ void Viewer::open(QString pathFile)
 	//render->update();
 
 	verticalScrollBar()->setSliderPosition(verticalScrollBar()->minimum());
+}
+
+void Viewer::showMessageErrorOpening()
+{
+	QMessageBox::critical(NULL,tr("Not found"),tr("Comic not found"));
 }
 
 void Viewer::next()
@@ -723,4 +731,9 @@ void Viewer::updateFitToWidthRatio(float ratio)
 void Viewer::updateConfig(QSettings * settings)
 {
 	goToFlow->updateConfig(settings);
+}
+
+void Viewer::setBookmarks()
+{
+	bd->setBookmarks(*render->getBookmarks());
 }

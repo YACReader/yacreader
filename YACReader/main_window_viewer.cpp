@@ -81,9 +81,11 @@ void MainWindowViewer::setupUI()
 		getSiblingComics(fi.absolutePath(),fi.fileName());
 
 		setWindowTitle("YACReader - " + fi.fileName());
-
-		viewer->open(pathFile);
+		
 		enableActions();
+		
+		viewer->open(pathFile);
+		
 	}
 
 	versionChecker = new HttpVersionChecker();
@@ -410,8 +412,10 @@ void MainWindowViewer::openComicFromPath(QString pathFile)
 
 	setWindowTitle("YACReader - " + fi.fileName());
 
-	viewer->open(pathFile);
 	enableActions();
+
+	viewer->open(pathFile);
+	
 }
 
 void MainWindowViewer::openFolder()
@@ -432,8 +436,10 @@ void MainWindowViewer::openFolderFromPath(QString pathDir)
 
 	setWindowTitle("YACReader - " + fi.fileName());
 
-	viewer->open(pathDir);
 	enableActions();
+
+	viewer->open(pathDir);
+	
 }
 
 void MainWindowViewer::saveImage()

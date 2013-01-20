@@ -25,6 +25,7 @@ class Render;
 class GoToDialog;
 class YACReaderTranslator;
 class GoToFlowWidget;
+class Bookmarks;
 
 	class Viewer : public QScrollArea
 	{
@@ -73,6 +74,8 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		void updateBackgroundColor(const QColor & color);
 		void updateFitToWidthRatio(float ratio);
 		void updateConfig(QSettings * settings);
+		void showMessageErrorOpening();
+		void setBookmarks();
 
 	private:
 		bool information;
