@@ -67,6 +67,8 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 	//backgroundColor->setMinimumWidth(100);
 	colorSelection->addWidget(backgroundColor);
 	colorSelection->addWidget(selectBackgroundColorButton = new QPushButton(tr("Choose")));
+	colorSelection->setStretchFactor(backgroundColor,1);
+	colorSelection->setStretchFactor(selectBackgroundColorButton,0);
 	//colorSelection->addStretch();
 	connect(selectBackgroundColorButton, SIGNAL(clicked()), colorDialog, SLOT(show()));
 	colorBox->setLayout(colorSelection);
@@ -173,6 +175,10 @@ void OptionsDialog::updateColor(const QColor & color)
 	backgroundColor->setPalette(pal);
 	backgroundColor->setAutoFillBackground(true);
 	colorDialog->setCurrentColor(color);
+	
+	settings->setValue(BACKGROUND_COLOR,color);
+
+	emit(changedOptions());
 }
 
 void OptionsDialog::fitToWidthRatio(int value)
