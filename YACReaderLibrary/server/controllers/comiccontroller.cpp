@@ -10,6 +10,7 @@ extern LibraryWindow * mw;
 #include "comic_db.h"
 #include "comic.h"
 
+#include <typeinfo>
 
 ComicController::ComicController() {}
 

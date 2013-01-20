@@ -5,6 +5,8 @@
 #include <QByteArray>
 #include <QPixmap>
 
+#include <typeinfo>
+
 #define NL 2
 #define NR 2
 
