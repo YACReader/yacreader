@@ -731,6 +731,10 @@ void Viewer::updateFitToWidthRatio(float ratio)
 void Viewer::updateConfig(QSettings * settings)
 {
 	goToFlow->updateConfig(settings);
+
+	QPalette palette;
+	palette.setColor(backgroundRole(), Configuration::getConfiguration().getBackgroundColor());
+	setPalette(palette);
 }
 
 void Viewer::setBookmarks()
