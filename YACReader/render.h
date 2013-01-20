@@ -139,6 +139,7 @@ public slots:
 	void removeBookmark();
 	void save();
 	void reset();
+	Bookmarks * getBookmarks();
 
 signals:
 	void currentPageReady();
@@ -150,7 +151,8 @@ signals:
 	void numPages(unsigned int numPages);
 	void errorOpening();
 	void currentPageIsBookmark(bool);
-	void bookmarksLoaded(const Bookmarks &);
+
+	void bookmarksUpdated();
 
 private:
 	Comic * comic;

@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QMap>
-#include <QPixmap>
+#include <QImage>
 #include <QString>
 #include <QMap>
 #include <QDateTime>
@@ -49,22 +49,22 @@ class Bookmarks : public QObject
     protected:
     QString comicPath;
     //bookmarks setted by the user
-    QMap<int,QPixmap> bookmarks;
+    QMap<int,QImage> bookmarks;
     QList<int> latestBookmarks;
     //last page readed
     int lastPageIndex;
-    QPixmap lastPage;
+    QImage lastPage;
     BookmarksList list;
 	QDateTime added;
 
     public:
     Bookmarks();
-    void setLastPage(int index,const QPixmap & page);
-    void setBookmark(int index,const QPixmap & page);
+    void setLastPage(int index,const QImage & page);
+    void setBookmark(int index,const QImage & page);
     void removeBookmark(int index);
     QList<int> getBookmarkPages() const;
-    QPixmap getBookmarkPixmap(int page) const;
-    QPixmap getLastPagePixmap() const;
+    QImage getBookmarkPixmap(int page) const;
+    QImage getLastPagePixmap() const;
     int getLastPage() const;
     bool isBookmark(int page);
     bool imageLoaded(int page);

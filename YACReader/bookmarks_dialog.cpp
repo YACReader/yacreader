@@ -85,7 +85,7 @@ void BookmarksDialog::setBookmarks(const Bookmarks & bm)
     lastPage = bm.getLastPage();
     if (lastPage > 0)
     {
-		QPixmap p = bm.getLastPagePixmap();
+		QPixmap p = QPixmap::fromImage(bm.getLastPagePixmap());
 		if(p.isNull())
 		{
 			images.at(0)->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
@@ -109,7 +109,7 @@ void BookmarksDialog::setBookmarks(const Bookmarks & bm)
 	for(int i=0;i<s;i++)
 	{
 		pages.at(i+1)->setText(QString::number(l.at(i)+1));
-		QPixmap p = bm.getBookmarkPixmap(l.at(i));
+		QPixmap p = QPixmap::fromImage(bm.getBookmarkPixmap(l.at(i)));
 		if(p.isNull())
 		{
 			images.at(i+1)->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);

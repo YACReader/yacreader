@@ -13,12 +13,12 @@ Bookmarks::Bookmarks()
 {
 	list.load();
 }
-void Bookmarks::setLastPage(int index,const QPixmap & page)
+void Bookmarks::setLastPage(int index,const QImage & page)
 {
 	lastPageIndex = index;
 	lastPage = page;
 }
-void Bookmarks::setBookmark(int index,const QPixmap & page)
+void Bookmarks::setBookmark(int index,const QImage & page)
 {
 	if(!bookmarks.contains(index))
 	{
@@ -46,12 +46,12 @@ QList<int> Bookmarks::getBookmarkPages() const
     return bookmarks.keys();
 }
 
-QPixmap Bookmarks::getBookmarkPixmap(int page) const
+QImage Bookmarks::getBookmarkPixmap(int page) const
 {
     return bookmarks.value(page);
 }
 
-QPixmap Bookmarks::getLastPagePixmap() const
+QImage Bookmarks::getLastPagePixmap() const
 {
     return lastPage;
 }
@@ -82,7 +82,7 @@ void Bookmarks::newComic(const QString & path)
 	lastPageIndex = b.lastPage;
 	latestBookmarks = b.bookmarks;
 	for(int i=0;i<latestBookmarks.count();i++)
-		bookmarks.insert(latestBookmarks.at(i),QPixmap());
+		bookmarks.insert(latestBookmarks.at(i),QImage());
 	added = b.added;
 	
 }
@@ -91,7 +91,7 @@ void Bookmarks::clear()
 	bookmarks.clear();
 	latestBookmarks.clear();
     lastPageIndex=0;
-    lastPage = QPixmap();
+    lastPage = QImage();
 }
 
 void Bookmarks::save()
