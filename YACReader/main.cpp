@@ -43,7 +43,5 @@ int main(int argc, char * argv[])
 
 	Configuration::getConfiguration().save();
 	
-	_CrtDumpMemoryLeaks();
-	
 	return ret;
 }
