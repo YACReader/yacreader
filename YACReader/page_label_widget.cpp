@@ -90,5 +90,10 @@ void PageLabelWidget::setText(const QString & text)
 
 void PageLabelWidget::updatePosition()
 {
-	move(QPoint((((QWidget *) parent())->geometry().size().width()-this->width())/2,this->pos().y()));
+	QWidget * parent = dynamic_cast<QWidget *>(this->parent());
+	if(parent == 0)
+	{
+		return;
+	}
+	move(QPoint((parent->geometry().size().width()-this->width())/2,this->pos().y()));
 }
