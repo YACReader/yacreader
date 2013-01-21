@@ -14,7 +14,7 @@ PageLabelWidget::PageLabelWidget(QWidget * parent)
 	imgLabel = new QLabel(this);
 	QPixmap p(":/images/numPagesLabel.png");
 	imgLabel->resize(p.size());
-	imgLabel->setPixmap(QPixmap(":/images/numPagesLabel.png"));
+	imgLabel->setPixmap(p);
 	
 	textLabel = new QLabel(this);
 	textLabel->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);

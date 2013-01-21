@@ -40,6 +40,8 @@ private:
 	QPushButton * goToButton;
 	//Comic * comic;
 	QSize imageSize;
+	QWidget * bottomToolBar;
+	void resizeEvent(QResizeEvent * event);
 
 };
 

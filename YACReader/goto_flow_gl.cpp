@@ -23,10 +23,54 @@ GoToFlowGL::GoToFlowGL(QWidget* parent, FlowType flowType)
 	connect(flow,SIGNAL(centerIndexChanged(int)),this,SLOT(setPageNumber(int)));
 	connect(flow,SIGNAL(selected(unsigned int)),this,SLOT(goTo()));
 
-	QHBoxLayout * bottom = new QHBoxLayout(this);
+	QHBoxLayout * topBar = new QHBoxLayout();
+
+	QLabel * imgTopLeft = new QLabel();
+	QLabel * imgTopRight = new QLabel();
+	QLabel * imgTopMiddle = new QLabel();
+	QPixmap pL(":/images/imgTopLeft.png");
+	QPixmap pM(":/images/imgTopMiddle.png");
+	QPixmap pR(":/images/imgTopRight.png");
+	imgTopLeft->setPixmap(pL);
+	imgTopRight->setPixmap(pR);
+	imgTopMiddle->setPixmap(pM);
+	imgTopMiddle->setScaledContents(true);
+	//imgTop->setStyleSheet("background-image: url(:/images/numPagesLabel.png); width: 100%; height:100%; background-repeat: none; border: none"); 
+
+	topBar->addWidget(imgTopLeft);
+	topBar->addWidget(imgTopMiddle);
+	topBar->addWidget(imgTopRight);
+	topBar->setStretchFactor(imgTopLeft,0);
+	topBar->setStretchFactor(imgTopMiddle,1);
+	topBar->setStretchFactor(imgTopRight,0);
+
+	QHBoxLayout * bottomBar = new QHBoxLayout(this);
+
+	QLabel * imgBottomLeft = new QLabel(this);
+	QLabel * imgBottomRight = new QLabel(this);
+	QLabel * imgBottomMiddle = new QLabel(this);
+	QPixmap pBL(":/images/imgBottomLeft.png");
+	QPixmap pBM(":/images/imgBottomMiddle.png");
+	QPixmap pBR(":/images/imgBottomRight.png");
+	imgBottomLeft->setPixmap(pBL);
+	imgBottomRight->setPixmap(pBR);
+	imgBottomMiddle->setPixmap(pBM);
+	imgBottomMiddle->setScaledContents(true);
+	//imgTop->setStyleSheet("background-image: url(:/images/numPagesLabel.png); width: 100%; height:100%; background-repeat: none; border: none"); 
+
+	bottomBar->addWidget(imgBottomLeft);
+	bottomBar->addWidget(imgBottomMiddle);
+	bottomBar->addWidget(imgBottomRight);
+	bottomBar->setStretchFactor(imgBottomLeft,0);
+	bottomBar->setStretchFactor(imgBottomMiddle,1);
+	bottomBar->setStretchFactor(imgBottomRight,0);
+
+	bottomToolBar = new QWidget(this);
+	
+	QHBoxLayout * bottom = new QHBoxLayout(bottomToolBar);
 	bottom->addStretch();
-	bottom->addWidget(new QLabel(tr("Page : "),this));
-	bottom->addWidget(edit = new QLineEdit(this));
+	bottom->addWidget(new QLabel(tr("Page : "),bottomToolBar));
+	bottom->addWidget(edit = new QLineEdit(bottomToolBar));
 	v = new QIntValidator(this);
 	v->setBottom(1);
 	edit->setValidator(v);
@@ -34,27 +78,41 @@ GoToFlowGL::GoToFlowGL(QWidget* parent, FlowType flowType)
 	edit->setFixedWidth(40);
 	edit->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,QSizePolicy::Minimum));
 
-	centerButton = new QPushButton(this);
+	centerButton = new QPushButton(bottomToolBar);
 	centerButton->setIcon(QIcon(":/images/center.png"));
 	connect(centerButton,SIGNAL(clicked()),this,SLOT(centerSlide()));
 	bottom->addWidget(centerButton);
 
-	goToButton = new QPushButton(this);
+	goToButton = new QPushButton(bottomToolBar);
 	goToButton->setIcon(QIcon(":/images/goto.png"));
 	connect(goToButton,SIGNAL(clicked()),this,SLOT(goTo()));
 	bottom->addWidget(goToButton);
 
 	bottom->addStretch();
 
+
+   /* QGraphicsDropShadowEffect* effect = new QGraphicsDropShadowEffect( this );
+	effect->setBlurRadius(100);
+	effect->setOffset(0,3);
+	effect->setColor(Qt::black);
+    setGraphicsEffect( effect );*/
+    	
+
+	layout->addLayout(topBar);
 	layout->addWidget(flow);
-	layout->addLayout(bottom);
+	//layout->addLayout(bottom);
+	layout->addLayout(bottomBar);
 	layout->setStretchFactor(flow,1);
-	layout->setStretchFactor(bottom,0);
+	layout->setStretchFactor(bottomBar,0);
 	layout->setMargin(0);
 	layout->setSpacing(0);
 	setLayout(layout);
-	this->setAutoFillBackground(true);
+	//this->setAutoFillBackground(true);
 	resize(static_cast<int>(5*imageSize.width()),static_cast<int>(imageSize.height()*1.7));
+
+	//bottomToolBar->setAutoFillBackground(true);
+	bottomToolBar->setLayout(bottom);
+	bottomToolBar->setGeometry(QRect(0,0,400,40));
 
 	//install eventFilter
 	flow->installEventFilter(this);
@@ -229,4 +287,12 @@ void GoToFlowGL::updateConfig(QSettings * settings)
 /*	flow->setVisibility(settings->value("visibilityDistance").toInt());
 	flow->setLightStrenght(settings->value("lightStrength").toInt())*/;
 
+}
+
+void GoToFlowGL::resizeEvent(QResizeEvent * event)
+{
+
+	bottomToolBar->setGeometry(QRect(0,(event->size().height()-50)+((50-bottomToolBar->height())/2),event->size().width(),40));
+
+	GoToFlowWidget::resizeEvent(event);
 }
