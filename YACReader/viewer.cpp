@@ -9,6 +9,7 @@
 #include "goto_dialog.h"
 #include "translator.h"
 #include "onstart_flow_selection_dialog.h"
+#include "page_label_widget.h"
 
 #include <QWebView>
 #include <QFile>
@@ -56,12 +57,8 @@ drag(false)
 	content->setMouseTracking(true);
 	setMouseTracking(true);
 
-	informationLabel = new QLabel(this);
-	informationLabel->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
-	informationLabel->setAutoFillBackground(true);
-	informationLabel->setFont(QFont("courier new", 12));
+	informationLabel = new PageLabelWidget(this);
 	informationLabel->hide();
-	informationLabel->resize(100,25);
 
 	showCursor();
 
@@ -160,6 +157,8 @@ void Viewer::open(QString pathFile)
 	//render->update();
 
 	verticalScrollBar()->setSliderPosition(verticalScrollBar()->minimum());
+
+	informationLabel->setText("...");
 }
 
 void Viewer::showMessageErrorOpening()
@@ -171,12 +170,14 @@ void Viewer::next()
 {
 	direction = 1;
 	render->nextPage();
+	updateInformation();
 }
 
 void Viewer::prev()
 {
 	direction = -1;
 	render->previousPage();
+	updateInformation();
 }
 void Viewer::showGoToDialog()
 {
@@ -407,7 +408,7 @@ void Viewer::resizeEvent(QResizeEvent * event)
 {
 	updateContentSize();
 	goToFlow->move(QPoint((width()-goToFlow->width())/2,height()-goToFlow->height()));
-	informationLabel->move(QPoint((width()-informationLabel->width())/2,0));
+	informationLabel->updatePosition();
 	QScrollArea::resizeEvent(event);
 }
 
@@ -487,7 +488,7 @@ void Viewer::hideMagnifyingGlass()
 void Viewer::informationSwitch()
 {
 	information?informationLabel->hide():informationLabel->show();
-	informationLabel->move(QPoint((width()-informationLabel->width())/2,0));
+	//informationLabel->move(QPoint((width()-informationLabel->width())/2,0));
 	information=!information;
 	//TODO it shouldn't be neccesary
 	informationLabel->adjustSize();

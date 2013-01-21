@@ -45,13 +45,14 @@ HEADERS += comic.h \
 	translator.h \
 	goto_flow_gl.h \
 	goto_flow_widget.h \
+	page_label_widget.h \
 	../common/pictureflow.h \
     ../common/custom_widgets.h \
     ../common/check_new_version.h \
 	../common/qnaturalsorting.h \
 	../common/yacreader_flow_gl.h \
 	../common/yacreader_global.h \
-	../common/onstart_flow_selection_dialog.h
+	../common/onstart_flow_selection_dialog.h 
 	
 SOURCES += comic.cpp \
     configuration.cpp \
@@ -69,6 +70,7 @@ SOURCES += comic.cpp \
 	translator.cpp \
 	goto_flow_gl.cpp \
 	goto_flow_widget.cpp \
+	page_label_widget.cpp \
     ../common/pictureflow.cpp \
     ../common/custom_widgets.cpp \
     ../common/check_new_version.cpp \
