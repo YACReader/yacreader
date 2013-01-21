@@ -75,20 +75,30 @@ GoToFlowGL::GoToFlowGL(QWidget* parent, FlowType flowType)
 	v->setBottom(1);
 	edit->setValidator(v);
 	edit->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-	edit->setFixedWidth(40);
-	edit->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,QSizePolicy::Minimum));
+	edit->setStyleSheet("background-image: url(:/images/imgEdit.png); width: 100%; height:100%; background-repeat: none; border: none; padding: 3px; color: white;"); 
+	QPixmap p(":/images/imgEdit.png");
+	edit->setFixedSize(54,50);
+	//edit->resize(QSize(54,50));
+	edit->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed));
+	edit->setAutoFillBackground(false);
 
 	centerButton = new QPushButton(bottomToolBar);
-	centerButton->setIcon(QIcon(":/images/center.png"));
+	//centerButton->setIcon(QIcon(":/images/center.png"));
+	centerButton->setStyleSheet("background-image: url(:/images/imgCenterSlide.png); width: 100%; height:100%; background-repeat: none; border: none;"); 
+	centerButton->setFixedSize(26,50);
 	connect(centerButton,SIGNAL(clicked()),this,SLOT(centerSlide()));
 	bottom->addWidget(centerButton);
 
 	goToButton = new QPushButton(bottomToolBar);
-	goToButton->setIcon(QIcon(":/images/goto.png"));
+	//goToButton->setIcon(QIcon(":/images/goto.png"));
+	goToButton->setStyleSheet("background-image: url(:/images/imgGoToSlide.png); width: 100%; height:100%; background-repeat: none; border: none;"); 
+	goToButton->setFixedSize(32,50);
 	connect(goToButton,SIGNAL(clicked()),this,SLOT(goTo()));
 	bottom->addWidget(goToButton);
 
 	bottom->addStretch();
+	bottom->setMargin(0);
+	bottom->setSpacing(0);
 
 
    /* QGraphicsDropShadowEffect* effect = new QGraphicsDropShadowEffect( this );
@@ -112,7 +122,7 @@ GoToFlowGL::GoToFlowGL(QWidget* parent, FlowType flowType)
 
 	//bottomToolBar->setAutoFillBackground(true);
 	bottomToolBar->setLayout(bottom);
-	bottomToolBar->setGeometry(QRect(0,0,400,40));
+	bottomToolBar->setGeometry(QRect(0,0,400,50));
 
 	//install eventFilter
 	flow->installEventFilter(this);
@@ -292,7 +302,7 @@ void GoToFlowGL::updateConfig(QSettings * settings)
 void GoToFlowGL::resizeEvent(QResizeEvent * event)
 {
 
-	bottomToolBar->setGeometry(QRect(0,(event->size().height()-50)+((50-bottomToolBar->height())/2),event->size().width(),40));
+	bottomToolBar->setGeometry(QRect(0,(event->size().height()-50)+((50-bottomToolBar->height())/2),event->size().width(),50));
 
 	GoToFlowWidget::resizeEvent(event);
 }
