@@ -42,6 +42,9 @@
 	<file>../images/imgBottomLeft.png</file>
 	<file>../images/imgBottomMiddle.png</file>
 	<file>../images/imgBottomRight.png</file>
+	<file>../images/imgEdit.png</file>
+	<file>../images/imgCenterSlide.png</file>
+	<file>../images/imgGoToSlide.png</file>
 	
 	<file>../images/helpImages/open.png</file>
 	<file>../images/helpImages/openFolder.png</file>
