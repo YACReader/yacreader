@@ -26,6 +26,7 @@ class GoToDialog;
 class YACReaderTranslator;
 class GoToFlowWidget;
 class Bookmarks;
+class PageLabelWidget; 
 
 	class Viewer : public QScrollArea
 	{
@@ -80,7 +81,7 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 	private:
 		bool information;
 		bool doublePage;
-		QLabel * informationLabel;
+		PageLabelWidget * informationLabel;
 		//QTimer * scroller;
 		QPropertyAnimation * verticalScroller;
 		int posByStep;
