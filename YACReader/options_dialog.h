@@ -37,15 +37,25 @@ Q_OBJECT
 
 		QColorDialog * colorDialog;
 
+		QSlider * brightnessS;
+
+		QSlider * contrastS;
+
+		QSlider * gammaS;
+
 	public slots:
 		void saveOptions();
 		void restoreOptions(QSettings * settings);
 		void findFolder();
 		void updateColor(const QColor & color);
 		void fitToWidthRatio(int value);
+		void brightnessChanged(int value);
+		void contrastChanged(int value);
+		void gammaChanged(int value);
 
 signals:
 		void changedOptions();
+		void changedImageOptions();
 		void fitToWidthRatioChanged(float ratio);
 
 };
