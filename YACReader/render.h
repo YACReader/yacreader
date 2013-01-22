@@ -50,7 +50,15 @@ private:
 
 class ContrastFilter : public ImageFilter {
 public:
-    ContrastFilter();
+    ContrastFilter(int l=150);
+    virtual QImage setFilter(const QImage & image);
+private:
+    int level;
+};
+
+class GammaFilter : public ImageFilter {
+public:
+    GammaFilter(int l=150);
     virtual QImage setFilter(const QImage & image);
 private:
     int level;
