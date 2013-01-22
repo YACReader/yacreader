@@ -45,6 +45,8 @@
 	<file>../images/imgEdit.png</file>
 	<file>../images/imgCenterSlide.png</file>
 	<file>../images/imgGoToSlide.png</file>
+	<file>../images/imgCenterSlidePressed.png</file>
+	<file>../images/imgGoToSlidePressed.png</file>
 	
 	<file>../images/helpImages/open.png</file>
 	<file>../images/helpImages/openFolder.png</file>

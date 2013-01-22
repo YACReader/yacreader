@@ -82,16 +82,22 @@ GoToFlowGL::GoToFlowGL(QWidget* parent, FlowType flowType)
 	edit->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed));
 	edit->setAutoFillBackground(false);
 
+	QString centerButtonCSS = "QPushButton {background-image: url(:/images/imgCenterSlide.png); width: 100%; height:100%; background-repeat: none; border: none;} "
+		                      "QPushButton:focus { border: none; outline: none;}"
+		                      "QPushButton:pressed  {background-image: url(:/images/imgCenterSlidePressed.png); width: 100%; height:100%; background-repeat: none; border: none;} ";
 	centerButton = new QPushButton(bottomToolBar);
 	//centerButton->setIcon(QIcon(":/images/center.png"));
-	centerButton->setStyleSheet("background-image: url(:/images/imgCenterSlide.png); width: 100%; height:100%; background-repeat: none; border: none;"); 
+	centerButton->setStyleSheet(centerButtonCSS); 
 	centerButton->setFixedSize(26,50);
 	connect(centerButton,SIGNAL(clicked()),this,SLOT(centerSlide()));
 	bottom->addWidget(centerButton);
 
+	QString goToButtonCSS = "QPushButton {background-image: url(:/images/imgGoToSlide.png); width: 100%; height:100%; background-repeat: none; border: none;} "
+		                    "QPushButton:focus { border: none; outline: none;}"
+		                    "QPushButton:pressed  {background-image: url(:/images/imgGoToSlidePressed.png); width: 100%; height:100%; background-repeat: none; border: none;} ";
 	goToButton = new QPushButton(bottomToolBar);
 	//goToButton->setIcon(QIcon(":/images/goto.png"));
-	goToButton->setStyleSheet("background-image: url(:/images/imgGoToSlide.png); width: 100%; height:100%; background-repeat: none; border: none;"); 
+	goToButton->setStyleSheet(goToButtonCSS); 
 	goToButton->setFixedSize(32,50);
 	connect(goToButton,SIGNAL(clicked()),this,SLOT(goTo()));
 	bottom->addWidget(goToButton);
