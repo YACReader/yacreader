@@ -736,6 +736,13 @@ void Viewer::updateConfig(QSettings * settings)
 	QPalette palette;
 	palette.setColor(backgroundRole(), Configuration::getConfiguration().getBackgroundColor());
 	setPalette(palette);
+
+	
+}
+
+void Viewer::updateImageOptions()
+{
+	render->reload();
 }
 
 void Viewer::setBookmarks()

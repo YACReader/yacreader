@@ -10,6 +10,8 @@
 #define NL 2
 #define NR 2
 
+#include "yacreader_global.h"
+
 template<class T>
 inline const T& kClamp( const T& x, const T& low, const T& high )
 {
@@ -238,8 +240,8 @@ QImage BrightnessFilter::setFilter(const QImage & image)
 		}
 	}
 	return result;*/
-
-	return changeBrightness(image,50);
+	QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+	return changeBrightness(image,settings.value(BRIGHTNESS,0).toInt());
 }
 
 //-----------------------------------------------------------------------------
@@ -309,8 +311,8 @@ QImage ContrastFilter::setFilter(const QImage & image)
 	}
 
 	return result;*/
-
-	return changeContrast(image,level);
+	QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+	return changeContrast(image,settings.value(CONTRAST,100).toInt());
 }
 //-----------------------------------------------------------------------------
 // ContrastFilter
@@ -322,7 +324,8 @@ GammaFilter::GammaFilter(int l)
 
 QImage GammaFilter::setFilter(const QImage & image)
 {
-	return changeGamma(image,level);
+	QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+	return changeGamma(image,settings.value(GAMMA,100).toInt());
 }
 
 //-----------------------------------------------------------------------------
@@ -438,7 +441,9 @@ Render::Render()
 		pageRenders.push_back(0);
 	}
 
-	//filters.push_back(new GammaFilter(250));
+	filters.push_back(new BrightnessFilter());
+	filters.push_back(new ContrastFilter());
+	filters.push_back(new GammaFilter());
 }
 
 //Este método se encarga de forzar el renderizado de las páginas.
@@ -822,7 +827,7 @@ void Render::fillBuffer()
 			pageRenders[currentPageBufferedIndex+i]==0 &&
 			pagesReady[currentIndex+1]) //preload next pages
 		{
-			pageRenders[currentPageBufferedIndex+i] = new PageRender(currentIndex+i,comic->getRawData()->at(currentIndex+i),buffer[currentPageBufferedIndex+i],imageRotation);
+			pageRenders[currentPageBufferedIndex+i] = new PageRender(currentIndex+i,comic->getRawData()->at(currentIndex+i),buffer[currentPageBufferedIndex+i],imageRotation,filters);
 			connect(pageRenders[currentPageBufferedIndex],SIGNAL(pageReady(int)),this,SLOT(prepareAvailablePage(int)));
 			pageRenders[currentPageBufferedIndex+i]->start();
 		}
@@ -833,7 +838,7 @@ void Render::fillBuffer()
 			pageRenders[currentPageBufferedIndex-i]==0 &&
 			pagesReady[currentIndex-1]) //preload previous pages
 		{
-			pageRenders[currentPageBufferedIndex-i] = new PageRender(currentIndex-i,comic->getRawData()->at(currentIndex-i),buffer[currentPageBufferedIndex-i],imageRotation);
+			pageRenders[currentPageBufferedIndex-i] = new PageRender(currentIndex-i,comic->getRawData()->at(currentIndex-i),buffer[currentPageBufferedIndex-i],imageRotation,filters);
 			connect(pageRenders[currentPageBufferedIndex],SIGNAL(pageReady(int)),this,SLOT(prepareAvailablePage(int)));
 			pageRenders[currentPageBufferedIndex-i]->start();
 		}
@@ -851,9 +856,9 @@ void Render::fillBufferDoublePage()
 			(pagesReady[currentIndex+2*i] && pagesReady[qMin(currentIndex+(2*i)+1,(int)comic->numPages()-1)])) //preload next pages
 		{
 			if(currentIndex+(2*i)+1 > comic->numPages()-1)
-				pageRenders[currentPageBufferedIndex+i] = new DoublePageRender(currentIndex+2*i,comic->getRawData()->at(currentIndex+(2*i)),QByteArray(),buffer[currentPageBufferedIndex+i],imageRotation);
+				pageRenders[currentPageBufferedIndex+i] = new DoublePageRender(currentIndex+2*i,comic->getRawData()->at(currentIndex+(2*i)),QByteArray(),buffer[currentPageBufferedIndex+i],imageRotation,filters);
 			else
-				pageRenders[currentPageBufferedIndex+i] = new DoublePageRender(currentIndex+2*i,comic->getRawData()->at(currentIndex+(2*i)),comic->getRawData()->at(currentIndex+(2*i)+1),buffer[currentPageBufferedIndex+i],imageRotation);
+				pageRenders[currentPageBufferedIndex+i] = new DoublePageRender(currentIndex+2*i,comic->getRawData()->at(currentIndex+(2*i)),comic->getRawData()->at(currentIndex+(2*i)+1),buffer[currentPageBufferedIndex+i],imageRotation,filters);
 			connect(pageRenders[currentPageBufferedIndex],SIGNAL(pageReady(int)),this,SLOT(prepareAvailablePage(int)));
 			pageRenders[currentPageBufferedIndex+i]->start();
 		}
@@ -865,9 +870,9 @@ void Render::fillBufferDoublePage()
 			(pagesReady[qMax(currentIndex-2*i,0)] && pagesReady[qMin(currentIndex-(2*i)+1,(int)comic->numPages()-1)])) //preload previous pages
 		{
 			if(currentIndex-2*i == -1)
-				pageRenders[currentPageBufferedIndex-i] = new DoublePageRender(0,QByteArray(),comic->getRawData()->at(0),buffer[currentPageBufferedIndex-i],imageRotation);
+				pageRenders[currentPageBufferedIndex-i] = new DoublePageRender(0,QByteArray(),comic->getRawData()->at(0),buffer[currentPageBufferedIndex-i],imageRotation,filters);
 			else
-				pageRenders[currentPageBufferedIndex-i] = new DoublePageRender(currentIndex-2*i,comic->getRawData()->at(currentIndex-(2*i)),comic->getRawData()->at(currentIndex-(2*i)+1),buffer[currentPageBufferedIndex-i],imageRotation);
+				pageRenders[currentPageBufferedIndex-i] = new DoublePageRender(currentIndex-2*i,comic->getRawData()->at(currentIndex-(2*i)),comic->getRawData()->at(currentIndex-(2*i)+1),buffer[currentPageBufferedIndex-i],imageRotation,filters);
 			connect(pageRenders[currentPageBufferedIndex],SIGNAL(pageReady(int)),this,SLOT(prepareAvailablePage(int)));
 			pageRenders[currentPageBufferedIndex-i]->start();
 		}
@@ -932,4 +937,13 @@ void Render::save()
 Bookmarks * Render::getBookmarks()
 {
 	return comic->bm;
+}
+
+void Render::reload()
+{
+	if(comic)
+	{
+		invalidate();
+		update();
+	}
 }

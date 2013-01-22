@@ -18,8 +18,10 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 
 	QWidget * pageGeneral = new QWidget();
 	QWidget * pageFlow = new QWidget();
+	QWidget * pageImage = new QWidget();
 	QVBoxLayout * layoutGeneral = new QVBoxLayout();
-	QVBoxLayout * layoutFlow = new QVBoxLayout();;
+	QVBoxLayout * layoutFlow = new QVBoxLayout();
+	QVBoxLayout * layoutImage = new QVBoxLayout();
 
 	QGroupBox *slideSizeBox = new QGroupBox(tr("\"Go to flow\" size"));
 	//slideSizeLabel = new QLabel(,this);
@@ -73,6 +75,31 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 	connect(selectBackgroundColorButton, SIGNAL(clicked()), colorDialog, SLOT(show()));
 	colorBox->setLayout(colorSelection);
 
+	brightnessS = new QSlider();
+	brightnessS->setMinimum(0);
+	brightnessS->setMaximum(100);
+	brightnessS->setPageStep(1);
+	brightnessS->setOrientation(Qt::Horizontal);
+	brightnessS->setTracking(false);
+	connect(brightnessS,SIGNAL(valueChanged(int)),this,SLOT(brightnessChanged(int)));
+	
+	contrastS = new QSlider();
+	contrastS->setMinimum(0);
+	contrastS->setMaximum(250);
+	contrastS->setPageStep(1);
+	contrastS->setOrientation(Qt::Horizontal);
+	contrastS->setTracking(false);
+	connect(contrastS,SIGNAL(valueChanged(int)),this,SLOT(contrastChanged(int)));
+
+	gammaS = new QSlider();
+	gammaS->setMinimum(0);
+	gammaS->setMaximum(250);
+	gammaS->setPageStep(1);
+	gammaS->setOrientation(Qt::Horizontal);
+	gammaS->setTracking(false);
+	connect(gammaS,SIGNAL(valueChanged(int)),this,SLOT(gammaChanged(int)));
+	//connect(brightnessS,SIGNAL(valueChanged(int)),this,SIGNAL(changedOptions()));
+
 	QHBoxLayout * buttons = new QHBoxLayout();
 	buttons->addStretch();
 	buttons->addWidget(new QLabel(tr("Restart is needed")));
@@ -88,12 +115,18 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 	layoutFlow->addWidget(gl);
 	layoutFlow->addWidget(useGL);
 	layoutFlow->addStretch();
+	layoutImage->addWidget(brightnessS);
+	layoutImage->addWidget(contrastS);
+	layoutImage->addWidget(gammaS);
+	layoutImage->addStretch();
 
 	pageGeneral->setLayout(layoutGeneral);
 	pageFlow->setLayout(layoutFlow);
+	pageImage->setLayout(layoutImage);
 
 	tabWidget->addTab(pageGeneral,tr("General"));
 	tabWidget->addTab(pageFlow,tr("Page Flow"));
+	tabWidget->addTab(pageImage,tr("Immage adjustment"));
 
 	layout->addWidget(tabWidget);
 	layout->addLayout(buttons);
@@ -165,6 +198,10 @@ void OptionsDialog::restoreOptions(QSettings * settings)
 
 	updateColor(settings->value(BACKGROUND_COLOR).value<QColor>());
 	fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
+
+	brightnessS->setValue(settings->value(BRIGHTNESS,0).toInt());
+	contrastS->setValue(settings->value(CONTRAST,100).toInt());
+	gammaS->setValue(settings->value(GAMMA,100).toInt());
 }
 
 
@@ -185,4 +222,25 @@ void OptionsDialog::fitToWidthRatio(int value)
 {
 	Configuration::getConfiguration().setFitToWidthRatio(value/100.0);
 	emit(fitToWidthRatioChanged(value/100.0));
+}
+
+void OptionsDialog::brightnessChanged(int value)
+{
+	QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+	settings.setValue(BRIGHTNESS,value);
+	emit(changedImageOptions());
+}
+
+void OptionsDialog::contrastChanged(int value)
+{
+	QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+	settings.setValue(CONTRAST,value);
+	emit(changedImageOptions());
+}
+
+void OptionsDialog::gammaChanged(int value)
+{
+	QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+	settings.setValue(GAMMA,value);
+	emit(changedImageOptions());
 }

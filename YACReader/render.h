@@ -147,6 +147,7 @@ public slots:
 	void removeBookmark();
 	void save();
 	void reset();
+	void reload();
 	Bookmarks * getBookmarks();
 
 signals:

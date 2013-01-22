@@ -63,6 +63,7 @@ void MainWindowViewer::setupUI()
 	connect(optionsDialog,SIGNAL(accepted()),viewer,SLOT(updateOptions()));
 	connect(optionsDialog,SIGNAL(fitToWidthRatioChanged(float)),viewer,SLOT(updateFitToWidthRatio(float)));
 	connect(optionsDialog, SIGNAL(optionsChanged()),this,SLOT(reloadOptions()));
+	connect(optionsDialog,SIGNAL(changedImageOptions()),viewer,SLOT(updateImageOptions()));
 
 	optionsDialog->restoreOptions(settings);
 	shortcutsDialog = new ShortcutsDialog(this);

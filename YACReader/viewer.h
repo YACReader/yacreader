@@ -77,6 +77,7 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		void updateConfig(QSettings * settings);
 		void showMessageErrorOpening();
 		void setBookmarks();
+		void updateImageOptions();
 
 	private:
 		bool information;
