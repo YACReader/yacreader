@@ -116,6 +116,9 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 	layoutImage->addWidget(brightnessS,0,1);
 	layoutImage->addWidget(contrastS,1,1);
 	layoutImage->addWidget(gammaS,2,1);
+	QPushButton * pushButton = new QPushButton(tr("Reset"));
+	connect(pushButton,SIGNAL(pressed()),this,SLOT(resetImageConfig()));
+	layoutImage->addWidget(pushButton,3,0);
 	layoutImage->setColumnStretch(1,1);
 
 
@@ -247,5 +250,17 @@ void OptionsDialog::gammaChanged(int value)
 {
 	QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
 	settings.setValue(GAMMA,value);
+	emit(changedImageOptions());
+}
+
+void OptionsDialog::resetImageConfig()
+{
+	brightnessS->setValue(0);
+	contrastS->setValue(100);
+	gammaS->setValue(100);
+	QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+	settings.setValue(BRIGHTNESS,0);
+	settings.setValue(CONTRAST,100);
+	settings.setValue(GAMMA,100);
 	emit(changedImageOptions());
 }
