@@ -21,7 +21,8 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 	QWidget * pageImage = new QWidget();
 	QVBoxLayout * layoutGeneral = new QVBoxLayout();
 	QVBoxLayout * layoutFlow = new QVBoxLayout();
-	QVBoxLayout * layoutImage = new QVBoxLayout();
+	QVBoxLayout * layoutImageV = new QVBoxLayout();
+	QGridLayout * layoutImage = new QGridLayout();
 
 	QGroupBox *slideSizeBox = new QGroupBox(tr("\"Go to flow\" size"));
 	//slideSizeLabel = new QLabel(,this);
@@ -75,27 +76,21 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 	connect(selectBackgroundColorButton, SIGNAL(clicked()), colorDialog, SLOT(show()));
 	colorBox->setLayout(colorSelection);
 
-	brightnessS = new QSlider();
-	brightnessS->setMinimum(0);
-	brightnessS->setMaximum(100);
-	brightnessS->setPageStep(1);
-	brightnessS->setOrientation(Qt::Horizontal);
+	brightnessS = new YACReaderSpinSliderWidget(this,true);
+	brightnessS->setRange(0,100);
+	//brightnessS->setText(tr("Brightness"));
 	brightnessS->setTracking(false);
 	connect(brightnessS,SIGNAL(valueChanged(int)),this,SLOT(brightnessChanged(int)));
 	
-	contrastS = new QSlider();
-	contrastS->setMinimum(0);
-	contrastS->setMaximum(250);
-	contrastS->setPageStep(1);
-	contrastS->setOrientation(Qt::Horizontal);
+	contrastS = new YACReaderSpinSliderWidget(this,true);
+	contrastS->setRange(0,250);
+	//contrastS->setText(tr("Contrast"));
 	contrastS->setTracking(false);
 	connect(contrastS,SIGNAL(valueChanged(int)),this,SLOT(contrastChanged(int)));
 
-	gammaS = new QSlider();
-	gammaS->setMinimum(0);
-	gammaS->setMaximum(250);
-	gammaS->setPageStep(1);
-	gammaS->setOrientation(Qt::Horizontal);
+	gammaS = new YACReaderSpinSliderWidget(this,true);
+	gammaS->setRange(0,250);
+	//gammaS->setText(tr("Gamma"));
 	gammaS->setTracking(false);
 	connect(gammaS,SIGNAL(valueChanged(int)),this,SLOT(gammaChanged(int)));
 	//connect(brightnessS,SIGNAL(valueChanged(int)),this,SIGNAL(changedOptions()));
@@ -115,18 +110,28 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 	layoutFlow->addWidget(gl);
 	layoutFlow->addWidget(useGL);
 	layoutFlow->addStretch();
-	layoutImage->addWidget(brightnessS);
-	layoutImage->addWidget(contrastS);
-	layoutImage->addWidget(gammaS);
-	layoutImage->addStretch();
+	layoutImage->addWidget(new QLabel(tr("Brightness")),0,0);
+	layoutImage->addWidget(new QLabel(tr("Contrast")),1,0);
+	layoutImage->addWidget(new QLabel(tr("Gamma")),2,0);
+	layoutImage->addWidget(brightnessS,0,1);
+	layoutImage->addWidget(contrastS,1,1);
+	layoutImage->addWidget(gammaS,2,1);
+	layoutImage->setColumnStretch(1,1);
+
+
+	QGroupBox *imageBox = new QGroupBox(tr("Image options"));
+	imageBox->setLayout(layoutImage);
+	layoutImageV->addWidget(imageBox);
+	layoutImageV->addStretch();
+
 
 	pageGeneral->setLayout(layoutGeneral);
 	pageFlow->setLayout(layoutFlow);
-	pageImage->setLayout(layoutImage);
+	pageImage->setLayout(layoutImageV);
 
 	tabWidget->addTab(pageGeneral,tr("General"));
 	tabWidget->addTab(pageFlow,tr("Page Flow"));
-	tabWidget->addTab(pageImage,tr("Immage adjustment"));
+	tabWidget->addTab(pageImage,tr("Image adjustment"));
 
 	layout->addWidget(tabWidget);
 	layout->addLayout(buttons);
