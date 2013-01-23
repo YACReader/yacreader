@@ -52,6 +52,7 @@ Q_OBJECT
 		void brightnessChanged(int value);
 		void contrastChanged(int value);
 		void gammaChanged(int value);
+		void resetImageConfig();
 
 signals:
 		void changedOptions();
