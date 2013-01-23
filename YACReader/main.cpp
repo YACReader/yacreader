@@ -36,8 +36,8 @@ int main(int argc, char * argv[])
 	app.installTranslator(&translator);
 	app.setApplicationName("YACReader");
 
-	MainWindowViewer mwv;
-	mwv.show();
+	MainWindowViewer * mwv = new MainWindowViewer();
+	mwv->show();
 
 	int ret = app.exec();
 

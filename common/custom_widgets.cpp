@@ -512,16 +512,23 @@ void YACReaderFieldPlainTextEdit::setDisabled(bool disabled)
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
-YACReaderSpinSliderWidget::YACReaderSpinSliderWidget(QWidget * parent)
+YACReaderSpinSliderWidget::YACReaderSpinSliderWidget(QWidget * parent,bool strechableSlider)
 	:QWidget(parent)
 {
 	QHBoxLayout * layout = new QHBoxLayout;
 	layout->addWidget(label = new QLabel(this),1);
-	layout->addStretch();
+	if(!strechableSlider)
+	  layout->addStretch();
 	spinBox = new QSpinBox(this);
 	layout->addWidget(spinBox);
 	slider = new QSlider(Qt::Horizontal,this);
 	layout->addWidget(slider);
+	if(strechableSlider)
+	{
+		layout->setStretchFactor(slider,0.85);
+		layout->setStretchFactor(spinBox,0);
+		layout->setStretchFactor(label,0.15);
+	}
 
 	connect(spinBox, SIGNAL(valueChanged(int)), slider,  SLOT(setValue(int)));
 	connect(slider,  SIGNAL(valueChanged(int)), spinBox, SLOT(setValue(int)));
@@ -562,6 +569,11 @@ int YACReaderSpinSliderWidget::getValue()
 QSize YACReaderSpinSliderWidget::minimumSizeHint() const
 {
 	return QSize(270, 25);
+}
+
+void YACReaderSpinSliderWidget::setTracking(bool b)
+{
+	slider->setTracking(b);
 }
 
 //////////////////////////////////////////////////////////////////////////

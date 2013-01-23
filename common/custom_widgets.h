@@ -249,13 +249,14 @@ private:
 	QSpinBox * spinBox;
 	QSlider * slider;
 public:
-	YACReaderSpinSliderWidget(QWidget * parent = 0);
+	YACReaderSpinSliderWidget(QWidget * parent = 0,bool strechableSlider = false);
 public slots:
 	void setRange(int lowValue, int topValue, int step=1);
 	void setValue(int value);
 	void setText(const QString & text);
 	int getValue();
 	QSize minimumSizeHint() const;
+	void setTracking(bool b);
 signals:
 	void valueChanged(int);
 

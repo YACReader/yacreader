@@ -37,11 +37,11 @@ Q_OBJECT
 
 		QColorDialog * colorDialog;
 
-		QSlider * brightnessS;
+		YACReaderSpinSliderWidget  * brightnessS;
 
-		QSlider * contrastS;
+		YACReaderSpinSliderWidget * contrastS;
 
-		QSlider * gammaS;
+		YACReaderSpinSliderWidget * gammaS;
 
 	public slots:
 		void saveOptions();
