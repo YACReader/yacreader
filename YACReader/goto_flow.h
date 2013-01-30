@@ -24,14 +24,9 @@ class GoToFlow : public GoToFlowWidget
 public:
 	GoToFlow(QWidget* parent = 0,FlowType flowType = CoverFlowLike);
 	bool ready; //comic is ready for read.
-	void keyPressEvent(QKeyEvent* event);
 	bool eventFilter(QObject *target, QEvent *event);
 private:
 	YACReaderFlow * flow;
-	QLineEdit * edit;
-	QIntValidator * v;
-	QPushButton * centerButton;
-	QPushButton * goToButton;
 	//Comic * comic;
 	QSize imageSize;
 
@@ -49,9 +44,6 @@ private:
 		void updateImageData();
 
 		public slots:
-			void goTo();
-			void setPageNumber(int page);
-			void centerSlide();
 			void centerSlide(int slide);
 			void reset();
 			void setNumSlides(unsigned int slides);

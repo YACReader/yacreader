@@ -46,6 +46,8 @@ HEADERS += comic.h \
 	goto_flow_gl.h \
 	goto_flow_widget.h \
 	page_label_widget.h \
+	goto_flow_toolbar.h \
+	goto_flow_decorationbar.h \
 	../common/pictureflow.h \
     ../common/custom_widgets.h \
     ../common/check_new_version.h \
@@ -71,6 +73,8 @@ SOURCES += comic.cpp \
 	goto_flow_gl.cpp \
 	goto_flow_widget.cpp \
 	page_label_widget.cpp \
+	goto_flow_toolbar.cpp \
+	goto_flow_decorationbar.cpp \
     ../common/pictureflow.cpp \
     ../common/custom_widgets.cpp \
     ../common/check_new_version.cpp \

@@ -1178,12 +1178,22 @@ void PictureFlow::showNext()
     d->animator->target = qMin(center + 2, slideCount()-1);
 }
 
-void PictureFlow::showSlide(int index)
+void PictureFlow::showSlide(unsigned int index)
 {
-  index = qMax(index, 0);
-  index = qMin(slideCount()-1, index);
+  index = qMax<unsigned int>(index, 0);
+  index = qMin<unsigned int>(slideCount()-1, index);
   if(index == d->state->centerSlide.slideIndex)
     return;
+
+  	int distance = centerIndex()-index;
+
+	if(abs(distance)>10)
+	{
+		if(distance<0)
+			setCenterIndex(centerIndex()+(-distance)-10);
+		else
+			setCenterIndex(centerIndex()-distance+10);
+	}
 
   d->animator->start(index);
 }

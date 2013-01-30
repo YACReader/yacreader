@@ -884,7 +884,7 @@ void YACReaderFlowGL::clear()
 	reset();
 }
 
-void YACReaderFlowGL::setCenterIndex(int index)
+void YACReaderFlowGL::setCenterIndex(unsigned int index)
 {
 	setCurrentIndex(index);
 }

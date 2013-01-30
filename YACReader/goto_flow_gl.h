@@ -17,16 +17,13 @@ class GoToFlowGL : public GoToFlowWidget
 public:
 	GoToFlowGL(QWidget* parent = 0,FlowType flowType = CoverFlowLike);
 	void reset();
-	void centerSlide();
 	void centerSlide(int slide);
-	void setPageNumber(int page);
 	void setFlowType(FlowType flowType);
 	void setNumSlides(unsigned int slides);
 	void setImageReady(int index,const QByteArray & image);
 	void updateSize();
-	void goTo();
 	bool eventFilter(QObject *target, QEvent *event);
-	void keyPressEvent(QKeyEvent* event);
+
 	void updateConfig(QSettings * settings);
 
 signals:
@@ -34,15 +31,9 @@ signals:
 private:
 	YACReaderPageFlowGL * flow;
 	
-	QLineEdit * edit;
-	QIntValidator * v;
-	QPushButton * centerButton;
-	QPushButton * goToButton;
+	
 	//Comic * comic;
 	QSize imageSize;
-	QWidget * bottomToolBar;
-	void resizeEvent(QResizeEvent * event);
-
 };
 
 #endif

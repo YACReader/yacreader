@@ -186,7 +186,7 @@ void Viewer::showGoToDialog()
 void Viewer::goTo(unsigned int page)
 {
 	direction = 1; //in "go to" direction is always fordward
-	render->goTo(page-1);
+	render->goTo(page);
 }
 
 void Viewer::updatePage()

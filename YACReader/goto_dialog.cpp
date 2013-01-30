@@ -62,7 +62,7 @@ void GoToDialog::goTo()
 	pageNumber->clear();
 
 	if(page >= 1)
-		emit(goToPage(page));	
+		emit(goToPage(page-1));	
 
 	close();
 
