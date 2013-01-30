@@ -166,7 +166,7 @@ public slots:
   /*!
     Go to specified slide using animation effect.
   */
-  void showSlide(int index);
+  void showSlide(unsigned int index);
 
   /*!
     Rerender the widget. Normally this function will be automatically invoked

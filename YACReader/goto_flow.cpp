@@ -11,6 +11,9 @@
 #include <QMutex>
 #include <QCoreApplication>
 
+#include "goto_flow_toolbar.h"
+#include "goto_flow_decorationbar.h"
+
 /*#define WIDTH 126
 #define HEIGHT 200*/
 
@@ -26,87 +29,36 @@ GoToFlow::GoToFlow(QWidget *parent,FlowType flowType)
 
 	worker = new PageLoader;
 
-	QVBoxLayout * layout = new QVBoxLayout(this);
+
 	flow = new YACReaderFlow(this,flowType);
 	flow->setReflectionEffect(PictureFlow::PlainReflection);
 	imageSize = Configuration::getConfiguration().getGotoSlideSize();
 
 	flow->setSlideSize(imageSize);
 	connect(flow,SIGNAL(centerIndexChanged(int)),this,SLOT(setPageNumber(int)));
-	connect(flow,SIGNAL(selected(unsigned int)),this,SLOT(goTo()));
+	connect(flow,SIGNAL(selected(unsigned int)),this,SIGNAL(goToPage(unsigned int)));
 
-	QHBoxLayout * bottom = new QHBoxLayout(this);
-	bottom->addStretch();
-	bottom->addWidget(new QLabel(tr("Page : "),this));
-	bottom->addWidget(edit = new QLineEdit(this));
-	v = new QIntValidator(this);
-	v->setBottom(1);
-	edit->setValidator(v);
-	edit->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-	edit->setFixedWidth(40);
-	edit->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,QSizePolicy::Minimum));
+	connect(toolBar,SIGNAL(goTo(unsigned int)),this,SIGNAL(goToPage(unsigned int)));
+	connect(toolBar,SIGNAL(setCenter(unsigned int)),flow,SLOT(showSlide(unsigned int))); 
 
-	centerButton = new QPushButton(this);
-	centerButton->setIcon(QIcon(":/images/center.png"));
-	connect(centerButton,SIGNAL(clicked()),this,SLOT(centerSlide()));
-	bottom->addWidget(centerButton);
+	mainLayout->insertWidget(1,flow);
+	mainLayout->setStretchFactor(flow,1);
 
-	goToButton = new QPushButton(this);
-	goToButton->setIcon(QIcon(":/images/goto.png"));
-	connect(goToButton,SIGNAL(clicked()),this,SLOT(goTo()));
-	bottom->addWidget(goToButton);
-
-	bottom->addStretch();
-
-	layout->addWidget(flow);
-	layout->addLayout(bottom);
-	layout->setStretchFactor(flow,1);
-	layout->setStretchFactor(bottom,0);
-	layout->setMargin(0);
-	layout->setSpacing(0);
-	setLayout(layout);
-	this->setAutoFillBackground(true);
 	resize(static_cast<int>(5*imageSize.width()),static_cast<int>(imageSize.height()*1.7));
 
 	//install eventFilter
 	//flow->installEventFilter(this);
-	edit->installEventFilter(this);
+	/*edit->installEventFilter(this);
 	centerButton->installEventFilter(this);
 	goToButton->installEventFilter(this);
 
-	connect(edit,SIGNAL(returnPressed()),goToButton,SIGNAL(clicked()));
+	connect(edit,SIGNAL(returnPressed()),goToButton,SIGNAL(clicked()));*/
 
 	this->setCursor(QCursor(Qt::ArrowCursor));
 	
 
 }
 
-void GoToFlow::goTo()
-{
-	//emit(goToPage(flow->centerIndex()+1));
-	emit(goToPage(edit->text().toInt()));
-}
-
-void GoToFlow::setPageNumber(int page)
-{
-	edit->setText(QString::number(page+1));
-}
-
-void GoToFlow::centerSlide()
-{
-	int page = edit->text().toInt()-1;
-	int distance = flow->centerIndex()-page;
-
-	if(abs(distance)>10)
-	{
-		if(distance<0)
-			flow->setCenterIndex(flow->centerIndex()+(-distance)-10);
-		else
-			flow->setCenterIndex(flow->centerIndex()-distance+10);
-	}
-
-	flow->showSlide(page);
-}
 
 void GoToFlow::centerSlide(int slide)
 {
@@ -131,7 +83,7 @@ void GoToFlow::setNumSlides(unsigned int slides)
 	rawImages.clear();
 	rawImages.resize(slides);
 
-	v->setTop(slides);
+	toolBar->setTop(slides);
 
 	SlideInitializer * si = new SlideInitializer(flow,slides);
 
@@ -239,28 +191,6 @@ bool GoToFlow::eventFilter(QObject *target, QEvent *event)
 			this->keyPressEvent(keyEvent);
 	}
 	return QWidget::eventFilter(target, event);
-}
-
-
-void GoToFlow::keyPressEvent(QKeyEvent* event)
-{
-	switch (event->key())
-	{
-	case Qt::Key_Return: case Qt::Key_Enter:
-		goTo();
-		centerSlide();
-		break;
-	case Qt::Key_Space:
-		centerSlide();
-		break;
-	case Qt::Key_S:
-		QCoreApplication::sendEvent(this->parent(),event);
-		break;
-	case Qt::Key_Left: case Qt::Key_Right:
-		QCoreApplication::sendEvent(flow,event);
-	}
-
-	event->accept();
 }
 
 void GoToFlow::wheelEvent(QWheelEvent * event)

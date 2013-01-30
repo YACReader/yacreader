@@ -8,135 +8,34 @@
 
 #include "configuration.h"
 
+#include "goto_flow_toolbar.h"
+#include "goto_flow_decorationbar.h"
+
 GoToFlowGL::GoToFlowGL(QWidget* parent, FlowType flowType)
 	:GoToFlowWidget(parent)
 {
-	//worker = new PageLoader;
 
-	QVBoxLayout * layout = new QVBoxLayout(this);
 	flow = new YACReaderPageFlowGL(this);
-	//flow->populate(50);
-	//flow->setReflectionEffect(PictureFlow::PlainReflection);
+
 	imageSize = Configuration::getConfiguration().getGotoSlideSize();
 
 	flow->setSlideSize(imageSize);
 	connect(flow,SIGNAL(centerIndexChanged(int)),this,SLOT(setPageNumber(int)));
-	connect(flow,SIGNAL(selected(unsigned int)),this,SLOT(goTo()));
+	connect(flow,SIGNAL(selected(unsigned int)),this,SIGNAL(goToPage(unsigned int)));
 
-	QHBoxLayout * topBar = new QHBoxLayout();
+	connect(toolBar,SIGNAL(goTo(unsigned int)),this,SIGNAL(goToPage(unsigned int)));
+	connect(toolBar,SIGNAL(setCenter(unsigned int)),flow,SLOT(setCenterIndex(unsigned int))); 
 
-	QLabel * imgTopLeft = new QLabel();
-	QLabel * imgTopRight = new QLabel();
-	QLabel * imgTopMiddle = new QLabel();
-	QPixmap pL(":/images/imgTopLeft.png");
-	QPixmap pM(":/images/imgTopMiddle.png");
-	QPixmap pR(":/images/imgTopRight.png");
-	imgTopLeft->setPixmap(pL);
-	imgTopRight->setPixmap(pR);
-	imgTopMiddle->setPixmap(pM);
-	imgTopMiddle->setScaledContents(true);
-	//imgTop->setStyleSheet("background-image: url(:/images/numPagesLabel.png); width: 100%; height:100%; background-repeat: none; border: none"); 
+	mainLayout->insertWidget(1,flow);
+	mainLayout->setStretchFactor(flow,1);
 
-	topBar->addWidget(imgTopLeft);
-	topBar->addWidget(imgTopMiddle);
-	topBar->addWidget(imgTopRight);
-	topBar->setStretchFactor(imgTopLeft,0);
-	topBar->setStretchFactor(imgTopMiddle,1);
-	topBar->setStretchFactor(imgTopRight,0);
-
-	QHBoxLayout * bottomBar = new QHBoxLayout(this);
-
-	QLabel * imgBottomLeft = new QLabel(this);
-	QLabel * imgBottomRight = new QLabel(this);
-	QLabel * imgBottomMiddle = new QLabel(this);
-	QPixmap pBL(":/images/imgBottomLeft.png");
-	QPixmap pBM(":/images/imgBottomMiddle.png");
-	QPixmap pBR(":/images/imgBottomRight.png");
-	imgBottomLeft->setPixmap(pBL);
-	imgBottomRight->setPixmap(pBR);
-	imgBottomMiddle->setPixmap(pBM);
-	imgBottomMiddle->setScaledContents(true);
-	//imgTop->setStyleSheet("background-image: url(:/images/numPagesLabel.png); width: 100%; height:100%; background-repeat: none; border: none"); 
-
-	bottomBar->addWidget(imgBottomLeft);
-	bottomBar->addWidget(imgBottomMiddle);
-	bottomBar->addWidget(imgBottomRight);
-	bottomBar->setStretchFactor(imgBottomLeft,0);
-	bottomBar->setStretchFactor(imgBottomMiddle,1);
-	bottomBar->setStretchFactor(imgBottomRight,0);
-
-	bottomToolBar = new QWidget(this);
-	
-	QHBoxLayout * bottom = new QHBoxLayout(bottomToolBar);
-	bottom->addStretch();
-	bottom->addWidget(new QLabel(tr("Page : "),bottomToolBar));
-	bottom->addWidget(edit = new QLineEdit(bottomToolBar));
-	v = new QIntValidator(this);
-	v->setBottom(1);
-	edit->setValidator(v);
-	edit->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-	edit->setStyleSheet("background-image: url(:/images/imgEdit.png); width: 100%; height:100%; background-repeat: none; border: none; padding: 3px; color: white;"); 
-	QPixmap p(":/images/imgEdit.png");
-	edit->setFixedSize(54,50);
-	//edit->resize(QSize(54,50));
-	edit->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed));
-	edit->setAutoFillBackground(false);
-
-	QString centerButtonCSS = "QPushButton {background-image: url(:/images/imgCenterSlide.png); width: 100%; height:100%; background-repeat: none; border: none;} "
-		                      "QPushButton:focus { border: none; outline: none;}"
-		                      "QPushButton:pressed  {background-image: url(:/images/imgCenterSlidePressed.png); width: 100%; height:100%; background-repeat: none; border: none;} ";
-	centerButton = new QPushButton(bottomToolBar);
-	//centerButton->setIcon(QIcon(":/images/center.png"));
-	centerButton->setStyleSheet(centerButtonCSS); 
-	centerButton->setFixedSize(26,50);
-	connect(centerButton,SIGNAL(clicked()),this,SLOT(centerSlide()));
-	bottom->addWidget(centerButton);
-
-	QString goToButtonCSS = "QPushButton {background-image: url(:/images/imgGoToSlide.png); width: 100%; height:100%; background-repeat: none; border: none;} "
-		                    "QPushButton:focus { border: none; outline: none;}"
-		                    "QPushButton:pressed  {background-image: url(:/images/imgGoToSlidePressed.png); width: 100%; height:100%; background-repeat: none; border: none;} ";
-	goToButton = new QPushButton(bottomToolBar);
-	//goToButton->setIcon(QIcon(":/images/goto.png"));
-	goToButton->setStyleSheet(goToButtonCSS); 
-	goToButton->setFixedSize(32,50);
-	connect(goToButton,SIGNAL(clicked()),this,SLOT(goTo()));
-	bottom->addWidget(goToButton);
-
-	bottom->addStretch();
-	bottom->setMargin(0);
-	bottom->setSpacing(0);
-
-
-   /* QGraphicsDropShadowEffect* effect = new QGraphicsDropShadowEffect( this );
-	effect->setBlurRadius(100);
-	effect->setOffset(0,3);
-	effect->setColor(Qt::black);
-    setGraphicsEffect( effect );*/
-    	
-
-	layout->addLayout(topBar);
-	layout->addWidget(flow);
-	//layout->addLayout(bottom);
-	layout->addLayout(bottomBar);
-	layout->setStretchFactor(flow,1);
-	layout->setStretchFactor(bottomBar,0);
-	layout->setMargin(0);
-	layout->setSpacing(0);
-	setLayout(layout);
-	//this->setAutoFillBackground(true);
 	resize(static_cast<int>(5*imageSize.width()),static_cast<int>(imageSize.height()*1.7));
 
-	//bottomToolBar->setAutoFillBackground(true);
-	bottomToolBar->setLayout(bottom);
-	bottomToolBar->setGeometry(QRect(0,0,400,50));
-
 	//install eventFilter
-	flow->installEventFilter(this);
-	edit->installEventFilter(this);
-	centerButton->installEventFilter(this);
-	goToButton->installEventFilter(this);
-
-	connect(edit,SIGNAL(returnPressed()),goToButton,SIGNAL(clicked()));
+	//flow->installEventFilter(this);
+	//edit->installEventFilter(this);
+	//centerButton->installEventFilter(this);
+	//goToButton->installEventFilter(this);
 
 	this->setCursor(QCursor(Qt::ArrowCursor));
 }
@@ -158,44 +57,11 @@ bool GoToFlowGL::eventFilter(QObject *target, QEvent *event)
 	return QWidget::eventFilter(target, event);
 }
 
-void GoToFlowGL::keyPressEvent(QKeyEvent* event)
-{
-	switch (event->key())
-	{
-	case Qt::Key_Return: case Qt::Key_Enter:
-		goTo();
-		centerSlide();
-		break;
-	case Qt::Key_Space:
-		centerSlide();
-		break;
-	case Qt::Key_S:
-		QCoreApplication::sendEvent(this->parent(),event);
-		break;
-	case Qt::Key_Left: case Qt::Key_Right:
-		//if(event->modifiers() == Qt::ControlModifier)
-			//flow->keyPressEvent(event);
-			//QCoreApplication::sendEvent(flow,event);
-		break;
-	}
 
-	event->accept();
-}
-
-void GoToFlowGL::goTo()
-{
-	emit(goToPage(edit->text().toInt()));
-}
 
 void GoToFlowGL::reset()
 {
 	flow->reset();
-}
-
-void GoToFlowGL::centerSlide()
-{
-	int page = edit->text().toInt()-1;
-	flow->setCenterIndex(page);
 }
 
 void GoToFlowGL::centerSlide(int slide)
@@ -204,10 +70,6 @@ void GoToFlowGL::centerSlide(int slide)
 	{
 		flow->setCenterIndex(slide);
 	}
-}
-void GoToFlowGL::setPageNumber(int page)
-{
-	edit->setText(QString::number(page+1));
 }
 
 void GoToFlowGL::setFlowType(FlowType flowType)
@@ -225,20 +87,14 @@ void GoToFlowGL::setFlowType(FlowType flowType)
 void GoToFlowGL::setNumSlides(unsigned int slides)
 {
 	flow->populate(slides);
-	v->setTop(slides);
+	toolBar->setTop(slides);
 }
 void GoToFlowGL::setImageReady(int index,const QByteArray & imageData)
 {
 	flow->rawImages[index] = imageData;
 	flow->imagesReady[index] = true;
-	
-	//QImage image;
-	//image.loadFromData(imageData);
-	//float x = 1;
-	//float y = 1 * (float(image.height())/image.width());
-	//image = image.scaledToWidth(128,Qt::SmoothTransformation);
-	//flow->replace("cover",flow->bindTexture(image,GL_TEXTURE_2D,GL_RGB,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption),x,y,index);
 }
+
 void GoToFlowGL::updateSize()
 {
 
@@ -305,10 +161,3 @@ void GoToFlowGL::updateConfig(QSettings * settings)
 
 }
 
-void GoToFlowGL::resizeEvent(QResizeEvent * event)
-{
-
-	bottomToolBar->setGeometry(QRect(0,(event->size().height()-50)+((50-bottomToolBar->height())/2),event->size().width(),50));
-
-	GoToFlowWidget::resizeEvent(event);
-}

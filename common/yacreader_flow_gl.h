@@ -253,7 +253,7 @@ public:
 	void unmarkSlide(int index);
 	void setSlideSize(QSize size);
 	void clear();
-	void setCenterIndex(int index);
+	void setCenterIndex(unsigned int index);
 	void showSlide(int index);
 	int centerIndex();
 	void updateMarks();
