@@ -235,6 +235,11 @@ YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
 	loader->moveToThread(loaderThread);
 
 	loaderThread->start();*/
+
+	QGLFormat f = format();
+	f.setSwapInterval(0);
+	setFormat(f);
+
 	timerId = startTimer(16);
 }
 
