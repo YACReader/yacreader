@@ -8,7 +8,7 @@
 #include "comic.h"
 #include "bookmarks_dialog.h"
 #include "shortcuts_dialog.h"
-
+#include "width_slider.h"
 
 MainWindowViewer::MainWindowViewer()
 :QMainWindow(),fullscreen(false),toolbars(true),alwaysOnTop(false),currentDirectory("."),currentDirectoryImgDest(".")
@@ -322,13 +322,17 @@ void MainWindowViewer::createToolBars()
 
 	//comicToolBar->addAction(adjustWidth);
 	QMenu * menu = new QMenu();
+	sliderAction = new YACReaderSliderAction(this);
 	menu->setAutoFillBackground(false);
 	menu->setStyleSheet(" QMenu {background:transparent; border: 0px;padding: 0px; }"
 		);
-	menu->addAction(new YACReaderSliderAction(this));
+	menu->addAction(sliderAction);
 		QToolButton * tb2 = new QToolButton();
 	tb2->addAction(adjustWidth);
 	tb2->setMenu(menu);
+
+	connect(sliderAction,SIGNAL(fitToWidthRatioChanged(float)),viewer,SLOT(updateFitToWidthRatio(float)));
+
 	//tb2->addAction();
 	tb2->setPopupMode(QToolButton::MenuButtonPopup);
 	tb2->setDefaultAction(adjustWidth);

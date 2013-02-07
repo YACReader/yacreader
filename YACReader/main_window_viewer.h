@@ -15,7 +15,7 @@ class OptionsDialog;
 class HelpAboutDialog;
 class HttpVersionChecker;
 class ShortcutsDialog;
-
+class YACReaderSliderAction;
 
 	class MainWindowViewer : public QMainWindow
 	{
@@ -91,6 +91,7 @@ class ShortcutsDialog;
 		QAction *showDictionaryAction;
 		QAction *alwaysOnTopAction;
 		QAction *adjustToFullSizeAction;
+		YACReaderSliderAction * sliderAction;
 
 		HttpVersionChecker * versionChecker;
 		QString previousComicPath;
