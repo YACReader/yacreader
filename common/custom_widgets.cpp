@@ -1240,12 +1240,12 @@ YACReaderSliderAction::YACReaderSliderAction (QWidget * parent)
         pLayout->addWidget (slider);
 		//"background-image: url(:/images/sliderGround.png); width: 100%; height:100%; background-repeat: none; border: none; padding: 0px; color: white;"
 		//"QSlider::sub-page:horizontal {background-image: url(:/images/sliderSubPage.png); background-repeat:repeat-x;}"
-		QString sliderCSS = "QSlider {background-image: url(:/images/sliderGround.png); width: 100%; height:100%; background-repeat: none; border: none; padding: 0px;} "
+		QString sliderCSS = //"QSlider {background-image: url(:/images/sliderGround.png); width: 100%; height:100%; background-repeat: none; border: none; padding: 0px;} "
 			
 			"QSlider::sub-page:horizontal {background-image: url(:/images/sliderSubPage.png); border: 0px; margin-left: 18px;}"
 			"QSlider::add-page:horizontal {background-image: url(:/images/sliderAddPage.png); border: 0px; margin-right: 18px;}"
 			"QSlider::handle:horizontal {image: url(:/images/sliderHandle.png); width: 100px;height:45px;padding:-20px; margin-left:-10px; margin-right:-10px; }" 
-			//"QSlider::groove:horizontal {border-image:url(:/images/sliderGround.png); border-left:-10px; border-right:-10px;}" 
+			"QSlider::groove:horizontal {border-image:url(:/images/sliderGround.png); border-left:-10px; border-right:-10px;}" 
 			; 
 
 		//"QSlider::handle {background-image: url(:/images/sliderHandle.png); border: 0px; width: 31px; height:45px; margin:0px; padding:0px;}"  
