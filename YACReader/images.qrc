@@ -47,6 +47,11 @@
 	<file>../images/imgGoToSlide.png</file>
 	<file>../images/imgCenterSlidePressed.png</file>
 	<file>../images/imgGoToSlidePressed.png</file>
+	<file>../images/sliderBackground.png</file>
+	<file>../images/sliderGround.png</file> 
+	<file>../images/sliderSubPage.png</file>
+	<file>../images/sliderAddPage.png</file>
+	<file>../images/sliderHandle.png</file> 
 	
 	<file>../images/helpImages/open.png</file>
 	<file>../images/helpImages/openFolder.png</file>
