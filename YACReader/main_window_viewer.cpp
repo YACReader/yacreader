@@ -320,7 +320,19 @@ void MainWindowViewer::createToolBars()
 
 	//comicToolBar->addWidget(widget);
 
-	comicToolBar->addAction(adjustWidth);
+	//comicToolBar->addAction(adjustWidth);
+	QMenu * menu = new QMenu();
+	menu->setAutoFillBackground(false);
+	menu->setStyleSheet(" QMenu {background:transparent; border: 0px;padding: 0px; }"
+		);
+	menu->addAction(new YACReaderSliderAction(this));
+		QToolButton * tb2 = new QToolButton();
+	tb2->addAction(adjustWidth);
+	tb2->setMenu(menu);
+	//tb2->addAction();
+	tb2->setPopupMode(QToolButton::MenuButtonPopup);
+	tb2->setDefaultAction(adjustWidth);
+	comicToolBar->addWidget(tb2);
 	comicToolBar->addAction(adjustToFullSizeAction);
 	comicToolBar->addAction(leftRotationAction);
 	comicToolBar->addAction(rightRotationAction);
