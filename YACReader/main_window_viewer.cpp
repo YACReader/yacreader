@@ -414,7 +414,7 @@ void MainWindowViewer::reloadOptions()
 void MainWindowViewer::open()
 {
 	QFileDialog openDialog;
-	QString pathFile = openDialog.getOpenFileName(this,tr("Open Comic"),currentDirectory,tr("Comic files (*.cbr *.cbz *.rar *.zip *.pdf *.tar *.arj)"));
+	QString pathFile = openDialog.getOpenFileName(this,tr("Open Comic"),currentDirectory,tr("Comic files") + "(*.cbr *.cbz *.rar *.zip *.tar *.pdf *.7z *.cb7 *.arj *.cbt");
 	if (!pathFile.isEmpty())
 	{
 		openComicFromPath(pathFile);
@@ -653,7 +653,7 @@ void MainWindowViewer::getSiblingComics(QString path,QString currentComic)
 {
 	QDir d(path);
 	d.setFilter(QDir::Files|QDir::NoDotAndDotDot);
-	d.setNameFilters(QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf");
+	d.setNameFilters(QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.7z" << "*.cb7" << "*.arj" << "*.cbt");
 	d.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware);
 	QStringList list = d.entryList();
 	int index = list.indexOf(currentComic);
