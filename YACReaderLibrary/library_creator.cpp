@@ -25,7 +25,7 @@ QMutex mutex;
 LibraryCreator::LibraryCreator()
 	:creation(false)
 {
-	_nameFilter << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf";
+	_nameFilter << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.7z" << "*.cb7" << "*.arj" << "*.cbt";
 }
 
 void LibraryCreator::createLibrary(const QString &source, const QString &target)
