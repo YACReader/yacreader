@@ -47,5 +47,11 @@
 	<file>../images/onStartFlowSelection_es.png</file> 
 	<file>../images/useNewFlowButton.png</file>
 	<file>../images/useOldFlowButton.png</file>
+	<file>../images/zip.png</file>
+	<file>../images/rar.png</file>
+	<file>../images/tar.png</file>
+	<file>../images/7z.png</file>
+	<file>../images/pdf.png</file>
+	<file>../images/comic.png</file>
   </qresource>
 </RCC>

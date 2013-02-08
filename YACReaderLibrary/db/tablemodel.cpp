@@ -100,7 +100,24 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation,
 	}
 
 	if(orientation == Qt::Vertical && role == Qt::DecorationRole)
-		return QVariant(QIcon(":/images/icon.png"));
+	{
+		QString fileName = _data.value(section)->data(FILE_NAME).toString();
+		QFileInfo fi(fileName);
+		QString ext = fi.suffix();
+
+		if(ext.compare("pdf",Qt::CaseInsensitive) == 0)
+			return QVariant(QIcon(":/images/pdf.png"));
+		else if(ext.compare("zip",Qt::CaseInsensitive) == 0)
+			return QVariant(QIcon(":/images/zip.png"));
+		else if(ext.compare("rar",Qt::CaseInsensitive) == 0)
+			return QVariant(QIcon(":/images/rar.png"));
+		else if (ext.compare("tar",Qt::CaseInsensitive) == 0)
+			return QVariant(QIcon(":/images/tar.png"));
+		else if (ext.compare("7z",Qt::CaseInsensitive) == 0)
+			return QVariant(QIcon(":/images/7z.png"));
+		else
+			return QVariant(QIcon(":/images/comic.png"));
+	}
 
     return QVariant();
 }
