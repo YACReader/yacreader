@@ -105,18 +105,25 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation,
 		QFileInfo fi(fileName);
 		QString ext = fi.suffix();
 
-		if(ext.compare("pdf",Qt::CaseInsensitive) == 0)
+		if (ext.compare("cbr",Qt::CaseInsensitive) == 0)
+			return QVariant(QIcon(":/images/comicRar.png"));
+		else if (ext.compare("cbz",Qt::CaseInsensitive) == 0)
+			return QVariant(QIcon(":/images/comicZip.png"));
+		else if(ext.compare("pdf",Qt::CaseInsensitive) == 0)
 			return QVariant(QIcon(":/images/pdf.png"));
+		else if (ext.compare("tar",Qt::CaseInsensitive) == 0)
+			return QVariant(QIcon(":/images/tar.png"));
 		else if(ext.compare("zip",Qt::CaseInsensitive) == 0)
 			return QVariant(QIcon(":/images/zip.png"));
 		else if(ext.compare("rar",Qt::CaseInsensitive) == 0)
 			return QVariant(QIcon(":/images/rar.png"));
-		else if (ext.compare("tar",Qt::CaseInsensitive) == 0)
-			return QVariant(QIcon(":/images/tar.png"));
 		else if (ext.compare("7z",Qt::CaseInsensitive) == 0)
 			return QVariant(QIcon(":/images/7z.png"));
-		else
-			return QVariant(QIcon(":/images/comic.png"));
+		else if (ext.compare("cb7",Qt::CaseInsensitive) == 0)
+			return QVariant(QIcon(":/images/comic7z.png"));
+		else if (ext.compare("cb7",Qt::CaseInsensitive) == 0)
+			return QVariant(QIcon(":/images/comicTar.png"));
+
 	}
 
     return QVariant();

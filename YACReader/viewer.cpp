@@ -10,6 +10,7 @@
 #include "translator.h"
 #include "onstart_flow_selection_dialog.h"
 #include "page_label_widget.h"
+#include "notifications_label_widget.h"
 
 #include <QWebView>
 #include <QFile>
@@ -108,6 +109,9 @@ drag(false)
 	//animations
 	verticalScroller = new QPropertyAnimation(verticalScrollBar(), "sliderPosition");
 	connect(verticalScroller,SIGNAL(valueChanged (const QVariant &)),this,SIGNAL(backgroundChanges()));
+
+	notificationsLabel = new NotificationsLabelWidget(this);
+	notificationsLabel->hide();
 }
 
 void Viewer::createConnections()
@@ -142,6 +146,9 @@ void Viewer::createConnections()
 	connect(render,SIGNAL(processingPage()),this,SLOT(setLoadingMessage()));
 	connect(render,SIGNAL(currentPageIsBookmark(bool)),this,SIGNAL(pageIsBookmark(bool)));
 	//connect(render,SIGNAL(bookmarksLoaded(Bookmarks)),this,SLOT(setBookmarks(Bookmarks)));
+
+	connect(render,SIGNAL(isLast()),this,SLOT(showIsLastMessage()));
+	connect(render,SIGNAL(isCover()),this,SLOT(showIsCoverMessage()));
 
 	connect(render,SIGNAL(bookmarksUpdated()),this,SLOT(setBookmarks()));
 }
@@ -748,4 +755,17 @@ void Viewer::updateImageOptions()
 void Viewer::setBookmarks()
 {
 	bd->setBookmarks(*render->getBookmarks());
+}
+
+void Viewer::showIsCoverMessage()
+{
+	notificationsLabel->setText(tr("Cover!"));
+	notificationsLabel->flash();
+
+}
+		
+void Viewer::showIsLastMessage()
+{
+	notificationsLabel->setText(tr("Last page!"));
+	notificationsLabel->flash();
 }

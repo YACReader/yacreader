@@ -111,7 +111,7 @@ macx {
 	ICON = YACReaderLibrary.icns
 }
 
-TRANSLATIONS    = yacreaderlibrary_es.ts
+TRANSLATIONS    = yacreaderlibrary_es.ts \ yacreaderlibrary_ru.ts
 
 Release:DESTDIR = ../release
 Debug:DESTDIR = ../debug

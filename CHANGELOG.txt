@@ -1,0 +1,11 @@
+6.0
+
+Mejorada la velocidad de inicio gracias al uso de /LTCG como opción de compilación
+Corregido bug relacionado con OpenGL que causaba consumo excesivo de CPU en tarjetas NVidia
+Añadidos iconos para cada tipo de archivo soportado en YACReaderLibrary
+Cambiado el icono "folder" en YACReaderLibrary
+Añadida barra para ajustar el ancho de página en la toolbar de YACReader
+Añadido widget para la information label
+Añadido nuevo estilo visual a goToFlow
+Añadidos filtros para controlar el brillo, el contraste y el valor gamma
+Añadidas notificaciones de portada y última página

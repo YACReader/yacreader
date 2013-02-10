@@ -574,6 +574,9 @@ void Render::load(const QString & path)
 
 	connect(comic,SIGNAL(bookmarksUpdated()),this,SIGNAL(bookmarksUpdated()));
 
+	connect(comic,SIGNAL(isLast()),this,SIGNAL(isLast()));
+	connect(comic,SIGNAL(isCover()),this,SIGNAL(isCover()));
+
 	QThread * thread = NULL;
 	if (typeid(*comic) != typeid(FileComic))
 	{

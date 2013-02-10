@@ -49,6 +49,7 @@ HEADERS += comic.h \
 	goto_flow_toolbar.h \
 	goto_flow_decorationbar.h \
 	width_slider.h \
+	notifications_label_widget.h \
 	../common/pictureflow.h \
     ../common/custom_widgets.h \
     ../common/check_new_version.h \
@@ -77,6 +78,7 @@ SOURCES += comic.cpp \
 	goto_flow_toolbar.cpp \
 	goto_flow_decorationbar.cpp \
 	width_slider.cpp \
+	notifications_label_widget.cpp \
     ../common/pictureflow.cpp \
     ../common/custom_widgets.cpp \
     ../common/check_new_version.cpp \
@@ -92,7 +94,7 @@ macx {
 	ICON = YACReader.icns
 }
 
-TRANSLATIONS = yacreader_es.ts \ yacreader_fr.ts
+TRANSLATIONS = yacreader_es.ts \ yacreader_fr.ts \ yacreader_ru.ts
 FORMS += 
 
 Release:DESTDIR = ../release
