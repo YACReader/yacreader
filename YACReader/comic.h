@@ -74,6 +74,8 @@
 		void errorOpening();
 		void isBookmark(bool);
 		void bookmarksUpdated();
+		void isCover();
+		void isLast();
 		
 	};
 

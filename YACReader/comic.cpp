@@ -39,31 +39,40 @@ void Comic::setup()
 int Comic::nextPage()
 {
 	if(_index<_pages.size()-1)
+	{
 		_index++;
 
-	emit pageChanged(_index);
-
+		emit pageChanged(_index);
+	}
+	else
+		emit isLast();
 	return _index;
 }
 //---------------------------------------------------------------------------
 int Comic::previousPage()
 {
 	if(_index>0)
+	{
 		_index--;
 
-	emit pageChanged(_index);
+		emit pageChanged(_index);
+	}
+	else
+		emit isCover();
 
 	return _index;
 }
 //-----------------------------------------------------------------------------
 void Comic::setIndex(unsigned int index)
 {
+	int previousIndex = _index;
 	if(static_cast<int>(index)<_pages.size()-1)
 		_index = index;
 	else
 		_index = _pages.size()-1;
 
-	emit pageChanged(_index);
+	if(previousIndex != _index)
+		emit pageChanged(_index);
 }
 //-----------------------------------------------------------------------------
 /*QPixmap * Comic::currentPage()

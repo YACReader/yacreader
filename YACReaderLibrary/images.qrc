@@ -52,6 +52,9 @@
 	<file>../images/tar.png</file>
 	<file>../images/7z.png</file>
 	<file>../images/pdf.png</file>
-	<file>../images/comic.png</file>
+	<file>../images/comicZip.png</file>
+  <file>../images/comicRar.png</file>
+  <file>../images/comicTar.png</file>
+  <file>../images/comic7z.png</file>
   </qresource>
 </RCC>

@@ -94,7 +94,7 @@ void MainWindowViewer::setupUI()
 	connect(versionChecker,SIGNAL(newVersionDetected()),
 		this,SLOT(newVersion()));
 
-	versionChecker->get();
+	//versionChecker->get(); //TODO
 	
 	viewer->setFocusPolicy(Qt::StrongFocus);
 	

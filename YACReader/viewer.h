@@ -27,6 +27,7 @@ class YACReaderTranslator;
 class GoToFlowWidget;
 class Bookmarks;
 class PageLabelWidget; 
+class NotificationsLabelWidget;
 
 	class Viewer : public QScrollArea
 	{
@@ -78,6 +79,8 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		void showMessageErrorOpening();
 		void setBookmarks();
 		void updateImageOptions();
+		void showIsCoverMessage();
+		void showIsLastMessage();
 
 	private:
 		bool information;
@@ -112,6 +115,9 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 
 		int yDragOrigin;
 		int xDragOrigin;
+
+		NotificationsLabelWidget * notificationsLabel;
+
 	private:
 		//!Magnifying glass
 		MagnifyingGlass *mglass;

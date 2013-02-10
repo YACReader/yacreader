@@ -160,8 +160,11 @@ signals:
 	void numPages(unsigned int numPages);
 	void errorOpening();
 	void currentPageIsBookmark(bool);
+	void isLast();
+	void isCover();
 
 	void bookmarksUpdated();
+
 
 private:
 	Comic * comic;
