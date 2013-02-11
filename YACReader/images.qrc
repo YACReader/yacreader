@@ -36,6 +36,8 @@
 	<file>../images/alwaysOnTop.png</file> 
 	<file>../images/adjustToFullSize.png</file>
 	<file>../images/numPagesLabel.png</file>
+  <file>../images/numPagesLabelMedium.png</file>
+  <file>../images/numPagesLabelBig.png</file>
 	<file>../images/imgTopLeft.png</file>
 	<file>../images/imgTopMiddle.png</file>
 	<file>../images/imgTopRight.png</file>
