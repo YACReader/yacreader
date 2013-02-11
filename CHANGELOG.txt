@@ -9,3 +9,6 @@ Añadido widget para la information label
 Añadido nuevo estilo visual a goToFlow
 Añadidos filtros para controlar el brillo, el contraste y el valor gamma
 Añadidas notificaciones de portada y última página
+InformationLabel se muestra ahora en la esquina superiror derecha.
+InformationLabel se muestra en 3 tamaños diferentes en función de la resolución
+Corregido bug que causaba que las marcas de cómic leído no se dibujasen adecuadamente.

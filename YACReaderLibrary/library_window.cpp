@@ -82,8 +82,7 @@ void LibraryWindow::doLayout()
 	m.rotate(-90);
 	m.scale(-1,1);
 	QImage image(":/images/setRead.png");
-	image.transformed(m,Qt::SmoothTransformation);
-	comicFlow->setMarkImage(image);
+	comicFlow->setMarkImage(image.transformed(m,Qt::SmoothTransformation));
 	int heightDesktopResolution = QApplication::desktop()->screenGeometry().height();
 	int height,width;
 	height = heightDesktopResolution*0.39;
