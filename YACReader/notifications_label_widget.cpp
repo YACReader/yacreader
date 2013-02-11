@@ -43,7 +43,7 @@ NotificationsLabelWidget::NotificationsLabelWidget(QWidget * parent)
 	imgLabel->setGraphicsEffect(effect);
 	textLabel->setGraphicsEffect(effect2);
 
-	resize(203,120);
+	resize(p.size());
 	updatePosition();
 
 }

@@ -38,8 +38,8 @@ PageLabelWidget::PageLabelWidget(QWidget * parent)
 	//textLabel->setFont(QFont("courier new bold", 12));
 	//textLabel->resize(100,25);
 
-	textLabel->setGeometry(imgLabel->geometry());
-
+	resize(p.size());
+	updatePosition();
 	/*QSize size = textLabel->sizeHint();
 
     int w = width();   // returns screen width
