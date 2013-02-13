@@ -79,7 +79,9 @@
 		bool getAlwaysOnTop(){return settings->value(ALWAYS_ON_TOP).toBool();};
 		void setAlwaysOnTop(bool b){ settings->setValue(ALWAYS_ON_TOP,b);};
 		bool getShowToolbars(){return settings->value(SHOW_TOOLBARS).toBool();};
-		void setShowToolbars(bool b){return settings->setValue(SHOW_TOOLBARS,b);};
+		void setShowToolbars(bool b){settings->setValue(SHOW_TOOLBARS,b);};
+		bool getShowInformation(){return settings->value(SHOW_INFO,false).toBool();};
+		void setShowInformation(bool b){settings->setValue(SHOW_INFO,b);};
 		
 		void save();
 

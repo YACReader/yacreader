@@ -58,9 +58,6 @@ drag(false)
 	content->setMouseTracking(true);
 	setMouseTracking(true);
 
-	informationLabel = new PageLabelWidget(this);
-	informationLabel->hide();
-
 	showCursor();
 
 	goToDialog = new GoToDialog(this);
@@ -112,6 +109,15 @@ drag(false)
 
 	notificationsLabel = new NotificationsLabelWidget(this);
 	notificationsLabel->hide();
+
+	informationLabel = new PageLabelWidget(this);
+	if(Configuration::getConfiguration().getShowInformation())
+	{
+		QTimer * timer = new QTimer();
+		connect(timer,SIGNAL(timeout()),this,SLOT(informationSwitch()));
+		connect(timer,SIGNAL(timeout()),timer,SLOT(deleteLater()));
+		timer->start();
+	}
 }
 
 void Viewer::createConnections()
@@ -497,6 +503,7 @@ void Viewer::informationSwitch()
 	information?informationLabel->hide():informationLabel->show();
 	//informationLabel->move(QPoint((width()-informationLabel->width())/2,0));
 	information=!information;
+	Configuration::getConfiguration().setShowInformation(information);
 	//TODO it shouldn't be neccesary
 	informationLabel->adjustSize();
 	informationLabel->update();

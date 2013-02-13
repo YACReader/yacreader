@@ -39,7 +39,9 @@ PageLabelWidget::PageLabelWidget(QWidget * parent)
 	//textLabel->resize(100,25);
 
 	resize(p.size());
-	updatePosition();
+	//por defecto aparece oculto
+	if(parent != 0)
+		move(QPoint((parent->geometry().size().width()-this->width()),-this->height()));
 	/*QSize size = textLabel->sizeHint();
 
     int w = width();   // returns screen width
