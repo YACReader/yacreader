@@ -348,7 +348,7 @@ filters(f)
 
 void PageRender::run()
 {
-	//QMutexLocker locker(&mutex);
+	QMutexLocker locker(&mutex);
 	
 	QImage img;
 	img.loadFromData(data);
@@ -388,7 +388,7 @@ filters(f)
 void DoublePageRender::run()
 {
 	//QImage result;
-	//QMutexLocker locker(&mutex);
+	QMutexLocker locker(&mutex);
 	QImage img, img2;
 	if(!data.isEmpty())
 		img.loadFromData(data);
@@ -760,7 +760,7 @@ void Render::rotateLeft()
 //Calcula el número de nuevas páginas que hay que buferear y si debe hacerlo por la izquierda o la derecha (según sea el sentido de la lectura)
 void Render::updateBuffer()
 {
-	//QMutexLocker locker(&mutex);
+	QMutexLocker locker(&mutex);
 	int windowSize = currentIndex - previousIndex;
 	if(doublePage)
 	{	

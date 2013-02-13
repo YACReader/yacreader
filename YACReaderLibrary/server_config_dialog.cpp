@@ -17,14 +17,11 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	qrCodeImage = new QPixmap();
 	qrCode = new QLabel("xxxx",this);
 
-
-
-	
-
 	QGridLayout * gridEdits = new QGridLayout;
 	gridEdits->addWidget(new QLabel(tr("IP")),0,0);
 	gridEdits->addWidget(new QLabel(tr("Port")),0,1);
-	ip = new QLineEdit(". . .");
+	ip = new QComboBox();
+	connect(ip,SIGNAL(activated(const QString &)),this,SLOT(regenerateQR(const QString &)));
 	gridEdits->addWidget(ip,1,0);
 	port = new QLineEdit("8080");
 	port->setMaximumWidth(50);
@@ -88,19 +85,24 @@ void ServerConfigDialog::generateQR()
 	
 	QString dir;
 	QList<QHostAddress> list = QHostInfo::fromName( QHostInfo::localHostName()  ).addresses();
+	QList<QString> otherAddresses;
 	foreach(QHostAddress add, list)
 	{
 		QString tmp = add.toString();
 		if(tmp.contains(".") && tmp != "127.0.0.1")
 		{
-			dir = tmp;
-			break;
-		}
+			if(dir.isEmpty())
+				dir = tmp;
+			else
+				otherAddresses.push_back(tmp);
+			
+		}	
 	}
 	if(!dir.isEmpty())
 	{
 		generateQR(dir+":"+s->getPort());
-		ip->setText(dir);
+		ip->addItem(dir);
+		ip->addItems(otherAddresses);
 		port->setText(s->getPort());
 	}
 	else
@@ -140,4 +142,9 @@ void ServerConfigDialog::updateImage()
 	qrCode->setPixmap(*qrCodeImage);
 
 	delete qrGenerator;*/
+}
+
+void ServerConfigDialog::regenerateQR(const QString & ip)
+{
+	generateQR(ip+":"+s->getPort());
 }

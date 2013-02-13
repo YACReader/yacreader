@@ -12,3 +12,5 @@ Añadidas notificaciones de portada y última página
 InformationLabel se muestra ahora en la esquina superiror derecha.
 InformationLabel se muestra en 3 tamaños diferentes en función de la resolución
 Corregido bug que causaba que las marcas de cómic leído no se dibujasen adecuadamente.
+Se recuerda si se debe mostrar o no la "label" información.
+Corregido bug que provocaba el fallo de YACReader al pasar muy rápido las páginas.

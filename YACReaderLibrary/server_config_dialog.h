@@ -8,6 +8,7 @@
 #include <QPixmap>
 #include <QProcess>
 #include <QPixmap>
+#include <QComboBox>
 
 class ServerConfigDialog : public QDialog
 {
@@ -15,7 +16,7 @@ Q_OBJECT
 	public:
 		ServerConfigDialog(QWidget * parent = 0);
 	private:
-		QLineEdit * ip;
+		QComboBox * ip;
 		QLineEdit * port;
 		QPushButton * close;
 		QPushButton * accept;
@@ -26,6 +27,7 @@ Q_OBJECT
 	public slots:
 		void generateQR();
 		void generateQR(const QString & serverAddress);
+		void regenerateQR(const QString & ip);
 		void updateImage();
 signals:
 		void portChanged(QString port);
