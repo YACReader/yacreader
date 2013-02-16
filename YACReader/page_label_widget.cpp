@@ -28,7 +28,7 @@ PageLabelWidget::PageLabelWidget(QWidget * parent)
 	textLabel = new QLabel(this);
 	textLabel->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
 	if(verticalRes <= 1024)
-		textLabel->setStyleSheet("QLabel { color : white; padding-left:8px; }");
+		textLabel->setStyleSheet("QLabel { color : white; font-size:12px; padding-left:8px; }");
 	else if (verticalRes <= 1200)
 		textLabel->setStyleSheet("QLabel { color : white; font-size:16px; padding-left:8px;}");
 	else

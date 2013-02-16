@@ -786,8 +786,10 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 	dmCV->setupModelData(folderId,dm->getDatabase());
 	comicView->setModel(dmCV);
 	comicView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+	//TODO parametrizar la configuración de las columnas
 	for(int i = 4;i<comicView->horizontalHeader()->count();i++)
-		comicView->horizontalHeader()->hideSection(i);
+		if(i!=7)
+			comicView->horizontalHeader()->hideSection(i);
 
 
 	//debido a un bug, qt4 no es capaz de ajustar el ancho teniendo en cuenta todas la filas (no sólo las visibles)

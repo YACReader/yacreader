@@ -65,7 +65,8 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     TableItem *item = static_cast<TableItem*>(index.internalPointer());
-
+	if(index.column() == HASH)
+		return QString::number(item->data(index.column()).toString().right(item->data(index.column()).toString().length()-40).toInt()/1024.0/1024.0,'f',2)+"Mb";
 	return item->data(index.column());
 }
 //! [3]
@@ -96,6 +97,8 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation,
 			return QVariant(QString(tr("File Name")));
 		case 3:
 			return QVariant(QString(tr("Pages")));
+		case 7:
+			return QVariant(QString(tr("Size")));
 		}
 	}
 
