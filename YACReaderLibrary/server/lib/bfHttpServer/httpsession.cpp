@@ -270,6 +270,7 @@ void HttpSession::setDeviceType(const QString & device)
 	if(dataPtr)
 	{
 		dataPtr->yacreaderSessionData.comicsOnDevice.clear(); //TODO crear un método clear que limpie la sesión completamente
+		dataPtr->yacreaderSessionData.downloadedComics.clear();
 		dataPtr->yacreaderSessionData.device = device;
 	}
 }
