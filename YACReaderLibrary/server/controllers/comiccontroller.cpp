@@ -40,6 +40,8 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 
 	ComicDB comic = mw->getComicInfo(libraryName, comicId);
 
+	session.setDownloadedComic(comic.info.hash);
+
 	Comic * comicFile = FactoryComic::newComic(libraries.value(libraryName)+comic.path);
 
 	if(comicFile != NULL)
