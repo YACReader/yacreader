@@ -5,10 +5,7 @@
 #define PICTUREFLOW_QT4 1
 
 //interfaz al servidor
-LibraryWindow * mw;
 Startup * s;
-
-
 
 int main( int argc, char ** argv )
 {
@@ -25,11 +22,9 @@ int main( int argc, char ** argv )
   s->start();
 #endif
 
-  mw = new LibraryWindow();
+  LibraryWindow * mw = new LibraryWindow();
   mw->resize(800,480);
   mw->showMaximized();
-
-
 
   return app.exec();
 }

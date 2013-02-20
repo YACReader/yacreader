@@ -1,10 +1,8 @@
 #include "errorcontroller.h"
-#include "library_window.h"  //get libraries
 
 #include "template.h"
 #include "../static.h"
 
-extern LibraryWindow * mw;
 
 ErrorController::ErrorController(int errorCode)
 :error(errorCode)

@@ -1,10 +1,8 @@
 #include "librariescontroller.h"
-#include "library_window.h"  //get libraries
+#include "db_helper.h"  //get libraries
 
 #include "template.h"
 #include "../static.h"
-
-extern LibraryWindow * mw;
 
 LibrariesController::LibrariesController() {}
 
@@ -40,7 +38,7 @@ void LibrariesController::service(HttpRequest& request, HttpResponse& response)
 	Template t=Static::templateLoader->getTemplate("libraries_"+session.getDeviceType(),request.getHeader("Accept-Language"));
 	t.enableWarnings();
 
-	QMap<QString,QString> libraries = mw->getLibraries();
+	QMap<QString,QString> libraries = DBHelper::getLibraries();
 	QList<QString> names = libraries.keys();
 	
 	t.loop("library",names.length());

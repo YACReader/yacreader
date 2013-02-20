@@ -843,17 +843,21 @@ void LibraryWindow::reloadCovers()
 
 void LibraryWindow::centerComicFlow(const QModelIndex & mi)
 {
-	int distance = comicFlow->centerIndex()-mi.row();
-	if(abs(distance)>10)
+	//TODO corregir el comportamiento de ComicFlowWidgetSW para evitar skip
+	if(typeid(comicFlow) == typeid(ComicFlowWidgetSW))
 	{
-		if(distance<0)
-			comicFlow->setCenterIndex(comicFlow->centerIndex()+(-distance)-10);
+		int distance = comicFlow->centerIndex()-mi.row();
+		if(abs(distance)>10)
+		{
+			if(distance<0)
+				comicFlow->setCenterIndex(comicFlow->centerIndex()+(-distance)-10);
+			else
+				comicFlow->setCenterIndex(comicFlow->centerIndex()-distance+10);
+			skip = 10;
+		}
 		else
-			comicFlow->setCenterIndex(comicFlow->centerIndex()-distance+10);
-		skip = 10;
+			skip = abs(comicFlow->centerIndex()-mi.row());
 	}
-	else
-		skip = abs(comicFlow->centerIndex()-mi.row());
 	comicFlow->showSlide(mi.row());
 	comicFlow->setFocus(Qt::OtherFocusReason);
 }

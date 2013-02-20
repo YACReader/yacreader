@@ -1,8 +1,6 @@
 #include "comiccontroller.h"
 
-#include "library_window.h"
-
-extern LibraryWindow * mw;
+#include "db_helper.h"
 
 #include "template.h"
 #include "../static.h"
@@ -33,12 +31,17 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 	//		response.write("",true);
 	//		return;
 	//	}
-	//}
+	//} 
 
-	QMap<QString,QString> libraries = mw->getLibraries();
+	//Aplicar a todos los controladores
+	//TODO usar LibraryWindow para acceder a información de las bases de datos está mal, hay
+	//que crear una clase que se encargue de estas cosas
+	//¿Se está accediendo a la UI desde un hilo?
+
+	QMap<QString,QString> libraries = DBHelper::getLibraries();
 	
 
-	ComicDB comic = mw->getComicInfo(libraryName, comicId);
+	ComicDB comic = DBHelper::getComicInfo(libraryName, comicId);
 
 	session.setDownloadedComic(comic.info.hash);
 

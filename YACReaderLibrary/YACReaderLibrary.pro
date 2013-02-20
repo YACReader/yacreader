@@ -10,10 +10,15 @@ INCLUDEPATH += ../common \
 	           ./server \
 			   ./db \
 			   ../YACReader 
+
+DEFINES += SERVER_RELEASE
 			   
 win32 {
 INCLUDEPATH += ../dependencies/poppler/include
 LIBS += -L../dependencies/poppler/lib -lpoppler-qt4
+QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
+QMAKE_LFLAGS_RELEASE += /LTCG
+CONFIG -= embed_manifest_exe
 }
 
 unix:!macx{
@@ -51,6 +56,7 @@ HEADERS += comic_flow.h \
 		   import_comics_info_dialog.h \
 		   server_config_dialog.h \
 		   comic_flow_widget.h \
+		   db_helper.h \
 		   ./db/data_base_management.h \
 		   ./db/treeitem.h \
 		   ./db/treemodel.h \
@@ -85,6 +91,7 @@ SOURCES += comic_flow.cpp \
 		   import_comics_info_dialog.cpp \
 		   server_config_dialog.cpp \
 		   comic_flow_widget.cpp \
+		   db_helper.cpp \
 		   ./db/data_base_management.cpp \
 		   ./db/treeitem.cpp \
 		   ./db/treemodel.cpp \

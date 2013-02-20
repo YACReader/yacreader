@@ -11,6 +11,9 @@ INCLUDEPATH += ../common
 win32 {
 INCLUDEPATH += ../dependencies/poppler/include
 LIBS += -L../dependencies/poppler/lib -lpoppler-qt4
+QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
+QMAKE_LFLAGS_RELEASE += /LTCG
+CONFIG -= embed_manifest_exe
 }
 
 unix:!macx{
