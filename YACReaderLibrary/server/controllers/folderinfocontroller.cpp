@@ -1,5 +1,5 @@
 #include "folderinfocontroller.h"
-#include "library_window.h"  //get libraries
+#include "db_helper.h"  //get libraries
 
 #include "folder.h"
 #include "comic_db.h"
@@ -7,7 +7,6 @@
 #include "template.h"
 #include "../static.h"
 
-extern LibraryWindow * mw;
 
 FolderInfoController::FolderInfoController() {}
 
@@ -19,8 +18,8 @@ void FolderInfoController::service(HttpRequest& request, HttpResponse& response)
 	QStringList pathElements = path.split('/');
 	QString libraryName = pathElements.at(2);
 	qulonglong parentId = pathElements.at(4).toULongLong();
-	QList<LibraryItem *> folderContent = mw->getFolderContentFromLibrary(libraryName,parentId);
-	QList<LibraryItem *> folderComics = mw->getFolderComicsFromLibrary(libraryName,parentId);
+	QList<LibraryItem *> folderContent = DBHelper::getFolderContentFromLibrary(libraryName,parentId);
+	QList<LibraryItem *> folderComics = DBHelper::getFolderComicsFromLibrary(libraryName,parentId);
 
 	Folder * currentFolder;
 	for(QList<LibraryItem *>::const_iterator itr = folderContent.constBegin();itr!=folderContent.constEnd();itr++)

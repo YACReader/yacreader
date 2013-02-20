@@ -1,5 +1,6 @@
 #include "foldercontroller.h"
-#include "library_window.h"  //get libraries
+#include "db_helper.h"  //get libraries
+#include "comic_db.h"
 
 #include "folder.h"
 
@@ -15,8 +16,6 @@ struct LibraryItemSorter
 		return naturalSortLessThanCI(a->name,b->name);
 	} 
 };
-
-extern LibraryWindow * mw;
 
 FolderController::FolderController() {}
 
@@ -36,13 +35,13 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	QStringList pathElements = path.split('/');
 	QString libraryName = pathElements.at(2);
 	qulonglong parentId = pathElements.at(4).toULongLong();
-	QString folderName = mw->getFolderName(libraryName,parentId);
+	QString folderName = DBHelper::getFolderName(libraryName,parentId);
 	if(parentId!=1)
 		t.setVariable("folder.name",folderName);
 	else
 		t.setVariable("folder.name",libraryName);
-	QList<LibraryItem *> folderContent = mw->getFolderContentFromLibrary(libraryName,parentId);
-	QList<LibraryItem *> folderComics = mw->getFolderComicsFromLibrary(libraryName,parentId);
+	QList<LibraryItem *> folderContent = DBHelper::getFolderContentFromLibrary(libraryName,parentId);
+	QList<LibraryItem *> folderComics = DBHelper::getFolderComicsFromLibrary(libraryName,parentId);
 
 	//response.writeText(libraryName);
 
@@ -51,7 +50,7 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	qSort(folderContent.begin(),folderContent.end(),LibraryItemSorter());
 	folderComics.clear();
 
-	qulonglong backId = mw->getParentFromComicFolderId(libraryName,parentId);
+	qulonglong backId = DBHelper::getParentFromComicFolderId(libraryName,parentId);
 
 	int page = 0;
 	QByteArray p = request.getParameter("page");

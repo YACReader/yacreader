@@ -1,10 +1,8 @@
 #include "covercontroller.h"
-#include "library_window.h"  //get libraries
+#include "db_helper.h"  //get libraries
 
 #include "template.h"
 #include "../static.h"
-
-extern LibraryWindow * mw;
 
 CoverController::CoverController() {}
 
@@ -17,7 +15,7 @@ void CoverController::service(HttpRequest& request, HttpResponse& response)
 	response.setHeader("Connection","close");
 	//response.setHeader("Content-Type", "plain/text; charset=ISO-8859-1");
 
-	QMap<QString,QString> libraries = mw->getLibraries();
+	QMap<QString,QString> libraries = DBHelper::getLibraries();
 
 	QString path = QUrl::fromPercentEncoding(request.getPath()).toLatin1();
 	QStringList pathElements = path.split('/');
@@ -54,6 +52,12 @@ void CoverController::service(HttpRequest& request, HttpResponse& response)
 		buffer.open(QIODevice::WriteOnly);
 		img.save(&buffer, "JPG");
 		response.write(ba,true);
+	}
+	//DONE else, hay que devolver un 404
+	else
+	{
+		response.setStatus(404,"not found");
+		response.write("404 not found",true);
 	}
 }
 
