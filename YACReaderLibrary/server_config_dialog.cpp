@@ -12,7 +12,7 @@ extern Startup * s;
 ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	:QDialog(parent)	
 {
-	accept = new QPushButton(tr("Generar"));
+	accept = new QPushButton(tr("Update IPs"));
 	connect(accept,SIGNAL(clicked()),this,SLOT(generateQR()));
 	qrCodeImage = new QPixmap();
 	qrCode = new QLabel("xxxx",this);
@@ -82,7 +82,7 @@ void ServerConfigDialog::generateQR()
 	//				items.append(interface.name() + entry.ip().toString());
 	//		}
 	//}
-	
+	ip->clear();
 	QString dir;
 	QList<QHostAddress> list = QHostInfo::fromName( QHostInfo::localHostName()  ).addresses();
 	QList<QString> otherAddresses;
