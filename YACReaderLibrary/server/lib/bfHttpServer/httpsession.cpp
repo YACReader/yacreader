@@ -281,3 +281,27 @@ void HttpSession::setDisplayType(const QString & display)
 		dataPtr->yacreaderSessionData.display = display;
 	}
 }
+
+void HttpSession::clearNavigationPath()
+{
+	if(dataPtr)
+		dataPtr->yacreaderSessionData.navigationPath.clear();
+}
+
+int HttpSession::popPage()
+{
+	if(dataPtr)
+		return dataPtr->yacreaderSessionData.navigationPath.pop();
+}
+
+void HttpSession::pushPage(int page)
+{
+	if(dataPtr)
+		dataPtr->yacreaderSessionData.navigationPath.push(page);
+}
+
+int HttpSession::topPage()
+{
+	if(dataPtr)
+		return dataPtr->yacreaderSessionData.navigationPath.top();
+}

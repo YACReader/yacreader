@@ -114,6 +114,11 @@ public:
 	void setDeviceType(const QString & device);
 	void setDisplayType(const QString & display);
 
+	void clearNavigationPath();
+	int popPage();
+	void pushPage(int page);
+	int topPage();
+
 private:
 
 	struct YACReaderSessionData {
@@ -125,6 +130,9 @@ private:
 		QString device;
 		QString display;
 		qulonglong comicId;
+
+		QStack<int> navigationPath;
+
 		Comic * comic;
 	};
 

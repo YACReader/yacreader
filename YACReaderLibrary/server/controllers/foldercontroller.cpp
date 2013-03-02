@@ -61,10 +61,39 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	//QString currentPath = session.get("currentPath").toString();
 	//QStringList pathSize = currentPath.split("/").last().toInt;
 
+	bool fromUp = false;
+
+	QMultiMap<QByteArray,QByteArray> map = request.getParameterMap();
+	if(map.contains("up"))
+		fromUp = true;
+	
+	int upPage = 0;
+
 	if(backId == 1 && parentId == 1)
+	{
+		session.pushPage(page);
 		t.setVariable(QString("upurl"),"/?page=0");
+	}
 	else
-		t.setVariable(QString("upurl"),"/library/" + QUrl::toPercentEncoding(libraryName) + "/folder/" +QString("%1").arg(backId));//.arg(upPage));		
+	{
+		if(fromUp)
+		{
+			session.popPage();
+			upPage = session.topPage();
+			page = upPage;
+		}
+		else //este nivel puede haberse cargado por primera vez ó puede que estemos navegando horizontalmente
+			if(p.length() == 0) // acabamos de entrar
+			{
+				session.pushPage(page);
+			}
+			else //navegación horizontal
+			{
+				session.popPage();
+				session.pushPage(page);
+			}
+		t.setVariable(QString("upurl"),"/library/" + QUrl::toPercentEncoding(libraryName) + "/folder/" +QString("%1?page=%2&up=true").arg(backId).arg(upPage));		
+	}
 
 	/*if(currentPath.length()>0)
 	{
