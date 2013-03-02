@@ -10,7 +10,7 @@ void LibrariesController::service(HttpRequest& request, HttpResponse& response)
 {
 	HttpSession session=Static::sessionStore->getSession(request,response);
 	session.set("ySession","ok");
-
+	session.clearNavigationPath();
 	response.setHeader("Content-Type", "text/html; charset=ISO-8859-1");
 	response.setHeader("Connection","close");
 	
