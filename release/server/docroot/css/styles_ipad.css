@@ -99,7 +99,7 @@ margin: 20px 12px 20px 0;
 .importButton
 {
 	width: 57px;
-	height: 22px;
+	height: 18px;
 	background: url("../images/bt_import.jpg") no-repeat scroll 0 0 transparent;
 	border: none;
 	text-align:center;
@@ -112,8 +112,8 @@ margin: 20px 12px 20px 0;
 .importedButton
 {
 	width: 67px;
-	height: 22px;
-	background: url("../images/bt_imported.jpg") no-repeat scroll 0 0 transparent;
+	height: 18px;
+	background: url("../images/bt_import.jpg") no-repeat scroll 0 -22px transparent;
 	border: none;
 	text-align:center;
 	display: block;

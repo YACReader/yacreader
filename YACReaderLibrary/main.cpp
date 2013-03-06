@@ -18,8 +18,16 @@ int main( int argc, char ** argv )
   app.setApplicationName("YACReaderLibrary");
 
 #ifdef SERVER_RELEASE
+  QSettings * settings = new QSettings(QCoreApplication::applicationDirPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+  settings->beginGroup("libraryConfig");
+  
   s = new Startup();
-  s->start();
+
+  if(settings->value(SERVER_ON,true).toBool())
+  {
+	  
+	  s->start();
+  }
 #endif
 
   LibraryWindow * mw = new LibraryWindow();
