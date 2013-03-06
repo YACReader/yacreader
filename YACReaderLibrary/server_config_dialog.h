@@ -9,6 +9,7 @@
 #include <QProcess>
 #include <QPixmap>
 #include <QComboBox>
+#include <QCheckBox>
 
 class ServerConfigDialog : public QDialog
 {
@@ -18,6 +19,9 @@ Q_OBJECT
 	private:
 		QComboBox * ip;
 		QLineEdit * port;
+		
+		QCheckBox * check;
+
 		QPushButton * close;
 		QPushButton * accept;
 		QLabel * qrCode;
@@ -29,6 +33,7 @@ Q_OBJECT
 		void generateQR(const QString & serverAddress);
 		void regenerateQR(const QString & ip);
 		void updateImage();
+		void enableServer(int status);
 signals:
 		void portChanged(QString port);
 

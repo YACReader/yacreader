@@ -81,21 +81,21 @@ margin: 20px 0 15px 0;
 .importButton
 {
 	width: 67px;
-	height: 24px;
+	height: 20px;
 	background: url("../images/bt_import.jpg") no-repeat scroll 0 0 transparent;
 	border: none;
 	text-align:center;
 	display: block;
 	float: left;
 	margin: 0 0 0 8px;
-	padding: 5px 0 0 0;
+	padding: 4px 0 0 0;
 }
 
 .importedButton
 {
-	width: 67px;
-	height: 22px;
-	background: url("../images/bt_imported.jpg") no-repeat scroll 0 0 transparent;
+	width: 77px;
+	height: 20px;
+	background: url("../images/bt_import.jpg") no-repeat scroll 0 -24px transparent;
 	border: none;
 	text-align:center;
 	display: block;

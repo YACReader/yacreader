@@ -41,6 +41,7 @@
 #define X_ROTATION "X_ROTATION"
 #define Y_COVER_OFFSET "Y_COVER_OFFSET"
 #define V_SYNC "V_SYNC"
+#define SERVER_ON "SERVER_ON"
 
  enum FlowType
   {
