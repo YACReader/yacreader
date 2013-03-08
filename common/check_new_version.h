@@ -5,10 +5,10 @@
 #include <QHttp>
 #include <QHttpResponseHeader>
 #include <QByteArray>
-
+#include <QThread>
 #include "yacreader_global.h"
 
- class HttpVersionChecker : public QWidget
+ class HttpVersionChecker : public QThread
  {
          Q_OBJECT
     public:
@@ -20,6 +20,7 @@
         void read(const QHttpResponseHeader &);
         void get();
     private:
+		void run();
         QHttp *http;
         int httpGetId;
         QByteArray content;

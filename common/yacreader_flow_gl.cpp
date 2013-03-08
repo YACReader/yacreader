@@ -711,7 +711,7 @@ void YACReaderFlowGL::populate(int n)
 	}*/
 
 	loaded = QVector<bool>(n,false);
-	marks = QVector<bool>(n,false);
+	//marks = QVector<bool>(n,false);
 
 	
 

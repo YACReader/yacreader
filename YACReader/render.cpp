@@ -635,6 +635,8 @@ void Render::nextPage()
 		currentIndex = nextPage;
 		update();
 	}
+	else
+		emit isLast();
 }
 //si se solicita la página anterior, se calcula cuál debe ser en función de si se lee en modo a doble página o no.
 //la página sólo se renderiza, si realmente ha cambiado.
@@ -663,6 +665,8 @@ void Render::previousPage()
 		currentIndex = previousPage;
 		update();
 	}
+	else
+		emit isCover();
 }
 unsigned int Render::getIndex()
 {
@@ -742,8 +746,7 @@ void Render::goTo(int index)
 void Render::rotateRight()
 {
 	imageRotation = (imageRotation+90) % 360;
-	invalidate();
-	update();
+    reload();
 }
 void Render::rotateLeft()
 {
@@ -751,8 +754,7 @@ void Render::rotateLeft()
 		imageRotation = 270;
 	else
 		imageRotation = imageRotation - 90;
-	invalidate();
-	update();
+	reload();
 }
 
 //Actualiza el buffer, añadiendo las imágenes (vacías) necesarias para su posterior renderizado y
@@ -890,7 +892,7 @@ void Render::invalidate()
 	{
 		if(pageRenders[i]!=0)
 		{
-			pageRenders[i]->terminate();
+			pageRenders[i]->wait();
 			delete pageRenders[i];
 			pageRenders[i] = 0;
 		}

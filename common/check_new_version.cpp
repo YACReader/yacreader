@@ -7,7 +7,7 @@
 #define PREVIOUS_VERSION "5.0.0"
 
 HttpVersionChecker::HttpVersionChecker()
-        :QWidget()
+        :QThread()
 {
     http = new QHttp(this);
 
@@ -23,6 +23,12 @@ HttpVersionChecker::HttpVersionChecker()
 
 void HttpVersionChecker::get()
 {
+	this->start();
+
+}
+
+void HttpVersionChecker::run()
+{
     QUrl url("http://code.google.com/p/yacreader/downloads/list");
     QHttp::ConnectionMode mode = QHttp::ConnectionModeHttp;
     http->setHost(url.host(), mode, url.port() == -1 ? 0 : url.port());
@@ -30,6 +36,7 @@ void HttpVersionChecker::get()
     if (path.isEmpty())
          path = "/";
     httpGetId = http->get(path, 0);
+	exec();
 }
 void HttpVersionChecker::readResponseHeader(const QHttpResponseHeader &responseHeader)
 {
@@ -48,6 +55,7 @@ void HttpVersionChecker::httpRequestFinished(int requestId, bool error)
 	QString response(content);
 #endif
 	checkNewVersion(response);
+	exit();
 }
 
 //TODO escribir prueba unitaria

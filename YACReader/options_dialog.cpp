@@ -264,3 +264,12 @@ void OptionsDialog::resetImageConfig()
 	settings.setValue(GAMMA,100);
 	emit(changedImageOptions());
 }
+
+void OptionsDialog::show()
+{
+	//TODO solucionar el tema de las settings, esto sólo debería aparecer en una única línea de código
+	QSettings *s = new QSettings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+	fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
+	QDialog::show();
+	delete s;
+}
