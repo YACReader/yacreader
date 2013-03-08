@@ -69,3 +69,10 @@ void YACReaderSliderAction::updateText(int value)
 	Configuration::getConfiguration().setFitToWidthRatio(value/100.0);
 	emit(fitToWidthRatioChanged(value / 100.0f));
 }
+
+void YACReaderSliderAction::updateFitToWidthRatio(float v)
+{
+	int value = v*100;
+	slider->setValue(value);
+	percentageLabel->setText(QString("%1 %").arg(value));
+}

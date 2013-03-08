@@ -16,6 +16,7 @@ GoToFlowGL::GoToFlowGL(QWidget* parent, FlowType flowType)
 {
 
 	flow = new YACReaderPageFlowGL(this);
+	flow->setShowMarks(false);
 
 	imageSize = Configuration::getConfiguration().getGotoSlideSize();
 

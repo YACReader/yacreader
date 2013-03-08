@@ -94,7 +94,7 @@ void MainWindowViewer::setupUI()
 	connect(versionChecker,SIGNAL(newVersionDetected()),
 		this,SLOT(newVersion()));
 
-	//versionChecker->get(); //TODO
+	versionChecker->get(); //TODO
 	
 	viewer->setFocusPolicy(Qt::StrongFocus);
 	
@@ -332,6 +332,8 @@ void MainWindowViewer::createToolBars()
 	tb2->setMenu(menu);
 
 	connect(sliderAction,SIGNAL(fitToWidthRatioChanged(float)),viewer,SLOT(updateFitToWidthRatio(float)));
+	connect(optionsDialog,SIGNAL(fitToWidthRatioChanged(float)),sliderAction,SLOT(updateFitToWidthRatio(float)));
+
 
 	//tb2->addAction();
 	tb2->setPopupMode(QToolButton::MenuButtonPopup);

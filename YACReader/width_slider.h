@@ -12,12 +12,14 @@ class YACReaderSliderAction : public QWidgetAction
 private:
 	QLabel * percentageLabel;
 	QSlider * slider;
+
 public:
 	
     YACReaderSliderAction (QWidget * parent = 0);
 
 public slots:
 	void updateText(int value);
+	void updateFitToWidthRatio(float v);
 
 
 signals:
