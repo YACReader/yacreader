@@ -111,13 +111,7 @@ drag(false)
 	notificationsLabel->hide();
 
 	informationLabel = new PageLabelWidget(this);
-	if(Configuration::getConfiguration().getShowInformation())
-	{
-		QTimer * timer = new QTimer();
-		connect(timer,SIGNAL(timeout()),this,SLOT(informationSwitch()));
-		connect(timer,SIGNAL(timeout()),timer,SLOT(deleteLater()));
-		timer->start();
-	}
+
 }
 
 void Viewer::createConnections()
@@ -170,8 +164,18 @@ void Viewer::open(QString pathFile)
 	//render->update();
 
 	verticalScrollBar()->setSliderPosition(verticalScrollBar()->minimum());
+	
+	if(Configuration::getConfiguration().getShowInformation() && !information)
+	{
+		QTimer * timer = new QTimer();
+		connect(timer,SIGNAL(timeout()),this,SLOT(informationSwitch()));
+		connect(timer,SIGNAL(timeout()),timer,SLOT(deleteLater()));
+		timer->start();
+	}
 
 	informationLabel->setText("...");
+
+	setAcceptDrops(true);
 }
 
 void Viewer::showMessageErrorOpening()
