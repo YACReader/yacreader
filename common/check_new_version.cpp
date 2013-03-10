@@ -4,6 +4,12 @@
 #include <QtGlobal>
 #include <QStringList>
 
+#include <QNetworkAccessManager>
+#include <QEventLoop>
+#include <QTimer>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+
 #define PREVIOUS_VERSION "5.0.0"
 
 HttpVersionChecker::HttpVersionChecker()
@@ -29,14 +35,35 @@ void HttpVersionChecker::get()
 
 void HttpVersionChecker::run()
 {
-    QUrl url("http://code.google.com/p/yacreader/downloads/list");
+	QNetworkAccessManager manager;
+    QEventLoop q;
+    QTimer tT;
+    
+    tT.setSingleShot(true);
+    connect(&tT, SIGNAL(timeout()), &q, SLOT(quit()));
+    connect(&manager, SIGNAL(finished(QNetworkReply*)),&q, SLOT(quit()));
+    QNetworkReply *reply = manager.get(QNetworkRequest(
+                   QUrl("http://code.google.com/p/yacreader/downloads/list")));
+    
+    tT.start(5000); // 5s timeout
+    q.exec();
+    
+    if(tT.isActive()){
+        // download complete
+		checkNewVersion(reply->readAll());
+        tT.stop();
+    } else {
+        // timeout
+    }
+	
+    /*QUrl url("http://code.google.com/p/yacreader/downloads/list");
     QHttp::ConnectionMode mode = QHttp::ConnectionModeHttp;
     http->setHost(url.host(), mode, url.port() == -1 ? 0 : url.port());
     QByteArray path = QUrl::toPercentEncoding(url.path(), "!$&'()*+,;=:@/");
     if (path.isEmpty())
          path = "/";
     httpGetId = http->get(path, 0);
-	exec();
+	exec();*/
 }
 void HttpVersionChecker::readResponseHeader(const QHttpResponseHeader &responseHeader)
 {

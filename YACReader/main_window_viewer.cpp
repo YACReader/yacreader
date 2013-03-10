@@ -10,6 +10,8 @@
 #include "shortcuts_dialog.h"
 #include "width_slider.h"
 
+#include <ctime>
+
 MainWindowViewer::MainWindowViewer()
 :QMainWindow(),fullscreen(false),toolbars(true),alwaysOnTop(false),currentDirectory("."),currentDirectoryImgDest(".")
 {
@@ -93,8 +95,13 @@ void MainWindowViewer::setupUI()
 
 	connect(versionChecker,SIGNAL(newVersionDetected()),
 		this,SLOT(newVersion()));
-
-	versionChecker->get(); //TODO
+	
+	QTimer * tT = new QTimer;
+    
+    tT->setSingleShot(true);
+    connect(tT, SIGNAL(timeout()), versionChecker, SLOT(get()));
+	//versionChecker->get(); //TODÓ
+	tT->start(100);
 	
 	viewer->setFocusPolicy(Qt::StrongFocus);
 	
