@@ -2,7 +2,6 @@
 <qresource>
 	<file>../files/about.html</file>
 	<file>../files/helpYACReaderLibrary.html</file>
-    <file>./yacreaderlibrary_es.qm</file>
 </qresource>
 
 <qresource lang="es_ES">

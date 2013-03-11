@@ -5,7 +5,6 @@
 	<file>../files/shortcuts.html</file>
 	<file>../files/shortcuts2.html</file>
   <file>../files/translator.html</file>
-	<file>./yacreader_es.qm</file>
 </qresource> 
 
 <qresource lang="es_ES">
