@@ -32,7 +32,7 @@ int main(int argc, char * argv[])
 
 	QTranslator translator;
 	QString sufix = QLocale::system().name();
-	translator.load(":/yacreader_"+sufix);
+	translator.load("./languages/yacreader_"+sufix);
 	app.installTranslator(&translator);
 	app.setApplicationName("YACReader");
 
