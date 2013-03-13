@@ -13,7 +13,7 @@ int main( int argc, char ** argv )
 
   QTranslator translator;
   QString sufix = QLocale::system().name();
-  translator.load("./languages/yacreaderlibrary_"+sufix);
+  translator.load(QCoreApplication::applicationDirPath()+"/languages/yacreaderlibrary_"+sufix);
   app.installTranslator(&translator);
   app.setApplicationName("YACReaderLibrary");
 
