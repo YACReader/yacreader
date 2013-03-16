@@ -31,8 +31,9 @@ int main( int argc, char ** argv )
 #endif
 
   LibraryWindow * mw = new LibraryWindow();
-  mw->resize(800,480);
-  mw->showMaximized();
+  mw->show();
+  /*mw->resize(800,480);
+  mw->showMaximized();*/
 
   return app.exec();
 }

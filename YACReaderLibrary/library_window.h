@@ -161,6 +161,8 @@ private:
 
 	//settings
 	QSettings * settings;
+protected:
+		virtual void closeEvent ( QCloseEvent * event );
 public:
 	LibraryWindow();
 	public slots:
