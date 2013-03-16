@@ -47,6 +47,17 @@ void LibraryWindow::setupUI()
 	createConnections();
 
 	setWindowTitle(tr("YACReader Library"));
+
+	setMinimumSize(800,480);
+
+	//restore
+	if(settings->contains(MAIN_WINDOW_GEOMETRY))
+		restoreGeometry(settings->value(MAIN_WINDOW_GEOMETRY).toByteArray());
+	else
+		showMaximized();
+
+	if(settings->contains(MAIN_WINDOW_STATE))
+		restoreState(settings->value(MAIN_WINDOW_STATE).toByteArray());
 }
 
 void LibraryWindow::doLayout()
@@ -1186,7 +1197,7 @@ void LibraryWindow::toNormal()
 	libraryToolBar->show();
 	comicFlow->show();
 
-	showMaximized();
+	showNormal();
 }
 
 void LibraryWindow::setFoldersFilter(QString filter)
@@ -1461,4 +1472,10 @@ QString LibraryWindow::getFolderName(const QString & libraryName, qulonglong id)
 	db.close();
 	QSqlDatabase::removeDatabase(libraries.value(libraryName));
 	return name;
+}
+
+void LibraryWindow::closeEvent ( QCloseEvent * event )
+{
+	settings->setValue(MAIN_WINDOW_GEOMETRY, saveGeometry());
+    settings->setValue(MAIN_WINDOW_STATE, saveState());
 }

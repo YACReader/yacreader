@@ -43,6 +43,9 @@
 #define V_SYNC "V_SYNC"
 #define SERVER_ON "SERVER_ON"
 
+#define MAIN_WINDOW_GEOMETRY "MAIN_WINDOW_GEOMETRY"
+#define MAIN_WINDOW_STATE "MAIN_WINDOW_STATE"
+
  enum FlowType
   {
     CoverFlowLike=0,
