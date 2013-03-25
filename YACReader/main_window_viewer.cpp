@@ -9,8 +9,10 @@
 #include "bookmarks_dialog.h"
 #include "shortcuts_dialog.h"
 #include "width_slider.h"
+#include "qnaturalsorting.h"
 
 #include <ctime>
+#include <algorithm>
 
 MainWindowViewer::MainWindowViewer()
 :QMainWindow(),fullscreen(false),toolbars(true),alwaysOnTop(false),currentDirectory("."),currentDirectoryImgDest(".")
@@ -665,6 +667,8 @@ void MainWindowViewer::getSiblingComics(QString path,QString currentComic)
 	d.setNameFilters(QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.7z" << "*.cb7" << "*.arj" << "*.cbt");
 	d.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware);
 	QStringList list = d.entryList();
+	qSort(list.begin(),list.end(),naturalSortLessThanCI);
+	//std::sort(list.begin(),list.end(),naturalSortLessThanCI);
 	int index = list.indexOf(currentComic);
         if(index == -1) //comic not found
         {
