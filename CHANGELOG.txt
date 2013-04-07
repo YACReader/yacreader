@@ -16,3 +16,5 @@ Se recuerda si se debe mostrar o no la "label" información.
 Corregido bug que provocaba el fallo de YACReader al pasar muy rápido las páginas.
 Añadida columna "Tamaño" a la lista de cómics en YACReaderLibrary
 Añadida la ordinación "natural" de los comics que hay en directorio del cómic actual.
+Corregido bug que causaba que se abriese el cómic erroneo en YACReaderLibrary.
+Cambiado el modo en el que se cargan los lenguages, ahora se pueden añadir traducciones sin necesidad de recompilar.
