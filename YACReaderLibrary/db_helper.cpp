@@ -45,7 +45,11 @@ QMap<QString,QString> DBHelper::getLibraries()
 		}
 		else
 		{
-			libraries.insert(name.trimmed(),line.trimmed());
+			//sólo se agregan las bibliotecas realmente disponibles
+			QSqlDatabase db = DataBaseManagement::loadDatabase(line.trimmed()+"/.yacreaderlibrary");
+			if(db.isValid())
+				libraries.insert(name.trimmed(),line.trimmed());
+			db.close();
 		}
 		i++;
 	}
