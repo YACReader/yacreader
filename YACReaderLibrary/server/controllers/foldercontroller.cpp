@@ -69,8 +69,11 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	
 	int upPage = 0;
 
+	
+
 	if(backId == 1 && parentId == 1)
 	{
+		session.popPage();
 		session.pushPage(page);
 		t.setVariable(QString("upurl"),"/?page=0");
 	}
@@ -85,11 +88,13 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 		else //este nivel puede haberse cargado por primera vez ó puede que estemos navegando horizontalmente
 			if(p.length() == 0) // acabamos de entrar
 			{
+				upPage = session.topPage();
 				session.pushPage(page);
 			}
 			else //navegación horizontal
 			{
 				session.popPage();
+				upPage = session.topPage();
 				session.pushPage(page);
 			}
 		t.setVariable(QString("upurl"),"/library/" + QUrl::toPercentEncoding(libraryName) + "/folder/" +QString("%1?page=%2&up=true").arg(backId).arg(upPage));		
