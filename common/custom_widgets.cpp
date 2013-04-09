@@ -513,7 +513,7 @@ void YACReaderFieldPlainTextEdit::setDisabled(bool disabled)
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 YACReaderSpinSliderWidget::YACReaderSpinSliderWidget(QWidget * parent,bool strechableSlider)
-	:QWidget(parent)
+	:QWidget(parent),tracking(true)
 {
 	QHBoxLayout * layout = new QHBoxLayout;
 	layout->addWidget(label = new QLabel(this),1);
@@ -533,9 +533,29 @@ YACReaderSpinSliderWidget::YACReaderSpinSliderWidget(QWidget * parent,bool strec
 	connect(spinBox, SIGNAL(valueChanged(int)), slider,  SLOT(setValue(int)));
 	connect(slider,  SIGNAL(valueChanged(int)), spinBox, SLOT(setValue(int)));
 
-	connect(spinBox, SIGNAL(valueChanged(int)), this, SIGNAL(valueChanged(int)));
+	connect(slider, SIGNAL(valueChanged(int)), this, SLOT(valueWillChange(int)));
+	connect(spinBox, SIGNAL(valueChanged(int)), this, SLOT(valueWillChangeFromSpinBox(int)));
+
+	connect(slider, SIGNAL(sliderReleased()), this, SLOT(sliderRelease()));
 
 	setLayout(layout);
+}
+void YACReaderSpinSliderWidget::valueWillChange(int v)
+{
+	if(tracking)
+		emit valueChanged(spinBox->value());
+}
+
+void YACReaderSpinSliderWidget::valueWillChangeFromSpinBox(int v)
+{
+	if(!tracking && !slider->isSliderDown())
+		emit valueChanged(spinBox->value());
+}
+
+void YACReaderSpinSliderWidget::sliderRelease()
+{
+	if(!tracking)
+		emit valueChanged(spinBox->value());
 }
 
 void YACReaderSpinSliderWidget::setRange(int lowValue, int topValue, int step)
@@ -551,9 +571,9 @@ void YACReaderSpinSliderWidget::setRange(int lowValue, int topValue, int step)
 
 void YACReaderSpinSliderWidget::setValue(int value)
 {
-	disconnect(spinBox, SIGNAL(valueChanged(int)), this, SIGNAL(valueChanged(int)));
+	disconnect(spinBox, SIGNAL(valueChanged(int)), this, SLOT(valueWillChange(int)));
 	spinBox->setValue(value);
-	connect(spinBox, SIGNAL(valueChanged(int)), this, SIGNAL(valueChanged(int)));
+	connect(spinBox, SIGNAL(valueChanged(int)), this, SLOT(valueWillChange(int)));
 }
 
 void YACReaderSpinSliderWidget::setText(const QString & text)
@@ -573,7 +593,8 @@ QSize YACReaderSpinSliderWidget::minimumSizeHint() const
 
 void YACReaderSpinSliderWidget::setTracking(bool b)
 {
-	slider->setTracking(b);
+	tracking = b;
+	//slider->setTracking(b);
 }
 
 //////////////////////////////////////////////////////////////////////////

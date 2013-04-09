@@ -13,7 +13,7 @@
 TemplateLoader::TemplateLoader(QSettings* settings, QObject* parent)
     : QObject(parent)
 {
-    templatePath=settings->value("path",".").toString();
+    templatePath=settings->value("path","./server/templates").toString();
     // Convert relative path to absolute, based on the directory of the config file.
 #ifdef Q_OS_WIN32
     if (QDir::isRelativePath(templatePath) && settings->format()!=QSettings::NativeFormat)
@@ -25,7 +25,7 @@ TemplateLoader::TemplateLoader(QSettings* settings, QObject* parent)
         templatePath=QFileInfo(configFile.absolutePath(),templatePath).absoluteFilePath();
     }
     fileNameSuffix=settings->value("suffix",".tpl").toString();
-    QString encoding=settings->value("encoding").toString();
+    QString encoding=settings->value("encoding","UTF-8").toString();
     if (encoding.isEmpty()) {
         textCodec=QTextCodec::codecForLocale();
     }
