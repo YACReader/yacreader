@@ -14,7 +14,7 @@ HttpSessionStore::HttpSessionStore(QSettings* settings, QObject* parent)
     connect(&cleanupTimer,SIGNAL(timeout()),this,SLOT(timerEvent()));
     cleanupTimer.start(60000);
     cookieName=settings->value("cookieName","sessionid").toByteArray();
-    expirationTime=settings->value("expirationTime",3600000).toInt();
+    expirationTime=settings->value("expirationTime",18000000).toInt();
     qDebug("HttpSessionStore: Sessions expire after %i milliseconds",expirationTime);
 }
 
@@ -57,7 +57,7 @@ HttpSession HttpSessionStore::getSession(HttpRequest& request, HttpResponse& res
     // Need to create a new session
     if (allowCreate) {
         QByteArray cookieName=settings->value("cookieName","sessionid").toByteArray();
-        QByteArray cookiePath=settings->value("cookiePath").toByteArray();
+        QByteArray cookiePath=settings->value("cookiePath","/").toByteArray();
         QByteArray cookieComment=settings->value("cookieComment").toByteArray();
         QByteArray cookieDomain=settings->value("cookieDomain").toByteArray();
         HttpSession session(true);

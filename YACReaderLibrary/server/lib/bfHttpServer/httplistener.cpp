@@ -14,7 +14,7 @@ HttpListener::HttpListener(QSettings* settings, HttpRequestHandler* requestHandl
     Q_ASSERT(settings!=0);
     this->settings=settings;
     // Start listening
-    int port=settings->value("port").toInt();
+    int port=settings->value("port",8080).toInt();
     listen(QHostAddress::Any, port);
 	//Cambiado
 	int i = 0;

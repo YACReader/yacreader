@@ -15,7 +15,7 @@ StaticFileController::StaticFileController(QSettings* settings, QObject* parent)
 {
     maxAge=settings->value("maxAge","60000").toInt();
     encoding=settings->value("encoding","UTF-8").toString();
-    docroot=settings->value("path",".").toString();
+    docroot=settings->value("path","./server/docroot").toString();
     // Convert relative path to absolute, based on the directory of the config file.
 #ifdef Q_OS_WIN32
     if (QDir::isRelativePath(docroot) && settings->format()!=QSettings::NativeFormat)

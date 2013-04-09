@@ -6,7 +6,7 @@
 TemplateCache::TemplateCache(QSettings* settings, QObject* parent)
     :TemplateLoader(settings,parent)
 {
-    cache.setMaxCost(settings->value("cacheSize","1000000").toInt());
+    cache.setMaxCost(settings->value("cacheSize","160000").toInt());//este tamaño antes era 1000000
     cacheTimeout=settings->value("cacheTime","60000").toInt();
     qDebug("TemplateCache: timeout=%i, size=%i",cacheTimeout,cache.maxCost());
 }
