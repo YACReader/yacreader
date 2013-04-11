@@ -145,62 +145,63 @@
     <message>
         <location filename="comic.cpp" line="216"/>
         <source>Not found</source>
-        <translation type="unfinished">No encontrado</translation>
+        <translatorcomment>No encontrado</translatorcomment>
+        <translation>No encontrado</translation>
     </message>
     <message>
         <location filename="comic.cpp" line="216"/>
         <source>Comic not found</source>
-        <translation type="unfinished">Cómic no encontrado</translation>
+        <translation>Cómic no encontrado</translation>
     </message>
     <message>
         <location filename="comic.cpp" line="243"/>
         <source>File error</source>
-        <translation type="unfinished">Error en archivo</translation>
+        <translation>Error en archivo</translation>
     </message>
     <message>
         <location filename="comic.cpp" line="243"/>
         <source>File not found or not images in file</source>
-        <translation type="unfinished">Archivo no encontrado o no hay imágenes en él</translation>
+        <translation>Archivo no encontrado o no hay imágenes en él</translation>
     </message>
     <message>
         <location filename="comic.cpp" line="297"/>
         <source>7z not found</source>
-        <translation type="unfinished">7z no encontrado</translation>
+        <translation>7z no encontrado</translation>
     </message>
     <message>
         <location filename="comic.cpp" line="297"/>
         <source>7z wasn&apos;t found in your PATH.</source>
-        <translation type="unfinished">7z no se ha encontrado en el PATH.</translation>
+        <translation>7z no se ha encontrado en el PATH.</translation>
     </message>
     <message>
         <location filename="comic.cpp" line="300"/>
         <source>7z crashed</source>
-        <translation type="unfinished">7z falló</translation>
+        <translation>7z falló</translation>
     </message>
     <message>
         <location filename="comic.cpp" line="300"/>
         <source>7z crashed.</source>
-        <translation type="unfinished">7z falló.</translation>
+        <translation>7z falló.</translation>
     </message>
     <message>
         <location filename="comic.cpp" line="303"/>
         <source>7z reading</source>
-        <translation type="unfinished">7z leyendo</translation>
+        <translation>7z leyendo</translation>
     </message>
     <message>
         <location filename="comic.cpp" line="303"/>
         <source>problem reading from 7z</source>
-        <translation type="unfinished">Problema leyendo desde 7z</translation>
+        <translation>Problema leyendo desde 7z</translation>
     </message>
     <message>
         <location filename="comic.cpp" line="306"/>
         <source>7z problem</source>
-        <translation type="unfinished">7z problema</translation>
+        <translation>7z problema</translation>
     </message>
     <message>
         <location filename="comic.cpp" line="306"/>
         <source>Unknown error 7z</source>
-        <translation type="unfinished">Error desconocido 7z</translation>
+        <translation>Error desconocido 7z</translation>
     </message>
 </context>
 <context>
@@ -255,7 +256,7 @@
     <message>
         <location filename="goto_flow_toolbar.cpp" line="44"/>
         <source>Page : </source>
-        <translation type="unfinished"></translation>
+        <translation>Página : </translation>
     </message>
 </context>
 <context>
@@ -533,7 +534,7 @@
     <message>
         <location filename="main_window_viewer.cpp" line="428"/>
         <source>Comic files</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivos de cómic</translation>
     </message>
     <message>
         <source>Comic files (*.cbr *.cbz *.rar *.zip *.pdf *.tar *.arj)</source>
@@ -621,42 +622,42 @@
     <message>
         <location filename="options_dialog.cpp" line="113"/>
         <source>Brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Brillo</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="114"/>
         <source>Contrast</source>
-        <translation type="unfinished"></translation>
+        <translation>Contraste</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="115"/>
         <source>Gamma</source>
-        <translation type="unfinished"></translation>
+        <translation>Gamma</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="119"/>
         <source>Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Reset</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="125"/>
         <source>Image options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opciones de imagen</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="135"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>General</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="136"/>
         <source>Page Flow</source>
-        <translation type="unfinished"></translation>
+        <translation>Page Flow</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="137"/>
         <source>Image adjustment</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajustes de imagen</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="150"/>
@@ -705,22 +706,22 @@
     <message>
         <location filename="viewer.cpp" line="183"/>
         <source>Not found</source>
-        <translation type="unfinished">No encontrado</translation>
+        <translation>No encontrado</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="183"/>
         <source>Comic not found</source>
-        <translation type="unfinished">Cómic no encontrado</translation>
+        <translation>Cómic no encontrado</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="773"/>
         <source>Cover!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡Portada!</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="780"/>
         <source>Last page!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡Última página!</translation>
     </message>
     <message>
         <source>Show Info</source>

@@ -23,11 +23,11 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	qrCode->setFixedSize(200,200);
 
 	QLabel * title1 = new QLabel(tr("EASY SERVER CONNECTION"),this);
-	title1->move(37,30);
+	title1->move(37,28);
 	title1->setStyleSheet("QLabel {color:#1F1F1F; font-size:18px; font-family: Arial; font-weight: bold;}");
 
 	QLabel * title2 = new QLabel(tr("SERVER ADDRESS"),this);
-	title2->move(451,30);
+	title2->move(451,28);
 	title2->setStyleSheet("QLabel {color:#1F1F1F; font-size:18px; font-family: Arial; font-weight: bold;}");
 
 	QLabel * qrMessage = new QLabel(tr("just scan the code with your device!!"),this);
@@ -45,11 +45,11 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	propaganda->setOpenExternalLinks(true);
 
 	QLabel * ipLabel = new QLabel(tr("IP address"),this);
-	ipLabel->move(455,78);
+	ipLabel->move(455,75);
 	ipLabel->setStyleSheet("QLabel {color:#1F1F1F; font-size:13px; font-family: Arial; font-weight: bold;}");
 
 	QLabel * portLabel = new QLabel(tr("Port"),this);
-	portLabel->move(455, 119);
+	portLabel->move(455, 114);
 	portLabel->setStyleSheet("QLabel {color:#1F1F1F; font-size:13px; font-family: Arial; font-weight: bold;}");
 
 	ip = new QComboBox(this);

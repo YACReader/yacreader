@@ -233,62 +233,62 @@
     <message>
         <location filename="../YACReader/comic.cpp" line="216"/>
         <source>Not found</source>
-        <translation type="unfinished"></translation>
+        <translation>No encontrado</translation>
     </message>
     <message>
         <location filename="../YACReader/comic.cpp" line="216"/>
         <source>Comic not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Cómic no encontrado</translation>
     </message>
     <message>
         <location filename="../YACReader/comic.cpp" line="243"/>
         <source>File error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de archivo</translation>
     </message>
     <message>
         <location filename="../YACReader/comic.cpp" line="243"/>
         <source>File not found or not images in file</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivo no encontrado o no hay imágenes en él</translation>
     </message>
     <message>
         <location filename="../YACReader/comic.cpp" line="297"/>
         <source>7z not found</source>
-        <translation type="unfinished">7z no encontrado</translation>
+        <translation>7z no encontrado</translation>
     </message>
     <message>
         <location filename="../YACReader/comic.cpp" line="297"/>
         <source>7z wasn&apos;t found in your PATH.</source>
-        <translation type="unfinished">7z no ha sido encontrado en tu PATH.</translation>
+        <translation>7z no ha sido encontrado en tu PATH.</translation>
     </message>
     <message>
         <location filename="../YACReader/comic.cpp" line="300"/>
         <source>7z crashed</source>
-        <translation type="unfinished">fallo en 7z</translation>
+        <translation>fallo en 7z</translation>
     </message>
     <message>
         <location filename="../YACReader/comic.cpp" line="300"/>
         <source>7z crashed.</source>
-        <translation type="unfinished">fallo en 7z.</translation>
+        <translation>fallo en 7z.</translation>
     </message>
     <message>
         <location filename="../YACReader/comic.cpp" line="303"/>
         <source>7z reading</source>
-        <translation type="unfinished">Leyendo de 7z</translation>
+        <translation>Leyendo de 7z</translation>
     </message>
     <message>
         <location filename="../YACReader/comic.cpp" line="303"/>
         <source>problem reading from 7z</source>
-        <translation type="unfinished">Problema lenyendo de 7z</translation>
+        <translation>Problema lenyendo de 7z</translation>
     </message>
     <message>
         <location filename="../YACReader/comic.cpp" line="306"/>
         <source>7z problem</source>
-        <translation type="unfinished">Problema en 7z</translation>
+        <translation>Problema en 7z</translation>
     </message>
     <message>
         <location filename="../YACReader/comic.cpp" line="306"/>
         <source>Unknown error 7z</source>
-        <translation type="unfinished">Error desconocido en 7z</translation>
+        <translation>Error desconocido en 7z</translation>
     </message>
 </context>
 <context>
@@ -971,47 +971,47 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="server_config_dialog.cpp" line="18"/>
         <source>Update IPs</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualizar IPs</translation>
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="25"/>
         <source>EASY SERVER CONNECTION</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CONEXIÓN AL SERVIDOR FÁCILMENTE</translation>
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="29"/>
         <source>SERVER ADDRESS</source>
-        <translation type="unfinished"></translation>
+        <translation>DATOS SERVIDOR</translation>
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="33"/>
         <source>just scan the code with your device!!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡simplemente escanea el código con tu dispositivo!</translation>
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="39"/>
         <source>YACReader is now available for iOS devices, the best comic reading experience now in your iPad, iPhone or iPod touch. &lt;a href=&apos;http://ios.yacreader.com&apos;&gt; Discover it! &lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>YACReader está ahora disponible para dispositivos iOS, la mejor experiencia de lectura de cómics ahora en tu iPad, iPhone o iPod touch. &lt;a href=&apos;http://ios.yacreader.com&apos;&gt; ¡Descúbrelo! &lt;/a&gt; </translation>
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="47"/>
         <source>IP address</source>
-        <translation type="unfinished"></translation>
+        <translation>IP usada</translation>
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="51"/>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation>Puerto</translation>
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="67"/>
         <source>enable the server</source>
-        <translation type="unfinished"></translation>
+        <translation>activar el servidor</translation>
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="196"/>
         <source>QR generator error!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡Error del generador QR!</translation>
     </message>
 </context>
 <context>
@@ -1034,7 +1034,7 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="db/tablemodel.cpp" line="101"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamaño</translation>
     </message>
 </context>
 <context>
