@@ -96,7 +96,8 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	ip = new QComboBox(this);
 	connect(ip,SIGNAL(activated(const QString &)),this,SLOT(regenerateQR(const QString &)));
 	ip->move(520,71);
-	//ip->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+	ip->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+	ip->setMinimumWidth(110);
 
 	port = new QLineEdit("8080",this);
 	port->setReadOnly(true);
@@ -195,15 +196,16 @@ void ServerConfigDialog::generateQR()
 	foreach(QHostAddress add, list)
 	{
 		QString tmp = add.toString();
-		if(tmp.contains(".") && tmp != "127.0.0.1")
+		if(tmp.contains(".") && !tmp.startsWith("127"))
 		{
-			if(dir.isEmpty())
+			if(dir.isEmpty() && tmp.startsWith("192.168"))
 				dir = tmp;
 			else
 				otherAddresses.push_back(tmp);
 			
 		}	
 	}
+
 #else
 	QList<QString> list = addresses();
 	
@@ -211,9 +213,9 @@ void ServerConfigDialog::generateQR()
 	foreach(QString add, list)
 	{
 		QString tmp = add;
-		if(tmp.contains(".") && tmp != "127.0.0.1")
+		if(tmp.contains(".") && !tmp.startsWith("127"))
 		{
-			if(dir.isEmpty())
+			if(dir.isEmpty() && tmp.startsWith("192.168"))
 				dir = tmp;
 			else
 				otherAddresses.push_back(tmp);
@@ -221,10 +223,11 @@ void ServerConfigDialog::generateQR()
 		}	
 	}
 #endif
-	if(!dir.isEmpty())
+	if(otherAddresses.length()>0)
 	{
 		generateQR(dir+":"+s->getPort());
-		ip->addItem(dir);
+		if(!dir.isEmpty())
+			ip->addItem(dir);
 		ip->addItems(otherAddresses);
 		port->setText(s->getPort());
 	}
@@ -233,9 +236,9 @@ void ServerConfigDialog::generateQR()
 
 	}
 	//qrCode->setText(dir+":8080");
-
+#ifdef Q_WS_MAC
     ip->setFixedWidth(130);
-	
+#endif
 }
 
 void ServerConfigDialog::generateQR(const QString & serverAddress)
