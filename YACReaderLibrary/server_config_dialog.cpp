@@ -10,6 +10,46 @@
 #include "startup.h"
 #include "yacreader_global.h"
 
+#ifndef Q_WS_WIN
+
+#include <sys/types.h>
+#include <ifaddrs.h>
+#include <netinet/in.h> 
+#include <string.h> 
+#include <arpa/inet.h>
+
+QList<QString> addresses()
+{
+	struct ifaddrs * ifAddrStruct=NULL;
+    struct ifaddrs * ifa=NULL;
+    void * tmpAddrPtr=NULL;
+	
+	QList<QString> localAddreses;
+
+    getifaddrs(&ifAddrStruct);
+
+    for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next) {
+        if (ifa ->ifa_addr->sa_family==AF_INET) { // check it is IP4
+            // is a valid IP4 Address
+            tmpAddrPtr=&((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
+            char addressBuffer[INET_ADDRSTRLEN];
+            inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
+			localAddreses.push_back(addressBuffer,INET_ADDRSTRLEN);
+            //printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer); 
+        } else if (ifa->ifa_addr->sa_family==AF_INET6) { // check it is IP6
+            // is a valid IP6 Address
+            tmpAddrPtr=&((struct sockaddr_in6 *)ifa->ifa_addr)->sin6_addr;
+            char addressBuffer[INET6_ADDRSTRLEN];
+            inet_ntop(AF_INET6, tmpAddrPtr, addressBuffer, INET6_ADDRSTRLEN);
+            //printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer); 
+        } 
+    }
+    if (ifAddrStruct!=NULL) freeifaddrs(ifAddrStruct);
+    return 0;
+}
+
+#endif
+
 extern Startup * s;
 
 ServerConfigDialog::ServerConfigDialog(QWidget * parent)
@@ -56,6 +96,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	connect(ip,SIGNAL(activated(const QString &)),this,SLOT(regenerateQR(const QString &)));
 	ip->move(531,71);
 	ip->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+	ip->setMaximumWidth(100);
 
 	port = new QLineEdit("8080",this);
 	port->setReadOnly(true);
@@ -147,7 +188,9 @@ void ServerConfigDialog::generateQR()
 	//}
 	ip->clear();
 	QString dir;
+#ifdef Q_WS_WIN
 	QList<QHostAddress> list = QHostInfo::fromName( QHostInfo::localHostName()  ).addresses();
+
 	QList<QString> otherAddresses;
 	foreach(QHostAddress add, list)
 	{
@@ -161,6 +204,23 @@ void ServerConfigDialog::generateQR()
 			
 		}	
 	}
+#else
+	QList<QString> list = addresses();
+	
+	QList<QString> otherAddresses;
+	foreach(QString add, list)
+	{
+		QString tmp = add;
+		if(tmp.contains(".") && tmp != "127.0.0.1")
+		{
+			if(dir.isEmpty())
+				dir = tmp;
+			else
+				otherAddresses.push_back(tmp);
+			
+		}	
+	}
+#endif
 	if(!dir.isEmpty())
 	{
 		generateQR(dir+":"+s->getPort());
