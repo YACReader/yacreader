@@ -1,4 +1,7 @@
 #! /bin/bash
+if [ $2 == "clean" ]; then
+./cleanOSX.sh
+fi
 
 echo "Compiling YACReader"
 cd ./YACReader
