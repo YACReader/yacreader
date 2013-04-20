@@ -50,6 +50,8 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget * parent)
 	edit->setStyleSheet("background-image: url(:/images/imgEdit.png); width: 100%; height:100%; background-repeat: none; border: none; padding: 3px; color: white;"); 
 	QPixmap p(":/images/imgEdit.png");
 	edit->setFixedSize(54,50);
+	edit->setAttribute(Qt::WA_MacShowFocusRect,false);
+	edit->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
 	//edit->resize(QSize(54,50));
 	edit->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed));
 	edit->setAutoFillBackground(false);
@@ -62,6 +64,7 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget * parent)
 	//centerButton->setIcon(QIcon(":/images/center.png"));
 	centerButton->setStyleSheet(centerButtonCSS); 
 	centerButton->setFixedSize(26,50);
+	centerButton->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
 	connect(centerButton,SIGNAL(clicked()),this,SLOT(centerSlide()));
 	bottom->addWidget(centerButton);
 
@@ -72,6 +75,8 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget * parent)
 	//goToButton->setIcon(QIcon(":/images/goto.png"));
 	goToButton->setStyleSheet(goToButtonCSS); 
 	goToButton->setFixedSize(32,50);
+	goToButton->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
+	
 	connect(goToButton,SIGNAL(clicked()),this,SLOT(goTo()));
 	bottom->addWidget(goToButton);
 
