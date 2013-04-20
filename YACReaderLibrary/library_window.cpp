@@ -16,6 +16,7 @@
 #include <QMatrix>
 
 #include <iterator>
+#include <typeinfo>
 
 #include "data_base_management.h"
 #include "yacreader_global.h"
