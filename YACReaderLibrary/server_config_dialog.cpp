@@ -62,6 +62,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	qrCode = new QLabel(this);
 	qrCode->move(196,73);
 	qrCode->setFixedSize(200,200);
+	qrCode->setScaledContents(true);
 
 	QLabel * title1 = new QLabel(tr("EASY SERVER CONNECTION"),this);
 	title1->move(37,28);

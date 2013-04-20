@@ -24,6 +24,7 @@ cp ./images/iconLibrary.png "./${dest}/"
 cp ./images/db.png "./${dest}/"
 cp ./images/coversPackage.png "./${dest}/"
 cp -R ./utils "./${dest}/"
+cp -R ./release/server "./${dest}/"
 
 echo "Creating package"
 tar -czf "${dest}".tar.gz "${dest}"
