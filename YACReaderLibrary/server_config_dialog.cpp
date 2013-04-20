@@ -223,11 +223,18 @@ void ServerConfigDialog::generateQR()
 		}	
 	}
 #endif
-	if(otherAddresses.length()>0)
+	if(otherAddresses.length()>0 || !dir.isEmpty())
 	{
-		generateQR(dir+":"+s->getPort());
 		if(!dir.isEmpty())
-			ip->addItem(dir);
+		{
+		generateQR(dir+":"+s->getPort());
+		
+		ip->addItem(dir);
+		}
+		else
+		{
+			generateQR(otherAddresses.first()+":"+s->getPort());
+		}
 		ip->addItems(otherAddresses);
 		port->setText(s->getPort());
 	}
