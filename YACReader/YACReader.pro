@@ -97,7 +97,10 @@ macx {
 	ICON = YACReader.icns
 }
 
-TRANSLATIONS = yacreader_es.ts \ yacreader_fr.ts \ yacreader_ru.ts
+TRANSLATIONS = yacreader_es.ts \
+								  yacreader_fr.ts \ 
+								  yacreader_ru.ts \
+								  yacreader_pt.ts \
 FORMS += 
 
 Release:DESTDIR = ../release
