@@ -613,22 +613,22 @@
 <context>
     <name>YACReaderFlowConfigWidget</name>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1167"/>
+        <location filename="../common/custom_widgets.cpp" line="1188"/>
         <source>How to show covers:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1169"/>
+        <location filename="../common/custom_widgets.cpp" line="1190"/>
         <source>CoverFlow look</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1170"/>
+        <location filename="../common/custom_widgets.cpp" line="1191"/>
         <source>Stripe look</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1171"/>
+        <location filename="../common/custom_widgets.cpp" line="1192"/>
         <source>Overlapped Stripe look</source>
         <translation type="unfinished"></translation>
     </message>
@@ -636,112 +636,112 @@
 <context>
     <name>YACReaderGLFlowConfigWidget</name>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="951"/>
+        <location filename="../common/custom_widgets.cpp" line="972"/>
         <source>Presets:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="953"/>
+        <location filename="../common/custom_widgets.cpp" line="974"/>
         <source>Classic look</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="956"/>
+        <location filename="../common/custom_widgets.cpp" line="977"/>
         <source>Stripe look</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="959"/>
+        <location filename="../common/custom_widgets.cpp" line="980"/>
         <source>Overlapped Stripe look</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="962"/>
+        <location filename="../common/custom_widgets.cpp" line="983"/>
         <source>Modern look</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="965"/>
+        <location filename="../common/custom_widgets.cpp" line="986"/>
         <source>Roulette look</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1012"/>
+        <location filename="../common/custom_widgets.cpp" line="1033"/>
         <source>Custom:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1015"/>
+        <location filename="../common/custom_widgets.cpp" line="1036"/>
         <source>View angle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1021"/>
+        <location filename="../common/custom_widgets.cpp" line="1042"/>
         <source>Position</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1027"/>
+        <location filename="../common/custom_widgets.cpp" line="1048"/>
         <source>Cover gap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1033"/>
+        <location filename="../common/custom_widgets.cpp" line="1054"/>
         <source>Central gap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1039"/>
+        <location filename="../common/custom_widgets.cpp" line="1060"/>
         <source>Zoom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1045"/>
+        <location filename="../common/custom_widgets.cpp" line="1066"/>
         <source>Y offset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1051"/>
+        <location filename="../common/custom_widgets.cpp" line="1072"/>
         <source>Z offset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1057"/>
+        <location filename="../common/custom_widgets.cpp" line="1078"/>
         <source>Cover Angle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1063"/>
+        <location filename="../common/custom_widgets.cpp" line="1084"/>
         <source>Visibility</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1069"/>
+        <location filename="../common/custom_widgets.cpp" line="1090"/>
         <source>Light</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1075"/>
+        <location filename="../common/custom_widgets.cpp" line="1096"/>
         <source>Max angle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1105"/>
+        <location filename="../common/custom_widgets.cpp" line="1126"/>
         <source>Low Performance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1107"/>
+        <location filename="../common/custom_widgets.cpp" line="1128"/>
         <source>High Performance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1118"/>
+        <location filename="../common/custom_widgets.cpp" line="1139"/>
         <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1126"/>
+        <location filename="../common/custom_widgets.cpp" line="1147"/>
         <source>Performance:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -749,17 +749,17 @@
 <context>
     <name>YACReaderOptionsDialog</name>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="587"/>
+        <location filename="../common/custom_widgets.cpp" line="608"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="588"/>
+        <location filename="../common/custom_widgets.cpp" line="609"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="596"/>
+        <location filename="../common/custom_widgets.cpp" line="617"/>
         <source>Use hardware acceleration (restart needed)</source>
         <translation type="unfinished"></translation>
     </message>
