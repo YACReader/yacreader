@@ -350,10 +350,10 @@ void Viewer::keyPressEvent(QKeyEvent *event)
 				emit backgroundChanges();
 				break;
 			case Qt::Key_Home:
-				goTo(1);
+				goTo(0);
 				break;
 			case Qt::Key_End:
-				goTo(this->render->numPages());
+				goTo(this->render->numPages()-1);
 				break;
 			default:
 				QAbstractScrollArea::keyPressEvent(event);
