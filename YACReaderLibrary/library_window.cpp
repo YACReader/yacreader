@@ -1169,6 +1169,8 @@ void LibraryWindow::toggleFullScreen()
 
 void LibraryWindow::toFullScreen()
 {
+	fromMaximized = this->isMaximized();
+
 	comicFlow->hide();
 	comicFlow->setSlideSize(slideSizeF);
 	comicFlow->setCenterIndex(comicFlow->centerIndex());
@@ -1199,7 +1201,10 @@ void LibraryWindow::toNormal()
 	libraryToolBar->show();
 	comicFlow->show();
 
-	showNormal();
+	if(fromMaximized)
+		showMaximized();
+	else
+		showNormal();
 }
 
 void LibraryWindow::setFoldersFilter(QString filter)
@@ -1479,5 +1484,5 @@ QString LibraryWindow::getFolderName(const QString & libraryName, qulonglong id)
 void LibraryWindow::closeEvent ( QCloseEvent * event )
 {
 	settings->setValue(MAIN_WINDOW_GEOMETRY, saveGeometry());
-    settings->setValue(MAIN_WINDOW_STATE, saveState());
+    //settings->setValue(MAIN_WINDOW_STATE, saveState());
 }

@@ -53,6 +53,7 @@ class YACReaderSliderAction;
 		bool fullscreen;
 		bool toolbars;
 		bool alwaysOnTop;
+		bool fromMaximized;
 		
 		QString currentDirectory;
 		QString currentDirectoryImgDest;
