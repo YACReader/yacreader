@@ -558,6 +558,8 @@ void MainWindowViewer::toggleFullScreen()
 
 void MainWindowViewer::toFullScreen()
 {
+	fromMaximized = this->isMaximized();
+
 	hideToolBars();
 	viewer->hide();
 	viewer->fullscreen = true;//TODO, change by the right use of windowState();
@@ -573,7 +575,11 @@ void MainWindowViewer::toNormal()
 	viewer->hide();
 	viewer->fullscreen = false;//TODO, change by the right use of windowState();
 	//viewer->hideMagnifyingGlass();
-	showNormal();
+	if(fromMaximized)
+		showMaximized();
+	else
+		showNormal();
+
 	if(Configuration::getConfiguration().getShowToolbars())
 		showToolBars();
 	viewer->show();
