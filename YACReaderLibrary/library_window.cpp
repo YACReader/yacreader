@@ -906,18 +906,38 @@ void LibraryWindow::openComic()
 	}
 }
 
-void LibraryWindow::setCurrentComicReaded()
+void LibraryWindow::setCurrentComicsStatusReaded(bool readed)
 {
-	comicFlow->markSlide(comicFlow->centerIndex());
+	QModelIndexList indexList = comicView->selectionModel()->selectedRows();
+
+	QList<ComicDB> comics = dmCV->getComics(indexList);
+
+	foreach (QModelIndex mi, indexList)
+	{
+		if(readed)
+			comicFlow->markSlide(mi.row());
+		else
+			comicFlow->unmarkSlide(mi.row());
+		
+	}
 	comicFlow->updateMarks();
 
-	ComicDB c = dmCV->getComic(comicView->currentIndex());
-	c.info.read = true;
 	QSqlDatabase db = DataBaseManagement::loadDatabase(dm->getDatabase());
 	db.open();
-	c.info.updateRead(db);
+	db.transaction();
+	foreach (ComicDB c, comics)
+	{
+		c.info.read = readed;
+		c.info.updateRead(db);
+	}
+	db.commit();
 	db.close();
 	QSqlDatabase::removeDatabase(dm->getDatabase());
+}
+
+void LibraryWindow::setCurrentComicReaded()
+{
+	this->setCurrentComicsStatusReaded(true);
 }
 
 void LibraryWindow::setComicsReaded()
@@ -928,17 +948,7 @@ void LibraryWindow::setComicsReaded()
 
 void LibraryWindow::setCurrentComicUnreaded()
 {
-	comicFlow->unmarkSlide(comicFlow->centerIndex());
-	comicFlow->updateMarks();
-
-	ComicDB c = dmCV->getComic(comicView->currentIndex());
-	c.info.read = false;
-	QSqlDatabase db = DataBaseManagement::loadDatabase(dm->getDatabase());
-	db.open();
-	c.info.updateRead(db);
-	db.close();
-	QSqlDatabase::removeDatabase(dm->getDatabase());
-
+	this->setCurrentComicsStatusReaded(false);
 }
 
 void LibraryWindow::setComicsUnreaded()
@@ -1169,8 +1179,6 @@ void LibraryWindow::toggleFullScreen()
 
 void LibraryWindow::toFullScreen()
 {
-	fromMaximized = this->isMaximized();
-
 	comicFlow->hide();
 	comicFlow->setSlideSize(slideSizeF);
 	comicFlow->setCenterIndex(comicFlow->centerIndex());
@@ -1201,10 +1209,7 @@ void LibraryWindow::toNormal()
 	libraryToolBar->show();
 	comicFlow->show();
 
-	if(fromMaximized)
-		showMaximized();
-	else
-		showNormal();
+	showNormal();
 }
 
 void LibraryWindow::setFoldersFilter(QString filter)
@@ -1484,5 +1489,5 @@ QString LibraryWindow::getFolderName(const QString & libraryName, qulonglong id)
 void LibraryWindow::closeEvent ( QCloseEvent * event )
 {
 	settings->setValue(MAIN_WINDOW_GEOMETRY, saveGeometry());
-    //settings->setValue(MAIN_WINDOW_STATE, saveState());
+    settings->setValue(MAIN_WINDOW_STATE, saveState());
 }
