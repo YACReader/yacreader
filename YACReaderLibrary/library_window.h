@@ -50,8 +50,6 @@ private:
 	PropertiesDialog * propertiesDialog;
 	bool fullscreen;
 	bool importedCovers; //if true, the library is read only (not updates,open comic or properties)
-	bool fromMaximized;
-	
 	//Ya no se usan proxies, el rendimiento de la BD es suficiente
 	//YACReaderTreeSearch * proxyFilter;
 	//YACReaderSortComics * proxySort;
@@ -202,6 +200,7 @@ public:
 		void importLibrary(QString clc,QString destPath,QString name);
 		void reloadOptions();
 		void updateFoldersView(QString);
+		void setCurrentComicsStatusReaded(bool readed);
 		void setCurrentComicReaded();
 		void setCurrentComicUnreaded();
 		void setComicsReaded();
