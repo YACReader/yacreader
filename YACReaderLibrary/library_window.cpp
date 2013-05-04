@@ -55,10 +55,8 @@ void LibraryWindow::setupUI()
 	if(settings->contains(MAIN_WINDOW_GEOMETRY))
 		restoreGeometry(settings->value(MAIN_WINDOW_GEOMETRY).toByteArray());
 	else
-		showMaximized();
-
-	if(settings->contains(MAIN_WINDOW_STATE))
-		restoreState(settings->value(MAIN_WINDOW_STATE).toByteArray());
+		if(settings->value(USE_OPEN_GL).toBool() == false)
+			showMaximized();
 }
 
 void LibraryWindow::doLayout()
@@ -266,7 +264,7 @@ void LibraryWindow::createActions()
 {
 	createLibraryAction = new QAction(this);
 	createLibraryAction->setToolTip(tr("Create a new library"));
-	createLibraryAction->setShortcut(Qt::Key_C);
+	createLibraryAction->setShortcut(Qt::Key_A);
 	createLibraryAction->setIcon(QIcon(":/images/new.png"));
 
 	openLibraryAction = new QAction(this);
@@ -353,22 +351,27 @@ void LibraryWindow::createActions()
 	helpAboutAction->setIcon(QIcon(":/images/help.png"));
 
 	setRootIndexAction = new QAction(this);
+	setRootIndexAction->setShortcut(Qt::Key_0);
 	setRootIndexAction->setToolTip(tr("Select root node"));
 	setRootIndexAction->setIcon(QIcon(":/images/setRoot.png"));
 
 	expandAllNodesAction = new QAction(this);
+	expandAllNodesAction->setShortcut(tr("+"));
 	expandAllNodesAction->setToolTip(tr("Expand all nodes"));
 	expandAllNodesAction->setIcon(QIcon(":/images/expand.png"));
 
 	colapseAllNodesAction = new QAction(this);
+	colapseAllNodesAction->setShortcut(tr("-"));
 	colapseAllNodesAction->setToolTip(tr("Colapse all nodes"));
 	colapseAllNodesAction->setIcon(QIcon(":/images/colapse.png"));
 
 	optionsAction = new QAction(this);
+	optionsAction->setShortcut(Qt::Key_C);
 	optionsAction->setToolTip(tr("Show options dialog"));
 	optionsAction->setIcon(QIcon(":/images/options.png"));
 
 	serverConfigAction = new QAction(this);
+	serverConfigAction->setShortcut(Qt::Key_S);
 	serverConfigAction->setToolTip(tr("Show comics server options dialog"));
 	serverConfigAction->setIcon(QIcon(":/images/server.png"));
 
@@ -1179,6 +1182,8 @@ void LibraryWindow::toggleFullScreen()
 
 void LibraryWindow::toFullScreen()
 {
+	fromMaximized = this->isMaximized();
+
 	comicFlow->hide();
 	comicFlow->setSlideSize(slideSizeF);
 	comicFlow->setCenterIndex(comicFlow->centerIndex());
@@ -1209,7 +1214,10 @@ void LibraryWindow::toNormal()
 	libraryToolBar->show();
 	comicFlow->show();
 
-	showNormal();
+	if(fromMaximized)
+		showMaximized();
+	else
+		showNormal();
 }
 
 void LibraryWindow::setFoldersFilter(QString filter)
@@ -1489,5 +1497,4 @@ QString LibraryWindow::getFolderName(const QString & libraryName, qulonglong id)
 void LibraryWindow::closeEvent ( QCloseEvent * event )
 {
 	settings->setValue(MAIN_WINDOW_GEOMETRY, saveGeometry());
-    settings->setValue(MAIN_WINDOW_STATE, saveState());
 }
