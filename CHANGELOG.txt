@@ -1,3 +1,8 @@
+6.0.1
+Corregido bug al usar las teclas Inicio/fin
+Corregido bug que al arrancar YACReaderLibrary por primera vez causaba que no se mostrasen las portadas (sólo bajo ciertas circunstancias)
+Añadidos algunos atajos de teclado a YACReaderLibrary a los ya existentes
+
 6.0
 
 Mejorada la velocidad de inicio gracias al uso de /LTCG como opción de compilación
