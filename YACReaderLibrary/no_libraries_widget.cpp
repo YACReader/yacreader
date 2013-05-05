@@ -48,9 +48,9 @@ NoLibrariesWidget::NoLibrariesWidget(QWidget *parent) :
 	layout->addWidget(iconLabel,0,Qt::AlignHCenter);
 	layout->addSpacing(10);
 	layout->addWidget(text,0,Qt::AlignHCenter);
-	layout->addSpacing(8);
+	layout->addSpacing(10);
 	layout->addWidget(lineLabel,0,Qt::AlignHCenter);
-	layout->addSpacing(12);
+	layout->addSpacing(10);
 	layout->addLayout(buttonLayout,0);
 	layout->addSpacing(150);
 	layout->addStretch();
