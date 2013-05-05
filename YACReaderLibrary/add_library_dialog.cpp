@@ -17,10 +17,12 @@ void AddLibraryDialog::setupUI()
 	textLabel = new QLabel(tr("Comics folder : "));
 	path = new QLineEdit;
 	textLabel->setBuddy(path);
+	connect(path,SIGNAL(textChanged(QString)),this,SLOT(pathSetted(QString)));
 
 	nameLabel = new QLabel(tr("Library Name : "));
 	nameEdit = new QLineEdit;
 	nameLabel->setBuddy(nameEdit);
+	connect(nameEdit,SIGNAL(textChanged(QString)),this,SLOT(nameSetted(QString)));
 
 	accept = new QPushButton(tr("Add"));
 	accept->setDisabled(true);
@@ -72,14 +74,46 @@ void AddLibraryDialog::add()
 	close();
 }
 
+void AddLibraryDialog::nameSetted(const QString & text)
+{
+	if(!text.isEmpty())
+	{
+		if(!path->text().isEmpty())
+		{
+			QFileInfo fi(path->text());
+			if(fi.isDir())
+				accept->setEnabled(true);
+			else
+				accept->setEnabled(false);
+		}
+	}
+	else
+		accept->setEnabled(false);
+}
+
+void AddLibraryDialog::pathSetted(const QString & text)
+{
+	QFileInfo fi(text);
+	if(fi.isDir())
+	{
+		if(!nameEdit->text().isEmpty())
+			accept->setEnabled(true);
+	}
+	else
+		accept->setEnabled(false);
+}
+
 void AddLibraryDialog::findPath()
 {
 	QString s = QFileDialog::getExistingDirectory(0,"Comics directory",".");
 	if(!s.isEmpty())
 	{
 		path->setText(s);
-		accept->setEnabled(true);
+		if(!nameEdit->text().isEmpty())
+			accept->setEnabled(true);
 	}
+	else
+		accept->setEnabled(false);
 }
 
 void AddLibraryDialog::close()
