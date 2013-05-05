@@ -11,6 +11,7 @@
 #include <QComboBox>
 #include <QThread>
 #include <QFileInfoList>
+#include <QStackedWidget>
 
 #include "create_library_dialog.h"
 #include "add_library_dialog.h"
@@ -30,6 +31,7 @@
 #include "tablemodel.h"
 #include "treeitem.h"
 #include "server_config_dialog.h"
+#include "no_libraries_widget.h"
 
 class LibraryWindow : public QMainWindow
 {
@@ -78,6 +80,9 @@ private:
 	QMap<QString,QString> libraries;
 	QLabel * fullScreenToolTip;
 	YACReaderIconProvider fip;
+
+	QStackedWidget * mainWidget;
+	NoLibrariesWidget * noLibrariesWidget;
 
 	bool fetching;
 
@@ -211,6 +216,8 @@ public:
 		void showExportComicsInfo();
 		void showImportComicsInfo();
 		void asignNumbers();
+		void showNoLibrariesWidget();
+		void hideNoLibrariesWidget();
 
 		//server interface
 		QMap<QString,QString> getLibraries(){return libraries;};

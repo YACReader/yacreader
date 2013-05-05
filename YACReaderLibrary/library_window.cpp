@@ -21,6 +21,7 @@
 #include "data_base_management.h"
 #include "yacreader_global.h"
 #include "onstart_flow_selection_dialog.h"
+#include "no_libraries_widget.h"
 
 //
 
@@ -29,10 +30,23 @@ LibraryWindow::LibraryWindow()
 {
 	setupUI();
 	loadLibraries();
+
+	if(libraries.size()==0)
+	{
+		showNoLibrariesWidget();
+	}
+	else
+	{
+		hideNoLibrariesWidget();
+	}
 }
 
 void LibraryWindow::setupUI()
 {
+	setWindowIcon(QIcon(":/images/iconLibrary.png"));
+
+	setUnifiedTitleAndToolBarOnMac(true);
+
 	libraryCreator = new LibraryCreator();
 	packageManager = new PackageManager();
 
@@ -195,7 +209,9 @@ void LibraryWindow::doLayout()
 	sHorizontal->addWidget(sVertical);
 	sHorizontal->setStretchFactor(0,0);
 	sHorizontal->setStretchFactor(1,1);
-	setCentralWidget(sHorizontal);
+	mainWidget = new QStackedWidget(this);
+	mainWidget->addWidget(sHorizontal);
+	setCentralWidget(mainWidget);
 	//FINAL LAYOUT-------------------------------------------------------------
 
 	fullScreenToolTip = new QLabel(comicFlow);
@@ -207,6 +223,12 @@ void LibraryWindow::doLayout()
 	fullScreenToolTip->adjustSize();
 
 	comicFlow->setFocus(Qt::OtherFocusReason);
+
+	noLibrariesWidget = new NoLibrariesWidget();
+	mainWidget->addWidget(noLibrariesWidget);
+
+	connect(noLibrariesWidget,SIGNAL(createNewLibrary()),this,SLOT(createLibrary()));
+	connect(noLibrariesWidget,SIGNAL(addExistingLibrary()),this,SLOT(showAddLibrary()));
 }
 
 void LibraryWindow::doDialogs()
@@ -668,6 +690,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 {
 	if(libraries.size()>0)  //si hay bibliotecas...
 	{	
+		hideNoLibrariesWidget();
 		QString path=libraries.value(name)+"/.yacreaderlibrary";
 		QDir d; //TODO change this by static methods (utils class?? with delTree for example)
 		QString dbVersion;
@@ -768,6 +791,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 	else //en caso de que no exista ninguna biblioteca se desactivan los botones pertinentes
 	{
 		disableAllActions();
+		showNoLibrariesWidget();
 	}
 }
 
@@ -1497,4 +1521,13 @@ QString LibraryWindow::getFolderName(const QString & libraryName, qulonglong id)
 void LibraryWindow::closeEvent ( QCloseEvent * event )
 {
 	settings->setValue(MAIN_WINDOW_GEOMETRY, saveGeometry());
+}
+
+void LibraryWindow::showNoLibrariesWidget()
+{
+	mainWidget->setCurrentIndex(1);
+}
+void LibraryWindow::hideNoLibrariesWidget()
+{
+	mainWidget->setCurrentIndex(0);
 }
