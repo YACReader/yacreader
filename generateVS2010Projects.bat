@@ -1,10 +1,10 @@
 
 echo Setting up a Qt environment...
 
-set QTDIR=D:\Desarrollo\Qt\4.8.3
-echo -- QTDIR set to D:\Desarrollo\Qt\4.8.3
-set PATH=D:\Desarrollo\Qt\4.8.3\bin;%PATH%
-echo -- Added D:\Desarrollo\Qt\4.8.3\bin to PATH
+set QTDIR=D:\Desarrollo\Qt\4.8.4
+echo -- QTDIR set to D:\Desarrollo\Qt\4.8.4
+set PATH=D:\Desarrollo\Qt\4.8.4\bin;%PATH%
+echo -- Added D:\Desarrollo\Qt\4.8.4\bin to PATH
 set QMAKESPEC=win32-msvc2010
 echo -- QMAKESPEC set to "win32-msvc2010"
 

@@ -35,6 +35,8 @@ void MainWindowViewer::setupUI()
 {
 	setWindowIcon(QIcon(":/images/icon.png"));
 
+	setUnifiedTitleAndToolBarOnMac(true);
+
 	viewer = new Viewer(this);
 	connect(viewer,SIGNAL(reset()),this,SLOT(disableActions()));
 

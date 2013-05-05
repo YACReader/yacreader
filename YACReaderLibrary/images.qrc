@@ -4,6 +4,7 @@
     <file>../images/folder.png</file>
     <file>../images/help.png</file>
     <file>../images/icon.png</file>
+    <file>../images/iconLibrary.png</file>
     <file>../images/new.png</file>
     <file>../images/openLibrary.png</file>
     <file>../images/removeLibrary.png</file>
@@ -57,5 +58,7 @@
 	<file>../images/comicTar.png</file>
 	<file>../images/comic7z.png</file>
     <file>../images/serverConfigBackground.png</file>
+	<file>../images/noLibrariesIcon.png</file>
+	<file>../images/noLibrariesLine.png</file>
   </qresource>
 </RCC>
