@@ -17,9 +17,10 @@ void RenameLibraryDialog::setupUI()
 	newNameLabel = new QLabel(tr("New Library Name : "));
 	newNameEdit = new QLineEdit;
 	newNameLabel->setBuddy(newNameEdit);
+	connect(newNameEdit,SIGNAL(textChanged(QString)),this,SLOT(nameSetted(QString)));
 
 	accept = new QPushButton(tr("Rename"));
-	//accept->setDisabled(true);
+	accept->setDisabled(true);
 	connect(accept,SIGNAL(clicked()),this,SLOT(rename()));
 
 	cancel = new QPushButton(tr("Cancel"));
@@ -58,6 +59,14 @@ void RenameLibraryDialog::rename()
 	//accept->setEnabled(false);
 	emit(renameLibrary(newNameEdit->text()));
 	close();
+}
+
+void RenameLibraryDialog::nameSetted(const QString & text)
+{
+	if(!text.isEmpty())
+		accept->setEnabled(true);
+	else
+		accept->setEnabled(false);
 }
 
 void RenameLibraryDialog::close()

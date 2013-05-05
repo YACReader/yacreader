@@ -948,7 +948,7 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="rename_library_dialog.cpp" line="17"/>
         <source>New Library Name : </source>
-        <translation>Nombre de la nueva biblioteca :</translation>
+        <translation>Nuevo nombre de la biblioteca :</translation>
     </message>
     <message>
         <location filename="rename_library_dialog.cpp" line="21"/>
@@ -976,7 +976,7 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="server_config_dialog.cpp" line="67"/>
         <source>EASY SERVER CONNECTION</source>
-        <translation type="unfinished">CONEXIÓN AL SERVIDOR FÁCILMENTE</translation>
+        <translation>CONEXIÓN AL SERVIDOR FÁCILMENTE</translation>
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="71"/>

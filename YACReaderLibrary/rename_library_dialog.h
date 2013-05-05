@@ -21,6 +21,7 @@
 		public slots:
 			void rename();
 			void close();
+			void nameSetted(const QString & name);
 signals:
 			void renameLibrary(QString newName);
 	};

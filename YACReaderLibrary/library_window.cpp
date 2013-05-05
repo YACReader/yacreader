@@ -200,6 +200,7 @@ void LibraryWindow::doLayout()
 	sVertical->addWidget(comicFlow);
 	comics = new QWidget;
 	QVBoxLayout * comicsLayout = new QVBoxLayout;
+	comicsLayout->setSpacing(0);
 	comicsLayout->setContentsMargins(2,2,0,0);
 	comicsLayout->addWidget(editInfoToolBar = new QToolBar(comics));
 	comicsLayout->addWidget(comicView);
@@ -507,11 +508,9 @@ void LibraryWindow::enableLibraryActions()
 void LibraryWindow::createToolBars()
 {
 	libraryToolBar = addToolBar(tr("Library"));
-#ifndef Q_WS_MAC
+
 	libraryToolBar->setIconSize(QSize(32,32)); //TODO make icon size dynamic
-#else
-	libraryToolBar->setIconSize(QSize(24,24));
-#endif
+
 	libraryToolBar->addAction(createLibraryAction);
 	libraryToolBar->addAction(openLibraryAction);
 
