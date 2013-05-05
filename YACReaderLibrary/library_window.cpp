@@ -69,7 +69,7 @@ void LibraryWindow::setupUI()
 	if(settings->contains(MAIN_WINDOW_GEOMETRY))
 		restoreGeometry(settings->value(MAIN_WINDOW_GEOMETRY).toByteArray());
 	else
-		if(settings->value(USE_OPEN_GL).toBool() == false)
+		//if(settings->value(USE_OPEN_GL).toBool() == false)
 			showMaximized();
 }
 
@@ -740,7 +740,9 @@ void LibraryWindow::loadLibrary(const QString & name)
 				}
 				enableLibraryActions();
 
-				loadCovers(QModelIndex());
+				setRootIndex();
+				//TODO encontrar el bug que provoca que no se carguen adecuadamente las carátulas en root.
+				setRootIndex();
 
 				//includeComicsCheckBox->setCheckState(Qt::Unchecked);
 				foldersFilter->clear();

@@ -10,7 +10,10 @@ NoLibrariesWidget::NoLibrariesWidget(QWidget *parent) :
 {
 	setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
 
-	setStyleSheet("{color:FFFFFF;}");
+	QPalette p(palette());
+    p.setColor(QPalette::Background, Qt::white);
+    setAutoFillBackground(true);
+    setPalette(p);
 
 	QPixmap icon(":/images/noLibrariesIcon.png");
 	QLabel * iconLabel  = new QLabel();
@@ -30,6 +33,8 @@ NoLibrariesWidget::NoLibrariesWidget(QWidget *parent) :
 
 	QVBoxLayout * layout = new QVBoxLayout(this);
 	QHBoxLayout * buttonLayout = new QHBoxLayout();
+	//QHBoxLayout * topLayout = new QHBoxLayout();
+	//QVBoxLayout * textLayout = new QVBoxLayout();
 
 	layout->setAlignment(Qt::AlignHCenter);
 
