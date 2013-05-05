@@ -507,7 +507,11 @@ void LibraryWindow::enableLibraryActions()
 void LibraryWindow::createToolBars()
 {
 	libraryToolBar = addToolBar(tr("Library"));
+#ifndef Q_WS_MAC
 	libraryToolBar->setIconSize(QSize(32,32)); //TODO make icon size dynamic
+#else
+	libraryToolBar->setIconSize(QSize(24,24));
+#endif
 	libraryToolBar->addAction(createLibraryAction);
 	libraryToolBar->addAction(openLibraryAction);
 
@@ -570,6 +574,7 @@ void LibraryWindow::createToolBars()
 	comicFlow->addAction(toggleFullScreenAction);
 	comicFlow->addAction(openComicAction);
 
+	editInfoToolBar->setIconSize(QSize(18,18));
 	editInfoToolBar->addAction(openComicAction);
 	editInfoToolBar->addSeparator();
 	editInfoToolBar->addAction(editSelectedComicsAction);

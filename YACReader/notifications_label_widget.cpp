@@ -8,6 +8,7 @@
 NotificationsLabelWidget::NotificationsLabelWidget(QWidget * parent)
 	:QWidget(parent)
 {
+	setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
 	effect = new QGraphicsOpacityEffect(this);
 	effect->setOpacity(1.0);
 
@@ -33,10 +34,12 @@ NotificationsLabelWidget::NotificationsLabelWidget(QWidget * parent)
 	QPixmap p(":/images/notificationsLabel.png");
 	imgLabel->resize(p.size());
 	imgLabel->setPixmap(p);
+	imgLabel->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
 
 	textLabel = new QLabel(this);
 	textLabel->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
 	textLabel->setStyleSheet("QLabel { color : white; font-size:24px; }");
+	textLabel->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
 
 	textLabel->setGeometry(imgLabel->geometry());
 
