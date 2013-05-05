@@ -398,16 +398,7 @@ void LibraryWindow::createActions()
 	serverConfigAction->setIcon(QIcon(":/images/server.png"));
 
 	//disable actions
-	updateLibraryAction->setEnabled(false);
-	renameLibraryAction->setEnabled(false);
-	deleteLibraryAction->setEnabled(false);
-	removeLibraryAction->setEnabled(false);
-	openComicAction->setEnabled(false);
-	showPropertiesAction->setEnabled(false);
-	setAsReadAction->setEnabled(false);
-	setAsNonReadAction->setEnabled(false);
-	setAllAsReadAction->setEnabled(false);
-	setAllAsNonReadAction->setEnabled(false);
+	disableAllActions();
 
 	openContainingFolderAction = new QAction(this);
 	openContainingFolderAction->setText(tr("Open folder..."));
@@ -455,15 +446,18 @@ void LibraryWindow::disableAllActions()
 	renameLibraryAction->setEnabled(false);
 	deleteLibraryAction->setEnabled(false);
 	removeLibraryAction->setEnabled(false);
-	foldersFilter->setEnabled(false);
-	clearFoldersFilter->setEnabled(false);
+	openComicAction->setEnabled(false);
+	showPropertiesAction->setEnabled(false);
 	setAsReadAction->setEnabled(false);
 	setAsNonReadAction->setEnabled(false);
 	setAllAsReadAction->setEnabled(false);
 	setAllAsNonReadAction->setEnabled(false);
-	selectAllComicsAction->setEnabled(false);
-	editSelectedComicsAction->setEnabled(false);
-	asignOrderActions->setEnabled(false);
+
+	showHideMarksAction->setEnabled(false);
+	importComicsInfo->setEnabled(false);
+	exportComicsInfo->setEnabled(false);
+	exportLibraryAction->setEnabled(false);
+	toggleFullScreenAction->setEnabled(false);
 }
 
 //librería de sólo lectura
@@ -494,6 +488,12 @@ void LibraryWindow::enableActions()
 	setAsNonReadAction->setEnabled(true);
 	setAllAsReadAction->setEnabled(true);
 	setAllAsNonReadAction->setEnabled(true);
+
+	showHideMarksAction->setEnabled(true);
+	importComicsInfo->setEnabled(true);
+	exportComicsInfo->setEnabled(true);
+	exportLibraryAction->setEnabled(true);
+	toggleFullScreenAction->setEnabled(true);
 }
 void LibraryWindow::enableLibraryActions()
 {
@@ -853,6 +853,9 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 		selectAllComicsAction->setEnabled(true);
 		editSelectedComicsAction->setEnabled(true);
 		asignOrderActions->setEnabled(true);
+
+		showHideMarksAction->setEnabled(true);
+		toggleFullScreenAction->setEnabled(true);
 	}
 	else
 	{
@@ -865,6 +868,9 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 		selectAllComicsAction->setEnabled(false);
 		editSelectedComicsAction->setEnabled(false);
 		asignOrderActions->setEnabled(false);
+
+		showHideMarksAction->setEnabled(false);
+		toggleFullScreenAction->setEnabled(false);
 	}
 	if(paths.size()>0)
 		comicView->setCurrentIndex(dmCV->index(0,0));
