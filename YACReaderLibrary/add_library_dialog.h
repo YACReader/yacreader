@@ -25,6 +25,8 @@
 		void add();
 		void findPath();
 		void close();
+		void nameSetted(const QString & text);
+		void pathSetted(const QString & text);
 	signals:
 		void addLibrary(QString target, QString name);
 	};

@@ -17,10 +17,12 @@ void CreateLibraryDialog::setupUI()
 	textLabel = new QLabel(tr("Comics folder : "));
 	path = new QLineEdit;
 	textLabel->setBuddy(path);
+	connect(path,SIGNAL(textChanged(QString)),this,SLOT(pathSetted(QString)));
 
 	nameLabel = new QLabel(tr("Library Name : "));
 	nameEdit = new QLineEdit;
 	nameLabel->setBuddy(nameEdit);
+	connect(nameEdit,SIGNAL(textChanged(QString)),this,SLOT(nameSetted(QString)));
 
 	accept = new QPushButton(tr("Create"));
 	accept->setDisabled(true);
@@ -108,16 +110,6 @@ void CreateLibraryDialog::create()
 		QMessageBox::critical(NULL,tr("Path not found"),tr("The selected path does not exist or is not a valid path. Be sure that you have write access to this folder"));
 }
 
-void CreateLibraryDialog::findPath()
-{
-	QString s = QFileDialog::getExistingDirectory(0,"Comics directory",".");
-	if(!s.isEmpty())
-	{
-		path->setText(s);
-		accept->setEnabled(true);
-	}
-}
-
 void CreateLibraryDialog::showCurrentFile(QString file)
 {
 	currentFileLabel->setText(tr("Importing : \n") + file);
@@ -125,6 +117,49 @@ void CreateLibraryDialog::showCurrentFile(QString file)
 	//this->adjustSize();
 	//is->update();
 }
+
+void CreateLibraryDialog::nameSetted(const QString & text)
+{
+	if(!text.isEmpty())
+	{
+		if(!path->text().isEmpty())
+		{
+			QFileInfo fi(path->text());
+			if(fi.isDir())
+				accept->setEnabled(true);
+			else
+				accept->setEnabled(false);
+		}
+	}
+	else
+		accept->setEnabled(false);
+}
+
+void CreateLibraryDialog::pathSetted(const QString & text)
+{
+	QFileInfo fi(text);
+	if(fi.isDir())
+	{
+		if(!nameEdit->text().isEmpty())
+			accept->setEnabled(true);
+	}
+	else
+		accept->setEnabled(false);
+}
+
+void CreateLibraryDialog::findPath()
+{
+	QString s = QFileDialog::getExistingDirectory(0,"Comics directory",".");
+	if(!s.isEmpty())
+	{
+		path->setText(s);
+		if(!nameEdit->text().isEmpty())
+			accept->setEnabled(true);
+	}
+	else
+		accept->setEnabled(false);
+}
+
 void CreateLibraryDialog::close()
 {
 	progressBar->hide();

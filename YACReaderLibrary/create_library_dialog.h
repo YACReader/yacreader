@@ -31,6 +31,8 @@
 		void showCurrentFile(QString file);
 		void close();
 		void setDataAndStart(QString name, QString paht);
+		void nameSetted(const QString & text);
+		void pathSetted(const QString & text);
 	signals:
 		void createLibrary(QString source, QString target, QString name);
 		void cancelCreate();
