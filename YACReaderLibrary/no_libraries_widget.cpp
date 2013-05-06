@@ -11,7 +11,7 @@ NoLibrariesWidget::NoLibrariesWidget(QWidget *parent) :
 	setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
 
 	QPalette p(palette());
-    p.setColor(QPalette::Background, Qt::white);
+    p.setColor(QPalette::Background, QColor(250,250,250));
     setAutoFillBackground(true);
     setPalette(p);
 
@@ -23,7 +23,7 @@ NoLibrariesWidget::NoLibrariesWidget(QWidget *parent) :
 	QLabel * lineLabel = new QLabel();
 	lineLabel->setPixmap(line);
 
-	QLabel * text = new QLabel(tr("<font color=\"#565959\">You don't have any library yet</font>"));
+	QLabel * text = new QLabel(tr("<font color=\"#565959\">You don't have any librarires yet</font>"));
 	text->setStyleSheet("QLabel {font-size:25px;font-weight:bold;}");
 
 	QPushButton * createButton = new QPushButton(tr("create your first library"));

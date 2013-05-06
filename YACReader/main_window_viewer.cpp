@@ -596,6 +596,8 @@ void MainWindowViewer::toggleToolBars()
 	toolbars?hideToolBars():showToolBars();
 
 	Configuration::getConfiguration().setShowToolbars(toolbars);
+
+	comicToolBar->setMovable(false);
 }
 void MainWindowViewer::hideToolBars()
 {
