@@ -105,6 +105,7 @@ void CreateLibraryDialog::create()
 		this->adjustSize();
 		accept->setEnabled(false);
 		emit(createLibrary(QDir::cleanPath(path->text()),QDir::cleanPath(path->text())+"/.yacreaderlibrary",nameEdit->text()));
+		close();
 	}
 	else
 		QMessageBox::critical(NULL,tr("Path not found"),tr("The selected path does not exist or is not a valid path. Be sure that you have write access to this folder"));

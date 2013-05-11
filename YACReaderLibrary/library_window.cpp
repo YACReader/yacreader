@@ -22,6 +22,7 @@
 #include "yacreader_global.h"
 #include "onstart_flow_selection_dialog.h"
 #include "no_libraries_widget.h"
+#include "import_widget.h"
 
 //
 
@@ -37,7 +38,7 @@ LibraryWindow::LibraryWindow()
 	}
 	else
 	{
-		hideNoLibrariesWidget();
+		showRootWidget();
 	}
 }
 
@@ -227,6 +228,9 @@ void LibraryWindow::doLayout()
 
 	noLibrariesWidget = new NoLibrariesWidget();
 	mainWidget->addWidget(noLibrariesWidget);
+
+	importWidget = new ImportWidget();
+	mainWidget->addWidget(importWidget);
 
 	connect(noLibrariesWidget,SIGNAL(createNewLibrary()),this,SLOT(createLibrary()));
 	connect(noLibrariesWidget,SIGNAL(addExistingLibrary()),this,SLOT(showAddLibrary()));
@@ -595,12 +599,19 @@ void LibraryWindow::createConnections()
 	//libraryCreator connections
 	connect(createLibraryDialog,SIGNAL(createLibrary(QString,QString,QString)),this,SLOT(create(QString,QString,QString)));
 	connect(importComicsInfoDialog,SIGNAL(finished(int)),this,SLOT(reloadCurrentLibrary()));
+
 	connect(libraryCreator,SIGNAL(coverExtracted(QString)),createLibraryDialog,SLOT(showCurrentFile(QString)));
 	connect(libraryCreator,SIGNAL(finished()),createLibraryDialog,SLOT(close()));
 	connect(libraryCreator,SIGNAL(coverExtracted(QString)),updateLibraryDialog,SLOT(showCurrentFile(QString)));
 	connect(libraryCreator,SIGNAL(finished()),updateLibraryDialog,SLOT(close()));
+	connect(libraryCreator,SIGNAL(finished()),this,SLOT(showRootWidget()));
 	connect(libraryCreator,SIGNAL(updated()),this,SLOT(reloadCurrentLibrary()));
 	connect(libraryCreator,SIGNAL(created()),this,SLOT(openLastCreated()));
+	//new import widget
+	connect(libraryCreator,SIGNAL(comicAdded(QString,QString)),importWidget,SLOT(newComic(QString,QString)));
+	//connect(libraryCreator,SIGNAL(finished()),importWidget,SLOT(clear()));
+	//connect(importWidget,SIGNAL(stop()),this,SLOT(cancelCreating()));
+	connect(importWidget,SIGNAL(stop()),this,SLOT(stopLibraryCreator()));
 
 	//packageManager connections
 	connect(exportLibraryDialog,SIGNAL(exportPath(QString)),this,SLOT(exportLibrary(QString)));
@@ -694,7 +705,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 {
 	if(libraries.size()>0)  //si hay bibliotecas...
 	{	
-		hideNoLibrariesWidget();
+		showRootWidget();
 		QString path=libraries.value(name)+"/.yacreaderlibrary";
 		QDir d; //TODO change this by static methods (utils class?? with delTree for example)
 		QString dbVersion;
@@ -1008,6 +1019,8 @@ void LibraryWindow::create(QString source, QString dest, QString name)
 	_lastAdded = name;
 	_sourceLastAdded = source;
 
+	showImportingWidget();
+
 }
 
 void LibraryWindow::reloadCurrentLibrary()
@@ -1101,7 +1114,9 @@ void LibraryWindow::saveLibraries()
 
 void LibraryWindow::updateLibrary()
 {
-	updateLibraryDialog->show();
+	//updateLibraryDialog->show();
+	showImportingWidget();
+
 	QString currentLibrary = selectedLibrary->currentText();
 	QString path = libraries.value(currentLibrary);
 	_lastAdded = currentLibrary;
@@ -1539,7 +1554,16 @@ void LibraryWindow::showNoLibrariesWidget()
 {
 	mainWidget->setCurrentIndex(1);
 }
-void LibraryWindow::hideNoLibrariesWidget()
+
+void LibraryWindow::showRootWidget()
 {
+	libraryToolBar->setDisabled(false);
 	mainWidget->setCurrentIndex(0);
+}
+
+void LibraryWindow::showImportingWidget()
+{
+	importWidget->clear();
+	libraryToolBar->setDisabled(true);
+	mainWidget->setCurrentIndex(2);
 }

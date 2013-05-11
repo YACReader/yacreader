@@ -57,8 +57,12 @@
 	<file>../images/comicRar.png</file>
 	<file>../images/comicTar.png</file>
 	<file>../images/comic7z.png</file>
-    <file>../images/serverConfigBackground.png</file>
+  <file>../images/serverConfigBackground.png</file>
 	<file>../images/noLibrariesIcon.png</file>
 	<file>../images/noLibrariesLine.png</file>
+  <file>../images/importingIcon.png</file>
+  <file>../images/importTopCoversDecoration.png</file>
+  <file>../images/importBottomCoversDecoration.png</file>
+  <file>../images/glowLine.png</file>
   </qresource>
 </RCC>

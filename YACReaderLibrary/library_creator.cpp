@@ -233,6 +233,8 @@ void LibraryCreator::insertComic(const QString & relativePath,const QFileInfo & 
 		//ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+fileInfo.fileName()+".jpg");
 		tc.create();
 		numPages = tc.getNumPages();
+
+		emit(comicAdded(relativePath,_target+"/covers/"+hash+".jpg"));
 	}
 	comic.info.setNumPages(numPages);
 	comic.insert(_database);

@@ -52,6 +52,7 @@
 		void finished();
         void coverExtracted(QString);
         void folderUpdated(QString);
+		void comicAdded(QString,QString);
 		void updated();
 		void created();
 	};

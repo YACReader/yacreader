@@ -13,6 +13,7 @@
 #include <QFileInfoList>
 #include <QStackedWidget>
 
+//TODO cambiar por class XXXXX
 #include "create_library_dialog.h"
 #include "add_library_dialog.h"
 #include "library_creator.h"
@@ -32,6 +33,7 @@
 #include "treeitem.h"
 #include "server_config_dialog.h"
 #include "no_libraries_widget.h"
+#include "import_widget.h"
 
 class LibraryWindow : public QMainWindow
 {
@@ -83,6 +85,7 @@ private:
 
 	QStackedWidget * mainWidget;
 	NoLibrariesWidget * noLibrariesWidget;
+	ImportWidget * importWidget;
 
 	bool fetching;
 
@@ -217,7 +220,8 @@ public:
 		void showImportComicsInfo();
 		void asignNumbers();
 		void showNoLibrariesWidget();
-		void hideNoLibrariesWidget();
+		void showRootWidget();
+		void showImportingWidget();
 
 		//server interface
 		QMap<QString,QString> getLibraries(){return libraries;};
