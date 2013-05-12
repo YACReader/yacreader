@@ -23,9 +23,14 @@ public slots:
 	void addCoverTest();
 	void finishedUpdatingCover();
 	void clearScene();
+	void setImportLook();
+	void setUpdateLook();
 private:
 	QLabel * currentComicLabel;
 	QLabel * portadasLabel;
+	QLabel * iconLabel;
+	QLabel * text;
+	QLabel * textDescription;
 	QGraphicsView * coversView;
 	QGraphicsScene * coversScene;
 	int previousWidth;

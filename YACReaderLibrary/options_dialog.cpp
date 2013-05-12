@@ -43,6 +43,8 @@ OptionsDialog::OptionsDialog(QWidget * parent)
     //resize(200,0);
 	setModal (true);
 	setWindowTitle(tr("Options"));
+
+	this->layout()->setSizeConstraint(QLayout::SetFixedSize);
 }
 
 
