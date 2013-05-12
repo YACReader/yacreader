@@ -1,7 +1,7 @@
 #ifndef __YACREADER_GLOBAL_H
 #define __YACREADER_GLOBAL_H
 
-#define VERSION "6.0.0"
+#define VERSION "6.2.0"
 
 #define PATH "PATH"
 #define MAG_GLASS_SIZE "MAG_GLASS_SIZE"

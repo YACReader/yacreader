@@ -145,7 +145,7 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 	gl->vSyncCheck->hide();
 
 	//restoreOptions(); //load options
-	resize(400,0);
+	//resize(400,0);
 	setModal (true);
 	setWindowTitle(tr("Options"));
 

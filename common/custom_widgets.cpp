@@ -605,16 +605,19 @@ YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget * parent)
 	:QDialog(parent)
 {
 
+	sw = new YACReaderFlowConfigWidget(this);
+	gl = new YACReaderGLFlowConfigWidget(this);
+
 	accept = new QPushButton(tr("Save"));
 	cancel = new QPushButton(tr("Cancel"));
+
+	cancel->setDefault(true);
+
 	connect(accept,SIGNAL(clicked()),this,SLOT(saveOptions()));
 	connect(cancel,SIGNAL(clicked()),this,SLOT(restoreOptions()));
 	connect(cancel,SIGNAL(clicked()),this,SLOT(close()));
 
-	sw = new YACReaderFlowConfigWidget(this);
-
-	gl = new YACReaderGLFlowConfigWidget(this);
-	useGL = useGL = new QCheckBox(tr("Use hardware acceleration (restart needed)"));
+	useGL = new QCheckBox(tr("Use hardware acceleration (restart needed)"));
 	connect(useGL,SIGNAL(stateChanged(int)),this,SLOT(saveUseGL(int)));
 
 	//sw CONNECTIONS
@@ -1026,11 +1029,17 @@ YACReaderGLFlowConfigWidget::YACReaderGLFlowConfigWidget(QWidget * parent /* = 0
 	opt5->addStretch();
 	opt5->addWidget(lOpt5);
 	vbox->addLayout(opt5);
+
+	showAdvancedOptions = new QPushButton(tr("Show advanced settings"));
+	showAdvancedOptions->setCheckable(true);
+	connect(showAdvancedOptions,SIGNAL(toggled(bool)),this,SLOT(avancedOptionToogled(bool)));
+	
+	vbox->addWidget(showAdvancedOptions,0,Qt::AlignRight);
 	
 	groupBox->setLayout(vbox);
 
 	//OPTIONS------------------------------------------------------------------
-	QGroupBox *optionsGroupBox = new QGroupBox(tr("Custom:"));
+	optionsGroupBox = new QGroupBox(tr("Custom:"));
 
 	xRotation = new YACReaderSpinSliderWidget(this);
 	xRotation->setText(tr("View angle"));
@@ -1122,6 +1131,8 @@ YACReaderGLFlowConfigWidget::YACReaderGLFlowConfigWidget(QWidget * parent /* = 0
 	groupBoxesLayout->addWidget(groupBox);
 	groupBoxesLayout->addWidget(optionsGroupBox);
 
+	optionsGroupBox->hide();
+
 	QHBoxLayout * performanceSliderLayout = new QHBoxLayout;
 	performanceSliderLayout->addWidget(new QLabel(tr("Low Performance")));
 	performanceSliderLayout->addWidget(performanceSlider = new QSlider(Qt::Horizontal));
@@ -1159,6 +1170,14 @@ YACReaderGLFlowConfigWidget::YACReaderGLFlowConfigWidget(QWidget * parent /* = 0
 	setLayout(layout);
 
 
+}
+
+void YACReaderGLFlowConfigWidget::avancedOptionToogled(bool show)
+{
+	if(show)
+		optionsGroupBox->show();
+	else
+		optionsGroupBox->hide();
 }
 
 void YACReaderGLFlowConfigWidget::setValues(Preset preset)

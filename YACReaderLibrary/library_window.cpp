@@ -1019,6 +1019,7 @@ void LibraryWindow::create(QString source, QString dest, QString name)
 	_lastAdded = name;
 	_sourceLastAdded = source;
 
+	importWidget->setImportLook();
 	showImportingWidget();
 
 }
@@ -1115,6 +1116,7 @@ void LibraryWindow::saveLibraries()
 void LibraryWindow::updateLibrary()
 {
 	//updateLibraryDialog->show();
+	importWidget->setUpdateLook();
 	showImportingWidget();
 
 	QString currentLibrary = selectedLibrary->currentText();

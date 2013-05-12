@@ -313,8 +313,12 @@ public:
 		QSlider * performanceSlider;
 		QCheckBox * vSyncCheck;
 
+		QPushButton * showAdvancedOptions;
+		QGroupBox *optionsGroupBox;
+
 public slots:
 		void setValues(Preset preset);
+		void avancedOptionToogled(bool show);
 };
 
 //////////////////////////////////////////////////////////////////////////
