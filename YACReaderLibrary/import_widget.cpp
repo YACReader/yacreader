@@ -335,7 +335,7 @@ void ImportWidget::setImportLook()
 {
 	iconLabel->setPixmap(QPixmap(":/images/importingIcon.png"));
 	text->setText("<font color=\"#495252\">"+tr("Importing comics")+"</font>");
-	textDescription->setText("<font color=\"#565959\">"+tr("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")+"</font>");
+	textDescription->setText("<font color=\"#565959\">"+tr("Create a library could take several minutes. You can stop the process and update the library later for completing the task.")+"</font>");
 }
 
 void ImportWidget::setUpdateLook()

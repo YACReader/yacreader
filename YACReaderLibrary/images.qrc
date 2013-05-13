@@ -65,5 +65,7 @@
   <file>../images/importTopCoversDecoration.png</file>
   <file>../images/importBottomCoversDecoration.png</file>
   <file>../images/glowLine.png</file>
+  <file>../images/clearSearch.png</file>
+  <file>../images/iconSearch.png</file>
   </qresource>
 </RCC>

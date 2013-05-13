@@ -64,7 +64,7 @@ private:
 	QSize slideSizeW;
 	QSize slideSizeF;
 	//search filter
-	QLineEdit * foldersFilter;
+	YACReaderLineEdit * foldersFilter;
 	TreeItem * index; //index al que hay que hacer scroll después de pulsar sobre un folder filtrado
 	int column;
 	QString previousFilter;
