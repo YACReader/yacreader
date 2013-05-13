@@ -181,16 +181,17 @@ void LibraryWindow::doLayout()
 	QVBoxLayout * searchLayout = new QVBoxLayout;
 
 	QHBoxLayout * filter = new QHBoxLayout;
-	filter->addWidget(foldersFilter = new QLineEdit());
+	filter->addWidget(foldersFilter = new YACReaderLineEdit());
+	foldersFilter->setPlaceholderText(tr("Search folders and comics"));
 	previousFilter = "";
-	filter->addWidget(clearFoldersFilter = new QPushButton(tr("Clear")));
+	//filter->addWidget(clearFoldersFilter = new QPushButton(tr("Clear")));
 
-	searchLayout->addWidget(new QLabel(tr("Search folders/comics"),this));
+	//searchLayout->addWidget(new QLabel(tr("Search folders/comics"),this));
 
 	searchLayout->addLayout(filter);
-	includeComicsCheckBox = new QCheckBox(tr("Include files (slower)"),this);
-	includeComicsCheckBox->setChecked(true);
-	searchLayout->addWidget(includeComicsCheckBox);
+	//includeComicsCheckBox = new QCheckBox(tr("Include files (slower)"),this);
+	//includeComicsCheckBox->setChecked(true);
+	//searchLayout->addWidget(includeComicsCheckBox);
 
 	l->addLayout(searchLayout);
 	l->setSpacing(1);
@@ -506,7 +507,7 @@ void LibraryWindow::enableLibraryActions()
 	deleteLibraryAction->setEnabled(true);
 	removeLibraryAction->setEnabled(true);
 	foldersFilter->setEnabled(true);
-	clearFoldersFilter->setEnabled(true);
+	//clearFoldersFilter->setEnabled(true);
 }
 
 void LibraryWindow::createToolBars()
@@ -682,9 +683,9 @@ void LibraryWindow::createConnections()
 	connect(comicFlow,SIGNAL(selected(unsigned int)),this,SLOT(openComic()));
 	connect(comicView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openComic()));
 	//Folders filter
-	connect(clearFoldersFilter,SIGNAL(clicked()),foldersFilter,SLOT(clear()));
+	//connect(clearFoldersFilter,SIGNAL(clicked()),foldersFilter,SLOT(clear()));
 	connect(foldersFilter,SIGNAL(textChanged(QString)),this,SLOT(setFoldersFilter(QString)));
-	connect(includeComicsCheckBox,SIGNAL(stateChanged(int)),this,SLOT(searchInFiles(int)));
+	//connect(includeComicsCheckBox,SIGNAL(stateChanged(int)),this,SLOT(searchInFiles(int)));
 
 	//ContextMenus
 	connect(openContainingFolderComicAction,SIGNAL(triggered()),this,SLOT(openContainingFolderComic()));
@@ -759,7 +760,6 @@ void LibraryWindow::loadLibrary(const QString & name)
 				//TODO encontrar el bug que provoca que no se carguen adecuadamente las carátulas en root.
 				setRootIndex();
 
-				//includeComicsCheckBox->setCheckState(Qt::Unchecked);
 				foldersFilter->clear();
 			}
 			else if(comparation > 0)
@@ -1291,7 +1291,7 @@ void LibraryWindow::setFoldersFilter(QString filter)
 	{
 		if(!filter.isEmpty())
 		{
-			dm->setFilter(filter, includeComicsCheckBox->isChecked());
+			dm->setFilter(filter, true);//includeComicsCheckBox->isChecked());
 			foldersView->expandAll();
 		}
 	}

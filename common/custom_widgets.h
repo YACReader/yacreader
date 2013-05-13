@@ -379,6 +379,28 @@ signals:
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
+#include <QLineEdit>
+
+class QToolButton;
+class QLabel;
+
+class YACReaderLineEdit : public QLineEdit
+{
+    Q_OBJECT
+
+public:
+    YACReaderLineEdit(QWidget *parent = 0);
+
+protected:
+    void resizeEvent(QResizeEvent *);
+
+private slots:
+    void updateCloseButton(const QString &text);
+
+private:
+    QToolButton *clearButton;
+	QLabel * searchLabel;
+};
 
 #endif
 
