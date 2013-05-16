@@ -1,4 +1,11 @@
-6.0.1
+6.2
+Nueva ventana de "bienvenida"
+Nueva ventana de importar/actualizar
+Nuevo input de entrada para la búsqueda.
+Nuevo control para la búsqueda
+
+
+6.0.1 (No pública)
 Corregido bug al usar las teclas Inicio/fin
 Corregido bug que al arrancar YACReaderLibrary por primera vez causaba que no se mostrasen las portadas (sólo bajo ciertas circunstancias)
 Añadidos algunos atajos de teclado a YACReaderLibrary a los ya existentes
