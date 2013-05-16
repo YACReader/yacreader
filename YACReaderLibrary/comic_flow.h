@@ -1,7 +1,8 @@
 #ifndef __COMICFLOW_H
 #define __COMICFLOW_H
 
-#include "custom_widgets.h"
+#include "yacreader_flow.h"
+
 #include <QtCore>
 #include <QObject>
 #include <QThread>

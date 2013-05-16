@@ -1,16 +1,18 @@
 #ifndef __OPTIONS_DIALOG_H
 #define __OPTIONS_DIALOG_H
 
-#include <QDialog>
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QSlider>
-#include <QPushButton>
-#include <QRadioButton>
-#include <QColorDialog>
+#include "yacreader_options_dialog.h"
 
-#include "custom_widgets.h"
+class QDialog;
+class QLabel;
+class QLineEdit;
+class QPushButton;
+class QSlider;
+class QPushButton;
+class QRadioButton;
+class QColorDialog;
+class YACReaderSpinSliderWidget;
+
 
 class OptionsDialog : public YACReaderOptionsDialog
 {

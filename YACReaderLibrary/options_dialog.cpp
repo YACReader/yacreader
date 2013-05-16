@@ -1,4 +1,9 @@
 #include "options_dialog.h"
+
+#include "yacreader_flow_gl.h"
+#include "yacreader_flow_config_widget.h"
+#include "yacreader_gl_flow_config_widget.h"
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFileDialog>
@@ -9,9 +14,6 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QCheckBox>
-
-#include "custom_widgets.h"
-#include "yacreader_flow_gl.h"
 
 FlowType flowType = Strip;
 

@@ -6,6 +6,7 @@
 #include "tablemodel.h"
 #include "data_base_management.h"
 #include "qnaturalsorting.h"
+#include "comic_db.h"
 
 //ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read
 #define NUMBER 0

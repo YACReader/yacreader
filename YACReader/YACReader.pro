@@ -6,7 +6,8 @@ TARGET =
 DEPENDPATH += . \
     release
 INCLUDEPATH += .
-INCLUDEPATH += ../common
+INCLUDEPATH += ../common \
+                            ../custom_widgets
 
 win32 {
 INCLUDEPATH += ../dependencies/poppler/include
@@ -88,7 +89,9 @@ SOURCES += comic.cpp \
 	../common/qnaturalsorting.cpp \
 	../common/yacreader_flow_gl.cpp \
 	../common/onstart_flow_selection_dialog.cpp
-	
+
+include(../custom_widgets/custom_widgets.pri)
+
 RESOURCES += images.qrc \
     files.qrc 
 RC_FILE = icon.rc

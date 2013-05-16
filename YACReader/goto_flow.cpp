@@ -1,7 +1,6 @@
 #include "goto_flow.h"
 #include "configuration.h"
 #include "comic.h"
-#include "custom_widgets.h"
 
 #include <QVBoxLayout>
 #include <QSize>
@@ -10,6 +9,19 @@
 #include <QPushButton>
 #include <QMutex>
 #include <QCoreApplication>
+
+#include <QLineEdit>
+#include <QPushButton>
+#include <QPixmap>
+#include <QThread>
+#include <QSize>
+#include <QIntValidator>
+#include <QWaitCondition>
+#include <QObject>
+#include <QEvent>
+#include <QLabel>
+
+#include "yacreader_flow.h"
 
 #include "goto_flow_toolbar.h"
 #include "goto_flow_decorationbar.h"

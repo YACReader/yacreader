@@ -3,7 +3,7 @@
 
 class QString;
 class LibraryItem;
-class ComicDB;
+#include "comic_db.h"
 #include <QMap>
 #include <QList>
 
