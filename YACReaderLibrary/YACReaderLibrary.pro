@@ -9,7 +9,8 @@ INCLUDEPATH += .
 INCLUDEPATH += ../common \
 	           ./server \
 			   ./db \
-			   ../YACReader 
+			   ../YACReader  \
+			   ../custom_widgets
 
 DEFINES += SERVER_RELEASE
 			   
@@ -36,8 +37,6 @@ LIBS         += -L/usr/local/lib -lpoppler-qt4
 CONFIG += release
 CONFIG -= flat
 QT += sql network opengl
-
-
 
 # Input
 HEADERS += comic_flow.h \
@@ -73,8 +72,8 @@ HEADERS += comic_flow.h \
 		   ../common/yacreader_flow_gl.h \
 		   ../common/yacreader_global.h \
 		   ../common/onstart_flow_selection_dialog.h \
-    no_libraries_widget.h \
-    import_widget.h
+			no_libraries_widget.h \
+			import_widget.h
 		   
 SOURCES += comic_flow.cpp \
            create_library_dialog.cpp \
@@ -109,11 +108,12 @@ SOURCES += comic_flow.cpp \
 		   ../common/qnaturalsorting.cpp \
 		   ../common/yacreader_flow_gl.cpp \
 		   ../common/onstart_flow_selection_dialog.cpp \
-    no_libraries_widget.cpp \
-    import_widget.cpp
+			no_libraries_widget.cpp \
+			import_widget.cpp \
+			
 		   
 include(./server/server.pri)
-
+include(../custom_widgets/custom_widgets.pri)
 
 RESOURCES += images.qrc files.qrc
 RC_FILE = icon.rc

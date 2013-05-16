@@ -2,38 +2,49 @@
 #define __LIBRARYWINDOW_H
 
 #include <QMainWindow>
-#include <QTableView>
-#include <QTreeView>
+#include <QMap>
 #include <QModelIndex>
-#include <QDirModel>
-#include <QAction>
-#include <QToolBar>
-#include <QComboBox>
-#include <QThread>
-#include <QFileInfoList>
-#include <QStackedWidget>
+#include <QFileInfo>
 
-//TODO cambiar por class XXXXX
-#include "create_library_dialog.h"
-#include "add_library_dialog.h"
-#include "library_creator.h"
-//#include "comic_flow.h"
-#include "comic_flow_widget.h"
-#include "custom_widgets.h"
-#include "rename_library_dialog.h"
-#include "properties_dialog.h"
-#include "options_dialog.h"
-#include "export_comics_info_dialog.h"
-#include "import_comics_info_dialog.h"
-#include "export_library_dialog.h"
-#include "import_library_dialog.h"
-#include "package_manager.h"
-#include "treemodel.h"
-#include "tablemodel.h"
-#include "treeitem.h"
-#include "server_config_dialog.h"
-#include "no_libraries_widget.h"
-#include "import_widget.h"
+class QTableView;
+class QTreeView;
+class QDirModel;
+class QAction;
+class QToolBar;
+class QComboBox;
+class QThread;
+class QStackedWidget;
+class YACReaderSearchLineEdit;
+class CreateLibraryDialog;
+class UpdateLibraryDialog;
+class ExportLibraryDialog;
+class ImportLibraryDialog;
+class ExportComicsInfoDialog;
+class ImportComicsInfoDialog;
+class AddLibraryDialog;
+class LibraryCreator;
+class HelpAboutDialog;
+class RenameLibraryDialog;
+class PropertiesDialog;
+class PackageManager;
+class ComicFlowWidget;
+class QCheckBox;
+class QPushButton;
+class TableModel;
+class QSplitter;
+class TreeItem;
+class TreeModel;
+class QItemSelectionModel;
+class QString;
+class QLabel;
+class NoLibrariesWidget;
+class OptionsDialog;
+class ServerConfigDialog;
+class QCloseEvent;
+class ImportWidget;
+class QSettings;
+class LibraryItem;
+#include "comic_db.h"
 
 class LibraryWindow : public QMainWindow
 {
@@ -64,7 +75,7 @@ private:
 	QSize slideSizeW;
 	QSize slideSizeF;
 	//search filter
-	YACReaderLineEdit * foldersFilter;
+	YACReaderSearchLineEdit * foldersFilter;
 	TreeItem * index; //index al que hay que hacer scroll después de pulsar sobre un folder filtrado
 	int column;
 	QString previousFilter;
@@ -81,7 +92,6 @@ private:
 	//QStringList paths;
 	QMap<QString,QString> libraries;
 	QLabel * fullScreenToolTip;
-	YACReaderIconProvider fip;
 
 	QStackedWidget * mainWidget;
 	NoLibrariesWidget * noLibrariesWidget;

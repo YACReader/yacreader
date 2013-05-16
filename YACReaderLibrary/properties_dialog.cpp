@@ -1,4 +1,10 @@
 #include "properties_dialog.h"
+
+#include "data_base_management.h"
+#include "library_creator.h"
+#include "yacreader_field_edit.h"
+#include "yacreader_field_plain_text_edit.h"
+
 #include <QHBoxLayout>
 #include <QApplication>
 #include <QDesktopWidget>
@@ -7,9 +13,6 @@
 #include <QCheckBox>
 #include <QTabWidget>
 #include <QIntValidator>
-
-#include "data_base_management.h"
-#include "library_creator.h"
 
 PropertiesDialog::PropertiesDialog(QWidget * parent)
 :QDialog(parent)

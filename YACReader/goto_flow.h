@@ -1,22 +1,27 @@
 #ifndef __GOTO_FLOW_H
 #define __GOTO_FLOW_H
 
-#include <QLineEdit>
-#include <QPushButton>
-#include <QPixmap>
-#include <QThread>
-#include <QSize>
-#include <QIntValidator>
-#include <QWaitCondition>
-#include <QObject>
-#include <QEvent>
-#include <QLabel>
-#include "custom_widgets.h"
 #include "goto_flow_widget.h"
-class Comic;
+#include <QThread>
 
+#include <QWaitCondition>
+
+class QLineEdit;
+class QPushButton;
+class QPixmap;
+class QThread;
+class QSize;
+class QIntValidator;
+class QWaitCondition;
+class QEvent;
+class QLabel;
+
+
+class Comic;
 class SlideInitializer;
 class PageLoader;
+class YACReaderFlow;
+class PictureFlow;
 
 class GoToFlow : public GoToFlowWidget
 {
@@ -71,6 +76,7 @@ private:
 //-----------------------------------------------------------------------------
 //PageLoader
 //-----------------------------------------------------------------------------
+
 class PageLoader : public QThread
 {
 public:

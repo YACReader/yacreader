@@ -6,7 +6,15 @@
 #include <QGroupBox>
 #include <QRadioButton>
 #include <QTabWidget>
+#include <QSlider>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QLabel>
+#include <QColorDialog>
 
+#include "yacreader_spin_slider_widget.h"
+#include "yacreader_flow_config_widget.h"
+#include "yacreader_gl_flow_config_widget.h"
 
 OptionsDialog::OptionsDialog(QWidget * parent)
 :YACReaderOptionsDialog(parent)

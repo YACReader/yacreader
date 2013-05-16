@@ -14,6 +14,8 @@
 #include <QHBoxLayout>
 #include <QFileIconProvider>
 #include <QMatrix>
+#include <QSettings>
+#include <QGLFormat>
 
 #include <iterator>
 #include <typeinfo>
@@ -23,6 +25,26 @@
 #include "onstart_flow_selection_dialog.h"
 #include "no_libraries_widget.h"
 #include "import_widget.h"
+
+#include "yacreader_search_line_edit.h"
+#include "comic_db.h"
+#include "library_creator.h"
+#include "package_manager.h"
+#include "comic_flow_widget.h"
+#include "create_library_dialog.h"
+#include "rename_library_dialog.h"
+#include "properties_dialog.h"
+#include "export_library_dialog.h"
+#include "import_library_dialog.h"
+#include "export_comics_info_dialog.h"
+#include "import_comics_info_dialog.h"
+#include "add_library_dialog.h"
+#include "options_dialog.h"
+#include "help_about_dialog.h"
+#include "server_config_dialog.h"
+#include "tablemodel.h"
+#include "yacreader_tool_bar_stretch.h"
+
 
 //
 
@@ -181,7 +203,7 @@ void LibraryWindow::doLayout()
 	QVBoxLayout * searchLayout = new QVBoxLayout;
 
 	QHBoxLayout * filter = new QHBoxLayout;
-	filter->addWidget(foldersFilter = new YACReaderLineEdit());
+	filter->addWidget(foldersFilter = new YACReaderSearchLineEdit());
 	foldersFilter->setPlaceholderText(tr("Search folders and comics"));
 	previousFilter = "";
 	//filter->addWidget(clearFoldersFilter = new QPushButton(tr("Clear")));

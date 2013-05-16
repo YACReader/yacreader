@@ -10,6 +10,8 @@
 #include "shortcuts_dialog.h"
 #include "width_slider.h"
 #include "qnaturalsorting.h"
+#include "help_about_dialog.h"
+#include "yacreader_tool_bar_stretch.h"
 
 #include <ctime>
 #include <algorithm>

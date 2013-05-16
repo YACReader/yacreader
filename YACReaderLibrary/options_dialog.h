@@ -1,18 +1,9 @@
 #ifndef __OPTIONS_DIALOG_H
 #define __OPTIONS_DIALOG_H
 
-#include <QDialog>
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QSlider>
-#include <QPushButton>
-#include <QRadioButton>
-#include <QCheckBox>
-#include <QSettings>
-#include "pictureflow.h"
+#include "yacreader_options_dialog.h"
 
-#include "custom_widgets.h"
+#include "yacreader_global.h"
 
 extern FlowType flowType;
 

@@ -1,9 +1,13 @@
 #include "comic_flow.h"
 #include "qnaturalsorting.h"
 
+#include "yacreader_global.h"
+
+#include <algorithm>
+
 #include <QMutex>
 #include <QImageReader>
-#include <algorithm>
+#include <QTimer>
 
 ComicFlow::ComicFlow(QWidget* parent,FlowType flowType)
 :YACReaderFlow(parent,flowType)

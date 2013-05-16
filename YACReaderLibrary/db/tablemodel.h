@@ -7,7 +7,7 @@
 #include <QSqlQuery>
 #include <QSqlDatabase>
 
-#include "comic_db.h"
+class ComicDB;
 
 class TableItem;
 

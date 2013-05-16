@@ -1,6 +1,11 @@
 #include "library_window.h"
 
 #include <QApplication>
+#include <QTranslator>
+#include <QSettings>
+#include <QLocale>
+
+#include "yacreader_global.h"
 #include "startup.h"
 #define PICTUREFLOW_QT4 1
 

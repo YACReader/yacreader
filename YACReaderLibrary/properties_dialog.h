@@ -2,18 +2,20 @@
 #define __PROPERTIES_DIALOG_H
 
 #include <QDialog>
-#include <QLabel>
-#include <QPushButton>
-#include <QScrollArea>
-#include <QGroupBox>
-#include <QDialogButtonBox>
-#include <QGridLayout>
-#include <QTabWidget>
-#include <QCheckBox>
+
 #include <QIntValidator>
 
+class QGridLayout;
+class QTabWidget;
+class QGroupBox;
+class QLabel;
+class QScrollArea;
+class QWidget;
+class YACReaderFieldEdit;
+class YACReaderFieldPlainTextEdit;
+class QDialogButtonBox;
+class QCheckBox;
 #include "comic_db.h"
-#include "custom_widgets.h"
 
 	class PropertiesDialog : public QDialog
 	{
