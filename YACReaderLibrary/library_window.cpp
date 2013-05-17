@@ -130,7 +130,7 @@ void LibraryWindow::doLayout()
 	m.scale(-1,1);
 	QImage image(":/images/setRead.png");
     QImage imageTransformed = image.transformed(m,Qt::SmoothTransformation);
-	comicFlow->setMarkImage(imageTransformed);
+	comicFlow->setMarkImage(imageTransformed); //not used in flowGL...
 	int heightDesktopResolution = QApplication::desktop()->screenGeometry().height();
 	int height,width;
 	height = heightDesktopResolution*0.39;

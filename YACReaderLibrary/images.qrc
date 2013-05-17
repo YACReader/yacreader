@@ -67,5 +67,6 @@
   <file>../images/glowLine.png</file>
   <file>../images/clearSearch.png</file>
   <file>../images/iconSearch.png</file>
+  <file>../images/readRibbon.png</file>
   </qresource>
 </RCC>

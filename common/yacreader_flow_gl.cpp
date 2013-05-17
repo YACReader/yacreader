@@ -279,7 +279,7 @@ void YACReaderFlowGL::initializeGL()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	defaultTexture = bindTexture(QImage(":/images/defaultCover.png"),GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
-	markTexture = bindTexture(QImage(":/images/setRead.png"),GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
+	markTexture = bindTexture(QImage(":/images/readRibbon.png"),GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
 
 	if(lazyPopulateObjects!=-1)
 		populate(lazyPopulateObjects);
@@ -461,24 +461,24 @@ void YACReaderFlowGL::drawCover(CFImage *CF)
 		glBegin(GL_QUADS);
 
 		//esquina inferior izquierda
-		glColor4f(LDOWN*opacity,LDOWN*opacity,LDOWN*opacity,1);
+		glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
 		glTexCoord2f(0.0f, 1.0f);
-		glVertex3f(w/2.f-0.2f, -0.5f, 0.001f);
+		glVertex3f(w/2.f-0.2, -0.685f+h, 0.001f);
 
 		//esquina inferior derecha
-		glColor4f(RDOWN*opacity,RDOWN*opacity,RDOWN*opacity,1);
+		glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
 		glTexCoord2f(1.0f, 1.0f);
-		glVertex3f(w/2.f, -0.5f, 0.001f);
+		glVertex3f(w/2.f-0.05, -0.685f+h, 0.001f);
 
 		//esquina superior derecha
 		glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
 		glTexCoord2f(1.0f, 0.0f);
-		glVertex3f(w/2.f, -0.3f, 0.001f);
+		glVertex3f(w/2.f-0.05, -0.485f+h, 0.001f);
 
 		//esquina superior izquierda
-		glColor4f(LUP*opacity,LUP*opacity,LUP*opacity,1);
+		glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
 		glTexCoord2f(0.0f, 0.0f);
-		glVertex3f(w/2.f-0.2f, -0.3f, 0.001f);
+		glVertex3f(w/2.f-0.2, -0.485f+h, 0.001f);
 
 		glEnd();
 		glDisable(GL_TEXTURE_2D);
