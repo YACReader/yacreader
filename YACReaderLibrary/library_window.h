@@ -114,7 +114,7 @@ private:
 	QAction * importLibraryAction;
 
 	QAction * updateLibraryAction;
-	QAction * deleteLibraryAction;
+	//QAction * deleteLibraryAction;
 	QAction * removeLibraryAction;
 	QAction * helpAboutAction;
 	QAction * renameLibraryAction;

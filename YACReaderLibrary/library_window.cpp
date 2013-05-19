@@ -348,9 +348,9 @@ void LibraryWindow::createActions()
 	renameLibraryAction->setShortcut(Qt::Key_R);
 	renameLibraryAction->setIcon(QIcon(":/images/edit.png"));
 
-	deleteLibraryAction = new QAction(this);
+	/*deleteLibraryAction = new QAction(this);
 	deleteLibraryAction->setToolTip(tr("Delete current library from disk"));
-	deleteLibraryAction->setIcon(QIcon(":/images/deleteLibrary.png"));
+	deleteLibraryAction->setIcon(QIcon(":/images/deleteLibrary.png"));*/
 
 	removeLibraryAction = new QAction(this);
 	removeLibraryAction->setToolTip(tr("Remove current library from your collection"));
@@ -472,7 +472,7 @@ void LibraryWindow::disableAllActions()
 {
 	updateLibraryAction->setEnabled(false);
 	renameLibraryAction->setEnabled(false);
-	deleteLibraryAction->setEnabled(false);
+	//deleteLibraryAction->setEnabled(false);
 	removeLibraryAction->setEnabled(false);
 	openComicAction->setEnabled(false);
 	showPropertiesAction->setEnabled(false);
@@ -526,7 +526,7 @@ void LibraryWindow::enableActions()
 void LibraryWindow::enableLibraryActions()
 {
 	renameLibraryAction->setEnabled(true);
-	deleteLibraryAction->setEnabled(true);
+	//deleteLibraryAction->setEnabled(true);
 	removeLibraryAction->setEnabled(true);
 	foldersFilter->setEnabled(true);
 	//clearFoldersFilter->setEnabled(true);
@@ -556,28 +556,7 @@ void LibraryWindow::createToolBars()
 	libraryToolBar->addAction(updateLibraryAction); 
 	libraryToolBar->addAction(renameLibraryAction);
 	libraryToolBar->addAction(removeLibraryAction);
-	libraryToolBar->addAction(deleteLibraryAction);
-
-	libraryToolBar->addSeparator();
-	libraryToolBar->addAction(openComicAction);
-	libraryToolBar->addAction(showPropertiesAction);
-
-	QToolButton * tb = new QToolButton();
-	tb->addAction(setAsReadAction);
-	tb->addAction(setAllAsReadAction);
-	tb->setPopupMode(QToolButton::MenuButtonPopup);
-	tb->setDefaultAction(setAsReadAction);
-
-	QToolButton * tb2 = new QToolButton();
-	tb2->addAction(setAsNonReadAction);
-	tb2->addAction(setAllAsNonReadAction);
-	tb2->setPopupMode(QToolButton::MenuButtonPopup);
-	tb2->setDefaultAction(setAsNonReadAction);
-
-	libraryToolBar->addWidget(tb);
-	libraryToolBar->addWidget(tb2);
-
-	libraryToolBar->addAction(showHideMarksAction);
+	//libraryToolBar->addAction(deleteLibraryAction);
 
 	libraryToolBar->addSeparator();
 	libraryToolBar->addAction(toggleFullScreenAction);
@@ -607,8 +586,29 @@ void LibraryWindow::createToolBars()
 	editInfoToolBar->addAction(selectAllComicsAction);
 	editInfoToolBar->addSeparator();
 	editInfoToolBar->addAction(asignOrderActions);
+
+	editInfoToolBar->addSeparator();
+
+	QToolButton * tb = new QToolButton();
+	tb->addAction(setAsReadAction);
+	tb->addAction(setAllAsReadAction);
+	tb->setPopupMode(QToolButton::MenuButtonPopup);
+	tb->setDefaultAction(setAsReadAction);
+
+	QToolButton * tb2 = new QToolButton();
+	tb2->addAction(setAsNonReadAction);
+	tb2->addAction(setAllAsNonReadAction);
+	tb2->setPopupMode(QToolButton::MenuButtonPopup);
+	tb2->setDefaultAction(setAsNonReadAction);
+
+	editInfoToolBar->addWidget(tb);
+	editInfoToolBar->addWidget(tb2);
+
+	editInfoToolBar->addAction(showHideMarksAction);
+
 	editInfoToolBar->addWidget(new QToolBarStretch());
 	editInfoToolBar->addAction(hideComicViewAction);
+
 }
 
 void LibraryWindow::createMenus()
@@ -688,7 +688,7 @@ void LibraryWindow::createConnections()
 
 	connect(updateLibraryAction,SIGNAL(triggered()),this,SLOT(updateLibrary()));
 	connect(renameLibraryAction,SIGNAL(triggered()),this,SLOT(renameLibrary()));
-	connect(deleteLibraryAction,SIGNAL(triggered()),this,SLOT(deleteLibrary()));
+	//connect(deleteLibraryAction,SIGNAL(triggered()),this,SLOT(deleteLibrary()));
 	connect(removeLibraryAction,SIGNAL(triggered()),this,SLOT(removeLibrary()));
 	connect(openComicAction,SIGNAL(triggered()),this,SLOT(openComic()));
 	connect(helpAboutAction,SIGNAL(triggered()),had,SLOT(show()));
@@ -1187,7 +1187,10 @@ void LibraryWindow::deleteCurrentLibrary()
 void LibraryWindow::removeLibrary()
 {
 	QString currentLibrary = selectedLibrary->currentText();
-	if(QMessageBox::question(this,tr("Are you sure?"),tr("Do you want remove ")+currentLibrary+tr(" library?\nFiles won't be erased from disk."),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
+	QMessageBox * messageBox = new QMessageBox(tr("Are you sure?"),tr("Do you want remove ")+currentLibrary+tr(" library?"),QMessageBox::Question,QMessageBox::Yes,QMessageBox::YesToAll,QMessageBox::No);
+	messageBox->button(QMessageBox::YesToAll)->setText(tr("Remove and delete metadata"));
+	int ret = messageBox->exec();
+	if(ret == QMessageBox::Yes)
 	{
 		libraries.remove(currentLibrary);
 		selectedLibrary->removeItem(selectedLibrary->currentIndex());
@@ -1199,6 +1202,10 @@ void LibraryWindow::removeLibrary()
 			comicFlow->clear();
 		}
 		saveLibraries();
+	}
+	else if(ret == QMessageBox::YesToAll)
+	{
+		deleteCurrentLibrary();
 	}
 }
 
