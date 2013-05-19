@@ -1,9 +1,11 @@
 6.2
 Nueva ventana de "bienvenida"
 Nueva ventana de importar/actualizar
-Nuevo input de entrada para la búsqueda.
 Nuevo control para la búsqueda
-
+Nueva imagen para las marcas de cómics leídos (sólo en OpenGL)
+Cambiada la distribución de algunos iconos
+Cambiado el modo de eliminar la metainformación (borrar base de datos/portadas de disco)
+Ocultadas las opciones avanzadas de configuración de YACReader Flow, accesibles ahora tras pulsar un botón (diálogos de configuración más simples)
 
 6.0.1 (No pública)
 Corregido bug al usar las teclas Inicio/fin

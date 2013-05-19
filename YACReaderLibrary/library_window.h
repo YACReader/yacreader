@@ -200,7 +200,7 @@ public:
 		void reloadCurrentLibrary();
 		void openLastCreated();
 		void updateLibrary();
-		void deleteLibrary();
+		//void deleteLibrary();
 		void openContainingFolder();
 		void openContainingFolderComic();
 		void deleteCurrentLibrary();
