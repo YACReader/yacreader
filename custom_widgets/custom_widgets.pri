@@ -2,7 +2,7 @@ INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
 HEADERS += $$PWD/help_about_dialog.h \
-						$$PWD/yacreader_field_edit.h  yacreader_search_line_edit.cpp \
+						$$PWD/yacreader_field_edit.h  yacreader_search_line_edit.h \
                         $$PWD/yacreader_field_plain_text_edit.h \
                         $$PWD/yacreader_flow.h \
                         $$PWD/yacreader_flow_config_widget.h \
