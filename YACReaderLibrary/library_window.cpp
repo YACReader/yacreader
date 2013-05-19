@@ -1148,6 +1148,7 @@ void LibraryWindow::updateLibrary()
 	libraryCreator->start();
 }
 
+/*
 void LibraryWindow::deleteLibrary()
 {
 	QString currentLibrary = selectedLibrary->currentText();
@@ -1156,6 +1157,7 @@ void LibraryWindow::deleteLibrary()
 		deleteCurrentLibrary();
 	}
 }
+*/
 
 void LibraryWindow::deleteCurrentLibrary()
 {
