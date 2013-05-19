@@ -78,7 +78,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	qrMessage->setWordWrap(true);
 	qrMessage->setFixedWidth(200);
 
-	QLabel * propaganda = new QLabel(tr("YACReader is now available for iOS devices, the best comic reading experience now in your iPad, iPhone or iPod touch. <a href='http://ios.yacreader.com'> Discover it! </a>"),this);
+	QLabel * propaganda = new QLabel(tr("YACReader is now available for iOS devices, the best comic reading experience now in your iPad, iPhone or iPod touch. <a href='http://ios.yacreader.com' style='color:rgb(193, 148, 65)'> Discover it! </a>"),this);
 	propaganda->move(36,375);
 	propaganda->setStyleSheet("QLabel {color:#1F1F1F; font-size:16px; font-family: Arial; font-style: italic;}"
 		"QLabel::a {color:#1A1A1A}");

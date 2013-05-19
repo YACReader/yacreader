@@ -342,7 +342,7 @@ void ImportWidget::setUpdateLook()
 {
 	iconLabel->setPixmap(QPixmap(":/images/updatingIcon.png"));
 	text->setText("<font color=\"#495252\">"+tr("Updating the library")+"</font>");
-	textDescription->setText("<font color=\"#565959\">"+tr("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")+"</font>");
+	textDescription->setText("<font color=\"#565959\">"+tr("<p>The current library is being updated. For faster updates, please, keep your libraries updated frequently.</p><p>You can stop the process and continue updating this library later.")+"</font>");
 }
 
 void ImportWidget::clearScene()
