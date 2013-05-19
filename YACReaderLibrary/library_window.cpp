@@ -45,7 +45,7 @@
 #include "tablemodel.h"
 #include "yacreader_tool_bar_stretch.h"
 
-
+#include "yacreader_dark_menu.h"
 //
 
 LibraryWindow::LibraryWindow()
@@ -462,9 +462,9 @@ void LibraryWindow::createActions()
 
 	comicFlow->addAction(toggleFullScreenAction);
 	comicFlow->addAction(openComicAction);
-	
 
 	comicFlow->setContextMenuPolicy(Qt::ActionsContextMenu);
+
 }
 
 //TODO unificar con disableActions
