@@ -154,8 +154,8 @@ ImportWidget::ImportWidget(QWidget *parent) :
 	QVBoxLayout * textLayout = new QVBoxLayout();
 
 	QWidget * topWidget = new QWidget();
-	topWidget->setFixedSize(650,180);
-	textLayout->addSpacing(12);
+	topWidget->setFixedWidth(650);
+	textLayout->addStretch();
 	textLayout->addWidget(text);
 	textLayout->addSpacing(12);
 	textLayout->addWidget(textDescription);
