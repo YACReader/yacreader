@@ -218,13 +218,21 @@ void ImportWidget::newComic(const QString & path, const QString & coverPath)
 		if(previousWidth >= coversView->width()+200 && !updatingCovers)
 		{
 			updatingCovers = true;
-			QGraphicsItem * last = coversScene->items().last();
-			int width = p.width();
-			if(previousWidth > 3000)
+			
+			foreach(QGraphicsItem * itemToRemove, coversScene->items())
 			{
-				coversScene->removeItem(last);
-				delete last;
+				QGraphicsPixmapItem * last = dynamic_cast<QGraphicsPixmapItem *>(itemToRemove);
+
+				if((last->pos().x()+last->pixmap().width())<=0)
+				{
+					coversScene->removeItem(last);
+					delete last;
+				}
+				else
+					break;
 			}
+
+			int width = p.width();
 
 			foreach(QGraphicsItem * itemToMove, coversScene->items())
 			{
