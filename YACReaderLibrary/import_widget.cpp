@@ -106,9 +106,9 @@ ImportWidget::ImportWidget(QWidget *parent) :
 
 	YACReaderActivityIndicatorWidget * activityIndicator = new YACReaderActivityIndicatorWidget();
 
-	text = new QLabel("<font color=\"#495252\">"+tr("Importing comics")+"</font>");
+	text = new QLabel();//"<font color=\"#495252\">"+tr("Importing comics")+"</font>");
 	text->setStyleSheet("QLabel {font-size:25px;font-weight:bold;}");
-	textDescription = new QLabel("<font color=\"#565959\">"+tr("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")+"</font>");
+	textDescription = new QLabel();//"<font color=\"#565959\">"+tr("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")+"</font>");
 	textDescription->setWordWrap(true);
 	textDescription->setMaximumWidth(330);
 	currentComicLabel = new QLabel("<font color=\"#565959\">...</font>");
@@ -335,14 +335,14 @@ void ImportWidget::setImportLook()
 {
 	iconLabel->setPixmap(QPixmap(":/images/importingIcon.png"));
 	text->setText("<font color=\"#495252\">"+tr("Importing comics")+"</font>");
-	textDescription->setText("<font color=\"#565959\">"+tr("Create a library could take several minutes. You can stop the process and update the library later for completing the task.")+"</font>");
+	textDescription->setText("<font color=\"#565959\">"+tr("<p>YACReaderLibrary is now creating a new library.</p><p>Create a library could take several minutes. You can stop the process and update the library later for completing the task.</p>")+"</font>");
 }
 
 void ImportWidget::setUpdateLook()
 {
 	iconLabel->setPixmap(QPixmap(":/images/updatingIcon.png"));
 	text->setText("<font color=\"#495252\">"+tr("Updating the library")+"</font>");
-	textDescription->setText("<font color=\"#565959\">"+tr("<p>The current library is being updated. For faster updates, please, keep your libraries updated frequently.</p><p>You can stop the process and continue updating this library later.")+"</font>");
+	textDescription->setText("<font color=\"#565959\">"+tr("<p>The current library is being updated. For faster updates, please, update your libraries frequently.</p><p>You can stop the process and continue updating this library later.</p>")+"</font>");
 }
 
 void ImportWidget::clearScene()

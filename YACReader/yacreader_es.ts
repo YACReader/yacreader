@@ -262,12 +262,12 @@
 <context>
     <name>HelpAboutDialog</name>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="37"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="19"/>
         <source>About</source>
         <translation>Acerca de</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="40"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="22"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
@@ -275,264 +275,264 @@
 <context>
     <name>MainWindowViewer</name>
     <message>
-        <location filename="main_window_viewer.cpp" line="131"/>
+        <location filename="main_window_viewer.cpp" line="135"/>
         <source>&amp;Open</source>
         <translation>&amp;Abrir</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="132"/>
+        <location filename="main_window_viewer.cpp" line="136"/>
         <source>O</source>
         <translation>O</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="134"/>
+        <location filename="main_window_viewer.cpp" line="138"/>
         <source>Open a comic</source>
         <translation>Abrir cómic</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="137"/>
+        <location filename="main_window_viewer.cpp" line="141"/>
         <source>Open Folder</source>
         <translation>Abrir carpeta</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="138"/>
+        <location filename="main_window_viewer.cpp" line="142"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="140"/>
+        <location filename="main_window_viewer.cpp" line="144"/>
         <source>Open image folder</source>
         <oldsource>Open images in a folder</oldsource>
         <translation>Abrir carpeta de imágenes</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="143"/>
+        <location filename="main_window_viewer.cpp" line="147"/>
         <source>Save</source>
         <translation>Guardar</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="145"/>
-        <location filename="main_window_viewer.cpp" line="476"/>
+        <location filename="main_window_viewer.cpp" line="149"/>
+        <location filename="main_window_viewer.cpp" line="483"/>
         <source>Save current page</source>
         <translation>Guardar la página actual</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="149"/>
+        <location filename="main_window_viewer.cpp" line="153"/>
         <source>Previous Comic</source>
         <translation>Cómic anterior</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="152"/>
+        <location filename="main_window_viewer.cpp" line="156"/>
         <source>Open previous comic</source>
         <translation>Abrir cómic anterior</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="156"/>
+        <location filename="main_window_viewer.cpp" line="160"/>
         <source>Next Comic</source>
         <translation>Siguiente Cómic</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="159"/>
+        <location filename="main_window_viewer.cpp" line="163"/>
         <source>Open next comic</source>
         <translation>Abrir siguiente cómic</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="163"/>
+        <location filename="main_window_viewer.cpp" line="167"/>
         <source>&amp;Previous</source>
         <translation>A&amp;nterior</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="166"/>
+        <location filename="main_window_viewer.cpp" line="170"/>
         <source>Go to previous page</source>
         <translation>Ir a la página anterior</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="170"/>
+        <location filename="main_window_viewer.cpp" line="174"/>
         <source>&amp;Next</source>
         <translation>Siguie&amp;nte</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="173"/>
+        <location filename="main_window_viewer.cpp" line="177"/>
         <source>Go to next page</source>
         <translation>Ir a la página siguiente</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="177"/>
+        <location filename="main_window_viewer.cpp" line="181"/>
         <source>Fit Width</source>
         <translation>Ajustar anchura</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="178"/>
+        <location filename="main_window_viewer.cpp" line="182"/>
         <source>A</source>
         <translation>A</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="183"/>
+        <location filename="main_window_viewer.cpp" line="187"/>
         <source>Fit image to ...</source>
         <translation>Ajustar imagen a...</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="187"/>
+        <location filename="main_window_viewer.cpp" line="191"/>
         <source>Rotate image to the left</source>
         <translation>Rotar imagen a la izquierda</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="188"/>
+        <location filename="main_window_viewer.cpp" line="192"/>
         <source>L</source>
         <translation>L</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="193"/>
+        <location filename="main_window_viewer.cpp" line="197"/>
         <source>Rotate image to the right</source>
         <translation>Rotar imagen a la derecha</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="194"/>
+        <location filename="main_window_viewer.cpp" line="198"/>
         <source>R</source>
         <translation>R</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="199"/>
+        <location filename="main_window_viewer.cpp" line="203"/>
         <source>Double page mode</source>
         <translation>Modo a doble página</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="200"/>
+        <location filename="main_window_viewer.cpp" line="204"/>
         <source>Switch to double page mode</source>
         <translation>Cambiar a modo de doble página</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="201"/>
+        <location filename="main_window_viewer.cpp" line="205"/>
         <source>D</source>
         <translation>D</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="208"/>
+        <location filename="main_window_viewer.cpp" line="212"/>
         <source>Go To</source>
         <translation>Ir a</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="209"/>
+        <location filename="main_window_viewer.cpp" line="213"/>
         <source>G</source>
         <translation>G</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="212"/>
+        <location filename="main_window_viewer.cpp" line="216"/>
         <source>Go to page ...</source>
         <translation>Ir a página...</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="215"/>
+        <location filename="main_window_viewer.cpp" line="219"/>
         <source>Options</source>
         <translation>Opciones</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="216"/>
+        <location filename="main_window_viewer.cpp" line="220"/>
         <source>C</source>
         <translation>C</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="217"/>
+        <location filename="main_window_viewer.cpp" line="221"/>
         <source>YACReader options</source>
         <translation>Opciones de YACReader</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="222"/>
+        <location filename="main_window_viewer.cpp" line="226"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="223"/>
+        <location filename="main_window_viewer.cpp" line="227"/>
         <source>Help, About YACReader</source>
         <translation>Ayuda, Sobre YACReader</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="228"/>
+        <location filename="main_window_viewer.cpp" line="232"/>
         <source>Magnifying glass</source>
         <translation>Lupa</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="229"/>
+        <location filename="main_window_viewer.cpp" line="233"/>
         <source>Switch Magnifying glass</source>
         <translation>Lupa On/Off</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="230"/>
+        <location filename="main_window_viewer.cpp" line="234"/>
         <source>Z</source>
         <translation>Z</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="236"/>
+        <location filename="main_window_viewer.cpp" line="240"/>
         <source>Set bookmark</source>
         <translation>Añadir marcador</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="237"/>
+        <location filename="main_window_viewer.cpp" line="241"/>
         <source>Set a bookmark on the current page</source>
         <translation>Añadir un marcador en la página actual</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="246"/>
+        <location filename="main_window_viewer.cpp" line="250"/>
         <source>Show bookmarks</source>
         <translation>Mostrar marcadores</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="247"/>
+        <location filename="main_window_viewer.cpp" line="251"/>
         <source>Show the bookmarks of the current comic</source>
         <translation>Mostrar los marcadores del cómic actual</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="248"/>
+        <location filename="main_window_viewer.cpp" line="252"/>
         <source>M</source>
         <translation>M</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="253"/>
+        <location filename="main_window_viewer.cpp" line="257"/>
         <source>Show keyboard shortcuts</source>
         <translation>Mostrar atajos de teclado</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="257"/>
+        <location filename="main_window_viewer.cpp" line="261"/>
         <source>Show Info</source>
         <translation>Mostrar información</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="258"/>
+        <location filename="main_window_viewer.cpp" line="262"/>
         <source>I</source>
         <translation>I</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="263"/>
+        <location filename="main_window_viewer.cpp" line="267"/>
         <source>Close</source>
         <translation>Cerrar</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="268"/>
+        <location filename="main_window_viewer.cpp" line="272"/>
         <source>Show Dictionary</source>
         <translation>Mostrar diccionario</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="275"/>
+        <location filename="main_window_viewer.cpp" line="279"/>
         <source>Always on top</source>
         <translation>Siempre visible</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="283"/>
+        <location filename="main_window_viewer.cpp" line="287"/>
         <source>Show full size</source>
         <translation>Mostrar a tamaño original</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="294"/>
+        <location filename="main_window_viewer.cpp" line="298"/>
         <source>&amp;File</source>
         <translation>&amp;Archivo</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="428"/>
+        <location filename="main_window_viewer.cpp" line="435"/>
         <source>Open Comic</source>
         <translation>Abrir cómic</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="428"/>
+        <location filename="main_window_viewer.cpp" line="435"/>
         <source>Comic files</source>
         <translation>Archivos de cómic</translation>
     </message>
@@ -545,32 +545,32 @@
         <translation type="obsolete">Archivos de cómic (*.cbr *.cbz *.rar *.zip *.tar *.arj)</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="452"/>
+        <location filename="main_window_viewer.cpp" line="459"/>
         <source>Open folder</source>
         <translation>Abrir carpeta</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="476"/>
+        <location filename="main_window_viewer.cpp" line="483"/>
         <source>Image files (*.jpg)</source>
         <translation>Archivos de imagen (*.jpg)</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="612"/>
+        <location filename="main_window_viewer.cpp" line="627"/>
         <source>There is a new version avaliable</source>
         <translation>Hay una nueva versión disponible</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="613"/>
+        <location filename="main_window_viewer.cpp" line="628"/>
         <source>Do you want to download the new version?</source>
         <translation>¿Desea descargar la nueva versión?</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="678"/>
+        <location filename="main_window_viewer.cpp" line="693"/>
         <source>Saving error log file....</source>
         <translation>Guardando el archivo de log...</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="678"/>
+        <location filename="main_window_viewer.cpp" line="693"/>
         <source>There was a problem saving YACReader error log file. Please, check if you have enough permissions in the YACReader root folder.</source>
         <translation>Hubo un problema al guardar el archivo de log de YACReader. Por favor, comprueba si tienes suficientes permisos en el directorio raíz de YACReader.</translation>
     </message>
@@ -578,12 +578,12 @@
 <context>
     <name>OptionsDialog</name>
     <message>
-        <location filename="options_dialog.cpp" line="27"/>
+        <location filename="options_dialog.cpp" line="35"/>
         <source>&quot;Go to flow&quot; size</source>
         <translation>Tamaño de &quot;Go to flow&quot;</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="38"/>
+        <location filename="options_dialog.cpp" line="46"/>
         <source>My comics path</source>
         <translation>Ruta a mis cómics</translation>
     </message>
@@ -600,72 +600,72 @@
         <translation type="obsolete">¿Cómo deseas que se muestren las páginas en &quot;Go To Flow&quot;:</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="48"/>
+        <location filename="options_dialog.cpp" line="56"/>
         <source>Page width stretch</source>
         <translation>Ajuste en anchura de la página</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="69"/>
+        <location filename="options_dialog.cpp" line="77"/>
         <source>Background color</source>
         <translation>Color de fondo</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="72"/>
+        <location filename="options_dialog.cpp" line="80"/>
         <source>Choose</source>
         <translation>Elegir</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="100"/>
+        <location filename="options_dialog.cpp" line="108"/>
         <source>Restart is needed</source>
         <translation>Es necesario reiniciar</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="113"/>
+        <location filename="options_dialog.cpp" line="121"/>
         <source>Brightness</source>
         <translation>Brillo</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="114"/>
+        <location filename="options_dialog.cpp" line="122"/>
         <source>Contrast</source>
         <translation>Contraste</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="115"/>
+        <location filename="options_dialog.cpp" line="123"/>
         <source>Gamma</source>
         <translation>Gamma</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="119"/>
+        <location filename="options_dialog.cpp" line="127"/>
         <source>Reset</source>
         <translation>Reset</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="125"/>
+        <location filename="options_dialog.cpp" line="133"/>
         <source>Image options</source>
         <translation>Opciones de imagen</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="135"/>
+        <location filename="options_dialog.cpp" line="143"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="136"/>
+        <location filename="options_dialog.cpp" line="144"/>
         <source>Page Flow</source>
         <translation>Page Flow</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="137"/>
+        <location filename="options_dialog.cpp" line="145"/>
         <source>Image adjustment</source>
         <translation>Ajustes de imagen</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="150"/>
+        <location filename="options_dialog.cpp" line="158"/>
         <source>Options</source>
         <translation>Opciones</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="157"/>
+        <location filename="options_dialog.cpp" line="165"/>
         <source>Comics directory</source>
         <translation>Directorio de cómics</translation>
     </message>
@@ -740,13 +740,13 @@
 <context>
     <name>YACReaderFieldEdit</name>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="424"/>
-        <location filename="../common/custom_widgets.cpp" line="444"/>
+        <location filename="../custom_widgets/yacreader_field_edit.cpp" line="9"/>
+        <location filename="../custom_widgets/yacreader_field_edit.cpp" line="29"/>
         <source>Click to overwrite</source>
         <translation>Click para sobreescribir</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="426"/>
+        <location filename="../custom_widgets/yacreader_field_edit.cpp" line="11"/>
         <source>Restore to default</source>
         <translation>Restaurar valor por defecto</translation>
     </message>
@@ -754,15 +754,15 @@
 <context>
     <name>YACReaderFieldPlainTextEdit</name>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="465"/>
-        <location filename="../common/custom_widgets.cpp" line="476"/>
-        <location filename="../common/custom_widgets.cpp" line="501"/>
-        <location filename="../common/custom_widgets.cpp" line="507"/>
+        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="9"/>
+        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="20"/>
+        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="45"/>
+        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="51"/>
         <source>Click to overwrite</source>
         <translation>Click para sobreescribir</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="466"/>
+        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="10"/>
         <source>Restore to default</source>
         <translation>Restaurar valor por defecto</translation>
     </message>
@@ -770,22 +770,22 @@
 <context>
     <name>YACReaderFlowConfigWidget</name>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1188"/>
+        <location filename="../custom_widgets/yacreader_flow_config_widget.cpp" line="13"/>
         <source>How to show covers:</source>
         <translation>Cómo mostrar las portadas:</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1190"/>
+        <location filename="../custom_widgets/yacreader_flow_config_widget.cpp" line="15"/>
         <source>CoverFlow look</source>
         <translation>Tipo CoverFlow</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1191"/>
+        <location filename="../custom_widgets/yacreader_flow_config_widget.cpp" line="16"/>
         <source>Stripe look</source>
         <translation>Tipo tira</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1192"/>
+        <location filename="../custom_widgets/yacreader_flow_config_widget.cpp" line="17"/>
         <source>Overlapped Stripe look</source>
         <translation>Tipo tira solapada</translation>
     </message>
@@ -793,112 +793,117 @@
 <context>
     <name>YACReaderGLFlowConfigWidget</name>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="972"/>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="19"/>
         <source>Presets:</source>
         <translation>Predefinidos:</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="974"/>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="21"/>
         <source>Classic look</source>
         <translation>Tipo clásico</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="977"/>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="24"/>
         <source>Stripe look</source>
         <translation>Tipo tira</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="980"/>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="27"/>
         <source>Overlapped Stripe look</source>
         <translation>Tipo tira solapada</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="983"/>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="30"/>
         <source>Modern look</source>
         <translation>Tipo moderno</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="986"/>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="33"/>
         <source>Roulette look</source>
         <translation>Tipo ruleta</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1033"/>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="77"/>
+        <source>Show advanced settings</source>
+        <translation>Opciones avanzadas</translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="86"/>
         <source>Custom:</source>
         <translation>Personalizado:</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1036"/>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="89"/>
         <source>View angle</source>
         <translation>Ángulo de vista</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1042"/>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="95"/>
         <source>Position</source>
         <translation>Posición</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1048"/>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="101"/>
         <source>Cover gap</source>
         <translation>Hueco entre portadas</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1054"/>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="107"/>
         <source>Central gap</source>
         <translation>Hueco central</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1060"/>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="113"/>
         <source>Zoom</source>
         <translation>Zoom</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1066"/>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="119"/>
         <source>Y offset</source>
         <translation>Desplazamiento en Y</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1072"/>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="125"/>
         <source>Z offset</source>
         <translation>Desplazamiento en Z </translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1078"/>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="131"/>
         <source>Cover Angle</source>
         <translation>Ángulo de las portadas</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1084"/>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="137"/>
         <source>Visibility</source>
         <translation>Visibilidad</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1090"/>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="143"/>
         <source>Light</source>
         <translation>Luz</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1096"/>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="149"/>
         <source>Max angle</source>
         <translation>Ángulo máximo</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1126"/>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="181"/>
         <source>Low Performance</source>
         <translation>Rendimiento bajo</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1128"/>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="183"/>
         <source>High Performance</source>
         <translation>Alto rendimiento</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1139"/>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="194"/>
         <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
         <translation>Utilizar VSync (mejora la calidad de imagen en pantalla completa, peor rendimiento)</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="1147"/>
+        <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="202"/>
         <source>Performance:</source>
         <translation>Rendimiento:</translation>
     </message>
@@ -906,17 +911,17 @@
 <context>
     <name>YACReaderOptionsDialog</name>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="608"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="21"/>
         <source>Save</source>
         <translation>Guardar</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="609"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="22"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="../common/custom_widgets.cpp" line="617"/>
+        <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="30"/>
         <source>Use hardware acceleration (restart needed)</source>
         <translation>Utilizar aceleración por hardware (necesario reiniciar)</translation>
     </message>
