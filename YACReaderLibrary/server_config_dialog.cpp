@@ -10,7 +10,7 @@
 #include "startup.h"
 #include "yacreader_global.h"
 
-#ifndef Q_WS_WIN
+#ifndef Q_OS_WIN32
 
 #include <sys/types.h>
 #include <ifaddrs.h>
@@ -190,7 +190,7 @@ void ServerConfigDialog::generateQR()
 	//}
 	ip->clear();
 	QString dir;
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 	QList<QHostAddress> list = QHostInfo::fromName( QHostInfo::localHostName()  ).addresses();
 
 	QList<QString> otherAddresses;
@@ -244,7 +244,7 @@ void ServerConfigDialog::generateQR()
 
 	}
 	//qrCode->setText(dir+":8080");
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     ip->setFixedWidth(130);
 #endif
 }

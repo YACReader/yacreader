@@ -177,7 +177,7 @@ void LibraryCreator::create(QDir dir)
 			return;
 		QFileInfo fileInfo = list.at(i);
 		QString fileName = fileInfo.fileName();
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
         QStringList src = _source.split("/");
 		QString filePath = fileInfo.absoluteFilePath();
         QStringList fp = filePath.split("/");
@@ -476,7 +476,7 @@ void ThumbnailCreator::create()
 		delete _7z;
 		attributes.clear();
 		_currentName = QDir::fromNativeSeparators(_currentName).split('/').last(); //separator fixed. 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 		attributes << "e" << "-so" << "-r" << _fileSource << QString(_currentName.toLocal8Bit().constData()); //TODO platform dependency?? OEM 437
 #else
 		attributes << "e" << "-so" << "-r" << _fileSource << _currentName; //TODO platform dependency?? OEM 437
