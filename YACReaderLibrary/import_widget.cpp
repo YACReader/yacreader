@@ -73,7 +73,7 @@ YACReaderActivityIndicatorWidget::YACReaderActivityIndicatorWidget(QWidget * par
 	animation2->setEndValue(1);
 	//animation2->setEasingCurve(QEasingCurve::InQuint);
 
-#ifndef Q_WS_MAC
+#ifndef Q_OS_MAC
 	glow->setGraphicsEffect(effect);
 #endif
 

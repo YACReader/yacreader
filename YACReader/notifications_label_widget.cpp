@@ -42,7 +42,7 @@ NotificationsLabelWidget::NotificationsLabelWidget(QWidget * parent)
 	textLabel->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
 
 	textLabel->setGeometry(imgLabel->geometry());
-#ifndef Q_WS_MAC
+#ifndef Q_OS_MAC
 	imgLabel->setGraphicsEffect(effect);
 	textLabel->setGraphicsEffect(effect2);
 #endif
