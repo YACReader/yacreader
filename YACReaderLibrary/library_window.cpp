@@ -46,6 +46,7 @@
 #include "yacreader_tool_bar_stretch.h"
 
 #include "yacreader_dark_menu.h"
+#include "yacreader_titled_toolbar.h"
 //
 
 LibraryWindow::LibraryWindow()
@@ -76,10 +77,10 @@ void LibraryWindow::setupUI()
 	settings = new QSettings(QCoreApplication::applicationDirPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
 	settings->beginGroup("libraryConfig");
 
+	createActions();
 	doModels();
 	doLayout();
 	doDialogs();
-	createActions();
 	createToolBars();
 	createMenus();
 	createConnections();
@@ -192,12 +193,20 @@ void LibraryWindow::doLayout()
 	left = new QWidget;
 	QVBoxLayout * l = new QVBoxLayout;
 	selectedLibrary = new QComboBox;
-	l->setContentsMargins(2,2,0,0);
-	l->addWidget(new QLabel(tr("Select a library:")));
+	l->setContentsMargins(2,0,0,0);
+
+	YACReaderTitledToolBar * librariesTitle = new YACReaderTitledToolBar(tr("Libraries"));
+
+	l->addWidget(librariesTitle);
 	l->addWidget(selectedLibrary);
-	treeActions = new QToolBar(left);
-	treeActions->setIconSize(QSize(16,16));
-	l->addWidget(treeActions);
+	
+	YACReaderTitledToolBar * foldersTitle = new YACReaderTitledToolBar(tr("Folders"));
+
+	foldersTitle->addAction(setRootIndexAction);
+	foldersTitle->addAction(expandAllNodesAction);
+	foldersTitle->addAction(colapseAllNodesAction);
+
+	l->addWidget(foldersTitle);
 	l->addWidget(foldersView);
 
 	QVBoxLayout * searchLayout = new QVBoxLayout;
@@ -257,6 +266,11 @@ void LibraryWindow::doLayout()
 
 	connect(noLibrariesWidget,SIGNAL(createNewLibrary()),this,SLOT(createLibrary()));
 	connect(noLibrariesWidget,SIGNAL(addExistingLibrary()),this,SLOT(showAddLibrary()));
+
+	comicFlow->addAction(toggleFullScreenAction);
+	comicFlow->addAction(openComicAction);
+
+	comicFlow->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
 void LibraryWindow::doDialogs()
@@ -459,12 +473,6 @@ void LibraryWindow::createActions()
 	hideComicViewAction->setCheckable(true);
 	hideComicViewAction->setChecked(false);
 	//-------------------------------------------------------------------------
-
-	comicFlow->addAction(toggleFullScreenAction);
-	comicFlow->addAction(openComicAction);
-
-	comicFlow->setContextMenuPolicy(Qt::ActionsContextMenu);
-
 }
 
 //TODO unificar con disableActions
@@ -571,10 +579,6 @@ void LibraryWindow::createToolBars()
 
 
 	libraryToolBar->setMovable(false);
-
-	treeActions->addAction(setRootIndexAction);
-	treeActions->addAction(expandAllNodesAction);
-	treeActions->addAction(colapseAllNodesAction);
 
 	comicFlow->addAction(toggleFullScreenAction);
 	comicFlow->addAction(openComicAction);
