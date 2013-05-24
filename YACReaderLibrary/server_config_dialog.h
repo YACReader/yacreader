@@ -34,6 +34,7 @@ Q_OBJECT
 		void regenerateQR(const QString & ip);
 		void updateImage();
 		void enableServer(int status);
+		void updatePort();
 signals:
 		void portChanged(QString port);
 
