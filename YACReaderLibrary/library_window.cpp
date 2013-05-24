@@ -193,7 +193,7 @@ void LibraryWindow::doLayout()
 	left = new QWidget;
 	QVBoxLayout * l = new QVBoxLayout;
 	selectedLibrary = new QComboBox;
-	l->setContentsMargins(2,0,0,0);
+	l->setContentsMargins(sHorizontal->handleWidth(),0,0,0);
 
 	YACReaderTitledToolBar * librariesTitle = new YACReaderTitledToolBar(tr("Libraries"));
 

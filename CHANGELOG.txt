@@ -3,6 +3,7 @@ Mejorada la gestión de errores relacionada con las bibliotecas
 Añadido botón que permite ocultar las portadas en la pantalla de importación
 Añadidos títulos "Bibliotecas" y "Carpetas" a la barra de navegación
 Nuevos iconos para seleccionar la carpeta raíz, expandir y contraer todos.
+Botón para cambiar el puerto del servidor por el usuario.
 
 6.2
 Nueva ventana de "bienvenida"
