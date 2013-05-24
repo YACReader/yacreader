@@ -69,10 +69,15 @@ void LibraryCreator::run()
 
 		//se crea la base de datos .yacreaderlibrary/library.ydb
 		_database = DataBaseManagement::createDatabase("library",_target);//
-		/*if(!_database.open())
-			return; //TODO avisar del problema
+		if(!_database.isOpen())
+		{
+			emit failedCreatingDB(_database.lastError().databaseText() + "-" + _database.lastError().driverText());
+			emit finished();
+			creation = false;
+			return; 
+		}
 
-		QSqlQuery pragma("PRAGMA foreign_keys = ON",_database);*/
+		/*QSqlQuery pragma("PRAGMA foreign_keys = ON",_database);*/
 		_database.transaction();
 		//se crea la librería
 		create(QDir(_source));
@@ -87,8 +92,13 @@ void LibraryCreator::run()
 		_currentPathFolders.append(Folder(1,1,"root","/"));
 		_database = DataBaseManagement::loadDatabase(_target);
 		//_database.setDatabaseName(_target+"/library.ydb");
-		/*if(!_database.open())
-			return; //TODO avisar del problema*/
+		if(!_database.open())
+		{
+			emit failedOpeningDB(_database.lastError().databaseText() + "-" + _database.lastError().driverText());
+			emit finished();
+			creation = false;
+			return;
+		}
 		//QSqlQuery pragma("PRAGMA foreign_keys = ON",_database);
 		_database.transaction();
 		update(QDir(_source));
@@ -101,7 +111,7 @@ void LibraryCreator::run()
 		else
 			emit(created());
 	}
-	msleep(100);//TODO try to solve the problem with the udpate dialog
+	msleep(100);//TODO try to solve the problem with the udpate dialog (ya no se usa más...)
 	emit(finished());
 	creation = false;
 }

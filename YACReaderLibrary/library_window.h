@@ -218,13 +218,11 @@ public:
 		void exportLibrary(QString destPath);
 		void importLibrary(QString clc,QString destPath,QString name);
 		void reloadOptions();
-		void updateFoldersView(QString);
 		void setCurrentComicsStatusReaded(bool readed);
 		void setCurrentComicReaded();
 		void setCurrentComicUnreaded();
 		void setComicsReaded();
 		void setComicsUnreaded();
-		void searchInFiles(int);
 		void hideComicFlow(bool hide);
 		void showExportComicsInfo();
 		void showImportComicsInfo();
@@ -232,6 +230,9 @@ public:
 		void showNoLibrariesWidget();
 		void showRootWidget();
 		void showImportingWidget();
+		void manageCreatingError(const QString & error);
+		void manageUpdatingError(const QString & error);
+		void manageOpeningLibraryError(const QString & error);
 
 		//server interface
 		QMap<QString,QString> getLibraries(){return libraries;};

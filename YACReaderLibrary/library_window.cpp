@@ -624,16 +624,16 @@ void LibraryWindow::createConnections()
 	connect(importComicsInfoDialog,SIGNAL(finished(int)),this,SLOT(reloadCurrentLibrary()));
 
 	connect(libraryCreator,SIGNAL(coverExtracted(QString)),createLibraryDialog,SLOT(showCurrentFile(QString)));
-	connect(libraryCreator,SIGNAL(finished()),createLibraryDialog,SLOT(close()));
 	connect(libraryCreator,SIGNAL(coverExtracted(QString)),updateLibraryDialog,SLOT(showCurrentFile(QString)));
-	connect(libraryCreator,SIGNAL(finished()),updateLibraryDialog,SLOT(close()));
 	connect(libraryCreator,SIGNAL(finished()),this,SLOT(showRootWidget()));
 	connect(libraryCreator,SIGNAL(updated()),this,SLOT(reloadCurrentLibrary()));
 	connect(libraryCreator,SIGNAL(created()),this,SLOT(openLastCreated()));
-	//new import widget
 	connect(libraryCreator,SIGNAL(comicAdded(QString,QString)),importWidget,SLOT(newComic(QString,QString)));
-	//connect(libraryCreator,SIGNAL(finished()),importWidget,SLOT(clear()));
-	//connect(importWidget,SIGNAL(stop()),this,SLOT(cancelCreating()));
+	//libraryCreator errors
+	connect(libraryCreator,SIGNAL(failedCreatingDB(QString)),this,SLOT(manageCreatingError(QString)));
+	connect(libraryCreator,SIGNAL(failedUpdatingDB(QString)),this,SLOT(manageUpdatingError(QString)));
+	
+	//new import widget
 	connect(importWidget,SIGNAL(stop()),this,SLOT(stopLibraryCreator()));
 
 	//packageManager connections
@@ -812,17 +812,25 @@ void LibraryWindow::loadLibrary(const QString & name)
 					deleteCurrentLibrary();
 				}
 			}
-			else//si existe el path, puede ser que la librería sea alguna versión pre-5.0 ó que esté corrupta
+			else//si existe el path, puede ser que la librería sea alguna versión pre-5.0 ó que esté corrupta o que no haya drivers sql
 			{
-				QString currentLibrary = selectedLibrary->currentText();
-				QString path = libraries.value(selectedLibrary->currentText());
-				if(QMessageBox::question(this,tr("Old library or corrupted"),tr("Library ")+currentLibrary+tr(" is corrupted or has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?"),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
+				QSqlDatabase db = DataBaseManagement::loadDatabase(path);
+				if(d.exists(path+"/library.ydb"))
 				{
-					QDir d(path+"/.yacreaderlibrary");
-					delTree(d);
-					d.rmdir(path+"/.yacreaderlibrary");
-					createLibraryDialog->setDataAndStart(currentLibrary,path);
-					//create(path,path+"/.yacreaderlibrary",currentLibrary);
+					manageOpeningLibraryError(db.lastError().databaseText() + "-" + db.lastError().driverText());
+				}
+				else
+				{
+					QString currentLibrary = selectedLibrary->currentText();
+					QString path = libraries.value(selectedLibrary->currentText());
+					if(QMessageBox::question(this,tr("Old library"),tr("Library ")+currentLibrary+tr("has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?"),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
+					{
+						QDir d(path+"/.yacreaderlibrary");
+						delTree(d);
+						d.rmdir(path+"/.yacreaderlibrary");
+						createLibraryDialog->setDataAndStart(currentLibrary,path);
+						//create(path,path+"/.yacreaderlibrary",currentLibrary);
+					}
 				}
 			}
 		}
@@ -1148,17 +1156,6 @@ void LibraryWindow::updateLibrary()
 	libraryCreator->start();
 }
 
-/*
-void LibraryWindow::deleteLibrary()
-{
-	QString currentLibrary = selectedLibrary->currentText();
-	if(QMessageBox::question(this,tr("Are you sure?"),tr("Do you want delete ")+currentLibrary+" library?",QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
-	{
-		deleteCurrentLibrary();
-	}
-}
-*/
-
 void LibraryWindow::deleteCurrentLibrary()
 {
 	//QSqlDatabase db = dm->getDatabase();
@@ -1429,47 +1426,6 @@ void LibraryWindow::reloadOptions()
 	comicFlow->updateConfig(settings);
 }
 
-//TODO esto sobra
-void LibraryWindow::updateFoldersView(QString path)
-{
-	//QModelIndex mi = dm->index(path);
-	//int rowCount = dm->rowCount(mi);
-	//if(!fetching)
-	//{
-	//	//fetching = true;
-	//	for(int i=0;i<rowCount;i++)
-	//	{
-	//		dm->fetchMore(dm->index(i,0,mi));
-	//		//int childCount = dm->rowCount(dm->index(i,0,mi));
-	//		//if(childCount>0)
-	//		//	QMessageBox::critical(NULL,tr("..."),tr("-----"));
-	//		fetching = false;
-	//	}
-	//}
-
-}
-
-void LibraryWindow::searchInFiles(int state)
-{
-
-	if(state == Qt::Checked)
-	{
-		if(!foldersFilter->text().isEmpty())
-		{
-			dm->setFilter(foldersFilter->text(), true);
-			foldersView->expandAll();
-		}
-	}
-	else
-	{
-		if(!foldersFilter->text().isEmpty())
-		{
-			dm->setFilter(foldersFilter->text(), false);
-			foldersView->expandAll();
-		}
-	}
-}
-
 QString LibraryWindow::currentPath()
 {
 	return libraries.value(selectedLibrary->currentText());
@@ -1599,4 +1555,19 @@ void LibraryWindow::showImportingWidget()
 	importWidget->clear();
 	libraryToolBar->setDisabled(true);
 	mainWidget->setCurrentIndex(2);
+}
+
+void LibraryWindow::manageCreatingError(const QString & error)
+{
+	QMessageBox::critical(this,tr("Error creating the library"),error);
+}
+
+void LibraryWindow::manageUpdatingError(const QString & error)
+{
+	QMessageBox::critical(this,tr("Error updating the library"),error);
+}
+
+void LibraryWindow::manageOpeningLibraryError(const QString & error)
+{
+	QMessageBox::critical(this,tr("Error opening the library"),error);
 }
