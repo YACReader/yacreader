@@ -95,6 +95,10 @@ void LibraryWindow::setupUI()
 	else
 		//if(settings->value(USE_OPEN_GL).toBool() == false)
 			showMaximized();
+	if(settings->contains(COMICS_VIEW_HEADERS))
+		comicView->horizontalHeader()->restoreState(settings->value(COMICS_VIEW_HEADERS).toByteArray());
+	/*if(settings->contains(COMICS_VIEW_HEADERS_GEOMETRY))
+		comicView->horizontalHeader()->restoreGeometry(settings->value(COMICS_VIEW_HEADERS_GEOMETRY).toByteArray());*/
 }
 
 void LibraryWindow::doLayout()
@@ -867,15 +871,16 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 	dmCV->setupModelData(folderId,dm->getDatabase());
 	comicView->setModel(dmCV);
 	comicView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+	comicView->horizontalHeader()->setMovable(true);
 	//TODO parametrizar la configuración de las columnas
-	for(int i = 4;i<comicView->horizontalHeader()->count();i++)
-		if(i!=7)
-			comicView->horizontalHeader()->hideSection(i);
+	for(int i = 4;i<comicView->horizontalHeader()->count()-2;i++)
+		comicView->horizontalHeader()->hideSection(i);
 
 
 	//debido a un bug, qt4 no es capaz de ajustar el ancho teniendo en cuenta todas la filas (no sólo las visibles)
 	//así que se ecala la primera vez y después se deja el control al usuario.
-	comicView->resizeColumnsToContents();
+	if(!settings->contains(COMICS_VIEW_HEADERS))
+		comicView->resizeColumnsToContents();
 	comicView->horizontalHeader()->setStretchLastSection(true);
 
 	QStringList paths = dmCV->getPaths(currentPath());
@@ -1399,6 +1404,8 @@ void LibraryWindow::showImportComicsInfo()
 void LibraryWindow::closeEvent ( QCloseEvent * event )
 {
 	settings->setValue(MAIN_WINDOW_GEOMETRY, saveGeometry());
+	settings->setValue(COMICS_VIEW_HEADERS,comicView->horizontalHeader()->saveState());
+	//settings->setValue(COMICS_VIEW_HEADERS_GEOMETRY,comicView->horizontalHeader()->saveGeometry());
 }
 
 void LibraryWindow::showNoLibrariesWidget()
