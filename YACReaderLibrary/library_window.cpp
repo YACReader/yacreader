@@ -356,10 +356,6 @@ void LibraryWindow::createActions()
 	renameLibraryAction->setShortcut(Qt::Key_R);
 	renameLibraryAction->setIcon(QIcon(":/images/edit.png"));
 
-	/*deleteLibraryAction = new QAction(this);
-	deleteLibraryAction->setToolTip(tr("Delete current library from disk"));
-	deleteLibraryAction->setIcon(QIcon(":/images/deleteLibrary.png"));*/
-
 	removeLibraryAction = new QAction(this);
 	removeLibraryAction->setToolTip(tr("Remove current library from your collection"));
 	removeLibraryAction->setIcon(QIcon(":/images/removeLibrary.png"));
@@ -986,31 +982,8 @@ void LibraryWindow::openComic()
 
 void LibraryWindow::setCurrentComicsStatusReaded(bool readed)
 {
-	QModelIndexList indexList = comicView->selectionModel()->selectedRows();
-
-	QList<ComicDB> comics = dmCV->getComics(indexList);
-
-	foreach (QModelIndex mi, indexList)
-	{
-		if(readed)
-			comicFlow->markSlide(mi.row());
-		else
-			comicFlow->unmarkSlide(mi.row());
-		
-	}
+	comicFlow->setMarks(dmCV->setComicsRead(comicView->selectionModel()->selectedRows(),readed));
 	comicFlow->updateMarks();
-
-	QSqlDatabase db = DataBaseManagement::loadDatabase(dm->getDatabase());
-	db.open();
-	db.transaction();
-	foreach (ComicDB c, comics)
-	{
-		c.info.read = readed;
-		c.info.updateRead(db);
-	}
-	db.commit();
-	db.close();
-	QSqlDatabase::removeDatabase(dm->getDatabase());
 }
 
 void LibraryWindow::setCurrentComicReaded()
@@ -1335,39 +1308,18 @@ void LibraryWindow::asignNumbers()
 {
 	QModelIndexList indexList = comicView->selectionModel()->selectedRows();
 
-	QList<ComicDB> comics = dmCV->getComics(indexList);
-	ComicDB c = comics[0];
-	_comicIdEdited = c.id;
-
-	int startingNumber = dmCV->getIndexFromId(comics[0].id).row()+1;
-	if(comics.count()>1)
+	int startingNumber = indexList[0].row()+1;
+	if(indexList.count()>1)
 	{
 		bool ok;
 		int n = QInputDialog::getInt(this, tr("Asign comics numbers"),
-			tr("Asign numbers starting in:"), dmCV->getIndexFromId(comics[0].id).row()+1,0,2147483647,1,&ok);
+			tr("Asign numbers starting in:"), startingNumber,0,2147483647,1,&ok);
 		if (ok)
 			startingNumber = n;
 		else
 			return;
 	}
-
-	QSqlDatabase db = DataBaseManagement::loadDatabase(dm->getDatabase());
-	db.transaction();
-
-	for(int i = 0;i<comics.length();i++)
-	{
-		ComicDB c = comics[i];
-		c.info.setNumber(startingNumber+i);
-		c.info.edited = true;
-		c.info.update(db);
-		/*QString hash = comics[i].info.hash;
-		comics[i].info.setNumber(i+1);
-		comics[i].info.update(db);*/
-	}
-
-	db.commit();
-	db.close();
-	QSqlDatabase::removeDatabase(dm->getDatabase());
+	_comicIdEdited = dmCV->asignNumbers(indexList,startingNumber);
 	
 	reloadCovers();
 }

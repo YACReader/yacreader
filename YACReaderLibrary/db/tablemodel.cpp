@@ -347,7 +347,7 @@ QVector<bool> TableModel::setAllComicsRead(bool read)
 	for(int i=0;i<numComics;i++)
 	{
 		readList[i] = read; 
-		_data.value(i)->data(READ) = QVariant(true);
+		_data.value(i)->setData(READ,QVariant(read));
 		ComicDB c;
 		c.load(_data.value(i)->data(ID).toULongLong(),db);
 		c.info.read = read;
@@ -377,6 +377,45 @@ QList<ComicDB> TableModel::getComics(QList<QModelIndex> list)
 	return comics;
 }
 
+QVector<bool> TableModel::setComicsRead(QList<QModelIndex> list,bool read)
+{
+	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+	db.transaction();
+	foreach (QModelIndex mi, list)
+	{
+		_data.value(mi.row())->setData(READ, QVariant(read));
+		ComicDB c;
+		c.load(_data.value(mi.row())->data(ID).toULongLong(),db);
+		c.info.read = read;
+		c.info.update(db);
+	}
+	db.commit();
+	db.close();
+	QSqlDatabase::removeDatabase(_databasePath);
+
+	return getReadList();
+}
+qint64 TableModel::asignNumbers(QList<QModelIndex> list,int startingNumber)
+{
+	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+	db.transaction();
+	qint64 idFirst = _data.value(list[0].row())->data(ID).toULongLong();
+	int i = 0;
+	foreach (QModelIndex mi, list)
+	{
+		ComicDB c;
+		c.load(_data.value(mi.row())->data(ID).toULongLong(),db);
+		c.info.setNumber(startingNumber+i);
+		c.info.edited = true;
+		c.info.update(db);
+		i++;
+	}
+
+	db.commit();
+	db.close();
+	QSqlDatabase::removeDatabase(_databasePath);
+	return idFirst;
+}
 QModelIndex TableModel::getIndexFromId(quint64 id)
 {
 	QList<TableItem *>::ConstIterator itr;
