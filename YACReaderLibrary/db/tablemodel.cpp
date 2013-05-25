@@ -68,6 +68,8 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
     TableItem *item = static_cast<TableItem*>(index.internalPointer());
 	if(index.column() == HASH)
 		return QString::number(item->data(index.column()).toString().right(item->data(index.column()).toString().length()-40).toInt()/1024.0/1024.0,'f',2)+"Mb";
+	if(index.column() == READ)
+		return item->data(index.column()).toBool()?QVariant(tr("yes")):QVariant(tr("no"));
 	return item->data(index.column());
 }
 //! [3]
@@ -100,6 +102,8 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation,
 			return QVariant(QString(tr("Pages")));
 		case 7:
 			return QVariant(QString(tr("Size")));
+		case 8:
+			return QVariant(QString(tr("Read")));
 		}
 	}
 
@@ -357,6 +361,8 @@ QVector<bool> TableModel::setAllComicsRead(bool read)
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
 
+	emit dataChanged(index(0,READ),index(numComics-1,READ));
+
 	return readList;
 }
 
@@ -393,6 +399,8 @@ QVector<bool> TableModel::setComicsRead(QList<QModelIndex> list,bool read)
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
 
+	emit dataChanged(index(list.first().row(),READ),index(list.last().row(),READ));
+
 	return getReadList();
 }
 qint64 TableModel::asignNumbers(QList<QModelIndex> list,int startingNumber)
@@ -414,6 +422,9 @@ qint64 TableModel::asignNumbers(QList<QModelIndex> list,int startingNumber)
 	db.commit();
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
+
+	//emit dataChanged(index(list.first().row(),READ),index(list.last().row(),READ));
+
 	return idFirst;
 }
 QModelIndex TableModel::getIndexFromId(quint64 id)

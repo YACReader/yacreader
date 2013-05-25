@@ -5,8 +5,9 @@
 #include <QVariant>
 
 //! [0]
-class TableItem
+class TableItem : public QObject
 {
+	Q_OBJECT
 public:
     TableItem(const QList<QVariant> &data);
     ~TableItem();
