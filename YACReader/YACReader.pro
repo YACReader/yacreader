@@ -60,7 +60,8 @@ HEADERS += comic.h \
 	../common/qnaturalsorting.h \
 	../common/yacreader_flow_gl.h \
 	../common/yacreader_global.h \
-	../common/onstart_flow_selection_dialog.h 
+	../common/onstart_flow_selection_dialog.h \
+	yacreader_local_client.h
 	
 SOURCES += comic.cpp \
     configuration.cpp \
@@ -88,7 +89,8 @@ SOURCES += comic.cpp \
     ../common/check_new_version.cpp \
 	../common/qnaturalsorting.cpp \
 	../common/yacreader_flow_gl.cpp \
-	../common/onstart_flow_selection_dialog.cpp
+	../common/onstart_flow_selection_dialog.cpp \
+	yacreader_local_client.cpp
 
 include(../custom_widgets/custom_widgets.pri)
 

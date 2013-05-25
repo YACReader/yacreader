@@ -234,7 +234,7 @@ void LibraryWindow::doLayout()
 	comics = new QWidget;
 	QVBoxLayout * comicsLayout = new QVBoxLayout;
 	comicsLayout->setSpacing(0);
-	comicsLayout->setContentsMargins(2,2,0,0);
+	comicsLayout->setContentsMargins(0,0,0,0);
 	comicsLayout->addWidget(editInfoToolBar = new QToolBar(comics));
 	comicsLayout->addWidget(comicView);
 	comics->setLayout(comicsLayout);
@@ -308,19 +308,13 @@ void LibraryWindow::doDialogs()
 
 void LibraryWindow::doModels()
 {
-	//dirmodels
+	//folders
 	dm = new TreeModel();
+	//comics
 	dmCV =  new TableModel();
+	//comics selection
 	sm = new QItemSelectionModel(dm);
 
-
-	/*proxyFilter = new  YACReaderTreeSearch();
-	proxyFilter->setSourceModel(dm);
-	proxyFilter->setFilterRole(Qt::DisplayRole);*/
-
-	/*proxySort = new YACReaderSortComics();
-	proxySort->setSourceModel(dmCV);
-	proxySort->setFilterRole(Qt::DisplayRole);*/
 	setFoldersFilter("");
 }
 
@@ -1162,12 +1156,6 @@ void LibraryWindow::updateLibrary()
 
 void LibraryWindow::deleteCurrentLibrary()
 {
-	//QSqlDatabase db = dm->getDatabase();
-	//db.commit();
-	//db.close();
-	//QSqlDatabase::removeDatabase(db.connectionName());
-	//if(!dm->getDatabase().isOpen())
-	//{
 	QString path = libraries.value(selectedLibrary->currentText());
 	libraries.remove(selectedLibrary->currentText());
 	selectedLibrary->removeItem(selectedLibrary->currentIndex());
@@ -1184,7 +1172,6 @@ void LibraryWindow::deleteCurrentLibrary()
 		comicFlow->clear();
 	}
 	saveLibraries();
-	//}
 }
 
 void LibraryWindow::removeLibrary()
@@ -1337,21 +1324,10 @@ void LibraryWindow::showProperties()
 	ComicDB c = comics[0];
 	_comicIdEdited = c.id;//static_cast<TableItem*>(indexList[0].internalPointer())->data(4).toULongLong();
 
-	//QModelIndex mi = comicView->currentIndex();
-	//QString path = QDir::cleanPath(currentPath()+dmCV->getComicPath(mi));
-
-	//ThumbnailCreator tc(path,"");
-	//tc.create();
 	propertiesDialog->databasePath = dm->getDatabase();
 	propertiesDialog->basePath = currentPath();
 	propertiesDialog->setComics(comics);
 	
-	/*propertiesDialog->setCover(tc.getCover());
-	propertiesDialog->setFilename(path.split("/").last());
-	propertiesDialog->setNumpages(tc.getNumPages());
-	QFile file(path);
-	propertiesDialog->setSize(file.size()/(1024.0*1024));
-	file.close();*/
 	propertiesDialog->show();
 }
 
@@ -1466,76 +1442,6 @@ void LibraryWindow::showImportComicsInfo()
 {
 	importComicsInfoDialog->dest = currentPath() + "/.yacreaderlibrary/library.ydb";
 	importComicsInfoDialog->show();
-}
-
-QList<LibraryItem *> LibraryWindow::getFolderContentFromLibrary(const QString & libraryName, qulonglong folderId)
-{
-	QSqlDatabase db = DataBaseManagement::loadDatabase(libraries.value(libraryName)+"/.yacreaderlibrary");
-	
-	QList<LibraryItem *> list = Folder::getFoldersFromParent(folderId,db,false);
-	
-	db.close();
-	QSqlDatabase::removeDatabase(libraries.value(libraryName));
-	return list;
-
-}
-
-QList<LibraryItem *> LibraryWindow::getFolderComicsFromLibrary(const QString & libraryName, qulonglong folderId)
-{
-	QSqlDatabase db = DataBaseManagement::loadDatabase(libraries.value(libraryName)+"/.yacreaderlibrary");
-
-	QList<LibraryItem *> list = ComicDB::getComicsFromParent(folderId,db,false);
-
-	db.close();
-	QSqlDatabase::removeDatabase(libraries.value(libraryName));
-	return list;
-}
-
-qulonglong LibraryWindow::getParentFromComicFolderId(const QString & libraryName, qulonglong id)
-{
-	QSqlDatabase db = DataBaseManagement::loadDatabase(libraries.value(libraryName)+"/.yacreaderlibrary");
-
-	Folder f(id,db);
-
-	db.close();
-	QSqlDatabase::removeDatabase(libraries.value(libraryName));
-	return f.parentId;
-}
-
-ComicDB LibraryWindow::getComicInfo(const QString & libraryName, qulonglong id)
-{
-	QSqlDatabase db = DataBaseManagement::loadDatabase(libraries.value(libraryName)+"/.yacreaderlibrary");
-
-	ComicDB comic;
-	comic.load(id,db);
-
-	db.close();
-	QSqlDatabase::removeDatabase(libraries.value(libraryName));
-	return comic;
-}
-
-QString LibraryWindow::getFolderName(const QString & libraryName, qulonglong id)
-{
-	QSqlDatabase db = DataBaseManagement::loadDatabase(libraries.value(libraryName)+"/.yacreaderlibrary");
-
-	QString name="";
-
-	{
-		QSqlQuery selectQuery(db); //TODO check
-		selectQuery.prepare("SELECT name FROM folder WHERE id = :id");
-		selectQuery.bindValue(":id", id);
-		selectQuery.exec();
-
-		if(selectQuery.next()) 
-		{
-			QSqlRecord record = selectQuery.record();
-			name = record.value(0).toString();
-		}
-	}
-
-	db.close();
-	QSqlDatabase::removeDatabase(libraries.value(libraryName));
-	return name;
 }
 
 void LibraryWindow::closeEvent ( QCloseEvent * event )
