@@ -166,10 +166,18 @@ void LibraryWindow::doLayout()
 	foldersView->setSelectionBehavior(QAbstractItemView::SelectRows);
 
 	comicView->setAlternatingRowColors(true);
-	//comicView->setStyleSheet("alternate-background-color: #e7e7d7;background-color: white;");
+	comicView->setStyleSheet("QTableView {alternate-background-color: #F2F2F2;background-color: #FAFAFA;}"
+		"QTableView::item {border-bottom: 1px solid #E9E9E9;border-top: 1px solid #FEFEFE; padding-bottom:1px;}"	
+		"QTableView::item:selected {outline: none; border-bottom: 1px solid #A9A9A9;border-top: 1px solid #A9A9A9; padding-bottom:1px; background-color: #A9A9A9; color: #FFFFFF; }"	
+		//"QTableView::item:hover {border-bottom: 1px solid #A3A3A3;border-top: 1px solid #A3A3A3; padding-bottom:1px; background-color: #A3A3A3; color: #FFFFFF; }"
+							 "");
 	//comicView->setItemDelegate(new YACReaderComicViewDelegate());
 	comicView->setContextMenuPolicy(Qt::ActionsContextMenu);
+
 	comicView->setShowGrid(false);
+
+	comicView->verticalHeader()->setResizeMode(QHeaderView::Fixed);
+
 	//comicView->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 	comicView->horizontalHeader()->setStretchLastSection(true);
 	comicView->horizontalHeader()->setClickable(false);
@@ -177,7 +185,7 @@ void LibraryWindow::doLayout()
 	comicView->verticalHeader()->setDefaultSectionSize(24);
 	comicView->verticalHeader()->setClickable(false); //TODO comportamiento anómalo
 	comicView->setCornerButtonEnabled(false);
-	qApp->setStyleSheet ( qApp->styleSheet() +"  QTableView::item{border-right-style:solid;border-width:1;border-color: #d7d7c7;} QTableView::item:selected{background-color: #d7d7c7; color:#000000; border-right-style:solid;border-width:1;border-color: #8c8590;}");
+	//qApp->setStyleSheet ( qApp->styleSheet() +"  QTableView::item{border-right-style:solid;border-width:1;border-color: #d7d7c7;} QTableView::item:selected{background-color: #d7d7c7; color:#000000; border-right-style:solid;border-width:1;border-color: #8c8590;}");
 	//qApp->setStyleSheet ( qApp->styleSheet() +" QTableView {selection-background-color: #d7d7c7; selection-color: #000000;}" );
 
 	/*comicView->setStyleSheet("QTableView {selection-background-color: #d7d7c7; selection-color: #000000; selection-border: 1px solid;}\n  QTableView::item{"
