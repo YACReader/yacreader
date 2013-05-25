@@ -33,6 +33,10 @@ QVariant TableItem::data(int column) const
 }
 //! [6]
 
+void TableItem::setData(int column,const QVariant & value)
+{
+	itemData[column] = value;
+}
 
 //! [8]
 int TableItem::row() const

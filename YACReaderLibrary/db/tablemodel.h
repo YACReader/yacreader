@@ -43,6 +43,8 @@ public:
 	//setcomicInfo(QModelIndex & mi); --> inserta en la base datos
 	//setComicInfoForAllComics(); --> inserta la información común a todos los cómics de una sola vez.
 	//setComicInfoForSelectedComis(QList<QModelIndex> list); -->inserta la información común para los comics seleccionados
+	QVector<bool> setComicsRead(QList<QModelIndex> list,bool read);
+	qint64 asignNumbers(QList<QModelIndex> list,int startingNumber);
 private:
     void setupModelData( QSqlQuery &sqlquery);
 	ComicDB _getComic(const QModelIndex & mi);
