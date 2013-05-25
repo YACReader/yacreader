@@ -233,14 +233,6 @@ public:
 		void manageCreatingError(const QString & error);
 		void manageUpdatingError(const QString & error);
 		void manageOpeningLibraryError(const QString & error);
-
-		//server interface
-		QMap<QString,QString> getLibraries(){return libraries;};
-		QList<LibraryItem *> getFolderContentFromLibrary(const QString & libraryName, qulonglong folderId);
-		QList<LibraryItem *> getFolderComicsFromLibrary(const QString & libraryName, qulonglong folderId);
-		qulonglong getParentFromComicFolderId(const QString & libraryName, qulonglong id);
-		ComicDB getComicInfo(const QString & libraryName, qulonglong id);
-		QString getFolderName(const QString & libraryName, qulonglong id);
 };
 
 #endif
