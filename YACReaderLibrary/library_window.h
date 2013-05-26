@@ -114,7 +114,6 @@ private:
 	QAction * importLibraryAction;
 
 	QAction * updateLibraryAction;
-	//QAction * deleteLibraryAction;
 	QAction * removeLibraryAction;
 	QAction * helpAboutAction;
 	QAction * renameLibraryAction;
@@ -218,13 +217,11 @@ public:
 		void exportLibrary(QString destPath);
 		void importLibrary(QString clc,QString destPath,QString name);
 		void reloadOptions();
-		void updateFoldersView(QString);
 		void setCurrentComicsStatusReaded(bool readed);
 		void setCurrentComicReaded();
 		void setCurrentComicUnreaded();
 		void setComicsReaded();
 		void setComicsUnreaded();
-		void searchInFiles(int);
 		void hideComicFlow(bool hide);
 		void showExportComicsInfo();
 		void showImportComicsInfo();
@@ -232,14 +229,10 @@ public:
 		void showNoLibrariesWidget();
 		void showRootWidget();
 		void showImportingWidget();
-
-		//server interface
-		QMap<QString,QString> getLibraries(){return libraries;};
-		QList<LibraryItem *> getFolderContentFromLibrary(const QString & libraryName, qulonglong folderId);
-		QList<LibraryItem *> getFolderComicsFromLibrary(const QString & libraryName, qulonglong folderId);
-		qulonglong getParentFromComicFolderId(const QString & libraryName, qulonglong id);
-		ComicDB getComicInfo(const QString & libraryName, qulonglong id);
-		QString getFolderName(const QString & libraryName, qulonglong id);
+		void manageCreatingError(const QString & error);
+		void manageUpdatingError(const QString & error);
+		void manageOpeningLibraryError(const QString & error);
+		QModelIndexList getSelectedComics();
 };
 
 #endif

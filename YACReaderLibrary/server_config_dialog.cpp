@@ -6,11 +6,12 @@
 #include <QHostAddress>
 #include <QSettings>
 #include <QPalette>
+#include <QIntValidator>
 
 #include "startup.h"
 #include "yacreader_global.h"
 
-#ifndef Q_WS_WIN
+#ifndef Q_OS_WIN32
 
 #include <sys/types.h>
 #include <ifaddrs.h>
@@ -56,8 +57,7 @@ extern Startup * s;
 ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	:QDialog(parent)	
 {
-	accept = new QPushButton(tr("Update IPs"));
-	connect(accept,SIGNAL(clicked()),this,SLOT(generateQR()));
+	accept = new QPushButton(tr("set port"),this);
 	qrCodeImage = new QPixmap();
 	qrCode = new QLabel(this);
 	qrCode->move(196,73);
@@ -101,9 +101,14 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	ip->setMinimumWidth(110);
 
 	port = new QLineEdit("8080",this);
-	port->setReadOnly(true);
+	port->setReadOnly(false);
 	port->setMaximumWidth(50);
-	port->move(571,110);
+	port->move(520,110);
+	QValidator *validator = new QIntValidator(1024, 65535, this);
+	port->setValidator(validator);
+
+	accept->move(520,149);
+	connect(accept,SIGNAL(pressed()),this,SLOT(updatePort()));
 
 	check = new QCheckBox(this);
 	check->move(453,314);
@@ -190,7 +195,7 @@ void ServerConfigDialog::generateQR()
 	//}
 	ip->clear();
 	QString dir;
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 	QList<QHostAddress> list = QHostInfo::fromName( QHostInfo::localHostName()  ).addresses();
 
 	QList<QString> otherAddresses;
@@ -244,13 +249,14 @@ void ServerConfigDialog::generateQR()
 
 	}
 	//qrCode->setText(dir+":8080");
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     ip->setFixedWidth(130);
 #endif
 }
 
 void ServerConfigDialog::generateQR(const QString & serverAddress)
 {
+	qrCode->clear();
 	qrGenerator = new QProcess();
 	QStringList attributes;
 	attributes << "-o" << "-" /*QCoreApplication::applicationDirPath()+"/utils/tmp.png"*/ << "-s" << "8" << "-l" << "H" << "-m" << "0" << serverAddress;
@@ -282,4 +288,19 @@ void ServerConfigDialog::updateImage()
 void ServerConfigDialog::regenerateQR(const QString & ip)
 {
 	generateQR(ip+":"+s->getPort());
+}
+
+void ServerConfigDialog::updatePort()
+{
+
+	QSettings * settings = new QSettings(QCoreApplication::applicationDirPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+	settings->beginGroup("listener");
+	settings->setValue("port",port->text().toInt());
+	settings->endGroup();
+
+	s->stop();
+	s->start();
+
+	generateQR(ip->currentText()+":"+port->text());
+
 }

@@ -55,6 +55,8 @@
 		void comicAdded(QString,QString);
 		void updated();
 		void created();
+		void failedCreatingDB(QString);
+		void failedOpeningDB(QString);
 	};
 
 	class ThumbnailCreator : public QObject

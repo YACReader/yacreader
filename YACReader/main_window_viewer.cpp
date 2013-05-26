@@ -312,7 +312,7 @@ void MainWindowViewer::createToolBars()
 	comicToolBar->addAction(prevAction);
 	comicToolBar->addAction(nextAction);
 	comicToolBar->addAction(goToPage);
-#ifndef Q_WS_MAC
+#ifndef Q_OS_MAC
 	comicToolBar->addSeparator();
 	comicToolBar->addAction(alwaysOnTopAction);
 #else
