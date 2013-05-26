@@ -1068,7 +1068,7 @@ Files won&apos;t be erased from disk.</source>
         <location filename="server_config_dialog.cpp" line="81"/>
         <source>YACReader is now available for iOS devices, the best comic reading experience now in your iPad, iPhone or iPod touch. &lt;a href=&apos;http://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt; Discover it! &lt;/a&gt;</source>
         <oldsource>YACReader is now available for iOS devices, the best comic reading experience now in your iPad, iPhone or iPod touch. &lt;a href=&apos;http://ios.yacreader.com&apos;&gt; Discover it! &lt;/a&gt;</oldsource>
-        <translation>YACReader está ahora disponible para dispositivos iOS, la mejor experiencia de lectura de cómics ahora en tu iPad, iPhone o iPod touch. &lt;a href=&apos;http://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos; ¡Descúbrelo! &lt;/a&gt; </translation>
+        <translation type="unfinished">YACReader está ahora disponible para dispositivos iOS, la mejor experiencia de lectura de cómics ahora en tu iPad, iPhone o iPod touch. &lt;a href=&apos;http://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt; ¡Descúbrelo! &lt;/a&gt; </translation>
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="89"/>
