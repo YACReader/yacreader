@@ -166,9 +166,13 @@ void LibraryWindow::doLayout()
 	foldersView->setSelectionBehavior(QAbstractItemView::SelectRows);
 
 	comicView->setAlternatingRowColors(true);
-	comicView->setStyleSheet("QTableView {alternate-background-color: #F2F2F2;background-color: #FAFAFA;}"
-		"QTableView::item {border-bottom: 1px solid #E9E9E9;border-top: 1px solid #FEFEFE; padding-bottom:1px;}"	
-		"QTableView::item:selected {outline: none; border-bottom: 1px solid #A9A9A9;border-top: 1px solid #A9A9A9; padding-bottom:1px; background-color: #A9A9A9; color: #FFFFFF; }"	
+	comicView->verticalHeader()->setAlternatingRowColors(true);
+	comicView->setStyleSheet("QTableView {alternate-background-color: #F2F2F2;background-color: #FAFAFA; outline: 0px;}"
+		"QTableCornerButton::section {background-color:#F5F5F5; border:none; border-bottom:1px solid #B8BDC4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #D1D1D1, stop: 1 #B8BDC4);}"
+		"QTableView::item {outline: 0px; border-bottom: 1px solid #DFDFDF;border-top: 1px solid #FEFEFE; padding-bottom:1px; color:#252626;}"	
+		"QTableView::item:selected {outline: 0px; border-bottom: 1px solid #7A8080;border-top: 1px solid #7A8080; padding-bottom:1px; background-color: #7A8080; color: #FFFFFF; }"	
+		"QHeaderView::section:horizontal {background-color:#F5F5F5; border-bottom:1px solid #B8BDC4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #D1D1D1, stop: 1 #B8BDC4); border-left:none; border-top:none; padding:4px; color:#313232;}"
+		"QHeaderView::section:vertical {border-bottom: 1px solid #DFDFDF;border-top: 1px solid #FEFEFE;}"
 		//"QTableView::item:hover {border-bottom: 1px solid #A3A3A3;border-top: 1px solid #A3A3A3; padding-bottom:1px; background-color: #A3A3A3; color: #FFFFFF; }"
 							 "");
 	//comicView->setItemDelegate(new YACReaderComicViewDelegate());
@@ -995,7 +999,8 @@ void LibraryWindow::openComic()
 
 void LibraryWindow::setCurrentComicsStatusReaded(bool readed)
 {
-	comicFlow->setMarks(dmCV->setComicsRead(comicView->selectionModel()->selectedRows(),readed));
+
+	comicFlow->setMarks(dmCV->setComicsRead(getSelectedComics(),readed));
 	comicFlow->updateMarks();
 }
 
@@ -1304,7 +1309,7 @@ void LibraryWindow::setFoldersFilter(QString filter)
 
 void LibraryWindow::showProperties()
 {
-	QModelIndexList indexList = comicView->selectionModel()->selectedRows();
+	QModelIndexList indexList = getSelectedComics();
 
 	QList<ComicDB> comics = dmCV->getComics(indexList);
 	ComicDB c = comics[0];
@@ -1319,7 +1324,7 @@ void LibraryWindow::showProperties()
 
 void LibraryWindow::asignNumbers()
 {
-	QModelIndexList indexList = comicView->selectionModel()->selectedRows();
+	QModelIndexList indexList = getSelectedComics();
 
 	int startingNumber = indexList[0].row()+1;
 	if(indexList.count()>1)
@@ -1447,4 +1452,16 @@ void LibraryWindow::manageUpdatingError(const QString & error)
 void LibraryWindow::manageOpeningLibraryError(const QString & error)
 {
 	QMessageBox::critical(this,tr("Error opening the library"),error);
+}
+
+QModelIndexList LibraryWindow::getSelectedComics()
+{
+	//se fuerza a que haya almenos una fila seleccionada TODO comprobar se se puede forzar a la tabla a que lo haga automáticamente
+	QModelIndexList selection = comicView->selectionModel()->selectedRows();
+	if(selection.count()==0)
+	{
+		comicView->selectRow(comicFlow->centerIndex());
+		selection = comicView->selectionModel()->selectedRows();
+	}
+	return selection;
 }

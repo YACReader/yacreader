@@ -232,6 +232,7 @@ public:
 		void manageCreatingError(const QString & error);
 		void manageUpdatingError(const QString & error);
 		void manageOpeningLibraryError(const QString & error);
+		QModelIndexList getSelectedComics();
 };
 
 #endif
