@@ -11,15 +11,7 @@
 #include <algorithm>
 using namespace std;
 
-//QMutex mutex;
 #include "poppler-qt4.h"
-
-
-/*int numThreads = 0;
-QWaitCondition waitCondition;
-QMutex mutex;
-*/
-
 
 //--------------------------------------------------------------------------------
 LibraryCreator::LibraryCreator()
@@ -69,10 +61,15 @@ void LibraryCreator::run()
 
 		//se crea la base de datos .yacreaderlibrary/library.ydb
 		_database = DataBaseManagement::createDatabase("library",_target);//
-		/*if(!_database.open())
-			return; //TODO avisar del problema
+		if(!_database.isOpen())
+		{
+			emit failedCreatingDB(_database.lastError().databaseText() + "-" + _database.lastError().driverText());
+			emit finished();
+			creation = false;
+			return; 
+		}
 
-		QSqlQuery pragma("PRAGMA foreign_keys = ON",_database);*/
+		/*QSqlQuery pragma("PRAGMA foreign_keys = ON",_database);*/
 		_database.transaction();
 		//se crea la librería
 		create(QDir(_source));
@@ -87,8 +84,13 @@ void LibraryCreator::run()
 		_currentPathFolders.append(Folder(1,1,"root","/"));
 		_database = DataBaseManagement::loadDatabase(_target);
 		//_database.setDatabaseName(_target+"/library.ydb");
-		/*if(!_database.open())
-			return; //TODO avisar del problema*/
+		if(!_database.open())
+		{
+			emit failedOpeningDB(_database.lastError().databaseText() + "-" + _database.lastError().driverText());
+			emit finished();
+			creation = false;
+			return;
+		}
 		//QSqlQuery pragma("PRAGMA foreign_keys = ON",_database);
 		_database.transaction();
 		update(QDir(_source));
@@ -101,7 +103,7 @@ void LibraryCreator::run()
 		else
 			emit(created());
 	}
-	msleep(100);//TODO try to solve the problem with the udpate dialog
+	msleep(100);//TODO try to solve the problem with the udpate dialog (ya no se usa más...)
 	emit(finished());
 	creation = false;
 }
@@ -133,39 +135,6 @@ qulonglong LibraryCreator::insertFolders()
 	return 0;
 }
 
-/*qulonglong LibraryCreator::insertFolder(qulonglong parentId,const Folder & folder)
-{
-	QSqlQuery query(_database);
-	query.prepare("INSERT INTO folder (parentId, name, path) "
-                   "VALUES (:parentId, :name, :path)");
-    query.bindValue(":parentId", parentId);
-    query.bindValue(":name", folder.name);
-	query.bindValue(":path", folder.path);
-	query.exec();
-	return query.lastInsertId().toULongLong();
-}*/
-
-/*qulonglong LibraryCreator::insertComic(const Comic & comic)
-{
-	//TODO comprobar si ya hay comic info con ese hash
-	QSqlQuery comicInfoInsert(_database);
-	comicInfoInsert.prepare("INSERT INTO comic_info (hash) "
-		"VALUES (:hash)");
-	comicInfoInsert.bindValue(":hash", comic.hash);
-	 comicInfoInsert.exec();
-	 qulonglong comicInfoId =comicInfoInsert.lastInsertId().toULongLong();
-
-	QSqlQuery query(_database);
-	query.prepare("INSERT INTO comic (parentId, comicInfoId, fileName, path) "
-                   "VALUES (:parentId,:comicInfoId,:name, :path)");
-    query.bindValue(":parentId", comic.parentId);
-	query.bindValue(":comicInfoId", comicInfoId);
-    query.bindValue(":name", comic.name);
-	query.bindValue(":path", comic.path);
-	query.exec();
-	return query.lastInsertId().toULongLong();
-}*/
-
 void LibraryCreator::create(QDir dir)
 {
 	dir.setNameFilters(_nameFilter);
@@ -177,7 +146,7 @@ void LibraryCreator::create(QDir dir)
 			return;
 		QFileInfo fileInfo = list.at(i);
 		QString fileName = fileInfo.fileName();
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
         QStringList src = _source.split("/");
 		QString filePath = fileInfo.absoluteFilePath();
         QStringList fp = filePath.split("/");
@@ -476,7 +445,7 @@ void ThumbnailCreator::create()
 		delete _7z;
 		attributes.clear();
 		_currentName = QDir::fromNativeSeparators(_currentName).split('/').last(); //separator fixed. 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 		attributes << "e" << "-so" << "-r" << _fileSource << QString(_currentName.toLocal8Bit().constData()); //TODO platform dependency?? OEM 437
 #else
 		attributes << "e" << "-so" << "-r" << _fileSource << _currentName; //TODO platform dependency?? OEM 437
@@ -515,26 +484,3 @@ void ThumbnailCreator::create()
 		delete _7z;
 	}
 }
-
-/*void ThumbnailCreator::openingError(QProcess::ProcessError error)
-{
-	//TODO : move to the gui thread 
-	switch(error)
-	{
-	case QProcess::FailedToStart:
-		QMessageBox::critical(NULL,tr("7z not found"),tr("7z wasn't found in your PATH."));
-		break;
-	case QProcess::Crashed:
-		QMessageBox::critical(NULL,tr("7z crashed"),tr("7z crashed."));
-		break;
-	case QProcess::ReadError:
-		QMessageBox::critical(NULL,tr("7z reading"),tr("problem reading from 7z"));
-		break;
-	case QProcess::UnknownError:
-		QMessageBox::critical(NULL,tr("7z problem"),tr("Unknown error 7z"));
-		break;
-	default:
-		//TODO
-		break;
-	}	
-}*/

@@ -46,6 +46,7 @@
 #include "yacreader_tool_bar_stretch.h"
 
 #include "yacreader_dark_menu.h"
+#include "yacreader_titled_toolbar.h"
 //
 
 LibraryWindow::LibraryWindow()
@@ -76,10 +77,10 @@ void LibraryWindow::setupUI()
 	settings = new QSettings(QCoreApplication::applicationDirPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
 	settings->beginGroup("libraryConfig");
 
+	createActions();
 	doModels();
 	doLayout();
 	doDialogs();
-	createActions();
 	createToolBars();
 	createMenus();
 	createConnections();
@@ -94,6 +95,10 @@ void LibraryWindow::setupUI()
 	else
 		//if(settings->value(USE_OPEN_GL).toBool() == false)
 			showMaximized();
+	if(settings->contains(COMICS_VIEW_HEADERS))
+		comicView->horizontalHeader()->restoreState(settings->value(COMICS_VIEW_HEADERS).toByteArray());
+	/*if(settings->contains(COMICS_VIEW_HEADERS_GEOMETRY))
+		comicView->horizontalHeader()->restoreGeometry(settings->value(COMICS_VIEW_HEADERS_GEOMETRY).toByteArray());*/
 }
 
 void LibraryWindow::doLayout()
@@ -161,10 +166,22 @@ void LibraryWindow::doLayout()
 	foldersView->setSelectionBehavior(QAbstractItemView::SelectRows);
 
 	comicView->setAlternatingRowColors(true);
-	//comicView->setStyleSheet("alternate-background-color: #e7e7d7;background-color: white;");
+	comicView->verticalHeader()->setAlternatingRowColors(true);
+	comicView->setStyleSheet("QTableView {alternate-background-color: #F2F2F2;background-color: #FAFAFA; outline: 0px;}"
+		"QTableCornerButton::section {background-color:#F5F5F5; border:none; border-bottom:1px solid #B8BDC4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #D1D1D1, stop: 1 #B8BDC4);}"
+		"QTableView::item {outline: 0px; border-bottom: 1px solid #DFDFDF;border-top: 1px solid #FEFEFE; padding-bottom:1px; color:#252626;}"	
+		"QTableView::item:selected {outline: 0px; border-bottom: 1px solid #7A8080;border-top: 1px solid #7A8080; padding-bottom:1px; background-color: #7A8080; color: #FFFFFF; }"	
+		"QHeaderView::section:horizontal {background-color:#F5F5F5; border-bottom:1px solid #B8BDC4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #D1D1D1, stop: 1 #B8BDC4); border-left:none; border-top:none; padding:4px; color:#313232;}"
+		"QHeaderView::section:vertical {border-bottom: 1px solid #DFDFDF;border-top: 1px solid #FEFEFE;}"
+		//"QTableView::item:hover {border-bottom: 1px solid #A3A3A3;border-top: 1px solid #A3A3A3; padding-bottom:1px; background-color: #A3A3A3; color: #FFFFFF; }"
+							 "");
 	//comicView->setItemDelegate(new YACReaderComicViewDelegate());
 	comicView->setContextMenuPolicy(Qt::ActionsContextMenu);
+
 	comicView->setShowGrid(false);
+
+	comicView->verticalHeader()->setResizeMode(QHeaderView::Fixed);
+
 	//comicView->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 	comicView->horizontalHeader()->setStretchLastSection(true);
 	comicView->horizontalHeader()->setClickable(false);
@@ -172,7 +189,7 @@ void LibraryWindow::doLayout()
 	comicView->verticalHeader()->setDefaultSectionSize(24);
 	comicView->verticalHeader()->setClickable(false); //TODO comportamiento anómalo
 	comicView->setCornerButtonEnabled(false);
-	qApp->setStyleSheet ( qApp->styleSheet() +"  QTableView::item{border-right-style:solid;border-width:1;border-color: #d7d7c7;} QTableView::item:selected{background-color: #d7d7c7; color:#000000; border-right-style:solid;border-width:1;border-color: #8c8590;}");
+	//qApp->setStyleSheet ( qApp->styleSheet() +"  QTableView::item{border-right-style:solid;border-width:1;border-color: #d7d7c7;} QTableView::item:selected{background-color: #d7d7c7; color:#000000; border-right-style:solid;border-width:1;border-color: #8c8590;}");
 	//qApp->setStyleSheet ( qApp->styleSheet() +" QTableView {selection-background-color: #d7d7c7; selection-color: #000000;}" );
 
 	/*comicView->setStyleSheet("QTableView {selection-background-color: #d7d7c7; selection-color: #000000; selection-border: 1px solid;}\n  QTableView::item{"
@@ -192,12 +209,20 @@ void LibraryWindow::doLayout()
 	left = new QWidget;
 	QVBoxLayout * l = new QVBoxLayout;
 	selectedLibrary = new QComboBox;
-	l->setContentsMargins(2,2,0,0);
-	l->addWidget(new QLabel(tr("Select a library:")));
+	l->setContentsMargins(sHorizontal->handleWidth(),0,0,0);
+
+	YACReaderTitledToolBar * librariesTitle = new YACReaderTitledToolBar(tr("Libraries"));
+
+	l->addWidget(librariesTitle);
 	l->addWidget(selectedLibrary);
-	treeActions = new QToolBar(left);
-	treeActions->setIconSize(QSize(16,16));
-	l->addWidget(treeActions);
+	
+	YACReaderTitledToolBar * foldersTitle = new YACReaderTitledToolBar(tr("Folders"));
+
+	foldersTitle->addAction(setRootIndexAction);
+	foldersTitle->addAction(expandAllNodesAction);
+	foldersTitle->addAction(colapseAllNodesAction);
+
+	l->addWidget(foldersTitle);
 	l->addWidget(foldersView);
 
 	QVBoxLayout * searchLayout = new QVBoxLayout;
@@ -225,7 +250,7 @@ void LibraryWindow::doLayout()
 	comics = new QWidget;
 	QVBoxLayout * comicsLayout = new QVBoxLayout;
 	comicsLayout->setSpacing(0);
-	comicsLayout->setContentsMargins(2,2,0,0);
+	comicsLayout->setContentsMargins(0,0,0,0);
 	comicsLayout->addWidget(editInfoToolBar = new QToolBar(comics));
 	comicsLayout->addWidget(comicView);
 	comics->setLayout(comicsLayout);
@@ -257,6 +282,11 @@ void LibraryWindow::doLayout()
 
 	connect(noLibrariesWidget,SIGNAL(createNewLibrary()),this,SLOT(createLibrary()));
 	connect(noLibrariesWidget,SIGNAL(addExistingLibrary()),this,SLOT(showAddLibrary()));
+
+	comicFlow->addAction(toggleFullScreenAction);
+	comicFlow->addAction(openComicAction);
+
+	comicFlow->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
 void LibraryWindow::doDialogs()
@@ -294,19 +324,13 @@ void LibraryWindow::doDialogs()
 
 void LibraryWindow::doModels()
 {
-	//dirmodels
+	//folders
 	dm = new TreeModel();
+	//comics
 	dmCV =  new TableModel();
+	//comics selection
 	sm = new QItemSelectionModel(dm);
 
-
-	/*proxyFilter = new  YACReaderTreeSearch();
-	proxyFilter->setSourceModel(dm);
-	proxyFilter->setFilterRole(Qt::DisplayRole);*/
-
-	/*proxySort = new YACReaderSortComics();
-	proxySort->setSourceModel(dmCV);
-	proxySort->setFilterRole(Qt::DisplayRole);*/
 	setFoldersFilter("");
 }
 
@@ -347,10 +371,6 @@ void LibraryWindow::createActions()
 	renameLibraryAction->setToolTip(tr("Rename current library"));
 	renameLibraryAction->setShortcut(Qt::Key_R);
 	renameLibraryAction->setIcon(QIcon(":/images/edit.png"));
-
-	/*deleteLibraryAction = new QAction(this);
-	deleteLibraryAction->setToolTip(tr("Delete current library from disk"));
-	deleteLibraryAction->setIcon(QIcon(":/images/deleteLibrary.png"));*/
 
 	removeLibraryAction = new QAction(this);
 	removeLibraryAction->setToolTip(tr("Remove current library from your collection"));
@@ -459,12 +479,6 @@ void LibraryWindow::createActions()
 	hideComicViewAction->setCheckable(true);
 	hideComicViewAction->setChecked(false);
 	//-------------------------------------------------------------------------
-
-	comicFlow->addAction(toggleFullScreenAction);
-	comicFlow->addAction(openComicAction);
-
-	comicFlow->setContextMenuPolicy(Qt::ActionsContextMenu);
-
 }
 
 //TODO unificar con disableActions
@@ -572,10 +586,6 @@ void LibraryWindow::createToolBars()
 
 	libraryToolBar->setMovable(false);
 
-	treeActions->addAction(setRootIndexAction);
-	treeActions->addAction(expandAllNodesAction);
-	treeActions->addAction(colapseAllNodesAction);
-
 	comicFlow->addAction(toggleFullScreenAction);
 	comicFlow->addAction(openComicAction);
 
@@ -624,16 +634,16 @@ void LibraryWindow::createConnections()
 	connect(importComicsInfoDialog,SIGNAL(finished(int)),this,SLOT(reloadCurrentLibrary()));
 
 	connect(libraryCreator,SIGNAL(coverExtracted(QString)),createLibraryDialog,SLOT(showCurrentFile(QString)));
-	connect(libraryCreator,SIGNAL(finished()),createLibraryDialog,SLOT(close()));
 	connect(libraryCreator,SIGNAL(coverExtracted(QString)),updateLibraryDialog,SLOT(showCurrentFile(QString)));
-	connect(libraryCreator,SIGNAL(finished()),updateLibraryDialog,SLOT(close()));
 	connect(libraryCreator,SIGNAL(finished()),this,SLOT(showRootWidget()));
 	connect(libraryCreator,SIGNAL(updated()),this,SLOT(reloadCurrentLibrary()));
 	connect(libraryCreator,SIGNAL(created()),this,SLOT(openLastCreated()));
-	//new import widget
 	connect(libraryCreator,SIGNAL(comicAdded(QString,QString)),importWidget,SLOT(newComic(QString,QString)));
-	//connect(libraryCreator,SIGNAL(finished()),importWidget,SLOT(clear()));
-	//connect(importWidget,SIGNAL(stop()),this,SLOT(cancelCreating()));
+	//libraryCreator errors
+	connect(libraryCreator,SIGNAL(failedCreatingDB(QString)),this,SLOT(manageCreatingError(QString)));
+	connect(libraryCreator,SIGNAL(failedUpdatingDB(QString)),this,SLOT(manageUpdatingError(QString)));
+	
+	//new import widget
 	connect(importWidget,SIGNAL(stop()),this,SLOT(stopLibraryCreator()));
 
 	//packageManager connections
@@ -812,17 +822,25 @@ void LibraryWindow::loadLibrary(const QString & name)
 					deleteCurrentLibrary();
 				}
 			}
-			else//si existe el path, puede ser que la librería sea alguna versión pre-5.0 ó que esté corrupta
+			else//si existe el path, puede ser que la librería sea alguna versión pre-5.0 ó que esté corrupta o que no haya drivers sql
 			{
-				QString currentLibrary = selectedLibrary->currentText();
-				QString path = libraries.value(selectedLibrary->currentText());
-				if(QMessageBox::question(this,tr("Old library or corrupted"),tr("Library ")+currentLibrary+tr(" is corrupted or has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?"),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
+				QSqlDatabase db = DataBaseManagement::loadDatabase(path);
+				if(d.exists(path+"/library.ydb"))
 				{
-					QDir d(path+"/.yacreaderlibrary");
-					delTree(d);
-					d.rmdir(path+"/.yacreaderlibrary");
-					createLibraryDialog->setDataAndStart(currentLibrary,path);
-					//create(path,path+"/.yacreaderlibrary",currentLibrary);
+					manageOpeningLibraryError(db.lastError().databaseText() + "-" + db.lastError().driverText());
+				}
+				else
+				{
+					QString currentLibrary = selectedLibrary->currentText();
+					QString path = libraries.value(selectedLibrary->currentText());
+					if(QMessageBox::question(this,tr("Old library"),tr("Library ")+currentLibrary+tr("has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?"),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
+					{
+						QDir d(path+"/.yacreaderlibrary");
+						delTree(d);
+						d.rmdir(path+"/.yacreaderlibrary");
+						createLibraryDialog->setDataAndStart(currentLibrary,path);
+						//create(path,path+"/.yacreaderlibrary",currentLibrary);
+					}
 				}
 			}
 		}
@@ -865,15 +883,16 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 	dmCV->setupModelData(folderId,dm->getDatabase());
 	comicView->setModel(dmCV);
 	comicView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+	comicView->horizontalHeader()->setMovable(true);
 	//TODO parametrizar la configuración de las columnas
-	for(int i = 4;i<comicView->horizontalHeader()->count();i++)
-		if(i!=7)
-			comicView->horizontalHeader()->hideSection(i);
+	for(int i = 4;i<comicView->horizontalHeader()->count()-2;i++)
+		comicView->horizontalHeader()->hideSection(i);
 
 
 	//debido a un bug, qt4 no es capaz de ajustar el ancho teniendo en cuenta todas la filas (no sólo las visibles)
 	//así que se ecala la primera vez y después se deja el control al usuario.
-	comicView->resizeColumnsToContents();
+	if(!settings->contains(COMICS_VIEW_HEADERS))
+		comicView->resizeColumnsToContents();
 	comicView->horizontalHeader()->setStretchLastSection(true);
 
 	QStringList paths = dmCV->getPaths(currentPath());
@@ -965,7 +984,7 @@ void LibraryWindow::openComic()
 	{
 		QString path = currentPath() + dmCV->getComicPath(comicView->currentIndex());
 		
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 		
 		QProcess::startDetached("open", QStringList() << "-n" << QDir::cleanPath(QCoreApplication::applicationDirPath()+"/../../../YACReader.app") << "--args" << path);//,QStringList() << path);
 		//Comic is readed
@@ -980,31 +999,9 @@ void LibraryWindow::openComic()
 
 void LibraryWindow::setCurrentComicsStatusReaded(bool readed)
 {
-	QModelIndexList indexList = comicView->selectionModel()->selectedRows();
 
-	QList<ComicDB> comics = dmCV->getComics(indexList);
-
-	foreach (QModelIndex mi, indexList)
-	{
-		if(readed)
-			comicFlow->markSlide(mi.row());
-		else
-			comicFlow->unmarkSlide(mi.row());
-		
-	}
+	comicFlow->setMarks(dmCV->setComicsRead(getSelectedComics(),readed));
 	comicFlow->updateMarks();
-
-	QSqlDatabase db = DataBaseManagement::loadDatabase(dm->getDatabase());
-	db.open();
-	db.transaction();
-	foreach (ComicDB c, comics)
-	{
-		c.info.read = readed;
-		c.info.updateRead(db);
-	}
-	db.commit();
-	db.close();
-	QSqlDatabase::removeDatabase(dm->getDatabase());
 }
 
 void LibraryWindow::setCurrentComicReaded()
@@ -1148,25 +1145,8 @@ void LibraryWindow::updateLibrary()
 	libraryCreator->start();
 }
 
-/*
-void LibraryWindow::deleteLibrary()
-{
-	QString currentLibrary = selectedLibrary->currentText();
-	if(QMessageBox::question(this,tr("Are you sure?"),tr("Do you want delete ")+currentLibrary+" library?",QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
-	{
-		deleteCurrentLibrary();
-	}
-}
-*/
-
 void LibraryWindow::deleteCurrentLibrary()
 {
-	//QSqlDatabase db = dm->getDatabase();
-	//db.commit();
-	//db.close();
-	//QSqlDatabase::removeDatabase(db.connectionName());
-	//if(!dm->getDatabase().isOpen())
-	//{
 	QString path = libraries.value(selectedLibrary->currentText());
 	libraries.remove(selectedLibrary->currentText());
 	selectedLibrary->removeItem(selectedLibrary->currentIndex());
@@ -1183,7 +1163,6 @@ void LibraryWindow::deleteCurrentLibrary()
 		comicFlow->clear();
 	}
 	saveLibraries();
-	//}
 }
 
 void LibraryWindow::removeLibrary()
@@ -1330,67 +1309,35 @@ void LibraryWindow::setFoldersFilter(QString filter)
 
 void LibraryWindow::showProperties()
 {
-	QModelIndexList indexList = comicView->selectionModel()->selectedRows();
+	QModelIndexList indexList = getSelectedComics();
 
 	QList<ComicDB> comics = dmCV->getComics(indexList);
 	ComicDB c = comics[0];
 	_comicIdEdited = c.id;//static_cast<TableItem*>(indexList[0].internalPointer())->data(4).toULongLong();
 
-	//QModelIndex mi = comicView->currentIndex();
-	//QString path = QDir::cleanPath(currentPath()+dmCV->getComicPath(mi));
-
-	//ThumbnailCreator tc(path,"");
-	//tc.create();
 	propertiesDialog->databasePath = dm->getDatabase();
 	propertiesDialog->basePath = currentPath();
 	propertiesDialog->setComics(comics);
 	
-	/*propertiesDialog->setCover(tc.getCover());
-	propertiesDialog->setFilename(path.split("/").last());
-	propertiesDialog->setNumpages(tc.getNumPages());
-	QFile file(path);
-	propertiesDialog->setSize(file.size()/(1024.0*1024));
-	file.close();*/
 	propertiesDialog->show();
 }
 
 void LibraryWindow::asignNumbers()
 {
-	QModelIndexList indexList = comicView->selectionModel()->selectedRows();
+	QModelIndexList indexList = getSelectedComics();
 
-	QList<ComicDB> comics = dmCV->getComics(indexList);
-	ComicDB c = comics[0];
-	_comicIdEdited = c.id;
-
-	int startingNumber = dmCV->getIndexFromId(comics[0].id).row()+1;
-	if(comics.count()>1)
+	int startingNumber = indexList[0].row()+1;
+	if(indexList.count()>1)
 	{
 		bool ok;
 		int n = QInputDialog::getInt(this, tr("Asign comics numbers"),
-			tr("Asign numbers starting in:"), dmCV->getIndexFromId(comics[0].id).row()+1,0,2147483647,1,&ok);
+			tr("Asign numbers starting in:"), startingNumber,0,2147483647,1,&ok);
 		if (ok)
 			startingNumber = n;
 		else
 			return;
 	}
-
-	QSqlDatabase db = DataBaseManagement::loadDatabase(dm->getDatabase());
-	db.transaction();
-
-	for(int i = 0;i<comics.length();i++)
-	{
-		ComicDB c = comics[i];
-		c.info.setNumber(startingNumber+i);
-		c.info.edited = true;
-		c.info.update(db);
-		/*QString hash = comics[i].info.hash;
-		comics[i].info.setNumber(i+1);
-		comics[i].info.update(db);*/
-	}
-
-	db.commit();
-	db.close();
-	QSqlDatabase::removeDatabase(dm->getDatabase());
+	_comicIdEdited = dmCV->asignNumbers(indexList,startingNumber);
 	
 	reloadCovers();
 }
@@ -1427,47 +1374,6 @@ void LibraryWindow::reloadOptions()
 {
 	//comicFlow->setFlowType(flowType);
 	comicFlow->updateConfig(settings);
-}
-
-//TODO esto sobra
-void LibraryWindow::updateFoldersView(QString path)
-{
-	//QModelIndex mi = dm->index(path);
-	//int rowCount = dm->rowCount(mi);
-	//if(!fetching)
-	//{
-	//	//fetching = true;
-	//	for(int i=0;i<rowCount;i++)
-	//	{
-	//		dm->fetchMore(dm->index(i,0,mi));
-	//		//int childCount = dm->rowCount(dm->index(i,0,mi));
-	//		//if(childCount>0)
-	//		//	QMessageBox::critical(NULL,tr("..."),tr("-----"));
-	//		fetching = false;
-	//	}
-	//}
-
-}
-
-void LibraryWindow::searchInFiles(int state)
-{
-
-	if(state == Qt::Checked)
-	{
-		if(!foldersFilter->text().isEmpty())
-		{
-			dm->setFilter(foldersFilter->text(), true);
-			foldersView->expandAll();
-		}
-	}
-	else
-	{
-		if(!foldersFilter->text().isEmpty())
-		{
-			dm->setFilter(foldersFilter->text(), false);
-			foldersView->expandAll();
-		}
-	}
 }
 
 QString LibraryWindow::currentPath()
@@ -1508,79 +1414,11 @@ void LibraryWindow::showImportComicsInfo()
 	importComicsInfoDialog->show();
 }
 
-QList<LibraryItem *> LibraryWindow::getFolderContentFromLibrary(const QString & libraryName, qulonglong folderId)
-{
-	QSqlDatabase db = DataBaseManagement::loadDatabase(libraries.value(libraryName)+"/.yacreaderlibrary");
-	
-	QList<LibraryItem *> list = Folder::getFoldersFromParent(folderId,db,false);
-	
-	db.close();
-	QSqlDatabase::removeDatabase(libraries.value(libraryName));
-	return list;
-
-}
-
-QList<LibraryItem *> LibraryWindow::getFolderComicsFromLibrary(const QString & libraryName, qulonglong folderId)
-{
-	QSqlDatabase db = DataBaseManagement::loadDatabase(libraries.value(libraryName)+"/.yacreaderlibrary");
-
-	QList<LibraryItem *> list = ComicDB::getComicsFromParent(folderId,db,false);
-
-	db.close();
-	QSqlDatabase::removeDatabase(libraries.value(libraryName));
-	return list;
-}
-
-qulonglong LibraryWindow::getParentFromComicFolderId(const QString & libraryName, qulonglong id)
-{
-	QSqlDatabase db = DataBaseManagement::loadDatabase(libraries.value(libraryName)+"/.yacreaderlibrary");
-
-	Folder f(id,db);
-
-	db.close();
-	QSqlDatabase::removeDatabase(libraries.value(libraryName));
-	return f.parentId;
-}
-
-ComicDB LibraryWindow::getComicInfo(const QString & libraryName, qulonglong id)
-{
-	QSqlDatabase db = DataBaseManagement::loadDatabase(libraries.value(libraryName)+"/.yacreaderlibrary");
-
-	ComicDB comic;
-	comic.load(id,db);
-
-	db.close();
-	QSqlDatabase::removeDatabase(libraries.value(libraryName));
-	return comic;
-}
-
-QString LibraryWindow::getFolderName(const QString & libraryName, qulonglong id)
-{
-	QSqlDatabase db = DataBaseManagement::loadDatabase(libraries.value(libraryName)+"/.yacreaderlibrary");
-
-	QString name="";
-
-	{
-		QSqlQuery selectQuery(db); //TODO check
-		selectQuery.prepare("SELECT name FROM folder WHERE id = :id");
-		selectQuery.bindValue(":id", id);
-		selectQuery.exec();
-
-		if(selectQuery.next()) 
-		{
-			QSqlRecord record = selectQuery.record();
-			name = record.value(0).toString();
-		}
-	}
-
-	db.close();
-	QSqlDatabase::removeDatabase(libraries.value(libraryName));
-	return name;
-}
-
 void LibraryWindow::closeEvent ( QCloseEvent * event )
 {
 	settings->setValue(MAIN_WINDOW_GEOMETRY, saveGeometry());
+	settings->setValue(COMICS_VIEW_HEADERS,comicView->horizontalHeader()->saveState());
+	//settings->setValue(COMICS_VIEW_HEADERS_GEOMETRY,comicView->horizontalHeader()->saveGeometry());
 }
 
 void LibraryWindow::showNoLibrariesWidget()
@@ -1599,4 +1437,31 @@ void LibraryWindow::showImportingWidget()
 	importWidget->clear();
 	libraryToolBar->setDisabled(true);
 	mainWidget->setCurrentIndex(2);
+}
+
+void LibraryWindow::manageCreatingError(const QString & error)
+{
+	QMessageBox::critical(this,tr("Error creating the library"),error);
+}
+
+void LibraryWindow::manageUpdatingError(const QString & error)
+{
+	QMessageBox::critical(this,tr("Error updating the library"),error);
+}
+
+void LibraryWindow::manageOpeningLibraryError(const QString & error)
+{
+	QMessageBox::critical(this,tr("Error opening the library"),error);
+}
+
+QModelIndexList LibraryWindow::getSelectedComics()
+{
+	//se fuerza a que haya almenos una fila seleccionada TODO comprobar se se puede forzar a la tabla a que lo haga automáticamente
+	QModelIndexList selection = comicView->selectionModel()->selectedRows();
+	if(selection.count()==0)
+	{
+		comicView->selectRow(comicFlow->centerIndex());
+		selection = comicView->selectionModel()->selectedRows();
+	}
+	return selection;
 }

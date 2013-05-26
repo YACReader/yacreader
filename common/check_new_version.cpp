@@ -88,18 +88,18 @@ void HttpVersionChecker::httpRequestFinished(int requestId, bool error)
 //TODO escribir prueba unitaria
 bool HttpVersionChecker::checkNewVersion(QString sourceContent)
 {
-	#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
     QRegExp rx(".*YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}win32.*");
 #endif
 
-#ifdef  Q_WS_X11
+#ifdef  Q_OS_LINUX
     QRegExp rx(".*YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}X11.*");
 #endif
 
-#ifdef  Q_WS_MAC
+#ifdef  Q_OS_MAC
     QRegExp rx(".*YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}Mac.*");
 #endif
-
+	
     int index = 0;
     bool newVersion = false;
     bool sameVersion = true;

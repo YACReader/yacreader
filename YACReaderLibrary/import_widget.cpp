@@ -13,6 +13,8 @@
 #include <QGLWidget>
 #include <QTimer>
 #include <QElapsedTimer>
+#include <QToolButton>
+#include <QResizeEvent>
 
 #include <QPropertyAnimation>
 #include <QGraphicsOpacityEffect>
@@ -73,7 +75,7 @@ YACReaderActivityIndicatorWidget::YACReaderActivityIndicatorWidget(QWidget * par
 	animation2->setEndValue(1);
 	//animation2->setEasingCurve(QEasingCurve::InQuint);
 
-#ifndef Q_WS_MAC
+#ifndef Q_OS_MAC
 	glow->setGraphicsEffect(effect);
 #endif
 
@@ -113,7 +115,9 @@ ImportWidget::ImportWidget(QWidget *parent) :
 	textDescription->setMaximumWidth(330);
 	currentComicLabel = new QLabel("<font color=\"#565959\">...</font>");
 
+	coversViewContainer = new QWidget(this);
 	QVBoxLayout * coversViewLayout = new QVBoxLayout;
+	coversViewContainer->setLayout(coversViewLayout);
 	coversView = new QGraphicsView();
 	//coversView->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
 	coversView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -185,8 +189,17 @@ ImportWidget::ImportWidget(QWidget *parent) :
 	layout->addSpacing(10);
 	layout->addStretch();
 	portadasLabel = new QLabel("<font color=\"#565959\">"+tr("Some of the comics being added...")+"</font>");
+	
+	hideButton = new QToolButton(this);
+	hideButton->setFixedSize(25,18);
+	hideButton->setStyleSheet("QToolButton {background: url(\":/images/shownCovers.png\"); border:none;}"
+		"  QToolButton:checked {background:url(\":/images/hiddenCovers.png\"); border:none;}");
+	hideButton->setCheckable(true);
+
+	connect(hideButton,SIGNAL(toggled(bool)),this,SLOT(showCovers(bool)));
+
 	layout->addWidget(portadasLabel,0,Qt::AlignHCenter);
-	layout->addLayout(coversViewLayout);
+	layout->addWidget(coversViewContainer);
 	//layout->addStretch();
 	layout->addWidget(currentComicLabel,0,Qt::AlignHCenter);
 	layout->setContentsMargins(0,layout->contentsMargins().top(),0,layout->contentsMargins().bottom());
@@ -357,4 +370,17 @@ void ImportWidget::clearScene()
 {
 
 
+}
+
+void ImportWidget::showCovers(bool hide)
+{
+	portadasLabel->setHidden(hide);
+	coversViewContainer->setHidden(hide);
+}
+
+void ImportWidget::resizeEvent(QResizeEvent * event)
+{
+	hideButton->move(event->size().width()-hideButton->width()- (currentComicLabel->height()/2),event->size().height()-hideButton->height()- (currentComicLabel->height()/2));
+
+	QWidget::resizeEvent(event);
 }
