@@ -105,6 +105,7 @@ void LibraryWindow::doLayout()
 {
 	sVertical = new QSplitter(Qt::Vertical);  //spliter derecha
 	QSplitter * sHorizontal = new QSplitter(Qt::Horizontal);  //spliter principal
+	sHorizontal->setStyleSheet("QSplitter::handle:vertical {height:4px;}");
 	//TODO: flowType is a global variable
 	//CONFIG COMIC_FLOW--------------------------------------------------------
 
@@ -252,6 +253,9 @@ void LibraryWindow::doLayout()
 	comicsLayout->setSpacing(0);
 	comicsLayout->setContentsMargins(0,0,0,0);
 	comicsLayout->addWidget(editInfoToolBar = new QToolBar(comics));
+
+	editInfoToolBar->setStyleSheet("QToolBar {border: none;}");
+
 	comicsLayout->addWidget(comicView);
 	comics->setLayout(comicsLayout);
 	sVertical->addWidget(comics);
