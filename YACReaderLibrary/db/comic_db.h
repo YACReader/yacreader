@@ -2,7 +2,6 @@
 #define __COMICDB_H
 
 #include "library_item.h"
-#include <QSqlDatabase>
 #include <QList>
 #include <QPixmap>
 #include <QImage>
@@ -14,11 +13,7 @@ public:
 	ComicInfo(const ComicInfo & comicInfo);
 	~ComicInfo();
 
-	bool load(QString hash, QSqlDatabase & db);
-	qulonglong insert(QSqlDatabase & db);
-	void removeFromDB(QSqlDatabase & db);
-	void update(QSqlDatabase & db);
-	void updateRead(QSqlDatabase & db);
+	ComicInfo & operator=(const ComicInfo & comicInfo);
 
 	qulonglong id;
 	bool read;
@@ -97,14 +92,6 @@ public:
 	QPixmap getCover(const QString & basePath);
 
 private:
-	void setField(const QString & name, QString * & field, QSqlRecord & record);
-	void setField(const QString & name, int * & field, QSqlRecord & record);
-	void setField(const QString & name, bool * & field, QSqlRecord & record);
-
-	void bindField(const QString & name, QString * field, QSqlQuery & query);
-	void bindField(const QString & name, int * field, QSqlQuery & query);
-	void bindField(const QString & name, bool * field, QSqlQuery & query);
-
 	void setValue(QString * & field, const QString & value);
 	void setValue(int * & field, int value);
 	void setValue(bool * & field, bool value);
@@ -116,19 +103,13 @@ private:
 
 class ComicDB : public LibraryItem
 {
-private:
-	bool _hasCover;
 public:
 	ComicDB();
-	ComicDB(qulonglong cparentId, QString cname, QString cpath, QString chash, QSqlDatabase & database);
-	//Comic(QString fn, QString fp):name(fn),path(fp),knownParent(false), knownId(false){};
 	
-	static QList<LibraryItem *> getComicsFromParent(qulonglong parentId, QSqlDatabase & db, bool sort = true);
 	bool isDir();
+	
+	bool _hasCover;
 
-	bool load(qulonglong id, QSqlDatabase & db);
-	qulonglong insert(QSqlDatabase & db);
-	void update(QSqlDatabase & db);
 	bool hasCover() {return _hasCover;};
 
 	QString toTXT();
