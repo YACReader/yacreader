@@ -4,7 +4,7 @@
 #include <QObject>
 
 class QLocalSocket;
-class YACReaderComicLibrary;
+class ComicDB;
 
 class YACReaderLocalClient : public QObject
 {
@@ -16,8 +16,8 @@ signals:
     
 public slots:
     void readMessage();
-    void requestComicInfo(QString library, YACReaderComicLibrary & comic);
-    void sendComicInfo(QString library, YACReaderComicLibrary & comic);
+    void requestComicInfo(QString library, ComicDB & comic);
+    void sendComicInfo(QString library, ComicDB & comic);
 
 private:
     QLocalSocket * localSocket;

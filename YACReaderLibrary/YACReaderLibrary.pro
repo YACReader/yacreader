@@ -75,8 +75,6 @@ HEADERS += comic_flow.h \
 			no_libraries_widget.h \
 			import_widget.h \
 			yacreader_local_server.h \
-			../common/yacreader_comic_library.h \
-			../common/yacreader_comic_info_library.h
 		   
 SOURCES += comic_flow.cpp \
            create_library_dialog.cpp \
@@ -114,8 +112,6 @@ SOURCES += comic_flow.cpp \
 			no_libraries_widget.cpp \
 			import_widget.cpp \
 			yacreader_local_server.cpp \
-			../common/yacreader_comic_library.cpp \
-			../common/yacreader_comic_info_library.cpp
 			
 		   
 include(./server/server.pri)
