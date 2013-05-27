@@ -7,6 +7,7 @@
 #include <QSqlRecord>
 #include "data_base_management.h"
 #include "qnaturalsorting.h"
+#include "db_helper.h"
 
 #include <algorithm>
 using namespace std;
@@ -241,7 +242,7 @@ void LibraryCreator::update(QDir dirS)
 			{
 				if(stopRunning)
 					return;
-				listD.at(j)->removeFromDB(_database);
+				DBHelper::removeFromDB(listD.at(j),(_database));
 			}
 			updated = true;
 		}
@@ -298,7 +299,7 @@ void LibraryCreator::update(QDir dirS)
 					{
 						if(nameS!="/.yacreaderlibrary")
 						{
-							fileInfoD->removeFromDB(_database);
+							DBHelper::removeFromDB(fileInfoD,_database);
 							j++;
 						}
 						else
@@ -318,7 +319,7 @@ void LibraryCreator::update(QDir dirS)
 				else
 					if(fileInfoD->isDir()) //delete this folder from library
 					{
-						fileInfoD->removeFromDB(_database);
+						DBHelper::removeFromDB(fileInfoD,_database);
 						j++;
 					}
 					else //both are files  //BUG on windows (no case sensitive)
@@ -334,7 +335,7 @@ void LibraryCreator::update(QDir dirS)
 						{
 							if(comparation > 0) //delete thumbnail
 							{
-								fileInfoD->removeFromDB(_database);
+								DBHelper::removeFromDB(fileInfoD,_database);
 								j++;
 							}
 							else //same file

@@ -136,15 +136,6 @@ void ComicDB::update(QSqlDatabase & db)
 
 }
 
-void ComicDB::removeFromDB(QSqlDatabase & db)
-{
-	QSqlQuery query(db);
-	query.prepare("DELETE FROM comic WHERE id = :id");
-    query.bindValue(":id", id);
-	query.exec();
-	//query.finish();
-}
-
 bool ComicDB::isDir()
 {
 	return false;

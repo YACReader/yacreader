@@ -21,7 +21,6 @@ public:
 	static QList<LibraryItem *> getFoldersFromParent(qulonglong parentId, QSqlDatabase & db, bool sort = true);
 	qulonglong insert(QSqlDatabase & db);
 	bool isDir(){return true;};
-	void removeFromDB(QSqlDatabase & db);
 };
 
 #endif

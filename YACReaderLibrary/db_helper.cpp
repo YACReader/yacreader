@@ -8,6 +8,7 @@
 #include <QFileInfo>
 #include <QCoreApplication>
 #include <QTextStream>
+#include <QSqlDatabase>
 
 #include "library_item.h"
 #include "comic_db.h"
@@ -124,4 +125,27 @@ QString DBHelper::getFolderName(const QString & libraryName, qulonglong id)
 	db.close();
 	QSqlDatabase::removeDatabase(libraryPath);
 	return name;
+}
+
+//objects management
+void DBHelper::removeFromDB(LibraryItem * item, QSqlDatabase & db)
+{
+	if(item->isDir())
+		DBHelper::removeFromDB(dynamic_cast<Folder *>(item),db);
+	else
+		DBHelper::removeFromDB(dynamic_cast<ComicDB *>(item),db);
+}
+void DBHelper::removeFromDB(Folder * folder, QSqlDatabase & db)
+{
+	QSqlQuery query(db);
+	query.prepare("DELETE FROM folder WHERE id = :id");
+    query.bindValue(":id", folder->id);
+	query.exec();
+}
+void DBHelper::removeFromDB(ComicDB * comic, QSqlDatabase & db)
+{
+	QSqlQuery query(db);
+	query.prepare("DELETE FROM comic WHERE id = :id");
+    query.bindValue(":id", comic->id);
+	query.exec();
 }
