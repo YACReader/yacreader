@@ -1,6 +1,8 @@
 #ifndef __LIBRARY_ITEM_H
 #define __LIBRARY_ITEM_H
 
+#include <QObject>
+
 class LibraryItem
 {
 public:
