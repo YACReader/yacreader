@@ -1,6 +1,5 @@
 #include "yacreader_local_client.h"
-#include "yacreader_comic_library.h"
-#include "yacreader_comic_info_library.h"
+#include "comic_db.h"
 
 #include <QLocalSocket>
 
@@ -20,12 +19,12 @@ void YACReaderLocalClient::readMessage()
 
 }
 
-void YACReaderLocalClient::requestComicInfo(QString library, YACReaderComicLibrary & comic)
+void YACReaderLocalClient::requestComicInfo(QString library, ComicDB & comic)
 {
 
 }
 
-void YACReaderLocalClient::sendComicInfo(QString library, YACReaderComicLibrary & comic)
+void YACReaderLocalClient::sendComicInfo(QString library, ComicDB & comic)
 {
 
 }
