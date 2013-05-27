@@ -61,6 +61,9 @@ HEADERS += comic.h \
 	../common/yacreader_flow_gl.h \
 	../common/yacreader_global.h \
 	../common/onstart_flow_selection_dialog.h \
+	../common/comic_db.h \
+	../common/folder.h \
+	../common/library_item.h \
 	yacreader_local_client.h
 	
 SOURCES += comic.cpp \
@@ -90,6 +93,9 @@ SOURCES += comic.cpp \
 	../common/qnaturalsorting.cpp \
 	../common/yacreader_flow_gl.cpp \
 	../common/onstart_flow_selection_dialog.cpp \
+	../common/comic_db.cpp \
+	../common/folder.cpp \
+	../common/library_item.cpp \
 	yacreader_local_client.cpp
 
 include(../custom_widgets/custom_widgets.pri)

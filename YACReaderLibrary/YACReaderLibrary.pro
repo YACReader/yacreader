@@ -61,9 +61,9 @@ HEADERS += comic_flow.h \
 		   ./db/treemodel.h \
 		   ./db/tablemodel.h \
 		   ./db/tableitem.h \
-		   ./db/comic_db.h \
-		   ./db/folder.h \
-		   ./db/library_item.h \
+		   ../common/comic_db.h \
+		   ../common/folder.h \
+		   ../common/library_item.h \
 		   ../YACReader/comic.h \
 		   ../YACReader/bookmarks.h \
 		   ../common/pictureflow.h \
@@ -101,9 +101,9 @@ SOURCES += comic_flow.cpp \
 		   ./db/treemodel.cpp \
 		   ./db/tablemodel.cpp \
 		   ./db/tableitem.cpp \
-		   ./db/comic_db.cpp \
-		   ./db/folder.cpp \
-		   ./db/library_item.cpp \
+		   ../common/comic_db.cpp \
+		   ../common/folder.cpp \
+		   ../common/library_item.cpp \
 		   ../YACReader/comic.cpp \
 		   ../YACReader/bookmarks.cpp \
            ../common/pictureflow.cpp \
