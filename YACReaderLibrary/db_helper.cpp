@@ -62,7 +62,7 @@ QList<LibraryItem *> DBHelper::getFolderContentFromLibrary(const QString & libra
 	QString libraryPath = DBHelper::getLibraries().value(libraryName);
 	QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
 	
-	QList<LibraryItem *> list = Folder::getFoldersFromParent(folderId,db,false);
+	QList<LibraryItem *> list = DBHelper::getFoldersFromParent(folderId,db,false);
 	
 	db.close();
 	QSqlDatabase::removeDatabase(libraryPath);
@@ -84,7 +84,7 @@ qulonglong DBHelper::getParentFromComicFolderId(const QString & libraryName, qul
 	QString libraryPath = DBHelper::getLibraries().value(libraryName);
 	QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
 
-	Folder f(id,db);
+	Folder f = DBHelper::loadFolder(id,db);
 
 	db.close();
 	QSqlDatabase::removeDatabase(libraryPath);
@@ -128,6 +128,7 @@ QString DBHelper::getFolderName(const QString & libraryName, qulonglong id)
 }
 
 //objects management
+//deletes
 void DBHelper::removeFromDB(LibraryItem * item, QSqlDatabase & db)
 {
 	if(item->isDir())
@@ -148,4 +149,86 @@ void DBHelper::removeFromDB(ComicDB * comic, QSqlDatabase & db)
 	query.prepare("DELETE FROM comic WHERE id = :id");
     query.bindValue(":id", comic->id);
 	query.exec();
+}
+
+//inserts
+qulonglong DBHelper::insert(Folder * folder, QSqlDatabase & db)
+{
+	QSqlQuery query(db);
+	query.prepare("INSERT INTO folder (parentId, name, path) "
+                   "VALUES (:parentId, :name, :path)");
+    query.bindValue(":parentId", folder->parentId);
+    query.bindValue(":name", folder->name);
+	query.bindValue(":path", folder->path);
+	query.exec();
+	return query.lastInsertId().toULongLong();
+}
+
+//queries
+QList<LibraryItem *> DBHelper::getFoldersFromParent(qulonglong parentId, QSqlDatabase & db, bool sort)
+{
+	QList<LibraryItem *> list;
+
+	QSqlQuery selectQuery(db); //TODO check
+	selectQuery.prepare("SELECT * FROM folder WHERE parentId = :parentId and id <> 1");
+	selectQuery.bindValue(":parentId", parentId);
+	selectQuery.exec();
+
+	Folder * currentItem;
+	while (selectQuery.next()) 
+	{
+		QList<QVariant> data;
+		QSqlRecord record = selectQuery.record();
+		for(int i=0;i<record.count();i++)
+			data << record.value(i);
+		//TODO sort by sort indicator and name
+		currentItem = new Folder(record.value("id").toULongLong(),record.value("parentId").toULongLong(),record.value("name").toString(),record.value("path").toString());
+		int lessThan = 0;
+
+		if(list.isEmpty() || !sort)
+			list.append(currentItem);
+		else
+		{
+			Folder * last = static_cast<Folder *>(list.back());
+			QString nameLast = last->name; 
+			QString nameCurrent = currentItem->name;
+			QList<LibraryItem *>::iterator i;
+			i = list.end();
+			i--;
+			while ((0 > (lessThan = nameCurrent.localeAwareCompare(nameLast))) && i != list.begin())
+			{
+				i--;
+				nameLast = (*i)->name;
+			}
+			if(lessThan>0) //si se ha encontrado un elemento menor que current, se inserta justo después
+				list.insert(++i,currentItem);
+			else
+				list.insert(i,currentItem);
+
+		}
+	}
+
+	return list;
+}
+
+//loads
+Folder DBHelper::loadFolder(qulonglong id, QSqlDatabase & db)
+{
+	Folder folder;
+
+	QSqlQuery query(db);
+	query.prepare("SELECT * FROM folder WHERE id = :id");
+	query.bindValue(":id",id);
+	query.exec();
+	folder.id = id;
+	folder.parentId = 0;
+	if(query.next())
+	{
+		QSqlRecord record = query.record();
+		folder.parentId = record.value("parentId").toULongLong();
+		folder.name = record.value("name").toString();
+		folder.path = record.value("path").toString();
+	}
+
+	return folder;
 }

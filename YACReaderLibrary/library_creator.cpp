@@ -125,7 +125,7 @@ qulonglong LibraryCreator::insertFolders()
 		if(!(i->knownId))
 		{
 			i->setFather(currentId);
-			currentId = i->insert(_database);//insertFolder(currentId,*i);
+			currentId = DBHelper::insert(&(*i),_database);//insertFolder(currentId,*i);
 			i->setId(currentId);
 		}
 		else
@@ -217,7 +217,7 @@ void LibraryCreator::update(QDir dirS)
 	dirS.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware|QDir::DirsFirst); 
 	QFileInfoList listS = dirS.entryInfoList();
 
-	QList<LibraryItem *> folders = Folder::getFoldersFromParent(_currentPathFolders.last().id,_database);
+	QList<LibraryItem *> folders = DBHelper::getFoldersFromParent(_currentPathFolders.last().id,_database);
 	QList<LibraryItem *> comics = ComicDB::getComicsFromParent(_currentPathFolders.last().id,_database);
 
 	QList <LibraryItem *> listD;

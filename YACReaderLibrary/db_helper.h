@@ -22,9 +22,19 @@ public:
 	static	QString getFolderName(const QString & libraryName, qulonglong id);
 
 	//objects management
+	//deletes
 	static void removeFromDB(LibraryItem * item, QSqlDatabase & db);
 	static void removeFromDB(Folder * folder, QSqlDatabase & db);
 	static void removeFromDB(ComicDB * comic, QSqlDatabase & db);
+	//inserts
+	static qulonglong insert(Folder * folder, QSqlDatabase & db);
+	//updates
+
+	//queries
+	static QList<LibraryItem *> getFoldersFromParent(qulonglong parentId, QSqlDatabase & db, bool sort = true);
+
+	//load
+	static Folder loadFolder(qulonglong id, QSqlDatabase & db);
 };
 
 #endif
