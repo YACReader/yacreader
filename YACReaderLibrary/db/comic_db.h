@@ -128,7 +128,6 @@ public:
 
 	bool load(qulonglong id, QSqlDatabase & db);
 	qulonglong insert(QSqlDatabase & db);
-	void removeFromDB(QSqlDatabase & db);
 	void update(QSqlDatabase & db);
 	bool hasCover() {return _hasCover;};
 

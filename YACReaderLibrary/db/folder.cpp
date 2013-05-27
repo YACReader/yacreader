@@ -78,12 +78,3 @@ QList<LibraryItem *> Folder::getFoldersFromParent(qulonglong parentId, QSqlDatab
 
 	return list;
 }
-
-void Folder::removeFromDB(QSqlDatabase & db)
-{
-	QSqlQuery query(db);
-	query.prepare("DELETE FROM folder WHERE id = :id");
-    query.bindValue(":id", id);
-	query.exec();
-}
-
