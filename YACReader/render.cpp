@@ -400,14 +400,23 @@ void DoublePageRender::run()
 	img2 = QPixmap(img.width(),img.height());*/
 
 	int x,y;
-	x = img.width()+img2.width();
+	//x = img.width()+img2.width();
 	y = qMax(img.height(),img2.height());
+
+	//widths fiting the normalized height
+	int width1, width2;
+
+	//altura normalizada
+	if(img.height()!=y)
+		x = (width1 = ((img.width() * y) / img2.height())) +  (width2 = img2.width());
+	else
+		x = (width1 = img.width()) + (width2 = ((img2.width() * y) / img.height()));
 	
 	
 	QImage auxImg(x,y,QImage::Format_RGB32);
 	QPainter painter(&auxImg);
-	painter.drawImage(0,0,img);
-	painter.drawImage(img.width(),0,img2);
+	painter.drawImage(QRect(0,0,width1,y),img);
+	painter.drawImage(QRect(width1,0,width2,y),img2);
 	painter.end();
 
 	if(degrees > 0)
