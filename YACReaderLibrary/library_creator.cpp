@@ -194,7 +194,7 @@ void LibraryCreator::insertComic(const QString & relativePath,const QFileInfo & 
 	file.close();
 	//hash Sha1 del primer 0.5MB + filesize
 	QString hash = QString(crypto.result().toHex().constData()) + QString::number(fileInfo.size());
-	ComicDB comic(_currentPathFolders.last().id,fileInfo.fileName(),relativePath,hash,_database);
+	ComicDB comic = DBHelper::loadComic(_currentPathFolders.last().id,fileInfo.fileName(),relativePath,hash,_database);
 	int numPages;
 
 	if(! ( comic.hasCover() && checkCover(hash)))
@@ -207,7 +207,7 @@ void LibraryCreator::insertComic(const QString & relativePath,const QFileInfo & 
 		emit(comicAdded(relativePath,_target+"/covers/"+hash+".jpg"));
 	}
 	comic.info.setNumPages(numPages);
-	comic.insert(_database);
+	DBHelper::insert(&comic,_database);
 }
 
 void LibraryCreator::update(QDir dirS)
@@ -218,7 +218,7 @@ void LibraryCreator::update(QDir dirS)
 	QFileInfoList listS = dirS.entryInfoList();
 
 	QList<LibraryItem *> folders = DBHelper::getFoldersFromParent(_currentPathFolders.last().id,_database);
-	QList<LibraryItem *> comics = ComicDB::getComicsFromParent(_currentPathFolders.last().id,_database);
+	QList<LibraryItem *> comics = DBHelper::getComicsFromParent(_currentPathFolders.last().id,_database);
 
 	QList <LibraryItem *> listD;
 	listD.append(folders);

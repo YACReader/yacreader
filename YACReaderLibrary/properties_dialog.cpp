@@ -4,6 +4,7 @@
 #include "library_creator.h"
 #include "yacreader_field_edit.h"
 #include "yacreader_field_plain_text_edit.h"
+#include "db_helper.h"
 
 #include <QHBoxLayout>
 #include <QApplication>
@@ -432,7 +433,7 @@ void PropertiesDialog::updateComics()
 	for(itr = comics.begin();itr!=comics.end();itr++)
 	{
 		if(itr->info.edited)
-			itr->info.update(db);
+			DBHelper::update(&(itr->info),db);
 	}
 	db.commit();
 	db.close();

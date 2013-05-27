@@ -7,6 +7,7 @@
 #include "data_base_management.h"
 #include "qnaturalsorting.h"
 #include "comic_db.h"
+#include "db_helper.h"
 
 //ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read
 #define NUMBER 0
@@ -308,10 +309,8 @@ void TableModel::setupModelData(QSqlQuery &sqlquery)
 
 ComicDB TableModel::getComic(const QModelIndex & mi)
 {
-	ComicDB c;
-
 	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-	c.load(_data.at(mi.row())->data(ID).toULongLong(),db);
+	ComicDB c = DBHelper::loadComic(_data.at(mi.row())->data(ID).toULongLong(),db);
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
 
@@ -320,10 +319,8 @@ ComicDB TableModel::getComic(const QModelIndex & mi)
 
 ComicDB TableModel::_getComic(const QModelIndex & mi)
 {
-	ComicDB c;
-
 	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-	c.load(_data.at(mi.row())->data(ID).toULongLong(),db);
+	ComicDB c = DBHelper::loadComic(_data.at(mi.row())->data(ID).toULongLong(),db);
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
 
@@ -352,10 +349,9 @@ QVector<bool> TableModel::setAllComicsRead(bool read)
 	{
 		readList[i] = read; 
 		_data.value(i)->setData(READ,QVariant(read));
-		ComicDB c;
-		c.load(_data.value(i)->data(ID).toULongLong(),db);
+		ComicDB c = DBHelper::loadComic(_data.value(i)->data(ID).toULongLong(),db);
 		c.info.read = read;
-		c.info.update(db);
+		DBHelper::update(&(c.info),db);
 	}
 	db.commit();
 	db.close();
@@ -390,10 +386,9 @@ QVector<bool> TableModel::setComicsRead(QList<QModelIndex> list,bool read)
 	foreach (QModelIndex mi, list)
 	{
 		_data.value(mi.row())->setData(READ, QVariant(read));
-		ComicDB c;
-		c.load(_data.value(mi.row())->data(ID).toULongLong(),db);
+		ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(ID).toULongLong(),db);
 		c.info.read = read;
-		c.info.update(db);
+		DBHelper::update(&(c.info),db);
 	}
 	db.commit();
 	db.close();
@@ -411,11 +406,10 @@ qint64 TableModel::asignNumbers(QList<QModelIndex> list,int startingNumber)
 	int i = 0;
 	foreach (QModelIndex mi, list)
 	{
-		ComicDB c;
-		c.load(_data.value(mi.row())->data(ID).toULongLong(),db);
+		ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(ID).toULongLong(),db);
 		c.info.setNumber(startingNumber+i);
 		c.info.edited = true;
-		c.info.update(db);
+		DBHelper::update(&(c.info),db);
 		i++;
 	}
 
