@@ -889,8 +889,15 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 	comicView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 	comicView->horizontalHeader()->setMovable(true);
 	//TODO parametrizar la configuración de las columnas
-	for(int i = 4;i<comicView->horizontalHeader()->count()-2;i++)
+	for(int i = 0;i<comicView->horizontalHeader()->count();i++)
 		comicView->horizontalHeader()->hideSection(i);
+
+	comicView->horizontalHeader()->showSection(0);
+	comicView->horizontalHeader()->showSection(1);
+	comicView->horizontalHeader()->showSection(2);
+	comicView->horizontalHeader()->showSection(3);
+	comicView->horizontalHeader()->showSection(7);
+	comicView->horizontalHeader()->showSection(8);
 
 
 	//debido a un bug, qt4 no es capaz de ajustar el ancho teniendo en cuenta todas la filas (no sólo las visibles)
