@@ -173,7 +173,7 @@ public:
     ~YACReaderFlowGL();
 
 	//size;
-    //QSize minimumSizeHint() const;
+    QSize minimumSizeHint() const;
     //QSize sizeHint() const;
 
 	/*functions*/

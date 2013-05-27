@@ -257,14 +257,14 @@ YACReaderFlowGL::~YACReaderFlowGL()
 
 }
 
-/*QSize YACReaderFlowGL::minimumSizeHint() const
+QSize YACReaderFlowGL::minimumSizeHint() const
 {
-	return QSize(800, 480);
+	return QSize(320, 200);
 }
 
-QSize YACReaderFlowGL::sizeHint() const
+/*QSize YACReaderFlowGL::sizeHint() const
 {
-	return QSize(800, 480);
+	return QSize(320, 200);
 }*/
 
 void YACReaderFlowGL::initializeGL()
