@@ -383,11 +383,11 @@ void LibraryWindow::createActions()
 	openComicAction = new QAction(tr("Open current comic"),this);
 	openComicAction->setToolTip(tr("Open current comic on YACReader"));
 	openComicAction->setShortcut(Qt::Key_Return);
-	openComicAction->setIcon(QIcon(":/images/icon.png"));
+	openComicAction->setIcon(QIcon(":/images/openInYACReader.png"));
 
 	setAsReadAction = new QAction(tr("Set as read"),this);
 	setAsReadAction->setToolTip(tr("Set comic as read"));
-	setAsReadAction->setIcon(QIcon(":/images/setRead.png"));
+	setAsReadAction->setIcon(QIcon(":/images/setReadButton.png"));
 
 	setAsNonReadAction = new QAction(tr("Set as unread"),this);
 	setAsNonReadAction->setToolTip(tr("Set comic as unread"));
@@ -607,20 +607,10 @@ void LibraryWindow::createToolBars()
 
 	editInfoToolBar->addSeparator();
 
-	QToolButton * tb = new QToolButton();
-	tb->addAction(setAsReadAction);
-	tb->addAction(setAllAsReadAction);
-	tb->setPopupMode(QToolButton::MenuButtonPopup);
-	tb->setDefaultAction(setAsReadAction);
-
-	QToolButton * tb2 = new QToolButton();
-	tb2->addAction(setAsNonReadAction);
-	tb2->addAction(setAllAsNonReadAction);
-	tb2->setPopupMode(QToolButton::MenuButtonPopup);
-	tb2->setDefaultAction(setAsNonReadAction);
-
-	editInfoToolBar->addWidget(tb);
-	editInfoToolBar->addWidget(tb2);
+	editInfoToolBar->addAction(setAsReadAction);
+	editInfoToolBar->addAction(setAllAsReadAction);
+	editInfoToolBar->addAction(setAsNonReadAction);
+	editInfoToolBar->addAction(setAllAsNonReadAction);
 
 	editInfoToolBar->addAction(showHideMarksAction);
 

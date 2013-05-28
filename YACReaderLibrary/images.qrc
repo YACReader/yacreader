@@ -71,5 +71,7 @@
     <file>../images/shownCovers.png</file>
     <file>../images/hiddenCovers.png</file>
     <file>../images/trash.png</file>
+    <file>../images/setReadButton.png</file>
+    <file>../images/openInYACReader.png</file>
   </qresource>
 </RCC>
