@@ -23,6 +23,7 @@ public:
 	void setImagePaths(const QStringList& paths);
 	//bool eventFilter(QObject *target, QEvent *event);
 	void keyPressEvent(QKeyEvent* event);
+	void removeSlide(int cover);
 
 private slots:
   void preload();

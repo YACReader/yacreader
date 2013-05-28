@@ -1085,6 +1085,18 @@ void PictureFlow::addSlide(const QPixmap& pixmap)
   addSlide(pixmap.toImage());
 }
 
+void PictureFlow::removeSlide(int index)
+{
+	int c = d->state->slideImages.count();
+	if (index >= 0 && index < c)
+	{
+		d->state->slideImages.remove(index);
+		d->state->marks.remove(index);
+		//TODO remove loaded flags
+		triggerRender();
+	}
+} 
+
 void PictureFlow::setSlide(int index, const QImage& image)
 {
   if((index >= 0) && (index < slideCount()))

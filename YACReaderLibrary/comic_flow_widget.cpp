@@ -127,6 +127,11 @@ void ComicFlowWidgetSW::updateConfig(QSettings * settings)
 	}
 }
 
+void ComicFlowWidgetSW::remove(int cover)
+{
+	flow->removeSlide(cover);
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
@@ -311,6 +316,11 @@ void ComicFlowWidgetGL::updateConfig(QSettings * settings)
 /*	flow->setVisibility(settings->value("visibilityDistance").toInt());
 	flow->setLightStrenght(settings->value("lightStrength").toInt())*/;
 
+}
+
+void ComicFlowWidgetGL::remove(int cover)
+{
+	flow->remove(cover);
 }
 
 //void ComicFlowWidgetGL::setCF_RX(int value){				flow->setCF_RX(value);}
