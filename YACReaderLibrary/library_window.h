@@ -139,6 +139,7 @@ private:
 	QAction * editSelectedComicsAction;
 	QAction * asignOrderActions;
 	QAction * forceConverExtractedAction;
+	QAction * deleteComicsAction;
 	QAction * hideComicViewAction;
 
 
@@ -233,6 +234,7 @@ public:
 		void manageUpdatingError(const QString & error);
 		void manageOpeningLibraryError(const QString & error);
 		QModelIndexList getSelectedComics();
+		void deleteComics();
 };
 
 #endif

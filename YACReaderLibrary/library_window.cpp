@@ -477,6 +477,10 @@ void LibraryWindow::createActions()
 	forceConverExtractedAction->setText(tr("Update cover"));
 	forceConverExtractedAction->setIcon(QIcon(":/images/importCover.png"));
 
+	deleteComicsAction = new QAction(this);
+	deleteComicsAction->setText(tr("Delete selected comics"));
+	deleteComicsAction->setIcon(QIcon(":/images/trash.png"));
+
 	hideComicViewAction = new QAction(this);
 	hideComicViewAction->setText(tr("Hide comic flow"));
 	hideComicViewAction->setIcon(QIcon(":/images/hideComicFlow.png"));
@@ -620,6 +624,10 @@ void LibraryWindow::createToolBars()
 
 	editInfoToolBar->addAction(showHideMarksAction);
 
+	editInfoToolBar->addSeparator();
+	
+	editInfoToolBar->addAction(deleteComicsAction);
+
 	editInfoToolBar->addWidget(new QToolBarStretch());
 	editInfoToolBar->addAction(hideComicViewAction);
 
@@ -733,6 +741,8 @@ void LibraryWindow::createConnections()
 	connect(selectAllComicsAction,SIGNAL(triggered()),comicView,SLOT(selectAll()));
 	connect(editSelectedComicsAction,SIGNAL(triggered()),this,SLOT(showProperties()));
 	connect(asignOrderActions,SIGNAL(triggered()),this,SLOT(asignNumbers()));
+
+	connect(deleteComicsAction,SIGNAL(triggered()),this,SLOT(deleteComics()));
 
 	connect(hideComicViewAction, SIGNAL(toggled(bool)),this, SLOT(hideComicFlow(bool)));
 
@@ -1475,4 +1485,25 @@ QModelIndexList LibraryWindow::getSelectedComics()
 		selection = comicView->selectionModel()->selectedRows();
 	}
 	return selection;
+}
+
+void LibraryWindow::deleteComics()
+{
+	//TODO move this to another thread
+	QModelIndexList indexList = getSelectedComics();
+
+	QString currentComicPath;
+	QListIterator<QModelIndex> i(indexList);
+	i.toBack();
+	while (i.hasPrevious())
+	{
+		QModelIndex mi = i.previous(); 
+		ComicDB comic = dmCV->getComic(mi);
+		currentComicPath = currentPath() + comic.path;
+		if(QFile::remove(currentComicPath))
+		{
+			dmCV->remove(&comic,mi.row());
+			comicFlow->remove(mi.row());
+		}
+	}
 }

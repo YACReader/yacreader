@@ -434,3 +434,19 @@ QModelIndex TableModel::getIndexFromId(quint64 id)
 
 	return index(i,0);
 }
+
+void TableModel::remove(ComicDB * comic, int row)
+{
+	beginRemoveRows(QModelIndex(),row,row);
+	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+
+	DBHelper::removeFromDB(comic,db);
+	
+	removeRow(row);
+	delete _data.at(row);
+	_data.removeAt(row);
+
+	db.close();
+	QSqlDatabase::removeDatabase(_databasePath);
+	endRemoveRows();
+}
