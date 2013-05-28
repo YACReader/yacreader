@@ -1,4 +1,9 @@
-6.3
+6.4
+Normalizado el renderizado de páginas en modo doble página
+Añadida la función de borrar cómics desde el disco duro
+Nuevos iconos de la barra de herramientas de cómics
+
+6.3 (No pública)
 Mejorada la gestión de errores relacionada con las bibliotecas
 Añadido botón que permite ocultar las portadas en la pantalla de importación
 Añadidos títulos "Bibliotecas" y "Carpetas" a la barra de navegación
@@ -7,7 +12,7 @@ Botón para cambiar el puerto del servidor por el usuario.
 Ahora las columnas de la lista de cómics pueden reordenarse
 Ahora YACReaderLibrary sólo permite una instancia ejecutandose.
 Columna leído añadida.
-Cambiado estilo de la lista de cócmis
+Cambiado estilo de la lista de cómics
 Corregidos bugs relacionados con realizar operaciones sobre cómics cuando no había ninguno seleccionado en la lista de cómics
 
 6.2
