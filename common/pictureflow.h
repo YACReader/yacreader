@@ -131,6 +131,11 @@ public slots:
   void addSlide(const QPixmap& pixmap);
 
   /*!
+  Removes an existing slide.
+  */
+  void removeSlide(int index); 
+
+  /*!
     Sets an image for specified slide. If the slide already exists,
     it will be replaced.
   */  

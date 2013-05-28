@@ -30,6 +30,7 @@ public slots:
 	virtual void setFlowType(FlowType flowType) = 0;
 	virtual void render() = 0;
 	virtual void updateConfig(QSettings * settings) = 0;
+	virtual void remove(int cover) = 0;
 signals:
 	void centerIndexChanged(int);
 	void selected(unsigned int);
@@ -59,6 +60,7 @@ public:
 	void setFlowType(FlowType flowType);
 	void render();
 	void updateConfig(QSettings * settings);
+	void remove(int cover);
 protected:
 	void keyPressEvent(QKeyEvent* event);
 	void paintEvent(QPaintEvent *event);
@@ -92,6 +94,7 @@ public:
 	void setFlowType(FlowType flowType);
 	void render();
 	void updateConfig(QSettings * settings);
+	void remove(int cover);
 //public slots:
 //	void setCF_RX(int value);
 //	//the Y Rotation of the Coverflow 

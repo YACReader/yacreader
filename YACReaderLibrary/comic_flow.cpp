@@ -126,6 +126,16 @@ void ComicFlow::wheelEvent(QWheelEvent * event)
 	event->accept();
 }
 
+void ComicFlow::removeSlide(int cover)
+{
+	imageFiles.removeAt(cover);
+	if(imagesLoaded[cover])
+		numImagesLoaded--;
+	imagesLoaded.remove(cover);
+	imagesSetted.remove(cover);
+
+	YACReaderFlow::removeSlide(cover);
+}
 //-----------------------------------------------------------------------------
 //ImageLoader
 //-----------------------------------------------------------------------------

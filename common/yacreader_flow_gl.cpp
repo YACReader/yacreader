@@ -674,6 +674,10 @@ void YACReaderFlowGL::remove(int item)
 	}
 	numObjects--;
 	cfImages = (CFImage*)realloc(cfImages,numObjects*sizeof(CFImage));
+
+	loaded.remove(item);
+	marks.remove(item);
+	paths.removeAt(item);
 }
 
 /*Info*/
