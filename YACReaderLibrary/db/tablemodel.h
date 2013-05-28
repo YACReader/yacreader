@@ -45,6 +45,7 @@ public:
 	//setComicInfoForSelectedComis(QList<QModelIndex> list); -->inserta la información común para los comics seleccionados
 	QVector<bool> setComicsRead(QList<QModelIndex> list,bool read);
 	qint64 asignNumbers(QList<QModelIndex> list,int startingNumber);
+	void remove(ComicDB * comic, int row);
 private:
     void setupModelData( QSqlQuery &sqlquery);
 	ComicDB _getComic(const QModelIndex & mi);

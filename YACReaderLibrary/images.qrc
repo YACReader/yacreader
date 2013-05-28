@@ -70,5 +70,6 @@
   <file>../images/readRibbon.png</file>
     <file>../images/shownCovers.png</file>
     <file>../images/hiddenCovers.png</file>
+    <file>../images/trash.png</file>
   </qresource>
 </RCC>
