@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+class QLabel;
+
 class YACReaderDeletingProgress : public QWidget
 {
     Q_OBJECT
@@ -15,6 +17,9 @@ public slots:
 	
 protected:
 	void paintEvent(QPaintEvent *);
+
+private:
+	QLabel * textMessage;
     
 };
 

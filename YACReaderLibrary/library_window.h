@@ -6,7 +6,6 @@
 #include <QModelIndex>
 #include <QFileInfo>
 
-class QTableView;
 class QTreeView;
 class QDirModel;
 class QAction;
@@ -44,6 +43,7 @@ class QCloseEvent;
 class ImportWidget;
 class QSettings;
 class LibraryItem;
+class YACReaderTableView;
 #include "comic_db.h"
 
 class LibraryWindow : public QMainWindow
@@ -83,7 +83,7 @@ private:
 	QCheckBox * includeComicsCheckBox;
 	//-------------
 	QWidget *comics;
-	QTableView * comicView;
+	YACReaderTableView * comicView;
 	QTreeView * foldersView;
 	QComboBox * selectedLibrary;
 	TreeModel * dm;

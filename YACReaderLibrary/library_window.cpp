@@ -44,6 +44,7 @@
 #include "server_config_dialog.h"
 #include "tablemodel.h"
 #include "yacreader_tool_bar_stretch.h"
+#include "yacreader_table_view.h"
 
 #include "yacreader_dark_menu.h"
 #include "yacreader_titled_toolbar.h"
@@ -150,7 +151,7 @@ void LibraryWindow::doLayout()
 	//-------------------------------------------------------------------------
 
 	//CONFIG TREE/TABLE VIEWS--------------------------------------------------
-	comicView = new QTableView;
+	comicView = new YACReaderTableView;
 	foldersView = new QTreeView;
 	//-------------------------------------------------------------------------
 
@@ -166,44 +167,7 @@ void LibraryWindow::doLayout()
 	foldersView->setUniformRowHeights(true);
 	foldersView->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-	comicView->setAlternatingRowColors(true);
-	comicView->verticalHeader()->setAlternatingRowColors(true);
-	comicView->setStyleSheet("QTableView {alternate-background-color: #F2F2F2;background-color: #FAFAFA; outline: 0px;}"
-		"QTableCornerButton::section {background-color:#F5F5F5; border:none; border-bottom:1px solid #B8BDC4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #D1D1D1, stop: 1 #B8BDC4);}"
-		"QTableView::item {outline: 0px; border-bottom: 1px solid #DFDFDF;border-top: 1px solid #FEFEFE; padding-bottom:1px; color:#252626;}"	
-		"QTableView::item:selected {outline: 0px; border-bottom: 1px solid #7A8080;border-top: 1px solid #7A8080; padding-bottom:1px; background-color: #7A8080; color: #FFFFFF; }"	
-		"QHeaderView::section:horizontal {background-color:#F5F5F5; border-bottom:1px solid #B8BDC4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #D1D1D1, stop: 1 #B8BDC4); border-left:none; border-top:none; padding:4px; color:#313232;}"
-		"QHeaderView::section:vertical {border-bottom: 1px solid #DFDFDF;border-top: 1px solid #FEFEFE;}"
-		//"QTableView::item:hover {border-bottom: 1px solid #A3A3A3;border-top: 1px solid #A3A3A3; padding-bottom:1px; background-color: #A3A3A3; color: #FFFFFF; }"
-							 "");
-	//comicView->setItemDelegate(new YACReaderComicViewDelegate());
-	comicView->setContextMenuPolicy(Qt::ActionsContextMenu);
-
-	comicView->setShowGrid(false);
-
-	comicView->verticalHeader()->setResizeMode(QHeaderView::Fixed);
-
-	//comicView->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
-	comicView->horizontalHeader()->setStretchLastSection(true);
-	comicView->horizontalHeader()->setClickable(false);
-	//comicView->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
-	comicView->verticalHeader()->setDefaultSectionSize(24);
-	comicView->verticalHeader()->setClickable(false); //TODO comportamiento anómalo
-	comicView->setCornerButtonEnabled(false);
-	//qApp->setStyleSheet ( qApp->styleSheet() +"  QTableView::item{border-right-style:solid;border-width:1;border-color: #d7d7c7;} QTableView::item:selected{background-color: #d7d7c7; color:#000000; border-right-style:solid;border-width:1;border-color: #8c8590;}");
-	//qApp->setStyleSheet ( qApp->styleSheet() +" QTableView {selection-background-color: #d7d7c7; selection-color: #000000;}" );
-
-	/*comicView->setStyleSheet("QTableView {selection-background-color: #d7d7c7; selection-color: #000000; selection-border: 1px solid;}\n  QTableView::item{"
-"border-right-style:solid;"
-"border-width:1;"
-"border-color: #DEDEDE;"
-"}");*/
-//	comicView->verticalHeader()->setStyleSheet("QHeaderView::section"
-//"{"
-//    "background-color: white /* steelblue      */"
-//"}");
-	comicView->setSelectionBehavior(QAbstractItemView::SelectRows);
-	comicView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	
 	//-------------------------------------------------------------------------
 
 	//CONFIG NAVEGACIÓN/BÚSQUEDA-----------------------------------------------

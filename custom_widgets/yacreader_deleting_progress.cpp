@@ -17,9 +17,9 @@ YACReaderDeletingProgress::YACReaderDeletingProgress(QWidget *parent) :
     iconLabel->setPixmap(icon);
 	iconLabel->setStyleSheet(tr("QLabel {padding:0px; margin:0px;}"));
 
-    QLabel * title = new QLabel(tr("Please wait, deleting in progress..."));
+    textMessage = new QLabel(tr("Please wait, deleting in progress..."));
 
-	title->setStyleSheet(tr("QLabel {color:#ABABAB; padding:0 0 0 0px; margin:0px; font-size:18px; font-weight:bold;}"));
+	textMessage->setStyleSheet(tr("QLabel {color:#ABABAB; padding:0 0 0 0px; margin:0px; font-size:18px; font-weight:bold;}"));
 
     QProgressBar * progressBar = new QProgressBar();
 
@@ -39,7 +39,7 @@ YACReaderDeletingProgress::YACReaderDeletingProgress(QWidget *parent) :
 	contentLayout->addSpacing(16);
 	contentLayout->addWidget(iconLabel,0,Qt::AlignHCenter);
 	contentLayout->addSpacing(11);
-    contentLayout->addWidget(title,0,Qt::AlignHCenter);
+    contentLayout->addWidget(textMessage,0,Qt::AlignHCenter);
 	contentLayout->addSpacing(13);
     contentLayout->addWidget(progressBar);
 	contentLayout->addSpacing(13);
@@ -102,5 +102,5 @@ void YACReaderDeletingProgress::paintEvent(QPaintEvent * event)
 
 QSize YACReaderDeletingProgress::sizeHint() const
 {
-	return QSize(410,184);
+	return QSize(textMessage->sizeHint().width()+120,185);
 }
