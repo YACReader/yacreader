@@ -149,8 +149,7 @@ ImportWidget::ImportWidget(QWidget *parent) :
 	coversViewLayout->setSpacing(0);
 
 	QPushButton * stop = new QPushButton(tr("stop"));
-	stop->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
-	stop->setMaximumWidth(100);
+	stop->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
 
 	QVBoxLayout * layout = new QVBoxLayout(this);
 	QHBoxLayout * buttonLayout = new QHBoxLayout();
