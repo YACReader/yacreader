@@ -73,5 +73,14 @@
     <file>../images/trash.png</file>
     <file>../images/setReadButton.png</file>
     <file>../images/openInYACReader.png</file>
+    <file>../images/deleting_progress/imgTopLeft.png</file>
+    <file>../images/deleting_progress/imgTopMiddle.png</file>
+    <file>../images/deleting_progress/imgTopRight.png</file>
+    <file>../images/deleting_progress/imgLeftMiddle.png</file>
+    <file>../images/deleting_progress/imgRightMiddle.png</file>
+    <file>../images/deleting_progress/imgBottomLeft.png</file>
+    <file>../images/deleting_progress/imgBottomMiddle.png</file>
+    <file>../images/deleting_progress/imgBottomRight.png</file>
+    <file>../images/deleting_progress/icon.png</file>
   </qresource>
 </RCC>
