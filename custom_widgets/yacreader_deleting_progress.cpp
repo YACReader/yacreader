@@ -51,6 +51,8 @@ YACReaderDeletingProgress::YACReaderDeletingProgress(QWidget *parent) :
 	setLayout(contentLayout);
 
 	setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+
+	resize( sizeHint() );
 }
 
 void YACReaderDeletingProgress::paintEvent(QPaintEvent * event)
@@ -95,8 +97,6 @@ void YACReaderDeletingProgress::paintEvent(QPaintEvent * event)
 	painter.fillRect(borderLeft,borderTop,width,height,QColor("#FAFAFA"));
 
 	QWidget::paintEvent(event);
-
-	resize( sizeHint() );
 }
 
 

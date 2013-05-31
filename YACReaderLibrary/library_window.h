@@ -44,6 +44,7 @@ class ImportWidget;
 class QSettings;
 class LibraryItem;
 class YACReaderTableView;
+//class YACReaderSocialDialog;
 #include "comic_db.h"
 
 class LibraryWindow : public QMainWindow
@@ -63,6 +64,7 @@ private:
 	HelpAboutDialog * had;
 	RenameLibraryDialog * renameLibraryDialog;
 	PropertiesDialog * propertiesDialog;
+	//YACReaderSocialDialog * socialDialog;
 	bool fullscreen;
 	bool importedCovers; //if true, the library is read only (not updates,open comic or properties)
 	bool fromMaximized;
@@ -120,6 +122,7 @@ private:
 	QAction * toggleFullScreenAction;
 	QAction * optionsAction;
 	QAction * serverConfigAction;
+	//QAction * socialAction;
 
 	//tree actions
 	QAction * setRootIndexAction;
@@ -235,6 +238,7 @@ public:
 		void manageOpeningLibraryError(const QString & error);
 		QModelIndexList getSelectedComics();
 		void deleteComics();
+		//void showSocial();
 };
 
 #endif

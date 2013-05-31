@@ -82,5 +82,12 @@
     <file>../images/deleting_progress/imgBottomMiddle.png</file>
     <file>../images/deleting_progress/imgBottomRight.png</file>
     <file>../images/deleting_progress/icon.png</file>
+    <file>../images/social_dialog/close.png</file>
+    <file>../images/social_dialog/facebook.png</file>
+    <file>../images/social_dialog/google+.png</file>
+    <file>../images/social_dialog/icon.png</file>
+    <file>../images/social_dialog/shadow.png</file>
+    <file>../images/social_dialog/twitter.png</file>
+    <file>../images/social_dialog/separator.png</file>
   </qresource>
 </RCC>

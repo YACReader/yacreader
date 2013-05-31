@@ -48,6 +48,8 @@
 
 #include "yacreader_dark_menu.h"
 #include "yacreader_titled_toolbar.h"
+
+//#include "yacreader_social_dialog.h"
 //
 
 LibraryWindow::LibraryWindow()
@@ -100,6 +102,9 @@ void LibraryWindow::setupUI()
 		comicView->horizontalHeader()->restoreState(settings->value(COMICS_VIEW_HEADERS).toByteArray());
 	/*if(settings->contains(COMICS_VIEW_HEADERS_GEOMETRY))
 		comicView->horizontalHeader()->restoreGeometry(settings->value(COMICS_VIEW_HEADERS_GEOMETRY).toByteArray());*/
+
+	/*socialDialog = new YACReaderSocialDialog(this);
+	socialDialog->setHidden(true);*/
 }
 
 void LibraryWindow::doLayout()
@@ -413,6 +418,8 @@ void LibraryWindow::createActions()
 	serverConfigAction->setToolTip(tr("Show comics server options dialog"));
 	serverConfigAction->setIcon(QIcon(":/images/server.png"));
 
+	//socialAction = new QAction(this);
+
 	//disable actions
 	disableAllActions();
 
@@ -554,6 +561,7 @@ void LibraryWindow::createToolBars()
 #endif
 	libraryToolBar->addAction(optionsAction);
 	libraryToolBar->addAction(helpAboutAction);
+	//libraryToolBar->addAction(socialAction);
 
 
 	libraryToolBar->setMovable(false);
@@ -699,6 +707,8 @@ void LibraryWindow::createConnections()
 	connect(deleteComicsAction,SIGNAL(triggered()),this,SLOT(deleteComics()));
 
 	connect(hideComicViewAction, SIGNAL(toggled(bool)),this, SLOT(hideComicFlow(bool)));
+
+	//connect(socialAction,SIGNAL(triggered()),this,SLOT(showSocial()));
 
 }
 
@@ -1461,3 +1471,16 @@ void LibraryWindow::deleteComics()
 		}
 	}
 }
+
+/*
+void LibraryWindow::showSocial()
+{	
+	socialDialog->move(this->mapToGlobal(QPoint(width()-socialDialog->width()-10, centralWidget()->pos().y()+10)));
+
+	QModelIndexList indexList = getSelectedComics();
+
+	ComicDB comic = dmCV->getComic(indexList.at(0));
+
+	socialDialog->setComic(comic,currentPath());
+	socialDialog->setHidden(false);
+}*/
