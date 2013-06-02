@@ -54,4 +54,6 @@ void YACReaderTableView::resizeEvent(QResizeEvent * event)
 	event->size();
 
 	deletingProgress->move((event->size().width()-deletingProgress->width())/2 ,1);
+
+	QTableView::resizeEvent(event);
 }

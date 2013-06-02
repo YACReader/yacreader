@@ -24,6 +24,14 @@ ComicFlowWidgetSW::ComicFlowWidgetSW(QWidget * parent)
 	Pal.setColor(QPalette::Background, Qt::black);
 	setAutoFillBackground(true);
 	setPalette(Pal);
+
+	//config
+	QMatrix m;
+	m.rotate(-90);
+	m.scale(-1,1);
+	QImage image(":/images/setRead.png");
+    QImage imageTransformed = image.transformed(m,Qt::SmoothTransformation);
+	setMarkImage(imageTransformed);
 }
 
 QSize ComicFlowWidgetSW::minimumSizeHint() const

@@ -69,6 +69,8 @@ protected:
 	void mouseDoubleClickEvent(QMouseEvent* event);
 	QSize minimumSizeHint() const;
 	QSize sizeHint() const;
+	QSize slideSizeW;
+	QSize slideSizeF;
 };
 
 class ComicFlowWidgetGL : public ComicFlowWidget
