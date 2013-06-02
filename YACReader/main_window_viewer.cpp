@@ -628,6 +628,8 @@ void MainWindowViewer::newVersion()
 	msgBox.setInformativeText(tr("Do you want to download the new version?"));
 	msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 	msgBox.setDefaultButton(QMessageBox::Yes);
+	msgBox.setWindowFlags(Qt::WindowStaysOnTopHint);
+	msgBox.setModal(true);
 	int ret = msgBox.exec();
 
 	if(ret==QMessageBox::Yes){
