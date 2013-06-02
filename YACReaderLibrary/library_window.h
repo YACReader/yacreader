@@ -51,7 +51,7 @@ class LibraryWindow : public QMainWindow
 {
 	Q_OBJECT
 private:
-	QWidget * left;
+	QWidget * sideBar;
 	QSplitter * sVertical;
 	CreateLibraryDialog * createLibraryDialog;
 	UpdateLibraryDialog * updateLibraryDialog;

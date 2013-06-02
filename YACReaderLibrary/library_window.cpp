@@ -82,9 +82,10 @@ void LibraryWindow::setupUI()
 
 	createActions();
 	doModels();
+	
 	doLayout();
-	doDialogs();
 	createToolBars();
+	doDialogs();
 	createMenus();
 	createConnections();
 
@@ -107,14 +108,27 @@ void LibraryWindow::setupUI()
 	socialDialog->setHidden(true);*/
 }
 
+//#define NEW_LAYOUT
+
 void LibraryWindow::doLayout()
 {
+	//LAYOUT ELEMENTS------------------------------------------------------------
+	//---------------------------------------------------------------------------
 	sVertical = new QSplitter(Qt::Vertical);  //spliter derecha
 	QSplitter * sHorizontal = new QSplitter(Qt::Horizontal);  //spliter principal
 	sHorizontal->setStyleSheet("QSplitter::handle:vertical {height:4px;}");
-	//TODO: flowType is a global variable
-	//CONFIG COMIC_FLOW--------------------------------------------------------
 
+	//TOOLBARS-------------------------------------------------------------------
+	//---------------------------------------------------------------------------
+	editInfoToolBar = new QToolBar();
+#ifdef NEW_LAYOUT
+	libraryToolBar = new QToolBar();
+#else
+	libraryToolBar = addToolBar(tr("Library"));
+#endif
+
+	//FLOW-----------------------------------------------------------------------
+	//---------------------------------------------------------------------------
 	if(QGLFormat::hasOpenGL() && !settings->contains(USE_OPEN_GL))
 	{
 		OnStartFlowSelectionDialog * flowSelDialog = new OnStartFlowSelectionDialog();
@@ -133,50 +147,34 @@ void LibraryWindow::doLayout()
 	else
 		comicFlow = new ComicFlowWidgetSW(0);
 
-	//comicFlow->setFlowType(flowType);
 	comicFlow->updateConfig(settings);
 	comicFlow->setFocusPolicy(Qt::StrongFocus);
 	comicFlow->setShowMarks(true);
-	QMatrix m;
-	m.rotate(-90);
-	m.scale(-1,1);
-	QImage image(":/images/setRead.png");
-    QImage imageTransformed = image.transformed(m,Qt::SmoothTransformation);
-	comicFlow->setMarkImage(imageTransformed); //not used in flowGL...
-	int heightDesktopResolution = QApplication::desktop()->screenGeometry().height();
-	int height,width;
-	height = heightDesktopResolution*0.39;
-	width = height*0.65;
-	slideSizeW = QSize(width,height);
-	height = heightDesktopResolution*0.55;
-	width = height*0.70;
-	slideSizeF = QSize(width,height);
-	comicFlow->setSlideSize(slideSizeW);
 	setFocusProxy(comicFlow);
-	//-------------------------------------------------------------------------
 
-	//CONFIG TREE/TABLE VIEWS--------------------------------------------------
-	comicView = new YACReaderTableView;
+	fullScreenToolTip = new QLabel(comicFlow);
+	fullScreenToolTip->setText(tr("<font color='white'> press 'F' to close fullscreen mode </font>"));
+	fullScreenToolTip->setPalette(QPalette(QColor(0,0,0)));
+	fullScreenToolTip->setFont(QFont("courier new",15,234));
+	fullScreenToolTip->setAutoFillBackground(true);
+	fullScreenToolTip->hide();
+	fullScreenToolTip->adjustSize();
+
+	comicFlow->setFocus(Qt::OtherFocusReason);
+
+	comicFlow->addAction(toggleFullScreenAction);
+	comicFlow->addAction(openComicAction);
+
+	//SIDEBAR-----------------------------------------------------------------------
+	//---------------------------------------------------------------------------
 	foldersView = new QTreeView;
-	//-------------------------------------------------------------------------
-
-	//CONFIG FOLDERS/COMICS-------------------------------------------------------
-	/*sVertical->setStretchFactor(0,1);
-	sVertical->setStretchFactor(1,0);
-	*/
-		//views
-	//foldersView->setAnimated(true);
 	foldersView->setContextMenuPolicy(Qt::ActionsContextMenu);
 	foldersView->setContextMenuPolicy(Qt::ActionsContextMenu);
 	foldersView->header()->hide();
 	foldersView->setUniformRowHeights(true);
 	foldersView->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-	
-	//-------------------------------------------------------------------------
-
-	//CONFIG NAVEGACIÓN/BÚSQUEDA-----------------------------------------------
-	left = new QWidget;
+	sideBar = new QWidget;
 	QVBoxLayout * l = new QVBoxLayout;
 	selectedLibrary = new QComboBox;
 	l->setContentsMargins(sHorizontal->handleWidth(),0,0,0);
@@ -201,19 +199,12 @@ void LibraryWindow::doLayout()
 	filter->addWidget(foldersFilter = new YACReaderSearchLineEdit());
 	foldersFilter->setPlaceholderText(tr("Search folders and comics"));
 	previousFilter = "";
-	//filter->addWidget(clearFoldersFilter = new QPushButton(tr("Clear")));
-
-	//searchLayout->addWidget(new QLabel(tr("Search folders/comics"),this));
 
 	searchLayout->addLayout(filter);
-	//includeComicsCheckBox = new QCheckBox(tr("Include files (slower)"),this);
-	//includeComicsCheckBox->setChecked(true);
-	//searchLayout->addWidget(includeComicsCheckBox);
 
 	l->addLayout(searchLayout);
 	l->setSpacing(1);
-	left->setLayout(l);
-	//-------------------------------------------------------------------------
+	sideBar->setLayout(l);
 
 	//FINAL LAYOUT-------------------------------------------------------------
 	sVertical->addWidget(comicFlow);
@@ -221,15 +212,31 @@ void LibraryWindow::doLayout()
 	QVBoxLayout * comicsLayout = new QVBoxLayout;
 	comicsLayout->setSpacing(0);
 	comicsLayout->setContentsMargins(0,0,0,0);
-	comicsLayout->addWidget(editInfoToolBar = new QToolBar(comics));
+	comicsLayout->addWidget(editInfoToolBar);
 
 	editInfoToolBar->setStyleSheet("QToolBar {border: none;}");
-
+	
+	comicView = new YACReaderTableView;
 	comicsLayout->addWidget(comicView);
 	comics->setLayout(comicsLayout);
 	sVertical->addWidget(comics);
-	sHorizontal->addWidget(left);
+	sHorizontal->addWidget(sideBar);
+#ifdef NEW_LAYOUT
+	QVBoxLayout * rightLayout = new QVBoxLayout;
+	rightLayout->addWidget(libraryToolBar);
+	rightLayout->addWidget(sVertical);
+
+	rightLayout->setMargin(0);
+	rightLayout->setSpacing(0);
+
+	QWidget * rightWidget = new QWidget();
+	rightWidget->setLayout(rightLayout);
+
+	sHorizontal->addWidget(rightWidget);
+#else
 	sHorizontal->addWidget(sVertical);
+#endif
+	
 	sHorizontal->setStretchFactor(0,0);
 	sHorizontal->setStretchFactor(1,1);
 	mainWidget = new QStackedWidget(this);
@@ -237,16 +244,9 @@ void LibraryWindow::doLayout()
 	setCentralWidget(mainWidget);
 	//FINAL LAYOUT-------------------------------------------------------------
 
-	fullScreenToolTip = new QLabel(comicFlow);
-	fullScreenToolTip->setText(tr("<font color='white'> press 'F' to close fullscreen mode </font>"));
-	fullScreenToolTip->setPalette(QPalette(QColor(0,0,0)));
-	fullScreenToolTip->setFont(QFont("courier new",15,234));
-	fullScreenToolTip->setAutoFillBackground(true);
-	fullScreenToolTip->hide();
-	fullScreenToolTip->adjustSize();
 
-	comicFlow->setFocus(Qt::OtherFocusReason);
-
+	//OTHER----------------------------------------------------------------------
+	//---------------------------------------------------------------------------
 	noLibrariesWidget = new NoLibrariesWidget();
 	mainWidget->addWidget(noLibrariesWidget);
 
@@ -527,8 +527,6 @@ void LibraryWindow::enableLibraryActions()
 
 void LibraryWindow::createToolBars()
 {
-	libraryToolBar = addToolBar(tr("Library"));
-
 	libraryToolBar->setIconSize(QSize(32,32)); //TODO make icon size dynamic
 
 	libraryToolBar->addAction(createLibraryAction);
@@ -565,9 +563,6 @@ void LibraryWindow::createToolBars()
 
 
 	libraryToolBar->setMovable(false);
-
-	comicFlow->addAction(toggleFullScreenAction);
-	comicFlow->addAction(openComicAction);
 
 	editInfoToolBar->setIconSize(QSize(18,18));
 	editInfoToolBar->addAction(openComicAction);
@@ -1233,10 +1228,10 @@ void LibraryWindow::toFullScreen()
 	fromMaximized = this->isMaximized();
 
 	comicFlow->hide();
-	comicFlow->setSlideSize(slideSizeF);
+	//comicFlow->setSlideSize(slideSizeF);
 	comicFlow->setCenterIndex(comicFlow->centerIndex());
 	comics->hide();
-	left->hide();
+	sideBar->hide();
 	libraryToolBar->hide();
 
 	showFullScreen();
@@ -1253,11 +1248,11 @@ void LibraryWindow::toNormal()
 {
 	fullScreenToolTip->hide();
 	comicFlow->hide();
-	comicFlow->setSlideSize(slideSizeW);
+	//comicFlow->setSlideSize(slideSizeW);
 	comicFlow->setCenterIndex(comicFlow->centerIndex());
 	comicFlow->render();
 	comics->show();
-	left->show();
+	sideBar->show();
 	
 	libraryToolBar->show();
 	comicFlow->show();

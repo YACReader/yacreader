@@ -1251,8 +1251,15 @@ void PictureFlow::paintEvent(QPaintEvent* event)
 
 void PictureFlow::resizeEvent(QResizeEvent* event)
 {
-  triggerRender();
-  QWidget::resizeEvent(event);
+	int heightWidget = event->size().height();
+	int height,width;
+	height = heightWidget*0.55;
+	width = height*0.65;
+	setSlideSize(QSize(width,height));
+
+	render();
+	d->animator->start(centerIndex());
+	QWidget::resizeEvent(event);
 }
 #include <QTime>
 void PictureFlow::updateAnimation()  //bucle principal
