@@ -89,5 +89,15 @@
     <file>../images/social_dialog/shadow.png</file>
     <file>../images/social_dialog/twitter.png</file>
     <file>../images/social_dialog/separator.png</file>
+    <file>../images/main_toolbar/back.png</file>
+    <file>../images/main_toolbar/back_disabled.png</file>
+    <file>../images/main_toolbar/forward.png</file>
+    <file>../images/main_toolbar/forward_disabled.png</file>
+    <file>../images/main_toolbar/divider.png</file>
+    <file>../images/main_toolbar/settings.png</file>
+    <file>../images/main_toolbar/server.png</file>
+    <file>../images/main_toolbar/help.png</file>
+    <file>../images/main_toolbar/fullscreen.png</file>
+
   </qresource>
 </RCC>

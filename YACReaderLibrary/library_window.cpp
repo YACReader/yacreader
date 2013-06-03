@@ -48,6 +48,7 @@
 
 #include "yacreader_dark_menu.h"
 #include "yacreader_titled_toolbar.h"
+#include "yacreader_main_toolbar.h"
 
 //#include "yacreader_social_dialog.h"
 //
@@ -223,7 +224,7 @@ void LibraryWindow::doLayout()
 	sHorizontal->addWidget(sideBar);
 #ifdef NEW_LAYOUT
 	QVBoxLayout * rightLayout = new QVBoxLayout;
-	rightLayout->addWidget(libraryToolBar);
+	rightLayout->addWidget(new YACReaderMainToolBar);
 	rightLayout->addWidget(sVertical);
 
 	rightLayout->setMargin(0);
