@@ -40,7 +40,7 @@ void YACReaderTitledToolBar::addAction(QAction * action)
 	tb->setDefaultAction(action);
 	tb->setIconSize(QSize(16,16));
 	tb->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
-	tb->setStyleSheet("QToolButton:hover {background-color:#A5A5A5;}");
+	tb->setStyleSheet("QToolButton:hover {background-color:#C5C5C5;}");
 
 	mainLayout->addWidget(tb);
 }
