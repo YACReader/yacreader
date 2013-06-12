@@ -218,6 +218,7 @@ void LibraryWindow::doLayout()
 	editInfoToolBar->setStyleSheet("QToolBar {border: none;}");
 	
 	comicView = new YACReaderTableView;
+	comicView->verticalHeader()->hide();
 	comicsLayout->addWidget(comicView);
 	comics->setLayout(comicsLayout);
 	sVertical->addWidget(comics);

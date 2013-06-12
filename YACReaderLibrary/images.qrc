@@ -99,5 +99,6 @@
     <file>../images/main_toolbar/help.png</file>
     <file>../images/main_toolbar/fullscreen.png</file>
 
+
   </qresource>
 </RCC>
