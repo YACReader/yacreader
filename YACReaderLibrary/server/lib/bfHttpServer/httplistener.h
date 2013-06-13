@@ -61,7 +61,7 @@ private:
     QSettings* settings;
 
     /** Pool of connection handlers */
-    HttpConnectionHandlerPool pool;
+    HttpConnectionHandlerPool* pool;
 
 signals:
 

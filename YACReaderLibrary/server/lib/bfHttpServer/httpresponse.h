@@ -121,7 +121,7 @@ private:
     QMap<QByteArray,HttpCookie> cookies;
 
     /** Write raw data to the socket. This method blocks until all bytes have been passed to the TCP buffer */
-    void writeToSocket(QByteArray data);
+    bool writeToSocket(QByteArray data);
 
     /**
       Write the response HTTP status and headers to the socket.

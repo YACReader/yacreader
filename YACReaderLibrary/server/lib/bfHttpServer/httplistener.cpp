@@ -9,10 +9,11 @@
 #include <QCoreApplication>
 
 HttpListener::HttpListener(QSettings* settings, HttpRequestHandler* requestHandler, QObject *parent)
-    : QTcpServer(parent), pool(settings,requestHandler)
+    : QTcpServer(parent)
 {
     Q_ASSERT(settings!=0);
     this->settings=settings;
+    pool=new HttpConnectionHandlerPool(settings,requestHandler);
     // Start listening
     int port=settings->value("port",8080).toInt();
     listen(QHostAddress::Any, port);
@@ -34,6 +35,8 @@ HttpListener::HttpListener(QSettings* settings, HttpRequestHandler* requestHandl
 HttpListener::~HttpListener() {
     close();
     qDebug("HttpListener: closed");
+    delete pool;
+    qDebug("HttpListener: destroyed");
 }
 
 
@@ -41,7 +44,7 @@ void HttpListener::incomingConnection(int socketDescriptor) {
 #ifdef SUPERVERBOSE
     qDebug("HttpListener: New connection");
 #endif
-    HttpConnectionHandler* freeHandler=pool.getConnectionHandler();
+    HttpConnectionHandler* freeHandler=pool->getConnectionHandler();
 
     // Let the handler process the new connection.
     if (freeHandler) {
