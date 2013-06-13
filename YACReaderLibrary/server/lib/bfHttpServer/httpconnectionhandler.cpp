@@ -31,6 +31,9 @@ HttpConnectionHandler::HttpConnectionHandler(QSettings* settings, HttpRequestHan
 
 
 HttpConnectionHandler::~HttpConnectionHandler() {
+    socket.close();
+    quit();
+    wait();
     qDebug("HttpConnectionHandler (%p): destroyed", this);
 }
 
@@ -53,6 +56,7 @@ void HttpConnectionHandler::handleConnection(int socketDescriptor) {
     qDebug("HttpConnectionHandler (%p): handle new connection", this);
     busy = true;
     Q_ASSERT(socket.isOpen()==false); // if not, then the handler is already busy
+
     if (!socket.setSocketDescriptor(socketDescriptor)) {
         qCritical("HttpConnectionHandler (%p): cannot initialize socket: %s", this,qPrintable(socket.errorString()));
         return;

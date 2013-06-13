@@ -56,14 +56,20 @@ void HttpResponse::writeHeaders() {
     sentHeaders=true;
 }
 
-void HttpResponse::writeToSocket(QByteArray data) {
+bool HttpResponse::writeToSocket(QByteArray data) {
     int remaining=data.size();
     char* ptr=data.data();
     while (socket->isOpen() && remaining>0) {
-        int written=socket->write(data);
+        // Wait until the previous buffer content is written out, otherwise it could become very large
+        socket->waitForBytesWritten(-1);
+        int written=socket->write(ptr,remaining);
+        if (written==-1) {
+          return false;
+        }
         ptr+=written;
         remaining-=written;
     }
+    return true;
 }
 
 void HttpResponse::write(QByteArray data, bool lastPart) {
