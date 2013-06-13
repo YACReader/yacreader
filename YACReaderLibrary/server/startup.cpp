@@ -64,7 +64,7 @@ void Startup::start() {
 void Startup::stop() {
     qDebug("ServiceHelper: Service has been stopped");
     // QCoreApplication destroys all objects that have been created in start().
-	listener->close();
+	delete listener;
 }
 
 

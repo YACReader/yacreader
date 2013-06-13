@@ -49,5 +49,11 @@ int main( int argc, char ** argv )
   /*mw->resize(800,480);
   mw->showMaximized();*/
 
-  return app.exec();
+  int ret = app.exec();
+
+  //server shutdown
+  s->stop();
+  delete s;
+
+  return ret;
 }
