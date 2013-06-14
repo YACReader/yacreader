@@ -100,5 +100,6 @@
     <file>../images/main_toolbar/fullscreen.png</file>
     <file>../images/collapsed_branch_osx.png</file>
     <file>../images/expanded_branch_osx.png</file>
+    <file>../images/folder_macosx.png</file>
   </qresource>
 </RCC>
