@@ -52,7 +52,7 @@ public:
 
 public slots:
 	void remove(int row);
-	void startTransaction(int first, int last);
+	void startTransaction();
 	void finishTransaction();
 
 private:

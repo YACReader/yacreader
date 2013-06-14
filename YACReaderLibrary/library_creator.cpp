@@ -256,13 +256,38 @@ void LibraryCreator::update(QDir dirS)
 				QFileInfo fileInfoS = listS.at(i);
 				if(fileInfoS.isDir()) //create folder
 				{
-					_currentPathFolders.append(Folder(fileInfoS.fileName(),QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source)));  //folder actual no está en la BD
+#ifdef Q_OS_MAC
+					QStringList src = _source.split("/");
+					QString filePath = fileInfoS.absoluteFilePath();
+					QStringList fp = filePath.split("/");
+					for(int i = 0; i< src.count();i++)
+					{
+						fp.removeFirst();
+					}
+					QString path = "/" + fp.join("/");
+#else
+					QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
+#endif
+					_currentPathFolders.append(Folder(fileInfoS.fileName(),path));  //folder actual no está en la BD
 					create(QDir(fileInfoS.absoluteFilePath()));
 					_currentPathFolders.pop_back();
 				}
 				else //create comic
 				{
-					insertComic(QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source),fileInfoS);
+#ifdef Q_OS_MAC
+					QStringList src = _source.split("/");
+					QString filePath = fileInfoS.absoluteFilePath();
+					QStringList fp = filePath.split("/");
+					for(int i = 0; i< src.count();i++)
+					{
+						fp.removeFirst();
+					}
+					QString path = "/" + fp.join("/");
+#else
+
+					QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
+#endif
+					insertComic(path,fileInfoS);
 				}
 			}
 			updated = true;
@@ -289,7 +314,19 @@ void LibraryCreator::update(QDir dirS)
 					{
 						if(nameS!="/.yacreaderlibrary")
 						{
-							_currentPathFolders.append(Folder(fileInfoS.fileName(),QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source)));
+#ifdef Q_OS_MAC
+							QStringList src = _source.split("/");
+							QString filePath = fileInfoS.absoluteFilePath();
+							QStringList fp = filePath.split("/");
+							for(int i = 0; i< src.count();i++)
+							{
+								fp.removeFirst();
+							}
+							QString path = "/" + fp.join("/");
+#else
+							QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
+#endif
+							_currentPathFolders.append(Folder(fileInfoS.fileName(),path));
 							create(QDir(fileInfoS.absoluteFilePath()));
 							_currentPathFolders.pop_back();
 						}
@@ -310,7 +347,19 @@ void LibraryCreator::update(QDir dirS)
 				{
 					if(nameS!="/.yacreaderlibrary") //skip .yacreaderlibrary folder
 					{
-						_currentPathFolders.append(Folder(fileInfoS.fileName(),QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source)));
+#ifdef Q_OS_MAC
+						QStringList src = _source.split("/");
+						QString filePath = fileInfoS.absoluteFilePath();
+						QStringList fp = filePath.split("/");
+						for(int i = 0; i< src.count();i++)
+						{
+							fp.removeFirst();
+						}
+						QString path = "/" + fp.join("/");
+#else
+						QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
+#endif
+						_currentPathFolders.append(Folder(fileInfoS.fileName(),path));
 						create(QDir(fileInfoS.absoluteFilePath()));
 						_currentPathFolders.pop_back();
 					}
@@ -328,7 +377,19 @@ void LibraryCreator::update(QDir dirS)
 						int comparation = QString::localeAwareCompare(nameS,nameD);
 						if(comparation < 0) //create new thumbnail
 						{
-							insertComic(QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source),fileInfoS);
+#ifdef Q_OS_MAC
+							QStringList src = _source.split("/");
+							QString filePath = fileInfoS.absoluteFilePath();
+							QStringList fp = filePath.split("/");
+							for(int i = 0; i< src.count();i++)
+							{
+								fp.removeFirst();
+							}
+							QString path = "/" + fp.join("/");
+#else
+							QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
+#endif
+							insertComic(path,fileInfoS);
 							i++;
 						}
 						else

@@ -176,10 +176,12 @@ void LibraryWindow::doLayout()
 	foldersView->header()->hide();
 	foldersView->setUniformRowHeights(true);
 	foldersView->setSelectionBehavior(QAbstractItemView::SelectRows);
+	foldersView->setAttribute(Qt::WA_MacShowFocusRect,false);
 
 	sideBar = new QWidget;
 	QVBoxLayout * l = new QVBoxLayout;
 	selectedLibrary = new QComboBox;
+	selectedLibrary->setAttribute(Qt::WA_MacShowFocusRect,false);
 	l->setContentsMargins(sHorizontal->handleWidth(),0,0,0);
 
 	YACReaderTitledToolBar * librariesTitle = new YACReaderTitledToolBar(tr("Libraries"));
@@ -200,6 +202,7 @@ void LibraryWindow::doLayout()
 
 	QHBoxLayout * filter = new QHBoxLayout;
 	filter->addWidget(foldersFilter = new YACReaderSearchLineEdit());
+	foldersFilter->setAttribute(Qt::WA_MacShowFocusRect,false);
 	foldersFilter->setPlaceholderText(tr("Search folders and comics"));
 	previousFilter = "";
 
@@ -1464,7 +1467,7 @@ void LibraryWindow::deleteComics()
 		ComicsRemover * remover = new ComicsRemover(indexList,paths);
 
 		//comicView->showDeleteProgress();
-		dmCV->startTransaction(indexList.first().row(),indexList.last().row());
+		dmCV->startTransaction();
 
 		connect(remover, SIGNAL(remove(int)), dmCV, SLOT(remove(int)));
 		connect(remover, SIGNAL(remove(int)), comicFlow, SLOT(remove(int)));
