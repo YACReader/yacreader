@@ -21,6 +21,7 @@ public:
     TableModel( QSqlQuery &sqlquery, QObject *parent = 0);
     ~TableModel();
 
+
     QVariant data(const QModelIndex &index, int role) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
     QVariant headerData(int section, Qt::Orientation orientation,
@@ -31,11 +32,12 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
 	void setupModelData(unsigned long long int parentFolder,const QString & databasePath);
-	
+
 	//Métodos de conveniencia
 	QStringList getPaths(const QString & _source);
 	QString getComicPath(QModelIndex mi);
 	ComicDB getComic(const QModelIndex & mi); //--> para la edición
+	ComicDB getComic(int row);
 	QVector<bool> getReadList();
 	QVector<bool> setAllComicsRead(bool read);
 	QList<ComicDB> getComics(QList<QModelIndex> list); //--> recupera la información común a los comics seleccionados
@@ -46,12 +48,21 @@ public:
 	QVector<bool> setComicsRead(QList<QModelIndex> list,bool read);
 	qint64 asignNumbers(QList<QModelIndex> list,int startingNumber);
 	void remove(ComicDB * comic, int row);
+	void removeInTransaction(int row);
+
+public slots:
+	void remove(int row);
+	void startTransaction(int first, int last);
+	void finishTransaction();
+
 private:
     void setupModelData( QSqlQuery &sqlquery);
 	ComicDB _getComic(const QModelIndex & mi);
     QList<TableItem *> _data;
 
 	QString _databasePath;
+
+	QSqlDatabase dbTransaction;
 
 signals:
 	void beforeReset();

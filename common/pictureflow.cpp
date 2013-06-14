@@ -1092,8 +1092,7 @@ void PictureFlow::removeSlide(int index)
 	{
 		d->state->slideImages.remove(index);
 		d->state->marks.remove(index);
-		//TODO remove loaded flags
-		triggerRender();
+		setCenterIndex(index);
 	}
 } 
 
@@ -1164,14 +1163,24 @@ void PictureFlow::showPrevious()
   int center = d->state->centerIndex;
 
   if(step > 0)
+  {
     d->animator->start(center);
+  	emit centerIndexChanged(center);
+  }
 
   if(step == 0)
     if(center > 0)
+	{
       d->animator->start(center - 1);
+  	  emit centerIndexChanged(center - 1);
+	}
 
   if(step < 0)
+  {
     d->animator->target = qMax(0, center - 2);
+	emit centerIndexChanged(qMax(0, center - 2));
+  }
+
 }
 
 void PictureFlow::showNext()
@@ -1179,15 +1188,27 @@ void PictureFlow::showNext()
   int step = d->animator->step;
   int center = d->state->centerIndex;
 
+
   if(step < 0)
+  {
     d->animator->start(center);
+	emit centerIndexChanged(center);
+  }
 
   if(step == 0)
     if(center < slideCount()-1)
+	{
       d->animator->start(center + 1);
+	  emit centerIndexChanged(center + 1);
+	}
 
   if(step > 0)
+  {
     d->animator->target = qMin(center + 2, slideCount()-1);
+	emit centerIndexChanged(qMin(center + 2, slideCount()-1));
+  }
+
+  
 }
 
 void PictureFlow::showSlide(unsigned int index)
@@ -1214,20 +1235,20 @@ void PictureFlow::keyPressEvent(QKeyEvent* event)
 {
   if(event->key() == Qt::Key_Left)
   {
-    if(event->modifiers() == Qt::ControlModifier)
+    /*if(event->modifiers() == Qt::ControlModifier)
       showSlide(centerIndex()-10);
-    else
-      showPrevious();
+    else*/
+    showPrevious();
     event->accept();
     return;
   }
 
   if(event->key() == Qt::Key_Right)
   {
-    if(event->modifiers() == Qt::ControlModifier)
+    /*if(event->modifiers() == Qt::ControlModifier)
       showSlide(centerIndex()+10);
-    else
-      showNext();
+    else*/
+     showNext();
     event->accept();
     return;
   }
@@ -1278,8 +1299,9 @@ void PictureFlow::updateAnimation()  //bucle principal
 	  frameSkiped = true;
   }
 
+  
   if(d->state->centerIndex != old_center)
-    emit centerIndexChanged(d->state->centerIndex);
+    emit centerIndexChangedSilent(d->state->centerIndex);
   if(d->animator->animating == true)
   {
 	  int difference = 10-now.elapsed();

@@ -435,6 +435,33 @@ QModelIndex TableModel::getIndexFromId(quint64 id)
 	return index(i,0);
 }
 
+void TableModel::startTransaction(int first, int last)
+{
+	beginRemoveRows(QModelIndex(),first,last);
+	dbTransaction = DataBaseManagement::loadDatabase(_databasePath);
+	dbTransaction.transaction();
+}
+
+void TableModel::finishTransaction()
+{
+	dbTransaction.commit();
+	dbTransaction.close();
+	QSqlDatabase::removeDatabase(_databasePath);
+
+	endRemoveRows();
+}
+
+void TableModel::removeInTransaction(int row)
+{
+	ComicDB c = DBHelper::loadComic(_data.at(row)->data(ID).toULongLong(),dbTransaction);
+
+	DBHelper::removeFromDB(&c,dbTransaction);
+	
+	removeRow(row);
+	delete _data.at(row);
+	_data.removeAt(row);
+}
+
 void TableModel::remove(ComicDB * comic, int row)
 {
 	beginRemoveRows(QModelIndex(),row,row);
@@ -449,4 +476,14 @@ void TableModel::remove(ComicDB * comic, int row)
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
 	endRemoveRows();
+}
+
+ComicDB TableModel::getComic(int row)
+{
+	return getComic(index(row,0));
+}
+
+void TableModel::remove(int row)
+{
+	removeInTransaction(row);
 }

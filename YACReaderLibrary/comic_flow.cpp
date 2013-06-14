@@ -17,6 +17,7 @@ ComicFlow::ComicFlow(QWidget* parent,FlowType flowType)
 
 	worker = new ImageLoader;
 	connect(this, SIGNAL(centerIndexChanged(int)), this, SLOT(preload()));
+	connect(this, SIGNAL(centerIndexChangedSilent(int)), this, SLOT(preload()));
 
 	setReflectionEffect(PlainReflection);
 }

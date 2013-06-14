@@ -102,7 +102,6 @@ private:
 	bool fetching;
 
 	int i;
-	unsigned int skip;
 
 	QAction * openComicAction;
 	QAction * showPropertiesAction;
@@ -190,6 +189,7 @@ public:
 	public slots:
 		void loadLibrary(const QString & path);
 		void loadCovers(const QModelIndex & mi);
+		void checkEmptyFolder(QStringList * paths = 0);
 		void reloadCovers();
 		void centerComicFlow(const QModelIndex & mi);
 		void updateComicView(int i);
