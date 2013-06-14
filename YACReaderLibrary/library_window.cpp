@@ -1214,6 +1214,8 @@ void LibraryWindow::setRootIndex()
 			comicView->setModel(NULL);
 			comicFlow->clear();
 		}
+
+        foldersView->clearSelection();
 	}
 }
 
