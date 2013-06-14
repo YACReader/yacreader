@@ -101,7 +101,11 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
 	if (role == Qt::DecorationRole)
+#ifdef Q_OS_MAC
+		return QVariant(QIcon(":/images/folder_macosx.png"));
+#else
 		return QVariant(QIcon(":/images/folder.png"));
+#endif
 
     if (role != Qt::DisplayRole)
         return QVariant();
