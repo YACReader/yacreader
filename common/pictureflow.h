@@ -204,6 +204,7 @@ public slots:
 
 signals:
   void centerIndexChanged(int index);
+  void centerIndexChangedSilent(int index);
 
 public:
   void paintEvent(QPaintEvent *event);

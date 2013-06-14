@@ -5,6 +5,7 @@
 
 class YACReaderDeletingProgress;
 class QResizeEvent;
+class QPropertyAnimation;
 
 class YACReaderTableView : public QTableView
 {
@@ -20,6 +21,8 @@ public slots:
 
 private:
     YACReaderDeletingProgress * deletingProgress;
+	bool showDelete;
+	QPropertyAnimation * showDeletingProgressAnimation;
 
 	void resizeEvent(QResizeEvent * event);
 };

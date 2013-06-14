@@ -2,11 +2,12 @@
 
 #include <QHeaderView>
 #include <QResizeEvent>
+#include <QPropertyAnimation>
 
 #include "yacreader_deleting_progress.h"
 
 YACReaderTableView::YACReaderTableView(QWidget *parent) :
-    QTableView(parent)
+    QTableView(parent),showDelete(false)
 {
 	setAlternatingRowColors(true);
 	verticalHeader()->setAlternatingRowColors(true);
@@ -36,24 +37,41 @@ YACReaderTableView::YACReaderTableView(QWidget *parent) :
 	setSelectionBehavior(QAbstractItemView::SelectRows);
 	setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-	deletingProgress = new YACReaderDeletingProgress(/*this*/);
+	/*deletingProgress = new YACReaderDeletingProgress(this);
+
+	showDeletingProgressAnimation = new QPropertyAnimation(deletingProgress,"pos");
+	showDeletingProgressAnimation->setDuration(150);*/
 }
 
 void YACReaderTableView::showDeleteProgress()
 {
+	/*showDelete = true;
 
+	showDeletingProgressAnimation->setStartValue(deletingProgress->pos());
+	showDeletingProgressAnimation->setEndValue(QPoint((width()-deletingProgress->width())/2 ,1));
+	showDeletingProgressAnimation->start();*/
 }
 
 void YACReaderTableView::hideDeleteProgress()
 {
+	/*showDelete = false;
 
+	if(showDeletingProgressAnimation->state()==QPropertyAnimation::Running)
+		showDeletingProgressAnimation->stop();
+
+	showDeletingProgressAnimation->setStartValue(deletingProgress->pos());
+	showDeletingProgressAnimation->setEndValue(QPoint((width()-deletingProgress->width())/2 ,-deletingProgress->height()));
+	showDeletingProgressAnimation->start();*/
 }
 
 void YACReaderTableView::resizeEvent(QResizeEvent * event)
 {
-	event->size();
+	/*event->size();
 
-	deletingProgress->move((event->size().width()-deletingProgress->width())/2 ,1);
+	if(showDelete)
+		deletingProgress->move((event->size().width()-deletingProgress->width())/2 ,1);
+	else
+		deletingProgress->move((event->size().width()-deletingProgress->width())/2 ,-deletingProgress->height());*/
 
 	QTableView::resizeEvent(event);
 }

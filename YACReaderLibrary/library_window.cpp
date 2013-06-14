@@ -50,11 +50,13 @@
 #include "yacreader_titled_toolbar.h"
 #include "yacreader_main_toolbar.h"
 
+#include "comics_remover.h"
+
 //#include "yacreader_social_dialog.h"
 //
 
 LibraryWindow::LibraryWindow()
-	:QMainWindow(),skip(0),fullscreen(false),fetching(false)
+	:QMainWindow(),fullscreen(false),fetching(false)
 {
 	setupUI();
 	loadLibraries();
@@ -882,7 +884,18 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 	comicFlow->setMarks(dmCV->getReadList());
 	comicFlow->setFocus(Qt::OtherFocusReason);
 
-	if(paths.size()>0 && !importedCovers)
+	checkEmptyFolder(&paths);
+
+	if(paths.size()>0)
+		comicView->setCurrentIndex(dmCV->index(0,0));
+}
+
+void LibraryWindow::checkEmptyFolder(QStringList * paths)
+{
+	if(paths == 0)
+		paths = &dmCV->getPaths(currentPath());
+
+	if(paths->size()>0 && !importedCovers)
 	{
 		openComicAction->setEnabled(true);
 		showPropertiesAction->setEnabled(true);
@@ -896,6 +909,8 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 
 		showHideMarksAction->setEnabled(true);
 		toggleFullScreenAction->setEnabled(true);
+
+		deleteComicsAction->setEnabled(true);
 	}
 	else
 	{
@@ -911,9 +926,9 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 
 		showHideMarksAction->setEnabled(false);
 		toggleFullScreenAction->setEnabled(false);
+
+		deleteComicsAction->setEnabled(false);
 	}
-	if(paths.size()>0)
-		comicView->setCurrentIndex(dmCV->index(0,0));
 }
 
 void LibraryWindow::reloadCovers()
@@ -929,35 +944,15 @@ void LibraryWindow::reloadCovers()
 
 void LibraryWindow::centerComicFlow(const QModelIndex & mi)
 {
-	//TODO corregir el comportamiento de ComicFlowWidgetSW para evitar skip
-	if(typeid(comicFlow) == typeid(ComicFlowWidgetSW))
-	{
-		int distance = comicFlow->centerIndex()-mi.row();
-		if(abs(distance)>10)
-		{
-			if(distance<0)
-				comicFlow->setCenterIndex(comicFlow->centerIndex()+(-distance)-10);
-			else
-				comicFlow->setCenterIndex(comicFlow->centerIndex()-distance+10);
-			skip = 10;
-		}
-		else
-			skip = abs(comicFlow->centerIndex()-mi.row());
-	}
 	comicFlow->showSlide(mi.row());
 	comicFlow->setFocus(Qt::OtherFocusReason);
 }
 
 void LibraryWindow::updateComicView(int i)
 {
-
-	if(skip==0)
-	{
 		QModelIndex mi = dmCV->index(i,2);
 		comicView->setCurrentIndex(mi);
 		comicView->scrollTo(mi,QAbstractItemView::EnsureVisible);
-	}
-	skip?(--skip):0;
 }
 
 void LibraryWindow::openComic()
@@ -1450,22 +1445,36 @@ QModelIndexList LibraryWindow::getSelectedComics()
 
 void LibraryWindow::deleteComics()
 {
-	//TODO move this to another thread
-	QModelIndexList indexList = getSelectedComics();
+	int ret = QMessageBox::question(this,tr("Delete comics"),tr("All the selected comics will be deleted from your disk. Are you sure?"),QMessageBox::Yes,QMessageBox::No);
 
-	QString currentComicPath;
-	QListIterator<QModelIndex> i(indexList);
-	i.toBack();
-	while (i.hasPrevious())
+	if(ret == QMessageBox::Yes)
 	{
-		QModelIndex mi = i.previous(); 
-		ComicDB comic = dmCV->getComic(mi);
-		currentComicPath = currentPath() + comic.path;
-		if(QFile::remove(currentComicPath))
+
+		QModelIndexList indexList = getSelectedComics();
+
+		QList<ComicDB> comics = dmCV->getComics(indexList);
+
+		QList<QString> paths;
+		QString libraryPath = currentPath();
+		foreach(ComicDB comic, comics)
 		{
-			dmCV->remove(&comic,mi.row());
-			comicFlow->remove(mi.row());
+			paths.append(libraryPath + comic.path);
 		}
+
+		ComicsRemover * remover = new ComicsRemover(indexList,paths);
+
+		//comicView->showDeleteProgress();
+		dmCV->startTransaction(indexList.first().row(),indexList.last().row());
+
+		connect(remover, SIGNAL(remove(int)), dmCV, SLOT(remove(int)));
+		connect(remover, SIGNAL(remove(int)), comicFlow, SLOT(remove(int)));
+		connect(remover, SIGNAL(finished()), dmCV, SLOT(finishTransaction()));
+		//connect(remover, SIGNAL(finished()), comicView, SLOT(hideDeleteProgress()));
+		connect(remover, SIGNAL(finished()),this,SLOT(checkEmptyFolder()));
+		connect(remover, SIGNAL(finished()), remover, SLOT(deleteLater()));
+		//connect(remover, SIGNAL(finished()), thread, SLOT(deleteLater()));
+
+		remover->start();
 	}
 }
 

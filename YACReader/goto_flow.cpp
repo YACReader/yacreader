@@ -108,6 +108,7 @@ void GoToFlow::setNumSlides(unsigned int slides)
 	numImagesLoaded = 0;
 
 	connect(flow, SIGNAL(centerIndexChanged(int)), this, SLOT(preload()));
+	connect(flow, SIGNAL(centerIndexChangedSilent(int)), this, SLOT(preload()));
 
 	ready = true;
 	worker->reset();
