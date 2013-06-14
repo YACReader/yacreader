@@ -177,7 +177,10 @@ void LibraryWindow::doLayout()
 	foldersView->setUniformRowHeights(true);
 	foldersView->setSelectionBehavior(QAbstractItemView::SelectRows);
 	foldersView->setAttribute(Qt::WA_MacShowFocusRect,false);
-
+#ifdef Q_OS_MAC
+    foldersView->setStyleSheet("QTreeView::branch:open:selected:has-children {image: url(':/images/expanded_branch_osx.png');}"
+                               "QTreeView::branch:closed:selected:has-children {image: url(':/images/collapsed_branch_osx.png');}");
+#endif
 	sideBar = new QWidget;
 	QVBoxLayout * l = new QVBoxLayout;
 	selectedLibrary = new QComboBox;
