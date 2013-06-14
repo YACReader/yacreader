@@ -98,7 +98,7 @@
     <file>../images/main_toolbar/server.png</file>
     <file>../images/main_toolbar/help.png</file>
     <file>../images/main_toolbar/fullscreen.png</file>
-
-
+    <file>../images/collapsed_branch_osx.png</file>
+    <file>../images/expanded_branch_osx.png</file>
   </qresource>
 </RCC>
