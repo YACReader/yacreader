@@ -182,6 +182,7 @@ void LibraryWindow::doLayout()
 	QVBoxLayout * l = new QVBoxLayout;
 	selectedLibrary = new QComboBox;
 	selectedLibrary->setAttribute(Qt::WA_MacShowFocusRect,false);
+    selectedLibrary->setFocusPolicy(Qt::NoFocus);
 	l->setContentsMargins(sHorizontal->handleWidth(),0,0,0);
 
 	YACReaderTitledToolBar * librariesTitle = new YACReaderTitledToolBar(tr("Libraries"));
