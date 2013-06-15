@@ -206,7 +206,7 @@ void LibraryWindow::doLayout()
 
 	QHBoxLayout * filter = new QHBoxLayout;
 	filter->addWidget(foldersFilter = new YACReaderSearchLineEdit());
-	foldersFilter->setAttribute(Qt::WA_MacShowFocusRect,false);
+    foldersFilter->setAttribute(Qt::WA_MacShowFocusRect,false);
 	foldersFilter->setPlaceholderText(tr("Search folders and comics"));
 	previousFilter = "";
 
@@ -562,8 +562,11 @@ void LibraryWindow::createToolBars()
 
 	libraryToolBar->addSeparator();
 	libraryToolBar->addAction(toggleFullScreenAction);
-
+#ifdef Q_OS_MAC
+   libraryToolBar->addSeparator();
+#else
 	libraryToolBar->addWidget(new QToolBarStretch());
+#endif
 
 #ifdef SERVER_RELEASE
 	libraryToolBar->addAction(serverConfigAction);
@@ -572,6 +575,10 @@ void LibraryWindow::createToolBars()
 	libraryToolBar->addAction(helpAboutAction);
 	//libraryToolBar->addAction(socialAction);
 
+#ifdef Q_OS_MAC
+    libraryToolBar->addWidget(new QToolBarStretch());
+    libraryToolBar->addWidget(foldersFilter);
+#endif
 
 	libraryToolBar->setMovable(false);
 
