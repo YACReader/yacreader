@@ -16,7 +16,9 @@ HEADERS += $$PWD/help_about_dialog.h \
 						$$PWD/yacreader_deleting_progress.h \
 						$$PWD/yacreader_table_view.h \
 						$$PWD/yacreader_social_dialog.h \
-						$$PWD/yacreader_sidebar.h 
+						$$PWD/yacreader_sidebar.h \
+						$$PWD/yacreader_library_list_widget.h \
+						$$PWD/yacreader_library_item_widget.h \
 						
 						 
 SOURCES += $$PWD/help_about_dialog.cpp \
@@ -34,4 +36,6 @@ SOURCES += $$PWD/help_about_dialog.cpp \
 						 $$PWD/yacreader_deleting_progress.cpp \
 						 $$PWD/yacreader_table_view.cpp \
 						 $$PWD/yacreader_social_dialog.cpp \
-						 $$PWD/yacreader_sidebar.cpp
+						 $$PWD/yacreader_sidebar.cpp \
+						$$PWD/yacreader_library_list_widget.cpp \
+						$$PWD/yacreader_library_item_widget.cpp \
