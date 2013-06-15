@@ -45,6 +45,7 @@ class QSettings;
 class LibraryItem;
 class YACReaderTableView;
 class YACReaderSideBar;
+class YACReaderLibraryListWidget;
 #include "comic_db.h"
 
 class LibraryWindow : public QMainWindow
@@ -87,7 +88,7 @@ private:
 	QWidget *comics;
 	YACReaderTableView * comicView;
 	QTreeView * foldersView;
-	QComboBox * selectedLibrary;
+	YACReaderLibraryListWidget * selectedLibrary;
 	TreeModel * dm;
 	QItemSelectionModel * sm;
 	TableModel * dmCV;

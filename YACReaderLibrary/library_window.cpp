@@ -53,6 +53,7 @@
 #include "yacreader_sidebar.h"
 
 #include "comics_remover.h"
+#include "yacreader_library_list_widget.h"
 
 //#include "yacreader_social_dialog.h"
 //
@@ -188,7 +189,8 @@ void LibraryWindow::doLayout()
 #endif
 	sideBar = new YACReaderSideBar;
 	QVBoxLayout * l = new QVBoxLayout;
-	selectedLibrary = new QComboBox;
+	selectedLibrary = new YACReaderLibraryListWidget;
+	selectedLibrary->setContextMenuPolicy(Qt::ActionsContextMenu);
 	selectedLibrary->setAttribute(Qt::WA_MacShowFocusRect,false);
     selectedLibrary->setFocusPolicy(Qt::NoFocus);
 	l->setContentsMargins(sHorizontal->handleWidth(),0,0,0);
@@ -351,17 +353,17 @@ void LibraryWindow::createActions()
 	importLibraryAction->setToolTip(tr("Unpack a catalog"));
 	importLibraryAction->setIcon(QIcon(":/images/importLibrary.png"));
 
-	updateLibraryAction = new QAction(this);
+	updateLibraryAction = new QAction(tr("Update library"),this);
 	updateLibraryAction->setToolTip(tr("Update current library"));
 	updateLibraryAction->setShortcut(Qt::Key_U);
 	updateLibraryAction->setIcon(QIcon(":/images/updateLibrary.png"));
 
-	renameLibraryAction = new QAction(this);
+	renameLibraryAction = new QAction(tr("Rename library"),this);
 	renameLibraryAction->setToolTip(tr("Rename current library"));
 	renameLibraryAction->setShortcut(Qt::Key_R);
 	renameLibraryAction->setIcon(QIcon(":/images/edit.png"));
 
-	removeLibraryAction = new QAction(this);
+	removeLibraryAction = new QAction(tr("Remove library"),this);
 	removeLibraryAction->setToolTip(tr("Remove current library from your collection"));
 	removeLibraryAction->setIcon(QIcon(":/images/removeLibrary.png"));
 
@@ -617,6 +619,30 @@ void LibraryWindow::createMenus()
 {
 	comicView->addAction(openContainingFolderComicAction);
 	foldersView->addAction(openContainingFolderAction);
+
+	selectedLibrary->addAction(updateLibraryAction); 
+	selectedLibrary->addAction(renameLibraryAction);
+	selectedLibrary->addAction(removeLibraryAction);
+
+	{
+		QAction *act = new QAction(this);
+		act->setSeparator(true);
+		selectedLibrary->addAction(act);
+	}
+
+	selectedLibrary->addAction(exportComicsInfo);
+	selectedLibrary->addAction(importComicsInfo);
+
+	{
+		QAction *act = new QAction(this);
+		act->setSeparator(true);
+		selectedLibrary->addAction(act);
+	}
+
+	selectedLibrary->addAction(exportLibraryAction);
+	selectedLibrary->addAction(importLibraryAction);
+	
+
 }
 
 void LibraryWindow::createConnections()
