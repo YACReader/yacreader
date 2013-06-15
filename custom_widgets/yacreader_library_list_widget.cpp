@@ -3,6 +3,7 @@
 #include "yacreader_library_item_widget.h"
 #include <QVBoxLayout>
 #include <QMouseEvent>
+#include <QMenu>
 
 YACReaderLibraryListWidget::YACReaderLibraryListWidget(QWidget *parent) :
     QWidget(parent),currentLibraryIndex(0)
@@ -19,6 +20,7 @@ void YACReaderLibraryListWidget::addItem(QString name, QString path)
 	QVBoxLayout * mainLayout = dynamic_cast<QVBoxLayout *>(layout());
 
 	YACReaderLibraryItemWidget * library = new YACReaderLibraryItemWidget(name,path,this);
+	connect(library,SIGNAL(showOptions()),this,SLOT(showContextMenu()));
 	librariesList.append(library);
 
 	connect(library,SIGNAL(selected(QString,QString)),this,SIGNAL(librarySelected(QString,QString)));
@@ -82,7 +84,6 @@ void YACReaderLibraryListWidget::mousePressEvent ( QMouseEvent * event )
 		//deselectAllBut(item);
 		setCurrentIndex(item);
 		emit currentIndexChanged(librariesList.at(item)->name);
-
 	}
 	
 }
@@ -94,4 +95,10 @@ void YACReaderLibraryListWidget::deselectAllBut(int index)
 		if(i!=index)
 			librariesList.at(i)->deselect();
 	}
+}
+
+void YACReaderLibraryListWidget::showContextMenu()
+{
+	YACReaderLibraryItemWidget * itemWidget = librariesList.at(currentLibraryIndex);
+	QMenu::exec(actions(),itemWidget->mapToGlobal(QPoint(itemWidget->width()-8,itemWidget->height()/2)));
 }

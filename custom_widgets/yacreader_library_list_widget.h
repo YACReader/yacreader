@@ -22,6 +22,7 @@ public slots:
 	void addItem(QString name, QString path);
 	int currentIndex();
 	void removeItem(int index);
+	void showContextMenu();
 protected:
 	void mousePressEvent ( QMouseEvent * event );
 private:
