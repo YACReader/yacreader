@@ -50,6 +50,8 @@
 #include "yacreader_titled_toolbar.h"
 #include "yacreader_main_toolbar.h"
 
+#include "yacreader_sidebar.h"
+
 #include "comics_remover.h"
 
 //#include "yacreader_social_dialog.h"
@@ -181,7 +183,7 @@ void LibraryWindow::doLayout()
     foldersView->setStyleSheet("QTreeView::branch:open:selected:has-children {image: url(':/images/expanded_branch_osx.png');}"
                                "QTreeView::branch:closed:selected:has-children {image: url(':/images/collapsed_branch_osx.png');}");
 #endif
-	sideBar = new QWidget;
+	sideBar = new YACReaderSideBar;
 	QVBoxLayout * l = new QVBoxLayout;
 	selectedLibrary = new QComboBox;
 	selectedLibrary->setAttribute(Qt::WA_MacShowFocusRect,false);
