@@ -17,8 +17,11 @@ YACReaderTitledToolBar::YACReaderTitledToolBar(const QString & title, QWidget *p
 	setStyleSheet(styleSheet);
 
 	QLabel * nameLabel = new QLabel(title,this);
-	
-	QString nameLabelStyleSheet = "QLabel {color:#656565; padding:0 0 0 0px; margin:0px; font-size:11px; font-weight:bold;}";
+#ifdef Q_OS_MAC
+    QString nameLabelStyleSheet = "QLabel {color:#707E8C; padding:0 0 0 7px; margin:0px; font-size:11px; font-weight:bold;}";
+#else
+    QString nameLabelStyleSheet = "QLabel {color:#656565; padding:0 0 0 0px; margin:0px; font-size:11px; font-weight:bold;}";
+#endif
 	nameLabel->setStyleSheet(nameLabelStyleSheet);
 
 	mainLayout->addWidget(nameLabel,Qt::AlignLeft);

@@ -16,8 +16,8 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n/*ame*/, QString
 
 	QPixmap iconPixmap(":/images/libraryIcon.png");
 	icon = new QLabel(this);
-	icon->setAutoFillBackground(true);
 	icon->setPixmap(iconPixmap);
+
 	nameLabel = new QLabel(name,this);
 
 	options = new QToolButton(this);
@@ -125,7 +125,11 @@ void YACReaderLibraryItemWidget::deselect()
 
 void YACReaderLibraryItemWidget::select()
 {
+#ifdef Q_OS_MAC
+    QString styleSheet ="color: white; background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6BAFE4, stop: 1 #3984D2); border-top: 2px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #5EA3DF, stop: 1 #73B8EA); border-left:none;border-right:none;border-bottom:1px solid #3577C2;";
+#else
 	QString styleSheet = "color: white; background-color:#BBBBBB; font-weight:bold;";
+#endif
 	setStyleSheet(styleSheet);
 
 	options->setHidden(false);

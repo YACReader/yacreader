@@ -193,7 +193,11 @@ void LibraryWindow::doLayout()
 	selectedLibrary->setContextMenuPolicy(Qt::ActionsContextMenu);
 	selectedLibrary->setAttribute(Qt::WA_MacShowFocusRect,false);
     selectedLibrary->setFocusPolicy(Qt::NoFocus);
+#ifdef Q_OS_MAC
+    l->setContentsMargins(0,0,0,0);
+#else
 	l->setContentsMargins(sHorizontal->handleWidth(),0,0,0);
+#endif
 
 	YACReaderTitledToolBar * librariesTitle = new YACReaderTitledToolBar(tr("LIBRARIES"));
 
