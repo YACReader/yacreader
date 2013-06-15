@@ -44,14 +44,14 @@ class ImportWidget;
 class QSettings;
 class LibraryItem;
 class YACReaderTableView;
-//class YACReaderSocialDialog;
+class YACReaderSideBar;
 #include "comic_db.h"
 
 class LibraryWindow : public QMainWindow
 {
 	Q_OBJECT
 private:
-	QWidget * sideBar;
+	YACReaderSideBar * sideBar;
 	QSplitter * sVertical;
 	CreateLibraryDialog * createLibraryDialog;
 	UpdateLibraryDialog * updateLibraryDialog;
