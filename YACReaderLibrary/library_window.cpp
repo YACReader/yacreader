@@ -180,7 +180,10 @@ void LibraryWindow::doLayout()
 	foldersView->setSelectionBehavior(QAbstractItemView::SelectRows);
 	foldersView->setAttribute(Qt::WA_MacShowFocusRect,false);
 #ifdef Q_OS_MAC
-    foldersView->setStyleSheet("QTreeView::branch:open:selected:has-children {image: url(':/images/expanded_branch_osx.png');}"
+    foldersView->setStyleSheet("QTreeView {background-color:transparent; border: none;}"
+                               "QTreeView::item:selected {background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6BAFE4, stop: 1 #3984D2); border-top: 2px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #5EA3DF, stop: 1 #73B8EA); border-left:none;border-right:none;border-bottom:1px solid #3577C2;}"
+                               "QTreeView::branch:selected {background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6BAFE4, stop: 1 #3984D2); border-top: 2px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #5EA3DF, stop: 1 #73B8EA); border-left:none;border-right:none;border-bottom:1px solid #3577C2;}"
+                               "QTreeView::branch:open:selected:has-children {image: url(':/images/expanded_branch_osx.png');}"
                                "QTreeView::branch:closed:selected:has-children {image: url(':/images/collapsed_branch_osx.png');}");
 #endif
 	sideBar = new YACReaderSideBar;
