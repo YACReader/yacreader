@@ -122,7 +122,11 @@ void LibraryWindow::doLayout()
 	//---------------------------------------------------------------------------
 	sVertical = new QSplitter(Qt::Vertical);  //spliter derecha
 	QSplitter * sHorizontal = new QSplitter(Qt::Horizontal);  //spliter principal
-	sHorizontal->setStyleSheet("QSplitter::handle:vertical {height:4px;}");
+#ifdef Q_OS_MAC
+    sHorizontal->setStyleSheet("QSplitter::handle{image:none;background-color:#B8B8B8;} QSplitter::handle:vertical {height:1px;}");
+#else
+    sHorizontal->setStyleSheet("QSplitter::handle:vertical {height:4px;}");
+#endif
 
 	//TOOLBARS-------------------------------------------------------------------
 	//---------------------------------------------------------------------------
