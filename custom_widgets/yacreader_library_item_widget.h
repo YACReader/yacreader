@@ -19,6 +19,7 @@ public:
 
 signals:
     void selected(QString,QString);
+	void showOptions();
 public slots:
 	void showUpDownButtons(bool show);
 	
