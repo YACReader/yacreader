@@ -11,7 +11,7 @@ YACReaderTableView::YACReaderTableView(QWidget *parent) :
 {
 	setAlternatingRowColors(true);
 	verticalHeader()->setAlternatingRowColors(true);
-	setStyleSheet("QTableView {alternate-background-color: #F2F2F2;background-color: #FAFAFA; outline: 0px;}"
+	setStyleSheet("QTableView {alternate-background-color: #F2F2F2;background-color: #FAFAFA; outline: 0px;}"// border: 1px solid #999999; border-right:none; border-bottom:none;}"
 		"QTableCornerButton::section {background-color:#F5F5F5; border:none; border-bottom:1px solid #B8BDC4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #D1D1D1, stop: 1 #B8BDC4);}"
 		"QTableView::item {outline: 0px; border-bottom: 1px solid #DFDFDF;border-top: 1px solid #FEFEFE; padding-bottom:1px; color:#252626;}"	
 #ifdef Q_OS_MAC

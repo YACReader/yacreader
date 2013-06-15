@@ -188,12 +188,12 @@ void LibraryWindow::doLayout()
     selectedLibrary->setFocusPolicy(Qt::NoFocus);
 	l->setContentsMargins(sHorizontal->handleWidth(),0,0,0);
 
-	YACReaderTitledToolBar * librariesTitle = new YACReaderTitledToolBar(tr("Libraries"));
+	YACReaderTitledToolBar * librariesTitle = new YACReaderTitledToolBar(tr("LIBRARIES"));
 
 	l->addWidget(librariesTitle);
 	l->addWidget(selectedLibrary);
 	
-	YACReaderTitledToolBar * foldersTitle = new YACReaderTitledToolBar(tr("Folders"));
+	YACReaderTitledToolBar * foldersTitle = new YACReaderTitledToolBar(tr("FOLDERS"));
 
 	foldersTitle->addAction(setRootIndexAction);
 	foldersTitle->addAction(expandAllNodesAction);

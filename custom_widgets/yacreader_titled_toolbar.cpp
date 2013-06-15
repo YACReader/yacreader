@@ -18,7 +18,7 @@ YACReaderTitledToolBar::YACReaderTitledToolBar(const QString & title, QWidget *p
 
 	QLabel * nameLabel = new QLabel(title,this);
 	
-	QString nameLabelStyleSheet = "QLabel {color:#656565; padding:0 0 0 0px; margin:0px; font-size:13px; font-weight:bold;}";
+	QString nameLabelStyleSheet = "QLabel {color:#656565; padding:0 0 0 0px; margin:0px; font-size:11px; font-weight:bold;}";
 	nameLabel->setStyleSheet(nameLabelStyleSheet);
 
 	mainLayout->addWidget(nameLabel,Qt::AlignLeft);
@@ -40,7 +40,7 @@ void YACReaderTitledToolBar::addAction(QAction * action)
 	tb->setDefaultAction(action);
 	tb->setIconSize(QSize(16,16));
 	tb->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
-	tb->setStyleSheet("QToolButton:hover {background-color:#C5C5C5;}");
+	//tb->setStyleSheet("QToolButton:hover {background-color:#C5C5C5;}");
 
 	mainLayout->addWidget(tb);
 }
