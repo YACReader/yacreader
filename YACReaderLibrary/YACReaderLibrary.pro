@@ -122,6 +122,9 @@ include(./server/server.pri)
 include(../custom_widgets/custom_widgets.pri)
 
 RESOURCES += images.qrc files.qrc
+win32:RESOURCES += images_win.qrc
+linux:RESOURCES += images_win.qrc
+mac:RESOURCE += images_osx.qrc
 RC_FILE = icon.rc
 
 macx {

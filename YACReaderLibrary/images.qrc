@@ -9,9 +9,6 @@
     <file>../images/openLibrary.png</file>
     <file>../images/removeLibrary.png</file>
     <file>../images/updateLibrary.png</file>
-    <file>../images/setRoot.png</file>
-    <file>../images/expand.png</file>
-    <file>../images/colapse.png</file>
     <file>../images/comicFolder.png</file>
     <file>../images/notCover.png</file>
     <file>../images/edit.png</file>
@@ -108,7 +105,5 @@
     <file>../images/branch-closed.png</file>
     <file>../images/expanded_branch_selected.png</file>
     <file>../images/collapsed_branch_selected.png</file>
-    <file>../images/newLibraryIcon.png</file>
-    <file>../images/openLibraryIcon.png</file>
   </qresource>
 </RCC>
