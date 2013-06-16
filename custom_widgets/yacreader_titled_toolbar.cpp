@@ -5,6 +5,40 @@
 #include <QPixmap>
 #include <QToolButton>
 #include <QGraphicsDropShadowEffect>
+#include <QPainter>
+
+
+
+DropShadowLabel::DropShadowLabel(QWidget* parent) :
+    QLabel(parent)
+{ }
+ 
+void DropShadowLabel::drawTextEffect(QPainter *painter,
+                                 QPoint offset)
+{
+    Q_ASSERT(painter != 0);
+ 
+    // Draw shadow.
+    painter->setPen(QPen(dropShadowColor));
+    painter->drawText(rect().translated(offset),
+                      alignment(), text());
+}
+ 
+void DropShadowLabel::paintEvent(QPaintEvent *event)
+{
+    QPainter painter(this);
+    painter.setFont(font());
+	//TODO find where is the '3' comming from?
+	drawTextEffect(&painter, QPoint(contentsMargins().left()+3, 1));
+	QLabel::paintEvent(event);
+}
+
+void DropShadowLabel::setDropShadowColor(const QColor & color)
+{
+	dropShadowColor = color;
+}
+
+
 
 YACReaderTitledToolBar::YACReaderTitledToolBar(const QString & title, QWidget *parent) :
     QWidget(parent)
@@ -16,11 +50,14 @@ YACReaderTitledToolBar::YACReaderTitledToolBar(const QString & title, QWidget *p
 	QString styleSheet = "QWidget {border:0px;}";
 	setStyleSheet(styleSheet);
 
-	QLabel * nameLabel = new QLabel(title,this);
+	DropShadowLabel * nameLabel = new DropShadowLabel(this);
+	nameLabel->setText(title);
 #ifdef Q_OS_MAC
     QString nameLabelStyleSheet = "QLabel {color:#707E8C; padding:0 0 0 7px; margin:0px; font-size:11px; font-weight:bold;}";
+	nameLabel->setDropShadowColor(QColor("#F9FAFB"));
 #else
-    QString nameLabelStyleSheet = "QLabel {color:#656565; padding:0 0 0 0px; margin:0px; font-size:11px; font-weight:bold;}";
+    QString nameLabelStyleSheet = "QLabel {color:#BDBFBF; padding:0 0 0 7px; margin:0px; font-size:11px; font-weight:bold;}";
+	nameLabel->setDropShadowColor(QColor("#000000"));
 #endif
 	nameLabel->setStyleSheet(nameLabelStyleSheet);
 
