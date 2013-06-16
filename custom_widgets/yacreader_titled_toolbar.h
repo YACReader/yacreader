@@ -17,10 +17,13 @@ public:
  
     DropShadowLabel(QWidget* parent = 0);
     void paintEvent(QPaintEvent *event);
+    void setColor(const QColor & color);
 	void setDropShadowColor(const QColor & color);
 private:
  
 	QColor dropShadowColor;
+    QColor textColor;
+    void drawText(QPainter *painter, QPoint offset);
     void drawTextEffect(QPainter* painter, QPoint offset);
 };
 
@@ -34,6 +37,9 @@ signals:
     
 public slots:
     void addAction(QAction * action);
+
+private:
+    DropShadowLabel * nameLabel;
 };
 
 #endif // YACREADER_TITLED_TOOLBAR_H

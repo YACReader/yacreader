@@ -13,6 +13,16 @@ DropShadowLabel::DropShadowLabel(QWidget* parent) :
     QLabel(parent)
 { }
  
+void DropShadowLabel::drawText(QPainter *painter,
+                                 QPoint offset)
+{
+    Q_ASSERT(painter != 0);
+
+    // Draw shadow.
+    painter->setPen(QPen(textColor));
+    painter->drawText(rect().translated(offset),
+                      alignment(), text());
+}
 void DropShadowLabel::drawTextEffect(QPainter *painter,
                                  QPoint offset)
 {
@@ -26,11 +36,18 @@ void DropShadowLabel::drawTextEffect(QPainter *painter,
  
 void DropShadowLabel::paintEvent(QPaintEvent *event)
 {
+    Q_UNUSED(event);
+
     QPainter painter(this);
     painter.setFont(font());
-	//TODO find where is the '3' comming from?
-	drawTextEffect(&painter, QPoint(contentsMargins().left()+3, 1));
-	QLabel::paintEvent(event);
+    //TODO find where is the '3' comming from?
+    drawTextEffect(&painter, QPoint(contentsMargins().left(), 1));
+    drawText(&painter, QPoint(contentsMargins().left(), 0));
+}
+
+void DropShadowLabel::setColor(const QColor & color)
+{
+    textColor = color;
 }
 
 void DropShadowLabel::setDropShadowColor(const QColor & color)
@@ -50,13 +67,15 @@ YACReaderTitledToolBar::YACReaderTitledToolBar(const QString & title, QWidget *p
 	QString styleSheet = "QWidget {border:0px;}";
 	setStyleSheet(styleSheet);
 
-	DropShadowLabel * nameLabel = new DropShadowLabel(this);
+    nameLabel = new DropShadowLabel(this);
 	nameLabel->setText(title);
 #ifdef Q_OS_MAC
-    QString nameLabelStyleSheet = "QLabel {color:#707E8C; padding:0 0 0 7px; margin:0px; font-size:11px; font-weight:bold;}";
+    QString nameLabelStyleSheet = "QLabel {padding:0 0 0 10px; margin:0px; font-size:11px; font-weight:bold;}";
+    nameLabel->setColor(QColor("#707E8C"));
 	nameLabel->setDropShadowColor(QColor("#F9FAFB"));
 #else
-    QString nameLabelStyleSheet = "QLabel {color:#BDBFBF; padding:0 0 0 7px; margin:0px; font-size:11px; font-weight:bold;}";
+    QString nameLabelStyleSheet = "QLabel {padding:0 0 0 10px; margin:0px; font-size:11px; font-weight:bold;}";
+    nameLabel->setColor(QColor("#BDBFBF"));
 	nameLabel->setDropShadowColor(QColor("#000000"));
 #endif
 	nameLabel->setStyleSheet(nameLabelStyleSheet);
@@ -82,5 +101,5 @@ void YACReaderTitledToolBar::addAction(QAction * action)
 	tb->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
 	//tb->setStyleSheet("QToolButton:hover {background-color:#C5C5C5;}");
 
-	mainLayout->addWidget(tb);
+    mainLayout->addWidget(tb);
 }
