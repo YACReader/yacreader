@@ -104,5 +104,9 @@
     <file>../images/libraryIcon.png</file>
     <file>../images/libraryIconSelected.png</file>
     <file>../images/libraryOptions.png</file>
+    <file>../images/branch-open.png</file>
+    <file>../images/branch-closed.png</file>
+    <file>../images/expanded_branch_selected.png</file>
+    <file>../images/collapsed_branch_selected.png</file>
   </qresource>
 </RCC>

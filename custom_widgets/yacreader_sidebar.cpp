@@ -24,7 +24,10 @@ void YACReaderSideBar::paintEvent(QPaintEvent * event)
 
 	painter.fillRect(0,0,width(),height(),lG);
 #else
-	QWidget::paintEvent(event);
+	QPainter painter(this);
+
+	painter.fillRect(0,0,width(),height(),QColor("#454545"));
+	//QWidget::paintEvent(event);
 #endif
 
 	
