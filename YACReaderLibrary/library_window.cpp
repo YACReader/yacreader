@@ -230,11 +230,11 @@ void LibraryWindow::doLayout()
 	l->addWidget(librariesTitle);
 	l->addWidget(selectedLibrary);
 	
-	YACReaderTitledToolBar * foldersTitle = new YACReaderTitledToolBar(tr("FOLDERS"));
+    YACReaderTitledToolBar * foldersTitle = new YACReaderTitledToolBar(tr("FOLDERS"));
 
-	foldersTitle->addAction(setRootIndexAction);
+    foldersTitle->addAction(setRootIndexAction);
 	foldersTitle->addAction(expandAllNodesAction);
-	foldersTitle->addAction(colapseAllNodesAction);
+    foldersTitle->addAction(colapseAllNodesAction);
 
 	l->addWidget(foldersTitle);
 	l->addWidget(foldersView);
