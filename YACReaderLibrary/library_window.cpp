@@ -54,12 +54,13 @@
 
 #include "comics_remover.h"
 #include "yacreader_library_list_widget.h"
+#include "yacreader_treeview.h"
 
 //#include "yacreader_social_dialog.h"
 //
 
 LibraryWindow::LibraryWindow()
-	:QMainWindow(),fullscreen(false),fetching(false)
+	:QMainWindow(),fullscreen(false),fetching(false),previousFilter("")
 {
 	setupUI();
 	loadLibraries();
@@ -177,81 +178,22 @@ void LibraryWindow::doLayout()
 
 	//SIDEBAR-----------------------------------------------------------------------
 	//---------------------------------------------------------------------------
-	foldersView = new QTreeView;
-	foldersView->setContextMenuPolicy(Qt::ActionsContextMenu);
-	foldersView->setContextMenuPolicy(Qt::ActionsContextMenu);
-	foldersView->header()->hide();
-	foldersView->setUniformRowHeights(true);
-	foldersView->setSelectionBehavior(QAbstractItemView::SelectRows);
-	foldersView->setAttribute(Qt::WA_MacShowFocusRect,false);
-#ifdef Q_OS_MAC
-    foldersView->setStyleSheet("QTreeView {background-color:transparent; border: none;}"
-                               "QTreeView::item:selected {background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6BAFE4, stop: 1 #3984D2); border-top: 2px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #5EA3DF, stop: 1 #73B8EA); border-left:none;border-right:none;border-bottom:1px solid #3577C2;}"
-                               "QTreeView::branch:selected {background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6BAFE4, stop: 1 #3984D2); border-top: 2px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #5EA3DF, stop: 1 #73B8EA); border-left:none;border-right:none;border-bottom:1px solid #3577C2;}"
-                               "QTreeView::branch:open:selected:has-children {image: url(':/images/expanded_branch_osx.png');}"
-                               "QTreeView::branch:closed:selected:has-children {image: url(':/images/collapsed_branch_osx.png');}");
-#else
-    foldersView->setStyleSheet("QTreeView {background-color:transparent; border: none; color:#DDDFDF; outline:0;}"
-								"QTreeView::item:selected {background-color: #2E2E2E; color:white; font:bold;}"
-								"QTreeView::item:hover {background-color:#2E2E2E; color:white; font:bold;}"
-                               "QTreeView::branch:selected {background-color:#2E2E2E;}"
-
-
-							   "QScrollBar:vertical { border: none; background: #222222; width: 7px; margin: 0 3px 0 0; }"
-	"QScrollBar::handle:vertical { background: #DDDDDD; width: 7px; min-height: 20px; }"
-	"QScrollBar::add-line:vertical { border: none; background: #222222; height: 10px; subcontrol-position: bottom; subcontrol-origin: margin; margin: 0 3px 0 0;}"
-
-	"QScrollBar::sub-line:vertical {  border: none; background: #222222; height: 10px; subcontrol-position: top; subcontrol-origin: margin; margin: 0 3px 0 0;}"
-  "QScrollBar::up-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-up.png') center top no-repeat;}"
-  "QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-down.png') center top no-repeat;}"
-
-  "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none; }"
-		
-  "QTreeView::branch:has-children:!has-siblings:closed,QTreeView::branch:closed:has-children:has-siblings {border-image: none;image: url(':/images/branch-closed.png');}"
-  "QTreeView::branch:has-children:selected:!has-siblings:closed,QTreeView::branch:closed:selected:has-children:has-siblings {border-image: none;image: url(':/images/collapsed_branch_selected.png');}"
-
- "QTreeView::branch:open:has-children:!has-siblings,QTreeView::branch:open:has-children:has-siblings  {border-image: none;image: url(':/images/branch-open.png');}"
- "QTreeView::branch:open:has-children:selected:!has-siblings,QTreeView::branch:open:has-children:selected:has-siblings {border-image: none;image: url(':/images/expanded_branch_selected.png');}"
-		
-							   
-							   );
-#endif
 	sideBar = new YACReaderSideBar;
-	QVBoxLayout * l = new QVBoxLayout;
-	selectedLibrary = new YACReaderLibraryListWidget;
-	selectedLibrary->setContextMenuPolicy(Qt::ActionsContextMenu);
-	selectedLibrary->setAttribute(Qt::WA_MacShowFocusRect,false);
-    selectedLibrary->setFocusPolicy(Qt::NoFocus);
 
-    l->setContentsMargins(0,0,0,0);
+	foldersView = sideBar->foldersView;
+	selectedLibrary = sideBar->selectedLibrary;
+	foldersFilter = sideBar->foldersFilter;
 
-	YACReaderTitledToolBar * librariesTitle = new YACReaderTitledToolBar(tr("LIBRARIES"));
+	YACReaderTitledToolBar * librariesTitle = sideBar->librariesTitle;
 
-	l->addWidget(librariesTitle);
-	l->addWidget(selectedLibrary);
-	
-    YACReaderTitledToolBar * foldersTitle = new YACReaderTitledToolBar(tr("FOLDERS"));
+    YACReaderTitledToolBar * foldersTitle = sideBar->foldersTitle;
 
-    foldersTitle->addAction(setRootIndexAction);
+	librariesTitle->addAction(createLibraryAction);
+	librariesTitle->addAction(openLibraryAction);
+
+	foldersTitle->addAction(setRootIndexAction);
 	foldersTitle->addAction(expandAllNodesAction);
     foldersTitle->addAction(colapseAllNodesAction);
-
-	l->addWidget(foldersTitle);
-	l->addWidget(foldersView);
-
-	QVBoxLayout * searchLayout = new QVBoxLayout;
-
-	QHBoxLayout * filter = new QHBoxLayout;
-	filter->addWidget(foldersFilter = new YACReaderSearchLineEdit());
-    foldersFilter->setAttribute(Qt::WA_MacShowFocusRect,false);
-	foldersFilter->setPlaceholderText(tr("Search folders and comics"));
-	previousFilter = "";
-
-	searchLayout->addLayout(filter);
-
-	l->addLayout(searchLayout);
-	l->setSpacing(0);
-	sideBar->setLayout(l);
 
 	//FINAL LAYOUT-------------------------------------------------------------
 	sVertical->addWidget(comicFlow);
@@ -360,12 +302,12 @@ void LibraryWindow::createActions()
 	createLibraryAction = new QAction(this);
 	createLibraryAction->setToolTip(tr("Create a new library"));
 	createLibraryAction->setShortcut(Qt::Key_A);
-	createLibraryAction->setIcon(QIcon(":/images/new.png"));
+	createLibraryAction->setIcon(QIcon(":/images/newLibraryIcon.png"));
 
 	openLibraryAction = new QAction(this);
 	openLibraryAction->setToolTip(tr("Open an existing library"));
 	openLibraryAction->setShortcut(Qt::Key_O);
-	openLibraryAction->setIcon(QIcon(":/images/openLibrary.png"));
+	openLibraryAction->setIcon(QIcon(":/images/openLibraryIcon.png"));
 
 	exportComicsInfo = new QAction(tr("Export comics info"),this);
 	exportComicsInfo->setToolTip(tr("Export comics info"));
