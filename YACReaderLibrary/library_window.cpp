@@ -880,7 +880,15 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 	{
 		TreeItem *item = static_cast<TreeItem*>(mi.internalPointer());
 		folderId = item->id;
+#ifndef Q_OS_MAC
+		libraryToolBar->setCurrentFolderName(item->data(0).toString());
+#endif
 	}
+#ifndef Q_OS_MAC
+	else libraryToolBar->setCurrentFolderName(selectedLibrary->currentText());
+#endif
+
+
 
 	//cambiado de orden, ya que al llamar a foldersFilter->clear() se invalidan los model index
 	if(foldersFilter->text()!="")
@@ -901,6 +909,7 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 
 	//comicView->setModel(NULL);
 	dmCV->setupModelData(folderId,dm->getDatabase());
+	
 	comicView->setModel(dmCV);
 	comicView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 	comicView->horizontalHeader()->setMovable(true);

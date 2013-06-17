@@ -13,7 +13,7 @@ YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent) :
 {
     mainLayout = new QHBoxLayout;
 
-    currentFolder = new QLabel(tr("Root"),this);
+    currentFolder = new QLabel(this);
 	currentFolder->setAlignment(Qt::AlignCenter);
 	currentFolder->setStyleSheet(" QLabel {color:#404040; font-size:22px; font-weight:bold;}");
 
@@ -109,4 +109,12 @@ void YACReaderMainToolBar::addWideDivider()
     mainLayout->addSpacing(3);
     addDivider();
     mainLayout->addSpacing(3);
+}
+
+void YACReaderMainToolBar::setCurrentFolderName(const QString & name)
+{
+	currentFolder->setText(name);
+	currentFolder->adjustSize();
+	currentFolder->move((width()-currentFolder->width())/2,(height()-currentFolder->height())/2);
+
 }

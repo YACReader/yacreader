@@ -22,6 +22,8 @@ public:
     QToolButton * serverButton;
     QToolButton * helpButton;
     QToolButton * fullscreenButton;
+
+	void setCurrentFolderName(const QString & name);
 signals:
     
 public slots:
