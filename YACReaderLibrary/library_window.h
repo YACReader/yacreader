@@ -107,7 +107,7 @@ private:
 	int i;
 	
 	QAction  * backAction;
-	QAction  * fordwardAction;
+    QAction  * forwardAction;
 
 	QAction * openComicAction;
 	QAction * showPropertiesAction;
@@ -191,6 +191,11 @@ private:
 
 	//settings
 	QSettings * settings;
+
+    //navigation backward and forward
+    int currentFolderNavigation;
+    QList<QModelIndex> history;
+
 protected:
 		virtual void closeEvent ( QCloseEvent * event );
 public:
@@ -248,6 +253,9 @@ public:
 		QModelIndexList getSelectedComics();
 		void deleteComics();
 		//void showSocial();
+        void backward();
+        void forward();
+        void updateHistory(const QModelIndex & mi);
 };
 
 #endif

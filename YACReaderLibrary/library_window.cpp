@@ -300,14 +300,16 @@ void LibraryWindow::createActions()
 	backAction = new QAction(this);
 	QIcon icoBackButton;
     icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back.png"), QIcon::Normal);
-    icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back_disabled.png"), QIcon::Disabled);
+    //icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back_disabled.png"), QIcon::Disabled);
 	backAction->setIcon(icoBackButton);
+    backAction->setDisabled(true);
 
-	fordwardAction = new QAction(this);
+    forwardAction = new QAction(this);
 	QIcon icoFordwardButton;
     icoFordwardButton.addPixmap(QPixmap(":/images/main_toolbar/forward.png"), QIcon::Normal);
-    icoFordwardButton.addPixmap(QPixmap(":/images/main_toolbar/forward_disabled.png"), QIcon::Disabled);
-	fordwardAction->setIcon(icoFordwardButton);
+    //icoFordwardButton.addPixmap(QPixmap(":/images/main_toolbar/forward_disabled.png"), QIcon::Disabled);
+    forwardAction->setIcon(icoFordwardButton);
+    forwardAction->setDisabled(true);
 
 	createLibraryAction = new QAction(this);
 	createLibraryAction->setToolTip(tr("Create a new library"));
@@ -540,7 +542,7 @@ void LibraryWindow::createToolBars()
 	libraryToolBar->setIconSize(QSize(16,16)); //TODO make icon size dynamic
 
     libraryToolBar->addAction(backAction);
-    libraryToolBar->addAction(fordwardAction);
+    libraryToolBar->addAction(forwardAction);
 
     {QWidget * w = new QWidget();
     w->setFixedWidth(10);
@@ -631,6 +633,10 @@ void LibraryWindow::createMenus()
 
 void LibraryWindow::createConnections()
 {
+    //history navigation
+    connect(backAction,SIGNAL(triggered()),this,SLOT(backward()));
+    connect(forwardAction,SIGNAL(triggered()),this,SLOT(forward()));
+
 	//libraryCreator connections
 	connect(createLibraryDialog,SIGNAL(createLibrary(QString,QString,QString)),this,SLOT(create(QString,QString,QString)));
 	connect(importComicsInfoDialog,SIGNAL(finished(int)),this,SLOT(reloadCurrentLibrary()));
@@ -674,6 +680,8 @@ void LibraryWindow::createConnections()
 
 	//navigations between view modes (tree,list and flow)
 	connect(foldersView, SIGNAL(pressed(QModelIndex)), this, SLOT(loadCovers(QModelIndex)));
+    connect(foldersView, SIGNAL(pressed(QModelIndex)), this, SLOT(updateHistory(QModelIndex)));
+
 	connect(comicView, SIGNAL(pressed(QModelIndex)), this, SLOT(centerComicFlow(QModelIndex)));
 	connect(comicFlow, SIGNAL(centerIndexChanged(int)), this, SLOT(updateComicView(int)));
 
@@ -744,6 +752,12 @@ void LibraryWindow::loadLibrary(const QString & name)
 {
 	if(libraries.size()>0)  //si hay bibliotecas...
 	{	
+        currentFolderNavigation=0;
+        backAction->setDisabled(true);
+        forwardAction->setDisabled(true);
+        history.clear();
+        history.append(QModelIndex());
+
 		showRootWidget();
 		QString path=libraries.value(name)+"/.yacreaderlibrary";
 		QDir d; //TODO change this by static methods (utils class?? with delTree for example)
@@ -1521,3 +1535,49 @@ void LibraryWindow::showSocial()
 	socialDialog->setComic(comic,currentPath());
 	socialDialog->setHidden(false);
 }*/
+
+void LibraryWindow::backward()
+{
+    if(currentFolderNavigation>0)
+    {
+        currentFolderNavigation--;
+        loadCovers(history.at(currentFolderNavigation));
+        foldersView->setCurrentIndex(history.at(currentFolderNavigation));
+        forwardAction->setEnabled(true);
+    }
+    if(currentFolderNavigation==0)
+    {
+        backAction->setEnabled(false);
+    }
+}
+
+void LibraryWindow::forward()
+{
+    if(currentFolderNavigation<history.count()-1)
+    {
+        currentFolderNavigation++;
+        loadCovers(history.at(currentFolderNavigation));
+        foldersView->setCurrentIndex(history.at(currentFolderNavigation));
+        backAction->setEnabled(true);
+    }
+    if(currentFolderNavigation==history.count()-1)
+    {
+        forwardAction->setEnabled(false);
+    }
+}
+
+void LibraryWindow::updateHistory(const QModelIndex &mi)
+{
+    //remove history from current index
+    int numElementsToRemove = history.count() - (currentFolderNavigation+1);
+    while(numElementsToRemove>0)
+    {
+        numElementsToRemove--;
+        history.removeLast();
+    }
+
+    backAction->setEnabled(true);
+    history.append(mi);
+
+    currentFolderNavigation++;
+}
