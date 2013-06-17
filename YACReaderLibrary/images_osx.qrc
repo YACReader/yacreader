@@ -1,0 +1,9 @@
+<RCC>
+  <qresource prefix="/" >
+    <file alias="images/setRoot.png">../images/setRoot_osx.png</file>
+    <file alias="images/expand.png">../images/expand_osx.png</file>
+    <file alias="images/colapse.png">../images/colapse_osx.png</file>
+    <file alias="images/newLibraryIcon.png">../images/newLibraryIcon_osx.png</file>
+    <file alias="images/openLibraryIcon.png">../images/openLibraryIcon_osx.png</file>
+  </qresource>
+</RCC>
