@@ -568,7 +568,7 @@ void LibraryWindow::createToolBars()
 	
 #else
 	libraryToolBar->backButton->setDefaultAction(backAction);
-    libraryToolBar->forwardButton->setDefaultAction(fordwardAction);
+    libraryToolBar->forwardButton->setDefaultAction(forwardAction);
     libraryToolBar->settingsButton->setDefaultAction(optionsAction);
     libraryToolBar->serverButton->setDefaultAction(serverConfigAction);
     libraryToolBar->helpButton->setDefaultAction(helpAboutAction);
@@ -1580,4 +1580,6 @@ void LibraryWindow::updateHistory(const QModelIndex &mi)
     history.append(mi);
 
     currentFolderNavigation++;
+
+	forwardAction->setEnabled(false);
 }
