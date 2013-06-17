@@ -86,15 +86,7 @@
     <file>../images/social_dialog/shadow.png</file>
     <file>../images/social_dialog/twitter.png</file>
     <file>../images/social_dialog/separator.png</file>
-    <file>../images/main_toolbar/back.png</file>
-    <file>../images/main_toolbar/back_disabled.png</file>
-    <file>../images/main_toolbar/forward.png</file>
-    <file>../images/main_toolbar/forward_disabled.png</file>
     <file>../images/main_toolbar/divider.png</file>
-    <file>../images/main_toolbar/settings.png</file>
-    <file>../images/main_toolbar/server.png</file>
-    <file>../images/main_toolbar/help.png</file>
-    <file>../images/main_toolbar/fullscreen.png</file>
     <file>../images/collapsed_branch_osx.png</file>
     <file>../images/expanded_branch_osx.png</file>
     <file>../images/folder_macosx.png</file>
