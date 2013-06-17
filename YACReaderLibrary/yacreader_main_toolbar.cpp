@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QResizeEvent>
 #include <QPaintEvent>
+#include <QAction>
 
 YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent) :
     QWidget(parent)
@@ -24,46 +25,29 @@ YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent) :
 
     backButton = new QToolButton();
     backButton->setStyleSheet(qToolButtonStyleSheet);
-	QIcon icoBackButton;
-    icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back.png"), QIcon::Normal);
-    icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back_disabled.png"), QIcon::Disabled);
-	backButton->setIcon(icoBackButton);
+
 
     forwardButton = new QToolButton();
     forwardButton->setStyleSheet(qToolButtonStyleSheet);
 	forwardButton->setDisabled(true);
-	QIcon icoFordwardButton;
-    icoFordwardButton.addPixmap(QPixmap(":/images/main_toolbar/forward.png"), QIcon::Normal);
-    icoFordwardButton.addPixmap(QPixmap(":/images/main_toolbar/forward_disabled.png"), QIcon::Disabled);
-	forwardButton->setIcon(icoFordwardButton);
 
     settingsButton = new QToolButton();
     settingsButton->setStyleSheet(qToolButtonStyleSheet);
-    QIcon icoSettingsButton;
 	settingsButton->setIconSize(QSize(24,24));
-    icoSettingsButton.addPixmap(QPixmap(":/images/main_toolbar/settings.png"), QIcon::Normal);
-    settingsButton->setIcon(icoSettingsButton);
 
     serverButton = new QToolButton();
     serverButton->setStyleSheet(qToolButtonStyleSheet);
-    QIcon icoServerButton;
     serverButton->setIconSize(QSize(17,24));
-    icoServerButton.addPixmap(QPixmap(":/images/main_toolbar/server.png"), QIcon::Normal);
-    serverButton->setIcon(icoServerButton);
+
 
     helpButton = new QToolButton();
     helpButton->setStyleSheet(qToolButtonStyleSheet);
-    QIcon icoHelpButton;
     helpButton->setIconSize(QSize(14,25));
-    icoHelpButton.addPixmap(QPixmap(":/images/main_toolbar/help.png"), QIcon::Normal);
-    helpButton->setIcon(icoHelpButton);
 
     fullscreenButton = new QToolButton();
     fullscreenButton->setStyleSheet(qToolButtonStyleSheet);
-    QIcon icoFullscreenButton;
     fullscreenButton->setIconSize(QSize(24,24));
-    icoFullscreenButton.addPixmap(QPixmap(":/images/main_toolbar/fullscreen.png"), QIcon::Normal);
-    fullscreenButton->setIcon(icoFullscreenButton);
+
 
     mainLayout->setMargin(0);
     mainLayout->setSpacing(0);
