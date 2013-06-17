@@ -65,6 +65,8 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
 	l->addWidget(w);}
 
 	l->addSpacing(4);
+#else
+    l->addSpacing(6);
 #endif
 
 	l->addWidget(foldersTitle);
