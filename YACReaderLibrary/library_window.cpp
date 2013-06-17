@@ -1283,7 +1283,7 @@ void LibraryWindow::toFullScreen()
 	comicFlow->setCenterIndex(comicFlow->centerIndex());
 	comics->hide();
 	sideBar->hide();
-	libraryToolBar->hide();
+    libraryToolBar->hide();
 
 	showFullScreen();
 
@@ -1305,13 +1305,23 @@ void LibraryWindow::toNormal()
 	comics->show();
 	sideBar->show();
 	
-	libraryToolBar->show();
 	comicFlow->show();
 
-	if(fromMaximized)
+    if(fromMaximized)
 		showMaximized();
-	else
-		showNormal();
+    else
+        showNormal();
+
+#ifdef Q_OS_MAC
+    QTimer * timer = new QTimer();
+    timer->setSingleShot(true);
+    timer->start();
+    connect(timer,SIGNAL(timeout()),libraryToolBar,SLOT(show()));
+    connect(timer,SIGNAL(timeout()),timer,SLOT(deleteLater()));
+#else
+    libraryToolBar->show();
+#endif
+
 }
 
 void LibraryWindow::setFoldersFilter(QString filter)
