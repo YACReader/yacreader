@@ -103,3 +103,10 @@ void YACReaderTitledToolBar::addAction(QAction * action)
 
     mainLayout->addWidget(tb);
 }
+
+void YACReaderTitledToolBar::addSpacing(int spacing)
+{
+	QHBoxLayout * mainLayout = dynamic_cast<QHBoxLayout *>(layout());
+
+	mainLayout->addSpacing(spacing);
+}

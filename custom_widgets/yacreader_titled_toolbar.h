@@ -37,7 +37,7 @@ signals:
     
 public slots:
     void addAction(QAction * action);
-
+	void addSpacing(int space);
 private:
     DropShadowLabel * nameLabel;
 };
