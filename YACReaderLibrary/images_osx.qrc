@@ -9,6 +9,7 @@
     <file alias="images/main_toolbar/help.png">../images/main_toolbar/help_osx.png</file>
     <file alias="images/main_toolbar/fullscreen.png">../images/main_toolbar/fullscreen_osx.png</file>
 	
+	<file alias="images/libraryIcon.png">../images/libraryIcon_os.png</file>
     <file alias="images/setRoot.png">../images/setRoot_osx.png</file>
     <file alias="images/expand.png">../images/expand_osx.png</file>
     <file alias="images/colapse.png">../images/colapse_osx.png</file>
