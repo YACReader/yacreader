@@ -115,8 +115,6 @@ void LibraryWindow::setupUI()
 	socialDialog->setHidden(true);*/
 }
 
-//#define NEW_LAYOUT
-
 void LibraryWindow::doLayout()
 {
 	//LAYOUT ELEMENTS------------------------------------------------------------
@@ -132,10 +130,10 @@ void LibraryWindow::doLayout()
 	//TOOLBARS-------------------------------------------------------------------
 	//---------------------------------------------------------------------------
 	editInfoToolBar = new QToolBar();
-#ifdef NEW_LAYOUT
-	libraryToolBar = new QToolBar();
-#else
+#ifdef Q_OS_MAC
 	libraryToolBar = addToolBar(tr("Library"));
+#else
+	libraryToolBar = new YACReaderMainToolBar;
 #endif
 
 	//FLOW-----------------------------------------------------------------------
@@ -211,9 +209,9 @@ void LibraryWindow::doLayout()
 	comics->setLayout(comicsLayout);
 	sVertical->addWidget(comics);
 	sHorizontal->addWidget(sideBar);
-#ifdef NEW_LAYOUT
+#ifndef Q_OS_MAC
 	QVBoxLayout * rightLayout = new QVBoxLayout;
-	rightLayout->addWidget(new YACReaderMainToolBar);
+	rightLayout->addWidget(libraryToolBar);
 	rightLayout->addWidget(sVertical);
 
 	rightLayout->setMargin(0);
@@ -299,6 +297,18 @@ void LibraryWindow::doModels()
 
 void LibraryWindow::createActions()
 {
+	backAction = new QAction(this);
+	QIcon icoBackButton;
+    icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back.png"), QIcon::Normal);
+    icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back_disabled.png"), QIcon::Disabled);
+	backAction->setIcon(icoBackButton);
+
+	fordwardAction = new QAction(this);
+	QIcon icoFordwardButton;
+    icoFordwardButton.addPixmap(QPixmap(":/images/main_toolbar/forward.png"), QIcon::Normal);
+    icoFordwardButton.addPixmap(QPixmap(":/images/main_toolbar/forward_disabled.png"), QIcon::Disabled);
+	fordwardAction->setIcon(icoFordwardButton);
+
 	createLibraryAction = new QAction(this);
 	createLibraryAction->setToolTip(tr("Create a new library"));
 	createLibraryAction->setShortcut(Qt::Key_A);
@@ -376,12 +386,16 @@ void LibraryWindow::createActions()
 	toggleFullScreenAction = new QAction(tr("Fullscreen mode on/off"),this);
 	toggleFullScreenAction->setToolTip(tr("Fullscreen mode on/off (F)"));
 	toggleFullScreenAction->setShortcut(Qt::Key_F);
-	toggleFullScreenAction->setIcon(QIcon(":/images/fit.png"));
+	QIcon icoFullscreenButton;
+    icoFullscreenButton.addPixmap(QPixmap(":/images/main_toolbar/fullscreen.png"), QIcon::Normal);
+	toggleFullScreenAction->setIcon(icoFullscreenButton);
 
 	helpAboutAction = new QAction(this);
 	helpAboutAction->setToolTip(tr("Help, About YACReader"));
 	helpAboutAction->setShortcut(Qt::Key_F1);
-	helpAboutAction->setIcon(QIcon(":/images/help.png"));
+	QIcon icoHelpButton;
+    icoHelpButton.addPixmap(QPixmap(":/images/main_toolbar/help.png"), QIcon::Normal);
+	helpAboutAction->setIcon(icoHelpButton);
 
 	setRootIndexAction = new QAction(this);
 	setRootIndexAction->setShortcut(Qt::Key_0);
@@ -401,12 +415,16 @@ void LibraryWindow::createActions()
 	optionsAction = new QAction(this);
 	optionsAction->setShortcut(Qt::Key_C);
 	optionsAction->setToolTip(tr("Show options dialog"));
-	optionsAction->setIcon(QIcon(":/images/options.png"));
+	QIcon icoSettingsButton;
+    icoSettingsButton.addPixmap(QPixmap(":/images/main_toolbar/settings.png"), QIcon::Normal);
+	optionsAction->setIcon(icoSettingsButton);
 
 	serverConfigAction = new QAction(this);
 	serverConfigAction->setShortcut(Qt::Key_S);
 	serverConfigAction->setToolTip(tr("Show comics server options dialog"));
-	serverConfigAction->setIcon(QIcon(":/images/server.png"));
+	QIcon icoServerButton;
+	icoServerButton.addPixmap(QPixmap(":/images/main_toolbar/server.png"), QIcon::Normal);
+	serverConfigAction->setIcon(icoServerButton);
 
 	//socialAction = new QAction(this);
 
@@ -517,49 +535,35 @@ void LibraryWindow::enableLibraryActions()
 
 void LibraryWindow::createToolBars()
 {
-	libraryToolBar->setIconSize(QSize(32,32)); //TODO make icon size dynamic
 
-	libraryToolBar->addAction(createLibraryAction);
-	libraryToolBar->addAction(openLibraryAction);
-
-	libraryToolBar->addSeparator();
-
-	libraryToolBar->addAction(exportComicsInfo);
-	libraryToolBar->addAction(importComicsInfo);
-
-	libraryToolBar->addSeparator();
-
-	libraryToolBar->addAction(exportLibraryAction);
-	libraryToolBar->addAction(importLibraryAction);
-	
-
-	libraryToolBar->addSeparator();
-	libraryToolBar->addAction(updateLibraryAction); 
-	libraryToolBar->addAction(renameLibraryAction);
-	libraryToolBar->addAction(removeLibraryAction);
-	//libraryToolBar->addAction(deleteLibraryAction);
-
-	libraryToolBar->addSeparator();
-	libraryToolBar->addAction(toggleFullScreenAction);
 #ifdef Q_OS_MAC
-   libraryToolBar->addSeparator();
-#else
-	libraryToolBar->addWidget(new QToolBarStretch());
-#endif
+	libraryToolBar->setIconSize(QSize(16,16)); //TODO make icon size dynamic
 
 #ifdef SERVER_RELEASE
 	libraryToolBar->addAction(serverConfigAction);
 #endif
 	libraryToolBar->addAction(optionsAction);
 	libraryToolBar->addAction(helpAboutAction);
-	//libraryToolBar->addAction(socialAction);
 
-#ifdef Q_OS_MAC
-    libraryToolBar->addWidget(new QToolBarStretch());
-    libraryToolBar->addWidget(foldersFilter);
-#endif
+	libraryToolBar->addSeparator();
+	libraryToolBar->addAction(toggleFullScreenAction);
+
+	libraryToolBar->addSeparator();
+
+	libraryToolBar->addWidget(new QToolBarStretch());
+	libraryToolBar->addWidget(foldersFilter);
 
 	libraryToolBar->setMovable(false);
+
+	
+#else
+	libraryToolBar->backButton->setDefaultAction(backAction);
+    libraryToolBar->forwardButton->setDefaultAction(fordwardAction);
+    libraryToolBar->settingsButton->setDefaultAction(optionsAction);
+    libraryToolBar->serverButton->setDefaultAction(serverConfigAction);
+    libraryToolBar->helpButton->setDefaultAction(helpAboutAction);
+    libraryToolBar->fullscreenButton->setDefaultAction(toggleFullScreenAction);
+#endif
 
 	editInfoToolBar->setIconSize(QSize(18,18));
 	editInfoToolBar->addAction(openComicAction);

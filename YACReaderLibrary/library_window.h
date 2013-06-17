@@ -47,6 +47,7 @@ class YACReaderTableView;
 class YACReaderSideBar;
 class YACReaderLibraryListWidget;
 class YACReaderTreeView;
+class YACReaderMainToolBar;
 #include "comic_db.h"
 
 class LibraryWindow : public QMainWindow
@@ -104,6 +105,9 @@ private:
 	bool fetching;
 
 	int i;
+	
+	QAction  * backAction;
+	QAction  * fordwardAction;
 
 	QAction * openComicAction;
 	QAction * showPropertiesAction;
@@ -146,8 +150,11 @@ private:
 	QAction * deleteComicsAction;
 	QAction * hideComicViewAction;
 
-
+#ifdef Q_OS_MAC
 	QToolBar * libraryToolBar;
+#else
+	YACReaderMainToolBar * libraryToolBar;
+#endif
 	QToolBar * treeActions;
 	QToolBar * comicsToolBar;
 	QToolBar * editInfoToolBar;

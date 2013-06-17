@@ -15,6 +15,13 @@ class YACReaderMainToolBar : public QWidget
 public:
     explicit YACReaderMainToolBar(QWidget *parent = 0);
     QSize sizeHint() const;
+
+	QToolButton * backButton;
+    QToolButton * forwardButton;
+    QToolButton * settingsButton;
+    QToolButton * serverButton;
+    QToolButton * helpButton;
+    QToolButton * fullscreenButton;
 signals:
     
 public slots:
@@ -23,12 +30,7 @@ private:
     void paintEvent(QPaintEvent *);
     void resizeEvent(QResizeEvent *);
 
-    QToolButton * backButton;
-    QToolButton * forwardButton;
-    QToolButton * settingsButton;
-    QToolButton * serverButton;
-    QToolButton * helpButton;
-    QToolButton * fullscreenButton;
+
 
 	QHBoxLayout * mainLayout;
 
