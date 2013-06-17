@@ -539,16 +539,24 @@ void LibraryWindow::createToolBars()
 #ifdef Q_OS_MAC
 	libraryToolBar->setIconSize(QSize(16,16)); //TODO make icon size dynamic
 
+    libraryToolBar->addAction(backAction);
+    libraryToolBar->addAction(fordwardAction);
+
+    {QWidget * w = new QWidget();
+    w->setFixedWidth(10);
+    libraryToolBar->addWidget(w);}
+
 #ifdef SERVER_RELEASE
 	libraryToolBar->addAction(serverConfigAction);
 #endif
 	libraryToolBar->addAction(optionsAction);
 	libraryToolBar->addAction(helpAboutAction);
 
-	libraryToolBar->addSeparator();
-	libraryToolBar->addAction(toggleFullScreenAction);
+    { QWidget * w2 = new QWidget();
+     w2->setFixedWidth(10);
+     libraryToolBar->addWidget(w2);}
 
-	libraryToolBar->addSeparator();
+	libraryToolBar->addAction(toggleFullScreenAction);
 
 	libraryToolBar->addWidget(new QToolBarStretch());
 	libraryToolBar->addWidget(foldersFilter);
