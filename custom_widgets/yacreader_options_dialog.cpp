@@ -33,7 +33,7 @@ YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget * parent)
 	//sw CONNECTIONS
 	connect(sw->radio1,SIGNAL(toggled(bool)),this,SLOT(setClassicConfigSW()));
 	connect(sw->radio2,SIGNAL(toggled(bool)),this,SLOT(setStripeConfigSW()));
-	connect(sw->radio3,SIGNAL(togg+led(bool)),this,SLOT(setOverlappedStripeConfigSW()));
+	connect(sw->radio3,SIGNAL(toggled(bool)),this,SLOT(setOverlappedStripeConfigSW()));
 
 	//gl CONNECTIONS
 	connect(gl->radioClassic,SIGNAL(toggled(bool)),this,SLOT(setClassicConfig()));
