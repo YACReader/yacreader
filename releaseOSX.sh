@@ -7,5 +7,6 @@ cp -R ./release/server ./YACReaderLibrary.app/Contents/MacOS/
 cp -R ./release/languages ./YACReader.app/Contents/MacOS/
 cp -R ./release/languages ./YACReaderLibrary.app/Contents/MacOS/
 cd ./YACReaderLibrary.app/Contents/MacOS/
+touch YACReaderLibrary.ini
 ln -s ../../../YACReader.app/Contents/MacOS/YACReader
 
