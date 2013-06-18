@@ -123,13 +123,13 @@ void ComicFlowWidgetSW::updateConfig(QSettings * settings)
 {
 	switch (settings->value(FLOW_TYPE_SW).toInt())
 	{
-	case 0:
+	case CoverFlowLike:
 		flow->setFlowType(CoverFlowLike);
 		return;
-	case 1:
+	case Strip:
 		flow->setFlowType(Strip);
 		return;
-	case 2:
+	case StripOverlapped:
 		flow->setFlowType(StripOverlapped);
 		return;
 	}

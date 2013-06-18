@@ -32,7 +32,7 @@ struct Preset defaultYACReaderFlowConfig = {
 
 	0.f,    //CF_X the X Position of the Coverflow 
 	0.f,    //CF_Y the Y Position of the Coverflow
-	-12.f,  //CF_Z the Z Position of the Coverflow
+	-8.f,  //CF_Z the Z Position of the Coverflow
 
 	15.f,   //CF_RX the X Rotation of the Coverflow
 	0.f,    //CF_RY the Y Rotation of the Coverflow
