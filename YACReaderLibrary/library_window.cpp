@@ -1142,6 +1142,8 @@ void LibraryWindow::loadLibraries()
 	{
 		disableAllActions();
 	}
+	else
+		selectedLibrary->setCurrentIndex(0);
 }
 
 void LibraryWindow::saveLibraries()
