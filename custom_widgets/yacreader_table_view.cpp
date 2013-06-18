@@ -20,7 +20,7 @@ YACReaderTableView::YACReaderTableView(QWidget *parent) :
         "QTableView::item:selected {outline: 0px; border-bottom: 1px solid #3875D7;border-top: 1px solid #3875D7; padding-bottom:1px; background-color: #3875D7; color: #FFFFFF; }"
 
 #else
-        "QTableView::item:selected {outline: 0px; border-bottom: 1px solid #EBCD49;border-top: 1px solid #EBCD49; padding-bottom:1px; background-color: #EBCD49; color: #FFFFFF; }"
+        "QTableView::item:selected {outline: 0px; border-bottom: 1px solid #D4D4D4;border-top: 1px solid #D4D4D4; padding-bottom:1px; background-color: #D4D4D4;  }"
 #endif
                   "QHeaderView::section:horizontal {background-color:#F5F5F5; border-bottom:1px solid #B8BDC4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #D1D1D1, stop: 1 #B8BDC4); border-left:none; border-top:none; padding:4px; color:#313232;}"
 		"QHeaderView::section:vertical {border-bottom: 1px solid #DFDFDF;border-top: 1px solid #FEFEFE;}"
