@@ -952,7 +952,10 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 void LibraryWindow::checkEmptyFolder(QStringList * paths)
 {
 	if(paths == 0)
-		paths = &dmCV->getPaths(currentPath());
+	{
+		QStringList pathList = dmCV->getPaths(currentPath());
+		paths = &pathList;
+	}
 
 	if(paths->size()>0 && !importedCovers)
 	{
