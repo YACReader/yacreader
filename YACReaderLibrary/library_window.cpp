@@ -1268,6 +1268,8 @@ void LibraryWindow::setRootIndex()
 		if(d.exists(path))
 		{
 			loadCovers(QModelIndex());
+			if(history.count()>1)
+				updateHistory(QModelIndex());
 		}
 		else
 		{
@@ -1599,18 +1601,21 @@ void LibraryWindow::forward()
 
 void LibraryWindow::updateHistory(const QModelIndex &mi)
 {
-    //remove history from current index
-    int numElementsToRemove = history.count() - (currentFolderNavigation+1);
-    while(numElementsToRemove>0)
-    {
-        numElementsToRemove--;
-        history.removeLast();
-    }
+	//remove history from current index
+	int numElementsToRemove = history.count() - (currentFolderNavigation+1);
+	while(numElementsToRemove>0)
+	{
+		numElementsToRemove--;
+		history.removeLast();
+	}
 
-    backAction->setEnabled(true);
-    history.append(mi);
+	if(mi!=history.at(currentFolderNavigation))
+	{
+		history.append(mi);
 
-    currentFolderNavigation++;
+		backAction->setEnabled(true);
+		currentFolderNavigation++;
+	}
 
 	forwardAction->setEnabled(false);
 }
