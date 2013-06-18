@@ -8,10 +8,13 @@
     <file>../images/new.png</file>
     <file>../images/openLibrary.png</file>
     <file>../images/removeLibrary.png</file>
+	 <file>../images/removeLibraryIcon.png</file>
     <file>../images/updateLibrary.png</file>
+	<file>../images/updateLibraryIcon.png</file>
     <file>../images/comicFolder.png</file>
     <file>../images/notCover.png</file>
     <file>../images/edit.png</file>
+	<file>../images/editIcon.png</file>
     <file>../images/fit.png</file>
     <file>../images/properties.png</file>
     <file>../images/options.png</file>
@@ -21,7 +24,9 @@
 	<file>../images/flow4.png</file>
 	<file>../images/flow5.png</file> 
     <file>../images/importLibrary.png</file>
+	<file>../images/importLibraryIcon.png</file>
     <file>../images/exportLibrary.png</file>
+	<file>../images/exportLibraryIcon.png</file>
     <file>../images/open.png</file>
     <file>../images/coversPackage.png</file>
     <file>../images/setRead.png</file>
@@ -35,6 +40,8 @@
     <file>../images/hideComicFlow.png</file>
     <file>../images/exportComicsInfo.png</file>
     <file>../images/importComicsInfo.png</file>
+	<file>../images/exportComicsInfoIcon.png</file>
+    <file>../images/importComicsInfoIcon.png</file>
     <file>../images/db.png</file>
     <file>../images/asignNumber.png</file>
 	<file>../images/defaultCover.png</file>
@@ -90,7 +97,6 @@
     <file>../images/collapsed_branch_osx.png</file>
     <file>../images/expanded_branch_osx.png</file>
     <file>../images/folder_macosx.png</file>
-    
     <file>../images/libraryIconSelected.png</file>
     <file>../images/libraryOptions.png</file>
     <file>../images/branch-open.png</file>

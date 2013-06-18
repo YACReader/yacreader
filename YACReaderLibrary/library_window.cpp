@@ -324,33 +324,33 @@ void LibraryWindow::createActions()
 
 	exportComicsInfo = new QAction(tr("Export comics info"),this);
 	exportComicsInfo->setToolTip(tr("Export comics info"));
-	exportComicsInfo->setIcon(QIcon(":/images/exportComicsInfo.png"));
+	exportComicsInfo->setIcon(QIcon(":/images/exportComicsInfoIcon.png"));
 
 	importComicsInfo = new QAction(tr("Import comics info"),this);
 	importComicsInfo->setToolTip(tr("Import comics info"));
-	importComicsInfo->setIcon(QIcon(":/images/importComicsInfo.png"));
+	importComicsInfo->setIcon(QIcon(":/images/importComicsInfoIcon.png"));
 
 	exportLibraryAction = new QAction(tr("Pack covers"),this);
 	exportLibraryAction->setToolTip(tr("Pack the covers of the selected library"));
-	exportLibraryAction->setIcon(QIcon(":/images/exportLibrary.png"));
+	exportLibraryAction->setIcon(QIcon(":/images/exportLibraryIcon.png"));
 
 	importLibraryAction = new QAction(tr("Unpack covers"),this);
 	importLibraryAction->setToolTip(tr("Unpack a catalog"));
-	importLibraryAction->setIcon(QIcon(":/images/importLibrary.png"));
+	importLibraryAction->setIcon(QIcon(":/images/importLibraryIcon.png"));
 
 	updateLibraryAction = new QAction(tr("Update library"),this);
 	updateLibraryAction->setToolTip(tr("Update current library"));
 	updateLibraryAction->setShortcut(Qt::Key_U);
-	updateLibraryAction->setIcon(QIcon(":/images/updateLibrary.png"));
+	updateLibraryAction->setIcon(QIcon(":/images/updateLibraryIcon.png"));
 
 	renameLibraryAction = new QAction(tr("Rename library"),this);
 	renameLibraryAction->setToolTip(tr("Rename current library"));
 	renameLibraryAction->setShortcut(Qt::Key_R);
-	renameLibraryAction->setIcon(QIcon(":/images/edit.png"));
+	renameLibraryAction->setIcon(QIcon(":/images/editIcon.png"));
 
 	removeLibraryAction = new QAction(tr("Remove library"),this);
 	removeLibraryAction->setToolTip(tr("Remove current library from your collection"));
-	removeLibraryAction->setIcon(QIcon(":/images/removeLibrary.png"));
+	removeLibraryAction->setIcon(QIcon(":/images/removeLibraryIcon.png"));
 
 	openComicAction = new QAction(tr("Open current comic"),this);
 	openComicAction->setToolTip(tr("Open current comic on YACReader"));
