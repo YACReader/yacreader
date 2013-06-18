@@ -52,6 +52,10 @@
 #include "treemodel.h"
 #include "data_base_management.h"
 
+#ifdef Q_OS_MAC
+#include <QFileIconProvider>
+#endif
+
 #define ROOT 1
 
 TreeModel::TreeModel(QObject *parent)
@@ -102,7 +106,7 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 
 	if (role == Qt::DecorationRole)
 #ifdef Q_OS_MAC
-		return QVariant(QIcon(":/images/folder_macosx.png"));
+        return QVariant(QFileIconProvider().icon(QFileIconProvider::Folder));
 #else
 		return QVariant(QIcon(":/images/folder.png"));
 #endif
