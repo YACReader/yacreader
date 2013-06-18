@@ -4,9 +4,10 @@
 #include <QVBoxLayout>
 #include <QMouseEvent>
 #include <QMenu>
+#include "qnaturalsorting.h"
 
 YACReaderLibraryListWidget::YACReaderLibraryListWidget(QWidget *parent) :
-    QWidget(parent),currentLibraryIndex(0)
+    QWidget(parent),currentLibraryIndex(-1)
 {
 	QVBoxLayout * mainLayout = new QVBoxLayout;
 	mainLayout->setSpacing(0);
@@ -21,19 +22,17 @@ void YACReaderLibraryListWidget::addItem(QString name, QString path)
 
 	YACReaderLibraryItemWidget * library = new YACReaderLibraryItemWidget(name,path,this);
 	connect(library,SIGNAL(showOptions()),this,SLOT(showContextMenu()));
-	librariesList.append(library);
+	QList<YACReaderLibraryItemWidget *>::iterator itr;
+	int i = 0;
+	for(itr = librariesList.begin(); itr!=librariesList.end() && !naturalSortLessThanCI(name,(*itr)->name);itr++)
+		i++;
 
-	connect(library,SIGNAL(selected(QString,QString)),this,SIGNAL(librarySelected(QString,QString)));
+	librariesList.insert(itr,library);
+
+	//connect(library,SIGNAL(selected(QString,QString)),this,SIGNAL(librarySelected(QString,QString)));
 	connect(library,SIGNAL(selected(QString,QString)),this,SLOT(updateLibraries(QString,QString)));
 
-	mainLayout->addWidget(library);
-
-	//first item added
-	if(librariesList.count()==1)
-	{
-		library->select();
-		emit currentIndexChanged(name);
-	}
+	mainLayout->insertWidget(i,library);
 }
 
 QString YACReaderLibraryListWidget::currentText()
@@ -55,6 +54,7 @@ void YACReaderLibraryListWidget::setCurrentIndex(int index)
 		librariesList.at(index)->select();
 		currentLibraryIndex = index;
 		deselectAllBut(index);
+		emit currentIndexChanged(librariesList.at(currentLibraryIndex)->name);
 	}
 }
 
@@ -70,7 +70,6 @@ void YACReaderLibraryListWidget::removeItem(int index)
 	if(librariesList.count()>0)
 	{
 		setCurrentIndex(0);
-		emit currentIndexChanged(librariesList.at(0)->name);
 	}
 	delete itemWidget;
 }
@@ -81,9 +80,10 @@ void YACReaderLibraryListWidget::mousePressEvent ( QMouseEvent * event )
 	{
 		int h = librariesList.at(0)->height();
 		int item = event->pos().y() / h;
-		//deselectAllBut(item);
-		setCurrentIndex(item);
-		emit currentIndexChanged(librariesList.at(item)->name);
+		if(item!=currentLibraryIndex)
+		{
+			setCurrentIndex(item);
+		}
 	}
 	
 }
