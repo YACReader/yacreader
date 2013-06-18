@@ -188,7 +188,7 @@ void LibraryWindow::doLayout()
 
 	librariesTitle->addAction(createLibraryAction);
 	librariesTitle->addAction(openLibraryAction);
-	librariesTitle->addSpacing(4);
+	librariesTitle->addSpacing(3);
 
 	foldersTitle->addAction(setRootIndexAction);
 	foldersTitle->addAction(expandAllNodesAction);
