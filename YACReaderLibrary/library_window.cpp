@@ -934,7 +934,7 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 
 	//debido a un bug, qt4 no es capaz de ajustar el ancho teniendo en cuenta todas la filas (no sólo las visibles)
 	//así que se ecala la primera vez y después se deja el control al usuario.
-	if(!settings->contains(COMICS_VIEW_HEADERS))
+	//if(!settings->contains(COMICS_VIEW_HEADERS))
 		comicView->resizeColumnsToContents();
 	comicView->horizontalHeader()->setStretchLastSection(true);
 

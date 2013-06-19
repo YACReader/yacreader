@@ -63,6 +63,22 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 			return QVariant();
 	}
 
+	if (role == Qt::TextAlignmentRole)
+	{
+		switch(index.column())//TODO obtener esto de la query
+		{
+		case 0:
+			return Qt::AlignRight | Qt::AlignVCenter;
+		case 3:
+			return Qt::AlignRight | Qt::AlignVCenter;
+		case 7:
+			return Qt::AlignRight | Qt::AlignVCenter;
+		default:
+			return Qt::AlignLeft | Qt::AlignVCenter;
+		}
+	}
+
+
     if (role != Qt::DisplayRole)
         return QVariant();
 
@@ -107,6 +123,22 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation,
 			return QVariant(QString(tr("Read")));
 		}
 	}
+
+	if (orientation == Qt::Horizontal && role == Qt::TextAlignmentRole)
+	{
+		switch(section)//TODO obtener esto de la query
+		{
+		case 0:
+			return Qt::AlignRight | Qt::AlignVCenter;
+		case 3:
+			return Qt::AlignRight | Qt::AlignVCenter;
+		case 7:
+			return Qt::AlignRight | Qt::AlignVCenter;
+		default:
+			return Qt::AlignLeft | Qt::AlignVCenter;
+		}
+	}
+
 
 	if(orientation == Qt::Vertical && role == Qt::DecorationRole)
 	{
