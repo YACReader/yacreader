@@ -103,5 +103,8 @@
     <file>../images/branch-closed.png</file>
     <file>../images/expanded_branch_selected.png</file>
     <file>../images/collapsed_branch_selected.png</file>
+    <file>../images/previousCoverPage.png</file>
+    <file>../images/nextCoverPage.png</file>
+    <file>../images/busy_background.png</file>
   </qresource>
 </RCC>
