@@ -68,13 +68,13 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 		switch(index.column())//TODO obtener esto de la query
 		{
 		case 0:
-			return Qt::AlignRight | Qt::AlignVCenter;
+            return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 		case 3:
-			return Qt::AlignRight | Qt::AlignVCenter;
+            return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 		case 7:
-			return Qt::AlignRight | Qt::AlignVCenter;
+            return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 		default:
-			return Qt::AlignLeft | Qt::AlignVCenter;
+            return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
 		}
 	}
 
@@ -129,13 +129,13 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation,
 		switch(section)//TODO obtener esto de la query
 		{
 		case 0:
-			return Qt::AlignRight | Qt::AlignVCenter;
+            return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 		case 3:
-			return Qt::AlignRight | Qt::AlignVCenter;
+            return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 		case 7:
-			return Qt::AlignRight | Qt::AlignVCenter;
+            return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 		default:
-			return Qt::AlignLeft | Qt::AlignVCenter;
+            return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
 		}
 	}
 
