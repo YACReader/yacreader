@@ -5,6 +5,7 @@
 #include "yacreader_field_edit.h"
 #include "yacreader_field_plain_text_edit.h"
 #include "db_helper.h"
+#include "yacreader_busy_widget.h"
 
 #include <QHBoxLayout>
 #include <QApplication>
@@ -29,14 +30,17 @@ PropertiesDialog::PropertiesDialog(QWidget * parent)
 	createTabBar();
 
 	mainLayout = new QGridLayout;
-	mainLayout->addWidget(coverBox,0,0);
+	//mainLayout->addWidget(coverBox,0,0);
 	mainLayout->addWidget(tabBar,0,1);
 	mainLayout->setColumnStretch(1,1);
 	/*mainLayout->addWidget(authorsBox,1,1);
 	mainLayout->addWidget(publishingBox,2,1);*/
 	mainLayout->addWidget(buttonBox,1,1,Qt::AlignBottom);
 
-	this->setLayout(mainLayout);
+	mainWidget = new QWidget(this);
+	mainWidget->setAutoFillBackground(true);
+	mainWidget->setFixedSize(470,444);
+	mainWidget->setLayout(mainLayout);
 	mainLayout->setSizeConstraint(QLayout::SetMinimumSize);
 
 	int heightDesktopResolution = QApplication::desktop()->screenGeometry().height();
@@ -45,11 +49,17 @@ PropertiesDialog::PropertiesDialog(QWidget * parent)
 	sHeight = static_cast<int>(heightDesktopResolution*0.65);
 	sWidth = static_cast<int>(sHeight*1.4);
 	setCover(QPixmap(":/images/notCover.png"));
-	this->resize(sWidth,this->height());
+
 	this->move(QPoint((widthDesktopResolution-sWidth)/2,((heightDesktopResolution-sHeight)-40)/2));
 	setModal(true);
-	repaint();
 
+	setFixedSize( sizeHint() );
+	mainWidget->move(280,0);
+}
+
+QSize PropertiesDialog::sizeHint()
+{
+	return QSize(750,444);
 }
 
 void PropertiesDialog::createTabBar()
@@ -63,33 +73,46 @@ void PropertiesDialog::createTabBar()
 
 void PropertiesDialog::createCoverBox()
 {
-	coverBox = new QGroupBox(tr("Cover"));
+	coverBox = new QWidget(this);
 
-	sa = new QScrollArea();
-	cover = new QLabel();
-	cover->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-	cover->setScaledContents(false);
-	cover->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
+	QHBoxLayout * layout = new QHBoxLayout;
+
+	QLabel * label = new QLabel(tr("Cover page"));
+	label->setStyleSheet("QLabel {color: white; font-weight:bold; font-size:14px;}");
+	layout->addWidget(label);
+	layout->addStretch();
+
+	coverPageEdit = new YACReaderFieldEdit();
 	
+	QToolButton * previous = new QToolButton();
+	previous->setIcon(QIcon(":/images/previousCoverPage.png"));
+	previous->setStyleSheet("QToolButton {border:none;}");
+	QToolButton * next = new QToolButton();
+	next->setIcon(QIcon(":/images/nextCoverPage.png"));
+	next->setStyleSheet("QToolButton {border:none;}");
 
-	/*sa->setWidget(cover);
-	sa->setBackgroundRole(QPalette::Dark);
-	sa->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	sa->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	sa->setFrameStyle(QFrame::NoFrame);
-	sa->setAlignment(Qt::AlignCenter);*/
+	QLabel * coverPageNumberLabel = new QLabel("1");
 
-	QVBoxLayout * coverLayout = new QVBoxLayout();
-	coverLayout->addWidget(cover);
+	coverPageNumberLabel->setStyleSheet("QLabel {color: white; font-weight:bold; font-size:14px;}");
+
+	layout->addWidget(previous);
+	layout->addSpacing(5);
+	layout->addWidget(coverPageNumberLabel);
+	layout->addSpacing(5);
+	layout->addWidget(next);
+
+	coverPageEdit->setStyleSheet("QLineEdit {border:none;}");
+	layout->setSpacing(0);
+
+	coverBox->setLayout(layout);
+
+	coverBox->setFixedWidth(280);
+	coverBox->move(0,444-28);
+	layout->setContentsMargins(5,4,5,0);
+
+	busyIndicator = new YACReaderBusyWidget(this);
+	busyIndicator->move((280-busyIndicator->width())/2,(444-busyIndicator->height()-28)/2);
 	
-	QHBoxLayout * coverPageLayout = new QHBoxLayout;
-	coverPageLayout->addWidget(new QLabel(tr("Cover page : ")));
-	coverPageLayout->addWidget(coverPageEdit = new YACReaderFieldEdit());
-	coverPageLayout->setStretch(1,0);
-
-	coverLayout->addLayout(coverPageLayout);
-
-	coverBox->setLayout(coverLayout);
 }
 
 QFrame * createLine()
@@ -440,9 +463,10 @@ void PropertiesDialog::updateComics()
 	QSqlDatabase::removeDatabase(databasePath);
 }
 //Deprecated
-void PropertiesDialog::setCover(const QPixmap & coverImage)
+void PropertiesDialog::setCover(const QPixmap & coverI)
 {
-	cover->setPixmap(coverImage.scaledToWidth(125,Qt::SmoothTransformation));
+	coverImage = coverI.scaledToHeight(444,Qt::SmoothTransformation);
+	//cover->setPixmap(coverImage.scaledToWidth(125,Qt::SmoothTransformation));
 	//cover->repaint();
 
 	//float aspectRatio = (float)coverImage.width()/coverImage.height();
@@ -694,4 +718,18 @@ void PropertiesDialog::closeEvent ( QCloseEvent * e )
 	coverPageEdit->setFocus();
 
 	QDialog::closeEvent(e);
+}
+
+void PropertiesDialog::paintEvent(QPaintEvent * event)
+{
+	QDialog::paintEvent(event);
+
+	QPainter p(this);
+
+	p.drawPixmap(0,0,coverImage);
+
+	QPixmap shadow(":/images/social_dialog/shadow.png");
+	p.drawPixmap(280-shadow.width(),0,shadow.width(),444,shadow);
+
+	p.fillRect(0,444-28,280,28,QColor(0,0,0,153));
 }

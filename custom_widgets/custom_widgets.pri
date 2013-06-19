@@ -20,6 +20,7 @@ HEADERS += $$PWD/help_about_dialog.h \
 						$$PWD/yacreader_library_list_widget.h \
 						$$PWD/yacreader_library_item_widget.h \
 						$$PWD/yacreader_treeview.h \
+						$$PWD/yacreader_busy_widget.h 
 						
 						 
 SOURCES += $$PWD/help_about_dialog.cpp \
@@ -41,3 +42,4 @@ SOURCES += $$PWD/help_about_dialog.cpp \
 						$$PWD/yacreader_library_list_widget.cpp \
 						$$PWD/yacreader_library_item_widget.cpp \
 						$$PWD/yacreader_treeview.cpp \
+						$$PWD/yacreader_busy_widget.cpp

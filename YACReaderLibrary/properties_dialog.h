@@ -15,17 +15,22 @@ class YACReaderFieldEdit;
 class YACReaderFieldPlainTextEdit;
 class QDialogButtonBox;
 class QCheckBox;
+class YACReaderBusyWidget;
+
 #include "comic_db.h"
 
 	class PropertiesDialog : public QDialog
 	{
 		Q_OBJECT
 	private: 
+		QWidget * mainWidget;
+		YACReaderBusyWidget * busyIndicator;
+
 		QGridLayout * mainLayout;
 		
 		QTabWidget * tabBar;
 
-		QGroupBox * coverBox;
+		QWidget * coverBox;
 		QLabel * cover;
 		QScrollArea * sa;
 
@@ -84,6 +89,8 @@ class QCheckBox;
 		QPushButton *closeButton;
 		QPushButton *saveButton;
 		QPushButton *restoreButton; //??
+		
+		QPixmap coverImage;
 
 		void createTabBar();
 		void createCoverBox();
@@ -102,6 +109,8 @@ class QCheckBox;
 		PropertiesDialog(QWidget * parent = 0);
 		QString databasePath;
 		QString basePath;
+		QSize sizeHint();
+		void paintEvent(QPaintEvent * event);
 
 	public slots:
 		void setComics(QList<ComicDB> comics);
