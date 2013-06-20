@@ -1229,6 +1229,12 @@ void LibraryWindow::removeLibrary()
 	{
 		deleteCurrentLibrary();
 	}
+
+	if(libraries.size()==0)
+	{
+		disableAllActions();
+		showNoLibrariesWidget();
+	}
 }
 
 void LibraryWindow::renameLibrary()
@@ -1478,17 +1484,20 @@ void LibraryWindow::closeEvent ( QCloseEvent * event )
 
 void LibraryWindow::showNoLibrariesWidget()
 {
+	disableAllActions();
 	mainWidget->setCurrentIndex(1);
 }
 
 void LibraryWindow::showRootWidget()
 {
+	enableActions();
 	libraryToolBar->setDisabled(false);
 	mainWidget->setCurrentIndex(0);
 }
 
 void LibraryWindow::showImportingWidget()
 {
+	disableAllActions();
 	importWidget->clear();
 	libraryToolBar->setDisabled(true);
 	mainWidget->setCurrentIndex(2);
