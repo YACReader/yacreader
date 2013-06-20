@@ -445,14 +445,17 @@ void ThumbnailCreator::create()
 
 			QImage p = pdfComic->page(_coverPage-1)->renderToImage(72,72); //TODO check if the the page is valid
 			_cover = QPixmap::fromImage(p);
-			QImage scaled;
-			if(p.width()>p.height()) //landscape??
-				scaled = p.scaledToWidth(640,Qt::SmoothTransformation);
-			else
-				scaled = p.scaledToWidth(480,Qt::SmoothTransformation);
-			scaled.save(_target,0,75);
+			if(_target!="")
+			{
+				QImage scaled;
+				if(p.width()>p.height()) //landscape??
+					scaled = p.scaledToWidth(640,Qt::SmoothTransformation);
+				else
+					scaled = p.scaledToWidth(480,Qt::SmoothTransformation);
+				scaled.save(_target,0,75);
+			}
 		}
-		else
+		else if(_target!="")
 		{
 			QImage p;
 			p.load(":/images/notCover.png");

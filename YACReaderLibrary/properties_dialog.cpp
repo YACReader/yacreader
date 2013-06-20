@@ -5,7 +5,7 @@
 #include "yacreader_field_edit.h"
 #include "yacreader_field_plain_text_edit.h"
 #include "db_helper.h"
-#include "yacreader_busy_widget.h"
+//#include "yacreader_busy_widget.h"
 
 #include <QHBoxLayout>
 #include <QApplication>
@@ -48,7 +48,7 @@ PropertiesDialog::PropertiesDialog(QWidget * parent)
 	int sHeight,sWidth;
 	sHeight = static_cast<int>(heightDesktopResolution*0.65);
 	sWidth = static_cast<int>(sHeight*1.4);
-	setCover(QPixmap(":/images/notCover.png"));
+	//setCover(QPixmap(":/images/notCover.png"));
 
 	this->move(QPoint((widthDesktopResolution-sWidth)/2,((heightDesktopResolution-sHeight)-40)/2));
 	setModal(true);
@@ -84,22 +84,22 @@ void PropertiesDialog::createCoverBox()
 
 	coverPageEdit = new YACReaderFieldEdit();
 	
-	QToolButton * previous = new QToolButton();
-	previous->setIcon(QIcon(":/images/previousCoverPage.png"));
-	previous->setStyleSheet("QToolButton {border:none;}");
-	QToolButton * next = new QToolButton();
-	next->setIcon(QIcon(":/images/nextCoverPage.png"));
-	next->setStyleSheet("QToolButton {border:none;}");
+	showPreviousCoverPageButton = new QToolButton();
+	showPreviousCoverPageButton->setIcon(QIcon(":/images/previousCoverPage.png"));
+	showPreviousCoverPageButton->setStyleSheet("QToolButton {border:none;}");
+	showNextCoverPageButton = new QToolButton();
+	showNextCoverPageButton->setIcon(QIcon(":/images/nextCoverPage.png"));
+	showNextCoverPageButton->setStyleSheet("QToolButton {border:none;}");
 
-	QLabel * coverPageNumberLabel = new QLabel("1");
+	coverPageNumberLabel = new QLabel("-");
 
 	coverPageNumberLabel->setStyleSheet("QLabel {color: white; font-weight:bold; font-size:14px;}");
 
-	layout->addWidget(previous);
+	layout->addWidget(showPreviousCoverPageButton);
 	layout->addSpacing(5);
 	layout->addWidget(coverPageNumberLabel);
 	layout->addSpacing(5);
-	layout->addWidget(next);
+	layout->addWidget(showNextCoverPageButton);
 
 	coverPageEdit->setStyleSheet("QLineEdit {border:none;}");
 	layout->setSpacing(0);
@@ -110,8 +110,12 @@ void PropertiesDialog::createCoverBox()
 	coverBox->move(0,444-28);
 	layout->setContentsMargins(5,4,5,0);
 
-	busyIndicator = new YACReaderBusyWidget(this);
-	busyIndicator->move((280-busyIndicator->width())/2,(444-busyIndicator->height()-28)/2);
+	//busyIndicator = new YACReaderBusyWidget(this);
+	//busyIndicator->move((280-busyIndicator->width())/2,(444-busyIndicator->height()-28)/2);
+	//busyIndicator->hide();
+
+	connect(showPreviousCoverPageButton,SIGNAL(pressed()),this,SLOT(loadPreviousCover()));
+	connect(showNextCoverPageButton,SIGNAL(pressed()),this,SLOT(loadNextCover()));
 	
 }
 
@@ -283,7 +287,73 @@ void PropertiesDialog::createButtonBox()
     connect(saveButton, SIGNAL(clicked()), this, SLOT(save()));
 }
 
+QImage blurred(const QImage& image, const QRect& rect, int radius, bool alphaOnly = false)
+{
+    int tab[] = { 14, 10, 8, 6, 5, 5, 4, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2 };
+    int alpha = (radius < 1)  ? 16 : (radius > 17) ? 1 : tab[radius-1];
 
+    QImage result = image.convertToFormat(QImage::Format_ARGB32_Premultiplied);
+    int r1 = rect.top();
+    int r2 = rect.bottom();
+    int c1 = rect.left();
+    int c2 = rect.right();
+
+    int bpl = result.bytesPerLine();
+    int rgba[4];
+    unsigned char* p;
+
+    int i1 = 0;
+    int i2 = 3;
+
+    if (alphaOnly)
+        i1 = i2 = (QSysInfo::ByteOrder == QSysInfo::BigEndian ? 0 : 3);
+
+    for (int col = c1; col <= c2; col++) {
+        p = result.scanLine(r1) + col * 4;
+        for (int i = i1; i <= i2; i++)
+            rgba[i] = p[i] << 4;
+
+        p += bpl;
+        for (int j = r1; j < r2; j++, p += bpl)
+            for (int i = i1; i <= i2; i++)
+                p[i] = (rgba[i] += ((p[i] << 4) - rgba[i]) * alpha / 16) >> 4;
+    }
+
+    for (int row = r1; row <= r2; row++) {
+        p = result.scanLine(row) + c1 * 4;
+        for (int i = i1; i <= i2; i++)
+            rgba[i] = p[i] << 4;
+
+        p += 4;
+        for (int j = c1; j < c2; j++, p += 4)
+            for (int i = i1; i <= i2; i++)
+                p[i] = (rgba[i] += ((p[i] << 4) - rgba[i]) * alpha / 16) >> 4;
+    }
+
+    for (int col = c1; col <= c2; col++) {
+        p = result.scanLine(r2) + col * 4;
+        for (int i = i1; i <= i2; i++)
+            rgba[i] = p[i] << 4;
+
+        p -= bpl;
+        for (int j = r1; j < r2; j++, p -= bpl)
+            for (int i = i1; i <= i2; i++)
+                p[i] = (rgba[i] += ((p[i] << 4) - rgba[i]) * alpha / 16) >> 4;
+    }
+
+    for (int row = r1; row <= r2; row++) {
+        p = result.scanLine(row) + c2 * 4;
+        for (int i = i1; i <= i2; i++)
+            rgba[i] = p[i] << 4;
+
+        p -= 4;
+        for (int j = c1; j < c2; j++, p -= 4)
+            for (int i = i1; i <= i2; i++)
+                p[i] = (rgba[i] += ((p[i] << 4) - rgba[i]) * alpha / 16) >> 4;
+    }
+
+    return result;
+}
 
 void PropertiesDialog::setComics(QList<ComicDB> comics)
 {
@@ -294,11 +364,26 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
 	if(comic.info.title != NULL)
 		title->setText(*comic.info.title);
 
-	if(comic.info.coverPage != NULL)
+	if(comics.length()==1 &&comic.info.coverPage != NULL)
 	{
 		coverPageEdit->setText(QString::number(*comic.info.coverPage));
 		coverPageValidator.setRange(1,*comic.info.numPages);
 		coverPageEdit->setValidator(&coverPageValidator);
+		//----------
+		int coverPage = *comic.info.coverPage;
+		coverPageNumberLabel->setText(QString::number(coverPage));
+		coverPageNumberLabel->adjustSize();
+		
+		showPreviousCoverPageButton->setEnabled(true);
+		showNextCoverPageButton->setEnabled(true);
+		
+		if(coverPage == 1)
+			showPreviousCoverPageButton->setDisabled(true);
+		if(coverPage == *comic.info.numPages)
+			showNextCoverPageButton->setDisabled(true);
+
+		coverChanged = false;
+		coverBox->show();
 	}
 	/*if(comic.info.numPages != NULL)
 	numPagesEdit->setText(QString::number(*comic.info.numPages));*/
@@ -367,9 +452,11 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
 
 	if(comics.length() > 1)
 	{
+		coverBox->hide();
+
 		setDisableUniqueValues(true);
 		this->setWindowTitle(tr("Edit selected comics information"));
-		setCover(QPixmap(":/images/editComic.png"));
+		setMultipleCover();
 
 		QList<ComicDB>::iterator itr;
 		for(itr = ++comics.begin();itr!=comics.end();itr++)
@@ -445,8 +532,6 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
 
 }
 
-
-
 void PropertiesDialog::updateComics()
 {
 	QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
@@ -462,39 +547,21 @@ void PropertiesDialog::updateComics()
 	db.close();
 	QSqlDatabase::removeDatabase(databasePath);
 }
-//Deprecated
+
+void PropertiesDialog::setMultipleCover()
+{
+	ComicDB lastComic = comics.last();
+	QPixmap last = lastComic.info.getCover(basePath);
+	last = last.scaledToHeight(444,Qt::SmoothTransformation);
+
+	coverImage = QPixmap::fromImage(blurred(last.toImage(),QRect(0,0,last.width(),last.height()),15));
+}
+
 void PropertiesDialog::setCover(const QPixmap & coverI)
 {
 	coverImage = coverI.scaledToHeight(444,Qt::SmoothTransformation);
-	//cover->setPixmap(coverImage.scaledToWidth(125,Qt::SmoothTransformation));
-	//cover->repaint();
-
-	//float aspectRatio = (float)coverImage.width()/coverImage.height();
-	//int heightDesktopResolution = QApplication::desktop()->screenGeometry().height();
-	//int widthDesktopResolution = QApplication::desktop()->screenGeometry().width();
-	//int sHeight,sWidth;
-	//sHeight = static_cast<int>(heightDesktopResolution*0.65);
-
-	//if(aspectRatio<1)
-	//{
-	//	sWidth = static_cast<int>(sHeight*1.4);
-	//	//this->resize(sWidth,sHeight);
-	//	this->move(QPoint((widthDesktopResolution-sWidth)/2,((heightDesktopResolution-sHeight)-40)/2));
-	//	//sa->resize(sa->width(),sa->width()*1.333);
-	//	/*cover->resize(static_cast<int>((sa->height())*aspectRatio),
-	//		(sa->height()));*/
-
-	//}
-	//else
-	//{
-	//	sWidth = static_cast<int>(sHeight/1.16);
-	//	//this->resize(sWidth,sHeight);
-	//	this->move(QPoint((widthDesktopResolution-sWidth)/2,((heightDesktopResolution-sHeight)-40)/2));
-	//	cover->resize((width()-25),
-	//		static_cast<int>((width()-25)/aspectRatio));
-	//}
-	
 }
+
 void PropertiesDialog::setFilename(const QString & nameString)
 {
 	title->setText(nameString);
@@ -524,9 +591,9 @@ void PropertiesDialog::save()
 		}
 
 		if(comics.size()==1)
-		if(coverPageEdit->isModified() && !coverPageEdit->text().isEmpty() && coverPageEdit->text().toInt() != 0)
+		if(coverChanged)
 		{
-			itr->info.setCoverPage(coverPageEdit->text().toInt());
+			itr->info.setCoverPage(coverPageNumberLabel->text().toInt());
 			edited = true;
 		}
 
@@ -657,7 +724,7 @@ void PropertiesDialog::save()
 	updateComics();
 	if(comics.count() == 1)
 	{
-		if(coverPageEdit->isModified())// && coverPageEdit->text().toInt() != *comics[0].info.coverPage)
+		if(coverChanged)// && coverPageEdit->text().toInt() != *comics[0].info.coverPage)
 		{
 			ThumbnailCreator tc(basePath+comics[0].path,basePath+"/.yacreaderlibrary/covers/"+comics[0].info.hash+".jpg",*comics[0].info.coverPage);
 			tc.create();
@@ -728,8 +795,60 @@ void PropertiesDialog::paintEvent(QPaintEvent * event)
 
 	p.drawPixmap(0,0,coverImage);
 
-	QPixmap shadow(":/images/social_dialog/shadow.png");
-	p.drawPixmap(280-shadow.width(),0,shadow.width(),444,shadow);
+	//QPixmap shadow(":/images/social_dialog/shadow.png");
+	//p.drawPixmap(280-shadow.width(),0,shadow.width(),444,shadow);
+	p.drawLine(279,0,279,444);
+	if(comics.length()==1)
+		p.fillRect(0,444-28,280,28,QColor(0,0,0,153));
+}
 
-	p.fillRect(0,444-28,280,28,QColor(0,0,0,153));
+void PropertiesDialog::updateCoverPageNumberLabel(int n)
+{
+	coverPageNumberLabel->setText(QString::number(n));
+	coverPageNumberLabel->adjustSize();
+}
+
+void PropertiesDialog::loadNextCover()
+{
+	int current = coverPageNumberLabel->text().toInt();
+	if(current < *(comics.at(0).info.numPages))
+	{
+		updateCoverPageNumberLabel(current+1);
+		
+		ThumbnailCreator tc(basePath+comics[0].path,"",current+1);
+		tc.create();
+		setCover(tc.getCover());
+		repaint();
+
+		if((current+1) ==  *(comics.at(0).info.numPages))
+		{
+			showNextCoverPageButton->setDisabled(true);
+		}
+
+		showPreviousCoverPageButton->setEnabled(true);
+		//busyIndicator->show();
+		coverChanged = true;
+	}
+}
+
+void PropertiesDialog::loadPreviousCover()
+{
+	int current = coverPageNumberLabel->text().toInt();
+	if(current!=1)
+	{
+		updateCoverPageNumberLabel(current-1);
+		ThumbnailCreator tc(basePath+comics[0].path,"",current-1);
+		tc.create();
+		setCover(tc.getCover());
+		repaint();
+
+		if((current-1) ==  1)
+		{
+			showPreviousCoverPageButton->setDisabled(true);
+		}
+
+		showNextCoverPageButton->setEnabled(true);
+		//busyIndicator->show();
+		coverChanged = true;
+	}
 }

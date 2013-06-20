@@ -15,7 +15,8 @@ class YACReaderFieldEdit;
 class YACReaderFieldPlainTextEdit;
 class QDialogButtonBox;
 class QCheckBox;
-class YACReaderBusyWidget;
+//class YACReaderBusyWidget;
+class QToolButton;
 
 #include "comic_db.h"
 
@@ -24,7 +25,7 @@ class YACReaderBusyWidget;
 		Q_OBJECT
 	private: 
 		QWidget * mainWidget;
-		YACReaderBusyWidget * busyIndicator;
+		//YACReaderBusyWidget * busyIndicator;
 
 		QGridLayout * mainLayout;
 		
@@ -92,6 +93,10 @@ class YACReaderBusyWidget;
 		
 		QPixmap coverImage;
 
+		QToolButton * showPreviousCoverPageButton;
+		QToolButton * showNextCoverPageButton;
+		QLabel * coverPageNumberLabel;
+
 		void createTabBar();
 		void createCoverBox();
 		void createGeneralInfoBox();
@@ -105,6 +110,10 @@ class YACReaderBusyWidget;
 
 		QList<ComicDB> comics;
 		void closeEvent ( QCloseEvent * e );
+		void updateCoverPageNumberLabel(int n);
+
+		bool coverChanged;
+
 	public:
 		PropertiesDialog(QWidget * parent = 0);
 		QString databasePath;
@@ -118,9 +127,13 @@ class YACReaderBusyWidget;
 		void save();
 		//Deprecated
 		void setCover(const QPixmap & cover);
+		void setMultipleCover();
 		void setFilename(const QString & name);
 		void setNumpages(int pages);
 		void setSize(float size);
+		void loadNextCover();
+		void loadPreviousCover();
+
 
 	};
 #endif
