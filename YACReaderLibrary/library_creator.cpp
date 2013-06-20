@@ -427,6 +427,12 @@ ThumbnailCreator::ThumbnailCreator(QString fileSource, QString target="", int co
 void ThumbnailCreator::create()
 {
 	QFileInfo fi(_fileSource);
+	if(!fi.exists()) //TODO: error file not found.
+	{
+		_cover.load(":/images/notCover.png");
+		return;
+	}
+
 	if(fi.suffix().compare("pdf",Qt::CaseInsensitive) == 0)
 	{
 		Poppler::Document * pdfComic = Poppler::Document::load(_fileSource);

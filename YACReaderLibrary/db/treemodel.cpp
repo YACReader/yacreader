@@ -255,7 +255,9 @@ void TreeModel::setupModelData(QSqlQuery &sqlquery, TreeItem *parent)
 
 		item->id = record.value("id").toULongLong();
 		//la inserción de hijos se hace de forma ordenada
-		items.value(record.value("parentId").toULongLong())->appendChild(item);
+		TreeItem * parent = items.value(record.value("parentId").toULongLong());
+		if(parent !=0)
+			parent->appendChild(item);
 		//se añade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
 		items.insert(item->id,item);
 	}
