@@ -147,3 +147,9 @@ void YACReaderLibraryItemWidget::select()
 
 	isSelected = true;
 }
+
+void YACReaderLibraryItemWidget::setName(const QString & name)
+{
+	this->name = name;
+	nameLabel->setText(name);
+}
