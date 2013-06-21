@@ -92,7 +92,7 @@ void LibraryCreator::run()
 			creation = false;
 			return;
 		}
-		//QSqlQuery pragma("PRAGMA foreign_keys = ON",_database);
+		QSqlQuery pragma("PRAGMA foreign_keys = ON",_database);
 		_database.transaction();
 		update(QDir(_source));
 		_database.commit();
