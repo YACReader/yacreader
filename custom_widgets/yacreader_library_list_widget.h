@@ -23,6 +23,7 @@ public slots:
 	int currentIndex();
 	void removeItem(int index);
 	void showContextMenu();
+	void renameCurrentLibrary(QString newName);
 protected:
 	void mousePressEvent ( QMouseEvent * event );
 private:

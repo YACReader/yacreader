@@ -1247,11 +1247,11 @@ void LibraryWindow::rename(QString newName)
 	QString currentLibrary = selectedLibrary->currentText();
 	QString path = libraries.value(currentLibrary);
 	libraries.remove(currentLibrary);
-	selectedLibrary->removeItem(selectedLibrary->currentIndex());
+	//selectedLibrary->removeItem(selectedLibrary->currentIndex());
 	libraries.insert(newName,path);
-	selectedLibrary->addItem(newName,path);
+	selectedLibrary->renameCurrentLibrary(newName);
 	saveLibraries();
-	selectedLibrary->setCurrentIndex(selectedLibrary->findText(newName));
+	//selectedLibrary->setCurrentIndex(selectedLibrary->findText(newName));
 }
 
 void LibraryWindow::cancelCreating()

@@ -102,3 +102,26 @@ void YACReaderLibraryListWidget::showContextMenu()
 	YACReaderLibraryItemWidget * itemWidget = librariesList.at(currentLibraryIndex);
 	QMenu::exec(actions(),itemWidget->mapToGlobal(QPoint(itemWidget->width()-8,itemWidget->height()/2)));
 }
+
+void YACReaderLibraryListWidget::renameCurrentLibrary(QString newName)
+{
+	YACReaderLibraryItemWidget * itemWidget = librariesList.at(currentLibraryIndex);
+	
+
+	this->layout()->removeWidget(itemWidget);
+	librariesList.removeOne(itemWidget);
+
+	itemWidget->setName(newName);
+
+	QList<YACReaderLibraryItemWidget *>::iterator itr;
+	int i = 0;
+	for(itr = librariesList.begin(); itr!=librariesList.end() && !naturalSortLessThanCI(newName,(*itr)->name);itr++)
+		i++;
+
+	librariesList.insert(itr,itemWidget);
+
+	QVBoxLayout * mainLayout = dynamic_cast<QVBoxLayout *>(layout());
+	mainLayout->insertWidget(i,itemWidget);
+
+	currentLibraryIndex = i;
+}
