@@ -18,10 +18,10 @@ HelpAboutDialog::HelpAboutDialog(QWidget * parent)
 
 	tabWidget->addTab(aboutText = new QTextBrowser(), tr("About"));
 	aboutText->setOpenExternalLinks(true);
-	aboutText->setFont(QFont("Comic Sans MS", 10)); //purisa
+	//aboutText->setFont(QFont("Comic Sans MS", 10)); //purisa
 	tabWidget->addTab(helpText = new QTextBrowser(), tr("Help"));
 	helpText->setOpenExternalLinks(true);
-	helpText->setFont(QFont("Comic Sans MS", 10));
+	//helpText->setFont(QFont("Comic Sans MS", 10));
 	//helpText->setDisabled(true);
 	//tabWidget->addTab(,"About Qt");
 
@@ -41,13 +41,13 @@ HelpAboutDialog::HelpAboutDialog(const QString & pathAbout,const QString & pathH
 
 void HelpAboutDialog::loadAboutInformation(const QString & path)
 {
-	aboutText->insertHtml(fileToString(path));
+	aboutText->setHtml(fileToString(path));
 	aboutText->moveCursor(QTextCursor::Start);
 }
 
 void HelpAboutDialog::loadHelp(const QString & path)
 {
-	helpText->insertHtml(fileToString(path));
+	helpText->setHtml(fileToString(path));
 	helpText->moveCursor(QTextCursor::Start);
 }
 
