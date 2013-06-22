@@ -1485,6 +1485,7 @@ void LibraryWindow::closeEvent ( QCloseEvent * event )
 void LibraryWindow::showNoLibrariesWidget()
 {
 	disableAllActions();
+	foldersFilter->setDisabled(true);
 	mainWidget->setCurrentIndex(1);
 }
 
@@ -1492,6 +1493,7 @@ void LibraryWindow::showRootWidget()
 {
 	enableActions();
 	libraryToolBar->setDisabled(false);
+	foldersFilter->setEnabled(true);
 	mainWidget->setCurrentIndex(0);
 }
 
@@ -1500,6 +1502,7 @@ void LibraryWindow::showImportingWidget()
 	disableAllActions();
 	importWidget->clear();
 	libraryToolBar->setDisabled(true);
+	foldersFilter->setDisabled(true);
 	mainWidget->setCurrentIndex(2);
 }
 
