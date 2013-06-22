@@ -136,6 +136,7 @@ void PropertiesDialog::createGeneralInfoBox()
 
 	QFormLayout *generalInfoLayout = new QFormLayout;
 
+    generalInfoLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
 	//generalInfoLayout->setRowWrapPolicy(QFormLayout::WrapAllRows);
 	generalInfoLayout->addRow(tr("Title:"), title = new YACReaderFieldEdit());
 	
@@ -234,6 +235,8 @@ void PropertiesDialog::createPublishingBox()
 	
 	QFormLayout *publishingLayout = new QFormLayout;
 
+    publishingLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+
 	QHBoxLayout * date = new QHBoxLayout;
 	date->addWidget(new QLabel(tr("Day:")));
 	date->addWidget(dayEdit = new YACReaderFieldEdit());
@@ -264,6 +267,7 @@ void PropertiesDialog::createPlotBox()
 	plotBox = new QWidget;
 
 	QFormLayout *plotLayout = new QFormLayout;
+    plotLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
 
 	plotLayout->setRowWrapPolicy(QFormLayout::WrapAllRows);
 	plotLayout->addRow(tr("Synopsis:"), synopsis = new YACReaderFieldPlainTextEdit());
