@@ -15,6 +15,7 @@
 #include <QCheckBox>
 #include <QTabWidget>
 #include <QIntValidator>
+#include <QFileInfo>
 
 PropertiesDialog::PropertiesDialog(QWidget * parent)
 :QDialog(parent)
@@ -388,6 +389,13 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
 
 		coverChanged = false;
 		coverBox->show();
+
+		if(!QFileInfo(basePath+comics[0].path).exists())
+		{
+			QMessageBox::warning(this,tr("Not found"),tr("Comic not found. You should update your library."));
+			showPreviousCoverPageButton->setDisabled(true);
+			showNextCoverPageButton->setDisabled(true);
+		}
 	}
 	/*if(comic.info.numPages != NULL)
 	numPagesEdit->setText(QString::number(*comic.info.numPages));*/
