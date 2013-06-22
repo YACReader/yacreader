@@ -831,7 +831,10 @@ void PropertiesDialog::loadNextCover()
 
 		showPreviousCoverPageButton->setEnabled(true);
 		//busyIndicator->show();
-		coverChanged = true;
+		if(current+1 != *(comics.at(0).info.coverPage))
+			coverChanged = true;
+		else
+			coverChanged = false;
 	}
 }
 
@@ -853,6 +856,9 @@ void PropertiesDialog::loadPreviousCover()
 
 		showNextCoverPageButton->setEnabled(true);
 		//busyIndicator->show();
-		coverChanged = true;
+		if(current-1 != *(comics.at(0).info.coverPage))
+			coverChanged = true;
+		else
+			coverChanged = false;
 	}
 }
