@@ -19,6 +19,7 @@
 #ifdef Q_OS_MAC
 class MacToolBarSeparator : public QWidget
 {
+public:
 	MacToolBarSeparator(int width = 10, QWidget * parent =0)
 		:QWidget(parent)
 	{
