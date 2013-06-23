@@ -102,6 +102,11 @@ include(../custom_widgets/custom_widgets.pri)
 
 RESOURCES += images.qrc \
     files.qrc 
+	
+win32:RESOURCES += images_win.qrc
+unix:!macx:RESOURCES += images_win.qrc
+macx:RESOURCES += images_osx.qrc
+
 RC_FILE = icon.rc
 
 macx {

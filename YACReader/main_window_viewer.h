@@ -43,6 +43,8 @@ class YACReaderSliderAction;
 		void alwaysOnTopSwitch();
 		void adjustToFullSizeSwitch();
 		void reloadOptions();
+		void fitToWidth();
+		void fitToHeight();
 		/*void viewComic();
 		void prev();
 		void next();
@@ -92,6 +94,8 @@ class YACReaderSliderAction;
 		QAction *showDictionaryAction;
 		QAction *alwaysOnTopAction;
 		QAction *adjustToFullSizeAction;
+		QAction *showFlowAction;
+
 		YACReaderSliderAction * sliderAction;
 
 		HttpVersionChecker * versionChecker;
