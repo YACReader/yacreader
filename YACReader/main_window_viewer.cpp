@@ -16,6 +16,17 @@
 #include <ctime>
 #include <algorithm>
 
+#ifdef Q_OS_MAC
+class MacToolBarSeparator : public QWidget
+{
+	MacToolBarSeparator(int width = 10, QWidget * parent =0)
+		:QWidget(parent)
+	{
+		setFixedWidth(width);
+	}
+};
+#endif
+
 MainWindowViewer::MainWindowViewer()
 :QMainWindow(),fullscreen(false),toolbars(true),alwaysOnTop(false),currentDirectory("."),currentDirectoryImgDest(".")
 {
@@ -313,7 +324,7 @@ void MainWindowViewer::createToolBars()
 
 	comicToolBar->setStyleSheet("QToolBar{border:none;}");
 #ifdef Q_OS_MAC
-	comicToolBar->setIconSize(QSize(17,17));
+	comicToolBar->setIconSize(QSize(16,16));
 #else
 	comicToolBar->setIconSize(QSize(18,18));
 #endif
@@ -328,8 +339,11 @@ void MainWindowViewer::createToolBars()
 	comicToolBar->addAction(saveImageAction);
 	comicToolBar->addAction(openPreviousComicAction);
 	comicToolBar->addAction(openNextComicAction);
-
+#ifdef Q_OS_MAC
+	comicToolBar->addWidget(new MacToolBarSeparator);
+#else
 	comicToolBar->addSeparator();
+#endif
 	comicToolBar->addAction(prevAction);
 	comicToolBar->addAction(nextAction);
 	comicToolBar->addAction(goToPage);
@@ -340,7 +354,11 @@ void MainWindowViewer::createToolBars()
 	alwaysOnTopAction->setEnabled(false);
 #endif
 
+#ifdef Q_OS_MAC
+	comicToolBar->addWidget(new MacToolBarSeparator(5));
+#else
 	comicToolBar->addSeparator();
+#endif
 
 	//QWidget * widget = new QWidget();
 
@@ -359,7 +377,7 @@ void MainWindowViewer::createToolBars()
 
 	//comicToolBar->addAction(adjustWidth);
 
-	comicToolBar->addAction(adjustHeight);
+	
 
 	QMenu * menu = new QMenu();
 	sliderAction = new YACReaderSliderAction(this);
@@ -379,19 +397,32 @@ void MainWindowViewer::createToolBars()
 	tb2->setPopupMode(QToolButton::MenuButtonPopup);
 	tb2->setDefaultAction(adjustWidth);
 	comicToolBar->addWidget(tb2);
+	comicToolBar->addAction(adjustHeight);
 	comicToolBar->addAction(adjustToFullSizeAction);
 	comicToolBar->addAction(leftRotationAction);
 	comicToolBar->addAction(rightRotationAction);
     comicToolBar->addAction(doublePageAction);
 
+#ifdef Q_OS_MAC
+	comicToolBar->addWidget(new MacToolBarSeparator);
+#else
 	comicToolBar->addSeparator();
+#endif
 	comicToolBar->addAction(showMagnifyingGlass);
 
+#ifdef Q_OS_MAC
+	comicToolBar->addWidget(new MacToolBarSeparator);
+#else
 	comicToolBar->addSeparator();
+#endif
 	comicToolBar->addAction(setBookmark);
 	comicToolBar->addAction(showBookmarks);
 	
+#ifdef Q_OS_MAC
+	comicToolBar->addWidget(new MacToolBarSeparator);
+#else
 	comicToolBar->addSeparator();
+#endif
 	comicToolBar->addAction(showDictionaryAction);
 	
 	comicToolBar->addWidget(new QToolBarStretch());
