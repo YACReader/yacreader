@@ -134,7 +134,8 @@ macx {
 
 TRANSLATIONS    = yacreaderlibrary_es.ts \ 
 									yacreaderlibrary_ru.ts \
-									yacreaderlibrary_pt.ts
+									yacreaderlibrary_pt.ts \
+									yacreaderlibrary_source.ts
 
 Release:DESTDIR = ../release
 Debug:DESTDIR = ../debug

@@ -565,12 +565,12 @@
         <translation>¿Desea descargar la nueva versión?</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="693"/>
+        <location filename="main_window_viewer.cpp" line="695"/>
         <source>Saving error log file....</source>
         <translation>Guardando el archivo de log...</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="693"/>
+        <location filename="main_window_viewer.cpp" line="695"/>
         <source>There was a problem saving YACReader error log file. Please, check if you have enough permissions in the YACReader root folder.</source>
         <translation>Hubo un problema al guardar el archivo de log de YACReader. Por favor, comprueba si tienes suficientes permisos en el directorio raíz de YACReader.</translation>
     </message>
@@ -735,6 +735,29 @@
         <location filename="viewer.cpp" line="647"/>
         <source>Loading...please wait!</source>
         <translation>Cargando...espere, por favor!</translation>
+    </message>
+</context>
+<context>
+    <name>YACReaderDeletingProgress</name>
+    <message>
+        <location filename="../custom_widgets/yacreader_deleting_progress.cpp" line="18"/>
+        <source>QLabel {padding:0px; margin:0px;}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_deleting_progress.cpp" line="20"/>
+        <source>Please wait, deleting in progress...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_deleting_progress.cpp" line="22"/>
+        <source>QLabel {color:#ABABAB; padding:0 0 0 0px; margin:0px; font-size:18px; font-weight:bold;}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_deleting_progress.cpp" line="35"/>
+        <source>cancel</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -924,6 +947,42 @@
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="30"/>
         <source>Use hardware acceleration (restart needed)</source>
         <translation>Utilizar aceleración por hardware (necesario reiniciar)</translation>
+    </message>
+</context>
+<context>
+    <name>YACReaderSideBar</name>
+    <message>
+        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="21"/>
+        <source>LIBRARIES</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="23"/>
+        <source>FOLDERS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="30"/>
+        <source>Search folders and comics</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>YACReaderSocialDialog</name>
+    <message>
+        <location filename="../custom_widgets/yacreader_social_dialog.cpp" line="50"/>
+        <source>send to:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_social_dialog.cpp" line="62"/>
+        <source>Follow YACReader!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/yacreader_social_dialog.cpp" line="129"/>
+        <source>I am reading %1 using YACReader.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
