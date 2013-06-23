@@ -134,76 +134,84 @@ void MainWindowViewer::createActions()
 {
 	openAction = new QAction(tr("&Open"),this);
 	openAction->setShortcut(tr("O"));
-	openAction->setIcon(QIcon(":/images/open.png"));
+	openAction->setIcon(QIcon(":/images/viewer_toolbar/open.png"));
 	openAction->setToolTip(tr("Open a comic"));
 	connect(openAction, SIGNAL(triggered()), this, SLOT(open()));
 
 	openFolderAction = new QAction(tr("Open Folder"),this);
 	openFolderAction->setShortcut(tr("Ctrl+O"));
-	openFolderAction->setIcon(QIcon(":/images/openFolder.png"));
+	openFolderAction->setIcon(QIcon(":/images/viewer_toolbar/openFolder.png"));
 	openFolderAction->setToolTip(tr("Open image folder"));
 	connect(openFolderAction, SIGNAL(triggered()), this, SLOT(openFolder()));
 
 	saveImageAction = new QAction(tr("Save"),this);
-	saveImageAction->setIcon(QIcon(":/images/save.png"));
+	saveImageAction->setIcon(QIcon(":/images/viewer_toolbar/save.png"));
 	saveImageAction->setToolTip(tr("Save current page"));
 	saveImageAction->setDisabled(true);
 	connect(saveImageAction,SIGNAL(triggered()),this,SLOT(saveImage()));
 
 	openPreviousComicAction = new QAction(tr("Previous Comic"),this);
-	openPreviousComicAction->setIcon(QIcon(":/images/previousComic.png"));
+	openPreviousComicAction->setIcon(QIcon(":/images/viewer_toolbar/openPrevious.png"));
 	openPreviousComicAction->setShortcut(Qt::CTRL + Qt::Key_Left);
 	openPreviousComicAction->setToolTip(tr("Open previous comic"));
 	openPreviousComicAction->setDisabled(true);
 	connect(openPreviousComicAction,SIGNAL(triggered()),this,SLOT(openPreviousComic()));
 
 	openNextComicAction = new QAction(tr("Next Comic"),this);
-	openNextComicAction->setIcon(QIcon(":/images/nextComic.png"));
+	openNextComicAction->setIcon(QIcon(":/images/viewer_toolbar/openNext.png"));
 	openNextComicAction->setShortcut(Qt::CTRL + Qt::Key_Right);
 	openNextComicAction->setToolTip(tr("Open next comic"));
 	openNextComicAction->setDisabled(true);
 	connect(openNextComicAction,SIGNAL(triggered()),this,SLOT(openNextComic()));
 
 	prevAction = new QAction(tr("&Previous"),this);
-	prevAction->setIcon(QIcon(":/images/prev.png"));
+	prevAction->setIcon(QIcon(":/images/viewer_toolbar/previous.png"));
 	prevAction->setShortcut(Qt::Key_Left);
 	prevAction->setToolTip(tr("Go to previous page"));
 	prevAction->setDisabled(true);
 	connect(prevAction, SIGNAL(triggered()),viewer,SLOT(prev()));
 
 	nextAction = new QAction(tr("&Next"),this);
-	nextAction->setIcon(QIcon(":/images/next.png"));
+	nextAction->setIcon(QIcon(":/images/viewer_toolbar/next.png"));
 	nextAction->setShortcut(Qt::Key_Right);
 	nextAction->setToolTip(tr("Go to next page"));
 	nextAction->setDisabled(true);
 	connect(nextAction, SIGNAL(triggered()),viewer,SLOT(next()));
 
+	adjustHeight = new QAction(tr("Fit Width"),this);
+	adjustHeight->setIcon(QIcon(":/images/viewer_toolbar/toHeight.png"));
+	//adjustWidth->setCheckable(true);
+	adjustHeight->setDisabled(true);
+	adjustHeight->setChecked(Configuration::getConfiguration().getAdjustToWidth());
+	adjustHeight->setToolTip(tr("Fit image to ..."));
+	//adjustWidth->setIcon(QIcon(":/images/fitWidth.png"));
+	connect(adjustHeight, SIGNAL(triggered()),this,SLOT(fitToHeight()));
+
 	adjustWidth = new QAction(tr("Fit Width"),this);
-	adjustWidth->setShortcut(tr("A"));
-	adjustWidth->setIcon(QIcon(":/images/fit.png"));
-	adjustWidth->setCheckable(true);
+	adjustWidth->setIcon(QIcon(":/images/viewer_toolbar/toWidth.png"));
+	//adjustWidth->setCheckable(true);
 	adjustWidth->setDisabled(true);
 	adjustWidth->setChecked(Configuration::getConfiguration().getAdjustToWidth());
 	adjustWidth->setToolTip(tr("Fit image to ..."));
 	//adjustWidth->setIcon(QIcon(":/images/fitWidth.png"));
-	connect(adjustWidth, SIGNAL(triggered()),this,SLOT(changeFit()));
+	connect(adjustWidth, SIGNAL(triggered()),this,SLOT(fitToWidth()));
 
 	leftRotationAction = new QAction(tr("Rotate image to the left"),this);
 	leftRotationAction->setShortcut(tr("L"));
-	leftRotationAction->setIcon(QIcon(":/images/rotateL.png"));
+	leftRotationAction->setIcon(QIcon(":/images/viewer_toolbar/rotateL.png"));
 	leftRotationAction->setDisabled(true);
 	connect(leftRotationAction, SIGNAL(triggered()),viewer,SLOT(rotateLeft()));
 
 	rightRotationAction = new QAction(tr("Rotate image to the right"),this);
 	rightRotationAction->setShortcut(tr("R"));
-	rightRotationAction->setIcon(QIcon(":/images/rotateR.png"));
+	rightRotationAction->setIcon(QIcon(":/images/viewer_toolbar/rotateR.png"));
 	rightRotationAction->setDisabled(true);
 	connect(rightRotationAction, SIGNAL(triggered()),viewer,SLOT(rotateRight()));
 
 	doublePageAction = new QAction(tr("Double page mode"),this);
 	doublePageAction->setToolTip(tr("Switch to double page mode"));
 	doublePageAction->setShortcut(tr("D"));
-	doublePageAction->setIcon(QIcon(":/images/doublePage.png"));
+	doublePageAction->setIcon(QIcon(":/images/viewer_toolbar/doublePage.png"));
 	doublePageAction->setDisabled(true);
 	doublePageAction->setCheckable(true);
 	doublePageAction->setChecked(Configuration::getConfiguration().getDoublePage());
@@ -211,7 +219,7 @@ void MainWindowViewer::createActions()
 
 	goToPage = new QAction(tr("Go To"),this);
 	goToPage->setShortcut(tr("G"));
-	goToPage->setIcon(QIcon(":/images/goto.png"));
+	goToPage->setIcon(QIcon(":/images/viewer_toolbar/goto.png"));
 	goToPage->setDisabled(true);
 	goToPage->setToolTip(tr("Go to page ..."));
 	connect(goToPage, SIGNAL(triggered()),viewer,SLOT(showGoToDialog()));
@@ -219,20 +227,20 @@ void MainWindowViewer::createActions()
 	optionsAction = new QAction(tr("Options"),this);
 	optionsAction->setShortcut(tr("C"));
 	optionsAction->setToolTip(tr("YACReader options"));
-	optionsAction->setIcon(QIcon(":/images/options.png"));
+	optionsAction->setIcon(QIcon(":/images/viewer_toolbar/options.png"));
 
 	connect(optionsAction, SIGNAL(triggered()),optionsDialog,SLOT(show()));
 
 	helpAboutAction = new QAction(tr("Help"),this);
 	helpAboutAction->setToolTip(tr("Help, About YACReader"));
 	helpAboutAction->setShortcut(Qt::Key_F1);
-	helpAboutAction->setIcon(QIcon(":/images/help.png"));
+	helpAboutAction->setIcon(QIcon(":/images/viewer_toolbar/help.png"));
 	connect(helpAboutAction, SIGNAL(triggered()),had,SLOT(show()));
 
 	showMagnifyingGlass = new QAction(tr("Magnifying glass"),this);
 	showMagnifyingGlass->setToolTip(tr("Switch Magnifying glass"));
 	showMagnifyingGlass->setShortcut(tr("Z"));
-	showMagnifyingGlass->setIcon(QIcon(":/images/zoom.png"));
+	showMagnifyingGlass->setIcon(QIcon(":/images/viewer_toolbar/magnifyingGlass.png"));
 	showMagnifyingGlass->setDisabled(true);
 	showMagnifyingGlass->setCheckable(true);
 	connect(showMagnifyingGlass, SIGNAL(triggered()),viewer,SLOT(magnifyingGlassSwitch()));
@@ -240,7 +248,7 @@ void MainWindowViewer::createActions()
 	setBookmark = new QAction(tr("Set bookmark"),this);
 	setBookmark->setToolTip(tr("Set a bookmark on the current page"));
 	setBookmark->setShortcut(Qt::CTRL+Qt::Key_M);
-	setBookmark->setIcon(QIcon(":/images/setBookmark.png"));
+	setBookmark->setIcon(QIcon(":/images/viewer_toolbar/bookmark.png"));
 	setBookmark->setDisabled(true);
 	setBookmark->setCheckable(true);
 	connect(setBookmark,SIGNAL(triggered (bool)),viewer,SLOT(setBookmark(bool)));
@@ -250,28 +258,28 @@ void MainWindowViewer::createActions()
 	showBookmarks = new QAction(tr("Show bookmarks"),this);
 	showBookmarks->setToolTip(tr("Show the bookmarks of the current comic"));
 	showBookmarks->setShortcut(tr("M"));
-	showBookmarks->setIcon(QIcon(":/images/bookmark.png"));
+	showBookmarks->setIcon(QIcon(":/images/viewer_toolbar/showBookmarks.png"));
 	showBookmarks->setDisabled(true);
 	connect(showBookmarks, SIGNAL(triggered()),viewer->getBookmarksDialog(),SLOT(show()));
 
 	showShorcutsAction = new QAction(tr("Show keyboard shortcuts"), this );
-	showShorcutsAction->setIcon(QIcon(":/images/shortcuts.png"));
+	showShorcutsAction->setIcon(QIcon(":/images/viewer_toolbar/shortcuts.png"));
 	connect(showShorcutsAction, SIGNAL(triggered()),shortcutsDialog,SLOT(show()));
 
 	showInfo = new QAction(tr("Show Info"),this);
 	showInfo->setShortcut(tr("I"));
-	showInfo->setIcon(QIcon(":/images/properties.png"));
+	showInfo->setIcon(QIcon(":/images/viewer_toolbar/info.png"));
 	showInfo->setDisabled(true);
 	connect(showInfo, SIGNAL(triggered()),viewer,SLOT(informationSwitch()));
 
 	closeAction = new QAction(tr("Close"),this);
 	closeAction->setShortcut(Qt::Key_Escape);
-	closeAction->setIcon(QIcon(":/images/deleteLibrary.png"));
+	closeAction->setIcon(QIcon(":/images/viewer_toolbar/close.png"));
 	connect(closeAction,SIGNAL(triggered()),this,SLOT(close()));
 
 	showDictionaryAction = new QAction(tr("Show Dictionary"),this);
 	showDictionaryAction->setShortcut(Qt::Key_T);
-	showDictionaryAction->setIcon(QIcon(":/images/dictionary.png"));
+	showDictionaryAction->setIcon(QIcon(":/images/viewer_toolbar/translator.png"));
 	showDictionaryAction->setCheckable(true);
 	showDictionaryAction->setDisabled(true);
 	connect(showDictionaryAction,SIGNAL(triggered()),viewer,SLOT(translatorSwitch()));
@@ -286,16 +294,26 @@ void MainWindowViewer::createActions()
 
 	adjustToFullSizeAction = new QAction(tr("Show full size"),this);
 	adjustToFullSizeAction->setShortcut(Qt::Key_W);
-	adjustToFullSizeAction->setIcon(QIcon(":/images/adjustToFullSize.png"));
+	adjustToFullSizeAction->setIcon(QIcon(":/images/viewer_toolbar/full.png"));
 	adjustToFullSizeAction->setCheckable(true);
 	adjustToFullSizeAction->setDisabled(true);
 	adjustToFullSizeAction->setChecked(Configuration::getConfiguration().getAdjustToFullSize());
 	connect(adjustToFullSizeAction,SIGNAL(triggered()),this,SLOT(adjustToFullSizeSwitch()));
+
+	showFlowAction = new QAction(tr("Show go to flow"),this);
+	showFlowAction->setShortcut(Qt::Key_S);
+	showFlowAction->setIcon(QIcon(":/images/viewer_toolbar/flow.png"));
+	showFlowAction->setDisabled(true);
+	connect(showFlowAction,SIGNAL(triggered()),viewer,SLOT(goToFlowSwitch()));
 }
 
 void MainWindowViewer::createToolBars()
 {
 	comicToolBar = addToolBar(tr("&File"));
+
+	comicToolBar->setStyleSheet("QToolBar{border:none;}");
+
+	comicToolBar->setIconSize(QSize(18,18));
 
 	QToolButton * tb = new QToolButton();
 	tb->addAction(openAction);
@@ -337,6 +355,9 @@ void MainWindowViewer::createToolBars()
 	//comicToolBar->addWidget(widget);
 
 	//comicToolBar->addAction(adjustWidth);
+
+	comicToolBar->addAction(adjustHeight);
+
 	QMenu * menu = new QMenu();
 	sliderAction = new YACReaderSliderAction(this);
 	menu->setAutoFillBackground(false);
@@ -372,10 +393,11 @@ void MainWindowViewer::createToolBars()
 	
 	comicToolBar->addWidget(new QToolBarStretch());
 
+	comicToolBar->addAction(showFlowAction);
 	comicToolBar->addAction(showShorcutsAction);
 	comicToolBar->addAction(optionsAction);
 	comicToolBar->addAction(helpAboutAction);
-	comicToolBar->addAction(closeAction);
+	//comicToolBar->addAction(closeAction);
 
 	comicToolBar->setMovable(false);
 
@@ -495,6 +517,7 @@ void MainWindowViewer::enableActions()
 	saveImageAction->setDisabled(false);
 	prevAction->setDisabled(false);
 	nextAction->setDisabled(false);
+	adjustHeight->setDisabled(false);
 	adjustWidth->setDisabled(false);
 	goToPage->setDisabled(false);
 	alwaysOnTopAction->setDisabled(false);
@@ -507,12 +530,14 @@ void MainWindowViewer::enableActions()
 	showBookmarks->setDisabled(false);
 	showInfo->setDisabled(false); //TODO enable goTo and showInfo (or update) when numPages emited
 	showDictionaryAction->setDisabled(false);
+	showFlowAction->setDisabled(false);
 }
 void MainWindowViewer::disableActions()
 {
     saveImageAction->setDisabled(true);
     prevAction->setDisabled(true);
     nextAction->setDisabled(true);
+	adjustHeight->setDisabled(true);
     adjustWidth->setDisabled(true);
     goToPage->setDisabled(true);
 	alwaysOnTopAction->setDisabled(true);
@@ -527,6 +552,7 @@ void MainWindowViewer::disableActions()
     openPreviousComicAction->setDisabled(true);
     openNextComicAction->setDisabled(true);
 	showDictionaryAction->setDisabled(true);
+	showFlowAction->setDisabled(true);
 }
 
 void MainWindowViewer::keyPressEvent(QKeyEvent *event)
@@ -544,6 +570,9 @@ void MainWindowViewer::keyPressEvent(QKeyEvent *event)
 		break;
 	case Qt::Key_O:   
 		open();
+		break;
+	case Qt::Key_A:   
+		changeFit();
 		break;
 	default:
 		QWidget::keyPressEvent(event);
@@ -613,7 +642,24 @@ void MainWindowViewer::showToolBars()
 	this->comicToolBar->show();
 	toolbars = true;
 }
-
+void MainWindowViewer::fitToWidth()
+{
+	Configuration & conf = Configuration::getConfiguration();
+	if(!conf.getAdjustToWidth())
+	{
+		conf.setAdjustToWidth(true);
+		viewer->updatePage();
+	}
+}
+void MainWindowViewer::fitToHeight()
+{
+	Configuration & conf = Configuration::getConfiguration();
+	if(conf.getAdjustToWidth())
+	{
+		conf.setAdjustToWidth(false);
+		viewer->updatePage();
+	}
+}
 void MainWindowViewer::changeFit()
 {
 	Configuration & conf = Configuration::getConfiguration();
