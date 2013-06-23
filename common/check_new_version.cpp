@@ -10,7 +10,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-#define PREVIOUS_VERSION "5.0.0"
+#define PREVIOUS_VERSION "6.0.0"
 
 HttpVersionChecker::HttpVersionChecker()
         :QThread()
@@ -43,7 +43,7 @@ void HttpVersionChecker::run()
     connect(&tT, SIGNAL(timeout()), &q, SLOT(quit()));
     connect(&manager, SIGNAL(finished(QNetworkReply*)),&q, SLOT(quit()));
     QNetworkReply *reply = manager.get(QNetworkRequest(
-                   QUrl("http://code.google.com/p/yacreader/downloads/list")));
+                   QUrl("https://bitbucket.org/luisangelsm/yacreader/wiki/Home")));
     
     tT.start(5000); // 5s timeout
     q.exec();
