@@ -136,6 +136,8 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		const QPixmap * pixmap();
 		//Comic * getComic(){return comic;}
 		const BookmarksDialog * getBookmarksDialog(){return bd;}
+		//returns the current index starting in 1 [1,nPages]
+		unsigned int getIndex();
 	signals:
 		void backgroundChanges();
 		void pageAvailable(bool);

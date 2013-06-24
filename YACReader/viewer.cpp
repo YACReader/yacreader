@@ -780,3 +780,8 @@ void Viewer::showIsLastMessage()
 	notificationsLabel->setText(tr("Last page!"));
 	notificationsLabel->flash();
 }
+
+unsigned int Viewer::getIndex()
+{
+	return render->getIndex()+1;
+}
