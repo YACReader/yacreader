@@ -10,12 +10,12 @@
 #include "bookmarks.h"
 
 BookmarksDialog::BookmarksDialog(QWidget * parent)
-    :QDialog(parent,Qt::FramelessWindowHint)
+    :QDialog(parent)
 {
     setModal(true);
 
-	animation = new QPropertyAnimation(this,"windowOpacity");
-	animation->setDuration(150);
+	//animation = new QPropertyAnimation(this,"windowOpacity");
+	//animation->setDuration(150);
 
     QHBoxLayout * layout = new QHBoxLayout();
 
@@ -25,6 +25,13 @@ BookmarksDialog::BookmarksDialog(QWidget * parent)
 	pages.push_back(new QLabel(tr("Lastest Page")));
 	for(int i=0;i<3;i++)
 		pages.push_back(new QLabel("-"));
+
+	QString labelsStyle = "QLabel {color:white;}";
+
+	foreach(QLabel * label,pages)
+	{
+		label->setStyleSheet(labelsStyle);
+	}
 	
 	int heightDesktopResolution = QApplication::desktop()->screenGeometry().height();
 	int height,width;
@@ -64,20 +71,26 @@ BookmarksDialog::BookmarksDialog(QWidget * parent)
     QHBoxLayout * buttons = new QHBoxLayout();
 
     cancel = new QPushButton(tr("Close"));
-    cancel->setFlat(true);
+    //cancel->setFlat(true);
     connect(cancel,SIGNAL(clicked()),this,SLOT(hide()));
     buttons->addStretch();
     buttons->addWidget(cancel);
 
+	cancel->setStyleSheet("QPushButton {color:white; border:1px solid #BBBBBB; padding:3px 5px 3px 5px;}");
+
     QVBoxLayout * l = new QVBoxLayout();
 
-    l->addWidget(new QLabel(tr("Click on any image to go to the bookmark")),0,Qt::AlignCenter);
+	l->addWidget(new QLabel("<font color=\"#FFFFFF\">"+tr("Click on any image to go to the bookmark")+"</font>"),0,Qt::AlignCenter);
     l->addLayout(layout);
-    l->addLayout(buttons);
+    //l->addLayout(buttons);
 
-	this->setPalette(QPalette(QColor(25,25,25)));
-	//this->setAutoFillBackground(true);
-    setLayout(l);
+	QPalette Pal(palette());
+	// set black background
+	Pal.setColor(QPalette::Background, QColor("#454545"));
+	this->setAutoFillBackground(true);
+	this->setPalette(Pal);
+
+	setLayout(l);
 }
 
 void BookmarksDialog::setBookmarks(const Bookmarks & bm)
@@ -163,7 +176,7 @@ void BookmarksDialog::keyPressEvent(QKeyEvent * event)
 	if(event->key() == Qt::Key_M)
 		hide();
 }
-
+/*
 void BookmarksDialog::show()
 {
 		QDialog::show();
@@ -179,4 +192,4 @@ void BookmarksDialog::hide()
 		animation->setStartValue(1);
 		animation->setEndValue(0);
 		animation->start();
-}
+}*/
