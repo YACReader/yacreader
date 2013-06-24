@@ -1,5 +1,6 @@
 #include "magnifying_glass.h"
 #include "viewer.h"
+#include "configuration.h"
 
 
 
@@ -80,7 +81,7 @@ void MagnifyingGlass::updateImage(int x, int y)
 		if(outImage)
 		{
 			QImage img(zoomWidth,zoomHeight,QImage::Format_RGB32);
-			img.fill(0);
+			img.fill(Configuration::getConfiguration().getBackgroundColor());
 			if(zw>0&&zh>0)
 			{
 				QPainter painter(&img);
@@ -129,7 +130,7 @@ void MagnifyingGlass::updateImage(int x, int y)
 		if(outImage)
 		{
 			QImage img(zoomWidth,zoomHeight,QImage::Format_RGB32);
-			img.fill(0);
+			img.fill(Configuration::getConfiguration().getBackgroundColor());
 			if(zw>0&&zh>0)
 			{
 				QPainter painter(&img);
