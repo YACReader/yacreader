@@ -564,10 +564,11 @@ void MainWindowViewer::openFolderFromPath(QString pathDir)
 void MainWindowViewer::saveImage()
 {
 	QFileDialog saveDialog;
-	QString pathFile = saveDialog.getSaveFileName(this,tr("Save current page"),currentDirectoryImgDest,tr("Image files (*.jpg)"));
+	QString pathFile = saveDialog.getSaveFileName(this,tr("Save current page"),currentDirectoryImgDest+"/"+tr("page_%1.jpg").arg(viewer->getIndex()),tr("Image files (*.jpg)"));
 	if (!pathFile.isEmpty())
 	{
-		currentDirectoryImgDest = pathFile;
+		QFileInfo fi(pathFile);
+		currentDirectoryImgDest = fi.absolutePath();
 		const QPixmap * p = viewer->pixmap();
 		if(p!=NULL)
 			p->save(pathFile);
