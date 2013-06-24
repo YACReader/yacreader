@@ -20,11 +20,33 @@
 class MacToolBarSeparator : public QWidget
 {
 public:
-	MacToolBarSeparator(int width = 10, QWidget * parent =0)
+    MacToolBarSeparator(QWidget * parent =0)
 		:QWidget(parent)
 	{
-		setFixedWidth(width);
+        setFixedWidth(2);
 	}
+
+    void paintEvent(QPaintEvent *event)
+    {
+        Q_UNUSED(event);
+        QPainter painter(this);
+
+        QLinearGradient lG(0,0,0,height());
+
+        lG.setColorAt(0,QColor(128,128,128,0));
+        lG.setColorAt(0.5,QColor(128,128,128,255));
+        lG.setColorAt(1,QColor(128,128,128,0));
+
+        painter.fillRect(0,0,1,height(),lG);
+
+        QLinearGradient lG2(1,0,1,height());
+
+        lG2.setColorAt(0,QColor(220,220,220,0));
+        lG2.setColorAt(0.5,QColor(220,220,220,255));
+        lG2.setColorAt(1,QColor(220,220,220,0));
+
+        painter.fillRect(1,0,1,height(),lG2);
+    }
 };
 #endif
 
@@ -195,7 +217,7 @@ void MainWindowViewer::createActions()
 	//adjustWidth->setCheckable(true);
 	adjustHeight->setDisabled(true);
 	adjustHeight->setChecked(Configuration::getConfiguration().getAdjustToWidth());
-	adjustHeight->setToolTip(tr("Fit image to ..."));
+    adjustHeight->setToolTip(tr("Fit image to height"));
 	//adjustWidth->setIcon(QIcon(":/images/fitWidth.png"));
 	connect(adjustHeight, SIGNAL(triggered()),this,SLOT(fitToHeight()));
 
@@ -204,7 +226,7 @@ void MainWindowViewer::createActions()
 	//adjustWidth->setCheckable(true);
 	adjustWidth->setDisabled(true);
 	adjustWidth->setChecked(Configuration::getConfiguration().getAdjustToWidth());
-	adjustWidth->setToolTip(tr("Fit image to ..."));
+    adjustWidth->setToolTip(tr("Fit image to width"));
 	//adjustWidth->setIcon(QIcon(":/images/fitWidth.png"));
 	connect(adjustWidth, SIGNAL(triggered()),this,SLOT(fitToWidth()));
 
@@ -357,7 +379,7 @@ void MainWindowViewer::createToolBars()
 //#endif
 
 #ifdef Q_OS_MAC
-	comicToolBar->addWidget(new MacToolBarSeparator(5));
+    comicToolBar->addWidget(new MacToolBarSeparator);
 #else
 	comicToolBar->addSeparator();
 #endif
@@ -426,8 +448,12 @@ void MainWindowViewer::createToolBars()
 	comicToolBar->addSeparator();
 #endif
 	comicToolBar->addAction(showDictionaryAction);
-	
+
+#ifdef Q_OS_MAC
+    comicToolBar->addWidget(new MacToolBarSeparator);
+#else
 	comicToolBar->addWidget(new QToolBarStretch());
+#endif
 
 	comicToolBar->addAction(showFlowAction);
 	comicToolBar->addAction(showShorcutsAction);
