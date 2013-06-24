@@ -28,15 +28,15 @@
 
                 bool eventFilter(QObject *obj, QEvent *event);
 				void keyPressEvent(QKeyEvent * event);
-				QPropertyAnimation * animation;
+				//QPropertyAnimation * animation;
 
             public:
                 BookmarksDialog(QWidget * parent = 0);
 			
 			public slots:
                 void setBookmarks(const Bookmarks & bookmarks);
-				void show();
-				void hide();
+				//void show();
+				//void hide();
 			
 			signals:
                 void goToPage(unsigned int page);
