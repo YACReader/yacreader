@@ -124,10 +124,10 @@ void MainWindowViewer::setupUI()
 	viewer->setFocusPolicy(Qt::StrongFocus);
 	
 
-	if(Configuration::getConfiguration().getAlwaysOnTop())
-	{
-		setWindowFlags(this->windowFlags() | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-	}
+	//if(Configuration::getConfiguration().getAlwaysOnTop())
+	//{
+	//	setWindowFlags(this->windowFlags() | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
+	//}
 
 	if(fullscreen)
 		toFullScreen();
@@ -348,12 +348,13 @@ void MainWindowViewer::createToolBars()
 	comicToolBar->addAction(prevAction);
 	comicToolBar->addAction(nextAction);
 	comicToolBar->addAction(goToPage);
-#ifndef Q_OS_MAC
-	comicToolBar->addSeparator();
-	comicToolBar->addAction(alwaysOnTopAction);
-#else
-	alwaysOnTopAction->setEnabled(false);
-#endif
+
+//#ifndef Q_OS_MAC
+//	comicToolBar->addSeparator();
+//	comicToolBar->addAction(alwaysOnTopAction);
+//#else
+//	alwaysOnTopAction->setEnabled(false);
+//#endif
 
 #ifdef Q_OS_MAC
 	comicToolBar->addWidget(new MacToolBarSeparator(5));
@@ -555,7 +556,7 @@ void MainWindowViewer::enableActions()
 	adjustHeight->setDisabled(false);
 	adjustWidth->setDisabled(false);
 	goToPage->setDisabled(false);
-	alwaysOnTopAction->setDisabled(false);
+	//alwaysOnTopAction->setDisabled(false);
 	leftRotationAction->setDisabled(false);
 	rightRotationAction->setDisabled(false);
 	showMagnifyingGlass->setDisabled(false);
@@ -575,7 +576,7 @@ void MainWindowViewer::disableActions()
 	adjustHeight->setDisabled(true);
     adjustWidth->setDisabled(true);
     goToPage->setDisabled(true);
-	alwaysOnTopAction->setDisabled(true);
+	//alwaysOnTopAction->setDisabled(true);
     leftRotationAction->setDisabled(true);
     rightRotationAction->setDisabled(true);
     showMagnifyingGlass->setDisabled(true);
