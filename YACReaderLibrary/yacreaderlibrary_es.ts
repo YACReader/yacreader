@@ -1164,7 +1164,7 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="db/tablemodel.cpp" line="89"/>
         <source>yes</source>
-        <translation type="unfinished">sí</translation>
+        <translation>sí</translation>
     </message>
     <message>
         <location filename="db/tablemodel.cpp" line="89"/>
