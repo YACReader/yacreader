@@ -15,11 +15,11 @@ YACReaderDeletingProgress::YACReaderDeletingProgress(QWidget *parent) :
 	QLabel * iconLabel = new QLabel();
     QPixmap icon(":/images/deleting_progress/icon.png");
     iconLabel->setPixmap(icon);
-	iconLabel->setStyleSheet(tr("QLabel {padding:0px; margin:0px;}"));
+	iconLabel->setStyleSheet("QLabel {padding:0px; margin:0px;}");
 
     textMessage = new QLabel(tr("Please wait, deleting in progress..."));
 
-	textMessage->setStyleSheet(tr("QLabel {color:#ABABAB; padding:0 0 0 0px; margin:0px; font-size:18px; font-weight:bold;}"));
+	textMessage->setStyleSheet("QLabel {color:#ABABAB; padding:0 0 0 0px; margin:0px; font-size:18px; font-weight:bold;}");
 
     QProgressBar * progressBar = new QProgressBar();
 
