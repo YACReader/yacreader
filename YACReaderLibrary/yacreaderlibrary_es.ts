@@ -492,6 +492,11 @@
         <translation>Desempaquetar un catálogo</translation>
     </message>
     <message>
+        <location filename="library_window.cpp" line="347"/>
+        <source>Update library</source>
+        <translation>Actualizar biblioteca</translation>
+    </message>
+    <message>
         <location filename="library_window.cpp" line="348"/>
         <source>Update current library</source>
         <translation>Actualizar la biblioteca seleccionada</translation>
@@ -499,7 +504,7 @@
     <message>
         <location filename="library_window.cpp" line="352"/>
         <source>Rename library</source>
-        <translation type="unfinished"></translation>
+        <translation>Renombrar biblioteca</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="353"/>
@@ -663,7 +668,7 @@
     <message>
         <location filename="library_window.cpp" line="469"/>
         <source>Delete selected comics</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar los cómics seleccionados</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="473"/>
@@ -673,37 +678,37 @@
     <message>
         <location filename="library_window.cpp" line="863"/>
         <source>Old library</source>
-        <translation type="unfinished"></translation>
+        <translation>Biblioteca antigua</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="863"/>
         <source>has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
-        <translation type="unfinished"></translation>
+        <translation>ha sido creada con una versión anterior de YACReaderLibrary. Debe ser creada de nuevo. ¿Quieres volver a crearla ahora?</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="1511"/>
         <source>Error creating the library</source>
-        <translation type="unfinished"></translation>
+        <translation>Errar creando la biblioteca</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="1516"/>
         <source>Error updating the library</source>
-        <translation type="unfinished"></translation>
+        <translation>Error actualizando la biblioteca</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="1521"/>
         <source>Error opening the library</source>
-        <translation type="unfinished"></translation>
+        <translation>Error abriendo la biblioteca</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="1538"/>
         <source>Delete comics</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar cómics</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="1538"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Todos los cómics seleccionados serán borrados de tu disco. ¿Estás seguro?</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="134"/>
@@ -713,7 +718,7 @@
     <message>
         <location filename="library_window.cpp" line="357"/>
         <source>Remove library</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar biblioteca</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="778"/>
@@ -937,7 +942,7 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="properties_dialog.cpp" line="81"/>
         <source>Cover page</source>
-        <translation type="unfinished"></translation>
+        <translation>Página de portada</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="142"/>
@@ -1053,12 +1058,12 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="properties_dialog.cpp" line="395"/>
         <source>Not found</source>
-        <translation type="unfinished">No encontrado</translation>
+        <translation>No encontrado</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="395"/>
         <source>Comic not found. You should update your library.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cómic no encontrado. Deberias actualizar tu biblioteca.</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="470"/>
@@ -1110,7 +1115,7 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="server_config_dialog.cpp" line="60"/>
         <source>set port</source>
-        <translation type="unfinished"></translation>
+        <translation>fijar puerto</translation>
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="67"/>
@@ -1159,12 +1164,12 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="db/tablemodel.cpp" line="89"/>
         <source>yes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">sí</translation>
     </message>
     <message>
         <location filename="db/tablemodel.cpp" line="89"/>
         <source>no</source>
-        <translation type="unfinished"></translation>
+        <translation>no</translation>
     </message>
     <message>
         <location filename="db/tablemodel.cpp" line="115"/>
@@ -1189,7 +1194,7 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="db/tablemodel.cpp" line="123"/>
         <source>Read</source>
-        <translation type="unfinished"></translation>
+        <translation>Leído</translation>
     </message>
 </context>
 <context>
@@ -1248,24 +1253,14 @@ Files won&apos;t be erased from disk.</source>
 <context>
     <name>YACReaderDeletingProgress</name>
     <message>
-        <location filename="../custom_widgets/yacreader_deleting_progress.cpp" line="18"/>
-        <source>QLabel {padding:0px; margin:0px;}</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../custom_widgets/yacreader_deleting_progress.cpp" line="20"/>
         <source>Please wait, deleting in progress...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../custom_widgets/yacreader_deleting_progress.cpp" line="22"/>
-        <source>QLabel {color:#ABABAB; padding:0 0 0 0px; margin:0px; font-size:18px; font-weight:bold;}</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrando, por favor espera...</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_deleting_progress.cpp" line="35"/>
         <source>cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>cancelar</translation>
     </message>
 </context>
 <context>
@@ -1462,17 +1457,17 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="../custom_widgets/yacreader_sidebar.cpp" line="21"/>
         <source>LIBRARIES</source>
-        <translation type="unfinished"></translation>
+        <translation>BIBLIOTECAS</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_sidebar.cpp" line="23"/>
         <source>FOLDERS</source>
-        <translation type="unfinished"></translation>
+        <translation>CARPETAS</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_sidebar.cpp" line="30"/>
         <source>Search folders and comics</source>
-        <translation type="unfinished">Buscar carpetas y cómics</translation>
+        <translation>Buscar carpetas y cómics</translation>
     </message>
 </context>
 <context>
@@ -1480,17 +1475,17 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="../custom_widgets/yacreader_social_dialog.cpp" line="50"/>
         <source>send to:</source>
-        <translation type="unfinished"></translation>
+        <translation>envíar a:</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_social_dialog.cpp" line="62"/>
         <source>Follow YACReader!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡Sigue a YACReader!</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_social_dialog.cpp" line="129"/>
         <source>I am reading %1 using YACReader.</source>
-        <translation type="unfinished"></translation>
+        <translation>Estoy leyendo %1 usando YACReader.</translation>
     </message>
 </context>
 </TS>

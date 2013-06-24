@@ -617,6 +617,11 @@
         <translation>Biblioteca</translation>
     </message>
     <message>
+        <location filename="library_window.cpp" line="347"/>
+        <source>Update library</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="library_window.cpp" line="357"/>
         <source>Remove library</source>
         <translation type="unfinished"></translation>
@@ -1135,18 +1140,8 @@ Os arquivos não serão apagados do disco.</translation>
 <context>
     <name>YACReaderDeletingProgress</name>
     <message>
-        <location filename="../custom_widgets/yacreader_deleting_progress.cpp" line="18"/>
-        <source>QLabel {padding:0px; margin:0px;}</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../custom_widgets/yacreader_deleting_progress.cpp" line="20"/>
         <source>Please wait, deleting in progress...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../custom_widgets/yacreader_deleting_progress.cpp" line="22"/>
-        <source>QLabel {color:#ABABAB; padding:0 0 0 0px; margin:0px; font-size:18px; font-weight:bold;}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
