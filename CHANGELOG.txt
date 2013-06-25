@@ -1,12 +1,15 @@
 6.5
-Nueva interfaz principal de YACReaderLibrary (YACReader recibirá una actualización de interfaz pronto)
+Nueva interfaz principal de YACReaderLibrary y YACReader
 Corregido bug que causaba que el servidor no se activase en el primer arranque en MacOSX
 Corregido bug que causaba un fallo al cerrar YACReaderLibrary cada vez que se usaba el servidor
 Nuevo diseño para el diálogo de propiedades de los cómics.
 Añadida navegación alante y atrás de las carpetas visitadas.
 La edición del nombre de una biblioteca no fuerza ahora que se recargue la biblioteca
+Corregido el color de fondo en la lupa
+Nuevo botón para ajustar a lo alto
+Eliminada la opción always on top
 
-6.4
+6.4 (No pública)
 Normalizado el renderizado de páginas en modo doble página
 Añadida la función de borrar cómics desde el disco duro
 Nuevos iconos de la barra de herramientas de cómics
