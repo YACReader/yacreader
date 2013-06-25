@@ -448,6 +448,8 @@ void MainWindowViewer::createToolBars()
 	comicToolBar->addSeparator();
 #endif
 	comicToolBar->addAction(showDictionaryAction);
+	comicToolBar->addAction(showFlowAction);
+	comicToolBar->addAction(showInfo);
 
 #ifdef Q_OS_MAC
     comicToolBar->addWidget(new MacToolBarSeparator);
@@ -455,7 +457,7 @@ void MainWindowViewer::createToolBars()
 	comicToolBar->addWidget(new QToolBarStretch());
 #endif
 
-	comicToolBar->addAction(showFlowAction);
+	
 	comicToolBar->addAction(showShorcutsAction);
 	comicToolBar->addAction(optionsAction);
 	comicToolBar->addAction(helpAboutAction);
@@ -475,6 +477,7 @@ void MainWindowViewer::createToolBars()
 	viewer->addAction(prevAction);
 	viewer->addAction(nextAction);
 	viewer->addAction(goToPage);
+	viewer->addAction(adjustHeight);
 	viewer->addAction(adjustWidth);
 	viewer->addAction(adjustToFullSizeAction);
 	viewer->addAction(leftRotationAction);
@@ -483,7 +486,11 @@ void MainWindowViewer::createToolBars()
 	separator = new QAction("",this);
 	separator->setSeparator(true);
 	viewer->addAction(separator);
-	
+	viewer->addAction(showMagnifyingGlass);
+	separator = new QAction("",this);
+	separator->setSeparator(true);
+	viewer->addAction(separator);
+
 	viewer->addAction(setBookmark);
 	viewer->addAction(showBookmarks);
 	separator = new QAction("",this);
@@ -491,15 +498,15 @@ void MainWindowViewer::createToolBars()
 	viewer->addAction(separator);
 
 	viewer->addAction(showDictionaryAction);
+	viewer->addAction(showFlowAction);
+	viewer->addAction(showInfo);
 	separator = new QAction("",this);
 	separator->setSeparator(true);
 	viewer->addAction(separator);
 
-	viewer->addAction(showMagnifyingGlass);
+	viewer->addAction(showShorcutsAction);
 	viewer->addAction(optionsAction);
 	viewer->addAction(helpAboutAction);
-	viewer->addAction(showInfo);
-	viewer->addAction(showShorcutsAction);
 	separator = new QAction("",this);
 	separator->setSeparator(true);
 	viewer->addAction(separator);
