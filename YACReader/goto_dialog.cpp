@@ -54,6 +54,9 @@ void GoToDialog::setupUI()
 
 	setWindowTitle(tr("Go to..."));
 	setModal (true);
+
+	pageNumber->setFocusPolicy(Qt::StrongFocus);
+	pageNumber->setFocus();
 }
 
 void GoToDialog::goTo()
@@ -72,4 +75,10 @@ void GoToDialog::setNumPages(unsigned int numPages)
 {
 	numPagesLabel->setText(tr("Total pages : ")+QString::number(numPages));
 	v->setTop(numPages);
+}
+
+void GoToDialog::show()
+{
+	pageNumber->setFocus();
+	QDialog::show();
 }
