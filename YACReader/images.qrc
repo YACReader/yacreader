@@ -1,40 +1,18 @@
 <RCC>
 <qresource>
-	<file>../images/open.png</file>
-	<file>../images/openFolder.png</file>
-	<file>../images/next.png</file>
-	<file>../images/prev.png</file>
 	<file>../images/icon.png</file>
-	<file>../images/zoom.png</file>
-	<file>../images/fit.png</file>
 	<file>../images/goto.png</file>
-	<file>../images/help.png</file>
-	<file>../images/center.png</file>
-	<file>../images/options.png</file>
 	<file>../images/comicFolder.png</file>
-	<file>../images/save.png</file>
-	<file>../images/rotateL.png</file>
-	<file>../images/rotateR.png</file>
 	<file>../images/flow1.png</file>
 	<file>../images/flow2.png</file>
 	<file>../images/flow3.png</file>
 	<file>../images/flow4.png</file>
 	<file>../images/flow5.png</file> 
-	<file>../images/bookmark.png</file>
-	<file>../images/setBookmark.png</file>
 	<file>../images/notCover.png</file>
-	<file>../images/previousComic.png</file>
-	<file>../images/nextComic.png</file>
-	<file>../images/deleteLibrary.png</file>
-	<file>../images/properties.png</file>
-	<file>../images/doublePage.png</file>
 	<file>../images/shortcuts.png</file>
 	<file>../images/close.png</file> 
 	<file>../images/up.png</file>
 	<file>../images/down.png</file>
-    <file>../images/dictionary.png</file>
-	<file>../images/alwaysOnTop.png</file> 
-	<file>../images/adjustToFullSize.png</file>
 	<file>../images/numPagesLabel.png</file>
   <file>../images/numPagesLabelMedium.png</file>
   <file>../images/numPagesLabelBig.png</file>

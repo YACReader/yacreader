@@ -1544,10 +1544,18 @@ void LibraryWindow::manageOpeningLibraryError(const QString & error)
 	QMessageBox::critical(this,tr("Error opening the library"),error);
 }
 
+bool lessThanModelIndexRow(const QModelIndex & m1, const QModelIndex & m2)
+{
+	return m1.row()<m2.row();
+}
+
 QModelIndexList LibraryWindow::getSelectedComics()
 {
 	//se fuerza a que haya almenos una fila seleccionada TODO comprobar se se puede forzar a la tabla a que lo haga automáticamente
 	QModelIndexList selection = comicView->selectionModel()->selectedRows();
+	
+	qSort(selection.begin(),selection.end(),lessThanModelIndexRow);
+
 	if(selection.count()==0)
 	{
 		comicView->selectRow(comicFlow->centerIndex());
