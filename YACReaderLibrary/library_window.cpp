@@ -1405,10 +1405,33 @@ void LibraryWindow::asignNumbers()
 
 void LibraryWindow::openContainingFolderComic()
 {
-	QModelIndex modelIndex = comicView->currentIndex();
-	QFileInfo file = QDir::cleanPath(currentPath() + dmCV->getComicPath(modelIndex)); 
+QModelIndex modelIndex = comicView->currentIndex();
+QFileInfo file = QDir::cleanPath(currentPath() + dmCV->getComicPath(modelIndex)); 
+#ifdef Q_OS_LINUX
 	QString path = file.absolutePath();
 	QDesktopServices::openUrl(QUrl("file:///"+path, QUrl::TolerantMode));
+#endif
+
+#ifdef Q_WS_MAC
+	QString filePath = file.absoluteFilePath();
+    QStringList args;
+    args << "-e";
+    args << "tell application \"Finder\"";
+    args << "-e";
+    args << "activate";
+    args << "-e";
+    args << "select POSIX file \""+filePath+"\"";
+    args << "-e";
+    args << "end tell";
+    QProcess::startDetached("osascript", args);
+#endif
+    
+#ifdef Q_WS_WIN
+	QString filePath = file.absoluteFilePath();
+    QStringList args;
+    args << "/select," << QDir::toNativeSeparators(filePath);
+    QProcess::startDetached("explorer", args);
+#endif
 }
 
 void LibraryWindow::openContainingFolder()
