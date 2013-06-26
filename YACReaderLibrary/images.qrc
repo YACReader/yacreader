@@ -1,23 +1,15 @@
 <RCC>
   <qresource prefix="/" >
-    <file>../images/deleteLibrary.png</file>
     <file>../images/folder.png</file>
-    <file>../images/help.png</file>
-    <file>../images/icon.png</file>
     <file>../images/iconLibrary.png</file>
     <file>../images/new.png</file>
     <file>../images/openLibrary.png</file>
-    <file>../images/removeLibrary.png</file>
 	 <file>../images/removeLibraryIcon.png</file>
-    <file>../images/updateLibrary.png</file>
 	<file>../images/updateLibraryIcon.png</file>
     <file>../images/comicFolder.png</file>
     <file>../images/notCover.png</file>
     <file>../images/edit.png</file>
 	<file>../images/editIcon.png</file>
-    <file>../images/fit.png</file>
-    <file>../images/properties.png</file>
-    <file>../images/options.png</file>
     <file>../images/flow1.png</file>
     <file>../images/flow2.png</file>
     <file>../images/flow3.png</file>
@@ -29,12 +21,10 @@
 	<file>../images/exportLibraryIcon.png</file>
     <file>../images/open.png</file>
     <file>../images/coversPackage.png</file>
-    <file>../images/setRead.png</file>
     <file>../images/setAllRead.png</file>
     <file>../images/setUnread.png</file>
     <file>../images/setAllUnread.png</file>
     <file>../images/showMarks.png</file>
-    <file>../images/importCover.png</file>
     <file>../images/editComic.png</file>
     <file>../images/selectAll.png</file>
     <file>../images/hideComicFlow.png</file>
@@ -45,22 +35,11 @@
     <file>../images/db.png</file>
     <file>../images/asignNumber.png</file>
 	<file>../images/defaultCover.png</file>
-	<file>../images/server.png</file>
 	<file>../images/iphoneConfig.png</file>
-	<file>../images/qrMessage.png</file>
 	<file>../images/onStartFlowSelection.png</file>
 	<file>../images/onStartFlowSelection_es.png</file> 
 	<file>../images/useNewFlowButton.png</file>
 	<file>../images/useOldFlowButton.png</file>
-	<file>../images/zip.png</file>
-	<file>../images/rar.png</file>
-	<file>../images/tar.png</file>
-	<file>../images/7z.png</file>
-	<file>../images/pdf.png</file>
-	<file>../images/comicZip.png</file>
-	<file>../images/comicRar.png</file>
-	<file>../images/comicTar.png</file>
-	<file>../images/comic7z.png</file>
   <file>../images/serverConfigBackground.png</file>
 	<file>../images/noLibrariesIcon.png</file>
 	<file>../images/noLibrariesLine.png</file>
@@ -77,7 +56,7 @@
     <file>../images/trash.png</file>
     <file>../images/setReadButton.png</file>
     <file>../images/openInYACReader.png</file>
-    <file>../images/deleting_progress/imgTopLeft.png</file>
+    <!--<file>../images/deleting_progress/imgTopLeft.png</file>
     <file>../images/deleting_progress/imgTopMiddle.png</file>
     <file>../images/deleting_progress/imgTopRight.png</file>
     <file>../images/deleting_progress/imgLeftMiddle.png</file>
@@ -92,7 +71,7 @@
     <file>../images/social_dialog/icon.png</file>
     <file>../images/social_dialog/shadow.png</file>
     <file>../images/social_dialog/twitter.png</file>
-    <file>../images/social_dialog/separator.png</file>
+    <file>../images/social_dialog/separator.png</file>-->
     <file>../images/main_toolbar/divider.png</file>
     <file>../images/collapsed_branch_osx.png</file>
     <file>../images/expanded_branch_osx.png</file>
@@ -105,6 +84,6 @@
     <file>../images/collapsed_branch_selected.png</file>
     <file>../images/previousCoverPage.png</file>
     <file>../images/nextCoverPage.png</file>
-    <file>../images/busy_background.png</file>
+    <!--<file>../images/busy_background.png</file>-->
   </qresource>
 </RCC>

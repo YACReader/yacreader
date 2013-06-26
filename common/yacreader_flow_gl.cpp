@@ -663,7 +663,7 @@ void YACReaderFlowGL::insert(char *name, GLuint Tex, float x, float y,int item)
 void YACReaderFlowGL::remove(int item)
 {
 	//reposition current selection
-	if(item == currentSelected && currentSelected != 0){
+	if(item <= currentSelected && currentSelected != 0){
 		currentSelected--;
 	}
 
