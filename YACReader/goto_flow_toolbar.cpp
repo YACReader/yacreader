@@ -111,10 +111,12 @@ void GoToFlowToolBar::resizeEvent(QResizeEvent * event)
 
 void GoToFlowToolBar::goTo()
 {
-	emit(goTo(edit->text().toInt()-1));
+	if(edit->text().toInt()!=0)
+		emit(goTo(edit->text().toInt()-1));
 }
 
 void GoToFlowToolBar::centerSlide()
 {
-	emit(setCenter(edit->text().toInt()-1));
+	if(edit->text().toInt()!=0)
+		emit(setCenter(edit->text().toInt()-1));
 }
