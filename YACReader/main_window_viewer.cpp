@@ -314,7 +314,7 @@ void MainWindowViewer::createActions()
 	showDictionaryAction = new QAction(tr("Show Dictionary"),this);
 	showDictionaryAction->setShortcut(Qt::Key_T);
 	showDictionaryAction->setIcon(QIcon(":/images/viewer_toolbar/translator.png"));
-	showDictionaryAction->setCheckable(true);
+	//showDictionaryAction->setCheckable(true);
 	showDictionaryAction->setDisabled(true);
 	connect(showDictionaryAction,SIGNAL(triggered()),viewer,SLOT(translatorSwitch()));
 
