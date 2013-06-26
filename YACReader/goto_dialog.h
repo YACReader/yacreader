@@ -23,6 +23,7 @@
 	public slots:
 		void goTo();
 		void setNumPages(unsigned int numPages);
+		void show();
 	signals:
 		void goToPage(unsigned int page);
 	};

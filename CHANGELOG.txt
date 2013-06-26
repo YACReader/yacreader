@@ -8,6 +8,7 @@ La edición del nombre de una biblioteca no fuerza ahora que se recargue la bibli
 Corregido el color de fondo en la lupa
 Nuevo botón para ajustar a lo alto
 Eliminada la opción always on top
+Mostrar en carpeta contenedora arreglado en Windows y MacOSX
 
 6.4 (No pública)
 Normalizado el renderizado de páginas en modo doble página
