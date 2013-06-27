@@ -15,7 +15,6 @@ class QThread;
 class QStackedWidget;
 class YACReaderSearchLineEdit;
 class CreateLibraryDialog;
-class UpdateLibraryDialog;
 class ExportLibraryDialog;
 class ImportLibraryDialog;
 class ExportComicsInfoDialog;
@@ -57,7 +56,6 @@ private:
 	YACReaderSideBar * sideBar;
 	QSplitter * sVertical;
 	CreateLibraryDialog * createLibraryDialog;
-	UpdateLibraryDialog * updateLibraryDialog;
 	ExportLibraryDialog * exportLibraryDialog;
 	ImportLibraryDialog * importLibraryDialog;
 	ExportComicsInfoDialog * exportComicsInfoDialog;
@@ -256,6 +254,8 @@ public:
         void backward();
         void forward();
         void updateHistory(const QModelIndex & mi);
+		void libraryAlreadyExists(const QString & name);
+		void importLibraryPackage();
 };
 
 #endif

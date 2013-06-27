@@ -18,24 +18,25 @@
 		QLabel * textLabel;
 		QLabel * message;
 		QProgressBar *progressBar;
-		QLabel * currentFileLabel;
 		QLineEdit * path;
 		QLineEdit * nameEdit;
 		QPushButton * find;
 		QPushButton * accept;
 		QPushButton * cancel;
+		QMap<QString,QString>  libraries;
 		void setupUI();
 	public slots:
 		void create();
 		void findPath();
-		void showCurrentFile(QString file);
 		void close();
 		void setDataAndStart(QString name, QString paht);
 		void nameSetted(const QString & text);
 		void pathSetted(const QString & text);
+		void show(const QMap<QString,QString> & libraries);
 	signals:
 		void createLibrary(QString source, QString target, QString name);
 		void cancelCreate();
+		void libraryExists(const QString & name);
 	};
 
 	class UpdateLibraryDialog : public QDialog

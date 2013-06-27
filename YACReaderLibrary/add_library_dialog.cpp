@@ -71,7 +71,6 @@ void AddLibraryDialog::add()
 {
 	//accept->setEnabled(false);
 	emit(addLibrary(QDir::cleanPath(path->text()),nameEdit->text()));
-	close();
 }
 
 void AddLibraryDialog::nameSetted(const QString & text)

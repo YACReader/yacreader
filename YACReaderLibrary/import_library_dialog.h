@@ -29,15 +29,18 @@
 		void setupUI();
 		int progressCount;
 		void closeEvent ( QCloseEvent * e );
+		QMap<QString,QString>  libraries;
 	public slots:
 		void add();
 		void findPath();
 		void findDestination();
 		void close();
 		void nameEntered();
+		void show(const QMap<QString,QString> & libs);
 
 	signals:
 		void unpackCLC(QString clc,QString targetFolder, QString name);
+		void libraryExists(const QString & name);
 	};
 
 #endif
