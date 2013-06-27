@@ -1472,7 +1472,8 @@ void LibraryWindow::exportLibrary(QString destPath)
 void LibraryWindow::importLibrary(QString clc,QString destPath,QString name)
 {
 	packageManager->extractPackage(clc,destPath+"/"+name);
-	openLibrary(destPath+"/"+name,name);
+	_lastAdded = name;
+	_sourceLastAdded = destPath+"/"+name;
 }
 
 void LibraryWindow::reloadOptions()
