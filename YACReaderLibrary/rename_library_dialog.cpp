@@ -58,7 +58,6 @@ void RenameLibraryDialog::rename()
 {
 	//accept->setEnabled(false);
 	emit(renameLibrary(newNameEdit->text()));
-	close();
 }
 
 void RenameLibraryDialog::nameSetted(const QString & text)

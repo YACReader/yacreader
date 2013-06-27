@@ -49,21 +49,6 @@ void CreateLibraryDialog::setupUI()
 	content->addWidget(find,1,2);
 	content->setColumnMinimumWidth(2,0); //TODO
 
-	QHBoxLayout *middleLayout = new QHBoxLayout;
-
-	progressBar = new QProgressBar(this);
-	progressBar->setMinimum(0);
-	progressBar->setMaximum(0);
-	progressBar->setTextVisible(false);
-	progressBar->hide();
-
-	currentFileLabel = new QLabel("");
-	currentFileLabel->setWordWrap(true);
-	middleLayout->addWidget(currentFileLabel);
-	middleLayout->addStretch();
-	middleLayout->setSizeConstraint(QLayout::SetMaximumSize);
-
-
 	QHBoxLayout *bottomLayout = new QHBoxLayout;
 	bottomLayout->addWidget(message = new QLabel(tr("Create a library could take several minutes. You can stop the process and update the library later for completing the task.")));
 	message->setWordWrap(true);
@@ -75,9 +60,6 @@ void CreateLibraryDialog::setupUI()
 	QVBoxLayout *mainLayout = new QVBoxLayout;
 	mainLayout->addLayout(content);
 
-	mainLayout->addLayout(middleLayout);
-	mainLayout->addStretch();
-	mainLayout->addWidget(progressBar);
 	mainLayout->addLayout(bottomLayout);
 
 	QHBoxLayout * imgMainLayout = new QHBoxLayout;
@@ -93,30 +75,28 @@ void CreateLibraryDialog::setupUI()
 	setWindowTitle(tr("Create new library"));
 }
 
+void CreateLibraryDialog::show(const QMap<QString,QString> & libs)
+{
+	libraries = libs;
+	QDialog::show();
+}
+
 void CreateLibraryDialog::create()
 {
 
 	QFileInfo f(path->text());
 	if(f.exists() && f.isDir() && f.isWritable())
 	{
-		progressBar->show();
-		message->show();
-		currentFileLabel->setText("Importing : \n\n\n\n\n");
-		this->adjustSize();
-		accept->setEnabled(false);
-		emit(createLibrary(QDir::cleanPath(path->text()),QDir::cleanPath(path->text())+"/.yacreaderlibrary",nameEdit->text()));
-		close();
+		if(!libraries.contains(nameEdit->text()))
+		{
+			emit(createLibrary(QDir::cleanPath(path->text()),QDir::cleanPath(path->text())+"/.yacreaderlibrary",nameEdit->text()));
+			close();
+		}
+		else
+			emit(libraryExists(nameEdit->text()));
 	}
 	else
 		QMessageBox::critical(NULL,tr("Path not found"),tr("The selected path does not exist or is not a valid path. Be sure that you have write access to this folder"));
-}
-
-void CreateLibraryDialog::showCurrentFile(QString file)
-{
-	currentFileLabel->setText(tr("Importing : \n") + file);
-	currentFileLabel->update();
-	//this->adjustSize();
-	//is->update();
 }
 
 void CreateLibraryDialog::nameSetted(const QString & text)
@@ -163,11 +143,8 @@ void CreateLibraryDialog::findPath()
 
 void CreateLibraryDialog::close()
 {
-	progressBar->hide();
 	path->clear();
 	nameEdit->clear();
-	currentFileLabel->setText("");
-	this->adjustSize();
 	accept->setEnabled(false);
 	QDialog::close();
 }
@@ -176,7 +153,7 @@ void CreateLibraryDialog::setDataAndStart(QString name, QString path)
 {
 	this->path->setText(path);
 	this->nameEdit->setText(name);
-	show();
+	QDialog::show();
 	create();
 }
 //-----------------------------------------------------------------------------
@@ -199,12 +176,6 @@ UpdateLibraryDialog::UpdateLibraryDialog(QWidget * parent)
 	
 	mainLayout->addStretch();
 	
-	progressBar = new QProgressBar(this);
-	progressBar->setMinimum(0);
-	progressBar->setMaximum(0);
-	progressBar->setTextVisible(false);
-
-	mainLayout->addWidget(progressBar);
 	mainLayout->addLayout(bottom);
 
 	QHBoxLayout * imgMainLayout = new QHBoxLayout;

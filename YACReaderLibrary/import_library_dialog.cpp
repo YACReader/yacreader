@@ -86,12 +86,24 @@ void ImportLibraryDialog::setupUI()
 	setModal(true);
 	setWindowTitle(tr("Extract a catalog"));
 }
+void ImportLibraryDialog::show(const QMap<QString,QString> & libs)
+{
+	libraries = libs;
+	QDialog::show();
+}
 
 void ImportLibraryDialog::add()
 {
-	accept->setEnabled(false);
-	progressBar->show();
-	emit(unpackCLC(QDir::cleanPath(path->text()),QDir::cleanPath(destPath->text()),nameEdit->text()));
+	if(!libraries.contains(nameEdit->text()))
+	{
+		accept->setEnabled(false);
+		progressBar->show();
+		emit(unpackCLC(QDir::cleanPath(path->text()),QDir::cleanPath(destPath->text()),nameEdit->text()));
+	}
+	else
+	{
+		emit(libraryExists(nameEdit->text()));
+	}
 }
 
 void ImportLibraryDialog::findPath()

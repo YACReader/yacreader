@@ -260,7 +260,6 @@ void LibraryWindow::doLayout()
 void LibraryWindow::doDialogs()
 {
 	createLibraryDialog = new CreateLibraryDialog(this);
-	updateLibraryDialog = new UpdateLibraryDialog(this);
 	renameLibraryDialog = new RenameLibraryDialog(this);
 	propertiesDialog = new PropertiesDialog(this);
 	exportLibraryDialog = new ExportLibraryDialog(this);
@@ -646,10 +645,11 @@ void LibraryWindow::createConnections()
 
 	//libraryCreator connections
 	connect(createLibraryDialog,SIGNAL(createLibrary(QString,QString,QString)),this,SLOT(create(QString,QString,QString)));
+	connect(createLibraryDialog,SIGNAL(libraryExists(QString)),this,SLOT(libraryAlreadyExists(QString)));
 	connect(importComicsInfoDialog,SIGNAL(finished(int)),this,SLOT(reloadCurrentLibrary()));
 
-	connect(libraryCreator,SIGNAL(coverExtracted(QString)),createLibraryDialog,SLOT(showCurrentFile(QString)));
-	connect(libraryCreator,SIGNAL(coverExtracted(QString)),updateLibraryDialog,SLOT(showCurrentFile(QString)));
+	//connect(libraryCreator,SIGNAL(coverExtracted(QString)),createLibraryDialog,SLOT(showCurrentFile(QString)));
+	//connect(libraryCreator,SIGNAL(coverExtracted(QString)),updateLibraryDialog,SLOT(showCurrentFile(QString)));
 	connect(libraryCreator,SIGNAL(finished()),this,SLOT(showRootWidget()));
 	connect(libraryCreator,SIGNAL(updated()),this,SLOT(reloadCurrentLibrary()));
 	connect(libraryCreator,SIGNAL(created()),this,SLOT(openLastCreated()));
@@ -668,13 +668,13 @@ void LibraryWindow::createConnections()
 	connect(importLibraryDialog,SIGNAL(unpackCLC(QString,QString,QString)),this,SLOT(importLibrary(QString,QString,QString)));
 	connect(importLibraryDialog,SIGNAL(rejected()),packageManager,SLOT(cancel()));
 	connect(importLibraryDialog,SIGNAL(rejected()),this,SLOT(deleteCurrentLibrary()));
+	connect(importLibraryDialog,SIGNAL(libraryExists(QString)),this,SLOT(libraryAlreadyExists(QString)));
 	connect(packageManager,SIGNAL(imported()),importLibraryDialog,SLOT(hide()));
 	connect(packageManager,SIGNAL(imported()),this,SLOT(openLastCreated()));
 
 
 	//create and update dialogs
 	connect(createLibraryDialog,SIGNAL(cancelCreate()),this,SLOT(cancelCreating()));
-	connect(updateLibraryDialog,SIGNAL(cancelUpdate()),this,SLOT(stopLibraryCreator()));
 
 	//open existing library from dialog.
 	connect(addLibraryDialog,SIGNAL(addLibrary(QString,QString)),this,SLOT(openLibrary(QString,QString)));
@@ -695,7 +695,7 @@ void LibraryWindow::createConnections()
 	//actions
 	connect(createLibraryAction,SIGNAL(triggered()),this,SLOT(createLibrary()));
 	connect(exportLibraryAction,SIGNAL(triggered()),exportLibraryDialog,SLOT(show()));
-	connect(importLibraryAction,SIGNAL(triggered()),importLibraryDialog,SLOT(show()));
+	connect(importLibraryAction,SIGNAL(triggered()),this,SLOT(importLibraryPackage()));
 
 	connect(openLibraryAction,SIGNAL(triggered()),this,SLOT(showAddLibrary()));
 	connect(showPropertiesAction,SIGNAL(triggered()),this,SLOT(showProperties()));
@@ -1067,7 +1067,7 @@ void LibraryWindow::setComicsUnreaded()
 
 void LibraryWindow::createLibrary()
 {
-	createLibraryDialog->show();
+	createLibraryDialog->show(libraries);
 }
 
 void LibraryWindow::create(QString source, QString dest, QString name)
@@ -1110,16 +1110,25 @@ void LibraryWindow::showAddLibrary()
 
 void LibraryWindow::openLibrary(QString path, QString name)
 {	
-	path.remove("/.yacreaderlibrary");
-	QDir d; //TODO change this by static methods (utils class?? with delTree for example) 
-	if(d.exists(path + "/.yacreaderlibrary"))
+	if(!libraries.contains(name))
 	{
-		_lastAdded = name;
-		_sourceLastAdded = path;
-		openLastCreated();
+		//TODO: fix bug, /a/b/c/.yacreaderlibrary/d/e
+		path.remove("/.yacreaderlibrary");
+		QDir d; //TODO change this by static methods (utils class?? with delTree for example) 
+		if(d.exists(path + "/.yacreaderlibrary"))
+		{
+			_lastAdded = name;
+			_sourceLastAdded = path;
+			openLastCreated();
+			addLibraryDialog->close();
+		}
+		else
+			QMessageBox::warning(this,tr("Library not found"),tr("The selected folder doesn't contain any library."));
 	}
 	else
-		QMessageBox::warning(this,tr("Library not found"),tr("The selected folder doesn't contain any library."));
+	{
+		libraryAlreadyExists(name);
+	}
 }
 
 void LibraryWindow::loadLibraries()
@@ -1175,7 +1184,6 @@ void LibraryWindow::saveLibraries()
 
 void LibraryWindow::updateLibrary()
 {
-	//updateLibraryDialog->show();
 	importWidget->setUpdateLook();
 	showImportingWidget();
 
@@ -1245,12 +1253,25 @@ void LibraryWindow::renameLibrary()
 void LibraryWindow::rename(QString newName)
 {
 	QString currentLibrary = selectedLibrary->currentText();
-	QString path = libraries.value(currentLibrary);
-	libraries.remove(currentLibrary);
-	//selectedLibrary->removeItem(selectedLibrary->currentIndex());
-	libraries.insert(newName,path);
-	selectedLibrary->renameCurrentLibrary(newName);
-	saveLibraries();
+	if(newName != currentLibrary)
+	{
+		if(!libraries.contains(newName))
+		{
+			QString path = libraries.value(currentLibrary);
+			libraries.remove(currentLibrary);
+			//selectedLibrary->removeItem(selectedLibrary->currentIndex());
+			libraries.insert(newName,path);
+			selectedLibrary->renameCurrentLibrary(newName);
+			saveLibraries();
+			renameLibraryDialog->close();
+		}
+		else
+		{
+			libraryAlreadyExists(newName);
+		}
+	}
+	else
+		renameLibraryDialog->close();
 	//selectedLibrary->setCurrentIndex(selectedLibrary->findText(newName));
 }
 
@@ -1661,4 +1682,14 @@ void LibraryWindow::updateHistory(const QModelIndex &mi)
 	}
 
 	forwardAction->setEnabled(false);
+}
+
+void LibraryWindow::libraryAlreadyExists(const QString & name)
+{
+	QMessageBox::information(this,tr("Library name already exists"),tr("There is another library with the name '%1'.").arg(name));
+}
+
+void LibraryWindow::importLibraryPackage()
+{
+	importLibraryDialog->show(libraries);
 }
