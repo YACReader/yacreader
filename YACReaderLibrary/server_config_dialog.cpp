@@ -7,6 +7,7 @@
 #include <QSettings>
 #include <QPalette>
 #include <QIntValidator>
+#include <QFormLayout>
 
 #include "startup.h"
 #include "yacreader_global.h"
@@ -86,29 +87,41 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	propaganda->setFixedWidth(590);
 	propaganda->setOpenExternalLinks(true);
 
-	QLabel * ipLabel = new QLabel(tr("IP address"),this);
+	//FORM---------------------------------------------------------------------
+	QWidget * form = new QWidget(this);
+	QFormLayout * formLayout = new QFormLayout;
+
+	/*QLabel * ipLabel = new QLabel(tr("IP address"),this);
 	ipLabel->move(452,75);
 	ipLabel->setStyleSheet("QLabel {color:#1F1F1F; font-size:13px; font-family: Arial; font-weight: bold;}");
 
 	QLabel * portLabel = new QLabel(tr("Port"),this);
 	portLabel->move(452, 114);
-	portLabel->setStyleSheet("QLabel {color:#1F1F1F; font-size:13px; font-family: Arial; font-weight: bold;}");
+	portLabel->setStyleSheet("QLabel {color:#1F1F1F; font-size:13px; font-family: Arial; font-weight: bold;}");*/
 
 	ip = new QComboBox(this);
 	connect(ip,SIGNAL(activated(const QString &)),this,SLOT(regenerateQR(const QString &)));
-	ip->move(520,71);
+	//ip->move(520,71);
 	ip->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-	ip->setMinimumWidth(110);
+	ip->setMinimumWidth(120);
 
 	port = new QLineEdit("8080",this);
 	port->setReadOnly(false);
 	port->setMaximumWidth(50);
-	port->move(520,110);
+	//port->move(520,110);
 	QValidator *validator = new QIntValidator(1024, 65535, this);
 	port->setValidator(validator);
 
-	accept->move(520,149);
+	//accept->move(514,149);
 	connect(accept,SIGNAL(pressed()),this,SLOT(updatePort()));
+	
+	formLayout->addRow(tr("IP address"),ip);
+	formLayout->addRow(tr("Port"),port);
+	formLayout->addRow("",accept);
+
+	form->setLayout(formLayout);
+	form->move(444,70);
+	//END FORM-----------------------------------------------------------------
 
 	check = new QCheckBox(this);
 	check->move(453,314);
@@ -121,10 +134,6 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	//elementsLayout->addWidget(iphone);
 	//elementsLayout->addStretch();
 	//elementsLayout->addLayout(configLayout);
-
-	QHBoxLayout * buttons = new QHBoxLayout;
-	buttons->addStretch();
-	buttons->addWidget(accept);
 
 	//QVBoxLayout *	mainLayout = new QVBoxLayout;
 	//mainLayout->addLayout(elementsLayout);
