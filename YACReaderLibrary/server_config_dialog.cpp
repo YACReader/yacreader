@@ -89,7 +89,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 
 	//FORM---------------------------------------------------------------------
 	QWidget * form = new QWidget(this);
-	QFormLayout * formLayout = new QFormLayout;
+    QFormLayout * formLayout = new QFormLayout;
 
 	/*QLabel * ipLabel = new QLabel(tr("IP address"),this);
 	ipLabel->move(452,75);
@@ -101,13 +101,23 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 
 	ip = new QComboBox(this);
 	connect(ip,SIGNAL(activated(const QString &)),this,SLOT(regenerateQR(const QString &)));
-	//ip->move(520,71);
-	ip->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-	ip->setMinimumWidth(120);
+    //ip->move(520,71);
+#ifndef Q_OS_WIN32
+    ip->setStyleSheet("QComboBox{font-size:10px;}");
+#endif
+    ip->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+#ifdef Q_OS_WIN32
+    ip->setMinimumWidth(120);
+#else
+    ip->setFixedSize(120,ip->height());
+#endif
 
 	port = new QLineEdit("8080",this);
 	port->setReadOnly(false);
-	port->setMaximumWidth(50);
+    port->setMaximumWidth(50);
+#ifndef Q_OS_WIN32
+    port->setStyleSheet("QLineEdit{font-size:10px;}");
+#endif
 	//port->move(520,110);
 	QValidator *validator = new QIntValidator(1024, 65535, this);
 	port->setValidator(validator);
@@ -115,12 +125,16 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	//accept->move(514,149);
 	connect(accept,SIGNAL(pressed()),this,SLOT(updatePort()));
 	
-	formLayout->addRow(tr("IP address"),ip);
+    formLayout->addRow(tr("IP address"),ip);
 	formLayout->addRow(tr("Port"),port);
 	formLayout->addRow("",accept);
 
 	form->setLayout(formLayout);
+#ifdef Q_OS_WIN32
 	form->move(444,70);
+#else
+    form->move(435,70);
+#endif
 	//END FORM-----------------------------------------------------------------
 
 	check = new QCheckBox(this);
@@ -258,9 +272,6 @@ void ServerConfigDialog::generateQR()
 
 	}
 	//qrCode->setText(dir+":8080");
-#ifdef Q_OS_MAC
-    ip->setFixedWidth(130);
-#endif
 }
 
 void ServerConfigDialog::generateQR(const QString & serverAddress)
