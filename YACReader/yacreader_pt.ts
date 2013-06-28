@@ -171,7 +171,7 @@
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="41"/>
-        <location filename="goto_dialog.cpp" line="73"/>
+        <location filename="goto_dialog.cpp" line="76"/>
         <source>Total pages : </source>
         <translation>Total de páginas : </translation>
     </message>
@@ -252,7 +252,7 @@
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="183"/>
-        <location filename="main_window_viewer.cpp" line="567"/>
+        <location filename="main_window_viewer.cpp" line="574"/>
         <source>Save current page</source>
         <translation>Salvar página atual</translation>
     </message>
@@ -481,12 +481,12 @@
         <translation>&amp;Arquivo</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="519"/>
+        <location filename="main_window_viewer.cpp" line="526"/>
         <source>Open Comic</source>
         <translation>Abrir Quadrinho</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="519"/>
+        <location filename="main_window_viewer.cpp" line="526"/>
         <source>Comic files</source>
         <translation type="unfinished"></translation>
     </message>
@@ -495,37 +495,37 @@
         <translation type="obsolete">Arquivos de quadrinho (*.cbr *.cbz *.rar *.zip *.tar *.arj)</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="543"/>
+        <location filename="main_window_viewer.cpp" line="550"/>
         <source>Open folder</source>
         <translation>Abrir pasta</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="567"/>
+        <location filename="main_window_viewer.cpp" line="574"/>
         <source>Image files (*.jpg)</source>
         <translation>Arquivos de imagem (*.jpg)</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="567"/>
+        <location filename="main_window_viewer.cpp" line="574"/>
         <source>page_%1.jpg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="736"/>
+        <location filename="main_window_viewer.cpp" line="743"/>
         <source>There is a new version avaliable</source>
         <translation>Há uma nova versão disponível</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="737"/>
+        <location filename="main_window_viewer.cpp" line="744"/>
         <source>Do you want to download the new version?</source>
         <translation>Você deseja baixar a nova versão?</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="804"/>
+        <location filename="main_window_viewer.cpp" line="811"/>
         <source>Saving error log file....</source>
         <translation>Salvando arquivo de registro de erro....</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="804"/>
+        <location filename="main_window_viewer.cpp" line="811"/>
         <source>There was a problem saving YACReader error log file. Please, check if you have enough permissions in the YACReader root folder.</source>
         <translation>Houve um problema ao salvar o arquivo de registro de erro do YACReader. Por favor, verifique se você tem permissões suficientes na pasta raiz YACReader.</translation>
     </message>
