@@ -120,7 +120,7 @@
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="41"/>
-        <location filename="goto_dialog.cpp" line="73"/>
+        <location filename="goto_dialog.cpp" line="76"/>
         <source>Total pages : </source>
         <translation>Общее количеств страниц:</translation>
     </message>
@@ -190,7 +190,7 @@
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="183"/>
-        <location filename="main_window_viewer.cpp" line="567"/>
+        <location filename="main_window_viewer.cpp" line="574"/>
         <source>Save current page</source>
         <translation>Сохранить нынешнюю страницу</translation>
     </message>
@@ -419,47 +419,47 @@
         <translation>&amp;Файл</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="519"/>
+        <location filename="main_window_viewer.cpp" line="526"/>
         <source>Open Comic</source>
         <translation>Открыть комикс</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="519"/>
+        <location filename="main_window_viewer.cpp" line="526"/>
         <source>Comic files</source>
         <translation>Файлы комикса</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="543"/>
+        <location filename="main_window_viewer.cpp" line="550"/>
         <source>Open folder</source>
         <translation>Открыть папку</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="567"/>
+        <location filename="main_window_viewer.cpp" line="574"/>
         <source>Image files (*.jpg)</source>
         <translation>Файлы изображений</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="567"/>
+        <location filename="main_window_viewer.cpp" line="574"/>
         <source>page_%1.jpg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="736"/>
+        <location filename="main_window_viewer.cpp" line="743"/>
         <source>There is a new version avaliable</source>
         <translation>Доступно новое обновление</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="737"/>
+        <location filename="main_window_viewer.cpp" line="744"/>
         <source>Do you want to download the new version?</source>
         <translation>Хотите загрузить новую версию ?</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="804"/>
+        <location filename="main_window_viewer.cpp" line="811"/>
         <source>Saving error log file....</source>
         <translation>Сохранение файла с логом ошибки...</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="804"/>
+        <location filename="main_window_viewer.cpp" line="811"/>
         <source>There was a problem saving YACReader error log file. Please, check if you have enough permissions in the YACReader root folder.</source>
         <translation>Возникла проблема с сохраниением файла лога YACReader. Пожалуйста, проверьте есть ли у вас права доступа к корневой папке YACReader.</translation>
     </message>
