@@ -32,7 +32,7 @@ void FileLogger::refreshSettings() {
         QFileInfo configFile(settings->fileName());
         fileName=QFileInfo(configFile.absolutePath(),fileName).absoluteFilePath();
     }
-    maxSize=settings->value("maxSize",0).toLongLong();
+    maxSize=settings->value("maxSize",128000).toLongLong();
     maxBackups=settings->value("maxBackups",0).toInt();
     msgFormat=settings->value("msgFormat","{timestamp} {type} {msg}").toString();
     timestampFormat=settings->value("timestampFormat","{yyyy-MM-dd hh:mm:ss.zzz}").toString();
@@ -105,8 +105,8 @@ void FileLogger::open() {
         qWarning("Name of logFile is empty");
     }
     else {
-        file=new QFile(fileName);
-        if (!file->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text)) {
+        file=new QFile(QDir::cleanPath(fileName));
+        if (!file->open(QIODevice::WriteOnly | QIODevice::Text)) {
             qWarning("Cannot open log file %s: %s",qPrintable(fileName),qPrintable(file->errorString()));
             file=0;
         }
@@ -147,7 +147,8 @@ void FileLogger::rotate() {
     }
 
     // Backup the current logfile
-    QFile::rename(fileName,fileName+".1");
+	if(maxBackups>0)
+		QFile::rename(fileName,fileName+".1");
 }
 
 
@@ -166,7 +167,8 @@ void FileLogger::timerEvent(QTimerEvent* event) {
 
         // Rotate the file if it is too large
         if (maxSize>0 && file->size()>=maxSize) {
-            close();
+            
+			close();
             rotate();
             open();
         }
