@@ -385,12 +385,6 @@ void LibraryWindow::createActions()
 	showHideMarksAction->setIcon(QIcon(":/images/showMarks.png"));
 	showHideMarksAction->setChecked(true);
 
-
-	showPropertiesAction = new QAction(this);
-	showPropertiesAction->setToolTip(tr("Show properties of current comic"));
-	showPropertiesAction->setShortcut(Qt::Key_P);
-	showPropertiesAction->setIcon(QIcon(":/images/properties.png"));
-
 	toggleFullScreenAction = new QAction(tr("Fullscreen mode on/off"),this);
 	toggleFullScreenAction->setToolTip(tr("Fullscreen mode on/off (F)"));
 	toggleFullScreenAction->setShortcut(Qt::Key_F);
@@ -436,9 +430,6 @@ void LibraryWindow::createActions()
 
 	//socialAction = new QAction(this);
 
-	//disable actions
-	disableAllActions();
-
 	openContainingFolderAction = new QAction(this);
 	openContainingFolderAction->setText(tr("Open folder..."));
 	openContainingFolderAction->setIcon(QIcon(":/images/open.png"));
@@ -474,71 +465,62 @@ void LibraryWindow::createActions()
 	hideComicViewAction->setCheckable(true);
 	hideComicViewAction->setChecked(false);
 	//-------------------------------------------------------------------------
+	//disable actions
+	disableAllActions();
+}
+void LibraryWindow::disableComicsActions(bool disabled)
+{
+	//if there aren't comics, no fullscreen option will be available
+	toggleFullScreenAction->setDisabled(disabled);
+	//edit toolbar
+	openComicAction->setDisabled(disabled);
+	editSelectedComicsAction->setDisabled(disabled);
+	selectAllComicsAction->setDisabled(disabled);
+	asignOrderActions->setDisabled(disabled);
+	setAsReadAction->setDisabled(disabled);
+	setAsNonReadAction->setDisabled(disabled);
+	setAllAsReadAction->setDisabled(disabled);
+	setAllAsNonReadAction->setDisabled(disabled);
+	showHideMarksAction->setDisabled(disabled);
+	deleteComicsAction->setDisabled(disabled);
+	//context menu
+	openContainingFolderComicAction->setDisabled(disabled);
+
+
+}
+void LibraryWindow::disableLibrariesActions(bool disabled)
+{
+	updateLibraryAction->setDisabled(disabled);
+	renameLibraryAction->setDisabled(disabled);
+	removeLibraryAction->setDisabled(disabled);
+	exportComicsInfo->setDisabled(disabled);
+	importComicsInfo->setDisabled(disabled);
+	exportLibraryAction->setDisabled(disabled);
+	//importLibraryAction->setDisabled(disabled);
 }
 
-//TODO unificar con disableActions
+void LibraryWindow::disableNoUpdatedLibrariesActions(bool disabled)
+{
+	updateLibraryAction->setDisabled(disabled);
+	exportComicsInfo->setDisabled(disabled);
+	importComicsInfo->setDisabled(disabled);
+	exportLibraryAction->setDisabled(disabled);
+}
+
+void LibraryWindow::disableFoldersActions(bool disabled)
+{
+	setRootIndexAction->setDisabled(disabled);
+	expandAllNodesAction->setDisabled(disabled);
+	colapseAllNodesAction->setDisabled(disabled);
+
+	openContainingFolderAction->setDisabled(disabled);
+}
+
 void LibraryWindow::disableAllActions()
 {
-	updateLibraryAction->setEnabled(false);
-	renameLibraryAction->setEnabled(false);
-	//deleteLibraryAction->setEnabled(false);
-	removeLibraryAction->setEnabled(false);
-	openComicAction->setEnabled(false);
-	showPropertiesAction->setEnabled(false);
-	setAsReadAction->setEnabled(false);
-	setAsNonReadAction->setEnabled(false);
-	setAllAsReadAction->setEnabled(false);
-	setAllAsNonReadAction->setEnabled(false);
-
-	showHideMarksAction->setEnabled(false);
-	importComicsInfo->setEnabled(false);
-	exportComicsInfo->setEnabled(false);
-	exportLibraryAction->setEnabled(false);
-	toggleFullScreenAction->setEnabled(false);
-}
-
-//librería de sólo lectura
-void LibraryWindow::disableActions()
-{
-	updateLibraryAction->setEnabled(false);
-	openComicAction->setEnabled(false);
-	showPropertiesAction->setEnabled(false);
-	openContainingFolderAction->setEnabled(false);
-	openContainingFolderComicAction->setEnabled(false);
-	setAsReadAction->setEnabled(false);
-	setAsNonReadAction->setEnabled(false);
-	setAllAsReadAction->setEnabled(false);
-	setAllAsNonReadAction->setEnabled(false);
-	selectAllComicsAction->setEnabled(false);
-	editSelectedComicsAction->setEnabled(false);
-	asignOrderActions->setEnabled(false);
-}
-//librería abierta
-void LibraryWindow::enableActions()
-{
-	updateLibraryAction->setEnabled(true);
-	openComicAction->setEnabled(true);
-	showPropertiesAction->setEnabled(true);
-	openContainingFolderAction->setEnabled(true);
-	openContainingFolderComicAction->setEnabled(true);
-	setAsReadAction->setEnabled(true);
-	setAsNonReadAction->setEnabled(true);
-	setAllAsReadAction->setEnabled(true);
-	setAllAsNonReadAction->setEnabled(true);
-
-	showHideMarksAction->setEnabled(true);
-	importComicsInfo->setEnabled(true);
-	exportComicsInfo->setEnabled(true);
-	exportLibraryAction->setEnabled(true);
-	toggleFullScreenAction->setEnabled(true);
-}
-void LibraryWindow::enableLibraryActions()
-{
-	renameLibraryAction->setEnabled(true);
-	//deleteLibraryAction->setEnabled(true);
-	removeLibraryAction->setEnabled(true);
-	foldersFilter->setEnabled(true);
-	//clearFoldersFilter->setEnabled(true);
+	disableComicsActions(true);
+	disableLibrariesActions(true);
+	disableFoldersActions(true);
 }
 
 void LibraryWindow::createToolBars()
@@ -698,7 +680,6 @@ void LibraryWindow::createConnections()
 	connect(importLibraryAction,SIGNAL(triggered()),this,SLOT(importLibraryPackage()));
 
 	connect(openLibraryAction,SIGNAL(triggered()),this,SLOT(showAddLibrary()));
-	connect(showPropertiesAction,SIGNAL(triggered()),this,SLOT(showProperties()));
 	connect(setAsReadAction,SIGNAL(triggered()),this,SLOT(setCurrentComicReaded()));
 	connect(setAsNonReadAction,SIGNAL(triggered()),this,SLOT(setCurrentComicUnreaded()));
 	connect(setAllAsReadAction,SIGNAL(triggered()),this,SLOT(setComicsReaded()));
@@ -789,6 +770,9 @@ void LibraryWindow::loadLibrary(const QString & name)
 						foldersView->setModel(NULL);
 						comicFlow->clear();
 						disableAllActions();//TODO comprobar que se deben deshabilitar
+						//será posible renombrar y borrar estas bibliotecas
+						renameLibraryAction->setEnabled(true);
+						removeLibraryAction->setEnabled(true);
 					}
 				}
 
@@ -800,20 +784,27 @@ void LibraryWindow::loadLibrary(const QString & name)
 				dm->setupModelData(path);
 				foldersView->setModel(dm);
 
+				if(dm->rowCount(QModelIndex())>0)
+					disableFoldersActions(false);
+				else
+					disableFoldersActions(true);
+
 				d.setCurrent(libraries.value(name));
 				d.setFilter(QDir::AllDirs | QDir::Files | QDir::Hidden | QDir::NoSymLinks | QDir::NoDotAndDotDot);
 				if(d.count()<=1) //librería de sólo lectura
 				{
 					//QMessageBox::critical(NULL,QString::number(d.count()),QString::number(d.count()));
-					disableActions();
+					updateLibraryAction->setDisabled(true);
+					openContainingFolderAction->setDisabled(true);
+					disableComicsActions(true);
+
 					importedCovers = true;
 				}
 				else //librería normal abierta
 				{
-					enableActions();
+					disableLibrariesActions(false);
 					importedCovers = false;
 				}
-				enableLibraryActions();
 
 				setRootIndex();
 				//TODO encontrar el bug que provoca que no se carguen adecuadamente las carátulas en root.
@@ -831,6 +822,9 @@ void LibraryWindow::loadLibrary(const QString & name)
 					foldersView->setModel(NULL);
 					comicFlow->clear();
 					disableAllActions();//TODO comprobar que se deben deshabilitar
+					//será posible renombrar y borrar estas bibliotecas
+					renameLibraryAction->setEnabled(true);
+					removeLibraryAction->setEnabled(true);
 			}
 		}
 		else
@@ -959,37 +953,11 @@ void LibraryWindow::checkEmptyFolder(QStringList * paths)
 
 	if(paths->size()>0 && !importedCovers)
 	{
-		openComicAction->setEnabled(true);
-		showPropertiesAction->setEnabled(true);
-		setAsReadAction->setEnabled(true);
-		setAsNonReadAction->setEnabled(true);
-		setAllAsReadAction->setEnabled(true);
-		setAllAsNonReadAction->setEnabled(true);
-		selectAllComicsAction->setEnabled(true);
-		editSelectedComicsAction->setEnabled(true);
-		asignOrderActions->setEnabled(true);
-
-		showHideMarksAction->setEnabled(true);
-		toggleFullScreenAction->setEnabled(true);
-
-		deleteComicsAction->setEnabled(true);
+		disableComicsActions(false);
 	}
 	else
 	{
-		openComicAction->setEnabled(false);
-		showPropertiesAction->setEnabled(false);
-		setAsReadAction->setEnabled(false);
-		setAsNonReadAction->setEnabled(false);
-		setAllAsReadAction->setEnabled(false);
-		setAllAsNonReadAction->setEnabled(false);
-		selectAllComicsAction->setEnabled(false);
-		editSelectedComicsAction->setEnabled(false);
-		asignOrderActions->setEnabled(false);
-
-		showHideMarksAction->setEnabled(false);
-		toggleFullScreenAction->setEnabled(false);
-
-		deleteComicsAction->setEnabled(false);
+		disableComicsActions(true);
 	}
 }
 
@@ -1536,7 +1504,6 @@ void LibraryWindow::showNoLibrariesWidget()
 
 void LibraryWindow::showRootWidget()
 {
-	enableActions();
 	libraryToolBar->setDisabled(false);
 	foldersFilter->setEnabled(true);
 	mainWidget->setCurrentIndex(0);
