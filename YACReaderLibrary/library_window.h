@@ -108,7 +108,6 @@ private:
     QAction  * forwardAction;
 
 	QAction * openComicAction;
-	QAction * showPropertiesAction;
 	QAction * createLibraryAction;
 	QAction * openLibraryAction;
 	
@@ -180,10 +179,16 @@ private:
 	void doDialogs();
 	void doModels();
 
+	//ACTIONS MANAGEMENT
+	void disableComicsActions(bool disabled);
+	void disableLibrariesActions(bool disabled);
+	void disableNoUpdatedLibrariesActions(bool disabled);
+	void disableFoldersActions(bool disabled);
+
 	void disableAllActions();
-	void disableActions();
-	void enableActions();
-	void enableLibraryActions();
+	//void disableActions();
+	//void enableActions();
+	//void enableLibraryActions();
 
 	QString currentPath();
 
@@ -256,6 +261,7 @@ public:
         void updateHistory(const QModelIndex & mi);
 		void libraryAlreadyExists(const QString & name);
 		void importLibraryPackage();
+
 };
 
 #endif
