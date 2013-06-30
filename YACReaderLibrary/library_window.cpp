@@ -839,7 +839,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 			if(!d.exists(path))
 			{
 				QString currentLibrary = selectedLibrary->currentText();
-				if(QMessageBox::question(this,tr("Library not available"),tr("Library '")+currentLibrary+tr("' is no longer available. Do you want to remove it?"),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
+				if(QMessageBox::question(this,tr("Library not available"),tr("Library '%1' is no longer available. Do you want to remove it?").arg(currentLibrary),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
 				{
 					deleteCurrentLibrary();
 				}
@@ -863,7 +863,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 				{
 					QString currentLibrary = selectedLibrary->currentText();
 					QString path = libraries.value(selectedLibrary->currentText());
-					if(QMessageBox::question(this,tr("Old library"),tr("Library '")+currentLibrary+tr("' has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?"),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
+					if(QMessageBox::question(this,tr("Old library"),tr("Library '%1' has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?").arg(currentLibrary),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
 					{
 						QDir d(path+"/.yacreaderlibrary");
 						delTree(d);
