@@ -1181,7 +1181,7 @@ void LibraryWindow::deleteCurrentLibrary()
 	QString path = libraries.value(selectedLibrary->currentText());
 	libraries.remove(selectedLibrary->currentText());
 	selectedLibrary->removeItem(selectedLibrary->currentIndex());
-	selectedLibrary->setCurrentIndex(0);
+	//selectedLibrary->setCurrentIndex(0);
 	path = path+"/.yacreaderlibrary";
 
 	QDir d(path);
@@ -1206,7 +1206,7 @@ void LibraryWindow::removeLibrary()
 	{
 		libraries.remove(currentLibrary);
 		selectedLibrary->removeItem(selectedLibrary->currentIndex());
-		selectedLibrary->setCurrentIndex(0);
+		//selectedLibrary->setCurrentIndex(0);
 		if(libraries.size()==0)//no more libraries avaliable.
 		{
 			comicView->setModel(NULL);
