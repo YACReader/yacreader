@@ -750,7 +750,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 		QString path=libraries.value(name)+"/.yacreaderlibrary";
 		QDir d; //TODO change this by static methods (utils class?? with delTree for example)
 		QString dbVersion;
-		if(d.exists(path) && (dbVersion = DataBaseManagement::checkValidDB(path+"/library.ydb")) != "") //si existe en disco la biblioteca seleccionada, y es válida..
+		if(d.exists(path) && d.exists(path+"/library.ydb") && (dbVersion = DataBaseManagement::checkValidDB(path+"/library.ydb")) != "") //si existe en disco la biblioteca seleccionada, y es válida..
 		{
 			int comparation = DataBaseManagement::compareVersions(dbVersion,VERSION);
 			bool updated = false;
@@ -797,6 +797,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 					updateLibraryAction->setDisabled(true);
 					openContainingFolderAction->setDisabled(true);
 					disableComicsActions(true);
+					toggleFullScreenAction->setEnabled(true);
 
 					importedCovers = true;
 				}
@@ -838,23 +839,31 @@ void LibraryWindow::loadLibrary(const QString & name)
 			if(!d.exists(path))
 			{
 				QString currentLibrary = selectedLibrary->currentText();
-				if(QMessageBox::question(this,tr("Library not available"),tr("Library ")+currentLibrary+tr(" is no longer available. Do you want to remove it?"),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
+				if(QMessageBox::question(this,tr("Library not available"),tr("Library '")+currentLibrary+tr("' is no longer available. Do you want to remove it?"),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
 				{
 					deleteCurrentLibrary();
 				}
+				//será posible renombrar y borrar estas bibliotecas
+				renameLibraryAction->setEnabled(true);
+				removeLibraryAction->setEnabled(true);
+
 			}
 			else//si existe el path, puede ser que la librería sea alguna versión pre-5.0 ó que esté corrupta o que no haya drivers sql
 			{
-				QSqlDatabase db = DataBaseManagement::loadDatabase(path);
+				
 				if(d.exists(path+"/library.ydb"))
 				{
+					QSqlDatabase db = DataBaseManagement::loadDatabase(path);
 					manageOpeningLibraryError(db.lastError().databaseText() + "-" + db.lastError().driverText());
+					//será posible renombrar y borrar estas bibliotecas
+					renameLibraryAction->setEnabled(true);
+					removeLibraryAction->setEnabled(true);
 				}
 				else
 				{
 					QString currentLibrary = selectedLibrary->currentText();
 					QString path = libraries.value(selectedLibrary->currentText());
-					if(QMessageBox::question(this,tr("Old library"),tr("Library ")+currentLibrary+tr("has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?"),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
+					if(QMessageBox::question(this,tr("Old library"),tr("Library '")+currentLibrary+tr("' has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?"),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
 					{
 						QDir d(path+"/.yacreaderlibrary");
 						delTree(d);
@@ -862,6 +871,9 @@ void LibraryWindow::loadLibrary(const QString & name)
 						createLibraryDialog->setDataAndStart(currentLibrary,path);
 						//create(path,path+"/.yacreaderlibrary",currentLibrary);
 					}
+					//será posible renombrar y borrar estas bibliotecas
+					renameLibraryAction->setEnabled(true);
+					removeLibraryAction->setEnabled(true);
 				}
 			}
 		}
@@ -958,6 +970,8 @@ void LibraryWindow::checkEmptyFolder(QStringList * paths)
 	else
 	{
 		disableComicsActions(true);
+		if(paths->size()>0)
+			toggleFullScreenAction->setEnabled(true);
 	}
 }
 
