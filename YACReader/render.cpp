@@ -408,9 +408,9 @@ void DoublePageRender::run()
 
 	//altura normalizada
 	if(img.height()!=y)
-		x = (width1 = ((img.width() * y) / img2.height())) +  (width2 = img2.width());
+		x = (width1 = ((img.width() * y) / img.height())) +  (width2 = img2.width());
 	else
-		x = (width1 = img.width()) + (width2 = ((img2.width() * y) / img.height()));
+		x = (width1 = img.width()) + (width2 = ((img2.width() * y) / img2.height()));
 	
 	
 	QImage auxImg(x,y,QImage::Format_RGB32);
