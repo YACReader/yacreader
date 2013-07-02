@@ -399,24 +399,39 @@ void DoublePageRender::run()
 	if(img2.isNull())
 	img2 = QPixmap(img.width(),img.height());*/
 
-	int x,y;
+	if(img.isNull() && !img2.isNull())
+	{
+		img = img2;
+		img2 = QImage();
+	}
+		
+
+	int totalWidth,totalHeight;
 	//x = img.width()+img2.width();
-	y = qMax(img.height(),img2.height());
+	totalHeight = qMax(img.height(),img2.height());
 
 	//widths fiting the normalized height
 	int width1, width2;
 
 	//altura normalizada
-	if(img.height()!=y)
-		x = (width1 = ((img.width() * y) / img.height())) +  (width2 = img2.width());
+	if(!img2.isNull())
+	{
+		if(img.height()!=totalHeight)
+			totalWidth = (width1 = ((img.width() * totalHeight) / img.height())) +  (width2 = img2.width());
+		else
+			totalWidth = (width1 = img.width()) + (width2 = ((img2.width() * totalHeight) / img2.height()));
+	}
 	else
-		x = (width1 = img.width()) + (width2 = ((img2.width() * y) / img2.height()));
+		totalWidth = width1 = img.width();
+
+
 	
 	
-	QImage auxImg(x,y,QImage::Format_RGB32);
+	QImage auxImg(totalWidth,totalHeight,QImage::Format_RGB32);
 	QPainter painter(&auxImg);
-	painter.drawImage(QRect(0,0,width1,y),img);
-	painter.drawImage(QRect(width1,0,width2,y),img2);
+	painter.drawImage(QRect(0,0,width1,totalHeight),img);
+	if(!img2.isNull())
+		painter.drawImage(QRect(width1,0,width2,totalHeight),img2);
 	painter.end();
 
 	if(degrees > 0)
