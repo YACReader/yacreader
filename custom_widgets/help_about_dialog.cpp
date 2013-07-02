@@ -9,6 +9,8 @@
 #include <QTextCodec>
 #include <QDesktopWidget>
 
+#include "yacreader_global.h"
+
 HelpAboutDialog::HelpAboutDialog(QWidget * parent)
 :QDialog(parent)
 {
@@ -41,7 +43,7 @@ HelpAboutDialog::HelpAboutDialog(const QString & pathAbout,const QString & pathH
 
 void HelpAboutDialog::loadAboutInformation(const QString & path)
 {
-	aboutText->setHtml(fileToString(path));
+	aboutText->setHtml(fileToString(path).arg(VERSION));
 	aboutText->moveCursor(QTextCursor::Start);
 }
 
