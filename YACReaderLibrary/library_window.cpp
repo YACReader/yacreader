@@ -1246,6 +1246,10 @@ void LibraryWindow::rename(QString newName)
 			selectedLibrary->renameCurrentLibrary(newName);
 			saveLibraries();
 			renameLibraryDialog->close();
+#ifndef Q_OS_MAC
+			if(!foldersView->currentIndex().isValid())
+				libraryToolBar->setCurrentFolderName(selectedLibrary->currentText());
+#endif
 		}
 		else
 		{
