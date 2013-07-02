@@ -23,6 +23,8 @@ public:
 	static	qulonglong getParentFromComicFolderId(const QString & libraryName, qulonglong id);
 	static	ComicDB getComicInfo(const QString & libraryName, qulonglong id);
 	static	QString getFolderName(const QString & libraryName, qulonglong id);
+	static  QList<QString> getLibrariesNames();
+	static  QString getLibraryName(int id);
 
 	//objects management
 	//deletes

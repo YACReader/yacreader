@@ -18,7 +18,7 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 
 	QString path = QUrl::fromPercentEncoding(request.getPath()).toLatin1();
 	QStringList pathElements = path.split('/');
-	QString libraryName = pathElements.at(2);
+	QString libraryName = DBHelper::getLibraryName(pathElements.at(2).toInt());
 	qulonglong comicId = pathElements.at(4).toULongLong();
 
 	//TODO
@@ -69,7 +69,7 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 		session.setCurrentComic(comic.id, comicFile);
 
 		response.setHeader("Content-Type", "plain/text; charset=ISO-8859-1");
-
+		//TODO this field is not used by the client!
 		response.writeText(QString("library:%1\r\n").arg(libraryName));
 		response.writeText(comic.toTXT(),true);
 	}

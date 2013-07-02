@@ -7,6 +7,8 @@
 #include <QDataStream>
 #include <QPointer>
 
+#include "db_helper.h"
+
 PageController::PageController() {}
 
 void PageController::service(HttpRequest& request, HttpResponse& response)
@@ -19,7 +21,7 @@ void PageController::service(HttpRequest& request, HttpResponse& response)
 	//qDebug("PageController: request to -> %s ",path2.data());
 
 	QStringList pathElements = path.split('/');
-	QString libraryName = pathElements.at(2);
+	QString libraryName = DBHelper::getLibraryName(pathElements.at(2).toInt());
 	qulonglong comicId = pathElements.at(4).toULongLong();
 	unsigned int page = pathElements.at(6).toUInt();
 

@@ -17,6 +17,8 @@
 #include "data_base_management.h"
 #include "folder.h"
 
+#include "qnaturalsorting.h"
+
 //server
 
 //TODO optimizar, evitar que se tenga que leer en cada petición el archivo
@@ -127,7 +129,22 @@ QString DBHelper::getFolderName(const QString & libraryName, qulonglong id)
 	QSqlDatabase::removeDatabase(libraryPath);
 	return name;
 }
-
+QList<QString> DBHelper::getLibrariesNames()
+{
+	QStringList names = getLibraries().keys();
+	qSort(names.begin(),names.end(),naturalSortLessThanCI);
+	return names;
+}
+QString DBHelper::getLibraryName(int id)
+{
+	QStringList names = getLibrariesNames();
+	if(names.isEmpty())
+		return "";
+	if(id>=0 && id<names.count())
+		return names.at(id);
+	else
+		return names.at(0);
+}
 //objects management
 //deletes
 void DBHelper::removeFromDB(LibraryItem * item, QSqlDatabase & db)
