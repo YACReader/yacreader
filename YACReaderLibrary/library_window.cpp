@@ -794,6 +794,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 				if(d.count()<=1) //librería de sólo lectura
 				{
 					//QMessageBox::critical(NULL,QString::number(d.count()),QString::number(d.count()));
+					disableLibrariesActions(false);
 					updateLibraryAction->setDisabled(true);
 					openContainingFolderAction->setDisabled(true);
 					disableComicsActions(true);
