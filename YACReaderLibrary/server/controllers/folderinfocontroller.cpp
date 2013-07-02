@@ -16,7 +16,8 @@ void FolderInfoController::service(HttpRequest& request, HttpResponse& response)
 
 	QString path = QUrl::fromPercentEncoding(request.getPath()).toLatin1();
 	QStringList pathElements = path.split('/');
-	QString libraryName = pathElements.at(2);
+	int libraryId = pathElements.at(2).toInt();
+	QString libraryName = DBHelper::getLibraryName(libraryId);
 	qulonglong parentId = pathElements.at(4).toULongLong();
 	QList<LibraryItem *> folderContent = DBHelper::getFolderContentFromLibrary(libraryName,parentId);
 	QList<LibraryItem *> folderComics = DBHelper::getFolderComicsFromLibrary(libraryName,parentId);
@@ -25,14 +26,14 @@ void FolderInfoController::service(HttpRequest& request, HttpResponse& response)
 	for(QList<LibraryItem *>::const_iterator itr = folderContent.constBegin();itr!=folderContent.constEnd();itr++)
 	{
 		currentFolder = (Folder *)(*itr);
-		response.writeText(QString("/library/%1/folder/%2/info\n").arg(QString(QUrl::toPercentEncoding(libraryName))).arg(currentFolder->id));
+		response.writeText(QString("/library/%1/folder/%2/info\n").arg(libraryId).arg(currentFolder->id));
 	}
 
 	ComicDB * currentComic;
 	for(QList<LibraryItem *>::const_iterator itr = folderComics.constBegin();itr!=folderComics.constEnd();itr++)
 	{
 		currentComic = (ComicDB *)(*itr);
-		response.writeText(QString("/library/%1/comic/%2\n").arg(QString(QUrl::toPercentEncoding(libraryName))).arg(currentComic->id));
+		response.writeText(QString("/library/%1/comic/%2\n").arg(libraryId).arg(currentComic->id));
 	}
 
 }

@@ -19,7 +19,7 @@ void CoverController::service(HttpRequest& request, HttpResponse& response)
 
 	QString path = QUrl::fromPercentEncoding(request.getPath()).toLatin1();
 	QStringList pathElements = path.split('/');
-	QString libraryName = pathElements.at(2);
+	QString libraryName = DBHelper::getLibraryName(pathElements.at(2).toInt());
 	QString fileName = pathElements.at(4);
 
 	//response.writeText(path+"<br/>");

@@ -4,6 +4,7 @@
 #include "template.h"
 #include "../static.h"
 
+
 LibrariesController::LibrariesController() {}
 
 void LibrariesController::service(HttpRequest& request, HttpResponse& response)
@@ -38,13 +39,12 @@ void LibrariesController::service(HttpRequest& request, HttpResponse& response)
 	Template t=Static::templateLoader->getTemplate("libraries_"+session.getDeviceType(),request.getHeader("Accept-Language"));
 	t.enableWarnings();
 
-	QMap<QString,QString> libraries = DBHelper::getLibraries();
-	QList<QString> names = libraries.keys();
-	
+	QList<QString> names = DBHelper::getLibrariesNames();
+
 	t.loop("library",names.length());
 	int i=0;
 	while (i<names.length()) {
-		t.setVariable(QString("library%1.name").arg(i),QUrl::toPercentEncoding(names.at(i)));
+		t.setVariable(QString("library%1.name").arg(i),QString::number(i));
 		t.setVariable(QString("library%1.label").arg(i),names.at(i));
 		i++;
 	}

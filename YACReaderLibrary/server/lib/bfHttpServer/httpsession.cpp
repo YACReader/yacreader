@@ -290,7 +290,7 @@ void HttpSession::clearNavigationPath()
 
 int HttpSession::popPage()
 {
-	if(dataPtr)
+	if(dataPtr && !(dataPtr->yacreaderSessionData.navigationPath.isEmpty()))
 		return dataPtr->yacreaderSessionData.navigationPath.pop();
 }
 
