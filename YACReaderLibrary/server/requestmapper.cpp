@@ -37,7 +37,7 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 	QRegExp cover("/library/.+/cover/[0-9a-f]+.jpg"); //get comic cover (navigation)
 	QRegExp comicPage("/library/.+/comic/[0-9]+/page/[0-9]+/?"); //get comic page
 
-	QRegExp library("/library/([^/.]+)/.+"); //permite verificar que la biblioteca solicitada existe
+	QRegExp library("/library/([^/]+)/.+"); //permite verificar que la biblioteca solicitada existe
 
 	path = QUrl::fromPercentEncoding(path).toLatin1();
 
