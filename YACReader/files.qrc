@@ -3,7 +3,6 @@
 	<file>../files/about.html</file>
 	<file>../files/helpYACReader.html</file>
 	<file>../files/shortcuts.html</file>
-  <file>../files/translator.html</file>
 </qresource> 
 
 <qresource lang="es_ES">
