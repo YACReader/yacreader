@@ -12,7 +12,6 @@
 #include "page_label_widget.h"
 #include "notifications_label_widget.h"
 
-#include <QWebView>
 #include <QFile>
 #define STEPS 22
 

@@ -29,7 +29,7 @@ INCLUDEPATH  += /usr/local/include/poppler/qt4
 LIBS         += -L/usr/local/lib -lpoppler-qt4
 }
 
-QT += network webkit phonon opengl
+QT += network phonon opengl
 CONFIG += release
 CONFIG -= flat
 
