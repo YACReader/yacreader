@@ -10,7 +10,6 @@
 
 #include "yacreader_busy_widget.h"
 
-#include <QWebView>
 #include <QFile>
 #include <QPoint>
 #include <QWidget>
