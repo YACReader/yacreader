@@ -8,9 +8,10 @@
 #include <QFileInfoList>
 #include "bookmarks.h" //TODO desacoplar la dependencia con bookmarks
 #include "qnaturalsorting.h"
+#include "compressed_archive.h"
 
 #define EXTENSIONS << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp"
-
+#define EXTENSIONS_LITERAL << ".jpg" << ".jpeg" << ".png" << ".gif" << ".tiff" << ".tif" << ".bmp"
 //-----------------------------------------------------------------------------
 Comic::Comic()
 :_pages(),_index(0),_path(),_loaded(false),bm(new Bookmarks()),_loadedPages(),_isPDF(false)
@@ -202,50 +203,81 @@ bool FileComic::load(const QString & path)
 
 		_path = QDir::cleanPath(path);
 		//load files size
-		_7z = new QProcess();
-		QStringList attributes;
-		attributes << "l" << "-ssc-" << "-r" << _path EXTENSIONS;
-		connect(_7z,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(loadSizes(void)));
-		connect(_7z,SIGNAL(error(QProcess::ProcessError)),this,SLOT(openingError(QProcess::ProcessError)));
-		_7z->start(QCoreApplication::applicationDirPath()+"/utils/7z",attributes);
 
 		return true;
 	}
 	else
 	{
-		QMessageBox::critical(NULL,tr("Not found"),tr("Comic not found"));
+		QMessageBox::critical(NULL,tr("Not found"),tr("Comic not found")+" : " + path);
 		emit errorOpening();
 		return false;
 	}
 }
 
-//-----------------------------------------------------------------------------
-void FileComic::loadSizes()
+QList<QString> FileComic::filter(const QList<QString> & src)
 {
-	QRegExp rx("[0-9]{4}-[0-9]{2}-[0-9]{2}[ ]+[0-9]{2}:[0-9]{2}:[0-9]{2}[ ]+.{5}[ ]+([0-9]+)[ ]+([0-9]+)[ ]+(.+)");
+	QList<QString> extensions;
+	extensions EXTENSIONS_LITERAL;
+	QList<QString> filtered;
+	bool fileAccepted = false;
 
-	QByteArray ba = _7z->readAllStandardOutput();
-	QList<QByteArray> lines = ba.split('\n');
-	QByteArray line; 
-	QString name;
-	foreach(line,lines)
+	foreach(QString fileName,src)
 	{
-		if(rx.indexIn(QString(line))!=-1)
+		fileAccepted = false;
+		foreach(QString extension,extensions)
 		{
-			_sizes.push_back(rx.cap(1).toInt());
-			name = rx.cap(3).trimmed();
-			_order.push_back(name);
-			_fileNames.push_back(name);
+			if(fileName.endsWith(extension,Qt::CaseInsensitive))
+			{
+				fileAccepted = true;
+				break;
+			}
 		}
+		if(fileAccepted)
+			filtered.append(fileName);
 	}
-	if(_sizes.size()==0)
+
+	return filtered;
+}
+void FileComic::fileExtracted(int index, const QByteArray & rawData)
+{
+	int sortedIndex = _fileNames.indexOf(_order.at(index));
+	if(sortedIndex == -1)
+		return;
+	_pages[sortedIndex] = rawData;
+	emit imageLoaded(sortedIndex);
+	emit imageLoaded(sortedIndex,_pages[sortedIndex]);
+}
+
+void FileComic::process()
+{
+	QFile f("c:/temp/out.txt");
+	f.open(QIODevice::WriteOnly);
+	QTextStream out(&f);
+
+	QTime myTimer;
+	myTimer.start();
+	// do something..
+
+	CompressedArchive archive(_path);
+	out << "tiempo en abrir : " << myTimer.elapsed() << endl;
+	//se filtran para obtener sólo los formatos soportados
+	_order = archive.getFileNames();
+	_fileNames = filter(_order);
+
+	out << "tiempo en filtrar : " << myTimer.elapsed() << endl;
+
+	if(_fileNames.size()==0)
 	{
-		QMessageBox::critical(NULL,tr("File error"),tr("File not found or not images in file"));
+		//QMessageBox::critical(NULL,tr("File error"),tr("File not found or not images in file"));
 		emit errorOpening();
 		return;
 	}
-	_pages.resize(_sizes.size());
-	_loadedPages = QVector<bool>(_sizes.size(),false);
+
+	//TODO, cambiar por listas
+	//_order = _fileNames;
+
+	_pages.resize(_fileNames.size());
+	_loadedPages = QVector<bool>(_fileNames.size(),false);
 
 	emit pageChanged(0); // this indicates new comic, index=0
 	emit numPages(_pages.size());
@@ -253,40 +285,35 @@ void FileComic::loadSizes()
 
 	_cfi=0;
 	qSort(_fileNames.begin(),_fileNames.end(), naturalSortLessThanCI);
-	int i=0;
-	foreach(name,_fileNames)
+	int index = 0;
+	int sortedIndex = 0;
+
+	out << "tiempo en ordenar : " << myTimer.elapsed() << endl;
+
+	QList<QByteArray> allData = archive.getAllData(this);
+	
+	out << "tiempo en obtener datos : " << myTimer.elapsed() << endl;
+	/*
+	foreach(QString name,_fileNames)
 	{
-		_newOrder.insert(name,i);
-		i++;
-	}
-	_7ze = new QProcess();
-	QStringList attributes;
-	attributes << "e" << "-ssc-" << "-so"  << "-r" << _path EXTENSIONS;
-	connect(_7ze,SIGNAL(error(QProcess::ProcessError)),this,SLOT(openingError(QProcess::ProcessError)));
-	connect(_7ze,SIGNAL(readyReadStandardOutput()),this,SLOT(loadImages(void)));
-	connect(_7ze,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(loadFinished(void)));
-	_7ze->start(QCoreApplication::applicationDirPath()+"/utils/7z",attributes);
+		index = _order.indexOf(name);
+		sortedIndex = _fileNames.indexOf(name);
+		_pages[sortedIndex] = allData.at(index);
+		emit imageLoaded(sortedIndex);
+		emit imageLoaded(sortedIndex,_pages[sortedIndex]);
+	}*/
+
+	out << "tiempo en copiar datos : " << myTimer.elapsed() << endl;
+	f.close();
+	emit imagesLoaded();
+}
+//-----------------------------------------------------------------------------
+void FileComic::loadSizes()
+{
 }
 //-----------------------------------------------------------------------------
 void FileComic::loadImages()
 {
-
-	QByteArray ba = _7ze->readAllStandardOutput();
-	int s;
-	int rigthIndex;
-	while(ba.size()>0)
-	{
-		rigthIndex = _newOrder.value(_order[_cfi]);
-		s = _pages[rigthIndex].size();
-		_pages[rigthIndex].append(ba.left(_sizes[_cfi]-s));
-		ba.remove(0,_sizes[_cfi]-s);
-		if(_pages[rigthIndex].size()==static_cast<int>(_sizes[_cfi]))
-		{
-			emit imageLoaded(rigthIndex);
-            emit imageLoaded(rigthIndex,_pages[rigthIndex]);
-			_cfi++;
-		}
-	}
 }
 //-----------------------------------------------------------------------------
 void FileComic::openingError(QProcess::ProcessError error)

@@ -99,6 +99,7 @@ SOURCES += comic.cpp \
 	yacreader_local_client.cpp
 
 include(../custom_widgets/custom_widgets.pri)
+include(../compressed_archive/wrapper.pri)
 
 RESOURCES += images.qrc \
     files.qrc 

@@ -602,16 +602,13 @@ void Render::load(const QString & path)
 	connect(comic,SIGNAL(isCover()),this,SIGNAL(isCover()));
 
 	QThread * thread = NULL;
-	if (typeid(*comic) != typeid(FileComic))
-	{
+
 	thread = new QThread();
 
 	comic->moveToThread(thread);
 
 	connect(thread, SIGNAL(started()), comic, SLOT(process()));
 	connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-
-	}
 
 	pagesReady.clear();
 

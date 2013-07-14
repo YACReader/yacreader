@@ -6,6 +6,8 @@
 #include <QByteArray>
 #include <QMap>
 
+#include "extract_delegate.h"
+
 #include "bookmarks.h"
 
 #include "poppler-qt4.h"
@@ -17,10 +19,10 @@
 		//Comic pages, one QPixmap for each file.
 		QVector<QByteArray> _pages;
 		QVector<bool> _loadedPages;
-		QVector<uint> _sizes;
+		//QVector<uint> _sizes;
 		QStringList _fileNames;
 		QMap<QString,int> _newOrder;
-		QVector<QString> _order;
+		QList<QString> _order;
 		int _index;
 		QString _path;
 		bool _loaded;
@@ -79,20 +81,20 @@
 		
 	};
 
-	class FileComic : public Comic
+	class FileComic : public Comic, public ExtractDelegate
 	{
 		Q_OBJECT
 	private:
-		QProcess * _7z;
-		QProcess * _7ze;
+	QList<QString> filter(const QList<QString> & src);
 	public:
 		FileComic();
 		FileComic(const QString & path);
 		~FileComic();
-
+		void fileExtracted(int index, const QByteArray & rawData);
 		virtual bool load(const QString & path);
 	
 	public slots:
+		void process();
 		void loadImages();
 		void loadSizes();
 		void openingError(QProcess::ProcessError error);
