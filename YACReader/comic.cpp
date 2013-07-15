@@ -240,12 +240,115 @@ QList<QString> FileComic::filter(const QList<QString> & src)
 }
 void FileComic::fileExtracted(int index, const QByteArray & rawData)
 {
+	QFile f("c:/temp/out2.txt");
+	f.open(QIODevice::Append);
+	QTextStream out(&f);
 	int sortedIndex = _fileNames.indexOf(_order.at(index));
+	out << sortedIndex << " , ";
+	f.close();
 	if(sortedIndex == -1)
 		return;
 	_pages[sortedIndex] = rawData;
 	emit imageLoaded(sortedIndex);
 	emit imageLoaded(sortedIndex,_pages[sortedIndex]);
+}
+
+QList<QVector<quint32> > FileComic::getSections(int & sectionIndex)
+{
+	QVector<quint32> sortedIndexes;
+	foreach(QString name, _fileNames)
+	{
+		sortedIndexes.append(_order.indexOf(name));
+	}
+	QList<QVector <quint32> > sections;
+	quint32 previous = 0;
+	sectionIndex = -1;
+	int sectionCount = 0;
+	QVector <quint32> section;
+	int idx = 0;
+	int realIdx;
+	foreach(quint32 i, sortedIndexes)
+	{
+		
+		if(_firstPage == idx)
+		{
+			sectionIndex = sectionCount;
+			realIdx  = i;
+		}
+		if(previous <= i)
+		{
+			//out << "idx : " << i << endl;
+			section.append(i);
+			previous = i;
+		}
+		else
+		{
+			if(sectionIndex == sectionCount) //found
+			{
+				if(section.indexOf(realIdx)!=0)
+				{
+					QVector <quint32> section1;
+					QVector <quint32> section2;
+					foreach(quint32 si,section)
+					{
+						if(si<realIdx)
+							section1.append(si);
+						else
+							section2.append(si);
+					}
+					sectionIndex++;
+					sections.append(section1);
+					sections.append(section2);
+					//out << "SPLIT" << endl;
+
+				}
+				else
+				{
+					sections.append(section);
+				}
+			}
+			else
+				sections.append(section);
+
+			section = QVector <quint32> ();
+			//out << "---------------" << endl;
+			section.append(i);
+			//out << "idx : " << i << endl;
+			previous = i;
+			sectionCount++;
+		}
+
+		idx++;
+	}
+				if(sectionIndex == sectionCount) //found
+			{
+				if(section.indexOf(realIdx)!=0)
+				{
+					QVector <quint32> section1;
+					QVector <quint32> section2;
+					foreach(quint32 si,section)
+					{
+						if(si<realIdx)
+							section1.append(si);
+						else
+							section2.append(si);
+					}
+					sectionIndex++;
+					sections.append(section1);
+					sections.append(section2);
+					//out << "SPLIT" << endl;
+
+				}
+				else
+				{
+					sections.append(section);
+				}
+			}
+			else
+				sections.append(section);
+
+	//out << "se han encontrado : " << sections.count() << " sectionIndex : " << sectionIndex << endl;
+	return sections;
 }
 
 void FileComic::process()
@@ -290,8 +393,17 @@ void FileComic::process()
 
 	out << "tiempo en ordenar : " << myTimer.elapsed() << endl;
 
-	QList<QByteArray> allData = archive.getAllData(this);
-	
+	_firstPage = 0;
+	_index = 0;
+
+	int sectionIndex;
+	QList<QVector <quint32> > sections = getSections(sectionIndex);
+
+	for(int i = sectionIndex; i<sections.count() ; i++)
+		archive.getAllData(sections.at(i),this);
+	for(int i = 0; i<sectionIndex; i++)
+		archive.getAllData(sections.at(i),this);
+	//archive.getAllData(QVector<quint32>(),this);
 	out << "tiempo en obtener datos : " << myTimer.elapsed() << endl;
 	/*
 	foreach(QString name,_fileNames)
@@ -303,7 +415,7 @@ void FileComic::process()
 		emit imageLoaded(sortedIndex,_pages[sortedIndex]);
 	}*/
 
-	out << "tiempo en copiar datos : " << myTimer.elapsed() << endl;
+	out << "--tiempo en copiar datos : " << myTimer.elapsed() << endl;
 	f.close();
 	emit imagesLoaded();
 }

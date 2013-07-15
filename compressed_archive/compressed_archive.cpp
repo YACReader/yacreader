@@ -166,14 +166,18 @@ int CompressedArchive::getNumFiles()
     szInterface->archive->GetNumberOfItems(&numItems);
 	return numItems;
 }
-QList<QByteArray> CompressedArchive::getAllData(ExtractDelegate * delegate)
+QList<QByteArray> CompressedArchive::getAllData(const QVector<quint32> & indexes, ExtractDelegate * delegate)
 {
 	CArchiveExtractCallback *extractCallbackSpec = new CArchiveExtractCallback(true,delegate);
 	CMyComPtr<IArchiveExtractCallback> extractCallback(extractCallbackSpec);
 	extractCallbackSpec->Init(szInterface->archive, L""); // second parameter is output folder path
 	extractCallbackSpec->PasswordIsDefined = false;
 
-	HRESULT result = szInterface->archive->Extract(NULL, -1, false, extractCallback);
+	HRESULT result;
+	if(indexes.isEmpty())
+		result = szInterface->archive->Extract(NULL, -1, false, extractCallback);
+	else
+		result = szInterface->archive->Extract(indexes.data(), indexes.count(), false, extractCallback);
 	if (result != S_OK)
 	{
 		qDebug() << "Extract Error" << endl;
