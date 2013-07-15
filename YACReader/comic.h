@@ -124,6 +124,7 @@
 	private:
 		//pdf
 		Poppler::Document * pdfComic;
+		void renderPage(int page);
 
 		//void run();
 	public:

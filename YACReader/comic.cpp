@@ -240,12 +240,12 @@ QList<QString> FileComic::filter(const QList<QString> & src)
 }
 void FileComic::fileExtracted(int index, const QByteArray & rawData)
 {
-	QFile f("c:/temp/out2.txt");
+	/*QFile f("c:/temp/out2.txt");
 	f.open(QIODevice::Append);
-	QTextStream out(&f);
+	QTextStream out(&f);*/
 	int sortedIndex = _fileNames.indexOf(_order.at(index));
-	out << sortedIndex << " , ";
-	f.close();
+	//out << sortedIndex << " , ";
+	//f.close();
 	if(sortedIndex == -1)
 		return;
 	_pages[sortedIndex] = rawData;
@@ -499,6 +499,7 @@ void FolderComic::process()
 	_pages.clear();
 	_pages.resize(nPages);
 	_loadedPages = QVector<bool>(nPages,false);
+
 	if(nPages==0)
 	{
 		//TODO emitir este mensaje en otro sitio
@@ -507,17 +508,27 @@ void FolderComic::process()
 	}
 	else
 	{
+		_firstPage = bm->getLastPage();
+		_index = bm->getLastPage();
+		emit(openAt(_index));
+
 		emit pageChanged(0); // this indicates new comic, index=0
 		emit numPages(_pages.size());
 		_loaded = true;
 
-		for(int i=0;i<nPages;i++)
+		int count=0;
+		int i=_firstPage;
+		while(count<nPages)
 		{
 			QFile f(list.at(i).absoluteFilePath());
 			f.open(QIODevice::ReadOnly);
 			_pages[i]=f.readAll();
 			emit imageLoaded(i);
 			emit imageLoaded(i,_pages[i]);
+			i++;
+			if(i==nPages)
+				i=0;
+			count++;
 		}
 	}
 	emit imagesLoaded();
@@ -578,28 +589,35 @@ void PDFComic::process()
 	_pages.clear();
 	_pages.resize(nPages);
 	_loadedPages = QVector<bool>(nPages,false);
-	for(int i=0;i<nPages;i++)
-	{
 
-		Poppler::Page* pdfpage = pdfComic->page(i);
-		if (pdfpage)
-		{
-			QImage img = pdfpage->renderToImage(150,150);
-			delete pdfpage;
-			QByteArray ba;
-			QBuffer buf(&ba);
-			img.save(&buf, "jpg");
-			_pages[i] = ba;
-			emit imageLoaded(i);
-			emit imageLoaded(i,_pages[i]);
+	_firstPage = bm->getLastPage();
+	_index = bm->getLastPage();
+	emit(openAt(_index));
 
-		}
+	for(int i=_index;i<nPages;i++)
+		renderPage(i);
+	for(int i=0;i<_index;i++)
+		renderPage(i);
 
-	}
 	delete pdfComic;
 	emit imagesLoaded();
 }
 
+void PDFComic::renderPage(int page)
+{
+	Poppler::Page* pdfpage = pdfComic->page(page);
+	if (pdfpage)
+	{
+		QImage img = pdfpage->renderToImage(150,150);
+		delete pdfpage;
+		QByteArray ba;
+		QBuffer buf(&ba);
+		img.save(&buf, "jpg");
+		_pages[page] = ba;
+		emit imageLoaded(page);
+		emit imageLoaded(page,_pages[page]);
+	}
+}
 
 Comic * FactoryComic::newComic(const QString & path)
 {
