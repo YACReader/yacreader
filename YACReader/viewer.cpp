@@ -111,6 +111,8 @@ drag(false)
 
 	informationLabel = new PageLabelWidget(this);
 
+	setAcceptDrops(true);
+
 }
 
 void Viewer::createConnections()
@@ -176,7 +178,7 @@ void Viewer::open(QString pathFile)
 
 	informationLabel->setText("...");
 
-	setAcceptDrops(true);
+	
 }
 
 void Viewer::showMessageErrorOpening()

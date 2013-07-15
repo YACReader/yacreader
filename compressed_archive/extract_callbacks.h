@@ -238,13 +238,13 @@ STDMETHODIMP CArchiveExtractCallback::PrepareOperation(Int32 askExtractMode)
   {
     case NArchive::NExtract::NAskMode::kExtract:  _extractMode = true; break;
   };
-  switch (askExtractMode)
+ /* switch (askExtractMode)
   {
     case NArchive::NExtract::NAskMode::kExtract:  qDebug() << (kExtractingString); break;
     case NArchive::NExtract::NAskMode::kTest:  qDebug() <<(kTestingString); break;
     case NArchive::NExtract::NAskMode::kSkip:  qDebug() <<(kSkippingString); break;
-  };
-  qDebug() << _filePath;
+  };*/
+  //qDebug() << _filePath;
   return S_OK;
 }
 
@@ -267,6 +267,7 @@ STDMETHODIMP CArchiveExtractCallback::SetOperationResult(Int32 operationResult)
       break;
     default:
     {
+	  //TODO comunicar los fallos usando el delegado
       NumErrors++;
       qDebug() << "     ";
       switch(operationResult)
@@ -295,7 +296,7 @@ STDMETHODIMP CArchiveExtractCallback::SetOperationResult(Int32 operationResult)
   _outFileStream.Release();
   if (_extractMode && _processedFileInfo.AttribDefined)
     NFile::NDirectory::MySetFileAttributes(_diskFilePath, _processedFileInfo.Attrib);*/
-  qDebug() << endl;
+  //qDebug() << endl;
   return S_OK;
 }
 
