@@ -101,6 +101,11 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 	}
 }
 
+CompressedArchive::~CompressedArchive()
+{
+	//TODO
+}
+
 void CompressedArchive::loadFunctions()
 {
 	//LOAD library

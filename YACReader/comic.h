@@ -72,6 +72,7 @@
 		void imageLoaded(int index);
 		void imageLoaded(int index,const QByteArray & image);
 		void pageChanged(int index);
+		void openAt(int index);
 		void numPages(unsigned int numPages);
 		void errorOpening();
 		void isBookmark(bool);

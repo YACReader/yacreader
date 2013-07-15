@@ -31,6 +31,7 @@ class CompressedArchive : public QObject
     Q_OBJECT
 public:
     explicit CompressedArchive(const QString & filePath, QObject *parent = 0);
+	~CompressedArchive();
     
 signals:
     

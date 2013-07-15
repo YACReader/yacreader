@@ -589,7 +589,7 @@ void Render::load(const QString & path)
 	connect(comic,SIGNAL(errorOpening()),this,SLOT(reset()));
 	connect(comic,SIGNAL(imageLoaded(int)),this,SIGNAL(imageLoaded(int)));
 	connect(comic,SIGNAL(imageLoaded(int)),this,SLOT(pageRawDataReady(int)));
-	//connect(comic,SIGNAL(pageChanged(int)),this,SIGNAL(pageChanged(int)));
+	connect(comic,SIGNAL(openAt(int)),this,SLOT(renderAt(int)));
 	connect(comic,SIGNAL(numPages(unsigned int)),this,SIGNAL(numPages(unsigned int)));
 	connect(comic,SIGNAL(numPages(unsigned int)),this,SLOT(setNumPages(unsigned int)));
 	connect(comic,SIGNAL(imageLoaded(int,QByteArray)),this,SIGNAL(imageLoaded(int,QByteArray)));
@@ -624,6 +624,12 @@ void Render::load(const QString & path)
 	
 }
 
+void Render::renderAt(int page)
+{
+	previousIndex = currentIndex = page;
+	emit pageChanged(page);
+}
+
 void Render::reset()
 {
 	loadedComic = false;
@@ -655,6 +661,7 @@ void Render::nextPage()
 		previousIndex = currentIndex;
 		currentIndex = nextPage;
 		update();
+		emit pageChanged(currentIndex);
 	}
 	else
 		emit isLast();
@@ -685,6 +692,7 @@ void Render::previousPage()
 		previousIndex = currentIndex;
 		currentIndex = previousPage;
 		update();
+		emit pageChanged(currentIndex);
 	}
 	else
 		emit isCover();
@@ -761,6 +769,7 @@ void Render::goTo(int index)
 			invalidate();
 
 		update();
+		emit pageChanged(currentIndex);
 	}
 }
 
