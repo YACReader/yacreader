@@ -36,7 +36,7 @@ signals:
     
 public slots:
 	int getNumFiles();
-	QList<QByteArray> getAllData(ExtractDelegate * delegate = 0);
+	QList<QByteArray> getAllData(const QVector<quint32> & indexes, ExtractDelegate * delegate = 0);
 	QByteArray getRawDataAtIndex(int index);
 	QList<QString> getFileNames();
 private:

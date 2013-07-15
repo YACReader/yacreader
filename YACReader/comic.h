@@ -29,8 +29,8 @@
 
 		int _cfi;
 
-		
-		
+		//open the comic at this point
+		int _firstPage;
 
 		bool _isPDF;
 	public:
@@ -86,6 +86,7 @@
 		Q_OBJECT
 	private:
 	QList<QString> filter(const QList<QString> & src);
+	QList<QVector<quint32> > getSections(int & sectionIndex);
 	public:
 		FileComic();
 		FileComic(const QString & path);
