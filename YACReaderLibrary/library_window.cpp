@@ -1012,7 +1012,7 @@ void LibraryWindow::openComic()
 		//Comic is readed
 #else
         
-		QProcess::startDetached(QDir::cleanPath(QCoreApplication::applicationDirPath())+"/YACReader",QStringList() << path);
+		QProcess::startDetached(QDir::cleanPath(QCoreApplication::applicationDirPath())+QString("/YACReader \"%1\"").arg(path),QStringList());
 #endif        
 		//Comic is readed
 		setCurrentComicReaded();
