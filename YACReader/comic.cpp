@@ -393,8 +393,9 @@ void FileComic::process()
 
 	out << "tiempo en ordenar : " << myTimer.elapsed() << endl;
 
-	_firstPage = 0;
-	_index = 0;
+	_firstPage = bm->getLastPage();
+	_index = bm->getLastPage();
+	emit(openAt(_index));
 
 	int sectionIndex;
 	QList<QVector <quint32> > sections = getSections(sectionIndex);

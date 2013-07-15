@@ -149,6 +149,8 @@ public slots:
 	void reset();
 	void reload();
 	Bookmarks * getBookmarks();
+	//sets the firt page to render
+	void renderAt(int page);
 
 signals:
 	void currentPageReady();
