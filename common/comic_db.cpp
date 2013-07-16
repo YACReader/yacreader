@@ -406,3 +406,162 @@ QPixmap ComicInfo::getCover(const QString & basePath)
 	c.convertFromImage(cover);
 	return c;
 }
+QDataStream &operator<<(QDataStream & stream, const ComicDB & comic)
+{
+	stream << comic.id;
+	stream << comic.name;
+	stream << comic.parentId;
+	stream << comic.path;
+	stream << comic._hasCover;
+	stream << comic.info;
+	return stream;
+}
+
+QDataStream &operator>>(QDataStream & stream, ComicDB & comic)
+{
+	stream >> comic.id;
+	stream >> comic.name;
+	stream >> comic.parentId;
+	stream >> comic.path;
+	stream >> comic._hasCover;
+	stream >> comic.info;
+	return stream;
+}
+
+void serializeField(QDataStream & stream, QString * field)
+{
+	stream << (field!=0);
+	if (field!=0) stream << *field;
+}
+
+void serializeField(QDataStream & stream, int * field)
+{
+	stream << (field!=0);
+	if (field!=0) stream << *field;
+}
+
+void serializeField(QDataStream & stream, bool * field)
+{
+	stream << (field!=0);
+	if (field!=0) stream << *field;
+}
+
+void deserializeField(QDataStream & stream, QString * & field)
+{
+	bool isData;
+	stream >> isData;
+	if(isData)
+	{
+		field = new QString();
+		stream >> *field;
+	}
+}
+
+void deserializeField(QDataStream & stream, int * & field)
+{
+	bool isData;
+	stream >> isData;
+	if(isData)
+	{
+		field = new int;
+		stream >> *field;
+	}
+}
+
+void deserializeField(QDataStream & stream, bool * & field)
+{
+	bool isData;
+	stream >> isData;
+	if(isData)
+	{
+		field = new bool;
+		stream >> *field;
+	}
+}
+
+
+QDataStream &operator<<(QDataStream & stream, const ComicInfo & comicInfo)
+{
+	stream << comicInfo.id;
+	stream << comicInfo.read;
+	stream << comicInfo.edited;
+	stream << comicInfo.hash;
+	stream << comicInfo.existOnDb;
+
+	serializeField(stream,comicInfo.title);
+
+	serializeField(stream,comicInfo.coverPage);
+	serializeField(stream,comicInfo.numPages);
+
+	serializeField(stream,comicInfo.number);
+	serializeField(stream,comicInfo.isBis);
+	serializeField(stream,comicInfo.count);
+
+	serializeField(stream,comicInfo.volume);
+	serializeField(stream,comicInfo.storyArc);
+	serializeField(stream,comicInfo.arcNumber);
+	serializeField(stream,comicInfo.arcCount);
+
+	serializeField(stream,comicInfo.genere);
+
+	serializeField(stream,comicInfo.writer);
+	serializeField(stream,comicInfo.penciller);
+	serializeField(stream,comicInfo.inker);
+	serializeField(stream,comicInfo.colorist);
+	serializeField(stream,comicInfo.letterer);
+	serializeField(stream,comicInfo.coverArtist);
+
+	serializeField(stream,comicInfo.date);
+	serializeField(stream,comicInfo.publisher);
+	serializeField(stream,comicInfo.format);
+	serializeField(stream,comicInfo.color);
+	serializeField(stream,comicInfo.ageRating);
+
+	serializeField(stream,comicInfo.synopsis);
+	serializeField(stream,comicInfo.characters);
+	serializeField(stream,comicInfo.notes);
+	return stream;
+}
+
+QDataStream &operator>>(QDataStream & stream, ComicInfo & comicInfo)
+{
+	stream >> comicInfo.id;
+	stream >> comicInfo.read;
+	stream >> comicInfo.edited;
+	stream >> comicInfo.hash;
+	stream >> comicInfo.existOnDb;
+
+	deserializeField(stream,comicInfo.title);
+
+	deserializeField(stream,comicInfo.coverPage);
+	deserializeField(stream,comicInfo.numPages);
+
+	deserializeField(stream,comicInfo.number);
+	deserializeField(stream,comicInfo.isBis);
+	deserializeField(stream,comicInfo.count);
+
+	deserializeField(stream,comicInfo.volume);
+	deserializeField(stream,comicInfo.storyArc);
+	deserializeField(stream,comicInfo.arcNumber);
+	deserializeField(stream,comicInfo.arcCount);
+
+	deserializeField(stream,comicInfo.genere);
+
+	deserializeField(stream,comicInfo.writer);
+	deserializeField(stream,comicInfo.penciller);
+	deserializeField(stream,comicInfo.inker);
+	deserializeField(stream,comicInfo.colorist);
+	deserializeField(stream,comicInfo.letterer);
+	deserializeField(stream,comicInfo.coverArtist);
+
+	deserializeField(stream,comicInfo.date);
+	deserializeField(stream,comicInfo.publisher);
+	deserializeField(stream,comicInfo.format);
+	deserializeField(stream,comicInfo.color);
+	deserializeField(stream,comicInfo.ageRating);
+
+	deserializeField(stream,comicInfo.synopsis);
+	deserializeField(stream,comicInfo.characters);
+	deserializeField(stream,comicInfo.notes);
+	return stream;
+}

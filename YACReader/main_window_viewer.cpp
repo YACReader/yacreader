@@ -13,6 +13,9 @@
 #include "help_about_dialog.h"
 #include "yacreader_tool_bar_stretch.h"
 
+#include "comic_db.h"
+#include "yacreader_local_client.h"
+
 #include <ctime>
 #include <algorithm>
 
@@ -115,7 +118,7 @@ void MainWindowViewer::setupUI()
 
 	setWindowTitle("YACReader");
 
-	if(QCoreApplication::argc()>1)
+	if(QCoreApplication::argc() == 2) //only path...
 	{
 		//TODO: new method open(QString)
 		QString pathFile = QCoreApplication::arguments().at(1);
@@ -124,12 +127,37 @@ void MainWindowViewer::setupUI()
 		getSiblingComics(fi.absolutePath(),fi.fileName());
 
 		setWindowTitle("YACReader - " + fi.fileName());
+		enableActions();
+		viewer->open(pathFile);
+	}
+	/*else if(QCoreApplication::argc() == 5)
+	{
+		QString pathFile = QCoreApplication::arguments().at(1);
+		currentDirectory = pathFile;
+		quint64 comicId = QCoreApplication::arguments().at(2).toULongLong();
+		quint64 libraryId = QCoreApplication::arguments().at(3).toULongLong();
+		int page = QCoreApplication::arguments().at(4).toULongLong();
+
+		QFileInfo fi(pathFile);
 		
 		enableActions();
+
+		//TODO request data to the server
+		ComicDB comic;
+		comic.id = comicId;
+		YACReaderLocalClient client;
 		
-		viewer->open(pathFile);
-		
-	}
+		//if(client.requestComicInfo(libraryId,comic))
+		{
+			if(comic.info.title == 0 || comic.info.title->isEmpty() )
+				setWindowTitle("YACReader - " + fi.fileName());
+			else
+				setWindowTitle("YACReader - " + *comic.info.title);
+		}
+		//else
+			setWindowTitle("YACReader : " + fi.fileName());
+		viewer->open(pathFile,page);
+	} */
 
 	versionChecker = new HttpVersionChecker();
 

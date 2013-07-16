@@ -4,6 +4,7 @@
 #include <QObject>
 
 class QLocalServer;
+class ComicDB;
 
 class YACReaderLocalServer : public QObject
 {
@@ -17,7 +18,7 @@ public slots:
     bool isListening();
     void sendResponse();
 	static bool isRunning();
-
+	void getComicInfo(quint64 libraryId, ComicDB & comic);
 private:
     QLocalServer * localServer;
     

@@ -16,8 +16,8 @@ signals:
     
 public slots:
     void readMessage();
-    void requestComicInfo(QString library, ComicDB & comic);
-    void sendComicInfo(QString library, ComicDB & comic);
+    bool requestComicInfo(quint64 libraryId, ComicDB & comic);
+    bool sendComicInfo(quint64 libraryId, ComicDB & comic);
 
 private:
     QLocalSocket * localSocket;

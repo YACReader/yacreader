@@ -35,7 +35,7 @@ class NotificationsLabelWidget;
 	public:
 		bool fullscreen; //TODO, change by the right use of windowState();
 	public slots:
-		void open(QString pathFile);
+		void open(QString pathFile, int atPage = -1);
 		void prev();
 		void next();
 		void showGoToDialog();
