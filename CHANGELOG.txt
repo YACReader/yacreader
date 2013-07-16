@@ -1,3 +1,9 @@
+6.6 (No pública)
+Modificado YACReader para que abra los archivos comprimidos usando 7z.dll (.so, .dylib)
+YACReader abre ahora los cómics por la última página leída.
+Corregido bug que causaba que algunos cómics no se pudiesen abrir desde YACReaderLibrary en YACReader
+Corregido el modo en el que se actualizaba la "information label"
+
 6.5
 Nueva interfaz principal de YACReaderLibrary y YACReader
 Corregido bug que causaba que el servidor no se activase en el primer arranque en MacOSX

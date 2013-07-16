@@ -91,6 +91,10 @@ public:
 
 	QPixmap getCover(const QString & basePath);
 
+	friend QDataStream &operator<<(QDataStream & stream, const ComicInfo & comicInfo);
+
+	friend QDataStream &operator>>(QDataStream & stream, ComicInfo & comicInfo);
+
 private:
 	void setValue(QString * & field, const QString & value);
 	void setValue(int * & field, int value);
@@ -115,6 +119,9 @@ public:
 	QString toTXT();
 	
 	ComicInfo info;
+
+	friend QDataStream &operator<<(QDataStream &, const ComicDB &);
+	friend QDataStream &operator>>(QDataStream &, ComicDB &);
 };
 
 

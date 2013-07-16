@@ -19,8 +19,8 @@ Comic::Comic()
     setup();
 }
 //-----------------------------------------------------------------------------
-Comic::Comic(const QString & pathFile)
-:_pages(),_index(0),_path(pathFile),_loaded(false),bm(new Bookmarks()),_loadedPages(),_isPDF(false)
+Comic::Comic(const QString & pathFile, int atPage )
+:_pages(),_index(0),_path(pathFile),_loaded(false),bm(new Bookmarks()),_loadedPages(),_isPDF(false),_firstPage(atPage)
 {
     setup();
 }
@@ -180,10 +180,10 @@ FileComic::FileComic()
 
 }
 
-FileComic::FileComic(const QString & path)
-	:Comic(path)
+FileComic::FileComic(const QString & path, int atPage )
+	:Comic(path,atPage)
 {
-	load(path);
+	load(path,atPage);
 }
 
 FileComic::~FileComic()
@@ -191,14 +191,18 @@ FileComic::~FileComic()
 	//Comic::~Comic();
 }
 
-bool FileComic::load(const QString & path)
+bool FileComic::load(const QString & path, int atPage)
 {
 	QFileInfo fi(path);
 
 	if(fi.exists())
 	{
-		bm->newComic(path);
-		emit bookmarksUpdated();
+		if(atPage == -1)
+		{
+			bm->newComic(path);
+			emit bookmarksUpdated();
+		}
+		_firstPage = atPage;
 		//emit bookmarksLoaded(*bm);
 
 		_path = QDir::cleanPath(path);
@@ -393,8 +397,9 @@ void FileComic::process()
 
 	out << "tiempo en ordenar : " << myTimer.elapsed() << endl;
 
-	_firstPage = bm->getLastPage();
-	_index = bm->getLastPage();
+	if(_firstPage == -1)
+		_firstPage = bm->getLastPage();
+	_index = _firstPage;
 	emit(openAt(_index));
 
 	int sectionIndex;
@@ -463,10 +468,10 @@ FolderComic::FolderComic()
 
 }
 
-FolderComic::FolderComic(const QString & path)
-	:Comic(path)
+FolderComic::FolderComic(const QString & path, int atPage )
+	:Comic(path, atPage )
 {
-	load(path);
+	load(path, atPage );
 }
 
 FolderComic::~FolderComic()
@@ -474,11 +479,15 @@ FolderComic::~FolderComic()
 
 }
 
-bool FolderComic::load(const QString & path)
+bool FolderComic::load(const QString & path, int atPage )
 {
 	_path = path;
-	bm->newComic(_path);
-	emit bookmarksUpdated();
+	if(atPage == -1)
+	{
+		bm->newComic(_path);
+		emit bookmarksUpdated();
+	}
+	_firstPage = atPage;
 	//emit bookmarksLoaded(*bm);
 	return true;
 }
@@ -508,8 +517,11 @@ void FolderComic::process()
 	}
 	else
 	{
-		_firstPage = bm->getLastPage();
-		_index = bm->getLastPage();
+		if(_firstPage == -1)
+			_firstPage = bm->getLastPage();
+
+		_index = _firstPage;
+
 		emit(openAt(_index));
 
 		emit pageChanged(0); // this indicates new comic, index=0
@@ -544,10 +556,10 @@ PDFComic::PDFComic()
 
 }
 
-PDFComic::PDFComic(const QString & path)
-	:Comic(path)
+PDFComic::PDFComic(const QString & path, int atPage)
+	:Comic(path,atPage)
 {
-	load(path);
+	load(path,atPage);
 }
 
 PDFComic::~PDFComic()
@@ -555,11 +567,15 @@ PDFComic::~PDFComic()
 
 }
 
-bool PDFComic::load(const QString & path)
+bool PDFComic::load(const QString & path, int atPage)
 {
 	_path = path;
-	bm->newComic(_path);
-	emit bookmarksUpdated();
+	if(atPage == -1)
+	{
+		bm->newComic(_path);
+		emit bookmarksUpdated();
+	}
+	_firstPage = atPage;
 	//emit bookmarksLoaded(*bm);
 	return true;
 }
@@ -590,8 +606,9 @@ void PDFComic::process()
 	_pages.resize(nPages);
 	_loadedPages = QVector<bool>(nPages,false);
 
-	_firstPage = bm->getLastPage();
-	_index = bm->getLastPage();
+	if(_firstPage == -1)
+		_firstPage = bm->getLastPage();
+	_index = _firstPage;
 	emit(openAt(_index));
 
 	for(int i=_index;i<nPages;i++)

@@ -156,14 +156,14 @@ void Viewer::createConnections()
 	connect(render,SIGNAL(bookmarksUpdated()),this,SLOT(setBookmarks()));
 }
 
-void Viewer::open(QString pathFile)
+void Viewer::open(QString pathFile, int atPage)
 {
 	if(render->hasLoadedComic())
 		save();
 	//bd->setBookmarks(*bm);
 
 	goToFlow->reset();
-	render->load(pathFile);
+	render->load(pathFile, atPage);
 	//render->update();
 
 	verticalScrollBar()->setSliderPosition(verticalScrollBar()->minimum());

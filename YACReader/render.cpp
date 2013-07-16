@@ -564,7 +564,7 @@ void Render::update()
 //-----------------------------------------------------------------------------
 // Comic interface
 //-----------------------------------------------------------------------------
-void Render::load(const QString & path)
+void Render::load(const QString & path, int atPage)
 {
 	if(comic!=0)
 	{
@@ -612,7 +612,7 @@ void Render::load(const QString & path)
 
 	pagesReady.clear();
 
-	comic->load(path); //garantiza que se va a intentar abrir el cómic
+	comic->load(path,atPage); //garantiza que se va a intentar abrir el cómic
 
 	if(thread != NULL)
 		thread->start();

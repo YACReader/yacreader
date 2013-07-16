@@ -4,6 +4,9 @@
 #include <QLocalSocket>
 
 #include "yacreader_global.h"
+#include "db_helper.h"
+
+#include "comic_db.h"
 
 YACReaderLocalServer::YACReaderLocalServer(QObject *parent) :
     QObject(parent)
@@ -49,22 +52,50 @@ void YACReaderLocalServer::sendResponse()
     clientConnection->flush();
     clientConnection->disconnectFromServer();*/
 
-	     QByteArray block;
-     QDataStream out(&block, QIODevice::WriteOnly);
-     out.setVersion(QDataStream::Qt_4_0);
-     out << (quint16)0;
-     out << QString("ok");
-     out.device()->seek(0);
-     out << (quint16)(block.size() - sizeof(quint16));
-
      QLocalSocket *clientConnection = localServer->nextPendingConnection();
      connect(clientConnection, SIGNAL(disconnected()),
              clientConnection, SLOT(deleteLater()));
 
-     clientConnection->write(block);
-     clientConnection->flush();
+	 quint64 libraryId;
+	 ComicDB comic;
+	 clientConnection->waitForReadyRead();
+	 QByteArray data;
+	 QDataStream inputStream(data);
+	 inputStream.setVersion(QDataStream::Qt_4_0);
+	 int totalSize = 0;
+	 while((data.size()-sizeof(quint16)) != totalSize )
+	 {
+		 data.append(clientConnection->read(1000000000));
+		 if(data.size()>=sizeof(quint16) && totalSize == 0)
+			 inputStream >> totalSize;
+	 }
+	 inputStream >> libraryId;
+	 inputStream >> comic;
+
+	 getComicInfo(libraryId,comic);
+
+	 QByteArray block;
+     QDataStream out(&block, QIODevice::WriteOnly);
+     out.setVersion(QDataStream::Qt_4_0);
+	 out << (quint16)0;
+     out << comic;
+	 out.device()->seek(0);
+	 out << (quint16)(block.size() - sizeof(quint16));
+
+	int  written = 0;
+	while(written != block.size())
+	{
+		written += clientConnection->write(block);
+		clientConnection->flush();
+	}
+	 //clientConnection->waitForBytesWritten();
      clientConnection->disconnectFromServer();
 
+}
+
+void YACReaderLocalServer::getComicInfo(quint64 libraryId, ComicDB & comic)
+{
+	comic = DBHelper::getComicInfo(DBHelper::getLibrariesNames().at(libraryId), comic.id);
 }
 
 bool YACReaderLocalServer::isRunning()

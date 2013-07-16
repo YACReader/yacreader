@@ -38,11 +38,11 @@
 
 		//Constructors
 		Comic();
-		Comic(const QString & pathFile);
+		Comic(const QString & pathFile, int atPage = -1);
 		~Comic();
 		void setup();
 		//Load pages from file
-		virtual bool load(const QString & path) = 0;
+		virtual bool load(const QString & path, int atPage = -1) = 0;
 		
 		/*void loadFromFile(const QString & pathFile);
 		void loadFromDir(const QString & pathDir);
@@ -90,10 +90,10 @@
 	QList<QVector<quint32> > getSections(int & sectionIndex);
 	public:
 		FileComic();
-		FileComic(const QString & path);
+		FileComic(const QString & path, int atPage = -1);
 		~FileComic();
 		void fileExtracted(int index, const QByteArray & rawData);
-		virtual bool load(const QString & path);
+		virtual bool load(const QString & path, int atPage = -1);
 	
 	public slots:
 		void process();
@@ -109,10 +109,10 @@
 		//void run();
 	public:
 		FolderComic();
-		FolderComic(const QString & path);
+		FolderComic(const QString & path, int atPage = -1);
 		~FolderComic();
 
-		virtual bool load(const QString & path);
+		virtual bool load(const QString & path, int atPage = -1);
 	public slots:
 		void process();
 
@@ -129,10 +129,10 @@
 		//void run();
 	public:
 		PDFComic();
-		PDFComic(const QString & path);
+		PDFComic(const QString & path, int atPage = -1);
 		~PDFComic();
 
-		virtual bool load(const QString & path);
+		virtual bool load(const QString & path, int atPage = -1);
 	public slots:
 		void process();
 	};

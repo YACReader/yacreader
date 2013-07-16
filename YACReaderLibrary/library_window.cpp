@@ -1004,15 +1004,20 @@ void LibraryWindow::openComic()
 {
 	if(!importedCovers)
 	{
-		QString path = currentPath() + dmCV->getComicPath(comicView->currentIndex());
+		ComicDB comic = dmCV->getComic(comicView->currentIndex());
+		QString path = currentPath() + comic.path;
+		/*quint64 comicId = comic.id;
+		//TODO generate IDS for libraries...
+		quint64 libraryId = selectedLibrary->currentIndex();
+		int page = *(comic.info.numPages) / 2;*/
 		
 #ifdef Q_OS_MAC
 		
-		QProcess::startDetached("open", QStringList() << "-n" << QDir::cleanPath(QCoreApplication::applicationDirPath()+"/../../../YACReader.app") << "--args" << path);//,QStringList() << path);
+		QProcess::startDetached("open", QStringList() << "-n" << QDir::cleanPath(QCoreApplication::applicationDirPath()+"/../../../YACReader.app") << "--args" << path /*<< comicId << libraryId << page*/);//,QStringList() << path);
 		//Comic is readed
 #else
         
-		QProcess::startDetached(QDir::cleanPath(QCoreApplication::applicationDirPath())+QString("/YACReader \"%1\"").arg(path),QStringList());
+		QProcess::startDetached(QDir::cleanPath(QCoreApplication::applicationDirPath())+QString("/YACReader \"%1\"").arg(path)/*.arg(comicId).arg(libraryId).arg(page)*/,QStringList());
 #endif        
 		//Comic is readed
 		setCurrentComicReaded();

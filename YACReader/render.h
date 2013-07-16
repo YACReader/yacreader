@@ -132,7 +132,7 @@ public slots:
 	//--comic interface
 	void nextPage();
 	void previousPage();
-	void load(const QString & path);
+	void load(const QString & path, int atPage);
 	void rotateRight();
 	void rotateLeft();
 	unsigned int getIndex();
