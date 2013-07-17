@@ -120,6 +120,8 @@ public:
 	
 	ComicInfo info;
 
+	bool operator==(const ComicDB & other){return id == other.id;};
+
 	friend QDataStream &operator<<(QDataStream &, const ComicDB &);
 	friend QDataStream &operator>>(QDataStream &, ComicDB &);
 };

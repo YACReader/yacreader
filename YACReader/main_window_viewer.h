@@ -9,6 +9,8 @@
 #include <QCloseEvent>
 #include <QSettings>
 
+#include "comic_db.h"
+
 class Comic;
 class Viewer;
 class OptionsDialog;
@@ -23,6 +25,7 @@ class YACReaderSliderAction;
 
 	public slots:
 		void open();
+		void open(QString path, ComicDB & comic, QList<ComicDB> & siblings);
 		void openFolder();
 		void saveImage();
 		void toggleToolBars();
@@ -115,7 +118,11 @@ class YACReaderSliderAction;
 		void dragEnterEvent(QDragEnterEvent *event);
 
 		QSettings * settings;
-		
+
+		ComicDB currentComicDB;
+		QList<ComicDB> siblingComics;
+signals:
+		void closed();
 	protected:
 		virtual void closeEvent ( QCloseEvent * event );
 	public:

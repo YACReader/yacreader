@@ -8,6 +8,7 @@
 #include "yacreader_global.h"
 #include "startup.h"
 #include "yacreader_local_server.h"
+
 #define PICTUREFLOW_QT4 1
 
 //interfaz al servidor
@@ -21,6 +22,10 @@ int main( int argc, char ** argv )
   QString sufix = QLocale::system().name();
   translator.load(QCoreApplication::applicationDirPath()+"/languages/yacreaderlibrary_"+sufix);
   app.installTranslator(&translator);
+  
+  QTranslator viewerTranslator;
+  viewerTranslator.load(QCoreApplication::applicationDirPath()+"/languages/yacreader_"+sufix);
+  app.installTranslator(&viewerTranslator);
   app.setApplicationName("YACReaderLibrary");
 
 #ifdef SERVER_RELEASE

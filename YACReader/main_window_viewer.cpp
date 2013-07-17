@@ -558,6 +558,34 @@ void MainWindowViewer::open()
 	}
 }
 
+void MainWindowViewer::open(QString path, ComicDB & comic, QList<ComicDB> & siblings)
+{
+	currentComicDB = comic;
+	siblingComics = siblings;
+
+	QFileInfo fi(path);
+	currentDirectory = fi.absoluteDir().path();
+
+	if(comic.info.title != 0 && !comic.info.title->isEmpty())
+		setWindowTitle("YACReader - " + *comic.info.title);
+	else
+		setWindowTitle("YACReader - " + fi.fileName());
+
+	viewer->open(path);
+	enableActions();
+	int index = siblings.indexOf(comic);
+
+	if(index>0)
+		openPreviousComicAction->setDisabled(false);
+	else
+		openPreviousComicAction->setDisabled(true);
+
+	if(index+1<siblings.count())
+		openNextComicAction->setDisabled(false);
+	else
+		openNextComicAction->setDisabled(true);
+}
+
 void MainWindowViewer::openComicFromPath(QString pathFile)
 {
 	currentDirectory = pathFile;
@@ -795,10 +823,19 @@ void MainWindowViewer::closeEvent ( QCloseEvent * event )
 		conf.setSize(size());
 	}
 	conf.setMaximized(isMaximized());
+
+	emit (closed());
 }
 
 void MainWindowViewer::openPreviousComic()
 {
+	if(!siblingComics.isEmpty())
+	{
+		int currentIndex = siblingComics.indexOf(currentComicDB);
+		ComicDB previoiusComic = siblingComics.at(currentIndex-1);
+		open(currentDirectory+previoiusComic.path,previoiusComic,siblingComics);
+		return;
+	}
 	if(!previousComicPath.isEmpty())
 	{
 		viewer->open(previousComicPath);
@@ -811,6 +848,13 @@ void MainWindowViewer::openPreviousComic()
 
 void MainWindowViewer::openNextComic()
 {
+	if(!siblingComics.isEmpty())
+	{
+		int currentIndex = siblingComics.indexOf(currentComicDB);
+		ComicDB nextComic = siblingComics.at(currentIndex+1);
+		open(currentDirectory+nextComic.path,nextComic,siblingComics);
+		return;
+	}
 	if(!nextComicPath.isEmpty())
 	{
 		viewer->open(nextComicPath);

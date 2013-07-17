@@ -41,6 +41,7 @@ public:
 	QVector<bool> getReadList();
 	QVector<bool> setAllComicsRead(bool read);
 	QList<ComicDB> getComics(QList<QModelIndex> list); //--> recupera la información común a los comics seleccionados
+	QList<ComicDB> getAllComics();
 	QModelIndex getIndexFromId(quint64 id);
 	//setcomicInfo(QModelIndex & mi); --> inserta en la base datos
 	//setComicInfoForAllComics(); --> inserta la información común a todos los cómics de una sola vez.

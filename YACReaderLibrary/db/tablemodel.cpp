@@ -394,6 +394,25 @@ QVector<bool> TableModel::setAllComicsRead(bool read)
 	return readList;
 }
 
+QList<ComicDB> TableModel::getAllComics()
+{
+	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+	db.transaction();
+
+	QList<ComicDB> comics;
+	int numComics = _data.count();
+	for(int i=0;i<numComics;i++)
+	{
+		comics.append(DBHelper::loadComic(_data.value(i)->data(ID).toULongLong(),db));
+	}
+
+	db.commit();
+	db.close();
+	QSqlDatabase::removeDatabase(_databasePath);
+
+	return comics;
+}
+
 QList<ComicDB> TableModel::getComics(QList<QModelIndex> list)
 {
 	QList<ComicDB> comics;
