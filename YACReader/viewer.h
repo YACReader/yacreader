@@ -132,6 +132,7 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 
 	public:
 		Viewer(QWidget * parent = 0);
+		~Viewer();
 		void toggleFullScreen();
 		const QPixmap * pixmap();
 		//Comic * getComic(){return comic;}

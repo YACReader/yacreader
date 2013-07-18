@@ -130,7 +130,7 @@ QImage changeGamma( const QImage& image, int gamma )
     return changeImage< changeGamma >( image, gamma );
     }
 
-QMutex mutex;
+
 
 //-----------------------------------------------------------------------------
 // MeanNoiseReductionFilter
@@ -336,8 +336,9 @@ PageRender::PageRender()
 {
 
 }
-PageRender::PageRender(int np, const QByteArray & rd, QImage * p,unsigned int d, QVector<ImageFilter *> f)
+PageRender::PageRender(Render * r,int np, const QByteArray & rd, QImage * p,unsigned int d, QVector<ImageFilter *> f)
 :QThread(),
+render(r),
 numPage(np),
 data(rd),
 page(p),
@@ -348,7 +349,7 @@ filters(f)
 
 void PageRender::run()
 {
-	QMutexLocker locker(&mutex);
+	QMutexLocker locker(&(render->mutex));
 	
 	QImage img;
 	img.loadFromData(data);
@@ -373,8 +374,9 @@ void PageRender::run()
 // DoublePageRender
 //-----------------------------------------------------------------------------
 
-DoublePageRender::DoublePageRender(int np, const QByteArray & rd, const QByteArray & rd2, QImage * p,unsigned int d, QVector<ImageFilter *> f)
+DoublePageRender::DoublePageRender(Render * r, int np, const QByteArray & rd, const QByteArray & rd2, QImage * p,unsigned int d, QVector<ImageFilter *> f)
 :PageRender(),
+render(r),
 numPage(np),
 data(rd),
 data2(rd2),
@@ -388,7 +390,7 @@ filters(f)
 void DoublePageRender::run()
 {
 	//QImage result;
-	QMutexLocker locker(&mutex);
+	QMutexLocker locker(&(render->mutex));
 	QImage img, img2;
 	if(!data.isEmpty())
 		img.loadFromData(data);
@@ -470,6 +472,24 @@ Render::Render()
 	filters.push_back(new GammaFilter());
 }
 
+Render::~Render()
+{
+	if(comic!=0)
+	{
+		comic->moveToThread(QApplication::instance()->thread());
+		comic->deleteLater();
+	}
+
+	foreach(ImageFilter * filter, filters)
+		delete filter;
+
+	foreach(PageRender * pr,pageRenders)
+		if(pr !=0)
+		{
+			if(pr->wait())
+				delete pr;
+		}
+}
 //Este método se encarga de forzar el renderizado de las páginas.
 //Actualiza el buffer según es necesario.
 //si la pagina actual no está renderizada, se lanza un hilo que la renderize (double or single page mode) y se emite una señal que indica que se está renderizando.
@@ -484,16 +504,16 @@ void Render::render()
 			{
 				if(pagesReady[currentIndex] && pagesReady[qMin(currentIndex+1,(int)comic->numPages()-1)])
 					if(currentIndex+1 > comic->numPages()-1)
-						pageRenders[currentPageBufferedIndex] = new DoublePageRender(currentIndex,comic->getRawData()->at(currentIndex),QByteArray(),buffer[currentPageBufferedIndex],imageRotation,filters);
+						pageRenders[currentPageBufferedIndex] = new DoublePageRender(this,currentIndex,comic->getRawData()->at(currentIndex),QByteArray(),buffer[currentPageBufferedIndex],imageRotation,filters);
 					else
-						pageRenders[currentPageBufferedIndex] = new DoublePageRender(currentIndex,comic->getRawData()->at(currentIndex),comic->getRawData()->at(currentIndex+1),buffer[currentPageBufferedIndex],imageRotation,filters);
+						pageRenders[currentPageBufferedIndex] = new DoublePageRender(this,currentIndex,comic->getRawData()->at(currentIndex),comic->getRawData()->at(currentIndex+1),buffer[currentPageBufferedIndex],imageRotation,filters);
 				else
 					//las páginas no están listas, y se están cargando en el cómic
 					emit processingPage(); //para evitar confusiones esta señal debería llamarse de otra forma
 			}
 			else
 				if(pagesReady[currentIndex])
-					pageRenders[currentPageBufferedIndex] = new PageRender(currentIndex,comic->getRawData()->at(currentIndex),buffer[currentPageBufferedIndex],imageRotation,filters);
+					pageRenders[currentPageBufferedIndex] = new PageRender(this,currentIndex,comic->getRawData()->at(currentIndex),buffer[currentPageBufferedIndex],imageRotation,filters);
 				else
 					//las páginas no están listas, y se están cargando en el cómic
 					emit processingPage(); //para evitar confusiones esta señal debería llamarse de otra forma
@@ -862,7 +882,7 @@ void Render::fillBuffer()
 			pageRenders[currentPageBufferedIndex+i]==0 &&
 			pagesReady[currentIndex+1]) //preload next pages
 		{
-			pageRenders[currentPageBufferedIndex+i] = new PageRender(currentIndex+i,comic->getRawData()->at(currentIndex+i),buffer[currentPageBufferedIndex+i],imageRotation,filters);
+			pageRenders[currentPageBufferedIndex+i] = new PageRender(this,currentIndex+i,comic->getRawData()->at(currentIndex+i),buffer[currentPageBufferedIndex+i],imageRotation,filters);
 			connect(pageRenders[currentPageBufferedIndex],SIGNAL(pageReady(int)),this,SLOT(prepareAvailablePage(int)));
 			pageRenders[currentPageBufferedIndex+i]->start();
 		}
@@ -873,7 +893,7 @@ void Render::fillBuffer()
 			pageRenders[currentPageBufferedIndex-i]==0 &&
 			pagesReady[currentIndex-1]) //preload previous pages
 		{
-			pageRenders[currentPageBufferedIndex-i] = new PageRender(currentIndex-i,comic->getRawData()->at(currentIndex-i),buffer[currentPageBufferedIndex-i],imageRotation,filters);
+			pageRenders[currentPageBufferedIndex-i] = new PageRender(this,currentIndex-i,comic->getRawData()->at(currentIndex-i),buffer[currentPageBufferedIndex-i],imageRotation,filters);
 			connect(pageRenders[currentPageBufferedIndex],SIGNAL(pageReady(int)),this,SLOT(prepareAvailablePage(int)));
 			pageRenders[currentPageBufferedIndex-i]->start();
 		}
@@ -891,9 +911,9 @@ void Render::fillBufferDoublePage()
 			(pagesReady[currentIndex+2*i] && pagesReady[qMin(currentIndex+(2*i)+1,(int)comic->numPages()-1)])) //preload next pages
 		{
 			if(currentIndex+(2*i)+1 > comic->numPages()-1)
-				pageRenders[currentPageBufferedIndex+i] = new DoublePageRender(currentIndex+2*i,comic->getRawData()->at(currentIndex+(2*i)),QByteArray(),buffer[currentPageBufferedIndex+i],imageRotation,filters);
+				pageRenders[currentPageBufferedIndex+i] = new DoublePageRender(this,currentIndex+2*i,comic->getRawData()->at(currentIndex+(2*i)),QByteArray(),buffer[currentPageBufferedIndex+i],imageRotation,filters);
 			else
-				pageRenders[currentPageBufferedIndex+i] = new DoublePageRender(currentIndex+2*i,comic->getRawData()->at(currentIndex+(2*i)),comic->getRawData()->at(currentIndex+(2*i)+1),buffer[currentPageBufferedIndex+i],imageRotation,filters);
+				pageRenders[currentPageBufferedIndex+i] = new DoublePageRender(this,currentIndex+2*i,comic->getRawData()->at(currentIndex+(2*i)),comic->getRawData()->at(currentIndex+(2*i)+1),buffer[currentPageBufferedIndex+i],imageRotation,filters);
 			connect(pageRenders[currentPageBufferedIndex],SIGNAL(pageReady(int)),this,SLOT(prepareAvailablePage(int)));
 			pageRenders[currentPageBufferedIndex+i]->start();
 		}
@@ -905,9 +925,9 @@ void Render::fillBufferDoublePage()
 			(pagesReady[qMax(currentIndex-2*i,0)] && pagesReady[qMin(currentIndex-(2*i)+1,(int)comic->numPages()-1)])) //preload previous pages
 		{
 			if(currentIndex-2*i == -1)
-				pageRenders[currentPageBufferedIndex-i] = new DoublePageRender(0,QByteArray(),comic->getRawData()->at(0),buffer[currentPageBufferedIndex-i],imageRotation,filters);
+				pageRenders[currentPageBufferedIndex-i] = new DoublePageRender(this,0,QByteArray(),comic->getRawData()->at(0),buffer[currentPageBufferedIndex-i],imageRotation,filters);
 			else
-				pageRenders[currentPageBufferedIndex-i] = new DoublePageRender(currentIndex-2*i,comic->getRawData()->at(currentIndex-(2*i)),comic->getRawData()->at(currentIndex-(2*i)+1),buffer[currentPageBufferedIndex-i],imageRotation,filters);
+				pageRenders[currentPageBufferedIndex-i] = new DoublePageRender(this,currentIndex-2*i,comic->getRawData()->at(currentIndex-(2*i)),comic->getRawData()->at(currentIndex-(2*i)+1),buffer[currentPageBufferedIndex-i],imageRotation,filters);
 			connect(pageRenders[currentPageBufferedIndex],SIGNAL(pageReady(int)),this,SLOT(prepareAvailablePage(int)));
 			pageRenders[currentPageBufferedIndex-i]->start();
 		}

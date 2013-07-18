@@ -29,7 +29,7 @@
 /*#define WIDTH 126
 #define HEIGHT 200*/
 
-QMutex mutexGoToFlow;
+
 
 
 
@@ -39,7 +39,7 @@ GoToFlow::GoToFlow(QWidget *parent,FlowType flowType)
 	updateTimer = new QTimer;
 	connect(updateTimer, SIGNAL(timeout()), this, SLOT(updateImageData()));
 
-	worker = new PageLoader;
+	worker = new PageLoader(&mutexGoToFlow);
 
 
 	flow = new YACReaderFlow(this,flowType);
@@ -70,7 +70,12 @@ GoToFlow::GoToFlow(QWidget *parent,FlowType flowType)
 	
 
 }
-
+GoToFlow::~GoToFlow()
+{
+	delete flow;
+	delete updateTimer;
+	worker->deleteLater();
+}
 
 void GoToFlow::centerSlide(int slide)
 {
@@ -97,7 +102,7 @@ void GoToFlow::setNumSlides(unsigned int slides)
 
 	toolBar->setTop(slides);
 
-	SlideInitializer * si = new SlideInitializer(flow,slides);
+	SlideInitializer * si = new SlideInitializer(&mutexGoToFlow,flow,slides);
 
 	imagesLoaded.clear();
 	imagesLoaded.fill(false,slides);
@@ -235,37 +240,37 @@ void GoToFlow::updateConfig(QSettings * settings)
 //-----------------------------------------------------------------------------
 //SlideInitializer
 //-----------------------------------------------------------------------------
-SlideInitializer::SlideInitializer(PictureFlow * flow,int slides)
-:QThread(),_flow(flow),_slides(slides)		
+SlideInitializer::SlideInitializer(QMutex * m,PictureFlow * flow,int slides)
+:QThread(),mutex(m),_flow(flow),_slides(slides)		
 {
 
 }
 void SlideInitializer::run()
 {
-	mutexGoToFlow.lock();
+	mutex->lock();
 
 	_flow->clear();
 	for(int i=0;i<_slides;i++)
 		_flow->addSlide(QImage());
 	_flow->setCenterIndex(0);
 
-	mutexGoToFlow.unlock();
+	mutex->unlock();
 }
 //-----------------------------------------------------------------------------
 //PageLoader
 //-----------------------------------------------------------------------------
 
 
-PageLoader::PageLoader(): 
-QThread(), restart(false), working(false), idx(-1)
+PageLoader::PageLoader(QMutex * m): 
+QThread(),mutex(m), restart(false), working(false), idx(-1)
 {
 }
 
 PageLoader::~PageLoader()
 {
-	mutexGoToFlow.lock();
+	mutex->lock();
 	condition.wakeOne();
-	mutexGoToFlow.unlock();
+	mutex->unlock();
 	wait();
 }
 
@@ -276,12 +281,12 @@ bool PageLoader::busy() const
 
 void PageLoader::generate(int index, QSize size,const QByteArray & rImage)
 {
-	mutexGoToFlow.lock();
+	mutex->lock();
 	this->idx = index;
 	//this->img = QImage();
 	this->size = size;
 	this->rawImage = rImage;
-	mutexGoToFlow.unlock();
+	mutex->unlock();
 
 	if (!isRunning())
 		start();
@@ -298,7 +303,7 @@ void PageLoader::run()
 	for(;;)
 	{
 		// copy necessary data
-		mutexGoToFlow.lock();
+		mutex->lock();
 		this->working = true;
 		//int idx = this->idx;
 
@@ -308,18 +313,18 @@ void PageLoader::run()
 		// let everyone knows it is ready
 		image = image.scaled(this->size,Qt::KeepAspectRatio,Qt::SmoothTransformation);
 
-		mutexGoToFlow.unlock();
+		mutex->unlock();
 
-		mutexGoToFlow.lock();
+		mutex->lock();
 		this->working = false;
 		this->img = image;
-		mutexGoToFlow.unlock();
+		mutex->unlock();
 
 		// put to sleep
-		mutexGoToFlow.lock();
+		mutex->lock();
 		if (!this->restart)
-			condition.wait(&mutexGoToFlow);
+			condition.wait(mutex);
 		restart = false;
-		mutexGoToFlow.unlock();
+		mutex->unlock();
 	}
 }

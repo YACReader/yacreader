@@ -28,6 +28,12 @@ GoToFlowWidget::GoToFlowWidget(QWidget * parent)
 	setLayout(mainLayout);
 }
 
+GoToFlowWidget::~GoToFlowWidget() { 
+	delete topBar;
+	delete toolBar;
+	delete mainLayout;
+}
+
 void GoToFlowWidget::setPageNumber(int page)
 {
 	toolBar->setPage(page);
