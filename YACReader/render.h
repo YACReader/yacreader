@@ -15,6 +15,7 @@
 #include <QThread>
 
 class Comic;
+class Render;
 
 class ImageFilter {
 public:
@@ -73,7 +74,7 @@ class PageRender : public QThread
 	Q_OBJECT
 public:
 	PageRender();
-        PageRender(int numPage, const QByteArray & rawData, QImage * page,unsigned int degrees=0, QVector<ImageFilter *> filters = QVector<ImageFilter *>());
+        PageRender(Render * render,int numPage, const QByteArray & rawData, QImage * page,unsigned int degrees=0, QVector<ImageFilter *> filters = QVector<ImageFilter *>());
 	int getNumPage(){return numPage;};
 	void setData(const QByteArray & rawData){data = rawData;};
         void setPage(QImage * p){page = p;};
@@ -86,6 +87,7 @@ private:
 	unsigned int degrees;
 	QVector<ImageFilter *> filters;
 	void run();
+	Render * render;
 signals:
 	void pageReady(int);
 
@@ -98,7 +100,7 @@ class DoublePageRender : public PageRender
 {
 	Q_OBJECT
 public:
-        DoublePageRender(int firstPage, const QByteArray & firstPageData,const QByteArray & secondPageData, QImage * page,unsigned int degrees=0, QVector<ImageFilter *> filters = QVector<ImageFilter *>());
+        DoublePageRender(Render * render, int firstPage, const QByteArray & firstPageData,const QByteArray & secondPageData, QImage * page,unsigned int degrees=0, QVector<ImageFilter *> filters = QVector<ImageFilter *>());
 private:
 	int numPage;
 	QByteArray data;
@@ -107,6 +109,7 @@ private:
 	unsigned int degrees;
 	QVector<ImageFilter *> filters;
 	void run();
+	Render * render;
 signals:
 	void pageReady(int);
 
@@ -117,6 +120,7 @@ class Render : public QObject {
 Q_OBJECT
 public:
 	Render();
+	~Render();
 
 public slots:
 	void render();
@@ -187,6 +191,10 @@ private:
 	QVector<bool> pagesReady;
 	int imageRotation;
 	QVector<ImageFilter *> filters;
+	QMutex mutex;
+
+	friend class PageRender;
+	friend class DoublePageRender;
 
 };
 

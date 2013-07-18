@@ -170,7 +170,7 @@ public:
 
 	/*Constructor*/
 	YACReaderFlowGL(QWidget *parent = 0,struct Preset p = pressetYACReaderFlowDownConfig);
-    ~YACReaderFlowGL();
+    virtual ~YACReaderFlowGL();
 
 	//size;
     QSize minimumSizeHint() const;
@@ -301,6 +301,7 @@ class YACReaderPageFlowGL : public YACReaderFlowGL
 {
 public:
 	YACReaderPageFlowGL(QWidget *parent = 0,struct Preset p = defaultYACReaderFlowConfig);
+	~YACReaderPageFlowGL();
 	void updateImageData();
 	void populate(int n);
 	QVector<bool> imagesReady;

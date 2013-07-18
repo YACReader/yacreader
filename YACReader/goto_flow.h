@@ -5,6 +5,7 @@
 #include <QThread>
 
 #include <QWaitCondition>
+#include <QMutex>
 
 class QLineEdit;
 class QPushButton;
@@ -28,6 +29,7 @@ class GoToFlow : public GoToFlowWidget
 	Q_OBJECT
 public:
 	GoToFlow(QWidget* parent = 0,FlowType flowType = CoverFlowLike);
+	~GoToFlow();
 	bool ready; //comic is ready for read.
 	bool eventFilter(QObject *target, QEvent *event);
 private:
@@ -43,6 +45,7 @@ private:
 	QTimer* updateTimer;
 	PageLoader* worker;
 	virtual void wheelEvent(QWheelEvent * event);
+	QMutex mutexGoToFlow;
 
 	private slots:
 		void preload();
@@ -59,7 +62,6 @@ private:
 signals:
 			void goToPage(unsigned int page);
 
-
 };
 //-----------------------------------------------------------------------------
 //SlideInitializer
@@ -67,8 +69,9 @@ signals:
 class SlideInitializer : public QThread
 {
 public:
-	SlideInitializer(PictureFlow * flow,int slides);
+	SlideInitializer(QMutex * m,PictureFlow * flow,int slides);
 private:
+	QMutex * mutex;
 	PictureFlow * _flow;
 	int _slides;
 	void run();
@@ -80,7 +83,7 @@ private:
 class PageLoader : public QThread
 {
 public:
-	PageLoader();
+	PageLoader(QMutex * m);
 	~PageLoader();
 	// returns FALSE if worker is still busy and can't take the task
 	bool busy() const;
@@ -91,6 +94,7 @@ public:
 protected:
 	void run();
 private:
+	QMutex * mutex;
 	QWaitCondition condition;
 
 	bool restart;

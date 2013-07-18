@@ -41,6 +41,11 @@ GoToFlowGL::GoToFlowGL(QWidget* parent, FlowType flowType)
 	this->setCursor(QCursor(Qt::ArrowCursor));
 }
 
+GoToFlowGL::~GoToFlowGL()
+{
+	delete flow;
+}
+
 bool GoToFlowGL::eventFilter(QObject *target, QEvent *event)
 {
 	if (event->type() == QEvent::KeyPress) 

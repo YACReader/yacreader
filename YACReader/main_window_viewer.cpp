@@ -60,6 +60,40 @@ MainWindowViewer::MainWindowViewer()
 	setupUI();
 }
 
+MainWindowViewer::~MainWindowViewer()
+{
+	delete settings;
+	delete viewer;
+	delete had;
+
+	delete sliderAction;
+	delete openAction;
+	delete openFolderAction;
+	delete saveImageAction;
+	delete openPreviousComicAction; 
+	delete openNextComicAction;
+	delete prevAction;
+	delete nextAction;
+	delete adjustHeight;
+	delete adjustWidth;
+	delete leftRotationAction;
+	delete rightRotationAction;
+	delete doublePageAction;
+	delete goToPage;
+	delete optionsAction;
+	delete helpAboutAction;
+	delete showMagnifyingGlass;
+	delete setBookmark;
+	delete showBookmarks;
+	delete showShorcutsAction;
+	delete showInfo;
+	delete closeAction;
+	delete showDictionaryAction;
+	delete alwaysOnTopAction;
+	delete adjustToFullSizeAction;
+	delete showFlowAction;
+
+}
 void MainWindowViewer::loadConfiguration()
 {
 	settings = new QSettings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
@@ -823,7 +857,7 @@ void MainWindowViewer::closeEvent ( QCloseEvent * event )
 		conf.setSize(size());
 	}
 	conf.setMaximized(isMaximized());
-
+	
 	emit (closed());
 }
 

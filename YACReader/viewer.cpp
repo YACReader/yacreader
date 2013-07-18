@@ -115,6 +115,23 @@ drag(false)
 
 }
 
+Viewer::~Viewer()
+{
+	delete render;
+	delete goToFlow;
+	delete translator;
+	delete translatorAnimation;
+	delete content;
+	delete hideCursorTimer;
+	delete informationLabel;
+	delete verticalScroller;
+	delete bd;
+	delete notificationsLabel;
+	delete mglass;
+	if(currentPage != 0)
+		delete currentPage;
+}
+
 void Viewer::createConnections()
 {
 	//magnifyingGlass (update mg after a background change

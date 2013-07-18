@@ -127,6 +127,7 @@ signals:
 		virtual void closeEvent ( QCloseEvent * event );
 	public:
 		MainWindowViewer();
+		~MainWindowViewer();
 
 	};
 #endif

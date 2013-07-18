@@ -34,6 +34,13 @@ HelpAboutDialog::HelpAboutDialog(QWidget * parent)
 	resize(500, QApplication::desktop()->availableGeometry().height()*0.83);
 }
 
+HelpAboutDialog::~HelpAboutDialog()
+{
+	delete aboutText;
+	delete helpText;
+	delete tabWidget;
+}
+
 HelpAboutDialog::HelpAboutDialog(const QString & pathAbout,const QString & pathHelp,QWidget * parent)
 :QDialog(parent)
 {

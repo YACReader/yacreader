@@ -27,7 +27,7 @@ Comic::Comic(const QString & pathFile, int atPage )
 //-----------------------------------------------------------------------------
 Comic::~Comic()
 {
-	delete bm; //TODO safe delete
+
 }
 //-----------------------------------------------------------------------------
 void Comic::setup()
@@ -188,7 +188,7 @@ FileComic::FileComic(const QString & path, int atPage )
 
 FileComic::~FileComic()
 {
-	//Comic::~Comic();
+	_pages.clear();
 }
 
 bool FileComic::load(const QString & path, int atPage)
