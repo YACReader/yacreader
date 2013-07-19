@@ -105,6 +105,18 @@ ComicDB DBHelper::getComicInfo(const QString & libraryName, qulonglong id)
 	QSqlDatabase::removeDatabase(libraryPath);
 	return comic;
 }
+
+QList<ComicDB> DBHelper::getSiblings(const QString & libraryName, qulonglong parentId)
+{
+	QString libraryPath = DBHelper::getLibraries().value(libraryName);
+	QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
+
+	QList<ComicDB> comics =  DBHelper::getSortedComicsFromParent(parentId,db);
+	db.close();
+	QSqlDatabase::removeDatabase(libraryPath);
+	return comics;
+}
+
 QString DBHelper::getFolderName(const QString & libraryName, qulonglong id)
 {
 	QString libraryPath = DBHelper::getLibraries().value(libraryName);
@@ -349,6 +361,55 @@ QList<LibraryItem *> DBHelper::getFoldersFromParent(qulonglong parentId, QSqlDat
 		}
 	}
 
+	return list;
+}
+QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlDatabase & db)
+{
+	
+	QList <ComicDB> list;
+
+	QSqlQuery selectQuery(db);
+	selectQuery.prepare("select c.id,c.parentId,c.fileName,c.path,ci.hash from comic c inner join comic_info ci on (c.comicInfoId = ci.id) where c.parentId = :parentId");
+	selectQuery.bindValue(":parentId", parentId);
+	selectQuery.exec();
+
+	ComicDB currentItem;
+	while (selectQuery.next()) 
+	{
+		QList<QVariant> data;
+		QSqlRecord record = selectQuery.record();
+		for(int i=0;i<record.count();i++)
+			data << record.value(i);
+
+		currentItem.id = record.value("id").toULongLong();
+		currentItem.parentId = record.value(1).toULongLong();
+		currentItem.name = record.value(2).toString();
+		currentItem.path = record.value(3).toString();
+		currentItem.info = DBHelper::loadComicInfo(record.value(4).toString(),db);
+		int lessThan = 0;
+		if(list.isEmpty())
+			list.append(currentItem);
+		else
+		{
+			ComicDB last = static_cast<ComicDB>(list.back());
+			QString nameLast = last.name; 
+			QString nameCurrent = currentItem.name;
+			QList<ComicDB>::iterator i;
+			i = list.end();
+			i--;
+			while ((0 > (lessThan = nameCurrent.localeAwareCompare(nameLast))) && i != list.begin())  //se usa la misma ordenación que en QDir
+			{
+				i--;
+				nameLast = (*i).name;
+			}
+			if(lessThan>0) //si se ha encontrado un elemento menor que current, se inserta justo después
+				list.insert(++i,currentItem);
+			else
+				list.insert(i,currentItem);
+
+		}
+	}
+	//selectQuery.finish();
 	return list;
 }
 QList<LibraryItem *> DBHelper::getComicsFromParent(qulonglong parentId, QSqlDatabase & db, bool sort)

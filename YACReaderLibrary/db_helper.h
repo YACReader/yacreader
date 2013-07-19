@@ -22,6 +22,7 @@ public:
 	static	QList<LibraryItem *> getFolderComicsFromLibrary(const QString & libraryName, qulonglong folderId);
 	static	qulonglong getParentFromComicFolderId(const QString & libraryName, qulonglong id);
 	static	ComicDB getComicInfo(const QString & libraryName, qulonglong id);
+	static  QList<ComicDB> getSiblings(const QString & libraryName, qulonglong parentId);
 	static	QString getFolderName(const QString & libraryName, qulonglong id);
 	static  QList<QString> getLibrariesNames();
 	static  QString getLibraryName(int id);
@@ -40,6 +41,7 @@ public:
 	static void updateRead(ComicInfo * comicInfo, QSqlDatabase & db);
 	//queries
 	static QList<LibraryItem *> getFoldersFromParent(qulonglong parentId, QSqlDatabase & db, bool sort = true);
+	static QList<ComicDB> getSortedComicsFromParent(qulonglong parentId, QSqlDatabase & db);
 	static QList<LibraryItem *> getComicsFromParent(qulonglong parentId, QSqlDatabase & db, bool sort = true);
 	//load
 	static Folder loadFolder(qulonglong id, QSqlDatabase & db);

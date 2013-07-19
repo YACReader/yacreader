@@ -61,5 +61,11 @@
 	Custom
   };
 
+ enum YACReaderIPCMessages
+ {
+	 RequestComicInfo = 0,
+	 SendComicInfo,
+ };
+
 #endif
 
