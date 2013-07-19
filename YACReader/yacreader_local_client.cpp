@@ -9,7 +9,7 @@ YACReaderLocalClient::YACReaderLocalClient(QObject *parent) :
 {
     localSocket = new QLocalSocket(this);
 
-    connect(localSocket, SIGNAL(readyRead()), this, SLOT(readMessage()));
+    //connect(localSocket, SIGNAL(readyRead()), this, SLOT(readMessage()));
 	
     /*connect(socket, SIGNAL(error(QLocalSocket::LocalSocketError)),
             this, SLOT(displayError(QLocalSocket::LocalSocketError)));*/
@@ -20,16 +20,22 @@ void YACReaderLocalClient::readMessage()
 {
 
 }
-
-bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic)
+#include <QFile>
+bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, QList<ComicDB> & siblings)
 {
 	localSocket->connectToServer(YACREADERLIBRARY_GUID);
 	if(localSocket->isOpen())
 	{
+			 	 QFile f("c:/temp/socket.txt");
+	 f.open(QIODevice::WriteOnly);
+	 QTextStream outt(&f);
+	  outt << QString(" antes : %1").arg(comic.id) << endl;
+
 		QByteArray block;
 		QDataStream out(&block, QIODevice::WriteOnly);
-		out.setVersion(QDataStream::Qt_4_0);
+		out.setVersion(QDataStream::Qt_4_8);
 		out << (quint16)0;
+		out << (quint8)YACReaderIPCMessages::RequestComicInfo;
 		out << libraryId;
 		out << comic;
 		out.device()->seek(0);
@@ -41,18 +47,23 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic)
 			written += localSocket->write(block);
 			localSocket->flush();
 		}
-		localSocket->waitForReadyRead();
-		QByteArray data;
-		QDataStream in(data);
-		in.setVersion(QDataStream::Qt_4_0);
-		int totalSize = 0;
-		while((data.size()-sizeof(quint16)) != totalSize )
+		
+		//QByteArray data;
+		while(localSocket->bytesAvailable() < sizeof(quint16))
+			localSocket->waitForReadyRead();
+		QDataStream sizeStream(localSocket->read(sizeof(quint16)));
+		sizeStream.setVersion(QDataStream::Qt_4_8);
+		quint16 totalSize = 0;
+		sizeStream >> totalSize;
+		
+		while(localSocket->bytesAvailable() < totalSize )
 		{
-			data.append(localSocket->read(1000000000));
-			if(data.size()>=sizeof(quint16) && totalSize == 0)
-				in >> totalSize;
+			localSocket->waitForReadyRead();
 		}
-		in >> comic;
+		QDataStream dataStream(localSocket->read(totalSize));
+		dataStream >> comic;
+		dataStream >> siblings;
+			 outt << QString(" despues : %1").arg(comic.id) << endl;
 		return true;
 	}
 	else

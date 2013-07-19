@@ -188,7 +188,7 @@ FileComic::FileComic(const QString & path, int atPage )
 
 FileComic::~FileComic()
 {
-	_pages.clear();
+
 }
 
 bool FileComic::load(const QString & path, int atPage)

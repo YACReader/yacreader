@@ -156,42 +156,40 @@ void MainWindowViewer::setupUI()
 	{
 		//TODO: new method open(QString)
 		QString pathFile = QCoreApplication::arguments().at(1);
-		currentDirectory = pathFile;
 		QFileInfo fi(pathFile);
+		currentDirectory = fi.absoluteDir().path();
 		getSiblingComics(fi.absolutePath(),fi.fileName());
 
 		setWindowTitle("YACReader - " + fi.fileName());
 		enableActions();
 		viewer->open(pathFile);
 	}
-	/*else if(QCoreApplication::argc() == 5)
+	else if(QCoreApplication::argc() == 5)
 	{
 		QString pathFile = QCoreApplication::arguments().at(1);
 		currentDirectory = pathFile;
 		quint64 comicId = QCoreApplication::arguments().at(2).toULongLong();
 		quint64 libraryId = QCoreApplication::arguments().at(3).toULongLong();
 		int page = QCoreApplication::arguments().at(4).toULongLong();
-
-		QFileInfo fi(pathFile);
 		
 		enableActions();
 
 		//TODO request data to the server
-		ComicDB comic;
-		comic.id = comicId;
+		
+		currentComicDB.id = comicId;
 		YACReaderLocalClient client;
 		
-		//if(client.requestComicInfo(libraryId,comic))
+		if(client.requestComicInfo(libraryId,currentComicDB,siblingComics))
 		{
-			if(comic.info.title == 0 || comic.info.title->isEmpty() )
-				setWindowTitle("YACReader - " + fi.fileName());
+			if(currentComicDB.info.title == 0 || currentComicDB.info.title->isEmpty() )
+				setWindowTitle("YACReader - " + currentComicDB.path);
 			else
-				setWindowTitle("YACReader - " + *comic.info.title);
+				setWindowTitle("YACReader - " + *currentComicDB.info.title);
 		}
-		//else
-			setWindowTitle("YACReader : " + fi.fileName());
-		viewer->open(pathFile,page);
-	} */
+		else
+			setWindowTitle("YACReader : " + currentComicDB.path);
+		open(pathFile+currentComicDB.path,currentComicDB,siblingComics);
+	}
 
 	versionChecker = new HttpVersionChecker();
 
@@ -594,11 +592,10 @@ void MainWindowViewer::open()
 
 void MainWindowViewer::open(QString path, ComicDB & comic, QList<ComicDB> & siblings)
 {
-	currentComicDB = comic;
-	siblingComics = siblings;
+	//currentComicDB = comic;
+	//siblingComics = siblings;
 
 	QFileInfo fi(path);
-	currentDirectory = fi.absoluteDir().path();
 
 	if(comic.info.title != 0 && !comic.info.title->isEmpty())
 		setWindowTitle("YACReader - " + *comic.info.title);
@@ -866,8 +863,8 @@ void MainWindowViewer::openPreviousComic()
 	if(!siblingComics.isEmpty())
 	{
 		int currentIndex = siblingComics.indexOf(currentComicDB);
-		ComicDB previoiusComic = siblingComics.at(currentIndex-1);
-		open(currentDirectory+previoiusComic.path,previoiusComic,siblingComics);
+		currentComicDB = siblingComics.at(currentIndex-1);
+		open(currentDirectory+currentComicDB.path,currentComicDB,siblingComics);
 		return;
 	}
 	if(!previousComicPath.isEmpty())
@@ -885,8 +882,9 @@ void MainWindowViewer::openNextComic()
 	if(!siblingComics.isEmpty())
 	{
 		int currentIndex = siblingComics.indexOf(currentComicDB);
-		ComicDB nextComic = siblingComics.at(currentIndex+1);
-		open(currentDirectory+nextComic.path,nextComic,siblingComics);
+		if(currentIndex+1 > 0 && currentIndex+1 < siblingComics.count())
+		currentComicDB = siblingComics.at(currentIndex+1);
+		open(currentDirectory+currentComicDB.path,currentComicDB,siblingComics);
 		return;
 	}
 	if(!nextComicPath.isEmpty())

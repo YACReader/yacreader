@@ -16,7 +16,7 @@ signals:
     
 public slots:
     void readMessage();
-    bool requestComicInfo(quint64 libraryId, ComicDB & comic);
+    bool requestComicInfo(quint64 libraryId, ComicDB & comic,QList<ComicDB> & siblings);
     bool sendComicInfo(quint64 libraryId, ComicDB & comic);
 
 private:

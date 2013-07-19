@@ -23,79 +23,67 @@ bool YACReaderLocalServer::isListening()
 {
     return localServer->isListening();
 }
-
+#include <QFile>
 void YACReaderLocalServer::sendResponse()
 {
-	/*QLocalSocket *clientConnection = localServer->nextPendingConnection();
-
-    connect(clientConnection, SIGNAL(disconnected()),
-            clientConnection, SLOT(deleteLater()));
-
-    QDataStream in(clientConnection);
-    in.setVersion(QDataStream::Qt_4_0);
-
-    if (clientConnection->bytesAvailable() == 0)
-		return;
- 
-    if (in.atEnd())
-        return;
-
-    QString message;
-    in >> message;
-
-    QByteArray block;
-    QDataStream out(&block, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_4_0);
-    out << QString("OK");
-
-    clientConnection->write(block);
-    clientConnection->flush();
-    clientConnection->disconnectFromServer();*/
-
-     QLocalSocket *clientConnection = localServer->nextPendingConnection();
+	 QLocalSocket *clientConnection = localServer->nextPendingConnection();
      connect(clientConnection, SIGNAL(disconnected()),
              clientConnection, SLOT(deleteLater()));
 
 	 quint64 libraryId;
 	 ComicDB comic;
-	 clientConnection->waitForReadyRead();
-	 QByteArray data;
-	 QDataStream inputStream(data);
-	 inputStream.setVersion(QDataStream::Qt_4_0);
-	 int totalSize = 0;
-	 while((data.size()-sizeof(quint16)) != totalSize )
+
+	 //QByteArray data;
+	 while(clientConnection->bytesAvailable() < sizeof(quint16))
+		 clientConnection->waitForReadyRead();
+	 QDataStream sizeStream(clientConnection->read(sizeof(quint16)));
+	 sizeStream.setVersion(QDataStream::Qt_4_8);
+	 quint16 totalSize = 0;
+	 sizeStream >> totalSize;
+
+	 while(clientConnection->bytesAvailable() < totalSize )
 	 {
-		 data.append(clientConnection->read(1000000000));
-		 if(data.size()>=sizeof(quint16) && totalSize == 0)
-			 inputStream >> totalSize;
+		 clientConnection->waitForReadyRead();
 	 }
-	 inputStream >> libraryId;
-	 inputStream >> comic;
+	 QDataStream dataStream(clientConnection->read(totalSize));
+	 quint8 msgType;
+	 dataStream >> msgType;
+	 dataStream >> libraryId;
+	 dataStream >> comic;
+	 	 QFile f("c:/temp/socket_server.txt");
+	 f.open(QIODevice::WriteOnly);
+	 QTextStream outt(&f);
+	 outt << QString(" antes : %1 - size : %2").arg(comic.id).arg(totalSize) << endl;
 
-	 getComicInfo(libraryId,comic);
+	 QList<ComicDB> siblings;
+	 getComicInfo(libraryId,comic,siblings);
 
+
+	 outt << QString(" despues : %1 - num sib : %2").arg(comic.id).arg(siblings.count()) << endl;
+	 
 	 QByteArray block;
-     QDataStream out(&block, QIODevice::WriteOnly);
-     out.setVersion(QDataStream::Qt_4_0);
+	 QDataStream out(&block, QIODevice::WriteOnly);
+	 out.setVersion(QDataStream::Qt_4_8);
 	 out << (quint16)0;
-     out << comic;
+	 out << comic;
+	 out << siblings;
 	 out.device()->seek(0);
 	 out << (quint16)(block.size() - sizeof(quint16));
 
-	int  written = 0;
-	while(written != block.size())
-	{
-		written += clientConnection->write(block);
-		clientConnection->flush();
-	}
-	 //clientConnection->waitForBytesWritten();
-     clientConnection->disconnectFromServer();
-
+	 int  written = 0;
+	 while(written != block.size())
+	 {
+		 written += clientConnection->write(block);
+		 clientConnection->flush();
+	 }
+	 //clientConnection->waitForBytesWritten();*/
+	 //clientConnection->disconnectFromServer();
 }
 
-void YACReaderLocalServer::getComicInfo(quint64 libraryId, ComicDB & comic)
+void YACReaderLocalServer::getComicInfo(quint64 libraryId, ComicDB & comic, QList<ComicDB> & siblings)
 {
 	comic = DBHelper::getComicInfo(DBHelper::getLibrariesNames().at(libraryId), comic.id);
+	siblings = DBHelper::getSiblings(DBHelper::getLibrariesNames().at(libraryId), comic.parentId);
 }
 
 bool YACReaderLocalServer::isRunning()

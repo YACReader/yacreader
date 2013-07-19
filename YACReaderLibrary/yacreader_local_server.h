@@ -18,7 +18,7 @@ public slots:
     bool isListening();
     void sendResponse();
 	static bool isRunning();
-	void getComicInfo(quint64 libraryId, ComicDB & comic);
+	void getComicInfo(quint64 libraryId, ComicDB & comic, QList<ComicDB> & sibling);
 private:
     QLocalServer * localServer;
     

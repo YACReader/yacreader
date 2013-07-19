@@ -127,7 +127,7 @@ win32:RESOURCES += images_win.qrc
 unix:!macx:RESOURCES += images_win.qrc
 macx:RESOURCES += images_osx.qrc
 
-include(../YACReader/YACReader.pri)
+#include(../YACReader/YACReader.pri)
 
 RC_FILE = icon.rc
 
