@@ -863,8 +863,13 @@ void MainWindowViewer::openPreviousComic()
 	if(!siblingComics.isEmpty())
 	{
 		int currentIndex = siblingComics.indexOf(currentComicDB);
-		currentComicDB = siblingComics.at(currentIndex-1);
-		open(currentDirectory+currentComicDB.path,currentComicDB,siblingComics);
+		if (currentIndex == -1)
+			return;
+		if(currentIndex-1 >= 0 && currentIndex-1 < siblingComics.count())
+		{
+			currentComicDB = siblingComics.at(currentIndex-1);
+			open(currentDirectory+currentComicDB.path,currentComicDB,siblingComics);
+		}
 		return;
 	}
 	if(!previousComicPath.isEmpty())
@@ -882,9 +887,13 @@ void MainWindowViewer::openNextComic()
 	if(!siblingComics.isEmpty())
 	{
 		int currentIndex = siblingComics.indexOf(currentComicDB);
+		if (currentIndex == -1)
+			return;
 		if(currentIndex+1 > 0 && currentIndex+1 < siblingComics.count())
-		currentComicDB = siblingComics.at(currentIndex+1);
-		open(currentDirectory+currentComicDB.path,currentComicDB,siblingComics);
+		{
+			currentComicDB = siblingComics.at(currentIndex+1);
+			open(currentDirectory+currentComicDB.path,currentComicDB,siblingComics);
+		}
 		return;
 	}
 	if(!nextComicPath.isEmpty())
