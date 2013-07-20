@@ -357,21 +357,14 @@ QList<QVector<quint32> > FileComic::getSections(int & sectionIndex)
 
 void FileComic::process()
 {
-	QFile f("c:/temp/out.txt");
-	f.open(QIODevice::WriteOnly);
-	QTextStream out(&f);
-
 	QTime myTimer;
 	myTimer.start();
 	// do something..
 
 	CompressedArchive archive(_path);
-	out << "tiempo en abrir : " << myTimer.elapsed() << endl;
 	//se filtran para obtener sólo los formatos soportados
 	_order = archive.getFileNames();
 	_fileNames = filter(_order);
-
-	out << "tiempo en filtrar : " << myTimer.elapsed() << endl;
 
 	if(_fileNames.size()==0)
 	{
@@ -395,8 +388,6 @@ void FileComic::process()
 	int index = 0;
 	int sortedIndex = 0;
 
-	out << "tiempo en ordenar : " << myTimer.elapsed() << endl;
-
 	if(_firstPage == -1)
 		_firstPage = bm->getLastPage();
 	_index = _firstPage;
@@ -410,7 +401,6 @@ void FileComic::process()
 	for(int i = 0; i<sectionIndex; i++)
 		archive.getAllData(sections.at(i),this);
 	//archive.getAllData(QVector<quint32>(),this);
-	out << "tiempo en obtener datos : " << myTimer.elapsed() << endl;
 	/*
 	foreach(QString name,_fileNames)
 	{
@@ -421,8 +411,6 @@ void FileComic::process()
 		emit imageLoaded(sortedIndex,_pages[sortedIndex]);
 	}*/
 
-	out << "--tiempo en copiar datos : " << myTimer.elapsed() << endl;
-	f.close();
 	emit imagesLoaded();
 	moveToThread(QApplication::instance()->thread());
 }

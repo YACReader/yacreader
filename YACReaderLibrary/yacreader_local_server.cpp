@@ -23,7 +23,7 @@ bool YACReaderLocalServer::isListening()
 {
     return localServer->isListening();
 }
-#include <QFile>
+
 void YACReaderLocalServer::sendResponse()
 {
 	 QLocalSocket *clientConnection = localServer->nextPendingConnection();
@@ -50,17 +50,10 @@ void YACReaderLocalServer::sendResponse()
 	 dataStream >> msgType;
 	 dataStream >> libraryId;
 	 dataStream >> comic;
-	 	 QFile f("c:/temp/socket_server.txt");
-	 f.open(QIODevice::WriteOnly);
-	 QTextStream outt(&f);
-	 outt << QString(" antes : %1 - size : %2").arg(comic.id).arg(totalSize) << endl;
 
 	 QList<ComicDB> siblings;
 	 getComicInfo(libraryId,comic,siblings);
 
-
-	 outt << QString(" despues : %1 - num sib : %2").arg(comic.id).arg(siblings.count()) << endl;
-	 
 	 QByteArray block;
 	 QDataStream out(&block, QIODevice::WriteOnly);
 	 out.setVersion(QDataStream::Qt_4_8);
