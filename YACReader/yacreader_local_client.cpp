@@ -73,7 +73,7 @@ bool YACReaderLocalClient::sendComicInfo(quint64 libraryId, ComicDB & comic)
 		QDataStream out(&block, QIODevice::WriteOnly);
 		out.setVersion(QDataStream::Qt_4_8);
 		out << (quint16)0;
-		out << (quint8)YACReaderIPCMessages::RequestComicInfo;
+		out << (quint8)YACReaderIPCMessages::SendComicInfo;
 		out << libraryId;
 		out << comic;
 		out.device()->seek(0);

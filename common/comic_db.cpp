@@ -113,7 +113,7 @@ ComicInfo::ComicInfo()
 	:existOnDb(false),
 	rating(-1),
 	hasBeenOpened(false),
-	currentPage(0),
+	currentPage(1),
 	bookmark1(-1),
 	bookmark2(-1),
 	bookmark3(-1),

@@ -121,6 +121,7 @@ class YACReaderSliderAction;
 
 		ComicDB currentComicDB;
 		QList<ComicDB> siblingComics;
+		bool isClient;
 signals:
 		void closed();
 	protected:

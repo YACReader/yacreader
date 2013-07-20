@@ -36,6 +36,7 @@ public:
 	static qulonglong insert(Folder * folder, QSqlDatabase & db);
 	static qulonglong insert(ComicDB * comic, QSqlDatabase & db);
 	//updates
+	static void update(const QString & libraryName, ComicInfo & comicInfo);
 	static void update(ComicDB * comics, QSqlDatabase & db);
 	static void update(ComicInfo * comicInfo, QSqlDatabase & db);
 	static void updateRead(ComicInfo * comicInfo, QSqlDatabase & db);
