@@ -20,17 +20,12 @@ void YACReaderLocalClient::readMessage()
 {
 
 }
-#include <QFile>
+
 bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, QList<ComicDB> & siblings)
 {
 	localSocket->connectToServer(YACREADERLIBRARY_GUID);
 	if(localSocket->isOpen())
 	{
-			 	 QFile f("c:/temp/socket.txt");
-	 f.open(QIODevice::WriteOnly);
-	 QTextStream outt(&f);
-	  outt << QString(" antes : %1").arg(comic.id) << endl;
-
 		QByteArray block;
 		QDataStream out(&block, QIODevice::WriteOnly);
 		out.setVersion(QDataStream::Qt_4_8);
@@ -63,7 +58,6 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 		QDataStream dataStream(localSocket->read(totalSize));
 		dataStream >> comic;
 		dataStream >> siblings;
-			 outt << QString(" despues : %1").arg(comic.id) << endl;
 		return true;
 	}
 	else
@@ -72,5 +66,27 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 
 bool YACReaderLocalClient::sendComicInfo(quint64 libraryId, ComicDB & comic)
 {
-	return true;
+	localSocket->connectToServer(YACREADERLIBRARY_GUID);
+	if(localSocket->isOpen())
+	{
+		QByteArray block;
+		QDataStream out(&block, QIODevice::WriteOnly);
+		out.setVersion(QDataStream::Qt_4_8);
+		out << (quint16)0;
+		out << (quint8)YACReaderIPCMessages::RequestComicInfo;
+		out << libraryId;
+		out << comic;
+		out.device()->seek(0);
+		out << (quint16)(block.size() - sizeof(quint16));
+
+		int  written = 0;
+		while(written != block.size())
+		{
+			written += localSocket->write(block);
+		}
+		return true;
+	}
+	else 
+		return false;
+
 }
