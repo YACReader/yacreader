@@ -25,6 +25,11 @@ QString ComicDB::toTXT()
 	txt.append(QString("path:%1\r\n").arg(path));
 	txt.append(QString("numpages:%1\r\n").arg(*info.numPages));
 
+	//new 7.0
+	txt.append(QString("rating:%1\r\n").arg(info.rating));
+	txt.append(QString("currentPage:%1\r\n").arg(info.currentPage));
+	txt.append(QString("contrast:%1\r\n").arg(info.contrast));
+
 	//Información general
 	if(info.coverPage != NULL)
 		txt.append(QString("coverPage:%1\r\n").arg(*info.coverPage));
@@ -106,6 +111,15 @@ QString ComicDB::toTXT()
 //-----------------------------------------------------------------------------
 ComicInfo::ComicInfo()
 	:existOnDb(false),
+	rating(-1),
+	hasBeenOpened(false),
+	currentPage(0),
+	bookmark1(-1),
+	bookmark2(-1),
+	bookmark3(-1),
+	brightness(-1),
+	contrast(-1),
+	gamma(-1),
 	title(NULL), 
 	coverPage(NULL), 
 	numPages(NULL), 
@@ -227,6 +241,16 @@ ComicInfo & ComicInfo::operator=(const ComicInfo & comicInfo)
 	read = comicInfo.read;
 	edited = comicInfo.edited;
 
+	hasBeenOpened = comicInfo.hasBeenOpened;
+	rating = comicInfo.rating;
+	currentPage = comicInfo.currentPage;
+	bookmark1 = comicInfo.bookmark1;
+	bookmark2 = comicInfo.bookmark2;
+	bookmark3 = comicInfo.bookmark3;
+	brightness = comicInfo.brightness;
+	contrast = comicInfo.contrast;
+	gamma = comicInfo.gamma;
+
 	return *this;
 }
 
@@ -254,18 +278,28 @@ void ComicInfo::setValue(bool * & field, bool value)
 
 void ComicInfo::copyField(QString * & field, const QString * value)
 {
+	if(field != 0)
+		 delete field;
+	field = 0;
 	if(value != NULL)
 		field = new QString(*value);
+
 }
 
 void ComicInfo::copyField(int * & field, int * value)
 {
+	if(field != NULL)
+		 delete field;
+	field = 0;
 	if(value != NULL)
 		field = new int(*value);
 }
 
 void ComicInfo::copyField(bool * & field, bool * value)
 {
+	if(field != NULL)
+		 delete field;
+	field = 0;
 	if(value != NULL)
 		field = new bool(*value);
 }
@@ -488,6 +522,16 @@ QDataStream &operator<<(QDataStream & stream, const ComicInfo & comicInfo)
 	stream << comicInfo.hash;
 	stream << comicInfo.existOnDb;
 
+	stream << comicInfo.hasBeenOpened;
+	stream << comicInfo.rating;
+	stream << comicInfo.currentPage;
+	stream << comicInfo.bookmark1;
+	stream << comicInfo.bookmark2;
+	stream << comicInfo.bookmark3;
+	stream << comicInfo.brightness; 
+	stream << comicInfo.contrast;
+	stream << comicInfo.gamma;
+
 	serializeField(stream,comicInfo.title);
 
 	serializeField(stream,comicInfo.coverPage);
@@ -530,6 +574,16 @@ QDataStream &operator>>(QDataStream & stream, ComicInfo & comicInfo)
 	stream >> comicInfo.edited;
 	stream >> comicInfo.hash;
 	stream >> comicInfo.existOnDb;
+
+	stream >> comicInfo.hasBeenOpened;
+	stream >> comicInfo.rating;
+	stream >> comicInfo.currentPage;
+	stream >> comicInfo.bookmark1;
+	stream >> comicInfo.bookmark2;
+	stream >> comicInfo.bookmark3;
+	stream >> comicInfo.brightness; 
+	stream >> comicInfo.contrast;
+	stream >> comicInfo.gamma;
 
 	deserializeField(stream,comicInfo.title);
 
