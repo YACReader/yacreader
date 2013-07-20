@@ -51,24 +51,39 @@ void YACReaderLocalServer::sendResponse()
 	 dataStream >> libraryId;
 	 dataStream >> comic;
 
-	 QList<ComicDB> siblings;
-	 getComicInfo(libraryId,comic,siblings);
-
-	 QByteArray block;
-	 QDataStream out(&block, QIODevice::WriteOnly);
-	 out.setVersion(QDataStream::Qt_4_8);
-	 out << (quint16)0;
-	 out << comic;
-	 out << siblings;
-	 out.device()->seek(0);
-	 out << (quint16)(block.size() - sizeof(quint16));
-
-	 int  written = 0;
-	 while(written != block.size())
+	 switch (msgType)
 	 {
-		 written += clientConnection->write(block);
-		 clientConnection->flush();
+	 case YACReaderIPCMessages::RequestComicInfo:
+		 {
+			 QList<ComicDB> siblings;
+			 getComicInfo(libraryId,comic,siblings);
+
+			 QByteArray block;
+			 QDataStream out(&block, QIODevice::WriteOnly);
+			 out.setVersion(QDataStream::Qt_4_8);
+			 out << (quint16)0;
+			 out << comic;
+			 out << siblings;
+			 out.device()->seek(0);
+			 out << (quint16)(block.size() - sizeof(quint16));
+
+			 int  written = 0;
+			 while(written != block.size())
+			 {
+				 written += clientConnection->write(block);
+				 clientConnection->flush();
+			 }
+			 break;
+		 }
+	 case YACReaderIPCMessages::SendComicInfo:
+		 {
+			 updateComic(libraryId,comic);
+			 //clientConnection->disconnectFromServer();
+			 break;
+		 }
+
 	 }
+
 	 //clientConnection->waitForBytesWritten();*/
 	 //clientConnection->disconnectFromServer();
 }
@@ -77,6 +92,11 @@ void YACReaderLocalServer::getComicInfo(quint64 libraryId, ComicDB & comic, QLis
 {
 	comic = DBHelper::getComicInfo(DBHelper::getLibrariesNames().at(libraryId), comic.id);
 	siblings = DBHelper::getSiblings(DBHelper::getLibrariesNames().at(libraryId), comic.parentId);
+}
+
+void YACReaderLocalServer::updateComic(quint64 libraryId, ComicDB & comic)
+{
+	DBHelper::update(DBHelper::getLibrariesNames().at(libraryId), comic.info);
 }
 
 bool YACReaderLocalServer::isRunning()

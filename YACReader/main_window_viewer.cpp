@@ -54,7 +54,7 @@ public:
 #endif
 
 MainWindowViewer::MainWindowViewer()
-:QMainWindow(),fullscreen(false),toolbars(true),alwaysOnTop(false),currentDirectory("."),currentDirectoryImgDest(".")
+:QMainWindow(),fullscreen(false),toolbars(true),alwaysOnTop(false),currentDirectory("."),currentDirectoryImgDest("."),isClient(false)
 {
 	loadConfiguration();
 	setupUI();
@@ -154,6 +154,7 @@ void MainWindowViewer::setupUI()
 
 	if(QCoreApplication::argc() == 2) //only path...
 	{
+		isClient = false;
 		//TODO: new method open(QString)
 		QString pathFile = QCoreApplication::arguments().at(1);
 		QFileInfo fi(pathFile);
@@ -166,6 +167,7 @@ void MainWindowViewer::setupUI()
 	}
 	else if(QCoreApplication::argc() == 5)
 	{
+		isClient = true;
 		QString pathFile = QCoreApplication::arguments().at(1);
 		currentDirectory = pathFile;
 		quint64 comicId = QCoreApplication::arguments().at(2).toULongLong();
@@ -596,7 +598,7 @@ void MainWindowViewer::open(QString path, ComicDB & comic, QList<ComicDB> & sibl
 	else
 		setWindowTitle("YACReader - " + fi.fileName());
 
-	viewer->open(path,comic.info.currentPage);
+	viewer->open(path,comic.info.currentPage-1);
 	enableActions();
 	int index = siblings.indexOf(comic);
 
@@ -840,6 +842,15 @@ void MainWindowViewer::newVersion()
 
 void MainWindowViewer::closeEvent ( QCloseEvent * event )
 {
+	YACReaderLocalClient client;
+	if(isClient)
+	{
+		currentComicDB.info.currentPage = viewer->getCurrentPageNumber()+1;
+		currentComicDB.info.hasBeenOpened = true;
+		//viewer->getBookmarks();
+		client.sendComicInfo(0,currentComicDB);
+	}
+
 	viewer->save();
 	Configuration & conf = Configuration::getConfiguration();
 	if(!fullscreen && !isMaximized())
@@ -980,6 +991,7 @@ void MainWindowViewer::dragEnterEvent(QDragEnterEvent *event)
     if (event->mimeData()->hasFormat("text/uri-list")) 
     {     
         event->acceptProposedAction();
+		isClient = false;
     }
 }
 

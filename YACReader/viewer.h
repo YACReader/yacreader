@@ -81,6 +81,7 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		void updateImageOptions();
 		void showIsCoverMessage();
 		void showIsLastMessage();
+		int getCurrentPageNumber();
 
 	private:
 		bool information;

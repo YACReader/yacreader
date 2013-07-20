@@ -187,6 +187,17 @@ void DBHelper::update(ComicDB * comic, QSqlDatabase & db)
 	//do nothing
 }
 
+void DBHelper::update(const QString & libraryName, ComicInfo & comicInfo)
+{
+	QString libraryPath = DBHelper::getLibraries().value(libraryName);
+	QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
+
+	DBHelper::update(&comicInfo,db);
+
+	db.close();
+	QSqlDatabase::removeDatabase(libraryPath);
+}
+
 void DBHelper::update(ComicInfo * comicInfo, QSqlDatabase & db)
 {
 	QSqlQuery updateComicInfo(db);
@@ -225,8 +236,18 @@ void DBHelper::update(ComicInfo * comicInfo, QSqlDatabase & db)
 		"notes = :notes,"
 		
 		"read = :read,"
-		"edited = :edited"
-		
+		"edited = :edited,"
+		//new 7.0 fields
+		"hasBeenOpened = :hasBeenOpened,"
+
+		"currentPage = :currentPage,"
+		"bookmark1 = :bookmark1,"
+		"bookmark2 = :bookmark2,"
+		"bookmark3 = :bookmark3,"
+		"brightness = :brightness,"
+		"contrast = :contrast, "
+		"gamma = :gamma"
+		//--
 		" WHERE id = :id ");
 	bindField(":title",comicInfo->title,updateComicInfo);
 
@@ -264,6 +285,16 @@ void DBHelper::update(ComicInfo * comicInfo, QSqlDatabase & db)
 	updateComicInfo.bindValue(":read", comicInfo->read?1:0);
 	updateComicInfo.bindValue(":id", comicInfo->id);
 	updateComicInfo.bindValue(":edited", comicInfo->edited?1:0);
+
+	updateComicInfo.bindValue(":hasBeenOpened", comicInfo->hasBeenOpened?1:0);
+	updateComicInfo.bindValue(":currentPage", comicInfo->currentPage);
+	updateComicInfo.bindValue(":bookmark1", comicInfo->bookmark1);
+	updateComicInfo.bindValue(":bookmark2", comicInfo->bookmark2);
+	updateComicInfo.bindValue(":bookmark3", comicInfo->bookmark3);
+	updateComicInfo.bindValue(":brightness", comicInfo->brightness);
+	updateComicInfo.bindValue(":contrast", comicInfo->contrast);
+	updateComicInfo.bindValue(":gamma", comicInfo->gamma);
+
 	updateComicInfo.exec();
 }
 
@@ -547,6 +578,17 @@ ComicInfo DBHelper::loadComicInfo(QString hash, QSqlDatabase & db)
 		comicInfo.id = record.value("id").toULongLong();
 		comicInfo.read = record.value("read").toBool();
 		comicInfo.edited = record.value("edited").toBool();
+
+		//new 7.0 fields
+		comicInfo.hasBeenOpened = record.value("hasBeenOpened").toBool();
+		comicInfo.currentPage = record.value("currentPage").toInt();
+		comicInfo.bookmark1 = record.value("bookmark1").toInt();
+		comicInfo.bookmark2 = record.value("bookmark2").toInt();
+		comicInfo.bookmark3 = record.value("bookmark3").toInt();
+		comicInfo.brightness = record.value("brightness").toInt();
+		comicInfo.contrast = record.value("contrast").toInt();
+		comicInfo.gamma = record.value("gamma").toInt();
+		//--
 
 		setField("title",comicInfo.title,record);
 		setField("numPages",comicInfo.numPages,record);

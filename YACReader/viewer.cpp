@@ -805,3 +805,8 @@ unsigned int Viewer::getIndex()
 {
 	return render->getIndex()+1;
 }
+
+int Viewer::getCurrentPageNumber()
+{
+	return render->getIndex();
+}
