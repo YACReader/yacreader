@@ -424,6 +424,7 @@ void FileComic::process()
 	out << "--tiempo en copiar datos : " << myTimer.elapsed() << endl;
 	f.close();
 	emit imagesLoaded();
+	moveToThread(QApplication::instance()->thread());
 }
 //-----------------------------------------------------------------------------
 void FileComic::loadSizes()
@@ -544,6 +545,7 @@ void FolderComic::process()
 		}
 	}
 	emit imagesLoaded();
+	moveToThread(QApplication::instance()->thread());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -618,6 +620,7 @@ void PDFComic::process()
 
 	delete pdfComic;
 	emit imagesLoaded();
+	moveToThread(QApplication::instance()->thread());
 }
 
 void PDFComic::renderPage(int page)

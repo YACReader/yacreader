@@ -42,7 +42,7 @@ public slots:
 	QList<QString> getFileNames();
 private:
 	SevenZipInterface * szInterface;
-
+	QLibrary * sevenzLib;
 	void loadFunctions();
     
 };
