@@ -180,15 +180,9 @@ void MainWindowViewer::setupUI()
 		YACReaderLocalClient client;
 		
 		if(client.requestComicInfo(libraryId,currentComicDB,siblingComics))
-		{
-			if(currentComicDB.info.title == 0 || currentComicDB.info.title->isEmpty() )
-				setWindowTitle("YACReader - " + currentComicDB.path);
-			else
-				setWindowTitle("YACReader - " + *currentComicDB.info.title);
-		}
+			open(pathFile+currentComicDB.path,currentComicDB,siblingComics);
 		else
-			setWindowTitle("YACReader : " + currentComicDB.path);
-		open(pathFile+currentComicDB.path,currentComicDB,siblingComics);
+		{/*error*/}
 	}
 
 	versionChecker = new HttpVersionChecker();
@@ -602,7 +596,7 @@ void MainWindowViewer::open(QString path, ComicDB & comic, QList<ComicDB> & sibl
 	else
 		setWindowTitle("YACReader - " + fi.fileName());
 
-	viewer->open(path);
+	viewer->open(path,comic.info.currentPage);
 	enableActions();
 	int index = siblings.indexOf(comic);
 

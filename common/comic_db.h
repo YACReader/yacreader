@@ -21,6 +21,21 @@ public:
 	QString hash;
 	bool existOnDb;
 
+	int rating;
+
+	bool hasBeenOpened;
+
+	//viewer
+	int currentPage;
+	int bookmark1;
+	int bookmark2;
+	int bookmark3;
+	int brightness;
+	int contrast;
+	int gamma;
+
+	
+
 	QString * title;
 	
 	int * coverPage;
