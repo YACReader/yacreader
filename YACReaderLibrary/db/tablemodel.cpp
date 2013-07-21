@@ -20,6 +20,9 @@
 #define HASH 7
 #define READ 8
 #define IS_BIS 9
+#define CURRENT_PAGE 10
+#define RATING 11
+#define HAS_BEEN_OPENED 12
 
 TableModel::TableModel(QObject *parent)
     : QAbstractItemModel(parent)
@@ -58,6 +61,12 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
+	if (index.column() == RATING && role == Qt::DecorationRole)
+	{
+		TableItem *item = static_cast<TableItem*>(index.internalPointer());
+		return QPixmap(QString(":/images/rating%1.png").arg(item->data(index.column()).toInt()));
+	}
+
 	if (role == Qt::DecorationRole)
 	{
 			return QVariant();
@@ -73,6 +82,8 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
             return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 		case 7:
             return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+		case CURRENT_PAGE:
+			return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 		default:
             return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
 		}
@@ -87,6 +98,12 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 		return QString::number(item->data(index.column()).toString().right(item->data(index.column()).toString().length()-40).toInt()/1024.0/1024.0,'f',2)+"Mb";
 	if(index.column() == READ)
 		return item->data(index.column()).toBool()?QVariant(tr("yes")):QVariant(tr("no"));
+	if(index.column() == CURRENT_PAGE)
+		return item->data(HAS_BEEN_OPENED).toBool()?item->data(index.column()):QVariant("-");
+	
+	if (index.column() == RATING)
+		return QVariant();
+
 	return item->data(index.column());
 }
 //! [3]
@@ -121,6 +138,10 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation,
 			return QVariant(QString(tr("Size")));
 		case 8:
 			return QVariant(QString(tr("Read")));
+		case CURRENT_PAGE:
+			return QVariant(QString(tr("Current Page")));
+		case RATING:
+			return QVariant(QString(tr("Rating")));
 		}
 	}
 
@@ -134,6 +155,8 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation,
             return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 		case 7:
             return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+		case CURRENT_PAGE:
+			return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 		default:
             return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
 		}
@@ -235,7 +258,7 @@ void TableModel::setupModelData(unsigned long long int folderId,const QString & 
 	//crear la consulta
 	//timer.restart();
 	QSqlQuery selectQuery(db); //TODO check
-	selectQuery.prepare("select ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis from comic c inner join comic_info ci on (c.comicInfoId = ci.id) where c.parentId = :parentId");
+	selectQuery.prepare("select ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened from comic c inner join comic_info ci on (c.comicInfoId = ci.id) where c.parentId = :parentId");
 	selectQuery.bindValue(":parentId", folderId);
 	selectQuery.exec();
 	//txtS << "TABLEMODEL: Tiempo de consulta: " << timer.elapsed() << "ms\r\n";

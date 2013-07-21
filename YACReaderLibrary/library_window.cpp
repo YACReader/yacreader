@@ -936,6 +936,8 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 	comicView->horizontalHeader()->showSection(3);
 	comicView->horizontalHeader()->showSection(7);
 	comicView->horizontalHeader()->showSection(8);
+	comicView->horizontalHeader()->showSection(10);
+	comicView->horizontalHeader()->showSection(11);
 
 
 	//debido a un bug, qt4 no es capaz de ajustar el ancho teniendo en cuenta todas la filas (no sólo las visibles)

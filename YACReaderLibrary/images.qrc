@@ -86,6 +86,12 @@
     <file>../images/collapsed_branch_selected.png</file>
     <file>../images/previousCoverPage.png</file>
     <file>../images/nextCoverPage.png</file>
+	<file>../images/rating0.png</file>
+	<file>../images/rating1.png</file>
+	<file>../images/rating2.png</file>
+	<file>../images/rating3.png</file>
+	<file>../images/rating4.png</file>
+	<file>../images/rating5.png</file>
     <!--<file>../images/busy_background.png</file>-->
   </qresource>
 </RCC>

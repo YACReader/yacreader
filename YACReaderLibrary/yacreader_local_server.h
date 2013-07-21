@@ -13,7 +13,7 @@ public:
     explicit YACReaderLocalServer(QObject *parent = 0);
     
 signals:
-    
+    void comicUpdated(const ComicDB & comic);
 public slots:
     bool isListening();
     void sendResponse();

@@ -172,7 +172,7 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
 //now 7.0 fields
 		
 		"hasBeenOpened BOOLEAN DEFAULT 0,"
-
+		"rating INTEGER DEFAULT 0,"
 		"currentPage INTEGER DEFAULT 1, "
 		"bookmark1 INTEGER DEFAULT -1, "
 		"bookmark2 INTEGER DEFAULT -1, "
@@ -569,7 +569,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
 			QSqlQuery alterTableComicInfo(db);
 			alterTableComicInfo.prepare("ALTER TABLE comic_info ADD ("
 				"hasBeenOpened BOOLEAN DEFAULT 0,"
-
+				"rating INTEGER DEFAULT 0,"
 				"currentPage INTEGER DEFAULT 1, "
 				"bookmark1 INTEGER DEFAULT -1, "
 				"bookmark2 INTEGER DEFAULT -1, "
