@@ -47,7 +47,7 @@ void ComicFlowWidgetSW::setShowMarks(bool value)
 {
 	flow->setShowMarks(value);
 }
-void ComicFlowWidgetSW::setMarks(QVector<bool> marks)
+void ComicFlowWidgetSW::setMarks(QVector<YACReaderComicReadStatus> marks)
 {
 	flow->setMarks(marks);
 }
@@ -55,9 +55,9 @@ void ComicFlowWidgetSW::setMarkImage(QImage & image)
 {
 	flow->setMarkImage(image);
 }
-void ComicFlowWidgetSW::markSlide(int index)
+void ComicFlowWidgetSW::markSlide(int index, YACReaderComicReadStatus status)
 {
-	flow->markSlide(index);
+	flow->markSlide(index,status);
 }
 void ComicFlowWidgetSW::unmarkSlide(int index)
 {
@@ -181,7 +181,7 @@ void ComicFlowWidgetGL::setShowMarks(bool value)
 {
 	flow->setShowMarks(value);
 }
-void ComicFlowWidgetGL::setMarks(QVector<bool> marks)
+void ComicFlowWidgetGL::setMarks(QVector<YACReaderComicReadStatus> marks)
 {
 	flow->setMarks(marks);
 }
@@ -189,9 +189,9 @@ void ComicFlowWidgetGL::setMarkImage(QImage & image)
 {
 	flow->setMarkImage(image);
 }
-void ComicFlowWidgetGL::markSlide(int index)
+void ComicFlowWidgetGL::markSlide(int index, YACReaderComicReadStatus status)
 {
-	flow->markSlide(index);
+	flow->markSlide(index,status);
 }
 void ComicFlowWidgetGL::unmarkSlide(int index)
 {

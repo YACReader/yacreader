@@ -67,5 +67,12 @@
 	 SendComicInfo,
  };
 
+ enum YACReaderComicReadStatus
+ {
+	 Unread = 0,
+	 Read = 1,
+	 Opened = 2
+ };
+
 #endif
 

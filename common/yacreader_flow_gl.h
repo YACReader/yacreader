@@ -127,6 +127,7 @@ protected:
 
 	GLuint defaultTexture;
 	GLuint markTexture;
+	GLuint readingTexture;
     void initializeGL();
     void paintGL();
 	void timerEvent(QTimerEvent *);
@@ -136,7 +137,7 @@ protected:
 	int lazyPopulateObjects;
 	bool showMarks;
 	QVector<bool> loaded;
-	QVector<bool> marks;
+	QVector<YACReaderComicReadStatus> marks;
 	QList<QString> paths;
 	CFImage * cfImages;
 	bool hasBeenInitialized;
@@ -247,9 +248,9 @@ public:
 
 	//interface with yacreaderlibrary, compatibility
 	void setShowMarks(bool value);
-	void setMarks(QVector<bool> marks);
+	void setMarks(QVector<YACReaderComicReadStatus> marks);
 	void setMarkImage(QImage & image);
-	void markSlide(int index);
+	void markSlide(int index, YACReaderComicReadStatus status);
 	void unmarkSlide(int index);
 	void setSlideSize(QSize size);
 	void clear();

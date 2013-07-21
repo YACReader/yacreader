@@ -192,7 +192,7 @@ public:
   PictureFlow::ReflectionEffect reflectionEffect;
   QVector<QImage*> slideImages;
 
-  QVector<bool> marks;
+  QVector<YACReaderComicReadStatus> marks;
   bool showMarks;
   QImage mark;
 
@@ -1076,7 +1076,7 @@ void PictureFlow::addSlide(const QImage& image)
   d->state->slideImages.resize(c+1);
   d->state->slideImages[c] = new QImage(image);
   d->state->marks.resize(c+1);
-  d->state->marks[c] = false;
+  d->state->marks[c] = YACReaderComicReadStatus::Unread;
   triggerRender();
 }
 
@@ -1345,10 +1345,10 @@ void PictureFlow::setMarkImage(const QImage & m)
 	d->state->mark = m;
 }
 
-void PictureFlow::markSlide(int index)
+void PictureFlow::markSlide(int index, YACReaderComicReadStatus readStatus)
 {
 	if(index<d->state->marks.size())
-		d->state->marks[index] = true;
+		d->state->marks[index] = readStatus;
 }
 
 void PictureFlow::updateMarks()
@@ -1361,10 +1361,10 @@ void PictureFlow::updateMarks()
 void PictureFlow::unmarkSlide(int index)
 {
 	if(index<d->state->marks.size())
-		d->state->marks[index] = false;
+		d->state->marks[index] = YACReaderComicReadStatus::Unread;
 }
 
-void PictureFlow::setMarks(const QVector<bool> & m)
+void PictureFlow::setMarks(const QVector<YACReaderComicReadStatus> & m)
 {
 	d->state->marks = m;
 	updateMarks();
@@ -1376,7 +1376,7 @@ void PictureFlow::setShowMarks(bool enable)
 	updateMarks();
 }
 
-QVector<bool> PictureFlow::getMarks()
+QVector<YACReaderComicReadStatus > PictureFlow::getMarks()
 {
 	return 	d->state->marks;
 }

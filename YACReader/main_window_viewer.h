@@ -122,6 +122,7 @@ class YACReaderSliderAction;
 		ComicDB currentComicDB;
 		QList<ComicDB> siblingComics;
 		bool isClient;
+		quint64 libraryId;
 signals:
 		void closed();
 	protected:

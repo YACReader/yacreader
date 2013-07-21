@@ -7,6 +7,8 @@
 #include <QSqlQuery>
 #include <QSqlDatabase>
 
+#include "yacreader_global.h"
+
 class ComicDB;
 
 class TableItem;
@@ -38,15 +40,15 @@ public:
 	QString getComicPath(QModelIndex mi);
 	ComicDB getComic(const QModelIndex & mi); //--> para la edición
 	ComicDB getComic(int row);
-	QVector<bool> getReadList();
-	QVector<bool> setAllComicsRead(bool read);
+	QVector<YACReaderComicReadStatus> getReadList();
+	QVector<YACReaderComicReadStatus> setAllComicsRead(YACReaderComicReadStatus readStatus);
 	QList<ComicDB> getComics(QList<QModelIndex> list); //--> recupera la información común a los comics seleccionados
 	QList<ComicDB> getAllComics();
 	QModelIndex getIndexFromId(quint64 id);
 	//setcomicInfo(QModelIndex & mi); --> inserta en la base datos
 	//setComicInfoForAllComics(); --> inserta la información común a todos los cómics de una sola vez.
 	//setComicInfoForSelectedComis(QList<QModelIndex> list); -->inserta la información común para los comics seleccionados
-	QVector<bool> setComicsRead(QList<QModelIndex> list,bool read);
+	QVector<YACReaderComicReadStatus> setComicsRead(QList<QModelIndex> list,YACReaderComicReadStatus read);
 	qint64 asignNumbers(QList<QModelIndex> list,int startingNumber);
 	void remove(ComicDB * comic, int row);
 	void removeInTransaction(int row);
