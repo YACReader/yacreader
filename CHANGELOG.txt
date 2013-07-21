@@ -1,3 +1,8 @@
+6.7 (No pública)
+Añadidos nuevos campos en la base de datos para almacenar información adicional sobre cómics: rating, página actual, bookmarks y configuración de imagen
+Añadida comunicación entre YACReaderLibrary y YACReader para poder almacenar el progreso de los cómics e información adicional
+
+
 6.6 (No pública)
 Modificado YACReader para que abra los archivos comprimidos usando 7z.dll (.so, .dylib)
 YACReader abre ahora los cómics por la última página leída.

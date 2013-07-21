@@ -1688,3 +1688,8 @@ void LibraryWindow::importLibraryPackage()
 {
 	importLibraryDialog->show(libraries);
 }
+
+void LibraryWindow::updateComicsView(const ComicDB & comic)
+{
+	dmCV->reload(comic);
+}
