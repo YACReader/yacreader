@@ -8,6 +8,7 @@
 #include "yacreader_global.h"
 #include "startup.h"
 #include "yacreader_local_server.h"
+#include "comic_db.h"
 
 #define PICTUREFLOW_QT4 1
 
@@ -47,6 +48,8 @@ int main( int argc, char ** argv )
   YACReaderLocalServer * localServer = new YACReaderLocalServer();
 
   LibraryWindow * mw = new LibraryWindow();
+
+  mw->connect(localServer,SIGNAL(comicUpdated(const ComicDB &)),mw,SLOT(updateComicsView(const ComicDB &)));
 
   //connections to localServer
 

@@ -50,6 +50,7 @@ public:
 	qint64 asignNumbers(QList<QModelIndex> list,int startingNumber);
 	void remove(ComicDB * comic, int row);
 	void removeInTransaction(int row);
+	void reload(const ComicDB & comic);
 
 public slots:
 	void remove(int row);

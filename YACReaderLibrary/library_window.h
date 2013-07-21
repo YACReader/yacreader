@@ -261,6 +261,7 @@ public:
         void updateHistory(const QModelIndex & mi);
 		void libraryAlreadyExists(const QString & name);
 		void importLibraryPackage();
+		void updateComicsView(const ComicDB & comic);
 
 };
 

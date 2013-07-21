@@ -563,3 +563,23 @@ void TableModel::remove(int row)
 {
 	removeInTransaction(row);
 }
+
+void TableModel::reload(const ComicDB & comic)
+{
+	int row = 0;
+	bool found = false;
+	foreach(TableItem * item,_data)
+	{
+		if(item->data(ID).toULongLong() == comic.id)
+		{
+			found = true;
+			item->setData(CURRENT_PAGE,comic.info.currentPage);
+			item->setData(HAS_BEEN_OPENED,true);
+			break;
+				
+		}
+		row++;
+	}
+	if(found)
+		emit dataChanged(index(row,CURRENT_PAGE),index(row,CURRENT_PAGE));
+}
