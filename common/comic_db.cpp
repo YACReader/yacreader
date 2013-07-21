@@ -111,7 +111,7 @@ QString ComicDB::toTXT()
 //-----------------------------------------------------------------------------
 ComicInfo::ComicInfo()
 	:existOnDb(false),
-	rating(-1),
+	rating(0),
 	hasBeenOpened(false),
 	currentPage(1),
 	bookmark1(-1),
