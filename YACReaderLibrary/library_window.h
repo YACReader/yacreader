@@ -5,6 +5,7 @@
 #include <QMap>
 #include <QModelIndex>
 #include <QFileInfo>
+#include "yacreader_global.h"
 
 class QTreeView;
 class QDirModel;
@@ -238,7 +239,7 @@ public:
 		void exportLibrary(QString destPath);
 		void importLibrary(QString clc,QString destPath,QString name);
 		void reloadOptions();
-		void setCurrentComicsStatusReaded(bool readed);
+		void setCurrentComicsStatusReaded(YACReaderComicReadStatus readStatus);
 		void setCurrentComicReaded();
 		void setCurrentComicUnreaded();
 		void setComicsReaded();
@@ -261,7 +262,8 @@ public:
         void updateHistory(const QModelIndex & mi);
 		void libraryAlreadyExists(const QString & name);
 		void importLibraryPackage();
-		void updateComicsView(const ComicDB & comic);
+		void updateComicsView(quint64 libraryId, const ComicDB & comic);
+		void setCurrentComicOpened();
 
 };
 

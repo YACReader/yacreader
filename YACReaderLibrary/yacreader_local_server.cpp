@@ -97,7 +97,7 @@ void YACReaderLocalServer::getComicInfo(quint64 libraryId, ComicDB & comic, QLis
 void YACReaderLocalServer::updateComic(quint64 libraryId, ComicDB & comic)
 {
 	DBHelper::update(DBHelper::getLibrariesNames().at(libraryId), comic.info);
-	emit comicUpdated(comic);
+	emit comicUpdated(libraryId, comic);
 }
 
 bool YACReaderLocalServer::isRunning()

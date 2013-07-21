@@ -189,17 +189,17 @@ public slots:
 
   void setMarkImage(const QImage & mark);
 
-  void markSlide(int index);
+  void markSlide(int index, YACReaderComicReadStatus readStatus = Read);
 
   void updateMarks();
 
   void unmarkSlide(int index);
 
-  void setMarks(const QVector<bool> & marks);
+  void setMarks(const QVector<YACReaderComicReadStatus> & marks);
 
   void setShowMarks(bool enable);
 
-  QVector<bool> getMarks();
+  QVector<YACReaderComicReadStatus> getMarks();
 
 
 signals:
@@ -218,7 +218,6 @@ private slots:
 private:
   PictureFlowPrivate* d;
   QImage mark;
-  QVector<bool> marks;
   int framesSkip;
 };
 

@@ -280,7 +280,7 @@ void YACReaderFlowGL::initializeGL()
 
 	defaultTexture = bindTexture(QImage(":/images/defaultCover.png"),GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
 	markTexture = bindTexture(QImage(":/images/readRibbon.png"),GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
-
+	readingTexture = bindTexture(QImage(":/images/readingRibbon.png"),GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
 	if(lazyPopulateObjects!=-1)
 		populate(lazyPopulateObjects);
 
@@ -454,10 +454,13 @@ void YACReaderFlowGL::drawCover(CFImage *CF)
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 	
-	if(showMarks && loaded[CF->index] && marks[CF->index])
+	if(showMarks && loaded[CF->index] && marks[CF->index] != Unread)
 	{
 		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, markTexture);
+		if(marks[CF->index] == Read)
+			glBindTexture(GL_TEXTURE_2D, markTexture);
+		else
+			glBindTexture(GL_TEXTURE_2D, readingTexture);
 		glBegin(GL_QUADS);
 
 		//esquina inferior izquierda
@@ -866,7 +869,7 @@ void YACReaderFlowGL::setShowMarks(bool value)
 {
 	showMarks = value;
 }
-void YACReaderFlowGL::setMarks(QVector<bool> marks)
+void YACReaderFlowGL::setMarks(QVector<YACReaderComicReadStatus> marks)
 {
 	this->marks = marks;
 }
@@ -876,13 +879,13 @@ void YACReaderFlowGL::setMarkImage(QImage & image)
 	//deleteTexture(markTexture);
 	//markTexture = bindTexture(image,GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
 }
-void YACReaderFlowGL::markSlide(int index)
+void YACReaderFlowGL::markSlide(int index, YACReaderComicReadStatus status)
 {
-	marks[index] = true;
+	marks[index] = status;
 }
 void YACReaderFlowGL::unmarkSlide(int index)
 {
-	marks[index] = false;
+	marks[index] = YACReaderComicReadStatus::Unread;
 }
 void YACReaderFlowGL::setSlideSize(QSize size)
 {

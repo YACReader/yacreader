@@ -1017,42 +1017,47 @@ void LibraryWindow::openComic()
 #ifdef Q_OS_MAC
 		
 		QProcess::startDetached("open", QStringList() << "-n" << QDir::cleanPath(QCoreApplication::applicationDirPath()+"/../../../YACReader.app") << "--args" << path << comicId << libraryId << page);//,QStringList() << path);
-		//Comic is readed
 #else
         
 		QProcess::startDetached(QDir::cleanPath(QCoreApplication::applicationDirPath())+QString("/YACReader \"%1\" \"%2\" \"%3\" \"%4\"").arg(path).arg(comicId).arg(libraryId).arg(page),QStringList());
 #endif        
 		//Comic is readed
-		setCurrentComicReaded();
+		//setCurrentComicReaded();
+		setCurrentComicOpened();
 	}
 }
 
-void LibraryWindow::setCurrentComicsStatusReaded(bool readed)
+void LibraryWindow::setCurrentComicsStatusReaded(YACReaderComicReadStatus readStatus)
 {
 
-	comicFlow->setMarks(dmCV->setComicsRead(getSelectedComics(),readed));
+	comicFlow->setMarks(dmCV->setComicsRead(getSelectedComics(),readStatus));
 	comicFlow->updateMarks();
 }
 
 void LibraryWindow::setCurrentComicReaded()
 {
-	this->setCurrentComicsStatusReaded(true);
+	this->setCurrentComicsStatusReaded(YACReaderComicReadStatus::Read);
+}
+
+void LibraryWindow::setCurrentComicOpened()
+{
+
 }
 
 void LibraryWindow::setComicsReaded()
 {
-	comicFlow->setMarks(dmCV->setAllComicsRead(true));
+	comicFlow->setMarks(dmCV->setAllComicsRead(YACReaderComicReadStatus::Read));
 	comicFlow->updateMarks();
 }
 
 void LibraryWindow::setCurrentComicUnreaded()
 {
-	this->setCurrentComicsStatusReaded(false);
+	this->setCurrentComicsStatusReaded(YACReaderComicReadStatus::Unread);
 }
 
 void LibraryWindow::setComicsUnreaded()
 {
-	comicFlow->setMarks(dmCV->setAllComicsRead(false));
+	comicFlow->setMarks(dmCV->setAllComicsRead(YACReaderComicReadStatus::Unread));
 	comicFlow->updateMarks();
 }
 
@@ -1689,7 +1694,12 @@ void LibraryWindow::importLibraryPackage()
 	importLibraryDialog->show(libraries);
 }
 
-void LibraryWindow::updateComicsView(const ComicDB & comic)
+void LibraryWindow::updateComicsView(quint64 libraryId, const ComicDB & comic)
 {
-	dmCV->reload(comic);
+	//TODO comprobar la biblioteca....
+	if(libraryId == selectedLibrary->currentIndex())
+	{
+		dmCV->reload(comic);
+		comicFlow->setMarks(dmCV->getReadList());
+	}
 }

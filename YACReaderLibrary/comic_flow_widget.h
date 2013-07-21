@@ -16,9 +16,9 @@ public:
 
 public slots:
 	virtual void setShowMarks(bool value) = 0;
-	virtual void setMarks(QVector<bool> marks) = 0;
+	virtual void setMarks(QVector<YACReaderComicReadStatus> marks) = 0;
 	virtual void setMarkImage(QImage & image) = 0;
-	virtual void markSlide(int index) = 0;
+	virtual void markSlide(int index, YACReaderComicReadStatus status) = 0;
 	virtual void unmarkSlide(int index) = 0;
 	virtual void setSlideSize(QSize size) = 0;
 	virtual void clear() = 0;
@@ -46,9 +46,9 @@ public:
 	ComicFlowWidgetSW(QWidget * parent = 0);
 
 	void setShowMarks(bool value);
-	void setMarks(QVector<bool> marks);
+	void setMarks(QVector<YACReaderComicReadStatus> marks);
 	void setMarkImage(QImage & image);
-	void markSlide(int index);
+	void markSlide(int index,  YACReaderComicReadStatus status);
 	void unmarkSlide(int index);
 	void setSlideSize(QSize size);
 	void clear();
@@ -82,9 +82,9 @@ public:
 	ComicFlowWidgetGL(QWidget * parent = 0);
 
 	void setShowMarks(bool value);
-	void setMarks(QVector<bool> marks);
+	void setMarks(QVector<YACReaderComicReadStatus> marks);
 	void setMarkImage(QImage & image);
-	void markSlide(int index);
+	void markSlide(int index, YACReaderComicReadStatus status);
 	void unmarkSlide(int index);
 	void setSlideSize(QSize size);
 	void clear();

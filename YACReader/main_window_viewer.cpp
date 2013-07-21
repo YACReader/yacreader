@@ -171,7 +171,7 @@ void MainWindowViewer::setupUI()
 		QString pathFile = QCoreApplication::arguments().at(1);
 		currentDirectory = pathFile;
 		quint64 comicId = QCoreApplication::arguments().at(2).toULongLong();
-		quint64 libraryId = QCoreApplication::arguments().at(3).toULongLong();
+		libraryId = QCoreApplication::arguments().at(3).toULongLong();
 		int page = QCoreApplication::arguments().at(4).toULongLong();
 		
 		enableActions();
@@ -848,7 +848,7 @@ void MainWindowViewer::closeEvent ( QCloseEvent * event )
 		currentComicDB.info.currentPage = viewer->getCurrentPageNumber()+1;
 		currentComicDB.info.hasBeenOpened = true;
 		//viewer->getBookmarks();
-		client.sendComicInfo(0,currentComicDB);
+		client.sendComicInfo(libraryId,currentComicDB);
 	}
 
 	viewer->save();
@@ -865,8 +865,18 @@ void MainWindowViewer::closeEvent ( QCloseEvent * event )
 
 void MainWindowViewer::openPreviousComic()
 {
+	YACReaderLocalClient client;
 	if(!siblingComics.isEmpty())
 	{
+
+		if(isClient)
+		{
+			currentComicDB.info.currentPage = viewer->getCurrentPageNumber()+1;
+			currentComicDB.info.hasBeenOpened = true;
+			//viewer->getBookmarks();
+			client.sendComicInfo(libraryId,currentComicDB);
+		}
+
 		int currentIndex = siblingComics.indexOf(currentComicDB);
 		if (currentIndex == -1)
 			return;
@@ -889,8 +899,17 @@ void MainWindowViewer::openPreviousComic()
 
 void MainWindowViewer::openNextComic()
 {
+	YACReaderLocalClient client;
 	if(!siblingComics.isEmpty())
 	{
+		if(isClient)
+		{
+			currentComicDB.info.currentPage = viewer->getCurrentPageNumber()+1;
+			currentComicDB.info.hasBeenOpened = true;
+			//viewer->getBookmarks();
+			client.sendComicInfo(libraryId,currentComicDB);
+		}
+
 		int currentIndex = siblingComics.indexOf(currentComicDB);
 		if (currentIndex == -1)
 			return;
