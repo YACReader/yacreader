@@ -615,8 +615,8 @@ void MainWindowViewer::open(QString path, ComicDB & comic, QList<ComicDB> & sibl
 
 void MainWindowViewer::openComicFromPath(QString pathFile)
 {
-	currentDirectory = pathFile;
 	QFileInfo fi(pathFile);
+	currentDirectory = fi.dir().absolutePath();
 	getSiblingComics(fi.absolutePath(),fi.fileName());
 
 	setWindowTitle("YACReader - " + fi.fileName());
@@ -624,6 +624,8 @@ void MainWindowViewer::openComicFromPath(QString pathFile)
 	enableActions();
 
 	viewer->open(pathFile);
+
+	isClient = false;
 	
 }
 
@@ -634,6 +636,7 @@ void MainWindowViewer::openFolder()
 	if (!pathDir.isEmpty())
 	{
 		openFolderFromPath(pathDir);
+		isClient = false;
 	}
 }
 
@@ -866,16 +869,13 @@ void MainWindowViewer::closeEvent ( QCloseEvent * event )
 void MainWindowViewer::openPreviousComic()
 {
 	YACReaderLocalClient client;
-	if(!siblingComics.isEmpty())
+	if(!siblingComics.isEmpty() && isClient)
 	{
 
-		if(isClient)
-		{
-			currentComicDB.info.currentPage = viewer->getCurrentPageNumber()+1;
-			currentComicDB.info.hasBeenOpened = true;
-			//viewer->getBookmarks();
-			client.sendComicInfo(libraryId,currentComicDB);
-		}
+		currentComicDB.info.currentPage = viewer->getCurrentPageNumber()+1;
+		currentComicDB.info.hasBeenOpened = true;
+		//viewer->getBookmarks();
+		client.sendComicInfo(libraryId,currentComicDB);
 
 		int currentIndex = siblingComics.indexOf(currentComicDB);
 		if (currentIndex == -1)
@@ -900,15 +900,12 @@ void MainWindowViewer::openPreviousComic()
 void MainWindowViewer::openNextComic()
 {
 	YACReaderLocalClient client;
-	if(!siblingComics.isEmpty())
+	if(!siblingComics.isEmpty() && isClient)
 	{
-		if(isClient)
-		{
-			currentComicDB.info.currentPage = viewer->getCurrentPageNumber()+1;
-			currentComicDB.info.hasBeenOpened = true;
-			//viewer->getBookmarks();
-			client.sendComicInfo(libraryId,currentComicDB);
-		}
+		currentComicDB.info.currentPage = viewer->getCurrentPageNumber()+1;
+		currentComicDB.info.hasBeenOpened = true;
+		//viewer->getBookmarks();
+		client.sendComicInfo(libraryId,currentComicDB);
 
 		int currentIndex = siblingComics.indexOf(currentComicDB);
 		if (currentIndex == -1)
@@ -999,6 +996,8 @@ void MainWindowViewer::dropEvent(QDropEvent *event)
 			else 
 				if(info.isDir())
 					openFolderFromPath(fName);
+
+			isClient = false;
         }
     }
 
