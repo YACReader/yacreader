@@ -566,24 +566,27 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
 		if(returnValue) //TODO: execute only if previous version was < 7.0
 		{
 			//new 7.0 fields
-			QSqlQuery alterTableComicInfo(db);
-			alterTableComicInfo.prepare("ALTER TABLE comic_info ADD ("
-				"hasBeenOpened BOOLEAN DEFAULT 0,"
-				"rating INTEGER DEFAULT 0,"
-				"currentPage INTEGER DEFAULT 1, "
-				"bookmark1 INTEGER DEFAULT -1, "
-				"bookmark2 INTEGER DEFAULT -1, "
-				"bookmark3 INTEGER DEFAULT -1, "
-				"brightness INTEGER DEFAULT -1, "
-				"contrast INTEGER DEFAULT -1, "
-				"gamma INTEGER DEFAULT -1 "
-				")");
-			alterTableComicInfo.exec();
-
-			returnValue = (alterTableComicInfo.numRowsAffected() > 0);
+			QStringList columnDefs;
+			columnDefs << "hasBeenOpened BOOLEAN DEFAULT 0"
+				       << "rating INTEGER DEFAULT 0"
+					   << "currentPage INTEGER DEFAULT 1"
+					   << "bookmark1 INTEGER DEFAULT -1"
+					   << "bookmark2 INTEGER DEFAULT -1"
+					   << "bookmark3 INTEGER DEFAULT -1"
+					   << "brightness INTEGER DEFAULT -1"
+					   << "contrast INTEGER DEFAULT -1"
+					   << "gamma INTEGER DEFAULT -1";
+			QString sql = "ALTER TABLE comic_info ADD COLUMN %1";
+			foreach(QString columnDef, columnDefs)
+			{
+				QSqlQuery alterTableComicInfo(db);
+				alterTableComicInfo.prepare(sql.arg(columnDef));
+				//alterTableComicInfo.bindValue(":column_def",columnDef);
+				alterTableComicInfo.exec();
+				returnValue = returnValue && (alterTableComicInfo.numRowsAffected() > 0);
+			}
 		}
 		//TODO update hasBeenOpened value
-
 	}
 
 	db.close();
