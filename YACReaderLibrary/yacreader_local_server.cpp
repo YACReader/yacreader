@@ -32,19 +32,29 @@ void YACReaderLocalServer::sendResponse()
 
 	 quint64 libraryId;
 	 ComicDB comic;
+	 int tries = 0;
 
 	 //QByteArray data;
-	 while(clientConnection->bytesAvailable() < sizeof(quint16))
-		 clientConnection->waitForReadyRead();
+	 while(clientConnection->bytesAvailable() < sizeof(quint16) && tries < 200)
+	 {
+		 clientConnection->waitForReadyRead(10);
+		 tries++;
+	 }
+	 if(tries == 200)
+		 return;
 	 QDataStream sizeStream(clientConnection->read(sizeof(quint16)));
 	 sizeStream.setVersion(QDataStream::Qt_4_8);
 	 quint16 totalSize = 0;
 	 sizeStream >> totalSize;
 
-	 while(clientConnection->bytesAvailable() < totalSize )
+	 tries = 0;
+	 while(clientConnection->bytesAvailable() < totalSize && tries < 200)
 	 {
-		 clientConnection->waitForReadyRead();
+		 clientConnection->waitForReadyRead(10);
+		 tries++;
 	 }
+	 if(tries == 200)
+		 return;
 	 QDataStream dataStream(clientConnection->read(totalSize));
 	 quint8 msgType;
 	 dataStream >> msgType;
@@ -68,10 +78,17 @@ void YACReaderLocalServer::sendResponse()
 			 out << (quint16)(block.size() - sizeof(quint16));
 
 			 int  written = 0;
-			 while(written != block.size())
+			 tries = 0;
+			 while(written != block.size() && tries < 200)
 			 {
-				 written += clientConnection->write(block);
-				 clientConnection->flush();
+				 int ret = clientConnection->write(block);
+				 if(ret != -1)
+				 {
+					written += ret;
+					clientConnection->flush();
+				 }
+				 else
+					 tries++;
 			 }
 			 break;
 		 }
