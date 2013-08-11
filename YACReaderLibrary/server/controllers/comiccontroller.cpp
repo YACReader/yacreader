@@ -50,16 +50,13 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 	if(comicFile != NULL)
 	{
 		QThread * thread = NULL;
-		if (typeid(*comicFile) != typeid(FileComic))
-		{
-			thread = new QThread();
 
-			comicFile->moveToThread(thread);
+		thread = new QThread();
 
-			connect(thread, SIGNAL(started()), comicFile, SLOT(process()));
-			connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+		comicFile->moveToThread(thread);
 
-		}
+		connect(thread, SIGNAL(started()), comicFile, SLOT(process()));
+		connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
 		comicFile->load(libraries.value(libraryName)+comic.path);
 
