@@ -862,7 +862,7 @@ void YACReaderFlowGL::useVSync(bool b)
 			f.setSwapInterval(0);
 			setFormat(f);
 		}
-		reload();
+		reset();
 	}
 }
 void YACReaderFlowGL::setShowMarks(bool value)
