@@ -386,6 +386,8 @@ void Viewer::keyPressEvent(QKeyEvent *event)
 				QCoreApplication::sendEvent(mglass,event);
 		}
 	}
+	else
+		QAbstractScrollArea::keyPressEvent(event);
 }
 
 void Viewer::wheelEvent(QWheelEvent * event)
