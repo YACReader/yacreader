@@ -32,7 +32,7 @@ void Configuration::load(QSettings * settings)
 	if(!settings->contains(ZOOM_LEVEL))
 		settings->setValue(MAG_GLASS_SIZE,QSize(350,175));
 	if(!settings->contains(FIT))
-		settings->setValue(FIT,true);
+		settings->setValue(FIT,false);
 	if(!settings->contains(FLOW_TYPE))
 		settings->setValue(FLOW_TYPE,0);
 	if(!settings->contains(FULLSCREEN))
