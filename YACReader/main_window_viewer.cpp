@@ -713,6 +713,7 @@ void MainWindowViewer::disableActions()
 
 void MainWindowViewer::keyPressEvent(QKeyEvent *event)
 {
+	//TODO remove unused keys
 	switch (event->key())
 	{
 	case Qt::Key_Escape:
