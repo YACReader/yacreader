@@ -242,6 +242,8 @@ QList<QString> FileComic::filter(const QList<QString> & src)
 
 	return filtered;
 }
+
+//DELEGATE methods
 void FileComic::fileExtracted(int index, const QByteArray & rawData)
 {
 	/*QFile f("c:/temp/out2.txt");
@@ -256,6 +258,18 @@ void FileComic::fileExtracted(int index, const QByteArray & rawData)
 	emit imageLoaded(sortedIndex);
 	emit imageLoaded(sortedIndex,_pages[sortedIndex]);
 }
+
+void FileComic::crcError(int index)
+{
+	emit errorOpening(tr("CRC error"));
+}
+
+void FileComic::unknownError(int index)
+{
+	emit errorOpening(tr("Unknown error opening the file"));
+}
+
+//--------------------------------------
 
 QList<QVector<quint32> > FileComic::getSections(int & sectionIndex)
 {
@@ -414,38 +428,7 @@ void FileComic::process()
 	emit imagesLoaded();
 	moveToThread(QApplication::instance()->thread());
 }
-//-----------------------------------------------------------------------------
-void FileComic::loadSizes()
-{
-}
-//-----------------------------------------------------------------------------
-void FileComic::loadImages()
-{
-}
-//-----------------------------------------------------------------------------
-void FileComic::openingError(QProcess::ProcessError error)
-{
-	switch(error)
-	{
-	case QProcess::FailedToStart:
-		QMessageBox::critical(NULL,tr("7z not found"),tr("7z wasn't found in your PATH."));
-		break;
-	case QProcess::Crashed:
-		QMessageBox::critical(NULL,tr("7z crashed"),tr("7z crashed."));
-		break;
-	case QProcess::ReadError:
-		QMessageBox::critical(NULL,tr("7z reading"),tr("problem reading from 7z"));
-		break;
-	case QProcess::UnknownError:
-		QMessageBox::critical(NULL,tr("7z problem"),tr("Unknown error 7z"));
-		break;
-	default:
-		//TODO
-		break;
-	}	
-	_loaded = false;
-	emit errorOpening();
-}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////

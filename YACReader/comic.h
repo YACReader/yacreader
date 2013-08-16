@@ -75,6 +75,7 @@
 		void openAt(int index);
 		void numPages(unsigned int numPages);
 		void errorOpening();
+		void errorOpening(QString);
 		void isBookmark(bool);
 		void bookmarksUpdated();
 		void isCover();
@@ -94,12 +95,10 @@
 		~FileComic();
 		void fileExtracted(int index, const QByteArray & rawData);
 		virtual bool load(const QString & path, int atPage = -1);
-	
+		void crcError(int index);
+		void unknownError(int index);
 	public slots:
 		void process();
-		void loadImages();
-		void loadSizes();
-		void openingError(QProcess::ProcessError error);
 	};
 
 	class FolderComic : public Comic 
