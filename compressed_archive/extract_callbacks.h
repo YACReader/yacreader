@@ -267,21 +267,28 @@ STDMETHODIMP CArchiveExtractCallback::SetOperationResult(Int32 operationResult)
       break;
     default:
     {
-	  //TODO comunicar los fallos usando el delegado
       NumErrors++;
       qDebug() << "     ";
       switch(operationResult)
       {
         case NArchive::NExtract::NOperationResult::kUnSupportedMethod:
+		  if(delegate != 0)
+			  delegate->unknownError(_index);
           qDebug() << kUnsupportedMethod;
           break;
         case NArchive::NExtract::NOperationResult::kCRCError:
+		  if(delegate != 0)
+			  delegate->crcError(_index);
           qDebug() << kCRCFailed;
           break;
         case NArchive::NExtract::NOperationResult::kDataError:
+		  if(delegate != 0)
+			  delegate->unknownError(_index);
           qDebug() << kDataError;
           break;
         default:
+		  if(delegate != 0)
+			  delegate->unknownError(_index);
           qDebug() << kUnknownError;
       }
     }
