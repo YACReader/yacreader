@@ -264,12 +264,14 @@ void FileComic::fileExtracted(int index, const QByteArray & rawData)
 
 void FileComic::crcError(int index)
 {
-	emit errorOpening(tr("CRC error"));
+	emit errorOpening(tr("CRC error: some of the pages will not be displayed correctly"));
 }
 
+//TODO: comprobar que si se produce uno de estos errores, la carga del cómic es irrecuperable
 void FileComic::unknownError(int index)
 {
-	emit errorOpening(tr("Unknown error opening the file"));
+	//emit errorOpening(tr("Unknown error opening the file"));
+	//emit errorOpening();
 }
 
 //--------------------------------------

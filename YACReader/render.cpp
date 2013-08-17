@@ -606,6 +606,7 @@ void Render::load(const QString & path, int atPage)
 	previousIndex = currentIndex = 0;
 
 	connect(comic,SIGNAL(errorOpening()),this,SIGNAL(errorOpening()));
+	connect(comic,SIGNAL(errorOpening(QString)),this,SIGNAL(errorOpening(QString)));
 	connect(comic,SIGNAL(errorOpening()),this,SLOT(reset()));
 	connect(comic,SIGNAL(imageLoaded(int)),this,SIGNAL(imageLoaded(int)));
 	connect(comic,SIGNAL(imageLoaded(int)),this,SLOT(pageRawDataReady(int)));
