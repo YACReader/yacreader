@@ -228,12 +228,15 @@ QList<QString> FileComic::filter(const QList<QString> & src)
 	foreach(QString fileName,src)
 	{
 		fileAccepted = false;
-		foreach(QString extension,extensions)
+		if(!fileName.contains("__MACOSX"))
 		{
-			if(fileName.endsWith(extension,Qt::CaseInsensitive))
+			foreach(QString extension,extensions)
 			{
-				fileAccepted = true;
-				break;
+				if(fileName.endsWith(extension,Qt::CaseInsensitive))
+				{
+					fileAccepted = true;
+					break;
+				}
 			}
 		}
 		if(fileAccepted)
