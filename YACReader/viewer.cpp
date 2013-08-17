@@ -157,6 +157,7 @@ void Viewer::createConnections()
 	//render
 	connect(render,SIGNAL(errorOpening()),this,SLOT(resetContent()));
 	connect(render,SIGNAL(errorOpening()),this,SLOT(showMessageErrorOpening()));
+	connect(render,SIGNAL(errorOpening(QString)),this,SLOT(showMessageErrorOpening(QString)));
 	connect(render,SIGNAL(numPages(unsigned int)),goToFlow,SLOT(setNumSlides(unsigned int)));
 	connect(render,SIGNAL(numPages(unsigned int)),goToDialog,SLOT(setNumPages(unsigned int)));
 	//connect(render,SIGNAL(numPages(unsigned int)),this,SLOT(updateInformation()));
@@ -203,6 +204,11 @@ void Viewer::showMessageErrorOpening()
 	QMessageBox::critical(NULL,tr("Not found"),tr("Comic not found"));
 }
 
+void Viewer::showMessageErrorOpening(QString message)
+{
+	QMessageBox::critical(NULL,tr("Error opening"),message);
+}
+
 void Viewer::next()
 {
 	direction = 1;
@@ -238,6 +244,11 @@ void Viewer::updatePage()
 	//TODO -> update bookmark action
 	setFocus(Qt::ShortcutFocusReason);
 	delete previousPage;
+
+	//TODO: fix loading...please wait!
+	if(currentPage->isNull())
+		setPageUnavailableMessage();
+
 	if(restoreMagnifyingGlass)
 	{
 		restoreMagnifyingGlass = false;
@@ -667,6 +678,17 @@ void Viewer::setLoadingMessage()
 	}
 	emit(pageAvailable(false));
 	configureContent(tr("Loading...please wait!"));
+}
+
+void Viewer::setPageUnavailableMessage()
+{
+	if(magnifyingGlassShowed)
+	{
+		hideMagnifyingGlass();
+		restoreMagnifyingGlass = true;
+	}
+	emit(pageAvailable(false));
+	configureContent(tr("Page not available!"));
 }
 
 void Viewer::configureContent(QString msg)
