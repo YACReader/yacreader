@@ -5,14 +5,14 @@
 #include <QLocalSocket>
 
 YACReaderLocalClient::YACReaderLocalClient(QObject *parent) :
-    QObject(parent)
+	QObject(parent)
 {
-    localSocket = new QLocalSocket(this);
+	localSocket = new QLocalSocket(this);
 
-    //connect(localSocket, SIGNAL(readyRead()), this, SLOT(readMessage()));
+	//connect(localSocket, SIGNAL(readyRead()), this, SLOT(readMessage()));
 	
-    /*connect(socket, SIGNAL(error(QLocalSocket::LocalSocketError)),
-            this, SLOT(displayError(QLocalSocket::LocalSocketError)));*/
+	/*connect(socket, SIGNAL(error(QLocalSocket::LocalSocketError)),
+			this, SLOT(displayError(QLocalSocket::LocalSocketError)));*/
 }
 
 //información de comic recibida...
@@ -101,10 +101,15 @@ bool YACReaderLocalClient::sendComicInfo(quint64 libraryId, ComicDB & comic)
 			tries++;
 		}
 		if(tries == 100 && written != block.size())
+		{
+			emit finished();
 			return false;
+		}
+		emit finished();
 		return true;
 	}
-	else 
-		return false;
+
+	emit finished();
+	return false;
 
 }

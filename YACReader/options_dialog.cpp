@@ -244,21 +244,24 @@ void OptionsDialog::brightnessChanged(int value)
 {
 	QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
 	settings.setValue(BRIGHTNESS,value);
-	emit(changedImageOptions());
+	emit changedFilters(brightnessS->getValue(), contrastS->getValue(), gammaS->getValue());
+	//emit(changedImageOptions());
 }
 
 void OptionsDialog::contrastChanged(int value)
 {
 	QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
 	settings.setValue(CONTRAST,value);
-	emit(changedImageOptions());
+	emit changedFilters(brightnessS->getValue(), contrastS->getValue(), gammaS->getValue());
+	///emit(changedImageOptions());
 }
 
 void OptionsDialog::gammaChanged(int value)
 {
 	QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
 	settings.setValue(GAMMA,value);
-	emit(changedImageOptions());
+	emit changedFilters(brightnessS->getValue(), contrastS->getValue(), gammaS->getValue());
+	//emit(changedImageOptions());
 }
 
 void OptionsDialog::resetImageConfig()
@@ -270,7 +273,8 @@ void OptionsDialog::resetImageConfig()
 	settings.setValue(BRIGHTNESS,0);
 	settings.setValue(CONTRAST,100);
 	settings.setValue(GAMMA,100);
-	emit(changedImageOptions());
+	emit changedFilters(brightnessS->getValue(), contrastS->getValue(), gammaS->getValue());
+	//emit(changedImageOptions());
 }
 
 void OptionsDialog::show()
@@ -280,4 +284,21 @@ void OptionsDialog::show()
 	fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
 	QDialog::show();
 	delete s;
+}
+
+void OptionsDialog::setFilters(int brightness, int contrast, int gamma)
+{
+	if(brightness != -1)
+		brightnessS->setValue(brightness);
+	else
+		brightnessS->setValue(0);
+	if(contrast != -1)
+		contrastS->setValue(contrast);
+	else
+		contrastS->setValue(100);
+	if(gamma != -1)
+		gammaS->setValue(gamma);
+	else
+		gammaS->setValue(100);
+
 }

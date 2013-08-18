@@ -9,6 +9,7 @@
 #include "bookmarks.h" //TODO desacoplar la dependencia con bookmarks
 #include "qnaturalsorting.h"
 #include "compressed_archive.h"
+#include "comic_db.h"
 
 #define EXTENSIONS << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp"
 #define EXTENSIONS_LITERAL << ".jpg" << ".jpeg" << ".png" << ".gif" << ".tiff" << ".tif" << ".bmp"
@@ -212,7 +213,29 @@ bool FileComic::load(const QString & path, int atPage)
 	}
 	else
 	{
-		QMessageBox::critical(NULL,tr("Not found"),tr("Comic not found")+" : " + path);
+		//QMessageBox::critical(NULL,tr("Not found"),tr("Comic not found")+" : " + path);
+		emit errorOpening();
+		return false;
+	}
+}
+
+bool FileComic::load(const QString & path, const ComicDB & comic)
+{
+	QFileInfo fi(path);
+
+	if(fi.exists())
+	{
+		QList<int> bookmarkIndexes;
+		bookmarkIndexes << comic.info.bookmark1 << comic.info.bookmark2 << comic.info.bookmark3;
+		if(bm->load(bookmarkIndexes,comic.info.currentPage-1))
+			emit bookmarksUpdated();
+		_firstPage = comic.info.currentPage-1;
+		_path = QDir::cleanPath(path);
+		return true;
+	}
+	else
+	{
+		//QMessageBox::critical(NULL,tr("Not found"),tr("Comic not found")+" : " + path);
 		emit errorOpening();
 		return false;
 	}
@@ -546,16 +569,48 @@ PDFComic::~PDFComic()
 }
 
 bool PDFComic::load(const QString & path, int atPage)
-{
-	_path = path;
-	if(atPage == -1)
+{	
+	QFileInfo fi(path);
+
+	if(fi.exists())
 	{
-		bm->newComic(_path);
-		emit bookmarksUpdated();
+		_path = path;
+		if(atPage == -1)
+		{
+			bm->newComic(_path);
+			emit bookmarksUpdated();
+		}
+		_firstPage = atPage;
+		//emit bookmarksLoaded(*bm);
+		return true;
 	}
-	_firstPage = atPage;
-	//emit bookmarksLoaded(*bm);
-	return true;
+	else
+	{
+		emit errorOpening();
+		return false;
+	}
+}
+
+bool PDFComic::load(const QString & path, const ComicDB & comic)
+{
+	QFileInfo fi(path);
+
+	if(fi.exists())
+	{
+		QList<int> bookmarkIndexes;
+		bookmarkIndexes << comic.info.bookmark1 << comic.info.bookmark2 << comic.info.bookmark3;
+		if(bm->load(bookmarkIndexes,comic.info.currentPage-1))
+			emit bookmarksUpdated();
+		_firstPage = comic.info.currentPage-1;
+		_path = QDir::cleanPath(path);
+		return true;
+	}
+	else
+	{
+		//QMessageBox::critical(NULL,tr("Not found"),tr("Comic not found")+" : " + path);
+		emit errorOpening();
+		return false;
+	}
 }
 
 void PDFComic::process()

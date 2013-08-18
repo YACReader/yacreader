@@ -11,7 +11,7 @@
 #include "onstart_flow_selection_dialog.h"
 #include "page_label_widget.h"
 #include "notifications_label_widget.h"
-
+#include "comic_db.h"
 #include <QFile>
 #define STEPS 22
 
@@ -174,18 +174,19 @@ void Viewer::createConnections()
 	connect(render,SIGNAL(bookmarksUpdated()),this,SLOT(setBookmarks()));
 }
 
-void Viewer::open(QString pathFile, int atPage)
+//Deprecated
+void Viewer::prepareForOpening()
 {
 	if(render->hasLoadedComic())
 		save();
 	//bd->setBookmarks(*bm);
 
 	goToFlow->reset();
-	render->load(pathFile, atPage);
+
 	//render->update();
 
 	verticalScrollBar()->setSliderPosition(verticalScrollBar()->minimum());
-	
+
 	if(Configuration::getConfiguration().getShowInformation() && !information)
 	{
 		QTimer * timer = new QTimer();
@@ -195,8 +196,18 @@ void Viewer::open(QString pathFile, int atPage)
 	}
 
 	informationLabel->setText("...");
+}
 
-	
+void Viewer::open(QString pathFile, int atPage)
+{
+	prepareForOpening();
+	render->load(pathFile, atPage);
+}
+
+void Viewer::open(QString pathFile, const ComicDB & comic)
+{
+	prepareForOpening();
+	render->load(pathFile, comic);
 }
 
 void Viewer::showMessageErrorOpening()
@@ -638,35 +649,35 @@ void Viewer::rotateRight()
 //TODO
 void Viewer::setBookmark(bool set)
 {
-    render->setBookmark();
-    if(set) //add bookmark
-    {
 	render->setBookmark();
-    }
-    else //remove bookmark
-    {
+	if(set) //add bookmark
+	{
+	render->setBookmark();
+	}
+	else //remove bookmark
+	{
 	render->removeBookmark();
-    }
+	}
 }
 
 void Viewer::save ()
 {
-    if(render->hasLoadedComic())
+	if(render->hasLoadedComic())
 	render->save();
 }
 
 void Viewer::doublePageSwitch()
 {
-    doublePage = !doublePage;
-    render->doublePageSwitch();
+	doublePage = !doublePage;
+	render->doublePageSwitch();
 	Configuration::getConfiguration().setDoublePage(doublePage);
 }
 
 void Viewer::resetContent()
 {
-    configureContent(tr("Press 'O' to open comic."));
+	configureContent(tr("Press 'O' to open comic."));
 	goToFlow->reset();
-    emit reset();
+	emit reset();
 }
 
 void Viewer::setLoadingMessage()
@@ -693,12 +704,12 @@ void Viewer::setPageUnavailableMessage()
 
 void Viewer::configureContent(QString msg)
 {
-    content->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    content->setScaledContents(true);
-    content->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
-    content->setText(msg);
-    content->setFont(QFont("courier new", 12));
-    content->adjustSize();
+	content->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+	content->setScaledContents(true);
+	content->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
+	content->setText(msg);
+	content->setFont(QFont("courier new", 12));
+	content->adjustSize();
 	setFocus(Qt::ShortcutFocusReason);
 	//emit showingText();
 }
@@ -802,9 +813,15 @@ void Viewer::updateConfig(QSettings * settings)
 	
 }
 
+//deprecated
 void Viewer::updateImageOptions()
 {
 	render->reload();
+}
+
+void Viewer::updateFilters(int brightness, int contrast,int gamma)
+{
+	render->updateFilters(brightness,contrast,gamma);
 }
 
 void Viewer::setBookmarks()
@@ -833,4 +850,35 @@ unsigned int Viewer::getIndex()
 int Viewer::getCurrentPageNumber()
 {
 	return render->getIndex();
+}
+
+void Viewer::updateComic(ComicDB & comic)
+{
+	//set currentPage
+	comic.info.currentPage = render->getIndex()+1;
+	//set bookmarks
+	Bookmarks * boomarks = render->getBookmarks();
+	QList<int> boomarksList = boomarks->getBookmarkPages();
+	int numBookmarks = boomarksList.size();
+	if(numBookmarks > 0)
+		comic.info.bookmark1 = boomarksList[0];
+	if(numBookmarks > 1)
+		comic.info.bookmark2 = boomarksList[1];
+	if(numBookmarks > 2)
+		comic.info.bookmark3 = boomarksList[2];
+	//set filters
+	//TODO: avoid use settings for this...
+	QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+	int brightness = settings.value(BRIGHTNESS,0).toInt();
+	int contrast = settings.value(CONTRAST,100).toInt();
+	int gamma = settings.value(GAMMA,100).toInt();
+
+	if(brightness != 0 || comic.info.brightness!=-1)
+		comic.info.brightness = brightness;
+	if(contrast != 100 || comic.info.contrast!=-1)
+		comic.info.contrast = contrast;
+	if(gamma != 100 || comic.info.gamma!=-1)
+		comic.info.gamma = gamma;
+
+
 }

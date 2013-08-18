@@ -71,6 +71,7 @@ class Bookmarks : public QObject
     void newComic(const QString & path);
     void clear();
 	void save();
+	bool load(const QList<int> & bookmarkIndexes, int lastPage); 
 
 };
 

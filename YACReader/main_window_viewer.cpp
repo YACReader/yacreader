@@ -23,33 +23,33 @@
 class MacToolBarSeparator : public QWidget
 {
 public:
-    MacToolBarSeparator(QWidget * parent =0)
+	MacToolBarSeparator(QWidget * parent =0)
 		:QWidget(parent)
 	{
-        setFixedWidth(2);
+		setFixedWidth(2);
 	}
 
-    void paintEvent(QPaintEvent *event)
-    {
-        Q_UNUSED(event);
-        QPainter painter(this);
+	void paintEvent(QPaintEvent *event)
+	{
+		Q_UNUSED(event);
+		QPainter painter(this);
 
-        QLinearGradient lG(0,0,0,height());
+		QLinearGradient lG(0,0,0,height());
 
-        lG.setColorAt(0,QColor(128,128,128,0));
-        lG.setColorAt(0.5,QColor(128,128,128,255));
-        lG.setColorAt(1,QColor(128,128,128,0));
+		lG.setColorAt(0,QColor(128,128,128,0));
+		lG.setColorAt(0.5,QColor(128,128,128,255));
+		lG.setColorAt(1,QColor(128,128,128,0));
 
-        painter.fillRect(0,0,1,height(),lG);
+		painter.fillRect(0,0,1,height(),lG);
 
-        QLinearGradient lG2(1,0,1,height());
+		QLinearGradient lG2(1,0,1,height());
 
-        lG2.setColorAt(0,QColor(220,220,220,0));
-        lG2.setColorAt(0.5,QColor(220,220,220,255));
-        lG2.setColorAt(1,QColor(220,220,220,0));
+		lG2.setColorAt(0,QColor(220,220,220,0));
+		lG2.setColorAt(0.5,QColor(220,220,220,255));
+		lG2.setColorAt(1,QColor(220,220,220,0));
 
-        painter.fillRect(1,0,1,height(),lG2);
-    }
+		painter.fillRect(1,0,1,height(),lG2);
+	}
 };
 #endif
 
@@ -142,7 +142,7 @@ void MainWindowViewer::setupUI()
 	connect(optionsDialog,SIGNAL(accepted()),viewer,SLOT(updateOptions()));
 	connect(optionsDialog,SIGNAL(fitToWidthRatioChanged(float)),viewer,SLOT(updateFitToWidthRatio(float)));
 	connect(optionsDialog, SIGNAL(optionsChanged()),this,SLOT(reloadOptions()));
-	connect(optionsDialog,SIGNAL(changedImageOptions()),viewer,SLOT(updateImageOptions()));
+	connect(optionsDialog,SIGNAL(changedFilters(int,int,int)),viewer,SLOT(updateFilters(int,int,int)));
 
 	optionsDialog->restoreOptions(settings);
 	shortcutsDialog = new ShortcutsDialog(this);
@@ -152,40 +152,7 @@ void MainWindowViewer::setupUI()
 
 	setWindowTitle("YACReader");
 
-	if(QCoreApplication::argc() == 2) //only path...
-	{
-		isClient = false;
-		//TODO: new method open(QString)
-		QString pathFile = QCoreApplication::arguments().at(1);
-		QFileInfo fi(pathFile);
-		currentDirectory = fi.absoluteDir().path();
-		getSiblingComics(fi.absolutePath(),fi.fileName());
-
-		setWindowTitle("YACReader - " + fi.fileName());
-		enableActions();
-		viewer->open(pathFile);
-	}
-	else if(QCoreApplication::argc() == 5)
-	{
-		isClient = true;
-		QString pathFile = QCoreApplication::arguments().at(1);
-		currentDirectory = pathFile;
-		quint64 comicId = QCoreApplication::arguments().at(2).toULongLong();
-		libraryId = QCoreApplication::arguments().at(3).toULongLong();
-		int page = QCoreApplication::arguments().at(4).toULongLong();
-		
-		enableActions();
-
-		//TODO request data to the server
-		
-		currentComicDB.id = comicId;
-		YACReaderLocalClient client;
-		
-		if(client.requestComicInfo(libraryId,currentComicDB,siblingComics))
-			open(pathFile+currentComicDB.path,currentComicDB,siblingComics);
-		else
-		{/*error*/}
-	}
+	openFromArgv();
 
 	versionChecker = new HttpVersionChecker();
 
@@ -193,9 +160,9 @@ void MainWindowViewer::setupUI()
 		this,SLOT(newVersion()));
 	
 	QTimer * tT = new QTimer;
-    
-    tT->setSingleShot(true);
-    connect(tT, SIGNAL(timeout()), versionChecker, SLOT(get()));
+	
+	tT->setSingleShot(true);
+	connect(tT, SIGNAL(timeout()), versionChecker, SLOT(get()));
 	//versionChecker->get(); //TODÓ
 	tT->start(100);
 	
@@ -218,6 +185,43 @@ void MainWindowViewer::setupUI()
 		showToolBars();
 	else
 		hideToolBars();
+}
+
+void MainWindowViewer::openFromArgv()
+{
+	if(QCoreApplication::argc() == 2) //only path...
+	{
+		isClient = false;
+		//TODO: new method open(QString)
+		QString pathFile = QCoreApplication::arguments().at(1);
+		QFileInfo fi(pathFile);
+		currentDirectory = fi.absoluteDir().path();
+		getSiblingComics(fi.absolutePath(),fi.fileName());
+
+		setWindowTitle("YACReader - " + fi.fileName());
+		enableActions();
+		viewer->open(pathFile);
+	}
+	else if(QCoreApplication::argc() == 4)
+	{
+		isClient = true;
+		QString pathFile = QCoreApplication::arguments().at(1);
+		currentDirectory = pathFile;
+		quint64 comicId = QCoreApplication::arguments().at(2).toULongLong();
+		libraryId = QCoreApplication::arguments().at(3).toULongLong();
+		
+		enableActions();
+	
+		currentComicDB.id = comicId;
+		YACReaderLocalClient client;
+		
+		if(client.requestComicInfo(libraryId,currentComicDB,siblingComics))
+			open(pathFile+currentComicDB.path,currentComicDB,siblingComics);
+		else
+		{/*error*/}
+
+		optionsDialog->setFilters(currentComicDB.info.brightness, currentComicDB.info.contrast, currentComicDB.info.gamma);
+	}
 }
 
 void MainWindowViewer::createActions()
@@ -273,7 +277,7 @@ void MainWindowViewer::createActions()
 	//adjustWidth->setCheckable(true);
 	adjustHeight->setDisabled(true);
 	adjustHeight->setChecked(Configuration::getConfiguration().getAdjustToWidth());
-    adjustHeight->setToolTip(tr("Fit image to height"));
+	adjustHeight->setToolTip(tr("Fit image to height"));
 	//adjustWidth->setIcon(QIcon(":/images/fitWidth.png"));
 	connect(adjustHeight, SIGNAL(triggered()),this,SLOT(fitToHeight()));
 
@@ -282,7 +286,7 @@ void MainWindowViewer::createActions()
 	//adjustWidth->setCheckable(true);
 	adjustWidth->setDisabled(true);
 	adjustWidth->setChecked(Configuration::getConfiguration().getAdjustToWidth());
-    adjustWidth->setToolTip(tr("Fit image to width"));
+	adjustWidth->setToolTip(tr("Fit image to width"));
 	//adjustWidth->setIcon(QIcon(":/images/fitWidth.png"));
 	connect(adjustWidth, SIGNAL(triggered()),this,SLOT(fitToWidth()));
 
@@ -435,7 +439,7 @@ void MainWindowViewer::createToolBars()
 //#endif
 
 #ifdef Q_OS_MAC
-    comicToolBar->addWidget(new MacToolBarSeparator);
+	comicToolBar->addWidget(new MacToolBarSeparator);
 #else
 	comicToolBar->addSeparator();
 #endif
@@ -481,7 +485,7 @@ void MainWindowViewer::createToolBars()
 	comicToolBar->addAction(adjustToFullSizeAction);
 	comicToolBar->addAction(leftRotationAction);
 	comicToolBar->addAction(rightRotationAction);
-    comicToolBar->addAction(doublePageAction);
+	comicToolBar->addAction(doublePageAction);
 
 #ifdef Q_OS_MAC
 	comicToolBar->addWidget(new MacToolBarSeparator);
@@ -508,7 +512,7 @@ void MainWindowViewer::createToolBars()
 	comicToolBar->addAction(showInfo);
 
 #ifdef Q_OS_MAC
-    comicToolBar->addWidget(new MacToolBarSeparator);
+	comicToolBar->addWidget(new MacToolBarSeparator);
 #else
 	comicToolBar->addWidget(new QToolBarStretch());
 #endif
@@ -538,7 +542,7 @@ void MainWindowViewer::createToolBars()
 	viewer->addAction(adjustToFullSizeAction);
 	viewer->addAction(leftRotationAction);
 	viewer->addAction(rightRotationAction);
-        viewer->addAction(doublePageAction);
+		viewer->addAction(doublePageAction);
 	separator = new QAction("",this);
 	separator->setSeparator(true);
 	viewer->addAction(separator);
@@ -598,9 +602,11 @@ void MainWindowViewer::open(QString path, ComicDB & comic, QList<ComicDB> & sibl
 	else
 		setWindowTitle("YACReader - " + fi.fileName());
 
-	viewer->open(path,comic.info.currentPage-1);
+	viewer->open(path,comic);
 	enableActions();
 	int index = siblings.indexOf(comic);
+
+	optionsDialog->setFilters(currentComicDB.info.brightness, currentComicDB.info.contrast, currentComicDB.info.gamma);
 
 	if(index>0)
 		openPreviousComicAction->setDisabled(false);
@@ -680,7 +686,7 @@ void MainWindowViewer::enableActions()
 	leftRotationAction->setDisabled(false);
 	rightRotationAction->setDisabled(false);
 	showMagnifyingGlass->setDisabled(false);
-    doublePageAction->setDisabled(false);
+	doublePageAction->setDisabled(false);
 	adjustToFullSizeAction->setDisabled(false);
 	//setBookmark->setDisabled(false);
 	showBookmarks->setDisabled(false);
@@ -690,23 +696,23 @@ void MainWindowViewer::enableActions()
 }
 void MainWindowViewer::disableActions()
 {
-    saveImageAction->setDisabled(true);
-    prevAction->setDisabled(true);
-    nextAction->setDisabled(true);
+	saveImageAction->setDisabled(true);
+	prevAction->setDisabled(true);
+	nextAction->setDisabled(true);
 	adjustHeight->setDisabled(true);
-    adjustWidth->setDisabled(true);
-    goToPage->setDisabled(true);
+	adjustWidth->setDisabled(true);
+	goToPage->setDisabled(true);
 	//alwaysOnTopAction->setDisabled(true);
-    leftRotationAction->setDisabled(true);
-    rightRotationAction->setDisabled(true);
-    showMagnifyingGlass->setDisabled(true);
-    doublePageAction->setDisabled(true);
+	leftRotationAction->setDisabled(true);
+	rightRotationAction->setDisabled(true);
+	showMagnifyingGlass->setDisabled(true);
+	doublePageAction->setDisabled(true);
 	adjustToFullSizeAction->setDisabled(true);
-    setBookmark->setDisabled(true);
-    showBookmarks->setDisabled(true);
-    showInfo->setDisabled(true); //TODO enable goTo and showInfo (or update) when numPages emited
-    openPreviousComicAction->setDisabled(true);
-    openNextComicAction->setDisabled(true);
+	setBookmark->setDisabled(true);
+	showBookmarks->setDisabled(true);
+	showInfo->setDisabled(true); //TODO enable goTo and showInfo (or update) when numPages emited
+	openPreviousComicAction->setDisabled(true);
+	openNextComicAction->setDisabled(true);
 	showDictionaryAction->setDisabled(true);
 	showFlowAction->setDisabled(true);
 }
@@ -840,20 +846,10 @@ void MainWindowViewer::newVersion()
 	}
 }
 
-
-
-
-
 void MainWindowViewer::closeEvent ( QCloseEvent * event )
 {
-	YACReaderLocalClient client;
 	if(isClient)
-	{
-		currentComicDB.info.currentPage = viewer->getCurrentPageNumber()+1;
-		currentComicDB.info.hasBeenOpened = true;
-		//viewer->getBookmarks();
-		client.sendComicInfo(libraryId,currentComicDB);
-	}
+		sendComic();
 
 	viewer->save();
 	Configuration & conf = Configuration::getConfiguration();
@@ -869,20 +865,16 @@ void MainWindowViewer::closeEvent ( QCloseEvent * event )
 
 void MainWindowViewer::openPreviousComic()
 {
-	YACReaderLocalClient client;
 	if(!siblingComics.isEmpty() && isClient)
 	{
-
-		currentComicDB.info.currentPage = viewer->getCurrentPageNumber()+1;
-		currentComicDB.info.hasBeenOpened = true;
-		//viewer->getBookmarks();
-		client.sendComicInfo(libraryId,currentComicDB);
+		sendComic();
 
 		int currentIndex = siblingComics.indexOf(currentComicDB);
 		if (currentIndex == -1)
 			return;
 		if(currentIndex-1 >= 0 && currentIndex-1 < siblingComics.count())
 		{
+			siblingComics[currentIndex] = currentComicDB; //updated
 			currentComicDB = siblingComics.at(currentIndex-1);
 			open(currentDirectory+currentComicDB.path,currentComicDB,siblingComics);
 		}
@@ -900,19 +892,16 @@ void MainWindowViewer::openPreviousComic()
 
 void MainWindowViewer::openNextComic()
 {
-	YACReaderLocalClient client;
 	if(!siblingComics.isEmpty() && isClient)
 	{
-		currentComicDB.info.currentPage = viewer->getCurrentPageNumber()+1;
-		currentComicDB.info.hasBeenOpened = true;
-		//viewer->getBookmarks();
-		client.sendComicInfo(libraryId,currentComicDB);
+		sendComic();
 
 		int currentIndex = siblingComics.indexOf(currentComicDB);
 		if (currentIndex == -1)
 			return;
 		if(currentIndex+1 > 0 && currentIndex+1 < siblingComics.count())
 		{
+			siblingComics[currentIndex] = currentComicDB; //updated
 			currentComicDB = siblingComics.at(currentIndex+1);
 			open(currentDirectory+currentComicDB.path,currentComicDB,siblingComics);
 		}
@@ -938,27 +927,27 @@ void MainWindowViewer::getSiblingComics(QString path,QString currentComic)
 	qSort(list.begin(),list.end(),naturalSortLessThanCI);
 	//std::sort(list.begin(),list.end(),naturalSortLessThanCI);
 	int index = list.indexOf(currentComic);
-        if(index == -1) //comic not found
-        {
-            QFile f(QCoreApplication::applicationDirPath()+"/errorLog.txt");
-            if(!f.open(QIODevice::WriteOnly))
-            {
-                QMessageBox::critical(NULL,tr("Saving error log file...."),tr("There was a problem saving YACReader error log file. Please, check if you have enough permissions in the YACReader root folder."));
-            }
-            else
-            {
-            QTextStream txtS(&f);
-            txtS << "METHOD : MainWindowViewer::getSiblingComics" << '\n';
-            txtS << "ERROR : current comic not found in its own path" << '\n';
-            txtS << path << '\n';
-            txtS << currentComic << '\n';
-            txtS << "Comic list count : " + list.count() << '\n';
-            foreach(QString s, list){
-                txtS << s << '\n';
-            }
-            f.close();
-        }
-        }
+		if(index == -1) //comic not found
+		{
+			QFile f(QCoreApplication::applicationDirPath()+"/errorLog.txt");
+			if(!f.open(QIODevice::WriteOnly))
+			{
+				QMessageBox::critical(NULL,tr("Saving error log file...."),tr("There was a problem saving YACReader error log file. Please, check if you have enough permissions in the YACReader root folder."));
+			}
+			else
+			{
+			QTextStream txtS(&f);
+			txtS << "METHOD : MainWindowViewer::getSiblingComics" << '\n';
+			txtS << "ERROR : current comic not found in its own path" << '\n';
+			txtS << path << '\n';
+			txtS << currentComic << '\n';
+			txtS << "Comic list count : " + list.count() << '\n';
+			foreach(QString s, list){
+				txtS << s << '\n';
+			}
+			f.close();
+		}
+		}
 
 	previousComicPath = nextComicPath = "";
 	if(index>0)
@@ -981,37 +970,37 @@ void MainWindowViewer::getSiblingComics(QString path,QString currentComic)
 void MainWindowViewer::dropEvent(QDropEvent *event)
 {
 	QList<QUrl> urlList;
-    QString fName;
-    QFileInfo info;
+	QString fName;
+	QFileInfo info;
  
-    if (event->mimeData()->hasUrls())
-    {
-        urlList = event->mimeData()->urls();
-    
-        if ( urlList.size() > 0)
-        {
-            fName = urlList[0].toLocalFile(); // convert first QUrl to local path
-            info.setFile( fName ); // information about file
-            if (info.isFile()) 
+	if (event->mimeData()->hasUrls())
+	{
+		urlList = event->mimeData()->urls();
+	
+		if ( urlList.size() > 0)
+		{
+			fName = urlList[0].toLocalFile(); // convert first QUrl to local path
+			info.setFile( fName ); // information about file
+			if (info.isFile()) 
 				openComicFromPath(fName); // if is file, setText
 			else 
 				if(info.isDir())
 					openFolderFromPath(fName);
 
 			isClient = false;
-        }
-    }
+		}
+	}
 
 	event->acceptProposedAction();
 }
 void MainWindowViewer::dragEnterEvent(QDragEnterEvent *event)
 {
-    // accept just text/uri-list mime format
-    if (event->mimeData()->hasFormat("text/uri-list")) 
-    {     
-        event->acceptProposedAction();
+	// accept just text/uri-list mime format
+	if (event->mimeData()->hasFormat("text/uri-list")) 
+	{     
+		event->acceptProposedAction();
 		isClient = false;
-    }
+	}
 }
 
 void MainWindowViewer::alwaysOnTopSwitch()
@@ -1033,4 +1022,14 @@ void MainWindowViewer::adjustToFullSizeSwitch()
 {
 	Configuration::getConfiguration().setAdjustToFullSize(!Configuration::getConfiguration().getAdjustToFullSize());
 	viewer->updatePage();
+}
+
+void MainWindowViewer::sendComic()
+{
+	YACReaderLocalClient  * client = new YACReaderLocalClient;
+	currentComicDB.info.hasBeenOpened = true;
+	viewer->updateComic(currentComicDB);
+	client->sendComicInfo(libraryId,currentComicDB);
+	connect(client,SIGNAL(finished()),client,SLOT(deleteLater()));
+	//delete client;
 }

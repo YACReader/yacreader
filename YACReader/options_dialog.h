@@ -56,10 +56,12 @@ Q_OBJECT
 		void gammaChanged(int value);
 		void resetImageConfig();
 		void show();
+		void setFilters(int brightness, int contrast, int gamma);
 
 signals:
 		void changedOptions();
 		void changedImageOptions();
+		void changedFilters(int brightness, int contrast, int gamma);
 		void fitToWidthRatioChanged(float ratio);
 
 };

@@ -170,14 +170,14 @@ void DBHelper::removeFromDB(Folder * folder, QSqlDatabase & db)
 {
 	QSqlQuery query(db);
 	query.prepare("DELETE FROM folder WHERE id = :id");
-    query.bindValue(":id", folder->id);
+	query.bindValue(":id", folder->id);
 	query.exec();
 }
 void DBHelper::removeFromDB(ComicDB * comic, QSqlDatabase & db)
 {
 	QSqlQuery query(db);
 	query.prepare("DELETE FROM comic WHERE id = :id");
-    query.bindValue(":id", comic->id);
+	query.bindValue(":id", comic->id);
 	query.exec();
 }
 
@@ -314,9 +314,9 @@ qulonglong DBHelper::insert(Folder * folder, QSqlDatabase & db)
 {
 	QSqlQuery query(db);
 	query.prepare("INSERT INTO folder (parentId, name, path) "
-                   "VALUES (:parentId, :name, :path)");
-    query.bindValue(":parentId", folder->parentId);
-    query.bindValue(":name", folder->name);
+				   "VALUES (:parentId, :name, :path)");
+	query.bindValue(":parentId", folder->parentId);
+	query.bindValue(":name", folder->name);
 	query.bindValue(":path", folder->path);
 	query.exec();
 	return query.lastInsertId().toULongLong();
@@ -340,10 +340,10 @@ qulonglong DBHelper::insert(ComicDB * comic, QSqlDatabase & db)
 	
 	QSqlQuery query(db);
 	query.prepare("INSERT INTO comic (parentId, comicInfoId, fileName, path) "
-                   "VALUES (:parentId,:comicInfoId,:name, :path)");
-    query.bindValue(":parentId", comic->parentId);
+				   "VALUES (:parentId,:comicInfoId,:name, :path)");
+	query.bindValue(":parentId", comic->parentId);
 	query.bindValue(":comicInfoId", comic->info.id);
-    query.bindValue(":name", comic->name);
+	query.bindValue(":name", comic->name);
 	query.bindValue(":path", comic->path);
 	query.exec();
 	return query.lastInsertId().toULongLong();

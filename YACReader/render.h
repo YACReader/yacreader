@@ -15,54 +15,53 @@
 #include <QThread>
 
 class Comic;
+class ComicDB;
 class Render;
 
 class ImageFilter {
 public:
-    ImageFilter(){};
-    virtual QImage setFilter(const QImage & image) = 0;
+	ImageFilter(){};
+	virtual QImage setFilter(const QImage & image) = 0;
+	inline int getLevel() {return level;};
+	inline void setLevel(int l) {level = l;};
+protected:
+	int level;
 };
 
 class MeanNoiseReductionFilter : public ImageFilter {
 public:
-    enum NeighborghoodSize{SMALL=9, LARGE=25 };
-    MeanNoiseReductionFilter(enum NeighborghoodSize ns = SMALL);
-    virtual QImage setFilter(const QImage & image);
+	enum NeighborghoodSize{SMALL=9, LARGE=25 };
+	MeanNoiseReductionFilter(enum NeighborghoodSize ns = SMALL);
+	virtual QImage setFilter(const QImage & image);
 private:
-    enum NeighborghoodSize neighborghoodSize;
+	enum NeighborghoodSize neighborghoodSize;
 };
 
 class MedianNoiseReductionFilter : public ImageFilter {
 public:
-    enum NeighborghoodSize{SMALL=9, LARGE=25 };
-    MedianNoiseReductionFilter(enum NeighborghoodSize ns = SMALL);
-    virtual QImage setFilter(const QImage & image);
+	enum NeighborghoodSize{SMALL=9, LARGE=25 };
+	MedianNoiseReductionFilter(enum NeighborghoodSize ns = SMALL);
+	virtual QImage setFilter(const QImage & image);
 private:
-    enum NeighborghoodSize neighborghoodSize;
+	enum NeighborghoodSize neighborghoodSize;
 };
 
 class BrightnessFilter : public ImageFilter {
 public:
-    BrightnessFilter(int l=150);
-    virtual QImage setFilter(const QImage & image);
-private:
-    int level;
+	BrightnessFilter(int l=-1);
+	virtual QImage setFilter(const QImage & image);
 };
 
 class ContrastFilter : public ImageFilter {
 public:
-    ContrastFilter(int l=150);
-    virtual QImage setFilter(const QImage & image);
-private:
-    int level;
+	ContrastFilter(int l=-1);
+	virtual QImage setFilter(const QImage & image);
 };
 
 class GammaFilter : public ImageFilter {
 public:
-    GammaFilter(int l=150);
-    virtual QImage setFilter(const QImage & image);
-private:
-    int level;
+	GammaFilter(int l=-1);
+	virtual QImage setFilter(const QImage & image);
 };
 
 //-----------------------------------------------------------------------------
@@ -74,16 +73,16 @@ class PageRender : public QThread
 	Q_OBJECT
 public:
 	PageRender();
-        PageRender(Render * render,int numPage, const QByteArray & rawData, QImage * page,unsigned int degrees=0, QVector<ImageFilter *> filters = QVector<ImageFilter *>());
+		PageRender(Render * render,int numPage, const QByteArray & rawData, QImage * page,unsigned int degrees=0, QVector<ImageFilter *> filters = QVector<ImageFilter *>());
 	int getNumPage(){return numPage;};
 	void setData(const QByteArray & rawData){data = rawData;};
-        void setPage(QImage * p){page = p;};
+		void setPage(QImage * p){page = p;};
 	void setRotation(unsigned int d){degrees = d;};
 	void setFilters(QVector<ImageFilter *> f){filters = f;};
 private:
 	int numPage;
 	QByteArray data;
-        QImage * page;
+		QImage * page;
 	unsigned int degrees;
 	QVector<ImageFilter *> filters;
 	void run();
@@ -100,12 +99,12 @@ class DoublePageRender : public PageRender
 {
 	Q_OBJECT
 public:
-        DoublePageRender(Render * render, int firstPage, const QByteArray & firstPageData,const QByteArray & secondPageData, QImage * page,unsigned int degrees=0, QVector<ImageFilter *> filters = QVector<ImageFilter *>());
+		DoublePageRender(Render * render, int firstPage, const QByteArray & firstPageData,const QByteArray & secondPageData, QImage * page,unsigned int degrees=0, QVector<ImageFilter *> filters = QVector<ImageFilter *>());
 private:
 	int numPage;
 	QByteArray data;
 	QByteArray data2;
-        QImage * page;
+		QImage * page;
 	unsigned int degrees;
 	QVector<ImageFilter *> filters;
 	void run();
@@ -136,7 +135,12 @@ public slots:
 	//--comic interface
 	void nextPage();
 	void previousPage();
+	void load(const QString & path, const ComicDB & comic);
 	void load(const QString & path, int atPage);
+	void createComic(const QString & path);
+	void loadComic(const QString & path,const ComicDB & comic);
+	void loadComic(const QString & path, int atPage);
+	void startLoad();
 	void rotateRight();
 	void rotateLeft();
 	unsigned int getIndex();
@@ -152,6 +156,7 @@ public slots:
 	void save();
 	void reset();
 	void reload();
+	void updateFilters(int brightness, int contrast, int gamma);
 	Bookmarks * getBookmarks();
 	//sets the firt page to render
 	void renderAt(int page);
@@ -183,7 +188,7 @@ private:
 	int numLeftPages;
 	int numRightPages;
 	QList<PageRender *> pageRenders;
-        QList<QImage *> buffer;
+		QList<QImage *> buffer;
 	void loadAll();
 	void updateRightPages();
 	void updateLeftPages();

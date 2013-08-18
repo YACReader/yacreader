@@ -13,7 +13,7 @@ public:
     explicit YACReaderLocalClient(QObject *parent = 0);
     
 signals:
-    
+    void finished();
 public slots:
     void readMessage();
     bool requestComicInfo(quint64 libraryId, ComicDB & comic,QList<ComicDB> & siblings);
