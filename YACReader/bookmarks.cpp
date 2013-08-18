@@ -5,7 +5,7 @@
 #include <QFileInfo>
 
 #include <QMessageBox>
-
+#include <QList>
 #define NUM_BOOKMARKS 250
 
 Bookmarks::Bookmarks()
@@ -38,33 +38,33 @@ void Bookmarks::setBookmark(int index,const QImage & page)
 
 void Bookmarks::removeBookmark(int index)
 {
-    bookmarks.remove(index);
+	bookmarks.remove(index);
 }
 
 QList<int> Bookmarks::getBookmarkPages() const
 {
-    return bookmarks.keys();
+	return bookmarks.keys();
 }
 
 QImage Bookmarks::getBookmarkPixmap(int page) const
 {
-    return bookmarks.value(page);
+	return bookmarks.value(page);
 }
 
 QImage Bookmarks::getLastPagePixmap() const
 {
-    return lastPage;
+	return lastPage;
 }
 
 int Bookmarks::getLastPage() const
 {
-    return lastPageIndex;
+	return lastPageIndex;
 }
 
 
 bool Bookmarks::isBookmark(int page)
 {
-     return bookmarks.contains(page);
+	 return bookmarks.contains(page);
 }
 
 bool Bookmarks::imageLoaded(int page)
@@ -84,14 +84,27 @@ void Bookmarks::newComic(const QString & path)
 	for(int i=0;i<latestBookmarks.count();i++)
 		bookmarks.insert(latestBookmarks.at(i),QImage());
 	added = b.added;
-	
 }
+
 void Bookmarks::clear()
 {
 	bookmarks.clear();
 	latestBookmarks.clear();
-    lastPageIndex=0;
-    lastPage = QImage();
+	lastPageIndex=0;
+	lastPage = QImage();
+}
+
+bool Bookmarks::load(const QList<int> & bookmarkIndexes, int lastPage)
+{
+	lastPageIndex = lastPage;
+	foreach(int b, bookmarkIndexes)
+		if(b != -1)
+		{
+			latestBookmarks.push_back(b);
+			bookmarks.insert(b,QImage());
+		}
+
+	return true;
 }
 
 void Bookmarks::save()

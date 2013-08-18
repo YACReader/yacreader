@@ -1,7 +1,12 @@
+6.8 (No pública)
+Corregido bug que causaba un cierre inesperado después de cambiar el modo de sincronización vertical (flow)
+Corregido bug que causaba que la toolbar en el visor no se pudiese ocultar/mostrar sin un cómic abierto
+Mejorada la gestión de errores al abrir cómics
+Corregidos algunos bugs relacionados con la apertura de cómics
+
 6.7 (No pública)
 Añadidos nuevos campos en la base de datos para almacenar información adicional sobre cómics: rating, página actual, bookmarks y configuración de imagen
 Añadida comunicación entre YACReaderLibrary y YACReader para poder almacenar el progreso de los cómics e información adicional
-
 
 6.6 (No pública)
 Modificado YACReader para que abra los archivos comprimidos usando 7z.dll (.so, .dylib)

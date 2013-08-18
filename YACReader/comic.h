@@ -12,6 +12,8 @@
 
 #include "poppler-qt4.h"
 
+class ComicDB;
+
 	class Comic : public QObject
 	{
 	Q_OBJECT
@@ -43,6 +45,7 @@
 		void setup();
 		//Load pages from file
 		virtual bool load(const QString & path, int atPage = -1) = 0;
+		virtual bool load(const QString & path, const ComicDB & comic){return false;};
 		
 		/*void loadFromFile(const QString & pathFile);
 		void loadFromDir(const QString & pathDir);
@@ -95,6 +98,7 @@
 		~FileComic();
 		void fileExtracted(int index, const QByteArray & rawData);
 		virtual bool load(const QString & path, int atPage = -1);
+		virtual bool load(const QString & path, const ComicDB & comic);
 		void crcError(int index);
 		void unknownError(int index);
 	public slots:
@@ -132,6 +136,7 @@
 		~PDFComic();
 
 		virtual bool load(const QString & path, int atPage = -1);
+		virtual bool load(const QString & path, const ComicDB & comic);
 	public slots:
 		void process();
 	};

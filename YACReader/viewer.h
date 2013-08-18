@@ -16,7 +16,7 @@
 #include <QPropertyAnimation>
 #include <QSettings>
 
-
+class ComicDB;
 class Comic;
 class MagnifyingGlass;
 class GoToFlow;
@@ -35,7 +35,9 @@ class NotificationsLabelWidget;
 	public:
 		bool fullscreen; //TODO, change by the right use of windowState();
 	public slots:
+		void prepareForOpening();
 		void open(QString pathFile, int atPage = -1);
+		void open(QString pathFile, const ComicDB & comic);
 		void prev();
 		void next();
 		void showGoToDialog();
@@ -80,7 +82,9 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		void showMessageErrorOpening();
 		void showMessageErrorOpening(QString);
 		void setBookmarks();
+		//deprecated
 		void updateImageOptions();
+		void updateFilters(int brightness, int contrast,int gamma);
 		void showIsCoverMessage();
 		void showIsLastMessage();
 		int getCurrentPageNumber();
@@ -142,6 +146,7 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		const BookmarksDialog * getBookmarksDialog(){return bd;}
 		//returns the current index starting in 1 [1,nPages]
 		unsigned int getIndex();
+		void updateComic(ComicDB & comic);
 	signals:
 		void backgroundChanges();
 		void pageAvailable(bool);

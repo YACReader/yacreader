@@ -9,26 +9,26 @@
 #include "comic_db.h"
 
 YACReaderLocalServer::YACReaderLocalServer(QObject *parent) :
-    QObject(parent)
+	QObject(parent)
 {
-    localServer = new QLocalServer(this);
-    if (!localServer->listen(YACREADERLIBRARY_GUID)) {
-        //error...........
-    }
+	localServer = new QLocalServer(this);
+	if (!localServer->listen(YACREADERLIBRARY_GUID)) {
+		//error...........
+	}
 
-    connect(localServer, SIGNAL(newConnection()), this, SLOT(sendResponse()));
+	connect(localServer, SIGNAL(newConnection()), this, SLOT(sendResponse()));
 }
 
 bool YACReaderLocalServer::isListening()
 {
-    return localServer->isListening();
+	return localServer->isListening();
 }
 
 void YACReaderLocalServer::sendResponse()
 {
 	 QLocalSocket *clientConnection = localServer->nextPendingConnection();
-     connect(clientConnection, SIGNAL(disconnected()),
-             clientConnection, SLOT(deleteLater()));
+	 connect(clientConnection, SIGNAL(disconnected()),
+			 clientConnection, SLOT(deleteLater()));
 
 	 quint64 libraryId;
 	 ComicDB comic;

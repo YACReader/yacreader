@@ -1012,17 +1012,15 @@ void LibraryWindow::openComic()
 		quint64 comicId = comic.id;
 		//TODO generate IDS for libraries...
 		quint64 libraryId = selectedLibrary->currentIndex();
-		int page = *(comic.info.numPages) / 2;
-		
+	
+		//                 %1        %2      %3        NO-->%4          %5        %6        %7        %8         %9       %10
+		//Invoke YACReader comicPath comicId libraryId NO-->currentPage bookmark1 bookmark2 bookmark3 brightness contrast gamma
 #ifdef Q_OS_MAC
-		
-		QProcess::startDetached("open", QStringList() << "-n" << QDir::cleanPath(QCoreApplication::applicationDirPath()+"/../../../YACReader.app") << "--args" << path << comicId << libraryId << page);//,QStringList() << path);
-#else
-        
-		QProcess::startDetached(QDir::cleanPath(QCoreApplication::applicationDirPath())+QString("/YACReader \"%1\" \"%2\" \"%3\" \"%4\"").arg(path).arg(comicId).arg(libraryId).arg(page),QStringList());
+		QProcess::startDetached("open", QStringList() << "-n" << QDir::cleanPath(QCoreApplication::applicationDirPath()+"/../../../YACReader.app") << "--args" << path << comicId << libraryId /*<< page << bookmark1 << bookmark2 << bookmark3 << brightness << contrast << gamma*/);//,QStringList() << path);
+#else           
+		                                                                                                                          /* \"%4\" \"%5\" \"%6\" \"%7\" \"%8\" \"%9\" \"%10\" */
+		QProcess::startDetached(QDir::cleanPath(QCoreApplication::applicationDirPath())+QString("/YACReader \"%1\" \"%2\" \"%3\"").arg(path).arg(comicId).arg(libraryId)/*.arg(page).arg(bookmark1).arg(bookmark2).arg(bookmark3).arg(brightness).arg(contrast).arg(gamma)*/,QStringList());
 #endif        
-		//Comic is readed
-		//setCurrentComicReaded();
 		setCurrentComicOpened();
 	}
 }

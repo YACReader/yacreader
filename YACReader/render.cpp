@@ -10,125 +10,126 @@
 #define NL 2
 #define NR 2
 
+#include "comic_db.h"
 #include "yacreader_global.h"
 
 template<class T>
 inline const T& kClamp( const T& x, const T& low, const T& high )
 {
-    if ( x < low )       return low;
-    else if ( high < x ) return high;
-    else                 return x;
+	if ( x < low )       return low;
+	else if ( high < x ) return high;
+	else                 return x;
 }
 
 inline
 int changeBrightness( int value, int brightness )
-    {
-    return kClamp( value + brightness * 255 / 100, 0, 255 );
-    }
+	{
+	return kClamp( value + brightness * 255 / 100, 0, 255 );
+	}
 
 inline
 int changeContrast( int value, int contrast )
-    {
-    return kClamp((( value - 127 ) * contrast / 100 ) + 127, 0, 255 );
-    }
+	{
+	return kClamp((( value - 127 ) * contrast / 100 ) + 127, 0, 255 );
+	}
 
 inline
 int changeGamma( int value, int gamma )
-    {
-    return kClamp( int( pow( value / 255.0, 100.0 / gamma ) * 255 ), 0, 255 );
-    }
+	{
+	return kClamp( int( pow( value / 255.0, 100.0 / gamma ) * 255 ), 0, 255 );
+	}
 
 inline
 int changeUsingTable( int value, const int table[] )
-    {
-    return table[ value ];
-    }
+	{
+	return table[ value ];
+	}
 
 template< int operation( int, int ) >
 static
 QImage changeImage( const QImage& image, int value )
-    {
-    QImage im = image;
-    im.detach();
-    if( im.numColors() == 0 ) /* truecolor */
-        {
-        if( im.format() != QImage::Format_RGB32 ) /* just in case */
-            im = im.convertToFormat( QImage::Format_RGB32 );
-        int table[ 256 ];
-        for( int i = 0;
-             i < 256;
-             ++i )
-            table[ i ] = operation( i, value );
-        if( im.hasAlphaChannel() )
-            {
-            for( int y = 0;
-                 y < im.height();
-                 ++y )
-                {
-                QRgb* line = reinterpret_cast< QRgb* >( im.scanLine( y ));
-                for( int x = 0;
-                     x < im.width();
-                     ++x )
-                    line[ x ] = qRgba( changeUsingTable( qRed( line[ x ] ), table ),
-                        changeUsingTable( qGreen( line[ x ] ), table ),
-                        changeUsingTable( qBlue( line[ x ] ), table ),
-                        changeUsingTable( qAlpha( line[ x ] ), table ));
-                }
-            }
-        else
-            {
-            for( int y = 0;
-                 y < im.height();
-                 ++y )
-                {
-                QRgb* line = reinterpret_cast< QRgb* >( im.scanLine( y ));
-                for( int x = 0;
-                     x < im.width();
-                     ++x )
-                    line[ x ] = qRgb( changeUsingTable( qRed( line[ x ] ), table ),
-                        changeUsingTable( qGreen( line[ x ] ), table ),
-                        changeUsingTable( qBlue( line[ x ] ), table ));
-                }
-            }
-        }
-    else
-        {
-        QVector<QRgb> colors = im.colorTable();
-        for( int i = 0;
-             i < im.numColors();
-             ++i )
-            colors[ i ] = qRgb( operation( qRed( colors[ i ] ), value ),
-                operation( qGreen( colors[ i ] ), value ),
-                operation( qBlue( colors[ i ] ), value ));
-        }
-    return im;
-    }
+	{
+	QImage im = image;
+	im.detach();
+	if( im.numColors() == 0 ) /* truecolor */
+		{
+		if( im.format() != QImage::Format_RGB32 ) /* just in case */
+			im = im.convertToFormat( QImage::Format_RGB32 );
+		int table[ 256 ];
+		for( int i = 0;
+			 i < 256;
+			 ++i )
+			table[ i ] = operation( i, value );
+		if( im.hasAlphaChannel() )
+			{
+			for( int y = 0;
+				 y < im.height();
+				 ++y )
+				{
+				QRgb* line = reinterpret_cast< QRgb* >( im.scanLine( y ));
+				for( int x = 0;
+					 x < im.width();
+					 ++x )
+					line[ x ] = qRgba( changeUsingTable( qRed( line[ x ] ), table ),
+						changeUsingTable( qGreen( line[ x ] ), table ),
+						changeUsingTable( qBlue( line[ x ] ), table ),
+						changeUsingTable( qAlpha( line[ x ] ), table ));
+				}
+			}
+		else
+			{
+			for( int y = 0;
+				 y < im.height();
+				 ++y )
+				{
+				QRgb* line = reinterpret_cast< QRgb* >( im.scanLine( y ));
+				for( int x = 0;
+					 x < im.width();
+					 ++x )
+					line[ x ] = qRgb( changeUsingTable( qRed( line[ x ] ), table ),
+						changeUsingTable( qGreen( line[ x ] ), table ),
+						changeUsingTable( qBlue( line[ x ] ), table ));
+				}
+			}
+		}
+	else
+		{
+		QVector<QRgb> colors = im.colorTable();
+		for( int i = 0;
+			 i < im.numColors();
+			 ++i )
+			colors[ i ] = qRgb( operation( qRed( colors[ i ] ), value ),
+				operation( qGreen( colors[ i ] ), value ),
+				operation( qBlue( colors[ i ] ), value ));
+		}
+	return im;
+	}
 
 
 // brightness is multiplied by 100 in order to avoid floating point numbers
 QImage changeBrightness( const QImage& image, int brightness )
-    {
-    if( brightness == 0 ) // no change
-        return image;
-    return changeImage< changeBrightness >( image, brightness );
-    }
+	{
+	if( brightness == 0 ) // no change
+		return image;
+	return changeImage< changeBrightness >( image, brightness );
+	}
 
 
 // contrast is multiplied by 100 in order to avoid floating point numbers
 QImage changeContrast( const QImage& image, int contrast )
-    {
-    if( contrast == 100 ) // no change
-        return image;
-    return changeImage< changeContrast >( image, contrast );
-    }
+	{
+	if( contrast == 100 ) // no change
+		return image;
+	return changeImage< changeContrast >( image, contrast );
+	}
 
 // gamma is multiplied by 100 in order to avoid floating point numbers
 QImage changeGamma( const QImage& image, int gamma )
-    {
-    if( gamma == 100 ) // no change
-        return image;
-    return changeImage< changeGamma >( image, gamma );
-    }
+	{
+	if( gamma == 100 ) // no change
+		return image;
+	return changeImage< changeGamma >( image, gamma );
+	}
 
 
 
@@ -223,9 +224,9 @@ QImage MedianNoiseReductionFilter::setFilter(const QImage & image)
 // BrightnessFilter
 //-----------------------------------------------------------------------------
 BrightnessFilter::BrightnessFilter(int l)
-:level(l)
+	:ImageFilter()
 {
-
+	level = l;
 }
 
 QImage BrightnessFilter::setFilter(const QImage & image)
@@ -240,17 +241,24 @@ QImage BrightnessFilter::setFilter(const QImage & image)
 		}
 	}
 	return result;*/
-	QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
-	return changeBrightness(image,settings.value(BRIGHTNESS,0).toInt());
+	if(level ==-1)
+	{
+		QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+		return changeBrightness(image,settings.value(BRIGHTNESS,0).toInt());
+	}
+	else
+	{
+		return changeBrightness(image,level);
+	}
 }
 
 //-----------------------------------------------------------------------------
 // ContrastFilter
 //-----------------------------------------------------------------------------
 ContrastFilter::ContrastFilter(int l)
-	:level(l)
+	:ImageFilter()
 {
-
+	level = l;
 }
 
 QImage ContrastFilter::setFilter(const QImage & image)
@@ -311,21 +319,36 @@ QImage ContrastFilter::setFilter(const QImage & image)
 	}
 
 	return result;*/
-	QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
-	return changeContrast(image,settings.value(CONTRAST,100).toInt());
+	if(level ==-1)
+	{
+		QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+		return changeContrast(image,settings.value(CONTRAST,100).toInt());
+	}
+	else
+	{
+		return changeContrast(image,level);
+	}
 }
 //-----------------------------------------------------------------------------
 // ContrastFilter
 //-----------------------------------------------------------------------------
 GammaFilter::GammaFilter(int l)
-	:level(l)
+	:ImageFilter()
 {
+	level = l;
 }
 
 QImage GammaFilter::setFilter(const QImage & image)
 {
-	QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
-	return changeGamma(image,settings.value(GAMMA,100).toInt());
+	if(level ==-1)
+	{
+		QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+		return changeGamma(image,settings.value(GAMMA,100).toInt());
+	}
+	else
+	{
+		return changeGamma(image,level);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -586,6 +609,40 @@ void Render::update()
 //-----------------------------------------------------------------------------
 void Render::load(const QString & path, int atPage)
 {
+	createComic(path);
+	loadComic(path,atPage);
+	startLoad();
+}
+
+//-----------------------------------------------------------------------------
+void Render::load(const QString & path, const ComicDB & comicDB)
+{
+   //TODO prepare filters
+   for(int i = 0; i < filters.count(); i++)
+   {
+	   if(typeid(*filters[i]) == typeid(BrightnessFilter))
+		   if(comicDB.info.brightness == -1)
+			   filters[i]->setLevel(0);
+		   else
+			filters[i]->setLevel(comicDB.info.brightness);
+	   if(typeid(*filters[i]) == typeid(ContrastFilter))
+		   if(comicDB.info.contrast == -1)
+			   filters[i]->setLevel(100);
+		   else
+			   filters[i]->setLevel(comicDB.info.contrast);
+	   if(typeid(*filters[i]) == typeid(GammaFilter))
+		   if(comicDB.info.gamma == -1)
+			   filters[i]->setLevel(100);
+		   else
+			   filters[i]->setLevel(comicDB.info.gamma);
+   }
+   createComic(path);
+   loadComic(path,comicDB);
+   startLoad();
+}
+
+void Render::createComic(const QString & path)
+{
 	if(comic!=0)
 	{
 		comic->moveToThread(QApplication::instance()->thread());
@@ -622,6 +679,22 @@ void Render::load(const QString & path, int atPage)
 	connect(comic,SIGNAL(isLast()),this,SIGNAL(isLast()));
 	connect(comic,SIGNAL(isCover()),this,SIGNAL(isCover()));
 
+	pagesReady.clear();
+}
+void Render::loadComic(const QString & path,const ComicDB & comicDB)
+{
+	//if(typeid(*comic) != typeid(FolderComic))
+		comic->load(path,comicDB);
+	//else
+	{/*TODO error*/}
+}
+void Render::loadComic(const QString & path, int atPage)
+{
+	comic->load(path,atPage);
+}
+
+void Render::startLoad()
+{
 	QThread * thread = NULL;
 
 	thread = new QThread();
@@ -631,18 +704,12 @@ void Render::load(const QString & path, int atPage)
 	connect(thread, SIGNAL(started()), comic, SLOT(process()));
 	connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
-	pagesReady.clear();
-
-	comic->load(path,atPage); //garantiza que se va a intentar abrir el cómic
-
 	if(thread != NULL)
 		thread->start();
 
 	invalidate();
 	loadedComic = true;
 	update();
-
-	
 }
 
 void Render::renderAt(int page)
@@ -797,7 +864,7 @@ void Render::goTo(int index)
 void Render::rotateRight()
 {
 	imageRotation = (imageRotation+90) % 360;
-    reload();
+	reload();
 }
 void Render::rotateLeft()
 {
@@ -1002,4 +1069,19 @@ void Render::reload()
 		invalidate();
 		update();
 	}
+}
+
+void Render::updateFilters(int brightness, int contrast, int gamma)
+{
+   for(int i = 0; i < filters.count(); i++)
+   {
+	   if(typeid(*filters[i]) == typeid(BrightnessFilter))
+		   filters[i]->setLevel(brightness);
+	   if(typeid(*filters[i]) == typeid(ContrastFilter))
+		   filters[i]->setLevel(contrast);
+	   if(typeid(*filters[i]) == typeid(GammaFilter))
+		   filters[i]->setLevel(gamma);
+   }
+
+   reload();
 }
