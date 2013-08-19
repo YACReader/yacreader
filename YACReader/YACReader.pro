@@ -19,7 +19,8 @@ TRANSLATIONS = yacreader_es.ts \
 								  yacreader_fr.ts \ 
 								  yacreader_ru.ts \
 								  yacreader_pt.ts \
-								  yacreader_source.ts
+								  yacreader_nl.ts \
+								  yacreader_source.ts  
 FORMS += 
 
 Release:DESTDIR = ../release
