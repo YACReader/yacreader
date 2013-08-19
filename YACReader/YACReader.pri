@@ -92,7 +92,7 @@ SOURCES += $$PWD/comic.cpp \
 	$$PWD/../common/library_item.cpp \
 	$$PWD/yacreader_local_client.cpp
 
-include($$PWD/../custom_widgets/custom_widgets.pri)
+include($$PWD/../custom_widgets/custom_widgets_yacreader.pri)
 include($$PWD/../compressed_archive/wrapper.pri)
 
 RESOURCES += $$PWD/yacreader_images.qrc \
