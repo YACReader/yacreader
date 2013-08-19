@@ -106,7 +106,7 @@ private:
 	int i;
 	
 	QAction  * backAction;
-    QAction  * forwardAction;
+	QAction  * forwardAction;
 
 	QAction * openComicAction;
 	QAction * createLibraryAction;
@@ -196,9 +196,9 @@ private:
 	//settings
 	QSettings * settings;
 
-    //navigation backward and forward
-    int currentFolderNavigation;
-    QList<QModelIndex> history;
+	//navigation backward and forward
+	int currentFolderNavigation;
+	QList<QModelIndex> history;
 
 protected:
 		virtual void closeEvent ( QCloseEvent * event );
@@ -257,14 +257,13 @@ public:
 		QModelIndexList getSelectedComics();
 		void deleteComics();
 		//void showSocial();
-        void backward();
-        void forward();
-        void updateHistory(const QModelIndex & mi);
+		void backward();
+		void forward();
+		void updateHistory(const QModelIndex & mi);
 		void libraryAlreadyExists(const QString & name);
 		void importLibraryPackage();
 		void updateComicsView(quint64 libraryId, const ComicDB & comic);
 		void setCurrentComicOpened();
-
 };
 
 #endif

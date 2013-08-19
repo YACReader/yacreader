@@ -30,6 +30,33 @@ void YACReaderLocalServer::sendResponse()
 	 connect(clientConnection, SIGNAL(disconnected()),
 			 clientConnection, SLOT(deleteLater()));
 
+	 qRegisterMetaType<ComicDB>("ComicDB");
+	 YACReaderClientConnectionWorker * worker = new YACReaderClientConnectionWorker(clientConnection);
+	 connect(worker,SIGNAL(comicUpdated(quint64, ComicDB)),this,SIGNAL(comicUpdated(quint64, ComicDB)));
+	 connect(worker,SIGNAL(finished()),worker,SLOT(deleteLater()));
+	 worker->start();
+	 //clientConnection->waitForBytesWritten();*/
+	 //clientConnection->disconnectFromServer();
+}
+
+bool YACReaderLocalServer::isRunning()
+{
+	QLocalSocket socket;
+	socket.connectToServer(YACREADERLIBRARY_GUID);
+	if (socket.waitForConnected(500)) 
+		return true; // Server is running (another instance of YACReaderLibrary has been launched)
+	return false;
+}
+
+
+YACReaderClientConnectionWorker::YACReaderClientConnectionWorker( QLocalSocket *cc)
+	:QThread(),clientConnection(cc)
+{
+
+}
+
+void YACReaderClientConnectionWorker::run()
+{
 	 quint64 libraryId;
 	 ComicDB comic;
 	 int tries = 0;
@@ -100,28 +127,16 @@ void YACReaderLocalServer::sendResponse()
 		 }
 
 	 }
-
-	 //clientConnection->waitForBytesWritten();*/
-	 //clientConnection->disconnectFromServer();
 }
 
-void YACReaderLocalServer::getComicInfo(quint64 libraryId, ComicDB & comic, QList<ComicDB> & siblings)
+void YACReaderClientConnectionWorker::getComicInfo(quint64 libraryId, ComicDB & comic, QList<ComicDB> & siblings)
 {
 	comic = DBHelper::getComicInfo(DBHelper::getLibrariesNames().at(libraryId), comic.id);
 	siblings = DBHelper::getSiblings(DBHelper::getLibrariesNames().at(libraryId), comic.parentId);
 }
 
-void YACReaderLocalServer::updateComic(quint64 libraryId, ComicDB & comic)
+void YACReaderClientConnectionWorker::updateComic(quint64 libraryId, ComicDB & comic)
 {
 	DBHelper::update(DBHelper::getLibrariesNames().at(libraryId), comic.info);
 	emit comicUpdated(libraryId, comic);
-}
-
-bool YACReaderLocalServer::isRunning()
-{
-	QLocalSocket socket;
-	socket.connectToServer(YACREADERLIBRARY_GUID);
-	if (socket.waitForConnected(500)) 
-		return true; // Server is running (another instance of YACReaderLibrary has been launched)
-	return false;
 }

@@ -28,7 +28,7 @@ enum Columns {
 
 
 TableModel::TableModel(QObject *parent)
-    : QAbstractItemModel(parent)
+	: QAbstractItemModel(parent)
 {
 	connect(this,SIGNAL(beforeReset()),this,SIGNAL(modelAboutToBeReset()));
 	connect(this,SIGNAL(reset()),this,SIGNAL(modelReset()));
@@ -36,9 +36,9 @@ TableModel::TableModel(QObject *parent)
 
 //! [0]
 TableModel::TableModel( QSqlQuery &sqlquery, QObject *parent)
-    : QAbstractItemModel(parent)
+	: QAbstractItemModel(parent)
 {
-    setupModelData(sqlquery);
+	setupModelData(sqlquery);
 }
 //! [0]
 
@@ -61,8 +61,8 @@ int TableModel::columnCount(const QModelIndex &parent) const
 //! [3]
 QVariant TableModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid())
-        return QVariant();
+	if (!index.isValid())
+		return QVariant();
 
 	if (index.column() == Columns::Rating && role == Qt::DecorationRole)
 	{
@@ -80,23 +80,23 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 		switch(index.column())//TODO obtener esto de la query
 		{
 		case 0:
-            return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+			return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 		case 3:
-            return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+			return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 		case 7:
-            return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+			return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 		case Columns::CurrentPage:
 			return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 		default:
-            return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
+			return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
 		}
 	}
 
 
-    if (role != Qt::DisplayRole)
-        return QVariant();
+	if (role != Qt::DisplayRole)
+		return QVariant();
 
-    TableItem *item = static_cast<TableItem*>(index.internalPointer());
+	TableItem *item = static_cast<TableItem*>(index.internalPointer());
 	if(index.column() == Columns::Hash)
 		return QString::number(item->data(index.column()).toString().right(item->data(index.column()).toString().length()-40).toInt()/1024.0/1024.0,'f',2)+"Mb";
 	if(index.column() == Columns::ReadColumn)
@@ -114,18 +114,18 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 //! [4]
 Qt::ItemFlags TableModel::flags(const QModelIndex &index) const
 {
-    if (!index.isValid())
-        return 0;
+	if (!index.isValid())
+		return 0;
 
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 //! [4]
 
 //! [5]
 QVariant TableModel::headerData(int section, Qt::Orientation orientation,
-                               int role) const
+							   int role) const
 {
-    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
+	if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
 	{
 		switch(section)//TODO obtener esto de la query
 		{
@@ -153,15 +153,15 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation,
 		switch(section)//TODO obtener esto de la query
 		{
 		case 0:
-            return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+			return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 		case 3:
-            return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+			return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 		case 7:
-            return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+			return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 		case Columns::CurrentPage:
 			return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 		default:
-            return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
+			return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
 		}
 	}
 
@@ -193,16 +193,16 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation,
 
 	}
 
-    return QVariant();
+	return QVariant();
 }
 //! [5]
 
 //! [6]
 QModelIndex TableModel::index(int row, int column, const QModelIndex &parent)
-            const
+			const
 {
-    if (!hasIndex(row, column, parent))
-        return QModelIndex();
+	if (!hasIndex(row, column, parent))
+		return QModelIndex();
 
 	return createIndex(row, column, _data.at(row));
 }
@@ -211,18 +211,18 @@ QModelIndex TableModel::index(int row, int column, const QModelIndex &parent)
 //! [7]
 QModelIndex TableModel::parent(const QModelIndex &index) const
 {
-     return QModelIndex();
+	 return QModelIndex();
 }
 //! [7]
 
 //! [8]
 int TableModel::rowCount(const QModelIndex &parent) const
 {
-    TreeItem *parentItem;
-    if (parent.column() > 0)
-        return 0;
+	TreeItem *parentItem;
+	if (parent.column() > 0)
+		return 0;
 
-    if (!parent.isValid())
+	if (!parent.isValid())
 		return _data.count();
 
 	return 0;

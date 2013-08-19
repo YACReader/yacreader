@@ -5,6 +5,7 @@
 #include <QList>
 #include <QPixmap>
 #include <QImage>
+#include <QMetaType>
 
 class ComicInfo
 {
@@ -141,5 +142,6 @@ public:
 	friend QDataStream &operator>>(QDataStream &, ComicDB &);
 };
 
+Q_DECLARE_METATYPE(ComicDB);
 
 #endif

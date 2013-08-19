@@ -121,9 +121,9 @@ void LibraryWindow::doLayout()
 	sVertical = new QSplitter(Qt::Vertical);  //spliter derecha
 	QSplitter * sHorizontal = new QSplitter(Qt::Horizontal);  //spliter principal
 #ifdef Q_OS_MAC
-    sHorizontal->setStyleSheet("QSplitter::handle{image:none;background-color:#B8B8B8;} QSplitter::handle:vertical {height:1px;}");
+	sHorizontal->setStyleSheet("QSplitter::handle{image:none;background-color:#B8B8B8;} QSplitter::handle:vertical {height:1px;}");
 #else
-    sHorizontal->setStyleSheet("QSplitter::handle:vertical {height:4px;}");
+	sHorizontal->setStyleSheet("QSplitter::handle:vertical {height:4px;}");
 #endif
 
 	//TOOLBARS-------------------------------------------------------------------
@@ -183,7 +183,7 @@ void LibraryWindow::doLayout()
 
 	YACReaderTitledToolBar * librariesTitle = sideBar->librariesTitle;
 
-    YACReaderTitledToolBar * foldersTitle = sideBar->foldersTitle;
+	YACReaderTitledToolBar * foldersTitle = sideBar->foldersTitle;
 
 	librariesTitle->addAction(createLibraryAction);
 	librariesTitle->addAction(openLibraryAction);
@@ -191,7 +191,7 @@ void LibraryWindow::doLayout()
 
 	foldersTitle->addAction(setRootIndexAction);
 	foldersTitle->addAction(expandAllNodesAction);
-    foldersTitle->addAction(colapseAllNodesAction);
+	foldersTitle->addAction(colapseAllNodesAction);
 
 	//FINAL LAYOUT-------------------------------------------------------------
 	sVertical->addWidget(comicFlow);
@@ -249,10 +249,10 @@ void LibraryWindow::doLayout()
 
 	comicFlow->setContextMenuPolicy(Qt::ActionsContextMenu);
 
-    //collapsible disabled in macosx (only temporaly)
+	//collapsible disabled in macosx (only temporaly)
 #ifdef Q_OS_MAC
-    sHorizontal->setCollapsible(0,false);
-    sVertical->setCollapsible(1,false);
+	sHorizontal->setCollapsible(0,false);
+	sVertical->setCollapsible(1,false);
 #endif
 }
 
@@ -304,17 +304,17 @@ void LibraryWindow::createActions()
 {
 	backAction = new QAction(this);
 	QIcon icoBackButton;
-    icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back.png"), QIcon::Normal);
-    //icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back_disabled.png"), QIcon::Disabled);
+	icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back.png"), QIcon::Normal);
+	//icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back_disabled.png"), QIcon::Disabled);
 	backAction->setIcon(icoBackButton);
-    backAction->setDisabled(true);
+	backAction->setDisabled(true);
 
-    forwardAction = new QAction(this);
+	forwardAction = new QAction(this);
 	QIcon icoFordwardButton;
-    icoFordwardButton.addPixmap(QPixmap(":/images/main_toolbar/forward.png"), QIcon::Normal);
-    //icoFordwardButton.addPixmap(QPixmap(":/images/main_toolbar/forward_disabled.png"), QIcon::Disabled);
-    forwardAction->setIcon(icoFordwardButton);
-    forwardAction->setDisabled(true);
+	icoFordwardButton.addPixmap(QPixmap(":/images/main_toolbar/forward.png"), QIcon::Normal);
+	//icoFordwardButton.addPixmap(QPixmap(":/images/main_toolbar/forward_disabled.png"), QIcon::Disabled);
+	forwardAction->setIcon(icoFordwardButton);
+	forwardAction->setDisabled(true);
 
 	createLibraryAction = new QAction(this);
 	createLibraryAction->setToolTip(tr("Create a new library"));
@@ -388,14 +388,14 @@ void LibraryWindow::createActions()
 	toggleFullScreenAction->setToolTip(tr("Fullscreen mode on/off (F)"));
 	toggleFullScreenAction->setShortcut(Qt::Key_F);
 	QIcon icoFullscreenButton;
-    icoFullscreenButton.addPixmap(QPixmap(":/images/main_toolbar/fullscreen.png"), QIcon::Normal);
+	icoFullscreenButton.addPixmap(QPixmap(":/images/main_toolbar/fullscreen.png"), QIcon::Normal);
 	toggleFullScreenAction->setIcon(icoFullscreenButton);
 
 	helpAboutAction = new QAction(this);
 	helpAboutAction->setToolTip(tr("Help, About YACReader"));
 	helpAboutAction->setShortcut(Qt::Key_F1);
 	QIcon icoHelpButton;
-    icoHelpButton.addPixmap(QPixmap(":/images/main_toolbar/help.png"), QIcon::Normal);
+	icoHelpButton.addPixmap(QPixmap(":/images/main_toolbar/help.png"), QIcon::Normal);
 	helpAboutAction->setIcon(icoHelpButton);
 
 	setRootIndexAction = new QAction(this);
@@ -417,7 +417,7 @@ void LibraryWindow::createActions()
 	optionsAction->setShortcut(Qt::Key_C);
 	optionsAction->setToolTip(tr("Show options dialog"));
 	QIcon icoSettingsButton;
-    icoSettingsButton.addPixmap(QPixmap(":/images/main_toolbar/settings.png"), QIcon::Normal);
+	icoSettingsButton.addPixmap(QPixmap(":/images/main_toolbar/settings.png"), QIcon::Normal);
 	optionsAction->setIcon(icoSettingsButton);
 
 	serverConfigAction = new QAction(this);
@@ -528,12 +528,12 @@ void LibraryWindow::createToolBars()
 #ifdef Q_OS_MAC
 	libraryToolBar->setIconSize(QSize(16,16)); //TODO make icon size dynamic
 
-    libraryToolBar->addAction(backAction);
-    libraryToolBar->addAction(forwardAction);
+	libraryToolBar->addAction(backAction);
+	libraryToolBar->addAction(forwardAction);
 
-    {QWidget * w = new QWidget();
-    w->setFixedWidth(10);
-    libraryToolBar->addWidget(w);}
+	{QWidget * w = new QWidget();
+	w->setFixedWidth(10);
+	libraryToolBar->addWidget(w);}
 
 #ifdef SERVER_RELEASE
 	libraryToolBar->addAction(serverConfigAction);
@@ -541,9 +541,9 @@ void LibraryWindow::createToolBars()
 	libraryToolBar->addAction(optionsAction);
 	libraryToolBar->addAction(helpAboutAction);
 
-    { QWidget * w2 = new QWidget();
-     w2->setFixedWidth(10);
-     libraryToolBar->addWidget(w2);}
+	{ QWidget * w2 = new QWidget();
+	 w2->setFixedWidth(10);
+	 libraryToolBar->addWidget(w2);}
 
 	libraryToolBar->addAction(toggleFullScreenAction);
 
@@ -555,11 +555,11 @@ void LibraryWindow::createToolBars()
 	
 #else
 	libraryToolBar->backButton->setDefaultAction(backAction);
-    libraryToolBar->forwardButton->setDefaultAction(forwardAction);
-    libraryToolBar->settingsButton->setDefaultAction(optionsAction);
-    libraryToolBar->serverButton->setDefaultAction(serverConfigAction);
-    libraryToolBar->helpButton->setDefaultAction(helpAboutAction);
-    libraryToolBar->fullscreenButton->setDefaultAction(toggleFullScreenAction);
+	libraryToolBar->forwardButton->setDefaultAction(forwardAction);
+	libraryToolBar->settingsButton->setDefaultAction(optionsAction);
+	libraryToolBar->serverButton->setDefaultAction(serverConfigAction);
+	libraryToolBar->helpButton->setDefaultAction(helpAboutAction);
+	libraryToolBar->fullscreenButton->setDefaultAction(toggleFullScreenAction);
 #endif
 
 	editInfoToolBar->setIconSize(QSize(18,18));
@@ -620,9 +620,9 @@ void LibraryWindow::createMenus()
 
 void LibraryWindow::createConnections()
 {
-    //history navigation
-    connect(backAction,SIGNAL(triggered()),this,SLOT(backward()));
-    connect(forwardAction,SIGNAL(triggered()),this,SLOT(forward()));
+	//history navigation
+	connect(backAction,SIGNAL(triggered()),this,SLOT(backward()));
+	connect(forwardAction,SIGNAL(triggered()),this,SLOT(forward()));
 
 	//libraryCreator connections
 	connect(createLibraryDialog,SIGNAL(createLibrary(QString,QString,QString)),this,SLOT(create(QString,QString,QString)));
@@ -668,7 +668,7 @@ void LibraryWindow::createConnections()
 
 	//navigations between view modes (tree,list and flow)
 	connect(foldersView, SIGNAL(pressed(QModelIndex)), this, SLOT(loadCovers(QModelIndex)));
-    connect(foldersView, SIGNAL(pressed(QModelIndex)), this, SLOT(updateHistory(QModelIndex)));
+	connect(foldersView, SIGNAL(pressed(QModelIndex)), this, SLOT(updateHistory(QModelIndex)));
 
 	connect(comicView, SIGNAL(pressed(QModelIndex)), this, SLOT(centerComicFlow(QModelIndex)));
 	connect(comicFlow, SIGNAL(centerIndexChanged(int)), this, SLOT(updateComicView(int)));
@@ -739,11 +739,11 @@ void LibraryWindow::loadLibrary(const QString & name)
 {
 	if(libraries.size()>0)  //si hay bibliotecas...
 	{	
-        currentFolderNavigation=0;
-        backAction->setDisabled(true);
-        forwardAction->setDisabled(true);
-        history.clear();
-        history.append(QModelIndex());
+		currentFolderNavigation=0;
+		backAction->setDisabled(true);
+		forwardAction->setDisabled(true);
+		history.clear();
+		history.append(QModelIndex());
 
 		showRootWidget();
 		QString path=libraries.value(name)+"/.yacreaderlibrary";
@@ -1018,7 +1018,7 @@ void LibraryWindow::openComic()
 #ifdef Q_OS_MAC
 		QProcess::startDetached("open", QStringList() << "-n" << QDir::cleanPath(QCoreApplication::applicationDirPath()+"/../../../YACReader.app") << "--args" << path << comicId << libraryId /*<< page << bookmark1 << bookmark2 << bookmark3 << brightness << contrast << gamma*/);//,QStringList() << path);
 #else           
-		                                                                                                                          /* \"%4\" \"%5\" \"%6\" \"%7\" \"%8\" \"%9\" \"%10\" */
+																																  /* \"%4\" \"%5\" \"%6\" \"%7\" \"%8\" \"%9\" \"%10\" */
 		QProcess::startDetached(QDir::cleanPath(QCoreApplication::applicationDirPath())+QString("/YACReader \"%1\" \"%2\" \"%3\"").arg(path).arg(comicId).arg(libraryId)/*.arg(page).arg(bookmark1).arg(bookmark2).arg(bookmark3).arg(brightness).arg(contrast).arg(gamma)*/,QStringList());
 #endif        
 		setCurrentComicOpened();
@@ -1302,7 +1302,7 @@ void LibraryWindow::setRootIndex()
 			comicFlow->clear();
 		}
 
-        foldersView->clearSelection();
+		foldersView->clearSelection();
 	}
 }
 
@@ -1322,7 +1322,7 @@ void LibraryWindow::toFullScreen()
 	comicFlow->setCenterIndex(comicFlow->centerIndex());
 	comics->hide();
 	sideBar->hide();
-    libraryToolBar->hide();
+	libraryToolBar->hide();
 
 	showFullScreen();
 
@@ -1346,19 +1346,19 @@ void LibraryWindow::toNormal()
 	
 	comicFlow->show();
 
-    if(fromMaximized)
+	if(fromMaximized)
 		showMaximized();
-    else
-        showNormal();
+	else
+		showNormal();
 
 #ifdef Q_OS_MAC
-    QTimer * timer = new QTimer();
-    timer->setSingleShot(true);
-    timer->start();
-    connect(timer,SIGNAL(timeout()),libraryToolBar,SLOT(show()));
-    connect(timer,SIGNAL(timeout()),timer,SLOT(deleteLater()));
+	QTimer * timer = new QTimer();
+	timer->setSingleShot(true);
+	timer->start();
+	connect(timer,SIGNAL(timeout()),libraryToolBar,SLOT(show()));
+	connect(timer,SIGNAL(timeout()),timer,SLOT(deleteLater()));
 #else
-    libraryToolBar->show();
+	libraryToolBar->show();
 #endif
 
 }
@@ -1433,23 +1433,23 @@ QFileInfo file = QDir::cleanPath(currentPath() + dmCV->getComicPath(modelIndex))
 
 #ifdef Q_WS_MAC
 	QString filePath = file.absoluteFilePath();
-    QStringList args;
-    args << "-e";
-    args << "tell application \"Finder\"";
-    args << "-e";
-    args << "activate";
-    args << "-e";
-    args << "select POSIX file \""+filePath+"\"";
-    args << "-e";
-    args << "end tell";
-    QProcess::startDetached("osascript", args);
+	QStringList args;
+	args << "-e";
+	args << "tell application \"Finder\"";
+	args << "-e";
+	args << "activate";
+	args << "-e";
+	args << "select POSIX file \""+filePath+"\"";
+	args << "-e";
+	args << "end tell";
+	QProcess::startDetached("osascript", args);
 #endif
-    
+	
 #ifdef Q_WS_WIN
 	QString filePath = file.absoluteFilePath();
-    QStringList args;
-    args << "/select," << QDir::toNativeSeparators(filePath);
-    QProcess::startDetached("explorer", args);
+	QStringList args;
+	args << "/select," << QDir::toNativeSeparators(filePath);
+	QProcess::startDetached("explorer", args);
 #endif
 }
 
@@ -1633,32 +1633,32 @@ void LibraryWindow::showSocial()
 
 void LibraryWindow::backward()
 {
-    if(currentFolderNavigation>0)
-    {
-        currentFolderNavigation--;
-        loadCovers(history.at(currentFolderNavigation));
-        foldersView->setCurrentIndex(history.at(currentFolderNavigation));
-        forwardAction->setEnabled(true);
-    }
-    if(currentFolderNavigation==0)
-    {
-        backAction->setEnabled(false);
-    }
+	if(currentFolderNavigation>0)
+	{
+		currentFolderNavigation--;
+		loadCovers(history.at(currentFolderNavigation));
+		foldersView->setCurrentIndex(history.at(currentFolderNavigation));
+		forwardAction->setEnabled(true);
+	}
+	if(currentFolderNavigation==0)
+	{
+		backAction->setEnabled(false);
+	}
 }
 
 void LibraryWindow::forward()
 {
-    if(currentFolderNavigation<history.count()-1)
-    {
-        currentFolderNavigation++;
-        loadCovers(history.at(currentFolderNavigation));
-        foldersView->setCurrentIndex(history.at(currentFolderNavigation));
-        backAction->setEnabled(true);
-    }
-    if(currentFolderNavigation==history.count()-1)
-    {
-        forwardAction->setEnabled(false);
-    }
+	if(currentFolderNavigation<history.count()-1)
+	{
+		currentFolderNavigation++;
+		loadCovers(history.at(currentFolderNavigation));
+		foldersView->setCurrentIndex(history.at(currentFolderNavigation));
+		backAction->setEnabled(true);
+	}
+	if(currentFolderNavigation==history.count()-1)
+	{
+		forwardAction->setEnabled(false);
+	}
 }
 
 void LibraryWindow::updateHistory(const QModelIndex &mi)
