@@ -119,15 +119,13 @@ SOURCES += comic_flow.cpp \
 			
 		   
 include(./server/server.pri)
-include(../custom_widgets/custom_widgets.pri)
+include(../custom_widgets/custom_widgets_yacreaderlibrary.pri)
 include(../compressed_archive/wrapper.pri)
 
 RESOURCES += images.qrc files.qrc
 win32:RESOURCES += images_win.qrc
 unix:!macx:RESOURCES += images_win.qrc
 macx:RESOURCES += images_osx.qrc
-
-#include(../YACReader/YACReader.pri)
 
 RC_FILE = icon.rc
 
