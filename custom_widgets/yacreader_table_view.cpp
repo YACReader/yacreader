@@ -3,11 +3,10 @@
 #include <QHeaderView>
 #include <QResizeEvent>
 #include <QPropertyAnimation>
-
-#include "yacreader_deleting_progress.h"
+#include <QPainter>
 
 YACReaderTableView::YACReaderTableView(QWidget *parent) :
-    QTableView(parent),showDelete(false)
+	QTableView(parent),showDelete(false),editing(false)
 {
 	setAlternatingRowColors(true);
 	verticalHeader()->setAlternatingRowColors(true);
@@ -16,13 +15,13 @@ YACReaderTableView::YACReaderTableView(QWidget *parent) :
 		"QTableView::item {outline: 0px; border-bottom: 1px solid #DFDFDF;border-top: 1px solid #FEFEFE; padding-bottom:1px; color:#252626;}"	
 		"QTableView {border-top:1px solid #B8B8B8;border-bottom:none;border-left:1px solid #B8B8B8;border-right:none;}"
 #ifdef Q_OS_MAC
-        "QTableView {border-top:1px solid #B8B8B8;border-bottom:none;border-left:none;border-right:none;}"          
-        "QTableView::item:selected {outline: 0px; border-bottom: 1px solid #3875D7;border-top: 1px solid #3875D7; padding-bottom:1px; background-color: #3875D7; color: #FFFFFF; }"
+		"QTableView {border-top:1px solid #B8B8B8;border-bottom:none;border-left:none;border-right:none;}"          
+		"QTableView::item:selected {outline: 0px; border-bottom: 1px solid #3875D7;border-top: 1px solid #3875D7; padding-bottom:1px; background-color: #3875D7; color: #FFFFFF; }"
 
 #else
-        "QTableView::item:selected {outline: 0px; border-bottom: 1px solid #D4D4D4;border-top: 1px solid #D4D4D4; padding-bottom:1px; background-color: #D4D4D4;  }"
+		"QTableView::item:selected {outline: 0px; border-bottom: 1px solid #D4D4D4;border-top: 1px solid #D4D4D4; padding-bottom:1px; background-color: #D4D4D4;  }"
 #endif
-                  "QHeaderView::section:horizontal {background-color:#F5F5F5; border-bottom:1px solid #B8BDC4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #D1D1D1, stop: 1 #B8BDC4); border-left:none; border-top:none; padding:4px; color:#313232;}"
+				  "QHeaderView::section:horizontal {background-color:#F5F5F5; border-bottom:1px solid #B8BDC4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #D1D1D1, stop: 1 #B8BDC4); border-left:none; border-top:none; padding:4px; color:#313232;}"
 		"QHeaderView::section:vertical {border-bottom: 1px solid #DFDFDF;border-top: 1px solid #FEFEFE;}"
 		//"QTableView::item:hover {border-bottom: 1px solid #A3A3A3;border-top: 1px solid #A3A3A3; padding-bottom:1px; background-color: #A3A3A3; color: #FFFFFF; }"
 							 "");
@@ -44,10 +43,46 @@ YACReaderTableView::YACReaderTableView(QWidget *parent) :
 	setSelectionBehavior(QAbstractItemView::SelectRows);
 	setSelectionMode(QAbstractItemView::ExtendedSelection);
 
+	setItemDelegateForColumn(11,new YACReaderRatingDelegate(this));
+	setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+	setMouseTracking(true);
 	/*deletingProgress = new YACReaderDeletingProgress(this);
 
 	showDeletingProgressAnimation = new QPropertyAnimation(deletingProgress,"pos");
 	showDeletingProgressAnimation->setDuration(150);*/
+}
+
+void YACReaderTableView::mouseMoveEvent(QMouseEvent *event)
+{
+	QModelIndex mi = indexAt(event->pos());
+	if(mi.isValid())
+	{
+		QList<QModelIndex> selectedIndexes = this->selectedIndexes();
+		if(selectedIndexes.contains(mi))
+		{
+			if(mi.column() == 11)
+			if(!editing)
+			{
+				editing = true;
+				currentIndexEditing = mi;
+				edit(mi);
+			}
+		}
+	}
+	QTableView::mouseMoveEvent(event);
+}
+
+
+void YACReaderTableView::closeEditor ( QWidget * editor, QAbstractItemDelegate::EndEditHint hint )
+{
+	editing = false;
+	QTableView::closeEditor(editor,hint);
+}
+void YACReaderTableView::commitData ( QWidget * editor )
+{
+	//TODO
+	emit comicRated(((StarEditor *)editor)->starRating().starCount(),currentIndexEditing);
 }
 
 void YACReaderTableView::showDeleteProgress()
@@ -82,3 +117,250 @@ void YACReaderTableView::resizeEvent(QResizeEvent * event)
 
 	QTableView::resizeEvent(event);
 }
+#include "tableitem.h"
+//------------------------------------------------------------------------------
+//YACReaderRatingDelegate-------------------------------------------------------
+//------------------------------------------------------------------------------
+void YACReaderRatingDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
+									const QModelIndex &index) const
+{
+	int rating = ((TableItem *)index.internalPointer())->data(11).toInt();
+
+	StarRating starRating(rating);
+
+	QStyledItemDelegate::paint(painter, option, index);
+
+	if(option.state | QStyle::State_Editing)
+	{
+		if (option.state & QStyle::State_Selected)
+			starRating.paintSelected(painter, option.rect, option.palette,
+			StarRating::ReadOnly);
+		else
+			starRating.paint(painter, option.rect, option.palette,
+			StarRating::ReadOnly);
+	}
+}
+
+QSize YACReaderRatingDelegate::sizeHint(const QStyleOptionViewItem &option,
+							 const QModelIndex &index) const
+{
+	int rating = ((TableItem *)index.internalPointer())->data(11).toInt();
+	StarRating starRating(rating);
+	return starRating.sizeHint();
+}
+
+QWidget *YACReaderRatingDelegate::createEditor(QWidget *parent,
+									const QStyleOptionViewItem &option,
+									const QModelIndex &index) const
+
+{
+	StarEditor *editor = new StarEditor(parent);
+	connect(editor, SIGNAL(editingFinished()),
+		this, SLOT(sendCloseEditor()));
+	connect(editor, SIGNAL(commitData()),
+		this, SLOT(sendCommitData()));
+	return editor;
+}
+
+void YACReaderRatingDelegate::setEditorData(QWidget *editor,
+								 const QModelIndex &index) const
+{
+	int rating = ((TableItem *)index.internalPointer())->data(11).toInt();
+
+	StarRating starRating(rating);
+
+	StarEditor *starEditor = qobject_cast<StarEditor *>(editor);
+	starEditor->setStarRating(starRating);
+}
+
+void YACReaderRatingDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
+								const QModelIndex &index) const
+{
+	QStyledItemDelegate::setModelData(editor, model, index);
+}
+
+void YACReaderRatingDelegate::sendCommitData()
+{
+	StarEditor *editor = qobject_cast<StarEditor *>(sender());
+	emit commitData(editor);
+}
+void YACReaderRatingDelegate::sendCloseEditor()
+{
+	StarEditor *editor = qobject_cast<StarEditor *>(sender());
+	emit closeEditor(editor);
+}
+
+//-------------------------------------------------------------------------------
+//StarRating---------------------------------------------------------------------
+//-------------------------------------------------------------------------------
+
+const int PaintingScaleFactor = 20;
+
+//! [0]
+StarRating::StarRating(int starCount, int maxStarCount)
+{
+	myStarCount = starCount;
+	myMaxStarCount = maxStarCount;
+
+	int numVertex = 5;
+	double pi = 3.14159265359;
+	double angle = 3.14159265359 / numVertex;
+
+	float rOuter = 0.3;
+	float rInner = 0.15;
+	for (int i = 0; i < 2 * numVertex; i++)
+	{
+		double r = (i & 1) == 0 ? rOuter : rInner;
+		starPolygon << QPointF(0.5 + cos((i * angle)-pi/2) * r, 0.5 + sin((i * angle)-pi/2) * r);
+	}
+
+	diamondPolygon << QPointF(0.4, 0.5) << QPointF(0.5, 0.4)
+				   << QPointF(0.6, 0.5) << QPointF(0.5, 0.6)
+				   << QPointF(0.4, 0.5);
+}
+//! [0]
+
+//! [1]
+QSize StarRating::sizeHint() const
+{
+	return PaintingScaleFactor * QSize(myMaxStarCount, 1);
+}
+//! [1]
+
+//! [2]
+void StarRating::paint(QPainter *painter, const QRect &rect,
+					   const QPalette &palette, EditMode mode) const
+{
+	painter->save();
+
+	painter->setRenderHint(QPainter::Antialiasing, true);
+	painter->setPen(Qt::NoPen);
+
+	//if (mode == Editable) {
+	//    painter->setBrush(palette.highlight());
+	//} else {
+	QBrush brush(QColor("#e9be0f"));
+	painter->setBrush(brush);
+	//}
+
+	int yOffset = (rect.height() - PaintingScaleFactor) / 2;
+	painter->translate(rect.x(), rect.y() + yOffset);
+	painter->scale(PaintingScaleFactor, PaintingScaleFactor);
+
+	for (int i = 0; i < myMaxStarCount; ++i) {
+		if (i < myStarCount) {
+			painter->drawPolygon(starPolygon, Qt::WindingFill);
+		} else if (mode == Editable) {
+			painter->drawEllipse(QPointF(0.5,0.5),0.08,0.08);//(diamondPolygon, Qt::WindingFill);
+		}
+		painter->translate(1.0, 0.0);
+	}
+
+	painter->restore();
+}
+
+void StarRating::paintSelected(QPainter *painter, const QRect &rect,
+					   const QPalette &palette, EditMode mode, QColor color) const
+{
+		painter->save();
+
+	painter->setRenderHint(QPainter::Antialiasing, true);
+	painter->setPen(Qt::NoPen);
+
+	QBrush star(color);
+	QBrush dot(color);
+
+	int yOffset = (rect.height() - PaintingScaleFactor) / 2;
+	painter->translate(rect.x(), rect.y() + yOffset);
+	painter->scale(PaintingScaleFactor, PaintingScaleFactor);
+
+	for (int i = 0; i < myMaxStarCount; ++i) {
+		if (i < myStarCount) {
+			painter->setBrush(star);
+			painter->drawPolygon(starPolygon, Qt::WindingFill);
+		} else {
+			painter->setBrush(dot);
+			painter->drawEllipse(QPointF(0.5,0.5),0.08,0.08);
+		}
+		painter->translate(1.0, 0.0);
+	}
+
+	painter->restore();
+}
+
+//! [2]
+void StarRating::paintSelected(QPainter *painter, const QRect &rect,
+					   const QPalette &palette, EditMode mode) const
+{
+	paintSelected(painter,rect, palette,mode,QColor("#ffffff"));
+}
+//! [2]
+
+void StarRating::mouseMoveEvent(QMouseEvent *event)
+{
+	event->accept();
+}
+
+
+//-------------------------------------------------------------------------------
+//StarEditor---------------------------------------------------------------------
+//-------------------------------------------------------------------------------
+
+//! [0]
+StarEditor::StarEditor(QWidget *parent)
+	: QWidget(parent)
+{
+	setMouseTracking(true);
+}
+//! [0]
+
+QSize StarEditor::sizeHint() const
+{
+	return myStarRating.sizeHint();
+}
+
+//! [1]
+void StarEditor::paintEvent(QPaintEvent *)
+{
+	QPainter painter(this);
+	myStarRating.paintSelected(&painter, rect(), this->palette(),
+		StarRating::Editable,QColor("#A0A0A0"));
+}
+//! [1]
+
+//! [2]
+void StarEditor::mouseMoveEvent(QMouseEvent *event)
+{
+	int star = starAtPosition(event->x());
+
+	if (star != myStarRating.starCount() && star != -1) {
+		myStarRating.setStarCount(star);
+		update();
+	}
+}
+//! [2]
+
+void StarEditor::leaveEvent(QEvent * event){
+	emit editingFinished();
+	QWidget::leaveEvent(event);
+}
+
+
+//! [3]
+void StarEditor::mouseReleaseEvent(QMouseEvent *  event )
+{
+	emit commitData();
+}
+//! [3]
+
+//! [4]
+int StarEditor::starAtPosition(int x)
+{
+	int star = (x / (myStarRating.sizeHint().width()
+					 / myStarRating.maxStarCount())) + 1;
+	if (star <= 0 || star > myStarRating.maxStarCount())
+		return -1;
+
+	return star;
+}
+//! [4]
