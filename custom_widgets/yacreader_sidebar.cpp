@@ -9,7 +9,7 @@
 #include "yacreader_titled_toolbar.h"
 
 YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
-    QWidget(parent)
+	QWidget(parent)
 {
 	setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Minimum);
 
@@ -20,11 +20,11 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
 
 	librariesTitle = new YACReaderTitledToolBar(tr("LIBRARIES"));
 
-    foldersTitle = new YACReaderTitledToolBar(tr("FOLDERS"));
+	foldersTitle = new YACReaderTitledToolBar(tr("FOLDERS"));
 
 	selectedLibrary->setContextMenuPolicy(Qt::ActionsContextMenu);
 	selectedLibrary->setAttribute(Qt::WA_MacShowFocusRect,false);
-    selectedLibrary->setFocusPolicy(Qt::NoFocus);
+	selectedLibrary->setFocusPolicy(Qt::NoFocus);
 
 	foldersFilter->setAttribute(Qt::WA_MacShowFocusRect,false);
 	foldersFilter->setPlaceholderText(tr("Search folders and comics"));
@@ -66,7 +66,7 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
 
 	l->addSpacing(4);
 #else
-    l->addSpacing(6);
+	l->addSpacing(6);
 #endif
 
 	l->addWidget(foldersTitle);
@@ -119,7 +119,7 @@ void YACReaderSideBar::paintEvent(QPaintEvent * event)
 	//painter.drawPixmap(width()-shadow.width(),0,shadow.width(),height(),shadow);
 
 	//   painter.setRenderHint(QPainter::Antialiasing);
-    // painter.drawLine(rect().topLeft(), rect().bottomRight());
+	// painter.drawLine(rect().topLeft(), rect().bottomRight());
 
 	//QWidget::paintEvent(event);
 }

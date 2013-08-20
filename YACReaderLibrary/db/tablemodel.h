@@ -58,6 +58,7 @@ public slots:
 	void remove(int row);
 	void startTransaction();
 	void finishTransaction();
+	void updateRating(int rating, QModelIndex mi);
 
 private:
     void setupModelData( QSqlQuery &sqlquery);

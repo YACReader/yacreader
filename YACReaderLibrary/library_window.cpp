@@ -672,6 +672,7 @@ void LibraryWindow::createConnections()
 
 	connect(comicView, SIGNAL(pressed(QModelIndex)), this, SLOT(centerComicFlow(QModelIndex)));
 	connect(comicFlow, SIGNAL(centerIndexChanged(int)), this, SLOT(updateComicView(int)));
+	connect(comicView, SIGNAL(comicRated(int,QModelIndex)), dmCV, SLOT(updateRating(int,QModelIndex)));
 
 	//actions
 	connect(createLibraryAction,SIGNAL(triggered()),this,SLOT(createLibrary()));

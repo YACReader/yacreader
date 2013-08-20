@@ -64,11 +64,11 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 	if (!index.isValid())
 		return QVariant();
 
-	if (index.column() == Columns::Rating && role == Qt::DecorationRole)
+	/*if (index.column() == Columns::Rating && role == Qt::DecorationRole)
 	{
 		TableItem *item = static_cast<TableItem*>(index.internalPointer());
 		return QPixmap(QString(":/images/rating%1.png").arg(item->data(index.column()).toInt()));
-	}
+	}*/
 
 	if (role == Qt::DecorationRole)
 	{
@@ -116,7 +116,8 @@ Qt::ItemFlags TableModel::flags(const QModelIndex &index) const
 {
 	if (!index.isValid())
 		return 0;
-
+	if(index.column() == Columns::Rating)
+		return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 //! [4]
@@ -612,4 +613,21 @@ void TableModel::reload(const ComicDB & comic)
 	}
 	if(found)
 		emit dataChanged(index(row,Columns::CurrentPage),index(row,Columns::CurrentPage));
+}
+
+void TableModel::updateRating(int rating, QModelIndex mi)
+{
+	ComicDB comic = getComic(mi);
+
+	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+	//TODO optimize update
+	
+	comic.info.rating = rating;
+	_data[mi.row()]->setData(Columns::Rating,rating);
+	DBHelper::update(&(comic.info),db);
+
+	emit dataChanged(mi,mi);
+
+	db.close();
+	QSqlDatabase::removeDatabase(_databasePath);
 }
