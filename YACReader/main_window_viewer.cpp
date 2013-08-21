@@ -216,7 +216,9 @@ void MainWindowViewer::openFromArgv()
 		YACReaderLocalClient client;
 		
 		if(client.requestComicInfo(libraryId,currentComicDB,siblingComics))
+		{
 			open(pathFile+currentComicDB.path,currentComicDB,siblingComics);
+		}
 		else
 		{/*error*/}
 

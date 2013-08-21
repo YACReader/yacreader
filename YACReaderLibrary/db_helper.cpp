@@ -197,7 +197,7 @@ void DBHelper::update(const QString & libraryName, ComicInfo & comicInfo)
 	db.close();
 	QSqlDatabase::removeDatabase(libraryPath);
 }
-#include <QMessageBox>
+
 void DBHelper::update(ComicInfo * comicInfo, QSqlDatabase & db)
 {
 	QSqlQuery updateComicInfo(db);
@@ -297,8 +297,7 @@ void DBHelper::update(ComicInfo * comicInfo, QSqlDatabase & db)
 	updateComicInfo.bindValue(":gamma", comicInfo->gamma);
 	updateComicInfo.bindValue(":rating", comicInfo->rating);
 
-	if(!updateComicInfo.exec())
-		QMessageBox::critical(0,"",updateComicInfo.lastError().text());
+	updateComicInfo.exec();
 }
 
 void DBHelper::updateRead(ComicInfo * comicInfo, QSqlDatabase & db)
@@ -591,6 +590,7 @@ ComicInfo DBHelper::loadComicInfo(QString hash, QSqlDatabase & db)
 		comicInfo.brightness = record.value("brightness").toInt();
 		comicInfo.contrast = record.value("contrast").toInt();
 		comicInfo.gamma = record.value("gamma").toInt();
+		comicInfo.rating = record.value("rating").toInt();
 		//--
 
 		setField("title",comicInfo.title,record);

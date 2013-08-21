@@ -243,7 +243,6 @@ void YACReaderRatingDelegate::sendCloseEditor()
 
 const int PaintingScaleFactor = 20;
 
-//! [0]
 StarRating::StarRating(int starCount, int maxStarCount)
 {
 	myStarCount = starCount;
@@ -265,16 +264,12 @@ StarRating::StarRating(int starCount, int maxStarCount)
 				   << QPointF(0.6, 0.5) << QPointF(0.5, 0.6)
 				   << QPointF(0.4, 0.5);
 }
-//! [0]
 
-//! [1]
 QSize StarRating::sizeHint() const
 {
 	return PaintingScaleFactor * QSize(myMaxStarCount, 1);
 }
-//! [1]
 
-//! [2]
 void StarRating::paint(QPainter *painter, const QRect &rect,
 					   const QPalette &palette, EditMode mode) const
 {
@@ -335,17 +330,10 @@ void StarRating::paintSelected(QPainter *painter, const QRect &rect,
 	painter->restore();
 }
 
-//! [2]
 void StarRating::paintSelected(QPainter *painter, const QRect &rect,
 					   const QPalette &palette, EditMode mode) const
 {
 	paintSelected(painter,rect, palette,mode,QColor("#ffffff"));
-}
-//! [2]
-
-void StarRating::mouseMoveEvent(QMouseEvent *event)
-{
-	event->accept();
 }
 
 
@@ -353,21 +341,18 @@ void StarRating::mouseMoveEvent(QMouseEvent *event)
 //StarEditor---------------------------------------------------------------------
 //-------------------------------------------------------------------------------
 
-//! [0]
 StarEditor::StarEditor(QWidget *parent)
 	: QWidget(parent),shouldCommitData(false)
 {
 	//setMouseTracking(true);
 	//setAutoFillBackground(true);
 }
-//! [0]
 
 QSize StarEditor::sizeHint() const
 {
 	return myStarRating.sizeHint();
 }
 
-//! [1]
 void StarEditor::paintEvent(QPaintEvent *)
 {
 	/*
@@ -375,9 +360,7 @@ void StarEditor::paintEvent(QPaintEvent *)
 	myStarRating.paintSelected(&painter, rect(), this->palette(),
 		StarRating::Editable,QColor("#615f59"));*/
 }
-//! [1]
 
-//! [2]
 void StarEditor::mouseMoveEvent(QMouseEvent *event)
 {
 	/*int star = starAtPosition(event->x());
@@ -387,14 +370,11 @@ void StarEditor::mouseMoveEvent(QMouseEvent *event)
 		update();
 	}*/
 }
-//! [2]
 void StarEditor::leaveEvent(QEvent * event){
 	emit editingFinished();
 	QWidget::leaveEvent(event);
 }
 
-
-//! [3]
 void StarEditor::mousePressEvent(QMouseEvent *  event )
 {
 	int star = starAtPosition(event->x());
@@ -407,9 +387,7 @@ void StarEditor::mousePressEvent(QMouseEvent *  event )
 
 
 }
-//! [3]
 
-//! [4]
 int StarEditor::starAtPosition(int x)
 {
 	int star = (x / (myStarRating.sizeHint().width()
@@ -419,4 +397,3 @@ int StarEditor::starAtPosition(int x)
 
 	return star;
 }
-//! [4]
