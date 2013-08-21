@@ -6,7 +6,7 @@
 #include <QPainter>
 
 YACReaderTableView::YACReaderTableView(QWidget *parent) :
-	QTableView(parent),showDelete(false),editing(false)
+	QTableView(parent),showDelete(false),editing(false),myeditor(0)
 {
 	setAlternatingRowColors(true);
 	verticalHeader()->setAlternatingRowColors(true);
@@ -62,27 +62,75 @@ void YACReaderTableView::mouseMoveEvent(QMouseEvent *event)
 		if(selectedIndexes.contains(mi))
 		{
 			if(mi.column() == 11)
-			if(!editing)
 			{
-				editing = true;
-				currentIndexEditing = mi;
-				edit(mi);
+				if(!editing)
+				{
+					editing = true;
+					currentIndexEditing = mi;
+					edit(mi);
+					myeditor = indexWidget(mi);
+				}
+				else if(mi.row() != currentIndexEditing.row())
+					closeRatingEditor();
+			}
+			else
+				closeRatingEditor();
+		}
+		else
+			closeRatingEditor();
+	}
+	else
+		closeRatingEditor();
+
+	QTableView::mouseMoveEvent(event);
+}
+void YACReaderTableView::mousePressEvent(QMouseEvent * event)
+{
+	QTableView::mousePressEvent(event);
+	QModelIndex mi = indexAt(event->pos());
+	if(mi.isValid())
+	{
+		QList<QModelIndex> selectedIndexes = this->selectedIndexes();
+		if(selectedIndexes.contains(mi))
+		{
+			if(mi.column() == 11)
+			{
+				if(!editing)
+				{
+					editing = true;
+					currentIndexEditing = mi;
+					edit(mi);
+					myeditor = indexWidget(mi);
+				}
 			}
 		}
 	}
-	QTableView::mouseMoveEvent(event);
+}
+void YACReaderTableView::leaveEvent(QEvent * event)
+{
+	closeRatingEditor();
 }
 
+void YACReaderTableView::closeRatingEditor()
+{
+	editing = false;
+	if(myeditor!=0)
+		closeEditor(myeditor,QAbstractItemDelegate::NoHint);
+	myeditor = 0;
+}
 
 void YACReaderTableView::closeEditor ( QWidget * editor, QAbstractItemDelegate::EndEditHint hint )
 {
 	editing = false;
+	myeditor = 0;
 	QTableView::closeEditor(editor,hint);
 }
 void YACReaderTableView::commitData ( QWidget * editor )
 {
 	//TODO
-	emit comicRated(((StarEditor *)editor)->starRating().starCount(),currentIndexEditing);
+	StarEditor *starEditor = qobject_cast<StarEditor *>(editor);
+	if(starEditor->getShouldCommitData())
+		emit comicRated(((StarEditor *)editor)->starRating().starCount(),currentIndexEditing);
 }
 
 void YACReaderTableView::showDeleteProgress()
@@ -152,7 +200,6 @@ QSize YACReaderRatingDelegate::sizeHint(const QStyleOptionViewItem &option,
 QWidget *YACReaderRatingDelegate::createEditor(QWidget *parent,
 									const QStyleOptionViewItem &option,
 									const QModelIndex &index) const
-
 {
 	StarEditor *editor = new StarEditor(parent);
 	connect(editor, SIGNAL(editingFinished()),
@@ -268,7 +315,7 @@ void StarRating::paintSelected(QPainter *painter, const QRect &rect,
 	painter->setPen(Qt::NoPen);
 
 	QBrush star(color);
-	QBrush dot(color);
+	QBrush dot(QColor("#ffffff"));
 
 	int yOffset = (rect.height() - PaintingScaleFactor) / 2;
 	painter->translate(rect.x(), rect.y() + yOffset);
@@ -308,9 +355,10 @@ void StarRating::mouseMoveEvent(QMouseEvent *event)
 
 //! [0]
 StarEditor::StarEditor(QWidget *parent)
-	: QWidget(parent)
+	: QWidget(parent),shouldCommitData(false)
 {
-	setMouseTracking(true);
+	//setMouseTracking(true);
+	//setAutoFillBackground(true);
 }
 //! [0]
 
@@ -322,24 +370,24 @@ QSize StarEditor::sizeHint() const
 //! [1]
 void StarEditor::paintEvent(QPaintEvent *)
 {
+	/*
 	QPainter painter(this);
 	myStarRating.paintSelected(&painter, rect(), this->palette(),
-		StarRating::Editable,QColor("#A0A0A0"));
+		StarRating::Editable,QColor("#615f59"));*/
 }
 //! [1]
 
 //! [2]
 void StarEditor::mouseMoveEvent(QMouseEvent *event)
 {
-	int star = starAtPosition(event->x());
+	/*int star = starAtPosition(event->x());
 
 	if (star != myStarRating.starCount() && star != -1) {
 		myStarRating.setStarCount(star);
 		update();
-	}
+	}*/
 }
 //! [2]
-
 void StarEditor::leaveEvent(QEvent * event){
 	emit editingFinished();
 	QWidget::leaveEvent(event);
@@ -347,9 +395,17 @@ void StarEditor::leaveEvent(QEvent * event){
 
 
 //! [3]
-void StarEditor::mouseReleaseEvent(QMouseEvent *  event )
+void StarEditor::mousePressEvent(QMouseEvent *  event )
 {
-	emit commitData();
+	int star = starAtPosition(event->x());
+
+	if (star != myStarRating.starCount() && star != -1) {
+		myStarRating.setStarCount(star);
+		shouldCommitData = true;
+		emit commitData();
+	}
+
+
 }
 //! [3]
 
