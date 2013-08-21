@@ -19,6 +19,7 @@ signals:
 public slots:
 	void showDeleteProgress();
 	void hideDeleteProgress();
+	void closeRatingEditor();
 protected slots:
 
 virtual void closeEditor ( QWidget * editor, QAbstractItemDelegate::EndEditHint hint );
@@ -30,9 +31,12 @@ private:
 
 	void resizeEvent(QResizeEvent * event);
 	void mouseMoveEvent(QMouseEvent *event);
+	void mousePressEvent(QMouseEvent * event);
+	void leaveEvent(QEvent * event);
 
 	bool editing;
 	QModelIndex currentIndexEditing;
+	QWidget * myeditor;
 };
 
 //---
@@ -64,9 +68,9 @@ private slots:
 class StarRating
 {
 public:
-    enum EditMode { Editable, ReadOnly };
+	enum EditMode { Editable, ReadOnly };
 
-    StarRating(int starCount = 1, int maxStarCount = 5);
+	StarRating(int starCount = 1, int maxStarCount = 5);
 
 	void paint(QPainter *painter, const QRect &rect,
 		const QPalette &palette, EditMode mode) const;
@@ -76,45 +80,47 @@ public:
 		const QPalette &palette, EditMode mode) const;
 	QSize sizeHint() const;
 	int starCount() const { return myStarCount; }
-    int maxStarCount() const { return myMaxStarCount; }
-    void setStarCount(int starCount) { myStarCount = starCount; }
-    void setMaxStarCount(int maxStarCount) { myMaxStarCount = maxStarCount; }
+	int maxStarCount() const { return myMaxStarCount; }
+	void setStarCount(int starCount) { myStarCount = starCount; }
+	void setMaxStarCount(int maxStarCount) { myMaxStarCount = maxStarCount; }
 protected:
-    void mouseMoveEvent(QMouseEvent *event);
+	void mouseMoveEvent(QMouseEvent *event);
 private:
-    QPolygonF starPolygon;
-    QPolygonF diamondPolygon;
-    int myStarCount;
-    int myMaxStarCount;
+	QPolygonF starPolygon;
+	QPolygonF diamondPolygon;
+	int myStarCount;
+	int myMaxStarCount;
 };
 Q_DECLARE_METATYPE(StarRating);
 //---
 
 class StarEditor : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    StarEditor(QWidget *parent = 0);
+	StarEditor(QWidget *parent = 0);
 
-    QSize sizeHint() const;
-    void setStarRating(const StarRating &starRating) {
-        myStarRating = starRating;
-    }
-    StarRating starRating() { return myStarRating; }
+	QSize sizeHint() const;
+	void setStarRating(const StarRating &starRating) {
+		myStarRating = starRating;
+	}
+	StarRating starRating() { return myStarRating; }
+	bool getShouldCommitData() {return shouldCommitData;};
 
 signals:
-    void editingFinished();
+	void editingFinished();
 	void commitData();
 
 protected:
-    void paintEvent(QPaintEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
+	void paintEvent(QPaintEvent *event);
+	void mouseMoveEvent(QMouseEvent *event);
+	void mousePressEvent(QMouseEvent *event);
 	void leaveEvent(QEvent * event);
 
 private:
-    int starAtPosition(int x);
-    StarRating myStarRating;
+	int starAtPosition(int x);
+	StarRating myStarRating;
+	bool shouldCommitData;
 };
 #endif // YACREADER_TABLE_VIEW_H
