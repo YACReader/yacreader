@@ -83,8 +83,6 @@ public:
 	int maxStarCount() const { return myMaxStarCount; }
 	void setStarCount(int starCount) { myStarCount = starCount; }
 	void setMaxStarCount(int maxStarCount) { myMaxStarCount = maxStarCount; }
-protected:
-	void mouseMoveEvent(QMouseEvent *event);
 private:
 	QPolygonF starPolygon;
 	QPolygonF diamondPolygon;
