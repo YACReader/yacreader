@@ -130,7 +130,7 @@ void YACReaderRatingDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 
 	QStyledItemDelegate::paint(painter, option, index);
 
-	if(option.state | QStyle::State_Editing)
+	if(!(option.state & QStyle::State_Editing))
 	{
 		if (option.state & QStyle::State_Selected)
 			starRating.paintSelected(painter, option.rect, option.palette,

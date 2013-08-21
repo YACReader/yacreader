@@ -657,7 +657,38 @@ void MainWindowViewer::openFolderFromPath(QString pathDir)
 	enableActions();
 
 	viewer->open(pathDir);
-	
+}
+
+void MainWindowViewer::openFolderFromPath(QString pathDir, QString atFileName)
+{
+	currentDirectory = pathDir; //TODO ??
+	QFileInfo fi(pathDir);
+	getSiblingComics(fi.absolutePath(),fi.fileName());
+
+	setWindowTitle("YACReader - " + fi.fileName());
+
+	enableActions();
+
+	QDir d(pathDir);
+	d.setFilter(QDir::Files|QDir::NoDotAndDotDot);
+	d.setNameFilters(QStringList() EXTENSIONS);
+	d.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware);
+	QStringList list = d.entryList();
+
+	qSort(list.begin(),list.end(),naturalSortLessThanCI);
+	int i = 0;
+	foreach(QString path,list)
+	{
+		if(path.endsWith(atFileName))
+			break;
+		i++;
+	}
+
+	int index = 0;
+	if(i < list.count())
+		index = i;
+
+	viewer->open(pathDir,i);	
 }
 
 void MainWindowViewer::saveImage()
@@ -977,12 +1008,19 @@ void MainWindowViewer::dropEvent(QDropEvent *event)
 	{
 		urlList = event->mimeData()->urls();
 	
-		if ( urlList.size() > 0)
+		if ( urlList.size() > 0 )
 		{
 			fName = urlList[0].toLocalFile(); // convert first QUrl to local path
 			info.setFile( fName ); // information about file
 			if (info.isFile()) 
-				openComicFromPath(fName); // if is file, setText
+			{
+				QStringList imageSuffixs;
+				imageSuffixs EXTENSIONS_LITERAL;
+				if(imageSuffixs.contains("."+info.suffix())) //image dropped
+					openFolderFromPath(info.absoluteDir().absolutePath(),info.fileName());
+				else
+					openComicFromPath(fName); // if is file, setText
+			}
 			else 
 				if(info.isDir())
 					openFolderFromPath(fName);

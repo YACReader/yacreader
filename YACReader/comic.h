@@ -13,7 +13,8 @@
 #include "poppler-qt4.h"
 
 class ComicDB;
-
+#define EXTENSIONS << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp"
+#define EXTENSIONS_LITERAL << ".jpg" << ".jpeg" << ".png" << ".gif" << ".tiff" << ".tif" << ".bmp"
 	class Comic : public QObject
 	{
 	Q_OBJECT

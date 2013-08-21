@@ -11,8 +11,6 @@
 #include "compressed_archive.h"
 #include "comic_db.h"
 
-#define EXTENSIONS << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp"
-#define EXTENSIONS_LITERAL << ".jpg" << ".jpeg" << ".png" << ".gif" << ".tiff" << ".tif" << ".bmp"
 //-----------------------------------------------------------------------------
 Comic::Comic()
 :_pages(),_index(0),_path(),_loaded(false),bm(new Bookmarks()),_loadedPages(),_isPDF(false)

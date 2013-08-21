@@ -43,6 +43,7 @@ class YACReaderSliderAction;
 		void openNextComic();
 		void openComicFromPath(QString pathFile);
 		void openFolderFromPath(QString pathDir);
+		void openFolderFromPath(QString pathFile, QString atFileName);
 		void alwaysOnTopSwitch();
 		void adjustToFullSizeSwitch();
 		void reloadOptions();
