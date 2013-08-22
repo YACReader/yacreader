@@ -63,7 +63,7 @@ class NotificationsLabelWidget;
 		bool magnifyingGlassIsVisible() {return magnifyingGlassShowed;}
 		void setBookmark(bool);
 		void save();
-        void doublePageSwitch();
+		void doublePageSwitch();
 		void resetContent();
 		void setLoadingMessage();
 		void setPageUnavailableMessage();
@@ -112,6 +112,7 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		QTimer * hideCursorTimer;
 		int direction;
 		bool drag;
+		int numScrollSteps;
 
 		//!Widgets
 		QLabel *content;

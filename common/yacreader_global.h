@@ -53,9 +53,9 @@
 
  enum FlowType
   {
-    CoverFlowLike=0,
-    Strip,
-    StripOverlapped,
+	CoverFlowLike=0,
+	Strip,
+	StripOverlapped,
 	Modern,
 	Roulette,
 	Custom

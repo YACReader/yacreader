@@ -6,7 +6,6 @@
 
 #include <QMessageBox>
 #include <QList>
-#define NUM_BOOKMARKS 250
 
 Bookmarks::Bookmarks()
 :lastPageIndex(0)
@@ -138,8 +137,8 @@ void BookmarksList::save()
 	QFile f(QCoreApplication::applicationDirPath()+"/bookmarks.yacr");
 	f.open(QIODevice::WriteOnly);
 	QDataStream dataS(&f);
-	if(list.count()>NUM_BOOKMARKS)
-		deleteOldest(list.count()-NUM_BOOKMARKS);
+	if(list.count()>numMaxBookmarks)
+		deleteOldest(list.count()-numMaxBookmarks);
 	dataS << list;
 	f.close();
 }

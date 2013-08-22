@@ -5,6 +5,8 @@
 #include <QPropertyAnimation>
 #include <QPainter>
 
+#include "tableitem.h"
+
 YACReaderTableView::YACReaderTableView(QWidget *parent) :
 	QTableView(parent),showDelete(false),editing(false),myeditor(0)
 {
@@ -165,7 +167,7 @@ void YACReaderTableView::resizeEvent(QResizeEvent * event)
 
 	QTableView::resizeEvent(event);
 }
-#include "tableitem.h"
+
 //------------------------------------------------------------------------------
 //YACReaderRatingDelegate-------------------------------------------------------
 //------------------------------------------------------------------------------

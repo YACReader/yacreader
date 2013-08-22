@@ -31,7 +31,7 @@ public:
                 }
 
 	};
-        BookmarksList(){}
+        BookmarksList():numMaxBookmarks(400){}
 	void load();
 	void save();
 	void add(const QString & comicID, const Bookmark & b);
@@ -39,6 +39,8 @@ public:
 protected:
 	QMap<QString,Bookmark> list;
 	void deleteOldest(int num);
+private:
+	int numMaxBookmarks;
 
 };
 

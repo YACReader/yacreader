@@ -13,8 +13,8 @@
 #include "poppler-qt4.h"
 
 class ComicDB;
-#define EXTENSIONS << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp"
-#define EXTENSIONS_LITERAL << ".jpg" << ".jpeg" << ".png" << ".gif" << ".tiff" << ".tif" << ".bmp"
+//#define EXTENSIONS << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp" Comic::getSupportedImageFormats()
+//#define EXTENSIONS_LITERAL << ".jpg" << ".jpeg" << ".png" << ".gif" << ".tiff" << ".tif" << ".bmp" //Comic::getSupportedImageLiteralFormats()
 	class Comic : public QObject
 	{
 	Q_OBJECT
@@ -36,6 +36,9 @@ class ComicDB;
 		int _firstPage;
 
 		bool _isPDF;
+
+		static QStringList extensions;
+		static QStringList literalExtensions;
 	public:
 		Bookmarks * bm;
 
@@ -62,6 +65,9 @@ class ComicDB;
 		QVector<QByteArray> * getRawData(){return &_pages;};
 		QByteArray getRawPage(int page);
 		bool pageIsLoaded(int page);
+
+		inline static QStringList getSupportedImageFormats() { return extensions;};
+		inline static QStringList getSupportedImageLiteralFormats() { return literalExtensions;};
 		
 	public slots:
 		void loadFinished();

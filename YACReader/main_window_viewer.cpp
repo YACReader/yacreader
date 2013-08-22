@@ -673,7 +673,7 @@ void MainWindowViewer::openFolderFromPath(QString pathDir, QString atFileName)
 
 	QDir d(pathDir);
 	d.setFilter(QDir::Files|QDir::NoDotAndDotDot);
-	d.setNameFilters(QStringList() EXTENSIONS);
+	d.setNameFilters(Comic::getSupportedImageFormats());
 	d.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware);
 	QStringList list = d.entryList();
 
@@ -1016,8 +1016,7 @@ void MainWindowViewer::dropEvent(QDropEvent *event)
 			info.setFile( fName ); // information about file
 			if (info.isFile()) 
 			{
-				QStringList imageSuffixs;
-				imageSuffixs EXTENSIONS_LITERAL;
+				QStringList imageSuffixs = Comic::getSupportedImageLiteralFormats();
 				if(imageSuffixs.contains("."+info.suffix())) //image dropped
 					openFolderFromPath(info.absoluteDir().absolutePath(),info.fileName());
 				else
