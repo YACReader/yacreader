@@ -11,17 +11,20 @@
 #include "compressed_archive.h"
 #include "comic_db.h"
 
+QStringList Comic::extensions = QStringList() << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp";
+QStringList Comic::literalExtensions = QStringList() << ".jpg" << ".jpeg" << ".png" << ".gif" << ".tiff" << ".tif" << ".bmp";
+
 //-----------------------------------------------------------------------------
 Comic::Comic()
 :_pages(),_index(0),_path(),_loaded(false),bm(new Bookmarks()),_loadedPages(),_isPDF(false)
 {
-    setup();
+	setup();
 }
 //-----------------------------------------------------------------------------
 Comic::Comic(const QString & pathFile, int atPage )
 :_pages(),_index(0),_path(pathFile),_loaded(false),bm(new Bookmarks()),_loadedPages(),_isPDF(false),_firstPage(atPage)
 {
-    setup();
+	setup();
 }
 //-----------------------------------------------------------------------------
 Comic::~Comic()
@@ -31,7 +34,7 @@ Comic::~Comic()
 //-----------------------------------------------------------------------------
 void Comic::setup()
 {
-    connect(this,SIGNAL(pageChanged(int)),this,SLOT(checkIsBookmark(int)));
+	connect(this,SIGNAL(pageChanged(int)),this,SLOT(checkIsBookmark(int)));
 	connect(this,SIGNAL(imageLoaded(int)),this,SLOT(updateBookmarkImage(int)));
 	connect(this,SIGNAL(imageLoaded(int)),this,SLOT(setPageLoaded(int)));
 }
@@ -103,7 +106,7 @@ void Comic::setBookmark()
 {
 	QImage p;
 	p.loadFromData(_pages[_index]);
-    bm->setBookmark(_index,p);
+	bm->setBookmark(_index,p);
 	//emit bookmarksLoaded(*bm);
 	emit bookmarksUpdated();
 }
@@ -125,7 +128,7 @@ void Comic::saveBookmarks()
 //-----------------------------------------------------------------------------
 void Comic::checkIsBookmark(int index)
 {
-    emit isBookmark(bm->isBookmark(index));
+	emit isBookmark(bm->isBookmark(index));
 }
 //-----------------------------------------------------------------------------
 void Comic::updateBookmarkImage(int index)
@@ -241,8 +244,7 @@ bool FileComic::load(const QString & path, const ComicDB & comic)
 
 QList<QString> FileComic::filter(const QList<QString> & src)
 {
-	QList<QString> extensions;
-	extensions EXTENSIONS_LITERAL;
+	QList<QString> extensions = getSupportedImageLiteralFormats();
 	QList<QString> filtered;
 	bool fileAccepted = false;
 
@@ -493,9 +495,8 @@ bool FolderComic::load(const QString & path, int atPage )
 void FolderComic::process()
 {
 	QDir d(_path);
-	QStringList l;
-	l EXTENSIONS;
-	d.setNameFilters(l);
+
+	d.setNameFilters(getSupportedImageFormats());
 	d.setFilter(QDir::Files|QDir::NoDotAndDotDot);
 	//d.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware);
 	QFileInfoList list = d.entryInfoList();

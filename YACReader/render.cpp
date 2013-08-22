@@ -7,9 +7,6 @@
 
 #include <typeinfo>
 
-#define NL 2
-#define NR 2
-
 #include "comic_db.h"
 #include "yacreader_global.h"
 
@@ -480,7 +477,7 @@ void DoublePageRender::run()
 //-----------------------------------------------------------------------------
 
 Render::Render()
-:currentIndex(0),doublePage(false),comic(0),loadedComic(false),imageRotation(0),numLeftPages(NL),numRightPages(NR)
+:currentIndex(0),doublePage(false),comic(0),loadedComic(false),imageRotation(0),numLeftPages(2),numRightPages(2)
 {
 	int size = numLeftPages+numRightPages+1;
 	currentPageBufferedIndex = numLeftPages;

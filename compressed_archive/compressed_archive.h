@@ -28,13 +28,13 @@ struct SevenZipInterface;
 
 class CompressedArchive : public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit CompressedArchive(const QString & filePath, QObject *parent = 0);
+	explicit CompressedArchive(const QString & filePath, QObject *parent = 0);
 	~CompressedArchive();
-    
+	
 signals:
-    
+	
 public slots:
 	int getNumFiles();
 	QList<QByteArray> getAllData(const QVector<quint32> & indexes, ExtractDelegate * delegate = 0);
@@ -44,7 +44,7 @@ private:
 	SevenZipInterface * szInterface;
 	QLibrary * sevenzLib;
 	void loadFunctions();
-    
+	
 };
 
 #endif // COMPRESSED_ARCHIVE_H

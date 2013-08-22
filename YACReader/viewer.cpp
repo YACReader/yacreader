@@ -13,8 +13,6 @@
 #include "notifications_label_widget.h"
 #include "comic_db.h"
 #include <QFile>
-#define STEPS 22
-
 
 
 Viewer::Viewer(QWidget * parent)
@@ -28,8 +26,8 @@ doublePage(false),
 wheelStop(false),
 direction(1),
 restoreMagnifyingGlass(false),
-drag(false)
-
+drag(false),
+numScrollSteps(22)
 {
 	translator = new YACReaderTranslator(this);
 	translator->hide();
@@ -362,12 +360,12 @@ void Viewer::keyPressEvent(QKeyEvent *event)
 			switch (event->key())
 		{
 			case Qt::Key_Space:
-				posByStep = height()/STEPS;
+				posByStep = height()/numScrollSteps;
 				nextPos=verticalScrollBar()->sliderPosition()+static_cast<int>((height()*0.80));
 				scrollDown();
 				break;
 			case Qt::Key_B:
-				posByStep = height()/STEPS;
+				posByStep = height()/numScrollSteps;
 				nextPos=verticalScrollBar()->sliderPosition()-static_cast<int>((height()*0.80));
 				scrollUp();
 				break;
