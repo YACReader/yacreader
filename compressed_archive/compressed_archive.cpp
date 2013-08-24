@@ -79,7 +79,7 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 
 		for(unsigned int i=0;i<supportedFileFormats.size();i++)
 		{
-			GUID uuid = supportedFileFormats[i];
+			//GUID uuid = supportedFileFormats[i];
 			//qDebug() << "trying : " << uuid << endl;
 			if (szInterface->createObjectFunc(&supportedFileFormats[i], &IID_InArchive, (void **)&szInterface->archive) != S_OK)
 				continue;

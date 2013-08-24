@@ -4,7 +4,7 @@
 #include <QVBoxLayout>
 #include <QFileDialog>
 #include <QGridLayout>
-
+#include <QCloseEvent>
 
 ImportLibraryDialog::ImportLibraryDialog(QWidget * parent)
 :QDialog(parent),progressCount(0)
@@ -153,4 +153,5 @@ void ImportLibraryDialog::close()
 void ImportLibraryDialog::closeEvent ( QCloseEvent * e )
 {
 	close();
+	e->accept();
 }

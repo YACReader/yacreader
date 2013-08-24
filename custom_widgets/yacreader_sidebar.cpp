@@ -95,7 +95,7 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
 
 void YACReaderSideBar::paintEvent(QPaintEvent * event)
 {
-
+	Q_UNUSED(event)
 
 #ifdef Q_OS_MAC
 	QPainter painter(this);

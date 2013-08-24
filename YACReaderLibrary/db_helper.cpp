@@ -184,6 +184,8 @@ void DBHelper::removeFromDB(ComicDB * comic, QSqlDatabase & db)
 //updates
 void DBHelper::update(ComicDB * comic, QSqlDatabase & db)
 {
+	Q_UNUSED(comic)
+	Q_UNUSED(db)
 	//do nothing
 }
 

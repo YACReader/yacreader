@@ -10,6 +10,7 @@ ErrorController::ErrorController(int errorCode)
 
 void ErrorController::service(HttpRequest& request, HttpResponse& response)
 {
+	Q_UNUSED(request)
 	switch(error)
 	{
 	case 300:

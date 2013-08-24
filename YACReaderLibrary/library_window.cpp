@@ -1035,7 +1035,7 @@ void LibraryWindow::setCurrentComicsStatusReaded(YACReaderComicReadStatus readSt
 
 void LibraryWindow::setCurrentComicReaded()
 {
-	this->setCurrentComicsStatusReaded(YACReaderComicReadStatus::Read);
+	this->setCurrentComicsStatusReaded(YACReader::Read);
 }
 
 void LibraryWindow::setCurrentComicOpened()
@@ -1045,18 +1045,18 @@ void LibraryWindow::setCurrentComicOpened()
 
 void LibraryWindow::setComicsReaded()
 {
-	comicFlow->setMarks(dmCV->setAllComicsRead(YACReaderComicReadStatus::Read));
+	comicFlow->setMarks(dmCV->setAllComicsRead(YACReader::Read));
 	comicFlow->updateMarks();
 }
 
 void LibraryWindow::setCurrentComicUnreaded()
 {
-	this->setCurrentComicsStatusReaded(YACReaderComicReadStatus::Unread);
+	this->setCurrentComicsStatusReaded(YACReader::Unread);
 }
 
 void LibraryWindow::setComicsUnreaded()
 {
-	comicFlow->setMarks(dmCV->setAllComicsRead(YACReaderComicReadStatus::Unread));
+	comicFlow->setMarks(dmCV->setAllComicsRead(YACReader::Unread));
 	comicFlow->updateMarks();
 }
 
@@ -1523,6 +1523,7 @@ void LibraryWindow::closeEvent ( QCloseEvent * event )
 {
 	settings->setValue(MAIN_WINDOW_GEOMETRY, saveGeometry());
 	settings->setValue(COMICS_VIEW_HEADERS,comicView->horizontalHeader()->saveState());
+	event->accept();
 	//settings->setValue(COMICS_VIEW_HEADERS_GEOMETRY,comicView->horizontalHeader()->saveGeometry());
 }
 

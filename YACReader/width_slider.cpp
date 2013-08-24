@@ -7,7 +7,7 @@
 #include "configuration.h"
 
 YACReaderSliderAction::YACReaderSliderAction (QWidget * parent) 
-	:QWidgetAction (0) {
+	:QWidgetAction (parent) {
 	
 		QWidget* pWidget = new QWidget (NULL);
 		QHBoxLayout* pLayout = new QHBoxLayout();

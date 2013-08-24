@@ -226,7 +226,6 @@ void LibraryCreator::update(QDir dirS)
 
 	int lenghtS = listS.size();
 	int lenghtD = listD.size();
-	int maxLenght = qMax(lenghtS,lenghtD);
 
 	bool updated;
 	int i,j;

@@ -17,9 +17,10 @@ YACReaderBusyWidget::YACReaderBusyWidget(QWidget *parent)
 
 void YACReaderBusyWidget::paintEvent(QPaintEvent * event)
 {
-	 QPainter painter(this);
-	 painter.setRenderHint(QPainter::Antialiasing);
-	 painter.drawPixmap(0,0,width(),height(),QPixmap(":/images/busy_background.png"));
+	Q_UNUSED(event);
+	QPainter painter(this);
+	painter.setRenderHint(QPainter::Antialiasing);
+	painter.drawPixmap(0,0,width(),height(),QPixmap(":/images/busy_background.png"));
 }
 
 BusyIndicator::BusyIndicator(QWidget *parent) :

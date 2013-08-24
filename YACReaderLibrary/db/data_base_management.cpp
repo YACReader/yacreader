@@ -602,7 +602,9 @@ ComicsInfoExporter::ComicsInfoExporter()
 
 void ComicsInfoExporter::exportComicsInfo(QSqlDatabase & source, QSqlDatabase & dest)
 {
-
+	Q_UNUSED(source)
+	Q_UNUSED(dest)
+	//TODO check this method
 }
 
 void ComicsInfoExporter::run()
@@ -619,7 +621,9 @@ ComicsInfoImporter::ComicsInfoImporter()
 
 void ComicsInfoImporter::importComicsInfo(QSqlDatabase & source, QSqlDatabase & dest)
 {
-
+	Q_UNUSED(source)
+	Q_UNUSED(dest)
+	//TODO check this method
 }
 
 void ComicsInfoImporter::run()

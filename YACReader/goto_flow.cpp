@@ -228,8 +228,7 @@ void GoToFlow::updateSize() //TODO : fix. it doesn't work.
 
 void GoToFlow::updateConfig(QSettings * settings)
 {
-
-
+	Q_UNUSED(settings)
 }
 //-----------------------------------------------------------------------------
 //SlideInitializer

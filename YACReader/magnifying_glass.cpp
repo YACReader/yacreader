@@ -27,6 +27,7 @@ void MagnifyingGlass::setup(const QSize & size)
 void MagnifyingGlass::mouseMoveEvent(QMouseEvent * event)
 {
 	updateImage();
+	event->accept();
 }
 
 void MagnifyingGlass::updateImage(int x, int y)
@@ -191,20 +192,20 @@ void MagnifyingGlass::wheelEvent(QWheelEvent * event)
 }
 void MagnifyingGlass::zoomIn()
 {
-	if(zoomLevel>0.2)
-		zoomLevel -= 0.025;
+	if(zoomLevel>0.2f)
+		zoomLevel -= 0.025f;
 }
 
 void MagnifyingGlass::zoomOut()
 {
-	if(zoomLevel<0.9)
-		zoomLevel += 0.025;
+	if(zoomLevel<0.9f)
+		zoomLevel += 0.025f;
 }
 
 void MagnifyingGlass::sizeUp()
 {
 	Viewer * p = (Viewer *)parent();
-	if(width()<(p->width()*0.90))
+	if(width()<(p->width()*0.90f))
 		resize(width()+30,height()+15);
 }
 
@@ -217,7 +218,7 @@ void MagnifyingGlass::sizeDown()
 void MagnifyingGlass::heightUp()
 {
 	Viewer * p = (Viewer *)parent();
-	if(height()<(p->height()*0.90))
+	if(height()<(p->height()*0.90f))
 		resize(width(),height()+15);
 }
 
@@ -230,7 +231,7 @@ void MagnifyingGlass::heightDown()
 void MagnifyingGlass::widthUp()
 {
 	Viewer * p = (Viewer *)parent();
-	if(width()<(p->width()*0.90))
+	if(width()<(p->width()*0.90f))
 		resize(width()+30,height());
 }
 

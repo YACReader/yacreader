@@ -37,7 +37,7 @@ struct RVect{
 //the cover info struct
 struct CFImage{
 	GLuint img;
-	char name[256];
+	//char name[256];
 
 	float width;
 	float height;

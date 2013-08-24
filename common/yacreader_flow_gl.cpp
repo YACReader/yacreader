@@ -637,6 +637,7 @@ void YACReaderFlowGL::updatePositions()
 
 void YACReaderFlowGL::insert(char *name, GLuint Tex, float x, float y,int item)
 {
+	Q_UNUSED(name)
 	//set a new entry 
 	if(item == -1){
 
@@ -660,7 +661,7 @@ void YACReaderFlowGL::insert(char *name, GLuint Tex, float x, float y,int item)
 	cfImages[item].width = x;
 	cfImages[item].height = y;
 	cfImages[item].index = item;
-	strcpy(cfImages[item].name,name);
+	//strcpy(cfImages[item].name,name);
 }
 
 void YACReaderFlowGL::remove(int item)
@@ -691,10 +692,11 @@ CFImage YACReaderFlowGL::getCurrentSelected()
 
 void YACReaderFlowGL::replace(char *name, GLuint Tex, float x, float y,int item)
 {
+	Q_UNUSED(name)
 	cfImages[item].img = Tex;
 	cfImages[item].width = x;
 	cfImages[item].height = y;
-	strcpy(cfImages[item].name,name);
+	//strcpy(cfImages[item].name,name);
 	loaded[item]=true;
 }
 
@@ -875,6 +877,7 @@ void YACReaderFlowGL::setMarks(QVector<YACReaderComicReadStatus> marks)
 }
 void YACReaderFlowGL::setMarkImage(QImage & image)
 {
+	Q_UNUSED(image);
 	//qué pasa la primera vez??
 	//deleteTexture(markTexture);
 	//markTexture = bindTexture(image,GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
@@ -885,10 +888,11 @@ void YACReaderFlowGL::markSlide(int index, YACReaderComicReadStatus status)
 }
 void YACReaderFlowGL::unmarkSlide(int index)
 {
-	marks[index] = YACReaderComicReadStatus::Unread;
+	marks[index] = YACReader::Unread;
 }
 void YACReaderFlowGL::setSlideSize(QSize size)
 {
+	Q_UNUSED(size);
 	//TODO calcular el tamaño del widget
 }
 void YACReaderFlowGL::clear()

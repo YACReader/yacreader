@@ -247,6 +247,7 @@ void ComicFlowWidgetGL::keyPressEvent(QKeyEvent* event)
 void ComicFlowWidgetGL::paintEvent(QPaintEvent *event)
 {
 	//flow->paintEvent(event);
+	ComicFlowWidget::paintEvent(event);
 }
 void ComicFlowWidgetGL::mousePressEvent(QMouseEvent* event)
 {

@@ -5,7 +5,7 @@
 
 #include "yacreader_global.h"
 
-extern FlowType flowType;
+using namespace YACReader;
 
 class OptionsDialog : public YACReaderOptionsDialog
 {

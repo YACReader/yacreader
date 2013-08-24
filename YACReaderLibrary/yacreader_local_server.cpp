@@ -8,6 +8,8 @@
 
 #include "comic_db.h"
 
+using namespace YACReader;
+
 YACReaderLocalServer::YACReaderLocalServer(QObject *parent) :
 	QObject(parent)
 {
@@ -90,7 +92,7 @@ void YACReaderClientConnectionWorker::run()
 
 	 switch (msgType)
 	 {
-	 case YACReaderIPCMessages::RequestComicInfo:
+	 case YACReader::RequestComicInfo:
 		 {
 			 QList<ComicDB> siblings;
 			 getComicInfo(libraryId,comic,siblings);
@@ -119,7 +121,7 @@ void YACReaderClientConnectionWorker::run()
 			 }
 			 break;
 		 }
-	 case YACReaderIPCMessages::SendComicInfo:
+	 case YACReader::SendComicInfo:
 		 {
 			 updateComic(libraryId,comic);
 			 //clientConnection->disconnectFromServer();

@@ -4,6 +4,8 @@
 
 #include <QLocalSocket>
 
+using namespace YACReader;
+
 YACReaderLocalClient::YACReaderLocalClient(QObject *parent) :
 	QObject(parent)
 {
@@ -30,7 +32,7 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 		QDataStream out(&block, QIODevice::WriteOnly);
 		out.setVersion(QDataStream::Qt_4_8);
 		out << (quint16)0;
-		out << (quint8)YACReaderIPCMessages::RequestComicInfo;
+		out << (quint8)YACReader::RequestComicInfo;
 		out << libraryId;
 		out << comic;
 		out.device()->seek(0);
@@ -87,7 +89,7 @@ bool YACReaderLocalClient::sendComicInfo(quint64 libraryId, ComicDB & comic)
 		QDataStream out(&block, QIODevice::WriteOnly);
 		out.setVersion(QDataStream::Qt_4_8);
 		out << (quint16)0;
-		out << (quint8)YACReaderIPCMessages::SendComicInfo;
+		out << (quint8)YACReader::SendComicInfo;
 		out << libraryId;
 		out << comic;
 		out.device()->seek(0);

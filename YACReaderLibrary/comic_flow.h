@@ -34,7 +34,7 @@ private:
   QStringList imageFiles;
   QVector<bool> imagesLoaded;
   QVector<bool> imagesSetted;
-  uint numImagesLoaded;
+  int numImagesLoaded;
   QTimer* updateTimer;
   ImageLoader* worker;
   virtual void wheelEvent(QWheelEvent * event);

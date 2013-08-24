@@ -304,13 +304,14 @@ void YACReaderTranslator::mousePressEvent(QMouseEvent *event)
 void YACReaderTranslator::mouseReleaseEvent(QMouseEvent *event)
 {
 	drag = false;
+	event->accept();
 }
 
 void YACReaderTranslator::mouseMoveEvent(QMouseEvent * event)
 {
 	if(drag)
 		this->move(QPoint(mapToParent(event->pos())-click));
-	
+	event->accept();
 }
 
 //---------------------------------------------------------------------------

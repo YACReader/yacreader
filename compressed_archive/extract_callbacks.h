@@ -98,6 +98,7 @@ void CArchiveExtractCallback::Init(IInArchive *archiveHandler, const UString &di
 {
   NumErrors = 0;
   _archiveHandler = archiveHandler;
+  directoryPath;//unused 
 }
 
 STDMETHODIMP CArchiveExtractCallback::SetTotal(UInt64 /* size */)
@@ -133,7 +134,8 @@ STDMETHODIMP CArchiveExtractCallback::GetStream(UInt32 index,
 	}
 	_filePath = fullPath;
   }
-  
+
+  askExtractMode;//unused 
   //if (askExtractMode != NArchive::NExtract::NAskMode::kExtract)
 	//return S_OK;
 

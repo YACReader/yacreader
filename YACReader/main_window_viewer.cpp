@@ -881,6 +881,8 @@ void MainWindowViewer::newVersion()
 
 void MainWindowViewer::closeEvent ( QCloseEvent * event )
 {
+	Q_UNUSED(event)
+
 	if(isClient)
 		sendComic();
 

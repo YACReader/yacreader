@@ -119,10 +119,10 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	int elementsPerPage = 18;
 
 	int numFolders = folderContent.length();
-	int numComics = folderComics.length();
+	//int numComics = folderComics.length();
 	int totalLength = folderContent.length() + folderComics.length();
 
-	int numFolderPages = numFolders / elementsPerPage + ((numFolders%elementsPerPage)>0?1:0);
+//	int numFolderPages = numFolders / elementsPerPage + ((numFolders%elementsPerPage)>0?1:0);
 	int numPages = totalLength / elementsPerPage + ((totalLength%elementsPerPage)>0?1:0);
 
 	//response.writeText(QString("Number of pages : %1 <br/>").arg(numPages));
@@ -237,7 +237,7 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 			firstChar = QString((*itr)->name[0]).toUpper();
 			firstChar = firstChar.normalized(QString::NormalizationForm_D).at(0);//TODO _D or _KD??
 			bool ok;
-			int dec = firstChar.toInt(&ok, 10);
+			/*int dec = */firstChar.toInt(&ok, 10);
 			if(ok)
 				firstChar = "#";
 			//response.writeText(QString("%1 - %2 <br />").arg((*itr)->name).arg(xyz));

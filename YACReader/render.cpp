@@ -523,7 +523,7 @@ void Render::render()
 			if(doublePage)
 			{
 				if(pagesReady[currentIndex] && pagesReady[qMin(currentIndex+1,(int)comic->numPages()-1)])
-					if(currentIndex+1 > comic->numPages()-1)
+					if(currentIndex+1 > (int)comic->numPages()-1)
 						pageRenders[currentPageBufferedIndex] = new DoublePageRender(this,currentIndex,comic->getRawData()->at(currentIndex),QByteArray(),buffer[currentPageBufferedIndex],imageRotation,filters);
 					else
 						pageRenders[currentPageBufferedIndex] = new DoublePageRender(this,currentIndex,comic->getRawData()->at(currentIndex),comic->getRawData()->at(currentIndex+1),buffer[currentPageBufferedIndex],imageRotation,filters);
@@ -577,7 +577,7 @@ QPixmap * Render::getCurrentPage()
 
 void Render::setRotation(int degrees)
 {
-
+	Q_UNUSED(degrees)
 }
 
 void Render::setComic(Comic * c)
@@ -728,7 +728,7 @@ void Render::nextPage()
 	if(doublePage)
 	{
 		nextPage = currentIndex;
-		if(currentIndex+2<comic->numPages())
+		if(currentIndex+2<(int)comic->numPages())
 		{
 			nextPage = currentIndex+2;
 			if(currentIndex != nextPage)
@@ -941,7 +941,7 @@ void Render::fillBuffer()
 {
 	for(int i = 1; i <= qMax(numLeftPages,numRightPages); i++)
 	{
-		if ((currentIndex+i < comic->numPages()) && 
+		if ((currentIndex+i < (int)comic->numPages()) && 
 			buffer[currentPageBufferedIndex+i]->isNull() && 
 			i <= numRightPages &&
 			pageRenders[currentPageBufferedIndex+i]==0 &&
@@ -969,13 +969,13 @@ void Render::fillBufferDoublePage()
 {
 	for(int i = 1; i <= qMax(numLeftPages,numRightPages); i++)
 	{
-		if ((currentIndex+2*i < comic->numPages()) && 
+		if ((currentIndex+2*i < (int)comic->numPages()) && 
 			buffer[currentPageBufferedIndex+i]->isNull() && 
 			i <= numRightPages &&
 			pageRenders[currentPageBufferedIndex+i]==0 &&
 			(pagesReady[currentIndex+2*i] && pagesReady[qMin(currentIndex+(2*i)+1,(int)comic->numPages()-1)])) //preload next pages
 		{
-			if(currentIndex+(2*i)+1 > comic->numPages()-1)
+			if(currentIndex+(2*i)+1 > (int)comic->numPages()-1)
 				pageRenders[currentPageBufferedIndex+i] = new DoublePageRender(this,currentIndex+2*i,comic->getRawData()->at(currentIndex+(2*i)),QByteArray(),buffer[currentPageBufferedIndex+i],imageRotation,filters);
 			else
 				pageRenders[currentPageBufferedIndex+i] = new DoublePageRender(this,currentIndex+2*i,comic->getRawData()->at(currentIndex+(2*i)),comic->getRawData()->at(currentIndex+(2*i)+1),buffer[currentPageBufferedIndex+i],imageRotation,filters);
@@ -1033,7 +1033,7 @@ void Render::doublePageSwitch()
 QString Render::getCurrentPagesInformation()
 {
 	QString s = QString::number(currentIndex+1);
-	if (doublePage && (currentIndex+1 < comic->numPages()))
+	if (doublePage && (currentIndex+1 < (int)comic->numPages()))
 		s += "-"+QString::number(currentIndex+2);
 	s += "/"+QString::number(comic->numPages());
 	return s;
