@@ -8,7 +8,7 @@ class QLocalServer;
 class QLocalSocket;
 class ComicDB;
 
-class YACReaderLocalServer : public QObject
+class YACReaderLocalServer : public QThread
 {
 	Q_OBJECT
 public:
@@ -21,6 +21,7 @@ public slots:
 	void sendResponse();
 	static bool isRunning();
 private:
+	void run();
 	QLocalServer * localServer;
 	
 };

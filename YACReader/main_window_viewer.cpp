@@ -214,7 +214,12 @@ void MainWindowViewer::openFromArgv()
 	
 		currentComicDB.id = comicId;
 		YACReaderLocalClient client;
-		
+		/*int tries = 0;
+		bool success = false;
+		while(!(success = client.requestComicInfo(libraryId,currentComicDB,siblingComics)) && tries < 3)
+		{
+			tries++;
+		}*/
 		if(client.requestComicInfo(libraryId,currentComicDB,siblingComics))
 		{
 			isClient = true;
