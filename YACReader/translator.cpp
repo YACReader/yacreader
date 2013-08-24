@@ -31,10 +31,10 @@ YACReaderTranslator::YACReaderTranslator(QWidget * parent)
 :QWidget(parent),drag(false)
 {
 	QString scrollBarStyle = "QScrollBar:vertical { border: none; background: #404040; width: 7px; margin: 0 3px 0 0; }"
-    "QScrollBar::handle:vertical { background: #DDDDDD; width: 7px; min-height: 20px; }"
-    "QScrollBar::add-line:vertical { border: none; background: #404040; height: 10px; subcontrol-position: bottom; subcontrol-origin: margin; margin: 0 3px 0 0;}"
+	"QScrollBar::handle:vertical { background: #DDDDDD; width: 7px; min-height: 20px; }"
+	"QScrollBar::add-line:vertical { border: none; background: #404040; height: 10px; subcontrol-position: bottom; subcontrol-origin: margin; margin: 0 3px 0 0;}"
 
-    "QScrollBar::sub-line:vertical {  border: none; background: #404040; height: 10px; subcontrol-position: top; subcontrol-origin: margin; margin: 0 3px 0 0;}"
+	"QScrollBar::sub-line:vertical {  border: none; background: #404040; height: 10px; subcontrol-position: top; subcontrol-origin: margin; margin: 0 3px 0 0;}"
   "QScrollBar::up-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-up.png') center top no-repeat;}"
   "QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-down.png') center top no-repeat;}"
 

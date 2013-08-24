@@ -8,19 +8,19 @@
 
 YACReaderSliderAction::YACReaderSliderAction (QWidget * parent) 
 	:QWidgetAction (0) {
-    
-        QWidget* pWidget = new QWidget (NULL);
-        QHBoxLayout* pLayout = new QHBoxLayout();
+	
+		QWidget* pWidget = new QWidget (NULL);
+		QHBoxLayout* pLayout = new QHBoxLayout();
 
 		pLayout->addStretch();
 
-        percentageLabel = new QLabel ("100%");
+		percentageLabel = new QLabel ("100%");
 		percentageLabel->setStyleSheet("QLabel { color : white; }");
 		percentageLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-        pLayout->addWidget (percentageLabel);
-        slider = new QSlider(NULL);
+		pLayout->addWidget (percentageLabel);
+		slider = new QSlider(NULL);
 		slider->setOrientation(Qt::Horizontal);
-        pLayout->addWidget (slider);
+		pLayout->addWidget (slider);
 
 		QString sliderCSS = 
 			
@@ -31,7 +31,7 @@ YACReaderSliderAction::YACReaderSliderAction (QWidget * parent)
 			;
 		slider->setStyleSheet(sliderCSS); 
 		slider->setFixedSize(218,45);
-        
+		
 		QLabel*	imgLabel = new QLabel(pWidget);  
 		QPixmap p(":/images/sliderBackground.png"); 
 		imgLabel->resize(p.size());
@@ -49,7 +49,7 @@ YACReaderSliderAction::YACReaderSliderAction (QWidget * parent)
 
 		pWidget->setMinimumSize(276,45);
 
-        setDefaultWidget(pWidget);
+		setDefaultWidget(pWidget);
 		
 		slider->setMinimum(50);
 		slider->setMaximum(100);

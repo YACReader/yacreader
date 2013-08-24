@@ -10,21 +10,21 @@ class QEvent;
 
 class YACReaderLibraryItemWidget : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    YACReaderLibraryItemWidget(QString name, QString path, QWidget *parent = 0);
+	YACReaderLibraryItemWidget(QString name, QString path, QWidget *parent = 0);
 	QString name;
 	QString path;
 
 signals:
-    void selected(QString,QString);
+	void selected(QString,QString);
 	void showOptions();
 	
 public slots:
 	void showUpDownButtons(bool show);
 	
-    //bool eventFilter(QObject *object, QEvent *event);
+	//bool eventFilter(QObject *object, QEvent *event);
 	void select();
 	void deselect();
 	void setName(const QString & name);

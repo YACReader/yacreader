@@ -22,8 +22,8 @@ PropertiesDialog::PropertiesDialog(QWidget * parent)
 {
 
 	createCoverBox();
-    createGeneralInfoBox();
-    createAuthorsBox();
+	createGeneralInfoBox();
+	createAuthorsBox();
 	createPublishingBox();
 	createButtonBox();
 	createPlotBox();
@@ -123,10 +123,10 @@ void PropertiesDialog::createCoverBox()
 QFrame * createLine()
 {
 	QFrame * line = new QFrame();
-    line->setObjectName(QString::fromUtf8("line"));
-    //line->setGeometry(QRect(320, 150, 118, 3));
-    line->setFrameShape(QFrame::HLine);
-    line->setFrameShadow(QFrame::Sunken);
+	line->setObjectName(QString::fromUtf8("line"));
+	//line->setGeometry(QRect(320, 150, 118, 3));
+	line->setFrameShape(QFrame::HLine);
+	line->setFrameShadow(QFrame::Sunken);
 
 	return line;
 }
@@ -137,7 +137,7 @@ void PropertiesDialog::createGeneralInfoBox()
 
 	QFormLayout *generalInfoLayout = new QFormLayout;
 
-    generalInfoLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+	generalInfoLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
 	//generalInfoLayout->setRowWrapPolicy(QFormLayout::WrapAllRows);
 	generalInfoLayout->addRow(tr("Title:"), title = new YACReaderFieldEdit());
 	
@@ -236,7 +236,7 @@ void PropertiesDialog::createPublishingBox()
 	
 	QFormLayout *publishingLayout = new QFormLayout;
 
-    publishingLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+	publishingLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
 
 	QHBoxLayout * date = new QHBoxLayout;
 	date->addWidget(new QLabel(tr("Day:")));
@@ -268,7 +268,7 @@ void PropertiesDialog::createPlotBox()
 	plotBox = new QWidget;
 
 	QFormLayout *plotLayout = new QFormLayout;
-    plotLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+	plotLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
 
 	plotLayout->setRowWrapPolicy(QFormLayout::WrapAllRows);
 	plotLayout->addRow(tr("Synopsis:"), synopsis = new YACReaderFieldPlainTextEdit());
@@ -281,83 +281,83 @@ void PropertiesDialog::createPlotBox()
 
 void PropertiesDialog::createButtonBox()
 {
-    buttonBox = new QDialogButtonBox;
+	buttonBox = new QDialogButtonBox;
 
-    closeButton = buttonBox->addButton(QDialogButtonBox::Close);
+	closeButton = buttonBox->addButton(QDialogButtonBox::Close);
 	saveButton = buttonBox->addButton(QDialogButtonBox::Save);
-    //rotateWidgetsButton = buttonBox->addButton(tr("Rotate &Widgets"),QDialogButtonBox::ActionRole);
+	//rotateWidgetsButton = buttonBox->addButton(tr("Rotate &Widgets"),QDialogButtonBox::ActionRole);
 
-    //connect(rotateWidgetsButton, SIGNAL(clicked()), this, SLOT(rotateWidgets()));
-    connect(closeButton, SIGNAL(clicked()), this, SLOT(close()));
-    connect(saveButton, SIGNAL(clicked()), this, SLOT(save()));
+	//connect(rotateWidgetsButton, SIGNAL(clicked()), this, SLOT(rotateWidgets()));
+	connect(closeButton, SIGNAL(clicked()), this, SLOT(close()));
+	connect(saveButton, SIGNAL(clicked()), this, SLOT(save()));
 }
 
 QImage blurred(const QImage& image, const QRect& rect, int radius, bool alphaOnly = false)
 {
-    int tab[] = { 14, 10, 8, 6, 5, 5, 4, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2 };
-    int alpha = (radius < 1)  ? 16 : (radius > 17) ? 1 : tab[radius-1];
+	int tab[] = { 14, 10, 8, 6, 5, 5, 4, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2 };
+	int alpha = (radius < 1)  ? 16 : (radius > 17) ? 1 : tab[radius-1];
 
-    QImage result = image.convertToFormat(QImage::Format_ARGB32_Premultiplied);
-    int r1 = rect.top();
-    int r2 = rect.bottom();
-    int c1 = rect.left();
-    int c2 = rect.right();
+	QImage result = image.convertToFormat(QImage::Format_ARGB32_Premultiplied);
+	int r1 = rect.top();
+	int r2 = rect.bottom();
+	int c1 = rect.left();
+	int c2 = rect.right();
 
-    int bpl = result.bytesPerLine();
-    int rgba[4];
-    unsigned char* p;
+	int bpl = result.bytesPerLine();
+	int rgba[4];
+	unsigned char* p;
 
-    int i1 = 0;
-    int i2 = 3;
+	int i1 = 0;
+	int i2 = 3;
 
-    if (alphaOnly)
-        i1 = i2 = (QSysInfo::ByteOrder == QSysInfo::BigEndian ? 0 : 3);
+	if (alphaOnly)
+		i1 = i2 = (QSysInfo::ByteOrder == QSysInfo::BigEndian ? 0 : 3);
 
-    for (int col = c1; col <= c2; col++) {
-        p = result.scanLine(r1) + col * 4;
-        for (int i = i1; i <= i2; i++)
-            rgba[i] = p[i] << 4;
+	for (int col = c1; col <= c2; col++) {
+		p = result.scanLine(r1) + col * 4;
+		for (int i = i1; i <= i2; i++)
+			rgba[i] = p[i] << 4;
 
-        p += bpl;
-        for (int j = r1; j < r2; j++, p += bpl)
-            for (int i = i1; i <= i2; i++)
-                p[i] = (rgba[i] += ((p[i] << 4) - rgba[i]) * alpha / 16) >> 4;
-    }
+		p += bpl;
+		for (int j = r1; j < r2; j++, p += bpl)
+			for (int i = i1; i <= i2; i++)
+				p[i] = (rgba[i] += ((p[i] << 4) - rgba[i]) * alpha / 16) >> 4;
+	}
 
-    for (int row = r1; row <= r2; row++) {
-        p = result.scanLine(row) + c1 * 4;
-        for (int i = i1; i <= i2; i++)
-            rgba[i] = p[i] << 4;
+	for (int row = r1; row <= r2; row++) {
+		p = result.scanLine(row) + c1 * 4;
+		for (int i = i1; i <= i2; i++)
+			rgba[i] = p[i] << 4;
 
-        p += 4;
-        for (int j = c1; j < c2; j++, p += 4)
-            for (int i = i1; i <= i2; i++)
-                p[i] = (rgba[i] += ((p[i] << 4) - rgba[i]) * alpha / 16) >> 4;
-    }
+		p += 4;
+		for (int j = c1; j < c2; j++, p += 4)
+			for (int i = i1; i <= i2; i++)
+				p[i] = (rgba[i] += ((p[i] << 4) - rgba[i]) * alpha / 16) >> 4;
+	}
 
-    for (int col = c1; col <= c2; col++) {
-        p = result.scanLine(r2) + col * 4;
-        for (int i = i1; i <= i2; i++)
-            rgba[i] = p[i] << 4;
+	for (int col = c1; col <= c2; col++) {
+		p = result.scanLine(r2) + col * 4;
+		for (int i = i1; i <= i2; i++)
+			rgba[i] = p[i] << 4;
 
-        p -= bpl;
-        for (int j = r1; j < r2; j++, p -= bpl)
-            for (int i = i1; i <= i2; i++)
-                p[i] = (rgba[i] += ((p[i] << 4) - rgba[i]) * alpha / 16) >> 4;
-    }
+		p -= bpl;
+		for (int j = r1; j < r2; j++, p -= bpl)
+			for (int i = i1; i <= i2; i++)
+				p[i] = (rgba[i] += ((p[i] << 4) - rgba[i]) * alpha / 16) >> 4;
+	}
 
-    for (int row = r1; row <= r2; row++) {
-        p = result.scanLine(row) + c2 * 4;
-        for (int i = i1; i <= i2; i++)
-            rgba[i] = p[i] << 4;
+	for (int row = r1; row <= r2; row++) {
+		p = result.scanLine(row) + c2 * 4;
+		for (int i = i1; i <= i2; i++)
+			rgba[i] = p[i] << 4;
 
-        p -= 4;
-        for (int j = c1; j < c2; j++, p -= 4)
-            for (int i = i1; i <= i2; i++)
-                p[i] = (rgba[i] += ((p[i] << 4) - rgba[i]) * alpha / 16) >> 4;
-    }
+		p -= 4;
+		for (int j = c1; j < c2; j++, p -= 4)
+			for (int i = i1; i <= i2; i++)
+				p[i] = (rgba[i] += ((p[i] << 4) - rgba[i]) * alpha / 16) >> 4;
+	}
 
-    return result;
+	return result;
 }
 
 void PropertiesDialog::setComics(QList<ComicDB> comics)

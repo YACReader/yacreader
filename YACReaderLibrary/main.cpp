@@ -43,7 +43,7 @@ int main( int argc, char ** argv )
 #endif
   
   if(YACReaderLocalServer::isRunning()) //sólo se permite una instancia de YACReaderLibrary
-  	return 0;
+	return 0;
 
   YACReaderLocalServer * localServer = new YACReaderLocalServer();
 

@@ -8,19 +8,19 @@ class QLabel;
 
 class YACReaderSearchLineEdit : public QLineEdit
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    YACReaderSearchLineEdit(QWidget *parent = 0);
+	YACReaderSearchLineEdit(QWidget *parent = 0);
 
 protected:
-    void resizeEvent(QResizeEvent *);
+	void resizeEvent(QResizeEvent *);
 
 private slots:
-    void updateCloseButton(const QString &text);
+	void updateCloseButton(const QString &text);
 
 private:
-    QToolButton *clearButton;
+	QToolButton *clearButton;
 	QLabel * searchLabel;
 };
 

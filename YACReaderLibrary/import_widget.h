@@ -13,12 +13,12 @@ class QResizeEvent;
 
 class ImportWidget : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit ImportWidget(QWidget *parent = 0);
-    
+	explicit ImportWidget(QWidget *parent = 0);
+	
 signals:
-    void stop();
+	void stop();
 public slots:
 	void newComic(const QString & path, const QString & coverPath);
 	void newCover(const QPixmap & image);
@@ -46,7 +46,7 @@ private:
 	QToolButton * hideButton;
 
 	void resizeEvent(QResizeEvent * event);
-    
+	
 };
 
 #endif // IMPORT_WIDGET_H

@@ -39,9 +39,9 @@
 ****************************************************************************/
 
 /*
-    treeitem.cpp
+	treeitem.cpp
 
-    A container for items of data supplied by the simple tree model.
+	A container for items of data supplied by the simple tree model.
 */
 
 #include <QStringList>
@@ -52,15 +52,15 @@
 //! [0]
 TreeItem::TreeItem(const QList<QVariant> &data, TreeItem *parent)
 {
-    parentItem = parent;
-    itemData = data;
+	parentItem = parent;
+	itemData = data;
 }
 //! [0]
 
 //! [1]
 TreeItem::~TreeItem()
 {
-    qDeleteAll(childItems);
+	qDeleteAll(childItems);
 }
 //! [1]
 
@@ -91,52 +91,52 @@ void TreeItem::appendChild(TreeItem *item)
 
 	}
 
-    //childItems.append(item);
+	//childItems.append(item);
 }
 //! [2]
 
 //! [3]
 TreeItem *TreeItem::child(int row)
 {
-    return childItems.value(row);
+	return childItems.value(row);
 }
 //! [3]
 
 //! [4]
 int TreeItem::childCount() const
 {
-    return childItems.count();
+	return childItems.count();
 }
 //! [4]
 
 //! [5]
 int TreeItem::columnCount() const
 {
-    return itemData.count();
+	return itemData.count();
 }
 //! [5]
 
 //! [6]
 QVariant TreeItem::data(int column) const
 {
-    return itemData.value(column);
+	return itemData.value(column);
 }
 //! [6]
 
 //! [7]
 TreeItem *TreeItem::parent()
 {
-    return parentItem;
+	return parentItem;
 }
 //! [7]
 
 //! [8]
 int TreeItem::row() const
 {
-    if (parentItem)
-        return parentItem->childItems.indexOf(const_cast<TreeItem*>(this));
+	if (parentItem)
+		return parentItem->childItems.indexOf(const_cast<TreeItem*>(this));
 
-    return 0;
+	return 0;
 }
 //! [8]
 

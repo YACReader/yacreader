@@ -44,13 +44,13 @@ PageLabelWidget::PageLabelWidget(QWidget * parent)
 		move(QPoint((parent->geometry().size().width()-this->width()),-this->height()));
 	/*QSize size = textLabel->sizeHint();
 
-    int w = width();   // returns screen width
-    int h = height();  // returns screen height
-    int mw = size.width();
-    int mh = size.height();
-    int cw = (w-mw)/2;
-    int ch = 0;
-    textLabel->move(cw,ch);*/
+	int w = width();   // returns screen width
+	int h = height();  // returns screen height
+	int mw = size.width();
+	int mh = size.height();
+	int cw = (w-mw)/2;
+	int ch = 0;
+	textLabel->move(cw,ch);*/
 	}
 
 void PageLabelWidget::show()

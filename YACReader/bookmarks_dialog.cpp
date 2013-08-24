@@ -10,17 +10,17 @@
 #include "bookmarks.h"
 
 BookmarksDialog::BookmarksDialog(QWidget * parent)
-    :QDialog(parent)
+	:QDialog(parent)
 {
-    setModal(true);
+	setModal(true);
 
 	//animation = new QPropertyAnimation(this,"windowOpacity");
 	//animation->setDuration(150);
 
-    QHBoxLayout * layout = new QHBoxLayout();
+	QHBoxLayout * layout = new QHBoxLayout();
 
-    //bookmarks
-    QGridLayout * bookmarksL = new QGridLayout();
+	//bookmarks
+	QGridLayout * bookmarksL = new QGridLayout();
 	
 	pages.push_back(new QLabel(tr("Lastest Page")));
 	for(int i=0;i<3;i++)
@@ -35,10 +35,10 @@ BookmarksDialog::BookmarksDialog(QWidget * parent)
 	
 	int heightDesktopResolution = QApplication::desktop()->screenGeometry().height();
 	int height,width;
-    height = heightDesktopResolution*0.50;
-    width = height*0.65;
+	height = heightDesktopResolution*0.50;
+	width = height*0.65;
 
-    coverSize = QSize(width,height);
+	coverSize = QSize(width,height);
 
 	for(int i=0;i<4;i++)
 	{
@@ -57,32 +57,32 @@ BookmarksDialog::BookmarksDialog(QWidget * parent)
 		bookmarksL->addWidget(images.at(i+1),1,i,Qt::AlignCenter);
 
 
-    //last page
-    QGridLayout * lp = new QGridLayout();
-    lp->addWidget(pages.at(0),0,0,Qt::AlignCenter);
-    lp->addWidget(images.at(0),1,0,Qt::AlignCenter);
+	//last page
+	QGridLayout * lp = new QGridLayout();
+	lp->addWidget(pages.at(0),0,0,Qt::AlignCenter);
+	lp->addWidget(images.at(0),1,0,Qt::AlignCenter);
 
-    layout->addLayout(bookmarksL);
-    QFrame *f = new QFrame( this );
-    f->setFrameStyle( QFrame::VLine | QFrame::Sunken );
-    layout->addWidget(f);
-    layout->addLayout(lp);
+	layout->addLayout(bookmarksL);
+	QFrame *f = new QFrame( this );
+	f->setFrameStyle( QFrame::VLine | QFrame::Sunken );
+	layout->addWidget(f);
+	layout->addLayout(lp);
 
-    QHBoxLayout * buttons = new QHBoxLayout();
+	QHBoxLayout * buttons = new QHBoxLayout();
 
-    cancel = new QPushButton(tr("Close"));
-    //cancel->setFlat(true);
-    connect(cancel,SIGNAL(clicked()),this,SLOT(hide()));
-    buttons->addStretch();
-    buttons->addWidget(cancel);
+	cancel = new QPushButton(tr("Close"));
+	//cancel->setFlat(true);
+	connect(cancel,SIGNAL(clicked()),this,SLOT(hide()));
+	buttons->addStretch();
+	buttons->addWidget(cancel);
 
 	cancel->setStyleSheet("QPushButton {color:white; border:1px solid #BBBBBB; padding:3px 5px 3px 5px;}");
 
-    QVBoxLayout * l = new QVBoxLayout();
+	QVBoxLayout * l = new QVBoxLayout();
 
 	l->addWidget(new QLabel("<font color=\"#FFFFFF\">"+tr("Click on any image to go to the bookmark")+"</font>"),0,Qt::AlignCenter);
-    l->addLayout(layout);
-    //l->addLayout(buttons);
+	l->addLayout(layout);
+	//l->addLayout(buttons);
 
 	QPalette Pal(palette());
 	// set black background
@@ -95,9 +95,9 @@ BookmarksDialog::BookmarksDialog(QWidget * parent)
 
 void BookmarksDialog::setBookmarks(const Bookmarks & bm)
 {
-    lastPage = bm.getLastPage();
-    if (lastPage > 0)
-    {
+	lastPage = bm.getLastPage();
+	if (lastPage > 0)
+	{
 		QPixmap p = QPixmap::fromImage(bm.getLastPagePixmap());
 		if(p.isNull())
 		{
@@ -109,16 +109,16 @@ void BookmarksDialog::setBookmarks(const Bookmarks & bm)
 			images.at(0)->setAlignment(Qt::AlignHCenter|Qt::AlignBottom);
 			images.at(0)->setPixmap(p.scaled(coverSize,Qt::KeepAspectRatio,Qt::SmoothTransformation));
 		}
-    }
+	}
 	else
 	{
 		images.at(0)->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-        images.at(0)->setPixmap(QPixmap(":/images/notCover.png").scaled(coverSize,Qt::KeepAspectRatio,Qt::SmoothTransformation));
+		images.at(0)->setPixmap(QPixmap(":/images/notCover.png").scaled(coverSize,Qt::KeepAspectRatio,Qt::SmoothTransformation));
 
 	}
 
-    QList<int> l = bm.getBookmarkPages();
-    int s = l.count();
+	QList<int> l = bm.getBookmarkPages();
+	int s = l.count();
 	for(int i=0;i<s;i++)
 	{
 		pages.at(i+1)->setText(QString::number(l.at(i)+1));
@@ -138,7 +138,7 @@ void BookmarksDialog::setBookmarks(const Bookmarks & bm)
 	{
 		pages.at(i+1)->setText("-");
 		images.at(i+1)->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-        images.at(i+1)->setPixmap(QPixmap(":/images/notCover.png").scaled(coverSize,Qt::KeepAspectRatio,Qt::SmoothTransformation));
+		images.at(i+1)->setPixmap(QPixmap(":/images/notCover.png").scaled(coverSize,Qt::KeepAspectRatio,Qt::SmoothTransformation));
 	}
 }
 

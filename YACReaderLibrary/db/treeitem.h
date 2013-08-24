@@ -49,28 +49,28 @@
 class TreeItem
 {
 public:
-    TreeItem(const QList<QVariant> &data, TreeItem *parent = 0);
-    ~TreeItem();
+	TreeItem(const QList<QVariant> &data, TreeItem *parent = 0);
+	~TreeItem();
 
-    void appendChild(TreeItem *child);
+	void appendChild(TreeItem *child);
 
-    TreeItem *child(int row);
-    int childCount() const;
-    int columnCount() const;
-    QVariant data(int column) const;
+	TreeItem *child(int row);
+	int childCount() const;
+	int columnCount() const;
+	QVariant data(int column) const;
 	QList<QVariant> getData() const;
-    int row() const;
-    TreeItem *parent();
+	int row() const;
+	TreeItem *parent();
 	TreeItem *parentItem;
 	unsigned long long int id;
 	QList<QString> comicNames;
 	TreeItem * originalItem;
 private:
-    QList<TreeItem*> childItems;
-    QList<QVariant> itemData;
+	QList<TreeItem*> childItems;
+	QList<QVariant> itemData;
 	
 	
-    
+	
 	
 };
 //! [0]

@@ -17,7 +17,7 @@ class ComicFlow : public YACReaderFlow
 {
 	Q_OBJECT
 public:
-    ComicFlow(QWidget* parent = 0,FlowType flowType = CoverFlowLike);
+	ComicFlow(QWidget* parent = 0,FlowType flowType = CoverFlowLike);
 	virtual ~ComicFlow();
 
 	void setImagePaths(const QStringList& paths);

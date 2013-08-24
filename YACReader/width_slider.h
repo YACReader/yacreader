@@ -15,7 +15,7 @@ private:
 
 public:
 	
-    YACReaderSliderAction (QWidget * parent = 0);
+	YACReaderSliderAction (QWidget * parent = 0);
 
 public slots:
 	void updateText(int value);

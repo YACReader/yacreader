@@ -155,39 +155,39 @@ void MagnifyingGlass::updateImage()
 }
 void MagnifyingGlass::wheelEvent(QWheelEvent * event)
 {
-    switch(event->modifiers())
-    {
+	switch(event->modifiers())
+	{
 	//size
 	case Qt::NoModifier:
-	    if(event->delta()<0)
+		if(event->delta()<0)
 		sizeUp();
-	    else
+		else
 		sizeDown();
 	break;
 	//size height
 	case Qt::ControlModifier:
-	    if(event->delta()<0)
+		if(event->delta()<0)
 		heightUp();
-	    else
+		else
 		heightDown();
 	break;
 	//size width
 	case Qt::AltModifier:
-	    if(event->delta()<0)
+		if(event->delta()<0)
 		widthUp();
-	    else
+		else
 		widthDown();
 	break;
 	//zoom level
 	case Qt::ShiftModifier:
-	    if(event->delta()<0)
+		if(event->delta()<0)
 		zoomIn();
-	    else
+		else
 		zoomOut();
 	break;
-    }
-    updateImage();
-    event->setAccepted(true);
+	}
+	updateImage();
+	event->setAccepted(true);
 }
 void MagnifyingGlass::zoomIn()
 {
@@ -216,28 +216,28 @@ void MagnifyingGlass::sizeDown()
 
 void MagnifyingGlass::heightUp()
 {
-    Viewer * p = (Viewer *)parent();
-    if(height()<(p->height()*0.90))
-	    resize(width(),height()+15);
+	Viewer * p = (Viewer *)parent();
+	if(height()<(p->height()*0.90))
+		resize(width(),height()+15);
 }
 
 void MagnifyingGlass::heightDown()
 {
-    if(height()>80)
-	    resize(width(),height()-15);
+	if(height()>80)
+		resize(width(),height()-15);
 }
 
 void MagnifyingGlass::widthUp()
 {
-    Viewer * p = (Viewer *)parent();
-    if(width()<(p->width()*0.90))
-	    resize(width()+30,height());
+	Viewer * p = (Viewer *)parent();
+	if(width()<(p->width()*0.90))
+		resize(width()+30,height());
 }
 
 void MagnifyingGlass::widthDown()
 {
-    if(width()>175)
-	    resize(width()-30,height());
+	if(width()>175)
+		resize(width()-30,height());
 }
 
 void MagnifyingGlass::keyPressEvent(QKeyEvent *event)

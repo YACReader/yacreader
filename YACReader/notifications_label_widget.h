@@ -21,7 +21,7 @@ public:
 	NotificationsLabelWidget(QWidget * parent);
 
 public slots:
-    void flash();
+	void flash();
 	void setText(const QString & text);
 	void updatePosition();
 };

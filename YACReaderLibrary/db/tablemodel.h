@@ -16,23 +16,23 @@ class TableItem;
 //! [0]
 class TableModel : public QAbstractItemModel
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
 	TableModel(QObject *parent = 0);
-    TableModel( QSqlQuery &sqlquery, QObject *parent = 0);
-    ~TableModel();
+	TableModel( QSqlQuery &sqlquery, QObject *parent = 0);
+	~TableModel();
 
 
-    QVariant data(const QModelIndex &index, int role) const;
-    Qt::ItemFlags flags(const QModelIndex &index) const;
-    QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const;
-    QModelIndex index(int row, int column,
-                      const QModelIndex &parent = QModelIndex()) const;
-    QModelIndex parent(const QModelIndex &index) const;
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const;
+	QVariant data(const QModelIndex &index, int role) const;
+	Qt::ItemFlags flags(const QModelIndex &index) const;
+	QVariant headerData(int section, Qt::Orientation orientation,
+						int role = Qt::DisplayRole) const;
+	QModelIndex index(int row, int column,
+					  const QModelIndex &parent = QModelIndex()) const;
+	QModelIndex parent(const QModelIndex &index) const;
+	int rowCount(const QModelIndex &parent = QModelIndex()) const;
+	int columnCount(const QModelIndex &parent = QModelIndex()) const;
 	void setupModelData(unsigned long long int parentFolder,const QString & databasePath);
 
 	//Métodos de conveniencia
@@ -61,9 +61,9 @@ public slots:
 	void updateRating(int rating, QModelIndex mi);
 
 private:
-    void setupModelData( QSqlQuery &sqlquery);
+	void setupModelData( QSqlQuery &sqlquery);
 	ComicDB _getComic(const QModelIndex & mi);
-    QList<TableItem *> _data;
+	QList<TableItem *> _data;
 
 	QString _databasePath;
 

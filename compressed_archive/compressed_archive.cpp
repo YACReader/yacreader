@@ -166,7 +166,7 @@ QList<QString> CompressedArchive::getFileNames()
 int CompressedArchive::getNumFiles()
 {
 	quint32 numItems = 0;
-    szInterface->archive->GetNumberOfItems(&numItems);
+	szInterface->archive->GetNumberOfItems(&numItems);
 	return numItems;
 }
 QList<QByteArray> CompressedArchive::getAllData(const QVector<quint32> & indexes, ExtractDelegate * delegate)

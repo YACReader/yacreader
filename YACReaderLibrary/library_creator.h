@@ -24,8 +24,8 @@
 	public:
 		LibraryCreator();
 		void createLibrary(const QString & source, const QString & target);
-                void updateLibrary(const QString & source, const QString & target);
-                void stop();
+				void updateLibrary(const QString & source, const QString & target);
+				void stop();
 	private:
 		void processLibrary(const QString & source, const QString & target);
 		enum Mode {CREATOR,UPDATER};
@@ -39,19 +39,19 @@
 		//recursive method
 		void create(QDir currentDirectory);
 		void update(QDir currentDirectory);
-        void run();
+		void run();
 		qulonglong insertFolders();//devuelve el id del último folder añadido (último en la ruta)
 		bool checkCover(const QString & hash);
 		void insertComic(const QString & relativePath,const QFileInfo & fileInfo);
 		//qulonglong insertFolder(qulonglong parentId,const Folder & folder);
 		//qulonglong insertComic(const Comic & comic);
-        bool stopRunning;
+		bool stopRunning;
 		//LibraryCreator está en modo creación si creation == true;
 		bool creation;
 	signals:
 		void finished();
-        void coverExtracted(QString);
-        void folderUpdated(QString);
+		void coverExtracted(QString);
+		void folderUpdated(QString);
 		void comicAdded(QString,QString);
 		void updated();
 		void created();

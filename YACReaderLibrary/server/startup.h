@@ -18,12 +18,12 @@ private:
 	HttpListener * listener;
 public:
 
-    /** Constructor */
-    Startup();
+	/** Constructor */
+	Startup();
 	/** Start the server */
-    void start();
+	void start();
 	/** Stop the server */
-    void stop();
+	void stop();
 
 	QString getPort();
 protected:

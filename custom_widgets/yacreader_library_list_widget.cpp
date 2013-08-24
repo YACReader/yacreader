@@ -7,7 +7,7 @@
 #include "qnaturalsorting.h"
 
 YACReaderLibraryListWidget::YACReaderLibraryListWidget(QWidget *parent) :
-    QWidget(parent),currentLibraryIndex(-1)
+	QWidget(parent),currentLibraryIndex(-1)
 {
 	QVBoxLayout * mainLayout = new QVBoxLayout;
 	mainLayout->setSpacing(0);
