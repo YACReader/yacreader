@@ -12,7 +12,7 @@
 using namespace YACReader;
 
 YACReaderLocalServer::YACReaderLocalServer(QObject *parent) :
-	QObject(parent)
+	QThread(parent)
 {
 	localServer = new QLocalServer(this);
 	if (!localServer->listen(YACREADERLIBRARY_GUID)) {
@@ -25,6 +25,12 @@ YACReaderLocalServer::YACReaderLocalServer(QObject *parent) :
 bool YACReaderLocalServer::isListening()
 {
 	return localServer->isListening();
+}
+
+void YACReaderLocalServer::run()
+{
+	while(1)
+		exec();
 }
 
 void YACReaderLocalServer::sendResponse()

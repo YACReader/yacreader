@@ -798,6 +798,7 @@ void Viewer::mouseReleaseEvent ( QMouseEvent * event )
 
 void Viewer::updateFitToWidthRatio(float ratio)
 {
+	Configuration::getConfiguration().setAdjustToWidth(true);
 	adjustToWidthRatio = ratio;
 	updateContentSize();
 }
