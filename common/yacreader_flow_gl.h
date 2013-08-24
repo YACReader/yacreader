@@ -128,8 +128,8 @@ protected:
 	GLuint defaultTexture;
 	GLuint markTexture;
 	GLuint readingTexture;
-    void initializeGL();
-    void paintGL();
+	void initializeGL();
+	void paintGL();
 	void timerEvent(QTimerEvent *);
 
 	//number of Covers
@@ -171,11 +171,11 @@ public:
 
 	/*Constructor*/
 	YACReaderFlowGL(QWidget *parent = 0,struct Preset p = pressetYACReaderFlowDownConfig);
-    virtual ~YACReaderFlowGL();
+	virtual ~YACReaderFlowGL();
 
 	//size;
-    QSize minimumSizeHint() const;
-    //QSize sizeHint() const;
+	QSize minimumSizeHint() const;
+	//QSize sizeHint() const;
 
 	/*functions*/
 

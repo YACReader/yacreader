@@ -11,35 +11,35 @@
 
 #include "bookmarks.h"
 
-        class BookmarksDialog : public QDialog
-        {
-            Q_OBJECT
+		class BookmarksDialog : public QDialog
+		{
+			Q_OBJECT
 
-            protected:
+			protected:
 				QList<QLabel *> pages;
 				QList<QLabel *> images;
 
 				int lastPage;
 
-                QPushButton * accept;
-                QPushButton * cancel;
+				QPushButton * accept;
+				QPushButton * cancel;
 
 				QSize coverSize;
 
-                bool eventFilter(QObject *obj, QEvent *event);
+				bool eventFilter(QObject *obj, QEvent *event);
 				void keyPressEvent(QKeyEvent * event);
 				//QPropertyAnimation * animation;
 
-            public:
-                BookmarksDialog(QWidget * parent = 0);
+			public:
+				BookmarksDialog(QWidget * parent = 0);
 			
 			public slots:
-                void setBookmarks(const Bookmarks & bookmarks);
+				void setBookmarks(const Bookmarks & bookmarks);
 				//void show();
 				//void hide();
 			
 			signals:
-                void goToPage(unsigned int page);
-         };
+				void goToPage(unsigned int page);
+		 };
 
 #endif // BOOKMARKS_DIALOG_H

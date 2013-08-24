@@ -18,7 +18,7 @@ public slots:
 	void loadHelp(const QString & path);
 
 private:
-    QTabWidget *tabWidget;
+	QTabWidget *tabWidget;
 	QTextBrowser *aboutText;
 	QTextBrowser *helpText;
 	QString fileToString(const QString & path);

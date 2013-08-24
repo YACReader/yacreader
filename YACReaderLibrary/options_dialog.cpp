@@ -42,7 +42,7 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 
 	setLayout(layout);
 	//restoreOptions(settings); //load options
-    //resize(200,0);
+	//resize(200,0);
 	setModal (true);
 	setWindowTitle(tr("Options"));
 

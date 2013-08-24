@@ -52,26 +52,26 @@ class TreeItem;
 //! [0]
 class TreeModel : public QAbstractItemModel
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
 	TreeModel(QObject *parent = 0);
-    TreeModel( QSqlQuery &sqlquery, QObject *parent = 0);
-    ~TreeModel();
+	TreeModel( QSqlQuery &sqlquery, QObject *parent = 0);
+	~TreeModel();
 
-    QVariant data(const QModelIndex &index, int role) const;
-    Qt::ItemFlags flags(const QModelIndex &index) const;
-    QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const;
-    QModelIndex index(int row, int column,
-                      const QModelIndex &parent = QModelIndex()) const;
-    QModelIndex parent(const QModelIndex &index) const;
+	QVariant data(const QModelIndex &index, int role) const;
+	Qt::ItemFlags flags(const QModelIndex &index) const;
+	QVariant headerData(int section, Qt::Orientation orientation,
+						int role = Qt::DisplayRole) const;
+	QModelIndex index(int row, int column,
+					  const QModelIndex &parent = QModelIndex()) const;
+	QModelIndex parent(const QModelIndex &index) const;
 	QModelIndex indexFromItem(TreeItem * item, int column);
 	/*QModelIndex _indexFromItem(TreeItem * item, int column);
 	int column;*/
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const;
+	int rowCount(const QModelIndex &parent = QModelIndex()) const;
+	int columnCount(const QModelIndex &parent = QModelIndex()) const;
 	void setupModelData(QString path);
 	QString getDatabase();
 
@@ -82,11 +82,11 @@ public:
 	void resetFilter();
 	bool isFilterEnabled(){return filterEnabled;};
 private:
-    void setupModelData( QSqlQuery &sqlquery, TreeItem *parent);
+	void setupModelData( QSqlQuery &sqlquery, TreeItem *parent);
 	void setupFilteredModelData( QSqlQuery &sqlquery, TreeItem *parent);
 	void setupFilteredModelData();
 
-    TreeItem *rootItem; //el árbol
+	TreeItem *rootItem; //el árbol
 	QMap<unsigned long long int, TreeItem *> items; //relación entre folders
 
 	TreeItem *rootBeforeFilter;

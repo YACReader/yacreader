@@ -23,32 +23,32 @@
 QList<QString> addresses()
 {
 	struct ifaddrs * ifAddrStruct=NULL;
-    struct ifaddrs * ifa=NULL;
-    void * tmpAddrPtr=NULL;
+	struct ifaddrs * ifa=NULL;
+	void * tmpAddrPtr=NULL;
 	
 	QList<QString> localAddreses;
 
-    getifaddrs(&ifAddrStruct);
+	getifaddrs(&ifAddrStruct);
 
-    for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next) {
-        if (ifa ->ifa_addr->sa_family==AF_INET) { // check it is IP4
-            // is a valid IP4 Address
-            tmpAddrPtr=&((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
-            char addressBuffer[INET_ADDRSTRLEN];
-            inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
-            QString add(addressBuffer);
+	for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next) {
+		if (ifa ->ifa_addr->sa_family==AF_INET) { // check it is IP4
+			// is a valid IP4 Address
+			tmpAddrPtr=&((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
+			char addressBuffer[INET_ADDRSTRLEN];
+			inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
+			QString add(addressBuffer);
 			localAddreses.push_back(QString(addressBuffer));
-            //printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer); 
-        } else if (ifa->ifa_addr->sa_family==AF_INET6) { // check it is IP6
-            // is a valid IP6 Address
-            tmpAddrPtr=&((struct sockaddr_in6 *)ifa->ifa_addr)->sin6_addr;
-            char addressBuffer[INET6_ADDRSTRLEN];
-            inet_ntop(AF_INET6, tmpAddrPtr, addressBuffer, INET6_ADDRSTRLEN);
-            //printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer); 
-        } 
-    }
-    if (ifAddrStruct!=NULL) freeifaddrs(ifAddrStruct);
-    return localAddreses;
+			//printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer); 
+		} else if (ifa->ifa_addr->sa_family==AF_INET6) { // check it is IP6
+			// is a valid IP6 Address
+			tmpAddrPtr=&((struct sockaddr_in6 *)ifa->ifa_addr)->sin6_addr;
+			char addressBuffer[INET6_ADDRSTRLEN];
+			inet_ntop(AF_INET6, tmpAddrPtr, addressBuffer, INET6_ADDRSTRLEN);
+			//printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer); 
+		} 
+	}
+	if (ifAddrStruct!=NULL) freeifaddrs(ifAddrStruct);
+	return localAddreses;
 }
 
 #endif
@@ -89,7 +89,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 
 	//FORM---------------------------------------------------------------------
 	QWidget * form = new QWidget(this);
-    QFormLayout * formLayout = new QFormLayout;
+	QFormLayout * formLayout = new QFormLayout;
 
 	/*QLabel * ipLabel = new QLabel(tr("IP address"),this);
 	ipLabel->move(452,75);
@@ -101,22 +101,22 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 
 	ip = new QComboBox(this);
 	connect(ip,SIGNAL(activated(const QString &)),this,SLOT(regenerateQR(const QString &)));
-    //ip->move(520,71);
+	//ip->move(520,71);
 #ifndef Q_OS_WIN32
-    ip->setStyleSheet("QComboBox{font-size:10px;}");
+	ip->setStyleSheet("QComboBox{font-size:10px;}");
 #endif
-    ip->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+	ip->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 #ifdef Q_OS_WIN32
-    ip->setMinimumWidth(120);
+	ip->setMinimumWidth(120);
 #else
-    ip->setFixedSize(120,ip->height());
+	ip->setFixedSize(120,ip->height());
 #endif
 
 	port = new QLineEdit("8080",this);
 	port->setReadOnly(false);
-    port->setMaximumWidth(50);
+	port->setMaximumWidth(50);
 #ifndef Q_OS_WIN32
-    port->setStyleSheet("QLineEdit{font-size:10px;}");
+	port->setStyleSheet("QLineEdit{font-size:10px;}");
 #endif
 	//port->move(520,110);
 	QValidator *validator = new QIntValidator(1024, 65535, this);
@@ -125,7 +125,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	//accept->move(514,149);
 	connect(accept,SIGNAL(pressed()),this,SLOT(updatePort()));
 	
-    formLayout->addRow(tr("IP address"),ip);
+	formLayout->addRow(tr("IP address"),ip);
 	formLayout->addRow(tr("Port"),port);
 	formLayout->addRow("",accept);
 
@@ -133,7 +133,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 #ifdef Q_OS_WIN32
 	form->move(444,70);
 #else
-    form->move(435,70);
+	form->move(435,70);
 #endif
 	//END FORM-----------------------------------------------------------------
 

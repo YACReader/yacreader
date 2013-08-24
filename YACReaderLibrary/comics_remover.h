@@ -8,16 +8,16 @@
 
 class ComicsRemover : public QThread
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit ComicsRemover(QModelIndexList & indexList, QList<QString> & paths, QObject *parent = 0);
-    
+	explicit ComicsRemover(QModelIndexList & indexList, QList<QString> & paths, QObject *parent = 0);
+	
 signals:
    void remove(int);
    void finished();
 
 private:
-    void run();
+	void run();
 
 private:
 	QModelIndexList indexList;

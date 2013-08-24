@@ -23,7 +23,7 @@
 #include "db_helper.h"
 
 RequestMapper::RequestMapper(QObject* parent)
-    :HttpRequestHandler(parent) {}
+	:HttpRequestHandler(parent) {}
 
 void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 	QByteArray path=request.getPath();

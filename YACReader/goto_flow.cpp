@@ -26,12 +26,6 @@
 #include "goto_flow_toolbar.h"
 #include "goto_flow_decorationbar.h"
 
-/*#define WIDTH 126
-#define HEIGHT 200*/
-
-
-
-
 
 GoToFlow::GoToFlow(QWidget *parent,FlowType flowType)
 :GoToFlowWidget(parent),ready(false)

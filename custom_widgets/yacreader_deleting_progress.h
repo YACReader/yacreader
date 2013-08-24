@@ -7,12 +7,12 @@ class QLabel;
 
 class YACReaderDeletingProgress : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit YACReaderDeletingProgress(QWidget *parent = 0);
-    QSize sizeHint() const;
+	explicit YACReaderDeletingProgress(QWidget *parent = 0);
+	QSize sizeHint() const;
 signals:
-    
+	
 public slots:
 	
 protected:
@@ -20,7 +20,7 @@ protected:
 
 private:
 	QLabel * textMessage;
-    
+	
 };
 
 #endif // YACREADER_DELETING_PROGRESS_H

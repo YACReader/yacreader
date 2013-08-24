@@ -13,18 +13,18 @@
 #define PREVIOUS_VERSION "6.0.0"
 
 HttpVersionChecker::HttpVersionChecker()
-        :QThread()
+		:QThread()
 {
-    http = new QHttp(this);
+	http = new QHttp(this);
 
-    connect(http, SIGNAL(requestFinished(int, bool)),
-             this, SLOT(httpRequestFinished(int, bool)));
+	connect(http, SIGNAL(requestFinished(int, bool)),
+			 this, SLOT(httpRequestFinished(int, bool)));
 
-    connect(http, SIGNAL(responseHeaderReceived(const QHttpResponseHeader &)),
-             this, SLOT(readResponseHeader(const QHttpResponseHeader &)));
+	connect(http, SIGNAL(responseHeaderReceived(const QHttpResponseHeader &)),
+			 this, SLOT(readResponseHeader(const QHttpResponseHeader &)));
 
-    connect(http, SIGNAL(readyRead(const QHttpResponseHeader &)),
-            this, SLOT(read(const QHttpResponseHeader &)));
+	connect(http, SIGNAL(readyRead(const QHttpResponseHeader &)),
+			this, SLOT(read(const QHttpResponseHeader &)));
 }
 
 void HttpVersionChecker::get()
@@ -36,33 +36,33 @@ void HttpVersionChecker::get()
 void HttpVersionChecker::run()
 {
 	QNetworkAccessManager manager;
-    QEventLoop q;
-    QTimer tT;
-    
-    tT.setSingleShot(true);
-    connect(&tT, SIGNAL(timeout()), &q, SLOT(quit()));
-    connect(&manager, SIGNAL(finished(QNetworkReply*)),&q, SLOT(quit()));
-    QNetworkReply *reply = manager.get(QNetworkRequest(
-                   QUrl("https://bitbucket.org/luisangelsm/yacreader/wiki/Home")));
-    
-    tT.start(5000); // 5s timeout
-    q.exec();
-    
-    if(tT.isActive()){
-        // download complete
-		checkNewVersion(reply->readAll());
-        tT.stop();
-    } else {
-        // timeout
-    }
+	QEventLoop q;
+	QTimer tT;
 	
-    /*QUrl url("http://code.google.com/p/yacreader/downloads/list");
-    QHttp::ConnectionMode mode = QHttp::ConnectionModeHttp;
-    http->setHost(url.host(), mode, url.port() == -1 ? 0 : url.port());
-    QByteArray path = QUrl::toPercentEncoding(url.path(), "!$&'()*+,;=:@/");
-    if (path.isEmpty())
-         path = "/";
-    httpGetId = http->get(path, 0);
+	tT.setSingleShot(true);
+	connect(&tT, SIGNAL(timeout()), &q, SLOT(quit()));
+	connect(&manager, SIGNAL(finished(QNetworkReply*)),&q, SLOT(quit()));
+	QNetworkReply *reply = manager.get(QNetworkRequest(
+				   QUrl("https://bitbucket.org/luisangelsm/yacreader/wiki/Home")));
+	
+	tT.start(5000); // 5s timeout
+	q.exec();
+	
+	if(tT.isActive()){
+		// download complete
+		checkNewVersion(reply->readAll());
+		tT.stop();
+	} else {
+		// timeout
+	}
+	
+	/*QUrl url("http://code.google.com/p/yacreader/downloads/list");
+	QHttp::ConnectionMode mode = QHttp::ConnectionModeHttp;
+	http->setHost(url.host(), mode, url.port() == -1 ? 0 : url.port());
+	QByteArray path = QUrl::toPercentEncoding(url.path(), "!$&'()*+,;=:@/");
+	if (path.isEmpty())
+		 path = "/";
+	httpGetId = http->get(path, 0);
 	exec();*/
 }
 void HttpVersionChecker::readResponseHeader(const QHttpResponseHeader &responseHeader)
@@ -71,13 +71,13 @@ void HttpVersionChecker::readResponseHeader(const QHttpResponseHeader &responseH
 }
 
 void HttpVersionChecker::read(const QHttpResponseHeader &){
-    content.append(http->readAll());
+	content.append(http->readAll());
 }
 
 void HttpVersionChecker::httpRequestFinished(int requestId, bool error)
 {
 #ifdef QT_DEBUG
-    QString response("YACReader-5.0.0 win32.exe");
+	QString response("YACReader-5.0.0 win32.exe");
 #else
 	QString response(content);
 #endif
@@ -89,25 +89,25 @@ void HttpVersionChecker::httpRequestFinished(int requestId, bool error)
 bool HttpVersionChecker::checkNewVersion(QString sourceContent)
 {
 #ifdef Q_OS_WIN32
-    QRegExp rx(".*YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}win32.*");
+	QRegExp rx(".*YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}win32.*");
 #endif
 
 #ifdef  Q_OS_LINUX
-    QRegExp rx(".*YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}X11.*");
+	QRegExp rx(".*YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}X11.*");
 #endif
 
 #ifdef  Q_OS_MAC
-    QRegExp rx(".*YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}Mac.*");
+	QRegExp rx(".*YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}Mac.*");
 #endif
 	
-    int index = 0;
-    bool newVersion = false;
-    bool sameVersion = true;
+	int index = 0;
+	bool newVersion = false;
+	bool sameVersion = true;
 	//bool currentVersionIsNewer = false;
 #ifdef QT_DEBUG
 	QString version(PREVIOUS_VERSION);
 #else
-    QString version(VERSION);
+	QString version(VERSION);
 #endif
 	QStringList sl = version.split(".");
 	if((index = rx.indexIn(sourceContent))!=-1)

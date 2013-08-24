@@ -8,13 +8,13 @@ class QMouseEvent;
 
 class YACReaderLibraryListWidget : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit YACReaderLibraryListWidget(QWidget *parent = 0);
-    
+	explicit YACReaderLibraryListWidget(QWidget *parent = 0);
+	
 signals:
 	void currentIndexChanged(QString text);
-    
+	
 public slots:
 	QString currentText();
 	int findText(QString text);
@@ -30,7 +30,7 @@ private:
 	int currentLibraryIndex;
 	QList < YACReaderLibraryItemWidget* > librariesList;
 	void deselectAllBut(int index);
-    
+	
 };
 
 #endif // YACREADER_LIBRARY_LIST_WIDGET_H

@@ -9,11 +9,11 @@
 #include <QAction>
 
 YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent) :
-    QWidget(parent)
+	QWidget(parent)
 {
-    mainLayout = new QHBoxLayout;
+	mainLayout = new QHBoxLayout;
 
-    currentFolder = new QLabel(this);
+	currentFolder = new QLabel(this);
 	currentFolder->setAlignment(Qt::AlignCenter);
 	currentFolder->setStyleSheet(" QLabel {color:#404040; font-size:22px; font-weight:bold;}");
 
@@ -23,92 +23,92 @@ YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent) :
 
 	QString qToolButtonStyleSheet = "QToolButton {border:none;}";
 
-    backButton = new QToolButton();
-    backButton->setStyleSheet(qToolButtonStyleSheet);
+	backButton = new QToolButton();
+	backButton->setStyleSheet(qToolButtonStyleSheet);
 
 
-    forwardButton = new QToolButton();
-    forwardButton->setStyleSheet(qToolButtonStyleSheet);
+	forwardButton = new QToolButton();
+	forwardButton->setStyleSheet(qToolButtonStyleSheet);
 	forwardButton->setDisabled(true);
 
-    settingsButton = new QToolButton();
-    settingsButton->setStyleSheet(qToolButtonStyleSheet);
+	settingsButton = new QToolButton();
+	settingsButton->setStyleSheet(qToolButtonStyleSheet);
 	settingsButton->setIconSize(QSize(24,24));
 
-    serverButton = new QToolButton();
-    serverButton->setStyleSheet(qToolButtonStyleSheet);
-    serverButton->setIconSize(QSize(17,24));
+	serverButton = new QToolButton();
+	serverButton->setStyleSheet(qToolButtonStyleSheet);
+	serverButton->setIconSize(QSize(17,24));
 
 
-    helpButton = new QToolButton();
-    helpButton->setStyleSheet(qToolButtonStyleSheet);
-    helpButton->setIconSize(QSize(14,25));
+	helpButton = new QToolButton();
+	helpButton->setStyleSheet(qToolButtonStyleSheet);
+	helpButton->setIconSize(QSize(14,25));
 
-    fullscreenButton = new QToolButton();
-    fullscreenButton->setStyleSheet(qToolButtonStyleSheet);
-    fullscreenButton->setIconSize(QSize(24,24));
+	fullscreenButton = new QToolButton();
+	fullscreenButton->setStyleSheet(qToolButtonStyleSheet);
+	fullscreenButton->setIconSize(QSize(24,24));
 
 
-    mainLayout->setMargin(0);
-    mainLayout->setSpacing(0);
+	mainLayout->setMargin(0);
+	mainLayout->setSpacing(0);
 
-    mainLayout->addSpacing(12);
-    mainLayout->addWidget(backButton);
-    addDivider();
-    mainLayout->addWidget(forwardButton);
+	mainLayout->addSpacing(12);
+	mainLayout->addWidget(backButton);
+	addDivider();
+	mainLayout->addWidget(forwardButton);
 
-    mainLayout->addSpacing(34);
-    mainLayout->addWidget(settingsButton);
-    addWideDivider();
-    mainLayout->addWidget(serverButton);
-    addWideDivider();
-    mainLayout->addWidget(helpButton);
+	mainLayout->addSpacing(34);
+	mainLayout->addWidget(settingsButton);
+	addWideDivider();
+	mainLayout->addWidget(serverButton);
+	addWideDivider();
+	mainLayout->addWidget(helpButton);
 
-    mainLayout->addStretch();
+	mainLayout->addStretch();
 
-    mainLayout->addWidget(fullscreenButton);
-    mainLayout->addSpacing(10);
+	mainLayout->addWidget(fullscreenButton);
+	mainLayout->addSpacing(10);
 
-    setLayout(mainLayout);
+	setLayout(mainLayout);
 
-    setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
+	setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
 }
 
 
 QSize YACReaderMainToolBar::sizeHint() const
 {
-    return QSize(200,40);
+	return QSize(200,40);
 }
 
 void YACReaderMainToolBar::paintEvent(QPaintEvent * event)
 {
-    Q_UNUSED(event);
+	Q_UNUSED(event);
 
-    QPainter painter (this);
-    painter.fillRect(0,0,width(),height(),QColor("#F0F0F0"));
+	QPainter painter (this);
+	painter.fillRect(0,0,width(),height(),QColor("#F0F0F0"));
 }
 
 void YACReaderMainToolBar::resizeEvent(QResizeEvent * event)
 {
-    currentFolder->move((event->size().width()-currentFolder->width())/2,(event->size().height()-currentFolder->height())/2);
+	currentFolder->move((event->size().width()-currentFolder->width())/2,(event->size().height()-currentFolder->height())/2);
 }
 
 void YACReaderMainToolBar::addDivider()
 {
-    QPixmap img(":/images/main_toolbar/divider.png");
-    QLabel * divider = new QLabel();
-    divider->setPixmap(img);
+	QPixmap img(":/images/main_toolbar/divider.png");
+	QLabel * divider = new QLabel();
+	divider->setPixmap(img);
 
-    mainLayout->addSpacing(5);
-    mainLayout->addWidget(divider);
-    mainLayout->addSpacing(5);
+	mainLayout->addSpacing(5);
+	mainLayout->addWidget(divider);
+	mainLayout->addSpacing(5);
 }
 
 void YACReaderMainToolBar::addWideDivider()
 {
-    mainLayout->addSpacing(3);
-    addDivider();
-    mainLayout->addSpacing(3);
+	mainLayout->addSpacing(3);
+	addDivider();
+	mainLayout->addSpacing(3);
 }
 
 void YACReaderMainToolBar::setCurrentFolderName(const QString & name)

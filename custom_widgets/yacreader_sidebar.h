@@ -11,9 +11,9 @@ class YACReaderTitledToolBar;
 
 class YACReaderSideBar : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    explicit YACReaderSideBar(QWidget *parent = 0);
+	explicit YACReaderSideBar(QWidget *parent = 0);
 	QSize sizeHint() const;
 
 	YACReaderTreeView * foldersView;
@@ -21,14 +21,14 @@ public:
 	YACReaderSearchLineEdit * foldersFilter;
 	YACReaderTitledToolBar * librariesTitle;
 	YACReaderTitledToolBar * foldersTitle;
-    
+	
 signals:
-    
+	
 public slots:
 
 protected:
 	void paintEvent(QPaintEvent *);
-    
+	
 };
 
 #endif // YACREADER_SIDEBAR_H

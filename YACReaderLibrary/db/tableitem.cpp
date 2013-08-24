@@ -7,7 +7,7 @@
 TableItem::TableItem(const QList<QVariant> &data)
 	
 {
-    itemData = data;
+	itemData = data;
 }
 //! [0]
 
@@ -22,14 +22,14 @@ TableItem::~TableItem()
 //! [5]
 int TableItem::columnCount() const
 {
-    return itemData.count();
+	return itemData.count();
 }
 //! [5]
 
 //! [6]
 QVariant TableItem::data(int column) const
 {
-    return itemData.value(column);
+	return itemData.value(column);
 }
 //! [6]
 
@@ -42,6 +42,6 @@ void TableItem::setData(int column,const QVariant & value)
 int TableItem::row() const
 {
 
-    return 0;
+	return 0;
 }
 //! [8]

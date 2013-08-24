@@ -40,47 +40,47 @@
 */
 
 class StaticFileController : public HttpRequestHandler  {
-    Q_OBJECT
-    Q_DISABLE_COPY(StaticFileController);
+	Q_OBJECT
+	Q_DISABLE_COPY(StaticFileController);
 public:
 
-    /** Constructor */
-    StaticFileController(QSettings* settings, QObject* parent = 0);
+	/** Constructor */
+	StaticFileController(QSettings* settings, QObject* parent = 0);
 
-    /** Generates the response */
-    void service(HttpRequest& request, HttpResponse& response);
+	/** Generates the response */
+	void service(HttpRequest& request, HttpResponse& response);
 
 private:
 
-    /** Encoding of text files */
-    QString encoding;
+	/** Encoding of text files */
+	QString encoding;
 
-    /** Root directory of documents */
-    QString docroot;
+	/** Root directory of documents */
+	QString docroot;
 
-    /** Maximum age of files in the browser cache */
-    int maxAge;    
+	/** Maximum age of files in the browser cache */
+	int maxAge;    
 
-    struct CacheEntry {
-        QByteArray document;
-        qint64 created;
-    };
+	struct CacheEntry {
+		QByteArray document;
+		qint64 created;
+	};
 
-    /** Timeout for each cached file */
-    int cacheTimeout;
+	/** Timeout for each cached file */
+	int cacheTimeout;
 
 
-    /** Maximum size of files in cache, larger files are not cached */
-    int maxCachedFileSize;
+	/** Maximum size of files in cache, larger files are not cached */
+	int maxCachedFileSize;
 
-    /** Cache storage */
-    QCache<QString,CacheEntry> cache;
+	/** Cache storage */
+	QCache<QString,CacheEntry> cache;
 
-    /** Used to synchronize cache access for threads */
-    QMutex mutex;
+	/** Used to synchronize cache access for threads */
+	QMutex mutex;
 
-    /** Set a content-type header in the response depending on the ending of the filename */
-    void setContentType(QString file, HttpResponse& response) const;
+	/** Set a content-type header in the response depending on the ending of the filename */
+	void setContentType(QString file, HttpResponse& response) const;
 
 	QString getLocalizedFileName(QString fileName, QString locales, QString path) const;
 	QString getDeviceAwareFileName(QString fileName, QString device, QString locales, QString path) const;

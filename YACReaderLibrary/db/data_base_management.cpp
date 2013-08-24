@@ -77,7 +77,7 @@ QSqlDatabase DataBaseManagement::createDatabase(QString dest)
 	DataBaseManagement::createTables(db);
 	
 	QSqlQuery query("INSERT INTO folder (parentId, name, path) "
-                   "VALUES (1,'root', '/')",db);
+				   "VALUES (1,'root', '/')",db);
 	}
 	//query.finish();
 	//db.close();
@@ -196,7 +196,7 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
 	//queryDBInfo.finish();
 
 	QSqlQuery query("INSERT INTO db_info (version) "
-                   "VALUES ('"VERSION"')",database);
+				   "VALUES ('"VERSION"')",database);
 	//query.finish();
 	}
 
@@ -568,7 +568,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
 			//new 7.0 fields
 			QStringList columnDefs;
 			columnDefs << "hasBeenOpened BOOLEAN DEFAULT 0"
-				       << "rating INTEGER DEFAULT 0"
+					   << "rating INTEGER DEFAULT 0"
 					   << "currentPage INTEGER DEFAULT 1"
 					   << "bookmark1 INTEGER DEFAULT -1"
 					   << "bookmark2 INTEGER DEFAULT -1"

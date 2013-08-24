@@ -66,7 +66,7 @@ void Configuration::load(const QString & path)
 	//gotoSlideSize = QSize(220,350); //huge
 	zoomLevel = 0.5;
 	adjustToWidth = true;
-    flowType = Strip;
+	flowType = Strip;
 	fullScreen = false;
 	fitToWidthRatio = 1;
 	windowSize = QSize(0,0);
@@ -107,7 +107,7 @@ void Configuration::load(const QString & path)
 						if(name==SLIDE_SIZE)
 						{
 							int height = line.toInt();
-                            gotoSlideSize = QSize(static_cast<int>(height/SLIDE_ASPECT_RATIO),height);
+							gotoSlideSize = QSize(static_cast<int>(height/SLIDE_ASPECT_RATIO),height);
 						}
 						else
 							if(name==FIT)
@@ -161,13 +161,13 @@ void Configuration::load(const QString & path)
 
 void Configuration::save()
 {
-    QFile f(QCoreApplication::applicationDirPath()+"/YACReader.conf");
-    if(!f.open(QIODevice::WriteOnly))
-    {
-        QMessageBox::critical(NULL,tr("Saving config file...."),tr("There was a problem saving YACReader configuration. Please, check if you have enough permissions in the YACReader root folder."));
-    }
-    else
-    {
+	QFile f(QCoreApplication::applicationDirPath()+"/YACReader.conf");
+	if(!f.open(QIODevice::WriteOnly))
+	{
+		QMessageBox::critical(NULL,tr("Saving config file...."),tr("There was a problem saving YACReader configuration. Please, check if you have enough permissions in the YACReader root folder."));
+	}
+	else
+	{
 	QTextStream txtS(&f);
 
 	txtS << PATH << "\n";
@@ -214,5 +214,5 @@ void Configuration::save()
 
 	txtS << ALWAYS_ON_TOP << "\n";
 	txtS << (int)alwaysOnTop << "\n";
-    }
+	}
 }

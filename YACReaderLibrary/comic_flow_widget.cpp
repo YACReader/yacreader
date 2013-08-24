@@ -30,7 +30,7 @@ ComicFlowWidgetSW::ComicFlowWidgetSW(QWidget * parent)
 	m.rotate(-90);
 	m.scale(-1,1);
 	QImage image(":/images/setRead.png");
-    QImage imageTransformed = image.transformed(m,Qt::SmoothTransformation);
+	QImage imageTransformed = image.transformed(m,Qt::SmoothTransformation);
 	setMarkImage(imageTransformed);
 }
 

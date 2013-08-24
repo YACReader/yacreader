@@ -8,20 +8,20 @@
 #include <QPainter>
 
 YACReaderDeletingProgress::YACReaderDeletingProgress(QWidget *parent) :
-    QWidget(parent)
+	QWidget(parent)
 {
 	QVBoxLayout * contentLayout = new QVBoxLayout(this);
 
 	QLabel * iconLabel = new QLabel();
-    QPixmap icon(":/images/deleting_progress/icon.png");
-    iconLabel->setPixmap(icon);
+	QPixmap icon(":/images/deleting_progress/icon.png");
+	iconLabel->setPixmap(icon);
 	iconLabel->setStyleSheet("QLabel {padding:0px; margin:0px;}");
 
-    textMessage = new QLabel(tr("Please wait, deleting in progress..."));
+	textMessage = new QLabel(tr("Please wait, deleting in progress..."));
 
 	textMessage->setStyleSheet("QLabel {color:#ABABAB; padding:0 0 0 0px; margin:0px; font-size:18px; font-weight:bold;}");
 
-    QProgressBar * progressBar = new QProgressBar();
+	QProgressBar * progressBar = new QProgressBar();
 
 	progressBar->setTextVisible(false);
 	progressBar->setFixedHeight(6);
@@ -32,18 +32,18 @@ YACReaderDeletingProgress::YACReaderDeletingProgress(QWidget *parent) :
 		"QProgressBar { border: none;  border-radius: 3px; background: #ABABAB; margin:0; margin-left:16; margin-right:16px;}"
 		"QProgressBar::chunk {background-color: #FFC745; border: none;  border-radius: 3px;}");
 
-    QPushButton * button = new QPushButton(tr("cancel"));
+	QPushButton * button = new QPushButton(tr("cancel"));
 
 	button->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 
 	contentLayout->addSpacing(16);
 	contentLayout->addWidget(iconLabel,0,Qt::AlignHCenter);
 	contentLayout->addSpacing(11);
-    contentLayout->addWidget(textMessage,0,Qt::AlignHCenter);
+	contentLayout->addWidget(textMessage,0,Qt::AlignHCenter);
 	contentLayout->addSpacing(13);
-    contentLayout->addWidget(progressBar);
+	contentLayout->addWidget(progressBar);
 	contentLayout->addSpacing(13);
-    contentLayout->addWidget(button,0,Qt::AlignHCenter);
+	contentLayout->addWidget(button,0,Qt::AlignHCenter);
 	contentLayout->addSpacing(18);
 
 	contentLayout->setMargin(0);
@@ -60,16 +60,16 @@ void YACReaderDeletingProgress::paintEvent(QPaintEvent * event)
 	int borderTop, borderRight, borderBottom, borderLeft;
 
 	QPixmap pL(":/images/deleting_progress/imgTopLeft.png");
-    QPixmap pM(":/images/deleting_progress/imgTopMiddle.png");
-    QPixmap pR(":/images/deleting_progress/imgTopRight.png");
+	QPixmap pM(":/images/deleting_progress/imgTopMiddle.png");
+	QPixmap pR(":/images/deleting_progress/imgTopRight.png");
 
 	QPixmap pLM(":/images/deleting_progress/imgLeftMiddle.png");
 	
 	QPixmap pRM(":/images/deleting_progress/imgRightMiddle.png");
 	
 	QPixmap pBL(":/images/deleting_progress/imgBottomLeft.png");
-    QPixmap pBM(":/images/deleting_progress/imgBottomMiddle.png");
-    QPixmap pBR(":/images/deleting_progress/imgBottomRight.png");
+	QPixmap pBM(":/images/deleting_progress/imgBottomMiddle.png");
+	QPixmap pBR(":/images/deleting_progress/imgBottomRight.png");
 
 	borderTop = pL.height();
 	borderRight = pRM.width();

@@ -9,7 +9,7 @@ class YACReaderFlow : public PictureFlow
 {
 Q_OBJECT
 public:
-        YACReaderFlow(QWidget * parent,FlowType flowType = CoverFlowLike);
+	YACReaderFlow(QWidget * parent,FlowType flowType = CoverFlowLike);
 
 	void mousePressEvent(QMouseEvent* event);
 	void mouseDoubleClickEvent(QMouseEvent* event);

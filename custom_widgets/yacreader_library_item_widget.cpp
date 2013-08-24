@@ -6,7 +6,7 @@
 #include <QMouseEvent>
 
 YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n/*ame*/, QString p/*ath*/, QWidget *parent) :
-    QWidget(parent),name(n),path(p),isSelected(false)
+	QWidget(parent),name(n),path(p),isSelected(false)
 {
 	QHBoxLayout * mainLayout = new QHBoxLayout;
 	mainLayout->setMargin(0);
@@ -134,7 +134,7 @@ void YACReaderLibraryItemWidget::deselect()
 void YACReaderLibraryItemWidget::select()
 {
 #ifdef Q_OS_MAC
-    QString styleSheet ="color: white; background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6BAFE4, stop: 1 #3984D2); border-top: 2px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #5EA3DF, stop: 1 #73B8EA); border-left:none;border-right:none;border-bottom:1px solid #3577C2;";
+	QString styleSheet ="color: white; background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6BAFE4, stop: 1 #3984D2); border-top: 2px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #5EA3DF, stop: 1 #73B8EA); border-left:none;border-right:none;border-bottom:1px solid #3577C2;";
 #else
 	QString styleSheet = "color: white; background-color:#2E2E2E; font-weight:bold;";
 #endif

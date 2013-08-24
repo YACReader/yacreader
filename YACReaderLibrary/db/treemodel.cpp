@@ -39,10 +39,10 @@
 ****************************************************************************/
 
 /*
-    treemodel.cpp
+	treemodel.cpp
 
-    Provides a simple tree model to show how to create and use hierarchical
-    models.
+	Provides a simple tree model to show how to create and use hierarchical
+	models.
 */
 
 #include <QtGui>
@@ -59,7 +59,7 @@
 #define ROOT 1
 
 TreeModel::TreeModel(QObject *parent)
-    : QAbstractItemModel(parent),rootItem(0),rootBeforeFilter(0),filterEnabled(false),includeComics(false)
+	: QAbstractItemModel(parent),rootItem(0),rootBeforeFilter(0),filterEnabled(false),includeComics(false)
 {
 	connect(this,SIGNAL(beforeReset()),this,SIGNAL(modelAboutToBeReset()));
 	connect(this,SIGNAL(reset()),this,SIGNAL(modelReset()));
@@ -67,15 +67,15 @@ TreeModel::TreeModel(QObject *parent)
 
 //! [0]
 TreeModel::TreeModel( QSqlQuery &sqlquery, QObject *parent)
-    : QAbstractItemModel(parent),rootItem(0),rootBeforeFilter(0),filterEnabled(false),includeComics(false)
+	: QAbstractItemModel(parent),rootItem(0),rootBeforeFilter(0),filterEnabled(false),includeComics(false)
 {
 	//lo más probable es que el nodo raíz no necesite tener información
-    QList<QVariant> rootData;
-    rootData << "root"; //id 0, padre 0, title "root" (el id, y el id del padre van a ir en la clase TreeItem)
-    rootItem = new TreeItem(rootData);
+	QList<QVariant> rootData;
+	rootData << "root"; //id 0, padre 0, title "root" (el id, y el id del padre van a ir en la clase TreeItem)
+	rootItem = new TreeItem(rootData);
 	rootItem->id = ROOT;
 	rootItem->parentItem = 0;
-    setupModelData(sqlquery, rootItem);
+	setupModelData(sqlquery, rootItem);
 	//sqlquery.finish();
 }
 //! [0]
@@ -91,91 +91,91 @@ TreeModel::~TreeModel()
 //! [2]
 int TreeModel::columnCount(const QModelIndex &parent) const
 {
-    if (parent.isValid())
-        return static_cast<TreeItem*>(parent.internalPointer())->columnCount();
-    else
-        return rootItem->columnCount();
+	if (parent.isValid())
+		return static_cast<TreeItem*>(parent.internalPointer())->columnCount();
+	else
+		return rootItem->columnCount();
 }
 //! [2]
 
 //! [3]
 QVariant TreeModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid())
-        return QVariant();
+	if (!index.isValid())
+		return QVariant();
 
 	if (role == Qt::DecorationRole)
 #ifdef Q_OS_MAC
-        return QVariant(QFileIconProvider().icon(QFileIconProvider::Folder));
+		return QVariant(QFileIconProvider().icon(QFileIconProvider::Folder));
 #else
 		return QVariant(QIcon(":/images/folder.png"));
 #endif
 
-    if (role != Qt::DisplayRole)
-        return QVariant();
+	if (role != Qt::DisplayRole)
+		return QVariant();
 
-    TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
+	TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
 
-    return item->data(index.column());
+	return item->data(index.column());
 }
 //! [3]
 
 //! [4]
 Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
 {
-    if (!index.isValid())
-        return 0;
+	if (!index.isValid())
+		return 0;
 
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 //! [4]
 
 //! [5]
 QVariant TreeModel::headerData(int section, Qt::Orientation orientation,
-                               int role) const
+							   int role) const
 {
-    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-        return rootItem->data(section);
+	if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
+		return rootItem->data(section);
 
-    return QVariant();
+	return QVariant();
 }
 //! [5]
 
 //! [6]
 QModelIndex TreeModel::index(int row, int column, const QModelIndex &parent)
-            const
+			const
 {
-    if (!hasIndex(row, column, parent))
-        return QModelIndex();
+	if (!hasIndex(row, column, parent))
+		return QModelIndex();
 
-    TreeItem *parentItem;
+	TreeItem *parentItem;
 
-    if (!parent.isValid())
-        parentItem = rootItem;
-    else
-        parentItem = static_cast<TreeItem*>(parent.internalPointer());
+	if (!parent.isValid())
+		parentItem = rootItem;
+	else
+		parentItem = static_cast<TreeItem*>(parent.internalPointer());
 
-    TreeItem *childItem = parentItem->child(row);
-    if (childItem)
-        return createIndex(row, column, childItem);
-    else
-        return QModelIndex();
+	TreeItem *childItem = parentItem->child(row);
+	if (childItem)
+		return createIndex(row, column, childItem);
+	else
+		return QModelIndex();
 }
 //! [6]
 
 //! [7]
 QModelIndex TreeModel::parent(const QModelIndex &index) const
 {
-    if (!index.isValid())
-        return QModelIndex();
+	if (!index.isValid())
+		return QModelIndex();
 
-    TreeItem *childItem = static_cast<TreeItem*>(index.internalPointer());
-    TreeItem *parentItem = childItem->parent();
+	TreeItem *childItem = static_cast<TreeItem*>(index.internalPointer());
+	TreeItem *parentItem = childItem->parent();
 
-    if (parentItem == rootItem)
-        return QModelIndex();
+	if (parentItem == rootItem)
+		return QModelIndex();
 
-    return createIndex(parentItem->row(), 0, parentItem);
+	return createIndex(parentItem->row(), 0, parentItem);
 }
 //! [7]
 
@@ -192,16 +192,16 @@ QModelIndex TreeModel::indexFromItem(TreeItem * item,int column)
 //! [8]
 int TreeModel::rowCount(const QModelIndex &parent) const
 {
-    TreeItem *parentItem;
-    if (parent.column() > 0)
-        return 0;
+	TreeItem *parentItem;
+	if (parent.column() > 0)
+		return 0;
 
-    if (!parent.isValid())
-        parentItem = rootItem;
-    else
-        parentItem = static_cast<TreeItem*>(parent.internalPointer());
+	if (!parent.isValid())
+		parentItem = rootItem;
+	else
+		parentItem = static_cast<TreeItem*>(parent.internalPointer());
 
-    return parentItem->childCount();
+	return parentItem->childCount();
 }
 //! [8]
 

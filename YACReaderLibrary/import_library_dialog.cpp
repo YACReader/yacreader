@@ -113,7 +113,7 @@ void ImportLibraryDialog::findPath()
 	{
 		path->setText(s);
 		if(!destPath->text().isEmpty() && !nameEdit->text().isEmpty())
-		    accept->setEnabled(true);
+			accept->setEnabled(true);
 	}
 }
 
@@ -125,18 +125,18 @@ void ImportLibraryDialog::findDestination()
 	{
 		destPath->setText(s);
 		if(!path->text().isEmpty() && !nameEdit->text().isEmpty())
-		    accept->setEnabled(true);
+			accept->setEnabled(true);
 	}
 }
 
 void ImportLibraryDialog::nameEntered()
 {
-    if(!nameEdit->text().isEmpty())
-    {
+	if(!nameEdit->text().isEmpty())
+	{
 	if(!path->text().isEmpty() && !destPath->text().isEmpty())
-	    accept->setEnabled(true);
-    }
-    else
+		accept->setEnabled(true);
+	}
+	else
 	accept->setEnabled(false);
 }
 
@@ -152,5 +152,5 @@ void ImportLibraryDialog::close()
 
 void ImportLibraryDialog::closeEvent ( QCloseEvent * e )
 {
-    close();
+	close();
 }

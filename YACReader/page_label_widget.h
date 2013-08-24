@@ -20,7 +20,7 @@ public:
 	PageLabelWidget(QWidget * parent);
 
 public slots:
-    void show();
+	void show();
 	void hide();
 	void setText(const QString & text);
 	void updatePosition();
