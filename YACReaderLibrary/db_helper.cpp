@@ -398,6 +398,7 @@ QList<LibraryItem *> DBHelper::getFoldersFromParent(qulonglong parentId, QSqlDat
 
 	return list;
 }
+//TODO sort using natural sorting and issue number
 QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlDatabase & db)
 {
 	

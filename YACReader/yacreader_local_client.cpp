@@ -51,12 +51,12 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 		
 		//QByteArray data;
 		tries = 0;
-		while(localSocket->bytesAvailable() < sizeof(quint16) && tries < 200)
+		while(localSocket->bytesAvailable() < sizeof(quint16) && tries < 10)
 		{
-			localSocket->waitForReadyRead(10);
+			localSocket->waitForReadyRead(100);
 			tries++;
 		}
-		if(tries == 200)
+		if(tries == 20)
 			return false;
 		QDataStream sizeStream(localSocket->read(sizeof(quint16)));
 		sizeStream.setVersion(QDataStream::Qt_4_8);
@@ -64,12 +64,12 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 		sizeStream >> totalSize;
 		
 		tries = 0;
-		while(localSocket->bytesAvailable() < totalSize && tries < 200 )
+		while(localSocket->bytesAvailable() < totalSize && tries < 10 )
 		{
-			localSocket->waitForReadyRead(10);
+			localSocket->waitForReadyRead(100);
 			tries++;
 		}
-		if(tries == 200)
+		if(tries == 20)
 			return false;
 		QDataStream dataStream(localSocket->read(totalSize));
 		dataStream >> comic;
