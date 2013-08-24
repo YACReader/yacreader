@@ -111,6 +111,7 @@ void YACReaderTableView::mousePressEvent(QMouseEvent * event)
 void YACReaderTableView::leaveEvent(QEvent * event)
 {
 	closeRatingEditor();
+	event->accept();
 }
 
 void YACReaderTableView::closeRatingEditor()
@@ -194,6 +195,7 @@ void YACReaderRatingDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 QSize YACReaderRatingDelegate::sizeHint(const QStyleOptionViewItem &option,
 							 const QModelIndex &index) const
 {
+	Q_UNUSED(option)
 	int rating = ((TableItem *)index.internalPointer())->data(11).toInt();
 	StarRating starRating(rating);
 	return starRating.sizeHint();
@@ -203,6 +205,8 @@ QWidget *YACReaderRatingDelegate::createEditor(QWidget *parent,
 									const QStyleOptionViewItem &option,
 									const QModelIndex &index) const
 {
+	Q_UNUSED(option)
+	Q_UNUSED(index)
 	StarEditor *editor = new StarEditor(parent);
 	connect(editor, SIGNAL(editingFinished()),
 		this, SLOT(sendCloseEditor()));
@@ -254,8 +258,8 @@ StarRating::StarRating(int starCount, int maxStarCount)
 	double pi = 3.14159265359;
 	double angle = 3.14159265359 / numVertex;
 
-	float rOuter = 0.3;
-	float rInner = 0.15;
+	float rOuter = 0.3f;
+	float rInner = 0.15f;
 	for (int i = 0; i < 2 * numVertex; i++)
 	{
 		double r = (i & 1) == 0 ? rOuter : rInner;
@@ -275,6 +279,7 @@ QSize StarRating::sizeHint() const
 void StarRating::paint(QPainter *painter, const QRect &rect,
 					   const QPalette &palette, EditMode mode) const
 {
+	Q_UNUSED(palette)
 	painter->save();
 
 	painter->setRenderHint(QPainter::Antialiasing, true);
@@ -306,7 +311,9 @@ void StarRating::paint(QPainter *painter, const QRect &rect,
 void StarRating::paintSelected(QPainter *painter, const QRect &rect,
 					   const QPalette &palette, EditMode mode, QColor color) const
 {
-		painter->save();
+	Q_UNUSED(palette)
+	Q_UNUSED(mode)
+	painter->save();
 
 	painter->setRenderHint(QPainter::Antialiasing, true);
 	painter->setPen(Qt::NoPen);
@@ -365,6 +372,7 @@ void StarEditor::paintEvent(QPaintEvent *)
 
 void StarEditor::mouseMoveEvent(QMouseEvent *event)
 {
+	Q_UNUSED(event)
 	/*int star = starAtPosition(event->x());
 
 	if (star != myStarRating.starCount() && star != -1) {

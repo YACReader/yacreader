@@ -50,6 +50,8 @@ class YACReaderTreeView;
 class YACReaderMainToolBar;
 #include "comic_db.h"
 
+using namespace YACReader;
+
 class LibraryWindow : public QMainWindow
 {
 	Q_OBJECT

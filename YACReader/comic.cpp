@@ -91,6 +91,12 @@ QPixmap * Comic::operator[](unsigned int index)
 	p->loadFromData(_pages[index]);
 	return p;
 }*/
+bool Comic::load(const QString & path, const ComicDB & comic)
+{
+	Q_UNUSED(path);
+	Q_UNUSED(comic);
+	return false;
+};
 //-----------------------------------------------------------------------------
 bool Comic::loaded()
 {
@@ -287,12 +293,13 @@ void FileComic::fileExtracted(int index, const QByteArray & rawData)
 
 void FileComic::crcError(int index)
 {
-	emit errorOpening(tr("CRC error: some of the pages will not be displayed correctly"));
+	emit errorOpening(tr("CRC error on page (%1): some of the pages will not be displayed correctly").arg(index));
 }
 
 //TODO: comprobar que si se produce uno de estos errores, la carga del cómic es irrecuperable
 void FileComic::unknownError(int index)
 {
+	Q_UNUSED(index)
 	//emit errorOpening(tr("Unknown error opening the file"));
 	//emit errorOpening();
 }
@@ -312,7 +319,7 @@ QList<QVector<quint32> > FileComic::getSections(int & sectionIndex)
 	int sectionCount = 0;
 	QVector <quint32> section;
 	int idx = 0;
-	int realIdx;
+	unsigned int realIdx;
 	foreach(quint32 i, sortedIndexes)
 	{
 		
@@ -427,8 +434,6 @@ void FileComic::process()
 
 	_cfi=0;
 	qSort(_fileNames.begin(),_fileNames.end(), naturalSortLessThanCI);
-	int index = 0;
-	int sortedIndex = 0;
 
 	if(_firstPage == -1)
 		_firstPage = bm->getLastPage();

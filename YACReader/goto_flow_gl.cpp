@@ -14,7 +14,7 @@
 GoToFlowGL::GoToFlowGL(QWidget* parent, FlowType flowType)
 	:GoToFlowWidget(parent)
 {
-
+	Q_UNUSED(flowType)
 	flow = new YACReaderPageFlowGL(this);
 	flow->setShowMarks(false);
 

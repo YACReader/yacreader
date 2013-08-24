@@ -281,7 +281,7 @@ void ImportWidget::finishedUpdatingCover()
 
 void ImportWidget::newCover(const QPixmap & image)
 {
-
+	Q_UNUSED(image)
 }
 static int i = 1;
 static int previousWidth = 10;
@@ -348,7 +348,7 @@ void ImportWidget::clear()
 
 	currentComicLabel->setText("<font color=\"#565959\">...</font>");
 
-	i = 0;
+	this->i = 0;
 }
 
 void ImportWidget::setImportLook()

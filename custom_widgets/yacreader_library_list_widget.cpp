@@ -46,6 +46,7 @@ int YACReaderLibraryListWidget::findText(QString text)
 		if(librariesList.at(i)->name == text)
 			return i;
 	}
+	return -1;
 }
 void YACReaderLibraryListWidget::setCurrentIndex(int index)
 {

@@ -5,6 +5,8 @@
 #include <QSettings>
 #include "yacreader_global.h"
 
+using namespace YACReader;
+
 class QSettings;
 class GoToFlowDecorationBar;
 class GoToFlowToolBar;

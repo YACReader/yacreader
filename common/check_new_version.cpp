@@ -67,7 +67,7 @@ void HttpVersionChecker::run()
 }
 void HttpVersionChecker::readResponseHeader(const QHttpResponseHeader &responseHeader)
 {
-
+	Q_UNUSED(responseHeader)
 }
 
 void HttpVersionChecker::read(const QHttpResponseHeader &){
@@ -76,12 +76,14 @@ void HttpVersionChecker::read(const QHttpResponseHeader &){
 
 void HttpVersionChecker::httpRequestFinished(int requestId, bool error)
 {
+	Q_UNUSED(requestId)
 #ifdef QT_DEBUG
 	QString response("YACReader-5.0.0 win32.exe");
 #else
 	QString response(content);
 #endif
-	checkNewVersion(response);
+	if(!error)
+		checkNewVersion(response);
 	exit();
 }
 

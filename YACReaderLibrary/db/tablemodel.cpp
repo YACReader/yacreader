@@ -10,21 +10,7 @@
 #include "db_helper.h"
 
 //ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read
-enum Columns {
-	Number = 0,
-	Title = 1,
-	FileName = 2,
-	NumPages = 3,
-	Id = 4,
-	Parent_Id = 5,
-	Path = 6,
-	Hash = 7,
-	ReadColumn = 8,
-	IsBis = 9,
-	CurrentPage = 10,
-	Rating = 11,
-	HasBeenOpened = 12
-};
+
 
 
 TableModel::TableModel(QObject *parent)
@@ -52,6 +38,7 @@ TableModel::~TableModel()
 //! [2]
 int TableModel::columnCount(const QModelIndex &parent) const
 {
+	Q_UNUSED(parent)
 	if(_data.isEmpty())
 		return 0;
 	return _data.first()->columnCount();
@@ -64,7 +51,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 	if (!index.isValid())
 		return QVariant();
 
-	/*if (index.column() == Columns::Rating && role == Qt::DecorationRole)
+	/*if (index.column() == TableModel::Rating && role == Qt::DecorationRole)
 	{
 		TableItem *item = static_cast<TableItem*>(index.internalPointer());
 		return QPixmap(QString(":/images/rating%1.png").arg(item->data(index.column()).toInt()));
@@ -79,13 +66,13 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 	{
 		switch(index.column())//TODO obtener esto de la query
 		{
-		case 0:
+		case TableModel::Number:
 			return QVariant(Qt::AlignRight | Qt::AlignVCenter);
-		case 3:
+		case TableModel::NumPages:
 			return QVariant(Qt::AlignRight | Qt::AlignVCenter);
-		case 7:
+		case TableModel::Hash:
 			return QVariant(Qt::AlignRight | Qt::AlignVCenter);
-		case Columns::CurrentPage:
+		case TableModel::CurrentPage:
 			return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 		default:
 			return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
@@ -97,14 +84,14 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 		return QVariant();
 
 	TableItem *item = static_cast<TableItem*>(index.internalPointer());
-	if(index.column() == Columns::Hash)
+	if(index.column() == TableModel::Hash)
 		return QString::number(item->data(index.column()).toString().right(item->data(index.column()).toString().length()-40).toInt()/1024.0/1024.0,'f',2)+"Mb";
-	if(index.column() == Columns::ReadColumn)
-		return (item->data(Columns::CurrentPage).toInt()==item->data(Columns::NumPages).toInt() || item->data(Columns::ReadColumn).toBool())?QVariant(tr("yes")):QVariant(tr("no"));
-	if(index.column() == Columns::CurrentPage)
-		return item->data(Columns::HasBeenOpened).toBool()?item->data(index.column()):QVariant("-");
+	if(index.column() == TableModel::ReadColumn)
+		return (item->data(TableModel::CurrentPage).toInt()==item->data(TableModel::NumPages).toInt() || item->data(TableModel::ReadColumn).toBool())?QVariant(tr("yes")):QVariant(tr("no"));
+	if(index.column() == TableModel::CurrentPage)
+		return item->data(TableModel::HasBeenOpened).toBool()?item->data(index.column()):QVariant("-");
 	
-	if (index.column() == Columns::Rating)
+	if (index.column() == TableModel::Rating)
 		return QVariant();
 
 	return item->data(index.column());
@@ -116,7 +103,7 @@ Qt::ItemFlags TableModel::flags(const QModelIndex &index) const
 {
 	if (!index.isValid())
 		return 0;
-	if(index.column() == Columns::Rating)
+	if(index.column() == TableModel::Rating)
 		return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
@@ -130,21 +117,21 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation,
 	{
 		switch(section)//TODO obtener esto de la query
 		{
-		case 0:
+		case TableModel::Number:
 			return QVariant(QString("#"));
-		case 1:
+		case TableModel::Title:
 			return QVariant(QString(tr("Title")));
-		case 2:
+		case TableModel::FileName:
 			return QVariant(QString(tr("File Name")));
-		case 3:
+		case TableModel::NumPages:
 			return QVariant(QString(tr("Pages")));
-		case 7:
+		case TableModel::Hash:
 			return QVariant(QString(tr("Size")));
-		case 8:
+		case TableModel::ReadColumn:
 			return QVariant(QString(tr("Read")));
-		case Columns::CurrentPage:
+		case TableModel::CurrentPage:
 			return QVariant(QString(tr("Current Page")));
-		case Columns::Rating:
+		case TableModel::Rating:
 			return QVariant(QString(tr("Rating")));
 		}
 	}
@@ -153,13 +140,13 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation,
 	{
 		switch(section)//TODO obtener esto de la query
 		{
-		case 0:
+		case TableModel::Number:
 			return QVariant(Qt::AlignRight | Qt::AlignVCenter);
-		case 3:
+		case TableModel::NumPages:
 			return QVariant(Qt::AlignRight | Qt::AlignVCenter);
-		case 7:
+		case TableModel::Hash:
 			return QVariant(Qt::AlignRight | Qt::AlignVCenter);
-		case Columns::CurrentPage:
+		case TableModel::CurrentPage:
 			return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 		default:
 			return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
@@ -169,7 +156,7 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation,
 
 	if(orientation == Qt::Vertical && role == Qt::DecorationRole)
 	{
-		QString fileName = _data.value(section)->data(Columns::FileName).toString();
+		QString fileName = _data.value(section)->data(TableModel::FileName).toString();
 		QFileInfo fi(fileName);
 		QString ext = fi.suffix();
 
@@ -212,14 +199,14 @@ QModelIndex TableModel::index(int row, int column, const QModelIndex &parent)
 //! [7]
 QModelIndex TableModel::parent(const QModelIndex &index) const
 {
-	 return QModelIndex();
+	Q_UNUSED(index)
+	return QModelIndex();
 }
 //! [7]
 
 //! [8]
 int TableModel::rowCount(const QModelIndex &parent) const
 {
-	TreeItem *parentItem;
 	if (parent.column() > 0)
 		return 0;
 
@@ -237,7 +224,7 @@ QStringList TableModel::getPaths(const QString & _source)
 	QList<TableItem *>::ConstIterator itr;
 	for(itr = _data.constBegin();itr != _data.constEnd();itr++)
 	{
-		QString hash = (*itr)->data(Columns::Hash).toString();
+		QString hash = (*itr)->data(TableModel::Hash).toString();
 		paths << source+ hash +".jpg";
 	}
 
@@ -280,7 +267,7 @@ void TableModel::setupModelData(unsigned long long int folderId,const QString & 
 QString TableModel::getComicPath(QModelIndex mi)
 {
 	if(mi.isValid())
-		return _data.at(mi.row())->data(Columns::Path).toString();
+		return _data.at(mi.row())->data(TableModel::Path).toString();
 	return "";
 }
 #define NUMBER_MAX 99999999
@@ -301,16 +288,16 @@ void TableModel::setupModelData(QSqlQuery &sqlquery)
 		else
 		{
 			TableItem * last = _data.back();
-			QString nameLast = last->data(Columns::FileName).toString();
-			QString nameCurrent = currentItem->data(Columns::FileName).toString();
+			QString nameLast = last->data(TableModel::FileName).toString();
+			QString nameCurrent = currentItem->data(TableModel::FileName).toString();
 			int numberLast,numberCurrent;
 			numberLast = numberCurrent = NUMBER_MAX; //TODO change by std limit
 
-			if(!last->data(Columns::Number).isNull())
-			numberLast = last->data(Columns::Number).toInt();
+			if(!last->data(TableModel::Number).isNull())
+			numberLast = last->data(TableModel::Number).toInt();
 			
-			if(!currentItem->data(Columns::Number).isNull())
-			numberCurrent = currentItem->data(Columns::Number).toInt();
+			if(!currentItem->data(TableModel::Number).isNull())
+			numberCurrent = currentItem->data(TableModel::Number).toInt();
 			
 			QList<TableItem *>::iterator i;
 			i = _data.end();
@@ -323,8 +310,8 @@ void TableModel::setupModelData(QSqlQuery &sqlquery)
 					i--;
 					numberLast = NUMBER_MAX; //TODO change by std limit
 
-					if(!(*i)->data(Columns::Number).isNull())
-						numberLast = (*i)->data(Columns::Number).toInt();
+					if(!(*i)->data(TableModel::Number).isNull())
+						numberLast = (*i)->data(TableModel::Number).toInt();
 				}
 			}
 			else
@@ -332,11 +319,11 @@ void TableModel::setupModelData(QSqlQuery &sqlquery)
 				while ((lessThan = naturalSortLessThanCI(nameCurrent,nameLast)) && i != _data.begin() && numberLast == 99999999)
 				{
 					i--;
-					nameLast = (*i)->data(Columns::FileName).toString();
+					nameLast = (*i)->data(TableModel::FileName).toString();
 					numberLast = NUMBER_MAX; //TODO change by std limit
 
-					if(!(*i)->data(Columns::Number).isNull())
-						numberLast = (*i)->data(Columns::Number).toInt();
+					if(!(*i)->data(TableModel::Number).isNull())
+						numberLast = (*i)->data(TableModel::Number).toInt();
 				}
 
 			}
@@ -345,7 +332,7 @@ void TableModel::setupModelData(QSqlQuery &sqlquery)
 				if(numberCurrent != NUMBER_MAX)
 				{
 					if(numberCurrent == numberLast)
-						if(currentItem->data(Columns::IsBis).toBool())
+						if(currentItem->data(TableModel::IsBis).toBool())
 						{
 							_data.insert(++i,currentItem);
 						}
@@ -369,7 +356,7 @@ void TableModel::setupModelData(QSqlQuery &sqlquery)
 ComicDB TableModel::getComic(const QModelIndex & mi)
 {
 	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-	ComicDB c = DBHelper::loadComic(_data.at(mi.row())->data(Columns::Id).toULongLong(),db);
+	ComicDB c = DBHelper::loadComic(_data.at(mi.row())->data(TableModel::Id).toULongLong(),db);
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
 
@@ -379,7 +366,7 @@ ComicDB TableModel::getComic(const QModelIndex & mi)
 ComicDB TableModel::_getComic(const QModelIndex & mi)
 {
 	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-	ComicDB c = DBHelper::loadComic(_data.at(mi.row())->data(Columns::Id).toULongLong(),db);
+	ComicDB c = DBHelper::loadComic(_data.at(mi.row())->data(TableModel::Id).toULongLong(),db);
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
 
@@ -393,14 +380,14 @@ QVector<YACReaderComicReadStatus> TableModel::getReadList()
 	QVector<YACReaderComicReadStatus> readList(numComics);
 	for(int i=0;i<numComics;i++)
 	{
-		if(_data.value(i)->data(Columns::ReadColumn).toBool())
-			readList[i] = YACReaderComicReadStatus::Read;
-		else if (_data.value(i)->data(Columns::CurrentPage).toInt() == _data.value(i)->data(Columns::NumPages).toInt())
-			 readList[i] = YACReaderComicReadStatus::Read;
-		else if (_data.value(i)->data(Columns::HasBeenOpened).toBool())
-			readList[i] = YACReaderComicReadStatus::Opened;
+		if(_data.value(i)->data(TableModel::ReadColumn).toBool())
+			readList[i] = YACReader::Read;
+		else if (_data.value(i)->data(TableModel::CurrentPage).toInt() == _data.value(i)->data(TableModel::NumPages).toInt())
+			 readList[i] = YACReader::Read;
+		else if (_data.value(i)->data(TableModel::HasBeenOpened).toBool())
+			readList[i] = YACReader::Opened;
 		else
-			readList[i] = YACReaderComicReadStatus::Unread;
+			readList[i] = YACReader::Unread;
 	}
 	return readList;
 }
@@ -414,17 +401,17 @@ QVector<YACReaderComicReadStatus> TableModel::setAllComicsRead(YACReaderComicRea
 	for(int i=0;i<numComics;i++)
 	{
 		readList[i] = read;
-		if(read == YACReaderComicReadStatus::Read)
+		if(read == YACReader::Read)
 		{
-			_data.value(i)->setData(Columns::ReadColumn,QVariant(true));
-			ComicDB c = DBHelper::loadComic(_data.value(i)->data(Columns::Id).toULongLong(),db);
+			_data.value(i)->setData(TableModel::ReadColumn,QVariant(true));
+			ComicDB c = DBHelper::loadComic(_data.value(i)->data(TableModel::Id).toULongLong(),db);
 			c.info.read = true;
 			DBHelper::update(&(c.info),db);
 		}
-		if(read == YACReaderComicReadStatus::Unread)
+		if(read == YACReader::Unread)
 		{
-			_data.value(i)->setData(Columns::ReadColumn,QVariant(false));
-			ComicDB c = DBHelper::loadComic(_data.value(i)->data(Columns::Id).toULongLong(),db);
+			_data.value(i)->setData(TableModel::ReadColumn,QVariant(false));
+			ComicDB c = DBHelper::loadComic(_data.value(i)->data(TableModel::Id).toULongLong(),db);
 			c.info.read = false;
 			DBHelper::update(&(c.info),db);
 		}
@@ -433,7 +420,7 @@ QVector<YACReaderComicReadStatus> TableModel::setAllComicsRead(YACReaderComicRea
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
 
-	emit dataChanged(index(0,Columns::ReadColumn),index(numComics-1,Columns::ReadColumn));
+	emit dataChanged(index(0,TableModel::ReadColumn),index(numComics-1,TableModel::ReadColumn));
 
 	return readList;
 }
@@ -447,7 +434,7 @@ QList<ComicDB> TableModel::getAllComics()
 	int numComics = _data.count();
 	for(int i=0;i<numComics;i++)
 	{
-		comics.append(DBHelper::loadComic(_data.value(i)->data(Columns::Id).toULongLong(),db));
+		comics.append(DBHelper::loadComic(_data.value(i)->data(TableModel::Id).toULongLong(),db));
 	}
 
 	db.commit();
@@ -480,17 +467,17 @@ QVector<YACReaderComicReadStatus> TableModel::setComicsRead(QList<QModelIndex> l
 	db.transaction();
 	foreach (QModelIndex mi, list)
 	{
-		if(read == YACReaderComicReadStatus::Read)
+		if(read == YACReader::Read)
 		{
-		_data.value(mi.row())->setData(Columns::ReadColumn, QVariant(true));
-		ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(Columns::Id).toULongLong(),db);
+		_data.value(mi.row())->setData(TableModel::ReadColumn, QVariant(true));
+		ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(TableModel::Id).toULongLong(),db);
 		c.info.read = true;
 		DBHelper::update(&(c.info),db);
 		}
-		if(read == YACReaderComicReadStatus::Unread)
+		if(read == YACReader::Unread)
 		{
-		_data.value(mi.row())->setData(Columns::ReadColumn, QVariant(false));
-		ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(Columns::Id).toULongLong(),db);
+		_data.value(mi.row())->setData(TableModel::ReadColumn, QVariant(false));
+		ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(TableModel::Id).toULongLong(),db);
 		c.info.read = false;
 		DBHelper::update(&(c.info),db);
 		}
@@ -499,7 +486,7 @@ QVector<YACReaderComicReadStatus> TableModel::setComicsRead(QList<QModelIndex> l
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
 
-	emit dataChanged(index(list.first().row(),Columns::ReadColumn),index(list.last().row(),Columns::ReadColumn));
+	emit dataChanged(index(list.first().row(),TableModel::ReadColumn),index(list.last().row(),TableModel::ReadColumn));
 
 	return getReadList();
 }
@@ -507,11 +494,11 @@ qint64 TableModel::asignNumbers(QList<QModelIndex> list,int startingNumber)
 {
 	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 	db.transaction();
-	qint64 idFirst = _data.value(list[0].row())->data(Columns::Id).toULongLong();
+	qint64 idFirst = _data.value(list[0].row())->data(TableModel::Id).toULongLong();
 	int i = 0;
 	foreach (QModelIndex mi, list)
 	{
-		ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(Columns::Id).toULongLong(),db);
+		ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(TableModel::Id).toULongLong(),db);
 		c.info.setNumber(startingNumber+i);
 		c.info.edited = true;
 		DBHelper::update(&(c.info),db);
@@ -532,7 +519,7 @@ QModelIndex TableModel::getIndexFromId(quint64 id)
 	int i=0;
 	for(itr = _data.constBegin();itr != _data.constEnd();itr++)
 	{
-		if((*itr)->data(Columns::Id).toULongLong() == id)
+		if((*itr)->data(TableModel::Id).toULongLong() == id)
 			break;
 		i++;
 	}
@@ -558,7 +545,7 @@ void TableModel::finishTransaction()
 
 void TableModel::removeInTransaction(int row)
 {
-	ComicDB c = DBHelper::loadComic(_data.at(row)->data(Columns::Id).toULongLong(),dbTransaction);
+	ComicDB c = DBHelper::loadComic(_data.at(row)->data(TableModel::Id).toULongLong(),dbTransaction);
 
 	DBHelper::removeFromDB(&c,dbTransaction);
 	beginRemoveRows(QModelIndex(),row,row);
@@ -601,18 +588,18 @@ void TableModel::reload(const ComicDB & comic)
 	bool found = false;
 	foreach(TableItem * item,_data)
 	{
-		if(item->data(Columns::Id).toULongLong() == comic.id)
+		if(item->data(TableModel::Id).toULongLong() == comic.id)
 		{
 			found = true;
-			item->setData(Columns::CurrentPage,comic.info.currentPage);
-			item->setData(Columns::HasBeenOpened,true);
+			item->setData(TableModel::CurrentPage,comic.info.currentPage);
+			item->setData(TableModel::HasBeenOpened,true);
 			break;
 				
 		}
 		row++;
 	}
 	if(found)
-		emit dataChanged(index(row,Columns::CurrentPage),index(row,Columns::CurrentPage));
+		emit dataChanged(index(row,TableModel::CurrentPage),index(row,TableModel::CurrentPage));
 }
 
 void TableModel::updateRating(int rating, QModelIndex mi)
@@ -623,7 +610,7 @@ void TableModel::updateRating(int rating, QModelIndex mi)
 	//TODO optimize update
 	
 	comic.info.rating = rating;
-	_data[mi.row()]->setData(Columns::Rating,rating);
+	_data[mi.row()]->setData(TableModel::Rating,rating);
 	DBHelper::update(&(comic.info),db);
 
 	emit dataChanged(mi,mi);

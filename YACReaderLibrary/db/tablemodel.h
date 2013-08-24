@@ -13,6 +13,8 @@ class ComicDB;
 
 class TableItem;
 
+using namespace YACReader;
+
 //! [0]
 class TableModel : public QAbstractItemModel
 {
@@ -22,8 +24,7 @@ public:
 	TableModel(QObject *parent = 0);
 	TableModel( QSqlQuery &sqlquery, QObject *parent = 0);
 	~TableModel();
-
-
+	
 	QVariant data(const QModelIndex &index, int role) const;
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 	QVariant headerData(int section, Qt::Orientation orientation,
@@ -54,6 +55,21 @@ public:
 	void removeInTransaction(int row);
 	void reload(const ComicDB & comic);
 
+	enum Columns {
+	Number = 0,
+	Title = 1,
+	FileName = 2,
+	NumPages = 3,
+	Id = 4,
+	Parent_Id = 5,
+	Path = 6,
+	Hash = 7,
+	ReadColumn = 8,
+	IsBis = 9,
+	CurrentPage = 10,
+	Rating = 11,
+	HasBeenOpened = 12
+};
 public slots:
 	void remove(int row);
 	void startTransaction();

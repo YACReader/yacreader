@@ -12,6 +12,8 @@
 #define CONF_FILE_PATH "."
 #define SLIDE_ASPECT_RATIO 1.585
 
+using namespace YACReader;
+
 	class Configuration : public QObject
 	{
 		Q_OBJECT
@@ -37,7 +39,7 @@
 		QColor backgroundColor;
 
 		Configuration();
-		Configuration(const Configuration & conf);
+		//Configuration(const Configuration & conf);
 		void load(const QString & path = CONF_FILE_PATH);
 		
 		

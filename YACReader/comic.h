@@ -49,7 +49,7 @@ class ComicDB;
 		void setup();
 		//Load pages from file
 		virtual bool load(const QString & path, int atPage = -1) = 0;
-		virtual bool load(const QString & path, const ComicDB & comic){return false;};
+		virtual bool load(const QString & path, const ComicDB & comic);
 		
 		/*void loadFromFile(const QString & pathFile);
 		void loadFromDir(const QString & pathDir);

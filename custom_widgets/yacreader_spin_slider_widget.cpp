@@ -35,12 +35,14 @@ YACReaderSpinSliderWidget::YACReaderSpinSliderWidget(QWidget * parent,bool strec
 }
 void YACReaderSpinSliderWidget::valueWillChange(int v)
 {
+	Q_UNUSED(v)
 	if(tracking)
 		emit valueChanged(spinBox->value());
 }
 
 void YACReaderSpinSliderWidget::valueWillChangeFromSpinBox(int v)
 {
+	Q_UNUSED(v)
 	if(!tracking && !slider->isSliderDown())
 		emit valueChanged(spinBox->value());
 }

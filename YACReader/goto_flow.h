@@ -39,7 +39,7 @@ private:
 
 	QVector<bool> imagesLoaded;
 	QVector<bool> imagesSetted;
-	uint numImagesLoaded;
+	int numImagesLoaded;
 	QVector<bool> imagesReady;
 	QVector<QByteArray> rawImages;
 	QTimer* updateTimer;

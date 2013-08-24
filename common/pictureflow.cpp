@@ -825,7 +825,7 @@ QRect PictureFlowSoftwareRenderer::renderSlide(const SlideInfo &slide, int col1,
   PFreal ys = slide.cy - state->slideWidth * sdy/2;
   PFreal dist = distance * PFREAL_ONE;
 
-  int xi = qMax((PFreal)0, (w*PFREAL_ONE/2) + fdiv(xs*h, dist+ys) >> PFREAL_SHIFT);
+  int xi = qMax((PFreal)0, ((w*PFREAL_ONE/2) + fdiv(xs*h, dist+ys)) >> PFREAL_SHIFT);
   if(xi >= w)
 	return rect;
 
@@ -1076,7 +1076,7 @@ void PictureFlow::addSlide(const QImage& image)
   d->state->slideImages.resize(c+1);
   d->state->slideImages[c] = new QImage(image);
   d->state->marks.resize(c+1);
-  d->state->marks[c] = YACReaderComicReadStatus::Unread;
+  d->state->marks[c] = YACReader::Unread;
   triggerRender();
 }
 
@@ -1361,7 +1361,7 @@ void PictureFlow::updateMarks()
 void PictureFlow::unmarkSlide(int index)
 {
 	if(index<d->state->marks.size())
-		d->state->marks[index] = YACReaderComicReadStatus::Unread;
+		d->state->marks[index] = YACReader::Unread;
 }
 
 void PictureFlow::setMarks(const QVector<YACReaderComicReadStatus> & m)

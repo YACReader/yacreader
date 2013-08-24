@@ -50,6 +50,8 @@
 
 #define YACREADERLIBRARY_GUID "ea343ff3-2005-4865-b212-7fa7c43999b8"
 
+namespace YACReader
+{
 
  enum FlowType
   {
@@ -73,6 +75,8 @@
 	 Read = 1,
 	 Opened = 2
  };
+
+}
 
 #endif
 

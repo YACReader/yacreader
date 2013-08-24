@@ -787,11 +787,13 @@ void Viewer::mousePressEvent ( QMouseEvent * event )
 	yDragOrigin = event->y();
 	xDragOrigin = event->x();
 	setCursor(Qt::ClosedHandCursor);
+	event->accept();
 }
 void Viewer::mouseReleaseEvent ( QMouseEvent * event )
 {
 	drag = false;
 	setCursor(Qt::OpenHandCursor);
+	event->accept();
 }
 
 void Viewer::updateFitToWidthRatio(float ratio)

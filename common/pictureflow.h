@@ -32,6 +32,8 @@
 
 class PictureFlowPrivate;
 
+using namespace YACReader;
+
 /*!
   Class PictureFlow implements an image show widget with animation effect 
   like Apple's CoverFlow (in iTunes and iPod). Images are arranged in form 
