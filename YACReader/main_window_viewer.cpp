@@ -204,7 +204,7 @@ void MainWindowViewer::openFromArgv()
 	}
 	else if(QCoreApplication::argc() == 4)
 	{
-		isClient = true;
+		
 		QString pathFile = QCoreApplication::arguments().at(1);
 		currentDirectory = pathFile;
 		quint64 comicId = QCoreApplication::arguments().at(2).toULongLong();
@@ -217,10 +217,11 @@ void MainWindowViewer::openFromArgv()
 		
 		if(client.requestComicInfo(libraryId,currentComicDB,siblingComics))
 		{
+			isClient = true;
 			open(pathFile+currentComicDB.path,currentComicDB,siblingComics);
 		}
 		else
-		{/*error*/}
+		{isClient = false;/*error*/}
 
 		optionsDialog->setFilters(currentComicDB.info.brightness, currentComicDB.info.contrast, currentComicDB.info.gamma);
 	}

@@ -854,6 +854,8 @@ int Viewer::getCurrentPageNumber()
 
 void Viewer::updateComic(ComicDB & comic)
 {
+	if(render->hasLoadedComic())
+	{
 	//set currentPage
 	comic.info.currentPage = render->getIndex()+1;
 	//set bookmarks
@@ -879,6 +881,7 @@ void Viewer::updateComic(ComicDB & comic)
 		comic.info.contrast = contrast;
 	if(gamma != 100 || comic.info.gamma!=-1)
 		comic.info.gamma = gamma;
+	}
 
 
 }

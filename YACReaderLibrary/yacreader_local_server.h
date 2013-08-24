@@ -30,6 +30,7 @@ class YACReaderClientConnectionWorker : public QThread
 	Q_OBJECT
 public:
 	YACReaderClientConnectionWorker( QLocalSocket *clientConnection);
+	~YACReaderClientConnectionWorker();
 signals:
 	void comicUpdated(quint64 libraryId, const ComicDB & comic);
 private:

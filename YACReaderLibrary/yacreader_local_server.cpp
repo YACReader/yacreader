@@ -2,6 +2,7 @@
 
 #include <QLocalServer>
 #include <QLocalSocket>
+#include <QPointer>
 
 #include "yacreader_global.h"
 #include "db_helper.h"
@@ -28,17 +29,15 @@ bool YACReaderLocalServer::isListening()
 
 void YACReaderLocalServer::sendResponse()
 {
-	 QLocalSocket *clientConnection = localServer->nextPendingConnection();
-	 connect(clientConnection, SIGNAL(disconnected()),
-			 clientConnection, SLOT(deleteLater()));
+	QLocalSocket *clientConnection = localServer->nextPendingConnection();
+	//connect(clientConnection, SIGNAL(disconnected()),clientConnection, SLOT(deleteLater()));
 
-	 qRegisterMetaType<ComicDB>("ComicDB");
-	 YACReaderClientConnectionWorker * worker = new YACReaderClientConnectionWorker(clientConnection);
-	 connect(worker,SIGNAL(comicUpdated(quint64, ComicDB)),this,SIGNAL(comicUpdated(quint64, ComicDB)));
-	 connect(worker,SIGNAL(finished()),worker,SLOT(deleteLater()));
-	 worker->start();
-	 //clientConnection->waitForBytesWritten();*/
-	 //clientConnection->disconnectFromServer();
+	YACReaderClientConnectionWorker * worker = new YACReaderClientConnectionWorker(clientConnection);
+	connect(worker,SIGNAL(comicUpdated(quint64, ComicDB)),this,SIGNAL(comicUpdated(quint64, ComicDB)));
+	connect(worker,SIGNAL(finished()),worker,SLOT(deleteLater()));
+	worker->start();
+	//clientConnection->waitForBytesWritten();*/
+	//clientConnection->disconnectFromServer();
 }
 
 bool YACReaderLocalServer::isRunning()
@@ -57,78 +56,85 @@ YACReaderClientConnectionWorker::YACReaderClientConnectionWorker( QLocalSocket *
 
 }
 
+YACReaderClientConnectionWorker::~YACReaderClientConnectionWorker()
+{
+
+}
+
 void YACReaderClientConnectionWorker::run()
 {
-	 quint64 libraryId;
-	 ComicDB comic;
-	 int tries = 0;
+	quint64 libraryId;
+	ComicDB comic;
+	int tries = 0;
+	//QByteArray data;
+	while(clientConnection->bytesAvailable() < sizeof(quint16) && tries < 200)
+	{
+		clientConnection->waitForReadyRead(10);
+		tries++;
+	}
+	if(tries == 200)
+		return;
+	QDataStream sizeStream(clientConnection->read(sizeof(quint16)));
+	sizeStream.setVersion(QDataStream::Qt_4_8);
+	quint16 totalSize = 0;
+	sizeStream >> totalSize;
 
-	 //QByteArray data;
-	 while(clientConnection->bytesAvailable() < sizeof(quint16) && tries < 200)
-	 {
-		 clientConnection->waitForReadyRead(10);
-		 tries++;
-	 }
-	 if(tries == 200)
-		 return;
-	 QDataStream sizeStream(clientConnection->read(sizeof(quint16)));
-	 sizeStream.setVersion(QDataStream::Qt_4_8);
-	 quint16 totalSize = 0;
-	 sizeStream >> totalSize;
+	tries = 0;
+	while(clientConnection->bytesAvailable() < totalSize && tries < 200)
+	{
+		clientConnection->waitForReadyRead(10);
+		tries++;
+	}
+	if(tries == 200)
+		return;
+	QDataStream dataStream(clientConnection->read(totalSize));
+	quint8 msgType;
+	dataStream >> msgType;
+	dataStream >> libraryId;
+	dataStream >> comic;
 
-	 tries = 0;
-	 while(clientConnection->bytesAvailable() < totalSize && tries < 200)
-	 {
-		 clientConnection->waitForReadyRead(10);
-		 tries++;
-	 }
-	 if(tries == 200)
-		 return;
-	 QDataStream dataStream(clientConnection->read(totalSize));
-	 quint8 msgType;
-	 dataStream >> msgType;
-	 dataStream >> libraryId;
-	 dataStream >> comic;
+	switch (msgType)
+	{
+	case YACReader::RequestComicInfo:
+		{
+			QList<ComicDB> siblings;
+			getComicInfo(libraryId,comic,siblings);
 
-	 switch (msgType)
-	 {
-	 case YACReader::RequestComicInfo:
-		 {
-			 QList<ComicDB> siblings;
-			 getComicInfo(libraryId,comic,siblings);
+			QByteArray block;
+			QDataStream out(&block, QIODevice::WriteOnly);
+			out.setVersion(QDataStream::Qt_4_8);
+			out << (quint16)0;
+			out << comic;
+			out << siblings;
+			out.device()->seek(0);
+			out << (quint16)(block.size() - sizeof(quint16));
 
-			 QByteArray block;
-			 QDataStream out(&block, QIODevice::WriteOnly);
-			 out.setVersion(QDataStream::Qt_4_8);
-			 out << (quint16)0;
-			 out << comic;
-			 out << siblings;
-			 out.device()->seek(0);
-			 out << (quint16)(block.size() - sizeof(quint16));
-
-			 int  written = 0;
-			 tries = 0;
-			 while(written != block.size() && tries < 200)
-			 {
-				 int ret = clientConnection->write(block);
-				 if(ret != -1)
-				 {
+			int  written = 0;
+			tries = 0;
+			while(written != block.size() && tries < 200)
+			{
+				int ret = clientConnection->write(block);
+				if(ret != -1)
+				{
 					written += ret;
 					clientConnection->flush();
-				 }
-				 else
-					 tries++;
-			 }
-			 break;
-		 }
-	 case YACReader::SendComicInfo:
-		 {
-			 updateComic(libraryId,comic);
-			 //clientConnection->disconnectFromServer();
-			 break;
-		 }
+				}
+				else
+					tries++;
+			}
+			break;
+		}
+	case YACReader::SendComicInfo:
+		{
+			updateComic(libraryId,comic);
+			//clientConnection->disconnectFromServer();
+			break;
+		}
 
-	 }
+	}
+
+	clientConnection->waitForDisconnected();
+	clientConnection->deleteLater();
 }
 
 void YACReaderClientConnectionWorker::getComicInfo(quint64 libraryId, ComicDB & comic, QList<ComicDB> & siblings)

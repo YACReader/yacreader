@@ -29,6 +29,8 @@ int main( int argc, char ** argv )
   app.installTranslator(&viewerTranslator);
   app.setApplicationName("YACReaderLibrary");
 
+  qRegisterMetaType<ComicDB>("ComicDB");
+
 #ifdef SERVER_RELEASE
   QSettings * settings = new QSettings(QCoreApplication::applicationDirPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
   settings->beginGroup("libraryConfig");
