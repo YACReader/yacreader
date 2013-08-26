@@ -477,8 +477,8 @@ void ThumbnailCreator::create()
 	//se filtran para obtener sólo los formatos soportados
 	QList<QString> order = archive.getFileNames();
 	QList<QString> fileNames = FileComic::filter(order);
-
-	if(fileNames.size() == 0)
+	_numPages = fileNames.size();
+	if(_numPages == 0)
 	{
 		_cover.load(":/images/notCover.png");
 		if(_target!="")
@@ -486,8 +486,10 @@ void ThumbnailCreator::create()
 	}
 	else
 	{
+		if(_coverPage > _numPages)
+			_coverPage = 1;
 		qSort(fileNames.begin(),fileNames.end(), naturalSortLessThanCI);
-		int index = order.indexOf(fileNames.first());
+		int index = order.indexOf(fileNames.at(_coverPage-1));
 
 		if(_target=="")
 		{
