@@ -9,6 +9,9 @@
 #include "qnaturalsorting.h"
 #include "db_helper.h"
 
+#include "compressed_archive.h"
+#include "comic.h"
+
 #include <algorithm>
 using namespace std;
 
@@ -470,73 +473,31 @@ void ThumbnailCreator::create()
 	else
 	{
 
-		_7z = new QProcess();
-		QStringList attributes;
-		attributes << "l" << "-ssc-" << "-r" << _fileSource << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp"; 
-		//connect(_7z,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(loadFirstImage(void)));
-		connect(_7z,SIGNAL(error(QProcess::ProcessError)),this,SIGNAL(openingError(QProcess::ProcessError)));
-		_7z->start(QCoreApplication::applicationDirPath()+"/utils/7z",attributes);
-		_7z->waitForFinished(60000);
+	CompressedArchive archive(_fileSource);
+	//se filtran para obtener sólo los formatos soportados
+	QList<QString> order = archive.getFileNames();
+	QList<QString> fileNames = FileComic::filter(order);
 
-		QRegExp rx("[0-9]{4}-[0-9]{2}-[0-9]{2}[ ]+[0-9]{2}:[0-9]{2}:[0-9]{2}[ ]+.{5}[ ]+([0-9]+)[ ]+([0-9]+)[ ]+(.+)");
+	if(fileNames.size() == 0)
+	{
+		_cover.load(":/images/notCover.png");
+		if(_target!="")
+			_cover.save(_target);
+	}
+	else
+	{
+		qSort(fileNames.begin(),fileNames.end(), naturalSortLessThanCI);
+		int index = order.indexOf(fileNames.first());
 
-		QString ba = QString::fromUtf8(_7z->readAllStandardOutput());
-		QList<QString> lines = ba.split('\n');
-		QString line;
-		_currentName = "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"; //TODO 
-		QString name;
-		if(_coverPage == 1)
-		{
-			foreach(line,lines)
-			{
-				if(rx.indexIn(line)!=-1)
-				{
-					name = rx.cap(3).trimmed();
-					if(naturalSortLessThanCI(name,_currentName))
-						_currentName = name;
-					_numPages++;
-				}	
-			}
-		}
-		else
-		{
-			QList<QString> names;
-			foreach(line,lines)
-			{
-				if(rx.indexIn(line)!=-1)
-				{
-					name = rx. cap(3).trimmed();
-					names.append(name);
-				}	
-			}
-			std::sort(names.begin(),names.end(),naturalSortLessThanCI);
-			_currentName = names[_coverPage-1];
-		}
-		delete _7z;
-		attributes.clear();
-		_currentName = QDir::fromNativeSeparators(_currentName).split('/').last(); //separator fixed. 
-#ifdef Q_OS_WIN32
-		attributes << "e" << "-so" << "-r" << _fileSource << QString(_currentName.toLocal8Bit().constData()); //TODO platform dependency?? OEM 437
-#else
-		attributes << "e" << "-so" << "-r" << _fileSource << _currentName; //TODO platform dependency?? OEM 437
-#endif
-		_7z = new QProcess();
-		connect(_7z,SIGNAL(error(QProcess::ProcessError)),this,SIGNAL(openingError(QProcess::ProcessError)));
-		//connect(_7z,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(writeThumbnail(void)));
-		_7z->start(QCoreApplication::applicationDirPath()+"/utils/7z",attributes);
-		_7z->waitForFinished(60000);
-
-		QByteArray image = _7z->readAllStandardOutput();
-		QString error = _7z->readAllStandardError();
-		QImage p;
 		if(_target=="")
 		{
-			if(!_cover.loadFromData(image))
+			if(!_cover.loadFromData(archive.getRawDataAtIndex(index)))
 				_cover.load(":/images/notCover.png");
 		}
 		else
 		{
-			if(p.loadFromData(image))
+			QImage p;
+			if(p.loadFromData(archive.getRawDataAtIndex(index)))
 			{
 				QImage scaled;
 				if(p.width()>p.height()) //landscape??
@@ -551,6 +512,6 @@ void ThumbnailCreator::create()
 				p.save(_target);
 			}
 		}
-		delete _7z;
+	}
 	}
 }

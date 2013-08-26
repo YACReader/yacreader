@@ -66,7 +66,6 @@
 	public:
 		ThumbnailCreator(QString fileSource, QString target, int coverPage = 1);
 	private:
-		QProcess * _7z;
 		QString _fileSource;
 		QString _target;
 		QString _currentName;
