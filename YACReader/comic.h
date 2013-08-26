@@ -97,7 +97,6 @@ class ComicDB;
 	{
 		Q_OBJECT
 	private:
-	QList<QString> filter(const QList<QString> & src);
 	QList<QVector<quint32> > getSections(int & sectionIndex);
 	public:
 		FileComic();
@@ -108,6 +107,7 @@ class ComicDB;
 		virtual bool load(const QString & path, const ComicDB & comic);
 		void crcError(int index);
 		void unknownError(int index);
+		static QList<QString> filter(const QList<QString> & src);
 	public slots:
 		void process();
 	};
