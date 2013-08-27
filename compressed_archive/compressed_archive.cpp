@@ -101,7 +101,9 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 
 CompressedArchive::~CompressedArchive()
 {
-	//TODO
+	//szInterface->fileSpec->Release();
+	delete szInterface;
+	delete sevenzLib;
 }
 
 void CompressedArchive::loadFunctions()
@@ -185,7 +187,7 @@ QList<QByteArray> CompressedArchive::getAllData(const QVector<quint32> & indexes
 	{
 		qDebug() << "Extract Error" << endl;
 	}
-
+	
 	return extractCallbackSpec->allFiles;
 }
 
@@ -205,10 +207,8 @@ QByteArray CompressedArchive::getRawDataAtIndex(int index)
 		{
 			qDebug() << "Extract Error" << endl;
 		}
-
-		QByteArray rawData((char *)extractCallbackSpec->data,extractCallbackSpec->newFileSize);
-
-		return rawData;
+		
+		return QByteArray((char *)extractCallbackSpec->data,extractCallbackSpec->newFileSize);
 	}
 	return QByteArray();
 }
