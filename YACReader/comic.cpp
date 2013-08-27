@@ -406,10 +406,6 @@ QList<QVector<quint32> > FileComic::getSections(int & sectionIndex)
 
 void FileComic::process()
 {
-	QTime myTimer;
-	myTimer.start();
-	// do something..
-
 	CompressedArchive archive(_path);
 	//se filtran para obtener sólo los formatos soportados
 	_order = archive.getFileNames();
@@ -459,7 +455,7 @@ void FileComic::process()
 	}*/
 
 	emit imagesLoaded();
-	moveToThread(QApplication::instance()->thread());
+	//moveToThread(QApplication::instance()->thread());
 }
 
 

@@ -92,6 +92,7 @@ public:
   UInt64 newFileSize;
 
   CArchiveExtractCallback(bool c = false,ExtractDelegate * d = 0) : PasswordIsDefined(false),all(c),delegate(d) {}
+  ~CArchiveExtractCallback() {MidFree(data);}
 };
 
 void CArchiveExtractCallback::Init(IInArchive *archiveHandler, const UString &directoryPath)
@@ -259,6 +260,7 @@ STDMETHODIMP CArchiveExtractCallback::SetOperationResult(Int32 operationResult)
 		{
 			QByteArray rawData((char *)data,newFileSize);
 			MidFree(data);
+			data = 0;
 			if(delegate != 0)
 				delegate->fileExtracted(_index,rawData);
 			else

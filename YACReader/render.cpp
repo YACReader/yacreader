@@ -642,7 +642,7 @@ void Render::createComic(const QString & path)
 {
 	if(comic!=0)
 	{
-		comic->moveToThread(QApplication::instance()->thread());
+		//comic->moveToThread(QApplication::instance()->thread());
 		comic->disconnect();
 		comic->deleteLater();
 	}
