@@ -240,8 +240,8 @@ void ImportWidget::newComic(const QString & path, const QString & coverPath)
 					coversScene->removeItem(last);
 					delete last;
 				}
-				else
-					break;
+				//else
+				//	break;
 			}
 
 			int width = p.width();
