@@ -383,7 +383,7 @@ QList<LibraryItem *> DBHelper::getFoldersFromParent(qulonglong parentId, QSqlDat
 			QList<LibraryItem *>::iterator i;
 			i = list.end();
 			i--;
-			while ((0 > (lessThan = nameCurrent.localeAwareCompare(nameLast))) && i != list.begin())
+			while ((0 > (lessThan = naturalSortLessThanCI(nameCurrent,nameLast))) && i != list.begin())
 			{
 				i--;
 				nameLast = (*i)->name;
@@ -398,7 +398,7 @@ QList<LibraryItem *> DBHelper::getFoldersFromParent(qulonglong parentId, QSqlDat
 
 	return list;
 }
-//TODO sort using natural sorting and issue number
+
 QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlDatabase & db)
 {
 	
@@ -430,18 +430,66 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
 			ComicDB last = static_cast<ComicDB>(list.back());
 			QString nameLast = last.name; 
 			QString nameCurrent = currentItem.name;
+
+			int numberLast,numberCurrent;
+			int max = (std::numeric_limits<int>::max)();
+			numberLast = numberCurrent = max; //TODO change by std limit
+
+			if(last.info.number!=NULL)
+				numberLast = *last.info.number;
+
+			if(currentItem.info.number!=NULL)
+				numberCurrent = *currentItem.info.number;
+
 			QList<ComicDB>::iterator i;
 			i = list.end();
 			i--;
-			while ((0 > (lessThan = nameCurrent.localeAwareCompare(nameLast))) && i != list.begin())  //se usa la misma ordenación que en QDir
+
+			if(numberCurrent != max)
 			{
-				i--;
-				nameLast = (*i).name;
+				while ((lessThan =numberCurrent < numberLast) && i != list.begin())
+				{
+					i--;
+					numberLast = max;
+
+					if((*i).info.number != NULL)
+						numberLast = *(*i).info.number;
+				}
 			}
-			if(lessThan>0) //si se ha encontrado un elemento menor que current, se inserta justo después
-				list.insert(++i,currentItem);
 			else
+			{
+				while ((lessThan = naturalSortLessThanCI(nameCurrent,nameLast)) && i != list.begin() && numberLast == max)
+				{
+					i--;
+					nameLast = (*i).name;
+					numberLast = max;
+
+					if((*i).info.number != NULL)
+						numberLast = *(*i).info.number;
+				}
+
+			}
+			if(!lessThan) //si se ha encontrado un elemento menor que current, se inserta justo después
+			{
+				if(numberCurrent != max)
+				{
+					if(numberCurrent == numberLast)
+						if(currentItem.info.isBis)
+						{
+							list.insert(++i,currentItem);
+						}
+						else
+							list.insert(i,currentItem);
+					else
+						list.insert(++i,currentItem);
+				}
+				else
+					list.insert(++i,currentItem);
+			}
+			else
+			{
 				list.insert(i,currentItem);
+			}
 
 		}
 	}

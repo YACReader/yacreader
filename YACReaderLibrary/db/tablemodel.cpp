@@ -1,6 +1,7 @@
 
 #include <QtGui>
 #include <QtDebug>
+#include <limits>
 
 #include "tableitem.h"
 #include "tablemodel.h"
@@ -270,7 +271,7 @@ QString TableModel::getComicPath(QModelIndex mi)
 		return _data.at(mi.row())->data(TableModel::Path).toString();
 	return "";
 }
-#define NUMBER_MAX 99999999
+
 void TableModel::setupModelData(QSqlQuery &sqlquery)
 {
 	TableItem * currentItem;
@@ -291,7 +292,8 @@ void TableModel::setupModelData(QSqlQuery &sqlquery)
 			QString nameLast = last->data(TableModel::FileName).toString();
 			QString nameCurrent = currentItem->data(TableModel::FileName).toString();
 			int numberLast,numberCurrent;
-			numberLast = numberCurrent = NUMBER_MAX; //TODO change by std limit
+			int max = (std::numeric_limits<int>::max)();
+			numberLast = numberCurrent = max; //TODO change by std limit
 
 			if(!last->data(TableModel::Number).isNull())
 			numberLast = last->data(TableModel::Number).toInt();
@@ -303,12 +305,12 @@ void TableModel::setupModelData(QSqlQuery &sqlquery)
 			i = _data.end();
 			i--;
 
-			if(numberCurrent != NUMBER_MAX)
+			if(numberCurrent != max)
 			{
 				while ((lessThan =numberCurrent < numberLast) && i != _data.begin())
 				{
 					i--;
-					numberLast = NUMBER_MAX; //TODO change by std limit
+					numberLast = max;
 
 					if(!(*i)->data(TableModel::Number).isNull())
 						numberLast = (*i)->data(TableModel::Number).toInt();
@@ -316,11 +318,11 @@ void TableModel::setupModelData(QSqlQuery &sqlquery)
 			}
 			else
 			{
-				while ((lessThan = naturalSortLessThanCI(nameCurrent,nameLast)) && i != _data.begin() && numberLast == 99999999)
+				while ((lessThan = naturalSortLessThanCI(nameCurrent,nameLast)) && i != _data.begin() && numberLast == max)
 				{
 					i--;
 					nameLast = (*i)->data(TableModel::FileName).toString();
-					numberLast = NUMBER_MAX; //TODO change by std limit
+					numberLast = max;
 
 					if(!(*i)->data(TableModel::Number).isNull())
 						numberLast = (*i)->data(TableModel::Number).toInt();
@@ -329,7 +331,7 @@ void TableModel::setupModelData(QSqlQuery &sqlquery)
 			}
 			if(!lessThan) //si se ha encontrado un elemento menor que current, se inserta justo después
 			{
-				if(numberCurrent != NUMBER_MAX)
+				if(numberCurrent != max)
 				{
 					if(numberCurrent == numberLast)
 						if(currentItem->data(TableModel::IsBis).toBool())
