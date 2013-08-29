@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QThread>
+#include <QMutex>
 
 class QLocalServer;
 class QLocalSocket;
@@ -35,6 +36,7 @@ public:
 signals:
 	void comicUpdated(quint64 libraryId, const ComicDB & comic);
 private:
+	static QMutex dbMutex;
 	void run();
 	
 	void getComicInfo(quint64 libraryId, ComicDB & comic, QList<ComicDB> & sibling);
