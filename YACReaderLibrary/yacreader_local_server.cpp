@@ -11,6 +11,8 @@
 
 using namespace YACReader;
 
+QMutex YACReaderClientConnectionWorker::dbMutex;
+
 YACReaderLocalServer::YACReaderLocalServer(QObject *parent) :
 	QThread(parent)
 {
@@ -145,12 +147,14 @@ void YACReaderClientConnectionWorker::run()
 
 void YACReaderClientConnectionWorker::getComicInfo(quint64 libraryId, ComicDB & comic, QList<ComicDB> & siblings)
 {
+	QMutexLocker locker(&dbMutex);
 	comic = DBHelper::getComicInfo(DBHelper::getLibrariesNames().at(libraryId), comic.id);
 	siblings = DBHelper::getSiblings(DBHelper::getLibrariesNames().at(libraryId), comic.parentId);
 }
 
 void YACReaderClientConnectionWorker::updateComic(quint64 libraryId, ComicDB & comic)
 {
+	QMutexLocker locker(&dbMutex);
 	DBHelper::update(DBHelper::getLibrariesNames().at(libraryId), comic.info);
 	emit comicUpdated(libraryId, comic);
 }
