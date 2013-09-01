@@ -48,7 +48,7 @@ void Configuration::load(QSettings * settings)
 	if(!settings->contains(ADJUST_TO_FULL_SIZE))
 		settings->setValue(ADJUST_TO_FULL_SIZE,false);
 	if(!settings->contains(BACKGROUND_COLOR))
-		settings->setValue(BACKGROUND_COLOR,QColor(0,0,0));
+		settings->setValue(BACKGROUND_COLOR,QColor(40,40,40));
 	if(!settings->contains(ALWAYS_ON_TOP))
 		settings->setValue(ALWAYS_ON_TOP,false);
 	if(!settings->contains(SHOW_TOOLBARS))
@@ -73,7 +73,7 @@ void Configuration::load(const QString & path)
 	maximized = false;
 	doublePage = false;
 	adjustToFullSize = false;
-	backgroundColor = QColor(0,0,0);
+	backgroundColor = QColor(40,40,40);
 	alwaysOnTop = false;
 
 	//load from file
