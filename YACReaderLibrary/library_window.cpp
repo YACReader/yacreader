@@ -369,13 +369,13 @@ void LibraryWindow::createActions()
 	setAsNonReadAction->setToolTip(tr("Set comic as unread"));
 	setAsNonReadAction->setIcon(QIcon(":/images/setUnread.png"));
 
-	setAllAsReadAction = new QAction(tr("Set all as read"),this);
+	/*setAllAsReadAction = new QAction(tr("Set all as read"),this);
 	setAllAsReadAction->setToolTip(tr("Set all comics as read"));
 	setAllAsReadAction->setIcon(QIcon(":/images/setAllRead.png"));
 
 	setAllAsNonReadAction = new QAction(tr("Set all as unread"),this);
 	setAllAsNonReadAction->setToolTip(tr("Set all comics as unread"));
-	setAllAsNonReadAction->setIcon(QIcon(":/images/setAllUnread.png"));
+	setAllAsNonReadAction->setIcon(QIcon(":/images/setAllUnread.png"));*/
 
 	showHideMarksAction = new QAction(tr("Show/Hide marks"),this);
 	showHideMarksAction->setToolTip(tr("Show or hide readed marks"));
@@ -478,8 +478,8 @@ void LibraryWindow::disableComicsActions(bool disabled)
 	asignOrderActions->setDisabled(disabled);
 	setAsReadAction->setDisabled(disabled);
 	setAsNonReadAction->setDisabled(disabled);
-	setAllAsReadAction->setDisabled(disabled);
-	setAllAsNonReadAction->setDisabled(disabled);
+	//setAllAsReadAction->setDisabled(disabled);
+	//setAllAsNonReadAction->setDisabled(disabled);
 	showHideMarksAction->setDisabled(disabled);
 	deleteComicsAction->setDisabled(disabled);
 	//context menu
@@ -573,9 +573,9 @@ void LibraryWindow::createToolBars()
 	editInfoToolBar->addSeparator();
 
 	editInfoToolBar->addAction(setAsReadAction);
-	editInfoToolBar->addAction(setAllAsReadAction);
+	//editInfoToolBar->addAction(setAllAsReadAction);
 	editInfoToolBar->addAction(setAsNonReadAction);
-	editInfoToolBar->addAction(setAllAsNonReadAction);
+	//editInfoToolBar->addAction(setAllAsNonReadAction);
 
 	editInfoToolBar->addAction(showHideMarksAction);
 
@@ -682,8 +682,8 @@ void LibraryWindow::createConnections()
 	connect(openLibraryAction,SIGNAL(triggered()),this,SLOT(showAddLibrary()));
 	connect(setAsReadAction,SIGNAL(triggered()),this,SLOT(setCurrentComicReaded()));
 	connect(setAsNonReadAction,SIGNAL(triggered()),this,SLOT(setCurrentComicUnreaded()));
-	connect(setAllAsReadAction,SIGNAL(triggered()),this,SLOT(setComicsReaded()));
-	connect(setAllAsNonReadAction,SIGNAL(triggered()),this,SLOT(setComicsUnreaded()));
+	//connect(setAllAsReadAction,SIGNAL(triggered()),this,SLOT(setComicsReaded()));
+	//connect(setAllAsNonReadAction,SIGNAL(triggered()),this,SLOT(setComicsUnreaded()));
 
 	connect(showHideMarksAction,SIGNAL(toggled(bool)),comicFlow,SLOT(setShowMarks(bool)));
 	
