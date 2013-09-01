@@ -138,8 +138,8 @@ private:
 	QAction * openContainingFolderComicAction;
 	QAction * setAsReadAction;
 	QAction * setAsNonReadAction;
-	QAction * setAllAsReadAction;
-	QAction * setAllAsNonReadAction;
+	//QAction * setAllAsReadAction;
+	//QAction * setAllAsNonReadAction;
 	QAction * showHideMarksAction;
 
 	//edit info actions
