@@ -16,7 +16,10 @@ YACReaderLocalClient::YACReaderLocalClient(QObject *parent) :
 	/*connect(socket, SIGNAL(error(QLocalSocket::LocalSocketError)),
 			this, SLOT(displayError(QLocalSocket::LocalSocketError)));*/
 }
-
+YACReaderLocalClient::~YACReaderLocalClient()
+{
+	delete localSocket;
+}
 //información de comic recibida...
 void YACReaderLocalClient::readMessage()
 {
@@ -47,7 +50,10 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 			tries++;
 		}
 		if(tries == 200)
+		{
+			localSocket->close();
 			return false;
+		}
 		
 		//QByteArray data;
 		tries = 0;
@@ -57,7 +63,10 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 			tries++;
 		}
 		if(tries == 10)
+		{
+			localSocket->close();
 			return false;
+		}
 		QDataStream sizeStream(localSocket->read(sizeof(quint16)));
 		sizeStream.setVersion(QDataStream::Qt_4_8);
 		quint16 totalSize = 0;
@@ -70,10 +79,14 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 			tries++;
 		}
 		if(tries == 10)
+		{
+			localSocket->close();
 			return false;
+		}
 		QDataStream dataStream(localSocket->read(totalSize));
 		dataStream >> comic;
 		dataStream >> siblings;
+		localSocket->close();
 		return true;
 	}
 	else
@@ -102,6 +115,7 @@ bool YACReaderLocalClient::sendComicInfo(quint64 libraryId, ComicDB & comic)
 			written += localSocket->write(block);
 			tries++;
 		}
+		localSocket->close();
 		if(tries == 100 && written != block.size())
 		{
 			emit finished();

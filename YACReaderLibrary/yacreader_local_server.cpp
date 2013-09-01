@@ -12,9 +12,9 @@
 using namespace YACReader;
 
 QMutex YACReaderClientConnectionWorker::dbMutex;
-
+//int YACReaderClientConnectionWorker::count = 0;
 YACReaderLocalServer::YACReaderLocalServer(QObject *parent) :
-	QThread(parent)
+	QObject(parent)
 {
 	localServer = new QLocalServer(this);
 	if (!localServer->listen(YACREADERLIBRARY_GUID)) {
@@ -29,11 +29,11 @@ bool YACReaderLocalServer::isListening()
 	return localServer->isListening();
 }
 
-void YACReaderLocalServer::run()
+/*void YACReaderLocalServer::run()
 {
 	while(1)
 		exec();
-}
+}*/
 
 void YACReaderLocalServer::sendResponse()
 {
@@ -41,9 +41,13 @@ void YACReaderLocalServer::sendResponse()
 	//connect(clientConnection, SIGNAL(disconnected()),clientConnection, SLOT(deleteLater()));
 
 	YACReaderClientConnectionWorker * worker = new YACReaderClientConnectionWorker(clientConnection);
-	connect(worker,SIGNAL(comicUpdated(quint64, ComicDB)),this,SIGNAL(comicUpdated(quint64, ComicDB)));
-	connect(worker,SIGNAL(finished()),worker,SLOT(deleteLater()));
-	worker->start();
+	if(worker != 0)
+	{
+		clientConnection->moveToThread(worker);
+		connect(worker,SIGNAL(comicUpdated(quint64, ComicDB)),this,SIGNAL(comicUpdated(quint64, ComicDB)));
+		connect(worker,SIGNAL(finished()),worker,SLOT(deleteLater()));
+		worker->start();
+	}
 	//clientConnection->waitForBytesWritten();*/
 	//clientConnection->disconnectFromServer();
 }
@@ -68,9 +72,20 @@ YACReaderClientConnectionWorker::~YACReaderClientConnectionWorker()
 {
 
 }
-
+/*#include <QFile>
+#include <QTextStream>
+#include <QDateTime>*/
 void YACReaderClientConnectionWorker::run()
 {
+	/*{
+	QFile f(QString("c:/temp/thread%1.txt").arg(count));
+	f.open(QIODevice::Append);
+	QTextStream out(&f);
+	out << QString("Thread%1 starts").arg(count) << endl;
+	f.close();
+	}
+	uint t1 = QDateTime::currentMSecsSinceEpoch();*/
+
 	quint64 libraryId;
 	ComicDB comic;
 	int tries = 0;
@@ -143,6 +158,15 @@ void YACReaderClientConnectionWorker::run()
 
 	clientConnection->waitForDisconnected();
 	clientConnection->deleteLater();
+	/*count++;
+	uint t2 = QDateTime::currentMSecsSinceEpoch();
+	{
+	QFile f(QString("c:/temp/thread%1.txt").arg(count));
+	f.open(QIODevice::Append);
+	QTextStream out(&f);
+	out << QString("Thread%1 ends : time - %2").arg(count).arg(t2-t1) << endl;
+	f.close();
+	}*/
 }
 
 void YACReaderClientConnectionWorker::getComicInfo(quint64 libraryId, ComicDB & comic, QList<ComicDB> & siblings)

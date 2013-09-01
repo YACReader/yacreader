@@ -9,7 +9,7 @@ class QLocalServer;
 class QLocalSocket;
 class ComicDB;
 
-class YACReaderLocalServer : public QThread
+class YACReaderLocalServer : public QObject
 {
 	Q_OBJECT
 public:
@@ -22,7 +22,7 @@ public slots:
 	void sendResponse();
 	static bool isRunning();
 private:
-	void run();
+	//void run();
 	QLocalServer * localServer;
 	
 };
@@ -37,6 +37,7 @@ signals:
 	void comicUpdated(quint64 libraryId, const ComicDB & comic);
 private:
 	static QMutex dbMutex;
+	//static int count;
 	void run();
 	
 	void getComicInfo(quint64 libraryId, ComicDB & comic, QList<ComicDB> & sibling);

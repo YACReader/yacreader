@@ -11,7 +11,7 @@ class YACReaderLocalClient : public QObject
     Q_OBJECT
 public:
     explicit YACReaderLocalClient(QObject *parent = 0);
-    
+    ~YACReaderLocalClient();
 signals:
     void finished();
 public slots:
