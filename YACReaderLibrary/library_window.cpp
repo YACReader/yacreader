@@ -463,6 +463,10 @@ void LibraryWindow::createActions()
 	hideComicViewAction->setIcon(QIcon(":/images/hideComicFlow.png"));
 	hideComicViewAction->setCheckable(true);
 	hideComicViewAction->setChecked(false);
+
+	getInfoAction = new QAction(this);
+	getInfoAction->setText(tr("Download tags from Comic Vine"));
+	getInfoAction->setIcon(QIcon(":/images/getInfo.png"));
 	//-------------------------------------------------------------------------
 	//disable actions
 	disableAllActions();
@@ -484,6 +488,7 @@ void LibraryWindow::disableComicsActions(bool disabled)
 	deleteComicsAction->setDisabled(disabled);
 	//context menu
 	openContainingFolderComicAction->setDisabled(disabled);
+	getInfoAction->setDisabled(disabled);
 
 
 }
@@ -566,9 +571,12 @@ void LibraryWindow::createToolBars()
 	editInfoToolBar->addAction(openComicAction);
 	editInfoToolBar->addSeparator();
 	editInfoToolBar->addAction(editSelectedComicsAction);
-	editInfoToolBar->addAction(selectAllComicsAction);
-	editInfoToolBar->addSeparator();
+	editInfoToolBar->addAction(getInfoAction);
 	editInfoToolBar->addAction(asignOrderActions);
+	
+	editInfoToolBar->addSeparator();
+	
+	editInfoToolBar->addAction(selectAllComicsAction);
 
 	editInfoToolBar->addSeparator();
 
@@ -731,6 +739,8 @@ void LibraryWindow::createConnections()
 	connect(deleteComicsAction,SIGNAL(triggered()),this,SLOT(deleteComics()));
 
 	connect(hideComicViewAction, SIGNAL(toggled(bool)),this, SLOT(hideComicFlow(bool)));
+
+	connect(getInfoAction,SIGNAL(triggered()),this,SLOT(showComicVineScraper()));
 
 	//connect(socialAction,SIGNAL(triggered()),this,SLOT(showSocial()));
 
@@ -1401,6 +1411,11 @@ void LibraryWindow::showProperties()
 	propertiesDialog->setComics(comics);
 	
 	propertiesDialog->show();
+}
+
+void LibraryWindow::showComicVineScraper()
+{
+
 }
 
 void LibraryWindow::asignNumbers()
