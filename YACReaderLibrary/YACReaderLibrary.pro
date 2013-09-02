@@ -76,7 +76,8 @@ HEADERS += comic_flow.h \
 			import_widget.h \
 			yacreader_local_server.h \
     yacreader_main_toolbar.h \
-    comics_remover.h
+    comics_remover.h \
+    comic_vine_dialog.h
 		   
 SOURCES += comic_flow.cpp \
            create_library_dialog.cpp \
@@ -115,7 +116,8 @@ SOURCES += comic_flow.cpp \
 			import_widget.cpp \
 			yacreader_local_server.cpp \
     yacreader_main_toolbar.cpp \
-    comics_remover.cpp
+    comics_remover.cpp \
+    comic_vine_dialog.cpp
 			
 		   
 include(./server/server.pri)
