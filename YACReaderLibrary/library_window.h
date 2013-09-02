@@ -141,6 +141,7 @@ private:
 	//QAction * setAllAsReadAction;
 	//QAction * setAllAsNonReadAction;
 	QAction * showHideMarksAction;
+	QAction * getInfoAction; //comic vine
 
 	//edit info actions
 	QAction * selectAllComicsAction;
@@ -266,6 +267,7 @@ public:
 		void importLibraryPackage();
 		void updateComicsView(quint64 libraryId, const ComicDB & comic);
 		void setCurrentComicOpened();
+		void showComicVineScraper();
 };
 
 #endif
