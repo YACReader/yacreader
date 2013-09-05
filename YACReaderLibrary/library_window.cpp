@@ -55,6 +55,8 @@
 #include "comics_remover.h"
 #include "yacreader_library_list_widget.h"
 #include "yacreader_treeview.h"
+
+#include "comic_vine_dialog.h"
 //#include "yacreader_social_dialog.h"
 //
 
@@ -261,6 +263,7 @@ void LibraryWindow::doDialogs()
 	createLibraryDialog = new CreateLibraryDialog(this);
 	renameLibraryDialog = new RenameLibraryDialog(this);
 	propertiesDialog = new PropertiesDialog(this);
+	comicVineDialog = new ComicVineDialog(this);
 	exportLibraryDialog = new ExportLibraryDialog(this);
 	importLibraryDialog = new ImportLibraryDialog(this);
 	exportComicsInfoDialog = new ExportComicsInfoDialog(this);
@@ -1415,7 +1418,7 @@ void LibraryWindow::showProperties()
 
 void LibraryWindow::showComicVineScraper()
 {
-
+	comicVineDialog->show();
 }
 
 void LibraryWindow::asignNumbers()
