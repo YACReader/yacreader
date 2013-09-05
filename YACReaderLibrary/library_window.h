@@ -48,6 +48,7 @@ class YACReaderSideBar;
 class YACReaderLibraryListWidget;
 class YACReaderTreeView;
 class YACReaderMainToolBar;
+class ComicVineDialog;
 #include "comic_db.h"
 
 using namespace YACReader;
@@ -68,6 +69,7 @@ private:
 	HelpAboutDialog * had;
 	RenameLibraryDialog * renameLibraryDialog;
 	PropertiesDialog * propertiesDialog;
+	ComicVineDialog * comicVineDialog;
 	//YACReaderSocialDialog * socialDialog;
 	bool fullscreen;
 	bool importedCovers; //if true, the library is read only (not updates,open comic or properties)
