@@ -59,7 +59,8 @@ HEADERS += $$PWD/comic.h \
 	$$PWD/../common/comic_db.h \
 	$$PWD/../common/folder.h \
 	$$PWD/../common/library_item.h \
-	$$PWD/yacreader_local_client.h
+	$$PWD/yacreader_local_client.h \
+	$$PWD/../common/http_worker.h
 	
 SOURCES += $$PWD/comic.cpp \
     $$PWD/configuration.cpp \
@@ -90,7 +91,8 @@ SOURCES += $$PWD/comic.cpp \
 	$$PWD/../common/comic_db.cpp \
 	$$PWD/../common/folder.cpp \
 	$$PWD/../common/library_item.cpp \
-	$$PWD/yacreader_local_client.cpp
+	$$PWD/yacreader_local_client.cpp \
+	$$PWD/../common/http_worker.cpp
 
 include($$PWD/../custom_widgets/custom_widgets_yacreader.pri)
 include($$PWD/../compressed_archive/wrapper.pri)
