@@ -13,80 +13,15 @@
 #define PREVIOUS_VERSION "6.0.0"
 
 HttpVersionChecker::HttpVersionChecker()
-		:QThread()
+		:HttpWorker("https://bitbucket.org/luisangelsm/yacreader/wiki/Home")
 {
-	http = new QHttp(this);
-
-	connect(http, SIGNAL(requestFinished(int, bool)),
-			 this, SLOT(httpRequestFinished(int, bool)));
-
-	connect(http, SIGNAL(responseHeaderReceived(const QHttpResponseHeader &)),
-			 this, SLOT(readResponseHeader(const QHttpResponseHeader &)));
-
-	connect(http, SIGNAL(readyRead(const QHttpResponseHeader &)),
-			this, SLOT(read(const QHttpResponseHeader &)));
+	connect(this,SIGNAL(dataReady(const QByteArray &)),this,SLOT(checkNewVersion(const QByteArray &)));
 }
 
-void HttpVersionChecker::get()
+void HttpVersionChecker::checkNewVersion(const QByteArray & data)
 {
-	this->start();
-
+	checkNewVersion(QString(data));
 }
-
-void HttpVersionChecker::run()
-{
-	QNetworkAccessManager manager;
-	QEventLoop q;
-	QTimer tT;
-	
-	tT.setSingleShot(true);
-	connect(&tT, SIGNAL(timeout()), &q, SLOT(quit()));
-	connect(&manager, SIGNAL(finished(QNetworkReply*)),&q, SLOT(quit()));
-	QNetworkReply *reply = manager.get(QNetworkRequest(
-				   QUrl("https://bitbucket.org/luisangelsm/yacreader/wiki/Home")));
-	
-	tT.start(5000); // 5s timeout
-	q.exec();
-	
-	if(tT.isActive()){
-		// download complete
-		checkNewVersion(reply->readAll());
-		tT.stop();
-	} else {
-		// timeout
-	}
-	
-	/*QUrl url("http://code.google.com/p/yacreader/downloads/list");
-	QHttp::ConnectionMode mode = QHttp::ConnectionModeHttp;
-	http->setHost(url.host(), mode, url.port() == -1 ? 0 : url.port());
-	QByteArray path = QUrl::toPercentEncoding(url.path(), "!$&'()*+,;=:@/");
-	if (path.isEmpty())
-		 path = "/";
-	httpGetId = http->get(path, 0);
-	exec();*/
-}
-void HttpVersionChecker::readResponseHeader(const QHttpResponseHeader &responseHeader)
-{
-	Q_UNUSED(responseHeader)
-}
-
-void HttpVersionChecker::read(const QHttpResponseHeader &){
-	content.append(http->readAll());
-}
-
-void HttpVersionChecker::httpRequestFinished(int requestId, bool error)
-{
-	Q_UNUSED(requestId)
-#ifdef QT_DEBUG
-	QString response("YACReader-5.0.0 win32.exe");
-#else
-	QString response(content);
-#endif
-	if(!error)
-		checkNewVersion(response);
-	exit();
-}
-
 //TODO escribir prueba unitaria
 bool HttpVersionChecker::checkNewVersion(QString sourceContent)
 {

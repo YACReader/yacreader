@@ -3,6 +3,9 @@
 
 #include <QDialog>
 
+class QPushButton;
+class QStackedWidget;
+
 class ComicVineDialog : public QDialog
 {
 	Q_OBJECT
@@ -12,7 +15,21 @@ public:
 signals:
 	
 public slots:
+
+private:
+	QPushButton * nextButton; 
+	QPushButton * closeButton;
+
+	//stacked widgets
+	QStackedWidget * content;
+
+	QWidget * infoNotFound;
+	QWidget * singleComicBrowser;
 	
+	void doLayout();
+	void doStackedWidgets();
+	void doSeriesQuestion();
+	void doConnections();
 };
 
 #endif // COMIC_VINE_DIALOG_H

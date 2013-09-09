@@ -1,31 +1,27 @@
 #ifndef __CHECKUPDATE_H
 #define __CHECKUPDATE_H
 
+#include "http_worker.h"
+#include "yacreader_global.h"
+
 #include <QWidget>
 #include <QHttp>
 #include <QHttpResponseHeader>
 #include <QByteArray>
 #include <QThread>
-#include "yacreader_global.h"
 
- class HttpVersionChecker : public QThread
+ class HttpVersionChecker : public HttpWorker
  {
 		 Q_OBJECT
 	public:
 		HttpVersionChecker();
-		bool thereIsNewVersion();
 	public slots:
-		void httpRequestFinished(int requestId, bool error);
-		void readResponseHeader(const QHttpResponseHeader &);
-		void read(const QHttpResponseHeader &);
-		void get();
+
 	private:
-		void run();
-		QHttp *http;
-		int httpGetId;
-		QByteArray content;
 		bool found;
+	private slots:
 		bool checkNewVersion(QString sourceContent);
+		void checkNewVersion(const QByteArray & data);
 	signals:
 		void newVersionDetected();
  };
