@@ -5,12 +5,13 @@
 #include <QPushButton>
 #include <QStackedWidget>
 #include <QRadioButton>
-#include <QFileInfo>
+#include <QMessageBox>
 
 #include "yacreader_busy_widget.h"
+#include "comic_vine_client.h"
 
 ComicVineDialog::ComicVineDialog(QWidget *parent) :
-	QDialog(parent)
+	QDialog(parent),comicVineClient(new ComicVineClient)
 {
 	doLayout();
 	doStackedWidgets();
@@ -65,6 +66,8 @@ void ComicVineDialog::doConnections()
 {
 	connect(closeButton,SIGNAL(pressed()),this,SLOT(close()));
 	connect(nextButton,SIGNAL(pressed()),this,SLOT(goNext()));
+
+	connect(comicVineClient,SIGNAL(searchResult(QString)),this,SLOT(debugClientResults(QString)));
 }
 
 void ComicVineDialog::goNext()
@@ -78,9 +81,13 @@ void ComicVineDialog::goNext()
 		}
 		else
 		{
-			//titleHeader->setSubtitle
+			ComicDB comic = comics[currentIndex];
+			QString title = comic.getTitleOrPath();
+			titleHeader->setSubTitle(tr("comic %1 of %2 - %3").arg(currentIndex+1).arg(comics.length()).arg(title));
 			content->setCurrentWidget(searchSingleComic);
 		}
+	}
+	else if (content->currentWidget() == searchSingleComic) {
 
 	}
 }
@@ -92,19 +99,19 @@ void ComicVineDialog::setComics(const QList<ComicDB> & comics)
 
 void ComicVineDialog::show()
 {
+	currentIndex = 0;
+
 	if(comics.length() == 1)
 	{
 		ComicDB singleComic = comics[0];
-
-		if(singleComic.info.title != 0)
-			titleHeader->setSubtitle(*singleComic.info.title);
-		else
-			titleHeader->setSubtitle(QFileInfo(singleComic.path).fileName());
-
+		QString title = singleComic.getTitleOrPath();
+		titleHeader->setSubTitle(title);
 		content->setCurrentWidget(searchSingleComic);
+
+		comicVineClient->search(title);
 	}else if(comics.length()>1)
 	{
-		titleHeader->setSubtitle(tr("%1 comics selected").arg(comics.length()));
+		titleHeader->setSubTitle(tr("%1 comics selected").arg(comics.length()));
 		content->setCurrentWidget(seriesQuestion);
 	}
 	QDialog::show();
@@ -125,6 +132,11 @@ void ComicVineDialog::doLoading()
 	w->setContentsMargins(0,0,0,0);
 
 	content->addWidget(w);
+}
+
+void ComicVineDialog::debugClientResults(const QString & string)
+{
+	QMessageBox::information(0,"-Response-", string);
 }
 
 //---------------------------------------
@@ -161,7 +173,7 @@ void TitleHeader::setTitle(const QString & title)
 	mainTitleLabel->setText(title);
 }
 
-void TitleHeader::setSubtitle(const QString & title)
+void TitleHeader::setSubTitle(const QString & title)
 {
 	subTitleLabel->setText(title);
 }
