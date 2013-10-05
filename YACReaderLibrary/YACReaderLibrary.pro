@@ -9,7 +9,6 @@ INCLUDEPATH += .
 INCLUDEPATH += ../common \
 	           ./server \
 			   ./db \
-			   ../YACReader  \
 			   ../custom_widgets
 
 DEFINES += SERVER_RELEASE
@@ -64,8 +63,8 @@ HEADERS += comic_flow.h \
 		   ../common/comic_db.h \
 		   ../common/folder.h \
 		   ../common/library_item.h \
-		   ../YACReader/comic.h \
-		   ../YACReader/bookmarks.h \
+		   ../common/comic.h \
+		   ../common/bookmarks.h \
 		   ../common/pictureflow.h \
            ../common/custom_widgets.h \
 		   ../common/qnaturalsorting.h \
@@ -107,8 +106,8 @@ SOURCES += comic_flow.cpp \
 		   ../common/comic_db.cpp \
 		   ../common/folder.cpp \
 		   ../common/library_item.cpp \
-		   ../YACReader/comic.cpp \
-		   ../YACReader/bookmarks.cpp \
+		   ../common/comic.cpp \
+		   ../common/bookmarks.cpp \
            ../common/pictureflow.cpp \
            ../common/custom_widgets.cpp \
 		   ../common/qnaturalsorting.cpp \
