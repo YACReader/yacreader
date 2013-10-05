@@ -6,6 +6,8 @@
 #ifndef STARTUP_H
 #define STARTUP_H
 
+#include <QString>
+
 class HttpListener;
 /**
   Helper class to install and run the application as a windows
