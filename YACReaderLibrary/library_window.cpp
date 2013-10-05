@@ -1418,6 +1418,16 @@ void LibraryWindow::showProperties()
 
 void LibraryWindow::showComicVineScraper()
 {
+	QModelIndexList indexList = getSelectedComics();
+
+	QList<ComicDB> comics = dmCV->getComics(indexList);
+	ComicDB c = comics[0];
+	_comicIdEdited = c.id;//static_cast<TableItem*>(indexList[0].internalPointer())->data(4).toULongLong();
+
+	comicVineDialog->databasePath = dm->getDatabase();
+	comicVineDialog->basePath = currentPath();
+	comicVineDialog->setComics(comics);
+
 	comicVineDialog->show();
 }
 

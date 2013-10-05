@@ -28,7 +28,7 @@ private slots:
 class CVSearch : public HttpWorker
 {
 public:
-	CVSearch(const QString & query, int page=0);
+	CVSearch(const QString & URL);
 };
 
 #endif // COMIC_VINE_CLIENT_H
