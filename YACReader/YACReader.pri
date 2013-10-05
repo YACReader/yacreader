@@ -6,7 +6,7 @@ INCLUDEPATH += $$PWD/../common \
 
 win32 {
 INCLUDEPATH += $$PWD/../dependencies/poppler/include
-LIBS += -L$$PWD/../dependencies/poppler/lib -lpoppler-qt4
+LIBS += -L$$PWD/../dependencies/poppler/lib -lpoppler-qt4 -loleaut32 -lole32
 QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
 QMAKE_LFLAGS_RELEASE += /LTCG
 CONFIG -= embed_manifest_exe

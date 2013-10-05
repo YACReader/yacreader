@@ -5,6 +5,9 @@
 #include <QPushButton>
 #include <QStackedWidget>
 #include <QRadioButton>
+#include <QFileInfo>
+
+#include "yacreader_busy_widget.h"
 
 ComicVineDialog::ComicVineDialog(QWidget *parent) :
 	QDialog(parent)
@@ -22,12 +25,6 @@ void ComicVineDialog::doLayout()
 
 	QString dialogButtonsStyleSheet = "QPushButton {border: 1px solid #242424; background: #2e2e2e; color:white; padding: 5px 26px 5px 26px; font-size:12px;font-family:Arial; font-weight:bold;}";
 
-	QLabel * mainTitleLabel = new QLabel(tr("SEARCH"));
-	QLabel * subTitleLabel = new QLabel(tr("%1 comics selected"));
-
-	mainTitleLabel->setStyleSheet("QLabel {color:white; font-size:18px;font-family:Arial;}");
-	subTitleLabel->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
-
 	nextButton = new QPushButton(tr("next"));
 	closeButton = new QPushButton(tr("close"));
 
@@ -35,25 +32,17 @@ void ComicVineDialog::doLayout()
 	closeButton->setStyleSheet(dialogButtonsStyleSheet);
 
 	content = new QStackedWidget(this);
-	//
 
 	QVBoxLayout * mainLayout = new QVBoxLayout;
-	QHBoxLayout * titleLayout = new QHBoxLayout;
-	QVBoxLayout * titleLabelsLayout = new QVBoxLayout;
+
 	QHBoxLayout * buttonLayout = new QHBoxLayout;
-
-	titleLabelsLayout->addWidget(mainTitleLabel);
-	titleLabelsLayout->addWidget(subTitleLabel);
-	titleLabelsLayout->setSpacing(0);
-
-	titleLayout->addLayout(titleLabelsLayout);
 
 	buttonLayout->addStretch();
 	buttonLayout->addWidget(nextButton);
 	buttonLayout->addWidget(closeButton);
 	buttonLayout->setContentsMargins(0,0,0,0);
 
-	mainLayout->addLayout(titleLayout);
+	mainLayout->addWidget(titleHeader = new TitleHeader);
 	mainLayout->addWidget(content);
 	mainLayout->addStretch();
 	mainLayout->addLayout(buttonLayout);
@@ -66,17 +55,141 @@ void ComicVineDialog::doLayout()
 
 void ComicVineDialog::doStackedWidgets()
 {
-	doSeriesQuestion();
+	content->addWidget(seriesQuestion = new SeriesQuestion);
+	content->addWidget(searchSingleComic = new SearchSingleComic);
+	content->addWidget(searchVolume = new SearchVolume);
+	doLoading();
 }
-void ComicVineDialog::doSeriesQuestion()
+
+void ComicVineDialog::doConnections()
+{
+	connect(closeButton,SIGNAL(pressed()),this,SLOT(close()));
+	connect(nextButton,SIGNAL(pressed()),this,SLOT(goNext()));
+}
+
+void ComicVineDialog::goNext()
+{
+	//
+	if(content->currentWidget() == seriesQuestion)
+	{
+		if(seriesQuestion->getYes())
+		{
+			content->setCurrentWidget(searchVolume);
+		}
+		else
+		{
+			//titleHeader->setSubtitle
+			content->setCurrentWidget(searchSingleComic);
+		}
+
+	}
+}
+
+void ComicVineDialog::setComics(const QList<ComicDB> & comics)
+{
+	this->comics = comics;
+}
+
+void ComicVineDialog::show()
+{
+	if(comics.length() == 1)
+	{
+		ComicDB singleComic = comics[0];
+
+		if(singleComic.info.title != 0)
+			titleHeader->setSubtitle(*singleComic.info.title);
+		else
+			titleHeader->setSubtitle(QFileInfo(singleComic.path).fileName());
+
+		content->setCurrentWidget(searchSingleComic);
+	}else if(comics.length()>1)
+	{
+		titleHeader->setSubtitle(tr("%1 comics selected").arg(comics.length()));
+		content->setCurrentWidget(seriesQuestion);
+	}
+	QDialog::show();
+}
+
+void ComicVineDialog::doLoading()
 {
 	QWidget * w = new QWidget;
 	QVBoxLayout * l = new QVBoxLayout;
 
+	YACReaderBusyWidget * bw = new YACReaderBusyWidget;
+
+	l->addStretch();
+	l->addWidget(bw,0,Qt::AlignHCenter);
+
+	l->setContentsMargins(0,0,0,0);
+	w->setLayout(l);
+	w->setContentsMargins(0,0,0,0);
+
+	content->addWidget(w);
+}
+
+//---------------------------------------
+//TitleHeader
+//---------------------------------------
+TitleHeader::TitleHeader(QWidget * parent )
+	:QWidget(parent)
+{
+	mainTitleLabel = new QLabel();
+	subTitleLabel = new QLabel();
+
+	mainTitleLabel->setStyleSheet("QLabel {color:white; font-size:18px;font-family:Arial;}");
+	subTitleLabel->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
+
+	QHBoxLayout * titleLayout = new QHBoxLayout;
+	QVBoxLayout * titleLabelsLayout = new QVBoxLayout;
+
+	titleLabelsLayout->addWidget(mainTitleLabel);
+	titleLabelsLayout->addWidget(subTitleLabel);
+	titleLabelsLayout->setSpacing(0);
+
+	titleLayout->addLayout(titleLabelsLayout);
+	titleLayout->setContentsMargins(0,0,0,0);
+
+	setLayout(titleLayout);
+
+	setContentsMargins(0,0,0,0);
+
+	setTitle(tr("SEARCH"));
+}
+
+void TitleHeader::setTitle(const QString & title)
+{
+	mainTitleLabel->setText(title);
+}
+
+void TitleHeader::setSubtitle(const QString & title)
+{
+	subTitleLabel->setText(title);
+}
+
+void TitleHeader::showButtons(bool show)
+{
+	if(show)
+	{
+
+	}
+	else
+	{
+
+	}
+}
+
+//---------------------------------------
+//SeriesQuestion
+//---------------------------------------
+SeriesQuestion::SeriesQuestion(QWidget * parent)
+	:QWidget(parent)
+{
+	QVBoxLayout * l = new QVBoxLayout;
+
 	QLabel * questionLabel = new QLabel(tr("You are trying to get information for various comics at once, are they part of the same series?"));
 	questionLabel->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
-	QRadioButton * yes = new QRadioButton(tr("yes"));
-	QRadioButton * no = new QRadioButton(tr("no"));
+	yes = new QRadioButton(tr("yes"));
+	no  = new QRadioButton(tr("no"));
 
 	QString rbStyle = "QRadioButton {margin-left:27px; margin-top:5px; color:white;font-size:12px;font-family:Arial;}"
 		"QRadioButton::indicator {width:11px;height:11px;}"
@@ -94,12 +207,87 @@ void ComicVineDialog::doSeriesQuestion()
 	l->addStretch();
 
 	l->setContentsMargins(0,0,0,0);
-	w->setLayout(l);
-	w->setContentsMargins(0,0,0,0);
-	content->addWidget(w);
+	setLayout(l);
+	setContentsMargins(0,0,0,0);
 }
 
-void ComicVineDialog::doConnections()
+bool SeriesQuestion::getYes()
 {
-	connect(closeButton,SIGNAL(pressed()),this,SLOT(close()));
+	return yes->isChecked();
+}
+//---------------------------------------
+//ScrapperLineEdit
+//---------------------------------------
+ScrapperLineEdit::ScrapperLineEdit(const QString & title, QWidget * widget)
+	:QLineEdit(widget)
+{
+	titleLabel = new QLabel(title,this);
+	titleLabel->setStyleSheet("QLabel {color:white;}");
+
+	setStyleSheet(QString("QLineEdit {"
+		"border:none; background-color: #2E2E2E; color : white; padding-left: %1; padding-bottom: 1px; margin-bottom: 0px;" 
+		"}").arg(titleLabel->sizeHint().width()+6));
+
+	setFixedHeight(22);
+}
+
+void ScrapperLineEdit::resizeEvent(QResizeEvent *)
+{
+	QSize szl = titleLabel->sizeHint();
+	titleLabel->move(6,(rect().bottom() + 1 - szl.height())/2);
+}
+
+//---------------------------------------
+//SearchSingleComic
+//---------------------------------------
+SearchSingleComic::SearchSingleComic(QWidget * parent)
+	:QWidget(parent)
+{
+
+	QLabel * label = new QLabel(tr("No results found, please provide some aditional information. At least one field is needed."));
+	label->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
+
+	titleEdit = new ScrapperLineEdit(tr("Title:"));
+	numberEdit = new ScrapperLineEdit(tr("Number:"));
+	volumeEdit = new ScrapperLineEdit(tr("Series:"));
+
+	numberEdit->setMaximumWidth(126);
+
+	QVBoxLayout * l = new QVBoxLayout;
+	QHBoxLayout * hl = new QHBoxLayout;
+	hl->addWidget(titleEdit);
+	hl->addWidget(numberEdit);
+
+	l->addSpacing(35);
+	l->addWidget(label);
+	l->addLayout(hl);
+	l->addWidget(volumeEdit);
+	l->addStretch();
+
+	l->setContentsMargins(0,0,0,0);
+	setLayout(l);
+	setContentsMargins(0,0,0,0);
+}
+
+//---------------------------------------
+//SearchVolume
+//---------------------------------------
+SearchVolume::SearchVolume(QWidget * parent)
+	:QWidget(parent)
+{
+	QLabel * label = new QLabel(tr("No results found, please provide some aditional information."));
+	label->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
+
+	volumeEdit = new ScrapperLineEdit(tr("Series:"));
+
+	QVBoxLayout * l = new QVBoxLayout;
+
+	l->addSpacing(35);
+	l->addWidget(label);
+	l->addWidget(volumeEdit);
+	l->addStretch();
+
+	l->setContentsMargins(0,0,0,0);
+	setLayout(l);
+	setContentsMargins(0,0,0,0);
 }

@@ -39,41 +39,54 @@ ComicVineClient::ComicVineClient(QObject *parent) :
 
 }
 
+//CV_SEARCH
 void ComicVineClient::search(const QString & query, int page)
 {
-	CVSearch * search = new CVSearch(query,page);
+	CVSearch * search = new CVSearch(CV_SEARCH.arg(query).arg(page));
 	connect(search,SIGNAL(dataReady(const QByteArry &)),this,SLOT(proccessVolumesSearchData(const QByteArry &)));
 	connect(search,SIGNAL(finished()),search,SLOT(deleteLater()));
 	search->get();
 }
 
+//CV_SEARCH result
 void ComicVineClient::proccessVolumesSearchData(const QByteArray & data)
 {
 	QString xml(data);
 }
 
+//CV_SERIES_DETAIL
 void ComicVineClient::getSeriesDetail(const QString & id)
 {
+
 }
 
+//CV_COMIC_IDS
 void ComicVineClient::getComicIds(const QString & id, int page)
 {
+
 }
 
+//CV_COMIC_ID
 void ComicVineClient::getComicId(const QString & id, int comicNumber)
 {
+
 }
 
+//CV_COMIC_DETAIL
 void ComicVineClient::getComicDetail(const QString & id)
 {
+
 }
 
+//CV_COVER_DETAIL
 void ComicVineClient::getCoverURL(const QString & id)
 {
+
 }
 
 //CVSearch
-CVSearch::CVSearch(const QString & query, int page)
-	:HttpWorker(CV_SEARCH.arg(query).arg(page))
+CVSearch::CVSearch(const QString & URL)
+	:HttpWorker(URL)
 {
+
 }
