@@ -29,7 +29,7 @@ CONFIG += release
 CONFIG -= flat
 
 # Input
-HEADERS += $$PWD/comic.h \
+HEADERS += $$PWD/../common/comic.h \
     $$PWD/configuration.h \
     $$PWD/goto_dialog.h \
     $$PWD/magnifying_glass.h \
@@ -37,7 +37,7 @@ HEADERS += $$PWD/comic.h \
     $$PWD/viewer.h \
     $$PWD/goto_flow.h \
     $$PWD/options_dialog.h \
-    $$PWD/bookmarks.h \
+    $$PWD/../common/bookmarks.h \
     $$PWD/bookmarks_dialog.h \
     $$PWD/render.h \
     $$PWD/shortcuts_dialog.h \
@@ -62,7 +62,7 @@ HEADERS += $$PWD/comic.h \
 	$$PWD/yacreader_local_client.h \
 	$$PWD/../common/http_worker.h
 	
-SOURCES += $$PWD/comic.cpp \
+SOURCES += $$PWD/../common/comic.cpp \
     $$PWD/configuration.cpp \
     $$PWD/goto_dialog.cpp \
 	$$PWD/magnifying_glass.cpp \
@@ -70,7 +70,7 @@ SOURCES += $$PWD/comic.cpp \
     $$PWD/viewer.cpp \
     $$PWD/goto_flow.cpp \
     $$PWD/options_dialog.cpp \
-    $$PWD/bookmarks.cpp \
+    $$PWD/../common/bookmarks.cpp \
     $$PWD/bookmarks_dialog.cpp \
     $$PWD/render.cpp \
     $$PWD/shortcuts_dialog.cpp \
