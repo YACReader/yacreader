@@ -10,6 +10,7 @@ class QPushButton;
 class QStackedWidget;
 class QLabel;
 class QRadioButton;
+class ComicVineClient;
 
 class ScrapperLineEdit : public QLineEdit
 {
@@ -30,7 +31,7 @@ public:
 	TitleHeader(QWidget * parent = 0);
 public slots:
 	void setTitle(const QString & title);
-	void setSubtitle(const QString & title);
+	void setSubTitle(const QString & title);
 	void showButtons(bool show);
 private:
 	QLabel * mainTitleLabel;
@@ -86,7 +87,12 @@ public slots:
 	void show();
 protected slots:
 	void goNext();
+	void debugClientResults(const QString & string);
 private:
+	ComicVineClient * comicVineClient;
+
+	int currentIndex;
+
 	TitleHeader * titleHeader;
 	QPushButton * nextButton; 
 	QPushButton * closeButton;

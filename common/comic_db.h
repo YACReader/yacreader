@@ -132,6 +132,9 @@ public:
 
 	bool hasCover() {return _hasCover;};
 
+	//returns comic title if it isn't null or empty, in other case returns fileName
+	QString getTitleOrPath();
+
 	QString toTXT();
 	
 	ComicInfo info;
