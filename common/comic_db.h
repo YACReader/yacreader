@@ -135,6 +135,9 @@ public:
 	//returns comic title if it isn't null or empty, in other case returns fileName
 	QString getTitleOrPath();
 
+	//returns parent folder name
+	QString getParentFolderName();
+
 	QString toTXT();
 	
 	ComicInfo info;

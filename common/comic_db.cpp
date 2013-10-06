@@ -116,6 +116,15 @@ QString ComicDB::getTitleOrPath()
 		return QFileInfo(path).fileName();
 }
 
+QString ComicDB::getParentFolderName()
+{
+	QStringList paths = path.split('/');
+	if(paths.length()<2)
+		return "";
+	else
+		return paths[paths.length()-2];
+}
+
 //-----------------------------------------------------------------------------
 //COMIC_INFO-------------------------------------------------------------------
 //-----------------------------------------------------------------------------

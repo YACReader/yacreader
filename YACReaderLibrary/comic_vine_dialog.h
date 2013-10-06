@@ -62,14 +62,34 @@ private:
 	ScrapperLineEdit * volumeEdit;
 };
 
-//----------------------------------------
+//---------------------------------------
 class SearchVolume : public QWidget
 {
 	Q_OBJECT
 public:
 	SearchVolume(QWidget * parent = 0);
+public slots:
+	QString getVolumeInfo() {return volumeEdit->text();}
 private:
 	ScrapperLineEdit * volumeEdit;
+};
+
+//---------------------------------------
+class SelectComic : public QWidget
+{
+	Q_OBJECT
+public:
+	SelectComic(QWidget * parent = 0);
+	virtual ~SelectComic();
+};
+
+//---------------------------------------
+class SelectVolume : public QWidget
+{
+	Q_OBJECT
+public:
+	SelectVolume(QWidget * parent = 0);
+	virtual ~SelectVolume();
 };
 
 //----------------------------------------
@@ -88,13 +108,33 @@ public slots:
 protected slots:
 	void goNext();
 	void debugClientResults(const QString & string);
+	//show widget methods
+	void showSeriesQuestion();
+	void showSearchSingleComic();
+	void showSearchVolume();
+	void showLoading();
+	void search();
 private:
+
+	enum ScrapperStatus
+	{
+		SingleComic,
+		Volume,
+		SingleComicInSeries
+	};
+
+	ScrapperStatus status;
+
 	ComicVineClient * comicVineClient;
 
 	int currentIndex;
 
 	TitleHeader * titleHeader;
-	QPushButton * nextButton; 
+
+	QPushButton * skipButton;
+	QPushButton * backButton;
+	QPushButton * nextButton;
+	QPushButton * searchButton;
 	QPushButton * closeButton;
 
 	//stacked widgets

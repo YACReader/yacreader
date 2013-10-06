@@ -306,7 +306,7 @@ void YACReaderFlowGL::paintGL()
 void YACReaderFlowGL::resizeGL(int width, int height)
 {
 
-	fontSize = width * 0.02;
+	fontSize = width * 0.015;
 
 	//int side = qMin(width, height);
 	udpatePerspective(width,height);
@@ -529,14 +529,7 @@ void YACReaderFlowGL::draw()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glBegin( GL_TRIANGLES );
-
 	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );	
-	glVertex2f( -0.03f, 0.98f);
-	glVertex2f( 0.03f, 0.98f);
-	glVertex2f( 0.f, 0.949f);
-
-	glEnd();
 
 	renderText(10, fontSize + 10,QString("%1/%2").arg(currentSelected+1).arg(numObjects),QFont("Arial", fontSize));
 
