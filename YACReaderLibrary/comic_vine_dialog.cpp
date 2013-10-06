@@ -56,10 +56,11 @@ void ComicVineDialog::doLayout()
 
 void ComicVineDialog::doStackedWidgets()
 {
+	doLoading();
 	content->addWidget(seriesQuestion = new SeriesQuestion);
 	content->addWidget(searchSingleComic = new SearchSingleComic);
 	content->addWidget(searchVolume = new SearchVolume);
-	doLoading();
+
 }
 
 void ComicVineDialog::doConnections()
@@ -99,6 +100,8 @@ void ComicVineDialog::setComics(const QList<ComicDB> & comics)
 
 void ComicVineDialog::show()
 {
+	QDialog::show();
+
 	currentIndex = 0;
 
 	if(comics.length() == 1)
@@ -106,7 +109,7 @@ void ComicVineDialog::show()
 		ComicDB singleComic = comics[0];
 		QString title = singleComic.getTitleOrPath();
 		titleHeader->setSubTitle(title);
-		content->setCurrentWidget(searchSingleComic);
+		content->setCurrentIndex(0);
 
 		comicVineClient->search(title);
 	}else if(comics.length()>1)
@@ -114,7 +117,7 @@ void ComicVineDialog::show()
 		titleHeader->setSubTitle(tr("%1 comics selected").arg(comics.length()));
 		content->setCurrentWidget(seriesQuestion);
 	}
-	QDialog::show();
+
 }
 
 void ComicVineDialog::doLoading()
@@ -136,7 +139,9 @@ void ComicVineDialog::doLoading()
 
 void ComicVineDialog::debugClientResults(const QString & string)
 {
+	content->setCurrentWidget(searchSingleComic);
 	QMessageBox::information(0,"-Response-", string);
+
 }
 
 //---------------------------------------
