@@ -26,10 +26,16 @@ void ComicVineDialog::doLayout()
 
 	QString dialogButtonsStyleSheet = "QPushButton {border: 1px solid #242424; background: #2e2e2e; color:white; padding: 5px 26px 5px 26px; font-size:12px;font-family:Arial; font-weight:bold;}";
 
+	skipButton = new QPushButton(tr("skip"));
+	backButton = new QPushButton(tr("back"));
 	nextButton = new QPushButton(tr("next"));
+	searchButton = new QPushButton(tr("search"));
 	closeButton = new QPushButton(tr("close"));
 
+	skipButton->setStyleSheet(dialogButtonsStyleSheet);
+	backButton->setStyleSheet(dialogButtonsStyleSheet);
 	nextButton->setStyleSheet(dialogButtonsStyleSheet);
+	searchButton->setStyleSheet(dialogButtonsStyleSheet);
 	closeButton->setStyleSheet(dialogButtonsStyleSheet);
 
 	content = new QStackedWidget(this);
@@ -39,7 +45,10 @@ void ComicVineDialog::doLayout()
 	QHBoxLayout * buttonLayout = new QHBoxLayout;
 
 	buttonLayout->addStretch();
+	buttonLayout->addWidget(skipButton);
+	buttonLayout->addWidget(backButton);
 	buttonLayout->addWidget(nextButton);
+	buttonLayout->addWidget(searchButton);
 	buttonLayout->addWidget(closeButton);
 	buttonLayout->setContentsMargins(0,0,0,0);
 
@@ -60,13 +69,13 @@ void ComicVineDialog::doStackedWidgets()
 	content->addWidget(seriesQuestion = new SeriesQuestion);
 	content->addWidget(searchSingleComic = new SearchSingleComic);
 	content->addWidget(searchVolume = new SearchVolume);
-
 }
 
 void ComicVineDialog::doConnections()
 {
-	connect(closeButton,SIGNAL(pressed()),this,SLOT(close()));
-	connect(nextButton,SIGNAL(pressed()),this,SLOT(goNext()));
+	connect(closeButton,SIGNAL(clicked()),this,SLOT(close()));
+	connect(nextButton,SIGNAL(clicked()),this,SLOT(goNext()));
+	connect(searchButton,SIGNAL(clicked()),this,SLOT(search()));
 
 	connect(comicVineClient,SIGNAL(searchResult(QString)),this,SLOT(debugClientResults(QString)));
 }
@@ -78,14 +87,28 @@ void ComicVineDialog::goNext()
 	{
 		if(seriesQuestion->getYes())
 		{
-			content->setCurrentWidget(searchVolume);
+			QString volumeSearchString = comics[0].getParentFolderName();
+
+			if(volumeSearchString.isEmpty())
+				showSearchVolume();
+			else
+			{
+				showLoading();
+				comicVineClient->search(volumeSearchString);
+			}
+
+			status = Volume;
 		}
 		else
 		{
 			ComicDB comic = comics[currentIndex];
 			QString title = comic.getTitleOrPath();
 			titleHeader->setSubTitle(tr("comic %1 of %2 - %3").arg(currentIndex+1).arg(comics.length()).arg(title));
-			content->setCurrentWidget(searchSingleComic);
+			showLoading();
+
+			comicVineClient->search(title);
+
+			status = SingleComicInSeries;
 		}
 	}
 	else if (content->currentWidget() == searchSingleComic) {
@@ -109,13 +132,15 @@ void ComicVineDialog::show()
 		ComicDB singleComic = comics[0];
 		QString title = singleComic.getTitleOrPath();
 		titleHeader->setSubTitle(title);
-		content->setCurrentIndex(0);
+		showLoading();
 
 		comicVineClient->search(title);
+
+		status = SingleComic;
 	}else if(comics.length()>1)
 	{
 		titleHeader->setSubTitle(tr("%1 comics selected").arg(comics.length()));
-		content->setCurrentWidget(seriesQuestion);
+		showSeriesQuestion();
 	}
 
 }
@@ -139,9 +164,76 @@ void ComicVineDialog::doLoading()
 
 void ComicVineDialog::debugClientResults(const QString & string)
 {
-	content->setCurrentWidget(searchSingleComic);
-	QMessageBox::information(0,"-Response-", string);
+	switch(status)
+	{
+	case SingleComic:
+		showSearchSingleComic();
+		break;
+	case Volume:
+		showSearchVolume();
+		break;
+	case SingleComicInSeries:
+		showSearchSingleComic();
+		break;
+	}
 
+	QMessageBox::information(0,"-Response-", string);
+}
+
+void ComicVineDialog::showSeriesQuestion()
+{
+	content->setCurrentWidget(seriesQuestion);
+	backButton->setHidden(true);
+	skipButton->setHidden(true);
+	nextButton->setVisible(true);
+	searchButton->setHidden(true);
+	closeButton->setVisible(true);
+}
+
+void ComicVineDialog::showSearchSingleComic()
+{
+	content->setCurrentWidget(searchSingleComic);
+	backButton->setHidden(true);
+	skipButton->setHidden(true);
+	nextButton->setHidden(true);
+	searchButton->setVisible(true);
+	closeButton->setVisible(true);
+}
+
+void ComicVineDialog::showSearchVolume()
+{
+	content->setCurrentWidget(searchVolume);
+	backButton->setHidden(true);
+	nextButton->setHidden(true);
+	searchButton->setVisible(true);
+	closeButton->setVisible(true);
+
+	if (status == SingleComicInSeries)
+		skipButton->setVisible(true);
+	else
+		skipButton->setHidden(true);
+}
+
+void ComicVineDialog::showLoading()
+{
+	content->setCurrentIndex(0);
+	backButton->setHidden(true);
+	skipButton->setHidden(true);
+	nextButton->setHidden(true);
+	searchButton->setHidden(true);
+	closeButton->setVisible(true);
+}
+
+void ComicVineDialog::search()
+{
+	switch (status) {
+	case Volume:
+		showLoading();
+		comicVineClient->search(searchVolume->getVolumeInfo());
+		break;
+	default:
+		break;
+	}
 }
 
 //---------------------------------------
@@ -308,3 +400,21 @@ SearchVolume::SearchVolume(QWidget * parent)
 	setLayout(l);
 	setContentsMargins(0,0,0,0);
 }
+
+//---------------------------------------
+//SelectVolume
+//---------------------------------------
+SelectVolume::SelectVolume(QWidget *parent)
+	:QWidget(parent)
+{}
+
+SelectVolume::~SelectVolume() {}
+
+//---------------------------------------
+//SelectComic
+//---------------------------------------
+SelectComic::SelectComic(QWidget *parent)
+	:QWidget(parent)
+{}
+
+SelectComic::~SelectComic() {}

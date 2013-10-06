@@ -934,17 +934,8 @@ void PictureFlowSoftwareRenderer::render()
   renderSlides();
   if(state->slideImages.size()>0)
   {
-	  int x = buffer.width()/2;
-	  int size = buffer.width() * 0.021;
+	  int size = buffer.width() * 0.015;
 	  int start =  buffer.width() * 0.010;
-	  for(int j = start; j<size;j++)
-	  {
-		  buffer.setPixel(QPoint(x,j),QColor(255,255,255).rgb()-state->backgroundColor);
-		  for(int i = 0; i<size-j;i++){
-			  buffer.setPixel(QPoint(x-i,j),QColor(255,255,255).rgb()-state->backgroundColor);
-			  buffer.setPixel(QPoint(x+i,j),QColor(255,255,255).rgb()-state->backgroundColor);
-		  }
-	  }
 
 	  QPainter painter(&buffer);
 	  painter.setPen(QColor(255,255,255).rgb()-state->backgroundColor);
