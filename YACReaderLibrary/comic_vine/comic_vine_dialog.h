@@ -44,17 +44,25 @@ protected slots:
 	void launchSearchVolume();
 	void launchSearchComic();
 	void showSelectVolume();
+	void showSelectComic();
 private:
+
+	enum ScrapperMode
+	{
+		SingleComic,       //the scrapper has been opened for a single comic
+		Volume,            //the scrapper is trying to get comics info for a whole volume
+		SingleComicInList  //the scrapper has been opened for a list of unrelated comics
+	};
 
 	enum ScrapperStatus
 	{
-		SingleComic,
-		Volume,
-		SingleComicInSeries,
+		AutoSearching,
+		AskingForInfo,
 		SelectingComic,
 		SelectingSeries
 	};
 
+	ScrapperMode mode;
 	ScrapperStatus status;
 
 	ComicVineClient * comicVineClient;
