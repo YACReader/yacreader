@@ -6,9 +6,20 @@
 #include <QStackedWidget>
 #include <QRadioButton>
 #include <QMessageBox>
+#include <QTableView>
 
 #include "yacreader_busy_widget.h"
 #include "comic_vine_client.h"
+#include "scrapper_lineedit.h"
+#include "title_header.h"
+#include "series_question.h"
+#include "search_single_comic.h"
+#include "search_volume.h"
+#include "select_comic.h"
+#include "select_volume.h"
+
+#include "response_parser.h"
+
 
 ComicVineDialog::ComicVineDialog(QWidget *parent) :
 	QDialog(parent),comicVineClient(new ComicVineClient)
@@ -69,6 +80,7 @@ void ComicVineDialog::doStackedWidgets()
 	content->addWidget(seriesQuestion = new SeriesQuestion);
 	content->addWidget(searchSingleComic = new SearchSingleComic);
 	content->addWidget(searchVolume = new SearchVolume);
+	content->addWidget(selectVolume = new SelectVolume);
 }
 
 void ComicVineDialog::doConnections()
@@ -142,7 +154,6 @@ void ComicVineDialog::show()
 		titleHeader->setSubTitle(tr("%1 comics selected").arg(comics.length()));
 		showSeriesQuestion();
 	}
-
 }
 
 void ComicVineDialog::doLoading()
@@ -164,6 +175,13 @@ void ComicVineDialog::doLoading()
 
 void ComicVineDialog::debugClientResults(const QString & string)
 {
+	ResponseParser p;
+	p.loadJSONResponse(string);
+
+	QString debug = QString("%1 \n %2").arg(p.getNumResults()).arg(string);
+
+	QMessageBox::information(0,"-Response-", debug);
+
 	switch(status)
 	{
 	case SingleComic:
@@ -177,7 +195,7 @@ void ComicVineDialog::debugClientResults(const QString & string)
 		break;
 	}
 
-	QMessageBox::information(0,"-Response-", string);
+
 }
 
 void ComicVineDialog::showSeriesQuestion()
@@ -214,6 +232,11 @@ void ComicVineDialog::showSearchVolume()
 		skipButton->setHidden(true);
 }
 
+void ComicVineDialog::showSelectVolume()
+{
+	content->setCurrentWidget(selectVolume);
+}
+
 void ComicVineDialog::showLoading()
 {
 	content->setCurrentIndex(0);
@@ -228,193 +251,30 @@ void ComicVineDialog::search()
 {
 	switch (status) {
 	case Volume:
-		showLoading();
-		comicVineClient->search(searchVolume->getVolumeInfo());
+		launchSearchVolume();
 		break;
 	default:
+		launchSearchComic();
 		break;
 	}
 }
 
-//---------------------------------------
-//TitleHeader
-//---------------------------------------
-TitleHeader::TitleHeader(QWidget * parent )
-	:QWidget(parent)
+void ComicVineDialog::launchSearchVolume()
 {
-	mainTitleLabel = new QLabel();
-	subTitleLabel = new QLabel();
-
-	mainTitleLabel->setStyleSheet("QLabel {color:white; font-size:18px;font-family:Arial;}");
-	subTitleLabel->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
-
-	QHBoxLayout * titleLayout = new QHBoxLayout;
-	QVBoxLayout * titleLabelsLayout = new QVBoxLayout;
-
-	titleLabelsLayout->addWidget(mainTitleLabel);
-	titleLabelsLayout->addWidget(subTitleLabel);
-	titleLabelsLayout->setSpacing(0);
-
-	titleLayout->addLayout(titleLabelsLayout);
-	titleLayout->setContentsMargins(0,0,0,0);
-
-	setLayout(titleLayout);
-
-	setContentsMargins(0,0,0,0);
-
-	setTitle(tr("SEARCH"));
+	showLoading();
+	//TODO: check if volume info is empty.
+	comicVineClient->search(searchVolume->getVolumeInfo());
 }
 
-void TitleHeader::setTitle(const QString & title)
+void ComicVineDialog::launchSearchComic()
 {
-	mainTitleLabel->setText(title);
+	showLoading();
+
+	QString volumeInfo = searchSingleComic->getVolumeInfo();
+	QString comicInfo = searchSingleComic->getComicInfo();
+	int comicNumber = searchSingleComic->getComicNumber();
+
+	if(comicInfo.isEmpty() && comicNumber == -1)
+		comicVineClient->search(volumeInfo);
 }
 
-void TitleHeader::setSubTitle(const QString & title)
-{
-	subTitleLabel->setText(title);
-}
-
-void TitleHeader::showButtons(bool show)
-{
-	if(show)
-	{
-
-	}
-	else
-	{
-
-	}
-}
-
-//---------------------------------------
-//SeriesQuestion
-//---------------------------------------
-SeriesQuestion::SeriesQuestion(QWidget * parent)
-	:QWidget(parent)
-{
-	QVBoxLayout * l = new QVBoxLayout;
-
-	QLabel * questionLabel = new QLabel(tr("You are trying to get information for various comics at once, are they part of the same series?"));
-	questionLabel->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
-	yes = new QRadioButton(tr("yes"));
-	no  = new QRadioButton(tr("no"));
-
-	QString rbStyle = "QRadioButton {margin-left:27px; margin-top:5px; color:white;font-size:12px;font-family:Arial;}"
-		"QRadioButton::indicator {width:11px;height:11px;}"
-		"QRadioButton::indicator::unchecked {image : url(:/images/comic_vine/radioUnchecked.png);}"
-		"QRadioButton::indicator::checked {image : url(:/images/comic_vine/radioChecked.png);}";
-	yes->setStyleSheet(rbStyle);
-	no->setStyleSheet(rbStyle);
-
-	yes->setChecked(true);
-
-	l->addSpacing(35);
-	l->addWidget(questionLabel);
-	l->addWidget(yes);
-	l->addWidget(no);
-	l->addStretch();
-
-	l->setContentsMargins(0,0,0,0);
-	setLayout(l);
-	setContentsMargins(0,0,0,0);
-}
-
-bool SeriesQuestion::getYes()
-{
-	return yes->isChecked();
-}
-//---------------------------------------
-//ScrapperLineEdit
-//---------------------------------------
-ScrapperLineEdit::ScrapperLineEdit(const QString & title, QWidget * widget)
-	:QLineEdit(widget)
-{
-	titleLabel = new QLabel(title,this);
-	titleLabel->setStyleSheet("QLabel {color:white;}");
-
-	setStyleSheet(QString("QLineEdit {"
-		"border:none; background-color: #2E2E2E; color : white; padding-left: %1; padding-bottom: 1px; margin-bottom: 0px;" 
-		"}").arg(titleLabel->sizeHint().width()+6));
-
-	setFixedHeight(22);
-}
-
-void ScrapperLineEdit::resizeEvent(QResizeEvent *)
-{
-	QSize szl = titleLabel->sizeHint();
-	titleLabel->move(6,(rect().bottom() + 1 - szl.height())/2);
-}
-
-//---------------------------------------
-//SearchSingleComic
-//---------------------------------------
-SearchSingleComic::SearchSingleComic(QWidget * parent)
-	:QWidget(parent)
-{
-
-	QLabel * label = new QLabel(tr("No results found, please provide some aditional information. At least one field is needed."));
-	label->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
-
-	titleEdit = new ScrapperLineEdit(tr("Title:"));
-	numberEdit = new ScrapperLineEdit(tr("Number:"));
-	volumeEdit = new ScrapperLineEdit(tr("Series:"));
-
-	numberEdit->setMaximumWidth(126);
-
-	QVBoxLayout * l = new QVBoxLayout;
-	QHBoxLayout * hl = new QHBoxLayout;
-	hl->addWidget(titleEdit);
-	hl->addWidget(numberEdit);
-
-	l->addSpacing(35);
-	l->addWidget(label);
-	l->addLayout(hl);
-	l->addWidget(volumeEdit);
-	l->addStretch();
-
-	l->setContentsMargins(0,0,0,0);
-	setLayout(l);
-	setContentsMargins(0,0,0,0);
-}
-
-//---------------------------------------
-//SearchVolume
-//---------------------------------------
-SearchVolume::SearchVolume(QWidget * parent)
-	:QWidget(parent)
-{
-	QLabel * label = new QLabel(tr("No results found, please provide some aditional information."));
-	label->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
-
-	volumeEdit = new ScrapperLineEdit(tr("Series:"));
-
-	QVBoxLayout * l = new QVBoxLayout;
-
-	l->addSpacing(35);
-	l->addWidget(label);
-	l->addWidget(volumeEdit);
-	l->addStretch();
-
-	l->setContentsMargins(0,0,0,0);
-	setLayout(l);
-	setContentsMargins(0,0,0,0);
-}
-
-//---------------------------------------
-//SelectVolume
-//---------------------------------------
-SelectVolume::SelectVolume(QWidget *parent)
-	:QWidget(parent)
-{}
-
-SelectVolume::~SelectVolume() {}
-
-//---------------------------------------
-//SelectComic
-//---------------------------------------
-SelectComic::SelectComic(QWidget *parent)
-	:QWidget(parent)
-{}
-
-SelectComic::~SelectComic() {}

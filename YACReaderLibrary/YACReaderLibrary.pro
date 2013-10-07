@@ -9,7 +9,9 @@ INCLUDEPATH += .
 INCLUDEPATH += ../common \
 	           ./server \
 			   ./db \
-			   ../custom_widgets
+			   ../custom_widgets \
+			   ./comic_vine \
+			   ./comic_vine/model
 
 DEFINES += SERVER_RELEASE
 			   
@@ -35,7 +37,7 @@ LIBS         += -L/usr/local/lib -lpoppler-qt4
 
 CONFIG += release
 CONFIG -= flat
-QT += sql network opengl
+QT += sql network opengl script
 
 # Input
 HEADERS += comic_flow.h \
@@ -76,8 +78,6 @@ HEADERS += comic_flow.h \
 			yacreader_local_server.h \
     yacreader_main_toolbar.h \
     comics_remover.h \
-    comic_vine_dialog.h \
-    comic_vine_client.h \
 	../common/http_worker.h
 		   
 SOURCES += comic_flow.cpp \
@@ -118,14 +118,13 @@ SOURCES += comic_flow.cpp \
 			yacreader_local_server.cpp \
     yacreader_main_toolbar.cpp \
     comics_remover.cpp \
-    comic_vine_dialog.cpp \
-    comic_vine_client.cpp \
 	../common/http_worker.cpp
 			
 		   
 include(./server/server.pri)
 include(../custom_widgets/custom_widgets_yacreaderlibrary.pri)
 include(../compressed_archive/wrapper.pri)
+include(./comic_vine/comic_vine.pri)
 
 RESOURCES += images.qrc files.qrc
 win32:RESOURCES += images_win.qrc
@@ -147,4 +146,3 @@ TRANSLATIONS    = yacreaderlibrary_es.ts \
 
 Release:DESTDIR = ../release
 Debug:DESTDIR = ../debug
-
