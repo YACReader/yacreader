@@ -107,9 +107,10 @@ void ComicVineDialog::goNext()
 			{
 				showLoading();
 				comicVineClient->search(volumeSearchString);
+				status = AutoSearching;
 			}
 
-			status = Volume;
+			mode = Volume;
 		}
 		else
 		{
@@ -119,8 +120,8 @@ void ComicVineDialog::goNext()
 			showLoading();
 
 			comicVineClient->search(title);
-
-			status = SingleComicInSeries;
+			status = AutoSearching;
+			mode = SingleComicInList;
 		}
 	}
 	else if (content->currentWidget() == searchSingleComic) {
@@ -147,8 +148,8 @@ void ComicVineDialog::show()
 		showLoading();
 
 		comicVineClient->search(title);
-
-		status = SingleComic;
+		status = AutoSearching;
+		mode = SingleComic;
 	}else if(comics.length()>1)
 	{
 		titleHeader->setSubTitle(tr("%1 comics selected").arg(comics.length()));
@@ -177,29 +178,32 @@ void ComicVineDialog::debugClientResults(const QString & string)
 {
 	ResponseParser p;
 	p.loadJSONResponse(string);
-
-	QString debug = QString("%1 \n %2").arg(p.getNumResults()).arg(string);
-
-	QMessageBox::information(0,"-Response-", debug);
-
-	switch(status)
+	QMessageBox::information(0,"Result", QString("Number of results : %1").arg(p.getNumResults()));
+	if(p.responseError())
+		QMessageBox::critical(0,"Error from ComicVine", "-");
+	else
 	{
-	case SingleComic:
-		showSearchSingleComic();
-		break;
-	case Volume:
-		showSearchVolume();
-		break;
-	case SingleComicInSeries:
-		showSearchSingleComic();
-		break;
+		switch(mode)
+		{
+		case SingleComic: case SingleComicInList:
+			if(p.getNumResults() == 0)
+				showSearchSingleComic();
+			else
+				showSelectComic();
+			break;
+		case Volume:
+			if(p.getNumResults() == 0)
+				showSearchVolume();
+			else
+				showSelectVolume();
+			break;
+		}
 	}
-
-
 }
 
 void ComicVineDialog::showSeriesQuestion()
 {
+	status = AskingForInfo;
 	content->setCurrentWidget(seriesQuestion);
 	backButton->setHidden(true);
 	skipButton->setHidden(true);
@@ -210,6 +214,7 @@ void ComicVineDialog::showSeriesQuestion()
 
 void ComicVineDialog::showSearchSingleComic()
 {
+	status = AskingForInfo;
 	content->setCurrentWidget(searchSingleComic);
 	backButton->setHidden(true);
 	skipButton->setHidden(true);
@@ -220,13 +225,14 @@ void ComicVineDialog::showSearchSingleComic()
 
 void ComicVineDialog::showSearchVolume()
 {
+	status = AskingForInfo;
 	content->setCurrentWidget(searchVolume);
 	backButton->setHidden(true);
 	nextButton->setHidden(true);
 	searchButton->setVisible(true);
 	closeButton->setVisible(true);
 
-	if (status == SingleComicInSeries)
+	if (mode == SingleComicInList)
 		skipButton->setVisible(true);
 	else
 		skipButton->setHidden(true);
@@ -235,6 +241,11 @@ void ComicVineDialog::showSearchVolume()
 void ComicVineDialog::showSelectVolume()
 {
 	content->setCurrentWidget(selectVolume);
+}
+
+void ComicVineDialog::showSelectComic()
+{
+
 }
 
 void ComicVineDialog::showLoading()
@@ -249,7 +260,7 @@ void ComicVineDialog::showLoading()
 
 void ComicVineDialog::search()
 {
-	switch (status) {
+	switch (mode) {
 	case Volume:
 		launchSearchVolume();
 		break;
