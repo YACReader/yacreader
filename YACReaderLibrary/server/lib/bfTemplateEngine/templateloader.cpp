@@ -30,7 +30,7 @@ TemplateLoader::TemplateLoader(QSettings* settings, QObject* parent)
         textCodec=QTextCodec::codecForLocale();
     }
     else {
-       textCodec=QTextCodec::codecForName(encoding.toAscii());
+	   textCodec=QTextCodec::codecForName(encoding.toLatin1());
    }
    qDebug("TemplateLoader: path=%s, codec=%s",qPrintable(templatePath),textCodec->name().data());
 }

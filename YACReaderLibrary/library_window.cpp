@@ -16,6 +16,7 @@
 #include <QMatrix>
 #include <QSettings>
 #include <QGLFormat>
+#include <QHeaderView>
 
 #include <iterator>
 #include <typeinfo>
@@ -939,7 +940,11 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 	
 	comicView->setModel(dmCV);
 	comicView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+#if QT_VERSION >= 0x050100
+	comicView->horizontalHeader()->setSectionsMovable(true);
+#else
 	comicView->horizontalHeader()->setMovable(true);
+#endif
 	//TODO parametrizar la configuración de las columnas
 	for(int i = 0;i<comicView->horizontalHeader()->count();i++)
 		comicView->horizontalHeader()->hideSection(i);

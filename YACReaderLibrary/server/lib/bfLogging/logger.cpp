@@ -9,6 +9,7 @@
 #include <QMutex>
 #include <QDateTime>
 #include <QThread>
+#include <QtGlobal>
 
 Logger* Logger::defaultLogger=0;
 
@@ -72,7 +73,12 @@ void Logger::msgHandler(const QtMsgType type, const char* message) {
 
 Logger::~Logger() {
     if (defaultLogger==this) {
-        qInstallMsgHandler(0);
+#if QT_VERSION >= 0x050100
+	qInstallMessageHandler(0);
+#else
+	qInstallMsgHandler(0);
+#endif
+
         defaultLogger=0;
     }
 }
@@ -86,7 +92,11 @@ void Logger::write(const LogMessage* logMessage) {
 
 void Logger::installMsgHandler() {
     defaultLogger=this;
-    qInstallMsgHandler(msgHandler);
+#if QT_VERSION >= 0x050100
+	//qInstallMessageHandler(msgHandler); TODO Qt5
+#else
+	qInstallMsgHandler(msgHandler);
+#endif
 }
 
 

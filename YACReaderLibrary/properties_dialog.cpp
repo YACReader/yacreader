@@ -16,6 +16,11 @@
 #include <QTabWidget>
 #include <QIntValidator>
 #include <QFileInfo>
+#include <QLabel>
+#include <QDialogButtonBox>
+#include <QToolButton>
+#include <QPushButton>
+#include <QMessageBox>
 
 PropertiesDialog::PropertiesDialog(QWidget * parent)
 :QDialog(parent)

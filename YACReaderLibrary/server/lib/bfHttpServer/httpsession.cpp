@@ -13,7 +13,7 @@ HttpSession::HttpSession(bool canStore) {
 		dataPtr=new HttpSessionData();
 		dataPtr->refCount=1;
 		dataPtr->lastAccess=QDateTime::currentMSecsSinceEpoch();
-		dataPtr->id=QUuid::createUuid().toString().toAscii();
+		dataPtr->id=QUuid::createUuid().toString().toLatin1();
 		dataPtr->yacreaderSessionData.comic = 0;
 		dataPtr->yacreaderSessionData.comicId = 0;
 #ifdef SUPERVERBOSE
