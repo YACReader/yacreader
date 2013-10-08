@@ -13,7 +13,7 @@ INCLUDEPATH += ../common \
 			   ./comic_vine \
 			   ./comic_vine/model
 
-DEFINES += SERVER_RELEASE
+DEFINES += SERVER_RELEASE NOMINMAX
 			   
 win32 {
 INCLUDEPATH += ../dependencies/poppler/include
@@ -143,6 +143,12 @@ TRANSLATIONS    = yacreaderlibrary_es.ts \
 									yacreaderlibrary_fr.ts \
 									yacreaderlibrary_nl.ts \
 									yacreaderlibrary_source.ts
-
-Release:DESTDIR = ../release
-Debug:DESTDIR = ../debug
+contains(QT_MINOR_VERSION, 5) {
+    Release:DESTDIR = ../release5
+    Debug:DESTDIR = ../debug5
+}
+!contains(QT_MINOR_VERSION, 5)
+{
+    Release:DESTDIR = ../release
+    Debug:DESTDIR = ../debug
+}

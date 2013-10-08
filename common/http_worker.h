@@ -2,8 +2,6 @@
 #define __HTTP_WORKER_H
 
 #include <QWidget>
-#include <QHttp>
-#include <QHttpResponseHeader>
 #include <QByteArray>
 #include <QThread>
 #include <QUrl>

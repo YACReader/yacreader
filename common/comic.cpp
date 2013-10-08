@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <QDir>
 #include <QFileInfoList>
+#include <QApplication>
+
 #include "bookmarks.h" //TODO desacoplar la dependencia con bookmarks
 #include "qnaturalsorting.h"
 #include "compressed_archive.h"

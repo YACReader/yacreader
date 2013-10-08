@@ -5,8 +5,6 @@
 #include "yacreader_global.h"
 
 #include <QWidget>
-#include <QHttp>
-#include <QHttpResponseHeader>
 #include <QByteArray>
 #include <QThread>
 
