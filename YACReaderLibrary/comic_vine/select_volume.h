@@ -12,6 +12,7 @@ class SelectVolume : public QWidget
 	Q_OBJECT
 public:
 	SelectVolume(QWidget * parent = 0);
+	void load(const QString & json);
 	virtual ~SelectVolume();
 private:
 	QLabel * cover;

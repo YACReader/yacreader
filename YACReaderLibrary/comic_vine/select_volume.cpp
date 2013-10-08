@@ -8,7 +8,7 @@
 #include "volumes_model.h"
 
 SelectVolume::SelectVolume(QWidget *parent)
-	:QWidget(parent)
+	:QWidget(parent),model(0)
 {
 	QString labelStylesheet = "QLabel {color:white; font-size:12px;font-family:Arial;}";
 	QString tableStylesheet = ""
@@ -66,6 +66,16 @@ SelectVolume::SelectVolume(QWidget *parent)
 	l->setContentsMargins(0,0,0,0);
 	setLayout(l);
 	setContentsMargins(0,0,0,0);
+}
+
+void SelectVolume::load(const QString & json)
+{
+	if(model != 0)
+		delete model;
+	else
+		model = new VolumesModel();
+
+	model->load(json);
 }
 
 

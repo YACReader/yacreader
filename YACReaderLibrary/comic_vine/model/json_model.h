@@ -8,6 +8,7 @@ class JSONModel : public QAbstractItemModel
 	Q_OBJECT
 public:
 	explicit JSONModel(QObject *parent = 0);
+	virtual void load(const QString & json) = 0 ;
 
 signals:
 

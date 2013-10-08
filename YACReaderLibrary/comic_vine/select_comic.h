@@ -8,6 +8,7 @@ class SelectComic : public QWidget
 	Q_OBJECT
 public:
 	SelectComic(QWidget * parent = 0);
+	void load(const QString & json);
 	virtual ~SelectComic();
 };
 

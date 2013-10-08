@@ -43,8 +43,8 @@ protected slots:
 	void search();
 	void launchSearchVolume();
 	void launchSearchComic();
-	void showSelectVolume();
-	void showSelectComic();
+	void showSelectVolume(const QString & json);
+	void showSelectComic(const QString & json);
 private:
 
 	enum ScrapperMode
@@ -94,6 +94,7 @@ private:
 	SearchSingleComic * searchSingleComic;
 	SearchVolume * searchVolume;
 	SelectVolume * selectVolume;
+	SelectComic * selectComic;
 };
 
 #endif // COMIC_VINE_DIALOG_H
