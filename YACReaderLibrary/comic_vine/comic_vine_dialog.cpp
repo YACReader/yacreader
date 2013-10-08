@@ -81,6 +81,7 @@ void ComicVineDialog::doStackedWidgets()
 	content->addWidget(searchSingleComic = new SearchSingleComic);
 	content->addWidget(searchVolume = new SearchVolume);
 	content->addWidget(selectVolume = new SelectVolume);
+	content->addWidget(selectComic = new SelectComic);
 }
 
 void ComicVineDialog::doConnections()
@@ -189,13 +190,13 @@ void ComicVineDialog::debugClientResults(const QString & string)
 			if(p.getNumResults() == 0)
 				showSearchSingleComic();
 			else
-				showSelectComic();
+				showSelectComic(string);
 			break;
 		case Volume:
 			if(p.getNumResults() == 0)
 				showSearchVolume();
 			else
-				showSelectVolume();
+				showSelectVolume(string);
 			break;
 		}
 	}
@@ -238,14 +239,16 @@ void ComicVineDialog::showSearchVolume()
 		skipButton->setHidden(true);
 }
 
-void ComicVineDialog::showSelectVolume()
+void ComicVineDialog::showSelectVolume(const QString & json)
 {
 	content->setCurrentWidget(selectVolume);
+	selectVolume->load(json);
 }
 
-void ComicVineDialog::showSelectComic()
+void ComicVineDialog::showSelectComic(const QString &json)
 {
-
+	content->setCurrentWidget(selectComic);
+	selectComic->load(json);
 }
 
 void ComicVineDialog::showLoading()

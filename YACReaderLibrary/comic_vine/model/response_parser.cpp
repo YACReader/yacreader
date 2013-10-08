@@ -27,7 +27,6 @@ void ResponseParser::loadJSONResponse(const QString &response)
 	if (!sc.property("error").isValid() && sc.property("error").toString() != "OK")
 	{
 		error = true;
-		numResults = -2;
 		qDebug("Error detected");
 	}
 	else
@@ -36,7 +35,6 @@ void ResponseParser::loadJSONResponse(const QString &response)
 		if(sc.property("number_of_total_results").isValid())
 			numResults = sc.property("number_of_total_results").toString().toInt();// sc.property("number_of_total_results").toInt32();
 		else
-			numResults = -3;
-		qDebug() << sc.property("number_of_total_results").toString();
+			qDebug() << sc.property("oops").toString();
 	}
 }
