@@ -3,7 +3,7 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = 
+TARGET = YACReaderLibrary
 DEPENDPATH += .
 INCLUDEPATH += .
 INCLUDEPATH += ../common \
@@ -143,12 +143,11 @@ TRANSLATIONS    = yacreaderlibrary_es.ts \
 									yacreaderlibrary_fr.ts \
 									yacreaderlibrary_nl.ts \
 									yacreaderlibrary_source.ts
-contains(QT_MINOR_VERSION, 5) {
-    Release:DESTDIR = ../release5
-    Debug:DESTDIR = ../debug5
-}
-!contains(QT_MINOR_VERSION, 5)
-{
-    Release:DESTDIR = ../release
-    Debug:DESTDIR = ../debug
+
+isEqual(QT_MAJOR_VERSION, 5) {
+	Release:DESTDIR = ../release5
+	Debug:DESTDIR = ../debug5
+} else {
+	Release:DESTDIR = ../release
+	Debug:DESTDIR = ../debug
 }

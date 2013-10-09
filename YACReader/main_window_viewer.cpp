@@ -18,6 +18,14 @@
 
 #include <ctime>
 #include <algorithm>
+#include <QApplication>
+#include <QCoreApplication>
+#include <QDesktopWidget>
+#include <QToolButton>
+#include <QMenu>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QImage>
 
 #ifdef Q_OS_MAC
 class MacToolBarSeparator : public QWidget
@@ -189,7 +197,7 @@ void MainWindowViewer::setupUI()
 
 void MainWindowViewer::openFromArgv()
 {
-	if(QCoreApplication::argc() == 2) //only path...
+	if(QCoreApplication::arguments().count() == 2) //only path...
 	{
 		isClient = false;
 		//TODO: new method open(QString)
@@ -202,7 +210,7 @@ void MainWindowViewer::openFromArgv()
 		enableActions();
 		viewer->open(pathFile);
 	}
-	else if(QCoreApplication::argc() == 4)
+	else if(QCoreApplication::arguments().count() == 4)
 	{
 		
 		QString pathFile = QCoreApplication::arguments().at(1);
@@ -226,7 +234,7 @@ void MainWindowViewer::openFromArgv()
 			open(pathFile+currentComicDB.path,currentComicDB,siblingComics);
 		}
 		else
-		{isClient = false;/*error*/}
+		{isClient = false; QMessageBox::information(this,"Connection Error", "Unable to connect to YACReaderLibrary");/*error*/}
 
 		optionsDialog->setFilters(currentComicDB.info.brightness, currentComicDB.info.contrast, currentComicDB.info.gamma);
 	}

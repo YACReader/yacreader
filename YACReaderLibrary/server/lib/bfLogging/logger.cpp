@@ -73,7 +73,7 @@ void Logger::msgHandler(const QtMsgType type, const char* message) {
 
 Logger::~Logger() {
     if (defaultLogger==this) {
-#if QT_VERSION >= 0x050100
+#if QT_VERSION >= 0x050000
 	qInstallMessageHandler(0);
 #else
 	qInstallMsgHandler(0);
@@ -92,7 +92,7 @@ void Logger::write(const LogMessage* logMessage) {
 
 void Logger::installMsgHandler() {
     defaultLogger=this;
-#if QT_VERSION >= 0x050100
+#if QT_VERSION >= 0x050000
 	//qInstallMessageHandler(msgHandler); TODO Qt5
 #else
 	qInstallMsgHandler(msgHandler);

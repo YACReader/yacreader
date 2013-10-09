@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <QByteArray>
 #include <QPixmap>
+#include <QApplication>
+#include <QImage>
 
 #include <typeinfo>
 
@@ -48,7 +50,7 @@ QImage changeImage( const QImage& image, int value )
 	{
 	QImage im = image;
 	im.detach();
-	if( im.numColors() == 0 ) /* truecolor */
+	if( im.colorCount() == 0 ) /* truecolor */
 		{
 		if( im.format() != QImage::Format_RGB32 ) /* just in case */
 			im = im.convertToFormat( QImage::Format_RGB32 );
@@ -93,7 +95,7 @@ QImage changeImage( const QImage& image, int value )
 		{
 		QVector<QRgb> colors = im.colorTable();
 		for( int i = 0;
-			 i < im.numColors();
+			 i < im.colorCount();
 			 ++i )
 			colors[ i ] = qRgb( operation( qRed( colors[ i ] ), value ),
 				operation( qGreen( colors[ i ] ), value ),
