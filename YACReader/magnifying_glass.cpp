@@ -2,7 +2,7 @@
 #include "viewer.h"
 #include "configuration.h"
 
-
+#include <QScrollBar>
 
 MagnifyingGlass::MagnifyingGlass(int w, int h, QWidget * parent)
 :QLabel(parent),zoomLevel(0.5)

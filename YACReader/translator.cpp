@@ -1,6 +1,11 @@
 #include <QUrl>
+
+#if QT_VERSION >= 0x050000
+#else
 #include <Phonon/MediaObject>
 #include <Phonon/MediaSource>
+#endif
+
 #include <QPushButton>
 #include <QPalette>
 #include <QMouseEvent>
@@ -138,8 +143,6 @@ YACReaderTranslator::YACReaderTranslator(QWidget * parent)
 
 	resize(400,479);
 
-	music = createPlayer(MusicCategory);
-
 	layout->setMargin(0);
 	layout->setContentsMargins(18,12,18,12);
 	setContentsMargins(0,0,0,0);
@@ -157,6 +160,13 @@ YACReaderTranslator::YACReaderTranslator(QWidget * parent)
 	connect(searchButton,SIGNAL(pressed()),this,SLOT(translate()));
 	connect(speakButton,SIGNAL(pressed()),this,SLOT(play()));
 	connect(clearButton,SIGNAL(pressed()),this,SLOT(clear()));
+
+	//multimedia/phonon
+#if QT_VERSION >= 0x050000
+#else
+	music = createPlayer(MusicCategory);
+#endif
+
 }
 
 void YACReaderTranslator::hideResults()
@@ -280,15 +290,21 @@ void YACReaderTranslator::populateCombos()
 void YACReaderTranslator::play()
 {
 	//QMessageBox::question(this,"xxx",ttsSource.toString());
+#if QT_VERSION >= 0x050000
+#else
 	MediaSource src(ttsSource);
 	src.setAutoDelete(true);
 	music->setCurrentSource(src);
 	music->play();
+#endif
 }
 
 YACReaderTranslator::~YACReaderTranslator()
 {
+#if QT_VERSION >= 0x050000
+#else
 	delete music;
+#endif
 }
 
 void YACReaderTranslator::mousePressEvent(QMouseEvent *event)

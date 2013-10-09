@@ -24,9 +24,15 @@ INCLUDEPATH  += /usr/local/include/poppler/qt4
 LIBS         += -L/usr/local/lib -lpoppler-qt4
 }
 
-QT += network phonon opengl
+QT += network opengl
 CONFIG += release
 CONFIG -= flat
+
+isEqual(QT_MAJOR_VERSION, 5) {
+	QT += multimedia
+} else {
+	QT += phonon
+}
 
 # Input
 HEADERS += $$PWD/../common/comic.h \

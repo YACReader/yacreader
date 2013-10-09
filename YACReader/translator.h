@@ -14,9 +14,13 @@ class YACReaderBusyWidget;
 #include <QThread>
 #include <QUrl>
 
-#include<Phonon/MediaObject>
+#if QT_VERSION >= 0x050000
+#else
+	#include<Phonon/MediaObject>
+	using namespace Phonon;
+#endif
 
-using namespace Phonon;
+
 
 class YACReaderTranslator : public QWidget
 {
@@ -45,7 +49,13 @@ protected:
 	bool drag;
 	QPoint click; 
 private:
+
+#if QT_VERSION >= 0x050000
+
+#else
 	MediaObject * music;
+#endif
+
 	QTextEdit * text;
 	QComboBox * from;
 	QComboBox * to;
