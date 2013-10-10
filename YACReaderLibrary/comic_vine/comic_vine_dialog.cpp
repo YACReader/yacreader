@@ -179,7 +179,7 @@ void ComicVineDialog::debugClientResults(const QString & string)
 {
 	ResponseParser p;
 	p.loadJSONResponse(string);
-	QMessageBox::information(0,"Result", QString("Number of results : %1").arg(p.getNumResults()));
+	//QMessageBox::information(0,"Result", QString("Number of results : %1").arg(p.getNumResults()));
 	if(p.responseError())
 		QMessageBox::critical(0,"Error from ComicVine", "-");
 	else

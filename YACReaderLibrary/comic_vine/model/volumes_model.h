@@ -8,6 +8,7 @@ class VolumesModel : public JSONModel
 	Q_OBJECT
 public:
 	explicit VolumesModel(QObject *parent = 0);
+	virtual ~VolumesModel();
 	//receive a valid json with a list of volumes
 	void load(const QString & json);
 
@@ -25,7 +26,7 @@ signals:
 public slots:
 
 private:
-	QList <QList <QString> > _data;
+	QList <QList <QString> * > _data;
 
 	enum Column {
 		SERIES,
