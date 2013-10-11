@@ -27,7 +27,8 @@ void VolumesModel::load(const QString &json)
 	{
 		int numResults = sc.property("number_of_total_results").toString().toInt(); //fix to weird behaviour using hasNext
 		QScriptValueIterator it(sc.property("results"));
-		while (numResults > 0) {
+		bool test;
+		while (it.hasNext()) {
 			it.next();
 			QString numIssues = it.value().property("count_of_issues").toString();
 			QString year = it.value().property("start_year").toString();
@@ -36,7 +37,9 @@ void VolumesModel::load(const QString &json)
 			QString url = it.value().property("image").property("screen_url").toString();
 			QStringList & l = *(new QStringList);
 			l << name << year << numIssues << publisher << url;
-			_data.push_back(&l);
+			test = name.isEmpty() && year.isEmpty() && numIssues.isEmpty() && url.isEmpty();
+			if(numResults>0 && !test)
+				_data.push_back(&l);
 			numResults--;
 		}
 	}
