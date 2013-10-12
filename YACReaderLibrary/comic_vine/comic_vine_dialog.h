@@ -41,6 +41,7 @@ protected slots:
 	void showSearchVolume();
 	void showLoading();
 	void search();
+	void searchVolume(const QString & v);
 	void launchSearchVolume();
 	void launchSearchComic();
 	void showSelectVolume(const QString & json);
@@ -65,8 +66,6 @@ private:
 	ScrapperMode mode;
 	ScrapperStatus status;
 
-	ComicVineClient * comicVineClient;
-
 	int currentIndex;
 
 	TitleHeader * titleHeader;
@@ -90,11 +89,11 @@ private:
 
 	QList<ComicDB> comics;
 
-	SeriesQuestion * seriesQuestion;
-	SearchSingleComic * searchSingleComic;
-	SearchVolume * searchVolume;
-	SelectVolume * selectVolume;
-	SelectComic * selectComic;
+	SeriesQuestion * seriesQuestionWidget;
+	SearchSingleComic * searchSingleComicWidget;
+	SearchVolume * searchVolumeWidget;
+	SelectVolume * selectVolumeWidget;
+	SelectComic * selectComicWidget;
 };
 
 #endif // COMIC_VINE_DIALOG_H

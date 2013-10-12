@@ -9,9 +9,9 @@ static const QString CV_WEB_ADDRESS = "http://www.comicvine.com/api";
 //gets any volumen containing any comic matching 'query'
 static const QString CV_SEARCH = CV_WEB_ADDRESS + "/search/?api_key=" + CV_API_KEY +
 								 "&format=json&limit=100&resources=volume"
-								 "&field_list=name,start_year,publisher,id,image,count_of_issues"
+								 "&field_list=name,start_year,publisher,id,image,count_of_issues,deck"
 								 "&query=%1&page=%2";
-//http://www.comicvine.com/api/search/?api_key=46680bebb358f1de690a5a365e15d325f9649f91&format=json&limit=100&resources=volume&field_list=name,start_year,publisher,id,image,count_of_issues&query=superman
+//http://www.comicvine.com/api/search/?api_key=46680bebb358f1de690a5a365e15d325f9649f91&format=json&limit=100&resources=volume&field_list=name,start_year,publisher,id,image,count_of_issues,deck&query=superman
 
 //gets the detail for a volume %1
 static const QString CV_SERIES_DETAIL = CV_WEB_ADDRESS + "/volume/4050-%1/?api_key=" + CV_API_KEY +
@@ -54,6 +54,7 @@ void ComicVineClient::proccessVolumesSearchData(const QByteArray & data)
 {
 	QString json(data);
 	emit searchResult(json);
+	emit finished();
 }
 
 void ComicVineClient::queryTimeOut()

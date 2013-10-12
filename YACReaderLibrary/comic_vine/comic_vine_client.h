@@ -13,6 +13,7 @@ public:
 	
 signals:
 	void searchResult(QString);
+	void finished();
 public slots:
 	void search(const QString & query, int page = 0);
 	void getSeriesDetail(const QString & id);

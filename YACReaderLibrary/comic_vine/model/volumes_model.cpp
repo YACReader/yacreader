@@ -28,15 +28,18 @@ void VolumesModel::load(const QString &json)
 		int numResults = sc.property("number_of_total_results").toString().toInt(); //fix to weird behaviour using hasNext
 		QScriptValueIterator it(sc.property("results"));
 		bool test;
+		QScriptValue resultsValue;
 		while (it.hasNext()) {
 			it.next();
-			QString numIssues = it.value().property("count_of_issues").toString();
-			QString year = it.value().property("start_year").toString();
-			QString name = it.value().property("name").toString();
-			QString publisher = it.value().property("publisher").property("name").toString();
-			QString url = it.value().property("image").property("screen_url").toString();
+			resultsValue = it.value();
+			QString numIssues = resultsValue.property("count_of_issues").toString();
+			QString year = resultsValue.property("start_year").toString();
+			QString name = resultsValue.property("name").toString();
+			QString publisher = resultsValue.property("publisher").property("name").toString();
+			QString url = resultsValue.property("image").property("medium_url").toString();
+			QString deck = resultsValue.property("deck").toString();
 			QStringList & l = *(new QStringList);
-			l << name << year << numIssues << publisher << url;
+			l << name << year << numIssues << publisher << url << deck;
 			test = name.isEmpty() && year.isEmpty() && numIssues.isEmpty() && url.isEmpty();
 			if(numResults>0 && !test)
 				_data.push_back(&l);

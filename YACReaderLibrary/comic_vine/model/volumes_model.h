@@ -21,6 +21,7 @@ public:
 	QVariant headerData(int section, Qt::Orientation orientation,
 						int role = Qt::DisplayRole) const;
 	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
+
 signals:
 
 public slots:
@@ -28,11 +29,14 @@ public slots:
 private:
 	QList <QList <QString> * > _data;
 
+public:
 	enum Column {
-		SERIES,
+		SERIES = 0,
 		YEAR,
 		ISSUES,
-		PUBLISHER
+		PUBLISHER,
+		COVER_URL,
+		DECK
 	};
 
 };
