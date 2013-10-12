@@ -59,7 +59,7 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 	fitToWidthRatioS->setMaximum(100);
 	fitToWidthRatioS->setPageStep(5);
 	fitToWidthRatioS->setOrientation(Qt::Horizontal);
-	connect(fitToWidthRatioS,SIGNAL(valueChanged(int)),this,SLOT(fitToWidthRatio(int)));
+	//connect(fitToWidthRatioS,SIGNAL(valueChanged(int)),this,SLOT(fitToWidthRatio(int)));
 	QHBoxLayout * fitLayout = new QHBoxLayout;
 	fitLayout->addWidget(fitToWidthRatioS);
 	fitBox->setLayout(fitLayout);
@@ -281,7 +281,9 @@ void OptionsDialog::show()
 {
 	//TODO solucionar el tema de las settings, esto sólo debería aparecer en una única línea de código
 	QSettings *s = new QSettings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+	fitToWidthRatioS->disconnect();
 	fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
+	connect(fitToWidthRatioS,SIGNAL(valueChanged(int)),this,SLOT(fitToWidthRatio(int)));
 	QDialog::show();
 	delete s;
 }
