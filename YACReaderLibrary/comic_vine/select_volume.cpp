@@ -6,8 +6,10 @@
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QScrollBar>
+#include <QModelIndex>
 
 #include "volumes_model.h"
+#include "http_worker.h"
 
 SelectVolume::SelectVolume(QWidget *parent)
 	:QWidget(parent),model(0)
@@ -40,8 +42,11 @@ SelectVolume::SelectVolume(QWidget *parent)
 
 	//widgets
 	cover = new QLabel();
+	cover->setScaledContents(true);
+	cover->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
 	detailLabel = new QLabel();
 	detailLabel->setStyleSheet(labelStylesheet);
+	detailLabel->setWordWrap(true);
 	tableVolumes = new QTableView();
 	tableVolumes->setStyleSheet(tableStylesheet);
 
@@ -78,17 +83,23 @@ SelectVolume::SelectVolume(QWidget *parent)
 
 	tableVolumes->setSelectionMode(QAbstractItemView::SingleSelection);
 
+	//connections
+	connect(tableVolumes,SIGNAL(clicked(QModelIndex)),this,SLOT(loadVolumeInfo(QModelIndex)));
+
 	left->addWidget(cover);
 	left->addWidget(detailLabel);
 	left->addStretch();
-	leftWidget->setMaximumWidth(168);
+	leftWidget->setMaximumWidth(180);
 	leftWidget->setLayout(left);
+	left->setContentsMargins(0,0,0,0);
+	leftWidget->setContentsMargins(0,0,0,0);
 
 	content->addWidget(leftWidget);
-	content->addWidget(tableVolumes,0,Qt::AlignRight);
+	content->addWidget(tableVolumes,0,Qt::AlignRight|Qt::AlignTop);
 
 	l->addSpacing(15);
 	l->addWidget(label);
+	l->addSpacing(5);
 	l->addLayout(content);
 	l->addStretch();
 
@@ -99,7 +110,7 @@ SelectVolume::SelectVolume(QWidget *parent)
 
 void SelectVolume::load(const QString & json)
 {
-	VolumesModel * tempM = new VolumesModel();;
+	VolumesModel * tempM = new VolumesModel();
 	tempM->load(json);
 	tableVolumes->setModel(tempM);
 
@@ -107,11 +118,47 @@ void SelectVolume::load(const QString & json)
 
 	tableVolumes->setFixedSize(419,341);
 
+	if(tempM->rowCount()>0)
+	{
+		tableVolumes->selectRow(0);
+		loadVolumeInfo(tempM->index(0,0));
+	}
+
 	if(model != 0)
 		delete model;
 	else
 		model = tempM;
 }
 
-
 SelectVolume::~SelectVolume() {}
+
+void SelectVolume::loadVolumeInfo(const QModelIndex & mi)
+{
+	QStringList * data = static_cast<QStringList *>(mi.internalPointer());
+	QString coverURL = data->at(VolumesModel::COVER_URL);
+	QString deck = data->at(VolumesModel::DECK);
+
+	//cover->setText(coverURL);
+	detailLabel->setText(deck);
+
+	HttpWorker * search = new HttpWorker(coverURL);
+	connect(search,SIGNAL(dataReady(const QByteArray &)),this,SLOT(setCover(const QByteArray &)));
+	connect(search,SIGNAL(timeout()),this,SLOT(queryTimeOut())); //TODO
+	connect(search,SIGNAL(finished()),search,SLOT(deleteLater()));
+	search->get();
+}
+
+void SelectVolume::setCover(const QByteArray & data)
+{
+	QPixmap p;
+	p.loadFromData(data);
+	int w = p.width();
+	int h = p.height();
+
+	cover->setPixmap(p);
+	float aspectRatio = static_cast<float>(w)/h;
+
+	cover->setFixedSize(180,static_cast<int>(180/aspectRatio));
+
+	cover->update();
+}

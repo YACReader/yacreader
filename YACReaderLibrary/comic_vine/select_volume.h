@@ -6,6 +6,7 @@
 class QLabel;
 class QTableView;
 class VolumesModel;
+class QModelIndex;
 
 class SelectVolume : public QWidget
 {
@@ -14,6 +15,9 @@ public:
 	SelectVolume(QWidget * parent = 0);
 	void load(const QString & json);
 	virtual ~SelectVolume();
+public slots:
+	void loadVolumeInfo(const QModelIndex & mi);
+	void setCover(const QByteArray &);
 private:
 	QLabel * cover;
 	QLabel * detailLabel;
