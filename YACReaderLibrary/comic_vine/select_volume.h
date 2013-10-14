@@ -18,6 +18,7 @@ public:
 public slots:
 	void loadVolumeInfo(const QModelIndex & mi);
 	void setCover(const QByteArray &);
+	void setDescription(const QString & description);
 private:
 	QLabel * cover;
 	QLabel * detailLabel;

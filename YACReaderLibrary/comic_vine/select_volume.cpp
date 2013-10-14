@@ -137,6 +137,7 @@ void SelectVolume::loadVolumeInfo(const QModelIndex & mi)
 	QStringList * data = static_cast<QStringList *>(mi.internalPointer());
 	QString coverURL = data->at(VolumesModel::COVER_URL);
 	QString deck = data->at(VolumesModel::DECK);
+	QString id = data->at(VolumesModel::ID);
 
 	//cover->setText(coverURL);
 	detailLabel->setText(deck);
@@ -146,6 +147,7 @@ void SelectVolume::loadVolumeInfo(const QModelIndex & mi)
 	connect(search,SIGNAL(timeout()),this,SLOT(queryTimeOut())); //TODO
 	connect(search,SIGNAL(finished()),search,SLOT(deleteLater()));
 	search->get();
+
 }
 
 void SelectVolume::setCover(const QByteArray & data)
@@ -162,3 +164,9 @@ void SelectVolume::setCover(const QByteArray & data)
 
 	cover->update();
 }
+
+void SelectVolume::setDescription(const QString &description)
+{
+
+}
+
