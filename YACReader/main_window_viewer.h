@@ -49,6 +49,7 @@ class YACReaderSliderAction;
 		void reloadOptions();
 		void fitToWidth();
 		void fitToHeight();
+		void checkNewVersion();
 		/*void viewComic();
 		void prev();
 		void next();

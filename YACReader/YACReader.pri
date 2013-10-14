@@ -25,7 +25,7 @@ LIBS         += -L/usr/local/lib -lpoppler-qt4
 }
 
 QT += network opengl
-CONFIG += release
+#CONFIG += release
 CONFIG -= flat
 
 isEqual(QT_MAJOR_VERSION, 5) {

@@ -26,6 +26,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QImage>
+#include <QDate>
 
 #ifdef Q_OS_MAC
 class MacToolBarSeparator : public QWidget
@@ -162,17 +163,7 @@ void MainWindowViewer::setupUI()
 
 	openFromArgv();
 
-	versionChecker = new HttpVersionChecker();
-
-	connect(versionChecker,SIGNAL(newVersionDetected()),
-		this,SLOT(newVersion()));
-	
-	QTimer * tT = new QTimer;
-	
-	tT->setSingleShot(true);
-	connect(tT, SIGNAL(timeout()), versionChecker, SLOT(get()));
-	//versionChecker->get(); //TODÓ
-	tT->start(100);
+	checkNewVersion();
 	
 	viewer->setFocusPolicy(Qt::StrongFocus);
 	
@@ -870,6 +861,28 @@ void MainWindowViewer::fitToHeight()
 		viewer->updatePage();
 	}
 }
+
+void MainWindowViewer::checkNewVersion()
+{
+	Configuration & conf = Configuration::getConfiguration();
+	QDate lastCheck = conf.getLastVersionCheck();
+	QDate current = QDate::currentDate();
+	if(lastCheck.isNull() || lastCheck.daysTo(current) >= conf.getNumDaysBetweenVersionChecks())
+	{
+		versionChecker = new HttpVersionChecker();
+
+		connect(versionChecker,SIGNAL(newVersionDetected()),
+			this,SLOT(newVersion()));
+
+		QTimer * tT = new QTimer;
+		tT->setSingleShot(true);
+		connect(tT, SIGNAL(timeout()), versionChecker, SLOT(get()));
+		//versionChecker->get(); //TODÓ
+		tT->start(100);
+
+		conf.setLastVersionCheck(current);
+	}
+}
 void MainWindowViewer::changeFit()
 {
 	Configuration & conf = Configuration::getConfiguration();
@@ -882,14 +895,25 @@ void MainWindowViewer::newVersion()
 	QMessageBox msgBox;
 	msgBox.setText(tr("There is a new version avaliable"));
 	msgBox.setInformativeText(tr("Do you want to download the new version?"));
-	msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+	msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Ignore | QMessageBox::No);
 	msgBox.setDefaultButton(QMessageBox::Yes);
+	msgBox.button(QMessageBox::Ignore)->setText(tr("Remind me in 14 days"));
+	msgBox.button(QMessageBox::No)->setText(tr("Not now"));
 	msgBox.setWindowFlags(Qt::WindowStaysOnTopHint);
 	msgBox.setModal(true);
 	int ret = msgBox.exec();
 
-	if(ret==QMessageBox::Yes){
-		QDesktopServices::openUrl(QUrl("http://www.yacreader.com"));
+	switch(ret)
+	{
+	case QMessageBox::Yes:
+		 QDesktopServices::openUrl(QUrl("http://www.yacreader.com"));
+		 break;
+	case QMessageBox::No:
+		 Configuration::getConfiguration().setNumDaysBetweenVersionChecks(1);
+		 break;
+	case QMessageBox::Ignore:
+		 Configuration::getConfiguration().setNumDaysBetweenVersionChecks(14);
+		 break;
 	}
 }
 
