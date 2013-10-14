@@ -38,8 +38,9 @@ void VolumesModel::load(const QString &json)
 			QString publisher = resultsValue.property("publisher").property("name").toString();
 			QString url = resultsValue.property("image").property("medium_url").toString();
 			QString deck = resultsValue.property("deck").toString();
+			QString id = resultsValue.property("id").toString();
 			QStringList & l = *(new QStringList);
-			l << name << year << numIssues << publisher << url << deck;
+			l << name << year << numIssues << publisher << url << deck << id;
 			test = name.isEmpty() && year.isEmpty() && numIssues.isEmpty() && url.isEmpty();
 			if(numResults>0 && !test)
 				_data.push_back(&l);

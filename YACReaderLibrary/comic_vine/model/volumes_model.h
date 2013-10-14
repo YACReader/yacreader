@@ -36,7 +36,8 @@ public:
 		ISSUES,
 		PUBLISHER,
 		COVER_URL,
-		DECK
+		DECK,
+		ID
 	};
 
 };
