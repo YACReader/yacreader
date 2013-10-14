@@ -35,7 +35,7 @@ INCLUDEPATH  += /usr/local/include/poppler/qt4
 LIBS         += -L/usr/local/lib -lpoppler-qt4
 }
 
-CONFIG += release
+#CONFIG += release
 CONFIG -= flat
 QT += sql network opengl script
 
@@ -151,3 +151,5 @@ isEqual(QT_MAJOR_VERSION, 5) {
 	Release:DESTDIR = ../release
 	Debug:DESTDIR = ../debug
 }
+
+#TODO: CONFIG += release on MacOSX and Linux (using qmake)
