@@ -32,5 +32,3 @@ TRANSLATIONS = yacreader_es.ts \
 								  yacreader_pt.ts \
 								  yacreader_nl.ts \
 								  yacreader_source.ts  
-
-#TODO: CONFIG += release on MacOSX and Linux (using qmake)
