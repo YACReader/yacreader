@@ -121,6 +121,10 @@ void MainWindowViewer::setupUI()
 
 	viewer = new Viewer(this);
 	connect(viewer,SIGNAL(reset()),this,SLOT(disableActions()));
+	//detected end of comic
+	connect(viewer,SIGNAL(openNextComic()),this,SLOT(openNextComic()));
+	//detected start of comic
+	connect(viewer,SIGNAL(openPreviousComic()),this,SLOT(openPreviousComic()));
 
 	setCentralWidget(viewer);
 	int heightDesktopResolution = QApplication::desktop()->screenGeometry().height();

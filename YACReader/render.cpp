@@ -675,8 +675,8 @@ void Render::createComic(const QString & path)
 
 	connect(comic,SIGNAL(bookmarksUpdated()),this,SIGNAL(bookmarksUpdated()));
 
-	connect(comic,SIGNAL(isLast()),this,SIGNAL(isLast()));
-	connect(comic,SIGNAL(isCover()),this,SIGNAL(isCover()));
+	//connect(comic,SIGNAL(isLast()),this,SIGNAL(isLast()));
+	//connect(comic,SIGNAL(isCover()),this,SIGNAL(isCover()));
 
 	pagesReady.clear();
 }
