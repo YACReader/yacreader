@@ -27,7 +27,9 @@ wheelStop(false),
 direction(1),
 restoreMagnifyingGlass(false),
 drag(false),
-numScrollSteps(22)
+numScrollSteps(22),
+shouldOpenNext(false),
+shouldOpenPrevious(false)
 {
 	translator = new YACReaderTranslator(this);
 	translator->hide();
@@ -789,6 +791,7 @@ void Viewer::mousePressEvent ( QMouseEvent * event )
 	setCursor(Qt::ClosedHandCursor);
 	event->accept();
 }
+
 void Viewer::mouseReleaseEvent ( QMouseEvent * event )
 {
 	drag = false;
@@ -810,8 +813,6 @@ void Viewer::updateConfig(QSettings * settings)
 	QPalette palette;
 	palette.setColor(backgroundRole(), Configuration::getConfiguration().getBackgroundColor());
 	setPalette(palette);
-
-	
 }
 
 //deprecated
@@ -832,15 +833,32 @@ void Viewer::setBookmarks()
 
 void Viewer::showIsCoverMessage()
 {
-	notificationsLabel->setText(tr("Cover!"));
-	notificationsLabel->flash();
-
+	if(!shouldOpenPrevious)
+	{
+		notificationsLabel->setText(tr("Cover!"));
+		notificationsLabel->flash();
+		shouldOpenPrevious = true;
+	}
+	else
+	{
+		shouldOpenPrevious = false;
+		emit (openPreviousComic());
+	}
 }
 		
 void Viewer::showIsLastMessage()
 {
-	notificationsLabel->setText(tr("Last page!"));
-	notificationsLabel->flash();
+	if(!shouldOpenNext)
+	{
+		notificationsLabel->setText(tr("Last page!"));
+		notificationsLabel->flash();
+		shouldOpenNext = true;
+	}
+	else
+	{
+		shouldOpenNext = false;
+		emit (openNextComic());
+	}
 }
 
 unsigned int Viewer::getIndex()

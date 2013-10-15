@@ -126,6 +126,9 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 
 		NotificationsLabelWidget * notificationsLabel;
 
+		bool shouldOpenNext;
+		bool shouldOpenPrevious;
+
 	private:
 		//!Magnifying glass
 		MagnifyingGlass *mglass;
@@ -153,6 +156,8 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		void pageAvailable(bool);
 		void pageIsBookmark(bool);
 		void reset();
+		void openNextComic();
+		void openPreviousComic();
 	};
 
 #endif
