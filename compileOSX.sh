@@ -5,13 +5,13 @@ fi
 
 echo "Compiling YACReader"
 cd ./YACReader
-qmake -spec macx-g++
+qmake -spec macx-g++ "CONFIG+=release"
 make
 cd ..
 
 echo "Compiling YACReaderLibrary"
 cd ./YACReaderLibrary
-qmake -spec macx-g++
+qmake -spec macx-g++ "CONFIG+=release"
 make
 cd ..
 

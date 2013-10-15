@@ -151,5 +151,3 @@ isEqual(QT_MAJOR_VERSION, 5) {
 	Release:DESTDIR = ../release
 	Debug:DESTDIR = ../debug
 }
-
-#TODO: CONFIG += release on MacOSX and Linux (using qmake)

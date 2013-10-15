@@ -2,13 +2,13 @@
 
 echo "Compiling YACReader"
 cd ./YACReader
-qmake
+qmake "CONFIG+=release"
 make
 cd ..
 
 echo "Compiling YACReaderLibrary"
 cd ./YACReaderLibrary
-qmake
+qmake "CONFIG+=release"
 make
 cd ..
 
