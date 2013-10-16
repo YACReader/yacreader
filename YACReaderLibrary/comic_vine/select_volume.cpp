@@ -7,9 +7,13 @@
 #include <QHeaderView>
 #include <QScrollBar>
 #include <QModelIndex>
+#include <QScrollArea>
+#include <QDesktopServices>
+
+#include <QtScript>
 
 #include "volumes_model.h"
-#include "http_worker.h"
+#include "comic_vine_client.h"
 
 SelectVolume::SelectVolume(QWidget *parent)
 	:QWidget(parent),model(0)
@@ -44,9 +48,38 @@ SelectVolume::SelectVolume(QWidget *parent)
 	cover = new QLabel();
 	cover->setScaledContents(true);
 	cover->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
+	cover->setMinimumSize(168,168*5.0/3);
+	cover->setStyleSheet("QLabel {background-color: #2B2B2B; color:white; font-size:12px; font-family:Arial; }");
 	detailLabel = new QLabel();
-	detailLabel->setStyleSheet(labelStylesheet);
+	detailLabel->setStyleSheet("QLabel {background-color: #2B2B2B; color:white; font-size:12px; font-family:Arial; }");
 	detailLabel->setWordWrap(true);
+
+	detailLabel->setMinimumSize(168,12);
+
+	connect(detailLabel,SIGNAL(linkActivated(QString)),this,SLOT(openLink(QString)));
+
+	QScrollArea * scroll = new QScrollArea(this);
+	scroll->setWidget(detailLabel);
+	scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	scroll->setStyleSheet(
+				"QScrollArea {background-color:#2B2B2B; border:none;}"
+				"QScrollBar:vertical { border: none; background: #2B2B2B; width: 3px; margin: 0; }"
+				"QScrollBar:horizontal { border: none; background: #2B2B2B; height: 3px; margin: 0; }"
+				"QScrollBar::handle:vertical { background: #DDDDDD; width: 7px; min-height: 20px; }"
+				"QScrollBar::handle:horizontal { background: #DDDDDD; width: 7px; min-height: 20px; }"
+				"QScrollBar::add-line:vertical { border: none; background: #404040; height: 10px; subcontrol-position: bottom; subcontrol-origin: margin; margin: 0 3px 0 0;}"
+				"QScrollBar::sub-line:vertical {  border: none; background: #404040; height: 10px; subcontrol-position: top; subcontrol-origin: margin; margin: 0 3px 0 0;}"
+				"QScrollBar::add-line:horizontal { border: none; background: #404040; width: 10px; subcontrol-position: bottom; subcontrol-origin: margin; margin: 0 0 3px 0;}"
+				"QScrollBar::sub-line:horizontal {  border: none; background: #404040; width: 10px; subcontrol-position: top; subcontrol-origin: margin; margin: 0 0 3px 0;}"
+				"QScrollBar::up-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-up.png') center top no-repeat;}"
+				"QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-down.png') center top no-repeat;}"
+				"QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical, QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {background: none; }"
+
+			);
+	//scroll->setWidgetResizable(true);
+	//iScroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+	//iScroll->show();
+
 	tableVolumes = new QTableView();
 	tableVolumes->setStyleSheet(tableStylesheet);
 
@@ -87,7 +120,7 @@ SelectVolume::SelectVolume(QWidget *parent)
 	connect(tableVolumes,SIGNAL(clicked(QModelIndex)),this,SLOT(loadVolumeInfo(QModelIndex)));
 
 	left->addWidget(cover);
-	left->addWidget(detailLabel);
+	left->addWidget(scroll,1);
 	left->addStretch();
 	leftWidget->setMaximumWidth(180);
 	leftWidget->setLayout(left);
@@ -140,14 +173,22 @@ void SelectVolume::loadVolumeInfo(const QModelIndex & mi)
 	QString id = data->at(VolumesModel::ID);
 
 	//cover->setText(coverURL);
-	detailLabel->setText(deck);
+	//detailLabel->setText(deck);
+	QString loadingStyle = "<font color='#AAAAAA'>%1</font>";
+	cover->setText(loadingStyle.arg(tr("loading cover")));
+	detailLabel->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
+	detailLabel->setText(loadingStyle.arg(tr("loading description")));
+	detailLabel->adjustSize();
 
-	HttpWorker * search = new HttpWorker(coverURL);
-	connect(search,SIGNAL(dataReady(const QByteArray &)),this,SLOT(setCover(const QByteArray &)));
-	connect(search,SIGNAL(timeout()),this,SLOT(queryTimeOut())); //TODO
-	connect(search,SIGNAL(finished()),search,SLOT(deleteLater()));
-	search->get();
+	ComicVineClient * comicVineClient = new ComicVineClient;
+	connect(comicVineClient,SIGNAL(seriesCover(const QByteArray &)),this,SLOT(setCover(const QByteArray &)));
+	connect(comicVineClient,SIGNAL(finished()),comicVineClient,SLOT(deleteLater()));
+	comicVineClient->getSeriesCover(coverURL);
 
+	ComicVineClient * comicVineClient2 = new ComicVineClient;
+	connect(comicVineClient2,SIGNAL(seriesDetail(QString)),this,SLOT(setDescription(QString)));
+	connect(comicVineClient2,SIGNAL(finished()),comicVineClient2,SLOT(deleteLater()));
+	comicVineClient2->getSeriesDetail(id);
 }
 
 void SelectVolume::setCover(const QByteArray & data)
@@ -165,8 +206,26 @@ void SelectVolume::setCover(const QByteArray & data)
 	cover->update();
 }
 
-void SelectVolume::setDescription(const QString &description)
+void SelectVolume::setDescription(const QString & jsonDetail)
 {
+	QScriptEngine engine;
+	QScriptValue sc;
+	sc = engine.evaluate("(" + jsonDetail + ")");
 
+	if (!sc.property("error").isValid() && sc.property("error").toString() != "OK")
+	{
+		qDebug("Error detected");
+	}
+	else
+	{
+		detailLabel->setAlignment(Qt::AlignTop|Qt::AlignLeft);
+		detailLabel->setText(sc.property("results").property("description").toString().replace("<a","<a style = 'color:#827A68; text-decoration:none;'"));
+		detailLabel->adjustSize();
+	}
+}
+
+void SelectVolume::openLink(const QString & link)
+{
+	QDesktopServices::openUrl(QUrl("http://www.comicvine.com"+link));
 }
 

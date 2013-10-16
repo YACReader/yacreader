@@ -252,11 +252,10 @@ void Viewer::updatePage()
 	updateVerticalScrollBar();
 	emit backgroundChanges();
 	emit(pageAvailable(true));
-	//TODO -> update bookmark action
+
 	setFocus(Qt::ShortcutFocusReason);
 	delete previousPage;
 
-	//TODO: fix loading...please wait!
 	if(currentPage->isNull())
 		setPageUnavailableMessage();
 

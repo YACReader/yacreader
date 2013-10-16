@@ -68,7 +68,7 @@ TreeItem::~TreeItem()
 void TreeItem::appendChild(TreeItem *item)
 {
 	item->parentItem = this;
-	//TODO insertar odernado
+
 	if(childItems.isEmpty())
 		childItems.append(item);
 	else
