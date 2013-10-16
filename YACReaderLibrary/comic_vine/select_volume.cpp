@@ -149,7 +149,7 @@ void SelectVolume::load(const QString & json)
 
 	tableVolumes->resizeColumnsToContents();
 
-	tableVolumes->setFixedSize(419,341);
+	tableVolumes->setFixedSize(619,341);
 
 	if(tempM->rowCount()>0)
 	{
@@ -161,6 +161,8 @@ void SelectVolume::load(const QString & json)
 		delete model;
 	else
 		model = tempM;
+
+	tableVolumes->setColumnWidth(0,350);
 }
 
 SelectVolume::~SelectVolume() {}
