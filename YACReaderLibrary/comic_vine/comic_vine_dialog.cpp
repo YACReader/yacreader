@@ -71,7 +71,7 @@ void ComicVineDialog::doLayout()
 	mainLayout->setContentsMargins(26,16,26,11);
 
 	setLayout(mainLayout);
-	setFixedSize(672,529);
+	setFixedSize(872,529);
 }
 
 void ComicVineDialog::doStackedWidgets()
