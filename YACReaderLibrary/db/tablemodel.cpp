@@ -293,7 +293,7 @@ void TableModel::setupModelData(QSqlQuery &sqlquery)
 			QString nameCurrent = currentItem->data(TableModel::FileName).toString();
 			int numberLast,numberCurrent;
 			int max = (std::numeric_limits<int>::max)();
-			numberLast = numberCurrent = max; //TODO change by std limit
+			numberLast = numberCurrent = max;
 
 			if(!last->data(TableModel::Number).isNull())
 			numberLast = last->data(TableModel::Number).toInt();

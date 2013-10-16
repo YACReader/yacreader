@@ -15,7 +15,7 @@ static const QString CV_SEARCH = CV_WEB_ADDRESS + "/search/?api_key=" + CV_API_K
 
 //gets the detail for a volume %1
 static const QString CV_SERIES_DETAIL = CV_WEB_ADDRESS + "/volume/4050-%1/?api_key=" + CV_API_KEY +
-										"&format=json&field_list=name,start_year,publisher,image,count_of_issues,id";
+										"&format=json&field_list=name,start_year,publisher,image,count_of_issues,id,description";
 
 //gets ids for comics in a volume id %1
 static const QString CV_COMIC_IDS = CV_WEB_ADDRESS + "/issues/?api_key=" + CV_API_KEY +
@@ -57,6 +57,13 @@ void ComicVineClient::proccessVolumesSearchData(const QByteArray & data)
 	emit finished();
 }
 
+void ComicVineClient::proccessSeriesDetailData(const QByteArray &data)
+{
+	QString json(data);
+	emit seriesDetail(json);
+	emit finished();
+}
+
 void ComicVineClient::queryTimeOut()
 {
 
@@ -65,7 +72,20 @@ void ComicVineClient::queryTimeOut()
 //CV_SERIES_DETAIL
 void ComicVineClient::getSeriesDetail(const QString & id)
 {
+	HttpWorker * search = new HttpWorker(CV_SERIES_DETAIL.arg(id));
+	connect(search,SIGNAL(dataReady(const QByteArray &)),this,SLOT(proccessSeriesDetailData(const QByteArray &)));
+	connect(search,SIGNAL(timeout()),this,SLOT(queryTimeOut()));
+	connect(search,SIGNAL(finished()),search,SLOT(deleteLater()));
+	search->get();
+}
 
+void ComicVineClient::getSeriesCover(const QString & url)
+{
+	HttpWorker * search = new HttpWorker(url);
+	connect(search,SIGNAL(dataReady(const QByteArray &)),this,SIGNAL(seriesCover(const QByteArray &)));
+	connect(search,SIGNAL(timeout()),this,SLOT(queryTimeOut())); //TODO
+	connect(search,SIGNAL(finished()),search,SLOT(deleteLater()));
+	search->get();
 }
 
 //CV_COMIC_IDS

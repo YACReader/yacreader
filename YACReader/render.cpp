@@ -682,10 +682,7 @@ void Render::createComic(const QString & path)
 }
 void Render::loadComic(const QString & path,const ComicDB & comicDB)
 {
-	//if(typeid(*comic) != typeid(FolderComic))
-		comic->load(path,comicDB);
-	//else
-	{/*TODO error*/}
+	comic->load(path,comicDB);
 }
 void Render::loadComic(const QString & path, int atPage)
 {

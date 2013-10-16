@@ -22,7 +22,7 @@ void HttpVersionChecker::checkNewVersion(const QByteArray & data)
 {
 	checkNewVersion(QString(data));
 }
-//TODO escribir prueba unitaria
+
 bool HttpVersionChecker::checkNewVersion(QString sourceContent)
 {
 #ifdef Q_OS_WIN32

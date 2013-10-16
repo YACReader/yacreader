@@ -626,8 +626,6 @@ void PDFComic::process()
 	{
 		delete pdfComic;
 		pdfComic = 0;
-		//TODO emitir este mensaje en otro sitio
-		//QMessageBox::critical(NULL,QObject::tr("Bad PDF File"),QObject::tr("Invalid PDF file"));
 		emit errorOpening();
 		return;
 	}
