@@ -139,3 +139,8 @@ QModelIndex VolumesModel::index(int row, int column, const QModelIndex &parent) 
 	return createIndex(row, column, _data[row]);
 }
 
+QString VolumesModel::getVolumeId(const QModelIndex &index) const
+{
+	return _data.at(index.row())->at(ID);
+}
+

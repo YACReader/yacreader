@@ -108,7 +108,12 @@ QString ComicDB::toTXT()
 	return txt;
 }
 
-QString ComicDB::getTitleOrPath()
+QString ComicDB::getFileName() const
+{
+	return QFileInfo(path).fileName();
+}
+
+QString ComicDB::getTitleOrFileName() const
 {
 	if(info.title && info.title->isEmpty())
 		return *(info.title);
@@ -116,7 +121,7 @@ QString ComicDB::getTitleOrPath()
 		return QFileInfo(path).fileName();
 }
 
-QString ComicDB::getParentFolderName()
+QString ComicDB::getParentFolderName() const
 {
 	QStringList paths = path.split('/');
 	if(paths.length()<2)

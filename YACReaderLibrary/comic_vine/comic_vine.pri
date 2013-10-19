@@ -12,7 +12,11 @@ HEADERS += \
     comic_vine/model/volumes_model.h \
     comic_vine/model/comics_model.h \
 	comic_vine/model/json_model.h \
-	comic_vine/model/response_parser.h
+	comic_vine/model/response_parser.h \
+    comic_vine/scrapper_tableview.h \
+    comic_vine/sort_volume_comics.h \
+    comic_vine/model/local_comic_list_model.h \
+    comic_vine/model/volume_comics_model.h
 
 SOURCES += \
 	comic_vine/comic_vine_dialog.cpp \
@@ -27,4 +31,8 @@ SOURCES += \
     comic_vine/model/volumes_model.cpp \
     comic_vine/model/comics_model.cpp \
 	comic_vine/model/json_model.cpp \
-	comic_vine/model/response_parser.cpp
+	comic_vine/model/response_parser.cpp \
+    comic_vine/scrapper_tableview.cpp \
+    comic_vine/sort_volume_comics.cpp \
+    comic_vine/model/local_comic_list_model.cpp \
+    comic_vine/model/volume_comics_model.cpp

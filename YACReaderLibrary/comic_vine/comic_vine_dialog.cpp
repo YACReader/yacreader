@@ -17,6 +17,7 @@
 #include "search_volume.h"
 #include "select_comic.h"
 #include "select_volume.h"
+#include "sort_volume_comics.h"
 
 #include "response_parser.h"
 
@@ -82,6 +83,7 @@ void ComicVineDialog::doStackedWidgets()
 	content->addWidget(searchVolumeWidget = new SearchVolume);
 	content->addWidget(selectVolumeWidget = new SelectVolume);
 	content->addWidget(selectComicWidget = new SelectComic);
+	content->addWidget(sortVolumeComicsWidget = new SortVolumeComics);
 }
 
 void ComicVineDialog::doConnections()
@@ -114,7 +116,7 @@ void ComicVineDialog::goNext()
 		else
 		{
 			ComicDB comic = comics[currentIndex];
-			QString title = comic.getTitleOrPath();
+			QString title = comic.getTitleOrFileName();
 			titleHeader->setSubTitle(tr("comic %1 of %2 - %3").arg(currentIndex+1).arg(comics.length()).arg(title));
 			showLoading();
 
@@ -123,8 +125,13 @@ void ComicVineDialog::goNext()
 			mode = SingleComicInList;
 		}
 	}
-	else if (content->currentWidget() == searchSingleComicWidget) {
+	else if (content->currentWidget() == selectVolumeWidget) {
+		showLoading();
 
+		ComicVineClient * comicVineClient = new ComicVineClient;
+		connect(comicVineClient,SIGNAL(volumeComicsInfo(QString)),this,SLOT(showSortVolumeComics(QString)));
+		connect(comicVineClient,SIGNAL(finished()),comicVineClient,SLOT(deleteLater()));
+		comicVineClient->getVolumeComicsInfo(selectVolumeWidget->getSelectedVolumeId());
 	}
 }
 
@@ -142,7 +149,7 @@ void ComicVineDialog::show()
 	if(comics.length() == 1)
 	{
 		ComicDB singleComic = comics[0];
-		QString title = singleComic.getTitleOrPath();
+		QString title = singleComic.getTitleOrFileName();
 		titleHeader->setSubTitle(title);
 		showLoading();
 
@@ -240,6 +247,12 @@ void ComicVineDialog::showSearchVolume()
 void ComicVineDialog::showSelectVolume(const QString & json)
 {
 	content->setCurrentWidget(selectVolumeWidget);
+
+	backButton->setVisible(true);
+	nextButton->setVisible(true);
+	searchButton->setHidden(true);
+	closeButton->setVisible(true);
+
 	selectVolumeWidget->load(json);
 }
 
@@ -247,6 +260,12 @@ void ComicVineDialog::showSelectComic(const QString &json)
 {
 	content->setCurrentWidget(selectComicWidget);
 	selectComicWidget->load(json);
+}
+
+void ComicVineDialog::showSortVolumeComics(const QString &json)
+{
+	content->setCurrentWidget(sortVolumeComicsWidget);
+	sortVolumeComicsWidget->setData(comics, json);
 }
 
 void ComicVineDialog::showLoading()

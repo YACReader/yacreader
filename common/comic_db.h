@@ -132,11 +132,14 @@ public:
 
 	bool hasCover() {return _hasCover;};
 
+	//return comic file name
+	QString getFileName() const;
+
 	//returns comic title if it isn't null or empty, in other case returns fileName
-	QString getTitleOrPath();
+	QString getTitleOrFileName() const;
 
 	//returns parent folder name
-	QString getParentFolderName();
+	QString getParentFolderName() const;
 
 	QString toTXT();
 	

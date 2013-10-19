@@ -17,6 +17,7 @@ class SearchSingleComic;
 class SearchVolume;
 class SelectComic;
 class SelectVolume;
+class SortVolumeComics;
 
 
 //----------------------------------------
@@ -46,6 +47,7 @@ protected slots:
 	void launchSearchComic();
 	void showSelectVolume(const QString & json);
 	void showSelectComic(const QString & json);
+	void showSortVolumeComics(const QString & json);
 private:
 
 	enum ScrapperMode
@@ -94,6 +96,7 @@ private:
 	SearchVolume * searchVolumeWidget;
 	SelectVolume * selectVolumeWidget;
 	SelectComic * selectComicWidget;
+	SortVolumeComics * sortVolumeComicsWidget;
 };
 
 #endif // COMIC_VINE_DIALOG_H
