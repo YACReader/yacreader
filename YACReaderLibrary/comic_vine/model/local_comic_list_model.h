@@ -1,16 +1,17 @@
-#ifndef VOLUMES_MODEL_H
-#define VOLUMES_MODEL_H
+#ifndef LOCAL_COMIC_LIST_MODEL_H
+#define LOCAL_COMIC_LIST_MODEL_H
 
-#include "json_model.h"
+#include <QAbstractItemModel>
 
-class VolumesModel : public JSONModel
+#include "comic_db.h"
+
+class LocalComicListModel : public QAbstractItemModel
 {
 	Q_OBJECT
 public:
-	explicit VolumesModel(QObject *parent = 0);
-	virtual ~VolumesModel();
-	//receive a valid json with a list of volumes
-	void load(const QString & json);
+	explicit LocalComicListModel(QObject *parent = 0);
+
+	void load(QList<ComicDB> & comics);
 
 	//QAbstractItemModel methods
 	QModelIndex parent(const QModelIndex &index) const;
@@ -22,26 +23,12 @@ public:
 						int role = Qt::DisplayRole) const;
 	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
 
-	QString getVolumeId(const QModelIndex & index) const;
-
 signals:
 
 public slots:
 
 private:
-	QList <QList <QString> * > _data;
-
-public:
-	enum Column {
-		SERIES = 0,
-		YEAR,
-		ISSUES,
-		PUBLISHER,
-		COVER_URL,
-		DECK,
-		ID
-	};
-
+	QList<ComicDB> _data;
 };
 
-#endif // VOLUMES_MODEL_H
+#endif // LOCAL_COMIC_LIST_MODEL_H

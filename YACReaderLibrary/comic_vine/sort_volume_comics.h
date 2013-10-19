@@ -1,0 +1,36 @@
+#ifndef SORT_VOLUME_COMICS_H
+#define SORT_VOLUME_COMICS_H
+
+#include <QWidget>
+
+#include "comic_db.h"
+
+class ScrapperTableView;
+class QPushButton;
+class LocalComicListModel;
+class VolumeComicsModel;
+
+class SortVolumeComics : public QWidget
+{
+	Q_OBJECT
+public:
+	explicit SortVolumeComics(QWidget *parent = 0);
+
+signals:
+
+public slots:
+	void setData(QList<ComicDB> & comics, const QString & json);
+
+private:
+	ScrapperTableView * tableFiles;
+	ScrapperTableView * tableVolumeComics;
+
+	LocalComicListModel * localComicsModel;
+	VolumeComicsModel * volumeComicsModel;
+
+	QPushButton * moveUpButton;
+	QPushButton * moveDownButton;
+
+};
+
+#endif // SORT_VOLUME_COMICS_H

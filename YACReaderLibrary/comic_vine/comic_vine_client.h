@@ -15,19 +15,23 @@ signals:
 	void searchResult(QString);
 	void seriesDetail(QString);//JSON
 	void seriesCover(const QByteArray &);
+	void volumeComicsInfo(QString);
+
 	void finished();
 public slots:
 	void search(const QString & query, int page = 0);
 	void getSeriesDetail(const QString & id);
 	void getSeriesCover(const QString & url);
+	void getVolumeComicsInfo(const QString & idVolume);
 
-	void getComicIds(const QString & id, int page = 0);
 	void getComicId(const QString & id, int comicNumber);
 	void getComicDetail(const QString & id);
 	void getCoverURL(const QString & id);
 protected slots:
 	void proccessVolumesSearchData(const QByteArray & data);
 	void proccessSeriesDetailData(const QByteArray & data);
+	void processVolumeComicsInfo(const QByteArray & data);
+
 	void queryTimeOut();
 	
 };

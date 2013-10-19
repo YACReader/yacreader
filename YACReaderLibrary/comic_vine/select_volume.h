@@ -4,9 +4,10 @@
 #include <QWidget>
 
 class QLabel;
-class QTableView;
 class VolumesModel;
 class QModelIndex;
+
+class ScrapperTableView;
 
 class SelectVolume : public QWidget
 {
@@ -20,10 +21,11 @@ public slots:
 	void setCover(const QByteArray &);
 	void setDescription(const QString & jsonDetail);
 	void openLink(const QString & link);
+	QString getSelectedVolumeId();
 private:
 	QLabel * cover;
 	QLabel * detailLabel;
-	QTableView * tableVolumes;
+	ScrapperTableView * tableVolumes;
 	VolumesModel * model;
 };
 
