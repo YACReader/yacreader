@@ -27,7 +27,10 @@ signals:
 
 public slots:
 
+	void addExtraRows(int numRows);
+
 private:
+	int numExtraRows;
 	QList<ComicDB> _data;
 };
 

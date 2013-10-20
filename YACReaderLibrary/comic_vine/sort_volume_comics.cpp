@@ -7,6 +7,7 @@
 
 #include "scrapper_tableview.h"
 #include "local_comic_list_model.h"
+#include "volume_comics_model.h"
 
 SortVolumeComics::SortVolumeComics(QWidget *parent) :
 	QWidget(parent)
@@ -17,6 +18,7 @@ SortVolumeComics::SortVolumeComics(QWidget *parent) :
 	label->setStyleSheet(labelStylesheet);
 
 	QLabel * sortLabel = new QLabel(tr("sort comic info to match your comic files"));
+	sortLabel->setStyleSheet(labelStylesheet);
 	moveUpButton = new QPushButton;
 	moveDownButton = new QPushButton;
 
@@ -33,7 +35,11 @@ SortVolumeComics::SortVolumeComics(QWidget *parent) :
 	content->addWidget(tableVolumeComics,0,Qt::AlignRight|Qt::AlignTop);
 	//content->addWidget(tableVolumes,0,Qt::AlignRight|Qt::AlignTop);
 
-	connect(tableVolumeComics->verticalScrollBar(), SIGNAL(valueChanged(int)), tableFiles->verticalScrollBar(), SLOT(setValue(int)));
+	connect(tableVolumeComics->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(synchronizeScroll(int)));
+	connect(tableFiles->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(synchronizeScroll(int)));
+
+	connect(tableVolumeComics, SIGNAL(pressed(QModelIndex)), tableFiles, SLOT(setCurrentIndex(QModelIndex)));
+	connect(tableFiles, SIGNAL(pressed(QModelIndex)), tableVolumeComics, SLOT(setCurrentIndex(QModelIndex)));
 
 	sortButtonsLayout->addStretch();
 	sortButtonsLayout->addWidget(sortLabel);
@@ -58,5 +64,43 @@ void SortVolumeComics::setData(QList<ComicDB> & comics, const QString &json)
 	localComicsModel = new LocalComicListModel;
 	localComicsModel->load(comics);
 
+	volumeComicsModel = new VolumeComicsModel;
+	volumeComicsModel->load(json);
+
+	int numLocalComics = localComicsModel->rowCount();
+	int numVolumeComics = volumeComicsModel->rowCount();
+
+	if(numLocalComics > numVolumeComics)
+		volumeComicsModel->addExtraRows(numLocalComics - numVolumeComics);
+	if(numLocalComics < numVolumeComics)
+		localComicsModel->addExtraRows(numVolumeComics - numLocalComics);
+
 	tableFiles->setModel(localComicsModel);
+	tableVolumeComics->setModel(volumeComicsModel);
+
+	tableVolumeComics->resizeColumnToContents(0);
+}
+
+void SortVolumeComics::synchronizeScroll(int pos)
+{
+	void * senderObject = sender();
+
+	if(senderObject == 0) //invalid call
+		return;
+
+	QScrollBar * tableVolumeComicsScrollBar = tableVolumeComics->verticalScrollBar();
+	QScrollBar * tableFilesScrollBar = tableFiles->verticalScrollBar();
+
+	if(senderObject == tableVolumeComicsScrollBar)
+	{
+		disconnect(tableFilesScrollBar,SIGNAL(valueChanged(int)),this,0);
+		tableFilesScrollBar->setValue(pos);
+		connect(tableFilesScrollBar, SIGNAL(valueChanged(int)), this, SLOT(synchronizeScroll(int)));
+	}
+	else
+	{
+		disconnect(tableVolumeComicsScrollBar,SIGNAL(valueChanged(int)),this,0);
+		tableVolumeComicsScrollBar->setValue(pos);
+		connect(tableVolumeComicsScrollBar, SIGNAL(valueChanged(int)), this, SLOT(synchronizeScroll(int)));
+	}
 }

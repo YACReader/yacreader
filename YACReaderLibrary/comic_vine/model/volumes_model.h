@@ -23,13 +23,14 @@ public:
 	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
 
 	QString getVolumeId(const QModelIndex & index) const;
+	QString getCoverURL(const QModelIndex & index) const;
 
 signals:
 
 public slots:
 
 private:
-	QList <QList <QString> * > _data;
+	QList <QList <QString> > _data;
 
 public:
 	enum Column {

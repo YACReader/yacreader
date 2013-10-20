@@ -101,16 +101,16 @@ void SelectVolume::load(const QString & json)
 
 	tableVolumes->setFixedSize(619,341);
 
-	if(tempM->rowCount()>0)
-	{
-		tableVolumes->selectRow(0);
-		loadVolumeInfo(tempM->index(0,0));
-	}
-
 	if(model != 0)
 		delete model;
 	else
 		model = tempM;
+
+	if(model->rowCount()>0)
+	{
+		tableVolumes->selectRow(0);
+		loadVolumeInfo(model->index(0,0));
+	}
 
 	tableVolumes->setColumnWidth(0,350);
 }
@@ -119,10 +119,10 @@ SelectVolume::~SelectVolume() {}
 
 void SelectVolume::loadVolumeInfo(const QModelIndex & mi)
 {
-	QStringList * data = static_cast<QStringList *>(mi.internalPointer());
-	QString coverURL = data->at(VolumesModel::COVER_URL);
-	QString deck = data->at(VolumesModel::DECK);
-	QString id = data->at(VolumesModel::ID);
+	//QStringList * data = static_cast<QStringList *>(mi.internalPointer());
+	QString coverURL = model->getCoverURL(mi);
+	//QString deck = model->data(model->index(mi.row(),VolumesModel::DECK)).toString();
+	QString id =  model->getVolumeId(mi);
 
 	//cover->setText(coverURL);
 	//detailLabel->setText(deck);
