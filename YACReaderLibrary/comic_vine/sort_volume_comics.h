@@ -2,6 +2,7 @@
 #define SORT_VOLUME_COMICS_H
 
 #include <QWidget>
+#include <QModelIndex>
 
 #include "comic_db.h"
 
@@ -20,6 +21,9 @@ signals:
 
 public slots:
 	void setData(QList<ComicDB> & comics, const QString & json);
+
+protected slots:
+	void synchronizeScroll(int pos);
 
 private:
 	ScrapperTableView * tableFiles;

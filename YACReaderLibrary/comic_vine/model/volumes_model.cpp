@@ -10,7 +10,7 @@ VolumesModel::VolumesModel(QObject *parent) :
 
 VolumesModel::~VolumesModel()
 {
-	std::for_each(_data.begin(), _data.end(), [](QList<QString> * ptr) { delete ptr; });
+	//std::for_each(_data.begin(), _data.end(), [](QList<QString> * ptr) { delete ptr; });
 }
 
 void VolumesModel::load(const QString &json)
@@ -39,11 +39,11 @@ void VolumesModel::load(const QString &json)
 			QString url = resultsValue.property("image").property("medium_url").toString();
 			QString deck = resultsValue.property("deck").toString();
 			QString id = resultsValue.property("id").toString();
-			QStringList & l = *(new QStringList);
+			QStringList l;
 			l << name << year << numIssues << publisher << url << deck << id;
 			test = name.isEmpty() && year.isEmpty() && numIssues.isEmpty() && url.isEmpty();
 			if(numResults>0 && !test)
-				_data.push_back(&l);
+				_data.push_back(l);
 			numResults--;
 		}
 	}
@@ -89,7 +89,7 @@ QVariant VolumesModel::data(const QModelIndex &index, int role) const
 
 	int row = index.row();
 	int column = index.column();
-	return _data[row]->at(column);
+	return _data[row][column];
 }
 
 Qt::ItemFlags VolumesModel::flags(const QModelIndex &index) const
@@ -136,11 +136,16 @@ QModelIndex VolumesModel::index(int row, int column, const QModelIndex &parent) 
 	if (!hasIndex(row, column, parent))
 		return QModelIndex();
 
-	return createIndex(row, column, _data[row]);
+	return createIndex(row, column);
 }
 
 QString VolumesModel::getVolumeId(const QModelIndex &index) const
 {
-	return _data.at(index.row())->at(ID);
+	return _data[index.row()][ID];
+}
+
+QString VolumesModel::getCoverURL(const QModelIndex &index) const
+{
+	return _data[index.row()][COVER_URL];
 }
 

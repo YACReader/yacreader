@@ -1,7 +1,7 @@
 #include "local_comic_list_model.h"
 
 LocalComicListModel::LocalComicListModel(QObject *parent) :
-	QAbstractItemModel(parent)
+	QAbstractItemModel(parent),numExtraRows(0)
 {
 }
 
@@ -20,7 +20,7 @@ QModelIndex LocalComicListModel::parent(const QModelIndex &index) const
 int LocalComicListModel::rowCount(const QModelIndex &parent) const
 {
 	Q_UNUSED(parent)
-	return _data.count();
+	return _data.count() + numExtraRows;
 }
 
 int LocalComicListModel::columnCount(const QModelIndex &parent) const
@@ -50,8 +50,11 @@ QVariant LocalComicListModel::data(const QModelIndex &index, int role) const
 		return QVariant();
 
 	int row = index.row();
-	int column = index.column();
-	return _data[row].getFileName();
+
+	if(row < _data.count())
+		return _data[row].getFileName();
+	else
+		return QVariant();
 }
 
 Qt::ItemFlags LocalComicListModel::flags(const QModelIndex &index) const
@@ -63,6 +66,9 @@ Qt::ItemFlags LocalComicListModel::flags(const QModelIndex &index) const
 
 QVariant LocalComicListModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
+
+	if ( role == Qt::TextAlignmentRole)
+		return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
 
 	if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
 	{
@@ -78,5 +84,10 @@ QModelIndex LocalComicListModel::index(int row, int column, const QModelIndex &p
 		return QModelIndex();
 
 	return createIndex(row, column);
+}
+
+void LocalComicListModel::addExtraRows(int numRows)
+{
+	numExtraRows = numRows;
 }
 
