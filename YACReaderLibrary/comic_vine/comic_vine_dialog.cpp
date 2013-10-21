@@ -156,6 +156,7 @@ void ComicVineDialog::show()
 		searchVolume(title);
 		status = AutoSearching;
 		mode = SingleComic;
+
 	}else if(comics.length()>1)
 	{
 		titleHeader->setSubTitle(tr("%1 comics selected").arg(comics.length()));
@@ -195,7 +196,10 @@ void ComicVineDialog::debugClientResults(const QString & string)
 			if(p.getNumResults() == 0)
 				showSearchSingleComic();
 			else
-				showSelectComic(string);
+				if(status == SearchingVolume)
+					showSelectVolume(string);
+				else
+					showSelectComic(string);
 			break;
 		case Volume:
 			if(p.getNumResults() == 0)
@@ -246,6 +250,8 @@ void ComicVineDialog::showSearchVolume()
 
 void ComicVineDialog::showSelectVolume(const QString & json)
 {
+	status = SelectingSeries;
+
 	content->setCurrentWidget(selectVolumeWidget);
 
 	backButton->setVisible(true);
@@ -296,6 +302,8 @@ void ComicVineDialog::searchVolume(const QString &v)
 	connect(comicVineClient,SIGNAL(searchResult(QString)),this,SLOT(debugClientResults(QString)));
 	connect(comicVineClient,SIGNAL(finished()),comicVineClient,SLOT(deleteLater()));
 	comicVineClient->search(v);
+
+	status = SearchingVolume;
 }
 
 void ComicVineDialog::launchSearchVolume()
