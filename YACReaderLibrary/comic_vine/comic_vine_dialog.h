@@ -62,7 +62,9 @@ private:
 		AutoSearching,
 		AskingForInfo,
 		SelectingComic,
-		SelectingSeries
+		SelectingSeries,
+		SearchingSingleComic,
+		SearchingVolume
 	};
 
 	ScrapperMode mode;
