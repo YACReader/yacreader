@@ -225,6 +225,7 @@ void Viewer::next()
 	direction = 1;
 	render->nextPage();
 	updateInformation();
+	shouldOpenPrevious = false;
 }
 
 void Viewer::prev()
@@ -232,6 +233,7 @@ void Viewer::prev()
 	direction = -1;
 	render->previousPage();
 	updateInformation();
+	shouldOpenNext = false;
 }
 void Viewer::showGoToDialog()
 {
@@ -843,6 +845,8 @@ void Viewer::showIsCoverMessage()
 		shouldOpenPrevious = false;
 		emit (openPreviousComic());
 	}
+
+	shouldOpenNext = false; //single page comic
 }
 		
 void Viewer::showIsLastMessage()
@@ -858,6 +862,8 @@ void Viewer::showIsLastMessage()
 		shouldOpenNext = false;
 		emit (openNextComic());
 	}
+
+	shouldOpenPrevious = false; //single page comic
 }
 
 unsigned int Viewer::getIndex()
