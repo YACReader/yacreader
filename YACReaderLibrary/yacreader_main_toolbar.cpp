@@ -14,7 +14,7 @@ YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent) :
 	mainLayout = new QHBoxLayout;
 
 	currentFolder = new QLabel(this);
-	currentFolder->setAlignment(Qt::AlignCenter);
+	//currentFolder->setAlignment(Qt::AlignCenter);
 	currentFolder->setStyleSheet(" QLabel {color:#404040; font-size:22px; font-weight:bold;}");
 
 	QFont f=currentFolder->font();
@@ -90,6 +90,16 @@ void YACReaderMainToolBar::paintEvent(QPaintEvent * event)
 
 void YACReaderMainToolBar::resizeEvent(QResizeEvent * event)
 {
+	//210px x 2 = 420px
+	int freeWidth = event->size().width() - 420;
+	int maxLabelWidth = freeWidth>=0?freeWidth:0;
+	currentFolder->setMaximumWidth(maxLabelWidth);
+	currentFolder->adjustSize();
+
+	QFontMetrics metrix(currentFolder->font());
+	QString clippedText = metrix.elidedText(currentFolderName, Qt::ElideRight, maxLabelWidth);
+
+	currentFolder->setText(clippedText);
 	currentFolder->move((event->size().width()-currentFolder->width())/2,(event->size().height()-currentFolder->height())/2);
 }
 
@@ -114,7 +124,17 @@ void YACReaderMainToolBar::addWideDivider()
 void YACReaderMainToolBar::setCurrentFolderName(const QString & name)
 {
 	currentFolder->setText(name);
+	currentFolderName = name;
 	currentFolder->adjustSize();
-	currentFolder->move((width()-currentFolder->width())/2,(height()-currentFolder->height())/2);
 
+	int freeWidth = size().width() - 420;
+	int maxLabelWidth = freeWidth>=0?freeWidth:0;
+	currentFolder->setMaximumWidth(maxLabelWidth);
+
+	QFontMetrics metrix(currentFolder->font());
+	QString clippedText = metrix.elidedText(currentFolderName, Qt::ElideRight, maxLabelWidth);
+
+	currentFolder->setText(clippedText);
+
+	currentFolder->move((width()-currentFolder->width())/2,(height()-currentFolder->height())/2);
 }

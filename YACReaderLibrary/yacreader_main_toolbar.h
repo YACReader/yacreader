@@ -37,6 +37,7 @@ private:
 	QHBoxLayout * mainLayout;
 
 	QLabel * currentFolder;
+	QString currentFolderName;
 
 	void addDivider();
 	void addWideDivider();
