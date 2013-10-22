@@ -135,7 +135,7 @@ void LibraryWindow::doLayout()
 #ifdef Q_OS_MAC
 	libraryToolBar = addToolBar(tr("Library"));
 #else
-	libraryToolBar = new YACReaderMainToolBar;
+	libraryToolBar = new YACReaderMainToolBar(this);
 #endif
 
 	//FLOW-----------------------------------------------------------------------
