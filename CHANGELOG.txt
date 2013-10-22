@@ -1,6 +1,7 @@
 6.9 (No pública)
 Añadida la apertura automática del siguiente/anterior cómic al llegar al final/portada del cómic actual
 Corregido el comportamiento del diálogo de nueva versión detectada. Ahora avisa una vez al día o si el usuario lo elige cada 14 días.
+Corregido el ajuste a lo ancho del título de la toolbar en YACReaderLibrary.
 
 6.8 (No pública)
 Corregido bug que causaba un cierre inesperado después de cambiar el modo de sincronización vertical (flow)
