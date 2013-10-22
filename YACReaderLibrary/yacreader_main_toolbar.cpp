@@ -100,6 +100,7 @@ void YACReaderMainToolBar::resizeEvent(QResizeEvent * event)
 	QString clippedText = metrix.elidedText(currentFolderName, Qt::ElideRight, maxLabelWidth);
 
 	currentFolder->setText(clippedText);
+	currentFolder->adjustSize();
 	currentFolder->move((event->size().width()-currentFolder->width())/2,(event->size().height()-currentFolder->height())/2);
 }
 
@@ -135,6 +136,6 @@ void YACReaderMainToolBar::setCurrentFolderName(const QString & name)
 	QString clippedText = metrix.elidedText(currentFolderName, Qt::ElideRight, maxLabelWidth);
 
 	currentFolder->setText(clippedText);
-
+	currentFolder->adjustSize();
 	currentFolder->move((width()-currentFolder->width())/2,(height()-currentFolder->height())/2);
 }
