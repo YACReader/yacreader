@@ -126,5 +126,5 @@ void YACReaderSideBar::paintEvent(QPaintEvent * event)
 
 QSize YACReaderSideBar::sizeHint() const
 {
-	return QSize(225,200);
+	return QSize(275,200);
 }
