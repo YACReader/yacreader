@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-class ScrapperLineEdit;
+class ScraperLineEdit;
 
 class SearchSingleComic : public QWidget
 {
@@ -14,8 +14,8 @@ public:
 	QString getComicInfo();
 	int getComicNumber();
 private:
-	ScrapperLineEdit * titleEdit;
-	ScrapperLineEdit * numberEdit;
-	ScrapperLineEdit * volumeEdit;
+	ScraperLineEdit * titleEdit;
+	ScraperLineEdit * numberEdit;
+	ScraperLineEdit * volumeEdit;
 };
 #endif // SEARCH_SINGLE_COMIC_H

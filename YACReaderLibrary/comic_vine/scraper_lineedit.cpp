@@ -1,7 +1,7 @@
-#include "scrapper_lineedit.h"
+#include "scraper_lineedit.h"
 #include <QLabel>
 
-ScrapperLineEdit::ScrapperLineEdit(const QString & title, QWidget * widget)
+ScraperLineEdit::ScraperLineEdit(const QString & title, QWidget * widget)
 	:QLineEdit(widget)
 {
 	titleLabel = new QLabel(title,this);
@@ -14,7 +14,7 @@ ScrapperLineEdit::ScrapperLineEdit(const QString & title, QWidget * widget)
 	setFixedHeight(22);
 }
 
-void ScrapperLineEdit::resizeEvent(QResizeEvent *)
+void ScraperLineEdit::resizeEvent(QResizeEvent *)
 {
 	QSize szl = titleLabel->sizeHint();
 	titleLabel->move(6,(rect().bottom() + 1 - szl.height())/2);

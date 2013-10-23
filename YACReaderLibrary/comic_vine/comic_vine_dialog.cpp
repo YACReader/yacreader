@@ -10,7 +10,7 @@
 
 #include "yacreader_busy_widget.h"
 #include "comic_vine_client.h"
-#include "scrapper_lineedit.h"
+#include "scraper_lineedit.h"
 #include "title_header.h"
 #include "series_question.h"
 #include "search_single_comic.h"

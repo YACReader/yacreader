@@ -1,6 +1,6 @@
 #include "search_volume.h"
 
-#include "scrapper_lineedit.h"
+#include "scraper_lineedit.h"
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -11,7 +11,7 @@ SearchVolume::SearchVolume(QWidget * parent)
 	QLabel * label = new QLabel(tr("No results found, please provide some aditional information."));
 	label->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
 
-	volumeEdit = new ScrapperLineEdit(tr("Series:"));
+	volumeEdit = new ScraperLineEdit(tr("Series:"));
 
 	QVBoxLayout * l = new QVBoxLayout;
 
