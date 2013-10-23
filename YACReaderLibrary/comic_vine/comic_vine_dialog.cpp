@@ -90,6 +90,7 @@ void ComicVineDialog::doConnections()
 {
 	connect(closeButton,SIGNAL(clicked()),this,SLOT(close()));
 	connect(nextButton,SIGNAL(clicked()),this,SLOT(goNext()));
+	connect(backButton,SIGNAL(clicked()),this,SLOT(goBack()));
 	connect(searchButton,SIGNAL(clicked()),this,SLOT(search()));
 }
 
@@ -135,6 +136,20 @@ void ComicVineDialog::goNext()
 	}
 }
 
+void ComicVineDialog::goBack()
+{
+	switch (status) {
+	case SelectingSeries:
+		if(mode == Volume)
+			showSearchVolume();
+		else
+			showSearchSingleComic();
+		break;
+	default:
+		break;
+	}
+}
+
 void ComicVineDialog::setComics(const QList<ComicDB> & comics)
 {
 	this->comics = comics;
@@ -173,6 +188,7 @@ void ComicVineDialog::doLoading()
 
 	l->addStretch();
 	l->addWidget(bw,0,Qt::AlignHCenter);
+	l->addStretch();
 
 	l->setContentsMargins(0,0,0,0);
 	w->setLayout(l);
