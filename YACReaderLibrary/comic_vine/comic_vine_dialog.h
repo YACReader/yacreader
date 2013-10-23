@@ -35,6 +35,7 @@ public slots:
 	void show();
 protected slots:
 	void goNext();
+	void goBack();
 	void debugClientResults(const QString & string);
 	//show widget methods
 	void showSeriesQuestion();

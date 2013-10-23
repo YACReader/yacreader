@@ -8,7 +8,7 @@
 SearchVolume::SearchVolume(QWidget * parent)
 	:QWidget(parent)
 {
-	QLabel * label = new QLabel(tr("No results found, please provide some aditional information."));
+	QLabel * label = new QLabel(tr("Please provide some aditional information."));
 	label->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
 
 	volumeEdit = new ScraperLineEdit(tr("Series:"));
