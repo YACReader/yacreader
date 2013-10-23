@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-class ScrapperLineEdit;
+class ScraperLineEdit;
 
 
 class SearchVolume : public QWidget
@@ -14,7 +14,7 @@ public:
 public slots:
 	QString getVolumeInfo();
 private:
-	ScrapperLineEdit * volumeEdit;
+	ScraperLineEdit * volumeEdit;
 };
 
 #endif // SEARCH_VOLUME_H

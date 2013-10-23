@@ -7,7 +7,7 @@ class QLabel;
 class VolumesModel;
 class QModelIndex;
 
-class ScrapperTableView;
+class ScraperTableView;
 
 class SelectVolume : public QWidget
 {
@@ -25,7 +25,7 @@ public slots:
 private:
 	QLabel * cover;
 	QLabel * detailLabel;
-	ScrapperTableView * tableVolumes;
+	ScraperTableView * tableVolumes;
 	VolumesModel * model;
 };
 

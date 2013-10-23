@@ -6,7 +6,7 @@
 
 #include "comic_db.h"
 
-class ScrapperTableView;
+class ScraperTableView;
 class QPushButton;
 class LocalComicListModel;
 class VolumeComicsModel;
@@ -26,8 +26,8 @@ protected slots:
 	void synchronizeScroll(int pos);
 
 private:
-	ScrapperTableView * tableFiles;
-	ScrapperTableView * tableVolumeComics;
+	ScraperTableView * tableFiles;
+	ScraperTableView * tableVolumeComics;
 
 	LocalComicListModel * localComicsModel;
 	VolumeComicsModel * volumeComicsModel;

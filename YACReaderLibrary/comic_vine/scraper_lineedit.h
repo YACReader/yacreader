@@ -5,11 +5,11 @@
 
 class QLabel;
 
-class ScrapperLineEdit : public QLineEdit
+class ScraperLineEdit : public QLineEdit
 {
 	Q_OBJECT
 public:
-	ScrapperLineEdit(const QString & title, QWidget * widget = 0);
+	ScraperLineEdit(const QString & title, QWidget * widget = 0);
 protected:
 	void resizeEvent(QResizeEvent *);
 private:

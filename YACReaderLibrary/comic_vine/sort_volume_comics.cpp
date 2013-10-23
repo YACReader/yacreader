@@ -5,7 +5,7 @@
 #include <QPushButton>
 #include <QScrollBar>
 
-#include "scrapper_tableview.h"
+#include "scraper_tableview.h"
 #include "local_comic_list_model.h"
 #include "volume_comics_model.h"
 
@@ -26,8 +26,8 @@ SortVolumeComics::SortVolumeComics(QWidget *parent) :
 	QHBoxLayout * content = new QHBoxLayout;
 	QHBoxLayout * sortButtonsLayout = new QHBoxLayout;
 
-	tableFiles = new ScrapperTableView();
-	tableVolumeComics = new ScrapperTableView();
+	tableFiles = new ScraperTableView();
+	tableVolumeComics = new ScraperTableView();
 
 	tableFiles->setFixedSize(407,341);
 	tableVolumeComics->setFixedSize(407,341);

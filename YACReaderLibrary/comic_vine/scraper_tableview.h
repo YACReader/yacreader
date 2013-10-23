@@ -3,11 +3,11 @@
 
 #include <QTableView>
 
-class ScrapperTableView : public QTableView
+class ScraperTableView : public QTableView
 {
 	Q_OBJECT
 public:
-	explicit ScrapperTableView(QWidget *parent = 0);
+	explicit ScraperTableView(QWidget *parent = 0);
 
 signals:
 

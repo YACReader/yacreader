@@ -1,8 +1,8 @@
-#include "scrapper_tableview.h"
+#include "scraper_tableview.h"
 
 #include <QHeaderView>
 
-ScrapperTableView::ScrapperTableView(QWidget *parent) :
+ScraperTableView::ScraperTableView(QWidget *parent) :
 	QTableView(parent)
 {
 	QString tableStylesheet = "QTableView {color:white; border:0px;alternate-background-color: #2E2E2E;background-color: #2B2B2B; outline: 0px;}"

@@ -1,6 +1,6 @@
 #include "search_single_comic.h"
 
-#include "scrapper_lineedit.h"
+#include "scraper_lineedit.h"
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -13,9 +13,9 @@ SearchSingleComic::SearchSingleComic(QWidget * parent)
 	QLabel * label = new QLabel(tr("No results found, please provide some aditional information. At least one field is needed."));
 	label->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
 
-	titleEdit = new ScrapperLineEdit(tr("Title:"));
-	numberEdit = new ScrapperLineEdit(tr("Number:"));
-	volumeEdit = new ScrapperLineEdit(tr("Series:"));
+	titleEdit = new ScraperLineEdit(tr("Title:"));
+	numberEdit = new ScraperLineEdit(tr("Number:"));
+	volumeEdit = new ScraperLineEdit(tr("Series:"));
 
 	numberEdit->setMaximumWidth(126);
 

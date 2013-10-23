@@ -9,7 +9,7 @@
 #include <QDesktopServices>
 #include <QHeaderView>
 
-#include "scrapper_tableview.h"
+#include "scraper_tableview.h"
 
 #include <QtScript>
 
@@ -65,7 +65,7 @@ SelectVolume::SelectVolume(QWidget *parent)
 	//iScroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 	//iScroll->show();
 
-	tableVolumes = new ScrapperTableView();
+	tableVolumes = new ScraperTableView();
 	//connections
 	connect(tableVolumes,SIGNAL(clicked(QModelIndex)),this,SLOT(loadVolumeInfo(QModelIndex)));
 

@@ -50,14 +50,14 @@ protected slots:
 	void showSortVolumeComics(const QString & json);
 private:
 
-	enum ScrapperMode
+	enum ScraperMode
 	{
-		SingleComic,       //the scrapper has been opened for a single comic
-		Volume,            //the scrapper is trying to get comics info for a whole volume
-		SingleComicInList  //the scrapper has been opened for a list of unrelated comics
+		SingleComic,       //the scraper has been opened for a single comic
+		Volume,            //the scraper is trying to get comics info for a whole volume
+		SingleComicInList  //the scraper has been opened for a list of unrelated comics
 	};
 
-	enum ScrapperStatus
+	enum ScraperStatus
 	{
 		AutoSearching,
 		AskingForInfo,
@@ -67,8 +67,8 @@ private:
 		SearchingVolume
 	};
 
-	ScrapperMode mode;
-	ScrapperStatus status;
+	ScraperMode mode;
+	ScraperStatus status;
 
 	int currentIndex;
 
