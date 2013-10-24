@@ -103,8 +103,8 @@ void SelectVolume::load(const QString & json)
 
 	if(model != 0)
 		delete model;
-	else
-		model = tempM;
+
+	model = tempM;
 
 	if(model->rowCount()>0)
 	{

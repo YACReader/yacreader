@@ -73,6 +73,8 @@ void ComicVineDialog::doLayout()
 
 	setLayout(mainLayout);
 	setFixedSize(872,529);
+
+	setWindowTitle("Comic Vine Scraper (beta)");
 }
 
 void ComicVineDialog::doStackedWidgets()
@@ -144,6 +146,9 @@ void ComicVineDialog::goBack()
 			showSearchVolume();
 		else
 			showSearchSingleComic();
+		break;
+	case SortingComics:
+		showSelectVolume();
 		break;
 	default:
 		break;
@@ -266,6 +271,12 @@ void ComicVineDialog::showSearchVolume()
 
 void ComicVineDialog::showSelectVolume(const QString & json)
 {
+	showSelectVolume();
+	selectVolumeWidget->load(json);
+}
+
+void ComicVineDialog::showSelectVolume()
+{
 	status = SelectingSeries;
 
 	content->setCurrentWidget(selectVolumeWidget);
@@ -274,8 +285,6 @@ void ComicVineDialog::showSelectVolume(const QString & json)
 	nextButton->setVisible(true);
 	searchButton->setHidden(true);
 	closeButton->setVisible(true);
-
-	selectVolumeWidget->load(json);
 }
 
 void ComicVineDialog::showSelectComic(const QString &json)
@@ -286,8 +295,16 @@ void ComicVineDialog::showSelectComic(const QString &json)
 
 void ComicVineDialog::showSortVolumeComics(const QString &json)
 {
+	status = SortingComics;
+
 	content->setCurrentWidget(sortVolumeComicsWidget);
+
 	sortVolumeComicsWidget->setData(comics, json);
+
+	backButton->setVisible(true);
+	nextButton->setVisible(true);
+	searchButton->setHidden(true);
+	closeButton->setVisible(true);
 }
 
 void ComicVineDialog::showLoading()
