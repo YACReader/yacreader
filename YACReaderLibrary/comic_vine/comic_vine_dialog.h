@@ -50,6 +50,7 @@ protected slots:
 	void showSelectVolume();
 	void showSelectComic(const QString & json);
 	void showSortVolumeComics(const QString & json);
+	void queryTimeOut();
 private:
 
 	enum ScraperMode

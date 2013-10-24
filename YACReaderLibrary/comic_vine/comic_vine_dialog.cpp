@@ -133,6 +133,7 @@ void ComicVineDialog::goNext()
 
 		ComicVineClient * comicVineClient = new ComicVineClient;
 		connect(comicVineClient,SIGNAL(volumeComicsInfo(QString)),this,SLOT(showSortVolumeComics(QString)));
+		connect(comicVineClient,SIGNAL(timeOut()),this,SLOT(queryTimeOut()));
 		connect(comicVineClient,SIGNAL(finished()),comicVineClient,SLOT(deleteLater()));
 		comicVineClient->getVolumeComicsInfo(selectVolumeWidget->getSelectedVolumeId());
 	}
@@ -307,6 +308,25 @@ void ComicVineDialog::showSortVolumeComics(const QString &json)
 	closeButton->setVisible(true);
 }
 
+void ComicVineDialog::queryTimeOut()
+{
+	QMessageBox::warning(this,"Comic Vine error", "Time out connecting to Comic Vine");
+
+	switch (status) {
+	case SelectingSeries:
+		if(mode == Volume)
+			showSearchVolume();
+		else
+			showSearchSingleComic();
+		break;
+	case SortingComics:
+		showSelectVolume();
+		break;
+	default:
+		break;
+	}
+}
+
 void ComicVineDialog::showLoading()
 {
 	content->setCurrentIndex(0);
@@ -333,6 +353,7 @@ void ComicVineDialog::searchVolume(const QString &v)
 {
 	ComicVineClient * comicVineClient = new ComicVineClient;
 	connect(comicVineClient,SIGNAL(searchResult(QString)),this,SLOT(debugClientResults(QString)));
+	connect(comicVineClient,SIGNAL(timeOut()),this,SLOT(queryTimeOut()));
 	connect(comicVineClient,SIGNAL(finished()),comicVineClient,SLOT(deleteLater()));
 	comicVineClient->search(v);
 

@@ -16,7 +16,7 @@ signals:
 	void seriesDetail(QString);//JSON
 	void seriesCover(const QByteArray &);
 	void volumeComicsInfo(QString);
-
+	void timeOut();
 	void finished();
 public slots:
 	void search(const QString & query, int page = 0);
@@ -32,7 +32,5 @@ protected slots:
 	void proccessSeriesDetailData(const QByteArray & data);
 	void processVolumeComicsInfo(const QByteArray & data);
 
-	void queryTimeOut();
-	
 };
 #endif // COMIC_VINE_CLIENT_H

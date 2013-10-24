@@ -71,17 +71,12 @@ void ComicVineClient::processVolumeComicsInfo(const QByteArray &data)
 	emit finished();
 }
 
-void ComicVineClient::queryTimeOut()
-{
-
-}
-
 //CV_SERIES_DETAIL
 void ComicVineClient::getSeriesDetail(const QString & id)
 {
 	HttpWorker * search = new HttpWorker(CV_SERIES_DETAIL.arg(id));
 	connect(search,SIGNAL(dataReady(const QByteArray &)),this,SLOT(proccessSeriesDetailData(const QByteArray &)));
-	connect(search,SIGNAL(timeout()),this,SLOT(queryTimeOut()));
+	connect(search,SIGNAL(timeout()),this,SIGNAL(timeOut()));
 	connect(search,SIGNAL(finished()),search,SLOT(deleteLater()));
 	search->get();
 }
@@ -90,7 +85,7 @@ void ComicVineClient::getSeriesCover(const QString & url)
 {
 	HttpWorker * search = new HttpWorker(url);
 	connect(search,SIGNAL(dataReady(const QByteArray &)),this,SIGNAL(seriesCover(const QByteArray &)));
-	connect(search,SIGNAL(timeout()),this,SLOT(queryTimeOut())); //TODO
+	connect(search,SIGNAL(timeout()),this,SIGNAL(timeOut())); //TODO
 	connect(search,SIGNAL(finished()),search,SLOT(deleteLater()));
 	search->get();
 }
@@ -100,7 +95,7 @@ void ComicVineClient::getVolumeComicsInfo(const QString & idVolume)
 {
 	HttpWorker * search = new HttpWorker(CV_COMICS_INFO.arg(idVolume));
 	connect(search,SIGNAL(dataReady(const QByteArray &)),this,SLOT(processVolumeComicsInfo(const QByteArray &)));
-	connect(search,SIGNAL(timeout()),this,SLOT(queryTimeOut())); //TODO
+	connect(search,SIGNAL(timeout()),this,SIGNAL(timeOut())); //TODO
 	connect(search,SIGNAL(finished()),search,SLOT(deleteLater()));
 	search->get();
 }
