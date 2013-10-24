@@ -47,6 +47,7 @@ protected slots:
 	void launchSearchVolume();
 	void launchSearchComic();
 	void showSelectVolume(const QString & json);
+	void showSelectVolume();
 	void showSelectComic(const QString & json);
 	void showSortVolumeComics(const QString & json);
 private:
@@ -65,7 +66,8 @@ private:
 		SelectingComic,
 		SelectingSeries,
 		SearchingSingleComic,
-		SearchingVolume
+		SearchingVolume,
+		SortingComics
 	};
 
 	ScraperMode mode;
