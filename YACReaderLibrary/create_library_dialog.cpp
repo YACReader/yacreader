@@ -32,7 +32,7 @@ void CreateLibraryDialog::setupUI()
 	connect(cancel,SIGNAL(clicked()),this,SIGNAL(cancelCreate()));
 	connect(cancel,SIGNAL(clicked()),this,SLOT(close()));
 
-	find = new QPushButton(QIcon(":/images/comicFolder.png"),"");
+	find = new QPushButton(QIcon(":/images/find_folder.png"),"");
 	connect(find,SIGNAL(clicked()),this,SLOT(findPath()));
 
 	QGridLayout * content = new QGridLayout;
