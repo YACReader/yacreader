@@ -26,7 +26,7 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n/*ame*/, QString
 	options->setFixedWidth(18);
 	options->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Minimum);
 	options->setStyleSheet("QToolButton {border:none;}");
-	connect(options,SIGNAL(pressed()),this,SIGNAL(showOptions()));
+	connect(options,SIGNAL(clicked()),this,SIGNAL(showOptions()));
 	/*up = new QToolButton(this);
 	up->setIcon(QIcon(":/images/libraryUp.png"));
 	up->setHidden(true);
