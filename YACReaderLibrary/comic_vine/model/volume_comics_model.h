@@ -22,6 +22,7 @@ signals:
 
 public slots:
 	QString getComicId(const QModelIndex &index) const;
+	QString getCoverURL(const QModelIndex &index) const;
 	void addExtraRows(int numRows);
 
 private:
@@ -31,6 +32,7 @@ private:
 	enum Column {
 		ISSUE = 0,
 		TITLE,
+		COVER_URL,
 		ID
 	};
 };

@@ -7,6 +7,7 @@ class QLabel;
 class VolumesModel;
 class QModelIndex;
 
+class ScraperScrollLabel;
 class ScraperTableView;
 
 class SelectVolume : public QWidget
@@ -16,15 +17,16 @@ public:
 	SelectVolume(QWidget * parent = 0);
 	void load(const QString & json);
 	virtual ~SelectVolume();
+
 public slots:
 	void loadVolumeInfo(const QModelIndex & mi);
 	void setCover(const QByteArray &);
 	void setDescription(const QString & jsonDetail);
-	void openLink(const QString & link);
 	QString getSelectedVolumeId();
+
 private:
 	QLabel * cover;
-	QLabel * detailLabel;
+	ScraperScrollLabel * detailLabel;
 	ScraperTableView * tableVolumes;
 	VolumesModel * model;
 };

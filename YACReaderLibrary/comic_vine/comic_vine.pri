@@ -16,7 +16,8 @@ HEADERS += \
 	comic_vine/scraper_tableview.h \
     comic_vine/sort_volume_comics.h \
     comic_vine/model/local_comic_list_model.h \
-    comic_vine/model/volume_comics_model.h
+    comic_vine/model/volume_comics_model.h \
+    comic_vine/scraper_scroll_label.h
 
 SOURCES += \
 	comic_vine/comic_vine_dialog.cpp \
@@ -35,4 +36,5 @@ SOURCES += \
 	comic_vine/scraper_tableview.cpp \
     comic_vine/sort_volume_comics.cpp \
     comic_vine/model/local_comic_list_model.cpp \
-    comic_vine/model/volume_comics_model.cpp
+    comic_vine/model/volume_comics_model.cpp \
+    comic_vine/scraper_scroll_label.cpp

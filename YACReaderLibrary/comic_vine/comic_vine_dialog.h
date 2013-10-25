@@ -19,7 +19,7 @@ class SelectComic;
 class SelectVolume;
 class SortVolumeComics;
 
-
+//TODO this should use a QStateMachine
 //----------------------------------------
 class ComicVineDialog : public QDialog
 {
@@ -68,7 +68,8 @@ private:
 		SelectingSeries,
 		SearchingSingleComic,
 		SearchingVolume,
-		SortingComics
+		SortingComics,
+		GettingVolumeComics
 	};
 
 	ScraperMode mode;
