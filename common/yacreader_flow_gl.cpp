@@ -306,7 +306,9 @@ void YACReaderFlowGL::paintGL()
 void YACReaderFlowGL::resizeGL(int width, int height)
 {
 
-	fontSize = width * 0.015;
+	fontSize = (width + height) * 0.010;
+	if(fontSize < 10)
+		fontSize = 10;
 
 	//int side = qMin(width, height);
 	udpatePerspective(width,height);
