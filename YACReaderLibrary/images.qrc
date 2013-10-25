@@ -90,6 +90,7 @@
 		<file>../images/getInfo.png</file>
 		<file>../images/comic_vine/radioChecked.png</file>
 		<file>../images/comic_vine/radioUnchecked.png</file>
+		<file>../images/find_folder.png</file>
 		<!--<file>../images/busy_background.png</file>-->
 	</qresource>
 </RCC>
