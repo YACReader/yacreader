@@ -15,6 +15,7 @@
 
 #include "volumes_model.h"
 #include "comic_vine_client.h"
+#include "scraper_scroll_label.h"
 
 SelectVolume::SelectVolume(QWidget *parent)
 	:QWidget(parent),model(0)
@@ -35,42 +36,14 @@ SelectVolume::SelectVolume(QWidget *parent)
 	cover->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
 	cover->setMinimumSize(168,168*5.0/3);
 	cover->setStyleSheet("QLabel {background-color: #2B2B2B; color:white; font-size:12px; font-family:Arial; }");
-	detailLabel = new QLabel();
-	detailLabel->setStyleSheet("QLabel {background-color: #2B2B2B; color:white; font-size:12px; font-family:Arial; }");
-	detailLabel->setWordWrap(true);
+	detailLabel = new ScraperScrollLabel(this);
 
-	detailLabel->setMinimumSize(168,12);
-
-	connect(detailLabel,SIGNAL(linkActivated(QString)),this,SLOT(openLink(QString)));
-
-	QScrollArea * scroll = new QScrollArea(this);
-	scroll->setWidget(detailLabel);
-	scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	scroll->setStyleSheet(
-				"QScrollArea {background-color:#2B2B2B; border:none;}"
-				"QScrollBar:vertical { border: none; background: #2B2B2B; width: 3px; margin: 0; }"
-				"QScrollBar:horizontal { border: none; background: #2B2B2B; height: 3px; margin: 0; }"
-				"QScrollBar::handle:vertical { background: #DDDDDD; width: 7px; min-height: 20px; }"
-				"QScrollBar::handle:horizontal { background: #DDDDDD; width: 7px; min-height: 20px; }"
-				"QScrollBar::add-line:vertical { border: none; background: #404040; height: 10px; subcontrol-position: bottom; subcontrol-origin: margin; margin: 0 3px 0 0;}"
-				"QScrollBar::sub-line:vertical {  border: none; background: #404040; height: 10px; subcontrol-position: top; subcontrol-origin: margin; margin: 0 3px 0 0;}"
-				"QScrollBar::add-line:horizontal { border: none; background: #404040; width: 10px; subcontrol-position: bottom; subcontrol-origin: margin; margin: 0 0 3px 0;}"
-				"QScrollBar::sub-line:horizontal {  border: none; background: #404040; width: 10px; subcontrol-position: top; subcontrol-origin: margin; margin: 0 0 3px 0;}"
-				"QScrollBar::up-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-up.png') center top no-repeat;}"
-				"QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-down.png') center top no-repeat;}"
-				"QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical, QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {background: none; }"
-
-			);
-	//scroll->setWidgetResizable(true);
-	//iScroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-	//iScroll->show();
-
-	tableVolumes = new ScraperTableView();
+	tableVolumes = new ScraperTableView(this);
 	//connections
 	connect(tableVolumes,SIGNAL(clicked(QModelIndex)),this,SLOT(loadVolumeInfo(QModelIndex)));
 
 	left->addWidget(cover);
-	left->addWidget(scroll,1);
+	left->addWidget(detailLabel,1);
 	left->addStretch();
 	leftWidget->setMaximumWidth(180);
 	leftWidget->setLayout(left);
@@ -119,18 +92,12 @@ SelectVolume::~SelectVolume() {}
 
 void SelectVolume::loadVolumeInfo(const QModelIndex & mi)
 {
-	//QStringList * data = static_cast<QStringList *>(mi.internalPointer());
 	QString coverURL = model->getCoverURL(mi);
-	//QString deck = model->data(model->index(mi.row(),VolumesModel::DECK)).toString();
 	QString id =  model->getVolumeId(mi);
 
-	//cover->setText(coverURL);
-	//detailLabel->setText(deck);
 	QString loadingStyle = "<font color='#AAAAAA'>%1</font>";
 	cover->setText(loadingStyle.arg(tr("loading cover")));
-	detailLabel->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
-	detailLabel->setText(loadingStyle.arg(tr("loading description")));
-	detailLabel->adjustSize();
+	detailLabel->setAltText(loadingStyle.arg(tr("loading description")));
 
 	ComicVineClient * comicVineClient = new ComicVineClient;
 	connect(comicVineClient,SIGNAL(seriesCover(const QByteArray &)),this,SLOT(setCover(const QByteArray &)));
@@ -170,17 +137,11 @@ void SelectVolume::setDescription(const QString & jsonDetail)
 	}
 	else
 	{
-		detailLabel->setAlignment(Qt::AlignTop|Qt::AlignLeft);
+
 		QScriptValue descriptionValues = sc.property("results").property("description");
 		bool valid = !descriptionValues.isNull() && descriptionValues.isValid();
 		detailLabel->setText(valid?descriptionValues.toString().replace("<a","<a style = 'color:#827A68; text-decoration:none;'"):tr("description unavailable"));
-		detailLabel->adjustSize();
 	}
-}
-
-void SelectVolume::openLink(const QString & link)
-{
-	QDesktopServices::openUrl(QUrl("http://www.comicvine.com"+link));
 }
 
 QString SelectVolume::getSelectedVolumeId()

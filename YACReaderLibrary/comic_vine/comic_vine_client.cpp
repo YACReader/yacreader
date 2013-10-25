@@ -71,6 +71,13 @@ void ComicVineClient::processVolumeComicsInfo(const QByteArray &data)
 	emit finished();
 }
 
+void ComicVineClient::proccessComicDetailData(const QByteArray &data)
+{
+	QString json(data);
+	emit comicDetail(json);
+	emit finished();
+}
+
 //CV_SERIES_DETAIL
 void ComicVineClient::getSeriesDetail(const QString & id)
 {
@@ -109,7 +116,20 @@ void ComicVineClient::getComicId(const QString & id, int comicNumber)
 //CV_COMIC_DETAIL
 void ComicVineClient::getComicDetail(const QString & id)
 {
+	HttpWorker * search = new HttpWorker(CV_COMIC_DETAIL.arg(id));
+	connect(search,SIGNAL(dataReady(const QByteArray &)),this,SLOT(proccessComicDetailData(const QByteArray &)));
+	connect(search,SIGNAL(timeout()),this,SIGNAL(timeOut()));
+	connect(search,SIGNAL(finished()),search,SLOT(deleteLater()));
+	search->get();
+}
 
+void ComicVineClient::getComicCover(const QString &url)
+{
+	HttpWorker * search = new HttpWorker(url);
+	connect(search,SIGNAL(dataReady(const QByteArray &)),this,SIGNAL(comicCover(QByteArray)));
+	connect(search,SIGNAL(timeout()),this,SIGNAL(timeOut())); //TODO
+	connect(search,SIGNAL(finished()),search,SLOT(deleteLater()));
+	search->get();
 }
 
 //CV_COVER_DETAIL

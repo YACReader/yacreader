@@ -38,9 +38,10 @@ void VolumeComicsModel::load(const QString & json)
 			resultsValue = it.value();
 			QString issueNumber = resultsValue.property("issue_number").toString();
 			QString name = resultsValue.property("name").toString();
+			QString coverURL = resultsValue.property("image").property("medium_url").toString();
 			QString id = resultsValue.property("id").toString();
 			QStringList l;
-			l << issueNumber << name << id;
+			l << issueNumber << name << coverURL << id;
 			//test = name.isEmpty() && year.isEmpty() && numIssues.isEmpty() && url.isEmpty();
 			if(numResults > 0)
 				_data.push_back(l);
@@ -149,6 +150,11 @@ QModelIndex VolumeComicsModel::index(int row, int column, const QModelIndex &par
 QString VolumeComicsModel::getComicId(const QModelIndex &index) const
 {
 	return _data[index.row()][ID];
+}
+
+QString VolumeComicsModel::getCoverURL(const QModelIndex &index) const
+{
+	return _data[index.row()][COVER_URL];
 }
 
 void VolumeComicsModel::addExtraRows(int numRows)
