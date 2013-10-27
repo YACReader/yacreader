@@ -20,7 +20,7 @@ ExportLibraryDialog::ExportLibraryDialog(QWidget * parent)
 	connect(cancel,SIGNAL(clicked()),this,SLOT(close()));
 	connect(cancel,SIGNAL(clicked()),this,SIGNAL(rejected()));
 
-	find = new QPushButton(QIcon(":/images/comicFolder.png"),"");
+	find = new QPushButton(QIcon(":/images/find_folder.png"),"");
 	connect(find,SIGNAL(clicked()),this,SLOT(findPath()));
 
 	QHBoxLayout *libraryLayout = new QHBoxLayout;

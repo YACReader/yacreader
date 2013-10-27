@@ -20,12 +20,13 @@
 		<file>../images/importLibraryIcon.png</file>
 		<file>../images/exportLibrary.png</file>
 		<file>../images/exportLibraryIcon.png</file>
+                <file>../images/importLibraryIcon.png</file>
 		<file>../images/open.png</file>
 		<file>../images/coversPackage.png</file>
 		<file>../images/setRead.png</file>
 		<!--<file>../images/setAllRead.png</file>-->
 		<file>../images/setUnread.png</file>
-		<!--<file>../images/setAllUnread.png</file>-->
+                <!--<file>../images/setAllUnread.png</file>-->
 		<file>../images/showMarks.png</file>
 		<file>../images/editComic.png</file>
 		<file>../images/selectAll.png</file>
