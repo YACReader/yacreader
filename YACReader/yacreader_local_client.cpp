@@ -25,6 +25,7 @@ void YACReaderLocalClient::readMessage()
 {
 
 }
+#include <QMessageBox>
 
 bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, QList<ComicDB> & siblings)
 {
@@ -72,10 +73,14 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 		quint16 totalSize = 0;
 		sizeStream >> totalSize;
 		
+		QByteArray data;
+
 		tries = 0;
-		while(localSocket->bytesAvailable() < totalSize && tries < 10 )
+		while(data.length() < totalSize && tries < 10 )
 		{
-			localSocket->waitForReadyRead(100);
+			data.append(localSocket->readAll());
+			if(data.length() < totalSize)
+				localSocket->waitForReadyRead(100);
 			tries++;
 		}
 		if(tries == 10)
@@ -83,7 +88,8 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 			localSocket->close();
 			return false;
 		}
-		QDataStream dataStream(localSocket->read(totalSize));
+
+		QDataStream dataStream(data);
 		dataStream >> comic;
 		dataStream >> siblings;
 		localSocket->close();
