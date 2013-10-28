@@ -24,7 +24,7 @@ YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget * parent)
 	cancel->setDefault(true);
 
 	connect(accept,SIGNAL(clicked()),this,SLOT(saveOptions()));
-	connect(cancel,SIGNAL(clicked()),this,SLOT(restoreOptions()));
+	connect(cancel,SIGNAL(clicked()),this,SLOT(restoreOptions())); //TODO fix this
 	connect(cancel,SIGNAL(clicked()),this,SLOT(close()));
 
 	useGL = new QCheckBox(tr("Use hardware acceleration (restart needed)"));
@@ -82,7 +82,7 @@ YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget * parent)
 	connect(gl->maxAngle,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
 	
 	connect(gl->performanceSlider, SIGNAL(valueChanged(int)),this,SLOT(savePerformance(int)));
-	connect(gl->performanceSlider, SIGNAL(valueChanged(int)),this,SLOT(optionsChanged()));
+	connect(gl->performanceSlider, SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
 
 	connect(gl->vSyncCheck,SIGNAL(stateChanged(int)),this,SLOT(saveUseVSync(int)));
 }
