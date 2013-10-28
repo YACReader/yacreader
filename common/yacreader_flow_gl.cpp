@@ -1033,7 +1033,7 @@ void YACReaderComicFlowGL::setImagePaths(QStringList paths)
 	worker->reset();
 	reset();
 	numObjects = 0;
-	if(lazyPopulateObjects!=-1)
+	if(lazyPopulateObjects!=-1 || hasBeenInitialized)
 		YACReaderFlowGL::populate(paths.size());
 	lazyPopulateObjects = paths.size();
 	this->paths = paths;
@@ -1228,7 +1228,7 @@ void YACReaderPageFlowGL::updateImageData()
 void YACReaderPageFlowGL::populate(int n)
 {
 	worker->reset();
-	if(lazyPopulateObjects!=-1)
+	if(lazyPopulateObjects!=-1 || hasBeenInitialized)
 		YACReaderFlowGL::populate(n);
 	lazyPopulateObjects = n;
 	imagesReady = QVector<bool> (n,false);
