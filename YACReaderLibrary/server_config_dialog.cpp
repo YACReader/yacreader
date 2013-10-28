@@ -281,7 +281,7 @@ void ServerConfigDialog::generateQR(const QString & serverAddress)
 	QStringList attributes;
 	attributes << "-o" << "-" /*QCoreApplication::applicationDirPath()+"/utils/tmp.png"*/ << "-s" << "8" << "-l" << "H" << "-m" << "0" << serverAddress;
 	connect(qrGenerator,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(updateImage(void)));
-	connect(qrGenerator,SIGNAL(error(QProcess::ProcessError)),this,SLOT(openingError(QProcess::ProcessError)));
+	connect(qrGenerator,SIGNAL(error(QProcess::ProcessError)),this,SLOT(openingError(QProcess::ProcessError))); //TODO: implement openingError
 	qrGenerator->start(QCoreApplication::applicationDirPath()+"/utils/qrencode",attributes);
 }
 

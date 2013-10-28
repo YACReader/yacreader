@@ -41,7 +41,7 @@ ImportComicsInfoDialog::ImportComicsInfoDialog(QWidget *parent)
 	progressBar->setMaximum(0);
 	progressBar->setTextVisible(false);
 	progressBar->hide();
-	connect(accept,SIGNAL(progressBar()),this,SLOT(show()));
+	connect(accept,SIGNAL(clicked()),progressBar,SLOT(show()));
 
 	QHBoxLayout *bottomLayout = new QHBoxLayout;
 	bottomLayout->addStretch();

@@ -19,19 +19,19 @@ YACReaderGLFlowConfigWidget::YACReaderGLFlowConfigWidget(QWidget * parent /* = 0
 	QGroupBox *groupBox = new QGroupBox(tr("Presets:"));
 
 	radioClassic = new QRadioButton(tr("Classic look"));
-	connect(radioClassic,SIGNAL(toggled(bool)),this,SLOT(setClassicConfig()));
+	//connect(radioClassic,SIGNAL(toggled(bool)),this,SLOT(setClassicConfig()));
 
 	radioStripe  = new QRadioButton(tr("Stripe look"));
-	connect(radioStripe,SIGNAL(toggled(bool)),this,SLOT(setStripeConfig()));
+	//connect(radioStripe,SIGNAL(toggled(bool)),this,SLOT(setStripeConfig()));
 
 	radioOver    = new QRadioButton(tr("Overlapped Stripe look"));
-	connect(radioOver,SIGNAL(toggled(bool)),this,SLOT(setOverlappedStripeConfig()));
+	//connect(radioOver,SIGNAL(toggled(bool)),this,SLOT(setOverlappedStripeConfig()));
 
 	radionModern = new QRadioButton(tr("Modern look"));
-	connect(radionModern,SIGNAL(toggled(bool)),this,SLOT(setModernConfig()));
+	//connect(radionModern,SIGNAL(toggled(bool)),this,SLOT(setModernConfig()));
 
 	radioDown    = new QRadioButton(tr("Roulette look"));
-	connect(radioDown,SIGNAL(toggled(bool)),this,SLOT(setRouletteConfig()));
+	//connect(radioDown,SIGNAL(toggled(bool)),this,SLOT(setRouletteConfig()));
 
 	QVBoxLayout *vbox = new QVBoxLayout;
 	QHBoxLayout * opt1 = new QHBoxLayout;

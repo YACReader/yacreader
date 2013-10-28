@@ -58,8 +58,6 @@ ExportLibraryDialog::ExportLibraryDialog(QWidget * parent)
 
 	setModal(true);
 	setWindowTitle(tr("Create covers package"));
-	t.setInterval(500);
-	connect(&t,SIGNAL(timeout()),this,SLOT(updateProgress()));
 }
 
 void ExportLibraryDialog::exportLibrary()
@@ -70,7 +68,6 @@ void ExportLibraryDialog::exportLibrary()
 		progressBar->show();
 		accept->setEnabled(false);
 		emit exportPath(QDir::cleanPath(path->text()));
-		t.start();
 	}
 	else
 		QMessageBox::critical(NULL,tr("Problem found while writing"),tr("The selected path for the output file does not exist or is not a valid path. Be sure that you have write access to this folder"));
@@ -92,7 +89,6 @@ void ExportLibraryDialog::close()
 	path->clear();
 	progressBar->hide();
 	accept->setEnabled(false);
-	t.stop();
 	progressCount=0;
 	QDialog::close();
 }

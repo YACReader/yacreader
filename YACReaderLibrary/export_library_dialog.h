@@ -28,7 +28,6 @@ private:
 		QPushButton * accept;
 		QPushButton * cancel;
 		void run();
-		QTimer t;
 signals:
 		void exportPath(QString);
 };

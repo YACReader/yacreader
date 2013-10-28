@@ -39,6 +39,7 @@ void YACReaderLocalServer::sendResponse()
 {
 	QLocalSocket *clientConnection = localServer->nextPendingConnection();
 	//connect(clientConnection, SIGNAL(disconnected()),clientConnection, SLOT(deleteLater()));
+	clientConnection->setParent(0);
 
 	YACReaderClientConnectionWorker * worker = new YACReaderClientConnectionWorker(clientConnection);
 	if(worker != 0)

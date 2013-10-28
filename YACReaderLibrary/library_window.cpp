@@ -649,7 +649,7 @@ void LibraryWindow::createConnections()
 	connect(libraryCreator,SIGNAL(comicAdded(QString,QString)),importWidget,SLOT(newComic(QString,QString)));
 	//libraryCreator errors
 	connect(libraryCreator,SIGNAL(failedCreatingDB(QString)),this,SLOT(manageCreatingError(QString)));
-	connect(libraryCreator,SIGNAL(failedUpdatingDB(QString)),this,SLOT(manageUpdatingError(QString)));
+	connect(libraryCreator,SIGNAL(failedUpdatingDB(QString)),this,SLOT(manageUpdatingError(QString))); //TODO: implement failedUpdatingDB
 	
 	//new import widget
 	connect(importWidget,SIGNAL(stop()),this,SLOT(stopLibraryCreator()));
@@ -679,10 +679,10 @@ void LibraryWindow::createConnections()
 	connect(renameLibraryDialog,SIGNAL(renameLibrary(QString)),this,SLOT(rename(QString)));
 
 	//navigations between view modes (tree,list and flow)
-	connect(foldersView, SIGNAL(pressed(QModelIndex)), this, SLOT(loadCovers(QModelIndex)));
-	connect(foldersView, SIGNAL(pressed(QModelIndex)), this, SLOT(updateHistory(QModelIndex)));
+	connect(foldersView, SIGNAL(clicked(QModelIndex)), this, SLOT(loadCovers(QModelIndex)));
+	connect(foldersView, SIGNAL(clicked(QModelIndex)), this, SLOT(updateHistory(QModelIndex)));
 
-	connect(comicView, SIGNAL(pressed(QModelIndex)), this, SLOT(centerComicFlow(QModelIndex)));
+	connect(comicView, SIGNAL(clicked(QModelIndex)), this, SLOT(centerComicFlow(QModelIndex)));
 	connect(comicFlow, SIGNAL(centerIndexChanged(int)), this, SLOT(updateComicView(int)));
 	connect(comicView, SIGNAL(comicRated(int,QModelIndex)), dmCV, SLOT(updateRating(int,QModelIndex)));
 
