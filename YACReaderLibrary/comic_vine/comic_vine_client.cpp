@@ -45,7 +45,7 @@ void ComicVineClient::search(const QString & query, int page)
 {
 	HttpWorker * search = new HttpWorker(CV_SEARCH.arg(query).arg(page));
 	connect(search,SIGNAL(dataReady(const QByteArray &)),this,SLOT(proccessVolumesSearchData(const QByteArray &)));
-	connect(search,SIGNAL(timeout()),this,SLOT(queryTimeOut()));
+	connect(search,SIGNAL(timeout()),this,SIGNAL(timeOut()));
 	connect(search,SIGNAL(finished()),search,SLOT(deleteLater()));
 	search->get();
 }
