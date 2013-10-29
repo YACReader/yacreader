@@ -393,38 +393,10 @@ QVector<YACReaderComicReadStatus> TableModel::getReadList()
 	}
 	return readList;
 }
-//TODO check other read status
+//TODO untested, this method is no longer used
 QVector<YACReaderComicReadStatus> TableModel::setAllComicsRead(YACReaderComicReadStatus read)
 {
-	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-	db.transaction();
-	int numComics = _data.count();
-	QVector<YACReaderComicReadStatus> readList(numComics);
-	for(int i=0;i<numComics;i++)
-	{
-		readList[i] = read;
-		if(read == YACReader::Read)
-		{
-			_data.value(i)->setData(TableModel::ReadColumn,QVariant(true));
-			ComicDB c = DBHelper::loadComic(_data.value(i)->data(TableModel::Id).toULongLong(),db);
-			c.info.read = true;
-			DBHelper::update(&(c.info),db);
-		}
-		if(read == YACReader::Unread)
-		{
-			_data.value(i)->setData(TableModel::ReadColumn,QVariant(false));
-			ComicDB c = DBHelper::loadComic(_data.value(i)->data(TableModel::Id).toULongLong(),db);
-			c.info.read = false;
-			DBHelper::update(&(c.info),db);
-		}
-	}
-	db.commit();
-	db.close();
-	QSqlDatabase::removeDatabase(_databasePath);
-
-	emit dataChanged(index(0,TableModel::ReadColumn),index(numComics-1,TableModel::ReadColumn));
-
-	return readList;
+	return setComicsRead(persistentIndexList(),read);
 }
 
 QList<ComicDB> TableModel::getAllComics()
@@ -479,8 +451,12 @@ QVector<YACReaderComicReadStatus> TableModel::setComicsRead(QList<QModelIndex> l
 		if(read == YACReader::Unread)
 		{
 		_data.value(mi.row())->setData(TableModel::ReadColumn, QVariant(false));
+		_data.value(mi.row())->setData(TableModel::CurrentPage, QVariant(1));
+		_data.value(mi.row())->setData(TableModel::HasBeenOpened, QVariant(false));
 		ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(TableModel::Id).toULongLong(),db);
 		c.info.read = false;
+		c.info.currentPage = 1;
+		c.info.hasBeenOpened = false;
 		DBHelper::update(&(c.info),db);
 		}
 	}
@@ -488,7 +464,7 @@ QVector<YACReaderComicReadStatus> TableModel::setComicsRead(QList<QModelIndex> l
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
 
-	emit dataChanged(index(list.first().row(),TableModel::ReadColumn),index(list.last().row(),TableModel::ReadColumn));
+	emit dataChanged(index(list.first().row(),TableModel::ReadColumn),index(list.last().row(),TableModel::CurrentPage+1));
 
 	return getReadList();
 }
