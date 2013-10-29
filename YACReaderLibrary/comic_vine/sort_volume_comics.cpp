@@ -19,8 +19,15 @@ SortVolumeComics::SortVolumeComics(QWidget *parent) :
 
 	QLabel * sortLabel = new QLabel(tr("sort comic info to match your comic files"));
 	sortLabel->setStyleSheet(labelStylesheet);
-	moveUpButton = new QPushButton;
-	moveDownButton = new QPushButton;
+
+	moveUpButtonCL = new ScrapperToolButton(ScrapperToolButton::LEFT);
+	moveUpButtonCL->setIcon(QIcon(":/images/comic_vine/rowUp.png"));
+	moveDownButtonCL = new ScrapperToolButton(ScrapperToolButton::RIGHT);
+	moveDownButtonCL->setIcon(QIcon(":/images/comic_vine/rowDown.png"));
+	moveUpButtonIL = new ScrapperToolButton(ScrapperToolButton::LEFT);
+	moveUpButtonIL->setIcon(QIcon(":/images/comic_vine/rowUp.png"));
+	moveDownButtonIL = new ScrapperToolButton(ScrapperToolButton::RIGHT);
+	moveDownButtonIL->setIcon(QIcon(":/images/comic_vine/rowDown.png"));
 
 	QVBoxLayout * l = new QVBoxLayout;
 	QHBoxLayout * content = new QHBoxLayout;
@@ -41,10 +48,16 @@ SortVolumeComics::SortVolumeComics(QWidget *parent) :
 	connect(tableVolumeComics, SIGNAL(pressed(QModelIndex)), tableFiles, SLOT(setCurrentIndex(QModelIndex)));
 	connect(tableFiles, SIGNAL(pressed(QModelIndex)), tableVolumeComics, SLOT(setCurrentIndex(QModelIndex)));
 
+	sortButtonsLayout->addWidget(moveUpButtonCL);
+	sortButtonsLayout->addWidget(ScrapperToolButton::getSeparator());
+	sortButtonsLayout->addWidget(moveDownButtonCL);
 	sortButtonsLayout->addStretch();
 	sortButtonsLayout->addWidget(sortLabel);
-	sortButtonsLayout->addWidget(moveUpButton);
-	sortButtonsLayout->addWidget(moveDownButton);
+	sortButtonsLayout->addStretch();
+	sortButtonsLayout->addWidget(moveUpButtonIL);
+	sortButtonsLayout->addWidget(ScrapperToolButton::getSeparator());
+	sortButtonsLayout->addWidget(moveDownButtonIL);
+	sortButtonsLayout->setSpacing(0);
 
 	l->addSpacing(15);
 	l->addWidget(label);

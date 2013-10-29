@@ -11,7 +11,7 @@
 		<file>../images/notCover.png</file>
 		<file>../images/edit.png</file>
 		<file>../images/editIcon.png</file>
-		<file>../images/flow1.png</file>
+                <file>../images/flow1.png</file>
 		<file>../images/flow2.png</file>
 		<file>../images/flow3.png</file>
 		<file>../images/flow4.png</file>
@@ -91,6 +91,9 @@
 		<file>../images/getInfo.png</file>
 		<file>../images/comic_vine/radioChecked.png</file>
 		<file>../images/comic_vine/radioUnchecked.png</file>
+                <file>../images/comic_vine/radioUnchecked.png</file>
+                <file>../images/comic_vine/rowDown.png</file>
+                <file>../images/comic_vine/rowUp.png</file>
 		<file>../images/find_folder.png</file>
 		<!--<file>../images/busy_background.png</file>-->
 	</qresource>
