@@ -26,7 +26,8 @@ public:
 signals:
 
 public slots:
-
+	void moveSelectionUp(const QList<QModelIndex> & selectedIndexes);
+	void moveSelectionDown(const QList<QModelIndex> & selectedIndexes);
 	void addExtraRows(int numRows);
 
 private:

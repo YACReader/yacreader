@@ -20,7 +20,7 @@ QModelIndex LocalComicListModel::parent(const QModelIndex &index) const
 int LocalComicListModel::rowCount(const QModelIndex &parent) const
 {
 	Q_UNUSED(parent)
-	return _data.count() + numExtraRows;
+	return _data.count();
 }
 
 int LocalComicListModel::columnCount(const QModelIndex &parent) const
@@ -51,10 +51,10 @@ QVariant LocalComicListModel::data(const QModelIndex &index, int role) const
 
 	int row = index.row();
 
-	if(row < _data.count())
+	//if(row < _data.count())
 		return _data[row].getFileName();
-	else
-		return QVariant();
+	//else
+		//return QVariant();
 }
 
 Qt::ItemFlags LocalComicListModel::flags(const QModelIndex &index) const
@@ -86,8 +86,48 @@ QModelIndex LocalComicListModel::index(int row, int column, const QModelIndex &p
 	return createIndex(row, column);
 }
 
+void LocalComicListModel::moveSelectionUp(const QList<QModelIndex> &selectedIndexes)
+{
+	QModelIndex mi = selectedIndexes.first();
+	QModelIndex lastMi = selectedIndexes.last();
+	int sourceRow = mi.row();
+	int sourceLastRow = lastMi.row();
+	int destRow = sourceRow - 1;
+
+	if(destRow < 0)
+		return;
+
+	beginMoveRows(mi.parent(),sourceRow,sourceLastRow,mi.parent(),destRow);
+
+	for(int i = sourceRow; i <= sourceLastRow; i++)
+		_data.swap(i, i-1);
+
+	endMoveRows();
+}
+
+void LocalComicListModel::moveSelectionDown(const QList<QModelIndex> &selectedIndexes)
+{
+	QModelIndex mi = selectedIndexes.first();
+	QModelIndex lastMi = selectedIndexes.last();
+	int sourceRow = mi.row();
+	int sourceLastRow = lastMi.row();
+	int destRow = sourceLastRow + 1;
+
+	if(destRow >= _data.count())
+		return;
+
+	beginMoveRows(mi.parent(),sourceRow,sourceLastRow,mi.parent(),destRow+1);
+
+	for(int i = sourceLastRow; i >= sourceRow; i--)
+		_data.swap(i, i+1);
+
+	endMoveRows();
+}
+
 void LocalComicListModel::addExtraRows(int numRows)
 {
 	numExtraRows = numRows;
+	for(int i = 0; i<numExtraRows; i++)
+		_data.append(ComicDB());
 }
 
