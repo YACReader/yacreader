@@ -33,55 +33,60 @@ public:
 
 
 
-	protected:
-		void paintEvent(QPaintEvent * e)
-		{
-			QPainter p(this);
+protected:
+	void paintEvent(QPaintEvent * e)
+	{
+		QPainter p(this);
 
-			switch (appearance) {
-			case LEFT:
-				p.fillRect(16,0,2,18,QColor("#2E2E2E"));
-				break;
-			case RIGHT:
-				p.fillRect(0,0,2,18,QColor("#2E2E2E"));
-				break;
-			default:
-				break;
-			}
-
-			QPushButton::paintEvent(e);
+		switch (appearance) {
+		case LEFT:
+			p.fillRect(16,0,2,18,QColor("#2E2E2E"));
+			break;
+		case RIGHT:
+			p.fillRect(0,0,2,18,QColor("#2E2E2E"));
+			break;
+		default:
+			break;
 		}
 
-	private:
-		Appearance appearance;
-	};
+		QPushButton::paintEvent(e);
+	}
 
-	class SortVolumeComics : public QWidget
-	{
-		Q_OBJECT
-	public:
-		explicit SortVolumeComics(QWidget *parent = 0);
+private:
+	Appearance appearance;
+};
 
-	signals:
 
-	public slots:
-		void setData(QList<ComicDB> & comics, const QString & json);
+class SortVolumeComics : public QWidget
+{
+	Q_OBJECT
+public:
+	explicit SortVolumeComics(QWidget *parent = 0);
 
-	protected slots:
-		void synchronizeScroll(int pos);
+signals:
 
-	private:
-		ScraperTableView * tableFiles;
-		ScraperTableView * tableVolumeComics;
+public slots:
+	void setData(QList<ComicDB> & comics, const QString & json);
 
-		LocalComicListModel * localComicsModel;
-		VolumeComicsModel * volumeComicsModel;
+protected slots:
+	void synchronizeScroll(int pos);
+	void moveUpCL();
+	void moveDownCL();
+	void moveUpIL();
+	void moveDownIL();
 
-		ScrapperToolButton * moveUpButtonCL;
-		ScrapperToolButton * moveDownButtonCL;
-		ScrapperToolButton * moveUpButtonIL;
-		ScrapperToolButton * moveDownButtonIL;
+private:
+	ScraperTableView * tableFiles;
+	ScraperTableView * tableVolumeComics;
 
-	};
+	LocalComicListModel * localComicsModel;
+	VolumeComicsModel * volumeComicsModel;
 
-	#endif // SORT_VOLUME_COMICS_H
+	ScrapperToolButton * moveUpButtonCL;
+	ScrapperToolButton * moveDownButtonCL;
+	ScrapperToolButton * moveUpButtonIL;
+	ScrapperToolButton * moveDownButtonIL;
+
+};
+
+#endif // SORT_VOLUME_COMICS_H

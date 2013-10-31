@@ -14,20 +14,27 @@ SortVolumeComics::SortVolumeComics(QWidget *parent) :
 {
 	QString labelStylesheet = "QLabel {color:white; font-size:12px;font-family:Arial;}";
 
-	QLabel * label = new QLabel(tr("Please, sort the list of comics info on the right until it matches your comics."));
+	QLabel * label = new QLabel(tr("Please, sort the list of comics on the left until it matches the comics' information."));
 	label->setStyleSheet(labelStylesheet);
 
-	QLabel * sortLabel = new QLabel(tr("sort comic info to match your comic files"));
+	QLabel * sortLabel = new QLabel(tr("sort comics to match comic information"));
 	sortLabel->setStyleSheet(labelStylesheet);
 
 	moveUpButtonCL = new ScrapperToolButton(ScrapperToolButton::LEFT);
 	moveUpButtonCL->setIcon(QIcon(":/images/comic_vine/rowUp.png"));
+	moveUpButtonCL->setAutoRepeat(true);
 	moveDownButtonCL = new ScrapperToolButton(ScrapperToolButton::RIGHT);
 	moveDownButtonCL->setIcon(QIcon(":/images/comic_vine/rowDown.png"));
-	moveUpButtonIL = new ScrapperToolButton(ScrapperToolButton::LEFT);
-	moveUpButtonIL->setIcon(QIcon(":/images/comic_vine/rowUp.png"));
-	moveDownButtonIL = new ScrapperToolButton(ScrapperToolButton::RIGHT);
-	moveDownButtonIL->setIcon(QIcon(":/images/comic_vine/rowDown.png"));
+	moveDownButtonCL->setAutoRepeat(true);
+	//moveUpButtonIL = new ScrapperToolButton(ScrapperToolButton::LEFT);
+	//moveUpButtonIL->setIcon(QIcon(":/images/comic_vine/rowUp.png"));
+	//moveDownButtonIL = new ScrapperToolButton(ScrapperToolButton::RIGHT);
+	//moveDownButtonIL->setIcon(QIcon(":/images/comic_vine/rowDown.png"));
+
+	connect(moveUpButtonCL,SIGNAL(clicked()),this,SLOT(moveUpCL()));
+	connect(moveDownButtonCL,SIGNAL(clicked()),this,SLOT(moveDownCL()));
+	//connect(moveUpButtonIL,SIGNAL(clicked()),this,SLOT(moveUpIL()));
+	//connect(moveUpButtonIL,SIGNAL(clicked()),this,SLOT(moveDownIL()));
 
 	QVBoxLayout * l = new QVBoxLayout;
 	QHBoxLayout * content = new QHBoxLayout;
@@ -35,6 +42,9 @@ SortVolumeComics::SortVolumeComics(QWidget *parent) :
 
 	tableFiles = new ScraperTableView();
 	tableVolumeComics = new ScraperTableView();
+
+	tableFiles->setSelectionBehavior(QAbstractItemView::SelectRows);
+	tableFiles->setSelectionMode(QAbstractItemView::ContiguousSelection);
 
 	tableFiles->setFixedSize(407,341);
 	tableVolumeComics->setFixedSize(407,341);
@@ -45,18 +55,19 @@ SortVolumeComics::SortVolumeComics(QWidget *parent) :
 	connect(tableVolumeComics->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(synchronizeScroll(int)));
 	connect(tableFiles->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(synchronizeScroll(int)));
 
-	connect(tableVolumeComics, SIGNAL(pressed(QModelIndex)), tableFiles, SLOT(setCurrentIndex(QModelIndex)));
-	connect(tableFiles, SIGNAL(pressed(QModelIndex)), tableVolumeComics, SLOT(setCurrentIndex(QModelIndex)));
+	//connect(tableVolumeComics, SIGNAL(pressed(QModelIndex)), tableFiles, SLOT(setCurrentIndex(QModelIndex)));
+	//connect(tableFiles, SIGNAL(pressed(QModelIndex)), tableVolumeComics, SLOT(setCurrentIndex(QModelIndex)));
 
 	sortButtonsLayout->addWidget(moveUpButtonCL);
 	sortButtonsLayout->addWidget(ScrapperToolButton::getSeparator());
 	sortButtonsLayout->addWidget(moveDownButtonCL);
-	sortButtonsLayout->addStretch();
+	sortButtonsLayout->addSpacing(10);
+	//sortButtonsLayout->addStretch();
 	sortButtonsLayout->addWidget(sortLabel);
-	sortButtonsLayout->addStretch();
-	sortButtonsLayout->addWidget(moveUpButtonIL);
-	sortButtonsLayout->addWidget(ScrapperToolButton::getSeparator());
-	sortButtonsLayout->addWidget(moveDownButtonIL);
+	//sortButtonsLayout->addStretch();
+	//sortButtonsLayout->addWidget(moveUpButtonIL);
+	//sortButtonsLayout->addWidget(ScrapperToolButton::getSeparator());
+	//sortButtonsLayout->addWidget(moveDownButtonIL);
 	sortButtonsLayout->setSpacing(0);
 
 	l->addSpacing(15);
@@ -116,4 +127,38 @@ void SortVolumeComics::synchronizeScroll(int pos)
 		tableVolumeComicsScrollBar->setValue(pos);
 		connect(tableVolumeComicsScrollBar, SIGNAL(valueChanged(int)), this, SLOT(synchronizeScroll(int)));
 	}
+}
+
+void SortVolumeComics::moveUpCL()
+{
+	QList<QModelIndex> selection = tableFiles->selectionModel()->selectedIndexes();
+
+	if(selection.count() == 0)
+		return;
+
+	localComicsModel->moveSelectionUp(selection);
+
+	selection = tableFiles->selectionModel()->selectedIndexes();
+	tableFiles->scrollTo(selection.first());
+}
+
+void SortVolumeComics::moveDownCL()
+{
+	QList<QModelIndex> selection = tableFiles->selectionModel()->selectedIndexes();
+
+	if(selection.count() > 0)
+		localComicsModel->moveSelectionDown(selection);
+
+	selection = tableFiles->selectionModel()->selectedIndexes();
+	tableFiles->scrollTo(selection.last());
+}
+
+void SortVolumeComics::moveUpIL()
+{
+
+}
+
+void SortVolumeComics::moveDownIL()
+{
+
 }
