@@ -86,6 +86,11 @@ QModelIndex LocalComicListModel::index(int row, int column, const QModelIndex &p
 	return createIndex(row, column);
 }
 
+QList<ComicDB> LocalComicListModel::getData()
+{
+	return _data;
+}
+
 void LocalComicListModel::moveSelectionUp(const QList<QModelIndex> &selectedIndexes)
 {
 	QModelIndex mi = selectedIndexes.first();
