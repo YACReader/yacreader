@@ -162,3 +162,24 @@ void SortVolumeComics::moveDownIL()
 {
 
 }
+
+QList<QPair<ComicDB, QString> > SortVolumeComics::getMatchingInfo()
+{
+	QList<ComicDB> comicList = localComicsModel->getData();
+	QList<QPair<ComicDB, QString> > l;
+
+	int index = 0;
+
+	QString id;
+	foreach(ComicDB c, comicList)
+	{
+		id = volumeComicsModel->getComicId(index);
+		if(!c.getFileName().isEmpty() && !id.isEmpty()) //there is a valid comic, and valid comic ID
+		{
+			l.push_back(QPair<ComicDB, QString>(c,id));
+		}
+		index++;
+	}
+
+	return l;
+}

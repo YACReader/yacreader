@@ -149,7 +149,17 @@ QModelIndex VolumeComicsModel::index(int row, int column, const QModelIndex &par
 
 QString VolumeComicsModel::getComicId(const QModelIndex &index) const
 {
-	return _data[index.row()][ID];
+	int row = index.row();
+	if(row >= _data.count())
+		return "";
+	return _data[row][ID];
+}
+
+QString VolumeComicsModel::getComicId(int row) const
+{
+	if(row >= _data.count())
+		return "";
+	return _data[row][ID];
 }
 
 QString VolumeComicsModel::getCoverURL(const QModelIndex &index) const

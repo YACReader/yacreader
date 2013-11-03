@@ -7,6 +7,10 @@
 #include <QRadioButton>
 #include <QMessageBox>
 #include <QTableView>
+#include <QtConcurrent/QtConcurrentRun>
+#include <QSqlDatabase>
+#include <QtScript>
+#include "data_base_management.h"
 
 #include "yacreader_busy_widget.h"
 #include "comic_vine_client.h"
@@ -18,8 +22,9 @@
 #include "select_comic.h"
 #include "select_volume.h"
 #include "sort_volume_comics.h"
-
+#include "db_helper.h"
 #include "response_parser.h"
+
 
 
 ComicVineDialog::ComicVineDialog(QWidget *parent) :
@@ -141,6 +146,12 @@ void ComicVineDialog::goNext()
 		connect(comicVineClient,SIGNAL(timeOut()),this,SLOT(queryTimeOut()));
 		connect(comicVineClient,SIGNAL(finished()),comicVineClient,SLOT(deleteLater()));
 		comicVineClient->getVolumeComicsInfo(selectVolumeWidget->getSelectedVolumeId());
+	} else if (content->currentWidget() == sortVolumeComicsWidget) {
+		showLoading();
+
+		//ComicDB-ComicVineID
+		QList<QPair<ComicDB,QString> > matchingInfo = sortVolumeComicsWidget->getMatchingInfo();
+		QtConcurrent::run(this, &ComicVineDialog::getComicsInfo,matchingInfo);
 	}
 }
 
@@ -342,6 +353,96 @@ void ComicVineDialog::queryTimeOut()
 	default:
 		break;
 	}
+}
+
+void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString> > & matchingInfo)
+{
+	QPair<ComicDB, QString> p;
+	QList<ComicDB> comics;
+	foreach (p, matchingInfo) {
+		ComicVineClient * comicVineClient = new ComicVineClient;
+		//connect(comicVineClient,SIGNAL(searchResult(QString)),this,SLOT(debugClientResults(QString)));
+		//connect(comicVineClient,SIGNAL(timeOut()),this,SLOT(queryTimeOut()));
+		//connect(comicVineClient,SIGNAL(finished()),comicVineClient,SLOT(deleteLater()));
+		QByteArray result = comicVineClient->getComicDetail(p.second); //TODO check timeOut or Connection error
+
+		comics.push_back(parseComicInfo(p.first,result)); //TODO check result error
+	}
+
+	QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+	db.open();
+	db.transaction();
+	foreach(ComicDB comic, comics)
+	{
+		DBHelper::update(&(comic.info),db);
+	}
+	db.commit();
+	db.close();
+	QSqlDatabase::removeDatabase(databasePath);
+
+	close();
+	emit accepted();
+}
+
+ComicDB ComicVineDialog::parseComicInfo(ComicDB & comic, const QString & json)
+{
+	QScriptEngine engine;
+	QScriptValue sc;
+	sc = engine.evaluate("(" + json + ")");
+
+	if (!sc.property("error").isValid() && sc.property("error").toString() != "OK")
+	{
+		qDebug("Error detected");
+	}
+	else
+	{
+		int numResults = sc.property("number_of_total_results").toString().toInt(); //fix to weird behaviour using hasNext
+
+		if(numResults > 0)
+		{
+			QScriptValue result = sc.property("results");
+
+			QString title = result.property("name").toString();
+
+			QString number = result.property("issue_number").toString();
+			QString count; //get from select volume
+
+
+			QString volume = result.property("volume").property("name").toString();
+			QString storyArc; //story_arc
+			QString arcNumber; //??
+			QString arcCount; //count_of_issue_appearances
+
+			QString genere; //no
+
+			QString writer;
+			QString penciller;
+			QString inker;
+			QString colorist;
+			QString letterer;
+			QString coverArtist;
+
+			QString date = result.property("cover_date").toString();
+
+			QString publisher; //get from select volume
+			QString format; //no
+			bool color; //no
+			QString ageRating; //no
+
+			QString synopsis = result.property("description").toString(); //description
+			QString characters;
+
+			comic.info.setTitle(title);
+
+			comic.info.setNumber(number.toInt());
+
+			QStringList tempList = date.split("-");
+			std::reverse(tempList.begin(),tempList.end());
+			comic.info.setDate(tempList.join("/"));
+			comic.info.setVolume(volume);
+		}
+	}
+	return comic;
 }
 
 void ComicVineDialog::showLoading()

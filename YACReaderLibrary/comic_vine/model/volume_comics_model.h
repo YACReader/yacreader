@@ -22,6 +22,7 @@ signals:
 
 public slots:
 	QString getComicId(const QModelIndex &index) const;
+	QString getComicId(int row) const;
 	QString getCoverURL(const QModelIndex &index) const;
 	void addExtraRows(int numRows);
 

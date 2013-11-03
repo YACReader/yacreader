@@ -23,6 +23,11 @@ void HttpWorker::get()
 	this->start();
 }
 
+QByteArray HttpWorker::getResult()
+{
+	return result;
+}
+
 void HttpWorker::run()
 {
 	QNetworkAccessManager manager;
@@ -39,7 +44,8 @@ void HttpWorker::run()
 	
 	if(tT.isActive()){
 		// download complete
-		emit dataReady(reply->readAll());
+		result = reply->readAll();
+		emit dataReady(result);
 		tT.stop();
 	} else {
 		emit timeout();

@@ -706,6 +706,9 @@ void LibraryWindow::createConnections()
 	//properties & config
 	connect(propertiesDialog,SIGNAL(accepted()),this,SLOT(reloadCovers()));
 
+	//comic vine
+	connect(comicVineDialog,SIGNAL(accepted()),this,SLOT(reloadCovers()));
+
 	connect(updateLibraryAction,SIGNAL(triggered()),this,SLOT(updateLibrary()));
 	connect(renameLibraryAction,SIGNAL(triggered()),this,SLOT(renameLibrary()));
 	//connect(deleteLibraryAction,SIGNAL(triggered()),this,SLOT(deleteLibrary()));

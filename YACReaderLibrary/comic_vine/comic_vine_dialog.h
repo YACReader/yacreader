@@ -29,10 +29,13 @@ public:
 	QString databasePath;
 	QString basePath;
 	void setComics(const QList<ComicDB> & comics);
+
+
 signals:
 	
 public slots:
 	void show();
+
 protected slots:
 	void goNext();
 	void goBack();
@@ -51,6 +54,9 @@ protected slots:
 	void showSelectComic(const QString & json);
 	void showSortVolumeComics(const QString & json);
 	void queryTimeOut();
+	void getComicsInfo(QList<QPair<ComicDB,QString> > & matchingInfo);
+	ComicDB parseComicInfo(ComicDB &comic, const QString & json);
+
 private:
 
 	enum ScraperMode

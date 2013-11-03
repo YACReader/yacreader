@@ -67,6 +67,7 @@ signals:
 
 public slots:
 	void setData(QList<ComicDB> & comics, const QString & json);
+	QList<QPair<ComicDB,QString> > getMatchingInfo();
 
 protected slots:
 	void synchronizeScroll(int pos);
@@ -74,6 +75,7 @@ protected slots:
 	void moveDownCL();
 	void moveUpIL();
 	void moveDownIL();
+
 
 private:
 	ScraperTableView * tableFiles;

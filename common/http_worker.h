@@ -14,11 +14,12 @@
 		HttpWorker(const QString & urlString);
 	public slots:
 		void get();
+		QByteArray getResult();
 	private:
 		void run();
 		QUrl url;
 		int httpGetId;
-		QByteArray content;
+		QByteArray result;
 	signals:
 		void dataReady(const QByteArray &);
 		void timeout();
