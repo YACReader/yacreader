@@ -141,7 +141,17 @@ QModelIndex VolumesModel::index(int row, int column, const QModelIndex &parent) 
 
 QString VolumesModel::getVolumeId(const QModelIndex &index) const
 {
-	return _data[index.row()][ID];
+    return _data[index.row()][ID];
+}
+
+int VolumesModel::getNumIssues(const QModelIndex &index) const
+{
+    return _data[index.row()][ISSUES].toInt();
+}
+
+QString VolumesModel::getPublisher(const QModelIndex &index) const
+{
+    return _data[index.row()][PUBLISHER];
 }
 
 QString VolumesModel::getCoverURL(const QModelIndex &index) const

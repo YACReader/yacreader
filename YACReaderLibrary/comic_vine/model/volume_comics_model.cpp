@@ -29,12 +29,13 @@ void VolumeComicsModel::load(const QString & json)
 	}
 	else
 	{
-		int numResults = sc.property("number_of_total_results").toString().toInt(); //fix to weird behaviour using hasNext
 		QScriptValueIterator it(sc.property("results"));
 		//bool test;
 		QScriptValue resultsValue;
 		while (it.hasNext()) {
 			it.next();
+            if(it.flags() & QScriptValue::SkipInEnumeration)
+                continue;
 			resultsValue = it.value();
 			QString issueNumber = resultsValue.property("issue_number").toString();
 			QString name = resultsValue.property("name").toString();
@@ -42,10 +43,7 @@ void VolumeComicsModel::load(const QString & json)
 			QString id = resultsValue.property("id").toString();
 			QStringList l;
 			l << issueNumber << name << coverURL << id;
-			//test = name.isEmpty() && year.isEmpty() && numIssues.isEmpty() && url.isEmpty();
-			if(numResults > 0)
-				_data.push_back(l);
-			numResults--;
+            _data.push_back(l);
 		}
 
 		qSort(_data.begin(),_data.end(),lessThan);

@@ -23,6 +23,8 @@ public:
 	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
 
 	QString getVolumeId(const QModelIndex & index) const;
+    int getNumIssues(const QModelIndex & index) const;
+    QString getPublisher(const QModelIndex & index) const;
 	QString getCoverURL(const QModelIndex & index) const;
 
 signals:

@@ -23,6 +23,8 @@ public slots:
 	void setCover(const QByteArray &);
 	void setDescription(const QString & jsonDetail);
 	QString getSelectedVolumeId();
+    int getSelectedVolumeNumIssues();
+    QString getSelectedVolumePublisher();
 
 private:
 	QLabel * cover;

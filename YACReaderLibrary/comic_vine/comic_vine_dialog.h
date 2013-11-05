@@ -18,6 +18,7 @@ class SearchVolume;
 class SelectComic;
 class SelectVolume;
 class SortVolumeComics;
+class QScriptValue;
 
 //TODO this should use a QStateMachine
 //----------------------------------------
@@ -54,10 +55,13 @@ protected slots:
 	void showSelectComic(const QString & json);
 	void showSortVolumeComics(const QString & json);
 	void queryTimeOut();
-	void getComicsInfo(QList<QPair<ComicDB,QString> > & matchingInfo);
-	ComicDB parseComicInfo(ComicDB &comic, const QString & json);
+    void getComicsInfo(QList<QPair<ComicDB,QString> > & matchingInfo, int count, const QString & publisher);
+    ComicDB parseComicInfo(ComicDB &comic, const QString & json, int count, const QString &publisher);
 
 private:
+
+    QString getCharacters(const QScriptValue & json_characters);
+    QMap<QString,QString> getAuthors(const QScriptValue & json_authors);
 
 	enum ScraperMode
 	{

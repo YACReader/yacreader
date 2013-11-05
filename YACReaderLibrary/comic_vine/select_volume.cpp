@@ -146,6 +146,16 @@ void SelectVolume::setDescription(const QString & jsonDetail)
 
 QString SelectVolume::getSelectedVolumeId()
 {
-	return model->getVolumeId(tableVolumes->currentIndex());
+    return model->getVolumeId(tableVolumes->currentIndex());
+}
+
+int SelectVolume::getSelectedVolumeNumIssues()
+{
+    return model->getNumIssues(tableVolumes->currentIndex());
+}
+
+QString SelectVolume::getSelectedVolumePublisher()
+{
+    return model->getPublisher(tableVolumes->currentIndex());
 }
 
