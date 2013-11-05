@@ -45,7 +45,7 @@ protected slots:
 	void showSeriesQuestion();
 	void showSearchSingleComic();
 	void showSearchVolume();
-	void showLoading();
+    void showLoading(const QString & message = "");
 	void search();
 	void searchVolume(const QString & v);
 	void launchSearchVolume();
@@ -56,8 +56,11 @@ protected slots:
 	void showSortVolumeComics(const QString & json);
 	void queryTimeOut();
     void getComicsInfo(QList<QPair<ComicDB,QString> > & matchingInfo, int count, const QString & publisher);
+    void getComicInfo(const QString & comicId, int count, const QString & publisher);
+
     ComicDB parseComicInfo(ComicDB &comic, const QString & json, int count, const QString &publisher);
 
+    void setLoadingMessage(const QString &message);
 private:
 
     QString getCharacters(const QScriptValue & json_characters);
@@ -101,6 +104,8 @@ private:
 	QWidget * infoNotFound;
 	QWidget * singleComicBrowser;
 	
+    QLabel * loadingMessage;
+
 	void doLayout();
 	void doStackedWidgets();
 	void doLoading();
