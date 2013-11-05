@@ -151,7 +151,9 @@ void ComicVineDialog::goNext()
 
 		//ComicDB-ComicVineID
 		QList<QPair<ComicDB,QString> > matchingInfo = sortVolumeComicsWidget->getMatchingInfo();
-		QtConcurrent::run(this, &ComicVineDialog::getComicsInfo,matchingInfo);
+        int count = selectVolumeWidget->getSelectedVolumeNumIssues();
+        QString publisher = selectVolumeWidget->getSelectedVolumePublisher();
+        QtConcurrent::run(this, &ComicVineDialog::getComicsInfo,matchingInfo,count,publisher);
 	}
 }
 
@@ -355,7 +357,7 @@ void ComicVineDialog::queryTimeOut()
 	}
 }
 
-void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString> > & matchingInfo)
+void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString> > & matchingInfo, int count,const QString & publisher)
 {
 	QPair<ComicDB, QString> p;
 	QList<ComicDB> comics;
@@ -366,7 +368,7 @@ void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString> > & matchingIn
 		//connect(comicVineClient,SIGNAL(finished()),comicVineClient,SLOT(deleteLater()));
 		QByteArray result = comicVineClient->getComicDetail(p.second); //TODO check timeOut or Connection error
 
-		comics.push_back(parseComicInfo(p.first,result)); //TODO check result error
+        comics.push_back(parseComicInfo(p.first,result,count,publisher)); //TODO check result error
 	}
 
 	QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
@@ -384,7 +386,7 @@ void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString> > & matchingIn
 	emit accepted();
 }
 
-ComicDB ComicVineDialog::parseComicInfo(ComicDB & comic, const QString & json)
+ComicDB ComicVineDialog::parseComicInfo(ComicDB & comic, const QString & json, int count, const QString & publisher)
 {
 	QScriptEngine engine;
 	QScriptValue sc;
@@ -405,44 +407,112 @@ ComicDB ComicVineDialog::parseComicInfo(ComicDB & comic, const QString & json)
 			QString title = result.property("name").toString();
 
 			QString number = result.property("issue_number").toString();
-			QString count; //get from select volume
+            //QString count; //get from select volume
 
 
 			QString volume = result.property("volume").property("name").toString();
 			QString storyArc; //story_arc
 			QString arcNumber; //??
-			QString arcCount; //count_of_issue_appearances
+            QString arcCount; //count_of_issue_appearances -> NO
 
 			QString genere; //no
 
-			QString writer;
-			QString penciller;
-			QString inker;
-			QString colorist;
-			QString letterer;
-			QString coverArtist;
+            QMap<QString,QString> authors = getAuthors(result.property("person_credits"));
+
+            QString writer = QStringList(authors.values("writer")).join("\n");
+            QString penciller = QStringList(authors.values("penciller")).join("\n");
+            QString inker = QStringList(authors.values("inker")).join("\n");
+            QString colorist = QStringList(authors.values("colorist")).join("\n");
+            QString letterer = QStringList(authors.values("letterer")).join("\n");
+            QString coverArtist = QStringList(authors.values("cover")).join("\n");
 
 			QString date = result.property("cover_date").toString();
 
-			QString publisher; //get from select volume
+            //QString publisher; //get from select volume
 			QString format; //no
 			bool color; //no
 			QString ageRating; //no
 
-			QString synopsis = result.property("description").toString(); //description
-			QString characters;
+            QString synopsis = result.property("description").toString().remove(QRegExp("<[^>]*>")); //description
+            QString characters = getCharacters(result.property("character_credits"));
 
 			comic.info.setTitle(title);
 
 			comic.info.setNumber(number.toInt());
+            comic.info.setCount(count);
+
+            comic.info.setWriter(writer);
+            comic.info.setPenciller(penciller);
+            comic.info.setInker(inker);
+            comic.info.setColorist(colorist);
+            comic.info.setLetterer(letterer);
+            comic.info.setCoverArtist(coverArtist);
 
 			QStringList tempList = date.split("-");
 			std::reverse(tempList.begin(),tempList.end());
 			comic.info.setDate(tempList.join("/"));
 			comic.info.setVolume(volume);
+
+            comic.info.setPublisher(publisher);
+
+            comic.info.setSynopsis(synopsis);
+            comic.info.setCharacters(characters);
 		}
 	}
-	return comic;
+    return comic;
+}
+
+QString ComicVineDialog::getCharacters(const QScriptValue &json_characters)
+{
+    QString characters;
+
+    QScriptValueIterator it(json_characters);
+    QScriptValue resultsValue;
+    while (it.hasNext()) {
+        it.next();
+        if(it.flags() & QScriptValue::SkipInEnumeration)
+            continue;
+        resultsValue = it.value();
+
+        characters += resultsValue.property("name").toString() + "\n";
+    }
+
+    return characters;
+}
+
+QMap<QString, QString> ComicVineDialog::getAuthors(const QScriptValue &json_authors)
+{
+    QMap<QString, QString> authors;
+
+    QScriptValueIterator it(json_authors);
+    QScriptValue resultsValue;
+    while (it.hasNext()) {
+        it.next();
+        if(it.flags() & QScriptValue::SkipInEnumeration)
+            continue;
+        resultsValue = it.value();
+
+        QString authorName = resultsValue.property("name").toString();
+
+        QStringList roles = resultsValue.property("role").toString().split(",");
+        foreach(QString role, roles)
+        {
+            if(role.trimmed() == "writer")
+                authors.insertMulti("writer",authorName);
+            else if(role.trimmed() == "inker")
+                authors.insertMulti("inker",authorName);
+            else if(role.trimmed() == "penciler" || role.trimmed() == "penciller")
+                authors.insertMulti("penciller",authorName);
+            else if(role.trimmed() == "colorist")
+                authors.insertMulti("colorist",authorName);
+            else if(role.trimmed() == "letterer")
+                authors.insertMulti("letterer",authorName);
+            else if(role.trimmed() == "cover")
+                authors.insertMulti("cover",authorName);
+        }
+    }
+
+    return authors;
 }
 
 void ComicVineDialog::showLoading()
