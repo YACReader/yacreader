@@ -57,14 +57,16 @@ protected slots:
 	void queryTimeOut();
     void getComicsInfo(QList<QPair<ComicDB,QString> > & matchingInfo, int count, const QString & publisher);
     void getComicInfo(const QString & comicId, int count, const QString & publisher);
-
     ComicDB parseComicInfo(ComicDB &comic, const QString & json, int count, const QString &publisher);
-
     void setLoadingMessage(const QString &message);
+	void goToNextComic();
+
 private:
 
     QString getCharacters(const QScriptValue & json_characters);
     QMap<QString,QString> getAuthors(const QScriptValue & json_authors);
+
+	void toggleSkipButton();
 
 	enum ScraperMode
 	{

@@ -99,6 +99,7 @@ void ComicVineDialog::doConnections()
 	connect(nextButton,SIGNAL(clicked()),this,SLOT(goNext()));
 	connect(backButton,SIGNAL(clicked()),this,SLOT(goBack()));
 	connect(searchButton,SIGNAL(clicked()),this,SLOT(search()));
+	connect(skipButton,SIGNAL(clicked()),this,SLOT(goToNextComic()));
 }
 
 void ComicVineDialog::goNext()
@@ -126,8 +127,8 @@ void ComicVineDialog::goNext()
 			ComicDB comic = comics[currentIndex];
 			QString title = comic.getTitleOrFileName();
 			titleHeader->setSubTitle(tr("comic %1 of %2 - %3").arg(currentIndex+1).arg(comics.length()).arg(title));
-            showLoading(tr("Looking for volume..."));
 
+            showLoading(tr("Looking for volume..."));
 			searchVolume(title);
 			status = AutoSearching;
 			mode = SingleComicInList;
@@ -279,6 +280,11 @@ void ComicVineDialog::showSeriesQuestion()
 	nextButton->setVisible(true);
 	searchButton->setHidden(true);
 	closeButton->setVisible(true);
+
+	if(mode == SingleComicInList)
+		skipButton->setVisible(true);
+	else
+		skipButton->setHidden(true);
 }
 
 void ComicVineDialog::showSearchSingleComic()
@@ -290,6 +296,11 @@ void ComicVineDialog::showSearchSingleComic()
 	nextButton->setHidden(true);
 	searchButton->setVisible(true);
 	closeButton->setVisible(true);
+
+	if(mode == SingleComicInList)
+		skipButton->setVisible(true);
+	else
+		skipButton->setHidden(true);
 }
 
 void ComicVineDialog::showSearchVolume()
@@ -300,11 +311,7 @@ void ComicVineDialog::showSearchVolume()
 	nextButton->setHidden(true);
 	searchButton->setVisible(true);
 	closeButton->setVisible(true);
-
-	if (mode == SingleComicInList)
-		skipButton->setVisible(true);
-	else
-		skipButton->setHidden(true);
+	toggleSkipButton();
 }
 
 void ComicVineDialog::showSelectVolume(const QString & json)
@@ -323,6 +330,7 @@ void ComicVineDialog::showSelectVolume()
 	nextButton->setVisible(true);
 	searchButton->setHidden(true);
 	closeButton->setVisible(true);
+	toggleSkipButton();
 }
 
 void ComicVineDialog::showSelectComic(const QString &json)
@@ -336,6 +344,7 @@ void ComicVineDialog::showSelectComic(const QString &json)
     nextButton->setVisible(true);
     searchButton->setHidden(true);
     closeButton->setVisible(true);
+	toggleSkipButton();
 }
 
 void ComicVineDialog::showSortVolumeComics(const QString &json)
@@ -350,6 +359,7 @@ void ComicVineDialog::showSortVolumeComics(const QString &json)
 	nextButton->setVisible(true);
 	searchButton->setHidden(true);
 	closeButton->setVisible(true);
+	toggleSkipButton();
 }
 
 void ComicVineDialog::queryTimeOut()
@@ -437,7 +447,7 @@ void ComicVineDialog::getComicInfo(const QString &comicId, int count, const QStr
         emit accepted();
     } else
     {
-       currentIndex++;
+	   goToNextComic();
     }
 }
 
@@ -567,7 +577,33 @@ QMap<QString, QString> ComicVineDialog::getAuthors(const QScriptValue &json_auth
         }
     }
 
-    return authors;
+	return authors;
+}
+
+void ComicVineDialog::toggleSkipButton()
+{
+	if (mode == SingleComicInList)
+		skipButton->setVisible(true);
+	else
+		skipButton->setHidden(true);
+}
+
+void ComicVineDialog::goToNextComic()
+{
+	if(mode == SingleComic || currentIndex == (comics.count()-1))
+	{
+		close();
+		emit accepted();
+		return;
+	}
+
+	currentIndex++;
+
+	showSearchSingleComic();
+
+	ComicDB comic = comics[currentIndex];
+	QString title = comic.getTitleOrFileName();
+	titleHeader->setSubTitle(tr("comic %1 of %2 - %3").arg(currentIndex+1).arg(comics.length()).arg(title));
 }
 
 void ComicVineDialog::showLoading(const QString &message)
