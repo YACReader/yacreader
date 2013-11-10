@@ -97,7 +97,7 @@ void SelectComic::loadComicInfo(const QModelIndex &mi)
 	ComicVineClient * comicVineClient2 = new ComicVineClient;
 	connect(comicVineClient2,SIGNAL(comicDetail(QString)),this,SLOT(setDescription(QString)));
 	connect(comicVineClient2,SIGNAL(finished()),comicVineClient2,SLOT(deleteLater()));
-	comicVineClient2->getComicDetail(id);
+	comicVineClient2->getComicDetailAsync(id);
 }
 
 void SelectComic::setCover(const QByteArray & data)
