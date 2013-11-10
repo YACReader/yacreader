@@ -30,6 +30,7 @@ public slots:
 
 	void getComicId(const QString & id, int comicNumber);
 	void getCoverURL(const QString & id);
+	void getComicDetailAsync(const QString &id);
 protected slots:
 	void proccessVolumesSearchData(const QByteArray & data);
 	void proccessSeriesDetailData(const QByteArray & data);

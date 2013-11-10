@@ -130,6 +130,17 @@ QByteArray ComicVineClient::getComicDetail(const QString & id)
 	return result;
 }
 
+//CV_COMIC_DETAIL
+void ComicVineClient::getComicDetailAsync(const QString & id)
+{
+	HttpWorker * search = new HttpWorker(CV_COMIC_DETAIL.arg(id));
+
+	connect(search,SIGNAL(dataReady(const QByteArray &)),this,SLOT(proccessComicDetailData(const QByteArray &)));
+	connect(search,SIGNAL(timeout()),this,SIGNAL(timeOut()));
+	connect(search,SIGNAL(finished()),search,SLOT(deleteLater()));
+	search->get();
+}
+
 void ComicVineClient::getComicCover(const QString &url)
 {
 	HttpWorker * search = new HttpWorker(url);
