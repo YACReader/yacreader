@@ -4,99 +4,54 @@
 #include <QTranslator>
 #include <QSettings>
 #include <QLocale>
-#include <QTextStream>
-#include <QtDebug>
 #include <QDir>
-#include <QDateTime>
-
 #if QT_VERSION >= 0x050000
-#include <QStandardPaths>
+	#include <QStandardPaths>
 #else
-#include <QDesktopServices>
+	#include <QDesktopServices>
 #endif
-
 
 #include "yacreader_global.h"
 #include "startup.h"
 #include "yacreader_local_server.h"
 #include "comic_db.h"
 
+#include "QsLog.h"
+#include "QsLogDest.h"
+
 #define PICTUREFLOW_QT4 1
-
-#if QT_VERSION >= 0x050000
-void yacreaderMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
-{
-
-	QString txt;
-
-	switch (type) {
-		case QtDebugMsg:
-			txt = QString("Debug: %1").arg(msg);
-			break;
-		case QtWarningMsg:
-			txt = QString("Warning: %1").arg(msg);
-			break;
-		case QtCriticalMsg:
-			txt = QString("Critical: %1").arg(msg);
-			break;
-		case QtFatalMsg:
-			txt = QString("Fatal: %1").arg(msg);
-			break;
-	}
-
-	QDir().mkpath(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation));
-
-	QFile outFile(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)+"/yacreaderlibrary.log");
-
-	outFile.open(QIODevice::WriteOnly | QIODevice::Append);
-	QTextStream ts(&outFile);
-	ts << QDateTime::currentDateTime().toString() << " - " << txt << endl;
-}
-#else
-void yacreaderMessageHandler(QtMsgType type, const char * msg)
-{
-    QString txt;
-
-    switch (type) {
-        case QtDebugMsg:
-            txt = QString("Debug: %1").arg(msg);
-            break;
-        case QtWarningMsg:
-            txt = QString("Warning: %1").arg(msg);
-            break;
-        case QtCriticalMsg:
-            txt = QString("Critical: %1").arg(msg);
-            break;
-        case QtFatalMsg:
-            txt = QString("Fatal: %1").arg(msg);
-            break;
-    }
-
-    QDir().mkpath(QDesktopServices::storageLocation(QDesktopServices::DataLocation));
-
-    QFile outFile(QDesktopServices::storageLocation(QDesktopServices::DataLocation)+"/yacreaderlibrary.log");
-
-    outFile.open(QIODevice::WriteOnly | QIODevice::Append);
-    QTextStream ts(&outFile);
-    ts << QDateTime::currentDateTime().toString() << " - " << txt << endl;
-}
-#endif
-
 
 //interfaz al servidor
 Startup * s;
+
+using namespace QsLogging;
 
 int main( int argc, char ** argv )
 {
   QApplication app( argc, argv );
 
+  app.setApplicationName("YACReaderLibrary");
+  app.setOrganizationName("YACReader");
+
 #if QT_VERSION >= 0x050000
-  qInstallMessageHandler(yacreaderMessageHandler);
+  QString destLog = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)+"/yacreaderlibrary.log";
+  QString destErr = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)+"/yacreaderlibrary.err";
+  QDir().mkpath(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation));
+
 #else
-  qInstallMsgHandler(yacreaderMessageHandler);
+  QString destLog = QDesktopServices::storageLocation(QDesktopServices::DataLocation)+"/yacreaderlibrary.log";
+  QString destErr = QDesktopServices::storageLocation(QDesktopServices::DataLocation)+"/yacreaderlibrary.err";
+  QDir().mkpath(QDesktopServices::storageLocation(QDesktopServices::DataLocation));
 #endif
 
-  qDebug() << "YACReaderLibrary started" << endl;
+  Logger& logger = Logger::instance();
+  logger.setLoggingLevel(QsLogging::TraceLevel);
+
+  DestinationPtr fileDestination(DestinationFactory::MakeFileDestination(
+	destLog, EnableLogRotation, MaxSizeBytes(2048), MaxOldLogCount(2)));
+  DestinationPtr debugDestination(DestinationFactory::MakeDebugOutputDestination());
+  logger.addDestination(debugDestination);
+  logger.addDestination(fileDestination);
 
   QTranslator translator;
   QString sufix = QLocale::system().name();
@@ -122,9 +77,14 @@ int main( int argc, char ** argv )
 	  s->start();
   }
 #endif
-  
+  QLOG_INFO() << "YACReaderLibrary attempting to start";
   if(YACReaderLocalServer::isRunning()) //sólo se permite una instancia de YACReaderLibrary
-	return 0;
+  {
+	  QLOG_WARN() << "another instance of YACReaderLibrary is running";
+	  QsLogging::Logger::destroyInstance();
+	  return 0;
+  }
+  QLOG_INFO() << "YACReaderLibrary starting";
 
   YACReaderLocalServer * localServer = new YACReaderLocalServer();
 
@@ -135,8 +95,6 @@ int main( int argc, char ** argv )
   //connections to localServer
 
   mw->show();
-  /*mw->resize(800,480);
-  mw->showMaximized();*/
 
   int ret = app.exec();
 
@@ -144,7 +102,9 @@ int main( int argc, char ** argv )
   s->stop();
   delete s;
 
-  qDebug() << "YACReaderLibrary closed" << endl;
+  QLOG_INFO() << "YACReaderLibrary closed";
+
+  QsLogging::Logger::destroyInstance();
 
   return ret;
 }
