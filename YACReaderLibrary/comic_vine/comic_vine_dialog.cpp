@@ -7,7 +7,11 @@
 #include <QRadioButton>
 #include <QMessageBox>
 #include <QTableView>
-#include <QtConcurrent/QtConcurrentRun>
+#if QT_VERSION >= 0x050000
+	#include <QtConcurrent/QtConcurrentRun>
+#else
+	#include <QtConcurrentRun>
+#endif
 #include <QSqlDatabase>
 #include <QtScript>
 #include "data_base_management.h"
