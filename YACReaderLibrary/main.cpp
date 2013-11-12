@@ -11,7 +11,10 @@
 
 #if QT_VERSION >= 0x050000
 #include <QStandardPaths>
+#else
+#include <QDesktopServices>
 #endif
+
 
 #include "yacreader_global.h"
 #include "startup.h"
@@ -50,9 +53,32 @@ void yacreaderMessageHandler(QtMsgType type, const QMessageLogContext &context, 
 	ts << QDateTime::currentDateTime().toString() << " - " << txt << endl;
 }
 #else
-void yacreaderMessageHandler(QtMsgType type, const char *)
+void yacreaderMessageHandler(QtMsgType type, const char * msg)
 {
+    QString txt;
 
+    switch (type) {
+        case QtDebugMsg:
+            txt = QString("Debug: %1").arg(msg);
+            break;
+        case QtWarningMsg:
+            txt = QString("Warning: %1").arg(msg);
+            break;
+        case QtCriticalMsg:
+            txt = QString("Critical: %1").arg(msg);
+            break;
+        case QtFatalMsg:
+            txt = QString("Fatal: %1").arg(msg);
+            break;
+    }
+
+    QDir().mkpath(QDesktopServices::storageLocation(QDesktopServices::DataLocation));
+
+    QFile outFile(QDesktopServices::storageLocation(QDesktopServices::DataLocation)+"/yacreaderlibrary.log");
+
+    outFile.open(QIODevice::WriteOnly | QIODevice::Append);
+    QTextStream ts(&outFile);
+    ts << QDateTime::currentDateTime().toString() << " - " << txt << endl;
 }
 #endif
 
