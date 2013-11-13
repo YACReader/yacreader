@@ -59,7 +59,8 @@
 
 #include "comic_vine_dialog.h"
 //#include "yacreader_social_dialog.h"
-//
+
+#include "QsLog.h"
 
 LibraryWindow::LibraryWindow()
 	:QMainWindow(),fullscreen(false),fetching(false),previousFilter("")
@@ -1088,6 +1089,7 @@ void LibraryWindow::createLibrary()
 
 void LibraryWindow::create(QString source, QString dest, QString name)
 {
+    QLOG_INFO() << QString("About to create a library from '%1' to '%2' with name '%3'").arg(source).arg(dest).arg(name);
 	libraryCreator->createLibrary(source,dest);
 	libraryCreator->start();
 	_lastAdded = name;
