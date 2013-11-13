@@ -95,7 +95,6 @@ private:
 	YACReaderTreeView * foldersView;
 	YACReaderLibraryListWidget * selectedLibrary;
 	TreeModel * dm;
-	QItemSelectionModel * sm;
 	TableModel * dmCV;
 	//QStringList paths;
 	QMap<QString,QString> libraries;
@@ -171,8 +170,8 @@ private:
 	QString _lastAdded;
 	QString _sourceLastAdded;
 
-	QModelIndex _rootIndex;
-	QModelIndex _rootIndexCV;
+	//QModelIndex _rootIndex;
+	//QModelIndex _rootIndexCV;
 
 	quint64 _comicIdEdited;
 

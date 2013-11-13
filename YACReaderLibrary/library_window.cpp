@@ -299,8 +299,6 @@ void LibraryWindow::doModels()
 	dm = new TreeModel();
 	//comics
 	dmCV =  new TableModel();
-	//comics selection
-	sm = new QItemSelectionModel(dm);
 
 	setFoldersFilter("");
 }
@@ -797,7 +795,6 @@ void LibraryWindow::loadLibrary(const QString & name)
 			if(comparation == 0 || updated) //en caso de que la versión se igual que la actual
 			{
 				index = 0;
-				sm->clear();
 
 				dm->setupModelData(path);
 				foldersView->setModel(dm);
@@ -906,7 +903,6 @@ void LibraryWindow::loadLibrary(const QString & name)
 
 void LibraryWindow::loadCovers(const QModelIndex & mi)
 {
-	_rootIndexCV = mi;
 	unsigned long long int folderId = 1;
 	if(mi.isValid())
 	{
@@ -1002,7 +998,7 @@ void LibraryWindow::checkEmptyFolder(QStringList * paths)
 
 void LibraryWindow::reloadCovers()
 {
-	loadCovers(_rootIndexCV);
+	loadCovers(foldersView->currentIndex());
 
 	QModelIndex mi = dmCV->getIndexFromId(_comicIdEdited);
 	comicView->scrollTo(mi,QAbstractItemView::PositionAtCenter);
@@ -1397,8 +1393,8 @@ void LibraryWindow::setFoldersFilter(QString filter)
 		{
 			QModelIndex mi = dm->indexFromItem(index,column);
 			foldersView->scrollTo(mi,QAbstractItemView::PositionAtTop);
-			sm->select(mi,QItemSelectionModel::Select);
-			foldersView->setSelectionModel(sm);
+			updateHistory(mi);
+			foldersView->setCurrentIndex(mi);
 		}
 	}
 	else
@@ -1704,6 +1700,8 @@ void LibraryWindow::forward()
 void LibraryWindow::updateHistory(const QModelIndex &mi)
 {
 	//remove history from current index
+	if(!mi.isValid())
+		return;
 	int numElementsToRemove = history.count() - (currentFolderNavigation+1);
 	while(numElementsToRemove>0)
 	{
