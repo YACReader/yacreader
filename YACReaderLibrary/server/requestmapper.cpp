@@ -21,6 +21,7 @@
 #include "controllers/errorcontroller.h"
 
 #include "db_helper.h"
+#include "yacreader_libraries.h"
 
 RequestMapper::RequestMapper(QObject* parent)
 	:HttpRequestHandler(parent) {}
@@ -53,7 +54,7 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 		HttpSession session=Static::sessionStore->getSession(request,response,false);
 		if(!session.isNull() && session.contains("ySession"))
 		{
-			if(library.indexIn(path)!=-1 && DBHelper::getLibraries().count() > library.cap(1).toInt() )
+			if(library.indexIn(path)!=-1 && DBHelper::getLibraries().contains(library.cap(1).toInt()) )
 			{
 				//listar el contenido del folder
 				if(folder.exactMatch(path))

@@ -30,11 +30,13 @@ int main(int argc, char * argv[])
 
 	QApplication app(argc, argv);
 
+	app.setApplicationName("YACReader");
+	app.setOrganizationName("YACReader");
+
 	QTranslator translator;
 	QString sufix = QLocale::system().name();
 	translator.load(QCoreApplication::applicationDirPath()+"/languages/yacreader_"+sufix);
 	app.installTranslator(&translator);
-	app.setApplicationName("YACReader");
 
 	MainWindowViewer * mwv = new MainWindowViewer();
 	mwv->show();

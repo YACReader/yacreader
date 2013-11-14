@@ -75,7 +75,7 @@ void CreateLibraryDialog::setupUI()
 	setWindowTitle(tr("Create new library"));
 }
 
-void CreateLibraryDialog::show(const QMap<QString,QString> & libs)
+void CreateLibraryDialog::show(const YACReaderLibraries & libs)
 {
 	libraries = libs;
 	QDialog::show();

@@ -1,6 +1,6 @@
 #ifndef IMPORT_LIBRARY_DIALOG_H
 #define IMPORT_LIBRARY_DIALOG_H
-
+#include "yacreader_libraries.h"
 
 #include <QDialog>
 #include <QLabel>
@@ -29,14 +29,14 @@
 		void setupUI();
 		int progressCount;
 		void closeEvent ( QCloseEvent * e );
-		QMap<QString,QString>  libraries;
+		YACReaderLibraries  libraries;
 	public slots:
 		void add();
 		void findPath();
 		void findDestination();
 		void close();
 		void nameEntered();
-		void show(const QMap<QString,QString> & libs);
+		void show(const YACReaderLibraries & libs);
 
 	signals:
 		void unpackCLC(QString clc,QString targetFolder, QString name);

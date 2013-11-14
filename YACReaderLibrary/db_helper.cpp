@@ -16,54 +16,21 @@
 #include "comic_db.h"
 #include "data_base_management.h"
 #include "folder.h"
+#include "yacreader_libraries.h"
 
 #include "qnaturalsorting.h"
 
 //server
 
-//TODO optimizar, evitar que se tenga que leer en cada petición el archivo
-//conservar un QDateTime stático que compruebe si libraries.yacr ha sido modificado
-//libraries debe ser una variable estática
-static QDateTime lastModified;
-static QMap<QString,QString> libraries;
-
-QMap<QString,QString> DBHelper::getLibraries()
+YACReaderLibraries DBHelper::getLibraries()
 {
-	QFileInfo fi(QCoreApplication::applicationDirPath()+"/libraries.yacr");
-	if(fi.lastModified() == lastModified)
-		return libraries;
-	
-	lastModified = fi.lastModified();
-	libraries.clear();
-	QFile f(QCoreApplication::applicationDirPath()+"/libraries.yacr");
-	f.open(QIODevice::ReadOnly);
-	QTextStream txtS(&f);
-	QString content = txtS.readAll();
-	QStringList lines = content.split('\n');
-	QString line,name;
-	int i=0;
-	foreach(line,lines)
-	{
-		if((i%2)==0)
-		{
-			name = line;
-		}
-		else
-		{
-			//sólo se agregan las bibliotecas realmente disponibles
-			QSqlDatabase db = DataBaseManagement::loadDatabase(line.trimmed()+"/.yacreaderlibrary");
-			if(db.isValid())
-				libraries.insert(name.trimmed(),line.trimmed());
-			db.close();
-		}
-		i++;
-	}
-	f.close();
+	YACReaderLibraries libraries;
+	libraries.load();
 	return libraries;
 }
 QList<LibraryItem *> DBHelper::getFolderContentFromLibrary(const QString & libraryName, qulonglong folderId)
 {
-	QString libraryPath = DBHelper::getLibraries().value(libraryName);
+	QString libraryPath = DBHelper::getLibraries().getPath(libraryName);
 	QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
 	
 	QList<LibraryItem *> list = DBHelper::getFoldersFromParent(folderId,db,false);
@@ -74,7 +41,7 @@ QList<LibraryItem *> DBHelper::getFolderContentFromLibrary(const QString & libra
 }
 QList<LibraryItem *> DBHelper::getFolderComicsFromLibrary(const QString & libraryName, qulonglong folderId)
 {
-	QString libraryPath = DBHelper::getLibraries().value(libraryName);
+	QString libraryPath = DBHelper::getLibraries().getPath(libraryName);
 	QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
 
 	QList<LibraryItem *> list = DBHelper::getComicsFromParent(folderId,db,false);
@@ -85,7 +52,7 @@ QList<LibraryItem *> DBHelper::getFolderComicsFromLibrary(const QString & librar
 }
 qulonglong DBHelper::getParentFromComicFolderId(const QString & libraryName, qulonglong id)
 {
-	QString libraryPath = DBHelper::getLibraries().value(libraryName);
+	QString libraryPath = DBHelper::getLibraries().getPath(libraryName);
 	QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
 
 	Folder f = DBHelper::loadFolder(id,db);
@@ -96,7 +63,7 @@ qulonglong DBHelper::getParentFromComicFolderId(const QString & libraryName, qul
 }
 ComicDB DBHelper::getComicInfo(const QString & libraryName, qulonglong id)
 {
-	QString libraryPath = DBHelper::getLibraries().value(libraryName);
+	QString libraryPath = DBHelper::getLibraries().getPath(libraryName);
 	QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
 
 	ComicDB comic = DBHelper::loadComic(id,db);
@@ -108,7 +75,7 @@ ComicDB DBHelper::getComicInfo(const QString & libraryName, qulonglong id)
 
 QList<ComicDB> DBHelper::getSiblings(const QString & libraryName, qulonglong parentId)
 {
-	QString libraryPath = DBHelper::getLibraries().value(libraryName);
+	QString libraryPath = DBHelper::getLibraries().getPath(libraryName);
 	QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
 
 	QList<ComicDB> comics =  DBHelper::getSortedComicsFromParent(parentId,db);
@@ -119,7 +86,7 @@ QList<ComicDB> DBHelper::getSiblings(const QString & libraryName, qulonglong par
 
 QString DBHelper::getFolderName(const QString & libraryName, qulonglong id)
 {
-	QString libraryPath = DBHelper::getLibraries().value(libraryName);
+	QString libraryPath = DBHelper::getLibraries().getPath(libraryName);
 	QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
 
 	QString name="";
@@ -143,19 +110,13 @@ QString DBHelper::getFolderName(const QString & libraryName, qulonglong id)
 }
 QList<QString> DBHelper::getLibrariesNames()
 {
-	QStringList names = getLibraries().keys();
+	QStringList names = getLibraries().getNames();
 	qSort(names.begin(),names.end(),naturalSortLessThanCI);
 	return names;
 }
 QString DBHelper::getLibraryName(int id)
 {
-	QStringList names = getLibrariesNames();
-	if(names.isEmpty())
-		return "";
-	if(id>=0 && id<names.count())
-		return names.at(id);
-	else
-		return names.at(0);
+	return getLibraries().getName(id);
 }
 //objects management
 //deletes
@@ -191,7 +152,7 @@ void DBHelper::update(ComicDB * comic, QSqlDatabase & db)
 
 void DBHelper::update(const QString & libraryName, ComicInfo & comicInfo)
 {
-	QString libraryPath = DBHelper::getLibraries().value(libraryName);
+	QString libraryPath = DBHelper::getLibraries().getPath(libraryName);
 	QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
 
 	DBHelper::update(&comicInfo,db);
