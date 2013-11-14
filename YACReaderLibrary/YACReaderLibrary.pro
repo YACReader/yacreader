@@ -78,7 +78,8 @@ HEADERS += comic_flow.h \
 			yacreader_local_server.h \
     yacreader_main_toolbar.h \
     comics_remover.h \
-	../common/http_worker.h
+	../common/http_worker.h \
+    yacreader_libraries.h
 		   
 SOURCES += comic_flow.cpp \
            create_library_dialog.cpp \
@@ -86,7 +87,7 @@ SOURCES += comic_flow.cpp \
            library_window.cpp \
            main.cpp \
            add_library_dialog.cpp \
-		   rename_library_dialog.cpp \
+                   rename_library_dialog.cpp \
 		   properties_dialog.cpp \
 		   options_dialog.cpp \
 		   export_library_dialog.cpp \
@@ -118,7 +119,9 @@ SOURCES += comic_flow.cpp \
 			yacreader_local_server.cpp \
     yacreader_main_toolbar.cpp \
     comics_remover.cpp \
-	../common/http_worker.cpp
+        ../common/http_worker.cpp \
+../common/yacreader_global.cpp \
+    yacreader_libraries.cpp
 			
 		   
 include(./server/server.pri)

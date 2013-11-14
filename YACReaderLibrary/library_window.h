@@ -6,6 +6,7 @@
 #include <QModelIndex>
 #include <QFileInfo>
 #include "yacreader_global.h"
+#include <yacreader_libraries.h>
 
 class QTreeView;
 class QDirModel;
@@ -97,7 +98,7 @@ private:
 	TreeModel * dm;
 	TableModel * dmCV;
 	//QStringList paths;
-	QMap<QString,QString> libraries;
+	YACReaderLibraries libraries;
 	QLabel * fullScreenToolTip;
 
 	QStackedWidget * mainWidget;

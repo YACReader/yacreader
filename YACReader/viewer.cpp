@@ -61,7 +61,7 @@ shouldOpenPrevious(false)
 
 	goToDialog = new GoToDialog(this);
 	
-	QSettings * settings = new QSettings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+	QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReader.ini",QSettings::IniFormat);
 
 	//CONFIG GOTO_FLOW--------------------------------------------------------
 	if(QGLFormat::hasOpenGL() && !settings->contains(USE_OPEN_GL))
@@ -894,7 +894,7 @@ void Viewer::updateComic(ComicDB & comic)
 		comic.info.bookmark3 = boomarksList[2];
 	//set filters
 	//TODO: avoid use settings for this...
-	QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+	QSettings settings(YACReader::getSettingsPath()+"/YACReader.ini",QSettings::IniFormat);
 	int brightness = settings.value(BRIGHTNESS,0).toInt();
 	int contrast = settings.value(CONTRAST,100).toInt();
 	int gamma = settings.value(GAMMA,100).toInt();

@@ -1,6 +1,8 @@
 #ifndef __CREATE_LIBRARY_DIALOG_H
 #define __CREATE_LIBRARY_DIALOG_H
 
+#include "yacreader_libraries.h"
+
 #include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
@@ -23,7 +25,7 @@
 		QPushButton * find;
 		QPushButton * accept;
 		QPushButton * cancel;
-		QMap<QString,QString>  libraries;
+		YACReaderLibraries  libraries;
 		void setupUI();
 	public slots:
 		void create();
@@ -32,7 +34,7 @@
 		void setDataAndStart(QString name, QString paht);
 		void nameSetted(const QString & text);
 		void pathSetted(const QString & text);
-		void show(const QMap<QString,QString> & libraries);
+		void show(const YACReaderLibraries &libraries);
 	signals:
 		void createLibrary(QString source, QString target, QString name);
 		void cancelCreate();

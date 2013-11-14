@@ -1,6 +1,7 @@
 #include "comiccontroller.h"
 
 #include "db_helper.h"
+#include "yacreader_libraries.h"
 
 #include "template.h"
 #include "../static.h"
@@ -38,14 +39,14 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 	//que crear una clase que se encargue de estas cosas
 	//¿Se está accediendo a la UI desde un hilo?
 
-	QMap<QString,QString> libraries = DBHelper::getLibraries();
+	YACReaderLibraries libraries = DBHelper::getLibraries();
 	
 
 	ComicDB comic = DBHelper::getComicInfo(libraryName, comicId);
 
 	session.setDownloadedComic(comic.info.hash);
 
-	Comic * comicFile = FactoryComic::newComic(libraries.value(libraryName)+comic.path);
+	Comic * comicFile = FactoryComic::newComic(libraries.getPath(libraryName)+comic.path);
 
 	if(comicFile != NULL)
 	{
@@ -58,7 +59,7 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 		connect(thread, SIGNAL(started()), comicFile, SLOT(process()));
 		connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
-		comicFile->load(libraries.value(libraryName)+comic.path);
+		comicFile->load(libraries.getPath(libraryName)+comic.path);
 
 		if(thread != NULL)
 			thread->start();

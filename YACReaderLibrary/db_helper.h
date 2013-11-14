@@ -12,12 +12,13 @@ class QSqlDatabase;
 class ComicInfo;
 class QSqlRecord;
 class QSqlQuery;
+class YACReaderLibraries;
 
 class DBHelper
 {
 public:
 	//server
-	static	QMap<QString,QString> getLibraries();
+	static	YACReaderLibraries getLibraries();
 	static	QList<LibraryItem *> getFolderContentFromLibrary(const QString & libraryName, qulonglong folderId);
 	static	QList<LibraryItem *> getFolderComicsFromLibrary(const QString & libraryName, qulonglong folderId);
 	static	qulonglong getParentFromComicFolderId(const QString & libraryName, qulonglong id);

@@ -166,7 +166,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 
 	this->setFixedSize(image.size());
 	
-	QSettings * settings = new QSettings(QCoreApplication::applicationDirPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+	QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
 	settings->beginGroup("libraryConfig");
 
 	if(settings->value(SERVER_ON,true).toBool())
@@ -184,7 +184,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 
 void ServerConfigDialog::enableServer(int status)
 {
-	QSettings * settings = new QSettings(QCoreApplication::applicationDirPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+	QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
 	settings->beginGroup("libraryConfig");
 
 	if(status == Qt::Checked)
@@ -313,7 +313,7 @@ void ServerConfigDialog::regenerateQR(const QString & ip)
 void ServerConfigDialog::updatePort()
 {
 
-	QSettings * settings = new QSettings(QCoreApplication::applicationDirPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+	QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
 	settings->beginGroup("listener");
 	settings->setValue("port",port->text().toInt());
 	settings->endGroup();

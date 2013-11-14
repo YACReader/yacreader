@@ -86,7 +86,7 @@ void ImportLibraryDialog::setupUI()
 	setModal(true);
 	setWindowTitle(tr("Extract a catalog"));
 }
-void ImportLibraryDialog::show(const QMap<QString,QString> & libs)
+void ImportLibraryDialog::show(const YACReaderLibraries &libs)
 {
 	libraries = libs;
 	QDialog::show();

@@ -1,5 +1,6 @@
 #include "covercontroller.h"
 #include "db_helper.h"  //get libraries
+#include "yacreader_libraries.h"
 
 #include "template.h"
 #include "../static.h"
@@ -15,7 +16,7 @@ void CoverController::service(HttpRequest& request, HttpResponse& response)
 	response.setHeader("Connection","close");
 	//response.setHeader("Content-Type", "plain/text; charset=ISO-8859-1");
 
-	QMap<QString,QString> libraries = DBHelper::getLibraries();
+	YACReaderLibraries libraries = DBHelper::getLibraries();
 
 	QString path = QUrl::fromPercentEncoding(request.getPath()).toLatin1();
 	QStringList pathElements = path.split('/');
@@ -40,7 +41,7 @@ void CoverController::service(HttpRequest& request, HttpResponse& response)
 	//	file.close();
 	//}
 
-	QImage img(libraries.value(libraryName)+"/.yacreaderlibrary/covers/"+fileName);
+	QImage img(libraries.getPath(libraryName)+"/.yacreaderlibrary/covers/"+fileName);
 	if (!img.isNull()) {
 
 		int width = 80;

@@ -242,7 +242,7 @@ void OptionsDialog::fitToWidthRatio(int value)
 
 void OptionsDialog::brightnessChanged(int value)
 {
-	QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+	QSettings settings(YACReader::getSettingsPath()+"/YACReader.ini",QSettings::IniFormat);
 	settings.setValue(BRIGHTNESS,value);
 	emit changedFilters(brightnessS->getValue(), contrastS->getValue(), gammaS->getValue());
 	//emit(changedImageOptions());
@@ -250,7 +250,7 @@ void OptionsDialog::brightnessChanged(int value)
 
 void OptionsDialog::contrastChanged(int value)
 {
-	QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+	QSettings settings(YACReader::getSettingsPath()+"/YACReader.ini",QSettings::IniFormat);
 	settings.setValue(CONTRAST,value);
 	emit changedFilters(brightnessS->getValue(), contrastS->getValue(), gammaS->getValue());
 	///emit(changedImageOptions());
@@ -258,7 +258,7 @@ void OptionsDialog::contrastChanged(int value)
 
 void OptionsDialog::gammaChanged(int value)
 {
-	QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+	QSettings settings(YACReader::getSettingsPath()+"/YACReader.ini",QSettings::IniFormat);
 	settings.setValue(GAMMA,value);
 	emit changedFilters(brightnessS->getValue(), contrastS->getValue(), gammaS->getValue());
 	//emit(changedImageOptions());
@@ -269,7 +269,7 @@ void OptionsDialog::resetImageConfig()
 	brightnessS->setValue(0);
 	contrastS->setValue(100);
 	gammaS->setValue(100);
-	QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+	QSettings settings(YACReader::getSettingsPath()+"/YACReader.ini",QSettings::IniFormat);
 	settings.setValue(BRIGHTNESS,0);
 	settings.setValue(CONTRAST,100);
 	settings.setValue(GAMMA,100);
@@ -280,7 +280,7 @@ void OptionsDialog::resetImageConfig()
 void OptionsDialog::show()
 {
 	//TODO solucionar el tema de las settings, esto sólo debería aparecer en una única línea de código
-	QSettings *s = new QSettings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+	QSettings *s = new QSettings(YACReader::getSettingsPath()+"/YACReader.ini",QSettings::IniFormat);
 	fitToWidthRatioS->disconnect();
 	fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
 	connect(fitToWidthRatioS,SIGNAL(valueChanged(int)),this,SLOT(fitToWidthRatio(int)));

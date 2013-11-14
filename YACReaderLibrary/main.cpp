@@ -10,17 +10,12 @@
 #include <QSettings>
 #include <QLibrary>
 
-#if QT_VERSION >= 0x050000
-	#include <QStandardPaths>
-#else
-	#include <QDesktopServices>
-#endif
-
 #include "yacreader_global.h"
 #include "startup.h"
 #include "yacreader_local_server.h"
 #include "comic_db.h"
 #include "db_helper.h"
+#include "yacreader_libraries.h"
 
 #include "QsLog.h"
 #include "QsLogDest.h"
@@ -110,7 +105,7 @@ void logSystemAndConfig()
     else
         QLOG_INFO() << "qrencode : not found";
 
-    QSettings settings(QCoreApplication::applicationDirPath()+"/YACReaderLibrary.ini",QSettings::IniFormat);
+	QSettings settings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat);
     settings.beginGroup("libraryConfig");
     if(settings.value(SERVER_ON).toBool())
         QLOG_INFO() << "server : enabled";
@@ -122,7 +117,7 @@ void logSystemAndConfig()
     else
         QLOG_INFO() << "OpenGL : disabled";
 
-    QLOG_INFO() << "Libraries: " << DBHelper::getLibraries();
+	QLOG_INFO() << "Libraries: " << DBHelper::getLibraries().getLibraries();
     QLOG_INFO() << "--------------------------------------------";
 }
 
@@ -133,16 +128,8 @@ int main( int argc, char ** argv )
   app.setApplicationName("YACReaderLibrary");
   app.setOrganizationName("YACReader");
 
-#if QT_VERSION >= 0x050000
-  QString destLog = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)+"/yacreaderlibrary.log";
-  QString destErr = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)+"/yacreaderlibrary.err";
-  QDir().mkpath(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation));
-
-#else
-  QString destLog = QDesktopServices::storageLocation(QDesktopServices::DataLocation)+"/yacreaderlibrary.log";
-  QString destErr = QDesktopServices::storageLocation(QDesktopServices::DataLocation)+"/yacreaderlibrary.err";
-  QDir().mkpath(QDesktopServices::storageLocation(QDesktopServices::DataLocation));
-#endif
+  QString destLog = YACReader::getSettingsPath()+"/yacreaderlibrary.log";
+  QDir().mkpath(YACReader::getSettingsPath());
 
   Logger& logger = Logger::instance();
   logger.setLoggingLevel(QsLogging::TraceLevel);
@@ -166,7 +153,7 @@ int main( int argc, char ** argv )
   qRegisterMetaType<ComicDB>("ComicDB");
 
 #ifdef SERVER_RELEASE
-  QSettings * settings = new QSettings(QCoreApplication::applicationDirPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+  QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
   settings->beginGroup("libraryConfig");
   
   s = new Startup();

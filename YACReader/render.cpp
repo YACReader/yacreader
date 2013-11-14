@@ -242,7 +242,7 @@ QImage BrightnessFilter::setFilter(const QImage & image)
 	return result;*/
 	if(level ==-1)
 	{
-		QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+		QSettings settings(YACReader::getSettingsPath()+"/YACReader.ini",QSettings::IniFormat);
 		return changeBrightness(image,settings.value(BRIGHTNESS,0).toInt());
 	}
 	else
@@ -320,7 +320,7 @@ QImage ContrastFilter::setFilter(const QImage & image)
 	return result;*/
 	if(level ==-1)
 	{
-		QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+		QSettings settings(YACReader::getSettingsPath()+"/YACReader.ini",QSettings::IniFormat);
 		return changeContrast(image,settings.value(CONTRAST,100).toInt());
 	}
 	else
@@ -341,7 +341,7 @@ QImage GammaFilter::setFilter(const QImage & image)
 {
 	if(level ==-1)
 	{
-		QSettings settings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+		QSettings settings(YACReader::getSettingsPath()+"/YACReader.ini",QSettings::IniFormat);
 		return changeGamma(image,settings.value(GAMMA,100).toInt());
 	}
 	else

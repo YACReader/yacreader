@@ -68,13 +68,14 @@ LibraryWindow::LibraryWindow()
 	setupUI();
 	loadLibraries();
 
-	if(libraries.size()==0)
+	if(libraries.isEmpty())
 	{
 		showNoLibrariesWidget();
 	}
 	else
 	{
 		showRootWidget();
+		selectedLibrary->setCurrentIndex(0);
 	}
 }
 
@@ -87,7 +88,7 @@ void LibraryWindow::setupUI()
 	libraryCreator = new LibraryCreator();
 	packageManager = new PackageManager();
 
-	settings = new QSettings(QCoreApplication::applicationDirPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+	settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
 	settings->beginGroup("libraryConfig");
 
 	createActions();
@@ -754,7 +755,7 @@ void LibraryWindow::createConnections()
 
 void LibraryWindow::loadLibrary(const QString & name)
 {
-	if(libraries.size()>0)  //si hay bibliotecas...
+	if(!libraries.isEmpty())  //si hay bibliotecas...
 	{	
 		currentFolderNavigation=0;
 		backAction->setDisabled(true);
@@ -763,7 +764,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 		history.append(QModelIndex());
 
 		showRootWidget();
-		QString path=libraries.value(name)+"/.yacreaderlibrary";
+		QString path=libraries.getPath(name)+"/.yacreaderlibrary";
 		QDir d; //TODO change this by static methods (utils class?? with delTree for example)
 		QString dbVersion;
 		if(d.exists(path) && d.exists(path+"/library.ydb") && (dbVersion = DataBaseManagement::checkValidDB(path+"/library.ydb")) != "") //si existe en disco la biblioteca seleccionada, y es válida..
@@ -804,7 +805,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 				else
 					disableFoldersActions(true);
 
-				d.setCurrent(libraries.value(name));
+				d.setCurrent(libraries.getPath(name));
 				d.setFilter(QDir::AllDirs | QDir::Files | QDir::Hidden | QDir::NoSymLinks | QDir::NoDotAndDotDot);
 				if(d.count()<=1) //librería de sólo lectura
 				{
@@ -878,7 +879,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 				else
 				{
 					QString currentLibrary = selectedLibrary->currentText();
-					QString path = libraries.value(selectedLibrary->currentText());
+					QString path = libraries.getPath(selectedLibrary->currentText());
 					if(QMessageBox::question(this,tr("Old library"),tr("Library '%1' has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?").arg(currentLibrary),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
 					{
 						QDir d(path+"/.yacreaderlibrary");
@@ -1107,10 +1108,10 @@ void LibraryWindow::openLastCreated()
 	selectedLibrary->disconnect();
 
 	selectedLibrary->setCurrentIndex(selectedLibrary->findText(_lastAdded));
-	libraries.insert(_lastAdded,_sourceLastAdded);
+	libraries.addLibrary(_lastAdded,_sourceLastAdded);
 	selectedLibrary->addItem(_lastAdded,_sourceLastAdded);
 	selectedLibrary->setCurrentIndex(selectedLibrary->findText(_lastAdded));
-	saveLibraries();
+	libraries.save();
 
 	connect(selectedLibrary,SIGNAL(currentIndexChanged(QString)),this,SLOT(loadLibrary(QString)));
 	
@@ -1147,40 +1148,17 @@ void LibraryWindow::openLibrary(QString path, QString name)
 
 void LibraryWindow::loadLibraries()
 {
-	QFile f(QCoreApplication::applicationDirPath()+"/libraries.yacr");
-	f.open(QIODevice::ReadOnly);
-	QTextStream txtS(&f);
-	QString content = txtS.readAll();
-	QStringList lines = content.split('\n');
-	QString line,name;
-	int i=0;
-	bool librariesAvailable = false;
-	foreach(line,lines)
-	{
-		if((i%2)==0)
-		{
-			name = line;
-		}
-		else
-		{
-			librariesAvailable = true;
-			libraries.insert(name.trimmed(),line.trimmed());
-			selectedLibrary->addItem(name.trimmed(),line.trimmed());
-		}
-		i++;
-	}
-
-	if(!librariesAvailable)
-	{
-		disableAllActions();
-	}
-	else
-		selectedLibrary->setCurrentIndex(0);
+	libraries.load();
+	foreach(QString name,libraries.getNames())
+			selectedLibrary->addItem(name,libraries.getPath(name));
 }
+
 
 void LibraryWindow::saveLibraries()
 {
-	QFile f(QCoreApplication::applicationDirPath()+"/libraries.yacr");
+
+	libraries.save();
+	/*QFile f(QCoreApplication::applicationDirPath()+"/libraries.yacr");
 	if(!f.open(QIODevice::WriteOnly))
 	{
 		QMessageBox::critical(NULL,tr("Saving libraries file...."),tr("There was a problem saving YACReaderLibrary libraries file. Please, check if you have enough permissions in the YACReader root folder."));
@@ -1193,7 +1171,7 @@ void LibraryWindow::saveLibraries()
 			txtS << i.key() << "\n";
 			txtS << i.value() << "\n";
 		}
-	}
+	}*/
 }
 
 void LibraryWindow::updateLibrary()
@@ -1202,7 +1180,7 @@ void LibraryWindow::updateLibrary()
 	showImportingWidget();
 
 	QString currentLibrary = selectedLibrary->currentText();
-	QString path = libraries.value(currentLibrary);
+	QString path = libraries.getPath(currentLibrary);
 	_lastAdded = currentLibrary;
 	libraryCreator->updateLibrary(path,path+"/.yacreaderlibrary");
 	libraryCreator->start();
@@ -1210,7 +1188,7 @@ void LibraryWindow::updateLibrary()
 
 void LibraryWindow::deleteCurrentLibrary()
 {
-	QString path = libraries.value(selectedLibrary->currentText());
+	QString path = libraries.getPath(selectedLibrary->currentText());
 	libraries.remove(selectedLibrary->currentText());
 	selectedLibrary->removeItem(selectedLibrary->currentIndex());
 	//selectedLibrary->setCurrentIndex(0);
@@ -1219,13 +1197,13 @@ void LibraryWindow::deleteCurrentLibrary()
 	QDir d(path);
 	delTree(d);
 	d.rmdir(path);
-	if(libraries.size()==0)//no more libraries avaliable.
+	if(libraries.isEmpty())//no more libraries avaliable.
 	{
 		comicView->setModel(NULL);
 		foldersView->setModel(NULL);
 		comicFlow->clear();
 	}
-	saveLibraries();
+	libraries.save();
 }
 
 void LibraryWindow::removeLibrary()
@@ -1239,20 +1217,20 @@ void LibraryWindow::removeLibrary()
 		libraries.remove(currentLibrary);
 		selectedLibrary->removeItem(selectedLibrary->currentIndex());
 		//selectedLibrary->setCurrentIndex(0);
-		if(libraries.size()==0)//no more libraries avaliable.
+		if(libraries.isEmpty())//no more libraries avaliable.
 		{
 			comicView->setModel(NULL);
 			foldersView->setModel(NULL);
 			comicFlow->clear();
 		}
-		saveLibraries();
+		libraries.save();
 	}
 	else if(ret == QMessageBox::YesToAll)
 	{
 		deleteCurrentLibrary();
 	}
 
-	if(libraries.size()==0)
+	if(libraries.isEmpty())
 	{
 		disableAllActions();
 		showNoLibrariesWidget();
@@ -1264,19 +1242,18 @@ void LibraryWindow::renameLibrary()
 	renameLibraryDialog->show();
 }
 
-void LibraryWindow::rename(QString newName)
+void LibraryWindow::rename(QString newName) //TODO replace
 {
 	QString currentLibrary = selectedLibrary->currentText();
 	if(newName != currentLibrary)
 	{
 		if(!libraries.contains(newName))
 		{
-			QString path = libraries.value(currentLibrary);
-			libraries.remove(currentLibrary);
+			libraries.rename(currentLibrary,newName);
 			//selectedLibrary->removeItem(selectedLibrary->currentIndex());
-			libraries.insert(newName,path);
+			//libraries.addLibrary(newName,path);
 			selectedLibrary->renameCurrentLibrary(newName);
-			saveLibraries();
+			libraries.save();
 			renameLibraryDialog->close();
 #ifndef Q_OS_MAC
 			if(!foldersView->currentIndex().isValid())
@@ -1306,9 +1283,9 @@ void LibraryWindow::stopLibraryCreator()
 
 void LibraryWindow::setRootIndex()
 {
-	if(libraries.size()>0)
+	if(!libraries.isEmpty())
 	{	
-		QString path=libraries.value(selectedLibrary->currentText())+"/.yacreaderlibrary";
+		QString path=libraries.getPath(selectedLibrary->currentText())+"/.yacreaderlibrary";
 		QDir d; //TODO change this by static methods (utils class?? with delTree for example) 
 		if(d.exists(path))
 		{
@@ -1498,7 +1475,7 @@ void LibraryWindow::openContainingFolder()
 void LibraryWindow::exportLibrary(QString destPath)
 {
 	QString currentLibrary = selectedLibrary->currentText();
-	QString path = libraries.value(currentLibrary)+"/.yacreaderlibrary";
+	QString path = libraries.getPath(currentLibrary)+"/.yacreaderlibrary";
 	packageManager->createPackage(path,destPath+"/"+currentLibrary);
 }
 
@@ -1517,7 +1494,7 @@ void LibraryWindow::reloadOptions()
 
 QString LibraryWindow::currentPath()
 {
-	return libraries.value(selectedLibrary->currentText());
+	return libraries.getPath(selectedLibrary->currentText());
 }
 
 void LibraryWindow::hideComicFlow(bool hide)

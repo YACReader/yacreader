@@ -1,6 +1,13 @@
 #ifndef __YACREADER_GLOBAL_H
 #define __YACREADER_GLOBAL_H
 
+#if QT_VERSION >= 0x050000
+	#include <QStandardPaths>
+#else
+	#include <QDesktopServices>
+#endif
+
+
 #define VERSION "6.5.3"
 
 #define PATH "PATH"
@@ -53,6 +60,8 @@
 
 #define YACREADERLIBRARY_GUID "ea343ff3-2005-4865-b212-7fa7c43999b8"
 
+#define LIBRARIES "LIBRARIES"
+
 namespace YACReader
 {
 
@@ -78,6 +87,8 @@ namespace YACReader
 	 Read = 1,
 	 Opened = 2
  };
+
+QString getSettingsPath();
 
 }
 

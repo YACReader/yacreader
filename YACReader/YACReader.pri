@@ -98,7 +98,8 @@ SOURCES += $$PWD/../common/comic.cpp \
 	$$PWD/../common/folder.cpp \
 	$$PWD/../common/library_item.cpp \
 	$$PWD/yacreader_local_client.cpp \
-	$$PWD/../common/http_worker.cpp
+        $$PWD/../common/http_worker.cpp \
+        $$PWD/../common/yacreader_global.cpp \
 
 include($$PWD/../custom_widgets/custom_widgets_yacreader.pri)
 include($$PWD/../compressed_archive/wrapper.pri)

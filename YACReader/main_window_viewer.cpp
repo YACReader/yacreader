@@ -16,6 +16,8 @@
 #include "comic_db.h"
 #include "yacreader_local_client.h"
 
+#include "yacreader_global.h"
+
 #include <ctime>
 #include <algorithm>
 #include <QApplication>
@@ -105,7 +107,7 @@ MainWindowViewer::~MainWindowViewer()
 }
 void MainWindowViewer::loadConfiguration()
 {
-	settings = new QSettings(QCoreApplication::applicationDirPath()+"/YACReader.ini",QSettings::IniFormat);
+	settings = new QSettings(YACReader::getSettingsPath()+"/YACReader.ini",QSettings::IniFormat);
 
 	Configuration & config = Configuration::getConfiguration();
 	config.load(settings);
