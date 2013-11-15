@@ -12,6 +12,8 @@
 #include "compressed_archive.h"
 #include "comic.h"
 
+#include "QsLog.h"
+
 #include <algorithm>
 using namespace std;
 
@@ -57,6 +59,7 @@ void LibraryCreator::run()
 
 	if(_mode == CREATOR)
 	{
+		QLOG_INFO() << "Starting to create new library ( " << _source << "," << _target << ")";
 		_currentPathFolders.clear();
 		_currentPathFolders.append(Folder(1,1,"root","/"));
 		//se crean los directorios .yacreaderlibrary y .yacreaderlibrary/covers
@@ -67,6 +70,7 @@ void LibraryCreator::run()
 		_database = DataBaseManagement::createDatabase("library",_target);//
 		if(!_database.isOpen())
 		{
+			QLOG_ERROR() << "Unable to create data base" << _database.lastError().databaseText() + "-" + _database.lastError().driverText();
 			emit failedCreatingDB(_database.lastError().databaseText() + "-" + _database.lastError().driverText());
 			emit finished();
 			creation = false;
@@ -81,15 +85,18 @@ void LibraryCreator::run()
 		_database.close();
 		QSqlDatabase::removeDatabase(_database.connectionName());
 		emit(created());
+		QLOG_INFO() << "Create library END";
 	}
 	else
 	{
+		QLOG_INFO() << "Starting to update library ( " << _source << "," << _target << ")";
 		_currentPathFolders.clear();
 		_currentPathFolders.append(Folder(1,1,"root","/"));
 		_database = DataBaseManagement::loadDatabase(_target);
 		//_database.setDatabaseName(_target+"/library.ydb");
 		if(!_database.open())
 		{
+			QLOG_ERROR() << "Unable to open data base" << _database.lastError().databaseText() + "-" + _database.lastError().driverText();
 			emit failedOpeningDB(_database.lastError().databaseText() + "-" + _database.lastError().driverText());
 			emit finished();
 			creation = false;
@@ -106,6 +113,7 @@ void LibraryCreator::run()
 			emit(updated());
 		else
 			emit(created());
+		QLOG_INFO() << "Update library END";
 	}
 	msleep(100);//TODO try to solve the problem with the udpate dialog (ya no se usa más...)
 	emit(finished());
@@ -421,7 +429,7 @@ void LibraryCreator::update(QDir dirS)
 		}	
 	}
 }
-ThumbnailCreator::ThumbnailCreator(QString fileSource, QString target="", int coverPage)
+ThumbnailCreator::ThumbnailCreator(QString fileSource, QString target, int coverPage)
 :_fileSource(fileSource),_target(target),_numPages(0),_coverPage(coverPage)
 {
 }
@@ -432,6 +440,7 @@ void ThumbnailCreator::create()
 	if(!fi.exists()) //TODO: error file not found.
 	{
 		_cover.load(":/images/notCover.png");
+		QLOG_WARN() << "Extracting cover: file not found " << _fileSource;
 		return;
 	}
 
@@ -440,6 +449,7 @@ void ThumbnailCreator::create()
 		Poppler::Document * pdfComic = Poppler::Document::load(_fileSource);
 		if (!pdfComic)
 		{
+			QLOG_WARN() << "Extracting cover: unable to open PDF file " << _fileSource;
 			delete pdfComic;
 			pdfComic = 0;
 			QImage p;
@@ -451,7 +461,7 @@ void ThumbnailCreator::create()
 		if(_numPages >= _coverPage)
 		{
 
-			QImage p = pdfComic->page(_coverPage-1)->renderToImage(72,72); //TODO check if the the page is valid
+			QImage p = pdfComic->page(_coverPage-1)->renderToImage(72,72); //TODO check if the page is valid
 			_cover = QPixmap::fromImage(p);
 			if(_target!="")
 			{
@@ -465,6 +475,7 @@ void ThumbnailCreator::create()
 		}
 		else if(_target!="")
 		{
+			QLOG_WARN() << "Extracting cover: requested cover index greater than numPages " << _fileSource;
 			QImage p;
 			p.load(":/images/notCover.png");
 			p.save(_target);
@@ -474,12 +485,15 @@ void ThumbnailCreator::create()
 	{
 
 	CompressedArchive archive(_fileSource);
+	if(!archive.isValid())
+		QLOG_WARN() << "Extracting cover: file format not supported " << _fileSource;
 	//se filtran para obtener sólo los formatos soportados
 	QList<QString> order = archive.getFileNames();
 	QList<QString> fileNames = FileComic::filter(order);
 	_numPages = fileNames.size();
 	if(_numPages == 0)
 	{
+		QLOG_WARN() << "Extracting cover: empty comic " << _fileSource;
 		_cover.load(":/images/notCover.png");
 		if(_target!="")
 			_cover.save(_target);
@@ -494,7 +508,10 @@ void ThumbnailCreator::create()
 		if(_target=="")
 		{
 			if(!_cover.loadFromData(archive.getRawDataAtIndex(index)))
+			{
+				QLOG_WARN() << "Extracting cover: unable to load image from extracted cover " << _fileSource;
 				_cover.load(":/images/notCover.png");
+			}
 		}
 		else
 		{
@@ -510,6 +527,7 @@ void ThumbnailCreator::create()
 			}
 			else
 			{
+				QLOG_WARN() << "Extracting cover: unable to load image from extracted cover " << _fileSource;
 				p.load(":/images/notCover.png");
 				p.save(_target);
 			}

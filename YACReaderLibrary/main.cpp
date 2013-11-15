@@ -107,7 +107,7 @@ void logSystemAndConfig()
 
 	QSettings settings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat);
     settings.beginGroup("libraryConfig");
-    if(settings.value(SERVER_ON).toBool())
+	if(settings.value(SERVER_ON,true).toBool())
         QLOG_INFO() << "server : enabled";
     else
         QLOG_INFO() << "server : disabled";

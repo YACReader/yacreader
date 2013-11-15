@@ -56,7 +56,7 @@ struct SevenZipInterface {
 //SevenZipInterface * szInterface;
 
 CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) :
-	QObject(parent),sevenzLib(0)
+	QObject(parent),sevenzLib(0),valid(false)
 {
 	szInterface = new SevenZipInterface;
 	//load functions
@@ -90,7 +90,7 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 
 			if (szInterface->archive->Open(file, 0, openCallback) == S_OK)
 			{
-				formatFound = true;
+				valid = formatFound = true;
 				break;
 			}
 		}
@@ -163,6 +163,11 @@ QList<QString> CompressedArchive::getFileNames()
 		}
 	}
 	return files;
+}
+
+bool CompressedArchive::isValid()
+{
+	return valid;
 }
 
 int CompressedArchive::getNumFiles()
