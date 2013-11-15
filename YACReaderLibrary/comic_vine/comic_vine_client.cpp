@@ -115,7 +115,7 @@ void ComicVineClient::getComicId(const QString & id, int comicNumber)
 }
 
 //CV_COMIC_DETAIL
-QByteArray ComicVineClient::getComicDetail(const QString & id)
+QByteArray ComicVineClient::getComicDetail(const QString & id, bool & outError, bool & outTimeout)
 {
 	HttpWorker * search = new HttpWorker(CV_COMIC_DETAIL.arg(id));
 
@@ -124,6 +124,8 @@ QByteArray ComicVineClient::getComicDetail(const QString & id)
 	//connect(search,SIGNAL(finished()),search,SLOT(deleteLater()));
 	search->get();
 	search->wait();
+	outError = !(search->wasValid());
+	outTimeout = search->wasTimeout();
 	QByteArray result = search->getResult();
 	delete search;
 

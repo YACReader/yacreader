@@ -12,6 +12,7 @@ class SeriesQuestion : public QWidget
 public:
 	SeriesQuestion(QWidget * parent = 0);
 	bool getYes();
+	void setYes(bool yes = true);
 
 private:
 	QRadioButton * yes;

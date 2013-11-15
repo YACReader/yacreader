@@ -13,7 +13,7 @@
 #define PREVIOUS_VERSION "6.0.0"
 
 HttpWorker::HttpWorker(const QString & urlString)
-		:QThread(),url(urlString)
+	:QThread(),url(urlString),_error(false),_timeout(false)
 {
 
 }
@@ -26,6 +26,16 @@ void HttpWorker::get()
 QByteArray HttpWorker::getResult()
 {
 	return result;
+}
+
+bool HttpWorker::wasValid()
+{
+	return !_error;
+}
+
+bool HttpWorker::wasTimeout()
+{
+	return _timeout;
 }
 
 void HttpWorker::run()
@@ -44,10 +54,12 @@ void HttpWorker::run()
 	
 	if(tT.isActive()){
 		// download complete
+		_error = !(reply->error() == QNetworkReply::NoError);
 		result = reply->readAll();
 		emit dataReady(result);
 		tT.stop();
 	} else {
+		_timeout = true;
 		emit timeout();
 	}
 }

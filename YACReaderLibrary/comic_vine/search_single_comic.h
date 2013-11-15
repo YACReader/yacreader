@@ -13,6 +13,7 @@ public:
 	QString getVolumeInfo();
 	QString getComicInfo();
 	int getComicNumber();
+	void clean();
 private:
 	ScraperLineEdit * titleEdit;
 	ScraperLineEdit * numberEdit;

@@ -25,6 +25,11 @@ SearchVolume::SearchVolume(QWidget * parent)
 	setContentsMargins(0,0,0,0);
 }
 
+void SearchVolume::clean()
+{
+	volumeEdit->clear();
+}
+
 QString SearchVolume::getVolumeInfo()
 {
 	return volumeEdit->text();

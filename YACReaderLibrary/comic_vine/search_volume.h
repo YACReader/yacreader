@@ -11,6 +11,7 @@ class SearchVolume : public QWidget
 	Q_OBJECT
 public:
 	SearchVolume(QWidget * parent = 0);
+	void clean();
 public slots:
 	QString getVolumeInfo();
 private:
