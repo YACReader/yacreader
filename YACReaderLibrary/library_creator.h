@@ -64,7 +64,7 @@
 		Q_OBJECT
 
 	public:
-		ThumbnailCreator(QString fileSource, QString target, int coverPage = 1);
+		ThumbnailCreator(QString fileSource, QString target="", int coverPage = 1);
 	private:
 		QString _fileSource;
 		QString _target;
