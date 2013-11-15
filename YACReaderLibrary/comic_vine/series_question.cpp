@@ -39,3 +39,8 @@ bool SeriesQuestion::getYes()
 {
 	return yes->isChecked();
 }
+
+void SeriesQuestion::setYes(bool y)
+{
+	yes->setChecked(y);
+}

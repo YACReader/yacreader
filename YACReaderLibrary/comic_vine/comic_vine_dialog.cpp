@@ -29,6 +29,8 @@
 #include "db_helper.h"
 #include "response_parser.h"
 
+#include "QsLog.h"
+
 
 
 ComicVineDialog::ComicVineDialog(QWidget *parent) :
@@ -201,17 +203,22 @@ void ComicVineDialog::show()
 
 	currentIndex = 0;
 
+	seriesQuestionWidget->setYes(true);
+	searchSingleComicWidget->clean();
+	searchVolumeWidget->clean();
+
 	if(comics.length() == 1)
 	{
+		status = AutoSearching;
+		mode = SingleComic;
+
 		ComicDB singleComic = comics[0];
 		QString title = singleComic.getTitleOrFileName();
 		titleHeader->setSubTitle(title);
         showLoading(tr("Looking for volume..."));
 
-		searchVolume(title);
-		status = AutoSearching;
-		mode = SingleComic;
-
+		searchVolume(singleComic.getParentFolderName());
+		QLOG_TRACE() << singleComic.getParentFolderName();
 	}else if(comics.length()>1)
 	{
 		titleHeader->setSubTitle(tr("%1 comics selected").arg(comics.length()));
@@ -403,8 +410,11 @@ void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString> > & matchingIn
 		//connect(comicVineClient,SIGNAL(searchResult(QString)),this,SLOT(debugClientResults(QString)));
 		//connect(comicVineClient,SIGNAL(timeOut()),this,SLOT(queryTimeOut()));
 		//connect(comicVineClient,SIGNAL(finished()),comicVineClient,SLOT(deleteLater()));
-		QByteArray result = comicVineClient->getComicDetail(p.second); //TODO check timeOut or Connection error
-
+		bool error;
+		bool timeout;
+		QByteArray result = comicVineClient->getComicDetail(p.second,error,timeout); //TODO check timeOut or Connection error
+		if(error || timeout)
+			continue; //TODO
         comics.push_back(parseComicInfo(p.first,result,count,publisher)); //TODO check result error
 
         setLoadingMessage(tr("Retrieving tags for : %1").arg(p.first.getFileName()));
@@ -429,7 +439,21 @@ void ComicVineDialog::getComicInfo(const QString &comicId, int count, const QStr
 {
 
     ComicVineClient * comicVineClient = new ComicVineClient;
-    QByteArray result = comicVineClient->getComicDetail(comicId); //TODO check timeOut or Connection error
+	bool error;
+	bool timeout;
+	QByteArray result = comicVineClient->getComicDetail(comicId,error,timeout); //TODO check timeOut or Connection error
+	if(error || timeout)
+	{
+		//TODO
+		if(mode == SingleComic || currentIndex == (comics.count()-1))
+		{
+			close();
+			emit accepted();
+		} else
+		{
+		   goToNextComic();
+		}
+	}
 
     ComicDB comic = parseComicInfo(comics[currentIndex],result,count,publisher); //TODO check result error
 
@@ -661,10 +685,10 @@ void ComicVineDialog::launchSearchComic()
     showLoading(tr("Looking for comic..."));
 
 	QString volumeInfo = searchSingleComicWidget->getVolumeInfo();
-	QString comicInfo = searchSingleComicWidget->getComicInfo();
-	int comicNumber = searchSingleComicWidget->getComicNumber();
+	//QString comicInfo = searchSingleComicWidget->getComicInfo();
+	//int comicNumber = searchSingleComicWidget->getComicNumber();
 
-	if(comicInfo.isEmpty() && comicNumber == -1)
-		searchVolume(volumeInfo);
+	//if(comicInfo.isEmpty() && comicNumber == -1)
+	searchVolume(volumeInfo);
 }
 
