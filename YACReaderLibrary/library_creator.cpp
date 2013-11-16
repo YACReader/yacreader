@@ -223,20 +223,46 @@ void LibraryCreator::insertComic(const QString & relativePath,const QFileInfo & 
 
 void LibraryCreator::update(QDir dirS)
 {
+	//QLOG_TRACE() << "Updating" << dirS.absolutePath();
+	//QLOG_TRACE() << "Getting info from dir" << dirS.absolutePath();
 	dirS.setNameFilters(_nameFilter);
-	dirS.setFilter(QDir::AllDirs|QDir::Files|QDir::NoDotAndDotDot);
-	dirS.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware|QDir::DirsFirst); 
-	QFileInfoList listS = dirS.entryInfoList();
+	dirS.setFilter(QDir::AllDirs|QDir::NoDotAndDotDot);
+	dirS.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware);
+	QFileInfoList listSFolders = dirS.entryInfoList();
+	dirS.setFilter(QDir::Files|QDir::NoDotAndDotDot);
+	dirS.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware);
+	QFileInfoList listSFiles = dirS.entryInfoList();
 
+	qSort(listSFolders.begin(),listSFolders.end(),naturalSortLessThanCIFileInfo);
+	qSort(listSFiles.begin(),listSFiles.end(),naturalSortLessThanCIFileInfo);
+
+	QFileInfoList listS;
+	listS.append(listSFolders);
+	listS.append(listSFiles);
+	//QLOG_DEBUG() << "---------------------------------------------------------";
+	//foreach(QFileInfo info,listS)
+	//	QLOG_DEBUG() << info.fileName();
+
+	//QLOG_TRACE() << "END Getting info from dir" << dirS.absolutePath();
+
+	//QLOG_TRACE() << "Getting info from DB" << dirS.absolutePath();
 	QList<LibraryItem *> folders = DBHelper::getFoldersFromParent(_currentPathFolders.last().id,_database);
 	QList<LibraryItem *> comics = DBHelper::getComicsFromParent(_currentPathFolders.last().id,_database);
+	//QLOG_TRACE() << "END Getting info from DB" << dirS.absolutePath();
 
 	QList <LibraryItem *> listD;
+	qSort(folders.begin(),folders.end(),naturalSortLessThanCILibraryItem);
+	qSort(comics.begin(),comics.end(),naturalSortLessThanCILibraryItem);
 	listD.append(folders);
 	listD.append(comics);
-
+	//QLOG_DEBUG() << "---------------------------------------------------------";
+	//foreach(LibraryItem * info,listD)
+	//	QLOG_DEBUG() << info->name;
+	//QLOG_DEBUG() << "---------------------------------------------------------";
 	int lenghtS = listS.size();
 	int lenghtD = listD.size();
+	//QLOG_DEBUG() << "S len" << lenghtS << "D len" << lenghtD;
+	//QLOG_DEBUG() << "---------------------------------------------------------";
 
 	bool updated;
 	int i,j;
@@ -247,6 +273,7 @@ void LibraryCreator::update(QDir dirS)
 		updated = false;
 		if(i>=lenghtS) //finished source files/dirs
 		{
+			//QLOG_WARN() << "finished source files/dirs" << dirS.absolutePath();
 			//delete listD //from j
 			for(;j<lenghtD;j++)
 			{
@@ -258,6 +285,7 @@ void LibraryCreator::update(QDir dirS)
 		}
 		if(j>=lenghtD) //finished library files/dirs
 		{
+			//QLOG_WARN() << "finished library files/dirs" << dirS.absolutePath();
 			//create listS //from i
 			for(;i<lenghtS;i++)
 			{
@@ -322,8 +350,10 @@ void LibraryCreator::update(QDir dirS)
 				else
 					if(comparation < 0) //nameS doesn't exist on DB
 					{
+
 						if(nameS!="/.yacreaderlibrary")
 						{
+							//QLOG_WARN() << "dir source < dest" << nameS << nameD;
 #ifdef Q_OS_MAC
 							QStringList src = _source.split("/");
 							QString filePath = fileInfoS.absoluteFilePath();
@@ -346,6 +376,7 @@ void LibraryCreator::update(QDir dirS)
 					{
 						if(nameS!="/.yacreaderlibrary")
 						{
+							//QLOG_WARN() << "dir source > dest" << nameS << nameD;
 							DBHelper::removeFromDB(fileInfoD,_database);
 							j++;
 						}
@@ -357,6 +388,7 @@ void LibraryCreator::update(QDir dirS)
 				{
 					if(nameS!="/.yacreaderlibrary") //skip .yacreaderlibrary folder
 					{
+						//QLOG_WARN() << "one of them(or both) is a file" << nameS << nameD;
 #ifdef Q_OS_MAC
 						QStringList src = _source.split("/");
 						QString filePath = fileInfoS.absoluteFilePath();

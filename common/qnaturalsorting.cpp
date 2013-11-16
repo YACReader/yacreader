@@ -255,3 +255,8 @@ bool naturalSortLessThanCIFileInfo(const QFileInfo & left,const QFileInfo & righ
 {
 	return naturalSortLessThanCI(left.fileName(),right.fileName());
 }
+
+bool naturalSortLessThanCILibraryItem(LibraryItem * left, LibraryItem * right)
+{
+	return naturalSortLessThanCI(left->name,right->name);
+}
