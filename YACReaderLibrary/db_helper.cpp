@@ -349,7 +349,7 @@ QList<LibraryItem *> DBHelper::getFoldersFromParent(qulonglong parentId, QSqlDat
 				i--;
 				nameLast = (*i)->name;
 			}
-			if(lessThan>0) //si se ha encontrado un elemento menor que current, se inserta justo después
+			if(lessThan>=0) //si se ha encontrado un elemento menor que current, se inserta justo después
 				list.insert(++i,currentItem);
 			else
 				list.insert(i,currentItem);
