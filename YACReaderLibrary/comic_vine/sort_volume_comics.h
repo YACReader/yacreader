@@ -1,7 +1,8 @@
 #ifndef SORT_VOLUME_COMICS_H
 #define SORT_VOLUME_COMICS_H
 
-#include <QWidget>
+#include "scraper_selector.h"
+
 #include <QModelIndex>
 #include <QPushButton>
 #include <QPainter>
@@ -57,7 +58,7 @@ private:
 };
 
 
-class SortVolumeComics : public QWidget
+class SortVolumeComics : public ScraperSelector
 {
 	Q_OBJECT
 public:
@@ -66,7 +67,7 @@ public:
 signals:
 
 public slots:
-	void setData(QList<ComicDB> & comics, const QString & json);
+	void setData(QList<ComicDB> & comics, const QString & json, const QString & vID);
 	QList<QPair<ComicDB,QString> > getMatchingInfo();
 
 protected slots:

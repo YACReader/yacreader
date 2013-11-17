@@ -10,7 +10,7 @@
 #include "volume_comics_model.h"
 
 SortVolumeComics::SortVolumeComics(QWidget *parent) :
-	QWidget(parent)
+	ScraperSelector(parent)
 {
 	QString labelStylesheet = "QLabel {color:white; font-size:12px;font-family:Arial;}";
 
@@ -58,12 +58,17 @@ SortVolumeComics::SortVolumeComics(QWidget *parent) :
 	//connect(tableVolumeComics, SIGNAL(pressed(QModelIndex)), tableFiles, SLOT(setCurrentIndex(QModelIndex)));
 	//connect(tableFiles, SIGNAL(pressed(QModelIndex)), tableVolumeComics, SLOT(setCurrentIndex(QModelIndex)));
 
+	paginator->setCustomLabel(tr("issues"));
+	paginator->setMinimumWidth(422);
+
 	sortButtonsLayout->addWidget(moveUpButtonCL);
 	sortButtonsLayout->addWidget(ScrapperToolButton::getSeparator());
 	sortButtonsLayout->addWidget(moveDownButtonCL);
 	sortButtonsLayout->addSpacing(10);
 	//sortButtonsLayout->addStretch();
 	sortButtonsLayout->addWidget(sortLabel);
+	sortButtonsLayout->addStretch();
+	sortButtonsLayout->addWidget(paginator);
 	//sortButtonsLayout->addStretch();
 	//sortButtonsLayout->addWidget(moveUpButtonIL);
 	//sortButtonsLayout->addWidget(ScrapperToolButton::getSeparator());
@@ -82,7 +87,7 @@ SortVolumeComics::SortVolumeComics(QWidget *parent) :
 	setContentsMargins(0,0,0,0);
 }
 
-void SortVolumeComics::setData(QList<ComicDB> & comics, const QString &json)
+void SortVolumeComics::setData(QList<ComicDB> & comics, const QString &json, const QString &vID)
 {
 	//set up models
 	localComicsModel = new LocalComicListModel;
@@ -103,6 +108,8 @@ void SortVolumeComics::setData(QList<ComicDB> & comics, const QString &json)
 	tableVolumeComics->setModel(volumeComicsModel);
 
 	tableVolumeComics->resizeColumnToContents(0);
+
+	ScraperSelector::load(json,vID);
 }
 
 void SortVolumeComics::synchronizeScroll(int pos)
