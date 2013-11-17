@@ -8,6 +8,7 @@
 #include <QScrollArea>
 #include <QDesktopServices>
 #include <QHeaderView>
+#include <QToolButton>
 
 #include "scraper_tableview.h"
 
@@ -17,9 +18,14 @@
 #include "comic_vine_client.h"
 #include "scraper_scroll_label.h"
 
+#include "response_parser.h"
+#include "scraper_results_paginator.h"
+
 SelectVolume::SelectVolume(QWidget *parent)
-	:QWidget(parent),model(0)
+	:ScraperSelector(parent),model(0)
 {
+	proxyModel = new QSortFilterProxyModel;
+
 	QString labelStylesheet = "QLabel {color:white; font-size:12px;font-family:Arial;}";
 
 	QLabel * label = new QLabel(tr("Please, select the right series for your comic."));
@@ -28,7 +34,10 @@ SelectVolume::SelectVolume(QWidget *parent)
 	QVBoxLayout * l = new QVBoxLayout;
 	QWidget * leftWidget = new QWidget;
 	QVBoxLayout * left = new QVBoxLayout;
+	QVBoxLayout * right = new QVBoxLayout;
 	QHBoxLayout * content = new QHBoxLayout;
+
+	right->setContentsMargins(0,0,0,0);
 
 	//widgets
 	cover = new QLabel();
@@ -39,8 +48,14 @@ SelectVolume::SelectVolume(QWidget *parent)
 	detailLabel = new ScraperScrollLabel(this);
 
 	tableVolumes = new ScraperTableView(this);
+	tableVolumes->setSortingEnabled(true);
+	tableVolumes->horizontalHeader()->setSectionsClickable(true);
+	//tableVolumes->horizontalHeader()->setSortIndicatorShown(false);
+	connect(tableVolumes->horizontalHeader(),SIGNAL(sectionClicked(int)), tableVolumes, SLOT(sortByColumn(int)));
 	//connections
 	connect(tableVolumes,SIGNAL(clicked(QModelIndex)),this,SLOT(loadVolumeInfo(QModelIndex)));
+
+	paginator->setCustomLabel(tr("volumes"));
 
 	left->addWidget(cover);
 	left->addWidget(detailLabel,1);
@@ -50,8 +65,11 @@ SelectVolume::SelectVolume(QWidget *parent)
 	left->setContentsMargins(0,0,0,0);
 	leftWidget->setContentsMargins(0,0,0,0);
 
+	right->addWidget(tableVolumes,0,Qt::AlignRight|Qt::AlignTop);
+	right->addWidget(paginator);
+
 	content->addWidget(leftWidget);
-	content->addWidget(tableVolumes,0,Qt::AlignRight|Qt::AlignTop);
+	content->addLayout(right);
 
 	l->addSpacing(15);
 	l->addWidget(label);
@@ -64,12 +82,15 @@ SelectVolume::SelectVolume(QWidget *parent)
 	setContentsMargins(0,0,0,0);
 }
 
-void SelectVolume::load(const QString & json)
+void SelectVolume::load(const QString & json, const QString & searchString)
 {
 	VolumesModel * tempM = new VolumesModel();
 	tempM->load(json);
-	tableVolumes->setModel(tempM);
+	//tableVolumes->setModel(tempM);
 
+	proxyModel->setSourceModel( tempM );
+	tableVolumes->setModel(proxyModel);
+	tableVolumes->sortByColumn(0,Qt::AscendingOrder);
 	tableVolumes->resizeColumnsToContents();
 
 	tableVolumes->setFixedSize(619,341);
@@ -82,16 +103,19 @@ void SelectVolume::load(const QString & json)
 	if(model->rowCount()>0)
 	{
 		tableVolumes->selectRow(0);
-		loadVolumeInfo(model->index(0,0));
+		loadVolumeInfo(proxyModel->index(0,0));
 	}
 
 	tableVolumes->setColumnWidth(0,350);
+
+	ScraperSelector::load(json,searchString);
 }
 
 SelectVolume::~SelectVolume() {}
 
-void SelectVolume::loadVolumeInfo(const QModelIndex & mi)
+void SelectVolume::loadVolumeInfo(const QModelIndex & omi)
 {
+	QModelIndex mi = proxyModel->mapToSource(omi);
 	QString coverURL = model->getCoverURL(mi);
 	QString id =  model->getVolumeId(mi);
 
@@ -146,16 +170,17 @@ void SelectVolume::setDescription(const QString & jsonDetail)
 
 QString SelectVolume::getSelectedVolumeId()
 {
-    return model->getVolumeId(tableVolumes->currentIndex());
+	return model->getVolumeId(proxyModel->mapToSource(tableVolumes->currentIndex()));
 }
 
 int SelectVolume::getSelectedVolumeNumIssues()
 {
-    return model->getNumIssues(tableVolumes->currentIndex());
+	return model->getNumIssues(proxyModel->mapToSource(tableVolumes->currentIndex()));
 }
 
 QString SelectVolume::getSelectedVolumePublisher()
 {
-    return model->getPublisher(tableVolumes->currentIndex());
+	return model->getPublisher(proxyModel->mapToSource(tableVolumes->currentIndex()));
 }
+
 

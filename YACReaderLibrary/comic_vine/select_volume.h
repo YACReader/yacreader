@@ -1,21 +1,23 @@
 #ifndef SELECT_VOLUME_H
 #define SELECT_VOLUME_H
 
-#include <QWidget>
+#include "scraper_selector.h"
 
 class QLabel;
 class VolumesModel;
 class QModelIndex;
+class QToolButton;
+class QSortFilterProxyModel;
 
 class ScraperScrollLabel;
 class ScraperTableView;
 
-class SelectVolume : public QWidget
+class SelectVolume : public ScraperSelector
 {
 	Q_OBJECT
 public:
 	SelectVolume(QWidget * parent = 0);
-	void load(const QString & json);
+	void load(const QString & json, const QString & searchString);
 	virtual ~SelectVolume();
 
 public slots:
@@ -31,6 +33,7 @@ private:
 	ScraperScrollLabel * detailLabel;
 	ScraperTableView * tableVolumes;
 	VolumesModel * model;
+	QSortFilterProxyModel * proxyModel;
 };
 
 #endif // SELECT_VOLUME_H

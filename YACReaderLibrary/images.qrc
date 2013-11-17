@@ -79,7 +79,7 @@
 		<file>../images/main_toolbar/divider.png</file>
 		<file>../images/collapsed_branch_osx.png</file>
 		<file>../images/expanded_branch_osx.png</file>
-		<file>../images/folder_macosx.png</file>
+                <file>../images/folder_macosx.png</file>
 		<file>../images/libraryIconSelected.png</file>
 		<file>../images/libraryOptions.png</file>
 		<file>../images/branch-open.png</file>
@@ -94,6 +94,10 @@
                 <file>../images/comic_vine/radioUnchecked.png</file>
                 <file>../images/comic_vine/rowDown.png</file>
                 <file>../images/comic_vine/rowUp.png</file>
+                <file>../images/comic_vine/previousPage.png</file>
+                <file>../images/comic_vine/nextPage.png</file>
+                <file>../images/comic_vine/downArrow.png</file>
+                <file>../images/comic_vine/upArrow.png</file>
 		<file>../images/find_folder.png</file>
 		<!--<file>../images/busy_background.png</file>-->
 	</qresource>

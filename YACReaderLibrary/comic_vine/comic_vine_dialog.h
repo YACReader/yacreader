@@ -47,7 +47,8 @@ protected slots:
 	void showSearchVolume();
     void showLoading(const QString & message = "");
 	void search();
-	void searchVolume(const QString & v);
+	void searchVolume(const QString & v, int page = 1);
+	void getVolumeComicsInfo(const QString &vID, int page = 1);
 	void launchSearchVolume();
 	void launchSearchComic();
 	void showSelectVolume(const QString & json);
@@ -121,6 +122,9 @@ private:
 	SelectVolume * selectVolumeWidget;
 	SelectComic * selectComicWidget;
 	SortVolumeComics * sortVolumeComicsWidget;
+
+	QString currentVolumeSearchString;
+	QString currentVolumeId;
 };
 
 #endif // COMIC_VINE_DIALOG_H

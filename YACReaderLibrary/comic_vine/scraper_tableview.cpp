@@ -10,6 +10,8 @@ ScraperTableView::ScraperTableView(QWidget *parent) :
 			"QTableView::item:selected {outline: 0px; background-color: #555555;  }"
 			"QHeaderView::section:horizontal {background-color:#292929; border-bottom:1px solid #1F1F1F; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #292929, stop: 1 #1F1F1F); border-left:none; border-top:none; padding:4px; color:#ebebeb;}"
 			"QHeaderView::section:vertical {border-bottom: 1px solid #DFDFDF;border-top: 1px solid #FEFEFE;}"
+			"QHeaderView::down-arrow {image: url(':/images/comic_vine/downArrow.png');}"
+			"QHeaderView::up-arrow {image: url(':/images/comic_vine/upArrow.png');}"
 			"QScrollBar:vertical { border: none; background: #2B2B2B; width: 3px; margin: 0; }"
 			"QScrollBar:horizontal { border: none; background: #2B2B2B; height: 3px; margin: 0; }"
 			"QScrollBar::handle:vertical { background: #DDDDDD; width: 7px; min-height: 20px; }"
