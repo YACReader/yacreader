@@ -106,6 +106,10 @@ void ComicVineDialog::doConnections()
 	connect(backButton,SIGNAL(clicked()),this,SLOT(goBack()));
 	connect(searchButton,SIGNAL(clicked()),this,SLOT(search()));
 	connect(skipButton,SIGNAL(clicked()),this,SLOT(goToNextComic()));
+
+	connect(selectVolumeWidget,SIGNAL(loadPage(QString,int)),this,SLOT(searchVolume(QString,int)));
+
+	connect(selectComicWidget,SIGNAL(loadPage(QString,int)),this,SLOT(getVolumeComicsInfo(QString,int)));
 }
 
 void ComicVineDialog::goNext()
@@ -141,18 +145,9 @@ void ComicVineDialog::goNext()
 		}
 	}
 	else if (content->currentWidget() == selectVolumeWidget) {
-        showLoading(tr("Retrieving volume info..."));
+		currentVolumeId = selectVolumeWidget->getSelectedVolumeId();
+		getVolumeComicsInfo(currentVolumeId);
 
-		status = GettingVolumeComics;
-
-		ComicVineClient * comicVineClient = new ComicVineClient;
-		if(mode == Volume)
-			connect(comicVineClient,SIGNAL(volumeComicsInfo(QString)),this,SLOT(showSortVolumeComics(QString)));
-		else
-			connect(comicVineClient,SIGNAL(volumeComicsInfo(QString)),this,SLOT(showSelectComic(QString)));
-		connect(comicVineClient,SIGNAL(timeOut()),this,SLOT(queryTimeOut()));
-		connect(comicVineClient,SIGNAL(finished()),comicVineClient,SLOT(deleteLater()));
-		comicVineClient->getVolumeComicsInfo(selectVolumeWidget->getSelectedVolumeId());
 	} else if (content->currentWidget() == sortVolumeComicsWidget) {
         showLoading();
 
@@ -328,7 +323,7 @@ void ComicVineDialog::showSearchVolume()
 void ComicVineDialog::showSelectVolume(const QString & json)
 {
 	showSelectVolume();
-	selectVolumeWidget->load(json);
+	selectVolumeWidget->load(json,currentVolumeSearchString);
 }
 
 void ComicVineDialog::showSelectVolume()
@@ -349,7 +344,7 @@ void ComicVineDialog::showSelectComic(const QString &json)
     status = SelectingComic;
 
 	content->setCurrentWidget(selectComicWidget);
-	selectComicWidget->load(json);
+	selectComicWidget->load(json,currentVolumeId);
 
     backButton->setVisible(true);
     nextButton->setVisible(true);
@@ -662,15 +657,38 @@ void ComicVineDialog::search()
 	}
 }
 
-void ComicVineDialog::searchVolume(const QString &v)
+void ComicVineDialog::searchVolume(const QString &v, int page)
 {
+	showLoading(tr("Looking for volume..."));
+
+	currentVolumeSearchString = v;
+
 	ComicVineClient * comicVineClient = new ComicVineClient;
 	connect(comicVineClient,SIGNAL(searchResult(QString)),this,SLOT(debugClientResults(QString)));
 	connect(comicVineClient,SIGNAL(timeOut()),this,SLOT(queryTimeOut()));
 	connect(comicVineClient,SIGNAL(finished()),comicVineClient,SLOT(deleteLater()));
-	comicVineClient->search(v);
+	comicVineClient->search(v,page);
 
 	status = SearchingVolume;
+}
+
+void ComicVineDialog::getVolumeComicsInfo(const QString &vID, int page)
+{
+	showLoading(tr("Retrieving volume info..."));
+
+	status = GettingVolumeComics;
+
+	ComicVineClient * comicVineClient = new ComicVineClient;
+	if(mode == Volume)
+		connect(comicVineClient,SIGNAL(volumeComicsInfo(QString)),this,SLOT(showSortVolumeComics(QString)));
+	else
+		connect(comicVineClient,SIGNAL(volumeComicsInfo(QString)),this,SLOT(showSelectComic(QString)));
+	connect(comicVineClient,SIGNAL(timeOut()),this,SLOT(queryTimeOut()));
+	connect(comicVineClient,SIGNAL(finished()),comicVineClient,SLOT(deleteLater()));
+
+	QLOG_TRACE() << vID;
+
+	comicVineClient->getVolumeComicsInfo(vID,page);
 }
 
 void ComicVineDialog::launchSearchVolume()

@@ -19,7 +19,9 @@ static const QString CV_SERIES_DETAIL = CV_WEB_ADDRESS + "/volume/4050-%1/?api_k
 
 //gets info for comics in a volume id %1
 static const QString CV_COMICS_INFO = CV_WEB_ADDRESS + "/issues/?api_key=" + CV_API_KEY +
-									"&format=json&field_list=name,issue_number,id,image&filter=volume:%1";//offset??
+									"&format=json&field_list=name,issue_number,id,image&filter=volume:%1&offset=%2";//offset??
+
+//"http://www.comicvine.com/api/issues/?api_key=46680bebb358f1de690a5a365e15d325f9649f91&format=json&field_list=name,issue_number,id,image&filter=volume:%1&page=%2
 
 //gets id for comic number %2 in a volume id %1
 static const QString CV_COMIC_ID = CV_WEB_ADDRESS + "/issues/?api_key=" + CV_API_KEY +
@@ -99,9 +101,9 @@ void ComicVineClient::getSeriesCover(const QString & url)
 }
 
 //CV_COMIC_IDS
-void ComicVineClient::getVolumeComicsInfo(const QString & idVolume)
+void ComicVineClient::getVolumeComicsInfo(const QString & idVolume, int page)
 {
-	HttpWorker * search = new HttpWorker(CV_COMICS_INFO.arg(idVolume));
+	HttpWorker * search = new HttpWorker(CV_COMICS_INFO.arg(idVolume).arg((page-1)*100)); //page on works for search, using offset instead
 	connect(search,SIGNAL(dataReady(const QByteArray &)),this,SLOT(processVolumeComicsInfo(const QByteArray &)));
 	connect(search,SIGNAL(timeout()),this,SIGNAL(timeOut())); //TODO
 	connect(search,SIGNAL(finished()),search,SLOT(deleteLater()));

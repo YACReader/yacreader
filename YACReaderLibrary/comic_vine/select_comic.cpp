@@ -10,7 +10,7 @@
 #include <QtScript>
 
 SelectComic::SelectComic(QWidget *parent)
-	:QWidget(parent),model(0)
+	:ScraperSelector(parent),model(0)
 {
 	QString labelStylesheet = "QLabel {color:white; font-size:12px;font-family:Arial;}";
 
@@ -20,7 +20,10 @@ SelectComic::SelectComic(QWidget *parent)
 	QVBoxLayout * l = new QVBoxLayout;
 	QWidget * leftWidget = new QWidget;
 	QVBoxLayout * left = new QVBoxLayout;
+	QVBoxLayout * right = new QVBoxLayout;
 	QHBoxLayout * content = new QHBoxLayout;
+
+	right->setContentsMargins(0,0,0,0);
 
 	//widgets
 	cover = new QLabel();
@@ -34,6 +37,8 @@ SelectComic::SelectComic(QWidget *parent)
 	//connections
 	connect(tableComics,SIGNAL(clicked(QModelIndex)),this,SLOT(loadComicInfo(QModelIndex)));
 
+	paginator->setCustomLabel(tr("comics"));
+
 	left->addWidget(cover);
 	left->addWidget(detailLabel,1);
 	left->addStretch();
@@ -42,8 +47,11 @@ SelectComic::SelectComic(QWidget *parent)
 	left->setContentsMargins(0,0,0,0);
 	leftWidget->setContentsMargins(0,0,0,0);
 
+	right->addWidget(tableComics,0,Qt::AlignRight|Qt::AlignTop);
+	right->addWidget(paginator);
+
 	content->addWidget(leftWidget);
-	content->addWidget(tableComics,0,Qt::AlignRight|Qt::AlignTop);
+	content->addLayout(right);
 
 	l->addSpacing(15);
 	l->addWidget(label);
@@ -56,7 +64,7 @@ SelectComic::SelectComic(QWidget *parent)
 	setContentsMargins(0,0,0,0);
 }
 
-void SelectComic::load(const QString &json)
+void SelectComic::load(const QString &json, const QString & searchString)
 {
 	VolumeComicsModel * tempM = new VolumeComicsModel();
 	tempM->load(json);
@@ -76,6 +84,8 @@ void SelectComic::load(const QString &json)
 	}
 
 	tableComics->resizeColumnToContents(0);
+
+	ScraperSelector::load(json,searchString);
 }
 
 SelectComic::~SelectComic() {}
