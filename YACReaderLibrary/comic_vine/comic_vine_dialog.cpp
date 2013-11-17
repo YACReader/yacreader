@@ -108,8 +108,8 @@ void ComicVineDialog::doConnections()
 	connect(skipButton,SIGNAL(clicked()),this,SLOT(goToNextComic()));
 
 	connect(selectVolumeWidget,SIGNAL(loadPage(QString,int)),this,SLOT(searchVolume(QString,int)));
-
 	connect(selectComicWidget,SIGNAL(loadPage(QString,int)),this,SLOT(getVolumeComicsInfo(QString,int)));
+	connect(sortVolumeComicsWidget,SIGNAL(loadPage(QString,int)),this,SLOT(getVolumeComicsInfo(QString,int)));
 }
 
 void ComicVineDialog::goNext()
@@ -120,28 +120,27 @@ void ComicVineDialog::goNext()
 		if(seriesQuestionWidget->getYes())
 		{
 			QString volumeSearchString = comics[0].getParentFolderName();
+			mode = Volume;
 
 			if(volumeSearchString.isEmpty())
 				showSearchVolume();
 			else
 			{
+				status = AutoSearching;
                 showLoading(tr("Looking for volume..."));
 				searchVolume(volumeSearchString);
-				status = AutoSearching;
 			}
-
-			mode = Volume;
 		}
 		else
 		{
+			status = AutoSearching;
+			mode = SingleComicInList;
 			ComicDB comic = comics[currentIndex];
 			QString title = comic.getTitleOrFileName();
 			titleHeader->setSubTitle(tr("comic %1 of %2 - %3").arg(currentIndex+1).arg(comics.length()).arg(title));
 
             showLoading(tr("Looking for volume..."));
 			searchVolume(title);
-			status = AutoSearching;
-			mode = SingleComicInList;
 		}
 	}
 	else if (content->currentWidget() == selectVolumeWidget) {
@@ -182,7 +181,16 @@ void ComicVineDialog::goBack()
         if(mode == SingleComic)
             showSelectVolume();
         break;
+	case AutoSearching:
+		if(mode == Volume)
+			showSearchVolume();
+		else
+			showSearchSingleComic();
 	default:
+		if(mode == Volume)
+			showSearchVolume();
+		else
+			showSearchSingleComic();
 		break;
 	}
 }
@@ -251,7 +259,7 @@ void ComicVineDialog::debugClientResults(const QString & string)
 	//QMessageBox::information(0,"Result", QString("Number of results : %1").arg(p.getNumResults()));
 	if(p.responseError())
 	{
-		QMessageBox::critical(0,"Error from ComicVine", "-");
+		QMessageBox::critical(0,tr("Error connecting to ComicVine"), tr("unknown error"));
 		goBack();
 	}
 	else
@@ -359,7 +367,7 @@ void ComicVineDialog::showSortVolumeComics(const QString &json)
 
 	content->setCurrentWidget(sortVolumeComicsWidget);
 
-	sortVolumeComicsWidget->setData(comics, json);
+	sortVolumeComicsWidget->setData(comics, json, currentVolumeId);
 
 	backButton->setVisible(true);
 	nextButton->setVisible(true);
