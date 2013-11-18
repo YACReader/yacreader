@@ -1,6 +1,7 @@
 #include <QUrl>
 
 #if QT_VERSION >= 0x050000
+#include <QMediaPlayer>
 #else
 #include <Phonon/MediaObject>
 #include <Phonon/MediaSource>
@@ -163,6 +164,7 @@ YACReaderTranslator::YACReaderTranslator(QWidget * parent)
 
 	//multimedia/phonon
 #if QT_VERSION >= 0x050000
+	player = new QMediaPlayer;
 #else
 	music = createPlayer(MusicCategory);
 #endif
@@ -291,6 +293,10 @@ void YACReaderTranslator::play()
 {
 	//QMessageBox::question(this,"xxx",ttsSource.toString());
 #if QT_VERSION >= 0x050000
+
+	player->setMedia(ttsSource);
+	player->play();
+
 #else
 	MediaSource src(ttsSource);
 	src.setAutoDelete(true);
