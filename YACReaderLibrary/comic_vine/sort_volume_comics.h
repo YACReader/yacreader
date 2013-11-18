@@ -77,6 +77,10 @@ protected slots:
 	void moveUpIL();
 	void moveDownIL();
 
+    void removeSelectedComics();
+    void restoreAllComics();
+    void showRemovedComicsSelector();
+
 
 private:
 	ScraperTableView * tableFiles;

@@ -4,6 +4,7 @@
 #include <QBoxLayout>
 #include <QPushButton>
 #include <QScrollBar>
+#include <QAction>
 
 #include "scraper_tableview.h"
 #include "local_comic_list_model.h"
@@ -85,6 +86,20 @@ SortVolumeComics::SortVolumeComics(QWidget *parent) :
 	l->setContentsMargins(0,0,0,0);
 	setLayout(l);
 	setContentsMargins(0,0,0,0);
+
+    //rows actions
+    QAction * removeItemFromList = new QAction(tr("remove selected comics"),this);
+    QAction * restoreAllItems = new QAction(tr("restore all removed comics"),this);
+    QAction * restoreItems = new QAction(tr("restore removed comics"),this);
+
+    tableFiles->setContextMenuPolicy(Qt::ActionsContextMenu);
+    tableFiles->addAction(removeItemFromList);
+    tableFiles->addAction(restoreAllItems);
+    //tableFiles->addAction(restoreItems);
+
+    connect(removeItemFromList,SIGNAL(triggered()),this,SLOT(removeSelectedComics()));
+    connect(restoreAllItems,SIGNAL(triggered()),this,SLOT(restoreAllComics()));
+    connect(restoreItems,SIGNAL(triggered()),this,SLOT(showRemovedComicsSelector()));
 }
 
 void SortVolumeComics::setData(QList<ComicDB> & comics, const QString &json, const QString &vID)
@@ -166,6 +181,23 @@ void SortVolumeComics::moveUpIL()
 }
 
 void SortVolumeComics::moveDownIL()
+{
+
+}
+
+void SortVolumeComics::removeSelectedComics()
+{
+    QList<QModelIndex> selection = tableFiles->selectionModel()->selectedIndexes();
+
+    localComicsModel->removeComics(selection);
+}
+
+void SortVolumeComics::restoreAllComics()
+{
+    localComicsModel->restoreAll();
+}
+
+void SortVolumeComics::showRemovedComicsSelector()
 {
 
 }

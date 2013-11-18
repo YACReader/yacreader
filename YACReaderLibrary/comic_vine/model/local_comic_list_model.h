@@ -23,6 +23,9 @@ public:
 						int role = Qt::DisplayRole) const;
 	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
 	QList<ComicDB> getData();
+
+    void removeComics(const QList<QModelIndex> & selectedIndexes);
+    void restoreAll();
 signals:
 
 public slots:
@@ -33,6 +36,7 @@ public slots:
 private:
 	int numExtraRows;
 	QList<ComicDB> _data;
+    QList<ComicDB> _removed;
 };
 
 #endif // LOCAL_COMIC_LIST_MODEL_H

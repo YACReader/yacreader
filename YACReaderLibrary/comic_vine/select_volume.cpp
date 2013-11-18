@@ -9,6 +9,7 @@
 #include <QDesktopServices>
 #include <QHeaderView>
 #include <QToolButton>
+#include <QSortFilterProxyModel>
 
 #include "scraper_tableview.h"
 
@@ -49,7 +50,11 @@ SelectVolume::SelectVolume(QWidget *parent)
 
 	tableVolumes = new ScraperTableView(this);
 	tableVolumes->setSortingEnabled(true);
+#if QT_VERSION >= 0x050000
 	tableVolumes->horizontalHeader()->setSectionsClickable(true);
+#else
+    tableVolumes->horizontalHeader()->setClickable(true);
+#endif
 	//tableVolumes->horizontalHeader()->setSortIndicatorShown(false);
 	connect(tableVolumes->horizontalHeader(),SIGNAL(sectionClicked(int)), tableVolumes, SLOT(sortByColumn(int)));
 	//connections

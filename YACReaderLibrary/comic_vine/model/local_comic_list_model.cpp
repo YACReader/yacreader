@@ -88,7 +88,52 @@ QModelIndex LocalComicListModel::index(int row, int column, const QModelIndex &p
 
 QList<ComicDB> LocalComicListModel::getData()
 {
-	return _data;
+    return _data;
+}
+
+void LocalComicListModel::removeComics(const QList<QModelIndex> &selectedIndexes)
+{
+    QModelIndex mi = selectedIndexes.first();
+    QModelIndex lastMi = selectedIndexes.last();
+    int sourceRow = mi.row();
+    int sourceLastRow = lastMi.row();
+
+    beginRemoveRows(QModelIndex(),selectedIndexes.first().row(),selectedIndexes.last().row());
+
+    for(int i = sourceLastRow;i>=sourceRow;i--)
+    {
+        _removed.push_front(_data.at(i));
+        _data.removeAt(i);
+    }
+
+    endRemoveRows();
+
+    beginInsertRows(QModelIndex(),_data.count()-_removed.count(),_data.count()-1);
+    for(int i = 0; i<_removed.count(); i++)
+        _data.append(ComicDB());
+    endInsertRows();
+}
+
+void LocalComicListModel::restoreAll()
+{
+    int numItemsToRemove = 0;
+    for(int i = 0;numItemsToRemove<_removed.count();i++)
+    {
+        if(_data.at(i).getFileName().isEmpty())
+        {
+            beginRemoveRows(QModelIndex(),i,i);
+            _data.removeAt(i);
+            endRemoveRows();
+
+            beginInsertRows(QModelIndex(),i,i);
+            _data.insert(i,_removed.at(numItemsToRemove));
+            endInsertRows();
+
+            numItemsToRemove++;
+        }
+    }
+
+    _removed.clear();
 }
 
 void LocalComicListModel::moveSelectionUp(const QList<QModelIndex> &selectedIndexes)
