@@ -10,6 +10,7 @@ static const QString CV_WEB_ADDRESS = "http://www.comicvine.com/api";
 static const QString CV_SEARCH = CV_WEB_ADDRESS + "/search/?api_key=" + CV_API_KEY +
 								 "&format=json&limit=100&resources=volume"
 								 "&field_list=name,start_year,publisher,id,image,count_of_issues,deck"
+								 "&sort=name:asc"
 								 "&query=%1&page=%2";
 //http://www.comicvine.com/api/search/?api_key=46680bebb358f1de690a5a365e15d325f9649f91&format=json&limit=100&resources=volume&field_list=name,start_year,publisher,id,image,count_of_issues,deck&query=superman
 
@@ -19,7 +20,9 @@ static const QString CV_SERIES_DETAIL = CV_WEB_ADDRESS + "/volume/4050-%1/?api_k
 
 //gets info for comics in a volume id %1
 static const QString CV_COMICS_INFO = CV_WEB_ADDRESS + "/issues/?api_key=" + CV_API_KEY +
-									"&format=json&field_list=name,issue_number,id,image&filter=volume:%1&offset=%2";//offset??
+									"&format=json&field_list=name,issue_number,id,image&filter=volume:%1"
+									"&sort=cover_date:asc"  //sorting by cover_date, because comic vine doesn't use natural sorting (issue_number -> 1 10 11 ... 100 2 20 21....)
+									"&offset=%2";
 
 //"http://www.comicvine.com/api/issues/?api_key=46680bebb358f1de690a5a365e15d325f9649f91&format=json&field_list=name,issue_number,id,image&filter=volume:%1&page=%2
 
