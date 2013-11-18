@@ -15,6 +15,7 @@ class YACReaderBusyWidget;
 #include <QUrl>
 
 #if QT_VERSION >= 0x050000
+	class QMediaPlayer;
 #else
 	#include<Phonon/MediaObject>
 	using namespace Phonon;
@@ -51,7 +52,7 @@ protected:
 private:
 
 #if QT_VERSION >= 0x050000
-
+	QMediaPlayer *player;
 #else
 	MediaObject * music;
 #endif
