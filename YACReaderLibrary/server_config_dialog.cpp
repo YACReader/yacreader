@@ -227,7 +227,7 @@ void ServerConfigDialog::generateQR()
 		QString tmp = add.toString();
 		if(tmp.contains(".") && !tmp.startsWith("127"))
 		{
-			if(dir.isEmpty() && tmp.startsWith("192.168"))
+			if(dir.isEmpty() && tmp.startsWith("192.168.2."))
 				dir = tmp;
 			else
 				otherAddresses.push_back(tmp);
@@ -244,7 +244,7 @@ void ServerConfigDialog::generateQR()
 		QString tmp = add;
 		if(tmp.contains(".") && !tmp.startsWith("127"))
 		{
-			if(dir.isEmpty() && tmp.startsWith("192.168"))
+			if(dir.isEmpty() && tmp.startsWith("192.168.2."))
 				dir = tmp;
 			else
 				otherAddresses.push_back(tmp);
