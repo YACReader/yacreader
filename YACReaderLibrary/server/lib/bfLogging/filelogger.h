@@ -15,12 +15,10 @@
 
 /**
   Logger that uses a text file for output. Settings are read from a
-  config file using a QSettings object. Config settings can be changed at runtime. 
-  They are copied to private fields in regular intervals for permance reason.
+  config file using a QSettings object. Config settings can be changed at runtime.
   <p>
-  Example for the required configuration settings:
+  Example for the configuration settings:
   <code><pre>
-  disabled=false
   fileName=logs/QtWebApp.log
   maxSize=1000000
   maxBackups=2
@@ -35,20 +33,16 @@
     working directory.
   - maxSize is the maximum size of that file in bytes. The file will be backed up and
     replaced by a new file if it becomes larger than this limit. Please note that
-    the actual file size may become a little bit larger than this limit. 0=unlimited.
-  - maxBackups defines the number of backup files to keep. 0=unlimited.
-  - minLevel defines the minimum level of message types to be written into the file.
-  - msgFormat defines the decoration of log messages.
-  - timestampFormat defines the format of timestamps.
-  - buffersize defines the size of the backtrace buffer. 0=disabled.  
-    The buffer stores log messages of any level from the time before an error occurs. 
-    It can be used to provide detailed debug information when an error occurs, while keeping 
-    the logfile clean as long no error occurs. Using this buffer may reduce performance
-    significantly.
+    the actual file size may become a little bit larger than this limit. Default is 0=unlimited.
+  - maxBackups defines the number of backup files to keep. Default is 0=unlimited.
+  - minLevel defines the minimum type of messages that are written (together with buffered messages) into the file. Defaults is 0=debug.
+  - msgFormat defines the decoration of log messages, see LogMessage class. Default is "{timestamp} {type} {msg}".
+  - timestampFormat defines the format of timestamps, see QDateTime::toString(). Default is "yyyy-MM-dd hh:mm:ss.zzz".
+  - bufferSize defines the size of the buffer. Default is 0=disabled.
 
   @see set() describes how to set logger variables
   @see LogMessage for a description of the message decoration.
-  @see Logger for a descrition of the backtrace buffer
+  @see Logger for a descrition of the buffer.
 */
 
 class FileLogger : public Logger {
@@ -62,7 +56,7 @@ public:
       Settings are read from the current group, so the caller must have called settings->beginGroup().
       Because the group must not change during runtime, it is recommended to provide a
       separate QSettings instance to the logger that is not used by other parts of the program.
-      @param refreshInterval Interval of checking the config settings in msec, or 0=disabled
+      @param refreshInterval Interval of checking for changed config settings in msec, or 0=disabled
       @param parent Parent object
     */
     FileLogger(QSettings* settings, const int refreshInterval=10000, QObject* parent = 0);
@@ -95,9 +89,6 @@ private:
 
     /** Configured maximum number of backup files, or 0=unlimited */
     int maxBackups;
-
-    /** Whether this logger is disabled */
-    bool disabled;
 
     /** Pointer to the configuration settings */
     QSettings* settings;

@@ -14,9 +14,8 @@
 #include "httprequesthandler.h"
 
 /**
-  Listens for incoming TCP connections and passes control to
-  one of the pooled connection handlers. This class is also
-  responsible for managing the pool.
+  Listens for incoming TCP connections and and passes all incoming HTTP requests to your implementation of HttpRequestHandler,
+  which processes the request and generates the response (usually a HTML document).
   <p>
   Example for the required settings in the config file:
   <code><pre>
@@ -43,7 +42,7 @@ public:
       Constructor.
       @param settings Configuration settings for the HTTP server. Must not be 0.
       @param requestHandler Processes each received HTTP request, usually by dispatching to controller classes.
-      @param parent Parent object
+      @param parent Parent object.
     */
     HttpListener(QSettings* settings, HttpRequestHandler* requestHandler, QObject* parent = 0);
 
@@ -53,7 +52,7 @@ public:
 protected:
 
     /** Serves new incoming connection requests */
-    void incomingConnection(int socketDescriptor);
+    void incomingConnection(tSocketDescriptor socketDescriptor);
 
 private:
 
@@ -69,7 +68,8 @@ signals:
       Emitted when the connection handler shall process a new incoming onnection.
       @param socketDescriptor references the accepted connection.
     */
-    void handleConnection(int socketDescriptor);
+
+    void handleConnection(tSocketDescriptor socketDescriptor);
 
 };
 

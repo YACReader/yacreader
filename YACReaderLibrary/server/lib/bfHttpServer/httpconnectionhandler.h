@@ -29,6 +29,12 @@
   @see HttpRequest for description of config settings maxRequestSize and maxMultiPartSize
 */
 
+#if QT_VERSION >= 0x050000
+    typedef qintptr tSocketDescriptor;
+#else
+    typedef int tSocketDescriptor;
+#endif
+
 class HttpConnectionHandler : public QThread {
     Q_OBJECT
     Q_DISABLE_COPY(HttpConnectionHandler)
@@ -79,7 +85,7 @@ public slots:
       Received from from the listener, when the handler shall start processing a new connection.
       @param socketDescriptor references the accepted connection.
     */
-    void handleConnection(int socketDescriptor);
+    void handleConnection(tSocketDescriptor socketDescriptor);
 
 private slots:
 

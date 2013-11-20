@@ -13,11 +13,9 @@
 #include <QtGlobal>
 
 /**
-  Logs messages into two log files. This is specially useful to get one less detailed
-  logfile for normal operation plus one more detailed file for debugging.
-  @see FileLogger for a description of the required config settings.
-  @see set() describes how to set logger variables
-  @see LogMessage for a description of the message decoration.
+  Logs messages into two log files simultaneously.
+  May be used to create two logfiles with different configuration settings.
+  @see FileLogger for a description of the two underlying loggers.
 */
 
 class DualFileLogger : public Logger {
@@ -33,8 +31,8 @@ public:
       Because the group must not change during runtime, it is recommended to provide a
       separate QSettings instance to the logger that is not used by other parts of the program.
       @param secondSettings Same as firstSettings, but for the second log file.
-      @param refreshInterval Interval of checking the config settings in msec, or 0=disabled
-      @param parent Parent object
+      @param refreshInterval Interval of checking for changed config settings in msec, or 0=disabled
+      @param parent Parent object.
     */
     DualFileLogger(QSettings* firstSettings, QSettings* secondSettings, const int refreshInterval=10000, QObject *parent = 0);
 

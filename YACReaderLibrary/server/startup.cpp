@@ -9,6 +9,9 @@
 #include "httplistener.h"
 #include "requestmapper.h"
 #include "staticfilecontroller.h"
+
+#include "yacreader_global.h"
+
 #include <QDir>
 #include <QApplication>
 
@@ -26,14 +29,14 @@ void Startup::start() {
 	QCoreApplication* app = QApplication::instance();
 	app->setApplicationName(APPNAME);
 	app->setOrganizationName(ORGANISATION);
-	QString configFileName=Static::getConfigDir()+"/"+QCoreApplication::applicationName()+".ini";
+	QString configFileName=YACReader::getSettingsPath()+"/"+QCoreApplication::applicationName()+".ini";
 
 	// Configure logging into files
 	QSettings* mainLogSettings=new QSettings(configFileName,QSettings::IniFormat,app);
 	mainLogSettings->beginGroup("mainLogFile");
-	QSettings* debugLogSettings=new QSettings(configFileName,QSettings::IniFormat,app);
-	debugLogSettings->beginGroup("debugLogFile");
-	Logger* logger=new DualFileLogger(mainLogSettings,debugLogSettings,10000,app);
+    //QSettings* debugLogSettings=new QSettings(configFileName,QSettings::IniFormat,app);
+    //debugLogSettings->beginGroup("debugLogFile");
+    Logger* logger=new FileLogger(mainLogSettings,10000,app);
 	logger->installMsgHandler();
 
 	// Configure template loader and cache

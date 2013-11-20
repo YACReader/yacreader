@@ -6,9 +6,12 @@
 #include "logmessage.h"
 #include <QThread>
 
-LogMessage::LogMessage(const QtMsgType type, const QString& message, QHash<QString,QString>* logVars) {
+LogMessage::LogMessage(const QtMsgType type, const QString& message, QHash<QString, QString>* logVars, const QString &file, const QString &function, const int line) {
     this->type=type;
     this->message=message;
+    this->file=file;
+    this->function=function;
+    this->line=line;
     timestamp=QDateTime::currentDateTime();
     threadId=QThread::currentThreadId();
 
@@ -24,7 +27,7 @@ QString LogMessage::toString(const QString& msgFormat, const QString& timestampF
     decorated.replace("{msg}",message);
 
     if (decorated.contains("{timestamp}")) {
-        decorated.replace("{timestamp}",QDateTime::currentDateTime().toString(timestampFormat));
+        decorated.replace("{timestamp}",timestamp.toString(timestampFormat));
     }
 
     QString typeNr;
@@ -48,8 +51,12 @@ QString LogMessage::toString(const QString& msgFormat, const QString& timestampF
         decorated.replace("{type}",typeNr);
     }
 
+    decorated.replace("{file}",file);
+    decorated.replace("{function}",function);
+    decorated.replace("{line}",QString::number(line));
+
     QString threadId;
-    threadId.setNum((quint64)QThread::currentThreadId()); //CAMBIADo unsigned int por quint64, evita error de compilación en máquinas de 64bit
+    threadId.setNum((unsigned int)QThread::currentThreadId()); // change to (qint64) for 64bit Mac OS
     decorated.replace("{thread}",threadId);
 
     // Fill in variables

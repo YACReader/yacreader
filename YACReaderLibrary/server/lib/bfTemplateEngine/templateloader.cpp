@@ -9,6 +9,7 @@
 #include <QStringList>
 #include <QDir>
 #include <QSet>
+#include <QApplication>
 
 TemplateLoader::TemplateLoader(QSettings* settings, QObject* parent)
     : QObject(parent)
@@ -21,16 +22,16 @@ TemplateLoader::TemplateLoader(QSettings* settings, QObject* parent)
     if (QDir::isRelativePath(templatePath))
 #endif
     {
-        QFileInfo configFile(settings->fileName());
-        templatePath=QFileInfo(configFile.absolutePath(),templatePath).absoluteFilePath();
+        QFileInfo configFile(QApplication::applicationDirPath());
+        templatePath=QFileInfo(QApplication::applicationDirPath(),templatePath).absoluteFilePath();
     }
     fileNameSuffix=settings->value("suffix",".tpl").toString();
-    QString encoding=settings->value("encoding","UTF-8").toString();
+    QString encoding=settings->value("encoding").toString();
     if (encoding.isEmpty()) {
         textCodec=QTextCodec::codecForLocale();
     }
     else {
-	   textCodec=QTextCodec::codecForName(encoding.toLatin1());
+       textCodec=QTextCodec::codecForName(encoding.toLocal8Bit());
    }
    qDebug("TemplateLoader: path=%s, codec=%s",qPrintable(templatePath),textCodec->name().data());
 }

@@ -13,6 +13,7 @@ Template::Template(QString source, QString sourceName)
 }
 
 Template::Template(QFile& file, QTextCodec* textCodec) {
+    this->warnings=false;
     sourceName=QFileInfo(file.fileName()).baseName();
     if (!file.isOpen()) {
         file.open(QFile::ReadOnly | QFile::Text);
