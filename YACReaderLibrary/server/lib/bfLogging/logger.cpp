@@ -9,7 +9,6 @@
 #include <QMutex>
 #include <QDateTime>
 #include <QThread>
-#include <QtGlobal>
 
 Logger* Logger::defaultLogger=0;
 
@@ -41,7 +40,7 @@ Logger::Logger(const QString msgFormat, const QString timestampFormat, const QtM
 }
 
 
-void Logger::msgHandler(const QtMsgType type, const char* message) {
+void Logger::msgHandler(const QtMsgType type, const QString &message, const QString &file, const QString &function, const int line) {
     static QMutex recursiveMutex(QMutex::Recursive);
     static QMutex nonRecursiveMutex(QMutex::NonRecursive);
 
@@ -52,33 +51,42 @@ void Logger::msgHandler(const QtMsgType type, const char* message) {
 
     // Fall back to stderr when this method has been called recursively.
     if (defaultLogger && nonRecursiveMutex.tryLock()) {
-        defaultLogger->log(type,message);
+        defaultLogger->log(type, message, file, function, line);
         nonRecursiveMutex.unlock();
     }
     else {
-        fputs(message,stderr);
+        fputs(qPrintable(message),stderr);
         fflush(stderr);
     }
 
     // Abort the program after logging a fatal message
     if (type>=QtFatalMsg) {
-        //abort();
+		//abort();
     }
 
     recursiveMutex.unlock();
 }
 
 
+#if QT_VERSION >= 0x050000
+    void Logger::msgHandler5(const QtMsgType type, const QMessageLogContext &context, const QString &message) {
+      (void)(context); // suppress "unused parameter" warning
+      msgHandler(type,message,context.file,context.function,context.line);
+    }
+#else
+    void Logger::msgHandler4(const QtMsgType type, const char* message) {
+        msgHandler(type,message);
+    }
+#endif
 
 
 Logger::~Logger() {
     if (defaultLogger==this) {
 #if QT_VERSION >= 0x050000
-	qInstallMessageHandler(0);
+        qInstallMessageHandler(0);
 #else
-	qInstallMsgHandler(0);
+        qInstallMsgHandler(0);
 #endif
-
         defaultLogger=0;
     }
 }
@@ -93,9 +101,9 @@ void Logger::write(const LogMessage* logMessage) {
 void Logger::installMsgHandler() {
     defaultLogger=this;
 #if QT_VERSION >= 0x050000
-	//qInstallMessageHandler(msgHandler); TODO Qt5
+    qInstallMessageHandler(msgHandler5);
 #else
-	qInstallMsgHandler(msgHandler);
+    qInstallMsgHandler(msgHandler4);
 #endif
 }
 
@@ -126,7 +134,7 @@ void Logger::clear(const bool buffer, const bool variables) {
 }
 
 
-void Logger::log(const QtMsgType type, const QString& message) {
+void Logger::log(const QtMsgType type, const QString& message, const QString &file, const QString &function, const int line) {
     mutex.lock();
 
     // If the buffer is enabled, write the message into it
@@ -137,7 +145,7 @@ void Logger::log(const QtMsgType type, const QString& message) {
         }
         QList<LogMessage*>* buffer=buffers.localData();
         // Append the decorated log message
-        LogMessage* logMessage=new LogMessage(type,message,logVars.localData());
+        LogMessage* logMessage=new LogMessage(type,message,logVars.localData(),file,function,line);
         buffer->append(logMessage);
         // Delete oldest message if the buffer became too large
         if (buffer->size()>bufferSize) {
@@ -156,7 +164,7 @@ void Logger::log(const QtMsgType type, const QString& message) {
     // Buffer is disabled, print the message if the type is high enough
     else {
         if (type>=minLevel) {
-            LogMessage logMessage(type,message,logVars.localData());
+            LogMessage logMessage(type,message,logVars.localData(),file,function,line);
             write(&logMessage);
         }
     }

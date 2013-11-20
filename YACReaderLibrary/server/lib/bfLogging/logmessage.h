@@ -21,7 +21,12 @@
   - {type}      Type of the message in string format (DEBUG, WARNING, CRITICAL, FATAL)
   - {thread}    ID number of the thread
   - {msg}       Message text (only useable in msgFormat)
+  - {file}      Filename where the message was generated #
+  - {function}  Function where the message was generated #
+  - {line}      Line number where the message was generated #
   - {xxx}       For any user-defined logger variable
+
+  # The macros qDebug()...qFatal() dont fill these variable in case of QT versions before 5.0.
 */
 
 class LogMessage
@@ -35,14 +40,17 @@ public:
       @param type Type of the message
       @param message Message text
       @param logVars Logger variables, 0 is allowed
+      @param file Name of the source file where the message was generated
+      @param function Name of the function where the message was generated
+      @param line Line Number of the source file, where the message was generated
     */
-    LogMessage(const QtMsgType type, const QString& message, QHash<QString,QString>* logVars);
+    LogMessage(const QtMsgType type, const QString& message, QHash<QString,QString>* logVars, const QString &file, const QString &function, const int line);
 
     /**
       Returns the log message as decorated string.
       @param msgFormat Format of the decoration. May contain variables and static text,
-          e.g. "{timestamp} {type} thread={thread}: {msg}"
-      @param timestampFormat Format of timestamp, e.g. "dd.MM.yyyy hh:mm:ss.zzz"
+          e.g. "{timestamp} {type} thread={thread}: {msg}".
+      @param timestampFormat Format of timestamp, e.g. "dd.MM.yyyy hh:mm:ss.zzz", see QDateTime::toString().
       @see QDatetime for a description of the timestamp format pattern
     */
     QString toString(const QString& msgFormat, const QString& timestampFormat) const;
@@ -68,6 +76,15 @@ private:
 
     /** Message text */
     QString message;
+
+    /** Filename where the message was generated */
+    QString file;
+
+    /** Function name where the message was generated */
+    QString function;
+
+    /** Line number where the message was generated */
+    int line;
 
 };
 

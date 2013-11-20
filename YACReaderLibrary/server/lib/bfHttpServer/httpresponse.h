@@ -16,15 +16,15 @@
   <p>
   Example code for proper response generation:
   <code><pre>
-	response.setStatus(200,"OK"); // optional, because this is the default
-	response.writeBody("Hello");
-	response.writeBody("World!",true);
+    response.setStatus(200,"OK"); // optional, because this is the default
+    response.writeBody("Hello");
+    response.writeBody("World!",true);
   </pre></code>
   <p>
   Example how to return an error:
   <code><pre>
-	response.setStatus(500,"server error");
-	response.write("The request cannot be processed because the servers is broken",true);
+    response.setStatus(500,"server error");
+    response.write("The request cannot be processed because the servers is broken",true);
   </pre></code>
   <p>
   For performance reason, writing a single or few large packets is better than writing
@@ -34,7 +34,7 @@
 */
 
 class HttpResponse {
-	Q_DISABLE_COPY(HttpResponse)
+    Q_DISABLE_COPY(HttpResponse)
 public:
 
 	/**

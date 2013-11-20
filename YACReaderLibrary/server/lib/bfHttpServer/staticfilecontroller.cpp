@@ -9,6 +9,7 @@
 #include <QDateTime>
 #include "httpsession.h"
 #include "static.h"
+#include <QApplication>
 
 StaticFileController::StaticFileController(QSettings* settings, QObject* parent)
     :HttpRequestHandler(parent)
@@ -23,8 +24,8 @@ StaticFileController::StaticFileController(QSettings* settings, QObject* parent)
         if (QDir::isRelativePath(docroot))
 #endif
         {
-        QFileInfo configFile(settings->fileName());
-        docroot=QFileInfo(configFile.absolutePath(),docroot).absoluteFilePath();
+        QFileInfo configFile(QApplication::applicationDirPath());
+        docroot=QFileInfo(QApplication::applicationDirPath(),docroot).absoluteFilePath();
     }
     qDebug("StaticFileController: docroot=%s, encoding=%s, maxAge=%i",qPrintable(docroot),qPrintable(encoding),maxAge);
     maxCachedFileSize=settings->value("maxCachedFileSize","65536").toInt();

@@ -23,13 +23,20 @@
   variable names in the form  <i>{name}</i> that are filled by values
   taken from a static thread local dictionary.
   <p>
-  The buffer stores log messages of any level from the time before an error occurs. 
-  It can be used to provide detailed debug information when an error occurs, while 
-  keeping the logfile clean as long no error occurs. Using this buffer may 
-  reduce performance significantly.
+  The logger keeps a configurable number of messages in a ring-buffer.
+  A log message with a severity >= minLevel flushes the buffer,
+  so the stored messages get written out. If the buffer is disabled, then
+  only messages with severity >= minLevel are written out.
+  <p>
+  If you enable the buffer and use minLevel=2, then the application logs
+  only errors together with some buffered debug messages. But as long no
+  error occurs, nothing gets written out.
+  <p>
+  Each thread has it's own buffer.
   <p>
   The logger can be registered to handle messages from
   the static global functions qDebug(), qWarning(), qCritical() and qFatal().
+
   @see set() describes how to set logger variables
   @see LogMessage for a description of the message decoration.
   @warning You should prefer a derived class, for example FileLogger,
@@ -53,7 +60,7 @@ public:
       Constructor.
       @param msgFormat Format of the decoration, e.g. "{timestamp} {type} thread={thread}: {msg}"
       @param timestampFormat Format of timestamp, e.g. "dd.MM.yyyy hh:mm:ss.zzz"
-      @param minLevel Minimum type of messages that are written out.
+      @param minLevel Minimum severity that genertes an output (0=debug, 1=warning, 2=critical, 3=fatal).
       @param bufferSize Size of the backtrace buffer, number of messages per thread. 0=disabled.
       @param parent Parent object
       @see LogMessage for a description of the message decoration.
@@ -68,9 +75,12 @@ public:
       This method is thread safe.
       @param type Message type (level)
       @param message Message text
+      @param file Name of the source file where the message was generated (usually filled with the macro __FILE__)
+      @param function Name of the function where the message was generated (usually filled with the macro __LINE__)
+      @param line Line Number of the source file, where the message was generated (usually filles with the macro __func__ or __FUNCTION__)
       @see LogMessage for a description of the message decoration.
     */
-    virtual void log(const QtMsgType type, const QString& message);
+    virtual void log(const QtMsgType type, const QString& message, const QString &file="", const QString &function="", const int line=0);
 
     /**
       Installs this logger as the default message handler, so it
@@ -130,8 +140,35 @@ private:
       This method is thread safe.
       @param type Message type (level)
       @param message Message text
+      @param file Name of the source file where the message was generated (usually filled with the macro __FILE__)
+      @param function Name of the function where the message was generated (usually filled with the macro __LINE__)
+      @param line Line Number of the source file, where the message was generated (usually filles with the macro __func__ or __FUNCTION__)
     */
-    static void msgHandler(const QtMsgType type, const char* message);
+    static void msgHandler(const QtMsgType type, const QString &message, const QString &file="", const QString &function="", const int line=0);
+
+
+#if QT_VERSION >= 0x050000
+
+    /**
+      Wrapper for QT version 5.
+      @param type Message type (level)
+      @param context Message context
+      @param message Message text
+      @see msgHandler()
+    */
+    static void msgHandler5(const QtMsgType type, const QMessageLogContext& context, const QString &message);
+
+#else
+
+    /**
+      Wrapper for QT version 4.
+      @param type Message type (level)
+      @param message Message text
+      @see msgHandler()
+    */
+    static void msgHandler4(const QtMsgType type, const char * message);
+
+#endif
 
     /** Thread local variables to be used in log messages */
     static QThreadStorage<QHash<QString,QString>*> logVars;
