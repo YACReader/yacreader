@@ -23,8 +23,7 @@ isEqual(QT_MAJOR_VERSION, 5) {
 LIBS += -lpoppler-qt5
 INCLUDEPATH += ../dependencies/poppler/include/qt5
 }
-else
-{
+else {
 LIBS += -lpoppler-qt4
 INCLUDEPATH += ../dependencies/poppler/include/qt4
 }
