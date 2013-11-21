@@ -10,7 +10,11 @@
 
 #include "bookmarks.h"
 
-#include "poppler-qt4.h"
+#if QT_VERSION >= 0x050000
+	#include "poppler-qt5.h"
+#else
+	#include "poppler-qt4.h"
+#endif
 
 class ComicDB;
 //#define EXTENSIONS << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp" Comic::getSupportedImageFormats()
