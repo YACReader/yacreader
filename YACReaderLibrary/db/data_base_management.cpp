@@ -169,7 +169,7 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
 		"hash TEXT UNIQUE NOT NULL,"
 		"edited BOOLEAN DEFAULT 0,"
 		"read BOOLEAN DEFAULT 0,"
-//now 7.0 fields
+//new 7.0 fields
 		
 		"hasBeenOpened BOOLEAN DEFAULT 0,"
 		"rating INTEGER DEFAULT 0,"
@@ -551,9 +551,13 @@ int DataBaseManagement::compareVersions(const QString & v1, const QString v2)
 
 bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
 {
+    bool pre7 = false;
+    if(compareVersions(DataBaseManagement::checkValidDB(fullPath),"7.0.0")<0)
+        pre7 = true;
+
 	QSqlDatabase db = loadDatabaseFromFile(fullPath);
 	bool returnValue = false;
-	if(db.isValid() && db.isOpen())
+    if(db.isValid() && db.isOpen())
 	{
 		QSqlQuery updateVersion(db);
 		updateVersion.prepare("UPDATE db_info SET "
@@ -562,8 +566,9 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
 		updateVersion.exec();
 
 		if(updateVersion.numRowsAffected() > 0)
-			returnValue = true;
-		if(returnValue) //TODO: execute only if previous version was < 7.0
+            returnValue = true;
+
+        if(pre7) //TODO: execute only if previous version was < 7.0
 		{
 			//new 7.0 fields
 			QStringList columnDefs;

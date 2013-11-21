@@ -8,7 +8,7 @@
 #endif
 
 
-#define VERSION "6.5.3"
+#define VERSION "7.0.0"
 
 #define PATH "PATH"
 #define MAG_GLASS_SIZE "MAG_GLASS_SIZE"
