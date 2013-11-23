@@ -71,18 +71,20 @@ BookmarksDialog::BookmarksDialog(QWidget * parent)
 	QHBoxLayout * buttons = new QHBoxLayout();
 
 	cancel = new QPushButton(tr("Close"));
-	//cancel->setFlat(true);
+    cancel->setFlat(true);
 	connect(cancel,SIGNAL(clicked()),this,SLOT(hide()));
 	buttons->addStretch();
 	buttons->addWidget(cancel);
 
-	cancel->setStyleSheet("QPushButton {color:white; border:1px solid #BBBBBB; padding:3px 5px 3px 5px;}");
+    cancel->setStyleSheet("QPushButton {border: 1px solid #242424; background: #2e2e2e; color:white; padding: 5px 26px 5px 26px; font-size:12px;font-family:Arial; font-weight:bold;}");
 
 	QVBoxLayout * l = new QVBoxLayout();
 
 	l->addWidget(new QLabel("<font color=\"#FFFFFF\">"+tr("Click on any image to go to the bookmark")+"</font>"),0,Qt::AlignCenter);
 	l->addLayout(layout);
-	//l->addLayout(buttons);
+#ifdef Q_OS_MAC
+    l->addLayout(buttons);
+#endif
 
 	QPalette Pal(palette());
 	// set black background
@@ -90,7 +92,7 @@ BookmarksDialog::BookmarksDialog(QWidget * parent)
 	this->setAutoFillBackground(true);
 	this->setPalette(Pal);
 
-	setLayout(l);
+    setLayout(l);
 }
 
 void BookmarksDialog::setBookmarks(const Bookmarks & bm)
