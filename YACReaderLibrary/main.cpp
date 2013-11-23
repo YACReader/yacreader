@@ -61,11 +61,7 @@ void logSystemAndConfig()
 
 #elif defined(Q_OS_MAC)
 
-    QSysInfo::MV_LION
-    QSysInfo::MV_MOUNTAINLION
-    QSysInfo::MV_MAVERICKS
-
-    switch (QSysInfo::macVersion())
+    switch (QSysInfo::MacVersion())
     {
         case QSysInfo::MV_SNOWLEOPARD:
             QLOG_INFO() << "SO : MacOSX Snow Leopard";
@@ -76,9 +72,11 @@ void logSystemAndConfig()
         case QSysInfo::MV_MOUNTAINLION:
             QLOG_INFO() << "SO : MacOSX Mountain Lion";
             break;
+#if QT_VERSION >= 0x050000
         case QSysInfo::MV_MAVERICKS:
             QLOG_INFO() << "SO : MacOSX Maverics";
             break;
+#endif
         default:
             QLOG_INFO() << "SO : MacOSX (unknown version)";
         break;

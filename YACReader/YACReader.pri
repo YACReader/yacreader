@@ -29,8 +29,14 @@ LIBS	     += -lGLU
 
 macx{
 #INCLUDEPATH  += "/Volumes/Mac OS X Lion/usr/X11/include"
+isEqual(QT_MAJOR_VERSION, 5) {
+INCLUDEPATH  += /usr/local/include/poppler/qt5
+LIBS         += -L/usr/local/lib -lpoppler-qt5
+}
+else {
 INCLUDEPATH  += /usr/local/include/poppler/qt4
 LIBS         += -L/usr/local/lib -lpoppler-qt4
+}
 }
 
 QT += network opengl
