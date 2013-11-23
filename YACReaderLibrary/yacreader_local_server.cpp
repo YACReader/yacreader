@@ -9,6 +9,8 @@
 
 #include "comic_db.h"
 
+#include "QsLog.h"
+
 using namespace YACReader;
 
 QMutex YACReaderClientConnectionWorker::dbMutex;
@@ -17,8 +19,9 @@ YACReaderLocalServer::YACReaderLocalServer(QObject *parent) :
 	QObject(parent)
 {
 	localServer = new QLocalServer(this);
+    QLocalServer::removeServer(YACREADERLIBRARY_GUID);
 	if (!localServer->listen(YACREADERLIBRARY_GUID)) {
-		//error...........
+        QLOG_ERROR() << "Unable to create local server";
 	}
 
 	connect(localServer, SIGNAL(newConnection()), this, SLOT(sendResponse()));
