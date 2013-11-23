@@ -210,7 +210,7 @@ void LibraryCreator::insertComic(const QString & relativePath,const QFileInfo & 
 	//hash Sha1 del primer 0.5MB + filesize
 	QString hash = QString(crypto.result().toHex().constData()) + QString::number(fileInfo.size());
 	ComicDB comic = DBHelper::loadComic(_currentPathFolders.last().id,fileInfo.fileName(),relativePath,hash,_database);
-	int numPages;
+    int numPages = 0;
 
 	if(! ( comic.hasCover() && checkCover(hash)))
 	{
