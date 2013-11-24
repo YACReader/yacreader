@@ -413,6 +413,8 @@ QList<QVector<quint32> > FileComic::getSections(int & sectionIndex)
 void FileComic::process()
 {
 	CompressedArchive archive(_path);
+	if(!archive.toolsLoaded())
+		return;
 	//se filtran para obtener sólo los formatos soportados
 	_order = archive.getFileNames();
 	_fileNames = filter(_order);
