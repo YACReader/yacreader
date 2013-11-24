@@ -7,6 +7,8 @@
 #include <QStringList>
 #include <QMessageBox>
 
+#include "yacreader_global.h"
+
 Configuration::Configuration()
 {
 	//read configuration
@@ -77,7 +79,7 @@ void Configuration::load(const QString & path)
 	alwaysOnTop = false;
 
 	//load from file
-	QFile f(QCoreApplication::applicationDirPath()+path);
+	QFile f(YACReader::getSettingsPath()+path);
 	f.open(QIODevice::ReadOnly);
 	QTextStream txtS(&f);
 	QString content = txtS.readAll();
@@ -156,63 +158,5 @@ void Configuration::load(const QString & path)
 
 		}
 		i++;
-	}
-}
-
-void Configuration::save()
-{
-	QFile f(QCoreApplication::applicationDirPath()+"/YACReader.conf");
-	if(!f.open(QIODevice::WriteOnly))
-	{
-		QMessageBox::critical(NULL,tr("Saving config file...."),tr("There was a problem saving YACReader configuration. Please, check if you have enough permissions in the YACReader root folder."));
-	}
-	else
-	{
-	QTextStream txtS(&f);
-
-	txtS << PATH << "\n";
-	txtS << defaultPath << "\n";
-
-	txtS << MAG_GLASS_SIZE << "\n";
-	txtS << magnifyingGlassSize.width() <<","<< magnifyingGlassSize.height() << "\n";
-
-	txtS << ZOOM_LEVEL << "\n";
-	txtS << zoomLevel << "\n";
-
-	txtS << SLIDE_SIZE << "\n";
-	txtS << gotoSlideSize.height() << "\n";
-
-	txtS << FIT << "\n";
-	txtS << (int)adjustToWidth << "\n";
-
-	txtS << FLOW_TYPE << "\n";
-	txtS << (int)flowType << "\n";
-
-	txtS << FULLSCREEN << "\n";
-	txtS << (int)fullScreen << "\n";
-
-	txtS << FIT_TO_WIDTH_RATIO << "\n";
-	txtS << fitToWidthRatio << "\n";
-
-	txtS << Y_WINDOW_POS << "\n";
-	txtS << windowPos.x() << "," << windowPos.y() << "\n";
-
-	txtS << Y_WINDOW_SIZE << "\n";
-	txtS << windowSize.width() << "," << windowSize.height() << "\n";
-
-	txtS << MAXIMIZED << "\n";
-	txtS << (int)maximized << "\n";
-
-	txtS << DOUBLE_PAGE << "\n";
-	txtS << (int)doublePage << "\n";
-
-	txtS << ADJUST_TO_FULL_SIZE << "\n";
-	txtS << (int) adjustToFullSize << "\n";
-
-	txtS << BACKGROUND_COLOR << "\n";
-	txtS << backgroundColor.red() << "," << backgroundColor.green() << ","  << backgroundColor.blue() << "\n";
-
-	txtS << ALWAYS_ON_TOP << "\n";
-	txtS << (int)alwaysOnTop << "\n";
 	}
 }
