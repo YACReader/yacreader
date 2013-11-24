@@ -96,7 +96,8 @@ HEADERS += comic_flow.h \
     yacreader_main_toolbar.h \
     comics_remover.h \
 	../common/http_worker.h \
-    yacreader_libraries.h
+    yacreader_libraries.h \
+	../common/exit_check.cpp \
 		   
 SOURCES += comic_flow.cpp \
            create_library_dialog.cpp \
@@ -138,7 +139,8 @@ SOURCES += comic_flow.cpp \
     comics_remover.cpp \
         ../common/http_worker.cpp \
 ../common/yacreader_global.cpp \
-    yacreader_libraries.cpp
+    yacreader_libraries.cpp \
+	../common/exit_check.cpp \
 			
 		   
 include(./server/server.pri)

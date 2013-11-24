@@ -3,10 +3,12 @@
 
 #include <QLibrary>
 #include <QDebug>
-
+#include <QApplication>
 
 #include "open_callbacks.h"
 #include "extract_callbacks.h"
+
+#include "yacreader_global.h"
 
 //DEFINE_GUID(CLSID_CFormat7z,0x23170F69, 0x40C1, 0x278A, 0x10, 0x00, 0x00, 0x01, 0x10, 0x07, 0x00, 0x00);
 //DEFINE_GUID(IArchiveKK,0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x06, 0x00, 0x60, 0x00, 0x00);        
@@ -56,12 +58,14 @@ struct SevenZipInterface {
 //SevenZipInterface * szInterface;
 
 CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) :
-	QObject(parent),sevenzLib(0),valid(false)
+	QObject(parent),sevenzLib(0),valid(false),tools(false)
 {
 	szInterface = new SevenZipInterface;
 	//load functions
-	loadFunctions();
+	if(!loadFunctions())
+		return;
 
+	tools = true;
 	//load file
 	if(szInterface->createObjectFunc != 0)
 	{
@@ -106,7 +110,7 @@ CompressedArchive::~CompressedArchive()
 	delete sevenzLib;
 }
 
-void CompressedArchive::loadFunctions()
+bool CompressedArchive::loadFunctions()
 {
 	//LOAD library
 	//TODO check if this works in OSX (7z.so instead of 7z.dylib)
@@ -115,7 +119,11 @@ void CompressedArchive::loadFunctions()
 	if(sevenzLib == 0)
 		sevenzLib = new QLibrary("./utils/7z");
 	if(!sevenzLib->load())
+	{
 		qDebug() << "Loading 7z.dll : " + sevenzLib->errorString() << endl;
+		QApplication::exit(YACReader::SevenZNotFound); //TODO app still crashing
+		return false;
+	}
 	else
 	{
 		qDebug() << "Loading functions" << endl;
@@ -135,6 +143,8 @@ void CompressedArchive::loadFunctions()
 		if((szInterface->setLargePageModeFunc = (SetLargePageModeFunc)sevenzLib->resolve("SetLargePageMode")) == 0)
 			qDebug() << "fail loading function : SetLargePageMode" << endl;
 	}
+
+	return true;
 }
 
 QList<QString> CompressedArchive::getFileNames()
@@ -168,6 +178,11 @@ QList<QString> CompressedArchive::getFileNames()
 bool CompressedArchive::isValid()
 {
 	return valid;
+}
+
+bool CompressedArchive::toolsLoaded()
+{
+	return tools;
 }
 
 int CompressedArchive::getNumFiles()
