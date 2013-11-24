@@ -72,6 +72,7 @@
 		int _numPages;
 		QPixmap _cover;
 		int _coverPage;
+		static bool crash;
 
 	public slots:
 		void create();		

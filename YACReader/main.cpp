@@ -11,7 +11,7 @@
 #include <QTranslator>
 #include "main_window_viewer.h"
 #include "configuration.h"
-
+#include "exit_check.h"
 
 
  #if defined(WIN32) && defined(_DEBUG)
@@ -43,7 +43,9 @@ int main(int argc, char * argv[])
 
 	int ret = app.exec();
 
-	Configuration::getConfiguration().save();
+	//Configuration::getConfiguration().save();
 	
+	YACReader::exitCheck(ret);
+
 	return ret;
 }

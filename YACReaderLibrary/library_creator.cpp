@@ -5,12 +5,17 @@
 #include <QDebug>
 #include <QSqlQuery>
 #include <QSqlRecord>
+#include <QApplication>
+#include <QLibrary>
+
 #include "data_base_management.h"
 #include "qnaturalsorting.h"
 #include "db_helper.h"
 
 #include "compressed_archive.h"
 #include "comic.h"
+
+#include "yacreader_global.h"
 
 #include "QsLog.h"
 
@@ -60,6 +65,16 @@ void LibraryCreator::processLibrary(const QString & source, const QString & targ
 void LibraryCreator::run()
 {
 	stopRunning = false;
+
+	//check for 7z lib
+	QLibrary *sevenzLib = new QLibrary("./utils/7z");
+	if(!sevenzLib->load())
+	{
+		QLOG_ERROR() << "Loading 7z.dll : " + sevenzLib->errorString() << endl;
+		QApplication::exit(YACReader::SevenZNotFound);
+		exit();
+	}
+	sevenzLib->deleteLater();
 
 	if(_mode == CREATOR)
 	{
@@ -465,6 +480,9 @@ void LibraryCreator::update(QDir dirS)
 		}	
 	}
 }
+
+bool ThumbnailCreator::crash = false;
+
 ThumbnailCreator::ThumbnailCreator(QString fileSource, QString target, int coverPage)
 :_fileSource(fileSource),_target(target),_numPages(0),_coverPage(coverPage)
 {
@@ -520,7 +538,16 @@ void ThumbnailCreator::create()
 	else
 	{
 
+	if(crash)
+		return;
+
 	CompressedArchive archive(_fileSource);
+	if(!archive.toolsLoaded())
+	{
+		QLOG_WARN() << "Extracting cover: 7z lib not loaded";
+		crash = true;
+		return;
+	}
 	if(!archive.isValid())
 		QLOG_WARN() << "Extracting cover: file format not supported " << _fileSource;
 	//se filtran para obtener sólo los formatos soportados

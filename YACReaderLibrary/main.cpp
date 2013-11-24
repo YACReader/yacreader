@@ -9,6 +9,7 @@
 #include <QFileInfo>
 #include <QSettings>
 #include <QLibrary>
+#include <QMessageBox>
 
 #include "yacreader_global.h"
 #include "startup.h"
@@ -16,6 +17,7 @@
 #include "comic_db.h"
 #include "db_helper.h"
 #include "yacreader_libraries.h"
+#include "exit_check.h"
 
 #include "QsLog.h"
 #include "QsLogDest.h"
@@ -186,11 +188,13 @@ int main( int argc, char ** argv )
 
   int ret = app.exec();
 
+  QLOG_INFO() << "YACReaderLibrary closed with exit code :" << ret;
+
+  YACReader::exitCheck(ret);
+
   //server shutdown
   s->stop();
   delete s;
-
-  QLOG_INFO() << "YACReaderLibrary closed";
 
   QsLogging::Logger::destroyInstance();
 
