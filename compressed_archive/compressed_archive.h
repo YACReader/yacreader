@@ -41,10 +41,12 @@ public slots:
 	QByteArray getRawDataAtIndex(int index);
 	QList<QString> getFileNames();
 	bool isValid();
+	bool toolsLoaded();
 private:
 	SevenZipInterface * szInterface;
 	QLibrary * sevenzLib;
-	void loadFunctions();
+	bool loadFunctions();
+	bool tools;
 	bool valid;
 	
 };

@@ -88,6 +88,11 @@ namespace YACReader
 	 Opened = 2
  };
 
+ enum YACReaderErrors
+ {
+	 SevenZNotFound = 700
+ };
+
 QString getSettingsPath();
 
 }

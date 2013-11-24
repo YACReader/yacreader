@@ -94,8 +94,8 @@ QMap<QString, QPair<int, QString> > YACReaderLibraries::getLibraries()
 void YACReaderLibraries::addLibrary(const QString &name, const QString &path)
 {
 	int newID=0;
-	foreach(QString name, libraries.keys())
-		newID = qMax(0,libraries.value(name).first);
+	foreach(QString lName, libraries.keys())
+		newID = qMax(newID,libraries.value(lName).first);
 	newID++;
 	libraries.insert(name,QPair<int,QString>(newID,path));
 }

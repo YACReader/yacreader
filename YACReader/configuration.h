@@ -89,9 +89,6 @@ using namespace YACReader;
 		void setLastVersionCheck(const QDate & date){ settings->setValue(LAST_VERSION_CHECK,date);}
 		int getNumDaysBetweenVersionChecks() {return settings->value(NUM_DAYS_BETWEEN_VERSION_CHECKS,1).toInt();}
 		void setNumDaysBetweenVersionChecks(int days) {return settings->setValue(NUM_DAYS_BETWEEN_VERSION_CHECKS,days);}
-		
-		void save();
-
 	};
 
 #endif
