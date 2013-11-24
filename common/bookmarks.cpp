@@ -7,6 +7,8 @@
 #include <QMessageBox>
 #include <QList>
 
+#include "yacreader_global.h"
+
 Bookmarks::Bookmarks()
 :lastPageIndex(0)
 {
@@ -123,7 +125,7 @@ void Bookmarks::save()
 //-----------------------------------------------------------------------------
 void BookmarksList::load()
 {
-	QFile f(QCoreApplication::applicationDirPath()+"/bookmarks.yacr");
+	QFile f(YACReader::getSettingsPath()+"/bookmarks.yacr");
 	if(f.open(QIODevice::ReadOnly))
 	{
 		QDataStream dataS(&f);
@@ -134,7 +136,7 @@ void BookmarksList::load()
 
 void BookmarksList::save()
 {
-	QFile f(QCoreApplication::applicationDirPath()+"/bookmarks.yacr");
+	QFile f(YACReader::getSettingsPath()+"/bookmarks.yacr");
 	f.open(QIODevice::WriteOnly);
 	QDataStream dataS(&f);
 	if(list.count()>numMaxBookmarks)

@@ -1008,7 +1008,7 @@ void MainWindowViewer::getSiblingComics(QString path,QString currentComic)
 	int index = list.indexOf(currentComic);
 		if(index == -1) //comic not found
 		{
-			QFile f(QCoreApplication::applicationDirPath()+"/errorLog.txt");
+			/*QFile f(QCoreApplication::applicationDirPath()+"/errorLog.txt");
 			if(!f.open(QIODevice::WriteOnly))
 			{
 				QMessageBox::critical(NULL,tr("Saving error log file...."),tr("There was a problem saving YACReader error log file. Please, check if you have enough permissions in the YACReader root folder."));
@@ -1025,7 +1025,7 @@ void MainWindowViewer::getSiblingComics(QString path,QString currentComic)
 				txtS << s << '\n';
 			}
 			f.close();
-		}
+		}*/
 		}
 
 	previousComicPath = nextComicPath = "";
