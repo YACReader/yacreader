@@ -67,7 +67,7 @@ void LibraryCreator::run()
 	stopRunning = false;
 
 	//check for 7z lib
-	QLibrary *sevenzLib = new QLibrary("./utils/7z");
+    QLibrary *sevenzLib = new QLibrary(QApplication::applicationDirPath()+"/utils/7z");
 	if(!sevenzLib->load())
 	{
 		QLOG_ERROR() << "Loading 7z.dll : " + sevenzLib->errorString() << endl;
