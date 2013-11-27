@@ -117,7 +117,7 @@ bool CompressedArchive::loadFunctions()
 	// fix1: try to load "7z.so"
 	// fix2: rename 7z.so to 7z.dylib
 	if(sevenzLib == 0)
-		sevenzLib = new QLibrary("./utils/7z");
+        sevenzLib = new QLibrary(QApplication::applicationDirPath()+"/utils/7z");
 	if(!sevenzLib->load())
 	{
 		qDebug() << "Loading 7z.dll : " + sevenzLib->errorString() << endl;
