@@ -488,7 +488,9 @@ void Viewer::mouseMoveEvent(QMouseEvent * event)
 		{
 		if(goToFlow->isVisible())
 		{
-			animateHideGoToFlow();
+            QPoint gtfPos = goToFlow->mapFrom(this,event->pos());
+            if(gtfPos.y() < 0 || gtfPos.x()<0 || gtfPos.x()>goToFlow->width())//TODO this extra check is for Mavericks (mouseMove over goToFlowGL seems to be broken)
+                animateHideGoToFlow();
 			//goToFlow->hide();
 		}
 		else
