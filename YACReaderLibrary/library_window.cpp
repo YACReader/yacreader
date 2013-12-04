@@ -1039,7 +1039,7 @@ void LibraryWindow::openComic()
         QString comicIdS = QString("%1").arg(comicId);
         QString libraryIdS = QString("%1").arg(libraryId);
         QString yacreaderPath = QDir::cleanPath(QCoreApplication::applicationDirPath()+"/../../../YACReader.app");
-        if(QFileInfo(yacreaderPath).exists(yacreaderPath))
+        if(QFileInfo(yacreaderPath).exists())
             QProcess::startDetached("open", QStringList() << "-n" << yacreaderPath << "--args" << path << comicIdS << libraryIdS ); /*<< page << bookmark1 << bookmark2 << bookmark3 << brightness << contrast << gamma*///,QStringList() << path);
         else
             QMessageBox::critical(this,tr("YACReader not found"),tr("YACReader not found, YACReader should be installed in the same folder as YACReaderLibrary."));
