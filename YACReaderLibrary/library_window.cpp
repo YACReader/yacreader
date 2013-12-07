@@ -1445,7 +1445,7 @@ QFileInfo file = QDir::cleanPath(currentPath() + dmCV->getComicPath(modelIndex))
 	QDesktopServices::openUrl(QUrl("file:///"+path, QUrl::TolerantMode));
 #endif
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 	QString filePath = file.absoluteFilePath();
 	QStringList args;
 	args << "-e";
@@ -1459,7 +1459,7 @@ QFileInfo file = QDir::cleanPath(currentPath() + dmCV->getComicPath(modelIndex))
 	QProcess::startDetached("osascript", args);
 #endif
 	
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
 	QString filePath = file.absoluteFilePath();
 	QStringList args;
 	args << "/select," << QDir::toNativeSeparators(filePath);
