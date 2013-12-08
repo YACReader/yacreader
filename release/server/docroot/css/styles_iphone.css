@@ -1,0 +1,342 @@
+body{
+	background-color: #363636;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+#content{
+	width: 256px;
+	background: url("../images/topbox.jpg") no-repeat scroll 0 0 #FFF;
+	margin: 16px auto 0;
+	padding: 16px;	
+}
+
+.folder
+{
+float: left;
+}
+
+.cover
+{
+float: left;
+}
+
+.cover img
+{
+ -webkit-box-shadow: 0px 0px 5px #333;
+}
+
+.index{
+	width: 272px;
+	background: url("../images/topbox.jpg") no-repeat scroll 0 0 #FFF;
+	margin: 7px auto 0;
+	padding: 16px 0px 0px 16px;	
+}
+
+.info
+{
+padding: 8px 0px 0px 0px;
+float: left;
+position: relative;
+height: 110px;
+width: 160px;
+}
+
+.buttons
+{
+position:absolute;
+bottom:0px;
+left:0px;
+}
+
+#itemContainer li
+{
+float: left;
+width: 250px;
+height: 120px;
+margin: 20px 0 15px 0;
+}
+
+#itemContainer a
+{
+	text-decoration: none;
+	font-family: Arial;
+	color: #FFF;
+	font-size: 13px;
+	
+}
+
+.browseButton
+{
+	width: 67px;
+	height: 24px;
+	background: url("../images/bt_browse.jpg") no-repeat scroll 0 0 transparent;
+	border: none;
+	text-align:center;
+	display: block;
+	float: left;
+	padding: 5px 0 0 0;
+	margin: 0 0 0 8px;
+}
+
+.importButton
+{
+	width: 67px;
+	height: 20px;
+	background: url("../images/bt_import.jpg") no-repeat scroll 0 0 transparent;
+	border: none;
+	text-align:center;
+	display: block;
+	float: left;
+	margin: 0 0 0 8px;
+	padding: 4px 0 0 0;
+}
+
+.importedButton
+{
+	width: 77px;
+	height: 20px;
+	background: url("../images/bt_import.jpg") no-repeat scroll 0 -24px transparent;
+	border: none;
+	text-align:center;
+	display: block;
+	float: left;
+	margin: 0 0 0 4px;
+	padding: 4px 0 0 0;
+	text-decoration: none;
+	font-family: Arial;
+	color: #FFF;
+	font-size: 13px;
+}
+
+#librariesList li
+{
+
+
+}
+
+#librariesList a
+{
+	width: 256px;
+	height: 32px;
+	background: url("../images/bt_library_iphone.jpg") no-repeat scroll 0 0 transparent;
+	border: none;
+	display: block;
+
+	padding: 9px 0 0 40px;
+	text-decoration: none;
+	font-family: Arial;
+	color: #FFF;
+	font-size: 13px;
+}
+
+#topIndex
+{
+	width: 100%;
+	margin: 7px 0px 7px 0px;
+}
+
+#topIndex a
+{
+	float: left;
+}
+
+#topIndex .next{
+	width: 29px;
+	height: 29px;
+	border: none;
+	margin: 0 8px 4px 0;
+	padding: 5px 0 0 0;
+	display: block;
+	background: url("../images/bt_next.jpg") no-repeat scroll 0 0 transparent;
+	padding: 0;
+	text-indent: -9999px;
+}
+
+#topIndex .previous{
+	width: 29px;
+	height: 29px;
+	border: none;
+	margin: 0 8px 4px 0;
+	padding: 5px 0 0 0;
+	display: block;
+	background: url("../images/bt_previous.jpg") no-repeat scroll 0 0 transparent;
+	padding: 0;
+	text-indent: -9999px;
+}
+
+#topIndex .up{
+	width: 58px;
+	height: 29px;
+	border: none;
+	margin: 0 8px 4px 0;
+	padding: 5px 0 0 0;
+	background: url("../images/bt_up.jpg") no-repeat scroll 0 0 transparent;
+	color: #FFF;
+	font-size: 17px;
+	display: block;
+	text-decoration: none;
+	font-family: Arial;
+	font-weight: bold;
+	text-align:center;
+}
+
+#topIndex .libraries{
+	width: 92px;
+	height: 29px;
+	border: none;
+	margin: 0 8px 4px 0;
+	padding: 6px 0 0 0;
+	background: url("../images/bt_libraries.jpg") no-repeat scroll 0 0 transparent;
+	color: #FFF;
+	font-size: 17px;
+	display: block;
+	text-decoration: none;
+	font-family: Arial;
+	font-weight: bold;
+	text-align:center;
+}
+
+#libraryList li
+{
+
+}
+
+#libraryList a
+{
+	width: 256px;
+	height: 32px;
+	background: url("../images/bt_library.jpg") no-repeat scroll 0 0 transparent;
+	border: none;
+	padding: 8px 0 0 40px;
+	color: #FFF;
+	font-size: 14px;
+	display: block;
+	text-decoration: none;
+	font-family: Arial;
+}
+
+
+#alphaIndex a, #pageIndex a{
+	width: 29px;
+	height: 29px;
+	background: url("../images/bt_index.jpg") no-repeat scroll 0 0 transparent;
+	border: none;
+	margin: 0 8px 4px 0;
+	padding: 5px 0 0 0;
+	color: #FFF;
+	font-size: 20px;
+	display: block;
+	text-decoration: none;
+	font-family: Arial;
+	font-weight: bold;
+	text-align:center;
+}
+
+#alphaIndex li, #pageIndex li{
+	float: left;
+}
+
+#pageIndex .current{
+	background: url("../images/bt_current.jpg") no-repeat scroll 0 0 transparent;
+	color: #EBEBEB;
+}
+
+#alphaIndex .next, #pageIndex .next{
+	background: url("../images/bt_next.jpg") no-repeat scroll 0 0 transparent;
+	padding: 0;
+	text-indent: -9999px;
+}
+#alphaIndex .previous, #pageIndex .previous{
+	background: url("../images/bt_previous.jpg") no-repeat scroll 0 0 transparent;
+	padding: 0;
+	text-indent: -9999px;
+}
+#alphaIndex .first, #pageIndex .first{
+	background: url("../images/bt_first.jpg") no-repeat scroll 0 0 transparent;
+	padding: 0;
+	text-indent: -9999px;
+}
+#alphaIndex .last, #pageIndex .last{
+	background: url("../images/bt_last.jpg") no-repeat scroll 0 0 transparent;
+	padding: 0;
+	text-indent: -9999px;
+}
+	#content h1{
+		color: #696969;
+		font-weight: bold;
+		font-size: 21px;
+		margin: 0 0 5px 0;
+	}
+	#content h2{
+		color: #000;
+		font-weight: bold;
+		font-size: 12px;
+		margin: 0 0 16px 0;
+	}
+	
+	.inputs_login{
+		width: 256px;
+		height: 64px;
+		background: url("../images/fnd_inputs.jpg") no-repeat scroll 0 0 #FFF;
+		margin: 0 0 18px 0;
+	}
+		.username{
+			width: 200px;
+			height: 24px;
+			background: url("../images/fnd_input_username.jpg") no-repeat scroll 0 0 #2b2b2b;
+			border: none;
+			padding: 0 0 0 44px;
+			margin: 5px 0 6px 8px;
+			font-size: 14px;
+			color: #6e6e6e;
+		}
+		.pass{
+			width: 200px;
+			height: 24px;
+			background: url("../images/fnd_input_pass.jpg") no-repeat scroll 0 0 #2b2b2b;
+			border: none;
+			padding: 0 0 0 44px;
+			margin: 0 0 0 8px;
+			font-size: 14px;
+			color: #6e6e6e;
+		}
+		.button_sign{
+			width: 86px;
+			height: 30px;
+			background: url("../images/bt_login.jpg") no-repeat scroll 0 0 transparent;
+			border: none;
+			margin: 0;
+			padding: 0;
+			color: #FFF;
+			font-size: 14px;
+			float: left;
+		}
+		.infor{
+			color: #666;
+			font-size: 8px;
+			float: left;
+			width: 112px;
+			margin: 0 0 0 8px;
+			line-height: 120%;
+		}
+.sombra{
+	background: url("../images/bottombox.jpg") no-repeat scroll bottom center #FFF;
+	width: 288px;
+	height: 14px;
+	margin: 0 auto;
+}
+.clear{
+	height: 2px;
+	clear: both;
+}
+
+.title{
+	font-family: Arial;
+	font-weight: bold;
+	font-size: 14px;
+	margin: 0 0 0 6px;
+	color: #333;
+	overflow: hidden;
+	word-wrap: break-word;
+	height: 80px;
+}
