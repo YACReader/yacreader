@@ -2,6 +2,7 @@
 
 rm -R *.app
 rm -R YACReader-*
+rm -R *.dmg
 cd YACReader
 make clean
 rm -R YACReader.app

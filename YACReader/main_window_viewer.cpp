@@ -219,13 +219,12 @@ void MainWindowViewer::openFromArgv()
 	
 		currentComicDB.id = comicId;
 		YACReaderLocalClient client;
-		/*int tries = 0;
+        int tries = 1;
 		bool success = false;
-		while(!(success = client.requestComicInfo(libraryId,currentComicDB,siblingComics)) && tries < 3)
-		{
-			tries++;
-		}*/
-		if(client.requestComicInfo(libraryId,currentComicDB,siblingComics))
+        while(!(success = client.requestComicInfo(libraryId,currentComicDB,siblingComics)) && tries != 0)
+            tries--;
+
+        if(success)
 		{
 			isClient = true;
 			open(pathFile+currentComicDB.path,currentComicDB,siblingComics);
@@ -1114,7 +1113,9 @@ void MainWindowViewer::sendComic()
 	YACReaderLocalClient  * client = new YACReaderLocalClient;
 	currentComicDB.info.hasBeenOpened = true;
 	viewer->updateComic(currentComicDB);
-	client->sendComicInfo(libraryId,currentComicDB);
+    int retries = 1;
+    while(!client->sendComicInfo(libraryId,currentComicDB) && retries!=0)
+        retries--;
 	connect(client,SIGNAL(finished()),client,SLOT(deleteLater()));
 	//delete client;
 }

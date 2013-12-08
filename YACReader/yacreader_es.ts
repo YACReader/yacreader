@@ -19,8 +19,8 @@
         <translation>Pulsa en cualquier imagen para ir al marcador</translation>
     </message>
     <message>
-        <location filename="bookmarks_dialog.cpp" line="105"/>
-        <location filename="bookmarks_dialog.cpp" line="129"/>
+        <location filename="bookmarks_dialog.cpp" line="107"/>
+        <location filename="bookmarks_dialog.cpp" line="131"/>
         <source>Loading...</source>
         <translation>Cargando...</translation>
     </message>
@@ -130,78 +130,69 @@
 <context>
     <name>Configuration</name>
     <message>
-        <location filename="configuration.cpp" line="167"/>
         <source>Saving config file....</source>
-        <translation>Guardando el archivo de configuración...</translation>
+        <translation type="obsolete">Guardando el archivo de configuración...</translation>
     </message>
     <message>
-        <location filename="configuration.cpp" line="167"/>
         <source>There was a problem saving YACReader configuration. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation>Hubo un problema al guardar la configuración de YACReader. Por favor, comprueba si tienes suficientes permisos en el directorio raíz de YACReader.</translation>
+        <translation type="obsolete">Hubo un problema al guardar la configuración de YACReader. Por favor, comprueba si tienes suficientes permisos en el directorio raíz de YACReader.</translation>
     </message>
 </context>
 <context>
     <name>FileComic</name>
     <message>
-        <location filename="comic.cpp" line="216"/>
         <source>Not found</source>
         <translatorcomment>No encontrado</translatorcomment>
-        <translation>No encontrado</translation>
+        <translation type="obsolete">No encontrado</translation>
     </message>
     <message>
-        <location filename="comic.cpp" line="216"/>
         <source>Comic not found</source>
-        <translation>Cómic no encontrado</translation>
+        <translation type="obsolete">Cómic no encontrado</translation>
     </message>
     <message>
-        <location filename="comic.cpp" line="243"/>
         <source>File error</source>
-        <translation>Error en archivo</translation>
+        <translation type="obsolete">Error en archivo</translation>
     </message>
     <message>
-        <location filename="comic.cpp" line="243"/>
         <source>File not found or not images in file</source>
-        <translation>Archivo no encontrado o no hay imágenes en él</translation>
+        <translation type="obsolete">Archivo no encontrado o no hay imágenes en él</translation>
     </message>
     <message>
-        <location filename="comic.cpp" line="297"/>
         <source>7z not found</source>
-        <translation>7z no encontrado</translation>
+        <translation type="obsolete">7z no encontrado</translation>
     </message>
     <message>
-        <location filename="comic.cpp" line="297"/>
         <source>7z wasn&apos;t found in your PATH.</source>
-        <translation>7z no se ha encontrado en el PATH.</translation>
+        <translation type="obsolete">7z no se ha encontrado en el PATH.</translation>
     </message>
     <message>
-        <location filename="comic.cpp" line="300"/>
         <source>7z crashed</source>
-        <translation>7z falló</translation>
+        <translation type="obsolete">7z falló</translation>
     </message>
     <message>
-        <location filename="comic.cpp" line="300"/>
         <source>7z crashed.</source>
-        <translation>7z falló.</translation>
+        <translation type="obsolete">7z falló.</translation>
     </message>
     <message>
-        <location filename="comic.cpp" line="303"/>
         <source>7z reading</source>
-        <translation>7z leyendo</translation>
+        <translation type="obsolete">7z leyendo</translation>
     </message>
     <message>
-        <location filename="comic.cpp" line="303"/>
         <source>problem reading from 7z</source>
-        <translation>Problema leyendo desde 7z</translation>
+        <translation type="obsolete">Problema leyendo desde 7z</translation>
     </message>
     <message>
-        <location filename="comic.cpp" line="306"/>
         <source>7z problem</source>
-        <translation>7z problema</translation>
+        <translation type="obsolete">7z problema</translation>
     </message>
     <message>
-        <location filename="comic.cpp" line="306"/>
         <source>Unknown error 7z</source>
-        <translation>Error desconocido 7z</translation>
+        <translation type="obsolete">Error desconocido 7z</translation>
+    </message>
+    <message>
+        <location filename="../common/comic.cpp" line="302"/>
+        <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -262,12 +253,12 @@
 <context>
     <name>HelpAboutDialog</name>
     <message>
-        <location filename="../custom_widgets/help_about_dialog.cpp" line="19"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="21"/>
         <source>About</source>
         <translation>Acerca de</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/help_about_dialog.cpp" line="22"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="24"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
@@ -275,90 +266,90 @@
 <context>
     <name>MainWindowViewer</name>
     <message>
-        <location filename="main_window_viewer.cpp" line="169"/>
+        <location filename="main_window_viewer.cpp" line="241"/>
         <source>&amp;Open</source>
         <translation>&amp;Abrir</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="170"/>
+        <location filename="main_window_viewer.cpp" line="242"/>
         <source>O</source>
         <translation>O</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="172"/>
+        <location filename="main_window_viewer.cpp" line="244"/>
         <source>Open a comic</source>
         <translation>Abrir cómic</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="175"/>
+        <location filename="main_window_viewer.cpp" line="247"/>
         <source>Open Folder</source>
         <translation>Abrir carpeta</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="176"/>
+        <location filename="main_window_viewer.cpp" line="248"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="178"/>
+        <location filename="main_window_viewer.cpp" line="250"/>
         <source>Open image folder</source>
         <oldsource>Open images in a folder</oldsource>
         <translation>Abrir carpeta de imágenes</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="181"/>
+        <location filename="main_window_viewer.cpp" line="253"/>
         <source>Save</source>
         <translation>Guardar</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="183"/>
-        <location filename="main_window_viewer.cpp" line="574"/>
+        <location filename="main_window_viewer.cpp" line="255"/>
+        <location filename="main_window_viewer.cpp" line="709"/>
         <source>Save current page</source>
         <translation>Guardar la página actual</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="187"/>
+        <location filename="main_window_viewer.cpp" line="259"/>
         <source>Previous Comic</source>
         <translation>Cómic anterior</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="190"/>
+        <location filename="main_window_viewer.cpp" line="262"/>
         <source>Open previous comic</source>
         <translation>Abrir cómic anterior</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="194"/>
+        <location filename="main_window_viewer.cpp" line="266"/>
         <source>Next Comic</source>
         <translation>Siguiente Cómic</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="197"/>
+        <location filename="main_window_viewer.cpp" line="269"/>
         <source>Open next comic</source>
         <translation>Abrir siguiente cómic</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="201"/>
+        <location filename="main_window_viewer.cpp" line="273"/>
         <source>&amp;Previous</source>
         <translation>A&amp;nterior</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="204"/>
+        <location filename="main_window_viewer.cpp" line="276"/>
         <source>Go to previous page</source>
         <translation>Ir a la página anterior</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="208"/>
+        <location filename="main_window_viewer.cpp" line="280"/>
         <source>&amp;Next</source>
         <translation>Siguie&amp;nte</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="211"/>
+        <location filename="main_window_viewer.cpp" line="283"/>
         <source>Go to next page</source>
         <translation>Ir a la página siguiente</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="215"/>
-        <location filename="main_window_viewer.cpp" line="224"/>
+        <location filename="main_window_viewer.cpp" line="287"/>
+        <location filename="main_window_viewer.cpp" line="296"/>
         <source>Fit Width</source>
         <translation>Ajustar anchura</translation>
     </message>
@@ -371,184 +362,194 @@
         <translation type="obsolete">Ajustar imagen a...</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="220"/>
+        <location filename="main_window_viewer.cpp" line="292"/>
         <source>Fit image to height</source>
         <translation>Ajustar página a lo alto</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="229"/>
+        <location filename="main_window_viewer.cpp" line="301"/>
         <source>Fit image to width</source>
         <translation>Ajustar página a lo ancho</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="233"/>
+        <location filename="main_window_viewer.cpp" line="305"/>
         <source>Rotate image to the left</source>
         <translation>Rotar imagen a la izquierda</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="234"/>
+        <location filename="main_window_viewer.cpp" line="306"/>
         <source>L</source>
         <translation>L</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="239"/>
+        <location filename="main_window_viewer.cpp" line="311"/>
         <source>Rotate image to the right</source>
         <translation>Rotar imagen a la derecha</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="240"/>
+        <location filename="main_window_viewer.cpp" line="312"/>
         <source>R</source>
         <translation>R</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="245"/>
+        <location filename="main_window_viewer.cpp" line="317"/>
         <source>Double page mode</source>
         <translation>Modo a doble página</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="246"/>
+        <location filename="main_window_viewer.cpp" line="318"/>
         <source>Switch to double page mode</source>
         <translation>Cambiar a modo de doble página</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="247"/>
+        <location filename="main_window_viewer.cpp" line="319"/>
         <source>D</source>
         <translation>D</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="254"/>
+        <location filename="main_window_viewer.cpp" line="326"/>
         <source>Go To</source>
         <translation>Ir a</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="255"/>
+        <location filename="main_window_viewer.cpp" line="327"/>
         <source>G</source>
         <translation>G</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="258"/>
+        <location filename="main_window_viewer.cpp" line="330"/>
         <source>Go to page ...</source>
         <translation>Ir a página...</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="261"/>
+        <location filename="main_window_viewer.cpp" line="333"/>
         <source>Options</source>
         <translation>Opciones</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="262"/>
+        <location filename="main_window_viewer.cpp" line="334"/>
         <source>C</source>
         <translation>C</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="263"/>
+        <location filename="main_window_viewer.cpp" line="335"/>
         <source>YACReader options</source>
         <translation>Opciones de YACReader</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="268"/>
+        <location filename="main_window_viewer.cpp" line="340"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="269"/>
+        <location filename="main_window_viewer.cpp" line="341"/>
         <source>Help, About YACReader</source>
         <translation>Ayuda, Sobre YACReader</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="274"/>
+        <location filename="main_window_viewer.cpp" line="346"/>
         <source>Magnifying glass</source>
         <translation>Lupa</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="275"/>
+        <location filename="main_window_viewer.cpp" line="347"/>
         <source>Switch Magnifying glass</source>
         <translation>Lupa On/Off</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="276"/>
+        <location filename="main_window_viewer.cpp" line="348"/>
         <source>Z</source>
         <translation>Z</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="282"/>
+        <location filename="main_window_viewer.cpp" line="354"/>
         <source>Set bookmark</source>
         <translation>Añadir marcador</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="283"/>
+        <location filename="main_window_viewer.cpp" line="355"/>
         <source>Set a bookmark on the current page</source>
         <translation>Añadir un marcador en la página actual</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="292"/>
+        <location filename="main_window_viewer.cpp" line="364"/>
         <source>Show bookmarks</source>
         <translation>Mostrar marcadores</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="293"/>
+        <location filename="main_window_viewer.cpp" line="365"/>
         <source>Show the bookmarks of the current comic</source>
         <translation>Mostrar los marcadores del cómic actual</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="294"/>
+        <location filename="main_window_viewer.cpp" line="366"/>
         <source>M</source>
         <translation>M</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="299"/>
+        <location filename="main_window_viewer.cpp" line="371"/>
         <source>Show keyboard shortcuts</source>
         <translation>Mostrar atajos de teclado</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="303"/>
+        <location filename="main_window_viewer.cpp" line="375"/>
         <source>Show Info</source>
         <translation>Mostrar información</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="304"/>
+        <location filename="main_window_viewer.cpp" line="376"/>
         <source>I</source>
         <translation>I</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="309"/>
+        <location filename="main_window_viewer.cpp" line="381"/>
         <source>Close</source>
         <translation>Cerrar</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="314"/>
+        <location filename="main_window_viewer.cpp" line="386"/>
         <source>Show Dictionary</source>
         <translation>Mostrar diccionario</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="321"/>
+        <location filename="main_window_viewer.cpp" line="393"/>
         <source>Always on top</source>
         <translation>Siempre visible</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="329"/>
+        <location filename="main_window_viewer.cpp" line="401"/>
         <source>Show full size</source>
         <translation>Mostrar a tamaño original</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="337"/>
+        <location filename="main_window_viewer.cpp" line="409"/>
         <source>Show go to flow</source>
         <translation>Mostrar flow ir a</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="346"/>
+        <location filename="main_window_viewer.cpp" line="418"/>
         <source>&amp;File</source>
         <translation>&amp;Archivo</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="526"/>
+        <location filename="main_window_viewer.cpp" line="598"/>
         <source>Open Comic</source>
         <translation>Abrir cómic</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="526"/>
+        <location filename="main_window_viewer.cpp" line="598"/>
         <source>Comic files</source>
         <translation>Archivos de cómic</translation>
+    </message>
+    <message>
+        <location filename="main_window_viewer.cpp" line="905"/>
+        <source>Remind me in 14 days</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="main_window_viewer.cpp" line="906"/>
+        <source>Not now</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Comic files (*.cbr *.cbz *.rar *.zip *.pdf *.tar *.arj)</source>
@@ -559,39 +560,37 @@
         <translation type="obsolete">Archivos de cómic (*.cbr *.cbz *.rar *.zip *.tar *.arj)</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="550"/>
+        <location filename="main_window_viewer.cpp" line="653"/>
         <source>Open folder</source>
         <translation>Abrir carpeta</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="574"/>
+        <location filename="main_window_viewer.cpp" line="709"/>
         <source>Image files (*.jpg)</source>
         <translation>Archivos de imagen (*.jpg)</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="574"/>
+        <location filename="main_window_viewer.cpp" line="709"/>
         <source>page_%1.jpg</source>
         <translation>página_%1.jpg</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="743"/>
+        <location filename="main_window_viewer.cpp" line="901"/>
         <source>There is a new version avaliable</source>
         <translation>Hay una nueva versión disponible</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="744"/>
+        <location filename="main_window_viewer.cpp" line="902"/>
         <source>Do you want to download the new version?</source>
         <translation>¿Desea descargar la nueva versión?</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="811"/>
         <source>Saving error log file....</source>
-        <translation>Guardando el archivo de log...</translation>
+        <translation type="obsolete">Guardando el archivo de log...</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="811"/>
         <source>There was a problem saving YACReader error log file. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation>Hubo un problema al guardar el archivo de log de YACReader. Por favor, comprueba si tienes suficientes permisos en el directorio raíz de YACReader.</translation>
+        <translation type="obsolete">Hubo un problema al guardar el archivo de log de YACReader. Por favor, comprueba si tienes suficientes permisos en el directorio raíz de YACReader.</translation>
     </message>
 </context>
 <context>
@@ -690,6 +689,19 @@
     </message>
 </context>
 <context>
+    <name>QObject</name>
+    <message>
+        <location filename="../common/exit_check.cpp" line="14"/>
+        <source>7z lib not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/exit_check.cpp" line="14"/>
+        <source>unable to load 7z lib from ./utils</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QPushButton</name>
     <message>
         <source>Hello world!</source>
@@ -717,28 +729,38 @@
 <context>
     <name>Viewer</name>
     <message>
-        <location filename="viewer.cpp" line="43"/>
-        <location filename="viewer.cpp" line="634"/>
+        <location filename="viewer.cpp" line="42"/>
+        <location filename="viewer.cpp" line="681"/>
         <source>Press &apos;O&apos; to open comic.</source>
         <translation>Pulsa &apos;O&apos; para abrir un fichero.</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="183"/>
+        <location filename="viewer.cpp" line="215"/>
         <source>Not found</source>
         <translation>No encontrado</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="183"/>
+        <location filename="viewer.cpp" line="215"/>
         <source>Comic not found</source>
         <translation>Cómic no encontrado</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="773"/>
+        <location filename="viewer.cpp" line="220"/>
+        <source>Error opening</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="viewer.cpp" line="705"/>
+        <source>Page not available!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="viewer.cpp" line="841"/>
         <source>Cover!</source>
         <translation>¡Portada!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="780"/>
+        <location filename="viewer.cpp" line="858"/>
         <source>Last page!</source>
         <translation>¡Última página!</translation>
     </message>
@@ -751,7 +773,7 @@
         <translation type="obsolete">I</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="647"/>
+        <location filename="viewer.cpp" line="694"/>
         <source>Loading...please wait!</source>
         <translation>Cargando...espere, por favor!</translation>
     </message>
@@ -759,14 +781,12 @@
 <context>
     <name>YACReaderDeletingProgress</name>
     <message>
-        <location filename="../custom_widgets/yacreader_deleting_progress.cpp" line="20"/>
         <source>Please wait, deleting in progress...</source>
-        <translation>Borrando, por favor espera...</translation>
+        <translation type="obsolete">Borrando, por favor espera...</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_deleting_progress.cpp" line="35"/>
         <source>cancel</source>
-        <translation>cancelar</translation>
+        <translation type="obsolete">cancelar</translation>
     </message>
 </context>
 <context>
@@ -961,36 +981,39 @@
 <context>
     <name>YACReaderSideBar</name>
     <message>
-        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="21"/>
         <source>LIBRARIES</source>
-        <translation>BIBLIOTECAS</translation>
+        <translation type="obsolete">BIBLIOTECAS</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="23"/>
         <source>FOLDERS</source>
-        <translation>CARPETAS</translation>
+        <translation type="obsolete">CARPETAS</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="30"/>
         <source>Search folders and comics</source>
-        <translation>Buscar carpetas y cómics</translation>
+        <translation type="obsolete">Buscar carpetas y cómics</translation>
     </message>
 </context>
 <context>
-    <name>YACReaderSocialDialog</name>
+    <name>YACReaderTranslator</name>
     <message>
-        <location filename="../custom_widgets/yacreader_social_dialog.cpp" line="50"/>
-        <source>send to:</source>
+        <location filename="translator.cpp" line="62"/>
+        <source>YACReader translator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_social_dialog.cpp" line="62"/>
-        <source>Follow YACReader!</source>
+        <location filename="translator.cpp" line="117"/>
+        <location filename="translator.cpp" line="210"/>
+        <source>Translation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_social_dialog.cpp" line="129"/>
-        <source>I am reading %1 using YACReader.</source>
+        <location filename="translator.cpp" line="140"/>
+        <source>clear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="translator.cpp" line="219"/>
+        <source>Service not available</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
