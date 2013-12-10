@@ -12,6 +12,8 @@
 #include <QSqlRecord>
 #include <QSqlQuery>
 
+#include <limits>
+
 #include "library_item.h"
 #include "comic_db.h"
 #include "data_base_management.h"
