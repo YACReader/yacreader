@@ -1244,6 +1244,12 @@ void PictureFlow::keyPressEvent(QKeyEvent* event)
 	return;
   }
 
+  if(event->key() == Qt::Key_Up)
+  {
+	 //TODO emit selected signal
+	 return;
+  }
+
   event->ignore();
 }
 

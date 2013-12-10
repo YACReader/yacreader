@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QPushButton>
 #include <QSize>
+#include <QApplication>
 
 #include "configuration.h"
 
@@ -32,12 +33,6 @@ GoToFlowGL::GoToFlowGL(QWidget* parent, FlowType flowType)
 
 	resize(static_cast<int>(5*imageSize.width()),static_cast<int>(imageSize.height()*1.7));
 
-	//install eventFilter
-	//flow->installEventFilter(this);
-	//edit->installEventFilter(this);
-	//centerButton->installEventFilter(this);
-	//goToButton->installEventFilter(this);
-
 	this->setCursor(QCursor(Qt::ArrowCursor));
 }
 
@@ -45,25 +40,6 @@ GoToFlowGL::~GoToFlowGL()
 {
 	delete flow;
 }
-
-bool GoToFlowGL::eventFilter(QObject *target, QEvent *event)
-{
-	if (event->type() == QEvent::KeyPress) 
-	{
-		QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
-		int key = keyEvent->key();
-		if((key==Qt::Key_Return)||
-			(key==Qt::Key_Enter)||
-			(key==Qt::Key_Space)||
-			(key==Qt::Key_Left)||
-			(key==Qt::Key_Right)||
-			(key==Qt::Key_S))
-			this->keyPressEvent(keyEvent);
-	}
-	return QWidget::eventFilter(target, event);
-}
-
-
 
 void GoToFlowGL::reset()
 {
@@ -167,3 +143,16 @@ void GoToFlowGL::updateConfig(QSettings * settings)
 
 }
 
+void GoToFlowGL::keyPressEvent(QKeyEvent* event)
+{
+	switch (event->key())
+	{
+		case Qt::Key_Left: case Qt::Key_Right: case Qt::Key_Up:
+			QApplication::sendEvent(flow,event);
+			return;
+		default:
+			break;
+	}
+
+	GoToFlowWidget::keyPressEvent(event);
+}

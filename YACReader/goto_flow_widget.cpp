@@ -26,6 +26,8 @@ GoToFlowWidget::GoToFlowWidget(QWidget * parent)
 	mainLayout->setSpacing(0);
 
 	setLayout(mainLayout);
+
+	//toolBar->installEventFilter(this);
 }
 
 GoToFlowWidget::~GoToFlowWidget() { 
@@ -53,12 +55,21 @@ void GoToFlowWidget::keyPressEvent(QKeyEvent* event)
 	case Qt::Key_S:
 		QCoreApplication::sendEvent(this->parent(),event);
 		break;
-	case Qt::Key_Left: case Qt::Key_Right:
-		//if(event->modifiers() == Qt::ControlModifier)
-		//flow->keyPressEvent(event);
-			//QCoreApplication::sendEvent(flow,event);
-		break;
 	}
 
 	event->accept();
 }
+
+/*bool GoToFlowWidget::eventFilter(QObject * target, QEvent * event)
+{
+	if(event->type() == QEvent::KeyPress)
+	{
+		QKeyEvent * e = static_cast<QKeyEvent *>(event);
+		if(e->key()==Qt::Key_S || e->key() == Qt::Key_Space)
+		{
+			this->keyPressEvent(e);
+			return true;
+		}
+	}
+	return QWidget::eventFilter(target,event);
+}*/

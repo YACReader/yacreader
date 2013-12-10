@@ -10,6 +10,7 @@ class QIntValidator;
 class QPushButton;
 class QPushButton;
 class QSize;
+class QKeyEvent;
 
 class GoToFlowGL : public GoToFlowWidget
 {
@@ -23,7 +24,6 @@ public:
 	void setNumSlides(unsigned int slides);
 	void setImageReady(int index,const QByteArray & image);
 	void updateSize();
-	bool eventFilter(QObject *target, QEvent *event);
 
 	void updateConfig(QSettings * settings);
 
@@ -31,8 +31,7 @@ signals:
 	void goToPage(unsigned int page);
 private:
 	YACReaderPageFlowGL * flow;
-	
-	
+	void keyPressEvent(QKeyEvent* event);
 	//Comic * comic;
 	QSize imageSize;
 };
