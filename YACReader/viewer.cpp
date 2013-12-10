@@ -82,6 +82,7 @@ shouldOpenPrevious(false)
 	else
 		goToFlow = new GoToFlow(this,Configuration::getConfiguration().getFlowType());
 
+	goToFlow->setFocusPolicy(Qt::StrongFocus);
 	goToFlow->hide();
 	showGoToFlowAnimation = new QPropertyAnimation(goToFlow,"pos");
 	showGoToFlowAnimation->setDuration(150);
@@ -255,7 +256,10 @@ void Viewer::updatePage()
 	emit backgroundChanges();
 	emit(pageAvailable(true));
 
-	setFocus(Qt::ShortcutFocusReason);
+	if(goToFlow->isHidden())
+		setFocus(Qt::ShortcutFocusReason);
+	else
+		goToFlow->setFocus(Qt::OtherFocusReason);
 	delete previousPage;
 
 	if(currentPage->isNull())

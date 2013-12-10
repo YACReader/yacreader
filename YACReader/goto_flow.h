@@ -23,6 +23,7 @@ class SlideInitializer;
 class PageLoader;
 class YACReaderFlow;
 class PictureFlow;
+class QKeyEvent;
 
 class GoToFlow : public GoToFlowWidget
 {
@@ -31,9 +32,9 @@ public:
 	GoToFlow(QWidget* parent = 0,FlowType flowType = CoverFlowLike);
 	~GoToFlow();
 	bool ready; //comic is ready for read.
-	bool eventFilter(QObject *target, QEvent *event);
 private:
 	YACReaderFlow * flow;
+	void keyPressEvent(QKeyEvent* event);
 	//Comic * comic;
 	QSize imageSize;
 

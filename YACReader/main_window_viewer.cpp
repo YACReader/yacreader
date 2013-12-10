@@ -273,6 +273,7 @@ void MainWindowViewer::createActions()
 	prevAction = new QAction(tr("&Previous"),this);
 	prevAction->setIcon(QIcon(":/images/viewer_toolbar/previous.png"));
 	prevAction->setShortcut(Qt::Key_Left);
+	prevAction->setShortcutContext(Qt::WidgetShortcut);
 	prevAction->setToolTip(tr("Go to previous page"));
 	prevAction->setDisabled(true);
 	connect(prevAction, SIGNAL(triggered()),viewer,SLOT(prev()));
@@ -280,6 +281,7 @@ void MainWindowViewer::createActions()
 	nextAction = new QAction(tr("&Next"),this);
 	nextAction->setIcon(QIcon(":/images/viewer_toolbar/next.png"));
 	nextAction->setShortcut(Qt::Key_Right);
+	nextAction->setShortcutContext(Qt::WidgetShortcut);
 	nextAction->setToolTip(tr("Go to next page"));
 	nextAction->setDisabled(true);
 	connect(nextAction, SIGNAL(triggered()),viewer,SLOT(next()));
