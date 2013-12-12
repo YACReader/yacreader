@@ -72,7 +72,10 @@ struct SevenZipInterface {
 //SevenZipInterface * szInterface;
 
 CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) :
-    QObject(parent),sevenzLib(0),valid(false),tools(false),isRar(false)
+    QObject(parent),sevenzLib(0),valid(false),tools(false)
+#ifdef Q_OS_UNIX
+  ,isRar(false)
+#endif
 {
 	szInterface = new SevenZipInterface;
 	//load functions
