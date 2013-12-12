@@ -54,6 +54,8 @@ extern "C"
 #include "libp7zip/CPP/7zip/Common/StreamObjects.h"
 #include "libp7zip/CPP/7zip/Common/StreamUtils.h"
 
+#include "libp7zip/CPP/7zip/ICoder.h"
+
 extern "C"
 {
 #include "libp7zip/C/Alloc.h"

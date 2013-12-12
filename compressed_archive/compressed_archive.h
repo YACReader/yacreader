@@ -3,6 +3,11 @@
 
 #include <QObject>
 
+#ifdef Q_OS_UNIX
+    #include "libp7zip/CPP/7zip/ICoder.h"
+    #include "libp7zip/CPP/Common/MyCom.h"
+#endif
+
 class ExtractDelegate;
 
 #ifdef Q_OS_WIN
@@ -26,13 +31,28 @@ class QLibrary;
 
 struct SevenZipInterface;
 
-class CompressedArchive : public QObject
+class MyCodecs;
+
+#ifdef Q_OS_UNIX
+    class CompressedArchive : public QObject, public ICompressCodecsInfo, public CMyUnknownImp
+#else
+    class CompressedArchive : public QObject
+#endif
 {
 	Q_OBJECT
 public:
 	explicit CompressedArchive(const QString & filePath, QObject *parent = 0);
 	~CompressedArchive();
-	
+
+#ifdef Q_OS_UNIX
+    MY_UNKNOWN_IMP
+
+    STDMETHOD(GetNumberOfMethods)(UInt32 *numMethods);
+    STDMETHOD(GetProperty)(UInt32 index, PROPID propID, PROPVARIANT *value);
+    STDMETHOD(CreateDecoder)(UInt32 index, const GUID *iid, void **coder);
+    STDMETHOD(CreateEncoder)(UInt32 index, const GUID *iid, void **coder);
+#endif
+
 signals:
 	
 public slots:
@@ -45,10 +65,14 @@ public slots:
 private:
 	SevenZipInterface * szInterface;
 	QLibrary * sevenzLib;
+#ifdef Q_OS_UNIX
+    QLibrary * rarLib;
+#endif
 	bool loadFunctions();
 	bool tools;
 	bool valid;
 	
+    friend class MyCodecs;
 };
 
 #endif // COMPRESSED_ARCHIVE_H
