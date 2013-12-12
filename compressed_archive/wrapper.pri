@@ -102,7 +102,8 @@ HEADERS += $$PWD/compressed_archive.h \
 	$$PWD/libp7zip/CPP/7zip/Common/StreamUtils.h \
 	$$PWD/libp7zip/C/Alloc.h \
 	$$PWD/libp7zip/CPP/7zip/Common/StreamObjects.h \
-	$$PWD/libp7zip/CPP/Common/MyWindows.h
+        $$PWD/libp7zip/CPP/Common/MyWindows.h \
+        $$PWD/libp7zip/CPP/7zip/ICoder.h \
 }
 
 

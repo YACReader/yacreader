@@ -34,10 +34,20 @@ DEFINE_GUID(CLSID_CFormatSplit,   0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 
 DEFINE_GUID(CLSID_CFormatWim,     0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 0x01, 0x10, 0xe6, 0x00, 0x00);
 DEFINE_GUID(CLSID_CFormatZ,       0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 0x01, 0x10, 0x05, 0x00, 0x00);
 
+#ifdef Q_OS_WIN
 GUID _supportedFileFormats[] = {CLSID_CFormatRar,CLSID_CFormatZip,CLSID_CFormatTar,CLSID_CFormat7z,CLSID_CFormatArj};
+#else
+GUID _supportedFileFormats[] = {CLSID_CFormatZip,CLSID_CFormatTar,CLSID_CFormat7z,CLSID_CFormatArj};
+#endif
 std::vector<GUID> supportedFileFormats (_supportedFileFormats, _supportedFileFormats + sizeof(_supportedFileFormats) / sizeof(_supportedFileFormats[0]) );
 
-DEFINE_GUID(IID_InArchive,        0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x06, 0x00, 0x60, 0x00, 0x00);
+DEFINE_GUID(IID_InArchive,                0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x06, 0x00, 0x60, 0x00, 0x00);
+DEFINE_GUID(IID_ISetCompressCodecsInfo,   0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x04, 0x00, 0x61, 0x00, 0x00);
+
+DEFINE_GUID(IID_IOutStream,   0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x03, 0x00, 0x04, 0x00, 0x00);
+DEFINE_GUID(IID_IInStream,   0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x03, 0x00, 0x03, 0x00, 0x00);
+DEFINE_GUID(IID_IStreamGetSize,   0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x03, 0x00, 0x06, 0x00, 0x00);
+DEFINE_GUID(IID_ISequentialInStream,   0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x03, 0x00, 0x01, 0x00, 0x00);
 
 struct SevenZipInterface {
 	CreateObjectFunc createObjectFunc;
@@ -47,6 +57,12 @@ struct SevenZipInterface {
 	GetHandlerPropertyFunc getHandlerPropertyFunc;
 	GetHandlerPropertyFunc2 getHandlerPropertyFunc2;
 	SetLargePageModeFunc setLargePageModeFunc;
+
+#ifdef Q_OS_UNIX
+    CreateObjectFunc createObjectFuncRar;
+    GetMethodPropertyFunc getMethodPropertyFuncRar;
+    GetNumberOfMethodsFunc getNumberOfMethodsFuncRar;
+#endif
 
 	CMyComPtr<IInArchive> archive;
 
@@ -99,15 +115,57 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 			}
 		}
 		if(!formatFound)
+        {
+#ifdef Q_OS_WIN
 			qDebug() << "Can not open archive" << endl;
+#else
+            if (szInterface->createObjectFunc(&CLSID_CFormatRar, &IID_InArchive, (void **)&szInterface->archive) != S_OK)
+            {
+                qDebug() << "Error creating rar archive :" + filePath;
+                return;
+            }
+
+            CMyComPtr<ISetCompressCodecsInfo> codecsInfo;
+            if (szInterface->archive->QueryInterface(IID_ISetCompressCodecsInfo,(void **)&codecsInfo) != S_OK)
+            {
+                qDebug() << "Error getting rar codec :" + filePath;
+                return;
+            }
+
+            if (codecsInfo->SetCompressCodecsInfo(this)  != S_OK)
+            {
+                qDebug() << "Error setting rar codec";
+                return;
+            }
+
+            if (!fileSpec->Open((LPCTSTR)filePath.toStdWString().data()))
+            {
+                qDebug() << "Error opening rar file :" + filePath;
+                return;
+            }
+            //qDebug() << "Can not open archive file : " + filePath << endl;
+
+            if (szInterface->archive->Open(file, 0, openCallback) == S_OK)
+            {
+                valid = formatFound = true;
+            }
+            else
+                qDebug() << "Error opening rar archive";
+
+
+#endif
+        }
 	}
 }
 
 CompressedArchive::~CompressedArchive()
 {
 	//szInterface->fileSpec->Release();
-	delete szInterface;
-	delete sevenzLib;
+    delete szInterface;
+#ifdef Q_OS_UNIX
+    delete rarLib;
+#endif
+    delete sevenzLib;
 }
 
 bool CompressedArchive::loadFunctions()
@@ -117,11 +175,22 @@ bool CompressedArchive::loadFunctions()
 	// fix1: try to load "7z.so"
 	// fix2: rename 7z.so to 7z.dylib
 	if(sevenzLib == 0)
+    {
+#ifdef Q_OS_UNIX
+        rarLib = new QLibrary(QApplication::applicationDirPath()+"/utils/Codecs/Rar29");
+        if(!rarLib->load())
+        {
+            qDebug() << "Error Loading Rar29.so : " + rarLib->errorString() << endl;
+            QApplication::exit(YACReader::SevenZNotFound);
+            return false;
+        }
+#endif
         sevenzLib = new QLibrary(QApplication::applicationDirPath()+"/utils/7z");
+    }
 	if(!sevenzLib->load())
 	{
-		qDebug() << "Loading 7z.dll : " + sevenzLib->errorString() << endl;
-		QApplication::exit(YACReader::SevenZNotFound); //TODO app still crashing
+        qDebug() << "Error Loading 7z.dll : " + sevenzLib->errorString() << endl;
+        QApplication::exit(YACReader::SevenZNotFound);
 		return false;
 	}
 	else
@@ -142,6 +211,15 @@ bool CompressedArchive::loadFunctions()
 			qDebug() << "fail loading function : GetHandlerProperty2" << endl;
 		if((szInterface->setLargePageModeFunc = (SetLargePageModeFunc)sevenzLib->resolve("SetLargePageMode")) == 0)
 			qDebug() << "fail loading function : SetLargePageMode" << endl;
+
+#ifdef Q_OS_UNIX
+        if((szInterface->createObjectFuncRar = (CreateObjectFunc)rarLib->resolve("CreateObject")) == 0)
+            qDebug() << "fail loading function (rar) : CreateObject" << endl;
+        if((szInterface->getMethodPropertyFuncRar = (GetMethodPropertyFunc)rarLib->resolve("GetMethodProperty")) == 0)
+            qDebug() << "fail loading function (rar) : GetMethodProperty" << endl;
+        if((szInterface->getNumberOfMethodsFuncRar = (GetNumberOfMethodsFunc)rarLib->resolve("GetNumberOfMethods")) == 0)
+            qDebug() << "fail loading function (rar) : GetNumberOfMethods" << endl;
+#endif
 	}
 
 	return true;
@@ -191,6 +269,7 @@ int CompressedArchive::getNumFiles()
 	szInterface->archive->GetNumberOfItems(&numItems);
 	return numItems;
 }
+
 QList<QByteArray> CompressedArchive::getAllData(const QVector<quint32> & indexes, ExtractDelegate * delegate)
 {
 	CArchiveExtractCallback *extractCallbackSpec = new CArchiveExtractCallback(true,delegate);
@@ -230,5 +309,34 @@ QByteArray CompressedArchive::getRawDataAtIndex(int index)
 		
 		return QByteArray((char *)extractCallbackSpec->data,extractCallbackSpec->newFileSize);
 	}
-	return QByteArray();
+    return QByteArray();
 }
+
+#ifdef Q_OS_UNIX
+
+STDMETHODIMP CompressedArchive::GetNumberOfMethods(UInt32 *numMethods)
+{
+    return szInterface->getNumberOfMethodsFuncRar(numMethods);
+}
+
+STDMETHODIMP CompressedArchive::GetProperty(UInt32 index, PROPID propID, PROPVARIANT *value)
+{
+    return  szInterface->getMethodPropertyFuncRar(index,propID,value);
+}
+
+int i = 0;
+STDMETHODIMP CompressedArchive::CreateDecoder(UInt32 index, const GUID *interfaceID, void **coder)
+{
+    NCOM::CPropVariant propVariant;
+    szInterface->getMethodPropertyFuncRar(index,NMethodPropID::kDecoder,&propVariant);
+    return szInterface->createObjectFuncRar((const GUID *)propVariant.bstrVal,interfaceID,coder);
+}
+
+STDMETHODIMP CompressedArchive::CreateEncoder(UInt32 index, const GUID *interfaceID, void **coder)
+{
+    return szInterface->createObjectFuncRar(&CLSID_CFormatRar,interfaceID,coder);
+}
+
+#endif
+
+
