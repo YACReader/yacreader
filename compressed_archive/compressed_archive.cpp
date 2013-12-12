@@ -67,16 +67,12 @@ struct SevenZipInterface {
 #endif
 
 	CMyComPtr<IInArchive> archive;
-
-	//---
-	CInFileStream *fileSpec;
-	CMyComPtr<IInStream> file;
 };
 
 //SevenZipInterface * szInterface;
 
 CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) :
-	QObject(parent),sevenzLib(0),valid(false),tools(false)
+    QObject(parent),sevenzLib(0),valid(false),tools(false),isRar(false)
 {
 	szInterface = new SevenZipInterface;
 	//load functions
@@ -104,10 +100,16 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 			//GUID uuid = supportedFileFormats[i];
 			//qDebug() << "trying : " << uuid << endl;
 			if (szInterface->createObjectFunc(&supportedFileFormats[i], &IID_InArchive, (void **)&szInterface->archive) != S_OK)
+            {
+                qDebug() << "wrong format";
 				continue;
+            }
 
-			if (!fileSpec->Open((LPCTSTR)filePath.toStdWString().data()))
+            if (!fileSpec->Open((LPCTSTR)filePath.toStdWString().data()))
+            {
+                qDebug() << "unable to load" + filePath;
 				continue;
+            }
 			//qDebug() << "Can not open archive file : " + filePath << endl;	
 
 			if (szInterface->archive->Open(file, 0, openCallback) == S_OK)
@@ -115,6 +117,8 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 				valid = formatFound = true;
 				break;
 			}
+            else
+                qDebug() << "Can not open archive file : " + filePath << endl;
 		}
 		if(!formatFound)
         {
@@ -150,6 +154,7 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
             if (szInterface->archive->Open(file, 0, openCallback) == S_OK)
             {
                 valid = formatFound = true;
+                isRar = true;
             }
             else
                 qDebug() << "Error opening rar archive";
@@ -162,7 +167,10 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 
 CompressedArchive::~CompressedArchive()
 {
-	//szInterface->fileSpec->Release();
+#ifdef Q_OS_UNIX
+    if(isRar) //TODO: fix this!!! Posible memory leak. If AddRef is not used, a crash occurs in "delete szInterface"
+        szInterface->archive->AddRef();
+#endif
     delete szInterface;
 #ifdef Q_OS_UNIX
     delete rarLib;
@@ -336,7 +344,7 @@ STDMETHODIMP CompressedArchive::CreateDecoder(UInt32 index, const GUID *interfac
 
 STDMETHODIMP CompressedArchive::CreateEncoder(UInt32 index, const GUID *interfaceID, void **coder)
 {
-    return szInterface->createObjectFuncRar(&CLSID_CFormatRar,interfaceID,coder);
+    return S_OK;//szInterface->createObjectFuncRar(&CLSID_CFormatRar,interfaceID,coder);
 }
 
 #endif

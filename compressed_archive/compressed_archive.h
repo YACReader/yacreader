@@ -51,6 +51,8 @@ public:
     STDMETHOD(GetProperty)(UInt32 index, PROPID propID, PROPVARIANT *value);
     STDMETHOD(CreateDecoder)(UInt32 index, const GUID *iid, void **coder);
     STDMETHOD(CreateEncoder)(UInt32 index, const GUID *iid, void **coder);
+
+    bool isRar;
 #endif
 
 signals:
