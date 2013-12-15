@@ -49,7 +49,7 @@ else {
 INCLUDEPATH  += /usr/local/include/poppler/qt4
 LIBS         += -L/usr/local/lib -lpoppler-qt4
 }
-
+QT += macextras
 }
 
 #CONFIG += release
