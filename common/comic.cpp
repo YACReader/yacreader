@@ -414,7 +414,16 @@ void FileComic::process()
 {
 	CompressedArchive archive(_path);
 	if(!archive.toolsLoaded())
+    {
+        emit errorOpening(tr("7z not found"));
 		return;
+    }
+
+    if(!archive.isValid())
+    {
+        emit errorOpening(tr("Format not supported"));
+        return;
+    }
 	//se filtran para obtener sólo los formatos soportados
 	_order = archive.getFileNames();
 	_fileNames = filter(_order);
@@ -665,11 +674,11 @@ void PDFComic::renderPage(int page)
 	Poppler::Page* pdfpage = pdfComic->page(page);
 	if (pdfpage)
 	{
-		QImage img = pdfpage->renderToImage(150,150);
-		delete pdfpage;
+        QImage img = pdfpage->renderToImage(150,150);
+        delete pdfpage;
 		QByteArray ba;
 		QBuffer buf(&ba);
-		img.save(&buf, "jpg");
+        img.save(&buf, "jpg");
 		_pages[page] = ba;
 		emit imageLoaded(page);
 		emit imageLoaded(page,_pages[page]);

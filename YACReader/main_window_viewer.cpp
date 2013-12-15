@@ -122,7 +122,7 @@ void MainWindowViewer::setupUI()
 	setUnifiedTitleAndToolBarOnMac(true);
 
 	viewer = new Viewer(this);
-	connect(viewer,SIGNAL(reset()),this,SLOT(disableActions()));
+    connect(viewer,SIGNAL(reset()),this,SLOT(processReset()));
 	//detected end of comic
 	connect(viewer,SIGNAL(openNextComic()),this,SLOT(openNextComic()));
 	//detected start of comic
@@ -888,8 +888,28 @@ void MainWindowViewer::checkNewVersion()
 		tT->start(100);
 
 		conf.setLastVersionCheck(current);
-	}
+    }
 }
+
+void MainWindowViewer::processReset()
+{
+    if(isClient)
+    {
+        if(siblingComics.count()>1)
+        {
+            bool openNextB = openNextComicAction->isEnabled();
+            bool openPrevB = openPreviousComicAction->isEnabled();
+            disableActions();
+            openNextComicAction->setEnabled(openNextB);
+            openPreviousComicAction->setEnabled(openPrevB);
+        }
+        else
+            disableActions();
+    }
+    else
+        disableActions();
+}
+
 void MainWindowViewer::changeFit()
 {
 	Configuration & conf = Configuration::getConfiguration();

@@ -213,12 +213,14 @@ void Viewer::open(QString pathFile, const ComicDB & comic)
 
 void Viewer::showMessageErrorOpening()
 {
-	QMessageBox::critical(NULL,tr("Not found"),tr("Comic not found"));
+    QMessageBox::critical(this,tr("Not found"),tr("Comic not found"));
+    resetContent();
 }
 
 void Viewer::showMessageErrorOpening(QString message)
 {
-	QMessageBox::critical(NULL,tr("Error opening"),message);
+    QMessageBox::critical(this,tr("Error opening comic"),message);
+    resetContent();
 }
 
 void Viewer::next()
