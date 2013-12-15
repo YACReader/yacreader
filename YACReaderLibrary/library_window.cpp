@@ -1038,10 +1038,17 @@ void LibraryWindow::openComic()
 #ifdef Q_OS_MAC
         QString comicIdS = QString("%1").arg(comicId);
         QString libraryIdS = QString("%1").arg(libraryId);
-        QProcess::startDetached("open", QStringList() << "-n" << QDir::cleanPath(QCoreApplication::applicationDirPath()+"/../../../YACReader.app") << "--args" << path << comicIdS << libraryIdS ); /*<< page << bookmark1 << bookmark2 << bookmark3 << brightness << contrast << gamma*///,QStringList() << path);
+        QString yacreaderPath = QDir::cleanPath(QCoreApplication::applicationDirPath()+"/../../../YACReader.app");
+        if(QFileInfo(yacreaderPath).exists(yacreaderPath))
+            QProcess::startDetached("open", QStringList() << "-n" << yacreaderPath << "--args" << path << comicIdS << libraryIdS ); /*<< page << bookmark1 << bookmark2 << bookmark3 << brightness << contrast << gamma*///,QStringList() << path);
+        else
+            QMessageBox::critical(this,tr("YACReader not found"),tr("YACReader not found, YACReader should be installed in the same folder as YACReaderLibrary."));
 #else           
 																																  /* \"%4\" \"%5\" \"%6\" \"%7\" \"%8\" \"%9\" \"%10\" */
-		QProcess::startDetached(QDir::cleanPath(QCoreApplication::applicationDirPath())+QString("/YACReader \"%1\" \"%2\" \"%3\"").arg(path).arg(comicId).arg(libraryId)/*.arg(page).arg(bookmark1).arg(bookmark2).arg(bookmark3).arg(brightness).arg(contrast).arg(gamma)*/,QStringList());
+        if(!QProcess::startDetached(QDir::cleanPath(QCoreApplication::applicationDirPath())+QString("/YACReader \"%1\" \"%2\" \"%3\"").arg(path).arg(comicId).arg(libraryId)/*.arg(page).arg(bookmark1).arg(bookmark2).arg(bookmark3).arg(brightness).arg(contrast).arg(gamma)*/,QStringList()))
+        {
+            QMessageBox::critical(this,tr("YACReader not found"),tr("YACReader not found, YACReader should be installed in the same folder as YACReaderLibrary."));
+        }
 #endif        
 		setCurrentComicOpened();
 	}
