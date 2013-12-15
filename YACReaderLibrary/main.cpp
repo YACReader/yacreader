@@ -123,6 +123,13 @@ void logSystemAndConfig()
 
 int main( int argc, char ** argv )
 {
+#ifdef Q_OS_MAC
+  #if QT_VERSION < 0x050000
+    if(QSysInfo::MacintoshVersion > QSysInfo::MV_10_8)
+        QFont::insertSubstitution(".Lucida Grande UI", "Lucida Grande");
+  #endif
+#endif
+
   QApplication app( argc, argv );
 
   app.setApplicationName("YACReaderLibrary");

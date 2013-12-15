@@ -62,6 +62,10 @@
 
 #include "QsLog.h"
 
+#ifdef Q_OS_MAC
+//#include <QtMacExtras>
+#endif
+
 LibraryWindow::LibraryWindow()
 	:QMainWindow(),fullscreen(false),fetching(false),previousFilter("")
 {
