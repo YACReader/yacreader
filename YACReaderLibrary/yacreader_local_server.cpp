@@ -52,6 +52,8 @@ void YACReaderLocalServer::sendResponse()
 		connect(worker,SIGNAL(finished()),worker,SLOT(deleteLater()));
 		worker->start();
 	}
+
+	QLOG_INFO() << "connection incoming";
 	//clientConnection->waitForBytesWritten();*/
 	//clientConnection->disconnectFromServer();
 }
@@ -94,27 +96,37 @@ void YACReaderClientConnectionWorker::run()
 	ComicDB comic;
 	int tries = 0;
 	//QByteArray data;
-	while(clientConnection->bytesAvailable() < sizeof(quint16) && tries < 200)
+	while(clientConnection->bytesAvailable() < sizeof(quint32) && tries < 200)
 	{
 		clientConnection->waitForReadyRead(10);
 		tries++;
 	}
 	if(tries == 200)
+	{
+		QLOG_ERROR() << "unable to read the message size";
 		return;
-	QDataStream sizeStream(clientConnection->read(sizeof(quint16)));
+	}
+
+	QDataStream sizeStream(clientConnection->read(sizeof(quint32)));
 	sizeStream.setVersion(QDataStream::Qt_4_8);
-	quint16 totalSize = 0;
+	quint32 totalSize = 0;
 	sizeStream >> totalSize;
 
 	tries = 0;
-	while(clientConnection->bytesAvailable() < totalSize && tries < 200)
+	QByteArray data;
+	while(data.size() < totalSize && tries < 200)
 	{
-		clientConnection->waitForReadyRead(10);
+		data.append(clientConnection->readAll());
+		if(data.length() < totalSize)
+			clientConnection->waitForReadyRead(100);
 		tries++;
 	}
 	if(tries == 200)
+	{
+		QLOG_ERROR() << "unable to read message";
 		return;
-	QDataStream dataStream(clientConnection->read(totalSize));
+	}
+	QDataStream dataStream(data);
 	quint8 msgType;
 	dataStream >> msgType;
 	dataStream >> libraryId;
@@ -130,11 +142,11 @@ void YACReaderClientConnectionWorker::run()
 			QByteArray block;
 			QDataStream out(&block, QIODevice::WriteOnly);
 			out.setVersion(QDataStream::Qt_4_8);
-			out << (quint16)0;
+			out << (quint32)0;
 			out << comic;
 			out << siblings;
 			out.device()->seek(0);
-			out << (quint16)(block.size() - sizeof(quint16));
+			out << (quint32)(block.size() - sizeof(quint32));
 
 			int  written = 0;
 			tries = 0;
