@@ -306,7 +306,7 @@ void FileComic::crcError(int index)
 void FileComic::unknownError(int index)
 {
 	Q_UNUSED(index)
-	//emit errorOpening(tr("Unknown error opening the file"));
+    emit errorOpening(tr("Unknown error opening the file"));
 	//emit errorOpening();
 }
 
