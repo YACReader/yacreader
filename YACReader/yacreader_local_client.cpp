@@ -35,12 +35,12 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 		QByteArray block;
 		QDataStream out(&block, QIODevice::WriteOnly);
 		out.setVersion(QDataStream::Qt_4_8);
-		out << (quint16)0;
+		out << (quint32)0;
 		out << (quint8)YACReader::RequestComicInfo;
 		out << libraryId;
 		out << comic;
 		out.device()->seek(0);
-		out << (quint16)(block.size() - sizeof(quint16));
+		out << (quint32)(block.size() - sizeof(quint32));
 
 		int  written = 0;
 		int tries = 0;
@@ -58,7 +58,7 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 		
 		//QByteArray data;
 		tries = 0;
-		while(localSocket->bytesAvailable() < sizeof(quint16) && tries < 10)
+		while(localSocket->bytesAvailable() < sizeof(quint32) && tries < 10)
 		{
 			localSocket->waitForReadyRead(100);
 			tries++;
@@ -68,9 +68,9 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 			localSocket->close();
 			return false;
 		}
-		QDataStream sizeStream(localSocket->read(sizeof(quint16)));
+		QDataStream sizeStream(localSocket->read(sizeof(quint32)));
 		sizeStream.setVersion(QDataStream::Qt_4_8);
-		quint16 totalSize = 0;
+		quint32 totalSize = 0;
 		sizeStream >> totalSize;
 		
 		QByteArray data;
@@ -107,12 +107,12 @@ bool YACReaderLocalClient::sendComicInfo(quint64 libraryId, ComicDB & comic)
 		QByteArray block;
 		QDataStream out(&block, QIODevice::WriteOnly);
 		out.setVersion(QDataStream::Qt_4_8);
-		out << (quint16)0;
+		out << (quint32)0;
 		out << (quint8)YACReader::SendComicInfo;
 		out << libraryId;
 		out << comic;
 		out.device()->seek(0);
-		out << (quint16)(block.size() - sizeof(quint16));
+		out << (quint32)(block.size() - sizeof(quint32));
 
 		int  written = 0;
 		int tries = 0;
