@@ -299,7 +299,7 @@ void FileComic::fileExtracted(int index, const QByteArray & rawData)
 
 void FileComic::crcError(int index)
 {
-	emit errorOpening(tr("CRC error on page (%1): some of the pages will not be displayed correctly").arg(index));
+	emit crcErrorFound(tr("CRC error on page (%1): some of the pages will not be displayed correctly").arg(index+1));
 }
 
 //TODO: comprobar que si se produce uno de estos errores, la carga del cómic es irrecuperable

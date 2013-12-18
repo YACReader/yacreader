@@ -159,6 +159,7 @@ void Viewer::createConnections()
 	connect(render,SIGNAL(errorOpening()),this,SLOT(resetContent()));
 	connect(render,SIGNAL(errorOpening()),this,SLOT(showMessageErrorOpening()));
 	connect(render,SIGNAL(errorOpening(QString)),this,SLOT(showMessageErrorOpening(QString)));
+	connect(render,SIGNAL(crcError(QString)),this,SLOT(processCRCError(QString)));
 	connect(render,SIGNAL(numPages(unsigned int)),goToFlow,SLOT(setNumSlides(unsigned int)));
 	connect(render,SIGNAL(numPages(unsigned int)),goToDialog,SLOT(setNumPages(unsigned int)));
 	//connect(render,SIGNAL(numPages(unsigned int)),this,SLOT(updateInformation()));
@@ -214,13 +215,18 @@ void Viewer::open(QString pathFile, const ComicDB & comic)
 void Viewer::showMessageErrorOpening()
 {
     QMessageBox::critical(this,tr("Not found"),tr("Comic not found"));
-    resetContent();
+	//resetContent(); --> not needed
 }
 
 void Viewer::showMessageErrorOpening(QString message)
 {
     QMessageBox::critical(this,tr("Error opening comic"),message);
-    resetContent();
+	resetContent();
+}
+
+void Viewer::processCRCError(QString message)
+{
+	QMessageBox::critical(this,tr("CRC Error"),message);
 }
 
 void Viewer::next()

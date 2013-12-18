@@ -171,6 +171,7 @@ signals:
 	void numPages(unsigned int numPages);
 	void errorOpening();
 	void errorOpening(QString);
+	void crcError(QString);
 	void currentPageIsBookmark(bool);
 	void isLast();
 	void isCover();

@@ -663,6 +663,7 @@ void Render::createComic(const QString & path)
 
 	connect(comic,SIGNAL(errorOpening()),this,SIGNAL(errorOpening()));
 	connect(comic,SIGNAL(errorOpening(QString)),this,SIGNAL(errorOpening(QString)));
+	connect(comic,SIGNAL(crcErrorFound(QString)),this,SIGNAL(crcError(QString)));
 	connect(comic,SIGNAL(errorOpening()),this,SLOT(reset()));
 	connect(comic,SIGNAL(imageLoaded(int)),this,SIGNAL(imageLoaded(int)));
 	connect(comic,SIGNAL(imageLoaded(int)),this,SLOT(pageRawDataReady(int)));
