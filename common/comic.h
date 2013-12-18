@@ -90,6 +90,7 @@ class ComicDB;
 		void numPages(unsigned int numPages);
 		void errorOpening();
 		void errorOpening(QString);
+		void crcErrorFound(QString);
 		void isBookmark(bool);
 		void bookmarksUpdated();
 		void isCover();

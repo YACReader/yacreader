@@ -81,6 +81,7 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		void updateConfig(QSettings * settings);
 		void showMessageErrorOpening();
 		void showMessageErrorOpening(QString);
+		void processCRCError(QString message);
 		void setBookmarks();
 		//deprecated
 		void updateImageOptions();
