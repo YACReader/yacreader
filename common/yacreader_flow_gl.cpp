@@ -661,22 +661,25 @@ void YACReaderFlowGL::insert(char *name, GLuint Tex, float x, float y,int item)
 
 void YACReaderFlowGL::remove(int item)
 {
+	loaded.removeAt(item);
+	marks.removeAt(item);
+	paths.removeAt(item);
+
 	//reposition current selection
-	if(item <= currentSelected && currentSelected != 0){
+	if(item < currentSelected && currentSelected != 0){
 		currentSelected--;
 	}
 
 	int count = item;
 	while(count <= numObjects-2){
 		cfImages[count] = cfImages[count+1];
+		cfImages[count].index--;
 		count++;
 	}
-	numObjects--;
+
 	cfImages = (CFImage*)realloc(cfImages,numObjects*sizeof(CFImage));
 
-	loaded.remove(item);
-	marks.remove(item);
-	paths.removeAt(item);
+	numObjects--;
 }
 
 /*Info*/
