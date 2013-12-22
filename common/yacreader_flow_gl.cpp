@@ -661,8 +661,8 @@ void YACReaderFlowGL::insert(char *name, GLuint Tex, float x, float y,int item)
 
 void YACReaderFlowGL::remove(int item)
 {
-	loaded.removeAt(item);
-	marks.removeAt(item);
+	loaded.remove(item);
+	marks.remove(item);
 	paths.removeAt(item);
 
 	//reposition current selection
