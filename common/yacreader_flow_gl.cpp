@@ -691,11 +691,15 @@ CFImage YACReaderFlowGL::getCurrentSelected()
 void YACReaderFlowGL::replace(char *name, GLuint Tex, float x, float y,int item)
 {
 	Q_UNUSED(name)
-	cfImages[item].img = Tex;
-	cfImages[item].width = x;
-	cfImages[item].height = y;
-	//strcpy(cfImages[item].name,name);
-	loaded[item]=true;
+	if(cfImages[item].index == item)
+	{
+		cfImages[item].img = Tex;
+		cfImages[item].width = x;
+		cfImages[item].height = y;
+		loaded[item]=true;
+	}
+	else
+		loaded[item]=false;
 }
 
 void YACReaderFlowGL::populate(int n)
@@ -1081,7 +1085,7 @@ void YACReaderComicFlowGL::updateImageData()
 			CFImages[idx].height = y;
 			CFImages[idx].img = worker->resultTexture;
 			strcpy(CFImages[idx].name,"cover");*/
-			loaded[idx] = true;
+			//loaded[idx] = true;
 			//numImagesLoaded++;
 		}
 	}
@@ -1132,6 +1136,14 @@ void YACReaderComicFlowGL::updateImageData()
 				return;
 			}
 	}
+}
+
+void YACReaderComicFlowGL::remove(int item)
+{
+	worker->lock();
+	worker->reset();
+	YACReaderFlowGL::remove(item);
+	worker->unlock();
 }
 
 
@@ -1310,6 +1322,16 @@ void ImageLoaderGL::generate(int index, const QString& fileName)
 		restart = true;
 		condition.wakeOne();
 	}
+}
+
+void ImageLoaderGL::lock()
+{
+	mutex.lock();
+}
+
+void ImageLoaderGL::unlock()
+{
+	mutex.unlock();
 }
 
 void ImageLoaderGL::run()

@@ -54,6 +54,8 @@ public:
   void generate(int index, const QString& fileName, QSize size);
   void reset(){idx = -1;};
   int index() const { return idx; };
+  void lock();
+  void unlock();
   QImage result();
 
 protected:
