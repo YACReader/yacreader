@@ -129,6 +129,10 @@ void ComicFlow::wheelEvent(QWheelEvent * event)
 
 void ComicFlow::removeSlide(int cover)
 {
+	worker->lock();
+
+	worker->reset();
+
 	imageFiles.removeAt(cover);
 	if(imagesLoaded[cover])
 		numImagesLoaded--;
@@ -136,6 +140,9 @@ void ComicFlow::removeSlide(int cover)
 	imagesSetted.remove(cover);
 
 	YACReaderFlow::removeSlide(cover);
+	worker->unlock();
+
+	preload();
 }
 //-----------------------------------------------------------------------------
 //ImageLoader
@@ -186,6 +193,16 @@ void ImageLoader::generate(int index, const QString& fileName, QSize size)
 		restart = true;
 		condition.wakeOne();
 	}
+}
+
+void ImageLoader::lock()
+{
+	mutex.lock();
+}
+
+void ImageLoader::unlock()
+{
+	mutex.unlock();
 }
 
 void ImageLoader::run()

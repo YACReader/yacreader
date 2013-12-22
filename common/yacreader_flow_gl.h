@@ -196,7 +196,7 @@ public:
 	//otherwise a new entry is set
 	void insert(char *name, GLuint Tex, float x, float y,int item = -1);
 	//removes a item
-	void remove(int item);
+	virtual void remove(int item);
 	//replaces the texture of the item 'item' with Tex
 	void replace(char *name, GLuint Tex, float x, float y,int item);
 	//create n covers with the default nu
@@ -292,6 +292,7 @@ public:
 	YACReaderComicFlowGL(QWidget *parent = 0,struct Preset p = defaultYACReaderFlowConfig);
 	void setImagePaths(QStringList paths);
 	void updateImageData();
+	void remove(int item);
 	friend class ImageLoaderGL;
 private:
 	ImageLoaderGL * worker;
@@ -323,6 +324,8 @@ public:
 	void generate(int index, const QString& fileName);
 	void reset(){idx = -1;fileName="";};
 	int index() const { return idx; };
+	void lock();
+	void unlock();
 	QImage result();
 	YACReaderFlowGL * flow;
 	GLuint resultTexture;
