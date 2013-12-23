@@ -123,6 +123,7 @@ void logSystemAndConfig()
 
 int main( int argc, char ** argv )
 {
+//fix for misplaced text in Qt4.8 and Mavericks
 #ifdef Q_OS_MAC
   #if QT_VERSION < 0x050000
     if(QSysInfo::MacintoshVersion > QSysInfo::MV_10_8)
