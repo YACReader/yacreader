@@ -20,9 +20,9 @@ void ComicsRemover::run()
 		QModelIndex mi = i.previous(); 
 		currentComicPath = i2.previous();
 		if(QFile::remove(currentComicPath))
-		{
 			emit remove(mi.row());
-		}
+		else
+			emit removeError();
 	}
 
 	emit finished();
