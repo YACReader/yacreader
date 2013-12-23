@@ -14,6 +14,7 @@ public:
 	
 signals:
    void remove(int);
+   void removeError();
    void finished();
 
 private:

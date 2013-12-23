@@ -67,7 +67,7 @@
 #endif
 
 LibraryWindow::LibraryWindow()
-	:QMainWindow(),fullscreen(false),fetching(false),previousFilter("")
+	:QMainWindow(),fullscreen(false),fetching(false),previousFilter(""),removeError(false)
 {
 	setupUI();
 	loadLibraries();
@@ -1433,6 +1433,20 @@ void LibraryWindow::showComicVineScraper()
 	comicVineDialog->show();
 }
 
+void LibraryWindow::setRemoveError()
+{
+	removeError = true;
+}
+
+void LibraryWindow::checkRemoveError()
+{
+	if(removeError)
+	{
+		QMessageBox::critical(this,tr("Unable to delete"),tr("There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder."));
+	}
+	removeError = false;
+}
+
 void LibraryWindow::asignNumbers()
 {
 	QModelIndexList indexList = getSelectedComics();
@@ -1640,9 +1654,11 @@ void LibraryWindow::deleteComics()
 
 		connect(remover, SIGNAL(remove(int)), dmCV, SLOT(remove(int)));
 		connect(remover, SIGNAL(remove(int)), comicFlow, SLOT(remove(int)));
+		connect(remover,SIGNAL(removeError()),this,SLOT(setRemoveError()));
 		connect(remover, SIGNAL(finished()), dmCV, SLOT(finishTransaction()));
 		//connect(remover, SIGNAL(finished()), comicView, SLOT(hideDeleteProgress()));
 		connect(remover, SIGNAL(finished()),this,SLOT(checkEmptyFolder()));
+		connect(remover, SIGNAL(finished()),this,SLOT(checkRemoveError()));
 		connect(remover, SIGNAL(finished()), remover, SLOT(deleteLater()));
 		//connect(remover, SIGNAL(finished()), thread, SLOT(deleteLater()));
 

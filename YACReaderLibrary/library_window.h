@@ -205,6 +205,8 @@ private:
 	int currentFolderNavigation;
 	QList<QModelIndex> history;
 
+	bool removeError;
+
 protected:
 		virtual void closeEvent ( QCloseEvent * event );
 public:
@@ -270,6 +272,8 @@ public:
 		void updateComicsView(quint64 libraryId, const ComicDB & comic);
 		void setCurrentComicOpened();
 		void showComicVineScraper();
+		void setRemoveError();
+		void checkRemoveError();
 };
 
 #endif
