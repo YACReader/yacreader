@@ -9,6 +9,7 @@
 #include <QFile>
 #include <QDataStream>
 #include <QTranslator>
+#include <QSysInfo>
 #include "main_window_viewer.h"
 #include "configuration.h"
 #include "exit_check.h"
@@ -57,6 +58,15 @@ int main(int argc, char * argv[])
 	#if defined(_MSC_VER) && defined(_DEBUG)
 	_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
 #endif
+
+//fix for misplaced text in Qt4.8 and Mavericks
+#ifdef Q_OS_MAC
+    #if QT_VERSION < 0x050000
+        if(QSysInfo::MacintoshVersion > QSysInfo::MV_10_8)
+            QFont::insertSubstitution(".Lucida Grande UI", "Lucida Grande");
+    #endif
+#endif
+
 
 #ifdef Q_OS_MAC
     YACReaderApplication app(argc,argv);
