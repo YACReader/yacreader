@@ -1044,7 +1044,7 @@ void LibraryWindow::openComic()
         QString comicIdS = QString("%1").arg(comicId);
         QString libraryIdS = QString("%1").arg(libraryId);
         QString yacreaderPath = QDir::cleanPath(QCoreApplication::applicationDirPath()+"/../../../YACReader.app");
-        if(yacreaderfound = QFileInfo(yacreaderPath).exists())
+        if(yacreaderFound = QFileInfo(yacreaderPath).exists())
             QProcess::startDetached("open", QStringList() << "-n" << yacreaderPath << "--args" << path << comicIdS << libraryIdS ); /*<< page << bookmark1 << bookmark2 << bookmark3 << brightness << contrast << gamma*///,QStringList() << path);
 
 #endif
