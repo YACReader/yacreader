@@ -198,7 +198,7 @@ struct Preset pressetYACReaderFlowDownConfig = {
 };
 /*Constructor*/
 YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
-	:QGLWidget(QGLFormat(QGL::SampleBuffers), parent),numObjects(0),lazyPopulateObjects(-1),bUseVSync(false),hasBeenInitialized(false)
+    :QGLWidget(QGLFormat(QGL::SampleBuffers), parent),numObjects(0),lazyPopulateObjects(-1),bUseVSync(false),hasBeenInitialized(false)
 {
 	updateCount = 0;
 	config = p;
@@ -223,7 +223,7 @@ YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
 	viewRotateActive = 0;
 	stepBackup = config.animationStep/config.animationSpeedUp;
 
-	/*QTimer * timer = new QTimer();
+    /*QTimer * timer = new QTimer();
 	connect(timer, SIGNAL(timeout()), this, SLOT(updateImageData()));
 	timer->start(70);
 	*/
@@ -236,17 +236,19 @@ YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
 
 	loaderThread->start();*/
 
-	QGLFormat f = format();
+    QGLFormat f = format();
+    f.setVersion(2, 1);
 	f.setSwapInterval(0);
 	setFormat(f);
 
-	timerId = startTimer(16);
+    timerId = startTimer(16);
+
 }
 
 void YACReaderFlowGL::timerEvent(QTimerEvent * event)
 {
 	if(timerId == event->timerId())
-		update();
+        updateGL();
 	
 	//if(!worker->isRunning())
 		//worker->start();
@@ -270,6 +272,7 @@ QSize YACReaderFlowGL::minimumSizeHint() const
 void YACReaderFlowGL::initializeGL()
 {
 	glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
 	glEnable(GL_COLOR_MATERIAL);
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_BLEND);
@@ -857,12 +860,14 @@ void YACReaderFlowGL::useVSync(bool b)
 		if(b)
 		{
 			QGLFormat f = format();
-			f.setSwapInterval(1);
+            f.setVersion(2, 1);
+            f.setSwapInterval(1);
 			setFormat(f);
 		}
 		else
 		{
 			QGLFormat f = format();
+            f.setVersion(2, 1);
 			f.setSwapInterval(0);
 			setFormat(f);
 		}
