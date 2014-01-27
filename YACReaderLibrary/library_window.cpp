@@ -1221,6 +1221,8 @@ void LibraryWindow::deleteCurrentLibrary()
 		comicView->setModel(NULL);
 		foldersView->setModel(NULL);
 		comicFlow->clear();
+        disableAllActions();
+        showNoLibrariesWidget();
 	}
 	libraries.save();
 }
@@ -1241,6 +1243,8 @@ void LibraryWindow::removeLibrary()
 			comicView->setModel(NULL);
 			foldersView->setModel(NULL);
 			comicFlow->clear();
+            disableAllActions();
+            showNoLibrariesWidget();
 		}
 		libraries.save();
 	}
@@ -1249,11 +1253,6 @@ void LibraryWindow::removeLibrary()
 		deleteCurrentLibrary();
 	}
 
-	if(libraries.isEmpty())
-	{
-		disableAllActions();
-		showNoLibrariesWidget();
-	}
 }
 
 void LibraryWindow::renameLibrary()
