@@ -424,6 +424,7 @@ void FileComic::process()
         emit errorOpening(tr("Format not supported"));
         return;
     }
+
 	//se filtran para obtener sólo los formatos soportados
 	_order = archive.getFileNames();
 	_fileNames = filter(_order);
