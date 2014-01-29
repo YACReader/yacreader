@@ -30,6 +30,7 @@ LIBS         += -L/usr/lib -lpoppler-qt5
 else {
 INCLUDEPATH  += /usr/include/poppler/qt4
 LIBS         += -L/usr/lib -lpoppler-qt4
+
 }
 LIBS	     += -lGLU
 }

@@ -34,8 +34,15 @@ CONFIG -= embed_manifest_exe
 }
 
 unix:!macx{
+
+isEqual(QT_MAJOR_VERSION, 5) {
+INCLUDEPATH  += /usr/include/poppler/qt5
+LIBS         += -L/usr/lib -lpoppler-qt5
+}
+else {
 INCLUDEPATH  += /usr/include/poppler/qt4
 LIBS         += -L/usr/lib -lpoppler-qt4
+}
 LIBS	     += -lGLU
 }
 
@@ -97,7 +104,7 @@ HEADERS += comic_flow.h \
     comics_remover.h \
 	../common/http_worker.h \
     yacreader_libraries.h \
-	../common/exit_check.cpp \
+        ../common/exit_check.h \
 		   
 SOURCES += comic_flow.cpp \
            create_library_dialog.cpp \
