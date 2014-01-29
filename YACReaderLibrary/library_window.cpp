@@ -945,7 +945,7 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 	
 	comicView->setModel(dmCV);
 	comicView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
-#if QT_VERSION >= 0x050100
+#if QT_VERSION >= 0x050000
 	comicView->horizontalHeader()->setSectionsMovable(true);
 #else
 	comicView->horizontalHeader()->setMovable(true);

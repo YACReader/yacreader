@@ -107,8 +107,11 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
                 qDebug() << "wrong format";
 				continue;
             }
-
+#ifdef UNICODE
             if (!fileSpec->Open((LPCTSTR)filePath.toStdWString().data()))
+#else
+            if (!fileSpec->Open((LPCTSTR)filePath.toStdString().data()))
+#endif
             {
                 qDebug() << "unable to load" + filePath;
 				continue;
@@ -147,7 +150,11 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
                 return;
             }
 
+#ifdef UNICODE
             if (!fileSpec->Open((LPCTSTR)filePath.toStdWString().data()))
+#else
+            if (!fileSpec->Open((LPCTSTR)filePath.toStdString().data()))
+#endif
             {
                 qDebug() << "Error opening rar file :" + filePath;
                 return;
