@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="es_ES">
+<TS version="2.1" language="es_ES">
 <context>
     <name>BookmarksDialog</name>
     <message>
@@ -26,184 +26,26 @@
     </message>
 </context>
 <context>
-    <name>Comic</name>
-    <message>
-        <source>Not found</source>
-        <translation type="obsolete">No encontrado</translation>
-    </message>
-    <message>
-        <source>Comic not found</source>
-        <translation type="obsolete">Cómic no encontrado</translation>
-    </message>
-    <message>
-        <source>Bad PDF File</source>
-        <translation type="obsolete">Archivo PDF erróneo</translation>
-    </message>
-    <message>
-        <source>Invalid PDF file</source>
-        <translation type="obsolete">Archivo PDF inválido</translation>
-    </message>
-    <message>
-        <source>No images found</source>
-        <translation type="obsolete">No se han encontrado imágenes</translation>
-    </message>
-    <message>
-        <source>There are not images on the selected folder</source>
-        <translation type="obsolete">No hay imágenes en el directorio seleccionado</translation>
-    </message>
-    <message>
-        <source>File error</source>
-        <translation type="obsolete">Error en archivo</translation>
-    </message>
-    <message>
-        <source>File not found or not images in file</source>
-        <translation type="obsolete">Archivo no encontrado o no hay imágenes en él</translation>
-    </message>
-    <message>
-        <source>7z not found</source>
-        <translation type="obsolete">7z no encontrado</translation>
-    </message>
-    <message>
-        <source>7z wasn&apos;t found in your PATH.</source>
-        <translation type="obsolete">7z no se ha encontrado en el PATH.</translation>
-    </message>
-    <message>
-        <source>7z crashed</source>
-        <translation type="obsolete">7z falló</translation>
-    </message>
-    <message>
-        <source>7z crashed.</source>
-        <translation type="obsolete">7z falló.</translation>
-    </message>
-    <message>
-        <source>7z reading</source>
-        <translation type="obsolete">7z leyendo</translation>
-    </message>
-    <message>
-        <source>problem reading from 7z</source>
-        <translation type="obsolete">Problema leyendo desde 7z</translation>
-    </message>
-    <message>
-        <source>7z problem</source>
-        <translation type="obsolete">7z problema</translation>
-    </message>
-    <message>
-        <source>Unknown error 7z</source>
-        <translation type="obsolete">Error desconocido 7z</translation>
-    </message>
-</context>
-<context>
-    <name>Comic2</name>
-    <message>
-        <source>7z not found</source>
-        <translation type="obsolete">7z no encontrado</translation>
-    </message>
-    <message>
-        <source>7z wasn&apos;t found in your PATH.</source>
-        <translation type="obsolete">7z no se ha encontrado en el PATH.</translation>
-    </message>
-    <message>
-        <source>7z crashed</source>
-        <translation type="obsolete">7z falló</translation>
-    </message>
-    <message>
-        <source>7z crashed.</source>
-        <translation type="obsolete">7z falló.</translation>
-    </message>
-    <message>
-        <source>7z reading</source>
-        <translation type="obsolete">7z leyendo</translation>
-    </message>
-    <message>
-        <source>problem reading from 7z</source>
-        <translation type="obsolete">Problema leyendo desde 7z</translation>
-    </message>
-    <message>
-        <source>7z problem</source>
-        <translation type="obsolete">7z problema</translation>
-    </message>
-    <message>
-        <source>Unknown error 7z</source>
-        <translation type="obsolete">Error desconocido 7z</translation>
-    </message>
-</context>
-<context>
-    <name>Configuration</name>
-    <message>
-        <source>Saving config file....</source>
-        <translation type="obsolete">Guardando el archivo de configuración...</translation>
-    </message>
-    <message>
-        <source>There was a problem saving YACReader configuration. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation type="obsolete">Hubo un problema al guardar la configuración de YACReader. Por favor, comprueba si tienes suficientes permisos en el directorio raíz de YACReader.</translation>
-    </message>
-</context>
-<context>
     <name>FileComic</name>
-    <message>
-        <source>Not found</source>
-        <translatorcomment>No encontrado</translatorcomment>
-        <translation type="obsolete">No encontrado</translation>
-    </message>
-    <message>
-        <source>Comic not found</source>
-        <translation type="obsolete">Cómic no encontrado</translation>
-    </message>
-    <message>
-        <source>File error</source>
-        <translation type="obsolete">Error en archivo</translation>
-    </message>
-    <message>
-        <source>File not found or not images in file</source>
-        <translation type="obsolete">Archivo no encontrado o no hay imágenes en él</translation>
-    </message>
     <message>
         <location filename="../common/comic.cpp" line="309"/>
         <source>Unknown error opening the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Error desconocido abriendo el archivo</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="418"/>
         <source>7z not found</source>
-        <translation type="unfinished">7z no encontrado</translation>
+        <translation>7z no encontrado</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="424"/>
         <source>Format not supported</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>7z wasn&apos;t found in your PATH.</source>
-        <translation type="obsolete">7z no se ha encontrado en el PATH.</translation>
-    </message>
-    <message>
-        <source>7z crashed</source>
-        <translation type="obsolete">7z falló</translation>
-    </message>
-    <message>
-        <source>7z crashed.</source>
-        <translation type="obsolete">7z falló.</translation>
-    </message>
-    <message>
-        <source>7z reading</source>
-        <translation type="obsolete">7z leyendo</translation>
-    </message>
-    <message>
-        <source>problem reading from 7z</source>
-        <translation type="obsolete">Problema leyendo desde 7z</translation>
-    </message>
-    <message>
-        <source>7z problem</source>
-        <translation type="obsolete">7z problema</translation>
-    </message>
-    <message>
-        <source>Unknown error 7z</source>
-        <translation type="obsolete">Error desconocido 7z</translation>
+        <translation>Formato no soportado</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="302"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
-        <translation type="unfinished"></translation>
+        <translation>Error CRC en la página (%1): algunas de las páginas no se mostrarán correctamente</translation>
     </message>
 </context>
 <context>
@@ -233,24 +75,6 @@
         <location filename="goto_dialog.cpp" line="55"/>
         <source>Go to...</source>
         <translation>Ir a...</translation>
-    </message>
-</context>
-<context>
-    <name>GoToFlow</name>
-    <message>
-        <source>Page : </source>
-        <translation type="obsolete">Página:</translation>
-    </message>
-    <message>
-        <source>Total pages : </source>
-        <translation type="obsolete">Page:</translation>
-    </message>
-</context>
-<context>
-    <name>GoToFlowGL</name>
-    <message>
-        <source>Page : </source>
-        <translation type="obsolete">Página :</translation>
     </message>
 </context>
 <context>
@@ -363,14 +187,6 @@
         <location filename="main_window_viewer.cpp" line="298"/>
         <source>Fit Width</source>
         <translation>Ajustar anchura</translation>
-    </message>
-    <message>
-        <source>A</source>
-        <translation type="obsolete">A</translation>
-    </message>
-    <message>
-        <source>Fit image to ...</source>
-        <translation type="obsolete">Ajustar imagen a...</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="294"/>
@@ -555,20 +371,12 @@
     <message>
         <location filename="main_window_viewer.cpp" line="927"/>
         <source>Remind me in 14 days</source>
-        <translation type="unfinished"></translation>
+        <translation>Recordar en 14 días</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="928"/>
         <source>Not now</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Comic files (*.cbr *.cbz *.rar *.zip *.pdf *.tar *.arj)</source>
-        <translation type="obsolete">Archivos de cómic (*.cbr *.cbz *.rar *.zip *pdf *.tar *.arj)</translation>
-    </message>
-    <message>
-        <source>Comic files (*.cbr *.cbz *.rar *.zip *.tar *.arj)</source>
-        <translation type="obsolete">Archivos de cómic (*.cbr *.cbz *.rar *.zip *.tar *.arj)</translation>
+        <translation>Ahora no</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="655"/>
@@ -595,14 +403,6 @@
         <source>Do you want to download the new version?</source>
         <translation>¿Desea descargar la nueva versión?</translation>
     </message>
-    <message>
-        <source>Saving error log file....</source>
-        <translation type="obsolete">Guardando el archivo de log...</translation>
-    </message>
-    <message>
-        <source>There was a problem saving YACReader error log file. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation type="obsolete">Hubo un problema al guardar el archivo de log de YACReader. Por favor, comprueba si tienes suficientes permisos en el directorio raíz de YACReader.</translation>
-    </message>
 </context>
 <context>
     <name>OptionsDialog</name>
@@ -615,18 +415,6 @@
         <location filename="options_dialog.cpp" line="46"/>
         <source>My comics path</source>
         <translation>Ruta a mis cómics</translation>
-    </message>
-    <message>
-        <source>Save</source>
-        <translation type="obsolete">Guardar</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Cancelar</translation>
-    </message>
-    <message>
-        <source>How to show pages in GoToFlow:</source>
-        <translation type="obsolete">¿Cómo deseas que se muestren las páginas en &quot;Go To Flow&quot;:</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="56"/>
@@ -704,19 +492,12 @@
     <message>
         <location filename="../common/exit_check.cpp" line="14"/>
         <source>7z lib not found</source>
-        <translation type="unfinished"></translation>
+        <translation>7z lib no encontrado</translation>
     </message>
     <message>
         <location filename="../common/exit_check.cpp" line="14"/>
         <source>unable to load 7z lib from ./utils</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QPushButton</name>
-    <message>
-        <source>Hello world!</source>
-        <translation type="obsolete">Hola  mundo!</translation>
+        <translation>imposible cargar 7z lib de ./utils</translation>
     </message>
 </context>
 <context>
@@ -758,17 +539,17 @@
     <message>
         <location filename="viewer.cpp" line="223"/>
         <source>Error opening comic</source>
-        <translation type="unfinished"></translation>
+        <translation>Error abriendo cómic</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="229"/>
         <source>CRC Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error CRC</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="717"/>
         <source>Page not available!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡Página no disponible!</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="853"/>
@@ -781,28 +562,9 @@
         <translation>¡Última página!</translation>
     </message>
     <message>
-        <source>Show Info</source>
-        <translation type="obsolete">Mostrar información</translation>
-    </message>
-    <message>
-        <source>I</source>
-        <translation type="obsolete">I</translation>
-    </message>
-    <message>
         <location filename="viewer.cpp" line="706"/>
         <source>Loading...please wait!</source>
         <translation>Cargando...espere, por favor!</translation>
-    </message>
-</context>
-<context>
-    <name>YACReaderDeletingProgress</name>
-    <message>
-        <source>Please wait, deleting in progress...</source>
-        <translation type="obsolete">Borrando, por favor espera...</translation>
-    </message>
-    <message>
-        <source>cancel</source>
-        <translation type="obsolete">cancelar</translation>
     </message>
 </context>
 <context>
@@ -995,42 +757,27 @@
     </message>
 </context>
 <context>
-    <name>YACReaderSideBar</name>
-    <message>
-        <source>LIBRARIES</source>
-        <translation type="obsolete">BIBLIOTECAS</translation>
-    </message>
-    <message>
-        <source>FOLDERS</source>
-        <translation type="obsolete">CARPETAS</translation>
-    </message>
-    <message>
-        <source>Search folders and comics</source>
-        <translation type="obsolete">Buscar carpetas y cómics</translation>
-    </message>
-</context>
-<context>
     <name>YACReaderTranslator</name>
     <message>
         <location filename="translator.cpp" line="62"/>
         <source>YACReader translator</source>
-        <translation type="unfinished"></translation>
+        <translation>Traductor YACReader</translation>
     </message>
     <message>
         <location filename="translator.cpp" line="117"/>
         <location filename="translator.cpp" line="210"/>
         <source>Translation</source>
-        <translation type="unfinished"></translation>
+        <translation>Traducción</translation>
     </message>
     <message>
         <location filename="translator.cpp" line="140"/>
         <source>clear</source>
-        <translation type="unfinished"></translation>
+        <translation>limpiar</translation>
     </message>
     <message>
         <location filename="translator.cpp" line="219"/>
         <source>Service not available</source>
-        <translation type="unfinished"></translation>
+        <translation>Servicio no disponible</translation>
     </message>
 </context>
 </TS>

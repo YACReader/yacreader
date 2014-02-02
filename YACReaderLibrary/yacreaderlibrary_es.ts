@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="es_ES">
+<TS version="2.1" language="es_ES">
 <context>
     <name>AddLibraryDialog</name>
     <message>
@@ -30,101 +30,31 @@
     </message>
 </context>
 <context>
-    <name>Comic</name>
-    <message>
-        <source>7z not found</source>
-        <translation type="obsolete">7z no encontrado</translation>
-    </message>
-    <message>
-        <source>7z wasn&apos;t found in your PATH.</source>
-        <translation type="obsolete">7z no ha sido encontrado en tu PATH.</translation>
-    </message>
-    <message>
-        <source>7z crashed</source>
-        <translation type="obsolete">fallo en 7z</translation>
-    </message>
-    <message>
-        <source>7z crashed.</source>
-        <translation type="obsolete">fallo en 7z.</translation>
-    </message>
-    <message>
-        <source>7z reading</source>
-        <translation type="obsolete">Leyendo de 7z</translation>
-    </message>
-    <message>
-        <source>problem reading from 7z</source>
-        <translation type="obsolete">Problema lenyendo de 7z</translation>
-    </message>
-    <message>
-        <source>7z problem</source>
-        <translation type="obsolete">Problema en 7z</translation>
-    </message>
-    <message>
-        <source>Unknown error 7z</source>
-        <translation type="obsolete">Error desconocido en 7z</translation>
-    </message>
-</context>
-<context>
-    <name>Comic2</name>
-    <message>
-        <source>7z not found</source>
-        <translation type="obsolete">7z no encontrado</translation>
-    </message>
-    <message>
-        <source>7z wasn&apos;t found in your PATH.</source>
-        <translation type="obsolete">7z no ha sido encontrado en tu PATH.</translation>
-    </message>
-    <message>
-        <source>7z crashed</source>
-        <translation type="obsolete">fallo en 7z</translation>
-    </message>
-    <message>
-        <source>7z crashed.</source>
-        <translation type="obsolete">fallo en 7z.</translation>
-    </message>
-    <message>
-        <source>7z reading</source>
-        <translation type="obsolete">Leyendo de 7z</translation>
-    </message>
-    <message>
-        <source>problem reading from 7z</source>
-        <translation type="obsolete">Problema lenyendo de 7z</translation>
-    </message>
-    <message>
-        <source>7z problem</source>
-        <translation type="obsolete">Problema en 7z</translation>
-    </message>
-    <message>
-        <source>Unknown error 7z</source>
-        <translation type="obsolete">Error desconocido en 7z</translation>
-    </message>
-</context>
-<context>
     <name>ComicVineDialog</name>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="52"/>
         <source>skip</source>
-        <translation type="unfinished"></translation>
+        <translation>omitir</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="53"/>
         <source>back</source>
-        <translation type="unfinished"></translation>
+        <translation>atrás</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="54"/>
         <source>next</source>
-        <translation type="unfinished"></translation>
+        <translation>siguiente</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="55"/>
         <source>search</source>
-        <translation type="unfinished"></translation>
+        <translation>buscar</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="56"/>
         <source>close</source>
-        <translation type="unfinished"></translation>
+        <translation>cerrar</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="130"/>
@@ -133,44 +63,44 @@
         <location filename="comic_vine/comic_vine_dialog.cpp" line="670"/>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="704"/>
         <source>Looking for volume...</source>
-        <translation type="unfinished"></translation>
+        <translation>Buscando volumen...</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="140"/>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="637"/>
         <source>comic %1 of %2 - %3</source>
-        <translation type="unfinished"></translation>
+        <translation>cómic %1 de %2 - %3</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="227"/>
         <source>%1 comics selected</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 comics seleccionados</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="262"/>
         <source>Error connecting to ComicVine</source>
-        <translation type="unfinished"></translation>
+        <translation>Error conectando a ComicVine</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="262"/>
         <source>unknown error</source>
-        <translation type="unfinished"></translation>
+        <translation>error desconocido</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="423"/>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="463"/>
         <source>Retrieving tags for : %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Recuperando etiquetas para : %1</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="685"/>
         <source>Retrieving volume info...</source>
-        <translation type="unfinished"></translation>
+        <translation>Recuperando imformación del volumen...</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="711"/>
         <source>Looking for comic...</source>
-        <translation type="unfinished"></translation>
+        <translation>Buscando cómic...</translation>
     </message>
 </context>
 <context>
@@ -214,11 +144,6 @@
         <location filename="create_library_dialog.cpp" line="99"/>
         <source>The selected path does not exist or is not a valid path. Be sure that you have write access to this folder</source>
         <translation>La ruta seleccionada no existe o no es válida. Asegúrate de que tienes privilegios de escritura en esta carpeta</translation>
-    </message>
-    <message>
-        <source>Importing : 
-</source>
-        <translation type="obsolete">Importando : </translation>
     </message>
 </context>
 <context>
@@ -296,76 +221,28 @@
         <source>Destination directory</source>
         <translation>Carpeta de destino</translation>
     </message>
-    <message>
-        <source>Creating package .</source>
-        <translation type="obsolete">Creando paquete .</translation>
-    </message>
 </context>
 <context>
     <name>FileComic</name>
     <message>
-        <source>Not found</source>
-        <translation type="obsolete">No encontrado</translation>
-    </message>
-    <message>
-        <source>Comic not found</source>
-        <translation type="obsolete">Cómic no encontrado</translation>
-    </message>
-    <message>
-        <source>File error</source>
-        <translation type="obsolete">Error de archivo</translation>
-    </message>
-    <message>
-        <source>File not found or not images in file</source>
-        <translation type="obsolete">Archivo no encontrado o no hay imágenes en él</translation>
-    </message>
-    <message>
         <location filename="../common/comic.cpp" line="309"/>
         <source>Unknown error opening the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Error desconocido abriendo el archivo</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="418"/>
         <source>7z not found</source>
-        <translation type="unfinished">7z no encontrado</translation>
+        <translation>7z no encontrado</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="424"/>
         <source>Format not supported</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>7z wasn&apos;t found in your PATH.</source>
-        <translation type="obsolete">7z no ha sido encontrado en tu PATH.</translation>
-    </message>
-    <message>
-        <source>7z crashed</source>
-        <translation type="obsolete">fallo en 7z</translation>
-    </message>
-    <message>
-        <source>7z crashed.</source>
-        <translation type="obsolete">fallo en 7z.</translation>
-    </message>
-    <message>
-        <source>7z reading</source>
-        <translation type="obsolete">Leyendo de 7z</translation>
-    </message>
-    <message>
-        <source>problem reading from 7z</source>
-        <translation type="obsolete">Problema lenyendo de 7z</translation>
-    </message>
-    <message>
-        <source>7z problem</source>
-        <translation type="obsolete">Problema en 7z</translation>
-    </message>
-    <message>
-        <source>Unknown error 7z</source>
-        <translation type="obsolete">Error desconocido en 7z</translation>
+        <translation>Formato no soportado</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="302"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
-        <translation type="unfinished"></translation>
+        <translation>Error CRC en la página (%1): algunas de las páginas no se mostrarán correctamente</translation>
     </message>
 </context>
 <context>
@@ -412,17 +289,9 @@
 <context>
     <name>ImportLibraryDialog</name>
     <message>
-        <source>Comics folder : </source>
-        <translation type="obsolete">Carpeta de cómics:</translation>
-    </message>
-    <message>
         <location filename="import_library_dialog.cpp" line="17"/>
         <source>Library Name : </source>
         <translation>Nombre de la biblioteca :</translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation type="obsolete">Añadir</translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="22"/>
@@ -453,10 +322,6 @@
         <location filename="import_library_dialog.cpp" line="111"/>
         <source>Compresed library covers (*.clc)</source>
         <translation>Compresed library covers (*.clc)</translation>
-    </message>
-    <message>
-        <source>Importing package .</source>
-        <translation type="obsolete">Importando paquete.</translation>
     </message>
 </context>
 <context>
@@ -497,22 +362,6 @@
 <context>
     <name>LibraryWindow</name>
     <message>
-        <source>Select a library:</source>
-        <translation type="obsolete">Seleciona una biblioteca:</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">Borrar</translation>
-    </message>
-    <message>
-        <source>Search folders/comics</source>
-        <translation type="obsolete">Buscar directorios/cómics</translation>
-    </message>
-    <message>
-        <source>Include files (slower)</source>
-        <translation type="obsolete">Incluir archivos (lento)</translation>
-    </message>
-    <message>
         <location filename="library_window.cpp" line="173"/>
         <source>&lt;font color=&apos;white&apos;&gt; press &apos;F&apos; to close fullscreen mode &lt;/font&gt;</source>
         <translation>&lt;font color=&apos;white&apos;&gt; presiona &apos;F&apos; para salir de pantalla completa &lt;/font&gt;</translation>
@@ -521,10 +370,6 @@
         <location filename="library_window.cpp" line="107"/>
         <source>YACReader Library</source>
         <translation>YACReader Library</translation>
-    </message>
-    <message>
-        <source>Search folders and comics</source>
-        <translation type="obsolete">Buscar carpetas y cómics</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="328"/>
@@ -589,10 +434,6 @@
         <translation>Renombrar la biblioteca seleccionada</translation>
     </message>
     <message>
-        <source>Delete current library from disk</source>
-        <translation type="obsolete">Borrar la biblioteca seleccionada del disco</translation>
-    </message>
-    <message>
         <location filename="library_window.cpp" line="364"/>
         <source>Remove current library from your collection</source>
         <translation>Eliminar biblioteca de la colección</translation>
@@ -628,18 +469,6 @@
         <translation>Marcar cómic como no leído</translation>
     </message>
     <message>
-        <source>Set all comics as read</source>
-        <translation type="obsolete">Marcar todos los cómics como leídos</translation>
-    </message>
-    <message>
-        <source>Set all as unread</source>
-        <translation type="obsolete">Marcar todos como no leídos</translation>
-    </message>
-    <message>
-        <source>Set all comics as unread</source>
-        <translation type="obsolete">Marcar todos los cómics como no leídos</translation>
-    </message>
-    <message>
         <location filename="library_window.cpp" line="388"/>
         <source>Show/Hide marks</source>
         <translation>Mostrar/Ocultar marcas</translation>
@@ -648,10 +477,6 @@
         <location filename="library_window.cpp" line="389"/>
         <source>Show or hide readed marks</source>
         <translation>Mostrar u ocultar marcas</translation>
-    </message>
-    <message>
-        <source>Show properties of current comic</source>
-        <translation type="obsolete">Mostrar las propiedades del cómic actual</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="395"/>
@@ -746,7 +571,7 @@
     <message>
         <location filename="library_window.cpp" line="476"/>
         <source>Download tags from Comic Vine</source>
-        <translation type="unfinished"></translation>
+        <translation>Descargar etiquetas de Comic Vine</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="863"/>
@@ -772,59 +597,55 @@
     <message>
         <location filename="library_window.cpp" line="1061"/>
         <source>YACReader not found</source>
-        <translation type="unfinished"></translation>
+        <translation>YACReader no encontrado</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="1061"/>
         <source>YACReader not found, YACReader should be installed in the same folder as YACReaderLibrary.</source>
-        <translation type="unfinished"></translation>
+        <translation>YACReader no encontrado, YACReader debe estar instalado en el mismo directorio que YACReaderLibrary.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1445"/>
+        <location filename="library_window.cpp" line="1444"/>
         <source>Unable to delete</source>
-        <translation type="unfinished"></translation>
+        <translation>No se ha podido borrar</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1445"/>
+        <location filename="library_window.cpp" line="1444"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ha habido algún problema intentando borrar los cómics selecionados. Por favor, verifica los permisos de escritura en los arhicovs seleccionados o los directorios que los conienen.</translation>
     </message>
     <message>
-        <source>has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
-        <translation type="obsolete">ha sido creada con una versión anterior de YACReaderLibrary. Debe ser creada de nuevo. ¿Quieres volver a crearla ahora?</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1599"/>
+        <location filename="library_window.cpp" line="1598"/>
         <source>Error creating the library</source>
         <translation>Errar creando la biblioteca</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1604"/>
+        <location filename="library_window.cpp" line="1603"/>
         <source>Error updating the library</source>
         <translation>Error actualizando la biblioteca</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1609"/>
+        <location filename="library_window.cpp" line="1608"/>
         <source>Error opening the library</source>
         <translation>Error abriendo la biblioteca</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1634"/>
+        <location filename="library_window.cpp" line="1633"/>
         <source>Delete comics</source>
         <translation>Borrar cómics</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1634"/>
+        <location filename="library_window.cpp" line="1633"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
         <translation>Todos los cómics seleccionados serán borrados de tu disco. ¿Estás seguro?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1737"/>
+        <location filename="library_window.cpp" line="1736"/>
         <source>Library name already exists</source>
         <translation>Ya existe el nombre de la biblioteca</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1737"/>
+        <location filename="library_window.cpp" line="1736"/>
         <source>There is another library with the name &apos;%1&apos;.</source>
         <translation>Hay otra biblioteca con el nombre &apos;%1&apos;.</translation>
     </message>
@@ -869,22 +690,6 @@
         <translation>Esta biblioteca fue creada con una versión más nueva de YACReaderLibrary. ¿Deseas descargar la nueva versión ahora?</translation>
     </message>
     <message>
-        <source>Library </source>
-        <translation type="obsolete">La biblioteca </translation>
-    </message>
-    <message>
-        <source> is no longer available. Do you want to remove it?</source>
-        <translation type="obsolete"> ya no esta disponible. ¿Deseas borrarla?</translation>
-    </message>
-    <message>
-        <source>Old library or corrupted</source>
-        <translation type="obsolete">Biblioteca antigua o corrupta</translation>
-    </message>
-    <message>
-        <source> is corrupted or has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
-        <translation type="obsolete"> está corrupta o ha sido creada con una versión antigua de YACReaderLibrary, por lo que debe ser creada de nuevo. ¿Deseas volver a crearla ahora?</translation>
-    </message>
-    <message>
         <location filename="library_window.cpp" line="1160"/>
         <source>Library not found</source>
         <translation>Biblioteca no encontrada</translation>
@@ -895,49 +700,32 @@
         <translation>La carpeta seleccionada no contiene ninguna biblioteca.</translation>
     </message>
     <message>
-        <source>Saving libraries file....</source>
-        <translation type="obsolete">Guardando bibliotecas...</translation>
-    </message>
-    <message>
-        <source>There was a problem saving YACReaderLibrary libraries file. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation type="obsolete">Hubo un problema al guardar las bibliotecas de YACReaderLibrary. Por favor, comprueba si tienes suficientes permisos en el directorio raíz de YACReader.</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1231"/>
+        <location filename="library_window.cpp" line="1233"/>
         <source>Are you sure?</source>
         <translation>¿Estás seguro?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1231"/>
+        <location filename="library_window.cpp" line="1233"/>
         <source> library?</source>
         <translation>?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1232"/>
+        <location filename="library_window.cpp" line="1234"/>
         <source>Remove and delete metadata</source>
         <translation>Eliminar y borrar metadatos</translation>
     </message>
     <message>
-        <source>Do you want delete </source>
-        <translation type="obsolete">¿Deseas borrar </translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1231"/>
+        <location filename="library_window.cpp" line="1233"/>
         <source>Do you want remove </source>
         <translation>¿Deseas eliminar la biblioteca  </translation>
     </message>
     <message>
-        <source> library?
-Files won&apos;t be erased from disk.</source>
-        <translation type="obsolete">? Los archivos no serán borrados del disco.</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1458"/>
+        <location filename="library_window.cpp" line="1457"/>
         <source>Asign comics numbers</source>
         <translation>Asignar números de cómic</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1459"/>
+        <location filename="library_window.cpp" line="1458"/>
         <source>Asign numbers starting in:</source>
         <translation>Asignar números empezando en:</translation>
     </message>
@@ -947,7 +735,7 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="comic_vine/model/local_comic_list_model.cpp" line="75"/>
         <source>file name</source>
-        <translation type="unfinished"></translation>
+        <translation>nombre de archivo</translation>
     </message>
 </context>
 <context>
@@ -976,34 +764,6 @@ Files won&apos;t be erased from disk.</source>
 <context>
     <name>OptionsDialog</name>
     <message>
-        <source>Save</source>
-        <translation type="obsolete">Guardar</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Cancelar</translation>
-    </message>
-    <message>
-        <source>How to show covers:</source>
-        <translation type="obsolete">Cómo mostrar las portadas:</translation>
-    </message>
-    <message>
-        <source>Restart is needed</source>
-        <translation type="obsolete">Es necesario reiniciar</translation>
-    </message>
-    <message>
-        <source>Comics directory</source>
-        <translation type="obsolete">Directorio de cómics</translation>
-    </message>
-    <message>
-        <source>Saving config file....</source>
-        <translation type="obsolete">Guardando archivo de configuración...</translation>
-    </message>
-    <message>
-        <source>There was a problem saving YACReaderLibrary configuration. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation type="obsolete">Hubo un problema al guardar la configuración de YACReaderLibrary. Por favor, comprueba si tienes suficientes permisos en el directorio raíz de YACReader.</translation>
-    </message>
-    <message>
         <location filename="options_dialog.cpp" line="47"/>
         <source>Options</source>
         <translation>Opciones</translation>
@@ -1011,22 +771,6 @@ Files won&apos;t be erased from disk.</source>
 </context>
 <context>
     <name>PropertiesDialog</name>
-    <message>
-        <source>Comic properties</source>
-        <translation type="obsolete">Propiedades del cómic</translation>
-    </message>
-    <message>
-        <source>Name : </source>
-        <translation type="obsolete">Nombre : </translation>
-    </message>
-    <message>
-        <source>Number of pages : </source>
-        <translation type="obsolete">Número de páginas : </translation>
-    </message>
-    <message>
-        <source>Size : </source>
-        <translation type="obsolete">Tamaño : </translation>
-    </message>
     <message>
         <location filename="properties_dialog.cpp" line="74"/>
         <source>General info</source>
@@ -1046,14 +790,6 @@ Files won&apos;t be erased from disk.</source>
         <location filename="properties_dialog.cpp" line="77"/>
         <source>Plot</source>
         <translation>Argumento</translation>
-    </message>
-    <message>
-        <source>Cover</source>
-        <translation type="obsolete">Portada</translation>
-    </message>
-    <message>
-        <source>Cover page : </source>
-        <translation type="obsolete">Página de portada : </translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="86"/>
@@ -1197,19 +933,12 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="../common/exit_check.cpp" line="14"/>
         <source>7z lib not found</source>
-        <translation type="unfinished"></translation>
+        <translation>7z lib no encontrado</translation>
     </message>
     <message>
         <location filename="../common/exit_check.cpp" line="14"/>
         <source>unable to load 7z lib from ./utils</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QPushButton</name>
-    <message>
-        <source>Hello world!</source>
-        <translation type="obsolete">Hola mundo!</translation>
+        <translation>imposible cargar 7z lib de ./utils</translation>
     </message>
 </context>
 <context>
@@ -1240,18 +969,18 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="32"/>
         <source>Number of volumes found : %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Número de volúmenes encontrados : %1</translation>
     </message>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="34"/>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="57"/>
         <source>page %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>página %1 de %2</translation>
     </message>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="56"/>
         <source>Number of %1 found : %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Número de %1 encontrados : %2</translation>
     </message>
 </context>
 <context>
@@ -1259,12 +988,12 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="comic_vine/search_single_comic.cpp" line="14"/>
         <source>Please provide some aditional information.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por favor, proporciona alguna información adicional.</translation>
     </message>
     <message>
         <location filename="comic_vine/search_single_comic.cpp" line="19"/>
         <source>Series:</source>
-        <translation type="unfinished"></translation>
+        <translation>Series:</translation>
     </message>
 </context>
 <context>
@@ -1272,12 +1001,12 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="comic_vine/search_volume.cpp" line="11"/>
         <source>Please provide some aditional information.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por favor, proporciona alguna informacion adicional.</translation>
     </message>
     <message>
         <location filename="comic_vine/search_volume.cpp" line="14"/>
         <source>Series:</source>
-        <translation type="unfinished"></translation>
+        <translation>Series:</translation>
     </message>
 </context>
 <context>
@@ -1285,27 +1014,27 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="comic_vine/select_comic.cpp" line="17"/>
         <source>Please, select the right comic info.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por favor, selecciona la información correcta.</translation>
     </message>
     <message>
         <location filename="comic_vine/select_comic.cpp" line="40"/>
         <source>comics</source>
-        <translation type="unfinished"></translation>
+        <translation>cómics</translation>
     </message>
     <message>
         <location filename="comic_vine/select_comic.cpp" line="99"/>
         <source>loading cover</source>
-        <translation type="unfinished"></translation>
+        <translation>cargando portada</translation>
     </message>
     <message>
         <location filename="comic_vine/select_comic.cpp" line="100"/>
         <source>loading description</source>
-        <translation type="unfinished"></translation>
+        <translation>cargando descripción</translation>
     </message>
     <message>
         <location filename="comic_vine/select_comic.cpp" line="143"/>
         <source>description unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>descripción no disponible</translation>
     </message>
 </context>
 <context>
@@ -1313,27 +1042,27 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="comic_vine/select_volume.cpp" line="32"/>
         <source>Please, select the right series for your comic.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por favor, seleciona la serie correcta para tu cómic.</translation>
     </message>
     <message>
         <location filename="comic_vine/select_volume.cpp" line="63"/>
         <source>volumes</source>
-        <translation type="unfinished"></translation>
+        <translation>volúmenes</translation>
     </message>
     <message>
         <location filename="comic_vine/select_volume.cpp" line="128"/>
         <source>loading cover</source>
-        <translation type="unfinished"></translation>
+        <translation>cargando portada</translation>
     </message>
     <message>
         <location filename="comic_vine/select_volume.cpp" line="129"/>
         <source>loading description</source>
-        <translation type="unfinished"></translation>
+        <translation>cargando descripción</translation>
     </message>
     <message>
         <location filename="comic_vine/select_volume.cpp" line="172"/>
         <source>description unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>descripción no disponible</translation>
     </message>
 </context>
 <context>
@@ -1341,25 +1070,21 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="comic_vine/series_question.cpp" line="13"/>
         <source>You are trying to get information for various comics at once, are they part of the same series?</source>
-        <translation type="unfinished"></translation>
+        <translation>Estás intentando obtener información de varios cómics a la vez, ¿son parte de la misma serie?</translation>
     </message>
     <message>
         <location filename="comic_vine/series_question.cpp" line="15"/>
         <source>yes</source>
-        <translation type="unfinished">sí</translation>
+        <translation>sí</translation>
     </message>
     <message>
         <location filename="comic_vine/series_question.cpp" line="16"/>
         <source>no</source>
-        <translation type="unfinished">no</translation>
+        <translation>no</translation>
     </message>
 </context>
 <context>
     <name>ServerConfigDialog</name>
-    <message>
-        <source>Update IPs</source>
-        <translation type="obsolete">Actualizar IPs</translation>
-    </message>
     <message>
         <location filename="server_config_dialog.cpp" line="61"/>
         <source>set port</source>
@@ -1412,32 +1137,32 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="18"/>
         <source>Please, sort the list of comics on the left until it matches the comics&apos; information.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por favor, ordena la lista de cómics en la izquiera hasta que coincida con la información adecuada.</translation>
     </message>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="21"/>
         <source>sort comics to match comic information</source>
-        <translation type="unfinished"></translation>
+        <translation>ordena los cómics para coincidir con la información</translation>
     </message>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="62"/>
         <source>issues</source>
-        <translation type="unfinished"></translation>
+        <translation>números</translation>
     </message>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="91"/>
         <source>remove selected comics</source>
-        <translation type="unfinished"></translation>
+        <translation>eliminar cómics seleccionados</translation>
     </message>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="92"/>
         <source>restore all removed comics</source>
-        <translation type="unfinished"></translation>
+        <translation>restaurar todos los cómics eliminados</translation>
     </message>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="93"/>
         <source>restore removed comics</source>
-        <translation type="unfinished"></translation>
+        <translation>restaurar cómics eliminados</translation>
     </message>
 </context>
 <context>
@@ -1480,47 +1205,12 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="db/tablemodel.cpp" line="134"/>
         <source>Current Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Página Actual</translation>
     </message>
     <message>
         <location filename="db/tablemodel.cpp" line="136"/>
         <source>Rating</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>ThumbnailCreator</name>
-    <message>
-        <source>7z not found</source>
-        <translation type="obsolete">7z no encontrado</translation>
-    </message>
-    <message>
-        <source>7z wasn&apos;t found in your PATH.</source>
-        <translation type="obsolete">7z no ha sido encontrado en tu PATH.</translation>
-    </message>
-    <message>
-        <source>7z crashed</source>
-        <translation type="obsolete">fallo en 7z</translation>
-    </message>
-    <message>
-        <source>7z crashed.</source>
-        <translation type="obsolete">fallo en 7z.</translation>
-    </message>
-    <message>
-        <source>7z reading</source>
-        <translation type="obsolete">Leyendo de 7z</translation>
-    </message>
-    <message>
-        <source>problem reading from 7z</source>
-        <translation type="obsolete">Problema lenyendo de 7z</translation>
-    </message>
-    <message>
-        <source>7z problem</source>
-        <translation type="obsolete">Problema en 7z</translation>
-    </message>
-    <message>
-        <source>Unknown error 7z</source>
-        <translation type="obsolete">Error desconocido en 7z</translation>
+        <translation>Nota</translation>
     </message>
 </context>
 <context>
@@ -1528,7 +1218,7 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="comic_vine/title_header.cpp" line="30"/>
         <source>SEARCH</source>
-        <translation type="unfinished"></translation>
+        <translation>BUSCAR</translation>
     </message>
 </context>
 <context>
@@ -1554,7 +1244,7 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="comic_vine/model/volume_comics_model.cpp" line="122"/>
         <source>title</source>
-        <translation type="unfinished"></translation>
+        <translation>título</translation>
     </message>
 </context>
 <context>
@@ -1562,17 +1252,17 @@ Files won&apos;t be erased from disk.</source>
     <message>
         <location filename="comic_vine/model/volumes_model.cpp" line="112"/>
         <source>year</source>
-        <translation type="unfinished"></translation>
+        <translation>año</translation>
     </message>
     <message>
         <location filename="comic_vine/model/volumes_model.cpp" line="114"/>
         <source>issues</source>
-        <translation type="unfinished"></translation>
+        <translation>números</translation>
     </message>
     <message>
         <location filename="comic_vine/model/volumes_model.cpp" line="116"/>
         <source>publisher</source>
-        <translation type="unfinished"></translation>
+        <translation>editor</translation>
     </message>
 </context>
 <context>
@@ -1793,21 +1483,6 @@ Files won&apos;t be erased from disk.</source>
         <location filename="../custom_widgets/yacreader_sidebar.cpp" line="30"/>
         <source>Search folders and comics</source>
         <translation>Buscar carpetas y cómics</translation>
-    </message>
-</context>
-<context>
-    <name>YACReaderSocialDialog</name>
-    <message>
-        <source>send to:</source>
-        <translation type="obsolete">envíar a:</translation>
-    </message>
-    <message>
-        <source>Follow YACReader!</source>
-        <translation type="obsolete">¡Sigue a YACReader!</translation>
-    </message>
-    <message>
-        <source>I am reading %1 using YACReader.</source>
-        <translation type="obsolete">Estoy leyendo %1 usando YACReader.</translation>
     </message>
 </context>
 </TS>

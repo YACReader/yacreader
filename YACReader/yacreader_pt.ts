@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="pt_BR">
+<TS version="2.1" language="pt_BR">
 <context>
     <name>BookmarksDialog</name>
     <message>
@@ -26,77 +26,7 @@
     </message>
 </context>
 <context>
-    <name>Comic</name>
-    <message>
-        <source>No images found</source>
-        <translation type="obsolete">Nenhuma imagem encontrada</translation>
-    </message>
-    <message>
-        <source>There are not images on the selected folder</source>
-        <translation type="obsolete">Não há imagens na pasta selecionada</translation>
-    </message>
-    <message>
-        <source>File error</source>
-        <translation type="obsolete">Erro no arquivo</translation>
-    </message>
-    <message>
-        <source>File not found or not images in file</source>
-        <translation type="obsolete">Arquivo não encontrado ou nenhuma imagem no arquivo</translation>
-    </message>
-    <message>
-        <source>7z not found</source>
-        <translation type="obsolete">7z não encontrado</translation>
-    </message>
-    <message>
-        <source>7z wasn&apos;t found in your PATH.</source>
-        <translation type="obsolete">7z não foi encontrado no seu sistema (PATH).</translation>
-    </message>
-    <message>
-        <source>7z crashed</source>
-        <translation type="obsolete">7z fechou inesperadamente</translation>
-    </message>
-    <message>
-        <source>7z crashed.</source>
-        <translation type="obsolete">7z fechou inesperadamente.</translation>
-    </message>
-    <message>
-        <source>7z reading</source>
-        <translation type="obsolete">Lendo 7z</translation>
-    </message>
-    <message>
-        <source>problem reading from 7z</source>
-        <translation type="obsolete">Problema na leitura do 7z</translation>
-    </message>
-    <message>
-        <source>7z problem</source>
-        <translation type="obsolete">Problema no 7z</translation>
-    </message>
-    <message>
-        <source>Unknown error 7z</source>
-        <translation type="obsolete">Erro desconhecido no 7z</translation>
-    </message>
-</context>
-<context>
-    <name>Configuration</name>
-    <message>
-        <source>Saving config file....</source>
-        <translation type="obsolete">Salvando arquivo de configuração...</translation>
-    </message>
-    <message>
-        <source>There was a problem saving YACReader configuration. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation type="obsolete">Houve um problema ao salvar a configuração do YACReader. Por favor, verifique se você tem permissões suficientes na pasta raiz do YACReader.</translation>
-    </message>
-</context>
-<context>
     <name>FileComic</name>
-    <message>
-        <source>File error</source>
-        <translation type="obsolete">Erro no arquivo</translation>
-    </message>
-    <message>
-        <source>File not found or not images in file</source>
-        <translation type="obsolete">Arquivo não encontrado ou nenhuma imagem no arquivo</translation>
-    </message>
     <message>
         <location filename="../common/comic.cpp" line="309"/>
         <source>Unknown error opening the file</source>
@@ -111,34 +41,6 @@
         <location filename="../common/comic.cpp" line="424"/>
         <source>Format not supported</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>7z wasn&apos;t found in your PATH.</source>
-        <translation type="obsolete">7z não foi encontrado no seu sistema (PATH).</translation>
-    </message>
-    <message>
-        <source>7z crashed</source>
-        <translation type="obsolete">7z fechou inesperadamente</translation>
-    </message>
-    <message>
-        <source>7z crashed.</source>
-        <translation type="obsolete">7z fechou inesperadamente.</translation>
-    </message>
-    <message>
-        <source>7z reading</source>
-        <translation type="obsolete">Lendo 7z</translation>
-    </message>
-    <message>
-        <source>problem reading from 7z</source>
-        <translation type="obsolete">Problema na leitura do 7z</translation>
-    </message>
-    <message>
-        <source>7z problem</source>
-        <translation type="obsolete">Problema no 7z</translation>
-    </message>
-    <message>
-        <source>Unknown error 7z</source>
-        <translation type="obsolete">Erro desconhecido no 7z</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="302"/>
@@ -173,13 +75,6 @@
         <location filename="goto_dialog.cpp" line="55"/>
         <source>Go to...</source>
         <translation>Ir para...</translation>
-    </message>
-</context>
-<context>
-    <name>GoToFlow</name>
-    <message>
-        <source>Page : </source>
-        <translation type="obsolete">Página : </translation>
     </message>
 </context>
 <context>
@@ -229,10 +124,6 @@
         <location filename="main_window_viewer.cpp" line="248"/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
-    </message>
-    <message>
-        <source>Open images in a folder</source>
-        <translation type="obsolete">Abrir imagens em uma pasta</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="250"/>
@@ -295,14 +186,6 @@
         <location filename="main_window_viewer.cpp" line="298"/>
         <source>Fit Width</source>
         <translation>Ajustar à Largura</translation>
-    </message>
-    <message>
-        <source>A</source>
-        <translation type="obsolete">A</translation>
-    </message>
-    <message>
-        <source>Fit image to ...</source>
-        <translation type="obsolete">Ajustar imagem à...</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="294"/>
@@ -495,10 +378,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Comic files (*.cbr *.cbz *.rar *.zip *.tar *.arj)</source>
-        <translation type="obsolete">Arquivos de quadrinho (*.cbr *.cbz *.rar *.zip *.tar *.arj)</translation>
-    </message>
-    <message>
         <location filename="main_window_viewer.cpp" line="655"/>
         <source>Open folder</source>
         <translation>Abrir pasta</translation>
@@ -523,14 +402,6 @@
         <source>Do you want to download the new version?</source>
         <translation>Você deseja baixar a nova versão?</translation>
     </message>
-    <message>
-        <source>Saving error log file....</source>
-        <translation type="obsolete">Salvando arquivo de registro de erro....</translation>
-    </message>
-    <message>
-        <source>There was a problem saving YACReader error log file. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation type="obsolete">Houve um problema ao salvar o arquivo de registro de erro do YACReader. Por favor, verifique se você tem permissões suficientes na pasta raiz YACReader.</translation>
-    </message>
 </context>
 <context>
     <name>OptionsDialog</name>
@@ -543,30 +414,6 @@
         <location filename="options_dialog.cpp" line="46"/>
         <source>My comics path</source>
         <translation>Meu caminho de quadrinhos</translation>
-    </message>
-    <message>
-        <source>Save</source>
-        <translation type="obsolete">Salvar</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Cancelar</translation>
-    </message>
-    <message>
-        <source>How to show pages in GoToFlow:</source>
-        <translation type="obsolete">Como mostrar páginas em IrParaCheia:</translation>
-    </message>
-    <message>
-        <source>CoverFlow look</source>
-        <translation type="obsolete">Olhar capa cheia</translation>
-    </message>
-    <message>
-        <source>Stripe look</source>
-        <translation type="obsolete">Olhar lista</translation>
-    </message>
-    <message>
-        <source>Overlapped Stripe look</source>
-        <translation type="obsolete">Olhar lista sobreposta</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="56"/>
