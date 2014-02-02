@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="fr_FR" sourcelanguage="en">
+<TS version="2.1" language="fr_FR" sourcelanguage="en">
 <context>
     <name>AddLibraryDialog</name>
     <message>
@@ -225,22 +225,6 @@
 <context>
     <name>FileComic</name>
     <message>
-        <source>Not found</source>
-        <translation type="obsolete">Introuvable</translation>
-    </message>
-    <message>
-        <source>Comic not found</source>
-        <translation type="obsolete">Comic introuvable</translation>
-    </message>
-    <message>
-        <source>File error</source>
-        <translation type="obsolete">Erreur de fichier</translation>
-    </message>
-    <message>
-        <source>File not found or not images in file</source>
-        <translation type="obsolete">Fichier introuvable ou pas d&apos;images dans le fichier</translation>
-    </message>
-    <message>
         <location filename="../common/comic.cpp" line="309"/>
         <source>Unknown error opening the file</source>
         <translation type="unfinished"></translation>
@@ -254,34 +238,6 @@
         <location filename="../common/comic.cpp" line="424"/>
         <source>Format not supported</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>7z wasn&apos;t found in your PATH.</source>
-        <translation type="obsolete">7z introuvable dans le chemin.</translation>
-    </message>
-    <message>
-        <source>7z crashed</source>
-        <translation type="obsolete">7z crashed</translation>
-    </message>
-    <message>
-        <source>7z crashed.</source>
-        <translation type="obsolete">7z crashed.</translation>
-    </message>
-    <message>
-        <source>7z reading</source>
-        <translation type="obsolete">Lecture du 7z</translation>
-    </message>
-    <message>
-        <source>problem reading from 7z</source>
-        <translation type="obsolete">Problème de lecture du 7z</translation>
-    </message>
-    <message>
-        <source>7z problem</source>
-        <translation type="obsolete">Problème du 7z</translation>
-    </message>
-    <message>
-        <source>Unknown error 7z</source>
-        <translation type="obsolete">Erreur inconnue du 7z</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="302"/>
@@ -521,18 +477,6 @@
         <translation>Marquer ce comic comme non-lu</translation>
     </message>
     <message>
-        <source>Set all comics as read</source>
-        <translation type="obsolete">Marquer tous les comics comme lus</translation>
-    </message>
-    <message>
-        <source>Set all as unread</source>
-        <translation type="obsolete">Tout marquer comme non-lu</translation>
-    </message>
-    <message>
-        <source>Set all comics as unread</source>
-        <translation type="obsolete">Marquer tous les comics comme non-lus</translation>
-    </message>
-    <message>
         <location filename="library_window.cpp" line="388"/>
         <source>Show/Hide marks</source>
         <translation>Afficher/Cacher les marqueurs</translation>
@@ -709,85 +653,77 @@
         <translation>Le dossier sélectionné ne contient aucune librairie.</translation>
     </message>
     <message>
-        <source>Saving libraries file....</source>
-        <translation type="obsolete">Sauvegarde de la librairie...</translation>
-    </message>
-    <message>
-        <source>There was a problem saving YACReaderLibrary libraries file. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation type="obsolete">Un problème est survenu lors de la sauvegarde du fichier YACReaderLibrary. Veuillez vérifier les droits administrateur à la racine de YACReader.</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1231"/>
+        <location filename="library_window.cpp" line="1233"/>
         <source>Are you sure?</source>
         <translation>Êtes-vous sûr?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1231"/>
+        <location filename="library_window.cpp" line="1233"/>
         <source>Do you want remove </source>
         <translation>Voulez-vous supprimer</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1231"/>
+        <location filename="library_window.cpp" line="1233"/>
         <source> library?</source>
         <translation> la librairie?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1232"/>
+        <location filename="library_window.cpp" line="1234"/>
         <source>Remove and delete metadata</source>
         <translation>Supprimer les métadata</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1445"/>
+        <location filename="library_window.cpp" line="1444"/>
         <source>Unable to delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1445"/>
+        <location filename="library_window.cpp" line="1444"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1458"/>
+        <location filename="library_window.cpp" line="1457"/>
         <source>Asign comics numbers</source>
         <translation>Assigner les numéros aux comics</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1459"/>
+        <location filename="library_window.cpp" line="1458"/>
         <source>Asign numbers starting in:</source>
         <translation>Assigner les numéros:</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1599"/>
+        <location filename="library_window.cpp" line="1598"/>
         <source>Error creating the library</source>
         <translation>Erreur lors de la création de la librairie</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1604"/>
+        <location filename="library_window.cpp" line="1603"/>
         <source>Error updating the library</source>
         <translation>Erreur lors de la mise à jour de la librairie</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1609"/>
+        <location filename="library_window.cpp" line="1608"/>
         <source>Error opening the library</source>
         <translation>Erreur lors de l&apos;ouverture de la librairie</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1634"/>
+        <location filename="library_window.cpp" line="1633"/>
         <source>Delete comics</source>
         <translation>Supprimer les comics</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1634"/>
+        <location filename="library_window.cpp" line="1633"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
         <translation>Tous les comics sélectionnés vont être supprimés de votre disque. Êtes-vous sûr?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1737"/>
+        <location filename="library_window.cpp" line="1736"/>
         <source>Library name already exists</source>
         <translation>Le nom de la librairie existe déjà</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1737"/>
+        <location filename="library_window.cpp" line="1736"/>
         <source>There is another library with the name &apos;%1&apos;.</source>
         <translation>Une autre librairie a le nom &apos;%1&apos;.</translation>
     </message>
@@ -1543,21 +1479,6 @@
         <location filename="../custom_widgets/yacreader_sidebar.cpp" line="30"/>
         <source>Search folders and comics</source>
         <translation>Recherche de dossiers et de comics</translation>
-    </message>
-</context>
-<context>
-    <name>YACReaderSocialDialog</name>
-    <message>
-        <source>send to:</source>
-        <translation type="obsolete">Envoyer à:</translation>
-    </message>
-    <message>
-        <source>Follow YACReader!</source>
-        <translation type="obsolete">Suivre YACReader!</translation>
-    </message>
-    <message>
-        <source>I am reading %1 using YACReader.</source>
-        <translation type="obsolete">Je lis %1 avec YACReader.</translation>
     </message>
 </context>
 </TS>

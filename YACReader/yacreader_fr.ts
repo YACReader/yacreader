@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="fr_FR" sourcelanguage="en">
+<TS version="2.1" language="fr_FR" sourcelanguage="en">
 <context>
     <name>BookmarksDialog</name>
     <message>
@@ -26,34 +26,7 @@
     </message>
 </context>
 <context>
-    <name>Configuration</name>
-    <message>
-        <source>Saving config file....</source>
-        <translation type="obsolete">Sauvegarde de la configuration...</translation>
-    </message>
-    <message>
-        <source>There was a problem saving YACReader configuration. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation type="obsolete">Un problème est survenu lors de la sauvegarde de la configuration de YACReader. Vérifiez vos droits d&apos;accès au dossier racine de YACReader.</translation>
-    </message>
-</context>
-<context>
     <name>FileComic</name>
-    <message>
-        <source>Not found</source>
-        <translation type="obsolete">Introuvable</translation>
-    </message>
-    <message>
-        <source>Comic not found</source>
-        <translation type="obsolete">Comic introuvable</translation>
-    </message>
-    <message>
-        <source>File error</source>
-        <translation type="obsolete">Erreur fichier</translation>
-    </message>
-    <message>
-        <source>File not found or not images in file</source>
-        <translation type="obsolete">Fichier introuvable ou pas d&apos;images dans le fichier</translation>
-    </message>
     <message>
         <location filename="../common/comic.cpp" line="309"/>
         <source>Unknown error opening the file</source>
@@ -68,34 +41,6 @@
         <location filename="../common/comic.cpp" line="424"/>
         <source>Format not supported</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>7z wasn&apos;t found in your PATH.</source>
-        <translation type="obsolete">7z introuvable dans le chemin.</translation>
-    </message>
-    <message>
-        <source>7z crashed</source>
-        <translation type="obsolete">7z crashed</translation>
-    </message>
-    <message>
-        <source>7z crashed.</source>
-        <translation type="obsolete">7z crashed.</translation>
-    </message>
-    <message>
-        <source>7z reading</source>
-        <translation type="obsolete">Lecture du 7z</translation>
-    </message>
-    <message>
-        <source>problem reading from 7z</source>
-        <translation type="obsolete">Problème de lecture du 7z</translation>
-    </message>
-    <message>
-        <source>7z problem</source>
-        <translation type="obsolete">Problème du 7z</translation>
-    </message>
-    <message>
-        <source>Unknown error 7z</source>
-        <translation type="obsolete">Erreur inconnue du 7z</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="302"/>
@@ -457,14 +402,6 @@
         <source>Not now</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Saving error log file....</source>
-        <translation type="obsolete">Sauvegarde du rapport d&apos;erreur....</translation>
-    </message>
-    <message>
-        <source>There was a problem saving YACReader error log file. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation type="obsolete">Un problème est survenu lors de la sauvegarde du rapport d&apos;erreur de YACReader. Vérifiez que vous disposez des droits d&apos;administrateur à la racine de YACReader.</translation>
-    </message>
 </context>
 <context>
     <name>OptionsDialog</name>
@@ -627,17 +564,6 @@
         <location filename="viewer.cpp" line="870"/>
         <source>Last page!</source>
         <translation>Dernière page!</translation>
-    </message>
-</context>
-<context>
-    <name>YACReaderDeletingProgress</name>
-    <message>
-        <source>Please wait, deleting in progress...</source>
-        <translation type="obsolete">Veuillez patienter, suppression en cours...</translation>
-    </message>
-    <message>
-        <source>cancel</source>
-        <translation type="obsolete">annuler</translation>
     </message>
 </context>
 <context>
@@ -827,36 +753,6 @@
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="30"/>
         <source>Use hardware acceleration (restart needed)</source>
         <translation>Utiliser accélération hardware (nécessite le redémarrage)</translation>
-    </message>
-</context>
-<context>
-    <name>YACReaderSideBar</name>
-    <message>
-        <source>LIBRARIES</source>
-        <translation type="obsolete">LIBRAIRIES</translation>
-    </message>
-    <message>
-        <source>FOLDERS</source>
-        <translation type="obsolete">DOSSIERS</translation>
-    </message>
-    <message>
-        <source>Search folders and comics</source>
-        <translation type="obsolete">Rechercher dossiers et comics</translation>
-    </message>
-</context>
-<context>
-    <name>YACReaderSocialDialog</name>
-    <message>
-        <source>send to:</source>
-        <translation type="obsolete">Envoyer à:</translation>
-    </message>
-    <message>
-        <source>Follow YACReader!</source>
-        <translation type="obsolete">Suivre YACReader!</translation>
-    </message>
-    <message>
-        <source>I am reading %1 using YACReader.</source>
-        <translation type="obsolete">Je lis %1 avec YACReader.</translation>
     </message>
 </context>
 <context>

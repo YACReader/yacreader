@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>AddLibraryDialog</name>
     <message>
@@ -145,11 +145,6 @@
         <source>The selected path does not exist or is not a valid path. Be sure that you have write access to this folder</source>
         <translation>Выбранный путь отсутствует, либо неверен. Убедитесь , что у вас есть доступ к этой папке</translation>
     </message>
-    <message>
-        <source>Importing : 
-</source>
-        <translation type="obsolete">Импорт:</translation>
-    </message>
 </context>
 <context>
     <name>ExportComicsInfoDialog</name>
@@ -230,22 +225,6 @@
 <context>
     <name>FileComic</name>
     <message>
-        <source>Not found</source>
-        <translation type="obsolete">Не найдено</translation>
-    </message>
-    <message>
-        <source>Comic not found</source>
-        <translation type="obsolete">Комикс не найден</translation>
-    </message>
-    <message>
-        <source>File error</source>
-        <translation type="obsolete">Ощибка файла</translation>
-    </message>
-    <message>
-        <source>File not found or not images in file</source>
-        <translation type="obsolete">Файл не найден или отсутствуют изображения</translation>
-    </message>
-    <message>
         <location filename="../common/comic.cpp" line="309"/>
         <source>Unknown error opening the file</source>
         <translation type="unfinished"></translation>
@@ -259,34 +238,6 @@
         <location filename="../common/comic.cpp" line="424"/>
         <source>Format not supported</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>7z wasn&apos;t found in your PATH.</source>
-        <translation type="obsolete">7z не был найден в вашем пути.</translation>
-    </message>
-    <message>
-        <source>7z crashed</source>
-        <translation type="obsolete">7z повреждён</translation>
-    </message>
-    <message>
-        <source>7z crashed.</source>
-        <translation type="obsolete">7z повреждён.</translation>
-    </message>
-    <message>
-        <source>7z reading</source>
-        <translation type="obsolete">Чтение 7z</translation>
-    </message>
-    <message>
-        <source>problem reading from 7z</source>
-        <translation type="obsolete">Проблема чтения 7z</translation>
-    </message>
-    <message>
-        <source>7z problem</source>
-        <translation type="obsolete">Ощибка 7z</translation>
-    </message>
-    <message>
-        <source>Unknown error 7z</source>
-        <translation type="obsolete">Неизвестная ошибка 7z</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="302"/>
@@ -416,22 +367,6 @@
         <translation>Библиотека YACReader</translation>
     </message>
     <message>
-        <source>Select a library:</source>
-        <translation type="obsolete">Выбор библиотеки:</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">Очистить</translation>
-    </message>
-    <message>
-        <source>Search folders/comics</source>
-        <translation type="obsolete">Поиск папки/комикса</translation>
-    </message>
-    <message>
-        <source>Include files (slower)</source>
-        <translation type="obsolete">Включить файлы (медленнее)</translation>
-    </message>
-    <message>
         <location filename="library_window.cpp" line="173"/>
         <source>&lt;font color=&apos;white&apos;&gt; press &apos;F&apos; to close fullscreen mode &lt;/font&gt;</source>
         <translation>&lt;font color=&apos;white&apos;&gt; нажмите &apos;F&apos; чтобы выйте из Полноэкранного режима &lt;/font&gt;</translation>
@@ -497,10 +432,6 @@
         <location filename="library_window.cpp" line="359"/>
         <source>Rename current library</source>
         <translation>Переименовать текущую бибилиотеку</translation>
-    </message>
-    <message>
-        <source>Delete current library from disk</source>
-        <translation type="obsolete">Удалить текущую библиотеку с диска</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="364"/>
@@ -674,47 +605,47 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1445"/>
+        <location filename="library_window.cpp" line="1444"/>
         <source>Unable to delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1445"/>
+        <location filename="library_window.cpp" line="1444"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1599"/>
+        <location filename="library_window.cpp" line="1598"/>
         <source>Error creating the library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1604"/>
+        <location filename="library_window.cpp" line="1603"/>
         <source>Error updating the library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1609"/>
+        <location filename="library_window.cpp" line="1608"/>
         <source>Error opening the library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1634"/>
+        <location filename="library_window.cpp" line="1633"/>
         <source>Delete comics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1634"/>
+        <location filename="library_window.cpp" line="1633"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1737"/>
+        <location filename="library_window.cpp" line="1736"/>
         <source>Library name already exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1737"/>
+        <location filename="library_window.cpp" line="1736"/>
         <source>There is another library with the name &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -759,22 +690,6 @@
         <translation>Эта библиотека был создан при новой версией YACReaderLibrary. Скачать новую версию сейчас?</translation>
     </message>
     <message>
-        <source>Library </source>
-        <translation type="obsolete">Библиотека</translation>
-    </message>
-    <message>
-        <source> is no longer available. Do you want to remove it?</source>
-        <translation type="obsolete">больше не доступна. Вы хотите, чтобы удалить его?</translation>
-    </message>
-    <message>
-        <source>Old library or corrupted</source>
-        <translation type="obsolete">Старая библиотека повреждена</translation>
-    </message>
-    <message>
-        <source> is corrupted or has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
-        <translation type="obsolete">поврежден или создан с более старой версией библиотеки YACReader. Она должна быть создана заново. Вы хотите создать библиотеку сейчас?</translation>
-    </message>
-    <message>
         <location filename="library_window.cpp" line="1160"/>
         <source>Library not found</source>
         <translation>Библиотека не найдена</translation>
@@ -785,50 +700,32 @@
         <translation>Выбранная папка не содержит библиотеку.</translation>
     </message>
     <message>
-        <source>Saving libraries file....</source>
-        <translation type="obsolete">Сохранение файлов библиотеки ...</translation>
-    </message>
-    <message>
-        <source>There was a problem saving YACReaderLibrary libraries file. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation type="obsolete">Возникла  проблема при  сохранения YACReaderLibrary библиотеки файлов. Пожалуйста, проверьте, достаточно ли у вас разрешения в YACReader корневой папке.</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1231"/>
+        <location filename="library_window.cpp" line="1233"/>
         <source>Are you sure?</source>
         <translation>Вы уверены?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1231"/>
+        <location filename="library_window.cpp" line="1233"/>
         <source> library?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1232"/>
+        <location filename="library_window.cpp" line="1234"/>
         <source>Remove and delete metadata</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Do you want delete </source>
-        <translation type="obsolete">Вы хотите удалить</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1231"/>
+        <location filename="library_window.cpp" line="1233"/>
         <source>Do you want remove </source>
         <translation>Вы хотите удалить</translation>
     </message>
     <message>
-        <source> library?
-Files won&apos;t be erased from disk.</source>
-        <translation type="obsolete">библиотеки?
-Файлы не могут быть удалены с жесткого диска.</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1458"/>
+        <location filename="library_window.cpp" line="1457"/>
         <source>Asign comics numbers</source>
         <translation>Назначение номеров комикса</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1459"/>
+        <location filename="library_window.cpp" line="1458"/>
         <source>Asign numbers starting in:</source>
         <translation>Назначьте номера, начинающиеся на:</translation>
     </message>
@@ -893,14 +790,6 @@ Files won&apos;t be erased from disk.</source>
         <location filename="properties_dialog.cpp" line="77"/>
         <source>Plot</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cover</source>
-        <translation type="obsolete">Осветить</translation>
-    </message>
-    <message>
-        <source>Cover page : </source>
-        <translation type="obsolete">Осветить страницу:</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="86"/>
@@ -1195,14 +1084,6 @@ Files won&apos;t be erased from disk.</source>
 </context>
 <context>
     <name>ServerConfigDialog</name>
-    <message>
-        <source>Generar</source>
-        <translation type="obsolete">Сгенерироать</translation>
-    </message>
-    <message>
-        <source>IP</source>
-        <translation type="obsolete">IP</translation>
-    </message>
     <message>
         <location filename="server_config_dialog.cpp" line="61"/>
         <source>set port</source>

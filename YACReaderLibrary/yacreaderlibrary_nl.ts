@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="nl_BE">
+<TS version="2.1" language="nl_BE">
 <context>
     <name>AddLibraryDialog</name>
     <message>
@@ -225,22 +225,6 @@
 <context>
     <name>FileComic</name>
     <message>
-        <source>Not found</source>
-        <translation type="obsolete">Niet gevonden</translation>
-    </message>
-    <message>
-        <source>Comic not found</source>
-        <translation type="obsolete">Strip niet gevonden</translation>
-    </message>
-    <message>
-        <source>File error</source>
-        <translation type="obsolete">Bestandsfout</translation>
-    </message>
-    <message>
-        <source>File not found or not images in file</source>
-        <translation type="obsolete">Bestand niet gevonden of geen afbeeldingen in het bestand</translation>
-    </message>
-    <message>
         <location filename="../common/comic.cpp" line="309"/>
         <source>Unknown error opening the file</source>
         <translation type="unfinished"></translation>
@@ -254,34 +238,6 @@
         <location filename="../common/comic.cpp" line="424"/>
         <source>Format not supported</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>7z wasn&apos;t found in your PATH.</source>
-        <translation type="obsolete">7Z Archiefbestand is niet gevonden in uw pad.</translation>
-    </message>
-    <message>
-        <source>7z crashed</source>
-        <translation type="obsolete">7Z Archiefbestand is vastgelopen</translation>
-    </message>
-    <message>
-        <source>7z crashed.</source>
-        <translation type="obsolete">7Z Archiefbestand is vastgelopen.</translation>
-    </message>
-    <message>
-        <source>7z reading</source>
-        <translation type="obsolete">7Z Archiefbestand lezen</translation>
-    </message>
-    <message>
-        <source>problem reading from 7z</source>
-        <translation type="obsolete">Probleem met het lezen van 7 z Archiefbestand</translation>
-    </message>
-    <message>
-        <source>7z problem</source>
-        <translation type="obsolete">Probleem met het 7z Archiefbestand</translation>
-    </message>
-    <message>
-        <source>Unknown error 7z</source>
-        <translation type="obsolete">Onbekende fout van het 7z Archiefbestand</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="302"/>
@@ -521,18 +477,6 @@
         <translation type="unfinished">Strip Instellen als ongelezen</translation>
     </message>
     <message>
-        <source>Set all comics as read</source>
-        <translation type="obsolete">Alle Strip Instellen als gelezen</translation>
-    </message>
-    <message>
-        <source>Set all as unread</source>
-        <translation type="obsolete">Alles Instellen als ongelezen</translation>
-    </message>
-    <message>
-        <source>Set all comics as unread</source>
-        <translation type="obsolete">Alle Strip Instellen als ongelezen</translation>
-    </message>
-    <message>
         <location filename="library_window.cpp" line="388"/>
         <source>Show/Hide marks</source>
         <translation type="unfinished">Toon/Verberg markeringen</translation>
@@ -709,85 +653,77 @@
         <translation type="unfinished">De geselecteerde map bevat geen bibliotheek.</translation>
     </message>
     <message>
-        <source>Saving libraries file....</source>
-        <translation type="obsolete">Opslaan bibliotheek bestanden ....</translation>
-    </message>
-    <message>
-        <source>There was a problem saving YACReaderLibrary libraries file. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation type="obsolete">Er was een probleem met het opslaan de YACReaderLibrary bibliotheek bestand. Controleer of u voldoende toegangsrechten in het YACReader hoofdmap heb.</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1231"/>
+        <location filename="library_window.cpp" line="1233"/>
         <source>Are you sure?</source>
         <translation type="unfinished">Weet u het zeker?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1231"/>
+        <location filename="library_window.cpp" line="1233"/>
         <source>Do you want remove </source>
         <translation type="unfinished">Wilt u verwijderen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1231"/>
+        <location filename="library_window.cpp" line="1233"/>
         <source> library?</source>
         <translation type="unfinished">Bibliotheek?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1232"/>
+        <location filename="library_window.cpp" line="1234"/>
         <source>Remove and delete metadata</source>
         <translation type="unfinished">Verwijder  metagegevens </translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1445"/>
+        <location filename="library_window.cpp" line="1444"/>
         <source>Unable to delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1445"/>
+        <location filename="library_window.cpp" line="1444"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1458"/>
+        <location filename="library_window.cpp" line="1457"/>
         <source>Asign comics numbers</source>
         <translation type="unfinished">Strips nummeren</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1459"/>
+        <location filename="library_window.cpp" line="1458"/>
         <source>Asign numbers starting in:</source>
         <translation type="unfinished">Strips nummeren beginnen bij:</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1599"/>
+        <location filename="library_window.cpp" line="1598"/>
         <source>Error creating the library</source>
         <translation type="unfinished">Fout bij aanmaken Bibliotheek</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1604"/>
+        <location filename="library_window.cpp" line="1603"/>
         <source>Error updating the library</source>
         <translation type="unfinished">Fout bij bijwerken Bibliotheek</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1609"/>
+        <location filename="library_window.cpp" line="1608"/>
         <source>Error opening the library</source>
         <translation type="unfinished">Fout bij openen Bibliotheek</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1634"/>
+        <location filename="library_window.cpp" line="1633"/>
         <source>Delete comics</source>
         <translation type="unfinished">Strips verwijderen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1634"/>
+        <location filename="library_window.cpp" line="1633"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
         <translation type="unfinished">Alle geselecteerde strips worden verwijderd van uw schijf. Weet u het zeker?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1737"/>
+        <location filename="library_window.cpp" line="1736"/>
         <source>Library name already exists</source>
         <translation type="unfinished">Bibliotheek naam bestaat al</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1737"/>
+        <location filename="library_window.cpp" line="1736"/>
         <source>There is another library with the name &apos;%1&apos;.</source>
         <translation type="unfinished">Er is al een bibliotheek met de naam &apos; %1 &apos;.</translation>
     </message>
@@ -1543,21 +1479,6 @@
         <location filename="../custom_widgets/yacreader_sidebar.cpp" line="30"/>
         <source>Search folders and comics</source>
         <translation type="unfinished">Zoeken in mappen en strips</translation>
-    </message>
-</context>
-<context>
-    <name>YACReaderSocialDialog</name>
-    <message>
-        <source>send to:</source>
-        <translation type="obsolete">Verzenden naar:</translation>
-    </message>
-    <message>
-        <source>Follow YACReader!</source>
-        <translation type="obsolete">Volg YACReader!</translation>
-    </message>
-    <message>
-        <source>I am reading %1 using YACReader.</source>
-        <translation type="obsolete">Ik lees  %1 met YACReader.</translation>
     </message>
 </context>
 </TS>

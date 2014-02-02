@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="nl_BE" sourcelanguage="en">
+<TS version="2.1" language="nl_BE" sourcelanguage="en">
 <context>
     <name>BookmarksDialog</name>
     <message>
@@ -26,34 +26,7 @@
     </message>
 </context>
 <context>
-    <name>Configuration</name>
-    <message>
-        <source>Saving config file....</source>
-        <translation type="obsolete">Bewaren configuratie bestand ....</translation>
-    </message>
-    <message>
-        <source>There was a problem saving YACReader configuration. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation type="obsolete">Er was een probleem met het opslaan van de  YACReader configuratie. Controleer of u voldoende toegangsrechten heeft in het YACReader hoofdmap.</translation>
-    </message>
-</context>
-<context>
     <name>FileComic</name>
-    <message>
-        <source>Not found</source>
-        <translation type="obsolete">Niet Gevonden</translation>
-    </message>
-    <message>
-        <source>Comic not found</source>
-        <translation type="obsolete">Strip niet gevonden</translation>
-    </message>
-    <message>
-        <source>File error</source>
-        <translation type="obsolete">Bestandsfout</translation>
-    </message>
-    <message>
-        <source>File not found or not images in file</source>
-        <translation type="obsolete">Bestand niet gevonden of geen afbeeldingen in het bestand</translation>
-    </message>
     <message>
         <location filename="../common/comic.cpp" line="309"/>
         <source>Unknown error opening the file</source>
@@ -68,34 +41,6 @@
         <location filename="../common/comic.cpp" line="424"/>
         <source>Format not supported</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>7z wasn&apos;t found in your PATH.</source>
-        <translation type="obsolete">7Z Archiefbestand is niet gevonden in uw pad.</translation>
-    </message>
-    <message>
-        <source>7z crashed</source>
-        <translation type="obsolete">7Z Archiefbestand is vastgelopen</translation>
-    </message>
-    <message>
-        <source>7z crashed.</source>
-        <translation type="obsolete">7Z Archiefbestand is vastgelopen.</translation>
-    </message>
-    <message>
-        <source>7z reading</source>
-        <translation type="obsolete">7Z Archiefbestand lezen</translation>
-    </message>
-    <message>
-        <source>problem reading from 7z</source>
-        <translation type="obsolete">Probleem met het lezen van 7 z Archiefbestand</translation>
-    </message>
-    <message>
-        <source>7z problem</source>
-        <translation type="obsolete">Probleem met het 7z Archiefbestand </translation>
-    </message>
-    <message>
-        <source>Unknown error 7z</source>
-        <translation type="obsolete">Onbekende fout van het 7z Archiefbestand</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="302"/>
@@ -457,14 +402,6 @@
         <source>Not now</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Saving error log file....</source>
-        <translation type="obsolete">Opslaan Fouten-logbestand ....</translation>
-    </message>
-    <message>
-        <source>There was a problem saving YACReader error log file. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation type="obsolete">Er was een probleem met het opslaan YACReader error log bestand. Controleer of u voldoende toegangsrechten heeft in de YACReader hoofdmap.</translation>
-    </message>
 </context>
 <context>
     <name>OptionsDialog</name>
@@ -627,17 +564,6 @@
         <location filename="viewer.cpp" line="870"/>
         <source>Last page!</source>
         <translation type="unfinished">Laatste pagina!</translation>
-    </message>
-</context>
-<context>
-    <name>YACReaderDeletingProgress</name>
-    <message>
-        <source>Please wait, deleting in progress...</source>
-        <translation type="obsolete">Even geduld, verwijderen ...</translation>
-    </message>
-    <message>
-        <source>cancel</source>
-        <translation type="obsolete">annuleren</translation>
     </message>
 </context>
 <context>
@@ -827,36 +753,6 @@
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="30"/>
         <source>Use hardware acceleration (restart needed)</source>
         <translation type="unfinished">Gebruik hardware versnelling (opnieuw opstarten vereist)</translation>
-    </message>
-</context>
-<context>
-    <name>YACReaderSideBar</name>
-    <message>
-        <source>LIBRARIES</source>
-        <translation type="obsolete">BIBLIOTHEKEN</translation>
-    </message>
-    <message>
-        <source>FOLDERS</source>
-        <translation type="obsolete">MAPPEN</translation>
-    </message>
-    <message>
-        <source>Search folders and comics</source>
-        <translation type="obsolete">Zoek mappen en strips</translation>
-    </message>
-</context>
-<context>
-    <name>YACReaderSocialDialog</name>
-    <message>
-        <source>send to:</source>
-        <translation type="obsolete">Verzenden naar:</translation>
-    </message>
-    <message>
-        <source>Follow YACReader!</source>
-        <translation type="obsolete">Volg YACReader!</translation>
-    </message>
-    <message>
-        <source>I am reading %1 using YACReader.</source>
-        <translation type="obsolete">Ik lees  %1 met YACReader.</translation>
     </message>
 </context>
 <context>

@@ -1,3 +1,13 @@
+7.0 (Final)
+Corregidos eventos de teclado en algunos diálogos
+Corregido soporte para archivos Rar en sistemas Unix
+Corregidos problemas borrando cómics
+Mejorada la gestión de errores
+Corregida la comunicación entre YACReader y YACReaderLibrary
+Corregida la toolBar en MacOSX
+Mejorada la compatabilidad de OpenGL en tarjetas NVIDIA
+Corregidos bugs menores
+
 6.9 (No pública)
 Añadida la apertura automática del siguiente/anterior cómic al llegar al final/portada del cómic actual
 Corregido el comportamiento del diálogo de nueva versión detectada. Ahora avisa una vez al día o si el usuario lo elige cada 14 días.

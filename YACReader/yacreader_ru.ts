@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU" sourcelanguage="ru">
+<TS version="2.1" language="ru_RU" sourcelanguage="ru">
 <context>
     <name>BookmarksDialog</name>
     <message>
@@ -26,34 +26,7 @@
     </message>
 </context>
 <context>
-    <name>Configuration</name>
-    <message>
-        <source>Saving config file....</source>
-        <translation type="obsolete">Сохраняется конфигурация...</translation>
-    </message>
-    <message>
-        <source>There was a problem saving YACReader configuration. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation type="obsolete">Возникла проблема с сохранением конфигурации YACReader. Пожалуйста, проверьте есть ли у вас права доступа к корневой папке YACReader.</translation>
-    </message>
-</context>
-<context>
     <name>FileComic</name>
-    <message>
-        <source>Not found</source>
-        <translation type="obsolete">Не найдено</translation>
-    </message>
-    <message>
-        <source>Comic not found</source>
-        <translation type="obsolete">Комикс не найден</translation>
-    </message>
-    <message>
-        <source>File error</source>
-        <translation type="obsolete">Ощибка файла</translation>
-    </message>
-    <message>
-        <source>File not found or not images in file</source>
-        <translation type="obsolete">Не найден файл или изображения </translation>
-    </message>
     <message>
         <location filename="../common/comic.cpp" line="309"/>
         <source>Unknown error opening the file</source>
@@ -68,34 +41,6 @@
         <location filename="../common/comic.cpp" line="424"/>
         <source>Format not supported</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>7z wasn&apos;t found in your PATH.</source>
-        <translation type="obsolete">7z не был найден в указанном пути.</translation>
-    </message>
-    <message>
-        <source>7z crashed</source>
-        <translation type="obsolete">7z повреждён</translation>
-    </message>
-    <message>
-        <source>7z crashed.</source>
-        <translation type="obsolete">7z повреждён.</translation>
-    </message>
-    <message>
-        <source>7z reading</source>
-        <translation type="obsolete">7z просматривается</translation>
-    </message>
-    <message>
-        <source>problem reading from 7z</source>
-        <translation type="obsolete">Проблема просмотра с 7z</translation>
-    </message>
-    <message>
-        <source>7z problem</source>
-        <translation type="obsolete">7z проблема</translation>
-    </message>
-    <message>
-        <source>Unknown error 7z</source>
-        <translation type="obsolete">Неизестная ошибка 7z</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="302"/>
@@ -241,14 +186,6 @@
         <location filename="main_window_viewer.cpp" line="298"/>
         <source>Fit Width</source>
         <translation>Подогнать ширину</translation>
-    </message>
-    <message>
-        <source>A</source>
-        <translation type="obsolete">А</translation>
-    </message>
-    <message>
-        <source>Fit image to ...</source>
-        <translation type="obsolete">Подогнать изображение для ...</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="294"/>
@@ -464,14 +401,6 @@
         <location filename="main_window_viewer.cpp" line="928"/>
         <source>Not now</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving error log file....</source>
-        <translation type="obsolete">Сохранение файла с логом ошибки...</translation>
-    </message>
-    <message>
-        <source>There was a problem saving YACReader error log file. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation type="obsolete">Возникла проблема с сохраниением файла лога YACReader. Пожалуйста, проверьте есть ли у вас права доступа к корневой папке YACReader.</translation>
     </message>
 </context>
 <context>
