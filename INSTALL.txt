@@ -1,30 +1,6 @@
 INSTALLATION GUIDE FOR LINUX USERS
 **********************************
-YACReader and YACReaderLibraries binaries are compiled under Ubuntu 12.04 and have been tested under Ubuntu 13.04.
-
-Install the following packages:
-
-sudo apt-get install libpoppler-qt4-dev
-sudo apt-get install phonon
-sudo apt-get install libqt4-sql
-sudo apt-get install libqt4-sql-sqlite
-
-Create the following link:
-
-for 64bit systems do:
-
-sudo ln -s /usr/lib/x86_64-linux-gnu/libpoppler-qt4.so.4 /usr/lib/x86_64-linux-gnu/libpoppler-qt4.so.3
-
-for 32bit systems do:
-
-sudo ln -s /usr/lib/i386-linux-gnu/libpoppler-qt4.so.4 /usr/lib/i386-linux-gnu/libpoppler-qt4.so.3
-
-YACReader has dependencies with several qt4 libs, the following qt4 libs should be installed in your system: 
-libqt4-core
-libqt4-gui
-libqt4-opengl
-libqt4-network
-libqt4-webkit
+YACReader and YACReaderLibraries binaries are compiled under Ubuntu 13.10 and uses Qt5 and libpoppler-qt5.
 
 
 DO YOU WANT TO HELP YACREADER?
