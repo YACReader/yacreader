@@ -103,7 +103,7 @@ void YACReaderClientConnectionWorker::run()
 	}
 	if(tries == 200)
 	{
-		QLOG_ERROR() << "unable to read the message size";
+		QLOG_ERROR() << "Local connection: unable to read the message size";
 		return;
 	}
 
@@ -123,7 +123,7 @@ void YACReaderClientConnectionWorker::run()
 	}
 	if(tries == 200)
 	{
-		QLOG_ERROR() << "unable to read message";
+		QLOG_ERROR() << QString("Local connection: unable to read message (%1,%2)").arg(data.size()).arg(totalSize);
 		return;
 	}
 	QDataStream dataStream(data);
@@ -161,6 +161,8 @@ void YACReaderClientConnectionWorker::run()
 				else
 					tries++;
 			}
+			if(tries == 200 && written != block.size())
+				QLOG_ERROR() << QString("Local connection (comic info requested): unable to send response (%1,%2)").arg(written).arg(block.size());
 			break;
 		}
 	case YACReader::SendComicInfo:

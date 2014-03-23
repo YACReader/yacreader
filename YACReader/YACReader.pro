@@ -19,6 +19,7 @@ isEqual(QT_MAJOR_VERSION, 5) {
 
 SOURCES += main.cpp
 include(YACReader.pri)
+include(../QsLog/QsLog.pri)
 
 RC_FILE = icon.rc
 

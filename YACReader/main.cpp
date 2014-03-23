@@ -14,6 +14,10 @@
 #include "configuration.h"
 #include "exit_check.h"
 
+#include "QsLog.h"
+#include "QsLogDest.h"
+
+using namespace QsLogging;
 
  #if defined(WIN32) && defined(_DEBUG)
 	 #define _CRTDBG_MAP_ALLOC
@@ -76,6 +80,18 @@ int main(int argc, char * argv[])
 
 	app.setApplicationName("YACReader");
 	app.setOrganizationName("YACReader");
+
+	QString destLog = YACReader::getSettingsPath()+"/yacreader.log";
+	QDir().mkpath(YACReader::getSettingsPath());
+
+	Logger& logger = Logger::instance();
+	logger.setLoggingLevel(QsLogging::TraceLevel);
+
+	DestinationPtr fileDestination(DestinationFactory::MakeFileDestination(
+	  destLog, EnableLogRotation, MaxSizeBytes(1048576), MaxOldLogCount(2)));
+	DestinationPtr debugDestination(DestinationFactory::MakeDebugOutputDestination());
+	logger.addDestination(debugDestination);
+	logger.addDestination(fileDestination);
 
 	QTranslator translator;
 	QString sufix = QLocale::system().name();

@@ -4,6 +4,8 @@
 
 #include <QLocalSocket>
 
+#include "QsLog.h"
+
 using namespace YACReader;
 
 YACReaderLocalClient::YACReaderLocalClient(QObject *parent) :
@@ -53,6 +55,7 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 		if(tries == 200)
 		{
 			localSocket->close();
+			QLOG_ERROR() << "Requesting Comic Info : unable to send request";
 			return false;
 		}
 		
@@ -66,6 +69,7 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 		if(tries == 10)
 		{
 			localSocket->close();
+			QLOG_ERROR() << "Requesting Comic Info : unable to read package size";
 			return false;
 		}
 		QDataStream sizeStream(localSocket->read(sizeof(quint32)));
@@ -86,6 +90,7 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 		if(tries == 10)
 		{
 			localSocket->close();
+			QLOG_ERROR() << QString("Requesting Comic Info : unable to read data (%1,%2)").arg(data.length()).arg(totalSize);
 			return false;
 		}
 
@@ -96,7 +101,10 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 		return true;
 	}
 	else
+	{
+		QLOG_ERROR() << "Requesting Comic Info : unable to connect to the server";
 		return false;
+	}
 }
 
 bool YACReaderLocalClient::sendComicInfo(quint64 libraryId, ComicDB & comic)
@@ -125,6 +133,7 @@ bool YACReaderLocalClient::sendComicInfo(quint64 libraryId, ComicDB & comic)
 		if(tries == 100 && written != block.size())
 		{
 			emit finished();
+			QLOG_ERROR() << QString("Sending Comic Info : unable to write data (%1,%2)").arg(written).arg(block.size());
 			return false;
 		}
 		emit finished();
@@ -132,6 +141,7 @@ bool YACReaderLocalClient::sendComicInfo(quint64 libraryId, ComicDB & comic)
 	}
 
 	emit finished();
+	QLOG_ERROR() << "Sending Comic Info : unable to connect to the server";
 	return false;
 
 }
