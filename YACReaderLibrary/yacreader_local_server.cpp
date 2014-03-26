@@ -114,12 +114,15 @@ void YACReaderClientConnectionWorker::run()
 
 	tries = 0;
 	QByteArray data;
+    int dataRead = 0;
 	while(data.size() < totalSize && tries < 200)
 	{
 		data.append(clientConnection->readAll());
 		if(data.length() < totalSize)
 			clientConnection->waitForReadyRead(100);
-		tries++;
+        if(dataRead == data.length()) //no bytes were read
+            tries++;
+        dataRead = data.length();
 	}
 	if(tries == 200)
 	{
