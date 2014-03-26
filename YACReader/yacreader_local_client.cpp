@@ -44,13 +44,15 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 		out.device()->seek(0);
 		out << (quint32)(block.size() - sizeof(quint32));
 
-		int  written = 0;
+        int  written, previousWritten = 0;
 		int tries = 0;
 		while(written != block.size() && tries < 200)
 		{
 			written += localSocket->write(block);
 			localSocket->flush();
-			tries++;
+            if(written == previousWritten) //no bytes were written
+                tries++;
+            previousWritten = written;
 		}
 		if(tries == 200)
 		{
@@ -80,14 +82,17 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 		QByteArray data;
 
 		tries = 0;
-		while(data.length() < totalSize && tries < 10 )
+        int dataRead = 0;
+        while(data.length() < totalSize && tries < 20 )
 		{
 			data.append(localSocket->readAll());
 			if(data.length() < totalSize)
 				localSocket->waitForReadyRead(100);
-			tries++;
+            if(data.length() == dataRead)
+                tries++;
+            dataRead = data.length();
 		}
-		if(tries == 10)
+        if(tries == 20)
 		{
 			localSocket->close();
 			QLOG_ERROR() << QString("Requesting Comic Info : unable to read data (%1,%2)").arg(data.length()).arg(totalSize);
@@ -122,12 +127,14 @@ bool YACReaderLocalClient::sendComicInfo(quint64 libraryId, ComicDB & comic)
 		out.device()->seek(0);
 		out << (quint32)(block.size() - sizeof(quint32));
 
-		int  written = 0;
+        int  written, previousWritten = 0;
 		int tries = 0;
 		while(written != block.size() && tries < 100)
 		{
 			written += localSocket->write(block);
-			tries++;
+            if(written == previousWritten)
+                tries++;
+            previousWritten = written;
 		}
 		localSocket->close();
 		if(tries == 100 && written != block.size())
