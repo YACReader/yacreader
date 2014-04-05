@@ -31,7 +31,7 @@
 #include <QDebug>
 #include <QString>
 
-#define QS_LOG_VERSION "2.0b1"
+#define QS_LOG_VERSION "2.0b3"
 
 namespace QsLogging
 {
@@ -56,7 +56,7 @@ public:
 
     //! The helper forwards the streaming to QDebug and builds the final
     //! log message.
-    class Helper
+    class QSLOG_SHARED_OBJECT Helper
     {
     public:
         explicit Helper(Level logLevel) :

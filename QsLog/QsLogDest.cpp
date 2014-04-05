@@ -26,10 +26,15 @@
 #include "QsLogDest.h"
 #include "QsLogDestConsole.h"
 #include "QsLogDestFile.h"
+#include "QsLogDestFunctor.h"
 #include <QString>
 
 namespace QsLogging
 {
+
+Destination::~Destination()
+{
+}
 
 //! destination factory
 DestinationPtr DestinationFactory::MakeFileDestination(const QString& filePath,
@@ -50,6 +55,16 @@ DestinationPtr DestinationFactory::MakeFileDestination(const QString& filePath,
 DestinationPtr DestinationFactory::MakeDebugOutputDestination()
 {
     return DestinationPtr(new DebugOutputDestination);
+}
+
+DestinationPtr DestinationFactory::MakeFunctorDestination(QsLogging::Destination::LogFunction f)
+{
+    return DestinationPtr(new FunctorDestination(f));
+}
+
+DestinationPtr DestinationFactory::MakeFunctorDestination(QObject *receiver, const char *member)
+{
+    return DestinationPtr(new FunctorDestination(receiver, member));
 }
 
 } // end namespace
