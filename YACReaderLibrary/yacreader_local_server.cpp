@@ -95,19 +95,26 @@ void YACReaderClientConnectionWorker::run()
 	quint64 libraryId;
 	ComicDB comic;
 	int tries = 0;
-	//QByteArray data;
-	while(clientConnection->bytesAvailable() < sizeof(quint32) && tries < 200)
+	int dataAvailable = 0;
+	QByteArray packageSize;
+	clientConnection->waitForReadyRead(1000);
+	while(packageSize.size() < sizeof(quint32) && tries < 20)
 	{
-		clientConnection->waitForReadyRead(10);
-		tries++;
+		packageSize.append(clientConnection->read(sizeof(quint32) - packageSize.size()));
+		clientConnection->waitForReadyRead(100);
+		if(dataAvailable == packageSize.size())
+		{
+			tries++;
+		}
+		dataAvailable = packageSize.size();
 	}
-	if(tries == 200)
+	if(tries == 20)
 	{
 		QLOG_ERROR() << "Local connection: unable to read the message size";
 		return;
 	}
 
-	QDataStream sizeStream(clientConnection->read(sizeof(quint32)));
+	QDataStream sizeStream(packageSize);
 	sizeStream.setVersion(QDataStream::Qt_4_8);
 	quint32 totalSize = 0;
 	sizeStream >> totalSize;

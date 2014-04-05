@@ -30,11 +30,14 @@
 #include <QSharedPointer>
 #include <QtGlobal>
 class QString;
+class QObject;
 
 #ifdef QSLOG_IS_SHARED_LIBRARY
 #define QSLOG_SHARED_OBJECT Q_DECL_EXPORT
+#elif QSLOG_IS_SHARED_LIBRARY_IMPORT
+#define QSLOG_SHARED_OBJECT Q_DECL_IMPORT
 #else
-#define QSLOG_SHARED_OBJECT /*Q_DECL_IMPORT*/
+#define QSLOG_SHARED_OBJECT
 #endif
 
 namespace QsLogging
@@ -43,7 +46,10 @@ namespace QsLogging
 class QSLOG_SHARED_OBJECT Destination
 {
 public:
-    virtual ~Destination(){}
+    typedef void (*LogFunction)(const QString &message, Level level);
+
+public:
+    virtual ~Destination();
     virtual void write(const QString& message, Level level) = 0;
     virtual bool isValid() = 0; // returns whether the destination was created correctly
 };
@@ -60,14 +66,14 @@ enum LogRotationOption
 struct QSLOG_SHARED_OBJECT MaxSizeBytes
 {
     MaxSizeBytes() : size(0) {}
-    MaxSizeBytes(qint64 size_) : size(size_) {}
+    explicit MaxSizeBytes(qint64 size_) : size(size_) {}
     qint64 size;
 };
 
 struct QSLOG_SHARED_OBJECT MaxOldLogCount
 {
     MaxOldLogCount() : count(0) {}
-    MaxOldLogCount(int count_) : count(count_) {}
+    explicit MaxOldLogCount(int count_) : count(count_) {}
     int count;
 };
 
@@ -82,6 +88,10 @@ public:
         const MaxSizeBytes &sizeInBytesToRotateAfter = MaxSizeBytes(),
         const MaxOldLogCount &oldLogsToKeep = MaxOldLogCount());
     static DestinationPtr MakeDebugOutputDestination();
+    // takes a pointer to a function
+    static DestinationPtr MakeFunctorDestination(Destination::LogFunction f);
+    // takes a QObject + signal/slot
+    static DestinationPtr MakeFunctorDestination(QObject *receiver, const char *member);
 };
 
 } // end namespace

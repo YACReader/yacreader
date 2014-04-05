@@ -11,6 +11,11 @@ TEMPLATE = lib
 
 DESTDIR = $$PWD/build-QsLogShared
 OBJECTS_DIR = $$DESTDIR/obj
+MOC_DIR = $$DESTDIR/moc
+
+win32 {
+    DEFINES += QSLOG_IS_SHARED_LIBRARY
+}
 
 unix:!macx {
     # make install will install the shared object in the appropriate folders
