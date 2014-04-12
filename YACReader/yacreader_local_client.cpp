@@ -44,7 +44,8 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 		out.device()->seek(0);
 		out << (quint32)(block.size() - sizeof(quint32));
 
-        int  written, previousWritten = 0;
+        int  written = 0;
+        int previousWritten = 0;
 		quint16 tries = 0;
 		while(written != block.size() && tries < 200)
 		{
@@ -65,7 +66,7 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 		tries = 0;
 		int dataAvailable = 0;
 		QByteArray packageSize;
-		localSocket->waitForReadyRead(1000);
+        localSocket->waitForReadyRead(1000);
 		while(packageSize.size() < sizeof(quint32) && tries < 20)
 		{
 			packageSize.append(localSocket->read(sizeof(quint32) - packageSize.size()));

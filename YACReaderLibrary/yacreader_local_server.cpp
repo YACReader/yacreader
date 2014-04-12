@@ -97,7 +97,7 @@ void YACReaderClientConnectionWorker::run()
 	int tries = 0;
 	int dataAvailable = 0;
 	QByteArray packageSize;
-	clientConnection->waitForReadyRead(1000);
+    clientConnection->waitForReadyRead(1000);
 	while(packageSize.size() < sizeof(quint32) && tries < 20)
 	{
 		packageSize.append(clientConnection->read(sizeof(quint32) - packageSize.size()));
