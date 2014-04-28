@@ -172,6 +172,7 @@ TRANSLATIONS    = yacreaderlibrary_es.ts \
 									yacreaderlibrary_pt.ts \
 									yacreaderlibrary_fr.ts \
 									yacreaderlibrary_nl.ts \
+									yacreaderlibrary_tr.ts \
 									yacreaderlibrary_source.ts
 
 isEqual(QT_MAJOR_VERSION, 5) {
