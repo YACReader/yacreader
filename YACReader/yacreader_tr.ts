@@ -1,6 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="tr_TR">
+<TS version="2.1" language="tr_TR">
+<context>
+    <name>BookmarksDialog</name>
+    <message>
+        <source>Close</source>
+        <translation>Kapat</translation>
+    </message>
+    <message>
+        <source>Loading...</source>
+        <translation>Yükleniyor...</translation>
+    </message>
+    <message>
+        <source>Click on any image to go to the bookmark</source>
+        <translation>Yer imine git</translation>
+    </message>
+    <message>
+        <source>Lastest Page</source>
+        <translation>Son Sayfa</translation>
+    </message>
+</context>
+<context>
+    <name>Configuration</name>
+    <message>
+        <source>There was a problem saving YACReader configuration. Please, check if you have enough permissions in the YACReader root folder.</source>
+        <translation type="vanished">Yeni ayarlar kaydedilirken bir problem çıktı. Lütfen YACReader dosyasını açın.</translation>
+    </message>
+    <message>
+        <source>Saving config file....</source>
+        <translation type="vanished">Config dosyası kaydediliyor...</translation>
+    </message>
+</context>
+<context>
+    <name>FileComic</name>
+    <message>
+        <source>File not found or not images in file</source>
+        <translation type="vanished">Dosya bulunamadı yada dosyada resim yok</translation>
+    </message>
+    <message>
+        <source>7z not found</source>
+        <translation>7z bulunamadı</translation>
+    </message>
+    <message>
+        <source>Comic not found</source>
+        <translation type="vanished">Çizgi roman bulunamadı</translation>
+    </message>
+    <message>
+        <source>Not found</source>
+        <translation type="vanished">Bulunamadı</translation>
+    </message>
+    <message>
+        <source>File error</source>
+        <translation type="vanished">Dosya hatası</translation>
+    </message>
+    <message>
+        <source>7z problem</source>
+        <translation type="vanished">7z Problemli</translation>
+    </message>
+    <message>
+        <source>7z reading</source>
+        <translation type="vanished">7z Okunuyor</translation>
+    </message>
+    <message>
+        <source>7z crashed.</source>
+        <translation type="vanished">7z Bozulmuş.</translation>
+    </message>
+    <message>
+        <source>problem reading from 7z</source>
+        <translation type="vanished">7z Okunurken Problem Oluştu</translation>
+    </message>
+    <message>
+        <source>7z crashed</source>
+        <translation type="vanished">7z Bozulması</translation>
+    </message>
+    <message>
+        <source>Unknown error 7z</source>
+        <translation type="vanished">Bilinmeyen 7z hatası</translation>
+    </message>
+    <message>
+        <source>7z wasn&apos;t found in your PATH.</source>
+        <translation type="vanished">7z Yolu Bulunamadı.</translation>
+    </message>
+    <message>
+        <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown error opening the file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Format not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GoToDialog</name>
+    <message>
+        <source>Go To</source>
+        <translation>Git</translation>
+    </message>
+    <message>
+        <source>Go to...</source>
+        <translation>Git...</translation>
+    </message>
+    <message>
+        <source>Total pages : </source>
+        <translation>Toplam sayfa:</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Vazgeç</translation>
+    </message>
+    <message>
+        <source>Page : </source>
+        <translation>Sayfa :</translation>
+    </message>
+</context>
+<context>
+    <name>GoToFlowToolBar</name>
+    <message>
+        <source>Page : </source>
+        <translation>Sayfa : </translation>
+    </message>
+</context>
+<context>
+    <name>HelpAboutDialog</name>
+    <message>
+        <source>Help</source>
+        <translation>Yardım</translation>
+    </message>
+    <message>
+        <source>About</source>
+        <translation>Hakkında</translation>
+    </message>
+</context>
 <context>
     <name>MainWindowViewer</name>
     <message>
@@ -129,7 +263,7 @@
     </message>
     <message>
         <source>Saving error log file....</source>
-        <translation>Hata dosyasını kaydet...</translation>
+        <translation type="vanished">Hata dosyasını kaydet...</translation>
     </message>
     <message>
         <source>Fit Width</source>
@@ -233,7 +367,7 @@
     </message>
     <message>
         <source>There was a problem saving YACReader error log file. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation>Kaydederken bir problem çıktı YACReader hata kayıt dosyası. Lütfen YACReader root dosyasını ziyaret edin.</translation>
+        <translation type="vanished">Kaydederken bir problem çıktı YACReader hata kayıt dosyası. Lütfen YACReader root dosyasını ziyaret edin.</translation>
     </message>
     <message>
         <source>Rotate image to the right</source>
@@ -243,31 +377,197 @@
         <source>Always on top</source>
         <translation>Her zaman üstte</translation>
     </message>
-</context>
-<context>
-    <name>HelpAboutDialog</name>
     <message>
-        <source>Help</source>
-        <translation>Yardım</translation>
+        <source>Remind me in 14 days</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>About</source>
-        <translation>Hakkında</translation>
+        <source>Not now</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>YACReaderOptionsDialog</name>
+    <name>OptionsDialog</name>
     <message>
-        <source>Save</source>
-        <translation>Kaydet</translation>
+        <source>Gamma</source>
+        <translation>Gama</translation>
     </message>
     <message>
-        <source>Use hardware acceleration (restart needed)</source>
-        <translation>Yüksek donanımlı kullan (yeniden başlatmak gerekli)</translation>
+        <source>Reset</source>
+        <translation>Yeniden başlat</translation>
     </message>
     <message>
-        <source>Cancel</source>
-        <translation>Vazgeç</translation>
+        <source>My comics path</source>
+        <translation>Çizgi Romanlarım</translation>
+    </message>
+    <message>
+        <source>Image adjustment</source>
+        <translation>Resim ayarları</translation>
+    </message>
+    <message>
+        <source>Page width stretch</source>
+        <translation>Sayfayı uzat</translation>
+    </message>
+    <message>
+        <source>&quot;Go to flow&quot; size</source>
+        <translation>Akış görünümüne git</translation>
+    </message>
+    <message>
+        <source>Choose</source>
+        <translation>Seç</translation>
+    </message>
+    <message>
+        <source>Image options</source>
+        <translation>Sayfa ayarları</translation>
+    </message>
+    <message>
+        <source>Contrast</source>
+        <translation>Kontrast</translation>
+    </message>
+    <message>
+        <source>Options</source>
+        <translation>Ayarlar</translation>
+    </message>
+    <message>
+        <source>Comics directory</source>
+        <translation>Çizgi roman konumu</translation>
+    </message>
+    <message>
+        <source>Background color</source>
+        <translation>Arka plan rengi</translation>
+    </message>
+    <message>
+        <source>Page Flow</source>
+        <translation>Sayfa akışı</translation>
+    </message>
+    <message>
+        <source>General</source>
+        <translation>Genel</translation>
+    </message>
+    <message>
+        <source>Brightness</source>
+        <translation>Parlaklık</translation>
+    </message>
+    <message>
+        <source>Restart is needed</source>
+        <translation>Yeniden başlatılmalı</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <source>7z lib not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unable to load 7z lib from ./utils</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ShortcutsDialog</name>
+    <message>
+        <source>Close</source>
+        <translation>Kapat</translation>
+    </message>
+    <message>
+        <source>YACReader keyboard shortcuts</source>
+        <translation>YACReader klavye kısayolları</translation>
+    </message>
+    <message>
+        <source>Keyboard Shortcuts</source>
+        <translation>Kılavye Kısayolları</translation>
+    </message>
+</context>
+<context>
+    <name>Viewer</name>
+    <message>
+        <source>Press &apos;O&apos; to open comic.</source>
+        <translation>&apos;O&apos;ya basarak aç.</translation>
+    </message>
+    <message>
+        <source>Cover!</source>
+        <translation>Kapak!</translation>
+    </message>
+    <message>
+        <source>Comic not found</source>
+        <translation>Çizgi roman bulunamadı</translation>
+    </message>
+    <message>
+        <source>Not found</source>
+        <translation>Bulunamadı</translation>
+    </message>
+    <message>
+        <source>Last page!</source>
+        <translation>Son sayfa!</translation>
+    </message>
+    <message>
+        <source>Loading...please wait!</source>
+        <translation>Yükleniyor... lütfen bekleyin!</translation>
+    </message>
+    <message>
+        <source>Error opening comic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRC Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Page not available!</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>YACReaderDeletingProgress</name>
+    <message>
+        <source>cancel</source>
+        <translation type="vanished">vazgeç</translation>
+    </message>
+    <message>
+        <source>Please wait, deleting in progress...</source>
+        <translation type="vanished">Lütfen bekle silme işlemi gerçekleştiriliyor...</translation>
+    </message>
+</context>
+<context>
+    <name>YACReaderFieldEdit</name>
+    <message>
+        <source>Restore to default</source>
+        <translation>Varsayılana ayarla</translation>
+    </message>
+    <message>
+        <source>Click to overwrite</source>
+        <translation>Üzerine yazmak için tıkla</translation>
+    </message>
+</context>
+<context>
+    <name>YACReaderFieldPlainTextEdit</name>
+    <message>
+        <source>Restore to default</source>
+        <translation>Varsayılana ayarla</translation>
+    </message>
+    <message>
+        <source>Click to overwrite</source>
+        <translation>Üstüne yazmak için tıkla</translation>
+    </message>
+</context>
+<context>
+    <name>YACReaderFlowConfigWidget</name>
+    <message>
+        <source>CoverFlow look</source>
+        <translation>Kapak akışı görünümü</translation>
+    </message>
+    <message>
+        <source>How to show covers:</source>
+        <translation>Kapaklar nasıl gözüksün:</translation>
+    </message>
+    <message>
+        <source>Stripe look</source>
+        <translation>Şerit görünüm</translation>
+    </message>
+    <message>
+        <source>Overlapped Stripe look</source>
+        <translation>Çakışan şerit görünüm</translation>
     </message>
 </context>
 <context>
@@ -366,290 +666,52 @@
     </message>
 </context>
 <context>
-    <name>BookmarksDialog</name>
+    <name>YACReaderOptionsDialog</name>
     <message>
-        <source>Close</source>
-        <translation>Kapat</translation>
+        <source>Save</source>
+        <translation>Kaydet</translation>
     </message>
     <message>
-        <source>Loading...</source>
-        <translation>Yükleniyor...</translation>
-    </message>
-    <message>
-        <source>Click on any image to go to the bookmark</source>
-        <translation>Yer imine git</translation>
-    </message>
-    <message>
-        <source>Lastest Page</source>
-        <translation>Son Sayfa</translation>
-    </message>
-</context>
-<context>
-    <name>ShortcutsDialog</name>
-    <message>
-        <source>Close</source>
-        <translation>Kapat</translation>
-    </message>
-    <message>
-        <source>YACReader keyboard shortcuts</source>
-        <translation>YACReader klavye kısayolları</translation>
-    </message>
-    <message>
-        <source>Keyboard Shortcuts</source>
-        <translation>Kılavye Kısayolları</translation>
-    </message>
-</context>
-<context>
-    <name>OptionsDialog</name>
-    <message>
-        <source>Gamma</source>
-        <translation>Gama</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation>Yeniden başlat</translation>
-    </message>
-    <message>
-        <source>My comics path</source>
-        <translation>Çizgi Romanlarım</translation>
-    </message>
-    <message>
-        <source>Image adjustment</source>
-        <translation>Resim ayarları</translation>
-    </message>
-    <message>
-        <source>Page width stretch</source>
-        <translation>Sayfayı uzat</translation>
-    </message>
-    <message>
-        <source>&quot;Go to flow&quot; size</source>
-        <translation>Akış görünümüne git</translation>
-    </message>
-    <message>
-        <source>Choose</source>
-        <translation>Seç</translation>
-    </message>
-    <message>
-        <source>Image options</source>
-        <translation>Sayfa ayarları</translation>
-    </message>
-    <message>
-        <source>Contrast</source>
-        <translation>Kontrast</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation>Ayarlar</translation>
-    </message>
-    <message>
-        <source>Comics directory</source>
-        <translation>Çizgi roman konumu</translation>
-    </message>
-    <message>
-        <source>Background color</source>
-        <translation>Arka plan rengi</translation>
-    </message>
-    <message>
-        <source>Page Flow</source>
-        <translation>Sayfa akışı</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation>Genel</translation>
-    </message>
-    <message>
-        <source>Brightness</source>
-        <translation>Parlaklık</translation>
-    </message>
-    <message>
-        <source>Restart is needed</source>
-        <translation>Yeniden başlatılmalı</translation>
-    </message>
-</context>
-<context>
-    <name>GoToDialog</name>
-    <message>
-        <source>Go To</source>
-        <translation>Git</translation>
-    </message>
-    <message>
-        <source>Go to...</source>
-        <translation>Git...</translation>
-    </message>
-    <message>
-        <source>Total pages : </source>
-        <translation>Toplam sayfa:</translation>
+        <source>Use hardware acceleration (restart needed)</source>
+        <translation>Yüksek donanımlı kullan (yeniden başlatmak gerekli)</translation>
     </message>
     <message>
         <source>Cancel</source>
         <translation>Vazgeç</translation>
-    </message>
-    <message>
-        <source>Page : </source>
-        <translation>Sayfa :</translation>
-    </message>
-</context>
-<context>
-    <name>YACReaderFlowConfigWidget</name>
-    <message>
-        <source>CoverFlow look</source>
-        <translation>Kapak akışı görünümü</translation>
-    </message>
-    <message>
-        <source>How to show covers:</source>
-        <translation>Kapaklar nasıl gözüksün:</translation>
-    </message>
-    <message>
-        <source>Stripe look</source>
-        <translation>Şerit görünüm</translation>
-    </message>
-    <message>
-        <source>Overlapped Stripe look</source>
-        <translation>Çakışan şerit görünüm</translation>
     </message>
 </context>
 <context>
     <name>YACReaderSideBar</name>
     <message>
         <source>Search folders and comics</source>
-        <translation>Dosyaları ve çizgi romanları ara</translation>
+        <translation type="vanished">Dosyaları ve çizgi romanları ara</translation>
     </message>
     <message>
         <source>LIBRARIES</source>
-        <translation>KÜTÜPHANELER</translation>
+        <translation type="vanished">KÜTÜPHANELER</translation>
     </message>
     <message>
         <source>FOLDERS</source>
-        <translation>DOSYALAR</translation>
+        <translation type="vanished">DOSYALAR</translation>
     </message>
 </context>
 <context>
-    <name>Viewer</name>
+    <name>YACReaderTranslator</name>
     <message>
-        <source>Press &apos;O&apos; to open comic.</source>
-        <translation>&apos;O&apos;ya basarak aç.</translation>
+        <source>YACReader translator</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cover!</source>
-        <translation>Kapak!</translation>
+        <source>Translation</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Comic not found</source>
-        <translation>Çizgi roman bulunamadı</translation>
+        <source>clear</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Not found</source>
-        <translation>Bulunamadı</translation>
-    </message>
-    <message>
-        <source>Last page!</source>
-        <translation>Son sayfa!</translation>
-    </message>
-    <message>
-        <source>Loading...please wait!</source>
-        <translation>Yükleniyor... lütfen bekleyin!</translation>
-    </message>
-</context>
-<context>
-    <name>FileComic</name>
-    <message>
-        <source>File not found or not images in file</source>
-        <translation>Dosya bulunamadı yada dosyada resim yok</translation>
-    </message>
-    <message>
-        <source>7z not found</source>
-        <translation>7z bulunamadı</translation>
-    </message>
-    <message>
-        <source>Comic not found</source>
-        <translation>Çizgi roman bulunamadı</translation>
-    </message>
-    <message>
-        <source>Not found</source>
-        <translation>Bulunamadı</translation>
-    </message>
-    <message>
-        <source>File error</source>
-        <translation>Dosya hatası</translation>
-    </message>
-    <message>
-        <source>7z problem</source>
-        <translation>7z Problemli</translation>
-    </message>
-    <message>
-        <source>7z reading</source>
-        <translation>7z Okunuyor</translation>
-    </message>
-    <message>
-        <source>7z crashed.</source>
-        <translation>7z Bozulmuş.</translation>
-    </message>
-    <message>
-        <source>problem reading from 7z</source>
-        <translation>7z Okunurken Problem Oluştu</translation>
-    </message>
-    <message>
-        <source>7z crashed</source>
-        <translation>7z Bozulması</translation>
-    </message>
-    <message>
-        <source>Unknown error 7z</source>
-        <translation>Bilinmeyen 7z hatası</translation>
-    </message>
-    <message>
-        <source>7z wasn&apos;t found in your PATH.</source>
-        <translation>7z Yolu Bulunamadı.</translation>
-    </message>
-</context>
-<context>
-    <name>GoToFlowToolBar</name>
-    <message>
-        <source>Page : </source>
-        <translation>Sayfa : </translation>
-    </message>
-</context>
-<context>
-    <name>YACReaderDeletingProgress</name>
-    <message>
-        <source>cancel</source>
-        <translation>vazgeç</translation>
-    </message>
-    <message>
-        <source>Please wait, deleting in progress...</source>
-        <translation>Lütfen bekle silme işlemi gerçekleştiriliyor...</translation>
-    </message>
-</context>
-<context>
-    <name>YACReaderFieldEdit</name>
-    <message>
-        <source>Restore to default</source>
-        <translation>Varsayılana ayarla</translation>
-    </message>
-    <message>
-        <source>Click to overwrite</source>
-        <translation>Üzerine yazmak için tıkla</translation>
-    </message>
-</context>
-<context>
-    <name>YACReaderFieldPlainTextEdit</name>
-    <message>
-        <source>Restore to default</source>
-        <translation>Varsayılana ayarla</translation>
-    </message>
-    <message>
-        <source>Click to overwrite</source>
-        <translation>Üstüne yazmak için tıkla</translation>
-    </message>
-</context>
-<context>
-    <name>Configuration</name>
-    <message>
-        <source>There was a problem saving YACReader configuration. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation>Yeni ayarlar kaydedilirken bir problem çıktı. Lütfen YACReader dosyasını açın.</translation>
-    </message>
-    <message>
-        <source>Saving config file....</source>
-        <translation>Config dosyası kaydediliyor...</translation>
+        <source>Service not available</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
