@@ -1,6 +1,337 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="tr_TR">
+<TS version="2.1" language="tr_TR">
+<context>
+    <name>AddLibraryDialog</name>
+    <message>
+        <source>Add</source>
+        <translation>Ekle</translation>
+    </message>
+    <message>
+        <source>Add an existing library</source>
+        <translation>Kütüphaneye ekle</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Vazgeç</translation>
+    </message>
+    <message>
+        <source>Comics folder : </source>
+        <translation>Çizfi roman dosyası :</translation>
+    </message>
+    <message>
+        <source>Library Name : </source>
+        <translation>Kütüphane adı :</translation>
+    </message>
+</context>
+<context>
+    <name>ComicVineDialog</name>
+    <message>
+        <source>skip</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>back</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Looking for volume...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>comic %1 of %2 - %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 comics selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error connecting to ComicVine</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unknown error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Retrieving tags for : %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Retrieving volume info...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Looking for comic...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CreateLibraryDialog</name>
+    <message>
+        <source>Create new library</source>
+        <translation>Yeni kütüphane oluştur</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Vazgeç</translation>
+    </message>
+    <message>
+        <source>Create</source>
+        <translation>Oluştur</translation>
+    </message>
+    <message>
+        <source>Create a library could take several minutes. You can stop the process and update the library later for completing the task.</source>
+        <translation>Yeni kütüphanenin oluşturulması birkaç dakika sürecek.</translation>
+    </message>
+    <message>
+        <source>The selected path does not exist or is not a valid path. Be sure that you have write access to this folder</source>
+        <translation>Seçilen dizine yazma iznimiz yok yazma izni olduğundan emin ol</translation>
+    </message>
+    <message>
+        <source>Comics folder : </source>
+        <translation>Çizgi dosyası:</translation>
+    </message>
+    <message>
+        <source>Library Name : </source>
+        <translation>Kütüphane adı:</translation>
+    </message>
+    <message>
+        <source>Path not found</source>
+        <translation>Dizin bulunamadı</translation>
+    </message>
+</context>
+<context>
+    <name>ExportComicsInfoDialog</name>
+    <message>
+        <source>Output file : </source>
+        <translation>Çıkış dosyası : </translation>
+    </message>
+    <message>
+        <source>Destination database name</source>
+        <translation>Hedef adı</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Vazgeç</translation>
+    </message>
+    <message>
+        <source>Create</source>
+        <translation>Oluştur</translation>
+    </message>
+    <message>
+        <source>The selected path for the output file does not exist or is not a valid path. Be sure that you have write access to this folder</source>
+        <translation>Seçilen dizine yazma iznimiz yok yazma izni olduğundan emin ol</translation>
+    </message>
+    <message>
+        <source>Export comics info</source>
+        <translation>Çizgi roman bilgilerini göster</translation>
+    </message>
+    <message>
+        <source>Problem found while writing</source>
+        <translation>Yazma sırasında bir problem oldu</translation>
+    </message>
+</context>
+<context>
+    <name>ExportLibraryDialog</name>
+    <message>
+        <source>Cancel</source>
+        <translation>Vazgeç</translation>
+    </message>
+    <message>
+        <source>Create</source>
+        <translation>Yeni bir  tane yap</translation>
+    </message>
+    <message>
+        <source>The selected path for the output file does not exist or is not a valid path. Be sure that you have write access to this folder</source>
+        <translation>Seçilen konuma yeni bir kütüphane yazılamıyor</translation>
+    </message>
+    <message>
+        <source>Output folder : </source>
+        <translation>Çıkış klasörü:</translation>
+    </message>
+    <message>
+        <source>Problem found while writing</source>
+        <translation>Yazım aşamasında bir problem bulundu</translation>
+    </message>
+    <message>
+        <source>Create covers package</source>
+        <translation>Kapak paketi oluştur</translation>
+    </message>
+    <message>
+        <source>Destination directory</source>
+        <translation>Hedef dizin</translation>
+    </message>
+</context>
+<context>
+    <name>FileComic</name>
+    <message>
+        <source>File not found or not images in file</source>
+        <translation type="vanished">Dosya bulunamadı yada dosyada resim yok</translation>
+    </message>
+    <message>
+        <source>7z not found</source>
+        <translation>7z bulunamadı</translation>
+    </message>
+    <message>
+        <source>Comic not found</source>
+        <translation type="vanished">Çizgi roman bulunamadı</translation>
+    </message>
+    <message>
+        <source>Not found</source>
+        <translation type="vanished">Bulunamadı</translation>
+    </message>
+    <message>
+        <source>File error</source>
+        <translation type="vanished">Dosya hatası</translation>
+    </message>
+    <message>
+        <source>7z problem</source>
+        <translation type="vanished">7z Problemli</translation>
+    </message>
+    <message>
+        <source>7z reading</source>
+        <translation type="vanished">7z Okuyor</translation>
+    </message>
+    <message>
+        <source>7z crashed.</source>
+        <translation type="vanished">7z Bozulmuş.</translation>
+    </message>
+    <message>
+        <source>problem reading from 7z</source>
+        <translation type="vanished">7z Dosyası Okunamıyor</translation>
+    </message>
+    <message>
+        <source>7z crashed</source>
+        <translation type="vanished">7z Bozulmuş</translation>
+    </message>
+    <message>
+        <source>Unknown error 7z</source>
+        <translation type="vanished">Bilinmeyen 7z hatası</translation>
+    </message>
+    <message>
+        <source>7z wasn&apos;t found in your PATH.</source>
+        <translation type="vanished">7z Dosya Yolu Bulunamadı.</translation>
+    </message>
+    <message>
+        <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown error opening the file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Format not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>HelpAboutDialog</name>
+    <message>
+        <source>Help</source>
+        <translation>Yardım</translation>
+    </message>
+    <message>
+        <source>About</source>
+        <translation>Hakkında</translation>
+    </message>
+</context>
+<context>
+    <name>ImportComicsInfoDialog</name>
+    <message>
+        <source>Cancel</source>
+        <translation>Vazgeç</translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation>Çıkart</translation>
+    </message>
+    <message>
+        <source>Info database location : </source>
+        <translation>Bilgi konumu :</translation>
+    </message>
+    <message>
+        <source>Import comics info</source>
+        <translation>Çizgi roman bilgilerini çıkart</translation>
+    </message>
+    <message>
+        <source>Comics info file (*.ydb)</source>
+        <translation>
+Çizgi Roman  bilgileri (*.ydb)</translation>
+    </message>
+</context>
+<context>
+    <name>ImportLibraryDialog</name>
+    <message>
+        <source>Destination folder : </source>
+        <translation>Hedef klasör:</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Vazgeç</translation>
+    </message>
+    <message>
+        <source>Unpack</source>
+        <translation>Paketten çıkar</translation>
+    </message>
+    <message>
+        <source>Compresed library covers (*.clc)</source>
+        <translation>Sıkıştırılmış kütüphane kapakları (*.clc)</translation>
+    </message>
+    <message>
+        <source>Package location : </source>
+        <translation>Paket konumu:</translation>
+    </message>
+    <message>
+        <source>Library Name : </source>
+        <translation>Kütüphane Adı :</translation>
+    </message>
+    <message>
+        <source>Extract a catalog</source>
+        <translation>Catalog&apos;a çıkart</translation>
+    </message>
+</context>
+<context>
+    <name>ImportWidget</name>
+    <message>
+        <source>stop</source>
+        <translation>dur</translation>
+    </message>
+    <message>
+        <source>Importing comics</source>
+        <translation>önemli çizgi romanlar</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Create a library could take several minutes. You can stop the process and update the library later for completing the task.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;YACReaderKütüphane şu anda yeni bir kütüphane oluşturuyor&lt;/p&gt;&lt;p&gt;Kütüphanenin oluşturulması birkaç dakika alacak.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Some of the comics being added...</source>
+        <translation>Bazı çizgi romanlar önceden eklenmiş...</translation>
+    </message>
+    <message>
+        <source>Updating the library</source>
+        <translation>Kütüphaneyi güncelle</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;The current library is being updated. For faster updates, please, update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;Kütüphane güncelleniyor&lt;/p&gt;&lt;p&gt;Güncellemeyi daha sonra iptal edebilirsin.&lt;/p&gt;</translation>
+    </message>
+</context>
 <context>
     <name>LibraryWindow</name>
     <message>
@@ -122,7 +453,7 @@
     </message>
     <message>
         <source>There was a problem saving YACReaderLibrary libraries file. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation>YACRKütüphane kütüphane dosyaları kaydedilirken bir sorun çıktı. Lütfen, YACReader root dosyalarını kontrol edin.</translation>
+        <translation type="vanished">YACRKütüphane kütüphane dosyaları kaydedilirken bir sorun çıktı. Lütfen, YACReader root dosyalarını kontrol edin.</translation>
     </message>
     <message>
         <source>Pack covers</source>
@@ -138,7 +469,7 @@
     </message>
     <message>
         <source>Saving libraries file....</source>
-        <translation>Kütüphane dosyalarını kaydet...</translation>
+        <translation type="vanished">Kütüphane dosyalarını kaydet...</translation>
     </message>
     <message>
         <source>Asign comics numbers</source>
@@ -234,7 +565,7 @@
     </message>
     <message>
         <source>Set all comics as read</source>
-        <translation>Tüm çizgi romanları okundu olarak ayarla</translation>
+        <translation type="vanished">Tüm çizgi romanları okundu olarak ayarla</translation>
     </message>
     <message>
         <source>Pack the covers of the selected library</source>
@@ -262,7 +593,7 @@
     </message>
     <message>
         <source>Set all as read</source>
-        <translation>Hepsini okundu işaretle</translation>
+        <translation type="vanished">Hepsini okundu işaretle</translation>
     </message>
     <message>
         <source>Set as unread</source>
@@ -286,7 +617,7 @@
     </message>
     <message>
         <source>Set all comics as unread</source>
-        <translation>Tüm çizgiromanları okunmadı olarak işaretle</translation>
+        <translation type="vanished">Tüm çizgiromanları okunmadı olarak işaretle</translation>
     </message>
     <message>
         <source> library?</source>
@@ -294,65 +625,64 @@
     </message>
     <message>
         <source>Set all as unread</source>
-        <translation>Hepsini okunmadı olarak ayarla</translation>
+        <translation type="vanished">Hepsini okunmadı olarak ayarla</translation>
     </message>
     <message>
         <source>Are you sure?</source>
         <translation>Emin misin?</translation>
     </message>
-</context>
-<context>
-    <name>TableModel</name>
     <message>
-        <source>no</source>
-        <translation>hayır</translation>
+        <source>Download tags from Comic Vine</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>yes</source>
-        <translation>evet</translation>
+        <source>YACReader not found</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Read</source>
-        <translation>Oku</translation>
+        <source>YACReader not found, YACReader should be installed in the same folder as YACReaderLibrary.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Size</source>
-        <translation>Boyut</translation>
+        <source>Unable to delete</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Pages</source>
-        <translation>Sayfalar</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation>Başlık</translation>
-    </message>
-    <message>
-        <source>File Name</source>
-        <translation>Dosya Adı</translation>
+        <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>AddLibraryDialog</name>
+    <name>LocalComicListModel</name>
     <message>
-        <source>Add</source>
-        <translation>Ekle</translation>
+        <source>file name</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>NoLibrariesWidget</name>
+    <message>
+        <source>create your first library</source>
+        <translation>İlk kütüphaneni oluştur</translation>
     </message>
     <message>
-        <source>Add an existing library</source>
-        <translation>Kütüphaneye ekle</translation>
+        <source>You don&apos;t have any librarires yet</source>
+        <translation>Henüz bir kütüphaneye sahip değilsin</translation>
     </message>
     <message>
-        <source>Cancel</source>
-        <translation>Vazgeç</translation>
+        <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;Yeni bir kütüphane oluşturabilmeniçin kütüphane&lt;/p&gt;&lt;p&gt;No olvides que puedes usar YACReader como una aplicación independiente para leer los cómics en tu ordenador.&lt;/p&gt;</translation>
     </message>
     <message>
-        <source>Comics folder : </source>
-        <translation>Çizfi roman dosyası :</translation>
+        <source>add an existing one</source>
+        <translation>Var olan bir tane ekle</translation>
     </message>
+</context>
+<context>
+    <name>OptionsDialog</name>
     <message>
-        <source>Library Name : </source>
-        <translation>Kütüphane adı :</translation>
+        <source>Options</source>
+        <translation>Ayarlar</translation>
     </message>
 </context>
 <context>
@@ -483,14 +813,131 @@
     </message>
 </context>
 <context>
-    <name>HelpAboutDialog</name>
+    <name>QObject</name>
     <message>
-        <source>Help</source>
-        <translation>Yardım</translation>
+        <source>7z lib not found</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>About</source>
-        <translation>Hakkında</translation>
+        <source>unable to load 7z lib from ./utils</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>RenameLibraryDialog</name>
+    <message>
+        <source>Rename current library</source>
+        <translation>Kütüphaneyi yeniden adlandır</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Vazgeç</translation>
+    </message>
+    <message>
+        <source>Rename</source>
+        <translation>Yeniden adlandır</translation>
+    </message>
+    <message>
+        <source>New Library Name : </source>
+        <translation>Yeni Kütüphane Adı :</translation>
+    </message>
+</context>
+<context>
+    <name>ScraperResultsPaginator</name>
+    <message>
+        <source>Number of volumes found : %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>page %1 of %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of %1 found : %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SearchSingleComic</name>
+    <message>
+        <source>Please provide some aditional information.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Series:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SearchVolume</name>
+    <message>
+        <source>Please provide some aditional information.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Series:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SelectComic</name>
+    <message>
+        <source>Please, select the right comic info.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>comics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>loading cover</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>loading description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>description unavailable</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SelectVolume</name>
+    <message>
+        <source>Please, select the right series for your comic.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>volumes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>loading cover</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>loading description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>description unavailable</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SeriesQuestion</name>
+    <message>
+        <source>You are trying to get information for various comics at once, are they part of the same series?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>yes</source>
+        <translation type="unfinished">evet</translation>
+    </message>
+    <message>
+        <source>no</source>
+        <translation type="unfinished">hayır</translation>
     </message>
 </context>
 <context>
@@ -533,18 +980,165 @@
     </message>
 </context>
 <context>
-    <name>YACReaderOptionsDialog</name>
+    <name>SortVolumeComics</name>
     <message>
-        <source>Save</source>
-        <translation>Kaydet</translation>
+        <source>Please, sort the list of comics on the left until it matches the comics&apos; information.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Use hardware acceleration (restart needed)</source>
-        <translation>Yüksek donanımlı kullan (yeniden başlatmak gerekli)</translation>
+        <source>sort comics to match comic information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>issues</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>remove selected comics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>restore all removed comics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>restore removed comics</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TableModel</name>
+    <message>
+        <source>no</source>
+        <translation>hayır</translation>
+    </message>
+    <message>
+        <source>yes</source>
+        <translation>evet</translation>
+    </message>
+    <message>
+        <source>Read</source>
+        <translation>Oku</translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation>Boyut</translation>
+    </message>
+    <message>
+        <source>Pages</source>
+        <translation>Sayfalar</translation>
+    </message>
+    <message>
+        <source>Title</source>
+        <translation>Başlık</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation>Dosya Adı</translation>
+    </message>
+    <message>
+        <source>Current Page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rating</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TitleHeader</name>
+    <message>
+        <source>SEARCH</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UpdateLibraryDialog</name>
+    <message>
+        <source>Update library</source>
+        <translation>Kütüphaneyi güncelle</translation>
     </message>
     <message>
         <source>Cancel</source>
         <translation>Vazgeç</translation>
+    </message>
+    <message>
+        <source>Updating....</source>
+        <translation>Güncelleniyor...</translation>
+    </message>
+</context>
+<context>
+    <name>VolumeComicsModel</name>
+    <message>
+        <source>title</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VolumesModel</name>
+    <message>
+        <source>year</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>issues</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>publisher</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>YACReaderDeletingProgress</name>
+    <message>
+        <source>cancel</source>
+        <translation>vazgeç</translation>
+    </message>
+    <message>
+        <source>Please wait, deleting in progress...</source>
+        <translation>Lütfen bekleyin, silme işlemi yapılıyor...</translation>
+    </message>
+</context>
+<context>
+    <name>YACReaderFieldEdit</name>
+    <message>
+        <source>Restore to default</source>
+        <translation>Varsayılana dön</translation>
+    </message>
+    <message>
+        <source>Click to overwrite</source>
+        <translation>Üstüne yazmak için tıkla</translation>
+    </message>
+</context>
+<context>
+    <name>YACReaderFieldPlainTextEdit</name>
+    <message>
+        <source>Restore to default</source>
+        <translation>Varsayılana dön</translation>
+    </message>
+    <message>
+        <source>Click to overwrite</source>
+        <translation>Üstüne yazmak için tıkla</translation>
+    </message>
+</context>
+<context>
+    <name>YACReaderFlowConfigWidget</name>
+    <message>
+        <source>CoverFlow look</source>
+        <translation>Kapak akışı görünümü</translation>
+    </message>
+    <message>
+        <source>How to show covers:</source>
+        <translation>Kapaklar nasıl gözüksün:</translation>
+    </message>
+    <message>
+        <source>Stripe look</source>
+        <translation>Şerit görünüm</translation>
+    </message>
+    <message>
+        <source>Overlapped Stripe look</source>
+        <translation>Çakışan şerit görünüm</translation>
     </message>
 </context>
 <context>
@@ -643,80 +1237,18 @@
     </message>
 </context>
 <context>
-    <name>ImportWidget</name>
+    <name>YACReaderOptionsDialog</name>
     <message>
-        <source>stop</source>
-        <translation>dur</translation>
+        <source>Save</source>
+        <translation>Kaydet</translation>
     </message>
     <message>
-        <source>Importing comics</source>
-        <translation>önemli çizgi romanlar</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Create a library could take several minutes. You can stop the process and update the library later for completing the task.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;YACReaderKütüphane şu anda yeni bir kütüphane oluşturuyor&lt;/p&gt;&lt;p&gt;Kütüphanenin oluşturulması birkaç dakika alacak.&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Some of the comics being added...</source>
-        <translation>Bazı çizgi romanlar önceden eklenmiş...</translation>
-    </message>
-    <message>
-        <source>Updating the library</source>
-        <translation>Kütüphaneyi güncelle</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;The current library is being updated. For faster updates, please, update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Kütüphane güncelleniyor&lt;/p&gt;&lt;p&gt;Güncellemeyi daha sonra iptal edebilirsin.&lt;/p&gt;</translation>
-    </message>
-</context>
-<context>
-    <name>ExportComicsInfoDialog</name>
-    <message>
-        <source>Output file : </source>
-        <translation>Çıkış dosyası : </translation>
-    </message>
-    <message>
-        <source>Destination database name</source>
-        <translation>Hedef adı</translation>
+        <source>Use hardware acceleration (restart needed)</source>
+        <translation>Yüksek donanımlı kullan (yeniden başlatmak gerekli)</translation>
     </message>
     <message>
         <source>Cancel</source>
         <translation>Vazgeç</translation>
-    </message>
-    <message>
-        <source>Create</source>
-        <translation>Oluştur</translation>
-    </message>
-    <message>
-        <source>The selected path for the output file does not exist or is not a valid path. Be sure that you have write access to this folder</source>
-        <translation>Seçilen dizine yazma iznimiz yok yazma izni olduğundan emin ol</translation>
-    </message>
-    <message>
-        <source>Export comics info</source>
-        <translation>Çizgi roman bilgilerini göster</translation>
-    </message>
-    <message>
-        <source>Problem found while writing</source>
-        <translation>Yazma sırasında bir problem oldu</translation>
-    </message>
-</context>
-<context>
-    <name>YACReaderFlowConfigWidget</name>
-    <message>
-        <source>CoverFlow look</source>
-        <translation>Kapak akışı görünümü</translation>
-    </message>
-    <message>
-        <source>How to show covers:</source>
-        <translation>Kapaklar nasıl gözüksün:</translation>
-    </message>
-    <message>
-        <source>Stripe look</source>
-        <translation>Şerit görünüm</translation>
-    </message>
-    <message>
-        <source>Overlapped Stripe look</source>
-        <translation>Çakışan şerit görünüm</translation>
     </message>
 </context>
 <context>
@@ -735,283 +1267,18 @@
     </message>
 </context>
 <context>
-    <name>NoLibrariesWidget</name>
-    <message>
-        <source>create your first library</source>
-        <translation>İlk kütüphaneni oluştur</translation>
-    </message>
-    <message>
-        <source>You don&apos;t have any librarires yet</source>
-        <translation>Henüz bir kütüphaneye sahip değilsin</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Yeni bir kütüphane oluşturabilmeniçin kütüphane&lt;/p&gt;&lt;p&gt;No olvides que puedes usar YACReader como una aplicación independiente para leer los cómics en tu ordenador.&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>add an existing one</source>
-        <translation>Var olan bir tane ekle</translation>
-    </message>
-</context>
-<context>
-    <name>CreateLibraryDialog</name>
-    <message>
-        <source>Create new library</source>
-        <translation>Yeni kütüphane oluştur</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation>Vazgeç</translation>
-    </message>
-    <message>
-        <source>Create</source>
-        <translation>Oluştur</translation>
-    </message>
-    <message>
-        <source>Create a library could take several minutes. You can stop the process and update the library later for completing the task.</source>
-        <translation>Yeni kütüphanenin oluşturulması birkaç dakika sürecek.</translation>
-    </message>
-    <message>
-        <source>The selected path does not exist or is not a valid path. Be sure that you have write access to this folder</source>
-        <translation>Seçilen dizine yazma iznimiz yok yazma izni olduğundan emin ol</translation>
-    </message>
-    <message>
-        <source>Comics folder : </source>
-        <translation>Çizgi dosyası:</translation>
-    </message>
-    <message>
-        <source>Library Name : </source>
-        <translation>Kütüphane adı:</translation>
-    </message>
-    <message>
-        <source>Path not found</source>
-        <translation>Dizin bulunamadı</translation>
-    </message>
-</context>
-<context>
-    <name>RenameLibraryDialog</name>
-    <message>
-        <source>Rename current library</source>
-        <translation>Kütüphaneyi yeniden adlandır</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation>Vazgeç</translation>
-    </message>
-    <message>
-        <source>Rename</source>
-        <translation>Yeniden adlandır</translation>
-    </message>
-    <message>
-        <source>New Library Name : </source>
-        <translation>Yeni Kütüphane Adı :</translation>
-    </message>
-</context>
-<context>
-    <name>FileComic</name>
-    <message>
-        <source>File not found or not images in file</source>
-        <translation>Dosya bulunamadı yada dosyada resim yok</translation>
-    </message>
-    <message>
-        <source>7z not found</source>
-        <translation>7z bulunamadı</translation>
-    </message>
-    <message>
-        <source>Comic not found</source>
-        <translation>Çizgi roman bulunamadı</translation>
-    </message>
-    <message>
-        <source>Not found</source>
-        <translation>Bulunamadı</translation>
-    </message>
-    <message>
-        <source>File error</source>
-        <translation>Dosya hatası</translation>
-    </message>
-    <message>
-        <source>7z problem</source>
-        <translation>7z Problemli</translation>
-    </message>
-    <message>
-        <source>7z reading</source>
-        <translation>7z Okuyor</translation>
-    </message>
-    <message>
-        <source>7z crashed.</source>
-        <translation>7z Bozulmuş.</translation>
-    </message>
-    <message>
-        <source>problem reading from 7z</source>
-        <translation>7z Dosyası Okunamıyor</translation>
-    </message>
-    <message>
-        <source>7z crashed</source>
-        <translation>7z Bozulmuş</translation>
-    </message>
-    <message>
-        <source>Unknown error 7z</source>
-        <translation>Bilinmeyen 7z hatası</translation>
-    </message>
-    <message>
-        <source>7z wasn&apos;t found in your PATH.</source>
-        <translation>7z Dosya Yolu Bulunamadı.</translation>
-    </message>
-</context>
-<context>
-    <name>UpdateLibraryDialog</name>
-    <message>
-        <source>Update library</source>
-        <translation>Kütüphaneyi güncelle</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation>Vazgeç</translation>
-    </message>
-    <message>
-        <source>Updating....</source>
-        <translation>Güncelleniyor...</translation>
-    </message>
-</context>
-<context>
-    <name>ImportLibraryDialog</name>
-    <message>
-        <source>Destination folder : </source>
-        <translation>Hedef klasör:</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation>Vazgeç</translation>
-    </message>
-    <message>
-        <source>Unpack</source>
-        <translation>Paketten çıkar</translation>
-    </message>
-    <message>
-        <source>Compresed library covers (*.clc)</source>
-        <translation>Sıkıştırılmış kütüphane kapakları (*.clc)</translation>
-    </message>
-    <message>
-        <source>Package location : </source>
-        <translation>Paket konumu:</translation>
-    </message>
-    <message>
-        <source>Library Name : </source>
-        <translation>Kütüphane Adı :</translation>
-    </message>
-    <message>
-        <source>Extract a catalog</source>
-        <translation>Catalog&apos;a çıkart</translation>
-    </message>
-</context>
-<context>
-    <name>ExportLibraryDialog</name>
-    <message>
-        <source>Cancel</source>
-        <translation>Vazgeç</translation>
-    </message>
-    <message>
-        <source>Create</source>
-        <translation>Yeni bir  tane yap</translation>
-    </message>
-    <message>
-        <source>The selected path for the output file does not exist or is not a valid path. Be sure that you have write access to this folder</source>
-        <translation>Seçilen konuma yeni bir kütüphane yazılamıyor</translation>
-    </message>
-    <message>
-        <source>Output folder : </source>
-        <translation>Çıkış klasörü:</translation>
-    </message>
-    <message>
-        <source>Problem found while writing</source>
-        <translation>Yazım aşamasında bir problem bulundu</translation>
-    </message>
-    <message>
-        <source>Create covers package</source>
-        <translation>Kapak paketi oluştur</translation>
-    </message>
-    <message>
-        <source>Destination directory</source>
-        <translation>Hedef dizin</translation>
-    </message>
-</context>
-<context>
-    <name>ImportComicsInfoDialog</name>
-    <message>
-        <source>Cancel</source>
-        <translation>Vazgeç</translation>
-    </message>
-    <message>
-        <source>Import</source>
-        <translation>Çıkart</translation>
-    </message>
-    <message>
-        <source>Info database location : </source>
-        <translation>Bilgi konumu :</translation>
-    </message>
-    <message>
-        <source>Import comics info</source>
-        <translation>Çizgi roman bilgilerini çıkart</translation>
-    </message>
-    <message>
-        <source>Comics info file (*.ydb)</source>
-        <translation>
-Çizgi Roman  bilgileri (*.ydb)</translation>
-    </message>
-</context>
-<context>
     <name>YACReaderSocialDialog</name>
     <message>
         <source>I am reading %1 using YACReader.</source>
-        <translation>YACReader ile okuyorum %1.</translation>
+        <translation type="vanished">YACReader ile okuyorum %1.</translation>
     </message>
     <message>
         <source>send to:</source>
-        <translation>Gönder:</translation>
+        <translation type="vanished">Gönder:</translation>
     </message>
     <message>
         <source>Follow YACReader!</source>
-        <translation>YACReader&apos;ı takip et !</translation>
-    </message>
-</context>
-<context>
-    <name>OptionsDialog</name>
-    <message>
-        <source>Options</source>
-        <translation>Ayarlar</translation>
-    </message>
-</context>
-<context>
-    <name>YACReaderDeletingProgress</name>
-    <message>
-        <source>cancel</source>
-        <translation>vazgeç</translation>
-    </message>
-    <message>
-        <source>Please wait, deleting in progress...</source>
-        <translation>Lütfen bekleyin, silme işlemi yapılıyor...</translation>
-    </message>
-</context>
-<context>
-    <name>YACReaderFieldEdit</name>
-    <message>
-        <source>Restore to default</source>
-        <translation>Varsayılana dön</translation>
-    </message>
-    <message>
-        <source>Click to overwrite</source>
-        <translation>Üstüne yazmak için tıkla</translation>
-    </message>
-</context>
-<context>
-    <name>YACReaderFieldPlainTextEdit</name>
-    <message>
-        <source>Restore to default</source>
-        <translation>Varsayılana dön</translation>
-    </message>
-    <message>
-        <source>Click to overwrite</source>
-        <translation>Üstüne yazmak için tıkla</translation>
+        <translation type="vanished">YACReader&apos;ı takip et !</translation>
     </message>
 </context>
 </TS>
