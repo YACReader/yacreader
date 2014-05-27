@@ -146,6 +146,7 @@ Logger& Logger::instance()
 void Logger::destroyInstance()
 {
     delete sInstance;
+    sInstance = 0;
 }
 
 // tries to extract the level from a string log message. If available, conversionSucceeded will
