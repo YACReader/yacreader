@@ -13,7 +13,7 @@ make
 cd ..
 
 echo "Copying to destination folder"
-dest='YACReader-'$1' X11-'$2'-qt4'
+dest='YACReader-'$1'-X11-'$2'-qt5'
 mkdir "$dest"
 cp ./YACReader/YACReader "./${dest}/YACReader"
 cp ./YACReaderLibrary/YACReaderLibrary "./${dest}/YACReaderLibrary"

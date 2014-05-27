@@ -27,7 +27,7 @@
 #ifndef QSLOGDESTFUNCTOR_H
 #define QSLOGDESTFUNCTOR_H
 
-#include "QSLogDest.h"
+#include "QsLogDest.h"
 #include <QObject>
 
 namespace QsLogging
