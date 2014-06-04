@@ -2,6 +2,7 @@
 #define __COMICDB_H
 
 #include "library_item.h"
+#include <QVariant>
 #include <QList>
 #include <QPixmap>
 #include <QImage>
@@ -16,6 +17,7 @@ public:
 
 	ComicInfo & operator=(const ComicInfo & comicInfo);
 
+    //mandatory fields
 	qulonglong id;
 	bool read;
 	bool edited;
@@ -34,76 +36,78 @@ public:
 	int brightness;
 	int contrast;
 	int gamma;
+    //-----------------
 
 	
-
-	QString * title;
+    QVariant title;//string
 	
-	int * coverPage;
-	int * numPages;
+    QVariant coverPage;//int
+    QVariant numPages;//int
 
-	int * number;
-	bool * isBis;
-	int * count;
+    QVariant number;//int
+    QVariant isBis;//bool
+    QVariant count;//int
 
-	QString * volume;
-	QString * storyArc;
-	int * arcNumber;
-	int * arcCount;
+    QVariant volume;//string
+    QVariant storyArc;//string
+    QVariant arcNumber;//int
+    QVariant arcCount;//int
 
-	QString * genere;
+    QVariant genere;//string
 
-	QString * writer;
-	QString * penciller;
-	QString * inker;
-	QString * colorist;
-	QString * letterer;
-	QString * coverArtist;
+    QVariant writer;//string
+    QVariant penciller;//string
+    QVariant inker;//string
+    QVariant colorist;//string
+    QVariant letterer;//string
+    QVariant coverArtist;//string
 
-	QString * date;
-	QString * publisher;
-	QString * format;
-	bool * color;
-	QString * ageRating;
+    QVariant date;//string
+    QVariant publisher;//string
+    QVariant format;//string
+    QVariant color;//bool
+    QVariant ageRating;//string
 
-	QString * synopsis;
-	QString * characters;
-	QString * notes;
+    QVariant synopsis;//string
+    QVariant characters;//string
+    QVariant notes;//string
+
+    QVariant comicVineURL;//string
 
 	QImage cover;
 
-	void setTitle(QString value);
+    /*void setTitle(QVariant value);
 
-	void setCoverPage(int value);
-	void setNumPages(int value);
+    void setCoverPage(QVariant value);
+    void setNumPages(QVariant value);
 
-	void setNumber(int value);
-	void setIsBis(bool value);
-	void setCount(int value);
+    void setNumber(QVariant value);
+    void setIsBis(QVariant value);
+    void setCount(QVariant value);
 
-	void setVolume(QString value);
-	void setStoryArc(QString value);
-	void setArcNumber(int value);
-	void setArcCount(int value);
+    void setVolume(QVariant value);
+    void setStoryArc(QVariant value);
+    void setArcNumber(QVariant value);
+    void setArcCount(QVariant value);
 
-	void setGenere(QString value);
+    void setGenere(QVariant value);
 
-	void setWriter(QString value);
-	void setPenciller(QString value);
-	void setInker(QString value);
-	void setColorist(QString value);
-	void setLetterer(QString value);
-	void setCoverArtist(QString value);
+    void setWriter(QVariant value);
+    void setPenciller(QVariant value);
+    void setInker(QVariant value);
+    void setColorist(QVariant value);
+    void setLetterer(QVariant value);
+    void setCoverArtist(QVariant value);
 
-	void setDate(QString value);
-	void setPublisher(QString value);
-	void setFormat(QString value);
-	void setColor(bool value);
-	void setAgeRating(QString value);
+    void setDate(QVariant value);
+    void setPublisher(QVariant value);
+    void setFormat(QVariant value);
+    void setColor(QVariant value);
+    void setAgeRating(QVariant value);
 
-	void setSynopsis(QString value);
-	void setCharacters(QString value);
-	void setNotes(QString value);
+    void setSynopsis(QVariant value);
+    void setCharacters(QVariant value);
+    void setNotes(QVariant value);*/
 
 	QPixmap getCover(const QString & basePath);
 
@@ -112,13 +116,7 @@ public:
 	friend QDataStream &operator>>(QDataStream & stream, ComicInfo & comicInfo);
 
 private:
-	void setValue(QString * & field, const QString & value);
-	void setValue(int * & field, int value);
-	void setValue(bool * & field, bool value);
 
-	void copyField(QString * & field, const QString * value);
-	void copyField(int * & field, int * value);
-	void copyField(bool * & field, bool * value);
 };
 
 class ComicDB : public LibraryItem

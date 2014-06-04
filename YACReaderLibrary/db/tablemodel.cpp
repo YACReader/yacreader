@@ -477,7 +477,7 @@ qint64 TableModel::asignNumbers(QList<QModelIndex> list,int startingNumber)
 	foreach (QModelIndex mi, list)
 	{
 		ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(TableModel::Id).toULongLong(),db);
-		c.info.setNumber(startingNumber+i);
+        c.info.number = startingNumber+i;
 		c.info.edited = true;
 		DBHelper::update(&(c.info),db);
 		i++;

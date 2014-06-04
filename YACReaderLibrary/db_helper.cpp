@@ -215,38 +215,39 @@ void DBHelper::update(ComicInfo * comicInfo, QSqlDatabase & db)
 		"rating = :rating"
 		//--
 		" WHERE id = :id ");
-	bindField(":title",comicInfo->title,updateComicInfo);
 
-	bindField(":coverPage",comicInfo->coverPage,updateComicInfo);
-	bindField(":numPages",comicInfo->numPages,updateComicInfo);
+    updateComicInfo.bindValue(":title",comicInfo->title);
 
-	bindField(":number",comicInfo->number,updateComicInfo);
-	bindField(":isBis",comicInfo->isBis,updateComicInfo);
-	bindField(":count",comicInfo->count,updateComicInfo);
+    updateComicInfo.bindValue(":coverPage", comicInfo->coverPage);
+    updateComicInfo.bindValue(":numPages", comicInfo->numPages);
 
-	bindField(":volume",comicInfo->volume,updateComicInfo);
-	bindField(":storyArc",comicInfo->storyArc,updateComicInfo);
-	bindField(":arcNumber",comicInfo->arcNumber,updateComicInfo);
-	bindField(":arcCount",comicInfo->arcCount,updateComicInfo);
+    updateComicInfo.bindValue(":number", comicInfo->number);
+    updateComicInfo.bindValue(":isBis", comicInfo->isBis);
+    updateComicInfo.bindValue(":count", comicInfo->count);
 
-	bindField(":genere",comicInfo->genere,updateComicInfo);
+    updateComicInfo.bindValue(":volume", comicInfo->volume);
+    updateComicInfo.bindValue(":storyArc", comicInfo->storyArc);
+	updateComicInfo.bindValue(":arcNumber",comicInfo->arcNumber);
+	updateComicInfo.bindValue(":arcCount",comicInfo->arcCount);
 
-	bindField(":writer",comicInfo->writer,updateComicInfo);
-	bindField(":penciller",comicInfo->penciller,updateComicInfo);
-	bindField(":inker",comicInfo->inker,updateComicInfo);
-	bindField(":colorist",comicInfo->colorist,updateComicInfo);
-	bindField(":letterer",comicInfo->letterer,updateComicInfo);
-	bindField(":coverArtist",comicInfo->coverArtist,updateComicInfo);
+	updateComicInfo.bindValue(":genere",comicInfo->genere);
 
-	bindField(":date",comicInfo->date,updateComicInfo);
-	bindField(":publisher",comicInfo->publisher,updateComicInfo);
-	bindField(":format",comicInfo->format,updateComicInfo);
-	bindField(":color",comicInfo->color,updateComicInfo);
-	bindField(":ageRating",comicInfo->ageRating,updateComicInfo);
+	updateComicInfo.bindValue(":writer",comicInfo->writer);
+	updateComicInfo.bindValue(":penciller",comicInfo->penciller);
+	updateComicInfo.bindValue(":inker",comicInfo->inker);
+	updateComicInfo.bindValue(":colorist",comicInfo->colorist);
+	updateComicInfo.bindValue(":letterer",comicInfo->letterer);
+	updateComicInfo.bindValue(":coverArtist",comicInfo->coverArtist);
 
-	bindField(":synopsis",comicInfo->synopsis,updateComicInfo);
-	bindField(":characters",comicInfo->characters,updateComicInfo);
-	bindField(":notes",comicInfo->notes,updateComicInfo);
+	updateComicInfo.bindValue(":date",comicInfo->date);
+	updateComicInfo.bindValue(":publisher",comicInfo->publisher);
+	updateComicInfo.bindValue(":format",comicInfo->format);
+	updateComicInfo.bindValue(":color",comicInfo->color);
+	updateComicInfo.bindValue(":ageRating",comicInfo->ageRating);
+
+	updateComicInfo.bindValue(":synopsis",comicInfo->synopsis);
+	updateComicInfo.bindValue(":characters",comicInfo->characters);
+	updateComicInfo.bindValue(":notes",comicInfo->notes);
 
 	updateComicInfo.bindValue(":read", comicInfo->read?1:0);
 	updateComicInfo.bindValue(":id", comicInfo->id);
@@ -297,7 +298,7 @@ qulonglong DBHelper::insert(ComicDB * comic, QSqlDatabase & db)
 		comicInfoInsert.prepare("INSERT INTO comic_info (hash,numPages) "
 			"VALUES (:hash,:numPages)");
 		comicInfoInsert.bindValue(":hash", comic->info.hash);
-		comicInfoInsert.bindValue(":numPages", *(comic->info.numPages));
+        comicInfoInsert.bindValue(":numPages", comic->info.numPages);
 		comicInfoInsert.exec();
 		comic->info.id =comicInfoInsert.lastInsertId().toULongLong();
 		comic->_hasCover = false;
@@ -399,10 +400,10 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
 			numberLast = numberCurrent = max; //TODO change by std limit
 
 			if(last.info.number!=NULL)
-				numberLast = *last.info.number;
+                numberLast = last.info.number.toInt();
 
 			if(currentItem.info.number!=NULL)
-				numberCurrent = *currentItem.info.number;
+                numberCurrent = currentItem.info.number.toInt();
 
 			QList<ComicDB>::iterator i;
 			i = list.end();
@@ -416,7 +417,7 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
 					numberLast = max;
 
 					if((*i).info.number != NULL)
-						numberLast = *(*i).info.number;
+                        numberLast = (*i).info.number.toInt();
 				}
 			}
 			else
@@ -428,7 +429,7 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
 					numberLast = max;
 
 					if((*i).info.number != NULL)
-						numberLast = *(*i).info.number;
+                        numberLast = (*i).info.number.toInt();
 				}
 
 			}
@@ -437,7 +438,7 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
 				if(numberCurrent != max)
 				{
 					if(numberCurrent == numberLast)
-						if(currentItem.info.isBis)
+                        if(currentItem.info.isBis.toBool())
 						{
 							list.insert(++i,currentItem);
 						}
@@ -566,7 +567,7 @@ ComicDB DBHelper::loadComic(qulonglong cparentId, QString cname, QString cpath, 
 	if(!comic.info.existOnDb)
 	{
 		comic.info.hash = chash;
-		comic.info.coverPage = new int(1);
+        comic.info.coverPage = 1;
 		comic._hasCover = false;
 	}
 	else
@@ -607,38 +608,38 @@ ComicInfo DBHelper::loadComicInfo(QString hash, QSqlDatabase & db)
 		comicInfo.rating = record.value("rating").toInt();
 		//--
 
-		setField("title",comicInfo.title,record);
-		setField("numPages",comicInfo.numPages,record);
+        comicInfo.title = record.value("title");
+        comicInfo.numPages = record.value("numPages");
 
-		setField("coverPage",comicInfo.coverPage,record);
+        comicInfo.coverPage = record.value("coverPage");
 
-		setField("number",comicInfo.number,record);
-		setField("isBis",comicInfo.isBis,record);
-		setField("count",comicInfo.count,record);
+        comicInfo.number = record.value("number");
+        comicInfo.isBis = record.value("isBis");
+        comicInfo.count = record.value("count");
 
-		setField("volume",comicInfo.volume,record);
-		setField("storyArc",comicInfo.storyArc,record);
-		setField("arcNumber",comicInfo.arcNumber,record);
-		setField("arcCount",comicInfo.arcCount,record);
+        comicInfo.volume = record.value("volume");
+        comicInfo.storyArc = record.value("storyArc");
+        comicInfo.arcNumber = record.value("arcNumber");
+        comicInfo.arcCount = record.value("arcCount");
 
-		setField("genere",comicInfo.genere,record);
+        comicInfo.genere = record.value("genere");
 
-		setField("writer",comicInfo.writer,record);
-		setField("penciller",comicInfo.penciller,record);
-		setField("inker",comicInfo.inker,record);
-		setField("colorist",comicInfo.colorist,record);
-		setField("letterer",comicInfo.letterer,record);
-		setField("coverArtist",comicInfo.coverArtist,record);
+        comicInfo.writer = record.value("writer");
+        comicInfo.penciller = record.value("penciller");
+        comicInfo.inker = record.value("inker");
+        comicInfo.colorist = record.value("colorist");
+        comicInfo.letterer = record.value("letterer");
+        comicInfo.coverArtist = record.value("coverArtist");
 
-		setField("date",comicInfo.date,record);
-		setField("publisher",comicInfo.publisher,record);
-		setField("format",comicInfo.format,record);
-		setField("color",comicInfo.color,record);
-		setField("ageRating",comicInfo.ageRating,record);
+        comicInfo.date = record.value("date");
+        comicInfo.publisher = record.value("publisher");
+        comicInfo.format = record.value("format");
+        comicInfo.color = record.value("color");
+        comicInfo.ageRating = record.value("ageRating");
 
-		setField("synopsis",comicInfo.synopsis,record);
-		setField("characters",comicInfo.characters,record);
-		setField("notes",comicInfo.notes,record);
+        comicInfo.synopsis = record.value("synopsis");
+        comicInfo.characters = record.value("characters");
+        comicInfo.notes = record.value("notes");
 
 		comicInfo.existOnDb = true;
 	}

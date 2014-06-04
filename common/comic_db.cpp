@@ -24,7 +24,7 @@ QString ComicDB::toTXT()
 	txt.append(QString("comicid:%1\r\n").arg(id));
 	txt.append(QString("hash:%1\r\n").arg(info.hash));
 	txt.append(QString("path:%1\r\n").arg(path));
-	txt.append(QString("numpages:%1\r\n").arg(*info.numPages));
+    txt.append(QString("numpages:%1\r\n").arg(info.numPages.toString()));
 
 	//new 7.0
 	txt.append(QString("rating:%1\r\n").arg(info.rating));
@@ -32,78 +32,78 @@ QString ComicDB::toTXT()
 	txt.append(QString("contrast:%1\r\n").arg(info.contrast));
 
 	//Información general
-	if(info.coverPage != NULL)
-		txt.append(QString("coverPage:%1\r\n").arg(*info.coverPage));
+    if(!info.coverPage.isNull())
+        txt.append(QString("coverPage:%1\r\n").arg(info.coverPage.toString()));
 
-	if(info.title != NULL)
-		txt.append(QString("title:%1\r\n").arg(*info.title));
+    if(!info.title.isNull())
+        txt.append(QString("title:%1\r\n").arg(info.title.toString()));
 
-	if(info.number != NULL)
-		txt.append(QString("number:%1\r\n").arg(*info.number));
+	if(!info.number.isNull())
+        txt.append(QString("number:%1\r\n").arg(info.number.toString()));
 
-	if(info.isBis != NULL)
-		txt.append(QString("isBis:%1\r\n").arg(*info.isBis));
+	if(!info.isBis.isNull())
+        txt.append(QString("isBis:%1\r\n").arg(info.isBis.toBool()?"1":"0"));
 
-	if(info.count != NULL)
-		txt.append(QString("count:%1\r\n").arg(*info.count));
+	if(!info.count.isNull())
+        txt.append(QString("count:%1\r\n").arg(info.count.toString()));
 
-	if(info.volume != NULL)
-		txt.append(QString("volume:%1\r\n").arg(*info.volume));
+	if(!info.volume.isNull())
+        txt.append(QString("volume:%1\r\n").arg(info.volume.toString()));
 
-	if(info.storyArc != NULL)
-		txt.append(QString("storyArc:%1\r\n").arg(*info.storyArc));
+	if(!info.storyArc.isNull())
+		txt.append(QString("storyArc:%1\r\n").arg(info.storyArc.toString()));
 
-	if(info.arcNumber != NULL)
-		txt.append(QString("arcNumber:%1\r\n").arg(*info.arcNumber));
+	if(!info.arcNumber.isNull())
+		txt.append(QString("arcNumber:%1\r\n").arg(info.arcNumber.toString()));
 
-	if(info.arcCount != NULL)
-		txt.append(QString("arcCount:%1\r\n").arg(*info.arcCount));
+	if(!info.arcCount.isNull())
+		txt.append(QString("arcCount:%1\r\n").arg(info.arcCount.toString()));
 
-	if(info.genere != NULL)
-		txt.append(QString("genere:%1\r\n").arg(*info.genere));
+	if(!info.genere.isNull())
+		txt.append(QString("genere:%1\r\n").arg(info.genere.toString()));
 
 	//Autores
-	if(info.writer != NULL)
-		txt.append(QString("writer:%1\r\n").arg(*info.writer));
+	if(!info.writer.isNull())
+		txt.append(QString("writer:%1\r\n").arg(info.writer.toString()));
 
-	if(info.penciller != NULL)
-		txt.append(QString("penciller:%1\r\n").arg(*info.penciller));
+	if(!info.penciller.isNull())
+		txt.append(QString("penciller:%1\r\n").arg(info.penciller.toString()));
 
-	if(info.inker != NULL)
-		txt.append(QString("inker:%1\r\n").arg(*info.inker));
+	if(!info.inker.isNull())
+		txt.append(QString("inker:%1\r\n").arg(info.inker.toString()));
 
-	if(info.colorist != NULL)
-		txt.append(QString("colorist:%1\r\n").arg(*info.colorist));
+	if(!info.colorist.isNull())
+		txt.append(QString("colorist:%1\r\n").arg(info.colorist.toString()));
 
-	if(info.letterer != NULL)
-		txt.append(QString("letterer:%1\r\n").arg(*info.letterer));
+	if(!info.letterer.isNull())
+		txt.append(QString("letterer:%1\r\n").arg(info.letterer.toString()));
 
-	if(info.coverArtist != NULL)
-		txt.append(QString("coverArtist:%1\r\n").arg(*info.coverArtist));
+	if(!info.coverArtist.isNull())
+		txt.append(QString("coverArtist:%1\r\n").arg(info.coverArtist.toString()));
 	//Publicación
-	if(info.date != NULL)
-		txt.append(QString("date:%1\r\n").arg(*info.date));
+	if(!info.date.isNull())
+		txt.append(QString("date:%1\r\n").arg(info.date.toString()));
 	
-	if(info.publisher != NULL)
-		txt.append(QString("publisher:%1\r\n").arg(*info.publisher));
+	if(!info.publisher.isNull())
+		txt.append(QString("publisher:%1\r\n").arg(info.publisher.toString()));
 
-	if(info.format != NULL)
-		txt.append(QString("format:%1\r\n").arg(*info.format));
+	if(!info.format.isNull())
+		txt.append(QString("format:%1\r\n").arg(info.format.toString()));
 
-	if(info.color != NULL)
-		txt.append(QString("color:%1\r\n").arg(*info.color));
+	if(!info.color.isNull())
+		txt.append(QString("color:%1\r\n").arg(info.color.toString()));
 
-	if(info.ageRating != NULL)
-		txt.append(QString("ageRating:%1\r\n").arg(*info.ageRating));
+	if(!info.ageRating.isNull())
+		txt.append(QString("ageRating:%1\r\n").arg(info.ageRating.toString()));
 	//Argumento
-	if(info.synopsis != NULL)
-		txt.append(QString("synopsis:%1\r\n").arg(*info.synopsis));
+	if(!info.synopsis.isNull())
+		txt.append(QString("synopsis:%1\r\n").arg(info.synopsis.toString()));
 
-	if(info.characters != NULL)
-		txt.append(QString("characters:%1\r\n").arg(*info.characters));
+	if(!info.characters.isNull())
+		txt.append(QString("characters:%1\r\n").arg(info.characters.toString()));
 
-	if(info.notes != NULL)
-		txt.append(QString("notes:%1\r\n").arg(*info.notes));
+	if(!info.notes.isNull())
+		txt.append(QString("notes:%1\r\n").arg(info.notes.toString()));
 
 	return txt;
 }
@@ -115,8 +115,8 @@ QString ComicDB::getFileName() const
 
 QString ComicDB::getTitleOrFileName() const
 {
-	if(info.title && info.title->isEmpty())
-		return *(info.title);
+    if(!info.title.isNull() && info.title.toString().isEmpty())
+        return info.title.toString();
 	else
 		return QFileInfo(path).fileName();
 }
@@ -143,122 +143,23 @@ ComicInfo::ComicInfo()
 	bookmark3(-1),
 	brightness(-1),
 	contrast(-1),
-	gamma(-1),
-	title(NULL), 
-	coverPage(NULL), 
-	numPages(NULL), 
-	number(NULL), 
-	isBis(NULL), 
-	count(NULL),
-	volume(NULL),
-	storyArc(NULL),
-	arcNumber(NULL),
-	arcCount(NULL),
-	genere(NULL),
-	writer(NULL),
-	penciller(NULL),
-	inker(NULL),
-	colorist(NULL),
-	letterer(NULL),
-	coverArtist(NULL),
-	date(NULL),
-	publisher(NULL),
-	format(NULL),
-	color(NULL),
-	ageRating(NULL),
-	synopsis(NULL),
-	characters(NULL),
-	notes(NULL)
+    gamma(-1)
 {
 
 }
 
 ComicInfo::ComicInfo(const ComicInfo & comicInfo)
-:	title(NULL), 
-	coverPage(NULL), 
-	numPages(NULL), 
-	number(NULL), 
-	isBis(NULL), 
-	count(NULL),
-	volume(NULL),
-	storyArc(NULL),
-	arcNumber(NULL),
-	arcCount(NULL),
-	genere(NULL),
-	writer(NULL),
-	penciller(NULL),
-	inker(NULL),
-	colorist(NULL),
-	letterer(NULL),
-	coverArtist(NULL),
-	date(NULL),
-	publisher(NULL),
-	format(NULL),
-	color(NULL),
-	ageRating(NULL),
-	synopsis(NULL),
-	characters(NULL),
-	notes(NULL)
 {
 	operator=(comicInfo);
 }
 
 ComicInfo::~ComicInfo()
 {
-	delete title;
-	delete coverPage;
-	delete numPages;
-	delete number;
-	delete isBis;
-	delete count;
-	delete volume;
-	delete storyArc;
-	delete arcNumber;
-	delete arcCount;
-	delete genere;
-	delete writer;
-	delete penciller;
-	delete inker;
-	delete colorist;
-	delete letterer;
-	delete coverArtist;
-	delete date;
-	delete publisher;
-	delete format;
-	delete color;
-	delete ageRating;
-	delete synopsis;
-	delete characters;
-	delete notes;
+
 }
+//the default operator= should work
 ComicInfo & ComicInfo::operator=(const ComicInfo & comicInfo)
 {
-	copyField(title,comicInfo.title);
-	copyField(coverPage,comicInfo.coverPage);
-	copyField(numPages,comicInfo.numPages);
-	copyField(number,comicInfo.number);
-	copyField(isBis,comicInfo.isBis);
-	copyField(count,comicInfo.count);
-	copyField(volume,comicInfo.volume);
-	copyField(storyArc,comicInfo.storyArc);
-	copyField(arcNumber,comicInfo.arcNumber);
-	copyField(arcCount,comicInfo.arcCount);
-	copyField(genere,comicInfo.genere);
-	copyField(writer,comicInfo.writer);
-	copyField(penciller,comicInfo.penciller);
-	copyField(inker,comicInfo.inker);
-	copyField(colorist,comicInfo.colorist);
-	copyField(letterer,comicInfo.letterer);
-	copyField(coverArtist,comicInfo.coverArtist);
-	copyField(date,comicInfo.date);
-	copyField(publisher,comicInfo.publisher);
-	copyField(format,comicInfo.format);
-	copyField(color,comicInfo.color);
-	copyField(ageRating,comicInfo.ageRating);
-	copyField(synopsis,comicInfo.synopsis);
-	copyField(characters,comicInfo.characters);
-	copyField(notes,comicInfo.notes);
-
 	hash = comicInfo.hash;
 	id = comicInfo.id;
 	existOnDb = comicInfo.existOnDb;
@@ -275,61 +176,38 @@ ComicInfo & ComicInfo::operator=(const ComicInfo & comicInfo)
 	contrast = comicInfo.contrast;
 	gamma = comicInfo.gamma;
 
+    title = comicInfo.title;
+    coverPage = comicInfo.coverPage;
+    numPages = comicInfo.numPages;
+    number = comicInfo.number;
+    isBis = comicInfo.isBis;
+    count = comicInfo.count;
+    volume = comicInfo.volume;
+    storyArc = comicInfo.storyArc;
+    arcNumber = comicInfo.arcNumber;
+    arcCount = comicInfo.arcCount;
+    genere = comicInfo.genere;
+    writer = comicInfo.writer;
+    penciller = comicInfo.penciller;
+    inker = comicInfo.inker;
+    colorist = comicInfo.colorist;
+    letterer = comicInfo.letterer;
+    coverArtist = comicInfo.coverArtist;
+    date = comicInfo.date;
+    publisher = comicInfo.publisher;
+    format = comicInfo.format;
+    color = comicInfo.color;
+    ageRating = comicInfo.ageRating;
+    synopsis = comicInfo.synopsis;
+    characters = comicInfo.characters;
+    notes = comicInfo.notes;
+    comicVineURL = comicInfo.comicVineURL;
+
 	return *this;
 }
 
-
-void ComicInfo::setValue(QString * & field, const QString & value)
-{
-	if(field == NULL)
-		field = new QString;
-	*field = value;
-}
-
-void ComicInfo::setValue(int * & field, int value)
-{
-	if(field == NULL)
-		field = new int;
-	*field = value;
-}
-
-void ComicInfo::setValue(bool * & field, bool value)
-{
-	if(field == NULL)
-		field = new bool;
-	*field = value;
-}
-
-void ComicInfo::copyField(QString * & field, const QString * value)
-{
-	if(field != 0)
-		 delete field;
-	field = 0;
-	if(value != NULL)
-		field = new QString(*value);
-
-}
-
-void ComicInfo::copyField(int * & field, int * value)
-{
-	if(field != NULL)
-		 delete field;
-	field = 0;
-	if(value != NULL)
-		field = new int(*value);
-}
-
-void ComicInfo::copyField(bool * & field, bool * value)
-{
-	if(field != NULL)
-		 delete field;
-	field = 0;
-	if(value != NULL)
-		field = new bool(*value);
-}
-
-
 //set fields
+/*
 void ComicInfo::setTitle(QString value)
 {
 	setValue(title,value);
@@ -452,7 +330,7 @@ void ComicInfo::setCharacters(QString value)
 void ComicInfo::setNotes(QString value)
 {
 	setValue(notes,value);
-}
+}*/
 
 QPixmap ComicInfo::getCover(const QString & basePath)
 {
@@ -486,58 +364,6 @@ QDataStream &operator>>(QDataStream & stream, ComicDB & comic)
 	return stream;
 }
 
-void serializeField(QDataStream & stream, QString * field)
-{
-	stream << (field!=0);
-	if (field!=0) stream << *field;
-}
-
-void serializeField(QDataStream & stream, int * field)
-{
-	stream << (field!=0);
-	if (field!=0) stream << *field;
-}
-
-void serializeField(QDataStream & stream, bool * field)
-{
-	stream << (field!=0);
-	if (field!=0) stream << *field;
-}
-
-void deserializeField(QDataStream & stream, QString * & field)
-{
-	bool isData;
-	stream >> isData;
-	if(isData)
-	{
-		field = new QString();
-		stream >> *field;
-	}
-}
-
-void deserializeField(QDataStream & stream, int * & field)
-{
-	bool isData;
-	stream >> isData;
-	if(isData)
-	{
-		field = new int;
-		stream >> *field;
-	}
-}
-
-void deserializeField(QDataStream & stream, bool * & field)
-{
-	bool isData;
-	stream >> isData;
-	if(isData)
-	{
-		field = new bool;
-		stream >> *field;
-	}
-}
-
-
 QDataStream &operator<<(QDataStream & stream, const ComicInfo & comicInfo)
 {
 	stream << comicInfo.id;
@@ -556,38 +382,38 @@ QDataStream &operator<<(QDataStream & stream, const ComicInfo & comicInfo)
 	stream << comicInfo.contrast;
 	stream << comicInfo.gamma;
 
-	serializeField(stream,comicInfo.title);
+    stream << comicInfo.title;
 
-	serializeField(stream,comicInfo.coverPage);
-	serializeField(stream,comicInfo.numPages);
+	stream << comicInfo.coverPage;
+	stream << comicInfo.numPages;
 
-	serializeField(stream,comicInfo.number);
-	serializeField(stream,comicInfo.isBis);
-	serializeField(stream,comicInfo.count);
+	stream << comicInfo.number;
+	stream << comicInfo.isBis;
+	stream << comicInfo.count;
 
-	serializeField(stream,comicInfo.volume);
-	serializeField(stream,comicInfo.storyArc);
-	serializeField(stream,comicInfo.arcNumber);
-	serializeField(stream,comicInfo.arcCount);
+	stream << comicInfo.volume;
+	stream << comicInfo.storyArc;
+	stream << comicInfo.arcNumber;
+	stream << comicInfo.arcCount;
 
-	serializeField(stream,comicInfo.genere);
+	stream << comicInfo.genere;
 
-	serializeField(stream,comicInfo.writer);
-	serializeField(stream,comicInfo.penciller);
-	serializeField(stream,comicInfo.inker);
-	serializeField(stream,comicInfo.colorist);
-	serializeField(stream,comicInfo.letterer);
-	serializeField(stream,comicInfo.coverArtist);
+	stream << comicInfo.writer;
+	stream << comicInfo.penciller;
+	stream << comicInfo.inker;
+	stream << comicInfo.colorist;
+	stream << comicInfo.letterer;
+	stream << comicInfo.coverArtist;
 
-	serializeField(stream,comicInfo.date);
-	serializeField(stream,comicInfo.publisher);
-	serializeField(stream,comicInfo.format);
-	serializeField(stream,comicInfo.color);
-	serializeField(stream,comicInfo.ageRating);
+	stream << comicInfo.date;
+	stream << comicInfo.publisher;
+	stream << comicInfo.format;
+	stream << comicInfo.color;
+	stream << comicInfo.ageRating;
 
-	serializeField(stream,comicInfo.synopsis);
-	serializeField(stream,comicInfo.characters);
-	serializeField(stream,comicInfo.notes);
+	stream << comicInfo.synopsis;
+	stream << comicInfo.characters;
+	stream << comicInfo.notes;
 	return stream;
 }
 
@@ -609,37 +435,38 @@ QDataStream &operator>>(QDataStream & stream, ComicInfo & comicInfo)
 	stream >> comicInfo.contrast;
 	stream >> comicInfo.gamma;
 
-	deserializeField(stream,comicInfo.title);
+	stream >> comicInfo.title;
 
-	deserializeField(stream,comicInfo.coverPage);
-	deserializeField(stream,comicInfo.numPages);
+	stream >> comicInfo.coverPage;
+	stream >> comicInfo.numPages;
 
-	deserializeField(stream,comicInfo.number);
-	deserializeField(stream,comicInfo.isBis);
-	deserializeField(stream,comicInfo.count);
+	stream >> comicInfo.number;
+	stream >> comicInfo.isBis;
+	stream >> comicInfo.count;
 
-	deserializeField(stream,comicInfo.volume);
-	deserializeField(stream,comicInfo.storyArc);
-	deserializeField(stream,comicInfo.arcNumber);
-	deserializeField(stream,comicInfo.arcCount);
+	stream >> comicInfo.volume;
+	stream >> comicInfo.storyArc;
+	stream >> comicInfo.arcNumber;
+	stream >> comicInfo.arcCount;
 
-	deserializeField(stream,comicInfo.genere);
+	stream >> comicInfo.genere;
 
-	deserializeField(stream,comicInfo.writer);
-	deserializeField(stream,comicInfo.penciller);
-	deserializeField(stream,comicInfo.inker);
-	deserializeField(stream,comicInfo.colorist);
-	deserializeField(stream,comicInfo.letterer);
-	deserializeField(stream,comicInfo.coverArtist);
+	stream >> comicInfo.writer;
+	stream >> comicInfo.penciller;
+	stream >> comicInfo.inker;
+	stream >> comicInfo.colorist;
+	stream >> comicInfo.letterer;
+	stream >> comicInfo.coverArtist;
 
-	deserializeField(stream,comicInfo.date);
-	deserializeField(stream,comicInfo.publisher);
-	deserializeField(stream,comicInfo.format);
-	deserializeField(stream,comicInfo.color);
-	deserializeField(stream,comicInfo.ageRating);
+	stream >> comicInfo.date;
+	stream >> comicInfo.publisher;
+	stream >> comicInfo.format;
+	stream >> comicInfo.color;
+	stream >> comicInfo.ageRating;
 
-	deserializeField(stream,comicInfo.synopsis);
-	deserializeField(stream,comicInfo.characters);
-	deserializeField(stream,comicInfo.notes);
+	stream >> comicInfo.synopsis;
+	stream >> comicInfo.characters;
+	stream >> comicInfo.notes;
+	
 	return stream;
 }

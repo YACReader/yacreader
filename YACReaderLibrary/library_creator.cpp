@@ -229,14 +229,14 @@ void LibraryCreator::insertComic(const QString & relativePath,const QFileInfo & 
 
 	if(! ( comic.hasCover() && checkCover(hash)))
 	{
-		ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+hash+".jpg",*comic.info.coverPage);
+        ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+hash+".jpg",comic.info.coverPage.toInt());
 		//ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+fileInfo.fileName()+".jpg");
 		tc.create();
 		numPages = tc.getNumPages();
 
 		emit(comicAdded(relativePath,_target+"/covers/"+hash+".jpg"));
 	}
-	comic.info.setNumPages(numPages);
+    comic.info.numPages = numPages;
 	DBHelper::insert(&comic,_database);
 }
 

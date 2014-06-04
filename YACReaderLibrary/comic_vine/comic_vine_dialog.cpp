@@ -532,27 +532,27 @@ ComicDB ComicVineDialog::parseComicInfo(ComicDB & comic, const QString & json, i
             QString synopsis = result.property("description").toString().remove(QRegExp("<[^>]*>")); //description
             QString characters = getCharacters(result.property("character_credits"));
 
-			comic.info.setTitle(title);
+            comic.info.title = title;
 
-			comic.info.setNumber(number.toInt());
-            comic.info.setCount(count);
+            comic.info.number = number;
+            comic.info.count = count;
 
-            comic.info.setWriter(writer);
-            comic.info.setPenciller(penciller);
-            comic.info.setInker(inker);
-            comic.info.setColorist(colorist);
-            comic.info.setLetterer(letterer);
-            comic.info.setCoverArtist(coverArtist);
+            comic.info.writer = writer;
+            comic.info.penciller = penciller;
+            comic.info.inker = inker;
+            comic.info.colorist = colorist;
+            comic.info.letterer = letterer;
+            comic.info.coverArtist = coverArtist;
 
 			QStringList tempList = date.split("-");
 			std::reverse(tempList.begin(),tempList.end());
-			comic.info.setDate(tempList.join("/"));
-			comic.info.setVolume(volume);
+            comic.info.date = tempList.join("/");
+            comic.info.volume = volume;
 
-            comic.info.setPublisher(publisher);
+            comic.info.publisher = publisher;
 
-            comic.info.setSynopsis(synopsis);
-            comic.info.setCharacters(characters);
+            comic.info.synopsis = synopsis;
+            comic.info.characters = characters;
 		}
 	}
     return comic;

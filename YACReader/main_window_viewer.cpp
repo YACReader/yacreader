@@ -611,8 +611,8 @@ void MainWindowViewer::open(QString path, ComicDB & comic, QList<ComicDB> & sibl
 
 	QFileInfo fi(path);
 
-	if(comic.info.title != 0 && !comic.info.title->isEmpty())
-		setWindowTitle("YACReader - " + *comic.info.title);
+    if(!comic.info.title.isNull() && !comic.info.title.toString().isEmpty())
+        setWindowTitle("YACReader - " + comic.info.title.toString());
 	else
 		setWindowTitle("YACReader - " + fi.fileName());
 
