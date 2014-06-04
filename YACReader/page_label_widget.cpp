@@ -10,7 +10,7 @@ PageLabelWidget::PageLabelWidget(QWidget * parent)
 	:QWidget(parent)
 	{
 	animation = new QPropertyAnimation(this,"pos");
-	animation->setDuration(150);
+    animation->setDuration(150);
 	
 	int verticalRes = QApplication::desktop()->screenGeometry().height();
 		
@@ -110,7 +110,12 @@ void PageLabelWidget::updatePosition()
 	QWidget * parent = dynamic_cast<QWidget *>(this->parent());
 	if(parent == 0)
 	{
-		return;
+        return;
 	}
-	move(QPoint((parent->geometry().size().width()-this->width()),this->pos().y()));
+
+    animation->stop();
+    if (animation->endValue().toPoint().y() == 0)
+        move(QPoint((parent->geometry().size().width()-this->width()),0));
+    else
+       move(QPoint((parent->geometry().size().width()-this->width()),-this->height()));
 }
