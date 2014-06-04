@@ -11,6 +11,7 @@ PageLabelWidget::PageLabelWidget(QWidget * parent)
 	{
 	animation = new QPropertyAnimation(this,"pos");
     animation->setDuration(150);
+    animation->setEndValue(QPoint((parent->geometry().size().width()-this->width()),-this->height()));
 	
 	int verticalRes = QApplication::desktop()->screenGeometry().height();
 		
