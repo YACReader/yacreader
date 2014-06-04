@@ -399,15 +399,16 @@ void StarEditor::leaveEvent(QEvent * event){
 
 void StarEditor::mousePressEvent(QMouseEvent *  event )
 {
-	int star = starAtPosition(event->x());
+    if(event->button() == Qt::LeftButton)
+    {
+        int star = starAtPosition(event->x());
 
-	if (star != myStarRating.starCount() && star != -1) {
-		myStarRating.setStarCount(star);
-		shouldCommitData = true;
-		emit commitData();
-	}
-
-
+        if (star != myStarRating.starCount() && star != -1) {
+            myStarRating.setStarCount(star);
+            shouldCommitData = true;
+            emit commitData();
+        }
+    }
 }
 
 int StarEditor::starAtPosition(int x)
