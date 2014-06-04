@@ -1,0 +1,28 @@
+<RCC>
+  <qresource prefix="/" >
+<file alias="images/viewer_toolbar/bookmark.png">../images/viewer_toolbar/bookmark_osx.png</file>
+<file alias="images/viewer_toolbar/close.png">../images/viewer_toolbar/close_osx.png</file>
+<file alias="images/viewer_toolbar/doublePage.png">../images/viewer_toolbar/doublePage_osx.png</file>
+<file alias="images/viewer_toolbar/flow.png">../images/viewer_toolbar/flow_osx.png</file>
+<file alias="images/viewer_toolbar/full.png">../images/viewer_toolbar/full_osx.png</file>
+<file alias="images/viewer_toolbar/goto.png">../images/viewer_toolbar/goto_osx.png</file>
+<file alias="images/viewer_toolbar/help.png">../images/viewer_toolbar/help_osx.png</file>
+<file alias="images/viewer_toolbar/info.png">../images/viewer_toolbar/info_osx.png</file>
+<file alias="images/viewer_toolbar/magnifyingGlass.png">../images/viewer_toolbar/magnifyingGlass_osx.png</file>
+<file alias="images/viewer_toolbar/next.png">../images/viewer_toolbar/next_osx.png</file>
+<file alias="images/viewer_toolbar/open.png">../images/viewer_toolbar/open_osx.png</file>
+<file alias="images/viewer_toolbar/openFolder.png">../images/viewer_toolbar/openFolder_osx.png</file>
+<file alias="images/viewer_toolbar/openNext.png">../images/viewer_toolbar/openNext_osx.png</file>
+<file alias="images/viewer_toolbar/openPrevious.png">../images/viewer_toolbar/openPrevious_osx.png</file>
+<file alias="images/viewer_toolbar/options.png">../images/viewer_toolbar/options_osx.png</file>
+<file alias="images/viewer_toolbar/previous.png">../images/viewer_toolbar/previous_osx.png</file>
+<file alias="images/viewer_toolbar/rotateL.png">../images/viewer_toolbar/rotateL_osx.png</file>
+<file alias="images/viewer_toolbar/rotateR.png">../images/viewer_toolbar/rotateR_osx.png</file>
+<file alias="images/viewer_toolbar/save.png">../images/viewer_toolbar/save_osx.png</file>
+<file alias="images/viewer_toolbar/shortcuts.png">../images/viewer_toolbar/shortcuts_osx.png</file>
+<file alias="images/viewer_toolbar/showBookmarks.png">../images/viewer_toolbar/showBookmarks_osx.png</file>
+<file alias="images/viewer_toolbar/toHeight.png">../images/viewer_toolbar/toHeight_osx.png</file>
+<file alias="images/viewer_toolbar/toWidth.png">../images/viewer_toolbar/toWidth_osx.png</file>
+<file alias="images/viewer_toolbar/translator.png">../images/viewer_toolbar/translator_osx.png</file>
+  </qresource>
+</RCC>
