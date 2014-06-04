@@ -144,6 +144,7 @@ private:
 	//QAction * setAllAsNonReadAction;
 	QAction * showHideMarksAction;
 	QAction * getInfoAction; //comic vine
+    QAction * resetComicRatingAction;
 
 	//edit info actions
 	QAction * selectAllComicsAction;
@@ -274,6 +275,7 @@ public:
 		void showComicVineScraper();
 		void setRemoveError();
 		void checkRemoveError();
+        void resetComicRating();
 };
 
 #endif

@@ -445,6 +445,9 @@ void LibraryWindow::createActions()
 	openContainingFolderComicAction->setText(tr("Open containing folder..."));
 	openContainingFolderComicAction->setIcon(QIcon(":/images/open.png"));
 
+    resetComicRatingAction = new QAction(this);
+    resetComicRatingAction->setText(tr("Reset comic rating"));
+
 	//Edit comics actions------------------------------------------------------
 	selectAllComicsAction = new QAction(this);
 	selectAllComicsAction->setText(tr("Select all comics"));
@@ -496,6 +499,8 @@ void LibraryWindow::disableComicsActions(bool disabled)
 	deleteComicsAction->setDisabled(disabled);
 	//context menu
 	openContainingFolderComicAction->setDisabled(disabled);
+    resetComicRatingAction->setDisabled(disabled);
+
 	getInfoAction->setDisabled(disabled);
 
 
@@ -607,6 +612,14 @@ void LibraryWindow::createToolBars()
 void LibraryWindow::createMenus()
 {
 	comicView->addAction(openContainingFolderComicAction);
+
+    {
+        QAction *act = new QAction(this);
+        act->setSeparator(true);
+        comicView->addAction(act);
+    }
+    comicView->addAction(resetComicRatingAction);
+
 	foldersView->addAction(openContainingFolderAction);
 
 	selectedLibrary->addAction(updateLibraryAction); 
@@ -739,6 +752,7 @@ void LibraryWindow::createConnections()
 	//ContextMenus
 	connect(openContainingFolderComicAction,SIGNAL(triggered()),this,SLOT(openContainingFolderComic()));
 	connect(openContainingFolderAction,SIGNAL(triggered()),this,SLOT(openContainingFolder()));
+    connect(resetComicRatingAction,SIGNAL(triggered()),this,SLOT(resetComicRating()));
 
 	//connect(dm,SIGNAL(directoryLoaded(QString)),foldersView,SLOT(expandAll()));
 	//connect(dm,SIGNAL(directoryLoaded(QString)),this,SLOT(updateFoldersView(QString)));
@@ -1443,7 +1457,19 @@ void LibraryWindow::checkRemoveError()
 	{
 		QMessageBox::critical(this,tr("Unable to delete"),tr("There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder."));
 	}
-	removeError = false;
+    removeError = false;
+}
+
+void LibraryWindow::resetComicRating()
+{
+    QModelIndexList indexList = getSelectedComics();
+
+    dmCV->startTransaction();
+    for(auto & index:indexList)
+    {
+        dmCV->resetComicRating(index);
+    }
+    dmCV->finishTransaction();
 }
 
 void LibraryWindow::asignNumbers()

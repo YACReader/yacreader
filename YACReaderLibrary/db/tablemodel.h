@@ -54,6 +54,7 @@ public:
 	void remove(ComicDB * comic, int row);
 	void removeInTransaction(int row);
 	void reload(const ComicDB & comic);
+    void resetComicRating(const QModelIndex & mi);
 
 	enum Columns {
 	Number = 0,

@@ -577,7 +577,23 @@ void TableModel::reload(const ComicDB & comic)
 		row++;
 	}
 	if(found)
-		emit dataChanged(index(row,TableModel::CurrentPage),index(row,TableModel::CurrentPage));
+        emit dataChanged(index(row,TableModel::CurrentPage),index(row,TableModel::CurrentPage));
+}
+
+void TableModel::resetComicRating(const QModelIndex &mi)
+{
+    ComicDB comic = getComic(mi);
+
+    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+
+    comic.info.rating = 0;
+    _data[mi.row()]->setData(TableModel::Rating,0);
+    DBHelper::update(&(comic.info),db);
+
+    emit dataChanged(mi,mi);
+
+    db.close();
+    QSqlDatabase::removeDatabase(_databasePath);
 }
 
 void TableModel::updateRating(int rating, QModelIndex mi)
