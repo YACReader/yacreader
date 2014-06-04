@@ -10,10 +10,18 @@
 
 #include "bookmarks.h"
 
+#ifdef Q_OS_MAC
+
+#include "pdf_comic.h"
+
+#else
+
 #if QT_VERSION >= 0x050000
 	#include "poppler-qt5.h"
 #else
 	#include "poppler-qt4.h"
+#endif
+
 #endif
 
 class ComicDB;
@@ -138,7 +146,11 @@ class ComicDB;
 		Q_OBJECT
 	private:
 		//pdf
+#ifdef Q_OS_MAC
+        MacOSXPDFComic * pdfComic;
+#else
 		Poppler::Document * pdfComic;
+#endif
 		void renderPage(int page);
 
 		//void run();

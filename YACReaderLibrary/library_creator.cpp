@@ -22,10 +22,16 @@
 #include <algorithm>
 using namespace std;
 
+#ifdef Q_OS_MAC
+    #include "pdf_comic.h"
+#else
+
 #if QT_VERSION >= 0x050000
 	#include "poppler-qt5.h"
 #else
 	#include "poppler-qt4.h"
+#endif
+
 #endif
 
 //--------------------------------------------------------------------------------
@@ -500,11 +506,24 @@ void ThumbnailCreator::create()
 
 	if(fi.suffix().compare("pdf",Qt::CaseInsensitive) == 0)
 	{
+
+#ifdef Q_OS_MAC
+        MacOSXPDFComic * pdfComic = new MacOSXPDFComic();
+        if(!pdfComic->openComic(_fileSource))
+        {
+            delete pdfComic;
+            QImage p;
+            p.load(":/images/notCover.png");
+            p.save(_target);
+            return;
+        }
+#else
 		Poppler::Document * pdfComic = Poppler::Document::load(_fileSource);
-		if (!pdfComic)
+#endif
+        if (!pdfComic)
 		{
 			QLOG_WARN() << "Extracting cover: unable to open PDF file " << _fileSource;
-			delete pdfComic;
+            //delete pdfComic; //TODO check if the delete is needed
 			pdfComic = 0;
 			QImage p;
 			p.load(":/images/notCover.png");
@@ -514,8 +533,12 @@ void ThumbnailCreator::create()
 		_numPages = pdfComic->numPages();
 		if(_numPages >= _coverPage)
 		{
-
-			QImage p = pdfComic->page(_coverPage-1)->renderToImage(72,72); //TODO check if the page is valid
+#ifdef Q_OS_MAC
+            {
+            QImage p = pdfComic->getPage(_coverPage-1); //TODO check if the page is valid
+#else
+            QImage p = pdfComic->page(_coverPage-1)->renderToImage(72,72);
+#endif
 			_cover = QPixmap::fromImage(p);
 			if(_target!="")
 			{
@@ -526,6 +549,10 @@ void ThumbnailCreator::create()
 					scaled = p.scaledToWidth(480,Qt::SmoothTransformation);
 				scaled.save(_target,0,75);
 			}
+#ifdef Q_OS_MAC
+        }
+        pdfComic->releaseLastPageData();
+#endif
 		}
 		else if(_target!="")
 		{
@@ -534,6 +561,8 @@ void ThumbnailCreator::create()
 			p.load(":/images/notCover.png");
 			p.save(_target);
 		}
+
+        delete pdfComic;
 	}
 	else
 	{
