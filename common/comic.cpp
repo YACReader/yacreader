@@ -633,18 +633,32 @@ bool PDFComic::load(const QString & path, const ComicDB & comic)
 
 void PDFComic::process()
 {
+#ifdef Q_OS_MAC
+    pdfComic = new MacOSXPDFComic();
+    if(!pdfComic->openComic(_path))
+    {
+        delete pdfComic;
+        emit errorOpening();
+        return;
+    }
+#else
+
+
 	pdfComic = Poppler::Document::load(_path);
 	if (!pdfComic)
 	{
-		delete pdfComic;
-		pdfComic = 0;
+        //delete pdfComic;
+        //pdfComic = 0;
 		emit errorOpening();
 		return;
 	}
+
 	
 
 	//pdfComic->setRenderHint(Poppler::Document::Antialiasing, true);
 	pdfComic->setRenderHint(Poppler::Document::TextAntialiasing, true);
+#endif
+
 	int nPages = pdfComic->numPages();
 	emit pageChanged(0); // this indicates new comic, index=0
 	emit numPages(nPages);
@@ -672,6 +686,21 @@ void PDFComic::process()
 
 void PDFComic::renderPage(int page)
 {
+#ifdef Q_OS_MAC
+    {
+    QImage img = pdfComic->getPage(page);
+    if(!img.isNull())
+    {
+        QByteArray ba;
+        QBuffer buf(&ba);
+        img.save(&buf, "jpg");
+        _pages[page] = ba;
+        emit imageLoaded(page);
+        emit imageLoaded(page,_pages[page]);
+    }
+    }
+    pdfComic->releaseLastPageData();
+#else
 	Poppler::Page* pdfpage = pdfComic->page(page);
 	if (pdfpage)
 	{
@@ -684,6 +713,7 @@ void PDFComic::renderPage(int page)
 		emit imageLoaded(page);
 		emit imageLoaded(page,_pages[page]);
 	}
+#endif
 }
 
 Comic * FactoryComic::newComic(const QString & path)
