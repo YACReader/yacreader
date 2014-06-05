@@ -37,6 +37,8 @@ static QString fields = 		"title ,"
 		"characters,"
 		"notes,"
 
+        "comicVineID,"
+
 		"hash"
 		;
 
@@ -179,8 +181,11 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
 		"bookmark3 INTEGER DEFAULT -1, "
 		"brightness INTEGER DEFAULT -1, "
 		"contrast INTEGER DEFAULT -1, "
-		"gamma INTEGER DEFAULT -1 "
-		")");
+        "gamma INTEGER DEFAULT -1, "
+//new 7.1 fields
+        "comicVineID TEXT"
+
+                                ")");
 	success = success && queryComicInfo.exec();
 	//queryComicInfo.finish();
 
@@ -304,7 +309,9 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 			"characters = :characters,"
 			"notes = :notes,"
 
-			"edited = :edited"
+            "edited = :edited,"
+
+            "comicVineID = :comicVineID"
 
 			" WHERE hash = :hash ");
 
@@ -337,6 +344,7 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 			"notes,"
 			"read,"
 			"edited,"
+            "comicVineID,"
 			"hash)"
 
 			"VALUES (:title,"
@@ -372,6 +380,7 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 
 			":read,"
 			":edited,"
+            ":comicVineID,"
 
 			":hash )");
 
@@ -445,7 +454,7 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 	return b;
 
 }
-
+//TODO fix these bindings
 void DataBaseManagement::bindValuesFromRecord(const QSqlRecord & record, QSqlQuery & query)
 {
 	bindString("title",record,query);
@@ -481,7 +490,22 @@ void DataBaseManagement::bindValuesFromRecord(const QSqlRecord & record, QSqlQue
 	bindString("characters",record,query);
 	bindString("notes",record,query);
 
-	bindString("hash",record,query);
+    bindString("comicVineID",record,query);
+
+    bindString("hash",record,query);
+}
+
+bool DataBaseManagement::addColumns(const QString &tableName, const QStringList &columnDefs, const QSqlDatabase &db)
+{
+    QString sql = "ALTER TABLE %1 ADD COLUMN %2";
+    foreach(QString columnDef, columnDefs)
+    {
+        QSqlQuery alterTableComicInfo(db);
+        alterTableComicInfo.prepare(sql.arg(tableName).arg(columnDef));
+        //alterTableComicInfo.bindValue(":column_def",columnDef);
+        alterTableComicInfo.exec();
+        return (alterTableComicInfo.numRowsAffected() > 0);
+    }
 }
 
 void DataBaseManagement::bindString(const QString & name, const QSqlRecord & record, QSqlQuery & query)
@@ -552,8 +576,11 @@ int DataBaseManagement::compareVersions(const QString & v1, const QString v2)
 bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
 {
     bool pre7 = false;
+    bool pre7_1 = false;
     if(compareVersions(DataBaseManagement::checkValidDB(fullPath),"7.0.0")<0)
         pre7 = true;
+    if(compareVersions(DataBaseManagement::checkValidDB(fullPath),"7.0.3")<0)
+        pre7_1 = true;
 
 	QSqlDatabase db = loadDatabaseFromFile(fullPath);
 	bool returnValue = false;
@@ -581,17 +608,17 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
 					   << "brightness INTEGER DEFAULT -1"
 					   << "contrast INTEGER DEFAULT -1"
 					   << "gamma INTEGER DEFAULT -1";
-			QString sql = "ALTER TABLE comic_info ADD COLUMN %1";
-			foreach(QString columnDef, columnDefs)
-			{
-				QSqlQuery alterTableComicInfo(db);
-				alterTableComicInfo.prepare(sql.arg(columnDef));
-				//alterTableComicInfo.bindValue(":column_def",columnDef);
-				alterTableComicInfo.exec();
-				returnValue = returnValue && (alterTableComicInfo.numRowsAffected() > 0);
-			}
+
+            returnValue = returnValue && addColumns("comic_info", columnDefs, db);
 		}
 		//TODO update hasBeenOpened value
+
+        if(pre7_1)
+        {
+            QStringList columnDefs;
+            columnDefs << "comicVineID TEXT DEFAULT NULL";
+            returnValue = returnValue && addColumns("comic_info", columnDefs, db);
+        }
 	}
 
 	db.close();

@@ -201,7 +201,7 @@ ComicInfo & ComicInfo::operator=(const ComicInfo & comicInfo)
     synopsis = comicInfo.synopsis;
     characters = comicInfo.characters;
     notes = comicInfo.notes;
-    comicVineURL = comicInfo.comicVineURL;
+    comicVineID = comicInfo.comicVineID;
 
 	return *this;
 }
@@ -414,6 +414,9 @@ QDataStream &operator<<(QDataStream & stream, const ComicInfo & comicInfo)
 	stream << comicInfo.synopsis;
 	stream << comicInfo.characters;
 	stream << comicInfo.notes;
+
+    stream << comicInfo.comicVineID;
+
 	return stream;
 }
 
@@ -467,6 +470,8 @@ QDataStream &operator>>(QDataStream & stream, ComicInfo & comicInfo)
 	stream >> comicInfo.synopsis;
 	stream >> comicInfo.characters;
 	stream >> comicInfo.notes;
+
+    stream >> comicInfo.comicVineID;
 	
 	return stream;
 }
