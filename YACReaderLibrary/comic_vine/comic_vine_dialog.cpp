@@ -418,7 +418,9 @@ void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString> > & matchingIn
 		QByteArray result = comicVineClient->getComicDetail(p.second,error,timeout); //TODO check timeOut or Connection error
 		if(error || timeout)
 			continue; //TODO
-        comics.push_back(parseComicInfo(p.first,result,count,publisher)); //TODO check result error
+        ComicDB comic = parseComicInfo(p.first,result,count,publisher);//TODO check result error
+        comic.info.comicVineID = p.second;
+        comics.push_back(comic);
 
         setLoadingMessage(tr("Retrieving tags for : %1").arg(p.first.getFileName()));
 	}
@@ -459,7 +461,7 @@ void ComicVineDialog::getComicInfo(const QString &comicId, int count, const QStr
 	}
 
     ComicDB comic = parseComicInfo(comics[currentIndex],result,count,publisher); //TODO check result error
-
+    comic.info.comicVineID = comicId;
     setLoadingMessage(tr("Retrieving tags for : %1").arg(comics[currentIndex].getFileName()));
 
     QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);

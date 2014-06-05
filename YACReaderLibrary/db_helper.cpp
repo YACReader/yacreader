@@ -212,7 +212,10 @@ void DBHelper::update(ComicInfo * comicInfo, QSqlDatabase & db)
 		"brightness = :brightness,"
 		"contrast = :contrast, "
 		"gamma = :gamma,"
-		"rating = :rating"
+        "rating = :rating,"
+
+        //new 7.1 fields
+        "comicVineID = :comicVineID"
 		//--
 		" WHERE id = :id ");
 
@@ -262,6 +265,8 @@ void DBHelper::update(ComicInfo * comicInfo, QSqlDatabase & db)
 	updateComicInfo.bindValue(":contrast", comicInfo->contrast);
 	updateComicInfo.bindValue(":gamma", comicInfo->gamma);
 	updateComicInfo.bindValue(":rating", comicInfo->rating);
+
+    updateComicInfo.bindValue(":comicVineID", comicInfo->comicVineID);
 
 	updateComicInfo.exec();
 }
@@ -640,6 +645,8 @@ ComicInfo DBHelper::loadComicInfo(QString hash, QSqlDatabase & db)
         comicInfo.synopsis = record.value("synopsis");
         comicInfo.characters = record.value("characters");
         comicInfo.notes = record.value("notes");
+
+        comicInfo.comicVineID = record.value("comicVineID");
 
 		comicInfo.existOnDb = true;
 	}

@@ -39,6 +39,7 @@ class QToolButton;
 		YACReaderFieldEdit * title;
 		YACReaderFieldEdit * numPagesEdit;
 		QLabel * size;
+        QLabel * comicVineLink;
 
 		YACReaderFieldEdit * coverPageEdit;
 		QIntValidator coverPageValidator;

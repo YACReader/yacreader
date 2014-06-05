@@ -181,7 +181,16 @@ void PropertiesDialog::createGeneralInfoBox()
 	
 	generalInfoLayout->addRow(tr("Size:"), size = new QLabel("size"));
 
-	generalInfoBox->setLayout(generalInfoLayout);
+    //generalInfoLayout->addRow(tr("Comic Vine link:"), comicVineLink = new QLabel("..."));
+    //generalInfoLayout->addRow(bottom);
+
+    QVBoxLayout * main = new QVBoxLayout;
+    main->addLayout(generalInfoLayout);
+    main->addStretch();
+    main->addWidget(comicVineLink = new QLabel("Comic Vine link : ..."));
+    comicVineLink->setOpenExternalLinks(true);
+
+    generalInfoBox->setLayout(main);
 }
 
 void PropertiesDialog::createAuthorsBox()
@@ -373,6 +382,13 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
 
     if(!comic.info.title.isNull())
         title->setText(comic.info.title.toString());
+    if(!comic.info.comicVineID.isNull())
+    {
+        comicVineLink->setHidden(false);
+        comicVineLink->setText(QString(tr("Comic Vine link: <a style='color: #FFCB00; text-decoration:none; font-weight:bold;' href=\"http://www.comicvine.com/comic/4000-%1/\"> view </a>").arg(comic.info.comicVineID.toString())));
+    }
+    else
+        comicVineLink->setHidden(true);
 
     if(comics.length()==1 && !comic.info.coverPage.isNull())
 	{

@@ -72,7 +72,7 @@ public:
     QVariant characters;//string
     QVariant notes;//string
 
-    QVariant comicVineURL;//string
+    QVariant comicVineID;//string
 
 	QImage cover;
 

@@ -37,6 +37,8 @@ private:
 	static void bindInt(const QString & name, const QSqlRecord & record, QSqlQuery & query);
 	static void bindValuesFromRecord(const QSqlRecord & record, QSqlQuery & query);
 
+    static bool addColumns(const QString & tableName, const QStringList & columnDefs, const QSqlDatabase & db);
+
 public:
 	DataBaseManagement();
 	//TreeModel * newTreeModel(QString path);
