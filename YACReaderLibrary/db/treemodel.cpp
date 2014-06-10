@@ -298,7 +298,7 @@ void TreeModel::setupFilteredModelData()
 	}
 	else
 	{
-		selectQuery.prepare("SELECT DISTINCT f.id, f.parentId, f.name, f.path FROM folder f INNER JOIN comic c ON (f.id = c.parentId) WHERE f.id <> 1 AND ((UPPER(c.fileName) like UPPER(:filter)) OR (UPPER(f.name) like UPPER(:filter2))) ORDER BY f.parentId,f.name");
+        selectQuery.prepare("SELECT DISTINCT f.id, f.parentId, f.name, f.path, f.finished, f.completed FROM folder f INNER JOIN comic c ON (f.id = c.parentId) WHERE f.id <> 1 AND ((UPPER(c.fileName) like UPPER(:filter)) OR (UPPER(f.name) like UPPER(:filter2))) ORDER BY f.parentId,f.name");
 		selectQuery.bindValue(":filter", "%%"+filter+"%%");
 		selectQuery.bindValue(":filter2", "%%"+filter+"%%");
 	}
