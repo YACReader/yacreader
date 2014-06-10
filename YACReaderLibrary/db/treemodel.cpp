@@ -112,7 +112,7 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 #ifdef Q_OS_MAC
         return QVariant(QFileIconProvider().icon(QFileIconProvider::Folder)); //TODO draw a tick on top when it is needed
 #else
-        if(!item->data(TreeModel::Finished).toBool())
+        if(item->data(TreeModel::Finished).toBool())
             return QVariant(QIcon(":/images/folder_finished.png"));
         else
             return QVariant(QIcon(":/images/folder.png"));
