@@ -106,17 +106,22 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 	if (!index.isValid())
 		return QVariant();
 
+    TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
+
 	if (role == Qt::DecorationRole)
 #ifdef Q_OS_MAC
-		return QVariant(QFileIconProvider().icon(QFileIconProvider::Folder));
+        return QVariant(QFileIconProvider().icon(QFileIconProvider::Folder)); //TODO draw a tick on top when it is needed
 #else
-		return QVariant(QIcon(":/images/folder.png"));
+        if(!item->data(TreeModel::Finished).toBool())
+            return QVariant(QIcon(":/images/folder_finished.png"));
+        else
+            return QVariant(QIcon(":/images/folder.png"));
 #endif
 
 	if (role != Qt::DisplayRole)
 		return QVariant();
 
-	TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
+
 
 	return item->data(index.column());
 }
