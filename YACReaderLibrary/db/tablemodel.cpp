@@ -569,6 +569,7 @@ void TableModel::reload(const ComicDB & comic)
 		if(item->data(TableModel::Id).toULongLong() == comic.id)
 		{
 			found = true;
+            item->setData(TableModel::ReadColumn,comic.info.read);
 			item->setData(TableModel::CurrentPage,comic.info.currentPage);
 			item->setData(TableModel::HasBeenOpened,true);
 			break;
