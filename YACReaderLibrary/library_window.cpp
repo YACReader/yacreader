@@ -441,6 +441,13 @@ void LibraryWindow::createActions()
 	openContainingFolderAction->setText(tr("Open folder..."));
 	openContainingFolderAction->setIcon(QIcon(":/images/open.png"));
 
+    setFolderAsNotCompletedAction = new QAction(this);
+    setFolderAsNotCompletedAction->setText(tr("Set as not completed"));
+
+    setFolderAsCompletedAction = new QAction(this);
+    setFolderAsCompletedAction->setText(tr("Set as completed"));
+
+
 	openContainingFolderComicAction = new QAction(this);
 	openContainingFolderComicAction->setText(tr("Open containing folder..."));
 	openContainingFolderComicAction->setIcon(QIcon(":/images/open.png"));
@@ -622,6 +629,14 @@ void LibraryWindow::createMenus()
 
 	foldersView->addAction(openContainingFolderAction);
 
+    {
+        QAction *act = new QAction(this);
+        act->setSeparator(true);
+        foldersView->addAction(act);
+    }
+    foldersView->addAction(setFolderAsNotCompletedAction);
+    foldersView->addAction(setFolderAsCompletedAction);
+
 	selectedLibrary->addAction(updateLibraryAction); 
 	selectedLibrary->addAction(renameLibraryAction);
 	selectedLibrary->addAction(removeLibraryAction);
@@ -751,7 +766,9 @@ void LibraryWindow::createConnections()
 
 	//ContextMenus
 	connect(openContainingFolderComicAction,SIGNAL(triggered()),this,SLOT(openContainingFolderComic()));
-	connect(openContainingFolderAction,SIGNAL(triggered()),this,SLOT(openContainingFolder()));
+    connect(setFolderAsNotCompletedAction,SIGNAL(triggered()),this,SLOT(setFolderAsNotCompleted()));
+    connect(setFolderAsCompletedAction,SIGNAL(triggered()),this,SLOT(setFolderAsCompleted()));
+    connect(openContainingFolderAction,SIGNAL(triggered()),this,SLOT(openContainingFolder()));
     connect(resetComicRatingAction,SIGNAL(triggered()),this,SLOT(resetComicRating()));
 
 	//connect(dm,SIGNAL(directoryLoaded(QString)),foldersView,SLOT(expandAll()));
@@ -1527,7 +1544,17 @@ void LibraryWindow::openContainingFolder()
 {
 	QModelIndex modelIndex = foldersView->currentIndex();
 	QString path = QDir::cleanPath(currentPath() + dm->getFolderPath(modelIndex));
-	QDesktopServices::openUrl(QUrl("file:///"+path, QUrl::TolerantMode));
+    QDesktopServices::openUrl(QUrl("file:///"+path, QUrl::TolerantMode));
+}
+
+void LibraryWindow::setFolderAsNotCompleted()
+{
+    dm->updateFolderCompletedStatus(foldersView->selectionModel()->selectedRows(),false);
+}
+
+void LibraryWindow::setFolderAsCompleted()
+{
+    dm->updateFolderCompletedStatus(foldersView->selectionModel()->selectedRows(),true);
 }
 
 void LibraryWindow::exportLibrary(QString destPath)

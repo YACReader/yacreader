@@ -1,6 +1,9 @@
 #include "yacreader_treeview.h"
+#include "treeitem.h"
+#include "treemodel.h"
 
 #include <QHeaderView>
+#include <QPainter>
 
 YACReaderTreeView::YACReaderTreeView(QWidget *parent) :
     QTreeView(parent)
@@ -11,6 +14,9 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent) :
     setUniformRowHeights(true);
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setAttribute(Qt::WA_MacShowFocusRect,false);
+
+    setItemDelegate(new YACReaderTreeViewItemDeletegate(this));
+
 #ifdef Q_OS_MAC
     setStyleSheet("QTreeView {background-color:transparent; border: none;}"
                                "QTreeView::item:selected {background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6BAFE4, stop: 1 #3984D2); border-top: 2px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #5EA3DF, stop: 1 #73B8EA); border-left:none;border-right:none;border-bottom:1px solid #3577C2;}"
@@ -44,3 +50,27 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent) :
                                );
 #endif
 }
+
+
+YACReaderTreeViewItemDeletegate::YACReaderTreeViewItemDeletegate(QObject *parent)
+    :QStyledItemDelegate(parent)
+{
+
+}
+
+void YACReaderTreeViewItemDeletegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    TreeItem * item = static_cast<TreeItem *>(index.internalPointer());
+
+    if(!item->data(TreeModel::Completed).toBool())
+    {
+        painter->save();
+        painter->setBrush(QBrush(QColor(237,197,24)));
+        painter->setPen(QPen(QBrush(),0));
+        painter->drawRect(0,option.rect.y(),2,option.rect.height());
+        painter->restore();
+    }
+
+    QStyledItemDelegate::paint(painter, option, index);
+}
+

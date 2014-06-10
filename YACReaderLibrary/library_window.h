@@ -137,6 +137,9 @@ private:
 	QAction * colapseAllNodesAction;
 
 	QAction * openContainingFolderAction;
+    QAction * setFolderAsNotCompletedAction;
+    QAction * setFolderAsCompletedAction;
+
 	QAction * openContainingFolderComicAction;
 	QAction * setAsReadAction;
 	QAction * setAsNonReadAction;
@@ -231,6 +234,8 @@ public:
 		void updateLibrary();
 		//void deleteLibrary();
 		void openContainingFolder();
+        void setFolderAsNotCompleted();
+        void setFolderAsCompleted();
 		void openContainingFolderComic();
 		void deleteCurrentLibrary();
 		void removeLibrary();

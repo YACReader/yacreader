@@ -16,7 +16,15 @@ public:
 	Folder(QString fn, QString fp):knownParent(false), knownId(false){name = fn; path = fp;};
 	void setId(qulonglong sid){id = sid;knownId = true;};
 	void setFather(qulonglong pid){parentId = pid;knownParent = true;};
-	bool isDir(){return true;};
+    bool isDir() {return true;};
+    bool isFinished() const {return finished;};
+    bool isCompleted() const {return completed;};
+    void setFinished(bool b) {finished = b;};
+    void setCompleted(bool b) {completed = b;};
+
+private:
+    bool finished;
+    bool completed;
 };
 
 #endif

@@ -273,14 +273,27 @@ void DBHelper::update(ComicInfo * comicInfo, QSqlDatabase & db)
 
 void DBHelper::updateRead(ComicInfo * comicInfo, QSqlDatabase & db)
 {
-	QSqlQuery findComicInfo(db);
-	findComicInfo.prepare("UPDATE comic_info SET "
+    QSqlQuery updateComicInfo(db);
+    updateComicInfo.prepare("UPDATE comic_info SET "
 		"read = :read"
 		" WHERE id = :id ");
 
-	findComicInfo.bindValue(":read", comicInfo->read?1:0);
-	findComicInfo.bindValue(":id", comicInfo->id);
-	findComicInfo.exec();
+    updateComicInfo.bindValue(":read", comicInfo->read?1:0);
+    updateComicInfo.bindValue(":id", comicInfo->id);
+    updateComicInfo.exec();
+}
+
+void DBHelper::update(const Folder & folder, QSqlDatabase &db)
+{
+    QSqlQuery updateFolderInfo(db);
+    updateFolderInfo.prepare("UPDATE folder SET "
+            "finished = :finished, "
+            "completed = :completed "
+            "WHERE id = :id ");
+    updateFolderInfo.bindValue(":finished", folder.isFinished()?1:0);
+    updateFolderInfo.bindValue(":completed", folder.isCompleted()?1:0);
+    updateFolderInfo.bindValue(":id", folder.id);
+    updateFolderInfo.exec();
 }
 //inserts
 qulonglong DBHelper::insert(Folder * folder, QSqlDatabase & db)
@@ -532,6 +545,9 @@ Folder DBHelper::loadFolder(qulonglong id, QSqlDatabase & db)
 		folder.parentId = record.value("parentId").toULongLong();
 		folder.name = record.value("name").toString();
 		folder.path = record.value("path").toString();
+        //new 7.1
+        folder.setFinished(record.value("finished").toBool());
+        folder.setCompleted(record.value("completed").toBool());
 	}
 
 	return folder;
@@ -654,56 +670,4 @@ ComicInfo DBHelper::loadComicInfo(QString hash, QSqlDatabase & db)
 		comicInfo.existOnDb = false;
 
 	return comicInfo;
-}
-
-void DBHelper::setField(const QString & name, QString * & field, QSqlRecord & record)
-{
-	if(!record.value(name).isNull())
-	{
-		field = new QString();
-		*field = record.value(name).toString();
-	}
-}
-
-void DBHelper::setField(const QString & name, int * & field, QSqlRecord & record)
-{
-	if(!record.value(name).isNull())
-	{
-		field = new int;
-		*field = record.value(name).toInt();
-	}
-}
-
-void DBHelper::setField(const QString & name, bool * & field, QSqlRecord & record)
-{
-	if(!record.value(name).isNull())
-	{
-		field = new bool;
-		*field = record.value(name).toBool();
-	}
-}
-
-
-void DBHelper::bindField(const QString & name, QString * field, QSqlQuery & query)
-{
-	if(field != NULL)
-	{
-		query.bindValue(name,*field);
-	}
-}
-
-void DBHelper::bindField(const QString & name, int * field, QSqlQuery & query)
-{
-	if(field != NULL)
-	{
-		query.bindValue(name,*field);
-	}
-}
-
-void DBHelper::bindField(const QString & name, bool * field, QSqlQuery & query)
-{
-	if(field != NULL)
-	{
-		query.bindValue(name,*field);
-	}
 }

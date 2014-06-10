@@ -123,6 +123,11 @@ QVariant TreeItem::data(int column) const
 }
 //! [6]
 
+void TreeItem::setData(int column, const QVariant & value)
+{
+    itemData[column] = value;
+}
+
 //! [7]
 TreeItem *TreeItem::parent()
 {

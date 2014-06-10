@@ -41,6 +41,7 @@ public:
 	static void update(ComicDB * comics, QSqlDatabase & db);
 	static void update(ComicInfo * comicInfo, QSqlDatabase & db);
 	static void updateRead(ComicInfo * comicInfo, QSqlDatabase & db);
+    static void update(const Folder & folder, QSqlDatabase & db);
 	//queries
 	static QList<LibraryItem *> getFoldersFromParent(qulonglong parentId, QSqlDatabase & db, bool sort = true);
 	static QList<ComicDB> getSortedComicsFromParent(qulonglong parentId, QSqlDatabase & db);
@@ -50,14 +51,6 @@ public:
 	static ComicDB loadComic(qulonglong id, QSqlDatabase & db);
 	static ComicDB loadComic(qulonglong cparentId, QString cname, QString cpath, QString chash, QSqlDatabase & database);
 	static ComicInfo loadComicInfo(QString hash, QSqlDatabase & db);
-private:
-	static void setField(const QString & name, QString * & field, QSqlRecord & record);
-	static void setField(const QString & name, int * & field, QSqlRecord & record);
-	static void setField(const QString & name, bool * & field, QSqlRecord & record);
-
-	static void bindField(const QString & name, QString * field, QSqlQuery & query);
-	static void bindField(const QString & name, int * field, QSqlQuery & query);
-	static void bindField(const QString & name, bool * field, QSqlQuery & query);
 };
 
 #endif

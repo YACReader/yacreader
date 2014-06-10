@@ -81,6 +81,16 @@ public:
 	void setFilter(QString filter, bool includeComics);
 	void resetFilter();
 	bool isFilterEnabled(){return filterEnabled;};
+
+    void updateFolderCompletedStatus(const QModelIndexList & list, bool status);
+
+    enum Columns {
+        Name = 0,
+        Path = 1,
+        Finished = 2,
+        Completed = 3
+    };//id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, name TEXT NOT NULL, path TEXT NOT NULL
+
 private:
 	void setupModelData( QSqlQuery &sqlquery, TreeItem *parent);
 	void setupFilteredModelData( QSqlQuery &sqlquery, TreeItem *parent);

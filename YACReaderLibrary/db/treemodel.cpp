@@ -51,6 +51,8 @@
 #include "treeitem.h"
 #include "treemodel.h"
 #include "data_base_management.h"
+#include "folder.h"
+#include "db_helper.h"
 
 #ifdef Q_OS_MAC
 #include <QFileIconProvider>
@@ -251,6 +253,8 @@ void TreeModel::setupModelData(QSqlQuery &sqlquery, TreeItem *parent)
 
 		data << record.value("name").toString();
 		data << record.value("path").toString();
+        data << record.value("finished").toBool();
+        data << record.value("completed").toBool();
 		TreeItem * item = new TreeItem(data);
 
 		item->id = record.value("id").toULongLong();
@@ -324,6 +328,9 @@ void TreeModel::setupFilteredModelData(QSqlQuery &sqlquery, TreeItem *parent)
 
 		data << record.value("name").toString();
 		data << record.value("path").toString();
+        data << record.value("finished").toBool();
+        data << record.value("completed").toBool();
+
 		TreeItem * item = new TreeItem(data);
 		item->id = sqlquery.value(0).toULongLong();
 
@@ -391,7 +398,7 @@ QString TreeModel::getDatabase()
 
 QString TreeModel::getFolderPath(const QModelIndex &folder)
 {
-	return static_cast<TreeItem*>(folder.internalPointer())->data(1).toString();
+    return static_cast<TreeItem*>(folder.internalPointer())->data(TreeModel::Path).toString();
 }
 
 void TreeModel::setFilter(QString filter, bool includeComics)
@@ -420,4 +427,24 @@ void TreeModel::resetFilter()
 	endResetModel();
 
 
+}
+
+void TreeModel::updateFolderCompletedStatus(const QModelIndexList &list, bool status)
+{
+    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+    db.transaction();
+    foreach (QModelIndex mi, list)
+    {
+        TreeItem * item = static_cast<TreeItem*>(mi.internalPointer());
+        item->setData(TreeModel::Completed,status);
+
+        Folder f = DBHelper::loadFolder(item->id,db);
+        f.setCompleted(status);
+        DBHelper::update(f,db);
+    }
+    db.commit();
+    db.close();
+    QSqlDatabase::removeDatabase(_databasePath);
+
+    emit dataChanged(index(list.first().row(),TreeModel::Name),index(list.last().row(),TreeModel::Completed));
 }

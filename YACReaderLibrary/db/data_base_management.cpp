@@ -128,7 +128,16 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
 	//FOLDER (representa una carpeta en disco)
 	{
 	QSqlQuery queryFolder(database);
-	queryFolder.prepare("CREATE TABLE folder (id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, name TEXT NOT NULL, path TEXT NOT NULL, FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE)");
+    queryFolder.prepare("CREATE TABLE folder ("
+                        "id INTEGER PRIMARY KEY,"
+                        "parentId INTEGER NOT NULL,"
+                        "name TEXT NOT NULL,"
+                        "path TEXT NOT NULL,"
+                        //new 7.1 fields
+                        "finished BOOLEAN DEFAULT 0,"   //reading
+                        "completed BOOLEAN DEFAULT 1,"  //collecting
+                        //--
+                        "FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE)");
 	success = success && queryFolder.exec();
 	//queryFolder.finish();
 		//COMIC INFO (representa la información de un cómic, cada cómic tendrá un idéntificador único formado por un hash sha1'de los primeros 512kb' + su tamaño en bytes)
@@ -498,14 +507,18 @@ void DataBaseManagement::bindValuesFromRecord(const QSqlRecord & record, QSqlQue
 bool DataBaseManagement::addColumns(const QString &tableName, const QStringList &columnDefs, const QSqlDatabase &db)
 {
     QString sql = "ALTER TABLE %1 ADD COLUMN %2";
+    bool returnValue = true;
+
     foreach(QString columnDef, columnDefs)
     {
-        QSqlQuery alterTableComicInfo(db);
-        alterTableComicInfo.prepare(sql.arg(tableName).arg(columnDef));
+        QSqlQuery alterTable(db);
+        alterTable.prepare(sql.arg(tableName).arg(columnDef));
         //alterTableComicInfo.bindValue(":column_def",columnDef);
-        alterTableComicInfo.exec();
-        return (alterTableComicInfo.numRowsAffected() > 0);
+        alterTable.exec();
+        returnValue = returnValue && (alterTable.numRowsAffected() > 0);
     }
+
+    return returnValue;
 }
 
 void DataBaseManagement::bindString(const QString & name, const QSqlRecord & record, QSqlQuery & query)
@@ -615,9 +628,18 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
 
         if(pre7_1)
         {
-            QStringList columnDefs;
-            columnDefs << "comicVineID TEXT DEFAULT NULL";
-            returnValue = returnValue && addColumns("comic_info", columnDefs, db);
+            {
+                QStringList columnDefs;
+                columnDefs << "finished BOOLEAN DEFAULT 0"
+                           << "completed BOOLEAN DEFAULT 1";
+                returnValue = returnValue && addColumns("folder", columnDefs, db);
+            }
+
+            {//comic_info
+                QStringList columnDefs;
+                columnDefs << "comicVineID TEXT DEFAULT NULL";
+                returnValue = returnValue && addColumns("comic_info", columnDefs, db);
+            }
         }
 	}
 
