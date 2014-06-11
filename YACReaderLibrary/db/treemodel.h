@@ -83,6 +83,7 @@ public:
 	bool isFilterEnabled(){return filterEnabled;};
 
     void updateFolderCompletedStatus(const QModelIndexList & list, bool status);
+    void updateFolderFinishedStatus(const QModelIndexList & list, bool status);
 
     enum Columns {
         Name = 0,
