@@ -315,7 +315,7 @@ void TreeModel::setupFilteredModelData()
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
 
-	endResetModel();
+    endResetModel();
 }
 
 void TreeModel::setupFilteredModelData(QSqlQuery &sqlquery, TreeItem *parent)
@@ -445,6 +445,26 @@ void TreeModel::updateFolderCompletedStatus(const QModelIndexList &list, bool st
 
         Folder f = DBHelper::loadFolder(item->id,db);
         f.setCompleted(status);
+        DBHelper::update(f,db);
+    }
+    db.commit();
+    db.close();
+    QSqlDatabase::removeDatabase(_databasePath);
+
+    emit dataChanged(index(list.first().row(),TreeModel::Name),index(list.last().row(),TreeModel::Completed));
+}
+
+void TreeModel::updateFolderFinishedStatus(const QModelIndexList &list, bool status)
+{
+    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+    db.transaction();
+    foreach (QModelIndex mi, list)
+    {
+        TreeItem * item = static_cast<TreeItem*>(mi.internalPointer());
+        item->setData(TreeModel::Finished,status);
+
+        Folder f = DBHelper::loadFolder(item->id,db);
+        f.setFinished(status);
         DBHelper::update(f,db);
     }
     db.commit();

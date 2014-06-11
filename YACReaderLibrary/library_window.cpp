@@ -442,11 +442,16 @@ void LibraryWindow::createActions()
 	openContainingFolderAction->setIcon(QIcon(":/images/open.png"));
 
     setFolderAsNotCompletedAction = new QAction(this);
-    setFolderAsNotCompletedAction->setText(tr("Set as not completed"));
+    setFolderAsNotCompletedAction->setText(tr("Set as uncompleted"));
 
     setFolderAsCompletedAction = new QAction(this);
     setFolderAsCompletedAction->setText(tr("Set as completed"));
 
+    setFolderAsFinishedAction = new QAction(this);
+    setFolderAsFinishedAction->setText(tr("Set as finished"));
+
+    setFolderAsNotFinishedAction = new QAction(this);
+    setFolderAsNotFinishedAction->setText(tr("Set as unfinished"));
 
 	openContainingFolderComicAction = new QAction(this);
 	openContainingFolderComicAction->setText(tr("Open containing folder..."));
@@ -636,6 +641,13 @@ void LibraryWindow::createMenus()
     }
     foldersView->addAction(setFolderAsNotCompletedAction);
     foldersView->addAction(setFolderAsCompletedAction);
+    {
+        QAction *act = new QAction(this);
+        act->setSeparator(true);
+        foldersView->addAction(act);
+    }
+    foldersView->addAction(setFolderAsFinishedAction);
+    foldersView->addAction(setFolderAsNotFinishedAction);
 
 	selectedLibrary->addAction(updateLibraryAction); 
 	selectedLibrary->addAction(renameLibraryAction);
@@ -768,6 +780,8 @@ void LibraryWindow::createConnections()
 	connect(openContainingFolderComicAction,SIGNAL(triggered()),this,SLOT(openContainingFolderComic()));
     connect(setFolderAsNotCompletedAction,SIGNAL(triggered()),this,SLOT(setFolderAsNotCompleted()));
     connect(setFolderAsCompletedAction,SIGNAL(triggered()),this,SLOT(setFolderAsCompleted()));
+    connect(setFolderAsFinishedAction,SIGNAL(triggered()),this,SLOT(setFolderAsFinished()));
+    connect(setFolderAsNotFinishedAction,SIGNAL(triggered()),this,SLOT(setFolderAsNotFinished()));
     connect(openContainingFolderAction,SIGNAL(triggered()),this,SLOT(openContainingFolder()));
     connect(resetComicRatingAction,SIGNAL(triggered()),this,SLOT(resetComicRating()));
 
@@ -1555,6 +1569,16 @@ void LibraryWindow::setFolderAsNotCompleted()
 void LibraryWindow::setFolderAsCompleted()
 {
     dm->updateFolderCompletedStatus(foldersView->selectionModel()->selectedRows(),true);
+}
+
+void LibraryWindow::setFolderAsFinished()
+{
+    dm->updateFolderFinishedStatus(foldersView->selectionModel()->selectedRows(),true);
+}
+
+void LibraryWindow::setFolderAsNotFinished()
+{
+   dm->updateFolderFinishedStatus(foldersView->selectionModel()->selectedRows(),false);
 }
 
 void LibraryWindow::exportLibrary(QString destPath)
