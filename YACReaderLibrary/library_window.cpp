@@ -723,6 +723,7 @@ void LibraryWindow::createConnections()
 	connect(renameLibraryDialog,SIGNAL(renameLibrary(QString)),this,SLOT(rename(QString)));
 
 	//navigations between view modes (tree,list and flow)
+    connect(foldersView, SIGNAL(pressed(QModelIndex)), this, SLOT(updateFoldersViewConextMenu(QModelIndex)));
 	connect(foldersView, SIGNAL(clicked(QModelIndex)), this, SLOT(loadCovers(QModelIndex)));
 	connect(foldersView, SIGNAL(clicked(QModelIndex)), this, SLOT(updateHistory(QModelIndex)));
 
@@ -1805,7 +1806,23 @@ void LibraryWindow::updateHistory(const QModelIndex &mi)
 		currentFolderNavigation++;
 	}
 
-	forwardAction->setEnabled(false);
+    forwardAction->setEnabled(false);
+}
+
+void LibraryWindow::updateFoldersViewConextMenu(const QModelIndex &mi)
+{
+    if(!mi.isValid())
+        return;
+
+    TreeItem * item = static_cast<TreeItem *>(mi.internalPointer());
+    bool isFinished = item->data(TreeModel::Finished).toBool();
+    bool isCompleted = item->data(TreeModel::Completed).toBool();
+
+    setFolderAsFinishedAction->setVisible(!isFinished);
+    setFolderAsNotFinishedAction->setVisible(isFinished);
+
+    setFolderAsCompletedAction->setVisible(!isCompleted);
+    setFolderAsNotCompletedAction->setVisible(isCompleted);
 }
 
 void LibraryWindow::libraryAlreadyExists(const QString & name)

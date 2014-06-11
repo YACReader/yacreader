@@ -279,6 +279,7 @@ public:
 		void backward();
 		void forward();
 		void updateHistory(const QModelIndex & mi);
+        void updateFoldersViewConextMenu(const QModelIndex & mi);
 		void libraryAlreadyExists(const QString & name);
 		void importLibraryPackage();
 		void updateComicsView(quint64 libraryId, const ComicDB & comic);
