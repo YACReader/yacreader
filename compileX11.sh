@@ -1,5 +1,14 @@
 #! /bin/bash
 
+cd ./compressed_archive
+if [ ! -d "libp7zip" ]; then
+echo "You need p7zip source code to compile YACReader. \
+Please check the compressed_archive folder for further instructions."
+exit
+fi
+patch -p0 -i libp7zip.patch
+cd ..
+
 echo "Compiling YACReader"
 cd ./YACReader
 qmake "CONFIG+=release"
