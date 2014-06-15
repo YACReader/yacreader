@@ -407,7 +407,7 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
 		currentItem.info = DBHelper::loadComicInfo(record.value(4).toString(),db);
 		int lessThan = 0;
 		if(list.isEmpty())
-			list.append(currentItem);
+            list.append(currentItem);
 		else
 		{
 			ComicDB last = static_cast<ComicDB>(list.back());
@@ -418,10 +418,10 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
 			int max = (std::numeric_limits<int>::max)();
 			numberLast = numberCurrent = max; //TODO change by std limit
 
-			if(last.info.number!=NULL)
+            if(!last.info.number.isNull())
                 numberLast = last.info.number.toInt();
 
-			if(currentItem.info.number!=NULL)
+            if(!currentItem.info.number.isNull())
                 numberCurrent = currentItem.info.number.toInt();
 
 			QList<ComicDB>::iterator i;
@@ -435,7 +435,7 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
 					i--;
 					numberLast = max;
 
-					if((*i).info.number != NULL)
+                    if(!(*i).info.number.isNull())
                         numberLast = (*i).info.number.toInt();
 				}
 			}
@@ -444,10 +444,10 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
 				while ((lessThan = naturalSortLessThanCI(nameCurrent,nameLast)) && i != list.begin() && numberLast == max)
 				{
 					i--;
-					nameLast = (*i).name;
+                    nameLast = (*i).name;
 					numberLast = max;
 
-					if((*i).info.number != NULL)
+                    if(!(*i).info.number.isNull())
                         numberLast = (*i).info.number.toInt();
 				}
 
