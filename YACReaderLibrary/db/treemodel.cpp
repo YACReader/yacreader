@@ -56,6 +56,7 @@
 
 #ifdef Q_OS_MAC
 #include <QFileIconProvider>
+QIcon finishedFolderIcon;
 #endif
 
 #define ROOT 1
@@ -109,8 +110,22 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
     TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
 
 	if (role == Qt::DecorationRole)
+
 #ifdef Q_OS_MAC
-        return QVariant(QFileIconProvider().icon(QFileIconProvider::Folder)); //TODO draw a tick on top when it is needed
+        if(item->data(TreeModel::Finished).toBool()){
+            if(finishedFolderIcon.isNull())
+            {
+                QIcon ico = QFileIconProvider().icon(QFileIconProvider::Folder);
+                QPixmap pix = ico.pixmap(16,16);
+                QPainter p(&pix);
+                p.drawPixmap(4,7,QPixmap(":/images/folder_finished_macosx.png"));
+                finishedFolderIcon.addPixmap(pix);
+            }
+            return QVariant(finishedFolderIcon);
+        }
+        else {
+            return QVariant(QFileIconProvider().icon(QFileIconProvider::Folder));
+        }
 #else
         if(item->data(TreeModel::Finished).toBool())
             return QVariant(QIcon(":/images/folder_finished.png"));
