@@ -642,7 +642,7 @@ void PropertiesDialog::save()
 			edited = true;
 		}
 		if(comics.size()==1)
-		if(itr->info.isBis != NULL || isBisCheck->isChecked())
+		if(!itr->info.isBis.isNull() || isBisCheck->isChecked())
 		{
             itr->info.isBis = isBisCheck->isChecked();
 			edited = true;

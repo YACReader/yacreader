@@ -65,7 +65,11 @@ void YACReaderTreeViewItemDeletegate::paint(QPainter *painter, const QStyleOptio
     if(!item->data(TreeModel::Completed).toBool())
     {
         painter->save();
+#ifdef Q_OS_MAC
+        painter->setBrush(QBrush(QColor(78,150,218)));
+#else
         painter->setBrush(QBrush(QColor(237,197,24)));
+#endif
         painter->setPen(QPen(QBrush(),0));
         painter->drawRect(0,option.rect.y(),2,option.rect.height());
         painter->restore();
