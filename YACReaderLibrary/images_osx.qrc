@@ -1,7 +1,7 @@
 <RCC>
   <qresource prefix="/" >
-    <file>../images/main_toolbar/back_osx.png </file>
-    <file alias="images/main_toolbar/back.png">../images/folder_finished_macosx.png</file>
+    <file>../images/folder_finished_macosx.png</file>
+    <file alias="images/main_toolbar/back.png">../images/main_toolbar/back_osx.png</file>
 	
     <file alias="images/main_toolbar/back_disabled.png">../images/main_toolbar/back_disabled_osx.png</file>
     <file alias="images/main_toolbar/forward.png">../images/main_toolbar/forward_osx.png</file>

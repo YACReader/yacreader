@@ -66,7 +66,7 @@ void YACReaderTreeViewItemDeletegate::paint(QPainter *painter, const QStyleOptio
     {
         painter->save();
 #ifdef Q_OS_MAC
-        painter->setBrush(QBrush(QColor(78,150,218)));
+        painter->setBrush(QBrush(QColor(85,95,127)));
 #else
         painter->setBrush(QBrush(QColor(237,197,24)));
 #endif

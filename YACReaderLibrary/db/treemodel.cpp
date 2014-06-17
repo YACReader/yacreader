@@ -57,6 +57,40 @@
 #ifdef Q_OS_MAC
 #include <QFileIconProvider>
 QIcon finishedFolderIcon;
+void drawMacOSXFinishedFolderIcon()
+{
+    QIcon ico = QFileIconProvider().icon(QFileIconProvider::Folder);
+    QPixmap pixNormalOff = ico.pixmap(16,16, QIcon::Normal, QIcon::Off);
+    QPixmap pixNormalOn = ico.pixmap(16,16, QIcon::Normal, QIcon::On);
+    QPixmap pixSelectedOff = ico.pixmap(16,16, QIcon::Selected, QIcon::Off);
+    QPixmap pixSelectedOn = ico.pixmap(16,16, QIcon::Selected, QIcon::On);
+    QPixmap tick(":/images/folder_finished_macosx.png");
+
+
+    {
+        QPainter p(&pixNormalOff);
+        p.drawPixmap(4,7,tick);
+    }
+    finishedFolderIcon.addPixmap(pixNormalOff, QIcon::Normal, QIcon::Off);
+
+    {
+        QPainter p(&pixNormalOn);
+        p.drawPixmap(4,7,tick);
+    }
+    finishedFolderIcon.addPixmap(pixNormalOn, QIcon::Normal, QIcon::On);
+
+    {
+        QPainter p(&pixSelectedOff);
+        p.drawPixmap(4,7,tick);
+    }
+    finishedFolderIcon.addPixmap(pixSelectedOff, QIcon::Selected, QIcon::Off);
+
+    {
+        QPainter p(&pixSelectedOn);
+        p.drawPixmap(4,7,tick);
+    }
+    finishedFolderIcon.addPixmap(pixSelectedOn, QIcon::Selected, QIcon::On);
+}
 #endif
 
 #define ROOT 1
@@ -113,14 +147,10 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 
 #ifdef Q_OS_MAC
         if(item->data(TreeModel::Finished).toBool()){
-            if(finishedFolderIcon.isNull())
-            {
-                QIcon ico = QFileIconProvider().icon(QFileIconProvider::Folder);
-                QPixmap pix = ico.pixmap(16,16);
-                QPainter p(&pix);
-                p.drawPixmap(4,7,QPixmap(":/images/folder_finished_macosx.png"));
-                finishedFolderIcon.addPixmap(pix);
+            if(finishedFolderIcon.isNull()){
+                drawMacOSXFinishedFolderIcon();
             }
+
             return QVariant(finishedFolderIcon);
         }
         else {
