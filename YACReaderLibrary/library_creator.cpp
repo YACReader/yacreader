@@ -239,11 +239,12 @@ void LibraryCreator::insertComic(const QString & relativePath,const QFileInfo & 
 		//ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+fileInfo.fileName()+".jpg");
 		tc.create();
 		numPages = tc.getNumPages();
-
-		emit(comicAdded(relativePath,_target+"/covers/"+hash+".jpg"));
+        if (numPages > 0)
+            emit(comicAdded(relativePath,_target+"/covers/"+hash+".jpg"));
 	}
     comic.info.numPages = numPages;
-	DBHelper::insert(&comic,_database);
+    if (numPages > 0)
+        DBHelper::insert(&comic,_database);
 }
 
 void LibraryCreator::update(QDir dirS)
@@ -512,9 +513,9 @@ void ThumbnailCreator::create()
         if(!pdfComic->openComic(_fileSource))
         {
             delete pdfComic;
-            QImage p;
-            p.load(":/images/notCover.png");
-            p.save(_target);
+            //QImage p;
+            //p.load(":/images/notCover.png");
+            //p.save(_target);
             return;
         }
 #else
@@ -525,9 +526,9 @@ void ThumbnailCreator::create()
 			QLOG_WARN() << "Extracting cover: unable to open PDF file " << _fileSource;
             //delete pdfComic; //TODO check if the delete is needed
 			pdfComic = 0;
-			QImage p;
-			p.load(":/images/notCover.png");
-			p.save(_target);
+            //QImage p;
+            //p.load(":/images/notCover.png");
+            //p.save(_target);
 			return;
 		}
 		_numPages = pdfComic->numPages();
@@ -557,9 +558,9 @@ void ThumbnailCreator::create()
 		else if(_target!="")
 		{
 			QLOG_WARN() << "Extracting cover: requested cover index greater than numPages " << _fileSource;
-			QImage p;
-			p.load(":/images/notCover.png");
-			p.save(_target);
+            //QImage p;
+            //p.load(":/images/notCover.png");
+            //p.save(_target);
 		}
 
         delete pdfComic;
@@ -620,8 +621,8 @@ void ThumbnailCreator::create()
 			else
 			{
 				QLOG_WARN() << "Extracting cover: unable to load image from extracted cover " << _fileSource;
-				p.load(":/images/notCover.png");
-				p.save(_target);
+                //p.load(":/images/notCover.png");
+                //p.save(_target);
 			}
 		}
 	}
