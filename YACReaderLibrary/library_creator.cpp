@@ -169,7 +169,7 @@ qulonglong LibraryCreator::insertFolders()
 			currentId = i->id;
 		}
 	}
-	return 0;
+    return currentId;
 }
 
 void LibraryCreator::create(QDir dir)
@@ -217,10 +217,6 @@ bool LibraryCreator::checkCover(const QString & hash)
 
 void LibraryCreator::insertComic(const QString & relativePath,const QFileInfo & fileInfo)
 {
-	//en este punto sabemos que todos los folders que hay en _currentPath, deberían estar añadidos a la base de datos
-	insertFolders();
-	emit(coverExtracted(relativePath));
-
 	//Se calcula el hash del cómic
 
 	QCryptographicHash crypto(QCryptographicHash::Sha1);
@@ -230,21 +226,26 @@ void LibraryCreator::insertComic(const QString & relativePath,const QFileInfo & 
 	file.close();
 	//hash Sha1 del primer 0.5MB + filesize
 	QString hash = QString(crypto.result().toHex().constData()) + QString::number(fileInfo.size());
-	ComicDB comic = DBHelper::loadComic(_currentPathFolders.last().id,fileInfo.fileName(),relativePath,hash,_database);
+    ComicDB comic = DBHelper::loadComic(fileInfo.fileName(),relativePath,hash,_database);
     int numPages = 0;
 
 	if(! ( comic.hasCover() && checkCover(hash)))
 	{
         ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+hash+".jpg",comic.info.coverPage.toInt());
-		//ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+fileInfo.fileName()+".jpg");
 		tc.create();
 		numPages = tc.getNumPages();
         if (numPages > 0)
             emit(comicAdded(relativePath,_target+"/covers/"+hash+".jpg"));
 	}
-    comic.info.numPages = numPages;
+
     if (numPages > 0)
+    {
+        //en este punto sabemos que todos los folders que hay en _currentPath, deberían estar añadidos a la base de datos
+        insertFolders();
+        comic.info.numPages = numPages;
+        comic.parentId = _currentPathFolders.last().id;
         DBHelper::insert(&comic,_database);
+    }
 }
 
 void LibraryCreator::update(QDir dirS)

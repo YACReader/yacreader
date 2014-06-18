@@ -49,7 +49,7 @@ public:
 	//load
 	static Folder loadFolder(qulonglong id, QSqlDatabase & db);
 	static ComicDB loadComic(qulonglong id, QSqlDatabase & db);
-	static ComicDB loadComic(qulonglong cparentId, QString cname, QString cpath, QString chash, QSqlDatabase & database);
+    static ComicDB loadComic(QString cname, QString cpath, QString chash, QSqlDatabase & database);
 	static ComicInfo loadComicInfo(QString hash, QSqlDatabase & db);
 };
 
