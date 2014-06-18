@@ -576,11 +576,11 @@ ComicDB DBHelper::loadComic(qulonglong id, QSqlDatabase & db)
 	return comic;
 }
 
-ComicDB DBHelper::loadComic(qulonglong cparentId, QString cname, QString cpath, QString chash, QSqlDatabase & database)
+ComicDB DBHelper::loadComic(QString cname, QString cpath, QString chash, QSqlDatabase & database)
 {
 	ComicDB comic;
 
-	comic.parentId = cparentId;
+    //comic.parentId = cparentId;
 	comic.name = cname;
 	comic.path = cpath;
 
