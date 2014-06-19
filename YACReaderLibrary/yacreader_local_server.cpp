@@ -110,7 +110,7 @@ void YACReaderClientConnectionWorker::run()
 	}
 	if(tries == 20)
 	{
-		QLOG_ERROR() << "Local connection: unable to read the message size";
+        QLOG_ERROR() << "Local connection: unable to read the message size" << clientConnection->errorString();
 		return;
 	}
 
@@ -163,6 +163,7 @@ void YACReaderClientConnectionWorker::run()
 			while(written != block.size() && tries < 200)
 			{
 				int ret = clientConnection->write(block);
+                clientConnection->waitForBytesWritten(10);
 				if(ret != -1)
 				{
 					written += ret;

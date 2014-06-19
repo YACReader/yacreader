@@ -62,6 +62,8 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 			return false;
 		}
 		
+        localSocket->waitForBytesWritten(2000);
+
 		//QByteArray data;
 		tries = 0;
 		int dataAvailable = 0;
@@ -128,6 +130,7 @@ bool YACReaderLocalClient::sendComicInfo(quint64 libraryId, ComicDB & comic)
 	localSocket->connectToServer(YACREADERLIBRARY_GUID);
 	if(localSocket->isOpen())
 	{
+        //QLOG_INFO() << "Connection opened for sending ComicInfo";
 		QByteArray block;
 		QDataStream out(&block, QIODevice::WriteOnly);
 		out.setVersion(QDataStream::Qt_4_8);
@@ -148,7 +151,9 @@ bool YACReaderLocalClient::sendComicInfo(quint64 libraryId, ComicDB & comic)
                 tries++;
             previousWritten = written;
 		}
+        localSocket->waitForBytesWritten(2000);
 		localSocket->close();
+        //QLOG_INFO() << QString("Sending Comic Info : writen data (%1,%2)").arg(written).arg(block.size());
 		if(tries == 100 && written != block.size())
 		{
 			emit finished();
