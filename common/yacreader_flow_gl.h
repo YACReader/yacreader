@@ -116,7 +116,8 @@ protected:
 	/*functions*/
 	void calcPos(CFImage *CF,int pos);
 	void calcRV(RVect *RV,int pos);
-	void animate(RVect *Current,RVect to);
+    //returns true if the animation is finished for Current
+    bool animate(RVect *Current,RVect to);
 	void drawCover(CFImage *CF);
 
 	void udpatePerspective(int width, int height);
@@ -165,6 +166,12 @@ protected:
 
 	/*** System info ***/
 	float viewRotate;
+
+    //sets the updateInterval in ms
+    static int updateInterval;
+
+    void startAnimationTimer();
+    void stopAnimationTimer();
 	
 public:
 

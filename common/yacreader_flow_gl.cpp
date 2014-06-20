@@ -18,6 +18,8 @@
 
 /*** Position Configuration ***/
 
+int YACReaderFlowGL::updateInterval = 16;
+
 struct Preset defaultYACReaderFlowConfig = {
 	0.08f, //Animation_step sets the speed of the animation
 	1.5f,  //Animation_speedup sets the acceleration of the animation
@@ -241,7 +243,7 @@ YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
 	f.setSwapInterval(0);
 	setFormat(f);
 
-    timerId = startTimer(16);
+    timerId = startTimer(updateInterval);
 
 }
 
@@ -251,7 +253,22 @@ void YACReaderFlowGL::timerEvent(QTimerEvent * event)
         updateGL();
 	
 	//if(!worker->isRunning())
-		//worker->start();
+    //worker->start();
+}
+
+void YACReaderFlowGL::startAnimationTimer()
+{
+    if(timerId == -1)
+        timerId = startTimer(updateInterval);
+}
+
+void YACReaderFlowGL::stopAnimationTimer()
+{
+    if(timerId != -1)
+    {
+        killTimer(timerId);
+        timerId = -1;
+    }
 }
 
 YACReaderFlowGL::~YACReaderFlowGL()
@@ -363,19 +380,33 @@ void YACReaderFlowGL::calcRV(RVect *RV,int pos)
 	RV->rot = dummy.current.rot;
 
 }
-void YACReaderFlowGL::animate(RVect *Current,RVect to)
+bool YACReaderFlowGL::animate(RVect *Current,RVect to)
 {
-	//calculate and apply positions
-	Current->x = Current->x+(to.x-Current->x)*config.animationStep;
-	Current->y = Current->y+(to.y-Current->y)*config.animationStep;
-	Current->z = Current->z+(to.z-Current->z)*config.animationStep;
+    float rotDiff = to.rot-Current->rot;
+    float xDiff = to.x-Current->x;
+    float yDiff = to.y-Current->y;
+    float zDiff = to.z-Current->z;
 
-	if(fabs(to.rot-Current->rot) > 0.01){
-		Current->rot = Current->rot+(to.rot-Current->rot)*(config.animationStep*config.preRotation);
+    if(fabs(rotDiff) < 0.01
+       && fabs(xDiff)  < 0.001
+       && fabs(yDiff)  < 0.001
+       && fabs(zDiff)  < 0.001)
+        return true;
+
+	//calculate and apply positions
+    Current->x = Current->x+(xDiff)*config.animationStep;
+    Current->y = Current->y+(yDiff)*config.animationStep;
+    Current->z = Current->z+(zDiff)*config.animationStep;
+
+    if(fabs(rotDiff) > 0.01){
+        Current->rot = Current->rot+(rotDiff)*(config.animationStep*config.preRotation);
 	}
 	else
+    {
 		viewRotateActive = 0;
+    }
 
+    return false;
 }
 void YACReaderFlowGL::drawCover(CFImage *CF)
 {
@@ -546,6 +577,8 @@ void YACReaderFlowGL::draw()
 
 void YACReaderFlowGL::showPrevious()
 {
+    startAnimationTimer();
+
 	if(currentSelected > 0){
 
 		currentSelected--;
@@ -567,6 +600,8 @@ void YACReaderFlowGL::showPrevious()
 
 void YACReaderFlowGL::showNext()
 {
+    startAnimationTimer();
+
 	if(currentSelected < numObjects-1){
 
 		currentSelected++;
@@ -587,6 +622,8 @@ void YACReaderFlowGL::showNext()
 
 void YACReaderFlowGL::setCurrentIndex(int pos)
 {
+    startAnimationTimer();
+
 	currentSelected = pos;
 
 	config.animationStep *= config.animationSpeedUp;
@@ -606,10 +643,12 @@ void YACReaderFlowGL::updatePositions()
 {
 	int count;
 
+    bool stopAnimation = true;
 	for(count = numObjects-1;count > -1;count--){
 		calcRV(&cfImages[count].animEnd,count-currentSelected);
-		animate(&cfImages[count].current,cfImages[count].animEnd);
-	}
+        if(!animate(&cfImages[count].current,cfImages[count].animEnd))
+            stopAnimation = false;
+    }
 
 	//slowly reset view angle
 	if(!viewRotateActive){
@@ -631,10 +670,15 @@ void YACReaderFlowGL::updatePositions()
 	else
 		updateCount++;
 
+    if(stopAnimation)
+        stopAnimationTimer();
+
 }
 
 void YACReaderFlowGL::insert(char *name, GLuint Tex, float x, float y,int item)
 {
+    startAnimationTimer();
+
 	Q_UNUSED(name)
 	//set a new entry 
 	if(item == -1){
@@ -660,10 +704,14 @@ void YACReaderFlowGL::insert(char *name, GLuint Tex, float x, float y,int item)
 	cfImages[item].height = y;
 	cfImages[item].index = item;
 	//strcpy(cfImages[item].name,name);
+
+
 }
 
 void YACReaderFlowGL::remove(int item)
 {
+    startAnimationTimer();
+
 	loaded.remove(item);
 	marks.remove(item);
 	paths.removeAt(item);
@@ -693,6 +741,8 @@ CFImage YACReaderFlowGL::getCurrentSelected()
 
 void YACReaderFlowGL::replace(char *name, GLuint Tex, float x, float y,int item)
 {
+    startAnimationTimer();
+
 	Q_UNUSED(name)
 	if(cfImages[item].index == item)
 	{
@@ -734,6 +784,8 @@ void YACReaderFlowGL::populate(int n)
 
 void YACReaderFlowGL::reset()
 {
+    startAnimationTimer();
+
 	currentSelected = 0;
 	loaded.clear();
 
@@ -751,6 +803,8 @@ void YACReaderFlowGL::reset()
 
 void YACReaderFlowGL::reload()
 {
+    startAnimationTimer();
+
 	int n = numObjects;
 	reset();
 	populate(n);
@@ -759,19 +813,26 @@ void YACReaderFlowGL::reload()
 //slots
 void YACReaderFlowGL::setCF_RX(int value)
 {
+    startAnimationTimer();
+
 	config.cfRX = value;
 }
 void YACReaderFlowGL::setCF_RY(int value)
 {
+    startAnimationTimer();
+
 	config.cfRY = value;
 }
 void YACReaderFlowGL::setCF_RZ(int value)
 {
+    startAnimationTimer();
+
 	config.cfRZ = value;
 }
 
 void YACReaderFlowGL::setZoom(int zoom)
 {
+    startAnimationTimer();
 
 	int width = this->width();
 	int height = this->height();
@@ -790,56 +851,78 @@ void YACReaderFlowGL::setZoom(int zoom)
 
 void YACReaderFlowGL::setRotation(int angle)
 {
+    startAnimationTimer();
+
 	config.rotation = -angle;
 }
 //sets the distance between the covers
 void YACReaderFlowGL::setX_Distance(int distance)
 {
+    startAnimationTimer();
+
 	config.xDistance = distance/100.0;
 }
 //sets the distance between the centered and the non centered covers
 void YACReaderFlowGL::setCenter_Distance(int distance)
 {
+    startAnimationTimer();
+
 	config.centerDistance = distance/100.0;
 }
 //sets the pushback amount 
 void YACReaderFlowGL::setZ_Distance(int distance)
 {
+    startAnimationTimer();
+
 	config.zDistance = distance/100.0;
 }
 
 void YACReaderFlowGL::setCF_Y(int value)
 {
+    startAnimationTimer();
+
 	config.cfY = value/100.0;
 }
 
 void YACReaderFlowGL::setCF_Z(int value)
 {
+    startAnimationTimer();
+
 	config.cfZ = value;
 }
 
 void YACReaderFlowGL::setY_Distance(int value)
 {
+    startAnimationTimer();
+
 	config.yDistance = value / 100.0;
 }
 
 void YACReaderFlowGL::setFadeOutDist(int value)
 {
-	config.animationFadeOutDist = value;
+    startAnimationTimer();
+
+    config.animationFadeOutDist = value;
 }
 
 void YACReaderFlowGL::setLightStrenght(int value)
 {
-	config.viewRotateLightStrenght = value;
+    startAnimationTimer();
+
+    config.viewRotateLightStrenght = value;
 }
 
 void YACReaderFlowGL::setMaxAngle(int value)
 {
+    startAnimationTimer();
+
 	config.viewAngle = value;
 }
 
 void YACReaderFlowGL::setPreset(const Preset & p)
 {
+    startAnimationTimer();
+
 	config = p;
 }
 
@@ -847,6 +930,8 @@ void YACReaderFlowGL::setPerformance(Performance performance)
 {
 	if(this->performance != performance)
 	{
+        startAnimationTimer();
+
 		this->performance = performance;
 		reload();
 	}
@@ -876,10 +961,14 @@ void YACReaderFlowGL::useVSync(bool b)
 }
 void YACReaderFlowGL::setShowMarks(bool value)
 {
+    startAnimationTimer();
+
 	showMarks = value;
 }
 void YACReaderFlowGL::setMarks(QVector<YACReaderComicReadStatus> marks)
 {
+    startAnimationTimer();
+
 	this->marks = marks;
 }
 void YACReaderFlowGL::setMarkImage(QImage & image)
@@ -891,10 +980,14 @@ void YACReaderFlowGL::setMarkImage(QImage & image)
 }
 void YACReaderFlowGL::markSlide(int index, YACReaderComicReadStatus status)
 {
+    startAnimationTimer();
+
 	marks[index] = status;
 }
 void YACReaderFlowGL::unmarkSlide(int index)
 {
+    startAnimationTimer();
+
 	marks[index] = YACReader::Unread;
 }
 void YACReaderFlowGL::setSlideSize(QSize size)
@@ -913,7 +1006,7 @@ void YACReaderFlowGL::setCenterIndex(unsigned int index)
 }
 void YACReaderFlowGL::showSlide(int index)
 {
-	setCurrentIndex(index);
+    setCurrentIndex(index);
 }
 int YACReaderFlowGL::centerIndex()
 {
