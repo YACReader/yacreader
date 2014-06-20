@@ -443,15 +443,19 @@ void LibraryWindow::createActions()
 
     setFolderAsNotCompletedAction = new QAction(this);
     setFolderAsNotCompletedAction->setText(tr("Set as uncompleted"));
+    setFolderAsNotCompletedAction->setVisible(false);
 
     setFolderAsCompletedAction = new QAction(this);
     setFolderAsCompletedAction->setText(tr("Set as completed"));
+    setFolderAsCompletedAction->setVisible(false);
 
     setFolderAsFinishedAction = new QAction(this);
     setFolderAsFinishedAction->setText(tr("Set as finished"));
+    setFolderAsFinishedAction->setVisible(false);
 
     setFolderAsNotFinishedAction = new QAction(this);
     setFolderAsNotFinishedAction->setText(tr("Set as unfinished"));
+    setFolderAsNotFinishedAction->setVisible(false);
 
 	openContainingFolderComicAction = new QAction(this);
 	openContainingFolderComicAction->setText(tr("Open containing folder..."));
@@ -543,6 +547,14 @@ void LibraryWindow::disableFoldersActions(bool disabled)
 	colapseAllNodesAction->setDisabled(disabled);
 
 	openContainingFolderAction->setDisabled(disabled);
+
+    if(disabled == false)
+    {
+        setFolderAsNotCompletedAction->setVisible(false);
+        setFolderAsCompletedAction->setVisible(false);
+        setFolderAsFinishedAction->setVisible(false);
+        setFolderAsNotFinishedAction->setVisible(false);
+    }
 }
 
 void LibraryWindow::disableAllActions()
@@ -671,7 +683,48 @@ void LibraryWindow::createMenus()
 	selectedLibrary->addAction(exportLibraryAction);
 	selectedLibrary->addAction(importLibraryAction);
 	
+//MacOSX app menus
+#ifdef Q_OS_MACX
+    QMenuBar * menu = this->menuBar();
+    //about / preferences
+    //TODO
 
+    //library
+    QMenu * libraryMenu = new QMenu(tr("Library"));
+
+    libraryMenu->addAction(updateLibraryAction);
+    libraryMenu->addAction(renameLibraryAction);
+    libraryMenu->addAction(removeLibraryAction);
+    libraryMenu->addSeparator();
+
+    libraryMenu->addAction(exportComicsInfo);
+    libraryMenu->addAction(importComicsInfo);
+
+    libraryMenu->addSeparator();
+
+    libraryMenu->addAction(exportLibraryAction);
+    libraryMenu->addAction(importLibraryAction);
+
+    //folder
+    QMenu * folderMenu = new QMenu(tr("Folder"));
+    folderMenu->addAction(openContainingFolderAction);
+    folderMenu->addSeparator();
+    folderMenu->addAction(setFolderAsNotCompletedAction);
+    folderMenu->addAction(setFolderAsCompletedAction);
+    folderMenu->addSeparator();
+    folderMenu->addAction(setFolderAsFinishedAction);
+    folderMenu->addAction(setFolderAsNotFinishedAction);
+
+    //comic
+    QMenu * comicMenu = new QMenu(tr("Comic"));
+    comicMenu->addAction(openContainingFolderComicAction);
+    comicMenu->addSeparator();
+    comicMenu->addAction(resetComicRatingAction);
+
+    menu->addMenu(libraryMenu);
+    menu->addMenu(folderMenu);
+    menu->addMenu(comicMenu);
+#endif
 }
 
 void LibraryWindow::createConnections()
@@ -1365,6 +1418,11 @@ void LibraryWindow::setRootIndex()
 
 		foldersView->clearSelection();
 	}
+
+    setFolderAsNotCompletedAction->setVisible(false);
+    setFolderAsCompletedAction->setVisible(false);
+    setFolderAsFinishedAction->setVisible(false);
+    setFolderAsNotFinishedAction->setVisible(false);
 }
 
 
@@ -1558,7 +1616,11 @@ QFileInfo file = QDir::cleanPath(currentPath() + dmCV->getComicPath(modelIndex))
 void LibraryWindow::openContainingFolder()
 {
 	QModelIndex modelIndex = foldersView->currentIndex();
-	QString path = QDir::cleanPath(currentPath() + dm->getFolderPath(modelIndex));
+    QString path;
+    if(modelIndex.isValid())
+        path = QDir::cleanPath(currentPath() + dm->getFolderPath(modelIndex));
+    else
+        path = QDir::cleanPath(currentPath());
     QDesktopServices::openUrl(QUrl("file:///"+path, QUrl::TolerantMode));
 }
 

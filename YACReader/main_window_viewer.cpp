@@ -29,6 +29,8 @@
 #include <QMessageBox>
 #include <QImage>
 #include <QDate>
+#include <QMenuBar>
+
 
 #ifdef Q_OS_MAC
 class MacToolBarSeparator : public QWidget
@@ -419,11 +421,11 @@ void MainWindowViewer::createToolBars()
 {
 	comicToolBar = addToolBar(tr("&File"));
 
-	comicToolBar->setStyleSheet("QToolBar{border:none;}");
 #ifdef Q_OS_MAC
 	comicToolBar->setIconSize(QSize(16,16));
 #else
 	comicToolBar->setIconSize(QSize(18,18));
+    comicToolBar->setStyleSheet("QToolBar{border:none;}");
 #endif
 
 	QToolButton * tb = new QToolButton();
@@ -587,6 +589,30 @@ void MainWindowViewer::createToolBars()
 	viewer->addAction(closeAction);
 
 	viewer->setContextMenuPolicy(Qt::ActionsContextMenu);
+
+    //MacOSX app menus
+#ifdef Q_OS_MAC
+    QMenuBar * menuBar = this->menuBar();
+    //about / preferences
+    //TODO
+
+    //file
+    QMenu * fileMenu = new QMenu(tr("File"));
+
+    fileMenu->addAction(openAction);
+    fileMenu->addAction(openFolderAction);
+    fileMenu->addSeparator();
+    fileMenu->addAction(saveImageAction);
+
+    //tool bar
+    //QMenu * toolbarMenu = new QMenu(tr("Toolbar"));
+    //toolbarMenu->addAction();
+    //TODO
+
+    menuBar->addMenu(fileMenu);
+    //menu->addMenu(toolbarMenu);
+#endif
+
 }
 
 void MainWindowViewer::reloadOptions()
