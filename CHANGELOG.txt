@@ -1,0 +1,99 @@
+7.0 (Final)
+Corregidos eventos de teclado en algunos diálogos
+Corregido soporte para archivos Rar en sistemas Unix
+Corregidos problemas borrando cómics
+Mejorada la gestión de errores
+Corregida la comunicación entre YACReader y YACReaderLibrary
+Corregida la toolBar en MacOSX
+Mejorada la compatabilidad de OpenGL en tarjetas NVIDIA
+Corregidos bugs menores
+
+6.9 (No pública)
+Añadida la apertura automática del siguiente/anterior cómic al llegar al final/portada del cómic actual
+Corregido el comportamiento del diálogo de nueva versión detectada. Ahora avisa una vez al día o si el usuario lo elige cada 14 días.
+Corregido el ajuste a lo ancho del título de la toolbar en YACReaderLibrary.
+Añadido log a YACReaderLibrary (permitirá a los usuarios ofrecer más información sobre sus bugs)
+Corregido bug en el historial de navegación (y al editar comics) después de usar el motor de búsqueda.
+
+6.8 (No pública)
+Corregido bug que causaba un cierre inesperado después de cambiar el modo de sincronización vertical (flow)
+Corregido bug que causaba que la toolbar en el visor no se pudiese ocultar/mostrar sin un cómic abierto
+Mejorada la gestión de errores al abrir cómics
+Corregidos algunos bugs relacionados con la apertura de cómics
+Añadida función de rating
+El visor ahora puede abrir archivos de imagen directamente. Si se abre un archivo de imagen se abre el directorio que lo contiene con todas las imágenes.
+Corregida la ordenación de carpetas y cómics usada en la navegación desde dispositivos iOS
+
+6.7 (No pública)
+Añadidos nuevos campos en la base de datos para almacenar información adicional sobre cómics: rating, página actual, bookmarks y configuración de imagen
+Añadida comunicación entre YACReaderLibrary y YACReader para poder almacenar el progreso de los cómics e información adicional
+
+6.6 (No pública)
+Modificado YACReader para que abra los archivos comprimidos usando 7z.dll (.so, .dylib)
+YACReader abre ahora los cómics por la última página leída.
+Corregido bug que causaba que algunos cómics no se pudiesen abrir desde YACReaderLibrary en YACReader
+Corregido el modo en el que se actualizaba la "information label"
+
+6.5
+Nueva interfaz principal de YACReaderLibrary y YACReader
+Corregido bug que causaba que el servidor no se activase en el primer arranque en MacOSX
+Corregido bug que causaba un fallo al cerrar YACReaderLibrary cada vez que se usaba el servidor
+Nuevo diseño para el diálogo de propiedades de los cómics.
+Añadida navegación alante y atrás de las carpetas visitadas.
+La edición del nombre de una biblioteca no fuerza ahora que se recargue la biblioteca
+Corregido el color de fondo en la lupa
+Nuevo botón para ajustar a lo alto
+Eliminada la opción always on top
+Mostrar en carpeta contenedora arreglado en Windows y MacOSX
+
+6.4 (No pública)
+Normalizado el renderizado de páginas en modo doble página
+Añadida la función de borrar cómics desde el disco duro
+Nuevos iconos de la barra de herramientas de cómics
+
+6.3 (No pública)
+Mejorada la gestión de errores relacionada con las bibliotecas
+Añadido botón que permite ocultar las portadas en la pantalla de importación
+Añadidos títulos "Bibliotecas" y "Carpetas" a la barra de navegación
+Nuevos iconos para seleccionar la carpeta raíz, expandir y contraer todos.
+Botón para cambiar el puerto del servidor por el usuario.
+Ahora las columnas de la lista de cómics pueden reordenarse
+Ahora YACReaderLibrary sólo permite una instancia ejecutandose.
+Columna leído añadida.
+Cambiado estilo de la lista de cómics
+Corregidos bugs relacionados con realizar operaciones sobre cómics cuando no había ninguno seleccionado en la lista de cómics
+
+6.2
+Nueva ventana de "bienvenida"
+Nueva ventana de importar/actualizar
+Nuevo control para la búsqueda
+Nueva imagen para las marcas de cómics leídos (sólo en OpenGL)
+Cambiada la distribución de algunos iconos
+Cambiado el modo de eliminar la metainformación (borrar base de datos/portadas de disco)
+Ocultadas las opciones avanzadas de configuración de YACReader Flow, accesibles ahora tras pulsar un botón (diálogos de configuración más simples)
+
+6.0.1 (No pública)
+Corregido bug al usar las teclas Inicio/fin
+Corregido bug que al arrancar YACReaderLibrary por primera vez causaba que no se mostrasen las portadas (sólo bajo ciertas circunstancias)
+Añadidos algunos atajos de teclado a YACReaderLibrary a los ya existentes
+
+6.0
+
+Mejorada la velocidad de inicio gracias al uso de /LTCG como opción de compilación
+Corregido bug relacionado con OpenGL que causaba consumo excesivo de CPU en tarjetas NVidia
+Añadidos iconos para cada tipo de archivo soportado en YACReaderLibrary
+Cambiado el icono "folder" en YACReaderLibrary
+Añadida barra para ajustar el ancho de página en la toolbar de YACReader
+Añadido widget para la information label
+Añadido nuevo estilo visual a goToFlow
+Añadidos filtros para controlar el brillo, el contraste y el valor gamma
+Añadidas notificaciones de portada y última página
+InformationLabel se muestra ahora en la esquina superiror derecha.
+InformationLabel se muestra en 3 tamaños diferentes en función de la resolución
+Corregido bug que causaba que las marcas de cómic leído no se dibujasen adecuadamente.
+Se recuerda si se debe mostrar o no la "label" información.
+Corregido bug que provocaba el fallo de YACReader al pasar muy rápido las páginas.
+Añadida columna "Tamaño" a la lista de cómics en YACReaderLibrary
+Añadida la ordinación "natural" de los comics que hay en directorio del cómic actual.
+Corregido bug que causaba que se abriese el cómic erroneo en YACReaderLibrary.
+Cambiado el modo en el que se cargan los lenguages, ahora se pueden añadir traducciones sin necesidad de recompilar.
