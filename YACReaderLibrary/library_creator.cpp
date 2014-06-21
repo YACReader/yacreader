@@ -228,8 +228,8 @@ void LibraryCreator::insertComic(const QString & relativePath,const QFileInfo & 
 	QString hash = QString(crypto.result().toHex().constData()) + QString::number(fileInfo.size());
     ComicDB comic = DBHelper::loadComic(fileInfo.fileName(),relativePath,hash,_database);
     int numPages = 0;
-
-	if(! ( comic.hasCover() && checkCover(hash)))
+    bool exists = checkCover(hash);
+    if(! ( comic.hasCover() && exists))
 	{
         ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+hash+".jpg",comic.info.coverPage.toInt());
 		tc.create();
@@ -238,7 +238,7 @@ void LibraryCreator::insertComic(const QString & relativePath,const QFileInfo & 
             emit(comicAdded(relativePath,_target+"/covers/"+hash+".jpg"));
 	}
 
-    if (numPages > 0)
+    if (numPages > 0 || exists)
     {
         //en este punto sabemos que todos los folders que hay en _currentPath, deberían estar añadidos a la base de datos
         insertFolders();
