@@ -62,6 +62,10 @@
 
 #include "QsLog.h"
 
+#ifdef Q_OS_WIN
+    #include <shellapi.h>
+#endif
+
 #ifdef Q_OS_MAC
 //#include <QtMacExtras>
 #endif
@@ -1606,10 +1610,9 @@ QFileInfo file = QDir::cleanPath(currentPath() + dmCV->getComicPath(modelIndex))
 #endif
 	
 #ifdef Q_OS_WIN
-	QString filePath = file.absoluteFilePath();
-	QStringList args;
-	args << "/select," << QDir::toNativeSeparators(filePath);
-	QProcess::startDetached("explorer", args);
+    QString filePath = file.absoluteFilePath();
+    QString cmdArgs = QString("/select,\"") + QDir::toNativeSeparators(filePath) + QStringLiteral("\"");
+    ShellExecuteW(0, L"open", L"explorer.exe", reinterpret_cast<LPCWSTR>(cmdArgs.utf16()), 0, SW_NORMAL);
 #endif
 }
 

@@ -17,7 +17,8 @@ DEFINES += SERVER_RELEASE NOMINMAX
 			   
 win32 {
 
-LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32
+LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32
+
 
 isEqual(QT_MAJOR_VERSION, 5) {
 LIBS += -lpoppler-qt5
