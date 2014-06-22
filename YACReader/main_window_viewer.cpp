@@ -288,7 +288,7 @@ void MainWindowViewer::createActions()
 	nextAction->setDisabled(true);
 	connect(nextAction, SIGNAL(triggered()),viewer,SLOT(next()));
 
-	adjustHeight = new QAction(tr("Fit Width"),this);
+    adjustHeight = new QAction(tr("Fit Height"),this);
 	adjustHeight->setIcon(QIcon(":/images/viewer_toolbar/toHeight.png"));
 	//adjustWidth->setCheckable(true);
 	adjustHeight->setDisabled(true);
