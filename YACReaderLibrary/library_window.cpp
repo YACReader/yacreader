@@ -500,9 +500,6 @@ void LibraryWindow::createActions()
 	getInfoAction->setIcon(QIcon(":/images/getInfo.png"));
 	//-------------------------------------------------------------------------
 
-	separatorAction = new QAction(this);
-	separatorAction->setSeparator(true);
-	//-------------------------------------------------------------------------
 	//disable actions
 	disableAllActions();
 }
@@ -644,53 +641,40 @@ void LibraryWindow::createToolBars()
 void LibraryWindow::createMenus()
 {
 	comicView->addAction(openContainingFolderComicAction);
-	{ comicView->addAction(separatorAction); }
+    YACReader::addSperator(comicView);
+
 	comicView->addAction(resetComicRatingAction);
-	{ comicView->addAction(separatorAction); }
+    YACReader::addSperator(comicView);
+
 	comicView->addAction(editSelectedComicsAction);
 	comicView->addAction(getInfoAction);
-	//comicView->addAction(asignOrderActions);
-	{ comicView->addAction(separatorAction); }
+    comicView->addAction(asignOrderActions);
+    YACReader::addSperator(comicView);
+
 	comicView->addAction(setAsReadAction);
 	comicView->addAction(setAsNonReadAction);
-	{ comicView->addAction(separatorAction); }
+    YACReader::addSperator(comicView);
+
 	comicView->addAction(deleteComicsAction);
 
 	foldersView->addAction(openContainingFolderAction);
+    YACReader::addSperator(foldersView);
 
-    {
-        QAction *act = new QAction(this);
-        act->setSeparator(true);
-        foldersView->addAction(act);
-    }
     foldersView->addAction(setFolderAsNotCompletedAction);
     foldersView->addAction(setFolderAsCompletedAction);
-    {
-        QAction *act = new QAction(this);
-        act->setSeparator(true);
-        foldersView->addAction(act);
-    }
+    YACReader::addSperator(foldersView);
+
     foldersView->addAction(setFolderAsFinishedAction);
     foldersView->addAction(setFolderAsNotFinishedAction);
 
 	selectedLibrary->addAction(updateLibraryAction); 
 	selectedLibrary->addAction(renameLibraryAction);
 	selectedLibrary->addAction(removeLibraryAction);
-
-	{
-		QAction *act = new QAction(this);
-		act->setSeparator(true);
-		selectedLibrary->addAction(act);
-	}
+    YACReader::addSperator(selectedLibrary);
 
 	selectedLibrary->addAction(exportComicsInfo);
 	selectedLibrary->addAction(importComicsInfo);
-
-	{
-		QAction *act = new QAction(this);
-		act->setSeparator(true);
-		selectedLibrary->addAction(act);
-	}
+    YACReader::addSperator(selectedLibrary);
 
 	selectedLibrary->addAction(exportLibraryAction);
 	selectedLibrary->addAction(importLibraryAction);
