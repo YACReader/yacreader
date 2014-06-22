@@ -547,9 +547,8 @@ void MainWindowViewer::createToolBars()
 	viewer->addAction(saveImageAction);
 	viewer->addAction(openPreviousComicAction);
 	viewer->addAction(openNextComicAction);
-	QAction * separator = new QAction("",this);
-	separator->setSeparator(true);
-	viewer->addAction(separator);
+    YACReader::addSperator(viewer);
+
 	viewer->addAction(prevAction);
 	viewer->addAction(nextAction);
 	viewer->addAction(goToPage);
@@ -558,34 +557,25 @@ void MainWindowViewer::createToolBars()
 	viewer->addAction(adjustToFullSizeAction);
 	viewer->addAction(leftRotationAction);
 	viewer->addAction(rightRotationAction);
-		viewer->addAction(doublePageAction);
-	separator = new QAction("",this);
-	separator->setSeparator(true);
-	viewer->addAction(separator);
+    YACReader::addSperator(viewer);
+
 	viewer->addAction(showMagnifyingGlass);
-	separator = new QAction("",this);
-	separator->setSeparator(true);
-	viewer->addAction(separator);
+    YACReader::addSperator(viewer);
 
 	viewer->addAction(setBookmark);
 	viewer->addAction(showBookmarks);
-	separator = new QAction("",this);
-	separator->setSeparator(true);
-	viewer->addAction(separator);
+    YACReader::addSperator(viewer);
 
 	viewer->addAction(showDictionaryAction);
 	viewer->addAction(showFlowAction);
 	viewer->addAction(showInfo);
-	separator = new QAction("",this);
-	separator->setSeparator(true);
-	viewer->addAction(separator);
+    YACReader::addSperator(viewer);
 
 	viewer->addAction(showShorcutsAction);
 	viewer->addAction(optionsAction);
 	viewer->addAction(helpAboutAction);
-	separator = new QAction("",this);
-	separator->setSeparator(true);
-	viewer->addAction(separator);
+    YACReader::addSperator(viewer);
+
 	viewer->addAction(closeAction);
 
 	viewer->setContextMenuPolicy(Qt::ActionsContextMenu);

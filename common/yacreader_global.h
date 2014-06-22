@@ -7,6 +7,7 @@
 	#include <QDesktopServices>
 #endif
 
+#include <QWidget>
 
 #define VERSION "7.1.0"
 
@@ -94,8 +95,7 @@ namespace YACReader
  };
 
 QString getSettingsPath();
-
+void addSperator(QWidget * w);
 }
-
 #endif
 
