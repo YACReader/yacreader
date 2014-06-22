@@ -499,6 +499,10 @@ void LibraryWindow::createActions()
 	getInfoAction->setText(tr("Download tags from Comic Vine"));
 	getInfoAction->setIcon(QIcon(":/images/getInfo.png"));
 	//-------------------------------------------------------------------------
+
+	separatorAction = new QAction(this);
+	separatorAction->setSeparator(true);
+	//-------------------------------------------------------------------------
 	//disable actions
 	disableAllActions();
 }
@@ -640,13 +644,17 @@ void LibraryWindow::createToolBars()
 void LibraryWindow::createMenus()
 {
 	comicView->addAction(openContainingFolderComicAction);
-
-    {
-        QAction *act = new QAction(this);
-        act->setSeparator(true);
-        comicView->addAction(act);
-    }
-    comicView->addAction(resetComicRatingAction);
+	{ comicView->addAction(separatorAction); }
+	comicView->addAction(resetComicRatingAction);
+	{ comicView->addAction(separatorAction); }
+	comicView->addAction(editSelectedComicsAction);
+	comicView->addAction(getInfoAction);
+	//comicView->addAction(asignOrderActions);
+	{ comicView->addAction(separatorAction); }
+	comicView->addAction(setAsReadAction);
+	comicView->addAction(setAsNonReadAction);
+	{ comicView->addAction(separatorAction); }
+	comicView->addAction(deleteComicsAction);
 
 	foldersView->addAction(openContainingFolderAction);
 

@@ -161,6 +161,8 @@ private:
 	QAction * deleteComicsAction;
 	QAction * hideComicViewAction;
 
+    QAction * separatorAction; //dummy action
+
 #ifdef Q_OS_MAC
 	QToolBar * libraryToolBar;
 #else
