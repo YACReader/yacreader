@@ -1,0 +1,8 @@
+INSTALLATION GUIDE FOR LINUX USERS
+**********************************
+YACReader and YACReaderLibraries binaries are compiled under Ubuntu 13.10 and uses Qt5 and libpoppler-qt5.
+
+
+DO YOU WANT TO HELP YACREADER?
+******************************
+If you have experience creating packages,please help to create a package for your favourite distro! Send me an e-mail to: info@yacreader.com
