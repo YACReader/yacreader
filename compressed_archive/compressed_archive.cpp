@@ -108,9 +108,9 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 				continue;
             }
 #ifdef UNICODE
-            if (!fileSpec->Open((LPCTSTR)filePath.toStdWString().data()))
+            if (!fileSpec->Open((LPCTSTR)filePath.toStdWString().c_str()))
 #else
-            if (!fileSpec->Open((LPCTSTR)filePath.toStdString().data()))
+            if (!fileSpec->Open((LPCTSTR)filePath.toStdString().c_str()))
 #endif
             {
                 qDebug() << "unable to load" + filePath;
