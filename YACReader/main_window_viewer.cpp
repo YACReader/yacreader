@@ -419,11 +419,11 @@ void MainWindowViewer::createToolBars()
 {
 	comicToolBar = addToolBar(tr("&File"));
 
-	comicToolBar->setStyleSheet("QToolBar{border:none;}");
 #ifdef Q_OS_MAC
 	comicToolBar->setIconSize(QSize(16,16));
 #else
 	comicToolBar->setIconSize(QSize(18,18));
+    comicToolBar->setStyleSheet("QToolBar{border:none;}");
 #endif
 
 	QToolButton * tb = new QToolButton();
