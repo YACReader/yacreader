@@ -81,6 +81,9 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 	}
 
 
+    //TODO check here if any view is asking for TableModel::Roles
+    //these roles will be used from QML/GridView
+
 	if (role != Qt::DisplayRole)
 		return QVariant();
 
@@ -595,6 +598,28 @@ void TableModel::resetComicRating(const QModelIndex &mi)
 
     db.close();
     QSqlDatabase::removeDatabase(_databasePath);
+}
+
+QHash<int, QByteArray> TableModel::roleNames()
+{
+    QHash<int, QByteArray> roles;
+
+    roles[NumberRole] = "number";
+    roles[TitleRole] = "title";
+    roles[FileNameRole] = "file_name";
+    roles[NumPagesRole] = "num_pages";
+    roles[IdRole] = "id";
+    roles[Parent_IdRole] = "parent_id";
+    roles[PathRole] = "path";
+    roles[HashRole] = "hash";
+    roles[ReadColumnRole] = "read";
+    roles[IsBisRole] = "is_bis";
+    roles[CurrentPageRole] = "current_page";
+    roles[RatingRole] = "rating";
+    roles[HasBeenOpenedRole] = "has_been_opened";
+    roles[CoverPathRole] = "cover_path";
+
+    return roles;
 }
 
 void TableModel::updateRating(int rating, QModelIndex mi)

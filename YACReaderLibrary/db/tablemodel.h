@@ -56,6 +56,8 @@ public:
 	void reload(const ComicDB & comic);
     void resetComicRating(const QModelIndex & mi);
 
+    QHash<int, QByteArray> roleNames();
+
 	enum Columns {
 	Number = 0,
 	Title = 1,
@@ -71,6 +73,25 @@ public:
 	Rating = 11,
 	HasBeenOpened = 12
 };
+
+    enum Roles {
+        NumberRole = Qt::UserRole + 1,
+        TitleRole,
+        FileNameRole,
+        NumPagesRole,
+        IdRole,
+        Parent_IdRole,
+        PathRole,
+        HashRole,
+        ReadColumnRole,
+        IsBisRole,
+        CurrentPageRole,
+        RatingRole,
+        HasBeenOpenedRole,
+        CoverPathRole
+
+    };
+
 public slots:
 	void remove(int row);
 	void startTransaction();
