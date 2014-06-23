@@ -385,6 +385,14 @@
         <source>Not now</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Fit Height</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>OptionsDialog</name>

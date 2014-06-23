@@ -651,6 +651,26 @@
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Set as uncompleted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set as completed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset comic rating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Comic</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LocalComicListModel</name>
@@ -810,6 +830,10 @@
     <message>
         <source>Letterer(s):</source>
         <translation>Mesaj(lar):</translation>
+    </message>
+    <message>
+        <source>Comic Vine link: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; view &lt;/a&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
