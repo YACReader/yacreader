@@ -454,11 +454,11 @@ void LibraryWindow::createActions()
     setFolderAsCompletedAction->setVisible(false);
 
     setFolderAsFinishedAction = new QAction(this);
-    setFolderAsFinishedAction->setText(tr("Set as finished"));
+    setFolderAsFinishedAction->setText(tr("Set as read"));
     setFolderAsFinishedAction->setVisible(false);
 
     setFolderAsNotFinishedAction = new QAction(this);
-    setFolderAsNotFinishedAction->setText(tr("Set as unfinished"));
+    setFolderAsNotFinishedAction->setText(tr("Set as unread"));
     setFolderAsNotFinishedAction->setVisible(false);
 
 	openContainingFolderComicAction = new QAction(this);
