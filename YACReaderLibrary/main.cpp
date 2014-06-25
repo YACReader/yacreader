@@ -92,7 +92,7 @@ void logSystemAndConfig()
 #endif
 
 #ifdef Q_OS_WIN
-    if(QLibrary::isLibrary(QApplication::applicationDirPath()+"/utils/7z.dll")) {
+    if(QLibrary::isLibrary(QApplication::applicationDirPath()+"/utils/7z.dll"))
 #elif defined Q_OS_UNIX && !defined Q_OS_MAC
     if(QLibrary::isLibrary(QString(LIBDIR)+"/p7zip/7z.so"))
 #else
@@ -174,7 +174,7 @@ int main( int argc, char ** argv )
   qRegisterMetaType<ComicDB>("ComicDB");
 
 #ifdef SERVER_RELEASE
-  QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+  QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creaciï¿½n del fichero de config con el servidor
   settings->beginGroup("libraryConfig");
   
   s = new Startup();
@@ -189,7 +189,7 @@ int main( int argc, char ** argv )
 
   logSystemAndConfig();
 
-  if(YACReaderLocalServer::isRunning()) //sólo se permite una instancia de YACReaderLibrary
+  if(YACReaderLocalServer::isRunning()) //sï¿½lo se permite una instancia de YACReaderLibrary
   {
 	  QLOG_WARN() << "another instance of YACReaderLibrary is running";
 	  QsLogging::Logger::destroyInstance();
