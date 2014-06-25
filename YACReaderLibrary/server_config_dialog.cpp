@@ -282,7 +282,11 @@ void ServerConfigDialog::generateQR(const QString & serverAddress)
 	attributes << "-o" << "-" /*QCoreApplication::applicationDirPath()+"/utils/tmp.png"*/ << "-s" << "8" << "-l" << "H" << "-m" << "0" << serverAddress;
 	connect(qrGenerator,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(updateImage(void)));
 	connect(qrGenerator,SIGNAL(error(QProcess::ProcessError)),this,SLOT(openingError(QProcess::ProcessError))); //TODO: implement openingError
+#if defined Q_OS_UNIX && !defined Q_OS_MAC
+	qrGenerator->start(QString("qrencode"),attributes);
+#else
 	qrGenerator->start(QCoreApplication::applicationDirPath()+"/utils/qrencode",attributes);
+#endif
 }
 
 void ServerConfigDialog::updateImage()
