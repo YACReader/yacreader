@@ -22,8 +22,13 @@ TemplateLoader::TemplateLoader(QSettings* settings, QObject* parent)
     if (QDir::isRelativePath(templatePath))
 #endif
     {
+#if defined Q_OS_UNIX && !defined Q_OS_MAC
+        QFileInfo configFile(QString(DATADIR)+"/YACReader");
+        templatePath=QFileInfo(QString(DATADIR)+"/YACReader",templatePath).absoluteFilePath();
+#else
         QFileInfo configFile(QApplication::applicationDirPath());
         templatePath=QFileInfo(QApplication::applicationDirPath(),templatePath).absoluteFilePath();
+#endif
     }
     fileNameSuffix=settings->value("suffix",".tpl").toString();
     QString encoding=settings->value("encoding").toString();

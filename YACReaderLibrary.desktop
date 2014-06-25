@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=YACReader Library
+GenericName=Yet Another Comic Reader
+Comment=Yet Another Comic Reader
+Exec=YACReaderLibrary %f
+Icon=/usr/share/YACReader/iconLibrary.png
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=Graphics;Viewer;
+MimeType=application/x-cbz;application/x-cbr;application/x-cbt;application/x-cb7;
+X-Desktop-File-Install-Version=0.22
