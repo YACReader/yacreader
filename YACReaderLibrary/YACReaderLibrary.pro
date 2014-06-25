@@ -36,8 +36,6 @@ CONFIG -= embed_manifest_exe
 unix:!macx{
 QMAKE_CXXFLAGS += -std=c++11
 
-QMAKE_CXXFLAGS += -std=c++11
-
 isEqual(QT_MAJOR_VERSION, 5) {
 INCLUDEPATH  += /usr/include/poppler/qt5
 LIBS         += -L/usr/lib -lpoppler-qt5
