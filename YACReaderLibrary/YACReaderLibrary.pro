@@ -19,7 +19,6 @@ win32 {
 
 LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32
 
-
 isEqual(QT_MAJOR_VERSION, 5) {
 LIBS += -lpoppler-qt5
 INCLUDEPATH += ../dependencies/poppler/include/qt5
@@ -35,6 +34,8 @@ CONFIG -= embed_manifest_exe
 }
 
 unix:!macx{
+QMAKE_CXXFLAGS += -std=c++11
+
 QMAKE_CXXFLAGS += -std=c++11
 
 isEqual(QT_MAJOR_VERSION, 5) {
@@ -190,4 +191,55 @@ isEqual(QT_MAJOR_VERSION, 5) {
 } else {
 	Release:DESTDIR = ../release
 	Debug:DESTDIR = ../debug
+}
+
+win32:!exists (../compressed_archive/lib7zip) {
+	error(You\'ll need 7zip source code to compile YACReader. \
+	Please check the compressed_archive folder for further instructions.)
+}
+
+unix:exists (../compressed_archive/libp7zip) {
+	message(Found p7zip source code...)
+	system(patch -d ../compressed_archive -N -p0 -i libp7zip.patch)
+} else {
+	error(You\'ll need 7zip source code to compile YACReader. \
+	Please check the compressed_archive folder for further instructions.)
+}
+
+unix:!macx {
+#set install prefix if it's empty
+isEmpty(PREFIX) {
+	PREFIX = /usr
+}
+
+BINDIR = $$PREFIX/bin
+LIBDIR = $$PREFIX/lib
+DATADIR = $$PREFIX/share
+
+DEFINES += "LIBDIR=\\\"$$LIBDIR\\\""  "DATADIR=\\\"$$DATADIR\\\"" "BINDIR=\\\"$$BINDIR\\\""
+
+#MAKE INSTALL
+INSTALLS += bin icon desktop server translation
+
+bin.path = $$BINDIR
+isEmpty(DESTDIR) {
+	bin.files = YACReaderLibrary
+} else {
+	bin.files = $$DESTDIR/YACReaderLibrary
+}
+
+server.path = $$DATADIR/YACReader
+server.files = ../release/server
+
+icon.path = $$DATADIR/YACReader
+icon.prefix = ../images
+icon.files = iconLibrary.png db.png coversPackage.png
+
+desktop.path = $$DATADIR/applications
+desktop.extra = desktop-file-edit --set-icon=$$DATADIR/YACReader/iconLibrary.png $$PWD/../YACReaderLibrary.desktop
+desktop.files = ../YACReaderLibrary.desktop
+#TODO: icons should be located at /usr/share/icons and have the same basename as their application
+
+translation.path = $$DATADIR/YACReader/languages
+translation.files = ../release/languages/yacreaderlibrary_*
 }
