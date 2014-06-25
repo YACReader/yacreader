@@ -24,8 +24,13 @@ StaticFileController::StaticFileController(QSettings* settings, QObject* parent)
         if (QDir::isRelativePath(docroot))
 #endif
         {
+#if defined Q_OS_UNIX && ! defined Q_OS_MAC
+	QFileInfo configFile(QString(DATADIR)+"/YACReader");
+        docroot=QFileInfo(QString(DATADIR)+"/YACReader",docroot).absoluteFilePath();
+#else
         QFileInfo configFile(QApplication::applicationDirPath());
         docroot=QFileInfo(QApplication::applicationDirPath(),docroot).absoluteFilePath();
+#endif
     }
     qDebug("StaticFileController: docroot=%s, encoding=%s, maxAge=%i",qPrintable(docroot),qPrintable(encoding),maxAge);
     maxCachedFileSize=settings->value("maxCachedFileSize","65536").toInt();
