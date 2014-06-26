@@ -191,17 +191,21 @@ isEqual(QT_MAJOR_VERSION, 5) {
 	Debug:DESTDIR = ../debug
 }
 
-win32:!exists (../compressed_archive/lib7zip) {
-	error(You\'ll need 7zip source code to compile YACReader. \
-	Please check the compressed_archive folder for further instructions.)
+win32 {
+!exists(../compressed_archive/lib7zip){
+        error(You\'ll need 7zip source code to compile YACReader. \
+        Please check the compressed_archive folder for further instructions.)
+}
 }
 
-unix:exists (../compressed_archive/libp7zip) {
-	message(Found p7zip source code...)
-	system(patch -d ../compressed_archive -N -p0 -i libp7zip.patch)
+unix {
+exists (../compressed_archive/libp7zip) {
+        message(Found p7zip source code...)
+        system(patch -d ../compressed_archive -N -p0 -i libp7zip.patch)
 } else {
-	error(You\'ll need 7zip source code to compile YACReader. \
-	Please check the compressed_archive folder for further instructions.)
+        error(You\'ll need 7zip source code to compile YACReader. \
+        Please check the compressed_archive folder for further instructions.)
+}
 }
 
 unix:!macx {
