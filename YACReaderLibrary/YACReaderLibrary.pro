@@ -234,8 +234,7 @@ server.path = $$DATADIR/YACReader
 server.files = ../release/server
 
 icon.path = $$DATADIR/YACReader
-icon.prefix = ../images
-icon.files = iconLibrary.png db.png coversPackage.png
+icon.files = ../images/iconLibrary.png ../images/db.png ../images/coversPackage.png
 
 desktop.path = $$DATADIR/applications
 desktop.extra = desktop-file-edit --set-icon=$$DATADIR/YACReader/iconLibrary.png $$PWD/../YACReaderLibrary.desktop
