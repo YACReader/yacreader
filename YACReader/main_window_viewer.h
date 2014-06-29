@@ -96,6 +96,7 @@ class YACReaderSliderAction;
 		QAction *showInfo;
 		QAction *closeAction;
 		QAction *doublePageAction;
+		QAction *doubleMangaPageAction;
 		QAction *showShorcutsAction;
 		QAction *showDictionaryAction;
 		QAction *alwaysOnTopAction;
