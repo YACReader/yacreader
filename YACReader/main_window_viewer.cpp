@@ -1159,7 +1159,7 @@ void MainWindowViewer::alwaysOnTopSwitch()
 
 void MainWindowViewer::adjustToFullSizeSwitch()
 {
-	Configuration::getConfiguration().setAdjustToFullSize(!ConfdoubleMangaPageAction->setDisablediguration::getConfiguration().getAdjustToFullSize());
+	Configuration::getConfiguration().setAdjustToFullSize(!Configuration::getConfiguration().getAdjustToFullSize());
 	viewer->updatePage();
 }
 
