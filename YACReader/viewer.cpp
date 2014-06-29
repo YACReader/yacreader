@@ -97,6 +97,9 @@ shouldOpenPrevious(false)
 
 	if(Configuration::getConfiguration().getDoublePage())
 		doublePageSwitch();
+		
+	if(Configuration::getConfiguration().getDoubleMangaPage())
+		doubleMangaPageSwitch();
 
 	createConnections();
 
