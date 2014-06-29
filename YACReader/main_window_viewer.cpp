@@ -92,6 +92,7 @@ MainWindowViewer::~MainWindowViewer()
 	delete leftRotationAction;
 	delete rightRotationAction;
 	delete doublePageAction;
+	delete doubleMangaPageAction;
 	delete goToPage;
 	delete optionsAction;
 	delete helpAboutAction;
@@ -326,7 +327,20 @@ void MainWindowViewer::createActions()
 	doublePageAction->setCheckable(true);
 	doublePageAction->setChecked(Configuration::getConfiguration().getDoublePage());
 	connect(doublePageAction, SIGNAL(triggered()),viewer,SLOT(doublePageSwitch()));
-
+	
+	//tests for inversed mode!
+	doubleMangaPageAction = new QAction(tr("Double page manga mode"),this);
+	doubleMangaPageAction->setToolTip(tr("Reverse reading order in double page mode"));
+	//TODO: Find a good shortcut for this
+	//doubleMangaPageAction->setShortcut(tr("M"));
+	doubleMangaPageAction->setIcon(QIcon(":/images/viewer_toolbar/doubleMangaPage.png"));
+	doubleMangaPageAction->setDisabled(true);
+	doubleMangaPageAction->setCheckable(true);
+	//TODO: Configuration?
+	doubleMangaPageAction->setChecked(Configuration::getConfiguration().getDoubleMangaPage());
+	connect(doubleMangaPageAction, SIGNAL(triggered()),viewer,SLOT(doubleMangaPageSwitch()));
+	//
+	
 	goToPage = new QAction(tr("Go To"),this);
 	goToPage->setShortcut(tr("G"));
 	goToPage->setIcon(QIcon(":/images/viewer_toolbar/goto.png"));
@@ -502,6 +516,7 @@ void MainWindowViewer::createToolBars()
 	comicToolBar->addAction(leftRotationAction);
 	comicToolBar->addAction(rightRotationAction);
 	comicToolBar->addAction(doublePageAction);
+	comicToolBar->addAction(doubleMangaPageAction);
 
 #ifdef Q_OS_MAC
 	comicToolBar->addWidget(new MacToolBarSeparator);
@@ -748,6 +763,7 @@ void MainWindowViewer::enableActions()
 	rightRotationAction->setDisabled(false);
 	showMagnifyingGlass->setDisabled(false);
 	doublePageAction->setDisabled(false);
+	doubleMangaPageAction->setDisabled(false);
 	adjustToFullSizeAction->setDisabled(false);
 	//setBookmark->setDisabled(false);
 	showBookmarks->setDisabled(false);
@@ -768,6 +784,7 @@ void MainWindowViewer::disableActions()
 	rightRotationAction->setDisabled(true);
 	showMagnifyingGlass->setDisabled(true);
 	doublePageAction->setDisabled(true);
+	doubleMangaPageAction->setDisabled(false);
 	adjustToFullSizeAction->setDisabled(true);
 	setBookmark->setDisabled(true);
 	showBookmarks->setDisabled(true);
