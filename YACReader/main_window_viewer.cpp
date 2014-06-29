@@ -784,7 +784,7 @@ void MainWindowViewer::disableActions()
 	rightRotationAction->setDisabled(true);
 	showMagnifyingGlass->setDisabled(true);
 	doublePageAction->setDisabled(true);
-	doubleMangaPageAction->setDisabled(false);
+	doubleMangaPageAction->setDisabled(true);
 	adjustToFullSizeAction->setDisabled(true);
 	setBookmark->setDisabled(true);
 	showBookmarks->setDisabled(true);
@@ -917,7 +917,7 @@ void MainWindowViewer::checkNewVersion()
 		QTimer * tT = new QTimer;
 		tT->setSingleShot(true);
 		connect(tT, SIGNAL(timeout()), versionChecker, SLOT(get()));
-		//versionChecker->get(); //TODÓ
+		//versionChecker->get(); //TODï¿½
 		tT->start(100);
 
 		conf.setLastVersionCheck(current);
@@ -1159,7 +1159,7 @@ void MainWindowViewer::alwaysOnTopSwitch()
 
 void MainWindowViewer::adjustToFullSizeSwitch()
 {
-	Configuration::getConfiguration().setAdjustToFullSize(!Configuration::getConfiguration().getAdjustToFullSize());
+	Configuration::getConfiguration().setAdjustToFullSize(!ConfdoubleMangaPageAction->setDisablediguration::getConfiguration().getAdjustToFullSize());
 	viewer->updatePage();
 }
 
