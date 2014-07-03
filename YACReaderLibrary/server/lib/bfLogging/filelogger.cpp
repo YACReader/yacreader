@@ -33,8 +33,8 @@ void FileLogger::refreshSettings() {
         QFileInfo configFile(YACReader::getSettingsPath());
         fileName=QFileInfo(YACReader::getSettingsPath(),fileName).absoluteFilePath();
     }
-    maxSize=settings->value("maxSize",0).toLongLong();
-    maxBackups=settings->value("maxBackups",0).toInt();
+    maxSize=settings->value("maxSize",1048576).toLongLong();
+    maxBackups=settings->value("maxBackups",1).toInt();
     msgFormat=settings->value("msgFormat","{timestamp} {type} {msg}").toString();
     timestampFormat=settings->value("timestampFormat","yyyy-MM-dd hh:mm:ss.zzz").toString();
     minLevel=static_cast<QtMsgType>(settings->value("minLevel",0).toInt());

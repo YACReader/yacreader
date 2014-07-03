@@ -93,14 +93,19 @@ void logSystemAndConfig()
 
 #ifdef Q_OS_WIN
     if(QLibrary::isLibrary(QApplication::applicationDirPath()+"/utils/7z.dll"))
+#elif defined Q_OS_UNIX && !defined Q_OS_MAC
+    if(QLibrary::isLibrary(QString(LIBDIR)+"/p7zip/7z.so"))
 #else
     if(QLibrary::isLibrary(QApplication::applicationDirPath()+"/utils/7z.so"))
 #endif
         QLOG_INFO() << "7z : found";
     else
         QLOG_ERROR() << "7z : not found";
-
+#if defined Q_OS_UNIX && !defined Q_OS_MAC
+    if(QFileInfo(QString(BINDIR)+"/qrencode").exists())
+#else
     if(QFileInfo(QApplication::applicationDirPath()+"/utils/qrencode.exe").exists() || QFileInfo("./util/qrencode").exists())
+#endif
         QLOG_INFO() << "qrencode : found";
     else
         QLOG_INFO() << "qrencode : not found";
@@ -150,18 +155,26 @@ int main( int argc, char ** argv )
 
   QTranslator translator;
   QString sufix = QLocale::system().name();
+#if defined Q_OS_UNIX && !defined Q_OS_MAC
+  translator.load(QString(DATADIR) +"/YACReader/languages/yacreaderlibrary_"+sufix);
+#else
   translator.load(QCoreApplication::applicationDirPath()+"/languages/yacreaderlibrary_"+sufix);
+#endif
   app.installTranslator(&translator);
   
   QTranslator viewerTranslator;
+#if defined Q_OS_UNIX && !defined Q_OS_MAC
+  viewerTranslator.load(QString(DATADIR)+"/YACReader/languages/yacreader_"+sufix);
+#else  
   viewerTranslator.load(QCoreApplication::applicationDirPath()+"/languages/yacreader_"+sufix);
+#endif
   app.installTranslator(&viewerTranslator);
   app.setApplicationName("YACReaderLibrary");
 
   qRegisterMetaType<ComicDB>("ComicDB");
 
 #ifdef SERVER_RELEASE
-  QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+  QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creaciï¿½n del fichero de config con el servidor
   settings->beginGroup("libraryConfig");
   
   s = new Startup();
@@ -176,7 +189,7 @@ int main( int argc, char ** argv )
 
   logSystemAndConfig();
 
-  if(YACReaderLocalServer::isRunning()) //sólo se permite una instancia de YACReaderLibrary
+  if(YACReaderLocalServer::isRunning()) //sï¿½lo se permite una instancia de YACReaderLibrary
   {
 	  QLOG_WARN() << "another instance of YACReaderLibrary is running";
 	  QsLogging::Logger::destroyInstance();
