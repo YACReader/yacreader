@@ -197,8 +197,12 @@ bool CompressedArchive::loadFunctions()
 	// fix2: rename 7z.so to 7z.dylib
 	if(sevenzLib == 0)
     {
-#ifdef Q_OS_UNIX
-        rarLib = new QLibrary(QApplication::applicationDirPath()+"/utils/Codecs/Rar29");
+#if defined Q_OS_UNIX
+	#if defined Q_OS_MAC
+		rarLib = new QLibrary(QApplication::applicationDirPath()+"/utils/Codecs/Rar29");
+	#else
+		rarLib = new QLibrary(QString(LIBDIR)+"/p7zip/Codecs/Rar29.so");	
+	#endif
         if(!rarLib->load())
         {
             qDebug() << "Error Loading Rar29.so : " + rarLib->errorString() << endl;
@@ -206,7 +210,11 @@ bool CompressedArchive::loadFunctions()
             return false;
         }
 #endif
-        sevenzLib = new QLibrary(QApplication::applicationDirPath()+"/utils/7z");
+#if defined Q_OS_UNIX && !defined Q_OS_MAC
+	sevenzLib = new QLibrary(QString(LIBDIR)+"/p7zip/7z.so");
+#else
+	sevenzLib = new QLibrary(QApplication::applicationDirPath()+"/utils/7z");
+#endif
     }
 	if(!sevenzLib->load())
 	{

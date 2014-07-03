@@ -1,3 +1,22 @@
+7.1.0
+Añadida opción para resetear el rating de un comics
+Corregidos bugs que afectaban a la información de página.
+Corregido error que marcaba un comic terminado como empezado si se volvía a leer.
+Añadidos 2 estados para las carpetas (Completo/Terminado)
+Corregido bug en la comunicación YACReaderLibrary <-> YACReader
+Añadidas las acciones relativas a los comics al menú contextual de la tabla de cómics.
+Corrgido bug que provocaba el crecimiento ilimatado del log del servidor
+Corregidos bugs menores
+
+7.0.2 (Sólo MacOSX)
+Eliminado el uso de Poppler en la versión de MacOSX
+Trabajo en traducciones.
+Corregidos bugs menores
+
+7.0.1
+Añadido QsLog a YACReader
+Corregido bug en la comunicación YACReaderLibrary <-> YACReader
+
 7.0 (Final)
 Corregidos eventos de teclado en algunos diálogos
 Corregido soporte para archivos Rar en sistemas Unix

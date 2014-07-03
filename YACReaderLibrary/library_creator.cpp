@@ -73,7 +73,11 @@ void LibraryCreator::run()
 	stopRunning = false;
 
 	//check for 7z lib
+#if defined Q_OS_UNIX && !defined Q_OS_MAC
+    QLibrary *sevenzLib = new QLibrary(QString(LIBDIR)+"/p7zip/7z.so");
+#else
     QLibrary *sevenzLib = new QLibrary(QApplication::applicationDirPath()+"/utils/7z");
+#endif
 	if(!sevenzLib->load())
 	{
 		QLOG_ERROR() << "Loading 7z.dll : " + sevenzLib->errorString() << endl;

@@ -26,8 +26,11 @@ QString Static::getConfigDir() {
         return configDir;
     }
     // Search config file
-
+    #if defined Q_OS_UNIX && !defined Q_OS_MAC
+    QString binDir=(QString(DATADIR) + "/YACReader");
+    #else
     QString binDir=QCoreApplication::applicationDirPath();
+    #endif
     QString organization=QCoreApplication::organizationName();
     QString configFileName=QCoreApplication::applicationName()+".ini";
 
