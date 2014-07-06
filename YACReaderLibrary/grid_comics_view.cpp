@@ -25,6 +25,7 @@ GridComicsView::GridComicsView(QWidget *parent) :
 
     setContentsMargins(0,0,0,0);
     l->setContentsMargins(0,0,0,0);
+    l->setSpacing(0);
 
     QLOG_INFO() << "GridComicsView";
 }
