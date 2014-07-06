@@ -258,7 +258,6 @@ void LibraryWindow::doLayout()
 	//collapsible disabled in macosx (only temporaly)
 #ifdef Q_OS_MAC
 	sHorizontal->setCollapsible(0,false);
-	sVertical->setCollapsible(1,false);
 #endif
 }
 

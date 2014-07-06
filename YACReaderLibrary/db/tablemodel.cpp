@@ -506,7 +506,7 @@ QVector<YACReaderComicReadStatus> TableModel::setComicsRead(QList<QModelIndex> l
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
 
-    emit dataChanged(index(list.first().row(),TableModel::ReadColumn),index(list.last().row(),TableModel::HasBeenOpened),QVector<int>() = {ReadColumnRole,CurrentPageRole,HasBeenOpenedRole});
+    emit dataChanged(index(list.first().row(),TableModel::ReadColumn),index(list.last().row(),TableModel::HasBeenOpened),QVector<int>() << ReadColumnRole << CurrentPageRole << HasBeenOpenedRole);
 
 	return getReadList();
 }
@@ -620,7 +620,7 @@ void TableModel::reload(const ComicDB & comic)
 		row++;
 	}
     if(found)
-        emit dataChanged(index(row,ReadColumn),index(row,HasBeenOpened), QVector<int>() = {ReadColumnRole,CurrentPageRole,HasBeenOpenedRole});
+        emit dataChanged(index(row,ReadColumn),index(row,HasBeenOpened), QVector<int>() << ReadColumnRole << CurrentPageRole << HasBeenOpenedRole);
 }
 
 void TableModel::resetComicRating(const QModelIndex &mi)
