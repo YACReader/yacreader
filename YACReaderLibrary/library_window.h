@@ -27,7 +27,6 @@ class HelpAboutDialog;
 class RenameLibraryDialog;
 class PropertiesDialog;
 class PackageManager;
-class ComicFlowWidget;
 class QCheckBox;
 class QPushButton;
 class TableModel;
@@ -50,6 +49,7 @@ class YACReaderLibraryListWidget;
 class YACReaderTreeView;
 class YACReaderMainToolBar;
 class ComicVineDialog;
+class ComicsView;
 #include "comic_db.h"
 
 using namespace YACReader;
@@ -59,7 +59,7 @@ class LibraryWindow : public QMainWindow
 	Q_OBJECT
 private:
 	YACReaderSideBar * sideBar;
-	QSplitter * sVertical;
+
 	CreateLibraryDialog * createLibraryDialog;
 	ExportLibraryDialog * exportLibraryDialog;
 	ImportLibraryDialog * importLibraryDialog;
@@ -80,7 +80,6 @@ private:
 	//YACReaderSortComics * proxySort;
 	PackageManager * packageManager;
 
-	ComicFlowWidget * comicFlow;
 	QSize slideSizeW;
 	QSize slideSizeF;
 	//search filter
@@ -91,8 +90,8 @@ private:
 	QPushButton * clearFoldersFilter;
 	QCheckBox * includeComicsCheckBox;
 	//-------------
-	QWidget *comics;
-	YACReaderTableView * comicView;
+
+    ComicsView * comicsView;
 	YACReaderTreeView * foldersView;
 	YACReaderLibraryListWidget * selectedLibrary;
 	TreeModel * dm;
@@ -224,8 +223,6 @@ public:
 		void loadCovers(const QModelIndex & mi);
 		void checkEmptyFolder(QStringList * paths = 0);
 		void reloadCovers();
-		void centerComicFlow(const QModelIndex & mi);
-		void updateComicView(int i);
 		void openComic();
 		void createLibrary();
 		void create(QString source,QString dest, QString name);
@@ -261,8 +258,6 @@ public:
 		void setCurrentComicsStatusReaded(YACReaderComicReadStatus readStatus);
 		void setCurrentComicReaded();
 		void setCurrentComicUnreaded();
-		void setComicsReaded();
-		void setComicsUnreaded();
 		void hideComicFlow(bool hide);
 		void showExportComicsInfo();
 		void showImportComicsInfo();

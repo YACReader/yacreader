@@ -24,7 +24,7 @@ public:
 	TableModel(QObject *parent = 0);
 	TableModel( QSqlQuery &sqlquery, QObject *parent = 0);
 	~TableModel();
-	
+
 	QVariant data(const QModelIndex &index, int role) const;
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 	QVariant headerData(int section, Qt::Orientation orientation,
@@ -39,8 +39,9 @@ public:
 	//Métodos de conveniencia
 	QStringList getPaths(const QString & _source);
 	QString getComicPath(QModelIndex mi);
+    QString getCurrentPath(){return QString(_databasePath).remove("/.yacreaderlibrary");};
 	ComicDB getComic(const QModelIndex & mi); //--> para la edición
-	ComicDB getComic(int row);
+    //ComicDB getComic(int row);
 	QVector<YACReaderComicReadStatus> getReadList();
 	QVector<YACReaderComicReadStatus> setAllComicsRead(YACReaderComicReadStatus readStatus);
 	QList<ComicDB> getComics(QList<QModelIndex> list); //--> recupera la información común a los comics seleccionados
@@ -56,7 +57,7 @@ public:
 	void reload(const ComicDB & comic);
     void resetComicRating(const QModelIndex & mi);
 
-    QHash<int, QByteArray> roleNames();
+    QHash<int, QByteArray> roleNames() const;
 
 	enum Columns {
 	Number = 0,
@@ -97,6 +98,8 @@ public slots:
 	void startTransaction();
 	void finishTransaction();
 	void updateRating(int rating, QModelIndex mi);
+
+protected:
 
 private:
 	void setupModelData( QSqlQuery &sqlquery);
