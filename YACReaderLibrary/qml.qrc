@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/GridComicsView.qml</file>
+        <file>qml/YACReaderScrollView.qml</file>
+        <file>qml/page.png</file>
+        <file>qml/star.png</file>
+        <file>qml/tick.png</file>
+        <file>qml/reading.png</file>
+    </qresource>
+</RCC>
