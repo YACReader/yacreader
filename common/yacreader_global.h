@@ -96,6 +96,7 @@ namespace YACReader
 
 QString getSettingsPath();
 void addSperator(QWidget * w);
+QAction * createSeparator();
 }
 #endif
 

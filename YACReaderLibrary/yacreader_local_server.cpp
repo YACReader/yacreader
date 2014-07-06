@@ -64,7 +64,12 @@ bool YACReaderLocalServer::isRunning()
 	socket.connectToServer(YACREADERLIBRARY_GUID);
 	if (socket.waitForConnected(500)) 
 		return true; // Server is running (another instance of YACReaderLibrary has been launched)
-	return false;
+    return false;
+}
+
+void YACReaderLocalServer::close()
+{
+    localServer->close();
 }
 
 

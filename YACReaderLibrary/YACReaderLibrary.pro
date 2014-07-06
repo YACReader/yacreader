@@ -113,6 +113,9 @@ HEADERS += comic_flow.h \
 	../common/http_worker.h \
     yacreader_libraries.h \
         ../common/exit_check.h \
+    comics_view.h \
+    classic_comics_view.h
+
 		   
 SOURCES += comic_flow.cpp \
            create_library_dialog.cpp \
@@ -156,6 +159,9 @@ SOURCES += comic_flow.cpp \
 ../common/yacreader_global.cpp \
     yacreader_libraries.cpp \
 	../common/exit_check.cpp \
+    comics_view.cpp \
+    classic_comics_view.cpp
+
 			
 		   
 include(./server/server.pri)
@@ -186,6 +192,16 @@ TRANSLATIONS    = yacreaderlibrary_es.ts \
 isEqual(QT_MAJOR_VERSION, 5) {
 	Release:DESTDIR = ../release5
 	Debug:DESTDIR = ../debug5
+
+#QML/GridView
+QT += quick qml
+
+HEADERS += grid_comics_view.h
+
+SOURCES += grid_comics_view.cpp
+
+RESOURCES += qml.qrc
+
 } else {
 	Release:DESTDIR = ../release
 	Debug:DESTDIR = ../debug
