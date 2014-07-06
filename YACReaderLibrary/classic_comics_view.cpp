@@ -67,6 +67,10 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     setLayout(layout);
 
     layout->setMargin(0);
+
+#ifdef Q_OS_MAC
+    sVertical->setCollapsible(1,false);
+#endif
 }
 
 void ClassicComicsView::setToolBar(QToolBar *toolBar)
