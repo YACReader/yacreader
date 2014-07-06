@@ -189,9 +189,25 @@ void LibraryWindow::doLayout()
 	foldersTitle->addAction(colapseAllNodesAction);
 
 	//FINAL LAYOUT-------------------------------------------------------------
+    comicsViewStack = new QWidget();
+    QHBoxLayout * l = new QHBoxLayout();
 
-    comicsView = new ClassicComicsView();
+    if(!settings->contains(COMICS_VIEW_STATUS) || settings->value(COMICS_VIEW_STATUS) == Flow) {
+        comicsView = classicComicsView = new ClassicComicsView();
+        comicsViewStatus = Flow;
+        //comicsViewStack->setCurrentIndex(Flow);
+    } else {
+        comicsView = gridComicsView = new GridComicsView();
+        comicsViewStatus = Grid;
+        //comicsViewStack->setCurrentIndex(Grid);
+    }
+
+    doComicsViewConnections();
+
     comicsView->setToolBar(editInfoToolBar);
+    l->addWidget(comicsView);
+    comicsViewStack->setLayout(l);
+    l->setContentsMargins(0,0,0,0);
 
     fullScreenToolTip = new QLabel(comicsView);
     fullScreenToolTip->setText(tr("<font color='white'> press 'F' to close fullscreen mode </font>"));
@@ -205,7 +221,7 @@ void LibraryWindow::doLayout()
 #ifndef Q_OS_MAC
 	QVBoxLayout * rightLayout = new QVBoxLayout;
 	rightLayout->addWidget(libraryToolBar);
-    rightLayout->addWidget(comicsView);
+    rightLayout->addWidget(comicsViewStack);
 
 	rightLayout->setMargin(0);
 	rightLayout->setSpacing(0);
@@ -215,7 +231,7 @@ void LibraryWindow::doLayout()
 
 	sHorizontal->addWidget(rightWidget);
 #else
-	sHorizontal->addWidget(sVertical);
+    sHorizontal->addWidget(comicsViewStack);
 #endif
 	
 	sHorizontal->setStretchFactor(0,0);
@@ -286,7 +302,25 @@ void LibraryWindow::doModels()
 	//comics
 	dmCV =  new TableModel();
 
-	setFoldersFilter("");
+    setFoldersFilter("");
+}
+
+void LibraryWindow::disconnectComicsViewConnections(ComicsView * widget)
+{
+    disconnect(widget, SIGNAL(comicRated(int,QModelIndex)), dmCV, SLOT(updateRating(int,QModelIndex)));
+    disconnect(showHideMarksAction,SIGNAL(toggled(bool)),widget,SLOT(setShowMarks(bool)));
+    disconnect(widget,SIGNAL(selected(unsigned int)),this,SLOT(openComic()));
+    disconnect(widget,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openComic()));
+    disconnect(selectAllComicsAction,SIGNAL(triggered()),widget,SLOT(selectAll()));
+}
+
+void LibraryWindow::doComicsViewConnections()
+{
+    connect(comicsView, SIGNAL(comicRated(int,QModelIndex)), dmCV, SLOT(updateRating(int,QModelIndex)));
+    connect(showHideMarksAction,SIGNAL(toggled(bool)),comicsView,SLOT(setShowMarks(bool)));
+    connect(comicsView,SIGNAL(selected(unsigned int)),this,SLOT(openComic()));
+    connect(comicsView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openComic()));
+    connect(selectAllComicsAction,SIGNAL(triggered()),comicsView,SLOT(selectAll()));
 }
 
 void LibraryWindow::createActions()
@@ -416,6 +450,15 @@ void LibraryWindow::createActions()
 	icoServerButton.addPixmap(QPixmap(":/images/main_toolbar/server.png"), QIcon::Normal);
 	serverConfigAction->setIcon(icoServerButton);
 
+    toggleComicsViewAction = new QAction(tr("Change between comics views"),this);
+    toggleComicsViewAction->setShortcut(Qt::Key_V);
+    toggleComicsViewAction->setToolTip(tr("Change between comics views"));
+    QIcon icoViewsButton;
+    if(!settings->contains(COMICS_VIEW_STATUS) || settings->value(COMICS_VIEW_STATUS) == Flow)
+        icoViewsButton.addPixmap(QPixmap(":/images/main_toolbar/grid.png"), QIcon::Normal);
+    else
+        icoViewsButton.addPixmap(QPixmap(":/images/main_toolbar/flow.png"), QIcon::Normal);
+    toggleComicsViewAction->setIcon(icoViewsButton);
 	//socialAction = new QAction(this);
 
 	openContainingFolderAction = new QAction(this);
@@ -569,6 +612,7 @@ void LibraryWindow::createToolBars()
 	 w2->setFixedWidth(10);
 	 libraryToolBar->addWidget(w2);}
 
+    libraryToolBar->addAction(toggleComicsViewAction);
 	libraryToolBar->addAction(toggleFullScreenAction);
 
 	libraryToolBar->addWidget(new QToolBarStretch());
@@ -583,6 +627,7 @@ void LibraryWindow::createToolBars()
 	libraryToolBar->settingsButton->setDefaultAction(optionsAction);
 	libraryToolBar->serverButton->setDefaultAction(serverConfigAction);
 	libraryToolBar->helpButton->setDefaultAction(helpAboutAction);
+    libraryToolBar->toggleComicsViewButton->setDefaultAction(toggleComicsViewAction);
 	libraryToolBar->fullscreenButton->setDefaultAction(toggleFullScreenAction);
 #endif
 
@@ -777,9 +822,6 @@ void LibraryWindow::createConnections()
 	connect(foldersView, SIGNAL(clicked(QModelIndex)), this, SLOT(loadCovers(QModelIndex)));
 	connect(foldersView, SIGNAL(clicked(QModelIndex)), this, SLOT(updateHistory(QModelIndex)));
 
-    connect(comicsView, SIGNAL(comicRated(int,QModelIndex)), dmCV, SLOT(updateRating(int,QModelIndex)));
-    connect(showHideMarksAction,SIGNAL(toggled(bool)),comicsView,SLOT(setShowMarks(bool)));
-
 	//actions
 	connect(createLibraryAction,SIGNAL(triggered()),this,SLOT(createLibrary()));
 	connect(exportLibraryAction,SIGNAL(triggered()),exportLibraryDialog,SLOT(show()));
@@ -812,14 +854,13 @@ void LibraryWindow::createConnections()
 	connect(expandAllNodesAction,SIGNAL(triggered()),foldersView,SLOT(expandAll()));
 	connect(colapseAllNodesAction,SIGNAL(triggered()),foldersView,SLOT(collapseAll()));
 	connect(toggleFullScreenAction,SIGNAL(triggered()),this,SLOT(toggleFullScreen()));
+    connect(toggleComicsViewAction,SIGNAL(triggered()),this,SLOT(toggleComicsView()));
 	connect(optionsAction, SIGNAL(triggered()),optionsDialog,SLOT(show()));
 #ifdef SERVER_RELEASE
 	connect(serverConfigAction, SIGNAL(triggered()), serverConfigDialog, SLOT(show()));
 #endif
 	connect(optionsDialog, SIGNAL(optionsChanged()),this,SLOT(reloadOptions()));
-	//ComicFlow
-    connect(comicsView,SIGNAL(selected(unsigned int)),this,SLOT(openComic()));
-    connect(comicsView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openComic()));
+
 	//Folders filter
 	//connect(clearFoldersFilter,SIGNAL(clicked()),foldersFilter,SLOT(clear()));
 	connect(foldersFilter,SIGNAL(textChanged(QString)),this,SLOT(setFoldersFilter(QString)));
@@ -837,7 +878,6 @@ void LibraryWindow::createConnections()
 	//connect(dm,SIGNAL(directoryLoaded(QString)),foldersView,SLOT(expandAll()));
 	//connect(dm,SIGNAL(directoryLoaded(QString)),this,SLOT(updateFoldersView(QString)));
 	//Comicts edition
-    connect(selectAllComicsAction,SIGNAL(triggered()),comicsView,SLOT(selectAll()));
 	connect(editSelectedComicsAction,SIGNAL(triggered()),this,SLOT(showProperties()));
 	connect(asignOrderActions,SIGNAL(triggered()),this,SLOT(asignNumbers()));
 
@@ -1069,8 +1109,11 @@ void LibraryWindow::reloadCovers()
         loadCovers(QModelIndex());
 QLOG_INFO() << "reloaded covers at row : " << foldersView->currentIndex().row();
 	QModelIndex mi = dmCV->getIndexFromId(_comicIdEdited);
-    comicsView->scrollTo(mi,QAbstractItemView::PositionAtCenter);
-    comicsView->setCurrentIndex(mi);
+    if(mi.isValid())
+    {
+        comicsView->scrollTo(mi,QAbstractItemView::PositionAtCenter);
+        comicsView->setCurrentIndex(mi);
+    }
 	//centerComicFlow(mi);
 }
 
@@ -1467,6 +1510,48 @@ void LibraryWindow::resetComicRating()
     dmCV->finishTransaction();
 }
 
+void LibraryWindow::switchToComicsView(ComicsView * from, ComicsView * to)
+{
+    disconnectComicsViewConnections(from);
+    from->close();
+
+    comicsView = to;
+    doComicsViewConnections();
+
+    comicsView->setToolBar(editInfoToolBar);
+
+    QHBoxLayout * l = new QHBoxLayout();
+    l->addWidget(to);
+    l->setContentsMargins(0,0,0,0);
+    delete comicsViewStack->layout();
+    comicsViewStack->setLayout(l);
+
+    delete from;
+
+    reloadCovers();
+}
+
+//TODO recover the current comics selection and restore it in the destination
+void LibraryWindow::toggleComicsView()
+{
+    if(comicsViewStatus == Flow){
+        QIcon icoViewsButton;
+        icoViewsButton.addPixmap(QPixmap(":/images/main_toolbar/flow.png"), QIcon::Normal);
+        toggleComicsViewAction->setIcon(icoViewsButton);
+        switchToComicsView(classicComicsView, gridComicsView = new GridComicsView());
+        comicsViewStatus = Grid;
+    }
+    else{
+        QIcon icoViewsButton;
+        icoViewsButton.addPixmap(QPixmap(":/images/main_toolbar/grid.png"), QIcon::Normal);
+        toggleComicsViewAction->setIcon(icoViewsButton);
+        switchToComicsView(gridComicsView, classicComicsView = new ClassicComicsView());
+        comicsViewStatus = Flow;
+    }
+
+    settings->setValue(COMICS_VIEW_STATUS, comicsViewStatus);
+}
+
 void LibraryWindow::asignNumbers()
 {
 	QModelIndexList indexList = getSelectedComics();
@@ -1616,6 +1701,7 @@ void LibraryWindow::closeEvent ( QCloseEvent * event )
     settings->setValue(MAIN_WINDOW_GEOMETRY, saveGeometry());
 
     comicsView->close();
+
     QApplication::instance()->processEvents();
         event->accept();
         QMainWindow::closeEvent(event);

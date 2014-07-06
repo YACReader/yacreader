@@ -9,6 +9,7 @@ class QResizeEvent;
 class QPaintEvent;
 class QHBoxLayout;
 
+//TODO create methods for adding actions, separators and sctreches dynimically
 class YACReaderMainToolBar : public QWidget
 {
 	Q_OBJECT
@@ -21,7 +22,9 @@ public:
 	QToolButton * settingsButton;
 	QToolButton * serverButton;
 	QToolButton * helpButton;
+    QToolButton * toggleComicsViewButton;
 	QToolButton * fullscreenButton;
+
 
 	void setCurrentFolderName(const QString & name);
 signals:

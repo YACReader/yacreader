@@ -50,6 +50,8 @@ class YACReaderTreeView;
 class YACReaderMainToolBar;
 class ComicVineDialog;
 class ComicsView;
+class ClassicComicsView;
+class GridComicsView;
 #include "comic_db.h"
 
 using namespace YACReader;
@@ -92,6 +94,10 @@ private:
 	//-------------
 
     ComicsView * comicsView;
+    ClassicComicsView * classicComicsView;
+    GridComicsView * gridComicsView;
+    QWidget * comicsViewStack;
+
 	YACReaderTreeView * foldersView;
 	YACReaderLibraryListWidget * selectedLibrary;
 	TreeModel * dm;
@@ -128,6 +134,7 @@ private:
 	QAction * toggleFullScreenAction;
 	QAction * optionsAction;
 	QAction * serverConfigAction;
+    QAction * toggleComicsViewAction;
 	//QAction * socialAction;
 
 	//tree actions
@@ -191,6 +198,9 @@ private:
 	void doLayout();
 	void doDialogs();
 	void doModels();
+    void disconnectComicsViewConnections(ComicsView * widget);
+    void doComicsViewConnections();
+
 
 	//ACTIONS MANAGEMENT
 	void disableComicsActions(bool disabled);
@@ -213,6 +223,14 @@ private:
 	QList<QModelIndex> history;
 
 	bool removeError;
+
+    enum ComicsViewStatus
+    {
+        Flow,
+        Grid
+    };
+
+    ComicsViewStatus comicsViewStatus;
 
 protected:
 		virtual void closeEvent ( QCloseEvent * event );
@@ -283,6 +301,8 @@ public:
 		void setRemoveError();
 		void checkRemoveError();
         void resetComicRating();
+        void switchToComicsView(ComicsView *from, ComicsView *to);
+        void toggleComicsView();
 };
 
 #endif
