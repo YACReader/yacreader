@@ -496,9 +496,9 @@ void LibraryWindow::createActions()
 	editSelectedComicsAction->setText(tr("Edit"));
 	editSelectedComicsAction->setIcon(QIcon(":/images/editComic.png"));
 
-	asignOrderActions = new QAction(this);
-	asignOrderActions->setText(tr("Asign current order to comics"));
-	asignOrderActions->setIcon(QIcon(":/images/asignNumber.png"));
+    asignOrderAction = new QAction(this);
+    asignOrderAction->setText(tr("Asign current order to comics"));
+    asignOrderAction->setIcon(QIcon(":/images/asignNumber.png"));
 
 	forceConverExtractedAction = new QAction(this);
 	forceConverExtractedAction->setText(tr("Update cover"));
@@ -530,7 +530,7 @@ void LibraryWindow::disableComicsActions(bool disabled)
 	openComicAction->setDisabled(disabled);
 	editSelectedComicsAction->setDisabled(disabled);
 	selectAllComicsAction->setDisabled(disabled);
-	asignOrderActions->setDisabled(disabled);
+    asignOrderAction->setDisabled(disabled);
 	setAsReadAction->setDisabled(disabled);
 	setAsNonReadAction->setDisabled(disabled);
 	//setAllAsReadAction->setDisabled(disabled);
@@ -635,7 +635,7 @@ void LibraryWindow::createToolBars()
 	editInfoToolBar->addSeparator();
 	editInfoToolBar->addAction(editSelectedComicsAction);
 	editInfoToolBar->addAction(getInfoAction);
-	editInfoToolBar->addAction(asignOrderActions);
+    editInfoToolBar->addAction(asignOrderAction);
 	
 	editInfoToolBar->addSeparator();
 	
@@ -661,21 +661,19 @@ void LibraryWindow::createToolBars()
 
 void LibraryWindow::createMenus()
 {
-    QList<QAction *> itemActions;
     itemActions << openContainingFolderComicAction
                 << YACReader::createSeparator()
                 << resetComicRatingAction
                 << YACReader::createSeparator()
                 << editSelectedComicsAction
                 << getInfoAction
-                << asignOrderActions
+                << asignOrderAction
                 << YACReader::createSeparator()
                 << setAsReadAction
                 << setAsNonReadAction
                 << YACReader::createSeparator()
                 << deleteComicsAction;
 
-    QList<QAction *> viewActions;
     viewActions << openComicAction
                 << YACReader::createSeparator()
                 << openContainingFolderComicAction
@@ -684,7 +682,7 @@ void LibraryWindow::createMenus()
                 << YACReader::createSeparator()
                 << editSelectedComicsAction
                 << getInfoAction
-                << asignOrderActions
+                << asignOrderAction
                 << YACReader::createSeparator()
                 << selectAllComicsAction
                 << YACReader::createSeparator()
@@ -878,7 +876,7 @@ void LibraryWindow::createConnections()
 	//connect(dm,SIGNAL(directoryLoaded(QString)),this,SLOT(updateFoldersView(QString)));
 	//Comicts edition
 	connect(editSelectedComicsAction,SIGNAL(triggered()),this,SLOT(showProperties()));
-	connect(asignOrderActions,SIGNAL(triggered()),this,SLOT(asignNumbers()));
+    connect(asignOrderAction,SIGNAL(triggered()),this,SLOT(asignNumbers()));
 
 	connect(deleteComicsAction,SIGNAL(triggered()),this,SLOT(deleteComics()));
 
@@ -1516,6 +1514,8 @@ void LibraryWindow::switchToComicsView(ComicsView * from, ComicsView * to)
 
     comicsView = to;
     doComicsViewConnections();
+    to->setItemActions(itemActions);
+    to->setViewActions(viewActions);
 
     comicsView->setToolBar(editInfoToolBar);
 

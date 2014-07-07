@@ -81,21 +81,28 @@ Rectangle {
                          }
                      }
 
-
+                    //Menu emits the 'main' signals
                     Menu {
                       id: myContextMenu
-                      MenuItem { text: "Open containing folder..."; onTriggered: display.setRandomName() }
+                      MenuItem { text: "Open comic"; enabled: true; iconSource:"qrc:///images/openInYACReader.png"; onTriggered: openComicAction.trigger() }
                       MenuSeparator{}
-                      MenuItem { text: "Reset comic rating"; onTriggered: model1.removeRows(index, 1) }
+                      MenuItem { text: "Open containing folder..."; enabled: true; iconSource: "qrc:///images/open.png"; onTriggered: openContainingFolderComicAction.trigger() }
                       MenuSeparator{}
-                      MenuItem { text: "Edit"; onTriggered: model1.removeRows(index, 1) }
-                      MenuItem { text: "Download tags from Comic Vine"; onTriggered: model1.removeRows(index, 1) }
-                      MenuItem { text: "Asign current order to comics"; onTriggered: model1.removeRows(index, 1) }
+                      MenuItem { text: "Reset comic rating"; onTriggered: resetComicRatingAction.trigger() }
                       MenuSeparator{}
-                      MenuItem { text: "Set as read"; onTriggered: model1.removeRows(index, 1) }
-                      MenuItem { text: "Set as unread"; onTriggered: model1.removeRows(index, 1) }
+                      MenuItem { text: "Edit"; enabled: true; iconSource:"qrc:///images/editComic.png"; onTriggered: editSelectedComicsAction.trigger() }
+                      MenuItem { text: "Download tags from Comic Vine"; enabled: true; iconSource:"qrc:///images/getInfo.png"; onTriggered: getInfoAction.trigger() }
+                      MenuItem { text: "Asign current order to comics"; enabled: true; iconSource:"qrc:///images/asignNumber.png"; onTriggered: asignOrderAction.trigger() }
                       MenuSeparator{}
-                      MenuItem { text: "Delete selected comics"; onTriggered: model1.removeRows(index, 1) }
+                      MenuItem { text: "Select all comics"; enabled: true; iconSource:"qrc:///images/selectAll.png"; onTriggered: selectAllComicsAction.trigger() }
+                      MenuSeparator{}
+                      MenuItem { text: "Set as read"; enabled: true; iconSource:"qrc:///images/setReadButton.png"; onTriggered: setAsReadAction.trigger() }
+                      MenuItem { text: "Set as unread"; enabled: true; iconSource:"qrc:///images/setUnread.png"; onTriggered: setAsNonReadAction.trigger() }
+                      MenuItem { text: "Show or hide read marks"; enabled: true; iconSource:"qrc:///images/showMarks.png"; onTriggered: showHideMarksAction.trigger() }
+                      MenuSeparator{}
+                      MenuItem { text: "Delete selected comics"; enabled: true; iconSource:"qrc:///images/trash.png"; onTriggered: deleteComicsAction.trigger() }
+                      MenuSeparator{}
+                      MenuItem { text: "Fullscreen mode on/off"; onTriggered: toggleFullScreenAction.trigger() }
                       //MenuItem { text: "Show details"; onTriggered: cell.state = 'Details';
                     }
 
