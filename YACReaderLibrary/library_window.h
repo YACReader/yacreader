@@ -162,10 +162,13 @@ private:
 	//edit info actions
 	QAction * selectAllComicsAction;
 	QAction * editSelectedComicsAction;
-	QAction * asignOrderActions;
+    QAction * asignOrderAction;
 	QAction * forceConverExtractedAction;
 	QAction * deleteComicsAction;
 	QAction * hideComicViewAction;
+
+    QList<QAction *> itemActions;
+    QList<QAction *> viewActions;
 
 #ifdef Q_OS_MAC
 	QToolBar * libraryToolBar;

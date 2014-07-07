@@ -138,6 +138,34 @@ void GridComicsView::setViewActions(const QList<QAction *> &actions)
     //TODO generate QML Menu from actions
     QLOG_INFO() << "setViewActions";
     this->addActions(actions);
+
+    //TODO this is completely unsafe, but QActions can't be used directly in QML
+    if(actions.length()>17)
+    {
+        QQmlContext *ctxt = view->rootContext();
+
+        ctxt->setContextProperty("openComicAction",actions[0]);
+
+        ctxt->setContextProperty("openContainingFolderComicAction",actions[2]);
+
+        ctxt->setContextProperty("resetComicRatingAction",actions[4]);
+
+        ctxt->setContextProperty("editSelectedComicsAction",actions[6]);
+        ctxt->setContextProperty("getInfoAction",actions[7]);
+        ctxt->setContextProperty("asignOrderAction",actions[8]);
+
+        ctxt->setContextProperty("selectAllComicsAction",actions[10]);
+
+        ctxt->setContextProperty("setAsReadAction",actions[12]);
+        ctxt->setContextProperty("setAsNonReadAction",actions[13]);
+        ctxt->setContextProperty("showHideMarksAction",actions[14]);
+
+        ctxt->setContextProperty("deleteComicsAction",actions[16]);
+
+        ctxt->setContextProperty("toggleFullScreenAction",actions[18]);
+    }
+    else
+        QLOG_ERROR() << "setViewActions invoked with the wrong number of actions";
 }
 
 QSize GridComicsView::sizeHint()
