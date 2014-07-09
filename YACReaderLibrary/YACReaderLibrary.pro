@@ -117,7 +117,8 @@ HEADERS += comic_flow.h \
     yacreader_libraries.h \
         ../common/exit_check.h \
     comics_view.h \
-    classic_comics_view.h
+    classic_comics_view.h \
+    empty_folder_widget.h
 
 		   
 SOURCES += comic_flow.cpp \
@@ -163,7 +164,8 @@ SOURCES += comic_flow.cpp \
     yacreader_libraries.cpp \
 	../common/exit_check.cpp \
     comics_view.cpp \
-    classic_comics_view.cpp
+    classic_comics_view.cpp \
+    empty_folder_widget.cpp
 
 			
 		   

@@ -53,6 +53,8 @@ class ComicsView;
 class ClassicComicsView;
 class GridComicsView;
 class ComicsViewTransition;
+class EmptyFolderWidget;
+
 #include "comic_db.h"
 
 using namespace YACReader;
@@ -99,6 +101,7 @@ private:
     GridComicsView * gridComicsView;
     QStackedWidget * comicsViewStack;
     ComicsViewTransition * comicsViewTransition;
+    EmptyFolderWidget * emptyFolderWidget;
 
 	YACReaderTreeView * foldersView;
 	YACReaderLibraryListWidget * selectedLibrary;
@@ -207,104 +210,107 @@ private:
     void doComicsViewConnections();
 
 
-	//ACTIONS MANAGEMENT
-	void disableComicsActions(bool disabled);
-	void disableLibrariesActions(bool disabled);
-	void disableNoUpdatedLibrariesActions(bool disabled);
-	void disableFoldersActions(bool disabled);
+    //ACTIONS MANAGEMENT
+    void disableComicsActions(bool disabled);
+    void disableLibrariesActions(bool disabled);
+    void disableNoUpdatedLibrariesActions(bool disabled);
+    void disableFoldersActions(bool disabled);
 
-	void disableAllActions();
-	//void disableActions();
-	//void enableActions();
-	//void enableLibraryActions();
+    void disableAllActions();
+    //void disableActions();
+    //void enableActions();
+    //void enableLibraryActions();
 
-	QString currentPath();
+    QString currentPath();
 
-	//settings
-	QSettings * settings;
+    //settings
+    QSettings * settings;
 
-	//navigation backward and forward
-	int currentFolderNavigation;
-	QList<QModelIndex> history;
+    //navigation backward and forward
+    int currentFolderNavigation;
+    QList<QModelIndex> history;
 
-	bool removeError;
+    bool removeError;
 
     ComicsViewStatus comicsViewStatus;
 
 protected:
-		virtual void closeEvent ( QCloseEvent * event );
+    virtual void closeEvent ( QCloseEvent * event );
 public:
-	LibraryWindow();
-	public slots:
-		void loadLibrary(const QString & path);
-		void loadCovers(const QModelIndex & mi);
-		void checkEmptyFolder(QStringList * paths = 0);
-		void reloadCovers();
-		void openComic();
-		void createLibrary();
-		void create(QString source,QString dest, QString name);
-		void showAddLibrary();
-		void openLibrary(QString path, QString name);
-		void loadLibraries();
-		void saveLibraries();
-		void reloadCurrentLibrary();
-		void openLastCreated();
-		void updateLibrary();
-		//void deleteLibrary();
-		void openContainingFolder();
-        void setFolderAsNotCompleted();
-        void setFolderAsCompleted();
-        void setFolderAsFinished();
-        void setFolderAsNotFinished();
-		void openContainingFolderComic();
-		void deleteCurrentLibrary();
-		void removeLibrary();
-		void renameLibrary();
-		void rename(QString newName);
-		void cancelCreating();
-		void stopLibraryCreator();
-		void setRootIndex();
-		void toggleFullScreen();
-		void toNormal();
-		void toFullScreen();
-		void setFoldersFilter(QString filter);
-		void showProperties();
-		void exportLibrary(QString destPath);
-		void importLibrary(QString clc,QString destPath,QString name);
-		void reloadOptions();
-		void setCurrentComicsStatusReaded(YACReaderComicReadStatus readStatus);
-		void setCurrentComicReaded();
-		void setCurrentComicUnreaded();
-		void hideComicFlow(bool hide);
-		void showExportComicsInfo();
-		void showImportComicsInfo();
-		void asignNumbers();
-		void showNoLibrariesWidget();
-		void showRootWidget();
-		void showImportingWidget();
-		void manageCreatingError(const QString & error);
-		void manageUpdatingError(const QString & error);
-		void manageOpeningLibraryError(const QString & error);
-		QModelIndexList getSelectedComics();
-		void deleteComics();
-		//void showSocial();
-		void backward();
-		void forward();
-		void updateHistory(const QModelIndex & mi);
-        void updateFoldersViewConextMenu(const QModelIndex & mi);
-		void libraryAlreadyExists(const QString & name);
-		void importLibraryPackage();
-		void updateComicsView(quint64 libraryId, const ComicDB & comic);
-		void setCurrentComicOpened();
-		void showComicVineScraper();
-		void setRemoveError();
-		void checkRemoveError();
-        void resetComicRating();
-        void switchToComicsView(ComicsView *from, ComicsView *to);
-        void showComicsViewTransition();
-        void toggleComicsView_delayed();//used in orther to avoid flickering;
-        void showComicsView();
-        void toggleComicsView();
+    LibraryWindow();
+
+public slots:
+    void loadLibrary(const QString & path);
+    void loadCovers(const QModelIndex & mi);
+    void selectSubfolder(const QModelIndex & mi, int child);
+    void checkEmptyFolder(QStringList * paths = 0);
+    void reloadCovers();
+    void openComic();
+    void createLibrary();
+    void create(QString source,QString dest, QString name);
+    void showAddLibrary();
+    void openLibrary(QString path, QString name);
+    void loadLibraries();
+    void saveLibraries();
+    void reloadCurrentLibrary();
+    void openLastCreated();
+    void updateLibrary();
+    //void deleteLibrary();
+    void openContainingFolder();
+    void setFolderAsNotCompleted();
+    void setFolderAsCompleted();
+    void setFolderAsFinished();
+    void setFolderAsNotFinished();
+    void openContainingFolderComic();
+    void deleteCurrentLibrary();
+    void removeLibrary();
+    void renameLibrary();
+    void rename(QString newName);
+    void cancelCreating();
+    void stopLibraryCreator();
+    void setRootIndex();
+    void toggleFullScreen();
+    void toNormal();
+    void toFullScreen();
+    void setFoldersFilter(QString filter);
+    void showProperties();
+    void exportLibrary(QString destPath);
+    void importLibrary(QString clc,QString destPath,QString name);
+    void reloadOptions();
+    void setCurrentComicsStatusReaded(YACReaderComicReadStatus readStatus);
+    void setCurrentComicReaded();
+    void setCurrentComicUnreaded();
+    void hideComicFlow(bool hide);
+    void showExportComicsInfo();
+    void showImportComicsInfo();
+    void asignNumbers();
+    void showNoLibrariesWidget();
+    void showRootWidget();
+    void showImportingWidget();
+    void manageCreatingError(const QString & error);
+    void manageUpdatingError(const QString & error);
+    void manageOpeningLibraryError(const QString & error);
+    QModelIndexList getSelectedComics();
+    void deleteComics();
+    //void showSocial();
+    void backward();
+    void forward();
+    void updateHistory(const QModelIndex & mi);
+    void updateFoldersViewConextMenu(const QModelIndex & mi);
+    void libraryAlreadyExists(const QString & name);
+    void importLibraryPackage();
+    void updateComicsView(quint64 libraryId, const ComicDB & comic);
+    void setCurrentComicOpened();
+    void showComicVineScraper();
+    void setRemoveError();
+    void checkRemoveError();
+    void resetComicRating();
+    void switchToComicsView(ComicsView *from, ComicsView *to);
+    void showComicsViewTransition();
+    void toggleComicsView_delayed();//used in orther to avoid flickering;
+    void showComicsView();
+    void showEmptyFolderView();
+    void toggleComicsView();
 };
 
 #endif
