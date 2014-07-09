@@ -62,6 +62,7 @@
 
 #include "classic_comics_view.h"
 #include "grid_comics_view.h"
+#include "comics_view_transition.h"
 
 #include "QsLog.h"
 
@@ -189,8 +190,7 @@ void LibraryWindow::doLayout()
 	foldersTitle->addAction(colapseAllNodesAction);
 
 	//FINAL LAYOUT-------------------------------------------------------------
-    comicsViewStack = new QWidget();
-    QHBoxLayout * l = new QHBoxLayout();
+    comicsViewStack = new QStackedWidget();
 
     if(!settings->contains(COMICS_VIEW_STATUS) || settings->value(COMICS_VIEW_STATUS) == Flow) {
         comicsView = classicComicsView = new ClassicComicsView();
@@ -205,9 +205,8 @@ void LibraryWindow::doLayout()
     doComicsViewConnections();
 
     comicsView->setToolBar(editInfoToolBar);
-    l->addWidget(comicsView);
-    comicsViewStack->setLayout(l);
-    l->setContentsMargins(0,0,0,0);
+    comicsViewStack->addWidget(comicsView);
+    comicsViewStack->addWidget(comicsViewTransition = new ComicsViewTransition());
 
     fullScreenToolTip = new QLabel(comicsView);
     fullScreenToolTip->setText(tr("<font color='white'> press 'F' to close fullscreen mode </font>"));
@@ -886,6 +885,8 @@ void LibraryWindow::createConnections()
 
 	//connect(socialAction,SIGNAL(triggered()),this,SLOT(showSocial()));
 
+    connect(comicsViewTransition,SIGNAL(transitionFinished()),this,SLOT(showComicsView()));
+
 }
 
 void LibraryWindow::loadLibrary(const QString & name)
@@ -1519,19 +1520,21 @@ void LibraryWindow::switchToComicsView(ComicsView * from, ComicsView * to)
 
     comicsView->setToolBar(editInfoToolBar);
 
-    QHBoxLayout * l = new QHBoxLayout();
-    l->addWidget(to);
-    l->setContentsMargins(0,0,0,0);
-    delete comicsViewStack->layout();
-    comicsViewStack->setLayout(l);
+    comicsViewStack->removeWidget(from);
+    comicsViewStack->insertWidget(0,comicsView);
 
     delete from;
 
     reloadCovers();
 }
 
-//TODO recover the current comics selection and restore it in the destination
-void LibraryWindow::toggleComicsView()
+void LibraryWindow::showComicsViewTransition()
+{
+    comicsViewStack->setCurrentIndex(1);
+    comicsViewTransition->startMovie();
+}
+
+void LibraryWindow::toggleComicsView_delayed()
 {
     if(comicsViewStatus == Flow){
         QIcon icoViewsButton;
@@ -1549,6 +1552,18 @@ void LibraryWindow::toggleComicsView()
     }
 
     settings->setValue(COMICS_VIEW_STATUS, comicsViewStatus);
+}
+
+void LibraryWindow::showComicsView()
+{
+    comicsViewStack->setCurrentIndex(0);
+}
+
+//TODO recover the current comics selection and restore it in the destination
+void LibraryWindow::toggleComicsView()
+{
+    QTimer::singleShot(0,this,SLOT(showComicsViewTransition()));
+    QTimer::singleShot(32,this,SLOT(toggleComicsView_delayed()));
 }
 
 void LibraryWindow::asignNumbers()

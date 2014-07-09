@@ -95,6 +95,12 @@ namespace YACReader
 	 SevenZNotFound = 700
  };
 
+ enum ComicsViewStatus
+ {
+     Flow,
+     Grid
+ };
+
 QString getSettingsPath();
 void addSperator(QWidget * w);
 QAction * createSeparator();
