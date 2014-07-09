@@ -63,6 +63,7 @@
 #include "classic_comics_view.h"
 #include "grid_comics_view.h"
 #include "comics_view_transition.h"
+#include "empty_folder_widget.h"
 
 #include "QsLog.h"
 
@@ -205,8 +206,11 @@ void LibraryWindow::doLayout()
     doComicsViewConnections();
 
     comicsView->setToolBar(editInfoToolBar);
-    comicsViewStack->addWidget(comicsView);
     comicsViewStack->addWidget(comicsViewTransition = new ComicsViewTransition());
+    comicsViewStack->addWidget(emptyFolderWidget = new EmptyFolderWidget());
+    comicsViewStack->addWidget(comicsView);
+
+    comicsViewStack->setCurrentWidget(comicsView);
 
     fullScreenToolTip = new QLabel(comicsView);
     fullScreenToolTip->setText(tr("<font color='white'> press 'F' to close fullscreen mode </font>"));
@@ -887,6 +891,8 @@ void LibraryWindow::createConnections()
 
     connect(comicsViewTransition,SIGNAL(transitionFinished()),this,SLOT(showComicsView()));
 
+    connect(dmCV,SIGNAL(isEmpty()),this,SLOT(showEmptyFolderView()));
+    connect(emptyFolderWidget,SIGNAL(subfolderSelected(QModelIndex,int)),this,SLOT(selectSubfolder(QModelIndex,int)));
 }
 
 void LibraryWindow::loadLibrary(const QString & name)
@@ -1075,8 +1081,20 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
     QStringList paths = dmCV->getPaths(currentPath());
 	checkEmptyFolder(&paths);
 
-	if(paths.size()>0)
+    if(paths.size()>0) {
         comicsView->setCurrentIndex(dmCV->index(0,0));
+        if(comicsViewStack->currentWidget() == emptyFolderWidget)
+            comicsViewStack->setCurrentWidget(comicsView);
+    }
+    else
+        emptyFolderWidget->setSubfolders(mi,dm->getSubfoldersNames(mi));
+}
+
+void LibraryWindow::selectSubfolder(const QModelIndex &mi, int child)
+{
+    QModelIndex dest = dm->index(child,0,mi);
+    foldersView->setCurrentIndex(dest);
+    loadCovers(dest);
 }
 
 void LibraryWindow::checkEmptyFolder(QStringList * paths)
@@ -1521,7 +1539,7 @@ void LibraryWindow::switchToComicsView(ComicsView * from, ComicsView * to)
     comicsView->setToolBar(editInfoToolBar);
 
     comicsViewStack->removeWidget(from);
-    comicsViewStack->insertWidget(0,comicsView);
+    comicsViewStack->addWidget(comicsView);
 
     delete from;
 
@@ -1530,7 +1548,7 @@ void LibraryWindow::switchToComicsView(ComicsView * from, ComicsView * to)
 
 void LibraryWindow::showComicsViewTransition()
 {
-    comicsViewStack->setCurrentIndex(1);
+    comicsViewStack->setCurrentWidget(comicsViewTransition);
     comicsViewTransition->startMovie();
 }
 
@@ -1556,14 +1574,22 @@ void LibraryWindow::toggleComicsView_delayed()
 
 void LibraryWindow::showComicsView()
 {
-    comicsViewStack->setCurrentIndex(0);
+    comicsViewStack->setCurrentWidget(comicsView);
+}
+
+void LibraryWindow::showEmptyFolderView()
+{
+    comicsViewStack->setCurrentWidget(emptyFolderWidget);
 }
 
 //TODO recover the current comics selection and restore it in the destination
 void LibraryWindow::toggleComicsView()
 {
-    QTimer::singleShot(0,this,SLOT(showComicsViewTransition()));
-    QTimer::singleShot(32,this,SLOT(toggleComicsView_delayed()));
+    if(comicsViewStack->currentWidget()!=emptyFolderWidget) {
+        QTimer::singleShot(0,this,SLOT(showComicsViewTransition()));
+        QTimer::singleShot(32,this,SLOT(toggleComicsView_delayed()));
+    } else
+        toggleComicsView_delayed();
 }
 
 void LibraryWindow::asignNumbers()

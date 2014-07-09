@@ -113,6 +113,7 @@ private:
 signals:
 	void beforeReset();
 	void reset();
+    void isEmpty();
 };
 //! [0]
 

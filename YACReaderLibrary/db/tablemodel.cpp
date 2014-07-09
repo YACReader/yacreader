@@ -304,7 +304,9 @@ void TableModel::setupModelData(unsigned long long int folderId,const QString & 
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
 	endResetModel();
-	//f.close();
+
+    if(_data.length()==0)
+        emit isEmpty();
 }
 
 QString TableModel::getComicPath(QModelIndex mi)

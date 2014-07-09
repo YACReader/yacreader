@@ -18,5 +18,6 @@
         <file>../images/main_toolbar/grid.png</file>
         <file>../images/flow_to_grid.gif</file>
         <file>../images/grid_to_flow.gif</file>
+        <file>../images/empty_folder.png</file>
     </qresource>
 </RCC>

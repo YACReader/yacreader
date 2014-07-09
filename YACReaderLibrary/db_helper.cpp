@@ -671,5 +671,18 @@ ComicInfo DBHelper::loadComicInfo(QString hash, QSqlDatabase & db)
 	else
 		comicInfo.existOnDb = false;
 
-	return comicInfo;
+    return comicInfo;
+}
+
+QList<QString> DBHelper::loadSubfoldersNames(qulonglong folderId, QSqlDatabase &db)
+{
+    QList<QString> result;
+    QSqlQuery selectQuery(db);
+    selectQuery.prepare("SELECT name FROM folder WHERE parentId = :parentId AND id <> 1"); //do not select the root folder
+    selectQuery.bindValue(":parentId", folderId);
+    selectQuery.exec();
+    while(selectQuery.next()){
+        result << selectQuery.record().value("name").toString();
+    }
+    return result;
 }
