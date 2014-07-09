@@ -199,9 +199,11 @@ isEqual(QT_MAJOR_VERSION, 5) {
 #QML/GridView
 QT += quick qml
 
-HEADERS += grid_comics_view.h
+HEADERS += grid_comics_view.h \
+           comics_view_transition.h
 
-SOURCES += grid_comics_view.cpp
+SOURCES += grid_comics_view.cpp \
+           comics_view_transition.cpp
 
 RESOURCES += qml.qrc
 

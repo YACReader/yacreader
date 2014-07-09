@@ -52,6 +52,7 @@ class ComicVineDialog;
 class ComicsView;
 class ClassicComicsView;
 class GridComicsView;
+class ComicsViewTransition;
 #include "comic_db.h"
 
 using namespace YACReader;
@@ -96,7 +97,8 @@ private:
     ComicsView * comicsView;
     ClassicComicsView * classicComicsView;
     GridComicsView * gridComicsView;
-    QWidget * comicsViewStack;
+    QStackedWidget * comicsViewStack;
+    ComicsViewTransition * comicsViewTransition;
 
 	YACReaderTreeView * foldersView;
 	YACReaderLibraryListWidget * selectedLibrary;
@@ -227,12 +229,6 @@ private:
 
 	bool removeError;
 
-    enum ComicsViewStatus
-    {
-        Flow,
-        Grid
-    };
-
     ComicsViewStatus comicsViewStatus;
 
 protected:
@@ -305,6 +301,9 @@ public:
 		void checkRemoveError();
         void resetComicRating();
         void switchToComicsView(ComicsView *from, ComicsView *to);
+        void showComicsViewTransition();
+        void toggleComicsView_delayed();//used in orther to avoid flickering;
+        void showComicsView();
         void toggleComicsView();
 };
 
