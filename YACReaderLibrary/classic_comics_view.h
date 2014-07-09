@@ -37,6 +37,8 @@ public slots:
     void removeItemsFromFlow(const QModelIndex & parent, int from, int to);
     //ComicsView
     void setShowMarks(bool show);
+    void selectAll();
+
 private:
     YACReaderTableView * tableView;
     QWidget *comics;

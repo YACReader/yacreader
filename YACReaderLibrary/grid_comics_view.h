@@ -45,6 +45,7 @@ public slots:
 
     //ComicsView
     void setShowMarks(bool show);
+    void selectAll();
 
 private:
     QItemSelectionModel * _selectionModel;

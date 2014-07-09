@@ -32,12 +32,13 @@ public:
     virtual void setItemActions(const QList<QAction *> & actions) = 0;
     //actions for visual-oriented views
     virtual void setViewActions(const QList<QAction *> & actions) = 0;
-    //virtual selectItem(int index) = 0;
+
 signals:
     void selected(unsigned int);
     void comicRated(int,QModelIndex);
 public slots:
     virtual void setShowMarks(bool show) = 0;
+    virtual void selectAll() = 0;
 protected:
     TableModel * model;
 
