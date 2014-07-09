@@ -188,6 +188,11 @@ void ClassicComicsView::setViewActions(const QList<QAction *> &actions)
     comicFlow->addActions(actions);
 }
 
+void ClassicComicsView::selectAll()
+{
+    tableView->selectAll();
+}
+
 void ClassicComicsView::setShowMarks(bool show)
 {
     comicFlow->setShowMarks(show);

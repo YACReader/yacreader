@@ -168,6 +168,11 @@ void GridComicsView::setViewActions(const QList<QAction *> &actions)
         QLOG_ERROR() << "setViewActions invoked with the wrong number of actions";
 }
 
+void GridComicsView::selectAll()
+{
+    QLOG_INFO() << "selectAll";
+}
+
 QSize GridComicsView::sizeHint()
 {
         QLOG_INFO() << "sizeHint";

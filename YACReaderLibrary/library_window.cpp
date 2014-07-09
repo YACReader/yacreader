@@ -1094,6 +1094,7 @@ void LibraryWindow::selectSubfolder(const QModelIndex &mi, int child)
 {
     QModelIndex dest = dm->index(child,0,mi);
     foldersView->setCurrentIndex(dest);
+    updateHistory(dest);
     loadCovers(dest);
 }
 
