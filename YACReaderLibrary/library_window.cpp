@@ -212,14 +212,6 @@ void LibraryWindow::doLayout()
 
     comicsViewStack->setCurrentWidget(comicsView);
 
-    fullScreenToolTip = new QLabel(comicsView);
-    fullScreenToolTip->setText(tr("<font color='white'> press 'F' to close fullscreen mode </font>"));
-    fullScreenToolTip->setPalette(QPalette(QColor(0,0,0)));
-    fullScreenToolTip->setFont(QFont("courier new",15,234));
-    fullScreenToolTip->setAutoFillBackground(true);
-    fullScreenToolTip->hide();
-    fullScreenToolTip->adjustSize();
-
 	sHorizontal->addWidget(sideBar);
 #ifndef Q_OS_MAC
 	QVBoxLayout * rightLayout = new QVBoxLayout;
@@ -1416,16 +1408,10 @@ void LibraryWindow::toFullScreen()
     comicsView->toFullScreen();
 
 	showFullScreen();
-
-	fullScreenToolTip->move((width()-fullScreenToolTip->width())/2,0);
-	fullScreenToolTip->adjustSize();
-	fullScreenToolTip->show();
 }
 
 void LibraryWindow::toNormal()
 {
-	fullScreenToolTip->hide();
-
 	sideBar->show();
 	
     comicsView->toNormal();

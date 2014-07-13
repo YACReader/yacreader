@@ -109,7 +109,6 @@ private:
 	TableModel * dmCV;
 	//QStringList paths;
 	YACReaderLibraries libraries;
-	QLabel * fullScreenToolTip;
 
 	QStackedWidget * mainWidget;
 	NoLibrariesWidget * noLibrariesWidget;
