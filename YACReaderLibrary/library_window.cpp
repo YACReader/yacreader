@@ -412,14 +412,14 @@ void LibraryWindow::createActions()
 
     exportComicsInfoAction = new QAction(tr("Export comics info"),this);
     exportComicsInfoAction->setToolTip(tr("Export comics info"));
-    exportComicsInfoAction->setData(EXPORT_COMICS_INFO_YL);
-    exportComicsInfoAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(EXPORT_COMICS_INFO_YL));
+    exportComicsInfoAction->setData(EXPORT_COMICS_INFO_ACTION_YL);
+    exportComicsInfoAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(EXPORT_COMICS_INFO_ACTION_YL));
     exportComicsInfoAction->setIcon(QIcon(":/images/exportComicsInfoIcon.png"));
 
     importComicsInfoAction = new QAction(tr("Import comics info"),this);
     importComicsInfoAction->setToolTip(tr("Import comics info"));
-    importComicsInfoAction->setData(IMPORT_COMICS_INFO_YL);
-    importComicsInfoAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(IMPORT_COMICS_INFO_YL));
+    importComicsInfoAction->setData(IMPORT_COMICS_INFO_ACTION_YL);
+    importComicsInfoAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(IMPORT_COMICS_INFO_ACTION_YL));
     importComicsInfoAction->setIcon(QIcon(":/images/importComicsInfoIcon.png"));
 
 	exportLibraryAction = new QAction(tr("Pack covers"),this);
