@@ -20,33 +20,59 @@ FlowType flowType = Strip;
 OptionsDialog::OptionsDialog(QWidget * parent)
 :YACReaderOptionsDialog(parent)
 {
-	QVBoxLayout * layout = new QVBoxLayout;
+    QTabWidget * tabWidget = new QTabWidget();
 
-	QHBoxLayout * switchFlowType = new QHBoxLayout;
-	switchFlowType->addStretch();
-	switchFlowType->addWidget(useGL);
+    QVBoxLayout * layout = new QVBoxLayout(this);
+
+    QVBoxLayout * flowLayout = new QVBoxLayout;
+    QVBoxLayout * generalLayout = new QVBoxLayout();
+
+    QHBoxLayout * switchFlowType = new QHBoxLayout;
+    switchFlowType->addStretch();
+    switchFlowType->addWidget(useGL);
+
+    QHBoxLayout * buttons = new QHBoxLayout();
+    buttons->addStretch();
+    buttons->addWidget(accept);
+    buttons->addWidget(cancel);
+
+    flowLayout->addWidget(sw);
+    flowLayout->addWidget(gl);
+    flowLayout->addLayout(switchFlowType);
+
+    QVBoxLayout * shortcutsLayout = new QVBoxLayout();
+    QPushButton * shortcutsButton = new QPushButton(tr("Edit shortcuts"));
+    shortcutsLayout->addWidget(shortcutsButton);
 
 
+    sw->hide();
 
-	QHBoxLayout * buttons = new QHBoxLayout();
-	buttons->addStretch();
-	buttons->addWidget(accept);
-	buttons->addWidget(cancel);
+    QWidget * comicFlowW = new QWidget;
+    comicFlowW->setLayout(flowLayout);
 
-	layout->addWidget(sw);
-	layout->addWidget(gl);
-	layout->addLayout(switchFlowType);
-	layout->addLayout(buttons);
+    QGroupBox *generalBox = new QGroupBox(tr("Shortcuts"));
+    generalBox->setLayout(shortcutsLayout);
+    generalLayout->addWidget(generalBox);
+    generalLayout->addStretch();
 
-	sw->hide();
+    QWidget * generalW = new QWidget;
+    generalW->setLayout(generalLayout);
 
-	setLayout(layout);
-	//restoreOptions(settings); //load options
-	//resize(200,0);
-	setModal (true);
-	setWindowTitle(tr("Options"));
+    tabWidget->addTab(comicFlowW,tr("Comic Flow"));
+    tabWidget->addTab(generalW,tr("General"));
 
-	this->layout()->setSizeConstraint(QLayout::SetFixedSize);
+    layout->addWidget(tabWidget);
+    layout->addLayout(buttons);
+    setLayout(layout);
+    //restoreOptions(settings); //load options
+    //resize(200,0);
+    setModal (true);
+    setWindowTitle(tr("Options"));
+
+    this->layout()->setSizeConstraint(QLayout::SetFixedSize);
+
+    connect(shortcutsButton,SIGNAL(clicked()),this,SIGNAL(editShortcuts()));
 }
+
 
 

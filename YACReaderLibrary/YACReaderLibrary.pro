@@ -174,6 +174,7 @@ include(../custom_widgets/custom_widgets_yacreaderlibrary.pri)
 include(../compressed_archive/wrapper.pri)
 include(./comic_vine/comic_vine.pri)
 include(../QsLog/QsLog.pri)
+include(../shortcuts_management/shortcuts_management.pri)
 
 RESOURCES += images.qrc files.qrc
 win32:RESOURCES += images_win.qrc
