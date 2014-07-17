@@ -100,6 +100,8 @@
                 <file>../images/comic_vine/downArrow.png</file>
                 <file>../images/comic_vine/upArrow.png</file>
 		<file>../images/find_folder.png</file>
+                <file>../images/clear_shortcut.png</file>
+                <file>../images/accept_shortcut.png</file>
 		<!--<file>../images/busy_background.png</file>-->
 	</qresource>
 </RCC>

@@ -54,6 +54,7 @@ class ClassicComicsView;
 class GridComicsView;
 class ComicsViewTransition;
 class EmptyFolderWidget;
+class ShortcutsDialog;
 
 #include "comic_db.h"
 
@@ -76,6 +77,7 @@ private:
 	RenameLibraryDialog * renameLibraryDialog;
 	PropertiesDialog * propertiesDialog;
 	ComicVineDialog * comicVineDialog;
+    ShortcutsDialog * shortcutsDialog;
 	//YACReaderSocialDialog * socialDialog;
 	bool fullscreen;
 	bool importedCovers; //if true, the library is read only (not updates,open comic or properties)
@@ -125,8 +127,8 @@ private:
 	QAction * createLibraryAction;
 	QAction * openLibraryAction;
 	
-	QAction * exportComicsInfo;
-	QAction * importComicsInfo;
+    QAction * exportComicsInfoAction;
+    QAction * importComicsInfoAction;
 
 	QAction * exportLibraryAction;
 	QAction * importLibraryAction;
@@ -151,8 +153,8 @@ private:
     QAction * setFolderAsNotCompletedAction;
     QAction * setFolderAsCompletedAction;
     //--
-    QAction * setFolderAsFinishedAction;
-    QAction * setFolderAsNotFinishedAction;
+    QAction * setFolderAsReadAction;
+    QAction * setFolderAsUnreadAction;
 
 	QAction * openContainingFolderComicAction;
 	QAction * setAsReadAction;
@@ -167,7 +169,7 @@ private:
 	QAction * selectAllComicsAction;
 	QAction * editSelectedComicsAction;
     QAction * asignOrderAction;
-	QAction * forceConverExtractedAction;
+    QAction * forceCoverExtractedAction;
 	QAction * deleteComicsAction;
 	QAction * hideComicViewAction;
 
@@ -204,6 +206,7 @@ private:
 	void createConnections();
 	void doLayout();
 	void doDialogs();
+    void setUpShortcutsManagement();
 	void doModels();
     void disconnectComicsViewConnections(ComicsView * widget);
     void doComicsViewConnections();
@@ -258,8 +261,8 @@ public slots:
     void openContainingFolder();
     void setFolderAsNotCompleted();
     void setFolderAsCompleted();
-    void setFolderAsFinished();
-    void setFolderAsNotFinished();
+    void setFolderAsRead();
+    void setFolderAsUnread();
     void openContainingFolderComic();
     void deleteCurrentLibrary();
     void removeLibrary();
