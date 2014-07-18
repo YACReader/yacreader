@@ -40,23 +40,15 @@ OptionsDialog::OptionsDialog(QWidget * parent)
     flowLayout->addWidget(gl);
     flowLayout->addLayout(switchFlowType);
 
-    QVBoxLayout * shortcutsLayout = new QVBoxLayout();
-    QPushButton * shortcutsButton = new QPushButton(tr("Edit shortcuts"));
-    shortcutsLayout->addWidget(shortcutsButton);
-
-
     sw->hide();
 
     QWidget * comicFlowW = new QWidget;
     comicFlowW->setLayout(flowLayout);
 
-    QGroupBox *generalBox = new QGroupBox(tr("Shortcuts"));
-    generalBox->setLayout(shortcutsLayout);
-    generalLayout->addWidget(generalBox);
-    generalLayout->addStretch();
-
     QWidget * generalW = new QWidget;
     generalW->setLayout(generalLayout);
+    generalLayout->addWidget(shortcutsBox);
+    generalLayout->addStretch();
 
     tabWidget->addTab(comicFlowW,tr("Comic Flow"));
     tabWidget->addTab(generalW,tr("General"));
@@ -71,7 +63,6 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 
     this->layout()->setSizeConstraint(QLayout::SetFixedSize);
 
-    connect(shortcutsButton,SIGNAL(clicked()),this,SIGNAL(editShortcuts()));
 }
 
 

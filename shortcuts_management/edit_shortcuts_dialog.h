@@ -1,5 +1,5 @@
-#ifndef SHORTCUTS_DIALOG_H
-#define SHORTCUTS_DIALOG_H
+#ifndef EDIT_SHORTCUTS_DIALOG_H
+#define EDIT_SHORTCUTS_DIALOG_H
 
 #include <QDialog>
 #include <QModelIndex>
@@ -10,11 +10,11 @@ class QTableView;
 class ActionsGroupsModel;
 class ActionsShortcutsModel;
 
-class ShortcutsDialog : public QDialog
+class EditShortcutsDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit ShortcutsDialog(QWidget * parent = 0);
+    explicit EditShortcutsDialog(QWidget * parent = 0);
     void addActionsGroup(const QString & name, const QIcon & ico, QList<QAction *> & group);
 signals:
 
@@ -29,4 +29,4 @@ protected:
     ActionsShortcutsModel * actionsModel;
 };
 
-#endif // SHORTCUTS_DIALOG_H
+#endif // EDIT_SHORTCUTS_DIALOG_H

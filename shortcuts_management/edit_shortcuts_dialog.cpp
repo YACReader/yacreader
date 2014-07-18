@@ -1,4 +1,4 @@
-#include "shortcuts_dialog.h"
+#include "edit_shortcuts_dialog.h"
 
 #include "actions_groups_model.h"
 #include "actions_shortcuts_model.h"
@@ -14,7 +14,7 @@
 
 #include "QsLog.h"
 
-ShortcutsDialog::ShortcutsDialog(QWidget *parent) :
+EditShortcutsDialog::EditShortcutsDialog(QWidget *parent) :
     QDialog(parent)
 {
     QPushButton * resetButton = new QPushButton(tr("Restore defaults"),this);
@@ -64,19 +64,19 @@ ShortcutsDialog::ShortcutsDialog(QWidget *parent) :
     setModal(true);
 }
 
-void ShortcutsDialog::addActionsGroup(const QString &name, const QIcon &ico, QList<QAction *> &group)
+void EditShortcutsDialog::addActionsGroup(const QString &name, const QIcon &ico, QList<QAction *> &group)
 {
     //TODO
     //groups model add
     groupsModel->addActionsGroup(ActionsGroup(name,ico,group));
 }
 
-void ShortcutsDialog::resetToDefaults()
+void EditShortcutsDialog::resetToDefaults()
 {
 
 }
 
-void ShortcutsDialog::loadShortcuts(const QModelIndex &mi,const QModelIndex &mi2)
+void EditShortcutsDialog::loadShortcuts(const QModelIndex &mi,const QModelIndex &mi2)
 {
     actionsModel->addActions(groupsModel->getActions(mi));
 }

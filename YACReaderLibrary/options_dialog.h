@@ -12,8 +12,6 @@ class OptionsDialog : public YACReaderOptionsDialog
 Q_OBJECT
 	public:
 		OptionsDialog(QWidget * parent = 0);
-signals:
-        void editShortcuts();
 };
 
 
