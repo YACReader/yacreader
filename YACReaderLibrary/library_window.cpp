@@ -65,7 +65,7 @@
 #include "comics_view_transition.h"
 #include "empty_folder_widget.h"
 
-#include "shortcuts_dialog.h"
+#include "edit_shortcuts_dialog.h"
 #include "shortcuts_manager.h"
 
 #include "QsLog.h"
@@ -273,7 +273,7 @@ void LibraryWindow::doDialogs()
 	optionsDialog = new OptionsDialog(this);
 	optionsDialog->restoreOptions(settings);
 
-    shortcutsDialog = new ShortcutsDialog(this);
+    editShortcutsDialog = new EditShortcutsDialog(this);
     setUpShortcutsManagement();
 
 #ifdef SERVER_RELEASE
@@ -297,7 +297,7 @@ void LibraryWindow::doDialogs()
 
 void LibraryWindow::setUpShortcutsManagement()
 {
-    shortcutsDialog->addActionsGroup("Comics",QIcon(":/images/openInYACReader.png"),
+    editShortcutsDialog->addActionsGroup("Comics",QIcon(":/images/openInYACReader.png"),
                                      QList<QAction *>()
                                      << openComicAction
                                      << setAsReadAction
@@ -310,7 +310,7 @@ void LibraryWindow::setUpShortcutsManagement()
                                      << deleteComicsAction
                                      << getInfoAction);
 
-    shortcutsDialog->addActionsGroup("Folders",QIcon(),
+    editShortcutsDialog->addActionsGroup("Folders",QIcon(),
                                      QList<QAction *>()
                                      << setRootIndexAction
                                      << expandAllNodesAction
@@ -321,15 +321,16 @@ void LibraryWindow::setUpShortcutsManagement()
                                      << setFolderAsReadAction
                                      << setFolderAsUnreadAction);
 
-    shortcutsDialog->addActionsGroup("General",QIcon(),
+    editShortcutsDialog->addActionsGroup("General",QIcon(),
                                      QList<QAction *>()
                                      << backAction
                                      << forwardAction
                                      << helpAboutAction
                                      << optionsAction
-                                     << serverConfigAction);
+                                     << serverConfigAction
+                                     << showEditShortcutsAction);
 
-    shortcutsDialog->addActionsGroup("Libraries",QIcon(),
+    editShortcutsDialog->addActionsGroup("Libraries",QIcon(),
                                      QList<QAction *>()
                                      << createLibraryAction
                                      << openLibraryAction
@@ -341,7 +342,7 @@ void LibraryWindow::setUpShortcutsManagement()
                                      << renameLibraryAction
                                      << removeLibraryAction);
 
-    shortcutsDialog->addActionsGroup("Visualization",QIcon(),
+    editShortcutsDialog->addActionsGroup("Visualization",QIcon(),
                                      QList<QAction *>()
                                      << showHideMarksAction
                                      << toggleFullScreenAction
@@ -635,6 +636,11 @@ void LibraryWindow::createActions()
 	getInfoAction->setIcon(QIcon(":/images/getInfo.png"));
 	//-------------------------------------------------------------------------
 
+    showEditShortcutsAction = new QAction(tr("Edit shortcuts"),this);
+    showEditShortcutsAction->setData(SHOW_EDIT_SHORTCUTS_ACTION_YL);
+    showEditShortcutsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_EDIT_SHORTCUTS_ACTION_YL));
+    showEditShortcutsAction->setShortcutContext(Qt::ApplicationShortcut);
+    addAction(showEditShortcutsAction);
 	//disable actions
 	disableAllActions();
 }
@@ -772,7 +778,6 @@ void LibraryWindow::createToolBars()
 
 	editInfoToolBar->addWidget(new QToolBarStretch());
     editInfoToolBar->addAction(hideComicViewAction);
-
 }
 
 void LibraryWindow::createMenus()
@@ -973,7 +978,7 @@ void LibraryWindow::createConnections()
 	connect(serverConfigAction, SIGNAL(triggered()), serverConfigDialog, SLOT(show()));
 #endif
 	connect(optionsDialog, SIGNAL(optionsChanged()),this,SLOT(reloadOptions()));
-    connect(optionsDialog, SIGNAL(editShortcuts()),shortcutsDialog,SLOT(show()));
+    connect(optionsDialog, SIGNAL(editShortcuts()),editShortcutsDialog,SLOT(show()));
 
 	//Folders filter
 	//connect(clearFoldersFilter,SIGNAL(clicked()),foldersFilter,SLOT(clear()));
@@ -1007,6 +1012,8 @@ void LibraryWindow::createConnections()
 
     connect(dmCV,SIGNAL(isEmpty()),this,SLOT(showEmptyFolderView()));
     connect(emptyFolderWidget,SIGNAL(subfolderSelected(QModelIndex,int)),this,SLOT(selectSubfolder(QModelIndex,int)));
+
+    connect(showEditShortcutsAction,SIGNAL(triggered()),editShortcutsDialog,SLOT(show()));
 }
 
 void LibraryWindow::loadLibrary(const QString & name)

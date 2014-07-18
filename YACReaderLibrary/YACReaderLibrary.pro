@@ -13,7 +13,7 @@ INCLUDEPATH += ../common \
 			   ./comic_vine \
 			   ./comic_vine/model
 
-DEFINES += SERVER_RELEASE NOMINMAX
+DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY
 			   
 win32 {
 

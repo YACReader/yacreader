@@ -10,6 +10,7 @@
 #include <QRadioButton>
 #include <QSlider>
 #include <QSettings>
+#include <QGroupBox>
 
 YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget * parent)
 	:QDialog(parent)
@@ -22,6 +23,16 @@ YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget * parent)
 	cancel = new QPushButton(tr("Cancel"));
 
 	cancel->setDefault(true);
+
+
+    QVBoxLayout * shortcutsLayout = new QVBoxLayout();
+    QPushButton * shortcutsButton = new QPushButton(tr("Edit shortcuts"));
+    shortcutsLayout->addWidget(shortcutsButton);
+
+    shortcutsBox = new QGroupBox(tr("Shortcuts"));
+    shortcutsBox->setLayout(shortcutsLayout);
+
+    connect(shortcutsButton,SIGNAL(clicked()),this,SIGNAL(editShortcuts()));
 
 	connect(accept,SIGNAL(clicked()),this,SLOT(saveOptions()));
 	connect(cancel,SIGNAL(clicked()),this,SLOT(restoreOptions())); //TODO fix this

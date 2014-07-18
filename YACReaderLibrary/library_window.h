@@ -54,7 +54,7 @@ class ClassicComicsView;
 class GridComicsView;
 class ComicsViewTransition;
 class EmptyFolderWidget;
-class ShortcutsDialog;
+class EditShortcutsDialog;
 
 #include "comic_db.h"
 
@@ -77,7 +77,7 @@ private:
 	RenameLibraryDialog * renameLibraryDialog;
 	PropertiesDialog * propertiesDialog;
 	ComicVineDialog * comicVineDialog;
-    ShortcutsDialog * shortcutsDialog;
+    EditShortcutsDialog * editShortcutsDialog;
 	//YACReaderSocialDialog * socialDialog;
 	bool fullscreen;
 	bool importedCovers; //if true, the library is read only (not updates,open comic or properties)
@@ -172,6 +172,8 @@ private:
     QAction * forceCoverExtractedAction;
 	QAction * deleteComicsAction;
 	QAction * hideComicViewAction;
+
+    QAction *showEditShortcutsAction;
 
     QList<QAction *> itemActions;
     QList<QAction *> viewActions;

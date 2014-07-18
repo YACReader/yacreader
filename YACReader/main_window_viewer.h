@@ -18,6 +18,7 @@ class HelpAboutDialog;
 class HttpVersionChecker;
 class ShortcutsDialog;
 class YACReaderSliderAction;
+class EditShortcutsDialog;
 
 	class MainWindowViewer : public QMainWindow
 	{
@@ -51,6 +52,7 @@ class YACReaderSliderAction;
 		void fitToHeight();
 		void checkNewVersion();
         void processReset();
+        void setUpShortcutsManagement();
 		/*void viewComic();
 		void prev();
 		void next();
@@ -71,6 +73,7 @@ class YACReaderSliderAction;
 		OptionsDialog * optionsDialog;
 		HelpAboutDialog * had;
 		ShortcutsDialog * shortcutsDialog;
+        EditShortcutsDialog * editShortcutsDialog;
 
 		//! ToolBars
 		QToolBar *comicToolBar;
@@ -83,17 +86,17 @@ class YACReaderSliderAction;
 		QAction *openNextComicAction;
 		QAction *nextAction;
 		QAction *prevAction;
-		QAction *adjustWidth;
-		QAction *adjustHeight;
-		QAction *goToPage;
+        QAction *adjustWidthAction;
+        QAction *adjustHeightAction;
+        QAction *goToPageAction;
 		QAction *optionsAction;
 		QAction *helpAboutAction;
-		QAction *showMagnifyingGlass;
-		QAction *setBookmark;
-		QAction *showBookmarks;
+        QAction *showMagnifyingGlassAction;
+        QAction *setBookmarkAction;
+        QAction *showBookmarksAction;
 		QAction *leftRotationAction;
 		QAction *rightRotationAction;
-		QAction *showInfo;
+        QAction *showInfoAction;
 		QAction *closeAction;
 		QAction *doublePageAction;
 		QAction *showShorcutsAction;
@@ -101,6 +104,8 @@ class YACReaderSliderAction;
 		QAction *alwaysOnTopAction;
 		QAction *adjustToFullSizeAction;
 		QAction *showFlowAction;
+
+        QAction *showEditShortcutsAction;
 
 		YACReaderSliderAction * sliderAction;
 
@@ -115,8 +120,8 @@ class YACReaderSliderAction;
 		void getSiblingComics(QString path,QString currentComic);
 
 		//! Manejadores de evento:
-		void keyPressEvent(QKeyEvent *event);
-		//void resizeEvent(QResizeEvent * event);
+        void keyPressEvent(QKeyEvent *event);
+        //void resizeEvent(QResizeEvent * event);
 		void mouseDoubleClickEvent ( QMouseEvent * event );
 		void dropEvent(QDropEvent *event);
 		void dragEnterEvent(QDragEnterEvent *event);
