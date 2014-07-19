@@ -297,7 +297,8 @@ void LibraryWindow::doDialogs()
 
 void LibraryWindow::setUpShortcutsManagement()
 {
-    editShortcutsDialog->addActionsGroup("Comics",QIcon(":/images/openInYACReader.png"),
+
+    editShortcutsDialog->addActionsGroup("Comics",QIcon(":/images/shortcuts_group_comics.png"),
                                      QList<QAction *>()
                                      << openComicAction
                                      << setAsReadAction
@@ -310,7 +311,7 @@ void LibraryWindow::setUpShortcutsManagement()
                                      << deleteComicsAction
                                      << getInfoAction);
 
-    editShortcutsDialog->addActionsGroup("Folders",QIcon(),
+    editShortcutsDialog->addActionsGroup("Folders",QIcon(":/images/shortcuts_group_folders.png"),
                                      QList<QAction *>()
                                      << setRootIndexAction
                                      << expandAllNodesAction
@@ -321,7 +322,7 @@ void LibraryWindow::setUpShortcutsManagement()
                                      << setFolderAsReadAction
                                      << setFolderAsUnreadAction);
 
-    editShortcutsDialog->addActionsGroup("General",QIcon(),
+    editShortcutsDialog->addActionsGroup("General",QIcon(":/images/shortcuts_group_general.png"),
                                      QList<QAction *>()
                                      << backAction
                                      << forwardAction
@@ -330,7 +331,7 @@ void LibraryWindow::setUpShortcutsManagement()
                                      << serverConfigAction
                                      << showEditShortcutsAction);
 
-    editShortcutsDialog->addActionsGroup("Libraries",QIcon(),
+    editShortcutsDialog->addActionsGroup("Libraries",QIcon(":/images/shortcuts_group_libraries.png"),
                                      QList<QAction *>()
                                      << createLibraryAction
                                      << openLibraryAction
@@ -342,7 +343,7 @@ void LibraryWindow::setUpShortcutsManagement()
                                      << renameLibraryAction
                                      << removeLibraryAction);
 
-    editShortcutsDialog->addActionsGroup("Visualization",QIcon(),
+    editShortcutsDialog->addActionsGroup("Visualization",QIcon(":/images/shortcuts_group_visualization.png"),
                                      QList<QAction *>()
                                      << showHideMarksAction
                                      << toggleFullScreenAction

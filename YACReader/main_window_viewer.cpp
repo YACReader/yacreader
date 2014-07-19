@@ -983,7 +983,7 @@ void MainWindowViewer::setUpShortcutsManagement()
     //actions holder
     QObject * orphanActions = new QObject;
 
-    editShortcutsDialog->addActionsGroup(tr("Comics"),QIcon(":/images/openInYACReader.png"),
+    editShortcutsDialog->addActionsGroup(tr("Comics"),QIcon(":/images/shortcuts_group_comics.png"),
                                          QList<QAction *>()
                                          << openAction
                                          << openFolderAction
@@ -1000,7 +1000,7 @@ void MainWindowViewer::setUpShortcutsManagement()
     toggleToolbarsAction->setData(TOGGLE_TOOL_BARS_ACTION_Y);
     toggleToolbarsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_TOOL_BARS_ACTION_Y));
 
-    editShortcutsDialog->addActionsGroup(tr("General"),QIcon(),
+    editShortcutsDialog->addActionsGroup(tr("General"),QIcon(":/images/shortcuts_group_general.png"),
                                          QList<QAction *>()
                                          << optionsAction
                                          << helpAboutAction
@@ -1030,7 +1030,7 @@ void MainWindowViewer::setUpShortcutsManagement()
     zoomOutMglassAction->setData(ZOOM_OUT_MGLASS_ACTION_Y);
     zoomOutMglassAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_OUT_MGLASS_ACTION_Y));
 
-    editShortcutsDialog->addActionsGroup(tr("Magnifiying glass"),QIcon(),
+    editShortcutsDialog->addActionsGroup(tr("Magnifiying glass"),QIcon(":/images/shortcuts_group_mglass.png"),
                                          QList<QAction *>()
                                          << showMagnifyingGlassAction
                                          << sizeUpMglassAction
@@ -1043,7 +1043,7 @@ void MainWindowViewer::setUpShortcutsManagement()
     toggleFitToScreenAction->setData(CHANGE_FIT_ACTION_Y);
     toggleFitToScreenAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(CHANGE_FIT_ACTION_Y));
 
-    editShortcutsDialog->addActionsGroup(tr("Page adjustement"),QIcon(),
+    editShortcutsDialog->addActionsGroup(tr("Page adjustement"),QIcon(":/images/shortcuts_group_page.png"),
                                          QList<QAction *>()
                                          << adjustHeightAction
                                          << adjustWidthAction
@@ -1085,7 +1085,7 @@ void MainWindowViewer::setUpShortcutsManagement()
     goToLastPageAction->setData(GO_TO_LAST_PAGE_ACTION_Y);
     goToLastPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(GO_TO_LAST_PAGE_ACTION_Y));
 
-    editShortcutsDialog->addActionsGroup(tr("Reading"),QIcon(),
+    editShortcutsDialog->addActionsGroup(tr("Reading"),QIcon(":/images/shortcuts_group_reading.png"),
                                          QList<QAction *>()
                                          << nextAction
                                          << prevAction
