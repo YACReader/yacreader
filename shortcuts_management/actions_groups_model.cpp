@@ -20,7 +20,7 @@ QModelIndex ActionsGroupsModel::index(int row, int column, const QModelIndex &pa
     if (!hasIndex(row, column, parent))
         return QModelIndex();
 
-    return createIndex(row, column, &groups.at(row).getActions());
+    return createIndex(row, column);
 }
 
 QVariant ActionsGroupsModel::data(const QModelIndex &index, int role) const
