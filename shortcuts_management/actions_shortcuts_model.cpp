@@ -57,13 +57,21 @@ QVariant ActionsShortcutsModel::data(const QModelIndex &index, int role) const
         }
     }
 
+    if(role == Qt::ForegroundRole && index.column() == KEYS && actions[index.row()]->shortcut().isEmpty())
+        return QBrush(QColor("#AAAAAA"));
+
     if (role != Qt::DisplayRole)
         return QVariant();
 
     if (index.column() == NAME)
         return QVariant(actions[index.row()]->toolTip());
     if (index.column() == KEYS)
-        return QVariant(actions[index.row()]->shortcut().toString(QKeySequence::NativeText));
+    {
+        QKeySequence ks = actions[index.row()]->shortcut();
+        if(ks.isEmpty())
+            return tr("None");
+        return QVariant(ks.toString(QKeySequence::NativeText));
+    }
 
     return QVariant();
 }

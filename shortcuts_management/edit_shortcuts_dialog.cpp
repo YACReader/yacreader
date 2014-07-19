@@ -40,6 +40,7 @@ EditShortcutsDialog::EditShortcutsDialog(QWidget *parent) :
     groupsModel = new ActionsGroupsModel();
     actionsModel = new ActionsShortcutsModel();
     actionsGroupsListView->setModel(groupsModel);
+    actionsGroupsListView->setFocus();
     actionsTableView->setModel(actionsModel);
     actionsTableView->setColumnWidth(0,30);
     actionsTableView->setColumnWidth(1,360);
@@ -71,9 +72,9 @@ EditShortcutsDialog::EditShortcutsDialog(QWidget *parent) :
 
 void EditShortcutsDialog::addActionsGroup(const QString &name, const QIcon &ico, QList<QAction *> &group)
 {
-    //TODO
-    //groups model add
     groupsModel->addActionsGroup(ActionsGroup(name,ico,group));
+    if(actionsTableView->model()->rowCount()==0)//first group added
+        actionsGroupsListView->selectionModel()->select(groupsModel->index(0,0),QItemSelectionModel::Select);
 }
 
 void EditShortcutsDialog::resetToDefaults()
@@ -84,5 +85,4 @@ void EditShortcutsDialog::resetToDefaults()
 void EditShortcutsDialog::loadShortcuts(const QModelIndex &mi,const QModelIndex &mi2)
 {
     actionsModel->addActions(groupsModel->getActions(mi));
-    //actionsTableView->resizeColumnsToContents();
 }
