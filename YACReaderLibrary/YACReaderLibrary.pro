@@ -209,6 +209,9 @@ SOURCES += grid_comics_view.cpp \
            comics_view_transition.cpp
 
 RESOURCES += qml.qrc
+win32:RESOURCES += qml_win.qrc
+unix:!macx:RESOURCES += qml_win.qrc
+macx:RESOURCES += qml_osx.qrc
 
 } else {
 	Release:DESTDIR = ../release

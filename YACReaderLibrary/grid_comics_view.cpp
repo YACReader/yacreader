@@ -64,8 +64,8 @@ void GridComicsView::setModel(TableModel *model)
     }
 
 #ifdef Q_OS_MAC
-    ctxt->setContextProperty("backgroundColor", "#FAFAFA");
-    ctxt->setContextProperty("cellColor", "#EDEDED");
+    ctxt->setContextProperty("backgroundColor", "#EDEDED");
+    ctxt->setContextProperty("cellColor", "#FFFFFF");
     ctxt->setContextProperty("selectedColor", "#DDDDDD");
     ctxt->setContextProperty("titleColor", "#121212");
     ctxt->setContextProperty("textColor", "#636363");
