@@ -18,7 +18,7 @@ EditShortcutsDialog::EditShortcutsDialog(QWidget *parent) :
     QDialog(parent)
 {
     QPushButton * resetButton = new QPushButton(tr("Restore defaults"),this);
-    QLabel * infoLabel = new QLabel(tr("To change a shortcut, select it, click in the key combination and type the new keys."));
+    QLabel * infoLabel = new QLabel(tr("To change a shortcut, double click in the key combination and type the new keys."));
     QVBoxLayout * layout = new QVBoxLayout(this);
     QSplitter * splitter = new QSplitter(this);
     actionsGroupsListView = new QListView(this);
@@ -42,7 +42,8 @@ EditShortcutsDialog::EditShortcutsDialog(QWidget *parent) :
     actionsGroupsListView->setModel(groupsModel);
     actionsTableView->setModel(actionsModel);
     actionsTableView->setColumnWidth(0,30);
-    actionsTableView->setColumnWidth(1,270);
+    actionsTableView->setColumnWidth(1,360);
+    //actionsTableView->horizontalHeader()->sectionResizeMode(QHeaderView::Custom);
     actionsTableView->horizontalHeader()->setStretchLastSection(true);
     actionsTableView->setSelectionBehavior(QAbstractItemView::SelectRows);
     actionsTableView->setShowGrid(false);
@@ -58,7 +59,11 @@ EditShortcutsDialog::EditShortcutsDialog(QWidget *parent) :
     connect(resetButton,SIGNAL(clicked()),this,SLOT(resetToDefaults()));
     connect(actionsGroupsListView->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),this,SLOT(loadShortcuts(QModelIndex,QModelIndex))); //clicked(QModelIndex) doesn't work :S
 
-    setFixedSize(640,480);
+#ifdef Q_OS_MAC
+    setFixedSize(760,500);
+#else
+    setFixedSize(804,500); //extra width for modifiers
+#endif
     setWindowTitle(tr("Shortcuts settings"));
 
     setModal(true);
@@ -79,4 +84,5 @@ void EditShortcutsDialog::resetToDefaults()
 void EditShortcutsDialog::loadShortcuts(const QModelIndex &mi,const QModelIndex &mi2)
 {
     actionsModel->addActions(groupsModel->getActions(mi));
+    //actionsTableView->resizeColumnsToContents();
 }
