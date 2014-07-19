@@ -9,7 +9,7 @@
 #include <QStringListModel>
 void testListView(QListView * l)
 {
-    QStringListModel * slm = new QStringListModel(QStringList() = {"Lorem ipsum", "Hailer skualer", "Mumbaluba X", "Finger layden", "Pacum tactus filer", "Aposum", "En","Lorem ipsum", "Hailer skualer", "Mumbaluba X", "Finger layden", "Pacum tactus filer", "Aposum", "En" });
+    QStringListModel * slm = new QStringListModel(QStringList() << "Lorem ipsum" << "Hailer skualer"<< "Mumbaluba X" << "Finger layden" << "Pacum tactus filer" << "Aposum" << "En" << "Lorem ipsum" << "Hailer skualer" << "Mumbaluba X" << "Finger layden" << "Pacum tactus filer" << "Aposum" << "En" );
     l->setModel(slm);
 }
 

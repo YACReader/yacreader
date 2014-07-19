@@ -857,8 +857,8 @@ void LibraryWindow::createMenus()
     libraryMenu->addAction(removeLibraryAction);
     libraryMenu->addSeparator();
 
-    libraryMenu->addAction(exportComicsInfo);
-    libraryMenu->addAction(importComicsInfo);
+    libraryMenu->addAction(exportComicsInfoAction);
+    libraryMenu->addAction(importComicsInfoAction);
 
     libraryMenu->addSeparator();
 
@@ -872,8 +872,8 @@ void LibraryWindow::createMenus()
     folderMenu->addAction(setFolderAsNotCompletedAction);
     folderMenu->addAction(setFolderAsCompletedAction);
     folderMenu->addSeparator();
-    folderMenu->addAction(setFolderAsFinishedAction);
-    folderMenu->addAction(setFolderAsNotFinishedAction);
+    folderMenu->addAction(setFolderAsReadAction);
+    folderMenu->addAction(setFolderAsUnreadAction);
 
     //comic
     QMenu * comicMenu = new QMenu(tr("Comic"));
