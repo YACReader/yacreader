@@ -75,15 +75,15 @@ KeySequenceLineEdit::KeySequenceLineEdit(QWidget *parent)
     connect(acceptButton, SIGNAL(clicked()), this, SIGNAL(editingFinished()));
 }
 
-void KeySequenceLineEdit::resizeEvent(QResizeEvent *)
+void KeySequenceLineEdit::resizeEvent(QResizeEvent * e)
 {
     QSize szClear = clearButton->sizeHint();
     //int frameWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
     int leftMargin = style()->pixelMetric(QStyle::PM_LayoutLeftMargin);
     int topMargin = style()->pixelMetric(QStyle::PM_LayoutTopMargin);
-    clearButton->move(0 + leftMargin,topMargin-4);
+    clearButton->move(0 + leftMargin,(e->size().height()-19)/2); //16 is the icon height+1blank pixel
 
-    acceptButton->move( leftMargin + szClear.width(),topMargin-4);
+    acceptButton->move( leftMargin + szClear.width(),(e->size().height()-19)/2);
 
 }
 

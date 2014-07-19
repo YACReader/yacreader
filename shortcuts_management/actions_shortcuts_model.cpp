@@ -63,7 +63,7 @@ QVariant ActionsShortcutsModel::data(const QModelIndex &index, int role) const
     if (index.column() == NAME)
         return QVariant(actions[index.row()]->toolTip());
     if (index.column() == KEYS)
-        return QVariant(actions[index.row()]->shortcut().toString());
+        return QVariant(actions[index.row()]->shortcut().toString(QKeySequence::NativeText));
 
     return QVariant();
 }
