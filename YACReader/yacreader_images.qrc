@@ -75,5 +75,13 @@
     <file>../images/speaker.png</file>
     <file>../images/clear_shortcut.png</file>
     <file>../images/accept_shortcut.png</file>
+    <file>../images/shortcuts_group_comics.png</file>
+    <file>../images/shortcuts_group_folders.png</file>
+    <file>../images/shortcuts_group_general.png</file>
+    <file>../images/shortcuts_group_libraries.png</file>
+    <file>../images/shortcuts_group_mglass.png</file>
+    <file>../images/shortcuts_group_page.png</file>
+    <file>../images/shortcuts_group_reading.png</file>
+    <file>../images/shortcuts_group_visualization.png</file>
   </qresource>
 </RCC>
