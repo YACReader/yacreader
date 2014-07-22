@@ -21,6 +21,7 @@ signals:
 public slots:
     void resetToDefaults();
     void loadShortcuts(const QModelIndex & mi,const QModelIndex &mi2);
+    void processConflict(const QString & shortcutInConflict);
 
 protected:
     QListView * actionsGroupsListView;

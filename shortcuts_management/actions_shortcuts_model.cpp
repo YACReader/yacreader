@@ -80,9 +80,15 @@ bool ActionsShortcutsModel::setData(const QModelIndex &index, const QVariant &va
 {
     if(index.column() == KEYS)
     {
-        actions[index.row()]->setShortcut(value.toString());
-        ShortcutsManager::getShortcutsManager().saveShortcut(actions[index.row()]);
-        return true;
+        ShortcutsManager sm = ShortcutsManager::getShortcutsManager();
+        if(sm.checkConflicts(value.toString(), actions[index.row()]))
+            emit conflict(value.toString());
+        else
+        {
+            actions[index.row()]->setShortcut(value.toString());
+            ShortcutsManager::getShortcutsManager().saveShortcut(actions[index.row()]);
+            return true;
+        }
     }
     return false;
 }

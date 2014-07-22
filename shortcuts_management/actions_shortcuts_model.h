@@ -28,7 +28,7 @@ public:
         KEYS
     };
 signals:
-
+    void conflict(QString);
 public slots:
 
 protected:
