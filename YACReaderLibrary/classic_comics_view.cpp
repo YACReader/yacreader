@@ -61,7 +61,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     connect(tableView, SIGNAL(clicked(QModelIndex)), this, SLOT(centerComicFlow(QModelIndex)));
     connect(comicFlow, SIGNAL(centerIndexChanged(int)), this, SLOT(updateTableView(int)));
     connect(tableView, SIGNAL(comicRated(int,QModelIndex)), this, SIGNAL(comicRated(int,QModelIndex)));
-    //connect(comicFlow, SIGNAL(selected(uint)), this, SIGNAL(selected(uint)));
+    connect(comicFlow, SIGNAL(selected(uint)), this, SIGNAL(selected(uint)));
     connect(tableView->horizontalHeader(), SIGNAL(sectionMoved(int,int,int)), this, SLOT(saveTableHeadersStatus()));
 
     layout->addWidget(sVertical);
