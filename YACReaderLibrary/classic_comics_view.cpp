@@ -48,6 +48,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
 
     tableView = new YACReaderTableView;
     tableView->verticalHeader()->hide();
+    tableView->setFocusPolicy(Qt::StrongFocus);
     comicsLayout->addWidget(tableView);
     comics->setLayout(comicsLayout);
     sVertical->addWidget(comics);
@@ -60,7 +61,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     connect(tableView, SIGNAL(clicked(QModelIndex)), this, SLOT(centerComicFlow(QModelIndex)));
     connect(comicFlow, SIGNAL(centerIndexChanged(int)), this, SLOT(updateTableView(int)));
     connect(tableView, SIGNAL(comicRated(int,QModelIndex)), this, SIGNAL(comicRated(int,QModelIndex)));
-    connect(comicFlow, SIGNAL(selected(uint)), this, SIGNAL(selected(uint)));
+    //connect(comicFlow, SIGNAL(selected(uint)), this, SIGNAL(selected(uint)));
     connect(tableView->horizontalHeader(), SIGNAL(sectionMoved(int,int,int)), this, SLOT(saveTableHeadersStatus()));
 
     layout->addWidget(sVertical);
@@ -116,13 +117,13 @@ void ClassicComicsView::setModel(TableModel *model)
         //debido a un bug, qt4 no es capaz de ajustar el ancho teniendo en cuenta todas la filas (no sólo las visibles)
         //así que se ecala la primera vez y después se deja el control al usuario.
         //if(!settings->contains(COMICS_VIEW_HEADERS))
-            tableView->resizeColumnsToContents();
+        tableView->resizeColumnsToContents();
         tableView->horizontalHeader()->setStretchLastSection(true);
 
         QStringList paths = model->getPaths(model->getCurrentPath());//TODO ComicsView: get currentpath from somewhere currentPath());
         comicFlow->setImagePaths(paths);
         comicFlow->setMarks(model->getReadList());
-        comicFlow->setFocus(Qt::OtherFocusReason);
+        //comicFlow->setFocus(Qt::OtherFocusReason);
     }
 
     if(settings->contains(COMICS_VIEW_HEADERS))
