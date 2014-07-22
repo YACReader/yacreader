@@ -11,6 +11,7 @@
 #include <QPushButton>
 #include <QHeaderView>
 #include <QLabel>
+#include <QMessageBox>
 
 #include "QsLog.h"
 
@@ -59,6 +60,7 @@ EditShortcutsDialog::EditShortcutsDialog(QWidget *parent) :
 
     connect(resetButton,SIGNAL(clicked()),this,SLOT(resetToDefaults()));
     connect(actionsGroupsListView->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),this,SLOT(loadShortcuts(QModelIndex,QModelIndex))); //clicked(QModelIndex) doesn't work :S
+    connect(actionsModel,SIGNAL(conflict(QString)),this,SLOT(processConflict(QString)));
 
 #ifdef Q_OS_MAC
     setFixedSize(760,500);
@@ -85,4 +87,9 @@ void EditShortcutsDialog::resetToDefaults()
 void EditShortcutsDialog::loadShortcuts(const QModelIndex &mi,const QModelIndex &mi2)
 {
     actionsModel->addActions(groupsModel->getActions(mi));
+}
+
+void EditShortcutsDialog::processConflict(const QString &shortcutInConflict)
+{
+    QMessageBox::warning(this,tr("Shortcut in use"), QString(tr("The shortcut \"%1\" is already assigned to other function")).arg(shortcutInConflict));
 }

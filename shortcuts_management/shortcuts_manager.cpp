@@ -93,3 +93,20 @@ void ShortcutsManager::saveShortcut(QAction *action)
 
     return s.setValue(action->data().toString() , action->shortcut().toString());
 }
+
+void ShortcutsManager::registerActions(const QList<QAction *> &a)
+{
+    actions = a;
+}
+
+bool ShortcutsManager::checkConflicts(const QKeySequence & shortcut, const QAction *dest)
+{
+    foreach(QAction * action, actions)
+    {
+        if(action != dest) //if the same shortcut is setted there is no conflict
+            if(action->shortcut() == shortcut)
+                return true;
+    }
+
+    return false;
+}

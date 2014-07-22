@@ -983,13 +983,19 @@ void MainWindowViewer::setUpShortcutsManagement()
     //actions holder
     QObject * orphanActions = new QObject;
 
+    QList<QAction *> allActions;
+    QList<QAction *> tmpList;
+
+
     editShortcutsDialog->addActionsGroup(tr("Comics"),QIcon(":/images/shortcuts_group_comics.png"),
-                                         QList<QAction *>()
+                                         tmpList = QList<QAction *>()
                                          << openAction
                                          << openFolderAction
                                          << saveImageAction
                                          << openPreviousComicAction
                                          << openNextComicAction);
+
+    allActions << tmpList;
 
     //keys without actions (General)
     QAction * toggleFullScreenAction = new QAction(tr("Toggle fullscreen mode"),orphanActions);
@@ -1001,7 +1007,7 @@ void MainWindowViewer::setUpShortcutsManagement()
     toggleToolbarsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_TOOL_BARS_ACTION_Y));
 
     editShortcutsDialog->addActionsGroup(tr("General"),QIcon(":/images/shortcuts_group_general.png"),
-                                         QList<QAction *>()
+                                         tmpList = QList<QAction *>()
                                          << optionsAction
                                          << helpAboutAction
                                          << showShorcutsAction
@@ -1012,6 +1018,8 @@ void MainWindowViewer::setUpShortcutsManagement()
                                          << toggleFullScreenAction
                                          << toggleToolbarsAction
                                          << showEditShortcutsAction);
+
+    allActions << tmpList;
 
     //keys without actions (MGlass)
     QAction * sizeUpMglassAction = new QAction(tr("Size up magnifying glass"),orphanActions);
@@ -1031,12 +1039,14 @@ void MainWindowViewer::setUpShortcutsManagement()
     zoomOutMglassAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_OUT_MGLASS_ACTION_Y));
 
     editShortcutsDialog->addActionsGroup(tr("Magnifiying glass"),QIcon(":/images/shortcuts_group_mglass.png"),
-                                         QList<QAction *>()
+                                         tmpList = QList<QAction *>()
                                          << showMagnifyingGlassAction
                                          << sizeUpMglassAction
                                          << sizeDownMglassAction
                                          << zoomInMglassAction
                                          << zoomOutMglassAction);
+
+    allActions << tmpList;
 
     //keys without actions
     QAction * toggleFitToScreenAction = new QAction(tr("Toggle between fit to width and fit to height"),orphanActions);
@@ -1044,7 +1054,7 @@ void MainWindowViewer::setUpShortcutsManagement()
     toggleFitToScreenAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(CHANGE_FIT_ACTION_Y));
 
     editShortcutsDialog->addActionsGroup(tr("Page adjustement"),QIcon(":/images/shortcuts_group_page.png"),
-                                         QList<QAction *>()
+                                         tmpList = QList<QAction *>()
                                          << adjustHeightAction
                                          << adjustWidthAction
                                          << toggleFitToScreenAction
@@ -1052,6 +1062,8 @@ void MainWindowViewer::setUpShortcutsManagement()
                                          << rightRotationAction
                                          << doublePageAction
                                          << adjustToFullSizeAction);
+
+    allActions << tmpList;
 
     QAction * autoScrollForwardAction = new QAction(tr("Autoscroll down"),orphanActions);
     autoScrollForwardAction->setData(AUTO_SCROLL_FORWARD_ACTION_Y);
@@ -1086,7 +1098,7 @@ void MainWindowViewer::setUpShortcutsManagement()
     goToLastPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(GO_TO_LAST_PAGE_ACTION_Y));
 
     editShortcutsDialog->addActionsGroup(tr("Reading"),QIcon(":/images/shortcuts_group_reading.png"),
-                                         QList<QAction *>()
+                                         tmpList = QList<QAction *>()
                                          << nextAction
                                          << prevAction
                                          << setBookmarkAction
@@ -1100,6 +1112,10 @@ void MainWindowViewer::setUpShortcutsManagement()
                                          << goToFirstPageAction
                                          << goToLastPageAction
                                          << goToPageAction);
+
+    allActions << tmpList;
+
+    ShortcutsManager::getShortcutsManager().registerActions(allActions);
 
 }
 

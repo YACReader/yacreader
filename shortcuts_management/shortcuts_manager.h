@@ -16,6 +16,8 @@ class ShortcutsManager
 private:
     ShortcutsManager();
     QMap<QString,QKeySequence> defaultShorcuts;
+    QList<QAction *> actions; //all actions registered, used for checking conflicts
+
     void initDefaultShorcuts();
 public:
     static ShortcutsManager & getShortcutsManager()
@@ -27,6 +29,8 @@ public:
     void resetToDefaults();
     QString getShortcut(const QString & name);
     void saveShortcut(QAction * action);
+    void registerActions(const QList<QAction *> & actions);
+    bool checkConflicts(const QKeySequence &shortcut, const QAction *dest);
 };
 
 //ACTION NAMES YACReaderLibrary
