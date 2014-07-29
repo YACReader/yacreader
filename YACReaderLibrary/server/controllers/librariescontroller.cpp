@@ -17,7 +17,8 @@ void LibrariesController::service(HttpRequest& request, HttpResponse& response)
         if(postData.length()>0) {
             QList<QString> data = postData.split("\n");
             if(data.length() > 2) {
-                //ONLY COMICS ARE UPDATED, DEVICE CHARACTERISTICS ARE INMUTABLE
+                session.setDeviceType(data.at(0).split(":").at(1));
+                session.setDisplayType(data.at(1).split(":").at(1));
                 QList<QString> comics = data.at(2).split(":").at(1).split("\t");
                 foreach(QString hash,comics) {
                     session.setComicOnDevice(hash);
@@ -52,7 +53,7 @@ void LibrariesController::service(HttpRequest& request, HttpResponse& response)
         }
         else //values by default, only for debug purposes.
         {
-            session.setDeviceType("iphone");
+            session.setDeviceType("ipad");
             session.setDisplayType("@2x");
         }
 

@@ -22,6 +22,8 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 	QString libraryName = DBHelper::getLibraryName(pathElements.at(2).toInt());
 	qulonglong comicId = pathElements.at(4).toULongLong();
 
+    bool remoteComic = path.contains("remote");
+
 	//TODO
 	//if(pathElements.size() == 6)
 	//{
@@ -44,7 +46,8 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 
 	ComicDB comic = DBHelper::getComicInfo(libraryName, comicId);
 
-	session.setDownloadedComic(comic.info.hash);
+    if(!remoteComic)
+        session.setDownloadedComic(comic.info.hash);
 
 	Comic * comicFile = FactoryComic::newComic(libraries.getPath(libraryName)+comic.path);
 
@@ -69,7 +72,34 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 		response.setHeader("Content-Type", "plain/text; charset=ISO-8859-1");
 		//TODO this field is not used by the client!
 		response.writeText(QString("library:%1\r\n").arg(libraryName));
-		response.writeText(comic.toTXT(),true);
+        response.writeText(QString("libraryId:%1\r\n").arg(pathElements.at(2)));
+        if(remoteComic) //send previous and next comics id
+        {
+            QList<LibraryItem *> siblings = DBHelper::getFolderComicsFromLibrary(libraryName, comic.parentId);
+            bool found = false;
+            int i;
+            for(i = 0; i < siblings.length(); i++)
+            {
+                if (siblings.at(i)->id == comic.id)
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if(found)
+            {
+                if(i>0)
+                    response.writeText(QString("previousComic:%1\r\n").arg(siblings.at(i-1)->id));
+                if(i<siblings.length()-1)
+                    response.writeText(QString("nextComic:%1\r\n").arg(siblings.at(i+1)->id));
+            }
+            else
+            {
+                //ERROR
+            }
+            response.writeText(comic.toTXT(),true);
+            qDeleteAll(siblings);
+        }
 	}
 	else
 	{
