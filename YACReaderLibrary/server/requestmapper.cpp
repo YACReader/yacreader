@@ -33,7 +33,7 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 	QRegExp folder("/library/.+/folder/[0-9]+/?");//get comic content
 	QRegExp folderInfo("/library/.+/folder/[0-9]+/info/?"); //get folder info
 	QRegExp comic("/library/.+/comic/[0-9]+/?"); //get comic info
-	QRegExp comicOpen("/library/.+/comic/[0-9]+/open/?"); //the server will open for reading the comic
+    QRegExp comicOpen("/library/.+/comic/[0-9]+/remote/?"); //the server will open for reading the comic
 	QRegExp comicClose("/library/.+/comic/[0-9]+/close/?"); //the server will close the comic and free memory
 	QRegExp cover("/library/.+/cover/[0-9a-f]+.jpg"); //get comic cover (navigation)
 	QRegExp comicPage("/library/.+/comic/[0-9]+/page/[0-9]+/?"); //get comic page
@@ -69,7 +69,7 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 				{
 					CoverController().service(request, response);
 				}
-				else if(comic.exactMatch(path))
+                else if(comic.exactMatch(path) || comicOpen.exactMatch(path))
 				{
 					ComicController().service(request, response);
 				}
