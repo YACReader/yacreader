@@ -12,8 +12,8 @@ HttpRequest::HttpRequest(QSettings* settings) {
     status=waitForRequest;
     currentSize=0;
     expectedBodySize=0;
-    maxSize=settings->value("maxRequestSize","16000000").toInt();
-    maxMultiPartSize=settings->value("maxMultiPartSize","1000000").toInt();
+    maxSize=settings->value("maxRequestSize","32000000").toInt();
+    maxMultiPartSize=settings->value("maxMultiPartSize","32000000").toInt();
 }
 
 void HttpRequest::readRequest(QTcpSocket& socket) {
