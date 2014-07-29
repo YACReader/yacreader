@@ -1,4 +1,6 @@
 #include "foldercontroller.h"
+#include "controllers/errorcontroller.h"
+
 #include "db_helper.h"  //get libraries
 #include "comic_db.h"
 
@@ -36,7 +38,16 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	int libraryId = pathElements.at(2).toInt();
 	QString libraryName = DBHelper::getLibraryName(libraryId);
 	qulonglong parentId = pathElements.at(4).toULongLong();
+
+    parentId = qMax<qulonglong>(1,parentId);
+
 	QString folderName = DBHelper::getFolderName(libraryName,parentId);
+    if(folderName.isEmpty())
+    {
+        ErrorController(300).service(request,response);
+        return;
+    }
+
 	if(parentId!=1)
 		t.setVariable("folder.name",folderName);
 	else
@@ -70,7 +81,21 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	
 	int upPage = 0;
 
-	
+    if(parentId == 1)
+        session.clearFoldersPath();
+    else
+    {
+        if(fromUp)
+            session.popFolder();
+        else
+            if(session.getFoldersPath().contains(parentId))
+        {
+            while(session.topFolder()!=parentId)
+                session.popFolder();
+        }
+        else
+            session.pushFolder(parentId);
+    }
 
 	if(backId == 1 && parentId == 1)
 	{
@@ -83,7 +108,7 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 		if(fromUp)
 		{
 			session.popPage();
-			upPage = session.topPage();
+            upPage = session.topPage();
 			page = upPage;
 		}
 		else //este nivel puede haberse cargado por primera vez ó puede que estemos navegando horizontalmente
@@ -116,7 +141,7 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 
 	//t.loop("element",folderContent.length());
 
-	int elementsPerPage = 18;
+    int elementsPerPage = 24;
 
 	int numFolders = folderContent.length();
 	//int numComics = folderComics.length();
@@ -135,9 +160,16 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	int indexCurrentPage = page*elementsPerPage;
 	int numFoldersAtCurrentPage = qMax(0,qMin(numFolders - indexCurrentPage, elementsPerPage));
 
-	//response.writeText(QString("indexCurrentPage : %1 <br/>").arg(indexCurrentPage));
-	//response.writeText(QString("numFoldersAtCurrentPage : %1 <br/>").arg(numFoldersAtCurrentPage));
-	//response.writeText(QString("foldersLength : %1 <br/>").arg(folderContent.length()));
+    //PATH
+    QStack<int> foldersPath = session.getFoldersPath();
+    t.setVariable(QString("library.name"),libraryName);
+    t.setVariable(QString("library.url"),QString("/library/%1/folder/1").arg(libraryId));
+    t.loop("path",foldersPath.length());
+    for(int i = 0; i < foldersPath.length(); i++){
+
+        t.setVariable(QString("path%1.url").arg(i),QString("/library/%1/folder/%2").arg(libraryId).arg(foldersPath[i]));
+        t.setVariable(QString("path%1.name").arg(i),DBHelper::getFolderName(libraryName,foldersPath[i]));
+    }
 
 	t.loop("element",numFoldersAtCurrentPage);
 	int i = 0;
@@ -148,7 +180,6 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 		if(item->isDir())
 		{
 			t.setVariable(QString("element%1.class").arg(i),"folder");
-			t.setVariable(QString("element%1.image.width").arg(i),"89px");
 			t.setVariable(QString("element%1.image.url").arg(i),"/images/f.png");
 
 			t.setVariable(QString("element%1.browse").arg(i),QString("<a class =\"browseButton\" href=\"%1\">browse</a>").arg(QString("/library/%1/folder/%2").arg(libraryId).arg(item->id)));
@@ -157,13 +188,17 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 			//t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/folder/"+QString("%1/info").arg(folderContent.at(i + (page*elementsPerPage))->id));
 			
 			t.setVariable(QString("element%1.download").arg(i),QString("<a onclick=\"this.innerHTML='importing';this.className='importedButton';\" class =\"importButton\" href=\"%1\">import</a>").arg("/library/"+QString::number(libraryId)+"/folder/"+QString("%1/info").arg(folderContent.at(i + (page*elementsPerPage))->id)));
-		}
+            t.setVariable(QString("element%1.read").arg(i),"");
+
+            t.setVariable(QString("element%1.size").arg(i),"");
+            t.setVariable(QString("element%1.pages").arg(i),"");
+            t.setVariable(QString("element%1.status").arg(i),"");
+        }
 		else
 		{
 			t.setVariable(QString("element%1.class").arg(i),"cover");
 			const ComicDB * comic = (ComicDB *)item;
 			t.setVariable(QString("element%1.browse").arg(i),"");
-			t.setVariable(QString("element%1.image.width").arg(i),"80px");
 			//t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/comic/"+QString("%1").arg(comic->id));
 			if(!session.isComicOnDevice(comic->info.hash) && !session.isComicDownloaded(comic->info.hash))
 				t.setVariable(QString("element%1.download").arg(i),QString("<a onclick=\"this.innerHTML='importing';this.className='importedButton';\" class =\"importButton\" href=\"%1\">import</a>").arg("/library/"+QString::number(libraryId)+"/comic/"+QString("%1").arg(comic->id)));
@@ -174,55 +209,27 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 			
 			//t.setVariable(QString("element%1.image.url").arg(i),"/images/f.png");
 
+            t.setVariable(QString("element%1.read").arg(i),QString("<a class =\"readButton\" href=\"%1\">read</a>").arg("/library/"+QString::number(libraryId)+"/comic/"+QString("%1").arg(comic->id)+"/remote"));
+
 			t.setVariable(QString("element%1.image.url").arg(i),QString("/library/%1/cover/%2.jpg").arg(libraryId).arg(comic->info.hash));
+
+            t.setVariable(QString("element%1.size").arg(i),"<span class=\"comicSize\">" + QString::number(comic->info.hash.right(comic->info.hash.length()-40).toInt()/1024.0/1024.0,'f',2)+"Mb</span>");
+            if(comic->info.hasBeenOpened)
+                t.setVariable(QString("element%1.pages").arg(i),QString("<span class=\"numPages\">%1/%2 pages</span>").arg(comic->info.currentPage).arg(comic->info.numPages.toInt()));
+            else
+                t.setVariable(QString("element%1.pages").arg(i),QString("<span class=\"numPages\">%1</span>").arg(comic->info.numPages.toInt()));
+
+            if(comic->info.read)
+                t.setVariable(QString("element%1.status").arg(i), QString("<div class=\"mark\"><img src=\"/images/readMark.png\" style = \"width: 15px\"/> </div>"));
+            else if(comic->info.hasBeenOpened)
+                t.setVariable(QString("element%1.status").arg(i), QString("<div class=\"mark\"><img src=\"/images/readingMark.png\" style = \"width: 15px\"/> </div>"));
+            else
+                t.setVariable(QString("element%1.status").arg(i),"");
+
+
 		}
 		i++;
 	}
-
-	//int comicsOffset;// = qMax(0,((page - (numFolderPages - 1)) * 10) - (numFolders%10));
-
-	//int comicPage = numFolderPages!=0?page-(numFolderPages - 1):page;
-
-	//if(comicPage > 0)
-	//{
-	//	comicsOffset = elementsPerPage - (numFolders%elementsPerPage);
-	//	comicsOffset += (comicPage-1) *elementsPerPage;
-	//}
-	//else
-	//	comicsOffset = 0;
-
-	//
-
-	//int globalComicsOffset = elementsPerPage - (numFolders%elementsPerPage);
-	//int numComicsAtCurrentPage = 0;
-
-	//if(comicPage == 0) //primera página de los cómics
-	//		numComicsAtCurrentPage = qMin(globalComicsOffset,numComics);
-	//	else if (page == (numPages-1)) //última página de los cómics
-	//		numComicsAtCurrentPage = elementsPerPage-globalComicsOffset + (numComics%elementsPerPage);
-	//	else
-	//		numComicsAtCurrentPage = elementsPerPage - numFoldersAtCurrentPage;
-
-	//if(numComics == 0)
-	//	numComicsAtCurrentPage = 0;
-	////response.writeText(QString("numComicsAtCurrentPage : %1 <br/>").arg(numComicsAtCurrentPage));
-	////response.writeText(QString("comicsOffset : %1 <br/>").arg(comicsOffset));
-
-	//t.loop("elementcomic",numComicsAtCurrentPage);
-	////
-	//int j = 0;
-
-	//while(j<numComicsAtCurrentPage)
-	//{
-	//	const ComicDB * comic = (ComicDB *)folderComics.at(j+comicsOffset);
-	//	//if(comic->info.title == 0 || comic->info.title->isEmpty())
-	//		t.setVariable(QString("elementcomic%1.name").arg(j),comic->name);
-	//	//else
-	//	//	t.setVariable(QString("elementcomic%1.name").arg(i),*comic->info.title);
-	//	t.setVariable(QString("elementcomic%1.url").arg(j),"/library/"+QUrl::toPercentEncoding(libraryName)+"/comic/"+QString("%1").arg(comic->id));
-	//	t.setVariable(QString("elementcomic%1.coverulr").arg(j),"/library/"+QUrl::toPercentEncoding(libraryName)+"/cover/"+QString("%1").arg(comic->info.hash + ".jpg"));
-	//	j++;
-	//}
 
 	if(numPages > 1)
 	{
@@ -267,7 +274,6 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 				i++;
 				count += indexCount.value(*itr);
 				indexPage = count/elementsPerPage;
-
 			}
 		}
 		else
@@ -295,12 +301,14 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 		t.setVariable("page.previous",QString("/library/%1/folder/%2?page=%3").arg(libraryId).arg(parentId).arg((page==0)?page:page-1));
 		t.setVariable("page.next",QString("/library/%1/folder/%2?page=%3").arg(libraryId).arg(parentId).arg((page==numPages-1)?page:page+1));
 		t.setVariable("page.last",QString("/library/%1/folder/%2?page=%3").arg(libraryId).arg(parentId).arg(numPages-1));
-
+        t.setCondition("index", true);
 	}
 	else
 	{
+
 		t.loop("page",0);
 		t.loop("index",0);
+        t.setCondition("index", false);
 		t.setCondition("pageIndex",false);
 		t.setCondition("alphaIndex",false);
 	}

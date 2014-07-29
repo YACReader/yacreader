@@ -84,6 +84,7 @@ private:
 
 	QString getLocalizedFileName(QString fileName, QString locales, QString path) const;
 	QString getDeviceAwareFileName(QString fileName, QString device, QString locales, QString path) const;
+    QString getDeviceAwareFileName(QString fileName, QString device, QString display, QString locales, QString path) const;
 
 	bool exists(QString localizedName, QString path) const;
 };

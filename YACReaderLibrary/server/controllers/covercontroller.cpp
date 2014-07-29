@@ -44,14 +44,28 @@ void CoverController::service(HttpRequest& request, HttpResponse& response)
 	QImage img(libraries.getPath(libraryName)+"/.yacreaderlibrary/covers/"+fileName);
 	if (!img.isNull()) {
 
-		int width = 80;
-		if(session.getDisplayType()=="retina")
+        int width = 80, height = 120;
+        if(session.getDisplayType()=="@2x")
+        {
 			width = 160;
-		img = img.scaledToWidth(width,Qt::SmoothTransformation);
+            height = 240;
+        }
+
+        if(float(img.width())/img.height() < 0.66666)
+            img = img.scaledToWidth(width,Qt::SmoothTransformation);
+        else
+            img = img.scaledToHeight(height,Qt::SmoothTransformation);
+
+        QImage destImg(width,height,QImage::Format_RGB32);
+        destImg.fill(Qt::black);
+        QPainter p(&destImg);
+
+        p.drawImage((width-img.width())/2,(height-img.height())/2,img);
+
 		QByteArray ba;
 		QBuffer buffer(&ba);
 		buffer.open(QIODevice::WriteOnly);
-		img.save(&buffer, "JPG");
+        destImg.save(&buffer, "JPG");
 		response.write(ba,true);
 	}
 	//DONE else, hay que devolver un 404
