@@ -56,7 +56,11 @@ void StaticFileController::service(HttpRequest& request, HttpResponse& response)
 	stringPath.remove(fileName);
 	HttpSession session=Static::sessionStore->getSession(request,response,false);
 	QString device = session.getDeviceType();
-	fileName = getDeviceAwareFileName(fileName, device, request.getHeader("Accept-Language"), stringPath);
+    QString display = session.getDisplayType();
+    if(fileName.endsWith(".png"))
+        fileName = getDeviceAwareFileName(fileName, device, display, request.getHeader("Accept-Language"), stringPath);
+    else
+        fileName = getDeviceAwareFileName(fileName, device, request.getHeader("Accept-Language"), stringPath);
 	QString newPath = stringPath.append(fileName);
 	path = newPath.toLocal8Bit();
 
@@ -207,5 +211,24 @@ QString StaticFileController::getDeviceAwareFileName(QString fileName, QString d
 	if(QFile(docroot+"/"+path+completeFileName).exists())
 		return completeFileName; //existe un archivo específico para este dispositivo y locales
 	else
-		return getLocalizedFileName(fileName,locales,path); //no hay archivo específico para el dispositivo, pero puede haberlo para estas locales
+        return getLocalizedFileName(fileName,locales,path); //no hay archivo específico para el dispositivo, pero puede haberlo para estas locales
+}
+
+QString StaticFileController::getDeviceAwareFileName(QString fileName, QString device, QString display, QString locales, QString path) const
+{
+    QFileInfo fi(fileName);
+    QString baseName = fi.baseName();
+    QString extension = fi.completeSuffix();
+
+    QString completeFileName = completeFileName = baseName+display+"."+extension;
+    if(QFile(docroot+"/"+path+completeFileName).exists())
+        return completeFileName;
+    else
+    {
+        completeFileName = baseName+"_"+device+display+"."+extension;
+        if((QFile(docroot+"/"+path+completeFileName).exists()))
+            return completeFileName;
+    }
+
+    return fileName;
 }

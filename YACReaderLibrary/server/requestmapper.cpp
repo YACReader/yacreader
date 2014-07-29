@@ -50,10 +50,10 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 
 	else 
 	{
-		//se comprueba que la sesión sea la correcta con el fin de evitar accesos no autorizados
-		HttpSession session=Static::sessionStore->getSession(request,response,false);
-		if(!session.isNull() && session.contains("ySession"))
-		{
+        //se comprueba que la sesión sea la correcta con el fin de evitar accesos no autorizados
+        HttpSession session=Static::sessionStore->getSession(request,response,false);
+        if(!session.isNull() && session.contains("ySession"))
+        {
 			if(library.indexIn(path)!=-1 && DBHelper::getLibraries().contains(library.cap(1).toInt()) )
 			{
 				//listar el contenido del folder
@@ -83,11 +83,11 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 				//response.writeText(library.cap(1));
 				Static::staticFileController->service(request, response);
 			}
-		}
-		else //acceso no autorizado, redirección
-		{
-			ErrorController(300).service(request,response);
-		}
+        }
+        else //acceso no autorizado, redirección
+        {
+            ErrorController(300).service(request,response);
+        }
 	}
 
 }

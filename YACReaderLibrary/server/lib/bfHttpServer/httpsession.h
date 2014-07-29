@@ -119,6 +119,12 @@ public:
 	void pushPage(int page);
 	int topPage();
 
+    void clearFoldersPath();
+    int popFolder();
+    void pushFolder(int page);
+    int topFolder();
+    QStack<int> getFoldersPath();
+
 private:
 
 	struct YACReaderSessionData {
@@ -132,6 +138,7 @@ private:
 		qulonglong comicId;
 
 		QStack<int> navigationPath;
+        QStack<int> foldersPath;
 
 		Comic * comic;
 	};

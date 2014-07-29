@@ -307,3 +307,36 @@ int HttpSession::topPage()
 		return dataPtr->yacreaderSessionData.navigationPath.top();
 	return 0;
 }
+
+void HttpSession::clearFoldersPath()
+{
+    if(dataPtr)
+        dataPtr->yacreaderSessionData.foldersPath.clear();
+}
+
+int HttpSession::popFolder()
+{
+    if(dataPtr && !(dataPtr->yacreaderSessionData.foldersPath.isEmpty()))
+        return dataPtr->yacreaderSessionData.foldersPath.pop();
+    return 0;
+}
+
+void HttpSession::pushFolder(int page)
+{
+    if(dataPtr)
+        dataPtr->yacreaderSessionData.foldersPath.push(page);
+}
+
+int HttpSession::topFolder()
+{
+    if(dataPtr)
+        return dataPtr->yacreaderSessionData.foldersPath.top();
+    return 0;
+}
+
+QStack<int> HttpSession::getFoldersPath()
+{
+    if(dataPtr)
+        return dataPtr->yacreaderSessionData.foldersPath;
+    return QStack<int>();
+}
