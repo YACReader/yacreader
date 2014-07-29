@@ -14,7 +14,7 @@ HttpSessionStore::HttpSessionStore(QSettings* settings, QObject* parent)
     connect(&cleanupTimer,SIGNAL(timeout()),this,SLOT(timerEvent()));
     cleanupTimer.start(60000);
     cookieName=settings->value("cookieName","sessionid").toByteArray();
-    expirationTime=settings->value("expirationTime",18000000).toInt();
+    expirationTime=settings->value("expirationTime",86400000).toInt();
     qDebug("HttpSessionStore: Sessions expire after %i milliseconds",expirationTime);
 }
 
