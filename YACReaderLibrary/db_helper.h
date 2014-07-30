@@ -42,6 +42,7 @@ public:
 	static void update(ComicInfo * comicInfo, QSqlDatabase & db);
 	static void updateRead(ComicInfo * comicInfo, QSqlDatabase & db);
     static void update(const Folder & folder, QSqlDatabase & db);
+    static void updateProgress(qulonglong libraryId,const ComicInfo & comicInfo); //TODO change libraryName by libraryId in all methods.
 	//queries
 	static QList<LibraryItem *> getFoldersFromParent(qulonglong parentId, QSqlDatabase & db, bool sort = true);
 	static QList<ComicDB> getSortedComicsFromParent(qulonglong parentId, QSqlDatabase & db);
