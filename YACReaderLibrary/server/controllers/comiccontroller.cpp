@@ -97,9 +97,9 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
             {
                 //ERROR
             }
-            response.writeText(comic.toTXT(),true);
             qDeleteAll(siblings);
         }
+        response.writeText(comic.toTXT(),true);
 	}
 	else
 	{
