@@ -39,6 +39,7 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 	QRegExp comicClose("/library/.+/comic/[0-9]+/close/?"); //the server will close the comic and free memory
 	QRegExp cover("/library/.+/cover/[0-9a-f]+.jpg"); //get comic cover (navigation)
 	QRegExp comicPage("/library/.+/comic/[0-9]+/page/[0-9]+/?"); //get comic page
+    QRegExp comicPageRemote("/library/.+/comic/[0-9]+/page/[0-9]+/remote?"); //get comic page (remote reading)
 
 	QRegExp library("/library/([0-9]+)/.+"); //permite verificar que la biblioteca solicitada existe
 
@@ -52,6 +53,7 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 
 	else 
 	{
+
         //se comprueba que la sesión sea la correcta con el fin de evitar accesos no autorizados
         HttpSession session=Static::sessionStore->getSession(request,response,false);
         if(!session.isNull() && session.contains("ySession"))
@@ -73,11 +75,11 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 				}
                 else if(comic.exactMatch(path) || comicOpen.exactMatch(path))
 				{
-					ComicController().service(request, response);
+                    ComicController().service(request, response);
 				}
-				else if(comicPage.exactMatch(path))
+                else if(comicPage.exactMatch(path) || comicPageRemote.exactMatch(path))
 				{
-					PageController().service(request,response);
+                    PageController().service(request,response);
                 }
                 else if(comicUpdate.exactMatch(path))
                 {
