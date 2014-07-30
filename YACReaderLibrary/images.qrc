@@ -110,6 +110,8 @@
                 <file>../images/shortcuts_group_page.png</file>
                 <file>../images/shortcuts_group_reading.png</file>
                 <file>../images/shortcuts_group_visualization.png</file>
+				<file>../images/f.png</file>
+                                <file>../images/f_retina.png</file>
 		<!--<file>../images/busy_background.png</file>-->
 	</qresource>
 </RCC>

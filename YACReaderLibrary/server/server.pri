@@ -12,7 +12,8 @@ HEADERS += \
 	$$PWD/controllers/librariescontroller.h \
 	$$PWD/controllers/pagecontroller.h \
 	$$PWD/controllers/sessionmanager.h \
-	$$PWD/controllers/covercontroller.h 
+	$$PWD/controllers/covercontroller.h \ 
+    server/controllers/updatecomiccontroller.h
 
 SOURCES += \
     $$PWD/static.cpp \
@@ -25,7 +26,8 @@ SOURCES += \
 	$$PWD/controllers/librariescontroller.cpp \
 	$$PWD/controllers/pagecontroller.cpp \
 	$$PWD/controllers/sessionmanager.cpp \
-	$$PWD/controllers/covercontroller.cpp
+	$$PWD/controllers/covercontroller.cpp \
+    server/controllers/updatecomiccontroller.cpp
 	
 include(lib/bfLogging/bfLogging.pri)
 include(lib/bfHttpServer/bfHttpServer.pri)

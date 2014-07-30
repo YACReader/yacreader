@@ -180,7 +180,15 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 		if(item->isDir())
 		{
 			t.setVariable(QString("element%1.class").arg(i),"folder");
-			t.setVariable(QString("element%1.image.url").arg(i),"/images/f.png");
+
+            QList<LibraryItem *> children = DBHelper::getFolderComicsFromLibrary(libraryName, item->id);
+            if(children.length()>0)
+            {
+               const ComicDB * comic = static_cast<ComicDB*>(children.at(0));
+               t.setVariable(QString("element%1.image.url").arg(i),QString("/library/%1/cover/%2.jpg?folderCover=true").arg(libraryId).arg(comic->info.hash));
+            }
+            else
+                t.setVariable(QString("element%1.image.url").arg(i),"/images/f.png");
 
 			t.setVariable(QString("element%1.browse").arg(i),QString("<a class =\"browseButton\" href=\"%1\">browse</a>").arg(QString("/library/%1/folder/%2").arg(libraryId).arg(item->id)));
 
@@ -217,7 +225,7 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
             if(comic->info.hasBeenOpened)
                 t.setVariable(QString("element%1.pages").arg(i),QString("<span class=\"numPages\">%1/%2 pages</span>").arg(comic->info.currentPage).arg(comic->info.numPages.toInt()));
             else
-                t.setVariable(QString("element%1.pages").arg(i),QString("<span class=\"numPages\">%1</span>").arg(comic->info.numPages.toInt()));
+                t.setVariable(QString("element%1.pages").arg(i),QString("<span class=\"numPages\">%1 pages</span>").arg(comic->info.numPages.toInt()));
 
             if(comic->info.read)
                 t.setVariable(QString("element%1.status").arg(i), QString("<div class=\"mark\"><img src=\"/images/readMark.png\" style = \"width: 15px\"/> </div>"));

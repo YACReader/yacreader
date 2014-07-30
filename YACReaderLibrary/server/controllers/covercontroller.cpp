@@ -23,6 +23,8 @@ void CoverController::service(HttpRequest& request, HttpResponse& response)
 	QString libraryName = DBHelper::getLibraryName(pathElements.at(2).toInt());
 	QString fileName = pathElements.at(4);
 
+    bool folderCover = request.getParameter("folderCover").length()>0;
+
 	//response.writeText(path+"<br/>");
 	//response.writeText(libraryName+"<br/>");
 	//response.writeText(libraries.value(libraryName)+"/.yacreaderlibrary/covers/"+fileName+"<br/>");
@@ -61,6 +63,14 @@ void CoverController::service(HttpRequest& request, HttpResponse& response)
         QPainter p(&destImg);
 
         p.drawImage((width-img.width())/2,(height-img.height())/2,img);
+
+        if(folderCover)
+        {
+             if(session.getDisplayType()=="@2x")
+                p.drawImage(0,0,QImage(":/images/f_retina.png"));
+             else
+                p.drawImage(0,0,QImage(":/images/f.png"));
+        }
 
 		QByteArray ba;
 		QBuffer buffer(&ba);
