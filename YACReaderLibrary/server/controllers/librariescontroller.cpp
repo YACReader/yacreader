@@ -5,6 +5,7 @@
 #include "template.h"
 #include "../static.h"
 
+#include "QsLog.h"
 
 LibrariesController::LibrariesController() {}
 
@@ -24,6 +25,14 @@ void LibrariesController::service(HttpRequest& request, HttpResponse& response)
                     session.setComicOnDevice(hash);
                 }
             }
+            else
+            {
+                if(data.length()>1)
+                {
+                    session.setDeviceType(data.at(0).split(":").at(1));
+                    session.setDisplayType(data.at(1).split(":").at(1));
+                }
+            }
         }
     }
     else
@@ -41,6 +50,9 @@ void LibrariesController::service(HttpRequest& request, HttpResponse& response)
         //response.writeText(postData);
 
         QList<QString> data = postData.split("\n");
+
+        QLOG_INFO() << "Data lenght : " << data.length();
+
         if(data.length() > 2)
         {
             session.setDeviceType(data.at(0).split(":").at(1));

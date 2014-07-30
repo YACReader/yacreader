@@ -102,11 +102,17 @@ public:
 	QSet<QString> getComicsOnDevice();
 	QSet<QString> getDownloadedComics();
 
-	//current comic
+    //current comic (import)
 	qulonglong getCurrentComicId();
 	Comic * getCurrentComic();
 	void dismissCurrentComic();
 	void setCurrentComic(qulonglong id, Comic * comic);
+
+    //current comic (read)
+    qulonglong getCurrentRemoteComicId();
+    Comic * getCurrentRemoteComic();
+    void dismissCurrentRemoteComic();
+    void setCurrentRemoteComic(qulonglong id, Comic * comic);
 	
 	//device identification
 	QString getDeviceType();
@@ -136,11 +142,13 @@ private:
 		QString device;
 		QString display;
 		qulonglong comicId;
+        qulonglong remoteComicId;
 
 		QStack<int> navigationPath;
         QStack<int> foldersPath;
 
 		Comic * comic;
+        Comic * remoteComic;
 	};
 
 	struct HttpSessionData {
