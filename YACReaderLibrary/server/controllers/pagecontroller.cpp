@@ -7,6 +7,8 @@
 #include <QDataStream>
 #include <QPointer>
 
+#include <QsLog.h>
+
 #include "db_helper.h"
 
 PageController::PageController() {}
@@ -16,6 +18,7 @@ void PageController::service(HttpRequest& request, HttpResponse& response)
 	HttpSession session=Static::sessionStore->getSession(request,response,false);
 
 	QString path = QUrl::fromPercentEncoding(request.getPath()).toLatin1();
+    bool remote = path.endsWith("remote");
 
 	//QByteArray path2=request.getPath();
 	//qDebug("PageController: request to -> %s ",path2.data());
@@ -27,10 +30,24 @@ void PageController::service(HttpRequest& request, HttpResponse& response)
 
 	//qDebug("lib name : %s",pathElements.at(2).data());
 
-	Comic * comicFile = session.getCurrentComic();
-	if(session.getCurrentComicId() != 0 && !QPointer<Comic>(comicFile).isNull())
+    Comic * comicFile;
+    qulonglong currentComicId;
+    if(remote)
+    {
+        QLOG_INFO() << "se recupera comic remoto para servir páginas";
+        comicFile = session.getCurrentRemoteComic();
+        currentComicId = session.getCurrentRemoteComicId();
+    }
+    else
+    {
+        QLOG_INFO() << "se recupera comic para servir páginas";
+        comicFile = session.getCurrentComic();
+        currentComicId = session.getCurrentComicId();
+    }
+
+    if(currentComicId != 0 && !QPointer<Comic>(comicFile).isNull())
 	{
-		if(comicId == session.getCurrentComicId() && page < comicFile->numPages())
+        if(comicId == currentComicId && page < comicFile->numPages())
 		{
 			if(comicFile->pageIsLoaded(page))
 			{
@@ -56,11 +73,14 @@ void PageController::service(HttpRequest& request, HttpResponse& response)
 		}
 		else
 		{
-			if(comicId != session.getCurrentComicId())
+            if(comicId != currentComicId)
 			{
-				//delete comicFile;
-				session.dismissCurrentComic();
-			}
+                //delete comicFile;
+                if(remote)
+                    session.dismissCurrentRemoteComic();
+                else
+                    session.dismissCurrentComic();
+            }
 			response.setStatus(404,"not found"); //TODO qué mensaje enviar
 			response.write("404 not found",true);
 		}
