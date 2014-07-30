@@ -16,6 +16,8 @@ HttpSession::HttpSession(bool canStore) {
 		dataPtr->id=QUuid::createUuid().toString().toLatin1();
 		dataPtr->yacreaderSessionData.comic = 0;
 		dataPtr->yacreaderSessionData.comicId = 0;
+        dataPtr->yacreaderSessionData.remoteComic = 0;
+        dataPtr->yacreaderSessionData.remoteComicId = 0;
 #ifdef SUPERVERBOSE
 		qDebug("HttpSession: created new session data with id %s",dataPtr->id.data());
 #endif
@@ -210,7 +212,7 @@ QSet<QString> HttpSession::getDownloadedComics()
 	else
 		return QSet<QString>();
 }
-//current comic
+//current comic (import)
 qulonglong HttpSession::getCurrentComicId()
 {
 	if(dataPtr)
@@ -249,6 +251,46 @@ void HttpSession::setCurrentComic(qulonglong id, Comic * comic)
 	}
 }
 
+//current comic (read)
+qulonglong HttpSession::getCurrentRemoteComicId()
+{
+    if(dataPtr)
+        return dataPtr->yacreaderSessionData.remoteComicId ;
+    else
+        return 0;
+}
+Comic* HttpSession::getCurrentRemoteComic()
+{
+    if(dataPtr)
+    {
+        return dataPtr->yacreaderSessionData.remoteComic ;
+    }
+    else
+        return 0;
+}
+void HttpSession::dismissCurrentRemoteComic()
+{
+    if(dataPtr)
+    {
+        if(dataPtr->yacreaderSessionData.remoteComic != 0)
+        {
+            dataPtr->yacreaderSessionData.remoteComic->deleteLater();
+            dataPtr->yacreaderSessionData.remoteComic = 0;
+        }
+        dataPtr->yacreaderSessionData.remoteComicId = 0;
+    }
+}
+void HttpSession::setCurrentRemoteComic(qulonglong id, Comic * comic)
+{
+    if(dataPtr)
+    {
+        dismissCurrentRemoteComic();
+        dataPtr->yacreaderSessionData.remoteComicId = id;
+        dataPtr->yacreaderSessionData.remoteComic = comic;
+    }
+}
+
+
 QString HttpSession::getDeviceType()
 {
 	if(dataPtr)
@@ -269,8 +311,8 @@ void HttpSession::setDeviceType(const QString & device)
 {
 	if(dataPtr)
 	{
-		dataPtr->yacreaderSessionData.comicsOnDevice.clear(); //TODO crear un método clear que limpie la sesión completamente
-		dataPtr->yacreaderSessionData.downloadedComics.clear();
+        //dataPtr->yacreaderSessionData.comicsOnDevice.clear(); //TODO crear un método clear que limpie la sesión completamente
+        //dataPtr->yacreaderSessionData.downloadedComics.clear();
 		dataPtr->yacreaderSessionData.device = device;
 	}
 }

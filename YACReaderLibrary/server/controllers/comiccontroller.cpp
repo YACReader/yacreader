@@ -9,6 +9,8 @@
 #include "comic_db.h"
 #include "comic.h"
 
+#include "QsLog.h"
+
 #include <typeinfo>
 
 ComicController::ComicController() {}
@@ -22,7 +24,7 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 	QString libraryName = DBHelper::getLibraryName(pathElements.at(2).toInt());
 	qulonglong comicId = pathElements.at(4).toULongLong();
 
-    bool remoteComic = path.contains("remote");
+    bool remoteComic = path.endsWith("remote");
 
 	//TODO
 	//if(pathElements.size() == 6)
@@ -67,7 +69,17 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 		if(thread != NULL)
 			thread->start();
 
-		session.setCurrentComic(comic.id, comicFile);
+        if(remoteComic)
+        {
+            QLOG_INFO() << "remote comic requested";
+            session.setCurrentRemoteComic(comic.id, comicFile);
+
+        }
+        else
+        {
+            QLOG_INFO() << "comic requested";
+            session.setCurrentComic(comic.id, comicFile);
+        }
 
 		response.setHeader("Content-Type", "plain/text; charset=ISO-8859-1");
 		//TODO this field is not used by the client!
