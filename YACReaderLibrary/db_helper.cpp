@@ -22,6 +22,7 @@
 
 #include "qnaturalsorting.h"
 
+#include "QsLog.h"
 //server
 
 YACReaderLibraries DBHelper::getLibraries()
@@ -296,6 +297,21 @@ void DBHelper::update(const Folder & folder, QSqlDatabase &db)
     updateFolderInfo.bindValue(":completed", folder.isCompleted()?1:0);
     updateFolderInfo.bindValue(":id", folder.id);
     updateFolderInfo.exec();
+}
+
+void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
+{
+    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
+    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
+
+    ComicDB comic = DBHelper::loadComic(comicInfo.id,db);
+    comic.info.currentPage = comicInfo.currentPage;
+    comic.info.hasBeenOpened = true;
+
+    DBHelper::update(&comic.info,db);
+
+    db.close();
+    QSqlDatabase::removeDatabase(libraryPath);
 }
 //inserts
 qulonglong DBHelper::insert(Folder * folder, QSqlDatabase & db)
