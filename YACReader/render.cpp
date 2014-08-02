@@ -1053,7 +1053,12 @@ QString Render::getCurrentPagesInformation()
 {
 	QString s = QString::number(currentIndex+1);
 	if (doublePage && (currentIndex+1 < (int)comic->numPages()))
-		s += "-"+QString::number(currentIndex+2);
+	{
+		if (doubleMangaPage)
+			s = QString::number(currentIndex+2) + "-" + s;
+		else
+			s += "-"+QString::number(currentIndex+2);
+	}
 	s += "/"+QString::number(comic->numPages());
 	return s;
 }
