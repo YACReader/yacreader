@@ -453,11 +453,20 @@ void DoublePageRender::run()
 	
 	QImage auxImg(totalWidth,totalHeight,QImage::Format_RGB32);
 	QPainter painter(&auxImg);
-	painter.drawImage(QRect(0,0,width1,totalHeight),img);
-	if(!img2.isNull())
-		painter.drawImage(QRect(width1,0,width2,totalHeight),img2);
-	painter.end();
-
+	if (render->doubleMangaPage) {
+		qDebug() << "we are in the double Manga Page tree" << render->doubleMangaPage;
+		painter.drawImage(QRect(width2,0,width1,totalHeight),img);
+		if(!img2.isNull())
+			painter.drawImage(QRect(0,0,width2,totalHeight),img2);
+		painter.end();
+	}
+	else {
+		qDebug() << "no double Manga Page" << render->doubleMangaPage;
+		painter.drawImage(QRect(0,0,width1,totalHeight),img);
+		if(!img2.isNull())
+			painter.drawImage(QRect(width1,0,width2,totalHeight),img2);
+		painter.end();
+	}
 	if(degrees > 0)
 	{
 		QMatrix m;
@@ -479,7 +488,7 @@ void DoublePageRender::run()
 //-----------------------------------------------------------------------------
 
 Render::Render()
-:currentIndex(0),doublePage(false),comic(0),loadedComic(false),imageRotation(0),numLeftPages(2),numRightPages(2)
+:currentIndex(0),doublePage(false),doubleMangaPage(false),comic(0),loadedComic(false),imageRotation(0),numLeftPages(2),numRightPages(2)
 {
 	int size = numLeftPages+numRightPages+1;
 	currentPageBufferedIndex = numLeftPages;
@@ -1024,6 +1033,16 @@ void Render::doublePageSwitch()
 {
 	doublePage = !doublePage;
 	if(comic)
+	{
+		invalidate();
+		update();
+	}
+}
+
+void Render::doubleMangaPageSwitch()
+{
+	doubleMangaPage = !doubleMangaPage;
+	if(comic&&doublePage)
 	{
 		invalidate();
 		update();

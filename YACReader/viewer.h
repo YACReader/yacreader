@@ -64,6 +64,7 @@ class NotificationsLabelWidget;
 		void setBookmark(bool);
 		void save();
 		void doublePageSwitch();
+		void doubleMangaPageSwitch();
 		void resetContent();
 		void setLoadingMessage();
 		void setPageUnavailableMessage();
@@ -93,6 +94,7 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 	private:
 		bool information;
 		bool doublePage;
+		bool doubleMangaPage;
 		PageLabelWidget * informationLabel;
 		//QTimer * scroller;
 		QPropertyAnimation * verticalScroller;

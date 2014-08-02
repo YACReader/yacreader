@@ -39,6 +39,7 @@ void ShortcutsManager::initDefaultShorcuts()
     defaultShorcuts.insert(LEFT_ROTATION_ACTION_Y, Qt::Key_L);
     defaultShorcuts.insert(RIGHT_ROTATION_ACTION_Y, Qt::Key_R);
     defaultShorcuts.insert(DOUBLE_PAGE_ACTION_Y, Qt::Key_D);
+    defaultShorcuts.insert(DOUBLE_MANGA_PAGE_ACTION_Y, Qt::Key_J);
     defaultShorcuts.insert(GO_TO_PAGE_ACTION_Y, Qt::Key_G);
     defaultShorcuts.insert(OPTIONS_ACTION_Y, Qt::Key_C);
     defaultShorcuts.insert(HELP_ABOUT_ACTION_Y, Qt::Key_F1);
