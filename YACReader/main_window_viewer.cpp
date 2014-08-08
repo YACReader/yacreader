@@ -169,7 +169,7 @@ void MainWindowViewer::setupUI()
 
 	setWindowTitle("YACReader");
 
-	openFromArgv();
+	//openFromArgv();
 
 	checkNewVersion();
 	
@@ -232,12 +232,16 @@ void MainWindowViewer::openFromArgv()
 			open(pathFile+currentComicDB.path,currentComicDB,siblingComics);
 		}
 		else
-		{isClient = false; QMessageBox::information(this,"Connection Error", "Unable to connect to YACReaderLibrary");/*error*/}
+		{
+			isClient = false; 
+			QMessageBox::information(this,"Connection Error", "Unable to connect to YACReaderLibrary");
+			//error
+		}
 
 		optionsDialog->setFilters(currentComicDB.info.brightness, currentComicDB.info.contrast, currentComicDB.info.gamma);
 	}
 }
-
+	
 void MainWindowViewer::createActions()
 {
 	openAction = new QAction(tr("&Open"),this);
@@ -647,6 +651,39 @@ void MainWindowViewer::open(QString path, ComicDB & comic, QList<ComicDB> & sibl
 		openNextComicAction->setDisabled(false);
 	else
 		openNextComicAction->setDisabled(true);
+}
+
+void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId)
+{
+	//QString pathFile = QCoreApplication::arguments().at(1);
+	currentDirectory = path;
+	//quint64 comicId = QCoreApplication::arguments().at(2).split("=").at(1).toULongLong();
+	//libraryId = QCoreApplication::arguments().at(3).split("=").at(1).toULongLong();
+	this->libraryId=libraryId;
+//	this->path=path;
+	
+	enableActions();
+	
+	currentComicDB.id = comicId;
+	YACReaderLocalClient client;
+        int tries = 1;
+		bool success = false;
+        while(!(success = client.requestComicInfo(libraryId,currentComicDB,siblingComics)) && tries != 0)
+            tries--;
+
+        if(success)
+	{
+		isClient = true;
+		open(path+currentComicDB.path,currentComicDB,siblingComics);
+	}
+	else
+	{
+		isClient = false; 
+		QMessageBox::information(this,"Connection Error", "Unable to connect to YACReaderLibrary");
+		//error
+	}
+
+	optionsDialog->setFilters(currentComicDB.info.brightness, currentComicDB.info.contrast, currentComicDB.info.gamma);
 }
 
 void MainWindowViewer::openComicFromPath(QString pathFile)
