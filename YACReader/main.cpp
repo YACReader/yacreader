@@ -80,7 +80,40 @@ int main(int argc, char * argv[])
 
 	app.setApplicationName("YACReader");
 	app.setOrganizationName("YACReader");
-
+	
+	//simple command line parser
+	//will be replaced by QCommandLineParser in the future
+	QStringList optlist;
+	QStringList arglist;
+	
+	if (argc > 1)
+	{
+		//extract options and arguments
+		optlist = QCoreApplication::arguments().filter(QRegExp ("^-{1,2}")); 		//options starting with "-"
+		arglist = QCoreApplication::arguments().filter(QRegExp ("^(?!-{1,2})")); 	//positional arguments
+		//deal with standard options
+		if (!optlist.isEmpty())
+		{
+			QTextStream parser(stdout);
+			if (optlist.contains("--version") | optlist.contains("-v"))
+			{
+				parser << app.applicationName() << " " << QString(VERSION) << endl << "Copyright 2014 by Luis Angel San Martin Rodriguez" << endl;
+				return 0;
+			}
+			if (optlist.contains("--help") | optlist.contains("-h"))
+			{
+				parser << endl << "Usage: YACReader [File|Directory|Option]" << endl << endl;
+				parser << "Options:" << endl;
+				parser << "  -h, --help\t\tDisplay this text and exit." << endl;
+				parser << "  -v, --version\t\tDisplay version information and exit." << endl << endl;
+				parser << "Arguments:" << endl;
+				parser << "  file\t\t\tOpen comic file." <<endl;
+				parser << "  directory\t\tOpen comic directory." << endl << endl;
+				return 0;
+			}
+		}
+	}
+	
 	QString destLog = YACReader::getSettingsPath()+"/yacreader.log";
 	QDir().mkpath(YACReader::getSettingsPath());
 
@@ -101,8 +134,24 @@ int main(int argc, char * argv[])
 	translator.load(QCoreApplication::applicationDirPath()+"/languages/yacreader_"+sufix);
 #endif	
 	app.installTranslator(&translator);
-
 	MainWindowViewer * mwv = new MainWindowViewer();
+	//parser code for comic loading needs to be processed after MainWindowViewer creation
+	//if we have a valid request, open it - if not, load normally
+	if (argc > 1)
+	{
+		if (!optlist.filter("--comicId=").isEmpty() && !optlist.filter("--libraryId=").isEmpty())	
+		{
+			if (arglist.count()>1)
+			{
+				mwv->open(arglist.at(1), optlist.filter("--comicId=").at(0).split("=").at(1).toULongLong(), optlist.filter("--libraryId=").at(0).split("=").at(1).toULongLong());
+			}
+		}
+		else if ((arglist.count()>1))
+		{
+			//open first positional argument, silently ignore all following positional arguments
+			mwv->openComicFromPath(arglist.at(1));
+		}
+	}
 #ifdef Q_OS_MAC
     app.setWindow(mwv);
 #endif

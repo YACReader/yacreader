@@ -26,6 +26,7 @@ class YACReaderSliderAction;
 	public slots:
 		void open();
 		void open(QString path, ComicDB & comic, QList<ComicDB> & siblings);
+		void open(QString path, qint64 comicId, qint64 libraryId);
 		void openFolder();
 		void saveImage();
 		void toggleToolBars();
@@ -126,6 +127,7 @@ class YACReaderSliderAction;
 		ComicDB currentComicDB;
 		QList<ComicDB> siblingComics;
 		bool isClient;
+		QString startComicPath;
 		quint64 libraryId;
 signals:
 		void closed();
