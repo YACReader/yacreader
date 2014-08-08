@@ -1582,7 +1582,7 @@ void LibraryWindow::openContainingFolderComic()
 {
 QModelIndex modelIndex = comicView->currentIndex();
 QFileInfo file = QDir::cleanPath(currentPath() + dmCV->getComicPath(modelIndex)); 
-#ifdef Q_OS_LINUX
+#if defined Q_OS_UNIX && !defined Q_OS_MAC
 	QString path = file.absolutePath();
 	QDesktopServices::openUrl(QUrl("file:///"+path, QUrl::TolerantMode));
 #endif
