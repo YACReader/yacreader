@@ -169,8 +169,6 @@ void MainWindowViewer::setupUI()
 
 	setWindowTitle("YACReader");
 
-	//openFromArgv();
-
 	checkNewVersion();
 	
 	viewer->setFocusPolicy(Qt::StrongFocus);
@@ -194,54 +192,6 @@ void MainWindowViewer::setupUI()
 		hideToolBars();
 }
 
-void MainWindowViewer::openFromArgv()
-{
-	if(QCoreApplication::arguments().count() == 2) //only path...
-	{
-		isClient = false;
-		//TODO: new method open(QString)
-		QString pathFile = QCoreApplication::arguments().at(1);
-		QFileInfo fi(pathFile);
-		currentDirectory = fi.absoluteDir().path();
-		getSiblingComics(fi.absolutePath(),fi.fileName());
-
-		setWindowTitle("YACReader - " + fi.fileName());
-		enableActions();
-		viewer->open(pathFile);
-	}
-	else if(QCoreApplication::arguments().count() == 4)
-	{
-		
-		QString pathFile = QCoreApplication::arguments().at(1);
-		currentDirectory = pathFile;
-		quint64 comicId = QCoreApplication::arguments().at(2).toULongLong();
-		libraryId = QCoreApplication::arguments().at(3).toULongLong();
-		
-		enableActions();
-	
-		currentComicDB.id = comicId;
-		YACReaderLocalClient client;
-        int tries = 1;
-		bool success = false;
-        while(!(success = client.requestComicInfo(libraryId,currentComicDB,siblingComics)) && tries != 0)
-            tries--;
-
-        if(success)
-		{
-			isClient = true;
-			open(pathFile+currentComicDB.path,currentComicDB,siblingComics);
-		}
-		else
-		{
-			isClient = false; 
-			QMessageBox::information(this,"Connection Error", "Unable to connect to YACReaderLibrary");
-			//error
-		}
-
-		optionsDialog->setFilters(currentComicDB.info.brightness, currentComicDB.info.contrast, currentComicDB.info.gamma);
-	}
-}
-	
 void MainWindowViewer::createActions()
 {
 	openAction = new QAction(tr("&Open"),this);

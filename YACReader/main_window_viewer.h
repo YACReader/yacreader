@@ -110,7 +110,6 @@ class YACReaderSliderAction;
 		QString nextComicPath;
 		//! Método que inicializa el interfaz.
 		void setupUI();
-		void openFromArgv();
 		void createActions();
 		void createToolBars();
 		void getSiblingComics(QString path,QString currentComic);
