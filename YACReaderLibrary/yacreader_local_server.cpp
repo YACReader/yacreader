@@ -51,7 +51,6 @@ void YACReaderLocalServer::sendResponse()
 		connect(worker,SIGNAL(comicUpdated(quint64, ComicDB)),this,SIGNAL(comicUpdated(quint64, ComicDB)));
 		connect(worker,SIGNAL(finished()),worker,SLOT(deleteLater()));
 		worker->start();
-		QLOG_INFO() << "connection incoming" << "Worker started";
 	}
 
 	QLOG_INFO() << "connection incoming";
