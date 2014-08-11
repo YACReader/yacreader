@@ -1,0 +1,23 @@
+<RCC>
+    <qresource prefix="/">
+        <file>../images/main_toolbar/back.png</file>
+        <file>../images/main_toolbar/back_disabled.png</file>
+        <file>../images/main_toolbar/forward.png</file>
+        <file>../images/main_toolbar/forward_disabled.png</file>
+        <file>../images/main_toolbar/settings.png</file>
+        <file>../images/main_toolbar/server.png</file>
+        <file>../images/main_toolbar/help.png</file>
+        <file>../images/main_toolbar/fullscreen.png</file>
+        <file>../images/libraryIcon.png</file>
+        <file>../images/setRoot.png</file>
+        <file>../images/expand.png</file>
+        <file>../images/colapse.png</file>
+        <file>../images/newLibraryIcon.png</file>
+        <file>../images/openLibraryIcon.png</file>
+        <file>../images/main_toolbar/flow.png</file>
+        <file>../images/main_toolbar/grid.png</file>
+        <file>../images/flow_to_grid.gif</file>
+        <file>../images/grid_to_flow.gif</file>
+        <file>../images/empty_folder.png</file>
+    </qresource>
+</RCC>
