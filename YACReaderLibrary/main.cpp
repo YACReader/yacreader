@@ -149,12 +149,12 @@ int main( int argc, char ** argv )
 	{
 		QTextStream parser(stdout);
 		QStringList optlist = QCoreApplication::arguments().filter(QRegExp ("^-{1,2}"));
-		if (optlist.contains("--version") | optlist.contains("-v"))
+        if (optlist.contains("--version") || optlist.contains("-v"))
 		{
 			parser << app.applicationName() << " " << QString(VERSION) << endl << "Copyright 2014 by Luis Angel San Martin Rodriguez" << endl;
 			return 0;
 		}
-		if (optlist.contains("--help") | optlist.contains("-h"))
+        if (optlist.contains("--help") || optlist.contains("-h"))
 		{
 			parser << endl << "Usage:" << "\tYACReaderLibrary [Option]" << endl << endl;
 			parser << "Options:" << endl;
