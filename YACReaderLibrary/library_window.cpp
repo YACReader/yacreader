@@ -1145,7 +1145,7 @@ void LibraryWindow::openComic()
 #endif
 
 #ifdef Q_OS_WIN																														  /* \"%4\" \"%5\" \"%6\" \"%7\" \"%8\" \"%9\" \"%10\" */
-        yacreaderFound = QProcess::startDetached(QDir::cleanPath(QCoreApplication::applicationDirPath())+QString("/YACReader \"%1\" \"%2\" \"%3\"").arg(path).arg(QString("--comicId=") + QString::number(comicId))).arg(QString("--libraryId=") + QString::number(libraryId))/*.arg(page).arg(bookmark1).arg(bookmark2).arg(bookmark3).arg(brightness).arg(contrast).arg(gamma)*/,QStringList());
+        yacreaderFound = QProcess::startDetached(QDir::cleanPath(QCoreApplication::applicationDirPath())+QString("/YACReader \"%1\" \"%2\" \"%3\"").arg(path).arg(QString("--comicId=") + QString::number(comicId)).arg(QString("--libraryId=") + QString::number(libraryId))/*.arg(page).arg(bookmark1).arg(bookmark2).arg(bookmark3).arg(brightness).arg(contrast).arg(gamma)*/,QStringList());
 #endif
 
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
