@@ -95,12 +95,12 @@ int main(int argc, char * argv[])
 		if (!optlist.isEmpty())
 		{
 			QTextStream parser(stdout);
-			if (optlist.contains("--version") | optlist.contains("-v"))
+            if (optlist.contains("--version") || optlist.contains("-v"))
 			{
 				parser << app.applicationName() << " " << QString(VERSION) << endl << "Copyright 2014 by Luis Angel San Martin Rodriguez" << endl;
 				return 0;
 			}
-			if (optlist.contains("--help") | optlist.contains("-h"))
+            if (optlist.contains("--help") || optlist.contains("-h"))
 			{
 				parser << endl << "Usage: YACReader [File|Directory|Option]" << endl << endl;
 				parser << "Options:" << endl;
