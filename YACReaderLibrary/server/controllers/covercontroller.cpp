@@ -67,9 +67,9 @@ void CoverController::service(HttpRequest& request, HttpResponse& response)
         if(folderCover)
         {
              if(session.getDisplayType()=="@2x")
-                p.drawImage(0,0,QImage(":/images/f_retina.png"));
+                p.drawImage(0,0,QImage(":/images/f_overlayed_retina.png"));
              else
-                p.drawImage(0,0,QImage(":/images/f.png"));
+                p.drawImage(0,0,QImage(":/images/f_overlayed.png"));
         }
 
 		QByteArray ba;
