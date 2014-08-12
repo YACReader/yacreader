@@ -609,8 +609,11 @@ void Render::update()
 void Render::load(const QString & path, int atPage)
 {
 	createComic(path);
-	loadComic(path,atPage);
-	startLoad();
+	if (comic !=0)
+	{
+		loadComic(path,atPage);
+		startLoad();
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -636,8 +639,11 @@ void Render::load(const QString & path, const ComicDB & comicDB)
 			   filters[i]->setLevel(comicDB.info.gamma);
    }
    createComic(path);
-   loadComic(path,comicDB);
-   startLoad();
+   if (comic!=0)
+   {
+	loadComic(path,comicDB);
+	startLoad();
+   }
 }
 
 void Render::createComic(const QString & path)

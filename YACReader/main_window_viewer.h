@@ -27,6 +27,7 @@ class EditShortcutsDialog;
 	public slots:
 		void open();
 		void open(QString path, ComicDB & comic, QList<ComicDB> & siblings);
+		void open(QString path, qint64 comicId, qint64 libraryId);
 		void openFolder();
 		void saveImage();
 		void toggleToolBars();
@@ -114,7 +115,6 @@ class EditShortcutsDialog;
 		QString nextComicPath;
 		//! Método que inicializa el interfaz.
 		void setupUI();
-		void openFromArgv();
 		void createActions();
 		void createToolBars();
 		void getSiblingComics(QString path,QString currentComic);
@@ -131,6 +131,7 @@ class EditShortcutsDialog;
 		ComicDB currentComicDB;
 		QList<ComicDB> siblingComics;
 		bool isClient;
+		QString startComicPath;
 		quint64 libraryId;
 signals:
 		void closed();
