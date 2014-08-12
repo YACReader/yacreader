@@ -313,6 +313,21 @@ void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
     db.close();
     QSqlDatabase::removeDatabase(libraryPath);
 }
+
+void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
+{
+    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
+    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
+
+    ComicDB comic = DBHelper::loadComic(comicInfo.id,db);
+    comic.info.currentPage = comicInfo.currentPage;
+    comic.info.hasBeenOpened = true;
+
+    DBHelper::update(&comic.info,db);
+
+    db.close();
+    QSqlDatabase::removeDatabase(libraryPath);
+}
 //inserts
 qulonglong DBHelper::insert(Folder * folder, QSqlDatabase & db)
 {
