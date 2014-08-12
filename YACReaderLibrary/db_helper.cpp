@@ -254,6 +254,7 @@ void DBHelper::update(ComicInfo * comicInfo, QSqlDatabase & db)
 	updateComicInfo.bindValue(":notes",comicInfo->notes);
 
     bool read = comicInfo->read || comicInfo->currentPage == comicInfo->numPages.toInt(); //if current page is the las page, the comic is read(completed)
+    comicInfo->read = read;
     updateComicInfo.bindValue(":read", read?1:0);
 	updateComicInfo.bindValue(":id", comicInfo->id);
 	updateComicInfo.bindValue(":edited", comicInfo->edited?1:0);
@@ -296,6 +297,21 @@ void DBHelper::update(const Folder & folder, QSqlDatabase &db)
     updateFolderInfo.bindValue(":completed", folder.isCompleted()?1:0);
     updateFolderInfo.bindValue(":id", folder.id);
     updateFolderInfo.exec();
+}
+
+void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
+{
+    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
+    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
+
+    ComicDB comic = DBHelper::loadComic(comicInfo.id,db);
+    comic.info.currentPage = comicInfo.currentPage;
+    comic.info.hasBeenOpened = true;
+
+    DBHelper::update(&comic.info,db);
+
+    db.close();
+    QSqlDatabase::removeDatabase(libraryPath);
 }
 
 void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
@@ -686,5 +702,18 @@ ComicInfo DBHelper::loadComicInfo(QString hash, QSqlDatabase & db)
 	else
 		comicInfo.existOnDb = false;
 
-	return comicInfo;
+    return comicInfo;
+}
+
+QList<QString> DBHelper::loadSubfoldersNames(qulonglong folderId, QSqlDatabase &db)
+{
+    QList<QString> result;
+    QSqlQuery selectQuery(db);
+    selectQuery.prepare("SELECT name FROM folder WHERE parentId = :parentId AND id <> 1"); //do not select the root folder
+    selectQuery.bindValue(":parentId", folderId);
+    selectQuery.exec();
+    while(selectQuery.next()){
+        result << selectQuery.record().value("name").toString();
+    }
+    return result;
 }

@@ -113,6 +113,7 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 	layoutGeneral->addWidget(slideSizeBox);
 	layoutGeneral->addWidget(fitBox);
 	layoutGeneral->addWidget(colorBox);
+    layoutGeneral->addWidget(shortcutsBox);
 	layoutGeneral->addStretch();
 	layoutFlow->addWidget(sw);
 	layoutFlow->addWidget(gl);
