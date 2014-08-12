@@ -25,6 +25,7 @@ fullscreen(false),
 information(false),
 adjustToWidthRatio(1),
 doublePage(false),
+doubleMangaPage(false),
 wheelStop(false),
 direction(1),
 restoreMagnifyingGlass(false),
@@ -98,6 +99,9 @@ shouldOpenPrevious(false)
 
 	if(Configuration::getConfiguration().getDoublePage())
 		doublePageSwitch();
+		
+	if(Configuration::getConfiguration().getDoubleMangaPage())
+		doubleMangaPageSwitch();
 
 	createConnections();
 
@@ -698,6 +702,13 @@ void Viewer::doublePageSwitch()
 	doublePage = !doublePage;
 	render->doublePageSwitch();
 	Configuration::getConfiguration().setDoublePage(doublePage);
+}
+
+void Viewer::doubleMangaPageSwitch()
+{
+	doubleMangaPage = !doubleMangaPage;
+	render->doubleMangaPageSwitch();
+	Configuration::getConfiguration().setDoubleMangaPage(doubleMangaPage);
 }
 
 void Viewer::resetContent()

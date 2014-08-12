@@ -100,6 +100,7 @@ class EditShortcutsDialog;
         QAction *showInfoAction;
 		QAction *closeAction;
 		QAction *doublePageAction;
+		QAction *doubleMangaPageAction;
 		QAction *showShorcutsAction;
 		QAction *showDictionaryAction;
 		QAction *alwaysOnTopAction;
