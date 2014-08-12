@@ -29,7 +29,7 @@ bool HttpVersionChecker::checkNewVersion(QString sourceContent)
 	QRegExp rx(".*YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}win32.*");
 #endif
 
-#ifdef  Q_OS_LINUX
+#if defined  Q_OS_UNIX && !defined Q_OS_MAC
 	QRegExp rx(".*YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}X11.*");
 #endif
 
