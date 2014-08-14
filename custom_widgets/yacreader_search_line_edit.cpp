@@ -34,7 +34,7 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
 				   qMax(msz.height(), clearButton->sizeHint().height() + frameWidth * 2 + 2));
 
 #ifdef Q_OS_MAC
-	setMaximumWidth(300);
+    setMaximumWidth(212);
 #endif
 }
 

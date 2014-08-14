@@ -254,6 +254,7 @@ void DBHelper::update(ComicInfo * comicInfo, QSqlDatabase & db)
 	updateComicInfo.bindValue(":notes",comicInfo->notes);
 
     bool read = comicInfo->read || comicInfo->currentPage == comicInfo->numPages.toInt(); //if current page is the las page, the comic is read(completed)
+    comicInfo->read = read;
     updateComicInfo.bindValue(":read", read?1:0);
 	updateComicInfo.bindValue(":id", comicInfo->id);
 	updateComicInfo.bindValue(":edited", comicInfo->edited?1:0);
@@ -312,6 +313,7 @@ void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
     db.close();
     QSqlDatabase::removeDatabase(libraryPath);
 }
+
 //inserts
 qulonglong DBHelper::insert(Folder * folder, QSqlDatabase & db)
 {
@@ -686,5 +688,18 @@ ComicInfo DBHelper::loadComicInfo(QString hash, QSqlDatabase & db)
 	else
 		comicInfo.existOnDb = false;
 
-	return comicInfo;
+    return comicInfo;
+}
+
+QList<QString> DBHelper::loadSubfoldersNames(qulonglong folderId, QSqlDatabase &db)
+{
+    QList<QString> result;
+    QSqlQuery selectQuery(db);
+    selectQuery.prepare("SELECT name FROM folder WHERE parentId = :parentId AND id <> 1"); //do not select the root folder
+    selectQuery.bindValue(":parentId", folderId);
+    selectQuery.exec();
+    while(selectQuery.next()){
+        result << selectQuery.record().value("name").toString();
+    }
+    return result;
 }
