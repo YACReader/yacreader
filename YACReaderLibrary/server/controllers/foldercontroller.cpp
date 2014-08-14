@@ -164,8 +164,8 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
     QStack<int> foldersPath = session.getFoldersPath();
     t.setVariable(QString("library.name"),libraryName);
     t.setVariable(QString("library.url"),QString("/library/%1/folder/1").arg(libraryId));
-    t.loop("path",foldersPath.length());
-    for(int i = 0; i < foldersPath.length(); i++){
+    t.loop("path",foldersPath.count());
+    for(int i = 0; i < foldersPath.count(); i++){
 
         t.setVariable(QString("path%1.url").arg(i),QString("/library/%1/folder/%2").arg(libraryId).arg(foldersPath[i]));
         t.setVariable(QString("path%1.name").arg(i),DBHelper::getFolderName(libraryName,foldersPath[i]));
