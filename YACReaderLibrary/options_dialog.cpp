@@ -20,33 +20,50 @@ FlowType flowType = Strip;
 OptionsDialog::OptionsDialog(QWidget * parent)
 :YACReaderOptionsDialog(parent)
 {
-	QVBoxLayout * layout = new QVBoxLayout;
+    QTabWidget * tabWidget = new QTabWidget();
 
-	QHBoxLayout * switchFlowType = new QHBoxLayout;
-	switchFlowType->addStretch();
-	switchFlowType->addWidget(useGL);
+    QVBoxLayout * layout = new QVBoxLayout(this);
 
+    QVBoxLayout * flowLayout = new QVBoxLayout;
+    QVBoxLayout * generalLayout = new QVBoxLayout();
 
+    QHBoxLayout * switchFlowType = new QHBoxLayout;
+    switchFlowType->addStretch();
+    switchFlowType->addWidget(useGL);
 
-	QHBoxLayout * buttons = new QHBoxLayout();
-	buttons->addStretch();
-	buttons->addWidget(accept);
-	buttons->addWidget(cancel);
+    QHBoxLayout * buttons = new QHBoxLayout();
+    buttons->addStretch();
+    buttons->addWidget(accept);
+    buttons->addWidget(cancel);
 
-	layout->addWidget(sw);
-	layout->addWidget(gl);
-	layout->addLayout(switchFlowType);
-	layout->addLayout(buttons);
+    flowLayout->addWidget(sw);
+    flowLayout->addWidget(gl);
+    flowLayout->addLayout(switchFlowType);
 
-	sw->hide();
+    sw->hide();
 
-	setLayout(layout);
-	//restoreOptions(settings); //load options
-	//resize(200,0);
-	setModal (true);
-	setWindowTitle(tr("Options"));
+    QWidget * comicFlowW = new QWidget;
+    comicFlowW->setLayout(flowLayout);
 
-	this->layout()->setSizeConstraint(QLayout::SetFixedSize);
+    QWidget * generalW = new QWidget;
+    generalW->setLayout(generalLayout);
+    generalLayout->addWidget(shortcutsBox);
+    generalLayout->addStretch();
+
+    tabWidget->addTab(comicFlowW,tr("Comic Flow"));
+    tabWidget->addTab(generalW,tr("General"));
+
+    layout->addWidget(tabWidget);
+    layout->addLayout(buttons);
+    setLayout(layout);
+    //restoreOptions(settings); //load options
+    //resize(200,0);
+    setModal (true);
+    setWindowTitle(tr("Options"));
+
+    this->layout()->setSizeConstraint(QLayout::SetFixedSize);
+
 }
+
 
 
