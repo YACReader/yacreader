@@ -35,6 +35,7 @@ using namespace YACReader;
 		QSize windowSize;
 		bool maximized;
 		bool doublePage;
+		bool doubleMangaPage;
 		bool alwaysOnTop;
 		bool adjustToFullSize;
 		QColor backgroundColor;
@@ -75,6 +76,8 @@ using namespace YACReader;
 		void setMaximized(bool b){settings->setValue(MAXIMIZED,b);}
 		bool getDoublePage(){return settings->value(DOUBLE_PAGE).toBool();}
 		void setDoublePage(bool b){settings->setValue(DOUBLE_PAGE,b);}
+		bool getDoubleMangaPage(){return settings->value(DOUBLE_MANGA_PAGE).toBool();}
+		void setDoubleMangaPage(bool b){settings->setValue(DOUBLE_MANGA_PAGE,b);}
 		bool getAdjustToFullSize(){return settings->value(ADJUST_TO_FULL_SIZE).toBool();}
 		void setAdjustToFullSize(bool b){settings->setValue(ADJUST_TO_FULL_SIZE,b);}
 		QColor getBackgroundColor(){return settings->value(BACKGROUND_COLOR).value<QColor>();}
