@@ -191,7 +191,8 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
                 t.setVariable(QString("element%1.image.url").arg(i),"/images/f.png");
 
 			t.setVariable(QString("element%1.browse").arg(i),QString("<a class =\"browseButton\" href=\"%1\">browse</a>").arg(QString("/library/%1/folder/%2").arg(libraryId).arg(item->id)));
-
+            t.setVariable(QString("element%1.cover.browse").arg(i),QString("<a href=\"%1\">").arg(QString("/library/%1/folder/%2").arg(libraryId).arg(item->id)));
+            t.setVariable(QString("element%1.cover.browse.end").arg(i),"</a>");
 			//t.setVariable(QString("element%1.url").arg(i),"/library/"+libraryName+"/folder/"+QString("%1").arg(folderContent.at(i + (page*10))->id));
 			//t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/folder/"+QString("%1/info").arg(folderContent.at(i + (page*elementsPerPage))->id));
 			
@@ -234,7 +235,8 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
             else
                 t.setVariable(QString("element%1.status").arg(i),"");
 
-
+            t.setVariable(QString("element%1.cover.browse").arg(i),"");
+            t.setVariable(QString("element%1.cover.browse.end").arg(i),"");
 		}
 		i++;
 	}

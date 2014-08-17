@@ -49,7 +49,7 @@
 					{loop element}
 					<li>
 						<div class="{element.class}">
-							<img style="width: 80px" src="{element.image.url}"/>
+							{cover.browse} <img style="width: 80px" src="{element.image.url}"/> {cover.browse.end}
 						</div> 
 						<div class="info"> 
 							<div class="title"><p>{element.name}</p> 
