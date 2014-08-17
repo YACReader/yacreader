@@ -69,10 +69,9 @@ DATADIR = $$PREFIX/share
 
 DEFINES += "LIBDIR=\\\"$$LIBDIR\\\""  "DATADIR=\\\"$$DATADIR\\\""
 
-
 #MAKE INSTALL
 
-INSTALLS += bin docs icon desktop translation
+INSTALLS += bin docs icon desktop translation manpage
 
 bin.path = $$BINDIR
 isEmpty(DESTDIR) {
@@ -82,7 +81,10 @@ isEmpty(DESTDIR) {
 }
 
 docs.path = $$DATADIR/doc/YACReader
-docs.files = ../*.txt
+
+#rename docs for better packageability
+docs.extra = cp ../CHANGELOG.txt ../changelog; cp ../README.txt ../README
+docs.files = ../README ../changelog
 
 icon.path = $$DATADIR/YACReader
 icon.files = ../images/icon.png
@@ -95,4 +97,10 @@ desktop.files = ../YACReader.desktop
 
 translation.path = $$DATADIR/YACReader/languages
 translation.files = ../release/languages/yacreader_*
+
+manpage.path = $$DATADIR/man/man1
+manpage.files = ../YACReader.1
+
+#remove leftover doc files when 'make clean' is invoked
+QMAKE_CLEAN += "../changelog" "../README"
 }
