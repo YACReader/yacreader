@@ -211,7 +211,7 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 			//t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/comic/"+QString("%1").arg(comic->id));
 			if(!session.isComicOnDevice(comic->info.hash) && !session.isComicDownloaded(comic->info.hash))
 				t.setVariable(QString("element%1.download").arg(i),QString("<a onclick=\"this.innerHTML='importing';this.className='importedButton';\" class =\"importButton\" href=\"%1\">import</a>").arg("/library/"+QString::number(libraryId)+"/comic/"+QString("%1").arg(comic->id)));
-			else if (!session.isComicDownloaded(comic->info.hash))
+            else if (session.isComicOnDevice(comic->info.hash))
 					t.setVariable(QString("element%1.download").arg(i),QString("<div class=\"importedButton\">imported</div>"));
 			else
 				t.setVariable(QString("element%1.download").arg(i),QString("<div class=\"importedButton\">importing</div>"));

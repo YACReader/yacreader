@@ -220,7 +220,7 @@ QString StaticFileController::getDeviceAwareFileName(QString fileName, QString d
     QString baseName = fi.baseName();
     QString extension = fi.completeSuffix();
 
-    QString completeFileName = completeFileName = baseName+display+"."+extension;
+    QString completeFileName = baseName+display+"."+extension;
     if(QFile(docroot+"/"+path+completeFileName).exists())
         return completeFileName;
     else
