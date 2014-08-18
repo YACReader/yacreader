@@ -210,7 +210,16 @@ QSet<QString> HttpSession::getDownloadedComics()
 	if(dataPtr)
 		return dataPtr->yacreaderSessionData.downloadedComics ;
 	else
-		return QSet<QString>();
+        return QSet<QString>();
+}
+
+void HttpSession::clearComics()
+{
+    if(dataPtr)
+    {
+        dataPtr->yacreaderSessionData.comicsOnDevice.clear();
+        dataPtr->yacreaderSessionData.downloadedComics.clear();
+    }
 }
 //current comic (import)
 qulonglong HttpSession::getCurrentComicId()

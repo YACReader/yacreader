@@ -24,8 +24,70 @@
 #include "db_helper.h"
 #include "yacreader_libraries.h"
 
+#include "QsLog.h"
+
 RequestMapper::RequestMapper(QObject* parent)
 	:HttpRequestHandler(parent) {}
+
+void RequestMapper::loadSession(HttpRequest & request, HttpResponse& response)
+{
+    HttpSession session=Static::sessionStore->getSession(request,response);
+    if(session.contains("ySession")) //session is already alive check if it is needed to update comics
+    {
+        QString postData = QString::fromUtf8(request.getBody());
+        if(postData.length()>0) {
+            QList<QString> data = postData.split("\n");
+            if(data.length() > 2) {
+                session.setDeviceType(data.at(0).split(":").at(1));
+                session.setDisplayType(data.at(1).split(":").at(1));
+                QList<QString> comics = data.at(2).split(":").at(1).split("\t");
+                session.clearComics();
+                foreach(QString hash,comics) {
+                    session.setComicOnDevice(hash);
+                }
+            }
+            else
+            {
+                if(data.length()>1)
+                {
+                    session.setDeviceType(data.at(0).split(":").at(1));
+                    session.setDisplayType(data.at(1).split(":").at(1));
+                }
+            }
+        }
+    }
+    else
+    {
+        session.set("ySession","ok");
+
+        session.clearNavigationPath();
+        session.clearFoldersPath();
+
+        QString postData = QString::fromUtf8(request.getBody());
+        //response.writeText(postData);
+
+        QList<QString> data = postData.split("\n");
+
+        QLOG_INFO() << "Data lenght : " << data.length();
+
+        if(data.length() > 2)
+        {
+            session.setDeviceType(data.at(0).split(":").at(1));
+            session.setDisplayType(data.at(1).split(":").at(1));
+            QList<QString> comics = data.at(2).split(":").at(1).split("\t");
+            foreach(QString hash,comics)
+            {
+                session.setComicOnDevice(hash);
+            }
+        }
+        else //values by default, only for debug purposes.
+        {
+            session.setDeviceType("ipad");
+            session.setDisplayType("@2x");
+        }
+
+    }
+}
 
 void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 	QByteArray path=request.getPath();
@@ -41,9 +103,11 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 	QRegExp comicPage("/library/.+/comic/[0-9]+/page/[0-9]+/?"); //get comic page
     QRegExp comicPageRemote("/library/.+/comic/[0-9]+/page/[0-9]+/remote?"); //get comic page (remote reading)
 
-	QRegExp library("/library/([0-9]+)/.+"); //permite verificar que la biblioteca solicitada existe
+    QRegExp library("/library/([0-9]+)/.+"); //permite verificar que la biblioteca solicitada existe
 
 	path = QUrl::fromPercentEncoding(path).toLatin1();
+
+    loadSession(request, response);
 
 	//primera petición, se ha hecho un post, se sirven las bibliotecas si la seguridad mediante login no está habilitada
 	if(path == "/")
