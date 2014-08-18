@@ -77,7 +77,7 @@
 		<file>../images/social_dialog/shadow.png</file>
 		<file>../images/social_dialog/twitter.png</file>
 		<file>../images/social_dialog/separator.png</file>-->
-		<file>../images/main_toolbar/divider.png</file>
+                <file>../images/main_toolbar/divider.png</file>
 		<file>../images/collapsed_branch_osx.png</file>
 		<file>../images/expanded_branch_osx.png</file>
                 <file>../images/folder_macosx.png</file>
@@ -100,8 +100,18 @@
                 <file>../images/comic_vine/downArrow.png</file>
                 <file>../images/comic_vine/upArrow.png</file>
 		<file>../images/find_folder.png</file>
+                <file>../images/clear_shortcut.png</file>
+                <file>../images/accept_shortcut.png</file>
 		<file>../images/f_overlayed.png</file>
 		<file>../images/f_overlayed_retina.png</file>
+                <file>../images/shortcuts_group_comics.png</file>
+                <file>../images/shortcuts_group_folders.png</file>
+                <file>../images/shortcuts_group_general.png</file>
+                <file>../images/shortcuts_group_libraries.png</file>
+                <file>../images/shortcuts_group_mglass.png</file>
+                <file>../images/shortcuts_group_page.png</file>
+                <file>../images/shortcuts_group_reading.png</file>
+                <file>../images/shortcuts_group_visualization.png</file>
 		<!--<file>../images/busy_background.png</file>-->
 	</qresource>
 </RCC>
