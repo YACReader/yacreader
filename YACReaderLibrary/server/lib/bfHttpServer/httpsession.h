@@ -101,6 +101,7 @@ public:
 	bool isComicDownloaded(const QString & hash);
 	QSet<QString> getComicsOnDevice();
 	QSet<QString> getDownloadedComics();
+    void clearComics();
 
     //current comic (import)
 	qulonglong getCurrentComicId();
