@@ -80,22 +80,22 @@ isEmpty(DESTDIR) {
 	bin.files = $$DESTDIR/YACReader
 }
 
-docs.path = $$DATADIR/doc/YACReader
+docs.path = $$DATADIR/doc/yacreader
 
 #rename docs for better packageability
 docs.extra = cp ../CHANGELOG.txt ../changelog; cp ../README.txt ../README
 docs.files = ../README ../changelog
 
-icon.path = $$DATADIR/YACReader
+icon.path = $$DATADIR/yacreader
 icon.files = ../images/icon.png
 
 desktop.path = $$DATADIR/applications
-desktop.extra = desktop-file-edit --set-icon=$$DATADIR/YACReader/icon.png $$PWD/../YACReader.desktop
+desktop.extra = desktop-file-edit --set-icon=$$DATADIR/yacreader/icon.png $$PWD/../YACReader.desktop
 desktop.files = ../YACReader.desktop
 
 #TODO: icons should be located at /usr/share/icons and have the same basename as their application
 
-translation.path = $$DATADIR/YACReader/languages
+translation.path = $$DATADIR/yacreader/languages
 translation.files = ../release/languages/yacreader_*
 
 manpage.path = $$DATADIR/man/man1

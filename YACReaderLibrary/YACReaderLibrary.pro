@@ -230,18 +230,18 @@ isEmpty(DESTDIR) {
 	bin.files = $$DESTDIR/YACReaderLibrary
 }
 
-server.path = $$DATADIR/YACReader
+server.path = $$DATADIR/yacreader
 server.files = ../release/server
 
-icon.path = $$DATADIR/YACReader
+icon.path = $$DATADIR/yacreader
 icon.files = ../images/iconLibrary.png ../images/db.png ../images/coversPackage.png
 
 desktop.path = $$DATADIR/applications
-desktop.extra = desktop-file-edit --set-icon=$$DATADIR/YACReader/iconLibrary.png $$PWD/../YACReaderLibrary.desktop
+desktop.extra = desktop-file-edit --set-icon=$$DATADIR/yacreader/iconLibrary.png $$PWD/../YACReaderLibrary.desktop
 desktop.files = ../YACReaderLibrary.desktop
 #TODO: icons should be located at /usr/share/icons and have the same basename as their application
 
-translation.path = $$DATADIR/YACReader/languages
+translation.path = $$DATADIR/yacreader/languages
 translation.files = ../release/languages/yacreaderlibrary_*
 
 manpage.path = $$DATADIR/man/man1

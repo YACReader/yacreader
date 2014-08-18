@@ -11,6 +11,7 @@
 #include "static.h"
 #include <QApplication>
 
+
 StaticFileController::StaticFileController(QSettings* settings, QObject* parent)
     :HttpRequestHandler(parent)
 {
@@ -25,8 +26,8 @@ StaticFileController::StaticFileController(QSettings* settings, QObject* parent)
 #endif
         {
 #if defined Q_OS_UNIX && ! defined Q_OS_MAC
-	QFileInfo configFile(QString(DATADIR)+"/YACReader");
-        docroot=QFileInfo(QString(DATADIR)+"/YACReader",docroot).absoluteFilePath();
+	QFileInfo configFile(QString(DATADIR)+"/yacreader");
+        docroot=QFileInfo(QString(DATADIR)+"/yacreader",docroot).absoluteFilePath();
 #else
         QFileInfo configFile(QApplication::applicationDirPath());
         docroot=QFileInfo(QApplication::applicationDirPath(),docroot).absoluteFilePath();
@@ -220,7 +221,7 @@ QString StaticFileController::getDeviceAwareFileName(QString fileName, QString d
     QString baseName = fi.baseName();
     QString extension = fi.completeSuffix();
 
-    QString completeFileName = completeFileName = baseName+display+"."+extension;
+    QString completeFileName = baseName+display+"."+extension;
     if(QFile(docroot+"/"+path+completeFileName).exists())
         return completeFileName;
     else
