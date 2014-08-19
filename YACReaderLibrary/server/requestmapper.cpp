@@ -35,7 +35,12 @@ void RequestMapper::loadSession(HttpRequest & request, HttpResponse& response)
     if(session.contains("ySession")) //session is already alive check if it is needed to update comics
     {
         QString postData = QString::fromUtf8(request.getBody());
+
+        if(postData.contains("currentPage"))
+            return;
+
         if(postData.length()>0) {
+
             QList<QString> data = postData.split("\n");
             if(data.length() > 2) {
                 session.setDeviceType(data.at(0).split(":").at(1));
@@ -59,9 +64,6 @@ void RequestMapper::loadSession(HttpRequest & request, HttpResponse& response)
     else
     {
         session.set("ySession","ok");
-
-        session.clearNavigationPath();
-        session.clearFoldersPath();
 
         QString postData = QString::fromUtf8(request.getBody());
         //response.writeText(postData);
