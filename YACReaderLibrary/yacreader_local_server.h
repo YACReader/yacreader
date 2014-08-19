@@ -21,6 +21,7 @@ public slots:
 	bool isListening();
 	void sendResponse();
 	static bool isRunning();
+    void close();
 private:
 	//void run();
 	QLocalServer * localServer;

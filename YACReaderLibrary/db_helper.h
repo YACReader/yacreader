@@ -52,6 +52,7 @@ public:
 	static ComicDB loadComic(qulonglong id, QSqlDatabase & db);
     static ComicDB loadComic(QString cname, QString cpath, QString chash, QSqlDatabase & database);
 	static ComicInfo loadComicInfo(QString hash, QSqlDatabase & db);
+    static QList<QString> loadSubfoldersNames(qulonglong folderId, QSqlDatabase & db);
 };
 
 #endif

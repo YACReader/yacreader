@@ -239,9 +239,12 @@ int main( int argc, char ** argv )
 
   YACReader::exitCheck(ret);
 
-  //server shutdown
+  //shutdown
   s->stop();
   delete s;
+  localServer->close();
+  delete localServer;
+  delete mw;
 
   QsLogging::Logger::destroyInstance();
 

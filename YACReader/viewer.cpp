@@ -12,6 +12,8 @@
 #include "page_label_widget.h"
 #include "notifications_label_widget.h"
 #include "comic_db.h"
+#include "shortcuts_manager.h"
+
 #include <QFile>
 
 
@@ -367,62 +369,72 @@ void Viewer::scrollUp()
 
 void Viewer::keyPressEvent(QKeyEvent *event)
 {
-	if(render->hasLoadedComic())
-	{
-		if(goToFlow->isVisible() && event->key()!=Qt::Key_S)
-			QCoreApplication::sendEvent(goToFlow,event);
-		else
-			switch (event->key())
-		{
-			case Qt::Key_Space:
-				posByStep = height()/numScrollSteps;
-				nextPos=verticalScrollBar()->sliderPosition()+static_cast<int>((height()*0.80));
-				scrollDown();
-				break;
-			case Qt::Key_B:
-				posByStep = height()/numScrollSteps;
-				nextPos=verticalScrollBar()->sliderPosition()-static_cast<int>((height()*0.80));
-				scrollUp();
-				break;
-			case Qt::Key_S:
-				goToFlowSwitch();
-				break;
-			case Qt::Key_T:
-				translatorSwitch();
-				break;
-			case Qt::Key_Down:
-				/*if(verticalScrollBar()->sliderPosition()==verticalScrollBar()->maximum())
-				next();
-				else*/
-				QAbstractScrollArea::keyPressEvent(event);
-				emit backgroundChanges();
-				break;
-			case Qt::Key_Up:
-				/*if(verticalScrollBar()->sliderPosition()==verticalScrollBar()->minimum())
-				prev();
-				else*/
-				QAbstractScrollArea::keyPressEvent(event);
-				emit backgroundChanges();
-				break;
-			case Qt::Key_Home:
-				goTo(0);
-				break;
-			case Qt::Key_End:
-				goTo(this->render->numPages()-1);
-				break;
-			default:
-				QAbstractScrollArea::keyPressEvent(event);
-				break;
-		}
-		if(mglass->isVisible())
-			switch(event->key())
-		{
-			case Qt::Key_Plus: case Qt::Key_Minus: case Qt::Key_Underscore: case Qt::Key_Asterisk:
-				QCoreApplication::sendEvent(mglass,event);
-		}
-	}
-	else
-		QAbstractScrollArea::keyPressEvent(event);
+    if(render->hasLoadedComic())
+    {
+        int _key = event->key();
+        Qt::KeyboardModifiers modifiers = event->modifiers();
+
+        if(modifiers & Qt::ShiftModifier)
+            _key |= Qt::SHIFT;
+        if (modifiers & Qt::ControlModifier)
+            _key |= Qt::CTRL;
+        if (modifiers & Qt::MetaModifier)
+            _key |= Qt::META;
+        if (modifiers & Qt::AltModifier)
+            _key |= Qt::ALT;
+
+        QKeySequence key(_key);
+        /*if(goToFlow->isVisible() && event->key()!=Qt::Key_S)
+            QCoreApplication::sendEvent(goToFlow,event);
+        else*/
+
+        if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_ACTION_Y))
+        {
+            posByStep = height()/numScrollSteps;
+            nextPos=verticalScrollBar()->sliderPosition()+static_cast<int>((height()*0.80));
+            scrollDown();
+        }
+
+        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_ACTION_Y))
+        {
+            posByStep = height()/numScrollSteps;
+            nextPos=verticalScrollBar()->sliderPosition()-static_cast<int>((height()*0.80));
+            scrollUp();
+        }
+
+        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_DOWN_ACTION_Y) ||
+                 key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_UP_ACTION_Y) ||
+                 key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_LEFT_ACTION_Y) ||
+                 key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_RIGHT_ACTION_Y))
+        {
+            QAbstractScrollArea::keyPressEvent(event);
+            emit backgroundChanges();
+        }
+
+        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(GO_TO_FIRST_PAGE_ACTION_Y))
+        {
+            goTo(0);
+        }
+
+        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(GO_TO_LAST_PAGE_ACTION_Y))
+        {
+            goTo(this->render->numPages()-1);
+        }
+
+        else
+            QAbstractScrollArea::keyPressEvent(event);
+
+        if(mglass->isVisible() && (key == ShortcutsManager::getShortcutsManager().getShortcut(SIZE_UP_MGLASS_ACTION_Y) ||
+                                   key == ShortcutsManager::getShortcutsManager().getShortcut(SIZE_DOWN_MGLASS_ACTION_Y) ||
+                                   key == ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_IN_MGLASS_ACTION_Y) ||
+                                   key == ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_OUT_MGLASS_ACTION_Y)))
+        {
+            QCoreApplication::sendEvent(mglass,event);
+        }
+
+    }
+    else
+        QAbstractScrollArea::keyPressEvent(event);
 }
 
 void Viewer::wheelEvent(QWheelEvent * event)

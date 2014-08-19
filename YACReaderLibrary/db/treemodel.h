@@ -85,6 +85,8 @@ public:
     void updateFolderCompletedStatus(const QModelIndexList & list, bool status);
     void updateFolderFinishedStatus(const QModelIndexList & list, bool status);
 
+    QStringList getSubfoldersNames(const QModelIndex & mi);
+
     enum Columns {
         Name = 0,
         Path = 1,

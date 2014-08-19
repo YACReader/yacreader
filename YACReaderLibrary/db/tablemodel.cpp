@@ -15,7 +15,7 @@
 
 
 TableModel::TableModel(QObject *parent)
-	: QAbstractItemModel(parent)
+    : QAbstractItemModel(parent)
 {
 	connect(this,SIGNAL(beforeReset()),this,SIGNAL(modelAboutToBeReset()));
 	connect(this,SIGNAL(reset()),this,SIGNAL(modelReset()));
@@ -23,7 +23,7 @@ TableModel::TableModel(QObject *parent)
 
 //! [0]
 TableModel::TableModel( QSqlQuery &sqlquery, QObject *parent)
-	: QAbstractItemModel(parent)
+    : QAbstractItemModel(parent)
 {
 	setupModelData(sqlquery);
 }
@@ -45,6 +45,27 @@ int TableModel::columnCount(const QModelIndex &parent) const
 	return _data.first()->columnCount();
 }
 //! [2]
+
+QHash<int, QByteArray> TableModel::roleNames() const {
+    QHash<int, QByteArray> roles;
+
+    roles[NumberRole] = "number";
+    roles[TitleRole] = "title";
+    roles[FileNameRole] = "file_name";
+    roles[NumPagesRole] = "num_pages";
+    roles[IdRole] = "id";
+    roles[Parent_IdRole] = "parent_id";
+    roles[PathRole] = "path";
+    roles[HashRole] = "hash";
+    roles[ReadColumnRole] = "read_column";
+    roles[IsBisRole] = "is_bis";
+    roles[CurrentPageRole] = "current_page";
+    roles[RatingRole] = "rating";
+    roles[HasBeenOpenedRole] = "has_been_opened";
+    roles[CoverPathRole] = "cover_path";
+
+    return roles;
+}
 
 //! [3]
 QVariant TableModel::data(const QModelIndex &index, int role) const
@@ -84,10 +105,28 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
     //TODO check here if any view is asking for TableModel::Roles
     //these roles will be used from QML/GridView
 
-	if (role != Qt::DisplayRole)
-		return QVariant();
-
 	TableItem *item = static_cast<TableItem*>(index.internalPointer());
+
+    if (role == NumberRole)
+        return item->data(Number);
+    else if (role == TitleRole)
+        return item->data(Title).isNull()?item->data(FileName):item->data(Title);
+    else if (role == RatingRole)
+        return item->data(Rating);
+    else if (role == CoverPathRole)
+        return "file:///"+_databasePath+"/covers/"+item->data(Hash).toString()+".jpg";
+    else if (role == NumPagesRole)
+        return item->data(NumPages);
+    else if (role == CurrentPageRole)
+        return item->data(CurrentPage);
+    else if (role == ReadColumnRole)
+        return item->data(ReadColumn).toBool();
+    else if (role == HasBeenOpenedRole)
+        return item->data(TableModel::HasBeenOpened);
+
+    if (role != Qt::DisplayRole)
+        return QVariant();
+
 	if(index.column() == TableModel::Hash)
 		return QString::number(item->data(index.column()).toString().right(item->data(index.column()).toString().length()-40).toInt()/1024.0/1024.0,'f',2)+"Mb";
 	if(index.column() == TableModel::ReadColumn)
@@ -265,7 +304,9 @@ void TableModel::setupModelData(unsigned long long int folderId,const QString & 
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
 	endResetModel();
-	//f.close();
+
+    if(_data.length()==0)
+        emit isEmpty();
 }
 
 QString TableModel::getComicPath(QModelIndex mi)
@@ -467,7 +508,7 @@ QVector<YACReaderComicReadStatus> TableModel::setComicsRead(QList<QModelIndex> l
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
 
-	emit dataChanged(index(list.first().row(),TableModel::ReadColumn),index(list.last().row(),TableModel::CurrentPage+1));
+    emit dataChanged(index(list.first().row(),TableModel::ReadColumn),index(list.last().row(),TableModel::HasBeenOpened),QVector<int>() << ReadColumnRole << CurrentPageRole << HasBeenOpenedRole);
 
 	return getReadList();
 }
@@ -553,10 +594,10 @@ void TableModel::remove(ComicDB * comic, int row)
 	endRemoveRows();
 }
 
-ComicDB TableModel::getComic(int row)
+/*ComicDB TableModel::getComic(int row)
 {
 	return getComic(index(row,0));
-}
+}*/
 
 void TableModel::remove(int row)
 {
@@ -580,8 +621,8 @@ void TableModel::reload(const ComicDB & comic)
 		}
 		row++;
 	}
-	if(found)
-        emit dataChanged(index(row,TableModel::CurrentPage),index(row,TableModel::CurrentPage));
+    if(found)
+        emit dataChanged(index(row,ReadColumn),index(row,HasBeenOpened), QVector<int>() << ReadColumnRole << CurrentPageRole << HasBeenOpenedRole);
 }
 
 void TableModel::resetComicRating(const QModelIndex &mi)
@@ -600,27 +641,6 @@ void TableModel::resetComicRating(const QModelIndex &mi)
     QSqlDatabase::removeDatabase(_databasePath);
 }
 
-QHash<int, QByteArray> TableModel::roleNames()
-{
-    QHash<int, QByteArray> roles;
-
-    roles[NumberRole] = "number";
-    roles[TitleRole] = "title";
-    roles[FileNameRole] = "file_name";
-    roles[NumPagesRole] = "num_pages";
-    roles[IdRole] = "id";
-    roles[Parent_IdRole] = "parent_id";
-    roles[PathRole] = "path";
-    roles[HashRole] = "hash";
-    roles[ReadColumnRole] = "read";
-    roles[IsBisRole] = "is_bis";
-    roles[CurrentPageRole] = "current_page";
-    roles[RatingRole] = "rating";
-    roles[HasBeenOpenedRole] = "has_been_opened";
-    roles[CoverPathRole] = "cover_path";
-
-    return roles;
-}
 
 void TableModel::updateRating(int rating, QModelIndex mi)
 {
