@@ -278,7 +278,7 @@ width: 158px;
 {
 	width: 60px;
 	background: url("/images/browse.png") no-repeat scroll 0 0 transparent;
-	background-position: 16px 5px;
+	background-position: 1px 6px;
 	background-size: 7px 7px;
 	border: none;
 	text-align:right;
@@ -307,7 +307,7 @@ width: 158px;
 {
 	width: 60px;
 	background: url("/images/read.png") no-repeat scroll 0 0 transparent;
-	background-position: 24px 5px;
+	background-position: 18px 5px;
 	background-size: 7px 9px;
 	border: none;
 	text-align:right;

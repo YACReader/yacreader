@@ -174,13 +174,13 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
             else
                 t.setVariable(QString("element%1.image.url").arg(i),"/images/f.png");
 
-			t.setVariable(QString("element%1.browse").arg(i),QString("<a class =\"browseButton\" href=\"%1\">browse</a>").arg(QString("/library/%1/folder/%2").arg(libraryId).arg(item->id)));
+            t.setVariable(QString("element%1.browse").arg(i),QString("<a class =\"browseButton\" href=\"%1\">BROWSE</a>").arg(QString("/library/%1/folder/%2").arg(libraryId).arg(item->id)));
             t.setVariable(QString("element%1.cover.browse").arg(i),QString("<a href=\"%1\">").arg(QString("/library/%1/folder/%2").arg(libraryId).arg(item->id)));
             t.setVariable(QString("element%1.cover.browse.end").arg(i),"</a>");
 			//t.setVariable(QString("element%1.url").arg(i),"/library/"+libraryName+"/folder/"+QString("%1").arg(folderContent.at(i + (page*10))->id));
 			//t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/folder/"+QString("%1/info").arg(folderContent.at(i + (page*elementsPerPage))->id));
 			
-			t.setVariable(QString("element%1.download").arg(i),QString("<a onclick=\"this.innerHTML='importing';this.className='importedButton';\" class =\"importButton\" href=\"%1\">import</a>").arg("/library/"+QString::number(libraryId)+"/folder/"+QString("%1/info").arg(folderContent.at(i + (page*elementsPerPage))->id)));
+            t.setVariable(QString("element%1.download").arg(i),QString("<a onclick=\"this.innerHTML='IMPORTING';this.className='importedButton';\" class =\"importButton\" href=\"%1\">IMPORT</a>").arg("/library/"+QString::number(libraryId)+"/folder/"+QString("%1/info").arg(folderContent.at(i + (page*elementsPerPage))->id)));
             t.setVariable(QString("element%1.read").arg(i),"");
 
             t.setVariable(QString("element%1.size").arg(i),"");
@@ -194,15 +194,15 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 			t.setVariable(QString("element%1.browse").arg(i),"");
 			//t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/comic/"+QString("%1").arg(comic->id));
 			if(!session.isComicOnDevice(comic->info.hash) && !session.isComicDownloaded(comic->info.hash))
-				t.setVariable(QString("element%1.download").arg(i),QString("<a onclick=\"this.innerHTML='importing';this.className='importedButton';\" class =\"importButton\" href=\"%1\">import</a>").arg("/library/"+QString::number(libraryId)+"/comic/"+QString("%1").arg(comic->id)));
+                t.setVariable(QString("element%1.download").arg(i),QString("<a onclick=\"this.innerHTML='IMPORTING';this.className='importedButton';\" class =\"importButton\" href=\"%1\">IMPORT</a>").arg("/library/"+QString::number(libraryId)+"/comic/"+QString("%1").arg(comic->id)));
             else if (session.isComicOnDevice(comic->info.hash))
-					t.setVariable(QString("element%1.download").arg(i),QString("<div class=\"importedButton\">imported</div>"));
+                    t.setVariable(QString("element%1.download").arg(i),QString("<div class=\"importedButton\">IMPORTED</div>"));
 			else
-				t.setVariable(QString("element%1.download").arg(i),QString("<div class=\"importedButton\">importing</div>"));
+                t.setVariable(QString("element%1.download").arg(i),QString("<div class=\"importedButton\">IMPORTING</div>"));
 			
 			//t.setVariable(QString("element%1.image.url").arg(i),"/images/f.png");
 
-            t.setVariable(QString("element%1.read").arg(i),QString("<a class =\"readButton\" href=\"%1\">read</a>").arg("/library/"+QString::number(libraryId)+"/comic/"+QString("%1").arg(comic->id)+"/remote"));
+            t.setVariable(QString("element%1.read").arg(i),QString("<a class =\"readButton\" href=\"%1\">READ</a>").arg("/library/"+QString::number(libraryId)+"/comic/"+QString("%1").arg(comic->id)+"/remote"));
 
 			t.setVariable(QString("element%1.image.url").arg(i),QString("/library/%1/cover/%2.jpg").arg(libraryId).arg(comic->info.hash));
 
