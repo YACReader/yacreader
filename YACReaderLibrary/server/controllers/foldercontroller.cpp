@@ -11,6 +11,8 @@
 
 #include "qnaturalsorting.h"
 
+#include "QsLog.h"
+
 struct LibraryItemSorter
 {
 	bool operator()(const LibraryItem * a,const LibraryItem * b) const
@@ -37,23 +39,23 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	QStringList pathElements = path.split('/');
 	int libraryId = pathElements.at(2).toInt();
 	QString libraryName = DBHelper::getLibraryName(libraryId);
-	qulonglong parentId = pathElements.at(4).toULongLong();
+    qulonglong folderId = pathElements.at(4).toULongLong();
 
-    parentId = qMax<qulonglong>(1,parentId);
+    folderId = qMax<qulonglong>(1,folderId);
 
-	QString folderName = DBHelper::getFolderName(libraryName,parentId);
+    QString folderName = DBHelper::getFolderName(libraryName,folderId);
     if(folderName.isEmpty())
     {
         ErrorController(300).service(request,response);
         return;
     }
 
-	if(parentId!=1)
+    if(folderId!=1)
 		t.setVariable("folder.name",folderName);
 	else
 		t.setVariable("folder.name",libraryName);
-	QList<LibraryItem *> folderContent = DBHelper::getFolderContentFromLibrary(libraryName,parentId);
-	QList<LibraryItem *> folderComics = DBHelper::getFolderComicsFromLibrary(libraryName,parentId);
+    QList<LibraryItem *> folderContent = DBHelper::getFolderContentFromLibrary(libraryName,folderId);
+    QList<LibraryItem *> folderComics = DBHelper::getFolderComicsFromLibrary(libraryName,folderId);
 
 	//response.writeText(libraryName);
 
@@ -62,7 +64,7 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	qSort(folderContent.begin(),folderContent.end(),LibraryItemSorter());
 	folderComics.clear();
 
-	qulonglong backId = DBHelper::getParentFromComicFolderId(libraryName,parentId);
+    //qulonglong backId = DBHelper::getParentFromComicFolderId(libraryName,folderId);
 
 	int page = 0;
 	QByteArray p = request.getParameter("page");
@@ -79,67 +81,50 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	if(map.contains("up"))
 		fromUp = true;
 	
-	int upPage = 0;
+    //int upPage = 0;
 
-    if(parentId == 1)
-        session.clearFoldersPath();
+    if(folderId == 1)
+    {
+        session.clearNavigationPath();
+        session.pushNavigationItem(QPair<qulonglong,quint32>(folderId,page));
+        t.setVariable(QString("upurl"),"/");
+    }
     else
     {
         if(fromUp)
-            session.popFolder();
-        else
-            if(session.getFoldersPath().contains(parentId))
+            session.popNavigationItem();
+        else //drill down or direct access
         {
-            while(session.topFolder()!=parentId)
-                session.popFolder();
+            QStack<QPair<qulonglong, quint32> > path = session.getNavigationPath();
+            bool found=false;
+            for(QStack<QPair<qulonglong, quint32> >::const_iterator itr = path.begin(); itr!=path.end(); itr++)
+                if(itr->first == folderId)
+                {
+                    found = true;
+                    break;
+                }
+
+            if(found)
+            {
+                while(session.topNavigationItem().first != folderId)
+                    session.popNavigationItem();
+
+                session.updateTopItem(QPair<qulonglong,quint32>(folderId,page));
+            }
+            else
+                session.pushNavigationItem(QPair<qulonglong,quint32>(folderId,page));
         }
-        else
-            session.pushFolder(parentId);
+
+        QStack<QPair<qulonglong, quint32> > path = session.getNavigationPath();
+        if(path.length()>1)
+        {
+            QPair<qulonglong, quint32> parentItem = path.at(path.length()-2);
+            qulonglong upParent = parentItem.first;
+            quint32 upPage = parentItem.second;
+            t.setVariable(QString("upurl"),"/library/" + QString::number(libraryId) + "/folder/" +QString("%1?page=%2&up=true").arg(upParent).arg(upPage));
+        } else
+            t.setVariable(QString("upurl"),"/");
     }
-
-	if(backId == 1 && parentId == 1)
-	{
-		session.popPage();
-		session.pushPage(page);
-		t.setVariable(QString("upurl"),"/?page=0");
-	}
-	else
-	{
-		if(fromUp)
-		{
-			session.popPage();
-            upPage = session.topPage();
-			page = upPage;
-		}
-		else //este nivel puede haberse cargado por primera vez ó puede que estemos navegando horizontalmente
-			if(p.length() == 0) // acabamos de entrar
-			{
-				upPage = session.topPage();
-				session.pushPage(page);
-			}
-			else //navegación horizontal
-			{
-				session.popPage();
-				upPage = session.topPage();
-				session.pushPage(page);
-			}
-		t.setVariable(QString("upurl"),"/library/" + QString::number(libraryId) + "/folder/" +QString("%1?page=%2&up=true").arg(backId).arg(upPage));		
-	}
-
-	/*if(currentPath.length()>0)
-	{
-		if(currentPath.contains(QString("%1").arg(parentId))
-		{
-
-		}
-		else
-		{
-			session.set("currentPath",currentPath+QString("/%1/%2").arg(parentId).arg(page);
-		}
-	}*/
-
-
-	//t.loop("element",folderContent.length());
 
     int elementsPerPage = 24;
 
@@ -161,14 +146,13 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	int numFoldersAtCurrentPage = qMax(0,qMin(numFolders - indexCurrentPage, elementsPerPage));
 
     //PATH
-    QStack<int> foldersPath = session.getFoldersPath();
+    QStack<QPair<qulonglong,quint32> > foldersPath = session.getNavigationPath();
     t.setVariable(QString("library.name"),libraryName);
     t.setVariable(QString("library.url"),QString("/library/%1/folder/1").arg(libraryId));
-    t.loop("path",foldersPath.count());
-    for(int i = 0; i < foldersPath.count(); i++){
-
-        t.setVariable(QString("path%1.url").arg(i),QString("/library/%1/folder/%2").arg(libraryId).arg(foldersPath[i]));
-        t.setVariable(QString("path%1.name").arg(i),DBHelper::getFolderName(libraryName,foldersPath[i]));
+    t.loop("path",foldersPath.count()-1);
+    for(int i = 1; i < foldersPath.count(); i++){
+        t.setVariable(QString("path%1.url").arg(i-1),QString("/library/%1/folder/%2").arg(libraryId).arg(foldersPath[i].first));
+        t.setVariable(QString("path%1.name").arg(i-1),DBHelper::getFolderName(libraryName,foldersPath[i].first));
     }
 
 	t.loop("element",numFoldersAtCurrentPage);
@@ -280,7 +264,7 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 			{
 				//response.writeText(QString("%1 - %2 <br />").arg(*itr).arg(count));
 				t.setVariable(QString("index%1.indexname").arg(i), *itr);
-				t.setVariable(QString("index%1.url").arg(i),QString("/library/%1/folder/%2?page=%3").arg(libraryId).arg(parentId).arg(indexPage));
+                t.setVariable(QString("index%1.url").arg(i),QString("/library/%1/folder/%2?page=%3").arg(libraryId).arg(folderId).arg(indexPage));
 				i++;
 				count += indexCount.value(*itr);
 				indexPage = count/elementsPerPage;
@@ -298,7 +282,7 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 		while(z < numPages)
 		{
 
-			t.setVariable(QString("page%1.url").arg(z),QString("/library/%1/folder/%2?page=%3").arg(libraryId).arg(parentId).arg(z));
+            t.setVariable(QString("page%1.url").arg(z),QString("/library/%1/folder/%2?page=%3").arg(libraryId).arg(folderId).arg(z));
 			t.setVariable(QString("page%1.number").arg(z),QString("%1").arg(z+1));
 			if(page == z)
 				t.setVariable(QString("page%1.current").arg(z),"current");
@@ -307,10 +291,10 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 			z++;
 		}
 
-		t.setVariable("page.first",QString("/library/%1/folder/%2?page=%3").arg(libraryId).arg(parentId).arg(0));
-		t.setVariable("page.previous",QString("/library/%1/folder/%2?page=%3").arg(libraryId).arg(parentId).arg((page==0)?page:page-1));
-		t.setVariable("page.next",QString("/library/%1/folder/%2?page=%3").arg(libraryId).arg(parentId).arg((page==numPages-1)?page:page+1));
-		t.setVariable("page.last",QString("/library/%1/folder/%2?page=%3").arg(libraryId).arg(parentId).arg(numPages-1));
+        t.setVariable("page.first",QString("/library/%1/folder/%2?page=%3").arg(libraryId).arg(folderId).arg(0));
+        t.setVariable("page.previous",QString("/library/%1/folder/%2?page=%3").arg(libraryId).arg(folderId).arg((page==0)?page:page-1));
+        t.setVariable("page.next",QString("/library/%1/folder/%2?page=%3").arg(libraryId).arg(folderId).arg((page==numPages-1)?page:page+1));
+        t.setVariable("page.last",QString("/library/%1/folder/%2?page=%3").arg(libraryId).arg(folderId).arg(numPages-1));
         t.setCondition("index", true);
 	}
 	else

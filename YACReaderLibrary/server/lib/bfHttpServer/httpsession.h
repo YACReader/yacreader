@@ -121,8 +121,8 @@ public:
 	void setDeviceType(const QString & device);
 	void setDisplayType(const QString & display);
 
-	void clearNavigationPath();
-	int popPage();
+
+    /*int popPage();
 	void pushPage(int page);
 	int topPage();
 
@@ -130,7 +130,19 @@ public:
     int popFolder();
     void pushFolder(int page);
     int topFolder();
-    QStack<int> getFoldersPath();
+    QStack<int> getFoldersPath();*/
+
+    void clearNavigationPath();
+    QPair<qulonglong, quint32> popNavigationItem();
+    QPair<qulonglong, quint32> topNavigationItem();
+    void pushNavigationItem(const QPair<qulonglong, quint32> & item);
+    void updateTopItem(const QPair<qulonglong, quint32> & item);
+
+    //TODO replace QPair by a custom class for storing folderId, page and folderName(save some DB accesses)
+    QStack<QPair<qulonglong, quint32> > getNavigationPath();
+
+
+
 
 private:
 
@@ -145,8 +157,8 @@ private:
 		qulonglong comicId;
         qulonglong remoteComicId;
 
-		QStack<int> navigationPath;
-        QStack<int> foldersPath;
+        //folder_id, page_number
+        QStack<QPair<qulonglong, quint32> > navigationPath;
 
 		Comic * comic;
         Comic * remoteComic;

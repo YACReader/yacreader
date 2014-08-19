@@ -70,8 +70,6 @@ void RequestMapper::loadSession(HttpRequest & request, HttpResponse& response)
 
         QList<QString> data = postData.split("\n");
 
-        QLOG_INFO() << "Data lenght : " << data.length();
-
         if(data.length() > 2)
         {
             session.setDeviceType(data.at(0).split(":").at(1));
@@ -112,8 +110,8 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
     loadSession(request, response);
 
 	//primera petición, se ha hecho un post, se sirven las bibliotecas si la seguridad mediante login no está habilitada
-	if(path == "/")
-	{
+    if(path == "/")  //Don't send data to the server using '/' !!!!
+    {
 		LibrariesController().service(request, response);
 	}
 

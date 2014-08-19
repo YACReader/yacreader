@@ -11,13 +11,12 @@ LibrariesController::LibrariesController() {}
 
 void LibrariesController::service(HttpRequest& request, HttpResponse& response)
 {
-    HttpSession session=Static::sessionStore->getSession(request,response);
+    HttpSession session=Static::sessionStore->getSession(request,response,false);
 
     response.setHeader("Content-Type", "text/html; charset=ISO-8859-1");
     response.setHeader("Connection","close");
 
     session.clearNavigationPath();
-    session.clearFoldersPath();
 
     Template t=Static::templateLoader->getTemplate("libraries_"+session.getDeviceType(),request.getHeader("Accept-Language"));
 	t.enableWarnings();
