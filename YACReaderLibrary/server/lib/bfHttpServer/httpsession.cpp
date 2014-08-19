@@ -335,59 +335,47 @@ void HttpSession::setDisplayType(const QString & display)
 
 void HttpSession::clearNavigationPath()
 {
-	if(dataPtr)
-		dataPtr->yacreaderSessionData.navigationPath.clear();
+    if(dataPtr)
+        dataPtr->yacreaderSessionData.navigationPath.clear();
 }
 
-int HttpSession::popPage()
+QPair<qulonglong, quint32> HttpSession::popNavigationItem()
 {
-	if(dataPtr && !(dataPtr->yacreaderSessionData.navigationPath.isEmpty()))
-		return dataPtr->yacreaderSessionData.navigationPath.pop();
-	return 0;
+    if(dataPtr && !(dataPtr->yacreaderSessionData.navigationPath.isEmpty()))
+        return dataPtr->yacreaderSessionData.navigationPath.pop();
+    return QPair<qulonglong, quint32>();
 }
 
-void HttpSession::pushPage(int page)
+QPair<qulonglong, quint32> HttpSession::topNavigationItem()
 {
-	if(dataPtr)
-		dataPtr->yacreaderSessionData.navigationPath.push(page);
+    if(dataPtr && !(dataPtr->yacreaderSessionData.navigationPath.isEmpty()))
+        return dataPtr->yacreaderSessionData.navigationPath.top();
+    return QPair<qulonglong, quint32>();
 }
 
-int HttpSession::topPage()
-{
-	if(dataPtr)
-		return dataPtr->yacreaderSessionData.navigationPath.top();
-	return 0;
-}
-
-void HttpSession::clearFoldersPath()
+void HttpSession::pushNavigationItem(const QPair<qulonglong, quint32> &item)
 {
     if(dataPtr)
-        dataPtr->yacreaderSessionData.foldersPath.clear();
+        dataPtr->yacreaderSessionData.navigationPath.push(item);
 }
 
-int HttpSession::popFolder()
+void HttpSession::updateTopItem(const QPair<qulonglong, quint32> &item)
 {
-    if(dataPtr && !(dataPtr->yacreaderSessionData.foldersPath.isEmpty()))
-        return dataPtr->yacreaderSessionData.foldersPath.pop();
-    return 0;
+     if(dataPtr && !(dataPtr->yacreaderSessionData.navigationPath.isEmpty()))
+     {
+        dataPtr->yacreaderSessionData.navigationPath.pop();
+        dataPtr->yacreaderSessionData.navigationPath.push(item);
+     } else if(dataPtr)
+     {
+         dataPtr->yacreaderSessionData.navigationPath.push(item);
+     }
 }
 
-void HttpSession::pushFolder(int page)
-{
-    if(dataPtr)
-        dataPtr->yacreaderSessionData.foldersPath.push(page);
-}
-
-int HttpSession::topFolder()
-{
-    if(dataPtr)
-        return dataPtr->yacreaderSessionData.foldersPath.top();
-    return 0;
-}
-
-QStack<int> HttpSession::getFoldersPath()
+QStack<QPair<qulonglong, quint32> > HttpSession::getNavigationPath()
 {
     if(dataPtr)
-        return dataPtr->yacreaderSessionData.foldersPath;
-    return QStack<int>();
+        return dataPtr->yacreaderSessionData.navigationPath;
+    else
+        return QStack<QPair<qulonglong, quint32> >();
 }
+
