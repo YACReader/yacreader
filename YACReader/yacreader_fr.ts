@@ -393,7 +393,7 @@
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="939"/>
-        <source>There is a new version avaliable</source>
+        <source>There is a new version available</source>
         <translation>Une nouvelle version est disponible</translation>
     </message>
     <message>

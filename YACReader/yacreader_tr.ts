@@ -306,7 +306,7 @@
         <translation>Sıradaki çizgi romanı aç</translation>
     </message>
     <message>
-        <source>There is a new version avaliable</source>
+        <source>There is a new version available</source>
         <translation>Yeni versiyon mevcut</translation>
     </message>
     <message>
