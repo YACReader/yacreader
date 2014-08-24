@@ -923,7 +923,7 @@ void MainWindowViewer::changeFit()
 void MainWindowViewer::newVersion()
 {
 	QMessageBox msgBox;
-	msgBox.setText(tr("There is a new version avaliable"));
+	msgBox.setText(tr("There is a new version available"));
 	msgBox.setInformativeText(tr("Do you want to download the new version?"));
 	msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Ignore | QMessageBox::No);
 	msgBox.setDefaultButton(QMessageBox::Yes);

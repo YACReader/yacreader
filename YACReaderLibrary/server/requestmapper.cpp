@@ -68,7 +68,7 @@ void RequestMapper::loadSession(HttpRequest & request, HttpResponse& response)
 
         QList<QString> data = postData.split("\n");
 
-        QLOG_INFO() << "Data lenght : " << data.length();
+        QLOG_INFO() << "Data length : " << data.length();
 
         if(data.length() > 2)
         {
