@@ -51,7 +51,7 @@ ShortcutsDialog::ShortcutsDialog(QWidget * parent)
 
 	setLayout(imgMainLayout);
 
-	setFixedSize(QSize(700,500));
+    setFixedSize(QSize(700,500));
 
 	QFile f(":/files/shortcuts.html");
 	f.open(QIODevice::ReadOnly);

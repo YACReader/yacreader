@@ -13,7 +13,7 @@ INCLUDEPATH += ../common \
 			   ./comic_vine \
 			   ./comic_vine/model
 
-DEFINES += SERVER_RELEASE NOMINMAX
+DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY
 			   
 win32 {
 
@@ -34,7 +34,6 @@ CONFIG -= embed_manifest_exe
 }
 
 unix:!macx{
-QMAKE_CXXFLAGS += -std=c++11
 
 isEqual(QT_MAJOR_VERSION, 5) {
 INCLUDEPATH  += /usr/include/poppler/qt5
@@ -65,6 +64,10 @@ OBJECTIVE_SOURCES += $$PWD/../common/pdf_comic.mm
 HEADERS += $$PWD/../common/pdf_comic.h
 CONFIG += objective_c
 
+}
+
+unix{
+QMAKE_CXXFLAGS += -std=c++11
 }
 
 #CONFIG += release
@@ -113,6 +116,10 @@ HEADERS += comic_flow.h \
 	../common/http_worker.h \
     yacreader_libraries.h \
         ../common/exit_check.h \
+    comics_view.h \
+    classic_comics_view.h \
+    empty_folder_widget.h
+
 		   
 SOURCES += comic_flow.cpp \
            create_library_dialog.cpp \
@@ -156,6 +163,10 @@ SOURCES += comic_flow.cpp \
 ../common/yacreader_global.cpp \
     yacreader_libraries.cpp \
 	../common/exit_check.cpp \
+    comics_view.cpp \
+    classic_comics_view.cpp \
+    empty_folder_widget.cpp
+
 			
 		   
 include(./server/server.pri)
@@ -163,6 +174,7 @@ include(../custom_widgets/custom_widgets_yacreaderlibrary.pri)
 include(../compressed_archive/wrapper.pri)
 include(./comic_vine/comic_vine.pri)
 include(../QsLog/QsLog.pri)
+include(../shortcuts_management/shortcuts_management.pri)
 
 RESOURCES += images.qrc files.qrc
 win32:RESOURCES += images_win.qrc
@@ -186,6 +198,21 @@ TRANSLATIONS    = yacreaderlibrary_es.ts \
 isEqual(QT_MAJOR_VERSION, 5) {
 	Release:DESTDIR = ../release5
 	Debug:DESTDIR = ../debug5
+
+#QML/GridView
+QT += quick qml
+
+HEADERS += grid_comics_view.h \
+           comics_view_transition.h
+
+SOURCES += grid_comics_view.cpp \
+           comics_view_transition.cpp
+
+RESOURCES += qml.qrc
+win32:RESOURCES += qml_win.qrc
+unix:!macx:RESOURCES += qml_win.qrc
+macx:RESOURCES += qml_osx.qrc
+
 } else {
 	Release:DESTDIR = ../release
 	Debug:DESTDIR = ../debug

@@ -1059,7 +1059,7 @@ void YACReaderFlowGL::keyPressEvent(QKeyEvent *event)
 
 	if(event->key() == Qt::Key_Up)
 	{
-		emit selected(centerIndex());
+        //emit selected(centerIndex());
 		return;
 	}
 

@@ -55,6 +55,7 @@
 #define MAIN_WINDOW_STATE "MAIN_WINDOW_STATE"
 #define COMICS_VIEW_HEADERS "COMICS_VIEW_HEADERS"
 #define COMICS_VIEW_HEADERS_GEOMETRY "COMICS_VIEW_HEADERS_GEOMETRY"
+#define COMICS_VIEW_STATUS "COMICS_VIEW_STATUS"
 
 #define NUM_DAYS_BETWEEN_VERSION_CHECKS "NUM_DAYS_BETWEEN_VERSION_CHECKS"
 #define LAST_VERSION_CHECK "LAST_VERSION_CHECK"
@@ -94,8 +95,15 @@ namespace YACReader
 	 SevenZNotFound = 700
  };
 
+ enum ComicsViewStatus
+ {
+     Flow,
+     Grid
+ };
+
 QString getSettingsPath();
 void addSperator(QWidget * w);
+QAction * createSeparator();
 }
 #endif
 
