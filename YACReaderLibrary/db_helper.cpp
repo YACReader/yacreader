@@ -31,9 +31,9 @@ YACReaderLibraries DBHelper::getLibraries()
 	libraries.load();
 	return libraries;
 }
-QList<LibraryItem *> DBHelper::getFolderContentFromLibrary(const QString & libraryName, qulonglong folderId)
+QList<LibraryItem *> DBHelper::getFolderSubfoldersFromLibrary(qulonglong libraryId, qulonglong folderId)
 {
-	QString libraryPath = DBHelper::getLibraries().getPath(libraryName);
+    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
 	QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
 	
 	QList<LibraryItem *> list = DBHelper::getFoldersFromParent(folderId,db,false);
@@ -42,9 +42,9 @@ QList<LibraryItem *> DBHelper::getFolderContentFromLibrary(const QString & libra
 	QSqlDatabase::removeDatabase(libraryPath);
 	return list;
 }
-QList<LibraryItem *> DBHelper::getFolderComicsFromLibrary(const QString & libraryName, qulonglong folderId)
+QList<LibraryItem *> DBHelper::getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId)
 {
-	QString libraryPath = DBHelper::getLibraries().getPath(libraryName);
+    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
 	QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
 
 	QList<LibraryItem *> list = DBHelper::getComicsFromParent(folderId,db,false);
@@ -53,9 +53,9 @@ QList<LibraryItem *> DBHelper::getFolderComicsFromLibrary(const QString & librar
 	QSqlDatabase::removeDatabase(libraryPath);
 	return list;
 }
-qulonglong DBHelper::getParentFromComicFolderId(const QString & libraryName, qulonglong id)
+qulonglong DBHelper::getParentFromComicFolderId(qulonglong libraryId, qulonglong id)
 {
-	QString libraryPath = DBHelper::getLibraries().getPath(libraryName);
+    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
 	QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
 
 	Folder f = DBHelper::loadFolder(id,db);
@@ -64,9 +64,9 @@ qulonglong DBHelper::getParentFromComicFolderId(const QString & libraryName, qul
 	QSqlDatabase::removeDatabase(libraryPath);
 	return f.parentId;
 }
-ComicDB DBHelper::getComicInfo(const QString & libraryName, qulonglong id)
+ComicDB DBHelper::getComicInfo(qulonglong libraryId, qulonglong id)
 {
-	QString libraryPath = DBHelper::getLibraries().getPath(libraryName);
+    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
 	QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
 
 	ComicDB comic = DBHelper::loadComic(id,db);
@@ -76,9 +76,9 @@ ComicDB DBHelper::getComicInfo(const QString & libraryName, qulonglong id)
 	return comic;
 }
 
-QList<ComicDB> DBHelper::getSiblings(const QString & libraryName, qulonglong parentId)
+QList<ComicDB> DBHelper::getSiblings(qulonglong libraryId, qulonglong parentId)
 {
-	QString libraryPath = DBHelper::getLibraries().getPath(libraryName);
+    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
 	QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
 
 	QList<ComicDB> comics =  DBHelper::getSortedComicsFromParent(parentId,db);
@@ -87,9 +87,9 @@ QList<ComicDB> DBHelper::getSiblings(const QString & libraryName, qulonglong par
 	return comics;
 }
 
-QString DBHelper::getFolderName(const QString & libraryName, qulonglong id)
+QString DBHelper::getFolderName(qulonglong libraryId, qulonglong id)
 {
-	QString libraryPath = DBHelper::getLibraries().getPath(libraryName);
+    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
 	QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
 
 	QString name="";
@@ -153,9 +153,9 @@ void DBHelper::update(ComicDB * comic, QSqlDatabase & db)
 	//do nothing
 }
 
-void DBHelper::update(const QString & libraryName, ComicInfo & comicInfo)
+void DBHelper::update(qulonglong libraryId, ComicInfo & comicInfo)
 {
-	QString libraryPath = DBHelper::getLibraries().getPath(libraryName);
+    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
 	QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
 
 	DBHelper::update(&comicInfo,db);
