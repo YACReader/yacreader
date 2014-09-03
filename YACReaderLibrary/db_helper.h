@@ -19,12 +19,12 @@ class DBHelper
 public:
 	//server
 	static	YACReaderLibraries getLibraries();
-	static	QList<LibraryItem *> getFolderContentFromLibrary(const QString & libraryName, qulonglong folderId);
-	static	QList<LibraryItem *> getFolderComicsFromLibrary(const QString & libraryName, qulonglong folderId);
-	static	qulonglong getParentFromComicFolderId(const QString & libraryName, qulonglong id);
-	static	ComicDB getComicInfo(const QString & libraryName, qulonglong id);
-	static  QList<ComicDB> getSiblings(const QString & libraryName, qulonglong parentId);
-	static	QString getFolderName(const QString & libraryName, qulonglong id);
+    static	QList<LibraryItem *> getFolderSubfoldersFromLibrary(qulonglong libraryId, qulonglong folderId);
+    static	QList<LibraryItem *> getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId);
+    static	qulonglong getParentFromComicFolderId(qulonglong libraryId, qulonglong id);
+    static	ComicDB getComicInfo(qulonglong libraryId, qulonglong id);
+    static  QList<ComicDB> getSiblings(qulonglong libraryId, qulonglong parentId);
+    static	QString getFolderName(qulonglong libraryId, qulonglong id);
 	static  QList<QString> getLibrariesNames();
 	static  QString getLibraryName(int id);
 
@@ -37,13 +37,13 @@ public:
 	static qulonglong insert(Folder * folder, QSqlDatabase & db);
 	static qulonglong insert(ComicDB * comic, QSqlDatabase & db);
 	//updates
-	static void update(const QString & libraryName, ComicInfo & comicInfo);
+    static void update(qulonglong libraryId, ComicInfo & comicInfo);
 	static void update(ComicDB * comics, QSqlDatabase & db);
 	static void update(ComicInfo * comicInfo, QSqlDatabase & db);
 	static void updateRead(ComicInfo * comicInfo, QSqlDatabase & db);
     static void update(const Folder & folder, QSqlDatabase & db);
-    static void updateProgress(qulonglong libraryId,const ComicInfo & comicInfo); //TODO change libraryName by libraryId in all methods.
-	//queries
+    static void updateProgress(qulonglong libraryId,const ComicInfo & comicInfo);
+
 	static QList<LibraryItem *> getFoldersFromParent(qulonglong parentId, QSqlDatabase & db, bool sort = true);
 	static QList<ComicDB> getSortedComicsFromParent(qulonglong parentId, QSqlDatabase & db);
 	static QList<LibraryItem *> getComicsFromParent(qulonglong parentId, QSqlDatabase & db, bool sort = true);
