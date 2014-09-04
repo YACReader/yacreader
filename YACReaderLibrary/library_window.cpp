@@ -1279,7 +1279,7 @@ void LibraryWindow::openComic()
 
 		quint64 comicId = comic.id;
 		//TODO generate IDS for libraries...
-		quint64 libraryId = selectedLibrary->currentIndex();
+        quint64 libraryId = libraries.getId(selectedLibrary->currentText());
 	
 		//                 %1        %2      %3        NO-->%4          %5        %6        %7        %8         %9       %10
 		//Invoke YACReader comicPath comicId libraryId NO-->currentPage bookmark1 bookmark2 bookmark3 brightness contrast gamma
