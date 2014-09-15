@@ -64,7 +64,12 @@ bool YACReaderLocalServer::isRunning()
 	socket.connectToServer(YACREADERLIBRARY_GUID);
 	if (socket.waitForConnected(500)) 
 		return true; // Server is running (another instance of YACReaderLibrary has been launched)
-	return false;
+    return false;
+}
+
+void YACReaderLocalServer::close()
+{
+    localServer->close();
 }
 
 
@@ -201,13 +206,13 @@ void YACReaderClientConnectionWorker::run()
 void YACReaderClientConnectionWorker::getComicInfo(quint64 libraryId, ComicDB & comic, QList<ComicDB> & siblings)
 {
 	QMutexLocker locker(&dbMutex);
-	comic = DBHelper::getComicInfo(DBHelper::getLibrariesNames().at(libraryId), comic.id);
-	siblings = DBHelper::getSiblings(DBHelper::getLibrariesNames().at(libraryId), comic.parentId);
+    comic = DBHelper::getComicInfo(libraryId, comic.id);
+    siblings = DBHelper::getSiblings(libraryId, comic.parentId);
 }
 
 void YACReaderClientConnectionWorker::updateComic(quint64 libraryId, ComicDB & comic)
 {
 	QMutexLocker locker(&dbMutex);
-	DBHelper::update(DBHelper::getLibrariesNames().at(libraryId), comic.info);
+    DBHelper::update(libraryId, comic.info);
 	emit comicUpdated(libraryId, comic);
 }

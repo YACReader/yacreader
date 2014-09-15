@@ -20,6 +20,7 @@
 #include "controllers/pagecontroller.h"
 #include "controllers/updatecomiccontroller.h"
 #include "controllers/errorcontroller.h"
+#include "controllers/comicdownloadinfocontroller.h"
 
 #include "db_helper.h"
 #include "yacreader_libraries.h"
@@ -95,7 +96,8 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 
 	QRegExp folder("/library/.+/folder/[0-9]+/?");//get comic content
 	QRegExp folderInfo("/library/.+/folder/[0-9]+/info/?"); //get folder info
-	QRegExp comic("/library/.+/comic/[0-9]+/?"); //get comic info
+    QRegExp comicDownloadInfo("/library/.+/comic/[0-9]+/?"); //get comic info (basic/download info)
+    QRegExp comicFullInfo("/library/.+/comic/[0-9]+/info/?"); //get comic info (full info)
     QRegExp comicOpen("/library/.+/comic/[0-9]+/remote/?"); //the server will open for reading the comic
     QRegExp comicUpdate("/library/.+/comic/[0-9]+/update/?"); //get comic info
 	QRegExp comicClose("/library/.+/comic/[0-9]+/close/?"); //the server will close the comic and free memory
@@ -138,8 +140,12 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 				else if(cover.exactMatch(path))
 				{
 					CoverController().service(request, response);
-				}
-                else if(comic.exactMatch(path) || comicOpen.exactMatch(path))
+                }
+                else if(comicDownloadInfo.exactMatch(path))
+                {
+                    ComicDownloadInfoController().service(request, response);
+                }
+                else if(comicFullInfo.exactMatch(path) || comicOpen.exactMatch(path))//start download or start remote reading
 				{
                     ComicController().service(request, response);
 				}
