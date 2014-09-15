@@ -210,7 +210,7 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
 	//queryDBInfo.finish();
 
 	QSqlQuery query("INSERT INTO db_info (version) "
-				   "VALUES ('"VERSION"')",database);
+                   "VALUES ('" VERSION "')",database);
 	//query.finish();
 	}
 
@@ -245,7 +245,7 @@ void DataBaseManagement::exportComicsInfo(QString source, QString dest)
 	queryComicsInfo.exec();*/
 
 	QSqlQuery query("INSERT INTO dest.db_info (version) "
-		"VALUES ('"VERSION"')",destDB);
+        "VALUES ('" VERSION "')",destDB);
 	//query.finish();
 
 	QSqlQuery exportData(destDB);
