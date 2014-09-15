@@ -139,6 +139,9 @@ public:
 	//returns parent folder name
 	QString getParentFolderName() const;
 
+    //return the size of the file in bytes
+    qulonglong getFileSize() const;
+
 	QString toTXT();
 	
 	ComicInfo info;

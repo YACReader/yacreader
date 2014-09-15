@@ -21,7 +21,8 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 
 	QString path = QUrl::fromPercentEncoding(request.getPath()).toLatin1();
 	QStringList pathElements = path.split('/');
-	QString libraryName = DBHelper::getLibraryName(pathElements.at(2).toInt());
+    qulonglong libraryId = pathElements.at(2).toLongLong();
+    QString libraryName = DBHelper::getLibraryName(libraryId);
 	qulonglong comicId = pathElements.at(4).toULongLong();
 
     bool remoteComic = path.endsWith("remote");
@@ -38,20 +39,14 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 	//	}
 	//} 
 
-	//Aplicar a todos los controladores
-	//TODO usar LibraryWindow para acceder a información de las bases de datos está mal, hay
-	//que crear una clase que se encargue de estas cosas
-	//¿Se está accediendo a la UI desde un hilo?
-
 	YACReaderLibraries libraries = DBHelper::getLibraries();
 	
-
-	ComicDB comic = DBHelper::getComicInfo(libraryName, comicId);
+    ComicDB comic = DBHelper::getComicInfo(libraryId, comicId);
 
     if(!remoteComic)
         session.setDownloadedComic(comic.info.hash);
 
-	Comic * comicFile = FactoryComic::newComic(libraries.getPath(libraryName)+comic.path);
+    Comic * comicFile = FactoryComic::newComic(libraries.getPath(libraryId)+comic.path);
 
 	if(comicFile != NULL)
 	{
@@ -64,7 +59,7 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 		connect(thread, SIGNAL(started()), comicFile, SLOT(process()));
 		connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
-		comicFile->load(libraries.getPath(libraryName)+comic.path);
+        comicFile->load(libraries.getPath(libraryId)+comic.path);
 
 		if(thread != NULL)
 			thread->start();
@@ -84,10 +79,10 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 		response.setHeader("Content-Type", "plain/text; charset=ISO-8859-1");
 		//TODO this field is not used by the client!
 		response.writeText(QString("library:%1\r\n").arg(libraryName));
-        response.writeText(QString("libraryId:%1\r\n").arg(pathElements.at(2)));
+        response.writeText(QString("libraryId:%1\r\n").arg(libraryId));
         if(remoteComic) //send previous and next comics id
         {
-            QList<LibraryItem *> siblings = DBHelper::getFolderComicsFromLibrary(libraryName, comic.parentId);
+            QList<LibraryItem *> siblings = DBHelper::getFolderComicsFromLibrary(libraryId, comic.parentId);
             bool found = false;
             int i;
             for(i = 0; i < siblings.length(); i++)
