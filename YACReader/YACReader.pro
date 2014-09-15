@@ -37,6 +37,7 @@ TRANSLATIONS = yacreader_es.ts \
 								  yacreader_pt.ts \
 								  yacreader_nl.ts \
 								  yacreader_tr.ts \
+								  yacreader_de.ts \
 								  yacreader_source.ts  
 
 
