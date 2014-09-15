@@ -1116,47 +1116,47 @@
 <context>
     <name>ServerConfigDialog</name>
     <message>
-        <location filename="server_config_dialog.cpp" line="61"/>
+        <location filename="server_config_dialog.cpp" line="63"/>
         <source>set port</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="68"/>
+        <location filename="server_config_dialog.cpp" line="70"/>
         <source>EASY SERVER CONNECTION</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="72"/>
+        <location filename="server_config_dialog.cpp" line="74"/>
         <source>SERVER ADDRESS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="76"/>
+        <location filename="server_config_dialog.cpp" line="78"/>
         <source>just scan the code with your device!!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="82"/>
+        <location filename="server_config_dialog.cpp" line="84"/>
         <source>YACReader is now available for iOS devices, the best comic reading experience now in your iPad, iPhone or iPod touch. &lt;a href=&apos;http://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt; Discover it! &lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="128"/>
+        <location filename="server_config_dialog.cpp" line="130"/>
         <source>IP address</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="129"/>
+        <location filename="server_config_dialog.cpp" line="131"/>
         <source>Port</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="142"/>
+        <location filename="server_config_dialog.cpp" line="144"/>
         <source>enable the server</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="294"/>
+        <location filename="server_config_dialog.cpp" line="300"/>
         <source>QR generator error!</source>
         <translation type="unfinished"></translation>
     </message>
