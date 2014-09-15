@@ -15,6 +15,9 @@ public:
 
 	/** Generates the response */
 	void service(HttpRequest& request, HttpResponse& response);
+
+private:
+    void serviceComics(const int  &library, const qulonglong & folderId, HttpResponse& response);
 };
 
 #endif // FOLDERINFOCONTROLLER_H
