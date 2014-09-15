@@ -43,7 +43,7 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 
     folderId = qMax<qulonglong>(1,folderId);
 
-    QString folderName = DBHelper::getFolderName(libraryName,folderId);
+    QString folderName = DBHelper::getFolderName(libraryId,folderId);
     if(folderName.isEmpty())
     {
         ErrorController(300).service(request,response);
@@ -54,8 +54,8 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 		t.setVariable("folder.name",folderName);
 	else
 		t.setVariable("folder.name",libraryName);
-    QList<LibraryItem *> folderContent = DBHelper::getFolderContentFromLibrary(libraryName,folderId);
-    QList<LibraryItem *> folderComics = DBHelper::getFolderComicsFromLibrary(libraryName,folderId);
+    QList<LibraryItem *> folderContent = DBHelper::getFolderSubfoldersFromLibrary(libraryId,folderId);
+    QList<LibraryItem *> folderComics = DBHelper::getFolderComicsFromLibrary(libraryId,folderId);
 
 	//response.writeText(libraryName);
 
@@ -152,7 +152,7 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
     t.loop("path",foldersPath.count()-1);
     for(int i = 1; i < foldersPath.count(); i++){
         t.setVariable(QString("path%1.url").arg(i-1),QString("/library/%1/folder/%2").arg(libraryId).arg(foldersPath[i].first));
-        t.setVariable(QString("path%1.name").arg(i-1),DBHelper::getFolderName(libraryName,foldersPath[i].first));
+        t.setVariable(QString("path%1.name").arg(i-1),DBHelper::getFolderName(libraryId,foldersPath[i].first));
     }
 
 	t.loop("element",numFoldersAtCurrentPage);
@@ -165,7 +165,7 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 		{
 			t.setVariable(QString("element%1.class").arg(i),"folder");
 
-            QList<LibraryItem *> children = DBHelper::getFolderComicsFromLibrary(libraryName, item->id);
+            QList<LibraryItem *> children = DBHelper::getFolderComicsFromLibrary(libraryId, item->id);
             if(children.length()>0)
             {
                const ComicDB * comic = static_cast<ComicDB*>(children.at(0));

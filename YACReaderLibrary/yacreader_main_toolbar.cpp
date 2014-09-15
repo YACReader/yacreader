@@ -44,10 +44,13 @@ YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent) :
 	helpButton->setStyleSheet(qToolButtonStyleSheet);
 	helpButton->setIconSize(QSize(14,25));
 
+    toggleComicsViewButton = new QToolButton;
+    toggleComicsViewButton->setStyleSheet(qToolButtonStyleSheet);
+    toggleComicsViewButton->setIconSize(QSize(24,24));
+
 	fullscreenButton = new QToolButton();
 	fullscreenButton->setStyleSheet(qToolButtonStyleSheet);
 	fullscreenButton->setIconSize(QSize(24,24));
-
 
 	mainLayout->setMargin(0);
 	mainLayout->setSpacing(0);
@@ -66,6 +69,8 @@ YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent) :
 
 	mainLayout->addStretch();
 
+    mainLayout->addWidget(toggleComicsViewButton);
+    addWideDivider();
 	mainLayout->addWidget(fullscreenButton);
 	mainLayout->addSpacing(10);
 

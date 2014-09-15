@@ -31,7 +31,7 @@ QString ComicDB::toTXT()
 	txt.append(QString("currentPage:%1\r\n").arg(info.currentPage));
 	txt.append(QString("contrast:%1\r\n").arg(info.contrast));
 
-	//Información general
+	//Informaciï¿½n general
     if(!info.coverPage.isNull())
         txt.append(QString("coverPage:%1\r\n").arg(info.coverPage.toString()));
 
@@ -80,7 +80,7 @@ QString ComicDB::toTXT()
 
 	if(!info.coverArtist.isNull())
 		txt.append(QString("coverArtist:%1\r\n").arg(info.coverArtist.toString()));
-	//Publicación
+	//Publicaciï¿½n
 	if(!info.date.isNull())
 		txt.append(QString("date:%1\r\n").arg(info.date.toString()));
 	
@@ -127,7 +127,13 @@ QString ComicDB::getParentFolderName() const
 	if(paths.length()<2)
 		return "";
 	else
-		return paths[paths.length()-2];
+        return paths[paths.length()-2];
+}
+
+qulonglong ComicDB::getFileSize() const
+{
+    //the size is encoded in the hash after the SHA-1
+    return info.hash.right(info.hash.length()-40).toLongLong();
 }
 
 //-----------------------------------------------------------------------------

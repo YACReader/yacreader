@@ -134,6 +134,7 @@ SOURCES += $$PWD/../common/comic.cpp \
 
 include($$PWD/../custom_widgets/custom_widgets_yacreader.pri)
 include($$PWD/../compressed_archive/wrapper.pri)
+include($$PWD/../shortcuts_management/shortcuts_management.pri)
 
 RESOURCES += $$PWD/yacreader_images.qrc \
     $$PWD/yacreader_files.qrc 

@@ -37,7 +37,7 @@ void Startup::start() {
     //QSettings* debugLogSettings=new QSettings(configFileName,QSettings::IniFormat,app);
     //debugLogSettings->beginGroup("debugLogFile");
     Logger* logger=new FileLogger(mainLogSettings,10000,app);
-	logger->installMsgHandler();
+    logger->installMsgHandler();
 
 	// Configure template loader and cache
 	QSettings* templateSettings=new QSettings(configFileName,QSettings::IniFormat,app);
@@ -65,9 +65,14 @@ void Startup::start() {
 
 
 void Startup::stop() {
-	qDebug("ServiceHelper: Service has been stopped");
-	// QCoreApplication destroys all objects that have been created in start().
-	delete listener;
+    qDebug("ServiceHelper: Service has been stopped");
+    // QCoreApplication destroys all objects that have been created in start().
+    if(listener!=nullptr)
+    {
+        listener->close();
+        delete listener;
+        listener = nullptr;
+    }
 }
 
 

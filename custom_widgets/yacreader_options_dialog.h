@@ -8,6 +8,7 @@ class YACReaderGLFlowConfigWidget;
 class QCheckBox;
 class QPushButton;
 class QSettings;
+class QGroupBox;
 
 class YACReaderOptionsDialog : public QDialog
 {
@@ -19,6 +20,8 @@ protected:
 
 	QPushButton * accept;
 	QPushButton * cancel;
+
+    QGroupBox * shortcutsBox;
 
 	QSettings * settings;
 	QSettings * previousSettings;
@@ -56,6 +59,7 @@ protected slots:
 
 signals:
 	void optionsChanged();
+    void editShortcuts();
 };
 
 #endif // YACREADER_OPTIONS_DIALOG_H

@@ -1,6 +1,7 @@
 #include "magnifying_glass.h"
 #include "viewer.h"
 #include "configuration.h"
+#include "shortcuts_manager.h"
 
 #include <QScrollBar>
 
@@ -244,26 +245,48 @@ void MagnifyingGlass::widthDown()
 void MagnifyingGlass::keyPressEvent(QKeyEvent *event)
 {
 	bool validKey = false;
-	switch (event->key())
-	{
-	case Qt::Key_Plus:
-		sizeUp();
-		validKey = true;
-		break;
-	case Qt::Key_Minus:
-		sizeDown();
-		validKey = true;
-		break;
-	case Qt::Key_Underscore:
-		zoomOut();
-		validKey = true;
-		break;
-	case Qt::Key_Asterisk:
-		zoomIn();
-		validKey = true;
-		break;
-	}
-	updateImage();
+
+    int _key = event->key();
+    Qt::KeyboardModifiers modifiers = event->modifiers();
+
+    if(modifiers & Qt::ShiftModifier)
+        _key |= Qt::SHIFT;
+    if (modifiers & Qt::ControlModifier)
+        _key |= Qt::CTRL;
+    if (modifiers & Qt::MetaModifier)
+        _key |= Qt::META;
+    if (modifiers & Qt::AltModifier)
+        _key |= Qt::ALT;
+
+    QKeySequence key(_key);
+
+    if (key == ShortcutsManager::getShortcutsManager().getShortcut(SIZE_UP_MGLASS_ACTION_Y))
+    {
+        sizeUp();
+        validKey = true;
+    }
+
+    else if (key == ShortcutsManager::getShortcutsManager().getShortcut(SIZE_DOWN_MGLASS_ACTION_Y))
+    {
+        sizeDown();
+        validKey = true;
+    }
+
+    else if (key == ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_IN_MGLASS_ACTION_Y))
+    {
+        zoomIn();
+        validKey = true;
+    }
+
+    else if (key == ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_OUT_MGLASS_ACTION_Y))
+    {
+        zoomOut();
+        validKey = true;
+    }
+
 	if(validKey)
+    {
+        updateImage();
 		event->setAccepted(true);
+    }
 }
