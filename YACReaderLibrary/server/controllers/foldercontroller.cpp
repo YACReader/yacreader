@@ -116,9 +116,9 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
         }
 
         QStack<QPair<qulonglong, quint32> > path = session.getNavigationPath();
-        if(path.length()>1)
+        if(path.count()>1)
         {
-            QPair<qulonglong, quint32> parentItem = path.at(path.length()-2);
+            QPair<qulonglong, quint32> parentItem = path.at(path.count()-2);
             qulonglong upParent = parentItem.first;
             quint32 upPage = parentItem.second;
             t.setVariable(QString("upurl"),"/library/" + QString::number(libraryId) + "/folder/" +QString("%1?page=%2&up=true").arg(upParent).arg(upPage));
