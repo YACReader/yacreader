@@ -44,7 +44,7 @@ QModelIndex ActionsGroupsModel::parent(const QModelIndex &index) const
 
 void ActionsGroupsModel::addActionsGroup(const ActionsGroup &group)
 {
-    beginInsertRows(QModelIndex(),groups.length()-1,groups.length());
+    beginInsertRows(QModelIndex(),groups.length(),groups.length());
     groups.push_back(group);
     endInsertRows();
 }
