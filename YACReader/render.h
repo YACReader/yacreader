@@ -126,6 +126,7 @@ public slots:
 	QPixmap * getCurrentPage();
 	void goTo(int index);
 	void doublePageSwitch();
+	void doubleMangaPageSwitch();
 	void setRotation(int degrees);
 	void setComic(Comic * c);
 	void prepareAvailablePage(int page);
@@ -182,6 +183,7 @@ signals:
 private:
 	Comic * comic;
 	bool doublePage;
+	bool doubleMangaPage;
 	int previousIndex;
 	int currentIndex;
 	//QPixmap * currentPage;
