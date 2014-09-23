@@ -1019,7 +1019,7 @@
     <name>SearchSingleComic</name>
     <message>
         <location filename="comic_vine/search_single_comic.cpp" line="14"/>
-        <source>Please provide some aditional information.</source>
+        <source>Please provide some additional information.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1032,7 +1032,7 @@
     <name>SearchVolume</name>
     <message>
         <location filename="comic_vine/search_volume.cpp" line="11"/>
-        <source>Please provide some aditional information.</source>
+        <source>Please provide some additional information.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

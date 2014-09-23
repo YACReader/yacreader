@@ -129,7 +129,7 @@ int main(int argc, char * argv[])
 	QTranslator translator;
 	QString sufix = QLocale::system().name();
 #if defined Q_OS_UNIX && !defined Q_OS_MAC	
-	translator.load(QString(DATADIR)+"/YACReader/languages/yacreader_"+sufix);
+	translator.load(QString(DATADIR)+"/yacreader/languages/yacreader_"+sufix);
 #else
 	translator.load(QCoreApplication::applicationDirPath()+"/languages/yacreader_"+sufix);
 #endif	
