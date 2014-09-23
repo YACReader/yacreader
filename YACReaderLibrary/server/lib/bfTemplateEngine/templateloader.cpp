@@ -23,8 +23,8 @@ TemplateLoader::TemplateLoader(QSettings* settings, QObject* parent)
 #endif
     {
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
-        QFileInfo configFile(QString(DATADIR)+"/YACReader");
-        templatePath=QFileInfo(QString(DATADIR)+"/YACReader",templatePath).absoluteFilePath();
+        QFileInfo configFile(QString(DATADIR)+"/yacreader");
+        templatePath=QFileInfo(QString(DATADIR)+"/yacreader",templatePath).absoluteFilePath();
 #else
         QFileInfo configFile(QApplication::applicationDirPath());
         templatePath=QFileInfo(QApplication::applicationDirPath(),templatePath).absoluteFilePath();
