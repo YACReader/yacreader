@@ -74,6 +74,7 @@ void Configuration::load(const QString & path)
 	windowSize = QSize(0,0);
 	maximized = false;
 	doublePage = false;
+	doubleMangaPage = false;
 	adjustToFullSize = false;
 	backgroundColor = QColor(40,40,40);
 	alwaysOnTop = false;
@@ -95,65 +96,74 @@ void Configuration::load(const QString & path)
 		else
 		{
 			if(name==PATH)
+			{
 				defaultPath = line.trimmed();
-			else
-				if(name==MAG_GLASS_SIZE)
-				{
-					QStringList values = line.split(',');
-					magnifyingGlassSize = QSize(values[0].toInt(),values[1].toInt());
-				}
-				else
-					if(name==ZOOM_LEVEL)
-						zoomLevel = line.toFloat();
-					else
-						if(name==SLIDE_SIZE)
-						{
-							int height = line.toInt();
-							gotoSlideSize = QSize(static_cast<int>(height/SLIDE_ASPECT_RATIO),height);
-						}
-						else
-							if(name==FIT)
-								adjustToWidth = line.toInt();
-							else
-								if(name==FLOW_TYPE)
-									flowType = (FlowType)line.toInt();
-								else
-									if(name==FULLSCREEN)
-										fullScreen = line.toInt();
-									else
-										if(name==FIT_TO_WIDTH_RATIO)
-											fitToWidthRatio = line.toFloat();
-										else
-											if(name==Y_WINDOW_POS)
-											{
-												QStringList l = line.split(',');
-												windowPos = QPoint(l[0].toInt(),l[1].toInt());
-											}
-											else
-												if(name==Y_WINDOW_SIZE)
-												{
-													QStringList l = line.split(',');
-													windowSize = QSize(l[0].toInt(),l[1].toInt());
-												}
-												else
-													if(name==MAXIMIZED)
-														maximized = line.toInt();
-													else
-														if(name==DOUBLE_PAGE)
-															doublePage = line.toInt();
-														else
-															if(name==ADJUST_TO_FULL_SIZE)
-																adjustToFullSize = line.toInt();
-															else
-																if(name==BACKGROUND_COLOR)
-																{
-																	QStringList l = line.split(',');
-																	backgroundColor = QColor(l[0].toInt(),l[1].toInt(),l[2].toInt());
-																}
-																else
-																	if(name==ALWAYS_ON_TOP)
-																		alwaysOnTop = line.toInt();
-													
+			}
+			if(name==MAG_GLASS_SIZE)
+			{
+				QStringList values = line.split(',');
+				magnifyingGlassSize = QSize(values[0].toInt(),values[1].toInt());
+			}
+			if(name==ZOOM_LEVEL)
+			{
+				zoomLevel = line.toFloat();
+			}
+			if(name==SLIDE_SIZE)
+			{
+				int height = line.toInt();
+				gotoSlideSize = QSize(static_cast<int>(height/SLIDE_ASPECT_RATIO),height);
+			}
+			if(name==FIT)
+			{
+				adjustToWidth = line.toInt();
+			}
+			if(name==FLOW_TYPE)
+			{
+				flowType = (FlowType)line.toInt();
+			}
+			if(name==FULLSCREEN)
+			{
+				fullScreen = line.toInt();
+			}
+			if(name==FIT_TO_WIDTH_RATIO)
+			{
+				fitToWidthRatio = line.toFloat();
+			}
+			if(name==Y_WINDOW_POS)
+			{
+				QStringList l = line.split(',');
+				windowPos = QPoint(l[0].toInt(),l[1].toInt());
+			}
+			if(name==Y_WINDOW_SIZE)
+			{
+				QStringList l = line.split(',');
+				windowSize = QSize(l[0].toInt(),l[1].toInt());
+			}
+			if(name==MAXIMIZED)
+			{
+				maximized = line.toInt();
+			}
+			if(name==DOUBLE_PAGE)
+			{
+				doublePage = line.toInt();
+			}
+			if(name==DOUBLE_MANGA_PAGE)
+			{
+				doubleMangaPage = line.toInt();
+			}
+			if(name==ADJUST_TO_FULL_SIZE)
+			{
+				adjustToFullSize = line.toInt();
+			}
+			if(name==BACKGROUND_COLOR)
+			{
+				QStringList l = line.split(',');
+				backgroundColor = QColor(l[0].toInt(),l[1].toInt(),l[2].toInt());
+			}
+			if(name==ALWAYS_ON_TOP)
+			{
+				alwaysOnTop = line.toInt();
+			}										
 
 
 		}
