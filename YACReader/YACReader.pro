@@ -72,7 +72,7 @@ DEFINES += "LIBDIR=\\\"$$LIBDIR\\\""  "DATADIR=\\\"$$DATADIR\\\""
 
 #MAKE INSTALL
 
-INSTALLS += bin docs icon desktop translation #manpage
+INSTALLS += bin docs icon desktop translation manpage
 
 bin.path = $$BINDIR
 isEmpty(DESTDIR) {
