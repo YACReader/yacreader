@@ -16,7 +16,6 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
 	//widgets
 	foldersView = new YACReaderTreeView;
 	selectedLibrary = new YACReaderLibraryListWidget;
-	foldersFilter = new YACReaderSearchLineEdit();
 
 	librariesTitle = new YACReaderTitledToolBar(tr("LIBRARIES"));
 
@@ -25,9 +24,6 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
 	selectedLibrary->setContextMenuPolicy(Qt::ActionsContextMenu);
 	selectedLibrary->setAttribute(Qt::WA_MacShowFocusRect,false);
 	selectedLibrary->setFocusPolicy(Qt::NoFocus);
-
-	foldersFilter->setAttribute(Qt::WA_MacShowFocusRect,false);
-	foldersFilter->setPlaceholderText(tr("Search folders and comics"));
 
 	//layout
 	QVBoxLayout * l = new QVBoxLayout;
@@ -85,8 +81,6 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
 #endif
 
 	l->addWidget(foldersView);
-
-	l->addWidget(foldersFilter);
 
 	l->setSpacing(0);
 	setLayout(l);

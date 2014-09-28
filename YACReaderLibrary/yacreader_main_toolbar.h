@@ -25,7 +25,7 @@ public:
     QToolButton * toggleComicsViewButton;
 	QToolButton * fullscreenButton;
 
-
+    void setSearchWidget(QWidget * w);
 	void setCurrentFolderName(const QString & name);
 signals:
 	

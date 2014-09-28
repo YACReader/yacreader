@@ -18,7 +18,6 @@ public:
 
 	YACReaderTreeView * foldersView;
 	YACReaderLibraryListWidget * selectedLibrary;
-	YACReaderSearchLineEdit * foldersFilter;
 	YACReaderTitledToolBar * librariesTitle;
 	YACReaderTitledToolBar * foldersTitle;
 	

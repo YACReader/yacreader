@@ -56,23 +56,22 @@ YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent) :
 	mainLayout->setSpacing(0);
 
 	mainLayout->addSpacing(12);
-	mainLayout->addWidget(backButton);
+    mainLayout->addWidget(backButton,0,Qt::AlignVCenter);
 	addDivider();
-	mainLayout->addWidget(forwardButton);
+    mainLayout->addWidget(forwardButton,0,Qt::AlignVCenter);
 
 	mainLayout->addSpacing(34);
-	mainLayout->addWidget(settingsButton);
+    mainLayout->addWidget(settingsButton,0,Qt::AlignVCenter);
 	addWideDivider();
-	mainLayout->addWidget(serverButton);
+    mainLayout->addWidget(serverButton,0,Qt::AlignVCenter);
 	addWideDivider();
-	mainLayout->addWidget(helpButton);
+    mainLayout->addWidget(helpButton,0,Qt::AlignVCenter);
 
 	mainLayout->addStretch();
 
-    mainLayout->addWidget(toggleComicsViewButton);
+    mainLayout->addWidget(toggleComicsViewButton,0,Qt::AlignVCenter);
     addWideDivider();
-	mainLayout->addWidget(fullscreenButton);
-	mainLayout->addSpacing(10);
+    mainLayout->addWidget(fullscreenButton,0,Qt::AlignVCenter);
 
 	setLayout(mainLayout);
 
@@ -82,7 +81,13 @@ YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent) :
 
 QSize YACReaderMainToolBar::sizeHint() const
 {
-	return QSize(200,40);
+    return QSize(200,40);
+}
+
+void YACReaderMainToolBar::setSearchWidget(QWidget *w)
+{
+    addWideDivider();
+    mainLayout->addWidget(w,0,Qt::AlignVCenter);
 }
 
 void YACReaderMainToolBar::paintEvent(QPaintEvent * event)
@@ -116,7 +121,7 @@ void YACReaderMainToolBar::addDivider()
 	divider->setPixmap(img);
 
 	mainLayout->addSpacing(5);
-	mainLayout->addWidget(divider);
+    mainLayout->addWidget(divider,0,Qt::AlignVCenter);
 	mainLayout->addSpacing(5);
 }
 

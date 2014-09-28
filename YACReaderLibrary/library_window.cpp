@@ -173,13 +173,16 @@ void LibraryWindow::doLayout()
         delete flowSelDialog;
     }
 
-	//SIDEBAR-----------------------------------------------------------------------
+    //FOLDERS FILTER-------------------------------------------------------------
+    //---------------------------------------------------------------------------
+    foldersFilter = new YACReaderSearchLineEdit();
+
+    //SIDEBAR--------------------------------------------------------------------
 	//---------------------------------------------------------------------------
 	sideBar = new YACReaderSideBar;
 
 	foldersView = sideBar->foldersView;
 	selectedLibrary = sideBar->selectedLibrary;
-	foldersFilter = sideBar->foldersFilter;
 
 	YACReaderTitledToolBar * librariesTitle = sideBar->librariesTitle;
 
@@ -764,6 +767,7 @@ void LibraryWindow::createToolBars()
 	libraryToolBar->helpButton->setDefaultAction(helpAboutAction);
     libraryToolBar->toggleComicsViewButton->setDefaultAction(toggleComicsViewAction);
 	libraryToolBar->fullscreenButton->setDefaultAction(toggleFullScreenAction);
+    libraryToolBar->setSearchWidget(foldersFilter);
 #endif
 
 	editInfoToolBar->setIconSize(QSize(18,18));
