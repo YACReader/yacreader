@@ -1062,7 +1062,7 @@ void LibraryWindow::loadLibrary(const QString & name)
                         comicsView->setModel(NULL);
 						foldersView->setModel(NULL);
 						disableAllActions();//TODO comprobar que se deben deshabilitar
-						//será posible renombrar y borrar estas bibliotecas
+						//será possible renombrar y borrar estas bibliotecas
 						renameLibraryAction->setEnabled(true);
 						removeLibraryAction->setEnabled(true);
 					}
@@ -1114,7 +1114,7 @@ void LibraryWindow::loadLibrary(const QString & name)
                     comicsView->setModel(NULL);
 					foldersView->setModel(NULL);
 					disableAllActions();//TODO comprobar que se deben deshabilitar
-					//será posible renombrar y borrar estas bibliotecas
+					//será possible renombrar y borrar estas bibliotecas
 					renameLibraryAction->setEnabled(true);
 					removeLibraryAction->setEnabled(true);
 			}
@@ -1133,7 +1133,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 				{
 					deleteCurrentLibrary();
 				}
-				//será posible renombrar y borrar estas bibliotecas
+				//será possible renombrar y borrar estas bibliotecas
 				renameLibraryAction->setEnabled(true);
 				removeLibraryAction->setEnabled(true);
 
@@ -1145,7 +1145,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 				{
 					QSqlDatabase db = DataBaseManagement::loadDatabase(path);
 					manageOpeningLibraryError(db.lastError().databaseText() + "-" + db.lastError().driverText());
-					//será posible renombrar y borrar estas bibliotecas
+					//será possible renombrar y borrar estas bibliotecas
 					renameLibraryAction->setEnabled(true);
 					removeLibraryAction->setEnabled(true);
 				}
@@ -1161,7 +1161,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 						createLibraryDialog->setDataAndStart(currentLibrary,path);
 						//create(path,path+"/.yacreaderlibrary",currentLibrary);
 					}
-					//será posible renombrar y borrar estas bibliotecas
+					//será possible renombrar y borrar estas bibliotecas
 					renameLibraryAction->setEnabled(true);
 					removeLibraryAction->setEnabled(true);
 				}
@@ -1425,7 +1425,7 @@ void LibraryWindow::deleteCurrentLibrary()
 	QDir d(path);
 	delTree(d);
 	d.rmdir(path);
-	if(libraries.isEmpty())//no more libraries avaliable.
+	if(libraries.isEmpty())//no more libraries available.
 	{
         comicsView->setModel(NULL);
 		foldersView->setModel(NULL);
@@ -1447,7 +1447,7 @@ void LibraryWindow::removeLibrary()
 		libraries.remove(currentLibrary);
 		selectedLibrary->removeItem(selectedLibrary->currentIndex());
 		//selectedLibrary->setCurrentIndex(0);
-		if(libraries.isEmpty())//no more libraries avaliable.
+		if(libraries.isEmpty())//no more libraries available.
 		{
             comicsView->setModel(NULL);
 			foldersView->setModel(NULL);

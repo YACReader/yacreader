@@ -403,7 +403,7 @@ void LibraryCreator::update(QDir dirS)
 						}
 						i++;
 					}
-					else //nameD no longer avaliable on Source folder...
+					else //nameD no longer available on Source folder...
 					{
 						if(nameS!="/.yacreaderlibrary")
 						{
