@@ -10,8 +10,8 @@ SearchSingleComic::SearchSingleComic(QWidget * parent)
 	:QWidget(parent)
 {
 
-	//QLabel * label = new QLabel(tr("Please provide some aditional information. At least one field is needed."));
-	QLabel * label = new QLabel(tr("Please provide some aditional information."));
+	//QLabel * label = new QLabel(tr("Please provide some additional information. At least one field is needed."));
+	QLabel * label = new QLabel(tr("Please provide some additional information."));
 	label->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
 
 	//titleEdit = new ScraperLineEdit(tr("Title:"));

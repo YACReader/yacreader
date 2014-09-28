@@ -884,7 +884,7 @@
 <context>
     <name>SearchSingleComic</name>
     <message>
-        <source>Please provide some aditional information.</source>
+        <source>Please provide some additional information.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -895,7 +895,7 @@
 <context>
     <name>SearchVolume</name>
     <message>
-        <source>Please provide some aditional information.</source>
+        <source>Please provide some additional information.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
