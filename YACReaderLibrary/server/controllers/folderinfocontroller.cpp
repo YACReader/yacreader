@@ -1,0 +1,48 @@
+#include "folderinfocontroller.h"
+#include "db_helper.h"  //get libraries
+
+#include "folder.h"
+#include "comic_db.h"
+
+#include "template.h"
+#include "../static.h"
+
+
+FolderInfoController::FolderInfoController() {}
+
+void FolderInfoController::service(HttpRequest& request, HttpResponse& response)
+{
+	response.setHeader("Content-Type", "plain/text; charset=ISO-8859-1");
+
+	QString path = QUrl::fromPercentEncoding(request.getPath()).toLatin1();
+	QStringList pathElements = path.split('/');
+	int libraryId = pathElements.at(2).toInt();
+	QString libraryName = DBHelper::getLibraryName(libraryId);
+	qulonglong parentId = pathElements.at(4).toULongLong();
+
+    serviceComics(libraryId, parentId, response);
+
+    response.writeText("",true);
+}
+
+void FolderInfoController::serviceComics(const int &library, const qulonglong &folderId, HttpResponse &response)
+{
+    QList<LibraryItem *> folderContent = DBHelper::getFolderSubfoldersFromLibrary(library,folderId);
+    QList<LibraryItem *> folderComics = DBHelper::getFolderComicsFromLibrary(library,folderId);
+
+    ComicDB * currentComic;
+    for(QList<LibraryItem *>::const_iterator itr = folderComics.constBegin();itr!=folderComics.constEnd();itr++)
+    {
+        currentComic = (ComicDB *)(*itr);
+        response.writeText(QString("/library/%1/comic/%2:%3:%4\r\n").arg(library).arg(currentComic->id).arg(currentComic->getFileName()).arg(currentComic->getFileSize()));
+        delete currentComic;
+    }
+
+    Folder * currentFolder;
+    for(QList<LibraryItem *>::const_iterator itr = folderContent.constBegin();itr!=folderContent.constEnd();itr++)
+    {
+        currentFolder = (Folder *)(*itr);
+        serviceComics(library, currentFolder->id, response);
+        delete currentFolder;
+    }
+}
