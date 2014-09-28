@@ -1,23 +1,29 @@
 .\" Manpage for YACReader.
 .\" Contact yoann.gauthier9@gmail.com to correct errors or typos.
-.TH man 8 "5 July 2014" "1.0" "YACReader man page"
+.TH man 1 "28 September 2014" "2.0" "YACReader man page"
 .SH NAME
 YACReader \- launch YACReader application.
 .SH SYNOPSIS
-.B
-YACReader
-pathfile
-[\fIcomicId\fR]
-[\fIlibraryId\fR]
+YACReader [\fBFile\fR | \fBDirectory\fR]
+.br
+YACReader [\fB\-h\fR | \fB\-\-help\fR]
+.br
+YACReader [\fB\-v\fR | \fB\-\-version\fR]
 .SH DESCRIPTION
 YACReader is a free cross-platform comic reader with support for multiple comic files and image formats.
 .SH OPTIONS
-pathfile
-: Path to be opened by YACReader.
 .TP
-\fIcomicId\fR : Comic identifier.
+.BR File
+Open comic file.
 .TP
-\fIlibraryId\fR : Library identifier. 
+.BR Directory
+Open comic directory.
+.TP
+.BR \-h, \-\- help
+Display this text and exit.
+.TP
+.BR \-v, \-\- version
+Display version information and exit. 
 .SH FEATURES
 - rar, zip, cbr, cbz, tar, pdf, 7z and cb7 comics support with compatibility for jpeg, gif, png, tiff and bmp images.
 .TP
