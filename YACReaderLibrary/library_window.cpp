@@ -371,16 +371,16 @@ void LibraryWindow::setUpShortcutsManagement()
 void LibraryWindow::doModels()
 {
 	//folders
-	dm = new TreeModel();
+    foldersModel = new TreeModel();
 	//comics
-	dmCV =  new TableModel();
+    comicsModel =  new TableModel();
 
-    setFoldersFilter("");
+    setSearchFilter("");
 }
 
 void LibraryWindow::disconnectComicsViewConnections(ComicsView * widget)
 {
-    disconnect(widget, SIGNAL(comicRated(int,QModelIndex)), dmCV, SLOT(updateRating(int,QModelIndex)));
+    disconnect(widget, SIGNAL(comicRated(int,QModelIndex)), comicsModel, SLOT(updateRating(int,QModelIndex)));
     disconnect(showHideMarksAction,SIGNAL(toggled(bool)),widget,SLOT(setShowMarks(bool)));
     disconnect(widget,SIGNAL(selected(unsigned int)),this,SLOT(openComic()));
     disconnect(widget,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openComic()));
@@ -389,7 +389,7 @@ void LibraryWindow::disconnectComicsViewConnections(ComicsView * widget)
 
 void LibraryWindow::doComicsViewConnections()
 {
-    connect(comicsView, SIGNAL(comicRated(int,QModelIndex)), dmCV, SLOT(updateRating(int,QModelIndex)));
+    connect(comicsView, SIGNAL(comicRated(int,QModelIndex)), comicsModel, SLOT(updateRating(int,QModelIndex)));
     connect(showHideMarksAction,SIGNAL(toggled(bool)),comicsView,SLOT(setShowMarks(bool)));
     connect(comicsView,SIGNAL(selected(unsigned int)),this,SLOT(openComic()));
     connect(comicsView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openComic()));
@@ -1000,7 +1000,7 @@ void LibraryWindow::createConnections()
 
 	//Folders filter
 	//connect(clearFoldersFilter,SIGNAL(clicked()),foldersFilter,SLOT(clear()));
-	connect(foldersFilter,SIGNAL(textChanged(QString)),this,SLOT(setFoldersFilter(QString)));
+    connect(foldersFilter,SIGNAL(textChanged(QString)),this,SLOT(setSearchFilter(QString)));
 	//connect(includeComicsCheckBox,SIGNAL(stateChanged(int)),this,SLOT(searchInFiles(int)));
 
 	//ContextMenus
@@ -1028,7 +1028,7 @@ void LibraryWindow::createConnections()
 
     connect(comicsViewTransition,SIGNAL(transitionFinished()),this,SLOT(showComicsView()));
 
-    connect(dmCV,SIGNAL(isEmpty()),this,SLOT(showEmptyFolderView()));
+    connect(comicsModel,SIGNAL(isEmpty()),this,SLOT(showEmptyFolderView()));
     connect(emptyFolderWidget,SIGNAL(subfolderSelected(QModelIndex,int)),this,SLOT(selectSubfolder(QModelIndex,int)));
 
     connect(showEditShortcutsAction,SIGNAL(triggered()),editShortcutsDialog,SLOT(show()));
@@ -1076,10 +1076,10 @@ void LibraryWindow::loadLibrary(const QString & name)
 			{
 				index = 0;
 
-				dm->setupModelData(path);
-				foldersView->setModel(dm);
+                foldersModel->setupModelData(path);
+                foldersView->setModel(foldersModel);
 
-				if(dm->rowCount(QModelIndex())>0)
+                if(foldersModel->rowCount(QModelIndex())>0)
 					disableFoldersActions(false);
 				else
 					disableFoldersActions(true);
@@ -1214,24 +1214,24 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 	}
 
     //comicsView->setModel(NULL);
-	dmCV->setupModelData(folderId,dm->getDatabase());
+    comicsModel->setupModelData(folderId,foldersModel->getDatabase());
 	
-    comicsView->setModel(dmCV);
-    QStringList paths = dmCV->getPaths(currentPath());
+    comicsView->setModel(comicsModel);
+    QStringList paths = comicsModel->getPaths(currentPath());
 	checkEmptyFolder(&paths);
 
     if(paths.size()>0) {
-        comicsView->setCurrentIndex(dmCV->index(0,0));
+        comicsView->setCurrentIndex(comicsModel->index(0,0));
         if(comicsViewStack->currentWidget() == emptyFolderWidget)
             comicsViewStack->setCurrentWidget(comicsView);
     }
     else
-        emptyFolderWidget->setSubfolders(mi,dm->getSubfoldersNames(mi));
+        emptyFolderWidget->setSubfolders(mi,foldersModel->getSubfoldersNames(mi));
 }
 
 void LibraryWindow::selectSubfolder(const QModelIndex &mi, int child)
 {
-    QModelIndex dest = dm->index(child,0,mi);
+    QModelIndex dest = foldersModel->index(child,0,mi);
     foldersView->setCurrentIndex(dest);
     updateHistory(dest);
     loadCovers(dest);
@@ -1241,7 +1241,7 @@ void LibraryWindow::checkEmptyFolder(QStringList * paths)
 {
 	if(paths == 0)
 	{
-		QStringList pathList = dmCV->getPaths(currentPath());
+        QStringList pathList = comicsModel->getPaths(currentPath());
 		paths = &pathList;
 	}
 
@@ -1264,7 +1264,7 @@ void LibraryWindow::reloadCovers()
     else
         loadCovers(QModelIndex());
 QLOG_INFO() << "reloaded covers at row : " << foldersView->currentIndex().row();
-	QModelIndex mi = dmCV->getIndexFromId(_comicIdEdited);
+    QModelIndex mi = comicsModel->getIndexFromId(_comicIdEdited);
     if(mi.isValid())
     {
         comicsView->scrollTo(mi,QAbstractItemView::PositionAtCenter);
@@ -1277,9 +1277,9 @@ void LibraryWindow::openComic()
 {
 	if(!importedCovers)
 	{
-        ComicDB comic = dmCV->getComic(comicsView->currentIndex());
+        ComicDB comic = comicsModel->getComic(comicsView->currentIndex());
         QString path = currentPath();
-		QList<ComicDB> siblings = dmCV->getAllComics();
+        QList<ComicDB> siblings = comicsModel->getAllComics();
 
 		quint64 comicId = comic.id;
 		//TODO generate IDS for libraries...
@@ -1313,7 +1313,7 @@ void LibraryWindow::openComic()
 }
 
 void LibraryWindow::setCurrentComicsStatusReaded(YACReaderComicReadStatus readStatus) {
-    dmCV->setComicsRead(getSelectedComics(),readStatus);
+    comicsModel->setComicsRead(getSelectedComics(),readStatus);
 }
 
 void LibraryWindow::setCurrentComicReaded() {
@@ -1580,15 +1580,15 @@ void LibraryWindow::toNormal()
 
 }
 
-void LibraryWindow::setFoldersFilter(QString filter)
+void LibraryWindow::setSearchFilter(QString filter)
 {
-	if(filter.isEmpty() && dm->isFilterEnabled())
+    if(filter.isEmpty() && foldersModel->isFilterEnabled())
 	{
-		dm->resetFilter();
+        foldersModel->resetFilter();
 		//foldersView->collapseAll();
 		if(index != 0)
 		{
-			QModelIndex mi = dm->indexFromItem(index,column);
+            QModelIndex mi = foldersModel->indexFromItem(index,column);
 			foldersView->scrollTo(mi,QAbstractItemView::PositionAtTop);
 			updateHistory(mi);
 			foldersView->setCurrentIndex(mi);
@@ -1598,7 +1598,7 @@ void LibraryWindow::setFoldersFilter(QString filter)
 	{
 		if(!filter.isEmpty())
 		{
-			dm->setFilter(filter, true);//includeComicsCheckBox->isChecked());
+            foldersModel->setFilter(filter, true);//includeComicsCheckBox->isChecked());
 			foldersView->expandAll();
 		}
 	}
@@ -1608,11 +1608,11 @@ void LibraryWindow::showProperties()
 {
 	QModelIndexList indexList = getSelectedComics();
 
-	QList<ComicDB> comics = dmCV->getComics(indexList);
+    QList<ComicDB> comics = comicsModel->getComics(indexList);
 	ComicDB c = comics[0];
 	_comicIdEdited = c.id;//static_cast<TableItem*>(indexList[0].internalPointer())->data(4).toULongLong();
 
-	propertiesDialog->databasePath = dm->getDatabase();
+    propertiesDialog->databasePath = foldersModel->getDatabase();
 	propertiesDialog->basePath = currentPath();
 	propertiesDialog->setComics(comics);
 	
@@ -1623,11 +1623,11 @@ void LibraryWindow::showComicVineScraper()
 {
 	QModelIndexList indexList = getSelectedComics();
 
-	QList<ComicDB> comics = dmCV->getComics(indexList);
+    QList<ComicDB> comics = comicsModel->getComics(indexList);
 	ComicDB c = comics[0];
 	_comicIdEdited = c.id;//static_cast<TableItem*>(indexList[0].internalPointer())->data(4).toULongLong();
 
-	comicVineDialog->databasePath = dm->getDatabase();
+    comicVineDialog->databasePath = foldersModel->getDatabase();
 	comicVineDialog->basePath = currentPath();
 	comicVineDialog->setComics(comics);
 
@@ -1652,12 +1652,12 @@ void LibraryWindow::resetComicRating()
 {
     QModelIndexList indexList = getSelectedComics();
 
-    dmCV->startTransaction();
+    comicsModel->startTransaction();
     for(auto & index:indexList)
     {
-        dmCV->resetComicRating(index);
+        comicsModel->resetComicRating(index);
     }
-    dmCV->finishTransaction();
+    comicsModel->finishTransaction();
 }
 
 void LibraryWindow::switchToComicsView(ComicsView * from, ComicsView * to)
@@ -1741,7 +1741,7 @@ void LibraryWindow::asignNumbers()
 		else
 			return;
 	}
-	_comicIdEdited = dmCV->asignNumbers(indexList,startingNumber);
+    _comicIdEdited = comicsModel->asignNumbers(indexList,startingNumber);
 	
 	reloadCovers();
 }
@@ -1749,7 +1749,7 @@ void LibraryWindow::asignNumbers()
 void LibraryWindow::openContainingFolderComic()
 {
 QModelIndex modelIndex = comicsView->currentIndex();
-QFileInfo file = QDir::cleanPath(currentPath() + dmCV->getComicPath(modelIndex)); 
+QFileInfo file = QDir::cleanPath(currentPath() + comicsModel->getComicPath(modelIndex));
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
 	QString path = file.absolutePath();
 	QDesktopServices::openUrl(QUrl("file:///"+path, QUrl::TolerantMode));
@@ -1781,7 +1781,7 @@ void LibraryWindow::openContainingFolder()
 	QModelIndex modelIndex = foldersView->currentIndex();
     QString path;
     if(modelIndex.isValid())
-        path = QDir::cleanPath(currentPath() + dm->getFolderPath(modelIndex));
+        path = QDir::cleanPath(currentPath() + foldersModel->getFolderPath(modelIndex));
     else
         path = QDir::cleanPath(currentPath());
     QDesktopServices::openUrl(QUrl("file:///"+path, QUrl::TolerantMode));
@@ -1789,22 +1789,22 @@ void LibraryWindow::openContainingFolder()
 
 void LibraryWindow::setFolderAsNotCompleted()
 {
-    dm->updateFolderCompletedStatus(foldersView->selectionModel()->selectedRows(),false);
+    foldersModel->updateFolderCompletedStatus(foldersView->selectionModel()->selectedRows(),false);
 }
 
 void LibraryWindow::setFolderAsCompleted()
 {
-    dm->updateFolderCompletedStatus(foldersView->selectionModel()->selectedRows(),true);
+    foldersModel->updateFolderCompletedStatus(foldersView->selectionModel()->selectedRows(),true);
 }
 
 void LibraryWindow::setFolderAsRead()
 {
-    dm->updateFolderFinishedStatus(foldersView->selectionModel()->selectedRows(),true);
+    foldersModel->updateFolderFinishedStatus(foldersView->selectionModel()->selectedRows(),true);
 }
 
 void LibraryWindow::setFolderAsUnread()
 {
-   dm->updateFolderFinishedStatus(foldersView->selectionModel()->selectedRows(),false);
+   foldersModel->updateFolderFinishedStatus(foldersView->selectionModel()->selectedRows(),false);
 }
 
 void LibraryWindow::exportLibrary(QString destPath)
@@ -1949,7 +1949,7 @@ void LibraryWindow::deleteComics()
 
 		QModelIndexList indexList = getSelectedComics();
 
-		QList<ComicDB> comics = dmCV->getComics(indexList);
+        QList<ComicDB> comics = comicsModel->getComics(indexList);
 
 		QList<QString> paths;
 		QString libraryPath = currentPath();
@@ -1964,11 +1964,11 @@ void LibraryWindow::deleteComics()
 		ComicsRemover * remover = new ComicsRemover(indexList,paths);
 
         //comicsView->showDeleteProgress();
-		dmCV->startTransaction();
+        comicsModel->startTransaction();
 
-		connect(remover, SIGNAL(remove(int)), dmCV, SLOT(remove(int)));        
+        connect(remover, SIGNAL(remove(int)), comicsModel, SLOT(remove(int)));
 		connect(remover,SIGNAL(removeError()),this,SLOT(setRemoveError()));
-		connect(remover, SIGNAL(finished()), dmCV, SLOT(finishTransaction()));
+        connect(remover, SIGNAL(finished()), comicsModel, SLOT(finishTransaction()));
         //connect(remover, SIGNAL(finished()), comicsView, SLOT(hideDeleteProgress()));
 		connect(remover, SIGNAL(finished()),this,SLOT(checkEmptyFolder()));
 		connect(remover, SIGNAL(finished()),this,SLOT(checkRemoveError()));
@@ -2075,6 +2075,6 @@ void LibraryWindow::updateComicsView(quint64 libraryId, const ComicDB & comic)
 {
 	//TODO comprobar la biblioteca....
     if(libraryId == selectedLibrary->currentIndex()) {
-		dmCV->reload(comic);
+        comicsModel->reload(comic);
 	}
 }
