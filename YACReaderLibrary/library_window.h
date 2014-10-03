@@ -91,7 +91,7 @@ private:
 	QSize slideSizeF;
 	//search filter
 	YACReaderSearchLineEdit * foldersFilter;
-	TreeItem * index; //index al que hay que hacer scroll después de pulsar sobre un folder filtrado
+	TreeItem * index; //index al que hay que hacer scroll despuï¿½s de pulsar sobre un folder filtrado
 	int column;
 	QString previousFilter;
 	QPushButton * clearFoldersFilter;
@@ -107,8 +107,8 @@ private:
 
 	YACReaderTreeView * foldersView;
 	YACReaderLibraryListWidget * selectedLibrary;
-	TreeModel * dm;
-	TableModel * dmCV;
+    TreeModel * foldersModel;
+    TableModel * comicsModel;
 	//QStringList paths;
 	YACReaderLibraries libraries;
 
@@ -276,7 +276,7 @@ public slots:
     void toggleFullScreen();
     void toNormal();
     void toFullScreen();
-    void setFoldersFilter(QString filter);
+    void setSearchFilter(QString filter);
     void showProperties();
     void exportLibrary(QString destPath);
     void importLibrary(QString clc,QString destPath,QString name);
