@@ -19,6 +19,7 @@
         <file>../images/flow_to_grid.gif</file>
         <file>../images/grid_to_flow.gif</file>
         <file>../images/empty_folder.png</file>
+        <file>../images/empty_search.png</file>
         <file alias="images/iconSearch.png">../images/iconSearchNew.png</file>
         <file alias="images/clearSearch.png">../images/clearSearchNew.png</file>
     </qresource>

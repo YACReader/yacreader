@@ -116,6 +116,7 @@ signals:
 	void beforeReset();
 	void reset();
     void isEmpty();
+    void searchNumResults(int);
 };
 //! [0]
 

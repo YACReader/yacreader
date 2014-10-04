@@ -28,6 +28,7 @@ public:
     void updateConfig(QSettings * settings);
     void setItemActions(const QList<QAction *> & actions);
     void setViewActions(const QList<QAction *> & actions);
+    void enableFilterMode(bool enabled);
 
     QSize sizeHint();
 signals:

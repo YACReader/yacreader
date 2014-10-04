@@ -32,6 +32,7 @@ public:
     virtual void setItemActions(const QList<QAction *> & actions) = 0;
     //actions for visual-oriented views
     virtual void setViewActions(const QList<QAction *> & actions) = 0;
+    virtual void enableFilterMode(bool enabled) = 0;
 
 signals:
     void selected(unsigned int);

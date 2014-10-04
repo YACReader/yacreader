@@ -6,7 +6,7 @@
 #include "QsLog.h"
 
 ClassicComicsView::ClassicComicsView(QWidget *parent)
-    :ComicsView(parent)
+    :ComicsView(parent),searching(false)
 {
     QHBoxLayout * layout = new QHBoxLayout;
 
@@ -74,7 +74,9 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
 #endif
 
     if(settings->contains(COMICS_VIEW_FLOW_SPLITTER_STATUS))
-    sVertical->restoreState(settings->value(COMICS_VIEW_FLOW_SPLITTER_STATUS).toByteArray());
+        sVertical->restoreState(settings->value(COMICS_VIEW_FLOW_SPLITTER_STATUS).toByteArray());
+
+    setupSearchingIcon();
 }
 
 void ClassicComicsView::setToolBar(QToolBar *toolBar)
@@ -192,6 +194,29 @@ void ClassicComicsView::setViewActions(const QList<QAction *> &actions)
     comicFlow->addActions(actions);
 }
 
+void ClassicComicsView::enableFilterMode(bool enabled)
+{
+    if(enabled)
+    {
+        comicFlow->clear();
+        comicFlow->setMinimumHeight(150);
+        if(previousSplitterStatus.isEmpty())
+            previousSplitterStatus = sVertical->saveState();
+        sVertical->setSizes(QList<int> () << 150 << 10000000);
+        showSearchingIcon();
+    }else
+    {
+        searchingIcon->setHidden(true);
+        comicFlow->setMinimumHeight(0);
+
+        sVertical->restoreState(previousSplitterStatus);
+        previousSplitterStatus.clear();
+    }
+
+    //sVertical->setCollapsible(0,!enabled);
+    searching = enabled;
+}
+
 void ClassicComicsView::selectAll()
 {
     tableView->selectAll();
@@ -222,7 +247,8 @@ void ClassicComicsView::saveTableHeadersStatus()
 
 void ClassicComicsView::saveSplitterStatus()
 {
-    settings->setValue(COMICS_VIEW_FLOW_SPLITTER_STATUS, sVertical->saveState());
+    if(!searching)
+        settings->setValue(COMICS_VIEW_FLOW_SPLITTER_STATUS, sVertical->saveState());
 }
 
 void ClassicComicsView::applyModelChanges(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
@@ -248,5 +274,30 @@ void ClassicComicsView::closeEvent(QCloseEvent *event)
     saveTableHeadersStatus();
     saveSplitterStatus();
     ComicsView::closeEvent(event);
+}
+
+void ClassicComicsView::setupSearchingIcon()
+{
+    searchingIcon = new QWidget(comicFlow);
+
+    QPixmap p(":/images/searching_icon.png");
+    QLabel * l = new QLabel(searchingIcon);
+    l->setPixmap(p);
+
+    searchingIcon->setFixedSize(p.size());
+
+    hideSearchingIcon();
+}
+
+void ClassicComicsView::showSearchingIcon()
+{
+    searchingIcon->move((comicFlow->width()-searchingIcon->width())/2,(comicFlow->height()-searchingIcon->height())/2);
+
+    searchingIcon->setHidden(false);
+}
+
+void ClassicComicsView::hideSearchingIcon()
+{
+    searchingIcon->setHidden(true);
 }
 

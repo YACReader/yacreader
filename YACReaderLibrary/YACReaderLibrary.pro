@@ -118,7 +118,8 @@ HEADERS += comic_flow.h \
         ../common/exit_check.h \
     comics_view.h \
     classic_comics_view.h \
-    empty_folder_widget.h
+    empty_folder_widget.h \
+    no_search_results_widget.h
 
 		   
 SOURCES += comic_flow.cpp \
@@ -165,7 +166,8 @@ SOURCES += comic_flow.cpp \
 	../common/exit_check.cpp \
     comics_view.cpp \
     classic_comics_view.cpp \
-    empty_folder_widget.cpp
+    empty_folder_widget.cpp \
+    no_search_results_widget.cpp
 
 			
 		   
