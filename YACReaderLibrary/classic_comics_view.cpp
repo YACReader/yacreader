@@ -72,6 +72,9 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
 #ifdef Q_OS_MAC
     sVertical->setCollapsible(1,false);
 #endif
+
+    if(settings->contains(COMICS_VIEW_FLOW_SPLITTER_STATUS))
+    sVertical->restoreState(settings->value(COMICS_VIEW_FLOW_SPLITTER_STATUS).toByteArray());
 }
 
 void ClassicComicsView::setToolBar(QToolBar *toolBar)
@@ -217,6 +220,11 @@ void ClassicComicsView::saveTableHeadersStatus()
     settings->setValue(COMICS_VIEW_HEADERS,tableView->horizontalHeader()->saveState());
 }
 
+void ClassicComicsView::saveSplitterStatus()
+{
+    settings->setValue(COMICS_VIEW_FLOW_SPLITTER_STATUS, sVertical->saveState());
+}
+
 void ClassicComicsView::applyModelChanges(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
 {
     Q_UNUSED(topLeft);
@@ -238,6 +246,7 @@ void ClassicComicsView::removeItemsFromFlow(const QModelIndex &parent, int from,
 void ClassicComicsView::closeEvent(QCloseEvent *event)
 {
     saveTableHeadersStatus();
+    saveSplitterStatus();
     ComicsView::closeEvent(event);
 }
 

@@ -33,6 +33,7 @@ public slots:
     void centerComicFlow(const QModelIndex & mi);
     void updateTableView(int i);
     void saveTableHeadersStatus();
+    void saveSplitterStatus();
     void applyModelChanges(const QModelIndex & topLeft,const QModelIndex & bottomRight,const QVector<int> & roles);
     void removeItemsFromFlow(const QModelIndex & parent, int from, int to);
     //ComicsView
