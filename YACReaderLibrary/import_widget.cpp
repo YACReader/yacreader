@@ -118,6 +118,9 @@ ImportWidget::ImportWidget(QWidget *parent) :
 	coversViewContainer = new QWidget(this);
 	QVBoxLayout * coversViewLayout = new QVBoxLayout;
 	coversViewContainer->setLayout(coversViewLayout);
+    coversViewContainer->setMaximumHeight(316);
+    coversViewContainer->setSizePolicy(QSizePolicy::Ignored,QSizePolicy::Maximum);
+
 	coversView = new QGraphicsView();
 	//coversView->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
 	coversView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
