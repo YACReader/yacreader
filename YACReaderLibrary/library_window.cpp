@@ -104,7 +104,7 @@ void LibraryWindow::setupUI()
 	libraryCreator = new LibraryCreator();
 	packageManager = new PackageManager();
 
-	settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+	settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creaciÃ³n del fichero de config con el servidor
 	settings->beginGroup("libraryConfig");
 
 	createActions();
@@ -1048,7 +1048,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 		QString path=libraries.getPath(name)+"/.yacreaderlibrary";
 		QDir d; //TODO change this by static methods (utils class?? with delTree for example)
 		QString dbVersion;
-		if(d.exists(path) && d.exists(path+"/library.ydb") && (dbVersion = DataBaseManagement::checkValidDB(path+"/library.ydb")) != "") //si existe en disco la biblioteca seleccionada, y es válida..
+		if(d.exists(path) && d.exists(path+"/library.ydb") && (dbVersion = DataBaseManagement::checkValidDB(path+"/library.ydb")) != "") //si existe en disco la biblioteca seleccionada, y es vÃ¡lida..
 		{
 			int comparation = DataBaseManagement::compareVersions(dbVersion,VERSION);
 			bool updated = false;
@@ -1066,13 +1066,13 @@ void LibraryWindow::loadLibrary(const QString & name)
                         comicsView->setModel(NULL);
 						foldersView->setModel(NULL);
 						disableAllActions();//TODO comprobar que se deben deshabilitar
-						//será possible renombrar y borrar estas bibliotecas
+						//serÃ¡ possible renombrar y borrar estas bibliotecas
 						renameLibraryAction->setEnabled(true);
 						removeLibraryAction->setEnabled(true);
 					}
 				}
 
-			if(comparation == 0 || updated) //en caso de que la versión se igual que la actual
+			if(comparation == 0 || updated) //en caso de que la versiÃ³n se igual que la actual
 			{
 				index = 0;
 
@@ -1086,7 +1086,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 
 				d.setCurrent(libraries.getPath(name));
 				d.setFilter(QDir::AllDirs | QDir::Files | QDir::Hidden | QDir::NoSymLinks | QDir::NoDotAndDotDot);
-				if(d.count()<=1) //librería de sólo lectura
+				if(d.count()<=1) //librerÃ­a de sÃ³lo lectura
 				{
 					//QMessageBox::critical(NULL,QString::number(d.count()),QString::number(d.count()));
 					disableLibrariesActions(false);
@@ -1097,14 +1097,14 @@ void LibraryWindow::loadLibrary(const QString & name)
 
 					importedCovers = true;
 				}
-				else //librería normal abierta
+				else //librerÃ­a normal abierta
 				{
 					disableLibrariesActions(false);
 					importedCovers = false;
 				}
 
 				setRootIndex();
-				//TODO encontrar el bug que provoca que no se carguen adecuadamente las carátulas en root.
+				//TODO encontrar el bug que provoca que no se carguen adecuadamente las carÃ¡tulas en root.
 				setRootIndex();
 
 				foldersFilter->clear();
@@ -1118,7 +1118,7 @@ void LibraryWindow::loadLibrary(const QString & name)
                     comicsView->setModel(NULL);
 					foldersView->setModel(NULL);
 					disableAllActions();//TODO comprobar que se deben deshabilitar
-					//será possible renombrar y borrar estas bibliotecas
+					//serÃ¡ possible renombrar y borrar estas bibliotecas
 					renameLibraryAction->setEnabled(true);
 					removeLibraryAction->setEnabled(true);
 			}
@@ -1129,7 +1129,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 			foldersView->setModel(NULL);
 			disableAllActions();//TODO comprobar que se deben deshabilitar
 
-			//si la librería no existe en disco, se ofrece al usuario la posibiliad de eliminarla
+			//si la librerÃ­a no existe en disco, se ofrece al usuario la posibiliad de eliminarla
 			if(!d.exists(path))
 			{
 				QString currentLibrary = selectedLibrary->currentText();
@@ -1137,19 +1137,19 @@ void LibraryWindow::loadLibrary(const QString & name)
 				{
 					deleteCurrentLibrary();
 				}
-				//será possible renombrar y borrar estas bibliotecas
+				//serÃ¡ possible renombrar y borrar estas bibliotecas
 				renameLibraryAction->setEnabled(true);
 				removeLibraryAction->setEnabled(true);
 
 			}
-			else//si existe el path, puede ser que la librería sea alguna versión pre-5.0 ó que esté corrupta o que no haya drivers sql
+			else//si existe el path, puede ser que la librerÃ­a sea alguna versiÃ³n pre-5.0 Ã³ que estÃ© corrupta o que no haya drivers sql
 			{
 				
 				if(d.exists(path+"/library.ydb"))
 				{
 					QSqlDatabase db = DataBaseManagement::loadDatabase(path);
 					manageOpeningLibraryError(db.lastError().databaseText() + "-" + db.lastError().driverText());
-					//será possible renombrar y borrar estas bibliotecas
+					//serÃ¡ possible renombrar y borrar estas bibliotecas
 					renameLibraryAction->setEnabled(true);
 					removeLibraryAction->setEnabled(true);
 				}
@@ -1165,7 +1165,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 						createLibraryDialog->setDataAndStart(currentLibrary,path);
 						//create(path,path+"/.yacreaderlibrary",currentLibrary);
 					}
-					//será possible renombrar y borrar estas bibliotecas
+					//serÃ¡ possible renombrar y borrar estas bibliotecas
 					renameLibraryAction->setEnabled(true);
 					removeLibraryAction->setEnabled(true);
 				}
@@ -1592,13 +1592,17 @@ void LibraryWindow::setSearchFilter(QString filter)
 			foldersView->scrollTo(mi,QAbstractItemView::PositionAtTop);
 			updateHistory(mi);
 			foldersView->setCurrentIndex(mi);
+
 		}
+
+        reloadCovers();
 	}
 	else
 	{
 		if(!filter.isEmpty())
 		{
             foldersModel->setFilter(filter, true);//includeComicsCheckBox->isChecked());
+            comicsModel->setupModelData(filter, foldersModel->getDatabase());
 			foldersView->expandAll();
 		}
 	}
@@ -1926,7 +1930,7 @@ bool lessThanModelIndexRow(const QModelIndex & m1, const QModelIndex & m2)
 
 QModelIndexList LibraryWindow::getSelectedComics()
 {
-	//se fuerza a que haya almenos una fila seleccionada TODO comprobar se se puede forzar a la tabla a que lo haga automáticamente
+	//se fuerza a que haya almenos una fila seleccionada TODO comprobar se se puede forzar a la tabla a que lo haga automÃ¡ticamente
     //avoid selection.count()==0 forcing selection in comicsView
     QModelIndexList selection = comicsView->selectionModel()->selectedRows();
     QLOG_INFO() << "selection count " << selection.length();
