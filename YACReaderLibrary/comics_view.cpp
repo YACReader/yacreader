@@ -7,5 +7,5 @@ ComicsView::ComicsView(QWidget *parent) :
 
 void ComicsView::setModel(TableModel *m)
 {
-   model = m;
+    model = m;
 }

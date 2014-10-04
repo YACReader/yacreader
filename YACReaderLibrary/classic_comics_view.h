@@ -28,6 +28,7 @@ public:
     void updateConfig(QSettings * settings);
     void setItemActions(const QList<QAction *> & actions);
     void setViewActions(const QList<QAction *> & actions);
+    void enableFilterMode(bool enabled);
 
 public slots:
     void centerComicFlow(const QModelIndex & mi);
@@ -47,6 +48,13 @@ private:
     ComicFlowWidget * comicFlow;
     QSettings * settings;
     void closeEvent ( QCloseEvent * event );
+
+    QByteArray previousSplitterStatus;
+    QWidget * searchingIcon;
+    bool searching;
+    void setupSearchingIcon();
+    void showSearchingIcon();
+    void hideSearchingIcon();
 };
 
 #endif // CLASSIC_COMICS_VIEW_H

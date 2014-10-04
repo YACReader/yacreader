@@ -68,6 +68,8 @@
 #include "edit_shortcuts_dialog.h"
 #include "shortcuts_manager.h"
 
+#include "no_search_results_widget.h"
+
 #include "QsLog.h"
 
 #ifdef Q_OS_WIN
@@ -175,7 +177,7 @@ void LibraryWindow::doLayout()
 
     //FOLDERS FILTER-------------------------------------------------------------
     //---------------------------------------------------------------------------
-    foldersFilter = new YACReaderSearchLineEdit();
+    searchEdit = new YACReaderSearchLineEdit();
 
     //SIDEBAR--------------------------------------------------------------------
 	//---------------------------------------------------------------------------
@@ -214,6 +216,7 @@ void LibraryWindow::doLayout()
     comicsView->setToolBar(editInfoToolBar);
     comicsViewStack->addWidget(comicsViewTransition = new ComicsViewTransition());
     comicsViewStack->addWidget(emptyFolderWidget = new EmptyFolderWidget());
+    comicsViewStack->addWidget(noSearchResultsWidget = new NoSearchResultsWidget());
     comicsViewStack->addWidget(comicsView);
 
     comicsViewStack->setCurrentWidget(comicsView);
@@ -767,7 +770,7 @@ void LibraryWindow::createToolBars()
 	libraryToolBar->helpButton->setDefaultAction(helpAboutAction);
     libraryToolBar->toggleComicsViewButton->setDefaultAction(toggleComicsViewAction);
 	libraryToolBar->fullscreenButton->setDefaultAction(toggleFullScreenAction);
-    libraryToolBar->setSearchWidget(foldersFilter);
+    libraryToolBar->setSearchWidget(searchEdit);
 #endif
 
 	editInfoToolBar->setIconSize(QSize(18,18));
@@ -1000,7 +1003,7 @@ void LibraryWindow::createConnections()
 
 	//Folders filter
 	//connect(clearFoldersFilter,SIGNAL(clicked()),foldersFilter,SLOT(clear()));
-    connect(foldersFilter,SIGNAL(textChanged(QString)),this,SLOT(setSearchFilter(QString)));
+    connect(searchEdit,SIGNAL(textChanged(QString)),this,SLOT(setSearchFilter(QString)));
 	//connect(includeComicsCheckBox,SIGNAL(stateChanged(int)),this,SLOT(searchInFiles(int)));
 
 	//ContextMenus
@@ -1029,6 +1032,7 @@ void LibraryWindow::createConnections()
     connect(comicsViewTransition,SIGNAL(transitionFinished()),this,SLOT(showComicsView()));
 
     connect(comicsModel,SIGNAL(isEmpty()),this,SLOT(showEmptyFolderView()));
+    connect(comicsModel,SIGNAL(searchNumResults(int)),this,SLOT(checkSearchNumResults(int)));
     connect(emptyFolderWidget,SIGNAL(subfolderSelected(QModelIndex,int)),this,SLOT(selectSubfolder(QModelIndex,int)));
 
     connect(showEditShortcutsAction,SIGNAL(triggered()),editShortcutsDialog,SLOT(show()));
@@ -1107,7 +1111,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 				//TODO encontrar el bug que provoca que no se carguen adecuadamente las carátulas en root.
 				setRootIndex();
 
-				foldersFilter->clear();
+                searchEdit->clear();
 			}
 			else if(comparation > 0)
 			{
@@ -1197,14 +1201,14 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 
 
 	//cambiado de orden, ya que al llamar a foldersFilter->clear() se invalidan los model index
-	if(foldersFilter->text()!="")
+    if(searchEdit->text()!="")
 	{
 		//setFoldersFilter("");
 		if(mi.isValid())
 		{
 			index = static_cast<TreeItem *>(mi.internalPointer())->originalItem;
 			column = mi.column();
-			foldersFilter->clear();
+            searchEdit->clear();
 		}
 	}
 	else
@@ -1227,6 +1231,16 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
     }
     else
         emptyFolderWidget->setSubfolders(mi,foldersModel->getSubfoldersNames(mi));
+}
+
+void LibraryWindow::loadCoversFromCurrentModel()
+{
+    comicsView->setModel(comicsModel);
+    QStringList paths = comicsModel->getPaths(currentPath());
+
+    if(paths.size()>0) {
+        comicsView->setCurrentIndex(comicsModel->index(0,0));
+    }
 }
 
 void LibraryWindow::selectSubfolder(const QModelIndex &mi, int child)
@@ -1259,6 +1273,13 @@ void LibraryWindow::checkEmptyFolder(QStringList * paths)
 
 void LibraryWindow::reloadCovers()
 {
+    //comics view switch when filter/search is enabled
+    if(!searchEdit->text().isEmpty())
+    {
+       loadCoversFromCurrentModel();
+        return;
+    }
+
     if(foldersView->selectionModel()->selectedRows().length()>0)
         loadCovers(foldersView->currentIndex());
     else
@@ -1585,6 +1606,7 @@ void LibraryWindow::setSearchFilter(QString filter)
     if(filter.isEmpty() && foldersModel->isFilterEnabled())
 	{
         foldersModel->resetFilter();
+        comicsView->enableFilterMode(false);
 		//foldersView->collapseAll();
 		if(index != 0)
 		{
@@ -1603,6 +1625,7 @@ void LibraryWindow::setSearchFilter(QString filter)
 		{
             foldersModel->setFilter(filter, true);//includeComicsCheckBox->isChecked());
             comicsModel->setupModelData(filter, foldersModel->getDatabase());
+            comicsView->enableFilterMode(true);
 			foldersView->expandAll();
 		}
 	}
@@ -1720,6 +1743,11 @@ void LibraryWindow::showEmptyFolderView()
     comicsViewStack->setCurrentWidget(emptyFolderWidget);
 }
 
+void LibraryWindow::showNoSearchResultsView()
+{
+    comicsViewStack->setCurrentWidget(noSearchResultsWidget);
+}
+
 //TODO recover the current comics selection and restore it in the destination
 void LibraryWindow::toggleComicsView()
 {
@@ -1728,6 +1756,14 @@ void LibraryWindow::toggleComicsView()
         QTimer::singleShot(32,this,SLOT(toggleComicsView_delayed()));
     } else
         toggleComicsView_delayed();
+}
+
+void LibraryWindow::checkSearchNumResults(int numResults)
+{
+    if(numResults == 0)
+        showNoSearchResultsView();
+    else
+        showComicsView();
 }
 
 void LibraryWindow::asignNumbers()
@@ -1888,14 +1924,14 @@ void LibraryWindow::closeEvent ( QCloseEvent * event )
 void LibraryWindow::showNoLibrariesWidget()
 {
 	disableAllActions();
-	foldersFilter->setDisabled(true);
+    searchEdit->setDisabled(true);
 	mainWidget->setCurrentIndex(1);
 }
 
 void LibraryWindow::showRootWidget()
 {
 	libraryToolBar->setDisabled(false);
-	foldersFilter->setEnabled(true);
+    searchEdit->setEnabled(true);
 	mainWidget->setCurrentIndex(0);
 }
 
@@ -1904,7 +1940,7 @@ void LibraryWindow::showImportingWidget()
 	disableAllActions();
 	importWidget->clear();
 	libraryToolBar->setDisabled(true);
-	foldersFilter->setDisabled(true);
+    searchEdit->setDisabled(true);
 	mainWidget->setCurrentIndex(2);
 }
 

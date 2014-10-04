@@ -54,6 +54,7 @@ class ClassicComicsView;
 class GridComicsView;
 class ComicsViewTransition;
 class EmptyFolderWidget;
+class NoSearchResultsWidget;
 class EditShortcutsDialog;
 
 #include "comic_db.h"
@@ -90,11 +91,10 @@ private:
 	QSize slideSizeW;
 	QSize slideSizeF;
 	//search filter
-	YACReaderSearchLineEdit * foldersFilter;
+    YACReaderSearchLineEdit * searchEdit;
 	TreeItem * index; //index al que hay que hacer scroll despu�s de pulsar sobre un folder filtrado
 	int column;
 	QString previousFilter;
-	QPushButton * clearFoldersFilter;
 	QCheckBox * includeComicsCheckBox;
 	//-------------
 
@@ -104,6 +104,7 @@ private:
     QStackedWidget * comicsViewStack;
     ComicsViewTransition * comicsViewTransition;
     EmptyFolderWidget * emptyFolderWidget;
+    NoSearchResultsWidget * noSearchResultsWidget;
 
 	YACReaderTreeView * foldersView;
 	YACReaderLibraryListWidget * selectedLibrary;
@@ -314,7 +315,10 @@ public slots:
     void toggleComicsView_delayed();//used in orther to avoid flickering;
     void showComicsView();
     void showEmptyFolderView();
+    void showNoSearchResultsView();
     void toggleComicsView();
+    void checkSearchNumResults(int numResults);
+    void loadCoversFromCurrentModel();
 };
 
 #endif

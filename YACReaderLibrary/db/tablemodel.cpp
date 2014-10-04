@@ -346,8 +346,7 @@ void TableModel::setupModelData(const QString &filter, const QString &databasePa
     QSqlDatabase::removeDatabase(_databasePath);
     endResetModel();
 
-    if(_data.length()==0)
-        emit isEmpty();
+    emit searchNumResults(_data.length());
 }
 
 QString TableModel::getComicPath(QModelIndex mi)
