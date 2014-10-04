@@ -11,7 +11,7 @@
 #include "db_helper.h"
 
 //ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read
-
+#include "QsLog.h"
 
 
 TableModel::TableModel(QObject *parent)
@@ -291,19 +291,60 @@ void TableModel::setupModelData(unsigned long long int folderId,const QString & 
 	{
 	//crear la consulta
 	//timer.restart();
-	QSqlQuery selectQuery(db); //TODO check
+    QSqlQuery selectQuery(db);
 	selectQuery.prepare("select ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened from comic c inner join comic_info ci on (c.comicInfoId = ci.id) where c.parentId = :parentId");
 	selectQuery.bindValue(":parentId", folderId);
 	selectQuery.exec();
 	//txtS << "TABLEMODEL: Tiempo de consulta: " << timer.elapsed() << "ms\r\n";
 	//timer.restart();
 	setupModelData(selectQuery);
-	//txtS << "TABLEMODEL: Tiempo de creaci�n del modelo: " << timer.elapsed() << "ms\r\n";
+	//txtS << "TABLEMODEL: Tiempo de creaciï¿½n del modelo: " << timer.elapsed() << "ms\r\n";
 	//selectQuery.finish();
 	}
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
 	endResetModel();
+
+    if(_data.length()==0)
+        emit isEmpty();
+}
+
+void TableModel::setupModelData(const QString &filter, const QString &databasePath)
+{
+    //QFile f(QCoreApplication::applicationDirPath()+"/performance.txt");
+    //f.open(QIODevice::Append);
+    beginResetModel();
+    //QElapsedTimer timer;
+    //timer.start();
+    qDeleteAll(_data);
+    _data.clear();
+
+    //QTextStream txtS(&f);
+    //txtS << "TABLEMODEL: Tiempo de borrado: " << timer.elapsed() << "ms\r\n";
+    _databasePath = databasePath;
+    QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+    {
+    //crear la consulta
+    //timer.restart();
+    QSqlQuery selectQuery(db);
+    selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
+                        "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                         "WHERE UPPER(ci.title) LIKE UPPER(:filter) OR UPPER(c.fileName) LIKE UPPER(:filter) LIMIT :limit");
+    selectQuery.bindValue(":filter", "%%"+filter+"%%");
+    selectQuery.bindValue(":limit",500); //TODO, load this value from settings
+    selectQuery.exec();
+
+    QLOG_DEBUG() << selectQuery.lastError() << "--";
+
+    //txtS << "TABLEMODEL: Tiempo de consulta: " << timer.elapsed() << "ms\r\n";
+    //timer.restart();
+    setupModelData(selectQuery);
+    //txtS << "TABLEMODEL: Tiempo de creaciï¿½n del modelo: " << timer.elapsed() << "ms\r\n";
+    //selectQuery.finish();
+    }
+    db.close();
+    QSqlDatabase::removeDatabase(_databasePath);
+    endResetModel();
 
     if(_data.length()==0)
         emit isEmpty();
@@ -373,7 +414,7 @@ void TableModel::setupModelData(QSqlQuery &sqlquery)
 				}
 
 			}
-			if(!lessThan) //si se ha encontrado un elemento menor que current, se inserta justo despu�s
+			if(!lessThan) //si se ha encontrado un elemento menor que current, se inserta justo despuï¿½s
 			{
 				if(numberCurrent != max)
 				{

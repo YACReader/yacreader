@@ -35,21 +35,23 @@ public:
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const;
 	void setupModelData(unsigned long long int parentFolder,const QString & databasePath);
+    //configures the model for showing the comics matching the filter criteria.
+    void setupModelData(const QString & filter, const QString & databasePath);
 
-	//M閠odos de conveniencia
+	//M茅todos de conveniencia
 	QStringList getPaths(const QString & _source);
 	QString getComicPath(QModelIndex mi);
     QString getCurrentPath(){return QString(_databasePath).remove("/.yacreaderlibrary");};
-	ComicDB getComic(const QModelIndex & mi); //--> para la edici髇
+	ComicDB getComic(const QModelIndex & mi); //--> para la edici贸n
     //ComicDB getComic(int row);
 	QVector<YACReaderComicReadStatus> getReadList();
 	QVector<YACReaderComicReadStatus> setAllComicsRead(YACReaderComicReadStatus readStatus);
-	QList<ComicDB> getComics(QList<QModelIndex> list); //--> recupera la informaci髇 com鷑 a los comics seleccionados
+	QList<ComicDB> getComics(QList<QModelIndex> list); //--> recupera la informaci贸n com煤n a los comics seleccionados
 	QList<ComicDB> getAllComics();
 	QModelIndex getIndexFromId(quint64 id);
 	//setcomicInfo(QModelIndex & mi); --> inserta en la base datos
-	//setComicInfoForAllComics(); --> inserta la informaci髇 com鷑 a todos los c髆ics de una sola vez.
-	//setComicInfoForSelectedComis(QList<QModelIndex> list); -->inserta la informaci髇 com鷑 para los comics seleccionados
+	//setComicInfoForAllComics(); --> inserta la informaci贸n com煤n a todos los c贸mics de una sola vez.
+	//setComicInfoForSelectedComis(QList<QModelIndex> list); -->inserta la informaci贸n com煤n para los comics seleccionados
 	QVector<YACReaderComicReadStatus> setComicsRead(QList<QModelIndex> list,YACReaderComicReadStatus read);
 	qint64 asignNumbers(QList<QModelIndex> list,int startingNumber);
 	void remove(ComicDB * comic, int row);
