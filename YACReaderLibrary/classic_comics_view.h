@@ -11,6 +11,7 @@ class QSplitter;
 class ComicFlowWidget;
 class QToolBar;
 class TableModel;
+class QStackedWidget;
 
 class ClassicComicsView : public ComicsView
 {
@@ -49,12 +50,15 @@ private:
     QSettings * settings;
     void closeEvent ( QCloseEvent * event );
 
+    QStackedWidget * stack;
+
     QByteArray previousSplitterStatus;
     QWidget * searchingIcon;
     bool searching;
     void setupSearchingIcon();
     void showSearchingIcon();
     void hideSearchingIcon();
+    void updateSearchingIconPosition();
 };
 
 #endif // CLASSIC_COMICS_VIEW_H
