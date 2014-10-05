@@ -1277,7 +1277,8 @@ void LibraryWindow::reloadCovers()
     if(!searchEdit->text().isEmpty())
     {
        loadCoversFromCurrentModel();
-        return;
+       comicsView->enableFilterMode(true);
+       return;
     }
 
     if(foldersView->selectionModel()->selectedRows().length()>0)
@@ -1627,6 +1628,7 @@ void LibraryWindow::setSearchFilter(QString filter)
             comicsModel->setupModelData(filter, foldersModel->getDatabase());
             comicsView->enableFilterMode(true);
 			foldersView->expandAll();
+            //loadCoversFromCurrentModel();
 		}
 	}
 }

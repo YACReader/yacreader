@@ -5,6 +5,8 @@
 #include "comic_flow_widget.h"
 #include "QsLog.h"
 
+#include "QStackedWidget"
+
 ClassicComicsView::ClassicComicsView(QWidget *parent)
     :ComicsView(parent),searching(false)
 {
@@ -39,7 +41,13 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     //layout-----------------------------------------------
     sVertical = new QSplitter(Qt::Vertical);  //spliter derecha
 
-    sVertical->addWidget(comicFlow);
+    stack = new QStackedWidget;
+    stack->addWidget(comicFlow);
+    setupSearchingIcon();
+    stack->addWidget(searchingIcon);
+
+
+    sVertical->addWidget(stack);
     comics = new QWidget;
     QVBoxLayout * comicsLayout = new QVBoxLayout;
     comicsLayout->setSpacing(0);
@@ -63,7 +71,6 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     connect(tableView, SIGNAL(comicRated(int,QModelIndex)), this, SIGNAL(comicRated(int,QModelIndex)));
     connect(comicFlow, SIGNAL(selected(uint)), this, SIGNAL(selected(uint)));
     connect(tableView->horizontalHeader(), SIGNAL(sectionMoved(int,int,int)), this, SLOT(saveTableHeadersStatus()));
-
     layout->addWidget(sVertical);
     setLayout(layout);
 
@@ -76,7 +83,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     if(settings->contains(COMICS_VIEW_FLOW_SPLITTER_STATUS))
         sVertical->restoreState(settings->value(COMICS_VIEW_FLOW_SPLITTER_STATUS).toByteArray());
 
-    setupSearchingIcon();
+
 }
 
 void ClassicComicsView::setToolBar(QToolBar *toolBar)
@@ -199,16 +206,13 @@ void ClassicComicsView::enableFilterMode(bool enabled)
     if(enabled)
     {
         comicFlow->clear();
-        comicFlow->setMinimumHeight(150);
         if(previousSplitterStatus.isEmpty())
             previousSplitterStatus = sVertical->saveState();
-        sVertical->setSizes(QList<int> () << 150 << 10000000);
+        sVertical->setSizes(QList<int> () << 100 << 10000000);
         showSearchingIcon();
     }else
     {
-        searchingIcon->setHidden(true);
-        comicFlow->setMinimumHeight(0);
-
+        hideSearchingIcon();
         sVertical->restoreState(previousSplitterStatus);
         previousSplitterStatus.clear();
     }
@@ -280,24 +284,30 @@ void ClassicComicsView::setupSearchingIcon()
 {
     searchingIcon = new QWidget(comicFlow);
 
+    QHBoxLayout * h = new QHBoxLayout;
+
     QPixmap p(":/images/searching_icon.png");
     QLabel * l = new QLabel(searchingIcon);
     l->setPixmap(p);
+    l->setFixedSize(p.size());
+    h->addWidget(l,0,Qt::AlignCenter);
+    searchingIcon->setLayout(h);
 
-    searchingIcon->setFixedSize(p.size());
+    QPalette pal(searchingIcon->palette());
+    pal.setColor(QPalette::Background, Qt::black);
+    searchingIcon->setAutoFillBackground(true);
+    searchingIcon->setPalette(pal);
 
     hideSearchingIcon();
 }
 
 void ClassicComicsView::showSearchingIcon()
 {
-    searchingIcon->move((comicFlow->width()-searchingIcon->width())/2,(comicFlow->height()-searchingIcon->height())/2);
-
-    searchingIcon->setHidden(false);
+    stack->setCurrentWidget(searchingIcon);
 }
 
 void ClassicComicsView::hideSearchingIcon()
 {
-    searchingIcon->setHidden(true);
+    stack->setCurrentWidget(comicFlow);
 }
 
