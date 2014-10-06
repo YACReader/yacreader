@@ -58,6 +58,7 @@
 #include "yacreader_treeview.h"
 
 #include "comic_vine_dialog.h"
+#include "api_key_dialog.h"
 //#include "yacreader_social_dialog.h"
 
 #include "classic_comics_view.h"
@@ -1650,17 +1651,30 @@ void LibraryWindow::showProperties()
 
 void LibraryWindow::showComicVineScraper()
 {
-	QModelIndexList indexList = getSelectedComics();
+    QSettings s(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+    s.beginGroup("ComicVine");
 
-    QList<ComicDB> comics = comicsModel->getComics(indexList);
-	ComicDB c = comics[0];
-	_comicIdEdited = c.id;//static_cast<TableItem*>(indexList[0].internalPointer())->data(4).toULongLong();
+    if(!s.contains(COMIC_VINE_API_KEY))
+    {
+        ApiKeyDialog d;
+        d.exec();
+    }
 
-    comicVineDialog->databasePath = foldersModel->getDatabase();
-	comicVineDialog->basePath = currentPath();
-	comicVineDialog->setComics(comics);
+    //check if the api key was inserted
+    if(s.contains(COMIC_VINE_API_KEY))
+    {
+        QModelIndexList indexList = getSelectedComics();
 
-	comicVineDialog->show();
+        QList<ComicDB> comics = comicsModel->getComics(indexList);
+        ComicDB c = comics[0];
+        _comicIdEdited = c.id;//static_cast<TableItem*>(indexList[0].internalPointer())->data(4).toULongLong();
+
+        comicVineDialog->databasePath = foldersModel->getDatabase();
+        comicVineDialog->basePath = currentPath();
+        comicVineDialog->setComics(comics);
+
+        comicVineDialog->show();
+    }
 }
 
 void LibraryWindow::setRemoveError()

@@ -65,6 +65,8 @@
 
 #define LIBRARIES "LIBRARIES"
 
+#define COMIC_VINE_API_KEY "COMIC_VINE_API_KEY"
+
 namespace YACReader
 {
 

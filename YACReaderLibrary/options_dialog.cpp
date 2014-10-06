@@ -3,6 +3,7 @@
 #include "yacreader_flow_gl.h"
 #include "yacreader_flow_config_widget.h"
 #include "yacreader_gl_flow_config_widget.h"
+#include "api_key_dialog.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -42,12 +43,22 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 
     sw->hide();
 
+    QVBoxLayout * apiKeyLayout = new QVBoxLayout();
+    QPushButton * apiKeyButton = new QPushButton(tr("Edit Comic Vine API key"));
+    apiKeyLayout->addWidget(apiKeyButton);
+
+    QGroupBox * apiKeyBox = new QGroupBox(tr("Comic Vine API key"));
+    apiKeyBox->setLayout(apiKeyLayout);
+
+    connect(apiKeyButton,SIGNAL(clicked()),this,SLOT(editApiKey()));
+
     QWidget * comicFlowW = new QWidget;
     comicFlowW->setLayout(flowLayout);
 
     QWidget * generalW = new QWidget;
     generalW->setLayout(generalLayout);
     generalLayout->addWidget(shortcutsBox);
+    generalLayout->addWidget(apiKeyBox);
     generalLayout->addStretch();
 
     tabWidget->addTab(comicFlowW,tr("Comic Flow"));
@@ -63,6 +74,12 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 
     this->layout()->setSizeConstraint(QLayout::SetFixedSize);
 
+}
+
+void OptionsDialog::editApiKey()
+{
+    ApiKeyDialog d;
+    d.exec();
 }
 
 
