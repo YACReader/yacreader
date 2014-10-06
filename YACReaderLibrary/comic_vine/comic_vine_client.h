@@ -4,12 +4,14 @@
 #include "http_worker.h"
 
 #include <QObject>
+#include <QSettings>
 
 class ComicVineClient : public QObject
 {
 	Q_OBJECT
 public:
 	explicit ComicVineClient(QObject *parent = 0);
+    ~ComicVineClient();
 	
 signals:
 	void searchResult(QString);
@@ -36,6 +38,9 @@ protected slots:
 	void proccessSeriesDetailData(const QByteArray & data);
 	void processVolumeComicsInfo(const QByteArray & data);
 	void proccessComicDetailData(const QByteArray & data);
+
+protected:
+    QSettings * settings;
 
 };
 #endif // COMIC_VINE_CLIENT_H

@@ -2,7 +2,8 @@
 
 //this is the API key used by YACReader to access Comic Vine
 //please, do not use it in your own software, get one for free at Comic Vine
-static const QString CV_API_KEY = "46680bebb358f1de690a5a365e15d325f9649f91";
+static const QString CV_API_KEY = "%CV_API_KEY%"; //get from settings
+static const QString CV_API_KEY_DEFAULT = "46680bebb358f1de690a5a365e15d325f9649f91";
 
 static const QString CV_WEB_ADDRESS = "http://www.comicvine.com/api";
 
@@ -43,13 +44,19 @@ static const QString CV_COVER_URL = CV_WEB_ADDRESS + "/issue/4000-%1/?api_key=" 
 ComicVineClient::ComicVineClient(QObject *parent) :
 	QObject(parent)
 {
+    settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+    settings->beginGroup("ComicVine");
+}
 
+ComicVineClient::~ComicVineClient()
+{
+    delete settings;
 }
 
 //CV_SEARCH
 void ComicVineClient::search(const QString & query, int page)
 {
-	HttpWorker * search = new HttpWorker(CV_SEARCH.arg(query).arg(page));
+    HttpWorker * search = new HttpWorker(QString(CV_SEARCH).replace(CV_API_KEY,settings->value(COMIC_VINE_API_KEY,CV_API_KEY_DEFAULT).toString()).arg(query).arg(page));
 	connect(search,SIGNAL(dataReady(const QByteArray &)),this,SLOT(proccessVolumesSearchData(const QByteArray &)));
 	connect(search,SIGNAL(timeout()),this,SIGNAL(timeOut()));
 	connect(search,SIGNAL(finished()),search,SLOT(deleteLater()));
@@ -87,7 +94,7 @@ void ComicVineClient::proccessComicDetailData(const QByteArray &data)
 //CV_SERIES_DETAIL
 void ComicVineClient::getSeriesDetail(const QString & id)
 {
-	HttpWorker * search = new HttpWorker(CV_SERIES_DETAIL.arg(id));
+    HttpWorker * search = new HttpWorker(QString(CV_SERIES_DETAIL).replace(CV_API_KEY,settings->value(COMIC_VINE_API_KEY,CV_API_KEY_DEFAULT).toString()).arg(id));
 	connect(search,SIGNAL(dataReady(const QByteArray &)),this,SLOT(proccessSeriesDetailData(const QByteArray &)));
 	connect(search,SIGNAL(timeout()),this,SIGNAL(timeOut()));
 	connect(search,SIGNAL(finished()),search,SLOT(deleteLater()));
@@ -106,7 +113,7 @@ void ComicVineClient::getSeriesCover(const QString & url)
 //CV_COMIC_IDS
 void ComicVineClient::getVolumeComicsInfo(const QString & idVolume, int page)
 {
-	HttpWorker * search = new HttpWorker(CV_COMICS_INFO.arg(idVolume).arg((page-1)*100)); //page on works for search, using offset instead
+    HttpWorker * search = new HttpWorker(QString(CV_COMICS_INFO).replace(CV_API_KEY,settings->value(COMIC_VINE_API_KEY,CV_API_KEY_DEFAULT).toString()).arg(idVolume).arg((page-1)*100)); //page on works for search, using offset instead
 	connect(search,SIGNAL(dataReady(const QByteArray &)),this,SLOT(processVolumeComicsInfo(const QByteArray &)));
 	connect(search,SIGNAL(timeout()),this,SIGNAL(timeOut())); //TODO
 	connect(search,SIGNAL(finished()),search,SLOT(deleteLater()));
@@ -122,7 +129,7 @@ void ComicVineClient::getComicId(const QString & id, int comicNumber)
 //CV_COMIC_DETAIL
 QByteArray ComicVineClient::getComicDetail(const QString & id, bool & outError, bool & outTimeout)
 {
-	HttpWorker * search = new HttpWorker(CV_COMIC_DETAIL.arg(id));
+    HttpWorker * search = new HttpWorker(QString(CV_COMIC_DETAIL).replace(CV_API_KEY,settings->value(COMIC_VINE_API_KEY,CV_API_KEY_DEFAULT).toString()).arg(id));
 
 	//connect(search,SIGNAL(dataReady(const QByteArray &)),this,SLOT(proccessComicDetailData(const QByteArray &)));
 	//connect(search,SIGNAL(timeout()),this,SIGNAL(timeOut()));
@@ -140,7 +147,7 @@ QByteArray ComicVineClient::getComicDetail(const QString & id, bool & outError, 
 //CV_COMIC_DETAIL
 void ComicVineClient::getComicDetailAsync(const QString & id)
 {
-	HttpWorker * search = new HttpWorker(CV_COMIC_DETAIL.arg(id));
+    HttpWorker * search = new HttpWorker(QString(CV_COMIC_DETAIL).replace(CV_API_KEY,settings->value(COMIC_VINE_API_KEY,CV_API_KEY_DEFAULT).toString()).arg(id));
 
 	connect(search,SIGNAL(dataReady(const QByteArray &)),this,SLOT(proccessComicDetailData(const QByteArray &)));
 	connect(search,SIGNAL(timeout()),this,SIGNAL(timeOut()));

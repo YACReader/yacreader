@@ -4,13 +4,18 @@
 #include <QDebug>
 
 ResponseParser::ResponseParser(QObject *parent) :
-	QObject(parent),error(false),numResults(-1),currentPage(-1),totalPages(-1)
+    QObject(parent),error(false),numResults(-1),currentPage(-1),totalPages(-1),errorTxt("None")
 {
 }
 
 bool ResponseParser::responseError()
 {
-	return error;
+    return error;
+}
+
+QString ResponseParser::errorDescription()
+{
+    return errorTxt;
 }
 
 qint32 ResponseParser::getNumResults()
@@ -25,7 +30,19 @@ qint32 ResponseParser::getCurrentPage()
 
 qint32 ResponseParser::getTotalPages()
 {
-	return totalPages;
+    return totalPages;
+}
+
+bool ResponseParser::isError(qint32 error)
+{
+    switch(error)
+    {
+        case 100:
+            return true;
+
+        default:
+            return false;
+    }
 }
 
 void ResponseParser::loadJSONResponse(const QString &response)
@@ -34,10 +51,15 @@ void ResponseParser::loadJSONResponse(const QString &response)
 	QScriptValue sc;
 	sc = engine.evaluate("(" + response + ")");
 
-	if (!sc.property("error").isValid() && sc.property("error").toString() != "OK")
+    errorTxt = "None";
+
+    if (!sc.property("status_code").isValid() || isError(sc.property("status_code").toInt32()))
 	{
 		error = true;
-		qDebug("Error detected");
+        if(sc.property("error").isValid())
+            errorTxt = sc.property("error").toString();
+        else
+            errorTxt = "Unknown error";
 	}
 	else
 	{

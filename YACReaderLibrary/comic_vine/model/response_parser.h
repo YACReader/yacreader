@@ -9,9 +9,11 @@ class ResponseParser : public QObject
 public:
 	explicit ResponseParser(QObject *parent = 0);
 	bool responseError();
+    QString errorDescription();
 	qint32 getNumResults();
 	qint32 getCurrentPage();
 	qint32 getTotalPages();
+    bool isError(qint32 error);
 signals:
 
 public slots:
@@ -19,6 +21,7 @@ public slots:
 
 protected:
 	bool error;
+    QString errorTxt;
 	qint32 numResults;
 	qint32 currentPage;
 	qint32 totalPages;

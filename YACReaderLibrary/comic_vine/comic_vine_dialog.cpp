@@ -259,7 +259,7 @@ void ComicVineDialog::debugClientResults(const QString & string)
 	//QMessageBox::information(0,"Result", QString("Number of results : %1").arg(p.getNumResults()));
 	if(p.responseError())
 	{
-		QMessageBox::critical(0,tr("Error connecting to ComicVine"), tr("unknown error"));
+        QMessageBox::critical(0,tr("Error connecting to ComicVine"), p.errorDescription());
 		goBack();
 	}
 	else
