@@ -19,6 +19,6 @@ void ComicDownloadInfoController::service(HttpRequest& request, HttpResponse& re
     ComicDB comic = DBHelper::getComicInfo(libraryId, comicId);
 
     //TODO: check if the comic wasn't found;
-    response.writeText(QString("comicName:%1\r\n").arg(comic.getFileName()));
+    response.writeText(QString("fileName:%1\r\n").arg(comic.getFileName()));
     response.writeText(QString("fileSize:%1\r\n").arg(comic.getFileSize()),true);
 }
