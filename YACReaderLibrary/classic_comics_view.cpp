@@ -67,6 +67,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
 
     //connections---------------------------------------------
     connect(tableView, SIGNAL(clicked(QModelIndex)), this, SLOT(centerComicFlow(QModelIndex)));
+    connect(tableView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(selectedComicForOpening(QModelIndex)));
     connect(comicFlow, SIGNAL(centerIndexChanged(int)), this, SLOT(updateTableView(int)));
     connect(tableView, SIGNAL(comicRated(int,QModelIndex)), this, SIGNAL(comicRated(int,QModelIndex)));
     connect(comicFlow, SIGNAL(selected(uint)), this, SIGNAL(selected(uint)));
@@ -224,6 +225,11 @@ void ClassicComicsView::enableFilterMode(bool enabled)
 void ClassicComicsView::selectAll()
 {
     tableView->selectAll();
+}
+
+void ClassicComicsView::selectedComicForOpening(const QModelIndex &mi)
+{
+    emit selected(mi.row());
 }
 
 void ClassicComicsView::setShowMarks(bool show)

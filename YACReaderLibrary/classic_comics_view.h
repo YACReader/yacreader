@@ -41,6 +41,7 @@ public slots:
     //ComicsView
     void setShowMarks(bool show);
     void selectAll();
+    void selectedComicForOpening(const QModelIndex & mi);
 
 private:
     YACReaderTableView * tableView;
