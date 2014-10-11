@@ -56,6 +56,8 @@ class ComicsViewTransition;
 class EmptyFolderWidget;
 class NoSearchResultsWidget;
 class EditShortcutsDialog;
+class ComicFilesManager;
+class QProgressDialog;
 
 #include "comic_db.h"
 
@@ -227,6 +229,7 @@ private:
     //void enableLibraryActions();
 
     QString currentPath();
+    QString currentFolderPath();
 
     //settings
     QSettings * settings;
@@ -319,6 +322,11 @@ public slots:
     void toggleComicsView();
     void checkSearchNumResults(int numResults);
     void loadCoversFromCurrentModel();
+    void copyAndImportComicsToCurrentFolder(const QList<QString> & comics);
+    void moveAndImportComicsToCurrentFolder(const QList<QString> &comics);
+    void processComicFiles(ComicFilesManager * comicFilesManager, QProgressDialog * progressDialog);
+    void updateCurrentFolder(); //imports new comics from the current folder
+    QProgressDialog * newProgressDialog(const QString & label, int maxValue);
 };
 
 #endif

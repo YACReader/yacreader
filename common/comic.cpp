@@ -13,8 +13,11 @@
 #include "compressed_archive.h"
 #include "comic_db.h"
 
-QStringList Comic::extensions = QStringList() << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp";
-QStringList Comic::literalExtensions = QStringList() << ".jpg" << ".jpeg" << ".png" << ".gif" << ".tiff" << ".tif" << ".bmp";
+QStringList Comic::imageExtensions = QStringList() << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp";
+QStringList Comic::literalImageExtensions = QStringList() << "jpg" << "jpeg" << "png" << "gif" << "tiff" << "tif" << "bmp";
+
+QStringList Comic::comicExtensions = QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.7z" << "*.cb7" << "*.arj" << "*.cbt";
+QStringList Comic::literalComicExtensions = QStringList() << "cbr" << "cbz" << "rar" << "zip" << "tar" << "pdf" << "7z" << "cb7" << "arj" << "cbt";
 
 //-----------------------------------------------------------------------------
 Comic::Comic()
@@ -177,7 +180,13 @@ bool Comic::pageIsLoaded(int page)
 {
 	if(page < 0 || page >= _pages.size())
 		return false;
-	return _loadedPages[page];
+    return _loadedPages[page];
+}
+
+bool Comic::fileIsComic(QUrl &path)
+{
+    QFileInfo info(path.toLocalFile());
+    return literalComicExtensions.contains(info.suffix());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -302,7 +311,7 @@ void FileComic::crcError(int index)
 	emit crcErrorFound(tr("CRC error on page (%1): some of the pages will not be displayed correctly").arg(index+1));
 }
 
-//TODO: comprobar que si se produce uno de estos errores, la carga del cómic es irrecuperable
+//TODO: comprobar que si se produce uno de estos errores, la carga del cï¿½mic es irrecuperable
 void FileComic::unknownError(int index)
 {
 	Q_UNUSED(index)
@@ -425,7 +434,7 @@ void FileComic::process()
         return;
     }
 
-	//se filtran para obtener sólo los formatos soportados
+	//se filtran para obtener sï¿½lo los formatos soportados
 	_order = archive.getFileNames();
 	_fileNames = filter(_order);
 
@@ -472,7 +481,7 @@ void FileComic::process()
 		emit imageLoaded(sortedIndex,_pages[sortedIndex]);
 	}*/
 
-	emit imagesLoaded();
+    emit imagesLoaded();
 	//moveToThread(QApplication::instance()->thread());
 }
 

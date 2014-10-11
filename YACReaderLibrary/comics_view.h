@@ -1,13 +1,9 @@
 #ifndef COMICS_VIEW_H
 #define COMICS_VIEW_H
 
-#include <QWidget>
+#include <QtWidgets>
 
 #include "tablemodel.h"
-#include <QAbstractItemView>
-#include <QSettings>
-#include <QModelIndex>
-#include <QModelIndexList>
 
 class YACReaderTableView;
 class QSplitter;
@@ -37,12 +33,23 @@ public:
 signals:
     void selected(unsigned int);
     void comicRated(int,QModelIndex);
+
+    //Drops
+    void copyComicsToCurrentFolder(QList<QString>);
+    void moveComicsToCurrentFolder(QList<QString>);
+
 public slots:
     virtual void setShowMarks(bool show) = 0;
     virtual void selectAll() = 0;
 protected:
     TableModel * model;
 
+    //Drop to import
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dropEvent(QDropEvent *event);
+
+private:
+    QList<QString> filterInvalidComicFiles(const QList<QUrl> & list);
 };
 
 #endif // COMICS_VIEW_H

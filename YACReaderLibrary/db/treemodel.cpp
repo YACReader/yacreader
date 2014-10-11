@@ -449,6 +449,8 @@ QString TreeModel::getDatabase()
 
 QString TreeModel::getFolderPath(const QModelIndex &folder)
 {
+    if(!folder.isValid()) //root folder
+        return "/";
     return static_cast<TreeItem*>(folder.internalPointer())->data(TreeModel::Path).toString();
 }
 

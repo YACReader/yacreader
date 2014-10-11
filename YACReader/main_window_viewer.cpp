@@ -1281,7 +1281,7 @@ void MainWindowViewer::dropEvent(QDropEvent *event)
 			if (info.isFile()) 
 			{
 				QStringList imageSuffixs = Comic::getSupportedImageLiteralFormats();
-				if(imageSuffixs.contains("."+info.suffix())) //image dropped
+                if(imageSuffixs.contains(info.suffix())) //image dropped
 					openFolderFromPath(info.absoluteDir().absolutePath(),info.fileName());
 				else
 					openComicFromPath(fName); // if is file, setText
