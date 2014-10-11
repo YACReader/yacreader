@@ -103,8 +103,8 @@ void ClassicComicsView::setModel(TableModel *model)
     }
     else
     {
-        connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(applyModelChanges(QModelIndex,QModelIndex,QVector<int>)));
-        connect(model, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(removeItemsFromFlow(QModelIndex,int,int)));
+        connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(applyModelChanges(QModelIndex,QModelIndex,QVector<int>)),Qt::UniqueConnection);
+        connect(model, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(removeItemsFromFlow(QModelIndex,int,int)),Qt::UniqueConnection);
 
         tableView->setModel(model);
 
