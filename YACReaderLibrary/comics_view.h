@@ -49,7 +49,7 @@ protected:
     void dropEvent(QDropEvent *event);
 
 private:
-    QList<QString> filterInvalidComicFiles(const QList<QUrl> & list);
+
 };
 
 #endif // COMICS_VIEW_H

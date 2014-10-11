@@ -1,8 +1,7 @@
 #ifndef YACREADER_TREEVIEW_H
 #define YACREADER_TREEVIEW_H
 
-#include <QTreeView>
-#include <QStyledItemDelegate>
+#include <QtWidgets>
 
 class YACReaderTreeView : public QTreeView
 {
@@ -11,9 +10,24 @@ public:
     explicit YACReaderTreeView(QWidget *parent = 0);
     
 signals:
-    
-public slots:
-    
+    //Drops
+    void copyComicsToFolder(QList<QString>,QModelIndex);
+    void moveComicsToFolder(QList<QString>,QModelIndex);
+
+protected slots:
+    //fix for drop auto expand
+    void expandCurrent();
+
+protected:
+    //Drop to import
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dragMoveEvent(QDragMoveEvent *event);
+    void dropEvent(QDropEvent *event);
+
+    //fix for drop auto expand
+    QTimer expandTimer;
+    QTimer t;
+    QPoint expandPos;
 };
 
 class YACReaderTreeViewItemDeletegate: public QStyledItemDelegate

@@ -201,6 +201,7 @@ private:
 
 	//QModelIndex _rootIndex;
 	//QModelIndex _rootIndexCV;
+    QModelIndex copyMoveIndexDestination;
 
 	quint64 _comicIdEdited;
 
@@ -324,9 +325,13 @@ public slots:
     void loadCoversFromCurrentModel();
     void copyAndImportComicsToCurrentFolder(const QList<QString> & comics);
     void moveAndImportComicsToCurrentFolder(const QList<QString> &comics);
+    void copyAndImportComicsToFolder(const QList<QString> & comics, const QModelIndex & miFolder);
+    void moveAndImportComicsToFolder(const QList<QString> & comics, const QModelIndex & miFolder);
     void processComicFiles(ComicFilesManager * comicFilesManager, QProgressDialog * progressDialog);
-    void updateCurrentFolder(); //imports new comics from the current folder
+    void updateCopyMoveFolderDestination(); //imports new comics from the current folder
     QProgressDialog * newProgressDialog(const QString & label, int maxValue);
+    void reloadAfterCopyMove();
+    QModelIndex getCurrentFolderIndex();
 };
 
 #endif

@@ -39,26 +39,15 @@ QLOG_DEBUG() << "drop" << event->dropAction();
     if(event->dropAction() == Qt::CopyAction)
     {
         QLOG_DEBUG() << "copy";
-        emit copyComicsToCurrentFolder(filterInvalidComicFiles(event->mimeData()->urls()));
+        emit copyComicsToCurrentFolder(Comic::filterInvalidComicFiles(event->mimeData()->urls()));
 
     }
     else if(event->dropAction() & Qt::MoveAction)
     {
         QLOG_DEBUG() << "move";
-        emit moveComicsToCurrentFolder(filterInvalidComicFiles(event->mimeData()->urls()));
+        emit moveComicsToCurrentFolder(Comic::filterInvalidComicFiles(event->mimeData()->urls()));
     }
 
     if(accepted)
         event->acceptProposedAction();
-}
-
-QList<QString> ComicsView::filterInvalidComicFiles(const QList<QUrl> &list)
-{
-    QList<QString> validComicFiles;
-    foreach (QUrl url, list) {
-        if(Comic::fileIsComic(url))
-            validComicFiles << url.toLocalFile();
-    }
-
-    return validComicFiles;
 }

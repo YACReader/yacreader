@@ -2,12 +2,21 @@
 #include "treeitem.h"
 #include "treemodel.h"
 
-#include <QHeaderView>
-#include <QPainter>
+#include "comic.h"
+
+#include "QsLog.h"
 
 YACReaderTreeView::YACReaderTreeView(QWidget *parent) :
     QTreeView(parent)
 {
+    setAcceptDrops(true);
+    setDragDropMode(QAbstractItemView::DropOnly);
+    setItemsExpandable(true);
+
+    //setDragEnabled(true);
+    /*viewport()->setAcceptDrops(true);
+    setDropIndicatorShown(true);*/
+
     setContextMenuPolicy(Qt::ActionsContextMenu);
     setContextMenuPolicy(Qt::ActionsContextMenu);
     header()->hide();
@@ -49,6 +58,80 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent) :
 
                                );
 #endif
+
+}
+
+void YACReaderTreeView::expandCurrent()
+{
+    QModelIndex index = indexAt(expandPos);
+    if(index.isValid())
+        expand(index);
+}
+
+void YACReaderTreeView::dragEnterEvent(QDragEnterEvent *event)
+{
+    QTreeView::dragEnterEvent(event);
+
+    QList<QUrl> urlList;
+
+    if (event->mimeData()->hasUrls())
+    {
+        urlList = event->mimeData()->urls();
+        foreach (QUrl url, urlList)
+        {
+            if(Comic::fileIsComic(url))
+            {
+                event->acceptProposedAction();
+                return;
+            }
+        }
+    }
+}
+
+void YACReaderTreeView::dragMoveEvent(QDragMoveEvent *event)
+{
+    QTreeView::dragMoveEvent(event);
+    event->acceptProposedAction();
+
+    //fix for drop auto expand
+    QModelIndex lastExpanded = indexAt(expandPos);
+    QModelIndex underMouse = indexAt(event->pos());
+    if( underMouse.isValid() && (underMouse != lastExpanded)) {
+        expandPos = event->pos();
+        connect(&expandTimer,SIGNAL(timeout()),this,SLOT(expandCurrent()));
+        expandTimer.start(750);
+    }
+    //TODO force mouse hover decoration, why the event loop is not working here?
+    if(!t.isActive())
+    {
+        t.setSingleShot(true);
+        t.setInterval(50);
+        t.start();
+        repaint();
+    }
+
+}
+
+void YACReaderTreeView::dropEvent(QDropEvent *event)
+{
+    QTreeView::dropEvent(event);
+
+    bool accepted = false;
+    QLOG_DEBUG() << "drop on tree" << event->dropAction();
+    if(event->dropAction() == Qt::CopyAction)
+    {
+        QLOG_DEBUG() << "copy - tree";
+        emit copyComicsToFolder(Comic::filterInvalidComicFiles(event->mimeData()->urls()),indexAt(event->pos()));
+
+    }
+    else if(event->dropAction() & Qt::MoveAction)
+    {
+        QLOG_DEBUG() << "move - tree";
+        emit moveComicsToFolder(Comic::filterInvalidComicFiles(event->mimeData()->urls()),indexAt(event->pos()));
+    }
+
+    if(accepted)
+        event->acceptProposedAction();
 }
 
 

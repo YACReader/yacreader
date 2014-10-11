@@ -189,6 +189,17 @@ bool Comic::fileIsComic(QUrl &path)
     return literalComicExtensions.contains(info.suffix());
 }
 
+QList<QString> Comic::filterInvalidComicFiles(const QList<QUrl> &list)
+{
+    QList<QString> validComicFiles;
+    foreach (QUrl url, list) {
+        if(Comic::fileIsComic(url))
+            validComicFiles << url.toLocalFile();
+    }
+
+    return validComicFiles;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
