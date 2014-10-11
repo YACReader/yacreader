@@ -811,7 +811,9 @@ void LibraryWindow::createToolBars()
 
 void LibraryWindow::createMenus()
 {
-    itemActions << openContainingFolderComicAction
+    itemActions << openComicAction
+                << YACReader::createSeparator()
+                << openContainingFolderComicAction
                 << YACReader::createSeparator()
                 << resetComicRatingAction
                 << YACReader::createSeparator()
