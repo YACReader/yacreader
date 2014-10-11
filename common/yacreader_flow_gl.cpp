@@ -710,6 +710,9 @@ void YACReaderFlowGL::insert(char *name, GLuint Tex, float x, float y,int item)
 
 void YACReaderFlowGL::remove(int item)
 {
+    if(item < 0 || item >= paths.size())
+        return;
+
     startAnimationTimer();
 
 	loaded.remove(item);
@@ -974,7 +977,7 @@ void YACReaderFlowGL::setMarks(QVector<YACReaderComicReadStatus> marks)
 void YACReaderFlowGL::setMarkImage(QImage & image)
 {
 	Q_UNUSED(image);
-	//qué pasa la primera vez??
+	//quÃ© pasa la primera vez??
 	//deleteTexture(markTexture);
 	//markTexture = bindTexture(image,GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
 }
@@ -993,7 +996,7 @@ void YACReaderFlowGL::unmarkSlide(int index)
 void YACReaderFlowGL::setSlideSize(QSize size)
 {
 	Q_UNUSED(size);
-	//TODO calcular el tamaño del widget
+	//TODO calcular el tamaÃ±o del widget
 }
 void YACReaderFlowGL::clear()
 {
