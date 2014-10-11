@@ -75,7 +75,7 @@ public:
 	void setupModelData(QString path);
 	QString getDatabase();
 
-	//Métodos de conveniencia
+	//MÃ©todos de conveniencia
 	QString getFolderPath(const QModelIndex &folder);
 
 	void setFilter(QString filter, bool includeComics);
@@ -99,11 +99,11 @@ private:
 	void setupFilteredModelData( QSqlQuery &sqlquery, TreeItem *parent);
 	void setupFilteredModelData();
 
-	TreeItem *rootItem; //el árbol
-	QMap<unsigned long long int, TreeItem *> items; //relación entre folders
+	TreeItem *rootItem; //el Ã¡rbol
+	QMap<unsigned long long int, TreeItem *> items; //relaciÃ³n entre folders
 
 	TreeItem *rootBeforeFilter;
-	QMap<unsigned long long int, TreeItem *> filteredItems; //relación entre folders
+	QMap<unsigned long long int, TreeItem *> filteredItems; //relaciÃ³n entre folders
 
 	QString _databasePath;
 

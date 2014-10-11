@@ -85,6 +85,7 @@ class ComicDB;
         inline static QStringList getSupportedImageLiteralFormats() { return literalImageExtensions;}
 
         static bool fileIsComic(QUrl & path);
+        static QList<QString> filterInvalidComicFiles(const QList<QUrl> & list);
 		
 	public slots:
 		void loadFinished();

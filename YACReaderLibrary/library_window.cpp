@@ -184,7 +184,7 @@ void LibraryWindow::doLayout()
 
     //SIDEBAR--------------------------------------------------------------------
 	//---------------------------------------------------------------------------
-	sideBar = new YACReaderSideBar;
+    sideBar = new YACReaderSideBar;
 
 	foldersView = sideBar->foldersView;
 	selectedLibrary = sideBar->selectedLibrary;
@@ -935,7 +935,7 @@ void LibraryWindow::createConnections()
 	connect(libraryCreator,SIGNAL(updated()),this,SLOT(reloadCurrentLibrary()));
 	connect(libraryCreator,SIGNAL(created()),this,SLOT(openLastCreated()));
     connect(libraryCreator,SIGNAL(updatedCurrentFolder()), this, SLOT(showRootWidget()));
-    connect(libraryCreator,SIGNAL(updatedCurrentFolder()), this, SLOT(reloadCovers()));
+    connect(libraryCreator,SIGNAL(updatedCurrentFolder()), this, SLOT(reloadAfterCopyMove()));
 	connect(libraryCreator,SIGNAL(comicAdded(QString,QString)),importWidget,SLOT(newComic(QString,QString)));
 	//libraryCreator errors
 	connect(libraryCreator,SIGNAL(failedCreatingDB(QString)),this,SLOT(manageCreatingError(QString)));
@@ -972,6 +972,10 @@ void LibraryWindow::createConnections()
     connect(foldersView, SIGNAL(pressed(QModelIndex)), this, SLOT(updateFoldersViewConextMenu(QModelIndex)));
 	connect(foldersView, SIGNAL(clicked(QModelIndex)), this, SLOT(loadCovers(QModelIndex)));
 	connect(foldersView, SIGNAL(clicked(QModelIndex)), this, SLOT(updateHistory(QModelIndex)));
+
+    //drops in folders view
+    connect(foldersView, SIGNAL(copyComicsToFolder(QList<QString>,QModelIndex)), this, SLOT(copyAndImportComicsToFolder(QList<QString>,QModelIndex)));
+    connect(foldersView, SIGNAL(moveComicsToFolder(QList<QString>,QModelIndex)), this, SLOT(moveAndImportComicsToFolder(QList<QString>,QModelIndex)));
 
 	//actions
 	connect(createLibraryAction,SIGNAL(triggered()),this,SLOT(createLibrary()));
@@ -1259,6 +1263,8 @@ void LibraryWindow::copyAndImportComicsToCurrentFolder(const QList<QString> &com
 {
     QString destFolderPath = currentFolderPath();
 
+    copyMoveIndexDestination = getCurrentFolderIndex();
+
     QProgressDialog * progressDialog = newProgressDialog(tr("Copying comics..."),comics.size());
 
     ComicFilesManager * comicFilesManager = new ComicFilesManager();
@@ -1271,12 +1277,52 @@ void LibraryWindow::moveAndImportComicsToCurrentFolder(const QList<QString> &com
 {
     QString destFolderPath = currentFolderPath();
 
+    copyMoveIndexDestination = getCurrentFolderIndex();
+
     QProgressDialog * progressDialog = newProgressDialog(tr("Moving comics..."),comics.size());
 
     ComicFilesManager * comicFilesManager = new ComicFilesManager();
     comicFilesManager->moveComicsTo(comics,destFolderPath);
 
     processComicFiles(comicFilesManager, progressDialog);
+}
+
+void LibraryWindow::copyAndImportComicsToFolder(const QList<QString> &comics, const QModelIndex &miFolder)
+{
+    if(miFolder.isValid())
+    {
+        QString destFolderPath = QDir::cleanPath(currentPath()+foldersModel->getFolderPath(miFolder));
+
+        copyMoveIndexDestination = miFolder;
+
+        QLOG_DEBUG() << "Coping to " << destFolderPath;
+
+        QProgressDialog * progressDialog = newProgressDialog(tr("Copying comics..."),comics.size());
+
+        ComicFilesManager * comicFilesManager = new ComicFilesManager();
+        comicFilesManager->copyComicsTo(comics,destFolderPath);
+
+        processComicFiles(comicFilesManager, progressDialog);
+    }
+}
+
+void LibraryWindow::moveAndImportComicsToFolder(const QList<QString> &comics, const QModelIndex &miFolder)
+{
+    if(miFolder.isValid())
+    {
+        QString destFolderPath = QDir::cleanPath(currentPath()+foldersModel->getFolderPath(miFolder));
+
+        copyMoveIndexDestination = miFolder;
+
+        QLOG_DEBUG() << "Moving to " << destFolderPath;
+
+        QProgressDialog * progressDialog = newProgressDialog(tr("Moving comics..."),comics.size());
+
+        ComicFilesManager * comicFilesManager = new ComicFilesManager();
+        comicFilesManager->moveComicsTo(comics,destFolderPath);
+
+        processComicFiles(comicFilesManager, progressDialog);
+    }
 }
 
 void LibraryWindow::processComicFiles(ComicFilesManager * comicFilesManager, QProgressDialog * progressDialog)
@@ -1290,7 +1336,7 @@ void LibraryWindow::processComicFiles(ComicFilesManager * comicFilesManager, QPr
     comicFilesManager->moveToThread(thread);
 
     connect(thread, SIGNAL(started()), comicFilesManager, SLOT(process()));
-    connect(comicFilesManager, SIGNAL(success()), this, SLOT(updateCurrentFolder()));
+    connect(comicFilesManager, SIGNAL(success()), this, SLOT(updateCopyMoveFolderDestination()));
     connect(comicFilesManager, SIGNAL(finished()), thread, SLOT(quit()));
     connect(comicFilesManager, SIGNAL(finished()), comicFilesManager, SLOT(deleteLater()));
     connect(comicFilesManager, SIGNAL(finished()), progressDialog, SLOT(close()));
@@ -1301,7 +1347,7 @@ void LibraryWindow::processComicFiles(ComicFilesManager * comicFilesManager, QPr
         thread->start();
 }
 
-void LibraryWindow::updateCurrentFolder()
+void LibraryWindow::updateCopyMoveFolderDestination()
 {
     importWidget->setUpdateLook();
     showImportingWidget();
@@ -1309,7 +1355,7 @@ void LibraryWindow::updateCurrentFolder()
     QString currentLibrary = selectedLibrary->currentText();
     QString path = libraries.getPath(currentLibrary);
     _lastAdded = currentLibrary;
-    libraryCreator->updateFolder(QDir::cleanPath(path),QDir::cleanPath(path+"/.yacreaderlibrary"),currentFolderPath());
+    libraryCreator->updateFolder(QDir::cleanPath(path),QDir::cleanPath(path+"/.yacreaderlibrary"),QDir::cleanPath(currentPath()+foldersModel->getFolderPath(copyMoveIndexDestination)));
     libraryCreator->start();
 }
 
@@ -1320,6 +1366,20 @@ QProgressDialog *LibraryWindow::newProgressDialog(const QString &label, int maxV
     progressDialog->setMinimumWidth(350);
     progressDialog->show();
     return progressDialog;
+}
+
+void LibraryWindow::reloadAfterCopyMove()
+{
+    if(getCurrentFolderIndex() == copyMoveIndexDestination)
+        reloadCovers();
+}
+
+QModelIndex LibraryWindow::getCurrentFolderIndex()
+{
+    if(foldersView->selectionModel()->selectedRows().length()>0)
+       return foldersView->currentIndex();
+    else
+        return QModelIndex();
 }
 
 void LibraryWindow::selectSubfolder(const QModelIndex &mi, int child)
