@@ -36,7 +36,7 @@ using namespace std;
 
 //--------------------------------------------------------------------------------
 LibraryCreator::LibraryCreator()
-	:creation(false)
+    :creation(false), partialUpdate(false)
 {
 	_nameFilter << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.7z" << "*.cb7" << "*.arj" << "*.cbt";
 }
@@ -44,12 +44,45 @@ LibraryCreator::LibraryCreator()
 void LibraryCreator::createLibrary(const QString &source, const QString &target)
 {
 	creation = true;
-	processLibrary(source,target);
+    processLibrary(source, target);
 }
 
 void LibraryCreator::updateLibrary(const QString &source, const QString &target)
 {
-	processLibrary(source,target);
+    partialUpdate = false;
+    processLibrary(source, target);
+}
+
+void LibraryCreator::updateFolder(const QString &source, const QString &target, const QString &sourceFolder)
+{
+    partialUpdate = true;
+
+    _currentPathFolders.clear();
+    _currentPathFolders.append(Folder(1,1,"root","/"));
+
+    QString relativeFolderPath = sourceFolder;
+    relativeFolderPath = relativeFolderPath.remove(QDir::cleanPath(source));
+
+    if(relativeFolderPath.startsWith("/"))
+        relativeFolderPath = relativeFolderPath.remove(0,1);//remove firts '/'
+
+    QStringList folders = relativeFolderPath.split('/');
+
+    QSqlDatabase db = DataBaseManagement::loadDatabase(target);
+
+    foreach (QString folderName, folders) {
+        qulonglong parentId = _currentPathFolders.last().id;
+        _currentPathFolders.append(DBHelper::loadFolder(folderName, parentId, db));
+        QLOG_DEBUG() << "Folder appended : " << _currentPathFolders.last().id << " " << _currentPathFolders.last().name << " with parent" << _currentPathFolders.last().parentId;
+    }
+
+    QSqlDatabase::removeDatabase(_database.connectionName());
+
+    QLOG_DEBUG() << "Relative path : " << relativeFolderPath;
+
+    _sourceFolder = sourceFolder;
+
+    processLibrary(source, target);
 }
 
 void LibraryCreator::processLibrary(const QString & source, const QString & target)
@@ -108,7 +141,7 @@ void LibraryCreator::run()
 
 		/*QSqlQuery pragma("PRAGMA foreign_keys = ON",_database);*/
 		_database.transaction();
-		//se crea la librería
+		//se crea la librerÃ­a
 		create(QDir(_source));
 		_database.commit();
 		_database.close();
@@ -118,9 +151,14 @@ void LibraryCreator::run()
 	}
 	else
 	{
-		QLOG_INFO() << "Starting to update library ( " << _source << "," << _target << ")";
-		_currentPathFolders.clear();
-		_currentPathFolders.append(Folder(1,1,"root","/"));
+        QLOG_INFO() << "Starting to update folder" << _sourceFolder << "in library ( " << _source << "," << _target << ")";
+        if(!partialUpdate)
+        {
+            _currentPathFolders.clear();
+            _currentPathFolders.append(Folder(1,1,"root","/"));
+            QLOG_DEBUG() << "update whole library";
+        }
+
 		_database = DataBaseManagement::loadDatabase(_target);
 		//_database.setDatabaseName(_target+"/library.ydb");
 		if(!_database.open())
@@ -133,19 +171,28 @@ void LibraryCreator::run()
 		}
 		QSqlQuery pragma("PRAGMA foreign_keys = ON",_database);
 		_database.transaction();
-		update(QDir(_source));
+        if(partialUpdate)
+            update(QDir(_sourceFolder));
+        else
+            update(QDir(_source));
 		_database.commit();
 		_database.close();
 		QSqlDatabase::removeDatabase(_target);
-		//si estabamos en modo creación, se está añadiendo una librería que ya existía y se ha actualizado antes de añadirse.
-		if(!creation)
-			emit(updated());
-		else
-			emit(created());
+		//si estabamos en modo creaciÃ³n, se estÃ¡ aÃ±adiendo una librerÃ­a que ya existÃ­a y se ha actualizado antes de aÃ±adirse.
+        if(!partialUpdate)
+        {
+            if(!creation)
+                emit(updated());
+            else
+                emit(created());
+        }
 		QLOG_INFO() << "Update library END";
 	}
-	msleep(100);//TODO try to solve the problem with the udpate dialog (ya no se usa más...)
-	emit(finished());
+    //msleep(100);//TODO try to solve the problem with the udpate dialog (ya no se usa mÃ¡s...)
+    if(partialUpdate)
+        emit updatedCurrentFolder();
+    else
+        emit finished();
 	creation = false;
 }
 
@@ -201,10 +248,10 @@ void LibraryCreator::create(QDir dir)
 #endif        
 		if(fileInfo.isDir())
 		{
-			//se añade al path actual el folder, aún no se sabe si habrá que añadirlo a la base de datos
+			//se aÃ±ade al path actual el folder, aÃºn no se sabe si habrÃ¡ que aÃ±adirlo a la base de datos
 			_currentPathFolders.append(Folder(fileInfo.fileName(),relativePath));
 			create(QDir(fileInfo.absoluteFilePath()));
-			//una vez importada la información del folder, se retira del path actual ya que no volverá a ser visitado
+			//una vez importada la informaciÃ³n del folder, se retira del path actual ya que no volverÃ¡ a ser visitado
 			_currentPathFolders.pop_back();
 		}
 		else
@@ -221,7 +268,7 @@ bool LibraryCreator::checkCover(const QString & hash)
 
 void LibraryCreator::insertComic(const QString & relativePath,const QFileInfo & fileInfo)
 {
-	//Se calcula el hash del cómic
+	//Se calcula el hash del cÃ³mic
 
 	QCryptographicHash crypto(QCryptographicHash::Sha1);
 	QFile file(fileInfo.absoluteFilePath());
@@ -244,7 +291,7 @@ void LibraryCreator::insertComic(const QString & relativePath,const QFileInfo & 
 
     if (numPages > 0 || exists)
     {
-        //en este punto sabemos que todos los folders que hay en _currentPath, deberían estar añadidos a la base de datos
+        //en este punto sabemos que todos los folders que hay en _currentPath, deberÃ­an estar aÃ±adidos a la base de datos
         insertFolders();
         comic.info.numPages = numPages;
         comic.parentId = _currentPathFolders.last().id;
@@ -337,7 +384,7 @@ void LibraryCreator::update(QDir dirS)
 #else
 					QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
 #endif
-					_currentPathFolders.append(Folder(fileInfoS.fileName(),path));  //folder actual no está en la BD
+					_currentPathFolders.append(Folder(fileInfoS.fileName(),path));  //folder actual no estÃ¡ en la BD
 					create(QDir(fileInfoS.absoluteFilePath()));
 					_currentPathFolders.pop_back();
 				}
@@ -476,7 +523,7 @@ void LibraryCreator::update(QDir dirS)
 							{
 								if(fileInfoS.isFile() && !fileInfoD->isDir())
 								{
-									//TODO comprobar fechas + tamaño
+									//TODO comprobar fechas + tamaÃ±o
 									//if(fileInfoS.lastModified()>fileInfoD.lastModified())
 									//{
 									//	dirD.mkpath(_target+(QDir::cleanPath(fileInfoS.absolutePath()).remove(_source)));
@@ -585,7 +632,7 @@ void ThumbnailCreator::create()
 	}
 	if(!archive.isValid())
 		QLOG_WARN() << "Extracting cover: file format not supported " << _fileSource;
-	//se filtran para obtener sólo los formatos soportados
+	//se filtran para obtener sÃ³lo los formatos soportados
 	QList<QString> order = archive.getFileNames();
 	QList<QString> fileNames = FileComic::filter(order);
 	_numPages = fileNames.size();

@@ -71,6 +71,8 @@
 
 #include "no_search_results_widget.h"
 
+#include "comic_files_manager.h"
+
 #include "QsLog.h"
 
 #ifdef Q_OS_WIN
@@ -389,6 +391,8 @@ void LibraryWindow::disconnectComicsViewConnections(ComicsView * widget)
     disconnect(widget,SIGNAL(selected(unsigned int)),this,SLOT(openComic()));
     disconnect(widget,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openComic()));
     disconnect(selectAllComicsAction,SIGNAL(triggered()),widget,SLOT(selectAll()));
+    disconnect(comicsView, SIGNAL(copyComicsToCurrentFolder(QList<QString>)), this, SLOT(copyAndImportComicsToCurrentFolder(QList<QString>)));
+    disconnect(comicsView, SIGNAL(moveComicsToCurrentFolder(QList<QString>)), this, SLOT(moveAndImportComicsToCurrentFolder(QList<QString>)));
 }
 
 void LibraryWindow::doComicsViewConnections()
@@ -398,6 +402,9 @@ void LibraryWindow::doComicsViewConnections()
     connect(comicsView,SIGNAL(selected(unsigned int)),this,SLOT(openComic()));
     connect(comicsView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openComic()));
     connect(selectAllComicsAction,SIGNAL(triggered()),comicsView,SLOT(selectAll()));
+    //Drops
+    connect(comicsView, SIGNAL(copyComicsToCurrentFolder(QList<QString>)), this, SLOT(copyAndImportComicsToCurrentFolder(QList<QString>)));
+    connect(comicsView, SIGNAL(moveComicsToCurrentFolder(QList<QString>)), this, SLOT(moveAndImportComicsToCurrentFolder(QList<QString>)));
 }
 
 void LibraryWindow::createActions()
@@ -925,6 +932,8 @@ void LibraryWindow::createConnections()
 	connect(libraryCreator,SIGNAL(finished()),this,SLOT(showRootWidget()));
 	connect(libraryCreator,SIGNAL(updated()),this,SLOT(reloadCurrentLibrary()));
 	connect(libraryCreator,SIGNAL(created()),this,SLOT(openLastCreated()));
+    connect(libraryCreator,SIGNAL(updatedCurrentFolder()), this, SLOT(showRootWidget()));
+    connect(libraryCreator,SIGNAL(updatedCurrentFolder()), this, SLOT(reloadCovers()));
 	connect(libraryCreator,SIGNAL(comicAdded(QString,QString)),importWidget,SLOT(newComic(QString,QString)));
 	//libraryCreator errors
 	connect(libraryCreator,SIGNAL(failedCreatingDB(QString)),this,SLOT(manageCreatingError(QString)));
@@ -1242,6 +1251,73 @@ void LibraryWindow::loadCoversFromCurrentModel()
     if(paths.size()>0) {
         comicsView->setCurrentIndex(comicsModel->index(0,0));
     }
+}
+
+void LibraryWindow::copyAndImportComicsToCurrentFolder(const QList<QString> &comics)
+{
+    QString destFolderPath = currentFolderPath();
+
+    QProgressDialog * progressDialog = newProgressDialog(tr("Copying comics..."),comics.size());
+
+    ComicFilesManager * comicFilesManager = new ComicFilesManager();
+    comicFilesManager->copyComicsTo(comics,destFolderPath);
+
+    processComicFiles(comicFilesManager, progressDialog);
+}
+
+void LibraryWindow::moveAndImportComicsToCurrentFolder(const QList<QString> &comics)
+{
+    QString destFolderPath = currentFolderPath();
+
+    QProgressDialog * progressDialog = newProgressDialog(tr("Moving comics..."),comics.size());
+
+    ComicFilesManager * comicFilesManager = new ComicFilesManager();
+    comicFilesManager->moveComicsTo(comics,destFolderPath);
+
+    processComicFiles(comicFilesManager, progressDialog);
+}
+
+void LibraryWindow::processComicFiles(ComicFilesManager * comicFilesManager, QProgressDialog * progressDialog)
+{
+    connect(comicFilesManager,SIGNAL(progress(int)), progressDialog, SLOT(setValue(int)));
+
+    QThread * thread = NULL;
+
+    thread = new QThread();
+
+    comicFilesManager->moveToThread(thread);
+
+    connect(thread, SIGNAL(started()), comicFilesManager, SLOT(process()));
+    connect(comicFilesManager, SIGNAL(success()), this, SLOT(updateCurrentFolder()));
+    connect(comicFilesManager, SIGNAL(finished()), thread, SLOT(quit()));
+    connect(comicFilesManager, SIGNAL(finished()), comicFilesManager, SLOT(deleteLater()));
+    connect(comicFilesManager, SIGNAL(finished()), progressDialog, SLOT(close()));
+    connect(comicFilesManager, SIGNAL(finished()), progressDialog, SLOT(deleteLater()));
+    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+
+    if(thread != NULL)
+        thread->start();
+}
+
+void LibraryWindow::updateCurrentFolder()
+{
+    importWidget->setUpdateLook();
+    showImportingWidget();
+
+    QString currentLibrary = selectedLibrary->currentText();
+    QString path = libraries.getPath(currentLibrary);
+    _lastAdded = currentLibrary;
+    libraryCreator->updateFolder(QDir::cleanPath(path),QDir::cleanPath(path+"/.yacreaderlibrary"),currentFolderPath());
+    libraryCreator->start();
+}
+
+QProgressDialog *LibraryWindow::newProgressDialog(const QString &label, int maxValue)
+{
+    QProgressDialog * progressDialog = new QProgressDialog(label,"Cancel",0,maxValue,this);
+    progressDialog->setWindowModality(Qt::WindowModal);
+    progressDialog->setMinimumWidth(350);
+    progressDialog->show();
+    return progressDialog;
 }
 
 void LibraryWindow::selectSubfolder(const QModelIndex &mi, int child)
@@ -1885,7 +1961,21 @@ void LibraryWindow::reloadOptions()
 
 QString LibraryWindow::currentPath()
 {
-	return libraries.getPath(selectedLibrary->currentText());
+    return libraries.getPath(selectedLibrary->currentText());
+}
+
+QString LibraryWindow::currentFolderPath()
+{
+    QString path;
+
+    if(foldersView->selectionModel()->selectedRows().length()>0)
+        path = foldersModel->getFolderPath(foldersView->currentIndex());
+    else
+        path = foldersModel->getFolderPath(QModelIndex());
+
+    QLOG_DEBUG() << "current folder path : " << QDir::cleanPath(currentPath()+path);
+
+    return QDir::cleanPath(currentPath()+path);
 }
 
 //TODO ComicsView: some actions in the comics toolbar can be relative to a certain view

@@ -49,6 +49,7 @@ public:
 	static QList<LibraryItem *> getComicsFromParent(qulonglong parentId, QSqlDatabase & db, bool sort = true);
 	//load
 	static Folder loadFolder(qulonglong id, QSqlDatabase & db);
+    static Folder loadFolder(const QString & folderName, qulonglong parentId, QSqlDatabase & db);
 	static ComicDB loadComic(qulonglong id, QSqlDatabase & db);
     static ComicDB loadComic(QString cname, QString cpath, QString chash, QSqlDatabase & database);
 	static ComicInfo loadComicInfo(QString hash, QSqlDatabase & db);

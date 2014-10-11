@@ -564,12 +564,42 @@ Folder DBHelper::loadFolder(qulonglong id, QSqlDatabase & db)
 		folder.parentId = record.value("parentId").toULongLong();
 		folder.name = record.value("name").toString();
 		folder.path = record.value("path").toString();
+        folder.knownId = true;
         //new 7.1
         folder.setFinished(record.value("finished").toBool());
         folder.setCompleted(record.value("completed").toBool());
 	}
 
-	return folder;
+    return folder;
+}
+
+Folder DBHelper::loadFolder(const QString &folderName, qulonglong parentId, QSqlDatabase &db)
+{
+    Folder folder;
+
+    QLOG_DEBUG() << "Looking for folder with name = " << folderName << " and parent " << parentId;
+
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM folder WHERE parentId = :parentId AND name = :folderName");
+    query.bindValue(":parentId",parentId);
+    query.bindValue(":folderName", folderName);
+    query.exec();
+
+    folder.parentId = parentId;
+    if(query.next())
+    {
+        QSqlRecord record = query.record();
+        folder.id = record.value("id").toULongLong();
+        folder.name = record.value("name").toString();
+        folder.path = record.value("path").toString();
+        folder.knownId = true;
+        //new 7.1
+        folder.setFinished(record.value("finished").toBool());
+        folder.setCompleted(record.value("completed").toBool());
+        QLOG_DEBUG() << "FOUND!!";
+    }
+
+    return folder;
 }
 
 ComicDB DBHelper::loadComic(qulonglong id, QSqlDatabase & db)

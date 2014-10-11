@@ -49,8 +49,11 @@ class ComicDB;
 
 		bool _isPDF;
 
-		static QStringList extensions;
-		static QStringList literalExtensions;
+        static QStringList imageExtensions;
+        static QStringList literalImageExtensions;
+        static QStringList comicExtensions;
+        static QStringList literalComicExtensions;
+
 	public:
 		Bookmarks * bm;
 
@@ -74,12 +77,14 @@ class ComicDB;
 		//QPixmap * currentPage();
 		bool loaded();
 		//QPixmap * operator[](unsigned int index);
-		QVector<QByteArray> * getRawData(){return &_pages;};
+        QVector<QByteArray> * getRawData(){return &_pages;}
 		QByteArray getRawPage(int page);
 		bool pageIsLoaded(int page);
 
-		inline static QStringList getSupportedImageFormats() { return extensions;};
-		inline static QStringList getSupportedImageLiteralFormats() { return literalExtensions;};
+        inline static QStringList getSupportedImageFormats() { return imageExtensions;}
+        inline static QStringList getSupportedImageLiteralFormats() { return literalImageExtensions;}
+
+        static bool fileIsComic(QUrl & path);
 		
 	public slots:
 		void loadFinished();

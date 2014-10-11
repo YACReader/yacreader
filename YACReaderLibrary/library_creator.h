@@ -22,32 +22,37 @@
 	{
 		Q_OBJECT
 	public:
-		LibraryCreator();
-		void createLibrary(const QString & source, const QString & target);
-				void updateLibrary(const QString & source, const QString & target);
-				void stop();
+        LibraryCreator();
+        void createLibrary(const QString & source, const QString & target);
+        void updateLibrary(const QString & source, const QString & target);
+        void updateFolder(const QString & source, const QString & target, const QString & folder);
+        void stop();
+
 	private:
 		void processLibrary(const QString & source, const QString & target);
 		enum Mode {CREATOR,UPDATER};
-		//atributos "globales" durante el proceso de creación y actualización
+		//atributos "globales" durante el proceso de creaciÃ³n y actualizaciÃ³n
 		enum Mode _mode;
 		QString _source;
 		QString _target;
+        QString _sourceFolder; //used for partial updates
 		QStringList _nameFilter;
 		QSqlDatabase _database;
-		QList<Folder> _currentPathFolders; //lista de folders en el orden en el que están siendo explorados, el último es el folder actual
+		QList<Folder> _currentPathFolders; //lista de folders en el orden en el que estÃ¡n siendo explorados, el Ãºltimo es el folder actual
 		//recursive method
 		void create(QDir currentDirectory);
 		void update(QDir currentDirectory);
 		void run();
-		qulonglong insertFolders();//devuelve el id del último folder añadido (último en la ruta)
+		qulonglong insertFolders();//devuelve el id del Ãºltimo folder aÃ±adido (Ãºltimo en la ruta)
 		bool checkCover(const QString & hash);
 		void insertComic(const QString & relativePath,const QFileInfo & fileInfo);
 		//qulonglong insertFolder(qulonglong parentId,const Folder & folder);
 		//qulonglong insertComic(const Comic & comic);
 		bool stopRunning;
-		//LibraryCreator está en modo creación si creation == true;
+		//LibraryCreator estÃ¡ en modo creaciÃ³n si creation == true;
 		bool creation;
+        bool partialUpdate;
+
 	signals:
 		void finished();
 		void coverExtracted(QString);
@@ -57,6 +62,7 @@
 		void created();
 		void failedCreatingDB(QString);
 		void failedOpeningDB(QString);
+        void updatedCurrentFolder();
 	};
 
 	class ThumbnailCreator : public QObject
