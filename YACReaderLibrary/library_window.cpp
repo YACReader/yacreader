@@ -1335,6 +1335,8 @@ void LibraryWindow::processComicFiles(ComicFilesManager * comicFilesManager, QPr
 
     comicFilesManager->moveToThread(thread);
 
+    connect(progressDialog, SIGNAL(canceled()), comicFilesManager, SLOT(cancel()), Qt::DirectConnection);
+
     connect(thread, SIGNAL(started()), comicFilesManager, SLOT(process()));
     connect(comicFilesManager, SIGNAL(success()), this, SLOT(updateCopyMoveFolderDestination()));
     connect(comicFilesManager, SIGNAL(finished()), thread, SLOT(quit()));
