@@ -147,22 +147,23 @@ void GridComicsView::setViewActions(const QList<QAction *> &actions)
         ctxt->setContextProperty("openComicAction",actions[0]);
 
         ctxt->setContextProperty("openContainingFolderComicAction",actions[2]);
+        ctxt->setContextProperty("updateCurrentFolderAction",actions[3]);
 
-        ctxt->setContextProperty("resetComicRatingAction",actions[4]);
+        ctxt->setContextProperty("resetComicRatingAction",actions[5]);
 
-        ctxt->setContextProperty("editSelectedComicsAction",actions[6]);
-        ctxt->setContextProperty("getInfoAction",actions[7]);
-        ctxt->setContextProperty("asignOrderAction",actions[8]);
+        ctxt->setContextProperty("editSelectedComicsAction",actions[7]);
+        ctxt->setContextProperty("getInfoAction",actions[8]);
+        ctxt->setContextProperty("asignOrderAction",actions[9]);
 
-        ctxt->setContextProperty("selectAllComicsAction",actions[10]);
+        ctxt->setContextProperty("selectAllComicsAction",actions[11]);
 
-        ctxt->setContextProperty("setAsReadAction",actions[12]);
-        ctxt->setContextProperty("setAsNonReadAction",actions[13]);
-        ctxt->setContextProperty("showHideMarksAction",actions[14]);
+        ctxt->setContextProperty("setAsReadAction",actions[13]);
+        ctxt->setContextProperty("setAsNonReadAction",actions[14]);
+        ctxt->setContextProperty("showHideMarksAction",actions[15]);
 
-        ctxt->setContextProperty("deleteComicsAction",actions[16]);
+        ctxt->setContextProperty("deleteComicsAction",actions[17]);
 
-        ctxt->setContextProperty("toggleFullScreenAction",actions[18]);
+        ctxt->setContextProperty("toggleFullScreenAction",actions[19]);
     }
     else
         QLOG_ERROR() << "setViewActions invoked with the wrong number of actions";

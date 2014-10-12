@@ -87,6 +87,7 @@ Rectangle {
                       MenuItem { text: "Open comic"; enabled: true; iconSource:"qrc:///images/openInYACReader.png"; onTriggered: openComicAction.trigger() }
                       MenuSeparator{}
                       MenuItem { text: "Open containing folder..."; enabled: true; iconSource: "qrc:///images/open.png"; onTriggered: openContainingFolderComicAction.trigger() }
+                      MenuItem { text: "Update current folder"; enabled: true; iconSource: "qrc:///images/updateLibraryIcon.png"; onTriggered: updateCurrentFolderAction.trigger() }
                       MenuSeparator{}
                       MenuItem { text: "Reset comic rating"; onTriggered: resetComicRatingAction.trigger() }
                       MenuSeparator{}
