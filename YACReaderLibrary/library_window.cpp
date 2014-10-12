@@ -1374,6 +1374,8 @@ void LibraryWindow::reloadAfterCopyMove()
 {
     if(getCurrentFolderIndex() == copyMoveIndexDestination)
         reloadCovers();
+
+    enableNeededActions();
 }
 
 QModelIndex LibraryWindow::getCurrentFolderIndex()
@@ -1382,6 +1384,18 @@ QModelIndex LibraryWindow::getCurrentFolderIndex()
        return foldersView->currentIndex();
     else
         return QModelIndex();
+}
+
+void LibraryWindow::enableNeededActions()
+{
+    if(foldersModel->rowCount(QModelIndex())>0)
+        disableFoldersActions(false);
+
+    if(comicsModel->rowCount()>0)
+        disableComicsActions(false);
+
+    disableLibrariesActions(false);
+
 }
 
 void LibraryWindow::selectSubfolder(const QModelIndex &mi, int child)
