@@ -720,7 +720,7 @@ void YACReaderFlowGL::remove(int item)
 	paths.removeAt(item);
 
 	//reposition current selection
-	if(item < currentSelected && currentSelected != 0){
+    if(item <= currentSelected && currentSelected != 0){
 		currentSelected--;
 	}
 
