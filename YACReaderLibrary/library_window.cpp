@@ -334,7 +334,8 @@ void LibraryWindow::setUpShortcutsManagement()
                                      << setFolderAsNotCompletedAction
                                      << setFolderAsCompletedAction
                                      << setFolderAsReadAction
-                                     << setFolderAsUnreadAction);
+                                     << setFolderAsUnreadAction
+                                     << updateCurrentFolderAction);
     allActions << tmpList;
 
     editShortcutsDialog->addActionsGroup("General",QIcon(":/images/shortcuts_group_general.png"),
@@ -669,6 +670,16 @@ void LibraryWindow::createActions()
     showEditShortcutsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_EDIT_SHORTCUTS_ACTION_YL));
     showEditShortcutsAction->setShortcutContext(Qt::ApplicationShortcut);
     addAction(showEditShortcutsAction);
+
+    updateFolderAction = new QAction(tr("Update folder"), this);
+    updateFolderAction->setIcon(QIcon(":/images/updateLibraryIcon.png"));
+
+    updateCurrentFolderAction = new QAction(tr("Update current folder"), this);
+    updateCurrentFolderAction->setData(UPDATE_CURRENT_FOLDER_ACTION_YL);
+    updateCurrentFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(UPDATE_CURRENT_FOLDER_ACTION_YL));
+    updateCurrentFolderAction->setIcon(QIcon(":/images/updateLibraryIcon.png"));
+
+
 	//disable actions
 	disableAllActions();
 }
@@ -692,6 +703,8 @@ void LibraryWindow::disableComicsActions(bool disabled)
     resetComicRatingAction->setDisabled(disabled);
 
 	getInfoAction->setDisabled(disabled);
+
+    updateCurrentFolderAction->setDisabled(disabled);
 
 
 }
@@ -721,6 +734,8 @@ void LibraryWindow::disableFoldersActions(bool disabled)
 	colapseAllNodesAction->setDisabled(disabled);
 
 	openContainingFolderAction->setDisabled(disabled);
+
+    updateFolderAction->setDisabled(disabled);
 
     if(disabled == false)
     {
@@ -814,6 +829,7 @@ void LibraryWindow::createMenus()
     itemActions << openComicAction
                 << YACReader::createSeparator()
                 << openContainingFolderComicAction
+                << updateCurrentFolderAction
                 << YACReader::createSeparator()
                 << resetComicRatingAction
                 << YACReader::createSeparator()
@@ -829,6 +845,7 @@ void LibraryWindow::createMenus()
     viewActions << openComicAction
                 << YACReader::createSeparator()
                 << openContainingFolderComicAction
+                << updateCurrentFolderAction
                 << YACReader::createSeparator()
                 << resetComicRatingAction
                 << YACReader::createSeparator()
@@ -850,6 +867,7 @@ void LibraryWindow::createMenus()
     comicsView->setViewActions(viewActions);
 
 	foldersView->addAction(openContainingFolderAction);
+    foldersView->addAction(updateFolderAction);
     YACReader::addSperator(foldersView);
 
     foldersView->addAction(setFolderAsNotCompletedAction);
@@ -899,6 +917,7 @@ void LibraryWindow::createMenus()
     //folder
     QMenu * folderMenu = new QMenu(tr("Folder"));
     folderMenu->addAction(openContainingFolderAction);
+    folderMenu->addAction(updateFolderAction);
     folderMenu->addSeparator();
     folderMenu->addAction(setFolderAsNotCompletedAction);
     folderMenu->addAction(setFolderAsCompletedAction);
@@ -1052,6 +1071,10 @@ void LibraryWindow::createConnections()
     connect(emptyFolderWidget,SIGNAL(subfolderSelected(QModelIndex,int)),this,SLOT(selectSubfolder(QModelIndex,int)));
 
     connect(showEditShortcutsAction,SIGNAL(triggered()),editShortcutsDialog,SLOT(show()));
+
+    //update folders (partial updates)
+    connect(updateCurrentFolderAction,SIGNAL(triggered()), this, SLOT(updateCurrentFolder()));
+    connect(updateFolderAction,SIGNAL(triggered()), this, SLOT(updateTreeFolder()));
 }
 
 void LibraryWindow::loadLibrary(const QString & name)
@@ -1263,7 +1286,7 @@ void LibraryWindow::copyAndImportComicsToCurrentFolder(const QList<QString> &com
 {
     QString destFolderPath = currentFolderPath();
 
-    copyMoveIndexDestination = getCurrentFolderIndex();
+    updateDestination = getCurrentFolderIndex();
 
     QProgressDialog * progressDialog = newProgressDialog(tr("Copying comics..."),comics.size());
 
@@ -1277,7 +1300,7 @@ void LibraryWindow::moveAndImportComicsToCurrentFolder(const QList<QString> &com
 {
     QString destFolderPath = currentFolderPath();
 
-    copyMoveIndexDestination = getCurrentFolderIndex();
+    updateDestination = getCurrentFolderIndex();
 
     QProgressDialog * progressDialog = newProgressDialog(tr("Moving comics..."),comics.size());
 
@@ -1293,7 +1316,7 @@ void LibraryWindow::copyAndImportComicsToFolder(const QList<QString> &comics, co
     {
         QString destFolderPath = QDir::cleanPath(currentPath()+foldersModel->getFolderPath(miFolder));
 
-        copyMoveIndexDestination = miFolder;
+        updateDestination = miFolder;
 
         QLOG_DEBUG() << "Coping to " << destFolderPath;
 
@@ -1312,7 +1335,7 @@ void LibraryWindow::moveAndImportComicsToFolder(const QList<QString> &comics, co
     {
         QString destFolderPath = QDir::cleanPath(currentPath()+foldersModel->getFolderPath(miFolder));
 
-        copyMoveIndexDestination = miFolder;
+        updateDestination = miFolder;
 
         QLOG_DEBUG() << "Moving to " << destFolderPath;
 
@@ -1351,13 +1374,30 @@ void LibraryWindow::processComicFiles(ComicFilesManager * comicFilesManager, QPr
 
 void LibraryWindow::updateCopyMoveFolderDestination()
 {
+    updateFolder(updateDestination);
+}
+
+void LibraryWindow::updateCurrentFolder()
+{
+    updateFolder(getCurrentFolderIndex());
+}
+
+void LibraryWindow::updateTreeFolder()
+{
+    updateFolder(foldersView->currentIndex());
+}
+
+void LibraryWindow::updateFolder(const QModelIndex & miFolder)
+{
+    updateDestination = miFolder;
+
     importWidget->setUpdateLook();
     showImportingWidget();
 
     QString currentLibrary = selectedLibrary->currentText();
     QString path = libraries.getPath(currentLibrary);
     _lastAdded = currentLibrary;
-    libraryCreator->updateFolder(QDir::cleanPath(path),QDir::cleanPath(path+"/.yacreaderlibrary"),QDir::cleanPath(currentPath()+foldersModel->getFolderPath(copyMoveIndexDestination)));
+    libraryCreator->updateFolder(QDir::cleanPath(path),QDir::cleanPath(path+"/.yacreaderlibrary"),QDir::cleanPath(currentPath()+foldersModel->getFolderPath(miFolder)));
     libraryCreator->start();
 }
 
@@ -1372,7 +1412,7 @@ QProgressDialog *LibraryWindow::newProgressDialog(const QString &label, int maxV
 
 void LibraryWindow::reloadAfterCopyMove()
 {
-    if(getCurrentFolderIndex() == copyMoveIndexDestination)
+    if(getCurrentFolderIndex() == updateDestination)
         reloadCovers();
 
     enableNeededActions();

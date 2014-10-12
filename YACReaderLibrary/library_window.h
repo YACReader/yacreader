@@ -151,7 +151,7 @@ private:
 	QAction * expandAllNodesAction;
 	QAction * colapseAllNodesAction;
 
-	QAction * openContainingFolderAction;
+    QAction * openContainingFolderAction;
     //--
     QAction * setFolderAsNotCompletedAction;
     QAction * setFolderAsCompletedAction;
@@ -178,6 +178,9 @@ private:
 
     QAction *showEditShortcutsAction;
 
+    QAction * updateFolderAction;
+    QAction * updateCurrentFolderAction;
+
     QList<QAction *> itemActions;
     QList<QAction *> viewActions;
 
@@ -201,7 +204,7 @@ private:
 
 	//QModelIndex _rootIndex;
 	//QModelIndex _rootIndexCV;
-    QModelIndex copyMoveIndexDestination;
+    QModelIndex updateDestination;
 
 	quint64 _comicIdEdited;
 
@@ -329,6 +332,9 @@ public slots:
     void moveAndImportComicsToFolder(const QList<QString> & comics, const QModelIndex & miFolder);
     void processComicFiles(ComicFilesManager * comicFilesManager, QProgressDialog * progressDialog);
     void updateCopyMoveFolderDestination(); //imports new comics from the current folder
+    void updateCurrentFolder();
+    void updateTreeFolder();
+    void updateFolder(const QModelIndex & miFolder);
     QProgressDialog * newProgressDialog(const QString & label, int maxValue);
     void reloadAfterCopyMove();
     QModelIndex getCurrentFolderIndex();
