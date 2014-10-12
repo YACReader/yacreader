@@ -2337,8 +2337,8 @@ void LibraryWindow::importLibraryPackage()
 
 void LibraryWindow::updateComicsView(quint64 libraryId, const ComicDB & comic)
 {
-	//TODO comprobar la biblioteca....
-    if(libraryId == selectedLibrary->currentIndex()) {
+    QLOG_DEBUG() << "incoming libraryId : " << " current id :" << libraries.getId(selectedLibrary->currentText());
+    if(libraryId == libraries.getId(selectedLibrary->currentText())) {
         comicsModel->reload(comic);
-	}
+    }
 }
