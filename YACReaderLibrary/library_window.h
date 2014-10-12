@@ -332,6 +332,7 @@ public slots:
     QProgressDialog * newProgressDialog(const QString & label, int maxValue);
     void reloadAfterCopyMove();
     QModelIndex getCurrentFolderIndex();
+    void enableNeededActions();
 };
 
 #endif
