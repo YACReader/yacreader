@@ -4,5 +4,6 @@
         <file>qml/YACReaderScrollView.qml</file>
         <file>qml/tick.png</file>
         <file>qml/reading.png</file>
+        <file>qml/star_menu.png</file>
     </qresource>
 </RCC>

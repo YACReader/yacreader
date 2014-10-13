@@ -60,6 +60,7 @@ void GridComicsView::setModel(TableModel *model)
         ctxt->setContextProperty("comicsList", this->model);
         ctxt->setContextProperty("comicsSelection", _selectionModel);
         ctxt->setContextProperty("comicsSelectionHelper", this);
+        ctxt->setContextProperty("comicRatingHelper", this);
         ctxt->setContextProperty("dummyValue", true);
     }
 
@@ -140,7 +141,7 @@ void GridComicsView::setViewActions(const QList<QAction *> &actions)
     this->addActions(actions);
 
     //TODO this is completely unsafe, but QActions can't be used directly in QML
-    if(actions.length()>17)
+    if(actions.length()>=19)
     {
         QQmlContext *ctxt = view->rootContext();
 
@@ -177,6 +178,12 @@ void GridComicsView::enableFilterMode(bool enabled)
 void GridComicsView::selectAll()
 {
     QLOG_INFO() << "selectAll";
+}
+
+void GridComicsView::rate(int index, int rating)
+{
+    QLOG_INFO() << "Comic "<< index << "rated" << rating;
+    model->updateRating(rating,model->index(index,0));
 }
 
 QSize GridComicsView::sizeHint()

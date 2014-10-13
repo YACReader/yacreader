@@ -29,7 +29,6 @@ public:
     void setItemActions(const QList<QAction *> & actions);
     void setViewActions(const QList<QAction *> & actions);
     void enableFilterMode(bool enabled);
-
     QSize sizeHint();
 signals:
 signals:
@@ -47,6 +46,10 @@ public slots:
     //ComicsView
     void setShowMarks(bool show);
     void selectAll();
+
+    //rating
+    void rate(int index, int rating);
+
 
 private:
     QItemSelectionModel * _selectionModel;
