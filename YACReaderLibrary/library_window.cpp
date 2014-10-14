@@ -392,8 +392,8 @@ void LibraryWindow::disconnectComicsViewConnections(ComicsView * widget)
     disconnect(widget,SIGNAL(selected(unsigned int)),this,SLOT(openComic()));
     disconnect(widget,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openComic()));
     disconnect(selectAllComicsAction,SIGNAL(triggered()),widget,SLOT(selectAll()));
-    disconnect(comicsView, SIGNAL(copyComicsToCurrentFolder(QList<QString>)), this, SLOT(copyAndImportComicsToCurrentFolder(QList<QString>)));
-    disconnect(comicsView, SIGNAL(moveComicsToCurrentFolder(QList<QString>)), this, SLOT(moveAndImportComicsToCurrentFolder(QList<QString>)));
+    disconnect(comicsView, SIGNAL(copyComicsToCurrentFolder(QList<QPair<QString, QString> >)), this, SLOT(copyAndImportComicsToCurrentFolder(QList<QPair<QString, QString> >)));
+    disconnect(comicsView, SIGNAL(moveComicsToCurrentFolder(QList<QPair<QString, QString> >)), this, SLOT(moveAndImportComicsToCurrentFolder(QList<QPair<QString, QString> >)));
 }
 
 void LibraryWindow::doComicsViewConnections()
@@ -404,8 +404,8 @@ void LibraryWindow::doComicsViewConnections()
     connect(comicsView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openComic()));
     connect(selectAllComicsAction,SIGNAL(triggered()),comicsView,SLOT(selectAll()));
     //Drops
-    connect(comicsView, SIGNAL(copyComicsToCurrentFolder(QList<QString>)), this, SLOT(copyAndImportComicsToCurrentFolder(QList<QString>)));
-    connect(comicsView, SIGNAL(moveComicsToCurrentFolder(QList<QString>)), this, SLOT(moveAndImportComicsToCurrentFolder(QList<QString>)));
+    connect(comicsView, SIGNAL(copyComicsToCurrentFolder(QList<QPair<QString, QString> >)), this, SLOT(copyAndImportComicsToCurrentFolder(QList<QPair<QString, QString> >)));
+    connect(comicsView, SIGNAL(moveComicsToCurrentFolder(QList<QPair<QString, QString> >)), this, SLOT(moveAndImportComicsToCurrentFolder(QList<QPair<QString, QString> >)));
 }
 
 void LibraryWindow::createActions()
@@ -993,8 +993,8 @@ void LibraryWindow::createConnections()
 	connect(foldersView, SIGNAL(clicked(QModelIndex)), this, SLOT(updateHistory(QModelIndex)));
 
     //drops in folders view
-    connect(foldersView, SIGNAL(copyComicsToFolder(QList<QString>,QModelIndex)), this, SLOT(copyAndImportComicsToFolder(QList<QString>,QModelIndex)));
-    connect(foldersView, SIGNAL(moveComicsToFolder(QList<QString>,QModelIndex)), this, SLOT(moveAndImportComicsToFolder(QList<QString>,QModelIndex)));
+    connect(foldersView, SIGNAL(copyComicsToFolder(QList<QPair<QString,QString> >,QModelIndex)), this, SLOT(copyAndImportComicsToFolder(QList<QPair<QString,QString> >,QModelIndex)));
+    connect(foldersView, SIGNAL(moveComicsToFolder(QList<QPair<QString,QString> >,QModelIndex)), this, SLOT(moveAndImportComicsToFolder(QList<QPair<QString,QString> >,QModelIndex)));
 
 	//actions
 	connect(createLibraryAction,SIGNAL(triggered()),this,SLOT(createLibrary()));
@@ -1282,37 +1282,46 @@ void LibraryWindow::loadCoversFromCurrentModel()
     }
 }
 
-void LibraryWindow::copyAndImportComicsToCurrentFolder(const QList<QString> &comics)
+void LibraryWindow::copyAndImportComicsToCurrentFolder(const QList<QPair<QString, QString> > &comics)
 {
-    QString destFolderPath = currentFolderPath();
+    QLOG_DEBUG() << "-copyAndImportComicsToCurrentFolder-";
+    if(comics.size()>0)
+    {
+        QString destFolderPath = currentFolderPath();
 
-    updateDestination = getCurrentFolderIndex();
+        updateDestination = getCurrentFolderIndex();
 
-    QProgressDialog * progressDialog = newProgressDialog(tr("Copying comics..."),comics.size());
+        QProgressDialog * progressDialog = newProgressDialog(tr("Copying comics..."),comics.size());
 
-    ComicFilesManager * comicFilesManager = new ComicFilesManager();
-    comicFilesManager->copyComicsTo(comics,destFolderPath);
+        ComicFilesManager * comicFilesManager = new ComicFilesManager();
+        comicFilesManager->copyComicsTo(comics,destFolderPath);
 
-    processComicFiles(comicFilesManager, progressDialog);
+        processComicFiles(comicFilesManager, progressDialog);
+    }
 }
 
-void LibraryWindow::moveAndImportComicsToCurrentFolder(const QList<QString> &comics)
+void LibraryWindow::moveAndImportComicsToCurrentFolder(const QList<QPair<QString,QString> > &comics)
 {
-    QString destFolderPath = currentFolderPath();
+    QLOG_DEBUG() << "-moveAndImportComicsToCurrentFolder-";
+    if(comics.size()>0)
+    {
+        QString destFolderPath = currentFolderPath();
 
-    updateDestination = getCurrentFolderIndex();
+        updateDestination = getCurrentFolderIndex();
 
-    QProgressDialog * progressDialog = newProgressDialog(tr("Moving comics..."),comics.size());
+        QProgressDialog * progressDialog = newProgressDialog(tr("Moving comics..."),comics.size());
 
-    ComicFilesManager * comicFilesManager = new ComicFilesManager();
-    comicFilesManager->moveComicsTo(comics,destFolderPath);
+        ComicFilesManager * comicFilesManager = new ComicFilesManager();
+        comicFilesManager->moveComicsTo(comics,destFolderPath);
 
-    processComicFiles(comicFilesManager, progressDialog);
+        processComicFiles(comicFilesManager, progressDialog);
+    }
 }
 
-void LibraryWindow::copyAndImportComicsToFolder(const QList<QString> &comics, const QModelIndex &miFolder)
+void LibraryWindow::copyAndImportComicsToFolder(const QList<QPair<QString,QString> > &comics, const QModelIndex &miFolder)
 {
-    if(miFolder.isValid())
+    QLOG_DEBUG() << "-copyAndImportComicsToFolder-";
+    if(comics.size()>0)
     {
         QString destFolderPath = QDir::cleanPath(currentPath()+foldersModel->getFolderPath(miFolder));
 
@@ -1329,9 +1338,10 @@ void LibraryWindow::copyAndImportComicsToFolder(const QList<QString> &comics, co
     }
 }
 
-void LibraryWindow::moveAndImportComicsToFolder(const QList<QString> &comics, const QModelIndex &miFolder)
+void LibraryWindow::moveAndImportComicsToFolder(const QList<QPair<QString, QString> > &comics, const QModelIndex &miFolder)
 {
-    if(miFolder.isValid())
+    QLOG_DEBUG() << "-moveAndImportComicsToFolder-";
+    if(comics.size()>0)
     {
         QString destFolderPath = QDir::cleanPath(currentPath()+foldersModel->getFolderPath(miFolder));
 
@@ -1414,6 +1424,9 @@ void LibraryWindow::reloadAfterCopyMove()
 {
     if(getCurrentFolderIndex() == updateDestination)
         reloadCovers();
+
+    //TODO do not reload the whole model, just the current folder...
+    foldersModel->setupModelData(QDir::cleanPath(libraries.getPath(selectedLibrary->currentText())+"/.yacreaderlibrary"));
 
     enableNeededActions();
 }

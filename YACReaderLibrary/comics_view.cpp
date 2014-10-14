@@ -1,5 +1,6 @@
 #include "comics_view.h"
 #include "comic.h"
+#include "comic_files_manager.h"
 
 #include "QsLog.h"
 
@@ -21,9 +22,12 @@ void ComicsView::dragEnterEvent(QDragEnterEvent *event)
     if (event->mimeData()->hasUrls())
     {
         urlList = event->mimeData()->urls();
+        QString currentPath;
         foreach (QUrl url, urlList)
         {
-            if(Comic::fileIsComic(url))
+            //comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
+            currentPath = url.toLocalFile();
+            if(Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir())
             {
                 event->acceptProposedAction();
                 return;
@@ -34,20 +38,26 @@ void ComicsView::dragEnterEvent(QDragEnterEvent *event)
 
 void ComicsView::dropEvent(QDropEvent *event)
 {
-    bool accepted = false;
-QLOG_DEBUG() << "drop" << event->dropAction();
-    if(event->dropAction() == Qt::CopyAction)
-    {
-        QLOG_DEBUG() << "copy";
-        emit copyComicsToCurrentFolder(Comic::filterInvalidComicFiles(event->mimeData()->urls()));
+    QLOG_DEBUG() << "drop" << event->dropAction();
 
-    }
-    else if(event->dropAction() & Qt::MoveAction)
-    {
-        QLOG_DEBUG() << "move";
-        emit moveComicsToCurrentFolder(Comic::filterInvalidComicFiles(event->mimeData()->urls()));
-    }
+    bool validAction = event->dropAction() == Qt::CopyAction || event->dropAction() & Qt::MoveAction;
 
-    if(accepted)
+    if(validAction)
+    {
+
+        QList<QPair<QString, QString> > droppedFiles = ComicFilesManager::getDroppedFiles(event->mimeData()->urls());
+
+        if(event->dropAction() == Qt::CopyAction)
+        {
+            QLOG_DEBUG() << "copy :" << droppedFiles;
+            emit copyComicsToCurrentFolder(droppedFiles);
+        }
+        else if(event->dropAction() & Qt::MoveAction)
+        {
+            QLOG_DEBUG() << "move :" << droppedFiles;
+            emit moveComicsToCurrentFolder(droppedFiles);
+        }
+
         event->acceptProposedAction();
+    }
 }

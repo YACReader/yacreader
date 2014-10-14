@@ -38,7 +38,7 @@ using namespace std;
 LibraryCreator::LibraryCreator()
     :creation(false), partialUpdate(false)
 {
-	_nameFilter << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.7z" << "*.cb7" << "*.arj" << "*.cbt";
+    _nameFilter << Comic::comicExtensions;
 }
 
 void LibraryCreator::createLibrary(const QString &source, const QString &target)
@@ -66,11 +66,18 @@ void LibraryCreator::updateFolder(const QString &source, const QString &target, 
     if(relativeFolderPath.startsWith("/"))
         relativeFolderPath = relativeFolderPath.remove(0,1);//remove firts '/'
 
-    QStringList folders = relativeFolderPath.split('/');
+    QStringList folders;
+
+    if(!relativeFolderPath.isEmpty()) //updating root
+        folders = relativeFolderPath.split('/');
+
+    QLOG_DEBUG() << "folders found in relative path : " << folders << "-" << relativeFolderPath;
 
     QSqlDatabase db = DataBaseManagement::loadDatabase(target);
 
     foreach (QString folderName, folders) {
+        if(folderName.isEmpty())
+            break;
         qulonglong parentId = _currentPathFolders.last().id;
         _currentPathFolders.append(DBHelper::loadFolder(folderName, parentId, db));
         QLOG_DEBUG() << "Folder appended : " << _currentPathFolders.last().id << " " << _currentPathFolders.last().name << " with parent" << _currentPathFolders.last().parentId;

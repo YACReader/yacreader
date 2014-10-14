@@ -544,3 +544,8 @@ QStringList TreeModel::getSubfoldersNames(const QModelIndex &mi)
     qSort(result.begin(),result.end(),naturalSortLessThanCI);
     return result;
 }
+
+void TreeModel::fetchMore(const QModelIndex &parent)
+{
+
+}

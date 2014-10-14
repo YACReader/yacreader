@@ -326,10 +326,10 @@ public slots:
     void toggleComicsView();
     void checkSearchNumResults(int numResults);
     void loadCoversFromCurrentModel();
-    void copyAndImportComicsToCurrentFolder(const QList<QString> & comics);
-    void moveAndImportComicsToCurrentFolder(const QList<QString> &comics);
-    void copyAndImportComicsToFolder(const QList<QString> & comics, const QModelIndex & miFolder);
-    void moveAndImportComicsToFolder(const QList<QString> & comics, const QModelIndex & miFolder);
+    void copyAndImportComicsToCurrentFolder(const QList<QPair<QString,QString> > & comics);
+    void moveAndImportComicsToCurrentFolder(const QList<QPair<QString, QString> > &comics);
+    void copyAndImportComicsToFolder(const QList<QPair<QString,QString> > & comics, const QModelIndex & miFolder);
+    void moveAndImportComicsToFolder(const QList<QPair<QString,QString> > & comics, const QModelIndex & miFolder);
     void processComicFiles(ComicFilesManager * comicFilesManager, QProgressDialog * progressDialog);
     void updateCopyMoveFolderDestination(); //imports new comics from the current folder
     void updateCurrentFolder();

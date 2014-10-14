@@ -13,11 +13,13 @@
 #include "compressed_archive.h"
 #include "comic_db.h"
 
-QStringList Comic::imageExtensions = QStringList() << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp";
-QStringList Comic::literalImageExtensions = QStringList() << "jpg" << "jpeg" << "png" << "gif" << "tiff" << "tif" << "bmp";
+#include "QsLog.h"
 
-QStringList Comic::comicExtensions = QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.7z" << "*.cb7" << "*.arj" << "*.cbt";
-QStringList Comic::literalComicExtensions = QStringList() << "cbr" << "cbz" << "rar" << "zip" << "tar" << "pdf" << "7z" << "cb7" << "arj" << "cbt";
+const QStringList Comic::imageExtensions = QStringList() << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp";
+const QStringList Comic::literalImageExtensions = QStringList() << "jpg" << "jpeg" << "png" << "gif" << "tiff" << "tif" << "bmp";
+
+const QStringList Comic::comicExtensions = QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.7z" << "*.cb7" << "*.arj" << "*.cbt";
+const QStringList Comic::literalComicExtensions = QStringList() << "cbr" << "cbz" << "rar" << "zip" << "tar" << "pdf" << "7z" << "cb7" << "arj" << "cbt";
 
 //-----------------------------------------------------------------------------
 Comic::Comic()
@@ -183,18 +185,52 @@ bool Comic::pageIsLoaded(int page)
     return _loadedPages[page];
 }
 
-bool Comic::fileIsComic(QUrl &path)
+bool Comic::fileIsComic(const QString &path)
 {
-    QFileInfo info(path.toLocalFile());
+    QFileInfo info(path);
     return literalComicExtensions.contains(info.suffix());
 }
 
-QList<QString> Comic::filterInvalidComicFiles(const QList<QUrl> &list)
+QList<QString> Comic::findValidComicFiles(const QList<QUrl> &list)
 {
+    QLOG_DEBUG() << "-findValidComicFiles-";
     QList<QString> validComicFiles;
+    QString currentPath;
     foreach (QUrl url, list) {
-        if(Comic::fileIsComic(url))
-            validComicFiles << url.toLocalFile();
+        currentPath = url.toLocalFile();
+        if(Comic::fileIsComic(currentPath))
+            validComicFiles << currentPath;
+        else if(QFileInfo(currentPath).isDir())
+        {
+           validComicFiles << findValidComicFilesInFolder(currentPath);
+        }
+    }
+    QLOG_DEBUG() << "-" << validComicFiles << "-";
+    return validComicFiles;
+}
+
+QList<QString> Comic::findValidComicFilesInFolder(const QString &path)
+{
+    QLOG_DEBUG() << "-findValidComicFilesInFolder-" << path;
+
+    if(!QFileInfo(path).isDir())
+        return QList<QString>();
+
+    QList<QString> validComicFiles;
+    QDir folder(path);
+    folder.setNameFilters(Comic::comicExtensions);
+    folder.setFilter(QDir::AllDirs|QDir::Files|QDir::NoDotAndDotDot);
+    QFileInfoList folderContent = folder.entryInfoList();
+
+    QString currentPath;
+    foreach (QFileInfo info, folderContent) {
+        currentPath = info.absoluteFilePath();
+        if(info.isDir())
+            validComicFiles << findValidComicFilesInFolder(currentPath); //find comics recursively
+        else if(Comic::fileIsComic(currentPath))
+        {
+            validComicFiles << currentPath;
+        }
     }
 
     return validComicFiles;

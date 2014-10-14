@@ -35,8 +35,8 @@ signals:
     void comicRated(int,QModelIndex);
 
     //Drops
-    void copyComicsToCurrentFolder(QList<QString>);
-    void moveComicsToCurrentFolder(QList<QString>);
+    void copyComicsToCurrentFolder(QList<QPair<QString, QString> >);
+    void moveComicsToCurrentFolder(QList<QPair<QString, QString> >);
 
 public slots:
     virtual void setShowMarks(bool show) = 0;

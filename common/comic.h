@@ -49,13 +49,14 @@ class ComicDB;
 
 		bool _isPDF;
 
-        static QStringList imageExtensions;
-        static QStringList literalImageExtensions;
-        static QStringList comicExtensions;
-        static QStringList literalComicExtensions;
-
 	public:
-		Bookmarks * bm;
+
+        static const QStringList imageExtensions;
+        static const QStringList literalImageExtensions;
+        static const QStringList comicExtensions;
+        static const QStringList literalComicExtensions;
+
+        Bookmarks * bm;
 
 		//Constructors
 		Comic();
@@ -84,9 +85,9 @@ class ComicDB;
         inline static QStringList getSupportedImageFormats() { return imageExtensions;}
         inline static QStringList getSupportedImageLiteralFormats() { return literalImageExtensions;}
 
-        static bool fileIsComic(QUrl & path);
-        static QList<QString> filterInvalidComicFiles(const QList<QUrl> & list);
-		
+        static bool fileIsComic(const QString &path);
+        static QList<QString> findValidComicFiles(const QList<QUrl> & list);
+        static QList<QString> findValidComicFilesInFolder(const QString &path);
 	public slots:
 		void loadFinished();
 		void setBookmark();
