@@ -3,6 +3,7 @@
 #include "treemodel.h"
 
 #include "comic.h"
+#include "comic_files_manager.h"
 
 #include "QsLog.h"
 
@@ -77,9 +78,12 @@ void YACReaderTreeView::dragEnterEvent(QDragEnterEvent *event)
     if (event->mimeData()->hasUrls())
     {
         urlList = event->mimeData()->urls();
+        QString currentPath;
         foreach (QUrl url, urlList)
         {
-            if(Comic::fileIsComic(url))
+            //comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
+            currentPath = url.toLocalFile();
+            if(Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir())
             {
                 event->acceptProposedAction();
                 return;
@@ -88,20 +92,25 @@ void YACReaderTreeView::dragEnterEvent(QDragEnterEvent *event)
     }
 }
 
+void YACReaderTreeView::dragLeaveEvent(QDragLeaveEvent *event)
+{
+    Q_UNUSED(event)
+}
+
 void YACReaderTreeView::dragMoveEvent(QDragMoveEvent *event)
 {
     QTreeView::dragMoveEvent(event);
     event->acceptProposedAction();
 
     //fix for drop auto expand
-    QModelIndex lastExpanded = indexAt(expandPos);
     QModelIndex underMouse = indexAt(event->pos());
-    if( underMouse.isValid() && (underMouse != lastExpanded)) {
+    if( underMouse.isValid()) {
         expandPos = event->pos();
         connect(&expandTimer,SIGNAL(timeout()),this,SLOT(expandCurrent()));
-        expandTimer.start(750);
+        expandTimer.setSingleShot(true);
+        expandTimer.start(500);
     }
-    //TODO force mouse hover decoration, why the event loop is not working here?
+    //force mouse hover decoration, TODO why the event loop is not working here?
     if(!t.isActive())
     {
         t.setSingleShot(true);
@@ -114,24 +123,33 @@ void YACReaderTreeView::dragMoveEvent(QDragMoveEvent *event)
 
 void YACReaderTreeView::dropEvent(QDropEvent *event)
 {
+    t.stop();
+
     QTreeView::dropEvent(event);
 
-    bool accepted = false;
     QLOG_DEBUG() << "drop on tree" << event->dropAction();
-    if(event->dropAction() == Qt::CopyAction)
-    {
-        QLOG_DEBUG() << "copy - tree";
-        emit copyComicsToFolder(Comic::filterInvalidComicFiles(event->mimeData()->urls()),indexAt(event->pos()));
 
-    }
-    else if(event->dropAction() & Qt::MoveAction)
-    {
-        QLOG_DEBUG() << "move - tree";
-        emit moveComicsToFolder(Comic::filterInvalidComicFiles(event->mimeData()->urls()),indexAt(event->pos()));
-    }
+    bool validAction = event->dropAction() == Qt::CopyAction || event->dropAction() & Qt::MoveAction;
 
-    if(accepted)
+    if(validAction)
+    {
+
+        QList<QPair<QString, QString> > droppedFiles = ComicFilesManager::getDroppedFiles(event->mimeData()->urls());
+        QModelIndex destinationIndex = indexAt(event->pos());
+
+        if(event->dropAction() == Qt::CopyAction)
+        {
+            QLOG_DEBUG() << "copy - tree :" << droppedFiles;
+            emit copyComicsToFolder(droppedFiles, destinationIndex);
+        }
+        else if(event->dropAction() & Qt::MoveAction)
+        {
+            QLOG_DEBUG() << "move - tree :" << droppedFiles;
+            emit moveComicsToFolder(droppedFiles, destinationIndex);
+        }
+
         event->acceptProposedAction();
+    }
 }
 
 

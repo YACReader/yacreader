@@ -9,9 +9,9 @@ class ComicFilesManager : public QObject
     Q_OBJECT
 public:
     explicit ComicFilesManager(QObject *parent = 0);
-    void copyComicsTo(const QList<QString> & sourceComics, const QString & folderDest);
-    void moveComicsTo(const QList<QString> & comics, const QString & folderDest);
-
+    void copyComicsTo(const QList<QPair<QString,QString> > & sourceComics, const QString & folderDest);
+    void moveComicsTo(const QList<QPair<QString,QString> > & comics, const QString & folderDest);
+    static QList<QPair<QString, QString> > getDroppedFiles(const QList<QUrl> & urls);
 signals:
     void currentComic(QString);
     void progress(int);
@@ -24,7 +24,7 @@ public slots:
 protected:
     bool move;
     bool canceled;
-    QList<QString> comics;
+    QList<QPair<QString,QString> > comics;
     QString folder;
 
 };

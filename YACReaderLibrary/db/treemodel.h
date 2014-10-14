@@ -87,6 +87,8 @@ public:
 
     QStringList getSubfoldersNames(const QModelIndex & mi);
 
+    void fetchMore(const QModelIndex & parent);
+
     enum Columns {
         Name = 0,
         Path = 1,

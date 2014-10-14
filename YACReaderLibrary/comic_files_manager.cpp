@@ -5,30 +5,61 @@
 
 #include <QsLog.h>
 
+#include "comic.h"
+
 ComicFilesManager::ComicFilesManager(QObject *parent) :
     QObject(parent), canceled(false)
 {
 }
 
-void ComicFilesManager::copyComicsTo(const QList<QString> &sourceComics, const QString &folderDest)
+void ComicFilesManager::copyComicsTo(const QList<QPair<QString,QString> > &sourceComics, const QString &folderDest)
 {
     comics = sourceComics;
     folder = folderDest;
     move = false;
 }
 
-void ComicFilesManager::moveComicsTo(const QList<QString> &sourceComics, const QString &folderDest)
+void ComicFilesManager::moveComicsTo(const QList<QPair<QString, QString> > &sourceComics, const QString &folderDest)
 {
     comics = sourceComics;
     folder = folderDest;
     move = true;
 }
 
+QList<QPair<QString, QString> > ComicFilesManager::getDroppedFiles(const QList<QUrl> &urls)
+{
+    QList<QPair<QString,QString> > dropedFiles;
+
+    QString currentPath;
+    foreach(QUrl url, urls)
+    {
+        currentPath = url.toLocalFile();
+        if(Comic::fileIsComic(currentPath))
+            dropedFiles << QPair<QString, QString>(currentPath,"/");
+        else
+        {
+            QFileInfo info(currentPath);
+            if(info.isDir())
+            {
+                foreach(QString comicPath, Comic::findValidComicFilesInFolder(info.absoluteFilePath()))
+                {
+                    QFileInfo comicInfo(comicPath);
+                    QString path = comicInfo.absolutePath();
+                    dropedFiles << QPair<QString, QString>(comicPath, path.remove(info.absolutePath()));
+                }
+            }
+        }
+    }
+
+    return dropedFiles;
+}
+
 void ComicFilesManager::process()
 {
     int i=0;
     bool successProcesingFiles = false;
-    foreach (QString source, comics) {
+    QPair<QString, QString> source;
+    foreach (source, comics) {
 
         if(canceled)
         {
@@ -39,12 +70,17 @@ void ComicFilesManager::process()
             return; //TODO rollback?
         }
 
-        QFileInfo info(source);
-        if(QFile::copy(source, QDir::cleanPath(folder+'/'+info.fileName())))
+        QFileInfo info(source.first);
+        QString destPath = QDir::cleanPath(folder+'/'+source.second);
+        QLOG_DEBUG() << "crear : " << destPath;
+        QDir().mkpath(destPath);
+        if(QFile::copy(source.first, QDir::cleanPath(destPath+'/'+info.fileName())))
         {
             successProcesingFiles = true;
             if(move)
-                QFile::remove(source);
+            {
+                QFile::remove(source.first); //TODO: remove the whole path....
+            }
         }
 
         i++;
