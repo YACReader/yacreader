@@ -20,6 +20,7 @@ ApiKeyDialog::ApiKeyDialog(QWidget *parent) :
 
     QLabel * info = new QLabel(tr("Before you can connect to Comic Vine, you need your own API key. Please, get one free <a href=\"http://www.comicvine.com/api/\">here</a>"));
     info->setWordWrap(true);
+    info->setOpenExternalLinks(true);
     edit = new QLineEdit();
     edit->setPlaceholderText(tr("Paste here your Comic Vine API key"));
     connect(edit,SIGNAL(textChanged(QString)),this,SLOT(enableAccept(QString)));
