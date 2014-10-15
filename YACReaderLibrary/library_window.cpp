@@ -1399,6 +1399,7 @@ void LibraryWindow::updateTreeFolder()
 
 void LibraryWindow::updateFolder(const QModelIndex & miFolder)
 {
+    QLOG_DEBUG() << "UPDATE FOLDER!!!!";
     updateDestination = miFolder;
 
     importWidget->setUpdateLook();
@@ -1425,8 +1426,7 @@ void LibraryWindow::reloadAfterCopyMove()
     if(getCurrentFolderIndex() == updateDestination)
         reloadCovers();
 
-    //TODO do not reload the whole model, just the current folder...
-    foldersModel->setupModelData(QDir::cleanPath(libraries.getPath(selectedLibrary->currentText())+"/.yacreaderlibrary"));
+    foldersModel->fetchMoreFromDB(updateDestination);
 
     enableNeededActions();
 }
