@@ -311,11 +311,33 @@ void TreeModel::setupModelData(QSqlQuery &sqlquery, TreeItem *parent)
 		item->id = record.value("id").toULongLong();
 		//la inserci�n de hijos se hace de forma ordenada
 		TreeItem * parent = items.value(record.value("parentId").toULongLong());
-		if(parent !=0) //TODO if parent==0 the parent of item was removed from the DB and delete on cascade didn't work, ERROR.
+        //if(parent !=0) //TODO if parent==0 the parent of item was removed from the DB and delete on cascade didn't work, ERROR.
 			parent->appendChild(item);
 		//se a�ade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
 		items.insert(item->id,item);
-	}
+    }
+}
+
+void TreeModel::updateFolderModelData(QSqlQuery &sqlquery, TreeItem *parent)
+{
+    while (sqlquery.next()) {
+        QList<QVariant> data;
+        QSqlRecord record = sqlquery.record();
+
+        data << record.value("name").toString();
+        data << record.value("path").toString();
+        data << record.value("finished").toBool();
+        data << record.value("completed").toBool();
+        TreeItem * item = new TreeItem(data);
+
+        item->id = record.value("id").toULongLong();
+        //la inserci�n de hijos se hace de forma ordenada
+        TreeItem * parent = items.value(record.value("parentId").toULongLong());
+        if(parent !=0) //TODO if parent==0 the parent of item was removed from the DB and delete on cascade didn't work, ERROR.
+            parent->appendChild(item);
+        //se a�ade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
+        items.insert(item->id,item);
+    }
 }
 
 void TreeModel::setupFilteredModelData()
@@ -545,7 +567,57 @@ QStringList TreeModel::getSubfoldersNames(const QModelIndex &mi)
     return result;
 }
 
-void TreeModel::fetchMore(const QModelIndex &parent)
+void TreeModel::fetchMoreFromDB(const QModelIndex &parent)
 {
+    TreeItem * item;
+    if(parent.isValid())
+        item = static_cast<TreeItem*>(parent.internalPointer());
+    else
+        item = rootItem;
 
+    //Remove all children
+    beginRemoveRows(parent, 0, item->childCount());
+    item->clearChildren();
+    endRemoveRows();
+
+    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+
+    QList<TreeItem *> items;
+    QList<TreeItem *> nextLevelItems;
+
+    QSqlQuery selectQuery(db);
+    selectQuery.prepare("select * from folder where id <> 1 and parentId = :parentId order by parentId,name");
+
+    items << item;
+    bool firstLevelUpdate = false;
+    while(items.size() > 0)
+    {
+        nextLevelItems.clear();
+        foreach(TreeItem * item, items)
+        {
+            selectQuery.bindValue(":parentId", item->id);
+
+            selectQuery.exec();
+            //Reload all children
+            if(!firstLevelUpdate)
+            {
+                beginInsertRows(parent, 0, selectQuery.numRowsAffected());
+                firstLevelUpdate = true;
+            }
+
+            updateFolderModelData(selectQuery,item);
+
+            if(!firstLevelUpdate)
+            endInsertRows();
+
+            nextLevelItems << item->children();
+
+        }
+
+        items.clear();
+        items = nextLevelItems;
+    }
+
+    db.close();
+    QSqlDatabase::removeDatabase(_databasePath);
 }

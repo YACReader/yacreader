@@ -87,7 +87,7 @@ public:
 
     QStringList getSubfoldersNames(const QModelIndex & mi);
 
-    void fetchMore(const QModelIndex & parent);
+    void fetchMoreFromDB(const QModelIndex & parent);
 
     enum Columns {
         Name = 0,
@@ -98,6 +98,7 @@ public:
 
 private:
 	void setupModelData( QSqlQuery &sqlquery, TreeItem *parent);
+    void updateFolderModelData( QSqlQuery &sqlquery, TreeItem *parent);
 	void setupFilteredModelData( QSqlQuery &sqlquery, TreeItem *parent);
 	void setupFilteredModelData();
 

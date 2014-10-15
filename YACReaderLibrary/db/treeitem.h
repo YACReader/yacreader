@@ -45,7 +45,6 @@
 #include <QVariant>
 #include <QModelIndex>
 
-//! [0]
 class TreeItem
 {
 public:
@@ -66,6 +65,8 @@ public:
 	QList<QString> comicNames;
     TreeItem * originalItem;
     void setData(int column, const QVariant &value);
+    void clearChildren();
+    QList<TreeItem*> children();
 private:
 	QList<TreeItem*> childItems;
 	QList<QVariant> itemData;
