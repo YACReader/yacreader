@@ -8,6 +8,7 @@
 #include <QPalette>
 #include <QIntValidator>
 #include <QFormLayout>
+#include <QBitmap>
 
 #include "startup.h"
 #include "yacreader_global.h"
@@ -63,87 +64,64 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	accept = new QPushButton(tr("set port"),this);
 	qrCodeImage = new QPixmap();
 	qrCode = new QLabel(this);
-	qrCode->move(196,73);
+    qrCode->move(64, 112);
 	qrCode->setFixedSize(200,200);
 	qrCode->setScaledContents(true);
 
-	QLabel * title1 = new QLabel(tr("EASY SERVER CONNECTION"),this);
-	title1->move(37,28);
-	title1->setStyleSheet("QLabel {color:#1F1F1F; font-size:18px; font-family: Arial; font-weight: bold;}");
+    QLabel * title1 = new QLabel(tr("Server connectivity information"),this);
+    title1->move(332, 61);
+    title1->setStyleSheet("QLabel {color:#474747; font-size:30px; font-family: Arial;}");
 
-	QLabel * title2 = new QLabel(tr("SERVER ADDRESS"),this);
-	title2->move(451,28);
-	title2->setStyleSheet("QLabel {color:#1F1F1F; font-size:18px; font-family: Arial; font-weight: bold;}");
-
-	QLabel * qrMessage = new QLabel(tr("just scan the code with your device!!"),this);
-	qrMessage->move(194,290);//373,627);
-	qrMessage->setStyleSheet("QLabel {color:#1F1F1F; font-size:16px; font-family: Arial; font-style: italic;}");
+    QLabel * qrMessage = new QLabel(tr("Scan it!"),this);
+    qrMessage->move(135,388);//373,627);
+    qrMessage->setStyleSheet("QLabel {color:#A3A3A3; font-size:18px; font-family: Arial;}");
 	qrMessage->setWordWrap(true);
 	qrMessage->setFixedWidth(200);
 
-	QLabel * propaganda = new QLabel(tr("YACReader is now available for iOS devices, the best comic reading experience now in your iPad, iPhone or iPod touch. <a href='http://ios.yacreader.com' style='color:rgb(193, 148, 65)'> Discover it! </a>"),this);
-	propaganda->move(36,375);
-	propaganda->setStyleSheet("QLabel {color:#1F1F1F; font-size:16px; font-family: Arial; font-style: italic;}"
-		"QLabel::a {color:#1A1A1A}");
-	propaganda->setWordWrap(true);
-	propaganda->setFixedWidth(590);
+    QLabel * propaganda = new QLabel(tr("YACReader is available for iOS devices. <a href='http://ios.yacreader.com' style='color:rgb(193, 148, 65)'> Discover it! </a>"),this);
+    propaganda->move(332,505);
+    propaganda->setStyleSheet("QLabel {color:#4D4D4D; font-size:13px; font-family: Arial; font-style: italic;}");
+    /*propaganda->setWordWrap(true);
+    propaganda->setFixedWidth(590);*/
 	propaganda->setOpenExternalLinks(true);
 
 	//FORM---------------------------------------------------------------------
-	QWidget * form = new QWidget(this);
-	QFormLayout * formLayout = new QFormLayout;
 
-	/*QLabel * ipLabel = new QLabel(tr("IP address"),this);
-	ipLabel->move(452,75);
-	ipLabel->setStyleSheet("QLabel {color:#1F1F1F; font-size:13px; font-family: Arial; font-weight: bold;}");
+    QLabel * ipLabel = new QLabel(tr("Choose an IP address"),this);
+    ipLabel->move(332,117);
+    ipLabel->setStyleSheet("QLabel {color:#575757; font-size:18px; font-family: Arial;}");
 
 	QLabel * portLabel = new QLabel(tr("Port"),this);
-	portLabel->move(452, 114);
-	portLabel->setStyleSheet("QLabel {color:#1F1F1F; font-size:13px; font-family: Arial; font-weight: bold;}");*/
+    portLabel->move(332, 211);
+    portLabel->setStyleSheet("QLabel {color:#575757; font-size:18px; font-family: Arial;}");
 
 	ip = new QComboBox(this);
 	connect(ip,SIGNAL(activated(const QString &)),this,SLOT(regenerateQR(const QString &)));
-	//ip->move(520,71);
-#ifndef Q_OS_WIN32
-	ip->setStyleSheet("QComboBox{font-size:10px;}");
-#endif
-	ip->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-#ifdef Q_OS_WIN32
-	ip->setMinimumWidth(120);
-#else
-	ip->setFixedSize(120,ip->height());
-#endif
+
+    ip->setFixedWidth(200);
+    ip->move(332,153);
+
 
 	port = new QLineEdit("8080",this);
 	port->setReadOnly(false);
-	port->setMaximumWidth(50);
-#ifndef Q_OS_WIN32
-	port->setStyleSheet("QLineEdit{font-size:10px;}");
-#endif
+    port->setFixedWidth(100);
+    port->move(332, 244);
+
 	//port->move(520,110);
 	QValidator *validator = new QIntValidator(1024, 65535, this);
 	port->setValidator(validator);
 
 	//accept->move(514,149);
 	connect(accept,SIGNAL(pressed()),this,SLOT(updatePort()));
-	
-	formLayout->addRow(tr("IP address"),ip);
-	formLayout->addRow(tr("Port"),port);
-	formLayout->addRow("",accept);
-
-	form->setLayout(formLayout);
-#ifdef Q_OS_WIN32
-	form->move(444,70);
-#else
-	form->move(435,70);
-#endif
 	//END FORM-----------------------------------------------------------------
 
 	check = new QCheckBox(this);
-	check->move(453,314);
+    check->move(332,314);
 	check->setText(tr("enable the server"));
-	check->setStyleSheet("QCheckBox {color:#1F1F1F; font-size:13px; font-family: Arial; font-weight: bold;}");
+    check->setStyleSheet("QCheckBox {color:#262626; font-size:13px; font-family: Arial;}");
 	
+
+    accept->move(444, 242);
 	//check->setLayoutDirection(Qt::RightToLeft);
 	
 	//elementsLayout->setSpacing(40);
@@ -168,7 +146,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 
 	this->setFixedSize(image.size());
 	
-	QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+	QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creaciÃ³n del fichero de config con el servidor
 	settings->beginGroup("libraryConfig");
 
 	if(settings->value(SERVER_ON,true).toBool())
@@ -186,7 +164,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 
 void ServerConfigDialog::enableServer(int status)
 {
-	QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+	QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creaciÃ³n del fichero de config con el servidor
 	settings->beginGroup("libraryConfig");
 
 	if(status == Qt::Checked)
@@ -299,7 +277,16 @@ void ServerConfigDialog::updateImage()
 	if(!qrCodeImage->loadFromData(imgBinary))
 		qrCode->setText(tr("QR generator error!"));
 	else
+    {
+        QPixmap p = *qrCodeImage;
+        QPixmap pMask( p.size() );
+        pMask.fill( QColor(66, 66, 66) );
+        pMask.setMask( p.createMaskFromColor( Qt::white ) );
+
+        *qrCodeImage = pMask;
+
 		qrCode->setPixmap(*qrCodeImage);
+    }
 	
 	delete qrGenerator;
 
@@ -319,7 +306,7 @@ void ServerConfigDialog::regenerateQR(const QString & ip)
 void ServerConfigDialog::updatePort()
 {
 
-	QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+	QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creaciÃ³n del fichero de config con el servidor
 	settings->beginGroup("listener");
 	settings->setValue("port",port->text().toInt());
 	settings->endGroup();
