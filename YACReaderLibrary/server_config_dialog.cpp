@@ -104,13 +104,20 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 
 	port = new QLineEdit("8080",this);
 	port->setReadOnly(false);
-    port->setFixedWidth(100);
-    port->move(332, 244);
+    //port->setFixedWidth(100);
+    //port->move(332, 244);
 
 	//port->move(520,110);
 	QValidator *validator = new QIntValidator(1024, 65535, this);
 	port->setValidator(validator);
 
+    QWidget * portWidget = new QWidget(this);
+    QHBoxLayout * portWidgetLayout = new QHBoxLayout;
+    portWidgetLayout->addWidget(port);
+    portWidgetLayout->addWidget(accept);
+    portWidgetLayout->setMargin(0);
+    portWidget->setLayout(portWidgetLayout);
+    portWidget->move(332, 244);
 	//accept->move(514,149);
 	connect(accept,SIGNAL(pressed()),this,SLOT(updatePort()));
 	//END FORM-----------------------------------------------------------------
@@ -121,7 +128,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
     check->setStyleSheet("QCheckBox {color:#262626; font-size:13px; font-family: Arial;}");
 	
 
-    accept->move(444, 242);
+    //accept->move(444, 242);
 	//check->setLayoutDirection(Qt::RightToLeft);
 	
 	//elementsLayout->setSpacing(40);
