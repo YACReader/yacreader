@@ -780,7 +780,7 @@ void LibraryWindow::createToolBars()
 	libraryToolBar->addAction(toggleFullScreenAction);
 
 	libraryToolBar->addWidget(new QToolBarStretch());
-	libraryToolBar->addWidget(foldersFilter);
+    libraryToolBar->addWidget(searchEdit);
 
 	libraryToolBar->setMovable(false);
 
