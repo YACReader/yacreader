@@ -66,18 +66,10 @@ shouldOpenPrevious(false)
 	QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReader.ini",QSettings::IniFormat);
 
 	//CONFIG GOTO_FLOW--------------------------------------------------------
-	if(QGLFormat::hasOpenGL() && !settings->contains(USE_OPEN_GL))
-	{
-		OnStartFlowSelectionDialog * flowSelDialog = new OnStartFlowSelectionDialog();
-
-		flowSelDialog->exec();
-		if(flowSelDialog->result() == QDialog::Accepted)
-			settings->setValue(USE_OPEN_GL,2);
-		else
-			settings->setValue(USE_OPEN_GL,0);
-
-		delete flowSelDialog;
-	}
+    if(QGLFormat::hasOpenGL() && !settings->contains(USE_OPEN_GL))
+        settings->setValue(USE_OPEN_GL,2);
+    else
+        settings->setValue(USE_OPEN_GL,0);
 
 	if(QGLFormat::hasOpenGL() && (settings->value(USE_OPEN_GL).toBool() == true))
 		goToFlow = new GoToFlowGL(this,Configuration::getConfiguration().getFlowType());
