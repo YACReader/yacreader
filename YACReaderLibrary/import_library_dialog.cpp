@@ -86,10 +86,10 @@ void ImportLibraryDialog::setupUI()
 	setModal(true);
 	setWindowTitle(tr("Extract a catalog"));
 }
-void ImportLibraryDialog::show(const YACReaderLibraries &libs)
+void ImportLibraryDialog::open(const YACReaderLibraries &libs)
 {
 	libraries = libs;
-	QDialog::show();
+    QDialog::open();
 }
 
 void ImportLibraryDialog::add()
