@@ -998,7 +998,7 @@ void LibraryWindow::createConnections()
 
 	//actions
 	connect(createLibraryAction,SIGNAL(triggered()),this,SLOT(createLibrary()));
-	connect(exportLibraryAction,SIGNAL(triggered()),exportLibraryDialog,SLOT(show()));
+    connect(exportLibraryAction,SIGNAL(triggered()),exportLibraryDialog,SLOT(open()));
 	connect(importLibraryAction,SIGNAL(triggered()),this,SLOT(importLibraryPackage()));
 
 	connect(openLibraryAction,SIGNAL(triggered()),this,SLOT(showAddLibrary()));
@@ -1560,7 +1560,7 @@ void LibraryWindow::setCurrentComicUnreaded() {
 }
 
 void LibraryWindow::createLibrary() {
-	createLibraryDialog->show(libraries);
+    createLibraryDialog->open(libraries);
 }
 
 void LibraryWindow::create(QString source, QString dest, QString name)
@@ -1598,7 +1598,7 @@ void LibraryWindow::openLastCreated()
 
 void LibraryWindow::showAddLibrary()
 {
-	addLibraryDialog->show();
+    addLibraryDialog->open();
 }
 
 void LibraryWindow::openLibrary(QString path, QString name)
@@ -1674,8 +1674,10 @@ void LibraryWindow::removeLibrary()
 {
 	QString currentLibrary = selectedLibrary->currentText();
 	QMessageBox * messageBox = new QMessageBox(tr("Are you sure?"),tr("Do you want remove ")+currentLibrary+tr(" library?"),QMessageBox::Question,QMessageBox::Yes,QMessageBox::YesToAll,QMessageBox::No);
-	messageBox->button(QMessageBox::YesToAll)->setText(tr("Remove and delete metadata"));
-	int ret = messageBox->exec();
+    messageBox->button(QMessageBox::YesToAll)->setText(tr("Remove and delete metadata"));
+    messageBox->setParent(this);
+    messageBox->setWindowModality(Qt::WindowModal);
+    int ret = messageBox->exec();
 	if(ret == QMessageBox::Yes)
 	{
 		libraries.remove(currentLibrary);
@@ -1700,7 +1702,7 @@ void LibraryWindow::removeLibrary()
 
 void LibraryWindow::renameLibrary()
 {
-	renameLibraryDialog->show();
+    renameLibraryDialog->open();
 }
 
 void LibraryWindow::rename(QString newName) //TODO replace
@@ -2136,13 +2138,13 @@ void LibraryWindow::hideComicFlow(bool hide)
 void LibraryWindow::showExportComicsInfo()
 {
 	exportComicsInfoDialog->source = currentPath() + "/.yacreaderlibrary/library.ydb";
-	exportComicsInfoDialog->show();
+    exportComicsInfoDialog->open();
 }
 
 void LibraryWindow::showImportComicsInfo()
 {
 	importComicsInfoDialog->dest = currentPath() + "/.yacreaderlibrary/library.ydb";
-	importComicsInfoDialog->show();
+    importComicsInfoDialog->open();
 }
 #include "startup.h"
 extern Startup * s;
@@ -2345,7 +2347,7 @@ void LibraryWindow::libraryAlreadyExists(const QString & name)
 
 void LibraryWindow::importLibraryPackage()
 {
-	importLibraryDialog->show(libraries);
+    importLibraryDialog->open(libraries);
 }
 
 void LibraryWindow::updateComicsView(quint64 libraryId, const ComicDB & comic)

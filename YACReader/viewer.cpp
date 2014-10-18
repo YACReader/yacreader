@@ -240,7 +240,7 @@ void Viewer::prev()
 }
 void Viewer::showGoToDialog()
 {
-	goToDialog->show();
+	goToDialog->open();
 }
 void Viewer::goTo(unsigned int page)
 {

@@ -34,7 +34,7 @@
 		void setDataAndStart(QString name, QString paht);
 		void nameSetted(const QString & text);
 		void pathSetted(const QString & text);
-		void show(const YACReaderLibraries &libraries);
+        void open(const YACReaderLibraries &libraries);
 	signals:
 		void createLibrary(QString source, QString target, QString name);
 		void cancelCreate();

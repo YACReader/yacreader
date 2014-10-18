@@ -36,7 +36,7 @@
 		void findDestination();
 		void close();
 		void nameEntered();
-		void show(const YACReaderLibraries & libs);
+		void open(const YACReaderLibraries & libs);
 
 	signals:
 		void unpackCLC(QString clc,QString targetFolder, QString name);

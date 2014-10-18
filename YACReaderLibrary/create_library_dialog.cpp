@@ -75,10 +75,10 @@ void CreateLibraryDialog::setupUI()
 	setWindowTitle(tr("Create new library"));
 }
 
-void CreateLibraryDialog::show(const YACReaderLibraries & libs)
+void CreateLibraryDialog::open(const YACReaderLibraries & libs)
 {
 	libraries = libs;
-	QDialog::show();
+    QDialog::open();
 }
 
 void CreateLibraryDialog::create()
@@ -153,7 +153,7 @@ void CreateLibraryDialog::setDataAndStart(QString name, QString path)
 {
 	this->path->setText(path);
 	this->nameEdit->setText(name);
-	QDialog::show();
+    QDialog::open();
 	create();
 }
 //-----------------------------------------------------------------------------
