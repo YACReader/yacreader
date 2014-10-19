@@ -80,7 +80,12 @@ void ShortcutsManager::resetToDefaults()
 
 QString ShortcutsManager::getShortcut(const QString &name)
 {
-    QSettings s(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat);
+#ifdef YACREADER
+    QString filePath = "/YACReader.ini";
+#else
+    QString filePath = "/YACReaderLibrary.ini";
+#endif
+    QSettings s(YACReader::getSettingsPath()+filePath,QSettings::IniFormat);
     s.beginGroup("shortcuts");
 
     return s.value(name,defaultShorcuts.value(name)).toString();
@@ -88,7 +93,12 @@ QString ShortcutsManager::getShortcut(const QString &name)
 
 void ShortcutsManager::saveShortcut(QAction *action)
 {
-    QSettings s(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat);
+#ifdef YACREADER
+    QString filePath = "/YACReader.ini";
+#else
+    QString filePath = "/YACReaderLibrary.ini";
+#endif
+    QSettings s(YACReader::getSettingsPath()+filePath,QSettings::IniFormat);
     s.beginGroup("shortcuts");
 
     return s.setValue(action->data().toString() , action->shortcut().toString());
