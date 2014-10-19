@@ -17,6 +17,10 @@ public:
 signals:
     void subfolderSelected(QModelIndex, int);
 
+    //Drops
+    void copyComicsToCurrentFolder(QList<QPair<QString, QString> >);
+    void moveComicsToCurrentFolder(QList<QPair<QString, QString> >);
+
 public slots:
     void onItemClicked(const QModelIndex & mi);
 
@@ -27,6 +31,10 @@ protected:
     QModelIndex parent;
     QStringListModel * subfoldersModel;
     void paintEvent(QPaintEvent *);
+
+    //Drop to import
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dropEvent(QDropEvent *event);
 };
 
 #endif // EMPTY_FOLDER_WIDGET_H
