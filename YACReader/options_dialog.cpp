@@ -47,7 +47,7 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 
 	QHBoxLayout * path = new QHBoxLayout();
 	path->addWidget(pathEdit = new QLineEdit());
-	path->addWidget(pathFindButton = new QPushButton(QIcon(":/images/comicFolder.png"),""));
+    path->addWidget(pathFindButton = new QPushButton(QIcon(":/images/find_folder.png"),""));
 	pathBox->setLayout(path);
 
 	connect(pathFindButton,SIGNAL(clicked()),this,SLOT(findFolder()));
@@ -280,7 +280,7 @@ void OptionsDialog::resetImageConfig()
 
 void OptionsDialog::show()
 {
-	//TODO solucionar el tema de las settings, esto sólo debería aparecer en una única línea de código
+	//TODO solucionar el tema de las settings, esto sÃ³lo deberÃ­a aparecer en una Ãºnica lÃ­nea de cÃ³digo
 	QSettings *s = new QSettings(YACReader::getSettingsPath()+"/YACReader.ini",QSettings::IniFormat);
 	fitToWidthRatioS->disconnect();
 	fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);

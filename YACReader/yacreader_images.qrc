@@ -2,7 +2,7 @@
   <qresource>
     <file>../images/icon.png</file>
     <file>../images/goto.png</file>
-    <file>../images/comicFolder.png</file>
+    <file>../images/find_folder.png</file>
     <file>../images/flow1.png</file>
     <file>../images/flow2.png</file>
     <file>../images/flow3.png</file>
@@ -59,7 +59,6 @@
     <file>../images/helpImages/deleteLibrary.png</file>
     <file>../images/helpImages/properties.png</file>
     <file>../images/helpImages/doublePage.png</file>
-    <file>../images/helpImages/shortcuts.png</file>
     <file>../images/helpImages/keyboard.png</file>
     <file>../images/helpImages/mouse.png</file>
     <file>../images/helpImages/speaker.png</file>
