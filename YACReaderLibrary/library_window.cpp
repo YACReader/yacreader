@@ -167,15 +167,7 @@ void LibraryWindow::doLayout()
     //---------------------------------------------------------------------------
     if(QGLFormat::hasOpenGL() && !settings->contains(USE_OPEN_GL))
     {
-        OnStartFlowSelectionDialog * flowSelDialog = new OnStartFlowSelectionDialog();
-
-        flowSelDialog->exec();
-        if(flowSelDialog->result() == QDialog::Accepted)
-            settings->setValue(USE_OPEN_GL,2);
-        else
-            settings->setValue(USE_OPEN_GL,0);
-
-        delete flowSelDialog;
+        settings->setValue(USE_OPEN_GL,2);
     }
 
     //FOLDERS FILTER-------------------------------------------------------------

@@ -65,16 +65,16 @@ shouldOpenPrevious(false)
 	
 	QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReader.ini",QSettings::IniFormat);
 
-	//CONFIG GOTO_FLOW--------------------------------------------------------
+    //CONFIG GOTO_FLOW--------------------------------------------------------
     if(QGLFormat::hasOpenGL() && !settings->contains(USE_OPEN_GL))
+    {
         settings->setValue(USE_OPEN_GL,2);
-    else
-        settings->setValue(USE_OPEN_GL,0);
+    }
 
-	if(QGLFormat::hasOpenGL() && (settings->value(USE_OPEN_GL).toBool() == true))
-		goToFlow = new GoToFlowGL(this,Configuration::getConfiguration().getFlowType());
-	else
-		goToFlow = new GoToFlow(this,Configuration::getConfiguration().getFlowType());
+    if(QGLFormat::hasOpenGL() && (settings->value(USE_OPEN_GL).toBool() == true))
+        goToFlow = new GoToFlowGL(this,Configuration::getConfiguration().getFlowType());
+    else
+        goToFlow = new GoToFlow(this,Configuration::getConfiguration().getFlowType());
 
 	goToFlow->setFocusPolicy(Qt::StrongFocus);
 	goToFlow->hide();
