@@ -1069,6 +1069,9 @@ void LibraryWindow::createConnections()
     connect(comicsModel,SIGNAL(isEmpty()),this,SLOT(showEmptyFolderView()));
     connect(comicsModel,SIGNAL(searchNumResults(int)),this,SLOT(checkSearchNumResults(int)));
     connect(emptyFolderWidget,SIGNAL(subfolderSelected(QModelIndex,int)),this,SLOT(selectSubfolder(QModelIndex,int)));
+    //Drops
+    connect(emptyFolderWidget, SIGNAL(copyComicsToCurrentFolder(QList<QPair<QString, QString> >)), this, SLOT(copyAndImportComicsToCurrentFolder(QList<QPair<QString, QString> >)));
+    connect(emptyFolderWidget, SIGNAL(moveComicsToCurrentFolder(QList<QPair<QString, QString> >)), this, SLOT(moveAndImportComicsToCurrentFolder(QList<QPair<QString, QString> >)));
 
     connect(showEditShortcutsAction,SIGNAL(triggered()),editShortcutsDialog,SLOT(show()));
 
