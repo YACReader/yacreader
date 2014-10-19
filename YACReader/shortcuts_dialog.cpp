@@ -37,19 +37,7 @@ ShortcutsDialog::ShortcutsDialog(QWidget * parent)
 	mainLayout->addLayout(shortcutsLayout);
 	mainLayout->addLayout(bottomLayout);
 
-	QHBoxLayout *imgMainLayout = new QHBoxLayout;
-	QLabel * imgLabel = new QLabel();
-	QPixmap p(":/images/shortcuts.png");
-	imgLabel->setPixmap(p);
-
-	QVBoxLayout * imgLayout = new QVBoxLayout;
-	imgLayout->addWidget(imgLabel);
-	imgLayout->addStretch();
-
-	imgMainLayout->addLayout(imgLayout);
-	imgMainLayout->addLayout(mainLayout);
-
-	setLayout(imgMainLayout);
+    setLayout(mainLayout);
 
     setFixedSize(QSize(700,500));
 
