@@ -25,7 +25,7 @@ EmptyFolderWidget::EmptyFolderWidget(QWidget *parent) :
     iconLabel->setPixmap(QPixmap(":/images/empty_folder.png"));
     iconLabel->setAlignment(Qt::AlignCenter);
 
-    titleLabel = new QLabel("Subfolders in this folder");
+    titleLabel = new QLabel(tr("Subfolders in this folder"));
     titleLabel->setAlignment(Qt::AlignCenter);
     titleLabel->setStyleSheet("QLabel {color:#CCCCCC; font-size:24px;font-family:Arial;font-weight:bold;}");
 
@@ -80,6 +80,15 @@ void EmptyFolderWidget::setSubfolders(const QModelIndex &mi, const QStringList &
     parent = mi;
     subfoldersModel->setStringList(foldersNames);
     foldersView->setModel(subfoldersModel);
+
+    if(foldersNames.isEmpty())
+    {
+        titleLabel->setText(tr("Empty folder") + QString("<p style='color:rgb(150,150,150);font-size:14px;font-weight:normal;'>%1</p>").arg(tr("Drag and drop folders and comics here")));
+    }
+    else
+    {
+        titleLabel->setText(tr("Subfolders in this folder"));
+    }
 }
 
 void EmptyFolderWidget::onItemClicked(const QModelIndex &mi)
