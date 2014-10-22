@@ -65,7 +65,7 @@ YACReaderTitledToolBar::YACReaderTitledToolBar(const QString & title, QWidget *p
 	mainLayout->setSpacing(0);
 
 	QString styleSheet = "QWidget {border:0px;}";
-	setStyleSheet(styleSheet);
+    setStyleSheet(styleSheet);
 
 	nameLabel = new DropShadowLabel(this);
 	nameLabel->setText(title);
@@ -108,5 +108,18 @@ void YACReaderTitledToolBar::addSpacing(int spacing)
 {
 	QHBoxLayout * mainLayout = dynamic_cast<QHBoxLayout *>(layout());
 
-	mainLayout->addSpacing(spacing);
+    mainLayout->addSpacing(spacing);
+}
+
+void YACReaderTitledToolBar::addSepartor()
+{
+    QHBoxLayout * mainLayout = dynamic_cast<QHBoxLayout *>(layout());
+
+    QWidget * w = new QWidget(this);
+    w->setFixedSize(1,14);
+    w->setStyleSheet("QWidget {background-color:#6F6F6F;}");
+
+    mainLayout->addSpacing(10);
+    mainLayout->addWidget(w);
+    mainLayout->addSpacing(10);
 }

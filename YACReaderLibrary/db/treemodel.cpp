@@ -621,3 +621,22 @@ void TreeModel::fetchMoreFromDB(const QModelIndex &parent)
     db.close();
     QSqlDatabase::removeDatabase(_databasePath);
 }
+
+void TreeModel::deleteFolder(const QModelIndex &mi)
+{
+   beginRemoveRows(mi.parent(),mi.row(),mi.row());
+
+   TreeItem * item = static_cast<TreeItem*>(mi.internalPointer());
+
+   TreeItem * parent = item->parent();
+   parent->removeChild(mi.row());
+
+   Folder f;
+   f.setId(item->id);
+
+   QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+   DBHelper::removeFromDB(&f,db);
+   QSqlDatabase::removeDatabase(_databasePath);
+
+   endRemoveRows();
+}

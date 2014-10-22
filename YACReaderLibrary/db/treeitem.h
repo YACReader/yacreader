@@ -65,6 +65,7 @@ public:
 	QList<QString> comicNames;
     TreeItem * originalItem;
     void setData(int column, const QVariant &value);
+    void removeChild(int childIndex);
     void clearChildren();
     QList<TreeItem*> children();
 private:
