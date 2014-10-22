@@ -36,14 +36,8 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
 	l->addWidget(librariesTitle);
 
 #ifndef Q_OS_MAC
-	{QWidget * w = new QWidget();
-	w->setStyleSheet("QWidget {border:none; border-bottom:1px solid #636363;border-top:1px solid #292929;}");
-	w->setMinimumHeight(2);
-
 	l->addSpacing(4);
-
-	l->addWidget(w);}
-
+    l->addWidget(new YACReaderSideBarSeparator(this));
 	l->addSpacing(3);
 #endif
 
@@ -52,14 +46,8 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
 #ifndef Q_OS_MAC
 	l->addSpacing(6);
 
-	{QWidget * w = new QWidget();
-	w->setStyleSheet("QWidget {border:none; border-bottom:1px solid #636363;border-top:1px solid #292929;}");
-	w->setMinimumHeight(2);
-
 	l->addSpacing(5);
-
-	l->addWidget(w);}
-
+    l->addWidget(new YACReaderSideBarSeparator(this));
 	l->addSpacing(4);
 #else
 	l->addSpacing(6);
@@ -68,20 +56,13 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
 	l->addWidget(foldersTitle);
 
 #ifndef Q_OS_MAC
-	{QWidget * w = new QWidget();
-	w->setStyleSheet("QWidget {border:none; border-bottom:1px solid #636363;border-top:1px solid #292929;}");
-	w->setMinimumHeight(2);
-
+    {
 	l->addSpacing(4);
-
-	l->addWidget(w);}
-
-
+    l->addWidget(new YACReaderSideBarSeparator(this));}
 	l->addSpacing(4);
 #endif
 
 	l->addWidget(foldersView);
-
 	l->setSpacing(0);
 	setLayout(l);
 }
@@ -121,4 +102,20 @@ void YACReaderSideBar::paintEvent(QPaintEvent * event)
 QSize YACReaderSideBar::sizeHint() const
 {
 	return QSize(275,200);
+}
+
+
+YACReaderSideBarSeparator::YACReaderSideBarSeparator(QWidget *parent)
+    :QWidget(parent)
+{
+    setFixedHeight(1);
+}
+
+void YACReaderSideBarSeparator::paintEvent(QPaintEvent * event)
+{
+   Q_UNUSED(event)
+
+   QPainter painter(this);
+
+   painter.fillRect(5,0,width()-10,height(),QColor("#575757"));
 }
