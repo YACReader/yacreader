@@ -89,6 +89,8 @@ public:
 
     void fetchMoreFromDB(const QModelIndex & parent);
 
+    void addFolderAtParent(const QString & folderName, const QModelIndex & parent);
+
     enum Columns {
         Name = 0,
         Path = 1,
