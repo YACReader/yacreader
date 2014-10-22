@@ -6,7 +6,7 @@
 #include <QModelIndex>
 #include <comic_db.h>
 
-class ComicsRemover : public QThread
+class ComicsRemover : public QObject
 {
 	Q_OBJECT
 public:
@@ -17,12 +17,31 @@ signals:
    void removeError();
    void finished();
 
-private:
-	void run();
+public slots:
+    void process();
 
 private:
 	QModelIndexList indexList;
 	QList<QString> paths;
+};
+
+class FoldersRemover : public QObject
+{
+    Q_OBJECT
+public:
+    explicit FoldersRemover(QModelIndexList & indexList, QList<QString> & paths, QObject *parent = 0);
+
+signals:
+   void remove(QModelIndex);
+   void removeError();
+   void finished();
+
+public slots:
+   void process();
+
+private:
+    QModelIndexList indexList;
+    QList<QString> paths;
 };
 
 #endif // COMICS_REMOVER_H

@@ -147,6 +147,9 @@ private:
 	//QAction * socialAction;
 
 	//tree actions
+    QAction * addFolderAction;
+    QAction * deleteFolderAction;
+    //--
 	QAction * setRootIndexAction;
 	QAction * expandAllNodesAction;
 	QAction * colapseAllNodesAction;
@@ -339,6 +342,9 @@ public slots:
     void reloadAfterCopyMove();
     QModelIndex getCurrentFolderIndex();
     void enableNeededActions();
+    void addFolderToCurrentIndex();
+    void deleteSelectedFolder();
+    void errorDeletingFolder();
 };
 
 #endif

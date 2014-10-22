@@ -1,13 +1,16 @@
 #include "comics_remover.h"
 
 #include <QFile>
+#include <QDir>
 
-ComicsRemover::ComicsRemover(QModelIndexList & il, QList<QString> &  ps, QObject *parent) :
-	QThread(parent),indexList(il), paths(ps)
+#include "QsLog.h"
+
+ComicsRemover::ComicsRemover(QModelIndexList & il, QList<QString> &  ps, QObject *parent)
+    :QObject(parent),indexList(il), paths(ps)
 {
 }
 
-void ComicsRemover::run()
+void ComicsRemover::process()
 {
 	QString currentComicPath;
 	QListIterator<QModelIndex> i(indexList);
@@ -26,4 +29,35 @@ void ComicsRemover::run()
 	}
 
 	emit finished();
+}
+
+
+FoldersRemover::FoldersRemover(QModelIndexList &il, QList<QString> &ps, QObject *parent)
+    :QObject(parent),indexList(il), paths(ps)
+{
+
+}
+
+void FoldersRemover::process()
+{
+    QString currentFolderPath;
+    QListIterator<QModelIndex> i(indexList);
+    QListIterator<QString> i2(paths);
+    i.toBack();
+    i2.toBack();
+
+    QLOG_DEBUG() << "Deleting folders" << paths.at(0);
+
+    while (i.hasPrevious() && i2.hasPrevious())
+    {
+        QModelIndex mi = i.previous();
+        currentFolderPath = i2.previous();
+        QDir d(currentFolderPath);
+        if(d.removeRecursively() || !d.exists()) //the folder is in the DB but no in the drive...
+            emit remove(mi);
+        else
+            emit removeError();
+    }
+
+    emit finished();
 }

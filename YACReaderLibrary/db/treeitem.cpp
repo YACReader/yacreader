@@ -68,6 +68,11 @@ void TreeItem::setData(int column, const QVariant & value)
     itemData[column] = value;
 }
 
+void TreeItem::removeChild(int childIndex)
+{
+    childItems.removeAt(childIndex);
+}
+
 void TreeItem::clearChildren()
 {
     qDeleteAll(childItems);

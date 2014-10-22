@@ -189,6 +189,9 @@ void LibraryWindow::doLayout()
 	librariesTitle->addAction(openLibraryAction);
 	librariesTitle->addSpacing(3);
 
+    foldersTitle->addAction(addFolderAction);
+    foldersTitle->addAction(deleteFolderAction);
+    foldersTitle->addSepartor();
 	foldersTitle->addAction(setRootIndexAction);
 	foldersTitle->addAction(expandAllNodesAction);
 	foldersTitle->addAction(colapseAllNodesAction);
@@ -319,6 +322,8 @@ void LibraryWindow::setUpShortcutsManagement()
 
     editShortcutsDialog->addActionsGroup("Folders",QIcon(":/images/shortcuts_group_folders.png"),
                                      tmpList = QList<QAction *>()
+                                     << addFolderAction
+                                     << deleteFolderAction
                                      << setRootIndexAction
                                      << expandAllNodesAction
                                      << colapseAllNodesAction
@@ -523,6 +528,18 @@ void LibraryWindow::createActions()
 	QIcon icoHelpButton;
 	icoHelpButton.addPixmap(QPixmap(":/images/main_toolbar/help.png"), QIcon::Normal);
 	helpAboutAction->setIcon(icoHelpButton);
+
+    addFolderAction = new QAction(tr("Add new folder"), this);
+    addFolderAction->setData(ADD_FOLDER_ACTION_YL);
+    addFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_FOLDER_ACTION_YL));
+    addFolderAction->setToolTip(tr("Add new folder to the current library"));
+    addFolderAction->setIcon(QIcon(":/images/addNew_sidebar.png"));
+
+    deleteFolderAction = new QAction(tr("Delete folder"), this);
+    deleteFolderAction->setData(REMOVE_FOLDER_ACTION_YL);
+    deleteFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(REMOVE_FOLDER_ACTION_YL));
+    deleteFolderAction->setToolTip(tr("Delete current folder from disk"));
+    deleteFolderAction->setIcon(QIcon(":/images/delete_sidebar.png"));
 
 	setRootIndexAction = new QAction(this);
     setRootIndexAction->setData(SET_ROOT_INDEX_ACTION_YL);
@@ -858,6 +875,10 @@ void LibraryWindow::createMenus()
     comicsView->setItemActions(itemActions);
     comicsView->setViewActions(viewActions);
 
+    foldersView->addAction(addFolderAction);
+    foldersView->addAction(deleteFolderAction);
+    YACReader::addSperator(foldersView);
+
 	foldersView->addAction(openContainingFolderAction);
     foldersView->addAction(updateFolderAction);
     YACReader::addSperator(foldersView);
@@ -1016,6 +1037,8 @@ void LibraryWindow::createConnections()
 	connect(removeLibraryAction,SIGNAL(triggered()),this,SLOT(removeLibrary()));
 	connect(openComicAction,SIGNAL(triggered()),this,SLOT(openComic()));
 	connect(helpAboutAction,SIGNAL(triggered()),had,SLOT(show()));
+    connect(addFolderAction,SIGNAL(triggered()),this,SLOT(addFolderToCurrentIndex()));
+    connect(deleteFolderAction,SIGNAL(triggered()),this,SLOT(deleteSelectedFolder()));
 	connect(setRootIndexAction,SIGNAL(triggered()),this,SLOT(setRootIndex()));
 	connect(expandAllNodesAction,SIGNAL(triggered()),foldersView,SLOT(expandAll()));
 	connect(colapseAllNodesAction,SIGNAL(triggered()),foldersView,SLOT(collapseAll()));
@@ -1444,6 +1467,65 @@ void LibraryWindow::enableNeededActions()
 
     disableLibrariesActions(false);
 
+}
+
+void LibraryWindow::addFolderToCurrentIndex()
+{
+    QModelIndex currentIndex = getCurrentFolderIndex();
+
+    bool ok;
+    QString text = QInputDialog::getText(this, tr("Add new folder"),
+                                         tr("Folder name:"), QLineEdit::Normal,
+                                         "", &ok);
+    if (ok && !text.isEmpty())
+        QLOG_INFO() << text;
+
+
+}
+
+void LibraryWindow::deleteSelectedFolder()
+{
+    QModelIndex currentIndex = getCurrentFolderIndex();
+
+    if(!currentIndex.isValid())
+        QMessageBox::information(this,tr("No folder selected"), tr("Please, select a folder first"));
+    else
+    {
+        int ret = QMessageBox::question(this,tr("Delete folder"),tr("The selected folder and all its contents will be deleted from your disk. Are you sure?"),QMessageBox::Yes,QMessageBox::No);
+
+        if(ret == QMessageBox::Yes)
+        {
+            //no folders multiselection by now
+            QModelIndexList indexList;
+            indexList << currentIndex;
+
+            QList<QString> paths;
+            paths << QDir::cleanPath(currentPath()+foldersModel->getFolderPath(currentIndex));
+
+            FoldersRemover * remover = new FoldersRemover(indexList,paths);
+
+            QThread * thread = NULL;
+
+            thread = new QThread(this);
+
+            remover->moveToThread(thread);
+
+            connect(thread, SIGNAL(started()), remover, SLOT(process()));
+            connect(remover, SIGNAL(remove(QModelIndex)), foldersModel, SLOT(deleteFolder(QModelIndex)));
+            connect(remover, SIGNAL(removeError()),this,SLOT(errorDeletingFolder()));
+            connect(remover, SIGNAL(finished()),this,SLOT(reloadCovers()));
+            connect(remover, SIGNAL(finished()), remover, SLOT(deleteLater()));
+            connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+
+            if(thread != NULL)
+                thread->start();
+        }
+    }
+}
+
+void LibraryWindow::errorDeletingFolder()
+{
+    QMessageBox::critical(this,tr("Unable to delete"),tr("There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files."));
 }
 
 void LibraryWindow::selectSubfolder(const QModelIndex &mi, int child)
@@ -2236,20 +2318,26 @@ void LibraryWindow::deleteComics()
 		}
 
 		ComicsRemover * remover = new ComicsRemover(indexList,paths);
+        QThread * thread = NULL;
 
-        //comicsView->showDeleteProgress();
+        thread = new QThread(this);
+
+        remover->moveToThread(thread);
+
         comicsModel->startTransaction();
 
+        connect(thread, SIGNAL(started()), remover, SLOT(process()));
         connect(remover, SIGNAL(remove(int)), comicsModel, SLOT(remove(int)));
-		connect(remover,SIGNAL(removeError()),this,SLOT(setRemoveError()));
+        connect(remover, SIGNAL(removeError()),this,SLOT(setRemoveError()));
         connect(remover, SIGNAL(finished()), comicsModel, SLOT(finishTransaction()));
-        //connect(remover, SIGNAL(finished()), comicsView, SLOT(hideDeleteProgress()));
-		connect(remover, SIGNAL(finished()),this,SLOT(checkEmptyFolder()));
-		connect(remover, SIGNAL(finished()),this,SLOT(checkRemoveError()));
+        
+        connect(remover, SIGNAL(finished()),this,SLOT(checkEmptyFolder()));
+        connect(remover, SIGNAL(finished()),this,SLOT(checkRemoveError()));
 		connect(remover, SIGNAL(finished()), remover, SLOT(deleteLater()));
-		//connect(remover, SIGNAL(finished()), thread, SLOT(deleteLater()));
+        connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
-		remover->start();
+        if(thread != NULL)
+            thread->start();
 	}
 }
 
