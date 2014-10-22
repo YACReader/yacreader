@@ -1484,7 +1484,10 @@ void LibraryWindow::addFolderToCurrentIndex()
     QDir parentDir(parentPath);
     QDir newFolder(parentPath+"/"+newFolderName);
     if(parentDir.mkdir(newFolderName) || newFolder.exists())
-        foldersModel->addFolderAtParent(newFolderName,currentIndex);
+    {
+        foldersView->setCurrentIndex(foldersModel->addFolderAtParent(newFolderName,currentIndex));
+        reloadCovers();
+    }
 }
 
 void LibraryWindow::deleteSelectedFolder()
