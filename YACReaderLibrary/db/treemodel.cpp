@@ -622,6 +622,42 @@ void TreeModel::fetchMoreFromDB(const QModelIndex &parent)
     QSqlDatabase::removeDatabase(_databasePath);
 }
 
+void TreeModel::addFolderAtParent(const QString &folderName, const QModelIndex &parent)
+{
+    TreeItem * parentItem;
+
+    if(parent.isValid())
+        parentItem = static_cast<TreeItem*>(parent.internalPointer());
+    else
+        parentItem = rootItem;
+
+    Folder newFolder;
+    newFolder.name = folderName;
+    newFolder.parentId = parentItem->id;
+    newFolder.path = parentItem->data(1).toString() + "/" + folderName;
+
+    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+    newFolder.id = DBHelper::insert(&newFolder, db);
+    QSqlDatabase::removeDatabase(_databasePath);
+
+    int destRow = 0;
+
+    QList<QVariant> data;
+    data << newFolder.name;
+    data << newFolder.path;
+    data << false;
+    data << false;
+
+    TreeItem * item = new TreeItem(data);
+    item->id = newFolder.id;
+
+    parentItem->appendChild(item);
+    destRow = parentItem->children().indexOf(item); //TODO optimize this, appendChild should return the index of the new item
+
+    beginInsertRows(parent,destRow,destRow);
+    endInsertRows();
+}
+
 void TreeModel::deleteFolder(const QModelIndex &mi)
 {
    beginRemoveRows(mi.parent(),mi.row(),mi.row());

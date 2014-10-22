@@ -1474,13 +1474,17 @@ void LibraryWindow::addFolderToCurrentIndex()
     QModelIndex currentIndex = getCurrentFolderIndex();
 
     bool ok;
-    QString text = QInputDialog::getText(this, tr("Add new folder"),
+    QString newFolderName = QInputDialog::getText(this, tr("Add new folder"),
                                          tr("Folder name:"), QLineEdit::Normal,
                                          "", &ok);
-    if (ok && !text.isEmpty())
-        QLOG_INFO() << text;
+    if (ok && !newFolderName.isEmpty())
+        QLOG_INFO() << newFolderName;
 
-
+    QString parentPath = QDir::cleanPath(currentPath()+foldersModel->getFolderPath(currentIndex));
+    QDir parentDir(parentPath);
+    QDir newFolder(parentPath+"/"+newFolderName);
+    if(parentDir.mkdir(newFolderName) || newFolder.exists())
+        foldersModel->addFolderAtParent(newFolderName,currentIndex);
 }
 
 void LibraryWindow::deleteSelectedFolder()
