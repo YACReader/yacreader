@@ -99,7 +99,8 @@ void LibraryCreator::processLibrary(const QString & source, const QString & targ
 	if(DataBaseManagement::checkValidDB(target+"/library.ydb")=="")
 	{
 		//se limpia el directorio ./yacreaderlibrary
-		delTree(target);
+        QDir d(target);
+        d.removeRecursively();
 		_mode = CREATOR;
 	}
 	else //

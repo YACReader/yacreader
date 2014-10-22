@@ -1221,8 +1221,8 @@ void LibraryWindow::loadLibrary(const QString & name)
 					if(QMessageBox::question(this,tr("Old library"),tr("Library '%1' has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?").arg(currentLibrary),QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes)
 					{
 						QDir d(path+"/.yacreaderlibrary");
-						delTree(d);
-						d.rmdir(path+"/.yacreaderlibrary");
+                        d.removeRecursively();
+                        //d.rmdir(path+"/.yacreaderlibrary");
 						createLibraryDialog->setDataAndStart(currentLibrary,path);
 						//create(path,path+"/.yacreaderlibrary",currentLibrary);
 					}
@@ -1741,8 +1741,7 @@ void LibraryWindow::deleteCurrentLibrary()
 	path = path+"/.yacreaderlibrary";
 
 	QDir d(path);
-	delTree(d);
-	d.rmdir(path);
+    d.removeRecursively();
 	if(libraries.isEmpty())//no more libraries available.
 	{
         comicsView->setModel(NULL);
