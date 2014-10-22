@@ -9,6 +9,14 @@ class YACReaderSearchLineEdit;
 class YACReaderTitledToolBar;
 class YACReaderTitledToolBar;
 
+class YACReaderSideBarSeparator : public QWidget
+{
+public:
+    explicit YACReaderSideBarSeparator(QWidget * parent = 0);
+protected:
+    void paintEvent(QPaintEvent *event);
+};
+
 class YACReaderSideBar : public QWidget
 {
 	Q_OBJECT
