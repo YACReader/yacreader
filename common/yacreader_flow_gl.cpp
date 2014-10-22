@@ -565,7 +565,7 @@ void YACReaderFlowGL::draw()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );	
+    glColor4f( 0.3f, 0.3f, 0.3f, 1.0f );
 
 	renderText(10, fontSize + 10,QString("%1/%2").arg(currentSelected+1).arg(numObjects),QFont("Arial", fontSize));
 
