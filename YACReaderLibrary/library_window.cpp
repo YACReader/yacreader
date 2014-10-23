@@ -1477,7 +1477,11 @@ void LibraryWindow::addFolderToCurrentIndex()
     QString newFolderName = QInputDialog::getText(this, tr("Add new folder"),
                                                   tr("Folder name:"), QLineEdit::Normal,
                                                   "", &ok);
-    if (ok && !newFolderName.isEmpty())
+
+    QRegExp invalidChars("\/\\\:\*\?\"\<\>\|");
+    bool isValid = !newFolderName.contains(invalidChars);
+
+    if (ok && !newFolderName.isEmpty() && isValid)
     {
         QString parentPath = QDir::cleanPath(currentPath()+foldersModel->getFolderPath(currentIndex));
         QDir parentDir(parentPath);
