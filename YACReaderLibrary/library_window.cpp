@@ -1493,39 +1493,47 @@ void LibraryWindow::addFolderToCurrentIndex()
 void LibraryWindow::deleteSelectedFolder()
 {
     QModelIndex currentIndex = getCurrentFolderIndex();
+    QString relativePath = foldersModel->getFolderPath(currentIndex);
+    QString folderPath = QDir::cleanPath(currentPath()+relativePath);
 
     if(!currentIndex.isValid())
         QMessageBox::information(this,tr("No folder selected"), tr("Please, select a folder first"));
     else
     {
-        int ret = QMessageBox::question(this,tr("Delete folder"),tr("The selected folder and all its contents will be deleted from your disk. Are you sure?"),QMessageBox::Yes,QMessageBox::No);
-
-        if(ret == QMessageBox::Yes)
+        QString libraryPath = QDir::cleanPath(currentPath());
+        if((libraryPath == folderPath) || relativePath.isEmpty() || relativePath == "/")
+            QMessageBox::critical(this,tr("Error in path"),tr("There was an error accessing the folder's path"));
+        else
         {
-            //no folders multiselection by now
-            QModelIndexList indexList;
-            indexList << currentIndex;
+            int ret = QMessageBox::question(this,tr("Delete folder"),tr("The selected folder and all its contents will be deleted from your disk. Are you sure?") + "\n\nFolder : " + folderPath,QMessageBox::Yes,QMessageBox::No);
 
-            QList<QString> paths;
-            paths << QDir::cleanPath(currentPath()+foldersModel->getFolderPath(currentIndex));
+            if(ret == QMessageBox::Yes)
+            {
+                //no folders multiselection by now
+                QModelIndexList indexList;
+                indexList << currentIndex;
 
-            FoldersRemover * remover = new FoldersRemover(indexList,paths);
+                QList<QString> paths;
+                paths << folderPath;
 
-            QThread * thread = NULL;
+                FoldersRemover * remover = new FoldersRemover(indexList,paths);
 
-            thread = new QThread(this);
+                QThread * thread = NULL;
 
-            remover->moveToThread(thread);
+                thread = new QThread(this);
 
-            connect(thread, SIGNAL(started()), remover, SLOT(process()));
-            connect(remover, SIGNAL(remove(QModelIndex)), foldersModel, SLOT(deleteFolder(QModelIndex)));
-            connect(remover, SIGNAL(removeError()),this,SLOT(errorDeletingFolder()));
-            connect(remover, SIGNAL(finished()),this,SLOT(reloadCovers()));
-            connect(remover, SIGNAL(finished()), remover, SLOT(deleteLater()));
-            connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+                remover->moveToThread(thread);
 
-            if(thread != NULL)
-                thread->start();
+                connect(thread, SIGNAL(started()), remover, SLOT(process()));
+                connect(remover, SIGNAL(remove(QModelIndex)), foldersModel, SLOT(deleteFolder(QModelIndex)));
+                connect(remover, SIGNAL(removeError()),this,SLOT(errorDeletingFolder()));
+                connect(remover, SIGNAL(finished()),this,SLOT(reloadCovers()));
+                connect(remover, SIGNAL(finished()), remover, SLOT(deleteLater()));
+                connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+
+                if(thread != NULL)
+                    thread->start();
+            }
         }
     }
 }
