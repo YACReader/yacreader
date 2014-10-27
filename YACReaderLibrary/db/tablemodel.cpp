@@ -309,7 +309,7 @@ void TableModel::setupModelData(unsigned long long int folderId,const QString & 
         emit isEmpty();
 }
 
-void TableModel::setupModelData(const QString &filter, const QString &databasePath)
+void TableModel::setupModelData(const SearchModifiers modifier, const QString &filter, const QString &databasePath)
 {
     //QFile f(QCoreApplication::applicationDirPath()+"/performance.txt");
     //f.open(QIODevice::Append);
@@ -327,11 +327,38 @@ void TableModel::setupModelData(const QString &filter, const QString &databasePa
     //crear la consulta
     //timer.restart();
     QSqlQuery selectQuery(db);
-    selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
-                        "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                         "WHERE UPPER(ci.title) LIKE UPPER(:filter) OR UPPER(c.fileName) LIKE UPPER(:filter) LIMIT :limit");
-    selectQuery.bindValue(":filter", "%%"+filter+"%%");
-    selectQuery.bindValue(":limit",500); //TODO, load this value from settings
+
+    switch (modifier) {
+    case YACReader::NoModifiers:
+        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
+                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                            "WHERE UPPER(ci.title) LIKE UPPER(:filter) OR UPPER(c.fileName) LIKE UPPER(:filter) LIMIT :limit");
+        selectQuery.bindValue(":filter", "%%"+filter+"%%");
+        selectQuery.bindValue(":limit",500); //TODO, load this value from settings
+        break;
+
+    case YACReader::OnlyRead:
+        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
+                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                            "WHERE (UPPER(ci.title) LIKE UPPER(:filter) OR UPPER(c.fileName) LIKE UPPER(:filter)) AND ci.read = 1 LIMIT :limit");
+        selectQuery.bindValue(":filter", "%%"+filter+"%%");
+        selectQuery.bindValue(":limit",500); //TODO, load this value from settings
+        break;
+
+    case YACReader::OnlyUnread:
+        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
+                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                            "WHERE (UPPER(ci.title) LIKE UPPER(:filter) OR UPPER(c.fileName) LIKE UPPER(:filter)) AND ci.read = 0 LIMIT :limit");
+        selectQuery.bindValue(":filter", "%%"+filter+"%%");
+        selectQuery.bindValue(":limit",500); //TODO, load this value from settings
+        break;
+
+    default:
+        QLOG_ERROR() << "not implemented";
+        break;
+    }
+
+
     selectQuery.exec();
 
     QLOG_DEBUG() << selectQuery.lastError() << "--";

@@ -55,6 +55,8 @@
 #include "db_helper.h"
 #include "qnaturalsorting.h"
 
+#include "QsLog.h"
+
 #ifdef Q_OS_MAC
 #include <QFileIconProvider>
 QIcon finishedFolderIcon;
@@ -369,11 +371,41 @@ void TreeModel::setupFilteredModelData()
 		selectQuery.prepare("select * from folder where id <> 1 and upper(name) like upper(:filter) order by parentId,name ");
 		selectQuery.bindValue(":filter", "%%"+filter+"%%");
 	}
-	else
-	{
-        selectQuery.prepare("SELECT DISTINCT f.id, f.parentId, f.name, f.path, f.finished, f.completed FROM folder f LEFT JOIN comic c ON (f.id = c.parentId) WHERE f.id <> 1 AND ((UPPER(c.fileName) like UPPER(:filter)) OR (UPPER(f.name) like UPPER(:filter2))) ORDER BY f.parentId,f.name");
-		selectQuery.bindValue(":filter", "%%"+filter+"%%");
-		selectQuery.bindValue(":filter2", "%%"+filter+"%%");
+    else
+    {
+        switch(modifier)
+        {
+        case YACReader::NoModifiers:
+            selectQuery.prepare("SELECT DISTINCT f.id, f.parentId, f.name, f.path, f.finished, f.completed "
+                                "FROM folder f LEFT JOIN comic c ON (f.id = c.parentId) "
+                                "WHERE f.id <> 1 AND ((UPPER(c.fileName) like UPPER(:filter)) OR (UPPER(f.name) like UPPER(:filter2))) ORDER BY f.parentId,f.name");
+            selectQuery.bindValue(":filter", "%%"+filter+"%%");
+            selectQuery.bindValue(":filter2", "%%"+filter+"%%");
+            break;
+
+        case YACReader::OnlyRead:
+            selectQuery.prepare("SELECT DISTINCT f.id, f.parentId, f.name, f.path, f.finished, f.completed "
+                                "FROM folder f LEFT JOIN (comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id)) ON (f.id = c.parentId) "
+                                "WHERE f.id <> 1 AND ((UPPER(c.fileName) like UPPER(:filter)) OR (UPPER(f.name) like UPPER(:filter2))) AND ci.read = 1  ORDER BY f.parentId,f.name;");
+            selectQuery.bindValue(":filter", "%%"+filter+"%%");
+            selectQuery.bindValue(":filter2", "%%"+filter+"%%");
+            break;
+
+        case YACReader::OnlyUnread:
+            selectQuery.prepare("SELECT DISTINCT f.id, f.parentId, f.name, f.path, f.finished, f.completed "
+                                "FROM folder f LEFT JOIN (comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id)) ON (f.id = c.parentId) "
+                                "WHERE f.id <> 1 AND ((UPPER(c.fileName) like UPPER(:filter)) OR (UPPER(f.name) like UPPER(:filter2))) AND ci.read = 0  ORDER BY f.parentId,f.name;");
+            selectQuery.bindValue(":filter", "%%"+filter+"%%");
+            selectQuery.bindValue(":filter2", "%%"+filter+"%%");
+            break;
+
+        default:
+            QLOG_ERROR() << "not implemented";
+            break;
+
+        }
+
+
 	}
 		selectQuery.exec();
 		
@@ -476,10 +508,11 @@ QString TreeModel::getFolderPath(const QModelIndex &folder)
     return static_cast<TreeItem*>(folder.internalPointer())->data(TreeModel::Path).toString();
 }
 
-void TreeModel::setFilter(QString filter, bool includeComics)
+void TreeModel::setFilter(const YACReader::SearchModifiers modifier, QString filter, bool includeComics)
 {
 	this->filter = filter;
 	this->includeComics = includeComics;
+    this->modifier = modifier;
 	filterEnabled = true;
 	setupFilteredModelData();
 }

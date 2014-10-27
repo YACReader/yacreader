@@ -47,6 +47,8 @@
 #include <QSqlQuery>
 #include <QSqlDatabase>
 
+#include "yacreader_global.h"
+
 class TreeItem;
 
 //! [0]
@@ -78,7 +80,7 @@ public:
 	//Métodos de conveniencia
 	QString getFolderPath(const QModelIndex &folder);
 
-	void setFilter(QString filter, bool includeComics);
+    void setFilter(const YACReader::SearchModifiers modifier, QString filter, bool includeComics);
 	void resetFilter();
 	bool isFilterEnabled(){return filterEnabled;};
 
@@ -118,6 +120,8 @@ private:
 	bool includeComics;
 	QString filter;
 	bool filterEnabled;
+
+    YACReader::SearchModifiers modifier;
 signals:
 	void beforeReset();
 	void reset();

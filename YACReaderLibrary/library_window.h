@@ -287,7 +287,7 @@ public slots:
     void toggleFullScreen();
     void toNormal();
     void toFullScreen();
-    void setSearchFilter(QString filter);
+    void setSearchFilter(const YACReader::SearchModifiers modifier, QString filter);
     void showProperties();
     void exportLibrary(QString destPath);
     void importLibrary(QString clc,QString destPath,QString name);
