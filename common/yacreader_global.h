@@ -104,6 +104,13 @@ namespace YACReader
      Grid
  };
 
+ enum SearchModifiers{
+     NoModifiers = 0,
+     OnlyRead,
+     OnlyUnread,
+     ByAuthor
+ };
+
 QString getSettingsPath();
 void addSperator(QWidget * w);
 QAction * createSeparator();

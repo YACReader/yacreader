@@ -2,6 +2,9 @@
 #define YACREADER_SEARCH_LINE_EDIT_H
 
 #include <QLineEdit>
+#include <QCompleter>
+
+#include "yacreader_global.h"
 
 class QToolButton;
 class QLabel;
@@ -16,12 +19,18 @@ public:
 protected:
 	void resizeEvent(QResizeEvent *);
 
+signals:
+    void filterChanged(const YACReader::SearchModifiers, QString);
+
 private slots:
 	void updateCloseButton(const QString &text);
+    void processText(const QString & text);
 
 private:
 	QToolButton *clearButton;
 	QLabel * searchLabel;
+    QCompleter * modifiersCompleter;
+    QStringList modifiers;
 };
 
 

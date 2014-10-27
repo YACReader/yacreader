@@ -379,7 +379,7 @@ void LibraryWindow::doModels()
 	//comics
     comicsModel =  new TableModel();
 
-    setSearchFilter("");
+    setSearchFilter(YACReader::NoModifiers, ""); //clear search filter
 }
 
 void LibraryWindow::disconnectComicsViewConnections(ComicsView * widget)
@@ -1053,7 +1053,7 @@ void LibraryWindow::createConnections()
 
 	//Folders filter
 	//connect(clearFoldersFilter,SIGNAL(clicked()),foldersFilter,SLOT(clear()));
-    connect(searchEdit,SIGNAL(textChanged(QString)),this,SLOT(setSearchFilter(QString)));
+    connect(searchEdit,SIGNAL(filterChanged(YACReader::SearchModifiers, QString)),this,SLOT(setSearchFilter(YACReader::SearchModifiers, QString)));
 	//connect(includeComicsCheckBox,SIGNAL(stateChanged(int)),this,SLOT(searchInFiles(int)));
 
 	//ContextMenus
@@ -1907,7 +1907,7 @@ void LibraryWindow::toNormal()
 
 }
 
-void LibraryWindow::setSearchFilter(QString filter)
+void LibraryWindow::setSearchFilter(const YACReader::SearchModifiers modifier, QString filter)
 {
     if(filter.isEmpty() && foldersModel->isFilterEnabled())
 	{
@@ -1929,8 +1929,8 @@ void LibraryWindow::setSearchFilter(QString filter)
 	{
 		if(!filter.isEmpty())
 		{
-            foldersModel->setFilter(filter, true);//includeComicsCheckBox->isChecked());
-            comicsModel->setupModelData(filter, foldersModel->getDatabase());
+            foldersModel->setFilter(modifier, filter, true);//includeComicsCheckBox->isChecked());
+            comicsModel->setupModelData(modifier, filter, foldersModel->getDatabase());
             comicsView->enableFilterMode(true);
 			foldersView->expandAll();
             //loadCoversFromCurrentModel();
