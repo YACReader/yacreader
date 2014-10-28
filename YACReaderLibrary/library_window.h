@@ -184,6 +184,13 @@ private:
     QAction * updateFolderAction;
     QAction * updateCurrentFolderAction;
 
+    //reading lists actions
+    QAction * addReadingListAction;
+    QAction * deleteReadingListAction;
+    //--
+    //QAction * expandAllNodesRLAction;
+    //QAction * colapseAllNodesRLAction;
+
     QList<QAction *> itemActions;
     QList<QAction *> viewActions;
 

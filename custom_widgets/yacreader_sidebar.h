@@ -1,7 +1,7 @@
 #ifndef YACREADER_SIDEBAR_H
 #define YACREADER_SIDEBAR_H
 
-#include <QWidget>
+#include <QtWidgets>
 
 class YACReaderTreeView;
 class YACReaderLibraryListWidget;
@@ -28,6 +28,9 @@ public:
 	YACReaderLibraryListWidget * selectedLibrary;
 	YACReaderTitledToolBar * librariesTitle;
 	YACReaderTitledToolBar * foldersTitle;
+    YACReaderTitledToolBar * readingListsTitle;
+
+    QSplitter * splitter;
 	
 signals:
 	

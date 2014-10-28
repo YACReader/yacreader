@@ -182,8 +182,8 @@ void LibraryWindow::doLayout()
 	selectedLibrary = sideBar->selectedLibrary;
 
 	YACReaderTitledToolBar * librariesTitle = sideBar->librariesTitle;
-
 	YACReaderTitledToolBar * foldersTitle = sideBar->foldersTitle;
+    YACReaderTitledToolBar * readingListsTitle = sideBar->readingListsTitle;
 
 	librariesTitle->addAction(createLibraryAction);
 	librariesTitle->addAction(openLibraryAction);
@@ -195,6 +195,9 @@ void LibraryWindow::doLayout()
 	foldersTitle->addAction(setRootIndexAction);
 	foldersTitle->addAction(expandAllNodesAction);
 	foldersTitle->addAction(colapseAllNodesAction);
+
+    readingListsTitle->addAction(addReadingListAction);
+    readingListsTitle->addAction(deleteReadingListAction);
 
 	//FINAL LAYOUT-------------------------------------------------------------
     comicsViewStack = new QStackedWidget();
@@ -688,6 +691,17 @@ void LibraryWindow::createActions()
     updateCurrentFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(UPDATE_CURRENT_FOLDER_ACTION_YL));
     updateCurrentFolderAction->setIcon(QIcon(":/images/updateLibraryIcon.png"));
 
+    addReadingListAction = new QAction(tr("Add new reading list"), this);
+    addReadingListAction->setData(ADD_READING_LIST_ACTION_YL);
+    addReadingListAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_READING_LIST_ACTION_YL));
+    addReadingListAction->setToolTip(tr("Add a new reading list to the current library"));
+    addReadingListAction->setIcon(QIcon(":/images/addNew_sidebar.png"));
+
+    deleteReadingListAction = new QAction(tr("Remove reading list"), this);
+    deleteReadingListAction->setData(REMOVE_READING_LIST_ACTION_YL);
+    deleteReadingListAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(REMOVE_READING_LIST_ACTION_YL));
+    deleteReadingListAction->setToolTip(tr("Remove current reading list from the library"));
+    deleteReadingListAction->setIcon(QIcon(":/images/delete_sidebar.png"));
 
 	//disable actions
 	disableAllActions();

@@ -18,8 +18,20 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
 	selectedLibrary = new YACReaderLibraryListWidget;
 
 	librariesTitle = new YACReaderTitledToolBar(tr("LIBRARIES"));
-
 	foldersTitle = new YACReaderTitledToolBar(tr("FOLDERS"));
+    readingListsTitle = new YACReaderTitledToolBar(tr("READING LISTS"));
+
+    splitter = new QSplitter(this);
+    splitter->setOrientation(Qt::Vertical);
+
+#ifndef Q_OS_MAC
+    splitter->setStyleSheet("QSplitter::handle { "
+                            " image: none; background-color = black; "
+                            " }"
+                            "QSplitter::handle:vertical { height: 50px;}");
+#else
+
+#endif
 
 	selectedLibrary->setContextMenuPolicy(Qt::ActionsContextMenu);
 	selectedLibrary->setAttribute(Qt::WA_MacShowFocusRect,false);
@@ -29,6 +41,8 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
 	QVBoxLayout * l = new QVBoxLayout;
 
 	l->setContentsMargins(0,0,0,0);
+
+    //LIBRARIES-------------------------------------------------------
 #ifndef Q_OS_MAC
 	l->addSpacing(5);
 #endif
@@ -43,27 +57,77 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
 
 	l->addWidget(selectedLibrary);
 
-#ifndef Q_OS_MAC
-	l->addSpacing(6);
+    //END LIBRARIES---------------------------------------------------
 
-	l->addSpacing(5);
-    l->addWidget(new YACReaderSideBarSeparator(this));
-	l->addSpacing(4);
+    //FOLDERS---------------------------------------------------------
+    QWidget * foldersContainer = new QWidget(this);
+    QVBoxLayout * foldersLayout = new QVBoxLayout;
+    foldersLayout->setContentsMargins(0,0,0,0);
+    foldersLayout->setSpacing(0);
+
+#ifndef Q_OS_MAC
+    foldersLayout->addSpacing(6);
+
+    foldersLayout->addSpacing(5);
+    foldersLayout->addWidget(new YACReaderSideBarSeparator(this));
+    foldersLayout->addSpacing(4);
 #else
-	l->addSpacing(6);
+    foldersLayout->addSpacing(6);
 #endif
 
-	l->addWidget(foldersTitle);
+    foldersLayout->addWidget(foldersTitle);
 
 #ifndef Q_OS_MAC
-    {
-	l->addSpacing(4);
-    l->addWidget(new YACReaderSideBarSeparator(this));}
-	l->addSpacing(4);
+    foldersLayout->addSpacing(4);
+    foldersLayout->addWidget(new YACReaderSideBarSeparator(this));
+    foldersLayout->addSpacing(4);
 #endif
 
-	l->addWidget(foldersView);
-	l->setSpacing(0);
+    foldersLayout->addWidget(foldersView);
+    foldersLayout->addSpacing(6);
+
+    foldersContainer->setLayout(foldersLayout);
+    splitter->addWidget(foldersContainer);
+    //END FOLDERS------------------------------------------------------
+
+    //READING LISTS----------------------------------------------------
+    QWidget * readingLists = new QWidget(this);
+    splitter->addWidget(readingLists);
+
+    QVBoxLayout * readingListsHeaderLayout = new QVBoxLayout;
+    readingListsHeaderLayout->setContentsMargins(0,0,0,0);
+    readingListsHeaderLayout->setSpacing(0);
+
+#ifndef Q_OS_MAC
+    //readingListsLayout->addSpacing(6);
+
+    readingListsHeaderLayout->addSpacing(5);
+    readingListsHeaderLayout->addWidget(new YACReaderSideBarSeparator(this));
+    readingListsHeaderLayout->addSpacing(4);
+#else
+    //readingListsHeaderLayout->addSpacing(6);
+#endif
+
+    readingListsHeaderLayout->addWidget(readingListsTitle);
+
+#ifndef Q_OS_MAC
+    readingListsHeaderLayout->addSpacing(4);
+    readingListsHeaderLayout->addWidget(new YACReaderSideBarSeparator(this));
+    readingListsHeaderLayout->addSpacing(4);
+#endif
+
+    //readingListsLayout->addWidget(readingListsView);
+    readingListsHeaderLayout->addStretch();
+    QSplitterHandle * handle = splitter->handle(1);
+    //handle->setCursor(QCursor(Qt::ArrowCursor));
+    handle->setLayout(readingListsHeaderLayout);
+    //END READING LISTS------------------------------------------------
+
+    l->addWidget(splitter);
+    l->setSpacing(0);
+
+
+
 	setLayout(l);
 }
 
