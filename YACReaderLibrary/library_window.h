@@ -29,10 +29,10 @@ class PropertiesDialog;
 class PackageManager;
 class QCheckBox;
 class QPushButton;
-class TableModel;
+class ComicModel;
 class QSplitter;
-class TreeItem;
-class TreeModel;
+class FolderItem;
+class FolderModel;
 class QItemSelectionModel;
 class QString;
 class QLabel;
@@ -94,7 +94,7 @@ private:
 	QSize slideSizeF;
 	//search filter
     YACReaderSearchLineEdit * searchEdit;
-	TreeItem * index; //index al que hay que hacer scroll despu�s de pulsar sobre un folder filtrado
+    FolderItem * index; //index al que hay que hacer scroll despu�s de pulsar sobre un folder filtrado
 	int column;
 	QString previousFilter;
 	QCheckBox * includeComicsCheckBox;
@@ -110,8 +110,8 @@ private:
 
 	YACReaderTreeView * foldersView;
 	YACReaderLibraryListWidget * selectedLibrary;
-    TreeModel * foldersModel;
-    TableModel * comicsModel;
+    FolderModel * foldersModel;
+    ComicModel * comicsModel;
 	//QStringList paths;
 	YACReaderLibraries libraries;
 

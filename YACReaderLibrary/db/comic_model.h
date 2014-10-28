@@ -11,19 +11,19 @@
 
 class ComicDB;
 
-class TableItem;
+class ComicItem;
 
 using namespace YACReader;
 
 //! [0]
-class TableModel : public QAbstractItemModel
+class ComicModel : public QAbstractItemModel
 {
 	Q_OBJECT
 
 public:
-	TableModel(QObject *parent = 0);
-	TableModel( QSqlQuery &sqlquery, QObject *parent = 0);
-	~TableModel();
+    ComicModel(QObject *parent = 0);
+    ComicModel( QSqlQuery &sqlquery, QObject *parent = 0);
+    ~ComicModel();
 
 	QVariant data(const QModelIndex &index, int role) const;
 	Qt::ItemFlags flags(const QModelIndex &index) const;
@@ -106,7 +106,7 @@ protected:
 private:
 	void setupModelData( QSqlQuery &sqlquery);
 	ComicDB _getComic(const QModelIndex & mi);
-	QList<TableItem *> _data;
+	QList<ComicItem *> _data;
 
 	QString _databasePath;
 

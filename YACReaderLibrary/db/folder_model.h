@@ -49,17 +49,17 @@
 
 #include "yacreader_global.h"
 
-class TreeItem;
+class FolderItem;
 
 //! [0]
-class TreeModel : public QAbstractItemModel
+class FolderModel : public QAbstractItemModel
 {
 	Q_OBJECT
 
 public:
-	TreeModel(QObject *parent = 0);
-	TreeModel( QSqlQuery &sqlquery, QObject *parent = 0);
-	~TreeModel();
+    FolderModel(QObject *parent = 0);
+    FolderModel( QSqlQuery &sqlquery, QObject *parent = 0);
+    ~FolderModel();
 
 	QVariant data(const QModelIndex &index, int role) const;
 	Qt::ItemFlags flags(const QModelIndex &index) const;
@@ -68,7 +68,7 @@ public:
 	QModelIndex index(int row, int column,
 					  const QModelIndex &parent = QModelIndex()) const;
 	QModelIndex parent(const QModelIndex &index) const;
-	QModelIndex indexFromItem(TreeItem * item, int column);
+	QModelIndex indexFromItem(FolderItem * item, int column);
 	/*QModelIndex _indexFromItem(TreeItem * item, int column);
 	int column;*/
 
@@ -104,16 +104,16 @@ public slots:
     void deleteFolder(const QModelIndex & mi);
 
 private:
-	void setupModelData( QSqlQuery &sqlquery, TreeItem *parent);
-    void updateFolderModelData( QSqlQuery &sqlquery, TreeItem *parent);
-	void setupFilteredModelData( QSqlQuery &sqlquery, TreeItem *parent);
+	void setupModelData( QSqlQuery &sqlquery, FolderItem *parent);
+    void updateFolderModelData( QSqlQuery &sqlquery, FolderItem *parent);
+	void setupFilteredModelData( QSqlQuery &sqlquery, FolderItem *parent);
 	void setupFilteredModelData();
 
-	TreeItem *rootItem; //el árbol
-	QMap<unsigned long long int, TreeItem *> items; //relación entre folders
+	FolderItem *rootItem; //el árbol
+	QMap<unsigned long long int, FolderItem *> items; //relación entre folders
 
-	TreeItem *rootBeforeFilter;
-	QMap<unsigned long long int, TreeItem *> filteredItems; //relación entre folders
+	FolderItem *rootBeforeFilter;
+	QMap<unsigned long long int, FolderItem *> filteredItems; //relación entre folders
 
 	QString _databasePath;
 

@@ -45,31 +45,31 @@
 #include <QVariant>
 #include <QModelIndex>
 
-class TreeItem
+class FolderItem
 {
 public:
-	TreeItem(const QList<QVariant> &data, TreeItem *parent = 0);
-	~TreeItem();
+    FolderItem(const QList<QVariant> &data, FolderItem *parent = 0);
+    ~FolderItem();
 
-	void appendChild(TreeItem *child);
+    void appendChild(FolderItem *child);
 
-	TreeItem *child(int row);
+    FolderItem *child(int row);
 	int childCount() const;
 	int columnCount() const;
 	QVariant data(int column) const;
 	QList<QVariant> getData() const;
 	int row() const;
-	TreeItem *parent();
-	TreeItem *parentItem;
+    FolderItem *parent();
+    FolderItem *parentItem;
 	unsigned long long int id;
 	QList<QString> comicNames;
-    TreeItem * originalItem;
+    FolderItem * originalItem;
     void setData(int column, const QVariant &value);
     void removeChild(int childIndex);
     void clearChildren();
-    QList<TreeItem*> children();
+    QList<FolderItem*> children();
 private:
-	QList<TreeItem*> childItems;
+    QList<FolderItem*> childItems;
 	QList<QVariant> itemData;
 	
 	

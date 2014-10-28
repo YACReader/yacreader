@@ -1,20 +1,20 @@
 #include <QStringList>
 
-#include "treeitem.h"
+#include "folder_item.h"
 #include "qnaturalsorting.h"
 
-TreeItem::TreeItem(const QList<QVariant> &data, TreeItem *parent)
+FolderItem::FolderItem(const QList<QVariant> &data, FolderItem *parent)
 {
 	parentItem = parent;
 	itemData = data;
 }
 
-TreeItem::~TreeItem()
+FolderItem::~FolderItem()
 {
 	qDeleteAll(childItems);
 }
 
-void TreeItem::appendChild(TreeItem *item)
+void FolderItem::appendChild(FolderItem *item)
 {
 	item->parentItem = this;
 
@@ -22,10 +22,10 @@ void TreeItem::appendChild(TreeItem *item)
 		childItems.append(item);
 	else
 	{
-		TreeItem * last = childItems.back();
+        FolderItem * last = childItems.back();
 		QString nameLast = last->data(1).toString(); //TODO usar info name si est� disponible, sino el nombre del fichero.....
 		QString nameCurrent = item->data(1).toString();
-		QList<TreeItem *>::iterator i;
+        QList<FolderItem *>::iterator i;
 		i = childItems.end();
 		i--;
 		while (naturalSortLessThanCI(nameCurrent,nameLast) && i != childItems.begin())
@@ -43,61 +43,61 @@ void TreeItem::appendChild(TreeItem *item)
 	//childItems.append(item);
 }
 
-TreeItem *TreeItem::child(int row)
+FolderItem *FolderItem::child(int row)
 {
 	return childItems.value(row);
 }
 
-int TreeItem::childCount() const
+int FolderItem::childCount() const
 {
 	return childItems.count();
 }
 
-int TreeItem::columnCount() const
+int FolderItem::columnCount() const
 {
 	return itemData.count();
 }
 
-QVariant TreeItem::data(int column) const
+QVariant FolderItem::data(int column) const
 {
 	return itemData.value(column);
 }
 
-void TreeItem::setData(int column, const QVariant & value)
+void FolderItem::setData(int column, const QVariant & value)
 {
     itemData[column] = value;
 }
 
-void TreeItem::removeChild(int childIndex)
+void FolderItem::removeChild(int childIndex)
 {
     childItems.removeAt(childIndex);
 }
 
-void TreeItem::clearChildren()
+void FolderItem::clearChildren()
 {
     qDeleteAll(childItems);
     childItems.clear();
 }
 
-QList<TreeItem *> TreeItem::children()
+QList<FolderItem *> FolderItem::children()
 {
     return childItems;
 }
 
-TreeItem *TreeItem::parent()
+FolderItem *FolderItem::parent()
 {
 	return parentItem;
 }
 
-int TreeItem::row() const
+int FolderItem::row() const
 {
 	if (parentItem)
-		return parentItem->childItems.indexOf(const_cast<TreeItem*>(this));
+        return parentItem->childItems.indexOf(const_cast<FolderItem*>(this));
 
 	return 0;
 }
 
-QList<QVariant> TreeItem::getData() const
+QList<QVariant> FolderItem::getData() const
 {
 	return itemData;
 }
