@@ -31,7 +31,7 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
     splitter->setStyleSheet("QSplitter::handle { "
                             " image: none; background-color = black; "
                             " }"
-                            "QSplitter::handle:vertical { height: 50px;}");
+                            "QSplitter::handle:vertical { height: 39px;}");
 #else
 
 #endif
@@ -59,6 +59,11 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
 #endif
 
 	l->addWidget(selectedLibrary);
+#ifndef Q_OS_MAC
+    l->addSpacing(11);
+#else
+     l->addSpacing(6);
+#endif
 
     //END LIBRARIES---------------------------------------------------
 
@@ -69,13 +74,13 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
     foldersLayout->setSpacing(0);
 
 #ifndef Q_OS_MAC
-    foldersLayout->addSpacing(6);
+    //foldersLayout->addSpacing(6);
 
-    foldersLayout->addSpacing(5);
+    //foldersLayout->addSpacing(5);
     foldersLayout->addWidget(new YACReaderSideBarSeparator(this));
     foldersLayout->addSpacing(4);
 #else
-    foldersLayout->addSpacing(6);
+    //foldersLayout->addSpacing(6);
 #endif
 
     foldersLayout->addWidget(foldersTitle);
@@ -101,9 +106,9 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
     readingListsHeaderLayout->setSpacing(0);
 
 #ifndef Q_OS_MAC
-    //readingListsLayout->addSpacing(6);
+    //readingListsHeaderLayout->addSpacing(6);
 
-    readingListsHeaderLayout->addSpacing(5);
+    //readingListsHeaderLayout->addSpacing(5);
     readingListsHeaderLayout->addWidget(new YACReaderSideBarSeparator(this));
     readingListsHeaderLayout->addSpacing(4);
 #else
