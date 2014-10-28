@@ -55,7 +55,7 @@
 
 #include "comics_remover.h"
 #include "yacreader_library_list_widget.h"
-#include "yacreader_treeview.h"
+#include "yacreader_folders_view.h"
 
 #include "comic_vine_dialog.h"
 #include "api_key_dialog.h"

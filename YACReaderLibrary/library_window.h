@@ -46,7 +46,7 @@ class LibraryItem;
 class YACReaderTableView;
 class YACReaderSideBar;
 class YACReaderLibraryListWidget;
-class YACReaderTreeView;
+class YACReaderFoldersView;
 class YACReaderMainToolBar;
 class ComicVineDialog;
 class ComicsView;
@@ -108,7 +108,7 @@ private:
     EmptyFolderWidget * emptyFolderWidget;
     NoSearchResultsWidget * noSearchResultsWidget;
 
-	YACReaderTreeView * foldersView;
+    YACReaderFoldersView * foldersView;
 	YACReaderLibraryListWidget * selectedLibrary;
     FolderModel * foldersModel;
     ComicModel * comicsModel;

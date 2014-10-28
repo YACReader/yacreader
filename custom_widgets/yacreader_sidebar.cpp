@@ -3,10 +3,12 @@
 #include <QPainter>
 #include <QLayout>
 
-#include "yacreader_treeview.h"
+#include "yacreader_folders_view.h"
+#include "yacreader_reading_lists_view.h"
 #include "yacreader_library_list_widget.h"
 #include "yacreader_search_line_edit.h"
 #include "yacreader_titled_toolbar.h"
+
 
 YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
 	QWidget(parent)
@@ -14,7 +16,8 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
 	setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Minimum);
 
 	//widgets
-	foldersView = new YACReaderTreeView;
+    foldersView = new YACReaderFoldersView;
+    readingListsView = new YACReaderReadingListsView;
 	selectedLibrary = new YACReaderLibraryListWidget;
 
 	librariesTitle = new YACReaderTitledToolBar(tr("LIBRARIES"));
@@ -91,8 +94,7 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
     //END FOLDERS------------------------------------------------------
 
     //READING LISTS----------------------------------------------------
-    QWidget * readingLists = new QWidget(this);
-    splitter->addWidget(readingLists);
+    splitter->addWidget(readingListsView);
 
     QVBoxLayout * readingListsHeaderLayout = new QVBoxLayout;
     readingListsHeaderLayout->setContentsMargins(0,0,0,0);

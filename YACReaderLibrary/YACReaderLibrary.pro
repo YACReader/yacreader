@@ -122,7 +122,9 @@ HEADERS += comic_flow.h \
            no_search_results_widget.h \
            comic_files_manager.h \
            db/reading_list_model.h \
-           db/reading_list_item.h
+           db/reading_list_item.h \
+    yacreader_folders_view.h \
+    yacreader_reading_lists_view.h
 
 		   
 SOURCES += comic_flow.cpp \
@@ -173,7 +175,9 @@ SOURCES += comic_flow.cpp \
            no_search_results_widget.cpp \
            comic_files_manager.cpp \
            db/reading_list_model.cpp \
-           db/reading_list_item.cpp
+           db/reading_list_item.cpp \
+    yacreader_folders_view.cpp \
+    yacreader_reading_lists_view.cpp
 
 				   
 include(./server/server.pri)

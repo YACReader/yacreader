@@ -1,11 +1,4 @@
 #include "yacreader_treeview.h"
-#include "folder_item.h"
-#include "folder_model.h"
-
-#include "comic.h"
-#include "comic_files_manager.h"
-
-#include "QsLog.h"
 
 YACReaderTreeView::YACReaderTreeView(QWidget *parent) :
     QTreeView(parent)
@@ -24,8 +17,6 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent) :
     setUniformRowHeights(true);
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setAttribute(Qt::WA_MacShowFocusRect,false);
-
-    setItemDelegate(new YACReaderTreeViewItemDeletegate(this));
 
 #ifdef Q_OS_MAC
     setStyleSheet("QTreeView {background-color:transparent; border: none;}"
@@ -72,24 +63,6 @@ void YACReaderTreeView::expandCurrent()
 void YACReaderTreeView::dragEnterEvent(QDragEnterEvent *event)
 {
     QTreeView::dragEnterEvent(event);
-
-    QList<QUrl> urlList;
-
-    if (event->mimeData()->hasUrls())
-    {
-        urlList = event->mimeData()->urls();
-        QString currentPath;
-        foreach (QUrl url, urlList)
-        {
-            //comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
-            currentPath = url.toLocalFile();
-            if(Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir())
-            {
-                event->acceptProposedAction();
-                return;
-            }
-        }
-    }
 }
 
 void YACReaderTreeView::dragLeaveEvent(QDragLeaveEvent *event)
@@ -126,56 +99,7 @@ void YACReaderTreeView::dropEvent(QDropEvent *event)
     t.stop();
 
     QTreeView::dropEvent(event);
-
-    QLOG_DEBUG() << "drop on tree" << event->dropAction();
-
-    bool validAction = event->dropAction() == Qt::CopyAction || event->dropAction() & Qt::MoveAction;
-
-    if(validAction)
-    {
-
-        QList<QPair<QString, QString> > droppedFiles = ComicFilesManager::getDroppedFiles(event->mimeData()->urls());
-        QModelIndex destinationIndex = indexAt(event->pos());
-
-        if(event->dropAction() == Qt::CopyAction)
-        {
-            QLOG_DEBUG() << "copy - tree :" << droppedFiles;
-            emit copyComicsToFolder(droppedFiles, destinationIndex);
-        }
-        else if(event->dropAction() & Qt::MoveAction)
-        {
-            QLOG_DEBUG() << "move - tree :" << droppedFiles;
-            emit moveComicsToFolder(droppedFiles, destinationIndex);
-        }
-
-        event->acceptProposedAction();
-    }
 }
 
 
-YACReaderTreeViewItemDeletegate::YACReaderTreeViewItemDeletegate(QObject *parent)
-    :QStyledItemDelegate(parent)
-{
-
-}
-
-void YACReaderTreeViewItemDeletegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
-{
-    FolderItem * item = static_cast<FolderItem *>(index.internalPointer());
-
-    if(!item->data(FolderModel::Completed).toBool())
-    {
-        painter->save();
-#ifdef Q_OS_MAC
-        painter->setBrush(QBrush(QColor(85,95,127)));
-#else
-        painter->setBrush(QBrush(QColor(237,197,24)));
-#endif
-        painter->setPen(QPen(QBrush(),0));
-        painter->drawRect(0,option.rect.y(),2,option.rect.height());
-        painter->restore();
-    }
-
-    QStyledItemDelegate::paint(painter, option, index);
-}
 

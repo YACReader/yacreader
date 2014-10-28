@@ -3,11 +3,12 @@
 
 #include <QtWidgets>
 
-class YACReaderTreeView;
+class YACReaderFoldersView;
 class YACReaderLibraryListWidget;
 class YACReaderSearchLineEdit;
 class YACReaderTitledToolBar;
 class YACReaderTitledToolBar;
+class YACReaderReadingListsView;
 
 class YACReaderSideBarSeparator : public QWidget
 {
@@ -24,7 +25,8 @@ public:
 	explicit YACReaderSideBar(QWidget *parent = 0);
 	QSize sizeHint() const;
 
-	YACReaderTreeView * foldersView;
+    YACReaderFoldersView * foldersView;
+    YACReaderReadingListsView * readingListsView;
 	YACReaderLibraryListWidget * selectedLibrary;
 	YACReaderTitledToolBar * librariesTitle;
 	YACReaderTitledToolBar * foldersTitle;
