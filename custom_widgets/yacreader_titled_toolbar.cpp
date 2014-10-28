@@ -96,6 +96,7 @@ void YACReaderTitledToolBar::addAction(QAction * action)
 	QHBoxLayout * mainLayout = dynamic_cast<QHBoxLayout *>(layout());
 
 	QToolButton * tb = new QToolButton(this);
+    tb->setCursor(QCursor(Qt::ArrowCursor));
 	tb->setDefaultAction(action);
 	tb->setIconSize(QSize(16,16));
 	tb->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
