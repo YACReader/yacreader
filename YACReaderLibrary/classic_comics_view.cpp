@@ -92,7 +92,7 @@ void ClassicComicsView::setToolBar(QToolBar *toolBar)
     static_cast<QVBoxLayout *>(comics->layout())->insertWidget(0,toolBar);
 }
 
-void ClassicComicsView::setModel(TableModel *model)
+void ClassicComicsView::setModel(ComicModel *model)
 {
 
     ComicsView::setModel(model);
@@ -118,14 +118,14 @@ void ClassicComicsView::setModel(TableModel *model)
         for(int i = 0;i<tableView->horizontalHeader()->count();i++)
             tableView->horizontalHeader()->hideSection(i);
 
-        tableView->horizontalHeader()->showSection(TableModel::Number);
-        tableView->horizontalHeader()->showSection(TableModel::Title);
-        tableView->horizontalHeader()->showSection(TableModel::FileName);
-        tableView->horizontalHeader()->showSection(TableModel::NumPages);
-        tableView->horizontalHeader()->showSection(TableModel::Hash); //Size is part of the Hash...TODO add Columns::Size to Columns
-        tableView->horizontalHeader()->showSection(TableModel::ReadColumn);
-        tableView->horizontalHeader()->showSection(TableModel::CurrentPage);
-        tableView->horizontalHeader()->showSection(TableModel::Rating);
+        tableView->horizontalHeader()->showSection(ComicModel::Number);
+        tableView->horizontalHeader()->showSection(ComicModel::Title);
+        tableView->horizontalHeader()->showSection(ComicModel::FileName);
+        tableView->horizontalHeader()->showSection(ComicModel::NumPages);
+        tableView->horizontalHeader()->showSection(ComicModel::Hash); //Size is part of the Hash...TODO add Columns::Size to Columns
+        tableView->horizontalHeader()->showSection(ComicModel::ReadColumn);
+        tableView->horizontalHeader()->showSection(ComicModel::CurrentPage);
+        tableView->horizontalHeader()->showSection(ComicModel::Rating);
 
         //debido a un bug, qt4 no es capaz de ajustar el ancho teniendo en cuenta todas la filas (no sólo las visibles)
         //así que se ecala la primera vez y después se deja el control al usuario.
@@ -265,7 +265,7 @@ void ClassicComicsView::applyModelChanges(const QModelIndex &topLeft, const QMod
 {
     Q_UNUSED(topLeft);
     Q_UNUSED(bottomRight);
-    if(roles.contains(TableModel::ReadColumnRole))
+    if(roles.contains(ComicModel::ReadColumnRole))
     {
         comicFlow->setMarks(model->getReadList());
         comicFlow->updateMarks();

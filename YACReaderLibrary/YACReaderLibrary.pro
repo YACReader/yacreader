@@ -28,8 +28,8 @@ LIBS += -lpoppler-qt4
 INCLUDEPATH += ../dependencies/poppler/include/qt4
 }
 
-#QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
-#QMAKE_LFLAGS_RELEASE += /LTCG
+QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
+QMAKE_LFLAGS_RELEASE += /LTCG
 CONFIG -= embed_manifest_exe
 }
 
@@ -80,47 +80,49 @@ HEADERS += comic_flow.h \
            library_creator.h \
            library_window.h \
            add_library_dialog.h \
-		   rename_library_dialog.h \
-		   properties_dialog.h \
-		   options_dialog.h \
-		   export_library_dialog.h \
-		   import_library_dialog.h \
-		   package_manager.h \
-		   bundle_creator.h \
-		   export_comics_info_dialog.h \
-		   import_comics_info_dialog.h \
-		   server_config_dialog.h \
-		   comic_flow_widget.h \
-		   db_helper.h \
-		   ./db/data_base_management.h \
-		   ./db/treeitem.h \
-		   ./db/treemodel.h \
-		   ./db/tablemodel.h \
-		   ./db/tableitem.h \
-		   ../common/comic_db.h \
-		   ../common/folder.h \
-		   ../common/library_item.h \
-		   ../common/comic.h \
-		   ../common/bookmarks.h \
-		   ../common/pictureflow.h \
+           rename_library_dialog.h \
+           properties_dialog.h \
+           options_dialog.h \
+           export_library_dialog.h \
+           import_library_dialog.h \
+           package_manager.h \
+           bundle_creator.h \
+           export_comics_info_dialog.h \
+           import_comics_info_dialog.h \
+           server_config_dialog.h \
+           comic_flow_widget.h \
+           db_helper.h \
+           ./db/data_base_management.h \
+           ./db/folder_item.h \
+           ./db/folder_model.h \
+           ./db/comic_model.h \
+           ./db/comic_item.h \
+           ../common/comic_db.h \
+           ../common/folder.h \
+           ../common/library_item.h \
+           ../common/comic.h \
+           ../common/bookmarks.h \
+           ../common/pictureflow.h \
            ../common/custom_widgets.h \
-		   ../common/qnaturalsorting.h \
-		   ../common/yacreader_flow_gl.h \
-		   ../common/yacreader_global.h \
-		   ../common/onstart_flow_selection_dialog.h \
-			no_libraries_widget.h \
-			import_widget.h \
-			yacreader_local_server.h \
-    yacreader_main_toolbar.h \
-    comics_remover.h \
-	../common/http_worker.h \
-    yacreader_libraries.h \
-        ../common/exit_check.h \
-    comics_view.h \
-    classic_comics_view.h \
-    empty_folder_widget.h \
-    no_search_results_widget.h \
-    comic_files_manager.h
+           ../common/qnaturalsorting.h \
+           ../common/yacreader_flow_gl.h \
+           ../common/yacreader_global.h \
+           ../common/onstart_flow_selection_dialog.h \
+           no_libraries_widget.h \
+           import_widget.h \
+           yacreader_local_server.h \
+           yacreader_main_toolbar.h \
+           comics_remover.h \
+           ../common/http_worker.h \
+           yacreader_libraries.h \
+           ../common/exit_check.h \
+           comics_view.h \
+           classic_comics_view.h \
+           empty_folder_widget.h \
+           no_search_results_widget.h \
+           comic_files_manager.h \
+           db/reading_list_model.h \
+           db/reading_list_item.h
 
 		   
 SOURCES += comic_flow.cpp \
@@ -129,50 +131,51 @@ SOURCES += comic_flow.cpp \
            library_window.cpp \
            main.cpp \
            add_library_dialog.cpp \
-                   rename_library_dialog.cpp \
-		   properties_dialog.cpp \
-		   options_dialog.cpp \
-		   export_library_dialog.cpp \
-		   import_library_dialog.cpp \
-		   package_manager.cpp \
-		   bundle_creator.cpp \
-		   export_comics_info_dialog.cpp \
-		   import_comics_info_dialog.cpp \
-		   server_config_dialog.cpp \
-		   comic_flow_widget.cpp \
-		   db_helper.cpp \
-		   ./db/data_base_management.cpp \
-		   ./db/treeitem.cpp \
-		   ./db/treemodel.cpp \
-		   ./db/tablemodel.cpp \
-		   ./db/tableitem.cpp \
-		   ../common/comic_db.cpp \
-		   ../common/folder.cpp \
-		   ../common/library_item.cpp \
-		   ../common/comic.cpp \
-		   ../common/bookmarks.cpp \
+           rename_library_dialog.cpp \
+           properties_dialog.cpp \
+           options_dialog.cpp \
+           export_library_dialog.cpp \
+           import_library_dialog.cpp \
+           package_manager.cpp \
+           bundle_creator.cpp \
+           export_comics_info_dialog.cpp \
+           import_comics_info_dialog.cpp \
+           server_config_dialog.cpp \
+           comic_flow_widget.cpp \
+           db_helper.cpp \
+           ./db/data_base_management.cpp \
+           ./db/folder_item.cpp \
+           ./db/folder_model.cpp \
+           ./db/comic_model.cpp \
+           ./db/comic_item.cpp \
+           ../common/comic_db.cpp \
+           ../common/folder.cpp \
+           ../common/library_item.cpp \
+           ../common/comic.cpp \
+           ../common/bookmarks.cpp \
            ../common/pictureflow.cpp \
            ../common/custom_widgets.cpp \
-		   ../common/qnaturalsorting.cpp \
-		   ../common/yacreader_flow_gl.cpp \
-		   ../common/onstart_flow_selection_dialog.cpp \
-			no_libraries_widget.cpp \
-			import_widget.cpp \
-			yacreader_local_server.cpp \
-    yacreader_main_toolbar.cpp \
-    comics_remover.cpp \
-        ../common/http_worker.cpp \
-../common/yacreader_global.cpp \
-    yacreader_libraries.cpp \
-	../common/exit_check.cpp \
-    comics_view.cpp \
-    classic_comics_view.cpp \
-    empty_folder_widget.cpp \
-    no_search_results_widget.cpp \
-    comic_files_manager.cpp
+           ../common/qnaturalsorting.cpp \
+           ../common/yacreader_flow_gl.cpp \
+           ../common/onstart_flow_selection_dialog.cpp \
+           no_libraries_widget.cpp \
+           import_widget.cpp \
+           yacreader_local_server.cpp \
+           yacreader_main_toolbar.cpp \
+           comics_remover.cpp \
+           ../common/http_worker.cpp \
+           ../common/yacreader_global.cpp \
+           yacreader_libraries.cpp \
+           ../common/exit_check.cpp \
+           comics_view.cpp \
+           classic_comics_view.cpp \
+           empty_folder_widget.cpp \
+           no_search_results_widget.cpp \
+           comic_files_manager.cpp \
+           db/reading_list_model.cpp \
+           db/reading_list_item.cpp
 
-			
-		   
+				   
 include(./server/server.pri)
 include(../custom_widgets/custom_widgets_yacreaderlibrary.pri)
 include(../compressed_archive/wrapper.pri)

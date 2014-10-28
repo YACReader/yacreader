@@ -10,7 +10,7 @@ ComicsView::ComicsView(QWidget *parent) :
     setAcceptDrops(true);
 }
 
-void ComicsView::setModel(TableModel *m)
+void ComicsView::setModel(ComicModel *m)
 {
     model = m;
 }

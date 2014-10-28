@@ -10,7 +10,7 @@ class YACReaderTableView;
 class QSplitter;
 class ComicFlowWidget;
 class QToolBar;
-class TableModel;
+class ComicModel;
 class QStackedWidget;
 
 class ClassicComicsView : public ComicsView
@@ -19,7 +19,7 @@ class ClassicComicsView : public ComicsView
 public:
     ClassicComicsView(QWidget *parent = 0);
     void setToolBar(QToolBar * toolBar);
-    void setModel(TableModel *model);
+    void setModel(ComicModel *model);
     void setCurrentIndex(const QModelIndex &index);
     QModelIndex currentIndex();
     QItemSelectionModel * selectionModel();

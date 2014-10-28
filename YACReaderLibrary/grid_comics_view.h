@@ -18,7 +18,7 @@ public:
     explicit GridComicsView(QWidget *parent = 0);
     virtual ~GridComicsView();
     void setToolBar(QToolBar * toolBar);
-    void setModel(TableModel *model);
+    void setModel(ComicModel *model);
     void setCurrentIndex(const QModelIndex &index);
     QModelIndex currentIndex();
     QItemSelectionModel * selectionModel();

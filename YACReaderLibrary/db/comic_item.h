@@ -5,12 +5,12 @@
 #include <QVariant>
 
 //! [0]
-class TableItem : public QObject
+class ComicItem : public QObject
 {
 	Q_OBJECT
 public:
-	TableItem(const QList<QVariant> &data);
-	~TableItem();
+    ComicItem(const QList<QVariant> &data);
+    ~ComicItem();
 	int columnCount() const;
 	QVariant data(int column) const;
 	void setData(int column,const QVariant & value);

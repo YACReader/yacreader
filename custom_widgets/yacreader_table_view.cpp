@@ -5,7 +5,7 @@
 #include <QPropertyAnimation>
 #include <QPainter>
 
-#include "tableitem.h"
+#include "comic_item.h"
 
 YACReaderTableView::YACReaderTableView(QWidget *parent) :
 	QTableView(parent),showDelete(false),editing(false),myeditor(0)
@@ -187,7 +187,7 @@ void YACReaderTableView::resizeEvent(QResizeEvent * event)
 void YACReaderRatingDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
 									const QModelIndex &index) const
 {
-	int rating = ((TableItem *)index.internalPointer())->data(11).toInt();
+    int rating = ((ComicItem *)index.internalPointer())->data(11).toInt();
 
 	StarRating starRating(rating);
 
@@ -208,7 +208,7 @@ QSize YACReaderRatingDelegate::sizeHint(const QStyleOptionViewItem &option,
 							 const QModelIndex &index) const
 {
 	Q_UNUSED(option)
-	int rating = ((TableItem *)index.internalPointer())->data(11).toInt();
+    int rating = ((ComicItem *)index.internalPointer())->data(11).toInt();
 	StarRating starRating(rating);
 	return starRating.sizeHint();
 }
@@ -230,7 +230,7 @@ QWidget *YACReaderRatingDelegate::createEditor(QWidget *parent,
 void YACReaderRatingDelegate::setEditorData(QWidget *editor,
 								 const QModelIndex &index) const
 {
-	int rating = ((TableItem *)index.internalPointer())->data(11).toInt();
+    int rating = ((ComicItem *)index.internalPointer())->data(11).toInt();
 
 	StarRating starRating(rating);
 

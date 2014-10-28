@@ -8,7 +8,7 @@
 GridComicsView::GridComicsView(QWidget *parent) :
     ComicsView(parent),_selectionModel(NULL)
 {
-    qmlRegisterType<TableModel>("comicModel",1,0,"TableModel");
+    qmlRegisterType<ComicModel>("comicModel",1,0,"TableModel");
 
     view = new QQuickView();
     container = QWidget::createWindowContainer(view, this);
@@ -41,7 +41,7 @@ QLOG_INFO() << "setToolBar";
 static_cast<QVBoxLayout *>(this->layout())->insertWidget(1,toolBar);
 }
 
-void GridComicsView::setModel(TableModel *model)
+void GridComicsView::setModel(ComicModel *model)
 {
     QLOG_INFO() << "setModel";
 

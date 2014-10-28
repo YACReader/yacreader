@@ -1,10 +1,10 @@
 
 #include <QStringList>
 
-#include "tableitem.h"
+#include "comic_item.h"
 
 //! [0]
-TableItem::TableItem(const QList<QVariant> &data)
+ComicItem::ComicItem(const QList<QVariant> &data)
 	
 {
 	itemData = data;
@@ -12,7 +12,7 @@ TableItem::TableItem(const QList<QVariant> &data)
 //! [0]
 
 //! [1]
-TableItem::~TableItem()
+ComicItem::~ComicItem()
 {
 
 }
@@ -20,26 +20,26 @@ TableItem::~TableItem()
 
 
 //! [5]
-int TableItem::columnCount() const
+int ComicItem::columnCount() const
 {
 	return itemData.count();
 }
 //! [5]
 
 //! [6]
-QVariant TableItem::data(int column) const
+QVariant ComicItem::data(int column) const
 {
 	return itemData.value(column);
 }
 //! [6]
 
-void TableItem::setData(int column,const QVariant & value)
+void ComicItem::setData(int column,const QVariant & value)
 {
 	itemData[column] = value;
 }
 
 //! [8]
-int TableItem::row() const
+int ComicItem::row() const
 {
 
 	return 0;

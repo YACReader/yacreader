@@ -1,6 +1,6 @@
 #include "yacreader_treeview.h"
-#include "treeitem.h"
-#include "treemodel.h"
+#include "folder_item.h"
+#include "folder_model.h"
 
 #include "comic.h"
 #include "comic_files_manager.h"
@@ -161,9 +161,9 @@ YACReaderTreeViewItemDeletegate::YACReaderTreeViewItemDeletegate(QObject *parent
 
 void YACReaderTreeViewItemDeletegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    TreeItem * item = static_cast<TreeItem *>(index.internalPointer());
+    FolderItem * item = static_cast<FolderItem *>(index.internalPointer());
 
-    if(!item->data(TreeModel::Completed).toBool())
+    if(!item->data(FolderModel::Completed).toBool())
     {
         painter->save();
 #ifdef Q_OS_MAC

@@ -5,7 +5,7 @@
 #include <QtSql>
 #include <QSqlDatabase>
 
-#include "treemodel.h"
+#include "folder_model.h"
 
 class ComicsInfoExporter : public QThread
 {

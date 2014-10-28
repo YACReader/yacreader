@@ -1,6 +1,6 @@
 #include "library_window.h"
 #include "custom_widgets.h"
-#include "treeitem.h"
+#include "folder_item.h"
 
 #include <QHBoxLayout>
 #include <QSplitter>
@@ -43,7 +43,7 @@
 #include "options_dialog.h"
 #include "help_about_dialog.h"
 #include "server_config_dialog.h"
-#include "tablemodel.h"
+#include "comic_model.h"
 #include "yacreader_tool_bar_stretch.h"
 #include "yacreader_table_view.h"
 
@@ -378,9 +378,9 @@ void LibraryWindow::setUpShortcutsManagement()
 void LibraryWindow::doModels()
 {
 	//folders
-    foldersModel = new TreeModel();
+    foldersModel = new FolderModel();
 	//comics
-    comicsModel =  new TableModel();
+    comicsModel =  new ComicModel();
 
     setSearchFilter(YACReader::NoModifiers, ""); //clear search filter
 }
@@ -1259,7 +1259,7 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 	unsigned long long int folderId = 1;
 	if(mi.isValid())
 	{
-		TreeItem *item = static_cast<TreeItem*>(mi.internalPointer());
+        FolderItem *item = static_cast<FolderItem*>(mi.internalPointer());
 		folderId = item->id;
 #ifndef Q_OS_MAC
 		libraryToolBar->setCurrentFolderName(item->data(0).toString());
@@ -1277,14 +1277,14 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 		//setFoldersFilter("");
 		if(mi.isValid())
 		{
-			index = static_cast<TreeItem *>(mi.internalPointer())->originalItem;
+            index = static_cast<FolderItem *>(mi.internalPointer())->originalItem;
 			column = mi.column();
             searchEdit->clear();
 		}
 	}
 	else
 	{
-		index = static_cast<TreeItem *>(mi.internalPointer());
+        index = static_cast<FolderItem *>(mi.internalPointer());
 		column = mi.column();
 	}
 
@@ -1492,7 +1492,7 @@ void LibraryWindow::addFolderToCurrentIndex()
                                                   tr("Folder name:"), QLineEdit::Normal,
                                                   "", &ok);
 
-    QRegExp invalidChars("\/\\\:\*\?\"\<\>\|");
+    QRegExp invalidChars("\/\\\:\*\?\"\<\>\|");//TODO this regexp is not properly written
     bool isValid = !newFolderName.contains(invalidChars);
 
     if (ok && !newFolderName.isEmpty() && isValid)
@@ -2444,9 +2444,9 @@ void LibraryWindow::updateFoldersViewConextMenu(const QModelIndex &mi)
     if(!mi.isValid())
         return;
 
-    TreeItem * item = static_cast<TreeItem *>(mi.internalPointer());
-    bool isFinished = item->data(TreeModel::Finished).toBool();
-    bool isCompleted = item->data(TreeModel::Completed).toBool();
+    FolderItem * item = static_cast<FolderItem *>(mi.internalPointer());
+    bool isFinished = item->data(FolderModel::Finished).toBool();
+    bool isCompleted = item->data(FolderModel::Completed).toBool();
 
     setFolderAsReadAction->setVisible(!isFinished);
     setFolderAsUnreadAction->setVisible(isFinished);

@@ -48,8 +48,8 @@
 #include <QtGui>
 
 
-#include "treeitem.h"
-#include "treemodel.h"
+#include "folder_item.h"
+#include "folder_model.h"
 #include "data_base_management.h"
 #include "folder.h"
 #include "db_helper.h"
@@ -98,7 +98,7 @@ void drawMacOSXFinishedFolderIcon()
 
 #define ROOT 1
 
-TreeModel::TreeModel(QObject *parent)
+FolderModel::FolderModel(QObject *parent)
 	: QAbstractItemModel(parent),rootItem(0),rootBeforeFilter(0),filterEnabled(false),includeComics(false)
 {
 	connect(this,SIGNAL(beforeReset()),this,SIGNAL(modelAboutToBeReset()));
@@ -106,13 +106,13 @@ TreeModel::TreeModel(QObject *parent)
 }
 
 //! [0]
-TreeModel::TreeModel( QSqlQuery &sqlquery, QObject *parent)
+FolderModel::FolderModel( QSqlQuery &sqlquery, QObject *parent)
 	: QAbstractItemModel(parent),rootItem(0),rootBeforeFilter(0),filterEnabled(false),includeComics(false)
 {
 	//lo m�s probable es que el nodo ra�z no necesite tener informaci�n
 	QList<QVariant> rootData;
 	rootData << "root"; //id 0, padre 0, title "root" (el id, y el id del padre van a ir en la clase TreeItem)
-	rootItem = new TreeItem(rootData);
+    rootItem = new FolderItem(rootData);
 	rootItem->id = ROOT;
 	rootItem->parentItem = 0;
 	setupModelData(sqlquery, rootItem);
@@ -121,7 +121,7 @@ TreeModel::TreeModel( QSqlQuery &sqlquery, QObject *parent)
 //! [0]
 
 //! [1]
-TreeModel::~TreeModel()
+FolderModel::~FolderModel()
 {
 	if(rootItem != 0)
 		delete rootItem;
@@ -129,22 +129,22 @@ TreeModel::~TreeModel()
 //! [1]
 
 //! [2]
-int TreeModel::columnCount(const QModelIndex &parent) const
+int FolderModel::columnCount(const QModelIndex &parent) const
 {
 	if (parent.isValid())
-		return static_cast<TreeItem*>(parent.internalPointer())->columnCount();
+        return static_cast<FolderItem*>(parent.internalPointer())->columnCount();
 	else
 		return rootItem->columnCount();
 }
 //! [2]
 
 //! [3]
-QVariant TreeModel::data(const QModelIndex &index, int role) const
+QVariant FolderModel::data(const QModelIndex &index, int role) const
 {
 	if (!index.isValid())
 		return QVariant();
 
-    TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
+    FolderItem *item = static_cast<FolderItem*>(index.internalPointer());
 
 	if (role == Qt::DecorationRole)
 
@@ -160,7 +160,7 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
             return QVariant(QFileIconProvider().icon(QFileIconProvider::Folder));
         }
 #else
-        if(item->data(TreeModel::Finished).toBool())
+        if(item->data(FolderModel::Finished).toBool())
             return QVariant(QIcon(":/images/folder_finished.png"));
         else
             return QVariant(QIcon(":/images/folder.png"));
@@ -176,7 +176,7 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 //! [3]
 
 //! [4]
-Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
+Qt::ItemFlags FolderModel::flags(const QModelIndex &index) const
 {
 	if (!index.isValid())
 		return 0;
@@ -186,7 +186,7 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
 //! [4]
 
 //! [5]
-QVariant TreeModel::headerData(int section, Qt::Orientation orientation,
+QVariant FolderModel::headerData(int section, Qt::Orientation orientation,
 							   int role) const
 {
 	if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
@@ -197,20 +197,20 @@ QVariant TreeModel::headerData(int section, Qt::Orientation orientation,
 //! [5]
 
 //! [6]
-QModelIndex TreeModel::index(int row, int column, const QModelIndex &parent)
+QModelIndex FolderModel::index(int row, int column, const QModelIndex &parent)
 			const
 {
 	if (!hasIndex(row, column, parent))
 		return QModelIndex();
 
-	TreeItem *parentItem;
+    FolderItem *parentItem;
 
 	if (!parent.isValid())
 		parentItem = rootItem;
 	else
-		parentItem = static_cast<TreeItem*>(parent.internalPointer());
+        parentItem = static_cast<FolderItem*>(parent.internalPointer());
 
-	TreeItem *childItem = parentItem->child(row);
+    FolderItem *childItem = parentItem->child(row);
 	if (childItem)
 		return createIndex(row, column, childItem);
 	else
@@ -219,13 +219,13 @@ QModelIndex TreeModel::index(int row, int column, const QModelIndex &parent)
 //! [6]
 
 //! [7]
-QModelIndex TreeModel::parent(const QModelIndex &index) const
+QModelIndex FolderModel::parent(const QModelIndex &index) const
 {
 	if (!index.isValid())
 		return QModelIndex();
 
-	TreeItem *childItem = static_cast<TreeItem*>(index.internalPointer());
-	TreeItem *parentItem = childItem->parent();
+    FolderItem *childItem = static_cast<FolderItem*>(index.internalPointer());
+    FolderItem *parentItem = childItem->parent();
 
 	if (parentItem == rootItem)
 		return QModelIndex();
@@ -234,7 +234,7 @@ QModelIndex TreeModel::parent(const QModelIndex &index) const
 }
 //! [7]
 
-QModelIndex TreeModel::indexFromItem(TreeItem * item,int column)
+QModelIndex FolderModel::indexFromItem(FolderItem * item,int column)
 {
 	//if(item->parent() != 0)
 	//	return index(item->row(),column,parent(indexFromItem(item->parent(),column-1)));
@@ -245,22 +245,22 @@ QModelIndex TreeModel::indexFromItem(TreeItem * item,int column)
 
 
 //! [8]
-int TreeModel::rowCount(const QModelIndex &parent) const
+int FolderModel::rowCount(const QModelIndex &parent) const
 {
-	TreeItem *parentItem;
+    FolderItem *parentItem;
 	if (parent.column() > 0)
 		return 0;
 
 	if (!parent.isValid())
 		parentItem = rootItem;
 	else
-		parentItem = static_cast<TreeItem*>(parent.internalPointer());
+        parentItem = static_cast<FolderItem*>(parent.internalPointer());
 
 	return parentItem->childCount();
 }
 //! [8]
 
-void TreeModel::setupModelData(QString path)
+void FolderModel::setupModelData(QString path)
 {
 	beginResetModel();
 	if(rootItem != 0)
@@ -271,7 +271,7 @@ void TreeModel::setupModelData(QString path)
 	//inicializar el nodo ra�z
 	QList<QVariant> rootData;
 	rootData << "root"; //id 0, padre 0, title "root" (el id, y el id del padre van a ir en la clase TreeItem)
-	rootItem = new TreeItem(rootData);
+    rootItem = new FolderItem(rootData);
 	rootItem->id = ROOT;
 	rootItem->parentItem = 0;
 
@@ -292,7 +292,7 @@ void TreeModel::setupModelData(QString path)
 }
 
 
-void TreeModel::setupModelData(QSqlQuery &sqlquery, TreeItem *parent)
+void FolderModel::setupModelData(QSqlQuery &sqlquery, FolderItem *parent)
 {
 	//64 bits para la primary key, es decir la misma precisi�n que soporta sqlit 2^64
 	//el diccionario permitir� encontrar cualquier nodo del �rbol r�pidamente, de forma que a�adir un hijo a un padre sea O(1)
@@ -308,11 +308,11 @@ void TreeModel::setupModelData(QSqlQuery &sqlquery, TreeItem *parent)
 		data << record.value("path").toString();
         data << record.value("finished").toBool();
         data << record.value("completed").toBool();
-		TreeItem * item = new TreeItem(data);
+        FolderItem * item = new FolderItem(data);
 
 		item->id = record.value("id").toULongLong();
 		//la inserci�n de hijos se hace de forma ordenada
-		TreeItem * parent = items.value(record.value("parentId").toULongLong());
+        FolderItem * parent = items.value(record.value("parentId").toULongLong());
         //if(parent !=0) //TODO if parent==0 the parent of item was removed from the DB and delete on cascade didn't work, ERROR.
 			parent->appendChild(item);
 		//se a�ade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
@@ -320,7 +320,7 @@ void TreeModel::setupModelData(QSqlQuery &sqlquery, TreeItem *parent)
     }
 }
 
-void TreeModel::updateFolderModelData(QSqlQuery &sqlquery, TreeItem *parent)
+void FolderModel::updateFolderModelData(QSqlQuery &sqlquery, FolderItem *parent)
 {
     while (sqlquery.next()) {
         QList<QVariant> data;
@@ -330,11 +330,11 @@ void TreeModel::updateFolderModelData(QSqlQuery &sqlquery, TreeItem *parent)
         data << record.value("path").toString();
         data << record.value("finished").toBool();
         data << record.value("completed").toBool();
-        TreeItem * item = new TreeItem(data);
+        FolderItem * item = new FolderItem(data);
 
         item->id = record.value("id").toULongLong();
         //la inserci�n de hijos se hace de forma ordenada
-        TreeItem * parent = items.value(record.value("parentId").toULongLong());
+        FolderItem * parent = items.value(record.value("parentId").toULongLong());
         if(parent !=0) //TODO if parent==0 the parent of item was removed from the DB and delete on cascade didn't work, ERROR.
             parent->appendChild(item);
         //se a�ade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
@@ -342,7 +342,7 @@ void TreeModel::updateFolderModelData(QSqlQuery &sqlquery, TreeItem *parent)
     }
 }
 
-void TreeModel::setupFilteredModelData()
+void FolderModel::setupFilteredModelData()
 {
 	beginResetModel();
 	
@@ -357,7 +357,7 @@ void TreeModel::setupFilteredModelData()
 
 	QList<QVariant> rootData;
 	rootData << "root"; //id 1, padre 1, title "root" (el id, y el id del padre van a ir en la clase TreeItem)
-	rootItem = new TreeItem(rootData);
+    rootItem = new FolderItem(rootData);
 	rootItem->id = ROOT;
 	rootItem->parentItem = 0;
 
@@ -418,7 +418,7 @@ void TreeModel::setupFilteredModelData()
     endResetModel();
 }
 
-void TreeModel::setupFilteredModelData(QSqlQuery &sqlquery, TreeItem *parent)
+void FolderModel::setupFilteredModelData(QSqlQuery &sqlquery, FolderItem *parent)
 {
 	//64 bits para la primary key, es decir la misma precisi�n que soporta sqlit 2^64
 	filteredItems.clear();
@@ -436,7 +436,7 @@ void TreeModel::setupFilteredModelData(QSqlQuery &sqlquery, TreeItem *parent)
         data << record.value("finished").toBool();
         data << record.value("completed").toBool();
 
-		TreeItem * item = new TreeItem(data);
+        FolderItem * item = new FolderItem(data);
 		item->id = sqlquery.value(0).toULongLong();
 
 		//id del padre
@@ -461,9 +461,9 @@ void TreeModel::setupFilteredModelData(QSqlQuery &sqlquery, TreeItem *parent)
 			while(parentId != ROOT )
 			{
 				//el padre no estaba en el modelo filtrado, as� que se rescata del modelo original
-				TreeItem * parentItem = items.value(parentId);
+                FolderItem * parentItem = items.value(parentId);
 				//se debe crear un nuevo nodo (para no compartir los hijos con el nodo original)
-				TreeItem * newparentItem = new TreeItem(parentItem->getData()); //padre que se a�adir� a la estructura de directorios filtrados
+                FolderItem * newparentItem = new FolderItem(parentItem->getData()); //padre que se a�adir� a la estructura de directorios filtrados
 				newparentItem->id = parentId;
 
 				newparentItem->originalItem = parentItem;
@@ -496,19 +496,19 @@ void TreeModel::setupFilteredModelData(QSqlQuery &sqlquery, TreeItem *parent)
 
 
 
-QString TreeModel::getDatabase()
+QString FolderModel::getDatabase()
 {
 	return _databasePath;
 }
 
-QString TreeModel::getFolderPath(const QModelIndex &folder)
+QString FolderModel::getFolderPath(const QModelIndex &folder)
 {
     if(!folder.isValid()) //root folder
         return "/";
-    return static_cast<TreeItem*>(folder.internalPointer())->data(TreeModel::Path).toString();
+    return static_cast<FolderItem*>(folder.internalPointer())->data(FolderModel::Path).toString();
 }
 
-void TreeModel::setFilter(const YACReader::SearchModifiers modifier, QString filter, bool includeComics)
+void FolderModel::setFilter(const YACReader::SearchModifiers modifier, QString filter, bool includeComics)
 {
 	this->filter = filter;
 	this->includeComics = includeComics;
@@ -517,7 +517,7 @@ void TreeModel::setFilter(const YACReader::SearchModifiers modifier, QString fil
 	setupFilteredModelData();
 }
 
-void TreeModel::resetFilter()
+void FolderModel::resetFilter()
 {
 	beginResetModel();
 	filter = "";
@@ -525,7 +525,7 @@ void TreeModel::resetFilter()
 	//TODO hay que liberar la memoria reservada para el filtrado
 	//items.clear();
 	filteredItems.clear();
-	TreeItem * root = rootItem;
+    FolderItem * root = rootItem;
 	rootItem = rootBeforeFilter; //TODO si no se aplica el filtro previamente, esto invalidar�a en modelo
 	if(root !=0)
 		delete root;
@@ -537,14 +537,14 @@ void TreeModel::resetFilter()
 
 }
 
-void TreeModel::updateFolderCompletedStatus(const QModelIndexList &list, bool status)
+void FolderModel::updateFolderCompletedStatus(const QModelIndexList &list, bool status)
 {
     QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
     db.transaction();
     foreach (QModelIndex mi, list)
     {
-        TreeItem * item = static_cast<TreeItem*>(mi.internalPointer());
-        item->setData(TreeModel::Completed,status);
+        FolderItem * item = static_cast<FolderItem*>(mi.internalPointer());
+        item->setData(FolderModel::Completed,status);
 
         Folder f = DBHelper::loadFolder(item->id,db);
         f.setCompleted(status);
@@ -554,17 +554,17 @@ void TreeModel::updateFolderCompletedStatus(const QModelIndexList &list, bool st
     db.close();
     QSqlDatabase::removeDatabase(_databasePath);
 
-    emit dataChanged(index(list.first().row(),TreeModel::Name),index(list.last().row(),TreeModel::Completed));
+    emit dataChanged(index(list.first().row(),FolderModel::Name),index(list.last().row(),FolderModel::Completed));
 }
 
-void TreeModel::updateFolderFinishedStatus(const QModelIndexList &list, bool status)
+void FolderModel::updateFolderFinishedStatus(const QModelIndexList &list, bool status)
 {
     QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
     db.transaction();
     foreach (QModelIndex mi, list)
     {
-        TreeItem * item = static_cast<TreeItem*>(mi.internalPointer());
-        item->setData(TreeModel::Finished,status);
+        FolderItem * item = static_cast<FolderItem*>(mi.internalPointer());
+        item->setData(FolderModel::Finished,status);
 
         Folder f = DBHelper::loadFolder(item->id,db);
         f.setFinished(status);
@@ -574,15 +574,15 @@ void TreeModel::updateFolderFinishedStatus(const QModelIndexList &list, bool sta
     db.close();
     QSqlDatabase::removeDatabase(_databasePath);
 
-    emit dataChanged(index(list.first().row(),TreeModel::Name),index(list.last().row(),TreeModel::Completed));
+    emit dataChanged(index(list.first().row(),FolderModel::Name),index(list.last().row(),FolderModel::Completed));
 }
 
-QStringList TreeModel::getSubfoldersNames(const QModelIndex &mi)
+QStringList FolderModel::getSubfoldersNames(const QModelIndex &mi)
 {
     QStringList result;
     qulonglong id = 1;
     if(mi.isValid()){
-        TreeItem * item = static_cast<TreeItem*>(mi.internalPointer());
+        FolderItem * item = static_cast<FolderItem*>(mi.internalPointer());
         id = item->id;
     }
 
@@ -600,11 +600,11 @@ QStringList TreeModel::getSubfoldersNames(const QModelIndex &mi)
     return result;
 }
 
-void TreeModel::fetchMoreFromDB(const QModelIndex &parent)
+void FolderModel::fetchMoreFromDB(const QModelIndex &parent)
 {
-    TreeItem * item;
+    FolderItem * item;
     if(parent.isValid())
-        item = static_cast<TreeItem*>(parent.internalPointer());
+        item = static_cast<FolderItem*>(parent.internalPointer());
     else
         item = rootItem;
 
@@ -615,8 +615,8 @@ void TreeModel::fetchMoreFromDB(const QModelIndex &parent)
 
     QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-    QList<TreeItem *> items;
-    QList<TreeItem *> nextLevelItems;
+    QList<FolderItem *> items;
+    QList<FolderItem *> nextLevelItems;
 
     QSqlQuery selectQuery(db);
     selectQuery.prepare("select * from folder where id <> 1 and parentId = :parentId order by parentId,name");
@@ -626,7 +626,7 @@ void TreeModel::fetchMoreFromDB(const QModelIndex &parent)
     while(items.size() > 0)
     {
         nextLevelItems.clear();
-        foreach(TreeItem * item, items)
+        foreach(FolderItem * item, items)
         {
             selectQuery.bindValue(":parentId", item->id);
 
@@ -655,12 +655,12 @@ void TreeModel::fetchMoreFromDB(const QModelIndex &parent)
     QSqlDatabase::removeDatabase(_databasePath);
 }
 
-QModelIndex TreeModel::addFolderAtParent(const QString &folderName, const QModelIndex &parent)
+QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QModelIndex &parent)
 {
-    TreeItem * parentItem;
+    FolderItem * parentItem;
 
     if(parent.isValid())
-        parentItem = static_cast<TreeItem*>(parent.internalPointer());
+        parentItem = static_cast<FolderItem*>(parent.internalPointer());
     else
         parentItem = rootItem;
 
@@ -681,7 +681,7 @@ QModelIndex TreeModel::addFolderAtParent(const QString &folderName, const QModel
     data << false; //finished
     data << true; //completed
 
-    TreeItem * item = new TreeItem(data);
+    FolderItem * item = new FolderItem(data);
     item->id = newFolder.id;
 
     parentItem->appendChild(item);
@@ -695,13 +695,13 @@ QModelIndex TreeModel::addFolderAtParent(const QString &folderName, const QModel
     return index(destRow,0,parent);
 }
 
-void TreeModel::deleteFolder(const QModelIndex &mi)
+void FolderModel::deleteFolder(const QModelIndex &mi)
 {
    beginRemoveRows(mi.parent(),mi.row(),mi.row());
 
-   TreeItem * item = static_cast<TreeItem*>(mi.internalPointer());
+   FolderItem * item = static_cast<FolderItem*>(mi.internalPointer());
 
-   TreeItem * parent = item->parent();
+   FolderItem * parent = item->parent();
    parent->removeChild(mi.row());
 
    Folder f;

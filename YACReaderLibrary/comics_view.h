@@ -3,20 +3,20 @@
 
 #include <QtWidgets>
 
-#include "tablemodel.h"
+#include "comic_model.h"
 
 class YACReaderTableView;
 class QSplitter;
 class ComicFlowWidget;
 class QToolBar;
-class TableModel;
+class ComicModel;
 class ComicsView : public QWidget
 {
     Q_OBJECT
 public:
     explicit ComicsView(QWidget *parent = 0);
     virtual void setToolBar(QToolBar * toolBar) = 0;
-    virtual void setModel(TableModel *model);
+    virtual void setModel(ComicModel *model);
     virtual void setCurrentIndex(const QModelIndex &index) = 0;
     virtual QModelIndex currentIndex() = 0;
     virtual QItemSelectionModel * selectionModel() = 0;
@@ -42,7 +42,7 @@ public slots:
     virtual void setShowMarks(bool show) = 0;
     virtual void selectAll() = 0;
 protected:
-    TableModel * model;
+    ComicModel * model;
 
     //Drop to import
     void dragEnterEvent(QDragEnterEvent *event);
