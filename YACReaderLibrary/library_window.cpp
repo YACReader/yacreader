@@ -1297,7 +1297,7 @@ void LibraryWindow::loadCovers(const QModelIndex & mi)
 
     if(paths.size()>0) {
         comicsView->setCurrentIndex(comicsModel->index(0,0));
-        if(comicsViewStack->currentWidget() != comicsView)
+        if(comicsViewStack->currentWidget() != comicsView && comicsViewStack->currentWidget() != comicsViewTransition)
             comicsViewStack->setCurrentWidget(comicsView);
     }
     else
