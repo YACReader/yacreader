@@ -15,6 +15,7 @@ class YACReaderSearchLineEdit : public QLineEdit
 
 public:
 	YACReaderSearchLineEdit(QWidget *parent = 0);
+    const QString text();
 
 protected:
 	void resizeEvent(QResizeEvent *);

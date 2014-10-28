@@ -70,6 +70,15 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
     connect(this,SIGNAL(textChanged(QString)),this,SLOT(processText(QString)));
 }
 
+//modifiers are not returned
+const QString YACReaderSearchLineEdit::text()
+{
+    QString text = QLineEdit::text();
+
+    QRegExp regExp("\\[.*\\]");
+    return text.remove(regExp).trimmed();
+}
+
 void YACReaderSearchLineEdit::resizeEvent(QResizeEvent *)
 {
     #ifdef Q_OS_MAC
@@ -108,11 +117,10 @@ void YACReaderSearchLineEdit::processText(const QString &text)
             QString modifier = regExp.cap(1);
             QString searchText = regExp.cap(2).trimmed();
 
-            QLOG_INFO() << "modifier : " << modifier << "text : " << searchText;
-
             int indexOfModifier = modifiers.indexOf(modifier);
             if(indexOfModifier != -1)
             {
+                QLOG_INFO() << "modifier : " << modifier << "text : " << searchText;
                 emit filterChanged(static_cast<YACReader::SearchModifiers>(indexOfModifier+1), searchText); //TODO, do not use on indexOF
             }
             else
