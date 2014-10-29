@@ -187,6 +187,7 @@ private:
     //reading lists actions
     QAction * addReadingListAction;
     QAction * deleteReadingListAction;
+    QAction * addLabelAction;
     //--
     //QAction * expandAllNodesRLAction;
     //QAction * colapseAllNodesRLAction;

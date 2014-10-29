@@ -24,5 +24,6 @@
         <file>../images/delete_sidebar.png</file>
         <file alias="images/iconSearch.png">../images/iconSearchNew.png</file>
         <file alias="images/clearSearch.png">../images/clearSearchNew.png</file>
+        <file>../images/addLabelIcon.png</file>
     </qresource>
 </RCC>
