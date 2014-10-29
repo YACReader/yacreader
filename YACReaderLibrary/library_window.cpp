@@ -198,6 +198,9 @@ void LibraryWindow::doLayout()
 
     readingListsTitle->addAction(addReadingListAction);
     readingListsTitle->addAction(deleteReadingListAction);
+    readingListsTitle->addSepartor();
+    readingListsTitle->addAction(addLabelAction);
+    readingListsTitle->addSpacing(3);
 
 	//FINAL LAYOUT-------------------------------------------------------------
     comicsViewStack = new QStackedWidget();
@@ -336,6 +339,13 @@ void LibraryWindow::setUpShortcutsManagement()
                                      << setFolderAsReadAction
                                      << setFolderAsUnreadAction
                                      << updateCurrentFolderAction);
+    allActions << tmpList;
+
+    editShortcutsDialog->addActionsGroup("Lists",QIcon(":/images/shortcuts_group_folders.png"), //TODO change icon
+                                     tmpList = QList<QAction *>()
+                                     << addReadingListAction
+                                     << deleteReadingListAction
+                                     << addLabelAction);
     allActions << tmpList;
 
     editShortcutsDialog->addActionsGroup("General",QIcon(":/images/shortcuts_group_general.png"),
@@ -702,6 +712,12 @@ void LibraryWindow::createActions()
     deleteReadingListAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(REMOVE_READING_LIST_ACTION_YL));
     deleteReadingListAction->setToolTip(tr("Remove current reading list from the library"));
     deleteReadingListAction->setIcon(QIcon(":/images/delete_sidebar.png"));
+
+    addLabelAction = new QAction(tr("Add new label"), this);
+    addLabelAction->setData(ADD_LABEL_ACTION_YL);
+    addLabelAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_LABEL_ACTION_YL));
+    addLabelAction->setToolTip(tr("Add a new label to this library"));
+    addLabelAction->setIcon(QIcon(":/images/addLabelIcon.png"));
 
 	//disable actions
 	disableAllActions();
