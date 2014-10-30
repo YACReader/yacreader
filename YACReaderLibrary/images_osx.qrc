@@ -1,0 +1,27 @@
+<RCC>
+  <qresource prefix="/" >
+    <file>../images/folder_finished_macosx.png</file>
+    <file alias="images/main_toolbar/back.png">../images/main_toolbar/back_osx.png</file>
+	
+    <file alias="images/main_toolbar/back_disabled.png">../images/main_toolbar/back_disabled_osx.png</file>
+    <file alias="images/main_toolbar/forward.png">../images/main_toolbar/forward_osx.png</file>
+    <file alias="images/main_toolbar/forward_disabled.png">../images/main_toolbar/forward_disabled_osx.png</file>
+	<file alias="images/main_toolbar/settings.png">../images/main_toolbar/settings_osx.png</file>
+    <file alias="images/main_toolbar/server.png">../images/main_toolbar/server_osx.png</file>
+    <file alias="images/main_toolbar/help.png">../images/main_toolbar/help_osx.png</file>
+    <file alias="images/main_toolbar/fullscreen.png">../images/main_toolbar/fullscreen_osx.png</file>
+	
+	<file alias="images/libraryIcon.png">../images/libraryIcon_osx.png</file>
+    <file alias="images/setRoot.png">../images/setRoot_osx.png</file>
+    <file alias="images/expand.png">../images/expand_osx.png</file>
+    <file alias="images/colapse.png">../images/colapse_osx.png</file>
+    <file alias="images/newLibraryIcon.png">../images/newLibraryIcon_osx.png</file>
+    <file alias="images/openLibraryIcon.png">../images/openLibraryIcon_osx.png</file>
+    <file alias="images/flow_to_grid.gif">../images/flow_to_grid.gif</file>
+    <file alias="images/grid_to_flow.gif">../images/grid_to_flow.gif</file>
+    <file alias="images/empty_folder.png">../images/empty_folder.png</file>
+    <file alias="images/empty_search.png">../images/empty_search.png</file>
+    <file>../images/iconSearch.png</file>
+    <file>../images/clearSearch.png</file>
+  </qresource>
+</RCC>
