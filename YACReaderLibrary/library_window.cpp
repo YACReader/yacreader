@@ -73,6 +73,9 @@
 
 #include "comic_files_manager.h"
 
+#include "reading_list_model.h"
+#include "yacreader_reading_lists_view.h"
+
 #include "QsLog.h"
 
 #ifdef Q_OS_WIN
@@ -179,6 +182,7 @@ void LibraryWindow::doLayout()
     sideBar = new YACReaderSideBar;
 
 	foldersView = sideBar->foldersView;
+    listsView = sideBar->readingListsView;
 	selectedLibrary = sideBar->selectedLibrary;
 
 	YACReaderTitledToolBar * librariesTitle = sideBar->librariesTitle;
@@ -391,6 +395,8 @@ void LibraryWindow::doModels()
     foldersModel = new FolderModel();
 	//comics
     comicsModel =  new ComicModel();
+    //lists
+    listsModel = new ReadingListModel();
 
     setSearchFilter(YACReader::NoModifiers, ""); //clear search filter
 }
@@ -1156,6 +1162,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 					{
                         comicsView->setModel(NULL);
 						foldersView->setModel(NULL);
+                        listsView->setModel(NULL);
 						disableAllActions();//TODO comprobar que se deben deshabilitar
 						//será possible renombrar y borrar estas bibliotecas
 						renameLibraryAction->setEnabled(true);
@@ -1169,6 +1176,9 @@ void LibraryWindow::loadLibrary(const QString & name)
 
                 foldersModel->setupModelData(path);
                 foldersView->setModel(foldersModel);
+
+                listsModel->setupModelData(path);
+                listsView->setModel(listsModel);
 
                 if(foldersModel->rowCount(QModelIndex())>0)
 					disableFoldersActions(false);
@@ -1208,6 +1218,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 
                     comicsView->setModel(NULL);
 					foldersView->setModel(NULL);
+                    listsView->setModel(NULL);
 					disableAllActions();//TODO comprobar que se deben deshabilitar
 					//será possible renombrar y borrar estas bibliotecas
 					renameLibraryAction->setEnabled(true);
@@ -1218,6 +1229,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 		{
             comicsView->setModel(NULL);
 			foldersView->setModel(NULL);
+            listsView->setModel(NULL);
 			disableAllActions();//TODO comprobar que se deben deshabilitar
 
 			//si la librería no existe en disco, se ofrece al usuario la posibiliad de eliminarla
@@ -1788,6 +1800,7 @@ void LibraryWindow::deleteCurrentLibrary()
 	{
         comicsView->setModel(NULL);
 		foldersView->setModel(NULL);
+        listsView->setModel(NULL);
 
         disableAllActions();
         showNoLibrariesWidget();
@@ -1812,6 +1825,7 @@ void LibraryWindow::removeLibrary()
 		{
             comicsView->setModel(NULL);
 			foldersView->setModel(NULL);
+            listsView->setModel(NULL);
 
             disableAllActions();
             showNoLibrariesWidget();
