@@ -49,11 +49,12 @@ public:
 	static QSqlDatabase loadDatabase(QString path);
 	static QSqlDatabase loadDatabaseFromFile(QString path);
 	static bool createTables(QSqlDatabase & database);
+    static bool createV8Tables(QSqlDatabase & database);
 
 	static void exportComicsInfo(QString source, QString dest);
 	static bool importComicsInfo(QString source, QString dest);
 
-	static QString checkValidDB(const QString & fullPath); //retorna "" si la DB es inv·lida Û la versiÛn si es v·lida.
+	static QString checkValidDB(const QString & fullPath); //retorna "" si la DB es inv√°lida √≥ la versi√≥n si es v√°lida.
 	static int compareVersions(const QString & v1, const QString v2); //retorna <0 si v1 < v2, 0 si v1 = v2 y >0 si v1 > v2
 	static bool updateToCurrentVersion(const QString & path);
 };

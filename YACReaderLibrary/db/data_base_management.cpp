@@ -93,7 +93,7 @@ QSqlDatabase DataBaseManagement::loadDatabase(QString path)
 	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE",path);
 	db.setDatabaseName(path+"/library.ydb");
 	if (!db.open()) {
-		//se devuelve una base de datos vacÌa e inv·lida
+		//se devuelve una base de datos vac√≠a e inv√°lida
 		
 		return QSqlDatabase();
 	}
@@ -109,7 +109,7 @@ QSqlDatabase DataBaseManagement::loadDatabaseFromFile(QString filePath)
 	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE",filePath);
 	db.setDatabaseName(filePath);
 	if (!db.open()) {
-		//se devuelve una base de datos vacÌa e inv·lida
+		//se devuelve una base de datos vac√≠a e inv√°lida
 		
 		return QSqlDatabase();
 	}
@@ -139,8 +139,8 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
                         //--
                         "FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE)");
 	success = success && queryFolder.exec();
-	//queryFolder.finish();
-		//COMIC INFO (representa la informaciÛn de un cÛmic, cada cÛmic tendr· un idÈntificador ˙nico formado por un hash sha1'de los primeros 512kb' + su tamaÒo en bytes)
+
+    //COMIC INFO (representa la informaci√≥n de un c√≥mic, cada c√≥mic tendr√° un id√©ntificador √∫nico formado por un hash sha1'de los primeros 512kb' + su tama√±o en bytes)
 	QSqlQuery queryComicInfo(database);
 	queryComicInfo.prepare("CREATE TABLE comic_info ("
 		"id INTEGER PRIMARY KEY,"
@@ -167,7 +167,7 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
 		"letterer TEXT,"
 		"coverArtist TEXT,"
 
-		"date TEXT," //dd/mm/yyyy --> se mostrar· en 3 campos diferentes
+		"date TEXT," //dd/mm/yyyy --> se mostrar√° en 3 campos diferentes
 		"publisher TEXT,"
 		"format TEXT,"
 		"color BOOLEAN,"
@@ -198,7 +198,7 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
 	success = success && queryComicInfo.exec();
 	//queryComicInfo.finish();
 
-	//COMIC (representa un cÛmic en disco, contiene el nombre de fichero)
+	//COMIC (representa un c√≥mic en disco, contiene el nombre de fichero)
 	QSqlQuery queryComic(database);
 	queryComic.prepare("CREATE TABLE comic (id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, comicInfoId INTEGER NOT NULL,  fileName TEXT NOT NULL, path TEXT, FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE, FOREIGN KEY(comicInfoId) REFERENCES comic_info(id))");
 	success = success && queryComic.exec();
@@ -212,10 +212,60 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
 	QSqlQuery query("INSERT INTO db_info (version) "
                    "VALUES ('" VERSION "')",database);
 	//query.finish();
-	}
 
-	return success;
+    //8.0> tables
+    success = success && DataBaseManagement::createV8Tables(database);
+
+    }
+
+    return success;
 }
+
+bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
+{
+    bool success = true;
+    {
+        //8.0> tables
+        //LABEL
+        QSqlQuery queryLabel(database);
+        queryLabel.prepare("CREATE TABLE label (id INTEGER PRIMARY KEY, name TEXT NOT NULL, color TEXT NOT NULL)");
+        success = success && queryLabel.exec();
+
+        //COMIC LABEL
+        QSqlQuery queryComicLabel(database);
+        queryComicLabel.prepare("CREATE TABLE comic_label ("
+                                "comic_id INTEGER, "
+                                "label_id INTEGER, "
+                                //"order INTEGER, " //order????
+                                "FOREIGN KEY(label_id) REFERENCES label(id) ON DELETE CASCADE, "
+                                "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE CASCADE)");
+        success = success && queryComicLabel.exec();
+
+        //READING LIST
+        QSqlQuery queryReadingList(database);
+        queryReadingList.prepare("CREATE TABLE reading_list ("
+                                 "id INTEGER PRIMARY KEY, "
+                                 "parentId INTEGER, "
+                                 "ordering INTEGER, " //only use it if the parentId is NULL
+                                 "name TEXT NOT NULL, "
+                                 "finished BOOLEAN DEFAULT 0, "
+                                 "completed BOOLEAN DEFAULT 1, "
+                                 "FOREIGN KEY(parentId) REFERENCES reading_list(id) ON DELETE CASCADE)");
+        success = success && queryReadingList.exec();
+
+        //COMIC READING LIST
+        QSqlQuery queryComicReadingList(database);
+        queryComicReadingList.prepare("CREATE TABLE comic_reading_list ("
+                                      "reading_list_id INTEGER, "
+                                      "comic_id INTEGER, "
+                                      "ordering INTEGER, "
+                                      "FOREIGN KEY(reading_list_id) REFERENCES reading_list(id) ON DELETE CASCADE, "
+                                      "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE CASCADE)");
+        success = success && queryComicReadingList.exec();
+    }
+    return success;
+}
+
 #include <qmessagebox.h>
 void DataBaseManagement::exportComicsInfo(QString source, QString dest)
 {
@@ -281,7 +331,7 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 	newInfo.exec();
 	destDB.transaction();
 	int cp;
-	while (newInfo.next()) //cada tupla deber· ser insertada o actualizada
+	while (newInfo.next()) //cada tupla deber√° ser insertada o actualizada
 	{
 		QSqlQuery update(destDB);
 		update.prepare("UPDATE comic_info SET "
@@ -590,10 +640,14 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
 {
     bool pre7 = false;
     bool pre7_1 = false;
+    bool pre8 = false;
+
     if(compareVersions(DataBaseManagement::checkValidDB(fullPath),"7.0.0")<0)
         pre7 = true;
     if(compareVersions(DataBaseManagement::checkValidDB(fullPath),"7.0.3")<0)
         pre7_1 = true;
+    if(compareVersions(DataBaseManagement::checkValidDB(fullPath),"8.0.0")<0)
+        pre8 = true;
 
 	QSqlDatabase db = loadDatabaseFromFile(fullPath);
 	bool returnValue = false;
@@ -640,6 +694,11 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
                 columnDefs << "comicVineID TEXT DEFAULT NULL";
                 returnValue = returnValue && addColumns("comic_info", columnDefs, db);
             }
+        }
+
+        if(pre8)
+        {
+            returnValue = returnValue && createV8Tables(db);
         }
 	}
 
