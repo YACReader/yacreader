@@ -58,6 +58,8 @@ class NoSearchResultsWidget;
 class EditShortcutsDialog;
 class ComicFilesManager;
 class QProgressDialog;
+class ReadingListModel;
+class YACReaderReadingListsView;
 
 #include "comic_db.h"
 
@@ -109,9 +111,11 @@ private:
     NoSearchResultsWidget * noSearchResultsWidget;
 
     YACReaderFoldersView * foldersView;
+    YACReaderReadingListsView * listsView;
 	YACReaderLibraryListWidget * selectedLibrary;
     FolderModel * foldersModel;
     ComicModel * comicsModel;
+    ReadingListModel * listsModel;
 	//QStringList paths;
 	YACReaderLibraries libraries;
 

@@ -61,6 +61,7 @@ public:
     FolderModel( QSqlQuery &sqlquery, QObject *parent = 0);
     ~FolderModel();
 
+    //QAbstractItemModel methods
 	QVariant data(const QModelIndex &index, int role) const;
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 	QVariant headerData(int section, Qt::Orientation orientation,
@@ -68,18 +69,14 @@ public:
 	QModelIndex index(int row, int column,
 					  const QModelIndex &parent = QModelIndex()) const;
 	QModelIndex parent(const QModelIndex &index) const;
-	QModelIndex indexFromItem(FolderItem * item, int column);
-	/*QModelIndex _indexFromItem(TreeItem * item, int column);
-	int column;*/
-
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const;
-	void setupModelData(QString path);
-	QString getDatabase();
 
-	//Métodos de conveniencia
+    //Convenience methods
+    void setupModelData(QString path);
+    QString getDatabase();
 	QString getFolderPath(const QModelIndex &folder);
-
+    QModelIndex indexFromItem(FolderItem * item, int column);
     void setFilter(const YACReader::SearchModifiers modifier, QString filter, bool includeComics);
 	void resetFilter();
 	bool isFilterEnabled(){return filterEnabled;};
