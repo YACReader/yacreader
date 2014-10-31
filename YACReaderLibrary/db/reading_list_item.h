@@ -40,13 +40,15 @@ class ReadingListItem : public ListItem
 public:
     ReadingListItem(const QList<QVariant> &data, ReadingListItem * parent = 0);
     QIcon getIcon() const;
+    ReadingListItem * parent;
     int childCount() const;
+    int row() const;
     ReadingListItem * child(int row);
     void appendChild(ReadingListItem *item);
 
 private:
     QList<ReadingListItem*> childItems;
-    ReadingListItem * parent;
+
 };
 
 #endif // READING_LIST_ITEM_H

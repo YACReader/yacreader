@@ -107,3 +107,11 @@ void ReadingListItem::appendChild(ReadingListItem *item)
     }
 
 }
+
+int ReadingListItem::row() const
+{
+    if (parent)
+        return parent->childItems.indexOf(const_cast<ReadingListItem*>(this));
+
+    return 0;
+}
