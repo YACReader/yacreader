@@ -393,102 +393,11 @@ void PageRender::run()
 }
 
 //-----------------------------------------------------------------------------
-// DoublePageRender
-//-----------------------------------------------------------------------------
-
-DoublePageRender::DoublePageRender(Render * r, int np, const QByteArray & rd, const QByteArray & rd2, QImage * p,unsigned int d, QVector<ImageFilter *> f)
-:PageRender(),
-render(r),
-numPage(np),
-data(rd),
-data2(rd2),
-page(p),
-degrees(d),
-filters(f)
-{
-
-}
-
-void DoublePageRender::run()
-{
-	//QImage result;
-	QMutexLocker locker(&(render->mutex));
-	QImage img, img2;
-	if(!data.isEmpty())
-		img.loadFromData(data);
-	if(!data2.isEmpty())
-		img2.loadFromData(data2);
-	/*if(img.isNull())
-	img = QPixmap(img2.width(),img2.height());
-	if(img2.isNull())
-	img2 = QPixmap(img.width(),img.height());*/
-
-	if(img.isNull() && !img2.isNull())
-	{
-		img = img2;
-		img2 = QImage();
-	}
-		
-
-	int totalWidth,totalHeight;
-	//x = img.width()+img2.width();
-	totalHeight = qMax(img.height(),img2.height());
-
-	//widths fiting the normalized height
-	int width1, width2;
-
-	//altura normalizada
-	if(!img2.isNull())
-	{
-		if(img.height()!=totalHeight)
-			totalWidth = (width1 = ((img.width() * totalHeight) / img.height())) +  (width2 = img2.width());
-		else
-			totalWidth = (width1 = img.width()) + (width2 = ((img2.width() * totalHeight) / img2.height()));
-	}
-	else
-		totalWidth = width1 = img.width();
-
-
-	
-	
-	QImage auxImg(totalWidth,totalHeight,QImage::Format_RGB32);
-	QPainter painter(&auxImg);
-	if (render->doubleMangaPage) {
-		qDebug() << "we are in the double Manga Page tree" << render->doubleMangaPage;
-		painter.drawImage(QRect(width2,0,width1,totalHeight),img);
-		if(!img2.isNull())
-			painter.drawImage(QRect(0,0,width2,totalHeight),img2);
-		painter.end();
-	}
-	else {
-		qDebug() << "no double Manga Page" << render->doubleMangaPage;
-		painter.drawImage(QRect(0,0,width1,totalHeight),img);
-		if(!img2.isNull())
-			painter.drawImage(QRect(width1,0,width2,totalHeight),img2);
-		painter.end();
-	}
-	if(degrees > 0)
-	{
-		QMatrix m;
-		m.rotate(degrees);
-		auxImg = auxImg.transformed(m,Qt::SmoothTransformation);
-	}
-	for(int i=0;i<filters.size();i++)
-	{
-		auxImg = filters[i]->setFilter(auxImg);
-	}
-	
-	*page = auxImg;
-
-	emit pageReady(numPage);
-}
-
-//-----------------------------------------------------------------------------
 // Render
 //-----------------------------------------------------------------------------
 
 Render::Render()
-:currentIndex(0),doublePage(false),doubleMangaPage(false),comic(0),loadedComic(false),imageRotation(0),numLeftPages(2),numRightPages(2)
+:currentIndex(0),doublePage(false),doubleMangaPage(false),comic(0),loadedComic(false),imageRotation(0),numLeftPages(4),numRightPages(4)
 {
 	int size = numLeftPages+numRightPages+1;
 	currentPageBufferedIndex = numLeftPages;
@@ -531,23 +440,13 @@ void Render::render()
 	{
 		if(pagesReady.size()>0)
 		{
-			if(doublePage)
+			if(pagesReady[currentIndex])
 			{
-				if(pagesReady[currentIndex] && pagesReady[qMin(currentIndex+1,(int)comic->numPages()-1)])
-					if(currentIndex+1 > (int)comic->numPages()-1)
-						pageRenders[currentPageBufferedIndex] = new DoublePageRender(this,currentIndex,comic->getRawData()->at(currentIndex),QByteArray(),buffer[currentPageBufferedIndex],imageRotation,filters);
-					else
-						pageRenders[currentPageBufferedIndex] = new DoublePageRender(this,currentIndex,comic->getRawData()->at(currentIndex),comic->getRawData()->at(currentIndex+1),buffer[currentPageBufferedIndex],imageRotation,filters);
-				else
-					//las páginas no están listas, y se están cargando en el cómic
-					emit processingPage(); //para evitar confusiones esta señal debería llamarse de otra forma
+				pageRenders[currentPageBufferedIndex] = new PageRender(this,currentIndex,comic->getRawData()->at(currentIndex),buffer[currentPageBufferedIndex],imageRotation,filters);
 			}
 			else
-				if(pagesReady[currentIndex])
-					pageRenders[currentPageBufferedIndex] = new PageRender(this,currentIndex,comic->getRawData()->at(currentIndex),buffer[currentPageBufferedIndex],imageRotation,filters);
-				else
-					//las páginas no están listas, y se están cargando en el cómic
-					emit processingPage(); //para evitar confusiones esta señal debería llamarse de otra forma
+				//las páginas no están listas, y se están cargando en el cómic
+				emit processingPage(); //para evitar confusiones esta señal debería llamarse de otra forma
 
 			//si se ha creado un hilo para renderizar la página actual, se arranca
 			if(pageRenders[currentPageBufferedIndex]!=0)
@@ -555,7 +454,7 @@ void Render::render()
 				//se conecta la señal pageReady del hilo, con el SLOT prepareAvailablePage
 				connect(pageRenders[currentPageBufferedIndex],SIGNAL(pageReady(int)),this,SLOT(prepareAvailablePage(int)));
 				//se emite la señal de procesando, debido a que los hilos se arrancan aquí
-				if(doublePage || filters.size()>0)
+				if(filters.size()>0)
 					emit processingPage();
 				pageRenders[currentPageBufferedIndex]->start();
 				pageRenders[currentPageBufferedIndex]->setPriority(QThread::TimeCriticalPriority);
@@ -569,14 +468,13 @@ void Render::render()
 			emit processingPage();
 	}
 	else
-		// la página actual está lista
-		emit currentPageReady();
-
-	//se renderizan las páginas restantes para llenar el buffer.
-	if(doublePage)
-		fillBufferDoublePage();
-	else
-		fillBuffer();
+	// la página actual está lista
+	{
+		//emit currentPageReady();
+		//make prepareAvailablePage the only function that emits currentPageReady()
+		prepareAvailablePage(currentIndex);
+	}
+	fillBuffer();
 }
 
 QPixmap * Render::getCurrentPage()
@@ -584,6 +482,176 @@ QPixmap * Render::getCurrentPage()
 	QPixmap * page = new QPixmap();
 	*page = page->fromImage(*buffer[currentPageBufferedIndex]);
 	return page;
+}
+
+QPixmap * Render::getCurrentDoublePage()
+{
+	if (currentPageIsDoublePage())
+	{
+		QPoint leftpage(0,0);
+		QPoint rightpage(0,0);
+		int totalWidth,totalHeight;
+		switch (imageRotation)
+		{
+			case 0:
+				totalHeight = qMax(buffer[currentPageBufferedIndex]->height(), buffer[currentPageBufferedIndex+1]->height());
+				totalWidth = buffer[currentPageBufferedIndex]->width() + buffer[currentPageBufferedIndex+1]->width();
+				rightpage.setX(buffer[currentPageBufferedIndex]->width());
+				break;
+			case 90:
+				totalWidth = qMax(buffer[currentPageBufferedIndex]->width(), buffer[currentPageBufferedIndex+1]->width());
+				totalHeight = buffer[currentPageBufferedIndex]->height() + buffer[currentPageBufferedIndex+1]->height();
+				rightpage.setY(buffer[currentPageBufferedIndex]->height());
+				break;
+			case 180:
+				totalHeight = qMax(buffer[currentPageBufferedIndex]->height(), buffer[currentPageBufferedIndex+1]->height());
+				totalWidth = buffer[currentPageBufferedIndex]->width() + buffer[currentPageBufferedIndex+1]->width();
+				leftpage.setX(buffer[currentPageBufferedIndex+1]->width());
+				break;
+			case 270:
+				totalWidth = qMax(buffer[currentPageBufferedIndex]->width(), buffer[currentPageBufferedIndex+1]->width());
+				totalHeight = buffer[currentPageBufferedIndex]->height() + buffer[currentPageBufferedIndex+1]->height();
+				leftpage.setY(buffer[currentPageBufferedIndex+1]->height());
+				break;
+			default:
+				return NULL;
+		}
+		QImage auximage(totalWidth, totalHeight, QImage::Format_RGB32);
+		QPainter painter(&auximage);
+		painter.drawImage(leftpage, *buffer[currentPageBufferedIndex]);
+		painter.drawImage(rightpage, *buffer[currentPageBufferedIndex+1]);
+		
+		QPixmap * page = new QPixmap();
+		*page = page->fromImage(auximage);
+		return page;
+	}
+	else
+	{
+		return NULL;
+	}
+}
+
+QPixmap * Render::getCurrentDoubleMangaPage()
+{
+	if (currentPageIsDoublePage())
+	{
+		QPoint leftpage(0,0);
+		QPoint rightpage(0,0);
+		int totalWidth,totalHeight;
+		switch (imageRotation)
+		{
+			case 0:
+				totalHeight = qMax(buffer[currentPageBufferedIndex]->height(), buffer[currentPageBufferedIndex+1]->height());
+				totalWidth = buffer[currentPageBufferedIndex]->width() + buffer[currentPageBufferedIndex+1]->width();
+				rightpage.setX(buffer[currentPageBufferedIndex+1]->width());
+				break;
+			case 90:
+				totalWidth = qMax(buffer[currentPageBufferedIndex]->width(), buffer[currentPageBufferedIndex+1]->width());
+				totalHeight = buffer[currentPageBufferedIndex]->height() + buffer[currentPageBufferedIndex+1]->height();
+				rightpage.setY(buffer[currentPageBufferedIndex+1]->height());
+				break;
+			case 180:
+				totalHeight = qMax(buffer[currentPageBufferedIndex]->height(), buffer[currentPageBufferedIndex+1]->height());
+				totalWidth = buffer[currentPageBufferedIndex]->width() + buffer[currentPageBufferedIndex+1]->width();
+				leftpage.setX(buffer[currentPageBufferedIndex]->width());
+				break;
+			case 270:
+				totalWidth = qMax(buffer[currentPageBufferedIndex]->width(), buffer[currentPageBufferedIndex+1]->width());
+				totalHeight = buffer[currentPageBufferedIndex]->height() + buffer[currentPageBufferedIndex+1]->height();
+				leftpage.setY(buffer[currentPageBufferedIndex]->height());
+				break;
+			default:
+				return NULL;
+		}
+		QImage auximage(totalWidth, totalHeight, QImage::Format_RGB32);
+		QPainter painter(&auximage);
+		painter.drawImage(rightpage, *buffer[currentPageBufferedIndex]);
+		painter.drawImage(leftpage, *buffer[currentPageBufferedIndex+1]);
+		
+		QPixmap * page = new QPixmap();
+		*page = page->fromImage(auximage);
+		return page;
+	}
+	else
+	{
+		return NULL;
+	}
+}
+
+bool Render::currentPageIsDoublePage()
+{
+	if (buffer[currentPageBufferedIndex]->isNull() || buffer[currentPageBufferedIndex+1]->isNull())
+	{
+		return false;
+	}
+	if (imageRotation == 0 || imageRotation == 180)
+	{
+		if (buffer[currentPageBufferedIndex]->height() > buffer[currentPageBufferedIndex]->width() &&
+			buffer[currentPageBufferedIndex+1]->height() > buffer[currentPageBufferedIndex+1]->width())
+		{
+			return true;
+		}
+	}
+	else if (imageRotation == 90 || imageRotation == 270)
+	{
+		if (buffer[currentPageBufferedIndex]->width() > buffer[currentPageBufferedIndex]->height() &&
+			buffer[currentPageBufferedIndex+1]->width() > buffer[currentPageBufferedIndex+1]->height())
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Render::nextPageIsDoublePage()
+{
+	//this function is not used right now
+	if (buffer[currentPageBufferedIndex+2]->isNull() || buffer[currentPageBufferedIndex+3]->isNull())
+	{
+		return false;
+	}
+	if (imageRotation == 0 || imageRotation == 180)
+	{
+		if (buffer[currentPageBufferedIndex+2]->height() > buffer[currentPageBufferedIndex+2]->width() &&
+			buffer[currentPageBufferedIndex+3]->height() > buffer[currentPageBufferedIndex+3]->width())
+		{
+			return true;
+		}
+	}
+	else if (imageRotation == 90 || imageRotation == 270)
+	{
+		if (buffer[currentPageBufferedIndex]->width() > buffer[currentPageBufferedIndex]->height() &&
+			buffer[currentPageBufferedIndex+1]->width() > buffer[currentPageBufferedIndex+1]->height())
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Render::previousPageIsDoublePage()
+{
+	if (buffer[currentPageBufferedIndex-1]->isNull() || buffer[currentPageBufferedIndex-2]->isNull())
+	{
+		return false;
+	}
+	if (imageRotation == 0 || imageRotation == 180)
+	{
+		if (buffer[currentPageBufferedIndex-1]->height() > buffer[currentPageBufferedIndex-1]->width() &&
+			buffer[currentPageBufferedIndex-2]->height() > buffer[currentPageBufferedIndex-2]->width())
+		{
+			return true;
+		}
+	}
+	else if (imageRotation == 90 || imageRotation == 270)
+	{
+		if (buffer[currentPageBufferedIndex-1]->width() > buffer[currentPageBufferedIndex-1]->height() &&
+			buffer[currentPageBufferedIndex-2]->width() > buffer[currentPageBufferedIndex-2]->height())
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 void Render::setRotation(int degrees)
@@ -604,8 +672,26 @@ void Render::setComic(Comic * c)
 
 void Render::prepareAvailablePage(int page)
 {
-	if(currentIndex == page)
-		emit currentPageReady();
+	if(!doublePage) 
+	{
+		if (currentIndex == page)
+		{
+			emit currentPageReady();
+		}
+	}
+	else
+	{
+		//check for last page in double page mode
+		if ((currentIndex == page) && (currentIndex + 1) >= (int)comic->numPages())
+		{
+			emit currentPageReady();
+		}
+		else if ((currentIndex == page && !buffer[currentPageBufferedIndex+1]->isNull()) || 
+			(currentIndex+1 == page && !buffer[currentPageBufferedIndex]->isNull()))
+		{
+			emit currentPageReady();
+		}
+	}
 }
 
 void Render::update()
@@ -740,21 +826,7 @@ void Render::reset()
 void Render::nextPage()
 {
 	int nextPage; //indica cuál será la próxima página
-	if(doublePage)
-	{
-		nextPage = currentIndex;
-		if(currentIndex+2<(int)comic->numPages())
-		{
-			nextPage = currentIndex+2;
-			if(currentIndex != nextPage)
-				comic->setIndex(nextPage);
-		}
-	}
-	else
-	{
-		nextPage = comic->nextPage();
-	}
-
+	nextPage = comic->nextPage();
 	//se fuerza renderizado si la página ha cambiado
 	if(currentIndex != nextPage)
 	{
@@ -766,26 +838,27 @@ void Render::nextPage()
 	else
 		emit isLast();
 }
+void Render::nextDoublePage()
+{
+	int nextPage;
+	nextPage = currentIndex+2;
+	if(currentIndex != nextPage)
+	{
+		comic->setIndex(nextPage);
+		previousIndex = currentIndex;
+		currentIndex = nextPage;
+		update();
+		emit pageChanged(currentIndex);
+	}
+}
+	
 //si se solicita la página anterior, se calcula cuál debe ser en función de si se lee en modo a doble página o no.
 //la página sólo se renderiza, si realmente ha cambiado.
 void Render::previousPage()
 {
 	int previousPage; //indica cuál será la próxima página
-	if(doublePage)
-	{
-		if(currentIndex == 1)
-			invalidate();
-		previousPage = qMax(currentIndex-2,0);
-		if(currentIndex != previousPage)
-		{
-			comic->setIndex(previousPage);
-		}
-	}
-	else
-	{
-		previousPage = comic->previousPage();
-	}
-	
+	previousPage = comic->previousPage();
+		
 	//se fuerza renderizado si la página ha cambiado
 	if(currentIndex != previousPage)
 	{
@@ -797,6 +870,21 @@ void Render::previousPage()
 	else
 		emit isCover();
 }
+
+void Render::previousDoublePage()
+{
+	int previousPage; //indica cuál será la próxima página
+	previousPage = qMax(currentIndex-2,0);
+	if(currentIndex != previousPage)
+	{
+		comic->setIndex(previousPage);
+		previousIndex = currentIndex;
+		currentIndex = previousPage;
+		update();
+		emit pageChanged(currentIndex);
+	}
+}
+	
 unsigned int Render::getIndex()
 {
 	return comic->getIndex();
@@ -828,18 +916,6 @@ void Render::pageRawDataReady(int page)
 			pagesReady[pagesEmited.at(i)] = true;
 			if(pagesEmited.at(i) == currentIndex)
 				update();
-
-			if(doublePage)
-			{
-				if(pagesEmited.at(i)==currentIndex+1)
-					update();
-
-				if ( ((pagesEmited.at(i) < currentIndex) && (pagesEmited.at(i) > currentIndex-2*numLeftPages)) ||
-					((pagesEmited.at(i) > currentIndex+1) && (pagesEmited.at(i) < currentIndex+1+2*numRightPages)) )
-				{
-					fillBufferDoublePage();
-				}
-			}
 			else
 			{
 				if ( ((pagesEmited.at(i) < currentIndex) && (pagesEmited.at(i) > currentIndex-numLeftPages)) ||
@@ -862,12 +938,6 @@ void Render::goTo(int index)
 		comic->setIndex(index);
 		previousIndex = currentIndex;
 		currentIndex = index;
-
-		//si cambia la paridad de las página en modo a doble página, se rellena el buffer.
-		//esto solo debería orcurrir al llegar al principio o al final
-		if(doublePage && ((previousIndex - index) % 2)!=0) 
-			invalidate();
-
 		update();
 		emit pageChanged(currentIndex);
 	}
@@ -894,13 +964,7 @@ void Render::updateBuffer()
 {
 	QMutexLocker locker(&mutex);
 	int windowSize = currentIndex - previousIndex;
-	if(doublePage)
-	{	
-		windowSize = windowSize/2;
-		if(currentIndex == 0 && windowSize == 0 && previousIndex == 1)
-			windowSize = -1;
-
-	}
+	
 	if(windowSize > 0)//add pages to right pages and remove on the left
 	{
 		windowSize = qMin(windowSize,buffer.size());
@@ -960,10 +1024,10 @@ void Render::fillBuffer()
 			buffer[currentPageBufferedIndex+i]->isNull() && 
 			i <= numRightPages &&
 			pageRenders[currentPageBufferedIndex+i]==0 &&
-			pagesReady[currentIndex+1]) //preload next pages
+			pagesReady[currentIndex+i]) //preload next pages
 		{
 			pageRenders[currentPageBufferedIndex+i] = new PageRender(this,currentIndex+i,comic->getRawData()->at(currentIndex+i),buffer[currentPageBufferedIndex+i],imageRotation,filters);
-			connect(pageRenders[currentPageBufferedIndex],SIGNAL(pageReady(int)),this,SLOT(prepareAvailablePage(int)));
+			connect(pageRenders[currentPageBufferedIndex+i],SIGNAL(pageReady(int)),this,SLOT(prepareAvailablePage(int)));
 			pageRenders[currentPageBufferedIndex+i]->start();
 		}
 
@@ -971,48 +1035,15 @@ void Render::fillBuffer()
 			buffer[currentPageBufferedIndex-i]->isNull() && 
 			i <= numLeftPages &&
 			pageRenders[currentPageBufferedIndex-i]==0 &&
-			pagesReady[currentIndex-1]) //preload previous pages
+			pagesReady[currentIndex-i]) //preload previous pages
 		{
 			pageRenders[currentPageBufferedIndex-i] = new PageRender(this,currentIndex-i,comic->getRawData()->at(currentIndex-i),buffer[currentPageBufferedIndex-i],imageRotation,filters);
-			connect(pageRenders[currentPageBufferedIndex],SIGNAL(pageReady(int)),this,SLOT(prepareAvailablePage(int)));
+			connect(pageRenders[currentPageBufferedIndex-i],SIGNAL(pageReady(int)),this,SLOT(prepareAvailablePage(int)));
 			pageRenders[currentPageBufferedIndex-i]->start();
 		}
 	}
 }
 
-void Render::fillBufferDoublePage()
-{
-	for(int i = 1; i <= qMax(numLeftPages,numRightPages); i++)
-	{
-		if ((currentIndex+2*i < (int)comic->numPages()) && 
-			buffer[currentPageBufferedIndex+i]->isNull() && 
-			i <= numRightPages &&
-			pageRenders[currentPageBufferedIndex+i]==0 &&
-			(pagesReady[currentIndex+2*i] && pagesReady[qMin(currentIndex+(2*i)+1,(int)comic->numPages()-1)])) //preload next pages
-		{
-			if(currentIndex+(2*i)+1 > (int)comic->numPages()-1)
-				pageRenders[currentPageBufferedIndex+i] = new DoublePageRender(this,currentIndex+2*i,comic->getRawData()->at(currentIndex+(2*i)),QByteArray(),buffer[currentPageBufferedIndex+i],imageRotation,filters);
-			else
-				pageRenders[currentPageBufferedIndex+i] = new DoublePageRender(this,currentIndex+2*i,comic->getRawData()->at(currentIndex+(2*i)),comic->getRawData()->at(currentIndex+(2*i)+1),buffer[currentPageBufferedIndex+i],imageRotation,filters);
-			connect(pageRenders[currentPageBufferedIndex],SIGNAL(pageReady(int)),this,SLOT(prepareAvailablePage(int)));
-			pageRenders[currentPageBufferedIndex+i]->start();
-		}
-
-		if ((currentIndex-2*i >= -1) && 
-			buffer[currentPageBufferedIndex-i]->isNull() && 
-			i <= numLeftPages &&
-			pageRenders[currentPageBufferedIndex-i]==0 &&
-			(pagesReady[qMax(currentIndex-2*i,0)] && pagesReady[qMin(currentIndex-(2*i)+1,(int)comic->numPages()-1)])) //preload previous pages
-		{
-			if(currentIndex-2*i == -1)
-				pageRenders[currentPageBufferedIndex-i] = new DoublePageRender(this,0,QByteArray(),comic->getRawData()->at(0),buffer[currentPageBufferedIndex-i],imageRotation,filters);
-			else
-				pageRenders[currentPageBufferedIndex-i] = new DoublePageRender(this,currentIndex-2*i,comic->getRawData()->at(currentIndex-(2*i)),comic->getRawData()->at(currentIndex-(2*i)+1),buffer[currentPageBufferedIndex-i],imageRotation,filters);
-			connect(pageRenders[currentPageBufferedIndex],SIGNAL(pageReady(int)),this,SLOT(prepareAvailablePage(int)));
-			pageRenders[currentPageBufferedIndex-i]->start();
-		}
-	}
-}
 
 //Método que debe ser llamado cada vez que la estructura del buffer se vuelve inconsistente con el modo de lectura actual.
 //se terminan todos los hilos en ejecución y se libera la memoria (de hilos e imágenes)
@@ -1040,7 +1071,7 @@ void Render::doublePageSwitch()
 	doublePage = !doublePage;
 	if(comic)
 	{
-		invalidate();
+		//invalidate();
 		update();
 	}
 }
@@ -1050,7 +1081,7 @@ void Render::doubleMangaPageSwitch()
 	doubleMangaPage = !doubleMangaPage;
 	if(comic&&doublePage)
 	{
-		invalidate();
+		//invalidate();
 		update();
 	}
 }
@@ -1060,10 +1091,13 @@ QString Render::getCurrentPagesInformation()
 	QString s = QString::number(currentIndex+1);
 	if (doublePage && (currentIndex+1 < (int)comic->numPages()))
 	{
-		if (doubleMangaPage)
-			s = QString::number(currentIndex+2) + "-" + s;
-		else
-			s += "-"+QString::number(currentIndex+2);
+		if (currentPageIsDoublePage())
+		{
+			if (doubleMangaPage)
+				s = QString::number(currentIndex+2) + "-" + s;
+			else
+				s += "-"+QString::number(currentIndex+2);
+		}
 	}
 	s += "/"+QString::number(comic->numPages());
 	return s;
