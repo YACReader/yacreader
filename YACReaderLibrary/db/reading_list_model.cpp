@@ -12,7 +12,17 @@ int ReadingListModel::rowCount(const QModelIndex &parent) const
     if(!parent.isValid()) //TOP
         return specialLists.count() + labels.count() + rootItem->childCount();
     else
-        return 0;
+    {
+        ListItem * item = static_cast<ListItem*>(parent.internalPointer());
+
+        if(typeid(*item) == typeid(ReadingListItem))
+        {
+            ReadingListItem * item = static_cast<ReadingListItem*>(parent.internalPointer());
+            return item->childCount();
+        }
+    }
+
+    return 0;
 }
 
 int ReadingListModel::columnCount(const QModelIndex &parent) const
@@ -63,14 +73,6 @@ QModelIndex ReadingListModel::index(int row, int column, const QModelIndex &pare
     if (!hasIndex(row, column, parent))
         return QModelIndex();
 
-    ListItem *parentItem;
-
-    /*if (!parent.isValid())
-        parentItem = rootItem;
-    else
-        parentItem = static_cast<ListItem*>(parent.internalPointer());*/
-
-
     if(!parent.isValid())
     {
         if(row >= 0 && row < specialLists.count())
@@ -82,6 +84,17 @@ QModelIndex ReadingListModel::index(int row, int column, const QModelIndex &pare
         if(row >= specialLists.count() + labels.count())
             return createIndex(row,column,rootItem->child(row - (specialLists.count() + labels.count())));
 
+    } else //sublist
+    {
+        ReadingListItem *parentItem;
+
+        if (!parent.isValid())
+            parentItem = rootItem; //this should be impossible
+        else
+            parentItem = static_cast<ReadingListItem*>(parent.internalPointer());
+
+        ReadingListItem *childItem = parentItem->child(row);
+        return createIndex(row,column,childItem);
     }
     /*FolderItem *childItem = parentItem->child(row);
     if (childItem)
@@ -93,16 +106,21 @@ QModelIndex ReadingListModel::index(int row, int column, const QModelIndex &pare
 
 QModelIndex ReadingListModel::parent(const QModelIndex &index) const
 {
-    //if (!index.isValid())
+
+    if(!index.isValid())
         return QModelIndex();
 
-    /*FolderItem *childItem = static_cast<FolderItem*>(index.internalPointer());
-    FolderItem *parentItem = childItem->parent();
+    ListItem * item = static_cast<ListItem*>(index.internalPointer());
 
-    if (parentItem == rootItem)
-        return QModelIndex();
+    if(typeid(*item) == typeid(ReadingListItem))
+    {
+        ReadingListItem * childItem = static_cast<ReadingListItem*>(index.internalPointer());
+        ReadingListItem * parent = childItem->parent;
+        if(parent != 0)
+            return createIndex(parent->row(), 0, parent);
+    }
 
-    return createIndex(parentItem->row(), 0, parentItem);    */
+    return QModelIndex();
 }
 
 void ReadingListModel::setupModelData(QString path)
@@ -146,8 +164,11 @@ void ReadingListModel::setupModelData(QString path)
     rootItem = new ReadingListItem(QList<QVariant>() /*<< 0*/ << "ROOT" << "atr");
 
     //setup reading lists
-    rootItem->appendChild(new ReadingListItem(QList<QVariant>() /*<< 0*/ << "My reading list" << "atr"));
+    ReadingListItem * node1;
+    rootItem->appendChild(node1 = new ReadingListItem(QList<QVariant>() /*<< 0*/ << "My reading list" << "atr"));
     rootItem->appendChild(new ReadingListItem(QList<QVariant>() /*<< 0*/ << "X timeline" << "atr"));
+
+    node1->appendChild(new ReadingListItem(QList<QVariant>() /*<< 0*/ << "sublist" << "atr",node1));
 
     endResetModel();
 }

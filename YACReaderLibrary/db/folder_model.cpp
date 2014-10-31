@@ -230,7 +230,7 @@ QModelIndex FolderModel::parent(const QModelIndex &index) const
 	if (parentItem == rootItem)
 		return QModelIndex();
 
-	return createIndex(parentItem->row(), 0, parentItem);
+    return createIndex(parentItem->row(), 0, parentItem);
 }
 //! [7]
 

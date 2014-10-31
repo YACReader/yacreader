@@ -70,11 +70,7 @@ public:
     QList<FolderItem*> children();
 private:
     QList<FolderItem*> childItems;
-	QList<QVariant> itemData;
-	
-	
-	
-	
+	QList<QVariant> itemData;	
 };
 //! [0]
 
