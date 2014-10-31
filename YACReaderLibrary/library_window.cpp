@@ -75,6 +75,7 @@
 
 #include "reading_list_model.h"
 #include "yacreader_reading_lists_view.h"
+#include "add_label_dialog.h"
 
 #include "QsLog.h"
 
@@ -1129,6 +1130,11 @@ void LibraryWindow::createConnections()
     //update folders (partial updates)
     connect(updateCurrentFolderAction,SIGNAL(triggered()), this, SLOT(updateCurrentFolder()));
     connect(updateFolderAction,SIGNAL(triggered()), this, SLOT(updateTreeFolder()));
+
+    //lists
+    connect(addReadingListAction,SIGNAL(triggered()),this,SLOT(addNewReadingList()));
+    connect(deleteReadingListAction,SIGNAL(triggered()),this,SLOT(deleteSelectedReadingList()));
+    connect(addLabelAction,SIGNAL(triggered()),this,SLOT(addNewLabel()));
 }
 
 void LibraryWindow::loadLibrary(const QString & name)
@@ -1587,6 +1593,22 @@ void LibraryWindow::deleteSelectedFolder()
 void LibraryWindow::errorDeletingFolder()
 {
     QMessageBox::critical(this,tr("Unable to delete"),tr("There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files."));
+}
+
+void LibraryWindow::addNewReadingList()
+{
+
+}
+
+void LibraryWindow::deleteSelectedReadingList()
+{
+
+}
+
+void LibraryWindow::addNewLabel()
+{
+    AddLabelDialog * dialog = new AddLabelDialog();
+    dialog->open();
 }
 
 void LibraryWindow::selectSubfolder(const QModelIndex &mi, int child)

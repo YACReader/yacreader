@@ -124,7 +124,8 @@ HEADERS += comic_flow.h \
            db/reading_list_model.h \
            db/reading_list_item.h \
     yacreader_folders_view.h \
-    yacreader_reading_lists_view.h
+    yacreader_reading_lists_view.h \
+    add_label_dialog.h
 
 		   
 SOURCES += comic_flow.cpp \
@@ -177,7 +178,8 @@ SOURCES += comic_flow.cpp \
            db/reading_list_model.cpp \
            db/reading_list_item.cpp \
     yacreader_folders_view.cpp \
-    yacreader_reading_lists_view.cpp
+    yacreader_reading_lists_view.cpp \
+    add_label_dialog.cpp
 
 				   
 include(./server/server.pri)

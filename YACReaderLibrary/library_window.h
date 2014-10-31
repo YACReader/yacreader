@@ -357,6 +357,9 @@ public slots:
     void addFolderToCurrentIndex();
     void deleteSelectedFolder();
     void errorDeletingFolder();
+    void addNewReadingList();
+    void deleteSelectedReadingList();
+    void addNewLabel();
 };
 
 #endif
