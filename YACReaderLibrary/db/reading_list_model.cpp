@@ -2,18 +2,27 @@
 
 #include "reading_list_item.h"
 
+#include "QsLog.h"
+
 ReadingListModel::ReadingListModel(QObject *parent) :
     QAbstractItemModel(parent),rootItem(0)
 {
+    separator1 = new ReadingListSeparatorItem;
+    separator2 = new ReadingListSeparatorItem;
 }
 
 int ReadingListModel::rowCount(const QModelIndex &parent) const
 {
     if(!parent.isValid()) //TOP
-        return specialLists.count() + labels.count() + rootItem->childCount();
+    {
+        int separatorsCount = labels.isEmpty()?1:2;
+        return specialLists.count() + labels.count() + rootItem->childCount() + separatorsCount;
+    }
     else
     {
         ListItem * item = static_cast<ListItem*>(parent.internalPointer());
+
+        QLOG_DEBUG() << item->itemData;
 
         if(typeid(*item) == typeid(ReadingListItem))
         {
@@ -27,6 +36,12 @@ int ReadingListModel::rowCount(const QModelIndex &parent) const
 
 int ReadingListModel::columnCount(const QModelIndex &parent) const
 {
+    if(parent.isValid())
+    {
+        ListItem * item = static_cast<ListItem*>(parent.internalPointer());
+        if(typeid(*item) == typeid(ReadingListSeparatorItem))
+            return 0;
+    }
     return 1;
     /*if (parent.isValid())
         return static_cast<ListItem*>(parent.internalPointer())->columnCount();
@@ -40,6 +55,9 @@ QVariant ReadingListModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     ListItem * item = static_cast<ListItem*>(index.internalPointer());
+
+    if(typeid(*item) == typeid(ReadingListSeparatorItem))
+        return QVariant();
 
     if (role == Qt::DecorationRole)
     {
@@ -55,6 +73,10 @@ QVariant ReadingListModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags ReadingListModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
+        return 0;
+
+    ListItem * item = static_cast<ListItem*>(index.internalPointer());
+    if(typeid(*item) == typeid(ReadingListSeparatorItem))
         return 0;
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled;
@@ -75,14 +97,23 @@ QModelIndex ReadingListModel::index(int row, int column, const QModelIndex &pare
 
     if(!parent.isValid())
     {
+        int separatorsCount = labels.isEmpty()?1:2;
+
         if(row >= 0 && row < specialLists.count())
             return createIndex(row, column, specialLists.at(row));
 
-        if(row >= specialLists.count() && row < specialLists.count() + labels.count())
-            return createIndex(row,column,labels.at(row-specialLists.count()));
+        if(row == specialLists.count())
+            return createIndex(row,column,separator1);
 
-        if(row >= specialLists.count() + labels.count())
-            return createIndex(row,column,rootItem->child(row - (specialLists.count() + labels.count())));
+        if(row > specialLists.count()  && row <= specialLists.count() + labels.count())
+            return createIndex(row,column,labels.at(row-specialLists.count()-1));
+
+        if(separatorsCount == 2)
+        if(row == specialLists.count() + labels.count() + 1)
+            return createIndex(row,column,separator2);
+
+        if(row >= specialLists.count() + labels.count() + separatorsCount)
+            return createIndex(row,column,rootItem->child(row - (specialLists.count() + labels.count() + separatorsCount)));
 
     } else //sublist
     {
@@ -146,6 +177,8 @@ void ReadingListModel::setupModelData(QString path)
     specialLists << new SpecialListItem(QList<QVariant>() /*<< 0*/ << "Favorites");
     specialLists << new SpecialListItem(QList<QVariant>() /*<< 1*/ << "Reading");
 
+    //separator
+
     //setup labels
     labels << new LabelItem(QList<QVariant>() /*<< 0*/ << "Oh Oh" << "red");
     labels << new LabelItem(QList<QVariant>() /*<< 1*/ << "lalala" << "orange");
@@ -159,6 +192,8 @@ void ReadingListModel::setupModelData(QString path)
     labels << new LabelItem(QList<QVariant>() /*<< 9*/ << ":D" << "white");
     labels << new LabelItem(QList<QVariant>() /*<< 10*/ << "ainsss" << "light");
     labels << new LabelItem(QList<QVariant>() /*<< 11*/ << "put a smile on my face" << "dark");
+
+    //separator
 
     //setup root item
     rootItem = new ReadingListItem(QList<QVariant>() /*<< 0*/ << "ROOT" << "atr");
