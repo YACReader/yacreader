@@ -10,6 +10,7 @@
 class LabelItem;
 class SpecialListItem;
 class ReadingListItem;
+class ReadingListSeparatorItem;
 
 class ReadingListModel : public QAbstractItemModel
 {
@@ -48,6 +49,10 @@ private:
     //Reading lists
     ReadingListItem * rootItem; //
     QMap<unsigned long long int, ReadingListItem *> items; //lists relationship
+
+    //separators
+    ReadingListSeparatorItem * separator1;
+    ReadingListSeparatorItem * separator2;
 
     QString _databasePath;
 

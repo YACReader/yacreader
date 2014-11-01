@@ -11,7 +11,7 @@ public:
     int columnCount();
     virtual QIcon getIcon() const = 0;
     QVariant data(int column) const;
-protected:
+
     QList<QVariant> itemData;
 };
 
@@ -49,6 +49,15 @@ public:
 private:
     QList<ReadingListItem*> childItems;
 
+};
+
+//------------------------------------------------------
+
+class ReadingListSeparatorItem : public ListItem
+{
+public:
+    ReadingListSeparatorItem();
+    QIcon getIcon() const;
 };
 
 #endif // READING_LIST_ITEM_H

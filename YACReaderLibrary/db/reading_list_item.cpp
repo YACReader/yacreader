@@ -115,3 +115,15 @@ int ReadingListItem::row() const
 
     return 0;
 }
+
+
+ReadingListSeparatorItem::ReadingListSeparatorItem()
+    :ListItem(QList<QVariant>())
+{
+
+}
+
+QIcon ReadingListSeparatorItem::getIcon() const
+{
+    return QIcon();
+}
