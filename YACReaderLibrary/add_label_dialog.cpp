@@ -24,8 +24,33 @@ AddLabelDialog::AddLabelDialog(QWidget *parent) :
     list->addItem(new QListWidgetItem(QIcon(":/images/lists/label_light.png"), tr("light")));
     list->addItem(new QListWidgetItem(QIcon(":/images/lists/label_dark.png"), tr("dark")));
 
-    //this->palette().background().color().
-    list->setStyleSheet("QListWidget {border : none; background-color:#BCBCBCBC;}");
+    QColor backgroundColor = this->palette().background().color();
+    list->setStyleSheet(QString("QListWidget {border : none; background-color: rgb(%1,%2,%3);}").arg(backgroundColor.red()).arg(backgroundColor.green()).arg(backgroundColor.blue()));
+    list->setMinimumHeight(225);
+
+    setModal(true);
+
+    setMinimumHeight(340);
+
+    //buttons
+    acceptButton = new QPushButton(tr("accept"),this);
+    cancelButton = new QPushButton(tr("cancel"),this);
+
+    QHBoxLayout * buttons = new QHBoxLayout;
+    buttons->addStretch();
+    buttons->addWidget(acceptButton);
+    buttons->addWidget(cancelButton);
+
+    layout->addStretch();
+    layout->addLayout(buttons);
 
     setLayout(layout);
+}
+
+void AddLabelDialog::open()
+{
+    QDialog::open();
+
+    edit->clear();
+    list->clearSelection();
 }
