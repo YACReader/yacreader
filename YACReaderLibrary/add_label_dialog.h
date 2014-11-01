@@ -12,11 +12,14 @@ public:
 signals:
 
 public slots:
+    void open();
 
 protected:
     QLineEdit * edit;
     QListWidget * list;
 
+    QPushButton * acceptButton;
+    QPushButton * cancelButton;
 };
 
 #endif // ADD_LABEL_DIALOG_H
