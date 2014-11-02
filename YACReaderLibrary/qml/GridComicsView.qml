@@ -38,11 +38,13 @@ Rectangle {
             Rectangle {
                 id: realCell
 
+                property int position : 0
+
                 Drag.active: mouseArea.drag.active
                 Drag.hotSpot.x: 32
                 Drag.hotSpot.y: 32
                 Drag.dragType: Drag.Automatic
-                Drag.mimeData: { "text/plain": "comic" }
+                Drag.mimeData: { "text/plain": titleText.text }
                 Drag.proposedAction: Qt.CopyAction
 
                 width: 156; height: 287
@@ -53,6 +55,12 @@ Rectangle {
                 MouseArea  {
                     id: mouseArea
                     drag.target: realCell
+
+                    drag.minimumX: 0
+                    drag.maximumX: 0
+                    drag.minimumY: 0
+                    drag.maximumY: 0
+
                     anchors.fill: parent
                     acceptedButtons: Qt.LeftButton | Qt.RightButton
                     onDoubleClicked: {
@@ -87,6 +95,7 @@ Rectangle {
                         comicsSelectionHelper.selectIndex(index)
                         grid.currentIndex = index;
                     }
+
                 }
 
                 //Menu emits the 'main' signals
@@ -159,6 +168,7 @@ Rectangle {
 
             //title
             Text {
+                id : titleText
                 anchors { top: realCell.top; left: realCell.left; leftMargin: 4; rightMargin: 4; topMargin: 234; }
                 width: 148
                 maximumLineCount: 2
