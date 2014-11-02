@@ -516,13 +516,10 @@ QPixmap * Render::getCurrentDoublePage()
 			default:
 				return NULL;
 		}
-		QImage auximage(totalWidth, totalHeight, QImage::Format_RGB32);
-		QPainter painter(&auximage);
+		QPixmap * page = new QPixmap(totalWidth, totalHeight);
+		QPainter painter(page);
 		painter.drawImage(leftpage, *buffer[currentPageBufferedIndex]);
 		painter.drawImage(rightpage, *buffer[currentPageBufferedIndex+1]);
-		
-		QPixmap * page = new QPixmap();
-		*page = page->fromImage(auximage);
 		return page;
 	}
 	else
@@ -563,13 +560,10 @@ QPixmap * Render::getCurrentDoubleMangaPage()
 			default:
 				return NULL;
 		}
-		QImage auximage(totalWidth, totalHeight, QImage::Format_RGB32);
-		QPainter painter(&auximage);
+		QPixmap * page = new QPixmap(totalWidth, totalHeight);
+		QPainter painter(page);
 		painter.drawImage(rightpage, *buffer[currentPageBufferedIndex]);
 		painter.drawImage(leftpage, *buffer[currentPageBufferedIndex+1]);
-		
-		QPixmap * page = new QPixmap();
-		*page = page->fromImage(auximage);
 		return page;
 	}
 	else
