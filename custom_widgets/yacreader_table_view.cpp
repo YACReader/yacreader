@@ -4,6 +4,8 @@
 #include <QResizeEvent>
 #include <QPropertyAnimation>
 #include <QPainter>
+#include <QDrag>
+#include <QMimeData>
 
 #include "comic_item.h"
 
@@ -47,9 +49,9 @@ YACReaderTableView::YACReaderTableView(QWidget *parent) :
 	//comicView->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
 	verticalHeader()->setDefaultSectionSize(24);
 #if QT_VERSION >= 0x050000
-	verticalHeader()->setSectionsClickable(false); //TODO comportamiento anómalo
+	verticalHeader()->setSectionsClickable(false); //TODO comportamiento anÃ³malo
 #else
-	verticalHeader()->setClickable(false); //TODO comportamiento anómalo
+	verticalHeader()->setClickable(false); //TODO comportamiento anÃ³malo
 #endif
 
 	setCornerButtonEnabled(false);
@@ -65,6 +67,9 @@ YACReaderTableView::YACReaderTableView(QWidget *parent) :
 
 	showDeletingProgressAnimation = new QPropertyAnimation(deletingProgress,"pos");
 	showDeletingProgressAnimation->setDuration(150);*/
+
+    //drag
+    setDragEnabled(true);
 }
 
 void YACReaderTableView::mouseMoveEvent(QMouseEvent *event)
@@ -100,25 +105,37 @@ void YACReaderTableView::mouseMoveEvent(QMouseEvent *event)
 }
 void YACReaderTableView::mousePressEvent(QMouseEvent * event)
 {
-	QTableView::mousePressEvent(event);
-	QModelIndex mi = indexAt(event->pos());
-	if(mi.isValid())
-	{
-		QList<QModelIndex> selectedIndexes = this->selectedIndexes();
-		if(selectedIndexes.contains(mi))
-		{
-			if(mi.column() == 11)
-			{
-				if(!editing)
-				{
-					editing = true;
-					currentIndexEditing = mi;
-					edit(mi);
-					myeditor = indexWidget(mi);
-				}
-			}
-		}
-	}
+    QTableView::mousePressEvent(event);
+    QModelIndex mi = indexAt(event->pos());
+    if(mi.isValid())
+    {
+        QList<QModelIndex> selectedIndexes = this->selectedIndexes();
+        if(selectedIndexes.contains(mi))
+        {
+            if(mi.column() == 11)
+            {
+                if(!editing)
+                {
+                    editing = true;
+                    currentIndexEditing = mi;
+                    edit(mi);
+                    myeditor = indexWidget(mi);
+                }
+                return;
+            }
+        }
+    }
+
+    QMimeData *mimeData = new QMimeData;
+
+    mimeData->setText("comic"); //TODO set the right mime data
+
+    QDrag *drag = new QDrag(this);
+    drag->setMimeData(mimeData);
+    drag->setPixmap(QPixmap(":/images/openInYACReader.png")); //TODO add better image
+
+    Qt::DropAction dropAction = drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
+
 }
 void YACReaderTableView::leaveEvent(QEvent * event)
 {

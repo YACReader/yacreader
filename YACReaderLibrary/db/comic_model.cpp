@@ -148,7 +148,7 @@ Qt::ItemFlags ComicModel::flags(const QModelIndex &index) const
 		return 0;
     if(index.column() == ComicModel::Rating)
 		return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
-	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 }
 //! [4]
 
