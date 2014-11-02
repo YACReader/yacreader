@@ -490,44 +490,36 @@ QPixmap * Render::getCurrentDoublePage()
 	{
 		QPoint leftpage(0,0);
 		QPoint rightpage(0,0);
-		QSize leftsize;
-		QSize rightsize;
+		QSize leftsize = buffer[currentPageBufferedIndex]->size();
+		QSize rightsize = buffer[currentPageBufferedIndex+1]->size();
 		int totalWidth,totalHeight;
 		switch (imageRotation)
 		{
 			case 0:
-				totalHeight = qMax(buffer[currentPageBufferedIndex]->height(), buffer[currentPageBufferedIndex+1]->height());
-				leftsize.setHeight(totalHeight);
-				rightsize.setHeight(totalHeight);
-				leftsize.setWidth(buffer[currentPageBufferedIndex]->width() + (totalHeight - buffer[currentPageBufferedIndex]->height()));
-				rightsize.setWidth(buffer[currentPageBufferedIndex+1]->width() + (totalHeight - buffer[currentPageBufferedIndex+1]->height()));
+				totalHeight = qMax(leftsize.rheight(),rightsize.rheight());
+				leftsize.scale(leftsize.rwidth(), totalHeight, Qt::KeepAspectRatioByExpanding);
+				rightsize.scale(rightsize.rwidth(), totalHeight, Qt::KeepAspectRatioByExpanding);
 				totalWidth = leftsize.rwidth() + rightsize.rwidth();
 				rightpage.setX(leftsize.rwidth());
 				break;
 			case 90:
-				totalWidth = qMax(buffer[currentPageBufferedIndex]->width(), buffer[currentPageBufferedIndex+1]->width());
-				leftsize.setWidth(totalWidth);
-				rightsize.setWidth(totalWidth);
-				leftsize.setHeight(buffer[currentPageBufferedIndex]->height() + (totalWidth - buffer[currentPageBufferedIndex]->width()));
-				rightsize.setHeight(buffer[currentPageBufferedIndex+1]->height() + (totalWidth - buffer[currentPageBufferedIndex+1]->width()));
+				totalWidth = qMax(leftsize.rwidth(), rightsize.rwidth());
+				leftsize.scale(totalWidth, leftsize.rheight(), Qt::KeepAspectRatioByExpanding);
+				rightsize.scale(totalWidth, rightsize.rheight(), Qt::KeepAspectRatioByExpanding);
 				totalHeight = leftsize.rheight() + rightsize.rheight();
 				rightpage.setY(leftsize.rheight());
 				break;
 			case 180:
-				totalHeight = qMax(buffer[currentPageBufferedIndex]->height(), buffer[currentPageBufferedIndex+1]->height());
-				leftsize.setHeight(totalHeight);
-				rightsize.setHeight(totalHeight);
-				leftsize.setWidth(buffer[currentPageBufferedIndex]->width() + (totalHeight - buffer[currentPageBufferedIndex]->height()));
-				rightsize.setWidth(buffer[currentPageBufferedIndex+1]->width() + (totalHeight - buffer[currentPageBufferedIndex+1]->height()));
+				totalHeight = qMax(leftsize.rheight(),rightsize.rheight());
+				leftsize.scale(leftsize.rwidth(), totalHeight, Qt::KeepAspectRatioByExpanding);
+				rightsize.scale(rightsize.rwidth(), totalHeight, Qt::KeepAspectRatioByExpanding);
 				totalWidth = leftsize.rwidth() + rightsize.rwidth();
 				leftpage.setX(rightsize.rwidth());
 				break;
 			case 270:
-				totalWidth = qMax(buffer[currentPageBufferedIndex]->width(), buffer[currentPageBufferedIndex+1]->width());
-				leftsize.setWidth(totalWidth);
-				rightsize.setWidth(totalWidth);
-				leftsize.setHeight(buffer[currentPageBufferedIndex]->height() + (totalWidth - buffer[currentPageBufferedIndex]->width()));
-				rightsize.setHeight(buffer[currentPageBufferedIndex+1]->height() + (totalWidth - buffer[currentPageBufferedIndex+1]->width()));
+				totalWidth = qMax(leftsize.rwidth(), rightsize.rwidth());
+				leftsize.scale(totalWidth, leftsize.rheight(), Qt::KeepAspectRatioByExpanding);
+				rightsize.scale(totalWidth, rightsize.rheight(), Qt::KeepAspectRatioByExpanding);
 				totalHeight = leftsize.rheight() + rightsize.rheight();
 				leftpage.setY(rightsize.rheight());
 				break;
@@ -552,44 +544,36 @@ QPixmap * Render::getCurrentDoubleMangaPage()
 	{
 		QPoint leftpage(0,0);
 		QPoint rightpage(0,0);
-		QSize leftsize;
-		QSize rightsize;
+		QSize leftsize = buffer[currentPageBufferedIndex+1]->size();
+		QSize rightsize = buffer[currentPageBufferedIndex]->size();
 		int totalWidth,totalHeight;
 		switch (imageRotation)
 		{
 			case 0:
-				totalHeight = qMax(buffer[currentPageBufferedIndex]->height(), buffer[currentPageBufferedIndex+1]->height());
-				leftsize.setHeight(totalHeight);
-				rightsize.setHeight(totalHeight);
-				leftsize.setWidth(buffer[currentPageBufferedIndex+1]->width() + (totalHeight - buffer[currentPageBufferedIndex+1]->height()));
-				rightsize.setWidth(buffer[currentPageBufferedIndex]->width() + (totalHeight - buffer[currentPageBufferedIndex]->height()));
+				totalHeight = qMax(leftsize.rheight(),rightsize.rheight());
+				leftsize.scale(leftsize.rwidth(), totalHeight, Qt::KeepAspectRatioByExpanding);
+				rightsize.scale(rightsize.rwidth(), totalHeight, Qt::KeepAspectRatioByExpanding);
 				totalWidth = leftsize.rwidth() + rightsize.rwidth();
 				rightpage.setX(leftsize.rwidth());
 				break;
 			case 90:
-				totalWidth = qMax(buffer[currentPageBufferedIndex]->width(), buffer[currentPageBufferedIndex+1]->width());
-				leftsize.setWidth(totalWidth);
-				rightsize.setWidth(totalWidth);
-				leftsize.setHeight(buffer[currentPageBufferedIndex+1]->height() + (totalWidth - buffer[currentPageBufferedIndex+1]->width()));
-				rightsize.setHeight(buffer[currentPageBufferedIndex]->height() + (totalWidth - buffer[currentPageBufferedIndex]->width()));
+				totalWidth = qMax(leftsize.rwidth(), rightsize.rwidth());
+				leftsize.scale(totalWidth, leftsize.rheight(), Qt::KeepAspectRatioByExpanding);
+				rightsize.scale(totalWidth, rightsize.rheight(), Qt::KeepAspectRatioByExpanding);
 				totalHeight = leftsize.rheight() + rightsize.rheight();
 				rightpage.setY(leftsize.rheight());
 				break;
 			case 180:
-				totalHeight = qMax(buffer[currentPageBufferedIndex]->height(), buffer[currentPageBufferedIndex+1]->height());
-				leftsize.setHeight(totalHeight);
-				rightsize.setHeight(totalHeight);
-				leftsize.setWidth(buffer[currentPageBufferedIndex+1]->width() + (totalHeight - buffer[currentPageBufferedIndex+1]->height()));
-				rightsize.setWidth(buffer[currentPageBufferedIndex]->width() + (totalHeight - buffer[currentPageBufferedIndex]->height()));
+				totalHeight = qMax(leftsize.rheight(),rightsize.rheight());
+				leftsize.scale(leftsize.rwidth(), totalHeight, Qt::KeepAspectRatioByExpanding);
+				rightsize.scale(rightsize.rwidth(), totalHeight, Qt::KeepAspectRatioByExpanding);
 				totalWidth = leftsize.rwidth() + rightsize.rwidth();
 				leftpage.setX(rightsize.rwidth());
 				break;
 			case 270:
-				totalWidth = qMax(buffer[currentPageBufferedIndex]->width(), buffer[currentPageBufferedIndex+1]->width());
-				leftsize.setWidth(totalWidth);
-				rightsize.setWidth(totalWidth);
-				leftsize.setHeight(buffer[currentPageBufferedIndex+1]->height() + (totalWidth - buffer[currentPageBufferedIndex+1]->width()));
-				rightsize.setHeight(buffer[currentPageBufferedIndex]->height() + (totalWidth - buffer[currentPageBufferedIndex]->width()));
+				totalWidth = qMax(leftsize.rwidth(), rightsize.rwidth());
+				leftsize.scale(totalWidth, leftsize.rheight(), Qt::KeepAspectRatioByExpanding);
+				rightsize.scale(totalWidth, rightsize.rheight(), Qt::KeepAspectRatioByExpanding);
 				totalHeight = leftsize.rheight() + rightsize.rheight();
 				leftpage.setY(rightsize.rheight());
 				break;
