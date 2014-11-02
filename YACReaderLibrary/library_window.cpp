@@ -2372,11 +2372,11 @@ QModelIndexList LibraryWindow::getSelectedComics()
     QLOG_INFO() << "selection count " << selection.length();
 	qSort(selection.begin(),selection.end(),lessThanModelIndexRow);
 
-    /*if(selection.count()==0)
+    if(selection.count()==0)
 	{
-        comicsView->selectRow(comicFlow->centerIndex());
+        comicsView->selectIndex(0);
         selection = comicsView->selectionModel()->selectedRows();
-    }*/
+    }
 	return selection;
 }
 

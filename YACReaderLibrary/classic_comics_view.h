@@ -30,6 +30,7 @@ public:
     void setItemActions(const QList<QAction *> & actions);
     void setViewActions(const QList<QAction *> & actions);
     void enableFilterMode(bool enabled);
+    void selectIndex(int index);
 
 public slots:
     void centerComicFlow(const QModelIndex & mi);

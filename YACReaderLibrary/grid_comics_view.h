@@ -30,7 +30,7 @@ public:
     void setViewActions(const QList<QAction *> & actions);
     void enableFilterMode(bool enabled);
     QSize sizeHint();
-signals:
+
 signals:
     void comicRated(int,QModelIndex);
     void doubleClicked(QModelIndex);

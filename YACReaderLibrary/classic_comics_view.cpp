@@ -222,6 +222,11 @@ void ClassicComicsView::enableFilterMode(bool enabled)
     searching = enabled;
 }
 
+void ClassicComicsView::selectIndex(int index)
+{
+    tableView->selectRow(index);
+}
+
 void ClassicComicsView::selectAll()
 {
     tableView->selectAll();
