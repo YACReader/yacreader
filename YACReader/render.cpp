@@ -490,36 +490,54 @@ QPixmap * Render::getCurrentDoublePage()
 	{
 		QPoint leftpage(0,0);
 		QPoint rightpage(0,0);
+		QSize leftsize;
+		QSize rightsize;
 		int totalWidth,totalHeight;
 		switch (imageRotation)
 		{
 			case 0:
 				totalHeight = qMax(buffer[currentPageBufferedIndex]->height(), buffer[currentPageBufferedIndex+1]->height());
-				totalWidth = buffer[currentPageBufferedIndex]->width() + buffer[currentPageBufferedIndex+1]->width();
-				rightpage.setX(buffer[currentPageBufferedIndex]->width());
+				leftsize.setHeight(totalHeight);
+				rightsize.setHeight(totalHeight);
+				leftsize.setWidth(buffer[currentPageBufferedIndex]->width() + (totalHeight - buffer[currentPageBufferedIndex]->height()));
+				rightsize.setWidth(buffer[currentPageBufferedIndex+1]->width() + (totalHeight - buffer[currentPageBufferedIndex+1]->height()));
+				totalWidth = leftsize.rwidth() + rightsize.rwidth();
+				rightpage.setX(leftsize.rwidth());
 				break;
 			case 90:
 				totalWidth = qMax(buffer[currentPageBufferedIndex]->width(), buffer[currentPageBufferedIndex+1]->width());
-				totalHeight = buffer[currentPageBufferedIndex]->height() + buffer[currentPageBufferedIndex+1]->height();
-				rightpage.setY(buffer[currentPageBufferedIndex]->height());
+				leftsize.setWidth(totalWidth);
+				rightsize.setWidth(totalWidth);
+				leftsize.setHeight(buffer[currentPageBufferedIndex]->height() + (totalWidth - buffer[currentPageBufferedIndex]->width()));
+				rightsize.setHeight(buffer[currentPageBufferedIndex+1]->height() + (totalWidth - buffer[currentPageBufferedIndex+1]->width()));
+				totalHeight = leftsize.rheight() + rightsize.rheight();
+				rightpage.setY(leftsize.rheight());
 				break;
 			case 180:
 				totalHeight = qMax(buffer[currentPageBufferedIndex]->height(), buffer[currentPageBufferedIndex+1]->height());
-				totalWidth = buffer[currentPageBufferedIndex]->width() + buffer[currentPageBufferedIndex+1]->width();
-				leftpage.setX(buffer[currentPageBufferedIndex+1]->width());
+				leftsize.setHeight(totalHeight);
+				rightsize.setHeight(totalHeight);
+				leftsize.setWidth(buffer[currentPageBufferedIndex]->width() + (totalHeight - buffer[currentPageBufferedIndex]->height()));
+				rightsize.setWidth(buffer[currentPageBufferedIndex+1]->width() + (totalHeight - buffer[currentPageBufferedIndex+1]->height()));
+				totalWidth = leftsize.rwidth() + rightsize.rwidth();
+				leftpage.setX(rightsize.rwidth());
 				break;
 			case 270:
 				totalWidth = qMax(buffer[currentPageBufferedIndex]->width(), buffer[currentPageBufferedIndex+1]->width());
-				totalHeight = buffer[currentPageBufferedIndex]->height() + buffer[currentPageBufferedIndex+1]->height();
-				leftpage.setY(buffer[currentPageBufferedIndex+1]->height());
+				leftsize.setWidth(totalWidth);
+				rightsize.setWidth(totalWidth);
+				leftsize.setHeight(buffer[currentPageBufferedIndex]->height() + (totalWidth - buffer[currentPageBufferedIndex]->width()));
+				rightsize.setHeight(buffer[currentPageBufferedIndex+1]->height() + (totalWidth - buffer[currentPageBufferedIndex+1]->width()));
+				totalHeight = leftsize.rheight() + rightsize.rheight();
+				leftpage.setY(rightsize.rheight());
 				break;
 			default:
 				return NULL;
 		}
 		QPixmap * page = new QPixmap(totalWidth, totalHeight);
 		QPainter painter(page);
-		painter.drawImage(leftpage, *buffer[currentPageBufferedIndex]);
-		painter.drawImage(rightpage, *buffer[currentPageBufferedIndex+1]);
+		painter.drawImage(QRect(leftpage,leftsize), *buffer[currentPageBufferedIndex]);
+		painter.drawImage(QRect(rightpage,rightsize), *buffer[currentPageBufferedIndex+1]);
 		return page;
 	}
 	else
