@@ -28,6 +28,8 @@ Rectangle {
                 height: grid.cellHeight
                 color: backgroundColor
                 MouseArea {
+                    id: mouseArea
+                    drag.target: realCell
                      anchors.fill: parent
                      onClicked: {
                          comicsSelectionHelper.clear();
@@ -38,7 +40,14 @@ Rectangle {
                 Rectangle {
                     id: realCell
 
-                    width: 156; height: 287
+                    Drag.active: mouseArea.drag.active
+                    Drag.hotSpot.x: 32
+                    Drag.hotSpot.y: 32
+                    Drag.dragType: Drag.Automatic
+                    Drag.mimeData: { "text/plain": "comic" }
+                    Drag.proposedAction: Qt.CopyAction
+
+                                        width: 156; height: 287
                     color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index)) || grid.currentIndex === index?selectedColor:cellColor;
 
                     anchors.horizontalCenter: parent.horizontalCenter
