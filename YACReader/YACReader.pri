@@ -45,12 +45,16 @@ macx{
 #INCLUDEPATH  += /usr/local/include/poppler/qt4
 #LIBS         += -L/usr/local/lib -lpoppler-qt4
 #}
+CONFIG += objective_c
+QT += macextras
+
 
 LIBS += -framework Foundation -framework ApplicationServices
 
 OBJECTIVE_SOURCES += $$PWD/../common/pdf_comic.mm
 HEADERS += $$PWD/../common/pdf_comic.h
-CONFIG += objective_c
+
+
 }
 
 QT += network opengl
