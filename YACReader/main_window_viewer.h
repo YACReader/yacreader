@@ -9,6 +9,10 @@
 #include <QCloseEvent>
 #include <QSettings>
 
+#ifdef Q_OS_MAC
+    #include "yacreader_macosx_toolbar.h"
+#endif
+
 #include "comic_db.h"
 
 class Comic;
@@ -77,7 +81,11 @@ class EditShortcutsDialog;
         EditShortcutsDialog * editShortcutsDialog;
 
 		//! ToolBars
-		QToolBar *comicToolBar;
+        #ifdef Q_OS_MAC
+        YACReaderMacOSXToolbar * comicToolBar;
+#else
+        QToolBar * comicToolBar;
+#endif
 
 		//! Actions
 		QAction *openAction;

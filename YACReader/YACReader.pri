@@ -49,7 +49,7 @@ CONFIG += objective_c
 QT += macextras
 
 
-LIBS += -framework Foundation -framework ApplicationServices
+LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 
 OBJECTIVE_SOURCES += $$PWD/../common/pdf_comic.mm
 HEADERS += $$PWD/../common/pdf_comic.h

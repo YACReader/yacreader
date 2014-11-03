@@ -33,7 +33,7 @@
 #include <QDate>
 #include <QMenuBar>
 
-
+/* TODO remove, no longer used
 #ifdef Q_OS_MAC
 class MacToolBarSeparator : public QWidget
 {
@@ -66,7 +66,7 @@ public:
 		painter.fillRect(1,0,1,height(),lG2);
 	}
 };
-#endif
+#endif*/
 
 MainWindowViewer::MainWindowViewer()
 :QMainWindow(),fullscreen(false),toolbars(true),alwaysOnTop(false),currentDirectory("."),currentDirectoryImgDest("."),isClient(false)
@@ -414,10 +414,14 @@ void MainWindowViewer::createActions()
 
 void MainWindowViewer::createToolBars()
 {
+#ifdef Q_OS_MAC
+    comicToolBar = new YACReaderMacOSXToolbar(this);
+#else
 	comicToolBar = addToolBar(tr("&File"));
+#endif
 
 #ifdef Q_OS_MAC
-	comicToolBar->setIconSize(QSize(16,16));
+    //comicToolBar->setIconSize(QSize(16,16));
 #else
 	comicToolBar->setIconSize(QSize(18,18));
     comicToolBar->setStyleSheet("QToolBar{border:none;}");
@@ -433,11 +437,9 @@ void MainWindowViewer::createToolBars()
 	comicToolBar->addAction(saveImageAction);
 	comicToolBar->addAction(openPreviousComicAction);
 	comicToolBar->addAction(openNextComicAction);
-#ifdef Q_OS_MAC
-	comicToolBar->addWidget(new MacToolBarSeparator);
-#else
+
 	comicToolBar->addSeparator();
-#endif
+
 	comicToolBar->addAction(prevAction);
 	comicToolBar->addAction(nextAction);
     comicToolBar->addAction(goToPageAction);
@@ -449,11 +451,8 @@ void MainWindowViewer::createToolBars()
 //	alwaysOnTopAction->setEnabled(false);
 //#endif
 
-#ifdef Q_OS_MAC
-	comicToolBar->addWidget(new MacToolBarSeparator);
-#else
+
 	comicToolBar->addSeparator();
-#endif
 
 	//QWidget * widget = new QWidget();
 
@@ -491,39 +490,31 @@ void MainWindowViewer::createToolBars()
 	//tb2->addAction();
 	tb2->setPopupMode(QToolButton::MenuButtonPopup);
     tb2->setDefaultAction(adjustWidthAction);
-	comicToolBar->addWidget(tb2);
+    comicToolBar->addWidget(tb2);
     comicToolBar->addAction(adjustHeightAction);
 	comicToolBar->addAction(adjustToFullSizeAction);
 	comicToolBar->addAction(leftRotationAction);
 	comicToolBar->addAction(rightRotationAction);
 	comicToolBar->addAction(doublePageAction);
 
-#ifdef Q_OS_MAC
-	comicToolBar->addWidget(new MacToolBarSeparator);
-#else
-	comicToolBar->addSeparator();
-#endif
+    comicToolBar->addSeparator();
+
     comicToolBar->addAction(showMagnifyingGlassAction);
 
-#ifdef Q_OS_MAC
-	comicToolBar->addWidget(new MacToolBarSeparator);
-#else
+
 	comicToolBar->addSeparator();
-#endif
+
     comicToolBar->addAction(setBookmarkAction);
     comicToolBar->addAction(showBookmarksAction);
 	
-#ifdef Q_OS_MAC
-	comicToolBar->addWidget(new MacToolBarSeparator);
-#else
 	comicToolBar->addSeparator();
-#endif
+
 	comicToolBar->addAction(showDictionaryAction);
 	comicToolBar->addAction(showFlowAction);
     comicToolBar->addAction(showInfoAction);
 
 #ifdef Q_OS_MAC
-	comicToolBar->addWidget(new MacToolBarSeparator);
+    comicToolBar->addStretch();
 #else
 	comicToolBar->addWidget(new QToolBarStretch());
 #endif
@@ -534,8 +525,9 @@ void MainWindowViewer::createToolBars()
 	comicToolBar->addAction(helpAboutAction);
 	//comicToolBar->addAction(closeAction);
 
+#ifndef Q_OS_MAC
 	comicToolBar->setMovable(false);
-
+#endif
 
 	viewer->addAction(openAction);
 	viewer->addAction(openFolderAction);
@@ -598,6 +590,11 @@ void MainWindowViewer::createToolBars()
 
     menuBar->addMenu(fileMenu);
     //menu->addMenu(toolbarMenu);
+
+    //attach toolbar
+
+    comicToolBar->attachToWindow(this->windowHandle());
+
 #endif
 
 }
@@ -891,8 +888,9 @@ void MainWindowViewer::toggleToolBars()
 	toolbars?hideToolBars():showToolBars();
 
 	Configuration::getConfiguration().setShowToolbars(toolbars);
-
+#ifndef Q_OS_MAC
 	comicToolBar->setMovable(false);
+#endif
 }
 void MainWindowViewer::hideToolBars()
 {
