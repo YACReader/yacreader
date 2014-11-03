@@ -12,9 +12,10 @@ HEADERS += $$PWD/help_about_dialog.h \
                         $$PWD/yacreader_tool_bar_stretch.h \
                                                 $$PWD/yacreader_busy_widget.h
 
-macx {
-    HEADERS += $$PWD/yacreader_macosx_toolbar.h
+macx{
+HEADERS += $$PWD/yacreader_macosx_toolbar.h
 }
+
 						
 						 
 SOURCES += $$PWD/help_about_dialog.cpp \
@@ -27,7 +28,7 @@ SOURCES += $$PWD/help_about_dialog.cpp \
                          $$PWD/yacreader_spin_slider_widget.cpp \
                          $$PWD/yacreader_tool_bar_stretch.cpp \
 						$$PWD/yacreader_busy_widget.cpp
-macx {
-OBJECTIVE_SOURCES += \
-    $$PWD/yacreader_macosx_toolbar.mm
+macx{
+OBJECTIVE_SOURCES += $$PWD/yacreader_macosx_toolbar.mm
 }
+
