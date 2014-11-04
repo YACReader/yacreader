@@ -822,7 +822,10 @@ void LibraryWindow::createToolBars()
 	libraryToolBar->addAction(toggleFullScreenAction);
 
     libraryToolBar->addStretch();
-    libraryToolBar->addWidget(searchEdit);
+
+    //Native toolbar search edit
+    //libraryToolBar->addWidget(searchEdit);
+    libraryToolBar->addSearchEdit();
 
     //libraryToolBar->setMovable(false);
 

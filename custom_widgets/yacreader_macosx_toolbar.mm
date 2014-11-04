@@ -217,6 +217,7 @@ void YACReaderMacOSXToolbar::addStretch()
 
 void YACReaderMacOSXToolbar::addWidget(QWidget *widget)
 {
+    //TODO fix it
    /* QMacNativeWidget *nativeWidget = new QMacNativeWidget();
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(widget);
@@ -237,4 +238,17 @@ void YACReaderMacOSXToolbar::show()
 void YACReaderMacOSXToolbar::hide()
 {
     [nativeToolBar setVisible:NO];
+}
+
+void YACReaderMacOSXToolbar::addSearchEdit()
+{
+    QMacToolBarItem *toolBarItem = addItem(QIcon(),"");
+    NSToolbarItem * nativeItem = toolBarItem->nativeToolBarItem();
+
+    static const NSRect searchEditFrameRect = { { 0.0, 0.0 }, { 150, 24.0 } };
+    NSTextField * searchEdit = [[NSTextField alloc] initWithFrame:searchEditFrameRect];
+
+    [searchEdit setBezelStyle:NSTextFieldRoundedBezel];
+
+    [nativeItem setView:searchEdit];
 }

@@ -19,8 +19,12 @@ public:
     void hide();
     QMap<QString, QAction *> actions;
 
-signals:
+    //convenience method for YACReaderLibrary search edit
+    void addSearchEdit();
 
+signals:
+    //convenience signal for YACReaderLibrary search edit
+    void searchTextChanged(QString);
 public slots:
 
 protected:
