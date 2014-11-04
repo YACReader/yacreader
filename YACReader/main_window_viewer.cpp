@@ -123,7 +123,7 @@ void MainWindowViewer::setupUI()
 {
 	setWindowIcon(QIcon(":/images/icon.png"));
 
-	setUnifiedTitleAndToolBarOnMac(true);
+    //setUnifiedTitleAndToolBarOnMac(true);
 
 	viewer = new Viewer(this);
     connect(viewer,SIGNAL(reset()),this,SLOT(processReset()));
@@ -427,6 +427,10 @@ void MainWindowViewer::createToolBars()
     comicToolBar->setStyleSheet("QToolBar{border:none;}");
 #endif
 
+#ifdef Q_OS_MAC
+    comicToolBar->addAction(openAction);
+    comicToolBar->addAction(openFolderAction);
+#else
 	QToolButton * tb = new QToolButton();
 	tb->addAction(openAction);
 	tb->addAction(openFolderAction);
@@ -434,6 +438,7 @@ void MainWindowViewer::createToolBars()
 	tb->setDefaultAction(openAction);
 
 	comicToolBar->addWidget(tb);
+#endif
 	comicToolBar->addAction(saveImageAction);
 	comicToolBar->addAction(openPreviousComicAction);
 	comicToolBar->addAction(openNextComicAction);
@@ -471,8 +476,11 @@ void MainWindowViewer::createToolBars()
 
 	//comicToolBar->addAction(adjustWidth);
 
-	
+#ifdef Q_OS_MAC
 
+    comicToolBar->addAction(adjustWidthAction);
+
+#else
 	QMenu * menu = new QMenu();
 	sliderAction = new YACReaderSliderAction(this);
 	menu->setAutoFillBackground(false);
@@ -491,6 +499,8 @@ void MainWindowViewer::createToolBars()
 	tb2->setPopupMode(QToolButton::MenuButtonPopup);
     tb2->setDefaultAction(adjustWidthAction);
     comicToolBar->addWidget(tb2);
+#endif
+
     comicToolBar->addAction(adjustHeightAction);
 	comicToolBar->addAction(adjustToFullSizeAction);
 	comicToolBar->addAction(leftRotationAction);

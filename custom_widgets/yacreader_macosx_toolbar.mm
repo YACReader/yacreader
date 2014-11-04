@@ -91,7 +91,10 @@
 - (IBAction)itemClicked:(id)sender
 {
     NSToolbarItem *item = reinterpret_cast<NSToolbarItem *>(sender);
-    //toolbarPrivate->itemClicked(item);
+
+    QString identifier = QString::fromNSString([item itemIdentifier]);
+    QMacToolBarItem *toolButton = reinterpret_cast<QMacToolBarItem *>(identifier.toULongLong());
+    Q_EMIT toolButton->activated();
 }
 
 - (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdentifier willBeInsertedIntoToolbar:(BOOL) willBeInserted
@@ -99,8 +102,6 @@
     Q_UNUSED(toolbar);
     Q_UNUSED(willBeInserted);
     QList<QMacToolBarItem *> items = mytoolbar->items();
-
-    int i = [itemIdentifier intValue];
 
     foreach (const QMacToolBarItem * item, items) {
         NSToolbarItem *toolbarItem = item->nativeToolBarItem();
