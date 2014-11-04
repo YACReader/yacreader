@@ -8,6 +8,10 @@
 #include "yacreader_global.h"
 #include <yacreader_libraries.h>
 
+#ifdef Q_OS_MAC
+    #include "yacreader_macosx_toolbar.h"
+#endif
+
 class QTreeView;
 class QDirModel;
 class QAction;
@@ -200,7 +204,7 @@ private:
     QList<QAction *> viewActions;
 
 #ifdef Q_OS_MAC
-	QToolBar * libraryToolBar;
+    YACReaderMacOSXToolbar * libraryToolBar;
 #else
 	YACReaderMainToolBar * libraryToolBar;
 #endif
