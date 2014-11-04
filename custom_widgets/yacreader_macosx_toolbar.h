@@ -17,6 +17,7 @@ public:
     void addWidget(QWidget * widget);
     void show();
     void hide();
+    QMap<QString, QAction *> actions;
 
 signals:
 
@@ -24,6 +25,8 @@ public slots:
 
 protected:
     NSToolbar * nativeToolBar;
+    void *delegate;
+
 
 };
 
