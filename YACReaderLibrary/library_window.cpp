@@ -161,7 +161,7 @@ void LibraryWindow::doLayout()
     editInfoToolBar->setStyleSheet("QToolBar {border: none;}");
 
 #ifdef Q_OS_MAC
-	libraryToolBar = addToolBar(tr("Library"));
+    libraryToolBar = new YACReaderMacOSXToolbar(this);
 #else
 	libraryToolBar = new YACReaderMainToolBar(this);
 #endif
@@ -803,14 +803,12 @@ void LibraryWindow::createToolBars()
 {
 
 #ifdef Q_OS_MAC
-	libraryToolBar->setIconSize(QSize(16,16)); //TODO make icon size dynamic
+    //libraryToolBar->setIconSize(QSize(16,16)); //TODO make icon size dynamic
 
 	libraryToolBar->addAction(backAction);
 	libraryToolBar->addAction(forwardAction);
 
-	{QWidget * w = new QWidget();
-	w->setFixedWidth(10);
-	libraryToolBar->addWidget(w);}
+    libraryToolBar->addSpace(10);
 
 #ifdef SERVER_RELEASE
 	libraryToolBar->addAction(serverConfigAction);
@@ -818,17 +816,17 @@ void LibraryWindow::createToolBars()
 	libraryToolBar->addAction(optionsAction);
 	libraryToolBar->addAction(helpAboutAction);
 
-	{ QWidget * w2 = new QWidget();
-	 w2->setFixedWidth(10);
-	 libraryToolBar->addWidget(w2);}
+    libraryToolBar->addSpace(10);
 
     libraryToolBar->addAction(toggleComicsViewAction);
 	libraryToolBar->addAction(toggleFullScreenAction);
 
-	libraryToolBar->addWidget(new QToolBarStretch());
+    libraryToolBar->addStretch();
     libraryToolBar->addWidget(searchEdit);
 
-	libraryToolBar->setMovable(false);
+    //libraryToolBar->setMovable(false);
+
+    libraryToolBar->attachToWindow(this->windowHandle());
 
 	
 #else
@@ -2330,7 +2328,9 @@ void LibraryWindow::showNoLibrariesWidget()
 
 void LibraryWindow::showRootWidget()
 {
+#ifndef Q_OS_MAC
 	libraryToolBar->setDisabled(false);
+#endif
     searchEdit->setEnabled(true);
 	mainWidget->setCurrentIndex(0);
 }
@@ -2339,7 +2339,9 @@ void LibraryWindow::showImportingWidget()
 {
 	disableAllActions();
 	importWidget->clear();
+#ifndef Q_OS_MAC
 	libraryToolBar->setDisabled(true);
+#endif
     searchEdit->setDisabled(true);
 	mainWidget->setCurrentIndex(2);
 }
