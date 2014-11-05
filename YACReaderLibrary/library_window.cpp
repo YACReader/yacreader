@@ -176,7 +176,10 @@ void LibraryWindow::doLayout()
 
     //FOLDERS FILTER-------------------------------------------------------------
     //---------------------------------------------------------------------------
+#ifndef Q_OS_MAC
+    //in MacOSX the searchEdit is created using the toolbar wrapper
     searchEdit = new YACReaderSearchLineEdit();
+#endif
 
     //SIDEBAR--------------------------------------------------------------------
 	//---------------------------------------------------------------------------
@@ -825,7 +828,8 @@ void LibraryWindow::createToolBars()
 
     //Native toolbar search edit
     //libraryToolBar->addWidget(searchEdit);
-    libraryToolBar->addSearchEdit();
+    searchEdit = libraryToolBar->addSearchEdit();
+    //connect(libraryToolBar,SIGNAL(searchTextChanged(YACReader::SearchModifiers,QString)),this,SLOT(setSearchFilter(YACReader::SearchModifiers, QString)));
 
     //libraryToolBar->setMovable(false);
 
