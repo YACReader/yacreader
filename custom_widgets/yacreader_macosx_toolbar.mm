@@ -11,7 +11,7 @@
 #import <Cocoa/Cocoa.h>
 
 //----------------------------
-
+//A custom items separator for NSToolbar
 @interface CustomSeparator : NSView
 
 @end
@@ -28,6 +28,7 @@
 @end
 
 //----------------------------
+//Toolbar delegate, needed for allow disabled/enabled items
 @interface MyToolbarDelegate : NSObject <NSToolbarDelegate>
 {
 @public
@@ -39,6 +40,7 @@
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar*)toolbar;
 //- (NSArray *)toolbarSelectableItemIdentifiers:(NSToolbar *)toolbar;
 - (IBAction)itemClicked:(id)sender;
+- (BOOL)validateToolbarItem:(NSToolbarItem *)theItem;
 @end
 
 
@@ -55,7 +57,6 @@
         [array addObject : item->nativeToolBarItem().itemIdentifier];
     }
     return array;
-    //return toolbarPrivate->getItemIdentifiers(toolbarPrivate->items, false);
 }
 
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar*)toolbar
@@ -69,8 +70,9 @@
         [array addObject : item->nativeToolBarItem().itemIdentifier];
     }
     return array;
-    //return toolbarPrivate->getItemIdentifiers(toolbarPrivate->allowedItems, false);
 }
+
+
 /*
 - (NSArray *)toolbarSelectableItemIdentifiers: (NSToolbar *)toolbar
 {
@@ -119,8 +121,6 @@
 
 - (BOOL)validateToolbarItem:(NSToolbarItem *)theItem
 {
-    int i = -1;
-
     QString identifier = QString::fromNSString(theItem.itemIdentifier);
 
     if(mytoolbar->actions.contains(identifier))
@@ -131,6 +131,24 @@
 }
 @end
 
+//----------------------------
+//detect changes in native text field
+//TODO implement validation and auto completion
+@interface MyTextFieldDelegate : NSObject <NSTextFieldDelegate>
+{
+@public
+    YACReaderMacOSXSearchLineEdit * mylineedit;
+}
+@end
+
+@implementation MyTextFieldDelegate
+
+- (void)controlTextDidChange:(NSNotification *)notification {
+    NSTextField *textField = [notification object];
+    Q_EMIT mylineedit->filterChanged(YACReader::NoModifiers, QString::fromNSString([textField stringValue]));
+}
+
+@end
 //----------------------------
 
 YACReaderMacOSXToolbar::YACReaderMacOSXToolbar(QObject *parent)
@@ -143,44 +161,19 @@ YACReaderMacOSXToolbar::YACReaderMacOSXToolbar(QObject *parent)
     delegate = [[MyToolbarDelegate alloc] init];
     ((MyToolbarDelegate *)delegate)->mytoolbar = this;
     [nativeToolBar setDelegate:(MyToolbarDelegate *)delegate];
-    //button testing
-    /*QPixmap p(100,100);
-
-    QIcon icon(p);
-    QMacToolBarItem *toolBarItem = addItem(icon,"hola");
-    NSToolbarItem * nativeItem = toolBarItem->nativeToolBarItem();
-
-
-    [nativeItem setMaxSize:NSMakeSize(10,50)];
-    [nativeItem setMinSize:NSMakeSize(10,50)];*/
-    //toolBarItem->setStandardItem(QMacToolBarItem::FlexibleSpace);
-    //connect(toolButton, SIGNAL(activated()), this, SLOT(fooClicked()))
-
-    //window->window()->winId(); // create window->windowhandle()
-    //attachToWindow(window->window()->windowHandle());
 }
 
 void YACReaderMacOSXToolbar::addAction(QAction *action)
 {
     QMacToolBarItem *toolBarItem = addItem(action->icon(),action->text());
-
     connect(toolBarItem,SIGNAL(activated()),action, SIGNAL(triggered()));
-
-    //TODO add support for enable/disable toolbaritems
     NSToolbarItem * nativeItem = toolBarItem->nativeToolBarItem();
-    //[nativeItem setTarget:[[MyToolbarDelegate alloc] init]];
-
-    [nativeToolBar  validateVisibleItems];
-
     actions.insert(QString::fromNSString(nativeItem.itemIdentifier),action);
 }
 
 void YACReaderMacOSXToolbar::addDropDownItem(const QList<QAction *> &actions, const QAction *defaultAction)
 {
-    foreach(QAction * action, actions)
-    {
-
-    }
+    //TODO
 }
 
 void YACReaderMacOSXToolbar::addSpace(int size)
@@ -194,8 +187,11 @@ void YACReaderMacOSXToolbar::addSpace(int size)
     //TODO this doesn't work
     [nativeItem setMaxSize:NSMakeSize(size,24)];
     [nativeItem setMinSize:NSMakeSize(size,24)];
+
+    //if a fix isn't found probably it is better to use QMacToolBar::
 }
 
+//reimplemented for convenience
 void YACReaderMacOSXToolbar::addSeparator()
 {
     //QMacToolBar::addSeparator();
@@ -240,15 +236,54 @@ void YACReaderMacOSXToolbar::hide()
     [nativeToolBar setVisible:NO];
 }
 
-void YACReaderMacOSXToolbar::addSearchEdit()
+YACReaderMacOSXSearchLineEdit * YACReaderMacOSXToolbar::addSearchEdit()
 {
     QMacToolBarItem *toolBarItem = addItem(QIcon(),"");
     NSToolbarItem * nativeItem = toolBarItem->nativeToolBarItem();
 
-    static const NSRect searchEditFrameRect = { { 0.0, 0.0 }, { 150, 24.0 } };
+    YACReaderMacOSXSearchLineEdit * searchEdit = new YACReaderMacOSXSearchLineEdit();
+    [nativeItem setView:((NSTextField *)searchEdit->getNSTextField())];
+
+    return searchEdit;
+}
+
+
+YACReaderMacOSXSearchLineEdit::YACReaderMacOSXSearchLineEdit()
+    :QObject()
+{
+    static const NSRect searchEditFrameRect = { { 0.0, 0.0 }, { 165, 24.0 } };
     NSTextField * searchEdit = [[NSTextField alloc] initWithFrame:searchEditFrameRect];
 
     [searchEdit setBezelStyle:NSTextFieldRoundedBezel];
 
-    [nativeItem setView:searchEdit];
+    MyTextFieldDelegate * delegate = [[MyTextFieldDelegate alloc] init];
+    delegate->mylineedit = this;
+    [searchEdit setDelegate:delegate];
+
+    nstextfield = searchEdit;
+}
+
+void *YACReaderMacOSXSearchLineEdit::getNSTextField()
+{
+    return nstextfield;
+}
+
+QString YACReaderMacOSXSearchLineEdit::text()
+{
+    return QString::fromNSString([((NSTextField *)nstextfield) stringValue]);
+}
+
+void YACReaderMacOSXSearchLineEdit::clear()
+{
+    [((NSTextField *)nstextfield) setStringValue:@""];
+}
+
+void YACReaderMacOSXSearchLineEdit::setDisabled(bool disabled)
+{
+    [((NSTextField *)nstextfield) setEnabled:!disabled];
+}
+
+void YACReaderMacOSXSearchLineEdit::setEnabled(bool enabled)
+{
+    [((NSTextField *)nstextfield) setEnabled:enabled];
 }

@@ -99,7 +99,11 @@ private:
 	QSize slideSizeW;
 	QSize slideSizeF;
 	//search filter
+#ifdef Q_OS_MAC
+    YACReaderMacOSXSearchLineEdit * searchEdit;
+#else
     YACReaderSearchLineEdit * searchEdit;
+#endif
     FolderItem * index; //index al que hay que hacer scroll despu�s de pulsar sobre un folder filtrado
 	int column;
 	QString previousFilter;

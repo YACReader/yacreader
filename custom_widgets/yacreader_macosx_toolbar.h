@@ -4,6 +4,31 @@
 #include <QMacToolBar>
 #include <QtWidgets>
 
+#include "yacreader_global.h"
+
+//Wrapper for NSTextField
+class YACReaderMacOSXSearchLineEdit : public QObject
+{
+    Q_OBJECT
+public:
+    YACReaderMacOSXSearchLineEdit();
+    void * getNSTextField();
+
+public slots:
+    QString text();
+    void clear();
+    void setDisabled(bool disabled);
+    void setEnabled(bool enabled);
+
+private:
+    void * nstextfield;
+
+
+signals:
+    //convenience signal for YACReaderLibrary search edit
+    void filterChanged(YACReader::SearchModifiers, QString);
+};
+
 class YACReaderMacOSXToolbar : public QMacToolBar
 {
     Q_OBJECT
@@ -20,11 +45,10 @@ public:
     QMap<QString, QAction *> actions;
 
     //convenience method for YACReaderLibrary search edit
-    void addSearchEdit();
+    YACReaderMacOSXSearchLineEdit *addSearchEdit();
 
 signals:
-    //convenience signal for YACReaderLibrary search edit
-    void searchTextChanged(QString);
+
 public slots:
 
 protected:
