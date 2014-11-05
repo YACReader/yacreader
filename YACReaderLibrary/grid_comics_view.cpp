@@ -65,16 +65,20 @@ void GridComicsView::setModel(ComicModel *model)
     }
 
 #ifdef Q_OS_MAC
-    ctxt->setContextProperty("backgroundColor", "#EDEDED");
+    ctxt->setContextProperty("backgroundColor", "#F5F5F5");
     ctxt->setContextProperty("cellColor", "#FFFFFF");
-    ctxt->setContextProperty("selectedColor", "#DDDDDD");
+    ctxt->setContextProperty("selectedColor", "#FFFFFF");
+    ctxt->setContextProperty("selectedBorderColor", "#007AFF");
+    ctxt->setContextProperty("borderColor", "#DBDBDB");
     ctxt->setContextProperty("titleColor", "#121212");
     ctxt->setContextProperty("textColor", "#636363");
-    ctxt->setContextProperty("dropShadow",true);
+
 #else
     ctxt->setContextProperty("backgroundColor", "#2A2A2A");
     ctxt->setContextProperty("cellColor", "#212121");
     ctxt->setContextProperty("selectedColor", "#121212");
+    ctxt->setContextProperty("selectedBorderColor", "#121212");
+    ctxt->setContextProperty("borderColor", "#121212");
     ctxt->setContextProperty("titleColor", "#E6E6E6");
     ctxt->setContextProperty("textColor", "#E6E6E6");
     ctxt->setContextProperty("dropShadow",false);

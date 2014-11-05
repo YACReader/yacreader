@@ -49,6 +49,8 @@ Rectangle {
 
                 width: 156; height: 287
                 color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index)) || grid.currentIndex === index?selectedColor:cellColor;
+                border.color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index)) || grid.currentIndex === index?selectedBorderColor:borderColor;
+                border.width: (Qt.platform.os === "osx")?1:0;
 
                 anchors.horizontalCenter: parent.horizontalCenter
 
@@ -125,19 +127,6 @@ Rectangle {
                 }
 
 
-            }
-
-            DropShadow {
-                anchors.fill: source
-                horizontalOffset: 0
-                verticalOffset: 0
-                radius: 3
-                samples: 24
-                color: "#40000000"
-                transparentBorder: true;
-                source: realCell;
-                enabled: dropShadow;
-                visible: dropShadow;
             }
 
             /**/

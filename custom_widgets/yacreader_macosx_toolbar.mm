@@ -260,6 +260,8 @@ YACReaderMacOSXSearchLineEdit::YACReaderMacOSXSearchLineEdit()
     NSTextField * searchEdit = [[NSSearchField alloc] initWithFrame:searchEditFrameRect];
     //[searchEdit setBezelStyle:NSTextFieldRoundedBezel];
 
+    [[searchEdit cell] setPlaceholderString:@"type to search"];
+
     MyTextFieldDelegate * delegate = [[MyTextFieldDelegate alloc] init];
     delegate->mylineedit = this;
     [searchEdit setDelegate:delegate];
