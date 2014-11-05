@@ -242,7 +242,10 @@ YACReaderMacOSXSearchLineEdit * YACReaderMacOSXToolbar::addSearchEdit()
     NSToolbarItem * nativeItem = toolBarItem->nativeToolBarItem();
 
     YACReaderMacOSXSearchLineEdit * searchEdit = new YACReaderMacOSXSearchLineEdit();
-    [nativeItem setView:((NSTextField *)searchEdit->getNSTextField())];
+    static const NSRect searchEditFrameRect = { { 0.0, 0.0 }, { 165, 26.0 } };
+    NSView * view = [[NSView alloc] initWithFrame:searchEditFrameRect];
+    [view addSubview:((NSTextField *)searchEdit->getNSTextField())];
+    [nativeItem setView:view];
 
     return searchEdit;
 }
@@ -251,10 +254,11 @@ YACReaderMacOSXSearchLineEdit * YACReaderMacOSXToolbar::addSearchEdit()
 YACReaderMacOSXSearchLineEdit::YACReaderMacOSXSearchLineEdit()
     :QObject()
 {
-    static const NSRect searchEditFrameRect = { { 0.0, 0.0 }, { 165, 24.0 } };
-    NSTextField * searchEdit = [[NSTextField alloc] initWithFrame:searchEditFrameRect];
+    static const NSRect searchEditFrameRect = { { 0.0, -3.0 }, { 165, 32.0 } };
+    //NSTextField * searchEdit = [[NSTextField alloc] initWithFrame:searchEditFrameRect];
 
-    [searchEdit setBezelStyle:NSTextFieldRoundedBezel];
+    NSTextField * searchEdit = [[NSSearchField alloc] initWithFrame:searchEditFrameRect];
+    //[searchEdit setBezelStyle:NSTextFieldRoundedBezel];
 
     MyTextFieldDelegate * delegate = [[MyTextFieldDelegate alloc] init];
     delegate->mylineedit = this;
