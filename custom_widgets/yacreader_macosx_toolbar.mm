@@ -162,6 +162,7 @@ YACReaderMacOSXToolbar::YACReaderMacOSXToolbar(QObject *parent)
     ((MyToolbarDelegate *)delegate)->mytoolbar = this;
     [nativeToolBar setDelegate:(MyToolbarDelegate *)delegate];
 
+#ifdef YACREADER_LIBRARY
     NSWindow *nswindow = (NSWindow*) qApp->platformNativeInterface()->nativeResourceForWindow("nswindow", ((QMainWindow*)parent)->windowHandle());
     if([nswindow respondsToSelector:@selector(setTitleVisibility:)])
     {
@@ -169,6 +170,8 @@ YACReaderMacOSXToolbar::YACReaderMacOSXToolbar(QObject *parent)
         [nswindow setTitleVisibility:1];
     }else
         yosemite = false;
+#endif
+    yosemite = false;
 }
 
 void YACReaderMacOSXToolbar::addAction(QAction *action)
