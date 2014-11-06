@@ -152,7 +152,9 @@ private:
 	QAction * removeLibraryAction;
 	QAction * helpAboutAction;
 	QAction * renameLibraryAction;
+#ifndef Q_OS_MAC
 	QAction * toggleFullScreenAction;
+#endif
 	QAction * optionsAction;
 	QAction * serverConfigAction;
     QAction * toggleComicsViewAction;

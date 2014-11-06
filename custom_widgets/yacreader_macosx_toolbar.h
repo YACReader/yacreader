@@ -44,8 +44,11 @@ public:
     void hide();
     QMap<QString, QAction *> actions;
 
+    //hacks everywhere
     //convenience method for YACReaderLibrary search edit
     YACReaderMacOSXSearchLineEdit *addSearchEdit();
+    //convenience method for switching the icon of the view selector
+    void updateViewSelectorIcon(const QIcon & icon);
 
 signals:
 
@@ -55,7 +58,7 @@ protected:
     NSToolbar * nativeToolBar;
     void *delegate;
     bool yosemite;
-
+    QMacToolBarItem * viewSelector;
 
 };
 

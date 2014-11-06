@@ -10,6 +10,8 @@
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
 
+#import "shortcuts_manager.h"
+
 //----------------------------
 //A custom items separator for NSToolbar
 @interface CustomSeparator : NSView
@@ -152,6 +154,7 @@
 //----------------------------
 
 YACReaderMacOSXToolbar::YACReaderMacOSXToolbar(QObject *parent)
+    :viewSelector(0)
 {
     //setup native toolbar
     nativeToolBar= nativeToolbar();
@@ -177,6 +180,8 @@ YACReaderMacOSXToolbar::YACReaderMacOSXToolbar(QObject *parent)
 void YACReaderMacOSXToolbar::addAction(QAction *action)
 {
     QMacToolBarItem *toolBarItem = addItem(action->icon(),action->text());
+    if(action->data().toString() == TOGGLE_COMICS_VIEW_ACTION_YL)
+        viewSelector = toolBarItem;
     connect(toolBarItem,SIGNAL(activated()),action, SIGNAL(triggered()));
     NSToolbarItem * nativeItem = toolBarItem->nativeToolBarItem();
     actions.insert(QString::fromNSString(nativeItem.itemIdentifier),action);
@@ -266,6 +271,12 @@ YACReaderMacOSXSearchLineEdit * YACReaderMacOSXToolbar::addSearchEdit()
     }
 
     return searchEdit;
+}
+
+void YACReaderMacOSXToolbar::updateViewSelectorIcon(const QIcon &icon)
+{
+    if(viewSelector)
+        viewSelector->setIcon(icon);
 }
 
 
