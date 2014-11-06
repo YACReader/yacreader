@@ -384,7 +384,9 @@ void LibraryWindow::setUpShortcutsManagement()
     editShortcutsDialog->addActionsGroup("Visualization",QIcon(":/images/shortcuts_group_visualization.png"),
                                      tmpList = QList<QAction *>()
                                      << showHideMarksAction
+        #ifndef Q_OS_MAC
                                      << toggleFullScreenAction
+        #endif
                                      << toggleComicsViewAction
                                      << hideComicViewAction);
 
@@ -535,7 +537,7 @@ void LibraryWindow::createActions()
 	showHideMarksAction->setCheckable(true);
 	showHideMarksAction->setIcon(QIcon(":/images/showMarks.png"));
 	showHideMarksAction->setChecked(true);
-
+#ifndef Q_OS_MAC
 	toggleFullScreenAction = new QAction(tr("Fullscreen mode on/off"),this);
     toggleFullScreenAction->setToolTip(tr("Fullscreen mode on/off"));
     toggleFullScreenAction->setData(TOGGLE_FULL_SCREEN_ACTION_YL);
@@ -543,7 +545,7 @@ void LibraryWindow::createActions()
 	QIcon icoFullscreenButton;
 	icoFullscreenButton.addPixmap(QPixmap(":/images/main_toolbar/fullscreen.png"), QIcon::Normal);
 	toggleFullScreenAction->setIcon(icoFullscreenButton);
-
+#endif
 	helpAboutAction = new QAction(this);
 	helpAboutAction->setToolTip(tr("Help, About YACReader"));
     helpAboutAction->setData(HELP_ABOUT_ACTION_YL);
@@ -735,7 +737,9 @@ void LibraryWindow::createActions()
 void LibraryWindow::disableComicsActions(bool disabled)
 {
 	//if there aren't comics, no fullscreen option will be available
+#ifndef Q_OS_MAC
 	toggleFullScreenAction->setDisabled(disabled);
+#endif
 	//edit toolbar
 	openComicAction->setDisabled(disabled);
 	editSelectedComicsAction->setDisabled(disabled);
@@ -822,7 +826,9 @@ void LibraryWindow::createToolBars()
     libraryToolBar->addSpace(10);
 
     libraryToolBar->addAction(toggleComicsViewAction);
+#ifndef Q_OS_MAC
 	libraryToolBar->addAction(toggleFullScreenAction);
+#endif
 
     libraryToolBar->addStretch();
 
@@ -911,8 +917,14 @@ void LibraryWindow::createMenus()
                 << showHideMarksAction
                 << YACReader::createSeparator()
                 << deleteComicsAction
+
+#ifndef Q_OS_MAC
                 << YACReader::createSeparator()
                 << toggleFullScreenAction;
+#else
+                   ;
+#endif
+
 
     comicsView->setItemActions(itemActions);
     comicsView->setViewActions(viewActions);
@@ -1084,7 +1096,9 @@ void LibraryWindow::createConnections()
 	connect(setRootIndexAction,SIGNAL(triggered()),this,SLOT(setRootIndex()));
 	connect(expandAllNodesAction,SIGNAL(triggered()),foldersView,SLOT(expandAll()));
 	connect(colapseAllNodesAction,SIGNAL(triggered()),foldersView,SLOT(collapseAll()));
-	connect(toggleFullScreenAction,SIGNAL(triggered()),this,SLOT(toggleFullScreen()));
+#ifndef Q_OS_MAC
+    connect(toggleFullScreenAction,SIGNAL(triggered()),this,SLOT(toggleFullScreen()));
+#endif
     connect(toggleComicsViewAction,SIGNAL(triggered()),this,SLOT(toggleComicsView()));
 	connect(optionsAction, SIGNAL(triggered()),optionsDialog,SLOT(show()));
 #ifdef SERVER_RELEASE
@@ -1205,7 +1219,9 @@ void LibraryWindow::loadLibrary(const QString & name)
 					updateLibraryAction->setDisabled(true);
 					openContainingFolderAction->setDisabled(true);
 					disableComicsActions(true);
+#ifndef Q_OS_MAC
 					toggleFullScreenAction->setEnabled(true);
+#endif
 
 					importedCovers = true;
 				}
@@ -1639,8 +1655,10 @@ void LibraryWindow::checkEmptyFolder(QStringList * paths)
 	else
 	{
 		disableComicsActions(true);
+#ifndef Q_OS_MAC
 		if(paths->size()>0)
 			toggleFullScreenAction->setEnabled(true);
+#endif
 	}
 }
 
@@ -2110,6 +2128,9 @@ void LibraryWindow::toggleComicsView_delayed()
         QIcon icoViewsButton;
         icoViewsButton.addPixmap(QPixmap(":/images/main_toolbar/flow.png"), QIcon::Normal);
         toggleComicsViewAction->setIcon(icoViewsButton);
+#ifdef Q_OS_MAC
+        libraryToolBar->updateViewSelectorIcon(icoViewsButton);
+#endif
         switchToComicsView(classicComicsView, gridComicsView = new GridComicsView());
         comicsViewStatus = Grid;
     }
@@ -2117,6 +2138,9 @@ void LibraryWindow::toggleComicsView_delayed()
         QIcon icoViewsButton;
         icoViewsButton.addPixmap(QPixmap(":/images/main_toolbar/grid.png"), QIcon::Normal);
         toggleComicsViewAction->setIcon(icoViewsButton);
+#ifdef Q_OS_MAC
+        libraryToolBar->updateViewSelectorIcon(icoViewsButton);
+#endif
         switchToComicsView(gridComicsView, classicComicsView = new ClassicComicsView());
         comicsViewStatus = Flow;
     }
