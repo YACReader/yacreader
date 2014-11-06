@@ -25,6 +25,7 @@
         <file alias="images/iconSearch.png">../images/iconSearchNew.png</file>
         <file alias="images/clearSearch.png">../images/clearSearchNew.png</file>
         <file>../images/addLabelIcon.png</file>
+        <!--reading lists-->
         <file>../images/lists/favorites.png</file>     
 		<file>../images/lists/label_blue.png</file>
 		<file>../images/lists/label_cyan.png</file>
