@@ -33,7 +33,9 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
                             " }"
                             "QSplitter::handle:vertical { height: 39px;}");
 #else
-
+    splitter->setStyleSheet(""
+                            "QSplitter::handle:vertical { height: 26px; background-color: #00000000;}"
+       );
 #endif
 
 	selectedLibrary->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -126,14 +128,15 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
     //readingListsLayout->addWidget(readingListsView);
     readingListsHeaderLayout->addStretch();
     QSplitterHandle * handle = splitter->handle(1);
+#ifdef Q_OS_MAC
+    handle->setAttribute( Qt::WA_TranslucentBackground, true );
+#endif
     //handle->setCursor(QCursor(Qt::ArrowCursor));
     handle->setLayout(readingListsHeaderLayout);
     //END READING LISTS------------------------------------------------
 
     l->addWidget(splitter);
     l->setSpacing(0);
-
-
 
 	setLayout(l);
 }
