@@ -46,7 +46,7 @@ macx{
 #LIBS         += -L/usr/local/lib -lpoppler-qt4
 #}
 CONFIG += objective_c
-QT += macextras
+QT += macextras gui-private
 
 
 LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
