@@ -10,6 +10,8 @@
     <file alias="images/main_toolbar/server.png">../images/main_toolbar/server_osx.png</file>
     <file alias="images/main_toolbar/help.png">../images/main_toolbar/help_osx.png</file>
     <file alias="images/main_toolbar/fullscreen.png">../images/main_toolbar/fullscreen_osx.png</file>
+    <file alias="images/main_toolbar/flow.png">../images/main_toolbar/flow_osx.png</file>
+    <file alias="images/main_toolbar/grid.png">../images/main_toolbar/grid_osx.png</file>
 	
 	<file alias="images/libraryIcon.png">../images/libraryIcon_osx.png</file>
     <file alias="images/setRoot.png">../images/setRoot_osx.png</file>
