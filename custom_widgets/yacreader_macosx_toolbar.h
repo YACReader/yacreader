@@ -54,6 +54,7 @@ public slots:
 protected:
     NSToolbar * nativeToolBar;
     void *delegate;
+    bool yosemite;
 
 
 };

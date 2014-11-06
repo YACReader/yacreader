@@ -63,7 +63,7 @@ LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 OBJECTIVE_SOURCES += $$PWD/../common/pdf_comic.mm
 HEADERS += $$PWD/../common/pdf_comic.h
 CONFIG += objective_c
-QT += macextras
+QT += macextras gui-private
 }
 
 unix{

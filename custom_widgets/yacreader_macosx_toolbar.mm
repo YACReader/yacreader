@@ -3,7 +3,7 @@
 #include <QWidget>
 #include <QMacNativeWidget>
 #include <qmacfunctions.h>
-
+#include <qpa/qplatformnativeinterface.h>
 #include <QsLog.h>
 
 #import <AppKit/AppKit.h>
@@ -161,6 +161,14 @@ YACReaderMacOSXToolbar::YACReaderMacOSXToolbar(QObject *parent)
     delegate = [[MyToolbarDelegate alloc] init];
     ((MyToolbarDelegate *)delegate)->mytoolbar = this;
     [nativeToolBar setDelegate:(MyToolbarDelegate *)delegate];
+
+    NSWindow *nswindow = (NSWindow*) qApp->platformNativeInterface()->nativeResourceForWindow("nswindow", ((QMainWindow*)parent)->windowHandle());
+    if([nswindow respondsToSelector:@selector(setTitleVisibility:)])
+    {
+        yosemite = true;
+        [nswindow setTitleVisibility:1];
+    }else
+        yosemite = false;
 }
 
 void YACReaderMacOSXToolbar::addAction(QAction *action)
@@ -242,10 +250,17 @@ YACReaderMacOSXSearchLineEdit * YACReaderMacOSXToolbar::addSearchEdit()
     NSToolbarItem * nativeItem = toolBarItem->nativeToolBarItem();
 
     YACReaderMacOSXSearchLineEdit * searchEdit = new YACReaderMacOSXSearchLineEdit();
-    static const NSRect searchEditFrameRect = { { 0.0, 0.0 }, { 165, 26.0 } };
-    NSView * view = [[NSView alloc] initWithFrame:searchEditFrameRect];
-    [view addSubview:((NSTextField *)searchEdit->getNSTextField())];
-    [nativeItem setView:view];
+
+
+    if(yosemite)
+        [nativeItem setView:(NSTextField *)searchEdit->getNSTextField()];
+    else
+    {
+        static const NSRect searchEditFrameRect = { { 0.0, 0.0 }, { 165, 26.0 } };
+        NSView * view = [[NSView alloc] initWithFrame:searchEditFrameRect];
+        [view addSubview:((NSTextField *)searchEdit->getNSTextField())];
+        [nativeItem setView:view];
+    }
 
     return searchEdit;
 }
@@ -254,7 +269,7 @@ YACReaderMacOSXSearchLineEdit * YACReaderMacOSXToolbar::addSearchEdit()
 YACReaderMacOSXSearchLineEdit::YACReaderMacOSXSearchLineEdit()
     :QObject()
 {
-    static const NSRect searchEditFrameRect = { { 0.0, -3.0 }, { 165, 32.0 } };
+    NSRect searchEditFrameRect = { { 0.0, -3.0 }, { 165, 32.0 } };
     //NSTextField * searchEdit = [[NSTextField alloc] initWithFrame:searchEditFrameRect];
 
     NSTextField * searchEdit = [[NSSearchField alloc] initWithFrame:searchEditFrameRect];
