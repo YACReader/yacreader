@@ -33,7 +33,7 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
                             " }"
                             "QSplitter::handle:vertical { height: 39px;}");
 #else
-
+    splitter->setStyleSheet("QSplitter::handle:vertical { height: 26px; background-color: transparent;}");
 #endif
 
 	selectedLibrary->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -132,8 +132,6 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
 
     l->addWidget(splitter);
     l->setSpacing(0);
-
-
 
 	setLayout(l);
 }
