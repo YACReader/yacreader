@@ -173,8 +173,9 @@ YACReaderMacOSXToolbar::YACReaderMacOSXToolbar(QObject *parent)
         [nswindow setTitleVisibility:1];
     }else
         yosemite = false;
-#endif
+#else
     yosemite = false;
+#endif
 }
 
 void YACReaderMacOSXToolbar::addAction(QAction *action)
@@ -195,16 +196,12 @@ void YACReaderMacOSXToolbar::addDropDownItem(const QList<QAction *> &actions, co
 void YACReaderMacOSXToolbar::addSpace(int size)
 {
     QMacToolBarItem *toolBarItem = addItem(QIcon(),"");
-    //NSToolbarItem * nativeItem = toolBarItem->nativeToolBarItem();
-    toolBarItem->setStandardItem(QMacToolBarItem::Space);
-
     NSToolbarItem * nativeItem = toolBarItem->nativeToolBarItem();
 
-    //TODO this doesn't work
-    [nativeItem setMaxSize:NSMakeSize(size,24)];
-    [nativeItem setMinSize:NSMakeSize(size,24)];
+    static const NSRect frameRect = { { 0.0, 0.0 }, { size, 16.0 } };
+    NSView *view = [[NSView alloc] initWithFrame:frameRect];
 
-    //if a fix isn't found probably it is better to use QMacToolBar::
+    [nativeItem setView:view];
 }
 
 //reimplemented for convenience
@@ -215,8 +212,8 @@ void YACReaderMacOSXToolbar::addSeparator()
     QMacToolBarItem *toolBarItem = addItem(QIcon(),"");
     NSToolbarItem * nativeItem = toolBarItem->nativeToolBarItem();
 
-    static const NSRect buttonFrameRect = { { 0.0, 0.0 }, { 1, 16.0 } };
-    CustomSeparator *view = [[CustomSeparator alloc] initWithFrame:buttonFrameRect];
+    static const NSRect frameRect = { { 0.0, 0.0 }, { 1, 16.0 } };
+    CustomSeparator *view = [[CustomSeparator alloc] initWithFrame:frameRect];
 
     [nativeItem setView:view];
 }
