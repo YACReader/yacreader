@@ -25,15 +25,6 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent) :
                   "QTreeView::branch:open:selected:has-children {image: url(':/images/expanded_branch_osx.png');}"
                   "QTreeView::branch:closed:selected:has-children {image: url(':/images/collapsed_branch_osx.png');}"
 
-                  "QScrollBar:vertical { border: none; background: #EFEFEF; width: 9px; margin: 0 3px 0 0; }"
-                  "QScrollBar::handle:vertical { background: #DDDDDD; width: 7px; min-height: 20px; margin: 1px; border: 1px solid #D0D0D0; }"
-                  "QScrollBar::add-line:vertical { border: none; background: #EFEFEF; height: 10px; subcontrol-position: bottom; subcontrol-origin: margin; margin: 0 3px 0 0;}"
-
-                  "QScrollBar::sub-line:vertical {  border: none; background: #EFEFEF; height: 10px; subcontrol-position: top; subcontrol-origin: margin; margin: 0 3px 0 0;}"
-                  "QScrollBar::up-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-up.png') center top no-repeat;}"
-                  "QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-down.png') center top no-repeat;}"
-
-                  "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none; }"
                   );
 #else
     setStyleSheet("QTreeView {background-color:transparent; border: none; color:#DDDFDF; outline:0; show-decoration-selected: 0;}"

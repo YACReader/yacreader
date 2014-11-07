@@ -50,8 +50,8 @@ EmptyFolderWidget::EmptyFolderWidget(QWidget *parent) :
                                "QListView::item:hover {background-color:#F4F4F8; color:#757575; }"
 
 
-                               "QScrollBar:vertical { border: none; background: #F4F4F8; width: 14px; margin: 0 10px 0 0; }"
-                               "QScrollBar::handle:vertical { background: #999999; width: 14px; min-height: 20px; }"
+                               "QScrollBar:vertical { border-radius:3px; background: #FFFFFF; width: 14px; margin: 0 10px 0 0; }"
+                               "QScrollBar::handle:vertical { border: 1px solid #999999; background: #999999; width: 14px; min-height: 20px; border-radius: 2px; }"
                                "QScrollBar::add-line:vertical { border: none; background: #999999; height: 0px; subcontrol-position: bottom; subcontrol-origin: margin; margin: 0 3px 0 0;}"
 
                                "QScrollBar::sub-line:vertical {  border: none; background: #999999; height: 0px; subcontrol-position: top; subcontrol-origin: margin; margin: 0 3px 0 0;}"
