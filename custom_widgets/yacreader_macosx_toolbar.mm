@@ -158,8 +158,8 @@ YACReaderMacOSXToolbar::YACReaderMacOSXToolbar(QObject *parent)
 {
     //setup native toolbar
     nativeToolBar= nativeToolbar();
-    [nativeToolBar setSizeMode:NSToolbarSizeModeSmall];
     [nativeToolBar setDisplayMode:NSToolbarDisplayModeIconOnly];
+    [nativeToolBar setAllowsUserCustomization:NO];
 
     delegate = [[MyToolbarDelegate alloc] init];
     ((MyToolbarDelegate *)delegate)->mytoolbar = this;
@@ -171,10 +171,16 @@ YACReaderMacOSXToolbar::YACReaderMacOSXToolbar(QObject *parent)
     {
         yosemite = true;
         [nswindow setTitleVisibility:1];
+        [nativeToolBar setSizeMode:NSToolbarSizeModeSmall]; //TODO figure out how to load specific images in Yosemite
     }else
+    {
+        [nativeToolBar setSizeMode:NSToolbarSizeModeSmall];
         yosemite = false;
+    }
 #else
     yosemite = false;
+    [nativeToolBar setAutosavesConfiguration:YES]; //TODO this doesn't work
+    [nativeToolBar setSizeMode:NSToolbarSizeModeSmall];
 #endif
 }
 
