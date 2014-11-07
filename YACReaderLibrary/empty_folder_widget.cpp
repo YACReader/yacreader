@@ -19,6 +19,12 @@ void testListView(QListView * l)
 EmptyFolderWidget::EmptyFolderWidget(QWidget *parent) :
     QWidget(parent),subfoldersModel(new QStringListModel())
 {
+#ifdef Q_OS_MAC
+    backgroundColor = "#FFFFFF";
+#else
+    backgroundColor = "#2A2A2A";
+#endif
+
     QVBoxLayout * layout = new QVBoxLayout;
 
     iconLabel = new QLabel();
@@ -27,12 +33,35 @@ EmptyFolderWidget::EmptyFolderWidget(QWidget *parent) :
 
     titleLabel = new QLabel(tr("Subfolders in this folder"));
     titleLabel->setAlignment(Qt::AlignCenter);
+
+#ifdef Q_OS_MAC
+    titleLabel->setStyleSheet("QLabel {color:#888888; font-size:24px;font-family:Arial;font-weight:bold;}");
+#else
     titleLabel->setStyleSheet("QLabel {color:#CCCCCC; font-size:24px;font-family:Arial;font-weight:bold;}");
+#endif
 
     foldersView = new QListView();
     foldersView->setMinimumWidth(282);
     foldersView->setWrapping(true);
+    foldersView->setAttribute(Qt::WA_MacShowFocusRect,false);
+#ifdef Q_OS_MAC
+    foldersView->setStyleSheet("QListView {background-color:transparent; border: none; color:#959595; outline:0; font-size: 18px; show-decoration-selected: 0; margin:0}"
+                               "QListView::item:selected {background-color: #EFEFEF; color:#CCCCCC;}"
+                               "QListView::item:hover {background-color:#F4F4F8; color:#757575; }"
 
+
+                               "QScrollBar:vertical { border: none; background: #F4F4F8; width: 14px; margin: 0 10px 0 0; }"
+                               "QScrollBar::handle:vertical { background: #999999; width: 14px; min-height: 20px; }"
+                               "QScrollBar::add-line:vertical { border: none; background: #999999; height: 0px; subcontrol-position: bottom; subcontrol-origin: margin; margin: 0 3px 0 0;}"
+
+                               "QScrollBar::sub-line:vertical {  border: none; background: #999999; height: 0px; subcontrol-position: top; subcontrol-origin: margin; margin: 0 3px 0 0;}"
+                               "QScrollBar::up-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-up.png') center top no-repeat;}"
+                               "QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-down.png') center top no-repeat;}"
+
+                               "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none; }"
+                               "QScrollBar:horizontal{height:0px;}"
+                               );
+#else
     foldersView->setStyleSheet("QListView {background-color:transparent; border: none; color:#858585; outline:0; font-size: 18px; font:bold; show-decoration-selected: 0; margin:0}"
                                "QListView::item:selected {background-color: #212121; color:#CCCCCC;}"
                                "QListView::item:hover {background-color:#212121; color:#CCCCCC; }"
@@ -50,6 +79,7 @@ EmptyFolderWidget::EmptyFolderWidget(QWidget *parent) :
                                "QScrollBar:horizontal{height:0px;}"
                                );
 
+#endif
     foldersView->setSizePolicy(QSizePolicy ::Expanding , QSizePolicy ::Expanding );
     testListView(foldersView);
 
@@ -65,7 +95,7 @@ EmptyFolderWidget::EmptyFolderWidget(QWidget *parent) :
 
     setContentsMargins(0,0,0,0);
 
-    setStyleSheet("QWidget {background:#2A2A2A}");
+    setStyleSheet(QString("QWidget {background:%1}").arg(backgroundColor));
 
     setSizePolicy(QSizePolicy ::Expanding , QSizePolicy ::Expanding );
     setLayout(layout);
@@ -99,7 +129,7 @@ void EmptyFolderWidget::onItemClicked(const QModelIndex &mi)
 void EmptyFolderWidget::paintEvent(QPaintEvent *)
 {
     QPainter painter (this);
-    painter.fillRect(0,0,width(),height(),QColor("#2A2A2A"));
+    painter.fillRect(0,0,width(),height(),QColor(backgroundColor));
 }
 
 //TODO remove repeated code in drag & drop support....

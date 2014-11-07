@@ -19,6 +19,7 @@ protected:
     QLabel * iconLabel;
     QLabel * titleLabel;
     void paintEvent(QPaintEvent *);
+    QString backgroundColor;
 
 };
 
