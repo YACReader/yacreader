@@ -31,6 +31,7 @@ protected:
     QModelIndex parent;
     QStringListModel * subfoldersModel;
     void paintEvent(QPaintEvent *);
+    QString backgroundColor;
 
     //Drop to import
     void dragEnterEvent(QDragEnterEvent *event);

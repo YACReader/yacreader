@@ -7,6 +7,12 @@
 NoSearchResultsWidget::NoSearchResultsWidget(QWidget *parent) :
     QWidget(parent)
 {
+#ifdef Q_OS_MAC
+    backgroundColor = "#FFFFFF";
+#else
+    backgroundColor = "#2A2A2A";
+#endif
+
     QVBoxLayout * layout = new QVBoxLayout;
 
     iconLabel = new QLabel();
@@ -15,7 +21,12 @@ NoSearchResultsWidget::NoSearchResultsWidget(QWidget *parent) :
 
     titleLabel = new QLabel("No results");
     titleLabel->setAlignment(Qt::AlignCenter);
+
+#ifdef Q_OS_MAC
+    titleLabel->setStyleSheet("QLabel {color:#888888; font-size:24px;font-family:Arial;font-weight:bold;}");
+#else
     titleLabel->setStyleSheet("QLabel {color:#CCCCCC; font-size:24px;font-family:Arial;font-weight:bold;}");
+#endif
 
     layout->addSpacing(100);
     layout->addWidget(iconLabel);
@@ -27,7 +38,7 @@ NoSearchResultsWidget::NoSearchResultsWidget(QWidget *parent) :
 
     setContentsMargins(0,0,0,0);
 
-    setStyleSheet("QWidget {background:#2A2A2A}");
+    setStyleSheet(QString("QWidget {background:%1}").arg(backgroundColor));
 
     setSizePolicy(QSizePolicy ::Expanding , QSizePolicy ::Expanding );
     setLayout(layout);
@@ -36,5 +47,5 @@ NoSearchResultsWidget::NoSearchResultsWidget(QWidget *parent) :
 void NoSearchResultsWidget::paintEvent(QPaintEvent *)
 {
     QPainter painter (this);
-    painter.fillRect(0,0,width(),height(),QColor("#2A2A2A"));
+    painter.fillRect(0,0,width(),height(),QColor(backgroundColor));
 }
