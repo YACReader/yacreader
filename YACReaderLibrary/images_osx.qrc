@@ -1,0 +1,50 @@
+<RCC>
+  <qresource prefix="/" >
+    <file>../images/folder_finished_macosx.png</file>
+    <file alias="images/main_toolbar/back.png">../images/main_toolbar/back_osx.png</file>
+    <file alias="images/main_toolbar/back@2x.png">../images/main_toolbar/back_osx@2x.png</file>
+    <file alias="images/main_toolbar/forward.png">../images/main_toolbar/forward_osx.png</file>
+    <file alias="images/main_toolbar/forward@2x.png">../images/main_toolbar/forward_osx@2x.png</file>
+	<file alias="images/main_toolbar/settings.png">../images/main_toolbar/settings_osx.png</file>
+    <file alias="images/main_toolbar/settings@2x.png">../images/main_toolbar/settings_osx@2x.png</file>
+    <file alias="images/main_toolbar/server.png">../images/main_toolbar/server_osx.png</file>
+    <file alias="images/main_toolbar/server@2x.png">../images/main_toolbar/server_osx@2x.png</file>
+    <file alias="images/main_toolbar/help.png">../images/main_toolbar/help_osx.png</file>
+    <file alias="images/main_toolbar/help@2x.png">../images/main_toolbar/help_osx@2x.png</file>
+    <file alias="images/main_toolbar/flow.png">../images/main_toolbar/flow_osx.png</file>
+    <file alias="images/main_toolbar/flow@2x.png">../images/main_toolbar/flow_osx@2x.png</file>
+    <file alias="images/main_toolbar/grid.png">../images/main_toolbar/grid_osx.png</file>
+    <file alias="images/main_toolbar/grid@2x.png">../images/main_toolbar/grid_osx@2x.png</file>
+	
+	<file alias="images/libraryIcon.png">../images/libraryIcon_osx.png</file>
+    <file alias="images/setRoot.png">../images/setRoot_osx.png</file>
+    <file alias="images/expand.png">../images/expand_osx.png</file>
+    <file alias="images/colapse.png">../images/colapse_osx.png</file>
+    <file alias="images/newLibraryIcon.png">../images/newLibraryIcon_osx.png</file>
+    <file alias="images/openLibraryIcon.png">../images/openLibraryIcon_osx.png</file>
+    <file alias="images/flow_to_grid.gif">../images/flow_to_grid.gif</file>
+    <file alias="images/grid_to_flow.gif">../images/grid_to_flow.gif</file>
+    <file alias="images/empty_folder.png">../images/empty_folder_osx.png</file>
+    <file alias="images/empty_search.png">../images/empty_search_osx.png</file>
+    <file>../images/iconSearch.png</file>
+    <file>../images/clearSearch.png</file>
+
+    <!--reading lists-->
+    <file alias="images/lists/favorites.png">../images/lists/favorites_osx.png</file>     
+    <file alias="images/lists/label_blue.png">../images/lists/label_blue_osx.png</file>
+    <file alias="images/lists/label_cyan.png">../images/lists/label_cyan_osx.png</file>
+    <file alias="images/lists/label_dark.png">../images/lists/label_dark_osx.png</file>
+    <file alias="images/lists/label_green.png">../images/lists/label_green_osx.png</file>
+    <file alias="images/lists/label_light.png">../images/lists/label_light_osx.png</file>
+    <file alias="images/lists/label_orange.png">../images/lists/label_orange_osx.png</file>
+    <file alias="images/lists/label_pink.png">../images/lists/label_pink_osx.png</file>
+    <file alias="images/lists/label_purple.png">../images/lists/label_purple_osx.png</file>
+    <file alias="images/lists/label_red.png">../images/lists/label_red_osx.png</file>
+    <file alias="images/lists/label_violet.png">../images/lists/label_violet_osx.png</file>
+    <file alias="images/lists/label_white.png">../images/lists/label_white_osx.png</file>
+    <file alias="images/lists/label_yellow.png">../images/lists/label_yellow_osx.png</file>
+    <file alias="images/lists/list.png">../images/lists/list_osx.png</file>
+    <file alias="images/lists/reading.png">../images/lists/reading_osx.png</file>   
+
+  </qresource>
+</RCC>
