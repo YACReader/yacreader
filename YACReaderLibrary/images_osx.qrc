@@ -2,16 +2,19 @@
   <qresource prefix="/" >
     <file>../images/folder_finished_macosx.png</file>
     <file alias="images/main_toolbar/back.png">../images/main_toolbar/back_osx.png</file>
-	
-    <file alias="images/main_toolbar/back_disabled.png">../images/main_toolbar/back_disabled_osx.png</file>
+    <file alias="images/main_toolbar/back@2x.png">../images/main_toolbar/back_osx@2x.png</file>
     <file alias="images/main_toolbar/forward.png">../images/main_toolbar/forward_osx.png</file>
-    <file alias="images/main_toolbar/forward_disabled.png">../images/main_toolbar/forward_disabled_osx.png</file>
+    <file alias="images/main_toolbar/forward@2x.png">../images/main_toolbar/forward_osx@2x.png</file>
 	<file alias="images/main_toolbar/settings.png">../images/main_toolbar/settings_osx.png</file>
+    <file alias="images/main_toolbar/settings@2x.png">../images/main_toolbar/settings_osx@2x.png</file>
     <file alias="images/main_toolbar/server.png">../images/main_toolbar/server_osx.png</file>
+    <file alias="images/main_toolbar/server@2x.png">../images/main_toolbar/server_osx@2x.png</file>
     <file alias="images/main_toolbar/help.png">../images/main_toolbar/help_osx.png</file>
-    <file alias="images/main_toolbar/fullscreen.png">../images/main_toolbar/fullscreen_osx.png</file>
+    <file alias="images/main_toolbar/help@2x.png">../images/main_toolbar/help_osx@2x.png</file>
     <file alias="images/main_toolbar/flow.png">../images/main_toolbar/flow_osx.png</file>
+    <file alias="images/main_toolbar/flow@2x.png">../images/main_toolbar/flow_osx@2x.png</file>
     <file alias="images/main_toolbar/grid.png">../images/main_toolbar/grid_osx.png</file>
+    <file alias="images/main_toolbar/grid@2x.png">../images/main_toolbar/grid_osx@2x.png</file>
 	
 	<file alias="images/libraryIcon.png">../images/libraryIcon_osx.png</file>
     <file alias="images/setRoot.png">../images/setRoot_osx.png</file>
