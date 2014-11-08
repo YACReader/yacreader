@@ -80,7 +80,7 @@ int main(int argc, char * argv[])
 
 	app.setApplicationName("YACReader");
 	app.setOrganizationName("YACReader");
-	
+    qApp->setAttribute(Qt::AA_UseHighDpiPixmaps);
 	//simple command line parser
 	//will be replaced by QCommandLineParser in the future
 	QStringList optlist;
