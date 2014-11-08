@@ -135,13 +135,14 @@ int main( int argc, char ** argv )
     if(QSysInfo::MacintoshVersion > QSysInfo::MV_10_8)
         QFont::insertSubstitution(".Lucida Grande UI", "Lucida Grande");
   #endif
+
 #endif
 
   QApplication app( argc, argv );
 
   app.setApplicationName("YACReaderLibrary");
   app.setOrganizationName("YACReader");
-
+  qApp->setAttribute(Qt::AA_UseHighDpiPixmaps);
 //simple command line parser
 //will be replaced by QCommandLineParser in the future 
 //TODO: --headless, --server=[on|off], support for file and directory arguments

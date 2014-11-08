@@ -434,7 +434,7 @@ void LibraryWindow::createActions()
 {
 	backAction = new QAction(this);
 	QIcon icoBackButton;
-	icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back.png"), QIcon::Normal);
+    icoBackButton.addFile(":/images/main_toolbar/back.png",QSize(), QIcon::Normal);
 	//icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back_disabled.png"), QIcon::Disabled);
     backAction->setData(BACK_ACTION_YL);
     backAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(BACK_ACTION_YL));
@@ -443,7 +443,7 @@ void LibraryWindow::createActions()
 
 	forwardAction = new QAction(this);
 	QIcon icoFordwardButton;
-	icoFordwardButton.addPixmap(QPixmap(":/images/main_toolbar/forward.png"), QIcon::Normal);
+    icoFordwardButton.addFile(":/images/main_toolbar/forward.png", QSize(), QIcon::Normal);
 	//icoFordwardButton.addPixmap(QPixmap(":/images/main_toolbar/forward_disabled.png"), QIcon::Disabled);
     forwardAction->setData(FORWARD_ACTION_YL);
     forwardAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(FORWARD_ACTION_YL));
@@ -551,7 +551,7 @@ void LibraryWindow::createActions()
     helpAboutAction->setData(HELP_ABOUT_ACTION_YL);
     helpAboutAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(HELP_ABOUT_ACTION_YL));
 	QIcon icoHelpButton;
-	icoHelpButton.addPixmap(QPixmap(":/images/main_toolbar/help.png"), QIcon::Normal);
+    icoHelpButton.addFile(":/images/main_toolbar/help.png",QSize(), QIcon::Normal);
 	helpAboutAction->setIcon(icoHelpButton);
 
     addFolderAction = new QAction(tr("Add new folder"), this);
@@ -589,7 +589,7 @@ void LibraryWindow::createActions()
     optionsAction->setData(OPTIONS_ACTION_YL);
     optionsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPTIONS_ACTION_YL));
 	QIcon icoSettingsButton;
-	icoSettingsButton.addPixmap(QPixmap(":/images/main_toolbar/settings.png"), QIcon::Normal);
+    icoSettingsButton.addFile(":/images/main_toolbar/settings.png", QSize(), QIcon::Normal);
 	optionsAction->setIcon(icoSettingsButton);
 
 	serverConfigAction = new QAction(this);
@@ -597,16 +597,16 @@ void LibraryWindow::createActions()
     serverConfigAction->setData(SERVER_CONFIG_ACTION_YL);
     serverConfigAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SERVER_CONFIG_ACTION_YL));
 	QIcon icoServerButton;
-	icoServerButton.addPixmap(QPixmap(":/images/main_toolbar/server.png"), QIcon::Normal);
+    icoServerButton.addFile(":/images/main_toolbar/server.png", QSize(), QIcon::Normal);
 	serverConfigAction->setIcon(icoServerButton);
 
     toggleComicsViewAction = new QAction(tr("Change between comics views"),this);
     toggleComicsViewAction->setToolTip(tr("Change between comics views"));
     QIcon icoViewsButton;
     if(!settings->contains(COMICS_VIEW_STATUS) || settings->value(COMICS_VIEW_STATUS) == Flow)
-        icoViewsButton.addPixmap(QPixmap(":/images/main_toolbar/grid.png"), QIcon::Normal);
+        icoViewsButton.addFile(":/images/main_toolbar/grid.png", QSize(), QIcon::Normal);
     else
-        icoViewsButton.addPixmap(QPixmap(":/images/main_toolbar/flow.png"), QIcon::Normal);
+        icoViewsButton.addFile(":/images/main_toolbar/flow.png", QSize(), QIcon::Normal);
     toggleComicsViewAction->setData(TOGGLE_COMICS_VIEW_ACTION_YL);
     toggleComicsViewAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_COMICS_VIEW_ACTION_YL));
     toggleComicsViewAction->setIcon(icoViewsButton);
@@ -2126,7 +2126,7 @@ void LibraryWindow::toggleComicsView_delayed()
 {
     if(comicsViewStatus == Flow){
         QIcon icoViewsButton;
-        icoViewsButton.addPixmap(QPixmap(":/images/main_toolbar/flow.png"), QIcon::Normal);
+        icoViewsButton.addFile(":/images/main_toolbar/flow.png", QSize(), QIcon::Normal);
         toggleComicsViewAction->setIcon(icoViewsButton);
 #ifdef Q_OS_MAC
         libraryToolBar->updateViewSelectorIcon(icoViewsButton);
@@ -2136,7 +2136,7 @@ void LibraryWindow::toggleComicsView_delayed()
     }
     else{
         QIcon icoViewsButton;
-        icoViewsButton.addPixmap(QPixmap(":/images/main_toolbar/grid.png"), QIcon::Normal);
+        icoViewsButton.addFile(":/images/main_toolbar/grid.png", QSize(), QIcon::Normal);
         toggleComicsViewAction->setIcon(icoViewsButton);
 #ifdef Q_OS_MAC
         libraryToolBar->updateViewSelectorIcon(icoViewsButton);
