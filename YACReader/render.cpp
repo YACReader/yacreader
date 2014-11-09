@@ -850,12 +850,21 @@ void Render::nextPage()
 		emit pageChanged(currentIndex);
 	}
 	else
+	{
 		emit isLast();
+	}
 }
 void Render::nextDoublePage()
 {
 	int nextPage;
-	nextPage = currentIndex+2;
+	if (currentIndex +2 < (int)comic->numPages())
+	{
+		nextPage = currentIndex+2;
+	}
+	else
+	{
+		nextPage = currentIndex;
+	}	
 	if(currentIndex != nextPage)
 	{
 		comic->setIndex(nextPage);
@@ -863,6 +872,10 @@ void Render::nextDoublePage()
 		currentIndex = nextPage;
 		update();
 		emit pageChanged(currentIndex);
+	}
+	else
+	{
+		emit isLast();
 	}
 }
 	
@@ -882,7 +895,9 @@ void Render::previousPage()
 		emit pageChanged(currentIndex);
 	}
 	else
+	{
 		emit isCover();
+	}
 }
 
 void Render::previousDoublePage()
