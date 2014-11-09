@@ -94,6 +94,7 @@ MainWindowViewer::~MainWindowViewer()
 	delete leftRotationAction;
 	delete rightRotationAction;
 	delete doublePageAction;
+	delete doubleMangaPageAction;
     delete goToPageAction;
 	delete optionsAction;
 	delete helpAboutAction;
@@ -301,7 +302,18 @@ void MainWindowViewer::createActions()
     doublePageAction->setData(DOUBLE_PAGE_ACTION_Y);
     doublePageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(DOUBLE_PAGE_ACTION_Y));
 	connect(doublePageAction, SIGNAL(triggered()),viewer,SLOT(doublePageSwitch()));
-
+	
+	//inversed pictures mode
+	doubleMangaPageAction = new QAction(tr("Double page manga mode"),this);
+	doubleMangaPageAction->setToolTip(tr("Reverse reading order in double page mode"));
+	doubleMangaPageAction->setIcon(QIcon(":/images/viewer_toolbar/doubleMangaPage.png"));
+	doubleMangaPageAction->setDisabled(true);
+	doubleMangaPageAction->setCheckable(true);
+	doubleMangaPageAction->setChecked(Configuration::getConfiguration().getDoubleMangaPage());
+   doubleMangaPageAction->setData(DOUBLE_MANGA_PAGE_ACTION_Y);
+   doubleMangaPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(DOUBLE_MANGA_PAGE_ACTION_Y));
+	connect(doubleMangaPageAction, SIGNAL(triggered()),viewer,SLOT(doubleMangaPageSwitch()));
+	
     goToPageAction = new QAction(tr("Go To"),this);
     goToPageAction->setIcon(QIcon(":/images/viewer_toolbar/goto.png"));
     goToPageAction->setDisabled(true);
@@ -506,6 +518,7 @@ void MainWindowViewer::createToolBars()
 	comicToolBar->addAction(leftRotationAction);
 	comicToolBar->addAction(rightRotationAction);
 	comicToolBar->addAction(doublePageAction);
+	comicToolBar->addAction(doubleMangaPageAction);
 
     comicToolBar->addSeparator();
 
@@ -785,6 +798,7 @@ void MainWindowViewer::enableActions()
 	rightRotationAction->setDisabled(false);
     showMagnifyingGlassAction->setDisabled(false);
 	doublePageAction->setDisabled(false);
+	doubleMangaPageAction->setDisabled(false);
 	adjustToFullSizeAction->setDisabled(false);
 	//setBookmark->setDisabled(false);
     showBookmarksAction->setDisabled(false);
@@ -805,6 +819,7 @@ void MainWindowViewer::disableActions()
 	rightRotationAction->setDisabled(true);
     showMagnifyingGlassAction->setDisabled(true);
 	doublePageAction->setDisabled(true);
+	doubleMangaPageAction->setDisabled(true);
 	adjustToFullSizeAction->setDisabled(true);
     setBookmarkAction->setDisabled(true);
     showBookmarksAction->setDisabled(true);
@@ -1057,6 +1072,7 @@ void MainWindowViewer::setUpShortcutsManagement()
                                          << leftRotationAction
                                          << rightRotationAction
                                          << doublePageAction
+					 << doubleMangaPageAction
                                          << adjustToFullSizeAction);
 
     allActions << tmpList;

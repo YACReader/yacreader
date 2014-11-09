@@ -95,7 +95,7 @@ signals:
 // RENDER
 //-----------------------------------------------------------------------------
 
-class DoublePageRender : public PageRender
+/*class DoublePageRender : public PageRender
 {
 	Q_OBJECT
 public:
@@ -113,7 +113,7 @@ signals:
 	void pageReady(int);
 
 };
-
+*/
 
 class Render : public QObject {
 Q_OBJECT
@@ -124,8 +124,14 @@ public:
 public slots:
 	void render();
 	QPixmap * getCurrentPage();
+	QPixmap * getCurrentDoublePage();
+	QPixmap * getCurrentDoubleMangaPage();
+	bool currentPageIsDoublePage();
+	bool nextPageIsDoublePage();
+	bool previousPageIsDoublePage();
 	void goTo(int index);
 	void doublePageSwitch();
+	void doubleMangaPageSwitch();
 	void setRotation(int degrees);
 	void setComic(Comic * c);
 	void prepareAvailablePage(int page);
@@ -135,6 +141,8 @@ public slots:
 	//--comic interface
 	void nextPage();
 	void previousPage();
+	void nextDoublePage();
+	void previousDoublePage();
 	void load(const QString & path, const ComicDB & comic);
 	void load(const QString & path, int atPage);
 	void createComic(const QString & path);
@@ -148,7 +156,6 @@ public slots:
 	bool hasLoadedComic();
 	void updateBuffer();
 	void fillBuffer();
-	void fillBufferDoublePage();
 	void invalidate();
 	QString getCurrentPagesInformation();
 	void setBookmark();
@@ -182,6 +189,7 @@ signals:
 private:
 	Comic * comic;
 	bool doublePage;
+	bool doubleMangaPage;
 	int previousIndex;
 	int currentIndex;
 	//QPixmap * currentPage;
@@ -201,8 +209,6 @@ private:
 	QMutex mutex;
 
 	friend class PageRender;
-	friend class DoublePageRender;
-
 };
 
 

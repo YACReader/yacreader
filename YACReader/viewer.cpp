@@ -25,6 +25,7 @@ fullscreen(false),
 information(false),
 adjustToWidthRatio(1),
 doublePage(false),
+doubleMangaPage(false),
 wheelStop(false),
 direction(1),
 restoreMagnifyingGlass(false),
@@ -90,6 +91,9 @@ shouldOpenPrevious(false)
 
 	if(Configuration::getConfiguration().getDoublePage())
 		doublePageSwitch();
+		
+	if(Configuration::getConfiguration().getDoubleMangaPage())
+		doubleMangaPageSwitch();
 
 	createConnections();
 
@@ -226,7 +230,14 @@ void Viewer::processCRCError(QString message)
 void Viewer::next()
 {
 	direction = 1;
-	render->nextPage();
+	if (doublePage && render->currentPageIsDoublePage())
+	{
+		render->nextDoublePage();
+	}
+	else
+	{
+		render->nextPage();
+	}
 	updateInformation();
 	shouldOpenPrevious = false;
 }
@@ -234,7 +245,14 @@ void Viewer::next()
 void Viewer::prev()
 {
 	direction = -1;
+	if (doublePage && render->previousPageIsDoublePage())
+	{
+		render->previousDoublePage();
+	}
+	else
+	{
 	render->previousPage();
+	}
 	updateInformation();
 	shouldOpenNext = false;
 }
@@ -251,7 +269,23 @@ void Viewer::goTo(unsigned int page)
 void Viewer::updatePage()
 {
 	QPixmap * previousPage = currentPage;
-	currentPage = render->getCurrentPage();
+	if (doublePage)
+	{
+		if (!doubleMangaPage)
+			currentPage = render->getCurrentDoublePage();
+		else
+		{
+			currentPage = render->getCurrentDoubleMangaPage();
+		}
+		if (currentPage == NULL)
+		{
+			currentPage = render->getCurrentPage();
+		}
+	}
+	else
+	{
+		currentPage = render->getCurrentPage();
+	}
 	content->setPixmap(*currentPage);
 	updateContentSize();
 	updateVerticalScrollBar();
@@ -690,6 +724,13 @@ void Viewer::doublePageSwitch()
 	doublePage = !doublePage;
 	render->doublePageSwitch();
 	Configuration::getConfiguration().setDoublePage(doublePage);
+}
+
+void Viewer::doubleMangaPageSwitch()
+{
+	doubleMangaPage = !doubleMangaPage;
+	render->doubleMangaPageSwitch();
+	Configuration::getConfiguration().setDoubleMangaPage(doubleMangaPage);
 }
 
 void Viewer::resetContent()
