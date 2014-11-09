@@ -29,6 +29,23 @@ signals:
     void filterChanged(YACReader::SearchModifiers, QString);
 };
 
+class MacToolBarItemWrapper : public QObject
+{
+    Q_OBJECT
+public:
+    MacToolBarItemWrapper(QAction * action, QMacToolBarItem * toolbaritem);
+
+public slots:
+    void actionToggled(bool toogled);
+
+private:
+    QAction * action;
+    QMacToolBarItem * toolbaritem;
+
+    void updateIcon(bool checked);
+};
+
+
 class YACReaderMacOSXToolbar : public QMacToolBar
 {
     Q_OBJECT
