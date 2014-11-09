@@ -190,8 +190,12 @@ void YACReaderMacOSXToolbar::addAction(QAction *action)
     if(action->data().toString() == TOGGLE_COMICS_VIEW_ACTION_YL)
         viewSelector = toolBarItem;
     connect(toolBarItem,SIGNAL(activated()),action, SIGNAL(triggered()));
+
     NSToolbarItem * nativeItem = toolBarItem->nativeToolBarItem();
     actions.insert(QString::fromNSString(nativeItem.itemIdentifier),action);
+
+    MacToolBarItemWrapper * wrapper = new MacToolBarItemWrapper(action,toolBarItem);
+    //wrapper->actionToogled(true);
 }
 
 void YACReaderMacOSXToolbar::addDropDownItem(const QList<QAction *> &actions, const QAction *defaultAction)
@@ -324,4 +328,38 @@ void YACReaderMacOSXSearchLineEdit::setDisabled(bool disabled)
 void YACReaderMacOSXSearchLineEdit::setEnabled(bool enabled)
 {
     [((NSTextField *)nstextfield) setEnabled:enabled];
+}
+
+
+MacToolBarItemWrapper::MacToolBarItemWrapper(QAction *action, QMacToolBarItem *toolbaritem)
+    :action(action),toolbaritem(toolbaritem)
+{
+    if(action->isCheckable())
+    {
+        connect(action,SIGNAL(toggled(bool)),this,SLOT(actionToggled(bool)));
+        connect(toolbaritem,SIGNAL(activated()), action, SLOT(toggle()));
+        updateIcon(action->isChecked());
+    }
+}
+
+void MacToolBarItemWrapper::actionToggled(bool toogled)
+{
+    updateIcon(toogled);
+}
+
+void MacToolBarItemWrapper::updateIcon(bool enabled)
+{
+    if(enabled)
+    {
+        QIcon icon = action->icon();
+        QPixmap tempPixmap = icon.pixmap(QSize(24,24));
+        QPainter painter;
+        painter.begin(&tempPixmap);
+        painter.fillRect(QRect(3,22,18,2),QColor("#EBBE00"));
+        painter.end();
+
+        toolbaritem->setIcon(QIcon(tempPixmap));
+    }
+    else
+        toolbaritem->setIcon(action->icon());
 }
