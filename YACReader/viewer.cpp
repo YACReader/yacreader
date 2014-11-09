@@ -342,6 +342,18 @@ void Viewer::updateContentSize()
 					content->resize(static_cast<int>(height()*aspectRatio),height());
 			}
 		}
+
+        QPixmap page;
+        if(devicePixelRatio()>1)
+        {
+            page = currentPage->scaled(content->width()*devicePixelRatio(), content->height()*devicePixelRatio(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+            page.setDevicePixelRatio(devicePixelRatio());
+        }
+        else
+            page = currentPage->scaled(content->width(), content->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+        content->setPixmap(page);
+
 		emit backgroundChanges();
 	}
 	content->update(); //TODO, it shouldn't be neccesary
@@ -765,7 +777,7 @@ void Viewer::setPageUnavailableMessage()
 void Viewer::configureContent(QString msg)
 {
 	content->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-	content->setScaledContents(true);
+    //content->setScaledContents(true);
 	content->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
 	content->setText(msg);
 	content->setFont(QFont("courier new", 12));
