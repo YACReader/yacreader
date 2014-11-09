@@ -343,16 +343,12 @@ void Viewer::updateContentSize()
 			}
 		}
 
-        QPixmap page;
-        if(devicePixelRatio()>1)
+        if(devicePixelRatio()>1)//only in retina display
         {
-            page = currentPage->scaled(content->width()*devicePixelRatio(), content->height()*devicePixelRatio(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+            QPixmap page = currentPage->scaled(content->width()*devicePixelRatio(), content->height()*devicePixelRatio(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
             page.setDevicePixelRatio(devicePixelRatio());
+            content->setPixmap(page);
         }
-        else
-            page = currentPage->scaled(content->width(), content->height(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-        content->setPixmap(page);
 
 		emit backgroundChanges();
 	}
@@ -777,7 +773,8 @@ void Viewer::setPageUnavailableMessage()
 void Viewer::configureContent(QString msg)
 {
 	content->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    //content->setScaledContents(true);
+    if(!(devicePixelRatio()>1))
+        content->setScaledContents(true);
 	content->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
 	content->setText(msg);
 	content->setFont(QFont("courier new", 12));
