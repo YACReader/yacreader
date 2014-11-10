@@ -26,10 +26,10 @@ SpecialListItem::SpecialListItem(const QList<QVariant> &data)
 
 QIcon SpecialListItem::getIcon() const
 {
-    if(itemData.count()>0)
+    if(itemData.count()>1)
     {
-        QString name = itemData.at(0).toString();
-        return QIcon(QString(":/images/lists/%1.png").arg(name).toLower());
+        QString id = itemData.at(1).toString();
+        return QIcon(QString(":/images/lists/default_%1.png").arg(id));
     }
 }
 

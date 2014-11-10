@@ -38,7 +38,11 @@ public slots:
     void deleteItem(const QModelIndex & mi);
 
 private:
+    void cleanAll();
     void setupModelData(QSqlQuery &sqlquery, ReadingListItem *parent);
+    QList<SpecialListItem *> setupSpecialLists(QSqlDatabase &db);
+    QList<LabelItem *> setupLabels(QSqlDatabase &db);
+    void setupReadingLists(QSqlDatabase &db);
 
     //Special lists
     QList<SpecialListItem *> specialLists;

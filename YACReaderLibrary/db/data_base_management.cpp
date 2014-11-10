@@ -228,7 +228,7 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
         //8.0> tables
         //LABEL
         QSqlQuery queryLabel(database);
-        queryLabel.prepare("CREATE TABLE label (id INTEGER PRIMARY KEY, name TEXT NOT NULL, color TEXT NOT NULL)");
+        queryLabel.prepare("CREATE TABLE label (id INTEGER PRIMARY KEY, name TEXT NOT NULL, color TEXT NOT NULL, ordering INTEGER NOT NULL)"); //order depends on the color
         success = success && queryLabel.exec();
 
         //COMIC LABEL

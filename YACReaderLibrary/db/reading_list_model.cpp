@@ -2,6 +2,8 @@
 
 #include "reading_list_item.h"
 
+#include "data_base_management.h"
+
 #include "QsLog.h"
 
 ReadingListModel::ReadingListModel(QObject *parent) :
@@ -158,6 +160,34 @@ void ReadingListModel::setupModelData(QString path)
 {
     beginResetModel();
 
+    cleanAll();
+
+    _databasePath = path;
+    QSqlDatabase db = DataBaseManagement::loadDatabase(path);
+
+    //setup special lists
+    specialLists = setupSpecialLists(db);
+
+    //separator--------------------------------------------
+
+    //setup labels
+    labels = setupLabels(db);
+
+    //separator--------------------------------------------
+
+    //setup reading list
+    setupReadingLists(db);
+
+    endResetModel();
+}
+
+void ReadingListModel::deleteItem(const QModelIndex &mi)
+{
+
+}
+
+void ReadingListModel::cleanAll()
+{
     if(rootItem != 0)
     {
         delete rootItem;
@@ -172,29 +202,59 @@ void ReadingListModel::setupModelData(QString path)
     }
 
     rootItem = 0;
+}
 
-    //setup special lists
-    specialLists << new SpecialListItem(QList<QVariant>() /*<< 0*/ << "Favorites");
-    specialLists << new SpecialListItem(QList<QVariant>() /*<< 1*/ << "Reading");
+void ReadingListModel::setupModelData(QSqlQuery &sqlquery, ReadingListItem *parent)
+{
 
-    //separator
+}
 
-    //setup labels
-    labels << new LabelItem(QList<QVariant>() /*<< 0*/ << "Oh Oh" << "red");
-    labels << new LabelItem(QList<QVariant>() /*<< 1*/ << "lalala" << "orange");
-    labels << new LabelItem(QList<QVariant>() /*<< 2*/ << "we are not sorry" << "yellow");
-    labels << new LabelItem(QList<QVariant>() /*<< 3*/ << "there we go" << "green");
-    labels << new LabelItem(QList<QVariant>() /*<< 4*/ << "oklabunga" << "cyan");
-    labels << new LabelItem(QList<QVariant>() /*<< 5*/ << "hailer mailer" << "blue");
-    labels << new LabelItem(QList<QVariant>() /*<< 6*/ << "lol" << "violet");
-    labels << new LabelItem(QList<QVariant>() /*<< 7*/ << "problems" << "purple");
-    labels << new LabelItem(QList<QVariant>() /*<< 8*/ << "me gussssta" << "pink");
-    labels << new LabelItem(QList<QVariant>() /*<< 9*/ << ":D" << "white");
-    labels << new LabelItem(QList<QVariant>() /*<< 10*/ << "ainsss" << "light");
-    labels << new LabelItem(QList<QVariant>() /*<< 11*/ << "put a smile on my face" << "dark");
+QList<SpecialListItem *> ReadingListModel::setupSpecialLists(QSqlDatabase & db)
+{
+    QList<SpecialListItem *> list;
 
-    //separator
+    QSqlQuery selectQuery("SELECT * FROM default_reading_list ORDER BY id",db);
+    while(selectQuery.next()) {
+        QSqlRecord record = selectQuery.record();
+        list << new SpecialListItem(QList<QVariant>()  << record.value("name") << record.value("id"));
+    }
 
+    //Reading after Favorites, Why? Because I want :P
+    list.insert(1,new SpecialListItem(QList<QVariant>()  << "Reading" << 0));
+
+    return list;
+}
+
+QList<LabelItem *> ReadingListModel::setupLabels(QSqlDatabase & db)
+{
+    QList<LabelItem *> list;
+
+    QSqlQuery selectQuery("SELECT * FROM label ORDER BY ordering,name",db); //TODO add some kind of
+    while(selectQuery.next()) {
+        QSqlRecord record = selectQuery.record();
+        list << new LabelItem(QList<QVariant>() << record.value("name") << record.value("color") << record.value("id"));
+    }
+
+    //TEST
+
+//    INSERT INTO label (name, color, ordering) VALUES ("Oh Oh", "red", 1);
+//    INSERT INTO label (name, color, ordering) VALUES ("lalala", "orange", 2);
+//    INSERT INTO label (name, color, ordering) VALUES ("we are not sorry", "yellow", 3);
+//    INSERT INTO label (name, color, ordering) VALUES ("there we go", "green", 4);
+//    INSERT INTO label (name, color, ordering) VALUES ("oklabunga", "cyan", 5);
+//    INSERT INTO label (name, color, ordering) VALUES ("hailer mailer", "blue", 6);
+//    INSERT INTO label (name, color, ordering) VALUES ("lol", "violet", 7);
+//    INSERT INTO label (name, color, ordering) VALUES ("problems", "purple", 8);
+//    INSERT INTO label (name, color, ordering) VALUES ("me gussssta", "pink", 9);
+//    INSERT INTO label (name, color, ordering) VALUES (":D", "white", 10);
+//    INSERT INTO label (name, color, ordering) VALUES ("ainsss", "light", 11);
+//    INSERT INTO label (name, color, ordering) VALUES ("put a smile on my face", "dark", 12);
+
+    return list;
+}
+
+void ReadingListModel::setupReadingLists(QSqlDatabase & db)
+{
     //setup root item
     rootItem = new ReadingListItem(QList<QVariant>() /*<< 0*/ << "ROOT" << "atr");
 
@@ -204,18 +264,6 @@ void ReadingListModel::setupModelData(QString path)
     rootItem->appendChild(new ReadingListItem(QList<QVariant>() /*<< 0*/ << "X timeline" << "atr"));
 
     node1->appendChild(new ReadingListItem(QList<QVariant>() /*<< 0*/ << "sublist" << "atr",node1));
-
-    endResetModel();
-}
-
-void ReadingListModel::deleteItem(const QModelIndex &mi)
-{
-
-}
-
-void ReadingListModel::setupModelData(QSqlQuery &sqlquery, ReadingListItem *parent)
-{
-
 }
 
 
