@@ -126,16 +126,18 @@ void YACReaderTableView::mousePressEvent(QMouseEvent * event)
         }
     }
 
-    QMimeData *mimeData = new QMimeData;
+    if(event->button() == Qt::LeftButton)
+    {
+        QMimeData *mimeData = new QMimeData;
 
-    mimeData->setText("comic"); //TODO set the right mime data
+        mimeData->setText("comic"); //TODO set the right mime data
 
-    QDrag *drag = new QDrag(this);
-    drag->setMimeData(mimeData);
-    drag->setPixmap(QPixmap(":/images/openInYACReader.png")); //TODO add better image
+        QDrag *drag = new QDrag(this);
+        drag->setMimeData(mimeData);
+        drag->setPixmap(QPixmap(":/images/openInYACReader.png")); //TODO add better image
 
-    Qt::DropAction dropAction = drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
-
+        Qt::DropAction dropAction = drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
+    }
 }
 void YACReaderTableView::leaveEvent(QEvent * event)
 {

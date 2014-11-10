@@ -1139,7 +1139,8 @@ void MainWindowViewer::setUpShortcutsManagement()
     ShortcutsManager::getShortcutsManager().registerActions(allActions);
 
 }
-#include "QsLog.h"
+
+#ifdef Q_OS_MAC
 void MainWindowViewer::toggleFitToWidthSlider()
 {
     if(sliderAction->isVisible())
@@ -1151,8 +1152,8 @@ void MainWindowViewer::toggleFitToWidthSlider()
         sliderAction->move(250,0);
         sliderAction->show();
     }
-
 }
+#endif
 
 void MainWindowViewer::changeFit()
 {
