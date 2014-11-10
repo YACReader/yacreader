@@ -26,7 +26,8 @@
         <file alias="images/clearSearch.png">../images/clearSearchNew.png</file>
         <file>../images/addLabelIcon.png</file>
         <!--reading lists-->
-        <file>../images/lists/favorites.png</file>     
+        <file>../images/lists/default_0.png</file> 
+        <file>../images/lists/default_1.png</file>     
 		<file>../images/lists/label_blue.png</file>
 		<file>../images/lists/label_cyan.png</file>
 		<file>../images/lists/label_dark.png</file>
@@ -40,6 +41,6 @@
 		<file>../images/lists/label_white.png</file>
 		<file>../images/lists/label_yellow.png</file>
 		<file>../images/lists/list.png</file>
-		<file>../images/lists/reading.png</file>   
+		  
     </qresource>
 </RCC>

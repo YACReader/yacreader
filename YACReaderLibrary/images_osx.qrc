@@ -30,7 +30,8 @@
     <file>../images/clearSearch.png</file>
 
     <!--reading lists-->
-    <file alias="images/lists/favorites.png">../images/lists/favorites_osx.png</file>     
+    <file alias="images/lists/default_0.png">../images/lists/default_0_osx.png</file>   
+    <file alias="images/lists/default_1.png">../images/lists/default_1_osx.png</file>     
     <file alias="images/lists/label_blue.png">../images/lists/label_blue_osx.png</file>
     <file alias="images/lists/label_cyan.png">../images/lists/label_cyan_osx.png</file>
     <file alias="images/lists/label_dark.png">../images/lists/label_dark_osx.png</file>
@@ -44,7 +45,7 @@
     <file alias="images/lists/label_white.png">../images/lists/label_white_osx.png</file>
     <file alias="images/lists/label_yellow.png">../images/lists/label_yellow_osx.png</file>
     <file alias="images/lists/list.png">../images/lists/list_osx.png</file>
-    <file alias="images/lists/reading.png">../images/lists/reading_osx.png</file>   
+
 
   </qresource>
 </RCC>
