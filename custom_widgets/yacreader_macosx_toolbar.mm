@@ -369,7 +369,9 @@ void MacToolBarItemWrapper::updateIcon(bool enabled)
         QPixmap tempPixmap = icon.pixmap(QSize(24,24));
         QPainter painter;
         painter.begin(&tempPixmap);
-        painter.fillRect(QRect(3,22,18,2),QColor("#EBBE00"));
+        painter.fillRect(QRect(3,21,18,1),QColor("#3F3F3F"));
+        painter.fillRect(QRect(3,22,18,1),QColor("#6E6E6E"));
+        painter.fillRect(QRect(3,23,18,1),QColor("#EEEEEE"));
         painter.end();
 
         toolbaritem->setIcon(QIcon(tempPixmap));
