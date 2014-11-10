@@ -488,13 +488,23 @@ void MainWindowViewer::createToolBars()
 
 	//comicToolBar->addAction(adjustWidth);
 
+
 #ifdef Q_OS_MAC
+
+    sliderAction = new YACReaderSlider(this);
+    sliderAction->hide();
 
     comicToolBar->addAction(adjustWidthAction);
 
+    QAction * action = comicToolBar->addFitToWidthSlider(adjustWidthAction);
+
+    connect(action,SIGNAL(triggered()),this,SLOT(toggleFitToWidthSlider()));
+
 #else
 	QMenu * menu = new QMenu();
-	sliderAction = new YACReaderSliderAction(this);
+
+    sliderAction = new YACReaderSliderAction(this);
+
 	menu->setAutoFillBackground(false);
 	menu->setStyleSheet(" QMenu {background:transparent; border: 0px;padding: 0px; }"
 		);
@@ -503,15 +513,14 @@ void MainWindowViewer::createToolBars()
     tb2->addAction(adjustWidthAction);
 	tb2->setMenu(menu);
 
-	connect(sliderAction,SIGNAL(fitToWidthRatioChanged(float)),viewer,SLOT(updateFitToWidthRatio(float)));
-	connect(optionsDialog,SIGNAL(fitToWidthRatioChanged(float)),sliderAction,SLOT(updateFitToWidthRatio(float)));
-
-
 	//tb2->addAction();
 	tb2->setPopupMode(QToolButton::MenuButtonPopup);
     tb2->setDefaultAction(adjustWidthAction);
     comicToolBar->addWidget(tb2);
 #endif
+
+    connect(sliderAction,SIGNAL(fitToWidthRatioChanged(float)),viewer,SLOT(updateFitToWidthRatio(float)));
+    connect(optionsDialog,SIGNAL(fitToWidthRatioChanged(float)),sliderAction,SLOT(updateFitToWidthRatio(float)));
 
     comicToolBar->addAction(adjustHeightAction);
 	comicToolBar->addAction(adjustToFullSizeAction);
@@ -1128,6 +1137,20 @@ void MainWindowViewer::setUpShortcutsManagement()
     allActions << tmpList;
 
     ShortcutsManager::getShortcutsManager().registerActions(allActions);
+
+}
+#include "QsLog.h"
+void MainWindowViewer::toggleFitToWidthSlider()
+{
+    if(sliderAction->isVisible())
+    {
+        sliderAction->hide();
+    }
+    else
+    {
+        sliderAction->move(250,0);
+        sliderAction->show();
+    }
 
 }
 
