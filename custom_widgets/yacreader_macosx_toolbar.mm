@@ -280,6 +280,20 @@ YACReaderMacOSXSearchLineEdit * YACReaderMacOSXToolbar::addSearchEdit()
     return searchEdit;
 }
 
+QAction *YACReaderMacOSXToolbar::addFitToWidthSlider(QAction *attachToAction)
+{
+    QMacToolBarItem *toolBarItem = addItem(attachToAction->icon(),"fit to width slider");
+
+    NSToolbarItem * nativeItem = toolBarItem->nativeToolBarItem();
+    actions.insert(QString::fromNSString(nativeItem.itemIdentifier),attachToAction);
+
+    QAction * action = new QAction("",attachToAction->parent());
+
+    connect(toolBarItem,SIGNAL(activated()), action, SIGNAL(triggered()));
+
+    return action;
+}
+
 void YACReaderMacOSXToolbar::updateViewSelectorIcon(const QIcon &icon)
 {
     if(viewSelector)

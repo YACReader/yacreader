@@ -22,6 +22,7 @@ class HelpAboutDialog;
 class HttpVersionChecker;
 class ShortcutsDialog;
 class YACReaderSliderAction;
+class YACReaderSlider;
 class EditShortcutsDialog;
 
 	class MainWindowViewer : public QMainWindow
@@ -58,6 +59,10 @@ class EditShortcutsDialog;
 		void checkNewVersion();
         void processReset();
         void setUpShortcutsManagement();
+
+#ifdef Q_OS_MAC
+        void toggleFitToWidthSlider();
+#endif
 		/*void viewComic();
 		void prev();
 		void next();
@@ -73,7 +78,7 @@ class EditShortcutsDialog;
 		QString currentDirectory;
 		QString currentDirectoryImgDest;
 		//!Widgets
-		Viewer * viewer;
+        Viewer * viewer;
 		//GoToDialog * goToDialog;
 		OptionsDialog * optionsDialog;
 		HelpAboutDialog * had;
@@ -116,8 +121,11 @@ class EditShortcutsDialog;
 		QAction *showFlowAction;
 
         QAction *showEditShortcutsAction;
-
-		YACReaderSliderAction * sliderAction;
+#ifdef Q_OS_MAC
+        YACReaderSlider * sliderAction;
+#else
+        YACReaderSliderAction * sliderAction;
+#endif
 
 		HttpVersionChecker * versionChecker;
 		QString previousComicPath;
