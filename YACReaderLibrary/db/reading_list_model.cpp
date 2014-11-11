@@ -196,6 +196,27 @@ void ReadingListModel::addNewLabel(const QString &name, YACReader::LabelColors c
     QSqlDatabase::removeDatabase(_databasePath);
 }
 
+bool ReadingListModel::isEditable(const QModelIndex &mi)
+{
+    return (mi.row() > specialLists.count());
+}
+
+QString ReadingListModel::name(const QModelIndex &mi)
+{
+    return data(mi,Qt::DisplayRole).toString();
+}
+
+void ReadingListModel::rename(const QModelIndex &mi, const QString &name)
+{
+    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+
+    //TODO
+
+    emit dataChanged(index(mi.row(), 0), index(mi.row(), 0));
+
+    QSqlDatabase::removeDatabase(_databasePath);
+}
+
 void ReadingListModel::deleteItem(const QModelIndex &mi)
 {
 

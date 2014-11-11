@@ -202,6 +202,7 @@ private:
     QAction * addReadingListAction;
     QAction * deleteReadingListAction;
     QAction * addLabelAction;
+    QAction * renameListAction;
     //--
     //QAction * expandAllNodesRLAction;
     //QAction * colapseAllNodesRLAction;
@@ -370,6 +371,7 @@ public slots:
     void addNewReadingList();
     void deleteSelectedReadingList();
     void showAddNewLabelDialog();
+    void showRenameCurrentList();
 
 };
 
