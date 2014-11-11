@@ -26,8 +26,6 @@ int ReadingListModel::rowCount(const QModelIndex &parent) const
     {
         ListItem * item = static_cast<ListItem*>(parent.internalPointer());
 
-        QLOG_DEBUG() << item->itemData;
-
         if(typeid(*item) == typeid(ReadingListItem))
         {
             ReadingListItem * item = static_cast<ReadingListItem*>(parent.internalPointer());
@@ -213,8 +211,20 @@ void ReadingListModel::rename(const QModelIndex &mi, const QString &name)
 
     QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-    //TODO
+    ListItem * item = static_cast<ListItem*>(mi.internalPointer());
 
+    if(typeid(*item) == typeid(ReadingListItem))
+    {
+        ReadingListItem * rli = static_cast<ReadingListItem*>(item);
+        rli->setName(name);
+        DBHelper::renameList(item->getId(), name, db);
+    }
+    else if(typeid(*item) == typeid(LabelItem))
+    {
+        LabelItem * li = static_cast<LabelItem*>(item);
+        li->setName(name);
+        DBHelper::renameLabel(item->getId(), name, db);
+    }
 
     emit dataChanged(index(mi.row(), 0), index(mi.row(), 0));
 

@@ -16,6 +16,11 @@ QVariant ListItem::data(int column) const
     return itemData.at(column);
 }
 
+qulonglong ListItem::getId() const
+{
+    return 0;
+}
+
 //------------------------------------------------------
 
 SpecialListItem::SpecialListItem(const QList<QVariant> &data)
@@ -50,7 +55,7 @@ QIcon LabelItem::getIcon() const
     }
 }
 
-YACReader::LabelColors LabelItem::colorid()
+YACReader::LabelColors LabelItem::colorid() const
 {
     if(itemData.count()>3)
     {
@@ -58,11 +63,24 @@ YACReader::LabelColors LabelItem::colorid()
     }
 }
 
-QString LabelItem::name()
+QString LabelItem::name() const
 {
     if(itemData.count()>0)
     {
         return itemData.at(0).toString();
+    }
+}
+
+void LabelItem::setName(const QString &name)
+{
+    itemData[0] = name;
+}
+
+qulonglong LabelItem::getId() const
+{
+    if(itemData.count()>2)
+    {
+        return YACReader::LabelColors(itemData.at(2).toULongLong());
     }
 }
 
@@ -122,6 +140,27 @@ void ReadingListItem::appendChild(ReadingListItem *item)
 
     }
 
+}
+
+qulonglong ReadingListItem::getId() const
+{
+    if(itemData.count()>1)
+    {
+        return YACReader::LabelColors(itemData.at(1).toULongLong());
+    }
+}
+
+QString ReadingListItem::name() const
+{
+    if(itemData.count()>0)
+    {
+        return itemData.at(0).toString();
+    }
+}
+
+void ReadingListItem::setName(const QString &name)
+{
+    itemData[0] = name;
 }
 
 int ReadingListItem::row() const

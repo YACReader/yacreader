@@ -738,7 +738,7 @@ void LibraryWindow::createActions()
     renameListAction->setData(RENAME_LIST_ACTION_YL);
     renameListAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RENAME_LIST_ACTION_YL));
     renameListAction->setToolTip(tr("Rename any selected labels or lists"));
-    renameListAction->setIcon(QIcon(":/images/addLabelIcon.png"));
+    renameListAction->setIcon(QIcon(":/images/renameListIcon.png"));
 
 	//disable actions
 	disableAllActions();

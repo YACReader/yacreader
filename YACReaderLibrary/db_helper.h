@@ -45,6 +45,8 @@ public:
 	static void updateRead(ComicInfo * comicInfo, QSqlDatabase & db);
     static void update(const Folder & folder, QSqlDatabase & db);
     static void updateProgress(qulonglong libraryId,const ComicInfo & comicInfo);
+    static void renameLabel(qulonglong id, const QString & name, QSqlDatabase & db);
+    static void renameList(qulonglong id, const QString & name, QSqlDatabase & db);
 
 	static QList<LibraryItem *> getFoldersFromParent(qulonglong parentId, QSqlDatabase & db, bool sort = true);
 	static QList<ComicDB> getSortedComicsFromParent(qulonglong parentId, QSqlDatabase & db);
