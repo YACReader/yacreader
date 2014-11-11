@@ -282,7 +282,7 @@ YACReaderMacOSXSearchLineEdit * YACReaderMacOSXToolbar::addSearchEdit()
 
 QAction *YACReaderMacOSXToolbar::addFitToWidthSlider(QAction *attachToAction)
 {
-    QMacToolBarItem *toolBarItem = addItem(attachToAction->icon(),"fit to width slider");
+    QMacToolBarItem *toolBarItem = addItem(QIcon(":/images/viewer_toolbar/toWidthSlider.png"),"fit to width slider");
 
     NSToolbarItem * nativeItem = toolBarItem->nativeToolBarItem();
     actions.insert(QString::fromNSString(nativeItem.itemIdentifier),attachToAction);
