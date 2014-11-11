@@ -369,7 +369,8 @@ public slots:
     void errorDeletingFolder();
     void addNewReadingList();
     void deleteSelectedReadingList();
-    void addNewLabel();
+    void showAddNewLabelDialog();
+
 };
 
 #endif

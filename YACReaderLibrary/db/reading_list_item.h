@@ -4,6 +4,9 @@
 #include <QIcon>
 #include <QVariant>
 
+#include "yacreader_global.h"
+//TODO add propper constructors, using QList<QVariant> is not safe
+
 class ListItem
 {
 public:
@@ -31,6 +34,8 @@ class LabelItem : public ListItem
 public:
     LabelItem(const QList<QVariant> &data);
     QIcon getIcon() const;
+    YACReader::LabelColors colorid();
+    QString name();
 };
 
 //------------------------------------------------------

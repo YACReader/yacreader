@@ -3,6 +3,8 @@
 #include "reading_list_item.h"
 
 #include "data_base_management.h"
+#include "qnaturalsorting.h"
+#include "db_helper.h"
 
 #include "QsLog.h"
 
@@ -181,6 +183,19 @@ void ReadingListModel::setupModelData(QString path)
     endResetModel();
 }
 
+void ReadingListModel::addNewLabel(const QString &name, YACReader::LabelColors color)
+{
+    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+    qulonglong id = DBHelper::insertLabel(name, color, db);
+
+    int newPos = addLabelIntoList(new LabelItem(QList<QVariant>() << name << YACReader::colorToName(color) << id << color));
+
+    beginInsertRows(QModelIndex(),specialLists.count()+1+newPos+1, specialLists.count()+1+newPos+1);
+    endInsertRows();
+
+    QSqlDatabase::removeDatabase(_databasePath);
+}
+
 void ReadingListModel::deleteItem(const QModelIndex &mi)
 {
 
@@ -232,7 +247,7 @@ QList<LabelItem *> ReadingListModel::setupLabels(QSqlDatabase & db)
     QSqlQuery selectQuery("SELECT * FROM label ORDER BY ordering,name",db); //TODO add some kind of
     while(selectQuery.next()) {
         QSqlRecord record = selectQuery.record();
-        list << new LabelItem(QList<QVariant>() << record.value("name") << record.value("color") << record.value("id"));
+        list << new LabelItem(QList<QVariant>() << record.value("name") << record.value("color") << record.value("id") << record.value("ordering"));
     }
 
     //TEST
@@ -264,6 +279,40 @@ void ReadingListModel::setupReadingLists(QSqlDatabase & db)
     rootItem->appendChild(new ReadingListItem(QList<QVariant>() /*<< 0*/ << "X timeline" << "atr"));
 
     node1->appendChild(new ReadingListItem(QList<QVariant>() /*<< 0*/ << "sublist" << "atr",node1));
+}
+
+int ReadingListModel::addLabelIntoList(LabelItem *item)
+{
+    if(labels.isEmpty())
+        labels << item;
+    else
+    {
+        int i = 0;
+
+        while (i < labels.count() && (labels.at(i)->colorid() < item->colorid()) )
+            i++;
+
+        if(i < labels.count())
+        {
+            if(labels.at(i)->colorid() == item->colorid()) //sort by name
+            {
+                while( i < labels.count() && naturalSortLessThanCI(labels.at(i)->name(),item->name()))
+                    i++;
+            }
+        }
+
+
+        if(i >= labels.count())
+            labels << item;
+        else
+        {
+            labels.insert(i,item);
+        }
+
+        return i;
+    }
+
+    return 0;
 }
 
 

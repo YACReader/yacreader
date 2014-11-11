@@ -1153,7 +1153,7 @@ void LibraryWindow::createConnections()
     //lists
     connect(addReadingListAction,SIGNAL(triggered()),this,SLOT(addNewReadingList()));
     connect(deleteReadingListAction,SIGNAL(triggered()),this,SLOT(deleteSelectedReadingList()));
-    connect(addLabelAction,SIGNAL(triggered()),this,SLOT(addNewLabel()));
+    connect(addLabelAction,SIGNAL(triggered()),this,SLOT(showAddNewLabelDialog()));
 }
 
 void LibraryWindow::loadLibrary(const QString & name)
@@ -1626,10 +1626,18 @@ void LibraryWindow::deleteSelectedReadingList()
 
 }
 
-void LibraryWindow::addNewLabel()
+void LibraryWindow::showAddNewLabelDialog()
 {
     AddLabelDialog * dialog = new AddLabelDialog();
-    dialog->open();
+    int ret = dialog->exec();
+
+    if (ret == QDialog::Accepted)
+    {
+        YACReader::LabelColors color = dialog->selectedColor();
+        QString name = dialog->name();
+
+        listsModel->addNewLabel(name,color);
+    }
 }
 
 void LibraryWindow::selectSubfolder(const QModelIndex &mi, int child)

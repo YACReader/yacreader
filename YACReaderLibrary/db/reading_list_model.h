@@ -7,6 +7,8 @@
 #include <QSqlQuery>
 #include <QSqlDatabase>
 
+#include "yacreader_global.h"
+
 class LabelItem;
 class SpecialListItem;
 class ReadingListItem;
@@ -32,6 +34,8 @@ public:
     //Convenience methods
     void setupModelData(QString path);
 
+    void addNewLabel(const QString & name, YACReader::LabelColors color);
+
 signals:
 
 public slots:
@@ -43,6 +47,7 @@ private:
     QList<SpecialListItem *> setupSpecialLists(QSqlDatabase &db);
     QList<LabelItem *> setupLabels(QSqlDatabase &db);
     void setupReadingLists(QSqlDatabase &db);
+    int addLabelIntoList(LabelItem *item);
 
     //Special lists
     QList<SpecialListItem *> specialLists;
