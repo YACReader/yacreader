@@ -112,9 +112,25 @@ namespace YACReader
      ByAuthor
  };
 
+ enum LabelColors{
+     YRed = 0,
+     YOrange,
+     YYellow,
+     YGreen,
+     YCyan,
+     YBlue,
+     YViolet,
+     YPurple,
+     YPink,
+     YWhite,
+     YLight,
+     YDark
+ };
+
 QString getSettingsPath();
 void addSperator(QWidget * w);
 QAction * createSeparator();
+QString colorToName(LabelColors colors);
 }
 #endif
 

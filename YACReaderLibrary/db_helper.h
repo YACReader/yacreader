@@ -4,6 +4,7 @@
 class QString;
 #include <QMap>
 #include <QList>
+#include "yacreader_global.h"
 
 class ComicDB;
 class Folder;
@@ -36,6 +37,7 @@ public:
 	//inserts
 	static qulonglong insert(Folder * folder, QSqlDatabase & db);
 	static qulonglong insert(ComicDB * comic, QSqlDatabase & db);
+    static qulonglong insertLabel(const QString & name, YACReader::LabelColors color , QSqlDatabase & db);
 	//updates
     static void update(qulonglong libraryId, ComicInfo & comicInfo);
 	static void update(ComicDB * comics, QSqlDatabase & db);

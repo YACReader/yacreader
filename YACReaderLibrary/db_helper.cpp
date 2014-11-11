@@ -351,7 +351,19 @@ qulonglong DBHelper::insert(ComicDB * comic, QSqlDatabase & db)
 	query.bindValue(":name", comic->name);
 	query.bindValue(":path", comic->path);
 	query.exec();
-	return query.lastInsertId().toULongLong();
+    return query.lastInsertId().toULongLong();
+}
+
+qulonglong DBHelper::insertLabel(const QString &name, YACReader::LabelColors color, QSqlDatabase &db)
+{
+    QSqlQuery query(db);
+    query.prepare("INSERT INTO label (name, color, ordering) "
+                   "VALUES (:name, :color, :ordering)");
+    query.bindValue(":name", name);
+    query.bindValue(":color", YACReader::colorToName(color));
+    query.bindValue(":ordering", color);
+    query.exec();
+    return query.lastInsertId().toULongLong();
 }
 //queries
 QList<LibraryItem *> DBHelper::getFoldersFromParent(qulonglong parentId, QSqlDatabase & db, bool sort)

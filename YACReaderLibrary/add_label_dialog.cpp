@@ -45,12 +45,40 @@ AddLabelDialog::AddLabelDialog(QWidget *parent) :
     layout->addLayout(buttons);
 
     setLayout(layout);
+
+    //connections
+    connect(edit,SIGNAL(textChanged(QString)),this,SLOT(validateName(QString)));
+    connect(cancelButton,SIGNAL(clicked()),this,SLOT(close()));
+    connect(acceptButton,SIGNAL(clicked()),this,SLOT(accept()));
+
 }
 
-void AddLabelDialog::open()
+YACReader::LabelColors AddLabelDialog::selectedColor()
 {
-    QDialog::open();
+    return YACReader::LabelColors(list->currentRow());
+}
 
+QString AddLabelDialog::name()
+{
+    return edit->text();
+}
+
+int  AddLabelDialog::exec()
+{
     edit->clear();
     list->clearSelection();
+
+    acceptButton->setDisabled(true);
+
+    list->setCurrentRow(0);
+
+    return QDialog::exec();
+}
+
+void AddLabelDialog::validateName(const QString &name)
+{
+    if(name.isEmpty())
+        acceptButton->setDisabled(true);
+    else
+        acceptButton->setEnabled(true);
 }

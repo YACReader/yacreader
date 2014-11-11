@@ -50,6 +50,22 @@ QIcon LabelItem::getIcon() const
     }
 }
 
+YACReader::LabelColors LabelItem::colorid()
+{
+    if(itemData.count()>3)
+    {
+        return YACReader::LabelColors(itemData.at(3).toInt());
+    }
+}
+
+QString LabelItem::name()
+{
+    if(itemData.count()>0)
+    {
+        return itemData.at(0).toString();
+    }
+}
+
 //------------------------------------------------------
 
 ReadingListItem::ReadingListItem(const QList<QVariant> &data, ReadingListItem *p)
