@@ -205,9 +205,11 @@ void LibraryWindow::doLayout()
 	foldersTitle->addAction(colapseAllNodesAction);
 
     readingListsTitle->addAction(addReadingListAction);
-    readingListsTitle->addAction(deleteReadingListAction);
-    readingListsTitle->addSepartor();
+    //readingListsTitle->addSepartor();
     readingListsTitle->addAction(addLabelAction);
+    //readingListsTitle->addSepartor();
+    readingListsTitle->addAction(renameListAction);
+    readingListsTitle->addAction(deleteReadingListAction);
     readingListsTitle->addSpacing(3);
 
 	//FINAL LAYOUT-------------------------------------------------------------
@@ -353,7 +355,8 @@ void LibraryWindow::setUpShortcutsManagement()
                                      tmpList = QList<QAction *>()
                                      << addReadingListAction
                                      << deleteReadingListAction
-                                     << addLabelAction);
+                                     << addLabelAction
+                                     << renameListAction);
     allActions << tmpList;
 
     editShortcutsDialog->addActionsGroup("General",QIcon(":/images/shortcuts_group_general.png"),
@@ -730,6 +733,12 @@ void LibraryWindow::createActions()
     addLabelAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_LABEL_ACTION_YL));
     addLabelAction->setToolTip(tr("Add a new label to this library"));
     addLabelAction->setIcon(QIcon(":/images/addLabelIcon.png"));
+
+    renameListAction = new QAction(tr("Rename selected list"), this);
+    renameListAction->setData(RENAME_LIST_ACTION_YL);
+    renameListAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RENAME_LIST_ACTION_YL));
+    renameListAction->setToolTip(tr("Rename any selected labels or lists"));
+    renameListAction->setIcon(QIcon(":/images/addLabelIcon.png"));
 
 	//disable actions
 	disableAllActions();
@@ -1154,6 +1163,7 @@ void LibraryWindow::createConnections()
     connect(addReadingListAction,SIGNAL(triggered()),this,SLOT(addNewReadingList()));
     connect(deleteReadingListAction,SIGNAL(triggered()),this,SLOT(deleteSelectedReadingList()));
     connect(addLabelAction,SIGNAL(triggered()),this,SLOT(showAddNewLabelDialog()));
+    connect(renameListAction,SIGNAL(triggered()),this,SLOT(showRenameCurrentList()));
 }
 
 void LibraryWindow::loadLibrary(const QString & name)
@@ -1638,6 +1648,27 @@ void LibraryWindow::showAddNewLabelDialog()
 
         listsModel->addNewLabel(name,color);
     }
+}
+
+//TODO implement editors in treeview
+void LibraryWindow::showRenameCurrentList()
+{
+    QModelIndexList selectedLists = listsView->selectionModel()->selectedIndexes();
+    if(!selectedLists.isEmpty())
+    {
+        QModelIndex mi = selectedLists.at(0);
+        if(listsModel->isEditable(mi))
+        {
+            bool ok;
+            QString newListName = QInputDialog::getText(this, tr("Rename list name"),
+                                                        tr("List name:"), QLineEdit::Normal,
+                                                        listsModel->name(mi), &ok);
+
+            if(ok)
+                listsModel->rename(mi,newListName);
+        }
+    }
+
 }
 
 void LibraryWindow::selectSubfolder(const QModelIndex &mi, int child)

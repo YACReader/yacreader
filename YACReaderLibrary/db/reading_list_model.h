@@ -33,8 +33,10 @@ public:
 
     //Convenience methods
     void setupModelData(QString path);
-
     void addNewLabel(const QString & name, YACReader::LabelColors color);
+    bool isEditable(const QModelIndex & mi);
+    QString name(const QModelIndex & mi);
+    void rename(const QModelIndex & mi, const QString & name);
 
 signals:
 
