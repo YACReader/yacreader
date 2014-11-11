@@ -196,7 +196,8 @@ void ReadingListModel::addNewLabel(const QString &name, YACReader::LabelColors c
 
 bool ReadingListModel::isEditable(const QModelIndex &mi)
 {
-    return (mi.row() > specialLists.count());
+    ListItem * item = static_cast<ListItem*>(mi.internalPointer());
+    return typeid(*item) != typeid(SpecialListItem);
 }
 
 QString ReadingListModel::name(const QModelIndex &mi)
