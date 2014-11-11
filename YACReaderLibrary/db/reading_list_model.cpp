@@ -208,9 +208,13 @@ QString ReadingListModel::name(const QModelIndex &mi)
 
 void ReadingListModel::rename(const QModelIndex &mi, const QString &name)
 {
+    if(!isEditable(mi))
+        return;
+
     QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
     //TODO
+
 
     emit dataChanged(index(mi.row(), 0), index(mi.row(), 0));
 
