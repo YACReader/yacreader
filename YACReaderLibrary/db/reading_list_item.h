@@ -14,7 +14,7 @@ public:
     int columnCount();
     virtual QIcon getIcon() const = 0;
     QVariant data(int column) const;
-
+    virtual qulonglong getId() const;
     QList<QVariant> itemData;
 };
 
@@ -34,8 +34,11 @@ class LabelItem : public ListItem
 public:
     LabelItem(const QList<QVariant> &data);
     QIcon getIcon() const;
-    YACReader::LabelColors colorid();
-    QString name();
+    YACReader::LabelColors colorid() const;
+    QString name() const;
+    void setName(const QString & name);
+    qulonglong getId() const;
+
 };
 
 //------------------------------------------------------
@@ -50,6 +53,9 @@ public:
     int row() const;
     ReadingListItem * child(int row);
     void appendChild(ReadingListItem *item);
+    qulonglong getId() const;
+    QString name() const;
+    void setName(const QString & name);
 
 private:
     QList<ReadingListItem*> childItems;

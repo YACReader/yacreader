@@ -314,6 +314,30 @@ void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
     QSqlDatabase::removeDatabase(libraryPath);
 }
 
+void DBHelper::renameLabel(qulonglong id, const QString &name, QSqlDatabase &db)
+{
+    QSqlQuery renameLabelQuery(db);
+    renameLabelQuery.prepare("UPDATE label SET "
+                             "name = :name "
+                             "WHERE id = :id");
+    renameLabelQuery.bindValue(":name", name);
+    renameLabelQuery.bindValue(":id", id);
+    renameLabelQuery.exec();
+
+    QLOG_DEBUG() << renameLabelQuery.lastError().databaseText();
+}
+
+void DBHelper::renameList(qulonglong id, const QString &name, QSqlDatabase &db)
+{
+    QSqlQuery renameLabelQuery(db);
+    renameLabelQuery.prepare("UPDATE reading_list SET "
+                             "name = :name "
+                             "WHERE id = :id");
+    renameLabelQuery.bindValue(":name", name);
+    renameLabelQuery.bindValue(":id", id);
+    renameLabelQuery.exec();
+}
+
 //inserts
 qulonglong DBHelper::insert(Folder * folder, QSqlDatabase & db)
 {

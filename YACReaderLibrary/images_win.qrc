@@ -25,6 +25,7 @@
         <file alias="images/iconSearch.png">../images/iconSearchNew.png</file>
         <file alias="images/clearSearch.png">../images/clearSearchNew.png</file>
         <file>../images/addLabelIcon.png</file>
+        <file>../images/renameListIcon.png</file>
         <!--reading lists-->
         <file>../images/lists/default_0.png</file> 
         <file>../images/lists/default_1.png</file>     
