@@ -48,6 +48,8 @@
 <file alias="images/viewer_toolbar/toHeight@2x.png">../images/viewer_toolbar/toHeight_osx@2x.png</file>
 <file alias="images/viewer_toolbar/toWidth.png">../images/viewer_toolbar/toWidth_osx.png</file>
 <file alias="images/viewer_toolbar/toWidth@2x.png">../images/viewer_toolbar/toWidth_osx@2x.png</file>
+<file alias="images/viewer_toolbar/toWidthSlider.png">../images/viewer_toolbar/toWidthSlider_osx.png</file>
+<file alias="images/viewer_toolbar/toWidthSlider@2x.png">../images/viewer_toolbar/toWidthSlider_osx@2x.png</file>
 <file alias="images/viewer_toolbar/translator.png">../images/viewer_toolbar/translator_osx.png</file>
 <file alias="images/viewer_toolbar/translator@2x.png">../images/viewer_toolbar/translator_osx@2x.png</file>
   </qresource>
