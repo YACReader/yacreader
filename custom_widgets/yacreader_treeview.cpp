@@ -91,6 +91,18 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent) :
 
 }
 
+void YACReaderTreeView::mousePressEvent(QMouseEvent *event)
+{
+    QTreeView::mousePressEvent(event);
+
+    QModelIndex destinationIndex = indexAt(event->pos());
+
+    if(!destinationIndex.isValid() && event->button() == Qt::LeftButton)
+    {
+        clearSelection();
+    }
+}
+
 void YACReaderTreeView::expandCurrent()
 {
     QModelIndex index = indexAt(expandPos);
