@@ -246,7 +246,7 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
         queryReadingList.prepare("CREATE TABLE reading_list ("
                                  "id INTEGER PRIMARY KEY, "
                                  "parentId INTEGER, "
-                                 "ordering INTEGER, " //only use it if the parentId is NULL
+                                 "ordering INTEGER DEFAULT 0, " //only use it if the parentId is NULL
                                  "name TEXT NOT NULL, "
                                  "finished BOOLEAN DEFAULT 0, "
                                  "completed BOOLEAN DEFAULT 1, "

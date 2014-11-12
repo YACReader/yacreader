@@ -156,7 +156,7 @@ QModelIndex ReadingListModel::parent(const QModelIndex &index) const
     return QModelIndex();
 }
 
-void ReadingListModel::setupModelData(QString path)
+void ReadingListModel::setupReadingListsData(QString path)
 {
     beginResetModel();
 
@@ -194,10 +194,46 @@ void ReadingListModel::addNewLabel(const QString &name, YACReader::LabelColors c
     QSqlDatabase::removeDatabase(_databasePath);
 }
 
+void ReadingListModel::addReadingList(const QString &name)
+{
+    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+
+    qulonglong id = DBHelper::insertReadingList(name,db);
+    ReadingListItem * newItem;
+    rootItem->appendChild(newItem = new ReadingListItem(QList<QVariant>()
+                                              << name
+                                              << id
+                                              << false
+                                              << true
+                                              << 0));
+
+    items.insert(id, newItem);
+
+    int pos = rootItem->children().indexOf(newItem);
+
+    pos += specialLists.count()+1+labels.count()+labels.count()>0?1:0;
+
+    beginInsertRows(QModelIndex(), pos, pos);
+    endInsertRows();
+
+    QSqlDatabase::removeDatabase(_databasePath);
+}
+
+void ReadingListModel::addReadingListAt(const QString &name, const QModelIndex &mi)
+{
+
+}
+
 bool ReadingListModel::isEditable(const QModelIndex &mi)
 {
     ListItem * item = static_cast<ListItem*>(mi.internalPointer());
     return typeid(*item) != typeid(SpecialListItem);
+}
+
+bool ReadingListModel::isReadingList(const QModelIndex &mi)
+{
+    ListItem * item = static_cast<ListItem*>(mi.internalPointer());
+    return typeid(*item) == typeid(ReadingListItem);
 }
 
 QString ReadingListModel::name(const QModelIndex &mi)
@@ -219,15 +255,21 @@ void ReadingListModel::rename(const QModelIndex &mi, const QString &name)
         ReadingListItem * rli = static_cast<ReadingListItem*>(item);
         rli->setName(name);
         DBHelper::renameList(item->getId(), name, db);
+
+        if(rli->parent->getId()!=0)
+        {
+            //TODO
+            //move row depending on the name
+        }else
+            emit dataChanged(index(mi.row(), 0), index(mi.row(), 0));
     }
     else if(typeid(*item) == typeid(LabelItem))
     {
         LabelItem * li = static_cast<LabelItem*>(item);
         li->setName(name);
         DBHelper::renameLabel(item->getId(), name, db);
+        emit dataChanged(index(mi.row(), 0), index(mi.row(), 0));
     }
-
-    emit dataChanged(index(mi.row(), 0), index(mi.row(), 0));
 
     QSqlDatabase::removeDatabase(_databasePath);
 }
@@ -255,19 +297,42 @@ void ReadingListModel::cleanAll()
     rootItem = 0;
 }
 
-void ReadingListModel::setupModelData(QSqlQuery &sqlquery, ReadingListItem *parent)
+void ReadingListModel::setupReadingListsData(QSqlQuery &sqlquery, ReadingListItem *parent)
 {
+    items.insert(parent->getId(),parent);
 
+    while (sqlquery.next())
+    {
+        QSqlRecord record = sqlquery.record();
+        ReadingListItem * rli = new ReadingListItem(QList<QVariant>()
+                                                    << record.value("name")
+                                                    << record.value("id")
+                                                    << record.value("finished")
+                                                    << record.value("completed")
+                                                    << record.value("ordering"));
+
+        ReadingListItem * currentParent;
+        if(record.value("parentId").isNull())
+            currentParent = rootItem;
+        else
+            currentParent = items.value(record.value("parentId").toULongLong());
+
+        parent->appendChild(rli);
+
+        items.insert(rli->getId(),rli);
+    }
 }
 
 QList<SpecialListItem *> ReadingListModel::setupSpecialLists(QSqlDatabase & db)
 {
     QList<SpecialListItem *> list;
 
-    QSqlQuery selectQuery("SELECT * FROM default_reading_list ORDER BY id",db);
+    QSqlQuery selectQuery("SELECT * FROM default_reading_list ORDER BY id,name",db);
     while(selectQuery.next()) {
         QSqlRecord record = selectQuery.record();
-        list << new SpecialListItem(QList<QVariant>()  << record.value("name") << record.value("id"));
+        list << new SpecialListItem(QList<QVariant>()
+                                    << record.value("name")
+                                    << record.value("id"));
     }
 
     //Reading after Favorites, Why? Because I want :P
@@ -307,14 +372,19 @@ QList<LabelItem *> ReadingListModel::setupLabels(QSqlDatabase & db)
 void ReadingListModel::setupReadingLists(QSqlDatabase & db)
 {
     //setup root item
-    rootItem = new ReadingListItem(QList<QVariant>() /*<< 0*/ << "ROOT" << "atr");
+    rootItem = new ReadingListItem(QList<QVariant>() << "ROOT" << 0 << true << false);
+
+    QSqlQuery selectQuery("select * from reading_list order by parentId,name",db);
 
     //setup reading lists
-    ReadingListItem * node1;
-    rootItem->appendChild(node1 = new ReadingListItem(QList<QVariant>() /*<< 0*/ << "My reading list" << "atr"));
-    rootItem->appendChild(new ReadingListItem(QList<QVariant>() /*<< 0*/ << "X timeline" << "atr"));
+    setupReadingListsData(selectQuery,rootItem);
 
-    node1->appendChild(new ReadingListItem(QList<QVariant>() /*<< 0*/ << "sublist" << "atr",node1));
+    //TEST
+//    ReadingListItem * node1;
+//    rootItem->appendChild(node1 = new ReadingListItem(QList<QVariant>() /*<< 0*/ << "My reading list" << "atr"));
+//    rootItem->appendChild(new ReadingListItem(QList<QVariant>() /*<< 0*/ << "X timeline" << "atr"));
+
+//    node1->appendChild(new ReadingListItem(QList<QVariant>() /*<< 0*/ << "sublist" << "atr",node1));
 }
 
 int ReadingListModel::addLabelIntoList(LabelItem *item)

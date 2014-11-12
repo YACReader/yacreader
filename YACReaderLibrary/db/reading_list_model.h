@@ -32,9 +32,12 @@ public:
     QModelIndex parent(const QModelIndex &index) const;
 
     //Convenience methods
-    void setupModelData(QString path);
+    void setupReadingListsData(QString path);
     void addNewLabel(const QString & name, YACReader::LabelColors color);
+    void addReadingList(const QString & name);//top level reading list
+    void addReadingListAt(const QString & name, const QModelIndex & mi);
     bool isEditable(const QModelIndex & mi);
+    bool isReadingList(const QModelIndex & mi);
     QString name(const QModelIndex & mi);
     void rename(const QModelIndex & mi, const QString & name);
 
@@ -45,7 +48,7 @@ public slots:
 
 private:
     void cleanAll();
-    void setupModelData(QSqlQuery &sqlquery, ReadingListItem *parent);
+    void setupReadingListsData(QSqlQuery &sqlquery, ReadingListItem *parent);
     QList<SpecialListItem *> setupSpecialLists(QSqlDatabase &db);
     QList<LabelItem *> setupLabels(QSqlDatabase &db);
     void setupReadingLists(QSqlDatabase &db);
