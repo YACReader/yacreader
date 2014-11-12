@@ -54,7 +54,7 @@
 #include "folder.h"
 #include "db_helper.h"
 #include "qnaturalsorting.h"
-
+#include "yacreader_global.h"
 #include "QsLog.h"
 
 #ifdef Q_OS_MAC
@@ -161,9 +161,9 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
         }
 #else
         if(item->data(FolderModel::Finished).toBool())
-            return QVariant(QIcon(":/images/folder_finished.png"));
+            return QVariant(YACReader::noHighlightedIcon(":/images/folder_finished.png"));
         else
-            return QVariant(QIcon(":/images/folder.png"));
+            return QVariant(YACReader::noHighlightedIcon(":/images/folder.png"));
 #endif
 
 	if (role != Qt::DisplayRole)

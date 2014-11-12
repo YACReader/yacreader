@@ -34,7 +34,7 @@ QIcon SpecialListItem::getIcon() const
     if(itemData.count()>1)
     {
         QString id = itemData.at(1).toString();
-        return QIcon(QString(":/images/lists/default_%1.png").arg(id));
+        return YACReader::noHighlightedIcon(QString(":/images/lists/default_%1.png").arg(id));
     }
 }
 
@@ -51,7 +51,7 @@ QIcon LabelItem::getIcon() const
     if(itemData.count()>1)
     {
         QString color = itemData.at(1).toString();
-        return QIcon(QString(":/images/lists/label_%1.png").arg(color).toLower());
+        return YACReader::noHighlightedIcon(QString(":/images/lists/label_%1.png").arg(color).toLower());
     }
 }
 
@@ -95,9 +95,9 @@ ReadingListItem::ReadingListItem(const QList<QVariant> &data, ReadingListItem *p
 QIcon ReadingListItem::getIcon() const
 {
     if(parent == 0)
-        return QIcon(":/images/lists/list.png");
+        return YACReader::noHighlightedIcon(":/images/lists/list.png");
     else
-        return QIcon(":/images/folder.png");
+        return YACReader::noHighlightedIcon(":/images/folder.png");
 }
 
 int ReadingListItem::childCount() const
