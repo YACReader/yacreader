@@ -131,6 +131,7 @@ QString getSettingsPath();
 void addSperator(QWidget * w);
 QAction * createSeparator();
 QString colorToName(LabelColors colors);
+QIcon noHighlightedIcon(const QString & path);
 }
 #endif
 

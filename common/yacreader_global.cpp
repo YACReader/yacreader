@@ -58,3 +58,13 @@ QString YACReader::colorToName(LabelColors colors)
         return "dark";
     }
 }
+
+
+QIcon YACReader::noHighlightedIcon(const QString &path)
+{
+    QPixmap p(path);
+    QIcon icon;
+    icon.addPixmap(p,QIcon::Normal);
+    icon.addPixmap(p,QIcon::Selected);
+    return icon;
+}
