@@ -8,7 +8,7 @@ class YACReaderTreeView : public QTreeView
     Q_OBJECT
 public:
     explicit YACReaderTreeView(QWidget *parent = 0);
-    
+    void mousePressEvent(QMouseEvent *event);
 protected slots:
     //fix for drop auto expand
     void expandCurrent();
