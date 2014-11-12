@@ -56,6 +56,7 @@ public:
     qulonglong getId() const;
     QString name() const;
     void setName(const QString & name);
+    QList<ReadingListItem*> children();
 
 private:
     QList<ReadingListItem*> childItems;

@@ -389,6 +389,16 @@ qulonglong DBHelper::insertLabel(const QString &name, YACReader::LabelColors col
     query.exec();
     return query.lastInsertId().toULongLong();
 }
+
+qulonglong DBHelper::insertReadingList(const QString &name, QSqlDatabase &db)
+{
+    QSqlQuery query(db);
+    query.prepare("INSERT INTO reading_list (name) "
+                   "VALUES (:name)");
+    query.bindValue(":name", name);
+    query.exec();
+    return query.lastInsertId().toULongLong();
+}
 //queries
 QList<LibraryItem *> DBHelper::getFoldersFromParent(qulonglong parentId, QSqlDatabase & db, bool sort)
 {

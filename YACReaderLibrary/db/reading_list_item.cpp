@@ -122,6 +122,15 @@ void ReadingListItem::appendChild(ReadingListItem *item)
         childItems.append(item);
     else
     {
+        if(item->parent->getId()==0) //sort by name, top level child
+        {
+
+        }
+        else
+        {
+
+        }
+
         /*ReadingListItem * last = childItems.back();
         QString nameLast = last->data(1).toString(); //TODO usar info name si est� disponible, sino el nombre del fichero.....
         QString nameCurrent = item->data(1).toString();
@@ -161,6 +170,11 @@ QString ReadingListItem::name() const
 void ReadingListItem::setName(const QString &name)
 {
     itemData[0] = name;
+}
+
+QList<ReadingListItem *> ReadingListItem::children()
+{
+    return childItems;
 }
 
 int ReadingListItem::row() const

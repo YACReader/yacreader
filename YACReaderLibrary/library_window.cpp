@@ -1212,7 +1212,7 @@ void LibraryWindow::loadLibrary(const QString & name)
                 foldersModel->setupModelData(path);
                 foldersView->setModel(foldersModel);
 
-                listsModel->setupModelData(path);
+                listsModel->setupReadingListsData(path);
                 listsView->setModel(listsModel);
 
                 if(foldersModel->rowCount(QModelIndex())>0)
@@ -1628,7 +1628,20 @@ void LibraryWindow::errorDeletingFolder()
 
 void LibraryWindow::addNewReadingList()
 {
+    bool ok;
+    QString newListName = QInputDialog::getText(this, tr("Add new reading lists"),
+                                                tr("List name:"), QLineEdit::Normal,
+                                                "", &ok);
 
+    if (ok) {
+        QModelIndexList selectedLists = listsView->selectionModel()->selectedIndexes();
+        if(selectedLists.isEmpty() || listsModel->isReadingList(selectedLists.at(0)))
+            listsModel->addReadingList(newListName); //top level
+        else
+        {
+            listsModel->addReadingListAt(newListName,selectedLists.at(0));
+        }
+    }
 }
 
 void LibraryWindow::deleteSelectedReadingList()
