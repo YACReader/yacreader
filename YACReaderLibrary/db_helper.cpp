@@ -142,7 +142,23 @@ void DBHelper::removeFromDB(ComicDB * comic, QSqlDatabase & db)
 	QSqlQuery query(db);
 	query.prepare("DELETE FROM comic WHERE id = :id");
 	query.bindValue(":id", comic->id);
-	query.exec();
+    query.exec();
+}
+
+void DBHelper::removeLabelFromDB(qulonglong id, QSqlDatabase &db)
+{
+    QSqlQuery query(db);
+    query.prepare("DELETE FROM label WHERE id = :id");
+    query.bindValue(":id", id);
+    query.exec();
+}
+
+void DBHelper::removeListFromDB(qulonglong id, QSqlDatabase &db)
+{
+    QSqlQuery query(db);
+    query.prepare("DELETE FROM reading_list WHERE id = :id");
+    query.bindValue(":id", id);
+    query.exec();
 }
 
 //updates

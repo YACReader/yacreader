@@ -40,11 +40,9 @@ public:
     bool isReadingList(const QModelIndex & mi);
     QString name(const QModelIndex & mi);
     void rename(const QModelIndex & mi, const QString & name);
+    void deleteItem(const QModelIndex & mi);
 
 signals:
-
-public slots:
-    void deleteItem(const QModelIndex & mi);
 
 private:
     void cleanAll();

@@ -276,7 +276,31 @@ void ReadingListModel::rename(const QModelIndex &mi, const QString &name)
 
 void ReadingListModel::deleteItem(const QModelIndex &mi)
 {
+    if(isEditable(mi))
+    {
+        beginRemoveRows(mi.parent(),mi.row(),mi.row());
 
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+
+        ListItem * item = static_cast<ListItem*>(mi.internalPointer());
+
+        if(typeid(*item) == typeid(ReadingListItem))
+        {
+            ReadingListItem * rli = static_cast<ReadingListItem*>(item);
+            rli->parent->removeChild(rli);
+            DBHelper::removeListFromDB(item->getId(), db);
+        }
+        else if(typeid(*item) == typeid(LabelItem))
+        {
+            LabelItem * li = static_cast<LabelItem*>(item);
+            labels.removeOne(li);
+            DBHelper::removeLabelFromDB(item->getId(), db);
+        }
+
+        QSqlDatabase::removeDatabase(_databasePath);
+
+        endRemoveRows();
+    }
 }
 
 void ReadingListModel::cleanAll()

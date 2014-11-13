@@ -34,6 +34,8 @@ public:
 	static void removeFromDB(LibraryItem * item, QSqlDatabase & db);
 	static void removeFromDB(Folder * folder, QSqlDatabase & db);
 	static void removeFromDB(ComicDB * comic, QSqlDatabase & db);
+    static void removeLabelFromDB(qulonglong id, QSqlDatabase & db);
+    static void removeListFromDB(qulonglong id, QSqlDatabase & db);
 	//inserts
 	static qulonglong insert(Folder * folder, QSqlDatabase & db);
 	static qulonglong insert(ComicDB * comic, QSqlDatabase & db);

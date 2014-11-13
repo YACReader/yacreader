@@ -114,6 +114,7 @@ ReadingListItem *ReadingListItem::child(int row)
 void ReadingListItem::appendChild(ReadingListItem *item)
 {
     childItems.append(item);
+    item->parent = this;
     return; //TODO
 
     item->parent = this;
@@ -149,6 +150,11 @@ void ReadingListItem::appendChild(ReadingListItem *item)
 
     }
 
+}
+
+void ReadingListItem::removeChild(ReadingListItem *item)
+{
+    childItems.removeOne(item);
 }
 
 qulonglong ReadingListItem::getId() const
