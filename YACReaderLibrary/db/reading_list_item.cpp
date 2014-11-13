@@ -94,7 +94,7 @@ ReadingListItem::ReadingListItem(const QList<QVariant> &data, ReadingListItem *p
 
 QIcon ReadingListItem::getIcon() const
 {
-    if(parent == 0)
+    if(parent->getId() == 0)
         return YACReader::noHighlightedIcon(":/images/lists/list.png");
     else
         return YACReader::noHighlightedIcon(":/images/folder.png");
