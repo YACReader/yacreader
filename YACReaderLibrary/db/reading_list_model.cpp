@@ -149,7 +149,7 @@ QModelIndex ReadingListModel::parent(const QModelIndex &index) const
     {
         ReadingListItem * childItem = static_cast<ReadingListItem*>(index.internalPointer());
         ReadingListItem * parent = childItem->parent;
-        if(parent != 0)
+        if(parent->getId() != 0)
             return createIndex(parent->row(), 0, parent);
     }
 
