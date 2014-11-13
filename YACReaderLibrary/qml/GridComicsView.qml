@@ -167,6 +167,7 @@ Rectangle {
                 color: titleColor
                 clip: true
                 font.letterSpacing: 0.5
+                font.pointSize: 11
             }
             //number
             Text {
@@ -174,6 +175,7 @@ Rectangle {
                 text: number?"<b>#</b>"+number:""
                 color: textColor
                 font.letterSpacing: 0.5
+                font.pointSize: 11
             }
             //page icon
             Image {
@@ -188,6 +190,7 @@ Rectangle {
                 text: has_been_opened?current_page+"/"+num_pages:num_pages
                 color: textColor
                 font.letterSpacing: 0.5
+                font.pointSize: 11
             }
             //rating icon
             Image {
