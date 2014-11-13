@@ -53,9 +53,11 @@ public:
     int row() const;
     ReadingListItem * child(int row);
     void appendChild(ReadingListItem *item);
+    void removeChild(ReadingListItem *item);
     qulonglong getId() const;
     QString name() const;
     void setName(const QString & name);
+
     QList<ReadingListItem*> children();
 
 private:
