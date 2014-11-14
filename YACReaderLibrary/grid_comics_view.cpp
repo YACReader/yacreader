@@ -72,6 +72,10 @@ void GridComicsView::setModel(ComicModel *model)
     ctxt->setContextProperty("borderColor", "#DBDBDB");
     ctxt->setContextProperty("titleColor", "#121212");
     ctxt->setContextProperty("textColor", "#636363");
+    //fonts settings
+    ctxt->setContextProperty("fontSize", "11");
+    ctxt->setContextProperty("fontFamily", "none");
+    ctxt->setContextProperty("fontSpacing", "0.5");
 
 #else
     ctxt->setContextProperty("backgroundColor", "#2A2A2A");
@@ -82,6 +86,10 @@ void GridComicsView::setModel(ComicModel *model)
     ctxt->setContextProperty("titleColor", "#E6E6E6");
     ctxt->setContextProperty("textColor", "#E6E6E6");
     ctxt->setContextProperty("dropShadow",false);
+    //fonts settings
+    ctxt->setContextProperty("fontSize", "none");
+    ctxt->setContextProperty("fontFamily", "none");
+    ctxt->setContextProperty("fontSpacing", "0.5");
 #endif
 
 
