@@ -170,7 +170,10 @@ YACReaderMacOSXToolbar::YACReaderMacOSXToolbar(QObject *parent)
     if([nswindow respondsToSelector:@selector(setTitleVisibility:)])
     {
         yosemite = true;
-        [nswindow setTitleVisibility:1];
+        //TODO yosemite new constants are not found in compilation time
+        [nswindow setTitleVisibility:1]; //NSWindowTitleHidden
+        //TODO NSFullSizeContentViewWindowMask produces an offset in the windows' content
+        //nswindow.styleMask |= 1 << 15; // NSFullSizeContentViewWindowMask;
         [nativeToolBar setSizeMode:NSToolbarSizeModeSmall]; //TODO figure out how to load specific images in Yosemite
     }else
     {
