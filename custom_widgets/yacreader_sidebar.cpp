@@ -20,6 +20,9 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
     readingListsView = new YACReaderReadingListsView;
 	selectedLibrary = new YACReaderLibraryListWidget;
 
+    connect(foldersView,SIGNAL(clicked(QModelIndex)),this,SLOT(selectedIndex(QModelIndex)));
+    connect(readingListsView,SIGNAL(clicked(QModelIndex)),this,SLOT(selectedIndex(QModelIndex)));
+
 	librariesTitle = new YACReaderTitledToolBar(tr("LIBRARIES"));
 	foldersTitle = new YACReaderTitledToolBar(tr("FOLDERS"));
     readingListsTitle = new YACReaderTitledToolBar(tr("READING LISTS"));
@@ -170,7 +173,15 @@ void YACReaderSideBar::paintEvent(QPaintEvent * event)
 
 QSize YACReaderSideBar::sizeHint() const
 {
-	return QSize(275,200);
+    return QSize(275,200);
+}
+
+void YACReaderSideBar::selectedIndex(const QModelIndex &mi)
+{
+    if(sender() == foldersView)
+        readingListsView->clearSelection();
+    else if(sender() == readingListsView)
+        foldersView->clearSelection();
 }
 
 
