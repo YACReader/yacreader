@@ -77,6 +77,8 @@
 #include "yacreader_reading_lists_view.h"
 #include "add_label_dialog.h"
 
+#include "yacreader_history_controller.h"
+
 #include "QsLog.h"
 
 #ifdef Q_OS_WIN
@@ -115,6 +117,8 @@ void LibraryWindow::setupUI()
 
 	settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
 	settings->beginGroup("libraryConfig");
+
+    historyController = new YACReaderHistoryController(this);
 
 	createActions();
 	doModels();
@@ -1016,8 +1020,14 @@ void LibraryWindow::createMenus()
 void LibraryWindow::createConnections()
 {
 	//history navigation
-	connect(backAction,SIGNAL(triggered()),this,SLOT(backward()));
-	connect(forwardAction,SIGNAL(triggered()),this,SLOT(forward()));
+    connect(backAction,SIGNAL(triggered()),historyController,SLOT(backward()));
+    connect(forwardAction,SIGNAL(triggered()),historyController,SLOT(forward()));
+    //--
+    connect(historyController,SIGNAL(enabledBackward(bool)),backAction,SLOT(setEnabled(bool)));
+    connect(historyController,SIGNAL(enabledForward(bool)),forwardAction,SLOT(setEnabled(bool)));
+    connect(historyController,SIGNAL(modelIndexSelected(QModelIndex)),this,SLOT(loadCovers(QModelIndex)));
+    connect(historyController,SIGNAL(modelIndexSelected(QModelIndex)),foldersView,SLOT(setCurrentIndex(QModelIndex)));
+    connect(foldersView, SIGNAL(clicked(QModelIndex)), historyController, SLOT(updateHistory(QModelIndex)));
 
 	//libraryCreator connections
 	connect(createLibraryDialog,SIGNAL(createLibrary(QString,QString,QString)),this,SLOT(create(QString,QString,QString)));
@@ -1065,8 +1075,7 @@ void LibraryWindow::createConnections()
 
 	//navigations between view modes (tree,list and flow)
     connect(foldersView, SIGNAL(pressed(QModelIndex)), this, SLOT(updateFoldersViewConextMenu(QModelIndex)));
-	connect(foldersView, SIGNAL(clicked(QModelIndex)), this, SLOT(loadCovers(QModelIndex)));
-	connect(foldersView, SIGNAL(clicked(QModelIndex)), this, SLOT(updateHistory(QModelIndex)));
+    connect(foldersView, SIGNAL(clicked(QModelIndex)), this, SLOT(loadCovers(QModelIndex)));
 
     //drops in folders view
     connect(foldersView, SIGNAL(copyComicsToFolder(QList<QPair<QString,QString> >,QModelIndex)), this, SLOT(copyAndImportComicsToFolder(QList<QPair<QString,QString> >,QModelIndex)));
@@ -1170,11 +1179,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 {
 	if(!libraries.isEmpty())  //si hay bibliotecas...
 	{	
-		currentFolderNavigation=0;
-		backAction->setDisabled(true);
-		forwardAction->setDisabled(true);
-		history.clear();
-		history.append(QModelIndex());
+        historyController->clear();
 
 		showRootWidget();
 		QString path=libraries.getPath(name)+"/.yacreaderlibrary";
@@ -1700,7 +1705,7 @@ void LibraryWindow::selectSubfolder(const QModelIndex &mi, int child)
 {
     QModelIndex dest = foldersModel->index(child,0,mi);
     foldersView->setCurrentIndex(dest);
-    updateHistory(dest);
+    historyController->updateHistory(dest);
     loadCovers(dest);
 }
 
@@ -2001,8 +2006,7 @@ void LibraryWindow::setRootIndex()
 		if(d.exists(path))
 		{
 			loadCovers(QModelIndex());
-			if(history.count()>1)
-				updateHistory(QModelIndex());
+            historyController->updateHistory(QModelIndex());
 		}
 		else
 		{
@@ -2071,7 +2075,7 @@ void LibraryWindow::setSearchFilter(const YACReader::SearchModifiers modifier, Q
 		{
             QModelIndex mi = foldersModel->indexFromItem(index,column);
 			foldersView->scrollTo(mi,QAbstractItemView::PositionAtTop);
-			updateHistory(mi);
+            historyController->updateHistory(mi);
 			foldersView->setCurrentIndex(mi);
 
 		}
@@ -2534,59 +2538,6 @@ void LibraryWindow::showSocial()
 	socialDialog->setComic(comic,currentPath());
 	socialDialog->setHidden(false);
 }*/
-
-void LibraryWindow::backward()
-{
-	if(currentFolderNavigation>0)
-	{
-		currentFolderNavigation--;
-		loadCovers(history.at(currentFolderNavigation));
-		foldersView->setCurrentIndex(history.at(currentFolderNavigation));
-		forwardAction->setEnabled(true);
-	}
-	if(currentFolderNavigation==0)
-	{
-		backAction->setEnabled(false);
-	}
-}
-
-void LibraryWindow::forward()
-{
-	if(currentFolderNavigation<history.count()-1)
-	{
-		currentFolderNavigation++;
-		loadCovers(history.at(currentFolderNavigation));
-		foldersView->setCurrentIndex(history.at(currentFolderNavigation));
-		backAction->setEnabled(true);
-	}
-	if(currentFolderNavigation==history.count()-1)
-	{
-		forwardAction->setEnabled(false);
-	}
-}
-
-void LibraryWindow::updateHistory(const QModelIndex &mi)
-{
-	//remove history from current index
-	if(!mi.isValid())
-		return;
-	int numElementsToRemove = history.count() - (currentFolderNavigation+1);
-	while(numElementsToRemove>0)
-	{
-		numElementsToRemove--;
-		history.removeLast();
-	}
-
-	if(mi!=history.at(currentFolderNavigation))
-	{
-		history.append(mi);
-
-		backAction->setEnabled(true);
-		currentFolderNavigation++;
-	}
-
-    forwardAction->setEnabled(false);
-}
 
 void LibraryWindow::updateFoldersViewConextMenu(const QModelIndex &mi)
 {
