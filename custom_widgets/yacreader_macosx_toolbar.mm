@@ -94,11 +94,14 @@
 
 - (IBAction)itemClicked:(id)sender
 {
-    NSToolbarItem *item = reinterpret_cast<NSToolbarItem *>(sender);
+    if([sender respondsToSelector:@selector(itemIdentifier)])
+    {
+        NSToolbarItem *item = reinterpret_cast<NSToolbarItem *>(sender);
 
-    QString identifier = QString::fromNSString([item itemIdentifier]);
-    QMacToolBarItem *toolButton = reinterpret_cast<QMacToolBarItem *>(identifier.toULongLong());
-    Q_EMIT toolButton->activated();
+        QString identifier = QString::fromNSString([item itemIdentifier]);
+        QMacToolBarItem *toolButton = reinterpret_cast<QMacToolBarItem *>(identifier.toULongLong());
+        Q_EMIT toolButton->activated();
+    }
 }
 
 - (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdentifier willBeInsertedIntoToolbar:(BOOL) willBeInserted
@@ -147,6 +150,7 @@
 
 - (void)controlTextDidChange:(NSNotification *)notification {
     NSTextField *textField = [notification object];
+    NSLog(@"%@",[textField stringValue]);
     Q_EMIT mylineedit->filterChanged(YACReader::NoModifiers, QString::fromNSString([textField stringValue]));
 }
 
@@ -335,6 +339,7 @@ QString YACReaderMacOSXSearchLineEdit::text()
 void YACReaderMacOSXSearchLineEdit::clear()
 {
     [((NSTextField *)nstextfield) setStringValue:@""];
+    emit filterChanged(YACReader::NoModifiers, "");
 }
 
 void YACReaderMacOSXSearchLineEdit::setDisabled(bool disabled)
