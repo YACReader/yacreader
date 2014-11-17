@@ -2067,7 +2067,7 @@ void LibraryWindow::toNormal()
 void LibraryWindow::setSearchFilter(const YACReader::SearchModifiers modifier, QString filter)
 {
     if(filter.isEmpty() && foldersModel->isFilterEnabled())
-	{
+    {
         foldersModel->resetFilter();
         comicsView->enableFilterMode(false);
 		//foldersView->collapseAll();
