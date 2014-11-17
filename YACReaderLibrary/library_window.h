@@ -64,6 +64,7 @@ class ComicFilesManager;
 class QProgressDialog;
 class ReadingListModel;
 class YACReaderReadingListsView;
+class YACReaderHistoryController;
 
 #include "comic_db.h"
 
@@ -265,8 +266,7 @@ private:
     QSettings * settings;
 
     //navigation backward and forward
-    int currentFolderNavigation;
-    QList<QModelIndex> history;
+    YACReaderHistoryController * historyController;
 
     bool removeError;
 
@@ -331,9 +331,6 @@ public slots:
     QModelIndexList getSelectedComics();
     void deleteComics();
     //void showSocial();
-    void backward();
-    void forward();
-    void updateHistory(const QModelIndex & mi);
     void updateFoldersViewConextMenu(const QModelIndex & mi);
     void libraryAlreadyExists(const QString & name);
     void importLibraryPackage();
