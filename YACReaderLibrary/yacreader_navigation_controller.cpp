@@ -11,6 +11,7 @@
 #include "folder_model.h"
 #include "comics_view.h"
 #include "empty_folder_widget.h"
+#include "yacreader_search_line_edit.h"
 
 YACReaderNavigationController::YACReaderNavigationController(LibraryWindow *parent) :
     QObject(parent),libraryWindow(parent)
