@@ -21,6 +21,8 @@ public slots:
     void backward();
     void forward();
     void updateHistory(const QModelIndex & mi);
+    QModelIndex lastIndex();
+    QModelIndex currentIndex();
 
 protected:
     int currentFolderNavigation;

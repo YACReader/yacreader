@@ -53,9 +53,10 @@ void LibraryCreator::updateLibrary(const QString &source, const QString &target)
     processLibrary(source, target);
 }
 
-void LibraryCreator::updateFolder(const QString &source, const QString &target, const QString &sourceFolder)
+void LibraryCreator::updateFolder(const QString &source, const QString &target, const QString &sourceFolder, const QModelIndex & dest)
 {
     partialUpdate = true;
+    folderDestinationModelIndex = dest;
 
     _currentPathFolders.clear();
     _currentPathFolders.append(Folder(1,1,"root","/"));
@@ -198,7 +199,10 @@ void LibraryCreator::run()
 	}
     //msleep(100);//TODO try to solve the problem with the udpate dialog (ya no se usa más...)
     if(partialUpdate)
-        emit updatedCurrentFolder();
+    {
+        emit updatedCurrentFolder(folderDestinationModelIndex);
+        emit finished();
+    }
     else
         emit finished();
 	creation = false;

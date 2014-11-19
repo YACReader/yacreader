@@ -42,6 +42,7 @@
 #define TREEMODEL_H
 
 #include <QAbstractItemModel>
+#include <QSortFilterProxyModel>
 #include <QModelIndex>
 #include <QVariant>
 #include <QSqlQuery>
@@ -51,10 +52,37 @@
 
 class FolderItem;
 
-//! [0]
+class FolderModelProxy : public QSortFilterProxyModel
+{
+    Q_OBJECT
+public:
+    explicit FolderModelProxy(QObject *parent = 0);
+    ~FolderModelProxy();
+
+    void setFilter(const YACReader::SearchModifiers modifier, QString filter, bool includeComics);
+    void setupFilteredModelData( QSqlQuery &sqlquery, FolderItem *parent);
+    void setupFilteredModelData();
+    void clear();
+
+    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
+
+protected:
+    FolderItem *rootItem;
+    QMap<unsigned long long int, FolderItem *> filteredItems; //relación entre folders
+
+    bool includeComics;
+    QString filter;
+    bool filterEnabled;
+
+    YACReader::SearchModifiers modifier;
+};
+
 class FolderModel : public QAbstractItemModel
 {
+
 	Q_OBJECT
+
+    friend class FolderModelProxy;
 
 public:
     FolderModel(QObject *parent = 0);
@@ -76,10 +104,10 @@ public:
     void setupModelData(QString path);
     QString getDatabase();
 	QString getFolderPath(const QModelIndex &folder);
-    QModelIndex indexFromItem(FolderItem * item, int column);
-    void setFilter(const YACReader::SearchModifiers modifier, QString filter, bool includeComics);
-	void resetFilter();
-	bool isFilterEnabled(){return filterEnabled;};
+    //QModelIndex indexFromItem(FolderItem * item, int column);
+
+
+    //bool isFilterEnabled(){return filterEnabled;};
 
     void updateFolderCompletedStatus(const QModelIndexList & list, bool status);
     void updateFolderFinishedStatus(const QModelIndexList & list, bool status);
@@ -103,22 +131,12 @@ public slots:
 private:
 	void setupModelData( QSqlQuery &sqlquery, FolderItem *parent);
     void updateFolderModelData( QSqlQuery &sqlquery, FolderItem *parent);
-	void setupFilteredModelData( QSqlQuery &sqlquery, FolderItem *parent);
-	void setupFilteredModelData();
 
 	FolderItem *rootItem; //el árbol
 	QMap<unsigned long long int, FolderItem *> items; //relación entre folders
 
-	FolderItem *rootBeforeFilter;
-	QMap<unsigned long long int, FolderItem *> filteredItems; //relación entre folders
-
 	QString _databasePath;
 
-	bool includeComics;
-	QString filter;
-	bool filterEnabled;
-
-    YACReader::SearchModifiers modifier;
 signals:
 	void beforeReset();
 	void reset();
