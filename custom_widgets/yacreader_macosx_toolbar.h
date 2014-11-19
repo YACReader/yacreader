@@ -17,6 +17,7 @@ public:
 public slots:
     QString text();
     void clear();
+    void clearText(); //no signal emited
     void setDisabled(bool disabled);
     void setEnabled(bool enabled);
 

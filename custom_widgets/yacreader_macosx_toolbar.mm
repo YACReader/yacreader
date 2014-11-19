@@ -342,6 +342,12 @@ void YACReaderMacOSXSearchLineEdit::clear()
     emit filterChanged(YACReader::NoModifiers, "");
 }
 
+void YACReaderMacOSXSearchLineEdit::clearText()
+{
+    //TODO be sure that this will not generate any event....
+    [((NSTextField *)nstextfield) setStringValue:@""];
+}
+
 void YACReaderMacOSXSearchLineEdit::setDisabled(bool disabled)
 {
     [((NSTextField *)nstextfield) setEnabled:!disabled];

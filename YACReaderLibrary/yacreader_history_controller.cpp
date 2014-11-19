@@ -64,3 +64,13 @@ void YACReaderHistoryController::updateHistory(const QModelIndex &mi)
 
     emit(enabledForward(false));
 }
+
+QModelIndex YACReaderHistoryController::lastIndex()
+{
+    return history.last();
+}
+
+QModelIndex YACReaderHistoryController::currentIndex()
+{
+    return history.at(currentFolderNavigation);
+}

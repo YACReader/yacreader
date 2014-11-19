@@ -126,7 +126,8 @@ HEADERS += comic_flow.h \
     yacreader_folders_view.h \
     yacreader_reading_lists_view.h \
     add_label_dialog.h \
-    yacreader_history_controller.h
+    yacreader_history_controller.h \
+    yacreader_navigation_controller.h
 
 		   
 SOURCES += comic_flow.cpp \
@@ -181,7 +182,8 @@ SOURCES += comic_flow.cpp \
     yacreader_folders_view.cpp \
     yacreader_reading_lists_view.cpp \
     add_label_dialog.cpp \
-    yacreader_history_controller.cpp
+    yacreader_history_controller.cpp \
+    yacreader_navigation_controller.cpp
 
 				   
 include(./server/server.pri)

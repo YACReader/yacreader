@@ -6,7 +6,9 @@
 #include <QModelIndex>
 #include <QFileInfo>
 #include "yacreader_global.h"
-#include <yacreader_libraries.h>
+#include "yacreader_libraries.h"
+
+#include "yacreader_navigation_controller.h"
 
 #ifdef Q_OS_MAC
     #include "yacreader_macosx_toolbar.h"
@@ -35,8 +37,8 @@ class QCheckBox;
 class QPushButton;
 class ComicModel;
 class QSplitter;
-class FolderItem;
 class FolderModel;
+class FolderModelProxy;
 class QItemSelectionModel;
 class QString;
 class QLabel;
@@ -72,6 +74,8 @@ using namespace YACReader;
 
 class LibraryWindow : public QMainWindow
 {
+    friend class YACReaderNavigationController;
+
 	Q_OBJECT
 private:
 	YACReaderSideBar * sideBar;
@@ -105,11 +109,12 @@ private:
 #else
     YACReaderSearchLineEdit * searchEdit;
 #endif
-    FolderItem * index; //index al que hay que hacer scroll despu�s de pulsar sobre un folder filtrado
-	int column;
+
 	QString previousFilter;
 	QCheckBox * includeComicsCheckBox;
 	//-------------
+
+    YACReaderNavigationController * navigationController;
 
     ComicsView * comicsView;
     ClassicComicsView * classicComicsView;
@@ -123,6 +128,7 @@ private:
     YACReaderReadingListsView * listsView;
 	YACReaderLibraryListWidget * selectedLibrary;
     FolderModel * foldersModel;
+    FolderModelProxy * foldersModelProxy;
     ComicModel * comicsModel;
     ReadingListModel * listsModel;
 	//QStringList paths;
@@ -231,9 +237,17 @@ private:
 
 	//QModelIndex _rootIndex;
 	//QModelIndex _rootIndexCV;
-    QModelIndex updateDestination;
+    //QModelIndex updateDestination;
 
 	quint64 _comicIdEdited;
+
+    enum NavigationStatus
+    {
+        Normal, //
+        Searching
+    };
+
+    NavigationStatus status;
 
 	void setupUI();
 	void createActions();
@@ -311,6 +325,7 @@ public slots:
     void toNormal();
     void toFullScreen();
     void setSearchFilter(const YACReader::SearchModifiers modifier, QString filter);
+    void clearSearchFilter();
     void showProperties();
     void exportLibrary(QString destPath);
     void importLibrary(QString clc,QString destPath,QString name);
@@ -354,12 +369,11 @@ public slots:
     void copyAndImportComicsToFolder(const QList<QPair<QString,QString> > & comics, const QModelIndex & miFolder);
     void moveAndImportComicsToFolder(const QList<QPair<QString,QString> > & comics, const QModelIndex & miFolder);
     void processComicFiles(ComicFilesManager * comicFilesManager, QProgressDialog * progressDialog);
-    void updateCopyMoveFolderDestination(); //imports new comics from the current folder
+    void updateCopyMoveFolderDestination(const QModelIndex & mi); //imports new comics from the current folder
     void updateCurrentFolder();
-    void updateTreeFolder();
     void updateFolder(const QModelIndex & miFolder);
     QProgressDialog * newProgressDialog(const QString & label, int maxValue);
-    void reloadAfterCopyMove();
+    void reloadAfterCopyMove(const QModelIndex &mi);
     QModelIndex getCurrentFolderIndex();
     void enableNeededActions();
     void addFolderToCurrentIndex();

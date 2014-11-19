@@ -99,7 +99,7 @@ void drawMacOSXFinishedFolderIcon()
 #define ROOT 1
 
 FolderModel::FolderModel(QObject *parent)
-	: QAbstractItemModel(parent),rootItem(0),rootBeforeFilter(0),filterEnabled(false),includeComics(false)
+    : QAbstractItemModel(parent),rootItem(0)
 {
 	connect(this,SIGNAL(beforeReset()),this,SIGNAL(modelAboutToBeReset()));
 	connect(this,SIGNAL(reset()),this,SIGNAL(modelReset()));
@@ -107,7 +107,7 @@ FolderModel::FolderModel(QObject *parent)
 
 //! [0]
 FolderModel::FolderModel( QSqlQuery &sqlquery, QObject *parent)
-	: QAbstractItemModel(parent),rootItem(0),rootBeforeFilter(0),filterEnabled(false),includeComics(false)
+    : QAbstractItemModel(parent),rootItem(0)
 {
 	//lo m�s probable es que el nodo ra�z no necesite tener informaci�n
 	QList<QVariant> rootData;
@@ -234,6 +234,7 @@ QModelIndex FolderModel::parent(const QModelIndex &index) const
 }
 //! [7]
 
+/*
 QModelIndex FolderModel::indexFromItem(FolderItem * item,int column)
 {
 	//if(item->parent() != 0)
@@ -241,7 +242,7 @@ QModelIndex FolderModel::indexFromItem(FolderItem * item,int column)
 	//else
 	//	return index(item->row(),0,QModelIndex());
 	return createIndex(item->row(), column, item);
-}
+}*/
 
 
 //! [8]
@@ -265,9 +266,9 @@ void FolderModel::setupModelData(QString path)
 	beginResetModel();
 	if(rootItem != 0)
 		delete rootItem; //TODO comprobar que se libera bien la memoria
-	filterEnabled = false;
+
 	rootItem = 0;
-	rootBeforeFilter = 0;
+
 	//inicializar el nodo ra�z
 	QList<QVariant> rootData;
 	rootData << "root"; //id 0, padre 0, title "root" (el id, y el id del padre van a ir en la clase TreeItem)
@@ -323,6 +324,7 @@ void FolderModel::setupModelData(QSqlQuery &sqlquery, FolderItem *parent)
 void FolderModel::updateFolderModelData(QSqlQuery &sqlquery, FolderItem *parent)
 {
     while (sqlquery.next()) {
+        QLOG_DEBUG () << "habia next";
         QList<QVariant> data;
         QSqlRecord record = sqlquery.record();
 
@@ -342,160 +344,6 @@ void FolderModel::updateFolderModelData(QSqlQuery &sqlquery, FolderItem *parent)
     }
 }
 
-void FolderModel::setupFilteredModelData()
-{
-	beginResetModel();
-	
-	//TODO hay que liberar memoria de anteriores filtrados
-
-	//inicializar el nodo ra�z
-
-	if(rootBeforeFilter == 0)
-		rootBeforeFilter = rootItem;
-	else
-		delete rootItem;//los resultados de la b�squeda anterior deben ser borrados
-
-	QList<QVariant> rootData;
-	rootData << "root"; //id 1, padre 1, title "root" (el id, y el id del padre van a ir en la clase TreeItem)
-    rootItem = new FolderItem(rootData);
-	rootItem->id = ROOT;
-	rootItem->parentItem = 0;
-
-	//cargar la base de datos
-	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-	//crear la consulta
-	{
-	QSqlQuery selectQuery(db); //TODO check
-	if(!includeComics)
-	{
-		selectQuery.prepare("select * from folder where id <> 1 and upper(name) like upper(:filter) order by parentId,name ");
-		selectQuery.bindValue(":filter", "%%"+filter+"%%");
-	}
-    else
-    {
-        switch(modifier)
-        {
-        case YACReader::NoModifiers:
-            selectQuery.prepare("SELECT DISTINCT f.id, f.parentId, f.name, f.path, f.finished, f.completed "
-                                "FROM folder f LEFT JOIN comic c ON (f.id = c.parentId) "
-                                "WHERE f.id <> 1 AND ((UPPER(c.fileName) like UPPER(:filter)) OR (UPPER(f.name) like UPPER(:filter2))) ORDER BY f.parentId,f.name");
-            selectQuery.bindValue(":filter", "%%"+filter+"%%");
-            selectQuery.bindValue(":filter2", "%%"+filter+"%%");
-            break;
-
-        case YACReader::OnlyRead:
-            selectQuery.prepare("SELECT DISTINCT f.id, f.parentId, f.name, f.path, f.finished, f.completed "
-                                "FROM folder f LEFT JOIN (comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id)) ON (f.id = c.parentId) "
-                                "WHERE f.id <> 1 AND ((UPPER(c.fileName) like UPPER(:filter)) OR (UPPER(f.name) like UPPER(:filter2))) AND ci.read = 1  ORDER BY f.parentId,f.name;");
-            selectQuery.bindValue(":filter", "%%"+filter+"%%");
-            selectQuery.bindValue(":filter2", "%%"+filter+"%%");
-            break;
-
-        case YACReader::OnlyUnread:
-            selectQuery.prepare("SELECT DISTINCT f.id, f.parentId, f.name, f.path, f.finished, f.completed "
-                                "FROM folder f LEFT JOIN (comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id)) ON (f.id = c.parentId) "
-                                "WHERE f.id <> 1 AND ((UPPER(c.fileName) like UPPER(:filter)) OR (UPPER(f.name) like UPPER(:filter2))) AND ci.read = 0  ORDER BY f.parentId,f.name;");
-            selectQuery.bindValue(":filter", "%%"+filter+"%%");
-            selectQuery.bindValue(":filter2", "%%"+filter+"%%");
-            break;
-
-        default:
-            QLOG_ERROR() << "not implemented";
-            break;
-
-        }
-
-
-	}
-		selectQuery.exec();
-		
-	setupFilteredModelData(selectQuery,rootItem);
-	}
-	//selectQuery.finish();
-	db.close();
-	QSqlDatabase::removeDatabase(_databasePath);
-
-    endResetModel();
-}
-
-void FolderModel::setupFilteredModelData(QSqlQuery &sqlquery, FolderItem *parent)
-{
-	//64 bits para la primary key, es decir la misma precisi�n que soporta sqlit 2^64
-	filteredItems.clear();
-
-	//se a�ade el nodo 0 al modelo que representa el arbol de elementos que cumplen con el filtro
-	filteredItems.insert(parent->id,parent);
-
-	while (sqlquery.next()) {  //se procesan todos los folders que cumplen con el filtro
-		//datos de la base de datos
-		QList<QVariant> data;
-		QSqlRecord record = sqlquery.record();
-
-		data << record.value("name").toString();
-		data << record.value("path").toString();
-        data << record.value("finished").toBool();
-        data << record.value("completed").toBool();
-
-        FolderItem * item = new FolderItem(data);
-		item->id = sqlquery.value(0).toULongLong();
-
-		//id del padre
-		quint64 parentId = record.value("parentId").toULongLong();
-
-		//se a�ade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
-		if(!filteredItems.contains(item->id))
-			filteredItems.insert(item->id,item);
-
-		//es necesario conocer las coordenadas de origen para poder realizar scroll autom�tico en la vista
-		item->originalItem = items.value(item->id);
-
-		//si el padre ya existe en el modelo, el item se a�ade como hijo
-		if(filteredItems.contains(parentId))
-			filteredItems.value(parentId)->appendChild(item);
-		else//si el padre a�n no se ha a�adido, hay que a�adirlo a �l y todos los padres hasta el nodo ra�z
-		{
-			//comprobamos con esta variable si el �ltimo de los padres (antes del nodo ra�z) ya exist�a en el modelo
-			bool parentPreviousInserted = false;
-
-			//mientras no se alcance el nodo ra�z se procesan todos los padres (de abajo a arriba)
-			while(parentId != ROOT )
-			{
-				//el padre no estaba en el modelo filtrado, as� que se rescata del modelo original
-                FolderItem * parentItem = items.value(parentId);
-				//se debe crear un nuevo nodo (para no compartir los hijos con el nodo original)
-                FolderItem * newparentItem = new FolderItem(parentItem->getData()); //padre que se a�adir� a la estructura de directorios filtrados
-				newparentItem->id = parentId;
-
-				newparentItem->originalItem = parentItem;
-
-				//si el modelo contiene al padre, se a�ade el item actual como hijo
-				if(filteredItems.contains(parentId))
-				{
-					filteredItems.value(parentId)->appendChild(item);
-					parentPreviousInserted = true;
-				}
-				//sino se registra el nodo para poder encontrarlo con posterioridad y se a�ade el item actual como hijo
-				else
-				{
-					newparentItem->appendChild(item);
-					filteredItems.insert(newparentItem->id,newparentItem);
-					parentPreviousInserted = false;
-				}
-
-				//variables de control del bucle, se avanza hacia el nodo padre
-				item = newparentItem;
-				parentId = parentItem->parentItem->id;
-			}
-
-			//si el nodo es hijo de 1 y no hab�a sido previamente insertado como hijo, se a�ade como tal
-			if(!parentPreviousInserted)
-				filteredItems.value(ROOT)->appendChild(item);
-		}
-	}
-}
-
-
-
 QString FolderModel::getDatabase()
 {
 	return _databasePath;
@@ -508,15 +356,7 @@ QString FolderModel::getFolderPath(const QModelIndex &folder)
     return static_cast<FolderItem*>(folder.internalPointer())->data(FolderModel::Path).toString();
 }
 
-void FolderModel::setFilter(const YACReader::SearchModifiers modifier, QString filter, bool includeComics)
-{
-	this->filter = filter;
-	this->includeComics = includeComics;
-    this->modifier = modifier;
-	filterEnabled = true;
-	setupFilteredModelData();
-}
-
+/*
 void FolderModel::resetFilter()
 {
 	beginResetModel();
@@ -535,7 +375,7 @@ void FolderModel::resetFilter()
 	endResetModel();
 
 
-}
+}*/
 
 void FolderModel::updateFolderCompletedStatus(const QModelIndexList &list, bool status)
 {
@@ -609,9 +449,12 @@ void FolderModel::fetchMoreFromDB(const QModelIndex &parent)
         item = rootItem;
 
     //Remove all children
-    beginRemoveRows(parent, 0, item->childCount());
-    item->clearChildren();
-    endRemoveRows();
+    if(item->childCount() > 0)
+    {
+        beginRemoveRows(parent, 0, item->childCount()-1);
+        item->clearChildren();
+        endRemoveRows();
+    }
 
     QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
@@ -622,26 +465,38 @@ void FolderModel::fetchMoreFromDB(const QModelIndex &parent)
     selectQuery.prepare("select * from folder where id <> 1 and parentId = :parentId order by parentId,name");
 
     items << item;
-    bool firstLevelUpdate = false;
+    bool firstLevelUpdated = false;
     while(items.size() > 0)
     {
         nextLevelItems.clear();
         foreach(FolderItem * item, items)
         {
+            QLOG_DEBUG() << "ID " << item->id;
             selectQuery.bindValue(":parentId", item->id);
 
             selectQuery.exec();
-            //Reload all children
-            if(!firstLevelUpdate)
+
+            if(!firstLevelUpdated)
             {
-                beginInsertRows(parent, 0, selectQuery.numRowsAffected());
-                firstLevelUpdate = true;
+                //NO size support
+                int numResults = 0;
+                while(selectQuery.next())
+                    numResults++;
+
+                if(!selectQuery.seek(-1))
+                    selectQuery.exec();
+                //END no size support
+
+                beginInsertRows(parent, 0, numResults-1);
             }
 
             updateFolderModelData(selectQuery,item);
 
-            if(!firstLevelUpdate)
-            endInsertRows();
+            if(!firstLevelUpdated)
+            {
+                endInsertRows();
+                firstLevelUpdated = true;
+            }
 
             nextLevelItems << item->children();
 
@@ -650,6 +505,9 @@ void FolderModel::fetchMoreFromDB(const QModelIndex &parent)
         items.clear();
         items = nextLevelItems;
     }
+
+    QLOG_DEBUG() << "item->childCount()-1" << item->childCount()-1;
+
 
     db.close();
     QSqlDatabase::removeDatabase(_databasePath);
@@ -712,4 +570,209 @@ void FolderModel::deleteFolder(const QModelIndex &mi)
    QSqlDatabase::removeDatabase(_databasePath);
 
    endRemoveRows();
+}
+
+
+//PROXY
+
+FolderModelProxy::FolderModelProxy(QObject *parent)
+    :QSortFilterProxyModel(parent),rootItem(0),filterEnabled(false),filter(""),includeComics(true)
+{
+
+}
+
+FolderModelProxy::~FolderModelProxy()
+{
+
+}
+
+bool FolderModelProxy::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+{
+    if(!filterEnabled)
+        return true;
+
+    FolderItem * parent = static_cast<FolderItem *>(source_parent.internalPointer());
+
+    if(parent == 0)
+        parent = static_cast<FolderModel *>(sourceModel())->rootItem;
+
+    FolderItem * item = parent->children().at(source_row);
+
+    return filteredItems.contains(item->id);
+}
+
+void FolderModelProxy::setFilter(const YACReader::SearchModifiers modifier, QString filter, bool includeComics)
+{
+    clear();
+    this->filter = filter;
+    this->includeComics = includeComics;
+    this->modifier = modifier;
+    filterEnabled = true;
+    setupFilteredModelData();
+}
+
+void FolderModelProxy::setupFilteredModelData()
+{
+    beginResetModel();
+
+    //TODO hay que liberar memoria de anteriores filtrados
+
+    //inicializar el nodo ra�z
+
+    if(rootItem != 0)
+        delete rootItem; //TODO comprobar que se libera bien la memoria
+
+    rootItem = 0;
+
+    //inicializar el nodo ra�z
+    QList<QVariant> rootData;
+    rootData << "root";
+    rootItem = new FolderItem(rootData);
+    rootItem->id = ROOT;
+    rootItem->parentItem = 0;
+
+    FolderModel * model = static_cast<FolderModel *>(sourceModel());
+
+    //cargar la base de datos
+    QSqlDatabase db = DataBaseManagement::loadDatabase(model->_databasePath);
+    //crear la consulta
+    {
+    QSqlQuery selectQuery(db); //TODO check
+    if(!includeComics)
+    {
+        selectQuery.prepare("select * from folder where id <> 1 and upper(name) like upper(:filter) order by parentId,name ");
+        selectQuery.bindValue(":filter", "%%"+filter+"%%");
+    }
+    else
+    {
+        switch(modifier)
+        {
+        case YACReader::NoModifiers:
+            selectQuery.prepare("SELECT DISTINCT f.id, f.parentId, f.name, f.path, f.finished, f.completed "
+                                "FROM folder f LEFT JOIN comic c ON (f.id = c.parentId) "
+                                "WHERE f.id <> 1 AND ((UPPER(c.fileName) like UPPER(:filter)) OR (UPPER(f.name) like UPPER(:filter2))) ORDER BY f.parentId,f.name");
+            selectQuery.bindValue(":filter", "%%"+filter+"%%");
+            selectQuery.bindValue(":filter2", "%%"+filter+"%%");
+            break;
+
+        case YACReader::OnlyRead:
+            selectQuery.prepare("SELECT DISTINCT f.id, f.parentId, f.name, f.path, f.finished, f.completed "
+                                "FROM folder f LEFT JOIN (comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id)) ON (f.id = c.parentId) "
+                                "WHERE f.id <> 1 AND ((UPPER(c.fileName) like UPPER(:filter)) OR (UPPER(f.name) like UPPER(:filter2))) AND ci.read = 1  ORDER BY f.parentId,f.name;");
+            selectQuery.bindValue(":filter", "%%"+filter+"%%");
+            selectQuery.bindValue(":filter2", "%%"+filter+"%%");
+            break;
+
+        case YACReader::OnlyUnread:
+            selectQuery.prepare("SELECT DISTINCT f.id, f.parentId, f.name, f.path, f.finished, f.completed "
+                                "FROM folder f LEFT JOIN (comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id)) ON (f.id = c.parentId) "
+                                "WHERE f.id <> 1 AND ((UPPER(c.fileName) like UPPER(:filter)) OR (UPPER(f.name) like UPPER(:filter2))) AND ci.read = 0  ORDER BY f.parentId,f.name;");
+            selectQuery.bindValue(":filter", "%%"+filter+"%%");
+            selectQuery.bindValue(":filter2", "%%"+filter+"%%");
+            break;
+
+        default:
+            QLOG_ERROR() << "not implemented";
+            break;
+
+        }
+
+
+    }
+        selectQuery.exec();
+
+    setupFilteredModelData(selectQuery,rootItem);
+    }
+    //selectQuery.finish();
+    db.close();
+    QSqlDatabase::removeDatabase(model->_databasePath);
+
+    endResetModel();
+}
+
+void FolderModelProxy::clear()
+{
+    filterEnabled = false;
+
+    filteredItems.clear();
+
+    QSortFilterProxyModel::clear();
+}
+
+void FolderModelProxy::setupFilteredModelData(QSqlQuery &sqlquery, FolderItem *parent)
+{
+    FolderModel * model = static_cast<FolderModel *>(sourceModel());
+
+    //64 bits para la primary key, es decir la misma precisi�n que soporta sqlit 2^64
+    filteredItems.clear();
+
+    //se a�ade el nodo 0 al modelo que representa el arbol de elementos que cumplen con el filtro
+    filteredItems.insert(parent->id,parent);
+
+    while (sqlquery.next()) {  //se procesan todos los folders que cumplen con el filtro
+        //datos de la base de datos
+        QList<QVariant> data;
+        QSqlRecord record = sqlquery.record();
+
+        data << record.value("name").toString();
+        data << record.value("path").toString();
+        data << record.value("finished").toBool();
+        data << record.value("completed").toBool();
+
+        FolderItem * item = new FolderItem(data);
+        item->id = sqlquery.value(0).toULongLong();
+
+        //id del padre
+        quint64 parentId = record.value("parentId").toULongLong();
+
+        //se a�ade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
+        if(!filteredItems.contains(item->id))
+            filteredItems.insert(item->id,item);
+
+        //es necesario conocer las coordenadas de origen para poder realizar scroll autom�tico en la vista
+        item->originalItem = model->items.value(item->id);
+
+        //si el padre ya existe en el modelo, el item se a�ade como hijo
+        if(filteredItems.contains(parentId))
+            filteredItems.value(parentId)->appendChild(item);
+        else//si el padre a�n no se ha a�adido, hay que a�adirlo a �l y todos los padres hasta el nodo ra�z
+        {
+            //comprobamos con esta variable si el �ltimo de los padres (antes del nodo ra�z) ya exist�a en el modelo
+            bool parentPreviousInserted = false;
+
+            //mientras no se alcance el nodo ra�z se procesan todos los padres (de abajo a arriba)
+            while(parentId != ROOT )
+            {
+                //el padre no estaba en el modelo filtrado, as� que se rescata del modelo original
+                FolderItem * parentItem = model->items.value(parentId);
+                //se debe crear un nuevo nodo (para no compartir los hijos con el nodo original)
+                FolderItem * newparentItem = new FolderItem(parentItem->getData()); //padre que se a�adir� a la estructura de directorios filtrados
+                newparentItem->id = parentId;
+
+                newparentItem->originalItem = parentItem;
+
+                //si el modelo contiene al padre, se a�ade el item actual como hijo
+                if(filteredItems.contains(parentId))
+                {
+                    filteredItems.value(parentId)->appendChild(item);
+                    parentPreviousInserted = true;
+                }
+                //sino se registra el nodo para poder encontrarlo con posterioridad y se a�ade el item actual como hijo
+                else
+                {
+                    newparentItem->appendChild(item);
+                    filteredItems.insert(newparentItem->id,newparentItem);
+                    parentPreviousInserted = false;
+                }
+
+                //variables de control del bucle, se avanza hacia el nodo padre
+                item = newparentItem;
+                parentId = parentItem->parentItem->id;
+            }
+
+            //si el nodo es hijo de 1 y no hab�a sido previamente insertado como hijo, se a�ade como tal
+            if(!parentPreviousInserted)
+                filteredItems.value(ROOT)->appendChild(item);
+        }
+    }
 }
