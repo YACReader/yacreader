@@ -107,6 +107,8 @@ void ClassicComicsView::setModel(ComicModel *model)
         connect(model, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(removeItemsFromFlow(QModelIndex,int,int)),Qt::UniqueConnection);
 
         tableView->setModel(model);
+        if(model->rowCount()>0)
+            tableView->setCurrentIndex(model->index(0,0));
 
         tableView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
     #if QT_VERSION >= 0x050000

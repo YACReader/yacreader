@@ -542,13 +542,13 @@ QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QMod
     FolderItem * item = new FolderItem(data);
     item->id = newFolder.id;
 
+    beginInsertRows(parent,0,0); //TODO calculate the destRow before inserting the new child
+
     parentItem->appendChild(item);
     destRow = parentItem->children().indexOf(item); //TODO optimize this, appendChild should return the index of the new item
-
-    beginInsertRows(parent,destRow,destRow);
-    endInsertRows();
-
     items.insert(item->id,item);
+
+    endInsertRows();
 
     return index(destRow,0,parent);
 }

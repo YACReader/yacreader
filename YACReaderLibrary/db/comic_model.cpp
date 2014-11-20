@@ -598,7 +598,7 @@ qint64 ComicModel::asignNumbers(QList<QModelIndex> list,int startingNumber)
 	db.close();
 	QSqlDatabase::removeDatabase(_databasePath);
 
-	//emit dataChanged(index(list.first().row(),READ),index(list.last().row(),READ));
+    //emit dataChanged(index(0,ComicModel::Number),index(_data.count()-1,ComicModel::HasBeenOpened));
 
 	return idFirst;
 }

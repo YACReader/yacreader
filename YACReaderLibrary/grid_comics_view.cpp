@@ -62,6 +62,9 @@ void GridComicsView::setModel(ComicModel *model)
         ctxt->setContextProperty("comicsSelectionHelper", this);
         ctxt->setContextProperty("comicRatingHelper", this);
         ctxt->setContextProperty("dummyValue", true);
+
+        if(model->rowCount()>0)
+            setCurrentIndex(model->index(0,0));
     }
 
 #ifdef Q_OS_MAC
