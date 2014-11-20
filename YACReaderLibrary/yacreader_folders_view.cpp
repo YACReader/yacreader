@@ -88,7 +88,7 @@ YACReaderFoldersViewItemDeletegate::YACReaderFoldersViewItemDeletegate(QObject *
 void YACReaderFoldersViewItemDeletegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
 
-    if(index.data(FolderModel::CompletedRole).toBool())
+    if(!index.data(FolderModel::CompletedRole).toBool())
     {
         painter->save();
 #ifdef Q_OS_MAC
