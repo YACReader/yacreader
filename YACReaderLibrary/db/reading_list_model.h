@@ -2,6 +2,7 @@
 #define READING_LIST_MODEL_H
 
 #include <QAbstractItemModel>
+#include <QSortFilterProxyModel>
 #include <QModelIndex>
 #include <QVariant>
 #include <QSqlQuery>
@@ -13,6 +14,13 @@ class LabelItem;
 class SpecialListItem;
 class ReadingListItem;
 class ReadingListSeparatorItem;
+
+class ReadingListModelProxy : public QSortFilterProxyModel
+{
+    Q_OBJECT
+public:
+    explicit ReadingListModelProxy(QObject *parent = 0);
+};
 
 class ReadingListModel : public QAbstractItemModel
 {
@@ -41,6 +49,17 @@ public:
     QString name(const QModelIndex & mi);
     void rename(const QModelIndex & mi, const QString & name);
     void deleteItem(const QModelIndex & mi);
+
+    enum Roles {
+        TypeListsRole = Qt::UserRole + 1,
+    };
+
+    enum TypeList {
+        SpecialList,
+        Label,
+        ReadingList,
+        Separator
+    };
 
 signals:
 

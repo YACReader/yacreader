@@ -9,9 +9,12 @@
 #include "yacreader_history_controller.h"
 #include "comic_model.h"
 #include "folder_model.h"
+#include "reading_list_model.h"
 #include "comics_view.h"
 #include "empty_folder_widget.h"
 #include "yacreader_search_line_edit.h"
+
+#include "QsLog.h"
 
 YACReaderNavigationController::YACReaderNavigationController(LibraryWindow *parent) :
     QObject(parent),libraryWindow(parent)
@@ -38,6 +41,8 @@ void YACReaderNavigationController::selectedFolder(const QModelIndex &mi)
 
     loadFolderInfo(modelIndex);
 
+    //if a folder is selected, listsView selection must be cleared
+    libraryWindow->listsView->clearSelection();
 }
 
 void YACReaderNavigationController::reselectCurrentFolder()
@@ -69,9 +74,32 @@ void YACReaderNavigationController::loadFolderInfo(const QModelIndex &modelIndex
     }
 }
 
-void YACReaderNavigationController::selectedList(const QModelIndex &mi)
+void YACReaderNavigationController::loadListInfo(const QModelIndex &modelIndex)
 {
 
+}
+
+void YACReaderNavigationController::selectedList(const QModelIndex &mi)
+{/*
+    //A proxy is used
+    QModelIndex modelIndex = libraryWindow->listsModelProxy->mapToSource(mi);
+
+    //update history
+    libraryWindow->historyController->updateHistory(modelIndex);
+
+    if(libraryWindow->status == LibraryWindow::Searching)
+    {
+        //when a list is selected the search mode has to be reset
+        libraryWindow->searchEdit->clearText();
+        libraryWindow->clearSearchFilter();
+        libraryWindow->listsView->scrollTo(mi,QAbstractItemView::PositionAtTop);
+        libraryWindow->listsView->setCurrentIndex(mi);
+    }
+
+    loadListInfo(modelIndex);
+
+    //if a list is selected, foldersView selection must be cleared
+    libraryWindow->foldersView->clearSelection();*/
 }
 
 void YACReaderNavigationController::selectedIndexFromHistory(const QModelIndex &sourceMI)

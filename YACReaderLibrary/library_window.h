@@ -65,6 +65,7 @@ class EditShortcutsDialog;
 class ComicFilesManager;
 class QProgressDialog;
 class ReadingListModel;
+class ReadingListModelProxy;
 class YACReaderReadingListsView;
 class YACReaderHistoryController;
 
@@ -96,9 +97,7 @@ private:
 	bool fullscreen;
 	bool importedCovers; //if true, the library is read only (not updates,open comic or properties)
 	bool fromMaximized;
-	//Ya no se usan proxies, el rendimiento de la BD es suficiente
-	//YACReaderTreeSearch * proxyFilter;
-	//YACReaderSortComics * proxySort;
+
 	PackageManager * packageManager;
 
 	QSize slideSizeW;
@@ -131,6 +130,7 @@ private:
     FolderModelProxy * foldersModelProxy;
     ComicModel * comicsModel;
     ReadingListModel * listsModel;
+    ReadingListModelProxy * listsModelProxy;
 	//QStringList paths;
 	YACReaderLibraries libraries;
 

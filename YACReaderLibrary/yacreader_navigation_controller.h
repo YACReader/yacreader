@@ -29,6 +29,7 @@ public slots:
     void loadEmptyFolderInfo(const QModelIndex & modelIndex);
 
     void loadFolderInfo(const QModelIndex & modelIndex);
+    void loadListInfo(const QModelIndex & modelIndex);
     void loadPreviousStatus();
 
 private:

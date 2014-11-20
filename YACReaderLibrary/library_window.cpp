@@ -418,6 +418,7 @@ void LibraryWindow::doModels()
     comicsModel =  new ComicModel();
     //lists
     listsModel = new ReadingListModel();
+    listsModelProxy = new ReadingListModelProxy();
 
     //setSearchFilter(YACReader::NoModifiers, ""); //clear search filter
 }
@@ -1223,7 +1224,8 @@ void LibraryWindow::loadLibrary(const QString & name)
                 foldersView->setModel(foldersModelProxy);
 
                 listsModel->setupReadingListsData(path);
-                listsView->setModel(listsModel);
+                listsModelProxy->setSourceModel(listsModel);
+                listsView->setModel(listsModelProxy);
 
                 if(foldersModel->rowCount(QModelIndex())>0)
 					disableFoldersActions(false);
