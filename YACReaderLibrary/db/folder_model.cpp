@@ -169,6 +169,9 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
     if(role == FolderModel::CompletedRole)
         return item->data(FolderModel::Completed);
 
+    if(role == FolderModel::FinishedRole)
+        return item->data(FolderModel::Finished);
+
 	if (role != Qt::DisplayRole)
 		return QVariant();
 
