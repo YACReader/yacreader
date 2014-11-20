@@ -2247,22 +2247,26 @@ void LibraryWindow::openContainingFolder()
 
 void LibraryWindow::setFolderAsNotCompleted()
 {
-    foldersModel->updateFolderCompletedStatus(foldersView->selectionModel()->selectedRows(),false);
+    //foldersModel->updateFolderCompletedStatus(foldersView->selectionModel()->selectedRows(),false);
+    foldersModel->updateFolderCompletedStatus(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()),false);
 }
 
 void LibraryWindow::setFolderAsCompleted()
 {
-    foldersModel->updateFolderCompletedStatus(foldersView->selectionModel()->selectedRows(),true);
+    //foldersModel->updateFolderCompletedStatus(foldersView->selectionModel()->selectedRows(),true);
+    foldersModel->updateFolderCompletedStatus(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()),true);
 }
 
 void LibraryWindow::setFolderAsRead()
 {
-    foldersModel->updateFolderFinishedStatus(foldersView->selectionModel()->selectedRows(),true);
+    //foldersModel->updateFolderFinishedStatus(foldersView->selectionModel()->selectedRows(),true);
+    foldersModel->updateFolderFinishedStatus(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()),true);
 }
 
 void LibraryWindow::setFolderAsUnread()
 {
-   foldersModel->updateFolderFinishedStatus(foldersView->selectionModel()->selectedRows(),false);
+   //foldersModel->updateFolderFinishedStatus(foldersView->selectionModel()->selectedRows(),false);
+   foldersModel->updateFolderFinishedStatus(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()),false);
 }
 
 void LibraryWindow::exportLibrary(QString destPath)
@@ -2479,9 +2483,8 @@ void LibraryWindow::updateFoldersViewConextMenu(const QModelIndex &mi)
     if(!mi.isValid())
         return;
 
-    FolderItem * item = static_cast<FolderItem *>(mi.internalPointer());
-    bool isFinished = item->data(FolderModel::Finished).toBool();
-    bool isCompleted = item->data(FolderModel::Completed).toBool();
+    bool isFinished = mi.data(FolderModel::FinishedRole).toBool();
+    bool isCompleted = mi.data(FolderModel::CompletedRole).toBool();
 
     setFolderAsReadAction->setVisible(!isFinished);
     setFolderAsUnreadAction->setVisible(isFinished);

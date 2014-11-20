@@ -72,6 +72,8 @@ void YACReaderNavigationController::loadFolderInfo(const QModelIndex &modelIndex
         libraryWindow->showEmptyFolderView();
         libraryWindow->disableComicsActions(true);
     }
+
+    libraryWindow->updateFoldersViewConextMenu(modelIndex);
 }
 
 void YACReaderNavigationController::loadListInfo(const QModelIndex &modelIndex)
@@ -80,7 +82,7 @@ void YACReaderNavigationController::loadListInfo(const QModelIndex &modelIndex)
 }
 
 void YACReaderNavigationController::selectedList(const QModelIndex &mi)
-{/*
+{
     //A proxy is used
     QModelIndex modelIndex = libraryWindow->listsModelProxy->mapToSource(mi);
 
@@ -99,7 +101,7 @@ void YACReaderNavigationController::selectedList(const QModelIndex &mi)
     loadListInfo(modelIndex);
 
     //if a list is selected, foldersView selection must be cleared
-    libraryWindow->foldersView->clearSelection();*/
+    libraryWindow->foldersView->clearSelection();
 }
 
 void YACReaderNavigationController::selectedIndexFromHistory(const QModelIndex &sourceMI)
