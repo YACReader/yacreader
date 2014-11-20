@@ -40,6 +40,11 @@ void YACReaderNavigationController::selectedFolder(const QModelIndex &mi)
 
 }
 
+void YACReaderNavigationController::reselectCurrentFolder()
+{
+    selectedFolder(libraryWindow->foldersView->currentIndex());
+}
+
 void YACReaderNavigationController::loadFolderInfo(const QModelIndex &modelIndex)
 {
     //Get FolderItem
@@ -54,17 +59,15 @@ void YACReaderNavigationController::loadFolderInfo(const QModelIndex &modelIndex
     {
         //updateView
         libraryWindow->showComicsView();
+        libraryWindow->disableComicsActions(false);
     }
     else{
         //showEmptyFolder
-        QStringList subfolders;
-        subfolders = libraryWindow->foldersModel->getSubfoldersNames(modelIndex);
-        libraryWindow->emptyFolderWidget->setSubfolders(modelIndex,subfolders);
+        loadEmptyFolderInfo(modelIndex);
         libraryWindow->showEmptyFolderView();
+        libraryWindow->disableComicsActions(true);
     }
 }
-
-
 
 void YACReaderNavigationController::selectedList(const QModelIndex &mi)
 {
@@ -94,6 +97,13 @@ void YACReaderNavigationController::selectSubfolder(const QModelIndex &sourceMIP
     libraryWindow->foldersView->setCurrentIndex(libraryWindow->foldersModelProxy->mapFromSource(dest));
     libraryWindow->historyController->updateHistory(dest);
     loadFolderInfo(dest);
+}
+
+void YACReaderNavigationController::loadEmptyFolderInfo(const QModelIndex &modelIndex)
+{
+    QStringList subfolders;
+    subfolders = libraryWindow->foldersModel->getSubfoldersNames(modelIndex);
+    libraryWindow->emptyFolderWidget->setSubfolders(modelIndex,subfolders);
 }
 
 void YACReaderNavigationController::loadPreviousStatus()

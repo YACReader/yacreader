@@ -18,12 +18,15 @@ public slots:
     //info origins
     //folders view
     void selectedFolder(const QModelIndex & mi);
+    void reselectCurrentFolder();
     //reading lists
     void selectedList(const QModelIndex & mi);
     //history navigation
     void selectedIndexFromHistory(const QModelIndex & mi);
     //empty subfolder
     void selectSubfolder(const QModelIndex &sourceMI, int child);
+
+    void loadEmptyFolderInfo(const QModelIndex & modelIndex);
 
     void loadFolderInfo(const QModelIndex & modelIndex);
     void loadPreviousStatus();

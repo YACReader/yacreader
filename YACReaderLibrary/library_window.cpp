@@ -92,7 +92,8 @@
 LibraryWindow::LibraryWindow()
     :QMainWindow(),fullscreen(false),fetching(false),previousFilter(""),removeError(false),status(LibraryWindow::Normal)
 {
-	setupUI();
+    setupUI();
+
 	loadLibraries();
 
 	if(libraries.isEmpty())
@@ -105,7 +106,7 @@ LibraryWindow::LibraryWindow()
 		selectedLibrary->setCurrentIndex(0);
 	}
 
-    navigationController = new YACReaderNavigationController(this);
+
 }
 
 void LibraryWindow::setupUI()
@@ -129,6 +130,9 @@ void LibraryWindow::setupUI()
 	createToolBars();
 	doDialogs();
 	createMenus();
+
+    navigationController = new YACReaderNavigationController(this);
+
 	createConnections();
 
 	setWindowTitle(tr("YACReader Library"));
@@ -1100,10 +1104,10 @@ void LibraryWindow::createConnections()
     connect(importComicsInfoAction,SIGNAL(triggered()),this,SLOT(showImportComicsInfo()));
 
 	//properties & config
-	connect(propertiesDialog,SIGNAL(accepted()),this,SLOT(reloadCovers()));
+    connect(propertiesDialog,SIGNAL(accepted()),navigationController,SLOT(reselectCurrentFolder()));
 
 	//comic vine
-	connect(comicVineDialog,SIGNAL(accepted()),this,SLOT(reloadCovers()));
+    connect(comicVineDialog,SIGNAL(accepted()),navigationController,SLOT(reselectCurrentFolder()));
 
 	connect(updateLibraryAction,SIGNAL(triggered()),this,SLOT(updateLibrary()));
 	connect(renameLibraryAction,SIGNAL(triggered()),this,SLOT(renameLibrary()));
@@ -1201,7 +1205,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 							QMessageBox::critical(this,tr("Update failed"), tr("The current library can't be udpated. Check for write write permissions on: ") + path+"/library.ydb");
 					}
 					else
-					{
+                    {
                         comicsView->setModel(NULL);
 						foldersView->setModel(NULL);
                         listsView->setModel(NULL);
@@ -1325,66 +1329,9 @@ void LibraryWindow::loadLibrary(const QString & name)
 	}
 }
 
-void LibraryWindow::loadCovers(const QModelIndex & mi)
-{
-	unsigned long long int folderId = 1;
-	if(mi.isValid())
-	{
-        FolderItem *item = static_cast<FolderItem*>(mi.internalPointer());
-		folderId = item->id;
-#ifndef Q_OS_MAC
-		libraryToolBar->setCurrentFolderName(item->data(0).toString());
-#endif
-	}
-#ifndef Q_OS_MAC
-	else libraryToolBar->setCurrentFolderName(selectedLibrary->currentText());
-#endif
-
-
-
-	//cambiado de orden, ya que al llamar a foldersFilter->clear() se invalidan los model index
-    /*
-    if(searchEdit->text()!="")
-	{
-		//setFoldersFilter("");
-		if(mi.isValid())
-		{
-            index = static_cast<FolderItem *>(mi.internalPointer())->originalItem;
-            column = mi.column();
-            searchEdit->clear();
-		}
-	}
-	else
-	{
-        index = static_cast<FolderItem *>(mi.internalPointer());
-		column = mi.column();
-    }
-*/
-
-    //comicsView->setModel(NULL);
-    comicsModel->setupModelData(folderId,foldersModel->getDatabase());
-	
-    comicsView->setModel(comicsModel);
-    QStringList paths = comicsModel->getPaths(currentPath());
-	checkEmptyFolder(&paths);
-
-    if(paths.size()>0) {
-        comicsView->setCurrentIndex(comicsModel->index(0,0));
-        if(comicsViewStack->currentWidget() != comicsView && comicsViewStack->currentWidget() != comicsViewTransition)
-            comicsViewStack->setCurrentWidget(comicsView);
-    }
-    else
-        emptyFolderWidget->setSubfolders(mi,foldersModel->getSubfoldersNames(mi));
-}
-
 void LibraryWindow::loadCoversFromCurrentModel()
 {
     comicsView->setModel(comicsModel);
-    QStringList paths = comicsModel->getPaths(currentPath());
-
-    if(paths.size()>0) {
-        comicsView->setCurrentIndex(comicsModel->index(0,0));
-    }
 }
 
 void LibraryWindow::copyAndImportComicsToCurrentFolder(const QList<QPair<QString, QString> > &comics)
@@ -1523,7 +1470,9 @@ QProgressDialog *LibraryWindow::newProgressDialog(const QString &label, int maxV
 void LibraryWindow::reloadAfterCopyMove(const QModelIndex & mi)
 {
     if(getCurrentFolderIndex() == mi)
-        reloadCovers();
+    {
+        navigationController->loadFolderInfo(mi);
+    }
 
     foldersModel->fetchMoreFromDB(mi);
 
@@ -1569,8 +1518,11 @@ void LibraryWindow::addFolderToCurrentIndex()
         QDir newFolder(parentPath+"/"+newFolderName);
         if(parentDir.mkdir(newFolderName) || newFolder.exists())
         {
-            foldersView->setCurrentIndex(foldersModel->addFolderAtParent(newFolderName,currentIndex));
-            reloadCovers();
+            QModelIndex newIndex = foldersModel->addFolderAtParent(newFolderName,currentIndex);
+            foldersView->setCurrentIndex(foldersModelProxy->mapFromSource(newIndex));
+            navigationController->loadFolderInfo(newIndex);
+            //a new folder is always an empty folder
+            showEmptyFolderView();
         }
     }
 }
@@ -1612,7 +1564,7 @@ void LibraryWindow::deleteSelectedFolder()
                 connect(thread, SIGNAL(started()), remover, SLOT(process()));
                 connect(remover, SIGNAL(remove(QModelIndex)), foldersModel, SLOT(deleteFolder(QModelIndex)));
                 connect(remover, SIGNAL(removeError()),this,SLOT(errorDeletingFolder()));
-                connect(remover, SIGNAL(finished()),this,SLOT(reloadCovers()));
+                connect(remover, SIGNAL(finished()),navigationController,SLOT(reselectCurrentFolder()));
                 connect(remover, SIGNAL(finished()), remover, SLOT(deleteLater()));
                 connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
@@ -1702,8 +1654,7 @@ void LibraryWindow::selectSubfolder(const QModelIndex &mi, int child)
 {
     QModelIndex dest = foldersModel->index(child,0,mi);
     foldersView->setCurrentIndex(dest);
-    historyController->updateHistory(dest);
-    loadCovers(dest);
+    navigationController->selectedFolder(dest);
 }
 
 void LibraryWindow::checkEmptyFolder(QStringList * paths)
@@ -1726,30 +1677,6 @@ void LibraryWindow::checkEmptyFolder(QStringList * paths)
 			toggleFullScreenAction->setEnabled(true);
 #endif
 	}
-}
-
-void LibraryWindow::reloadCovers()
-{
-    //comics view switch when filter/search is enabled
-    if(!searchEdit->text().isEmpty())
-    {
-       loadCoversFromCurrentModel();
-       comicsView->enableFilterMode(true);
-       return;
-    }
-
-    if(foldersView->selectionModel()->selectedRows().length()>0)
-        loadCovers(foldersModelProxy->mapToSource(foldersView->currentIndex()));
-    else
-        loadCovers(QModelIndex());
-QLOG_INFO() << "reloaded covers at row : " << foldersModelProxy->mapToSource(foldersView->currentIndex()).row();
-    QModelIndex mi = comicsModel->getIndexFromId(_comicIdEdited);
-    if(mi.isValid())
-    {
-        comicsView->scrollTo(mi,QAbstractItemView::PositionAtCenter);
-        comicsView->setCurrentIndex(mi);
-    }
-	//centerComicFlow(mi);
 }
 
 void LibraryWindow::openComic()
@@ -2002,8 +1929,7 @@ void LibraryWindow::setRootIndex()
 		QDir d; //TODO change this by static methods (utils class?? with delTree for example) 
 		if(d.exists(path))
 		{
-			loadCovers(QModelIndex());
-            historyController->updateHistory(QModelIndex());
+            navigationController->selectedFolder(QModelIndex());
 		}
 		else
 		{
@@ -2063,29 +1989,6 @@ void LibraryWindow::toNormal()
 
 void LibraryWindow::setSearchFilter(const YACReader::SearchModifiers modifier, QString filter)
 {
-    /*
-    if(filter.isEmpty())
-    {
-        QLOG_DEBUG() << "clearing filter";
-        foldersModelProxy->clear();
-        comicsView->enableFilterMode(false);
-        foldersView->collapseAll();
-
-        //TODO scroll to folder after clearing the filter
-        //1. histoy last index
-        //2. scrollto
-        //3. setCurrentIndex
-        if(index != 0)
-		{
-            QModelIndex mi = foldersModel->indexFromItem(index,column);
-			foldersView->scrollTo(mi,QAbstractItemView::PositionAtTop);
-            historyController->updateHistory(mi);
-			foldersView->setCurrentIndex(mi);
-
-        }
-
-        reloadCovers();
-    }*/
     if(!filter.isEmpty())
 	{
             status = LibraryWindow::Searching;
@@ -2181,6 +2084,7 @@ void LibraryWindow::resetComicRating()
 
 void LibraryWindow::switchToComicsView(ComicsView * from, ComicsView * to)
 {
+    //setup views
     disconnectComicsViewConnections(from);
     from->close();
 
@@ -2196,7 +2100,13 @@ void LibraryWindow::switchToComicsView(ComicsView * from, ComicsView * to)
 
     delete from;
 
-    reloadCovers();
+    //load content into current view
+    loadCoversFromCurrentModel();
+
+    if(!searchEdit->text().isEmpty())
+    {
+       comicsView->enableFilterMode(true);
+    }
 }
 
 void LibraryWindow::showComicsViewTransition()
@@ -2279,9 +2189,17 @@ void LibraryWindow::asignNumbers()
 		else
 			return;
 	}
-    _comicIdEdited = comicsModel->asignNumbers(indexList,startingNumber);
+    qint64 edited = comicsModel->asignNumbers(indexList,startingNumber);
 	
-	reloadCovers();
+    //TODO add resorting without reloading
+    navigationController->loadFolderInfo(foldersModelProxy->mapToSource(foldersView->currentIndex()));
+
+    const QModelIndex & mi = comicsModel->getIndexFromId(edited);
+    if(mi.isValid())
+    {
+        comicsView->scrollTo(mi,QAbstractItemView::PositionAtCenter);
+        comicsView->setCurrentIndex(mi);
+    }
 }
 
 void LibraryWindow::openContainingFolderComic()
