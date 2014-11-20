@@ -38,9 +38,6 @@ signals:
 	
 public slots:
 
-protected slots:
-    void selectedIndex(const QModelIndex & mi);
-
 protected:
 	void paintEvent(QPaintEvent *);
 	

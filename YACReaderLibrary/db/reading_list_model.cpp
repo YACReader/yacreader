@@ -58,6 +58,21 @@ QVariant ReadingListModel::data(const QModelIndex &index, int role) const
 
     ListItem * item = static_cast<ListItem*>(index.internalPointer());
 
+    if (role == ReadingListModel::TypeListsRole)
+    {
+        if(typeid(*item) == typeid(SpecialListItem))
+            return QVariant(ReadingListModel::SpecialList);
+
+        if(typeid(*item) == typeid(LabelItem))
+            return QVariant(ReadingListModel::Label);
+
+        if(typeid(*item) == typeid(ReadingListItem))
+            return QVariant(ReadingListModel::ReadingList);
+
+        if(typeid(*item) == typeid(ReadingListSeparatorItem))
+            return QVariant(ReadingListModel::Separator);
+    }
+
     if(typeid(*item) == typeid(ReadingListSeparatorItem))
         return QVariant();
 
@@ -446,3 +461,10 @@ int ReadingListModel::addLabelIntoList(LabelItem *item)
 }
 
 
+
+
+ReadingListModelProxy::ReadingListModelProxy(QObject *parent)
+    :QSortFilterProxyModel(parent)
+{
+
+}

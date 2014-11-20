@@ -125,6 +125,11 @@ public:
         Completed = 3
     };//id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, name TEXT NOT NULL, path TEXT NOT NULL
 
+    enum Roles {
+        FinishedRole = Qt::UserRole + 1,
+        CompletedRole
+    };
+
 public slots:
     void deleteFolder(const QModelIndex & mi);
 

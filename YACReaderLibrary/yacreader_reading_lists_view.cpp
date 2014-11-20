@@ -1,6 +1,7 @@
 #include "yacreader_reading_lists_view.h"
 
 #include "reading_list_item.h"
+#include "reading_list_model.h"
 
 YACReaderReadingListsView::YACReaderReadingListsView(QWidget *parent)
     :YACReaderTreeView(parent)
@@ -20,9 +21,9 @@ YACReaderReadingListsViewItemDeletegate::YACReaderReadingListsViewItemDeletegate
 
 void YACReaderReadingListsViewItemDeletegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    ListItem * item = static_cast<ListItem*>(index.internalPointer());
+    ReadingListModel::TypeList typeList = (ReadingListModel::TypeList)index.data(ReadingListModel::TypeListsRole).toInt();
 
-    if(typeid(*item) == typeid(ReadingListSeparatorItem))
+    if(typeList == ReadingListModel::Separator)
     {
         return;
     }
@@ -45,14 +46,12 @@ void YACReaderReadingListsViewItemDeletegate::paint(QPainter *painter, const QSt
 
 QSize YACReaderReadingListsViewItemDeletegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    ListItem * item = static_cast<ListItem*>(index.internalPointer());
+    ReadingListModel::TypeList typeList = (ReadingListModel::TypeList)index.data(ReadingListModel::TypeListsRole).toInt();
 
-    if(typeid(*item) == typeid(ReadingListSeparatorItem))
+    if(typeList == ReadingListModel::Separator)
     {
         QSize newSize = QStyledItemDelegate::sizeHint(option, index);
-
         newSize.setHeight(7);
-
         return newSize;
     }
 
