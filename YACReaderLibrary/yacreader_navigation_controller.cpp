@@ -152,6 +152,11 @@ void YACReaderNavigationController::selectedList(const QModelIndex &mi)
     libraryWindow->foldersView->clearSelection();
 }
 
+void YACReaderNavigationController::reselectCurrentList()
+{
+    selectedList(libraryWindow->listsView->currentIndex());
+}
+
 void YACReaderNavigationController::selectedIndexFromHistory(const QModelIndex &sourceMI)
 {
     //TODO NO searching allowed, just disable backward/forward actions in searching mode

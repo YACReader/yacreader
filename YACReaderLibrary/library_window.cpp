@@ -1607,13 +1607,14 @@ void LibraryWindow::deleteSelectedReadingList()
     QModelIndexList selectedLists = listsView->selectionModel()->selectedIndexes();
     if(!selectedLists.isEmpty())
     {
-        QModelIndex mi = selectedLists.at(0);
+        QModelIndex mi = listsModelProxy->mapToSource(selectedLists.at(0));
         if(listsModel->isEditable(mi))
         {
             int ret = QMessageBox::question(this,tr("Delete list/label"),tr("The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?"),QMessageBox::Yes,QMessageBox::No);
             if(ret == QMessageBox::Yes)
             {
                 listsModel->deleteItem(mi);
+                navigationController->reselectCurrentList();
             }
         }
     }

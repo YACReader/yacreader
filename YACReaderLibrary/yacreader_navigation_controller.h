@@ -21,6 +21,7 @@ public slots:
     void reselectCurrentFolder();
     //reading lists
     void selectedList(const QModelIndex & mi);
+    void reselectCurrentList();
     //history navigation
     void selectedIndexFromHistory(const QModelIndex & mi);
     //empty subfolder
