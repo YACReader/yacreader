@@ -69,7 +69,7 @@ private:
     void cleanAll();
     void setupReadingListsData(QSqlQuery &sqlquery, ReadingListItem *parent);
     QList<SpecialListItem *> setupSpecialLists(QSqlDatabase &db);
-    QList<LabelItem *> setupLabels(QSqlDatabase &db);
+    void setupLabels(QSqlDatabase &db);
     void setupReadingLists(QSqlDatabase &db);
     int addLabelIntoList(LabelItem *item);
 
