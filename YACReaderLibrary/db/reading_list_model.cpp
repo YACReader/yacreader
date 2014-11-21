@@ -73,6 +73,12 @@ QVariant ReadingListModel::data(const QModelIndex &index, int role) const
             return QVariant(ReadingListModel::Separator);
     }
 
+    if (role == ReadingListModel::LabelColorRole && typeid(*item) == typeid(LabelItem) )
+    {
+        LabelItem * labelItem = static_cast<LabelItem*>(item);
+        return QVariant(labelItem->colorid());
+    }
+
     if (role == ReadingListModel::IDRole)
         return item->getId();
 

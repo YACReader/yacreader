@@ -80,32 +80,31 @@ void YACReaderNavigationController::loadFolderInfo(const QModelIndex &modelIndex
 
 void YACReaderNavigationController::loadListInfo(const QModelIndex &modelIndex)
 {
-    qulonglong id = modelIndex.data(ReadingListModel::IDRole).toULongLong();
-
     switch(modelIndex.data(ReadingListModel::TypeListsRole).toInt())
     {
     case ReadingListModel::SpecialList:
-        loadSpecialListInfo(id);
+        loadSpecialListInfo(modelIndex);
         break;
 
     case ReadingListModel::Label:
-        loadLabelInfo(id);
+        loadLabelInfo(modelIndex);
         break;
 
     case ReadingListModel::ReadingList:
-        loadReadingListInfo(id);
+        loadReadingListInfo(modelIndex);
         break;
     }
 }
 
-void YACReaderNavigationController::loadSpecialListInfo(const qulonglong id)
+void YACReaderNavigationController::loadSpecialListInfo(const QModelIndex &modelIndex)
 {
 
 }
 
-void YACReaderNavigationController::loadLabelInfo(const qulonglong id)
+void YACReaderNavigationController::loadLabelInfo(const QModelIndex &modelIndex)
 {
-    //check comics in folder with id = folderId
+    qulonglong id = modelIndex.data(ReadingListModel::IDRole).toULongLong();
+    //check comics in label with id = id
     libraryWindow->comicsModel->setupLabelModelData(id,libraryWindow->foldersModel->getDatabase());
     libraryWindow->comicsView->setModel(libraryWindow->comicsModel);
 
@@ -119,13 +118,13 @@ void YACReaderNavigationController::loadLabelInfo(const qulonglong id)
     else{
         //showEmptyFolder
         //loadEmptyLabelInfo(); //there is no info in an empty label by now, TODO design something
-        //TODO libraryWindow->emptyLabelWidget->setColor(YACReader::YRed);
+        libraryWindow->emptyLabelWidget->setColor((YACReader::LabelColors)modelIndex.data(ReadingListModel::LabelColorRole).toInt());
         libraryWindow->showEmptyLabelView();
         libraryWindow->disableComicsActions(true);
     }
 }
 
-void YACReaderNavigationController::loadReadingListInfo(const qulonglong id)
+void YACReaderNavigationController::loadReadingListInfo(const QModelIndex &modelIndex)
 {
 
 }

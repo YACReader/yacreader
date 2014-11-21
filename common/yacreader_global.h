@@ -113,7 +113,7 @@ namespace YACReader
  };
 
  enum LabelColors{
-     YRed = 0,
+     YRed = 1,
      YOrange,
      YYellow,
      YGreen,
@@ -132,6 +132,8 @@ void addSperator(QWidget * w);
 QAction * createSeparator();
 QString colorToName(LabelColors colors);
 QIcon noHighlightedIcon(const QString & path);
+void colorize(QImage &img, QColor &col);
+QString labelColorToRGBString(LabelColors color);
 }
 #endif
 

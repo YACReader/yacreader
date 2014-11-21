@@ -30,9 +30,9 @@ public slots:
 
     void loadFolderInfo(const QModelIndex & modelIndex);
     void loadListInfo(const QModelIndex & modelIndex);
-    void loadSpecialListInfo(const qulonglong id);
-    void loadLabelInfo(const qulonglong id);
-    void loadReadingListInfo(const qulonglong id);
+    void loadSpecialListInfo(const QModelIndex & modelIndex);
+    void loadLabelInfo(const QModelIndex & modelIndex);
+    void loadReadingListInfo(const QModelIndex & modelIndex);
 
     void loadPreviousStatus();
 

@@ -36,10 +36,10 @@ EmptyLabelWidget::EmptyLabelWidget(QWidget *parent) :
 
 void EmptyLabelWidget::setColor(YACReader::LabelColors color)
 {
-    //TODO tint the widget depending on color
-    //backgroundColor = "#FF0000";
-
-    //repaint();
+    QPixmap p(":/images/empty_label.png");
+    QImage img = p.toImage().convertToFormat(QImage::Format_ARGB32);
+    YACReader::colorize(img,QColor(YACReader::labelColorToRGBString(color)));
+    iconLabel->setPixmap(QPixmap::fromImage(img));
 }
 
 void EmptyLabelWidget::paintEvent(QPaintEvent * event)
