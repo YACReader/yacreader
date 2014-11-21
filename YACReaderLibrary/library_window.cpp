@@ -65,6 +65,7 @@
 #include "grid_comics_view.h"
 #include "comics_view_transition.h"
 #include "empty_folder_widget.h"
+#include "empty_label_widget.h"
 
 #include "edit_shortcuts_dialog.h"
 #include "shortcuts_manager.h"
@@ -240,6 +241,7 @@ void LibraryWindow::doLayout()
     comicsView->setToolBar(editInfoToolBar);
     comicsViewStack->addWidget(comicsViewTransition = new ComicsViewTransition());
     comicsViewStack->addWidget(emptyFolderWidget = new EmptyFolderWidget());
+    comicsViewStack->addWidget(emptyLabelWidget = new EmptyLabelWidget());
     comicsViewStack->addWidget(noSearchResultsWidget = new NoSearchResultsWidget());
     comicsViewStack->addWidget(comicsView);
 
@@ -2151,6 +2153,11 @@ void LibraryWindow::showComicsView()
 void LibraryWindow::showEmptyFolderView()
 {
     comicsViewStack->setCurrentWidget(emptyFolderWidget);
+}
+
+void LibraryWindow::showEmptyLabelView()
+{
+    comicsViewStack->setCurrentWidget(emptyLabelWidget);
 }
 
 void LibraryWindow::showNoSearchResultsView()

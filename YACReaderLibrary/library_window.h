@@ -68,6 +68,7 @@ class ReadingListModel;
 class ReadingListModelProxy;
 class YACReaderReadingListsView;
 class YACReaderHistoryController;
+class EmptyLabelWidget;
 
 #include "comic_db.h"
 
@@ -121,6 +122,7 @@ private:
     QStackedWidget * comicsViewStack;
     ComicsViewTransition * comicsViewTransition;
     EmptyFolderWidget * emptyFolderWidget;
+    EmptyLabelWidget * emptyLabelWidget;
     NoSearchResultsWidget * noSearchResultsWidget;
 
     YACReaderFoldersView * foldersView;
@@ -358,6 +360,7 @@ public slots:
     void toggleComicsView_delayed();//used in orther to avoid flickering;
     void showComicsView();
     void showEmptyFolderView();
+    void showEmptyLabelView();
     void showNoSearchResultsView();
     void toggleComicsView();
     void checkSearchNumResults(int numResults);

@@ -274,36 +274,50 @@ QStringList ComicModel::getPaths(const QString & _source)
 	return paths;
 }
 
-void ComicModel::setupModelData(unsigned long long int folderId,const QString & databasePath)
+void ComicModel::setupFolderModelData(unsigned long long int folderId,const QString & databasePath)
 {
-	//QFile f(QCoreApplication::applicationDirPath()+"/performance.txt");
-	//f.open(QIODevice::Append);
-	beginResetModel();
-	//QElapsedTimer timer;
-	//timer.start();
-	qDeleteAll(_data);
-	_data.clear();
+    beginResetModel();
+    qDeleteAll(_data);
+    _data.clear();
 
-	//QTextStream txtS(&f);
-	//txtS << "TABLEMODEL: Tiempo de borrado: " << timer.elapsed() << "ms\r\n";
-	_databasePath = databasePath;
-	QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
-	{
-	//crear la consulta
-	//timer.restart();
-    QSqlQuery selectQuery(db);
-	selectQuery.prepare("select ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened from comic c inner join comic_info ci on (c.comicInfoId = ci.id) where c.parentId = :parentId");
-	selectQuery.bindValue(":parentId", folderId);
-	selectQuery.exec();
-	//txtS << "TABLEMODEL: Tiempo de consulta: " << timer.elapsed() << "ms\r\n";
-	//timer.restart();
-	setupModelData(selectQuery);
-	//txtS << "TABLEMODEL: Tiempo de creaciï¿½n del modelo: " << timer.elapsed() << "ms\r\n";
-	//selectQuery.finish();
-	}
-	db.close();
-	QSqlDatabase::removeDatabase(_databasePath);
-	endResetModel();
+    _databasePath = databasePath;
+    QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+    {
+        QSqlQuery selectQuery(db);
+        selectQuery.prepare("select ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened from comic c inner join comic_info ci on (c.comicInfoId = ci.id) where c.parentId = :parentId");
+        selectQuery.bindValue(":parentId", folderId);
+        selectQuery.exec();
+        setupModelData(selectQuery);
+    }
+    db.close();
+    QSqlDatabase::removeDatabase(_databasePath);
+    endResetModel();
+
+    if(_data.length()==0)
+        emit isEmpty();
+}
+
+void ComicModel::setupLabelModelData(unsigned long long parentLabel, const QString &databasePath)
+{
+    beginResetModel();
+    qDeleteAll(_data);
+    _data.clear();
+
+    _databasePath = databasePath;
+    QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+    {
+        QSqlQuery selectQuery(db);
+        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
+                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                            "INNER JOIN comic_label cl ON (c.id == cl.comic_id) "
+                            "WHERE cl.label_id = :parentLabelId");
+        selectQuery.bindValue(":parentLabelId", parentLabel);
+        selectQuery.exec();
+        setupModelData(selectQuery);
+    }
+    db.close();
+    QSqlDatabase::removeDatabase(_databasePath);
+    endResetModel();
 
     if(_data.length()==0)
         emit isEmpty();
