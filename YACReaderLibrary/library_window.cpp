@@ -1593,11 +1593,12 @@ void LibraryWindow::addNewReadingList()
 
     if (ok) {
         QModelIndexList selectedLists = listsView->selectionModel()->selectedIndexes();
-        if(selectedLists.isEmpty() || listsModel->isReadingList(selectedLists.at(0)))
+        QModelIndex sourceMI = listsModelProxy->mapToSource(selectedLists.at(0));
+        if(selectedLists.isEmpty() || !listsModel->isReadingList(sourceMI))
             listsModel->addReadingList(newListName); //top level
         else
         {
-            listsModel->addReadingListAt(newListName,selectedLists.at(0));
+            listsModel->addReadingListAt(newListName,sourceMI);
         }
     }
 }
