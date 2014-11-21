@@ -1598,7 +1598,7 @@ void LibraryWindow::addNewReadingList()
             listsModel->addReadingList(newListName); //top level
         else
         {
-            listsModel->addReadingListAt(newListName,sourceMI);
+            listsModel->addReadingListAt(newListName,sourceMI); //sublist
         }
     }
 }
