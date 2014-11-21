@@ -195,7 +195,7 @@ void ReadingListModel::setupReadingListsData(QString path)
     //separator--------------------------------------------
 
     //setup labels
-    labels = setupLabels(db);
+    setupLabels(db);
 
     //separator--------------------------------------------
 
@@ -389,14 +389,12 @@ QList<SpecialListItem *> ReadingListModel::setupSpecialLists(QSqlDatabase & db)
     return list;
 }
 
-QList<LabelItem *> ReadingListModel::setupLabels(QSqlDatabase & db)
+void ReadingListModel::setupLabels(QSqlDatabase & db)
 {
-    QList<LabelItem *> list;
-
     QSqlQuery selectQuery("SELECT * FROM label ORDER BY ordering,name",db); //TODO add some kind of
     while(selectQuery.next()) {
         QSqlRecord record = selectQuery.record();
-        list << new LabelItem(QList<QVariant>() << record.value("name") << record.value("color") << record.value("id") << record.value("ordering"));
+        addLabelIntoList(new LabelItem(QList<QVariant>() << record.value("name") << record.value("color") << record.value("id") << record.value("ordering")));
     }
 
     //TEST
@@ -414,7 +412,6 @@ QList<LabelItem *> ReadingListModel::setupLabels(QSqlDatabase & db)
 //    INSERT INTO label (name, color, ordering) VALUES ("ainsss", "light", 11);
 //    INSERT INTO label (name, color, ordering) VALUES ("put a smile on my face", "dark", 12);
 
-    return list;
 }
 
 void ReadingListModel::setupReadingLists(QSqlDatabase & db)
@@ -450,16 +447,20 @@ int ReadingListModel::addLabelIntoList(LabelItem *item)
         {
             if(labels.at(i)->colorid() == item->colorid()) //sort by name
             {
-                while( i < labels.count() && naturalSortLessThanCI(labels.at(i)->name(),item->name()))
+                while( i < labels.count() && labels.at(i)->colorid() == item->colorid() && naturalSortLessThanCI(labels.at(i)->name(),item->name()))
                     i++;
             }
         }
 
 
         if(i >= labels.count())
+        {
+            QLOG_DEBUG() << "insertando label al final " << item->name();
             labels << item;
+        }
         else
         {
+            QLOG_DEBUG() << "insertando label en  " << i << "-" << item->name();
             labels.insert(i,item);
         }
 
