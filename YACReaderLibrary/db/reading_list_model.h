@@ -52,6 +52,7 @@ public:
 
     enum Roles {
         TypeListsRole = Qt::UserRole + 1,
+        IDRole
     };
 
     enum TypeList {

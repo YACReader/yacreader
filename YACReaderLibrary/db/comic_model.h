@@ -34,7 +34,8 @@ public:
 	QModelIndex parent(const QModelIndex &index) const;
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const;
-	void setupModelData(unsigned long long int parentFolder,const QString & databasePath);
+    void setupFolderModelData(unsigned long long int parentFolder,const QString & databasePath);
+    void setupLabelModelData(unsigned long long int parentLabel, const QString & databasePath);
     //configures the model for showing the comics matching the filter criteria.
     void setupModelData(const SearchModifiers modifier, const QString & filter, const QString & databasePath);
 

@@ -73,6 +73,9 @@ QVariant ReadingListModel::data(const QModelIndex &index, int role) const
             return QVariant(ReadingListModel::Separator);
     }
 
+    if (role == ReadingListModel::IDRole)
+        return item->getId();
+
     if(typeid(*item) == typeid(ReadingListSeparatorItem))
         return QVariant();
 

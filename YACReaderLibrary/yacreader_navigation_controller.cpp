@@ -13,6 +13,8 @@
 #include "comics_view.h"
 #include "empty_folder_widget.h"
 #include "yacreader_search_line_edit.h"
+#include "yacreader_global.h"
+#include "empty_label_widget.h"
 
 #include "QsLog.h"
 
@@ -56,7 +58,7 @@ void YACReaderNavigationController::loadFolderInfo(const QModelIndex &modelIndex
     qulonglong folderId = folderModelIndexToID(modelIndex);
 
     //check comics in folder with id = folderId
-    libraryWindow->comicsModel->setupModelData(folderId,libraryWindow->foldersModel->getDatabase());
+    libraryWindow->comicsModel->setupFolderModelData(folderId,libraryWindow->foldersModel->getDatabase());
     libraryWindow->comicsView->setModel(libraryWindow->comicsModel);
 
     //configure views
@@ -77,6 +79,53 @@ void YACReaderNavigationController::loadFolderInfo(const QModelIndex &modelIndex
 }
 
 void YACReaderNavigationController::loadListInfo(const QModelIndex &modelIndex)
+{
+    qulonglong id = modelIndex.data(ReadingListModel::IDRole).toULongLong();
+
+    switch(modelIndex.data(ReadingListModel::TypeListsRole).toInt())
+    {
+    case ReadingListModel::SpecialList:
+        loadSpecialListInfo(id);
+        break;
+
+    case ReadingListModel::Label:
+        loadLabelInfo(id);
+        break;
+
+    case ReadingListModel::ReadingList:
+        loadReadingListInfo(id);
+        break;
+    }
+}
+
+void YACReaderNavigationController::loadSpecialListInfo(const qulonglong id)
+{
+
+}
+
+void YACReaderNavigationController::loadLabelInfo(const qulonglong id)
+{
+    //check comics in folder with id = folderId
+    libraryWindow->comicsModel->setupLabelModelData(id,libraryWindow->foldersModel->getDatabase());
+    libraryWindow->comicsView->setModel(libraryWindow->comicsModel);
+
+    //configure views
+    if(libraryWindow->comicsModel->rowCount() > 0)
+    {
+        //updateView
+        libraryWindow->showComicsView();
+        libraryWindow->disableComicsActions(false);
+    }
+    else{
+        //showEmptyFolder
+        //loadEmptyLabelInfo(); //there is no info in an empty label by now, TODO design something
+        //TODO libraryWindow->emptyLabelWidget->setColor(YACReader::YRed);
+        libraryWindow->showEmptyLabelView();
+        libraryWindow->disableComicsActions(true);
+    }
+}
+
+void YACReaderNavigationController::loadReadingListInfo(const qulonglong id)
 {
 
 }
