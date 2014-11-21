@@ -245,7 +245,7 @@ void ReadingListModel::addReadingList(const QString &name)
 
 void ReadingListModel::addReadingListAt(const QString &name, const QModelIndex &mi)
 {
-
+    //TODO
 }
 
 bool ReadingListModel::isEditable(const QModelIndex &mi)
