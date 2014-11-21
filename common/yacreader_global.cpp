@@ -114,16 +114,17 @@ QString YACReader::labelColorToRGBString(LabelColors color)
         return "#FF9FDD";
 
 #ifdef Q_OS_MAC
-    case YWhite: case YLight: case YDark:
+    case YWhite:
         return "#E3E3E3";
 #else
     case YWhite:
         return "#FFFFFF";
+#endif
     case YLight:
         return "#C8C8C8";
     case YDark:
         return "#ABABAB";
-#endif
+
 
     }
 }
