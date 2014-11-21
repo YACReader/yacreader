@@ -25,7 +25,6 @@
     <file alias="images/flow_to_grid.gif">../images/flow_to_grid.gif</file>
     <file alias="images/grid_to_flow.gif">../images/grid_to_flow.gif</file>
     <file alias="images/empty_folder.png">../images/empty_folder_osx.png</file>
-    <file alias="images/empty_label.png">../images/empty_label_osx.png</file>
     <file alias="images/empty_search.png">../images/empty_search_osx.png</file>
     <file>../images/iconSearch.png</file>
     <file>../images/clearSearch.png</file>

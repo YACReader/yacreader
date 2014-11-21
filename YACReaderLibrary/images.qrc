@@ -111,6 +111,7 @@
                 <file>../images/shortcuts_group_reading.png</file>
                 <file>../images/shortcuts_group_visualization.png</file>
                 <file>../images/searching_icon.png</file>
+                <file>../images/empty_label.png</file>
 		<!--<file>../images/busy_background.png</file>-->
 	</qresource>
 </RCC>
