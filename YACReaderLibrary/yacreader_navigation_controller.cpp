@@ -15,6 +15,7 @@
 #include "yacreader_search_line_edit.h"
 #include "yacreader_global.h"
 #include "empty_label_widget.h"
+#include "empty_special_list.h"
 
 #include "QsLog.h"
 
@@ -98,7 +99,21 @@ void YACReaderNavigationController::loadListInfo(const QModelIndex &modelIndex)
 
 void YACReaderNavigationController::loadSpecialListInfo(const QModelIndex &modelIndex)
 {
+    ReadingListModel::TypeSpecialList type = (ReadingListModel::TypeSpecialList)modelIndex.data(ReadingListModel::SpecialListTypeRole).toInt();
+    switch(type)
+    {
+    case ReadingListModel::Favorites:
 
+        libraryWindow->emptySpecialList->setPixmap(QPixmap(":/images/empty_favorites.png"));
+        libraryWindow->emptySpecialList->setText(tr("No favorites"));
+        break;
+    case ReadingListModel::Reading:
+        libraryWindow->emptySpecialList->setPixmap(QPixmap(":/images/empty_current_readings.png"));
+        libraryWindow->emptySpecialList->setText(tr("You are not reading anything yet, come on!!"));
+        break;
+    }
+    libraryWindow->showEmptySpecialList();
+    libraryWindow->disableComicsActions(true);
 }
 
 void YACReaderNavigationController::loadLabelInfo(const QModelIndex &modelIndex)
@@ -126,7 +141,8 @@ void YACReaderNavigationController::loadLabelInfo(const QModelIndex &modelIndex)
 
 void YACReaderNavigationController::loadReadingListInfo(const QModelIndex &modelIndex)
 {
-
+    libraryWindow->showEmptyReadingListWidget();
+    libraryWindow->disableComicsActions(true);
 }
 
 void YACReaderNavigationController::selectedList(const QModelIndex &mi)

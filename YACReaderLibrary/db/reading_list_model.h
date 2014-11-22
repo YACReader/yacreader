@@ -53,7 +53,8 @@ public:
     enum Roles {
         TypeListsRole = Qt::UserRole + 1,
         IDRole,
-        LabelColorRole
+        LabelColorRole,
+        SpecialListTypeRole
     };
 
     enum TypeList {
@@ -61,6 +62,11 @@ public:
         Label,
         ReadingList,
         Separator
+    };
+
+    enum TypeSpecialList {
+        Reading,
+        Favorites
     };
 
 signals:
