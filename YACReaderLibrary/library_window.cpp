@@ -1996,13 +1996,18 @@ void LibraryWindow::toNormal()
 void LibraryWindow::setSearchFilter(const YACReader::SearchModifiers modifier, QString filter)
 {
     if(!filter.isEmpty())
-	{
-            status = LibraryWindow::Searching;
-            foldersModelProxy->setFilter(modifier, filter, true);//includeComicsCheckBox->isChecked());
-            comicsModel->setupModelData(modifier, filter, foldersModel->getDatabase());
-            comicsView->enableFilterMode(true);
-			foldersView->expandAll();
-	}
+    {
+        status = LibraryWindow::Searching;
+        foldersModelProxy->setFilter(modifier, filter, true);//includeComicsCheckBox->isChecked());
+        comicsModel->setupModelData(modifier, filter, foldersModel->getDatabase());
+        comicsView->enableFilterMode(true);
+        foldersView->expandAll();
+
+        if(comicsModel->rowCount() == 0)
+            showNoSearchResultsView();
+        else
+            showComicsView();
+    }
     else if(status == LibraryWindow::Searching)
     {//if no searching, then ignore this
         clearSearchFilter();
