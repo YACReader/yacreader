@@ -287,7 +287,7 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
         queryInsertDefaultReadingList.prepare("INSERT INTO default_reading_list (name) VALUES (:name)");
 
         //1 Favorites
-        queryInsertDefaultReadingList.bindValue(":name", tr("Favorites"));
+        queryInsertDefaultReadingList.bindValue(":name", "Favorites");
         success = success && queryInsertDefaultReadingList.exec();
 
         //Reading doesn't need its onw list
