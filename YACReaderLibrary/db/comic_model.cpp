@@ -284,7 +284,9 @@ void ComicModel::setupFolderModelData(unsigned long long int folderId,const QStr
     QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
     {
         QSqlQuery selectQuery(db);
-        selectQuery.prepare("select ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened from comic c inner join comic_info ci on (c.comicInfoId = ci.id) where c.parentId = :parentId");
+        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
+                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                            "WHERE c.parentId = :parentId");
         selectQuery.bindValue(":parentId", folderId);
         selectQuery.exec();
         setupModelData(selectQuery);
@@ -312,6 +314,56 @@ void ComicModel::setupLabelModelData(unsigned long long parentLabel, const QStri
                             "INNER JOIN comic_label cl ON (c.id == cl.comic_id) "
                             "WHERE cl.label_id = :parentLabelId");
         selectQuery.bindValue(":parentLabelId", parentLabel);
+        selectQuery.exec();
+        setupModelData(selectQuery);
+    }
+    db.close();
+    QSqlDatabase::removeDatabase(_databasePath);
+    endResetModel();
+
+    if(_data.length()==0)
+        emit isEmpty();
+}
+
+void ComicModel::setupFavoritesModelData(const QString &databasePath)
+{
+    beginResetModel();
+    qDeleteAll(_data);
+    _data.clear();
+
+    _databasePath = databasePath;
+    QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+    {
+        QSqlQuery selectQuery(db);
+        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
+                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                            "INNER JOIN comic_default_reading_list cdrl ON (c.id == cdrl.comic_id) "
+                            "WHERE cdrl.default_reading_list_id = :parentDefaultListId");
+        selectQuery.bindValue(":parentDefaultListId", 1);
+        selectQuery.exec();
+        setupModelData(selectQuery);
+    }
+    db.close();
+    QSqlDatabase::removeDatabase(_databasePath);
+    endResetModel();
+
+    if(_data.length()==0)
+        emit isEmpty();
+}
+
+void ComicModel::setupReadingModelData(const QString &databasePath)
+{
+    beginResetModel();
+    qDeleteAll(_data);
+    _data.clear();
+
+    _databasePath = databasePath;
+    QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+    {
+        QSqlQuery selectQuery(db);
+        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
+                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                            "WHERE ci.hasBeenOpened = 1 AND ci.read = 0");
         selectQuery.exec();
         setupModelData(selectQuery);
     }

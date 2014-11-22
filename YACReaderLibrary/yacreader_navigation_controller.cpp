@@ -100,20 +100,42 @@ void YACReaderNavigationController::loadListInfo(const QModelIndex &modelIndex)
 void YACReaderNavigationController::loadSpecialListInfo(const QModelIndex &modelIndex)
 {
     ReadingListModel::TypeSpecialList type = (ReadingListModel::TypeSpecialList)modelIndex.data(ReadingListModel::SpecialListTypeRole).toInt();
+
     switch(type)
     {
     case ReadingListModel::Favorites:
-
-        libraryWindow->emptySpecialList->setPixmap(QPixmap(":/images/empty_favorites.png"));
-        libraryWindow->emptySpecialList->setText(tr("No favorites"));
+        libraryWindow->comicsModel->setupFavoritesModelData(libraryWindow->foldersModel->getDatabase());
         break;
     case ReadingListModel::Reading:
-        libraryWindow->emptySpecialList->setPixmap(QPixmap(":/images/empty_current_readings.png"));
-        libraryWindow->emptySpecialList->setText(tr("You are not reading anything yet, come on!!"));
+        libraryWindow->comicsModel->setupReadingModelData(libraryWindow->foldersModel->getDatabase());
         break;
     }
-    libraryWindow->showEmptySpecialList();
-    libraryWindow->disableComicsActions(true);
+
+    libraryWindow->comicsView->setModel(libraryWindow->comicsModel);
+
+    if(libraryWindow->comicsModel->rowCount() > 0)
+    {
+        libraryWindow->showComicsView();
+        libraryWindow->disableComicsActions(false);
+    }
+    else
+    {
+        //setup empty special list widget
+        switch(type)
+        {
+        case ReadingListModel::Favorites:
+            libraryWindow->emptySpecialList->setPixmap(QPixmap(":/images/empty_favorites.png"));
+            libraryWindow->emptySpecialList->setText(tr("No favorites"));
+            break;
+        case ReadingListModel::Reading:
+            libraryWindow->emptySpecialList->setPixmap(QPixmap(":/images/empty_current_readings.png"));
+            libraryWindow->emptySpecialList->setText(tr("You are not reading anything yet, come on!!"));
+            break;
+        }
+
+        libraryWindow->showEmptySpecialList();
+        libraryWindow->disableComicsActions(true);
+    }
 }
 
 void YACReaderNavigationController::loadLabelInfo(const QModelIndex &modelIndex)
