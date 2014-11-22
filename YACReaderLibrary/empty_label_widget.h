@@ -2,25 +2,21 @@
 #define EMPTY_LABEL_WIDGET_H
 
 #include <QtWidgets>
+#include "empty_container_info.h"
 #include "yacreader_global.h"
 
-class EmptyLabelWidget : public QWidget
+class EmptyLabelWidget : public EmptyContainerInfo
 {
     Q_OBJECT
 public:
     explicit EmptyLabelWidget(QWidget *parent = 0);
     void setColor(YACReader::LabelColors color);
-    void paintEvent(QPaintEvent *event);
 
 signals:
 
 public slots:
 
 protected:
-    QLabel * iconLabel;
-    QLabel * titleLabel;
-    QString backgroundColor;
-
 };
 
 #endif // EMPTY_LABEL_WIDGET_H

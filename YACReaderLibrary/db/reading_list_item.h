@@ -5,6 +5,7 @@
 #include <QVariant>
 
 #include "yacreader_global.h"
+#include "reading_list_model.h"
 //TODO add propper constructors, using QList<QVariant> is not safe
 
 class ListItem
@@ -25,6 +26,7 @@ class SpecialListItem : public ListItem
 public:
     SpecialListItem(const QList<QVariant> &data);
     QIcon getIcon() const;
+    ReadingListModel::TypeSpecialList getType() const;
 };
 
 //------------------------------------------------------

@@ -69,6 +69,8 @@ class ReadingListModelProxy;
 class YACReaderReadingListsView;
 class YACReaderHistoryController;
 class EmptyLabelWidget;
+class EmptySpecialListWidget;
+class EmptyReadingListWidget;
 
 #include "comic_db.h"
 
@@ -123,6 +125,8 @@ private:
     ComicsViewTransition * comicsViewTransition;
     EmptyFolderWidget * emptyFolderWidget;
     EmptyLabelWidget * emptyLabelWidget;
+    EmptySpecialListWidget * emptySpecialList;
+    EmptyReadingListWidget * emptyReadingList;
     NoSearchResultsWidget * noSearchResultsWidget;
 
     YACReaderFoldersView * foldersView;
@@ -361,6 +365,8 @@ public slots:
     void showComicsView();
     void showEmptyFolderView();
     void showEmptyLabelView();
+    void showEmptySpecialList();
+    void showEmptyReadingListWidget();
     void showNoSearchResultsView();
     void toggleComicsView();
     void checkSearchNumResults(int numResults);

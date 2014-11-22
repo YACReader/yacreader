@@ -38,6 +38,15 @@ QIcon SpecialListItem::getIcon() const
     }
 }
 
+ReadingListModel::TypeSpecialList SpecialListItem::getType() const
+{
+    if(itemData.count()>1)
+    {
+        int id = itemData.at(1).toInt();
+        return (ReadingListModel::TypeSpecialList)id;
+    }
+}
+
 //------------------------------------------------------
 
 LabelItem::LabelItem(const QList<QVariant> &data)

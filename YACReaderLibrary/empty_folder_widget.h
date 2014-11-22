@@ -1,14 +1,12 @@
 #ifndef EMPTY_FOLDER_WIDGET_H
 #define EMPTY_FOLDER_WIDGET_H
 
-#include <QWidget>
-#include <QModelIndex>
+#include "empty_container_info.h"
+#include <QtWidgets>
 
-class QLabel;
-class QListView;
-class QStringListModel;
 
-class EmptyFolderWidget : public QWidget
+
+class EmptyFolderWidget : public EmptyContainerInfo
 {
     Q_OBJECT
 public:
@@ -25,12 +23,9 @@ public slots:
     void onItemClicked(const QModelIndex & mi);
 
 protected:
-    QLabel * iconLabel;
-    QLabel * titleLabel;
     QListView * foldersView;
     QModelIndex parent;
     QStringListModel * subfoldersModel;
-    void paintEvent(QPaintEvent *);
     QString backgroundColor;
 
     //Drop to import
