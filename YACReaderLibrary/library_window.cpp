@@ -2170,7 +2170,7 @@ void LibraryWindow::showNoSearchResultsView()
 //TODO recover the current comics selection and restore it in the destination
 void LibraryWindow::toggleComicsView()
 {
-    if(comicsViewStack->currentWidget()!=emptyFolderWidget) {
+    if(comicsViewStack->currentWidget()==comicsView) {
         QTimer::singleShot(0,this,SLOT(showComicsViewTransition()));
         QTimer::singleShot(32,this,SLOT(toggleComicsView_delayed()));
     } else
