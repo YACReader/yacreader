@@ -43,9 +43,6 @@ void YACReaderNavigationController::selectedFolder(const QModelIndex &mi)
     }
 
     loadFolderInfo(modelIndex);
-
-    //if a folder is selected, listsView selection must be cleared
-    libraryWindow->listsView->clearSelection();
 }
 
 void YACReaderNavigationController::reselectCurrentFolder()
@@ -77,6 +74,9 @@ void YACReaderNavigationController::loadFolderInfo(const QModelIndex &modelIndex
     }
 
     libraryWindow->updateFoldersViewConextMenu(modelIndex);
+
+    //if a folder is selected, listsView selection must be cleared
+    libraryWindow->listsView->clearSelection();
 }
 
 void YACReaderNavigationController::loadListInfo(const QModelIndex &modelIndex)
@@ -95,6 +95,9 @@ void YACReaderNavigationController::loadListInfo(const QModelIndex &modelIndex)
         loadReadingListInfo(modelIndex);
         break;
     }
+
+    //if a list is selected, foldersView selection must be cleared
+    libraryWindow->foldersView->clearSelection();
 }
 
 void YACReaderNavigationController::loadSpecialListInfo(const QModelIndex &modelIndex)
@@ -185,9 +188,6 @@ void YACReaderNavigationController::selectedList(const QModelIndex &mi)
     }
 
     loadListInfo(modelIndex);
-
-    //if a list is selected, foldersView selection must be cleared
-    libraryWindow->foldersView->clearSelection();
 }
 
 void YACReaderNavigationController::reselectCurrentList()

@@ -1531,6 +1531,7 @@ void LibraryWindow::addFolderToCurrentIndex()
             QModelIndex newIndex = foldersModel->addFolderAtParent(newFolderName,currentIndex);
             foldersView->setCurrentIndex(foldersModelProxy->mapFromSource(newIndex));
             navigationController->loadFolderInfo(newIndex);
+            historyController->updateHistory(YACReaderLibrarySourceContainer(newIndex,YACReaderLibrarySourceContainer::Folder));
             //a new folder is always an empty folder
             showEmptyFolderView();
         }
