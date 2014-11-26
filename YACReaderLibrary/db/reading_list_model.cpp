@@ -256,12 +256,16 @@ void ReadingListModel::addReadingListAt(const QString &name, const QModelIndex &
 
 bool ReadingListModel::isEditable(const QModelIndex &mi)
 {
+    if(!mi.isValid())
+        return false;
     ListItem * item = static_cast<ListItem*>(mi.internalPointer());
     return typeid(*item) != typeid(SpecialListItem);
 }
 
 bool ReadingListModel::isReadingList(const QModelIndex &mi)
 {
+    if(!mi.isValid())
+        return false;
     ListItem * item = static_cast<ListItem*>(mi.internalPointer());
     return typeid(*item) == typeid(ReadingListItem);
 }
