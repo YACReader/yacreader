@@ -3,7 +3,7 @@
 
 #include <QObject>
 class LibraryWindow;
-
+class YACReaderLibrarySourceContainer;
 
 class YACReaderNavigationController : public QObject
 {
@@ -23,7 +23,8 @@ public slots:
     void selectedList(const QModelIndex & mi);
     void reselectCurrentList();
     //history navigation
-    void selectedIndexFromHistory(const QModelIndex & mi);
+    void selectedIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer);
+    void loadIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer);
     //empty subfolder
     void selectSubfolder(const QModelIndex &sourceMI, int child);
 

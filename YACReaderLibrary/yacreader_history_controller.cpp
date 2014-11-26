@@ -9,7 +9,7 @@ void YACReaderHistoryController::clear()
 {
     currentFolderNavigation = 0;
     history.clear();
-    history.append(QModelIndex()); //root folder is always the first item
+    history.append(YACReaderLibrarySourceContainer(QModelIndex(),YACReaderLibrarySourceContainer::Folder)); //root folder is always the first item
 
     emit(enabledBackward(false));
     emit(enabledForward(false));
@@ -41,10 +41,10 @@ void YACReaderHistoryController::forward()
         emit(enabledForward(false));
 }
 
-void YACReaderHistoryController::updateHistory(const QModelIndex &mi)
+void YACReaderHistoryController::updateHistory(const YACReaderLibrarySourceContainer &source)
 {
     //remove history from current index
-    if(!mi.isValid() && history.count() == 1)
+    if(!source.sourceModelIndex.isValid() && history.count() == 1)
         return;
 
     int numElementsToRemove = history.count() - (currentFolderNavigation+1);
@@ -54,9 +54,9 @@ void YACReaderHistoryController::updateHistory(const QModelIndex &mi)
         history.removeLast();
     }
 
-    if(mi!=history.at(currentFolderNavigation))
+    if(source!=history.at(currentFolderNavigation))
     {
-        history.append(mi);
+        history.append(source);
 
         emit(enabledBackward(true));
         currentFolderNavigation++;
@@ -65,12 +65,44 @@ void YACReaderHistoryController::updateHistory(const QModelIndex &mi)
     emit(enabledForward(false));
 }
 
-QModelIndex YACReaderHistoryController::lastIndex()
+YACReaderLibrarySourceContainer YACReaderHistoryController::lastSourceContainer()
 {
     return history.last();
 }
 
-QModelIndex YACReaderHistoryController::currentIndex()
+YACReaderLibrarySourceContainer YACReaderHistoryController::currentSourceContainer()
 {
     return history.at(currentFolderNavigation);
+}
+
+//------------------------------------------------------------------------------
+
+YACReaderLibrarySourceContainer::YACReaderLibrarySourceContainer()
+    :sourceModelIndex(QModelIndex()),type(None)
+{
+
+}
+
+YACReaderLibrarySourceContainer::YACReaderLibrarySourceContainer(const QModelIndex &sourceModelIndex, YACReaderLibrarySourceContainer::SourceType type)
+    :sourceModelIndex(sourceModelIndex),type(type)
+{}
+
+QModelIndex YACReaderLibrarySourceContainer::getSourceModelIndex() const
+{
+    return sourceModelIndex;
+}
+
+YACReaderLibrarySourceContainer::SourceType YACReaderLibrarySourceContainer::getType() const
+{
+    return type;
+}
+
+bool YACReaderLibrarySourceContainer::operator==(const YACReaderLibrarySourceContainer &other) const
+{
+    return sourceModelIndex == other.sourceModelIndex && type == other.type;
+}
+
+bool YACReaderLibrarySourceContainer::operator!=(const YACReaderLibrarySourceContainer &other) const
+{
+    return !(*this == other);
 }
