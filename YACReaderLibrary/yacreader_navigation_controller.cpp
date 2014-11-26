@@ -31,7 +31,7 @@ void YACReaderNavigationController::selectedFolder(const QModelIndex &mi)
     QModelIndex modelIndex = libraryWindow->foldersModelProxy->mapToSource(mi);
 
     //update history
-    libraryWindow->historyController->updateHistory(modelIndex);
+    libraryWindow->historyController->updateHistory(YACReaderLibrarySourceContainer(modelIndex, YACReaderLibrarySourceContainer::Folder));
 
     if(libraryWindow->status == LibraryWindow::Searching)
     {
@@ -173,7 +173,7 @@ void YACReaderNavigationController::selectedList(const QModelIndex &mi)
     QModelIndex modelIndex = libraryWindow->listsModelProxy->mapToSource(mi);
 
     //update history
-    libraryWindow->historyController->updateHistory(modelIndex);
+    libraryWindow->historyController->updateHistory(YACReaderLibrarySourceContainer(modelIndex,YACReaderLibrarySourceContainer::List));
 
     if(libraryWindow->status == LibraryWindow::Searching)
     {
@@ -195,7 +195,7 @@ void YACReaderNavigationController::reselectCurrentList()
     selectedList(libraryWindow->listsView->currentIndex());
 }
 
-void YACReaderNavigationController::selectedIndexFromHistory(const QModelIndex &sourceMI)
+void YACReaderNavigationController::selectedIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer)
 {
     //TODO NO searching allowed, just disable backward/forward actions in searching mode
     if(libraryWindow->status == LibraryWindow::Searching)
@@ -206,17 +206,38 @@ void YACReaderNavigationController::selectedIndexFromHistory(const QModelIndex &
     }
 
     //TODO more info about mi is needed (folder, lists...)
-    QModelIndex mi = libraryWindow->foldersModelProxy->mapFromSource(sourceMI);
-    libraryWindow->foldersView->scrollTo(mi,QAbstractItemView::PositionAtTop);
-    libraryWindow->foldersView->setCurrentIndex(mi);
-    loadFolderInfo(sourceMI);
+    loadIndexFromHistory(sourceContainer);
+}
+
+void YACReaderNavigationController::loadIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer)
+{
+    QModelIndex sourceMI = sourceContainer.getSourceModelIndex();
+    switch(sourceContainer.getType())
+    {
+    case YACReaderLibrarySourceContainer::Folder:
+    {
+        QModelIndex mi = libraryWindow->foldersModelProxy->mapFromSource(sourceMI);
+        libraryWindow->foldersView->scrollTo(mi,QAbstractItemView::PositionAtTop);
+        libraryWindow->foldersView->setCurrentIndex(mi);
+        loadFolderInfo(sourceMI);
+        break;
+    }
+    case YACReaderLibrarySourceContainer::List:
+    {
+        QModelIndex mi = libraryWindow->listsModelProxy->mapFromSource(sourceMI);
+        libraryWindow->listsView->scrollTo(mi,QAbstractItemView::PositionAtTop);
+        libraryWindow->listsView->setCurrentIndex(mi);
+        loadListInfo(sourceMI);
+        break;
+    }
+    }
 }
 
 void YACReaderNavigationController::selectSubfolder(const QModelIndex &sourceMIParent, int child)
 {
     QModelIndex dest = libraryWindow->foldersModel->index(child,0,sourceMIParent);
     libraryWindow->foldersView->setCurrentIndex(libraryWindow->foldersModelProxy->mapFromSource(dest));
-    libraryWindow->historyController->updateHistory(dest);
+    libraryWindow->historyController->updateHistory(YACReaderLibrarySourceContainer(dest,YACReaderLibrarySourceContainer::Folder));
     loadFolderInfo(dest);
 }
 
@@ -229,18 +250,15 @@ void YACReaderNavigationController::loadEmptyFolderInfo(const QModelIndex &model
 
 void YACReaderNavigationController::loadPreviousStatus()
 {
-    QModelIndex sourceMI = libraryWindow->historyController->currentIndex();
-    QModelIndex mi = libraryWindow->foldersModelProxy->mapFromSource(sourceMI);
-    libraryWindow->foldersView->scrollTo(mi,QAbstractItemView::PositionAtTop);
-    libraryWindow->foldersView->setCurrentIndex(mi);
-    loadFolderInfo(sourceMI);
+    YACReaderLibrarySourceContainer sourceContainer = libraryWindow->historyController->currentSourceContainer();
+    loadIndexFromHistory(sourceContainer);
 }
 
 void YACReaderNavigationController::setupConnections()
 {
     connect(libraryWindow->foldersView,SIGNAL(clicked(QModelIndex)),this,SLOT(selectedFolder(QModelIndex)));
     connect(libraryWindow->listsView,SIGNAL(clicked(QModelIndex)),this,SLOT(selectedList(QModelIndex)));
-    connect(libraryWindow->historyController,SIGNAL(modelIndexSelected(QModelIndex)),this,SLOT(selectedIndexFromHistory(QModelIndex)));
+    connect(libraryWindow->historyController,SIGNAL(modelIndexSelected(YACReaderLibrarySourceContainer)),this,SLOT(selectedIndexFromHistory(YACReaderLibrarySourceContainer)));
     connect(libraryWindow->emptyFolderWidget,SIGNAL(subfolderSelected(QModelIndex,int)),this,SLOT(selectSubfolder(QModelIndex,int)));
 }
 
