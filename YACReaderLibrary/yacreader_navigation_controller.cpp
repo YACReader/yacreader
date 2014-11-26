@@ -205,7 +205,6 @@ void YACReaderNavigationController::selectedIndexFromHistory(const YACReaderLibr
         libraryWindow->clearSearchFilter();
     }
 
-    //TODO more info about mi is needed (folder, lists...)
     loadIndexFromHistory(sourceContainer);
 }
 

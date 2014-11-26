@@ -1517,7 +1517,8 @@ void LibraryWindow::addFolderToCurrentIndex()
                                                   tr("Folder name:"), QLineEdit::Normal,
                                                   "", &ok);
 
-    QRegExp invalidChars("\/\\\:\*\?\"\<\>\|");//TODO this regexp is not properly written
+    //chars not supported in a folder's name: / \ : * ? " < > |
+    QRegExp invalidChars("\\/\\:\\*\\?\\\"\\<\\>\\|\\\\");//TODO this regexp is not properly written
     bool isValid = !newFolderName.contains(invalidChars);
 
     if (ok && !newFolderName.isEmpty() && isValid)
