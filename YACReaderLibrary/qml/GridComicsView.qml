@@ -267,12 +267,12 @@ Rectangle {
 
 
             function numCellsPerRow() {
-                return Math.floor(width / 190);
+                return Math.floor(width / 185);
             }
 
             onWidthChanged: {
                 var numCells = numCellsPerRow();
-                var rest = width % 190;
+                var rest = width % 185;
 
                 if(numCells > 0)
                 {
