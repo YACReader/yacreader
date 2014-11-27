@@ -259,6 +259,7 @@ void YACReaderNavigationController::setupConnections()
     connect(libraryWindow->listsView,SIGNAL(clicked(QModelIndex)),this,SLOT(selectedList(QModelIndex)));
     connect(libraryWindow->historyController,SIGNAL(modelIndexSelected(YACReaderLibrarySourceContainer)),this,SLOT(selectedIndexFromHistory(YACReaderLibrarySourceContainer)));
     connect(libraryWindow->emptyFolderWidget,SIGNAL(subfolderSelected(QModelIndex,int)),this,SLOT(selectSubfolder(QModelIndex,int)));
+    connect(libraryWindow->comicsModel,SIGNAL(isEmpty()),this,SLOT(reselectCurrentFolder()));
 }
 
 qulonglong YACReaderNavigationController::folderModelIndexToID(const QModelIndex &mi)

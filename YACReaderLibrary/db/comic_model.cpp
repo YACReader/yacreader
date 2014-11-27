@@ -295,8 +295,8 @@ void ComicModel::setupFolderModelData(unsigned long long int folderId,const QStr
     QSqlDatabase::removeDatabase(_databasePath);
     endResetModel();
 
-    if(_data.length()==0)
-        emit isEmpty();
+    /*if(_data.length()==0)
+        emit isEmpty();*/
 }
 
 void ComicModel::setupLabelModelData(unsigned long long parentLabel, const QString &databasePath)
@@ -321,8 +321,8 @@ void ComicModel::setupLabelModelData(unsigned long long parentLabel, const QStri
     QSqlDatabase::removeDatabase(_databasePath);
     endResetModel();
 
-    if(_data.length()==0)
-        emit isEmpty();
+    /*if(_data.length()==0)
+        emit isEmpty();*/
 }
 
 void ComicModel::setupFavoritesModelData(const QString &databasePath)
@@ -347,8 +347,8 @@ void ComicModel::setupFavoritesModelData(const QString &databasePath)
     QSqlDatabase::removeDatabase(_databasePath);
     endResetModel();
 
-    if(_data.length()==0)
-        emit isEmpty();
+    /*if(_data.length()==0)
+        emit isEmpty();*/
 }
 
 void ComicModel::setupReadingModelData(const QString &databasePath)
@@ -371,8 +371,8 @@ void ComicModel::setupReadingModelData(const QString &databasePath)
     QSqlDatabase::removeDatabase(_databasePath);
     endResetModel();
 
-    if(_data.length()==0)
-        emit isEmpty();
+    /*if(_data.length()==0)
+        emit isEmpty();*/
 }
 
 void ComicModel::setupModelData(const SearchModifiers modifier, const QString &filter, const QString &databasePath)
@@ -708,7 +708,7 @@ void ComicModel::removeInTransaction(int row)
 	delete _data.at(row);
 	_data.removeAt(row);
 
-	endRemoveRows();
+    endRemoveRows();
 }
 
 void ComicModel::remove(ComicDB * comic, int row)

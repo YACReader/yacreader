@@ -1672,15 +1672,11 @@ void LibraryWindow::selectSubfolder(const QModelIndex &mi, int child)
     navigationController->selectedFolder(dest);
 }
 
-void LibraryWindow::checkEmptyFolder(QStringList * paths)
+//this methods is only using after deleting comics
+//TODO broken window :)
+void LibraryWindow::checkEmptyFolder()
 {
-	if(paths == 0)
-	{
-        QStringList pathList = comicsModel->getPaths(currentPath());
-		paths = &pathList;
-	}
-
-	if(paths->size()>0 && !importedCovers)
+    if(comicsModel->rowCount()>0 && !importedCovers)
 	{
 		disableComicsActions(false);
 	}
@@ -1688,9 +1684,11 @@ void LibraryWindow::checkEmptyFolder(QStringList * paths)
 	{
 		disableComicsActions(true);
 #ifndef Q_OS_MAC
-		if(paths->size()>0)
+        if(comicsModel->rowCount()>0)
 			toggleFullScreenAction->setEnabled(true);
 #endif
+        if(comicsModel->rowCount() == 0)
+            navigationController->reselectCurrentFolder();
 	}
 }
 
