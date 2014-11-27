@@ -1671,7 +1671,7 @@ void LibraryWindow::showRenameCurrentList()
     QModelIndexList selectedLists = listsView->selectionModel()->selectedIndexes();
     if(!selectedLists.isEmpty())
     {
-        QModelIndex mi = selectedLists.at(0);
+        QModelIndex mi = listsModelProxy->mapToSource(selectedLists.at(0));
         if(listsModel->isEditable(mi))
         {
             bool ok;
