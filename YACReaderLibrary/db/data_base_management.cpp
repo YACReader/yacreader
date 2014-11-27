@@ -279,7 +279,8 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
                                 "default_reading_list_id INTEGER, "
                                 //"order INTEGER, " //order????
                                 "FOREIGN KEY(default_reading_list_id) REFERENCES default_reading_list(id) ON DELETE CASCADE, "
-                                "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE CASCADE)");
+                                "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE CASCADE,"
+                                "PRIMARY KEY(default_reading_list_id, comic_id))");
         success = success && queryComicDefaultReadingList.exec();
 
         //INSERT DEFAULT READING LISTS

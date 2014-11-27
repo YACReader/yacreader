@@ -81,6 +81,7 @@
 #include "add_label_dialog.h"
 
 #include "yacreader_history_controller.h"
+#include "db_helper.h"
 
 #include "QsLog.h"
 
@@ -1203,6 +1204,10 @@ void LibraryWindow::createConnections()
     connect(deleteReadingListAction,SIGNAL(triggered()),this,SLOT(deleteSelectedReadingList()));
     connect(addLabelAction,SIGNAL(triggered()),this,SLOT(showAddNewLabelDialog()));
     connect(renameListAction,SIGNAL(triggered()),this,SLOT(showRenameCurrentList()));
+
+    //--
+
+    connect(addToFavoritesAction,SIGNAL(triggered()),this,SLOT(addSelectedComicsToFavorites()));
 }
 
 void LibraryWindow::loadLibrary(const QString & name)
@@ -1679,6 +1684,12 @@ void LibraryWindow::showRenameCurrentList()
         }
     }
 
+}
+
+void LibraryWindow::addSelectedComicsToFavorites()
+{
+    QModelIndexList indexList = getSelectedComics();
+    comicsModel->addComicsToFavorites(indexList);
 }
 
 void LibraryWindow::selectSubfolder(const QModelIndex &mi, int child)

@@ -41,6 +41,7 @@ public:
 	static qulonglong insert(ComicDB * comic, QSqlDatabase & db);
     static qulonglong insertLabel(const QString & name, YACReader::LabelColors color , QSqlDatabase & db);
     static qulonglong insertReadingList(const QString & name, QSqlDatabase & db);
+    static void insertComicsInFavorites(const QList<ComicDB> & comicsList, QSqlDatabase & db);
 	//updates
     static void update(qulonglong libraryId, ComicInfo & comicInfo);
 	static void update(ComicDB * comics, QSqlDatabase & db);

@@ -390,6 +390,7 @@ public slots:
     void deleteSelectedReadingList();
     void showAddNewLabelDialog();
     void showRenameCurrentList();
+    void addSelectedComicsToFavorites();
 
 };
 

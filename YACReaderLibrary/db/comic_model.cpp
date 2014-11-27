@@ -797,6 +797,24 @@ void ComicModel::resetComicRating(const QModelIndex &mi)
     QSqlDatabase::removeDatabase(_databasePath);
 }
 
+void ComicModel::addComicsToFavorites(const QList<QModelIndex> & comicsList)
+{
+    QList<ComicDB> comics = getComics(comicsList);
+
+    DBHelper::insertComicsInFavorites(comics, QSqlDatabase());
+
+    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+
+    db.transaction();
+
+    DBHelper::insertComicsInFavorites(comics,db);
+
+    db.commit();
+
+    db.close();
+    QSqlDatabase::removeDatabase(_databasePath);
+}
+
 
 void ComicModel::updateRating(int rating, QModelIndex mi)
 {
