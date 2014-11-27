@@ -62,6 +62,7 @@ public:
 	void removeInTransaction(int row);
 	void reload(const ComicDB & comic);
     void resetComicRating(const QModelIndex & mi);
+    void addComicsToFavorites(const QList<QModelIndex> &comicsList);
 
     QHash<int, QByteArray> roleNames() const;
 
