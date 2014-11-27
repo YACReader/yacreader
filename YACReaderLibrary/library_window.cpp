@@ -760,6 +760,18 @@ void LibraryWindow::createActions()
     renameListAction->setToolTip(tr("Rename any selected labels or lists"));
     renameListAction->setIcon(QIcon(":/images/renameListIcon.png"));
 
+    //--
+    addToMenuAction = new QAction(tr("Add to..."), this);
+
+    addToFavoritesAction = new QAction(tr("Favorites"), this);
+    addToFavoritesAction->setData(ADD_TO_FAVORITES_ACTION_YL);
+    addToFavoritesAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_TO_FAVORITES_ACTION_YL));
+    addToFavoritesAction->setToolTip(tr("Add selected comics to favorites list"));
+    addToFavoritesAction->setIcon(QIcon(":/images/lists/default_1.png"));
+
+    QMenu * menu = new QMenu(this);
+    menu->addAction(addToFavoritesAction);
+    addToMenuAction->setMenu(menu);
 	//disable actions
 	disableAllActions();
 }
@@ -926,7 +938,9 @@ void LibraryWindow::createMenus()
                 << setAsReadAction
                 << setAsNonReadAction
                 << YACReader::createSeparator()
-                << deleteComicsAction;
+                << deleteComicsAction
+                << YACReader::createSeparator()
+                << addToMenuAction;
 
     viewActions << openComicAction
                 << YACReader::createSeparator()
@@ -946,6 +960,8 @@ void LibraryWindow::createMenus()
                 << showHideMarksAction
                 << YACReader::createSeparator()
                 << deleteComicsAction
+                << YACReader::createSeparator()
+                << addToMenuAction
 
 #ifndef Q_OS_MAC
                 << YACReader::createSeparator()

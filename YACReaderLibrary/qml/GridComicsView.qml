@@ -122,6 +122,13 @@ Rectangle {
                     MenuSeparator{}
                     MenuItem { text: "Delete selected comics"; enabled: true; iconSource:"qrc:///images/trash.png"; onTriggered: deleteComicsAction.trigger() }
                     MenuSeparator{}
+                    Menu {
+                        id: addToMenu
+                        title: "Add to..."
+                        MenuItem { text: "Favorites"; enabled: true; iconSource:"qrc:///images/lists/default_1.png"; onTriggered: addToFavoritesAction.trigger() }
+                    }
+
+                    MenuSeparator{}
                     MenuItem { text: "Fullscreen mode on/off"; onTriggered: toggleFullScreenAction.trigger() }
                     //MenuItem { text: "Show details"; onTriggered: cell.state = 'Details';
                 }
