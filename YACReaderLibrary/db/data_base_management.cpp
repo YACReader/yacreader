@@ -238,7 +238,8 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
                                 "label_id INTEGER, "
                                 //"order INTEGER, " //TODO order????
                                 "FOREIGN KEY(label_id) REFERENCES label(id) ON DELETE CASCADE, "
-                                "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE CASCADE)");
+                                "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE CASCADE, "
+                                "PRIMARY KEY(label_id, comic_id))");
         success = success && queryComicLabel.exec();
 
         //READING LIST
@@ -260,7 +261,8 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
                                       "comic_id INTEGER, "
                                       "ordering INTEGER, "
                                       "FOREIGN KEY(reading_list_id) REFERENCES reading_list(id) ON DELETE CASCADE, "
-                                      "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE CASCADE)");
+                                      "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE CASCADE, "
+                                      "PRIMARY KEY(reading_list_id, comic_id))");
         success = success && queryComicReadingList.exec();
 
         //DEFAULT READING LISTS
