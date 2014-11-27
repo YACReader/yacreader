@@ -36,6 +36,7 @@ public:
 	int columnCount(const QModelIndex &parent = QModelIndex()) const;
     void setupFolderModelData(unsigned long long int parentFolder,const QString & databasePath);
     void setupLabelModelData(unsigned long long int parentLabel, const QString & databasePath);
+    void setupReadingListModelData(unsigned long long int parentReadingList, const QString & databasePath);
     void setupFavoritesModelData(const QString & databasePath);
     void setupReadingModelData(const QString & databasePath);
     //configures the model for showing the comics matching the filter criteria.
