@@ -166,8 +166,22 @@ void YACReaderNavigationController::loadLabelInfo(const QModelIndex &modelIndex)
 
 void YACReaderNavigationController::loadReadingListInfo(const QModelIndex &modelIndex)
 {
-    libraryWindow->showEmptyReadingListWidget();
-    libraryWindow->disableComicsActions(true);
+    qulonglong id = modelIndex.data(ReadingListModel::IDRole).toULongLong();
+    //check comics in label with id = id
+    libraryWindow->comicsModel->setupReadingListModelData(id,libraryWindow->foldersModel->getDatabase());
+    libraryWindow->comicsView->setModel(libraryWindow->comicsModel);
+
+    //configure views
+    if(libraryWindow->comicsModel->rowCount() > 0)
+    {
+        //updateView
+        libraryWindow->showComicsView();
+        libraryWindow->disableComicsActions(false);
+    }
+    else{
+        libraryWindow->showEmptyReadingListWidget();
+        libraryWindow->disableComicsActions(true);
+    }
 }
 
 void YACReaderNavigationController::selectedList(const QModelIndex &mi)
