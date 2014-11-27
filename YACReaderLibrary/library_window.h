@@ -300,7 +300,7 @@ public:
 public slots:
     void loadLibrary(const QString & path);
     void selectSubfolder(const QModelIndex & mi, int child);
-    void checkEmptyFolder(QStringList * paths = 0);
+    void checkEmptyFolder();
     void openComic();
     void createLibrary();
     void create(QString source,QString dest, QString name);
