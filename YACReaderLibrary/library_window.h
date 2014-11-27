@@ -217,8 +217,8 @@ private:
     QAction * addLabelAction;
     QAction * renameListAction;
     //--
-    //QAction * expandAllNodesRLAction;
-    //QAction * colapseAllNodesRLAction;
+    QAction * addToMenuAction;
+    QAction * addToFavoritesAction;
 
     QList<QAction *> itemActions;
     QList<QAction *> viewActions;

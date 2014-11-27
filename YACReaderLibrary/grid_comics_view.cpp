@@ -179,7 +179,14 @@ void GridComicsView::setViewActions(const QList<QAction *> &actions)
 
         ctxt->setContextProperty("deleteComicsAction",actions[17]);
 
-        ctxt->setContextProperty("toggleFullScreenAction",actions[19]);
+        QAction * tmpAction = actions[19];
+        QMenu * menu = tmpAction->menu();
+        if(menu)
+        {
+            ctxt->setContextProperty("addToFavoritesAction",menu->actions().at(0));
+        }
+
+        ctxt->setContextProperty("toggleFullScreenAction",actions[21]);
     }
     else
         QLOG_ERROR() << "setViewActions invoked with the wrong number of actions";
