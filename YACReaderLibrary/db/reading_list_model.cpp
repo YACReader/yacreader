@@ -216,9 +216,11 @@ void ReadingListModel::addNewLabel(const QString &name, YACReader::LabelColors c
     QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
     qulonglong id = DBHelper::insertLabel(name, color, db);
 
+    beginInsertRows(QModelIndex(),0, 0);
+
     int newPos = addLabelIntoList(new LabelItem(QList<QVariant>() << name << YACReader::colorToName(color) << id << color));
 
-    beginInsertRows(QModelIndex(),specialLists.count()+1+newPos+1, specialLists.count()+1+newPos+1);
+    //beginInsertRows(QModelIndex(),specialLists.count()+1+newPos+1, specialLists.count()+1+newPos+1);
     endInsertRows();
 
     QSqlDatabase::removeDatabase(_databasePath);
