@@ -6,6 +6,7 @@
 #include <QPainter>
 #include <QDrag>
 #include <QMimeData>
+#include <QApplication>
 
 #include "comic_item.h"
 
@@ -101,6 +102,13 @@ void YACReaderTableView::mouseMoveEvent(QMouseEvent *event)
 	else
 		closeRatingEditor();
 
+    //are we in a drag action??
+    if(event->buttons() & Qt::LeftButton) {
+        int distance = (event->pos() - startDragPos).manhattanLength();
+        if (distance >= QApplication::startDragDistance())
+            performDrag();
+    }
+
 	QTableView::mouseMoveEvent(event);
 }
 void YACReaderTableView::mousePressEvent(QMouseEvent * event)
@@ -126,23 +134,29 @@ void YACReaderTableView::mousePressEvent(QMouseEvent * event)
         }
     }
 
+    //this could be the origin of a new drag acction
     if(event->button() == Qt::LeftButton)
     {
-        QMimeData *mimeData = new QMimeData;
-
-        mimeData->setText("comic"); //TODO set the right mime data
-
-        QDrag *drag = new QDrag(this);
-        drag->setMimeData(mimeData);
-        drag->setPixmap(QPixmap(":/images/openInYACReader.png")); //TODO add better image
-
-        Qt::DropAction dropAction = drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
+        startDragPos = event->pos();
     }
 }
 void YACReaderTableView::leaveEvent(QEvent * event)
 {
 	closeRatingEditor();
-	event->accept();
+    event->accept();
+}
+
+void YACReaderTableView::performDrag()
+{
+    QMimeData *mimeData = new QMimeData;
+
+    mimeData->setText("comic"); //TODO set the right mime data
+
+    QDrag *drag = new QDrag(this);
+    drag->setMimeData(mimeData);
+    drag->setPixmap(QPixmap(":/images/openInYACReader.png")); //TODO add better image
+
+    Qt::DropAction dropAction = drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
 }
 
 void YACReaderTableView::closeRatingEditor()

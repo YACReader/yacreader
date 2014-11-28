@@ -33,10 +33,14 @@ private:
 	void mouseMoveEvent(QMouseEvent *event);
 	void mousePressEvent(QMouseEvent * event);
 	void leaveEvent(QEvent * event);
+    void performDrag();
 
 	bool editing;
 	QModelIndex currentIndexEditing;
 	QWidget * myeditor;
+
+    //drag from here
+    QPoint startDragPos;
 };
 
 //---
