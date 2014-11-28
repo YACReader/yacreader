@@ -350,7 +350,7 @@ public slots:
     QModelIndexList getSelectedComics();
     void deleteComics();
     //void showSocial();
-    void updateFoldersViewConextMenu(const QModelIndex & mi);
+    void showFoldersContextMenu(const QPoint & point);
     void libraryAlreadyExists(const QString & name);
     void importLibraryPackage();
     void updateComicsView(quint64 libraryId, const ComicDB & comic);

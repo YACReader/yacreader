@@ -73,7 +73,7 @@ void YACReaderNavigationController::loadFolderInfo(const QModelIndex &modelIndex
         libraryWindow->disableComicsActions(true);
     }
 
-    libraryWindow->updateFoldersViewConextMenu(modelIndex);
+    //libraryWindow->updateFoldersViewConextMenu(modelIndex);
 
     //if a folder is selected, listsView selection must be cleared
     libraryWindow->listsView->clearSelection();
