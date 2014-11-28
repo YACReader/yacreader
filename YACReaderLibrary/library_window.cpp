@@ -644,25 +644,21 @@ void LibraryWindow::createActions()
 
     setFolderAsNotCompletedAction = new QAction(this);
     setFolderAsNotCompletedAction->setText(tr("Set as uncompleted"));
-    setFolderAsNotCompletedAction->setVisible(false);
     setFolderAsNotCompletedAction->setData(SET_FOLDER_AS_NOT_COMPLETED_ACTION_YL);
     setFolderAsNotCompletedAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_FOLDER_AS_NOT_COMPLETED_ACTION_YL));
 
     setFolderAsCompletedAction = new QAction(this);
     setFolderAsCompletedAction->setText(tr("Set as completed"));
-    setFolderAsCompletedAction->setVisible(false);
     setFolderAsCompletedAction->setData(SET_FOLDER_AS_COMPLETED_ACTION_YL);
     setFolderAsCompletedAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_FOLDER_AS_COMPLETED_ACTION_YL));
 
     setFolderAsReadAction = new QAction(this);
     setFolderAsReadAction->setText(tr("Set as read"));
-    setFolderAsReadAction->setVisible(false);
     setFolderAsReadAction->setData(SET_FOLDER_AS_READ_ACTION_YL);
     setFolderAsReadAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_FOLDER_AS_READ_ACTION_YL));
 
     setFolderAsUnreadAction = new QAction(this);
     setFolderAsUnreadAction->setText(tr("Set as unread"));
-    setFolderAsUnreadAction->setVisible(false);
     setFolderAsUnreadAction->setData(SET_FOLDER_AS_UNREAD_ACTION_YL);
     setFolderAsUnreadAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_FOLDER_AS_UNREAD_ACTION_YL));
 
@@ -831,14 +827,6 @@ void LibraryWindow::disableFoldersActions(bool disabled)
 	openContainingFolderAction->setDisabled(disabled);
 
     updateFolderAction->setDisabled(disabled);
-
-    if(disabled == false)
-    {
-        setFolderAsNotCompletedAction->setVisible(false);
-        setFolderAsCompletedAction->setVisible(false);
-        setFolderAsReadAction->setVisible(false);
-        setFolderAsUnreadAction->setVisible(false);
-    }
 }
 
 void LibraryWindow::disableAllActions()
@@ -1111,6 +1099,7 @@ void LibraryWindow::createConnections()
     //drops in folders view
     connect(foldersView, SIGNAL(copyComicsToFolder(QList<QPair<QString,QString> >,QModelIndex)), this, SLOT(copyAndImportComicsToFolder(QList<QPair<QString,QString> >,QModelIndex)));
     connect(foldersView, SIGNAL(moveComicsToFolder(QList<QPair<QString,QString> >,QModelIndex)), this, SLOT(moveAndImportComicsToFolder(QList<QPair<QString,QString> >,QModelIndex)));
+    connect(foldersView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showFoldersContextMenu(QPoint)));
 
 	//actions
 	connect(createLibraryAction,SIGNAL(triggered()),this,SLOT(createLibrary()));
@@ -1978,11 +1967,6 @@ void LibraryWindow::setRootIndex()
 
         foldersView->selectionModel()->clear();
 	}
-
-    setFolderAsNotCompletedAction->setVisible(false);
-    setFolderAsCompletedAction->setVisible(false);
-    setFolderAsReadAction->setVisible(false);
-    setFolderAsUnreadAction->setVisible(false);
 }
 
 
@@ -2520,7 +2504,33 @@ void LibraryWindow::deleteComics()
 
         if(thread != NULL)
             thread->start();
-	}
+    }
+}
+
+void LibraryWindow::showFoldersContextMenu(const QPoint &point)
+{
+    QModelIndex sourceMI = foldersModelProxy->mapToSource(foldersView->indexAt(point));
+
+    bool isCompleted = sourceMI.data(FolderModel::CompletedRole).toBool();
+    bool isRead = sourceMI.data(FolderModel::FinishedRole).toBool();
+
+    QMenu menu;
+    //QMenu * folderMenu = new QMenu(tr("Folder"));
+    menu.addAction(openContainingFolderAction);
+    menu.addAction(updateFolderAction);
+    menu.addSeparator();//-------------------------------
+    if(isCompleted)
+        menu.addAction(setFolderAsNotCompletedAction);
+    else
+        menu.addAction(setFolderAsCompletedAction);
+    menu.addSeparator();//-------------------------------
+    if(isRead)
+        menu.addAction(setFolderAsUnreadAction);
+    else
+        menu.addAction(setFolderAsReadAction);
+
+    menu.exec(foldersView->mapToGlobal(point));
+
 }
 
 /*
@@ -2535,21 +2545,6 @@ void LibraryWindow::showSocial()
 	socialDialog->setComic(comic,currentPath());
 	socialDialog->setHidden(false);
 }*/
-
-void LibraryWindow::updateFoldersViewConextMenu(const QModelIndex &mi)
-{
-    if(!mi.isValid())
-        return;
-
-    bool isFinished = mi.data(FolderModel::FinishedRole).toBool();
-    bool isCompleted = mi.data(FolderModel::CompletedRole).toBool();
-
-    setFolderAsReadAction->setVisible(!isFinished);
-    setFolderAsUnreadAction->setVisible(isFinished);
-
-    setFolderAsCompletedAction->setVisible(!isCompleted);
-    setFolderAsNotCompletedAction->setVisible(isCompleted);
-}
 
 void LibraryWindow::libraryAlreadyExists(const QString & name)
 {

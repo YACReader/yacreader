@@ -11,8 +11,8 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent) :
     /*viewport()->setAcceptDrops(true);
     setDropIndicatorShown(true);*/
 
-    setContextMenuPolicy(Qt::ActionsContextMenu);
-    setContextMenuPolicy(Qt::ActionsContextMenu);
+    setContextMenuPolicy(Qt::CustomContextMenu);
+
     header()->hide();
     setUniformRowHeights(true);
     setSelectionBehavior(QAbstractItemView::SelectRows);
