@@ -24,16 +24,16 @@ public:
     virtual void toFullScreen() = 0;
     virtual void toNormal() = 0;
     virtual void updateConfig(QSettings * settings) = 0;
-    //Actions for tableviews
-    virtual void setItemActions(const QList<QAction *> & actions) = 0;
-    //actions for visual-oriented views
-    virtual void setViewActions(const QList<QAction *> & actions) = 0;
     virtual void enableFilterMode(bool enabled) = 0;
     virtual void selectIndex(int index) = 0;
 
 signals:
     void selected(unsigned int);
     void comicRated(int,QModelIndex);
+
+    //Context menus
+    void customContextMenuViewRequested(QPoint);
+    void customContextMenuItemRequested(QPoint);
 
     //Drops
     void copyComicsToCurrentFolder(QList<QPair<QString, QString> >);

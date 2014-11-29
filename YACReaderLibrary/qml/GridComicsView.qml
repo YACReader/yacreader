@@ -78,13 +78,10 @@ Rectangle {
                         //grid.currentIndex = index
                         //comicsSelection.setCurrentIndex(index,0x0002)
                         var ci = grid.currentIndex;
-                        if(mouse.button == Qt.RightButton || !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
+                        if(mouse.button != Qt.RightButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
                         {
                             comicsSelectionHelper.clear();
                         }
-
-                        if(mouse.button == Qt.RightButton)
-                            myContextMenu.popup();
 
                         if(mouse.modifiers & Qt.ShiftModifier)
                             if(index < ci)
@@ -94,45 +91,27 @@ Rectangle {
 
                         mouse.accepted = true;
 
-                        comicsSelectionHelper.selectIndex(index)
-                        grid.currentIndex = index;
+                        if(mouse.button == Qt.RightButton)
+                        {
+
+                            if(!comicsSelectionHelper.isSelectedIndex(index))
+                            {
+                                comicsSelectionHelper.selectIndex(index)
+                                grid.currentIndex = index;
+                            }
+
+                            var coordinates = main.mapFromItem(realCell,mouseX,mouseY)
+                            contextMenuHelper.requestedContextMenu(Qt.point(coordinates.x,coordinates.y));
+
+                        } else
+                        {
+                            comicsSelectionHelper.selectIndex(index)
+                            grid.currentIndex = index;
+                        }
+
                     }
 
                 }
-
-                //Menu emits the 'main' signals
-                Menu {
-                    id: myContextMenu
-                    MenuItem { text: "Open comic"; enabled: true; iconSource:"qrc:///images/openInYACReader.png"; onTriggered: openComicAction.trigger() }
-                    MenuSeparator{}
-                    MenuItem { text: "Open containing folder..."; enabled: true; iconSource: "qrc:///images/open.png"; onTriggered: openContainingFolderComicAction.trigger() }
-                    MenuItem { text: "Update current folder"; enabled: true; iconSource: "qrc:///images/updateLibraryIcon.png"; onTriggered: updateCurrentFolderAction.trigger() }
-                    MenuSeparator{}
-                    MenuItem { text: "Reset comic rating"; onTriggered: resetComicRatingAction.trigger() }
-                    MenuSeparator{}
-                    MenuItem { text: "Edit"; enabled: true; iconSource:"qrc:///images/editComic.png"; onTriggered: editSelectedComicsAction.trigger() }
-                    MenuItem { text: "Download tags from Comic Vine"; enabled: true; iconSource:"qrc:///images/getInfo.png"; onTriggered: getInfoAction.trigger() }
-                    MenuItem { text: "Asign current order to comics"; enabled: true; iconSource:"qrc:///images/asignNumber.png"; onTriggered: asignOrderAction.trigger() }
-                    MenuSeparator{}
-                    MenuItem { text: "Select all comics"; enabled: true; iconSource:"qrc:///images/selectAll.png"; onTriggered: selectAllComicsAction.trigger() }
-                    MenuSeparator{}
-                    MenuItem { text: "Set as read"; enabled: true; iconSource:"qrc:///images/setReadButton.png"; onTriggered: setAsReadAction.trigger() }
-                    MenuItem { text: "Set as unread"; enabled: true; iconSource:"qrc:///images/setUnread.png"; onTriggered: setAsNonReadAction.trigger() }
-                    MenuItem { text: "Show or hide read marks"; enabled: true; iconSource:"qrc:///images/showMarks.png"; onTriggered: showHideMarksAction.trigger() }
-                    MenuSeparator{}
-                    MenuItem { text: "Delete selected comics"; enabled: true; iconSource:"qrc:///images/trash.png"; onTriggered: deleteComicsAction.trigger() }
-                    MenuSeparator{}
-                    Menu {
-                        id: addToMenu
-                        title: "Add to..."
-                        MenuItem { text: "Favorites"; enabled: true; iconSource:"qrc:///images/lists/default_1.png"; onTriggered: addToFavoritesAction.trigger() }
-                    }
-
-                    MenuSeparator{}
-                    MenuItem { text: "Fullscreen mode on/off"; onTriggered: toggleFullScreenAction.trigger() }
-                    //MenuItem { text: "Show details"; onTriggered: cell.state = 'Details';
-                }
-
 
             }
 

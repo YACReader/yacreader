@@ -440,6 +440,8 @@ void LibraryWindow::disconnectComicsViewConnections(ComicsView * widget)
     disconnect(selectAllComicsAction,SIGNAL(triggered()),widget,SLOT(selectAll()));
     disconnect(comicsView, SIGNAL(copyComicsToCurrentFolder(QList<QPair<QString, QString> >)), this, SLOT(copyAndImportComicsToCurrentFolder(QList<QPair<QString, QString> >)));
     disconnect(comicsView, SIGNAL(moveComicsToCurrentFolder(QList<QPair<QString, QString> >)), this, SLOT(moveAndImportComicsToCurrentFolder(QList<QPair<QString, QString> >)));
+    disconnect(comicsView,SIGNAL(customContextMenuViewRequested(QPoint)),this,SLOT(showComicsViewContextMenu(QPoint)));
+    disconnect(comicsView,SIGNAL(customContextMenuItemRequested(QPoint)),this,SLOT(showComicsItemContextMenu(QPoint)));
 }
 
 void LibraryWindow::doComicsViewConnections()
@@ -449,6 +451,9 @@ void LibraryWindow::doComicsViewConnections()
     connect(comicsView,SIGNAL(selected(unsigned int)),this,SLOT(openComic()));
     connect(comicsView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openComic()));
     connect(selectAllComicsAction,SIGNAL(triggered()),comicsView,SLOT(selectAll()));
+
+    connect(comicsView,SIGNAL(customContextMenuViewRequested(QPoint)),this,SLOT(showComicsViewContextMenu(QPoint)));
+    connect(comicsView,SIGNAL(customContextMenuItemRequested(QPoint)),this,SLOT(showComicsItemContextMenu(QPoint)));
     //Drops
     connect(comicsView, SIGNAL(copyComicsToCurrentFolder(QList<QPair<QString, QString> >)), this, SLOT(copyAndImportComicsToCurrentFolder(QList<QPair<QString, QString> >)));
     connect(comicsView, SIGNAL(moveComicsToCurrentFolder(QList<QPair<QString, QString> >)), this, SLOT(moveAndImportComicsToCurrentFolder(QList<QPair<QString, QString> >)));
@@ -766,9 +771,6 @@ void LibraryWindow::createActions()
     addToFavoritesAction->setToolTip(tr("Add selected comics to favorites list"));
     addToFavoritesAction->setIcon(QIcon(":/images/lists/default_1.png"));
 
-    QMenu * menu = new QMenu(this);
-    menu->addAction(addToFavoritesAction);
-    addToMenuAction->setMenu(menu);
 	//disable actions
 	disableAllActions();
 }
@@ -913,56 +915,6 @@ void LibraryWindow::createToolBars()
 
 void LibraryWindow::createMenus()
 {
-    itemActions << openComicAction
-                << YACReader::createSeparator()
-                << openContainingFolderComicAction
-                << updateCurrentFolderAction
-                << YACReader::createSeparator()
-                << resetComicRatingAction
-                << YACReader::createSeparator()
-                << editSelectedComicsAction
-                << getInfoAction
-                << asignOrderAction
-                << YACReader::createSeparator()
-                << setAsReadAction
-                << setAsNonReadAction
-                << YACReader::createSeparator()
-                << deleteComicsAction
-                << YACReader::createSeparator()
-                << addToMenuAction;
-
-    viewActions << openComicAction
-                << YACReader::createSeparator()
-                << openContainingFolderComicAction
-                << updateCurrentFolderAction
-                << YACReader::createSeparator()
-                << resetComicRatingAction
-                << YACReader::createSeparator()
-                << editSelectedComicsAction
-                << getInfoAction
-                << asignOrderAction
-                << YACReader::createSeparator()
-                << selectAllComicsAction
-                << YACReader::createSeparator()
-                << setAsReadAction
-                << setAsNonReadAction
-                << showHideMarksAction
-                << YACReader::createSeparator()
-                << deleteComicsAction
-                << YACReader::createSeparator()
-                << addToMenuAction
-
-#ifndef Q_OS_MAC
-                << YACReader::createSeparator()
-                << toggleFullScreenAction;
-#else
-                   ;
-#endif
-
-
-    comicsView->setItemActions(itemActions);
-    comicsView->setViewActions(viewActions);
-
     foldersView->addAction(addFolderAction);
     foldersView->addAction(deleteFolderAction);
     YACReader::addSperator(foldersView);
@@ -1681,6 +1633,73 @@ void LibraryWindow::addSelectedComicsToFavorites()
     comicsModel->addComicsToFavorites(indexList);
 }
 
+void LibraryWindow::showComicsViewContextMenu(const QPoint &point)
+{
+    QMenu menu;
+
+    menu.addAction(openComicAction);
+    menu.addSeparator();
+    menu.addAction(openContainingFolderComicAction);
+    menu.addAction(updateCurrentFolderAction);
+    menu.addSeparator();
+    menu.addAction(resetComicRatingAction);
+    menu.addSeparator();
+    menu.addAction(editSelectedComicsAction);
+    menu.addAction(getInfoAction);
+    menu.addAction(asignOrderAction);
+    menu.addSeparator();
+    menu.addAction(selectAllComicsAction);
+    menu.addSeparator();
+    menu.addAction(setAsReadAction);
+    menu.addAction(setAsNonReadAction);
+    menu.addSeparator();
+    menu.addAction(deleteComicsAction);
+    menu.addSeparator();
+    menu.addAction(addToMenuAction);
+    QMenu subMenu;
+    setupAddToSubmenu(subMenu);
+
+#ifndef Q_OS_MAC
+    menu.addSeparator();
+    menu.addAction(toggleFullScreenAction);
+#endif
+
+    menu.exec(comicsView->mapToGlobal(point));
+}
+
+void LibraryWindow::showComicsItemContextMenu(const QPoint &point)
+{
+    QMenu menu;
+
+    menu.addAction(openComicAction);
+    menu.addSeparator();
+    menu.addAction(openContainingFolderComicAction);
+    menu.addAction(updateCurrentFolderAction);
+    menu.addSeparator();
+    menu.addAction(resetComicRatingAction);
+    menu.addSeparator();
+    menu.addAction(editSelectedComicsAction);
+    menu.addAction(getInfoAction);
+    menu.addAction(asignOrderAction);
+    menu.addSeparator();
+    menu.addAction(setAsReadAction);
+    menu.addAction(setAsNonReadAction);
+    menu.addSeparator();
+    menu.addAction(deleteComicsAction);
+    menu.addSeparator();
+    menu.addAction(addToMenuAction);
+    QMenu subMenu;
+    setupAddToSubmenu(subMenu);
+
+    menu.exec(comicsView->mapToGlobal(point));
+}
+
+void LibraryWindow::setupAddToSubmenu(QMenu &menu)
+{
+    menu.addAction(addToFavoritesAction);
+    addToMenuAction->setMenu(&menu);
+}
+
 void LibraryWindow::selectSubfolder(const QModelIndex &mi, int child)
 {
     QModelIndex dest = foldersModel->index(child,0,mi);
@@ -2119,8 +2138,6 @@ void LibraryWindow::switchToComicsView(ComicsView * from, ComicsView * to)
 
     comicsView = to;
     doComicsViewConnections();
-    to->setItemActions(itemActions);
-    to->setViewActions(viewActions);
 
     comicsView->setToolBar(editInfoToolBar);
 

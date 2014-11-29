@@ -220,9 +220,6 @@ private:
     QAction * addToMenuAction;
     QAction * addToFavoritesAction;
 
-    QList<QAction *> itemActions;
-    QList<QAction *> viewActions;
-
 #ifdef Q_OS_MAC
     YACReaderMacOSXToolbar * libraryToolBar;
 #else
@@ -391,6 +388,9 @@ public slots:
     void showAddNewLabelDialog();
     void showRenameCurrentList();
     void addSelectedComicsToFavorites();
+    void showComicsViewContextMenu(const QPoint & point);
+    void showComicsItemContextMenu(const QPoint & point);
+    void setupAddToSubmenu(QMenu & menu);
 
 };
 

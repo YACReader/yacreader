@@ -59,6 +59,7 @@ void GridComicsView::setModel(ComicModel *model)
 
         ctxt->setContextProperty("comicsList", this->model);
         ctxt->setContextProperty("comicsSelection", _selectionModel);
+        ctxt->setContextProperty("contextMenuHelper",this);
         ctxt->setContextProperty("comicsSelectionHelper", this);
         ctxt->setContextProperty("comicRatingHelper", this);
         ctxt->setContextProperty("dummyValue", true);
@@ -76,9 +77,9 @@ void GridComicsView::setModel(ComicModel *model)
     ctxt->setContextProperty("titleColor", "#121212");
     ctxt->setContextProperty("textColor", "#636363");
     //fonts settings
-    ctxt->setContextProperty("fontSize", "11");
+    ctxt->setContextProperty("fontSize", 11);
     ctxt->setContextProperty("fontFamily", "none");
-    ctxt->setContextProperty("fontSpacing", "0.5");
+    ctxt->setContextProperty("fontSpacing", 0.5);
 
 #else
     ctxt->setContextProperty("backgroundColor", "#2A2A2A");
@@ -92,7 +93,7 @@ void GridComicsView::setModel(ComicModel *model)
     //fonts settings
     ctxt->setContextProperty("fontSize", "none");
     ctxt->setContextProperty("fontFamily", "none");
-    ctxt->setContextProperty("fontSpacing", "0.5");
+    ctxt->setContextProperty("fontSpacing", 0.5);
 #endif
 
 
@@ -144,54 +145,6 @@ void GridComicsView::updateConfig(QSettings *settings)
     QLOG_INFO() << "updateConfig";
 }
 
-void GridComicsView::setItemActions(const QList<QAction *> &actions)
-{
-    QLOG_INFO() << "setItemActions";
-}
-
-void GridComicsView::setViewActions(const QList<QAction *> &actions)
-{
-    //TODO generate QML Menu from actions
-    QLOG_INFO() << "setViewActions";
-    this->addActions(actions);
-
-    //TODO this is completely unsafe, but QActions can't be used directly in QML
-    if(actions.length()>=19)
-    {
-        QQmlContext *ctxt = view->rootContext();
-
-        ctxt->setContextProperty("openComicAction",actions[0]);
-
-        ctxt->setContextProperty("openContainingFolderComicAction",actions[2]);
-        ctxt->setContextProperty("updateCurrentFolderAction",actions[3]);
-
-        ctxt->setContextProperty("resetComicRatingAction",actions[5]);
-
-        ctxt->setContextProperty("editSelectedComicsAction",actions[7]);
-        ctxt->setContextProperty("getInfoAction",actions[8]);
-        ctxt->setContextProperty("asignOrderAction",actions[9]);
-
-        ctxt->setContextProperty("selectAllComicsAction",actions[11]);
-
-        ctxt->setContextProperty("setAsReadAction",actions[13]);
-        ctxt->setContextProperty("setAsNonReadAction",actions[14]);
-        ctxt->setContextProperty("showHideMarksAction",actions[15]);
-
-        ctxt->setContextProperty("deleteComicsAction",actions[17]);
-
-        QAction * tmpAction = actions[19];
-        QMenu * menu = tmpAction->menu();
-        if(menu)
-        {
-            ctxt->setContextProperty("addToFavoritesAction",menu->actions().at(0));
-        }
-
-        ctxt->setContextProperty("toggleFullScreenAction",actions[21]);
-    }
-    else
-        QLOG_ERROR() << "setViewActions invoked with the wrong number of actions";
-}
-
 void GridComicsView::enableFilterMode(bool enabled)
 {
 
@@ -206,6 +159,11 @@ void GridComicsView::rate(int index, int rating)
 {
     QLOG_INFO() << "Comic "<< index << "rated" << rating;
     model->updateRating(rating,model->index(index,0));
+}
+
+void GridComicsView::requestedContextMenu(const QPoint &point)
+{
+    emit customContextMenuViewRequested(point);
 }
 
 QSize GridComicsView::sizeHint()
