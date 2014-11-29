@@ -29,13 +29,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
 
     comicFlow->setFocus(Qt::OtherFocusReason);
 
-    comicFlow->setContextMenuPolicy(Qt::ActionsContextMenu);
-
-    //TODO!!! set actions....
-    //comicFlow->addAction(toggleFullScreenAction);
-    //comicFlow->addAction(openComicAction);
-
-    //END FLOW----
+    comicFlow->setContextMenuPolicy(Qt::CustomContextMenu);
 
 
     //layout-----------------------------------------------
@@ -61,6 +55,8 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     comics->setLayout(comicsLayout);
     sVertical->addWidget(comics);
 
+    tableView->setContextMenuPolicy(Qt::CustomContextMenu);
+
     //config--------------------------------------------------
     if(settings->contains(COMICS_VIEW_HEADERS))
         tableView->horizontalHeader()->restoreState(settings->value(COMICS_VIEW_HEADERS).toByteArray());
@@ -72,6 +68,8 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     connect(tableView, SIGNAL(comicRated(int,QModelIndex)), this, SIGNAL(comicRated(int,QModelIndex)));
     connect(comicFlow, SIGNAL(selected(uint)), this, SIGNAL(selected(uint)));
     connect(tableView->horizontalHeader(), SIGNAL(sectionMoved(int,int,int)), this, SLOT(saveTableHeadersStatus()));
+    connect(comicFlow, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(requestedViewContextMenu(QPoint)));
+    connect(tableView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(requestedItemContextMenu(QPoint)));
     layout->addWidget(sVertical);
     setLayout(layout);
 
@@ -194,16 +192,6 @@ void ClassicComicsView::updateConfig(QSettings *settings)
     comicFlow->updateConfig(settings);
 }
 
-void ClassicComicsView::setItemActions(const QList<QAction *> &actions)
-{
-    tableView->addActions(actions);
-}
-
-void ClassicComicsView::setViewActions(const QList<QAction *> &actions)
-{
-    comicFlow->addActions(actions);
-}
-
 void ClassicComicsView::enableFilterMode(bool enabled)
 {
     if(enabled)
@@ -237,6 +225,16 @@ void ClassicComicsView::selectAll()
 void ClassicComicsView::selectedComicForOpening(const QModelIndex &mi)
 {
     emit selected(mi.row());
+}
+
+void ClassicComicsView::requestedViewContextMenu(const QPoint &point)
+{
+    emit customContextMenuViewRequested(comicFlow->mapTo(this, point));
+}
+
+void ClassicComicsView::requestedItemContextMenu(const QPoint &point)
+{
+    emit customContextMenuItemRequested(tableView->mapTo(this, point));
 }
 
 void ClassicComicsView::setShowMarks(bool show)

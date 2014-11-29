@@ -27,8 +27,6 @@ public:
     void toFullScreen();
     void toNormal();
     void updateConfig(QSettings * settings);
-    void setItemActions(const QList<QAction *> & actions);
-    void setViewActions(const QList<QAction *> & actions);
     void enableFilterMode(bool enabled);
     void selectIndex(int index);
 
@@ -43,6 +41,10 @@ public slots:
     void setShowMarks(bool show);
     void selectAll();
     void selectedComicForOpening(const QModelIndex & mi);
+
+protected slots:
+    void requestedViewContextMenu(const QPoint & point);
+    void requestedItemContextMenu(const QPoint & point);
 
 private:
     YACReaderTableView * tableView;

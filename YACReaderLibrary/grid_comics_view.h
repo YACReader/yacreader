@@ -26,8 +26,6 @@ public:
     void toFullScreen();
     void toNormal();
     void updateConfig(QSettings * settings);
-    void setItemActions(const QList<QAction *> & actions);
-    void setViewActions(const QList<QAction *> & actions);
     void enableFilterMode(bool enabled);
     QSize sizeHint();
 
@@ -50,6 +48,8 @@ public slots:
     //rating
     void rate(int index, int rating);
 
+protected slots:
+    void requestedContextMenu(const QPoint & point);
 
 private:
     QItemSelectionModel * _selectionModel;
