@@ -49,6 +49,7 @@ public:
     QString name(const QModelIndex & mi);
     void rename(const QModelIndex & mi, const QString & name);
     void deleteItem(const QModelIndex & mi);
+    const QList<LabelItem *> getLabels();
 
     enum Roles {
         TypeListsRole = Qt::UserRole + 1,

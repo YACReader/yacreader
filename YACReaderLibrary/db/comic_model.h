@@ -63,6 +63,7 @@ public:
 	void reload(const ComicDB & comic);
     void resetComicRating(const QModelIndex & mi);
     void addComicsToFavorites(const QList<QModelIndex> &comicsList);
+    void addComicsToLabel(const QList<QModelIndex> &comicsList, qulonglong labelId);
 
     QHash<int, QByteArray> roleNames() const;
 

@@ -434,6 +434,20 @@ void DBHelper::insertComicsInFavorites(const QList<ComicDB> &comicsList, QSqlDat
         query.exec();
     }
 }
+
+void DBHelper::insertComicsInLabel(const QList<ComicDB> &comicsList, qulonglong labelId, QSqlDatabase &db)
+{
+    QSqlQuery query(db);
+    query.prepare("INSERT INTO comic_label (label_id, comic_id) "
+                   "VALUES (:label_id, :comic_id)");
+
+    foreach(ComicDB comic, comicsList)
+    {
+        query.bindValue(":label_id", labelId);
+        query.bindValue(":comic_id", comic.id);
+        query.exec();
+    }
+}
 //queries
 QList<LibraryItem *> DBHelper::getFoldersFromParent(qulonglong parentId, QSqlDatabase & db, bool sort)
 {
