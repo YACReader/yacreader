@@ -96,6 +96,7 @@ Rectangle {
 
                             if(!comicsSelectionHelper.isSelectedIndex(index))
                             {
+                                comicsSelectionHelper.clear();
                                 comicsSelectionHelper.selectIndex(index)
                                 grid.currentIndex = index;
                             }
