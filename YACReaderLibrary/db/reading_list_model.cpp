@@ -339,6 +339,11 @@ void ReadingListModel::deleteItem(const QModelIndex &mi)
     }
 }
 
+const QList<LabelItem *> ReadingListModel::getLabels()
+{
+    return labels;
+}
+
 void ReadingListModel::cleanAll()
 {
     if(rootItem != 0)

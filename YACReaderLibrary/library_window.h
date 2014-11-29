@@ -391,6 +391,7 @@ public slots:
     void showComicsViewContextMenu(const QPoint & point);
     void showComicsItemContextMenu(const QPoint & point);
     void setupAddToSubmenu(QMenu & menu);
+    void onAddComicsToLabel();
 
 };
 

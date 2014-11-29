@@ -83,6 +83,8 @@
 #include "yacreader_history_controller.h"
 #include "db_helper.h"
 
+#include "reading_list_item.h"
+
 #include "QsLog.h"
 
 #ifdef Q_OS_WIN
@@ -1698,6 +1700,33 @@ void LibraryWindow::setupAddToSubmenu(QMenu &menu)
 {
     menu.addAction(addToFavoritesAction);
     addToMenuAction->setMenu(&menu);
+
+    const QList<LabelItem*> labels = listsModel->getLabels();
+    if(labels.count() > 0)
+        menu.addSeparator();
+    foreach(LabelItem * label, labels)
+    {
+        QAction * action = new QAction(this);
+        action->setIcon(label->getIcon());
+        action->setText(label->name());
+
+        action->setData(label->getId());
+
+        menu.addAction(action);
+
+        connect(action,SIGNAL(triggered()),this,SLOT(onAddComicsToLabel()));
+    }
+}
+
+void LibraryWindow::onAddComicsToLabel()
+{
+    QAction * action = static_cast<QAction *>(sender());
+
+    qulonglong labelId = action->data().toULongLong();
+
+    QModelIndexList comics = getSelectedComics();
+
+    comicsModel->addComicsToLabel(comics,labelId);
 }
 
 void LibraryWindow::selectSubfolder(const QModelIndex &mi, int child)
