@@ -7,6 +7,7 @@
 #include <QDrag>
 #include <QMimeData>
 #include <QApplication>
+#include <QBuffer>
 
 #include "comic_item.h"
 
@@ -148,12 +149,8 @@ void YACReaderTableView::leaveEvent(QEvent * event)
 
 void YACReaderTableView::performDrag()
 {
-    QMimeData *mimeData = new QMimeData;
-
-    mimeData->setText("comic"); //TODO set the right mime data
-
     QDrag *drag = new QDrag(this);
-    drag->setMimeData(mimeData);
+    drag->setMimeData(model()->mimeData(selectionModel()->selectedRows()));
     drag->setPixmap(QPixmap(":/images/openInYACReader.png")); //TODO add better image
 
     Qt::DropAction dropAction = drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
