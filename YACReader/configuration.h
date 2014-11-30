@@ -60,8 +60,12 @@ using namespace YACReader;
 		void setGotoSlideSize(const QSize & gss) { settings->setValue(GO_TO_FLOW_SIZE,gss);}
 		float getZoomLevel() { return settings->value(ZOOM_LEVEL).toFloat();}
 		void setZoomLevel(float zl) { settings->setValue(ZOOM_LEVEL,zl);}
+		float getPageZoomLevel() { return settings->value(PAGE_ZOOM_LEVEL).toFloat();}
+		void setPageZoomLevel(float zl) { settings->setValue(PAGE_ZOOM_LEVEL,zl);}
 		bool getAdjustToWidth() {return settings->value(FIT).toBool();}
 		void setAdjustToWidth(bool atw=true) {settings->setValue(FIT,atw);}
+		bool getFitToPage() {return settings->value(PAGEFIT).toBool();}
+		void setFitToPage(bool b=true) {settings->setValue(PAGEFIT,b);}
 		FlowType getFlowType(){return (FlowType)settings->value(FLOW_TYPE_SW).toInt();}
 		void setFlowType(FlowType type){settings->setValue(FLOW_TYPE_SW,type);}
 		bool getFullScreen(){return settings->value(FULLSCREEN).toBool();}
