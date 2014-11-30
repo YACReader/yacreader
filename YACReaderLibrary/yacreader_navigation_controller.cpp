@@ -209,6 +209,17 @@ void YACReaderNavigationController::reselectCurrentList()
     selectedList(libraryWindow->listsView->currentIndex());
 }
 
+void YACReaderNavigationController::reselectCurrentSource()
+{
+    if(!libraryWindow->listsView->selectionModel()->selectedRows().isEmpty())
+    {
+        reselectCurrentList();
+    }else
+    {
+        reselectCurrentFolder();
+    }
+}
+
 void YACReaderNavigationController::selectedIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer)
 {
     //TODO NO searching allowed, just disable backward/forward actions in searching mode
@@ -273,7 +284,7 @@ void YACReaderNavigationController::setupConnections()
     connect(libraryWindow->listsView,SIGNAL(clicked(QModelIndex)),this,SLOT(selectedList(QModelIndex)));
     connect(libraryWindow->historyController,SIGNAL(modelIndexSelected(YACReaderLibrarySourceContainer)),this,SLOT(selectedIndexFromHistory(YACReaderLibrarySourceContainer)));
     connect(libraryWindow->emptyFolderWidget,SIGNAL(subfolderSelected(QModelIndex,int)),this,SLOT(selectSubfolder(QModelIndex,int)));
-    connect(libraryWindow->comicsModel,SIGNAL(isEmpty()),this,SLOT(reselectCurrentFolder()));
+    connect(libraryWindow->comicsModel,SIGNAL(isEmpty()),this,SLOT(reselectCurrentSource()));
 }
 
 qulonglong YACReaderNavigationController::folderModelIndexToID(const QModelIndex &mi)

@@ -22,6 +22,9 @@ public slots:
     //reading lists
     void selectedList(const QModelIndex & mi);
     void reselectCurrentList();
+
+    void reselectCurrentSource();
+
     //history navigation
     void selectedIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer);
     void loadIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer);

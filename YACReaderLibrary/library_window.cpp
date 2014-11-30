@@ -2510,26 +2510,38 @@ QModelIndexList LibraryWindow::getSelectedComics()
 
 void LibraryWindow::deleteComics()
 {
-	int ret = QMessageBox::question(this,tr("Delete comics"),tr("All the selected comics will be deleted from your disk. Are you sure?"),QMessageBox::Yes,QMessageBox::No);
+    //TODO
+    if(!listsView->selectionModel()->selectedRows().isEmpty())
+    {
+        deleteComicsFromList();
+    }else
+    {
+        deleteComicsFromDisk();
+    }
+}
 
-	if(ret == QMessageBox::Yes)
-	{
+void LibraryWindow::deleteComicsFromDisk()
+{
+    int ret = QMessageBox::question(this,tr("Delete comics"),tr("All the selected comics will be deleted from your disk. Are you sure?"),QMessageBox::Yes,QMessageBox::No);
 
-		QModelIndexList indexList = getSelectedComics();
+    if(ret == QMessageBox::Yes)
+    {
+
+        QModelIndexList indexList = getSelectedComics();
 
         QList<ComicDB> comics = comicsModel->getComics(indexList);
 
-		QList<QString> paths;
-		QString libraryPath = currentPath();
-		foreach(ComicDB comic, comics)
-		{
+        QList<QString> paths;
+        QString libraryPath = currentPath();
+        foreach(ComicDB comic, comics)
+        {
             paths.append(libraryPath + comic.path);
             QLOG_INFO() << comic.path;
             QLOG_INFO() << comic.id;
             QLOG_INFO() << comic.parentId;
-		}
+        }
 
-		ComicsRemover * remover = new ComicsRemover(indexList,paths);
+        ComicsRemover * remover = new ComicsRemover(indexList,paths);
         QThread * thread = NULL;
 
         thread = new QThread(this);
@@ -2542,15 +2554,46 @@ void LibraryWindow::deleteComics()
         connect(remover, SIGNAL(remove(int)), comicsModel, SLOT(remove(int)));
         connect(remover, SIGNAL(removeError()),this,SLOT(setRemoveError()));
         connect(remover, SIGNAL(finished()), comicsModel, SLOT(finishTransaction()));
-        
+
         connect(remover, SIGNAL(finished()),this,SLOT(checkEmptyFolder()));
         connect(remover, SIGNAL(finished()),this,SLOT(checkRemoveError()));
-		connect(remover, SIGNAL(finished()), remover, SLOT(deleteLater()));
+        connect(remover, SIGNAL(finished()), remover, SLOT(deleteLater()));
         connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
         if(thread != NULL)
             thread->start();
     }
+}
+
+void LibraryWindow::deleteComicsFromList()
+{
+    int ret = QMessageBox::question(this,tr("Remove comics"),tr("Comics will only be deleted from the current label/list. Are you sure?"),QMessageBox::Yes,QMessageBox::No);
+
+    if(ret == QMessageBox::Yes)
+    {
+        QModelIndexList indexList = getSelectedComics();
+        if(indexList.isEmpty())
+            return;
+
+        QModelIndex mi = listsModelProxy->mapToSource(listsView->currentIndex());
+
+        ReadingListModel::TypeList typeList = (ReadingListModel::TypeList)mi.data(ReadingListModel::TypeListsRole).toInt();
+
+        qulonglong id = mi.data(ReadingListModel::IDRole).toULongLong();
+        switch (typeList) {
+        case ReadingListModel::SpecialList:
+            //by now only 'favorites'
+            comicsModel->deleteComicsFromFavorites(indexList);
+            break;
+        case ReadingListModel::Label:
+            comicsModel->deleteComicsFromLabel(indexList,id);
+            break;
+        case ReadingListModel::ReadingList:
+            comicsModel->deleteComicsFromReadingList(indexList,id);
+            break;
+        }
+    }
+
 }
 
 void LibraryWindow::showFoldersContextMenu(const QPoint &point)
