@@ -53,6 +53,7 @@ class EditShortcutsDialog;
 		void openFolderFromPath(QString pathFile, QString atFileName);
 		void alwaysOnTopSwitch();
 		void adjustToFullSizeSwitch();
+		void fitToPageSwitch();
 		void reloadOptions();
 		void fitToWidth();
 		void fitToHeight();
@@ -118,6 +119,7 @@ class EditShortcutsDialog;
 		QAction *showDictionaryAction;
 		QAction *alwaysOnTopAction;
 		QAction *adjustToFullSizeAction;
+		QAction *fitToPageAction;
 		QAction *showFlowAction;
 
         QAction *showEditShortcutsAction;
