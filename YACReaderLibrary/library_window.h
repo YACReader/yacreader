@@ -346,6 +346,8 @@ public slots:
     void manageOpeningLibraryError(const QString & error);
     QModelIndexList getSelectedComics();
     void deleteComics();
+    void deleteComicsFromDisk();
+    void deleteComicsFromList();
     //void showSocial();
     void showFoldersContextMenu(const QPoint & point);
     void libraryAlreadyExists(const QString & name);

@@ -65,6 +65,12 @@ public:
     void addComicsToFavorites(const QList<QModelIndex> &comicsList);
     void addComicsToLabel(const QList<QModelIndex> &comicsList, qulonglong labelId);
 
+    void deleteComicsFromFavorites(const QList<QModelIndex> &comicsList);
+    void deleteComicsFromLabel(const QList<QModelIndex> &comicsList, qulonglong labelId);
+    void deleteComicsFromReadingList(const QList<QModelIndex> &comicsList, qulonglong readingListId);
+
+    void deleteComicsFromModel(const QList<QModelIndex> &comicsList);
+
     QHash<int, QByteArray> roleNames() const;
 
 	enum Columns {

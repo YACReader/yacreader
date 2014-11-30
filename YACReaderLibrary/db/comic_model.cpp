@@ -801,15 +801,9 @@ void ComicModel::addComicsToFavorites(const QList<QModelIndex> & comicsList)
 {
     QList<ComicDB> comics = getComics(comicsList);
 
-    DBHelper::insertComicsInFavorites(comics, QSqlDatabase());
-
     QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-    db.transaction();
-
     DBHelper::insertComicsInFavorites(comics,db);
-
-    db.commit();
 
     db.close();
     QSqlDatabase::removeDatabase(_databasePath);
@@ -819,18 +813,71 @@ void ComicModel::addComicsToLabel(const QList<QModelIndex> &comicsList, qulonglo
 {
     QList<ComicDB> comics = getComics(comicsList);
 
-    DBHelper::insertComicsInFavorites(comics, QSqlDatabase());
-
     QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-
-    db.transaction();
 
     DBHelper::insertComicsInLabel(comics,labelId,db);
 
-    db.commit();
+    db.close();
+    QSqlDatabase::removeDatabase(_databasePath);
+}
+
+void ComicModel::deleteComicsFromFavorites(const QList<QModelIndex> &comicsList)
+{
+    QList<ComicDB> comics = getComics(comicsList);
+
+    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+
+    DBHelper::deleteComicsFromFavorites(comics,db);
 
     db.close();
     QSqlDatabase::removeDatabase(_databasePath);
+
+    deleteComicsFromModel(comicsList);
+
+}
+
+void ComicModel::deleteComicsFromLabel(const QList<QModelIndex> &comicsList, qulonglong labelId)
+{
+    QList<ComicDB> comics = getComics(comicsList);
+
+    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+
+    DBHelper::deleteComicsFromLabel(comics,labelId,db);
+
+    db.close();
+    QSqlDatabase::removeDatabase(_databasePath);
+
+    deleteComicsFromModel(comicsList);
+}
+
+void ComicModel::deleteComicsFromReadingList(const QList<QModelIndex> &comicsList, qulonglong readingListId)
+{
+    QList<ComicDB> comics = getComics(comicsList);
+
+    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+
+    DBHelper::deleteComicsFromReadingList(comics,readingListId,db);
+
+    db.close();
+    QSqlDatabase::removeDatabase(_databasePath);
+
+    deleteComicsFromModel(comicsList);
+}
+
+void ComicModel::deleteComicsFromModel(const QList<QModelIndex> &comicsList)
+{
+    QListIterator<QModelIndex> it(comicsList);
+    it.toBack();
+    while(it.hasPrevious())
+    {
+        int row = it.previous().row();
+        beginRemoveRows(QModelIndex(),row,row);
+        _data.removeAt(row);
+        endRemoveRows();
+    }
+
+    if(_data.isEmpty())
+        emit isEmpty();
 }
 
 
