@@ -107,6 +107,7 @@ MainWindowViewer::~MainWindowViewer()
 	delete showDictionaryAction;
 	delete alwaysOnTopAction;
 	delete adjustToFullSizeAction;
+	delete fitToPageAction;
 	delete showFlowAction;
 
 }
@@ -410,6 +411,15 @@ void MainWindowViewer::createActions()
     adjustToFullSizeAction->setData(ADJUST_TO_FULL_SIZE_ACTION_Y);
     adjustToFullSizeAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADJUST_TO_FULL_SIZE_ACTION_Y));
 	connect(adjustToFullSizeAction,SIGNAL(triggered()),this,SLOT(adjustToFullSizeSwitch()));
+	
+	fitToPageAction = new QAction(tr("Fit to page"),this);
+	//fitToPageAction->setIcon(QIcon(":/images/viewer_toolbar/full.png"));
+	fitToPageAction->setCheckable(true);
+	fitToPageAction->setDisabled(true);
+	fitToPageAction->setChecked(Configuration::getConfiguration().getFitToPage());
+    fitToPageAction->setData(FIT_TO_PAGE_ACTION_Y);
+    fitToPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(FIT_TO_PAGE_ACTION_Y));
+	connect(fitToPageAction,SIGNAL(triggered()),this,SLOT(fitToPageSwitch()));
 
 	showFlowAction = new QAction(tr("Show go to flow"),this);
 	showFlowAction->setIcon(QIcon(":/images/viewer_toolbar/flow.png"));
@@ -524,6 +534,7 @@ void MainWindowViewer::createToolBars()
 
     comicToolBar->addAction(adjustHeightAction);
 	comicToolBar->addAction(adjustToFullSizeAction);
+	comicToolBar->addAction(fitToPageAction);
 	comicToolBar->addAction(leftRotationAction);
 	comicToolBar->addAction(rightRotationAction);
 	comicToolBar->addAction(doublePageAction);
@@ -574,6 +585,7 @@ void MainWindowViewer::createToolBars()
     viewer->addAction(adjustHeightAction);
     viewer->addAction(adjustWidthAction);
 	viewer->addAction(adjustToFullSizeAction);
+	viewer->addAction(fitToPageAction);
 	viewer->addAction(leftRotationAction);
 	viewer->addAction(rightRotationAction);
     viewer->addAction(doublePageAction);
@@ -809,6 +821,7 @@ void MainWindowViewer::enableActions()
 	doublePageAction->setDisabled(false);
 	doubleMangaPageAction->setDisabled(false);
 	adjustToFullSizeAction->setDisabled(false);
+	fitToPageAction->setDisabled(false);
 	//setBookmark->setDisabled(false);
     showBookmarksAction->setDisabled(false);
     showInfoAction->setDisabled(false); //TODO enable goTo and showInfo (or update) when numPages emited
@@ -830,6 +843,7 @@ void MainWindowViewer::disableActions()
 	doublePageAction->setDisabled(true);
 	doubleMangaPageAction->setDisabled(true);
 	adjustToFullSizeAction->setDisabled(true);
+	fitToPageAction->setDisabled(true);
     setBookmarkAction->setDisabled(true);
     showBookmarksAction->setDisabled(true);
     showInfoAction->setDisabled(true); //TODO enable goTo and showInfo (or update) when numPages emited
@@ -1082,7 +1096,8 @@ void MainWindowViewer::setUpShortcutsManagement()
                                          << rightRotationAction
                                          << doublePageAction
 					 << doubleMangaPageAction
-                                         << adjustToFullSizeAction);
+                                         << adjustToFullSizeAction
+					 << fitToPageAction);
 
     allActions << tmpList;
 
@@ -1372,6 +1387,12 @@ void MainWindowViewer::alwaysOnTopSwitch()
 void MainWindowViewer::adjustToFullSizeSwitch()
 {
 	Configuration::getConfiguration().setAdjustToFullSize(!Configuration::getConfiguration().getAdjustToFullSize());
+	viewer->updatePage();
+}
+
+void MainWindowViewer::fitToPageSwitch()
+{
+	Configuration::getConfiguration().setFitToPage(!Configuration::getConfiguration().getFitToPage());
 	viewer->updatePage();
 }
 
