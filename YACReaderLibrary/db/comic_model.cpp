@@ -21,30 +21,45 @@ ComicModel::ComicModel(QObject *parent)
 	connect(this,SIGNAL(reset()),this,SIGNAL(modelReset()));
 }
 
-//! [0]
 ComicModel::ComicModel( QSqlQuery &sqlquery, QObject *parent)
     : QAbstractItemModel(parent)
 {
 	setupModelData(sqlquery);
 }
-//! [0]
 
-//! [1]
 ComicModel::~ComicModel()
 {
 	qDeleteAll(_data);
 }
-//! [1]
 
-//! [2]
 int ComicModel::columnCount(const QModelIndex &parent) const
 {
 	Q_UNUSED(parent)
 	if(_data.isEmpty())
 		return 0;
-	return _data.first()->columnCount();
+    return _data.first()->columnCount();
 }
-//! [2]
+
+QMimeData *ComicModel::mimeData(const QModelIndexList &indexes) const
+{
+    //custom model data
+    //application/yacreader-comics-ids + list of ids in a QByteArray
+    QList<qulonglong> ids;
+    foreach(QModelIndex index, indexes)
+    {
+        ids << index.data(IdRole).toULongLong();
+    }
+
+    QByteArray data;
+    QBuffer buffer(&data);
+    QDataStream out(&buffer);
+    out << ids; //serialize the list of identifiers
+
+    QMimeData * mimeData = new QMimeData();
+    mimeData->setData("application/yacreaderlibrary-comics-ids", data);
+
+    return mimeData;
+}
 
 QHash<int, QByteArray> ComicModel::roleNames() const {
     QHash<int, QByteArray> roles;
@@ -67,7 +82,6 @@ QHash<int, QByteArray> ComicModel::roleNames() const {
     return roles;
 }
 
-//! [3]
 QVariant ComicModel::data(const QModelIndex &index, int role) const
 {
 	if (!index.isValid())
@@ -139,9 +153,7 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
 
 	return item->data(index.column());
 }
-//! [3]
 
-//! [4]
 Qt::ItemFlags ComicModel::flags(const QModelIndex &index) const
 {
 	if (!index.isValid())
@@ -150,9 +162,7 @@ Qt::ItemFlags ComicModel::flags(const QModelIndex &index) const
 		return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 }
-//! [4]
 
-//! [5]
 QVariant ComicModel::headerData(int section, Qt::Orientation orientation,
 							   int role) const
 {
@@ -226,9 +236,7 @@ QVariant ComicModel::headerData(int section, Qt::Orientation orientation,
 
 	return QVariant();
 }
-//! [5]
 
-//! [6]
 QModelIndex ComicModel::index(int row, int column, const QModelIndex &parent)
 			const
 {
@@ -237,17 +245,13 @@ QModelIndex ComicModel::index(int row, int column, const QModelIndex &parent)
 
 	return createIndex(row, column, _data.at(row));
 }
-//! [6]
 
-//! [7]
 QModelIndex ComicModel::parent(const QModelIndex &index) const
 {
 	Q_UNUSED(index)
 	return QModelIndex();
 }
-//! [7]
 
-//! [8]
 int ComicModel::rowCount(const QModelIndex &parent) const
 {
 	if (parent.column() > 0)
@@ -258,7 +262,6 @@ int ComicModel::rowCount(const QModelIndex &parent) const
 
 	return 0;
 }
-//! [8]
 
 QStringList ComicModel::getPaths(const QString & _source)
 {
