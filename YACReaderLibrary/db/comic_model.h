@@ -34,6 +34,8 @@ public:
 	QModelIndex parent(const QModelIndex &index) const;
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    QMimeData * mimeData(const QModelIndexList &indexes) const;
+
     void setupFolderModelData(unsigned long long int parentFolder,const QString & databasePath);
     void setupLabelModelData(unsigned long long int parentLabel, const QString & databasePath);
     void setupReadingListModelData(unsigned long long int parentReadingList, const QString & databasePath);
