@@ -17,7 +17,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     //FLOW-----------------------------------------------------------------------
     //---------------------------------------------------------------------------
 
-    if(QGLFormat::hasOpenGL() && (settings->value(USE_OPEN_GL).toBool() == true))
+    if((settings->value(USE_OPEN_GL).toBool() == true))
         comicFlow = new ComicFlowWidgetGL(0);
     else
         comicFlow = new ComicFlowWidgetSW(0);
