@@ -479,20 +479,22 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 	glBegin(GL_QUADS);
 
 	//esquina inferior izquierda
-	glColor4f(LUP*opacity*reflectionUp,LUP*opacity*reflectionUp,LUP*opacity*reflectionUp,opacity*reflectionUp);
+    glColor4f(LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,1);
 	glTexCoord2f(0.0f, 0.0f);
 	glVertex3f(w/2.f*-1.f, -0.5f-h, 0.f);
 
 	//esquina inferior derecha
+    glColor4f(RUP*opacity*reflectionUp/2,RUP*opacity*reflectionUp/2,RUP*opacity*reflectionUp/2,1);
 	glTexCoord2f(1.0f, 0.0f);
 	glVertex3f(w/2.f, -0.5f-h, 0.f);
 
 	//esquina superior derecha
-	glColor4f(opacity*reflectionBottom,opacity*reflectionBottom,opacity*reflectionBottom,opacity*reflectionBottom);
+    glColor4f(RDOWN*opacity/3,RDOWN*opacity/3,RDOWN*opacity/3,1);
 	glTexCoord2f(1.0f, 1.0f);
 	glVertex3f(w/2.f, -0.5f, 0.f);
 
 	//esquina superior izquierda
+    glColor4f(LDOWN*opacity/3,LDOWN*opacity/3,LDOWN*opacity/3,1);
 	glTexCoord2f(0.0f, 1.0f);
 	glVertex3f(w/2.f*-1.f, -0.5f, 0.f);
 
