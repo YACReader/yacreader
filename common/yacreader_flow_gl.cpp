@@ -13,7 +13,7 @@
 #include <QGLContext>
 #include <QGLPixelBuffer>
 #include <cmath>
-
+#include <iostream>
 /*** Animation Settings ***/
 
 /*** Position Configuration ***/
@@ -200,7 +200,7 @@ struct Preset pressetYACReaderFlowDownConfig = {
 };
 /*Constructor*/
 YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
-    :QGLWidget(QGLFormat(QGL::SampleBuffers), parent),numObjects(0),lazyPopulateObjects(-1),bUseVSync(false),hasBeenInitialized(false)
+    :QOpenGLWidget(/*QOpenGLWidget migration QGLFormat(QGL::SampleBuffers),*/ parent),numObjects(0),lazyPopulateObjects(-1),bUseVSync(false),hasBeenInitialized(false)
 {
 	updateCount = 0;
 	config = p;
@@ -238,7 +238,10 @@ YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
 
 	loaderThread->start();*/
 
-    QGLFormat f = format();
+    QSurfaceFormat f = format();
+
+    //TODO add antialiasing
+    f.setSamples(4);
     f.setVersion(2, 1);
 	f.setSwapInterval(0);
 	setFormat(f);
@@ -250,7 +253,7 @@ YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
 void YACReaderFlowGL::timerEvent(QTimerEvent * event)
 {
 	if(timerId == event->timerId())
-        updateGL();
+        update();
 	
 	//if(!worker->isRunning())
     //worker->start();
@@ -298,10 +301,16 @@ void YACReaderFlowGL::initializeGL()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	defaultTexture = bindTexture(QImage(":/images/defaultCover.png"),GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
-	markTexture = bindTexture(QImage(":/images/readRibbon.png"),GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
-	readingTexture = bindTexture(QImage(":/images/readingRibbon.png"),GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
-	if(lazyPopulateObjects!=-1)
+    defaultTexture = new QOpenGLTexture(QImage(":/images/defaultCover.png"));
+    defaultTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::LinearMipMapLinear);
+
+    markTexture = new QOpenGLTexture(QImage(":/images/readRibbon.png"));
+    markTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::LinearMipMapLinear);
+
+    readingTexture = new QOpenGLTexture(QImage(":/images/readingRibbon.png"));
+    readingTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::LinearMipMapLinear);
+
+    if(lazyPopulateObjects!=-1)
 		populate(lazyPopulateObjects);
 
 	hasBeenInitialized = true;
@@ -351,41 +360,41 @@ void YACReaderFlowGL::udpatePerspective(int width, int height)
 
 //-----------------------------------------------------------------------------
 /*Private*/
-void YACReaderFlowGL::calcPos(CFImage *CF,int pos)
+void YACReaderFlowGL::calcPos(YACReader3DImage & image, int pos)
 {
 	if(pos == 0){
-		CF->current = centerPos;
+        image.current = centerPos;
 	}else{
 		if(pos > 0){
-			CF->current.x = (config.centerDistance)+(config.xDistance*pos);
-			CF->current.y = config.yDistance*pos*-1;
-			CF->current.z = config.zDistance*pos*-1;
-			CF->current.rot = config.rotation;
+            image.current.x = (config.centerDistance)+(config.xDistance*pos);
+            image.current.y = config.yDistance*pos*-1;
+            image.current.z = config.zDistance*pos*-1;
+            image.current.rot = config.rotation;
 		}else{
-			CF->current.x = (config.centerDistance)*-1+(config.xDistance*pos);
-			CF->current.y =  config.yDistance*pos;
-			CF->current.z = config.zDistance*pos;
-			CF->current.rot = config.rotation*-1;
+            image.current.x = (config.centerDistance)*-1+(config.xDistance*pos);
+            image.current.y =  config.yDistance*pos;
+            image.current.z = config.zDistance*pos;
+            image.current.rot = config.rotation*-1;
 		}
 	}
 
 }
-void YACReaderFlowGL::calcRV(RVect *RV,int pos)
+void YACReaderFlowGL::calcVector(YACReader3DVector & vector, int pos)
 {
-	calcPos(&dummy,pos);
+    calcPos(dummy,pos);
 
-	RV->x = dummy.current.x;
-	RV->y = dummy.current.y;
-	RV->z = dummy.current.z;
-	RV->rot = dummy.current.rot;
-
+    vector.x = dummy.current.x;
+    vector.y = dummy.current.y;
+    vector.z = dummy.current.z;
+    vector.rot = dummy.current.rot;
 }
-bool YACReaderFlowGL::animate(RVect *Current,RVect to)
+
+bool YACReaderFlowGL::animate(YACReader3DVector & currentVector,YACReader3DVector & toVector)
 {
-    float rotDiff = to.rot-Current->rot;
-    float xDiff = to.x-Current->x;
-    float yDiff = to.y-Current->y;
-    float zDiff = to.z-Current->z;
+    float rotDiff = toVector.rot-currentVector.rot;
+    float xDiff = toVector.x-currentVector.x;
+    float yDiff = toVector.y-currentVector.y;
+    float zDiff = toVector.z-currentVector.z;
 
     if(fabs(rotDiff) < 0.01
        && fabs(xDiff)  < 0.001
@@ -394,12 +403,12 @@ bool YACReaderFlowGL::animate(RVect *Current,RVect to)
         return true;
 
 	//calculate and apply positions
-    Current->x = Current->x+(xDiff)*config.animationStep;
-    Current->y = Current->y+(yDiff)*config.animationStep;
-    Current->z = Current->z+(zDiff)*config.animationStep;
+    currentVector.x = currentVector.x+(xDiff)*config.animationStep;
+    currentVector.y = currentVector.y+(yDiff)*config.animationStep;
+    currentVector.z = currentVector.z+(zDiff)*config.animationStep;
 
     if(fabs(rotDiff) > 0.01){
-        Current->rot = Current->rot+(rotDiff)*(config.animationStep*config.preRotation);
+        currentVector.rot = currentVector.rot+(rotDiff)*(config.animationStep*config.preRotation);
 	}
 	else
     {
@@ -408,13 +417,13 @@ bool YACReaderFlowGL::animate(RVect *Current,RVect to)
 
     return false;
 }
-void YACReaderFlowGL::drawCover(CFImage *CF)
+void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 {
-	float w = CF->width;
-	float h = CF->height;
+    float w = image.width;
+    float h = image.height;
 
 	//fadeout 
-	float opacity = 1-1/(config.animationFadeOutDist+config.viewRotateLightStrenght*fabs(viewRotate))*fabs(0-CF->current.x);
+    float opacity = 1-1/(config.animationFadeOutDist+config.viewRotateLightStrenght*fabs(viewRotate))*fabs(0-image.current.x);
 
 	glLoadIdentity();
 	glTranslatef(config.cfX,config.cfY,config.cfZ);
@@ -422,17 +431,17 @@ void YACReaderFlowGL::drawCover(CFImage *CF)
 	glRotatef(viewRotate*config.viewAngle+config.cfRY,0,1,0);
 	glRotatef(config.cfRZ,0,0,1);
 
-	glTranslatef( CF->current.x, CF->current.y, CF->current.z );
+    glTranslatef( image.current.x, image.current.y, image.current.z );
 
 	glPushMatrix();
-	glRotatef(CF->current.rot,0,1,0);
+    glRotatef(image.current.rot,0,1,0);
 
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, CF->img);
+    image.texture->bind();
 
 	//calculate shading
-	float LShading = ((config.rotation != 0 )?((CF->current.rot < 0)?1-1/config.rotation*CF->current.rot:1):1);
-	float RShading = ((config.rotation != 0 )?((CF->current.rot > 0)?1-1/(config.rotation*-1)*CF->current.rot:1):1);
+    float LShading = ((config.rotation != 0 )?((image.current.rot < 0)?1-1/config.rotation*image.current.rot:1):1);
+    float RShading = ((config.rotation != 0 )?((image.current.rot > 0)?1-1/(config.rotation*-1)*image.current.rot:1):1);
 	float LUP = shadingTop+(1-shadingTop)*LShading;
 	float LDOWN = shadingBottom+(1-shadingBottom)*LShading;
 	float RUP =  shadingTop+(1-shadingTop)*RShading;
@@ -490,13 +499,13 @@ void YACReaderFlowGL::drawCover(CFImage *CF)
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 	
-	if(showMarks && loaded[CF->index] && marks[CF->index] != Unread)
+    if(showMarks && loaded[image.index] && marks[image.index] != Unread)
 	{
 		glEnable(GL_TEXTURE_2D);
-		if(marks[CF->index] == Read)
-			glBindTexture(GL_TEXTURE_2D, markTexture);
+        if(marks[image.index] == Read)
+            markTexture->bind();
 		else
-			glBindTexture(GL_TEXTURE_2D, readingTexture);
+            readingTexture->bind();
 		glBegin(GL_QUADS);
 
 		//esquina inferior izquierda
@@ -543,19 +552,19 @@ void YACReaderFlowGL::draw()
 	//Draw right Covers
 	for(count = numObjects-1;count > -1;count--){
 		if(count > CS){
-			drawCover(&cfImages[count]);
+            drawCover(images[count]);
 		}
 	}
 
 	//Draw left Covers
 	for(count = 0;count < numObjects-1;count++){
 		if(count < CS){
-			drawCover(&cfImages[count]);
+            drawCover(images[count]);
 		}
 	}
 
 	//Draw Center Cover
-	drawCover(&cfImages[CS]);
+    drawCover(images[CS]);
 
 	//glDisable(GL_DEPTH_TEST);
 	glMatrixMode(GL_PROJECTION);
@@ -565,9 +574,17 @@ void YACReaderFlowGL::draw()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-    glColor4f( 0.3f, 0.3f, 0.3f, 1.0f );
+    //glColor4f( 0.3f, 0.3f, 0.3f, 1.0f );
 
-	renderText(10, fontSize + 10,QString("%1/%2").arg(currentSelected+1).arg(numObjects),QFont("Arial", fontSize));
+    /*QOpenGLWidget migration renderText(10, fontSize + 10,QString("%1/%2").arg(currentSelected+1).arg(numObjects),QFont("Arial", fontSize));
+
+    QPainter painter;
+    painter.begin(this);
+
+    painter.setPen(QColor(76,76,76));
+    painter.drawText(10,10, QString("%1/%2").arg(currentSelected+1).arg(numObjects));
+
+    painter.end();*/
 
 	glEnable(GL_DEPTH_TEST);
 	glMatrixMode(GL_PROJECTION);
@@ -645,8 +662,8 @@ void YACReaderFlowGL::updatePositions()
 
     bool stopAnimation = true;
 	for(count = numObjects-1;count > -1;count--){
-		calcRV(&cfImages[count].animEnd,count-currentSelected);
-        if(!animate(&cfImages[count].current,cfImages[count].animEnd))
+        calcVector(images[count].animEnd,count-currentSelected);
+        if(!animate(images[count].current,images[count].animEnd))
             stopAnimation = false;
     }
 
@@ -655,7 +672,7 @@ void YACReaderFlowGL::updatePositions()
 		viewRotate += (0-viewRotate)*config.viewRotateSub;
 	}
 
-	if(fabs (cfImages[currentSelected].current.x - cfImages[currentSelected].animEnd.x) < 1)//viewRotate < 0.2)
+    if(fabs (images[currentSelected].current.x - images[currentSelected].animEnd.x) < 1)//viewRotate < 0.2)
 	{
 		cleanupAnimation();
 		if(updateCount >= 0) //TODO parametrizar
@@ -675,34 +692,27 @@ void YACReaderFlowGL::updatePositions()
 
 }
 
-void YACReaderFlowGL::insert(char *name, GLuint Tex, float x, float y,int item)
+void YACReaderFlowGL::insert(char *name, QOpenGLTexture * texture, float x, float y,int item)
 {
     startAnimationTimer();
 
 	Q_UNUSED(name)
 	//set a new entry 
 	if(item == -1){
-
-		if(numObjects == 0){
-			cfImages = (CFImage*)malloc(sizeof(CFImage));
-		}
-		else
-		{
-			cfImages = (CFImage*)realloc(cfImages,(numObjects+1)*sizeof(CFImage));
-		}
+        images.push_back(YACReader3DImage());
 
 		item = numObjects;
 		numObjects++;
 
-		calcRV(&cfImages[item].current,item);
-		cfImages[item].current.x += 1;
-		cfImages[item].current.rot = 90;
+        calcVector(images[item].current,item);
+        images[item].current.x += 1;
+        images[item].current.rot = 90;
 	}
 
-	cfImages[item].img = Tex;
-	cfImages[item].width = x;
-	cfImages[item].height = y;
-	cfImages[item].index = item;
+    images[item].texture = texture;
+    images[item].width = x;
+    images[item].height = y;
+    images[item].index = item;
 	//strcpy(cfImages[item].name,name);
 
 
@@ -724,34 +734,37 @@ void YACReaderFlowGL::remove(int item)
 		currentSelected--;
 	}
 
+    QOpenGLTexture * texture = images[item].texture;
+
 	int count = item;
 	while(count <= numObjects-2){
-		cfImages[count] = cfImages[count+1];
-		cfImages[count].index--;
+        images[count].index--;
 		count++;
 	}
+    images.removeAt(item);
 
-	cfImages = (CFImage*)realloc(cfImages,numObjects*sizeof(CFImage));
+    if(texture != defaultTexture)
+        delete(texture);
 
 	numObjects--;
 }
 
 /*Info*/
-CFImage YACReaderFlowGL::getCurrentSelected()
+YACReader3DImage YACReaderFlowGL::getCurrentSelected()
 {
-	return cfImages[currentSelected];
+    return images[currentSelected];
 }
 
-void YACReaderFlowGL::replace(char *name, GLuint Tex, float x, float y,int item)
+void YACReaderFlowGL::replace(char *name, QOpenGLTexture * texture, float x, float y,int item)
 {
     startAnimationTimer();
 
 	Q_UNUSED(name)
-	if(cfImages[item].index == item)
+    if(images[item].index == item)
 	{
-		cfImages[item].img = Tex;
-		cfImages[item].width = x;
-		cfImages[item].height = y;
+        images[item].texture = texture;
+        images[item].width = x;
+        images[item].height = y;
 		loaded[item]=true;
 	}
 	else
@@ -766,7 +779,8 @@ void YACReaderFlowGL::populate(int n)
 	int i;
 	
 	for(i = 0;i<n;i++){
-		insert("cover", defaultTexture, x, y);
+        QString s = "cover";
+        insert(s.toLocal8Bit().data(), defaultTexture, x, y);
 	}
 
 	/*
@@ -793,12 +807,12 @@ void YACReaderFlowGL::reset()
 	loaded.clear();
 
 	for(int i = 0;i<numObjects;i++){
-		if(cfImages[i].img != defaultTexture)
-			deleteTexture(cfImages[i].img);
+        if(images[i].texture != defaultTexture)
+            delete(images[i].texture);
 	}
-	if(numObjects>0)
-		delete[] cfImages;
+
 	numObjects = 0;
+    images.clear();
 	
 	if(!hasBeenInitialized)
 		lazyPopulateObjects = -1;
@@ -947,14 +961,14 @@ void YACReaderFlowGL::useVSync(bool b)
 		bUseVSync = b;
 		if(b)
 		{
-			QGLFormat f = format();
+            QSurfaceFormat f = format();
             f.setVersion(2, 1);
             f.setSwapInterval(1);
 			setFormat(f);
 		}
 		else
 		{
-			QGLFormat f = format();
+            QSurfaceFormat f = format();
             f.setVersion(2, 1);
 			f.setSwapInterval(0);
 			setFormat(f);
@@ -1103,7 +1117,7 @@ void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 		else if(posX <=-0.5)
 			showPrevious();
 	} else
-		QGLWidget::mousePressEvent(event);
+        QOpenGLWidget::mousePressEvent(event);
 }
 
 void YACReaderFlowGL::mouseDoubleClickEvent(QMouseEvent* event)
@@ -1175,19 +1189,21 @@ void YACReaderComicFlowGL::updateImageData()
 		{
 			float x = 1;
 			QImage img = worker->result();
-			GLuint cover;
-			if(performance == high || performance == ultraHigh)
-				cover = bindTexture(img, GL_TEXTURE_2D,GL_RGB,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
+            QOpenGLTexture * texture = new QOpenGLTexture(img);
+
+            if(performance == high || performance == ultraHigh)
+            {
+                texture->setAutoMipMapGenerationEnabled(true);
+                texture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::LinearMipMapLinear);
+            }
 			else
-				cover = bindTexture(img, GL_TEXTURE_2D,GL_RGB,QGLContext::LinearFilteringBindOption);
+            {
+                texture->setMinMagFilters(QOpenGLTexture::Linear, QOpenGLTexture::Linear);
+            }
+
 			float y = 1 * (float(img.height())/img.width());
-			replace("cover", cover, x, y,idx);
-			/*CFImages[idx].width = x;
-			CFImages[idx].height = y;
-			CFImages[idx].img = worker->resultTexture;
-			strcpy(CFImages[idx].name,"cover");*/
-			//loaded[idx] = true;
-			//numImagesLoaded++;
+            QString s = "cover";
+            replace(s.toLocal8Bit().data(), texture, x, y,idx);
 		}
 	}
 
@@ -1260,7 +1276,9 @@ YACReaderPageFlowGL::~YACReaderPageFlowGL()
 	this->killTimer(timerId);
 	//worker->deleteLater();
 	rawImages.clear();
-	free(cfImages);
+    for(int i = 0;i<numObjects;i++){
+        delete(images[i].texture);
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1283,19 +1301,22 @@ void YACReaderPageFlowGL::updateImageData()
 		{
 			float x = 1;
 			QImage img = worker->result();
-			GLuint cover;
-			if(performance == high || performance == ultraHigh)
-				cover = bindTexture(img, GL_TEXTURE_2D,GL_RGB,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
+            QOpenGLTexture * texture = new QOpenGLTexture(img);
+
+            if(performance == high || performance == ultraHigh)
+            {
+                texture->setAutoMipMapGenerationEnabled(true);
+                texture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::LinearMipMapLinear);
+            }
 			else
-				cover = bindTexture(img, GL_TEXTURE_2D,GL_RGB,QGLContext::LinearFilteringBindOption);
+            {
+                texture->setMinMagFilters(QOpenGLTexture::Linear, QOpenGLTexture::Linear);
+            }
+
 			float y = 1 * (float(img.height())/img.width());
-			replace("cover", cover, x, y,idx);
-			/*CFImages[idx].width = x;
-			CFImages[idx].height = y;
-			CFImages[idx].img = worker->resultTexture;
-			strcpy(CFImages[idx].name,"cover");*/
+            QString s = "cover";
+            replace(s.toLocal8Bit().data(), texture, x, y,idx);
 			loaded[idx] = true;
-			//numImagesLoaded++;
 		}
 	}
 
@@ -1333,12 +1354,6 @@ void YACReaderPageFlowGL::updateImageData()
 			
 			if(!loaded[i]&&imagesReady[i])//slide(i).isNull())
 			{
-				//loader->loadTexture(i);
-				//loaded[i]=true;
-				// schedule thumbnail generation
-
-					//loaded[i]=true;
-
 				worker->generate(i, rawImages.at(i));
 				
 				delete[] indexes;
@@ -1566,18 +1581,3 @@ QImage ImageLoaderByteArrayGL::result()
 { 
 	return img; 
 }
-
-//WidgetLoader::WidgetLoader(QWidget *parent, QGLWidget * shared)
-//	:QGLWidget(parent,shared)
-//{
-//}
-//
-//void WidgetLoader::loadTexture(int index)
-//{
-//	QImage image;
-//	bool result = image.load(QString("./cover%1.jpg").arg(index+1));
-//	//image = image.scaledToWidth(128,Qt::SmoothTransformation); //TODO parametrizar
-//	flow->cfImages[index].width = 0.5;
-//	flow->cfImages[index].height  = 0.5 * (float(image.height())/image.width());
-//	flow->cfImages[index].img = bindTexture(image, GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
-//}
