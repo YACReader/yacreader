@@ -9,6 +9,8 @@
 #include <QApplication>
 #include <QBuffer>
 
+#include "QsLog.h"
+
 #include "comic_item.h"
 
 YACReaderTableView::YACReaderTableView(QWidget *parent) :
@@ -70,12 +72,14 @@ YACReaderTableView::YACReaderTableView(QWidget *parent) :
 	showDeletingProgressAnimation = new QPropertyAnimation(deletingProgress,"pos");
 	showDeletingProgressAnimation->setDuration(150);*/
 
-    //drag
-    setDragEnabled(true);
+    //drag: if the default drag is enabled there is no way for setting a custom image
+    //TODO report bug/suggestion
+    //setDragEnabled(true);
 }
 
 void YACReaderTableView::mouseMoveEvent(QMouseEvent *event)
 {
+
 	QModelIndex mi = indexAt(event->pos());
 	if(mi.isValid())
 	{
@@ -110,7 +114,7 @@ void YACReaderTableView::mouseMoveEvent(QMouseEvent *event)
             performDrag();
     }
 
-	QTableView::mouseMoveEvent(event);
+
 }
 void YACReaderTableView::mousePressEvent(QMouseEvent * event)
 {
@@ -149,6 +153,7 @@ void YACReaderTableView::leaveEvent(QEvent * event)
 
 void YACReaderTableView::performDrag()
 {
+    QLOG_DEBUG() << "performDrag";
     QDrag *drag = new QDrag(this);
     drag->setMimeData(model()->mimeData(selectionModel()->selectedRows()));
     drag->setPixmap(QPixmap(":/images/openInYACReader.png")); //TODO add better image

@@ -10,6 +10,14 @@ YACReaderReadingListsView::YACReaderReadingListsView(QWidget *parent)
     setUniformRowHeights(false);
 }
 
+void YACReaderReadingListsView::dragEnterEvent(QDragEnterEvent *event)
+{
+    YACReaderTreeView::dragEnterEvent(event);
+
+    QModelIndex destinationIndex = indexAt(event->pos());
+    if(model()->canDropMimeData(event->mimeData(), event->proposedAction(), destinationIndex.row(), destinationIndex.column(), destinationIndex.parent()))
+        event->acceptProposedAction();
+}
 
 //----------------------------------------------------------------------
 
@@ -27,19 +35,6 @@ void YACReaderReadingListsViewItemDeletegate::paint(QPainter *painter, const QSt
     {
         return;
     }
-
-    /*if(!item->data(FolderModel::Completed).toBool())
-    {
-        painter->save();
-#ifdef Q_OS_MAC
-        painter->setBrush(QBrush(QColor(85,95,127)));
-#else
-        painter->setBrush(QBrush(QColor(237,197,24)));
-#endif
-        painter->setPen(QPen(QBrush(),0));
-        painter->drawRect(0,option.rect.y(),2,option.rect.height());
-        painter->restore();
-    }*/
 
     QStyledItemDelegate::paint(painter, option, index);
 }

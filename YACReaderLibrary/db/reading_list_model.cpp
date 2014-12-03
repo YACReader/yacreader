@@ -186,6 +186,17 @@ QModelIndex ReadingListModel::parent(const QModelIndex &index) const
     return QModelIndex();
 }
 
+bool ReadingListModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
+{
+    return data->formats().contains("application/yacreaderlibrary-comics-ids");
+}
+
+bool ReadingListModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+{
+    QLOG_DEBUG() << "drop mimedata into row = " << row << "column column = " << column << "parent" << parent;
+    return true;
+}
+
 void ReadingListModel::setupReadingListsData(QString path)
 {
     beginResetModel();
