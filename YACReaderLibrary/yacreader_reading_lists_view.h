@@ -10,6 +10,10 @@ class YACReaderReadingListsView : public YACReaderTreeView
     Q_OBJECT
 public:
     explicit YACReaderReadingListsView(QWidget * parent = 0);
+
+protected:
+    //Drop to import
+    void dragEnterEvent(QDragEnterEvent *event);
 };
 
 class YACReaderReadingListsViewItemDeletegate: public QStyledItemDelegate
