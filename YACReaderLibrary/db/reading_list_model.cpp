@@ -393,7 +393,7 @@ void ReadingListModel::setupReadingListsData(QSqlQuery &sqlquery, ReadingListIte
         else
             currentParent = items.value(record.value("parentId").toULongLong());
 
-        parent->appendChild(rli);
+        currentParent->appendChild(rli);
 
         items.insert(rli->getId(),rli);
     }
@@ -447,7 +447,7 @@ void ReadingListModel::setupReadingLists(QSqlDatabase & db)
     //setup root item
     rootItem = new ReadingListItem(QList<QVariant>() << "ROOT" << 0 << true << false);
 
-    QSqlQuery selectQuery("select * from reading_list order by parentId,name",db);
+    QSqlQuery selectQuery("select * from reading_list order by parentId IS NULL DESC",db);
 
     //setup reading lists
     setupReadingListsData(selectQuery,rootItem);
