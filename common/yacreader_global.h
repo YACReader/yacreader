@@ -71,6 +71,8 @@
 namespace YACReader
 {
 
+static const QString YACReaderLibrarComiscSelectionMimeDataFormat = "application/yacreaderlibrary-comics-ids";
+
  enum FlowType
   {
 	CoverFlowLike=0,

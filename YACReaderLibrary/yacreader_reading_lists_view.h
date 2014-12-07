@@ -14,6 +14,7 @@ public:
 protected:
     //Drop to import
     void dragEnterEvent(QDragEnterEvent *event);
+    void dragMoveEvent(QDragMoveEvent *event);
 };
 
 class YACReaderReadingListsViewItemDeletegate: public QStyledItemDelegate

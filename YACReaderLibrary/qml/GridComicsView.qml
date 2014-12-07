@@ -1,6 +1,6 @@
 import QtQuick 2.3
-import QtQuick.Controls 1.0
-import QtQuick.Controls 1.1
+
+import QtQuick.Controls 1.2
 import QtGraphicalEffects 1.0
 import comicModel 1.0
 
@@ -39,13 +39,21 @@ Rectangle {
                 id: realCell
 
                 property int position : 0
-
+                property bool dragging: false;
                 Drag.active: mouseArea.drag.active
                 Drag.hotSpot.x: 32
                 Drag.hotSpot.y: 32
                 Drag.dragType: Drag.Automatic
-                Drag.mimeData: { "text/plain": titleText.text }
+                //Drag.mimeData: { "x": 1 }
                 Drag.proposedAction: Qt.CopyAction
+                Drag.onActiveChanged: {
+                    if(!dragging)
+                    {
+                        comicsSelectionHelper.startDrag();
+                        dragging = true;
+                    }else
+                        dragging = false;
+                }
 
                 width: 156; height: 287
                 color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index)) || grid.currentIndex === index?selectedColor:cellColor;
@@ -65,8 +73,8 @@ Rectangle {
 
                     anchors.fill: parent
                     acceptedButtons: Qt.LeftButton | Qt.RightButton
-                    onDoubleClicked: {
 
+                    onDoubleClicked: {
                         comicsSelectionHelper.clear();
 
                         comicsSelectionHelper.selectIndex(index);
@@ -74,13 +82,14 @@ Rectangle {
                         comicsSelectionHelper.selectedItem(index);
                     }
 
-                    onClicked: {
+                    onPressed: {
                         //grid.currentIndex = index
                         //comicsSelection.setCurrentIndex(index,0x0002)
                         var ci = grid.currentIndex;
                         if(mouse.button != Qt.RightButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
                         {
-                            comicsSelectionHelper.clear();
+                            if(!comicsSelectionHelper.isSelectedIndex(index))
+                                comicsSelectionHelper.clear();
                         }
 
                         if(mouse.modifiers & Qt.ShiftModifier)
@@ -126,9 +135,8 @@ Rectangle {
                 anchors {horizontalCenter: parent.horizontalCenter; top: realCell.top; topMargin: 4}
                 source: cover_path
                 fillMode: Image.PreserveAspectCrop
-                //smooth: true
+                smooth: true
                 mipmap: true
-                //antialiasing: true
                 asynchronous : true
                 cache: false //TODO clear cache only when it is neede
             }

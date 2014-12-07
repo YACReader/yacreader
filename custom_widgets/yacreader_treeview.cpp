@@ -123,7 +123,6 @@ void YACReaderTreeView::dragLeaveEvent(QDragLeaveEvent *event)
 void YACReaderTreeView::dragMoveEvent(QDragMoveEvent *event)
 {
     QTreeView::dragMoveEvent(event);
-    event->acceptProposedAction();
 
     //fix for drop auto expand
     QModelIndex underMouse = indexAt(event->pos());

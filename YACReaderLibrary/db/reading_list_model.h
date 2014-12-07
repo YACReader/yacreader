@@ -74,6 +74,10 @@ public:
 
 signals:
 
+    void addComicsToFavorites(const QList<qulonglong> & comicIds);
+    void addComicsToLabel(const QList<qulonglong> & comicIds, qulonglong labelId);
+    void addComicsToReadingList(const QList<qulonglong> & comicIds, qulonglong readingListId);
+
 private:
     void cleanAll();
     void setupReadingListsData(QSqlQuery &sqlquery, ReadingListItem *parent);
@@ -81,6 +85,11 @@ private:
     void setupLabels(QSqlDatabase &db);
     void setupReadingLists(QSqlDatabase &db);
     int addLabelIntoList(LabelItem *item);
+
+    bool rowIsSpecialList(int row, const QModelIndex & parent = QModelIndex()) const;
+    bool rowIsLabel(int row, const QModelIndex & parent = QModelIndex()) const;
+    bool rowIsReadingList(int row, const QModelIndex & parent = QModelIndex()) const;
+    bool rowIsSeparator(int row, const QModelIndex & parent = QModelIndex()) const;
 
     //Special lists
     QList<SpecialListItem *> specialLists;

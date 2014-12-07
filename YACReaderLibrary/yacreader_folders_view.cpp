@@ -46,6 +46,7 @@ void YACReaderFoldersView::dragLeaveEvent(QDragLeaveEvent *event)
 void YACReaderFoldersView::dragMoveEvent(QDragMoveEvent *event)
 {
     YACReaderTreeView::dragMoveEvent(event);
+    event->acceptProposedAction();
 }
 
 void YACReaderFoldersView::dropEvent(QDropEvent *event)
@@ -58,7 +59,6 @@ void YACReaderFoldersView::dropEvent(QDropEvent *event)
 
     if(validAction)
     {
-
         QList<QPair<QString, QString> > droppedFiles = ComicFilesManager::getDroppedFiles(event->mimeData()->urls());
         QModelIndex destinationIndex = indexAt(event->pos());
 

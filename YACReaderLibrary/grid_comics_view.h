@@ -28,6 +28,8 @@ public:
     void updateConfig(QSettings * settings);
     void enableFilterMode(bool enabled);
     QSize sizeHint();
+    QByteArray getMimeDataFromSelection();
+
 
 signals:
     void comicRated(int,QModelIndex);
@@ -47,6 +49,8 @@ public slots:
 
     //rating
     void rate(int index, int rating);
+
+    void startDrag();
 
 protected slots:
     void requestedContextMenu(const QPoint & point);
