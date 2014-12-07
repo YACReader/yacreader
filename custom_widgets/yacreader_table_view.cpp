@@ -114,7 +114,7 @@ void YACReaderTableView::mouseMoveEvent(QMouseEvent *event)
             performDrag();
     }
 
-
+    //disabled mouseMoveEvent in the parent class
 }
 void YACReaderTableView::mousePressEvent(QMouseEvent * event)
 {

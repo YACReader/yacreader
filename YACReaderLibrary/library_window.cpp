@@ -1148,6 +1148,9 @@ void LibraryWindow::createConnections()
     connect(addLabelAction,SIGNAL(triggered()),this,SLOT(showAddNewLabelDialog()));
     connect(renameListAction,SIGNAL(triggered()),this,SLOT(showRenameCurrentList()));
 
+    connect(listsModel,SIGNAL(addComicsToFavorites(QList<qulonglong>)),comicsModel,SLOT(addComicsToFavorites(QList<qulonglong>)));
+    connect(listsModel,SIGNAL(addComicsToLabel(QList<qulonglong>,qulonglong)),comicsModel,SLOT(addComicsToLabel(QList<qulonglong>,qulonglong)));
+    connect(listsModel,SIGNAL(addComicsToReadingList(QList<qulonglong>,qulonglong)),comicsModel,SLOT(addComicsToReadingList(QList<qulonglong>,qulonglong)));
     //--
 
     connect(addToFavoritesAction,SIGNAL(triggered()),this,SLOT(addSelectedComicsToFavorites()));

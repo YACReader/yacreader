@@ -55,6 +55,7 @@ public:
 	QList<ComicDB> getComics(QList<QModelIndex> list); //--> recupera la información común a los comics seleccionados
 	QList<ComicDB> getAllComics();
 	QModelIndex getIndexFromId(quint64 id);
+    QList<QModelIndex> getIndexesFromIds(const QList<qulonglong> &comicIds);
 	//setcomicInfo(QModelIndex & mi); --> inserta en la base datos
 	//setComicInfoForAllComics(); --> inserta la información común a todos los cómics de una sola vez.
 	//setComicInfoForSelectedComis(QList<QModelIndex> list); -->inserta la información común para los comics seleccionados
@@ -64,8 +65,11 @@ public:
 	void removeInTransaction(int row);
 	void reload(const ComicDB & comic);
     void resetComicRating(const QModelIndex & mi);
+
+
     void addComicsToFavorites(const QList<QModelIndex> &comicsList);
     void addComicsToLabel(const QList<QModelIndex> &comicsList, qulonglong labelId);
+    void addComicsToReadingList(const QList<QModelIndex> &comicsList, qulonglong readingListId);
 
     void deleteComicsFromFavorites(const QList<QModelIndex> &comicsList);
     void deleteComicsFromLabel(const QList<QModelIndex> &comicsList, qulonglong labelId);
@@ -114,6 +118,10 @@ public slots:
 	void startTransaction();
 	void finishTransaction();
 	void updateRating(int rating, QModelIndex mi);
+
+    void addComicsToFavorites(const QList<qulonglong> &comicIds);
+    void addComicsToLabel(const QList<qulonglong> &comicIds, qulonglong labelId);
+    void addComicsToReadingList(const QList<qulonglong> &comicIds, qulonglong readingListId);
 
 protected:
 

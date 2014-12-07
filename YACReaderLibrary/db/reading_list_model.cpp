@@ -80,7 +80,10 @@ QVariant ReadingListModel::data(const QModelIndex &index, int role) const
     }
 
     if (role == ReadingListModel::IDRole)
+    {
+        QLOG_DEBUG() << "getting role";
         return item->getId();
+}
 
     if (role == ReadingListModel::SpecialListTypeRole && typeid(*item) == typeid(SpecialListItem))
     {
@@ -131,20 +134,20 @@ QModelIndex ReadingListModel::index(int row, int column, const QModelIndex &pare
     {
         int separatorsCount = labels.isEmpty()?1:2;
 
-        if(row >= 0 && row < specialLists.count())
+        if(rowIsSpecialList(row,parent))
             return createIndex(row, column, specialLists.at(row));
 
         if(row == specialLists.count())
             return createIndex(row,column,separator1);
 
-        if(row > specialLists.count()  && row <= specialLists.count() + labels.count())
+        if(rowIsLabel(row,parent))
             return createIndex(row,column,labels.at(row-specialLists.count()-1));
 
         if(separatorsCount == 2)
         if(row == specialLists.count() + labels.count() + 1)
             return createIndex(row,column,separator2);
 
-        if(row >= specialLists.count() + labels.count() + separatorsCount)
+        if(rowIsReadingList(row,parent))
             return createIndex(row,column,rootItem->child(row - (specialLists.count() + labels.count() + separatorsCount)));
 
     } else //sublist
@@ -188,13 +191,71 @@ QModelIndex ReadingListModel::parent(const QModelIndex &index) const
 
 bool ReadingListModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
 {
-    return data->formats().contains("application/yacreaderlibrary-comics-ids");
+    QLOG_DEBUG() << "trying to drop into row = " << row << "column column = " << column << "parent" << parent;
+
+    if(row == -1)
+        return false;
+
+    if(!parent.isValid()) //top level items
+    {
+        if(row == -1) //no list
+            return false;
+
+        if(row == 1) //reading is just an smart list
+            return false;
+
+        if(rowIsSeparator(row,parent))
+            return false;
+    }
+
+    return data->formats().contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat);
 }
 
 bool ReadingListModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
-    QLOG_DEBUG() << "drop mimedata into row = " << row << "column column = " << column << "parent" << parent;
-    return true;
+    QLOG_DEBUG() << "drop mimedata into row = " << row << " column = " << column << "parent" << parent;
+
+    QList<qulonglong> comicIds;
+    QByteArray rawData = data->data(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat);
+    QDataStream in(&rawData,QIODevice::ReadOnly);
+    in  >> comicIds; //deserialize the list of indentifiers
+
+    QLOG_DEBUG() << "dropped : " << comicIds;
+
+    QModelIndex dest;
+    QModelIndex parentDest;
+
+    if(row == -1)
+    {
+        dest = parent;
+    }
+    else
+        dest = index(row,column,parent);
+
+    parentDest = dest.parent();
+
+    if(rowIsSpecialList(dest.row(),parentDest)) {
+        if(dest.row() == 0) //add to favorites
+        {
+            QLOG_DEBUG() << "-------addComicsToFavorites : " << comicIds << " to " << dest.data(IDRole).toULongLong();
+            emit addComicsToFavorites(comicIds);
+            return true;
+        }
+    }
+
+    if(rowIsLabel(dest.row(),parentDest)) {
+        QLOG_DEBUG() << "+++++++++++addComicsToLabel : " << comicIds << " to " << dest.data(IDRole).toULongLong();
+        emit addComicsToLabel(comicIds,  dest.data(IDRole).toULongLong());
+        return true;
+    }
+
+    if(rowIsReadingList(dest.row(),parentDest)) {
+        QLOG_DEBUG() << "///////////addComicsToReadingList : " << comicIds << " to " << dest.data(IDRole).toULongLong();
+        emit addComicsToReadingList(comicIds,  dest.data(IDRole).toULongLong());
+        return true;
+    }
+
+    return false;
 }
 
 void ReadingListModel::setupReadingListsData(QString path)
@@ -498,8 +559,55 @@ int ReadingListModel::addLabelIntoList(LabelItem *item)
     return 0;
 }
 
+bool ReadingListModel::rowIsSpecialList(int row, const QModelIndex &parent) const
+{
+    if(parent.isValid())
+        return false; //by now no sublists in special list
 
+    if(row >=0 && row < specialLists.count())
+        return true;
 
+    return false;
+}
+
+bool ReadingListModel::rowIsLabel(int row, const QModelIndex &parent) const
+{
+    if(parent.isValid())
+        return false; //by now no sublists in labels
+
+    if(row > specialLists.count()  && row <= specialLists.count() + labels.count())
+        return true;
+
+    return false;
+}
+
+bool ReadingListModel::rowIsReadingList(int row, const QModelIndex &parent) const
+{
+    if(parent.isValid())
+        return true; //only lists with sublists
+
+    int separatorsCount = labels.isEmpty()?1:2;
+
+    if(row >= specialLists.count() + labels.count() + separatorsCount)
+        return true;
+
+    return false;
+}
+
+bool ReadingListModel::rowIsSeparator(int row, const QModelIndex &parent) const
+{
+    if(parent.isValid())
+        return false; //only separators at top level
+
+    if(row == specialLists.count())
+        return true;
+
+     int separatorsCount = labels.isEmpty()?1:2;
+     if(separatorsCount == 2 && row == specialLists.count() + labels.count() + 1)
+         return true;
+
+     return false;
+}
 
 ReadingListModelProxy::ReadingListModelProxy(QObject *parent)
     :QSortFilterProxyModel(parent)

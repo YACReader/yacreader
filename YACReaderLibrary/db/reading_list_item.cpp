@@ -170,7 +170,7 @@ qulonglong ReadingListItem::getId() const
 {
     if(itemData.count()>1)
     {
-        return YACReader::LabelColors(itemData.at(1).toULongLong());
+        return itemData.at(1).toULongLong();
     }
 }
 

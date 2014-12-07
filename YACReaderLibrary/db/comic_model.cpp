@@ -47,16 +47,17 @@ QMimeData *ComicModel::mimeData(const QModelIndexList &indexes) const
     QList<qulonglong> ids;
     foreach(QModelIndex index, indexes)
     {
+        QLOG_DEBUG() << "dragging : " << index.data(IdRole).toULongLong();
         ids << index.data(IdRole).toULongLong();
+
     }
 
     QByteArray data;
-    QBuffer buffer(&data);
-    QDataStream out(&buffer);
+    QDataStream out(&data,QIODevice::WriteOnly);
     out << ids; //serialize the list of identifiers
 
     QMimeData * mimeData = new QMimeData();
-    mimeData->setData("application/yacreaderlibrary-comics-ids", data);
+    mimeData->setData(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat, data);
 
     return mimeData;
 }
@@ -137,6 +138,8 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
         return item->data(ReadColumn).toBool();
     else if (role == HasBeenOpenedRole)
         return item->data(ComicModel::HasBeenOpened);
+    else if (role == IdRole)
+        return item->data(Id);
 
     if (role != Qt::DisplayRole)
         return QVariant();
@@ -705,7 +708,18 @@ QModelIndex ComicModel::getIndexFromId(quint64 id)
 		i++;
 	}
 
-	return index(i,0);
+    return index(i,0);
+}
+
+//TODO completely inefficiently
+QList<QModelIndex> ComicModel::getIndexesFromIds(const QList<qulonglong> &comicIds)
+{
+    QList<QModelIndex> comicsIndexes;
+
+    foreach(qulonglong id,comicIds)
+        comicsIndexes << getIndexFromId(id);
+
+    return comicsIndexes;
 }
 
 void ComicModel::startTransaction()
@@ -720,8 +734,6 @@ void ComicModel::finishTransaction()
 	dbTransaction.commit();
 	dbTransaction.close();
 	QSqlDatabase::removeDatabase(_databasePath);
-
-
 }
 
 void ComicModel::removeInTransaction(int row)
@@ -800,6 +812,11 @@ void ComicModel::resetComicRating(const QModelIndex &mi)
     QSqlDatabase::removeDatabase(_databasePath);
 }
 
+void ComicModel::addComicsToFavorites(const QList<qulonglong> &comicIds)
+{
+    addComicsToFavorites(getIndexesFromIds(comicIds));
+}
+
 void ComicModel::addComicsToFavorites(const QList<QModelIndex> & comicsList)
 {
     QList<ComicDB> comics = getComics(comicsList);
@@ -812,6 +829,11 @@ void ComicModel::addComicsToFavorites(const QList<QModelIndex> & comicsList)
     QSqlDatabase::removeDatabase(_databasePath);
 }
 
+void ComicModel::addComicsToLabel(const QList<qulonglong> &comicIds, qulonglong labelId)
+{
+    addComicsToLabel(getIndexesFromIds(comicIds),labelId);
+}
+
 void ComicModel::addComicsToLabel(const QList<QModelIndex> &comicsList, qulonglong labelId)
 {
     QList<ComicDB> comics = getComics(comicsList);
@@ -819,6 +841,23 @@ void ComicModel::addComicsToLabel(const QList<QModelIndex> &comicsList, qulonglo
     QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
     DBHelper::insertComicsInLabel(comics,labelId,db);
+
+    db.close();
+    QSqlDatabase::removeDatabase(_databasePath);
+}
+
+void ComicModel::addComicsToReadingList(const QList<qulonglong> &comicIds, qulonglong readingListId)
+{
+    addComicsToReadingList(getIndexesFromIds(comicIds),readingListId);
+}
+
+void ComicModel::addComicsToReadingList(const QList<QModelIndex> &comicsList, qulonglong readingListId)
+{
+    QList<ComicDB> comics = getComics(comicsList);
+
+    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+
+    DBHelper::insertComicsInReadingList(comics,readingListId,db);
 
     db.close();
     QSqlDatabase::removeDatabase(_databasePath);

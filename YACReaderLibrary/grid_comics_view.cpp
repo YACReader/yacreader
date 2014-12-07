@@ -169,7 +169,29 @@ void GridComicsView::requestedContextMenu(const QPoint &point)
 QSize GridComicsView::sizeHint()
 {
         QLOG_INFO() << "sizeHint";
-    return QSize(1280,768);
+        return QSize(1280,768);
+}
+
+QByteArray GridComicsView::getMimeDataFromSelection()
+{
+    QByteArray data;
+
+    QMimeData * mimeData = model->mimeData(_selectionModel->selectedIndexes());
+    data = mimeData->data(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat);
+
+    delete mimeData;
+
+    return data;
+}
+
+void GridComicsView::startDrag()
+{
+    QLOG_DEBUG() << "performDrag";
+    QDrag *drag = new QDrag(this);
+    drag->setMimeData(model->mimeData(_selectionModel->selectedRows()));
+    drag->setPixmap(QPixmap(":/images/openInYACReader.png")); //TODO add better image
+
+    Qt::DropAction dropAction = drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
 }
 
 //helper

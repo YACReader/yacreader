@@ -474,11 +474,6 @@ qulonglong DBHelper::insertReadingList(const QString &name, QSqlDatabase &db)
 
 void DBHelper::insertComicsInFavorites(const QList<ComicDB> &comicsList, QSqlDatabase &db)
 {
-    /*QSqlQuery getNumComicsInFavoritesQuery("SELECT count(*) from comic_reading_list;",db);
-    getNumComicsInFavoritesQuery.next();
-    QSqlRecord record = getNumComicsInFavoritesQuery.record();
-    int numComics = record.value(0).toInt();*/
-
     db.transaction();
 
     QSqlQuery query(db);
@@ -507,6 +502,30 @@ void DBHelper::insertComicsInLabel(const QList<ComicDB> &comicsList, qulonglong 
     {
         query.bindValue(":label_id", labelId);
         query.bindValue(":comic_id", comic.id);
+        query.exec();
+    }
+
+    db.commit();
+}
+
+void DBHelper::insertComicsInReadingList(const QList<ComicDB> &comicsList, qulonglong readingListId, QSqlDatabase &db)
+{
+    QSqlQuery getNumComicsInFavoritesQuery("SELECT count(*) from comic_reading_list;",db);
+    getNumComicsInFavoritesQuery.next();
+    QSqlRecord record = getNumComicsInFavoritesQuery.record();
+    int numComics = record.value(0).toInt();
+
+    db.transaction();
+
+    QSqlQuery query(db);
+    query.prepare("INSERT INTO comic_reading_list (reading_list_id, comic_id, ordering) "
+                   "VALUES (:reading_list_id, :comic_id, :ordering)");
+
+    foreach(ComicDB comic, comicsList)
+    {
+        query.bindValue(":reading_list_id", readingListId);
+        query.bindValue(":comic_id", comic.id);
+        query.bindValue(":ordering", numComics++);
         query.exec();
     }
 
