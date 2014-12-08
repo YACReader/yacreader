@@ -325,7 +325,32 @@ void ReadingListModel::addReadingList(const QString &name)
 
 void ReadingListModel::addReadingListAt(const QString &name, const QModelIndex &mi)
 {
-    //TODO
+    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+
+    beginInsertRows(mi, 0, 0); //TODO calculate the right coordinates before inserting
+
+    qulonglong id = DBHelper::insertReadingSubList(name,mi.data(IDRole).toULongLong(),db);
+    ReadingListItem * newItem;
+    ReadingListItem * readingListParent = static_cast<ReadingListItem*>(mi.internalPointer());
+    readingListParent->appendChild(newItem = new ReadingListItem(QList<QVariant>()
+                                              << name
+                                              << id
+                                              << false
+                                              << true
+                                              << mi.data(IDRole).toULongLong()));
+
+
+
+    items.insert(id, newItem);
+
+    int pos = readingListParent->children().indexOf(newItem);
+
+    pos += specialLists.count()+1+labels.count()+labels.count()>0?1:0;
+
+
+    endInsertRows();
+
+    QSqlDatabase::removeDatabase(_databasePath);
 }
 
 bool ReadingListModel::isEditable(const QModelIndex &mi)

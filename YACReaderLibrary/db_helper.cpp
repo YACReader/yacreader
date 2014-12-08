@@ -472,6 +472,17 @@ qulonglong DBHelper::insertReadingList(const QString &name, QSqlDatabase &db)
     return query.lastInsertId().toULongLong();
 }
 
+qulonglong DBHelper::insertReadingSubList(const QString &name, qulonglong parentId, QSqlDatabase &db)
+{
+    QSqlQuery query(db);
+    query.prepare("INSERT INTO reading_list (name, parentId) "
+                   "VALUES (:name, :parentId)");
+    query.bindValue(":name", name);
+    query.bindValue(":parentId", parentId);
+    query.exec();
+    return query.lastInsertId().toULongLong();
+}
+
 void DBHelper::insertComicsInFavorites(const QList<ComicDB> &comicsList, QSqlDatabase &db)
 {
     db.transaction();
