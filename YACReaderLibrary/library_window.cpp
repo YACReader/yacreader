@@ -1072,10 +1072,10 @@ void LibraryWindow::createConnections()
     connect(importComicsInfoAction,SIGNAL(triggered()),this,SLOT(showImportComicsInfo()));
 
 	//properties & config
-    connect(propertiesDialog,SIGNAL(accepted()),navigationController,SLOT(reselectCurrentFolder()));
+    connect(propertiesDialog,SIGNAL(accepted()),navigationController,SLOT(reselectCurrentSource()));
 
 	//comic vine
-    connect(comicVineDialog,SIGNAL(accepted()),navigationController,SLOT(reselectCurrentFolder()));
+    connect(comicVineDialog,SIGNAL(accepted()),navigationController,SLOT(reselectCurrentSource()));
 
 	connect(updateLibraryAction,SIGNAL(triggered()),this,SLOT(updateLibrary()));
 	connect(renameLibraryAction,SIGNAL(triggered()),this,SLOT(renameLibrary()));
