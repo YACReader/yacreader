@@ -291,15 +291,10 @@ QSize YACReaderFlowGL::minimumSizeHint() const
 
 void YACReaderFlowGL::initializeGL()
 {
-	glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-	glEnable(GL_COLOR_MATERIAL);
-	glShadeModel(GL_SMOOTH);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glShadeModel(GL_SMOOTH);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     defaultTexture = new QOpenGLTexture(QImage(":/images/defaultCover.png"));
     defaultTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::LinearMipMapLinear);
@@ -318,23 +313,48 @@ void YACReaderFlowGL::initializeGL()
 
 void YACReaderFlowGL::paintGL()
 {
-	/*glClearDepth(1.0);
-	glClearColor(1,1,1,1);*/
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	/*glLoadIdentity();
-	glTranslatef(0.0, 0.0, -10.0);
-	glPopMatrix();*/
-	if(numObjects>0)
-	{
-		updatePositions();
-		udpatePerspective(width(),height());
-		draw();
-	}
+    QPainter painter;
+    painter.begin(this);
+
+    painter.beginNativePainting();
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_COLOR_MATERIAL);
+    glEnable(GL_BLEND);
+    glEnable(GL_MULTISAMPLE);
+
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    if(numObjects>0)
+    {
+        updatePositions();
+        udpatePerspective(width(),height());
+        draw();
+    }
+
+    glDisable(GL_MULTISAMPLE);
+    glDisable(GL_BLEND);
+    glDisable(GL_COLOR_MATERIAL);
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_DEPTH_TEST);
+
+    painter.endNativePainting();
+
+    QFont font = painter.font() ;
+    font.setPixelSize(fontSize);
+    painter.setFont(font);
+
+    painter.setPen(QColor(76,76,76));
+    painter.drawText(10,fontSize + 10, QString("%1/%2").arg(currentSelected+1).arg(numObjects));
+
+    painter.end();
 }
 
 void YACReaderFlowGL::resizeGL(int width, int height)
 {
-
 	fontSize = (width + height) * 0.010;
 	if(fontSize < 10)
 		fontSize = 10;
@@ -568,30 +588,7 @@ void YACReaderFlowGL::draw()
 	//Draw Center Cover
     drawCover(images[CS]);
 
-	//glDisable(GL_DEPTH_TEST);
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-	glOrtho(-(float(width())/height())/2.0,(float(width())/height())/2.0, 0, 1, -10, 10);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
-    //glColor4f( 0.3f, 0.3f, 0.3f, 1.0f );
-
-    /*QOpenGLWidget migration renderText(10, fontSize + 10,QString("%1/%2").arg(currentSelected+1).arg(numObjects),QFont("Arial", fontSize));
-
-    QPainter painter;
-    painter.begin(this);
-
-    painter.setPen(QColor(76,76,76));
-    painter.drawText(10,10, QString("%1/%2").arg(currentSelected+1).arg(numObjects));
-
-    painter.end();*/
-
-	glEnable(GL_DEPTH_TEST);
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
 }
 
 void YACReaderFlowGL::showPrevious()
