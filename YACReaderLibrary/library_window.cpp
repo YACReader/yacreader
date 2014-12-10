@@ -1732,6 +1732,16 @@ void LibraryWindow::onAddComicsToLabel()
     comicsModel->addComicsToLabel(comics,labelId);
 }
 
+void LibraryWindow::setToolbarTitle(const QModelIndex &modelIndex)
+{
+#ifndef Q_OS_MAC
+    if(!modelIndex.isValid())
+        libraryToolBar->setCurrentFolderName(selectedLibrary->currentText());
+    else
+        libraryToolBar->setCurrentFolderName(modelIndex.data().toString());
+#endif
+}
+
 void LibraryWindow::selectSubfolder(const QModelIndex &mi, int child)
 {
     QModelIndex dest = foldersModel->index(child,0,mi);

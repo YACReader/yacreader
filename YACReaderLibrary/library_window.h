@@ -394,6 +394,7 @@ public slots:
     void showComicsItemContextMenu(const QPoint & point);
     void setupAddToSubmenu(QMenu & menu);
     void onAddComicsToLabel();
+    void setToolbarTitle(const QModelIndex & modelIndex);
 
 };
 
