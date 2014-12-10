@@ -43,6 +43,8 @@ void YACReaderNavigationController::selectedFolder(const QModelIndex &mi)
     }
 
     loadFolderInfo(modelIndex);
+
+    libraryWindow->setToolbarTitle(modelIndex);
 }
 
 void YACReaderNavigationController::reselectCurrentFolder()
@@ -202,6 +204,8 @@ void YACReaderNavigationController::selectedList(const QModelIndex &mi)
     }
 
     loadListInfo(modelIndex);
+
+    libraryWindow->setToolbarTitle(modelIndex);
 }
 
 void YACReaderNavigationController::reselectCurrentList()
