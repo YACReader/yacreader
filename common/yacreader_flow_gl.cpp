@@ -344,6 +344,7 @@ void YACReaderFlowGL::paintGL()
     painter.endNativePainting();
 
     QFont font = painter.font() ;
+    font.setFamily("Arial");
     font.setPixelSize(fontSize);
     painter.setFont(font);
 
