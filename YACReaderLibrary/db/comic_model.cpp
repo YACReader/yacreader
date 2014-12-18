@@ -340,14 +340,30 @@ void ComicModel::setupReadingListModelData(unsigned long long parentReadingList,
     _databasePath = databasePath;
     QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
     {
-        QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
-                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                            "INNER JOIN comic_reading_list crl ON (c.id == crl.comic_id) "
-                            "WHERE crl.reading_list_id = :parentReadingList");
-        selectQuery.bindValue(":parentReadingList", parentReadingList);
-        selectQuery.exec();
-        setupModelData(selectQuery);
+        QList<qulonglong> ids;
+        ids << parentReadingList;
+
+        QSqlQuery subfolders(db);
+        subfolders.prepare("SELECT id "
+                           "FROM reading_list "
+                           "WHERE parentId = :parentId");
+        subfolders.bindValue(":parentId", parentReadingList);
+        subfolders.exec();
+        while(subfolders.next())
+           ids << subfolders.record().value(0).toULongLong();
+
+        foreach(qulonglong id, ids)
+        {
+            QSqlQuery selectQuery(db);
+            selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
+                                "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                                "INNER JOIN comic_reading_list crl ON (c.id == crl.comic_id) "
+                                "WHERE crl.reading_list_id = :parentReadingList");
+            selectQuery.bindValue(":parentReadingList", id);
+            selectQuery.exec();
+            setupModelData(selectQuery);
+        }
+
     }
     db.close();
     QSqlDatabase::removeDatabase(_databasePath);

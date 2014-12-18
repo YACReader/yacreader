@@ -48,6 +48,7 @@ public:
     void addReadingListAt(const QString & name, const QModelIndex & mi);
     bool isEditable(const QModelIndex & mi);
     bool isReadingList(const QModelIndex & mi);
+    bool isReadingSubList(const QModelIndex & mi);
     QString name(const QModelIndex & mi);
     void rename(const QModelIndex & mi, const QString & name);
     void deleteItem(const QModelIndex & mi);
