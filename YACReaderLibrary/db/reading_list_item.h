@@ -27,6 +27,12 @@ public:
     SpecialListItem(const QList<QVariant> &data);
     QIcon getIcon() const;
     ReadingListModel::TypeSpecialList getType() const;
+private:
+    enum DataIndexes {
+        Name,
+        Id
+    };
+
 };
 
 //------------------------------------------------------
@@ -41,6 +47,14 @@ public:
     void setName(const QString & name);
     qulonglong getId() const;
 
+
+private:
+    enum DataIndexes {
+        Name,
+        Color,
+        Id,
+        Ordering
+    };
 };
 
 //------------------------------------------------------
@@ -59,11 +73,20 @@ public:
     qulonglong getId() const;
     QString name() const;
     void setName(const QString & name);
-
+    int getOrdering() const;
+    void setOrdering(const int ordering);
     QList<ReadingListItem*> children();
 
 private:
     QList<ReadingListItem*> childItems;
+
+    enum DataIndexes {
+        Name,
+        Id,
+        Finished,
+        Completed,
+        Ordering
+    };
 
 };
 

@@ -31,18 +31,18 @@ SpecialListItem::SpecialListItem(const QList<QVariant> &data)
 
 QIcon SpecialListItem::getIcon() const
 {
-    if(itemData.count()>1)
+    if(itemData.count()>Id)
     {
-        QString id = itemData.at(1).toString();
+        QString id = itemData.at(Id).toString();
         return YACReader::noHighlightedIcon(QString(":/images/lists/default_%1.png").arg(id));
     }
 }
 
 ReadingListModel::TypeSpecialList SpecialListItem::getType() const
 {
-    if(itemData.count()>1)
+    if(itemData.count()>Id)
     {
-        int id = itemData.at(1).toInt();
+        int id = itemData.at(Id).toInt();
         return (ReadingListModel::TypeSpecialList)id;
     }
 }
@@ -57,39 +57,42 @@ LabelItem::LabelItem(const QList<QVariant> &data)
 
 QIcon LabelItem::getIcon() const
 {
-    if(itemData.count()>1)
+    if(itemData.count()>Color)
     {
-        QString color = itemData.at(1).toString();
+        QString color = itemData.at(Color).toString();
         return YACReader::noHighlightedIcon(QString(":/images/lists/label_%1.png").arg(color).toLower());
     }
 }
 
 YACReader::LabelColors LabelItem::colorid() const
 {
-    if(itemData.count()>3)
+    if(itemData.count()>Ordering)
     {
-        return YACReader::LabelColors(itemData.at(3).toInt());
+        return YACReader::LabelColors(itemData.at(Ordering).toInt());
     }
 }
 
 QString LabelItem::name() const
 {
-    if(itemData.count()>0)
+    if(itemData.count()>Name)
     {
-        return itemData.at(0).toString();
+        return itemData.at(Name).toString();
     }
 }
 
 void LabelItem::setName(const QString &name)
 {
-    itemData[0] = name;
+    if(itemData.count()>Name)
+    {
+        itemData[Name] = name;
+    }
 }
 
 qulonglong LabelItem::getId() const
 {
-    if(itemData.count()>2)
+    if(itemData.count()>Id)
     {
-        return YACReader::LabelColors(itemData.at(2).toULongLong());
+        return YACReader::LabelColors(itemData.at(Id).toULongLong());
     }
 }
 
@@ -104,9 +107,9 @@ ReadingListItem::ReadingListItem(const QList<QVariant> &data, ReadingListItem *p
 QIcon ReadingListItem::getIcon() const
 {
     if(parent->getId() == 0)
-        return YACReader::noHighlightedIcon(":/images/lists/list.png");
+        return YACReader::noHighlightedIcon(":/images/lists/list.png"); //top level list
     else
-        return YACReader::noHighlightedIcon(":/images/folder.png");
+        return YACReader::noHighlightedIcon(":/images/folder.png"); //sublist
 }
 
 int ReadingListItem::childCount() const
@@ -168,23 +171,32 @@ void ReadingListItem::removeChild(ReadingListItem *item)
 
 qulonglong ReadingListItem::getId() const
 {
-    if(itemData.count()>1)
-    {
-        return itemData.at(1).toULongLong();
-    }
+    if(itemData.count()>Id)
+        return itemData.at(Id).toULongLong();
 }
 
 QString ReadingListItem::name() const
 {
-    if(itemData.count()>0)
-    {
-        return itemData.at(0).toString();
-    }
+    if(itemData.count()>Name)
+        return itemData.at(Name).toString();
 }
 
 void ReadingListItem::setName(const QString &name)
 {
-    itemData[0] = name;
+    if(itemData.count()>Name)
+        itemData[Name] = name;
+}
+
+int ReadingListItem::getOrdering() const
+{
+    if(itemData.count()>Ordering)
+        return itemData[Ordering].toInt();
+}
+
+void ReadingListItem::setOrdering(const int ordering)
+{
+    if(itemData.count()>Ordering)
+        itemData[Ordering] = ordering;
 }
 
 QList<ReadingListItem *> ReadingListItem::children()
