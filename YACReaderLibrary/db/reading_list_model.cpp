@@ -497,7 +497,7 @@ QList<SpecialListItem *> ReadingListModel::setupSpecialLists(QSqlDatabase & db)
                                     << record.value("id"));
     }
 
-    //Reading after Favorites, Why? Because I want :P
+    //Reading after Favorites, Why? Because I want to :P
     list.insert(1,new SpecialListItem(QList<QVariant>()  << "Reading" << 0));
 
     return list;
@@ -508,7 +508,11 @@ void ReadingListModel::setupLabels(QSqlDatabase & db)
     QSqlQuery selectQuery("SELECT * FROM label ORDER BY ordering,name",db); //TODO add some kind of
     while(selectQuery.next()) {
         QSqlRecord record = selectQuery.record();
-        addLabelIntoList(new LabelItem(QList<QVariant>() << record.value("name") << record.value("color") << record.value("id") << record.value("ordering")));
+        addLabelIntoList(new LabelItem(QList<QVariant>()
+                                       << record.value("name")
+                                       << record.value("color")
+                                       << record.value("id")
+                                       << record.value("ordering")));
     }
 
     //TEST
