@@ -369,6 +369,23 @@ bool ReadingListModel::isReadingList(const QModelIndex &mi)
     return typeid(*item) == typeid(ReadingListItem);
 }
 
+bool ReadingListModel::isReadingSubList(const QModelIndex &mi)
+{
+    if(!mi.isValid())
+        return false;
+    ListItem * item = static_cast<ListItem*>(mi.internalPointer());
+    if(typeid(*item) == typeid(ReadingListItem))
+    {
+        ReadingListItem * readingListItem = static_cast<ReadingListItem *>(item);
+        if(readingListItem->parent == rootItem)
+            return false;
+        else
+            return true;
+    }
+    else
+        return false;
+}
+
 QString ReadingListModel::name(const QModelIndex &mi)
 {
     return data(mi,Qt::DisplayRole).toString();

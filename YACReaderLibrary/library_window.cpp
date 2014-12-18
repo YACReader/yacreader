@@ -1560,21 +1560,24 @@ void LibraryWindow::errorDeletingFolder()
 
 void LibraryWindow::addNewReadingList()
 {
-    bool ok;
-    QString newListName = QInputDialog::getText(this, tr("Add new reading lists"),
-                                                tr("List name:"), QLineEdit::Normal,
-                                                "", &ok);
+    QModelIndexList selectedLists = listsView->selectionModel()->selectedIndexes();
+    QModelIndex sourceMI;
+    if(!selectedLists.isEmpty())
+        sourceMI = listsModelProxy->mapToSource(selectedLists.at(0));
 
-    if (ok) {
-        QModelIndexList selectedLists = listsView->selectionModel()->selectedIndexes();
-        QModelIndex sourceMI;
-        if(!selectedLists.isEmpty())
-            sourceMI = listsModelProxy->mapToSource(selectedLists.at(0));
-        if(selectedLists.isEmpty() || !listsModel->isReadingList(sourceMI))
-            listsModel->addReadingList(newListName); //top level
-        else
-        {
-            listsModel->addReadingListAt(newListName,sourceMI); //sublist
+    if(selectedLists.isEmpty() || !listsModel->isReadingSubList(sourceMI) )
+    {
+        bool ok;
+        QString newListName = QInputDialog::getText(this, tr("Add new reading lists"),
+                                                    tr("List name:"), QLineEdit::Normal,
+                                                    "", &ok);
+        if (ok) {
+            if(selectedLists.isEmpty() || !listsModel->isReadingList(sourceMI))
+                listsModel->addReadingList(newListName); //top level
+            else
+            {
+                listsModel->addReadingListAt(newListName,sourceMI); //sublist
+            }
         }
     }
 }
