@@ -369,6 +369,23 @@ bool ReadingListModel::isReadingList(const QModelIndex &mi)
     return typeid(*item) == typeid(ReadingListItem);
 }
 
+bool ReadingListModel::isReadingSubList(const QModelIndex &mi)
+{
+    if(!mi.isValid())
+        return false;
+    ListItem * item = static_cast<ListItem*>(mi.internalPointer());
+    if(typeid(*item) == typeid(ReadingListItem))
+    {
+        ReadingListItem * readingListItem = static_cast<ReadingListItem *>(item);
+        if(readingListItem->parent == rootItem)
+            return false;
+        else
+            return true;
+    }
+    else
+        return false;
+}
+
 QString ReadingListModel::name(const QModelIndex &mi)
 {
     return data(mi,Qt::DisplayRole).toString();
@@ -497,7 +514,7 @@ QList<SpecialListItem *> ReadingListModel::setupSpecialLists(QSqlDatabase & db)
                                     << record.value("id"));
     }
 
-    //Reading after Favorites, Why? Because I want :P
+    //Reading after Favorites, Why? Because I want to :P
     list.insert(1,new SpecialListItem(QList<QVariant>()  << "Reading" << 0));
 
     return list;
@@ -508,7 +525,11 @@ void ReadingListModel::setupLabels(QSqlDatabase & db)
     QSqlQuery selectQuery("SELECT * FROM label ORDER BY ordering,name",db); //TODO add some kind of
     while(selectQuery.next()) {
         QSqlRecord record = selectQuery.record();
-        addLabelIntoList(new LabelItem(QList<QVariant>() << record.value("name") << record.value("color") << record.value("id") << record.value("ordering")));
+        addLabelIntoList(new LabelItem(QList<QVariant>()
+                                       << record.value("name")
+                                       << record.value("color")
+                                       << record.value("id")
+                                       << record.value("ordering")));
     }
 
     //TEST
