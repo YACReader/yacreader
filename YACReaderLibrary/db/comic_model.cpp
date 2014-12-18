@@ -361,7 +361,14 @@ void ComicModel::setupReadingListModelData(unsigned long long parentReadingList,
                                 "WHERE crl.reading_list_id = :parentReadingList");
             selectQuery.bindValue(":parentReadingList", id);
             selectQuery.exec();
+
+            //TODO, extra information is needed (resorting)
+            QList<ComicItem *> tempData = _data;
+            _data.clear();
+
             setupModelData(selectQuery);
+
+            _data = tempData << _data;
         }
 
     }
