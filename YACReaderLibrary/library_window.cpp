@@ -911,8 +911,8 @@ void LibraryWindow::createToolBars()
 	
 	editInfoToolBar->addAction(deleteComicsAction);
 
-	editInfoToolBar->addWidget(new QToolBarStretch());
-    editInfoToolBar->addAction(hideComicViewAction);
+    /*editInfoToolBar->addWidget(new QToolBarStretch());
+    editInfoToolBar->addAction(hideComicViewAction);*/
 }
 
 void LibraryWindow::createMenus()
