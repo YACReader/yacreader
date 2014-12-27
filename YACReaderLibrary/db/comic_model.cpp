@@ -534,20 +534,37 @@ void ComicModel::setupModelData(QSqlQuery &sqlquery)
 			i = _data.end();
 			i--;
 
-			if(numberCurrent != max)
+            if(numberCurrent != max) //sort the current item by issue number
 			{
-				while ((lessThan =numberCurrent < numberLast) && i != _data.begin())
+                while ((lessThan =numberCurrent < numberLast) && i != _data.begin())
 				{
-					i--;
+                    i--;
 					numberLast = max;
 
                     if(!(*i)->data(ComicModel::Number).isNull())
                         numberLast = (*i)->data(ComicModel::Number).toInt();
 				}
+
+                if(lessThan)
+                    _data.insert(i,currentItem);
+                else
+                {
+                    if(numberCurrent == numberLast)
+                        if(currentItem->data(ComicModel::IsBis).toBool())
+                        {
+                            _data.insert(++i,currentItem);
+                        }
+                        else
+                            _data.insert(i,currentItem);
+                    else
+                        _data.insert(++i,currentItem);
+                }
+                continue;
 			}
-			else
+
+            else //sort the current item by title
 			{
-				while ((lessThan = naturalSortLessThanCI(nameCurrent,nameLast)) && i != _data.begin() && numberLast == max)
+                while ((lessThan = naturalSortLessThanCI(nameCurrent,nameLast)) && i != _data.begin() && numberLast == max)
 				{
 					i--;
                     nameLast = (*i)->data(ComicModel::FileName).toString();
@@ -557,29 +574,16 @@ void ComicModel::setupModelData(QSqlQuery &sqlquery)
                         numberLast = (*i)->data(ComicModel::Number).toInt();
 				}
 
-			}
-			if(!lessThan) //si se ha encontrado un elemento menor que current, se inserta justo despuï¿½s
-			{
-				if(numberCurrent != max)
-				{
-					if(numberCurrent == numberLast)
-                        if(currentItem->data(ComicModel::IsBis).toBool())
-						{
-							_data.insert(++i,currentItem);
-						}
-						else
-							_data.insert(i,currentItem);
-					else
-						_data.insert(++i,currentItem);
-				}
-				else
-					_data.insert(++i,currentItem);
-			}
-			else
-			{
-				_data.insert(i,currentItem);
-			}
+                if(numberLast != max)
+                    _data.insert(++i,currentItem);
+                else
+                    if(lessThan)
+                        _data.insert(i,currentItem);
+                    else
+                        _data.insert(++i,currentItem);
+                continue;
 
+			}
 		}
 	}
 }
