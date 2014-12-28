@@ -182,6 +182,7 @@ private:
 	QAction * colapseAllNodesAction;
 
     QAction * openContainingFolderAction;
+    QAction * saveCoversToAction;
     //--
     QAction * setFolderAsNotCompletedAction;
     QAction * setFolderAsCompletedAction;
@@ -395,6 +396,7 @@ public slots:
     void setupAddToSubmenu(QMenu & menu);
     void onAddComicsToLabel();
     void setToolbarTitle(const QModelIndex & modelIndex);
+    void saveSelectedCoversTo();
 
 };
 

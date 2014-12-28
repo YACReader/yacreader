@@ -126,6 +126,8 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
         return item->data(Number);
     else if (role == TitleRole)
         return item->data(Title).isNull()?item->data(FileName):item->data(Title);
+    else if (role == FileNameRole)
+        return item->data(FileName);
     else if (role == RatingRole)
         return item->data(Rating);
     else if (role == CoverPathRole)
