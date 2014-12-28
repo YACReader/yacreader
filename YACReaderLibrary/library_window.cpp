@@ -344,6 +344,7 @@ void LibraryWindow::setUpShortcutsManagement()
     editShortcutsDialog->addActionsGroup("Comics",QIcon(":/images/shortcuts_group_comics.png"),
                                      tmpList = QList<QAction *>()
                                      << openComicAction
+                                     << saveCoversToAction
                                      << setAsReadAction
                                      << setAsNonReadAction
                                      << openContainingFolderComicAction
@@ -463,35 +464,35 @@ void LibraryWindow::doComicsViewConnections()
 
 void LibraryWindow::createActions()
 {
-	backAction = new QAction(this);
-	QIcon icoBackButton;
+    backAction = new QAction(this);
+    QIcon icoBackButton;
     icoBackButton.addFile(":/images/main_toolbar/back.png",QSize(), QIcon::Normal);
-	//icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back_disabled.png"), QIcon::Disabled);
+    //icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back_disabled.png"), QIcon::Disabled);
     backAction->setData(BACK_ACTION_YL);
     backAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(BACK_ACTION_YL));
     backAction->setIcon(icoBackButton);
-	backAction->setDisabled(true);
+    backAction->setDisabled(true);
 
-	forwardAction = new QAction(this);
-	QIcon icoFordwardButton;
+    forwardAction = new QAction(this);
+    QIcon icoFordwardButton;
     icoFordwardButton.addFile(":/images/main_toolbar/forward.png", QSize(), QIcon::Normal);
-	//icoFordwardButton.addPixmap(QPixmap(":/images/main_toolbar/forward_disabled.png"), QIcon::Disabled);
+    //icoFordwardButton.addPixmap(QPixmap(":/images/main_toolbar/forward_disabled.png"), QIcon::Disabled);
     forwardAction->setData(FORWARD_ACTION_YL);
     forwardAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(FORWARD_ACTION_YL));
-	forwardAction->setIcon(icoFordwardButton);
-	forwardAction->setDisabled(true);
+    forwardAction->setIcon(icoFordwardButton);
+    forwardAction->setDisabled(true);
 
-	createLibraryAction = new QAction(this);
-	createLibraryAction->setToolTip(tr("Create a new library"));
+    createLibraryAction = new QAction(this);
+    createLibraryAction->setToolTip(tr("Create a new library"));
     createLibraryAction->setData(CREATE_LIBRARY_ACTION_YL);
     createLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(CREATE_LIBRARY_ACTION_YL));
-	createLibraryAction->setIcon(QIcon(":/images/newLibraryIcon.png"));
+    createLibraryAction->setIcon(QIcon(":/images/newLibraryIcon.png"));
 
-	openLibraryAction = new QAction(this);
-	openLibraryAction->setToolTip(tr("Open an existing library"));
+    openLibraryAction = new QAction(this);
+    openLibraryAction->setToolTip(tr("Open an existing library"));
     openLibraryAction->setData(OPEN_LIBRARY_ACTION_YL);
     openLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_LIBRARY_ACTION_YL));
-	openLibraryAction->setIcon(QIcon(":/images/openLibraryIcon.png"));
+    openLibraryAction->setIcon(QIcon(":/images/openLibraryIcon.png"));
 
     exportComicsInfoAction = new QAction(tr("Export comics info"),this);
     exportComicsInfoAction->setToolTip(tr("Export comics info"));
@@ -505,85 +506,90 @@ void LibraryWindow::createActions()
     importComicsInfoAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(IMPORT_COMICS_INFO_ACTION_YL));
     importComicsInfoAction->setIcon(QIcon(":/images/importComicsInfoIcon.png"));
 
-	exportLibraryAction = new QAction(tr("Pack covers"),this);
-	exportLibraryAction->setToolTip(tr("Pack the covers of the selected library"));
+    exportLibraryAction = new QAction(tr("Pack covers"),this);
+    exportLibraryAction->setToolTip(tr("Pack the covers of the selected library"));
     exportLibraryAction->setData(EXPORT_LIBRARY_ACTION_YL);
     exportLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(EXPORT_LIBRARY_ACTION_YL));
-	exportLibraryAction->setIcon(QIcon(":/images/exportLibraryIcon.png"));
+    exportLibraryAction->setIcon(QIcon(":/images/exportLibraryIcon.png"));
 
-	importLibraryAction = new QAction(tr("Unpack covers"),this);
-	importLibraryAction->setToolTip(tr("Unpack a catalog"));
+    importLibraryAction = new QAction(tr("Unpack covers"),this);
+    importLibraryAction->setToolTip(tr("Unpack a catalog"));
     importLibraryAction->setData(IMPORT_LIBRARY_ACTION_YL);
     importLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(IMPORT_LIBRARY_ACTION_YL));
-	importLibraryAction->setIcon(QIcon(":/images/importLibraryIcon.png"));
+    importLibraryAction->setIcon(QIcon(":/images/importLibraryIcon.png"));
 
-	updateLibraryAction = new QAction(tr("Update library"),this);
-	updateLibraryAction->setToolTip(tr("Update current library"));
+    updateLibraryAction = new QAction(tr("Update library"),this);
+    updateLibraryAction->setToolTip(tr("Update current library"));
     updateLibraryAction->setData(UPDATE_LIBRARY_ACTION_YL);
     updateLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(UPDATE_LIBRARY_ACTION_YL));
-	updateLibraryAction->setIcon(QIcon(":/images/updateLibraryIcon.png"));
+    updateLibraryAction->setIcon(QIcon(":/images/updateLibraryIcon.png"));
 
-	renameLibraryAction = new QAction(tr("Rename library"),this);
-	renameLibraryAction->setToolTip(tr("Rename current library"));
+    renameLibraryAction = new QAction(tr("Rename library"),this);
+    renameLibraryAction->setToolTip(tr("Rename current library"));
     renameLibraryAction->setData(RENAME_LIBRARY_ACTION_YL);
     renameLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RENAME_LIBRARY_ACTION_YL));
-	renameLibraryAction->setIcon(QIcon(":/images/editIcon.png"));
+    renameLibraryAction->setIcon(QIcon(":/images/editIcon.png"));
 
-	removeLibraryAction = new QAction(tr("Remove library"),this);
-	removeLibraryAction->setToolTip(tr("Remove current library from your collection"));
+    removeLibraryAction = new QAction(tr("Remove library"),this);
+    removeLibraryAction->setToolTip(tr("Remove current library from your collection"));
     removeLibraryAction->setData(REMOVE_LIBRARY_ACTION_YL);
     removeLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(REMOVE_LIBRARY_ACTION_YL));
-	removeLibraryAction->setIcon(QIcon(":/images/removeLibraryIcon.png"));
+    removeLibraryAction->setIcon(QIcon(":/images/removeLibraryIcon.png"));
 
-	openComicAction = new QAction(tr("Open current comic"),this);
-	openComicAction->setToolTip(tr("Open current comic on YACReader"));
+    openComicAction = new QAction(tr("Open current comic"),this);
+    openComicAction->setToolTip(tr("Open current comic on YACReader"));
     openComicAction->setData(OPEN_COMIC_ACTION_YL);
     openComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_COMIC_ACTION_YL));
-	openComicAction->setIcon(QIcon(":/images/openInYACReader.png"));
+    openComicAction->setIcon(QIcon(":/images/openInYACReader.png"));
 
-	setAsReadAction = new QAction(tr("Set as read"),this);
-	setAsReadAction->setToolTip(tr("Set comic as read"));
+    saveCoversToAction = new QAction(tr("Save selected covers to..."),this);
+    saveCoversToAction->setToolTip(tr("Save covers of the selected comics as JPG files"));
+    saveCoversToAction->setData(SAVE_COVERS_TO_ACTION_YL);
+    saveCoversToAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SAVE_COVERS_TO_ACTION_YL));
+
+    setAsReadAction = new QAction(tr("Set as read"),this);
+    setAsReadAction->setToolTip(tr("Set comic as read"));
     setAsReadAction->setData(SET_AS_READ_ACTION_YL);
     setAsReadAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_READ_ACTION_YL));
-	setAsReadAction->setIcon(QIcon(":/images/setReadButton.png"));
+    setAsReadAction->setIcon(QIcon(":/images/setReadButton.png"));
 
-	setAsNonReadAction = new QAction(tr("Set as unread"),this);
-	setAsNonReadAction->setToolTip(tr("Set comic as unread"));
+    setAsNonReadAction = new QAction(tr("Set as unread"),this);
+    setAsNonReadAction->setToolTip(tr("Set comic as unread"));
     setAsNonReadAction->setData(SET_AS_NON_READ_ACTION_YL);
     setAsNonReadAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_NON_READ_ACTION_YL));
-	setAsNonReadAction->setIcon(QIcon(":/images/setUnread.png"));
+    setAsNonReadAction->setIcon(QIcon(":/images/setUnread.png"));
 
-	/*setAllAsReadAction = new QAction(tr("Set all as read"),this);
-	setAllAsReadAction->setToolTip(tr("Set all comics as read"));
-	setAllAsReadAction->setIcon(QIcon(":/images/setAllRead.png"));
+    /*setAllAsReadAction = new QAction(tr("Set all as read"),this);
+        setAllAsReadAction->setToolTip(tr("Set all comics as read"));
+        setAllAsReadAction->setIcon(QIcon(":/images/setAllRead.png"));
 
-	setAllAsNonReadAction = new QAction(tr("Set all as unread"),this);
-	setAllAsNonReadAction->setToolTip(tr("Set all comics as unread"));
-	setAllAsNonReadAction->setIcon(QIcon(":/images/setAllUnread.png"));*/
+        setAllAsNonReadAction = new QAction(tr("Set all as unread"),this);
+        setAllAsNonReadAction->setToolTip(tr("Set all comics as unread"));
+        setAllAsNonReadAction->setIcon(QIcon(":/images/setAllUnread.png"));*/
 
-	showHideMarksAction = new QAction(tr("Show/Hide marks"),this);
-	showHideMarksAction->setToolTip(tr("Show or hide readed marks"));
+    showHideMarksAction = new QAction(tr("Show/Hide marks"),this);
+    showHideMarksAction->setToolTip(tr("Show or hide readed marks"));
     showHideMarksAction->setData(SHOW_HIDE_MARKS_ACTION_YL);
     showHideMarksAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_HIDE_MARKS_ACTION_YL));
-	showHideMarksAction->setCheckable(true);
-	showHideMarksAction->setIcon(QIcon(":/images/showMarks.png"));
-	showHideMarksAction->setChecked(true);
+    showHideMarksAction->setCheckable(true);
+    showHideMarksAction->setIcon(QIcon(":/images/showMarks.png"));
+    showHideMarksAction->setChecked(true);
 #ifndef Q_OS_MAC
-	toggleFullScreenAction = new QAction(tr("Fullscreen mode on/off"),this);
+    toggleFullScreenAction = new QAction(tr("Fullscreen mode on/off"),this);
     toggleFullScreenAction->setToolTip(tr("Fullscreen mode on/off"));
     toggleFullScreenAction->setData(TOGGLE_FULL_SCREEN_ACTION_YL);
     toggleFullScreenAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_FULL_SCREEN_ACTION_YL));
-	QIcon icoFullscreenButton;
-	icoFullscreenButton.addPixmap(QPixmap(":/images/main_toolbar/fullscreen.png"), QIcon::Normal);
-	toggleFullScreenAction->setIcon(icoFullscreenButton);
+    QIcon icoFullscreenButton;
+    icoFullscreenButton.addPixmap(QPixmap(":/images/main_toolbar/fullscreen.png"), QIcon::Normal);
+    toggleFullScreenAction->setIcon(icoFullscreenButton);
 #endif
-	helpAboutAction = new QAction(this);
-	helpAboutAction->setToolTip(tr("Help, About YACReader"));
+    helpAboutAction = new QAction(this);
+    helpAboutAction->setToolTip(tr("Help, About YACReader"));
     helpAboutAction->setData(HELP_ABOUT_ACTION_YL);
     helpAboutAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(HELP_ABOUT_ACTION_YL));
-	QIcon icoHelpButton;
+    QIcon icoHelpButton;
     icoHelpButton.addFile(":/images/main_toolbar/help.png",QSize(), QIcon::Normal);
-	helpAboutAction->setIcon(icoHelpButton);
+    helpAboutAction->setIcon(icoHelpButton);
 
     addFolderAction = new QAction(tr("Add new folder"), this);
     addFolderAction->setData(ADD_FOLDER_ACTION_YL);
@@ -597,39 +603,39 @@ void LibraryWindow::createActions()
     deleteFolderAction->setToolTip(tr("Delete current folder from disk"));
     deleteFolderAction->setIcon(QIcon(":/images/delete_sidebar.png"));
 
-	setRootIndexAction = new QAction(this);
+    setRootIndexAction = new QAction(this);
     setRootIndexAction->setData(SET_ROOT_INDEX_ACTION_YL);
     setRootIndexAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_ROOT_INDEX_ACTION_YL));
-	setRootIndexAction->setToolTip(tr("Select root node"));
-	setRootIndexAction->setIcon(QIcon(":/images/setRoot.png"));
+    setRootIndexAction->setToolTip(tr("Select root node"));
+    setRootIndexAction->setIcon(QIcon(":/images/setRoot.png"));
 
-	expandAllNodesAction = new QAction(this);
-	expandAllNodesAction->setToolTip(tr("Expand all nodes"));
+    expandAllNodesAction = new QAction(this);
+    expandAllNodesAction->setToolTip(tr("Expand all nodes"));
     expandAllNodesAction->setData(EXPAND_ALL_NODES_ACTION_YL);
     expandAllNodesAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(EXPAND_ALL_NODES_ACTION_YL));
-	expandAllNodesAction->setIcon(QIcon(":/images/expand.png"));
+    expandAllNodesAction->setIcon(QIcon(":/images/expand.png"));
 
-	colapseAllNodesAction = new QAction(this);
-	colapseAllNodesAction->setToolTip(tr("Colapse all nodes"));
+    colapseAllNodesAction = new QAction(this);
+    colapseAllNodesAction->setToolTip(tr("Colapse all nodes"));
     colapseAllNodesAction->setData(COLAPSE_ALL_NODES_ACTION_YL);
     colapseAllNodesAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(COLAPSE_ALL_NODES_ACTION_YL));
-	colapseAllNodesAction->setIcon(QIcon(":/images/colapse.png"));
+    colapseAllNodesAction->setIcon(QIcon(":/images/colapse.png"));
 
-	optionsAction = new QAction(this);
-	optionsAction->setToolTip(tr("Show options dialog"));
+    optionsAction = new QAction(this);
+    optionsAction->setToolTip(tr("Show options dialog"));
     optionsAction->setData(OPTIONS_ACTION_YL);
     optionsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPTIONS_ACTION_YL));
-	QIcon icoSettingsButton;
+    QIcon icoSettingsButton;
     icoSettingsButton.addFile(":/images/main_toolbar/settings.png", QSize(), QIcon::Normal);
-	optionsAction->setIcon(icoSettingsButton);
+    optionsAction->setIcon(icoSettingsButton);
 
-	serverConfigAction = new QAction(this);
-	serverConfigAction->setToolTip(tr("Show comics server options dialog"));
+    serverConfigAction = new QAction(this);
+    serverConfigAction->setToolTip(tr("Show comics server options dialog"));
     serverConfigAction->setData(SERVER_CONFIG_ACTION_YL);
     serverConfigAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SERVER_CONFIG_ACTION_YL));
-	QIcon icoServerButton;
+    QIcon icoServerButton;
     icoServerButton.addFile(":/images/main_toolbar/server.png", QSize(), QIcon::Normal);
-	serverConfigAction->setIcon(icoServerButton);
+    serverConfigAction->setIcon(icoServerButton);
 
     toggleComicsViewAction = new QAction(tr("Change between comics views"),this);
     toggleComicsViewAction->setToolTip(tr("Change between comics views"));
@@ -641,13 +647,13 @@ void LibraryWindow::createActions()
     toggleComicsViewAction->setData(TOGGLE_COMICS_VIEW_ACTION_YL);
     toggleComicsViewAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_COMICS_VIEW_ACTION_YL));
     toggleComicsViewAction->setIcon(icoViewsButton);
-	//socialAction = new QAction(this);
+    //socialAction = new QAction(this);
 
-	openContainingFolderAction = new QAction(this);
-	openContainingFolderAction->setText(tr("Open folder..."));
+    openContainingFolderAction = new QAction(this);
+    openContainingFolderAction->setText(tr("Open folder..."));
     openContainingFolderAction->setData(OPEN_CONTAINING_FOLDER_ACTION_YL);
     openContainingFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_CONTAINING_FOLDER_ACTION_YL));
-	openContainingFolderAction->setIcon(QIcon(":/images/open.png"));
+    openContainingFolderAction->setIcon(QIcon(":/images/open.png"));
 
     setFolderAsNotCompletedAction = new QAction(this);
     setFolderAsNotCompletedAction->setText(tr("Set as uncompleted"));
@@ -669,29 +675,29 @@ void LibraryWindow::createActions()
     setFolderAsUnreadAction->setData(SET_FOLDER_AS_UNREAD_ACTION_YL);
     setFolderAsUnreadAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_FOLDER_AS_UNREAD_ACTION_YL));
 
-	openContainingFolderComicAction = new QAction(this);
-	openContainingFolderComicAction->setText(tr("Open containing folder..."));
+    openContainingFolderComicAction = new QAction(this);
+    openContainingFolderComicAction->setText(tr("Open containing folder..."));
     openContainingFolderComicAction->setData(OPEN_CONTAINING_FOLDER_COMIC_ACTION_YL);
     openContainingFolderComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_CONTAINING_FOLDER_COMIC_ACTION_YL));
-	openContainingFolderComicAction->setIcon(QIcon(":/images/open.png"));
+    openContainingFolderComicAction->setIcon(QIcon(":/images/open.png"));
 
     resetComicRatingAction = new QAction(this);
     resetComicRatingAction->setText(tr("Reset comic rating"));
     resetComicRatingAction->setData(RESET_COMIC_RATING_ACTION_YL);
     resetComicRatingAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RESET_COMIC_RATING_ACTION_YL));
 
-	//Edit comics actions------------------------------------------------------
-	selectAllComicsAction = new QAction(this);
-	selectAllComicsAction->setText(tr("Select all comics"));
+    //Edit comics actions------------------------------------------------------
+    selectAllComicsAction = new QAction(this);
+    selectAllComicsAction->setText(tr("Select all comics"));
     selectAllComicsAction->setData(SELECT_ALL_COMICS_ACTION_YL);
     selectAllComicsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SELECT_ALL_COMICS_ACTION_YL));
     selectAllComicsAction->setIcon(QIcon(":/images/selectAll.png"));
 
-	editSelectedComicsAction = new QAction(this);
-	editSelectedComicsAction->setText(tr("Edit"));
+    editSelectedComicsAction = new QAction(this);
+    editSelectedComicsAction->setText(tr("Edit"));
     editSelectedComicsAction->setData(EDIT_SELECTED_COMICS_ACTION_YL);
     editSelectedComicsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(EDIT_SELECTED_COMICS_ACTION_YL));
-	editSelectedComicsAction->setIcon(QIcon(":/images/editComic.png"));
+    editSelectedComicsAction->setIcon(QIcon(":/images/editComic.png"));
 
     asignOrderAction = new QAction(this);
     asignOrderAction->setText(tr("Asign current order to comics"));
@@ -705,11 +711,11 @@ void LibraryWindow::createActions()
     forceCoverExtractedAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(FORCE_COVER_EXTRACTED_ACTION_YL));
     forceCoverExtractedAction->setIcon(QIcon(":/images/importCover.png"));
 
-	deleteComicsAction = new QAction(this);
-	deleteComicsAction->setText(tr("Delete selected comics"));
+    deleteComicsAction = new QAction(this);
+    deleteComicsAction->setText(tr("Delete selected comics"));
     deleteComicsAction->setData(DELETE_COMICS_ACTION_YL);
     deleteComicsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(DELETE_COMICS_ACTION_YL));
-	deleteComicsAction->setIcon(QIcon(":/images/trash.png"));
+    deleteComicsAction->setIcon(QIcon(":/images/trash.png"));
 
     hideComicViewAction = new QAction(this);
     hideComicViewAction->setText(tr("Hide comic flow"));
@@ -719,12 +725,12 @@ void LibraryWindow::createActions()
     hideComicViewAction->setCheckable(true);
     hideComicViewAction->setChecked(false);
 
-	getInfoAction = new QAction(this);
+    getInfoAction = new QAction(this);
     getInfoAction->setData(GET_INFO_ACTION_YL);
     getInfoAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(GET_INFO_ACTION_YL));
-	getInfoAction->setText(tr("Download tags from Comic Vine"));
-	getInfoAction->setIcon(QIcon(":/images/getInfo.png"));
-	//-------------------------------------------------------------------------
+    getInfoAction->setText(tr("Download tags from Comic Vine"));
+    getInfoAction->setIcon(QIcon(":/images/getInfo.png"));
+    //-------------------------------------------------------------------------
 
     showEditShortcutsAction = new QAction(tr("Edit shortcuts"),this);
     showEditShortcutsAction->setData(SHOW_EDIT_SHORTCUTS_ACTION_YL);
@@ -773,8 +779,8 @@ void LibraryWindow::createActions()
     addToFavoritesAction->setToolTip(tr("Add selected comics to favorites list"));
     addToFavoritesAction->setIcon(QIcon(":/images/lists/default_1.png"));
 
-	//disable actions
-	disableAllActions();
+    //disable actions
+    disableAllActions();
 }
 void LibraryWindow::disableComicsActions(bool disabled)
 {
@@ -994,7 +1000,7 @@ void LibraryWindow::createMenus()
 
 void LibraryWindow::createConnections()
 {
-	//history navigation
+    //history navigation
     connect(backAction,SIGNAL(triggered()),historyController,SLOT(backward()));
     connect(forwardAction,SIGNAL(triggered()),historyController,SLOT(forward()));
     //--
@@ -1002,51 +1008,51 @@ void LibraryWindow::createConnections()
     connect(historyController,SIGNAL(enabledForward(bool)),forwardAction,SLOT(setEnabled(bool)));
     //connect(foldersView, SIGNAL(clicked(QModelIndex)), historyController, SLOT(updateHistory(QModelIndex)));
 
-	//libraryCreator connections
-	connect(createLibraryDialog,SIGNAL(createLibrary(QString,QString,QString)),this,SLOT(create(QString,QString,QString)));
-	connect(createLibraryDialog,SIGNAL(libraryExists(QString)),this,SLOT(libraryAlreadyExists(QString)));
-	connect(importComicsInfoDialog,SIGNAL(finished(int)),this,SLOT(reloadCurrentLibrary()));
+    //libraryCreator connections
+    connect(createLibraryDialog,SIGNAL(createLibrary(QString,QString,QString)),this,SLOT(create(QString,QString,QString)));
+    connect(createLibraryDialog,SIGNAL(libraryExists(QString)),this,SLOT(libraryAlreadyExists(QString)));
+    connect(importComicsInfoDialog,SIGNAL(finished(int)),this,SLOT(reloadCurrentLibrary()));
 
-	//connect(libraryCreator,SIGNAL(coverExtracted(QString)),createLibraryDialog,SLOT(showCurrentFile(QString)));
-	//connect(libraryCreator,SIGNAL(coverExtracted(QString)),updateLibraryDialog,SLOT(showCurrentFile(QString)));
-	connect(libraryCreator,SIGNAL(finished()),this,SLOT(showRootWidget()));
-	connect(libraryCreator,SIGNAL(updated()),this,SLOT(reloadCurrentLibrary()));
-	connect(libraryCreator,SIGNAL(created()),this,SLOT(openLastCreated()));
+    //connect(libraryCreator,SIGNAL(coverExtracted(QString)),createLibraryDialog,SLOT(showCurrentFile(QString)));
+    //connect(libraryCreator,SIGNAL(coverExtracted(QString)),updateLibraryDialog,SLOT(showCurrentFile(QString)));
+    connect(libraryCreator,SIGNAL(finished()),this,SLOT(showRootWidget()));
+    connect(libraryCreator,SIGNAL(updated()),this,SLOT(reloadCurrentLibrary()));
+    connect(libraryCreator,SIGNAL(created()),this,SLOT(openLastCreated()));
     //connect(libraryCreator,SIGNAL(updatedCurrentFolder()), this, SLOT(showRootWidget()));
     connect(libraryCreator,SIGNAL(updatedCurrentFolder(QModelIndex)), this, SLOT(reloadAfterCopyMove(QModelIndex)));
-	connect(libraryCreator,SIGNAL(comicAdded(QString,QString)),importWidget,SLOT(newComic(QString,QString)));
-	//libraryCreator errors
-	connect(libraryCreator,SIGNAL(failedCreatingDB(QString)),this,SLOT(manageCreatingError(QString)));
-	connect(libraryCreator,SIGNAL(failedUpdatingDB(QString)),this,SLOT(manageUpdatingError(QString))); //TODO: implement failedUpdatingDB
-	
-	//new import widget
-	connect(importWidget,SIGNAL(stop()),this,SLOT(stopLibraryCreator()));
+    connect(libraryCreator,SIGNAL(comicAdded(QString,QString)),importWidget,SLOT(newComic(QString,QString)));
+    //libraryCreator errors
+    connect(libraryCreator,SIGNAL(failedCreatingDB(QString)),this,SLOT(manageCreatingError(QString)));
+    connect(libraryCreator,SIGNAL(failedUpdatingDB(QString)),this,SLOT(manageUpdatingError(QString))); //TODO: implement failedUpdatingDB
 
-	//packageManager connections
-	connect(exportLibraryDialog,SIGNAL(exportPath(QString)),this,SLOT(exportLibrary(QString)));
-	connect(exportLibraryDialog,SIGNAL(rejected()),packageManager,SLOT(cancel()));
-	connect(packageManager,SIGNAL(exported()),exportLibraryDialog,SLOT(close()));
-	connect(importLibraryDialog,SIGNAL(unpackCLC(QString,QString,QString)),this,SLOT(importLibrary(QString,QString,QString)));
-	connect(importLibraryDialog,SIGNAL(rejected()),packageManager,SLOT(cancel()));
-	connect(importLibraryDialog,SIGNAL(rejected()),this,SLOT(deleteCurrentLibrary()));
-	connect(importLibraryDialog,SIGNAL(libraryExists(QString)),this,SLOT(libraryAlreadyExists(QString)));
-	connect(packageManager,SIGNAL(imported()),importLibraryDialog,SLOT(hide()));
-	connect(packageManager,SIGNAL(imported()),this,SLOT(openLastCreated()));
+    //new import widget
+    connect(importWidget,SIGNAL(stop()),this,SLOT(stopLibraryCreator()));
+
+    //packageManager connections
+    connect(exportLibraryDialog,SIGNAL(exportPath(QString)),this,SLOT(exportLibrary(QString)));
+    connect(exportLibraryDialog,SIGNAL(rejected()),packageManager,SLOT(cancel()));
+    connect(packageManager,SIGNAL(exported()),exportLibraryDialog,SLOT(close()));
+    connect(importLibraryDialog,SIGNAL(unpackCLC(QString,QString,QString)),this,SLOT(importLibrary(QString,QString,QString)));
+    connect(importLibraryDialog,SIGNAL(rejected()),packageManager,SLOT(cancel()));
+    connect(importLibraryDialog,SIGNAL(rejected()),this,SLOT(deleteCurrentLibrary()));
+    connect(importLibraryDialog,SIGNAL(libraryExists(QString)),this,SLOT(libraryAlreadyExists(QString)));
+    connect(packageManager,SIGNAL(imported()),importLibraryDialog,SLOT(hide()));
+    connect(packageManager,SIGNAL(imported()),this,SLOT(openLastCreated()));
 
 
-	//create and update dialogs
-	connect(createLibraryDialog,SIGNAL(cancelCreate()),this,SLOT(cancelCreating()));
+    //create and update dialogs
+    connect(createLibraryDialog,SIGNAL(cancelCreate()),this,SLOT(cancelCreating()));
 
-	//open existing library from dialog.
-	connect(addLibraryDialog,SIGNAL(addLibrary(QString,QString)),this,SLOT(openLibrary(QString,QString)));
+    //open existing library from dialog.
+    connect(addLibraryDialog,SIGNAL(addLibrary(QString,QString)),this,SLOT(openLibrary(QString,QString)));
 
-	//load library when selected library changes
-	connect(selectedLibrary,SIGNAL(currentIndexChanged(QString)),this,SLOT(loadLibrary(QString)));
+    //load library when selected library changes
+    connect(selectedLibrary,SIGNAL(currentIndexChanged(QString)),this,SLOT(loadLibrary(QString)));
 
-	//rename library dialog
-	connect(renameLibraryDialog,SIGNAL(renameLibrary(QString)),this,SLOT(rename(QString)));
+    //rename library dialog
+    connect(renameLibraryDialog,SIGNAL(renameLibrary(QString)),this,SLOT(rename(QString)));
 
-	//navigations between view modes (tree,list and flow)
+    //navigations between view modes (tree,list and flow)
     //TODO connect(foldersView, SIGNAL(pressed(QModelIndex)), this, SLOT(updateFoldersViewConextMenu(QModelIndex)));
     //connect(foldersView, SIGNAL(clicked(QModelIndex)), this, SLOT(loadCovers(QModelIndex)));
 
@@ -1055,57 +1061,57 @@ void LibraryWindow::createConnections()
     connect(foldersView, SIGNAL(moveComicsToFolder(QList<QPair<QString,QString> >,QModelIndex)), this, SLOT(moveAndImportComicsToFolder(QList<QPair<QString,QString> >,QModelIndex)));
     connect(foldersView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showFoldersContextMenu(QPoint)));
 
-	//actions
-	connect(createLibraryAction,SIGNAL(triggered()),this,SLOT(createLibrary()));
+    //actions
+    connect(createLibraryAction,SIGNAL(triggered()),this,SLOT(createLibrary()));
     connect(exportLibraryAction,SIGNAL(triggered()),exportLibraryDialog,SLOT(open()));
-	connect(importLibraryAction,SIGNAL(triggered()),this,SLOT(importLibraryPackage()));
+    connect(importLibraryAction,SIGNAL(triggered()),this,SLOT(importLibraryPackage()));
 
-	connect(openLibraryAction,SIGNAL(triggered()),this,SLOT(showAddLibrary()));
-	connect(setAsReadAction,SIGNAL(triggered()),this,SLOT(setCurrentComicReaded()));
-	connect(setAsNonReadAction,SIGNAL(triggered()),this,SLOT(setCurrentComicUnreaded()));
-	//connect(setAllAsReadAction,SIGNAL(triggered()),this,SLOT(setComicsReaded()));
-	//connect(setAllAsNonReadAction,SIGNAL(triggered()),this,SLOT(setComicsUnreaded()));
+    connect(openLibraryAction,SIGNAL(triggered()),this,SLOT(showAddLibrary()));
+    connect(setAsReadAction,SIGNAL(triggered()),this,SLOT(setCurrentComicReaded()));
+    connect(setAsNonReadAction,SIGNAL(triggered()),this,SLOT(setCurrentComicUnreaded()));
+    //connect(setAllAsReadAction,SIGNAL(triggered()),this,SLOT(setComicsReaded()));
+    //connect(setAllAsNonReadAction,SIGNAL(triggered()),this,SLOT(setComicsUnreaded()));
 
 
-	//comicsInfoManagement
+    //comicsInfoManagement
     connect(exportComicsInfoAction,SIGNAL(triggered()),this,SLOT(showExportComicsInfo()));
     connect(importComicsInfoAction,SIGNAL(triggered()),this,SLOT(showImportComicsInfo()));
 
-	//properties & config
+    //properties & config
     connect(propertiesDialog,SIGNAL(accepted()),navigationController,SLOT(reselectCurrentSource()));
 
-	//comic vine
+    //comic vine
     connect(comicVineDialog,SIGNAL(accepted()),navigationController,SLOT(reselectCurrentSource()));
 
-	connect(updateLibraryAction,SIGNAL(triggered()),this,SLOT(updateLibrary()));
-	connect(renameLibraryAction,SIGNAL(triggered()),this,SLOT(renameLibrary()));
-	//connect(deleteLibraryAction,SIGNAL(triggered()),this,SLOT(deleteLibrary()));
-	connect(removeLibraryAction,SIGNAL(triggered()),this,SLOT(removeLibrary()));
-	connect(openComicAction,SIGNAL(triggered()),this,SLOT(openComic()));
-	connect(helpAboutAction,SIGNAL(triggered()),had,SLOT(show()));
+    connect(updateLibraryAction,SIGNAL(triggered()),this,SLOT(updateLibrary()));
+    connect(renameLibraryAction,SIGNAL(triggered()),this,SLOT(renameLibrary()));
+    //connect(deleteLibraryAction,SIGNAL(triggered()),this,SLOT(deleteLibrary()));
+    connect(removeLibraryAction,SIGNAL(triggered()),this,SLOT(removeLibrary()));
+    connect(openComicAction,SIGNAL(triggered()),this,SLOT(openComic()));
+    connect(helpAboutAction,SIGNAL(triggered()),had,SLOT(show()));
     connect(addFolderAction,SIGNAL(triggered()),this,SLOT(addFolderToCurrentIndex()));
     connect(deleteFolderAction,SIGNAL(triggered()),this,SLOT(deleteSelectedFolder()));
-	connect(setRootIndexAction,SIGNAL(triggered()),this,SLOT(setRootIndex()));
-	connect(expandAllNodesAction,SIGNAL(triggered()),foldersView,SLOT(expandAll()));
-	connect(colapseAllNodesAction,SIGNAL(triggered()),foldersView,SLOT(collapseAll()));
+    connect(setRootIndexAction,SIGNAL(triggered()),this,SLOT(setRootIndex()));
+    connect(expandAllNodesAction,SIGNAL(triggered()),foldersView,SLOT(expandAll()));
+    connect(colapseAllNodesAction,SIGNAL(triggered()),foldersView,SLOT(collapseAll()));
 #ifndef Q_OS_MAC
     connect(toggleFullScreenAction,SIGNAL(triggered()),this,SLOT(toggleFullScreen()));
 #endif
     connect(toggleComicsViewAction,SIGNAL(triggered()),this,SLOT(toggleComicsView()));
-	connect(optionsAction, SIGNAL(triggered()),optionsDialog,SLOT(show()));
+    connect(optionsAction, SIGNAL(triggered()),optionsDialog,SLOT(show()));
 #ifdef SERVER_RELEASE
-	connect(serverConfigAction, SIGNAL(triggered()), serverConfigDialog, SLOT(show()));
+    connect(serverConfigAction, SIGNAL(triggered()), serverConfigDialog, SLOT(show()));
 #endif
-	connect(optionsDialog, SIGNAL(optionsChanged()),this,SLOT(reloadOptions()));
+    connect(optionsDialog, SIGNAL(optionsChanged()),this,SLOT(reloadOptions()));
     connect(optionsDialog, SIGNAL(editShortcuts()),editShortcutsDialog,SLOT(show()));
 
-	//Folders filter
-	//connect(clearFoldersFilter,SIGNAL(clicked()),foldersFilter,SLOT(clear()));
+    //Folders filter
+    //connect(clearFoldersFilter,SIGNAL(clicked()),foldersFilter,SLOT(clear()));
     connect(searchEdit,SIGNAL(filterChanged(YACReader::SearchModifiers, QString)),this,SLOT(setSearchFilter(YACReader::SearchModifiers, QString)));
-	//connect(includeComicsCheckBox,SIGNAL(stateChanged(int)),this,SLOT(searchInFiles(int)));
+    //connect(includeComicsCheckBox,SIGNAL(stateChanged(int)),this,SLOT(searchInFiles(int)));
 
-	//ContextMenus
-	connect(openContainingFolderComicAction,SIGNAL(triggered()),this,SLOT(openContainingFolderComic()));
+    //ContextMenus
+    connect(openContainingFolderComicAction,SIGNAL(triggered()),this,SLOT(openContainingFolderComic()));
     connect(setFolderAsNotCompletedAction,SIGNAL(triggered()),this,SLOT(setFolderAsNotCompleted()));
     connect(setFolderAsCompletedAction,SIGNAL(triggered()),this,SLOT(setFolderAsCompleted()));
     connect(setFolderAsReadAction,SIGNAL(triggered()),this,SLOT(setFolderAsRead()));
@@ -1113,19 +1119,19 @@ void LibraryWindow::createConnections()
     connect(openContainingFolderAction,SIGNAL(triggered()),this,SLOT(openContainingFolder()));
     connect(resetComicRatingAction,SIGNAL(triggered()),this,SLOT(resetComicRating()));
 
-	//connect(dm,SIGNAL(directoryLoaded(QString)),foldersView,SLOT(expandAll()));
-	//connect(dm,SIGNAL(directoryLoaded(QString)),this,SLOT(updateFoldersView(QString)));
-	//Comicts edition
-	connect(editSelectedComicsAction,SIGNAL(triggered()),this,SLOT(showProperties()));
+    //connect(dm,SIGNAL(directoryLoaded(QString)),foldersView,SLOT(expandAll()));
+    //connect(dm,SIGNAL(directoryLoaded(QString)),this,SLOT(updateFoldersView(QString)));
+    //Comicts edition
+    connect(editSelectedComicsAction,SIGNAL(triggered()),this,SLOT(showProperties()));
     connect(asignOrderAction,SIGNAL(triggered()),this,SLOT(asignNumbers()));
 
-	connect(deleteComicsAction,SIGNAL(triggered()),this,SLOT(deleteComics()));
+    connect(deleteComicsAction,SIGNAL(triggered()),this,SLOT(deleteComics()));
 
     connect(hideComicViewAction, SIGNAL(toggled(bool)),this, SLOT(hideComicFlow(bool)));
 
-	connect(getInfoAction,SIGNAL(triggered()),this,SLOT(showComicVineScraper()));
+    connect(getInfoAction,SIGNAL(triggered()),this,SLOT(showComicVineScraper()));
 
-	//connect(socialAction,SIGNAL(triggered()),this,SLOT(showSocial()));
+    //connect(socialAction,SIGNAL(triggered()),this,SLOT(showSocial()));
 
     connect(comicsViewTransition,SIGNAL(transitionFinished()),this,SLOT(showComicsView()));
 
@@ -1154,6 +1160,9 @@ void LibraryWindow::createConnections()
     //--
 
     connect(addToFavoritesAction,SIGNAL(triggered()),this,SLOT(addSelectedComicsToFavorites()));
+
+    //save covers
+    connect(saveCoversToAction,SIGNAL(triggered()),this,SLOT(saveSelectedCoversTo()));
 }
 
 void LibraryWindow::loadLibrary(const QString & name)
@@ -1646,6 +1655,7 @@ void LibraryWindow::showComicsViewContextMenu(const QPoint &point)
     QMenu menu;
 
     menu.addAction(openComicAction);
+    menu.addAction(saveCoversToAction);
     menu.addSeparator();
     menu.addAction(openContainingFolderComicAction);
     menu.addAction(updateCurrentFolderAction);
@@ -1680,6 +1690,7 @@ void LibraryWindow::showComicsItemContextMenu(const QPoint &point)
     QMenu menu;
 
     menu.addAction(openComicAction);
+    menu.addAction(saveCoversToAction);
     menu.addSeparator();
     menu.addAction(openContainingFolderComicAction);
     menu.addAction(updateCurrentFolderAction);
@@ -1743,6 +1754,26 @@ void LibraryWindow::setToolbarTitle(const QModelIndex &modelIndex)
     else
         libraryToolBar->setCurrentFolderName(modelIndex.data().toString());
 #endif
+}
+
+void LibraryWindow::saveSelectedCoversTo()
+{
+    QFileDialog saveDialog;
+    QString folderPath = saveDialog.getExistingDirectory(this,tr("Save covers"),QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
+    if (!folderPath.isEmpty())
+    {
+        QModelIndexList comics = getSelectedComics();
+        foreach(QModelIndex comic, comics)
+        {
+            QString origin = comic.data(ComicModel::CoverPathRole).toString().remove("file:///");
+            QString destination = QDir(folderPath).filePath(comic.data(ComicModel::FileNameRole).toString()+".jpg");
+
+            QLOG_DEBUG() << "From : " << origin;
+            QLOG_DEBUG() << "To : " << destination;
+
+            QFile::copy(origin,destination);
+        }
+    }
 }
 
 void LibraryWindow::selectSubfolder(const QModelIndex &mi, int child)
