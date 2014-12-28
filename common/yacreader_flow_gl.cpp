@@ -705,8 +705,7 @@ void YACReaderFlowGL::insert(char *name, QOpenGLTexture * texture, float x, floa
 		numObjects++;
 
         calcVector(images[item].current,item);
-        images[item].current.x += 1;
-        images[item].current.rot = 90;
+        images[item].current.z = images[item].current.z-1;
 	}
 
     images[item].texture = texture;
