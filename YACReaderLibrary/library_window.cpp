@@ -779,6 +779,16 @@ void LibraryWindow::createActions()
     addToFavoritesAction->setToolTip(tr("Add selected comics to favorites list"));
     addToFavoritesAction->setIcon(QIcon(":/images/lists/default_1.png"));
 
+    //actions not asigned to any widget
+    this->addAction(saveCoversToAction);
+    this->addAction(openContainingFolderAction);
+    this->addAction(updateCurrentFolderAction);
+    this->addAction(resetComicRatingAction);
+    this->addAction(setFolderAsCompletedAction);
+    this->addAction(setFolderAsNotCompletedAction);
+    this->addAction(setFolderAsReadAction);
+    this->addAction(setFolderAsUnreadAction);
+
     //disable actions
     disableAllActions();
 }
