@@ -165,7 +165,7 @@ void MainWindowViewer::setupUI()
 	connect(optionsDialog,SIGNAL(changedFilters(int,int,int)),viewer,SLOT(updateFilters(int,int,int)));
 
 	optionsDialog->restoreOptions(settings);
-	shortcutsDialog = new ShortcutsDialog(this);
+    //shortcutsDialog = new ShortcutsDialog(this);
     editShortcutsDialog = new EditShortcutsDialog(this);
     connect(optionsDialog,SIGNAL(editShortcuts()),editShortcutsDialog,SLOT(show()));
 
@@ -369,7 +369,8 @@ void MainWindowViewer::createActions()
 	showShorcutsAction->setIcon(QIcon(":/images/viewer_toolbar/shortcuts.png"));
     showShorcutsAction->setData(SHOW_SHORCUTS_ACTION_Y);
     showShorcutsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_SHORCUTS_ACTION_Y));
-	connect(showShorcutsAction, SIGNAL(triggered()),shortcutsDialog,SLOT(show()));
+    //connect(showShorcutsAction, SIGNAL(triggered()),shortcutsDialog,SLOT(show()));
+    connect(showShorcutsAction, SIGNAL(triggered()), editShortcutsDialog, SLOT(show()));
 
     showInfoAction = new QAction(tr("Show Info"),this);
     showInfoAction->setIcon(QIcon(":/images/viewer_toolbar/info.png"));
