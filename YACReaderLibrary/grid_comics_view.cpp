@@ -102,6 +102,8 @@ void GridComicsView::setModel(ComicModel *model)
 void GridComicsView::setCurrentIndex(const QModelIndex &index)
 {
     QLOG_INFO() << "setCurrentIndex";
+    _selectionModel->select(index, QItemSelectionModel::Select | QItemSelectionModel::Rows);
+    view->rootContext()->setContextProperty("dummyValue", true);
 }
 
 QModelIndex GridComicsView::currentIndex()
@@ -153,6 +155,11 @@ void GridComicsView::enableFilterMode(bool enabled)
 void GridComicsView::selectAll()
 {
     QLOG_INFO() << "selectAll";
+    QModelIndex top = model->index(0, 0);
+    QModelIndex bottom = model->index(model->rowCount()-1, 0);
+    QItemSelection selection(top, bottom);
+    _selectionModel->select(selection, QItemSelectionModel::Select | QItemSelectionModel::Rows);
+    view->rootContext()->setContextProperty("dummyValue", true);
 }
 
 void GridComicsView::rate(int index, int rating)
