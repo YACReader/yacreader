@@ -38,10 +38,14 @@ signals:
 public slots:
     //selection helper
     void selectIndex(int index);
+    void setCurrentIndex(int index);
+    void deselectIndex(int index);
     bool isSelectedIndex(int index);
     void clear();
     //double clicked item
     void selectedItem(int index);
+    int numItemsSelected();
+    int lastSelectedIndex();
 
     //ComicsView
     void setShowMarks(bool show);
