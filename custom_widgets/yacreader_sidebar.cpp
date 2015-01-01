@@ -15,6 +15,9 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
 {
 	setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Minimum);
 
+    settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+    settings->beginGroup("libraryConfig");
+
 	//widgets
     foldersView = new YACReaderFoldersView;
     readingListsView = new YACReaderReadingListsView;
@@ -134,6 +137,9 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
     l->setSpacing(0);
 
 	setLayout(l);
+
+    if(settings->contains(SIDEBAR_SPLITTER_STATUS))
+        splitter->restoreState(settings->value(SIDEBAR_SPLITTER_STATUS).toByteArray());
 }
 
 
@@ -165,7 +171,12 @@ void YACReaderSideBar::paintEvent(QPaintEvent * event)
 	//   painter.setRenderHint(QPainter::Antialiasing);
 	// painter.drawLine(rect().topLeft(), rect().bottomRight());
 
-	//QWidget::paintEvent(event);
+    //QWidget::paintEvent(event);
+}
+
+void YACReaderSideBar::closeEvent(QCloseEvent *event)
+{
+    settings->setValue(SIDEBAR_SPLITTER_STATUS, splitter->saveState());
 }
 
 QSize YACReaderSideBar::sizeHint() const

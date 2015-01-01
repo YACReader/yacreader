@@ -2495,6 +2495,7 @@ void LibraryWindow::closeEvent ( QCloseEvent * event )
     settings->setValue(MAIN_WINDOW_GEOMETRY, saveGeometry());
 
     comicsView->close();
+    sideBar->close();
 
     QApplication::instance()->processEvents();
         event->accept();
