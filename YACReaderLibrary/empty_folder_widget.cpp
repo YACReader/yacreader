@@ -26,7 +26,7 @@ EmptyFolderWidget::EmptyFolderWidget(QWidget *parent) :
 
     foldersView = new QListView();
     foldersView->setMinimumWidth(282);
-    foldersView->setWrapping(true);
+    //foldersView->setWrapping(true);
     foldersView->setAttribute(Qt::WA_MacShowFocusRect,false);
 #ifdef Q_OS_MAC
     foldersView->setStyleSheet("QListView {background-color:transparent; border: none; color:#959595; outline:0; font-size: 18px; show-decoration-selected: 0; margin:0}"
