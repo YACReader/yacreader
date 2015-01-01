@@ -12,7 +12,7 @@ Rectangle {
 
     function selectAll(from,to)
     {
-        for(var i = from;i<to;i++)
+        for(var i = from;i<=to;i++)
         {
             comicsSelectionHelper.selectIndex(i);
         }
@@ -26,13 +26,7 @@ Rectangle {
             width: grid.cellWidth
             height: grid.cellHeight
             color: backgroundColor
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    comicsSelectionHelper.clear();
-                    comicsSelectionHelper.selectIndex(grid.currentIndex);
-                }
-            }
+
 
             Rectangle {
                 id: realCell
@@ -55,8 +49,8 @@ Rectangle {
                 }
 
                 width: 156; height: 287
-                color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index)) || grid.currentIndex === index?selectedColor:cellColor;
-                border.color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index)) || grid.currentIndex === index?selectedBorderColor:borderColor;
+                color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index))?selectedColor:cellColor;
+                border.color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index))?selectedBorderColor:borderColor;
                 border.width: (Qt.platform.os === "osx")?1:0;
 
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -85,17 +79,23 @@ Rectangle {
                         //grid.currentIndex = index
                         //comicsSelection.setCurrentIndex(index,0x0002)
                         var ci = grid.currentIndex;
-                        if(mouse.button != Qt.RightButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
+                        /*if(mouse.button != Qt.RightButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
                         {
                             if(!comicsSelectionHelper.isSelectedIndex(index))
                                 comicsSelectionHelper.clear();
-                        }
+                        }*/
 
                         if(mouse.modifiers & Qt.ShiftModifier)
                             if(index < ci)
+                            {
                                 selectAll(index,ci);
+                                grid.currentIndex = index;
+                            }
                             else if (index > ci)
+                            {
                                 selectAll(ci,index);
+                                grid.currentIndex = index;
+                            }
 
                         mouse.accepted = true;
 
@@ -104,8 +104,7 @@ Rectangle {
 
                             if(!comicsSelectionHelper.isSelectedIndex(index))
                             {
-                                comicsSelectionHelper.clear();
-                                comicsSelectionHelper.selectIndex(index)
+                                comicsSelectionHelper.setCurrentIndex(index)
                                 grid.currentIndex = index;
                             }
 
@@ -114,8 +113,23 @@ Rectangle {
 
                         } else
                         {
-                            comicsSelectionHelper.selectIndex(index)
-                            grid.currentIndex = index;
+                            if(mouse.modifiers & Qt.ControlModifier)
+                            {
+                                if(comicsSelectionHelper.isSelectedIndex(index))
+                                {
+                                    if(comicsSelectionHelper.numItemsSelected()>1)
+                                    {
+                                        comicsSelectionHelper.deselectIndex(index);
+                                        if(grid.currentIndex === index)
+                                            grid.currentIndex = comicsSelectionHelper.lastSelectedIndex();
+                                    }
+                                }
+                                else
+                                {
+                                    comicsSelectionHelper.selectIndex(index);
+                                    grid.currentIndex = index;
+                                }
+                            }
                         }
 
                     }
@@ -123,7 +137,7 @@ Rectangle {
                     onReleased: {
                         if(mouse.button != Qt.RightButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
                         {
-                            comicsSelectionHelper.clear();
+                            comicsSelectionHelper.setCurrentIndex(index)
                             grid.currentIndex = index;
                         }
                     }
@@ -299,7 +313,7 @@ Rectangle {
             //var ci = grid.currentIndex;
             grid.currentIndex = -1
             comicsSelectionHelper.clear();
-            comicsSelectionHelper.selectIndex(ci);
+            comicsSelectionHelper.setCurrentIndex(ci);
             grid.currentIndex = ci;
         }
         //}

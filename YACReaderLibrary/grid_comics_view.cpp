@@ -102,6 +102,7 @@ void GridComicsView::setModel(ComicModel *model)
 void GridComicsView::setCurrentIndex(const QModelIndex &index)
 {
     QLOG_INFO() << "setCurrentIndex";
+    _selectionModel->clear();
     _selectionModel->select(index, QItemSelectionModel::Select | QItemSelectionModel::Rows);
     view->rootContext()->setContextProperty("dummyValue", true);
 }
@@ -206,7 +207,24 @@ void GridComicsView::selectIndex(int index)
 {
     QLOG_INFO() << "selectIndex" << index;
     if(_selectionModel != NULL && model!=NULL)
+    {
         _selectionModel->select(model->index(index,0),QItemSelectionModel::Select | QItemSelectionModel::Rows);
+        view->rootContext()->setContextProperty("dummyValue", true);
+    }
+}
+
+void GridComicsView::setCurrentIndex(int index)
+{
+    setCurrentIndex(model->index(index,0));
+}
+
+void GridComicsView::deselectIndex(int index)
+{
+    if(_selectionModel != NULL && model!=NULL)
+    {
+        _selectionModel->select(model->index(index,0),QItemSelectionModel::Deselect | QItemSelectionModel::Rows);
+        view->rootContext()->setContextProperty("dummyValue", true);
+    }
 }
 
 bool GridComicsView::isSelectedIndex(int index)
@@ -235,6 +253,27 @@ void GridComicsView::clear()
 void GridComicsView::selectedItem(int index)
 {
     emit doubleClicked(model->index(index,0));
+}
+
+int GridComicsView::numItemsSelected()
+{
+    if(_selectionModel != NULL)
+    {
+        return _selectionModel->selectedRows().length();
+    }
+
+    return 0;
+}
+
+int GridComicsView::lastSelectedIndex()
+{
+    if(_selectionModel != NULL)
+    {
+        QLOG_INFO() << "last selected index " << _selectionModel->selectedRows().last().row();
+        return _selectionModel->selectedRows().last().row();
+    }
+
+    return -1;
 }
 
 void GridComicsView::setShowMarks(bool show)
