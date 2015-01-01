@@ -1215,6 +1215,7 @@ void LibraryWindow::loadLibrary(const QString & name)
                 foldersModel->setupModelData(path);
                 foldersModelProxy->setSourceModel(foldersModel);
                 foldersView->setModel(foldersModelProxy);
+                foldersView->setCurrentIndex(QModelIndex()); //why is this necesary?? by default it seems that returns an arbitrary index.
 
                 listsModel->setupReadingListsData(path);
                 listsModelProxy->setSourceModel(listsModel);
