@@ -1247,8 +1247,6 @@ void LibraryWindow::loadLibrary(const QString & name)
 				}
 
 				setRootIndex();
-				//TODO encontrar el bug que provoca que no se carguen adecuadamente las carátulas en root.
-				setRootIndex();
 
                 searchEdit->clear();
 			}
