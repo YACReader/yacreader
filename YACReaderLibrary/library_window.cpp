@@ -788,6 +788,7 @@ void LibraryWindow::createActions()
     this->addAction(setFolderAsNotCompletedAction);
     this->addAction(setFolderAsReadAction);
     this->addAction(setFolderAsUnreadAction);
+    this->addAction(toggleFullScreenAction);
 
     //disable actions
     disableAllActions();
