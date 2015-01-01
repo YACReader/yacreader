@@ -12,7 +12,7 @@ Rectangle {
 
     function selectAll(from,to)
     {
-        for(var i = from+1;i<to;i++)
+        for(var i = from;i<to;i++)
         {
             comicsSelectionHelper.selectIndex(i);
         }
@@ -118,6 +118,14 @@ Rectangle {
                             grid.currentIndex = index;
                         }
 
+                    }
+
+                    onReleased: {
+                        if(mouse.button != Qt.RightButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
+                        {
+                            comicsSelectionHelper.clear();
+                            grid.currentIndex = index;
+                        }
                     }
 
                 }
