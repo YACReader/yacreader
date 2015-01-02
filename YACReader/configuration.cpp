@@ -58,4 +58,6 @@ void Configuration::load(QSettings * settings)
 		settings->setValue(ALWAYS_ON_TOP,false);
 	if(!settings->contains(SHOW_TOOLBARS))
 		settings->setValue(SHOW_TOOLBARS, true);
+	if(!settings->contains(FITMODE))
+		settings->setValue(FITMODE, "full_page");
 }
