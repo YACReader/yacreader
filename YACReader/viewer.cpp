@@ -314,21 +314,22 @@ void Viewer::updateContentSize()
 	//there is an image to resize
 	if(currentPage !=0 && !currentPage->isNull())
 	{
-		if(Configuration::getConfiguration().getAdjustToFullSize())
+		if(!Configuration::getConfiguration().getFitMode().isNull())
 		{
-			content->resize(currentPage->size());
-		}
-		else if(Configuration::getConfiguration().getFitToPage())
-		{
-			QSize pagefit=currentPage->size();
-			pagefit.scale(size(), Qt::KeepAspectRatio);
-			content->resize(pagefit);
-		}
-		else
-		{
+			if(Configuration::getConfiguration().getFitMode()=="full_size")
+			{
+				content->resize(currentPage->size());
+			}
+			if(Configuration::getConfiguration().getFitMode()=="full_page")
+			{
+				QSize pagefit=currentPage->size();
+				pagefit.scale(size(), Qt::KeepAspectRatio);
+				content->resize(pagefit);
+			}
+			
 			//float aspectRatio = (float)currentPage->width()/currentPage->height();
 			//Fit to width
-			if(Configuration::getConfiguration().getAdjustToWidth())
+			if(Configuration::getConfiguration().getFitMode()=="to_width")
 			{
 				QSize pagefit=currentPage->size();
 				pagefit.scale(width(), 0, Qt::KeepAspectRatioByExpanding);
@@ -355,7 +356,7 @@ void Viewer::updateContentSize()
 				else
 					content->resize(static_cast<int>(height()*aspectRatio),height());
 			}*/
-			else
+			if(Configuration::getConfiguration().getFitMode()=="to_height")
 			{
 				QSize pagefit=currentPage->size();
 				pagefit.scale(0, height(), Qt::KeepAspectRatioByExpanding);
@@ -373,7 +374,6 @@ void Viewer::updateContentSize()
 	
         if(devicePixelRatio()>1)//only in retina display
         {
-	    qDebug() << "Retina Display detected" << "devicePixelRatio:" << devicePixelRatio();
             QPixmap page = currentPage->scaled(content->width()*devicePixelRatio(), content->height()*devicePixelRatio(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
             page.setDevicePixelRatio(devicePixelRatio());
             content->setPixmap(page);
@@ -899,7 +899,8 @@ void Viewer::mouseReleaseEvent ( QMouseEvent * event )
 
 void Viewer::updateFitToWidthRatio(float ratio)
 {
-	Configuration::getConfiguration().setAdjustToWidth(true);
+	//Configuration::getConfiguration().setAdjustToWidth(true);
+	Configuration::getConfiguration().setFitMode("to_width");
 	adjustToWidthRatio = ratio;
 	updateContentSize();
 }
