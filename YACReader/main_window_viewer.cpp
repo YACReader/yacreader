@@ -975,6 +975,7 @@ void MainWindowViewer::showToolBars()
 void MainWindowViewer::fitToWidth()
 {
 	Configuration::getConfiguration().setFitMode("to_width");
+	Configuration::getConfiguration().setPageZoomLevel(1);
 	viewer->updatePage();
 /*
 	Configuration & conf = Configuration::getConfiguration();
@@ -988,6 +989,7 @@ void MainWindowViewer::fitToWidth()
 void MainWindowViewer::fitToHeight()
 {
 	Configuration::getConfiguration().setFitMode("to_height");
+	Configuration::getConfiguration().setPageZoomLevel(1);
 	viewer->updatePage();
 	/*
 	Configuration & conf = Configuration::getConfiguration();
@@ -1416,6 +1418,7 @@ void MainWindowViewer::adjustToFullSizeSwitch()
 {
 	//Configuration::getConfiguration().setAdjustToFullSize(!Configuration::getConfiguration().getAdjustToFullSize());
 	Configuration::getConfiguration().setFitMode("full_size");
+	Configuration::getConfiguration().setPageZoomLevel(1);
 	viewer->updatePage();
 }
 
@@ -1423,6 +1426,7 @@ void MainWindowViewer::fitToPageSwitch()
 {
 	//Configuration::getConfiguration().setFitToPage(!Configuration::getConfiguration().getFitToPage());
 	Configuration::getConfiguration().setFitMode("full_page");
+	Configuration::getConfiguration().setPageZoomLevel(1);
 	viewer->updatePage();
 }
 
