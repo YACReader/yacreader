@@ -326,8 +326,15 @@ void Viewer::updateContentSize()
 		}
 		else
 		{
-			float aspectRatio = (float)currentPage->width()/currentPage->height();
+			//float aspectRatio = (float)currentPage->width()/currentPage->height();
 			//Fit to width
+			if(Configuration::getConfiguration().getAdjustToWidth())
+			{
+				QSize pagefit=currentPage->size();
+				pagefit.scale(width(), 0, Qt::KeepAspectRatioByExpanding);
+				content->resize(pagefit);
+			}
+			/*
 			if(Configuration::getConfiguration().getAdjustToWidth())
 			{
 				adjustToWidthRatio = Configuration::getConfiguration().getFitToWidthRatio();
@@ -339,6 +346,7 @@ void Viewer::updateContentSize()
 				else
 					content->resize(width()*adjustToWidthRatio,static_cast<int>(width()*adjustToWidthRatio/aspectRatio));
 			}
+			
 			//Fit to height or fullsize/custom size
 			else
 			{
@@ -346,18 +354,26 @@ void Viewer::updateContentSize()
 					content->resize(width(),static_cast<int>(width()/aspectRatio));
 				else
 					content->resize(static_cast<int>(height()*aspectRatio),height());
+			}*/
+			else
+			{
+				QSize pagefit=currentPage->size();
+				pagefit.scale(0, height(), Qt::KeepAspectRatioByExpanding);
+				content->resize(pagefit);
 			}
+			
 		}
 
 	if(Configuration::getConfiguration().getPageZoomLevel())
 	{	
 		QSize pagesize=content->size();
-		pagesize.scale(content->width()*Configuration::getConfiguration().getPageZoomLevel(), content->height(), Qt::KeepAspectRatio);
+		pagesize.scale(content->width()*Configuration::getConfiguration().getPageZoomLevel(), 0, Qt::KeepAspectRatioByExpanding);
 		content->resize(pagesize);
 	}
 	
         if(devicePixelRatio()>1)//only in retina display
         {
+	    qDebug() << "Retina Display detected" << "devicePixelRatio:" << devicePixelRatio();
             QPixmap page = currentPage->scaled(content->width()*devicePixelRatio(), content->height()*devicePixelRatio(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
             page.setDevicePixelRatio(devicePixelRatio());
             content->setPixmap(page);
