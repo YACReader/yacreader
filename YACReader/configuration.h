@@ -27,7 +27,7 @@ using namespace YACReader;
 		QSize magnifyingGlassSize;
 		QSize gotoSlideSize;
 		float zoomLevel;
-		bool adjustToWidth;
+		//bool adjustToWidth;
 		bool fullScreen;
 		FlowType flowType;
 		float fitToWidthRatio;
