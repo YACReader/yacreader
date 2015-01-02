@@ -262,7 +262,7 @@ void MainWindowViewer::createActions()
     adjustHeightAction->setIcon(QIcon(":/images/viewer_toolbar/toHeight.png"));
 	//adjustWidth->setCheckable(true);
     adjustHeightAction->setDisabled(true);
-    adjustHeightAction->setChecked(Configuration::getConfiguration().getAdjustToWidth());
+    //adjustHeightAction->setChecked(Configuration::getConfiguration().getAdjustToWidth());
     adjustHeightAction->setToolTip(tr("Fit image to height"));
 	//adjustWidth->setIcon(QIcon(":/images/fitWidth.png"));
     adjustHeightAction->setData(ADJUST_HEIGHT_ACTION_Y);
@@ -273,7 +273,7 @@ void MainWindowViewer::createActions()
     adjustWidthAction->setIcon(QIcon(":/images/viewer_toolbar/toWidth.png"));
 	//adjustWidth->setCheckable(true);
     adjustWidthAction->setDisabled(true);
-    adjustWidthAction->setChecked(Configuration::getConfiguration().getAdjustToWidth());
+    //adjustWidthAction->setChecked(Configuration::getConfiguration().getAdjustToWidth());
     adjustWidthAction->setToolTip(tr("Fit image to width"));
 	//adjustWidth->setIcon(QIcon(":/images/fitWidth.png"));
     adjustWidthAction->setData(ADJUST_WIDTH_ACTION_Y);
@@ -405,9 +405,9 @@ void MainWindowViewer::createActions()
 
 	adjustToFullSizeAction = new QAction(tr("Show full size"),this);
 	adjustToFullSizeAction->setIcon(QIcon(":/images/viewer_toolbar/full.png"));
-	adjustToFullSizeAction->setCheckable(true);
+	//adjustToFullSizeAction->setCheckable(true);
 	adjustToFullSizeAction->setDisabled(true);
-	adjustToFullSizeAction->setChecked(Configuration::getConfiguration().getAdjustToFullSize());
+	//adjustToFullSizeAction->setChecked(Configuration::getConfiguration().getAdjustToFullSize());
     adjustToFullSizeAction->setData(ADJUST_TO_FULL_SIZE_ACTION_Y);
     adjustToFullSizeAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADJUST_TO_FULL_SIZE_ACTION_Y));
 	connect(adjustToFullSizeAction,SIGNAL(triggered()),this,SLOT(adjustToFullSizeSwitch()));
@@ -416,7 +416,7 @@ void MainWindowViewer::createActions()
 	//fitToPageAction->setIcon(QIcon(":/images/viewer_toolbar/full.png"));
 	fitToPageAction->setCheckable(true);
 	fitToPageAction->setDisabled(true);
-	fitToPageAction->setChecked(Configuration::getConfiguration().getFitToPage());
+	//fitToPageAction->setChecked(Configuration::getConfiguration().getFitToPage());
     fitToPageAction->setData(FIT_TO_PAGE_ACTION_Y);
     fitToPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(FIT_TO_PAGE_ACTION_Y));
 	connect(fitToPageAction,SIGNAL(triggered()),this,SLOT(fitToPageSwitch()));
@@ -971,21 +971,28 @@ void MainWindowViewer::showToolBars()
 }
 void MainWindowViewer::fitToWidth()
 {
+	Configuration::getConfiguration().setFitMode("to_width");
+	viewer->updatePage();
+/*
 	Configuration & conf = Configuration::getConfiguration();
 	if(!conf.getAdjustToWidth())
 	{
 		conf.setAdjustToWidth(true);
 		viewer->updatePage();
 	}
+*/
 }
 void MainWindowViewer::fitToHeight()
 {
+	Configuration::getConfiguration().setFitMode("to_height");
+	viewer->updatePage();
+	/*
 	Configuration & conf = Configuration::getConfiguration();
 	if(conf.getAdjustToWidth())
 	{
 		conf.setAdjustToWidth(false);
 		viewer->updatePage();
-	}
+	}*/
 }
 
 void MainWindowViewer::checkNewVersion()
@@ -1189,8 +1196,9 @@ void MainWindowViewer::toggleFitToWidthSlider()
 
 void MainWindowViewer::changeFit()
 {
+	//TODO: this is depreceated
 	Configuration & conf = Configuration::getConfiguration();
-	conf.setAdjustToWidth(!conf.getAdjustToWidth());
+	//conf.setAdjustToWidth(!conf.getAdjustToWidth());
 	viewer->updatePage();
 }
 
@@ -1403,19 +1411,20 @@ void MainWindowViewer::alwaysOnTopSwitch()
 
 void MainWindowViewer::adjustToFullSizeSwitch()
 {
-	Configuration::getConfiguration().setAdjustToFullSize(!Configuration::getConfiguration().getAdjustToFullSize());
+	//Configuration::getConfiguration().setAdjustToFullSize(!Configuration::getConfiguration().getAdjustToFullSize());
+	Configuration::getConfiguration().setFitMode("full_size");
 	viewer->updatePage();
 }
 
 void MainWindowViewer::fitToPageSwitch()
 {
-	Configuration::getConfiguration().setFitToPage(!Configuration::getConfiguration().getFitToPage());
+	//Configuration::getConfiguration().setFitToPage(!Configuration::getConfiguration().getFitToPage());
+	Configuration::getConfiguration().setFitMode("full_page");
 	viewer->updatePage();
 }
 
 void MainWindowViewer::increasePageZoomLevel()
 {
-	qDebug() << "Increase page zoom level!";
 	Configuration::getConfiguration().setPageZoomLevel(Configuration::getConfiguration().getPageZoomLevel() + 0.1);
 	viewer->updatePage();
 }
