@@ -110,7 +110,7 @@ void EmptyFolderWidget::dragEnterEvent(QDragEnterEvent *event)
 {
     QList<QUrl> urlList;
 
-    if (event->mimeData()->hasUrls())
+    if (event->mimeData()->hasUrls() && event->dropAction() == Qt::CopyAction)
     {
         urlList = event->mimeData()->urls();
         QString currentPath;
@@ -131,7 +131,7 @@ void EmptyFolderWidget::dropEvent(QDropEvent *event)
 {
     QLOG_DEBUG() << "drop in emptyfolder" << event->dropAction();
 
-    bool validAction = event->dropAction() == Qt::CopyAction || event->dropAction() & Qt::MoveAction;
+    bool validAction = event->dropAction() == Qt::CopyAction; // || event->dropAction() & Qt::MoveAction;  TODO move
 
     if(validAction)
     {
