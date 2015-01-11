@@ -9,7 +9,7 @@
 
 #include <QWidget>
 
-#define VERSION "7.2.0"
+#define VERSION "8.0.0"
 
 #define PATH "PATH"
 #define MAG_GLASS_SIZE "MAG_GLASS_SIZE"
