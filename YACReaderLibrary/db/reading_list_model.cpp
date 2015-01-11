@@ -19,7 +19,7 @@ int ReadingListModel::rowCount(const QModelIndex &parent) const
 {
     if(!parent.isValid()) //TOP
     {
-        int separatorsCount = labels.isEmpty()?1:2;
+        int separatorsCount = 2;//labels.isEmpty()?1:2;
         return specialLists.count() + labels.count() + rootItem->childCount() + separatorsCount;
     }
     else
@@ -132,7 +132,7 @@ QModelIndex ReadingListModel::index(int row, int column, const QModelIndex &pare
 
     if(!parent.isValid())
     {
-        int separatorsCount = labels.isEmpty()?1:2;
+        int separatorsCount = 2;//labels.isEmpty()?1:2;
 
         if(rowIsSpecialList(row,parent))
             return createIndex(row, column, specialLists.at(row));
@@ -302,6 +302,8 @@ void ReadingListModel::addReadingList(const QString &name)
 {
     QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
+    beginInsertRows(QModelIndex(), 0, 0); //TODO calculate the right coordinates before inserting
+
     qulonglong id = DBHelper::insertReadingList(name,db);
     ReadingListItem * newItem;
     rootItem->appendChild(newItem = new ReadingListItem(QList<QVariant>()
@@ -313,11 +315,11 @@ void ReadingListModel::addReadingList(const QString &name)
 
     items.insert(id, newItem);
 
-    int pos = rootItem->children().indexOf(newItem);
+    /*int pos = rootItem->children().indexOf(newItem);
 
-    pos += specialLists.count()+1+labels.count()+labels.count()>0?1:0;
+    pos += specialLists.count()+1+labels.count()+labels.count()>0?1:0;*/
 
-    beginInsertRows(QModelIndex(), pos, pos);
+
     endInsertRows();
 
     QSqlDatabase::removeDatabase(_databasePath);
@@ -343,9 +345,9 @@ void ReadingListModel::addReadingListAt(const QString &name, const QModelIndex &
 
     items.insert(id, newItem);
 
-    int pos = readingListParent->children().indexOf(newItem);
+    /*int pos = readingListParent->children().indexOf(newItem);
 
-    pos += specialLists.count()+1+labels.count()+labels.count()>0?1:0;
+    pos += specialLists.count()+1+labels.count()+labels.count()>0?1:0;*/
 
 
     endInsertRows();
