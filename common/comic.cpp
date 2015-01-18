@@ -15,8 +15,8 @@
 
 #include "QsLog.h"
 
-const QStringList Comic::imageExtensions = QStringList() << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp";
-const QStringList Comic::literalImageExtensions = QStringList() << "jpg" << "jpeg" << "png" << "gif" << "tiff" << "tif" << "bmp";
+const QStringList Comic::imageExtensions = QStringList() << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp" << "*.webp";
+const QStringList Comic::literalImageExtensions = QStringList() << "jpg" << "jpeg" << "png" << "gif" << "tiff" << "tif" << "bmp" << "webp";
 
 const QStringList Comic::comicExtensions = QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.7z" << "*.cb7" << "*.arj" << "*.cbt";
 const QStringList Comic::literalComicExtensions = QStringList() << "cbr" << "cbz" << "rar" << "zip" << "tar" << "pdf" << "7z" << "cb7" << "arj" << "cbt";
