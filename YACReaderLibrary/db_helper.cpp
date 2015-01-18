@@ -410,6 +410,24 @@ void DBHelper::renameList(qulonglong id, const QString &name, QSqlDatabase &db)
     renameLabelQuery.exec();
 }
 
+void DBHelper::reasignOrderToSublists(QList<qulonglong> ids, QSqlDatabase &db)
+{
+    QSqlQuery updateOrdering(db);
+    updateOrdering.prepare("UPDATE reading_list SET "
+                           "ordering = :ordering "
+                           "WHERE id = :id");
+    db.transaction();
+    int order = 0;
+    foreach(qulonglong id, ids)
+    {
+        updateOrdering.bindValue(":ordering",order++);
+        updateOrdering.bindValue(":id", id);
+        updateOrdering.exec();
+    }
+
+    db.commit();
+}
+
 //inserts
 qulonglong DBHelper::insert(Folder * folder, QSqlDatabase & db)
 {
@@ -472,13 +490,14 @@ qulonglong DBHelper::insertReadingList(const QString &name, QSqlDatabase &db)
     return query.lastInsertId().toULongLong();
 }
 
-qulonglong DBHelper::insertReadingSubList(const QString &name, qulonglong parentId, QSqlDatabase &db)
+qulonglong DBHelper::insertReadingSubList(const QString &name, qulonglong parentId, int ordering, QSqlDatabase &db)
 {
     QSqlQuery query(db);
-    query.prepare("INSERT INTO reading_list (name, parentId) "
-                   "VALUES (:name, :parentId)");
+    query.prepare("INSERT INTO reading_list (name, parentId, ordering) "
+                   "VALUES (:name, :parentId, :ordering)");
     query.bindValue(":name", name);
     query.bindValue(":parentId", parentId);
+    query.bindValue(":ordering", ordering);
     query.exec();
     return query.lastInsertId().toULongLong();
 }

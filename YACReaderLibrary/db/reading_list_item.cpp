@@ -1,4 +1,5 @@
 #include "reading_list_item.h"
+#include "qnaturalsorting.h"
 
 ListItem::ListItem(const QList<QVariant> &data)
     :itemData(data)
@@ -125,10 +126,6 @@ ReadingListItem *ReadingListItem::child(int row)
 //items are sorted by order
 void ReadingListItem::appendChild(ReadingListItem *item)
 {
-    childItems.append(item);
-    item->parent = this;
-    return; //TODO
-
     item->parent = this;
 
     if(childItems.isEmpty())
@@ -137,11 +134,17 @@ void ReadingListItem::appendChild(ReadingListItem *item)
     {
         if(item->parent->getId()==0) //sort by name, top level child
         {
-
+            int i= 0;
+            while(i<childItems.length() && naturalSortLessThanCI(childItems.at(i)->name(),item->name()))
+                i++;
+            childItems.insert(i,item);
         }
         else
         {
-
+            int i= 0;
+            while(i<childItems.length() && (childItems.at(i)->getOrdering()<item->getOrdering()))
+                i++;
+            childItems.insert(i,item);
         }
 
         /*ReadingListItem * last = childItems.back();
@@ -162,6 +165,11 @@ void ReadingListItem::appendChild(ReadingListItem *item)
 
     }
 
+}
+
+void ReadingListItem::appendChild(ReadingListItem *item, int pos)
+{
+    childItems.insert(pos, item);
 }
 
 void ReadingListItem::removeChild(ReadingListItem *item)
