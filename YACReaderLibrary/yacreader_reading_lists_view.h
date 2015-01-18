@@ -12,9 +12,11 @@ public:
     explicit YACReaderReadingListsView(QWidget * parent = 0);
 
 protected:
-    //Drop to import
+    //Drop to import & internal Drag&Drop for resorting
     void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);
+    void dropEvent(QDropEvent *event);
+
 };
 
 class YACReaderReadingListsViewItemDeletegate: public QStyledItemDelegate

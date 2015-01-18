@@ -40,6 +40,7 @@ public:
     QModelIndex parent(const QModelIndex &index) const;
     bool canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const;
     bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
+    QMimeData *mimeData(const QModelIndexList &indexes) const;
 
     //Convenience methods
     void setupReadingListsData(QString path);
@@ -86,12 +87,15 @@ private:
     void setupLabels(QSqlDatabase &db);
     void setupReadingLists(QSqlDatabase &db);
     int addLabelIntoList(LabelItem *item);
+    void reorderingChildren(QList<ReadingListItem *> children);
 
     bool rowIsSpecialList(int row, const QModelIndex & parent = QModelIndex()) const;
     bool rowIsLabel(int row, const QModelIndex & parent = QModelIndex()) const;
     bool rowIsReadingList(int row, const QModelIndex & parent = QModelIndex()) const;
     bool rowIsSeparator(int row, const QModelIndex & parent = QModelIndex()) const;
 
+    bool dropComics(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
+    bool dropSublist(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
     //Special lists
     QList<SpecialListItem *> specialLists;
 

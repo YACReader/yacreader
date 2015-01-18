@@ -114,7 +114,10 @@ Qt::ItemFlags ReadingListModel::flags(const QModelIndex &index) const
     if(typeid(*item) == typeid(ReadingListSeparatorItem))
         return 0;
 
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled;
+    if(typeid(*item) == typeid(ReadingListItem) && static_cast<ReadingListItem *>(item)->parent->getId()!=0)
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled; //only sublists are dragable
+
+    return  Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled;
 }
 
 QVariant ReadingListModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -183,7 +186,7 @@ QModelIndex ReadingListModel::parent(const QModelIndex &index) const
         ReadingListItem * childItem = static_cast<ReadingListItem*>(index.internalPointer());
         ReadingListItem * parent = childItem->parent;
         if(parent->getId() != 0)
-            return createIndex(parent->row(), 0, parent);
+            return createIndex(parent->row()+specialLists.count()+labels.count()+2, 0, parent);
     }
 
     return QModelIndex();
@@ -208,13 +211,39 @@ bool ReadingListModel::canDropMimeData(const QMimeData *data, Qt::DropAction act
             return false;
     }
 
-    return data->formats().contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat);
+    if(data->formats().contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat))
+        return true;
+
+    if(rowIsReadingList(row,parent))// TODO avoid droping in a different parent
+        if(!parent.isValid())
+            return false;
+        else
+        {
+            QList<QPair<int,int> > sublistsRows;
+            QByteArray rawData = data->data(YACReader::YACReaderLibrarSubReadingListMimeDataFormat);
+            QDataStream in(&rawData,QIODevice::ReadOnly);
+            in  >> sublistsRows; //deserialize the list of indentifiers
+            if(parent.row()!= sublistsRows.at(0).second)
+                return false;
+            return data->formats().contains(YACReader::YACReaderLibrarSubReadingListMimeDataFormat);
+
+        }
+
+    return false;
 }
 
 bool ReadingListModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
     QLOG_DEBUG() << "drop mimedata into row = " << row << " column = " << column << "parent" << parent;
+    if(data->formats().contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat))
+        return dropComics(data, action, row, column, parent);
 
+    if(data->formats().contains(YACReader::YACReaderLibrarSubReadingListMimeDataFormat))
+        return dropSublist(data, action, row, column, parent);
+}
+
+bool ReadingListModel::dropComics(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+{
     QList<qulonglong> comicIds;
     QByteArray rawData = data->data(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat);
     QDataStream in(&rawData,QIODevice::ReadOnly);
@@ -256,6 +285,71 @@ bool ReadingListModel::dropMimeData(const QMimeData *data, Qt::DropAction action
     }
 
     return false;
+}
+
+bool ReadingListModel::dropSublist(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+{
+    QList<QPair<int,int> > sublistsRows;
+    QByteArray rawData = data->data(YACReader::YACReaderLibrarSubReadingListMimeDataFormat);
+    QDataStream in(&rawData,QIODevice::ReadOnly);
+    in  >> sublistsRows; //deserialize the list of indentifiers
+
+    QLOG_DEBUG() << "dropped : " << sublistsRows;
+
+    int sourceRow = sublistsRows.at(0).first;
+    int destRow = row;
+    QModelIndex destParent = parent;
+    if(row == -1)
+    {
+        QLOG_DEBUG() << "droping inside parent";
+        destRow = parent.row();
+        destParent = parent.parent();
+    }
+    QLOG_DEBUG() << "move " << sourceRow << "-" << destRow;
+
+    if(sourceRow == destRow)
+        return false;
+
+    //beginMoveRows(destParent,sourceRow,sourceRow,destParent,destRow);
+
+    ReadingListItem * parentItem = static_cast<ReadingListItem *>(destParent.internalPointer());
+    ReadingListItem * child = parentItem->child(sourceRow);
+    parentItem->removeChild(child);
+    parentItem->appendChild(child,destRow);
+
+    reorderingChildren(parentItem->children());
+    //endMoveRows();
+
+    return true;
+}
+
+QMimeData *ReadingListModel::mimeData(const QModelIndexList &indexes) const
+{
+    QLOG_DEBUG() << "mimeData requested" << indexes;
+
+    if(indexes.length() == 0)
+    {
+        QLOG_ERROR() << "mimeData requested: indexes is empty";
+        return new QMimeData();//TODO what happens if 0 is returned?
+    }
+
+    if(indexes.length() > 1)
+        QLOG_DEBUG() << "mimeData requested for more than one index, this shouldn't be possible";
+
+    QModelIndex modelIndex = indexes.at(0);
+
+    QList<QPair<int,int> > rows;
+    rows << QPair<int,int>(modelIndex.row(),modelIndex.parent().row());
+    QLOG_DEBUG() << "mimeData requested for row : " << modelIndex.row();
+
+    QByteArray data;
+    QDataStream out(&data,QIODevice::WriteOnly);
+    out << rows; //serialize the list of identifiers
+
+    QMimeData * mimeData = new QMimeData();
+    mimeData->setData(YACReader::YACReaderLibrarSubReadingListMimeDataFormat, data);
+
+    return mimeData;
 }
 
 void ReadingListModel::setupReadingListsData(QString path)
@@ -331,17 +425,16 @@ void ReadingListModel::addReadingListAt(const QString &name, const QModelIndex &
 
     beginInsertRows(mi, 0, 0); //TODO calculate the right coordinates before inserting
 
-    qulonglong id = DBHelper::insertReadingSubList(name,mi.data(IDRole).toULongLong(),db);
-    ReadingListItem * newItem;
     ReadingListItem * readingListParent = static_cast<ReadingListItem*>(mi.internalPointer());
+    qulonglong id = DBHelper::insertReadingSubList(name,mi.data(IDRole).toULongLong(),readingListParent->childCount(),db);
+    ReadingListItem * newItem;
+
     readingListParent->appendChild(newItem = new ReadingListItem(QList<QVariant>()
                                               << name
                                               << id
                                               << false
                                               << true
-                                              << mi.data(IDRole).toULongLong()));
-
-
+                                              << readingListParent->childCount()));
 
     items.insert(id, newItem);
 
@@ -430,6 +523,7 @@ void ReadingListModel::deleteItem(const QModelIndex &mi)
 {
     if(isEditable(mi))
     {
+        QLOG_DEBUG() << "parent row :" << mi.parent().data() << "-" << mi.row();
         beginRemoveRows(mi.parent(),mi.row(),mi.row());
 
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
@@ -439,8 +533,15 @@ void ReadingListModel::deleteItem(const QModelIndex &mi)
         if(typeid(*item) == typeid(ReadingListItem))
         {
             ReadingListItem * rli = static_cast<ReadingListItem*>(item);
+            QLOG_DEBUG() << "num children : " << rli->parent->childCount();
             rli->parent->removeChild(rli);
+            QLOG_DEBUG() << "num children : " << rli->parent->childCount();
             DBHelper::removeListFromDB(item->getId(), db);
+            if(rli->parent->getId()!=0)
+            {
+                reorderingChildren(rli->parent->children());
+            }
+            QLOG_DEBUG() << "num children : " << rli->parent->childCount();
         }
         else if(typeid(*item) == typeid(LabelItem))
         {
@@ -605,6 +706,20 @@ int ReadingListModel::addLabelIntoList(LabelItem *item)
     }
 
     return 0;
+}
+
+void ReadingListModel::reorderingChildren(QList<ReadingListItem *> children)
+{
+    QList<qulonglong> childrenIds;
+    int i = 0;
+    foreach (ReadingListItem * item, children) {
+        item->setOrdering(i++);
+        childrenIds << item->getId();
+    }
+
+    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+    DBHelper::reasignOrderToSublists(childrenIds, db);
+    QSqlDatabase::removeDatabase(_databasePath);
 }
 
 bool ReadingListModel::rowIsSpecialList(int row, const QModelIndex &parent) const

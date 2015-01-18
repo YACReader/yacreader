@@ -348,7 +348,8 @@ void ComicModel::setupReadingListModelData(unsigned long long parentReadingList,
         QSqlQuery subfolders(db);
         subfolders.prepare("SELECT id "
                            "FROM reading_list "
-                           "WHERE parentId = :parentId");
+                           "WHERE parentId = :parentId "
+                           "ORDER BY ordering ASC");
         subfolders.bindValue(":parentId", parentReadingList);
         subfolders.exec();
         while(subfolders.next())

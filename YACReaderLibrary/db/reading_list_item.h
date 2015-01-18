@@ -69,6 +69,7 @@ public:
     int row() const;
     ReadingListItem * child(int row);
     void appendChild(ReadingListItem *item);
+    void appendChild(ReadingListItem *item, int pos);
     void removeChild(ReadingListItem *item);
     qulonglong getId() const;
     QString name() const;

@@ -8,6 +8,9 @@ YACReaderReadingListsView::YACReaderReadingListsView(QWidget *parent)
 {
     setItemDelegate(new YACReaderReadingListsViewItemDeletegate(this));
     setUniformRowHeights(false);
+
+    //enabling internal drag&drop
+    setDragDropMode(QAbstractItemView::DragDrop);
 }
 
 void YACReaderReadingListsView::dragEnterEvent(QDragEnterEvent *event)
@@ -25,6 +28,13 @@ void YACReaderReadingListsView::dragMoveEvent(QDragMoveEvent *event)
     QModelIndex destinationIndex = indexAt(event->pos());
     if(model()->canDropMimeData(event->mimeData(), event->proposedAction(), destinationIndex.row(), destinationIndex.column(), destinationIndex.parent()))
         event->acceptProposedAction();
+}
+
+void YACReaderReadingListsView::dropEvent(QDropEvent *event)
+{
+    YACReaderTreeView::dropEvent(event);
+
+
 }
 
 //----------------------------------------------------------------------
