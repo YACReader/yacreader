@@ -150,12 +150,7 @@ void YACReaderSideBar::paintEvent(QPaintEvent * event)
 #ifdef Q_OS_MAC
 	QPainter painter(this);
 
-	QLinearGradient lG(0,0,0,height());
-
-	lG.setColorAt(0,QColor("#E8ECF1"));
-	lG.setColorAt(1,QColor("#D1D8E0"));
-
-	painter.fillRect(0,0,width(),height(),lG);
+    painter.fillRect(0,0,width(),height(),QColor("#F6F0F2"));
 #else
 	QPainter painter(this);
 
