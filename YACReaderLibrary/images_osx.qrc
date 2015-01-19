@@ -44,5 +44,22 @@
         <file alias="images/lists/label_yellow.png">../images/lists/label_yellow_osx.png</file>
         <file alias="images/lists/list.png">../images/lists/list_osx.png</file>
         <file alias="images/empty_reading_list.png">../images/empty_reading_list_osx.png</file>
+        <!--reading lists @2x-->
+        <file alias="images/lists/default_0@2x.png">../images/lists/default_0_osx@2x.png</file>
+        <file alias="images/lists/default_1@2x.png">../images/lists/default_1_osx@2x.png</file>
+        <file alias="images/lists/label_blue@2x.png">../images/lists/label_blue_osx@2x.png</file>
+        <file alias="images/lists/label_cyan@2x.png">../images/lists/label_cyan_osx@2x.png</file>
+        <file alias="images/lists/label_dark@2x.png">../images/lists/label_dark_osx@2x.png</file>
+        <file alias="images/lists/label_green@2x.png">../images/lists/label_green_osx@2x.png</file>
+        <file alias="images/lists/label_light@2x.png">../images/lists/label_light_osx@2x.png</file>
+        <file alias="images/lists/label_orange@2x.png">../images/lists/label_orange_osx@2x.png</file>
+        <file alias="images/lists/label_pink@2x.png">../images/lists/label_pink_osx@2x.png</file>
+        <file alias="images/lists/label_purple@2x.png">../images/lists/label_purple_osx@2x.png</file>
+        <file alias="images/lists/label_red@2x.png">../images/lists/label_red_osx@2x.png</file>
+        <file alias="images/lists/label_violet@2x.png">../images/lists/label_violet_osx@2x.png</file>
+        <file alias="images/lists/label_white@2x.png">../images/lists/label_white_osx@2x.png</file>
+        <file alias="images/lists/label_yellow@2x.png">../images/lists/label_yellow_osx@2x.png</file>
+        <file alias="images/lists/list@2x.png">../images/lists/list_osx@2x.png</file>
+        <file alias="images/empty_reading_list@2x.png">../images/empty_reading_list_osx@2x.png</file>
     </qresource>
 </RCC>
