@@ -20,19 +20,19 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent) :
 
 #ifdef Q_OS_MAC
 
-    bool oldStyle = false;
-    /*switch (QSysInfo::MacVersion())
+    bool oldStyle = true;
+    switch (QSysInfo::MacVersion())
     {
         case QSysInfo::MV_SNOWLEOPARD:
         case QSysInfo::MV_LION:
         case QSysInfo::MV_MOUNTAINLION:
         case QSysInfo::MV_MAVERICKS:
-            oldStyle = true;
+            oldStyle = true; //TODO fix this
             break;
         default:
             oldStyle = false;
         break;
-    }*/
+    }
 
     if(oldStyle)
     {

@@ -63,9 +63,10 @@ QString YACReader::colorToName(LabelColors colors)
 QIcon YACReader::noHighlightedIcon(const QString &path)
 {
     QPixmap p(path);
-    QIcon icon;
-    icon.addPixmap(p,QIcon::Normal);
-    icon.addPixmap(p,QIcon::Selected);
+
+    QIcon icon;//(path);
+    icon.addFile(path,p.size(),QIcon::Normal);
+    icon.addFile(path,p.size(),QIcon::Selected);
     return icon;
 }
 
