@@ -60,6 +60,5 @@
         <file alias="images/lists/label_white@2x.png">../images/lists/label_white_osx@2x.png</file>
         <file alias="images/lists/label_yellow@2x.png">../images/lists/label_yellow_osx@2x.png</file>
         <file alias="images/lists/list@2x.png">../images/lists/list_osx@2x.png</file>
-        <file alias="images/empty_reading_list@2x.png">../images/empty_reading_list_osx@2x.png</file>
     </qresource>
 </RCC>

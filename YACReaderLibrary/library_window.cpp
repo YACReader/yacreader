@@ -788,7 +788,9 @@ void LibraryWindow::createActions()
     this->addAction(setFolderAsNotCompletedAction);
     this->addAction(setFolderAsReadAction);
     this->addAction(setFolderAsUnreadAction);
+#ifndef Q_OS_MAC
     this->addAction(toggleFullScreenAction);
+#endif
 
     //disable actions
     disableAllActions();

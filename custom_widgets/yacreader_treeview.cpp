@@ -21,7 +21,7 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent) :
 #ifdef Q_OS_MAC
 
     bool oldStyle = false;
-    switch (QSysInfo::MacVersion())
+    /*switch (QSysInfo::MacVersion())
     {
         case QSysInfo::MV_SNOWLEOPARD:
         case QSysInfo::MV_LION:
@@ -32,7 +32,7 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent) :
         default:
             oldStyle = false;
         break;
-    }
+    }*/
 
     if(oldStyle)
     {
@@ -56,8 +56,8 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent) :
     else
     {
         setStyleSheet("QTreeView {background-color:transparent; border: none;}"
-                      "QTreeView::item:selected {background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6BAFE4, stop: 1 #3984D2); border-top: 2px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #5EA3DF, stop: 1 #73B8EA); border-left:none;border-right:none;border-bottom:1px solid #3577C2;}"
-                      "QTreeView::branch:selected {background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6BAFE4, stop: 1 #3984D2); border-top: 2px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #5EA3DF, stop: 1 #73B8EA); border-left:none;border-right:none;border-bottom:1px solid #3577C2;}"
+                      "QTreeView::item:selected {background-color:#91c4f4; border-top: 1px solid #91c4f4; border-left:none;border-right:none;border-bottom:1px solid #91c4f4;}"
+                      "QTreeView::branch:selected {background-color:#91c4f4; border-top: 1px solid #91c4f4; border-left:none;border-right:none;border-bottom:1px solid #91c4f4;}"
                       "QTreeView::branch:open:selected:has-children {image: url(':/images/expanded_branch_osx.png');}"
                       "QTreeView::branch:closed:selected:has-children {image: url(':/images/collapsed_branch_osx.png');}"
 

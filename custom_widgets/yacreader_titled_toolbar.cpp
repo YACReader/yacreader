@@ -118,7 +118,11 @@ void YACReaderTitledToolBar::addSepartor()
 
     QWidget * w = new QWidget(this);
     w->setFixedSize(1,14);
+#ifdef Q_OS_MAC
+    w->setStyleSheet("QWidget {background-color:#AFAFAF;}");
+#else
     w->setStyleSheet("QWidget {background-color:#6F6F6F;}");
+#endif
 
     mainLayout->addSpacing(10);
     mainLayout->addWidget(w);
