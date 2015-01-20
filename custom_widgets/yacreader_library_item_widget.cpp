@@ -14,14 +14,14 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n/*ame*/, QString
 
 	//installEventFilter(this);
 
-	QPixmap iconPixmap(":/images/libraryIcon.png");
+    QPixmap iconPixmap(":/images/sidebar/libraryIcon.png");
 	icon = new QLabel(this);
 	icon->setPixmap(iconPixmap);
 
 	nameLabel = new QLabel(name,this);
 
 	options = new QToolButton(this);
-	options->setIcon(QIcon(":/images/libraryOptions.png"));
+    options->setIcon(QIcon(":/images/sidebar/libraryOptions.png"));
 	options->setHidden(true);
 	options->setFixedWidth(18);
 	options->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Minimum);
@@ -119,7 +119,7 @@ void YACReaderLibraryItemWidget::deselect()
 	setStyleSheet(styleSheet);
 #endif
 
-	QPixmap iconPixmap(":/images/libraryIcon.png");
+    QPixmap iconPixmap(":/images/sidebar/libraryIcon.png");
 	icon->setPixmap(iconPixmap);
 
 	/*up->setHidden(true);
@@ -143,7 +143,7 @@ void YACReaderLibraryItemWidget::select()
 
 	options->setHidden(false);
 
-	QPixmap iconPixmap(":/images/libraryIconSelected.png");
+    QPixmap iconPixmap(":/images/sidebar/libraryIconSelected.png");
 	icon->setPixmap(iconPixmap);
 
 	isSelected = true;
