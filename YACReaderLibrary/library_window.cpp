@@ -486,13 +486,13 @@ void LibraryWindow::createActions()
     createLibraryAction->setToolTip(tr("Create a new library"));
     createLibraryAction->setData(CREATE_LIBRARY_ACTION_YL);
     createLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(CREATE_LIBRARY_ACTION_YL));
-    createLibraryAction->setIcon(QIcon(":/images/newLibraryIcon.png"));
+    createLibraryAction->setIcon(QIcon(":/images/sidebar/newLibraryIcon.png"));
 
     openLibraryAction = new QAction(this);
     openLibraryAction->setToolTip(tr("Open an existing library"));
     openLibraryAction->setData(OPEN_LIBRARY_ACTION_YL);
     openLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_LIBRARY_ACTION_YL));
-    openLibraryAction->setIcon(QIcon(":/images/openLibraryIcon.png"));
+    openLibraryAction->setIcon(QIcon(":/images/sidebar/openLibraryIcon.png"));
 
     exportComicsInfoAction = new QAction(tr("Export comics info"),this);
     exportComicsInfoAction->setToolTip(tr("Export comics info"));
@@ -595,31 +595,31 @@ void LibraryWindow::createActions()
     addFolderAction->setData(ADD_FOLDER_ACTION_YL);
     addFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_FOLDER_ACTION_YL));
     addFolderAction->setToolTip(tr("Add new folder to the current library"));
-    addFolderAction->setIcon(QIcon(":/images/addNew_sidebar.png"));
+    addFolderAction->setIcon(QIcon(":/images/sidebar/addNew_sidebar.png"));
 
     deleteFolderAction = new QAction(tr("Delete folder"), this);
     deleteFolderAction->setData(REMOVE_FOLDER_ACTION_YL);
     deleteFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(REMOVE_FOLDER_ACTION_YL));
     deleteFolderAction->setToolTip(tr("Delete current folder from disk"));
-    deleteFolderAction->setIcon(QIcon(":/images/delete_sidebar.png"));
+    deleteFolderAction->setIcon(QIcon(":/images/sidebar/delete_sidebar.png"));
 
     setRootIndexAction = new QAction(this);
     setRootIndexAction->setData(SET_ROOT_INDEX_ACTION_YL);
     setRootIndexAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_ROOT_INDEX_ACTION_YL));
     setRootIndexAction->setToolTip(tr("Select root node"));
-    setRootIndexAction->setIcon(QIcon(":/images/setRoot.png"));
+    setRootIndexAction->setIcon(QIcon(":/images/sidebar/setRoot.png"));
 
     expandAllNodesAction = new QAction(this);
     expandAllNodesAction->setToolTip(tr("Expand all nodes"));
     expandAllNodesAction->setData(EXPAND_ALL_NODES_ACTION_YL);
     expandAllNodesAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(EXPAND_ALL_NODES_ACTION_YL));
-    expandAllNodesAction->setIcon(QIcon(":/images/expand.png"));
+    expandAllNodesAction->setIcon(QIcon(":/images/sidebar/expand.png"));
 
     colapseAllNodesAction = new QAction(this);
     colapseAllNodesAction->setToolTip(tr("Colapse all nodes"));
     colapseAllNodesAction->setData(COLAPSE_ALL_NODES_ACTION_YL);
     colapseAllNodesAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(COLAPSE_ALL_NODES_ACTION_YL));
-    colapseAllNodesAction->setIcon(QIcon(":/images/colapse.png"));
+    colapseAllNodesAction->setIcon(QIcon(":/images/sidebar/colapse.png"));
 
     optionsAction = new QAction(this);
     optionsAction->setToolTip(tr("Show options dialog"));
@@ -750,25 +750,25 @@ void LibraryWindow::createActions()
     addReadingListAction->setData(ADD_READING_LIST_ACTION_YL);
     addReadingListAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_READING_LIST_ACTION_YL));
     addReadingListAction->setToolTip(tr("Add a new reading list to the current library"));
-    addReadingListAction->setIcon(QIcon(":/images/addNew_sidebar.png"));
+    addReadingListAction->setIcon(QIcon(":/images/sidebar/addNew_sidebar.png"));
 
     deleteReadingListAction = new QAction(tr("Remove reading list"), this);
     deleteReadingListAction->setData(REMOVE_READING_LIST_ACTION_YL);
     deleteReadingListAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(REMOVE_READING_LIST_ACTION_YL));
     deleteReadingListAction->setToolTip(tr("Remove current reading list from the library"));
-    deleteReadingListAction->setIcon(QIcon(":/images/delete_sidebar.png"));
+    deleteReadingListAction->setIcon(QIcon(":/images/sidebar/delete_sidebar.png"));
 
     addLabelAction = new QAction(tr("Add new label"), this);
     addLabelAction->setData(ADD_LABEL_ACTION_YL);
     addLabelAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_LABEL_ACTION_YL));
     addLabelAction->setToolTip(tr("Add a new label to this library"));
-    addLabelAction->setIcon(QIcon(":/images/addLabelIcon.png"));
+    addLabelAction->setIcon(QIcon(":/images/sidebar/addLabelIcon.png"));
 
     renameListAction = new QAction(tr("Rename selected list"), this);
     renameListAction->setData(RENAME_LIST_ACTION_YL);
     renameListAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RENAME_LIST_ACTION_YL));
     renameListAction->setToolTip(tr("Rename any selected labels or lists"));
-    renameListAction->setIcon(QIcon(":/images/renameListIcon.png"));
+    renameListAction->setIcon(QIcon(":/images/sidebar/renameListIcon.png"));
 
     //--
     addToMenuAction = new QAction(tr("Add to..."), this);
