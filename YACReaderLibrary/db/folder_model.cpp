@@ -161,9 +161,9 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
         }
 #else
         if(item->data(FolderModel::Finished).toBool())
-            return QVariant(YACReader::noHighlightedIcon(":/images/folder_finished.png"));
+            return QVariant(YACReader::noHighlightedIcon(":/images/sidebar/folder_finished.png"));
         else
-            return QVariant(YACReader::noHighlightedIcon(":/images/folder.png"));
+            return QVariant(YACReader::noHighlightedIcon(":/images/sidebar/folder.png"));
 #endif
 
     if(role == FolderModel::CompletedRole)
