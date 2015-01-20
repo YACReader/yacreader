@@ -15,12 +15,6 @@
         <file alias="images/main_toolbar/flow@2x.png">../images/main_toolbar/flow_osx@2x.png</file>
         <file alias="images/main_toolbar/grid.png">../images/main_toolbar/grid_osx.png</file>
         <file alias="images/main_toolbar/grid@2x.png">../images/main_toolbar/grid_osx@2x.png</file>
-        <file alias="images/libraryIcon.png">../images/libraryIcon_osx.png</file>
-        <file alias="images/setRoot.png">../images/setRoot_osx.png</file>
-        <file alias="images/expand.png">../images/expand_osx.png</file>
-        <file alias="images/colapse.png">../images/colapse_osx.png</file>
-        <file alias="images/newLibraryIcon.png">../images/newLibraryIcon_osx.png</file>
-        <file alias="images/openLibraryIcon.png">../images/openLibraryIcon_osx.png</file>
         <file alias="images/flow_to_grid.gif">../images/flow_to_grid_osx.gif</file>
         <file alias="images/grid_to_flow.gif">../images/grid_to_flow_osx.gif</file>
         <file alias="images/empty_folder.png">../images/empty_folder_osx.png</file>
@@ -60,5 +54,27 @@
         <file alias="images/lists/label_white@2x.png">../images/lists/label_white_osx@2x.png</file>
         <file alias="images/lists/label_yellow@2x.png">../images/lists/label_yellow_osx@2x.png</file>
         <file alias="images/lists/list@2x.png">../images/lists/list_osx@2x.png</file>
+        <!--sidebar-->
+        <file alias="images/sidebar/libraryIcon.png">../images/sidebar/libraryIcon_osx.png</file>
+        <file alias="images/sidebar/setRoot.png">../images/sidebar/setRoot_osx.png</file>
+        <file alias="images/sidebar/expand.png">../images/sidebar/expand_osx.png</file>
+        <file alias="images/sidebar/colapse.png">../images/sidebar/colapse_osx.png</file>
+        <file alias="images/sidebar/newLibraryIcon.png">../images/sidebar/newLibraryIcon_osx.png</file>
+        <file alias="images/sidebar/openLibraryIcon.png">../images/sidebar/openLibraryIcon_osx.png</file>
+        <file alias="images/sidebar/addNew_sidebar.png">../images/sidebar/addNew_sidebar_osx.png</file>
+        <file alias="images/sidebar/delete_sidebar.png">../images/sidebar/delete_sidebar_osx.png</file>
+        <file alias="images/sidebar/addLabelIcon.png">../images/sidebar/addLabelIcon_osx.png</file>
+        <file alias="images/sidebar/renameListIcon.png">../images/sidebar/renameListIcon_osx.png</file>
+        <!--sidebar @2x-->
+        <!-- <file alias="images/sidebar/libraryIcon@2x.png">../images/sidebar/libraryIcon_osx@2x.png</file> -->
+        <file alias="images/sidebar/setRoot@2x.png">../images/sidebar/setRoot_osx@2x.png</file>
+        <file alias="images/sidebar/expand@2x.png">../images/sidebar/expand_osx@2x.png</file>
+        <file alias="images/sidebar/colapse@2x.png">../images/sidebar/colapse_osx@2x.png</file>
+        <file alias="images/sidebar/newLibraryIcon@2x.png">../images/sidebar/newLibraryIcon_osx@2x.png</file>
+        <file alias="images/sidebar/openLibraryIcon@2x.png">../images/sidebar/openLibraryIcon_osx@2x.png</file>
+        <file alias="images/sidebar/addNew_sidebar@2x.png">../images/sidebar/addNew_sidebar_osx@2x.png</file>
+        <file alias="images/sidebar/delete_sidebar@2x.png">../images/sidebar/delete_sidebar_osx@2x.png</file>
+        <file alias="images/sidebar/addLabelIcon@2x.png">../images/sidebar/addLabelIcon_osx@2x.png</file>
+        <file alias="images/sidebar/renameListIcon@2x.png">../images/sidebar/renameListIcon_osx@2x.png</file>
     </qresource>
 </RCC>
