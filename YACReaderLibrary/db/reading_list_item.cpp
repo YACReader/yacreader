@@ -110,7 +110,11 @@ QIcon ReadingListItem::getIcon() const
     if(parent->getId() == 0)
         return YACReader::noHighlightedIcon(":/images/lists/list.png"); //top level list
     else
-        return YACReader::noHighlightedIcon(":/images/folder.png"); //sublist
+#ifdef Q_OS_MAC
+        return QFileIconProvider().icon(QFileIconProvider::Folder);
+#else
+        return YACReader::noHighlightedIcon(":/images/sidebar/folder.png"); //sublist
+#endif
 }
 
 int ReadingListItem::childCount() const
