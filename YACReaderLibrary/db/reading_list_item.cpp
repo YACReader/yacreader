@@ -1,6 +1,8 @@
 #include "reading_list_item.h"
 #include "qnaturalsorting.h"
 
+#include <QFileIconProvider>
+
 ListItem::ListItem(const QList<QVariant> &data)
     :itemData(data)
 {
