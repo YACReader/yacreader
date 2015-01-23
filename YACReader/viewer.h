@@ -16,6 +16,8 @@
 #include <QPropertyAnimation>
 #include <QSettings>
 
+#include "scroll_management.h"
+
 class ComicDB;
 class Comic;
 class MagnifyingGlass;
@@ -29,7 +31,7 @@ class Bookmarks;
 class PageLabelWidget; 
 class NotificationsLabelWidget;
 
-	class Viewer : public QScrollArea
+    class Viewer : public QScrollArea, public ScrollManagement
 	{
 		Q_OBJECT
 	public:

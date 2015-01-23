@@ -101,6 +101,7 @@ HEADERS += $$PWD/../common/comic.h \
 	$$PWD/yacreader_local_client.h \
 	$$PWD/../common/http_worker.h \
 	$$PWD/../common/exit_check.h \
+        $$PWD/../common/scroll_management.h
 	
 SOURCES += $$PWD/../common/comic.cpp \
     $$PWD/configuration.cpp \
@@ -135,6 +136,7 @@ SOURCES += $$PWD/../common/comic.cpp \
     $$PWD/../common/http_worker.cpp \
     $$PWD/../common/yacreader_global.cpp \
 	$$PWD/../common/exit_check.cpp \
+    $$PWD/../common/scroll_management.cpp
 
 include($$PWD/../custom_widgets/custom_widgets_yacreader.pri)
 include($$PWD/../compressed_archive/wrapper.pri)
