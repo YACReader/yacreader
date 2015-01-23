@@ -175,6 +175,9 @@ protected:
 
     void startAnimationTimer();
     void stopAnimationTimer();
+
+    QTime * wheelTimer;
+    int wheelAccumulator;
 	
 public:
 
