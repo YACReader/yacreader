@@ -13,6 +13,7 @@
 #include <QtWidgets>
 
 #include "pictureflow.h" //TODO mover los tipos de flow de sitio
+#include "scroll_management.h"
 
 class ImageLoaderGL;
 class QGLContext;
@@ -104,7 +105,7 @@ extern struct Preset presetYACReaderFlowOverlappedStripeConfig;
 extern struct Preset pressetYACReaderFlowUpConfig;
 extern struct Preset pressetYACReaderFlowDownConfig;
 
-class YACReaderFlowGL : public QOpenGLWidget
+class YACReaderFlowGL : public QOpenGLWidget, public ScrollManagement
 {
 	Q_OBJECT
 protected:
@@ -175,9 +176,6 @@ protected:
 
     void startAnimationTimer();
     void stopAnimationTimer();
-
-    QTime * wheelTimer;
-    int wheelAccumulator;
 	
 public:
 

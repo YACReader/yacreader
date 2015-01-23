@@ -475,30 +475,36 @@ void Viewer::wheelEvent(QWheelEvent * event)
 {
 	if(render->hasLoadedComic())
 	{
-		if((event->delta()<0)&&(verticalScrollBar()->sliderPosition()==verticalScrollBar()->maximum()))
-		{
-			if(wheelStop)
-			{
-				next();
-				verticalScroller->stop();
-				event->accept();
-				wheelStop = false;
-				return;
-			}
-			else
-				wheelStop = true;
-		}
-		else
+        if((event->delta()<0)&&(verticalScrollBar()->sliderPosition()==verticalScrollBar()->maximum()))
+        {
+            if(wheelStop)
+            {
+                if(getMovement(event) == Forward)
+                {
+                    next();
+                    verticalScroller->stop();
+                    event->accept();
+                    wheelStop = false;
+                }
+                return;
+            }
+            else
+                wheelStop = true;
+        }
+        else
 		{
 			if((event->delta()>0)&&(verticalScrollBar()->sliderPosition()==verticalScrollBar()->minimum()))
 			{
 				if(wheelStop)
-				{
-					prev();
-					verticalScroller->stop();
-					event->accept();
-					wheelStop = false;
-					return;
+                {
+                    if(getMovement(event) == Backward)
+                    {
+                        prev();
+                        verticalScroller->stop();
+                        event->accept();
+                        wheelStop = false;
+                    }
+                    return;
 				}
 				else
 					wheelStop = true;

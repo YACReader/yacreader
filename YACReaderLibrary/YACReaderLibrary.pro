@@ -131,7 +131,8 @@ HEADERS += comic_flow.h \
     empty_label_widget.h \
     empty_container_info.h \
     empty_special_list.h \
-    empty_reading_list_widget.h
+    empty_reading_list_widget.h \
+    ../common/scroll_management.h
 
 		   
 SOURCES += comic_flow.cpp \
@@ -191,7 +192,8 @@ SOURCES += comic_flow.cpp \
     empty_label_widget.cpp \
     empty_container_info.cpp \
     empty_special_list.cpp \
-    empty_reading_list_widget.cpp
+    empty_reading_list_widget.cpp \
+    ../common/scroll_management.cpp
 
 				   
 include(./server/server.pri)
