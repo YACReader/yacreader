@@ -248,6 +248,10 @@ YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
 
     timerId = startTimer(updateInterval);
 
+    wheelTimer = new QTime();
+    wheelTimer->start();
+    wheelAccumulator = 0;
+
 }
 
 void YACReaderFlowGL::timerEvent(QTimerEvent * event)
@@ -1042,13 +1046,54 @@ void YACReaderFlowGL::render()
 }
 
 //EVENTOS
+#include "QsLog.h"
 void YACReaderFlowGL::wheelEvent(QWheelEvent * event)
 {
-	if(event->delta()<0)
+    /*QLOG_DEBUG() << "WheelEvent angle delta : " << event->angleDelta();
+    QLOG_DEBUG() << "WheelEvent pixel delta : " << event->pixelDelta();*/
+
+    /*if(event->delta()<0)
 		showNext();
 	else
 		showPrevious();
-	event->accept();
+    event->accept();*/
+
+    int tooFast = 1;
+    int timeThrottle = 16;
+    int minimumMove = 70;
+
+    //avoid any events overflood
+    if((wheelTimer->elapsed() < tooFast)){
+        event->setAccepted(true);
+        return;
+    }
+
+    // Accumulate the delta
+    if(event->delta()<0 != wheelAccumulator<0 ) //different sign means change in direction
+        wheelAccumulator = 0;
+
+    wheelAccumulator += event->delta();
+
+    //Do not process events too fast
+    if((wheelTimer->elapsed() < timeThrottle)){
+        event->setAccepted(true);
+        return;
+    }
+
+    //small intervals are ignored until with have enough acumulated delta
+    if((wheelAccumulator < minimumMove) && (wheelAccumulator > -minimumMove)){
+        event->setAccepted(true);
+        return;
+    }
+
+    if(wheelAccumulator<0)
+            showNext();
+        else
+            showPrevious();
+        event->accept();
+    //Clean up
+    wheelAccumulator = 0;
+    wheelTimer->restart();
 }
 
 void YACReaderFlowGL::keyPressEvent(QKeyEvent *event)
