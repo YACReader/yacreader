@@ -2145,6 +2145,7 @@ void LibraryWindow::setSearchFilter(const YACReader::SearchModifiers modifier, Q
         foldersModelProxy->setFilter(modifier, filter, true);//includeComicsCheckBox->isChecked());
         comicsModel->setupModelData(modifier, filter, foldersModel->getDatabase());
         comicsView->enableFilterMode(true);
+        comicsView->setModel(comicsModel); //TODO, columns are messed up after ResetModel some times, this shouldn't be necesary
         foldersView->expandAll();
 
         if(comicsModel->rowCount() == 0)
