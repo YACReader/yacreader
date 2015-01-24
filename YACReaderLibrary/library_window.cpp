@@ -2083,8 +2083,13 @@ void LibraryWindow::toggleFullScreen()
 	fullscreen = !fullscreen;
 }
 
+//QTBUG-41883
 void LibraryWindow::toFullScreen()
 {
+    _size = size();
+    _pos = pos();
+    hide();
+
 	fromMaximized = this->isMaximized();
 
     sideBar->hide();
@@ -2092,14 +2097,26 @@ void LibraryWindow::toFullScreen()
 
     comicsView->toFullScreen();
 
-	showFullScreen();
+    setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
+    setWindowState(windowState() | Qt::WindowFullScreen);
+    resize(windowHandle()->screen()->size()-QSize(0,1));
+
+    show();
 }
 
+//QTBUG-41883
 void LibraryWindow::toNormal()
 {
+    hide();
+
 	sideBar->show();
 	
     comicsView->toNormal();
+
+    setWindowFlags(windowFlags() & ~Qt::WindowStaysOnTopHint);
+    setWindowState(windowState() & ~Qt::WindowFullScreen);
+    resize(_size);
+    move(_pos);
 
 	if(fromMaximized)
 		showMaximized();
@@ -2115,6 +2132,8 @@ void LibraryWindow::toNormal()
 #else
 	libraryToolBar->show();
 #endif
+
+    show();
 
 }
 

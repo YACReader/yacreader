@@ -74,6 +74,10 @@ class EditShortcutsDialog;
 		bool toolbars;
 		bool alwaysOnTop;
 		bool fromMaximized;
+
+        //QTBUG-41883
+        QSize _size;
+        QPoint _pos;
 		
 		QString currentDirectory;
 		QString currentDirectoryImgDest;
