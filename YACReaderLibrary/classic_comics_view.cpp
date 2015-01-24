@@ -92,6 +92,7 @@ void ClassicComicsView::setToolBar(QToolBar *toolBar)
 
 void ClassicComicsView::setModel(ComicModel *model)
 {
+    QLOG_DEBUG() << "Setting model";
 
     ComicsView::setModel(model);
 
@@ -137,12 +138,10 @@ void ClassicComicsView::setModel(ComicModel *model)
         comicFlow->setImagePaths(paths);
         comicFlow->setMarks(model->getReadList());
         //comicFlow->setFocus(Qt::OtherFocusReason);
+
+        if(settings->contains(COMICS_VIEW_HEADERS))
+            tableView->horizontalHeader()->restoreState(settings->value(COMICS_VIEW_HEADERS).toByteArray());
     }
-
-    if(settings->contains(COMICS_VIEW_HEADERS))
-        tableView->horizontalHeader()->restoreState(settings->value(COMICS_VIEW_HEADERS).toByteArray());
-
-
 }
 
 void ClassicComicsView::setCurrentIndex(const QModelIndex &index)
