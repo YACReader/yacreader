@@ -290,6 +290,10 @@ private:
 
     ComicsViewStatus comicsViewStatus;
 
+    //QTBUG-41883
+    QSize _size;
+    QPoint _pos;
+
 protected:
     virtual void closeEvent ( QCloseEvent * event );
 public:

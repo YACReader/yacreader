@@ -37,8 +37,9 @@ GridComicsView::~GridComicsView()
 
 void GridComicsView::setToolBar(QToolBar *toolBar)
 {
-QLOG_INFO() << "setToolBar";
-static_cast<QVBoxLayout *>(this->layout())->insertWidget(1,toolBar);
+    QLOG_INFO() << "setToolBar";
+    static_cast<QVBoxLayout *>(this->layout())->insertWidget(1,toolBar);
+    this->toolbar = toolBar;
 }
 
 void GridComicsView::setModel(ComicModel *model)
@@ -136,11 +137,13 @@ void GridComicsView::scrollTo(const QModelIndex &mi, QAbstractItemView::ScrollHi
 void GridComicsView::toFullScreen()
 {
     QLOG_INFO() << "toFullScreen";
+    toolbar->hide();
 }
 
 void GridComicsView::toNormal()
 {
     QLOG_INFO() << "toNormal";
+    toolbar->show();
 }
 
 void GridComicsView::updateConfig(QSettings *settings)

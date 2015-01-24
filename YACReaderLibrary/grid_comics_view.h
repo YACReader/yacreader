@@ -60,6 +60,7 @@ protected slots:
     void requestedContextMenu(const QPoint & point);
 
 private:
+    QToolBar * toolbar;
     QItemSelectionModel * _selectionModel;
     QQuickView *view;
     QWidget *container;
