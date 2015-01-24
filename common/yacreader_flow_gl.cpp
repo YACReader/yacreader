@@ -297,13 +297,13 @@ void YACReaderFlowGL::initializeGL()
 
     defaultTexture = new QOpenGLTexture(QImage(":/images/defaultCover.png"));
     defaultTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::LinearMipMapLinear);
-
+#ifdef YACREADER_LIBRARY
     markTexture = new QOpenGLTexture(QImage(":/images/readRibbon.png"));
     markTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::LinearMipMapLinear);
 
     readingTexture = new QOpenGLTexture(QImage(":/images/readingRibbon.png"));
     readingTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::LinearMipMapLinear);
-
+#endif
     if(lazyPopulateObjects!=-1)
 		populate(lazyPopulateObjects);
 
