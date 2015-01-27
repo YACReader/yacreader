@@ -127,6 +127,7 @@ protected:
 
 private:
 	void setupModelData( QSqlQuery &sqlquery);
+    void setupModelDataForList(QSqlQuery &sqlquery);
 	ComicDB _getComic(const QModelIndex & mi);
 	QList<ComicItem *> _data;
 

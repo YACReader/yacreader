@@ -320,10 +320,11 @@ void ComicModel::setupLabelModelData(unsigned long long parentLabel, const QStri
         selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                             "INNER JOIN comic_label cl ON (c.id == cl.comic_id) "
-                            "WHERE cl.label_id = :parentLabelId");
+                            "WHERE cl.label_id = :parentLabelId "
+                            "ORDER BY cl.ordering");
         selectQuery.bindValue(":parentLabelId", parentLabel);
         selectQuery.exec();
-        setupModelData(selectQuery);
+        setupModelDataForList(selectQuery);
     }
     db.close();
     QSqlDatabase::removeDatabase(_databasePath);
@@ -361,7 +362,8 @@ void ComicModel::setupReadingListModelData(unsigned long long parentReadingList,
             selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
                                 "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                                 "INNER JOIN comic_reading_list crl ON (c.id == crl.comic_id) "
-                                "WHERE crl.reading_list_id = :parentReadingList");
+                                "WHERE crl.reading_list_id = :parentReadingList "
+                                "ORDER BY crl.ordering");
             selectQuery.bindValue(":parentReadingList", id);
             selectQuery.exec();
 
@@ -393,7 +395,8 @@ void ComicModel::setupFavoritesModelData(const QString &databasePath)
         selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                             "INNER JOIN comic_default_reading_list cdrl ON (c.id == cdrl.comic_id) "
-                            "WHERE cdrl.default_reading_list_id = :parentDefaultListId");
+                            "WHERE cdrl.default_reading_list_id = :parentDefaultListId "
+                            "ORDER BY cdrl.ordering");
         selectQuery.bindValue(":parentDefaultListId", 1);
         selectQuery.exec();
         setupModelData(selectQuery);
@@ -588,7 +591,21 @@ void ComicModel::setupModelData(QSqlQuery &sqlquery)
 
 			}
 		}
-	}
+    }
+}
+
+//comics are sorted by "ordering", the sorting is done in the sql query
+void ComicModel::setupModelDataForList(QSqlQuery &sqlquery)
+{
+    while (sqlquery.next())
+    {
+        QList<QVariant> data;
+        QSqlRecord record = sqlquery.record();
+        for(int i=0;i<record.count();i++)
+            data << record.value(i);
+
+        _data.append(new ComicItem(data));
+    }
 }
 
 ComicDB ComicModel::getComic(const QModelIndex & mi)
