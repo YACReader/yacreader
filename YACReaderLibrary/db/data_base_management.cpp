@@ -220,7 +220,7 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
 
     return success;
 }
-
+#include "QsLog.h"
 bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
 {
     bool success = true;
@@ -228,73 +228,83 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
         //8.0> tables
         //LABEL
         QSqlQuery queryLabel(database);
-        queryLabel.prepare("CREATE TABLE label (id INTEGER PRIMARY KEY, "
-                           "name TEXT NOT NULL, "
-                           "color TEXT NOT NULL, "
-                           "ordering INTEGER NOT NULL)"); //order depends on the color
-        success = success && queryLabel.exec();
+        success = success && queryLabel.exec("CREATE TABLE label (id INTEGER PRIMARY KEY, "
+                                             "name TEXT NOT NULL, "
+                                             "color TEXT NOT NULL, "
+                                             "ordering INTEGER NOT NULL); "); //order depends on the color
+
+        QSqlQuery queryIndexLabel(database);
+        success = success && queryIndexLabel.exec("CREATE INDEX label_ordering_index ON label (ordering)");
 
         //COMIC LABEL
         QSqlQuery queryComicLabel(database);
-        queryComicLabel.prepare("CREATE TABLE comic_label ("
-                                "comic_id INTEGER, "
-                                "label_id INTEGER, "
-                                //"order INTEGER, " //TODO order????
-                                "FOREIGN KEY(label_id) REFERENCES label(id) ON DELETE CASCADE, "
-                                "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE CASCADE, "
-                                "PRIMARY KEY(label_id, comic_id))");
-        success = success && queryComicLabel.exec();
+        success = success && queryComicLabel.exec("CREATE TABLE comic_label ("
+                                                  "comic_id INTEGER, "
+                                                  "label_id INTEGER, "
+                                                  "ordering INTEGER, " //TODO order????
+                                                  "FOREIGN KEY(label_id) REFERENCES label(id) ON DELETE CASCADE, "
+                                                  "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE CASCADE, "
+                                                  "PRIMARY KEY(label_id, comic_id))");
+
+        QSqlQuery queryIndexComicLabel(database);
+        success = success && queryIndexComicLabel.exec("CREATE INDEX comic_label_ordering_index ON label (ordering)");
 
         //READING LIST
         QSqlQuery queryReadingList(database);
-        queryReadingList.prepare("CREATE TABLE reading_list ("
-                                 "id INTEGER PRIMARY KEY, "
-                                 "parentId INTEGER, "
-                                 "ordering INTEGER DEFAULT 0, " //only use it if the parentId is NULL
-                                 "name TEXT NOT NULL, "
-                                 "finished BOOLEAN DEFAULT 0, "
-                                 "completed BOOLEAN DEFAULT 1, "
-                                 "FOREIGN KEY(parentId) REFERENCES reading_list(id) ON DELETE CASCADE)");
-        success = success && queryReadingList.exec();
+        success = success && queryReadingList.exec("CREATE TABLE reading_list ("
+                                                   "id INTEGER PRIMARY KEY, "
+                                                   "parentId INTEGER, "
+                                                   "ordering INTEGER DEFAULT 0, " //only use it if the parentId is NULL
+                                                   "name TEXT NOT NULL, "
+                                                   "finished BOOLEAN DEFAULT 0, "
+                                                   "completed BOOLEAN DEFAULT 1, "
+                                                   "FOREIGN KEY(parentId) REFERENCES reading_list(id) ON DELETE CASCADE)");
+
+        QSqlQuery queryIndexReadingList(database);
+        success = success && queryIndexReadingList.exec("CREATE INDEX reading_list_ordering_index ON label (ordering)");
 
         //COMIC READING LIST
         QSqlQuery queryComicReadingList(database);
-        queryComicReadingList.prepare("CREATE TABLE comic_reading_list ("
-                                      "reading_list_id INTEGER, "
-                                      "comic_id INTEGER, "
-                                      "ordering INTEGER, "
-                                      "FOREIGN KEY(reading_list_id) REFERENCES reading_list(id) ON DELETE CASCADE, "
-                                      "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE CASCADE, "
-                                      "PRIMARY KEY(reading_list_id, comic_id))");
-        success = success && queryComicReadingList.exec();
+        success = success && queryComicReadingList.exec("CREATE TABLE comic_reading_list ("
+                                                        "reading_list_id INTEGER, "
+                                                        "comic_id INTEGER, "
+                                                        "ordering INTEGER, "
+                                                        "FOREIGN KEY(reading_list_id) REFERENCES reading_list(id) ON DELETE CASCADE, "
+                                                        "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE CASCADE, "
+                                                        "PRIMARY KEY(reading_list_id, comic_id))");
+
+        QSqlQuery queryIndexComicReadingList(database);
+        success = success && queryIndexComicReadingList.exec("CREATE INDEX comic_reading_list_ordering_index ON label (ordering)");
 
         //DEFAULT READING LISTS
         QSqlQuery queryDefaultReadingList(database);
-        queryDefaultReadingList.prepare("CREATE TABLE default_reading_list ("
-                                        "id INTEGER PRIMARY KEY, "
-                                        "name TEXT NOT NULL"
-                                        //TODO icon????
-                                        ")");
-        success = success && queryDefaultReadingList.exec();
+        success = success && queryDefaultReadingList.exec("CREATE TABLE default_reading_list ("
+                                                          "id INTEGER PRIMARY KEY, "
+                                                          "name TEXT NOT NULL"
+                                                          //TODO icon????
+                                                          ")");
 
         //COMIC DEFAULT READING LISTS
         QSqlQuery queryComicDefaultReadingList(database);
-        queryComicDefaultReadingList.prepare("CREATE TABLE comic_default_reading_list ("
-                                "comic_id INTEGER, "
-                                "default_reading_list_id INTEGER, "
-                                //"order INTEGER, " //order????
-                                "FOREIGN KEY(default_reading_list_id) REFERENCES default_reading_list(id) ON DELETE CASCADE, "
-                                "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE CASCADE,"
-                                "PRIMARY KEY(default_reading_list_id, comic_id))");
-        success = success && queryComicDefaultReadingList.exec();
+        success = success && queryComicDefaultReadingList.exec("CREATE TABLE comic_default_reading_list ("
+                                                               "comic_id INTEGER, "
+                                                               "default_reading_list_id INTEGER, "
+                                                               "ordering INTEGER, " //order????
+                                                               "FOREIGN KEY(default_reading_list_id) REFERENCES default_reading_list(id) ON DELETE CASCADE, "
+                                                               "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE CASCADE,"
+                                                               "PRIMARY KEY(default_reading_list_id, comic_id))");
+
+        QSqlQuery queryIndexComicDefaultReadingList(database);
+        success = success && queryIndexComicDefaultReadingList.exec("CREATE INDEX comic_default_reading_list_ordering_index ON label (ordering)");
 
         //INSERT DEFAULT READING LISTS
         QSqlQuery queryInsertDefaultReadingList(database);
-        queryInsertDefaultReadingList.prepare("INSERT INTO default_reading_list (name) VALUES (:name)");
+        //if(!queryInsertDefaultReadingList.prepare())
 
         //1 Favorites
-        queryInsertDefaultReadingList.bindValue(":name", "Favorites");
-        success = success && queryInsertDefaultReadingList.exec();
+        //queryInsertDefaultReadingList.bindValue(":name", "Favorites");
+        success = success && queryInsertDefaultReadingList.exec("INSERT INTO default_reading_list (name) VALUES (\"Favorites\")");
+        QLOG_ERROR() << success;
 
         //Reading doesn't need its onw list
 
