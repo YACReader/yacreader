@@ -6,6 +6,10 @@
 #include <QPainter>
 #include <QDrag>
 #include <QMimeData>
+#include <QApplication>
+#include <QBuffer>
+
+#include "QsLog.h"
 
 #include "comic_item.h"
 
@@ -68,12 +72,16 @@ YACReaderTableView::YACReaderTableView(QWidget *parent) :
 	showDeletingProgressAnimation = new QPropertyAnimation(deletingProgress,"pos");
 	showDeletingProgressAnimation->setDuration(150);*/
 
-    //drag
-    setDragEnabled(true);
+    //drag: if the default drag is enabled there is no way for setting a custom image
+    //TODO report bug/suggestion
+    //setDragEnabled(true);
+    //setDragDropMode(QAbstractItemView::DragDrop);
+    setAcceptDrops(true);
 }
 
 void YACReaderTableView::mouseMoveEvent(QMouseEvent *event)
 {
+
 	QModelIndex mi = indexAt(event->pos());
 	if(mi.isValid())
 	{
@@ -101,7 +109,14 @@ void YACReaderTableView::mouseMoveEvent(QMouseEvent *event)
 	else
 		closeRatingEditor();
 
-	QTableView::mouseMoveEvent(event);
+    //are we in a drag action??
+    if(event->buttons() & Qt::LeftButton) {
+        int distance = (event->pos() - startDragPos).manhattanLength();
+        if (distance >= QApplication::startDragDistance())
+            performDrag();
+    }
+
+    //disabled mouseMoveEvent in the parent class
 }
 void YACReaderTableView::mousePressEvent(QMouseEvent * event)
 {
@@ -126,23 +141,54 @@ void YACReaderTableView::mousePressEvent(QMouseEvent * event)
         }
     }
 
+    //this could be the origin of a new drag acction
     if(event->button() == Qt::LeftButton)
     {
-        QMimeData *mimeData = new QMimeData;
-
-        mimeData->setText("comic"); //TODO set the right mime data
-
-        QDrag *drag = new QDrag(this);
-        drag->setMimeData(mimeData);
-        drag->setPixmap(QPixmap(":/images/openInYACReader.png")); //TODO add better image
-
-        Qt::DropAction dropAction = drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
+        startDragPos = event->pos();
     }
 }
 void YACReaderTableView::leaveEvent(QEvent * event)
 {
 	closeRatingEditor();
-	event->accept();
+    event->accept();
+}
+
+void YACReaderTableView::performDrag()
+{
+    QLOG_DEBUG() << "performDrag";
+    QDrag *drag = new QDrag(this);
+    drag->setMimeData(model()->mimeData(selectionModel()->selectedRows()));
+    drag->setPixmap(QPixmap(":/images/openInYACReader.png")); //TODO add better image
+
+    Qt::DropAction dropAction = drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
+}
+
+void YACReaderTableView::dragEnterEvent(QDragEnterEvent *event)
+{
+    QTableView::dragEnterEvent(event);
+
+    if(model()->canDropMimeData(event->mimeData(),event->proposedAction(),0,0,QModelIndex()))
+        event->acceptProposedAction();
+    QLOG_DEBUG() << "drag enter table";
+}
+
+void YACReaderTableView::dragMoveEvent(QDragMoveEvent *event)
+{
+    QTableView::dragMoveEvent(event);
+
+    if(model()->canDropMimeData(event->mimeData(),event->proposedAction(),0,0,QModelIndex()))
+        event->acceptProposedAction();
+    QLOG_DEBUG() << "dragMoveEvent table";
+}
+
+void YACReaderTableView::dropEvent(QDropEvent *event)
+{
+    QTableView::dropEvent(event);
+
+    if(model()->canDropMimeData(event->mimeData(),event->proposedAction(),0,0,QModelIndex()))
+        event->acceptProposedAction();
+    QLOG_DEBUG() << "drop on table";
+
 }
 
 void YACReaderTableView::closeRatingEditor()

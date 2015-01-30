@@ -15,6 +15,7 @@ class YACReaderSearchLineEdit : public QLineEdit
 
 public:
 	YACReaderSearchLineEdit(QWidget *parent = 0);
+    void clearText(); //no signal emited;
     const QString text();
 
 protected:

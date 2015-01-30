@@ -17,7 +17,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     //FLOW-----------------------------------------------------------------------
     //---------------------------------------------------------------------------
 
-    if(QGLFormat::hasOpenGL() && (settings->value(USE_OPEN_GL).toBool() == true))
+    if((settings->value(USE_OPEN_GL).toBool() == true))
         comicFlow = new ComicFlowWidgetGL(0);
     else
         comicFlow = new ComicFlowWidgetSW(0);
@@ -29,13 +29,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
 
     comicFlow->setFocus(Qt::OtherFocusReason);
 
-    comicFlow->setContextMenuPolicy(Qt::ActionsContextMenu);
-
-    //TODO!!! set actions....
-    //comicFlow->addAction(toggleFullScreenAction);
-    //comicFlow->addAction(openComicAction);
-
-    //END FLOW----
+    comicFlow->setContextMenuPolicy(Qt::CustomContextMenu);
 
 
     //layout-----------------------------------------------
@@ -61,6 +55,8 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     comics->setLayout(comicsLayout);
     sVertical->addWidget(comics);
 
+    tableView->setContextMenuPolicy(Qt::CustomContextMenu);
+
     //config--------------------------------------------------
     if(settings->contains(COMICS_VIEW_HEADERS))
         tableView->horizontalHeader()->restoreState(settings->value(COMICS_VIEW_HEADERS).toByteArray());
@@ -72,6 +68,8 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     connect(tableView, SIGNAL(comicRated(int,QModelIndex)), this, SIGNAL(comicRated(int,QModelIndex)));
     connect(comicFlow, SIGNAL(selected(uint)), this, SIGNAL(selected(uint)));
     connect(tableView->horizontalHeader(), SIGNAL(sectionMoved(int,int,int)), this, SLOT(saveTableHeadersStatus()));
+    connect(comicFlow, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(requestedViewContextMenu(QPoint)));
+    connect(tableView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(requestedItemContextMenu(QPoint)));
     layout->addWidget(sVertical);
     setLayout(layout);
 
@@ -83,8 +81,6 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
 
     if(settings->contains(COMICS_VIEW_FLOW_SPLITTER_STATUS))
         sVertical->restoreState(settings->value(COMICS_VIEW_FLOW_SPLITTER_STATUS).toByteArray());
-
-
 }
 
 void ClassicComicsView::setToolBar(QToolBar *toolBar)
@@ -94,6 +90,7 @@ void ClassicComicsView::setToolBar(QToolBar *toolBar)
 
 void ClassicComicsView::setModel(ComicModel *model)
 {
+    QLOG_DEBUG() << "Setting model";
 
     ComicsView::setModel(model);
 
@@ -105,8 +102,12 @@ void ClassicComicsView::setModel(ComicModel *model)
     {
         connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(applyModelChanges(QModelIndex,QModelIndex,QVector<int>)),Qt::UniqueConnection);
         connect(model, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(removeItemsFromFlow(QModelIndex,int,int)),Qt::UniqueConnection);
+        connect(model, SIGNAL(resortedIndexes(QList<int>)),comicFlow,SLOT(resortCovers(QList<int>)),Qt::UniqueConnection);
+        connect(model, SIGNAL(newSelectedIndex(QModelIndex)),this,SLOT(setCurrentIndex(QModelIndex)),Qt::UniqueConnection);
 
         tableView->setModel(model);
+        if(model->rowCount()>0)
+            tableView->setCurrentIndex(model->index(0,0));
 
         tableView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
     #if QT_VERSION >= 0x050000
@@ -137,18 +138,17 @@ void ClassicComicsView::setModel(ComicModel *model)
         comicFlow->setImagePaths(paths);
         comicFlow->setMarks(model->getReadList());
         //comicFlow->setFocus(Qt::OtherFocusReason);
+
+        if(settings->contains(COMICS_VIEW_HEADERS))
+            tableView->horizontalHeader()->restoreState(settings->value(COMICS_VIEW_HEADERS).toByteArray());
     }
-
-    if(settings->contains(COMICS_VIEW_HEADERS))
-        tableView->horizontalHeader()->restoreState(settings->value(COMICS_VIEW_HEADERS).toByteArray());
-
-
 }
 
 void ClassicComicsView::setCurrentIndex(const QModelIndex &index)
 {
+    QLOG_INFO() << "*******************************************************ClassicComicsView::setCurrentIndex";
     tableView->setCurrentIndex(index);
-    //TODO ComicsView: scroll comicFlow to index
+    centerComicFlow(index);
 }
 
 QModelIndex ClassicComicsView::currentIndex()
@@ -192,16 +192,6 @@ void ClassicComicsView::updateConfig(QSettings *settings)
     comicFlow->updateConfig(settings);
 }
 
-void ClassicComicsView::setItemActions(const QList<QAction *> &actions)
-{
-    tableView->addActions(actions);
-}
-
-void ClassicComicsView::setViewActions(const QList<QAction *> &actions)
-{
-    comicFlow->addActions(actions);
-}
-
 void ClassicComicsView::enableFilterMode(bool enabled)
 {
     if(enabled)
@@ -235,6 +225,16 @@ void ClassicComicsView::selectAll()
 void ClassicComicsView::selectedComicForOpening(const QModelIndex &mi)
 {
     emit selected(mi.row());
+}
+
+void ClassicComicsView::requestedViewContextMenu(const QPoint &point)
+{
+    emit customContextMenuViewRequested(comicFlow->mapTo(this, point));
+}
+
+void ClassicComicsView::requestedItemContextMenu(const QPoint &point)
+{
+    emit customContextMenuItemRequested(tableView->mapTo(this, point));
 }
 
 void ClassicComicsView::setShowMarks(bool show)

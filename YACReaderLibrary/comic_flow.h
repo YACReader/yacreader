@@ -24,6 +24,7 @@ public:
 	//bool eventFilter(QObject *target, QEvent *event);
 	void keyPressEvent(QKeyEvent* event);
 	void removeSlide(int cover);
+    void resortCovers(QList<int> newOrder);
 
 private slots:
   void preload();

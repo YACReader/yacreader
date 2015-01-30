@@ -203,6 +203,7 @@ public slots:
 
   QVector<YACReaderComicReadStatus> getMarks();
 
+  void resortCovers(QList<int> newOrder);
 
 signals:
   void centerIndexChanged(int index);

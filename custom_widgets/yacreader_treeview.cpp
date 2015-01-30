@@ -11,8 +11,8 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent) :
     /*viewport()->setAcceptDrops(true);
     setDropIndicatorShown(true);*/
 
-    setContextMenuPolicy(Qt::ActionsContextMenu);
-    setContextMenuPolicy(Qt::ActionsContextMenu);
+    setContextMenuPolicy(Qt::CustomContextMenu);
+
     header()->hide();
     setUniformRowHeights(true);
     setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -20,14 +20,14 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent) :
 
 #ifdef Q_OS_MAC
 
-    bool oldStyle = false;
+    bool oldStyle = true;
     switch (QSysInfo::MacVersion())
     {
         case QSysInfo::MV_SNOWLEOPARD:
         case QSysInfo::MV_LION:
         case QSysInfo::MV_MOUNTAINLION:
         case QSysInfo::MV_MAVERICKS:
-            oldStyle = true;
+            oldStyle = true; //TODO fix this
             break;
         default:
             oldStyle = false;
@@ -39,8 +39,8 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent) :
     setStyleSheet("QTreeView {background-color:transparent; border: none;}"
                   "QTreeView::item:selected {background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6BAFE4, stop: 1 #3984D2); border-top: 2px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #5EA3DF, stop: 1 #73B8EA); border-left:none;border-right:none;border-bottom:1px solid #3577C2;}"
                   "QTreeView::branch:selected {background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6BAFE4, stop: 1 #3984D2); border-top: 2px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #5EA3DF, stop: 1 #73B8EA); border-left:none;border-right:none;border-bottom:1px solid #3577C2;}"
-                  "QTreeView::branch:open:selected:has-children {image: url(':/images/expanded_branch_osx.png');}"
-                  "QTreeView::branch:closed:selected:has-children {image: url(':/images/collapsed_branch_osx.png');}"
+                  "QTreeView::branch:open:selected:has-children {image: url(':/images/sidebar/expanded_branch_osx.png');}"
+                  "QTreeView::branch:closed:selected:has-children {image: url(':/images/sidebar/collapsed_branch_osx.png');}"
 
                   "QScrollBar:vertical { border: none; background: #EFEFEF; width: 9px; margin: 0 3px 0 0; }"
                   "QScrollBar::handle:vertical { background: #DDDDDD; width: 7px; min-height: 20px; margin: 1px; border: 1px solid #D0D0D0; }"
@@ -56,10 +56,10 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent) :
     else
     {
         setStyleSheet("QTreeView {background-color:transparent; border: none;}"
-                      "QTreeView::item:selected {background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6BAFE4, stop: 1 #3984D2); border-top: 2px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #5EA3DF, stop: 1 #73B8EA); border-left:none;border-right:none;border-bottom:1px solid #3577C2;}"
-                      "QTreeView::branch:selected {background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6BAFE4, stop: 1 #3984D2); border-top: 2px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #5EA3DF, stop: 1 #73B8EA); border-left:none;border-right:none;border-bottom:1px solid #3577C2;}"
-                      "QTreeView::branch:open:selected:has-children {image: url(':/images/expanded_branch_osx.png');}"
-                      "QTreeView::branch:closed:selected:has-children {image: url(':/images/collapsed_branch_osx.png');}"
+                      "QTreeView::item:selected {background-color:#91c4f4; border-top: 1px solid #91c4f4; border-left:none;border-right:none;border-bottom:1px solid #91c4f4;}"
+                      "QTreeView::branch:selected {background-color:#91c4f4; border-top: 1px solid #91c4f4; border-left:none;border-right:none;border-bottom:1px solid #91c4f4;}"
+                      "QTreeView::branch:open:selected:has-children {image: url(':/images/sidebar/expanded_branch_osx.png');}"
+                      "QTreeView::branch:closed:selected:has-children {image: url(':/images/sidebar/collapsed_branch_osx.png');}"
 
                       );
     }
@@ -81,11 +81,11 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent) :
 
                   "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none; }"
 
-                  "QTreeView::branch:has-children:!has-siblings:closed,QTreeView::branch:closed:has-children:has-siblings {border-image: none;image: url(':/images/branch-closed.png');}"
-                  "QTreeView::branch:has-children:selected:!has-siblings:closed,QTreeView::branch:closed:selected:has-children:has-siblings {border-image: none;image: url(':/images/collapsed_branch_selected.png');}"
+                  "QTreeView::branch:has-children:!has-siblings:closed,QTreeView::branch:closed:has-children:has-siblings {border-image: none;image: url(':/images/sidebar/branch-closed.png');}"
+                  "QTreeView::branch:has-children:selected:!has-siblings:closed,QTreeView::branch:closed:selected:has-children:has-siblings {border-image: none;image: url(':/images/sidebar/collapsed_branch_selected.png');}"
 
-                  "QTreeView::branch:open:has-children:!has-siblings,QTreeView::branch:open:has-children:has-siblings  {border-image: none;image: url(':/images/branch-open.png');}"
-                  "QTreeView::branch:open:has-children:selected:!has-siblings,QTreeView::branch:open:has-children:selected:has-siblings {border-image: none;image: url(':/images/expanded_branch_selected.png');}"
+                  "QTreeView::branch:open:has-children:!has-siblings,QTreeView::branch:open:has-children:has-siblings  {border-image: none;image: url(':/images/sidebar/branch-open.png');}"
+                  "QTreeView::branch:open:has-children:selected:!has-siblings,QTreeView::branch:open:has-children:selected:has-siblings {border-image: none;image: url(':/images/sidebar/expanded_branch_selected.png');}"
                                );
 #endif
 
@@ -123,7 +123,6 @@ void YACReaderTreeView::dragLeaveEvent(QDragLeaveEvent *event)
 void YACReaderTreeView::dragMoveEvent(QDragMoveEvent *event)
 {
     QTreeView::dragMoveEvent(event);
-    event->acceptProposedAction();
 
     //fix for drop auto expand
     QModelIndex underMouse = indexAt(event->pos());

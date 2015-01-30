@@ -22,7 +22,15 @@ ComicsViewTransition::ComicsViewTransition(QWidget *parent) :
    movieLabel->setAlignment(Qt::AlignCenter);
    QLabel * textLabel = new QLabel("Switching comics view");
    textLabel->setAlignment(Qt::AlignCenter);
+
+#ifdef Q_OS_MAC
+    textLabel->setStyleSheet("QLabel {color:#888888; font-size:24px;font-family:Arial;font-weight:bold;}");
+    setStyleSheet("QWidget {background:#FFFFFF}");
+#else
    textLabel->setStyleSheet("QLabel {color:#CCCCCC; font-size:24px;font-family:Arial;font-weight:bold;}");
+   setStyleSheet("QWidget {background:#2A2A2A}");
+#endif
+
    //movieLabel->setFixedSize(450,350);
 
    layout->addSpacing(100);
@@ -34,8 +42,6 @@ ComicsViewTransition::ComicsViewTransition(QWidget *parent) :
    layout->setSpacing(0);
 
    setContentsMargins(0,0,0,0);
-
-   setStyleSheet("QWidget {background:#2A2A2A}");
 
    //QSizePolicy sp();
    setSizePolicy(QSizePolicy ::Expanding , QSizePolicy ::Expanding );
@@ -70,5 +76,10 @@ void ComicsViewTransition::startMovie()
 void ComicsViewTransition::paintEvent(QPaintEvent *)
 {
     QPainter painter (this);
+
+#ifdef Q_OS_MAC
+    painter.fillRect(0,0,width(),height(),QColor("#FFFFFF"));
+#else
     painter.fillRect(0,0,width(),height(),QColor("#2A2A2A"));
+#endif
 }

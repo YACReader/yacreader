@@ -13,6 +13,7 @@
 #include <QMutex>
 #include <QThread>
 #include <QSqlDatabase>
+#include <QModelIndex>
 
 #include "folder.h"
 #include "comic_db.h"
@@ -25,7 +26,7 @@
         LibraryCreator();
         void createLibrary(const QString & source, const QString & target);
         void updateLibrary(const QString & source, const QString & target);
-        void updateFolder(const QString & source, const QString & target, const QString & folder);
+        void updateFolder(const QString & source, const QString & target, const QString & folder, const QModelIndex &dest);
         void stop();
 
 	private:
@@ -52,6 +53,7 @@
 		//LibraryCreator está en modo creación si creation == true;
 		bool creation;
         bool partialUpdate;
+        QModelIndex folderDestinationModelIndex;
 
 	signals:
 		void finished();
@@ -62,7 +64,7 @@
 		void created();
 		void failedCreatingDB(QString);
 		void failedOpeningDB(QString);
-        void updatedCurrentFolder();
+        void updatedCurrentFolder(QModelIndex);
 	};
 
 	class ThumbnailCreator : public QObject

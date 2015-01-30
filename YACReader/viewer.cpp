@@ -67,12 +67,12 @@ shouldOpenPrevious(false)
 	QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReader.ini",QSettings::IniFormat);
 
     //CONFIG GOTO_FLOW--------------------------------------------------------
-    if(QGLFormat::hasOpenGL() && !settings->contains(USE_OPEN_GL))
+    if(!settings->contains(USE_OPEN_GL))
     {
         settings->setValue(USE_OPEN_GL,2);
     }
 
-    if(QGLFormat::hasOpenGL() && (settings->value(USE_OPEN_GL).toBool() == true))
+    if((settings->value(USE_OPEN_GL).toBool() == true))
         goToFlow = new GoToFlowGL(this,Configuration::getConfiguration().getFlowType());
     else
         goToFlow = new GoToFlow(this,Configuration::getConfiguration().getFlowType());
@@ -475,30 +475,36 @@ void Viewer::wheelEvent(QWheelEvent * event)
 {
 	if(render->hasLoadedComic())
 	{
-		if((event->delta()<0)&&(verticalScrollBar()->sliderPosition()==verticalScrollBar()->maximum()))
-		{
-			if(wheelStop)
-			{
-				next();
-				verticalScroller->stop();
-				event->accept();
-				wheelStop = false;
-				return;
-			}
-			else
-				wheelStop = true;
-		}
-		else
+        if((event->delta()<0)&&(verticalScrollBar()->sliderPosition()==verticalScrollBar()->maximum()))
+        {
+            if(wheelStop)
+            {
+                if(getMovement(event) == Forward)
+                {
+                    next();
+                    verticalScroller->stop();
+                    event->accept();
+                    wheelStop = false;
+                }
+                return;
+            }
+            else
+                wheelStop = true;
+        }
+        else
 		{
 			if((event->delta()>0)&&(verticalScrollBar()->sliderPosition()==verticalScrollBar()->minimum()))
 			{
 				if(wheelStop)
-				{
-					prev();
-					verticalScroller->stop();
-					event->accept();
-					wheelStop = false;
-					return;
+                {
+                    if(getMovement(event) == Backward)
+                    {
+                        prev();
+                        verticalScroller->stop();
+                        event->accept();
+                        wheelStop = false;
+                    }
+                    return;
 				}
 				else
 					wheelStop = true;

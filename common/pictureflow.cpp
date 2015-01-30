@@ -569,7 +569,7 @@ void PictureFlowSoftwareRenderer::init()
   int wh = size.height();
   int w = (ww+1)/2;
   int h = (wh+1)/2;
-  if(h<10)//TODO a partir de qué h es seguro??
+  if(h<10)//TODO a partir de quÃ© h es seguro??
 	  return;
 
 #ifdef PICTUREFLOW_QT4
@@ -1207,18 +1207,19 @@ void PictureFlow::showSlide(unsigned int index)
   index = qMax<unsigned int>(index, 0);
   index = qMin<unsigned int>(slideCount()-1, index);
   if(index == d->state->centerSlide.slideIndex)
-	return;
+    return;
 
-	int distance = centerIndex()-index;
+    int distance = centerIndex()-index;
 
-	if(abs(distance)>10)
-	{
-		if(distance<0)
-			setCenterIndex(centerIndex()+(-distance)-10);
-		else
-			setCenterIndex(centerIndex()-distance+10);
-	}
+    if(abs(distance)>10)
+    {
+        if(distance<0)
+            setCenterIndex(centerIndex()+(-distance)-10);
+        else
+            setCenterIndex(centerIndex()-distance+10);
+    }
 
+  d->state->centerIndex = index;
   d->animator->start(index);
 }
 
@@ -1375,6 +1376,39 @@ void PictureFlow::setShowMarks(bool enable)
 
 QVector<YACReaderComicReadStatus > PictureFlow::getMarks()
 {
-	return 	d->state->marks;
+    return 	d->state->marks;
+}
+
+void PictureFlow::resortCovers(QList<int> newOrder)
+{
+    QVector<QImage*> slideImagesNew;
+
+    QVector<YACReaderComicReadStatus> marksNew;
+
+    SlideInfo centerSlideNew;
+    QVector<SlideInfo> leftSlidesNew;
+    QVector<SlideInfo> rightSlidesNew;
+
+    QVector<SlideInfo> slidesInfo;
+    slidesInfo << d->state->leftSlides << d->state->centerSlide << d->state->rightSlides;
+    QVector<SlideInfo> slidesInfoNew;
+    int numSlides = 1 + d->state->leftSlides.length() + d->state->rightSlides.length();
+
+    int order = 0;
+    foreach(int index, newOrder)
+    {
+        slideImagesNew << d->state->slideImages.at(index);
+        marksNew << d->state->marks.at(index);
+        slidesInfoNew << slidesInfo.at(index);
+        slidesInfoNew.last().slideIndex = order++;
+    }
+
+    d->state->slideImages = slideImagesNew;
+    d->state->marks = marksNew;
+    d->state->leftSlides = slidesInfoNew.mid(0,d->state->leftSlides.length());
+    d->state->centerSlide = slidesInfoNew.at(d->state->centerIndex);
+    d->state->leftSlides = slidesInfoNew.mid(d->state->centerIndex+1,d->state->leftSlides.length());
+
+    setCenterIndex(d->state->centerIndex);
 }
 

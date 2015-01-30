@@ -32,29 +32,29 @@ QAction * YACReader::createSeparator()
 QString YACReader::colorToName(LabelColors colors)
 {
     switch(colors){
-    case 0:
+    case YRed:
         return "red";
-    case 1:
+    case YOrange:
         return "orange";
-    case 2:
+    case YYellow:
         return "yellow";
-    case 3:
+    case YGreen:
         return "green";
-    case 4:
+    case YCyan:
         return "cyan";
-    case 5:
+    case YBlue:
         return "blue";
-    case 6:
+    case YViolet:
         return "violet";
-    case 7:
+    case YPurple:
         return "purple";
-    case 8:
+    case YPink:
         return "pink";
-    case 9:
+    case YWhite:
         return "white";
-    case 10:
+    case YLight:
         return "light";
-    case 11:
+    case YDark:
         return "dark";
     }
 }
@@ -63,8 +63,79 @@ QString YACReader::colorToName(LabelColors colors)
 QIcon YACReader::noHighlightedIcon(const QString &path)
 {
     QPixmap p(path);
-    QIcon icon;
-    icon.addPixmap(p,QIcon::Normal);
-    icon.addPixmap(p,QIcon::Selected);
+
+    QIcon icon;//(path);
+    icon.addFile(path,p.size(),QIcon::Normal);
+    icon.addFile(path,p.size(),QIcon::Selected);
     return icon;
+}
+
+
+void YACReader::colorize(QImage &img, QColor &col)
+{
+    QRgb *data = (QRgb *)img.bits();
+    QRgb *end = data + img.width()*img.height();
+
+    int rcol = col.red(), gcol = col.green(), bcol = col.blue();
+    while(data != end) {
+            *data = qRgba(rcol,gcol,bcol,qAlpha(*data));
+        ++data;
+    }
+}
+
+
+QString YACReader::labelColorToRGBString(LabelColors color)
+{
+    switch (color) {
+    case YRed:
+        return "#FD777C";
+
+    case YOrange:
+        return "#FEBF34";
+
+    case YYellow:
+        return "#F5E934";
+
+    case YGreen:
+        return "#B6E525";
+
+    case YCyan:
+        return "#9FFFDD";
+
+    case YBlue:
+        return "#82C7FF";
+
+    case YViolet:
+        return "#8286FF";
+
+    case YPurple:
+        return "#E39FFF";
+
+    case YPink:
+        return "#FF9FDD";
+
+#ifdef Q_OS_MAC
+    case YWhite:
+        return "#E3E3E3";
+#else
+    case YWhite:
+        return "#FFFFFF";
+#endif
+    case YLight:
+        return "#C8C8C8";
+    case YDark:
+        return "#ABABAB";
+
+
+    }
+}
+
+
+QList<qulonglong> YACReader::mimeDataToComicsIds(const QMimeData *data)
+{
+    QList<qulonglong> comicIds;
+    QByteArray rawData = data->data(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat);
+    QDataStream in(&rawData,QIODevice::ReadOnly);
+    in  >> comicIds; //deserialize the list of indentifiers
+    return comicIds;
 }

@@ -15,13 +15,13 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
 {
 	setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Minimum);
 
+    settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+    settings->beginGroup("libraryConfig");
+
 	//widgets
     foldersView = new YACReaderFoldersView;
     readingListsView = new YACReaderReadingListsView;
 	selectedLibrary = new YACReaderLibraryListWidget;
-
-    connect(foldersView,SIGNAL(clicked(QModelIndex)),this,SLOT(selectedIndex(QModelIndex)));
-    connect(readingListsView,SIGNAL(clicked(QModelIndex)),this,SLOT(selectedIndex(QModelIndex)));
 
 	librariesTitle = new YACReaderTitledToolBar(tr("LIBRARIES"));
 	foldersTitle = new YACReaderTitledToolBar(tr("FOLDERS"));
@@ -137,6 +137,9 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
     l->setSpacing(0);
 
 	setLayout(l);
+
+    if(settings->contains(SIDEBAR_SPLITTER_STATUS))
+        splitter->restoreState(settings->value(SIDEBAR_SPLITTER_STATUS).toByteArray());
 }
 
 
@@ -147,12 +150,7 @@ void YACReaderSideBar::paintEvent(QPaintEvent * event)
 #ifdef Q_OS_MAC
 	QPainter painter(this);
 
-	QLinearGradient lG(0,0,0,height());
-
-	lG.setColorAt(0,QColor("#E8ECF1"));
-	lG.setColorAt(1,QColor("#D1D8E0"));
-
-	painter.fillRect(0,0,width(),height(),lG);
+    painter.fillRect(0,0,width(),height(),QColor("#FFFFFF"));
 #else
 	QPainter painter(this);
 
@@ -168,22 +166,18 @@ void YACReaderSideBar::paintEvent(QPaintEvent * event)
 	//   painter.setRenderHint(QPainter::Antialiasing);
 	// painter.drawLine(rect().topLeft(), rect().bottomRight());
 
-	//QWidget::paintEvent(event);
+    //QWidget::paintEvent(event);
+}
+
+void YACReaderSideBar::closeEvent(QCloseEvent *event)
+{
+    settings->setValue(SIDEBAR_SPLITTER_STATUS, splitter->saveState());
 }
 
 QSize YACReaderSideBar::sizeHint() const
 {
     return QSize(275,200);
 }
-
-void YACReaderSideBar::selectedIndex(const QModelIndex &mi)
-{
-    if(sender() == foldersView)
-        readingListsView->clearSelection();
-    else if(sender() == readingListsView)
-        foldersView->clearSelection();
-}
-
 
 YACReaderSideBarSeparator::YACReaderSideBarSeparator(QWidget *parent)
     :QWidget(parent)

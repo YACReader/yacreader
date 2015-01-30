@@ -70,6 +70,13 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
     connect(this,SIGNAL(textChanged(QString)),this,SLOT(processText(QString)));
 }
 
+void YACReaderSearchLineEdit::clearText()
+{
+    disconnect(this,SIGNAL(textChanged(QString)),this,SLOT(processText(QString)));
+    clear();
+    connect(this,SIGNAL(textChanged(QString)),this,SLOT(processText(QString)));
+}
+
 //modifiers are not returned
 const QString YACReaderSearchLineEdit::text()
 {

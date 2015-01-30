@@ -17,32 +17,16 @@ void testListView(QListView * l)
 }
 
 EmptyFolderWidget::EmptyFolderWidget(QWidget *parent) :
-    QWidget(parent),subfoldersModel(new QStringListModel())
+    EmptyContainerInfo(parent),subfoldersModel(new QStringListModel())
 {
-#ifdef Q_OS_MAC
-    backgroundColor = "#FFFFFF";
-#else
-    backgroundColor = "#2A2A2A";
-#endif
+    QVBoxLayout * layout = setUpDefaultLayout(false);
 
-    QVBoxLayout * layout = new QVBoxLayout;
-
-    iconLabel = new QLabel();
     iconLabel->setPixmap(QPixmap(":/images/empty_folder.png"));
-    iconLabel->setAlignment(Qt::AlignCenter);
-
-    titleLabel = new QLabel(tr("Subfolders in this folder"));
-    titleLabel->setAlignment(Qt::AlignCenter);
-
-#ifdef Q_OS_MAC
-    titleLabel->setStyleSheet("QLabel {color:#888888; font-size:24px;font-family:Arial;font-weight:bold;}");
-#else
-    titleLabel->setStyleSheet("QLabel {color:#CCCCCC; font-size:24px;font-family:Arial;font-weight:bold;}");
-#endif
+    titleLabel->setText(tr("Subfolders in this folder"));
 
     foldersView = new QListView();
     foldersView->setMinimumWidth(282);
-    foldersView->setWrapping(true);
+    //foldersView->setWrapping(true);
     foldersView->setAttribute(Qt::WA_MacShowFocusRect,false);
 #ifdef Q_OS_MAC
     foldersView->setStyleSheet("QListView {background-color:transparent; border: none; color:#959595; outline:0; font-size: 18px; show-decoration-selected: 0; margin:0}"
@@ -83,10 +67,6 @@ EmptyFolderWidget::EmptyFolderWidget(QWidget *parent) :
     foldersView->setSizePolicy(QSizePolicy ::Expanding , QSizePolicy ::Expanding );
     testListView(foldersView);
 
-    layout->addSpacing(100);
-    layout->addWidget(iconLabel);
-    layout->addSpacing(30);
-    layout->addWidget(titleLabel);
     layout->addSpacing(12);
     layout->addWidget(foldersView,1,Qt::AlignHCenter);
     layout->addStretch();
@@ -98,7 +78,6 @@ EmptyFolderWidget::EmptyFolderWidget(QWidget *parent) :
     setStyleSheet(QString("QWidget {background:%1}").arg(backgroundColor));
 
     setSizePolicy(QSizePolicy ::Expanding , QSizePolicy ::Expanding );
-    setLayout(layout);
 
     setAcceptDrops(true);
 
@@ -126,18 +105,12 @@ void EmptyFolderWidget::onItemClicked(const QModelIndex &mi)
     emit subfolderSelected(parent,mi.row());
 }
 
-void EmptyFolderWidget::paintEvent(QPaintEvent *)
-{
-    QPainter painter (this);
-    painter.fillRect(0,0,width(),height(),QColor(backgroundColor));
-}
-
 //TODO remove repeated code in drag & drop support....
 void EmptyFolderWidget::dragEnterEvent(QDragEnterEvent *event)
 {
     QList<QUrl> urlList;
 
-    if (event->mimeData()->hasUrls())
+    if (event->mimeData()->hasUrls() && event->dropAction() == Qt::CopyAction)
     {
         urlList = event->mimeData()->urls();
         QString currentPath;
@@ -158,7 +131,7 @@ void EmptyFolderWidget::dropEvent(QDropEvent *event)
 {
     QLOG_DEBUG() << "drop in emptyfolder" << event->dropAction();
 
-    bool validAction = event->dropAction() == Qt::CopyAction || event->dropAction() & Qt::MoveAction;
+    bool validAction = event->dropAction() == Qt::CopyAction; // || event->dropAction() & Qt::MoveAction;  TODO move
 
     if(validAction)
     {

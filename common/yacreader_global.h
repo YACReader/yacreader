@@ -8,8 +8,9 @@
 #endif
 
 #include <QWidget>
+#include <QMimeData>
 
-#define VERSION "7.2.0"
+#define VERSION "8.0.0"
 
 #define PATH "PATH"
 #define MAG_GLASS_SIZE "MAG_GLASS_SIZE"
@@ -58,6 +59,7 @@
 #define COMICS_VIEW_HEADERS_GEOMETRY "COMICS_VIEW_HEADERS_GEOMETRY"
 #define COMICS_VIEW_STATUS "COMICS_VIEW_STATUS"
 #define COMICS_VIEW_FLOW_SPLITTER_STATUS "COMICS_VIEW_FLOW_SPLITTER_STATUS"
+#define SIDEBAR_SPLITTER_STATUS "SIDEBAR_SPLITTER_STATUS"
 
 #define NUM_DAYS_BETWEEN_VERSION_CHECKS "NUM_DAYS_BETWEEN_VERSION_CHECKS"
 #define LAST_VERSION_CHECK "LAST_VERSION_CHECK"
@@ -70,6 +72,9 @@
 
 namespace YACReader
 {
+
+static const QString YACReaderLibrarComiscSelectionMimeDataFormat = "application/yacreaderlibrary-comics-ids";
+static const QString YACReaderLibrarSubReadingListMimeDataFormat = "application/yacreaderlibrary-sublist-rows";
 
  enum FlowType
   {
@@ -113,7 +118,7 @@ namespace YACReader
  };
 
  enum LabelColors{
-     YRed = 0,
+     YRed = 1,
      YOrange,
      YYellow,
      YGreen,
@@ -132,6 +137,9 @@ void addSperator(QWidget * w);
 QAction * createSeparator();
 QString colorToName(LabelColors colors);
 QIcon noHighlightedIcon(const QString & path);
+void colorize(QImage &img, QColor &col);
+QString labelColorToRGBString(LabelColors color);
+QList<qulonglong> mimeDataToComicsIds(const QMimeData * data);
 }
 #endif
 

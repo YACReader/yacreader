@@ -5,6 +5,7 @@
 #include <QVariant>
 
 #include "yacreader_global.h"
+#include "reading_list_model.h"
 //TODO add propper constructors, using QList<QVariant> is not safe
 
 class ListItem
@@ -25,6 +26,13 @@ class SpecialListItem : public ListItem
 public:
     SpecialListItem(const QList<QVariant> &data);
     QIcon getIcon() const;
+    ReadingListModel::TypeSpecialList getType() const;
+private:
+    enum DataIndexes {
+        Name,
+        Id
+    };
+
 };
 
 //------------------------------------------------------
@@ -39,6 +47,14 @@ public:
     void setName(const QString & name);
     qulonglong getId() const;
 
+
+private:
+    enum DataIndexes {
+        Name,
+        Color,
+        Id,
+        Ordering
+    };
 };
 
 //------------------------------------------------------
@@ -53,15 +69,25 @@ public:
     int row() const;
     ReadingListItem * child(int row);
     void appendChild(ReadingListItem *item);
+    void appendChild(ReadingListItem *item, int pos);
     void removeChild(ReadingListItem *item);
     qulonglong getId() const;
     QString name() const;
     void setName(const QString & name);
-
+    int getOrdering() const;
+    void setOrdering(const int ordering);
     QList<ReadingListItem*> children();
 
 private:
     QList<ReadingListItem*> childItems;
+
+    enum DataIndexes {
+        Name,
+        Id,
+        Finished,
+        Completed,
+        Ordering
+    };
 
 };
 

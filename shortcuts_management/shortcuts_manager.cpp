@@ -112,6 +112,9 @@ void ShortcutsManager::registerActions(const QList<QAction *> &a)
 
 bool ShortcutsManager::checkConflicts(const QKeySequence & shortcut, const QAction *dest)
 {
+    if(shortcut.isEmpty())
+        return false;
+
     foreach(QAction * action, actions)
     {
         if(action != dest) //if the same shortcut is setted there is no conflict

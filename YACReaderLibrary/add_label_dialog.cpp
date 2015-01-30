@@ -55,7 +55,7 @@ AddLabelDialog::AddLabelDialog(QWidget *parent) :
 
 YACReader::LabelColors AddLabelDialog::selectedColor()
 {
-    return YACReader::LabelColors(list->currentRow());
+    return YACReader::LabelColors(list->currentRow()+1);
 }
 
 QString AddLabelDialog::name()

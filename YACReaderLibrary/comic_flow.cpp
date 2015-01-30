@@ -142,7 +142,33 @@ void ComicFlow::removeSlide(int cover)
 	YACReaderFlow::removeSlide(cover);
 	worker->unlock();
 
-	preload();
+    preload();
+}
+
+void ComicFlow::resortCovers(QList<int> newOrder)
+{
+    worker->lock();
+    worker->reset();
+
+    YACReaderFlow::resortCovers(newOrder);
+
+    QStringList imageFilesNew;
+    QVector<bool> imagesLoadedNew;
+    QVector<bool> imagesSettedNew;
+    foreach(int index, newOrder)
+    {
+        imageFilesNew << imageFiles.at(index);
+        imagesLoadedNew << imagesLoaded.at(index);
+        imagesSettedNew << imagesSetted.at(index);
+    }
+
+
+
+    imageFiles = imageFilesNew;
+    imagesLoaded = imagesLoadedNew;
+    imagesSetted = imagesSettedNew;
+
+    worker->unlock();
 }
 //-----------------------------------------------------------------------------
 //ImageLoader
