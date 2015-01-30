@@ -8,6 +8,7 @@
 #endif
 
 #include <QWidget>
+#include <QMimeData>
 
 #define VERSION "8.0.0"
 
@@ -138,6 +139,7 @@ QString colorToName(LabelColors colors);
 QIcon noHighlightedIcon(const QString & path);
 void colorize(QImage &img, QColor &col);
 QString labelColorToRGBString(LabelColors color);
+QList<qulonglong> mimeDataToComicsIds(const QMimeData * data);
 }
 #endif
 

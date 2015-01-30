@@ -137,7 +137,12 @@ void ComicFlowWidgetSW::updateConfig(QSettings * settings)
 
 void ComicFlowWidgetSW::remove(int cover)
 {
-	flow->removeSlide(cover);
+    flow->removeSlide(cover);
+}
+
+void ComicFlowWidgetSW::resortCovers(QList<int> newOrder)
+{
+    flow->resortCovers(newOrder);
 }
 
 
@@ -329,7 +334,12 @@ void ComicFlowWidgetGL::updateConfig(QSettings * settings)
 
 void ComicFlowWidgetGL::remove(int cover)
 {
-	flow->remove(cover);
+    flow->remove(cover);
+}
+
+void ComicFlowWidgetGL::resortCovers(QList<int> newOrder)
+{
+    flow->resortCovers(newOrder);
 }
 
 //void ComicFlowWidgetGL::setCF_RX(int value){				flow->setCF_RX(value);}

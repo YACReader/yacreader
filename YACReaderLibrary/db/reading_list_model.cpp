@@ -244,10 +244,7 @@ bool ReadingListModel::dropMimeData(const QMimeData *data, Qt::DropAction action
 
 bool ReadingListModel::dropComics(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
-    QList<qulonglong> comicIds;
-    QByteArray rawData = data->data(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat);
-    QDataStream in(&rawData,QIODevice::ReadOnly);
-    in  >> comicIds; //deserialize the list of indentifiers
+    QList<qulonglong> comicIds = YACReader::mimeDataToComicsIds(data);
 
     QLOG_DEBUG() << "dropped : " << comicIds;
 

@@ -75,6 +75,8 @@ YACReaderTableView::YACReaderTableView(QWidget *parent) :
     //drag: if the default drag is enabled there is no way for setting a custom image
     //TODO report bug/suggestion
     //setDragEnabled(true);
+    //setDragDropMode(QAbstractItemView::DragDrop);
+    setAcceptDrops(true);
 }
 
 void YACReaderTableView::mouseMoveEvent(QMouseEvent *event)
@@ -159,6 +161,34 @@ void YACReaderTableView::performDrag()
     drag->setPixmap(QPixmap(":/images/openInYACReader.png")); //TODO add better image
 
     Qt::DropAction dropAction = drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
+}
+
+void YACReaderTableView::dragEnterEvent(QDragEnterEvent *event)
+{
+    QTableView::dragEnterEvent(event);
+
+    if(model()->canDropMimeData(event->mimeData(),event->proposedAction(),0,0,QModelIndex()))
+        event->acceptProposedAction();
+    QLOG_DEBUG() << "drag enter table";
+}
+
+void YACReaderTableView::dragMoveEvent(QDragMoveEvent *event)
+{
+    QTableView::dragMoveEvent(event);
+
+    if(model()->canDropMimeData(event->mimeData(),event->proposedAction(),0,0,QModelIndex()))
+        event->acceptProposedAction();
+    QLOG_DEBUG() << "dragMoveEvent table";
+}
+
+void YACReaderTableView::dropEvent(QDropEvent *event)
+{
+    QTableView::dropEvent(event);
+
+    if(model()->canDropMimeData(event->mimeData(),event->proposedAction(),0,0,QModelIndex()))
+        event->acceptProposedAction();
+    QLOG_DEBUG() << "drop on table";
+
 }
 
 void YACReaderTableView::closeRatingEditor()

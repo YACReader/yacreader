@@ -220,7 +220,7 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
 
     return success;
 }
-#include "QsLog.h"
+
 bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
 {
     bool success = true;
@@ -304,7 +304,6 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
         //1 Favorites
         //queryInsertDefaultReadingList.bindValue(":name", "Favorites");
         success = success && queryInsertDefaultReadingList.exec("INSERT INTO default_reading_list (name) VALUES (\"Favorites\")");
-        QLOG_ERROR() << success;
 
         //Reading doesn't need its onw list
 

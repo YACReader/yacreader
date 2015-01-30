@@ -141,7 +141,6 @@ protected:
 	bool showMarks;
 	QVector<bool> loaded;
 	QVector<YACReaderComicReadStatus> marks;
-	QList<QString> paths;
 
     QVector<YACReader3DImage> images;
 
@@ -293,9 +292,12 @@ public:
 	void setImagePaths(QStringList paths);
 	void updateImageData();
 	void remove(int item);
+    void resortCovers(QList<int> newOrder);
 	friend class ImageLoaderGL;
 private:
 	ImageLoaderGL * worker;
+protected:
+    QList<QString> paths;
 
 };
 

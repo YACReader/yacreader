@@ -34,6 +34,10 @@ private:
 	void mousePressEvent(QMouseEvent * event);
 	void leaveEvent(QEvent * event);
     void performDrag();
+    void dragEnterEvent(QDragEnterEvent * event);
+    void dragMoveEvent(QDragMoveEvent * event);
+    void dropEvent(QDropEvent * event);
+
 
 	bool editing;
 	QModelIndex currentIndexEditing;

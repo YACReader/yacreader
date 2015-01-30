@@ -59,6 +59,9 @@ public:
     static void renameLabel(qulonglong id, const QString & name, QSqlDatabase & db);
     static void renameList(qulonglong id, const QString & name, QSqlDatabase & db);
     static void reasignOrderToSublists(QList<qulonglong> ids, QSqlDatabase & db);
+    static void reasignOrderToComicsInFavorites(QList<qulonglong> comicIds, QSqlDatabase & db);
+    static void reasignOrderToComicsInLabel(qulonglong labelId, QList<qulonglong> comicIds, QSqlDatabase & db);
+    static void reasignOrderToComicsInReadingList(qulonglong readingListId, QList<qulonglong> comicIds, QSqlDatabase & db);
 
 	static QList<LibraryItem *> getFoldersFromParent(qulonglong parentId, QSqlDatabase & db, bool sort = true);
 	static QList<ComicDB> getSortedComicsFromParent(qulonglong parentId, QSqlDatabase & db);

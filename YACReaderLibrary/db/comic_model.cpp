@@ -40,6 +40,118 @@ int ComicModel::columnCount(const QModelIndex &parent) const
     return _data.first()->columnCount();
 }
 
+bool ComicModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
+{
+    if(!enableResorting)
+        return false;
+    return data->formats().contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat);
+}
+
+//TODO: optimize this method
+bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+{
+    QAbstractItemModel::dropMimeData(data,action,row,column,parent);
+    QLOG_INFO() << ">>>>>>>>>>>>>>dropMimeData ComicModel<<<<<<<<<<<<<<<<<"<< parent << row << "," << column;
+
+    if(!data->formats().contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat))
+        return false;
+
+    QList<qulonglong> comicIds = YACReader::mimeDataToComicsIds(data);
+    QList<int> currentIndexes;
+    int i;
+    foreach(qulonglong id, comicIds)
+    {
+        i = 0;
+        foreach (ComicItem *item, _data) {
+           if(item->data(Id)==id)
+           {
+               currentIndexes << i;
+               break;
+           }
+           i++;
+        }
+    }
+
+    std::sort(currentIndexes.begin(), currentIndexes.end());
+    QList<ComicItem *> resortedData;
+
+    if(currentIndexes.contains(row))//no resorting
+        return false;
+
+    ComicItem * destinationItem;
+    if(row == -1 || row >= _data.length())
+        destinationItem = 0;
+    else
+        destinationItem = _data.at(row);
+
+    QList<int> newSorting;
+
+    i = 0;
+    foreach (ComicItem *item, _data) {
+        if(!currentIndexes.contains(i))
+        {
+
+            if(item == destinationItem) {
+                foreach(int index, currentIndexes)
+                {
+                    resortedData << _data.at(index);
+                    newSorting << index;
+                }
+            }
+
+            resortedData << item;
+            newSorting << i;
+        }
+
+        i++;
+    }
+
+    if(destinationItem == 0)
+    {
+        foreach(int index, currentIndexes)
+        {
+            resortedData << _data.at(index);
+            newSorting << index;
+        }
+    }
+
+    QLOG_INFO() << newSorting;
+
+    _data = resortedData;
+
+
+    //TODO emit signals
+    //TODO fix selection
+    QList<qulonglong> allComicIds;
+    foreach (ComicItem *item, _data) {
+        allComicIds << item->data(Id).toULongLong();
+    }
+
+    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+    switch (mode) {
+    case Favorites:
+        DBHelper::reasignOrderToComicsInFavorites(allComicIds,db);
+        break;
+    case Label:
+        DBHelper::reasignOrderToComicsInLabel(sourceId,allComicIds,db);
+        break;
+    case ReadingList:
+        DBHelper::reasignOrderToComicsInReadingList(sourceId,allComicIds,db);
+        break;
+    }
+
+    QSqlDatabase::removeDatabase(_databasePath);
+    emit resortedIndexes(newSorting);
+    int destSelectedIndex = row<0?_data.length():row;
+
+    if(destSelectedIndex>currentIndexes.at(0))
+        emit newSelectedIndex(index(qMax(0,destSelectedIndex-1),0,parent));
+    else
+        emit newSelectedIndex(index(qMax(0,destSelectedIndex),0,parent));
+
+    return true;
+}
+
 QMimeData *ComicModel::mimeData(const QModelIndexList &indexes) const
 {
     //custom model data
@@ -60,6 +172,14 @@ QMimeData *ComicModel::mimeData(const QModelIndexList &indexes) const
     mimeData->setData(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat, data);
 
     return mimeData;
+}
+
+QStringList ComicModel::mimeTypes() const
+{
+    QLOG_DEBUG() << "mimeTypes";
+    QStringList list;
+    list << YACReader::YACReaderLibrarComiscSelectionMimeDataFormat;
+    return list;
 }
 
 QHash<int, QByteArray> ComicModel::roleNames() const {
@@ -162,10 +282,10 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags ComicModel::flags(const QModelIndex &index) const
 {
 	if (!index.isValid())
-		return 0;
+        return 0;
     if(index.column() == ComicModel::Rating)
 		return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled ;
 }
 
 QVariant ComicModel::headerData(int section, Qt::Orientation orientation,
@@ -284,6 +404,10 @@ QStringList ComicModel::getPaths(const QString & _source)
 
 void ComicModel::setupFolderModelData(unsigned long long int folderId,const QString & databasePath)
 {
+    enableResorting = false;
+    mode = Folder;
+    sourceId=folderId;
+
     beginResetModel();
     qDeleteAll(_data);
     _data.clear();
@@ -309,6 +433,10 @@ void ComicModel::setupFolderModelData(unsigned long long int folderId,const QStr
 
 void ComicModel::setupLabelModelData(unsigned long long parentLabel, const QString &databasePath)
 {
+    enableResorting = true;
+    mode = Label;
+    sourceId = parentLabel;
+
     beginResetModel();
     qDeleteAll(_data);
     _data.clear();
@@ -336,6 +464,9 @@ void ComicModel::setupLabelModelData(unsigned long long parentLabel, const QStri
 
 void ComicModel::setupReadingListModelData(unsigned long long parentReadingList, const QString &databasePath)
 {
+    mode = ReadingList;
+    sourceId = parentReadingList;
+
     beginResetModel();
     qDeleteAll(_data);
     _data.clear();
@@ -356,6 +487,9 @@ void ComicModel::setupReadingListModelData(unsigned long long parentReadingList,
         while(subfolders.next())
            ids << subfolders.record().value(0).toULongLong();
 
+        enableResorting = ids.length()==1;//only resorting if no sublists exist
+
+
         foreach(qulonglong id, ids)
         {
             QSqlQuery selectQuery(db);
@@ -371,7 +505,7 @@ void ComicModel::setupReadingListModelData(unsigned long long parentReadingList,
             QList<ComicItem *> tempData = _data;
             _data.clear();
 
-            setupModelData(selectQuery);
+            setupModelDataForList(selectQuery);
 
             _data = tempData << _data;
         }
@@ -384,6 +518,9 @@ void ComicModel::setupReadingListModelData(unsigned long long parentReadingList,
 
 void ComicModel::setupFavoritesModelData(const QString &databasePath)
 {
+    enableResorting = true;
+    mode = Favorites;
+
     beginResetModel();
     qDeleteAll(_data);
     _data.clear();
@@ -411,6 +548,9 @@ void ComicModel::setupFavoritesModelData(const QString &databasePath)
 
 void ComicModel::setupReadingModelData(const QString &databasePath)
 {
+    enableResorting = false;
+    mode = Reading;
+
     beginResetModel();
     qDeleteAll(_data);
     _data.clear();

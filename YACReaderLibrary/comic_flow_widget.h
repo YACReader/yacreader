@@ -31,6 +31,7 @@ public slots:
 	virtual void render() = 0;
 	virtual void updateConfig(QSettings * settings) = 0;
 	virtual void remove(int cover) = 0;
+    virtual void resortCovers(QList<int> newOrder) = 0;
 signals:
 	void centerIndexChanged(int);
 	void selected(unsigned int);
@@ -61,6 +62,7 @@ public:
 	void render();
 	void updateConfig(QSettings * settings);
 	void remove(int cover);
+    void resortCovers(QList<int> newOrder);
 protected:
 	void keyPressEvent(QKeyEvent* event);
 	void paintEvent(QPaintEvent *event);
@@ -97,6 +99,7 @@ public:
 	void render();
 	void updateConfig(QSettings * settings);
 	void remove(int cover);
+    void resortCovers(QList<int> newOrder);
 //public slots:
 //	void setCF_RX(int value);
 //	//the Y Rotation of the Coverflow 

@@ -129,3 +129,13 @@ QString YACReader::labelColorToRGBString(LabelColors color)
 
     }
 }
+
+
+QList<qulonglong> YACReader::mimeDataToComicsIds(const QMimeData *data)
+{
+    QList<qulonglong> comicIds;
+    QByteArray rawData = data->data(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat);
+    QDataStream in(&rawData,QIODevice::ReadOnly);
+    in  >> comicIds; //deserialize the list of indentifiers
+    return comicIds;
+}
