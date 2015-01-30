@@ -6,7 +6,9 @@
 #include <QModelIndex>
 #include <QFileInfo>
 #include "yacreader_global.h"
-#include <yacreader_libraries.h>
+#include "yacreader_libraries.h"
+
+#include "yacreader_navigation_controller.h"
 
 #ifdef Q_OS_MAC
     #include "yacreader_macosx_toolbar.h"
@@ -35,8 +37,8 @@ class QCheckBox;
 class QPushButton;
 class ComicModel;
 class QSplitter;
-class FolderItem;
 class FolderModel;
+class FolderModelProxy;
 class QItemSelectionModel;
 class QString;
 class QLabel;
@@ -63,8 +65,12 @@ class EditShortcutsDialog;
 class ComicFilesManager;
 class QProgressDialog;
 class ReadingListModel;
+class ReadingListModelProxy;
 class YACReaderReadingListsView;
 class YACReaderHistoryController;
+class EmptyLabelWidget;
+class EmptySpecialListWidget;
+class EmptyReadingListWidget;
 
 #include "comic_db.h"
 
@@ -72,6 +78,8 @@ using namespace YACReader;
 
 class LibraryWindow : public QMainWindow
 {
+    friend class YACReaderNavigationController;
+
 	Q_OBJECT
 private:
 	YACReaderSideBar * sideBar;
@@ -92,9 +100,7 @@ private:
 	bool fullscreen;
 	bool importedCovers; //if true, the library is read only (not updates,open comic or properties)
 	bool fromMaximized;
-	//Ya no se usan proxies, el rendimiento de la BD es suficiente
-	//YACReaderTreeSearch * proxyFilter;
-	//YACReaderSortComics * proxySort;
+
 	PackageManager * packageManager;
 
 	QSize slideSizeW;
@@ -105,11 +111,12 @@ private:
 #else
     YACReaderSearchLineEdit * searchEdit;
 #endif
-    FolderItem * index; //index al que hay que hacer scroll despu�s de pulsar sobre un folder filtrado
-	int column;
+
 	QString previousFilter;
 	QCheckBox * includeComicsCheckBox;
 	//-------------
+
+    YACReaderNavigationController * navigationController;
 
     ComicsView * comicsView;
     ClassicComicsView * classicComicsView;
@@ -117,14 +124,19 @@ private:
     QStackedWidget * comicsViewStack;
     ComicsViewTransition * comicsViewTransition;
     EmptyFolderWidget * emptyFolderWidget;
+    EmptyLabelWidget * emptyLabelWidget;
+    EmptySpecialListWidget * emptySpecialList;
+    EmptyReadingListWidget * emptyReadingList;
     NoSearchResultsWidget * noSearchResultsWidget;
 
     YACReaderFoldersView * foldersView;
     YACReaderReadingListsView * listsView;
 	YACReaderLibraryListWidget * selectedLibrary;
     FolderModel * foldersModel;
+    FolderModelProxy * foldersModelProxy;
     ComicModel * comicsModel;
     ReadingListModel * listsModel;
+    ReadingListModelProxy * listsModelProxy;
 	//QStringList paths;
 	YACReaderLibraries libraries;
 
@@ -170,6 +182,7 @@ private:
 	QAction * colapseAllNodesAction;
 
     QAction * openContainingFolderAction;
+    QAction * saveCoversToAction;
     //--
     QAction * setFolderAsNotCompletedAction;
     QAction * setFolderAsCompletedAction;
@@ -205,11 +218,8 @@ private:
     QAction * addLabelAction;
     QAction * renameListAction;
     //--
-    //QAction * expandAllNodesRLAction;
-    //QAction * colapseAllNodesRLAction;
-
-    QList<QAction *> itemActions;
-    QList<QAction *> viewActions;
+    QAction * addToMenuAction;
+    QAction * addToFavoritesAction;
 
 #ifdef Q_OS_MAC
     YACReaderMacOSXToolbar * libraryToolBar;
@@ -231,9 +241,17 @@ private:
 
 	//QModelIndex _rootIndex;
 	//QModelIndex _rootIndexCV;
-    QModelIndex updateDestination;
+    //QModelIndex updateDestination;
 
 	quint64 _comicIdEdited;
+
+    enum NavigationStatus
+    {
+        Normal, //
+        Searching
+    };
+
+    NavigationStatus status;
 
 	void setupUI();
 	void createActions();
@@ -272,6 +290,10 @@ private:
 
     ComicsViewStatus comicsViewStatus;
 
+    //QTBUG-41883
+    QSize _size;
+    QPoint _pos;
+
 protected:
     virtual void closeEvent ( QCloseEvent * event );
 public:
@@ -279,10 +301,8 @@ public:
 
 public slots:
     void loadLibrary(const QString & path);
-    void loadCovers(const QModelIndex & mi);
     void selectSubfolder(const QModelIndex & mi, int child);
-    void checkEmptyFolder(QStringList * paths = 0);
-    void reloadCovers();
+    void checkEmptyFolder();
     void openComic();
     void createLibrary();
     void create(QString source,QString dest, QString name);
@@ -311,6 +331,7 @@ public slots:
     void toNormal();
     void toFullScreen();
     void setSearchFilter(const YACReader::SearchModifiers modifier, QString filter);
+    void clearSearchFilter();
     void showProperties();
     void exportLibrary(QString destPath);
     void importLibrary(QString clc,QString destPath,QString name);
@@ -330,8 +351,10 @@ public slots:
     void manageOpeningLibraryError(const QString & error);
     QModelIndexList getSelectedComics();
     void deleteComics();
+    void deleteComicsFromDisk();
+    void deleteComicsFromList();
     //void showSocial();
-    void updateFoldersViewConextMenu(const QModelIndex & mi);
+    void showFoldersContextMenu(const QPoint & point);
     void libraryAlreadyExists(const QString & name);
     void importLibraryPackage();
     void updateComicsView(quint64 libraryId, const ComicDB & comic);
@@ -345,6 +368,9 @@ public slots:
     void toggleComicsView_delayed();//used in orther to avoid flickering;
     void showComicsView();
     void showEmptyFolderView();
+    void showEmptyLabelView();
+    void showEmptySpecialList();
+    void showEmptyReadingListWidget();
     void showNoSearchResultsView();
     void toggleComicsView();
     void checkSearchNumResults(int numResults);
@@ -354,12 +380,11 @@ public slots:
     void copyAndImportComicsToFolder(const QList<QPair<QString,QString> > & comics, const QModelIndex & miFolder);
     void moveAndImportComicsToFolder(const QList<QPair<QString,QString> > & comics, const QModelIndex & miFolder);
     void processComicFiles(ComicFilesManager * comicFilesManager, QProgressDialog * progressDialog);
-    void updateCopyMoveFolderDestination(); //imports new comics from the current folder
+    void updateCopyMoveFolderDestination(const QModelIndex & mi); //imports new comics from the current folder
     void updateCurrentFolder();
-    void updateTreeFolder();
     void updateFolder(const QModelIndex & miFolder);
     QProgressDialog * newProgressDialog(const QString & label, int maxValue);
-    void reloadAfterCopyMove();
+    void reloadAfterCopyMove(const QModelIndex &mi);
     QModelIndex getCurrentFolderIndex();
     void enableNeededActions();
     void addFolderToCurrentIndex();
@@ -369,6 +394,13 @@ public slots:
     void deleteSelectedReadingList();
     void showAddNewLabelDialog();
     void showRenameCurrentList();
+    void addSelectedComicsToFavorites();
+    void showComicsViewContextMenu(const QPoint & point);
+    void showComicsItemContextMenu(const QPoint & point);
+    void setupAddToSubmenu(QMenu & menu);
+    void onAddComicsToLabel();
+    void setToolbarTitle(const QModelIndex & modelIndex);
+    void saveSelectedCoversTo();
 
 };
 

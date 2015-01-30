@@ -36,11 +36,19 @@ public:
 	static void removeFromDB(ComicDB * comic, QSqlDatabase & db);
     static void removeLabelFromDB(qulonglong id, QSqlDatabase & db);
     static void removeListFromDB(qulonglong id, QSqlDatabase & db);
+    //logic deletes
+    static void deleteComicsFromFavorites(const QList<ComicDB> & comicsList, QSqlDatabase & db);
+    static void deleteComicsFromLabel(const QList<ComicDB> & comicsList, qulonglong labelId, QSqlDatabase & db);
+    static void deleteComicsFromReadingList(const QList<ComicDB> & comicsList, qulonglong readingListId, QSqlDatabase & db);
 	//inserts
 	static qulonglong insert(Folder * folder, QSqlDatabase & db);
 	static qulonglong insert(ComicDB * comic, QSqlDatabase & db);
     static qulonglong insertLabel(const QString & name, YACReader::LabelColors color , QSqlDatabase & db);
     static qulonglong insertReadingList(const QString & name, QSqlDatabase & db);
+    static qulonglong insertReadingSubList(const QString & name, qulonglong parentId, int ordering, QSqlDatabase & db);
+    static void insertComicsInFavorites(const QList<ComicDB> & comicsList, QSqlDatabase & db);
+    static void insertComicsInLabel(const QList<ComicDB> & comicsList, qulonglong labelId, QSqlDatabase & db);
+    static void insertComicsInReadingList(const QList<ComicDB> & comicsList, qulonglong readingListId, QSqlDatabase & db);
 	//updates
     static void update(qulonglong libraryId, ComicInfo & comicInfo);
 	static void update(ComicDB * comics, QSqlDatabase & db);
@@ -50,6 +58,10 @@ public:
     static void updateProgress(qulonglong libraryId,const ComicInfo & comicInfo);
     static void renameLabel(qulonglong id, const QString & name, QSqlDatabase & db);
     static void renameList(qulonglong id, const QString & name, QSqlDatabase & db);
+    static void reasignOrderToSublists(QList<qulonglong> ids, QSqlDatabase & db);
+    static void reasignOrderToComicsInFavorites(QList<qulonglong> comicIds, QSqlDatabase & db);
+    static void reasignOrderToComicsInLabel(qulonglong labelId, QList<qulonglong> comicIds, QSqlDatabase & db);
+    static void reasignOrderToComicsInReadingList(qulonglong readingListId, QList<qulonglong> comicIds, QSqlDatabase & db);
 
 	static QList<LibraryItem *> getFoldersFromParent(qulonglong parentId, QSqlDatabase & db, bool sort = true);
 	static QList<ComicDB> getSortedComicsFromParent(qulonglong parentId, QSqlDatabase & db);

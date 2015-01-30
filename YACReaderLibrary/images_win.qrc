@@ -8,40 +8,40 @@
         <file>../images/main_toolbar/server.png</file>
         <file>../images/main_toolbar/help.png</file>
         <file>../images/main_toolbar/fullscreen.png</file>
-        <file>../images/libraryIcon.png</file>
-        <file>../images/setRoot.png</file>
-        <file>../images/expand.png</file>
-        <file>../images/colapse.png</file>
-        <file>../images/newLibraryIcon.png</file>
-        <file>../images/openLibraryIcon.png</file>
+        <file>../images/sidebar/libraryIcon.png</file>
+        <file>../images/sidebar/setRoot.png</file>
+        <file>../images/sidebar/expand.png</file>
+        <file>../images/sidebar/colapse.png</file>
+        <file>../images/sidebar/newLibraryIcon.png</file>
+        <file>../images/sidebar/openLibraryIcon.png</file>
         <file>../images/main_toolbar/flow.png</file>
         <file>../images/main_toolbar/grid.png</file>
         <file>../images/flow_to_grid.gif</file>
         <file>../images/grid_to_flow.gif</file>
         <file>../images/empty_folder.png</file>
         <file>../images/empty_search.png</file>
-        <file>../images/addNew_sidebar.png</file>
-        <file>../images/delete_sidebar.png</file>
+        <file>../images/sidebar/addNew_sidebar.png</file>
+        <file>../images/sidebar/delete_sidebar.png</file>
         <file alias="images/iconSearch.png">../images/iconSearchNew.png</file>
         <file alias="images/clearSearch.png">../images/clearSearchNew.png</file>
-        <file>../images/addLabelIcon.png</file>
-        <file>../images/renameListIcon.png</file>
+        <file>../images/sidebar/addLabelIcon.png</file>
+        <file>../images/sidebar/renameListIcon.png</file>
         <!--reading lists-->
-        <file>../images/lists/default_0.png</file> 
-        <file>../images/lists/default_1.png</file>     
-		<file>../images/lists/label_blue.png</file>
-		<file>../images/lists/label_cyan.png</file>
-		<file>../images/lists/label_dark.png</file>
-		<file>../images/lists/label_green.png</file>
-		<file>../images/lists/label_light.png</file>
-		<file>../images/lists/label_orange.png</file>
-		<file>../images/lists/label_pink.png</file>
-		<file>../images/lists/label_purple.png</file>
-		<file>../images/lists/label_red.png</file>
-		<file>../images/lists/label_violet.png</file>
-		<file>../images/lists/label_white.png</file>
-		<file>../images/lists/label_yellow.png</file>
-		<file>../images/lists/list.png</file>
-		  
+        <file>../images/lists/default_0.png</file>
+        <file>../images/lists/default_1.png</file>
+        <file>../images/lists/label_blue.png</file>
+        <file>../images/lists/label_cyan.png</file>
+        <file>../images/lists/label_dark.png</file>
+        <file>../images/lists/label_green.png</file>
+        <file>../images/lists/label_light.png</file>
+        <file>../images/lists/label_orange.png</file>
+        <file>../images/lists/label_pink.png</file>
+        <file>../images/lists/label_purple.png</file>
+        <file>../images/lists/label_red.png</file>
+        <file>../images/lists/label_violet.png</file>
+        <file>../images/lists/label_white.png</file>
+        <file>../images/lists/label_yellow.png</file>
+        <file>../images/lists/list.png</file>
+        <file>../images/empty_reading_list.png</file>
     </qresource>
 </RCC>

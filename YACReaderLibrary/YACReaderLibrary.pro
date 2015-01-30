@@ -126,7 +126,13 @@ HEADERS += comic_flow.h \
     yacreader_folders_view.h \
     yacreader_reading_lists_view.h \
     add_label_dialog.h \
-    yacreader_history_controller.h
+    yacreader_history_controller.h \
+    yacreader_navigation_controller.h \
+    empty_label_widget.h \
+    empty_container_info.h \
+    empty_special_list.h \
+    empty_reading_list_widget.h \
+    ../common/scroll_management.h
 
 		   
 SOURCES += comic_flow.cpp \
@@ -181,7 +187,13 @@ SOURCES += comic_flow.cpp \
     yacreader_folders_view.cpp \
     yacreader_reading_lists_view.cpp \
     add_label_dialog.cpp \
-    yacreader_history_controller.cpp
+    yacreader_history_controller.cpp \
+    yacreader_navigation_controller.cpp \
+    empty_label_widget.cpp \
+    empty_container_info.cpp \
+    empty_special_list.cpp \
+    empty_reading_list_widget.cpp \
+    ../common/scroll_management.cpp
 
 				   
 include(./server/server.pri)

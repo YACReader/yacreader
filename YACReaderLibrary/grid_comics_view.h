@@ -26,10 +26,10 @@ public:
     void toFullScreen();
     void toNormal();
     void updateConfig(QSettings * settings);
-    void setItemActions(const QList<QAction *> & actions);
-    void setViewActions(const QList<QAction *> & actions);
     void enableFilterMode(bool enabled);
     QSize sizeHint();
+    QByteArray getMimeDataFromSelection();
+
 
 signals:
     void comicRated(int,QModelIndex);
@@ -38,10 +38,14 @@ signals:
 public slots:
     //selection helper
     void selectIndex(int index);
+    void setCurrentIndex(int index);
+    void deselectIndex(int index);
     bool isSelectedIndex(int index);
     void clear();
     //double clicked item
     void selectedItem(int index);
+    int numItemsSelected();
+    int lastSelectedIndex();
 
     //ComicsView
     void setShowMarks(bool show);
@@ -50,8 +54,13 @@ public slots:
     //rating
     void rate(int index, int rating);
 
+    void startDrag();
+
+protected slots:
+    void requestedContextMenu(const QPoint & point);
 
 private:
+    QToolBar * toolbar;
     QItemSelectionModel * _selectionModel;
     QQuickView *view;
     QWidget *container;

@@ -21,7 +21,7 @@ void YACReaderFoldersView::dragEnterEvent(QDragEnterEvent *event)
 
     QList<QUrl> urlList;
 
-    if (event->mimeData()->hasUrls())
+    if (event->mimeData()->hasUrls() && event->dropAction() == Qt::CopyAction)
     {
         urlList = event->mimeData()->urls();
         QString currentPath;
@@ -46,6 +46,7 @@ void YACReaderFoldersView::dragLeaveEvent(QDragLeaveEvent *event)
 void YACReaderFoldersView::dragMoveEvent(QDragMoveEvent *event)
 {
     YACReaderTreeView::dragMoveEvent(event);
+    event->acceptProposedAction();
 }
 
 void YACReaderFoldersView::dropEvent(QDropEvent *event)
@@ -54,11 +55,10 @@ void YACReaderFoldersView::dropEvent(QDropEvent *event)
 
     QLOG_DEBUG() << "drop on tree" << event->dropAction();
 
-    bool validAction = event->dropAction() == Qt::CopyAction || event->dropAction() & Qt::MoveAction;
+    bool validAction = event->dropAction() == Qt::CopyAction; // || event->dropAction() & Qt::MoveAction; TODO move
 
     if(validAction)
     {
-
         QList<QPair<QString, QString> > droppedFiles = ComicFilesManager::getDroppedFiles(event->mimeData()->urls());
         QModelIndex destinationIndex = indexAt(event->pos());
 
@@ -87,9 +87,7 @@ YACReaderFoldersViewItemDeletegate::YACReaderFoldersViewItemDeletegate(QObject *
 
 void YACReaderFoldersViewItemDeletegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    FolderItem * item = static_cast<FolderItem *>(index.internalPointer());
-
-    if(!item->data(FolderModel::Completed).toBool())
+    if(!index.data(FolderModel::CompletedRole).toBool())
     {
         painter->save();
 #ifdef Q_OS_MAC

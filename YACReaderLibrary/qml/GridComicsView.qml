@@ -1,7 +1,6 @@
 import QtQuick 2.3
-import QtQuick.Controls 1.0
-import QtQuick.Controls 1.1
-import QtGraphicalEffects 1.0
+
+import QtQuick.Controls 1.2
 import comicModel 1.0
 
 Rectangle {
@@ -13,7 +12,7 @@ Rectangle {
 
     function selectAll(from,to)
     {
-        for(var i = from+1;i<to;i++)
+        for(var i = from;i<=to;i++)
         {
             comicsSelectionHelper.selectIndex(i);
         }
@@ -27,29 +26,31 @@ Rectangle {
             width: grid.cellWidth
             height: grid.cellHeight
             color: backgroundColor
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    comicsSelectionHelper.clear();
-                    comicsSelectionHelper.selectIndex(grid.currentIndex);
-                }
-            }
+
 
             Rectangle {
                 id: realCell
 
                 property int position : 0
-
+                property bool dragging: false;
                 Drag.active: mouseArea.drag.active
                 Drag.hotSpot.x: 32
                 Drag.hotSpot.y: 32
                 Drag.dragType: Drag.Automatic
-                Drag.mimeData: { "text/plain": titleText.text }
+                //Drag.mimeData: { "x": 1 }
                 Drag.proposedAction: Qt.CopyAction
+                Drag.onActiveChanged: {
+                    if(!dragging)
+                    {
+                        comicsSelectionHelper.startDrag();
+                        dragging = true;
+                    }else
+                        dragging = false;
+                }
 
                 width: 156; height: 287
-                color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index)) || grid.currentIndex === index?selectedColor:cellColor;
-                border.color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index)) || grid.currentIndex === index?selectedBorderColor:borderColor;
+                color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index))?selectedColor:cellColor;
+                border.color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index))?selectedBorderColor:borderColor;
                 border.width: (Qt.platform.os === "osx")?1:0;
 
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -65,8 +66,8 @@ Rectangle {
 
                     anchors.fill: parent
                     acceptedButtons: Qt.LeftButton | Qt.RightButton
-                    onDoubleClicked: {
 
+                    onDoubleClicked: {
                         comicsSelectionHelper.clear();
 
                         comicsSelectionHelper.selectIndex(index);
@@ -74,58 +75,74 @@ Rectangle {
                         comicsSelectionHelper.selectedItem(index);
                     }
 
-                    onClicked: {
+                    onPressed: {
                         //grid.currentIndex = index
                         //comicsSelection.setCurrentIndex(index,0x0002)
                         var ci = grid.currentIndex;
-                        if(mouse.button == Qt.RightButton || !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
+                        /*if(mouse.button != Qt.RightButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
                         {
-                            comicsSelectionHelper.clear();
-                        }
-
-                        if(mouse.button == Qt.RightButton)
-                            myContextMenu.popup();
+                            if(!comicsSelectionHelper.isSelectedIndex(index))
+                                comicsSelectionHelper.clear();
+                        }*/
 
                         if(mouse.modifiers & Qt.ShiftModifier)
                             if(index < ci)
+                            {
                                 selectAll(index,ci);
+                                grid.currentIndex = index;
+                            }
                             else if (index > ci)
+                            {
                                 selectAll(ci,index);
+                                grid.currentIndex = index;
+                            }
 
                         mouse.accepted = true;
 
-                        comicsSelectionHelper.selectIndex(index)
-                        grid.currentIndex = index;
+                        if(mouse.button == Qt.RightButton)
+                        {
+
+                            if(!comicsSelectionHelper.isSelectedIndex(index))
+                            {
+                                comicsSelectionHelper.setCurrentIndex(index)
+                                grid.currentIndex = index;
+                            }
+
+                            var coordinates = main.mapFromItem(realCell,mouseX,mouseY)
+                            contextMenuHelper.requestedContextMenu(Qt.point(coordinates.x,coordinates.y));
+
+                        } else
+                        {
+                            if(mouse.modifiers & Qt.ControlModifier)
+                            {
+                                if(comicsSelectionHelper.isSelectedIndex(index))
+                                {
+                                    if(comicsSelectionHelper.numItemsSelected()>1)
+                                    {
+                                        comicsSelectionHelper.deselectIndex(index);
+                                        if(grid.currentIndex === index)
+                                            grid.currentIndex = comicsSelectionHelper.lastSelectedIndex();
+                                    }
+                                }
+                                else
+                                {
+                                    comicsSelectionHelper.selectIndex(index);
+                                    grid.currentIndex = index;
+                                }
+                            }
+                        }
+
+                    }
+
+                    onReleased: {
+                        if(mouse.button != Qt.RightButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
+                        {
+                            comicsSelectionHelper.setCurrentIndex(index)
+                            grid.currentIndex = index;
+                        }
                     }
 
                 }
-
-                //Menu emits the 'main' signals
-                Menu {
-                    id: myContextMenu
-                    MenuItem { text: "Open comic"; enabled: true; iconSource:"qrc:///images/openInYACReader.png"; onTriggered: openComicAction.trigger() }
-                    MenuSeparator{}
-                    MenuItem { text: "Open containing folder..."; enabled: true; iconSource: "qrc:///images/open.png"; onTriggered: openContainingFolderComicAction.trigger() }
-                    MenuItem { text: "Update current folder"; enabled: true; iconSource: "qrc:///images/updateLibraryIcon.png"; onTriggered: updateCurrentFolderAction.trigger() }
-                    MenuSeparator{}
-                    MenuItem { text: "Reset comic rating"; onTriggered: resetComicRatingAction.trigger() }
-                    MenuSeparator{}
-                    MenuItem { text: "Edit"; enabled: true; iconSource:"qrc:///images/editComic.png"; onTriggered: editSelectedComicsAction.trigger() }
-                    MenuItem { text: "Download tags from Comic Vine"; enabled: true; iconSource:"qrc:///images/getInfo.png"; onTriggered: getInfoAction.trigger() }
-                    MenuItem { text: "Asign current order to comics"; enabled: true; iconSource:"qrc:///images/asignNumber.png"; onTriggered: asignOrderAction.trigger() }
-                    MenuSeparator{}
-                    MenuItem { text: "Select all comics"; enabled: true; iconSource:"qrc:///images/selectAll.png"; onTriggered: selectAllComicsAction.trigger() }
-                    MenuSeparator{}
-                    MenuItem { text: "Set as read"; enabled: true; iconSource:"qrc:///images/setReadButton.png"; onTriggered: setAsReadAction.trigger() }
-                    MenuItem { text: "Set as unread"; enabled: true; iconSource:"qrc:///images/setUnread.png"; onTriggered: setAsNonReadAction.trigger() }
-                    MenuItem { text: "Show or hide read marks"; enabled: true; iconSource:"qrc:///images/showMarks.png"; onTriggered: showHideMarksAction.trigger() }
-                    MenuSeparator{}
-                    MenuItem { text: "Delete selected comics"; enabled: true; iconSource:"qrc:///images/trash.png"; onTriggered: deleteComicsAction.trigger() }
-                    MenuSeparator{}
-                    MenuItem { text: "Fullscreen mode on/off"; onTriggered: toggleFullScreenAction.trigger() }
-                    //MenuItem { text: "Show details"; onTriggered: cell.state = 'Details';
-                }
-
 
             }
 
@@ -139,9 +156,8 @@ Rectangle {
                 anchors {horizontalCenter: parent.horizontalCenter; top: realCell.top; topMargin: 4}
                 source: cover_path
                 fillMode: Image.PreserveAspectCrop
-                //smooth: true
+                smooth: true
                 mipmap: true
-                //antialiasing: true
                 asynchronous : true
                 cache: false //TODO clear cache only when it is neede
             }
@@ -260,12 +276,12 @@ Rectangle {
 
 
             function numCellsPerRow() {
-                return Math.floor(width / 190);
+                return Math.floor(width / 185);
             }
 
             onWidthChanged: {
                 var numCells = numCellsPerRow();
-                var rest = width % 190;
+                var rest = width % 185;
 
                 if(numCells > 0)
                 {
@@ -297,7 +313,7 @@ Rectangle {
             //var ci = grid.currentIndex;
             grid.currentIndex = -1
             comicsSelectionHelper.clear();
-            comicsSelectionHelper.selectIndex(ci);
+            comicsSelectionHelper.setCurrentIndex(ci);
             grid.currentIndex = ci;
         }
         //}

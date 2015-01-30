@@ -7,11 +7,13 @@
 #include <string.h>
 #include <math.h>
 
-#include <QtOpenGL>
-#include <QGLWidget>
-#include <QMutex>
+#include <QOpenGLWidget>
+#include <QOpenGLFunctions>
+#include <QOpenGLTexture>
+#include <QtWidgets>
 
 #include "pictureflow.h" //TODO mover los tipos de flow de sitio
+#include "scroll_management.h"
 
 class ImageLoaderGL;
 class QGLContext;
@@ -27,16 +29,16 @@ enum Performance
 };
 
 //Cover Vector
-struct RVect{
+struct YACReader3DVector{
 	float x;
 	float y;
 	float z;
 	float rot;
 };
 
-//the cover info struct
-struct CFImage{
-	GLuint img;
+//the image/texture info struct
+struct YACReader3DImage{
+    QOpenGLTexture * texture;
 	//char name[256];
 
 	float width;
@@ -44,8 +46,8 @@ struct CFImage{
 
 	int index;
 
-	RVect current;
-	RVect animEnd;
+    YACReader3DVector current;
+    YACReader3DVector animEnd;
 };
 
 struct Preset{
@@ -103,22 +105,22 @@ extern struct Preset presetYACReaderFlowOverlappedStripeConfig;
 extern struct Preset pressetYACReaderFlowUpConfig;
 extern struct Preset pressetYACReaderFlowDownConfig;
 
-class YACReaderFlowGL : public QGLWidget
+class YACReaderFlowGL : public QOpenGLWidget, public ScrollManagement
 {
 	Q_OBJECT
 protected:
 	int timerId;
 	/*** System variables ***/
-	CFImage dummy;
+    YACReader3DImage dummy;
 	int viewRotateActive;
 	float stepBackup;
 
 	/*functions*/
-	void calcPos(CFImage *CF,int pos);
-	void calcRV(RVect *RV,int pos);
+    void calcPos(YACReader3DImage & image, int pos);
+    void calcVector(YACReader3DVector & vector, int pos);
     //returns true if the animation is finished for Current
-    bool animate(RVect *Current,RVect to);
-	void drawCover(CFImage *CF);
+    bool animate(YACReader3DVector &currentVector, YACReader3DVector &toVector);
+    void drawCover(const YACReader3DImage & image);
 
 	void udpatePerspective(int width, int height);
 	
@@ -126,9 +128,9 @@ protected:
 	WidgetLoader * loader;
 	int fontSize;
 
-	GLuint defaultTexture;
-	GLuint markTexture;
-	GLuint readingTexture;
+    QOpenGLTexture * defaultTexture;
+    QOpenGLTexture * markTexture;
+    QOpenGLTexture * readingTexture;
 	void initializeGL();
 	void paintGL();
 	void timerEvent(QTimerEvent *);
@@ -139,8 +141,9 @@ protected:
 	bool showMarks;
 	QVector<bool> loaded;
 	QVector<YACReaderComicReadStatus> marks;
-	QList<QString> paths;
-	CFImage * cfImages;
+
+    QVector<YACReader3DImage> images;
+
 	bool hasBeenInitialized;
 
 	Performance performance;
@@ -153,7 +156,7 @@ protected:
 	int currentSelected;
 
 	//defines the position of the centered cover 
-	RVect centerPos;
+    YACReader3DVector centerPos;
 
 	/*** Style ***/
 	//sets the amount of shading of the covers in the back (0-1)
@@ -201,17 +204,17 @@ public:
 	//inserts a new item to the coverflow 
 	//if item is set to a value > -1 it updates a already set value
 	//otherwise a new entry is set
-	void insert(char *name, GLuint Tex, float x, float y,int item = -1);
+    void insert(char *name, QOpenGLTexture * texture, float x, float y, int item = -1);
 	//removes a item
 	virtual void remove(int item);
 	//replaces the texture of the item 'item' with Tex
-	void replace(char *name, GLuint Tex, float x, float y,int item);
+    void replace(char *name, QOpenGLTexture * texture, float x, float y, int item);
 	//create n covers with the default nu
 	void populate(int n);
 	/*Info*/
-	//retuns the CFImage Struct of the current selected item
+    //retuns the YACReader3DImage Struct of the current selected item
 	//to read title or textures
-	CFImage getCurrentSelected();
+    YACReader3DImage getCurrentSelected();
 
 	public slots:
 	void setCF_RX(int value);
@@ -282,17 +285,6 @@ signals:
 	void selected(unsigned int);
 };
 
-//class WidgetLoader : public QGLWidget
-//{
-//	Q_OBJECT
-//public:
-//	WidgetLoader(QWidget *parent, QGLWidget * shared);
-//	YACReaderFlowGL * flow;
-//public slots:
-//	void loadTexture(int index);
-//
-//};
-
 class YACReaderComicFlowGL : public YACReaderFlowGL
 {
 public:
@@ -300,9 +292,12 @@ public:
 	void setImagePaths(QStringList paths);
 	void updateImageData();
 	void remove(int item);
+    void resortCovers(QList<int> newOrder);
 	friend class ImageLoaderGL;
 private:
 	ImageLoaderGL * worker;
+protected:
+    QList<QString> paths;
 
 };
 
@@ -329,8 +324,8 @@ public:
 	// returns FALSE if worker is still busy and can't take the task
 	bool busy() const;
 	void generate(int index, const QString& fileName);
-	void reset(){idx = -1;fileName="";};
-	int index() const { return idx; };
+    void reset(){idx = -1;fileName="";}
+    int index() const { return idx; }
 	void lock();
 	void unlock();
 	QImage result();
@@ -362,8 +357,8 @@ public:
 	// returns FALSE if worker is still busy and can't take the task
 	bool busy() const;
 	void generate(int index, const QByteArray& raw);
-	void reset(){idx = -1; rawData.clear();};
-	int index() const { return idx; };
+    void reset(){idx = -1; rawData.clear();}
+    int index() const { return idx; }
 	QImage result();
 	YACReaderFlowGL * flow;
 	GLuint resultTexture;
@@ -384,19 +379,5 @@ private:
 	QSize size;
 	QImage img;
 };
-
-//class TextureLoader : public QThread
-//{
-//public:
-//	TextureLoader();
-//	~TextureLoader();
-//	// returns FALSE if worker is still busy and can't take the task
-//
-//	YACReaderFlow * flow;
-//	ImageLoader * worker;
-//protected:
-//	void run();
-//
-//};
 
 #endif

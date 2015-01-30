@@ -37,8 +37,9 @@ GridComicsView::~GridComicsView()
 
 void GridComicsView::setToolBar(QToolBar *toolBar)
 {
-QLOG_INFO() << "setToolBar";
-static_cast<QVBoxLayout *>(this->layout())->insertWidget(1,toolBar);
+    QLOG_INFO() << "setToolBar";
+    static_cast<QVBoxLayout *>(this->layout())->insertWidget(1,toolBar);
+    this->toolbar = toolBar;
 }
 
 void GridComicsView::setModel(ComicModel *model)
@@ -59,9 +60,13 @@ void GridComicsView::setModel(ComicModel *model)
 
         ctxt->setContextProperty("comicsList", this->model);
         ctxt->setContextProperty("comicsSelection", _selectionModel);
+        ctxt->setContextProperty("contextMenuHelper",this);
         ctxt->setContextProperty("comicsSelectionHelper", this);
         ctxt->setContextProperty("comicRatingHelper", this);
         ctxt->setContextProperty("dummyValue", true);
+
+        if(model->rowCount()>0)
+            setCurrentIndex(model->index(0,0));
     }
 
 #ifdef Q_OS_MAC
@@ -73,9 +78,9 @@ void GridComicsView::setModel(ComicModel *model)
     ctxt->setContextProperty("titleColor", "#121212");
     ctxt->setContextProperty("textColor", "#636363");
     //fonts settings
-    ctxt->setContextProperty("fontSize", "11");
+    ctxt->setContextProperty("fontSize", 11);
     ctxt->setContextProperty("fontFamily", "none");
-    ctxt->setContextProperty("fontSpacing", "0.5");
+    ctxt->setContextProperty("fontSpacing", 0.5);
 
 #else
     ctxt->setContextProperty("backgroundColor", "#2A2A2A");
@@ -89,7 +94,7 @@ void GridComicsView::setModel(ComicModel *model)
     //fonts settings
     ctxt->setContextProperty("fontSize", "none");
     ctxt->setContextProperty("fontFamily", "none");
-    ctxt->setContextProperty("fontSpacing", "0.5");
+    ctxt->setContextProperty("fontSpacing", 0.5);
 #endif
 
 
@@ -98,6 +103,9 @@ void GridComicsView::setModel(ComicModel *model)
 void GridComicsView::setCurrentIndex(const QModelIndex &index)
 {
     QLOG_INFO() << "setCurrentIndex";
+    _selectionModel->clear();
+    _selectionModel->select(index, QItemSelectionModel::Select | QItemSelectionModel::Rows);
+    view->rootContext()->setContextProperty("dummyValue", true);
 }
 
 QModelIndex GridComicsView::currentIndex()
@@ -129,57 +137,18 @@ void GridComicsView::scrollTo(const QModelIndex &mi, QAbstractItemView::ScrollHi
 void GridComicsView::toFullScreen()
 {
     QLOG_INFO() << "toFullScreen";
+    toolbar->hide();
 }
 
 void GridComicsView::toNormal()
 {
     QLOG_INFO() << "toNormal";
+    toolbar->show();
 }
 
 void GridComicsView::updateConfig(QSettings *settings)
 {
     QLOG_INFO() << "updateConfig";
-}
-
-void GridComicsView::setItemActions(const QList<QAction *> &actions)
-{
-    QLOG_INFO() << "setItemActions";
-}
-
-void GridComicsView::setViewActions(const QList<QAction *> &actions)
-{
-    //TODO generate QML Menu from actions
-    QLOG_INFO() << "setViewActions";
-    this->addActions(actions);
-
-    //TODO this is completely unsafe, but QActions can't be used directly in QML
-    if(actions.length()>=19)
-    {
-        QQmlContext *ctxt = view->rootContext();
-
-        ctxt->setContextProperty("openComicAction",actions[0]);
-
-        ctxt->setContextProperty("openContainingFolderComicAction",actions[2]);
-        ctxt->setContextProperty("updateCurrentFolderAction",actions[3]);
-
-        ctxt->setContextProperty("resetComicRatingAction",actions[5]);
-
-        ctxt->setContextProperty("editSelectedComicsAction",actions[7]);
-        ctxt->setContextProperty("getInfoAction",actions[8]);
-        ctxt->setContextProperty("asignOrderAction",actions[9]);
-
-        ctxt->setContextProperty("selectAllComicsAction",actions[11]);
-
-        ctxt->setContextProperty("setAsReadAction",actions[13]);
-        ctxt->setContextProperty("setAsNonReadAction",actions[14]);
-        ctxt->setContextProperty("showHideMarksAction",actions[15]);
-
-        ctxt->setContextProperty("deleteComicsAction",actions[17]);
-
-        ctxt->setContextProperty("toggleFullScreenAction",actions[19]);
-    }
-    else
-        QLOG_ERROR() << "setViewActions invoked with the wrong number of actions";
 }
 
 void GridComicsView::enableFilterMode(bool enabled)
@@ -190,6 +159,11 @@ void GridComicsView::enableFilterMode(bool enabled)
 void GridComicsView::selectAll()
 {
     QLOG_INFO() << "selectAll";
+    QModelIndex top = model->index(0, 0);
+    QModelIndex bottom = model->index(model->rowCount()-1, 0);
+    QItemSelection selection(top, bottom);
+    _selectionModel->select(selection, QItemSelectionModel::Select | QItemSelectionModel::Rows);
+    view->rootContext()->setContextProperty("dummyValue", true);
 }
 
 void GridComicsView::rate(int index, int rating)
@@ -198,10 +172,37 @@ void GridComicsView::rate(int index, int rating)
     model->updateRating(rating,model->index(index,0));
 }
 
+void GridComicsView::requestedContextMenu(const QPoint &point)
+{
+    emit customContextMenuViewRequested(point);
+}
+
 QSize GridComicsView::sizeHint()
 {
         QLOG_INFO() << "sizeHint";
-    return QSize(1280,768);
+        return QSize(1280,768);
+}
+
+QByteArray GridComicsView::getMimeDataFromSelection()
+{
+    QByteArray data;
+
+    QMimeData * mimeData = model->mimeData(_selectionModel->selectedIndexes());
+    data = mimeData->data(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat);
+
+    delete mimeData;
+
+    return data;
+}
+
+void GridComicsView::startDrag()
+{
+    QLOG_DEBUG() << "performDrag";
+    QDrag *drag = new QDrag(this);
+    drag->setMimeData(model->mimeData(_selectionModel->selectedRows()));
+    drag->setPixmap(QPixmap(":/images/openInYACReader.png")); //TODO add better image
+
+    Qt::DropAction dropAction = drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
 }
 
 //helper
@@ -209,7 +210,24 @@ void GridComicsView::selectIndex(int index)
 {
     QLOG_INFO() << "selectIndex" << index;
     if(_selectionModel != NULL && model!=NULL)
+    {
         _selectionModel->select(model->index(index,0),QItemSelectionModel::Select | QItemSelectionModel::Rows);
+        view->rootContext()->setContextProperty("dummyValue", true);
+    }
+}
+
+void GridComicsView::setCurrentIndex(int index)
+{
+    setCurrentIndex(model->index(index,0));
+}
+
+void GridComicsView::deselectIndex(int index)
+{
+    if(_selectionModel != NULL && model!=NULL)
+    {
+        _selectionModel->select(model->index(index,0),QItemSelectionModel::Deselect | QItemSelectionModel::Rows);
+        view->rootContext()->setContextProperty("dummyValue", true);
+    }
 }
 
 bool GridComicsView::isSelectedIndex(int index)
@@ -238,6 +256,27 @@ void GridComicsView::clear()
 void GridComicsView::selectedItem(int index)
 {
     emit doubleClicked(model->index(index,0));
+}
+
+int GridComicsView::numItemsSelected()
+{
+    if(_selectionModel != NULL)
+    {
+        return _selectionModel->selectedRows().length();
+    }
+
+    return 0;
+}
+
+int GridComicsView::lastSelectedIndex()
+{
+    if(_selectionModel != NULL)
+    {
+        QLOG_INFO() << "last selected index " << _selectionModel->selectedRows().last().row();
+        return _selectionModel->selectedRows().last().row();
+    }
+
+    return -1;
 }
 
 void GridComicsView::setShowMarks(bool show)

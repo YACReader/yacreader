@@ -74,6 +74,10 @@ class EditShortcutsDialog;
 		bool toolbars;
 		bool alwaysOnTop;
 		bool fromMaximized;
+
+        //QTBUG-41883
+        QSize _size;
+        QPoint _pos;
 		
 		QString currentDirectory;
 		QString currentDirectoryImgDest;
@@ -82,7 +86,7 @@ class EditShortcutsDialog;
 		//GoToDialog * goToDialog;
 		OptionsDialog * optionsDialog;
 		HelpAboutDialog * had;
-		ShortcutsDialog * shortcutsDialog;
+        //ShortcutsDialog * shortcutsDialog;
         EditShortcutsDialog * editShortcutsDialog;
 
 		//! ToolBars
@@ -130,7 +134,7 @@ class EditShortcutsDialog;
 		HttpVersionChecker * versionChecker;
 		QString previousComicPath;
 		QString nextComicPath;
-		//! Método que inicializa el interfaz.
+		//! MÃ©todo que inicializa el interfaz.
 		void setupUI();
 		void createActions();
 		void createToolBars();

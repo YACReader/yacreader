@@ -31,18 +31,16 @@ public:
 	YACReaderTitledToolBar * librariesTitle;
 	YACReaderTitledToolBar * foldersTitle;
     YACReaderTitledToolBar * readingListsTitle;
-
-    QSplitter * splitter;
 	
 signals:
 	
 public slots:
 
-protected slots:
-    void selectedIndex(const QModelIndex & mi);
-
 protected:
 	void paintEvent(QPaintEvent *);
+    void closeEvent ( QCloseEvent * event );
+    QSettings * settings;
+    QSplitter * splitter;
 	
 };
 

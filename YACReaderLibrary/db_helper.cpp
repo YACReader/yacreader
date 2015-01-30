@@ -161,6 +161,62 @@ void DBHelper::removeListFromDB(qulonglong id, QSqlDatabase &db)
     query.exec();
 }
 
+void DBHelper::deleteComicsFromFavorites(const QList<ComicDB> &comicsList, QSqlDatabase &db)
+{
+    db.transaction();
+
+    QLOG_DEBUG() << "deleteComicsFromFavorites----------------------------------";
+
+    QSqlQuery query(db);
+    query.prepare("DELETE FROM comic_default_reading_list WHERE comic_id = :comic_id AND default_reading_list_id = 1");
+    foreach(ComicDB comic, comicsList)
+    {
+        query.bindValue(":comic_id", comic.id);
+        query.exec();
+    }
+
+    db.commit();
+}
+
+void DBHelper::deleteComicsFromLabel(const QList<ComicDB> &comicsList, qulonglong labelId, QSqlDatabase &db)
+{
+    db.transaction();
+
+    QLOG_DEBUG() << "deleteComicsFromLabel----------------------------------";
+
+    QSqlQuery query(db);
+    query.prepare("DELETE FROM comic_label WHERE comic_id = :comic_id AND label_id = :label_id");
+    foreach(ComicDB comic, comicsList)
+    {
+        query.bindValue(":comic_id", comic.id);
+        query.bindValue(":label_id", labelId);
+        query.exec();
+
+        QLOG_DEBUG() << "cid = " << comic.id << "lid = " << labelId;
+        QLOG_DEBUG() << query.lastError().databaseText() << "-" << query.lastError().driverText();
+    }
+
+    db.commit();
+}
+
+void DBHelper::deleteComicsFromReadingList(const QList<ComicDB> &comicsList, qulonglong readingListId, QSqlDatabase &db)
+{
+    db.transaction();
+
+    QLOG_DEBUG() << "deleteComicsFromReadingList----------------------------------";
+
+    QSqlQuery query(db);
+    query.prepare("DELETE FROM comic_reading_list WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id");
+    foreach(ComicDB comic, comicsList)
+    {
+        query.bindValue(":comic_id", comic.id);
+        query.bindValue(":reading_list_id", readingListId);
+        query.exec();
+    }
+
+    db.commit();
+}
+
 //updates
 void DBHelper::update(ComicDB * comic, QSqlDatabase & db)
 {
@@ -354,6 +410,81 @@ void DBHelper::renameList(qulonglong id, const QString &name, QSqlDatabase &db)
     renameLabelQuery.exec();
 }
 
+void DBHelper::reasignOrderToSublists(QList<qulonglong> ids, QSqlDatabase &db)
+{
+    QSqlQuery updateOrdering(db);
+    updateOrdering.prepare("UPDATE reading_list SET "
+                           "ordering = :ordering "
+                           "WHERE id = :id");
+    db.transaction();
+    int order = 0;
+    foreach(qulonglong id, ids)
+    {
+        updateOrdering.bindValue(":ordering",order++);
+        updateOrdering.bindValue(":id", id);
+        updateOrdering.exec();
+    }
+
+    db.commit();
+}
+
+void DBHelper::reasignOrderToComicsInFavorites(QList<qulonglong> comicIds, QSqlDatabase &db)
+{
+    QSqlQuery updateOrdering(db);
+    updateOrdering.prepare("UPDATE comic_default_reading_list SET "
+                           "ordering = :ordering "
+                           "WHERE comic_id = :comic_id AND default_reading_list_id = 0");
+    db.transaction();
+    int order = 0;
+    foreach(qulonglong id, comicIds)
+    {
+        updateOrdering.bindValue(":ordering",order++);
+        updateOrdering.bindValue(":comic_id", id);
+        updateOrdering.exec();
+    }
+
+    db.commit();
+}
+
+void DBHelper::reasignOrderToComicsInLabel(qulonglong labelId, QList<qulonglong> comicIds, QSqlDatabase &db)
+{
+    QSqlQuery updateOrdering(db);
+    updateOrdering.prepare("UPDATE comic_label SET "
+                           "ordering = :ordering "
+                           "WHERE comic_id = :comic_id AND label_id = :label_id");
+    db.transaction();
+    int order = 0;
+    foreach(qulonglong id, comicIds)
+    {
+        updateOrdering.bindValue(":ordering",order++);
+        updateOrdering.bindValue(":comic_id", id);
+        updateOrdering.bindValue(":label_id", labelId);
+        updateOrdering.exec();
+    }
+
+    db.commit();
+}
+
+void DBHelper::reasignOrderToComicsInReadingList(qulonglong readingListId, QList<qulonglong> comicIds, QSqlDatabase &db)
+{
+    QSqlQuery updateOrdering(db);
+    updateOrdering.prepare("UPDATE comic_reading_list SET "
+                           "ordering = :ordering "
+                           "WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id");
+    db.transaction();
+    int order = 0;
+    foreach(qulonglong id, comicIds)
+    {
+        updateOrdering.bindValue(":ordering",order++);
+        updateOrdering.bindValue(":comic_id", id);
+        updateOrdering.bindValue(":reading_list_id", readingListId);
+        updateOrdering.exec();
+        QLOG_INFO() << updateOrdering.lastError().databaseText() << "-" << updateOrdering.lastError().driverText();
+    }
+
+    db.commit();
+}
+
 //inserts
 qulonglong DBHelper::insert(Folder * folder, QSqlDatabase & db)
 {
@@ -414,6 +545,78 @@ qulonglong DBHelper::insertReadingList(const QString &name, QSqlDatabase &db)
     query.bindValue(":name", name);
     query.exec();
     return query.lastInsertId().toULongLong();
+}
+
+qulonglong DBHelper::insertReadingSubList(const QString &name, qulonglong parentId, int ordering, QSqlDatabase &db)
+{
+    QSqlQuery query(db);
+    query.prepare("INSERT INTO reading_list (name, parentId, ordering) "
+                   "VALUES (:name, :parentId, :ordering)");
+    query.bindValue(":name", name);
+    query.bindValue(":parentId", parentId);
+    query.bindValue(":ordering", ordering);
+    query.exec();
+    return query.lastInsertId().toULongLong();
+}
+
+void DBHelper::insertComicsInFavorites(const QList<ComicDB> &comicsList, QSqlDatabase &db)
+{
+    db.transaction();
+
+    QSqlQuery query(db);
+    query.prepare("INSERT INTO comic_default_reading_list (default_reading_list_id, comic_id) "
+                   "VALUES (1, :comic_id)");
+
+    foreach(ComicDB comic, comicsList)
+    {
+        query.bindValue(":comic_id", comic.id);
+        //query.bindValue(":order", numComics++);
+        query.exec();
+    }
+
+    db.commit();
+}
+
+void DBHelper::insertComicsInLabel(const QList<ComicDB> &comicsList, qulonglong labelId, QSqlDatabase &db)
+{
+    db.transaction();
+
+    QSqlQuery query(db);
+    query.prepare("INSERT INTO comic_label (label_id, comic_id) "
+                   "VALUES (:label_id, :comic_id)");
+
+    foreach(ComicDB comic, comicsList)
+    {
+        query.bindValue(":label_id", labelId);
+        query.bindValue(":comic_id", comic.id);
+        query.exec();
+    }
+
+    db.commit();
+}
+
+void DBHelper::insertComicsInReadingList(const QList<ComicDB> &comicsList, qulonglong readingListId, QSqlDatabase &db)
+{
+    QSqlQuery getNumComicsInFavoritesQuery("SELECT count(*) from comic_reading_list;",db);
+    getNumComicsInFavoritesQuery.next();
+    QSqlRecord record = getNumComicsInFavoritesQuery.record();
+    int numComics = record.value(0).toInt();
+
+    db.transaction();
+
+    QSqlQuery query(db);
+    query.prepare("INSERT INTO comic_reading_list (reading_list_id, comic_id, ordering) "
+                   "VALUES (:reading_list_id, :comic_id, :ordering)");
+
+    foreach(ComicDB comic, comicsList)
+    {
+        query.bindValue(":reading_list_id", readingListId);
+        query.bindValue(":comic_id", comic.id);
+        query.bindValue(":ordering", numComics++);
+        query.exec();
+    }
+
+    db.commit();
 }
 //queries
 QList<LibraryItem *> DBHelper::getFoldersFromParent(qulonglong parentId, QSqlDatabase & db, bool sort)
