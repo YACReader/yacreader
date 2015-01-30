@@ -34,7 +34,10 @@ public:
 	QModelIndex parent(const QModelIndex &index) const;
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    bool canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const;
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
     QMimeData * mimeData(const QModelIndexList &indexes) const;
+    QStringList mimeTypes() const;
 
     void setupFolderModelData(unsigned long long int parentFolder,const QString & databasePath);
     void setupLabelModelData(unsigned long long int parentLabel, const QString & databasePath);
@@ -113,6 +116,16 @@ public:
 
     };
 
+    enum Mode {
+        Folder,
+        Favorites,
+        Reading,
+        Label,
+        ReadingList
+    };
+
+
+
 public slots:
 	void remove(int row);
 	void startTransaction();
@@ -135,11 +148,17 @@ private:
 
 	QSqlDatabase dbTransaction;
 
+    bool enableResorting;
+    Mode mode;
+    qulonglong sourceId;
+
 signals:
 	void beforeReset();
 	void reset();
     void isEmpty();
     void searchNumResults(int);
+    void resortedIndexes(QList<int>);
+    void newSelectedIndex(const QModelIndex &);
 };
 //! [0]
 

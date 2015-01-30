@@ -428,6 +428,63 @@ void DBHelper::reasignOrderToSublists(QList<qulonglong> ids, QSqlDatabase &db)
     db.commit();
 }
 
+void DBHelper::reasignOrderToComicsInFavorites(QList<qulonglong> comicIds, QSqlDatabase &db)
+{
+    QSqlQuery updateOrdering(db);
+    updateOrdering.prepare("UPDATE comic_default_reading_list SET "
+                           "ordering = :ordering "
+                           "WHERE comic_id = :comic_id AND default_reading_list_id = 0");
+    db.transaction();
+    int order = 0;
+    foreach(qulonglong id, comicIds)
+    {
+        updateOrdering.bindValue(":ordering",order++);
+        updateOrdering.bindValue(":comic_id", id);
+        updateOrdering.exec();
+    }
+
+    db.commit();
+}
+
+void DBHelper::reasignOrderToComicsInLabel(qulonglong labelId, QList<qulonglong> comicIds, QSqlDatabase &db)
+{
+    QSqlQuery updateOrdering(db);
+    updateOrdering.prepare("UPDATE comic_label SET "
+                           "ordering = :ordering "
+                           "WHERE comic_id = :comic_id AND label_id = :label_id");
+    db.transaction();
+    int order = 0;
+    foreach(qulonglong id, comicIds)
+    {
+        updateOrdering.bindValue(":ordering",order++);
+        updateOrdering.bindValue(":comic_id", id);
+        updateOrdering.bindValue(":label_id", labelId);
+        updateOrdering.exec();
+    }
+
+    db.commit();
+}
+
+void DBHelper::reasignOrderToComicsInReadingList(qulonglong readingListId, QList<qulonglong> comicIds, QSqlDatabase &db)
+{
+    QSqlQuery updateOrdering(db);
+    updateOrdering.prepare("UPDATE comic_reading_list SET "
+                           "ordering = :ordering "
+                           "WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id");
+    db.transaction();
+    int order = 0;
+    foreach(qulonglong id, comicIds)
+    {
+        updateOrdering.bindValue(":ordering",order++);
+        updateOrdering.bindValue(":comic_id", id);
+        updateOrdering.bindValue(":reading_list_id", readingListId);
+        updateOrdering.exec();
+        QLOG_INFO() << updateOrdering.lastError().databaseText() << "-" << updateOrdering.lastError().driverText();
+    }
+
+    db.commit();
+}
+
 //inserts
 qulonglong DBHelper::insert(Folder * folder, QSqlDatabase & db)
 {

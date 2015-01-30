@@ -20,7 +20,7 @@ public:
     ClassicComicsView(QWidget *parent = 0);
     void setToolBar(QToolBar * toolBar);
     void setModel(ComicModel *model);
-    void setCurrentIndex(const QModelIndex &index);
+
     QModelIndex currentIndex();
     QItemSelectionModel * selectionModel();
     void scrollTo(const QModelIndex & mi, QAbstractItemView::ScrollHint hint );
@@ -31,6 +31,7 @@ public:
     void selectIndex(int index);
 
 public slots:
+    void setCurrentIndex(const QModelIndex &index);
     void centerComicFlow(const QModelIndex & mi);
     void updateTableView(int i);
     void saveTableHeadersStatus();

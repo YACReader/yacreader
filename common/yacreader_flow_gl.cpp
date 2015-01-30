@@ -638,21 +638,27 @@ void YACReaderFlowGL::showNext()
 
 void YACReaderFlowGL::setCurrentIndex(int pos)
 {
-    startAnimationTimer();
+    if(!(pos>=0 && pos < images.length() && images.length()>0))
+        return;
+    if(pos >= images.length() && images.length() > 0)
+        pos = images.length()-1;
 
-	currentSelected = pos;
+        startAnimationTimer();
 
-	config.animationStep *= config.animationSpeedUp;
+        currentSelected = pos;
 
-	if(config.animationStep > config.animationStepMax){
-		config.animationStep = config.animationStepMax;
-	}
+        config.animationStep *= config.animationSpeedUp;
 
-	if(viewRotateActive && viewRotate < 1){
-		viewRotate += config.viewRotateAdd;
-	}
+        if(config.animationStep > config.animationStepMax){
+            config.animationStep = config.animationStepMax;
+        }
 
-	viewRotateActive = 1;
+        if(viewRotateActive && viewRotate < 1){
+            viewRotate += config.viewRotateAdd;
+        }
+
+        viewRotateActive = 1;
+
 }
 
 void YACReaderFlowGL::updatePositions()
@@ -672,7 +678,7 @@ void YACReaderFlowGL::updatePositions()
 	}
 
     if(fabs (images[currentSelected].current.x - images[currentSelected].animEnd.x) < 1)//viewRotate < 0.2)
-	{
+    {
 		cleanupAnimation();
 		if(updateCount >= 0) //TODO parametrizar
 		{
@@ -718,14 +724,13 @@ void YACReaderFlowGL::insert(char *name, QOpenGLTexture * texture, float x, floa
 
 void YACReaderFlowGL::remove(int item)
 {
-    if(item < 0 || item >= paths.size())
+    if(item < 0 || item >= images.size())
         return;
 
     startAnimationTimer();
 
 	loaded.remove(item);
 	marks.remove(item);
-	paths.removeAt(item);
 
 	//reposition current selection
     if(item <= currentSelected && currentSelected != 0){
@@ -1041,7 +1046,7 @@ void YACReaderFlowGL::render()
 }
 
 //EVENTOS
-#include "QsLog.h"
+
 void YACReaderFlowGL::wheelEvent(QWheelEvent * event)
 {
     Movement m = getMovement(event);
@@ -1248,8 +1253,8 @@ void YACReaderComicFlowGL::updateImageData()
 	{
 		int i = indexes[c];
 		if((i >= 0) && (i < numObjects))
-			if(!loaded[i])//slide(i).isNull())
-			{
+            if(!loaded[i])//slide(i).isNull())
+            {
 				//loader->loadTexture(i);
 				//loaded[i]=true;
 				// schedule thumbnail generation
@@ -1262,7 +1267,7 @@ void YACReaderComicFlowGL::updateImageData()
 				}
 				delete[] indexes;
 				return;
-			}
+            }
 	}
 }
 
@@ -1271,7 +1276,36 @@ void YACReaderComicFlowGL::remove(int item)
 	worker->lock();
 	worker->reset();
 	YACReaderFlowGL::remove(item);
-	worker->unlock();
+    if(item >= 0 && item < paths.size())
+        paths.removeAt(item);
+    worker->unlock();
+}
+
+void YACReaderComicFlowGL::resortCovers(QList<int> newOrder)
+{
+    worker->lock();
+    worker->reset();//is this necesary?
+    startAnimationTimer();
+    QList<QString> pathsNew;
+    QVector<bool> loadedNew;
+    QVector<YACReaderComicReadStatus> marksNew;
+    QVector<YACReader3DImage> imagesNew;
+
+    int index = 0;
+    foreach (int i, newOrder) {
+        pathsNew << paths.at(i);
+        loadedNew << loaded.at(i);
+        marksNew << marks.at(i);
+        imagesNew << images.at(i);
+        imagesNew.last().index = index++;
+    }
+
+    paths = pathsNew;
+    loaded = loadedNew;
+    marks = marksNew;
+    images = imagesNew;
+
+    worker->unlock();
 }
 
 

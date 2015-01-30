@@ -81,8 +81,6 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
 
     if(settings->contains(COMICS_VIEW_FLOW_SPLITTER_STATUS))
         sVertical->restoreState(settings->value(COMICS_VIEW_FLOW_SPLITTER_STATUS).toByteArray());
-
-
 }
 
 void ClassicComicsView::setToolBar(QToolBar *toolBar)
@@ -104,6 +102,8 @@ void ClassicComicsView::setModel(ComicModel *model)
     {
         connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(applyModelChanges(QModelIndex,QModelIndex,QVector<int>)),Qt::UniqueConnection);
         connect(model, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(removeItemsFromFlow(QModelIndex,int,int)),Qt::UniqueConnection);
+        connect(model, SIGNAL(resortedIndexes(QList<int>)),comicFlow,SLOT(resortCovers(QList<int>)),Qt::UniqueConnection);
+        connect(model, SIGNAL(newSelectedIndex(QModelIndex)),this,SLOT(setCurrentIndex(QModelIndex)),Qt::UniqueConnection);
 
         tableView->setModel(model);
         if(model->rowCount()>0)
@@ -146,8 +146,9 @@ void ClassicComicsView::setModel(ComicModel *model)
 
 void ClassicComicsView::setCurrentIndex(const QModelIndex &index)
 {
+    QLOG_INFO() << "*******************************************************ClassicComicsView::setCurrentIndex";
     tableView->setCurrentIndex(index);
-    //TODO ComicsView: scroll comicFlow to index
+    centerComicFlow(index);
 }
 
 QModelIndex ClassicComicsView::currentIndex()

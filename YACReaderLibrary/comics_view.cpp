@@ -17,6 +17,11 @@ void ComicsView::setModel(ComicModel *m)
 
 void ComicsView::dragEnterEvent(QDragEnterEvent *event)
 {
+    if(model->canDropMimeData(event->mimeData(),event->proposedAction(),0,0,QModelIndex()))
+        event->acceptProposedAction();
+    else
+    {
+    QLOG_INFO() << "dragEnterEvent";
     QList<QUrl> urlList;
 
     if (event->mimeData()->hasUrls() && event->dropAction() == Qt::CopyAction)
@@ -34,6 +39,7 @@ void ComicsView::dragEnterEvent(QDragEnterEvent *event)
             }
         }
     }
+    }
 }
 
 void ComicsView::dropEvent(QDropEvent *event)
@@ -42,7 +48,7 @@ void ComicsView::dropEvent(QDropEvent *event)
 
     bool validAction = event->dropAction() == Qt::CopyAction;// || event->dropAction() & Qt::MoveAction;  TODO move
 
-    if(validAction)
+    if(event->mimeData()->hasUrls() && validAction)
     {
 
         QList<QPair<QString, QString> > droppedFiles = ComicFilesManager::getDroppedFiles(event->mimeData()->urls());
