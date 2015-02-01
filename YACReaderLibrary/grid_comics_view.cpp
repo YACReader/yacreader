@@ -3,6 +3,9 @@
 #include <QtWidgets>
 #include <QtQuick>
 
+#include "yacreader_global.h"
+#include "comic.h"
+#include "comic_files_manager.h"
 #include "QsLog.h"
 
 GridComicsView::GridComicsView(QWidget *parent) :
@@ -64,6 +67,8 @@ void GridComicsView::setModel(ComicModel *model)
         ctxt->setContextProperty("comicsSelectionHelper", this);
         ctxt->setContextProperty("comicRatingHelper", this);
         ctxt->setContextProperty("dummyValue", true);
+        ctxt->setContextProperty("dragManager", this);
+        ctxt->setContextProperty("dropManager", this);
 
         if(model->rowCount()>0)
             setCurrentIndex(model->index(0,0));
@@ -202,7 +207,44 @@ void GridComicsView::startDrag()
     drag->setMimeData(model->mimeData(_selectionModel->selectedRows()));
     drag->setPixmap(QPixmap(":/images/openInYACReader.png")); //TODO add better image
 
-    Qt::DropAction dropAction = drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
+    /*Qt::DropAction dropAction =*/ drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
+}
+
+bool GridComicsView::canDropUrls(const QList<QUrl> &urls, Qt::DropAction action)
+{
+    if(action == Qt::CopyAction)
+    {
+        QString currentPath;
+        foreach (QUrl url, urls)
+        {
+            //comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
+            currentPath = url.toLocalFile();
+            if(Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir())
+                return true;
+        }
+    }
+    return false;
+}
+
+bool GridComicsView::canDropFormats(const QString &formats)
+{
+    return (formats.contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat) && model->canBeResorted());
+}
+
+void GridComicsView::droppedFiles(const QList<QUrl> &urls, Qt::DropAction action)
+{
+    bool validAction = action == Qt::CopyAction; //TODO add move
+
+    if(validAction)
+    {
+        QList<QPair<QString, QString> > droppedFiles = ComicFilesManager::getDroppedFiles(urls);
+        emit copyComicsToCurrentFolder(droppedFiles);
+    }
+}
+
+void GridComicsView::droppedComicsForResortingAt(const QString &data, int index)
+{
+    model->dropMimeData(model->mimeData(_selectionModel->selectedRows()), Qt::MoveAction, index, 0, QModelIndex());
 }
 
 //helper
