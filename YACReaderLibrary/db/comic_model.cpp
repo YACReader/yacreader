@@ -50,6 +50,7 @@ bool ComicModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, i
 //TODO: optimize this method
 bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
+
     QAbstractItemModel::dropMimeData(data,action,row,column,parent);
     QLOG_INFO() << ">>>>>>>>>>>>>>dropMimeData ComicModel<<<<<<<<<<<<<<<<<"<< parent << row << "," << column;
 
@@ -117,6 +118,8 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 
     QLOG_INFO() << newSorting;
 
+    if(!beginMoveRows(parent,currentIndexes.first(),currentIndexes.last(),parent,row))
+        return false;
     _data = resortedData;
 
 
@@ -141,6 +144,9 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
     }
 
     QSqlDatabase::removeDatabase(_databasePath);
+
+    endMoveRows();
+
     emit resortedIndexes(newSorting);
     int destSelectedIndex = row<0?_data.length():row;
 
@@ -150,6 +156,11 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
         emit newSelectedIndex(index(qMax(0,destSelectedIndex),0,parent));
 
     return true;
+}
+
+bool ComicModel::canBeResorted()
+{
+    return enableResorting;
 }
 
 QMimeData *ComicModel::mimeData(const QModelIndexList &indexes) const

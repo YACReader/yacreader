@@ -42,7 +42,7 @@ Rectangle {
                 Drag.onActiveChanged: {
                     if(!dragging)
                     {
-                        comicsSelectionHelper.startDrag();
+                        dragManager.startDrag();
                         dragging = true;
                     }else
                         dragging = false;
@@ -76,9 +76,9 @@ Rectangle {
                     }
 
                     onPressed: {
-                        //grid.currentIndex = index
-                        //comicsSelection.setCurrentIndex(index,0x0002)
-                        var ci = grid.currentIndex;
+
+                        var ci = grid.currentIndex; //save current index
+
                         /*if(mouse.button != Qt.RightButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
                         {
                             if(!comicsSelectionHelper.isSelectedIndex(index))
@@ -99,10 +99,10 @@ Rectangle {
 
                         mouse.accepted = true;
 
-                        if(mouse.button == Qt.RightButton)
+                        if(mouse.button == Qt.RightButton) // context menu is requested
                         {
 
-                            if(!comicsSelectionHelper.isSelectedIndex(index))
+                            if(!comicsSelectionHelper.isSelectedIndex(index)) //the context menu is requested outside the current selection, the selection will be
                             {
                                 comicsSelectionHelper.setCurrentIndex(index)
                                 grid.currentIndex = index;
@@ -111,8 +111,9 @@ Rectangle {
                             var coordinates = main.mapFromItem(realCell,mouseX,mouseY)
                             contextMenuHelper.requestedContextMenu(Qt.point(coordinates.x,coordinates.y));
 
-                        } else
+                        } else //left button
                         {
+
                             if(mouse.modifiers & Qt.ControlModifier)
                             {
                                 if(comicsSelectionHelper.isSelectedIndex(index))
@@ -121,7 +122,7 @@ Rectangle {
                                     {
                                         comicsSelectionHelper.deselectIndex(index);
                                         if(grid.currentIndex === index)
-                                            grid.currentIndex = comicsSelectionHelper.lastSelectedIndex();
+                                           grid.currentIndex = comicsSelectionHelper.lastSelectedIndex();
                                     }
                                 }
                                 else
@@ -130,16 +131,30 @@ Rectangle {
                                     grid.currentIndex = index;
                                 }
                             }
+
+                            if(mouse.button != Qt.RightButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier)) //just left button click
+                            {
+                                if(comicsSelectionHelper.isSelectedIndex(index)) //the context menu is requested outside the current selection, the selection will be
+                                {
+
+                                }
+                                else
+                                {
+                                    comicsSelectionHelper.setCurrentIndex(index)
+                                }
+
+                                grid.currentIndex = index;
+                            }
                         }
 
                     }
 
                     onReleased: {
-                        if(mouse.button != Qt.RightButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
+                        /*if(mouse.button != Qt.RightButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
                         {
                             comicsSelectionHelper.setCurrentIndex(index)
                             grid.currentIndex = index;
-                        }
+                        }*/
                     }
 
                 }
@@ -255,6 +270,56 @@ Rectangle {
         anchors.fill: parent
         anchors.margins: 0
 
+        //QTBUG-39453
+        //Another fu%$·#& bug in Qt
+        //https://bugreports.qt.io/browse/QTBUG-39453
+        //To solve this I am going to accept any input drag, drops will be filtered in "onDropped"
+        DropArea {
+            anchors.fill: parent
+
+            /*
+            onEntered: {
+                console.log("onEntered");
+                if(drag.hasUrls)
+                {
+                    console.log("HAS URLS -> ", drag.urls);
+                    if(dropManager.canDropUrls(drag.urls, drag.action))
+                    {
+                        drag.accepted = true;
+                        console.log("canDropUrls");
+                    }else
+                        drag.accepted = false;
+                }
+                else if (dropManager.canDropFormats(drag.formats)) {
+                    drag.accepted = true;
+                    console.log("canDropFormats");
+                } else
+                    drag.accepted = false;
+            }*/
+
+
+            onDropped: {
+                if(drop.hasUrls && dropManager.canDropUrls(drop.urls, drop.action))
+                {
+                    dropManager.droppedFiles(drop.urls, drop.action);
+                }
+                else{
+                    if (dropManager.canDropFormats(drop.formats))
+                    {
+                        var destItem = grid.itemAt(drop.x,drop.y + grid.contentY);
+                        var destLocalX = grid.mapToItem(destItem,drop.x,drop.y + grid.contentY).x
+                        var realIndex = grid.indexAt(drop.x,drop.y + grid.contentY);
+
+                        if(realIndex === -1)
+                            realIndex = grid.count - 1;
+
+                        var destIndex = destLocalX < (grid.cellWidth / 2) ? realIndex : realIndex + 1;
+                        dropManager.droppedComicsForResortingAt(drop.getDataAsString(), destIndex);
+                    }
+                }
+            }
+
+        }
 
         GridView {
             id:grid
@@ -274,6 +339,30 @@ Rectangle {
             currentIndex: 0
             cacheBuffer: 0
 
+            move: Transition {
+                NumberAnimation { properties: "x,y"; duration: 250 }
+            }
+
+            moveDisplaced: Transition {
+                NumberAnimation { properties: "x,y"; duration: 250 }
+            }
+
+            remove: Transition {
+                ParallelAnimation {
+                    NumberAnimation { property: "opacity"; to: 0; duration: 250 }
+
+                }
+            }
+
+            removeDisplaced: Transition {
+                NumberAnimation { properties: "x,y"; duration: 250 }
+            }
+
+
+
+            displaced: Transition {
+                NumberAnimation { properties: "x,y"; duration: 250 }
+            }
 
             function numCellsPerRow() {
                 return Math.floor(width / 185);

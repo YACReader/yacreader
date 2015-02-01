@@ -36,6 +36,7 @@ public:
 	int columnCount(const QModelIndex &parent = QModelIndex()) const;
     bool canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const;
     bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
+    bool canBeResorted();
     QMimeData * mimeData(const QModelIndexList &indexes) const;
     QStringList mimeTypes() const;
 

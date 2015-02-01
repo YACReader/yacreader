@@ -54,7 +54,14 @@ public slots:
     //rating
     void rate(int index, int rating);
 
+    //dragManager
     void startDrag();
+    //dropManager
+    bool canDropUrls(const QList<QUrl> & urls, Qt::DropAction action);
+    bool canDropFormats(const QString &formats);
+    void droppedFiles(const QList<QUrl> & urls, Qt::DropAction action);
+    void droppedComicsForResortingAt(const QString & data, int index);
+
 
 protected slots:
     void requestedContextMenu(const QPoint & point);
