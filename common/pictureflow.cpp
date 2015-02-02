@@ -1385,14 +1385,9 @@ void PictureFlow::resortCovers(QList<int> newOrder)
 
     QVector<YACReaderComicReadStatus> marksNew;
 
-    SlideInfo centerSlideNew;
-    QVector<SlideInfo> leftSlidesNew;
-    QVector<SlideInfo> rightSlidesNew;
-
     QVector<SlideInfo> slidesInfo;
     slidesInfo << d->state->leftSlides << d->state->centerSlide << d->state->rightSlides;
     QVector<SlideInfo> slidesInfoNew;
-    int numSlides = 1 + d->state->leftSlides.length() + d->state->rightSlides.length();
 
     int order = 0;
     foreach(int index, newOrder)
