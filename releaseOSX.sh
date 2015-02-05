@@ -1,7 +1,7 @@
 #!/bin/bash
 
-/Users/luisangel/Qt/5.3/clang_64/bin/macdeployqt YACReader.app
-/Users/luisangel/Qt/5.3/clang_64/bin/macdeployqt YACReaderLibrary.app
+/Users/luisangel/Qt/5.4/clang_64/bin/macdeployqt YACReader.app
+/Users/luisangel/Qt/5.4/clang_64/bin/macdeployqt YACReaderLibrary.app -qmldir=./YACReaderLibrary/qml
 
 #macdeployqt YACReader.app
 #macdeployqt YACReaderLibrary.app
