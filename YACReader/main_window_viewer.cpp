@@ -889,6 +889,7 @@ void MainWindowViewer::toggleFullScreen()
 }
 
 //QTBUG-41883
+#ifdef Q_OS_WIN
 void MainWindowViewer::toFullScreen()
 {
     _size = size();
@@ -936,6 +937,42 @@ void MainWindowViewer::toNormal()
 
     show();
 }
+
+#else
+
+void MainWindowViewer::toFullScreen()
+{
+    fromMaximized = this->isMaximized();
+
+    hideToolBars();
+    viewer->hide();
+    viewer->fullscreen = true;//TODO, change by the right use of windowState();
+    showFullScreen();
+    viewer->show();
+    if(viewer->magnifyingGlassIsVisible())
+        viewer->showMagnifyingGlass();
+}
+
+void MainWindowViewer::toNormal()
+{
+    //show all
+    viewer->hide();
+    viewer->fullscreen = false;//TODO, change by the right use of windowState();
+    //viewer->hideMagnifyingGlass();
+    if(fromMaximized)
+        showMaximized();
+    else
+        showNormal();
+
+    if(Configuration::getConfiguration().getShowToolbars())
+        showToolBars();
+    viewer->show();
+    if(viewer->magnifyingGlassIsVisible())
+        viewer->showMagnifyingGlass();
+}
+
+#endif
+
 void MainWindowViewer::toggleToolBars()
 {
 	toolbars?hideToolBars():showToolBars();

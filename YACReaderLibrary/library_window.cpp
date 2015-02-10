@@ -2083,6 +2083,8 @@ void LibraryWindow::toggleFullScreen()
 	fullscreen = !fullscreen;
 }
 
+#ifdef Q_OS_WIN
+
 //QTBUG-41883
 void LibraryWindow::toFullScreen()
 {
@@ -2136,6 +2138,45 @@ void LibraryWindow::toNormal()
     show();
 
 }
+
+#else
+
+void LibraryWindow::toFullScreen()
+{
+    fromMaximized = this->isMaximized();
+
+    sideBar->hide();
+    libraryToolBar->hide();
+
+    comicsView->toFullScreen();
+
+    showFullScreen();
+}
+
+void LibraryWindow::toNormal()
+{
+    sideBar->show();
+
+    comicsView->toNormal();
+
+    if(fromMaximized)
+        showMaximized();
+    else
+        showNormal();
+
+#ifdef Q_OS_MAC
+    QTimer * timer = new QTimer();
+    timer->setSingleShot(true);
+    timer->start();
+    connect(timer,SIGNAL(timeout()),libraryToolBar,SLOT(show()));
+    connect(timer,SIGNAL(timeout()),timer,SLOT(deleteLater()));
+#else
+    libraryToolBar->show();
+#endif
+
+}
+
+#endif
 
 void LibraryWindow::setSearchFilter(const YACReader::SearchModifiers modifier, QString filter)
 {
