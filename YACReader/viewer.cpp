@@ -314,14 +314,28 @@ void Viewer::updateContentSize()
 	//there is an image to resize
 	if(currentPage !=0 && !currentPage->isNull())
 	{
-		if(Configuration::getConfiguration().getAdjustToFullSize())
+		if(!Configuration::getConfiguration().getFitMode().isNull())
 		{
-			content->resize(currentPage->width(),currentPage->height());
-		}
-		else
-		{
-			float aspectRatio = (float)currentPage->width()/currentPage->height();
+			if(Configuration::getConfiguration().getFitMode()=="full_size")
+			{
+				content->resize(currentPage->size());
+			}
+			else if(Configuration::getConfiguration().getFitMode()=="full_page")
+			{
+				QSize pagefit=currentPage->size();
+				pagefit.scale(size(), Qt::KeepAspectRatio);
+				content->resize(pagefit);
+			}
+			
+			//float aspectRatio = (float)currentPage->width()/currentPage->height();
 			//Fit to width
+			else if(Configuration::getConfiguration().getFitMode()=="to_width")
+			{
+				QSize pagefit=currentPage->size();
+				pagefit.scale(width(), 0, Qt::KeepAspectRatioByExpanding);
+				content->resize(pagefit);
+			}
+			/*
 			if(Configuration::getConfiguration().getAdjustToWidth())
 			{
 				adjustToWidthRatio = Configuration::getConfiguration().getFitToWidthRatio();
@@ -333,6 +347,7 @@ void Viewer::updateContentSize()
 				else
 					content->resize(width()*adjustToWidthRatio,static_cast<int>(width()*adjustToWidthRatio/aspectRatio));
 			}
+			
 			//Fit to height or fullsize/custom size
 			else
 			{
@@ -340,9 +355,31 @@ void Viewer::updateContentSize()
 					content->resize(width(),static_cast<int>(width()/aspectRatio));
 				else
 					content->resize(static_cast<int>(height()*aspectRatio),height());
+			}*/
+			else if(Configuration::getConfiguration().getFitMode()=="to_height")
+			{
+				QSize pagefit=currentPage->size();
+				pagefit.scale(0, height(), Qt::KeepAspectRatioByExpanding);
+				content->resize(pagefit);
 			}
+			
+			else //if everything else fails use full_page
+			{
+				Configuration::getConfiguration().setFitMode("full_page");
+				QSize pagefit=currentPage->size();
+				pagefit.scale(size(), Qt::KeepAspectRatio);
+				content->resize(pagefit);
+			}
+			
 		}
 
+	if(Configuration::getConfiguration().getPageZoomLevel())
+	{	
+		QSize pagesize=content->size();
+		pagesize.scale(content->width()*Configuration::getConfiguration().getPageZoomLevel(), 0, Qt::KeepAspectRatioByExpanding);
+		content->resize(pagesize);
+	}
+	
         if(devicePixelRatio()>1)//only in retina display
         {
             QPixmap page = currentPage->scaled(content->width()*devicePixelRatio(), content->height()*devicePixelRatio(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -876,7 +913,8 @@ void Viewer::mouseReleaseEvent ( QMouseEvent * event )
 
 void Viewer::updateFitToWidthRatio(float ratio)
 {
-	Configuration::getConfiguration().setAdjustToWidth(true);
+	//Configuration::getConfiguration().setAdjustToWidth(true);
+	Configuration::getConfiguration().setFitMode("to_width");
 	adjustToWidthRatio = ratio;
 	updateContentSize();
 }
