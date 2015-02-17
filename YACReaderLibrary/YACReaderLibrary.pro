@@ -13,7 +13,11 @@ INCLUDEPATH += ../common \
 			   ./comic_vine \
 			   ./comic_vine/model
 
-DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY NO_OPENGL
+DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY
+
+CONFIG(no_opengl) {
+	DEFINES += NO_OPENGL
+}
 			   
 win32 {
 
@@ -43,7 +47,9 @@ else {
 INCLUDEPATH  += /usr/include/poppler/qt4
 LIBS         += -L/usr/lib -lpoppler-qt4
 }
-LIBS	     += -lGLU
+	!CONFIG(no_opengl) {
+	LIBS	     += -lGLU
+	}
 }
 
 macx{
@@ -73,7 +79,9 @@ QMAKE_CXXFLAGS += -std=c++11
 #CONFIG += release
 CONFIG -= flat
 QT += sql network widgets script
-#opengl
+!CONFIG(no_opengl) {
+	QT += opengl
+}
 
 # Input
 HEADERS += comic_flow.h \
@@ -106,7 +114,6 @@ HEADERS += comic_flow.h \
            ../common/pictureflow.h \
            ../common/custom_widgets.h \
            ../common/qnaturalsorting.h \
-           #../common/yacreader_flow_gl.h \
            ../common/yacreader_global.h \
            ../common/onstart_flow_selection_dialog.h \
            no_libraries_widget.h \
@@ -135,6 +142,9 @@ HEADERS += comic_flow.h \
     empty_reading_list_widget.h \
     ../common/scroll_management.h
 
+!CONFIG(no_opengl) {
+	HEADERS += ../common/yacreader_flow_gl.h
+	}
 		   
 SOURCES += comic_flow.cpp \
            create_library_dialog.cpp \
@@ -167,7 +177,6 @@ SOURCES += comic_flow.cpp \
            ../common/pictureflow.cpp \
            ../common/custom_widgets.cpp \
            ../common/qnaturalsorting.cpp \
-           #../common/yacreader_flow_gl.cpp \
            ../common/onstart_flow_selection_dialog.cpp \
            no_libraries_widget.cpp \
            import_widget.cpp \
@@ -195,6 +204,10 @@ SOURCES += comic_flow.cpp \
     empty_special_list.cpp \
     empty_reading_list_widget.cpp \
     ../common/scroll_management.cpp
+
+!CONFIG(no_opengl) {
+         SOURCES += ../common/yacreader_flow_gl.cpp
+}
 
 				   
 include(./server/server.pri)
