@@ -7,13 +7,8 @@ INCLUDEPATH += $$PWD/../common \
 win32 {
 LIBS += -L$$PWD/../dependencies/poppler/lib -loleaut32 -lole32
 
-isEqual(QT_MAJOR_VERSION, 5) {
 LIBS += -lpoppler-qt5
 INCLUDEPATH += ../dependencies/poppler/include/qt5
-}
-else {
-LIBS += -lpoppler-qt4
-INCLUDEPATH += ../dependencies/poppler/include/qt4
 }
 
 QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT
@@ -26,15 +21,8 @@ CONFIG -= embed_manifest_exe
 
 unix:!macx{
 
-isEqual(QT_MAJOR_VERSION, 5) {
 INCLUDEPATH  += /usr/include/poppler/qt5
 LIBS         += -L/usr/lib -lpoppler-qt5
-}
-else {
-INCLUDEPATH  += /usr/include/poppler/qt4
-LIBS         += -L/usr/lib -lpoppler-qt4
-
-}
 
 !CONFIG(no_opengl) {
 	LIBS += -lGLU
@@ -71,11 +59,7 @@ QT += network widgets core
 #CONFIG += release
 CONFIG -= flat
 
-isEqual(QT_MAJOR_VERSION, 5) {
-	QT += multimedia
-} else {
-	QT += phonon
-}
+QT += multimedia
 
 # Input
 HEADERS += $$PWD/../common/comic.h \
