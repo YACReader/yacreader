@@ -17,7 +17,7 @@ QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT
 }
 QMAKE_LFLAGS_RELEASE += /LTCG
 CONFIG -= embed_manifest_exe
-}
+
 
 unix:!macx{
 
