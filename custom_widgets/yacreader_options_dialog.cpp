@@ -102,8 +102,10 @@ YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget * parent)
 	connect(gl->performanceSlider, SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
 
 	connect(gl->vSyncCheck,SIGNAL(stateChanged(int)),this,SLOT(saveUseVSync(int)));
+#endif
 }
 
+#ifndef NO_OPENGL
 void YACReaderOptionsDialog::savePerformance(int value)
 {
 	settings->setValue(PERFORMANCE,value);
@@ -127,8 +129,6 @@ void YACReaderOptionsDialog::saveFlowParameters()
 	settings->setValue(FADE_OUT_DIST,gl->fadeOutDist->getValue());
 	settings->setValue(LIGHT_STRENGTH,gl->lightStrength->getValue());
 	settings->setValue(MAX_ANGLE,gl->maxAngle->getValue());
-}
-#else
 }
 #endif
 
