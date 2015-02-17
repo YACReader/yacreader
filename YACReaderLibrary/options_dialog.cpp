@@ -1,8 +1,10 @@
 #include "options_dialog.h"
 
+#ifndef NO_OPENGL
 #include "yacreader_flow_gl.h"
-#include "yacreader_flow_config_widget.h"
 #include "yacreader_gl_flow_config_widget.h"
+#endif
+#include "yacreader_flow_config_widget.h"
 #include "api_key_dialog.h"
 
 #include <QVBoxLayout>
@@ -15,6 +17,8 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QCheckBox>
+#include <QtWidgets>
+
 
 FlowType flowType = Strip;
 
@@ -28,20 +32,25 @@ OptionsDialog::OptionsDialog(QWidget * parent)
     QVBoxLayout * flowLayout = new QVBoxLayout;
     QVBoxLayout * generalLayout = new QVBoxLayout();
 
-    QHBoxLayout * switchFlowType = new QHBoxLayout;
+    QHBoxLayout * switchFlowType = new QHBoxLayout();
     switchFlowType->addStretch();
+#ifndef NO_OPENGL
     switchFlowType->addWidget(useGL);
-
+#endif
     QHBoxLayout * buttons = new QHBoxLayout();
     buttons->addStretch();
     buttons->addWidget(accept);
     buttons->addWidget(cancel);
 
     flowLayout->addWidget(sw);
+#ifndef NO_OPENGL
     flowLayout->addWidget(gl);
+#endif
     flowLayout->addLayout(switchFlowType);
 
+#ifndef NO_OPENGL
     sw->hide();
+#endif
 
     QVBoxLayout * apiKeyLayout = new QVBoxLayout();
     QPushButton * apiKeyButton = new QPushButton(tr("Edit Comic Vine API key"));
