@@ -23,14 +23,8 @@ win32 {
 
 LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32
 
-isEqual(QT_MAJOR_VERSION, 5) {
 LIBS += -lpoppler-qt5
 INCLUDEPATH += ../dependencies/poppler/include/qt5
-}
-else {
-LIBS += -lpoppler-qt4
-INCLUDEPATH += ../dependencies/poppler/include/qt4
-}
 
 QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT
 !CONFIG(no_opengl) {
@@ -42,15 +36,10 @@ CONFIG -= embed_manifest_exe
 
 unix:!macx{
 
-isEqual(QT_MAJOR_VERSION, 5) {
 INCLUDEPATH  += /usr/include/poppler/qt5
 LIBS         += -L/usr/lib -lpoppler-qt5
-}
-else {
-INCLUDEPATH  += /usr/include/poppler/qt4
-LIBS         += -L/usr/lib -lpoppler-qt4
-}
-	!CONFIG(no_opengl) {
+
+!CONFIG(no_opengl) {
 	LIBS	     += -lGLU
 	}
 }
@@ -240,9 +229,9 @@ TRANSLATIONS    = yacreaderlibrary_es.ts \
 									yacreaderlibrary_de.ts \
 									yacreaderlibrary_source.ts
 
-isEqual(QT_MAJOR_VERSION, 5) {
-	Release:DESTDIR = ../release5
-	Debug:DESTDIR = ../debug5
+
+Release:DESTDIR = ../release
+Debug:DESTDIR = ../debug
 
 #QML/GridView
 QT += quick qml
