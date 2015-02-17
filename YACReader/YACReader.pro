@@ -6,7 +6,12 @@ TARGET = YACReader
 DEPENDPATH += . \
     release
 
-DEFINES += NOMINMAX YACREADER NO_OPENGL
+DEFINES += NOMINMAX YACREADER
+
+CONFIG(no_opengl) {
+	DEFINES += NO_OPENGL
+}
+
 
  unix:!macx{
 QMAKE_CXXFLAGS += -std=c++11
