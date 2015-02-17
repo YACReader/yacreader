@@ -32,7 +32,11 @@ INCLUDEPATH  += /usr/include/poppler/qt4
 LIBS         += -L/usr/lib -lpoppler-qt4
 
 }
-LIBS	     += -lGLU
+
+!CONFIG(no_opengl) {
+	LIBS += -lGLU
+}
+
 }
 
 macx{
@@ -53,12 +57,14 @@ LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 
 OBJECTIVE_SOURCES += $$PWD/../common/pdf_comic.mm
 HEADERS += $$PWD/../common/pdf_comic.h
-
-
 }
 
 QT += network widgets core
-#opengl
+!CONFIG(no_opengl) {
+	QT += opengl
+}
+
+
 #CONFIG += release
 CONFIG -= flat
 
@@ -82,7 +88,6 @@ HEADERS += $$PWD/../common/comic.h \
     $$PWD/render.h \
     $$PWD/shortcuts_dialog.h \
 	$$PWD/translator.h \
-	#$$PWD/goto_flow_gl.h \
 	$$PWD/goto_flow_widget.h \
 	$$PWD/page_label_widget.h \
 	$$PWD/goto_flow_toolbar.h \
@@ -93,7 +98,6 @@ HEADERS += $$PWD/../common/comic.h \
     $$PWD/../common/custom_widgets.h \
     $$PWD/../common/check_new_version.h \
 	$$PWD/../common/qnaturalsorting.h \
-	#$$PWD/../common/yacreader_flow_gl.h \
 	$$PWD/../common/yacreader_global.h \
 	$$PWD/../common/onstart_flow_selection_dialog.h \
 	$$PWD/../common/comic_db.h \
@@ -103,7 +107,12 @@ HEADERS += $$PWD/../common/comic.h \
 	$$PWD/../common/http_worker.h \
 	$$PWD/../common/exit_check.h \
         $$PWD/../common/scroll_management.h
-	
+
+!CONFIG(no_opengl) {
+	HEADERS += 	$$PWD/goto_flow_gl.h \
+				$$PWD/../common/yacreader_flow_gl.h
+}
+
 SOURCES += $$PWD/../common/comic.cpp \
     $$PWD/configuration.cpp \
     $$PWD/goto_dialog.cpp \
@@ -117,7 +126,6 @@ SOURCES += $$PWD/../common/comic.cpp \
     $$PWD/render.cpp \
     $$PWD/shortcuts_dialog.cpp \
 	$$PWD/translator.cpp \
-	#$$PWD/goto_flow_gl.cpp \
 	$$PWD/goto_flow_widget.cpp \
 	$$PWD/page_label_widget.cpp \
 	$$PWD/goto_flow_toolbar.cpp \
@@ -128,7 +136,6 @@ SOURCES += $$PWD/../common/comic.cpp \
     $$PWD/../common/custom_widgets.cpp \
     $$PWD/../common/check_new_version.cpp \
 	$$PWD/../common/qnaturalsorting.cpp \
-	#$$PWD/../common/yacreader_flow_gl.cpp \
 	$$PWD/../common/onstart_flow_selection_dialog.cpp \
 	$$PWD/../common/comic_db.cpp \
 	$$PWD/../common/folder.cpp \
@@ -138,6 +145,11 @@ SOURCES += $$PWD/../common/comic.cpp \
     $$PWD/../common/yacreader_global.cpp \
 	$$PWD/../common/exit_check.cpp \
     $$PWD/../common/scroll_management.cpp
+
+!CONFIG(no_opengl) {
+	SOURCES += 	$$PWD/goto_flow_gl.cpp \
+				$$PWD/../common/yacreader_flow_gl.cpp
+}
 
 include($$PWD/../custom_widgets/custom_widgets_yacreader.pri)
 include($$PWD/../compressed_archive/wrapper.pri)
