@@ -57,7 +57,8 @@ HEADERS += $$PWD/../common/pdf_comic.h
 
 }
 
-QT += network opengl
+QT += network widgets core
+#opengl
 #CONFIG += release
 CONFIG -= flat
 
@@ -81,7 +82,7 @@ HEADERS += $$PWD/../common/comic.h \
     $$PWD/render.h \
     $$PWD/shortcuts_dialog.h \
 	$$PWD/translator.h \
-	$$PWD/goto_flow_gl.h \
+	#$$PWD/goto_flow_gl.h \
 	$$PWD/goto_flow_widget.h \
 	$$PWD/page_label_widget.h \
 	$$PWD/goto_flow_toolbar.h \
@@ -92,7 +93,7 @@ HEADERS += $$PWD/../common/comic.h \
     $$PWD/../common/custom_widgets.h \
     $$PWD/../common/check_new_version.h \
 	$$PWD/../common/qnaturalsorting.h \
-	$$PWD/../common/yacreader_flow_gl.h \
+	#$$PWD/../common/yacreader_flow_gl.h \
 	$$PWD/../common/yacreader_global.h \
 	$$PWD/../common/onstart_flow_selection_dialog.h \
 	$$PWD/../common/comic_db.h \
@@ -116,7 +117,7 @@ SOURCES += $$PWD/../common/comic.cpp \
     $$PWD/render.cpp \
     $$PWD/shortcuts_dialog.cpp \
 	$$PWD/translator.cpp \
-	$$PWD/goto_flow_gl.cpp \
+	#$$PWD/goto_flow_gl.cpp \
 	$$PWD/goto_flow_widget.cpp \
 	$$PWD/page_label_widget.cpp \
 	$$PWD/goto_flow_toolbar.cpp \
@@ -127,7 +128,7 @@ SOURCES += $$PWD/../common/comic.cpp \
     $$PWD/../common/custom_widgets.cpp \
     $$PWD/../common/check_new_version.cpp \
 	$$PWD/../common/qnaturalsorting.cpp \
-	$$PWD/../common/yacreader_flow_gl.cpp \
+	#$$PWD/../common/yacreader_flow_gl.cpp \
 	$$PWD/../common/onstart_flow_selection_dialog.cpp \
 	$$PWD/../common/comic_db.cpp \
 	$$PWD/../common/folder.cpp \

@@ -13,7 +13,7 @@ INCLUDEPATH += ../common \
 			   ./comic_vine \
 			   ./comic_vine/model
 
-DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY
+DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY NO_OPENGL
 			   
 win32 {
 
@@ -72,7 +72,8 @@ QMAKE_CXXFLAGS += -std=c++11
 
 #CONFIG += release
 CONFIG -= flat
-QT += sql network opengl script
+QT += sql network widgets script
+#opengl
 
 # Input
 HEADERS += comic_flow.h \
