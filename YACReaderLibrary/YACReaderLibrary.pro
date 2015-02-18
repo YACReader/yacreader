@@ -247,11 +247,6 @@ win32:RESOURCES += qml_win.qrc
 unix:!macx:RESOURCES += qml_win.qrc
 macx:RESOURCES += qml_osx.qrc
 
-} else {
-	Release:DESTDIR = ../release
-	Debug:DESTDIR = ../debug
-}
-
 win32 {
 !exists(../compressed_archive/lib7zip){
         error(You\'ll need 7zip source code to compile YACReader. \
