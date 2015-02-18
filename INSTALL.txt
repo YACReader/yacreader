@@ -1,8 +1,3 @@
-INSTALLATION GUIDE FOR LINUX USERS (BINARY PACKAGE)
-**********************************
-YACReader and YACReaderLibraries binaries are compiled under Ubuntu 13.10 and uses Qt5 and libpoppler-qt5.
-
-
 COMPILATION GUIDE FOR LINUX/UNIX USERS
 **********************************
 YACReader and YACReaderLibrary are build using qmake. To build and install the program, run:
@@ -25,7 +20,13 @@ Default values:
 PREFIX=/usr
 INSTALL_ROOT=""
 
+On embedded devices that don't support desktop OpenGL, it is recommended to use the no_opengl config option:
+
+qmake CONFIG+=no_opengl
+
+This will remove any dependency on desktop OpenGL.
+
 
 DO YOU WANT TO HELP YACREADER?
 ******************************
-If you have experience creating packages, please help to create a package for your favourite distro! Send me an e-mail to: info@yacreader.com
+If you have experience creating packages, please help to create a package for your favourite Linux distro! Send me an e-mail to: info@yacreader.com
