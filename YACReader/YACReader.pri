@@ -9,15 +9,14 @@ LIBS += -L$$PWD/../dependencies/poppler/lib -loleaut32 -lole32
 
 LIBS += -lpoppler-qt5
 INCLUDEPATH += ../dependencies/poppler/include/qt5
-}
 
 QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT
 !CONFIG(no_opengl) {
-	QMAKE_CXXFLAGS_RELEASE +=  /GL
+	QMAKE_CXXFLAGS_RELEASE += /GL
 }
 QMAKE_LFLAGS_RELEASE += /LTCG
 CONFIG -= embed_manifest_exe
-
+}
 
 unix:!macx{
 
@@ -54,7 +53,6 @@ QT += network widgets core
 !CONFIG(no_opengl) {
 	QT += opengl
 }
-
 
 #CONFIG += release
 CONFIG -= flat
