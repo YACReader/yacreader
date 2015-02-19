@@ -8,18 +8,17 @@ DEPENDPATH += . \
 
 DEFINES += NOMINMAX YACREADER
 
+CONFIG(no_opengl) {
+	DEFINES += NO_OPENGL
+}
+
+
  unix:!macx{
 QMAKE_CXXFLAGS += -std=c++11
 }
 
-isEqual(QT_MAJOR_VERSION, 5) {
-	Release:DESTDIR = ../release5
-	Debug:DESTDIR = ../debug5
-
-} else {
-	Release:DESTDIR = ../release
-	Debug:DESTDIR = ../debug
-}
+Release:DESTDIR = ../release
+Debug:DESTDIR = ../debug
 
 SOURCES += main.cpp
 include(YACReader.pri)

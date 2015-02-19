@@ -16,12 +16,14 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     settings->beginGroup("libraryConfig");
     //FLOW-----------------------------------------------------------------------
     //---------------------------------------------------------------------------
-
+#ifndef NO_OPENGL
     if((settings->value(USE_OPEN_GL).toBool() == true))
         comicFlow = new ComicFlowWidgetGL(0);
     else
         comicFlow = new ComicFlowWidgetSW(0);
-
+#else
+        comicFlow = new ComicFlowWidgetSW(0);
+#endif
     comicFlow->updateConfig(settings);
     comicFlow->setFocusPolicy(Qt::StrongFocus);
     comicFlow->setShowMarks(true);

@@ -3,7 +3,11 @@
 #include "configuration.h"
 #include "magnifying_glass.h"
 #include "goto_flow.h"
+#ifndef NO_OPENGL
 #include "goto_flow_gl.h"
+#else
+#include <QtWidgets>
+#endif	
 #include "bookmarks_dialog.h"
 #include "render.h"
 #include "goto_dialog.h"
@@ -67,6 +71,7 @@ shouldOpenPrevious(false)
 	QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReader.ini",QSettings::IniFormat);
 
     //CONFIG GOTO_FLOW--------------------------------------------------------
+#ifndef NO_OPENGL
     if(!settings->contains(USE_OPEN_GL))
     {
         settings->setValue(USE_OPEN_GL,2);
@@ -76,7 +81,9 @@ shouldOpenPrevious(false)
         goToFlow = new GoToFlowGL(this,Configuration::getConfiguration().getFlowType());
     else
         goToFlow = new GoToFlow(this,Configuration::getConfiguration().getFlowType());
-
+#else
+	goToFlow = new GoToFlow(this,Configuration::getConfiguration().getFlowType());
+#endif
 	goToFlow->setFocusPolicy(Qt::StrongFocus);
 	goToFlow->hide();
 	showGoToFlowAnimation = new QPropertyAnimation(goToFlow,"pos");
