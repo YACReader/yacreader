@@ -10,7 +10,8 @@
 #include <QScrollBar>
 #include <QGraphicsItemAnimation>
 #include <QTimeLine>
-#include <QGLWidget>
+//TODO: is QGLWidget needed here???
+//#include <QGLWidget>
 #include <QTimer>
 #include <QElapsedTimer>
 #include <QToolButton>

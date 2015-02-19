@@ -14,36 +14,34 @@ INCLUDEPATH += ../common \
 			   ./comic_vine/model
 
 DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY
+
+CONFIG(no_opengl) {
+	DEFINES += NO_OPENGL
+}
 			   
 win32 {
 
 LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32
 
-isEqual(QT_MAJOR_VERSION, 5) {
 LIBS += -lpoppler-qt5
 INCLUDEPATH += ../dependencies/poppler/include/qt5
-}
-else {
-LIBS += -lpoppler-qt4
-INCLUDEPATH += ../dependencies/poppler/include/qt4
-}
 
-QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
+QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT
+!CONFIG(no_opengl) {
+	QMAKE_CXXFLAGS_RELEASE +=  /GL
+}
 QMAKE_LFLAGS_RELEASE += /LTCG
 CONFIG -= embed_manifest_exe
 }
 
 unix:!macx{
 
-isEqual(QT_MAJOR_VERSION, 5) {
 INCLUDEPATH  += /usr/include/poppler/qt5
 LIBS         += -L/usr/lib -lpoppler-qt5
-}
-else {
-INCLUDEPATH  += /usr/include/poppler/qt4
-LIBS         += -L/usr/lib -lpoppler-qt4
-}
-LIBS	     += -lGLU
+
+!CONFIG(no_opengl) {
+	LIBS	     += -lGLU
+	}
 }
 
 macx{
@@ -72,7 +70,10 @@ QMAKE_CXXFLAGS += -std=c++11
 
 #CONFIG += release
 CONFIG -= flat
-QT += sql network opengl script
+QT += sql network widgets script
+!CONFIG(no_opengl) {
+	QT += opengl
+}
 
 # Input
 HEADERS += comic_flow.h \
@@ -105,7 +106,6 @@ HEADERS += comic_flow.h \
            ../common/pictureflow.h \
            ../common/custom_widgets.h \
            ../common/qnaturalsorting.h \
-           ../common/yacreader_flow_gl.h \
            ../common/yacreader_global.h \
            ../common/onstart_flow_selection_dialog.h \
            no_libraries_widget.h \
@@ -134,6 +134,9 @@ HEADERS += comic_flow.h \
     empty_reading_list_widget.h \
     ../common/scroll_management.h
 
+!CONFIG(no_opengl) {
+	HEADERS += ../common/yacreader_flow_gl.h
+	}
 		   
 SOURCES += comic_flow.cpp \
            create_library_dialog.cpp \
@@ -166,7 +169,6 @@ SOURCES += comic_flow.cpp \
            ../common/pictureflow.cpp \
            ../common/custom_widgets.cpp \
            ../common/qnaturalsorting.cpp \
-           ../common/yacreader_flow_gl.cpp \
            ../common/onstart_flow_selection_dialog.cpp \
            no_libraries_widget.cpp \
            import_widget.cpp \
@@ -194,6 +196,10 @@ SOURCES += comic_flow.cpp \
     empty_special_list.cpp \
     empty_reading_list_widget.cpp \
     ../common/scroll_management.cpp
+
+!CONFIG(no_opengl) {
+         SOURCES += ../common/yacreader_flow_gl.cpp
+}
 
 				   
 include(./server/server.pri)
@@ -223,9 +229,9 @@ TRANSLATIONS    = yacreaderlibrary_es.ts \
 									yacreaderlibrary_de.ts \
 									yacreaderlibrary_source.ts
 
-isEqual(QT_MAJOR_VERSION, 5) {
-	Release:DESTDIR = ../release5
-	Debug:DESTDIR = ../debug5
+
+Release:DESTDIR = ../release
+Debug:DESTDIR = ../debug
 
 #QML/GridView
 QT += quick qml
@@ -240,11 +246,6 @@ RESOURCES += qml.qrc
 win32:RESOURCES += qml_win.qrc
 unix:!macx:RESOURCES += qml_win.qrc
 macx:RESOURCES += qml_osx.qrc
-
-} else {
-	Release:DESTDIR = ../release
-	Debug:DESTDIR = ../debug
-}
 
 win32 {
 !exists(../compressed_archive/lib7zip){

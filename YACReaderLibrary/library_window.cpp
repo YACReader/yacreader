@@ -15,7 +15,9 @@
 #include <QFileIconProvider>
 #include <QMatrix>
 #include <QSettings>
+#ifndef NO_OPENGL
 #include <QGLFormat>
+#endif
 #include <QHeaderView>
 
 #include <iterator>
@@ -182,14 +184,14 @@ void LibraryWindow::doLayout()
 	libraryToolBar = new YACReaderMainToolBar(this);
 #endif
 
-
+#ifndef NO_OPENGL
     //FLOW-----------------------------------------------------------------------
     //---------------------------------------------------------------------------
     if(QGLFormat::hasOpenGL() && !settings->contains(USE_OPEN_GL))
     {
         settings->setValue(USE_OPEN_GL,2);
     }
-
+#endif
     //FOLDERS FILTER-------------------------------------------------------------
     //---------------------------------------------------------------------------
 #ifndef Q_OS_MAC
