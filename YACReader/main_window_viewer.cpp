@@ -578,6 +578,7 @@ void MainWindowViewer::createToolBars()
 	viewer->addAction(leftRotationAction);
 	viewer->addAction(rightRotationAction);
     viewer->addAction(doublePageAction);
+    viewer->addAction(doubleMangaPageAction);
     YACReader::addSperator(viewer);
 
     viewer->addAction(showMagnifyingGlassAction);
