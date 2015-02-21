@@ -13,6 +13,7 @@
 YACReaderGLFlowConfigWidget::YACReaderGLFlowConfigWidget(QWidget * parent /* = 0 */)
 	:QWidget(parent)
 {
+	qDebug() << "Surface:" << QSurfaceFormat().majorVersion();
 	QVBoxLayout * layout = new QVBoxLayout(this);
 
 	//PRESETS------------------------------------------------------------------
