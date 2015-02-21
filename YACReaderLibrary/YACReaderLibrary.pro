@@ -16,9 +16,15 @@ INCLUDEPATH += ../common \
 DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY
 
 CONFIG(no_opengl) {
-	DEFINES += NO_OPENGL
+    DEFINES += NO_OPENGL
 }
-			   
+
+CONFIG(legacy_gl_widget) {
+    INCLUDEPATH += ../common/gl_legacy \
+} else {
+    INCLUDEPATH += ../common/gl \
+}
+
 win32 {
 
 LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32
@@ -135,8 +141,13 @@ HEADERS += comic_flow.h \
     ../common/scroll_management.h
 
 !CONFIG(no_opengl) {
-	HEADERS += ../common/yacreader_flow_gl.h
-	}
+    CONFIG(legacy_gl_widget) {
+        message("using legacy YACReaderFlowGL (QGLWidget) header")
+        HEADERS += ../common/gl_legacy/yacreader_flow_gl.h
+    } else {
+        HEADERS += ../common/gl/yacreader_flow_gl.h
+    }
+}
 		   
 SOURCES += comic_flow.cpp \
            create_library_dialog.cpp \
@@ -198,7 +209,12 @@ SOURCES += comic_flow.cpp \
     ../common/scroll_management.cpp
 
 !CONFIG(no_opengl) {
-         SOURCES += ../common/yacreader_flow_gl.cpp
+    CONFIG(legacy_gl_widget) {
+        message("using legacy YACReaderFlowGL (QGLWidget) source code")
+        SOURCES += ../common/gl_legacy/yacreader_flow_gl.cpp
+    } else {
+        SOURCES += ../common/gl/yacreader_flow_gl.cpp
+    }
 }
 
 				   
