@@ -849,7 +849,7 @@ void Render::nextPage()
 		update();
 		emit pageChanged(currentIndex);
 	}
-	else
+	else if (hasLoadedComic() && (currentIndex == numPages()-1))
 	{
 		emit isLast();
 	}
@@ -873,7 +873,7 @@ void Render::nextDoublePage()
 		update();
 		emit pageChanged(currentIndex);
 	}
-	else
+	else if (hasLoadedComic() && (currentIndex >= numPages()-2))
 	{
 		emit isLast();
 	}
@@ -894,7 +894,7 @@ void Render::previousPage()
 		update();
 		emit pageChanged(currentIndex);
 	}
-	else
+	else if (hasLoadedComic() && (currentIndex == 0))
 	{
 		emit isCover();
 	}
