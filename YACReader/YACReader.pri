@@ -4,6 +4,12 @@ INCLUDEPATH += .
 INCLUDEPATH += $$PWD/../common \
                             $$PWD/../custom_widgets
 
+CONFIG(legacy_gl_widget) {
+    INCLUDEPATH += ../common/gl_legacy \
+} else {
+    INCLUDEPATH += ../common/gl \
+}
+
 win32 {
 LIBS += -L$$PWD/../dependencies/poppler/lib -loleaut32 -lole32
 
@@ -94,8 +100,13 @@ HEADERS += $$PWD/../common/comic.h \
         $$PWD/../common/scroll_management.h
 
 !CONFIG(no_opengl) {
-	HEADERS += 	$$PWD/goto_flow_gl.h \
-				$$PWD/../common/yacreader_flow_gl.h
+    CONFIG(legacy_gl_widget) {
+        message("using legacy YACReaderFlowGL (QGLWidget) header")
+        HEADERS += ../common/gl_legacy/yacreader_flow_gl.h
+    } else {
+        HEADERS += ../common/gl/yacreader_flow_gl.h
+    }
+    HEADERS += 	$$PWD/goto_flow_gl.h
 }
 
 SOURCES += $$PWD/../common/comic.cpp \
@@ -132,8 +143,13 @@ SOURCES += $$PWD/../common/comic.cpp \
     $$PWD/../common/scroll_management.cpp
 
 !CONFIG(no_opengl) {
-	SOURCES += 	$$PWD/goto_flow_gl.cpp \
-				$$PWD/../common/yacreader_flow_gl.cpp
+    CONFIG(legacy_gl_widget) {
+        message("using legacy YACReaderFlowGL (QGLWidget) source code")
+        SOURCES += ../common/gl_legacy/yacreader_flow_gl.cpp
+    } else {
+        SOURCES += ../common/gl/yacreader_flow_gl.cpp
+    }
+    SOURCES += $$PWD/goto_flow_gl.cpp
 }
 
 include($$PWD/../custom_widgets/custom_widgets_yacreader.pri)

@@ -889,58 +889,6 @@ void MainWindowViewer::toggleFullScreen()
 	Configuration::getConfiguration().setFullScreen(fullscreen = !fullscreen);
 }
 
-//QTBUG-41883
-#ifdef Q_OS_WIN
-void MainWindowViewer::toFullScreen()
-{
-    _size = size();
-    _pos = pos();
-    hide();
-	fromMaximized = this->isMaximized();
-
-	hideToolBars();
-	viewer->hide();
-	viewer->fullscreen = true;//TODO, change by the right use of windowState();
-
-    setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
-    setWindowState(windowState() | Qt::WindowFullScreen);
-    resize(windowHandle()->screen()->size()-QSize(0,1));
-
-	viewer->show();
-	if(viewer->magnifyingGlassIsVisible())
-		viewer->showMagnifyingGlass();
-
-    show();
-}
-
-//QTBUG-41883
-void MainWindowViewer::toNormal()
-{
-    hide();
-	//show all
-	viewer->hide();
-	viewer->fullscreen = false;//TODO, change by the right use of windowState();
-	//viewer->hideMagnifyingGlass();
-    setWindowFlags(windowFlags() & ~Qt::WindowStaysOnTopHint);
-    setWindowState(windowState() & ~Qt::WindowFullScreen);
-    resize(_size);
-    move(_pos);
-    if(fromMaximized)
-        showMaximized();
-    else
-        showNormal();
-
-	if(Configuration::getConfiguration().getShowToolbars())
-		showToolBars();
-    viewer->show();
-	if(viewer->magnifyingGlassIsVisible())
-        viewer->showMagnifyingGlass();
-
-    show();
-}
-
-#else
-
 void MainWindowViewer::toFullScreen()
 {
     fromMaximized = this->isMaximized();
@@ -971,8 +919,6 @@ void MainWindowViewer::toNormal()
     if(viewer->magnifyingGlassIsVisible())
         viewer->showMagnifyingGlass();
 }
-
-#endif
 
 void MainWindowViewer::toggleToolBars()
 {
