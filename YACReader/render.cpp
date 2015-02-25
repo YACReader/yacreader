@@ -942,6 +942,8 @@ void Render::pageRawDataReady(int page)
 	{
 		for(int i=0;i<pagesEmited.size();i++)
 		{
+            if(pagesEmited.at(i)>= pagesReady.size())
+                return;
 			pagesReady[pagesEmited.at(i)] = true;
 			if(pagesEmited.at(i) == currentIndex)
 				update();
