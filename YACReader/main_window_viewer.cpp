@@ -732,7 +732,7 @@ void MainWindowViewer::openComic(const QString &pathFile)
 
     enableActions();
 
-    viewer->open(pathFile);
+    viewer->open(fi.absoluteFilePath());
  }
 
 void MainWindowViewer::openFolder()
