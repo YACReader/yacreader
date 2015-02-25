@@ -937,25 +937,31 @@ void Render::setNumPages(unsigned int numPages)
 
 void Render::pageRawDataReady(int page)
 {
-	pagesEmited.push_back(page);
-	if(pageRenders.size()>0)
-	{
-		for(int i=0;i<pagesEmited.size();i++)
-		{
-			pagesReady[pagesEmited.at(i)] = true;
-			if(pagesEmited.at(i) == currentIndex)
-				update();
-			else
-			{
-				if ( ((pagesEmited.at(i) < currentIndex) && (pagesEmited.at(i) > currentIndex-numLeftPages)) ||
-					((pagesEmited.at(i) > currentIndex) && (pagesEmited.at(i) < currentIndex+numRightPages)) )
-				{
-					fillBuffer();
-				}
-			}
-		}
-		pagesEmited.clear();
-	}
+    if (!hasLoadedComic())
+        return;
+
+    pagesEmited.push_back(page);
+    if(pageRenders.size()>0)
+    {
+        for(int i=0;i<pagesEmited.size();i++)
+        {
+            if(pagesEmited.at(i)>= pagesReady.size())
+                return; //Oooops, something went wrong
+
+            pagesReady[pagesEmited.at(i)] = true;
+            if(pagesEmited.at(i) == currentIndex)
+                update();
+            else
+            {
+                if ( ((pagesEmited.at(i) < currentIndex) && (pagesEmited.at(i) > currentIndex-numLeftPages)) ||
+                     ((pagesEmited.at(i) > currentIndex) && (pagesEmited.at(i) < currentIndex+numRightPages)) )
+                {
+                    fillBuffer();
+                }
+            }
+        }
+        pagesEmited.clear();
+    }
 }
 
 //sólo se renderiza la página, si ha habido un cambio de página
