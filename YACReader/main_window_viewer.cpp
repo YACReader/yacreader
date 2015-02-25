@@ -710,19 +710,19 @@ void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId)
 	optionsDialog->setFilters(currentComicDB.info.brightness, currentComicDB.info.contrast, currentComicDB.info.gamma);
 }
 
-void MainWindowViewer::openComicFromPath(const QString &pathFile)
+void MainWindowViewer::openComicFromPath(QString pathFile)
 {
     openComic(pathFile);
     isClient = false; //this method is used for direct openings
 }
 
 //isClient shouldn't be modified when a siblinig comic is opened
-void MainWindowViewer::openSiblingComic(const QString &pathFile)
+void MainWindowViewer::openSiblingComic(QString pathFile)
 {
     openComic(pathFile);
 }
 
-void MainWindowViewer::openComic(const QString &pathFile)
+void MainWindowViewer::openComic(QString pathFile)
 {
     QFileInfo fi(pathFile);
     currentDirectory = fi.dir().absolutePath();
@@ -732,7 +732,7 @@ void MainWindowViewer::openComic(const QString &pathFile)
 
     enableActions();
 
-    viewer->open(fi.absoluteFilePath());
+    viewer->open(pathFile);
  }
 
 void MainWindowViewer::openFolder()
@@ -746,7 +746,7 @@ void MainWindowViewer::openFolder()
 	}
 }
 
-void MainWindowViewer::openFolderFromPath(const QString & pathDir)
+void MainWindowViewer::openFolderFromPath(QString pathDir)
 {
 	currentDirectory = pathDir; //TODO ??
 	QFileInfo fi(pathDir);
@@ -759,7 +759,7 @@ void MainWindowViewer::openFolderFromPath(const QString & pathDir)
 	viewer->open(pathDir);
 }
 
-void MainWindowViewer::openFolderFromPath(const QString &pathDir, const QString &atFileName)
+void MainWindowViewer::openFolderFromPath(QString pathDir, QString atFileName)
 {
 	currentDirectory = pathDir; //TODO ??
 	QFileInfo fi(pathDir);
