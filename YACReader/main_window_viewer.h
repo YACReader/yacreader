@@ -48,9 +48,11 @@ class EditShortcutsDialog;
 		void newVersion();
 		void openPreviousComic();
 		void openNextComic();
-		void openComicFromPath(QString pathFile);
-		void openFolderFromPath(QString pathDir);
-		void openFolderFromPath(QString pathFile, QString atFileName);
+        void openComicFromPath(QString pathFile);
+        void openSiblingComic(QString pathFile);
+        void openComic(QString pathFile);
+        void openFolderFromPath(QString pathDir);
+        void openFolderFromPath(QString pathFile, QString atFileName);
 		void alwaysOnTopSwitch();
 		void adjustToFullSizeSwitch();
 		void fitToPageSwitch();
@@ -71,7 +73,8 @@ class EditShortcutsDialog;
 		void next();
 		void updatePage();*/
 
-	private:
+
+    private:
 		//!State
 		bool fullscreen;
 		bool toolbars;
@@ -168,6 +171,5 @@ signals:
 	public:
 		MainWindowViewer();
 		~MainWindowViewer();
-
-};
+    };
 #endif

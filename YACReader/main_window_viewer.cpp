@@ -742,19 +742,28 @@ void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId)
 
 void MainWindowViewer::openComicFromPath(QString pathFile)
 {
-	QFileInfo fi(pathFile);
-	currentDirectory = fi.dir().absolutePath();
-	getSiblingComics(fi.absolutePath(),fi.fileName());
-
-	setWindowTitle("YACReader - " + fi.fileName());
-
-	enableActions();
-
-	viewer->open(pathFile);
-
-	isClient = false;
-	
+    openComic(pathFile);
+    isClient = false; //this method is used for direct openings
 }
+
+//isClient shouldn't be modified when a siblinig comic is opened
+void MainWindowViewer::openSiblingComic(QString pathFile)
+{
+    openComic(pathFile);
+}
+
+void MainWindowViewer::openComic(QString pathFile)
+{
+    QFileInfo fi(pathFile);
+    currentDirectory = fi.dir().absolutePath();
+    getSiblingComics(fi.absolutePath(),fi.fileName());
+
+    setWindowTitle("YACReader - " + fi.fileName());
+
+    enableActions();
+
+    viewer->open(pathFile);
+ }
 
 void MainWindowViewer::openFolder()
 {
@@ -1275,11 +1284,7 @@ void MainWindowViewer::openPreviousComic()
 	}
 	if(!previousComicPath.isEmpty())
 	{
-		viewer->open(previousComicPath);
-		QFileInfo fi(previousComicPath);
-		getSiblingComics(fi.absolutePath(),fi.fileName());
-
-		setWindowTitle("YACReader - " + fi.fileName());
+        openSiblingComic(previousComicPath);
 	}
 }
 
@@ -1302,11 +1307,7 @@ void MainWindowViewer::openNextComic()
 	}
 	if(!nextComicPath.isEmpty())
 	{
-		viewer->open(nextComicPath);
-		QFileInfo fi(nextComicPath);
-		getSiblingComics(fi.absolutePath(),fi.fileName());
-
-		setWindowTitle("YACReader - " + fi.fileName());
+        openSiblingComic(nextComicPath);
 	}
 }
 
