@@ -249,10 +249,13 @@ void ServerConfigDialog::generateQR()
 	}
 #endif
 
-    stl::sort(otherAddresses.begin(),otherAddresses.end(),ipComparator);
+    std::sort(otherAddresses.begin(),otherAddresses.end(),ipComparator);
 
-    if(otherAddresses.length()>0)
-        dir = otherAddresses.pop_front();
+    if(!otherAddresses.isEmpty())
+    {
+        dir = otherAddresses.first();
+        otherAddresses.pop_front();
+    }
 
 	if(otherAddresses.length()>0 || !dir.isEmpty())
 	{
