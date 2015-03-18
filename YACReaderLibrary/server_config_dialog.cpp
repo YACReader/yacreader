@@ -13,6 +13,22 @@
 #include "startup.h"
 #include "yacreader_global.h"
 
+#include <algorithm>
+
+bool ipComparator(const QString & ip1, const QString & ip2)
+{
+    if(ip1.startsWith("192.168") && ip2.startsWith("192.168"))
+        return ip1 < ip2;
+
+    if(ip1.startsWith("192.168"))
+        return true;
+
+    if(ip2.startsWith("192.168"))
+        return false;
+
+    return ip1 < ip2;
+}
+
 #ifndef Q_OS_WIN32
 
 #include <sys/types.h>
@@ -166,7 +182,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 
 	settings->endGroup();
 
-	connect(check,SIGNAL(stateChanged(int)),this,SLOT(enableServer(int)));
+    connect(check,SIGNAL(stateChanged(int)),this,SLOT(enableServer(int)));
 }
 
 void ServerConfigDialog::enableServer(int status)
@@ -205,6 +221,7 @@ void ServerConfigDialog::generateQR()
 	//}
 	ip->clear();
 	QString dir;
+
 #ifdef Q_OS_WIN32
 	QList<QHostAddress> list = QHostInfo::fromName( QHostInfo::localHostName()  ).addresses();
 
@@ -214,11 +231,7 @@ void ServerConfigDialog::generateQR()
 		QString tmp = add.toString();
 		if(tmp.contains(".") && !tmp.startsWith("127"))
 		{
-			if(dir.isEmpty() && tmp.startsWith("192.168.2."))
-				dir = tmp;
-			else
-				otherAddresses.push_back(tmp);
-			
+            otherAddresses.push_back(tmp);
 		}	
 	}
 
@@ -231,14 +244,16 @@ void ServerConfigDialog::generateQR()
 		QString tmp = add;
 		if(tmp.contains(".") && !tmp.startsWith("127"))
 		{
-			if(dir.isEmpty() && tmp.startsWith("192.168.2."))
-				dir = tmp;
-			else
-				otherAddresses.push_back(tmp);
-			
+            otherAddresses.push_back(tmp);
 		}	
 	}
 #endif
+
+    stl::sort(otherAddresses.begin(),otherAddresses.end(),ipComparator);
+
+    if(otherAddresses.length()>0)
+        dir = otherAddresses.pop_front();
+
 	if(otherAddresses.length()>0 || !dir.isEmpty())
 	{
 		if(!dir.isEmpty())
