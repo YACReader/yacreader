@@ -730,11 +730,13 @@ void PDFComic::process()
 	_index = _firstPage;
 	emit(openAt(_index));
 
-	for(int i=_index;i<nPages;i++)
+	//buffer index to avoid race conditions
+	int buffered_index = _index;
+	for(int i=buffered_index;i<nPages;i++)
 		renderPage(i);
-	for(int i=0;i<_index;i++)
+	for(int i=0;i<buffered_index;i++)
 		renderPage(i);
-
+	
 	delete pdfComic;
 	emit imagesLoaded();
 	moveToThread(QApplication::instance()->thread());

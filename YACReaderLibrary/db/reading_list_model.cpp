@@ -8,6 +8,8 @@
 
 #include "QsLog.h"
 
+#include <typeinfo>
+
 ReadingListModel::ReadingListModel(QObject *parent) :
     QAbstractItemModel(parent),rootItem(0)
 {

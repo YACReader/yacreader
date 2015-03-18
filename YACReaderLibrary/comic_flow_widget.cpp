@@ -1,5 +1,5 @@
 #include "comic_flow_widget.h"
-
+#include <QVBoxLayout>
 ComicFlowWidget::ComicFlowWidget(QWidget * parent)
 	:QWidget(parent)
 {
@@ -145,7 +145,7 @@ void ComicFlowWidgetSW::resortCovers(QList<int> newOrder)
     flow->resortCovers(newOrder);
 }
 
-
+#ifndef NO_OPENGL
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 ///OpenGL ComicFlow
@@ -341,7 +341,7 @@ void ComicFlowWidgetGL::resortCovers(QList<int> newOrder)
 {
     flow->resortCovers(newOrder);
 }
-
+#endif
 //void ComicFlowWidgetGL::setCF_RX(int value){				flow->setCF_RX(value);}
 //void ComicFlowWidgetGL::setCF_RY(int value){				flow->setCF_RY(value);}
 //void ComicFlowWidgetGL::setCF_RZ(int value){				flow->setCF_RZ(value);}
