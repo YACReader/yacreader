@@ -28,6 +28,7 @@ Q_OBJECT
 		QPixmap * qrCodeImage;
 
 		QProcess * qrGenerator;
+
 	public slots:
 		void generateQR();
 		void generateQR(const QString & serverAddress);

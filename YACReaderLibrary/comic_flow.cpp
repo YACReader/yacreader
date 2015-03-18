@@ -24,6 +24,7 @@ ComicFlow::ComicFlow(QWidget* parent,FlowType flowType)
 
 ComicFlow::~ComicFlow()
 {
+    worker->terminate();
 	delete worker;
 	delete updateTimer;
 }

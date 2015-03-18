@@ -6,8 +6,9 @@
 
 #include "pictureflow.h"
 #include "comic_flow.h"
+#ifndef NO_OPENGL
 #include "yacreader_flow_gl.h"
-
+#endif
 class ComicFlowWidget : public QWidget
 {	
 	Q_OBJECT
@@ -75,6 +76,7 @@ protected:
 	QSize slideSizeF;
 };
 
+#ifndef NO_OPENGL
 class ComicFlowWidgetGL : public ComicFlowWidget
 {
 	Q_OBJECT
@@ -127,5 +129,5 @@ protected:
 	QSize minimumSizeHint() const;
 	QSize sizeHint() const;
 };
-
+#endif
 #endif

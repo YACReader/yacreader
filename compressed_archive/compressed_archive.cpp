@@ -2,6 +2,7 @@
 #include "extract_delegate.h"
 
 #include <QLibrary>
+#include <QFileInfo>
 #include <QDebug>
 #include <QApplication>
 
@@ -201,7 +202,16 @@ bool CompressedArchive::loadFunctions()
 	#if defined Q_OS_MAC
 		rarLib = new QLibrary(QApplication::applicationDirPath()+"/utils/Codecs/Rar29");
 	#else
-		rarLib = new QLibrary(QString(LIBDIR)+"/p7zip/Codecs/Rar29.so");	
+		//check if a yacreader specific version of p7zip exists on the system
+		QFileInfo rarCodec(QString(LIBDIR)+"/yacreader/Codecs/Rar29.so");
+		if (rarCodec.exists())
+		{
+			rarLib = new QLibrary(rarCodec.absoluteFilePath());
+		}
+		else
+		{
+			rarLib = new QLibrary(QString(LIBDIR)+"/p7zip/Codecs/Rar29.so");	
+		}
 	#endif
         if(!rarLib->load())
         {
@@ -211,7 +221,15 @@ bool CompressedArchive::loadFunctions()
         }
 #endif
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
-	sevenzLib = new QLibrary(QString(LIBDIR)+"/p7zip/7z.so");
+	QFileInfo sevenzlibrary(QString(LIBDIR)+"/yacreader/7z.so");
+	if (sevenzlibrary.exists())
+	{
+		sevenzLib = new QLibrary(sevenzlibrary.absoluteFilePath());
+	}
+	else
+	{
+		sevenzLib = new QLibrary(QString(LIBDIR)+"/p7zip/7z.so");
+	}
 #else
 	sevenzLib = new QLibrary(QApplication::applicationDirPath()+"/utils/7z");
 #endif

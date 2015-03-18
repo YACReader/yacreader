@@ -15,7 +15,9 @@
 #include <QFileIconProvider>
 #include <QMatrix>
 #include <QSettings>
+#ifndef NO_OPENGL
 #include <QGLFormat>
+#endif
 #include <QHeaderView>
 
 #include <iterator>
@@ -182,14 +184,14 @@ void LibraryWindow::doLayout()
 	libraryToolBar = new YACReaderMainToolBar(this);
 #endif
 
-
+#ifndef NO_OPENGL
     //FLOW-----------------------------------------------------------------------
     //---------------------------------------------------------------------------
     if(QGLFormat::hasOpenGL() && !settings->contains(USE_OPEN_GL))
     {
         settings->setValue(USE_OPEN_GL,2);
     }
-
+#endif
     //FOLDERS FILTER-------------------------------------------------------------
     //---------------------------------------------------------------------------
 #ifndef Q_OS_MAC
@@ -2083,57 +2085,38 @@ void LibraryWindow::toggleFullScreen()
 	fullscreen = !fullscreen;
 }
 
-//QTBUG-41883
 void LibraryWindow::toFullScreen()
 {
-    _size = size();
-    _pos = pos();
-    hide();
-
-	fromMaximized = this->isMaximized();
+    fromMaximized = this->isMaximized();
 
     sideBar->hide();
-	libraryToolBar->hide();
+    libraryToolBar->hide();
 
     comicsView->toFullScreen();
 
-    setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
-    setWindowState(windowState() | Qt::WindowFullScreen);
-    resize(windowHandle()->screen()->size()-QSize(0,1));
-
-    show();
+    showFullScreen();
 }
 
-//QTBUG-41883
 void LibraryWindow::toNormal()
 {
-    hide();
+    sideBar->show();
 
-	sideBar->show();
-	
     comicsView->toNormal();
 
-    setWindowFlags(windowFlags() & ~Qt::WindowStaysOnTopHint);
-    setWindowState(windowState() & ~Qt::WindowFullScreen);
-    resize(_size);
-    move(_pos);
-
-	if(fromMaximized)
-		showMaximized();
-	else
-		showNormal();
+    if(fromMaximized)
+        showMaximized();
+    else
+        showNormal();
 
 #ifdef Q_OS_MAC
-	QTimer * timer = new QTimer();
-	timer->setSingleShot(true);
-	timer->start();
-	connect(timer,SIGNAL(timeout()),libraryToolBar,SLOT(show()));
-	connect(timer,SIGNAL(timeout()),timer,SLOT(deleteLater()));
+    QTimer * timer = new QTimer();
+    timer->setSingleShot(true);
+    timer->start();
+    connect(timer,SIGNAL(timeout()),libraryToolBar,SLOT(show()));
+    connect(timer,SIGNAL(timeout()),timer,SLOT(deleteLater()));
 #else
-	libraryToolBar->show();
+    libraryToolBar->show();
 #endif
-
-    show();
 
 }
 

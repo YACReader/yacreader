@@ -14,7 +14,9 @@
 
 #include "yacreader_spin_slider_widget.h"
 #include "yacreader_flow_config_widget.h"
+#ifndef NO_OPENGL
 #include "yacreader_gl_flow_config_widget.h"
+#endif
 
 OptionsDialog::OptionsDialog(QWidget * parent)
 :YACReaderOptionsDialog(parent)
@@ -116,8 +118,10 @@ OptionsDialog::OptionsDialog(QWidget * parent)
     layoutGeneral->addWidget(shortcutsBox);
 	layoutGeneral->addStretch();
 	layoutFlow->addWidget(sw);
+#ifndef NO_OPENGL
 	layoutFlow->addWidget(gl);
 	layoutFlow->addWidget(useGL);
+#endif
 	layoutFlow->addStretch();
 	layoutImage->addWidget(new QLabel(tr("Brightness")),0,0);
 	layoutImage->addWidget(new QLabel(tr("Contrast")),1,0);
@@ -151,8 +155,9 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 	setLayout(layout);
 
 	//disable vSyncCheck
+#ifndef NO_OPENGL
 	gl->vSyncCheck->hide();
-
+#endif
 	//restoreOptions(); //load options
 	//resize(400,0);
 	setModal (true);

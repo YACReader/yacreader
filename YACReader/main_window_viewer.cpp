@@ -578,6 +578,7 @@ void MainWindowViewer::createToolBars()
 	viewer->addAction(leftRotationAction);
 	viewer->addAction(rightRotationAction);
     viewer->addAction(doublePageAction);
+    viewer->addAction(doubleMangaPageAction);
     YACReader::addSperator(viewer);
 
     viewer->addAction(showMagnifyingGlassAction);
@@ -711,19 +712,28 @@ void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId)
 
 void MainWindowViewer::openComicFromPath(QString pathFile)
 {
-	QFileInfo fi(pathFile);
-	currentDirectory = fi.dir().absolutePath();
-	getSiblingComics(fi.absolutePath(),fi.fileName());
-
-	setWindowTitle("YACReader - " + fi.fileName());
-
-	enableActions();
-
-	viewer->open(pathFile);
-
-	isClient = false;
-	
+    openComic(pathFile);
+    isClient = false; //this method is used for direct openings
 }
+
+//isClient shouldn't be modified when a siblinig comic is opened
+void MainWindowViewer::openSiblingComic(QString pathFile)
+{
+    openComic(pathFile);
+}
+
+void MainWindowViewer::openComic(QString pathFile)
+{
+    QFileInfo fi(pathFile);
+    currentDirectory = fi.dir().absolutePath();
+    getSiblingComics(fi.absolutePath(),fi.fileName());
+
+    setWindowTitle("YACReader - " + fi.fileName());
+
+    enableActions();
+
+    viewer->open(pathFile);
+ }
 
 void MainWindowViewer::openFolder()
 {
@@ -888,54 +898,37 @@ void MainWindowViewer::toggleFullScreen()
 	Configuration::getConfiguration().setFullScreen(fullscreen = !fullscreen);
 }
 
-//QTBUG-41883
 void MainWindowViewer::toFullScreen()
 {
-    _size = size();
-    _pos = pos();
-    hide();
-	fromMaximized = this->isMaximized();
+    fromMaximized = this->isMaximized();
 
-	hideToolBars();
-	viewer->hide();
-	viewer->fullscreen = true;//TODO, change by the right use of windowState();
-
-    setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
-    setWindowState(windowState() | Qt::WindowFullScreen);
-    resize(windowHandle()->screen()->size()-QSize(0,1));
-
-	viewer->show();
-	if(viewer->magnifyingGlassIsVisible())
-		viewer->showMagnifyingGlass();
-
-    show();
+    hideToolBars();
+    viewer->hide();
+    viewer->fullscreen = true;//TODO, change by the right use of windowState();
+    showFullScreen();
+    viewer->show();
+    if(viewer->magnifyingGlassIsVisible())
+        viewer->showMagnifyingGlass();
 }
 
-//QTBUG-41883
 void MainWindowViewer::toNormal()
 {
-    hide();
-	//show all
-	viewer->hide();
-	viewer->fullscreen = false;//TODO, change by the right use of windowState();
-	//viewer->hideMagnifyingGlass();
-    setWindowFlags(windowFlags() & ~Qt::WindowStaysOnTopHint);
-    setWindowState(windowState() & ~Qt::WindowFullScreen);
-    resize(_size);
-    move(_pos);
+    //show all
+    viewer->hide();
+    viewer->fullscreen = false;//TODO, change by the right use of windowState();
+    //viewer->hideMagnifyingGlass();
     if(fromMaximized)
         showMaximized();
     else
         showNormal();
 
-	if(Configuration::getConfiguration().getShowToolbars())
-		showToolBars();
+    if(Configuration::getConfiguration().getShowToolbars())
+        showToolBars();
     viewer->show();
-	if(viewer->magnifyingGlassIsVisible())
+    if(viewer->magnifyingGlassIsVisible())
         viewer->showMagnifyingGlass();
-
-    show();
 }
+
 void MainWindowViewer::toggleToolBars()
 {
 	toolbars?hideToolBars():showToolBars();
@@ -1246,11 +1239,7 @@ void MainWindowViewer::openPreviousComic()
 	}
 	if(!previousComicPath.isEmpty())
 	{
-		viewer->open(previousComicPath);
-		QFileInfo fi(previousComicPath);
-		getSiblingComics(fi.absolutePath(),fi.fileName());
-
-		setWindowTitle("YACReader - " + fi.fileName());
+        openSiblingComic(previousComicPath);
 	}
 }
 
@@ -1273,11 +1262,7 @@ void MainWindowViewer::openNextComic()
 	}
 	if(!nextComicPath.isEmpty())
 	{
-		viewer->open(nextComicPath);
-		QFileInfo fi(nextComicPath);
-		getSiblingComics(fi.absolutePath(),fi.fileName());
-
-		setWindowTitle("YACReader - " + fi.fileName());
+        openSiblingComic(nextComicPath);
 	}
 }
 
