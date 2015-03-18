@@ -211,6 +211,7 @@ ImportWidget::ImportWidget(QWidget *parent) :
 	previousWidth = 10;
 	updatingCovers = false;
 	elapsedTimer = new QElapsedTimer();
+    elapsedTimer->start();
 }
 
 void ImportWidget::newComic(const QString & path, const QString & coverPath)
