@@ -595,6 +595,16 @@ void ThumbnailCreator::create()
             //p.save(_target);
 			return;
 		}
+#ifndef Q_OS_MAC
+		//poppler only, not mac
+	if (pdfComic->isLocked())
+	{
+		QLOG_WARN() << "Extracting cover: unable to open PDF file " << _fileSource;
+		delete pdfComic;
+		return;
+	}
+		
+#endif
 		_numPages = pdfComic->numPages();
 		if(_numPages >= _coverPage)
 		{
