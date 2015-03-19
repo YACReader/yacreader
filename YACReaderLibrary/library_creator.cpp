@@ -44,7 +44,7 @@ LibraryCreator::LibraryCreator()
 void LibraryCreator::createLibrary(const QString &source, const QString &target)
 {
 	creation = true;
-    processLibrary(source, target);
+	processLibrary(source, target);
 }
 
 void LibraryCreator::updateLibrary(const QString &source, const QString &target)
@@ -65,20 +65,27 @@ void LibraryCreator::updateFolder(const QString &source, const QString &target, 
     relativeFolderPath = relativeFolderPath.remove(QDir::cleanPath(source));
 
     if(relativeFolderPath.startsWith("/"))
+    {
         relativeFolderPath = relativeFolderPath.remove(0,1);//remove firts '/'
+    }
 
     QStringList folders;
 
     if(!relativeFolderPath.isEmpty()) //updating root
+    {
         folders = relativeFolderPath.split('/');
+    }
 
     QLOG_DEBUG() << "folders found in relative path : " << folders << "-" << relativeFolderPath;
 
     QSqlDatabase db = DataBaseManagement::loadDatabase(target);
 
-    foreach (QString folderName, folders) {
-        if(folderName.isEmpty())
+    foreach (QString folderName, folders) 
+    {
+	if(folderName.isEmpty())
+	{
             break;
+	}
         qulonglong parentId = _currentPathFolders.last().id;
         _currentPathFolders.append(DBHelper::loadFolder(folderName, parentId, db));
         QLOG_DEBUG() << "Folder appended : " << _currentPathFolders.last().id << " " << _currentPathFolders.last().name << " with parent" << _currentPathFolders.last().parentId;
@@ -100,12 +107,14 @@ void LibraryCreator::processLibrary(const QString & source, const QString & targ
 	if(DataBaseManagement::checkValidDB(target+"/library.ydb")=="")
 	{
 		//se limpia el directorio ./yacreaderlibrary
-        QDir d(target);
-        d.removeRecursively();
+		QDir d(target);
+		d.removeRecursively();
 		_mode = CREATOR;
 	}
-	else //
+	else
+	{		//
 		_mode = UPDATER;
+	}
 }
 
 
@@ -120,6 +129,7 @@ void LibraryCreator::run()
 #else
     QLibrary *sevenzLib = new QLibrary(QApplication::applicationDirPath()+"/utils/7z");
 #endif
+	
 	if(!sevenzLib->load())
 	{
 		QLOG_ERROR() << "Loading 7z.dll : " + sevenzLib->errorString() << endl;
@@ -160,13 +170,13 @@ void LibraryCreator::run()
 	}
 	else
 	{
-        QLOG_INFO() << "Starting to update folder" << _sourceFolder << "in library ( " << _source << "," << _target << ")";
-        if(!partialUpdate)
-        {
-            _currentPathFolders.clear();
-            _currentPathFolders.append(Folder(1,1,"root","/"));
-            QLOG_DEBUG() << "update whole library";
-        }
+		QLOG_INFO() << "Starting to update folder" << _sourceFolder << "in library ( " << _source << "," << _target << ")";
+		if(!partialUpdate)
+		{
+			_currentPathFolders.clear();
+			_currentPathFolders.append(Folder(1,1,"root","/"));
+			QLOG_DEBUG() << "update whole library";
+		}
 
 		_database = DataBaseManagement::loadDatabase(_target);
 		//_database.setDatabaseName(_target+"/library.ydb");
@@ -180,21 +190,30 @@ void LibraryCreator::run()
 		}
 		QSqlQuery pragma("PRAGMA foreign_keys = ON",_database);
 		_database.transaction();
-        if(partialUpdate)
-            update(QDir(_sourceFolder));
-        else
-            update(QDir(_source));
+		
+		if(partialUpdate)
+		{
+			update(QDir(_sourceFolder));
+		}
+		else
+		{
+		update(QDir(_source));
+		}
 		_database.commit();
 		_database.close();
 		QSqlDatabase::removeDatabase(_target);
 		//si estabamos en modo creación, se está añadiendo una librería que ya existía y se ha actualizado antes de añadirse.
-        if(!partialUpdate)
-        {
-            if(!creation)
-                emit(updated());
-            else
-                emit(created());
-        }
+		if(!partialUpdate)
+		{
+			if(!creation)
+			{
+				emit(updated());
+			}
+			else
+			{
+				emit(created());
+			}
+		}
 		QLOG_INFO() << "Update library END";
 	}
     //msleep(100);//TODO try to solve the problem with the udpate dialog (ya no se usa más...)
@@ -203,7 +222,7 @@ void LibraryCreator::run()
         emit updatedCurrentFolder(folderDestinationModelIndex);
         emit finished();
     }
-    else
+    else //TODO check this part!!
         emit finished();
 	creation = false;
 }
@@ -260,6 +279,7 @@ void LibraryCreator::create(QDir dir)
 #endif        
 		if(fileInfo.isDir())
 		{
+			QLOG_INFO() << "Parsing folder" << fileInfo.canonicalPath() ;
 			//se añade al path actual el folder, aún no se sabe si habrá que añadirlo a la base de datos
 			_currentPathFolders.append(Folder(fileInfo.fileName(),relativePath));
 			create(QDir(fileInfo.absoluteFilePath()));
@@ -268,6 +288,7 @@ void LibraryCreator::create(QDir dir)
 		}
 		else
 		{
+			QLOG_INFO() << "Parsing file" << fileInfo.filePath();
 			insertComic(relativePath,fileInfo);
 		}
 	}
@@ -289,26 +310,28 @@ void LibraryCreator::insertComic(const QString & relativePath,const QFileInfo & 
 	file.close();
 	//hash Sha1 del primer 0.5MB + filesize
 	QString hash = QString(crypto.result().toHex().constData()) + QString::number(fileInfo.size());
-    ComicDB comic = DBHelper::loadComic(fileInfo.fileName(),relativePath,hash,_database);
-    int numPages = 0;
-    bool exists = checkCover(hash);
-    if(! ( comic.hasCover() && exists))
+	ComicDB comic = DBHelper::loadComic(fileInfo.fileName(),relativePath,hash,_database);
+	int numPages = 0;
+	bool exists = checkCover(hash);
+	if(! ( comic.hasCover() && exists))
 	{
-        ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+hash+".jpg",comic.info.coverPage.toInt());
+		ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+hash+".jpg",comic.info.coverPage.toInt());
 		tc.create();
 		numPages = tc.getNumPages();
-        if (numPages > 0)
-            emit(comicAdded(relativePath,_target+"/covers/"+hash+".jpg"));
+		if (numPages > 0)
+		{
+			emit(comicAdded(relativePath,_target+"/covers/"+hash+".jpg"));
+		}
 	}
 
-    if (numPages > 0 || exists)
-    {
-        //en este punto sabemos que todos los folders que hay en _currentPath, deberían estar añadidos a la base de datos
-        insertFolders();
-        comic.info.numPages = numPages;
-        comic.parentId = _currentPathFolders.last().id;
-        DBHelper::insert(&comic,_database);
-    }
+	if (numPages > 0 || exists)
+	{
+		//en este punto sabemos que todos los folders que hay en _currentPath, deberían estar añadidos a la base de datos
+		insertFolders();
+		comic.info.numPages = numPages;
+		comic.parentId = _currentPathFolders.last().id;
+		DBHelper::insert(&comic,_database);
+	}
 }
 
 void LibraryCreator::update(QDir dirS)
@@ -573,28 +596,28 @@ void ThumbnailCreator::create()
 	{
 
 #ifdef Q_OS_MAC
-        MacOSXPDFComic * pdfComic = new MacOSXPDFComic();
-        if(!pdfComic->openComic(_fileSource))
-        {
-            delete pdfComic;
-            //QImage p;
-            //p.load(":/images/notCover.png");
-            //p.save(_target);
-            return;
+		MacOSXPDFComic * pdfComic = new MacOSXPDFComic();
+		if(!pdfComic->openComic(_fileSource))
+		{
+			delete pdfComic;
+			//QImage p;
+			//p.load(":/images/notCover.png");
+			//p.save(_target);
+		return;
         }
 #else
 		Poppler::Document * pdfComic = Poppler::Document::load(_fileSource);
 #endif
         if (!pdfComic)
-		{
-			QLOG_WARN() << "Extracting cover: unable to open PDF file " << _fileSource;
-            //delete pdfComic; //TODO check if the delete is needed
-			pdfComic = 0;
-            //QImage p;
-            //p.load(":/images/notCover.png");
-            //p.save(_target);
-			return;
-		}
+	{
+		QLOG_WARN() << "Extracting cover: unable to open PDF file " << _fileSource;
+		//delete pdfComic; //TODO check if the delete is needed
+		pdfComic = 0;
+		//QImage p;
+		//p.load(":/images/notCover.png");
+		//p.save(_target);
+		return;
+	}
 #ifndef Q_OS_MAC
 		//poppler only, not mac
 	if (pdfComic->isLocked())
@@ -603,38 +626,41 @@ void ThumbnailCreator::create()
 		delete pdfComic;
 		return;
 	}
-		
 #endif
-		_numPages = pdfComic->numPages();
-		if(_numPages >= _coverPage)
+	_numPages = pdfComic->numPages();
+	if(_numPages >= _coverPage)
 		{
 #ifdef Q_OS_MAC
-            {
-            QImage p = pdfComic->getPage(_coverPage-1); //TODO check if the page is valid
+            { //TODO is this "{" one too much?
+			QImage p = pdfComic->getPage(_coverPage-1); //TODO check if the page is valid
 #else
-            QImage p = pdfComic->page(_coverPage-1)->renderToImage(72,72);
+			QImage p = pdfComic->page(_coverPage-1)->renderToImage(72,72);
 #endif
 			_cover = QPixmap::fromImage(p);
 			if(_target!="")
 			{
 				QImage scaled;
 				if(p.width()>p.height()) //landscape??
+				{
 					scaled = p.scaledToWidth(640,Qt::SmoothTransformation);
+				}
 				else
+				{
 					scaled = p.scaledToWidth(480,Qt::SmoothTransformation);
+				}
 				scaled.save(_target,0,75);
 			}
 #ifdef Q_OS_MAC
-        }
+        } //TODO  is this "{" one too much?
         pdfComic->releaseLastPageData();
 #endif
 		}
 		else if(_target!="")
 		{
 			QLOG_WARN() << "Extracting cover: requested cover index greater than numPages " << _fileSource;
-            //QImage p;
-            //p.load(":/images/notCover.png");
-            //p.save(_target);
+			//QImage p;
+			//p.load(":/images/notCover.png");
+			//p.save(_target);
 		}
 
         delete pdfComic;
@@ -642,63 +668,75 @@ void ThumbnailCreator::create()
 	else
 	{
 
-	if(crash)
-		return;
-
-	CompressedArchive archive(_fileSource);
-	if(!archive.toolsLoaded())
-	{
-		QLOG_WARN() << "Extracting cover: 7z lib not loaded";
-		crash = true;
-		return;
-	}
-	if(!archive.isValid())
-		QLOG_WARN() << "Extracting cover: file format not supported " << _fileSource;
-	//se filtran para obtener sólo los formatos soportados
-	QList<QString> order = archive.getFileNames();
-	QList<QString> fileNames = FileComic::filter(order);
-	_numPages = fileNames.size();
-	if(_numPages == 0)
-	{
-		QLOG_WARN() << "Extracting cover: empty comic " << _fileSource;
-		_cover.load(":/images/notCover.png");
-		if(_target!="")
-			_cover.save(_target);
-	}
-	else
-	{
-		if(_coverPage > _numPages)
-			_coverPage = 1;
-		qSort(fileNames.begin(),fileNames.end(), naturalSortLessThanCI);
-		int index = order.indexOf(fileNames.at(_coverPage-1));
-
-		if(_target=="")
+		if(crash)
 		{
-			if(!_cover.loadFromData(archive.getRawDataAtIndex(index)))
+			return;
+		}
+
+		CompressedArchive archive(_fileSource);
+		if(!archive.toolsLoaded())
+		{
+			QLOG_WARN() << "Extracting cover: 7z lib not loaded";
+			crash = true;
+			return;
+		}
+		if(!archive.isValid())
+		{
+			QLOG_WARN() << "Extracting cover: file format not supported " << _fileSource;	
+		}
+		//se filtran para obtener sólo los formatos soportados
+		QList<QString> order = archive.getFileNames();
+		QList<QString> fileNames = FileComic::filter(order);
+		_numPages = fileNames.size();
+		if(_numPages == 0)
+		{
+			QLOG_WARN() << "Extracting cover: empty comic " << _fileSource;
+			_cover.load(":/images/notCover.png");
+			if(_target!="")
 			{
-				QLOG_WARN() << "Extracting cover: unable to load image from extracted cover " << _fileSource;
-				_cover.load(":/images/notCover.png");
+				_cover.save(_target);
 			}
 		}
 		else
 		{
-			QImage p;
-			if(p.loadFromData(archive.getRawDataAtIndex(index)))
+			if(_coverPage > _numPages)
 			{
-				QImage scaled;
-				if(p.width()>p.height()) //landscape??
-					scaled = p.scaledToWidth(640,Qt::SmoothTransformation);
-				else
-					scaled = p.scaledToWidth(480,Qt::SmoothTransformation);
-				scaled.save(_target,0,75);
+				_coverPage = 1;
+			}
+			qSort(fileNames.begin(),fileNames.end(), naturalSortLessThanCI);
+			int index = order.indexOf(fileNames.at(_coverPage-1));
+
+			if(_target=="")
+			{
+				if(!_cover.loadFromData(archive.getRawDataAtIndex(index)))
+				{
+					QLOG_WARN() << "Extracting cover: unable to load image from extracted cover " << _fileSource;
+					_cover.load(":/images/notCover.png");
+				}
 			}
 			else
 			{
-				QLOG_WARN() << "Extracting cover: unable to load image from extracted cover " << _fileSource;
-                //p.load(":/images/notCover.png");
-                //p.save(_target);
+				QImage p;
+				if(p.loadFromData(archive.getRawDataAtIndex(index)))
+				{
+					QImage scaled;
+					if(p.width()>p.height()) //landscape??
+					{
+						scaled = p.scaledToWidth(640,Qt::SmoothTransformation);
+					}
+					else
+					{
+						scaled = p.scaledToWidth(480,Qt::SmoothTransformation);
+					}
+					scaled.save(_target,0,75);
+				}
+				else
+				{
+					QLOG_WARN() << "Extracting cover: unable to load image from extracted cover " << _fileSource;
+			//p.load(":/images/notCover.png");
+			//p.save(_target);
+				}
 			}
 		}
-	}
 	}
 }
