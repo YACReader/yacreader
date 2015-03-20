@@ -178,12 +178,16 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 
 CompressedArchive::~CompressedArchive()
 {
+
 #ifdef Q_OS_UNIX
     if(isRar) //TODO: fix this!!! Possible memory leak. If AddRef is not used, a crash occurs in "delete szInterface"
         szInterface->archive->AddRef();
 #endif
     if(valid) //TODO: fix this!!! Memory leak.
+    {
+        szInterface->archive->Close();
         delete szInterface;
+    }
 #ifdef Q_OS_UNIX
     delete rarLib;
 #endif
