@@ -6,4 +6,5 @@ HEADERS += $$PWD/extract_delegate.h \
 
 SOURCES += $$PWD/compressed_archive.cpp \
 
-LIBS+=-lunarr
+#for system libunarr.so
+#LIBS+=-lunarr

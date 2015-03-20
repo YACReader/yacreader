@@ -25,7 +25,6 @@ public slots:
 	bool toolsLoaded();
 private:
 
-	bool loadFunctions();
 	bool tools;
 	bool valid;
 	QList<QString> fileNames;

@@ -14,7 +14,6 @@ extern"C" {
 CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) :
     QObject(parent),valid(false),tools(true),numFiles(0),ar(NULL),stream(NULL)
 {
-	qDebug() << filePath;
 	stream = ar_open_file(filePath.toStdString().c_str());
 	//try to open archive
 	ar = ar_open_rar_archive(stream);
@@ -25,7 +24,7 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 	{
 		return;
 	}
-	
+	//initial parse
 	while (ar_parse_entry(ar)) 
 	{
 		numFiles++;
@@ -37,19 +36,12 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 		valid = true;
 		tools = true;
 	}
-	qDebug() << fileNames;
-	qDebug() << numFiles;
 }
 
 CompressedArchive::~CompressedArchive()
 {
 	ar_close_archive(ar);
 	ar_close(stream);
-}
-
-bool CompressedArchive::loadFunctions()
-{
-	return true;
 }
 
 QList<QString> CompressedArchive::getFileNames()
