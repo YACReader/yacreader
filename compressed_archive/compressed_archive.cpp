@@ -4,12 +4,11 @@
 #include <QLibrary>
 #include <QFileInfo>
 #include <QDebug>
-#include <QApplication>
+#include <QCoreApplication>
 
 #include "open_callbacks.h"
 #include "extract_callbacks.h"
 
-#include "yacreader_global.h"
 
 //DEFINE_GUID(CLSID_CFormat7z,0x23170F69, 0x40C1, 0x278A, 0x10, 0x00, 0x00, 0x01, 0x10, 0x07, 0x00, 0x00);
 //DEFINE_GUID(IArchiveKK,0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x06, 0x00, 0x60, 0x00, 0x00);        
@@ -178,16 +177,12 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 
 CompressedArchive::~CompressedArchive()
 {
-
 #ifdef Q_OS_UNIX
     if(isRar) //TODO: fix this!!! Possible memory leak. If AddRef is not used, a crash occurs in "delete szInterface"
         szInterface->archive->AddRef();
 #endif
     if(valid) //TODO: fix this!!! Memory leak.
-    {
-        szInterface->archive->Close();
         delete szInterface;
-    }
 #ifdef Q_OS_UNIX
     delete rarLib;
 #endif
@@ -204,7 +199,7 @@ bool CompressedArchive::loadFunctions()
     {
 #if defined Q_OS_UNIX
 	#if defined Q_OS_MAC
-		rarLib = new QLibrary(QApplication::applicationDirPath()+"/utils/Codecs/Rar29");
+        rarLib = new QLibrary(QCoreApplication::applicationDirPath()+"/utils/Codecs/Rar29");
 	#else
 		//check if a yacreader specific version of p7zip exists on the system
 		QFileInfo rarCodec(QString(LIBDIR)+"/yacreader/Codecs/Rar29.so");
@@ -220,7 +215,7 @@ bool CompressedArchive::loadFunctions()
         if(!rarLib->load())
         {
             qDebug() << "Error Loading Rar29.so : " + rarLib->errorString() << endl;
-            QApplication::exit(YACReader::SevenZNotFound);
+            QCoreApplication::exit(700); //TODO yacreader_global can't be used here, it is GUI dependant, YACReader::SevenZNotFound
             return false;
         }
 #endif
@@ -235,13 +230,13 @@ bool CompressedArchive::loadFunctions()
 		sevenzLib = new QLibrary(QString(LIBDIR)+"/p7zip/7z.so");
 	}
 #else
-	sevenzLib = new QLibrary(QApplication::applicationDirPath()+"/utils/7z");
+    sevenzLib = new QLibrary(QCoreApplication::applicationDirPath()+"/utils/7z");
 #endif
     }
 	if(!sevenzLib->load())
 	{
         qDebug() << "Error Loading 7z.dll : " + sevenzLib->errorString() << endl;
-        QApplication::exit(YACReader::SevenZNotFound);
+        QCoreApplication::exit(700); //TODO yacreader_global can't be used here, it is GUI dependant, YACReader::SevenZNotFound
 		return false;
 	}
 	else
