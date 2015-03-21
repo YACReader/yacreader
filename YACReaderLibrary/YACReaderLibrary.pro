@@ -220,7 +220,12 @@ SOURCES += comic_flow.cpp \
 				   
 include(./server/server.pri)
 include(../custom_widgets/custom_widgets_yacreaderlibrary.pri)
+!CONFIG(unarr){
 include(../compressed_archive/wrapper.pri)
+} else {
+include(../compressed_archive/unarr/unarr-wrapper.pri)
+}
+
 include(./comic_vine/comic_vine.pri)
 include(../QsLog/QsLog.pri)
 include(../shortcuts_management/shortcuts_management.pri)
@@ -263,6 +268,7 @@ win32:RESOURCES += qml_win.qrc
 unix:!macx:RESOURCES += qml_win.qrc
 macx:RESOURCES += qml_osx.qrc
 
+!CONFIG(unarr){
 win32 {
 !exists(../compressed_archive/lib7zip){
         error(You\'ll need 7zip source code to compile YACReader. \
@@ -278,6 +284,11 @@ exists (../compressed_archive/libp7zip) {
         error(You\'ll need 7zip source code to compile YACReader. \
         Please check the compressed_archive folder for further instructions.)
 }
+}
+} else {
+	exists (../compressed_archive/unarr/unarr-master) {
+        message(Found unarr source code)
+	}
 }
 
 unix:!macx {
