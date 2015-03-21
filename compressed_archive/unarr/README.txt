@@ -1,0 +1,1 @@
+To use unarr download https://github.com/zeniko/unarr/archive/master.zip and extract it in this folder. Run qmake with CONFIG+=unarr
