@@ -4,12 +4,11 @@
 #include <QLibrary>
 #include <QFileInfo>
 #include <QDebug>
-#include <QApplication>
+#include <QCoreApplication>
 
 #include "open_callbacks.h"
 #include "extract_callbacks.h"
 
-#include "yacreader_global.h"
 
 //DEFINE_GUID(CLSID_CFormat7z,0x23170F69, 0x40C1, 0x278A, 0x10, 0x00, 0x00, 0x01, 0x10, 0x07, 0x00, 0x00);
 //DEFINE_GUID(IArchiveKK,0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x06, 0x00, 0x60, 0x00, 0x00);        
@@ -235,13 +234,13 @@ bool CompressedArchive::loadFunctions()
 		sevenzLib = new QLibrary(QString(LIBDIR)+"/p7zip/7z.so");
 	}
 #else
-	sevenzLib = new QLibrary(QApplication::applicationDirPath()+"/utils/7z");
+    sevenzLib = new QLibrary(QCoreApplication::applicationDirPath()+"/utils/7z");
 #endif
     }
 	if(!sevenzLib->load())
 	{
         qDebug() << "Error Loading 7z.dll : " + sevenzLib->errorString() << endl;
-        QApplication::exit(YACReader::SevenZNotFound);
+        QCoreApplication::exit(700); //TODO yacreader_global can't be used here, it is GUI dependant, YACReader::SevenZNotFound
 		return false;
 	}
 	else
