@@ -100,6 +100,7 @@ QImage changeImage( const QImage& image, int value )
 			colors[ i ] = qRgb( operation( qRed( colors[ i ] ), value ),
 				operation( qGreen( colors[ i ] ), value ),
 				operation( qBlue( colors[ i ] ), value ));
+		im.setColorTable(colors);
 		}
 	return im;
 	}
