@@ -12,9 +12,9 @@ FolderInfoController::FolderInfoController() {}
 
 void FolderInfoController::service(HttpRequest& request, HttpResponse& response)
 {
-	response.setHeader("Content-Type", "plain/text; charset=ISO-8859-1");
+    response.setHeader("Content-Type", "plain/text; charset=utf-8");
 
-	QString path = QUrl::fromPercentEncoding(request.getPath()).toLatin1();
+    QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
 	QStringList pathElements = path.split('/');
 	int libraryId = pathElements.at(2).toInt();
 	QString libraryName = DBHelper::getLibraryName(libraryId);
