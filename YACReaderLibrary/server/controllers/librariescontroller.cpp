@@ -13,7 +13,7 @@ void LibrariesController::service(HttpRequest& request, HttpResponse& response)
 {
     HttpSession session=Static::sessionStore->getSession(request,response,false);
 
-    response.setHeader("Content-Type", "text/html; charset=ISO-8859-1");
+    response.setHeader("Content-Type", "text/html; charset=utf-8");
     response.setHeader("Connection","close");
 
     session.clearNavigationPath();
@@ -36,5 +36,5 @@ void LibrariesController::service(HttpRequest& request, HttpResponse& response)
 	}
 
     response.setStatus(200,"OK");
-	response.write(t.toLatin1(),true);
+    response.writeText(t,true);
 }

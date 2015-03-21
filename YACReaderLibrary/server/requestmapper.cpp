@@ -107,11 +107,11 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 
     QRegExp library("/library/([0-9]+)/.+"); //permite verificar que la biblioteca solicitada existe
 
-	path = QUrl::fromPercentEncoding(path).toLatin1();
+    path = QUrl::fromPercentEncoding(path).toUtf8();
 
     loadSession(request, response);
 
-	//primera petición, se ha hecho un post, se sirven las bibliotecas si la seguridad mediante login no está habilitada
+	//primera peticiÃ³n, se ha hecho un post, se sirven las bibliotecas si la seguridad mediante login no estÃ¡ habilitada
     if(path == "/")  //Don't send data to the server using '/' !!!!
     {
 		LibrariesController().service(request, response);
@@ -120,7 +120,7 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 	else 
 	{
 
-        //se comprueba que la sesión sea la correcta con el fin de evitar accesos no autorizados
+        //se comprueba que la sesiÃ³n sea la correcta con el fin de evitar accesos no autorizados
         HttpSession session=Static::sessionStore->getSession(request,response,false);
         if(!session.isNull() && session.contains("ySession"))
         {
@@ -162,7 +162,7 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 				Static::staticFileController->service(request, response);
 			}
         }
-        else //acceso no autorizado, redirección
+        else //acceso no autorizado, redirecciÃ³n
         {
             ErrorController(300).service(request,response);
         }

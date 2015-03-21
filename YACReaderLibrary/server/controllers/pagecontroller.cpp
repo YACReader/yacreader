@@ -17,7 +17,7 @@ void PageController::service(HttpRequest& request, HttpResponse& response)
 {
 	HttpSession session=Static::sessionStore->getSession(request,response,false);
 
-	QString path = QUrl::fromPercentEncoding(request.getPath()).toLatin1();
+    QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
     bool remote = path.endsWith("remote");
 
 	//QByteArray path2=request.getPath();
@@ -34,13 +34,13 @@ void PageController::service(HttpRequest& request, HttpResponse& response)
     qulonglong currentComicId;
     if(remote)
     {
-        QLOG_INFO() << "se recupera comic remoto para servir p·ginas";
+        QLOG_INFO() << "se recupera comic remoto para servir p√°ginas";
         comicFile = session.getCurrentRemoteComic();
         currentComicId = session.getCurrentRemoteComicId();
     }
     else
     {
-        QLOG_INFO() << "se recupera comic para servir p·ginas";
+        QLOG_INFO() << "se recupera comic para servir p√°ginas";
         comicFile = session.getCurrentComic();
         currentComicId = session.getCurrentComicId();
     }
@@ -51,7 +51,7 @@ void PageController::service(HttpRequest& request, HttpResponse& response)
 		{
 			if(comicFile->pageIsLoaded(page))
 			{
-				//qDebug("PageController: La p·gina estaba cargada -> %s ",path.data());
+				//qDebug("PageController: La p√°gina estaba cargada -> %s ",path.data());
 				response.setHeader("Content-Type", "image/jpeg");
 				response.setHeader("Transfer-Encoding","chunked");
 				QByteArray pageData = comicFile->getRawPage(page);
@@ -66,8 +66,8 @@ void PageController::service(HttpRequest& request, HttpResponse& response)
 			}
 			else
 			{
-				//qDebug("PageController: La p·gina NO estaba cargada 404 -> %s ",path.data());
-				response.setStatus(404,"not found"); //TODO quÈ mensaje enviar
+				//qDebug("PageController: La p√°gina NO estaba cargada 404 -> %s ",path.data());
+				response.setStatus(404,"not found"); //TODO qu√© mensaje enviar
 				response.write("404 not found",true);
 			}
 		}
@@ -81,7 +81,7 @@ void PageController::service(HttpRequest& request, HttpResponse& response)
                 else
                     session.dismissCurrentComic();
             }
-			response.setStatus(404,"not found"); //TODO quÈ mensaje enviar
+			response.setStatus(404,"not found"); //TODO qu√© mensaje enviar
 			response.write("404 not found",true);
 		}
 	}

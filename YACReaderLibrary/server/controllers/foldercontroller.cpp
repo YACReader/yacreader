@@ -27,7 +27,7 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 {
 	HttpSession session=Static::sessionStore->getSession(request,response,false);
 
-	response.setHeader("Content-Type", "text/html; charset=ISO-8859-1");
+    response.setHeader("Content-Type", "text/html; charset=utf-8");
 	response.setHeader("Connection","close");
 
 	//QString y = session.get("xxx").toString();
@@ -35,7 +35,7 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 
 	Template t=Static::templateLoader->getTemplate("folder_"+session.getDeviceType(),request.getHeader("Accept-Language"));
 	t.enableWarnings();
-	QString path = QUrl::fromPercentEncoding(request.getPath()).toLatin1();
+    QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
 	QStringList pathElements = path.split('/');
 	int libraryId = pathElements.at(2).toInt();
 	QString libraryName = DBHelper::getLibraryName(libraryId);
@@ -310,6 +310,6 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	t.setVariable("page",QString("%1").arg(page+1));
 	t.setVariable("pages",QString("%1").arg(numPages));
 
-	response.write(t.toLatin1(),true);
+    response.writeText(t, true);
 
 }
