@@ -177,16 +177,12 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 
 CompressedArchive::~CompressedArchive()
 {
-
 #ifdef Q_OS_UNIX
     if(isRar) //TODO: fix this!!! Possible memory leak. If AddRef is not used, a crash occurs in "delete szInterface"
         szInterface->archive->AddRef();
 #endif
     if(valid) //TODO: fix this!!! Memory leak.
-    {
-        szInterface->archive->Close();
         delete szInterface;
-    }
 #ifdef Q_OS_UNIX
     delete rarLib;
 #endif
@@ -203,7 +199,7 @@ bool CompressedArchive::loadFunctions()
     {
 #if defined Q_OS_UNIX
 	#if defined Q_OS_MAC
-		rarLib = new QLibrary(QApplication::applicationDirPath()+"/utils/Codecs/Rar29");
+        rarLib = new QLibrary(QCoreApplication::applicationDirPath()+"/utils/Codecs/Rar29");
 	#else
 		//check if a yacreader specific version of p7zip exists on the system
 		QFileInfo rarCodec(QString(LIBDIR)+"/yacreader/Codecs/Rar29.so");
@@ -219,7 +215,7 @@ bool CompressedArchive::loadFunctions()
         if(!rarLib->load())
         {
             qDebug() << "Error Loading Rar29.so : " + rarLib->errorString() << endl;
-            QApplication::exit(YACReader::SevenZNotFound);
+            QCoreApplication::exit(700); //TODO yacreader_global can't be used here, it is GUI dependant, YACReader::SevenZNotFound
             return false;
         }
 #endif
