@@ -708,8 +708,11 @@ void PDFComic::process()
 		emit errorOpening();
 		return;
 	}
-
-	
+	if (pdfComic->isLocked())
+	{
+		emit errorOpening();
+		return;
+	}
 
 	//pdfComic->setRenderHint(Poppler::Document::Antialiasing, true);
 	pdfComic->setRenderHint(Poppler::Document::TextAntialiasing, true);
