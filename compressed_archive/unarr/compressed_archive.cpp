@@ -2,9 +2,7 @@
 
 #include <QFileInfo>
 #include <QDebug>
-#include <QApplication>
 
-#include "yacreader_global.h"
 #include "extract_delegate.h"
 
 extern"C" {
