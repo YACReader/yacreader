@@ -174,7 +174,11 @@ SOURCES += ../common/comic.cpp \
 }
 
 include(../custom_widgets/custom_widgets_yacreader.pri)
+!CONFIG(unarr){
 include(../compressed_archive/wrapper.pri)
+} else {
+include(../compressed_archive/unarr/unarr-wrapper.pri)
+}
 include(../shortcuts_management/shortcuts_management.pri)
 
 RESOURCES += yacreader_images.qrc \
@@ -202,7 +206,7 @@ TRANSLATIONS = yacreader_es.ts \
 								  yacreader_de.ts \
 								  yacreader_source.ts  
 
-
+!CONFIG(unarr){
 win32 {
 !exists (../compressed_archive/lib7zip) {
 	error(You\'ll need 7zip source code to compile YACReader. \
@@ -219,6 +223,12 @@ exists (../compressed_archive/libp7zip) {
 	Please check the compressed_archive folder for further instructions.)
 }
 }
+} else { 
+exists (../compressed_archive/unarr/unarr-master) {
+		message(Found unarr source-code)
+		}
+}
+
 
 unix:!macx {
 #set install prefix if it's empty
