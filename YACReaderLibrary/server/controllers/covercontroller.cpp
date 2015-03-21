@@ -18,7 +18,7 @@ void CoverController::service(HttpRequest& request, HttpResponse& response)
 
 	YACReaderLibraries libraries = DBHelper::getLibraries();
 
-	QString path = QUrl::fromPercentEncoding(request.getPath()).toLatin1();
+    QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
 	QStringList pathElements = path.split('/');
 	QString libraryName = DBHelper::getLibraryName(pathElements.at(2).toInt());
 	QString fileName = pathElements.at(4);

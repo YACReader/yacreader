@@ -112,7 +112,7 @@ void HttpResponse::write(QByteArray data, bool lastPart) {
 
 void HttpResponse::writeText(QString text, bool lastPart)
 {
-	write(text.toLatin1(),lastPart);
+    write(QByteArray(text.toUtf8()),lastPart);
 }
 
 bool HttpResponse::hasSentLastPart() const {

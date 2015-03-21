@@ -10,7 +10,7 @@ ComicDownloadInfoController::ComicDownloadInfoController() {}
 
 void ComicDownloadInfoController::service(HttpRequest& request, HttpResponse& response)
 {
-    QString path = QUrl::fromPercentEncoding(request.getPath()).toLatin1();
+    QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
     QStringList pathElements = path.split('/');
 
     qulonglong libraryId = pathElements.at(2).toLongLong();
