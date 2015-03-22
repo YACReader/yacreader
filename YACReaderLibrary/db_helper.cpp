@@ -44,14 +44,19 @@ QList<LibraryItem *> DBHelper::getFolderSubfoldersFromLibrary(qulonglong library
 }
 QList<LibraryItem *> DBHelper::getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId)
 {
+    return DBHelper::getFolderComicsFromLibrary(libraryId, folderId, false);
+}
+
+QList<LibraryItem *> DBHelper::getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId, bool sort)
+{
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-	QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
+    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
 
-	QList<LibraryItem *> list = DBHelper::getComicsFromParent(folderId,db,false);
+    QList<LibraryItem *> list = DBHelper::getComicsFromParent(folderId,db,sort);
 
-	db.close();
-	QSqlDatabase::removeDatabase(libraryPath);
-	return list;
+    db.close();
+    QSqlDatabase::removeDatabase(libraryPath);
+    return list;
 }
 qulonglong DBHelper::getParentFromComicFolderId(qulonglong libraryId, qulonglong id)
 {
