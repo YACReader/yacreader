@@ -61,7 +61,11 @@ int main(int argc, char *argv[])
             {
                 int i = archive.getNumFiles();
                 cerr << i;
-                cerr << archive.getFileNames().at(0).toStdString();
+		QList<QString> filenames = archive.getFileNames();
+		if (!filenames.isEmpty())
+		{
+			cerr << archive.getFileNames().at(0).toStdString();
+		}
             }
         }
         quint64 end = timer.elapsed();
