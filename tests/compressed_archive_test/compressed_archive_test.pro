@@ -11,6 +11,10 @@ win32 {
     CONFIG -= embed_manifest_exe
 }
 
+unix {
+	DEFINES += "LIBDIR=\\\"$$/usr/lib\\\""
+	}
+
 !CONFIG(unarr){
     include(../../compressed_archive/wrapper.pri)
 } else {

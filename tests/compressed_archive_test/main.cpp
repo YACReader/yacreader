@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    QCoreApplication app(argc, argv);
+    //QCoreApplication app(argc, argv);
 
     QString s(argv[1]);
 
@@ -70,13 +70,13 @@ int main(int argc, char *argv[])
         cout << "Format '" << format.toStdString() <<"'" << endl;
         cout << "Total files : " << totalFormat << endl;
         cout << "Errors : " << errors << endl;
-        cout << "Elapsed time : " << (end - init) / 1000000 <<"s" << endl;
+        cout << "Elapsed time : " << (end - init) / 1000 <<"s" << endl;
         cout << endl;
     }
 
     cout << endl;
-    cout << "Total time : " << timer.elapsed() / 1000000 <<"s" <<endl;
+    cout << "Total time : " << timer.elapsed() / 1000 <<"s" <<endl;
     cout << endl;
 
-    return app.exec();
+    //return app.exec();
 }

@@ -215,7 +215,7 @@ bool CompressedArchive::loadFunctions()
         if(!rarLib->load())
         {
             qDebug() << "Error Loading Rar29.so : " + rarLib->errorString() << endl;
-            QApplication::exit(YACReader::SevenZNotFound);
+            //QApplication::exit(YACReader::SevenZNotFound);
             return false;
         }
 #endif
