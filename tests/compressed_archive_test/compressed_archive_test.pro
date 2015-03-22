@@ -4,6 +4,8 @@ CONFIG += console
 SOURCES += \
     main.cpp \
 
+QT += core
+
 win32 {
     LIBS +=  -loleaut32 -lole32
     QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT
