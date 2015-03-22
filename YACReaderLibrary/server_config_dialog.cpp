@@ -13,12 +13,16 @@
 #include "startup.h"
 #include "yacreader_global.h"
 
+#include "qnaturalsorting.h"
+
 #include <algorithm>
 
+//192.168 (most comon local subnet for ips are always put first)
+//IPs are sorted using natoral sorting
 bool ipComparator(const QString & ip1, const QString & ip2)
 {
     if(ip1.startsWith("192.168") && ip2.startsWith("192.168"))
-        return ip1 < ip2;
+        return naturalSortLessThanCI(ip1, ip2);
 
     if(ip1.startsWith("192.168"))
         return true;
@@ -26,7 +30,7 @@ bool ipComparator(const QString & ip1, const QString & ip2)
     if(ip2.startsWith("192.168"))
         return false;
 
-    return ip1 < ip2;
+    return naturalSortLessThanCI(ip1, ip2);
 }
 
 #ifndef Q_OS_WIN32
