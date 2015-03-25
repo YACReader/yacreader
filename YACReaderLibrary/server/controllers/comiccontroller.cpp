@@ -82,7 +82,7 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
         response.writeText(QString("libraryId:%1\r\n").arg(libraryId));
         if(remoteComic) //send previous and next comics id
         {
-            QList<LibraryItem *> siblings = DBHelper::getFolderComicsFromLibrary(libraryId, comic.parentId);
+            QList<LibraryItem *> siblings = DBHelper::getFolderComicsFromLibrary(libraryId, comic.parentId, true);
             bool found = false;
             int i;
             for(i = 0; i < siblings.length(); i++)
