@@ -120,7 +120,7 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 #else
 		//match suffix to GUID list
 		if (suffix == "rar" || suffix == "cbr")
-			i=0
+			i=0;
 		else if (suffix == "zip" || suffix == "cbz")
 			i=1;
 		else if (suffix == "tar" || suffix == "cbt")
@@ -159,10 +159,12 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 			
 	
 #ifdef Q_OS_WIN
-	if(!formatFound)
-	{
-		qDebug() << "Can not open archive" << endl;
+		if(!formatFound)
+		{
+			qDebug() << "Can not open archive" << endl;
+		}
 	}
+}
 #else
 	}
 	else
@@ -204,10 +206,11 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
                 valid = formatFound = true;
                 //isRar = true;
             }
-#endif
         }
+
 	}
 }
+#endif
 
 CompressedArchive::~CompressedArchive()
 {
