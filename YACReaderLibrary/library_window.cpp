@@ -570,7 +570,7 @@ void LibraryWindow::createActions()
         setAllAsNonReadAction->setIcon(QIcon(":/images/setAllUnread.png"));*/
 
     showHideMarksAction = new QAction(tr("Show/Hide marks"),this);
-    showHideMarksAction->setToolTip(tr("Show or hide readed marks"));
+    showHideMarksAction->setToolTip(tr("Show or hide read marks"));
     showHideMarksAction->setData(SHOW_HIDE_MARKS_ACTION_YL);
     showHideMarksAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_HIDE_MARKS_ACTION_YL));
     showHideMarksAction->setCheckable(true);
