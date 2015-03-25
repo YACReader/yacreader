@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     QString s(argv[1]);
 
     QStringList supportedFormats;
-    supportedFormats << "rar" << "zip" << "tar";
+    supportedFormats << "rar"<< "zip" << "tar";
 
     QElapsedTimer timer;
     timer.start();
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 			cerr << archive.getFileNames().at(0).toStdString();
 		}
             }
-        }
+	}
         quint64 end = timer.elapsed();
 
 
