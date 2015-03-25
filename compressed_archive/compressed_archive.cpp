@@ -18,7 +18,9 @@ DEFINE_GUID(CLSID_CFormatRar,     0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 
 DEFINE_GUID(CLSID_CFormatZip,     0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 0x01, 0x10, 0x01, 0x00, 0x00);
 DEFINE_GUID(CLSID_CFormatTar,     0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 0x01, 0x10, 0xee, 0x00, 0x00);
 DEFINE_GUID(CLSID_CFormatArj,     0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 0x01, 0x10, 0x04, 0x00, 0x00);
-DEFINE_GUID(CLSID_CFormatBZip2,   0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 0x01, 0x10, 0x02, 0x00, 0x00);
+
+//unused Formats
+/*DEFINE_GUID(CLSID_CFormatBZip2,   0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 0x01, 0x10, 0x02, 0x00, 0x00);
 DEFINE_GUID(CLSID_CFormatCab,     0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 0x01, 0x10, 0x08, 0x00, 0x00);
 DEFINE_GUID(CLSID_CFormatChm,     0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 0x01, 0x10, 0xe9, 0x00, 0x00);
 DEFINE_GUID(CLSID_CFormatCompound,0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 0x01, 0x10, 0xe5, 0x00, 0x00);
@@ -32,7 +34,7 @@ DEFINE_GUID(CLSID_CFormatNsis,    0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 
 DEFINE_GUID(CLSID_CFormatRpm,     0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 0x01, 0x10, 0xeb, 0x00, 0x00);
 DEFINE_GUID(CLSID_CFormatSplit,   0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 0x01, 0x10, 0xea, 0x00, 0x00);
 DEFINE_GUID(CLSID_CFormatWim,     0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 0x01, 0x10, 0xe6, 0x00, 0x00);
-DEFINE_GUID(CLSID_CFormatZ,       0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 0x01, 0x10, 0x05, 0x00, 0x00);
+DEFINE_GUID(CLSID_CFormatZ,       0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 0x01, 0x10, 0x05, 0x00, 0x00);*/
 
 #ifdef Q_OS_WIN
 GUID _supportedFileFormats[] = {CLSID_CFormatRar,CLSID_CFormatZip,CLSID_CFormatTar,CLSID_CFormat7z,CLSID_CFormatArj};
@@ -97,63 +99,99 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 		openCallbackSpec->PasswordIsDefined = false;
 		// openCallbackSpec->PasswordIsDefined = true;
 		// openCallbackSpec->Password = L"1";
-
-		for(unsigned int i=0;i<supportedFileFormats.size();i++)
+		
+		//get file type from suffix
+		QString suffix=QFileInfo(filePath).suffix();
+		int i;
+		//TODO: this suffix matching is rather primitive - better approach?
+#ifdef Q_OS_UNIX
+		if (suffix != "cbr" && suffix != "rar")
 		{
+			//match suffix to GUID list
+			if (suffix == "zip" || suffix == "cbz")
+				i=0;
+			else if (suffix == "tar" || suffix == "cbt")
+				i=1;
+			else if (suffix == "7z" || suffix == "cb7")
+				i=2;
+			else if (suffix == "arj")
+				i=3;
+			else return;
+#else
+		//match suffix to GUID list
+		if (suffix == "rar" || suffix == "cbr")
+			i=0
+		else if (suffix == "zip" || suffix == "cbz")
+			i=1;
+		else if (suffix == "tar" || suffix == "cbt")
+			i=2;
+		else if (suffix == "7z" || suffix == "cb7")
+			i=3;
+		else if (suffix == "arj")
+			i=4;
+		else return;
+#endif
+
+#ifdef UNICODE
+		if (!fileSpec->Open((LPCTSTR)filePath.toStdWString().c_str()))
+#else
+		if (!fileSpec->Open((LPCTSTR)filePath.toStdString().c_str()))
+#endif
+		{
+			qDebug() << "unable to load" + filePath;
+			return;
+		}
+		
 			//GUID uuid = supportedFileFormats[i];
 			//qDebug() << "trying : " << uuid << endl;
-			if (szInterface->createObjectFunc(&supportedFileFormats[i], &IID_InArchive, (void **)&szInterface->archive) != S_OK)
-            {
-                qDebug() << "wrong format";
-				continue;
-            }
-#ifdef UNICODE
-            if (!fileSpec->Open((LPCTSTR)filePath.toStdWString().c_str()))
-#else
-            if (!fileSpec->Open((LPCTSTR)filePath.toStdString().c_str()))
-#endif
-            {
-                qDebug() << "unable to load" + filePath;
-				continue;
-            }
-			//qDebug() << "Can not open archive file : " + filePath << endl;	
+		if (szInterface->createObjectFunc(&supportedFileFormats[i], &IID_InArchive, (void **)&szInterface->archive) == S_OK)
+		{
+		//qDebug() << "Can not open archive file : " + filePath << endl;	
 
 			if (szInterface->archive->Open(file, 0, openCallback) == S_OK)
-			{
-				valid = formatFound = true;
-				break;
-			}
-            else
-                qDebug() << "Can not open archive file : " + filePath << endl;
+				{
+					valid = formatFound = true;
+					qDebug() << "Opened archive file : " + filePath << endl;
+					return;
+				}
 		}
-		if(!formatFound)
-        {
+			
+			
+	
 #ifdef Q_OS_WIN
-			qDebug() << "Can not open archive" << endl;
+	if(!formatFound)
+	{
+		qDebug() << "Can not open archive" << endl;
+	}
 #else
+	}
+	else
+	{
+	isRar=true; //tell the destructor we *tried* to open a rar file!
+			    //according to valgrind, something goes wrong here
             if (szInterface->createObjectFunc(&CLSID_CFormatRar, &IID_InArchive, (void **)&szInterface->archive) != S_OK)
             {
                 qDebug() << "Error creating rar archive :" + filePath;
                 return;
             }
+       	    
+	    CMyComPtr<ISetCompressCodecsInfo> codecsInfo;
 
-            CMyComPtr<ISetCompressCodecsInfo> codecsInfo;
             if (szInterface->archive->QueryInterface(IID_ISetCompressCodecsInfo,(void **)&codecsInfo) != S_OK)
             {
                 qDebug() << "Error getting rar codec :" + filePath;
                 return;
             }
-
             if (codecsInfo->SetCompressCodecsInfo(this)  != S_OK)
             {
                 qDebug() << "Error setting rar codec";
-                return;
+		return;
             }
 
 #ifdef UNICODE
-            if (!fileSpec->Open((LPCTSTR)filePath.toStdWString().data()))
+            if (!fileSpec->Open((LPCTSTR)filePath.toStdWString().c_str()))
 #else
-            if (!fileSpec->Open((LPCTSTR)filePath.toStdString().data()))
+            if (!fileSpec->Open((LPCTSTR)filePath.toStdString().c_str()))
 #endif
             {
                 qDebug() << "Error opening rar file :" + filePath;
@@ -164,12 +202,8 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
             if (szInterface->archive->Open(file, 0, openCallback) == S_OK)
             {
                 valid = formatFound = true;
-                isRar = true;
+                //isRar = true;
             }
-            else
-                qDebug() << "Error opening rar archive";
-
-
 #endif
         }
 	}
@@ -177,16 +211,21 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 
 CompressedArchive::~CompressedArchive()
 {
+	//always close the archive!
+	szInterface->archive->Close();
+
 #ifdef Q_OS_UNIX
-    if(isRar) //TODO: fix this!!! Possible memory leak. If AddRef is not used, a crash occurs in "delete szInterface"
-        szInterface->archive->AddRef();
+	if(isRar) //TODO: fix this!!! Memory leak!!!! If AddRef is not used, a crash occurs in "delete szInterface"
+	{
+		szInterface->archive->AddRef();
+	}
 #endif
-    if(valid) //TODO: fix this!!! Memory leak.
-        delete szInterface;
+	delete szInterface;
+    
 #ifdef Q_OS_UNIX
-    delete rarLib;
+	delete rarLib;
 #endif
-    delete sevenzLib;
+	delete sevenzLib;
 }
 
 bool CompressedArchive::loadFunctions()

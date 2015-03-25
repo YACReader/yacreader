@@ -66,6 +66,7 @@ public slots:
 	bool toolsLoaded();
 private:
 	SevenZipInterface * szInterface;
+
 	QLibrary * sevenzLib;
 #ifdef Q_OS_UNIX
     QLibrary * rarLib;
