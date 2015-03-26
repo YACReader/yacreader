@@ -21,6 +21,7 @@
 #include "controllers/updatecomiccontroller.h"
 #include "controllers/errorcontroller.h"
 #include "controllers/comicdownloadinfocontroller.h"
+#include "controllers/synccontroller.h"
 
 #include "db_helper.h"
 #include "yacreader_libraries.h"
@@ -91,19 +92,21 @@ void RequestMapper::loadSession(HttpRequest & request, HttpResponse& response)
 }
 
 void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
-	QByteArray path=request.getPath();
-	qDebug("RequestMapper: path=%s",path.data());
+    QByteArray path=request.getPath();
+    qDebug("RequestMapper: path=%s",path.data());
 
-	QRegExp folder("/library/.+/folder/[0-9]+/?");//get comic content
-	QRegExp folderInfo("/library/.+/folder/[0-9]+/info/?"); //get folder info
+    QRegExp folder("/library/.+/folder/[0-9]+/?");//get comic content
+    QRegExp folderInfo("/library/.+/folder/[0-9]+/info/?"); //get folder info
     QRegExp comicDownloadInfo("/library/.+/comic/[0-9]+/?"); //get comic info (basic/download info)
     QRegExp comicFullInfo("/library/.+/comic/[0-9]+/info/?"); //get comic info (full info)
     QRegExp comicOpen("/library/.+/comic/[0-9]+/remote/?"); //the server will open for reading the comic
     QRegExp comicUpdate("/library/.+/comic/[0-9]+/update/?"); //get comic info
-	QRegExp comicClose("/library/.+/comic/[0-9]+/close/?"); //the server will close the comic and free memory
-	QRegExp cover("/library/.+/cover/[0-9a-f]+.jpg"); //get comic cover (navigation)
-	QRegExp comicPage("/library/.+/comic/[0-9]+/page/[0-9]+/?"); //get comic page
+    QRegExp comicClose("/library/.+/comic/[0-9]+/close/?"); //the server will close the comic and free memory
+    QRegExp cover("/library/.+/cover/[0-9a-f]+.jpg"); //get comic cover (navigation)
+    QRegExp comicPage("/library/.+/comic/[0-9]+/page/[0-9]+/?"); //get comic page
     QRegExp comicPageRemote("/library/.+/comic/[0-9]+/page/[0-9]+/remote?"); //get comic page (remote reading)
+
+    QRegExp sync("/library/.+/sync");
 
     QRegExp library("/library/([0-9]+)/.+"); //permite verificar que la biblioteca solicitada existe
 
@@ -111,61 +114,62 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
 
     loadSession(request, response);
 
-	//primera petición, se ha hecho un post, se sirven las bibliotecas si la seguridad mediante login no está habilitada
+    //primera petición, se ha hecho un post, se sirven las bibliotecas si la seguridad mediante login no está habilitada
     if(path == "/")  //Don't send data to the server using '/' !!!!
     {
-		LibrariesController().service(request, response);
-	}
-
-	else 
-	{
-
-        //se comprueba que la sesión sea la correcta con el fin de evitar accesos no autorizados
-        HttpSession session=Static::sessionStore->getSession(request,response,false);
-        if(!session.isNull() && session.contains("ySession"))
+        LibrariesController().service(request, response);
+    }
+    else
+    {
+        if(sync.exactMatch(path))
+            SyncController().service(request, response);
         {
-		if(library.indexIn(path)!=-1 && DBHelper::getLibraries().contains(library.cap(1).toInt()) )
-			{
-				//listar el contenido del folder
-				if(folder.exactMatch(path))
-				{
-					FolderController().service(request, response);
-				}
-				else if (folderInfo.exactMatch(path))
-				{
-					FolderInfoController().service(request, response);
-				}
-				else if(cover.exactMatch(path))
-				{
-					CoverController().service(request, response);
-                }
-                else if(comicDownloadInfo.exactMatch(path))
+            //se comprueba que la sesión sea la correcta con el fin de evitar accesos no autorizados
+            HttpSession session=Static::sessionStore->getSession(request,response,false);
+            if(!session.isNull() && session.contains("ySession"))
+            {
+                if(library.indexIn(path)!=-1 && DBHelper::getLibraries().contains(library.cap(1).toInt()) )
                 {
-                    ComicDownloadInfoController().service(request, response);
+                    //listar el contenido del folder
+                    if(folder.exactMatch(path))
+                    {
+                        FolderController().service(request, response);
+                    }
+                    else if (folderInfo.exactMatch(path))
+                    {
+                        FolderInfoController().service(request, response);
+                    }
+                    else if(cover.exactMatch(path))
+                    {
+                        CoverController().service(request, response);
+                    }
+                    else if(comicDownloadInfo.exactMatch(path))
+                    {
+                        ComicDownloadInfoController().service(request, response);
+                    }
+                    else if(comicFullInfo.exactMatch(path) || comicOpen.exactMatch(path))//start download or start remote reading
+                    {
+                        ComicController().service(request, response);
+                    }
+                    else if(comicPage.exactMatch(path) || comicPageRemote.exactMatch(path))
+                    {
+                        PageController().service(request,response);
+                    }
+                    else if(comicUpdate.exactMatch(path))
+                    {
+                        UpdateComicController().service(request, response);
+                    }
                 }
-                else if(comicFullInfo.exactMatch(path) || comicOpen.exactMatch(path))//start download or start remote reading
-				{
-                    ComicController().service(request, response);
-				}
-                else if(comicPage.exactMatch(path) || comicPageRemote.exactMatch(path))
-				{
-                    PageController().service(request,response);
-                }
-                else if(comicUpdate.exactMatch(path))
+                else
                 {
-                    UpdateComicController().service(request, response);
+                    //response.writeText(library.cap(1));
+                    Static::staticFileController->service(request, response);
                 }
-			}
-			else
-			{
-				//response.writeText(library.cap(1));
-				Static::staticFileController->service(request, response);
-			}
+            }
+            else //acceso no autorizado, redirección
+            {
+                ErrorController(300).service(request,response);
+            }
         }
-        else //acceso no autorizado, redirección
-        {
-            ErrorController(300).service(request,response);
-        }
-	}
-
+    }
 }
