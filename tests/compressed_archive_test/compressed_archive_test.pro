@@ -1,6 +1,7 @@
 TEMPLATE = app
 CONFIG += console
 
+QMAKE_CXXFLAGS+= -O2 -pipe -Wall 
 SOURCES += \
     main.cpp \
 
