@@ -12,27 +12,46 @@ extern"C" {
 CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) :
     QObject(parent),valid(false),tools(true),numFiles(0),ar(NULL),stream(NULL)
 {
+	//open file
 	stream = ar_open_file(filePath.toStdString().c_str());
-	//try to open archive
+	if (!stream)
+	{
+		return;
+	}
+	
+	//open archive
 	ar = ar_open_rar_archive(stream);
-	if (!ar) ar = ar_open_zip_archive(stream, false);
+	//TODO: build unarr with 7z support and test this!
 	//if (!ar) ar = ar_open_7z_archive(stream);
 	if (!ar) ar = ar_open_tar_archive(stream);
+	//zip detection is costly, so it comes last...
+	if (!ar) ar = ar_open_zip_archive(stream, false);
 	if (!ar)
 	{
 		return;
 	}
+	
 	//initial parse
 	while (ar_parse_entry(ar)) 
 	{
-		numFiles++;
-		fileNames.append(ar_entry_get_name(ar));
-		offsets.append(ar_entry_get_offset(ar));
+		//make sure we really got a file header
+		if (ar_entry_get_size(ar) > 0)
+		{
+			fileNames.append(ar_entry_get_name(ar));
+			offsets.append(ar_entry_get_offset(ar));
+			numFiles++;
+		}
+	}
+	if (!ar_at_eof(ar))
+	{	
+		//fail if the initial parse didn't reach EOF
+		//this might be a bit too drastic
+		qDebug() << "Error while parsing archive";
+		return;
 	}
 	if (numFiles > 0)
 	{
 		valid = true;
-		tools = true;
 	}
 }
 
@@ -54,6 +73,7 @@ bool CompressedArchive::isValid()
 
 bool CompressedArchive::toolsLoaded()
 {
+	//for backwards compatibilty
 	return tools;
 }
 
@@ -77,12 +97,21 @@ void CompressedArchive::getAllData(const QVector<quint32> & indexes, ExtractDele
 			ar_parse_entry_at(ar, offsets.at(indexes.at(0))); //set ar_entry to start of indexes
 		}
 		else
-		{
+		{	
+			//TODO:
+			//since we already have offset lists, we want to use ar_parse_entry_at here as well
+			//speed impact?
 			ar_parse_entry(ar);
 		}
 		buffer.resize(ar_entry_get_size(ar));
-		ar_entry_uncompress(ar, buffer.data(), buffer.size());
-		delegate->fileExtracted(indexes.at(i), buffer); //return extracted files :)
+		if (ar_entry_uncompress(ar, buffer.data(), buffer.size())) //did we extract it?
+		{
+			delegate->fileExtracted(indexes.at(i), buffer); //return extracted file
+		}
+		else
+		{
+			delegate->crcError(indexes.at(i)); 	//we could not extract it...
+		}								
 		i++;
 	}
 }
@@ -93,13 +122,15 @@ QByteArray CompressedArchive::getRawDataAtIndex(int index)
 	if(index >= 0 && index < getNumFiles())
 	{
 		ar_parse_entry_at(ar, offsets.at(index));
-		while (ar_entry_get_size(ar)==0)
-		{
-			ar_parse_entry(ar);
-		}
 		buffer.resize(ar_entry_get_size(ar));
-		ar_entry_uncompress(ar, buffer.data(), buffer.size());
-		//return buffer;
+		if(ar_entry_uncompress(ar, buffer.data(), buffer.size()))
+		{
+			return buffer;
+		}
+		else
+		{
+			return QByteArray();
+		}
 	}
     return buffer;
 }
