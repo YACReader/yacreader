@@ -1,7 +1,6 @@
 TEMPLATE = app
 CONFIG += console
 
-QMAKE_CXXFLAGS+= -O2 -pipe -Wall 
 SOURCES += \
     main.cpp \
 
@@ -15,7 +14,14 @@ win32 {
 }
 
 unix {
-	DEFINES += "LIBDIR=\\\"$$/usr/lib\\\""
+
+	QMAKE_CXXFLAGS+= -O3 -pipe -Wall -pthread -std=c++11
+	QMAKE_CFLAGS+= -O3 -pipe -Wall -pthread
+	
+	#this might need a little tweaking on mac os
+	DEFINES += "LIBDIR=\\\"$$/usr/lib\\\"" HAVE_ZLIB HAVE_BZIP2
+	
+	LIBS += -lbz2 -lz
 	}
 
 !CONFIG(unarr){
