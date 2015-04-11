@@ -14,14 +14,22 @@ win32 {
 }
 
 unix {
-
-	QMAKE_CXXFLAGS+= -O3 -pipe -Wall -pthread -std=c++11
-	QMAKE_CFLAGS+= -O3 -pipe -Wall -pthread
+	#these flags are probably redundant
+	#qmake tends to chose it's own flags and ignores system wide flags on unix
+	QMAKE_CXXFLAGS+= -O2 -pipe -Wall -pthread -std=c++11
+	QMAKE_CFLAGS+= -O2 -pipe -Wall -pthread
 	
 	#this might need a little tweaking on mac os
-	DEFINES += "LIBDIR=\\\"$$/usr/lib\\\"" HAVE_ZLIB HAVE_BZIP2
-	
-	LIBS += -lbz2 -lz
+	!CONFIG(unarr){
+		DEFINES += "LIBDIR=\\\"$$/usr/lib\\\""
+		}
+		else{
+		#make unarr use system zlib and bzip2
+		#these are pretty much standard on unix
+		DEFINES += HAVE_ZLIB HAVE_BZIP2
+		#add zlib and bz2 to libs
+		LIBS += -lbz2 -lz
+		}
 	}
 
 !CONFIG(unarr){
