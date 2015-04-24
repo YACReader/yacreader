@@ -106,13 +106,14 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
     QRegExp comicPage("/library/.+/comic/[0-9]+/page/[0-9]+/?"); //get comic page
     QRegExp comicPageRemote("/library/.+/comic/[0-9]+/page/[0-9]+/remote?"); //get comic page (remote reading)
 
-    QRegExp sync("/library/.+/sync");
+    QRegExp sync("/sync");
 
     QRegExp library("/library/([0-9]+)/.+"); //permite verificar que la biblioteca solicitada existe
 
     path = QUrl::fromPercentEncoding(path).toUtf8();
 
-    loadSession(request, response);
+    if(!sync.exactMatch(path)) //no session is needed for syncback info, until security will be added
+        loadSession(request, response);
 
     //primera petición, se ha hecho un post, se sirven las bibliotecas si la seguridad mediante login no está habilitada
     if(path == "/")  //Don't send data to the server using '/' !!!!
@@ -123,6 +124,7 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
     {
         if(sync.exactMatch(path))
             SyncController().service(request, response);
+        else
         {
             //se comprueba que la sesión sea la correcta con el fin de evitar accesos no autorizados
             HttpSession session=Static::sessionStore->getSession(request,response,false);
