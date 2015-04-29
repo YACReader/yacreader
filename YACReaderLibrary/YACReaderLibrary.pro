@@ -285,6 +285,7 @@ exists (../compressed_archive/libp7zip) {
         Please check the compressed_archive folder for further instructions.)
 }
 }
+}
 
 unix:!macx {
 #set install prefix if it's empty
