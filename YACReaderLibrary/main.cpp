@@ -92,6 +92,7 @@ void logSystemAndConfig()
     QLOG_INFO() << "SO : Unknown";
 #endif
 
+#ifndef use_unarr
 #ifdef Q_OS_WIN
     if(QLibrary::isLibrary(QApplication::applicationDirPath()+"/utils/7z.dll"))
 #elif defined Q_OS_UNIX && !defined Q_OS_MAC
@@ -102,6 +103,9 @@ void logSystemAndConfig()
         QLOG_INFO() << "7z : found";
     else
         QLOG_ERROR() << "7z : not found";
+#else
+	QLOG_INFO() << "using unarr decompression backend";
+#endif
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
     if(QFileInfo(QString(BINDIR)+"/qrencode").exists())
 #else

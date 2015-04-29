@@ -9,13 +9,16 @@ SOURCES += $$PWD/compressed_archive.cpp \
 unix:!macx:exists (/usr/include/unarr.h) {
 		message(Using system provided unarr installation)
 		LIBS+=-lunarr
+		DEFINES+=use_unarr
 		}
 else:macx:exists (../../dependencies/unarr/libunarr.dynlib) {
 		LIBS += -L../../dependencies/unarr/ -lunarr
+		DEFINES+=use_unarr
 		}
 
 else:win32:exists (../../dependencies/unarr/unarr.dll) {
 		LIBS += -L../../dependencies/unarr/ -lunarr
+		DEFINES+=use_unarr
 		}
 
 else:exists ($$PWD/unarr-master) {
@@ -25,6 +28,7 @@ else:exists ($$PWD/unarr-master) {
 		#qmake based unarr build system
 		#this should only be used for testing or as a last resort
 		include(unarr.pro)
+		DEFINES+=use_unarr
 		}
 	else {
 		error(Missing dependency: unarr decrompression backend. Please install libunarr on your system\
