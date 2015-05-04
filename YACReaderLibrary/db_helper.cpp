@@ -348,7 +348,7 @@ void DBHelper::update(ComicInfo * comicInfo, QSqlDatabase & db)
 
     updateComicInfo.bindValue(":comicVineID", comicInfo->comicVineID);
 
-	updateComicInfo.exec();
+    updateComicInfo.exec();
 }
 
 void DBHelper::updateRead(ComicInfo * comicInfo, QSqlDatabase & db)
@@ -386,6 +386,44 @@ void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
     comic.info.hasBeenOpened = true;
 
     DBHelper::update(&comic.info,db);
+
+    db.close();
+    QSqlDatabase::removeDatabase(libraryPath);
+}
+
+void DBHelper::updateReadingRemoteProgress(const ComicInfo &comicInfo, QSqlDatabase &db)
+{
+    QSqlQuery updateComicInfo(db);
+    updateComicInfo.prepare("UPDATE comic_info SET "
+        "read = :read, "
+        "currentPage = :currentPage, "
+        "hasBeenOpened = :hasBeenOpened"
+        " WHERE id = :id ");
+
+    updateComicInfo.bindValue(":read", comicInfo.read?1:0);
+    updateComicInfo.bindValue(":currentPage", comicInfo.currentPage);
+    updateComicInfo.bindValue(":hasBeenOpened", comicInfo.hasBeenOpened?1:0);
+    updateComicInfo.bindValue(":id", comicInfo.id);
+    updateComicInfo.exec();
+}
+
+
+void DBHelper::updateFromRemoteClient(qulonglong libraryId,const ComicInfo & comicInfo)
+{
+    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
+    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
+
+    ComicDB comic = DBHelper::loadComic(comicInfo.id,db);
+
+    if(comic.info.hash == comicInfo.hash)
+    {
+        if(comic.info.currentPage == comic.info.numPages)
+            comic.info.read = true;
+        comic.info.currentPage = comicInfo.currentPage;
+        comic.info.hasBeenOpened = true;
+
+        DBHelper::updateReadingRemoteProgress(comic.info,db);
+    }
 
     db.close();
     QSqlDatabase::removeDatabase(libraryPath);
