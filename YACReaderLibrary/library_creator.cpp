@@ -122,8 +122,8 @@ void LibraryCreator::processLibrary(const QString & source, const QString & targ
 void LibraryCreator::run()
 {
 	stopRunning = false;
-
-	//check for 7z lib
+#ifndef use_unarr
+//check for 7z lib
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
     QLibrary *sevenzLib = new QLibrary(QString(LIBDIR)+"/p7zip/7z.so");
 #else
@@ -137,7 +137,7 @@ void LibraryCreator::run()
 		exit();
 	}
 	sevenzLib->deleteLater();
-
+#endif
 	if(_mode == CREATOR)
 	{
 		QLOG_INFO() << "Starting to create new library ( " << _source << "," << _target << ")";

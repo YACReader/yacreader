@@ -285,10 +285,6 @@ exists (../compressed_archive/libp7zip) {
         Please check the compressed_archive folder for further instructions.)
 }
 }
-} else {
-	exists (../compressed_archive/unarr/unarr-master) {
-        message(Found unarr source code)
-	}
 }
 
 unix:!macx {
