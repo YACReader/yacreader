@@ -60,8 +60,10 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     tableView->setContextMenuPolicy(Qt::CustomContextMenu);
 
     //config--------------------------------------------------
+    settingsMutex.lock();
     if(settings->contains(COMICS_VIEW_HEADERS))
         tableView->horizontalHeader()->restoreState(settings->value(COMICS_VIEW_HEADERS).toByteArray());
+    settingsMutex.unlock();
 
     //connections---------------------------------------------
     connect(tableView, SIGNAL(clicked(QModelIndex)), this, SLOT(centerComicFlow(QModelIndex)));
@@ -141,8 +143,10 @@ void ClassicComicsView::setModel(ComicModel *model)
         comicFlow->setMarks(model->getReadList());
         //comicFlow->setFocus(Qt::OtherFocusReason);
 
+        settingsMutex.lock();
         if(settings->contains(COMICS_VIEW_HEADERS))
             tableView->horizontalHeader()->restoreState(settings->value(COMICS_VIEW_HEADERS).toByteArray());
+        settingsMutex.unlock();
     }
 }
 
@@ -259,7 +263,9 @@ void ClassicComicsView::updateTableView(int i)
 
 void ClassicComicsView::saveTableHeadersStatus()
 {
+    settingsMutex.lock();
     settings->setValue(COMICS_VIEW_HEADERS,tableView->horizontalHeader()->saveState());
+    settingsMutex.unlock();
 }
 
 void ClassicComicsView::saveSplitterStatus()

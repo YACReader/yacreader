@@ -64,6 +64,8 @@ private:
     void showSearchingIcon();
     void hideSearchingIcon();
     void updateSearchingIconPosition();
+
+    QMutex settingsMutex;
 };
 
 #endif // CLASSIC_COMICS_VIEW_H
