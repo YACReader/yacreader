@@ -73,6 +73,13 @@ struct SevenZipInterface {
 
 //SevenZipInterface * szInterface;
 
+const char rar[7]={0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x00};
+const char rar5[8]={0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x01, 0x00};
+const char zip[2]={0x50, 0x4B};
+const char sevenz[6]={0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C};
+const char tar[6]="ustar";
+const char arj[2]={0x60, 0xEA};
+
 CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) :
     QObject(parent),sevenzLib(0),valid(false),tools(false)
 #ifdef Q_OS_UNIX
@@ -101,35 +108,76 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 		// openCallbackSpec->Password = L"1";
 		
 		//get file type from suffix
-		QString suffix=QFileInfo(filePath).suffix();
-		int i;
+		int i=-1;
+		QFile filex(filePath);
+		
+		if (!filex.open(QIODevice::ReadOnly))
+			return;
+		QByteArray magicNumber=filex.read(8); //read first 8 bytes
+		
+		//if (memcmp(magicNumber,rar5,8)==0)
+			//return; //rar5 is not supported
+		//qDebug() << memcmp(magicNumber,rar,7);
 		//TODO: this suffix matching is rather primitive - better approach?
 #ifdef Q_OS_UNIX
-		if (suffix != "cbr" && suffix != "rar")
+		if (memcmp(magicNumber,rar,6) != 0)
 		{
 			//match suffix to GUID list
-			if (suffix == "zip" || suffix == "cbz")
+			if (memcmp(magicNumber,zip,2)==0)
 				i=0;
-			else if (suffix == "tar" || suffix == "cbt")
-				i=1;
-			else if (suffix == "7z" || suffix == "cb7")
+			else if (memcmp(magicNumber,sevenz,6)==0)
 				i=2;
-			else if (suffix == "arj")
+			else if (memcmp(magicNumber,arj,2)==0)
 				i=3;
-			else return;
+			else 
+				{
+					filex.seek(257);
+					magicNumber=filex.read(8);
+					if (memcmp(magicNumber,tar,5)==0)
+						i=1;
+				}
+			if (i==-1) //fallback code
+			{
+				QFileInfo fileinfo(filePath);
+				if (fileinfo.suffix() == "zip" || fileinfo.suffix() == "cbz")
+				{
+					i=0;
+				}
+				else
+				{
+					return;
+				}
+			}
 #else
-		//match suffix to GUID list
-		if (suffix == "rar" || suffix == "cbr")
-			i=0;
-		else if (suffix == "zip" || suffix == "cbz")
+		if (memcmp(magicNumber,rar,6) == 0)
+			if (memcmp(magicNumber,rar5,7) == 0)
+				return;
+			else
+				i=0;
+		else if (memcmp(magicNumber,zip,2)==0)
 			i=1;
-		else if (suffix == "tar" || suffix == "cbt")
-			i=2;
-		else if (suffix == "7z" || suffix == "cb7")
+		else if (memcmp(magicNumber,sevenz,6)==0)
 			i=3;
-		else if (suffix == "arj")
+		else if (memcmp(magicNumber,arj,2)==0)
 			i=4;
-		else return;
+		else {
+				filex.seek(257);
+				magicNumber=filex.read(8);
+				if (memcmp(magicNumber,tar,5)==0)
+				i=2;
+			}
+		if (i==-1) //fallback code
+			{
+				QFileInfo fileinfo(filePath);
+				if (fileinfo.suffix() == "zip" || fileinfo.suffix() == "cbz")
+				{
+					i=1;
+				}
+				else
+				{
+					return;
+				}
+			}
 #endif
 
 #ifdef UNICODE
@@ -169,8 +217,10 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 	}
 	else
 	{
-	isRar=true; //tell the destructor we *tried* to open a rar file!
-			    //according to valgrind, something goes wrong here
+	     if (memcmp(magicNumber,rar5,7) == 0)
+		return;//we don't support rar5
+	
+	    isRar=true; //tell the destructor we *tried* to open a rar file!
             if (szInterface->createObjectFunc(&CLSID_CFormatRar, &IID_InArchive, (void **)&szInterface->archive) != S_OK)
             {
                 qDebug() << "Error creating rar archive :" + filePath;
@@ -207,7 +257,6 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
                 //isRar = true;
             }
         }
-
 	}
 }
 #endif
@@ -215,10 +264,13 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 CompressedArchive::~CompressedArchive()
 {
 	//always close the archive!
-	szInterface->archive->Close();
+	if (szInterface->archive)
+	{
+		szInterface->archive->Close();
+	}
 
 #ifdef Q_OS_UNIX
-	if(isRar) //TODO: fix this!!! Memory leak!!!! If AddRef is not used, a crash occurs in "delete szInterface"
+	if(isRar) //TODO: Memory leak!!!! If AddRef is not used, a crash occurs in "delete szInterface"
 	{
 		szInterface->archive->AddRef();
 	}
@@ -426,5 +478,3 @@ STDMETHODIMP CompressedArchive::CreateEncoder(UInt32 index, const GUID *interfac
 }
 
 #endif
-
-

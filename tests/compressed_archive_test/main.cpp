@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    QCoreApplication app(argc, argv);
+    //QCoreApplication app(argc, argv);
 
     QString s(argv[1]);
 
