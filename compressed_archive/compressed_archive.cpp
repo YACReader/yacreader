@@ -73,12 +73,12 @@ struct SevenZipInterface {
 
 //SevenZipInterface * szInterface;
 
-const char rar[7]={0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x00};
-const char rar5[8]={0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x01, 0x00};
-const char zip[2]={0x50, 0x4B};
-const char sevenz[6]={0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C};
+const char rar[7]={static_cast<char>(0x52), static_cast<char>(0x61), static_cast<char>(0x72), static_cast<char>(0x21), static_cast<char>(0x1A), static_cast<char>(0x07), static_cast<char>(0x00)};
+const char rar5[8]={static_cast<char>(0x52), static_cast<char>(0x61), static_cast<char>(0x72), static_cast<char>(0x21), static_cast<char>(0x1A), static_cast<char>(0x07), static_cast<char>(0x01), static_cast<char>(0x00)};
+const char zip[2]={static_cast<char>(0x50), static_cast<char>(0x4B)};
+const char sevenz[6]={static_cast<char>(0x37), static_cast<char>(0x7A), static_cast<char>(0xBC), static_cast<char>(0xAF), static_cast<char>(0x27), static_cast<char>(0x1C)};
 const char tar[6]="ustar";
-const char arj[2]={0x60, 0xEA};
+const char arj[2]={static_cast<char>(0x60), static_cast<char>(0xEA)};
 
 CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) :
     QObject(parent),sevenzLib(0),valid(false),tools(false)
