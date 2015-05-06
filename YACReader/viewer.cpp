@@ -18,6 +18,8 @@
 #include "comic_db.h"
 #include "shortcuts_manager.h"
 
+#include "opengl_checker.h"
+
 #include <QFile>
 
 
@@ -72,10 +74,15 @@ shouldOpenPrevious(false)
 
     //CONFIG GOTO_FLOW--------------------------------------------------------
 #ifndef NO_OPENGL
-    if(!settings->contains(USE_OPEN_GL))
-    {
+
+    OpenGLChecker openGLChecker;
+    bool openGLAvailable = openGLChecker.hasCompatibleOpenGLVersion();
+
+    if(openGLAvailable && !settings->contains(USE_OPEN_GL))
         settings->setValue(USE_OPEN_GL,2);
-    }
+    else
+        if(!openGLAvailable)
+            settings->setValue(USE_OPEN_GL,0);
 
     if((settings->value(USE_OPEN_GL).toBool() == true))
         goToFlow = new GoToFlowGL(this,Configuration::getConfiguration().getFlowType());
