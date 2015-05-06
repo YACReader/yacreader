@@ -86,6 +86,7 @@
 #include "db_helper.h"
 
 #include "reading_list_item.h"
+#include "opengl_checker.h"
 
 #include "QsLog.h"
 
@@ -187,10 +188,15 @@ void LibraryWindow::doLayout()
 #ifndef NO_OPENGL
     //FLOW-----------------------------------------------------------------------
     //---------------------------------------------------------------------------
-    if(QGLFormat::hasOpenGL() && !settings->contains(USE_OPEN_GL))
-    {
+
+    OpenGLChecker openGLChecker;
+    bool openGLAvailable = openGLChecker.hasCompatibleOpenGLVersion();
+
+    if(openGLAvailable && !settings->contains(USE_OPEN_GL))
         settings->setValue(USE_OPEN_GL,2);
-    }
+    else
+        if(!openGLAvailable)
+            settings->setValue(USE_OPEN_GL,0);
 #endif
     //FOLDERS FILTER-------------------------------------------------------------
     //---------------------------------------------------------------------------

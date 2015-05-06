@@ -135,7 +135,8 @@ HEADERS += comic_flow.h \
     empty_container_info.h \
     empty_special_list.h \
     empty_reading_list_widget.h \
-    ../common/scroll_management.h
+    ../common/scroll_management.h \
+    ../common/opengl_checker.h
 
 !CONFIG(no_opengl) {
     CONFIG(legacy_gl_widget) {
@@ -203,7 +204,8 @@ SOURCES += comic_flow.cpp \
     empty_container_info.cpp \
     empty_special_list.cpp \
     empty_reading_list_widget.cpp \
-    ../common/scroll_management.cpp
+    ../common/scroll_management.cpp \
+    ../common/opengl_checker.cpp
 
 !CONFIG(no_opengl) {
     CONFIG(legacy_gl_widget) {
