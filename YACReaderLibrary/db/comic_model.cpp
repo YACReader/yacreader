@@ -361,9 +361,11 @@ QVariant ComicModel::headerData(int section, Qt::Orientation orientation,
 			return QVariant(QIcon(":/images/zip.png"));
 		else if(ext.compare("rar",Qt::CaseInsensitive) == 0)
 			return QVariant(QIcon(":/images/rar.png"));
+#ifndef use_unarr
 		else if (ext.compare("7z",Qt::CaseInsensitive) == 0)
 			return QVariant(QIcon(":/images/7z.png"));
 		else if (ext.compare("cb7",Qt::CaseInsensitive) == 0)
+#endif
 			return QVariant(QIcon(":/images/comic7z.png"));
 		else if (ext.compare("cbt",Qt::CaseInsensitive) == 0)
 			return QVariant(QIcon(":/images/comicTar.png"));
