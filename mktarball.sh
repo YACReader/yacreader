@@ -17,6 +17,6 @@ fi
 #Use tar's --exclude feature to make sure we get a pristine tar for distribution.
 #Exclude all version control system related files and rename the top directory in the tarball using --transform.
 tar cfJ yacreader-${YACVERSION}-src.tar.xz  --exclude '*.rej' --exclude '*.orig' --exclude '*.gch' --exclude 'dependencies' --exclude '*.o' \
---exclude 'yacreader*tar*' --exclude '.hg*' --exclude 'lib7zip' --exclude 'libp7zip' --exclude-vcs ./* --transform s/./yacreader-${YACVERSION}/
+--exclude 'yacreader*tar*' --exclude '.hg*' --exclude 'lib7zip' --exclude 'libp7zip' --exlude 'unarr-master' --exclude-vcs ./* --transform s/./yacreader-${YACVERSION}/
 #Calculate checksum to enable packagers to verify whether they are using the original tarball. 
 md5sum yacreader-${YACVERSION}-src.tar.xz > yacreader-${YACVERSION}-src.tar.xz.md5sum
