@@ -641,7 +641,11 @@ void MainWindowViewer::reloadOptions()
 void MainWindowViewer::open()
 {
 	QFileDialog openDialog;
+#ifndef use_unarr
 	QString pathFile = openDialog.getOpenFileName(this,tr("Open Comic"),currentDirectory,tr("Comic files") + "(*.cbr *.cbz *.rar *.zip *.tar *.pdf *.7z *.cb7 *.arj *.cbt)");
+#else
+	QString pathFile = openDialog.getOpenFileName(this,tr("Open Comic"),currentDirectory,tr("Comic files") + "(*.cbr *.cbz *.rar *.zip *.tar *.pdf *.cbt)");
+#endif
 	if (!pathFile.isEmpty())
 	{
 		openComicFromPath(pathFile);
@@ -1270,7 +1274,11 @@ void MainWindowViewer::getSiblingComics(QString path,QString currentComic)
 {
 	QDir d(path);
 	d.setFilter(QDir::Files|QDir::NoDotAndDotDot);
+#ifndef use_unarr
 	d.setNameFilters(QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.7z" << "*.cb7" << "*.arj" << "*.cbt");
+#else
+	d.setNameFilters(QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.cbt");
+#endif
 	d.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware);
 	QStringList list = d.entryList();
 	qSort(list.begin(),list.end(),naturalSortLessThanCI);
