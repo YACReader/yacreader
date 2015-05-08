@@ -8,10 +8,8 @@ DEPENDPATH += . \
 
 DEFINES += NOMINMAX YACREADER
 
-CONFIG(no_opengl) {
-	DEFINES += NO_OPENGL
-}
-
+#load default build flags
+include (../config.pri)
 
  unix:!macx{
 QMAKE_CXXFLAGS += -std=c++11
@@ -25,7 +23,7 @@ SOURCES += main.cpp
 INCLUDEPATH += ../common \
                             ../custom_widgets
 
-CONFIG(legacy_gl_widget) {
+!CONFIG(no_opengl):CONFIG(legacy_gl_widget) {
     INCLUDEPATH += ../common/gl_legacy \
 } else {
     INCLUDEPATH += ../common/gl \
@@ -171,11 +169,13 @@ SOURCES += ../common/comic.cpp \
 }
 
 include(../custom_widgets/custom_widgets_yacreader.pri)
-!CONFIG(unarr){
+CONFIG(7zip){
 include(../compressed_archive/wrapper.pri)
-} else {
+} else:CONFIG(unarr){
 include(../compressed_archive/unarr/unarr-wrapper.pri)
-}
+} else {
+	error(No compression backend specified. Did you mess with the build system?)
+	}
 include(../shortcuts_management/shortcuts_management.pri)
 
 RESOURCES += yacreader_images.qrc \
@@ -202,25 +202,6 @@ TRANSLATIONS = yacreader_es.ts \
 								  yacreader_tr.ts \
 								  yacreader_de.ts \
 								  yacreader_source.ts  
-
-!CONFIG(unarr){
-win32 {
-!exists (../compressed_archive/lib7zip) {
-	error(You\'ll need 7zip source code to compile YACReader. \
-	Please check the compressed_archive folder for further instructions.)
-}
-}
-
-unix {
-exists (../compressed_archive/libp7zip) {
-	message(Found p7zip source code...)
-	system(patch -d ../compressed_archive -N -p0 -i libp7zip.patch)
-} else {
-	error(You\'ll need 7zip source code to compile YACReader. \
-	Please check the compressed_archive folder for further instructions.)
-}
-}
-} 
 
 unix:!macx {
 #set install prefix if it's empty
