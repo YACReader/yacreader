@@ -15,9 +15,8 @@ INCLUDEPATH += ../common \
 
 DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY
 
-CONFIG(no_opengl) {
-    DEFINES += NO_OPENGL
-}
+#load default build flags
+include (../config.pri)
 
 CONFIG(legacy_gl_widget) {
     INCLUDEPATH += ../common/gl_legacy \
@@ -217,10 +216,12 @@ SOURCES += comic_flow.cpp \
 				   
 include(./server/server.pri)
 include(../custom_widgets/custom_widgets_yacreaderlibrary.pri)
-!CONFIG(unarr){
+CONFIG(7zip){
 include(../compressed_archive/wrapper.pri)
-} else {
+} else:CONFIG(unarr) {
 include(../compressed_archive/unarr/unarr-wrapper.pri)
+} else {
+	error(No compression backend specified. Did you mess with the build system?)
 }
 
 include(./comic_vine/comic_vine.pri)
@@ -264,25 +265,6 @@ RESOURCES += qml.qrc
 win32:RESOURCES += qml_win.qrc
 unix:!macx:RESOURCES += qml_win.qrc
 macx:RESOURCES += qml_osx.qrc
-
-!CONFIG(unarr){
-win32 {
-!exists(../compressed_archive/lib7zip){
-        error(You\'ll need 7zip source code to compile YACReader. \
-        Please check the compressed_archive folder for further instructions.)
-}
-}
-
-unix {
-exists (../compressed_archive/libp7zip) {
-        message(Found p7zip source code...)
-        system(patch -d ../compressed_archive -N -p0 -i libp7zip.patch)
-} else {
-        error(You\'ll need 7zip source code to compile YACReader. \
-        Please check the compressed_archive folder for further instructions.)
-}
-}
-}
 
 unix:!macx {
 #set install prefix if it's empty
