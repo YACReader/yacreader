@@ -11,7 +11,7 @@ QT_VER_MIN = $$member(QT_VERSION, 1)
 lessThan(QT_VER_MAJ, 5) {
 error(YACReader requires Qt 5 or newer but Qt $$[QT_VERSION] was detected.)
 	}
-lessThan(QT_VER_MIN, 5):!CONFIG(no_opengl)	{
+lessThan(QT_VER_MIN, 4):!CONFIG(no_opengl)	{
 	CONFIG += legacy_gl_widget
 	message ("Qt < 5.4 detected. Using QGLWidget for coverflow.")
 	}
