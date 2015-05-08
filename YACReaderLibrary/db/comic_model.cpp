@@ -365,7 +365,7 @@ QVariant ComicModel::headerData(int section, Qt::Orientation orientation,
 			return QVariant(QIcon(":/images/7z.png"));
 		else if (ext.compare("cb7",Qt::CaseInsensitive) == 0)
 			return QVariant(QIcon(":/images/comic7z.png"));
-		else if (ext.compare("cb7",Qt::CaseInsensitive) == 0)
+		else if (ext.compare("cbt",Qt::CaseInsensitive) == 0)
 			return QVariant(QIcon(":/images/comicTar.png"));
 
 	}
