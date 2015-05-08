@@ -113,7 +113,8 @@ HEADERS += ../common/comic.h \
         yacreader_local_client.h \
         ../common/http_worker.h \
         ../common/exit_check.h \
-        ../common/scroll_management.h
+        ../common/scroll_management.h \
+        ../common/opengl_checker.h
 
 !CONFIG(no_opengl) {
     CONFIG(legacy_gl_widget) {
@@ -156,7 +157,8 @@ SOURCES += ../common/comic.cpp \
     ../common/http_worker.cpp \
     ../common/yacreader_global.cpp \
         ../common/exit_check.cpp \
-    ../common/scroll_management.cpp
+    ../common/scroll_management.cpp \
+    ../common/opengl_checker.cpp
 
 !CONFIG(no_opengl) {
     CONFIG(legacy_gl_widget) {
