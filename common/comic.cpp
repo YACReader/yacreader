@@ -1,4 +1,4 @@
-#include "comic.h"
+	#include "comic.h"
 
 #include <QPixmap>
 #include <QRegExp>
@@ -18,9 +18,13 @@
 const QStringList Comic::imageExtensions = QStringList() << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp" << "*.webp";
 const QStringList Comic::literalImageExtensions = QStringList() << "jpg" << "jpeg" << "png" << "gif" << "tiff" << "tif" << "bmp" << "webp";
 
+#ifndef use_unarr
 const QStringList Comic::comicExtensions = QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.7z" << "*.cb7" << "*.arj" << "*.cbt";
 const QStringList Comic::literalComicExtensions = QStringList() << "cbr" << "cbz" << "rar" << "zip" << "tar" << "pdf" << "7z" << "cb7" << "arj" << "cbt";
-
+#else
+const QStringList Comic::comicExtensions = QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.cbt";
+const QStringList Comic::literalComicExtensions = QStringList() << "cbr" << "cbz" << "rar" << "zip" << "tar" << "pdf" << "cbt";
+#endif
 //-----------------------------------------------------------------------------
 Comic::Comic()
 :_pages(),_index(0),_path(),_loaded(false),bm(new Bookmarks()),_loadedPages(),_isPDF(false)
