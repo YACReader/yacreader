@@ -5,7 +5,7 @@ body{
 
 /* libraries */
 #contentLibraries{
-	width: 300px;
+	width: 400px;
 	border: 1px solid #C6C6C6;
 	background-color: white;
 	margin-left: auto;
@@ -36,7 +36,7 @@ body{
 
 #contentLibraries .library-link
 {
-	width: 211px;
+	width: 311px;
 	height: 28px;
 	border: none;
 	padding: 11px 0 0 0px;
@@ -47,6 +47,7 @@ body{
 	font-size: 16px; 
 	text-decoration: none;
 	color: #525252 ;
+	overflow: hidden;
 }
 
  #contentLibraries a
