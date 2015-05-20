@@ -339,6 +339,12 @@ Rectangle {
             currentIndex: 0
             cacheBuffer: 0
 
+            footer: Rectangle { //fix for the scroll issue, TODO find what causes the issue (some times the bottoms cells are hidden for the toolbar, no full scroll)
+                height : 25
+                width : parent.width
+                color : backgroundColor
+            }
+
             move: Transition {
                 NumberAnimation { properties: "x,y"; duration: 250 }
             }
