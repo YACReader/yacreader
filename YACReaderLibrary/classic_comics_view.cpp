@@ -72,6 +72,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     connect(tableView, SIGNAL(comicRated(int,QModelIndex)), this, SIGNAL(comicRated(int,QModelIndex)));
     connect(comicFlow, SIGNAL(selected(uint)), this, SIGNAL(selected(uint)));
     connect(tableView->horizontalHeader(), SIGNAL(sectionMoved(int,int,int)), this, SLOT(saveTableHeadersStatus()));
+    connect(tableView->horizontalHeader(), SIGNAL(sectionResized(int,int,int)), this, SLOT(saveTableHeadersStatus()));
     connect(comicFlow, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(requestedViewContextMenu(QPoint)));
     connect(tableView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(requestedItemContextMenu(QPoint)));
     layout->addWidget(sVertical);
@@ -83,8 +84,10 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     sVertical->setCollapsible(1,false);
 #endif
 
+    settingsMutex.lock();
     if(settings->contains(COMICS_VIEW_FLOW_SPLITTER_STATUS))
         sVertical->restoreState(settings->value(COMICS_VIEW_FLOW_SPLITTER_STATUS).toByteArray());
+    settingsMutex.unlock();
 }
 
 void ClassicComicsView::setToolBar(QToolBar *toolBar)
@@ -120,22 +123,30 @@ void ClassicComicsView::setModel(ComicModel *model)
         tableView->horizontalHeader()->setMovable(true);
     #endif
         //TODO parametrizar la configuración de las columnas
-        for(int i = 0;i<tableView->horizontalHeader()->count();i++)
-            tableView->horizontalHeader()->hideSection(i);
+        settingsMutex.lock();
+        if(!settings->contains(COMICS_VIEW_HEADERS))
+        {
+            for(int i = 0;i<tableView->horizontalHeader()->count();i++)
+                tableView->horizontalHeader()->hideSection(i);
 
-        tableView->horizontalHeader()->showSection(ComicModel::Number);
-        tableView->horizontalHeader()->showSection(ComicModel::Title);
-        tableView->horizontalHeader()->showSection(ComicModel::FileName);
-        tableView->horizontalHeader()->showSection(ComicModel::NumPages);
-        tableView->horizontalHeader()->showSection(ComicModel::Hash); //Size is part of the Hash...TODO add Columns::Size to Columns
-        tableView->horizontalHeader()->showSection(ComicModel::ReadColumn);
-        tableView->horizontalHeader()->showSection(ComicModel::CurrentPage);
-        tableView->horizontalHeader()->showSection(ComicModel::Rating);
+            tableView->horizontalHeader()->showSection(ComicModel::Number);
+            tableView->horizontalHeader()->showSection(ComicModel::Title);
+            tableView->horizontalHeader()->showSection(ComicModel::FileName);
+            tableView->horizontalHeader()->showSection(ComicModel::NumPages);
+            tableView->horizontalHeader()->showSection(ComicModel::Hash); //Size is part of the Hash...TODO add Columns::Size to Columns
+            tableView->horizontalHeader()->showSection(ComicModel::ReadColumn);
+            tableView->horizontalHeader()->showSection(ComicModel::CurrentPage);
+            tableView->horizontalHeader()->showSection(ComicModel::Rating);
+        }
+        settingsMutex.unlock();
 
         //debido a un bug, qt4 no es capaz de ajustar el ancho teniendo en cuenta todas la filas (no sólo las visibles)
         //así que se ecala la primera vez y después se deja el control al usuario.
-        //if(!settings->contains(COMICS_VIEW_HEADERS))
-        tableView->resizeColumnsToContents();
+        settingsMutex.lock();
+        if(!settings->contains(COMICS_VIEW_HEADERS))
+            tableView->resizeColumnsToContents();
+        settingsMutex.unlock();
+
         tableView->horizontalHeader()->setStretchLastSection(true);
 
         QStringList paths = model->getPaths(model->getCurrentPath());//TODO ComicsView: get currentpath from somewhere currentPath());
@@ -270,8 +281,10 @@ void ClassicComicsView::saveTableHeadersStatus()
 
 void ClassicComicsView::saveSplitterStatus()
 {
+    settingsMutex.lock();
     if(!searching)
         settings->setValue(COMICS_VIEW_FLOW_SPLITTER_STATUS, sVertical->saveState());
+    settingsMutex.unlock();
 }
 
 void ClassicComicsView::applyModelChanges(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
