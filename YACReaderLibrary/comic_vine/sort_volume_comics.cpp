@@ -169,10 +169,12 @@ void SortVolumeComics::moveDownCL()
 	QList<QModelIndex> selection = tableFiles->selectionModel()->selectedIndexes();
 
 	if(selection.count() > 0)
+    {
 		localComicsModel->moveSelectionDown(selection);
 
-	selection = tableFiles->selectionModel()->selectedIndexes();
-	tableFiles->scrollTo(selection.last());
+        selection = tableFiles->selectionModel()->selectedIndexes();
+        tableFiles->scrollTo(selection.last());
+    }
 }
 
 void SortVolumeComics::moveUpIL()
