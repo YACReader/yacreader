@@ -47,7 +47,7 @@ bool ComicModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, i
     return data->formats().contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat);
 }
 
-//TODO: optimize this method
+//TODO: optimize this method (seriously)
 bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
 
@@ -118,9 +118,26 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 
     QLOG_INFO() << newSorting;
 
-    if(!beginMoveRows(parent,currentIndexes.first(),currentIndexes.last(),parent,row))
-        return false;
-    _data = resortedData;
+    int tempRow = row;
+    foreach(qulonglong id, comicIds)
+    {
+        int i = 0;
+        foreach (ComicItem *item, _data) {
+            if(item->data(Id) == id)
+            {
+                beginMoveRows(parent,i,i,parent,tempRow);
+                _data.removeAll(item);
+                _data.insert(tempRow++, item);
+                endMoveRows();
+                break;
+            }
+            i++;
+        }
+    }
+
+    /*if(!beginMoveRows(parent,currentIndexes.first(),currentIndexes.last(),parent,row))
+        return false;*/
+    _data = resortedData; //TODO No longer needed
 
 
     //TODO emit signals
@@ -145,7 +162,7 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 
     QSqlDatabase::removeDatabase(_databasePath);
 
-    endMoveRows();
+    //endMoveRows();
 
     emit resortedIndexes(newSorting);
     int destSelectedIndex = row<0?_data.length():row;

@@ -51,7 +51,7 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
     }
 
     if(folderId!=1)
-		t.setVariable("folder.name",folderName);
+        t.setVariable("folder.name",folderName);
 	else
 		t.setVariable("folder.name",libraryName);
     QList<LibraryItem *> folderContent = DBHelper::getFolderSubfoldersFromLibrary(libraryId,folderId);
@@ -155,75 +155,81 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
         t.setVariable(QString("path%1.name").arg(i-1),DBHelper::getFolderName(libraryId,foldersPath[i].first));
     }
 
-	t.loop("element",numFoldersAtCurrentPage);
-	int i = 0;
-	while(i<numFoldersAtCurrentPage)
-	{
-		LibraryItem * item = folderContent.at(i + (page*elementsPerPage));
-		t.setVariable(QString("element%1.name").arg(i),folderContent.at(i + (page*elementsPerPage))->name);
-		if(item->isDir())
-		{
-			t.setVariable(QString("element%1.class").arg(i),"folder");
-
-            QList<LibraryItem *> children = DBHelper::getFolderComicsFromLibrary(libraryId, item->id);
-            if(children.length()>0)
+    if(folderContent.length() > 0)
+    {
+        t.loop("element",numFoldersAtCurrentPage);
+        int i = 0;
+        while(i<numFoldersAtCurrentPage)
+        {
+            LibraryItem * item = folderContent.at(i + (page*elementsPerPage));
+            t.setVariable(QString("element%1.name").arg(i),folderContent.at(i + (page*elementsPerPage))->name);
+            if(item->isDir())
             {
-               const ComicDB * comic = static_cast<ComicDB*>(children.at(0));
-               t.setVariable(QString("element%1.image.url").arg(i),QString("/library/%1/cover/%2.jpg?folderCover=true").arg(libraryId).arg(comic->info.hash));
+                t.setVariable(QString("element%1.class").arg(i),"folder");
+
+                QList<LibraryItem *> children = DBHelper::getFolderComicsFromLibrary(libraryId, item->id);
+                if(children.length()>0)
+                {
+                    const ComicDB * comic = static_cast<ComicDB*>(children.at(0));
+                    t.setVariable(QString("element%1.image.url").arg(i),QString("/library/%1/cover/%2.jpg?folderCover=true").arg(libraryId).arg(comic->info.hash));
+                }
+                else
+                    t.setVariable(QString("element%1.image.url").arg(i),"/images/f.png");
+
+                t.setVariable(QString("element%1.browse").arg(i),QString("<a class =\"browseButton\" href=\"%1\">BROWSE</a>").arg(QString("/library/%1/folder/%2").arg(libraryId).arg(item->id)));
+                t.setVariable(QString("element%1.cover.browse").arg(i),QString("<a href=\"%1\">").arg(QString("/library/%1/folder/%2").arg(libraryId).arg(item->id)));
+                t.setVariable(QString("element%1.cover.browse.end").arg(i),"</a>");
+                //t.setVariable(QString("element%1.url").arg(i),"/library/"+libraryName+"/folder/"+QString("%1").arg(folderContent.at(i + (page*10))->id));
+                //t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/folder/"+QString("%1/info").arg(folderContent.at(i + (page*elementsPerPage))->id));
+
+                t.setVariable(QString("element%1.download").arg(i),QString("<a onclick=\"this.innerHTML='IMPORTING';this.className='importedButton';\" class =\"importButton\" href=\"%1\">IMPORT</a>").arg("/library/"+QString::number(libraryId)+"/folder/"+QString("%1/info").arg(folderContent.at(i + (page*elementsPerPage))->id)));
+                t.setVariable(QString("element%1.read").arg(i),"");
+
+                t.setVariable(QString("element%1.size").arg(i),"");
+                t.setVariable(QString("element%1.pages").arg(i),"");
+                t.setVariable(QString("element%1.status").arg(i),"");
             }
             else
-                t.setVariable(QString("element%1.image.url").arg(i),"/images/f.png");
-
-            t.setVariable(QString("element%1.browse").arg(i),QString("<a class =\"browseButton\" href=\"%1\">BROWSE</a>").arg(QString("/library/%1/folder/%2").arg(libraryId).arg(item->id)));
-            t.setVariable(QString("element%1.cover.browse").arg(i),QString("<a href=\"%1\">").arg(QString("/library/%1/folder/%2").arg(libraryId).arg(item->id)));
-            t.setVariable(QString("element%1.cover.browse.end").arg(i),"</a>");
-			//t.setVariable(QString("element%1.url").arg(i),"/library/"+libraryName+"/folder/"+QString("%1").arg(folderContent.at(i + (page*10))->id));
-			//t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/folder/"+QString("%1/info").arg(folderContent.at(i + (page*elementsPerPage))->id));
-			
-            t.setVariable(QString("element%1.download").arg(i),QString("<a onclick=\"this.innerHTML='IMPORTING';this.className='importedButton';\" class =\"importButton\" href=\"%1\">IMPORT</a>").arg("/library/"+QString::number(libraryId)+"/folder/"+QString("%1/info").arg(folderContent.at(i + (page*elementsPerPage))->id)));
-            t.setVariable(QString("element%1.read").arg(i),"");
-
-            t.setVariable(QString("element%1.size").arg(i),"");
-            t.setVariable(QString("element%1.pages").arg(i),"");
-            t.setVariable(QString("element%1.status").arg(i),"");
-        }
-		else
-		{
-			t.setVariable(QString("element%1.class").arg(i),"cover");
-			const ComicDB * comic = (ComicDB *)item;
-			t.setVariable(QString("element%1.browse").arg(i),"");
-			//t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/comic/"+QString("%1").arg(comic->id));
-			if(!session.isComicOnDevice(comic->info.hash) && !session.isComicDownloaded(comic->info.hash))
-                t.setVariable(QString("element%1.download").arg(i),QString("<a onclick=\"this.innerHTML='IMPORTING';this.className='importedButton';\" class =\"importButton\" href=\"%1\">IMPORT</a>").arg("/library/"+QString::number(libraryId)+"/comic/"+QString("%1").arg(comic->id)));
-            else if (session.isComicOnDevice(comic->info.hash))
+            {
+                t.setVariable(QString("element%1.class").arg(i),"cover");
+                const ComicDB * comic = (ComicDB *)item;
+                t.setVariable(QString("element%1.browse").arg(i),"");
+                //t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/comic/"+QString("%1").arg(comic->id));
+                if(!session.isComicOnDevice(comic->info.hash) && !session.isComicDownloaded(comic->info.hash))
+                    t.setVariable(QString("element%1.download").arg(i),QString("<a onclick=\"this.innerHTML='IMPORTING';this.className='importedButton';\" class =\"importButton\" href=\"%1\">IMPORT</a>").arg("/library/"+QString::number(libraryId)+"/comic/"+QString("%1").arg(comic->id)));
+                else if (session.isComicOnDevice(comic->info.hash))
                     t.setVariable(QString("element%1.download").arg(i),QString("<div class=\"importedButton\">IMPORTED</div>"));
-			else
-                t.setVariable(QString("element%1.download").arg(i),QString("<div class=\"importedButton\">IMPORTING</div>"));
-			
-			//t.setVariable(QString("element%1.image.url").arg(i),"/images/f.png");
+                else
+                    t.setVariable(QString("element%1.download").arg(i),QString("<div class=\"importedButton\">IMPORTING</div>"));
 
-            t.setVariable(QString("element%1.read").arg(i),QString("<a class =\"readButton\" href=\"%1\">READ</a>").arg("/library/"+QString::number(libraryId)+"/comic/"+QString("%1").arg(comic->id)+"/remote"));
+                //t.setVariable(QString("element%1.image.url").arg(i),"/images/f.png");
 
-			t.setVariable(QString("element%1.image.url").arg(i),QString("/library/%1/cover/%2.jpg").arg(libraryId).arg(comic->info.hash));
+                t.setVariable(QString("element%1.read").arg(i),QString("<a class =\"readButton\" href=\"%1\">READ</a>").arg("/library/"+QString::number(libraryId)+"/comic/"+QString("%1").arg(comic->id)+"/remote"));
 
-            t.setVariable(QString("element%1.size").arg(i),"<span class=\"comicSize\">" + QString::number(comic->info.hash.right(comic->info.hash.length()-40).toInt()/1024.0/1024.0,'f',2)+"Mb</span>");
-            if(comic->info.hasBeenOpened)
-                t.setVariable(QString("element%1.pages").arg(i),QString("<span class=\"numPages\">%1/%2 pages</span>").arg(comic->info.currentPage).arg(comic->info.numPages.toInt()));
-            else
-                t.setVariable(QString("element%1.pages").arg(i),QString("<span class=\"numPages\">%1 pages</span>").arg(comic->info.numPages.toInt()));
+                t.setVariable(QString("element%1.image.url").arg(i),QString("/library/%1/cover/%2.jpg").arg(libraryId).arg(comic->info.hash));
 
-            if(comic->info.read)
-                t.setVariable(QString("element%1.status").arg(i), QString("<div class=\"mark\"><img src=\"/images/readMark.png\" style = \"width: 15px\"/> </div>"));
-            else if(comic->info.hasBeenOpened)
-                t.setVariable(QString("element%1.status").arg(i), QString("<div class=\"mark\"><img src=\"/images/readingMark.png\" style = \"width: 15px\"/> </div>"));
-            else
-                t.setVariable(QString("element%1.status").arg(i),"");
+                t.setVariable(QString("element%1.size").arg(i),"<span class=\"comicSize\">" + QString::number(comic->info.hash.right(comic->info.hash.length()-40).toInt()/1024.0/1024.0,'f',2)+"Mb</span>");
+                if(comic->info.hasBeenOpened)
+                    t.setVariable(QString("element%1.pages").arg(i),QString("<span class=\"numPages\">%1/%2 pages</span>").arg(comic->info.currentPage).arg(comic->info.numPages.toInt()));
+                else
+                    t.setVariable(QString("element%1.pages").arg(i),QString("<span class=\"numPages\">%1 pages</span>").arg(comic->info.numPages.toInt()));
 
-            t.setVariable(QString("element%1.cover.browse").arg(i),"");
-            t.setVariable(QString("element%1.cover.browse.end").arg(i),"");
-		}
-		i++;
-	}
+                if(comic->info.read)
+                    t.setVariable(QString("element%1.status").arg(i), QString("<div class=\"mark\"><img src=\"/images/readMark.png\" style = \"width: 15px\"/> </div>"));
+                else if(comic->info.hasBeenOpened)
+                    t.setVariable(QString("element%1.status").arg(i), QString("<div class=\"mark\"><img src=\"/images/readingMark.png\" style = \"width: 15px\"/> </div>"));
+                else
+                    t.setVariable(QString("element%1.status").arg(i),"");
+
+                t.setVariable(QString("element%1.cover.browse").arg(i),"");
+                t.setVariable(QString("element%1.cover.browse.end").arg(i),"");
+            }
+            i++;
+        }
+    } else
+    {
+        t.loop("element",0);
+    }
 
 	if(numPages > 1)
 	{
