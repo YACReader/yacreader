@@ -150,11 +150,14 @@ Rectangle {
                     }
 
                     onReleased: {
-                        /*if(mouse.button != Qt.RightButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
+                        if(mouse.button == Qt.LeftButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
                         {
-                            comicsSelectionHelper.setCurrentIndex(index)
-                            grid.currentIndex = index;
-                        }*/
+                            if(comicsSelectionHelper.isSelectedIndex(index))
+                            {
+                                comicsSelectionHelper.setCurrentIndex(index)
+                                grid.currentIndex = index;
+                            }
+                        }
                     }
 
                 }
