@@ -14,7 +14,7 @@ HttpSessionStore::HttpSessionStore(QSettings* settings, QObject* parent)
     connect(&cleanupTimer,SIGNAL(timeout()),this,SLOT(timerEvent()));
     cleanupTimer.start(60000);
     cookieName=settings->value("cookieName","sessionid").toByteArray();
-    expirationTime=settings->value("expirationTime",86400000).toInt();
+    expirationTime=settings->value("expirationTime",864000000).toInt();
     qDebug("HttpSessionStore: Sessions expire after %i milliseconds",expirationTime);
 }
 
@@ -90,7 +90,9 @@ void HttpSessionStore::timerEvent() {
         ++i;
         HttpSession session=prev.value();
         qint64 lastAccess=session.getLastAccess();
-        if (now-lastAccess>expirationTime) {
+        if (now-lastAccess>expirationTime) { //TODO cleaning up will cause current opened comic to be deleted, so clients won't be able to download it
+                                             //If the cleaning occurs in the midle of a download it going to cause issues
+                                             //Temporal fix: use a big expirationTime = 10 days
             qDebug("HttpSessionStore: session %s expired",session.getId().data());
             sessions.erase(prev);
         }

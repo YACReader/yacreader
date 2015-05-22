@@ -35,7 +35,7 @@ body{
 
 #contentLibraries .library-link
 {
-	width: 211px;
+	width: 65%;
 	height: 28px;
 	border: none;
 	padding: 11px 0 0 0px;
@@ -46,6 +46,7 @@ body{
 	font-size: 16px; 
 	text-decoration: none;
 	color: #525252 ;
+	overflow: hidden;
 }
 
  #contentLibraries a
