@@ -604,16 +604,21 @@ qulonglong DBHelper::insertReadingSubList(const QString &name, qulonglong parent
 
 void DBHelper::insertComicsInFavorites(const QList<ComicDB> &comicsList, QSqlDatabase &db)
 {
+    QSqlQuery getNumComicsInFavoritesQuery("SELECT count(*) FROM comic_default_reading_list WHERE default_reading_list_id = 1;",db);
+    getNumComicsInFavoritesQuery.next();
+    QSqlRecord record = getNumComicsInFavoritesQuery.record();
+    int numComics = record.value(0).toInt();
+
     db.transaction();
 
     QSqlQuery query(db);
-    query.prepare("INSERT INTO comic_default_reading_list (default_reading_list_id, comic_id) "
-                   "VALUES (1, :comic_id)");
+    query.prepare("INSERT INTO comic_default_reading_list (default_reading_list_id, comic_id, ordering) "
+                   "VALUES (1, :comic_id, :ordering)");
 
     foreach(ComicDB comic, comicsList)
     {
         query.bindValue(":comic_id", comic.id);
-        //query.bindValue(":order", numComics++);
+        query.bindValue(":ordering", numComics++);
         query.exec();
     }
 
@@ -622,16 +627,22 @@ void DBHelper::insertComicsInFavorites(const QList<ComicDB> &comicsList, QSqlDat
 
 void DBHelper::insertComicsInLabel(const QList<ComicDB> &comicsList, qulonglong labelId, QSqlDatabase &db)
 {
+    QSqlQuery getNumComicsInFavoritesQuery(QString("SELECT count(*) FROM comic_label WHERE label_id = %1;").arg(labelId) ,db);
+    getNumComicsInFavoritesQuery.next();
+    QSqlRecord record = getNumComicsInFavoritesQuery.record();
+    int numComics = record.value(0).toInt();
+
     db.transaction();
 
     QSqlQuery query(db);
-    query.prepare("INSERT INTO comic_label (label_id, comic_id) "
-                   "VALUES (:label_id, :comic_id)");
+    query.prepare("INSERT INTO comic_label (label_id, comic_id, ordering) "
+                   "VALUES (:label_id, :comic_id, :ordering)");
 
     foreach(ComicDB comic, comicsList)
     {
         query.bindValue(":label_id", labelId);
         query.bindValue(":comic_id", comic.id);
+        query.bindValue(":ordering", numComics++);
         query.exec();
     }
 
@@ -640,7 +651,7 @@ void DBHelper::insertComicsInLabel(const QList<ComicDB> &comicsList, qulonglong 
 
 void DBHelper::insertComicsInReadingList(const QList<ComicDB> &comicsList, qulonglong readingListId, QSqlDatabase &db)
 {
-    QSqlQuery getNumComicsInFavoritesQuery("SELECT count(*) from comic_reading_list;",db);
+    QSqlQuery getNumComicsInFavoritesQuery("SELECT count(*) FROM comic_reading_list;",db);
     getNumComicsInFavoritesQuery.next();
     QSqlRecord record = getNumComicsInFavoritesQuery.record();
     int numComics = record.value(0).toInt();

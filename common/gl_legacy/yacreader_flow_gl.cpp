@@ -1243,6 +1243,7 @@ void YACReaderComicFlowGL::updateImageData()
 				return;
 			}
 	}
+    delete[] indexes;
 }
 
 void YACReaderComicFlowGL::remove(int item)
@@ -1369,6 +1370,7 @@ void YACReaderPageFlowGL::updateImageData()
 				return;
 			}
 	}
+    delete[] indexes;
 }
 
 void YACReaderPageFlowGL::populate(int n)
