@@ -15,7 +15,7 @@ lessThan(QT_VER_MIN, 4):!CONFIG(no_opengl)	{
 	CONFIG += legacy_gl_widget
 	message ("Qt < 5.4 detected. Using QGLWidget for coverflow.")
 	}
-essThan(QT_VER_MIN, 3){
+lessThan(QT_VER_MIN, 3){
 	error ("You need at least Qt 5.3 to build YACReader or YACReaderLibrary")
 	}
 	
