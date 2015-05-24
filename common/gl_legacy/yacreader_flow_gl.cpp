@@ -238,10 +238,10 @@ YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
 
 	loaderThread->start();*/
 
-    QGLFormat f = format();
+    /*QGLFormat f = format();
     f.setVersion(2, 1);
-	f.setSwapInterval(0);
-	setFormat(f);
+    f.setSwapInterval(0);
+    setFormat(f);*/
 
     timerId = startTimer(updateInterval);
 
@@ -938,26 +938,25 @@ void YACReaderFlowGL::setPerformance(Performance performance)
 }
 
 void YACReaderFlowGL::useVSync(bool b)
-{
-	if(bUseVSync != b)
+{/*if(bUseVSync != b)
 	{
 		bUseVSync = b;
 		if(b)
 		{
 			QGLFormat f = format();
-            f.setVersion(2, 1);
+            //f.setVersion(2, 1);
             f.setSwapInterval(1);
 			setFormat(f);
 		}
 		else
 		{
 			QGLFormat f = format();
-            f.setVersion(2, 1);
+            //f.setVersion(2, 1);
 			f.setSwapInterval(0);
 			setFormat(f);
 		}
-		reset();
-	}
+        reset();
+    }*/
 }
 void YACReaderFlowGL::setShowMarks(bool value)
 {
