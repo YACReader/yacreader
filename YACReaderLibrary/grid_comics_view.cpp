@@ -97,8 +97,8 @@ void GridComicsView::setModel(ComicModel *model)
     ctxt->setContextProperty("textColor", "#E6E6E6");
     ctxt->setContextProperty("dropShadow",false);
     //fonts settings
-    ctxt->setContextProperty("fontSize", "none");
-    ctxt->setContextProperty("fontFamily", "none");
+    ctxt->setContextProperty("fontSize", "12");
+    ctxt->setContextProperty("fontFamily", "Arial");
     ctxt->setContextProperty("fontSpacing", 0.5);
 #endif
 
