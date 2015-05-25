@@ -325,8 +325,8 @@ void YACReaderFlowGL::paintGL()
 
 void YACReaderFlowGL::resizeGL(int width, int height)
 {
-
-	fontSize = (width + height) * 0.010;
+    float pixelRatio = devicePixelRatio();
+    fontSize = (width + height) * 0.010 * pixelRatio;
 	if(fontSize < 10)
 		fontSize = 10;
 
