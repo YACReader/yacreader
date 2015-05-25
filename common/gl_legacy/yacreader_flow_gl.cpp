@@ -339,7 +339,8 @@ void YACReaderFlowGL::resizeGL(int width, int height)
 
 void YACReaderFlowGL::udpatePerspective(int width, int height)
 {
-	glViewport(0, 0, width, height);
+    float pixelRatio = devicePixelRatio();
+    glViewport(0, 0, width*pixelRatio, height*pixelRatio);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -1078,8 +1079,9 @@ void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 	if(event->button() == Qt::LeftButton)
 	{
 		float x,y;
-		x = event->x();
-		y = event->y();
+        float pixelRatio = devicePixelRatio();
+        x = event->x()*pixelRatio;
+        y = event->y()*pixelRatio;
 		GLint viewport[4];
 		GLdouble modelview[16];
 		GLdouble projection[16];
@@ -1113,8 +1115,9 @@ void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 void YACReaderFlowGL::mouseDoubleClickEvent(QMouseEvent* event)
 {
 		float x,y;
-		x = event->x();
-		y = event->y();
+        float pixelRatio = devicePixelRatio();
+        x = event->x()*pixelRatio;
+        y = event->y()*pixelRatio;
 		GLint viewport[4];
 		GLdouble modelview[16];
 		GLdouble projection[16];
