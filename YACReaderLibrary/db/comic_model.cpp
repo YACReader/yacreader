@@ -279,7 +279,7 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
     else if (role == RatingRole)
         return item->data(Rating);
     else if (role == CoverPathRole)
-        return "file:///"+_databasePath+"/covers/"+item->data(Hash).toString()+".jpg";
+        return QUrl("file:"+_databasePath+"/covers/"+item->data(Hash).toString()+".jpg");
     else if (role == NumPagesRole)
         return item->data(NumPages);
     else if (role == CurrentPageRole)
