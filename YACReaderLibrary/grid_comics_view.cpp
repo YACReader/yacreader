@@ -84,7 +84,7 @@ void GridComicsView::setModel(ComicModel *model)
     ctxt->setContextProperty("textColor", "#636363");
     //fonts settings
     ctxt->setContextProperty("fontSize", 11);
-    ctxt->setContextProperty("fontFamily", "none");
+    ctxt->setContextProperty("fontFamily", QApplication::font().family());
     ctxt->setContextProperty("fontSpacing", 0.5);
 
 #else
@@ -97,8 +97,11 @@ void GridComicsView::setModel(ComicModel *model)
     ctxt->setContextProperty("textColor", "#E6E6E6");
     ctxt->setContextProperty("dropShadow",false);
     //fonts settings
-    ctxt->setContextProperty("fontSize", "12");
-    ctxt->setContextProperty("fontFamily", "Arial");
+    int fontSize = QApplication::font().pointSize();
+    if(fontSize == -1)
+        fontSize = QApplication::font().pixelSize();
+    ctxt->setContextProperty("fontSize", fontSize);
+    ctxt->setContextProperty("fontFamily", QApplication::font().family());
     ctxt->setContextProperty("fontSpacing", 0.5);
 #endif
 
