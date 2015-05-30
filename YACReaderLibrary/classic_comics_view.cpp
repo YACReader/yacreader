@@ -60,10 +60,8 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     tableView->setContextMenuPolicy(Qt::CustomContextMenu);
 
     //config--------------------------------------------------
-    settingsMutex.lock();
     if(settings->contains(COMICS_VIEW_HEADERS))
         tableView->horizontalHeader()->restoreState(settings->value(COMICS_VIEW_HEADERS).toByteArray());
-    settingsMutex.unlock();
 
     //connections---------------------------------------------
     connect(tableView, SIGNAL(clicked(QModelIndex)), this, SLOT(centerComicFlow(QModelIndex)));
@@ -84,10 +82,9 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     sVertical->setCollapsible(1,false);
 #endif
 
-    settingsMutex.lock();
     if(settings->contains(COMICS_VIEW_FLOW_SPLITTER_STATUS))
         sVertical->restoreState(settings->value(COMICS_VIEW_FLOW_SPLITTER_STATUS).toByteArray());
-    settingsMutex.unlock();
+
 }
 
 void ClassicComicsView::setToolBar(QToolBar *toolBar)
@@ -123,9 +120,8 @@ void ClassicComicsView::setModel(ComicModel *model)
         tableView->horizontalHeader()->setMovable(true);
     #endif
         //TODO parametrizar la configuración de las columnas
-        settingsMutex.lock();
-        if(!settings->contains(COMICS_VIEW_HEADERS))
-        {
+        /*if(!settings->contains(COMICS_VIEW_HEADERS))
+        {*/
             for(int i = 0;i<tableView->horizontalHeader()->count();i++)
                 tableView->horizontalHeader()->hideSection(i);
 
@@ -137,27 +133,24 @@ void ClassicComicsView::setModel(ComicModel *model)
             tableView->horizontalHeader()->showSection(ComicModel::ReadColumn);
             tableView->horizontalHeader()->showSection(ComicModel::CurrentPage);
             tableView->horizontalHeader()->showSection(ComicModel::Rating);
-        }
-        settingsMutex.unlock();
+        //}
 
         //debido a un bug, qt4 no es capaz de ajustar el ancho teniendo en cuenta todas la filas (no sólo las visibles)
         //así que se ecala la primera vez y después se deja el control al usuario.
-        settingsMutex.lock();
-        if(!settings->contains(COMICS_VIEW_HEADERS))
-            tableView->resizeColumnsToContents();
-        settingsMutex.unlock();
+        //if(!settings->contains(COMICS_VIEW_HEADERS))
 
-        tableView->horizontalHeader()->setStretchLastSection(true);
 
         QStringList paths = model->getPaths(model->getCurrentPath());//TODO ComicsView: get currentpath from somewhere currentPath());
         comicFlow->setImagePaths(paths);
         comicFlow->setMarks(model->getReadList());
         //comicFlow->setFocus(Qt::OtherFocusReason);
 
-        settingsMutex.lock();
         if(settings->contains(COMICS_VIEW_HEADERS))
             tableView->horizontalHeader()->restoreState(settings->value(COMICS_VIEW_HEADERS).toByteArray());
-        settingsMutex.unlock();
+
+        tableView->resizeColumnsToContents();
+
+        tableView->horizontalHeader()->setStretchLastSection(true);
     }
 }
 
@@ -274,9 +267,7 @@ void ClassicComicsView::updateTableView(int i)
 
 void ClassicComicsView::saveTableHeadersStatus()
 {
-    settingsMutex.lock();
     settings->setValue(COMICS_VIEW_HEADERS,tableView->horizontalHeader()->saveState());
-    settingsMutex.unlock();
 }
 
 void ClassicComicsView::saveSplitterStatus()
