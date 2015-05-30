@@ -533,7 +533,6 @@ void FileComic::process()
 	}*/
 
     emit imagesLoaded();
-	//moveToThread(QApplication::instance()->thread());
 }
 
 
@@ -622,7 +621,6 @@ void FolderComic::process()
 		}
 	}
 	emit imagesLoaded();
-	moveToThread(QApplication::instance()->thread());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -746,7 +744,6 @@ void PDFComic::process()
 	
 	delete pdfComic;
 	emit imagesLoaded();
-	moveToThread(QApplication::instance()->thread());
 }
 
 void PDFComic::renderPage(int page)
