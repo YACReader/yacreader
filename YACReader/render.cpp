@@ -814,6 +814,9 @@ void Render::startLoad()
 
 	comic->moveToThread(thread);
 
+    connect(comic, SIGNAL(errorOpening()), thread, SLOT(quit()));
+    connect(comic, SIGNAL(errorOpening(QString)), thread, SLOT(quit()));
+    connect(comic, SIGNAL(imagesLoaded()), thread, SLOT(quit()));
 	connect(thread, SIGNAL(started()), comic, SLOT(process()));
 	connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
