@@ -309,6 +309,7 @@ bool FileComic::load(const QString & path, const ComicDB & comic)
 	else
 	{
 		//QMessageBox::critical(NULL,tr("Not found"),tr("Comic not found")+" : " + path);
+        moveToThread(QApplication::instance()->thread());
 		emit errorOpening();
 		return false;
 	}
@@ -475,12 +476,14 @@ void FileComic::process()
 	CompressedArchive archive(_path);
 	if(!archive.toolsLoaded())
     {
+        moveToThread(QApplication::instance()->thread());
         emit errorOpening(tr("7z not found"));
 		return;
     }
 
     if(!archive.isValid())
     {
+        moveToThread(QApplication::instance()->thread());
         emit errorOpening(tr("Format not supported"));
         return;
     }
@@ -492,6 +495,7 @@ void FileComic::process()
 	if(_fileNames.size()==0)
 	{
 		//QMessageBox::critical(NULL,tr("File error"),tr("File not found or not images in file"));
+        moveToThread(QApplication::instance()->thread());
 		emit errorOpening();
 		return;
 	}
@@ -531,7 +535,7 @@ void FileComic::process()
 		emit imageLoaded(sortedIndex);
 		emit imageLoaded(sortedIndex,_pages[sortedIndex]);
 	}*/
-
+    moveToThread(QApplication::instance()->thread());
     emit imagesLoaded();
 }
 
@@ -590,6 +594,7 @@ void FolderComic::process()
 	{
 		//TODO emitir este mensaje en otro sitio
 		//QMessageBox::critical(NULL,QObject::tr("No images found"),QObject::tr("There are not images on the selected folder"));
+        moveToThread(QApplication::instance()->thread());
 		emit errorOpening();
 	}
 	else
@@ -620,6 +625,7 @@ void FolderComic::process()
 			count++;
 		}
 	}
+        moveToThread(QApplication::instance()->thread());
 	emit imagesLoaded();
 }
 
@@ -662,6 +668,7 @@ bool PDFComic::load(const QString & path, int atPage)
 	}
 	else
 	{
+        moveToThread(QApplication::instance()->thread());
 		emit errorOpening();
 		return false;
 	}
@@ -684,6 +691,7 @@ bool PDFComic::load(const QString & path, const ComicDB & comic)
 	else
 	{
 		//QMessageBox::critical(NULL,tr("Not found"),tr("Comic not found")+" : " + path);
+        moveToThread(QApplication::instance()->thread());
 		emit errorOpening();
 		return false;
 	}
@@ -707,11 +715,13 @@ void PDFComic::process()
 	{
         //delete pdfComic;
         //pdfComic = 0;
+        moveToThread(QApplication::instance()->thread());
 		emit errorOpening();
 		return;
 	}
 	if (pdfComic->isLocked())
 	{
+        moveToThread(QApplication::instance()->thread());
 		emit errorOpening();
 		return;
 	}
@@ -743,6 +753,7 @@ void PDFComic::process()
 		renderPage(i);
 	
 	delete pdfComic;
+        moveToThread(QApplication::instance()->thread());
 	emit imagesLoaded();
 }
 
