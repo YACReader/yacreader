@@ -26,7 +26,7 @@ CONFIG(legacy_gl_widget) {
 
 win32 {
 
-LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32
+LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
 
 LIBS += -lpoppler-qt5
 INCLUDEPATH += ../dependencies/poppler/include/qt5
