@@ -11,12 +11,17 @@ DEFINES += NOMINMAX YACREADER
 #load default build flags
 include (../config.pri)
 
- unix:!macx{
-QMAKE_CXXFLAGS += -std=c++11
+unix:!macx{
+    QMAKE_CXXFLAGS += -std=c++11
 }
 
-Release:DESTDIR = ../release
-Debug:DESTDIR = ../debug
+CONFIG(force_angle) {
+    Release:DESTDIR = ../release_angle
+    Debug:DESTDIR = ../debug_angle
+} else {
+    Release:DESTDIR = ../release
+    Debug:DESTDIR = ../debug
+}
 
 SOURCES += main.cpp
 
@@ -29,15 +34,25 @@ INCLUDEPATH += ../common \
     INCLUDEPATH += ../common/gl \
 }
 
+#there are going to be two builds for windows, OpenGL based and ANGLE based
 win32 {
-LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lopengl32 -lglu32 -luser32
+    CONFIG(force_angle) {
+        message("using ANGLE")
+        LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
+        #linking extra libs are necesary for a successful compilation, a better approach should be
+        #to remove any OpenGL (desktop) dependencies
+        #the OpenGL stuff should be migrated to OpenGL ES
+        DEFINES += FORCE_ANGLE
+    } else {
+        LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32
+    }
 
-LIBS += -lpoppler-qt5
-INCLUDEPATH += ../dependencies/poppler/include/qt5
+    LIBS += -lpoppler-qt5
+    INCLUDEPATH += ../dependencies/poppler/include/qt5
 
-QMAKE_CXXFLAGS_RELEASE += /02 /MP /Ob2 /Oi /Ot /GT /GL
-QMAKE_LFLAGS_RELEASE += /LTCG
-CONFIG -= embed_manifest_exe
+    QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
+    QMAKE_LFLAGS_RELEASE += /LTCG
+    CONFIG -= embed_manifest_exe
 }
 
 unix:!macx{

@@ -3,42 +3,67 @@
 #include "QsLog.h"
 
 OpenGLChecker::OpenGLChecker()
-{
-
-}
-
-bool OpenGLChecker::hasCompatibleOpenGLVersion()
+    :compatibleOpenGLVersion(true)
 {
     QOpenGLContext * openGLContext = new QOpenGLContext();
     openGLContext->create();
 
     if(!openGLContext->isValid())
-        return false;
+    {
+        compatibleOpenGLVersion = false;
+        description = "unable to create QOpenGLContext";
+    }
 
     QSurfaceFormat format = openGLContext->format();
 
     int majorVersion = format.majorVersion();
     int minorVersion = format.minorVersion();
+    QString type;
+
+    switch (format.renderableType()) {
+    case QSurfaceFormat::OpenGL:
+        type = "desktop";
+        break;
+
+    case QSurfaceFormat::OpenGLES:
+        type = "OpenGL ES";
+        break;
+
+    case QSurfaceFormat::OpenVG:
+        type = "OpenVG";
+
+    default: case QSurfaceFormat::DefaultRenderableType:
+        type = "unknown";
+        break;
+    }
 
     delete openGLContext;
 
-    QLOG_INFO() << QString("OpenGL version %1.%2").arg(majorVersion).arg(minorVersion);
+    description = QString("%1.%2 %3").arg(majorVersion).arg(minorVersion).arg(type);
 
     if(format.renderableType() != QSurfaceFormat::OpenGL) //Desktop OpenGL
-        return false;
+        compatibleOpenGLVersion = false;
 
 #ifdef Q_OS_WIN //TODO check Qt version, and set this values depending on the use of QOpenGLWidget or QGLWidget
-    int majorTargetVersion = 1;
-    int minorTargetVersion = 5;
+    static const int majorTargetVersion = 1;
+    static const int minorTargetVersion = 4;
 #else
-    int majorTargetVersion = 2;
-    int minorTargetVersion = 1;
+    static const int majorTargetVersion = 2;
+    static const int minorTargetVersion = 0;
 #endif
 
     if(majorVersion < majorTargetVersion)
-        return false;
+        compatibleOpenGLVersion = false;
     if(majorVersion == majorTargetVersion && minorVersion < minorTargetVersion)
-        return false;
+        compatibleOpenGLVersion = false;
+}
 
-    return true;
+QString OpenGLChecker::textVersionDescription()
+{
+    return description;
+}
+
+bool OpenGLChecker::hasCompatibleOpenGLVersion()
+{
+    return compatibleOpenGLVersion;
 }

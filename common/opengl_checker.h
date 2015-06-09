@@ -8,8 +8,10 @@ class OpenGLChecker
 public:
     OpenGLChecker();
     bool hasCompatibleOpenGLVersion();
+    QString textVersionDescription();
 private:
-    //??
+    QString description;
+    bool compatibleOpenGLVersion;
 };
 
 #endif // OPENGL_CHECKER_H
