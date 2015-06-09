@@ -59,6 +59,7 @@ class YACReaderApplication: public QApplication
 
 int main(int argc, char * argv[])
 {
+
 	#if defined(_MSC_VER) && defined(_DEBUG)
 	_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
 #endif
@@ -78,9 +79,13 @@ int main(int argc, char * argv[])
 	QApplication app(argc, argv);
 #endif
 
+#ifdef FORCE_ANGLE
+    app.setAttribute(Qt::AA_UseOpenGLES);
+#endif
+
 	app.setApplicationName("YACReader");
 	app.setOrganizationName("YACReader");
-    qApp->setAttribute(Qt::AA_UseHighDpiPixmaps);
+    app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 	//simple command line parser
 	//will be replaced by QCommandLineParser in the future
 	QStringList optlist;

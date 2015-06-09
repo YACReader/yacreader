@@ -16,6 +16,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     settings->beginGroup("libraryConfig");
     //FLOW-----------------------------------------------------------------------
     //---------------------------------------------------------------------------
+//FORCE_ANGLE is not used here, because ComicFlowWidgetGL will use OpenGL ES in the future
 #ifndef NO_OPENGL
     if((settings->value(USE_OPEN_GL).toBool() == true))
         comicFlow = new ComicFlowWidgetGL(0);
