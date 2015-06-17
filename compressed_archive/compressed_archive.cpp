@@ -200,6 +200,7 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 				{
 					valid = formatFound = true;
 					qDebug() << "Opened archive file : " + filePath << endl;
+                    setupFilesNames();
 					return;
 				}
 		}
@@ -254,6 +255,7 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
             if (szInterface->archive->Open(file, 0, openCallback) == S_OK)
             {
                 valid = formatFound = true;
+                setupFilesNames();
                 //isRar = true;
             }
         }
@@ -261,51 +263,52 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 }
 #endif
 
+
 CompressedArchive::~CompressedArchive()
 {
-	//always close the archive!
-	if (szInterface->archive)
-	{
-		szInterface->archive->Close();
-	}
+    //always close the archive!
+    if (szInterface->archive)
+    {
+        szInterface->archive->Close();
+    }
 
 #ifdef Q_OS_UNIX
-	if(isRar) //TODO: Memory leak!!!! If AddRef is not used, a crash occurs in "delete szInterface"
-	{
-		szInterface->archive->AddRef();
-	}
+    if(isRar) //TODO: Memory leak!!!! If AddRef is not used, a crash occurs in "delete szInterface"
+    {
+        szInterface->archive->AddRef();
+    }
 #endif
-	delete szInterface;
-    
+    delete szInterface;
+
 #ifdef Q_OS_UNIX
-	delete rarLib;
+    delete rarLib;
 #endif
-	delete sevenzLib;
+    delete sevenzLib;
 }
 
 bool CompressedArchive::loadFunctions()
 {
-	//LOAD library
-	//TODO check if this works in OSX (7z.so instead of 7z.dylib)
-	// fix1: try to load "7z.so"
-	// fix2: rename 7z.so to 7z.dylib
-	if(sevenzLib == 0)
+    //LOAD library
+    //TODO check if this works in OSX (7z.so instead of 7z.dylib)
+    // fix1: try to load "7z.so"
+    // fix2: rename 7z.so to 7z.dylib
+    if(sevenzLib == 0)
     {
 #if defined Q_OS_UNIX
-	#if defined Q_OS_MAC
-		rarLib = new QLibrary(QCoreApplication::applicationDirPath()+"/utils/Codecs/Rar29");
-	#else
-		//check if a yacreader specific version of p7zip exists on the system
-		QFileInfo rarCodec(QString(LIBDIR)+"/yacreader/Codecs/Rar29.so");
-		if (rarCodec.exists())
-		{
-			rarLib = new QLibrary(rarCodec.absoluteFilePath());
-		}
-		else
-		{
-			rarLib = new QLibrary(QString(LIBDIR)+"/p7zip/Codecs/Rar29.so");	
-		}
-	#endif
+    #if defined Q_OS_MAC
+        rarLib = new QLibrary(QCoreApplication::applicationDirPath()+"/utils/Codecs/Rar29");
+    #else
+        //check if a yacreader specific version of p7zip exists on the system
+        QFileInfo rarCodec(QString(LIBDIR)+"/yacreader/Codecs/Rar29.so");
+        if (rarCodec.exists())
+        {
+            rarLib = new QLibrary(rarCodec.absoluteFilePath());
+        }
+        else
+        {
+            rarLib = new QLibrary(QString(LIBDIR)+"/p7zip/Codecs/Rar29.so");
+        }
+    #endif
         if(!rarLib->load())
         {
             qDebug() << "Error Loading Rar29.so : " + rarLib->errorString() << endl;
@@ -314,43 +317,43 @@ bool CompressedArchive::loadFunctions()
         }
 #endif
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
-	QFileInfo sevenzlibrary(QString(LIBDIR)+"/yacreader/7z.so");
-	if (sevenzlibrary.exists())
-	{
-		sevenzLib = new QLibrary(sevenzlibrary.absoluteFilePath());
-	}
-	else
-	{
-		sevenzLib = new QLibrary(QString(LIBDIR)+"/p7zip/7z.so");
-	}
+    QFileInfo sevenzlibrary(QString(LIBDIR)+"/yacreader/7z.so");
+    if (sevenzlibrary.exists())
+    {
+        sevenzLib = new QLibrary(sevenzlibrary.absoluteFilePath());
+    }
+    else
+    {
+        sevenzLib = new QLibrary(QString(LIBDIR)+"/p7zip/7z.so");
+    }
 #else
     sevenzLib = new QLibrary(QCoreApplication::applicationDirPath()+"/utils/7z");
 #endif
     }
-	if(!sevenzLib->load())
-	{
+    if(!sevenzLib->load())
+    {
         qDebug() << "Error Loading 7z.dll : " + sevenzLib->errorString() << endl;
         QCoreApplication::exit(700); //TODO yacreader_global can't be used here, it is GUI dependant, YACReader::SevenZNotFound
-		return false;
-	}
-	else
-	{
-		qDebug() << "Loading functions" << endl;
+        return false;
+    }
+    else
+    {
+        qDebug() << "Loading functions" << endl;
 
-		if((szInterface->createObjectFunc = (CreateObjectFunc)sevenzLib->resolve("CreateObject")) == 0)
-			qDebug() << "fail loading function : CreateObject" << endl;
-		if((szInterface->getMethodPropertyFunc = (GetMethodPropertyFunc)sevenzLib->resolve("GetMethodProperty")) == 0)
-			qDebug() << "fail loading function : GetMethodProperty" << endl;
-		if((szInterface->getNumberOfMethodsFunc = (GetNumberOfMethodsFunc)sevenzLib->resolve("GetNumberOfMethods")) == 0)
-			qDebug() << "fail loading function : GetNumberOfMethods" << endl;
-		if((szInterface->getNumberOfFormatsFunc = (GetNumberOfFormatsFunc)sevenzLib->resolve("GetNumberOfFormats")) == 0)
-			qDebug() << "fail loading function : GetNumberOfFormats" << endl;
-		if((szInterface->getHandlerPropertyFunc = (GetHandlerPropertyFunc)sevenzLib->resolve("GetHandlerProperty")) == 0)
-			qDebug() << "fail loading function : GetHandlerProperty" << endl;
-		if((szInterface->getHandlerPropertyFunc2 = (GetHandlerPropertyFunc2)sevenzLib->resolve("GetHandlerProperty2")) == 0)
-			qDebug() << "fail loading function : GetHandlerProperty2" << endl;
-		if((szInterface->setLargePageModeFunc = (SetLargePageModeFunc)sevenzLib->resolve("SetLargePageMode")) == 0)
-			qDebug() << "fail loading function : SetLargePageMode" << endl;
+        if((szInterface->createObjectFunc = (CreateObjectFunc)sevenzLib->resolve("CreateObject")) == 0)
+            qDebug() << "fail loading function : CreateObject" << endl;
+        if((szInterface->getMethodPropertyFunc = (GetMethodPropertyFunc)sevenzLib->resolve("GetMethodProperty")) == 0)
+            qDebug() << "fail loading function : GetMethodProperty" << endl;
+        if((szInterface->getNumberOfMethodsFunc = (GetNumberOfMethodsFunc)sevenzLib->resolve("GetNumberOfMethods")) == 0)
+            qDebug() << "fail loading function : GetNumberOfMethods" << endl;
+        if((szInterface->getNumberOfFormatsFunc = (GetNumberOfFormatsFunc)sevenzLib->resolve("GetNumberOfFormats")) == 0)
+            qDebug() << "fail loading function : GetNumberOfFormats" << endl;
+        if((szInterface->getHandlerPropertyFunc = (GetHandlerPropertyFunc)sevenzLib->resolve("GetHandlerProperty")) == 0)
+            qDebug() << "fail loading function : GetHandlerProperty" << endl;
+        if((szInterface->getHandlerPropertyFunc2 = (GetHandlerPropertyFunc2)sevenzLib->resolve("GetHandlerProperty2")) == 0)
+            qDebug() << "fail loading function : GetHandlerProperty2" << endl;
+        if((szInterface->setLargePageModeFunc = (SetLargePageModeFunc)sevenzLib->resolve("SetLargePageMode")) == 0)
+            qDebug() << "fail loading function : SetLargePageMode" << endl;
 
 #ifdef Q_OS_UNIX
         if((szInterface->createObjectFuncRar = (CreateObjectFunc)rarLib->resolve("CreateObject")) == 0)
@@ -360,95 +363,127 @@ bool CompressedArchive::loadFunctions()
         if((szInterface->getNumberOfMethodsFuncRar = (GetNumberOfMethodsFunc)rarLib->resolve("GetNumberOfMethods")) == 0)
             qDebug() << "fail loading function (rar) : GetNumberOfMethods" << endl;
 #endif
-	}
+    }
 
-	return true;
+    return true;
+}
+
+void CompressedArchive::setupFilesNames()
+{
+    quint32 numItems = getNumEntries();
+    quint32 p = 0;
+    for (quint32 i = 0; i < numItems; i++)
+    {
+
+        // Get name of file
+        NWindows::NCOM::CPropVariant prop;
+        szInterface->archive->GetProperty(i, kpidIsDir, &prop);
+        bool isDir;
+        if (prop.vt == VT_BOOL)
+            isDir = VARIANT_BOOLToBool(prop.boolVal);
+        else if (prop.vt == VT_EMPTY)
+            isDir = false;
+
+        if(!isDir)
+        {
+            szInterface->archive->GetProperty(i, kpidPath, &prop);
+            UString s = ConvertPropVariantToString(prop);
+            const wchar_t * chars = s.operator const wchar_t *();
+            files.append(QString::fromWCharArray(chars));
+            offsets.append(i);
+            indexesToPages.insert(i,p);
+            p++;
+        }
+
+    }
+}
+
+QVector<quint32> CompressedArchive::translateIndexes(const QVector<quint32> & indexes)
+{
+    QVector<quint32> translatedIndexes;
+
+    foreach(quint32 i, indexes)
+    {
+        if(i < offsets.length())
+            translatedIndexes.append(offsets.at(i));
+    }
+
+    return translatedIndexes;
 }
 
 QList<QString> CompressedArchive::getFileNames()
 {
-	QList<QString> files;
-	quint32 numItems = getNumFiles();
-	for (quint32 i = 0; i < numItems; i++)
-	{
-		{
-			// Get name of file
-			NWindows::NCOM::CPropVariant prop;
-			/*szInterface->archive->GetProperty(i, kpidIsDir, &prop);
-			bool isDir;
-			if (prop.vt == VT_BOOL)
-				isDir = VARIANT_BOOLToBool(prop.boolVal);
-			else if (prop.vt == VT_EMPTY)
-				isDir = false;
-
-			if(!isDir)
-			{*/
-				szInterface->archive->GetProperty(i, kpidPath, &prop);
-				UString s = ConvertPropVariantToString(prop);
-				const wchar_t * chars = s.operator const wchar_t *();
-				files.append(QString::fromWCharArray(chars));
-			//}
-		}
-	}
-	return files;
+    return files;
 }
 
 bool CompressedArchive::isValid()
 {
-	return valid;
+    return valid;
 }
 
 bool CompressedArchive::toolsLoaded()
 {
-	return tools;
+    return tools;
 }
 
 int CompressedArchive::getNumFiles()
 {
-	quint32 numItems = 0;
-	szInterface->archive->GetNumberOfItems(&numItems);
-	return numItems;
+    return files.length();
+}
+
+int CompressedArchive::getNumEntries()
+{
+    quint32 numItems = 0;
+    szInterface->archive->GetNumberOfItems(&numItems);
+    return numItems;
 }
 
 QList<QByteArray> CompressedArchive::getAllData(const QVector<quint32> & indexes, ExtractDelegate * delegate)
 {
-	CArchiveExtractCallback *extractCallbackSpec = new CArchiveExtractCallback(true,delegate);
-	CMyComPtr<IArchiveExtractCallback> extractCallback(extractCallbackSpec);
-	extractCallbackSpec->Init(szInterface->archive, L""); // second parameter is output folder path
-	extractCallbackSpec->PasswordIsDefined = false;
+    CArchiveExtractCallback *extractCallbackSpec = new CArchiveExtractCallback(indexesToPages, true, delegate);
+    CMyComPtr<IArchiveExtractCallback> extractCallback(extractCallbackSpec);
+    extractCallbackSpec->Init(szInterface->archive, L""); // second parameter is output folder path
+    extractCallbackSpec->PasswordIsDefined = false;
 
-	HRESULT result;
-	if(indexes.isEmpty())
-		result = szInterface->archive->Extract(NULL, -1, false, extractCallback);
-	else
-		result = szInterface->archive->Extract(indexes.data(), indexes.count(), false, extractCallback);
-	if (result != S_OK)
-	{
-		qDebug() << "Extract Error" << endl;
-	}
-	
-	return extractCallbackSpec->allFiles;
+    QVector<quint32> currentIndexes = translateIndexes(indexes);
+
+    HRESULT result;
+    if(indexes.isEmpty())
+        result = szInterface->archive->Extract(NULL, -1, false, extractCallback);
+    else
+        result = szInterface->archive->Extract(currentIndexes.data(), currentIndexes.count(), false, extractCallback);
+    if (result != S_OK)
+    {
+        qDebug() << "Extract Error" << endl;
+    }
+
+    return extractCallbackSpec->allFiles;
 }
 
 QByteArray CompressedArchive::getRawDataAtIndex(int index)
 {
-	if(index>=0 && index < getNumFiles())
-	{
-		CArchiveExtractCallback *extractCallbackSpec = new CArchiveExtractCallback;
-		CMyComPtr<IArchiveExtractCallback> extractCallback(extractCallbackSpec);
-		extractCallbackSpec->Init(szInterface->archive, L""); // second parameter is output folder path
-		extractCallbackSpec->PasswordIsDefined = false;
+    if(index>=0 && index < getNumFiles())
+    {
+        CArchiveExtractCallback *extractCallbackSpec = new CArchiveExtractCallback(indexesToPages);
+        CMyComPtr<IArchiveExtractCallback> extractCallback(extractCallbackSpec);
+        extractCallbackSpec->Init(szInterface->archive, L""); // second parameter is output folder path
+        extractCallbackSpec->PasswordIsDefined = false;
 
-		UInt32 indices[1];
-		indices[0] = index;
-		HRESULT result = szInterface->archive->Extract(indices, 1, false, extractCallback);
-		if (result != S_OK)
-		{
-			qDebug() << "Extract Error" << endl;
-		}
-		
-		return QByteArray((char *)extractCallbackSpec->data,extractCallbackSpec->newFileSize);
-	}
+        UInt32 indices[1];
+
+        if(index < offsets.length())
+            indices[0] = offsets.at(index);
+        else
+            indices[0] = index;
+
+        HRESULT result = szInterface->archive->Extract(indices, 1, false, extractCallback);
+        if (result != S_OK)
+        {
+            qDebug() << "Extract Error" << endl;
+        }
+
+        return QByteArray((char *)extractCallbackSpec->data,extractCallbackSpec->newFileSize);
+    }
     return QByteArray();
 }
 
