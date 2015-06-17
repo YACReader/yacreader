@@ -515,6 +515,10 @@ void FileComic::process()
 
 	if(_firstPage == -1)
 		_firstPage = bm->getLastPage();
+
+    if(_firstPage >= _pages.length())
+        _firstPage = 0;
+
 	_index = _firstPage;
 	emit(openAt(_index));
 
@@ -601,6 +605,9 @@ void FolderComic::process()
 	{
 		if(_firstPage == -1)
 			_firstPage = bm->getLastPage();
+
+        if(_firstPage >= _pages.length())
+            _firstPage = 0;
 
 		_index = _firstPage;
 
@@ -742,6 +749,10 @@ void PDFComic::process()
 
 	if(_firstPage == -1)
 		_firstPage = bm->getLastPage();
+
+    if(_firstPage >= _pages.length())
+        _firstPage = 0;
+
 	_index = _firstPage;
 	emit(openAt(_index));
 
