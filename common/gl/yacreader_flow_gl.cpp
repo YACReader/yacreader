@@ -806,6 +806,8 @@ void YACReaderFlowGL::populate(int n)
 
 void YACReaderFlowGL::reset()
 {
+    makeCurrent();
+
     startAnimationTimer();
 
 	currentSelected = 0;
@@ -821,6 +823,8 @@ void YACReaderFlowGL::reset()
 	
 	if(!hasBeenInitialized)
 		lazyPopulateObjects = -1;
+
+    doneCurrent();
 }
 
 void YACReaderFlowGL::reload()
