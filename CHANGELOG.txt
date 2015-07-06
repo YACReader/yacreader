@@ -1,3 +1,34 @@
+8.0.0
+Reading lists
+Tags
+'Favorites' and 'being read' lists
+New search engine, now you can filter folders and comics
+New grid view
+Add and delete folders
+Update a single folder (no need for updating the whole library to rescan a single folder)
+Drag and drop for adding new comics and folders
+Customizable shorcuts
+Manga mode (thank you Felix)
+Spread page detection for double page mode (including manga mode)(thank you again Felix :) )
+New view for folders not containing comics (only subfolders)
+Save selected covers to disk
+Comics in Reading Lists and Tags can be sorted by drag&drop
+Sublist in Reading Lists can by sorted by drag&drop
+Added WebP image format support
+The user has to provide its own Comic Vine API key to prevent usage limit errors from Comic Vine
+New unarr decompression backend for Linux and Unix systems
+Fixed memory and filedescriptor leaks in 7zip wrapper
+Dropped support for Qt4
+Lots of smaller bugfixes
+
+7.2.0
+Added support for the new "remote read" feature in iOS devices.
+Improved stability
+Fixed broken compatibility with Windows XP
+Improved Linux "packageability" (thanks to Felix, Alexander and Yoann)**
+German translation (thanks to Gerhard Joeken)
+Bug fixes.
+
 7.1.0
 Añadida opción para resetear el rating de un comics
 Corregidos bugs que afectaban a la información de página.
