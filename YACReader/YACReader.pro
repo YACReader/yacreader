@@ -44,7 +44,7 @@ win32 {
         #the OpenGL stuff should be migrated to OpenGL ES
         DEFINES += FORCE_ANGLE
     } else {
-        LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32
+        LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
     }
 
     LIBS += -lpoppler-qt5
