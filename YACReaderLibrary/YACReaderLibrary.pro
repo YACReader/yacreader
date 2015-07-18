@@ -76,7 +76,7 @@ QT += macextras gui-private
 }
 
 unix{
-QMAKE_CXXFLAGS += -std=c++11
+CONFIG += c++11
 }
 
 #CONFIG += release
