@@ -353,7 +353,7 @@ void MainWindowViewer::createActions()
     setBookmarkAction->setCheckable(true);
     setBookmarkAction->setData(SET_BOOKMARK_ACTION_Y);
     setBookmarkAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_BOOKMARK_ACTION_Y));
-    connect(setBookmarkAction,SIGNAL(triggered (bool)),viewer,SLOT(setBookmarkAction(bool)));
+    connect(setBookmarkAction,SIGNAL(triggered (bool)),viewer,SLOT(setBookmark(bool)));
     connect(viewer,SIGNAL(pageAvailable(bool)),setBookmarkAction,SLOT(setEnabled(bool)));
     connect(viewer,SIGNAL(pageIsBookmark(bool)),setBookmarkAction,SLOT(setChecked(bool)));
 
