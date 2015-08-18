@@ -549,7 +549,7 @@ void MainWindowViewer::createToolBars()
 #ifdef Q_OS_MAC
     comicToolBar->addStretch();
 #else
-	comicToolBar->addWidget(new QToolBarStretch());
+    comicToolBar->addWidget(new YACReaderToolBarStretch());
 #endif
 
 	

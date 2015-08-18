@@ -6,12 +6,14 @@
 #include <QModelIndex>
 #include <QModelIndexList>
 
-class YACReaderTableView;
 class QSplitter;
-class ComicFlowWidget;
-class QToolBar;
-class ComicModel;
 class QStackedWidget;
+class QToolBar;
+
+class ComicFlowWidget;
+class ComicModel;
+class YACReaderTableView;
+class YACReaderToolBarStretch;
 
 class ClassicComicsView : public ComicsView
 {
@@ -44,16 +46,22 @@ public slots:
     void selectedComicForOpening(const QModelIndex & mi);
 
 protected slots:
+    void hideComicFlow(bool hide);
     void requestedViewContextMenu(const QPoint & point);
     void requestedItemContextMenu(const QPoint & point);
 
+
 private:
     YACReaderTableView * tableView;
+    YACReaderToolBarStretch * toolBarStretch;
+    QAction * toolBarStretchAction;
+    QToolBar * toolbar;
     QWidget *comics;
     QSplitter * sVertical;
     ComicFlowWidget * comicFlow;
     QSettings * settings;
     void closeEvent ( QCloseEvent * event );
+    QAction * hideFlowViewAction;
 
     QStackedWidget * stack;
 

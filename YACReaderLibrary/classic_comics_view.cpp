@@ -1,11 +1,12 @@
 #include "classic_comics_view.h"
 
-#include "yacreader_table_view.h"
+#include "QStackedWidget"
 
 #include "comic_flow_widget.h"
 #include "QsLog.h"
-
-#include "QStackedWidget"
+#include "shortcuts_manager.h"
+#include "yacreader_table_view.h"
+#include "yacreader_tool_bar_stretch.h"
 
 ClassicComicsView::ClassicComicsView(QWidget *parent)
     :ComicsView(parent),searching(false)
@@ -86,11 +87,48 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     if(settings->contains(COMICS_VIEW_FLOW_SPLITTER_STATUS))
         sVertical->restoreState(settings->value(COMICS_VIEW_FLOW_SPLITTER_STATUS).toByteArray());
 
+    //hide flow widgets
+    toolBarStretch = new YACReaderToolBarStretch(this);
+
+    hideFlowViewAction = new QAction(this);
+    hideFlowViewAction->setText(tr("Hide comic flow"));
+    hideFlowViewAction->setData(HIDE_COMIC_VIEW_ACTION_YL);
+    hideFlowViewAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(HIDE_COMIC_VIEW_ACTION_YL));
+    hideFlowViewAction->setIcon(QIcon(":/images/hideComicFlow.png"));
+    hideFlowViewAction->setCheckable(true);
+    hideFlowViewAction->setChecked(false);
+
+    connect(hideFlowViewAction, SIGNAL(toggled(bool)),this, SLOT(hideComicFlow(bool)));
 }
 
+void ClassicComicsView::hideComicFlow(bool hide)
+{
+    if(hide)
+    {
+        QList<int> sizes;
+        sizes.append(0);
+        int total = sVertical->sizes().at(0) + sVertical->sizes().at(1);
+        sizes.append(total);
+        sVertical->setSizes(sizes);
+    }
+    else
+    {
+        QList<int> sizes;
+        int total = sVertical->sizes().at(0) + sVertical->sizes().at(1);
+        sizes.append(2*total/3);
+        sizes.append(total/3);
+        sVertical->setSizes(sizes);
+    }
+}
+
+//the toolbar has to be populated
 void ClassicComicsView::setToolBar(QToolBar *toolBar)
 {
     static_cast<QVBoxLayout *>(comics->layout())->insertWidget(0,toolBar);
+    this->toolbar = toolBar;
+
+    toolBarStretchAction = toolBar->addWidget(toolBarStretch);
+    toolBar->addAction(hideFlowViewAction);
 }
 
 void ClassicComicsView::setModel(ComicModel *model)
@@ -302,6 +340,9 @@ void ClassicComicsView::closeEvent(QCloseEvent *event)
     saveTableHeadersStatus();
     saveSplitterStatus();
     ComicsView::closeEvent(event);
+
+    toolbar->removeAction(toolBarStretchAction);
+    toolbar->removeAction(hideFlowViewAction);
 }
 
 void ClassicComicsView::setupSearchingIcon()

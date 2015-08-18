@@ -205,7 +205,6 @@ private:
     QAction * asignOrderAction;
     QAction * forceCoverExtractedAction;
 	QAction * deleteComicsAction;
-	QAction * hideComicViewAction;
 
     QAction *showEditShortcutsAction;
 
@@ -339,7 +338,6 @@ public slots:
     void setCurrentComicsStatusReaded(YACReaderComicReadStatus readStatus);
     void setCurrentComicReaded();
     void setCurrentComicUnreaded();
-    void hideComicFlow(bool hide);
     void showExportComicsInfo();
     void showImportComicsInfo();
     void asignNumbers();
