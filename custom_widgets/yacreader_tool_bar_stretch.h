@@ -4,10 +4,10 @@
 #include <QWidget>
 #include <QHBoxLayout>
 
-class QToolBarStretch : public QWidget
+class YACReaderToolBarStretch : public QWidget
 {
 public:
-	QToolBarStretch(QWidget * parent=0):QWidget(parent)
+    YACReaderToolBarStretch(QWidget * parent=0):QWidget(parent)
 	{
 		QHBoxLayout * l= new QHBoxLayout();
 		l->addStretch();
