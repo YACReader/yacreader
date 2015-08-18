@@ -93,8 +93,8 @@ void GridComicsView::setModel(ComicModel *model)
     ctxt->setContextProperty("selectedColor", "#121212");
     ctxt->setContextProperty("selectedBorderColor", "#121212");
     ctxt->setContextProperty("borderColor", "#121212");
-    ctxt->setContextProperty("titleColor", "#E6E6E6");
-    ctxt->setContextProperty("textColor", "#E6E6E6");
+    ctxt->setContextProperty("titleColor", "#FFFFFF");
+    ctxt->setContextProperty("textColor", "#A8A8A8");
     ctxt->setContextProperty("dropShadow",false);
     //fonts settings
     int fontSize = QApplication::font().pointSize();
