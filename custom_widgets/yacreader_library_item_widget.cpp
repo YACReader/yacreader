@@ -16,16 +16,32 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n/*ame*/, QString
 
     QPixmap iconPixmap(":/images/sidebar/libraryIcon.png");
 	icon = new QLabel(this);
-	icon->setPixmap(iconPixmap);
+    icon->setPixmap(iconPixmap);
 
 	nameLabel = new QLabel(name,this);
 
-	options = new QToolButton(this);
+    options = new QToolButton(this);
+#ifdef Q_OS_MAC
+    //TODO fix this crazy hack for having a propper retina icon for the options
+    //this hack has been perpetrated using Qt 5.5.0
+    QString sourceOptionsImage;
+    if(devicePixelRatio()>1)
+        sourceOptionsImage = ":/images/sidebar/libraryOptions@2x.png";
+    else
+        sourceOptionsImage = ":/images/sidebar/libraryOptions.png";
+    QPixmap iconOptionsPixmap(sourceOptionsImage);
+    iconOptionsPixmap.setDevicePixelRatio(devicePixelRatio());
+    QLabel * helperLabel = new QLabel(options);
+    helperLabel->move(4,2);
+    helperLabel->setFixedSize(14,14);
+    helperLabel->setPixmap(iconOptionsPixmap);
+#else
     options->setIcon(QIcon(":/images/sidebar/libraryOptions.png"));
+#endif
 	options->setHidden(true);
-	options->setFixedWidth(18);
-	options->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Minimum);
-	options->setStyleSheet("QToolButton {border:none;}");
+    options->setFixedWidth(18);
+    options->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Minimum);
+    options->setStyleSheet("QToolButton {border:none;}");
 	connect(options,SIGNAL(clicked()),this,SIGNAL(showOptions()));
 	/*up = new QToolButton(this);
 	up->setIcon(QIcon(":/images/libraryUp.png"));
