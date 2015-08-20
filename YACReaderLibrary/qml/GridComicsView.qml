@@ -48,7 +48,9 @@ Rectangle {
                         dragging = false;
                 }
 
-                width: 156; height: 287
+                width: itemWidth
+                height: itemHeight
+
                 color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index))?selectedColor:cellColor;
                 border.color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index))?selectedBorderColor:borderColor;
                 border.width: (Qt.platform.os === "osx")?1:0;
@@ -159,9 +161,7 @@ Rectangle {
                             }
                         }
                     }
-
                 }
-
             }
 
             /**/
@@ -169,8 +169,8 @@ Rectangle {
             //cover
             Image {
                 id: coverElement
-                width: 156
-                height: 236
+                width: coverWidth
+                height: coverHeight
                 anchors {horizontalCenter: parent.horizontalCenter; top: realCell.top; topMargin: 0}
                 source: cover_path
                 fillMode: Image.PreserveAspectCrop
@@ -183,8 +183,8 @@ Rectangle {
 
             //border
             Rectangle {
-                width: 156
-                height: 236
+                width: coverElement.width
+                height: coverElement.height
                 anchors {horizontalCenter: parent.horizontalCenter; top: realCell.top; topMargin: 0}
                 color: "transparent"
                 border {
@@ -206,8 +206,8 @@ Rectangle {
             //title
             Text {
                 id : titleText
-                anchors { top: realCell.top; left: realCell.left; leftMargin: 4; rightMargin: 4; topMargin: 238; }
-                width: 148
+                anchors { top: coverElement.bottom; left: realCell.left; leftMargin: 4; rightMargin: 4; topMargin: 4; }
+                width: itemWidth - 8
                 maximumLineCount: 2
                 wrapMode: Text.WordWrap
                 text: title
@@ -218,6 +218,7 @@ Rectangle {
                 font.pointSize: fontSize
                 font.family: fontFamily
             }
+
             //number
             Text {
                 anchors {bottom: realCell.bottom; left: realCell.left; margins: 4}
@@ -227,12 +228,14 @@ Rectangle {
                 font.pointSize: fontSize
                 font.family: fontFamily
             }
+
             //page icon
             Image {
                 id: pageImage
                 anchors {bottom: realCell.bottom; right: realCell.right; bottomMargin: 5; rightMargin: 4; leftMargin: 4}
                 source: "page.png"
             }
+
             //numPages
             Text {
                 id: pages
@@ -243,6 +246,7 @@ Rectangle {
                 font.pointSize: fontSize
                 font.family: fontFamily
             }
+
             //rating icon
             Image {
                 id: ratingImage
@@ -282,7 +286,7 @@ Rectangle {
         }
     }
 
-    YACReaderScrollView{
+    Rectangle{
         id: scrollView
         anchors.fill: parent
         anchors.margins: 0
@@ -335,13 +339,13 @@ Rectangle {
                     }
                 }
             }
-
         }
 
         GridView {
             id:grid
+            objectName: "grid"
             anchors.fill: parent
-            cellHeight: 295
+            cellHeight: cellCustomHeight
             highlight: appHighlight
             focus: true
             model: comicsList
@@ -388,20 +392,23 @@ Rectangle {
             }
 
             function numCellsPerRow() {
-                return Math.floor(width / 185);
+                return Math.floor(width / cellCustomWidth);
             }
 
-            onWidthChanged: {
-                var numCells = numCellsPerRow();
-                var rest = width % 185;
-
-                if(numCells > 0)
-                {
-                    cellWidth = Math.floor(width / numCells) ;
-                    //console.log("numCells=",numCells,"rest=",rest,"cellWidth=",cellWidth,"width=",width);
-                }
+           onWidthChanged: {
+                calculateCellWidths(cellCustomWidth);
             }
+
+           function calculateCellWidths(cWidth) {
+
+               var wholeCells = Math.floor(width / cWidth);
+               var rest = width - (cWidth * wholeCells)
+
+               grid.cellWidth = cWidth + Math.floor(rest / wholeCells);
+               console.log("cWidth",cWidth,"wholeCells=",wholeCells,"rest=",rest,"cellWidth=",cellWidth,"width=",width);
+           }
         }
+
         focus: true
         Keys.onPressed: {
             if (event.modifiers & Qt.ControlModifier || event.modifiers & Qt.ShiftModifier)
