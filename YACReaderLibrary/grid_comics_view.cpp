@@ -51,7 +51,7 @@ GridComicsView::GridComicsView(QWidget *parent) :
     QQmlContext *ctxt = view->rootContext();
 
 #ifdef Q_OS_MAC
-    ctxt->setContextProperty("backgroundColor", "#F5F5F5");
+    ctxt->setContextProperty("backgroundColor", "#F6F6F6");
     ctxt->setContextProperty("cellColor", "#FFFFFF");
     ctxt->setContextProperty("selectedColor", "#FFFFFF");
     ctxt->setContextProperty("selectedBorderColor", "#007AFF");
