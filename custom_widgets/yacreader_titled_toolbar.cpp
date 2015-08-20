@@ -1,12 +1,12 @@
 #include "yacreader_titled_toolbar.h"
 
+#include <QAction>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QPixmap>
-#include <QToolButton>
-#include <QGraphicsDropShadowEffect>
 #include <QPainter>
-
+#include <QPixmap>
+#include <QPushButton>
+#include <QToolButton>
 
 
 DropShadowLabel::DropShadowLabel(QWidget* parent) :
@@ -95,14 +95,26 @@ void YACReaderTitledToolBar::addAction(QAction * action)
 {
 	QHBoxLayout * mainLayout = dynamic_cast<QHBoxLayout *>(layout());
 
-	QToolButton * tb = new QToolButton(this);
+//fix for QToolButton and retina support in OSX
+#ifdef Q_OS_MAC
+    QPushButton * pb = new QPushButton(this);
+    pb->setCursor(QCursor(Qt::ArrowCursor));
+    pb->setIcon(action->icon());
+    pb->addAction(action);
+
+    connect(pb, SIGNAL(clicked(bool)), action, SIGNAL(triggered(bool)));
+
+    mainLayout->addWidget(pb);
+#else
+    QToolButton * tb = new QToolButton(this);
     tb->setCursor(QCursor(Qt::ArrowCursor));
     tb->setDefaultAction(action);
     tb->setIconSize(QSize(16,16));
     tb->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
 	//tb->setStyleSheet("QToolButton:hover {background-color:#C5C5C5;}");
 
-	mainLayout->addWidget(tb);
+    mainLayout->addWidget(tb);
+#endif
 }
 
 void YACReaderTitledToolBar::addSpacing(int spacing)
