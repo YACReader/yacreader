@@ -5,14 +5,14 @@ fi
 
 echo "Compiling YACReader"
 cd ./YACReader
-/Users/luisangel/Qt/5.4/clang_64/bin/qmake -spec macx-clang "CONFIG+=release"
+/Users/luisangel/my_dev/Qt5.5.0/5.5/clang_64/bin/qmake -spec macx-clang "CONFIG+=release"
 #qmake -spec macx-g++ "CONFIG+=release"
 make
 cd ..
 
 echo "Compiling YACReaderLibrary"
 cd ./YACReaderLibrary
-/Users/luisangel/Qt/5.4/clang_64/bin/qmake -spec macx-clang "CONFIG+=release"
+/Users/luisangel/my_dev/Qt5.5.0/5.5/clang_64/bin/qmake -spec macx-clang "CONFIG+=release"
 #qmake -spec macx-g++ "CONFIG+=release"
 make
 cd ..

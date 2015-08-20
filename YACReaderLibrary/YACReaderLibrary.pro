@@ -15,9 +15,8 @@ INCLUDEPATH += ../common \
 
 DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY
 
-CONFIG(no_opengl) {
-    DEFINES += NO_OPENGL
-}
+#load default build flags
+include (../config.pri)
 
 CONFIG(legacy_gl_widget) {
     INCLUDEPATH += ../common/gl_legacy \
@@ -25,19 +24,25 @@ CONFIG(legacy_gl_widget) {
     INCLUDEPATH += ../common/gl \
 }
 
+#there are going to be two builds for windows, OpenGL based and ANGLE based
 win32 {
+    CONFIG(force_angle) {
+        message("using ANGLE")
+        LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
+        #linking extra libs are necesary for a successful compilation, a better approach should be
+        #to remove any OpenGL (desktop) dependencies
+        #the OpenGL stuff should be migrated to OpenGL ES
+        DEFINES += FORCE_ANGLE
+    } else {
+        LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
+    }
 
-LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32
+    LIBS += -lpoppler-qt5
+    INCLUDEPATH += ../dependencies/poppler/include/qt5
 
-LIBS += -lpoppler-qt5
-INCLUDEPATH += ../dependencies/poppler/include/qt5
-
-QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT
-!CONFIG(no_opengl) {
-	QMAKE_CXXFLAGS_RELEASE +=  /GL
-}
-QMAKE_LFLAGS_RELEASE += /LTCG
-CONFIG -= embed_manifest_exe
+    QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
+    QMAKE_LFLAGS_RELEASE += /LTCG
+    CONFIG -= embed_manifest_exe
 }
 
 unix:!macx{
@@ -71,7 +76,7 @@ QT += macextras gui-private
 }
 
 unix{
-QMAKE_CXXFLAGS += -std=c++11
+CONFIG += c++11
 }
 
 #CONFIG += release
@@ -138,7 +143,8 @@ HEADERS += comic_flow.h \
     empty_container_info.h \
     empty_special_list.h \
     empty_reading_list_widget.h \
-    ../common/scroll_management.h
+    ../common/scroll_management.h \
+    ../common/opengl_checker.h
 
 !CONFIG(no_opengl) {
     CONFIG(legacy_gl_widget) {
@@ -206,7 +212,8 @@ SOURCES += comic_flow.cpp \
     empty_container_info.cpp \
     empty_special_list.cpp \
     empty_reading_list_widget.cpp \
-    ../common/scroll_management.cpp
+    ../common/scroll_management.cpp \
+    ../common/opengl_checker.cpp
 
 !CONFIG(no_opengl) {
     CONFIG(legacy_gl_widget) {
@@ -220,7 +227,14 @@ SOURCES += comic_flow.cpp \
 				   
 include(./server/server.pri)
 include(../custom_widgets/custom_widgets_yacreaderlibrary.pri)
+CONFIG(7zip){
 include(../compressed_archive/wrapper.pri)
+} else:CONFIG(unarr) {
+include(../compressed_archive/unarr/unarr-wrapper.pri)
+} else {
+	error(No compression backend specified. Did you mess with the build system?)
+}
+
 include(./comic_vine/comic_vine.pri)
 include(../QsLog/QsLog.pri)
 include(../shortcuts_management/shortcuts_management.pri)
@@ -245,9 +259,13 @@ TRANSLATIONS    = yacreaderlibrary_es.ts \
 									yacreaderlibrary_de.ts \
 									yacreaderlibrary_source.ts
 
-
-Release:DESTDIR = ../release
-Debug:DESTDIR = ../debug
+CONFIG(force_angle) {
+    Release:DESTDIR = ../release_angle
+    Debug:DESTDIR = ../debug_angle
+} else {
+    Release:DESTDIR = ../release
+    Debug:DESTDIR = ../debug
+}
 
 #QML/GridView
 QT += quick qml
@@ -262,23 +280,6 @@ RESOURCES += qml.qrc
 win32:RESOURCES += qml_win.qrc
 unix:!macx:RESOURCES += qml_win.qrc
 macx:RESOURCES += qml_osx.qrc
-
-win32 {
-!exists(../compressed_archive/lib7zip){
-        error(You\'ll need 7zip source code to compile YACReader. \
-        Please check the compressed_archive folder for further instructions.)
-}
-}
-
-unix {
-exists (../compressed_archive/libp7zip) {
-        message(Found p7zip source code...)
-        system(patch -d ../compressed_archive -N -p0 -i libp7zip.patch)
-} else {
-        error(You\'ll need 7zip source code to compile YACReader. \
-        Please check the compressed_archive folder for further instructions.)
-}
-}
 
 unix:!macx {
 #set install prefix if it's empty

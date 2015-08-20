@@ -57,6 +57,8 @@ public:
 	static void updateRead(ComicInfo * comicInfo, QSqlDatabase & db);
     static void update(const Folder & folder, QSqlDatabase & db);
     static void updateProgress(qulonglong libraryId,const ComicInfo & comicInfo);
+    static void updateReadingRemoteProgress(const ComicInfo & comicInfo, QSqlDatabase & db);
+    static void updateFromRemoteClient(qulonglong libraryId,const ComicInfo & comicInfo);
     static void renameLabel(qulonglong id, const QString & name, QSqlDatabase & db);
     static void renameList(qulonglong id, const QString & name, QSqlDatabase & db);
     static void reasignOrderToSublists(QList<qulonglong> ids, QSqlDatabase & db);

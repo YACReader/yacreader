@@ -175,7 +175,7 @@ YACReaderMacOSXToolbar::YACReaderMacOSXToolbar(QObject *parent)
     {
         yosemite = true;
         //TODO yosemite new constants are not found in compilation time
-        [nswindow setTitleVisibility:1]; //NSWindowTitleHidden
+        [nswindow setTitleVisibility:NSWindowTitleHidden];
         //TODO NSFullSizeContentViewWindowMask produces an offset in the windows' content
         //nswindow.styleMask |= 1 << 15; // NSFullSizeContentViewWindowMask;
         [nativeToolBar setSizeMode:NSToolbarSizeModeSmall]; //TODO figure out how to load specific images in Yosemite
@@ -215,7 +215,7 @@ void YACReaderMacOSXToolbar::addSpace(int size)
     QMacToolBarItem *toolBarItem = addItem(QIcon(),"");
     NSToolbarItem * nativeItem = toolBarItem->nativeToolBarItem();
 
-    static const NSRect frameRect = { { 0.0, 0.0 }, { size, 16.0 } };
+    static const NSRect frameRect = { { 0.0, 0.0 }, { CGFloat(size), 16.0 } };
     NSView *view = [[NSView alloc] initWithFrame:frameRect];
 
     [nativeItem setView:view];

@@ -355,7 +355,8 @@ void YACReaderFlowGL::paintGL()
 
 void YACReaderFlowGL::resizeGL(int width, int height)
 {
-	fontSize = (width + height) * 0.010;
+    float pixelRatio = devicePixelRatio();
+    fontSize = (width + height) * 0.010 * pixelRatio;
 	if(fontSize < 10)
 		fontSize = 10;
 
@@ -368,12 +369,13 @@ void YACReaderFlowGL::resizeGL(int width, int height)
 
 void YACReaderFlowGL::udpatePerspective(int width, int height)
 {
-	glViewport(0, 0, width, height);
+    float pixelRatio = devicePixelRatio();
+    glViewport(0, 0, width*pixelRatio, height*pixelRatio);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	gluPerspective(20.0, GLdouble(width) / (float)height, 1.0, 200.0);
+    gluPerspective(20.0, GLdouble(width) / (float)height, 1.0, 200.0);
 
 	glMatrixMode(GL_MODELVIEW);
 }
@@ -384,7 +386,7 @@ void YACReaderFlowGL::calcPos(YACReader3DImage & image, int pos)
 {
 	if(pos == 0){
         image.current = centerPos;
-	}else{
+    }else{
 		if(pos > 0){
             image.current.x = (config.centerDistance)+(config.xDistance*pos);
             image.current.y = config.yDistance*pos*-1;
@@ -804,6 +806,8 @@ void YACReaderFlowGL::populate(int n)
 
 void YACReaderFlowGL::reset()
 {
+    makeCurrent();
+
     startAnimationTimer();
 
 	currentSelected = 0;
@@ -819,6 +823,8 @@ void YACReaderFlowGL::reset()
 	
 	if(!hasBeenInitialized)
 		lazyPopulateObjects = -1;
+
+    doneCurrent();
 }
 
 void YACReaderFlowGL::reload()
@@ -1101,8 +1107,9 @@ void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 	if(event->button() == Qt::LeftButton)
 	{
 		float x,y;
-		x = event->x();
-		y = event->y();
+        float pixelRatio = devicePixelRatio();
+        x = event->x()*pixelRatio;
+        y = event->y()*pixelRatio;
 		GLint viewport[4];
 		GLdouble modelview[16];
 		GLdouble projection[16];
@@ -1139,8 +1146,9 @@ void YACReaderFlowGL::mouseDoubleClickEvent(QMouseEvent* event)
 {
     makeCurrent();
     float x,y;
-    x = event->x();
-    y = event->y();
+    float pixelRatio = devicePixelRatio();
+    x = event->x()*pixelRatio;
+    y = event->y()*pixelRatio;
     GLint viewport[4];
     GLdouble modelview[16];
     GLdouble projection[16];
@@ -1269,6 +1277,8 @@ void YACReaderComicFlowGL::updateImageData()
 				return;
             }
 	}
+
+    delete[] indexes;
 }
 
 void YACReaderComicFlowGL::remove(int item)
@@ -1405,6 +1415,8 @@ void YACReaderPageFlowGL::updateImageData()
 				return;
 			}
 	}
+
+    delete[] indexes;
 }
 
 void YACReaderPageFlowGL::populate(int n)

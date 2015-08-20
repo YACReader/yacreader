@@ -1,4 +1,4 @@
-#include "comic.h"
+	#include "comic.h"
 
 #include <QPixmap>
 #include <QRegExp>
@@ -18,9 +18,13 @@
 const QStringList Comic::imageExtensions = QStringList() << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp" << "*.webp";
 const QStringList Comic::literalImageExtensions = QStringList() << "jpg" << "jpeg" << "png" << "gif" << "tiff" << "tif" << "bmp" << "webp";
 
+#ifndef use_unarr
 const QStringList Comic::comicExtensions = QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.7z" << "*.cb7" << "*.arj" << "*.cbt";
 const QStringList Comic::literalComicExtensions = QStringList() << "cbr" << "cbz" << "rar" << "zip" << "tar" << "pdf" << "7z" << "cb7" << "arj" << "cbt";
-
+#else
+const QStringList Comic::comicExtensions = QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.cbt";
+const QStringList Comic::literalComicExtensions = QStringList() << "cbr" << "cbz" << "rar" << "zip" << "tar" << "pdf" << "cbt";
+#endif
 //-----------------------------------------------------------------------------
 Comic::Comic()
 :_pages(),_index(0),_path(),_loaded(false),bm(new Bookmarks()),_loadedPages(),_isPDF(false)
@@ -305,6 +309,7 @@ bool FileComic::load(const QString & path, const ComicDB & comic)
 	else
 	{
 		//QMessageBox::critical(NULL,tr("Not found"),tr("Comic not found")+" : " + path);
+        moveToThread(QApplication::instance()->thread());
 		emit errorOpening();
 		return false;
 	}
@@ -471,12 +476,14 @@ void FileComic::process()
 	CompressedArchive archive(_path);
 	if(!archive.toolsLoaded())
     {
+        moveToThread(QApplication::instance()->thread());
         emit errorOpening(tr("7z not found"));
 		return;
     }
 
     if(!archive.isValid())
     {
+        moveToThread(QApplication::instance()->thread());
         emit errorOpening(tr("Format not supported"));
         return;
     }
@@ -488,6 +495,7 @@ void FileComic::process()
 	if(_fileNames.size()==0)
 	{
 		//QMessageBox::critical(NULL,tr("File error"),tr("File not found or not images in file"));
+        moveToThread(QApplication::instance()->thread());
 		emit errorOpening();
 		return;
 	}
@@ -507,6 +515,10 @@ void FileComic::process()
 
 	if(_firstPage == -1)
 		_firstPage = bm->getLastPage();
+
+    if(_firstPage >= _pages.length())
+        _firstPage = 0;
+
 	_index = _firstPage;
 	emit(openAt(_index));
 
@@ -527,9 +539,8 @@ void FileComic::process()
 		emit imageLoaded(sortedIndex);
 		emit imageLoaded(sortedIndex,_pages[sortedIndex]);
 	}*/
-
+    moveToThread(QApplication::instance()->thread());
     emit imagesLoaded();
-	//moveToThread(QApplication::instance()->thread());
 }
 
 
@@ -587,12 +598,16 @@ void FolderComic::process()
 	{
 		//TODO emitir este mensaje en otro sitio
 		//QMessageBox::critical(NULL,QObject::tr("No images found"),QObject::tr("There are not images on the selected folder"));
+        moveToThread(QApplication::instance()->thread());
 		emit errorOpening();
 	}
 	else
 	{
 		if(_firstPage == -1)
 			_firstPage = bm->getLastPage();
+
+        if(_firstPage >= _pages.length())
+            _firstPage = 0;
 
 		_index = _firstPage;
 
@@ -617,8 +632,8 @@ void FolderComic::process()
 			count++;
 		}
 	}
+        moveToThread(QApplication::instance()->thread());
 	emit imagesLoaded();
-	moveToThread(QApplication::instance()->thread());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -660,6 +675,7 @@ bool PDFComic::load(const QString & path, int atPage)
 	}
 	else
 	{
+        moveToThread(QApplication::instance()->thread());
 		emit errorOpening();
 		return false;
 	}
@@ -682,6 +698,7 @@ bool PDFComic::load(const QString & path, const ComicDB & comic)
 	else
 	{
 		//QMessageBox::critical(NULL,tr("Not found"),tr("Comic not found")+" : " + path);
+        moveToThread(QApplication::instance()->thread());
 		emit errorOpening();
 		return false;
 	}
@@ -705,11 +722,13 @@ void PDFComic::process()
 	{
         //delete pdfComic;
         //pdfComic = 0;
+        moveToThread(QApplication::instance()->thread());
 		emit errorOpening();
 		return;
 	}
 	if (pdfComic->isLocked())
 	{
+        moveToThread(QApplication::instance()->thread());
 		emit errorOpening();
 		return;
 	}
@@ -730,6 +749,10 @@ void PDFComic::process()
 
 	if(_firstPage == -1)
 		_firstPage = bm->getLastPage();
+
+    if(_firstPage >= _pages.length())
+        _firstPage = 0;
+
 	_index = _firstPage;
 	emit(openAt(_index));
 
@@ -741,8 +764,8 @@ void PDFComic::process()
 		renderPage(i);
 	
 	delete pdfComic;
+        moveToThread(QApplication::instance()->thread());
 	emit imagesLoaded();
-	moveToThread(QApplication::instance()->thread());
 }
 
 void PDFComic::renderPage(int page)

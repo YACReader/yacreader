@@ -19,6 +19,7 @@
 #include "db_helper.h"
 #include "yacreader_libraries.h"
 #include "exit_check.h"
+#include "opengl_checker.h"
 
 #include "QsLog.h"
 #include "QsLogDest.h"
@@ -92,6 +93,7 @@ void logSystemAndConfig()
     QLOG_INFO() << "SO : Unknown";
 #endif
 
+#ifndef use_unarr
 #ifdef Q_OS_WIN
     if(QLibrary::isLibrary(QApplication::applicationDirPath()+"/utils/7z.dll"))
 #elif defined Q_OS_UNIX && !defined Q_OS_MAC
@@ -102,6 +104,9 @@ void logSystemAndConfig()
         QLOG_INFO() << "7z : found";
     else
         QLOG_ERROR() << "7z : not found";
+#else
+	QLOG_INFO() << "using unarr decompression backend";
+#endif
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
     if(QFileInfo(QString(BINDIR)+"/qrencode").exists())
 #else
@@ -123,12 +128,16 @@ void logSystemAndConfig()
     else
         QLOG_INFO() << "OpenGL : disabled";
 
+    OpenGLChecker checker;
+    QLOG_INFO() << "OpenGL version : " << checker.textVersionDescription();
+
 	QLOG_INFO() << "Libraries: " << DBHelper::getLibraries().getLibraries();
     QLOG_INFO() << "--------------------------------------------";
 }
 
 int main( int argc, char ** argv )
 {
+
 //fix for misplaced text in Qt4.8 and Mavericks
 #ifdef Q_OS_MAC
   #if QT_VERSION < 0x050000
@@ -140,9 +149,13 @@ int main( int argc, char ** argv )
 
   QApplication app( argc, argv );
 
+#ifdef FORCE_ANGLE
+    app.setAttribute(Qt::AA_UseOpenGLES);
+#endif
+
   app.setApplicationName("YACReaderLibrary");
   app.setOrganizationName("YACReader");
-  qApp->setAttribute(Qt::AA_UseHighDpiPixmaps);
+  app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 //simple command line parser
 //will be replaced by QCommandLineParser in the future 
 //TODO: --headless, --server=[on|off], support for file and directory arguments
@@ -208,7 +221,6 @@ int main( int argc, char ** argv )
 
   if(settings->value(SERVER_ON,true).toBool())
   {
-	  
 	  s->start();
   }
 #endif

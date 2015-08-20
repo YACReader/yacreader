@@ -238,10 +238,10 @@ YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
 
 	loaderThread->start();*/
 
-    QGLFormat f = format();
+    /*QGLFormat f = format();
     f.setVersion(2, 1);
-	f.setSwapInterval(0);
-	setFormat(f);
+    f.setSwapInterval(0);
+    setFormat(f);*/
 
     timerId = startTimer(updateInterval);
 
@@ -325,8 +325,8 @@ void YACReaderFlowGL::paintGL()
 
 void YACReaderFlowGL::resizeGL(int width, int height)
 {
-
-	fontSize = (width + height) * 0.010;
+    float pixelRatio = devicePixelRatio();
+    fontSize = (width + height) * 0.010 * pixelRatio;
 	if(fontSize < 10)
 		fontSize = 10;
 
@@ -339,7 +339,8 @@ void YACReaderFlowGL::resizeGL(int width, int height)
 
 void YACReaderFlowGL::udpatePerspective(int width, int height)
 {
-	glViewport(0, 0, width, height);
+    float pixelRatio = devicePixelRatio();
+    glViewport(0, 0, width*pixelRatio, height*pixelRatio);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -938,26 +939,25 @@ void YACReaderFlowGL::setPerformance(Performance performance)
 }
 
 void YACReaderFlowGL::useVSync(bool b)
-{
-	if(bUseVSync != b)
+{/*if(bUseVSync != b)
 	{
 		bUseVSync = b;
 		if(b)
 		{
 			QGLFormat f = format();
-            f.setVersion(2, 1);
+            //f.setVersion(2, 1);
             f.setSwapInterval(1);
 			setFormat(f);
 		}
 		else
 		{
 			QGLFormat f = format();
-            f.setVersion(2, 1);
+            //f.setVersion(2, 1);
 			f.setSwapInterval(0);
 			setFormat(f);
 		}
-		reset();
-	}
+        reset();
+    }*/
 }
 void YACReaderFlowGL::setShowMarks(bool value)
 {
@@ -1079,8 +1079,9 @@ void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 	if(event->button() == Qt::LeftButton)
 	{
 		float x,y;
-		x = event->x();
-		y = event->y();
+        float pixelRatio = devicePixelRatio();
+        x = event->x()*pixelRatio;
+        y = event->y()*pixelRatio;
 		GLint viewport[4];
 		GLdouble modelview[16];
 		GLdouble projection[16];
@@ -1114,8 +1115,9 @@ void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 void YACReaderFlowGL::mouseDoubleClickEvent(QMouseEvent* event)
 {
 		float x,y;
-		x = event->x();
-		y = event->y();
+        float pixelRatio = devicePixelRatio();
+        x = event->x()*pixelRatio;
+        y = event->y()*pixelRatio;
 		GLint viewport[4];
 		GLdouble modelview[16];
 		GLdouble projection[16];
@@ -1243,6 +1245,7 @@ void YACReaderComicFlowGL::updateImageData()
 				return;
 			}
 	}
+    delete[] indexes;
 }
 
 void YACReaderComicFlowGL::remove(int item)
@@ -1369,6 +1372,7 @@ void YACReaderPageFlowGL::updateImageData()
 				return;
 			}
 	}
+    delete[] indexes;
 }
 
 void YACReaderPageFlowGL::populate(int n)

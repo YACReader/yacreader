@@ -150,11 +150,14 @@ Rectangle {
                     }
 
                     onReleased: {
-                        /*if(mouse.button != Qt.RightButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
+                        if(mouse.button == Qt.LeftButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
                         {
-                            comicsSelectionHelper.setCurrentIndex(index)
-                            grid.currentIndex = index;
-                        }*/
+                            if(comicsSelectionHelper.isSelectedIndex(index))
+                            {
+                                comicsSelectionHelper.setCurrentIndex(index)
+                                grid.currentIndex = index;
+                            }
+                        }
                     }
 
                 }
@@ -166,30 +169,44 @@ Rectangle {
             //cover
             Image {
                 id: coverElement
-                width: 148
-                height: 224
-                anchors {horizontalCenter: parent.horizontalCenter; top: realCell.top; topMargin: 4}
+                width: 156
+                height: 236
+                anchors {horizontalCenter: parent.horizontalCenter; top: realCell.top; topMargin: 0}
                 source: cover_path
                 fillMode: Image.PreserveAspectCrop
                 smooth: true
                 mipmap: true
                 asynchronous : true
-                cache: false //TODO clear cache only when it is neede
+                cache: false //TODO clear cache only when it is needed
+
             }
+
+            //border
+            Rectangle {
+                width: 156
+                height: 236
+                anchors {horizontalCenter: parent.horizontalCenter; top: realCell.top; topMargin: 0}
+                color: "transparent"
+                border {
+                    color: "#20FFFFFF"
+                    width: 1
+                }
+            }
+
             //mark
             Image {
                 id: mark
                 width: 23
                 height: 23
                 source: read_column&&show_marks?"tick.png":has_been_opened&&show_marks?"reading.png":""
-                anchors {right: coverElement.right; top: coverElement.top; topMargin: 11; rightMargin: 11}
+                anchors {right: coverElement.right; top: coverElement.top; topMargin: 9; rightMargin: 9}
                 asynchronous : true
             }
 
             //title
             Text {
                 id : titleText
-                anchors { top: realCell.top; left: realCell.left; leftMargin: 4; rightMargin: 4; topMargin: 234; }
+                anchors { top: realCell.top; left: realCell.left; leftMargin: 4; rightMargin: 4; topMargin: 238; }
                 width: 148
                 maximumLineCount: 2
                 wrapMode: Text.WordWrap
@@ -338,6 +355,12 @@ Rectangle {
             snapMode: GridView.SnapToRow
             currentIndex: 0
             cacheBuffer: 0
+
+            footer: Rectangle { //fix for the scroll issue, TODO find what causes the issue (some times the bottoms cells are hidden for the toolbar, no full scroll)
+                height : 25
+                width : parent.width
+                color : backgroundColor
+            }
 
             move: Transition {
                 NumberAnimation { properties: "x,y"; duration: 250 }

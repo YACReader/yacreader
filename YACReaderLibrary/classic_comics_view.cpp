@@ -1,11 +1,12 @@
 #include "classic_comics_view.h"
 
-#include "yacreader_table_view.h"
+#include "QStackedWidget"
 
 #include "comic_flow_widget.h"
 #include "QsLog.h"
-
-#include "QStackedWidget"
+#include "shortcuts_manager.h"
+#include "yacreader_table_view.h"
+#include "yacreader_tool_bar_stretch.h"
 
 ClassicComicsView::ClassicComicsView(QWidget *parent)
     :ComicsView(parent),searching(false)
@@ -16,6 +17,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     settings->beginGroup("libraryConfig");
     //FLOW-----------------------------------------------------------------------
     //---------------------------------------------------------------------------
+//FORCE_ANGLE is not used here, because ComicFlowWidgetGL will use OpenGL ES in the future
 #ifndef NO_OPENGL
     if((settings->value(USE_OPEN_GL).toBool() == true))
         comicFlow = new ComicFlowWidgetGL(0);
@@ -70,6 +72,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     connect(tableView, SIGNAL(comicRated(int,QModelIndex)), this, SIGNAL(comicRated(int,QModelIndex)));
     connect(comicFlow, SIGNAL(selected(uint)), this, SIGNAL(selected(uint)));
     connect(tableView->horizontalHeader(), SIGNAL(sectionMoved(int,int,int)), this, SLOT(saveTableHeadersStatus()));
+    connect(tableView->horizontalHeader(), SIGNAL(sectionResized(int,int,int)), this, SLOT(saveTableHeadersStatus()));
     connect(comicFlow, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(requestedViewContextMenu(QPoint)));
     connect(tableView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(requestedItemContextMenu(QPoint)));
     layout->addWidget(sVertical);
@@ -83,11 +86,49 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
 
     if(settings->contains(COMICS_VIEW_FLOW_SPLITTER_STATUS))
         sVertical->restoreState(settings->value(COMICS_VIEW_FLOW_SPLITTER_STATUS).toByteArray());
+
+    //hide flow widgets
+    toolBarStretch = new YACReaderToolBarStretch(this);
+
+    hideFlowViewAction = new QAction(this);
+    hideFlowViewAction->setText(tr("Hide comic flow"));
+    hideFlowViewAction->setData(HIDE_COMIC_VIEW_ACTION_YL);
+    hideFlowViewAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(HIDE_COMIC_VIEW_ACTION_YL));
+    hideFlowViewAction->setIcon(QIcon(":/images/hideComicFlow.png"));
+    hideFlowViewAction->setCheckable(true);
+    hideFlowViewAction->setChecked(false);
+
+    connect(hideFlowViewAction, SIGNAL(toggled(bool)),this, SLOT(hideComicFlow(bool)));
 }
 
+void ClassicComicsView::hideComicFlow(bool hide)
+{
+    if(hide)
+    {
+        QList<int> sizes;
+        sizes.append(0);
+        int total = sVertical->sizes().at(0) + sVertical->sizes().at(1);
+        sizes.append(total);
+        sVertical->setSizes(sizes);
+    }
+    else
+    {
+        QList<int> sizes;
+        int total = sVertical->sizes().at(0) + sVertical->sizes().at(1);
+        sizes.append(2*total/3);
+        sizes.append(total/3);
+        sVertical->setSizes(sizes);
+    }
+}
+
+//the toolbar has to be populated
 void ClassicComicsView::setToolBar(QToolBar *toolBar)
 {
     static_cast<QVBoxLayout *>(comics->layout())->insertWidget(0,toolBar);
+    this->toolbar = toolBar;
+
+    toolBarStretchAction = toolBar->addWidget(toolBarStretch);
+    toolBar->addAction(hideFlowViewAction);
 }
 
 void ClassicComicsView::setModel(ComicModel *model)
@@ -118,23 +159,25 @@ void ClassicComicsView::setModel(ComicModel *model)
         tableView->horizontalHeader()->setMovable(true);
     #endif
         //TODO parametrizar la configuración de las columnas
-        for(int i = 0;i<tableView->horizontalHeader()->count();i++)
-            tableView->horizontalHeader()->hideSection(i);
+        /*if(!settings->contains(COMICS_VIEW_HEADERS))
+        {*/
+            for(int i = 0;i<tableView->horizontalHeader()->count();i++)
+                tableView->horizontalHeader()->hideSection(i);
 
-        tableView->horizontalHeader()->showSection(ComicModel::Number);
-        tableView->horizontalHeader()->showSection(ComicModel::Title);
-        tableView->horizontalHeader()->showSection(ComicModel::FileName);
-        tableView->horizontalHeader()->showSection(ComicModel::NumPages);
-        tableView->horizontalHeader()->showSection(ComicModel::Hash); //Size is part of the Hash...TODO add Columns::Size to Columns
-        tableView->horizontalHeader()->showSection(ComicModel::ReadColumn);
-        tableView->horizontalHeader()->showSection(ComicModel::CurrentPage);
-        tableView->horizontalHeader()->showSection(ComicModel::Rating);
+            tableView->horizontalHeader()->showSection(ComicModel::Number);
+            tableView->horizontalHeader()->showSection(ComicModel::Title);
+            tableView->horizontalHeader()->showSection(ComicModel::FileName);
+            tableView->horizontalHeader()->showSection(ComicModel::NumPages);
+            tableView->horizontalHeader()->showSection(ComicModel::Hash); //Size is part of the Hash...TODO add Columns::Size to Columns
+            tableView->horizontalHeader()->showSection(ComicModel::ReadColumn);
+            tableView->horizontalHeader()->showSection(ComicModel::CurrentPage);
+            tableView->horizontalHeader()->showSection(ComicModel::Rating);
+        //}
 
         //debido a un bug, qt4 no es capaz de ajustar el ancho teniendo en cuenta todas la filas (no sólo las visibles)
         //así que se ecala la primera vez y después se deja el control al usuario.
         //if(!settings->contains(COMICS_VIEW_HEADERS))
-        tableView->resizeColumnsToContents();
-        tableView->horizontalHeader()->setStretchLastSection(true);
+
 
         QStringList paths = model->getPaths(model->getCurrentPath());//TODO ComicsView: get currentpath from somewhere currentPath());
         comicFlow->setImagePaths(paths);
@@ -143,6 +186,10 @@ void ClassicComicsView::setModel(ComicModel *model)
 
         if(settings->contains(COMICS_VIEW_HEADERS))
             tableView->horizontalHeader()->restoreState(settings->value(COMICS_VIEW_HEADERS).toByteArray());
+
+        tableView->resizeColumnsToContents();
+
+        tableView->horizontalHeader()->setStretchLastSection(true);
     }
 }
 
@@ -264,8 +311,10 @@ void ClassicComicsView::saveTableHeadersStatus()
 
 void ClassicComicsView::saveSplitterStatus()
 {
+    settingsMutex.lock();
     if(!searching)
         settings->setValue(COMICS_VIEW_FLOW_SPLITTER_STATUS, sVertical->saveState());
+    settingsMutex.unlock();
 }
 
 void ClassicComicsView::applyModelChanges(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
@@ -291,6 +340,9 @@ void ClassicComicsView::closeEvent(QCloseEvent *event)
     saveTableHeadersStatus();
     saveSplitterStatus();
     ComicsView::closeEvent(event);
+
+    toolbar->removeAction(toolBarStretchAction);
+    toolbar->removeAction(hideFlowViewAction);
 }
 
 void ClassicComicsView::setupSearchingIcon()

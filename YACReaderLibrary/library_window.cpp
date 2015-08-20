@@ -86,6 +86,7 @@
 #include "db_helper.h"
 
 #include "reading_list_item.h"
+#include "opengl_checker.h"
 
 #include "QsLog.h"
 
@@ -187,10 +188,15 @@ void LibraryWindow::doLayout()
 #ifndef NO_OPENGL
     //FLOW-----------------------------------------------------------------------
     //---------------------------------------------------------------------------
-    if(QGLFormat::hasOpenGL() && !settings->contains(USE_OPEN_GL))
-    {
+
+    OpenGLChecker openGLChecker;
+    bool openGLAvailable = openGLChecker.hasCompatibleOpenGLVersion();
+
+    if(openGLAvailable && !settings->contains(USE_OPEN_GL))
         settings->setValue(USE_OPEN_GL,2);
-    }
+    else
+        if(!openGLAvailable)
+            settings->setValue(USE_OPEN_GL,0);
 #endif
     //FOLDERS FILTER-------------------------------------------------------------
     //---------------------------------------------------------------------------
@@ -245,7 +251,6 @@ void LibraryWindow::doLayout()
 
     doComicsViewConnections();
 
-    comicsView->setToolBar(editInfoToolBar);
     comicsViewStack->addWidget(comicsViewTransition = new ComicsViewTransition());
     comicsViewStack->addWidget(emptyFolderWidget = new EmptyFolderWidget());
     comicsViewStack->addWidget(emptyLabelWidget = new EmptyLabelWidget());
@@ -413,8 +418,7 @@ void LibraryWindow::setUpShortcutsManagement()
         #ifndef Q_OS_MAC
                                      << toggleFullScreenAction
         #endif
-                                     << toggleComicsViewAction
-                                     << hideComicViewAction);
+                                     << toggleComicsViewAction);
 
     allActions << tmpList;
 
@@ -570,7 +574,7 @@ void LibraryWindow::createActions()
         setAllAsNonReadAction->setIcon(QIcon(":/images/setAllUnread.png"));*/
 
     showHideMarksAction = new QAction(tr("Show/Hide marks"),this);
-    showHideMarksAction->setToolTip(tr("Show or hide readed marks"));
+    showHideMarksAction->setToolTip(tr("Show or hide read marks"));
     showHideMarksAction->setData(SHOW_HIDE_MARKS_ACTION_YL);
     showHideMarksAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_HIDE_MARKS_ACTION_YL));
     showHideMarksAction->setCheckable(true);
@@ -718,14 +722,6 @@ void LibraryWindow::createActions()
     deleteComicsAction->setData(DELETE_COMICS_ACTION_YL);
     deleteComicsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(DELETE_COMICS_ACTION_YL));
     deleteComicsAction->setIcon(QIcon(":/images/trash.png"));
-
-    hideComicViewAction = new QAction(this);
-    hideComicViewAction->setText(tr("Hide comic flow"));
-    hideComicViewAction->setData(HIDE_COMIC_VIEW_ACTION_YL);
-    hideComicViewAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(HIDE_COMIC_VIEW_ACTION_YL));
-    hideComicViewAction->setIcon(QIcon(":/images/hideComicFlow.png"));
-    hideComicViewAction->setCheckable(true);
-    hideComicViewAction->setChecked(false);
 
     getInfoAction = new QAction(this);
     getInfoAction->setData(GET_INFO_ACTION_YL);
@@ -932,8 +928,8 @@ void LibraryWindow::createToolBars()
 	
 	editInfoToolBar->addAction(deleteComicsAction);
 
-    /*editInfoToolBar->addWidget(new QToolBarStretch());
-    editInfoToolBar->addAction(hideComicViewAction);*/
+
+    comicsView->setToolBar(editInfoToolBar);
 }
 
 void LibraryWindow::createMenus()
@@ -1141,8 +1137,6 @@ void LibraryWindow::createConnections()
     connect(asignOrderAction,SIGNAL(triggered()),this,SLOT(asignNumbers()));
 
     connect(deleteComicsAction,SIGNAL(triggered()),this,SLOT(deleteComics()));
-
-    connect(hideComicViewAction, SIGNAL(toggled(bool)),this, SLOT(hideComicFlow(bool)));
 
     connect(getInfoAction,SIGNAL(triggered()),this,SLOT(showComicVineScraper()));
 
@@ -2456,30 +2450,6 @@ QString LibraryWindow::currentFolderPath()
     QLOG_DEBUG() << "current folder path : " << QDir::cleanPath(currentPath()+path);
 
     return QDir::cleanPath(currentPath()+path);
-}
-
-//TODO ComicsView: some actions in the comics toolbar can be relative to a certain view
-//show/hide actions on show/hide widget
-void LibraryWindow::hideComicFlow(bool hide)
-{
-    /*
-	if(hide)
-	{
-		QList<int> sizes;
-		sizes.append(0);
-		int total = sVertical->sizes().at(0) + sVertical->sizes().at(1);
-		sizes.append(total);
-		sVertical->setSizes(sizes);	
-	}
-	else
-	{
-		QList<int> sizes;
-		int total = sVertical->sizes().at(0) + sVertical->sizes().at(1);
-		sizes.append(2*total/3);
-		sizes.append(total/3);
-		sVertical->setSizes(sizes);	
-	}
-*/
 }
 
 void LibraryWindow::showExportComicsInfo()
