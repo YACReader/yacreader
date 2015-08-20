@@ -40,8 +40,9 @@ void DropShadowLabel::paintEvent(QPaintEvent *event)
 
 	QPainter painter(this);
 	painter.setFont(font());
-	//TODO find where is the '3' comming from?
+#ifndef Q_OS_MAC
 	drawTextEffect(&painter, QPoint(contentsMargins().left(), 1));
+#endif
 	drawText(&painter, QPoint(contentsMargins().left(), 0));
 }
 
@@ -71,8 +72,8 @@ YACReaderTitledToolBar::YACReaderTitledToolBar(const QString & title, QWidget *p
 	nameLabel->setText(title);
 #ifdef Q_OS_MAC
 	QString nameLabelStyleSheet = "QLabel {padding:0 0 0 10px; margin:0px; font-size:11px; font-weight:bold;}";
-	nameLabel->setColor(QColor("#707E8C"));
-	nameLabel->setDropShadowColor(QColor("#F9FAFB"));
+    nameLabel->setColor(QColor("#808080"));
+    //nameLabel->setDropShadowColor(QColor("#F9FAFB"));
 #else
 	QString nameLabelStyleSheet = "QLabel {padding:0 0 0 10px; margin:0px; font-size:11px; font-weight:bold;}";
 	nameLabel->setColor(QColor("#BDBFBF"));

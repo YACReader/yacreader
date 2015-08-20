@@ -23,9 +23,15 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
     readingListsView = new YACReaderReadingListsView;
 	selectedLibrary = new YACReaderLibraryListWidget;
 
-	librariesTitle = new YACReaderTitledToolBar(tr("LIBRARIES"));
-	foldersTitle = new YACReaderTitledToolBar(tr("FOLDERS"));
+#ifdef Q_OS_MAC
+    librariesTitle = new YACReaderTitledToolBar(tr("Libraries"));
+    foldersTitle = new YACReaderTitledToolBar(tr("Folders"));
+    readingListsTitle = new YACReaderTitledToolBar(tr("Reading Lists"));
+#else
+    librariesTitle = new YACReaderTitledToolBar(tr("LIBRARIES"));
+    foldersTitle = new YACReaderTitledToolBar(tr("FOLDERS"));
     readingListsTitle = new YACReaderTitledToolBar(tr("READING LISTS"));
+#endif
 
     splitter = new QSplitter(this);
     splitter->setOrientation(Qt::Vertical);
