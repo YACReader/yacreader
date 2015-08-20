@@ -1,16 +1,37 @@
 #include "grid_comics_view.h"
 
-#include <QtWidgets>
 #include <QtQuick>
+#include <QtWidgets>
 
-#include "yacreader_global.h"
 #include "comic.h"
 #include "comic_files_manager.h"
 #include "QsLog.h"
+#include "yacreader_global.h"
+#include "yacreader_tool_bar_stretch.h"
+
+//values relative to visible cells
+const unsigned int YACREADER_MIN_GRID_ZOOM_WIDTH = 156;
+const unsigned int YACREADER_MAX_GRID_ZOOM_WIDTH = 312;
+
+//GridView cells
+const unsigned int YACREADER_MIN_CELL_CUSTOM_HEIGHT = 295;
+const unsigned int YACREADER_MIN_CELL_CUSTOM_WIDTH = 185;
+
+//Covers
+const unsigned int YACREADER_MAX_COVER_HEIGHT = 236;
+const unsigned int YACREADER_MIN_COVER_WIDTH = YACREADER_MIN_GRID_ZOOM_WIDTH;
+
+//visible cells (realCell in qml), grid cells size is used to create faux inner margings
+const unsigned int YACREADER_MIN_ITEM_HEIGHT = YACREADER_MAX_COVER_HEIGHT + 51; //51 is the height of the bottom rectangle used for title and other info
+const unsigned int YACREADER_MIN_ITEM_WIDTH = YACREADER_MIN_COVER_WIDTH;
+
 
 GridComicsView::GridComicsView(QWidget *parent) :
     ComicsView(parent),_selectionModel(NULL)
 {
+    settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini", QSettings::IniFormat, this);
+    settings->beginGroup("libraryConfig");
+
     qmlRegisterType<ComicModel>("comicModel",1,0,"TableModel");
 
     view = new QQuickView();
@@ -20,59 +41,14 @@ GridComicsView::GridComicsView(QWidget *parent) :
     container->setFocusPolicy(Qt::TabFocus);
     view->setSource(QUrl("qrc:/qml/GridComicsView.qml"));
 
-    setShowMarks(true);//TODO save this in settings
+    createCoverSizeSliderWidget();
 
-    QVBoxLayout * l = new QVBoxLayout;
-    l->addWidget(container);
-    this->setLayout(l);
+    int coverSize = settings->value(COMICS_GRID_COVER_SIZES, YACREADER_MIN_COVER_WIDTH).toInt();
 
-    setContentsMargins(0,0,0,0);
-    l->setContentsMargins(0,0,0,0);
-    l->setSpacing(0);
-
-    QLOG_INFO() << "GridComicsView";
-}
-
-GridComicsView::~GridComicsView()
-{
-   delete view;
-}
-
-void GridComicsView::setToolBar(QToolBar *toolBar)
-{
-    QLOG_INFO() << "setToolBar";
-    static_cast<QVBoxLayout *>(this->layout())->insertWidget(1,toolBar);
-    this->toolbar = toolBar;
-}
-
-void GridComicsView::setModel(ComicModel *model)
-{
-    QLOG_INFO() << "setModel";
+    coverSizeSlider->setValue(coverSize);
+    setCoversSize(coverSize);
 
     QQmlContext *ctxt = view->rootContext();
-
-    //there is only one mothel in the system
-    ComicsView::setModel(model);
-    if(this->model != NULL)
-    {
-        QLOG_INFO() << "xxx";
-
-        if(_selectionModel != NULL)
-            delete _selectionModel;
-        _selectionModel = new QItemSelectionModel(this->model);
-
-        ctxt->setContextProperty("comicsList", this->model);
-        ctxt->setContextProperty("comicsSelection", _selectionModel);
-        ctxt->setContextProperty("contextMenuHelper",this);
-        ctxt->setContextProperty("comicsSelectionHelper", this);
-        ctxt->setContextProperty("comicRatingHelper", this);
-        ctxt->setContextProperty("dummyValue", true);
-        ctxt->setContextProperty("dragManager", this);
-        ctxt->setContextProperty("dropManager", this);
-
-        if(model->rowCount()>0)
-            setCurrentIndex(model->index(0,0));
-    }
 
 #ifdef Q_OS_MAC
     ctxt->setContextProperty("backgroundColor", "#F5F5F5");
@@ -104,6 +80,90 @@ void GridComicsView::setModel(ComicModel *model)
     ctxt->setContextProperty("fontFamily", QApplication::font().family());
     ctxt->setContextProperty("fontSpacing", 0.5);
 #endif
+
+    setShowMarks(true);//TODO save this in settings
+
+    QVBoxLayout * l = new QVBoxLayout;
+    l->addWidget(container);
+    this->setLayout(l);
+
+    setContentsMargins(0,0,0,0);
+    l->setContentsMargins(0,0,0,0);
+    l->setSpacing(0);
+
+    QLOG_INFO() << "GridComicsView";
+}
+
+GridComicsView::~GridComicsView()
+{
+   delete view;
+}
+
+void GridComicsView::createCoverSizeSliderWidget()
+{
+    toolBarStretch = new YACReaderToolBarStretch(this);
+    coverSizeSliderWidget = new QWidget(this);
+    coverSizeSliderWidget->setFixedWidth(200);
+    coverSizeSlider = new QSlider();
+    coverSizeSlider->setOrientation(Qt::Horizontal);
+    coverSizeSlider->setRange(YACREADER_MIN_GRID_ZOOM_WIDTH, YACREADER_MAX_GRID_ZOOM_WIDTH);
+
+    QHBoxLayout * horizontalLayout = new QHBoxLayout();
+    QLabel * smallLabel = new QLabel();
+    smallLabel->setPixmap(QPixmap(":/images/small_size_grid_zoom.png"));
+    horizontalLayout->addWidget(smallLabel);
+    horizontalLayout->addWidget(coverSizeSlider, 0, Qt::AlignVCenter);
+    QLabel * bigLabel = new QLabel();
+    bigLabel->setPixmap(QPixmap(":/images/big_size_grid_zoom.png"));
+    horizontalLayout->addWidget(bigLabel);
+    horizontalLayout->addSpacing(10);
+    horizontalLayout->setMargin(0);
+
+    coverSizeSliderWidget->setLayout(horizontalLayout);
+    //TODO add shortcuts (ctrl-+ and ctrl-- for zooming in out, + ctrl-0 for reseting the zoom)
+
+    connect(coverSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(setCoversSize(int)));
+}
+
+void GridComicsView::setToolBar(QToolBar *toolBar)
+{
+    QLOG_INFO() << "setToolBar";
+    static_cast<QVBoxLayout *>(this->layout())->insertWidget(1,toolBar);
+    this->toolbar = toolBar;
+
+     toolBarStretchAction = toolBar->addWidget(toolBarStretch);
+     coverSizeSliderAction = toolBar->addWidget(coverSizeSliderWidget);
+}
+
+void GridComicsView::setModel(ComicModel *model)
+{
+    QLOG_INFO() << "setModel";
+
+    QQmlContext *ctxt = view->rootContext();
+
+    //there is only one mothel in the system
+    ComicsView::setModel(model);
+    if(this->model != NULL)
+    {
+        QLOG_INFO() << "xxx";
+
+        if(_selectionModel != NULL)
+            delete _selectionModel;
+        _selectionModel = new QItemSelectionModel(this->model);
+
+        ctxt->setContextProperty("comicsList", this->model);
+        ctxt->setContextProperty("comicsSelection", _selectionModel);
+        ctxt->setContextProperty("contextMenuHelper",this);
+        ctxt->setContextProperty("comicsSelectionHelper", this);
+        ctxt->setContextProperty("comicRatingHelper", this);
+        ctxt->setContextProperty("dummyValue", true);
+        ctxt->setContextProperty("dragManager", this);
+        ctxt->setContextProperty("dropManager", this);
+
+        if(model->rowCount()>0)
+            setCurrentIndex(model->index(0,0));
+    }
+
 
 
 }
@@ -183,6 +243,32 @@ void GridComicsView::rate(int index, int rating)
 void GridComicsView::requestedContextMenu(const QPoint &point)
 {
     emit customContextMenuViewRequested(point);
+}
+
+void GridComicsView::setCoversSize(int width)
+{
+    QQmlContext *ctxt = view->rootContext();
+
+    QQuickItem * grid = view->rootObject()->findChild<QQuickItem *>(QStringLiteral("grid"));
+
+    if(grid != 0)
+    {
+        QLOG_INFO() << "method invoked";
+        QVariant cellCustomWidth = (width * YACREADER_MIN_CELL_CUSTOM_WIDTH) / YACREADER_MIN_GRID_ZOOM_WIDTH;
+        QMetaObject::invokeMethod(grid, "calculateCellWidths",
+                                  Q_ARG(QVariant, cellCustomWidth));
+    }
+
+    int cellBottomMarging = 8 * (1 + 2*(1 - (float(YACREADER_MAX_GRID_ZOOM_WIDTH - width) / (YACREADER_MAX_GRID_ZOOM_WIDTH - YACREADER_MIN_GRID_ZOOM_WIDTH))) );
+
+    ctxt->setContextProperty("cellCustomHeight", ((width * YACREADER_MAX_COVER_HEIGHT) / YACREADER_MIN_COVER_WIDTH) + 51 + cellBottomMarging);
+    ctxt->setContextProperty("cellCustomWidth", (width * YACREADER_MIN_CELL_CUSTOM_WIDTH) / YACREADER_MIN_COVER_WIDTH );
+
+    ctxt->setContextProperty("itemWidth", width);
+    ctxt->setContextProperty("itemHeight", ((width * YACREADER_MAX_COVER_HEIGHT) / YACREADER_MIN_COVER_WIDTH) + 51);
+
+    ctxt->setContextProperty("coverWidth", width);
+    ctxt->setContextProperty("coverHeight", (width * YACREADER_MAX_COVER_HEIGHT) / YACREADER_MIN_COVER_WIDTH);
 }
 
 QSize GridComicsView::sizeHint()
@@ -333,6 +419,9 @@ void GridComicsView::setShowMarks(bool show)
 
 void GridComicsView::closeEvent(QCloseEvent *event)
 {
+    toolbar->removeAction(toolBarStretchAction);
+    toolbar->removeAction(coverSizeSliderAction);
+
     QLOG_INFO() << "closeEvent";
     QObject *object = view->rootObject();
     QMetaObject::invokeMethod(object, "exit");
@@ -340,4 +429,7 @@ void GridComicsView::closeEvent(QCloseEvent *event)
     view->close();
     event->accept();
     ComicsView::closeEvent(event);
+
+    //save settings
+    settings->setValue(COMICS_GRID_COVER_SIZES, coverSizeSlider->value());
 }

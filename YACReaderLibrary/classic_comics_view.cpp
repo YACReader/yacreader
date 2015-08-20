@@ -337,12 +337,12 @@ void ClassicComicsView::removeItemsFromFlow(const QModelIndex &parent, int from,
 
 void ClassicComicsView::closeEvent(QCloseEvent *event)
 {
+    toolbar->removeAction(toolBarStretchAction);
+    toolbar->removeAction(hideFlowViewAction);
+
     saveTableHeadersStatus();
     saveSplitterStatus();
     ComicsView::closeEvent(event);
-
-    toolbar->removeAction(toolBarStretchAction);
-    toolbar->removeAction(hideFlowViewAction);
 }
 
 void ClassicComicsView::setupSearchingIcon()
