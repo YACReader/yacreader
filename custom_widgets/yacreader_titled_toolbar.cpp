@@ -85,9 +85,9 @@ YACReaderTitledToolBar::YACReaderTitledToolBar(const QString & title, QWidget *p
 
 	setLayout(mainLayout);
 
-	setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+    setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
 
-	setMinimumHeight(25);
+    setMinimumHeight(25);
 }
 
 
@@ -97,9 +97,9 @@ void YACReaderTitledToolBar::addAction(QAction * action)
 
 	QToolButton * tb = new QToolButton(this);
     tb->setCursor(QCursor(Qt::ArrowCursor));
-	tb->setDefaultAction(action);
-	tb->setIconSize(QSize(16,16));
-	tb->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
+    tb->setDefaultAction(action);
+    tb->setIconSize(QSize(16,16));
+    tb->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
 	//tb->setStyleSheet("QToolButton:hover {background-color:#C5C5C5;}");
 
 	mainLayout->addWidget(tb);

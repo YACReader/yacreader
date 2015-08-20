@@ -28,6 +28,7 @@ typedef quint32 (_MY_WINAPI *SetLargePageModeFunc)();
 class QLibrary;
 #include <QString>
 #include <QList>
+#include <QMap>
 
 struct SevenZipInterface;
 
@@ -59,6 +60,7 @@ signals:
 	
 public slots:
 	int getNumFiles();
+    int getNumEntries();
 	QList<QByteArray> getAllData(const QVector<quint32> & indexes, ExtractDelegate * delegate = 0);
 	QByteArray getRawDataAtIndex(int index);
 	QList<QString> getFileNames();
@@ -66,6 +68,7 @@ public slots:
 	bool toolsLoaded();
 private:
 	SevenZipInterface * szInterface;
+
 	QLibrary * sevenzLib;
 #ifdef Q_OS_UNIX
     QLibrary * rarLib;
@@ -73,6 +76,12 @@ private:
 	bool loadFunctions();
 	bool tools;
 	bool valid;
+    QList<QString> files;
+    QList<qint32> offsets;
+    QMap<qint32, qint32> indexesToPages;
+
+    void setupFilesNames();
+    QVector<quint32> translateIndexes(const QVector<quint32> &indexes);
 	
     friend class MyCodecs;
 };

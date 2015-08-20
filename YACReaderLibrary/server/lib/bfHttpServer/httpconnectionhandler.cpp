@@ -99,66 +99,72 @@ void HttpConnectionHandler::disconnected() {
 }
 
 void HttpConnectionHandler::read() {
+    while (socket.bytesAvailable()) {
 #ifdef SUPERVERBOSE
-    qDebug("HttpConnectionHandler (%p): read input",this);
+        qDebug("HttpConnectionHandler (%p): read input",this);
 #endif
 
-    // Create new HttpRequest object if necessary
-    if (!currentRequest) {
-        currentRequest=new HttpRequest(settings);
-    }
-
-    // Collect data for the request object
-    while (socket.bytesAvailable() && currentRequest->getStatus()!=HttpRequest::complete && currentRequest->getStatus()!=HttpRequest::abort) {
-        currentRequest->readFromSocket(socket);
-        if (currentRequest->getStatus()==HttpRequest::waitForBody) {
-            // Restart timer for read timeout, otherwise it would
-            // expire during large file uploads.
-            int readTimeout=settings->value("readTimeout",10000).toInt();
-            readTimer.start(readTimeout);
-        }
-    }
-
-    // If the request is aborted, return error message and close the connection
-    if (currentRequest->getStatus()==HttpRequest::abort) {
-        socket.write("HTTP/1.1 413 entity too large\r\nConnection: close\r\n\r\n413 Entity too large\r\n");
-        socket.disconnectFromHost();
-        delete currentRequest;
-        currentRequest=0;
-        return;
-    }
-
-    // If the request is complete, let the request mapper dispatch it
-    if (currentRequest->getStatus()==HttpRequest::complete) {
-        readTimer.stop();
-        qDebug("HttpConnectionHandler (%p): received request",this);
-        HttpResponse response(&socket);
-		//response.setHeader("Connection","close"); No funciona bien con NSURLConnection
-        try {
-            requestHandler->service(*currentRequest, response);
-        }
-        catch (...) {
-            qCritical("HttpConnectionHandler (%p): An uncatched exception occured in the request handler",this);
+        // Create new HttpRequest object if necessary
+        if (!currentRequest) {
+            currentRequest=new HttpRequest(settings);
         }
 
-        // Finalize sending the response if not already done
-        if (!response.hasSentLastPart()) {
-            response.write(QByteArray(),true);
+        // Collect data for the request object
+        while (socket.bytesAvailable() && currentRequest->getStatus()!=HttpRequest::complete && currentRequest->getStatus()!=HttpRequest::abort) {
+            currentRequest->readFromSocket(socket);
+            if (currentRequest->getStatus()==HttpRequest::waitForBody) {
+                // Restart timer for read timeout, otherwise it would
+                // expire during large file uploads.
+                int readTimeout=settings->value("readTimeout",10000).toInt();
+                readTimer.start(readTimeout);
+            }
         }
 
-		socket.disconnectFromHost(); //CAMBIADO sólo se van a soportar conexiones NO persistentes
+        // If the request is aborted, return error message and close the connection
+        if (currentRequest->getStatus()==HttpRequest::abort) {
+            socket.write("HTTP/1.1 413 entity too large\r\nConnection: close\r\n\r\n413 Entity too large\r\n");
+            socket.disconnectFromHost();
+            delete currentRequest;
+            currentRequest=0;
+            return;
+        }
 
-        // Close the connection after delivering the response, if requested
-        //if (QString::compare(currentRequest->getHeader("Connection"),"close",Qt::CaseInsensitive)==0) {
-        //    socket.disconnectFromHost();
-        //}
-        //else {
-        //    // Start timer for next request
-        //    int readTimeout=settings->value("readTimeout",10000).toInt();
-        //    readTimer.start(readTimeout);
-        //}
-        // Prepare for next request
-        delete currentRequest;
-        currentRequest=0;
+        // If the request is complete, let the request mapper dispatch it
+        if (currentRequest->getStatus()==HttpRequest::complete) {
+            readTimer.stop();
+            qDebug("HttpConnectionHandler (%p): received request",this);
+            HttpResponse response(&socket);
+            //response.setHeader("Connection","close"); No funciona bien con NSURLConnection
+            try {
+                requestHandler->service(*currentRequest, response);
+            }
+            catch (...) {
+                qCritical("HttpConnectionHandler (%p): An uncatched exception occured in the request handler",this);
+            }
+
+            // Finalize sending the response if not already done
+            if (!response.hasSentLastPart()) {
+                response.write(QByteArray(),true);
+            }
+
+            //socket.disconnectFromHost(); //CAMBIADO sólo se van a soportar conexiones NO persistentes
+
+            // Close the connection after delivering the response, if requested
+            if (QString::compare(currentRequest->getHeader("Connection"),"close",Qt::CaseInsensitive)==0) {
+                socket.disconnectFromHost();
+            }
+            else {
+                // Start timer for next request
+                int readTimeout=settings->value("readTimeout",10000).toInt();
+                readTimer.start(readTimeout);
+            }
+            // Prepare for next request
+            delete currentRequest;
+            currentRequest=0;
+        }
+        else
+        {
+            qDebug("HttpConnectionHandler (%p): received request",this);
+        }
     }
 }

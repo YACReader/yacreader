@@ -354,7 +354,7 @@ void MainWindowViewer::createActions()
     setBookmarkAction->setCheckable(true);
     setBookmarkAction->setData(SET_BOOKMARK_ACTION_Y);
     setBookmarkAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_BOOKMARK_ACTION_Y));
-    connect(setBookmarkAction,SIGNAL(triggered (bool)),viewer,SLOT(setBookmarkAction(bool)));
+    connect(setBookmarkAction,SIGNAL(triggered (bool)),viewer,SLOT(setBookmark(bool)));
     connect(viewer,SIGNAL(pageAvailable(bool)),setBookmarkAction,SLOT(setEnabled(bool)));
     connect(viewer,SIGNAL(pageIsBookmark(bool)),setBookmarkAction,SLOT(setChecked(bool)));
 
@@ -578,7 +578,7 @@ void MainWindowViewer::createToolBars()
 #ifdef Q_OS_MAC
     comicToolBar->addStretch();
 #else
-	comicToolBar->addWidget(new QToolBarStretch());
+    comicToolBar->addWidget(new YACReaderToolBarStretch());
 #endif
 
 	
@@ -671,7 +671,11 @@ void MainWindowViewer::reloadOptions()
 void MainWindowViewer::open()
 {
 	QFileDialog openDialog;
+#ifndef use_unarr
 	QString pathFile = openDialog.getOpenFileName(this,tr("Open Comic"),currentDirectory,tr("Comic files") + "(*.cbr *.cbz *.rar *.zip *.tar *.pdf *.7z *.cb7 *.arj *.cbt)");
+#else
+	QString pathFile = openDialog.getOpenFileName(this,tr("Open Comic"),currentDirectory,tr("Comic files") + "(*.cbr *.cbz *.rar *.zip *.tar *.pdf *.cbt)");
+#endif
 	if (!pathFile.isEmpty())
 	{
 		openComicFromPath(pathFile);
@@ -1315,7 +1319,11 @@ void MainWindowViewer::getSiblingComics(QString path,QString currentComic)
 {
 	QDir d(path);
 	d.setFilter(QDir::Files|QDir::NoDotAndDotDot);
+#ifndef use_unarr
 	d.setNameFilters(QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.7z" << "*.cb7" << "*.arj" << "*.cbt");
+#else
+	d.setNameFilters(QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.cbt");
+#endif
 	d.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware);
 	QStringList list = d.entryList();
 	qSort(list.begin(),list.end(),naturalSortLessThanCI);

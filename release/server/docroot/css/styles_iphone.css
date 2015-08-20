@@ -5,11 +5,10 @@ body{
 
 /* libraries */
 #contentLibraries{
-	width: 300px;
 	border: 1px solid #C6C6C6;
 	background-color: white;
-	margin-left: auto;
-	margin-right: auto;
+	margin-left: 20px;
+	margin-right: 20px;
 	margin-top: 9px;	
 }
 
@@ -36,7 +35,7 @@ body{
 
 #contentLibraries .library-link
 {
-	width: 211px;
+	width: 65%;
 	height: 28px;
 	border: none;
 	padding: 11px 0 0 0px;
@@ -47,6 +46,7 @@ body{
 	font-size: 16px; 
 	text-decoration: none;
 	color: #525252 ;
+	overflow: hidden;
 }
 
  #contentLibraries a
@@ -62,7 +62,7 @@ body{
 
 #contentLibraries .library-indicator
 {
-	float: left;
+	float: right;
 	background-color: white;
 	height: 8px;
 	padding: 16px 16px 15px 16px;
@@ -181,10 +181,10 @@ body{
 
 #itemContainer li
 {
-width: 300px;
+
 height: 120px;
 border: 1px solid #E2E2E2;
-margin: 9px auto 0px auto;
+margin: 9px 10px 0px 10px;
 background-color: white;
 overflow: hidden;
 position: relative;
@@ -218,22 +218,22 @@ overflow: hidden;
 .info
 {
 padding: 8px 0px 0px 0px;
-float: left;
+
 position: relative;
 height: 115px;
-width: 212px;
 
+padding-left: 82px;
 }
 
 .buttons
 {
 	position:absolute;
 	bottom:0px;
-	left:0px;
+	left:80px;
+	right: 0px;
 	border-top: 1px solid #e2e2e2;
 	padding-top: 3px;
 	height: 25px;
-	width: 220px;
 	font-family: Arial;
 	color: #6e6e6e;
 	font-size: 10px;
@@ -245,7 +245,7 @@ width: 212px;
 	bottom:24px;
 	padding-top: 3px;
 	height: 25px;
-	width: 220px;
+	width: 100%;
 	font-family: Arial;
 	color: #adadad;
 	font-size: 10px;

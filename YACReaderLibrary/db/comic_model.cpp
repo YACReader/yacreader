@@ -47,7 +47,7 @@ bool ComicModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, i
     return data->formats().contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat);
 }
 
-//TODO: optimize this method
+//TODO: optimize this method (seriously)
 bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
 
@@ -118,9 +118,26 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 
     QLOG_INFO() << newSorting;
 
-    if(!beginMoveRows(parent,currentIndexes.first(),currentIndexes.last(),parent,row))
-        return false;
-    _data = resortedData;
+    int tempRow = row;
+    foreach(qulonglong id, comicIds)
+    {
+        int i = 0;
+        foreach (ComicItem *item, _data) {
+            if(item->data(Id) == id)
+            {
+                beginMoveRows(parent,i,i,parent,tempRow);
+                _data.removeAll(item);
+                _data.insert(tempRow++, item);
+                endMoveRows();
+                break;
+            }
+            i++;
+        }
+    }
+
+    /*if(!beginMoveRows(parent,currentIndexes.first(),currentIndexes.last(),parent,row))
+        return false;*/
+    _data = resortedData; //TODO No longer needed
 
 
     //TODO emit signals
@@ -145,7 +162,7 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 
     QSqlDatabase::removeDatabase(_databasePath);
 
-    endMoveRows();
+    //endMoveRows();
 
     emit resortedIndexes(newSorting);
     int destSelectedIndex = row<0?_data.length():row;
@@ -262,7 +279,7 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
     else if (role == RatingRole)
         return item->data(Rating);
     else if (role == CoverPathRole)
-        return "file:///"+_databasePath+"/covers/"+item->data(Hash).toString()+".jpg";
+        return QUrl("file:"+_databasePath+"/covers/"+item->data(Hash).toString()+".jpg");
     else if (role == NumPagesRole)
         return item->data(NumPages);
     else if (role == CurrentPageRole)
@@ -361,11 +378,13 @@ QVariant ComicModel::headerData(int section, Qt::Orientation orientation,
 			return QVariant(QIcon(":/images/zip.png"));
 		else if(ext.compare("rar",Qt::CaseInsensitive) == 0)
 			return QVariant(QIcon(":/images/rar.png"));
+#ifndef use_unarr
 		else if (ext.compare("7z",Qt::CaseInsensitive) == 0)
 			return QVariant(QIcon(":/images/7z.png"));
 		else if (ext.compare("cb7",Qt::CaseInsensitive) == 0)
 			return QVariant(QIcon(":/images/comic7z.png"));
-		else if (ext.compare("cb7",Qt::CaseInsensitive) == 0)
+#endif
+		else if (ext.compare("cbt",Qt::CaseInsensitive) == 0)
 			return QVariant(QIcon(":/images/comicTar.png"));
 
 	}

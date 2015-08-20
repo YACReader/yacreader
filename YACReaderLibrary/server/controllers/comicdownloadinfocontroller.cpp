@@ -10,6 +10,8 @@ ComicDownloadInfoController::ComicDownloadInfoController() {}
 
 void ComicDownloadInfoController::service(HttpRequest& request, HttpResponse& response)
 {
+    response.setHeader("Content-Type", "plain/text; charset=utf-8");
+
     QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
     QStringList pathElements = path.split('/');
 

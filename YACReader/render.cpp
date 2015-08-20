@@ -431,9 +431,9 @@ Render::~Render()
 				delete pr;
 		}
 }
-//Este mÈtodo se encarga de forzar el renderizado de las p·ginas.
-//Actualiza el buffer seg˙n es necesario.
-//si la pagina actual no est· renderizada, se lanza un hilo que la renderize (double or single page mode) y se emite una seÒal que indica que se est· renderizando.
+//Este m√©todo se encarga de forzar el renderizado de las p√°ginas.
+//Actualiza el buffer seg√∫n es necesario.
+//si la pagina actual no est√° renderizada, se lanza un hilo que la renderize (double or single page mode) y se emite una se√±al que indica que se est√° renderizando.
 void Render::render()
 {
 	updateBuffer();
@@ -446,30 +446,30 @@ void Render::render()
 				pageRenders[currentPageBufferedIndex] = new PageRender(this,currentIndex,comic->getRawData()->at(currentIndex),buffer[currentPageBufferedIndex],imageRotation,filters);
 			}
 			else
-				//las p·ginas no est·n listas, y se est·n cargando en el cÛmic
-				emit processingPage(); //para evitar confusiones esta seÒal deberÌa llamarse de otra forma
+				//las p√°ginas no est√°n listas, y se est√°n cargando en el c√≥mic
+				emit processingPage(); //para evitar confusiones esta se√±al deber√≠a llamarse de otra forma
 
-			//si se ha creado un hilo para renderizar la p·gina actual, se arranca
+			//si se ha creado un hilo para renderizar la p√°gina actual, se arranca
 			if(pageRenders[currentPageBufferedIndex]!=0)
 			{
-				//se conecta la seÒal pageReady del hilo, con el SLOT prepareAvailablePage
+				//se conecta la se√±al pageReady del hilo, con el SLOT prepareAvailablePage
 				connect(pageRenders[currentPageBufferedIndex],SIGNAL(pageReady(int)),this,SLOT(prepareAvailablePage(int)));
-				//se emite la seÒal de procesando, debido a que los hilos se arrancan aquÌ
+				//se emite la se√±al de procesando, debido a que los hilos se arrancan aqu√≠
 				if(filters.size()>0)
 					emit processingPage();
 				pageRenders[currentPageBufferedIndex]->start();
 				pageRenders[currentPageBufferedIndex]->setPriority(QThread::TimeCriticalPriority);
 			}
 			else
-				//en quÈ caso serÌa necesario hacer esto??? //TODO: IMPORTANTE, puede que no sea necesario.
+				//en qu√© caso ser√≠a necesario hacer esto??? //TODO: IMPORTANTE, puede que no sea necesario.
 				emit processingPage();
 		}
 		else
-			//no hay ninguna p·gina lista para ser renderizada, es necesario esperar.
+			//no hay ninguna p√°gina lista para ser renderizada, es necesario esperar.
 			emit processingPage();
 	}
 	else
-	// la p·gina actual est· lista
+	// la p√°gina actual est√° lista
 	{
 		//emit currentPageReady();
 		//make prepareAvailablePage the only function that emits currentPageReady()
@@ -768,7 +768,7 @@ void Render::createComic(const QString & path)
 	comic = FactoryComic::newComic(path);
 
 	
-	if(comic == NULL)//archivo no encontrado o no v·lido
+	if(comic == NULL)//archivo no encontrado o no v√°lido
 	{
 		emit errorOpening();
 		reset();
@@ -788,7 +788,6 @@ void Render::createComic(const QString & path)
 	connect(comic,SIGNAL(numPages(unsigned int)),this,SLOT(setNumPages(unsigned int)));
 	connect(comic,SIGNAL(imageLoaded(int,QByteArray)),this,SIGNAL(imageLoaded(int,QByteArray)));
 	connect(comic,SIGNAL(isBookmark(bool)),this,SIGNAL(currentPageIsBookmark(bool)));
-	connect(comic,SIGNAL(isBookmark(bool)),this,SLOT(pageIsBookmark(bool)));
 
 	connect(comic,SIGNAL(bookmarksUpdated()),this,SIGNAL(bookmarksUpdated()));
 
@@ -814,6 +813,9 @@ void Render::startLoad()
 
 	comic->moveToThread(thread);
 
+    connect(comic, SIGNAL(errorOpening()), thread, SLOT(quit()));
+    connect(comic, SIGNAL(errorOpening(QString)), thread, SLOT(quit()));
+    connect(comic, SIGNAL(imagesLoaded()), thread, SLOT(quit()));
 	connect(thread, SIGNAL(started()), comic, SLOT(process()));
 	connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
@@ -836,13 +838,13 @@ void Render::reset()
 	loadedComic = false;
 	invalidate();
 }
-//si se solicita la siguiente p·gina, se calcula cu·l debe ser en funciÛn de si se lee en modo a doble p·gina o no.
-//la p·gina sÛlo se renderiza, si realmente ha cambiado.
+//si se solicita la siguiente p√°gina, se calcula cu√°l debe ser en funci√≥n de si se lee en modo a doble p√°gina o no.
+//la p√°gina s√≥lo se renderiza, si realmente ha cambiado.
 void Render::nextPage()
 {
-	int nextPage; //indica cu·l ser· la prÛxima p·gina
+	int nextPage; //indica cu√°l ser√° la pr√≥xima p√°gina
 	nextPage = comic->nextPage();
-	//se fuerza renderizado si la p·gina ha cambiado
+	//se fuerza renderizado si la p√°gina ha cambiado
 	if(currentIndex != nextPage)
 	{
 		previousIndex = currentIndex;
@@ -880,14 +882,14 @@ void Render::nextDoublePage()
 	}
 }
 	
-//si se solicita la p·gina anterior, se calcula cu·l debe ser en funciÛn de si se lee en modo a doble p·gina o no.
-//la p·gina sÛlo se renderiza, si realmente ha cambiado.
+//si se solicita la p√°gina anterior, se calcula cu√°l debe ser en funci√≥n de si se lee en modo a doble p√°gina o no.
+//la p√°gina s√≥lo se renderiza, si realmente ha cambiado.
 void Render::previousPage()
 {
-	int previousPage; //indica cu·l ser· la prÛxima p·gina
+	int previousPage; //indica cu√°l ser√° la pr√≥xima p√°gina
 	previousPage = comic->previousPage();
 		
-	//se fuerza renderizado si la p·gina ha cambiado
+	//se fuerza renderizado si la p√°gina ha cambiado
 	if(currentIndex != previousPage)
 	{
 		previousIndex = currentIndex;
@@ -903,7 +905,7 @@ void Render::previousPage()
 
 void Render::previousDoublePage()
 {
-	int previousPage; //indica cu·l ser· la prÛxima p·gina
+	int previousPage; //indica cu√°l ser√° la pr√≥xima p√°gina
 	previousPage = qMax(currentIndex-2,0);
 	if(currentIndex != previousPage)
 	{
@@ -965,7 +967,7 @@ void Render::pageRawDataReady(int page)
     }
 }
 
-//sÛlo se renderiza la p·gina, si ha habido un cambio de p·gina
+//s√≥lo se renderiza la p√°gina, si ha habido un cambio de p√°gina
 void Render::goTo(int index)
 {
 
@@ -993,9 +995,9 @@ void Render::rotateLeft()
 	reload();
 }
 
-//Actualiza el buffer, aÒadiendo las im·genes (vacÌas) necesarias para su posterior renderizado y
-//eliminado aquellas que ya no sean necesarias. TambiÈn libera los hilos (no estoy seguro de que sea responsabilidad suya)
-//Calcula el n˙mero de nuevas p·ginas que hay que buferear y si debe hacerlo por la izquierda o la derecha (seg˙n sea el sentido de la lectura)
+//Actualiza el buffer, a√±adiendo las im√°genes (vac√≠as) necesarias para su posterior renderizado y
+//eliminado aquellas que ya no sean necesarias. Tambi√©n libera los hilos (no estoy seguro de que sea responsabilidad suya)
+//Calcula el n√∫mero de nuevas p√°ginas que hay que buferear y si debe hacerlo por la izquierda o la derecha (seg√∫n sea el sentido de la lectura)
 void Render::updateBuffer()
 {
 	QMutexLocker locker(&mutex);
@@ -1081,8 +1083,8 @@ void Render::fillBuffer()
 }
 
 
-//MÈtodo que debe ser llamado cada vez que la estructura del buffer se vuelve inconsistente con el modo de lectura actual.
-//se terminan todos los hilos en ejecuciÛn y se libera la memoria (de hilos e im·genes)
+//M√©todo que debe ser llamado cada vez que la estructura del buffer se vuelve inconsistente con el modo de lectura actual.
+//se terminan todos los hilos en ejecuci√≥n y se libera la memoria (de hilos e im√°genes)
 void Render::invalidate()
 {
 	for(int i=0;i<pageRenders.size();i++)

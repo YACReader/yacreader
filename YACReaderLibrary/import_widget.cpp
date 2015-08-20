@@ -127,11 +127,14 @@ ImportWidget::ImportWidget(QWidget *parent) :
 	coversView->setMaximumHeight(300);
 	coversView->setStyleSheet("QGraphicsView {background-color: #E6E6E6;border:none;}");
 
-	coversScene = new QGraphicsScene();
-	coversScene->setSceneRect(0,0,coversView->width(),coversView->height());
+    coversScene = new QGraphicsScene();
 	coversView->setAlignment(Qt::AlignLeft);
-	coversView->setScene(coversScene);
+    coversView->setScene(coversScene);
+    coversView->setFixedHeight(300);
 
+    coversView->setInteractive(false);
+
+    scrollAnimation = new QPropertyAnimation(coversView->horizontalScrollBar(), "value");
 
 	QLabel * topDecorator = new QLabel();
 	QLabel * bottomDecorator = new QLabel();
@@ -208,7 +211,7 @@ ImportWidget::ImportWidget(QWidget *parent) :
 	connect(stop,SIGNAL(clicked()),this,SIGNAL(stop()));
 	//connect(stop,SIGNAL(clicked()),this,SLOT(addCoverTest()));
 
-	previousWidth = 10;
+    previousWidth = 0;
 	updatingCovers = false;
 	elapsedTimer = new QElapsedTimer();
     elapsedTimer->start();
@@ -216,70 +219,49 @@ ImportWidget::ImportWidget(QWidget *parent) :
 
 void ImportWidget::newComic(const QString & path, const QString & coverPath)
 {
-	currentComicLabel->setText("<font color=\"#565959\">"+path+"</font>");
+    if(!this->isVisible())
+        return;
 
-	if(((elapsedTimer->elapsed()>=1000) || ((previousWidth < coversView->width()) && (elapsedTimer->elapsed()>=500))) && !updatingCovers)//todo elapsed time
-	{
-		
-		QPixmap p(coverPath);
-		p = p.scaledToHeight(300,Qt::SmoothTransformation);
-		QGraphicsPixmapItem * item = new QGraphicsPixmapItem(p);
-		item->setPos(previousWidth,0);
-		item->setZValue(i/10000.0);
-		previousWidth += 10 + p.width();
-		coversScene->addItem(item);
+    currentComicLabel->setText("<font color=\"#565959\">"+path+"</font>");
 
-		elapsedTimer->start();
-		if(previousWidth >= coversView->width()+200 && !updatingCovers)
-		{
-			updatingCovers = true;
-			
-			foreach(QGraphicsItem * itemToRemove, coversScene->items())
-			{
-				QGraphicsPixmapItem * last = dynamic_cast<QGraphicsPixmapItem *>(itemToRemove);
+    if( ((elapsedTimer->elapsed()>=1100) || ((previousWidth < coversView->width()) && (elapsedTimer->elapsed()>=500))) && scrollAnimation->state() != QAbstractAnimation::Running)//todo elapsed time
+    {
+        updatingCovers = true;
+        elapsedTimer->start();
 
-				if((last->pos().x()+last->pixmap().width())<=0)
-				{
-					coversScene->removeItem(last);
-					delete last;
-				}
-				//else
-				//	break;
-			}
+        QPixmap p(coverPath);
+        p = p.scaledToHeight(300,Qt::SmoothTransformation);
 
-			int width = p.width();
+        QGraphicsPixmapItem * item = new QGraphicsPixmapItem(p);
+        item->setPos(previousWidth, 0);
+        coversScene->addItem(item);
 
-			foreach(QGraphicsItem * itemToMove, coversScene->items())
-			{
-				QTimeLine *timer = new QTimeLine(400);
-				timer->setFrameRange(0, 24);
-				timer->setUpdateInterval(17);
+        previousWidth += 10 + p.width();
 
-				QGraphicsItemAnimation *animation = new QGraphicsItemAnimation;
-				animation->setItem(itemToMove);
-				animation->setTimeLine(timer);
+        foreach(QGraphicsItem * itemToRemove, coversScene->items())
+        {
+            QGraphicsPixmapItem * last = dynamic_cast<QGraphicsPixmapItem *>(itemToRemove);
 
-				QPointF point = itemToMove->scenePos();
-				float step = (width+10)/24.0;
-				for (int i = 0; i < 24; ++i)
-					animation->setPosAt(i / 24.0, QPointF(point.x()-((i+1)*step), point.y()));
+            if((last->pos().x()+last->pixmap().width()) < coversView->horizontalScrollBar()->value()) //TODO check this
+            {
+                coversScene->removeItem(last);
+                delete last;
+            }
+        }
 
-				timer->start();
-				connect(timer,SIGNAL(finished()),timer,SLOT(deleteLater()));
-				connect(timer,SIGNAL(finished()),animation,SLOT(deleteLater()));
-			}
+        QScrollBar * scrollBar = coversView->horizontalScrollBar();
 
-			QTimer::singleShot(400,this,SLOT(finishedUpdatingCover()));
-	
-			previousWidth -= 10+width;
-		}
+        float speedFactor = 2.5;
+        int origin = scrollBar->value();
+        int dest = origin + 10 + p.width();
 
-	}
-}
-
-void ImportWidget::finishedUpdatingCover()
-{
-	updatingCovers = false;
+        scrollAnimation->setDuration((dest-origin)*speedFactor);
+        scrollAnimation->setStartValue(origin);
+        scrollAnimation->setEndValue(dest);
+        QEasingCurve easing(QEasingCurve::OutQuad);
+        scrollAnimation->setEasingCurve(easing);
+        scrollAnimation->start();
+    }
 }
 
 void ImportWidget::newCover(const QPixmap & image)
@@ -335,7 +317,7 @@ void ImportWidget::addCoverTest()
 
 void ImportWidget::clear()
 {
-	previousWidth = 10;
+    previousWidth = 0;
 	
 	//nos aseguramos de que las animaciones han finalizado antes de borrar
 	QList<QGraphicsItem*> all = coversScene->items();
@@ -347,7 +329,12 @@ void ImportWidget::clear()
 	}
 	coversScene->clear();
 
-	updatingCovers = false;
+    delete coversScene;
+    coversScene = new QGraphicsScene;
+
+    coversView->setScene(coversScene);
+
+    updatingCovers = false;
 
 	currentComicLabel->setText("<font color=\"#565959\">...</font>");
 
@@ -377,7 +364,7 @@ void ImportWidget::clearScene()
 void ImportWidget::showCovers(bool hide)
 {
 	portadasLabel->setHidden(hide);
-	coversViewContainer->setHidden(hide);
+    coversViewContainer->setHidden(hide);
 }
 
 void ImportWidget::resizeEvent(QResizeEvent * event)

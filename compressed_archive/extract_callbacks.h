@@ -90,8 +90,9 @@ public:
   UString Password;
   Byte * data;
   UInt64 newFileSize;
+  QMap<qint32, qint32> indexesToPages;
 
-  CArchiveExtractCallback(bool c = false,ExtractDelegate * d = 0) : PasswordIsDefined(false),all(c),delegate(d) {}
+  CArchiveExtractCallback(const QMap<qint32, qint32> & indexesToPages ,bool c = false,ExtractDelegate * d = 0) : PasswordIsDefined(false),all(c),delegate(d),indexesToPages(indexesToPages) {}
   ~CArchiveExtractCallback() {MidFree(data);}
 };
 
@@ -117,7 +118,11 @@ STDMETHODIMP CArchiveExtractCallback::GetStream(UInt32 index,
 {
   *outStream = 0;
   _outFileStream.Release();
-  _index = index;
+
+  if(indexesToPages.isEmpty())
+      _index = index;
+  else
+    _index = indexesToPages.value(index);
 
   {
 	// Get Name
