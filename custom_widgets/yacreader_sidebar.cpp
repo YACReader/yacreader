@@ -156,7 +156,7 @@ void YACReaderSideBar::paintEvent(QPaintEvent * event)
 #ifdef Q_OS_MAC
 	QPainter painter(this);
 
-    painter.fillRect(0,0,width(),height(),QColor("#FFFFFF"));
+    painter.fillRect(0,0,width(),height(),QColor("#F1F1F1"));
 #else
 	QPainter painter(this);
 
