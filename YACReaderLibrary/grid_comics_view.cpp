@@ -110,11 +110,11 @@ void GridComicsView::createCoverSizeSliderWidget()
 
     QHBoxLayout * horizontalLayout = new QHBoxLayout();
     QLabel * smallLabel = new QLabel();
-    smallLabel->setPixmap(QPixmap(":/images/small_size_grid_zoom.png"));
+    smallLabel->setPixmap(QPixmap(":/images/comics_view_toolbar/small_size_grid_zoom.png"));
     horizontalLayout->addWidget(smallLabel);
     horizontalLayout->addWidget(coverSizeSlider, 0, Qt::AlignVCenter);
     QLabel * bigLabel = new QLabel();
-    bigLabel->setPixmap(QPixmap(":/images/big_size_grid_zoom.png"));
+    bigLabel->setPixmap(QPixmap(":/images/comics_view_toolbar/big_size_grid_zoom.png"));
     horizontalLayout->addWidget(bigLabel);
     horizontalLayout->addSpacing(10);
     horizontalLayout->setMargin(0);
@@ -294,7 +294,7 @@ void GridComicsView::startDrag()
     QLOG_DEBUG() << "performDrag";
     QDrag *drag = new QDrag(this);
     drag->setMimeData(model->mimeData(_selectionModel->selectedRows()));
-    drag->setPixmap(QPixmap(":/images/openInYACReader.png")); //TODO add better image
+    drag->setPixmap(QPixmap(":/images/comics_view_toolbar/openInYACReader.png")); //TODO add better image
 
     /*Qt::DropAction dropAction =*/ drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
 }
