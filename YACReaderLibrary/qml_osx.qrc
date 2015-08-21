@@ -1,6 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file alias="qml/page.png">qml/page-macosx.png</file>
+        <file alias="qml/page.png">qml/page-macosx@2x.png</file>
         <file alias="qml/star.png">qml/star-macosx.png</file>
+        <file alias="qml/star.png">qml/star-macosx@2x.png</file>
     </qresource>
 </RCC>
