@@ -234,6 +234,8 @@ Rectangle {
                 id: pageImage
                 anchors {bottom: realCell.bottom; right: realCell.right; bottomMargin: 5; rightMargin: 4; leftMargin: 4}
                 source: "page.png"
+                width: 8
+                height: 10
             }
 
             //numPages
@@ -252,6 +254,8 @@ Rectangle {
                 id: ratingImage
                 anchors {bottom: realCell.bottom; right: pageImage.left; bottomMargin: 5; rightMargin: Math.floor(pages.width)+12}
                 source: "star.png"
+                width: 13
+                height: 11
 
                 MouseArea  {
                     anchors.fill: parent
