@@ -546,7 +546,7 @@ void LibraryWindow::createActions()
     openComicAction->setToolTip(tr("Open current comic on YACReader"));
     openComicAction->setData(OPEN_COMIC_ACTION_YL);
     openComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_COMIC_ACTION_YL));
-    openComicAction->setIcon(QIcon(":/images/openInYACReader.png"));
+    openComicAction->setIcon(QIcon(":/images/comics_view_toolbar/openInYACReader.png"));
 
     saveCoversToAction = new QAction(tr("Save selected covers to..."),this);
     saveCoversToAction->setToolTip(tr("Save covers of the selected comics as JPG files"));
@@ -557,28 +557,28 @@ void LibraryWindow::createActions()
     setAsReadAction->setToolTip(tr("Set comic as read"));
     setAsReadAction->setData(SET_AS_READ_ACTION_YL);
     setAsReadAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_READ_ACTION_YL));
-    setAsReadAction->setIcon(QIcon(":/images/setReadButton.png"));
+    setAsReadAction->setIcon(QIcon(":/images/comics_view_toolbar/setReadButton.png"));
 
     setAsNonReadAction = new QAction(tr("Set as unread"),this);
     setAsNonReadAction->setToolTip(tr("Set comic as unread"));
     setAsNonReadAction->setData(SET_AS_NON_READ_ACTION_YL);
     setAsNonReadAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_NON_READ_ACTION_YL));
-    setAsNonReadAction->setIcon(QIcon(":/images/setUnread.png"));
+    setAsNonReadAction->setIcon(QIcon(":/images/comics_view_toolbar/setUnread.png"));
 
     /*setAllAsReadAction = new QAction(tr("Set all as read"),this);
         setAllAsReadAction->setToolTip(tr("Set all comics as read"));
-        setAllAsReadAction->setIcon(QIcon(":/images/setAllRead.png"));
+        setAllAsReadAction->setIcon(QIcon(":/images/comics_view_toolbar/setAllRead.png"));
 
         setAllAsNonReadAction = new QAction(tr("Set all as unread"),this);
         setAllAsNonReadAction->setToolTip(tr("Set all comics as unread"));
-        setAllAsNonReadAction->setIcon(QIcon(":/images/setAllUnread.png"));*/
+        setAllAsNonReadAction->setIcon(QIcon(":/images/comics_view_toolbar/setAllUnread.png"));*/
 
     showHideMarksAction = new QAction(tr("Show/Hide marks"),this);
     showHideMarksAction->setToolTip(tr("Show or hide read marks"));
     showHideMarksAction->setData(SHOW_HIDE_MARKS_ACTION_YL);
     showHideMarksAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_HIDE_MARKS_ACTION_YL));
     showHideMarksAction->setCheckable(true);
-    showHideMarksAction->setIcon(QIcon(":/images/showMarks.png"));
+    showHideMarksAction->setIcon(QIcon(":/images/comics_view_toolbar/showMarks.png"));
     showHideMarksAction->setChecked(true);
 #ifndef Q_OS_MAC
     toggleFullScreenAction = new QAction(tr("Fullscreen mode on/off"),this);
@@ -697,19 +697,19 @@ void LibraryWindow::createActions()
     selectAllComicsAction->setText(tr("Select all comics"));
     selectAllComicsAction->setData(SELECT_ALL_COMICS_ACTION_YL);
     selectAllComicsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SELECT_ALL_COMICS_ACTION_YL));
-    selectAllComicsAction->setIcon(QIcon(":/images/selectAll.png"));
+    selectAllComicsAction->setIcon(QIcon(":/images/comics_view_toolbar/selectAll.png"));
 
     editSelectedComicsAction = new QAction(this);
     editSelectedComicsAction->setText(tr("Edit"));
     editSelectedComicsAction->setData(EDIT_SELECTED_COMICS_ACTION_YL);
     editSelectedComicsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(EDIT_SELECTED_COMICS_ACTION_YL));
-    editSelectedComicsAction->setIcon(QIcon(":/images/editComic.png"));
+    editSelectedComicsAction->setIcon(QIcon(":/images/comics_view_toolbar/editComic.png"));
 
     asignOrderAction = new QAction(this);
     asignOrderAction->setText(tr("Asign current order to comics"));
     asignOrderAction->setData(ASIGN_ORDER_ACTION_YL);
     asignOrderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ASIGN_ORDER_ACTION_YL));
-    asignOrderAction->setIcon(QIcon(":/images/asignNumber.png"));
+    asignOrderAction->setIcon(QIcon(":/images/comics_view_toolbar/asignNumber.png"));
 
     forceCoverExtractedAction = new QAction(this);
     forceCoverExtractedAction->setText(tr("Update cover"));
@@ -721,13 +721,13 @@ void LibraryWindow::createActions()
     deleteComicsAction->setText(tr("Delete selected comics"));
     deleteComicsAction->setData(DELETE_COMICS_ACTION_YL);
     deleteComicsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(DELETE_COMICS_ACTION_YL));
-    deleteComicsAction->setIcon(QIcon(":/images/trash.png"));
+    deleteComicsAction->setIcon(QIcon(":/images/comics_view_toolbar/trash.png"));
 
     getInfoAction = new QAction(this);
     getInfoAction->setData(GET_INFO_ACTION_YL);
     getInfoAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(GET_INFO_ACTION_YL));
     getInfoAction->setText(tr("Download tags from Comic Vine"));
-    getInfoAction->setIcon(QIcon(":/images/getInfo.png"));
+    getInfoAction->setIcon(QIcon(":/images/comics_view_toolbar/getInfo.png"));
     //-------------------------------------------------------------------------
 
     showEditShortcutsAction = new QAction(tr("Edit shortcuts"),this);
