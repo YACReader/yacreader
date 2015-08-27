@@ -10,6 +10,7 @@ class QItemSelectionModel;
 class QQuickView;
 class QQuickView;
 
+class YACReaderToolBarStretch;
 
 class GridComicsView : public ComicsView
 {
@@ -65,14 +66,22 @@ public slots:
 
 protected slots:
     void requestedContextMenu(const QPoint & point);
+    void setCoversSize(int width);
 
 private:
+    QSettings * settings;
     QToolBar * toolbar;
+    YACReaderToolBarStretch * toolBarStretch;
+    QAction * toolBarStretchAction;
+    QWidget * coverSizeSliderWidget;
+    QSlider * coverSizeSlider;
+    QAction * coverSizeSliderAction;
     QItemSelectionModel * _selectionModel;
     QQuickView *view;
     QWidget *container;
     bool dummy;
     void closeEvent ( QCloseEvent * event );
+    void createCoverSizeSliderWidget();
 
 };
 

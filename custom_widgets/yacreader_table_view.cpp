@@ -158,7 +158,7 @@ void YACReaderTableView::performDrag()
     QLOG_DEBUG() << "performDrag";
     QDrag *drag = new QDrag(this);
     drag->setMimeData(model()->mimeData(selectionModel()->selectedRows()));
-    drag->setPixmap(QPixmap(":/images/openInYACReader.png")); //TODO add better image
+    drag->setPixmap(QPixmap(":/images/comics_view_toolbar/openInYACReader.png")); //TODO add better image
 
     /*Qt::DropAction dropAction =*/ drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
 }

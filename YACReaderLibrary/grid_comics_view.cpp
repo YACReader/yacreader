@@ -1,16 +1,37 @@
 #include "grid_comics_view.h"
 
-#include <QtWidgets>
 #include <QtQuick>
+#include <QtWidgets>
 
-#include "yacreader_global.h"
 #include "comic.h"
 #include "comic_files_manager.h"
 #include "QsLog.h"
+#include "yacreader_global.h"
+#include "yacreader_tool_bar_stretch.h"
+
+//values relative to visible cells
+const unsigned int YACREADER_MIN_GRID_ZOOM_WIDTH = 156;
+const unsigned int YACREADER_MAX_GRID_ZOOM_WIDTH = 312;
+
+//GridView cells
+const unsigned int YACREADER_MIN_CELL_CUSTOM_HEIGHT = 295;
+const unsigned int YACREADER_MIN_CELL_CUSTOM_WIDTH = 185;
+
+//Covers
+const unsigned int YACREADER_MAX_COVER_HEIGHT = 236;
+const unsigned int YACREADER_MIN_COVER_WIDTH = YACREADER_MIN_GRID_ZOOM_WIDTH;
+
+//visible cells (realCell in qml), grid cells size is used to create faux inner margings
+const unsigned int YACREADER_MIN_ITEM_HEIGHT = YACREADER_MAX_COVER_HEIGHT + 51; //51 is the height of the bottom rectangle used for title and other info
+const unsigned int YACREADER_MIN_ITEM_WIDTH = YACREADER_MIN_COVER_WIDTH;
+
 
 GridComicsView::GridComicsView(QWidget *parent) :
     ComicsView(parent),_selectionModel(NULL)
 {
+    settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini", QSettings::IniFormat, this);
+    settings->beginGroup("libraryConfig");
+
     qmlRegisterType<ComicModel>("comicModel",1,0,"TableModel");
 
     view = new QQuickView();
@@ -19,6 +40,46 @@ GridComicsView::GridComicsView(QWidget *parent) :
     container->setMinimumSize(200, 200);
     container->setFocusPolicy(Qt::TabFocus);
     view->setSource(QUrl("qrc:/qml/GridComicsView.qml"));
+
+    createCoverSizeSliderWidget();
+
+    int coverSize = settings->value(COMICS_GRID_COVER_SIZES, YACREADER_MIN_COVER_WIDTH).toInt();
+
+    coverSizeSlider->setValue(coverSize);
+    setCoversSize(coverSize);
+
+    QQmlContext *ctxt = view->rootContext();
+
+#ifdef Q_OS_MAC
+    ctxt->setContextProperty("backgroundColor", "#F6F6F6");
+    ctxt->setContextProperty("cellColor", "#FFFFFF");
+    ctxt->setContextProperty("selectedColor", "#FFFFFF");
+    ctxt->setContextProperty("selectedBorderColor", "#007AFF");
+    ctxt->setContextProperty("borderColor", "#DBDBDB");
+    ctxt->setContextProperty("titleColor", "#121212");
+    ctxt->setContextProperty("textColor", "#636363");
+    //fonts settings
+    ctxt->setContextProperty("fontSize", 11);
+    ctxt->setContextProperty("fontFamily", QApplication::font().family());
+    ctxt->setContextProperty("fontSpacing", 0.5);
+
+#else
+    ctxt->setContextProperty("backgroundColor", "#2A2A2A");
+    ctxt->setContextProperty("cellColor", "#212121");
+    ctxt->setContextProperty("selectedColor", "#121212");
+    ctxt->setContextProperty("selectedBorderColor", "#121212");
+    ctxt->setContextProperty("borderColor", "#121212");
+    ctxt->setContextProperty("titleColor", "#FFFFFF");
+    ctxt->setContextProperty("textColor", "#A8A8A8");
+    ctxt->setContextProperty("dropShadow",false);
+    //fonts settings
+    int fontSize = QApplication::font().pointSize();
+    if(fontSize == -1)
+        fontSize = QApplication::font().pixelSize();
+    ctxt->setContextProperty("fontSize", fontSize);
+    ctxt->setContextProperty("fontFamily", QApplication::font().family());
+    ctxt->setContextProperty("fontSpacing", 0.5);
+#endif
 
     setShowMarks(true);//TODO save this in settings
 
@@ -38,11 +99,40 @@ GridComicsView::~GridComicsView()
    delete view;
 }
 
+void GridComicsView::createCoverSizeSliderWidget()
+{
+    toolBarStretch = new YACReaderToolBarStretch(this);
+    coverSizeSliderWidget = new QWidget(this);
+    coverSizeSliderWidget->setFixedWidth(200);
+    coverSizeSlider = new QSlider();
+    coverSizeSlider->setOrientation(Qt::Horizontal);
+    coverSizeSlider->setRange(YACREADER_MIN_GRID_ZOOM_WIDTH, YACREADER_MAX_GRID_ZOOM_WIDTH);
+
+    QHBoxLayout * horizontalLayout = new QHBoxLayout();
+    QLabel * smallLabel = new QLabel();
+    smallLabel->setPixmap(QPixmap(":/images/comics_view_toolbar/small_size_grid_zoom.png"));
+    horizontalLayout->addWidget(smallLabel);
+    horizontalLayout->addWidget(coverSizeSlider, 0, Qt::AlignVCenter);
+    QLabel * bigLabel = new QLabel();
+    bigLabel->setPixmap(QPixmap(":/images/comics_view_toolbar/big_size_grid_zoom.png"));
+    horizontalLayout->addWidget(bigLabel);
+    horizontalLayout->addSpacing(10);
+    horizontalLayout->setMargin(0);
+
+    coverSizeSliderWidget->setLayout(horizontalLayout);
+    //TODO add shortcuts (ctrl-+ and ctrl-- for zooming in out, + ctrl-0 for reseting the zoom)
+
+    connect(coverSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(setCoversSize(int)));
+}
+
 void GridComicsView::setToolBar(QToolBar *toolBar)
 {
     QLOG_INFO() << "setToolBar";
     static_cast<QVBoxLayout *>(this->layout())->insertWidget(1,toolBar);
     this->toolbar = toolBar;
+
+     toolBarStretchAction = toolBar->addWidget(toolBarStretch);
+     coverSizeSliderAction = toolBar->addWidget(coverSizeSliderWidget);
 }
 
 void GridComicsView::setModel(ComicModel *model)
@@ -74,36 +164,6 @@ void GridComicsView::setModel(ComicModel *model)
             setCurrentIndex(model->index(0,0));
     }
 
-#ifdef Q_OS_MAC
-    ctxt->setContextProperty("backgroundColor", "#F5F5F5");
-    ctxt->setContextProperty("cellColor", "#FFFFFF");
-    ctxt->setContextProperty("selectedColor", "#FFFFFF");
-    ctxt->setContextProperty("selectedBorderColor", "#007AFF");
-    ctxt->setContextProperty("borderColor", "#DBDBDB");
-    ctxt->setContextProperty("titleColor", "#121212");
-    ctxt->setContextProperty("textColor", "#636363");
-    //fonts settings
-    ctxt->setContextProperty("fontSize", 11);
-    ctxt->setContextProperty("fontFamily", QApplication::font().family());
-    ctxt->setContextProperty("fontSpacing", 0.5);
-
-#else
-    ctxt->setContextProperty("backgroundColor", "#2A2A2A");
-    ctxt->setContextProperty("cellColor", "#212121");
-    ctxt->setContextProperty("selectedColor", "#121212");
-    ctxt->setContextProperty("selectedBorderColor", "#121212");
-    ctxt->setContextProperty("borderColor", "#121212");
-    ctxt->setContextProperty("titleColor", "#FFFFFF");
-    ctxt->setContextProperty("textColor", "#A8A8A8");
-    ctxt->setContextProperty("dropShadow",false);
-    //fonts settings
-    int fontSize = QApplication::font().pointSize();
-    if(fontSize == -1)
-        fontSize = QApplication::font().pixelSize();
-    ctxt->setContextProperty("fontSize", fontSize);
-    ctxt->setContextProperty("fontFamily", QApplication::font().family());
-    ctxt->setContextProperty("fontSpacing", 0.5);
-#endif
 
 
 }
@@ -185,6 +245,32 @@ void GridComicsView::requestedContextMenu(const QPoint &point)
     emit customContextMenuViewRequested(point);
 }
 
+void GridComicsView::setCoversSize(int width)
+{
+    QQmlContext *ctxt = view->rootContext();
+
+    QQuickItem * grid = view->rootObject()->findChild<QQuickItem *>(QStringLiteral("grid"));
+
+    if(grid != 0)
+    {
+        QLOG_INFO() << "method invoked";
+        QVariant cellCustomWidth = (width * YACREADER_MIN_CELL_CUSTOM_WIDTH) / YACREADER_MIN_GRID_ZOOM_WIDTH;
+        QMetaObject::invokeMethod(grid, "calculateCellWidths",
+                                  Q_ARG(QVariant, cellCustomWidth));
+    }
+
+    int cellBottomMarging = 8 * (1 + 2*(1 - (float(YACREADER_MAX_GRID_ZOOM_WIDTH - width) / (YACREADER_MAX_GRID_ZOOM_WIDTH - YACREADER_MIN_GRID_ZOOM_WIDTH))) );
+
+    ctxt->setContextProperty("cellCustomHeight", ((width * YACREADER_MAX_COVER_HEIGHT) / YACREADER_MIN_COVER_WIDTH) + 51 + cellBottomMarging);
+    ctxt->setContextProperty("cellCustomWidth", (width * YACREADER_MIN_CELL_CUSTOM_WIDTH) / YACREADER_MIN_COVER_WIDTH );
+
+    ctxt->setContextProperty("itemWidth", width);
+    ctxt->setContextProperty("itemHeight", ((width * YACREADER_MAX_COVER_HEIGHT) / YACREADER_MIN_COVER_WIDTH) + 51);
+
+    ctxt->setContextProperty("coverWidth", width);
+    ctxt->setContextProperty("coverHeight", (width * YACREADER_MAX_COVER_HEIGHT) / YACREADER_MIN_COVER_WIDTH);
+}
+
 QSize GridComicsView::sizeHint()
 {
         QLOG_INFO() << "sizeHint";
@@ -208,7 +294,7 @@ void GridComicsView::startDrag()
     QLOG_DEBUG() << "performDrag";
     QDrag *drag = new QDrag(this);
     drag->setMimeData(model->mimeData(_selectionModel->selectedRows()));
-    drag->setPixmap(QPixmap(":/images/openInYACReader.png")); //TODO add better image
+    drag->setPixmap(QPixmap(":/images/comics_view_toolbar/openInYACReader.png")); //TODO add better image
 
     /*Qt::DropAction dropAction =*/ drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
 }
@@ -333,6 +419,9 @@ void GridComicsView::setShowMarks(bool show)
 
 void GridComicsView::closeEvent(QCloseEvent *event)
 {
+    toolbar->removeAction(toolBarStretchAction);
+    toolbar->removeAction(coverSizeSliderAction);
+
     QLOG_INFO() << "closeEvent";
     QObject *object = view->rootObject();
     QMetaObject::invokeMethod(object, "exit");
@@ -340,4 +429,7 @@ void GridComicsView::closeEvent(QCloseEvent *event)
     view->close();
     event->accept();
     ComicsView::closeEvent(event);
+
+    //save settings
+    settings->setValue(COMICS_GRID_COVER_SIZES, coverSizeSlider->value());
 }

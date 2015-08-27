@@ -94,7 +94,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     hideFlowViewAction->setText(tr("Hide comic flow"));
     hideFlowViewAction->setData(HIDE_COMIC_VIEW_ACTION_YL);
     hideFlowViewAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(HIDE_COMIC_VIEW_ACTION_YL));
-    hideFlowViewAction->setIcon(QIcon(":/images/hideComicFlow.png"));
+    hideFlowViewAction->setIcon(QIcon(":/images/comics_view_toolbar/hideComicFlow.png"));
     hideFlowViewAction->setCheckable(true);
     hideFlowViewAction->setChecked(false);
 
@@ -337,12 +337,12 @@ void ClassicComicsView::removeItemsFromFlow(const QModelIndex &parent, int from,
 
 void ClassicComicsView::closeEvent(QCloseEvent *event)
 {
+    toolbar->removeAction(toolBarStretchAction);
+    toolbar->removeAction(hideFlowViewAction);
+
     saveTableHeadersStatus();
     saveSplitterStatus();
     ComicsView::closeEvent(event);
-
-    toolbar->removeAction(toolBarStretchAction);
-    toolbar->removeAction(hideFlowViewAction);
 }
 
 void ClassicComicsView::setupSearchingIcon()

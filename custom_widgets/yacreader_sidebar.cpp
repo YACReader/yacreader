@@ -23,9 +23,15 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent) :
     readingListsView = new YACReaderReadingListsView;
 	selectedLibrary = new YACReaderLibraryListWidget;
 
-	librariesTitle = new YACReaderTitledToolBar(tr("LIBRARIES"));
-	foldersTitle = new YACReaderTitledToolBar(tr("FOLDERS"));
+#ifdef Q_OS_MAC
+    librariesTitle = new YACReaderTitledToolBar(tr("Libraries"));
+    foldersTitle = new YACReaderTitledToolBar(tr("Folders"));
+    readingListsTitle = new YACReaderTitledToolBar(tr("Reading Lists"));
+#else
+    librariesTitle = new YACReaderTitledToolBar(tr("LIBRARIES"));
+    foldersTitle = new YACReaderTitledToolBar(tr("FOLDERS"));
     readingListsTitle = new YACReaderTitledToolBar(tr("READING LISTS"));
+#endif
 
     splitter = new QSplitter(this);
     splitter->setOrientation(Qt::Vertical);
@@ -150,7 +156,7 @@ void YACReaderSideBar::paintEvent(QPaintEvent * event)
 #ifdef Q_OS_MAC
 	QPainter painter(this);
 
-    painter.fillRect(0,0,width(),height(),QColor("#FFFFFF"));
+    painter.fillRect(0,0,width(),height(),QColor("#F1F1F1"));
 #else
 	QPainter painter(this);
 
