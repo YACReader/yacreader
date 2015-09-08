@@ -415,7 +415,7 @@ void MainWindowViewer::createActions()
 	
 	fitToPageAction = new QAction(tr("Fit to page"),this);
 	//fitToPageAction->setIcon(QIcon(":/images/viewer_toolbar/full.png"));
-	//fitToPageAction->setCheckable(true);
+	fitToPageAction->setCheckable(true);
 	fitToPageAction->setDisabled(true);
 	//fitToPageAction->setChecked(Configuration::getConfiguration().getFitToPage());
     fitToPageAction->setData(FIT_TO_PAGE_ACTION_Y);
@@ -423,20 +423,19 @@ void MainWindowViewer::createActions()
 	connect(fitToPageAction,SIGNAL(triggered()),this,SLOT(fitToPageSwitch()));
 	
 	increasePageZoomAction = new QAction(tr("Zoom+"),this);
-	//increasePageZoomAction->setIcon(QIcon(":/images/viewer_toolbar/full.png"));
-	increasePageZoomAction->setDisabled(true);
-    increasePageZoomAction->setData(ZOOM_PLUS_ACTION_Y);
-    increasePageZoomAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_PLUS_ACTION_Y));
-	
+	//fitToPageAction->setIcon(QIcon(":/images/viewer_toolbar/full.png"));
+	//fitToPageAction->setDisabled(true);
+	//fitToPageAction->setChecked(Configuration::getConfiguration().getFitToPage());
+    //fitToPageAction->setData(FIT_TO_PAGE_ACTION_Y);
+    increasePageZoomAction->setShortcut(QKeySequence::ZoomIn);
 	connect(increasePageZoomAction,SIGNAL(triggered()),this,SLOT(increasePageZoomLevel()));
 	
 	decreasePageZoomAction = new QAction(tr("Zoom-"),this);
-	//decreasePageZoomAction->setIcon(QIcon(":/images/viewer_toolbar/full.png"));
-	decreasePageZoomAction->setDisabled(true);
-    decreasePageZoomAction->setData(ZOOM_MINUS_ACTION_Y);
-    decreasePageZoomAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_MINUS_ACTION_Y));
-        //decreasePageZoomAction->setShortcut(QKeySequence::ZoomOut);
-
+	//fitToPageAction->setIcon(QIcon(":/images/viewer_toolbar/full.png"));
+	//fitToPageAction->setDisabled(true);
+	//fitToPageAction->setChecked(Configuration::getConfiguration().getFitToPage());
+    //fitToPageAction->setData(FIT_TO_PAGE_ACTION_Y);
+    decreasePageZoomAction->setShortcut(QKeySequence::ZoomOut);
 	connect(decreasePageZoomAction,SIGNAL(triggered()),this,SLOT(decreasePageZoomLevel()));
 
 	showFlowAction = new QAction(tr("Show go to flow"),this);
@@ -855,8 +854,6 @@ void MainWindowViewer::enableActions()
 	doubleMangaPageAction->setDisabled(false);
 	adjustToFullSizeAction->setDisabled(false);
 	fitToPageAction->setDisabled(false);
-	increasePageZoomAction->setDisabled(false);
-	decreasePageZoomAction->setDisabled(false);
 	//setBookmark->setDisabled(false);
     showBookmarksAction->setDisabled(false);
     showInfoAction->setDisabled(false); //TODO enable goTo and showInfo (or update) when numPages emited

@@ -39,11 +39,8 @@ void Configuration::load(QSettings * settings)
 		settings->setValue(FLOW_TYPE,0);
 	if(!settings->contains(FULLSCREEN))
 		settings->setValue(FULLSCREEN,false);
-	
-//TODO: Replace this with zoom mode
 	if(!settings->contains(FIT_TO_WIDTH_RATIO))
 		settings->setValue(FIT_TO_WIDTH_RATIO,1);
-	
 	if(!settings->contains(Y_WINDOW_SIZE))
 		settings->setValue(Y_WINDOW_SIZE,QSize(0,0));
 	if(!settings->contains(MAXIMIZED))
