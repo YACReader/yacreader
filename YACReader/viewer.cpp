@@ -330,13 +330,7 @@ void Viewer::updateContentSize()
 	{
 		if(Configuration::getConfiguration().getAdjustToFullSize())
 		{
-			content->resize(currentPage->size());
-		}
-		else if(Configuration::getConfiguration().getFitToPage())
-		{
-			QSize pagefit=currentPage->size();
-			pagefit.scale(size(), Qt::KeepAspectRatio);
-			content->resize(pagefit);
+			content->resize(currentPage->width(),currentPage->height());
 		}
 		else
 		{
@@ -363,13 +357,6 @@ void Viewer::updateContentSize()
 			}
 		}
 
-	if(Configuration::getConfiguration().getPageZoomLevel())
-	{	
-		QSize pagesize=content->size();
-		pagesize.scale(content->width()*Configuration::getConfiguration().getPageZoomLevel(), content->height(), Qt::KeepAspectRatio);
-		content->resize(pagesize);
-	}
-	
         if(devicePixelRatio()>1)//only in retina display
         {
             QPixmap page = currentPage->scaled(content->width()*devicePixelRatio(), content->height()*devicePixelRatio(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
