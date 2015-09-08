@@ -33,8 +33,8 @@ void Configuration::load(QSettings * settings)
 		settings->setValue(MAG_GLASS_SIZE,QSize(350,175));
 	if(!settings->contains(ZOOM_LEVEL))
 		settings->setValue(MAG_GLASS_SIZE,QSize(350,175));
-	//if(!settings->contains(FIT))
-	//	settings->setValue(FIT,false);
+	if(!settings->contains(FIT))
+		settings->setValue(FIT,false);
 	if(!settings->contains(FLOW_TYPE))
 		settings->setValue(FLOW_TYPE,0);
 	if(!settings->contains(FULLSCREEN))
@@ -47,8 +47,8 @@ void Configuration::load(QSettings * settings)
 		settings->setValue(MAXIMIZED,false);
 	if(!settings->contains(DOUBLE_PAGE))
 		settings->setValue(DOUBLE_PAGE,false);
-	//if(!settings->contains(ADJUST_TO_FULL_SIZE))
-	//	settings->setValue(ADJUST_TO_FULL_SIZE,false);
+	if(!settings->contains(ADJUST_TO_FULL_SIZE))
+		settings->setValue(ADJUST_TO_FULL_SIZE,false);
 	if(!settings->contains(BACKGROUND_COLOR))
 		settings->setValue(BACKGROUND_COLOR,QColor(40,40,40));
 	if(!settings->contains(ALWAYS_ON_TOP))

@@ -62,19 +62,10 @@ using namespace YACReader;
 		void setZoomLevel(float zl) { settings->setValue(ZOOM_LEVEL,zl);}
 		float getPageZoomLevel() { return settings->value(PAGE_ZOOM_LEVEL).toFloat();}
 		void setPageZoomLevel(float zl) { settings->setValue(PAGE_ZOOM_LEVEL,zl);}
-		/*
-		//Old fitting modes
 		bool getAdjustToWidth() {return settings->value(FIT).toBool();}
 		void setAdjustToWidth(bool atw=true) {settings->setValue(FIT,atw);}
 		bool getFitToPage() {return settings->value(PAGEFIT).toBool();}
 		void setFitToPage(bool b=true) {settings->setValue(PAGEFIT,b);}
-		bool getAdjustToFullSize(){return settings->value(ADJUST_TO_FULL_SIZE).toBool();}
-		void setAdjustToFullSize(bool b){settings->setValue(ADJUST_TO_FULL_SIZE,b);}
-		*/
-		
-		QString getFitMode() { return settings->value(FITMODE).toString(); }
-		void setFitMode ( QString fitMode ){settings->setValue(FITMODE, fitMode);}
-		
 		FlowType getFlowType(){return (FlowType)settings->value(FLOW_TYPE_SW).toInt();}
 		void setFlowType(FlowType type){settings->setValue(FLOW_TYPE_SW,type);}
 		bool getFullScreen(){return settings->value(FULLSCREEN).toBool();}
@@ -91,6 +82,8 @@ using namespace YACReader;
 		void setDoublePage(bool b){settings->setValue(DOUBLE_PAGE,b);}
 		bool getDoubleMangaPage(){return settings->value(DOUBLE_MANGA_PAGE).toBool();}
 		void setDoubleMangaPage(bool b){settings->setValue(DOUBLE_MANGA_PAGE,b);}
+		bool getAdjustToFullSize(){return settings->value(ADJUST_TO_FULL_SIZE).toBool();}
+		void setAdjustToFullSize(bool b){settings->setValue(ADJUST_TO_FULL_SIZE,b);}
 		QColor getBackgroundColor(){return settings->value(BACKGROUND_COLOR).value<QColor>();}
 		void setBackgroundColor(const QColor& color){settings->value(BACKGROUND_COLOR,color);}
 		bool getAlwaysOnTop(){return settings->value(ALWAYS_ON_TOP).toBool();}
