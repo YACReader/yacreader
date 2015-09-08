@@ -262,7 +262,7 @@ void MainWindowViewer::createActions()
     adjustHeightAction->setIcon(QIcon(":/images/viewer_toolbar/toHeight.png"));
 	//adjustWidth->setCheckable(true);
     adjustHeightAction->setDisabled(true);
-    //adjustHeightAction->setChecked(Configuration::getConfiguration().getAdjustToWidth());
+    adjustHeightAction->setChecked(Configuration::getConfiguration().getAdjustToWidth());
     adjustHeightAction->setToolTip(tr("Fit image to height"));
 	//adjustWidth->setIcon(QIcon(":/images/fitWidth.png"));
     adjustHeightAction->setData(ADJUST_HEIGHT_ACTION_Y);
@@ -273,7 +273,7 @@ void MainWindowViewer::createActions()
     adjustWidthAction->setIcon(QIcon(":/images/viewer_toolbar/toWidth.png"));
 	//adjustWidth->setCheckable(true);
     adjustWidthAction->setDisabled(true);
-    //adjustWidthAction->setChecked(Configuration::getConfiguration().getAdjustToWidth());
+    adjustWidthAction->setChecked(Configuration::getConfiguration().getAdjustToWidth());
     adjustWidthAction->setToolTip(tr("Fit image to width"));
 	//adjustWidth->setIcon(QIcon(":/images/fitWidth.png"));
     adjustWidthAction->setData(ADJUST_WIDTH_ACTION_Y);
@@ -406,9 +406,9 @@ void MainWindowViewer::createActions()
 
 	adjustToFullSizeAction = new QAction(tr("Show full size"),this);
 	adjustToFullSizeAction->setIcon(QIcon(":/images/viewer_toolbar/full.png"));
-	//adjustToFullSizeAction->setCheckable(true);
+	adjustToFullSizeAction->setCheckable(true);
 	adjustToFullSizeAction->setDisabled(true);
-	//adjustToFullSizeAction->setChecked(Configuration::getConfiguration().getAdjustToFullSize());
+	adjustToFullSizeAction->setChecked(Configuration::getConfiguration().getAdjustToFullSize());
     adjustToFullSizeAction->setData(ADJUST_TO_FULL_SIZE_ACTION_Y);
     adjustToFullSizeAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADJUST_TO_FULL_SIZE_ACTION_Y));
 	connect(adjustToFullSizeAction,SIGNAL(triggered()),this,SLOT(adjustToFullSizeSwitch()));
@@ -417,26 +417,10 @@ void MainWindowViewer::createActions()
 	//fitToPageAction->setIcon(QIcon(":/images/viewer_toolbar/full.png"));
 	fitToPageAction->setCheckable(true);
 	fitToPageAction->setDisabled(true);
-	//fitToPageAction->setChecked(Configuration::getConfiguration().getFitToPage());
+	fitToPageAction->setChecked(Configuration::getConfiguration().getFitToPage());
     fitToPageAction->setData(FIT_TO_PAGE_ACTION_Y);
     fitToPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(FIT_TO_PAGE_ACTION_Y));
 	connect(fitToPageAction,SIGNAL(triggered()),this,SLOT(fitToPageSwitch()));
-	
-	increasePageZoomAction = new QAction(tr("Zoom+"),this);
-	//fitToPageAction->setIcon(QIcon(":/images/viewer_toolbar/full.png"));
-	//fitToPageAction->setDisabled(true);
-	//fitToPageAction->setChecked(Configuration::getConfiguration().getFitToPage());
-    //fitToPageAction->setData(FIT_TO_PAGE_ACTION_Y);
-    increasePageZoomAction->setShortcut(QKeySequence::ZoomIn);
-	connect(increasePageZoomAction,SIGNAL(triggered()),this,SLOT(increasePageZoomLevel()));
-	
-	decreasePageZoomAction = new QAction(tr("Zoom-"),this);
-	//fitToPageAction->setIcon(QIcon(":/images/viewer_toolbar/full.png"));
-	//fitToPageAction->setDisabled(true);
-	//fitToPageAction->setChecked(Configuration::getConfiguration().getFitToPage());
-    //fitToPageAction->setData(FIT_TO_PAGE_ACTION_Y);
-    decreasePageZoomAction->setShortcut(QKeySequence::ZoomOut);
-	connect(decreasePageZoomAction,SIGNAL(triggered()),this,SLOT(decreasePageZoomLevel()));
 
 	showFlowAction = new QAction(tr("Show go to flow"),this);
 	showFlowAction->setIcon(QIcon(":/images/viewer_toolbar/flow.png"));
@@ -560,8 +544,7 @@ void MainWindowViewer::createToolBars()
     comicToolBar->addSeparator();
 
     comicToolBar->addAction(showMagnifyingGlassAction);
-    comicToolBar->addAction(increasePageZoomAction);
-    comicToolBar->addAction(decreasePageZoomAction);
+
 
 	comicToolBar->addSeparator();
 
@@ -1422,18 +1405,6 @@ void MainWindowViewer::adjustToFullSizeSwitch()
 void MainWindowViewer::fitToPageSwitch()
 {
 	Configuration::getConfiguration().setFitToPage(!Configuration::getConfiguration().getFitToPage());
-	viewer->updatePage();
-}
-
-void MainWindowViewer::increasePageZoomLevel()
-{
-	Configuration::getConfiguration().setPageZoomLevel(Configuration::getConfiguration().getPageZoomLevel() + 0.1);
-	viewer->updatePage();
-}
-
-void MainWindowViewer::decreasePageZoomLevel()
-{
-	Configuration::getConfiguration().setPageZoomLevel(Configuration::getConfiguration().getPageZoomLevel() - 0.1);
 	viewer->updatePage();
 }
 

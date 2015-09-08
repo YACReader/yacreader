@@ -56,8 +56,6 @@ class EditShortcutsDialog;
 		void alwaysOnTopSwitch();
 		void adjustToFullSizeSwitch();
 		void fitToPageSwitch();
-		void increasePageZoomLevel();
-		void decreasePageZoomLevel();
 		void reloadOptions();
 		void fitToWidth();
 		void fitToHeight();
@@ -129,8 +127,6 @@ class EditShortcutsDialog;
 		QAction *alwaysOnTopAction;
 		QAction *adjustToFullSizeAction;
 		QAction *fitToPageAction;
-		QAction *increasePageZoomAction;
-		QAction *decreasePageZoomAction;
 		QAction *showFlowAction;
 
         QAction *showEditShortcutsAction;
