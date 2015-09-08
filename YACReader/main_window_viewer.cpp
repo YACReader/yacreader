@@ -987,30 +987,21 @@ void MainWindowViewer::showToolBars()
 }
 void MainWindowViewer::fitToWidth()
 {
-	Configuration::getConfiguration().setFitMode("to_width");
-	Configuration::getConfiguration().setPageZoomLevel(1);
-	viewer->updatePage();
-/*
 	Configuration & conf = Configuration::getConfiguration();
 	if(!conf.getAdjustToWidth())
 	{
 		conf.setAdjustToWidth(true);
 		viewer->updatePage();
 	}
-*/
 }
 void MainWindowViewer::fitToHeight()
 {
-	Configuration::getConfiguration().setFitMode("to_height");
-	Configuration::getConfiguration().setPageZoomLevel(1);
-	viewer->updatePage();
-	/*
 	Configuration & conf = Configuration::getConfiguration();
 	if(conf.getAdjustToWidth())
 	{
 		conf.setAdjustToWidth(false);
 		viewer->updatePage();
-	}*/
+	}
 }
 
 void MainWindowViewer::checkNewVersion()
@@ -1214,9 +1205,8 @@ void MainWindowViewer::toggleFitToWidthSlider()
 
 void MainWindowViewer::changeFit()
 {
-	//TODO: this is depreceated
 	Configuration & conf = Configuration::getConfiguration();
-	//conf.setAdjustToWidth(!conf.getAdjustToWidth());
+	conf.setAdjustToWidth(!conf.getAdjustToWidth());
 	viewer->updatePage();
 }
 
@@ -1425,17 +1415,13 @@ void MainWindowViewer::alwaysOnTopSwitch()
 
 void MainWindowViewer::adjustToFullSizeSwitch()
 {
-	//Configuration::getConfiguration().setAdjustToFullSize(!Configuration::getConfiguration().getAdjustToFullSize());
-	Configuration::getConfiguration().setFitMode("full_size");
-	Configuration::getConfiguration().setPageZoomLevel(1);
+	Configuration::getConfiguration().setAdjustToFullSize(!Configuration::getConfiguration().getAdjustToFullSize());
 	viewer->updatePage();
 }
 
 void MainWindowViewer::fitToPageSwitch()
 {
-	//Configuration::getConfiguration().setFitToPage(!Configuration::getConfiguration().getFitToPage());
-	Configuration::getConfiguration().setFitMode("full_page");
-	Configuration::getConfiguration().setPageZoomLevel(1);
+	Configuration::getConfiguration().setFitToPage(!Configuration::getConfiguration().getFitToPage());
 	viewer->updatePage();
 }
 
