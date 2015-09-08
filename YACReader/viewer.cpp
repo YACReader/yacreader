@@ -334,7 +334,7 @@ void Viewer::updateContentSize()
 			{
 				content->resize(currentPage->size());
 			}
-			else if(Configuration::getConfiguration().getFitMode()=="full_page")
+			if(Configuration::getConfiguration().getFitMode()=="full_page")
 			{
 				QSize pagefit=currentPage->size();
 				pagefit.scale(size(), Qt::KeepAspectRatio);
@@ -343,7 +343,7 @@ void Viewer::updateContentSize()
 			
 			//float aspectRatio = (float)currentPage->width()/currentPage->height();
 			//Fit to width
-			else if(Configuration::getConfiguration().getFitMode()=="to_width")
+			if(Configuration::getConfiguration().getFitMode()=="to_width")
 			{
 				QSize pagefit=currentPage->size();
 				pagefit.scale(width(), 0, Qt::KeepAspectRatioByExpanding);
@@ -370,18 +370,10 @@ void Viewer::updateContentSize()
 				else
 					content->resize(static_cast<int>(height()*aspectRatio),height());
 			}*/
-			else if(Configuration::getConfiguration().getFitMode()=="to_height")
+			if(Configuration::getConfiguration().getFitMode()=="to_height")
 			{
 				QSize pagefit=currentPage->size();
 				pagefit.scale(0, height(), Qt::KeepAspectRatioByExpanding);
-				content->resize(pagefit);
-			}
-			
-			else //if everything else fails use full_page
-			{
-				Configuration::getConfiguration().setFitMode("full_page");
-				QSize pagefit=currentPage->size();
-				pagefit.scale(size(), Qt::KeepAspectRatio);
 				content->resize(pagefit);
 			}
 			
