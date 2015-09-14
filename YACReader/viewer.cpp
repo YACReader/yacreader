@@ -328,35 +328,32 @@ void Viewer::updateContentSize()
 	//there is an image to resize
 	if(currentPage !=0 && !currentPage->isNull())
 	{
-		if(Configuration::getConfiguration().getAdjustToFullSize())
+		QSize pagefit;
+		YACReader::FitMode fitmode = Configuration::getConfiguration().getFitMode();
+		switch (fitmode)
 		{
-			content->resize(currentPage->width(),currentPage->height());
+			case YACReader::FitMode::FullRes:
+				pagefit=currentPage->size();
+				break;
+			case YACReader::FitMode::ToWidth:
+				pagefit=currentPage->size();
+				pagefit.scale(width(), 0, Qt::KeepAspectRatioByExpanding);
+				break;
+			case YACReader::FitMode::ToHeight:
+				pagefit=currentPage->size();
+				pagefit.scale(0, height(), Qt::KeepAspectRatioByExpanding);
+				break;
+			//if everything fails showing the full page is a good idea
+			case YACReader::FitMode::FullPage:
+			default:
+				pagefit=currentPage->size();
+				pagefit.scale(size(), Qt::KeepAspectRatio);
+				break;
 		}
-		else
-		{
-			float aspectRatio = (float)currentPage->width()/currentPage->height();
-			//Fit to width
-			if(Configuration::getConfiguration().getAdjustToWidth())
-			{
-				adjustToWidthRatio = Configuration::getConfiguration().getFitToWidthRatio();
-				if(static_cast<int>(width()*adjustToWidthRatio/aspectRatio)<height())
-					if(static_cast<int>(height()*aspectRatio)>width())
-						content->resize(width(),static_cast<int>(width()/aspectRatio));
-					else
-						content->resize(static_cast<int>(height()*aspectRatio),height());
-				else
-					content->resize(width()*adjustToWidthRatio,static_cast<int>(width()*adjustToWidthRatio/aspectRatio));
-			}
-			//Fit to height or fullsize/custom size
-			else
-			{
-				if(static_cast<int>(height()*aspectRatio)>width()) //page width exceeds window width
-					content->resize(width(),static_cast<int>(width()/aspectRatio));
-				else
-					content->resize(static_cast<int>(height()*aspectRatio),height());
-			}
-		}
-
+	//apply scaling
+	content->resize(pagefit);
+	
+	//TODO: updtateContentSize should only scale the pixmap once
         if(devicePixelRatio()>1)//only in retina display
         {
             QPixmap page = currentPage->scaled(content->width()*devicePixelRatio(), content->height()*devicePixelRatio(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
