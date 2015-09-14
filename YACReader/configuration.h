@@ -60,14 +60,24 @@ using namespace YACReader;
 		void setGotoSlideSize(const QSize & gss) { settings->setValue(GO_TO_FLOW_SIZE,gss);}
 		float getZoomLevel() { return settings->value(ZOOM_LEVEL).toFloat();}
 		void setZoomLevel(float zl) { settings->setValue(ZOOM_LEVEL,zl);}
+		
+		//Unified enum based fitmode
+		YACReader::FitMode getFitMode() { return static_cast<YACReader::FitMode>(settings->value(FITMODE).toInt()); }
+		void setFitMode ( YACReader::FitMode fitMode ){ settings->setValue(FITMODE, static_cast<int>(fitMode)); }
+		
+		//Old fitmodes
 		bool getAdjustToWidth() {return settings->value(FIT).toBool();}
 		void setAdjustToWidth(bool atw=true) {settings->setValue(FIT,atw);}
+		float getFitToWidthRatio(){return settings->value(FIT_TO_WIDTH_RATIO).toFloat();}
+		void setFitToWidthRatio(float r){settings->setValue(FIT_TO_WIDTH_RATIO,r);}
+		bool getAdjustToFullSize(){return settings->value(ADJUST_TO_FULL_SIZE).toBool();}
+		void setAdjustToFullSize(bool b){settings->setValue(ADJUST_TO_FULL_SIZE,b);}
+		
 		FlowType getFlowType(){return (FlowType)settings->value(FLOW_TYPE_SW).toInt();}
 		void setFlowType(FlowType type){settings->setValue(FLOW_TYPE_SW,type);}
 		bool getFullScreen(){return settings->value(FULLSCREEN).toBool();}
 		void setFullScreen(bool f){settings->setValue(FULLSCREEN,f);}
-		float getFitToWidthRatio(){return settings->value(FIT_TO_WIDTH_RATIO).toFloat();}
-		void setFitToWidthRatio(float r){settings->setValue(FIT_TO_WIDTH_RATIO,r);}
+		
 		QPoint getPos(){return settings->value(Y_WINDOW_POS).toPoint();}
 		void setPos(QPoint p){settings->setValue(Y_WINDOW_POS,p);}
 		QSize getSize(){return settings->value(Y_WINDOW_SIZE).toSize();}
@@ -78,8 +88,7 @@ using namespace YACReader;
 		void setDoublePage(bool b){settings->setValue(DOUBLE_PAGE,b);}
 		bool getDoubleMangaPage(){return settings->value(DOUBLE_MANGA_PAGE).toBool();}
 		void setDoubleMangaPage(bool b){settings->setValue(DOUBLE_MANGA_PAGE,b);}
-		bool getAdjustToFullSize(){return settings->value(ADJUST_TO_FULL_SIZE).toBool();}
-		void setAdjustToFullSize(bool b){settings->setValue(ADJUST_TO_FULL_SIZE,b);}
+		
 		QColor getBackgroundColor(){return settings->value(BACKGROUND_COLOR).value<QColor>();}
 		void setBackgroundColor(const QColor& color){settings->value(BACKGROUND_COLOR,color);}
 		bool getAlwaysOnTop(){return settings->value(ALWAYS_ON_TOP).toBool();}
