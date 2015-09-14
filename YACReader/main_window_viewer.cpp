@@ -81,7 +81,7 @@ MainWindowViewer::~MainWindowViewer()
 	delete viewer;
 	delete had;
 
-	delete sliderAction;
+	//delete sliderAction;
 	delete openAction;
 	delete openFolderAction;
 	delete saveImageAction;
@@ -160,7 +160,6 @@ void MainWindowViewer::setupUI()
 
 	optionsDialog = new OptionsDialog(this);
 	connect(optionsDialog,SIGNAL(accepted()),viewer,SLOT(updateOptions()));
-	connect(optionsDialog,SIGNAL(fitToWidthRatioChanged(float)),viewer,SLOT(updateFitToWidthRatio(float)));
 	connect(optionsDialog, SIGNAL(optionsChanged()),this,SLOT(reloadOptions()));
 	connect(optionsDialog,SIGNAL(changedFilters(int,int,int)),viewer,SLOT(updateFilters(int,int,int)));
 
@@ -261,7 +260,6 @@ void MainWindowViewer::createActions()
     adjustHeightAction->setIcon(QIcon(":/images/viewer_toolbar/toHeight.png"));
 	//adjustWidth->setCheckable(true);
     adjustHeightAction->setDisabled(true);
-    adjustHeightAction->setChecked(Configuration::getConfiguration().getAdjustToWidth());
     adjustHeightAction->setToolTip(tr("Fit image to height"));
 	//adjustWidth->setIcon(QIcon(":/images/fitWidth.png"));
     adjustHeightAction->setData(ADJUST_HEIGHT_ACTION_Y);
@@ -272,7 +270,6 @@ void MainWindowViewer::createActions()
     adjustWidthAction->setIcon(QIcon(":/images/viewer_toolbar/toWidth.png"));
 	//adjustWidth->setCheckable(true);
     adjustWidthAction->setDisabled(true);
-    adjustWidthAction->setChecked(Configuration::getConfiguration().getAdjustToWidth());
     adjustWidthAction->setToolTip(tr("Fit image to width"));
 	//adjustWidth->setIcon(QIcon(":/images/fitWidth.png"));
     adjustWidthAction->setData(ADJUST_WIDTH_ACTION_Y);
@@ -407,7 +404,6 @@ void MainWindowViewer::createActions()
 	adjustToFullSizeAction->setIcon(QIcon(":/images/viewer_toolbar/full.png"));
 	adjustToFullSizeAction->setCheckable(false);
 	adjustToFullSizeAction->setDisabled(true);
-	adjustToFullSizeAction->setChecked(Configuration::getConfiguration().getAdjustToFullSize());
     adjustToFullSizeAction->setData(ADJUST_TO_FULL_SIZE_ACTION_Y);
     adjustToFullSizeAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADJUST_TO_FULL_SIZE_ACTION_Y));
 	connect(adjustToFullSizeAction,SIGNAL(triggered()),this,SLOT(adjustToFullSizeSwitch()));
@@ -492,38 +488,38 @@ void MainWindowViewer::createToolBars()
 
 #ifdef Q_OS_MAC
 
-    sliderAction = new YACReaderSlider(this);
-    sliderAction->hide();
+    //sliderAction = new YACReaderSlider(this);
+    //sliderAction->hide();
 
     comicToolBar->addAction(adjustWidthAction);
 
-    QAction * action = comicToolBar->addFitToWidthSlider(adjustWidthAction);
+    //QAction * action = comicToolBar->addFitToWidthSlider(adjustWidthAction);
 
-    connect(action,SIGNAL(triggered()),this,SLOT(toggleFitToWidthSlider()));
+    //connect(action,SIGNAL(triggered()),this,SLOT(toggleFitToWidthSlider()));
 
 #else
-	QMenu * menu = new QMenu();
+	//QMenu * menu = new QMenu();
 
-    sliderAction = new YACReaderSliderAction(this);
+    //sliderAction = new YACReaderSliderAction(this);
 
-	menu->setAutoFillBackground(false);
-	menu->setStyleSheet(" QMenu {background:transparent; border: 0px;padding: 0px; }"
-		);
-	menu->addAction(sliderAction);
-		QToolButton * tb2 = new QToolButton();
-    tb2->addAction(adjustWidthAction);
-	tb2->setMenu(menu);
+	//menu->setAutoFillBackground(false);
+	//menu->setStyleSheet(" QMenu {background:transparent; border: 0px;padding: 0px; }"
+	//	);
+	//menu->addAction(sliderAction);
+		//QToolButton * tb2 = new QToolButton();
+    //tb2->addAction(adjustWidthAction);
+	//tb2->setMenu(menu);
 
 	//tb2->addAction();
-	tb2->setPopupMode(QToolButton::MenuButtonPopup);
-    tb2->setDefaultAction(adjustWidthAction);
-    comicToolBar->addWidget(tb2);
+	//tb2->setPopupMode(QToolButton::MenuButtonPopup);
+    //tb2->setDefaultAction(adjustWidthAction);
+    //comicToolBar->addWidget(tb2);
 #endif
 
-    connect(sliderAction,SIGNAL(fitToWidthRatioChanged(float)),viewer,SLOT(updateFitToWidthRatio(float)));
-    connect(optionsDialog,SIGNAL(fitToWidthRatioChanged(float)),sliderAction,SLOT(updateFitToWidthRatio(float)));
-
-    comicToolBar->addAction(adjustHeightAction);
+    //connect(sliderAction,SIGNAL(fitToWidthRatioChanged(float)),viewer,SLOT(updateFitToWidthRatio(float)));
+    //connect(optionsDialog,SIGNAL(fitToWidthRatioChanged(float)),sliderAction,SLOT(updateFitToWidthRatio(float)));
+	comicToolBar->addAction(adjustWidthAction);
+	comicToolBar->addAction(adjustHeightAction);
 	comicToolBar->addAction(adjustToFullSizeAction);
 	comicToolBar->addAction(leftRotationAction);
 	comicToolBar->addAction(rightRotationAction);
@@ -881,11 +877,6 @@ void MainWindowViewer::keyPressEvent(QKeyEvent *event)
         toggleToolBars();
         event->accept();
     }
-    else if (key == ShortcutsManager::getShortcutsManager().getShortcut(CHANGE_FIT_ACTION_Y))
-    {
-        changeFit();
-        event->accept();
-    }
     else
         QWidget::keyPressEvent(event);
 }
@@ -1149,6 +1140,7 @@ void MainWindowViewer::setUpShortcutsManagement()
 }
 
 #ifdef Q_OS_MAC
+/*
 void MainWindowViewer::toggleFitToWidthSlider()
 {
     if(sliderAction->isVisible())
@@ -1160,15 +1152,8 @@ void MainWindowViewer::toggleFitToWidthSlider()
         sliderAction->move(250,0);
         sliderAction->show();
     }
-}
+}*/
 #endif
-
-void MainWindowViewer::changeFit()
-{
-	Configuration & conf = Configuration::getConfiguration();
-	conf.setAdjustToWidth(!conf.getAdjustToWidth());
-	viewer->updatePage();
-}
 
 void MainWindowViewer::newVersion()
 {

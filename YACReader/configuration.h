@@ -66,12 +66,14 @@ using namespace YACReader;
 		void setFitMode ( YACReader::FitMode fitMode ){ settings->setValue(FITMODE, static_cast<int>(fitMode)); }
 		
 		//Old fitmodes
+		/*
 		bool getAdjustToWidth() {return settings->value(FIT).toBool();}
 		void setAdjustToWidth(bool atw=true) {settings->setValue(FIT,atw);}
 		float getFitToWidthRatio(){return settings->value(FIT_TO_WIDTH_RATIO).toFloat();}
 		void setFitToWidthRatio(float r){settings->setValue(FIT_TO_WIDTH_RATIO,r);}
 		bool getAdjustToFullSize(){return settings->value(ADJUST_TO_FULL_SIZE).toBool();}
 		void setAdjustToFullSize(bool b){settings->setValue(ADJUST_TO_FULL_SIZE,b);}
+		*/
 		
 		FlowType getFlowType(){return (FlowType)settings->value(FLOW_TYPE_SW).toInt();}
 		void setFlowType(FlowType type){settings->setValue(FLOW_TYPE_SW,type);}

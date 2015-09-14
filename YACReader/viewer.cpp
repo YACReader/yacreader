@@ -885,13 +885,6 @@ void Viewer::mouseReleaseEvent ( QMouseEvent * event )
 	event->accept();
 }
 
-void Viewer::updateFitToWidthRatio(float ratio)
-{
-	Configuration::getConfiguration().setAdjustToWidth(true);
-	adjustToWidthRatio = ratio;
-	updateContentSize();
-}
-
 void Viewer::updateConfig(QSettings * settings)
 {
 	goToFlow->updateConfig(settings);

@@ -80,7 +80,6 @@ class NotificationsLabelWidget;
 virtual void mousePressEvent ( QMouseEvent * event );
 virtual void mouseReleaseEvent ( QMouseEvent * event );
 		void updateBackgroundColor(const QColor & color);
-		void updateFitToWidthRatio(float ratio);
 		void updateConfig(QSettings * settings);
 		void showMessageErrorOpening();
 		void showMessageErrorOpening(QString);
