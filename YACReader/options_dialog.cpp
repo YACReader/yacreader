@@ -55,7 +55,7 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 	connect(pathFindButton,SIGNAL(clicked()),this,SLOT(findFolder()));
 
 	//fitToWidthRatioLabel = new QLabel(tr("Page width stretch"),this);
-	QGroupBox *fitBox = new QGroupBox(tr("Page width stretch"));
+	/*QGroupBox *fitBox = new QGroupBox(tr("Page width stretch"));
 	fitToWidthRatioS = new QSlider(this);
 	fitToWidthRatioS->setMinimum(50);
 	fitToWidthRatioS->setMaximum(100);
@@ -64,7 +64,7 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 	//connect(fitToWidthRatioS,SIGNAL(valueChanged(int)),this,SLOT(fitToWidthRatio(int)));
 	QHBoxLayout * fitLayout = new QHBoxLayout;
 	fitLayout->addWidget(fitToWidthRatioS);
-	fitBox->setLayout(fitLayout);
+	fitBox->setLayout(fitLayout);*/
 
 	QHBoxLayout * colorSelection = new QHBoxLayout;
 	backgroundColor = new QLabel();
@@ -113,7 +113,7 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 
 	layoutGeneral->addWidget(pathBox);
 	layoutGeneral->addWidget(slideSizeBox);
-	layoutGeneral->addWidget(fitBox);
+	//layoutGeneral->addWidget(fitBox);
 	layoutGeneral->addWidget(colorBox);
     layoutGeneral->addWidget(shortcutsBox);
 	layoutGeneral->addStretch();
@@ -190,7 +190,7 @@ void OptionsDialog::saveOptions()
 	settings->setValue(PATH,pathEdit->text());
 
 	settings->setValue(BACKGROUND_COLOR,colorDialog->currentColor());
-	settings->setValue(FIT_TO_WIDTH_RATIO,fitToWidthRatioS->sliderPosition()/100.0);
+	//settings->setValue(FIT_TO_WIDTH_RATIO,fitToWidthRatioS->sliderPosition()/100.0);
 
 	YACReaderOptionsDialog::saveOptions();
 }
@@ -219,7 +219,7 @@ void OptionsDialog::restoreOptions(QSettings * settings)
 	pathEdit->setText(settings->value(PATH).toString());
 
 	updateColor(settings->value(BACKGROUND_COLOR).value<QColor>());
-	fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
+	//fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
 
 	brightnessS->setValue(settings->value(BRIGHTNESS,0).toInt());
 	contrastS->setValue(settings->value(CONTRAST,100).toInt());
@@ -240,11 +240,11 @@ void OptionsDialog::updateColor(const QColor & color)
 	emit(changedOptions());
 }
 
-void OptionsDialog::fitToWidthRatio(int value)
+/*void OptionsDialog::fitToWidthRatio(int value)
 {
 	Configuration::getConfiguration().setFitToWidthRatio(value/100.0);
 	emit(fitToWidthRatioChanged(value/100.0));
-}
+}*/
 
 void OptionsDialog::brightnessChanged(int value)
 {
@@ -287,9 +287,9 @@ void OptionsDialog::show()
 {
 	//TODO solucionar el tema de las settings, esto sólo debería aparecer en una única línea de código
 	QSettings *s = new QSettings(YACReader::getSettingsPath()+"/YACReader.ini",QSettings::IniFormat);
-	fitToWidthRatioS->disconnect();
-	fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
-	connect(fitToWidthRatioS,SIGNAL(valueChanged(int)),this,SLOT(fitToWidthRatio(int)));
+	//fitToWidthRatioS->disconnect();
+	//fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
+	//connect(fitToWidthRatioS,SIGNAL(valueChanged(int)),this,SLOT(fitToWidthRatio(int)));
 	QDialog::show();
 	delete s;
 }

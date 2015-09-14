@@ -38,7 +38,6 @@ class EditShortcutsDialog;
 		void toggleToolBars();
 		void hideToolBars();
 		void showToolBars();
-		void changeFit();
 		void enableActions();
 		void disableActions();
 		void toggleFullScreen();
