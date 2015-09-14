@@ -132,6 +132,14 @@ static const QString YACReaderLibrarSubReadingListMimeDataFormat = "application/
      YLight,
      YDark
  };
+ 
+ enum FitMode{
+	ToWidth=0x01,
+	ToHeight=0x02,
+	FullRes=0x03,
+	FullPage=0x04//,
+	//Text=0x05
+ };
 
 QString getSettingsPath();
 void addSperator(QWidget * w);
