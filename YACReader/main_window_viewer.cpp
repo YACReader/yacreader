@@ -405,7 +405,7 @@ void MainWindowViewer::createActions()
 
 	adjustToFullSizeAction = new QAction(tr("Show full size"),this);
 	adjustToFullSizeAction->setIcon(QIcon(":/images/viewer_toolbar/full.png"));
-	adjustToFullSizeAction->setCheckable(true);
+	adjustToFullSizeAction->setCheckable(false);
 	adjustToFullSizeAction->setDisabled(true);
 	adjustToFullSizeAction->setChecked(Configuration::getConfiguration().getAdjustToFullSize());
     adjustToFullSizeAction->setData(ADJUST_TO_FULL_SIZE_ACTION_Y);
@@ -956,21 +956,13 @@ void MainWindowViewer::showToolBars()
 }
 void MainWindowViewer::fitToWidth()
 {
-	Configuration & conf = Configuration::getConfiguration();
-	if(!conf.getAdjustToWidth())
-	{
-		conf.setAdjustToWidth(true);
-		viewer->updatePage();
-	}
+	Configuration::getConfiguration().setFitMode(YACReader::FitMode::ToWidth);
+	viewer->updatePage();
 }
 void MainWindowViewer::fitToHeight()
 {
-	Configuration & conf = Configuration::getConfiguration();
-	if(conf.getAdjustToWidth())
-	{
-		conf.setAdjustToWidth(false);
-		viewer->updatePage();
-	}
+	Configuration::getConfiguration().setFitMode(YACReader::FitMode::ToHeight);
+	viewer->updatePage();
 }
 
 void MainWindowViewer::checkNewVersion()
@@ -1383,7 +1375,7 @@ void MainWindowViewer::alwaysOnTopSwitch()
 
 void MainWindowViewer::adjustToFullSizeSwitch()
 {
-	Configuration::getConfiguration().setAdjustToFullSize(!Configuration::getConfiguration().getAdjustToFullSize());
+	Configuration::getConfiguration().setFitMode(YACReader::FitMode::FullRes);
 	viewer->updatePage();
 }
 
