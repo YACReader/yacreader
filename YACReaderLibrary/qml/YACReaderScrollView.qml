@@ -274,8 +274,6 @@ FocusScope {
 
             onVerticalValueChanged: {
                 if (!verticalRecursionGuard) {
-                        //console.log(verticalDelta);
-
                     if (flickableItem.contentY < flickThreshold && verticalDelta > speedThreshold) {
                         flickableItem.flick(ignored, Math.min(maxFlick, acceleration * verticalDelta))
                     } else if (flickableItem.contentY > flickableItem.contentHeight
@@ -285,16 +283,13 @@ FocusScope {
                         var absDelta = Math.abs(verticalDelta);
 
                         if(verticalDelta < 0)
-                            flickableItem.contentY = verticalValue + Math.min(98,0.93*absDelta+4.5);
+                            flickableItem.contentY = Math.min(verticalMaximumValue, verticalValue + Math.min(98,0.93*absDelta+4.5));
                         else
-                            flickableItem.contentY = verticalValue - Math.min(98,0.93*absDelta+4.5);
-}
-
-
-                        //TODO: snap to row
-
+                            flickableItem.contentY = Math.max(0, verticalValue - Math.min(98,0.93*absDelta+4.5));
                     }
 
+                    flickableItem.contentY = Math.min(verticalMaximumValue, Math.max(0, flickableItem.contentY));
+                }
             }
 
             onHorizontalValueChanged: {
