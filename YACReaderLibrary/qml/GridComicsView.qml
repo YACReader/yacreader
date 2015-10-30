@@ -290,7 +290,7 @@ Rectangle {
         }
     }
 
-    YACReaderScrollView{
+    ScrollView{
         id: scrollView
         anchors.fill: parent
         anchors.margins: 0
