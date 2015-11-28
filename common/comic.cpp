@@ -15,9 +15,14 @@
 
 #include "QsLog.h"
 
+enum YACReaderPageSortingMode
+{
+    YACReaderNumericalSorting,
+    YACReaderHeuristicSorting,
+    YACReaderAlphabeticalSorting
+};
 
-
-void comic_pages_sort(QList<QString> & pageNames, bool fixDoublePagesSorting);
+void comic_pages_sort(QList<QString> & pageNames, YACReaderPageSortingMode sortingMode);
 
 
 
@@ -518,8 +523,8 @@ void FileComic::process()
 
 	_cfi=0;
 
-    //TODO, add a setting for fixing bad named double page files, so the user can have control over it.
-    comic_pages_sort(_fileNames, true);
+    //TODO, add a setting for choosing the type of page sorting used.
+    comic_pages_sort(_fileNames, YACReaderHeuristicSorting);
 
 	if(_firstPage == -1)
 		_firstPage = bm->getLastPage();
@@ -967,12 +972,18 @@ QList<QString> merge_pages(QList<QString> & singlePageNames, QList<QString> & do
 }
 
 
-void comic_pages_sort(QList<QString> & pageNames, bool fixDoublePagesSorting)
+void comic_pages_sort(QList<QString> & pageNames, YACReaderPageSortingMode sortingMode)
 {
-    std::sort(pageNames.begin(), pageNames.end(), naturalSortLessThanCI);
-
-    if(fixDoublePagesSorting)
+    switch(sortingMode)
     {
+    case YACReaderNumericalSorting:
+        std::sort(pageNames.begin(), pageNames.end(), naturalSortLessThanCI);
+        break;
+
+    case YACReaderHeuristicSorting:
+    {
+        std::sort(pageNames.begin(), pageNames.end(), naturalSortLessThanCI);
+
         QList<QString> singlePageNames;
         QList<QString> doublePageNames;
 
@@ -980,8 +991,15 @@ void comic_pages_sort(QList<QString> & pageNames, bool fixDoublePagesSorting)
 
         if(doublePageNames.length() > 0)
         {
-           pageNames = merge_pages(singlePageNames, doublePageNames);
+            pageNames = merge_pages(singlePageNames, doublePageNames);
         }
+
+        break;
+    }
+
+    case YACReaderAlphabeticalSorting:
+        std::sort(pageNames.begin(), pageNames.end());
+        break;
     }
 }
 
