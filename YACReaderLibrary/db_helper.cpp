@@ -395,15 +395,17 @@ void DBHelper::updateReadingRemoteProgress(const ComicInfo &comicInfo, QSqlDatab
 {
     QSqlQuery updateComicInfo(db);
     updateComicInfo.prepare("UPDATE comic_info SET "
-        "read = :read, "
-        "currentPage = :currentPage, "
-        "hasBeenOpened = :hasBeenOpened"
-        " WHERE id = :id ");
+                            "read = :read, "
+                            "currentPage = :currentPage, "
+                            "hasBeenOpened = :hasBeenOpened, "
+                            "rating = :rating"
+                            " WHERE id = :id ");
 
     updateComicInfo.bindValue(":read", comicInfo.read?1:0);
     updateComicInfo.bindValue(":currentPage", comicInfo.currentPage);
     updateComicInfo.bindValue(":hasBeenOpened", comicInfo.hasBeenOpened?1:0);
     updateComicInfo.bindValue(":id", comicInfo.id);
+    updateComicInfo.bindValue(":rating", comicInfo.rating);
     updateComicInfo.exec();
 }
 
@@ -417,10 +419,18 @@ void DBHelper::updateFromRemoteClient(qulonglong libraryId,const ComicInfo & com
 
     if(comic.info.hash == comicInfo.hash)
     {
-        if(comic.info.currentPage == comic.info.numPages)
-            comic.info.read = true;
-        comic.info.currentPage = comicInfo.currentPage;
-        comic.info.hasBeenOpened = true;
+        if(comicInfo.currentPage > 0)
+        {
+            if(comic.info.currentPage == comic.info.numPages)
+                comic.info.read = true;
+
+            comic.info.currentPage = comicInfo.currentPage;
+
+            comic.info.hasBeenOpened = true;
+        }
+
+        if(comicInfo.rating > 0)
+            comic.info.rating = comicInfo.rating;
 
         DBHelper::updateReadingRemoteProgress(comic.info,db);
     }
