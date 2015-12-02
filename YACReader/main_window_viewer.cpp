@@ -407,6 +407,20 @@ void MainWindowViewer::createActions()
     adjustToFullSizeAction->setData(ADJUST_TO_FULL_SIZE_ACTION_Y);
     adjustToFullSizeAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADJUST_TO_FULL_SIZE_ACTION_Y));
 	connect(adjustToFullSizeAction,SIGNAL(triggered()),this,SLOT(adjustToFullSizeSwitch()));
+	
+	increasePageZoomAction = new QAction(tr("Zoom+"),this);
+	increasePageZoomAction->setDisabled(true);
+    increasePageZoomAction->setData(ZOOM_PLUS_ACTION_Y);
+    increasePageZoomAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_PLUS_ACTION_Y));
+	
+	connect(increasePageZoomAction,SIGNAL(triggered()),this,SLOT(increasePageZoomLevel()));
+	
+	decreasePageZoomAction = new QAction(tr("Zoom-"),this);
+	decreasePageZoomAction->setDisabled(true);
+    decreasePageZoomAction->setData(ZOOM_MINUS_ACTION_Y);
+    decreasePageZoomAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_MINUS_ACTION_Y));
+
+	connect(decreasePageZoomAction,SIGNAL(triggered()),this,SLOT(decreasePageZoomLevel()));
 
 	showFlowAction = new QAction(tr("Show go to flow"),this);
 	showFlowAction->setIcon(QIcon(":/images/viewer_toolbar/flow.png"));
@@ -578,6 +592,8 @@ void MainWindowViewer::createToolBars()
     YACReader::addSperator(viewer);
 
     viewer->addAction(showMagnifyingGlassAction);
+    viewer->addAction(increasePageZoomAction);
+    viewer->addAction(decreasePageZoomAction);
     YACReader::addSperator(viewer);
 
     viewer->addAction(setBookmarkAction);
@@ -820,6 +836,8 @@ void MainWindowViewer::enableActions()
 	doublePageAction->setDisabled(false);
 	doubleMangaPageAction->setDisabled(false);
 	adjustToFullSizeAction->setDisabled(false);
+	increasePageZoomAction->setDisabled(false);
+	decreasePageZoomAction->setDisabled(false);
 	//setBookmark->setDisabled(false);
     showBookmarksAction->setDisabled(false);
     showInfoAction->setDisabled(false); //TODO enable goTo and showInfo (or update) when numPages emited
@@ -948,11 +966,13 @@ void MainWindowViewer::showToolBars()
 void MainWindowViewer::fitToWidth()
 {
 	Configuration::getConfiguration().setFitMode(YACReader::FitMode::ToWidth);
+	viewer->setZoomFactor(1);
 	viewer->updatePage();
 }
 void MainWindowViewer::fitToHeight()
 {
 	Configuration::getConfiguration().setFitMode(YACReader::FitMode::ToHeight);
+	viewer->setZoomFactor(1);
 	viewer->updatePage();
 }
 
@@ -1081,7 +1101,9 @@ void MainWindowViewer::setUpShortcutsManagement()
                                          << rightRotationAction
                                          << doublePageAction
 					 << doubleMangaPageAction
-                                         << adjustToFullSizeAction);
+                                         << adjustToFullSizeAction
+					 << increasePageZoomAction
+					 << decreasePageZoomAction);
 
     allActions << tmpList;
 
@@ -1361,7 +1383,18 @@ void MainWindowViewer::alwaysOnTopSwitch()
 void MainWindowViewer::adjustToFullSizeSwitch()
 {
 	Configuration::getConfiguration().setFitMode(YACReader::FitMode::FullRes);
+	viewer->setZoomFactor(1);
 	viewer->updatePage();
+}
+
+void MainWindowViewer::increasePageZoomLevel()
+{
+	viewer->increaseZoomFactor();
+}
+
+void MainWindowViewer::decreasePageZoomLevel()
+{
+	viewer->decreaseZoomFactor();
 }
 
 void MainWindowViewer::sendComic()

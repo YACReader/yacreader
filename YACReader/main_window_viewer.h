@@ -54,6 +54,8 @@ class EditShortcutsDialog;
         void openFolderFromPath(QString pathFile, QString atFileName);
 		void alwaysOnTopSwitch();
 		void adjustToFullSizeSwitch();
+		void increasePageZoomLevel();
+		void decreasePageZoomLevel();
 		void reloadOptions();
 		void fitToWidth();
 		void fitToHeight();
@@ -124,6 +126,8 @@ class EditShortcutsDialog;
 		QAction *showDictionaryAction;
 		QAction *alwaysOnTopAction;
 		QAction *adjustToFullSizeAction;
+		QAction *increasePageZoomAction;
+		QAction *decreasePageZoomAction;
 		QAction *showFlowAction;
 
         QAction *showEditShortcutsAction;
