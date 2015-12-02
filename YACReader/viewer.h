@@ -37,6 +37,11 @@ class NotificationsLabelWidget;
 	public:
 		bool fullscreen; //TODO, change by the right use of windowState();
 	public slots:
+		void increaseZoomFactor();
+		void decreaseZoomFactor();
+		void setZoomFactor(qreal);
+		qreal getZoomFactor();
+	
 		void prepareForOpening();
 		void open(QString pathFile, int atPage = -1);
 		void open(QString pathFile, const ComicDB & comic);
