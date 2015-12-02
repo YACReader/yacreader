@@ -96,6 +96,9 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		bool information;
 		bool doublePage;
 		bool doubleMangaPage;
+	
+		qreal zoom;
+	
 		PageLabelWidget * informationLabel;
 		//QTimer * scroller;
 		QPropertyAnimation * verticalScroller;

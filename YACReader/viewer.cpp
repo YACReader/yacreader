@@ -38,7 +38,8 @@ restoreMagnifyingGlass(false),
 drag(false),
 numScrollSteps(22),
 shouldOpenNext(false),
-shouldOpenPrevious(false)
+shouldOpenPrevious(false),
+zoom(1)
 {
 	translator = new YACReaderTranslator(this);
 	translator->hide();
@@ -350,16 +351,21 @@ void Viewer::updateContentSize()
 				pagefit.scale(size(), Qt::KeepAspectRatio);
 				break;
 		}
-	//apply scaling
-	content->resize(pagefit);
 	
-	//TODO: updtateContentSize should only scale the pixmap once
-        if(devicePixelRatio()>1)//only in retina display
-        {
-            QPixmap page = currentPage->scaled(content->width()*devicePixelRatio(), content->height()*devicePixelRatio(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-            page.setDevicePixelRatio(devicePixelRatio());
-            content->setPixmap(page);
-        }
+		if(zoom != 1)
+		{	
+			pagefit.scale(pagefit.width()*zoom, 0, Qt::KeepAspectRatioByExpanding);
+		}
+		//apply scaling
+		content->resize(pagefit);
+	
+		//TODO: updtateContentSize should only scale the pixmap once
+		if(devicePixelRatio()>1)//only in retina display
+		{
+			QPixmap page = currentPage->scaled(content->width()*devicePixelRatio(), content->height()*devicePixelRatio(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+			page.setDevicePixelRatio(devicePixelRatio());
+			content->setPixmap(page);
+		}
 
 		emit backgroundChanges();
 	}
