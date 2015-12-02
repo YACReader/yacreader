@@ -372,6 +372,45 @@ void Viewer::updateContentSize()
 	content->update(); //TODO, it shouldn't be neccesary
 }
 
+void Viewer::increaseZoomFactor()
+{
+	zoom += 0.1;
+	if (zoom > 5)
+	{
+		zoom = 5;
+	}
+	updateContentSize();
+	notificationsLabel->setText(QString::number(getZoomFactor()*100)+"%");
+	notificationsLabel->flash();
+}
+void Viewer::decreaseZoomFactor()
+{
+	zoom -= 0.1;
+	if (zoom < 0.1)
+		zoom = 0.1;
+	updateContentSize();
+	notificationsLabel->setText(QString::number(getZoomFactor()*100)+"%");
+	notificationsLabel->flash();
+}
+
+qreal Viewer::getZoomFactor()
+{
+	//this function is a placeholder for future refactoring work
+	return zoom;
+}
+
+void Viewer::setZoomFactor(qreal z)
+{
+	//this function is mostly used to reset the zoom after a fitmode switch
+	if (z > 5)
+		zoom = 5;
+	else if (z < 0.1)
+		zoom = 0.1;
+	else
+		zoom = z;
+//	updateContentSize()
+}
+
 void Viewer::updateVerticalScrollBar()
 {
 	if(direction > 0)
