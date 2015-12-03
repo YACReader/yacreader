@@ -109,6 +109,7 @@ MainWindowViewer::~MainWindowViewer()
 	delete showDictionaryAction;
 	delete alwaysOnTopAction;
 	delete adjustToFullSizeAction;
+	delete fitToPageAction;
 	delete showFlowAction;
 
 }
@@ -410,6 +411,12 @@ void MainWindowViewer::createActions()
     adjustToFullSizeAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADJUST_TO_FULL_SIZE_ACTION_Y));
 	connect(adjustToFullSizeAction,SIGNAL(triggered()),this,SLOT(adjustToFullSizeSwitch()));
 	
+	fitToPageAction = new QAction(tr("Fit to page"),this);
+	fitToPageAction->setDisabled(true);
+    fitToPageAction->setData(FIT_TO_PAGE_ACTION_Y);
+    fitToPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(FIT_TO_PAGE_ACTION_Y));
+	connect(fitToPageAction,SIGNAL(triggered()),this,SLOT(fitToPageSwitch()));
+	
 	increasePageZoomAction = new QAction(tr("Zoom+"),this);
 	increasePageZoomAction->setDisabled(true);
     increasePageZoomAction->setData(ZOOM_PLUS_ACTION_Y);
@@ -537,6 +544,7 @@ void MainWindowViewer::createToolBars()
 	comicToolBar->addAction(adjustWidthAction);
 	comicToolBar->addAction(adjustHeightAction);
 	comicToolBar->addAction(adjustToFullSizeAction);
+	comicToolBar->addAction(fitToPageAction);
 	comicToolBar->addAction(leftRotationAction);
 	comicToolBar->addAction(rightRotationAction);
 	comicToolBar->addAction(doublePageAction);
@@ -587,6 +595,7 @@ void MainWindowViewer::createToolBars()
     viewer->addAction(adjustHeightAction);
     viewer->addAction(adjustWidthAction);
 	viewer->addAction(adjustToFullSizeAction);
+	viewer->addAction(fitToPageAction);
 	viewer->addAction(leftRotationAction);
 	viewer->addAction(rightRotationAction);
     viewer->addAction(doublePageAction);
@@ -838,6 +847,8 @@ void MainWindowViewer::enableActions()
 	doublePageAction->setDisabled(false);
 	doubleMangaPageAction->setDisabled(false);
 	adjustToFullSizeAction->setDisabled(false);
+	adjustToFullSizeAction->setDisabled(false);
+	fitToPageAction->setDisabled(false);
 	increasePageZoomAction->setDisabled(false);
 	decreasePageZoomAction->setDisabled(false);
 	//setBookmark->setDisabled(false);
@@ -1385,6 +1396,13 @@ void MainWindowViewer::alwaysOnTopSwitch()
 void MainWindowViewer::adjustToFullSizeSwitch()
 {
 	Configuration::getConfiguration().setFitMode(YACReader::FitMode::FullRes);
+	viewer->setZoomFactor(1);
+	viewer->updatePage();
+}
+
+void MainWindowViewer::fitToPageSwitch()
+{
+	Configuration::getConfiguration().setFitMode(YACReader::FitMode::FullPage);
 	viewer->setZoomFactor(1);
 	viewer->updatePage();
 }
