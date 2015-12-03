@@ -95,6 +95,8 @@ MainWindowViewer::~MainWindowViewer()
 	delete rightRotationAction;
 	delete doublePageAction;
 	delete doubleMangaPageAction;
+	delete increasePageZoomAction;
+	delete decreasePageZoomAction;
     delete goToPageAction;
 	delete optionsAction;
 	delete helpAboutAction;
