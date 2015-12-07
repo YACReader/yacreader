@@ -160,6 +160,37 @@ void GridComicsView::setModel(ComicModel *model)
         ctxt->setContextProperty("dragManager", this);
         ctxt->setContextProperty("dropManager", this);
 
+
+        //backgroun image configuration
+        bool useBackgroundImage = settings->value(USE_BACKGROUND_IMAGE_IN_GRID_VIEW, true).toBool();
+
+        if(useBackgroundImage)
+        {
+            float opacity = settings->value(OPACITY_BACKGROUND_IMAGE_IN_GRID_VIEW, 0.2).toFloat();
+            float blurRadius = settings->value(BLUR_RADIUS_BACKGROUND_IMAGE_IN_GRID_VIEW, 75).toFloat();
+
+            ctxt->setContextProperty("backgroundImage", this->model->data(this->model->index(0, 0), ComicModel::CoverPathRole));
+            ctxt->setContextProperty("backgroundBlurOpacity", opacity);
+            ctxt->setContextProperty("backgroundBlurRadius", blurRadius);
+            ctxt->setContextProperty("backgroundBlurVisible", true);
+        }
+        else
+        {
+            ctxt->setContextProperty("backgroundImage", QVariant());
+            ctxt->setContextProperty("backgroundBlurOpacity", 0);
+            ctxt->setContextProperty("backgroundBlurRadius", 0);
+            ctxt->setContextProperty("backgroundBlurVisible", false);
+        }
+
+
+#ifdef Q_OS_MAC
+    ctxt->setContextProperty("cellColor", useBackgroundImage?"#99FFFFFF":"#FFFFFF");
+    ctxt->setContextProperty("selectedColor", "#FFFFFF");
+#else
+    ctxt->setContextProperty("cellColor", useBackgroundImage?"#99212121":"#212121");
+    ctxt->setContextProperty("selectedColor", "#121212");
+#endif
+
         if(model->rowCount()>0)
             setCurrentIndex(model->index(0,0));
     }
