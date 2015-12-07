@@ -58,7 +58,7 @@ OptionsDialog::OptionsDialog(QWidget * parent)
     backgroundImageOpacitySlider = new QSlider(Qt::Horizontal);
     backgroundImageOpacitySlider->setRange(5,100);
 
-    blurLabel = new QLabel(tr("Opacity level"));
+    blurLabel = new QLabel(tr("Blur level"));
 
     backgroundImageBlurRadiusSlider = new QSlider(Qt::Horizontal);
     backgroundImageBlurRadiusSlider->setRange(0,100);
