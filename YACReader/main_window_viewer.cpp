@@ -412,6 +412,7 @@ void MainWindowViewer::createActions()
 	connect(adjustToFullSizeAction,SIGNAL(triggered()),this,SLOT(adjustToFullSizeSwitch()));
 	
 	fitToPageAction = new QAction(tr("Fit to page"),this);
+    fitToPageAction->setIcon(QIcon(":/images/viewer_toolbar/fitToPage.png"));
 	fitToPageAction->setDisabled(true);
     fitToPageAction->setData(FIT_TO_PAGE_ACTION_Y);
     fitToPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(FIT_TO_PAGE_ACTION_Y));
