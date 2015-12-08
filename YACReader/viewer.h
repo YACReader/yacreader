@@ -171,6 +171,7 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		void reset();
 		void openNextComic();
 		void openPreviousComic();
+        void zoomUpdated(float);
 	};
 
 #endif

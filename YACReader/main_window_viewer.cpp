@@ -539,6 +539,7 @@ void MainWindowViewer::createToolBars()
 
     connect(showZoomSliderlAction,SIGNAL(triggered()),this,SLOT(toggleFitToWidthSlider()));
     connect(zoomSliderAction, SIGNAL(zoomRatioChanged(float)),viewer,SLOT(updateZoomRatio(float)));
+    connect(viewer,SIGNAL(zoomUpdated(float)),zoomSliderAction,SLOT(updateZoomRatio(float)));
 #endif
 
 	comicToolBar->addAction(leftRotationAction);
