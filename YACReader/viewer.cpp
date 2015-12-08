@@ -382,6 +382,8 @@ void Viewer::increaseZoomFactor()
 	updateContentSize();
 	notificationsLabel->setText(QString::number(getZoomFactor()*100)+"%");
 	notificationsLabel->flash();
+
+    emit zoomUpdated(zoom);
 }
 void Viewer::decreaseZoomFactor()
 {
@@ -391,6 +393,8 @@ void Viewer::decreaseZoomFactor()
 	updateContentSize();
 	notificationsLabel->setText(QString::number(getZoomFactor()*100)+"%");
 	notificationsLabel->flash();
+
+    emit zoomUpdated(zoom);
 }
 
 qreal Viewer::getZoomFactor()
