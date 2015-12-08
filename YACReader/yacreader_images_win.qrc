@@ -25,5 +25,7 @@
     <file>../images/viewer_toolbar/toHeight.png</file>
     <file>../images/viewer_toolbar/toWidth.png</file>
     <file>../images/viewer_toolbar/translator.png</file>
+    <file>../images/viewer_toolbar/fitToPage.png</file>
+    <file>../images/viewer_toolbar/zoom.png</file>
   </qresource>
 </RCC>
