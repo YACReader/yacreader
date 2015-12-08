@@ -96,6 +96,7 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		void showIsCoverMessage();
 		void showIsLastMessage();
 		int getCurrentPageNumber();
+        void updateZoomRatio(float ratio);
 
 	private:
 		bool information;

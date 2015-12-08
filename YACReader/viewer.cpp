@@ -386,8 +386,8 @@ void Viewer::increaseZoomFactor()
 void Viewer::decreaseZoomFactor()
 {
 	zoom -= 0.1;
-	if (zoom < 0.1)
-		zoom = 0.1;
+    if (zoom < 0.3)
+        zoom = 0.3;
 	updateContentSize();
 	notificationsLabel->setText(QString::number(getZoomFactor()*100)+"%");
 	notificationsLabel->flash();
@@ -928,6 +928,12 @@ void Viewer::mouseReleaseEvent ( QMouseEvent * event )
 	drag = false;
 	setCursor(Qt::OpenHandCursor);
 	event->accept();
+}
+
+void Viewer::updateZoomRatio(float ratio)
+{
+    zoom = ratio;
+    updateContentSize();
 }
 
 void Viewer::updateConfig(QSettings * settings)

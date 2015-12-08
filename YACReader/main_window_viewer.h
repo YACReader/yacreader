@@ -64,9 +64,8 @@ class EditShortcutsDialog;
         void processReset();
         void setUpShortcutsManagement();
 
-#ifdef Q_OS_MAC
         void toggleFitToWidthSlider();
-#endif
+
 		/*void viewComic();
 		void prev();
 		void next();
@@ -128,16 +127,14 @@ class EditShortcutsDialog;
 		QAction *alwaysOnTopAction;
 		QAction *adjustToFullSizeAction;
 		QAction *fitToPageAction;
+        QAction *showZoomSliderlAction;
 		QAction *increasePageZoomAction;
 		QAction *decreasePageZoomAction;
 		QAction *showFlowAction;
 
         QAction *showEditShortcutsAction;
-#ifdef Q_OS_MAC
-        YACReaderSlider * sliderAction;
-#else
-        YACReaderSliderAction * sliderAction;
-#endif
+
+        YACReaderSlider * zoomSliderAction;
 
 		HttpVersionChecker * versionChecker;
 		QString previousComicPath;
