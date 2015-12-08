@@ -417,7 +417,11 @@ void MainWindowViewer::createActions()
     fitToPageAction->setData(FIT_TO_PAGE_ACTION_Y);
     fitToPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(FIT_TO_PAGE_ACTION_Y));
 	connect(fitToPageAction,SIGNAL(triggered()),this,SLOT(fitToPageSwitch()));
-	
+
+    showZoomSliderlAction = new QAction(tr("Show zoom slider"), this);
+    showZoomSliderlAction->setIcon(QIcon(":/images/viewer_toolbar/zoom.png"));
+    showZoomSliderlAction->setDisabled(true);
+
 	increasePageZoomAction = new QAction(tr("Zoom+"),this);
 	increasePageZoomAction->setDisabled(true);
     increasePageZoomAction->setData(ZOOM_PLUS_ACTION_Y);
@@ -509,43 +513,34 @@ void MainWindowViewer::createToolBars()
 
 	//comicToolBar->addAction(adjustWidth);
 
-
-#ifdef Q_OS_MAC
-
-    //sliderAction = new YACReaderSlider(this);
-    //sliderAction->hide();
-
-    comicToolBar->addAction(adjustWidthAction);
-
-    //QAction * action = comicToolBar->addFitToWidthSlider(adjustWidthAction);
-
-    //connect(action,SIGNAL(triggered()),this,SLOT(toggleFitToWidthSlider()));
-
-#else
-	//QMenu * menu = new QMenu();
-
-    //sliderAction = new YACReaderSliderAction(this);
-
-	//menu->setAutoFillBackground(false);
-	//menu->setStyleSheet(" QMenu {background:transparent; border: 0px;padding: 0px; }"
-	//	);
-	//menu->addAction(sliderAction);
-		//QToolButton * tb2 = new QToolButton();
-    //tb2->addAction(adjustWidthAction);
-	//tb2->setMenu(menu);
-
-	//tb2->addAction();
-	//tb2->setPopupMode(QToolButton::MenuButtonPopup);
-    //tb2->setDefaultAction(adjustWidthAction);
-    //comicToolBar->addWidget(tb2);
-#endif
-
-    //connect(sliderAction,SIGNAL(fitToWidthRatioChanged(float)),viewer,SLOT(updateFitToWidthRatio(float)));
-    //connect(optionsDialog,SIGNAL(fitToWidthRatioChanged(float)),sliderAction,SLOT(updateFitToWidthRatio(float)));
 	comicToolBar->addAction(adjustWidthAction);
 	comicToolBar->addAction(adjustHeightAction);
 	comicToolBar->addAction(adjustToFullSizeAction);
 	comicToolBar->addAction(fitToPageAction);
+
+#ifdef Q_OS_MAC
+
+    zoomSliderAction = new YACReaderSlider(this);
+    zoomSliderAction->hide();
+
+    comicToolBar->addAction(showZoomSliderlAction);
+
+    QAction * action = comicToolBar->addFitToWidthSlider(showZoomSliderlAction);
+
+    connect(action,SIGNAL(triggered()),this,SLOT(toggleFitToWidthSlider()));
+
+#else
+    zoomSliderAction = new YACReaderSlider(this);
+    zoomSliderAction->hide();
+
+    comicToolBar->addAction(showZoomSliderlAction);
+
+    //QAction * action = comicToolBar->addFitToWidthSlider(showZoomSliderlAction);
+
+    connect(showZoomSliderlAction,SIGNAL(triggered()),this,SLOT(toggleFitToWidthSlider()));
+    connect(zoomSliderAction, SIGNAL(zoomRatioChanged(float)),viewer,SLOT(updateZoomRatio(float)));
+#endif
+
 	comicToolBar->addAction(leftRotationAction);
 	comicToolBar->addAction(rightRotationAction);
 	comicToolBar->addAction(doublePageAction);
@@ -554,7 +549,6 @@ void MainWindowViewer::createToolBars()
     comicToolBar->addSeparator();
 
     comicToolBar->addAction(showMagnifyingGlassAction);
-
 
 	comicToolBar->addSeparator();
 
@@ -850,6 +844,7 @@ void MainWindowViewer::enableActions()
 	adjustToFullSizeAction->setDisabled(false);
 	adjustToFullSizeAction->setDisabled(false);
 	fitToPageAction->setDisabled(false);
+    showZoomSliderlAction->setDisabled(false);
 	increasePageZoomAction->setDisabled(false);
 	decreasePageZoomAction->setDisabled(false);
 	//setBookmark->setDisabled(false);
@@ -873,6 +868,8 @@ void MainWindowViewer::disableActions()
 	doublePageAction->setDisabled(true);
 	doubleMangaPageAction->setDisabled(true);
 	adjustToFullSizeAction->setDisabled(true);
+    fitToPageAction->setDisabled(true);
+    showZoomSliderlAction->setDisabled(true);
     setBookmarkAction->setDisabled(true);
     showBookmarksAction->setDisabled(true);
     showInfoAction->setDisabled(true); //TODO enable goTo and showInfo (or update) when numPages emited
@@ -1175,21 +1172,26 @@ void MainWindowViewer::setUpShortcutsManagement()
 
 }
 
-#ifdef Q_OS_MAC
-/*
 void MainWindowViewer::toggleFitToWidthSlider()
 {
-    if(sliderAction->isVisible())
+    int y;
+
+#ifdef Q_OS_MAC
+    y = 0;
+#else
+    y = this->comicToolBar->frameSize().height();
+#endif
+
+    if(zoomSliderAction->isVisible())
     {
-        sliderAction->hide();
+        zoomSliderAction->hide();
     }
     else
     {
-        sliderAction->move(250,0);
-        sliderAction->show();
+        zoomSliderAction->move(250, y);
+        zoomSliderAction->show();
     }
-}*/
-#endif
+}
 
 void MainWindowViewer::newVersion()
 {
