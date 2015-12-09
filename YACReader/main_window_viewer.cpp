@@ -572,8 +572,8 @@ void MainWindowViewer::createToolBars()
     //QAction * action = comicToolBar->addFitToWidthSlider(showZoomSliderlAction);
 
     connect(showZoomSliderlAction,SIGNAL(triggered()),this,SLOT(toggleFitToWidthSlider()));
-    connect(zoomSliderAction, SIGNAL(zoomRatioChanged(float)),viewer,SLOT(updateZoomRatio(float)));
-    connect(viewer,SIGNAL(zoomUpdated(float)),zoomSliderAction,SLOT(updateZoomRatio(float)));
+    connect(zoomSliderAction, SIGNAL(zoomRatioChanged(int)),viewer,SLOT(updateZoomRatio(int)));
+    connect(viewer,SIGNAL(zoomUpdated(int)),zoomSliderAction,SLOT(updateZoomRatio(int)));
 #endif
 
 	comicToolBar->addAction(leftRotationAction);

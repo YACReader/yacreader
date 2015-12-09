@@ -19,11 +19,11 @@ public:
 
 public slots:
     void updateText(int value);
-    void updateZoomRatio(float v);
+    void updateZoomRatio(int value);
 
 
 signals:
-    void zoomRatioChanged(float value);
+    void zoomRatioChanged(int value);
 };
 
 class YACReaderSliderAction : public QWidgetAction 
@@ -38,11 +38,11 @@ public:
 
 public slots:
 	void updateText(int value);
-    void updateZoomRatio(float v);
+    void updateZoomRatio(int value);
 
 
 signals:
-    void zoomRatioChanged(float value);
+    void zoomRatioChanged(int value);
 };
 
 #endif
