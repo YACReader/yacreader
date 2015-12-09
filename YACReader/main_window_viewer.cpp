@@ -97,6 +97,7 @@ MainWindowViewer::~MainWindowViewer()
 	delete doubleMangaPageAction;
 	delete increasePageZoomAction;
 	delete decreasePageZoomAction;
+    delete resetZoomAction;
     delete goToPageAction;
 	delete optionsAction;
 	delete helpAboutAction;
@@ -267,6 +268,7 @@ void MainWindowViewer::createActions()
 	//adjustWidth->setIcon(QIcon(":/images/fitWidth.png"));
     adjustHeightAction->setData(ADJUST_HEIGHT_ACTION_Y);
     adjustHeightAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADJUST_HEIGHT_ACTION_Y));
+    adjustHeightAction->setCheckable(true);
     connect(adjustHeightAction, SIGNAL(triggered()),this,SLOT(fitToHeight()));
 
     adjustWidthAction = new QAction(tr("Fit Width"),this);
@@ -277,7 +279,72 @@ void MainWindowViewer::createActions()
 	//adjustWidth->setIcon(QIcon(":/images/fitWidth.png"));
     adjustWidthAction->setData(ADJUST_WIDTH_ACTION_Y);
     adjustWidthAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADJUST_WIDTH_ACTION_Y));
+    adjustWidthAction->setCheckable(true);
     connect(adjustWidthAction, SIGNAL(triggered()),this,SLOT(fitToWidth()));
+
+    adjustToFullSizeAction = new QAction(tr("Show full size"),this);
+    adjustToFullSizeAction->setIcon(QIcon(":/images/viewer_toolbar/full.png"));
+    adjustToFullSizeAction->setCheckable(false);
+    adjustToFullSizeAction->setDisabled(true);
+    adjustToFullSizeAction->setData(ADJUST_TO_FULL_SIZE_ACTION_Y);
+    adjustToFullSizeAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADJUST_TO_FULL_SIZE_ACTION_Y));
+    adjustToFullSizeAction->setCheckable(true);
+    connect(adjustToFullSizeAction,SIGNAL(triggered()),this,SLOT(adjustToFullSizeSwitch()));
+
+    fitToPageAction = new QAction(tr("Fit to page"),this);
+    fitToPageAction->setIcon(QIcon(":/images/viewer_toolbar/fitToPage.png"));
+    fitToPageAction->setDisabled(true);
+    fitToPageAction->setData(FIT_TO_PAGE_ACTION_Y);
+    fitToPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(FIT_TO_PAGE_ACTION_Y));
+    fitToPageAction->setCheckable(true);
+    connect(fitToPageAction,SIGNAL(triggered()),this,SLOT(fitToPageSwitch()));
+
+    //fit modes have to be exclusive and checkable
+    QActionGroup *fitModes = new QActionGroup(this);
+    fitModes->addAction(adjustHeightAction);
+    fitModes->addAction(adjustWidthAction);
+    fitModes->addAction(adjustToFullSizeAction);
+    fitModes->addAction(fitToPageAction);
+
+    switch(Configuration::getConfiguration().getFitMode())
+    {
+    case YACReader::FitMode::ToWidth:
+        adjustWidthAction->setChecked(true);
+        break;
+    case YACReader::FitMode::ToHeight:
+        adjustHeightAction->setChecked(true);
+        break;
+    case YACReader::FitMode::FullRes:
+        adjustToFullSizeAction->setChecked(true);
+        break;
+    case YACReader::FitMode::FullPage:
+        fitToPageAction->setChecked(true);
+        break;
+    default:
+        fitToPageAction->setChecked(true);
+    }
+
+    resetZoomAction = new QAction(tr("Reset zoom"), this);
+    resetZoomAction->setDisabled(true);
+    resetZoomAction->setData(RESET_ZOOM_ACTION_Y);
+    resetZoomAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RESET_ZOOM_ACTION_Y));
+    connect(resetZoomAction,SIGNAL(triggered()),this,SLOT(resetZoomLevel()));
+
+    showZoomSliderlAction = new QAction(tr("Show zoom slider"), this);
+    showZoomSliderlAction->setIcon(QIcon(":/images/viewer_toolbar/zoom.png"));
+    showZoomSliderlAction->setDisabled(true);
+
+    increasePageZoomAction = new QAction(tr("Zoom+"),this);
+    increasePageZoomAction->setDisabled(true);
+    increasePageZoomAction->setData(ZOOM_PLUS_ACTION_Y);
+    increasePageZoomAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_PLUS_ACTION_Y));
+    connect(increasePageZoomAction,SIGNAL(triggered()),this,SLOT(increasePageZoomLevel()));
+
+    decreasePageZoomAction = new QAction(tr("Zoom-"),this);
+    decreasePageZoomAction->setDisabled(true);
+    decreasePageZoomAction->setData(ZOOM_MINUS_ACTION_Y);
+    decreasePageZoomAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_MINUS_ACTION_Y));
+    connect(decreasePageZoomAction,SIGNAL(triggered()),this,SLOT(decreasePageZoomLevel()));
 
 	leftRotationAction = new QAction(tr("Rotate image to the left"),this);
 	leftRotationAction->setIcon(QIcon(":/images/viewer_toolbar/rotateL.png"));
@@ -295,7 +362,7 @@ void MainWindowViewer::createActions()
 
 	doublePageAction = new QAction(tr("Double page mode"),this);
 	doublePageAction->setToolTip(tr("Switch to double page mode"));
-	doublePageAction->setIcon(QIcon(":/images/viewer_toolbar/doublePage.png"));
+    doublePageAction->setIcon(QIcon(":/images/viewer_toolbar/doublePage.png"));
 	doublePageAction->setDisabled(true);
 	doublePageAction->setCheckable(true);
 	doublePageAction->setChecked(Configuration::getConfiguration().getDoublePage());
@@ -310,8 +377,8 @@ void MainWindowViewer::createActions()
 	doubleMangaPageAction->setDisabled(true);
 	doubleMangaPageAction->setCheckable(true);
 	doubleMangaPageAction->setChecked(Configuration::getConfiguration().getDoubleMangaPage());
-   doubleMangaPageAction->setData(DOUBLE_MANGA_PAGE_ACTION_Y);
-   doubleMangaPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(DOUBLE_MANGA_PAGE_ACTION_Y));
+    doubleMangaPageAction->setData(DOUBLE_MANGA_PAGE_ACTION_Y);
+    doubleMangaPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(DOUBLE_MANGA_PAGE_ACTION_Y));
 	connect(doubleMangaPageAction, SIGNAL(triggered()),viewer,SLOT(doubleMangaPageSwitch()));
 	
     goToPageAction = new QAction(tr("Go To"),this);
@@ -402,39 +469,6 @@ void MainWindowViewer::createActions()
     alwaysOnTopAction->setData(ALWAYS_ON_TOP_ACTION_Y);
     alwaysOnTopAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ALWAYS_ON_TOP_ACTION_Y));
 	connect(alwaysOnTopAction,SIGNAL(triggered()),this,SLOT(alwaysOnTopSwitch()));
-
-	adjustToFullSizeAction = new QAction(tr("Show full size"),this);
-	adjustToFullSizeAction->setIcon(QIcon(":/images/viewer_toolbar/full.png"));
-	adjustToFullSizeAction->setCheckable(false);
-	adjustToFullSizeAction->setDisabled(true);
-    adjustToFullSizeAction->setData(ADJUST_TO_FULL_SIZE_ACTION_Y);
-    adjustToFullSizeAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADJUST_TO_FULL_SIZE_ACTION_Y));
-	connect(adjustToFullSizeAction,SIGNAL(triggered()),this,SLOT(adjustToFullSizeSwitch()));
-	
-	fitToPageAction = new QAction(tr("Fit to page"),this);
-    fitToPageAction->setIcon(QIcon(":/images/viewer_toolbar/fitToPage.png"));
-	fitToPageAction->setDisabled(true);
-    fitToPageAction->setData(FIT_TO_PAGE_ACTION_Y);
-    fitToPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(FIT_TO_PAGE_ACTION_Y));
-	connect(fitToPageAction,SIGNAL(triggered()),this,SLOT(fitToPageSwitch()));
-
-    showZoomSliderlAction = new QAction(tr("Show zoom slider"), this);
-    showZoomSliderlAction->setIcon(QIcon(":/images/viewer_toolbar/zoom.png"));
-    showZoomSliderlAction->setDisabled(true);
-
-	increasePageZoomAction = new QAction(tr("Zoom+"),this);
-	increasePageZoomAction->setDisabled(true);
-    increasePageZoomAction->setData(ZOOM_PLUS_ACTION_Y);
-    increasePageZoomAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_PLUS_ACTION_Y));
-	
-	connect(increasePageZoomAction,SIGNAL(triggered()),this,SLOT(increasePageZoomLevel()));
-	
-	decreasePageZoomAction = new QAction(tr("Zoom-"),this);
-	decreasePageZoomAction->setDisabled(true);
-    decreasePageZoomAction->setData(ZOOM_MINUS_ACTION_Y);
-    decreasePageZoomAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_MINUS_ACTION_Y));
-
-	connect(decreasePageZoomAction,SIGNAL(triggered()),this,SLOT(decreasePageZoomLevel()));
 
 	showFlowAction = new QAction(tr("Show go to flow"),this);
 	showFlowAction->setIcon(QIcon(":/images/viewer_toolbar/flow.png"));
@@ -601,6 +635,7 @@ void MainWindowViewer::createToolBars()
     viewer->addAction(showMagnifyingGlassAction);
     viewer->addAction(increasePageZoomAction);
     viewer->addAction(decreasePageZoomAction);
+    viewer->addAction(resetZoomAction);
     YACReader::addSperator(viewer);
 
     viewer->addAction(setBookmarkAction);
@@ -848,6 +883,7 @@ void MainWindowViewer::enableActions()
     showZoomSliderlAction->setDisabled(false);
 	increasePageZoomAction->setDisabled(false);
 	decreasePageZoomAction->setDisabled(false);
+    resetZoomAction->setDisabled(false);
 	//setBookmark->setDisabled(false);
     showBookmarksAction->setDisabled(false);
     showInfoAction->setDisabled(false); //TODO enable goTo and showInfo (or update) when numPages emited
@@ -871,6 +907,9 @@ void MainWindowViewer::disableActions()
 	adjustToFullSizeAction->setDisabled(true);
     fitToPageAction->setDisabled(true);
     showZoomSliderlAction->setDisabled(true);
+    increasePageZoomAction->setDisabled(true);
+    decreasePageZoomAction->setDisabled(true);
+    resetZoomAction->setDisabled(true);
     setBookmarkAction->setDisabled(true);
     showBookmarksAction->setDisabled(true);
     showInfoAction->setDisabled(true); //TODO enable goTo and showInfo (or update) when numPages emited
@@ -1112,10 +1151,11 @@ void MainWindowViewer::setUpShortcutsManagement()
                                          << leftRotationAction
                                          << rightRotationAction
                                          << doublePageAction
-					 << doubleMangaPageAction
+                                         << doubleMangaPageAction
                                          << adjustToFullSizeAction
-					 << increasePageZoomAction
-					 << decreasePageZoomAction);
+                                         << increasePageZoomAction
+                                         << decreasePageZoomAction
+                                         << resetZoomAction);
 
     allActions << tmpList;
 
@@ -1409,6 +1449,12 @@ void MainWindowViewer::fitToPageSwitch()
 	Configuration::getConfiguration().setFitMode(YACReader::FitMode::FullPage);
 	viewer->setZoomFactor(1);
 	viewer->updatePage();
+}
+
+void MainWindowViewer::resetZoomLevel()
+{
+    viewer->setZoomFactor(1);
+    viewer->updatePage();
 }
 
 void MainWindowViewer::increasePageZoomLevel()
