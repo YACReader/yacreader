@@ -62,7 +62,7 @@ using namespace YACReader;
 		void setZoomLevel(float zl) { settings->setValue(ZOOM_LEVEL,zl);}
 		
 		//Unified enum based fitmode
-		YACReader::FitMode getFitMode() { return static_cast<YACReader::FitMode>(settings->value(FITMODE).toInt()); }
+        YACReader::FitMode getFitMode() { return static_cast<YACReader::FitMode>(settings->value(FITMODE, YACReader::FitMode::FullPage).toInt()); }
 		void setFitMode ( YACReader::FitMode fitMode ){ settings->setValue(FITMODE, static_cast<int>(fitMode)); }
 		
 		//Old fitmodes
