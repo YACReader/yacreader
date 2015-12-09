@@ -39,7 +39,7 @@ drag(false),
 numScrollSteps(22),
 shouldOpenNext(false),
 shouldOpenPrevious(false),
-zoom(1)
+zoom(100)
 {
 	translator = new YACReaderTranslator(this);
 	translator->hide();
@@ -352,9 +352,9 @@ void Viewer::updateContentSize()
 				break;
 		}
 	
-		if(zoom != 1)
+        if(zoom != 100)
 		{	
-			pagefit.scale(pagefit.width()*zoom, 0, Qt::KeepAspectRatioByExpanding);
+            pagefit.scale(floor(pagefit.width()*zoom/100.0f), 0, Qt::KeepAspectRatioByExpanding);
 		}
 		//apply scaling
 		content->resize(pagefit);
@@ -374,42 +374,38 @@ void Viewer::updateContentSize()
 
 void Viewer::increaseZoomFactor()
 {
-	zoom += 0.1;
-	if (zoom > 5)
-	{
-		zoom = 5;
-	}
+    zoom = std::min(zoom + 10, 500);
+
 	updateContentSize();
-	notificationsLabel->setText(QString::number(getZoomFactor()*100)+"%");
+    notificationsLabel->setText(QString::number(getZoomFactor())+"%");
 	notificationsLabel->flash();
 
     emit zoomUpdated(zoom);
 }
 void Viewer::decreaseZoomFactor()
 {
-	zoom -= 0.1;
-    if (zoom < 0.3)
-        zoom = 0.3;
+    zoom = std::max(zoom - 10, 30);
+
 	updateContentSize();
-	notificationsLabel->setText(QString::number(getZoomFactor()*100)+"%");
+    notificationsLabel->setText(QString::number(getZoomFactor())+"%");
 	notificationsLabel->flash();
 
     emit zoomUpdated(zoom);
 }
 
-qreal Viewer::getZoomFactor()
+int Viewer::getZoomFactor()
 {
 	//this function is a placeholder for future refactoring work
 	return zoom;
 }
 
-void Viewer::setZoomFactor(qreal z)
+void Viewer::setZoomFactor(int z)
 {
 	//this function is mostly used to reset the zoom after a fitmode switch
-	if (z > 5)
-		zoom = 5;
-	else if (z < 0.1)
-		zoom = 0.1;
+    if (z > 500)
+        zoom = 500;
+    else if (z < 30)
+        zoom = 30;
 	else
 		zoom = z;
 
@@ -935,7 +931,7 @@ void Viewer::mouseReleaseEvent ( QMouseEvent * event )
 	event->accept();
 }
 
-void Viewer::updateZoomRatio(float ratio)
+void Viewer::updateZoomRatio(int ratio)
 {
     zoom = ratio;
     updateContentSize();

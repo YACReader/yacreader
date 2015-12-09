@@ -39,8 +39,8 @@ class NotificationsLabelWidget;
 	public slots:
 		void increaseZoomFactor();
 		void decreaseZoomFactor();
-		void setZoomFactor(qreal);
-		qreal getZoomFactor();
+        void setZoomFactor(int);
+        int getZoomFactor();
 	
 		void prepareForOpening();
 		void open(QString pathFile, int atPage = -1);
@@ -96,14 +96,14 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		void showIsCoverMessage();
 		void showIsLastMessage();
 		int getCurrentPageNumber();
-        void updateZoomRatio(float ratio);
+        void updateZoomRatio(int ratio);
 
 	private:
 		bool information;
 		bool doublePage;
 		bool doubleMangaPage;
 	
-		qreal zoom;
+        int zoom;
 	
 		PageLabelWidget * informationLabel;
 		//QTimer * scroller;
@@ -171,7 +171,7 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		void reset();
 		void openNextComic();
 		void openPreviousComic();
-        void zoomUpdated(float);
+        void zoomUpdated(int);
 	};
 
 #endif

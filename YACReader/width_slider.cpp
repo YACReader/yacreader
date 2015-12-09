@@ -12,7 +12,7 @@ YACReaderSliderAction::YACReaderSliderAction (QWidget * parent)
     widget = new YACReaderSlider();
     setDefaultWidget(widget);
 
-    connect(widget,SIGNAL(zoomRatioChanged(float)),this,SIGNAL(zoomRatioChanged(float)));
+    connect(widget,SIGNAL(zoomRatioChanged(int)),this,SIGNAL(zoomRatioChanged(int)));
 }
 
 void YACReaderSliderAction::updateText(int value)
@@ -20,9 +20,9 @@ void YACReaderSliderAction::updateText(int value)
     widget->updateText(value);
 }
 
-void YACReaderSliderAction::updateZoomRatio(float v)
+void YACReaderSliderAction::updateZoomRatio(int value)
 {
-    widget->updateZoomRatio(v);
+    widget->updateZoomRatio(value);
 }
 
 YACReaderSlider::YACReaderSlider(QWidget *parent)
@@ -80,13 +80,12 @@ YACReaderSlider::YACReaderSlider(QWidget *parent)
 void YACReaderSlider::updateText(int value)
 {
     percentageLabel->setText(QString("%1 %").arg(value));
-    Configuration::getConfiguration().setZoomLevel(value/100.0);
-    emit(zoomRatioChanged(value / 100.0f));
+    Configuration::getConfiguration().setZoomLevel(value);
+    emit zoomRatioChanged(value);
 }
 
-void YACReaderSlider::updateZoomRatio(float v)
+void YACReaderSlider::updateZoomRatio(int value)
 {
-    int value = v*100;
     slider->setValue(value);
     percentageLabel->setText(QString("%1 %").arg(value));
 }
