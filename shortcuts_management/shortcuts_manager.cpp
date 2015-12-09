@@ -52,6 +52,9 @@ void ShortcutsManager::initDefaultShorcuts()
     defaultShorcuts.insert(ALWAYS_ON_TOP_ACTION_Y, Qt::Key_Q); //deprecated
     defaultShorcuts.insert(ADJUST_TO_FULL_SIZE_ACTION_Y, Qt::Key_W);
     defaultShorcuts.insert(SHOW_FLOW_ACTION_Y, Qt::Key_S);
+    defaultShorcuts.insert(ZOOM_PLUS_ACTION_Y, Qt::Key_Plus);
+    defaultShorcuts.insert(ZOOM_MINUS_ACTION_Y, Qt::Key_Minus);
+    defaultShorcuts.insert(RESET_ZOOM_ACTION_Y, Qt::CTRL | Qt::Key_0);
 
     //main_window_viewer
     defaultShorcuts.insert(TOGGLE_FULL_SCREEN_ACTION_Y, Qt::Key_F);
