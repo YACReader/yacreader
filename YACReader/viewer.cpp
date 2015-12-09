@@ -412,7 +412,8 @@ void Viewer::setZoomFactor(qreal z)
 		zoom = 0.1;
 	else
 		zoom = z;
-//	updateContentSize()
+
+    emit zoomUpdated(zoom);
 }
 
 void Viewer::updateVerticalScrollBar()
