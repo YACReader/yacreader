@@ -14,8 +14,11 @@ private:
     QSlider * slider;
 
 public:
-
     YACReaderSlider (QWidget * parent = 0);
+    void show();
+
+protected:
+    virtual void focusOutEvent(QFocusEvent * event);
 
 public slots:
     void updateText(int value);

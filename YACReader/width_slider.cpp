@@ -28,6 +28,8 @@ void YACReaderSliderAction::updateZoomRatio(int value)
 YACReaderSlider::YACReaderSlider(QWidget *parent)
     :QWidget(parent)
 {
+    setFocusPolicy(Qt::StrongFocus);
+
     QHBoxLayout* pLayout = new QHBoxLayout();
 
     pLayout->addStretch();
@@ -71,10 +73,24 @@ YACReaderSlider::YACReaderSlider(QWidget *parent)
     slider->setMaximum(500);
     slider->setPageStep(5);
 
+    slider->setFocusPolicy(Qt::NoFocus);
+
     int value = Configuration::getConfiguration().getZoomLevel()*100;
     slider->setValue(value);
     percentageLabel->setText(QString("%1 %").arg(value));
     connect(slider,SIGNAL(valueChanged(int)),this,SLOT(updateText(int)));
+}
+
+void YACReaderSlider::show()
+{
+    QWidget::show();
+    setFocus();
+}
+
+void YACReaderSlider::focusOutEvent(QFocusEvent * event)
+{
+    QWidget::focusOutEvent(event);
+    hide();
 }
 
 void YACReaderSlider::updateText(int value)
