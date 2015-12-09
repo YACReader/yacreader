@@ -58,8 +58,8 @@ using namespace YACReader;
 		void setMagnifyingGlassSize(const QSize & mgs) { settings->setValue(MAG_GLASS_SIZE,mgs);}
 		QSize getGotoSlideSize() { return settings->value(GO_TO_FLOW_SIZE).toSize();}
 		void setGotoSlideSize(const QSize & gss) { settings->setValue(GO_TO_FLOW_SIZE,gss);}
-        float getZoomLevel() { return settings->value(ZOOM_LEVEL).toInt();}
-        void setZoomLevel(int zl) { settings->setValue(ZOOM_LEVEL,zl);}
+        float getZoomLevel() { return settings->value(ZOOM_LEVEL).toFloat();}
+        void setZoomLevel(float zl) { settings->setValue(ZOOM_LEVEL,zl);}
 		
 		//Unified enum based fitmode
         YACReader::FitMode getFitMode() { return static_cast<YACReader::FitMode>(settings->value(FITMODE, YACReader::FitMode::FullPage).toInt()); }
