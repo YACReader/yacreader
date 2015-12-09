@@ -75,9 +75,8 @@ YACReaderSlider::YACReaderSlider(QWidget *parent)
 
     slider->setFocusPolicy(Qt::NoFocus);
 
-    int value = Configuration::getConfiguration().getZoomLevel()*100;
-    slider->setValue(value);
-    percentageLabel->setText(QString("%1 %").arg(value));
+    slider->setValue(100);
+    percentageLabel->setText(QString("%1 %").arg(100));
     connect(slider,SIGNAL(valueChanged(int)),this,SLOT(updateText(int)));
 }
 
@@ -96,7 +95,6 @@ void YACReaderSlider::focusOutEvent(QFocusEvent * event)
 void YACReaderSlider::updateText(int value)
 {
     percentageLabel->setText(QString("%1 %").arg(value));
-    Configuration::getConfiguration().setZoomLevel(value);
     emit zoomRatioChanged(value);
 }
 
