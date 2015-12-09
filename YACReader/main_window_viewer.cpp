@@ -1017,13 +1017,13 @@ void MainWindowViewer::showToolBars()
 void MainWindowViewer::fitToWidth()
 {
 	Configuration::getConfiguration().setFitMode(YACReader::FitMode::ToWidth);
-	viewer->setZoomFactor(1);
+    viewer->setZoomFactor(100);
 	viewer->updatePage();
 }
 void MainWindowViewer::fitToHeight()
 {
 	Configuration::getConfiguration().setFitMode(YACReader::FitMode::ToHeight);
-	viewer->setZoomFactor(1);
+    viewer->setZoomFactor(100);
 	viewer->updatePage();
 }
 
@@ -1440,20 +1440,20 @@ void MainWindowViewer::alwaysOnTopSwitch()
 void MainWindowViewer::adjustToFullSizeSwitch()
 {
 	Configuration::getConfiguration().setFitMode(YACReader::FitMode::FullRes);
-	viewer->setZoomFactor(1);
+    viewer->setZoomFactor(100);
 	viewer->updatePage();
 }
 
 void MainWindowViewer::fitToPageSwitch()
 {
 	Configuration::getConfiguration().setFitMode(YACReader::FitMode::FullPage);
-	viewer->setZoomFactor(1);
+    viewer->setZoomFactor(100);
 	viewer->updatePage();
 }
 
 void MainWindowViewer::resetZoomLevel()
 {
-    viewer->setZoomFactor(1);
+    viewer->setZoomFactor(100);
     viewer->updatePage();
 }
 
