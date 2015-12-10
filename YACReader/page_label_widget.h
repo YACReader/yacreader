@@ -10,11 +10,11 @@ class PageLabelWidget : public QWidget
 {
 Q_OBJECT
 private:
-	QLabel * imgLabel;
 	QLabel * textLabel;
 	QPropertyAnimation * animation;
 
-	//void resizeEvent(QResizeEvent * event);
+protected:
+    virtual void paintEvent(QPaintEvent *);
 
 public:
 	PageLabelWidget(QWidget * parent);
