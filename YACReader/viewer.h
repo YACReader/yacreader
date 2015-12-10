@@ -37,6 +37,11 @@ class NotificationsLabelWidget;
 	public:
 		bool fullscreen; //TODO, change by the right use of windowState();
 	public slots:
+		void increaseZoomFactor();
+		void decreaseZoomFactor();
+        void setZoomFactor(int);
+        int getZoomFactor();
+	
 		void prepareForOpening();
 		void open(QString pathFile, int atPage = -1);
 		void open(QString pathFile, const ComicDB & comic);
@@ -80,7 +85,6 @@ class NotificationsLabelWidget;
 virtual void mousePressEvent ( QMouseEvent * event );
 virtual void mouseReleaseEvent ( QMouseEvent * event );
 		void updateBackgroundColor(const QColor & color);
-		void updateFitToWidthRatio(float ratio);
 		void updateConfig(QSettings * settings);
 		void showMessageErrorOpening();
 		void showMessageErrorOpening(QString);
@@ -92,11 +96,15 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		void showIsCoverMessage();
 		void showIsLastMessage();
 		int getCurrentPageNumber();
+        void updateZoomRatio(int ratio);
 
 	private:
 		bool information;
 		bool doublePage;
 		bool doubleMangaPage;
+	
+        int zoom;
+	
 		PageLabelWidget * informationLabel;
 		//QTimer * scroller;
 		QPropertyAnimation * verticalScroller;
@@ -163,6 +171,7 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		void reset();
 		void openNextComic();
 		void openPreviousComic();
+        void zoomUpdated(int);
 	};
 
 #endif

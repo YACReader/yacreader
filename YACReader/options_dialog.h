@@ -32,7 +32,7 @@ Q_OBJECT
 		QSlider * slideSize;
 		
 		//QLabel * fitToWidthRatioLabel;
-		QSlider * fitToWidthRatioS;
+		//QSlider * fitToWidthRatioS;
 
 		QLabel * backgroundColor;
 		QPushButton * selectBackgroundColorButton;
@@ -50,7 +50,7 @@ Q_OBJECT
 		void restoreOptions(QSettings * settings);
 		void findFolder();
 		void updateColor(const QColor & color);
-		void fitToWidthRatio(int value);
+		//void fitToWidthRatio(int value);
 		void brightnessChanged(int value);
 		void contrastChanged(int value);
 		void gammaChanged(int value);
@@ -62,7 +62,7 @@ signals:
 		void changedOptions();
 		void changedImageOptions();
 		void changedFilters(int brightness, int contrast, int gamma);
-		void fitToWidthRatioChanged(float ratio);
+		//void fitToWidthRatioChanged(float ratio);
 
 };
 
