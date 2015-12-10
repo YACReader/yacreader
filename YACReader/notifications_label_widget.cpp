@@ -1,13 +1,14 @@
 #include "notifications_label_widget.h"
 
-#include <QLabel>
-#include <QHBoxLayout>
-#include <QPropertyAnimation>
-#include <QGraphicsOpacityEffect>
+#include <QtWidgets>
 
 NotificationsLabelWidget::NotificationsLabelWidget(QWidget * parent)
 	:QWidget(parent)
 {
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->setSpacing(0);
+    layout->setMargin(0);
+
 	setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
 	effect = new QGraphicsOpacityEffect(this);
 	effect->setOpacity(1.0);
@@ -30,25 +31,35 @@ NotificationsLabelWidget::NotificationsLabelWidget(QWidget * parent)
 
 	connect(anim,SIGNAL(finished()),this,SLOT(hide()));
 
-	imgLabel = new QLabel(this);
-	QPixmap p(":/images/notificationsLabel.png");
-	imgLabel->resize(p.size());
-	imgLabel->setPixmap(p);
-	imgLabel->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
-
 	textLabel = new QLabel(this);
 	textLabel->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
 	textLabel->setStyleSheet("QLabel { color : white; font-size:24px; }");
 	textLabel->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
 
-	textLabel->setGeometry(imgLabel->geometry());
+    textLabel->setFixedSize(200, 120);
+
+    //TODO check if the effects still be broken in OSX yet
 #ifndef Q_OS_MAC
-	imgLabel->setGraphicsEffect(effect);
+    this->setGraphicsEffect(effect);
 	textLabel->setGraphicsEffect(effect2);
 #endif
-	resize(p.size());
-	updatePosition();
 
+    layout->addWidget(textLabel);
+    setLayout(layout);
+
+    setFixedSize(200, 120);
+	updatePosition();
+}
+
+void NotificationsLabelWidget::paintEvent(QPaintEvent *)
+{
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+    QPainterPath path;
+    path.addRoundedRect(QRectF(0, 0, width(), height()), 5.0, 5.0);
+    painter.setPen(Qt::NoPen);
+    painter.fillPath(path, QColor("#BB000000"));
+    painter.drawPath(path);
 }
 
 void NotificationsLabelWidget::flash()
@@ -65,11 +76,6 @@ void NotificationsLabelWidget::flash()
 void NotificationsLabelWidget::setText(const QString & text)
 {
 	textLabel->setText(text);
-	QRect geom = imgLabel->geometry();
-	QSize size = geom.size();
-	size.setHeight(size.height() - 10); //TODO remove this amazing magic number
-	geom.setSize(size);
-	textLabel->setGeometry(geom);
 }
 
 void NotificationsLabelWidget::updatePosition()
