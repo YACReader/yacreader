@@ -917,18 +917,21 @@ void Viewer::animateHideTranslator()
 
 void Viewer::mousePressEvent ( QMouseEvent * event )
 {
-	drag = true;
-	yDragOrigin = event->y();
-	xDragOrigin = event->x();
-	setCursor(Qt::ClosedHandCursor);
-	event->accept();
+    if (event->button() == Qt::LeftButton)
+    {
+        drag = true;
+        yDragOrigin = event->y();
+        xDragOrigin = event->x();
+        setCursor(Qt::ClosedHandCursor);
+        event->accept();
+    }
 }
 
 void Viewer::mouseReleaseEvent ( QMouseEvent * event )
 {
-	drag = false;
-	setCursor(Qt::OpenHandCursor);
-	event->accept();
+    drag = false;
+    setCursor(Qt::OpenHandCursor);
+    event->accept();
 }
 
 void Viewer::updateZoomRatio(int ratio)
