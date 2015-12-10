@@ -37,7 +37,7 @@ PageLabelWidget::PageLabelWidget(QWidget * parent)
     if(parent != 0)
         move(QPoint((parent->geometry().size().width()-this->width()),-this->height()));
 
-    layout->addWidget(textLabel);
+    layout->addWidget(textLabel, 0 , Qt::AlignCenter);
     setLayout(layout);
 }
 
