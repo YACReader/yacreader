@@ -14,16 +14,21 @@ private:
     QSlider * slider;
 
 public:
-
     YACReaderSlider (QWidget * parent = 0);
+    void show();
+
+protected:
+    virtual void focusOutEvent(QFocusEvent * event);
+    virtual void paintEvent(QPaintEvent *);
 
 public slots:
     void updateText(int value);
-    void updateFitToWidthRatio(float v);
+    void updateZoomRatio(int value);
+    void resetValueToDefault();
 
 
 signals:
-    void fitToWidthRatioChanged(float value);
+    void zoomRatioChanged(int value);
 };
 
 class YACReaderSliderAction : public QWidgetAction 
@@ -38,11 +43,11 @@ public:
 
 public slots:
 	void updateText(int value);
-	void updateFitToWidthRatio(float v);
+    void updateZoomRatio(int value);
 
 
 signals:
-	void fitToWidthRatioChanged(float value);
+    void zoomRatioChanged(int value);
 };
 
 #endif

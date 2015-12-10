@@ -4,6 +4,7 @@
     <file>../images/viewer_toolbar/close.png</file>
     <file>../images/viewer_toolbar/doublePage.png</file>
     <file>../images/viewer_toolbar/doubleMangaPage.png</file>
+    <file>../images/viewer_toolbar/fitToPage.png</file>
     <file>../images/viewer_toolbar/flow.png</file>
     <file>../images/viewer_toolbar/full.png</file>
     <file>../images/viewer_toolbar/goto.png</file>
@@ -25,5 +26,6 @@
     <file>../images/viewer_toolbar/toHeight.png</file>
     <file>../images/viewer_toolbar/toWidth.png</file>
     <file>../images/viewer_toolbar/translator.png</file>
+    <file>../images/viewer_toolbar/zoom.png</file>
   </qresource>
 </RCC>

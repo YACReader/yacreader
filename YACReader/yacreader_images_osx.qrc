@@ -8,6 +8,8 @@
 <file alias="images/viewer_toolbar/doubleMangaPage@2x.png">../images/viewer_toolbar/doubleMangaPage_osx@2x.png</file>
 <file alias="images/viewer_toolbar/doublePage.png">../images/viewer_toolbar/doublePage_osx.png</file>
 <file alias="images/viewer_toolbar/doublePage@2x.png">../images/viewer_toolbar/doublePage_osx@2x.png</file>
+<file alias="images/viewer_toolbar/fitToPage.png">../images/viewer_toolbar/fitToPage_osx.png</file>
+<file alias="images/viewer_toolbar/fitToPage@2x.png">../images/viewer_toolbar/fitToPage_osx@2x.png</file>
 <file alias="images/viewer_toolbar/flow.png">../images/viewer_toolbar/flow_osx.png</file>
 <file alias="images/viewer_toolbar/flow@2x.png">../images/viewer_toolbar/flow_osx@2x.png</file>
 <file alias="images/viewer_toolbar/full.png">../images/viewer_toolbar/full_osx.png</file>
@@ -52,6 +54,8 @@
 <file alias="images/viewer_toolbar/toWidthSlider@2x.png">../images/viewer_toolbar/toWidthSlider_osx@2x.png</file>
 <file alias="images/viewer_toolbar/translator.png">../images/viewer_toolbar/translator_osx.png</file>
 <file alias="images/viewer_toolbar/translator@2x.png">../images/viewer_toolbar/translator_osx@2x.png</file>
+<file alias="images/viewer_toolbar/zoom.png">../images/viewer_toolbar/zoom_osx.png</file>
+<file alias="images/viewer_toolbar/zoom@2x.png">../images/viewer_toolbar/zoom_osx@2x.png</file>
   </qresource>
 </RCC>
 

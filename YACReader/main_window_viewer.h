@@ -38,7 +38,6 @@ class EditShortcutsDialog;
 		void toggleToolBars();
 		void hideToolBars();
 		void showToolBars();
-		void changeFit();
 		void enableActions();
 		void disableActions();
 		void toggleFullScreen();
@@ -55,6 +54,10 @@ class EditShortcutsDialog;
         void openFolderFromPath(QString pathFile, QString atFileName);
 		void alwaysOnTopSwitch();
 		void adjustToFullSizeSwitch();
+		void fitToPageSwitch();
+        void resetZoomLevel();
+		void increasePageZoomLevel();
+		void decreasePageZoomLevel();
 		void reloadOptions();
 		void fitToWidth();
 		void fitToHeight();
@@ -62,9 +65,8 @@ class EditShortcutsDialog;
         void processReset();
         void setUpShortcutsManagement();
 
-#ifdef Q_OS_MAC
         void toggleFitToWidthSlider();
-#endif
+
 		/*void viewComic();
 		void prev();
 		void next();
@@ -125,14 +127,16 @@ class EditShortcutsDialog;
 		QAction *showDictionaryAction;
 		QAction *alwaysOnTopAction;
 		QAction *adjustToFullSizeAction;
+		QAction *fitToPageAction;
+        QAction *resetZoomAction;
+        QAction *showZoomSliderlAction;
+		QAction *increasePageZoomAction;
+		QAction *decreasePageZoomAction;
 		QAction *showFlowAction;
 
         QAction *showEditShortcutsAction;
-#ifdef Q_OS_MAC
-        YACReaderSlider * sliderAction;
-#else
-        YACReaderSliderAction * sliderAction;
-#endif
+
+        YACReaderSlider * zoomSliderAction;
 
 		HttpVersionChecker * versionChecker;
 		QString previousComicPath;
