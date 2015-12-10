@@ -552,29 +552,14 @@ void MainWindowViewer::createToolBars()
 	comicToolBar->addAction(adjustToFullSizeAction);
 	comicToolBar->addAction(fitToPageAction);
 
-#ifdef Q_OS_MAC
-
     zoomSliderAction = new YACReaderSlider(this);
     zoomSliderAction->hide();
 
     comicToolBar->addAction(showZoomSliderlAction);
-
-    QAction * action = comicToolBar->addFitToWidthSlider(showZoomSliderlAction);
-
-    connect(action,SIGNAL(triggered()),this,SLOT(toggleFitToWidthSlider()));
-
-#else
-    zoomSliderAction = new YACReaderSlider(this);
-    zoomSliderAction->hide();
-
-    comicToolBar->addAction(showZoomSliderlAction);
-
-    //QAction * action = comicToolBar->addFitToWidthSlider(showZoomSliderlAction);
 
     connect(showZoomSliderlAction,SIGNAL(triggered()),this,SLOT(toggleFitToWidthSlider()));
     connect(zoomSliderAction, SIGNAL(zoomRatioChanged(int)),viewer,SLOT(updateZoomRatio(int)));
     connect(viewer,SIGNAL(zoomUpdated(int)),zoomSliderAction,SLOT(updateZoomRatio(int)));
-#endif
 
 	comicToolBar->addAction(leftRotationAction);
 	comicToolBar->addAction(rightRotationAction);
