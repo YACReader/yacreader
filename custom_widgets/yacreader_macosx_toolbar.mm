@@ -287,6 +287,7 @@ YACReaderMacOSXSearchLineEdit * YACReaderMacOSXToolbar::addSearchEdit()
     return searchEdit;
 }
 
+//deprecated
 QAction *YACReaderMacOSXToolbar::addFitToWidthSlider(QAction *attachToAction)
 {
     QMacToolBarItem *toolBarItem = addItem(QIcon(":/images/viewer_toolbar/toWidthSlider.png"),"fit to width slider");
