@@ -1,58 +1,45 @@
 #include "page_label_widget.h"
 
-#include <QLabel>
-#include <QHBoxLayout>
-#include <QPropertyAnimation>
-#include <QApplication>
-#include <QDesktopWidget>
+#include <QtWidgets>
 
 PageLabelWidget::PageLabelWidget(QWidget * parent)
-	:QWidget(parent)
-	{
-	animation = new QPropertyAnimation(this,"pos");
+    :QWidget(parent)
+{
+    animation = new QPropertyAnimation(this,"pos");
     animation->setDuration(150);
     animation->setEndValue(QPoint((parent->geometry().size().width()-this->width()),-this->height()));
-	
-	int verticalRes = QApplication::desktop()->screenGeometry().height();
-		
-	imgLabel = new QLabel(this);
-	QPixmap p;
-	if (verticalRes <= 1024)
-		p.load(":/images/numPagesLabel.png");
-	else if (verticalRes <= 1200)
-		p.load(":/images/numPagesLabelMedium.png");
-	else
-		p.load(":/images/numPagesLabelBig.png");
-	imgLabel->resize(p.size());
-	imgLabel->setPixmap(p);
-	
-	textLabel = new QLabel(this);
-	textLabel->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
-	if(verticalRes <= 1024)
-		textLabel->setStyleSheet("QLabel { color : white; font-size:12px; padding-left:8px; }");
-	else if (verticalRes <= 1200)
-		textLabel->setStyleSheet("QLabel { color : white; font-size:16px; padding-left:8px;}");
-	else
-		textLabel->setStyleSheet("QLabel { color : white; font-size:20px; padding-left:8px; }");
 
-	//informationLabel->setAutoFillBackground(true);
-	//textLabel->setFont(QFont("courier new bold", 12));
-	//textLabel->resize(100,25);
+    int verticalRes = QApplication::desktop()->screenGeometry().height();
 
-	resize(p.size());
-	//por defecto aparece oculto
-	if(parent != 0)
-		move(QPoint((parent->geometry().size().width()-this->width()),-this->height()));
-	/*QSize size = textLabel->sizeHint();
+    QHBoxLayout *layout = new QHBoxLayout;
+    layout->setMargin(0);
+    setContentsMargins(0,0,0,0);
 
-	int w = width();   // returns screen width
-	int h = height();  // returns screen height
-	int mw = size.width();
-	int mh = size.height();
-	int cw = (w-mw)/2;
-	int ch = 0;
-	textLabel->move(cw,ch);*/
-	}
+    QSize labelSize;
+    if (verticalRes <= 1024)
+        labelSize = QSize(135, 30);
+    else if (verticalRes <= 1200)
+        labelSize = QSize(170, 35);
+    else
+        labelSize = QSize(205, 45);
+
+    textLabel = new QLabel(this);
+    textLabel->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
+    if(verticalRes <= 1024)
+        textLabel->setStyleSheet("QLabel { color : white; font-size:12px; padding-left:8px; }");
+    else if (verticalRes <= 1200)
+        textLabel->setStyleSheet("QLabel { color : white; font-size:16px; padding-left:8px;}");
+    else
+        textLabel->setStyleSheet("QLabel { color : white; font-size:20px; padding-left:8px; }");
+
+    setFixedSize(labelSize);
+
+    if(parent != 0)
+        move(QPoint((parent->geometry().size().width()-this->width()),-this->height()));
+
+    layout->addWidget(textLabel);
+    setLayout(layout);
+}
 
 void PageLabelWidget::show()
 {
@@ -76,7 +63,6 @@ void PageLabelWidget::show()
 
 void PageLabelWidget::hide()
 {
-
 	if(this->pos().y() >= 0 && animation->state()!=QPropertyAnimation::Running)
 	{
 		QWidget * parent = dynamic_cast<QWidget *>(this->parent());
@@ -93,18 +79,15 @@ void PageLabelWidget::hide()
 
 void PageLabelWidget::setText(const QString & text)
 {
-	textLabel->setText(text);
-	QRect geom = imgLabel->geometry();
-	QSize size = geom.size();
-	size.setHeight(size.height() - 10);//TODO remove this amazing magic number
-	geom.setSize(size);
-	textLabel->setGeometry(geom);
+    textLabel->setText(text);
 }
 
-/*void PageLabelWidget::resizeEvent(QResizeEvent * event)
+void PageLabelWidget::paintEvent(QPaintEvent *)
 {
-	move(QPoint((((QWidget *) parent())->geometry().size().width()-this->width())/2,0));
-}*/
+    QPainter painter(this);
+
+    painter.fillRect(0,0,width(),height(),QColor("#BB000000"));
+}
 
 void PageLabelWidget::updatePosition()
 {
