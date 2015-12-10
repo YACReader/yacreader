@@ -19,10 +19,12 @@ public:
 
 protected:
     virtual void focusOutEvent(QFocusEvent * event);
+    virtual void paintEvent(QPaintEvent *);
 
 public slots:
     void updateText(int value);
     void updateZoomRatio(int value);
+    void resetValueToDefault();
 
 
 signals:
