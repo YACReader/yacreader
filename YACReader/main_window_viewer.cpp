@@ -520,32 +520,7 @@ void MainWindowViewer::createToolBars()
 	comicToolBar->addAction(nextAction);
     comicToolBar->addAction(goToPageAction);
 
-//#ifndef Q_OS_MAC
-//	comicToolBar->addSeparator();
-//	comicToolBar->addAction(alwaysOnTopAction);
-//#else
-//	alwaysOnTopAction->setEnabled(false);
-//#endif
-
-
 	comicToolBar->addSeparator();
-
-	//QWidget * widget = new QWidget();
-
-	//QToolButton * tbW = new QToolButton(widget);
-	//tbW->addAction(adjustWidth);
-	//tbW->setPopupMode(QToolButton::MenuButtonPopup);
-	//tbW->setDefaultAction(adjustWidth);
-
-	//QHBoxLayout *layout = new QHBoxLayout;
-	//layout->addWidget(tbW);
-	//layout->setContentsMargins(0,0,0,0);
-	//widget->setLayout(layout);
-	//widget->setContentsMargins(0,0,0,0);
-
-	//comicToolBar->addWidget(widget);
-
-	//comicToolBar->addAction(adjustWidth);
 
 	comicToolBar->addAction(adjustWidthAction);
 	comicToolBar->addAction(adjustHeightAction);
