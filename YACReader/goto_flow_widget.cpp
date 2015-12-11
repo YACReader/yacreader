@@ -28,7 +28,6 @@ GoToFlowWidget::GoToFlowWidget(QWidget * parent)
 }
 
 GoToFlowWidget::~GoToFlowWidget() { 
-	delete topBar;
 	delete toolBar;
 	delete mainLayout;
 }

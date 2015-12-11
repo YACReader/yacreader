@@ -8,7 +8,6 @@
 using namespace YACReader;
 
 class QSettings;
-class GoToFlowDecorationBar;
 class GoToFlowToolBar;
 class QVBoxLayout;
 
@@ -17,7 +16,6 @@ class GoToFlowWidget : public QWidget
 	Q_OBJECT
 protected:
 	QVBoxLayout * mainLayout;
-	GoToFlowDecorationBar * topBar;
 	GoToFlowToolBar * toolBar;
 public:
 	GoToFlowWidget(QWidget * paret = 0);
