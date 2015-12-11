@@ -17,6 +17,7 @@ class GoToFlowToolBar : public QWidget
 		QPushButton * goToButton;
 		QWidget * bar;
 		void resizeEvent(QResizeEvent * event);
+        void paintEvent(QPaintEvent *);
 
 	public:
 		GoToFlowToolBar(QWidget * parent = 0);

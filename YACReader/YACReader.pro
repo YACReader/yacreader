@@ -115,7 +115,6 @@ HEADERS += ../common/comic.h \
         goto_flow_widget.h \
         page_label_widget.h \
         goto_flow_toolbar.h \
-        goto_flow_decorationbar.h \
         width_slider.h \
         notifications_label_widget.h \
         ../common/pictureflow.h \
@@ -159,7 +158,6 @@ SOURCES += ../common/comic.cpp \
         goto_flow_widget.cpp \
         page_label_widget.cpp \
         goto_flow_toolbar.cpp \
-        goto_flow_decorationbar.cpp \
         width_slider.cpp \
         notifications_label_widget.cpp \
     ../common/pictureflow.cpp \

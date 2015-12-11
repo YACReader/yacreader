@@ -6,7 +6,6 @@
 #include <QCoreApplication>
 
 #include "goto_flow_toolbar.h"
-#include "goto_flow_decorationbar.h"
 
 GoToFlowWidget::GoToFlowWidget(QWidget * parent)
 	:QWidget(parent)

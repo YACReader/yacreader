@@ -10,7 +10,7 @@
 #include "configuration.h"
 
 #include "goto_flow_toolbar.h"
-#include "goto_flow_decorationbar.h"
+
 
 GoToFlowGL::GoToFlowGL(QWidget* parent, FlowType flowType)
 	:GoToFlowWidget(parent)

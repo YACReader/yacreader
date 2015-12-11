@@ -24,7 +24,6 @@
 #include "yacreader_flow.h"
 
 #include "goto_flow_toolbar.h"
-#include "goto_flow_decorationbar.h"
 
 
 GoToFlow::GoToFlow(QWidget *parent,FlowType flowType)
