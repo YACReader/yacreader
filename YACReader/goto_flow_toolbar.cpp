@@ -1,12 +1,6 @@
 #include "goto_flow_toolbar.h"
 
-#include <QLineEdit>
-#include <QIntValidator>
-#include <QPushButton>
-#include <QLabel>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QResizeEvent>
+#include <QtWidgets>
 
 GoToFlowToolBar::GoToFlowToolBar(QWidget * parent)
 	:QWidget(parent)
@@ -90,7 +84,14 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget * parent)
 	bar->setGeometry(QRect(0,0,400,50));
 	
 }
-	
+
+void GoToFlowToolBar::paintEvent(QPaintEvent *)
+{
+    QPainter painter(this);
+
+    painter.fillRect(0,0,width(),height(),QColor("#BB000000"));
+}
+
 void GoToFlowToolBar::setPage(int pageNumber)
 {
 	edit->setText(QString::number(pageNumber+1));
