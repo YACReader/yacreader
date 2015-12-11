@@ -5,50 +5,25 @@
 GoToFlowToolBar::GoToFlowToolBar(QWidget * parent)
 	:QWidget(parent)
 {
-	//fondo
-	QBoxLayout * background = new QHBoxLayout(this);
-
-	QLabel * imgBottomLeft = new QLabel(this);
-	QLabel * imgBottomRight = new QLabel(this);
-	QLabel * imgBottomMiddle = new QLabel(this);
-	QPixmap pBL(":/images/imgBottomLeft.png");
-	QPixmap pBM(":/images/imgBottomMiddle.png");
-	QPixmap pBR(":/images/imgBottomRight.png");
-	imgBottomLeft->setPixmap(pBL);
-	imgBottomRight->setPixmap(pBR);
-	imgBottomMiddle->setPixmap(pBM);
-	imgBottomMiddle->setScaledContents(true);
-	//imgTop->setStyleSheet("background-image: url(:/images/numPagesLabel.png); width: 100%; height:100%; background-repeat: none; border: none"); 
-
-	background->addWidget(imgBottomLeft);
-	background->addWidget(imgBottomMiddle);
-	background->addWidget(imgBottomRight);
-	background->setStretchFactor(imgBottomLeft,0);
-	background->setStretchFactor(imgBottomMiddle,1);
-	background->setStretchFactor(imgBottomRight,0);
-
-	background->setMargin(0);
-	background->setSpacing(0);
-
 	//elementos interactivos
-	//QVBoxLayout * mainLayout = new QVBoxLayout;
+    QVBoxLayout * mainLayout = new QVBoxLayout;
 	bar = new QWidget(this);
 	QHBoxLayout * bottom = new QHBoxLayout(bar);
 	bottom->addStretch();
-	bottom->addWidget(new QLabel(tr("Page : "),bar));
+    bottom->addWidget(new QLabel("<b>" + tr("Page : ") + "</b>",bar));
 	bottom->addWidget(edit = new QLineEdit(bar));
 	v = new QIntValidator(bar);
 	v->setBottom(1);
 	edit->setValidator(v);
 	edit->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-	edit->setStyleSheet("background-image: url(:/images/imgEdit.png); width: 100%; height:100%; background-repeat: none; border: none; padding: 3px; color: white;"); 
+    edit->setStyleSheet("QLineEdit {border: 1px solid #77000000; background: #55000000; color: white; padding: 3px 5px 5px 5px; margin: 13px 5px 12px 5px; font-color: white; font-weight:bold}");
 	QPixmap p(":/images/imgEdit.png");
 	edit->setFixedSize(54,50);
 	edit->setAttribute(Qt::WA_MacShowFocusRect,false);
-	edit->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
+    //edit->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
 	//edit->resize(QSize(54,50));
 	edit->setSizePolicy(QSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed));
-	edit->setAutoFillBackground(false);
+    //edit->setAutoFillBackground(false);
 	connect(edit,SIGNAL(returnPressed()),this,SLOT(goTo()));
 
 	QString centerButtonCSS = "QPushButton {background-image: url(:/images/imgCenterSlide.png); width: 100%; height:100%; background-repeat: none; border: none;} "
@@ -58,7 +33,7 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget * parent)
 	//centerButton->setIcon(QIcon(":/images/center.png"));
 	centerButton->setStyleSheet(centerButtonCSS); 
 	centerButton->setFixedSize(26,50);
-	centerButton->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
+    centerButton->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
 	connect(centerButton,SIGNAL(clicked()),this,SLOT(centerSlide()));
 	bottom->addWidget(centerButton);
 
@@ -79,17 +54,21 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget * parent)
 	bottom->setSpacing(0);
 	
 	bar->setLayout(bottom);
-	//mainLayout->addWidget(bar);
-	setLayout(background);
-	bar->setGeometry(QRect(0,0,400,50));
-	
+
+    mainLayout->setMargin(0);
+    mainLayout->setSpacing(0);
+    mainLayout->addWidget(bar);
+
+    setLayout(mainLayout);
+
+    setFixedHeight(50);
 }
 
 void GoToFlowToolBar::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
-    painter.fillRect(0,0,width(),height(),QColor("#BB000000"));
+    painter.fillRect(0,0,width(),height(),QColor("#99000000"));
 }
 
 void GoToFlowToolBar::setPage(int pageNumber)
@@ -100,14 +79,6 @@ void GoToFlowToolBar::setPage(int pageNumber)
 void GoToFlowToolBar::setTop(int numPages)
 {
 	v->setTop(numPages);
-}
-
-void GoToFlowToolBar::resizeEvent(QResizeEvent * event)
-{
-
-	bar->setGeometry(QRect(0,(event->size().height()-50)+((50-bar->height())/2),event->size().width(),50));
-
-	QWidget::resizeEvent(event);
 }
 
 void GoToFlowToolBar::goTo()

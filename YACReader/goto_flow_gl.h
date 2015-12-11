@@ -32,6 +32,7 @@ signals:
 private:
 	YACReaderPageFlowGL * flow;
 	void keyPressEvent(QKeyEvent* event);
+    void resizeEvent(QResizeEvent *event);
 	//Comic * comic;
 	QSize imageSize;
 };
