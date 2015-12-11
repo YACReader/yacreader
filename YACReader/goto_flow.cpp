@@ -47,7 +47,7 @@ GoToFlow::GoToFlow(QWidget *parent,FlowType flowType)
 	connect(toolBar,SIGNAL(goTo(unsigned int)),this,SIGNAL(goToPage(unsigned int)));
 	connect(toolBar,SIGNAL(setCenter(unsigned int)),flow,SLOT(showSlide(unsigned int))); 
 
-	mainLayout->insertWidget(1,flow);
+    mainLayout->insertWidget(0,flow);
 	mainLayout->setStretchFactor(flow,1);
 
 	resize(static_cast<int>(5*imageSize.width()),static_cast<int>(imageSize.height()*1.7));

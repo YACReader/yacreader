@@ -16,10 +16,8 @@ GoToFlowWidget::GoToFlowWidget(QWidget * parent)
 	mainLayout->setMargin(0);
 	mainLayout->setSpacing(0);
 
-	topBar = new GoToFlowDecorationBar(this);
 	toolBar = new GoToFlowToolBar(this);
 
-	mainLayout->addWidget(topBar);
 	mainLayout->addWidget(toolBar);
 
 	mainLayout->setMargin(0);
