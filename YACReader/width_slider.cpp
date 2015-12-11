@@ -46,7 +46,7 @@ YACReaderSlider::YACReaderSlider(QWidget *parent)
     slider->setMinimumWidth(sliderWidth);
 
     QPushButton *resetButton = new QPushButton(tr("Reset"));
-    resetButton->setStyleSheet("QPushButton {border: 1px solid #BB242424; background: #BB2E2E2E; color:white; padding: 3px 5px 5px 5px; font-color: white}");
+    resetButton->setStyleSheet("QPushButton {border: 1px solid #BB242424; background: #BB2E2E2E; color:white; padding: 3px 5px 5px 5px;}");
     connect(resetButton, &QPushButton::clicked, this, &YACReaderSlider::resetValueToDefault);
 
     pLayout->addWidget(percentageLabel, 1, Qt::AlignHCenter);
