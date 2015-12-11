@@ -28,10 +28,10 @@ GoToFlowGL::GoToFlowGL(QWidget* parent, FlowType flowType)
 	connect(toolBar,SIGNAL(goTo(unsigned int)),this,SIGNAL(goToPage(unsigned int)));
 	connect(toolBar,SIGNAL(setCenter(unsigned int)),flow,SLOT(setCenterIndex(unsigned int))); 
 
-    mainLayout->insertWidget(0,flow);
-	mainLayout->setStretchFactor(flow,1);
+    mainLayout->addWidget(flow);
+    toolBar->raise();
 
-	resize(static_cast<int>(5*imageSize.width()),static_cast<int>(imageSize.height()*1.7));
+    resize(static_cast<int>(5*imageSize.width()),toolBar->height() + static_cast<int>(imageSize.height()*1.7));
 
 	this->setCursor(QCursor(Qt::ArrowCursor));
 }
@@ -155,4 +155,12 @@ void GoToFlowGL::keyPressEvent(QKeyEvent* event)
 	}
 
 	GoToFlowWidget::keyPressEvent(event);
+}
+
+void GoToFlowGL::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+
+    toolBar->move(0, event->size().height() - toolBar->height());
+    toolBar->setFixedWidth(width());
 }

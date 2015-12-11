@@ -48,20 +48,21 @@ private:
 	virtual void wheelEvent(QWheelEvent * event);
 	QMutex mutexGoToFlow;
 
-	private slots:
-		void preload();
-		void updateImageData();
+private slots:
+    void preload();
+    void updateImageData();
+    void resizeEvent(QResizeEvent *event);
 
-		public slots:
-			void centerSlide(int slide);
-			void reset();
-			void setNumSlides(unsigned int slides);
-			void setImageReady(int index,const QByteArray & image);
-			void setFlowType(FlowType flowType);
-			void updateSize();
-			void updateConfig(QSettings * settings);
+    public slots:
+        void centerSlide(int slide);
+    void reset();
+    void setNumSlides(unsigned int slides);
+    void setImageReady(int index,const QByteArray & image);
+    void setFlowType(FlowType flowType);
+    void updateSize();
+    void updateConfig(QSettings * settings);
 signals:
-			void goToPage(unsigned int page);
+    void goToPage(unsigned int page);
 
 };
 //-----------------------------------------------------------------------------
