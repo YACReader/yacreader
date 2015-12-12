@@ -127,7 +127,6 @@ void GridComicsView::createCoverSizeSliderWidget()
 
 void GridComicsView::setToolBar(QToolBar *toolBar)
 {
-    QLOG_INFO() << "setToolBar";
     static_cast<QVBoxLayout *>(this->layout())->insertWidget(1,toolBar);
     this->toolbar = toolBar;
 
@@ -140,9 +139,6 @@ void GridComicsView::setModel(ComicModel *model)
     if(model == NULL)
         return;
 
-    if(this->model == model)
-        return;
-
     ComicsView::setModel(model);
 
     QQmlContext *ctxt = view->rootContext();
@@ -152,6 +148,7 @@ void GridComicsView::setModel(ComicModel *model)
 
     _selectionModel = new QItemSelectionModel(model);
 
+    //TODO fix crash in the following line on comics views switch
     ctxt->setContextProperty("comicsList", model);
     ctxt->setContextProperty("comicsSelection", _selectionModel);
     ctxt->setContextProperty("contextMenuHelper",this);
