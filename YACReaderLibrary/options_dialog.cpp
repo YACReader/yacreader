@@ -7,18 +7,6 @@
 #include "yacreader_flow_config_widget.h"
 #include "api_key_dialog.h"
 
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QFileDialog>
-#include <QGroupBox>
-#include <QRadioButton>
-#include <QTextStream>
-#include <QCoreApplication>
-#include <QFile>
-#include <QMessageBox>
-#include <QCheckBox>
-#include <QtWidgets>
-
 
 FlowType flowType = Strip;
 
@@ -30,6 +18,7 @@ OptionsDialog::OptionsDialog(QWidget * parent)
     QVBoxLayout * layout = new QVBoxLayout(this);
 
     QVBoxLayout * flowLayout = new QVBoxLayout;
+    QVBoxLayout * gridViewLayout = new QVBoxLayout();
     QVBoxLayout * generalLayout = new QVBoxLayout();
 
     QHBoxLayout * switchFlowType = new QHBoxLayout();
@@ -61,8 +50,42 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 
     connect(apiKeyButton,SIGNAL(clicked()),this,SLOT(editApiKey()));
 
+    //grid view background config
+    useBackgroundImageCheck = new QCheckBox(tr("Enable background image"));
+
+    opacityLabel = new QLabel(tr("Opacity level"));
+
+    backgroundImageOpacitySlider = new QSlider(Qt::Horizontal);
+    backgroundImageOpacitySlider->setRange(5,100);
+
+    blurLabel = new QLabel(tr("Blur level"));
+
+    backgroundImageBlurRadiusSlider = new QSlider(Qt::Horizontal);
+    backgroundImageBlurRadiusSlider->setRange(0,100);
+
+    QVBoxLayout * gridBackgroundLayout = new QVBoxLayout();
+    gridBackgroundLayout->addWidget(useBackgroundImageCheck);
+    gridBackgroundLayout->addWidget(opacityLabel);
+    gridBackgroundLayout->addWidget(backgroundImageOpacitySlider);
+    gridBackgroundLayout->addWidget(blurLabel);
+    gridBackgroundLayout->addWidget(backgroundImageBlurRadiusSlider);
+
+    QGroupBox * gridBackgroundGroup = new QGroupBox(tr("Background"));
+    gridBackgroundGroup->setLayout(gridBackgroundLayout);
+
+    gridViewLayout->addWidget(gridBackgroundGroup);
+    gridViewLayout->addStretch();
+
+    connect(useBackgroundImageCheck, SIGNAL(clicked(bool)), this, SLOT(useBackgroundImageCheckClicked(bool)));
+    connect(backgroundImageOpacitySlider, SIGNAL(valueChanged(int)), this, SLOT(backgroundImageOpacitySliderChanged(int)));
+    connect(backgroundImageBlurRadiusSlider, SIGNAL(valueChanged(int)), this, SLOT(backgroundImageBlurRadiusSliderChanged(int)));
+    //end grid view background config
+
     QWidget * comicFlowW = new QWidget;
     comicFlowW->setLayout(flowLayout);
+
+    QWidget * gridViewW = new QWidget;
+    gridViewW->setLayout(gridViewLayout);
 
     QWidget * generalW = new QWidget;
     generalW->setLayout(generalLayout);
@@ -71,6 +94,9 @@ OptionsDialog::OptionsDialog(QWidget * parent)
     generalLayout->addStretch();
 
     tabWidget->addTab(comicFlowW,tr("Comic Flow"));
+#ifndef NO_OPENGL
+    tabWidget->addTab(gridViewW,tr("Grid view"));
+#endif
     tabWidget->addTab(generalW,tr("General"));
 
     layout->addWidget(tabWidget);
@@ -82,7 +108,6 @@ OptionsDialog::OptionsDialog(QWidget * parent)
     setWindowTitle(tr("Options"));
 
     this->layout()->setSizeConstraint(QLayout::SetFixedSize);
-
 }
 
 void OptionsDialog::editApiKey()
@@ -91,5 +116,44 @@ void OptionsDialog::editApiKey()
     d.exec();
 }
 
+void OptionsDialog::restoreOptions(QSettings * settings)
+{
+    YACReaderOptionsDialog::restoreOptions(settings);
 
+    bool useBackgroundImage = settings->value(USE_BACKGROUND_IMAGE_IN_GRID_VIEW, true).toBool();
 
+    useBackgroundImageCheck->setChecked(useBackgroundImage);
+    backgroundImageOpacitySlider->setValue(settings->value(OPACITY_BACKGROUND_IMAGE_IN_GRID_VIEW, 0.2).toFloat()*100);
+    backgroundImageBlurRadiusSlider->setValue(settings->value(BLUR_RADIUS_BACKGROUND_IMAGE_IN_GRID_VIEW, 75).toInt());
+
+    backgroundImageOpacitySlider->setVisible(useBackgroundImage);
+    backgroundImageBlurRadiusSlider->setVisible(useBackgroundImage);
+    opacityLabel->setVisible(useBackgroundImage);
+    blurLabel->setVisible(useBackgroundImage);
+}
+
+void OptionsDialog::useBackgroundImageCheckClicked(bool checked)
+{
+    settings->setValue(USE_BACKGROUND_IMAGE_IN_GRID_VIEW, checked);
+
+    backgroundImageOpacitySlider->setVisible(checked);
+    backgroundImageBlurRadiusSlider->setVisible(checked);
+    opacityLabel->setVisible(checked);
+    blurLabel->setVisible(checked);
+
+    emit optionsChanged();
+}
+
+void OptionsDialog::backgroundImageOpacitySliderChanged(int value)
+{
+    settings->setValue(OPACITY_BACKGROUND_IMAGE_IN_GRID_VIEW, value/100.0);
+
+    emit optionsChanged();
+}
+
+void OptionsDialog::backgroundImageBlurRadiusSliderChanged(int value)
+{
+    settings->setValue(BLUR_RADIUS_BACKGROUND_IMAGE_IN_GRID_VIEW, value);
+
+    emit optionsChanged();
+}

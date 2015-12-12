@@ -2,9 +2,33 @@ import QtQuick 2.3
 
 import QtQuick.Controls 1.2
 import comicModel 1.0
+import QtGraphicalEffects 1.0
 
 Rectangle {
     id: main
+    clip: true
+
+    Image {
+        id: backgroundImg
+        anchors.fill: parent
+        source: backgroundImage
+        fillMode: Image.PreserveAspectCrop
+        smooth: true
+        mipmap: true
+        asynchronous : true
+        cache: false //TODO clear cache only when it is needed
+        opacity: 0
+        visible: false
+    }
+
+    FastBlur {
+        anchors.fill: backgroundImg
+        source: backgroundImg
+        radius: backgroundBlurRadius
+        opacity: backgroundBlurOpacity
+        visible: backgroundBlurVisible
+    }
+
     color: backgroundColor
     width: parent.width
     height: parent.height
@@ -25,7 +49,7 @@ Rectangle {
             id: cell
             width: grid.cellWidth
             height: grid.cellHeight
-            color: backgroundColor
+            color: "#00000000"
 
 
             Rectangle {
@@ -54,7 +78,6 @@ Rectangle {
                 color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index))?selectedColor:cellColor;
                 border.color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index))?selectedBorderColor:borderColor;
                 border.width: (Qt.platform.os === "osx")?1:0;
-
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 MouseArea  {
@@ -290,7 +313,7 @@ Rectangle {
         }
     }
 
-    YACReaderScrollView{
+    YACReaderScrollView {
         id: scrollView
         anchors.fill: parent
         anchors.margins: 0
@@ -367,7 +390,7 @@ Rectangle {
             footer: Rectangle { //fix for the scroll issue, TODO find what causes the issue (some times the bottoms cells are hidden for the toolbar, no full scroll)
                 height : 25
                 width : parent.width
-                color : backgroundColor
+                color : "#00000000"
             }
 
             move: Transition {
