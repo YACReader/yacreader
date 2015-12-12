@@ -1,13 +1,4 @@
-#include <QCoreApplication>
-#include <QTranslator>
-#include <QSettings>
-#include <QLocale>
-#include <QDir>
-#include <QSysInfo>
-#include <QFileInfo>
-#include <QSettings>
-#include <QLibrary>
-#include <QTextStream>
+#include <QtCore>
 
 #include "yacreader_global.h"
 #include "startup.h"
@@ -18,9 +9,6 @@
 
 #include "QsLog.h"
 #include "QsLogDest.h"
-
-//interfaz al servidor
-Startup * s;
 
 using namespace QsLogging;
 
@@ -97,7 +85,7 @@ void logSystemAndConfig()
     else
         QLOG_ERROR() << "7z : not found";
 
-    /*
+    /* TODO: qrencode could be helpfull for showing a qr code in the web client for client devices
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
     if(QFileInfo(QString(BINDIR)+"/qrencode").exists())
 #else
@@ -122,111 +110,102 @@ QCoreApplication* createApplication(int &argc, char *argv[])
 
 int main( int argc, char ** argv )
 {
-//fix for misplaced text in Qt4.8 and Mavericks
-#ifdef Q_OS_MAC
-  #if QT_VERSION < 0x050000
-    if(QSysInfo::MacintoshVersion > QSysInfo::MV_10_8)
-        QFont::insertSubstitution(".Lucida Grande UI", "Lucida Grande");
-  #endif
+    QScopedPointer<QCoreApplication> app(createApplication(argc, argv));
 
-#endif
-
-  QScopedPointer<QCoreApplication> app(createApplication(argc, argv));
-  //QApplication app( argc, argv );
-
-  app->setApplicationName("YACReaderLibraryServer");
-  app->setOrganizationName("YACReader");
-//simple command line parser
-//will be replaced by QCommandLineParser in the future 
-//TODO: --headless, --server=[on|off], support for file and directory arguments
-  if (argc > 1)
-	{
-		QTextStream parser(stdout);
-		QStringList optlist = QCoreApplication::arguments().filter(QRegExp ("^-{1,2}"));
+    app->setApplicationName("YACReaderLibraryServer");
+    app->setOrganizationName("YACReader");
+    //simple command line parser
+    //will be replaced by QCommandLineParser in the future
+    //TODO: support for file and directory arguments
+    if (argc > 1)
+    {
+        QTextStream parser(stdout);
+        QStringList optlist = QCoreApplication::arguments().filter(QRegExp ("^-{1,2}"));
         if (optlist.contains("--version") || optlist.contains("-v"))
-		{
-			parser << app->applicationName() << " " << QString(VERSION) << endl << "Copyright 2014 by Luis Angel San Martin Rodriguez" << endl;
-			return 0;
-		}
+        {
+            parser << app->applicationName() << " " << QString(VERSION) << endl << "Copyright 2014 by Luis Angel San Martin Rodriguez" << endl;
+            return 0;
+        }
         if (optlist.contains("--help") || optlist.contains("-h"))
-		{
-			parser << endl << "Usage:" << "\tYACReaderLibrary [Option]" << endl << endl;
-			parser << "Options:" << endl;
-			parser << "  none\t\t\tStart YACReaderLibrary" << endl;
-			parser << "  -h, --help\t\tDisplay help text and exit." << endl;
-			parser << "  -v, --version\t\tDisplay version information and exit." << endl;
-			return 0;
-		}
-	if (optlist.contains("--no-gui"))
-		{
-			parser << "You're running YACReaderLibrary in non-gui mode. Press Ctrl+C to exit." << endl;
-		}
-	}
+        {
+            parser << endl << "Usage:" << "\tYACReaderLibrary [Option]" << endl << endl;
+            parser << "Options:" << endl;
+            parser << "  none\t\t\tStart YACReaderLibrary" << endl;
+            parser << "  -h, --help\t\tDisplay help text and exit." << endl;
+            parser << "  -v, --version\t\tDisplay version information and exit." << endl;
+            return 0;
+        }
+        if (optlist.contains("--no-gui"))
+        {
+            parser << "You're running YACReaderLibrary in non-gui mode. Press Ctrl+C to exit." << endl;
+        }
+    }
 
-  QString destLog = YACReader::getSettingsPath()+"/yacreaderlibrary.log";
-  QDir().mkpath(YACReader::getSettingsPath());
+    QString destLog = YACReader::getSettingsPath()+"/yacreaderlibrary.log";
+    QDir().mkpath(YACReader::getSettingsPath());
 
-  Logger& logger = Logger::instance();
-  logger.setLoggingLevel(QsLogging::TraceLevel);
+    Logger& logger = Logger::instance();
+    logger.setLoggingLevel(QsLogging::TraceLevel);
 
-  DestinationPtr fileDestination(DestinationFactory::MakeFileDestination(
-    destLog, EnableLogRotation, MaxSizeBytes(1048576), MaxOldLogCount(2)));
-  DestinationPtr debugDestination(DestinationFactory::MakeDebugOutputDestination());
-  logger.addDestination(debugDestination);
-  logger.addDestination(fileDestination);
+    DestinationPtr fileDestination(DestinationFactory::MakeFileDestination(
+                                       destLog, EnableLogRotation, MaxSizeBytes(1048576), MaxOldLogCount(2)));
+    DestinationPtr debugDestination(DestinationFactory::MakeDebugOutputDestination());
+    logger.addDestination(debugDestination);
+    logger.addDestination(fileDestination);
 
-  QTranslator translator;
-  QString sufix = QLocale::system().name();
+    QTranslator translator;
+    QString sufix = QLocale::system().name();
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
-  translator.load(QString(DATADIR)+"/yacreader/languages/yacreaderlibrary_"+sufix);
+    translator.load(QString(DATADIR)+"/yacreader/languages/yacreaderlibrary_"+sufix);
 #else
-  translator.load(QCoreApplication::applicationDirPath()+"/languages/yacreaderlibrary_"+sufix);
+    translator.load(QCoreApplication::applicationDirPath()+"/languages/yacreaderlibrary_"+sufix);
 #endif
-  app->installTranslator(&translator);
-  
-  QTranslator viewerTranslator;
+    app->installTranslator(&translator);
+
+    QTranslator viewerTranslator;
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
-  viewerTranslator.load(QString(DATADIR)+"/yacreader/languages/yacreader_"+sufix);
+    viewerTranslator.load(QString(DATADIR)+"/yacreader/languages/yacreader_"+sufix);
 #else  
-  viewerTranslator.load(QCoreApplication::applicationDirPath()+"/languages/yacreader_"+sufix);
+    viewerTranslator.load(QCoreApplication::applicationDirPath()+"/languages/yacreader_"+sufix);
 #endif
-  app->installTranslator(&viewerTranslator);
-  app->setApplicationName("YACReaderLibrary");
+    app->installTranslator(&viewerTranslator);
+    app->setApplicationName("YACReaderLibrary");
 
-  qRegisterMetaType<ComicDB>("ComicDB");
+    qRegisterMetaType<ComicDB>("ComicDB");
 
 
-  QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creaciï¿½n del fichero de config con el servidor
-  settings->beginGroup("libraryConfig");
-  
-  s = new Startup();
-  s->start();
+    QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creaciï¿½n del fichero de config con el servidor
+    settings->beginGroup("libraryConfig");
 
-  QLOG_INFO() << "YACReaderLibraryServer attempting to start";
+    //server
+    Startup *s = new Startup();
+    s->start();
 
-  logSystemAndConfig();
+    QLOG_INFO() << "YACReaderLibraryServer attempting to start";
 
-  if(YACReaderLocalServer::isRunning()) //sï¿½lo se permite una instancia de YACReaderLibrary
-  {
-	  QLOG_WARN() << "another instance of YACReaderLibrary is running";
-	  QsLogging::Logger::destroyInstance();
-	  return 0;
-  }
-  QLOG_INFO() << "YACReaderLibrary starting";
+    logSystemAndConfig();
 
-  YACReaderLocalServer * localServer = new YACReaderLocalServer();
+    if(YACReaderLocalServer::isRunning()) //sï¿½lo se permite una instancia de YACReaderLibrary
+    {
+        QLOG_WARN() << "another instance of YACReaderLibrary is running";
+        QsLogging::Logger::destroyInstance();
+        return 0;
+    }
+    QLOG_INFO() << "YACReaderLibrary starting";
 
-  int ret = app->exec();
+    YACReaderLocalServer * localServer = new YACReaderLocalServer();
 
-  QLOG_INFO() << "YACReaderLibrary closed with exit code :" << ret;
+    int ret = app->exec();
 
-  //shutdown
-  s->stop();
-  delete s;
-  localServer->close();
-  delete localServer;
+    QLOG_INFO() << "YACReaderLibrary closed with exit code :" << ret;
 
-  QsLogging::Logger::destroyInstance();
+    //shutdown
+    s->stop();
+    delete s;
+    localServer->close();
+    delete localServer;
 
-  return ret;
+    QsLogging::Logger::destroyInstance();
+
+    return ret;
 }
