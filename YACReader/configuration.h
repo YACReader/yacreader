@@ -8,7 +8,7 @@
 #include <QSettings>
 #include <QDate>
 
-#include "yacreader_global.h"
+#include "yacreader_global_gui.h"
 
 #define CONF_FILE_PATH "."
 #define SLIDE_ASPECT_RATIO 1.585
