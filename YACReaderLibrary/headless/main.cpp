@@ -1,11 +1,11 @@
 #include <QtCore>
 
-#include "yacreader_global.h"
-#include "startup.h"
-#include "yacreader_local_server.h"
 #include "comic_db.h"
 #include "db_helper.h"
+#include "startup.h"
+#include "yacreader_global.h"
 #include "yacreader_libraries.h"
+#include "yacreader_local_server.h"
 
 #include "QsLog.h"
 #include "QsLogDest.h"
