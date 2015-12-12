@@ -2,6 +2,8 @@
 #define __GOTO_FLOW_H
 
 #include "goto_flow_widget.h"
+#include "yacreader_global_gui.h"
+
 #include <QThread>
 
 #include <QWaitCondition>

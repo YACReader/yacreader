@@ -10,7 +10,7 @@
 #include <typeinfo>
 
 #include "comic_db.h"
-#include "yacreader_global.h"
+#include "yacreader_global_gui.h"
 
 template<class T>
 inline const T& kClamp( const T& x, const T& low, const T& high )

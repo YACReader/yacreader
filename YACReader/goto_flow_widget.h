@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QSettings>
-#include "yacreader_global.h"
+#include "yacreader_global_gui.h"
 
 using namespace YACReader;
 
