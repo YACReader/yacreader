@@ -23,12 +23,13 @@ void SyncController::service(HttpRequest &request, HttpResponse &response)
         qulonglong libraryId;
         qulonglong comicId;
         int currentPage;
+        int currentRating;
         QString hash;
         foreach(QString comicInfo, data)
         {
             QList<QString> comicInfoProgress = comicInfo.split("\t");
 
-            if(comicInfoProgress.length() == 4)
+            if(comicInfoProgress.length() == 4 || comicInfoProgress.length() == 5)
             {
                 libraryId = comicInfoProgress.at(0).toULongLong();
                 comicId = comicInfoProgress.at(1).toULongLong();
@@ -39,6 +40,14 @@ void SyncController::service(HttpRequest &request, HttpResponse &response)
                 info.currentPage = currentPage;
                 info.hash = hash; //TODO remove the hash check and add UUIDs for libraries
                 info.id = comicId;
+
+                //Client 2.1+ version
+                if(comicInfoProgress.length() > 4)
+                {
+                    currentRating = comicInfoProgress.at(4).toInt();
+                    info.rating = currentRating;
+                }
+
                 DBHelper::updateFromRemoteClient(libraryId,info);
             }
         }

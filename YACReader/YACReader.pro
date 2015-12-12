@@ -7,7 +7,7 @@ DEPENDPATH += . \
     release
 
 DEFINES += NOMINMAX YACREADER
-
+QMAKE_MAC_SDK = macosx10.11
 QMAKE_MAC_SDK = macosx10.11
 
 #load default build flags

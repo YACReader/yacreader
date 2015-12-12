@@ -15,6 +15,17 @@
 
 #include "QsLog.h"
 
+enum YACReaderPageSortingMode
+{
+    YACReaderNumericalSorting,
+    YACReaderHeuristicSorting,
+    YACReaderAlphabeticalSorting
+};
+
+void comic_pages_sort(QList<QString> & pageNames, YACReaderPageSortingMode sortingMode);
+
+
+
 const QStringList Comic::imageExtensions = QStringList() << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp" << "*.webp";
 const QStringList Comic::literalImageExtensions = QStringList() << "jpg" << "jpeg" << "png" << "gif" << "tiff" << "tif" << "bmp" << "webp";
 
@@ -511,7 +522,9 @@ void FileComic::process()
 	_loaded = true;
 
 	_cfi=0;
-	qSort(_fileNames.begin(),_fileNames.end(), naturalSortLessThanCI);
+
+    //TODO, add a setting for choosing the type of page sorting used.
+    comic_pages_sort(_fileNames, YACReaderHeuristicSorting);
 
 	if(_firstPage == -1)
 		_firstPage = bm->getLastPage();
@@ -587,7 +600,8 @@ void FolderComic::process()
 	//d.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware);
 	QFileInfoList list = d.entryInfoList();
 
-	qSort(list.begin(),list.end(),naturalSortLessThanCIFileInfo);
+    //don't fix double page files sorting, because the user can see how the SO sorts the files in the folder.
+    std::sort(list.begin(),list.end(),naturalSortLessThanCIFileInfo);
 
 	int nPages = list.size();
 	_pages.clear();
@@ -825,3 +839,167 @@ Comic * FactoryComic::newComic(const QString & path)
 		return NULL;
 
 }
+
+
+bool is_double_page(const QString & pageName, const QString & commonPrefix, const int maxExpectedDoublePagesNumberLenght)
+{
+    if(pageName.startsWith(commonPrefix))
+    {
+        QString substringContainingPageNumbers = pageName.mid(commonPrefix.length());
+        QString pageNumbersSubString;
+        for(int i = 0 ; i < substringContainingPageNumbers.length() && substringContainingPageNumbers.at(i).isDigit(); i++)
+            pageNumbersSubString.append(substringContainingPageNumbers.at(i));
+
+        if(pageNumbersSubString.length() < 3 || pageNumbersSubString.length() > maxExpectedDoublePagesNumberLenght || pageNumbersSubString.length() % 2 == 1)
+            return false;
+
+        int leftPageNumber = pageNumbersSubString.left(pageNumbersSubString.length() / 2).toInt();
+        int rightPageNumber = pageNumbersSubString.mid(pageNumbersSubString.length() / 2).toInt();
+
+        if(leftPageNumber == 0 || rightPageNumber == 0)
+            return false;
+
+        if((rightPageNumber - leftPageNumber) == 1)
+            return true;
+    }
+
+    return false;
+}
+
+QString get_most_common_prefix(const QList<QString> & pageNames)
+{
+    if(pageNames.isEmpty())
+        return "";
+
+    QMap<QString, uint> frequency;
+    int currentPrefixLenght = pageNames.at(0).split('/').last().length();
+    int currentPrefixCount = 1;
+
+    int i;
+    QString previous;
+    QString current;
+    for(i = 1; i < pageNames.length(); i++)
+    {
+        int pos = 0;
+        previous = pageNames.at(i-1).split('/').last();
+        current = pageNames.at(i).split('/').last();
+        for(; pos < current.length() && previous[pos] == current[pos]; pos++);
+
+        if(pos < currentPrefixLenght && pos > 0)
+        {
+            frequency.insert(previous.left(currentPrefixLenght), currentPrefixCount);
+            currentPrefixLenght = pos;
+            currentPrefixCount++;
+        }
+        /*
+        else if(pos > currentPrefixLenght)
+        {
+            frequency.insert(pageNames.at(i-1).left(currentPrefixLenght), currentPrefixCount - 1);
+            currentPrefixLenght = pos;
+            currentPrefixCount = 2;
+        }*/
+        else if(pos == 0)
+        {
+            frequency.insert(previous.left(currentPrefixLenght), currentPrefixCount);
+            currentPrefixLenght = current.length();
+            currentPrefixCount = 1;
+        }
+        else
+            currentPrefixCount++;
+    }
+
+    frequency.insert(previous.left(currentPrefixLenght), currentPrefixCount);
+
+    uint maxFrequency = 0;
+    QString common_prefix = "";
+    foreach(QString key, frequency.keys())
+    {
+        if(maxFrequency < frequency.value(key))
+        {
+            maxFrequency = frequency.value(key);
+            common_prefix = key;
+        }
+    }
+
+    QRegExp allNumberRegExp("\\d+");
+    if (allNumberRegExp.exactMatch(common_prefix))
+        return "";
+
+    if(maxFrequency < pageNames.length() * 0.60) //the most common tipe of image file should a proper page, so we can asume that the common_prefix should be in, at least, the 60% of the pages
+        return "";
+
+    return common_prefix;
+}
+
+void get_double_pages(const QList<QString> & pageNames, QList<QString> & singlePageNames/*out*/, QList<QString> & doublePageNames/*out*/)
+{
+    uint maxExpectedDoublePagesNumberLenght = (int)(log10(pageNames.length())+1) * 2;
+
+    QString mostCommonPrefix = get_most_common_prefix(pageNames);
+
+    foreach(const QString & pageName, pageNames)
+    {
+        if(is_double_page(pageName.split('/').last(), mostCommonPrefix, maxExpectedDoublePagesNumberLenght))
+            doublePageNames.append(pageName);
+        else
+            singlePageNames.append(pageName);
+    }
+}
+
+QList<QString> merge_pages(QList<QString> & singlePageNames, QList<QString> & doublePageNames)
+{
+    //NOTE: this implementation doesn't differ from std::merge using a custom comparator, but it can be easily tweaked if merging requeries an additional heuristic behaviour
+    QList<QString> pageNames;
+
+    int i = 0;
+    int j = 0;
+
+    while (i < singlePageNames.length() && j < doublePageNames.length())
+    {
+        if (singlePageNames.at(i).compare(doublePageNames.at(j), Qt::CaseInsensitive) < 0)
+            pageNames.append(singlePageNames.at(i++));
+        else
+            pageNames.append(doublePageNames.at(j++));
+    }
+
+    while (i < singlePageNames.length())
+        pageNames.append(singlePageNames.at(i++));
+
+    while (j < doublePageNames.length())
+        pageNames.append(doublePageNames.at(j++));
+
+    return pageNames;
+}
+
+
+void comic_pages_sort(QList<QString> & pageNames, YACReaderPageSortingMode sortingMode)
+{
+    switch(sortingMode)
+    {
+    case YACReaderNumericalSorting:
+        std::sort(pageNames.begin(), pageNames.end(), naturalSortLessThanCI);
+        break;
+
+    case YACReaderHeuristicSorting:
+    {
+        std::sort(pageNames.begin(), pageNames.end(), naturalSortLessThanCI);
+
+        QList<QString> singlePageNames;
+        QList<QString> doublePageNames;
+
+        get_double_pages(pageNames, singlePageNames, doublePageNames);
+
+        if(doublePageNames.length() > 0)
+        {
+            pageNames = merge_pages(singlePageNames, doublePageNames);
+        }
+
+        break;
+    }
+
+    case YACReaderAlphabeticalSorting:
+        std::sort(pageNames.begin(), pageNames.end());
+        break;
+    }
+}
+
