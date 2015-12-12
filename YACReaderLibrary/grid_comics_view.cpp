@@ -137,34 +137,34 @@ void GridComicsView::setToolBar(QToolBar *toolBar)
 
 void GridComicsView::setModel(ComicModel *model)
 {
-    QLOG_INFO() << "setModel";
+    if(model == NULL)
+        return;
+
+    if(this->model == model)
+        return;
+
+    ComicsView::setModel(model);
 
     QQmlContext *ctxt = view->rootContext();
 
-    //there is only one mothel in the system
-    ComicsView::setModel(model);
-    if(this->model != NULL)
-    {
-        QLOG_INFO() << "xxx";
+    if(_selectionModel != NULL)
+        delete _selectionModel;
 
-        if(_selectionModel != NULL)
-            delete _selectionModel;
-        _selectionModel = new QItemSelectionModel(this->model);
+    _selectionModel = new QItemSelectionModel(model);
 
-        ctxt->setContextProperty("comicsList", this->model);
-        ctxt->setContextProperty("comicsSelection", _selectionModel);
-        ctxt->setContextProperty("contextMenuHelper",this);
-        ctxt->setContextProperty("comicsSelectionHelper", this);
-        ctxt->setContextProperty("comicRatingHelper", this);
-        ctxt->setContextProperty("dummyValue", true);
-        ctxt->setContextProperty("dragManager", this);
-        ctxt->setContextProperty("dropManager", this);
+    ctxt->setContextProperty("comicsList", model);
+    ctxt->setContextProperty("comicsSelection", _selectionModel);
+    ctxt->setContextProperty("contextMenuHelper",this);
+    ctxt->setContextProperty("comicsSelectionHelper", this);
+    ctxt->setContextProperty("comicRatingHelper", this);
+    ctxt->setContextProperty("dummyValue", true);
+    ctxt->setContextProperty("dragManager", this);
+    ctxt->setContextProperty("dropManager", this);
 
-        updateBackgroundConfig();
+    updateBackgroundConfig();
 
-        if(model->rowCount()>0)
-            setCurrentIndex(model->index(0,0));
-    }
+    if(model->rowCount()>0)
+        setCurrentIndex(model->index(0,0));
 }
 
 void GridComicsView::updateBackgroundConfig()
@@ -206,7 +206,6 @@ void GridComicsView::updateBackgroundConfig()
 
 void GridComicsView::setCurrentIndex(const QModelIndex &index)
 {
-    QLOG_INFO() << "setCurrentIndex";
     _selectionModel->clear();
     _selectionModel->select(index, QItemSelectionModel::Select | QItemSelectionModel::Rows);
     view->rootContext()->setContextProperty("dummyValue", true);
@@ -214,7 +213,6 @@ void GridComicsView::setCurrentIndex(const QModelIndex &index)
 
 QModelIndex GridComicsView::currentIndex()
 {
-        QLOG_INFO() << "currentIndex";
     QModelIndexList indexes = _selectionModel->selectedRows();
     if(indexes.length()>0)
         return indexes[0];
@@ -225,7 +223,6 @@ QModelIndex GridComicsView::currentIndex()
 
 QItemSelectionModel *GridComicsView::selectionModel()
 {
-    QLOG_INFO() << "selectionModel";
     QModelIndexList indexes = _selectionModel->selectedRows();
     if(indexes.length()==0)
         this->selectIndex(0);
@@ -235,24 +232,22 @@ QItemSelectionModel *GridComicsView::selectionModel()
 
 void GridComicsView::scrollTo(const QModelIndex &mi, QAbstractItemView::ScrollHint hint)
 {
-    QLOG_INFO() << "scrollTo";
+
 }
 
 void GridComicsView::toFullScreen()
 {
-    QLOG_INFO() << "toFullScreen";
     toolbar->hide();
 }
 
 void GridComicsView::toNormal()
 {
-    QLOG_INFO() << "toNormal";
     toolbar->show();
 }
 
 void GridComicsView::updateConfig(QSettings *settings)
 {
-    QLOG_INFO() << "updateConfig";
+
 }
 
 void GridComicsView::enableFilterMode(bool enabled)
@@ -262,7 +257,6 @@ void GridComicsView::enableFilterMode(bool enabled)
 
 void GridComicsView::selectAll()
 {
-    QLOG_INFO() << "selectAll";
     QModelIndex top = model->index(0, 0);
     QModelIndex bottom = model->index(model->rowCount()-1, 0);
     QItemSelection selection(top, bottom);
@@ -272,7 +266,6 @@ void GridComicsView::selectAll()
 
 void GridComicsView::rate(int index, int rating)
 {
-    QLOG_INFO() << "Comic "<< index << "rated" << rating;
     model->updateRating(rating,model->index(index,0));
 }
 
@@ -289,7 +282,6 @@ void GridComicsView::setCoversSize(int width)
 
     if(grid != 0)
     {
-        QLOG_INFO() << "method invoked";
         QVariant cellCustomWidth = (width * YACREADER_MIN_CELL_CUSTOM_WIDTH) / YACREADER_MIN_GRID_ZOOM_WIDTH;
         QMetaObject::invokeMethod(grid, "calculateCellWidths",
                                   Q_ARG(QVariant, cellCustomWidth));
@@ -309,8 +301,7 @@ void GridComicsView::setCoversSize(int width)
 
 QSize GridComicsView::sizeHint()
 {
-        QLOG_INFO() << "sizeHint";
-        return QSize(1280,768);
+    return QSize(1280,768);
 }
 
 QByteArray GridComicsView::getMimeDataFromSelection()
@@ -327,7 +318,6 @@ QByteArray GridComicsView::getMimeDataFromSelection()
 
 void GridComicsView::startDrag()
 {
-    QLOG_DEBUG() << "performDrag";
     QDrag *drag = new QDrag(this);
     drag->setMimeData(model->mimeData(_selectionModel->selectedRows()));
     drag->setPixmap(QPixmap(":/images/comics_view_toolbar/openInYACReader.png")); //TODO add better image
@@ -375,7 +365,6 @@ void GridComicsView::droppedComicsForResortingAt(const QString &data, int index)
 //helper
 void GridComicsView::selectIndex(int index)
 {
-    QLOG_INFO() << "selectIndex" << index;
     if(_selectionModel != NULL && model!=NULL)
     {
         _selectionModel->select(model->index(index,0),QItemSelectionModel::Select | QItemSelectionModel::Rows);
@@ -409,7 +398,6 @@ bool GridComicsView::isSelectedIndex(int index)
 
 void GridComicsView::clear()
 {
-    QLOG_INFO() << "clear";
     if(_selectionModel != NULL)
     {
         _selectionModel->clear();
@@ -439,7 +427,6 @@ int GridComicsView::lastSelectedIndex()
 {
     if(_selectionModel != NULL)
     {
-        QLOG_INFO() << "last selected index " << _selectionModel->selectedRows().last().row();
         return _selectionModel->selectedRows().last().row();
     }
 
@@ -448,7 +435,6 @@ int GridComicsView::lastSelectedIndex()
 
 void GridComicsView::setShowMarks(bool show)
 {
-    QLOG_INFO() << "setShowMarks";
     QQmlContext *ctxt = view->rootContext();
     ctxt->setContextProperty("show_marks", show);
 }
@@ -458,7 +444,6 @@ void GridComicsView::closeEvent(QCloseEvent *event)
     toolbar->removeAction(toolBarStretchAction);
     toolbar->removeAction(coverSizeSliderAction);
 
-    QLOG_INFO() << "closeEvent";
     QObject *object = view->rootObject();
     QMetaObject::invokeMethod(object, "exit");
     container->close();
