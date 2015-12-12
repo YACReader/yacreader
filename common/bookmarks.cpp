@@ -4,7 +4,6 @@
 #include <QCoreApplication>
 #include <QFileInfo>
 
-#include <QMessageBox>
 #include <QList>
 
 #include "yacreader_global.h"

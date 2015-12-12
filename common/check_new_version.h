@@ -4,7 +4,6 @@
 #include "http_worker.h"
 #include "yacreader_global.h"
 
-#include <QWidget>
 #include <QByteArray>
 #include <QThread>
 

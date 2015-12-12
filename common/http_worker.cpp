@@ -1,5 +1,5 @@
 #include "http_worker.h"
-#include <QMessageBox>
+
 #include <QUrl>
 #include <QtGlobal>
 #include <QStringList>

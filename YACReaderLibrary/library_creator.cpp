@@ -5,7 +5,7 @@
 #include <QDebug>
 #include <QSqlQuery>
 #include <QSqlRecord>
-#include <QApplication>
+#include <QCoreApplication>
 #include <QLibrary>
 
 #include "data_base_management.h"
@@ -127,13 +127,13 @@ void LibraryCreator::run()
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
     QLibrary *sevenzLib = new QLibrary(QString(LIBDIR)+"/p7zip/7z.so");
 #else
-    QLibrary *sevenzLib = new QLibrary(QApplication::applicationDirPath()+"/utils/7z");
+    QLibrary *sevenzLib = new QLibrary(QCoreApplication::applicationDirPath()+"/utils/7z");
 #endif
 	
 	if(!sevenzLib->load())
 	{
 		QLOG_ERROR() << "Loading 7z.dll : " + sevenzLib->errorString() << endl;
-		QApplication::exit(YACReader::SevenZNotFound);
+        QCoreApplication::exit(YACReader::SevenZNotFound);
 		exit();
 	}
 	sevenzLib->deleteLater();

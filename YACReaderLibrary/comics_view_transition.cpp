@@ -8,7 +8,7 @@
 #include <QSizePolicy>
 #include <QPainter>
 
-#include "yacreader_global.h"
+#include "yacreader_global_gui.h"
 
 ComicsViewTransition::ComicsViewTransition(QWidget *parent) :
     QWidget(parent),movie(0)

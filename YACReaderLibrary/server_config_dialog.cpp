@@ -11,7 +11,7 @@
 #include <QBitmap>
 
 #include "startup.h"
-#include "yacreader_global.h"
+#include "yacreader_global_gui.h"
 
 #include "qnaturalsorting.h"
 
