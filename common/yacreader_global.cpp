@@ -1,5 +1,5 @@
 #include "yacreader_global.h"
-#include <QAction>
+
 
 using namespace YACReader;
 
@@ -12,22 +12,6 @@ QString YACReader::getSettingsPath()
 #endif
 
 }
-
-void YACReader::addSperator(QWidget *w)
-{
-    QAction * separator = new QAction(w);
-    separator->setSeparator(true);
-    w->addAction(separator);
-}
-
-
-QAction * YACReader::createSeparator()
-{
-    QAction * a = new QAction(0);
-    a->setSeparator(true);
-    return a;
-}
-
 
 QString YACReader::colorToName(LabelColors colors)
 {
@@ -58,31 +42,6 @@ QString YACReader::colorToName(LabelColors colors)
         return "dark";
     }
 }
-
-
-QIcon YACReader::noHighlightedIcon(const QString &path)
-{
-    QPixmap p(path);
-
-    QIcon icon;//(path);
-    icon.addFile(path,p.size(),QIcon::Normal);
-    icon.addFile(path,p.size(),QIcon::Selected);
-    return icon;
-}
-
-
-void YACReader::colorize(QImage &img, QColor &col)
-{
-    QRgb *data = (QRgb *)img.bits();
-    QRgb *end = data + img.width()*img.height();
-
-    int rcol = col.red(), gcol = col.green(), bcol = col.blue();
-    while(data != end) {
-            *data = qRgba(rcol,gcol,bcol,qAlpha(*data));
-        ++data;
-    }
-}
-
 
 QString YACReader::labelColorToRGBString(LabelColors color)
 {
@@ -128,14 +87,4 @@ QString YACReader::labelColorToRGBString(LabelColors color)
 
 
     }
-}
-
-
-QList<qulonglong> YACReader::mimeDataToComicsIds(const QMimeData *data)
-{
-    QList<qulonglong> comicIds;
-    QByteArray rawData = data->data(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat);
-    QDataStream in(&rawData,QIODevice::ReadOnly);
-    in  >> comicIds; //deserialize the list of indentifiers
-    return comicIds;
 }

@@ -28,7 +28,7 @@
 #define PICTUREFLOW_H
 
 #include <qwidget.h>
-#include "yacreader_global.h" //FlowType
+#include "yacreader_global_gui.h" //FlowType
 
 class PictureFlowPrivate;
 

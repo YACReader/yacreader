@@ -1,4 +1,5 @@
 #include "comic_vine_client.h"
+#include "yacreader_global_gui.h"
 
 //this is the API key used by YACReader to access Comic Vine
 //please, do not use it in your own software, get one for free at Comic Vine

@@ -3,7 +3,7 @@
 
 #include <QtWidgets>
 #include "empty_container_info.h"
-#include "yacreader_global.h"
+#include "yacreader_global_gui.h"
 
 class EmptyLabelWidget : public EmptyContainerInfo
 {
