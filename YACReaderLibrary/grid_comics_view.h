@@ -63,6 +63,7 @@ public slots:
     void droppedFiles(const QList<QUrl> & urls, Qt::DropAction action);
     void droppedComicsForResortingAt(const QString & data, int index);
 
+    void updateBackgroundConfig();
 
 protected slots:
     void requestedContextMenu(const QPoint & point);

@@ -135,9 +135,9 @@ void LibraryWindow::setupUI()
 	createActions();
 	doModels();
 	
+    doDialogs();
 	doLayout();
 	createToolBars();
-	doDialogs();
 	createMenus();
 
     navigationController = new YACReaderNavigationController(this);
@@ -245,6 +245,7 @@ void LibraryWindow::doLayout()
         //comicsViewStack->setCurrentIndex(Flow);
     } else {
         comicsView = gridComicsView = new GridComicsView();
+        connect(optionsDialog, SIGNAL(optionsChanged()), gridComicsView, SLOT(updateBackgroundConfig()));
         comicsViewStatus = Grid;
         //comicsViewStack->setCurrentIndex(Grid);
     }
@@ -2256,6 +2257,7 @@ void LibraryWindow::toggleComicsView_delayed()
         libraryToolBar->updateViewSelectorIcon(icoViewsButton);
 #endif
         switchToComicsView(classicComicsView, gridComicsView = new GridComicsView());
+        connect(optionsDialog, SIGNAL(optionsChanged()), gridComicsView, SLOT(updateBackgroundConfig()));
         comicsViewStatus = Grid;
     }
     else{
