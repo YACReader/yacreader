@@ -96,6 +96,8 @@ void logSystemAndConfig()
         QLOG_INFO() << "7z : found";
     else
         QLOG_ERROR() << "7z : not found";
+
+    /*
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
     if(QFileInfo(QString(BINDIR)+"/qrencode").exists())
 #else
@@ -104,18 +106,7 @@ void logSystemAndConfig()
         QLOG_INFO() << "qrencode : found";
     else
         QLOG_INFO() << "qrencode : not found";
-
-	QSettings settings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat);
-    settings.beginGroup("libraryConfig");
-	if(settings.value(SERVER_ON,true).toBool())
-        QLOG_INFO() << "server : enabled";
-    else
-        QLOG_INFO() << "server : disabled";
-
-    if(settings.value(USE_OPEN_GL).toBool())
-        QLOG_INFO() << "OpenGL : enabled"  << " - " << (settings.value(V_SYNC).toBool()?"VSync on":"VSync off");
-    else
-        QLOG_INFO() << "OpenGL : disabled";
+        */
 
 	QLOG_INFO() << "Libraries: " << DBHelper::getLibraries().getLibraries();
     QLOG_INFO() << "--------------------------------------------";
@@ -204,18 +195,14 @@ int main( int argc, char ** argv )
 
   qRegisterMetaType<ComicDB>("ComicDB");
 
-#ifdef SERVER_RELEASE
+
   QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creaciï¿½n del fichero de config con el servidor
   settings->beginGroup("libraryConfig");
   
   s = new Startup();
+  s->start();
 
-  if(settings->value(SERVER_ON,true).toBool())
-  {
-	  s->start();
-  }
-#endif
-  QLOG_INFO() << "YACReaderLibrary attempting to start";
+  QLOG_INFO() << "YACReaderLibraryServer attempting to start";
 
   logSystemAndConfig();
 

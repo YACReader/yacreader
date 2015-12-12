@@ -9,7 +9,7 @@
 #include <QDateTime>
 #include "httpsession.h"
 #include "static.h"
-#include <QApplication>
+#include <QCoreApplication>
 
 
 StaticFileController::StaticFileController(QSettings* settings, QObject* parent)
@@ -29,8 +29,8 @@ StaticFileController::StaticFileController(QSettings* settings, QObject* parent)
 	QFileInfo configFile(QString(DATADIR)+"/yacreader");
         docroot=QFileInfo(QString(DATADIR)+"/yacreader",docroot).absoluteFilePath();
 #else
-        QFileInfo configFile(QApplication::applicationDirPath());
-        docroot=QFileInfo(QApplication::applicationDirPath(),docroot).absoluteFilePath();
+        QFileInfo configFile(QCoreApplication::applicationDirPath());
+        docroot=QFileInfo(QCoreApplication::applicationDirPath(),docroot).absoluteFilePath();
 #endif
     }
     qDebug("StaticFileController: docroot=%s, encoding=%s, maxAge=%i",qPrintable(docroot),qPrintable(encoding),maxAge);

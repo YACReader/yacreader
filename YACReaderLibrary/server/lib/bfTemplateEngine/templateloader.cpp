@@ -9,7 +9,7 @@
 #include <QStringList>
 #include <QDir>
 #include <QSet>
-#include <QApplication>
+#include <QCoreApplication>
 
 TemplateLoader::TemplateLoader(QSettings* settings, QObject* parent)
     : QObject(parent)
@@ -26,8 +26,8 @@ TemplateLoader::TemplateLoader(QSettings* settings, QObject* parent)
         QFileInfo configFile(QString(DATADIR)+"/yacreader");
         templatePath=QFileInfo(QString(DATADIR)+"/yacreader",templatePath).absoluteFilePath();
 #else
-        QFileInfo configFile(QApplication::applicationDirPath());
-        templatePath=QFileInfo(QApplication::applicationDirPath(),templatePath).absoluteFilePath();
+        QFileInfo configFile(QCoreApplication::applicationDirPath());
+        templatePath=QFileInfo(QCoreApplication::applicationDirPath(),templatePath).absoluteFilePath();
 #endif
     }
     fileNameSuffix=settings->value("suffix",".tpl").toString();

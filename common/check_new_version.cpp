@@ -1,5 +1,5 @@
 #include "check_new_version.h"
-#include <QMessageBox>
+
 #include <QUrl>
 #include <QtGlobal>
 #include <QStringList>

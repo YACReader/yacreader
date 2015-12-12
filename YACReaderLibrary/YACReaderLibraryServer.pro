@@ -67,10 +67,6 @@ HEADERS += library_creator.h \
            bundle_creator.h \
            db_helper.h \
            ./db/data_base_management.h \
-#           ./db/folder_item.h \
-#           ./db/folder_model.h \
-#           ./db/comic_model.h \
-#           ./db/comic_item.h \
            ../common/comic_db.h \
            ../common/folder.h \
            ../common/library_item.h \
@@ -82,8 +78,8 @@ HEADERS += library_creator.h \
            comics_remover.h \
            ../common/http_worker.h \
            yacreader_libraries.h \
-           comic_files_manager.h \
-#           db/reading_list_model.h
+           comic_files_manager.h
+
 
 SOURCES += library_creator.cpp \
            .\headless\main.cpp \
@@ -102,8 +98,7 @@ SOURCES += library_creator.cpp \
            ../common/http_worker.cpp \
            ../common/yacreader_global.cpp \
            yacreader_libraries.cpp \
-           comic_files_manager.cpp \
-
+           comic_files_manager.cpp
 
 				   
 include(./server/server.pri)
@@ -114,8 +109,8 @@ include(../compressed_archive/unarr/unarr-wrapper.pri)
 } else {
 	error(No compression backend specified. Did you mess with the build system?)
 }
-
 include(../QsLog/QsLog.pri)
+
 
 TRANSLATIONS =  yacreaderlibraryserver_es.ts \
                 yacreaderlibraryserver_ru.ts \
@@ -129,6 +124,7 @@ TRANSLATIONS =  yacreaderlibraryserver_es.ts \
 
 Release:DESTDIR = ../release
 Debug:DESTDIR = ../debug
+
 
 unix:!macx {
 #set install prefix if it's empty
