@@ -33,11 +33,24 @@ void ConsoleUILibraryCreator::createLibrary(const QString & name, const QString 
 
 void ConsoleUILibraryCreator::updateLibrary(const QString & path)
 {
-    //TODO
-    //connect(libraryCreator,SIGNAL(failedUpdatingDB(QString)),this,SLOT(manageUpdatingError(QString)));
+    QEventLoop eventLoop;
+    LibraryCreator * libraryCreator = new LibraryCreator();
+
+    libraryCreator->updateLibrary(QDir::cleanPath(path),QDir::cleanPath(path)+"/.yacreaderlibrary");
+
+    connect(libraryCreator, &LibraryCreator::finished, this, &ConsoleUILibraryCreator::done);
+    connect(libraryCreator, &LibraryCreator::comicAdded, this, &ConsoleUILibraryCreator::newComic);
+    connect(libraryCreator, &LibraryCreator::failedOpeningDB, this, &ConsoleUILibraryCreator::manageUpdatingError);
+
+    connect(libraryCreator, &LibraryCreator::finished, &eventLoop, &QEventLoop::quit);
+
+    std::cout << "Processing comics";
+
+    libraryCreator->start();
+    eventLoop.exec();
 }
 
-void ConsoleUILibraryCreator::newComic(const QString & relativeComicPath, const QString & coverPath)
+void ConsoleUILibraryCreator::newComic(const QString & /*relativeComicPath*/, const QString & /*coverPath*/)
 {
     numComicsProcessed++;
     std::cout << ".";
@@ -48,8 +61,15 @@ void ConsoleUILibraryCreator::manageCreatingError(const QString & error)
     std::cout << std::endl << "Error creating library! " << error.toUtf8().constData();
 }
 
+void ConsoleUILibraryCreator::manageUpdatingError(const QString & error)
+{
+    std::cout << std::endl << "Error updating library! " << error.toUtf8().constData();
+}
+
 void ConsoleUILibraryCreator::done()
 {
-   std::cout << "Done!" << std::endl;
-   std::cout << "Number of comis processed = " << numComicsProcessed << std::endl;
+    std::cout << "Done!" << std::endl;
+
+    if(numComicsProcessed > 0)
+        std::cout << "Number of comis processed = " << numComicsProcessed << std::endl;
 }

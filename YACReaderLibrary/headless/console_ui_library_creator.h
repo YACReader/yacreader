@@ -20,6 +20,7 @@ public slots:
 protected slots:
     void newComic(const QString & relativeComicPath, const QString & coverPath);
     void manageCreatingError(const QString & error);
+    void manageUpdatingError(const QString & error);
     void done();
 };
 

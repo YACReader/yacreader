@@ -175,7 +175,15 @@ int main( int argc, char ** argv )
         if(args.length() != 2)
         {
             parser.showHelp();
+            return 0;
         }
+
+        const QStringList updateArgs = parser.positionalArguments();
+
+        ConsoleUILibraryCreator * libraryCreatorUI = new ConsoleUILibraryCreator;
+        libraryCreatorUI->updateLibrary(updateArgs.at(1));
+
+        return 0;
     }
     else if(command == "list-libraries")
     {
