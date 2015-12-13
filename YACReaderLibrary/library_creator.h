@@ -78,14 +78,14 @@
 		QString _target;
 		QString _currentName;
 		int _numPages;
-		QPixmap _cover;
+        QImage _cover;
 		int _coverPage;
 		static bool crash;
 
 	public slots:
 		void create();		
-		int getNumPages(){return _numPages;};
-		QPixmap getCover(){return _cover;};
+        int getNumPages(){return _numPages;}
+        QPixmap getCover(){return QPixmap::fromImage(_cover);}
 	signals:
 		void openingError(QProcess::ProcessError error);
 
