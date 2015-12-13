@@ -7,8 +7,12 @@
 #include "yacreader_libraries.h"
 #include "yacreader_local_server.h"
 
+#include "console_ui_library_creator.h"
+
 #include "QsLog.h"
 #include "QsLogDest.h"
+
+
 
 using namespace QsLogging;
 
@@ -100,45 +104,90 @@ void logSystemAndConfig()
     QLOG_INFO() << "--------------------------------------------";
 }
 
-QCoreApplication* createApplication(int &argc, char *argv[])
-{
-    for (int i = 1; i < argc; ++i)
-        if (!qstrcmp(argv[i], "--no-gui"))
-            return new QCoreApplication(argc, argv);
-    return new QCoreApplication(argc, argv);
-}
-
 int main( int argc, char ** argv )
 {
-    QScopedPointer<QCoreApplication> app(createApplication(argc, argv));
+    QCoreApplication *app = new QCoreApplication(argc, argv);
 
     app->setApplicationName("YACReaderLibraryServer");
     app->setOrganizationName("YACReader");
-    //simple command line parser
-    //will be replaced by QCommandLineParser in the future
-    //TODO: support for file and directory arguments
-    if (argc > 1)
+    app->setApplicationVersion(VERSION);
+
+    QTextStream qout(stdout);
+
+    //general help
+    QCommandLineParser parser;
+    parser.setApplicationDescription(QCoreApplication::tr("\nYACReaderLibraryServer is the headless (no gui) version of YACReaderLibrary"));
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addPositionalArgument("command", "The command to execute. [start, create-library, update-library, list-libraries]");
+
+    parser.parse(QCoreApplication::arguments());
+
+    const QStringList args = parser.positionalArguments();
+    const QString command = args.isEmpty() ? QString() : args.first();
+
+    if(command == "start")
     {
-        QTextStream parser(stdout);
-        QStringList optlist = QCoreApplication::arguments().filter(QRegExp ("^-{1,2}"));
-        if (optlist.contains("--version") || optlist.contains("-v"))
+
+    }
+    else if(command == "create-library")
+    {
+        QCommandLineParser parser;
+
+        parser.addHelpOption();
+
+        parser.parse(QCoreApplication::arguments());
+
+        parser.clearPositionalArguments();
+        parser.addPositionalArgument("create-library", "Creates a library named \"name\" in the specified destination <path>");
+        parser.addPositionalArgument("name", "Library name", "\"name\"");
+        parser.addPositionalArgument("path", "Path to the folder where the library will be created", "<path>");
+        parser.process(*app);
+
+        const QStringList args = parser.positionalArguments();
+        if(args.length() != 3)
         {
-            parser << app->applicationName() << " " << QString(VERSION) << endl << "Copyright 2014 by Luis Angel San Martin Rodriguez" << endl;
+            parser.showHelp();
             return 0;
         }
-        if (optlist.contains("--help") || optlist.contains("-h"))
+
+        const QStringList createArgs = parser.positionalArguments();
+
+        ConsoleUILibraryCreator * libraryCreatorUI = new ConsoleUILibraryCreator;
+        libraryCreatorUI->createLibrary(createArgs.at(1), createArgs.at(2));
+
+        return 0;
+    }
+    else if(command == "update-library")
+    {
+        QCommandLineParser parser;
+
+        parser.addHelpOption();
+
+        parser.parse(QCoreApplication::arguments());
+
+        parser.clearPositionalArguments();
+        parser.addPositionalArgument("update-library", "Updates an existing library at <path>");
+        parser.addPositionalArgument("path", "Path to the library to be updated", "<path>");
+        parser.process(*app);
+
+        const QStringList args = parser.positionalArguments();
+        if(args.length() != 2)
         {
-            parser << endl << "Usage:" << "\tYACReaderLibrary [Option]" << endl << endl;
-            parser << "Options:" << endl;
-            parser << "  none\t\t\tStart YACReaderLibrary" << endl;
-            parser << "  -h, --help\t\tDisplay help text and exit." << endl;
-            parser << "  -v, --version\t\tDisplay version information and exit." << endl;
-            return 0;
+            parser.showHelp();
         }
-        if (optlist.contains("--no-gui"))
-        {
-            parser << "You're running YACReaderLibrary in non-gui mode. Press Ctrl+C to exit." << endl;
-        }
+    }
+    else if(command == "list-libraries")
+    {
+        YACReaderLibraries libraries = DBHelper::getLibraries();
+        for(QString libraryName : libraries.getNames())
+            qout << libraryName << " : " << libraries.getPath(libraryName) << endl;
+
+        return 0;
+    }
+    else //error
+    {
+        parser.showHelp();
     }
 
     QString destLog = YACReader::getSettingsPath()+"/yacreaderlibrary.log";
