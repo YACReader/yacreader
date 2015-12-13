@@ -4,7 +4,6 @@
 #include "library_creator.h"
 #include "check_new_version.h"
 
-#define QT_NO_DEBUG_OUTPUT
 
 static QString fields = 		"title ,"
 
