@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "library_creator.h"
-
+#include "yacreader_libraries.h"
 
 
 ConsoleUILibraryCreator::ConsoleUILibraryCreator(QObject *parent) :
@@ -29,6 +29,12 @@ void ConsoleUILibraryCreator::createLibrary(const QString & name, const QString 
 
     libraryCreator->start();
     eventLoop.exec();
+
+    //TODO, at some point some checking is needed for avoiding duplicated libraries
+    YACReaderLibraries yacreaderLibraries;
+    yacreaderLibraries.load();
+    yacreaderLibraries.addLibrary(name, path);
+    yacreaderLibraries.save();
 }
 
 void ConsoleUILibraryCreator::updateLibrary(const QString & path)
