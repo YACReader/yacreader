@@ -11,7 +11,7 @@ INCLUDEPATH += ../common \
                 ./server \
                 ./db
 
-DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY
+DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY QT_NO_DEBUG_OUTPUT
 
 #load default build flags
 #TODO include (../config.pri)
