@@ -155,31 +155,9 @@ int main( int argc, char ** argv )
 
   app.setApplicationName("YACReaderLibrary");
   app.setOrganizationName("YACReader");
+  app.setApplicationName(VERSION);
+
   app.setAttribute(Qt::AA_UseHighDpiPixmaps);
-//simple command line parser
-//will be replaced by QCommandLineParser in the future 
-//TODO: --headless, --server=[on|off], support for file and directory arguments
-  if (argc > 1)
-	{
-		QTextStream parser(stdout);
-		QStringList optlist = QCoreApplication::arguments().filter(QRegExp ("^-{1,2}"));
-        if (optlist.contains("--version") || optlist.contains("-v"))
-		{
-			parser << app.applicationName() << " " << QString(VERSION) << endl << "Copyright 2014 by Luis Angel San Martin Rodriguez" << endl;
-			return 0;
-		}
-        if (optlist.contains("--help") || optlist.contains("-h"))
-		{
-			parser << endl << "Usage:" << "\tYACReaderLibrary [Option]" << endl << endl;
-			parser << "Options:" << endl;
-			parser << "  none\t\t\tStart YACReaderLibrary" << endl;
-			parser << "  -h, --help\t\tDisplay help text and exit." << endl;
-			parser << "  -v, --version\t\tDisplay version information and exit." << endl;
-			return 0;
-		}
-		parser << "Unsupported command line options. See YACReaderLibrary --help for further information." << endl;
-		return 0;
-	}
 
   QString destLog = YACReader::getSettingsPath()+"/yacreaderlibrary.log";
   QDir().mkpath(YACReader::getSettingsPath());
