@@ -27,8 +27,7 @@
 void Startup::start() {
 	// Initialize the core application
     QCoreApplication* app = QCoreApplication::instance();
-	app->setApplicationName(APPNAME);
-	app->setOrganizationName(ORGANISATION);
+
 	QString configFileName=YACReader::getSettingsPath()+"/"+QCoreApplication::applicationName()+".ini";
 
 	// Configure logging into files

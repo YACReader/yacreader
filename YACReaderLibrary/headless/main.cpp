@@ -226,12 +226,10 @@ int main( int argc, char ** argv )
     viewerTranslator.load(QCoreApplication::applicationDirPath()+"/languages/yacreader_"+sufix);
 #endif
     app->installTranslator(&viewerTranslator);
-    app->setApplicationName("YACReaderLibrary");
 
     qRegisterMetaType<ComicDB>("ComicDB");
 
-
-    QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creaciï¿½n del fichero de config con el servidor
+    QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/"+QCoreApplication::applicationName()+".ini",QSettings::IniFormat);
     settings->beginGroup("libraryConfig");
 
     //server
