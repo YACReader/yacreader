@@ -218,6 +218,15 @@ void MainWindowViewer::createActions()
     openFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_FOLDER_ACTION_Y));
     connect(openFolderAction, SIGNAL(triggered()), this, SLOT(openFolder()));
 
+    QAction* recentFileAction = 0;
+    for (int i = 0; i < 5; i++)
+	{
+		recentFileAction = new QAction(this);
+		recentFileAction->setVisible(false);
+		//QObject::connect(recentFileAction, SIGNAL(triggered()), this, SLOT(openRecent()));
+		recentFilesActionList.append(recentFileAction);
+	}
+	
     saveImageAction = new QAction(tr("Save"),this);
     saveImageAction->setIcon(QIcon(":/images/viewer_toolbar/save.png"));
     saveImageAction->setToolTip(tr("Save current page"));
@@ -502,9 +511,13 @@ void MainWindowViewer::createToolBars()
     comicToolBar->addAction(openAction);
     comicToolBar->addAction(openFolderAction);
 #else
+	QMenu * recentmenu = new QMenu("Open recent");
+	recentmenu->addActions(recentFilesActionList);
+	
 	QToolButton * tb = new QToolButton();
 	tb->addAction(openAction);
 	tb->addAction(openFolderAction);
+	tb->addAction(recentmenu->menuAction());
 	tb->setPopupMode(QToolButton::MenuButtonPopup);
 	tb->setDefaultAction(openAction);
 

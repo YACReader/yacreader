@@ -104,6 +104,7 @@ class EditShortcutsDialog;
 		//! Actions
 		QAction *openAction;
 		QAction *openFolderAction;
+		QList<QAction*> recentFilesActionList;
 		QAction *saveImageAction;
 		QAction *openPreviousComicAction;
 		QAction *openNextComicAction;
