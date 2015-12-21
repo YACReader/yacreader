@@ -4,6 +4,7 @@
 #include "library_creator.h"
 #include "check_new_version.h"
 
+
 static QString fields = 		"title ,"
 
 		"coverPage,"

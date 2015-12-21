@@ -11,7 +11,7 @@ INCLUDEPATH += ../common \
                 ./server \
                 ./db
 
-DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY
+DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY QT_NO_DEBUG_OUTPUT
 
 #load default build flags
 #TODO include (../config.pri)
@@ -78,7 +78,8 @@ HEADERS += library_creator.h \
            comics_remover.h \
            ../common/http_worker.h \
            yacreader_libraries.h \
-           comic_files_manager.h
+           comic_files_manager.h \
+           headless/console_ui_library_creator.h
 
 
 SOURCES += library_creator.cpp \
@@ -98,7 +99,8 @@ SOURCES += library_creator.cpp \
            ../common/http_worker.cpp \
            ../common/yacreader_global.cpp \
            yacreader_libraries.cpp \
-           comic_files_manager.cpp
+           comic_files_manager.cpp \
+           headless/console_ui_library_creator.cpp
 
 				   
 include(./server/server.pri)
@@ -120,6 +122,9 @@ TRANSLATIONS =  yacreaderlibraryserver_es.ts \
                 yacreaderlibraryserver_tr.ts \
                 yacreaderlibraryserver_de.ts \
                 yacreaderlibraryserver_source.ts
+
+
+RESOURCES += headless/images.qrc
 
 
 Release:DESTDIR = ../release

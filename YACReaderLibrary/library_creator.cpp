@@ -636,7 +636,7 @@ void ThumbnailCreator::create()
 #else
 			QImage p = pdfComic->page(_coverPage-1)->renderToImage(72,72);
 #endif
-			_cover = QPixmap::fromImage(p);
+            _cover = p;
 			if(_target!="")
 			{
 				QImage scaled;

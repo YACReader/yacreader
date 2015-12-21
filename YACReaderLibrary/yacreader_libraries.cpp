@@ -102,7 +102,7 @@ void YACReaderLibraries::addLibrary(const QString &name, const QString &path)
 
 void YACReaderLibraries::load()
 {
-	QSettings settings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat);
+    QSettings settings(YACReader::getSettingsPath()+"/"+QCoreApplication::applicationName()+".ini",QSettings::IniFormat);
 
 	if(settings.value(LIBRARIES).isValid())
 	{
@@ -136,7 +136,7 @@ void YACReaderLibraries::load()
 
 bool YACReaderLibraries::save()
 {
-	QSettings settings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat);
+    QSettings settings(YACReader::getSettingsPath()+"/"+QCoreApplication::applicationName()+".ini",QSettings::IniFormat);
 
 	QByteArray data;
 	QDataStream out(&data, QIODevice::WriteOnly);
