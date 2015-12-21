@@ -58,3 +58,14 @@ void Configuration::load(QSettings * settings)
 		settings->setValue(ADJUST_TO_FULL_SIZE,false);
 	*/
 	}
+void Configuration::updateOpenRecentList (QString path)
+{
+	QStringList list = openRecentList();
+	list.removeAll(path);
+	list.prepend(path);
+	while (list.length() > 5)
+	{
+		list.removeLast();
+	}
+	settings->setValue("recentFiles", list);
+}

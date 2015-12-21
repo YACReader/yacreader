@@ -65,6 +65,10 @@ using namespace YACReader;
         YACReader::FitMode getFitMode() { return static_cast<YACReader::FitMode>(settings->value(FITMODE, YACReader::FitMode::FullPage).toInt()); }
 		void setFitMode ( YACReader::FitMode fitMode ){ settings->setValue(FITMODE, static_cast<int>(fitMode)); }
 		
+		//openRecent
+		QStringList openRecentList() { return settings->value("recentFiles").toStringList(); }
+		void updateOpenRecentList (QString path);
+		
 		//Old fitmodes
 		/*
 		bool getAdjustToWidth() {return settings->value(FIT).toBool();}
