@@ -34,6 +34,7 @@ class EditShortcutsDialog;
 		void open(QString path, ComicDB & comic, QList<ComicDB> & siblings);
 		void open(QString path, qint64 comicId, qint64 libraryId);
 		void openFolder();
+		void openRecent();
 		void saveImage();
 		void toggleToolBars();
 		void hideToolBars();
@@ -146,6 +147,7 @@ class EditShortcutsDialog;
 		void setupUI();
 		void createActions();
 		void createToolBars();
+		void refreshRecentFilesActionList();
 		void getSiblingComics(QString path,QString currentComic);
 
 		//! Manejadores de evento:
