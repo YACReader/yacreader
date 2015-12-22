@@ -63,7 +63,8 @@ void Configuration::updateOpenRecentList (QString path)
 	QStringList list = openRecentList();
 	list.removeAll(path);
 	list.prepend(path);
-	while (list.length() > 5)
+	//TODO: Make list lenght configurable
+	while (list.length() > 10)
 	{
 		list.removeLast();
 	}
