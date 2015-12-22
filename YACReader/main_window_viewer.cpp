@@ -219,7 +219,8 @@ void MainWindowViewer::createActions()
     connect(openFolderAction, SIGNAL(triggered()), this, SLOT(openFolder()));
 
     QAction* recentFileAction = 0;
-    for (int i = 0; i < 5; i++)
+    //TODO: Replace limit with a configurable value
+    for (int i = 0; i < 10; i++)
 	{
 		recentFileAction = new QAction(this);
 		recentFileAction->setVisible(false);
@@ -665,8 +666,8 @@ void MainWindowViewer::refreshRecentFilesActionList()
 {
 	QStringList recentFilePaths = Configuration::getConfiguration().openRecentList();
 	
-	//TODO: Replace "5" with something configurable
-	int iteration = (recentFilePaths.size() < 5) ? recentFilePaths.size() : 5;
+	//TODO: Replace limit with something configurable
+	int iteration = (recentFilePaths.size() < 10) ? recentFilePaths.size() : 10;
 		
 	for (int i = 0; i < iteration; i++) 
 	{
@@ -676,7 +677,7 @@ void MainWindowViewer::refreshRecentFilesActionList()
 		recentFilesActionList.at(i)->setVisible(true);
 	}
 	
-	for (int i = iteration; i < 5; i++)
+	for (int i = iteration; i < 10; i++)
 	{
 		recentFilesActionList.at(i)->setVisible(false);
 	}
