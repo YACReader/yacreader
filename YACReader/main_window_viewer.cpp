@@ -223,7 +223,7 @@ void MainWindowViewer::createActions()
 	{
 		recentFileAction = new QAction(this);
 		recentFileAction->setVisible(false);
-		//QObject::connect(recentFileAction, SIGNAL(triggered()), this, SLOT(openRecent()));
+		QObject::connect(recentFileAction, &QAction::triggered, this, &MainWindowViewer::openRecent);
 		recentFilesActionList.append(recentFileAction);
 	}
 	
@@ -513,6 +513,7 @@ void MainWindowViewer::createToolBars()
 #else
 	QMenu * recentmenu = new QMenu("Open recent");
 	recentmenu->addActions(recentFilesActionList);
+	refreshRecentFilesActionList();
 	
 	QToolButton * tb = new QToolButton();
 	tb->addAction(openAction);
@@ -660,6 +661,48 @@ void MainWindowViewer::createToolBars()
 
 }
 
+void MainWindowViewer::refreshRecentFilesActionList()
+{
+	QStringList recentFilePaths = Configuration::getConfiguration().openRecentList();
+	
+	//TODO: Replace "5" with something configurable
+	int iteration = (recentFilePaths.size() < 5) ? recentFilePaths.size() : 5;
+		
+	for (int i = 0; i < iteration; i++) 
+	{
+		QString strippedName = QFileInfo(recentFilePaths.at(i)).fileName();
+		recentFilesActionList.at(i)->setText(strippedName);
+		recentFilesActionList.at(i)->setData(recentFilePaths.at(i));
+		recentFilesActionList.at(i)->setVisible(true);
+	}
+	
+	for (int i = iteration; i < 5; i++)
+	{
+		recentFilesActionList.at(i)->setVisible(false);
+	}
+}
+
+void MainWindowViewer::openRecent()
+{
+	QAction *action = qobject_cast<QAction *>(sender());
+	if (action)
+	{
+		QFileInfo info1 (action->data().toString());
+		if (info1.exists())
+		{
+			 if (info1.isFile())
+			{
+				openComicFromPath(action->data().toString());
+			}
+			else if (info1.isDir())
+			{
+				openFolderFromPath(action->data().toString());
+			}
+		}
+				
+	}
+}
+
 void MainWindowViewer::reloadOptions()
 {
 	viewer->updateConfig(settings);
@@ -764,6 +807,8 @@ void MainWindowViewer::openComic(QString pathFile)
     enableActions();
 
     viewer->open(pathFile);
+    Configuration::getConfiguration().updateOpenRecentList(pathFile);
+    refreshRecentFilesActionList();
  }
 
 void MainWindowViewer::openFolder()
@@ -788,6 +833,8 @@ void MainWindowViewer::openFolderFromPath(QString pathDir)
 	enableActions();
 
 	viewer->open(pathDir);
+	Configuration::getConfiguration().updateOpenRecentList(pathDir);
+	refreshRecentFilesActionList();
 }
 
 void MainWindowViewer::openFolderFromPath(QString pathDir, QString atFileName)
