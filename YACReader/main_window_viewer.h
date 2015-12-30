@@ -106,6 +106,7 @@ class EditShortcutsDialog;
 		QAction *openAction;
 		QAction *openFolderAction;
 		QList<QAction*> recentFilesActionList;
+		QAction *clearRecentFilesAction;
 		QAction *saveImageAction;
 		QAction *openPreviousComicAction;
 		QAction *openNextComicAction;
@@ -148,6 +149,7 @@ class EditShortcutsDialog;
 		void createActions();
 		void createToolBars();
 		void refreshRecentFilesActionList();
+		void clearRecentFiles();
 		void getSiblingComics(QString path,QString currentComic);
 
 		//! Manejadores de evento:
