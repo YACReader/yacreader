@@ -108,7 +108,7 @@ int main( int argc, char ** argv )
 {
     QCoreApplication *app = new QCoreApplication(argc, argv);
 
-    app->setApplicationName("YACReaderLibraryServer");
+    app->setApplicationName("YACReaderLibrary");
     app->setOrganizationName("YACReader");
     app->setApplicationVersion(VERSION);
 
