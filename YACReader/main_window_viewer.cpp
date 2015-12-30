@@ -516,7 +516,7 @@ void MainWindowViewer::createToolBars()
     comicToolBar->addAction(openAction);
     comicToolBar->addAction(openFolderAction);
 #else
-	QMenu * recentmenu = new QMenu("Open recent");
+	QMenu * recentmenu = new QMenu(tr("Open recent"));
 	recentmenu->addActions(recentFilesActionList);
 	recentmenu->addSeparator();
 	recentmenu->addAction(clearRecentFilesAction);
@@ -691,7 +691,6 @@ void MainWindowViewer::refreshRecentFilesActionList()
 
 void MainWindowViewer::clearRecentFiles()
 {
-	qDebug() << "clear triggered";
 	Configuration::getConfiguration().clearOpenRecentList();
 	refreshRecentFilesActionList();
 }
