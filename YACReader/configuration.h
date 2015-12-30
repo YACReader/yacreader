@@ -68,6 +68,7 @@ using namespace YACReader;
 		//openRecent
 		QStringList openRecentList() { return settings->value("recentFiles").toStringList(); }
 		void updateOpenRecentList (QString path);
+		void clearOpenRecentList() { settings->remove("recentFiles"); }
 		
 		//Old fitmodes
 		/*

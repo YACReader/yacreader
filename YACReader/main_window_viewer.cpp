@@ -227,6 +227,10 @@ void MainWindowViewer::createActions()
 		QObject::connect(recentFileAction, &QAction::triggered, this, &MainWindowViewer::openRecent);
 		recentFilesActionList.append(recentFileAction);
 	}
+    
+    clearRecentFilesAction = new QAction(tr("Clear"),this);
+    clearRecentFilesAction->setToolTip(tr("Clear openrecent list"));
+    connect(clearRecentFilesAction, &QAction::triggered, this, &MainWindowViewer::clearRecentFiles);
 	
     saveImageAction = new QAction(tr("Save"),this);
     saveImageAction->setIcon(QIcon(":/images/viewer_toolbar/save.png"));
@@ -514,8 +518,10 @@ void MainWindowViewer::createToolBars()
 #else
 	QMenu * recentmenu = new QMenu("Open recent");
 	recentmenu->addActions(recentFilesActionList);
+	recentmenu->addSeparator();
+	recentmenu->addAction(clearRecentFilesAction);
 	refreshRecentFilesActionList();
-	
+
 	QToolButton * tb = new QToolButton();
 	tb->addAction(openAction);
 	tb->addAction(openFolderAction);
@@ -681,6 +687,13 @@ void MainWindowViewer::refreshRecentFilesActionList()
 	{
 		recentFilesActionList.at(i)->setVisible(false);
 	}
+}
+
+void MainWindowViewer::clearRecentFiles()
+{
+	qDebug() << "clear triggered";
+	Configuration::getConfiguration().clearOpenRecentList();
+	refreshRecentFilesActionList();
 }
 
 void MainWindowViewer::openRecent()
