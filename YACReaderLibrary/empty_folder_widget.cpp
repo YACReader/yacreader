@@ -10,11 +10,53 @@
 #include "comic_files_manager.h"
 #include "QsLog.h"
 
+
+
 void testListView(QListView * l)
 {
     QStringListModel * slm = new QStringListModel(QStringList() << "Lorem ipsum" << "Hailer skualer"<< "Mumbaluba X" << "Finger layden" << "Pacum tactus filer" << "Aposum" << "En" << "Lorem ipsum" << "Hailer skualer" << "Mumbaluba X" << "Finger layden" << "Pacum tactus filer" << "Aposum" << "En" );
     l->setModel(slm);
 }
+
+
+
+class ListviewDelegate : public QStyledItemDelegate
+{
+public:
+    ListviewDelegate() : QStyledItemDelegate() {}
+
+    virtual ~ListviewDelegate() {}
+
+    void paint(QPainter *painter, const QStyleOptionViewItem &option,
+               const QModelIndex &index) const
+    {
+        painter->save();
+
+        QFontMetrics fm(option.font);
+        QString text = qvariant_cast<QString>(index.data(Qt::DisplayRole));
+
+        QRect textRect = option.rect;
+
+        textRect.setLeft(std::max(0, (option.rect.size().width() - fm.width(text)) / 2));
+
+        painter->drawText(textRect,text);
+
+        painter->restore();
+
+        //TODO add mouse hover style ??
+    }
+
+    QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index ) const
+    {
+        QFontMetrics fm(option.font);
+        QString text = qvariant_cast<QString>(index.data(Qt::DisplayRole));
+
+        return QSize(fm.width(text),fm.height());
+    }
+};
+
+
 
 EmptyFolderWidget::EmptyFolderWidget(QWidget *parent) :
     EmptyContainerInfo(parent),subfoldersModel(new QStringListModel())
@@ -25,9 +67,8 @@ EmptyFolderWidget::EmptyFolderWidget(QWidget *parent) :
     titleLabel->setText(tr("Subfolders in this folder"));
 
     foldersView = new QListView();
-    foldersView->setMinimumWidth(282);
-    //foldersView->setWrapping(true);
     foldersView->setAttribute(Qt::WA_MacShowFocusRect,false);
+    foldersView->setItemDelegate(new ListviewDelegate);
 #ifdef Q_OS_MAC
     foldersView->setStyleSheet("QListView {background-color:transparent; border: none; color:#959595; outline:0; font-size: 18px; show-decoration-selected: 0; margin:0}"
                                "QListView::item:selected {background-color: #EFEFEF; color:#CCCCCC;}"
@@ -65,10 +106,9 @@ EmptyFolderWidget::EmptyFolderWidget(QWidget *parent) :
 
 #endif
     foldersView->setSizePolicy(QSizePolicy ::Expanding , QSizePolicy ::Expanding );
-    testListView(foldersView);
 
     layout->addSpacing(12);
-    layout->addWidget(foldersView,1,Qt::AlignHCenter);
+    layout->addWidget(foldersView,1);
     layout->addStretch();
     layout->setMargin(0);
     layout->setSpacing(0);
