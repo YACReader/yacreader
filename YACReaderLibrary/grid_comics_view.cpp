@@ -182,7 +182,9 @@ void GridComicsView::updateBackgroundConfig()
         float opacity = settings->value(OPACITY_BACKGROUND_IMAGE_IN_GRID_VIEW, 0.2).toFloat();
         float blurRadius = settings->value(BLUR_RADIUS_BACKGROUND_IMAGE_IN_GRID_VIEW, 75).toInt();
 
-        ctxt->setContextProperty("backgroundImage", this->model->data(this->model->index(0, 0), ComicModel::CoverPathRole));
+        int row = settings->value(USE_SELECTED_COMIC_COVER_AS_BACKGROUND_IMAGE_IN_GRID_VIEW, false).toBool() ? currentIndex().row() : 0;
+
+        ctxt->setContextProperty("backgroundImage", this->model->data(this->model->index(row, 0), ComicModel::CoverPathRole));
         ctxt->setContextProperty("backgroundBlurOpacity", opacity);
         ctxt->setContextProperty("backgroundBlurRadius", blurRadius);
         ctxt->setContextProperty("backgroundBlurVisible", true);
@@ -210,6 +212,9 @@ void GridComicsView::setCurrentIndex(const QModelIndex &index)
     _selectionModel->clear();
     _selectionModel->select(index, QItemSelectionModel::Select | QItemSelectionModel::Rows);
     view->rootContext()->setContextProperty("dummyValue", true);
+
+    if(settings->value(USE_SELECTED_COMIC_COVER_AS_BACKGROUND_IMAGE_IN_GRID_VIEW, false).toBool())
+        updateBackgroundConfig();
 }
 
 QModelIndex GridComicsView::currentIndex()
