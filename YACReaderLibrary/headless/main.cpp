@@ -119,7 +119,7 @@ int main( int argc, char ** argv )
     parser.setApplicationDescription(QCoreApplication::tr("\nYACReaderLibraryServer is the headless (no gui) version of YACReaderLibrary"));
     parser.addHelpOption();
     parser.addVersionOption();
-    parser.addPositionalArgument("command", "The command to execute. [start, create-library, update-library, list-libraries]");
+    parser.addPositionalArgument("command", "The command to execute. [start, create-library, update-library, add-library, remove-library, list-libraries]");
 
     parser.parse(QCoreApplication::arguments());
 
@@ -246,6 +246,61 @@ int main( int argc, char ** argv )
 
         ConsoleUILibraryCreator * libraryCreatorUI = new ConsoleUILibraryCreator;
         libraryCreatorUI->updateLibrary(updateArgs.at(1));
+
+        return 0;
+    }
+    else if(command == "add-library")
+    {
+        QCommandLineParser parser;
+
+        parser.addHelpOption();
+
+        parser.parse(QCoreApplication::arguments());
+
+        parser.clearPositionalArguments();
+        parser.addPositionalArgument("add-library", "Adds an exiting library named \"name\" at the specified origin <path>");
+        parser.addPositionalArgument("name", "Library name", "\"name\"");
+        parser.addPositionalArgument("path", "Path to the folder where the library is", "<path>");
+        parser.process(*app);
+
+        const QStringList args = parser.positionalArguments();
+        if(args.length() != 3)
+        {
+            parser.showHelp();
+            return 0;
+        }
+
+        const QStringList addArgs = parser.positionalArguments();
+
+        ConsoleUILibraryCreator * libraryCreatorUI = new ConsoleUILibraryCreator;
+        libraryCreatorUI->addExistingLibrary(addArgs.at(1), addArgs.at(2));
+
+        return 0;
+    }
+    else if(command == "remove-library")
+    {
+        QCommandLineParser parser;
+
+        parser.addHelpOption();
+
+        parser.parse(QCoreApplication::arguments());
+
+        parser.clearPositionalArguments();
+        parser.addPositionalArgument("remove-library", "Removes a library named \"name\" from the list of libraries");
+        parser.addPositionalArgument("name", "Library name", "\"name\"");
+        parser.process(*app);
+
+        const QStringList args = parser.positionalArguments();
+        if(args.length() != 2)
+        {
+            parser.showHelp();
+            return 0;
+        }
+
+        const QStringList removeArgs = parser.positionalArguments();
+
+        ConsoleUILibraryCreator * libraryCreatorUI = new ConsoleUILibraryCreator;
+        libraryCreatorUI->removeLibrary(removeArgs.at(1));
 
         return 0;
     }
