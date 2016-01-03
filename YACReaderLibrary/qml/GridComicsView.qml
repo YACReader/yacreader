@@ -314,10 +314,10 @@ Rectangle {
     }
 
     YACReaderScrollView {
+        __wheelAreaScrollSpeed: grid.cellHeight * 0.30
         id: scrollView
         anchors.fill: parent
         anchors.margins: 0
-
         //QTBUG-39453
         //Another fu%$·#& bug in Qt
         //https://bugreports.qt.io/browse/QTBUG-39453
