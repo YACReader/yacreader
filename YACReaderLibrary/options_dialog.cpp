@@ -65,6 +65,8 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 
     useCurrentComicCoverCheck = new QCheckBox(tr("Use selectec comic cover as background"));
 
+    resetButton = new QPushButton(tr("Restore defautls"));
+
     QVBoxLayout * gridBackgroundLayout = new QVBoxLayout();
     gridBackgroundLayout->addWidget(useBackgroundImageCheck);
     gridBackgroundLayout->addWidget(opacityLabel);
@@ -72,6 +74,7 @@ OptionsDialog::OptionsDialog(QWidget * parent)
     gridBackgroundLayout->addWidget(blurLabel);
     gridBackgroundLayout->addWidget(backgroundImageBlurRadiusSlider);
     gridBackgroundLayout->addWidget(useCurrentComicCoverCheck);
+    gridBackgroundLayout->addWidget(resetButton,0,Qt::AlignRight);
 
     QGroupBox * gridBackgroundGroup = new QGroupBox(tr("Background"));
     gridBackgroundGroup->setLayout(gridBackgroundLayout);
@@ -83,6 +86,7 @@ OptionsDialog::OptionsDialog(QWidget * parent)
     connect(backgroundImageOpacitySlider, SIGNAL(valueChanged(int)), this, SLOT(backgroundImageOpacitySliderChanged(int)));
     connect(backgroundImageBlurRadiusSlider, SIGNAL(valueChanged(int)), this, SLOT(backgroundImageBlurRadiusSliderChanged(int)));
     connect(useCurrentComicCoverCheck, &QCheckBox::clicked, this, &OptionsDialog::useCurrentComicCoverCheckClicked);
+    connect(resetButton, &QPushButton::clicked, this, &OptionsDialog::resetToDefaults);
     //end grid view background config
 
     QWidget * comicFlowW = new QWidget;
@@ -168,6 +172,17 @@ void OptionsDialog::backgroundImageBlurRadiusSliderChanged(int value)
 void OptionsDialog::useCurrentComicCoverCheckClicked(bool checked)
 {
     settings->setValue(USE_SELECTED_COMIC_COVER_AS_BACKGROUND_IMAGE_IN_GRID_VIEW, checked);
+
+    emit optionsChanged();
+}
+
+void OptionsDialog::resetToDefaults()
+{
+    settings->setValue(OPACITY_BACKGROUND_IMAGE_IN_GRID_VIEW, 0.2);
+    settings->setValue(BLUR_RADIUS_BACKGROUND_IMAGE_IN_GRID_VIEW, 75);
+    settings->setValue(USE_SELECTED_COMIC_COVER_AS_BACKGROUND_IMAGE_IN_GRID_VIEW, false);
+
+    restoreOptions(settings);
 
     emit optionsChanged();
 }
