@@ -1,38 +1,34 @@
 /****************************************************************************
 **
-** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Quick Controls module of the Qt Toolkit.
 **
-** $QT_BEGIN_LICENSE:BSD$
-** You may use this file under the terms of the BSD license as follows:
+** $QT_BEGIN_LICENSE:LGPL3$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://www.qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
 **
-** "Redistribution and use in source and binary forms, with or without
-** modification, are permitted provided that the following conditions are
-** met:
-**   * Redistributions of source code must retain the above copyright
-**     notice, this list of conditions and the following disclaimer.
-**   * Redistributions in binary form must reproduce the above copyright
-**     notice, this list of conditions and the following disclaimer in
-**     the documentation and/or other materials provided with the
-**     distribution.
-**   * Neither the name of Digia Plc and its Subsidiary(-ies) nor the names
-**     of its contributors may be used to endorse or promote products derived
-**     from this software without specific prior written permission.
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 3 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPLv3 included in the
+** packaging of this file. Please review the following information to
+** ensure the GNU Lesser General Public License version 3 requirements
+** will be met: https://www.gnu.org/licenses/lgpl.html.
 **
-**
-** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 2.0 or later as published by the Free
+** Software Foundation and appearing in the file LICENSE.GPL included in
+** the packaging of this file. Please review the following information to
+** ensure the GNU General Public License version 2.0 requirements will be
+** met: http://www.gnu.org/licenses/gpl-2.0.html.
 **
 ** $QT_END_LICENSE$
 **
@@ -49,6 +45,8 @@ import QtQuick.Controls.Styles 1.1
     \since  5.1
     \ingroup views
     \brief Provides a scrolling view within another Item.
+
+    \image scrollview.png
 
     A ScrollView can be used either to replace a \l Flickable or decorate an
     existing \l Flickable. Depending on the platform, it will add scroll bars and
@@ -81,7 +79,7 @@ import QtQuick.Controls.Styles 1.1
     \l flickableItem.
 
     You can create a custom appearance for a ScrollView by
-    assigning a \l {QtQuick.Controls.Styles::ScrollViewStyle}{ScrollViewStyle}.
+    assigning a \l {ScrollViewStyle}.
 */
 
 FocusScope {
@@ -97,6 +95,36 @@ FocusScope {
         The default value is \c false.
     */
     property bool frameVisible: false
+
+    /*! \qmlproperty enumeration ScrollView::horizontalScrollBarPolicy
+        \since QtQuick.Controls 1.3
+
+        This property holds the policy for showing the horizontal scrollbar.
+        It can be any of the following values:
+        \list
+        \li Qt.ScrollBarAsNeeded
+        \li Qt.ScrollBarAlwaysOff
+        \li Qt.ScrollBarAlwaysOn
+        \endlist
+
+        The default policy is \c Qt.ScrollBarAsNeeded.
+     */
+    property alias horizontalScrollBarPolicy: scroller.horizontalScrollBarPolicy
+
+    /*! \qmlproperty enumeration ScrollView::verticalScrollBarPolicy
+        \since QtQuick.Controls 1.3
+
+        This property holds the policy for showing the vertical scrollbar.
+        It can be any of the following values:
+        \list
+        \li Qt.ScrollBarAsNeeded
+        \li Qt.ScrollBarAlwaysOff
+        \li Qt.ScrollBarAlwaysOn
+        \endlist
+
+        The default policy is \c Qt.ScrollBarAsNeeded.
+     */
+    property alias verticalScrollBarPolicy: scroller.verticalScrollBarPolicy
 
     /*!
         This property controls if there should be a highlight
@@ -152,7 +180,7 @@ FocusScope {
         \sa {Qt Quick Controls Styles QML Types}
 
     */
-    property Component style: Qt.createComponent(Settings.style + "/ScrollViewStyle.qml", root)
+    property Component style: Settings.styleComponent(Settings.style, "ScrollViewStyle.qml", root)
 
     /*! \internal */
     property Style __style: styleLoader.item
@@ -160,7 +188,7 @@ FocusScope {
     activeFocusOnTab: true
 
     onContentItemChanged: {
-//console.log("onContentItemChanged");
+
         if (contentItem.hasOwnProperty("contentY") && // Check if flickable
                 contentItem.hasOwnProperty("contentHeight")) {
             internal.flickableItem = contentItem // "Use content if it is a flickable
@@ -208,14 +236,12 @@ FocusScope {
             target: flickableItem
 
             onContentYChanged:  {
-            //console.log("onContentYChanged2");
                 scroller.blockUpdates = true
                 scroller.verticalScrollBar.value = flickableItem.contentY
                 scroller.blockUpdates = false
             }
 
             onContentXChanged:  {
-            //console.log("onContentXChanged2");
                 scroller.blockUpdates = true
                 scroller.horizontalScrollBar.value = flickableItem.contentX
                 scroller.blockUpdates = false
@@ -233,12 +259,10 @@ FocusScope {
         WheelArea {
             id: wheelArea
             parent: flickableItem
-
+            z: -1
             // ### Note this is needed due to broken mousewheel behavior in Flickable.
 
             anchors.fill: parent
-
-            property int stepSize: 295
 
             property int acceleration: 40
             property int flickThreshold: Settings.dragThreshold
@@ -255,17 +279,21 @@ FocusScope {
             verticalMinimumValue: flickableItem ? flickableItem.originY : 0
             verticalMaximumValue: flickableItem ? flickableItem.originY + flickableItem.contentHeight - viewport.height + __viewTopMargin : 0
 
+            // The default scroll speed for typical angle-based mouse wheels. The value
+            // comes originally from QTextEdit, which sets 20px steps by default, as well as
+            // QQuickWheelArea.
+            // TODO: centralize somewhere, QPlatformTheme?
+            scrollSpeed: 20 * (__style.__wheelScrollLines || 1)
+
             Connections {
                 target: flickableItem
 
                 onContentYChanged: {
-                //console.log("onContentYChanged");
                     wheelArea.verticalRecursionGuard = true
                     wheelArea.verticalValue = flickableItem.contentY
                     wheelArea.verticalRecursionGuard = false
                 }
                 onContentXChanged: {
-                //console.log("onContentXChanged");
                     wheelArea.horizontalRecursionGuard = true
                     wheelArea.horizontalValue = flickableItem.contentX
                     wheelArea.horizontalRecursionGuard = false
@@ -280,14 +308,8 @@ FocusScope {
                                - flickThreshold - viewport.height && verticalDelta < -speedThreshold) {
                         flickableItem.flick(ignored, Math.max(-maxFlick, acceleration * verticalDelta))
                     } else {
-                        var absDelta = Math.abs(verticalDelta);
-
-                        if(verticalDelta < 0)
-                            flickableItem.contentY = Math.min(verticalMaximumValue, verticalValue + Math.min(98,0.93*absDelta+4.5));
-                        else
-                            flickableItem.contentY = Math.max(0, verticalValue - Math.min(98,0.93*absDelta+4.5));
+                        flickableItem.contentY = verticalValue
                     }
-
                     flickableItem.contentY = Math.min(verticalMaximumValue, Math.max(0, flickableItem.contentY));
                 }
             }
