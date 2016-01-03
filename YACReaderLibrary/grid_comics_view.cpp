@@ -219,13 +219,21 @@ void GridComicsView::setCurrentIndex(const QModelIndex &index)
 
 QModelIndex GridComicsView::currentIndex()
 {
-        QLOG_INFO() << "currentIndex";
+    QLOG_INFO() << "currentIndex";
+
+    if(!_selectionModel)
+        return QModelIndex();
+
     QModelIndexList indexes = _selectionModel->selectedRows();
     if(indexes.length()>0)
         return indexes[0];
 
     this->selectIndex(0);
-    return _selectionModel->selectedRows()[0];
+    indexes = _selectionModel->selectedRows();
+    if(indexes.length()>0)
+        return indexes[0];
+    else
+        return QModelIndex();
 }
 
 QItemSelectionModel *GridComicsView::selectionModel()
