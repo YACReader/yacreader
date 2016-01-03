@@ -63,12 +63,15 @@ OptionsDialog::OptionsDialog(QWidget * parent)
     backgroundImageBlurRadiusSlider = new QSlider(Qt::Horizontal);
     backgroundImageBlurRadiusSlider->setRange(0,100);
 
+    useCurrentComicCoverCheck = new QCheckBox(tr("User selectec comic cover for background"));
+
     QVBoxLayout * gridBackgroundLayout = new QVBoxLayout();
     gridBackgroundLayout->addWidget(useBackgroundImageCheck);
     gridBackgroundLayout->addWidget(opacityLabel);
     gridBackgroundLayout->addWidget(backgroundImageOpacitySlider);
     gridBackgroundLayout->addWidget(blurLabel);
     gridBackgroundLayout->addWidget(backgroundImageBlurRadiusSlider);
+    gridBackgroundLayout->addWidget(useCurrentComicCoverCheck);
 
     QGroupBox * gridBackgroundGroup = new QGroupBox(tr("Background"));
     gridBackgroundGroup->setLayout(gridBackgroundLayout);
@@ -79,6 +82,7 @@ OptionsDialog::OptionsDialog(QWidget * parent)
     connect(useBackgroundImageCheck, SIGNAL(clicked(bool)), this, SLOT(useBackgroundImageCheckClicked(bool)));
     connect(backgroundImageOpacitySlider, SIGNAL(valueChanged(int)), this, SLOT(backgroundImageOpacitySliderChanged(int)));
     connect(backgroundImageBlurRadiusSlider, SIGNAL(valueChanged(int)), this, SLOT(backgroundImageBlurRadiusSliderChanged(int)));
+    connect(useCurrentComicCoverCheck, &QCheckBox::clicked, this, &OptionsDialog::useCurrentComicCoverCheckClicked);
     //end grid view background config
 
     QWidget * comicFlowW = new QWidget;
@@ -125,11 +129,13 @@ void OptionsDialog::restoreOptions(QSettings * settings)
     useBackgroundImageCheck->setChecked(useBackgroundImage);
     backgroundImageOpacitySlider->setValue(settings->value(OPACITY_BACKGROUND_IMAGE_IN_GRID_VIEW, 0.2).toFloat()*100);
     backgroundImageBlurRadiusSlider->setValue(settings->value(BLUR_RADIUS_BACKGROUND_IMAGE_IN_GRID_VIEW, 75).toInt());
+    useCurrentComicCoverCheck->setChecked(settings->value(USE_SELECTED_COMIC_COVER_AS_BACKGROUND_IMAGE_IN_GRID_VIEW, false).toBool());
 
     backgroundImageOpacitySlider->setVisible(useBackgroundImage);
     backgroundImageBlurRadiusSlider->setVisible(useBackgroundImage);
     opacityLabel->setVisible(useBackgroundImage);
     blurLabel->setVisible(useBackgroundImage);
+    useCurrentComicCoverCheck->setVisible(useBackgroundImage);
 }
 
 void OptionsDialog::useBackgroundImageCheckClicked(bool checked)
@@ -140,6 +146,7 @@ void OptionsDialog::useBackgroundImageCheckClicked(bool checked)
     backgroundImageBlurRadiusSlider->setVisible(checked);
     opacityLabel->setVisible(checked);
     blurLabel->setVisible(checked);
+    useCurrentComicCoverCheck->setVisible(checked);
 
     emit optionsChanged();
 }
@@ -154,6 +161,13 @@ void OptionsDialog::backgroundImageOpacitySliderChanged(int value)
 void OptionsDialog::backgroundImageBlurRadiusSliderChanged(int value)
 {
     settings->setValue(BLUR_RADIUS_BACKGROUND_IMAGE_IN_GRID_VIEW, value);
+
+    emit optionsChanged();
+}
+
+void OptionsDialog::useCurrentComicCoverCheckClicked(bool checked)
+{
+    settings->setValue(USE_SELECTED_COMIC_COVER_AS_BACKGROUND_IMAGE_IN_GRID_VIEW, checked);
 
     emit optionsChanged();
 }
