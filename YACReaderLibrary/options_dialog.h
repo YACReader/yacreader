@@ -24,6 +24,7 @@ Q_OBJECT
         void backgroundImageOpacitySliderChanged(int value);
         void backgroundImageBlurRadiusSliderChanged(int value);
         void useCurrentComicCoverCheckClicked(bool checked);
+        void resetToDefaults();
     private:
         QCheckBox * useBackgroundImageCheck;
         QCheckBox * useCurrentComicCoverCheck;
@@ -31,6 +32,7 @@ Q_OBJECT
         QSlider * backgroundImageBlurRadiusSlider;
         QLabel * opacityLabel;
         QLabel * blurLabel;
+        QPushButton * resetButton;
 };
 
 
