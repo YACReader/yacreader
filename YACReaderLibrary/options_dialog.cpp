@@ -63,7 +63,7 @@ OptionsDialog::OptionsDialog(QWidget * parent)
     backgroundImageBlurRadiusSlider = new QSlider(Qt::Horizontal);
     backgroundImageBlurRadiusSlider->setRange(0,100);
 
-    useCurrentComicCoverCheck = new QCheckBox(tr("User selectec comic cover for background"));
+    useCurrentComicCoverCheck = new QCheckBox(tr("Use selectec comic cover as background"));
 
     QVBoxLayout * gridBackgroundLayout = new QVBoxLayout();
     gridBackgroundLayout->addWidget(useBackgroundImageCheck);
