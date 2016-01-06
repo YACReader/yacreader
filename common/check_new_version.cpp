@@ -10,10 +10,10 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-#define PREVIOUS_VERSION "6.0.0"
+#define PREVIOUS_VERSION_TESTING "6.0.0"
 
 HttpVersionChecker::HttpVersionChecker()
-		:HttpWorker("https://bitbucket.org/luisangelsm/yacreader/wiki/Home")
+    :HttpWorker("https://bitbucket.org/luisangelsm/yacreader/wiki/Home")
 {
 	connect(this,SIGNAL(dataReady(const QByteArray &)),this,SLOT(checkNewVersion(const QByteArray &)));
 }
@@ -26,15 +26,15 @@ void HttpVersionChecker::checkNewVersion(const QByteArray & data)
 bool HttpVersionChecker::checkNewVersion(QString sourceContent)
 {
 #ifdef Q_OS_WIN32
-	QRegExp rx(".*YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}win32.*");
+    QRegExp rx("YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}win32");
 #endif
 
 #if defined  Q_OS_UNIX && !defined Q_OS_MAC
-	QRegExp rx(".*YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}X11.*");
+    QRegExp rx("YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}X11");
 #endif
 
 #ifdef  Q_OS_MAC
-	QRegExp rx(".*YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}Mac.*");
+    QRegExp rx("YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}Mac");
 #endif
 	
 	int index = 0;
@@ -42,9 +42,9 @@ bool HttpVersionChecker::checkNewVersion(QString sourceContent)
 	bool sameVersion = true;
 	//bool currentVersionIsNewer = false;
 #ifdef QT_DEBUG
-	QString version(PREVIOUS_VERSION);
+    QString version(PREVIOUS_VERSION_TESTING);
 #else
-	QString version(VERSION);
+    QString version(VERSION);
 #endif
 	QStringList sl = version.split(".");
 	if((index = rx.indexIn(sourceContent))!=-1)
@@ -68,8 +68,6 @@ bool HttpVersionChecker::checkNewVersion(QString sourceContent)
 			if((sl.size()==3)&&(rx.cap(4)!=""))
 				newVersion = true;
 		}
-
-
 	}
 
 	if(newVersion == true)
