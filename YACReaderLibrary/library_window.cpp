@@ -1325,6 +1325,9 @@ void LibraryWindow::loadLibrary(const QString & name)
 
 void LibraryWindow::loadCoversFromCurrentModel()
 {
+    //TODO this is a workaround for the crash in GridComicsView::setModel crash on views switching
+    if(typeid(*comicsView) == typeid(GridComicsView))
+        comicsView->setModel(new ComicModel());
     comicsView->setModel(comicsModel);
 }
 

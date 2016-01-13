@@ -7,7 +7,7 @@
 #include <QPushButton>
 #include <QSettings>
 
-#include "yacreader_global.h"
+#include "yacreader_global_gui.h"
 
 ApiKeyDialog::ApiKeyDialog(QWidget *parent) :
     QDialog(parent)

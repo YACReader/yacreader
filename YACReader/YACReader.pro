@@ -99,38 +99,39 @@ CONFIG -= flat
 QT += multimedia
 
 # Input
-HEADERS += ../common/comic.h \
-    configuration.h \
-    goto_dialog.h \
-    magnifying_glass.h \
-        main_window_viewer.h \
-    viewer.h \
-    goto_flow.h \
-    options_dialog.h \
-    ../common/bookmarks.h \
-    bookmarks_dialog.h \
-    render.h \
-    shortcuts_dialog.h \
-        translator.h \
-        goto_flow_widget.h \
-        page_label_widget.h \
-        goto_flow_toolbar.h \
-        width_slider.h \
-        notifications_label_widget.h \
-        ../common/pictureflow.h \
-    ../common/custom_widgets.h \
-    ../common/check_new_version.h \
-        ../common/qnaturalsorting.h \
-        ../common/yacreader_global.h \
-        ../common/onstart_flow_selection_dialog.h \
-        ../common/comic_db.h \
-        ../common/folder.h \
-        ../common/library_item.h \
-        yacreader_local_client.h \
-        ../common/http_worker.h \
-        ../common/exit_check.h \
-        ../common/scroll_management.h \
-        ../common/opengl_checker.h
+HEADERS +=  ../common/comic.h \
+            configuration.h \
+            goto_dialog.h \
+            magnifying_glass.h \
+            main_window_viewer.h \
+            viewer.h \
+            goto_flow.h \
+            options_dialog.h \
+            ../common/bookmarks.h \
+            bookmarks_dialog.h \
+            render.h \
+            shortcuts_dialog.h \
+            translator.h \
+            goto_flow_widget.h \
+            page_label_widget.h \
+            goto_flow_toolbar.h \
+            width_slider.h \
+            notifications_label_widget.h \
+            ../common/pictureflow.h \
+            ../common/custom_widgets.h \
+            ../common/check_new_version.h \
+            ../common/qnaturalsorting.h \
+            ../common/yacreader_global.h \
+            ../common/yacreader_global_gui.h \
+            ../common/onstart_flow_selection_dialog.h \
+            ../common/comic_db.h \
+            ../common/folder.h \
+            ../common/library_item.h \
+            yacreader_local_client.h \
+            ../common/http_worker.h \
+            ../common/exit_check.h \
+            ../common/scroll_management.h \
+            ../common/opengl_checker.h
 
 !CONFIG(no_opengl) {
     CONFIG(legacy_gl_widget) {
@@ -142,38 +143,39 @@ HEADERS += ../common/comic.h \
     HEADERS += 	goto_flow_gl.h
 }
 
-SOURCES += ../common/comic.cpp \
-    configuration.cpp \
-    goto_dialog.cpp \
-        magnifying_glass.cpp \
-    main_window_viewer.cpp \
-    viewer.cpp \
-    goto_flow.cpp \
-    options_dialog.cpp \
-    ../common/bookmarks.cpp \
-    bookmarks_dialog.cpp \
-    render.cpp \
-    shortcuts_dialog.cpp \
-        translator.cpp \
-        goto_flow_widget.cpp \
-        page_label_widget.cpp \
-        goto_flow_toolbar.cpp \
-        width_slider.cpp \
-        notifications_label_widget.cpp \
-    ../common/pictureflow.cpp \
-    ../common/custom_widgets.cpp \
-    ../common/check_new_version.cpp \
-        ../common/qnaturalsorting.cpp \
-        ../common/onstart_flow_selection_dialog.cpp \
-        ../common/comic_db.cpp \
-        ../common/folder.cpp \
-        ../common/library_item.cpp \
-        yacreader_local_client.cpp \
-    ../common/http_worker.cpp \
-    ../common/yacreader_global.cpp \
-        ../common/exit_check.cpp \
-    ../common/scroll_management.cpp \
-    ../common/opengl_checker.cpp
+SOURCES +=  ../common/comic.cpp \
+            configuration.cpp \
+            goto_dialog.cpp \
+            magnifying_glass.cpp \
+            main_window_viewer.cpp \
+            viewer.cpp \
+            goto_flow.cpp \
+            options_dialog.cpp \
+            ../common/bookmarks.cpp \
+            bookmarks_dialog.cpp \
+            render.cpp \
+            shortcuts_dialog.cpp \
+            translator.cpp \
+            goto_flow_widget.cpp \
+            page_label_widget.cpp \
+            goto_flow_toolbar.cpp \
+            width_slider.cpp \
+            notifications_label_widget.cpp \
+            ../common/pictureflow.cpp \
+            ../common/custom_widgets.cpp \
+            ../common/check_new_version.cpp \
+            ../common/qnaturalsorting.cpp \
+            ../common/onstart_flow_selection_dialog.cpp \
+            ../common/comic_db.cpp \
+            ../common/folder.cpp \
+            ../common/library_item.cpp \
+            yacreader_local_client.cpp \
+            ../common/http_worker.cpp \
+            ../common/yacreader_global.cpp \
+            ../common/yacreader_global_gui.cpp \
+                ../common/exit_check.cpp \
+            ../common/scroll_management.cpp \
+            ../common/opengl_checker.cpp
 
 !CONFIG(no_opengl) {
     CONFIG(legacy_gl_widget) {

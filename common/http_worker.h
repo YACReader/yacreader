@@ -1,7 +1,6 @@
 #ifndef __HTTP_WORKER_H
 #define __HTTP_WORKER_H
 
-#include <QWidget>
 #include <QByteArray>
 #include <QThread>
 #include <QUrl>
