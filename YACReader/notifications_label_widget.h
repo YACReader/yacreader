@@ -13,9 +13,7 @@ Q_OBJECT
 private:
 	QLabel * textLabel;
 	QPropertyAnimation * anim;
-	QPropertyAnimation * anim2;
 	QGraphicsOpacityEffect * effect;
-	QGraphicsOpacityEffect * effect2;
 
 protected:
     void paintEvent(QPaintEvent *);
