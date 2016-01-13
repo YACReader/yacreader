@@ -4,6 +4,7 @@
 #include "library_creator.h"
 #include "check_new_version.h"
 
+
 static QString fields = 		"title ,"
 
 		"coverPage,"
@@ -311,7 +312,6 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
     return success;
 }
 
-#include <qmessagebox.h>
 void DataBaseManagement::exportComicsInfo(QString source, QString dest)
 {
 	//QSqlDatabase sourceDB = loadDatabase(source);

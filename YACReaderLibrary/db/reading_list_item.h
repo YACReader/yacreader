@@ -4,7 +4,7 @@
 #include <QIcon>
 #include <QVariant>
 
-#include "yacreader_global.h"
+#include "yacreader_global_gui.h"
 #include "reading_list_model.h"
 //TODO add propper constructors, using QList<QVariant> is not safe
 

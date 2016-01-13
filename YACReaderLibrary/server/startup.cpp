@@ -13,7 +13,7 @@
 #include "yacreader_global.h"
 
 #include <QDir>
-#include <QApplication>
+#include <QCoreApplication>
 
 /** Name of this application */
 #define APPNAME "YACReaderLibrary"
@@ -26,9 +26,8 @@
 
 void Startup::start() {
 	// Initialize the core application
-	QCoreApplication* app = QApplication::instance();
-	app->setApplicationName(APPNAME);
-	app->setOrganizationName(ORGANISATION);
+    QCoreApplication* app = QCoreApplication::instance();
+
 	QString configFileName=YACReader::getSettingsPath()+"/"+QCoreApplication::applicationName()+".ini";
 
 	// Configure logging into files

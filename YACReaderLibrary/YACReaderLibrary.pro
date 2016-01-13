@@ -118,6 +118,7 @@ HEADERS += comic_flow.h \
            ../common/custom_widgets.h \
            ../common/qnaturalsorting.h \
            ../common/yacreader_global.h \
+           ../common/yacreader_global_gui.h \
            ../common/onstart_flow_selection_dialog.h \
            no_libraries_widget.h \
            import_widget.h \
@@ -194,6 +195,7 @@ SOURCES += comic_flow.cpp \
            comics_remover.cpp \
            ../common/http_worker.cpp \
            ../common/yacreader_global.cpp \
+           ../common/yacreader_global_gui.cpp \
            yacreader_libraries.cpp \
            ../common/exit_check.cpp \
            comics_view.cpp \
