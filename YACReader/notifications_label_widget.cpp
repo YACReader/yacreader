@@ -11,25 +11,15 @@ NotificationsLabelWidget::NotificationsLabelWidget(QWidget * parent)
 
 	setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
 	effect = new QGraphicsOpacityEffect(this);
-	effect->setOpacity(1.0);
-
-	effect2= new QGraphicsOpacityEffect(this);
-	effect->setOpacity(1.0);
+    effect->setOpacity(1.0);
 
 	anim = new QPropertyAnimation(effect,"opacity");
 	anim->setDuration(500);
-	anim->setStartValue(1.0);
-	anim->setEndValue(0.0);
+    anim->setStartValue(1.0);
+    anim->setEndValue(0.0);
 	anim->setEasingCurve(QEasingCurve::InExpo);
 
-	anim2 = new QPropertyAnimation(effect2,"opacity");
-	anim2->setDuration(500);
-	anim2->setStartValue(1.0);
-	anim2->setEndValue(0.0);
-	anim2->setEasingCurve(QEasingCurve::InExpo);
-	anim2->start();	
-
-	connect(anim,SIGNAL(finished()),this,SLOT(hide()));
+    connect(anim,SIGNAL(finished()),this,SLOT(hide()));
 
 	textLabel = new QLabel(this);
 	textLabel->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
@@ -41,7 +31,6 @@ NotificationsLabelWidget::NotificationsLabelWidget(QWidget * parent)
     //TODO check if the effects still be broken in OSX yet
 #ifndef Q_OS_MAC
     this->setGraphicsEffect(effect);
-	textLabel->setGraphicsEffect(effect2);
 #endif
 
     layout->addWidget(textLabel);
@@ -66,9 +55,7 @@ void NotificationsLabelWidget::flash()
 {
 	updatePosition();
 	anim->stop();
-	anim2->stop();
 	anim->start();
-	anim2->start();
 
 	setVisible(true);
 }
