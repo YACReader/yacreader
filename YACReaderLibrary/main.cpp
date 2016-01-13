@@ -155,7 +155,7 @@ int main( int argc, char ** argv )
 
   app.setApplicationName("YACReaderLibrary");
   app.setOrganizationName("YACReader");
-  app.setApplicationName(VERSION);
+  app.setApplicationVersion(VERSION);
 
   app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 
