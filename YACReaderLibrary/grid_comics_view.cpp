@@ -39,7 +39,6 @@ GridComicsView::GridComicsView(QWidget *parent) :
 
     container->setMinimumSize(200, 200);
     container->setFocusPolicy(Qt::TabFocus);
-    view->setSource(QUrl("qrc:/qml/GridComicsView.qml"));
 
     createCoverSizeSliderWidget();
 
@@ -80,6 +79,25 @@ GridComicsView::GridComicsView(QWidget *parent) :
     ctxt->setContextProperty("fontFamily", QApplication::font().family());
     ctxt->setContextProperty("fontSpacing", 0.5);
 #endif
+
+    ctxt->setContextProperty("backgroundImage", QUrl());
+    ctxt->setContextProperty("backgroundBlurOpacity", 0.0);
+    ctxt->setContextProperty("backgroundBlurRadius", 0.0);
+    ctxt->setContextProperty("backgroundBlurVisible", false);
+
+    ComicModel *model = new ComicModel();
+    QItemSelectionModel *selectionModel = new QItemSelectionModel(model);
+    ctxt->setContextProperty("comicsList", model);
+    ctxt->setContextProperty("comicsSelection", selectionModel);
+    ctxt->setContextProperty("contextMenuHelper",this);
+    ctxt->setContextProperty("comicsSelectionHelper", this);
+    ctxt->setContextProperty("comicRatingHelper", this);
+    ctxt->setContextProperty("dummyValue", true);
+    ctxt->setContextProperty("dragManager", this);
+    ctxt->setContextProperty("dropManager", this);
+
+    view->setSource(QUrl("qrc:/qml/GridComicsView.qml"));
+
 
     setShowMarks(true);//TODO save this in settings
 
@@ -188,9 +206,9 @@ void GridComicsView::updateBackgroundConfig()
     }
     else
     {
-        ctxt->setContextProperty("backgroundImage", QVariant());
-        ctxt->setContextProperty("backgroundBlurOpacity", 0);
-        ctxt->setContextProperty("backgroundBlurRadius", 0);
+        ctxt->setContextProperty("backgroundImage", QUrl());
+        ctxt->setContextProperty("backgroundBlurOpacity", 0.0);
+        ctxt->setContextProperty("backgroundBlurRadius", 0.0);
         ctxt->setContextProperty("backgroundBlurVisible", false);
     }
 
