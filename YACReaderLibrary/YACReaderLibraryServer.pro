@@ -144,7 +144,7 @@ DATADIR = $$PREFIX/share
 DEFINES += "LIBDIR=\\\"$$LIBDIR\\\""  "DATADIR=\\\"$$DATADIR\\\"" "BINDIR=\\\"$$BINDIR\\\""
 
 #MAKE INSTALL
-INSTALLS += bin icon desktop server translation manpage
+INSTALLS += bin server translation #manpage
 
 bin.path = $$BINDIR
 isEmpty(DESTDIR) {
