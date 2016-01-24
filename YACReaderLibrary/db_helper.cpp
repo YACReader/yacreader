@@ -929,6 +929,10 @@ Folder DBHelper::loadFolder(qulonglong id, QSqlDatabase & db)
         //new 7.1
         folder.setFinished(record.value("finished").toBool());
         folder.setCompleted(record.value("completed").toBool());
+        //new 8.6
+        folder.numChildren = record.value("numChildren").toInt();
+        folder.firstChildId = record.value("firstChildId").toULongLong();
+        folder.customImage = record.value("customImage").toString();
 	}
 
     return folder;
@@ -957,6 +961,11 @@ Folder DBHelper::loadFolder(const QString &folderName, qulonglong parentId, QSql
         //new 7.1
         folder.setFinished(record.value("finished").toBool());
         folder.setCompleted(record.value("completed").toBool());
+        //new 8.6
+        folder.numChildren = record.value("numChildren").toInt();
+        folder.firstChildId = record.value("firstChildId").toULongLong();
+        folder.customImage = record.value("customImage").toString();
+
         QLOG_DEBUG() << "FOUND!!";
     }
 
