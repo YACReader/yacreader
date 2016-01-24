@@ -686,6 +686,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
     bool pre7 = false;
     bool pre7_1 = false;
     bool pre8 = false;
+    bool pre8_6 = false;
 
     if(compareVersions(DataBaseManagement::checkValidDB(fullPath),"7.0.0")<0)
         pre7 = true;
@@ -693,6 +694,8 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
         pre7_1 = true;
     if(compareVersions(DataBaseManagement::checkValidDB(fullPath),"8.0.0")<0)
         pre8 = true;
+    if(compareVersions(DataBaseManagement::checkValidDB(fullPath),"8.6.0")<0)
+        pre8_6 = true;
 
 	QSqlDatabase db = loadDatabaseFromFile(fullPath);
 	bool returnValue = false;
@@ -744,6 +747,13 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
         if(pre8)
         {
             returnValue = returnValue && createV8Tables(db);
+        }
+
+        if(pre8_6)
+        {
+            QStringList columnDefs;
+            //TODO
+            //returnValue = returnValue && addColumns("folder", columnDefs, db);
         }
 	}
 
