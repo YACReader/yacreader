@@ -10,6 +10,10 @@ class Folder : public LibraryItem
 public:
 	bool knownParent;
 	bool knownId;
+
+    qint32 numChildren; //-1 for unknown number of children
+    qulonglong firstChildId; //0 for unknown first child
+    QString customImage; //empty for none custom image
 	
 	Folder():knownParent(false), knownId(false){};
 	Folder(qulonglong sid, qulonglong pid,QString fn, QString fp):knownParent(true), knownId(true){id = sid; parentId = pid;name = fn; path = fp;};
