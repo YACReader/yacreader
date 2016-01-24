@@ -54,7 +54,7 @@ void FolderContentController::serviceContent(const int &library, const qulonglon
         if((*itr)->isDir())
         {
             currentFolder = (Folder *)(*itr);
-            response.writeText(QString("f:%1:%2:%3:%4\r\n").arg(library).arg(currentFolder->id).arg(currentFolder->name).arg(currentFolder->getNumChildren()));
+            response.writeText(QString("f:%1:%2:%3:%4:%5\r\n").arg(library).arg(currentFolder->id).arg(currentFolder->name).arg(currentFolder->getNumChildren()).arg(currentFolder->getFirstChildHash()));
         }
         else
         {
