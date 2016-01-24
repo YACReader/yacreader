@@ -620,6 +620,19 @@ bool DataBaseManagement::addColumns(const QString &tableName, const QStringList 
     return returnValue;
 }
 
+bool DataBaseManagement::addConstraint(const QString &tableName, const QString &constraint, const QSqlDatabase &db)
+{
+    QString sql = "ALTER TABLE %1 ADD %2";
+    bool returnValue = true;
+
+    QSqlQuery alterTable(db);
+    alterTable.prepare(sql.arg(tableName).arg(constraint));
+    alterTable.exec();
+    returnValue = returnValue && (alterTable.numRowsAffected() > 0);
+
+    return returnValue;
+}
+
 void DataBaseManagement::bindString(const QString & name, const QSqlRecord & record, QSqlQuery & query)
 {
 	if(!record.value(name).isNull())
