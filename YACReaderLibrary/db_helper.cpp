@@ -930,7 +930,7 @@ Folder DBHelper::loadFolder(qulonglong id, QSqlDatabase & db)
         folder.setFinished(record.value("finished").toBool());
         folder.setCompleted(record.value("completed").toBool());
         //new 8.6
-        folder.numChildren = record.value("numChildren").toInt();
+        folder.numChildren = record.value("numChildren").isNull() ? -1 : record.value("numChildren").toInt();
         folder.firstChildId = record.value("firstChildId").toULongLong();
         folder.customImage = record.value("customImage").toString();
 	}
@@ -962,7 +962,7 @@ Folder DBHelper::loadFolder(const QString &folderName, qulonglong parentId, QSql
         folder.setFinished(record.value("finished").toBool());
         folder.setCompleted(record.value("completed").toBool());
         //new 8.6
-        folder.numChildren = record.value("numChildren").toInt();
+        folder.numChildren = record.value("numChildren").isNull() ? -1 : record.value("numChildren").toInt();
         folder.firstChildId = record.value("firstChildId").toULongLong();
         folder.customImage = record.value("customImage").toString();
 
