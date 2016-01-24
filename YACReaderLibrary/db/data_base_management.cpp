@@ -770,7 +770,11 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
         {
             QStringList columnDefs;
             //TODO
+            columnDefs << "numChildren INTEGER";
+            columnDefs << "firstChildId INTEGER";
+            columnDefs << "customImage TEXT";
             //returnValue = returnValue && addColumns("folder", columnDefs, db);
+            //returnValue = returnValue && addConstraint("folder", FOREIGN KEY(firstChildId) REFERENCES comic_info(id), db);
         }
 	}
 
