@@ -62,19 +62,19 @@ public:
         numChildren = v;
     }
 
-    inline qulonglong getFirstChildId() const
+    inline QString getFirstChildHash() const
     {
-        return firstChildId;
+        return firstChildHash;
     }
 
-    inline void setFirstChildId(const qulonglong v)
+    inline void setFirstChildHash(const QString & v)
     {
-        firstChildId = v;
+        firstChildHash = v;
     }
 
-    inline qulonglong getCustomImage() const
+    inline QString getCustomImage() const
     {
-        return firstChildId;
+        return customImage;
     }
 
     inline void setCustomImage(const QString & s)
@@ -87,7 +87,7 @@ private:
     bool completed;
 
     qint32 numChildren; //-1 for unknown number of children
-    qulonglong firstChildId; //0 for unknown first child
+    QString firstChildHash; //empty for unknown first child
     QString customImage; //empty for none custom image
 
 };

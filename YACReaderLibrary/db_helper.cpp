@@ -419,10 +419,10 @@ void DBHelper::updateChildrenInfo(const Folder & folder, QSqlDatabase & db)
     QSqlQuery updateFolderInfo(db);
     updateFolderInfo.prepare("UPDATE folder SET "
                              "numChildren = :numChildren, "
-                             "firstChildId = :firstChildId "
+                             "firstChildHash = :firstChildHash "
                              "WHERE id = :id ");
     updateFolderInfo.bindValue(":numChildren", folder.getNumChildren());
-    updateFolderInfo.bindValue(":firstChildId", folder.getFirstChildId());
+    updateFolderInfo.bindValue(":firstChildHash", folder.getFirstChildHash());
     updateFolderInfo.bindValue(":id", folder.id);
     updateFolderInfo.exec();
 }
@@ -439,10 +439,10 @@ void DBHelper::updateChildrenInfo(qulonglong folderId, QSqlDatabase & db)
     QSqlQuery updateFolderInfo(db);
     updateFolderInfo.prepare("UPDATE folder SET "
                              "numChildren = :numChildren, "
-                             "firstChildId = :firstChildId "
+                             "firstChildHash = :firstChildHash "
                              "WHERE id = :id ");
     updateFolderInfo.bindValue(":numChildren", subfolders.count() + comics.count());
-    updateFolderInfo.bindValue(":firstChildId", firstComic != NULL ? firstComic->info.id : 0);
+    updateFolderInfo.bindValue(":firstChildHash", firstComic != NULL ? firstComic->info.hash : "");
     updateFolderInfo.bindValue(":id", folderId);
     updateFolderInfo.exec();
 }
@@ -783,7 +783,7 @@ QList<LibraryItem *> DBHelper::getFoldersFromParent(qulonglong parentId, QSqlDat
 
         if(!record.value("numChildren").isNull() && record.value("numChildren").isValid())
              currentItem->setNumChildren(record.value("numChildren").toInt());
-        currentItem->setFirstChildId(record.value("firstChildId").toULongLong());
+        currentItem->setFirstChildHash(record.value("firstChildHash").toString());
         currentItem->setCustomImage(record.value("customImage").toString());
 
         int lessThan = 0;
@@ -985,7 +985,7 @@ Folder DBHelper::loadFolder(qulonglong id, QSqlDatabase & db)
         //new 8.6
         if(!record.value("numChildren").isNull() && record.value("numChildren").isValid())
              folder.setNumChildren(record.value("numChildren").toInt());
-        folder.setFirstChildId(record.value("firstChildId").toULongLong());
+        folder.setFirstChildHash(record.value("firstChildHash").toString());
         folder.setCustomImage(record.value("customImage").toString());
 	}
 
@@ -1018,7 +1018,7 @@ Folder DBHelper::loadFolder(const QString &folderName, qulonglong parentId, QSql
         //new 8.6
         if(!record.value("numChildren").isNull() && record.value("numChildren").isValid())
              folder.setNumChildren(record.value("numChildren").toInt());
-        folder.setFirstChildId(record.value("firstChildId").toULongLong());
+        folder.setFirstChildHash(record.value("firstChildHash").toString());
         folder.setCustomImage(record.value("customImage").toString());
 
         QLOG_DEBUG() << "FOUND!!";

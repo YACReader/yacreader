@@ -197,11 +197,9 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
                             "completed BOOLEAN DEFAULT 1,"  //collecting
                             //new 8.6 fields
                             "numChildren INTEGER,"
-                            "firstChildId INTEGER,"
+                            "firstChildHash TEXT,"
                             "customImage TEXT,"
-                            "FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE, "
-                            //8.6
-                            "FOREIGN KEY(firstChildId) REFERENCES comic_info(id))");
+                            "FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE)");
         success = success && queryFolder.exec();
 
         //COMIC (representa un cómic en disco, contiene el nombre de fichero)
@@ -771,10 +769,9 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
             QStringList columnDefs;
             //TODO
             columnDefs << "numChildren INTEGER";
-            columnDefs << "firstChildId INTEGER";
+            columnDefs << "firstChildHash TEXT";
             columnDefs << "customImage TEXT";
             //returnValue = returnValue && addColumns("folder", columnDefs, db);
-            //returnValue = returnValue && addConstraint("folder", FOREIGN KEY(firstChildId) REFERENCES comic_info(id), db);
         }
 	}
 
