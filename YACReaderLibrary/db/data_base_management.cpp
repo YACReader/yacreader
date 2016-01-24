@@ -199,7 +199,7 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
                             "numChildren INTEGER,"
                             "firstChildId INTEGER,"
                             "customImage TEXT,"
-                            "FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE), "
+                            "FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE, "
                             //8.6
                             "FOREIGN KEY(firstChildId) REFERENCES comic_info(id))");
         success = success && queryFolder.exec();
