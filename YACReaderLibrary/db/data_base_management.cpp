@@ -195,8 +195,13 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
                             //new 7.1 fields
                             "finished BOOLEAN DEFAULT 0,"   //reading
                             "completed BOOLEAN DEFAULT 1,"  //collecting
-                            //--
-                            "FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE)");
+                            //new 8.6 fields
+                            "numChildren INTEGER,"
+                            "firstChildId INTEGER,"
+                            "customImage TEXT,"
+                            "FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE), "
+                            //8.6
+                            "FOREIGN KEY(firstChildId) REFERENCES comic_info(id))");
         success = success && queryFolder.exec();
 
         //COMIC (representa un cómic en disco, contiene el nombre de fichero)
