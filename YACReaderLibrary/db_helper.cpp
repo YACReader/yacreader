@@ -733,7 +733,13 @@ QList<LibraryItem *> DBHelper::getFoldersFromParent(qulonglong parentId, QSqlDat
 			data << record.value(i);
 		//TODO sort by sort indicator and name
 		currentItem = new Folder(record.value("id").toULongLong(),record.value("parentId").toULongLong(),record.value("name").toString(),record.value("path").toString());
-		int lessThan = 0;
+
+        if(!record.value("numChildren").isNull() && record.value("numChildren").isValid())
+             currentItem->setNumChildren(record.value("numChildren").toInt());
+        currentItem->setFirstChildId(record.value("firstChildId").toULongLong());
+        currentItem->setCustomImage(record.value("customImage").toString());
+
+        int lessThan = 0;
 
 		if(list.isEmpty() || !sort)
 			list.append(currentItem);
@@ -930,9 +936,10 @@ Folder DBHelper::loadFolder(qulonglong id, QSqlDatabase & db)
         folder.setFinished(record.value("finished").toBool());
         folder.setCompleted(record.value("completed").toBool());
         //new 8.6
-        folder.numChildren = record.value("numChildren").isNull() ? -1 : record.value("numChildren").toInt();
-        folder.firstChildId = record.value("firstChildId").toULongLong();
-        folder.customImage = record.value("customImage").toString();
+        if(!record.value("numChildren").isNull() && record.value("numChildren").isValid())
+             folder.setNumChildren(record.value("numChildren").toInt());
+        folder.setFirstChildId(record.value("firstChildId").toULongLong());
+        folder.setCustomImage(record.value("customImage").toString());
 	}
 
     return folder;
@@ -962,9 +969,10 @@ Folder DBHelper::loadFolder(const QString &folderName, qulonglong parentId, QSql
         folder.setFinished(record.value("finished").toBool());
         folder.setCompleted(record.value("completed").toBool());
         //new 8.6
-        folder.numChildren = record.value("numChildren").isNull() ? -1 : record.value("numChildren").toInt();
-        folder.firstChildId = record.value("firstChildId").toULongLong();
-        folder.customImage = record.value("customImage").toString();
+        if(!record.value("numChildren").isNull() && record.value("numChildren").isValid())
+             folder.setNumChildren(record.value("numChildren").toInt());
+        folder.setFirstChildId(record.value("firstChildId").toULongLong());
+        folder.setCustomImage(record.value("customImage").toString());
 
         QLOG_DEBUG() << "FOUND!!";
     }
