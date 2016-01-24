@@ -23,6 +23,7 @@ public:
     static	QList<LibraryItem *> getFolderSubfoldersFromLibrary(qulonglong libraryId, qulonglong folderId);
     static	QList<LibraryItem *> getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId);
     static	QList<LibraryItem *> getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId, bool sort);
+    static  quint32 getNumChildrenFromFolder(qulonglong libraryId, qulonglong folderId);
     static	qulonglong getParentFromComicFolderId(qulonglong libraryId, qulonglong id);
     static	ComicDB getComicInfo(qulonglong libraryId, qulonglong id);
     static  QList<ComicDB> getSiblings(qulonglong libraryId, qulonglong parentId);

@@ -58,6 +58,38 @@ QList<LibraryItem *> DBHelper::getFolderComicsFromLibrary(qulonglong libraryId, 
     QSqlDatabase::removeDatabase(libraryPath);
     return list;
 }
+
+quint32 DBHelper::getNumChildrenFromFolder(qulonglong libraryId, qulonglong folderId)
+{
+    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
+    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
+
+    quint32 result = 0;
+
+    {
+        QSqlQuery selectQuery(db);
+        selectQuery.prepare("SELECT count(*) FROM folder WHERE parentId = :parentId and id <> 1");
+        selectQuery.bindValue(":parentId", folderId);
+        selectQuery.exec();
+
+        result +=  selectQuery.record().value(0).toULongLong();
+    }
+
+    {
+        QSqlQuery selectQuery(db);
+        selectQuery.prepare("SELECT count(*) FROM comic c WHERE c.parentId = :parentId");
+        selectQuery.bindValue(":parentId", folderId);
+        selectQuery.exec();
+
+        result +=  selectQuery.record().value(0).toULongLong();
+    }
+
+    db.close();
+    QSqlDatabase::removeDatabase(libraryPath);
+
+    return result;
+}
+
 qulonglong DBHelper::getParentFromComicFolderId(qulonglong libraryId, qulonglong id)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
