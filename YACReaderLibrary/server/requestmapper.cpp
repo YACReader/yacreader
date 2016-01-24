@@ -23,6 +23,7 @@
 #include "controllers/comicdownloadinfocontroller.h"
 #include "controllers/synccontroller.h"
 #include "controllers/versioncontroller.h"
+#include "controllers/foldercontentcontroller.h"
 
 #include "db_helper.h"
 #include "yacreader_libraries.h"
@@ -107,6 +108,7 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
     static const QRegExp comicPage("/library/.+/comic/[0-9]+/page/[0-9]+/?"); //get comic page
     static const QRegExp comicPageRemote("/library/.+/comic/[0-9]+/page/[0-9]+/remote?"); //get comic page (remote reading)
     static const QRegExp serverVersion("/version/?");
+    static const QRegExp folderContent("/library/.+/folder/[0-9]+/content/?");
 
     static const QRegExp sync("/sync");
 
@@ -168,6 +170,10 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
                     else if(comicUpdate.exactMatch(path))
                     {
                         UpdateComicController().service(request, response);
+                    }
+                    else if(folderContent.exactMatch(path))
+                    {
+                        FolderContentController().service(request, response);
                     }
                 }
                 else

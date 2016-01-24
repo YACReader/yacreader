@@ -17,7 +17,8 @@ HEADERS += \
     $$PWD/controllers/comicdownloadinfocontroller.h \
     $$PWD/controllers/synccontroller.h \
     #v2
-    $$PWD/controllers/versioncontroller.h
+    $$PWD/controllers/versioncontroller.h \
+    $$PWD/controllers/foldercontentcontroller.h
 
 SOURCES += \
     $$PWD/static.cpp \
@@ -35,7 +36,8 @@ SOURCES += \
     $$PWD/controllers/comicdownloadinfocontroller.cpp \
     $$PWD/controllers/synccontroller.cpp \
     #v2
-    $$PWD/controllers/versioncontroller.cpp
+    $$PWD/controllers/versioncontroller.cpp \
+    $$PWD/controllers/foldercontentcontroller.cpp
 	
 include(lib/bfLogging/bfLogging.pri)
 include(lib/bfHttpServer/bfHttpServer.pri)
