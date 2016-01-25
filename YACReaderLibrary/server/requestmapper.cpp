@@ -97,22 +97,22 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
     QByteArray path=request.getPath();
     qDebug("RequestMapper: path=%s",path.data());
 
-    static const QRegExp folder("/library/.+/folder/[0-9]+/?");//get comic content
-    static const QRegExp folderInfo("/library/.+/folder/[0-9]+/info/?"); //get folder info
-    static const QRegExp comicDownloadInfo("/library/.+/comic/[0-9]+/?"); //get comic info (basic/download info)
-    static const QRegExp comicFullInfo("/library/.+/comic/[0-9]+/info/?"); //get comic info (full info)
-    static const QRegExp comicOpen("/library/.+/comic/[0-9]+/remote/?"); //the server will open for reading the comic
-    static const QRegExp comicUpdate("/library/.+/comic/[0-9]+/update/?"); //get comic info
-    static const QRegExp comicClose("/library/.+/comic/[0-9]+/close/?"); //the server will close the comic and free memory
-    static const QRegExp cover("/library/.+/cover/[0-9a-f]+.jpg"); //get comic cover (navigation)
-    static const QRegExp comicPage("/library/.+/comic/[0-9]+/page/[0-9]+/?"); //get comic page
-    static const QRegExp comicPageRemote("/library/.+/comic/[0-9]+/page/[0-9]+/remote?"); //get comic page (remote reading)
-    static const QRegExp serverVersion("/version/?");
-    static const QRegExp folderContent("/library/.+/folder/[0-9]+/content/?");
+    QRegExp folder("/library/.+/folder/[0-9]+/?");//get comic content
+    QRegExp folderInfo("/library/.+/folder/[0-9]+/info/?"); //get folder info
+    QRegExp comicDownloadInfo("/library/.+/comic/[0-9]+/?"); //get comic info (basic/download info)
+    QRegExp comicFullInfo("/library/.+/comic/[0-9]+/info/?"); //get comic info (full info)
+    QRegExp comicOpen("/library/.+/comic/[0-9]+/remote/?"); //the server will open for reading the comic
+    QRegExp comicUpdate("/library/.+/comic/[0-9]+/update/?"); //get comic info
+    QRegExp comicClose("/library/.+/comic/[0-9]+/close/?"); //the server will close the comic and free memory
+    QRegExp cover("/library/.+/cover/[0-9a-f]+.jpg"); //get comic cover (navigation)
+    QRegExp comicPage("/library/.+/comic/[0-9]+/page/[0-9]+/?"); //get comic page
+    QRegExp comicPageRemote("/library/.+/comic/[0-9]+/page/[0-9]+/remote?"); //get comic page (remote reading)
+    QRegExp serverVersion("/version/?");
+    QRegExp folderContent("/library/.+/folder/[0-9]+/content/?");
 
-    static const QRegExp sync("/sync");
+    QRegExp sync("/sync");
 
-    static const QRegExp library("/library/([0-9]+)/.+"); //permite verificar que la biblioteca solicitada existe
+    QRegExp library("/library/([0-9]+)/.+"); //permite verificar que la biblioteca solicitada existe
 
     path = QUrl::fromPercentEncoding(path).toUtf8();
 
