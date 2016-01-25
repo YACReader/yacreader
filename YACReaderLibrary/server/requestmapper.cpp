@@ -24,6 +24,7 @@
 #include "controllers/synccontroller.h"
 #include "controllers/versioncontroller.h"
 #include "controllers/foldercontentcontroller.h"
+#include "controllers/tagscontroller.h"
 
 #include "db_helper.h"
 #include "yacreader_libraries.h"
@@ -109,6 +110,7 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
     QRegExp comicPageRemote("/library/.+/comic/[0-9]+/page/[0-9]+/remote?"); //get comic page (remote reading)
     QRegExp serverVersion("/version/?");
     QRegExp folderContent("/library/.+/folder/[0-9]+/content/?");
+    QRegExp tags("/library/.+/tags/?");
 
     QRegExp sync("/sync");
 
@@ -174,6 +176,10 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
                     else if(folderContent.exactMatch(path))
                     {
                         FolderContentController().service(request, response);
+                    }
+                    else if(tags.exactMatch(path))
+                    {
+                        TagsController().service(request, response);
                     }
                 }
                 else

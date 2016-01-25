@@ -18,7 +18,8 @@ HEADERS += \
     $$PWD/controllers/synccontroller.h \
     #v2
     $$PWD/controllers/versioncontroller.h \
-    $$PWD/controllers/foldercontentcontroller.h
+    $$PWD/controllers/foldercontentcontroller.h \
+    $$PWD/controllers/tagscontroller.h
 
 SOURCES += \
     $$PWD/static.cpp \
@@ -37,7 +38,8 @@ SOURCES += \
     $$PWD/controllers/synccontroller.cpp \
     #v2
     $$PWD/controllers/versioncontroller.cpp \
-    $$PWD/controllers/foldercontentcontroller.cpp
+    $$PWD/controllers/foldercontentcontroller.cpp \
+    $$PWD/controllers/tagscontroller.cpp
 	
 include(lib/bfLogging/bfLogging.pri)
 include(lib/bfHttpServer/bfHttpServer.pri)
