@@ -33,9 +33,9 @@ public:
 
 	//objects management
 	//deletes
-    static void removeFromDB(LibraryItem * item, QSqlDatabase & db, bool updateParent = true);
-    static void removeFromDB(Folder * folder, QSqlDatabase & db, bool updateParent = true);
-    static void removeFromDB(ComicDB * comic, QSqlDatabase & db, bool updateParent = true);
+    static void removeFromDB(LibraryItem * item, QSqlDatabase & db);
+    static void removeFromDB(Folder * folder, QSqlDatabase & db);
+    static void removeFromDB(ComicDB * comic, QSqlDatabase & db);
     static void removeLabelFromDB(qulonglong id, QSqlDatabase & db);
     static void removeListFromDB(qulonglong id, QSqlDatabase & db);
     //logic deletes
@@ -43,8 +43,8 @@ public:
     static void deleteComicsFromLabel(const QList<ComicDB> & comicsList, qulonglong labelId, QSqlDatabase & db);
     static void deleteComicsFromReadingList(const QList<ComicDB> & comicsList, qulonglong readingListId, QSqlDatabase & db);
 	//inserts
-    static qulonglong insert(Folder * folder, QSqlDatabase & db, bool updateParent = true);
-    static qulonglong insert(ComicDB * comic, QSqlDatabase & db, bool updateParent = true);
+    static qulonglong insert(Folder * folder, QSqlDatabase & db);
+    static qulonglong insert(ComicDB * comic, QSqlDatabase & db);
     static qulonglong insertLabel(const QString & name, YACReader::LabelColors color , QSqlDatabase & db);
     static qulonglong insertReadingList(const QString & name, QSqlDatabase & db);
     static qulonglong insertReadingSubList(const QString & name, qulonglong parentId, int ordering, QSqlDatabase & db);
@@ -59,6 +59,7 @@ public:
     static void update(const Folder & folder, QSqlDatabase & db);
     static void updateChildrenInfo(const Folder & folder, QSqlDatabase & db);
     static void updateChildrenInfo(qulonglong folderId, QSqlDatabase & db);
+    static void updateChildrenInfo(QSqlDatabase & db);
     static void updateProgress(qulonglong libraryId,const ComicInfo & comicInfo);
     static void updateReadingRemoteProgress(const ComicInfo & comicInfo, QSqlDatabase & db);
     static void updateFromRemoteClient(qulonglong libraryId,const ComicInfo & comicInfo);
