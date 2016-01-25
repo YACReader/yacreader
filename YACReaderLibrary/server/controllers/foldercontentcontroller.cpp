@@ -54,12 +54,12 @@ void FolderContentController::serviceContent(const int &library, const qulonglon
         if((*itr)->isDir())
         {
             currentFolder = (Folder *)(*itr);
-            response.writeText(QString("f:%1:%2:%3:%4:%5\r\n").arg(library).arg(currentFolder->id).arg(currentFolder->name).arg(currentFolder->getNumChildren()).arg(currentFolder->getFirstChildHash()));
+            response.writeText(QString("f\t%1\t%2\t%3\t%4\t%5\r\n").arg(library).arg(currentFolder->id).arg(currentFolder->name).arg(currentFolder->getNumChildren()).arg(currentFolder->getFirstChildHash()));
         }
         else
         {
             currentComic = (ComicDB *)(*itr);
-            response.writeText(QString("c:%1:%2:%3:%4:%5\r\n").arg(library).arg(currentComic->id).arg(currentComic->getFileName()).arg(currentComic->getFileSize()).arg(currentComic->info.hash));
+            response.writeText(QString("c\t%1\t%2\t%3\t%4\t%5\r\n").arg(library).arg(currentComic->id).arg(currentComic->getFileName()).arg(currentComic->getFileSize()).arg(currentComic->info.hash));
         }
     }
 
