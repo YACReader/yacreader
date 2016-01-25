@@ -9,6 +9,7 @@ class QString;
 class ComicDB;
 class Folder;
 class LibraryItem;
+class LabelItem;
 class QSqlDatabase;
 class ComicInfo;
 class QSqlRecord;
@@ -73,7 +74,8 @@ public:
 	static QList<LibraryItem *> getFoldersFromParent(qulonglong parentId, QSqlDatabase & db, bool sort = true);
 	static QList<ComicDB> getSortedComicsFromParent(qulonglong parentId, QSqlDatabase & db);
 	static QList<LibraryItem *> getComicsFromParent(qulonglong parentId, QSqlDatabase & db, bool sort = true);
-	//load
+    static QList<LabelItem *> getLabelItems(qulonglong libraryId);
+    //load
 	static Folder loadFolder(qulonglong id, QSqlDatabase & db);
     static Folder loadFolder(const QString & folderName, qulonglong parentId, QSqlDatabase & db);
 	static ComicDB loadComic(qulonglong id, QSqlDatabase & db);

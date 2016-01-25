@@ -14,6 +14,7 @@
 
 #include <limits>
 
+#include "reading_list_item.h"
 #include "library_item.h"
 #include "comic_db.h"
 #include "data_base_management.h"
@@ -959,6 +960,59 @@ QList<LibraryItem *> DBHelper::getComicsFromParent(qulonglong parentId, QSqlData
 	}
 	//selectQuery.finish();
 	return list;
+}
+
+QList<LabelItem *> DBHelper::getLabelItems(qulonglong libraryId)
+{
+    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
+    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
+
+    QSqlQuery selectQuery("SELECT * FROM label ORDER BY ordering,name",db); //TODO add some kind of
+    QList<LabelItem *> labels;
+
+    while(selectQuery.next())
+    {
+        QSqlRecord record = selectQuery.record();
+        LabelItem *item = new LabelItem(QList<QVariant>()
+                                       << record.value("name")
+                                       << record.value("color")
+                                       << record.value("id")
+                                       << record.value("ordering"));
+
+        if(labels.isEmpty())
+        {
+            labels << item;
+        }
+        else
+        {
+            int i = 0;
+
+            while (i < labels.count() && (labels.at(i)->colorid() < item->colorid()) )
+                i++;
+
+            if(i < labels.count())
+            {
+                if(labels.at(i)->colorid() == item->colorid()) //sort by name
+                {
+                    while( i < labels.count() && labels.at(i)->colorid() == item->colorid() && naturalSortLessThanCI(labels.at(i)->name(),item->name()))
+                        i++;
+                }
+            }
+            if(i >= labels.count())
+            {
+                labels << item;
+            }
+            else
+            {
+                labels.insert(i,item);
+            }
+        }
+    }
+
+    db.close();
+    QSqlDatabase::removeDatabase(libraryPath);
+
+    return labels;
 }
 
 //loads
