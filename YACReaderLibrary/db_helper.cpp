@@ -160,32 +160,26 @@ QString DBHelper::getLibraryName(int id)
 }
 //objects management
 //deletes
-void DBHelper::removeFromDB(LibraryItem * item, QSqlDatabase & db, bool updateParent)
+void DBHelper::removeFromDB(LibraryItem * item, QSqlDatabase & db)
 {
 	if(item->isDir())
-        DBHelper::removeFromDB(dynamic_cast<Folder *>(item),db, updateParent);
+        DBHelper::removeFromDB(dynamic_cast<Folder *>(item),db);
 	else
-        DBHelper::removeFromDB(dynamic_cast<ComicDB *>(item),db, updateParent);
+        DBHelper::removeFromDB(dynamic_cast<ComicDB *>(item),db);
 }
-void DBHelper::removeFromDB(Folder * folder, QSqlDatabase & db, bool updateParent)
+void DBHelper::removeFromDB(Folder * folder, QSqlDatabase & db)
 {
 	QSqlQuery query(db);
 	query.prepare("DELETE FROM folder WHERE id = :id");
 	query.bindValue(":id", folder->id);
 	query.exec();
-
-    if(updateParent)
-        DBHelper::updateChildrenInfo(folder->parentId, db);
 }
-void DBHelper::removeFromDB(ComicDB * comic, QSqlDatabase & db, bool updateParent)
+void DBHelper::removeFromDB(ComicDB * comic, QSqlDatabase & db)
 {
 	QSqlQuery query(db);
 	query.prepare("DELETE FROM comic WHERE id = :id");
 	query.bindValue(":id", comic->id);
     query.exec();
-
-    if(updateParent)
-        DBHelper::updateChildrenInfo(comic->parentId, db);
 }
 
 void DBHelper::removeLabelFromDB(qulonglong id, QSqlDatabase &db)
@@ -447,6 +441,18 @@ void DBHelper::updateChildrenInfo(qulonglong folderId, QSqlDatabase & db)
     updateFolderInfo.exec();
 }
 
+void DBHelper::updateChildrenInfo(QSqlDatabase & db)
+{
+    QSqlQuery selectQuery(db); //TODO check
+    selectQuery.prepare("SELECT id FROM folder");
+    selectQuery.exec();
+
+    while (selectQuery.next())
+    {
+        DBHelper::updateChildrenInfo(selectQuery.record().value(0).toULongLong(), db);
+    }
+}
+
 void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
@@ -610,7 +616,7 @@ void DBHelper::reasignOrderToComicsInReadingList(qulonglong readingListId, QList
 }
 
 //inserts
-qulonglong DBHelper::insert(Folder * folder, QSqlDatabase & db, bool updateParent)
+qulonglong DBHelper::insert(Folder * folder, QSqlDatabase & db)
 {
 	QSqlQuery query(db);
 	query.prepare("INSERT INTO folder (parentId, name, path) "
@@ -620,13 +626,10 @@ qulonglong DBHelper::insert(Folder * folder, QSqlDatabase & db, bool updateParen
 	query.bindValue(":path", folder->path);
 	query.exec();
 
-    if(updateParent)
-        DBHelper::updateChildrenInfo(folder->parentId, db);
-
 	return query.lastInsertId().toULongLong();
 }
 
-qulonglong DBHelper::insert(ComicDB * comic, QSqlDatabase & db, bool updateParent)
+qulonglong DBHelper::insert(ComicDB * comic, QSqlDatabase & db)
 {
 	if(!comic->info.existOnDb)
 	{
@@ -650,9 +653,6 @@ qulonglong DBHelper::insert(ComicDB * comic, QSqlDatabase & db, bool updateParen
 	query.bindValue(":name", comic->name);
 	query.bindValue(":path", comic->path);
 	query.exec();
-
-    if(updateParent)
-        DBHelper::updateChildrenInfo(comic->parentId, db);
 
     return query.lastInsertId().toULongLong();
 }

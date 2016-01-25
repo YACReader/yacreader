@@ -10,12 +10,13 @@ class ComicsRemover : public QObject
 {
 	Q_OBJECT
 public:
-	explicit ComicsRemover(QModelIndexList & indexList, QList<QString> & paths, QObject *parent = 0);
+    explicit ComicsRemover(QModelIndexList & indexList, QList<QString> & paths, qulonglong parentId, QObject *parent = 0);
 	
 signals:
    void remove(int);
    void removeError();
    void finished();
+   void removedItemsFromFolder(qulonglong);
 
 public slots:
     void process();
@@ -23,6 +24,7 @@ public slots:
 private:
 	QModelIndexList indexList;
 	QList<QString> paths;
+    qulonglong parentId;
 };
 
 class FoldersRemover : public QObject
