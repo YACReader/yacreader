@@ -14,21 +14,8 @@ INCLUDEPATH += ../common \
 DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY QT_NO_DEBUG_OUTPUT
 
 #load default build flags
-#TODO include (../config.pri)
-!CONFIG(unarr):!CONFIG(7zip) {
-        unix {
-                !macx {
-                                CONFIG+=unarr
-                        }
-                else {
-                                CONFIG+=7zip
-                        }
-
-                }
-        win32 {
-                        CONFIG+=7zip
-                  }
-}
+#do a basic dependency check
+include(headless_config.pri)
 
 win32 {
     LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32 -luser32
@@ -148,9 +135,9 @@ INSTALLS += bin server translation #manpage
 
 bin.path = $$BINDIR
 isEmpty(DESTDIR) {
-	bin.files = YACReaderLibrary
+	bin.files = YACReaderLibraryServer
 } else {
-	bin.files = $$DESTDIR/YACReaderLibrary
+	bin.files = $$DESTDIR/YACReaderLibraryServer
 }
 
 server.path = $$DATADIR/yacreader
@@ -159,6 +146,6 @@ server.files = ../release/server
 translation.path = $$DATADIR/yacreader/languages
 translation.files = ../release/languages/yacreaderlibrary_*
 
-manpage.path = $$DATADIR/man/man1
-manpage.files = ../YACReaderLibrary.1
+#manpage.path = $$DATADIR/man/man1
+#manpage.files = ../YACReaderLibrary.1
 }
