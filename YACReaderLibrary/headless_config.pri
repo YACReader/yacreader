@@ -29,39 +29,43 @@ lessThan(QT_VER_MIN, 3){
 		  }
 }
 
-packagesExist(QtCore) {
-		message("Found QtCore")
-	}
-	else: {
-		error("Missing dependency: QtCore")
-	}
-packagesExist(QtGui) {
-		message("Found QtGui")
-	}
-	else: {
-		error("Missing dependency: QtGui")
-	}
-packagesExist(poppler-qt5) {
-		message("Found poppler-qt5")
-	}
-	else: {
-		error("Missing dependency: poppler-qt5")
-	}
-packagesExist(QtNetwork) {
-		message("Found QtNetwork")
-	}
-	else: {
-		error("Missing dependency: QtNetwork")
-	}
-packagesExist(QtSql) {
-		message("Found QtSql")
-	}
-	else: {
-		error("Missing dependency: QtSql")
-	}
-packagesExist(sqlite3) {
-		message("Found sqlite3")
-	}
-	else: {
-		error("Missing dependency: sqlite3")
-	}
+unix { 
+	!macx {
+		packagesExist(QtCore) {
+				message("Found QtCore")
+			}
+			else: {
+				error("Missing dependency: QtCore")
+			}
+		packagesExist(QtGui) {
+				message("Found QtGui")
+			}
+			else: {
+				error("Missing dependency: QtGui")
+			}
+		packagesExist(poppler-qt5) {
+				message("Found poppler-qt5")
+			}
+			else: {
+				error("Missing dependency: poppler-qt5")
+			}
+		packagesExist(QtNetwork) {
+				message("Found QtNetwork")
+			}
+			else: {
+				error("Missing dependency: QtNetwork")
+			}
+		packagesExist(QtSql) {
+				message("Found QtSql")
+			}
+			else: {
+				error("Missing dependency: QtSql")
+			}
+		packagesExist(sqlite3) {
+				message("Found sqlite3")
+			}
+			else: {
+				error("Missing dependency: sqlite3")
+			}
+		}
+}
