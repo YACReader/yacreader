@@ -10,6 +10,8 @@ public:
     explicit ConsoleUILibraryCreator(QObject *parent = 0);
     void createLibrary(const QString & name, const QString & path);
     void updateLibrary(const QString & path);
+    void addExistingLibrary(const QString & name, const QString & path);
+    void removeLibrary(const QString & name);
 
 private:
     uint numComicsProcessed;
