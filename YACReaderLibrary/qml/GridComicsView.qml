@@ -314,10 +314,10 @@ Rectangle {
     }
 
     YACReaderScrollView {
+        __wheelAreaScrollSpeed: grid.cellHeight * 0.30
         id: scrollView
         anchors.fill: parent
         anchors.margins: 0
-
         //QTBUG-39453
         //Another fu%$·#& bug in Qt
         //https://bugreports.qt.io/browse/QTBUG-39453
@@ -373,7 +373,7 @@ Rectangle {
             objectName: "grid"
             anchors.fill: parent
             cellHeight: cellCustomHeight
-            highlight: appHighlight
+            //highlight: appHighlight
             focus: true
             model: comicsList
             delegate: appDelegate
@@ -432,7 +432,7 @@ Rectangle {
                var rest = width - (cWidth * wholeCells)
 
                grid.cellWidth = cWidth + Math.floor(rest / wholeCells);
-               console.log("cWidth",cWidth,"wholeCells=",wholeCells,"rest=",rest,"cellWidth=",cellWidth,"width=",width);
+               //console.log("cWidth",cWidth,"wholeCells=",wholeCells,"rest=",rest,"cellWidth=",cellWidth,"width=",width);
            }
         }
 

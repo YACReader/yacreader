@@ -56,6 +56,28 @@ void ConsoleUILibraryCreator::updateLibrary(const QString & path)
     eventLoop.exec();
 }
 
+void ConsoleUILibraryCreator::addExistingLibrary(const QString & name, const QString & path)
+{
+    //TODO add error handling
+    YACReaderLibraries yacreaderLibraries;
+    yacreaderLibraries.load();
+    yacreaderLibraries.addLibrary(name, path);
+    yacreaderLibraries.save();
+
+    std::cout << "Library added : " << name.toUtf8().constData() << " at " << path.toUtf8().constData() << std::endl;
+}
+
+void ConsoleUILibraryCreator::removeLibrary(const QString & name)
+{
+    //TODO add error handling
+    YACReaderLibraries yacreaderLibraries;
+    yacreaderLibraries.load();
+    yacreaderLibraries.remove(name);
+    yacreaderLibraries.save();
+
+    std::cout << "Library removed : " << name.toUtf8().constData() << std::endl;
+}
+
 void ConsoleUILibraryCreator::newComic(const QString & /*relativeComicPath*/, const QString & /*coverPath*/)
 {
     numComicsProcessed++;

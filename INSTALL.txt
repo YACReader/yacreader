@@ -8,17 +8,26 @@ make install
 
 from the source dir. For seperate builds of YACReader or YACReaderLibrary, enter their respective subfolders and run the commands from there.
 
+For the headless version of YACReaderLibrary enter the YACReaderLibrary folder and run:
+
+qmake-qt5 YACReaderLibraryServer.pro
+
+This will select the build config for the headless version instead of the gui version. You can then continue the build as described above.
+
+
 Dependencies:
 -----------------------
 
 - Qt >= 5.3 with the following modules:
 	- declarative
+	- quickcontrols
 	- sql
 	- script
 	- multimedia
 	- imageformats
 	- opengl
 	- sql-sqlite
+	- network
 	
 - poppler-qt5
 - qrencode
@@ -26,9 +35,12 @@ Dependencies:
 - glu
 - a decompression backend, either 7zip or unarr (see below)
 
+Please note that not all of these dependencies are needed at build time. A good example for this is YACReaderLibrary's GridView mode which will
+silently fail and only show a white page if the proper qml modules (declarative, quickcontrols) are not installed.
+
 
 Decompression backend:
----------------------------------------
+--------------------------------------
 
 YACReader supports two decompression backends:
 
@@ -50,8 +62,9 @@ If you chose to build YACReader with p7zip as a backend on Linux/Unix, please ta
 If your system already ships with p7zip > 9.20.1 you can place 7z.so and the Codecs folder with the Rar29.so from p7zip 9.20.1 in /usr/lib/yacreader 
 YACReader will check this folder first and can thus continue using 7zip as a backend with p7zip > 9.20.1 installed on your system.
 
+
 Other build options:
----------------------
+------------------------------
 
 You can adjust the installation prefix as well als the path make install uses to install the files.
 Use "qmake PREFIX=DIR" to configure YACReader for your systems default prefix (for example "/", "/usr", "/usr/local").
@@ -67,7 +80,8 @@ On embedded devices that don't support desktop OpenGL, it is recommended to use 
 
 qmake CONFIG+=no_opengl
 
-This will remove any dependency on desktop OpenGL and hardlock rendering to software.
+This will remove any dependency on desktop OpenGL and hardlock YACReader's coverflow to software rendering. Please note that it 
+doesn't actually remove OpenGL from the build, the Qt toolkit will still make use of it.
 
 
 DO YOU WANT TO HELP YACREADER?

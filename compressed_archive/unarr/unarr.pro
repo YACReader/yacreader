@@ -20,7 +20,7 @@ HEADERS+=$$PWD/unarr-master/common/allocator.h\
 		 $$PWD/unarr-master/lzmasdk/Ppmd.h\
 		 $$PWD/unarr-master/lzmasdk/LzmaDec.h\
 		 $$PWD/unarr-master/lzmasdk/Ppmd8.h\
-		 $$PWD/unarr-master/lzmasdk/Types.h\
+		 $$PWD/unarr-master/lzmasdk/7zTypes.h\
 		 $$PWD/unarr-master/tar/tar.h\
 		 $$PWD/unarr-master/_7z/_7z.h\
 		 $$PWD/unarr-master/unarr.h
