@@ -41,6 +41,7 @@ protected slots:
 
 protected:
     QSettings * settings;
+    QString baseURL;
 
 };
 #endif // COMIC_VINE_CLIENT_H
