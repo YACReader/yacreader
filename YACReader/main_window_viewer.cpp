@@ -979,6 +979,11 @@ void MainWindowViewer::keyPressEvent(QKeyEvent *event)
         toggleToolBars();
         event->accept();
     }
+    else if (key == ShortcutsManager::getShortcutsManager().getShortcut(CHANGE_FIT_ACTION_Y))
+    {
+	    toggleWidthHeight();
+	    event->accept();
+    }
     else
         QWidget::keyPressEvent(event);
 }
@@ -1060,6 +1065,19 @@ void MainWindowViewer::fitToHeight()
 	viewer->updatePage();
 }
 
+void MainWindowViewer::toggleWidthHeight()
+{
+	//Only switch to "Fit to height" when we're in "Fit to width"
+	if (Configuration::getConfiguration().getFitMode() == YACReader::FitMode::ToWidth)
+	{
+		adjustHeightAction->trigger();
+	}
+	//Default to "Fit to width" in all other cases
+	else
+	{
+		adjustWidthAction->trigger();
+	}
+}
 void MainWindowViewer::checkNewVersion()
 {
 	Configuration & conf = Configuration::getConfiguration();

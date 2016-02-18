@@ -62,6 +62,7 @@ class EditShortcutsDialog;
 		void reloadOptions();
 		void fitToWidth();
 		void fitToHeight();
+		void toggleWidthHeight();
 		void checkNewVersion();
         void processReset();
         void setUpShortcutsManagement();
