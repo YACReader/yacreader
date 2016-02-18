@@ -12,7 +12,7 @@ INCLUDEPATH += ../common \
                 ./db
 
 DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY QT_NO_DEBUG_OUTPUT
-
+QMAKE_MAC_SDK = macosx10.11
 #load default build flags
 #do a basic dependency check
 include(headless_config.pri)
