@@ -83,7 +83,7 @@ void logSystemAndConfig()
 #elif defined Q_OS_UNIX && !defined Q_OS_MAC
     if(QLibrary::isLibrary(QString(LIBDIR)+"/yacreader/7z.so") | QLibrary::isLibrary(QString(LIBDIR)+"/p7zip/7z.so"))
 #else
-    if(QLibrary::isLibrary(QApplication::applicationDirPath()+"/utils/7z.so"))
+    if(QLibrary::isLibrary(QCoreApplication::applicationDirPath()+"/utils/7z.so"))
 #endif
         QLOG_INFO() << "7z : found";
     else
