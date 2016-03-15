@@ -2,6 +2,13 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="tr_TR">
 <context>
+    <name>ActionsShortcutsModel</name>
+    <message>
+        <source>None</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>BookmarksDialog</name>
     <message>
         <source>Close</source>
@@ -29,6 +36,29 @@
     <message>
         <source>Saving config file....</source>
         <translation type="vanished">Config dosyası kaydediliyor...</translation>
+    </message>
+</context>
+<context>
+    <name>EditShortcutsDialog</name>
+    <message>
+        <source>Restore defaults</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shortcuts settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shortcut in use</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -139,39 +169,39 @@
     <name>MainWindowViewer</name>
     <message>
         <source>C</source>
-        <translation>C</translation>
+        <translation type="vanished">C</translation>
     </message>
     <message>
         <source>D</source>
-        <translation>D</translation>
+        <translation type="vanished">D</translation>
     </message>
     <message>
         <source>G</source>
-        <translation>G</translation>
+        <translation type="vanished">G</translation>
     </message>
     <message>
         <source>I</source>
-        <translation>I</translation>
+        <translation type="vanished">I</translation>
     </message>
     <message>
         <source>L</source>
-        <translation>L</translation>
+        <translation type="vanished">L</translation>
     </message>
     <message>
         <source>M</source>
-        <translation>M</translation>
+        <translation type="vanished">M</translation>
     </message>
     <message>
         <source>O</source>
-        <translation>O</translation>
+        <translation type="vanished">O</translation>
     </message>
     <message>
         <source>R</source>
-        <translation>R</translation>
+        <translation type="vanished">R</translation>
     </message>
     <message>
         <source>Z</source>
-        <translation>Z</translation>
+        <translation type="vanished">Z</translation>
     </message>
     <message>
         <source>Help</source>
@@ -239,7 +269,7 @@
     </message>
     <message>
         <source>Ctrl+O</source>
-        <translation>Ctrl+O</translation>
+        <translation type="vanished">Ctrl+O</translation>
     </message>
     <message>
         <source>Comic files</source>
@@ -393,6 +423,130 @@
         <source>File</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Clear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear openrecent list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fit to page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset zoom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show zoom slider</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Double page manga mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reverse reading order in double page mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open recent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Comics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle fullscreen mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide/show toolbar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>General</source>
+        <translation type="unfinished">Genel</translation>
+    </message>
+    <message>
+        <source>Size up magnifying glass</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size down magnifying glass</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom in magnifying glass</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom out magnifying glass</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Magnifiying glass</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle between fit to width and fit to height</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Page adjustement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Autoscroll down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Autoscroll up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Go to the first page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Go to the last page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reading</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>OptionsDialog</name>
@@ -414,7 +568,7 @@
     </message>
     <message>
         <source>Page width stretch</source>
-        <translation>Sayfayı uzat</translation>
+        <translation type="vanished">Sayfayı uzat</translation>
     </message>
     <message>
         <source>&quot;Go to flow&quot; size</source>
@@ -687,6 +841,14 @@
         <source>Cancel</source>
         <translation>Vazgeç</translation>
     </message>
+    <message>
+        <source>Edit shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>YACReaderSideBar</name>
@@ -701,6 +863,13 @@
     <message>
         <source>FOLDERS</source>
         <translation type="vanished">DOSYALAR</translation>
+    </message>
+</context>
+<context>
+    <name>YACReaderSlider</name>
+    <message>
+        <source>Reset</source>
+        <translation type="unfinished">Yeniden başlat</translation>
     </message>
 </context>
 <context>
