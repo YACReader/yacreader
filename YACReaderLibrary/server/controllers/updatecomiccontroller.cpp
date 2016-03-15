@@ -25,7 +25,7 @@ void UpdateComicController::service(HttpRequest &request, HttpResponse &response
 
     QString postData = QString::fromUtf8(request.getBody());
 
-    QLOG_INFO() << "POST DATA: " << postData;
+    QLOG_TRACE() << "POST DATA: " << postData;
 
     if(postData.length()>0) {
         QList<QString> data = postData.split("\n");

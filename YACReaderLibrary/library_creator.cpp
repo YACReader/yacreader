@@ -279,7 +279,7 @@ void LibraryCreator::create(QDir dir)
 #endif        
 		if(fileInfo.isDir())
 		{
-			QLOG_INFO() << "Parsing folder" << fileInfo.canonicalPath() ;
+            QLOG_TRACE() << "Parsing folder" << fileInfo.canonicalPath() ;
 			//se añade al path actual el folder, aún no se sabe si habrá que añadirlo a la base de datos
 			_currentPathFolders.append(Folder(fileInfo.fileName(),relativePath));
 			create(QDir(fileInfo.absoluteFilePath()));
@@ -288,7 +288,7 @@ void LibraryCreator::create(QDir dir)
 		}
 		else
 		{
-			QLOG_INFO() << "Parsing file" << fileInfo.filePath();
+            QLOG_TRACE() << "Parsing file" << fileInfo.filePath();
 			insertComic(relativePath,fileInfo);
 		}
 	}

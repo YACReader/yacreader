@@ -53,7 +53,7 @@ void YACReaderLocalServer::sendResponse()
 		worker->start();
 	}
 
-	QLOG_INFO() << "connection incoming";
+    QLOG_TRACE() << "connection incoming";
 	//clientConnection->waitForBytesWritten();*/
 	//clientConnection->disconnectFromServer();
 }

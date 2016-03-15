@@ -21,7 +21,7 @@ void ComicsView::dragEnterEvent(QDragEnterEvent *event)
         event->acceptProposedAction();
     else
     {
-    QLOG_INFO() << "dragEnterEvent";
+    QLOG_TRACE() << "dragEnterEvent";
     QList<QUrl> urlList;
 
     if (event->mimeData()->hasUrls() && event->dropAction() == Qt::CopyAction)

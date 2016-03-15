@@ -34,13 +34,13 @@ void PageController::service(HttpRequest& request, HttpResponse& response)
     qulonglong currentComicId;
     if(remote)
     {
-        QLOG_INFO() << "se recupera comic remoto para servir páginas";
+        QLOG_TRACE() << "se recupera comic remoto para servir páginas";
         comicFile = session.getCurrentRemoteComic();
         currentComicId = session.getCurrentRemoteComicId();
     }
     else
     {
-        QLOG_INFO() << "se recupera comic para servir páginas";
+        QLOG_TRACE() << "se recupera comic para servir páginas";
         comicFile = session.getCurrentComic();
         currentComicId = session.getCurrentComicId();
     }

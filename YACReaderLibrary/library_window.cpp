@@ -2535,7 +2535,7 @@ QModelIndexList LibraryWindow::getSelectedComics()
 	//se fuerza a que haya almenos una fila seleccionada TODO comprobar se se puede forzar a la tabla a que lo haga automáticamente
     //avoid selection.count()==0 forcing selection in comicsView
     QModelIndexList selection = comicsView->selectionModel()->selectedRows();
-    QLOG_INFO() << "selection count " << selection.length();
+    QLOG_TRACE() << "selection count " << selection.length();
 	qSort(selection.begin(),selection.end(),lessThanModelIndexRow);
 
     if(selection.count()==0)
@@ -2574,9 +2574,9 @@ void LibraryWindow::deleteComicsFromDisk()
         foreach(ComicDB comic, comics)
         {
             paths.append(libraryPath + comic.path);
-            QLOG_INFO() << comic.path;
-            QLOG_INFO() << comic.id;
-            QLOG_INFO() << comic.parentId;
+            QLOG_TRACE() << comic.path;
+            QLOG_TRACE() << comic.id;
+            QLOG_TRACE() << comic.parentId;
         }
 
         ComicsRemover * remover = new ComicsRemover(indexList,paths);
