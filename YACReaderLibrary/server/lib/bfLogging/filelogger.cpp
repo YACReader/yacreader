@@ -37,7 +37,7 @@ void FileLogger::refreshSettings() {
     maxBackups=settings->value("maxBackups",1).toInt();
     msgFormat=settings->value("msgFormat","{timestamp} {type} {msg}").toString();
     timestampFormat=settings->value("timestampFormat","yyyy-MM-dd hh:mm:ss.zzz").toString();
-    minLevel=static_cast<QtMsgType>(settings->value("minLevel",0).toInt());
+    minLevel=static_cast<QtMsgType>(settings->value("minLevel",QtWarningMsg).toInt());
     bufferSize=settings->value("bufferSize",0).toInt();
 
     // Create new file if the filename has been changed
