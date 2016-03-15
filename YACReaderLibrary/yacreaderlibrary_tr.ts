@@ -2,6 +2,80 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="tr_TR">
 <context>
+    <name>ActionsShortcutsModel</name>
+    <message>
+        <source>None</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AddLabelDialog</name>
+    <message>
+        <source>Label name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>red</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>orange</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>yellow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>green</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>cyan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>blue</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>violet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>purple</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>pink</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>white</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>light</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>dark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>accept</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>cancel</source>
+        <translation type="unfinished">vazgeç</translation>
+    </message>
+</context>
+<context>
     <name>AddLibraryDialog</name>
     <message>
         <source>Add</source>
@@ -22,6 +96,71 @@
     <message>
         <source>Library Name : </source>
         <translation>Kütüphane adı :</translation>
+    </message>
+</context>
+<context>
+    <name>ApiKeyDialog</name>
+    <message>
+        <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste here your Comic Vine API key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Accept</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Vazgeç</translation>
+    </message>
+</context>
+<context>
+    <name>ClassicComicsView</name>
+    <message>
+        <source>Hide comic flow</source>
+        <translation type="unfinished">Çizgi roman akışını gizle</translation>
+    </message>
+</context>
+<context>
+    <name>ComicModel</name>
+    <message>
+        <source>yes</source>
+        <translation type="unfinished">evet</translation>
+    </message>
+    <message>
+        <source>no</source>
+        <translation type="unfinished">hayır</translation>
+    </message>
+    <message>
+        <source>Title</source>
+        <translation type="unfinished">Başlık</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation type="unfinished">Dosya Adı</translation>
+    </message>
+    <message>
+        <source>Pages</source>
+        <translation type="unfinished">Sayfalar</translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation type="unfinished">Boyut</translation>
+    </message>
+    <message>
+        <source>Read</source>
+        <translation type="unfinished">Oku</translation>
+    </message>
+    <message>
+        <source>Current Page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rating</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -60,10 +199,6 @@
     </message>
     <message>
         <source>Error connecting to ComicVine</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>unknown error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -112,6 +247,58 @@
     <message>
         <source>Path not found</source>
         <translation>Dizin bulunamadı</translation>
+    </message>
+</context>
+<context>
+    <name>EditShortcutsDialog</name>
+    <message>
+        <source>Restore defaults</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shortcuts settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shortcut in use</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>EmptyFolderWidget</name>
+    <message>
+        <source>Subfolders in this folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Drag and drop folders and comics here</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>EmptyLabelWidget</name>
+    <message>
+        <source>This label doesn&apos;t contain comics yet</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>EmptyReadingListWidget</name>
+    <message>
+        <source>This reading list doesn&apos;t cotain comics yet</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -336,11 +523,11 @@
     <name>LibraryWindow</name>
     <message>
         <source>+</source>
-        <translation>+</translation>
+        <translation type="vanished">+</translation>
     </message>
     <message>
         <source>-</source>
-        <translation>-</translation>
+        <translation type="vanished">-</translation>
     </message>
     <message>
         <source>Edit</source>
@@ -356,7 +543,7 @@
     </message>
     <message>
         <source>&lt;font color=&apos;white&apos;&gt; press &apos;F&apos; to close fullscreen mode &lt;/font&gt;</source>
-        <translation>&lt;font color=&apos;white&apos;&gt; &apos;F&apos;ye basarak tam ekran modundan çıkabilirsin &lt;/font&gt;</translation>
+        <translation type="vanished">&lt;font color=&apos;white&apos;&gt; &apos;F&apos;ye basarak tam ekran modundan çıkabilirsin &lt;/font&gt;</translation>
     </message>
     <message>
         <source>Asign current order to comics</source>
@@ -441,7 +628,7 @@
     </message>
     <message>
         <source>Hide comic flow</source>
-        <translation>Çizgi roman akışını gizle</translation>
+        <translation type="vanished">Çizgi roman akışını gizle</translation>
     </message>
     <message>
         <source>Expand all nodes</source>
@@ -465,7 +652,7 @@
     </message>
     <message>
         <source>Fullscreen mode on/off (F)</source>
-        <translation>Tam ekran modunu aç/kapa(F)</translation>
+        <translation type="vanished">Tam ekran modunu aç/kapa(F)</translation>
     </message>
     <message>
         <source>Saving libraries file....</source>
@@ -557,7 +744,7 @@
     </message>
     <message>
         <source>Show or hide readed marks</source>
-        <translation>Okunmuş işaretleri göster yada gizle</translation>
+        <translation type="vanished">Okunmuş işaretleri göster yada gizle</translation>
     </message>
     <message>
         <source>Select all comics</source>
@@ -671,6 +858,162 @@
         <source>Comic</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Save selected covers to...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save covers of the selected comics as JPG files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show or hide read marks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add new folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add new folder to the current library</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete current folder from disk</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change between comics views</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update current folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add new reading list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add a new reading list to the current library</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove reading list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove current reading list from the library</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add new label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add a new label to this library</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rename selected list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rename any selected labels or lists</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add to...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Favorites</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add selected comics to favorites list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copying comics...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Moving comics...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Folder name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No folder selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please, select a folder first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error in path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was an error accessing the folder&apos;s path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The selected folder and all its contents will be deleted from your disk. Are you sure?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add new reading lists</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>List name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete list/label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rename list name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save covers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove comics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Comics will only be deleted from the current label/list. Are you sure?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LocalComicListModel</name>
@@ -703,6 +1046,50 @@
     <message>
         <source>Options</source>
         <translation>Ayarlar</translation>
+    </message>
+    <message>
+        <source>Edit Comic Vine API key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Comic Vine API key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable background image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Opacity level</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blur level</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use selectec comic cover as background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore defautls</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Comic Flow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>General</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -972,11 +1359,11 @@
     </message>
     <message>
         <source>EASY SERVER CONNECTION</source>
-        <translation>KOLAY SERVER BAĞLANTISI</translation>
+        <translation type="vanished">KOLAY SERVER BAĞLANTISI</translation>
     </message>
     <message>
         <source>just scan the code with your device!!</source>
-        <translation>Sadece kodu cihaza tarat !!</translation>
+        <translation type="vanished">Sadece kodu cihaza tarat !!</translation>
     </message>
     <message>
         <source>enable the server</source>
@@ -984,11 +1371,11 @@
     </message>
     <message>
         <source>IP address</source>
-        <translation>IP adres</translation>
+        <translation type="vanished">IP adres</translation>
     </message>
     <message>
         <source>YACReader is now available for iOS devices, the best comic reading experience now in your iPad, iPhone or iPod touch. &lt;a href=&apos;http://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt; Discover it! &lt;/a&gt;</source>
-        <translation>YACReader şimdi iOS cihazlarda  Hemen iPad, iPhone veya iPod Touch&apos;ına kapmak için tıkla (Çevirisi yapılmayacak) &lt;a href=&apos;http://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt; ¡Descúbrelo! &lt;/a&gt; </translation>
+        <translation type="vanished">YACReader şimdi iOS cihazlarda  Hemen iPad, iPhone veya iPod Touch&apos;ına kapmak için tıkla (Çevirisi yapılmayacak) &lt;a href=&apos;http://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt; ¡Descúbrelo! &lt;/a&gt; </translation>
     </message>
     <message>
         <source>QR generator error!</source>
@@ -1000,7 +1387,23 @@
     </message>
     <message>
         <source>SERVER ADDRESS</source>
-        <translation>Server Adres</translation>
+        <translation type="vanished">Server Adres</translation>
+    </message>
+    <message>
+        <source>Server connectivity information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scan it!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>YACReader is available for iOS devices. &lt;a href=&apos;http://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt; Discover it! &lt;/a&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose an IP address</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1034,39 +1437,31 @@
     <name>TableModel</name>
     <message>
         <source>no</source>
-        <translation>hayır</translation>
+        <translation type="vanished">hayır</translation>
     </message>
     <message>
         <source>yes</source>
-        <translation>evet</translation>
+        <translation type="vanished">evet</translation>
     </message>
     <message>
         <source>Read</source>
-        <translation>Oku</translation>
+        <translation type="vanished">Oku</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>Boyut</translation>
+        <translation type="vanished">Boyut</translation>
     </message>
     <message>
         <source>Pages</source>
-        <translation>Sayfalar</translation>
+        <translation type="vanished">Sayfalar</translation>
     </message>
     <message>
         <source>Title</source>
-        <translation>Başlık</translation>
+        <translation type="vanished">Başlık</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation>Dosya Adı</translation>
-    </message>
-    <message>
-        <source>Current Page</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rating</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">Dosya Adı</translation>
     </message>
 </context>
 <context>
@@ -1261,6 +1656,17 @@
     </message>
 </context>
 <context>
+    <name>YACReaderNavigationController</name>
+    <message>
+        <source>No favorites</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You are not reading anything yet, come on!!</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>YACReaderOptionsDialog</name>
     <message>
         <source>Save</source>
@@ -1274,12 +1680,27 @@
         <source>Cancel</source>
         <translation>Vazgeç</translation>
     </message>
+    <message>
+        <source>Edit shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>YACReaderSearchLineEdit</name>
+    <message>
+        <source>type to search</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>YACReaderSideBar</name>
     <message>
         <source>Search folders and comics</source>
-        <translation>Klasörleri ve çizgi romanları ara</translation>
+        <translation type="vanished">Klasörleri ve çizgi romanları ara</translation>
     </message>
     <message>
         <source>LIBRARIES</source>
@@ -1288,6 +1709,22 @@
     <message>
         <source>FOLDERS</source>
         <translation>DOSYALAR</translation>
+    </message>
+    <message>
+        <source>Libraries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Folders</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reading Lists</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>READING LISTS</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
