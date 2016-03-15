@@ -69,13 +69,13 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 
         if(remoteComic)
         {
-            QLOG_INFO() << "remote comic requested";
+            QLOG_TRACE() << "remote comic requested";
             session.setCurrentRemoteComic(comic.id, comicFile);
 
         }
         else
         {
-            QLOG_INFO() << "comic requested";
+            QLOG_TRACE() << "comic requested";
             session.setCurrentComic(comic.id, comicFile);
         }
 

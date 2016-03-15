@@ -59,7 +59,7 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
 
     regExpString = regExpString + "[^\\[].*";
 
-    QLOG_INFO () << regExpString;
+    QLOG_TRACE () << regExpString;
 
     QRegExp regExp(regExpString);
     QValidator *validator = new QRegExpValidator(regExp, this);
@@ -127,7 +127,7 @@ void YACReaderSearchLineEdit::processText(const QString &text)
             int indexOfModifier = modifiers.indexOf(modifier);
             if(indexOfModifier != -1)
             {
-                QLOG_INFO() << "modifier : " << modifier << "text : " << searchText;
+                QLOG_TRACE() << "modifier : " << modifier << "text : " << searchText;
                 emit filterChanged(static_cast<YACReader::SearchModifiers>(indexOfModifier+1), searchText); //TODO, do not use on indexOF
             }
             else
@@ -136,11 +136,11 @@ void YACReaderSearchLineEdit::processText(const QString &text)
             }
         }
 
-        QLOG_INFO() << "full text :" << text << " : " << regExp.indexIn(text);
+        QLOG_TRACE() << "full text :" << text << " : " << regExp.indexIn(text);
     }
     else
     {
-        QLOG_INFO() << "NoModifiers : " << text;
+        QLOG_TRACE() << "NoModifiers : " << text;
         emit filterChanged(YACReader::NoModifiers,text);
     }
 }

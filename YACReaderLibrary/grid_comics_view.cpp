@@ -109,7 +109,7 @@ GridComicsView::GridComicsView(QWidget *parent) :
     l->setContentsMargins(0,0,0,0);
     l->setSpacing(0);
 
-    QLOG_INFO() << "GridComicsView";
+    QLOG_TRACE() << "GridComicsView";
 }
 
 GridComicsView::~GridComicsView()

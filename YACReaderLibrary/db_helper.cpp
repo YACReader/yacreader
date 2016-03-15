@@ -532,7 +532,7 @@ void DBHelper::reasignOrderToComicsInReadingList(qulonglong readingListId, QList
         updateOrdering.bindValue(":comic_id", id);
         updateOrdering.bindValue(":reading_list_id", readingListId);
         updateOrdering.exec();
-        QLOG_INFO() << updateOrdering.lastError().databaseText() << "-" << updateOrdering.lastError().driverText();
+        QLOG_TRACE() << updateOrdering.lastError().databaseText() << "-" << updateOrdering.lastError().driverText();
     }
 
     db.commit();

@@ -52,7 +52,7 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 {
 
     QAbstractItemModel::dropMimeData(data,action,row,column,parent);
-    QLOG_INFO() << ">>>>>>>>>>>>>>dropMimeData ComicModel<<<<<<<<<<<<<<<<<"<< parent << row << "," << column;
+    QLOG_TRACE() << ">>>>>>>>>>>>>>dropMimeData ComicModel<<<<<<<<<<<<<<<<<"<< parent << row << "," << column;
 
     if(!data->formats().contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat))
         return false;
@@ -116,7 +116,7 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
         }
     }
 
-    QLOG_INFO() << newSorting;
+    QLOG_TRACE() << newSorting;
 
     int tempRow = row;
     foreach(qulonglong id, comicIds)

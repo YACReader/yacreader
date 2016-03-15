@@ -133,8 +133,6 @@ void ClassicComicsView::setToolBar(QToolBar *toolBar)
 
 void ClassicComicsView::setModel(ComicModel *model)
 {
-    QLOG_DEBUG() << "Setting model";
-
     ComicsView::setModel(model);
 
     if(model == NULL)
@@ -195,7 +193,6 @@ void ClassicComicsView::setModel(ComicModel *model)
 
 void ClassicComicsView::setCurrentIndex(const QModelIndex &index)
 {
-    QLOG_INFO() << "*******************************************************ClassicComicsView::setCurrentIndex";
     tableView->setCurrentIndex(index);
     centerComicFlow(index);
 }
