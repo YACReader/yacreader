@@ -126,7 +126,6 @@ Rectangle {
 
                         if(mouse.button == Qt.RightButton) // context menu is requested
                         {
-
                             if(!comicsSelectionHelper.isSelectedIndex(index)) //the context menu is requested outside the current selection, the selection will be
                             {
                                 comicsSelectionHelper.setCurrentIndex(index)
@@ -135,6 +134,7 @@ Rectangle {
 
                             var coordinates = main.mapFromItem(realCell,mouseX,mouseY)
                             contextMenuHelper.requestedContextMenu(Qt.point(coordinates.x,coordinates.y));
+                            mouse.accepted = false;
 
                         } else //left button
                         {
