@@ -136,6 +136,7 @@ HEADERS +=  ../common/comic.h \
 !CONFIG(no_opengl) {
     CONFIG(legacy_gl_widget) {
         message("using legacy YACReaderFlowGL (QGLWidget) header")
+        DEFINES += YACREADER_LEGACY_FLOW_GL
         HEADERS += ../common/gl_legacy/yacreader_flow_gl.h
     } else {
         HEADERS += ../common/gl/yacreader_flow_gl.h
