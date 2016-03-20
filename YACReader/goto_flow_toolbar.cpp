@@ -68,7 +68,11 @@ void GoToFlowToolBar::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
+#ifdef YACREADER_LEGACY_FLOW_GL
+    painter.fillRect(0,0,width(),height(),QColor("#FF000000"));
+#else
     painter.fillRect(0,0,width(),height(),QColor("#99000000"));
+#endif
 }
 
 void GoToFlowToolBar::setPage(int pageNumber)
