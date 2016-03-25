@@ -15,7 +15,11 @@ HEADERS += \
     $$PWD/controllers/covercontroller.h \
     $$PWD/controllers/updatecomiccontroller.h \
     $$PWD/controllers/comicdownloadinfocontroller.h \
-    $$PWD/controllers/synccontroller.h
+    $$PWD/controllers/synccontroller.h \
+    #v2
+    $$PWD/controllers/versioncontroller.h \
+    $$PWD/controllers/foldercontentcontroller.h \
+    $$PWD/controllers/tagscontroller.h
 
 SOURCES += \
     $$PWD/static.cpp \
@@ -31,8 +35,14 @@ SOURCES += \
     $$PWD/controllers/covercontroller.cpp \
     $$PWD/controllers/updatecomiccontroller.cpp \
     $$PWD/controllers/comicdownloadinfocontroller.cpp \
-    $$PWD/controllers/synccontroller.cpp
+    $$PWD/controllers/synccontroller.cpp \
+    #v2
+    $$PWD/controllers/versioncontroller.cpp \
+    $$PWD/controllers/foldercontentcontroller.cpp \
+    $$PWD/controllers/tagscontroller.cpp
 	
 include(lib/bfLogging/bfLogging.pri)
 include(lib/bfHttpServer/bfHttpServer.pri)
 include(lib/bfTemplateEngine/bfTemplateEngine.pri)
+
+DEFINES += SERVER_VERSION_NUMBER=\\\"2.0\\\"

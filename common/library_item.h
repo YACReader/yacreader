@@ -6,7 +6,7 @@
 class LibraryItem
 {
 public:
-	virtual bool isDir() = 0;
+    virtual bool isDir() const = 0;
 	QString name;
 	QString path;
 	qulonglong parentId;
