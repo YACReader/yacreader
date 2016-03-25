@@ -119,6 +119,10 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
     QLOG_TRACE() << newSorting;
 
     int tempRow = row;
+
+    if(tempRow < 0)
+        tempRow = _data.count();
+
     foreach(qulonglong id, comicIds)
     {
         int i = 0;
@@ -126,21 +130,28 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
             if(item->data(Id) == id)
             {
                 beginMoveRows(parent,i,i,parent,tempRow);
-                _data.removeAll(item);
-                _data.insert(tempRow++, item);
+
+                bool skipElement = i == tempRow || i + 1 == tempRow;
+
+                if(!skipElement)
+                {
+                    if(i > tempRow)
+                        _data.move(i, tempRow);
+                    else
+                        _data.move(i, tempRow - 1);
+                }
+
                 endMoveRows();
+
+                if(i > tempRow)
+                    tempRow++;
+
                 break;
             }
             i++;
         }
     }
 
-    /*if(!beginMoveRows(parent,currentIndexes.first(),currentIndexes.last(),parent,row))
-        return false;*/
-    _data = resortedData; //TODO No longer needed
-
-
-    //TODO emit signals
     //TODO fix selection
     QList<qulonglong> allComicIds;
     foreach (ComicItem *item, _data) {
