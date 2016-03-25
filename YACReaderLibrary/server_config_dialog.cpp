@@ -85,8 +85,8 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	qrCodeImage = new QPixmap();
 	qrCode = new QLabel(this);
     qrCode->move(64, 112);
-	qrCode->setFixedSize(200,200);
-	qrCode->setScaledContents(true);
+    qrCode->setFixedSize(200,200);
+    qrCode->setScaledContents(true);
 
     QLabel * title1 = new QLabel(tr("Server connectivity information"),this);
     title1->move(332, 61);
@@ -287,8 +287,9 @@ void ServerConfigDialog::generateQR(const QString & serverAddress)
 {
 	qrCode->clear();
 	qrGenerator = new QProcess();
-	QStringList attributes;
-	attributes << "-o" << "-" /*QCoreApplication::applicationDirPath()+"/utils/tmp.png"*/ << "-s" << "8" << "-l" << "H" << "-m" << "0" << serverAddress;
+    QStringList attributes;
+    int pixels = devicePixelRatio() * 8;
+    attributes << "-o" << "-" /*QCoreApplication::applicationDirPath()+"/utils/tmp.png"*/ << "-s" << QString::number(pixels) << "-l" << "H" << "-m" << "0" << serverAddress;
 	connect(qrGenerator,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(updateImage(void)));
 	connect(qrGenerator,SIGNAL(error(QProcess::ProcessError)),this,SLOT(openingError(QProcess::ProcessError))); //TODO: implement openingError
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
@@ -311,6 +312,8 @@ void ServerConfigDialog::updateImage()
         QPixmap pMask( p.size() );
         pMask.fill( QColor(66, 66, 66) );
         pMask.setMask( p.createMaskFromColor( Qt::white ) );
+
+        pMask.setDevicePixelRatio(devicePixelRatio());
 
         *qrCodeImage = pMask;
 
