@@ -79,7 +79,7 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
             session.setCurrentComic(comic.id, comicFile);
         }
 
-        response.setHeader("Content-Type", "plain/text; charset=utf-8");
+        response.setHeader("Content-Type", "text/plain; charset=utf-8");
 		//TODO this field is not used by the client!
 		response.writeText(QString("library:%1\r\n").arg(libraryName));
         response.writeText(QString("libraryId:%1\r\n").arg(libraryId));

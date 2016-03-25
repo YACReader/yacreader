@@ -22,6 +22,9 @@
 #include "controllers/errorcontroller.h"
 #include "controllers/comicdownloadinfocontroller.h"
 #include "controllers/synccontroller.h"
+#include "controllers/versioncontroller.h"
+#include "controllers/foldercontentcontroller.h"
+#include "controllers/tagscontroller.h"
 
 #include "db_helper.h"
 #include "yacreader_libraries.h"
@@ -105,6 +108,9 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
     QRegExp cover("/library/.+/cover/[0-9a-f]+.jpg"); //get comic cover (navigation)
     QRegExp comicPage("/library/.+/comic/[0-9]+/page/[0-9]+/?"); //get comic page
     QRegExp comicPageRemote("/library/.+/comic/[0-9]+/page/[0-9]+/remote?"); //get comic page (remote reading)
+    QRegExp serverVersion("/version/?");
+    QRegExp folderContent("/library/.+/folder/[0-9]+/content/?");
+    QRegExp tags("/library/.+/tags/?");
 
     QRegExp sync("/sync");
 
@@ -122,8 +128,14 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
     }
     else
     {
-        if(sync.exactMatch(path))
+        if(serverVersion.exactMatch(path))
+        {
+            VersionController().service(request, response);
+        }
+        else if(sync.exactMatch(path))
+        {
             SyncController().service(request, response);
+        }
         else
         {
             //se comprueba que la sesión sea la correcta con el fin de evitar accesos no autorizados
@@ -160,6 +172,14 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
                     else if(comicUpdate.exactMatch(path))
                     {
                         UpdateComicController().service(request, response);
+                    }
+                    else if(folderContent.exactMatch(path))
+                    {
+                        FolderContentController().service(request, response);
+                    }
+                    else if(tags.exactMatch(path))
+                    {
+                        TagsController().service(request, response);
                     }
                 }
                 else

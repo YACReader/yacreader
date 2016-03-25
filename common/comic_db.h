@@ -124,7 +124,7 @@ class ComicDB : public LibraryItem
 public:
 	ComicDB();
 	
-	bool isDir();
+    bool isDir() const;
 	
 	bool _hasCover;
 
