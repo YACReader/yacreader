@@ -243,7 +243,7 @@ YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
     //TODO add antialiasing
     //f.setSamples(4);
     f.setVersion(2, 1);
-	f.setSwapInterval(0);
+    f.setSwapInterval(0);
 	setFormat(f);
 
     timerId = startTimer(updateInterval);

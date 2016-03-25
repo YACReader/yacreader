@@ -76,9 +76,46 @@ Rectangle {
                 height: itemHeight
 
                 color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index))?selectedColor:cellColor;
-                border.color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index))?selectedBorderColor:borderColor;
-                border.width: (Qt.platform.os === "osx")?1:0;
+                //border.color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index))?selectedBorderColor:borderColor;
+                //border.width: ?1:0;
                 anchors.horizontalCenter: parent.horizontalCenter
+
+                Rectangle
+                {
+                    id: mouseOverBorder
+
+                    property bool commonBorder : false
+
+                    property int lBorderwidth : 2
+                    property int rBorderwidth : 2
+                    property int tBorderwidth : 2
+                    property int bBorderwidth : 2
+
+                    property int commonBorderWidth : 1
+
+                    z : -1
+
+                    color: "#00000000"
+
+                    anchors
+                    {
+                        left: parent.left
+                        right: parent.right
+                        top: parent.top
+                        bottom: parent.bottom
+
+                        topMargin    : commonBorder ? -commonBorderWidth : -tBorderwidth
+                        bottomMargin : commonBorder ? -commonBorderWidth : -bBorderwidth
+                        leftMargin   : commonBorder ? -commonBorderWidth : -lBorderwidth
+                        rightMargin  : commonBorder ? -commonBorderWidth : -rBorderwidth
+                    }
+
+                    border.color: (Qt.platform.os === "osx") ? selectedBorderColor : "#ffcc00"
+                    border.width:  (dummyValue || !dummyValue) && (comicsSelectionHelper.isSelectedIndex(index) || mouseArea.containsMouse) ? 3 : 0
+
+                    radius : 2
+                }
+
 
                 MouseArea  {
                     id: mouseArea
@@ -91,6 +128,8 @@ Rectangle {
 
                     anchors.fill: parent
                     acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+                    hoverEnabled: true
 
                     onDoubleClicked: {
                         comicsSelectionHelper.clear();

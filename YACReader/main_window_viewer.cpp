@@ -1007,7 +1007,7 @@ void MainWindowViewer::toFullScreen()
     hideToolBars();
     viewer->hide();
     viewer->fullscreen = true;//TODO, change by the right use of windowState();
-    showFullScreen();
+    setWindowState(Qt::WindowFullScreen);
     viewer->show();
     if(viewer->magnifyingGlassIsVisible())
         viewer->showMagnifyingGlass();

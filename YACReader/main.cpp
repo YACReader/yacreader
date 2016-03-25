@@ -14,6 +14,8 @@
 #include "configuration.h"
 #include "exit_check.h"
 
+#include <QtPlatformHeaders/QWindowsWindowFunctions>
+
 #include "QsLog.h"
 #include "QsLogDest.h"
 
@@ -140,6 +142,13 @@ int main(int argc, char * argv[])
 #endif	
 	app.installTranslator(&translator);
 	MainWindowViewer * mwv = new MainWindowViewer();
+
+    QWindow * w = mwv->windowHandle();
+
+    QString s_data = QString::fromLocal8Bit(QWindowsWindowFunctions::setHasBorderInFullScreenIdentifier());
+
+    qDebug() << s_data << "---";
+
 	//parser code for comic loading needs to be processed after MainWindowViewer creation
 	//if we have a valid request, open it - if not, load normally
 	if (argc > 1)

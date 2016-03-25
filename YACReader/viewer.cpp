@@ -22,6 +22,8 @@
 
 #include <QFile>
 
+#include <QtPlatformHeaders/QWindowsWindowFunctions>
+
 
 Viewer::Viewer(QWidget * parent)
 :QScrollArea(parent),
@@ -127,6 +129,8 @@ zoom(100)
 
 	setAcceptDrops(true);
 
+    if(this->windowHandle())
+    QWindowsWindowFunctions::setHasBorderInFullScreen(this->windowHandle(), true);
 }
 
 Viewer::~Viewer()
@@ -721,7 +725,7 @@ void Viewer::animateShowGoToFlow()
 		goToFlow->centerSlide(render->getIndex());
 		goToFlow->setPageNumber(render->getIndex());
 		goToFlow->show();
-		goToFlow->setFocus(Qt::OtherFocusReason);
+        goToFlow->setFocus(Qt::OtherFocusReason);
 	}
 }
 
@@ -735,8 +739,8 @@ void Viewer::animateHideGoToFlow()
 		showGoToFlowAnimation->setEndValue(QPoint((width()-goToFlow->width())/2,height()));
 		showGoToFlowAnimation->start();
 		goToFlow->centerSlide(render->getIndex());
-		goToFlow->setPageNumber(render->getIndex());
-		this->setFocus(Qt::OtherFocusReason);
+        goToFlow->setPageNumber(render->getIndex());
+        this->setFocus(Qt::OtherFocusReason);
 	}
 }
 
