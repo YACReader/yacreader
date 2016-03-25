@@ -22,9 +22,6 @@
 
 #include <QFile>
 
-#include <QtPlatformHeaders/QWindowsWindowFunctions>
-
-
 Viewer::Viewer(QWidget * parent)
 :QScrollArea(parent),
 currentPage(0),
@@ -128,9 +125,6 @@ zoom(100)
 	informationLabel = new PageLabelWidget(this);
 
 	setAcceptDrops(true);
-
-    if(this->windowHandle())
-    QWindowsWindowFunctions::setHasBorderInFullScreen(this->windowHandle(), true);
 }
 
 Viewer::~Viewer()
