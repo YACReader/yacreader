@@ -209,6 +209,8 @@ QItemSelectionModel *ClassicComicsView::selectionModel()
 
 void ClassicComicsView::scrollTo(const QModelIndex & mi, QAbstractItemView::ScrollHint hint)
 {
+    Q_UNUSED(hint);
+
     comicFlow->setCenterIndex(mi.row());
 }
 

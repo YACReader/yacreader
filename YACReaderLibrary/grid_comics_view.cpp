@@ -260,7 +260,8 @@ QItemSelectionModel *GridComicsView::selectionModel()
 
 void GridComicsView::scrollTo(const QModelIndex &mi, QAbstractItemView::ScrollHint hint)
 {
-
+    Q_UNUSED(mi);
+    Q_UNUSED(hint);
 }
 
 void GridComicsView::toFullScreen()
@@ -275,12 +276,12 @@ void GridComicsView::toNormal()
 
 void GridComicsView::updateConfig(QSettings *settings)
 {
-
+    Q_UNUSED(settings);
 }
 
 void GridComicsView::enableFilterMode(bool enabled)
 {
-
+    Q_UNUSED(enabled);
 }
 
 void GridComicsView::selectAll()
@@ -387,6 +388,8 @@ void GridComicsView::droppedFiles(const QList<QUrl> &urls, Qt::DropAction action
 
 void GridComicsView::droppedComicsForResortingAt(const QString &data, int index)
 {
+    Q_UNUSED(data);
+
     model->dropMimeData(model->mimeData(_selectionModel->selectedRows()), Qt::MoveAction, index, 0, QModelIndex());
 }
 

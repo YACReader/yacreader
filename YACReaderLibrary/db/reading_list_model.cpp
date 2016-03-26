@@ -196,6 +196,8 @@ QModelIndex ReadingListModel::parent(const QModelIndex &index) const
 
 bool ReadingListModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
 {
+    Q_UNUSED(action);
+
     QLOG_DEBUG() << "trying to drop into row = " << row << "column column = " << column << "parent" << parent;
 
     if(row == -1)
@@ -242,10 +244,14 @@ bool ReadingListModel::dropMimeData(const QMimeData *data, Qt::DropAction action
 
     if(data->formats().contains(YACReader::YACReaderLibrarSubReadingListMimeDataFormat))
         return dropSublist(data, action, row, column, parent);
+
+    return false;
 }
 
 bool ReadingListModel::dropComics(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
+    Q_UNUSED(action);
+
     QList<qulonglong> comicIds = YACReader::mimeDataToComicsIds(data);
 
     QLOG_DEBUG() << "dropped : " << comicIds;
@@ -288,6 +294,9 @@ bool ReadingListModel::dropComics(const QMimeData *data, Qt::DropAction action, 
 
 bool ReadingListModel::dropSublist(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
+    Q_UNUSED(action);
+    Q_UNUSED(column);
+
     QList<QPair<int,int> > sublistsRows;
     QByteArray rawData = data->data(YACReader::YACReaderLibrarSubReadingListMimeDataFormat);
     QDataStream in(&rawData,QIODevice::ReadOnly);
@@ -381,11 +390,16 @@ void ReadingListModel::addNewLabel(const QString &name, YACReader::LabelColors c
     QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
     qulonglong id = DBHelper::insertLabel(name, color, db);
 
+    Q_UNUSED(id);
+
     beginInsertRows(QModelIndex(),0, 0);
 
-    int newPos = addLabelIntoList(new LabelItem(QList<QVariant>() << name << YACReader::colorToName(color) << id << color));
+    // using the specfic row pos for inserting doesnt work
+    // int newPos = addLabelIntoList(new LabelItem(QList<QVariant>() << name << YACReader::colorToName(color) << id << color));
+    // beginInsertRows(QModelIndex(),specialLists.count()+1+newPos+1, specialLists.count()+1+newPos+1);
 
-    //beginInsertRows(QModelIndex(),specialLists.count()+1+newPos+1, specialLists.count()+1+newPos+1);
+    // endInsertRows();
+
     endInsertRows();
 
     QSqlDatabase::removeDatabase(_databasePath);
