@@ -28,8 +28,6 @@ public:
     QWidget * containerWidget();
 
     ComicsView * comicsView;
-    ClassicComicsView * classicComicsView;
-    GridComicsView * gridComicsView;
 
     ComicsViewTransition * comicsViewTransition;
 
@@ -45,6 +43,9 @@ protected:
     LibraryWindow * libraryWindow;
 
     ComicsViewStatus comicsViewStatus;
+
+    ClassicComicsView * classicComicsView;
+    GridComicsView * gridComicsView;
 
 signals:
 
