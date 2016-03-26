@@ -509,11 +509,11 @@ ComicDB ComicVineDialog::parseComicInfo(ComicDB & comic, const QString & json, i
 
 
 			QString volume = result.property("volume").property("name").toString();
-			QString storyArc; //story_arc
-			QString arcNumber; //??
-            QString arcCount; //count_of_issue_appearances -> NO
+            // QString storyArc; //story_arc
+            // QString arcNumber; //??
+            // QString arcCount; //count_of_issue_appearances -> NO
 
-			QString genere; //no
+            // QString genere; //no
 
             QMap<QString,QString> authors = getAuthors(result.property("person_credits"));
 
@@ -527,9 +527,9 @@ ComicDB ComicVineDialog::parseComicInfo(ComicDB & comic, const QString & json, i
 			QString date = result.property("cover_date").toString();
 
             //QString publisher; //get from select volume
-			QString format; //no
-			bool color; //no
-			QString ageRating; //no
+            // QString format; //no
+            // bool color; //no
+            // QString ageRating; //no
 
             QString synopsis = result.property("description").toString().remove(QRegExp("<[^>]*>")); //description
             QString characters = getCharacters(result.property("character_credits"));

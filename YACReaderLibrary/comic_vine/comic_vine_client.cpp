@@ -125,7 +125,8 @@ void ComicVineClient::getVolumeComicsInfo(const QString & idVolume, int page)
 //CV_COMIC_ID
 void ComicVineClient::getComicId(const QString & id, int comicNumber)
 {
-
+    Q_UNUSED(id);
+    Q_UNUSED(comicNumber);
 }
 
 //CV_COMIC_DETAIL
@@ -169,5 +170,5 @@ void ComicVineClient::getComicCover(const QString &url)
 //CV_COVER_DETAIL
 void ComicVineClient::getCoverURL(const QString & id)
 {
-
+    Q_UNUSED(id);
 }

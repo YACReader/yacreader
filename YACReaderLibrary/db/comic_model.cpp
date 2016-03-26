@@ -42,6 +42,11 @@ int ComicModel::columnCount(const QModelIndex &parent) const
 
 bool ComicModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
 {
+    Q_UNUSED(action);
+    Q_UNUSED(row);
+    Q_UNUSED(column);
+    Q_UNUSED(parent);
+
     if(!enableResorting)
         return false;
     return data->formats().contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat);
