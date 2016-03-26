@@ -86,6 +86,8 @@ void EditShortcutsDialog::resetToDefaults()
 
 void EditShortcutsDialog::loadShortcuts(const QModelIndex &mi,const QModelIndex &mi2)
 {
+    Q_UNUSED(mi2);
+
     actionsModel->addActions(groupsModel->getActions(mi));
 }
 
