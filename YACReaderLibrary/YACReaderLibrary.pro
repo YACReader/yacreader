@@ -145,7 +145,8 @@ HEADERS += comic_flow.h \
     empty_special_list.h \
     empty_reading_list_widget.h \
     ../common/scroll_management.h \
-    ../common/opengl_checker.h
+    ../common/opengl_checker.h \
+    yacreader_comics_views_manager.h
 
 !CONFIG(no_opengl) {
     CONFIG(legacy_gl_widget) {
@@ -215,7 +216,8 @@ SOURCES += comic_flow.cpp \
     empty_special_list.cpp \
     empty_reading_list_widget.cpp \
     ../common/scroll_management.cpp \
-    ../common/opengl_checker.cpp
+    ../common/opengl_checker.cpp \
+    yacreader_comics_views_manager.cpp
 
 !CONFIG(no_opengl) {
     CONFIG(legacy_gl_widget) {
