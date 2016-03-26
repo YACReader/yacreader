@@ -96,7 +96,6 @@ void YACReaderComicsViewsManager::toggleComicsView()
 
 //PROTECTED
 
-//TODO FIX these connections
 void YACReaderComicsViewsManager::disconnectComicsViewConnections(ComicsView * widget)
 {
     disconnect(widget, SIGNAL(comicRated(int,QModelIndex)), libraryWindow->comicsModel, SLOT(updateRating(int,QModelIndex)));
