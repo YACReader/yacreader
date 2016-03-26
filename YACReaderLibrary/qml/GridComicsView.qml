@@ -173,7 +173,7 @@ Rectangle {
 
                         mouse.accepted = true;
 
-                        if(mouse.button == Qt.RightButton) // context menu is requested
+                        if(mouse.button === Qt.RightButton) // context menu is requested
                         {
                             if(!comicsSelectionHelper.isSelectedIndex(index)) //the context menu is requested outside the current selection, the selection will be
                             {
@@ -206,7 +206,7 @@ Rectangle {
                                 }
                             }
 
-                            if(mouse.button != Qt.RightButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier)) //just left button click
+                            if(mouse.button !== Qt.RightButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier)) //just left button click
                             {
                                 if(comicsSelectionHelper.isSelectedIndex(index)) //the context menu is requested outside the current selection, the selection will be
                                 {
@@ -224,7 +224,7 @@ Rectangle {
                     }
 
                     onReleased: {
-                        if(mouse.button == Qt.LeftButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
+                        if(mouse.button === Qt.LeftButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
                         {
                             if(comicsSelectionHelper.isSelectedIndex(index))
                             {
@@ -331,24 +331,26 @@ Rectangle {
 
                 MouseArea  {
                     anchors.fill: parent
-                    onClicked: {
+                    onPressed: {
                         console.log("rating");
                         comicsSelectionHelper.clear();
                         comicsSelectionHelper.selectIndex(index);
                         grid.currentIndex = index;
                         ratingConextMenu.popup();
-
                     }
                 }
 
-                Menu {
-                    id: ratingConextMenu
-                    MenuItem { text: "1"; enabled: true; iconSource:"star_menu.png"; onTriggered: comicRatingHelper.rate(index,1) }
-                    MenuItem { text: "2"; enabled: true; iconSource:"star_menu.png"; onTriggered: comicRatingHelper.rate(index,2) }
-                    MenuItem { text: "3"; enabled: true; iconSource:"star_menu.png"; onTriggered: comicRatingHelper.rate(index,3) }
-                    MenuItem { text: "4"; enabled: true; iconSource:"star_menu.png"; onTriggered: comicRatingHelper.rate(index,4) }
-                    MenuItem { text: "5"; enabled: true; iconSource:"star_menu.png"; onTriggered: comicRatingHelper.rate(index,5) }
+                MenuBar
+                {
+                    Menu {
+                        id: ratingConextMenu
+                        MenuItem { text: "1"; enabled: true; iconSource:"star_menu.png"; onTriggered: comicRatingHelper.rate(index,1) }
+                        MenuItem { text: "2"; enabled: true; iconSource:"star_menu.png"; onTriggered: comicRatingHelper.rate(index,2) }
+                        MenuItem { text: "3"; enabled: true; iconSource:"star_menu.png"; onTriggered: comicRatingHelper.rate(index,3) }
+                        MenuItem { text: "4"; enabled: true; iconSource:"star_menu.png"; onTriggered: comicRatingHelper.rate(index,4) }
+                        MenuItem { text: "5"; enabled: true; iconSource:"star_menu.png"; onTriggered: comicRatingHelper.rate(index,5) }
 
+                    }
                 }
             }
 
