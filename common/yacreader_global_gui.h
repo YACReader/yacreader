@@ -76,7 +76,8 @@ static const QString YACReaderLibrarSubReadingListMimeDataFormat = "application/
  enum ComicsViewStatus
  {
      Flow,
-     Grid
+     Grid,
+     Info
  };
 
  enum FitMode{
