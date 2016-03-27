@@ -4,6 +4,7 @@
 
 #include "classic_comics_view.h"
 #include "grid_comics_view.h"
+#include "info_comics_view.h"
 #include "comics_view_transition.h"
 #include "empty_folder_widget.h"
 #include "empty_label_widget.h"
@@ -20,13 +21,27 @@ YACReaderComicsViewsManager::YACReaderComicsViewsManager(QSettings *settings, Li
 {
     comicsViewStack = new QStackedWidget();
 
-    if(!settings->contains(COMICS_VIEW_STATUS) || settings->value(COMICS_VIEW_STATUS) == Flow) {
+    switch ((YACReader::ComicsViewStatus)settings->value(COMICS_VIEW_STATUS).toInt())
+    {
+    case Flow:
         comicsView = classicComicsView = new ClassicComicsView();
         comicsViewStatus = Flow;
-    } else {
+        break;
+
+    case Grid:
         comicsView = gridComicsView = new GridComicsView();
         connect(libraryWindow->optionsDialog, SIGNAL(optionsChanged()), gridComicsView, SLOT(updateBackgroundConfig()));
         comicsViewStatus = Grid;
+        break;
+
+    case Info:
+        comicsView = infoComicsView = new InfoComicsView();
+        comicsViewStatus = Info;
+        break;
+
+    default:
+        comicsView = classicComicsView = new ClassicComicsView();
+        comicsViewStatus = Flow;
     }
 
     doComicsViewConnections();
@@ -157,9 +172,12 @@ void YACReaderComicsViewsManager::showComicsViewTransition()
 
 void YACReaderComicsViewsManager::toggleComicsView_delayed()
 {
-    if(comicsViewStatus == Flow){
+    switch(comicsViewStatus)
+    {
+    case Flow:
+    {
         QIcon icoViewsButton;
-        icoViewsButton.addFile(":/images/main_toolbar/flow.png", QSize(), QIcon::Normal);
+        icoViewsButton.addFile(":/images/main_toolbar/info.png", QSize(), QIcon::Normal);
         libraryWindow->toggleComicsViewAction->setIcon(icoViewsButton);
 #ifdef Q_OS_MAC
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
@@ -167,16 +185,37 @@ void YACReaderComicsViewsManager::toggleComicsView_delayed()
         switchToComicsView(classicComicsView, gridComicsView = new GridComicsView());
         connect(libraryWindow->optionsDialog, SIGNAL(optionsChanged()), gridComicsView, SLOT(updateBackgroundConfig()));
         comicsViewStatus = Grid;
+
+        break;
     }
-    else{
+
+    case Grid:
+    {
+        QIcon icoViewsButton;
+        icoViewsButton.addFile(":/images/main_toolbar/flow.png", QSize(), QIcon::Normal);
+        libraryWindow->toggleComicsViewAction->setIcon(icoViewsButton);
+#ifdef Q_OS_MAC
+        libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
+#endif
+        switchToComicsView(gridComicsView, infoComicsView = new InfoComicsView());
+        comicsViewStatus = Info;
+
+        break;
+    }
+
+    case Info:
+    {
         QIcon icoViewsButton;
         icoViewsButton.addFile(":/images/main_toolbar/grid.png", QSize(), QIcon::Normal);
         libraryWindow->toggleComicsViewAction->setIcon(icoViewsButton);
 #ifdef Q_OS_MAC
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
 #endif
-        switchToComicsView(gridComicsView, classicComicsView = new ClassicComicsView());
+        switchToComicsView(infoComicsView, classicComicsView = new ClassicComicsView());
         comicsViewStatus = Flow;
+
+        break;
+    }
     }
 
     libraryWindow->settings->setValue(COMICS_VIEW_STATUS, comicsViewStatus);

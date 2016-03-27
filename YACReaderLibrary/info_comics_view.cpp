@@ -8,6 +8,8 @@ InfoComicsView::InfoComicsView(QWidget *parent)
 
 void InfoComicsView::setToolBar(QToolBar *toolBar)
 {
+    toolBar->setParent(this);
+
     int FIXME;
 }
 
@@ -24,11 +26,15 @@ void InfoComicsView::setCurrentIndex(const QModelIndex &index)
 QModelIndex InfoComicsView::currentIndex()
 {
     int FIXME;
+
+    return QModelIndex();
 }
 
 QItemSelectionModel *InfoComicsView::selectionModel()
 {
     int FIXME;
+
+    return 0;
 }
 
 void InfoComicsView::scrollTo(const QModelIndex &mi, QAbstractItemView::ScrollHint hint)

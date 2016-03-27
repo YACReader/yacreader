@@ -10,6 +10,7 @@ class LibraryWindow;
 class ComicsView;
 class ClassicComicsView;
 class GridComicsView;
+class InfoComicsView;
 class ComicsViewTransition;
 class EmptyFolderWidget;
 class EmptyLabelWidget;
@@ -46,6 +47,7 @@ protected:
 
     ClassicComicsView * classicComicsView;
     GridComicsView * gridComicsView;
+    InfoComicsView *infoComicsView;
 
 signals:
 
