@@ -590,10 +590,14 @@ void LibraryWindow::createActions()
     toggleComicsViewAction = new QAction(tr("Change between comics views"),this);
     toggleComicsViewAction->setToolTip(tr("Change between comics views"));
     QIcon icoViewsButton;
+
     if(!settings->contains(COMICS_VIEW_STATUS) || settings->value(COMICS_VIEW_STATUS) == Flow)
         icoViewsButton.addFile(":/images/main_toolbar/grid.png", QSize(), QIcon::Normal);
+    else if(settings->value(COMICS_VIEW_STATUS) == Grid)
+        icoViewsButton.addFile(":/images/main_toolbar/info.png", QSize(), QIcon::Normal);
     else
         icoViewsButton.addFile(":/images/main_toolbar/flow.png", QSize(), QIcon::Normal);
+
     toggleComicsViewAction->setData(TOGGLE_COMICS_VIEW_ACTION_YL);
     toggleComicsViewAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_COMICS_VIEW_ACTION_YL));
     toggleComicsViewAction->setIcon(icoViewsButton);
