@@ -1,8 +1,9 @@
 import QtQuick 2.3
 
 import QtQuick.Controls 1.2
-import comicModel 1.0
 import QtGraphicalEffects 1.0
+
+import com.yacreader.ComicModel 1.0
 
 Rectangle {
     id: main
