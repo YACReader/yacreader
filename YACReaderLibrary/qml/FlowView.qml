@@ -7,13 +7,13 @@ import com.yacreader.ComicModel 1.0
 Rectangle {
     property url backgroundImageURL;
 
-    property real backgroundBlurRadius : 100;
-    property real backgroundBlurOpacity : 0.25;
+    property real backgroundBlurRadius : 100; //85;
+    property real backgroundBlurOpacity : 0.25; //0.35;
     property bool backgroundBlurVisible : true;
 
     property real additionalBottomSpace;
 
-    property real verticalPadding: 11
+    property real verticalPadding: 12
 
     Rectangle {
         id: background
@@ -74,8 +74,8 @@ Rectangle {
 
         model: comicsList
 
-        spacing: 16
-        anchors.leftMargin: 11
+        spacing: 17
+        anchors.leftMargin: Math.floor(verticalPadding * 1.1)
 
         snapMode: ListView.SnapToItem
 
