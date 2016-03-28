@@ -5,6 +5,10 @@
 
 
 
+class QQuickView;
+
+
+
 class InfoComicsView : public ComicsView
 {
     Q_OBJECT
@@ -25,6 +29,10 @@ public:
 public slots:
     void setShowMarks(bool show);
     void selectAll();
+
+protected:
+    QQuickView *view;
+    QWidget *container;
 };
 
 #endif // INFOCOMICSVIEW_H
