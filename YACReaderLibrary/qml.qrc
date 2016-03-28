@@ -11,5 +11,6 @@
         <file>qml/info-indicator.png</file>
         <file>qml/info-shadow.png</file>
         <file>qml/info-top-shadow.png</file>
+        <file>qml/ComicInfo.qml</file>
     </qresource>
 </RCC>
