@@ -32,7 +32,7 @@ GridComicsView::GridComicsView(QWidget *parent) :
     settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini", QSettings::IniFormat, this);
     settings->beginGroup("libraryConfig");
 
-    qmlRegisterType<ComicModel>("comicModel",1,0,"TableModel");
+    qmlRegisterType<ComicModel>("com.yacreader.ComicModel",1,0,"ComicModel");
 
     view = new QQuickView();
     container = QWidget::createWindowContainer(view, this);
