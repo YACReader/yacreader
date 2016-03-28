@@ -6,5 +6,10 @@
         <file>qml/reading.png</file>
         <file>qml/star_menu.png</file>
         <file>qml/star_menu@2x.png</file>
+        <file>qml/InfoComicsView.qml</file>
+        <file>qml/FlowView.qml</file>
+        <file>qml/info-indicator.png</file>
+        <file>qml/info-shadow.png</file>
+        <file>qml/info-top-shadow.png</file>
     </qresource>
 </RCC>
