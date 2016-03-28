@@ -1,4 +1,5 @@
 import QtQuick 2.3
+import QtQuick.Controls 1.4
 
 import QtGraphicalEffects 1.0
 
@@ -92,6 +93,12 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
 
                 color:"transparent"
+
+            BusyIndicator {
+                scale: 0.5
+                anchors.centerIn: parent
+                running: coverElement.status === Image.Loading
+                }
 
                 DropShadow {
                     anchors.fill: coverElement
