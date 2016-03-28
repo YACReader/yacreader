@@ -12,9 +12,11 @@ Rectangle {
     property real backgroundBlurOpacity : 0.25; //0.35;
     property bool backgroundBlurVisible : true;
 
-    property real additionalBottomSpace;
+    property real additionalBottomSpace : 0;
 
     property real verticalPadding: 12
+
+    property real itemsSpacing: 17
 
     Rectangle {
         id: background
@@ -75,7 +77,7 @@ Rectangle {
 
         model: comicsList
 
-        spacing: 17
+        spacing: itemsSpacing
         anchors.leftMargin: Math.floor(verticalPadding * 1.1)
 
         snapMode: ListView.SnapToItem
