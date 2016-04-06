@@ -1,0 +1,71 @@
+#functions to automatically initialize some of YACReader's build options to
+#default values if they're not set on build time
+#for a more detailed description, see INSTALL.TXT
+
+#check Qt version
+QT_VERSION = $$[QT_VERSION]
+QT_VERSION = $$split(QT_VERSION, ".")
+QT_VER_MAJ = $$member(QT_VERSION, 0)
+QT_VER_MIN = $$member(QT_VERSION, 1)
+
+lessThan(QT_VER_MAJ, 5) {
+error(YACReader requires Qt 5 or newer but Qt $$[QT_VERSION] was detected.)
+	}
+lessThan(QT_VER_MIN, 3){
+	error ("You need at least Qt 5.3 to build YACReader or YACReaderLibrary")
+	}
+!CONFIG(unarr):!CONFIG(7zip) {
+	unix {
+		!macx {
+				CONFIG+=unarr
+			}
+		else {
+				CONFIG+=7zip
+			}
+	
+		}
+	win32 {
+			CONFIG+=7zip
+		  }
+}
+
+unix { 
+	!macx {
+		packagesExist(QtCore) {
+				message("Found QtCore")
+			}
+			else: {
+				error("Missing dependency: QtCore")
+			}
+		packagesExist(QtGui) {
+				message("Found QtGui")
+			}
+			else: {
+				error("Missing dependency: QtGui")
+			}
+		packagesExist(poppler-qt5) {
+				message("Found poppler-qt5")
+			}
+			else: {
+				error("Missing dependency: poppler-qt5")
+			}
+		packagesExist(QtNetwork) {
+				message("Found QtNetwork")
+			}
+			else: {
+				error("Missing dependency: QtNetwork")
+			}
+		packagesExist(QtSql) {
+				message("Found QtSql")
+			}
+			else: {
+				error("Missing dependency: QtSql")
+			}
+		packagesExist(sqlite3) {
+				message("Found sqlite3")
+			}
+			else: {
+				error("Missing dependency: sqlite3")
+			}
+		}
+}
