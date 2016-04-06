@@ -2,7 +2,7 @@
 #Script to create a source tarball for YACReader distribution and packaging
 #This should be run from YACReaders top source directory
 
-YACVERSION=8.0
+YACVERSION=8.5
 if [ -f Makefile ]
 then
 	make distclean
