@@ -12,5 +12,17 @@
         <file>qml/info-shadow.png</file>
         <file>qml/info-top-shadow.png</file>
         <file>qml/ComicInfo.qml</file>
+        <file>qml/info-favorites.png</file>
+        <file>qml/info-favorites@2x.png</file>
+        <file>qml/info-rating.png</file>
+        <file>qml/info-rating@2x.png</file>
+        <file>qml/info-tag.png</file>
+        <file>qml/info-tag@2x.png</file>
+        <file>qml/info-tick.png</file>
+        <file>qml/info-tick@2x.png</file>
+        <file>qml/InfoTick.qml</file>
+        <file>qml/InfoFavorites.qml</file>
+        <file>qml/InfoRating.qml</file>
+        <file>qml/YACReaderScrollViewStyle.qml</file>
     </qresource>
 </RCC>
