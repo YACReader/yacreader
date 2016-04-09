@@ -2,10 +2,13 @@ import QtQuick 2.6
 
 import QtGraphicalEffects 1.0
 
-Image {
-    id: read_compact
+Item {
 
-    source: "info-tick.png"
+    Image {
+        id: read_compact
+
+        source: "info-tick.png"
+    }
 
     ColorOverlay {
         anchors.fill: read_compact
