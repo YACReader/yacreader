@@ -2,6 +2,7 @@ import QtQuick 2.3
 
 import QtQuick.Controls 1.2
 import QtGraphicalEffects 1.0
+import QtQuick.Controls.Styles 1.4
 
 import com.yacreader.ComicModel 1.0
 
@@ -370,6 +371,32 @@ Rectangle {
         id: scrollView
         anchors.fill: parent
         anchors.margins: 0
+
+        style: YACReaderScrollViewStyle {
+            transientScrollBars: false
+            incrementControl: Item {}
+            decrementControl: Item {}
+            handle: Item {
+                implicitWidth: 16
+                implicitHeight: 26
+                Rectangle {
+                    color: "#88424242"
+                    anchors.fill: parent
+                    anchors.topMargin: 6
+                    anchors.leftMargin: 4
+                    anchors.rightMargin: 4
+                    anchors.bottomMargin: 6
+                    border.color: "#AA313131"
+                    border.width: 1
+                    radius: 8
+                }
+            }
+            scrollBarBackground: Item {
+                implicitWidth: 16
+                implicitHeight: 26
+            }
+        }
+
         //QTBUG-39453
         //Another fu%$·#& bug in Qt
         //https://bugreports.qt.io/browse/QTBUG-39453
@@ -540,7 +567,6 @@ Rectangle {
         height: 64
         enabled: (dummyValue || !dummyValue)
     }*/
+
     }
 }
-
-
