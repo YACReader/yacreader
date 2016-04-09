@@ -7,6 +7,9 @@ import QtQuick.Controls.Styles 1.4
 import com.yacreader.ComicModel 1.0
 
 Rectangle {
+    anchors.fill: parent
+
+Rectangle {
     id: main
     clip: true
 
@@ -32,7 +35,7 @@ Rectangle {
     }
 
     color: backgroundColor
-    width: parent.width
+    width: parent.width - (info_container.visible ? info_container.width : 0)
     height: parent.height
     anchors.margins: 0
 
@@ -570,3 +573,51 @@ Rectangle {
 
     }
 }
+Rectangle {
+    id: info_container
+    width: 350
+    y: 0
+    x: main.width
+    height: parent.height
+
+    color: "#2e2e2e"
+
+    visible: false
+
+    ScrollView {
+        anchors.fill: parent
+        anchors.margins: 0
+
+        horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+
+        style: ScrollViewStyle {
+            transientScrollBars: false
+            incrementControl: Item {}
+            decrementControl: Item {}
+            handle: Item {
+                implicitWidth: 10
+                implicitHeight: 26
+                Rectangle {
+                    color: "#424246"
+                    anchors.fill: parent
+                    anchors.topMargin: 6
+                    anchors.leftMargin: 4
+                    anchors.rightMargin: 4
+                    anchors.bottomMargin: 6
+                }
+            }
+            scrollBarBackground: Item {
+                implicitWidth: 14
+                implicitHeight: 26
+            }
+        }
+
+        ComicInfo {
+            width: info_container.width
+            height: 2048
+        }
+    }
+}
+}
+
+
