@@ -17,8 +17,6 @@
         <file>../images/main_toolbar/flow.png</file>
         <file>../images/main_toolbar/grid.png</file>
         <file>../images/main_toolbar/info.png</file>
-        <file>../images/flow_to_grid.gif</file>
-        <file>../images/grid_to_flow.gif</file>
         <file>../images/empty_folder.png</file>
         <file>../images/empty_search.png</file>
         <file>../images/sidebar/addNew_sidebar.png</file>
@@ -27,7 +25,6 @@
         <file alias="images/clearSearch.png">../images/clearSearchNew.png</file>
         <file>../images/sidebar/addLabelIcon.png</file>
         <file>../images/sidebar/renameListIcon.png</file>
-        <!--reading lists-->
         <file>../images/lists/default_0.png</file>
         <file>../images/lists/default_1.png</file>
         <file>../images/lists/label_blue.png</file>
