@@ -1,7 +1,8 @@
-import QtQuick 2.3
+import QtQuick 2.5
 
 import QtQuick.Controls 1.2
 import QtGraphicalEffects 1.0
+import QtQuick.Controls.Styles 1.4
 
 import com.yacreader.ComicModel 1.0
 
@@ -33,6 +34,7 @@ Rectangle {
     }
 
     Rectangle {
+        id: indicator_container
         width: parent.width
         y: 250
 
@@ -49,14 +51,47 @@ Rectangle {
             fillMode: Image.TileHorizontally
         }
     }
+
     Rectangle {
         id: info_container
         width: parent.width
         y: flow.height + flow.additionalBottomSpace - 6
-        height: parent.height
+        height: parent.height - y
 
         color: "#2e2e2e"
+
+        ScrollView {
+            anchors.fill: parent
+            anchors.margins: 0
+
+            horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+
+            style: ScrollViewStyle {
+                transientScrollBars: false
+                incrementControl: Item {}
+                decrementControl: Item {}
+                handle: Item {
+                    implicitWidth: 10
+                    implicitHeight: 26
+                    Rectangle {
+                        color: "#424246"
+                        anchors.fill: parent
+                        anchors.topMargin: 6
+                        anchors.leftMargin: 4
+                        anchors.rightMargin: 4
+                        anchors.bottomMargin: 6
+                    }
+                }
+
+                scrollBarBackground: Item {
+                    implicitWidth: 14
+                    implicitHeight: 26
+                }
+            }
+
+            ComicInfo {
+                width: info_container.width - 14
+            }
+        }
     }
-
-
 }
