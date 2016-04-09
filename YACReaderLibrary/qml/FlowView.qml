@@ -52,9 +52,13 @@ Rectangle {
     MouseArea {
         anchors.fill : list
         onWheel: {
+
+            if(list.moving)
+                return;
+
                 var ci
                 if(wheel.angleDelta.y < 0) {
-                    ci = Math.min(list.currentIndex+1, list.count);
+                    ci = Math.min(list.currentIndex+1, list.count - 1);
                 }
                 else if(wheel.angleDelta.y > 0) {
                     ci = Math.max(0,list.currentIndex-1);
@@ -85,6 +89,8 @@ Rectangle {
         highlightFollowsCurrentItem: true
         highlightRangeMode: ListView.StrictlyEnforceRange
         preferredHighlightEnd: 50
+
+        highlightMoveDuration: 250
 
         delegate: Component {
 
@@ -168,11 +174,12 @@ Rectangle {
 
         focus: true
         Keys.onPressed: {
+
             if (event.modifiers & Qt.ControlModifier || event.modifiers & Qt.ShiftModifier)
                 return;
             var ci
             if (event.key === Qt.Key_Right) {
-                ci = Math.min(list.currentIndex+1, list.count);
+                ci = Math.min(list.currentIndex+1, list.count - 1);
             }
             else if (event.key === Qt.Key_Left) {
                 ci = Math.max(0,list.currentIndex-1);
