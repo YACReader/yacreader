@@ -148,26 +148,8 @@ Rectangle {
                     acceptedButtons: Qt.LeftButton | Qt.RightButton
 
                     onClicked: {
-                        gotoIndex(index);
+                        list.currentIndex = index;
                     }
-                }
-
-                NumberAnimation {
-                    id: anim;
-                    target: list;
-                    property: "contentX";
-                    duration: Math.min(850, Math.max(350, 75 * Math.abs(list.currentIndex - list.previousIndex)))
-                }
-
-                function gotoIndex(idx) {
-                    var pos = list.contentX;
-                    var destPos;
-                    list.previousIndex = list.currentIndex
-                    list.positionViewAtIndex(idx, ListView.Beginning);
-                    destPos = list.contentX;
-                    anim.from = pos;
-                    anim.to = destPos;
-                    anim.running = true;
                 }
             }
         }
