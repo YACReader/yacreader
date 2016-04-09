@@ -525,7 +525,7 @@ Rectangle {
             var numCells = grid.numCellsPerRow();
             var ci
             if (event.key === Qt.Key_Right) {
-                ci = Math.min(grid.currentIndex+1,grid.count);
+                ci = Math.min(grid.currentIndex+1,grid.count - 1);
             }
             else if (event.key === Qt.Key_Left) {
                 ci = Math.max(0,grid.currentIndex-1);
@@ -534,7 +534,7 @@ Rectangle {
                 ci = Math.max(0,grid.currentIndex-numCells);
             }
             else if (event.key === Qt.Key_Down) {
-                ci = Math.min(grid.currentIndex+numCells,grid.count);
+                ci = Math.min(grid.currentIndex+numCells,grid.count - 1);
             }
 
             event.accepted = true;
