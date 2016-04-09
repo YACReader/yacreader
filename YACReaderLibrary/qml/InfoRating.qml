@@ -8,13 +8,19 @@ Row {
     Repeater {
         id: rating_compact
         model: 5
-        Image {
-            source: "info-rating.png"
+        Item {
+            width: 20
+            height: 20
+
+            Image {
+                id: star
+                source: "info-rating.png"
+            }
 
             ColorOverlay {
-                anchors.fill: rating_compact.itemAt(index)
-                source: rating_compact.itemAt(index)
-                color: index <= 3 ? "#ffffff" : "#1c1c1c"
+                anchors.fill: star
+                source: star
+                color: index <= 2 ? "#ffffff" : "#1c1c1c"
             }
         }
     }
