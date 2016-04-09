@@ -58,7 +58,6 @@ YACReaderComicsViewsManager::YACReaderComicsViewsManager(QSettings *settings, Li
     comicsViewStack->setCurrentWidget(comicsView);
 
     //connections
-    connect(comicsViewTransition,SIGNAL(transitionFinished()),this,SLOT(showComicsView()));
 
     connect(emptyFolderWidget, SIGNAL(copyComicsToCurrentFolder(QList<QPair<QString, QString> >)), libraryWindow, SLOT(copyAndImportComicsToCurrentFolder(QList<QPair<QString, QString> >)));
     connect(emptyFolderWidget, SIGNAL(moveComicsToCurrentFolder(QList<QPair<QString, QString> >)), libraryWindow, SLOT(moveAndImportComicsToCurrentFolder(QList<QPair<QString, QString> >)));
@@ -104,7 +103,7 @@ void YACReaderComicsViewsManager::toggleComicsView()
 {
     if(comicsViewStack->currentWidget()==comicsView) {
         QTimer::singleShot(0,this,SLOT(showComicsViewTransition()));
-        QTimer::singleShot(32,this,SLOT(toggleComicsView_delayed()));
+        QTimer::singleShot(100,this,SLOT(toggleComicsView_delayed()));
     } else
         toggleComicsView_delayed();
 }
@@ -167,7 +166,6 @@ void YACReaderComicsViewsManager::switchToComicsView(ComicsView * from, ComicsVi
 void YACReaderComicsViewsManager::showComicsViewTransition()
 {
     comicsViewStack->setCurrentWidget(comicsViewTransition);
-    comicsViewTransition->startMovie();
 }
 
 void YACReaderComicsViewsManager::toggleComicsView_delayed()
@@ -219,4 +217,6 @@ void YACReaderComicsViewsManager::toggleComicsView_delayed()
     }
 
     libraryWindow->settings->setValue(COMICS_VIEW_STATUS, comicsViewStatus);
+
+    showComicsView();
 }
