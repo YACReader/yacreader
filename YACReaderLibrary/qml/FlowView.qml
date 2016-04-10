@@ -18,6 +18,8 @@ Rectangle {
 
     property real itemsSpacing: 17
 
+    signal currentCoverChanged(int index)
+
     Rectangle {
         id: background
         color: "#2A2A2A"
@@ -72,6 +74,7 @@ Rectangle {
 
     ListView {
         id: list
+        objectName: "list"
         anchors.fill: parent
 
         property int previousIndex;
@@ -91,6 +94,10 @@ Rectangle {
         preferredHighlightEnd: 50
 
         highlightMoveDuration: 250
+
+        onCurrentIndexChanged: {
+            currentCoverChanged(currentIndex);
+        }
 
         delegate: Component {
 
