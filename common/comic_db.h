@@ -8,8 +8,9 @@
 #include <QImage>
 #include <QMetaType>
 
-class ComicInfo
+class ComicInfo : public QObject
 {
+    Q_OBJECT
 public:
 	ComicInfo();
 	ComicInfo(const ComicInfo & comicInfo);
