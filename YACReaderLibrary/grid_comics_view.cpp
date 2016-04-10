@@ -8,6 +8,7 @@
 #include "QsLog.h"
 #include "yacreader_global.h"
 #include "yacreader_tool_bar_stretch.h"
+#include "comic_db.h"
 
 //values relative to visible cells
 const unsigned int YACREADER_MIN_GRID_ZOOM_WIDTH = 156;
@@ -33,6 +34,7 @@ GridComicsView::GridComicsView(QWidget *parent) :
     settings->beginGroup("libraryConfig");
 
     qmlRegisterType<ComicModel>("com.yacreader.ComicModel",1,0,"ComicModel");
+    qmlRegisterType<ComicInfo>("com.yacreader.ComicInfo",1,0,"ComicInfo");
 
     view = new QQuickView();
     container = QWidget::createWindowContainer(view, this);
