@@ -5,6 +5,8 @@ import QtQuick.Layouts 1.2
 
 import QtGraphicalEffects 1.0
 
+import com.yacreader.ComicInfo 1.0
+
 Rectangle {
 
     color : "transparent"
@@ -22,6 +24,8 @@ Rectangle {
     property int topMargin : 27
 
     property bool compact : width <= 650
+
+    property ComicInfo comicInfo
 
     RowLayout
     {
