@@ -404,7 +404,7 @@ void LibraryWindow::doModels()
     foldersModelProxy = new FolderModelProxy();
     //foldersModelProxy->setSourceModel(foldersModel);
 	//comics
-    comicsModel =  new ComicModel();
+    comicsModel =  new ComicModel(this);
     //lists
     listsModel = new ReadingListModel();
     listsModelProxy = new ReadingListModelProxy();
@@ -1265,12 +1265,8 @@ void LibraryWindow::loadLibrary(const QString & name)
 	}
 }
 
-#include "classic_comics_view.h"
 void LibraryWindow::loadCoversFromCurrentModel()
 {
-    //TODO this is a workaround for the crash in setModel, crash on views switching (QML)
-    if(typeid(*comicsViewsManager->comicsView) != typeid(ClassicComicsView))
-        comicsViewsManager->comicsView->setModel(new ComicModel());
     comicsViewsManager->comicsView->setModel(comicsModel);
 }
 
