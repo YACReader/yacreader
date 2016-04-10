@@ -13,7 +13,5 @@ cp -R ./release/languages ./YACReader.app/Contents/MacOS/
 cp -R ./release/languages ./YACReaderLibrary.app/Contents/MacOS/
 cp -R ./release/languages ./YACReaderLibraryServer.app/Contents/MacOS/
 
-./signapps.sh
-
-/Users/luisangel/my_dev/YACReader/YACReader_hg/create-dmg
+#./signapps.sh
 
