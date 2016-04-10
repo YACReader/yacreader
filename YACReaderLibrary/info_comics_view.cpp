@@ -3,6 +3,7 @@
 #include <QtQuick>
 
 #include "comic_model.h"
+#include "comic_db.h"
 
 #include "QsLog.h"
 
@@ -10,6 +11,7 @@ InfoComicsView::InfoComicsView(QWidget *parent)
     :ComicsView(parent)
 {
     qmlRegisterType<ComicModel>("com.yacreader.ComicModel",1,0,"ComicModel");
+    qmlRegisterType<ComicInfo>("com.yacreader.ComicInfo",1,0,"ComicInfo");
 
     view = new QQuickView();
     container = QWidget::createWindowContainer(view, this);
@@ -17,6 +19,13 @@ InfoComicsView::InfoComicsView(QWidget *parent)
     container->setFocusPolicy(Qt::StrongFocus);
 
     view->setSource(QUrl("qrc:/qml/InfoComicsView.qml"));
+
+
+    QObject *rootObject = dynamic_cast<QObject*>(view->rootObject());
+    flow = rootObject->findChild<QObject*>("flow");
+    list = rootObject->findChild<QObject*>("list");
+
+    connect(flow, SIGNAL(currentCoverChanged(int)), this, SLOT(updateInfoForIndex(int)));
 
     QVBoxLayout * l = new QVBoxLayout;
     l->addWidget(container);
@@ -71,6 +80,12 @@ void InfoComicsView::setModel(ComicModel *model)
 }
 
 void InfoComicsView::setCurrentIndex(const QModelIndex &index)
+{
+    QQmlProperty(list, "currentIndex").write(index.row());
+}
+
+
+void InfoComicsView::updateInfoForIndex(int index)
 {
     int FIXME;
 }
