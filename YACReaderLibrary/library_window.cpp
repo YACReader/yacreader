@@ -248,7 +248,7 @@ void LibraryWindow::doLayout()
 
 	sHorizontal->addWidget(rightWidget);
 #else
-    sHorizontal->addWidget(comicsViewStack);
+    sHorizontal->addWidget(comicsViewsManager->containerWidget());
 #endif
 	
 	sHorizontal->setStretchFactor(0,0);
@@ -1265,10 +1265,11 @@ void LibraryWindow::loadLibrary(const QString & name)
 	}
 }
 
+#include "classic_comics_view.h"
 void LibraryWindow::loadCoversFromCurrentModel()
 {
-    //TODO this is a workaround for the crash in GridComicsView::setModel crash on views switching
-    if(typeid(*comicsViewsManager->comicsView) == typeid(GridComicsView))
+    //TODO this is a workaround for the crash in setModel, crash on views switching (QML)
+    if(typeid(*comicsViewsManager->comicsView) != typeid(ClassicComicsView))
         comicsViewsManager->comicsView->setModel(new ComicModel());
     comicsViewsManager->comicsView->setModel(comicsModel);
 }
