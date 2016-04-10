@@ -18,7 +18,7 @@ Rectangle {
     property font infoFont: Qt.font({
 
                                         family: "Arial",
-                                        pointSize: 10.5
+                                        pixelSize: 14
                                     });
 
     property int topMargin : 27
@@ -109,7 +109,7 @@ Rectangle {
                     color: "#ffffff"
                     font.family: "Arial"
                     font.bold: true
-                    font.pointSize: mainContainer.compact ? 14 : 15.75;
+                    font.pixelSize: mainContainer.compact ? 18 : 21;
                     wrapMode: Text.WordWrap
 
                     text: "#1" + "  -  " + "A Single Dream Can Spark A Revolution"
@@ -197,7 +197,7 @@ Rectangle {
                 id: sinopsis
                 color: "white"
                 font.family: "Arial"
-                font.pointSize: 11.75
+                font.pixelSize: 15
                 wrapMode: Text.WordWrap
                 horizontalAlignment: Text.AlignJustify
                 text: "The first original comic series created and written by Clive Barker is here!Julian Edmond, captain of industry, has left behind everything to begin a walkabout -- he believes he’s on a mission from God. While in the wasteland, he comes across a figure unlike any other, who calls himself Wick...and claims to be God. Their journey will span the globe, as neither man merely wants to make a mark on the world, but a scar.Clive Barker, with internationally acclaimed artist Haemi Jang (HELLRAISER: THE ROAD BELOW), come together to create the next legendary work in the canon of one of the great writers of our era. Ask your retailer about the ultra-limited edition signed Clive Barker variant cover, painted by the master of horror himself!"
@@ -210,7 +210,7 @@ Rectangle {
                 id: authors_title
                 color: "white"
                 font.family: "Arial"
-                font.pointSize: 13.5
+                font.pixelSize: 18
                 font.bold: true
 
                 text: "Authors"
@@ -226,7 +226,7 @@ Rectangle {
                         Text {
                             color: "white"
                             font.family: "Arial"
-                            font.pointSize: 11.25
+                            font.pixelSize: 15
 
                             text: "Author"
                         }
@@ -234,7 +234,7 @@ Rectangle {
                         Text {
                             color: "#b0b0b0"
                             font.family: "Arial"
-                            font.pointSize: 9.75
+                            font.pixelSize: 13
                             font.italic: true
                             text: "writer"
                         }
@@ -248,7 +248,7 @@ Rectangle {
                 id: publisher_title
                 color: "white"
                 font.family: "Arial"
-                font.pointSize: 13.5
+                font.pixelSize: 18
                 font.bold: true
 
                 text: "Publiser"
@@ -261,7 +261,7 @@ Rectangle {
                 id: characters_title
                 color: "white"
                 font.family: "Arial"
-                font.pointSize: 13.5
+                font.pixelSize: 18
                 font.bold: true
 
                 text: "Characters"
@@ -277,7 +277,7 @@ Rectangle {
                     Text {
                         color: "white"
                         font.family: "Arial"
-                        font.pointSize: 11.25
+                        font.pixelSize: 15
 
                         text: "character"
                     }
