@@ -47,6 +47,8 @@ void InfoComicsView::setToolBar(QToolBar *toolBar)
 
 void InfoComicsView::setModel(ComicModel *model)
 {
+    BOOL setModel = model != this->model;
+
     if(model == NULL)
         return;
 
@@ -62,7 +64,9 @@ void InfoComicsView::setModel(ComicModel *model)
     //TODO fix crash in the following line on comics views switch
 
     int row = currentIndex().row();
-    ctxt->setContextProperty("comicsList", model);
+
+    if(setModel)
+        ctxt->setContextProperty("comicsList", model);
     ctxt->setContextProperty("backgroundImage", this->model->data(this->model->index(0, 0), ComicModel::CoverPathRole));
 
     /*ctxt->setContextProperty("comicsSelection", _selectionModel);
