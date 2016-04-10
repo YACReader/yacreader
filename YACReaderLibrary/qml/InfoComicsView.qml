@@ -17,6 +17,7 @@ Rectangle {
 
     FlowView {
         id: flow
+        objectName: "flow"
         height: 256 //TODO dynamic size?
 
         anchors.top: parent.top
