@@ -11,6 +11,11 @@ ComicDB::ComicDB()
 
 }
 
+ComicDB::ComicDB(const ComicDB &comicDB)
+{
+    operator=(comicDB);
+}
+
 bool ComicDB::isDir()
 {
 	return false;
@@ -105,7 +110,18 @@ QString ComicDB::toTXT()
 	if(!info.notes.isNull())
 		txt.append(QString("notes:%1\r\n").arg(info.notes.toString()));
 
-	return txt;
+    return txt;
+}
+
+ComicDB &ComicDB::operator=(const ComicDB &other)
+{
+    LibraryItem::operator =(other);
+
+    this->_hasCover = other._hasCover;
+
+    this->info = other.info;
+
+    return *this;
 }
 
 QString ComicDB::getFileName() const
