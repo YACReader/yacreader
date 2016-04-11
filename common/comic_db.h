@@ -122,14 +122,16 @@ private:
 
 class ComicDB : public LibraryItem
 {
+    Q_OBJECT
 public:
 	ComicDB();
+    ComicDB(const ComicDB & comicDB);
 	
 	bool isDir();
 	
 	bool _hasCover;
 
-	bool hasCover() {return _hasCover;};
+    bool hasCover() {return _hasCover;}
 
 	//return comic file name
 	QString getFileName() const;
@@ -147,12 +149,13 @@ public:
 	
 	ComicInfo info;
 
-	bool operator==(const ComicDB & other){return id == other.id;};
+    ComicDB & operator=(const ComicDB & other);
+    bool operator==(const ComicDB & other){return id == other.id;}
 
 	friend QDataStream &operator<<(QDataStream &, const ComicDB &);
 	friend QDataStream &operator>>(QDataStream &, ComicDB &);
 };
 
-Q_DECLARE_METATYPE(ComicDB);
+Q_DECLARE_METATYPE(ComicDB)
 
 #endif
