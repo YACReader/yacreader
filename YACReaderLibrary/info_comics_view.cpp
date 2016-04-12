@@ -39,11 +39,15 @@ InfoComicsView::InfoComicsView(QWidget *parent)
     QLOG_TRACE() << "GridComicsView";
 }
 
+InfoComicsView::~InfoComicsView()
+{
+    delete view;
+}
+
 void InfoComicsView::setToolBar(QToolBar *toolBar)
 {
-    toolBar->setParent(this);
-
-    int FIXME;
+    static_cast<QVBoxLayout *>(this->layout())->insertWidget(1,toolBar);
+    this->toolbar = toolBar;
 }
 
 void InfoComicsView::setModel(ComicModel *model)
