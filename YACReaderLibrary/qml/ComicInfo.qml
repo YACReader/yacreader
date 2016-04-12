@@ -199,8 +199,9 @@ Rectangle {
             }
 
             Text {
-                Layout.topMargin: 31
+                Layout.topMargin: 22
                 Layout.rightMargin: 30
+                Layout.bottomMargin: 5
                 Layout.fillWidth: true
 
                 id: sinopsis
@@ -214,7 +215,7 @@ Rectangle {
             }
 
             Text {
-                Layout.topMargin: 20
+                Layout.topMargin: 25
                 Layout.bottomMargin: 5
 
                 id: authors_title
@@ -370,7 +371,7 @@ Rectangle {
             }
 
             Text {
-                Layout.topMargin: 20
+                Layout.topMargin: 25
 
                 id: publisher_title
                 color: "white"
@@ -382,7 +383,7 @@ Rectangle {
             }
 
             Text {
-                Layout.topMargin: 20
+                Layout.topMargin: 25
                 Layout.bottomMargin: 5
 
                 id: characters_title
