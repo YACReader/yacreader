@@ -8,6 +8,9 @@
 #include <QImage>
 #include <QMetaType>
 
+typedef QPair<QString,QString> YACReaderComicInfoPair;
+Q_DECLARE_METATYPE(YACReaderComicInfoPair)
+
 class ComicInfo : public QObject
 {
     Q_OBJECT
@@ -17,6 +20,9 @@ public:
 	~ComicInfo();
 
 	ComicInfo & operator=(const ComicInfo & comicInfo);
+
+    bool operator==(const ComicInfo & other){return id == other.id;}
+    bool operator!=(const ComicInfo & other){return id != other.id;}
 
     //mandatory fields
 	qulonglong id;
@@ -112,9 +118,73 @@ public:
 
 	QPixmap getCover(const QString & basePath);
 
+    Q_INVOKABLE QStringList getWriters();
+    Q_INVOKABLE QStringList getPencillers();
+    Q_INVOKABLE QStringList getInkers();
+    Q_INVOKABLE QStringList getColorists();
+    Q_INVOKABLE QStringList getLetterers();
+    Q_INVOKABLE QStringList getCoverArtists();
+
+    Q_INVOKABLE QStringList getCharacters();
+
 	friend QDataStream &operator<<(QDataStream & stream, const ComicInfo & comicInfo);
 
 	friend QDataStream &operator>>(QDataStream & stream, ComicInfo & comicInfo);
+
+    Q_PROPERTY(qulonglong id MEMBER id CONSTANT)
+    Q_PROPERTY(bool read MEMBER read CONSTANT)
+    Q_PROPERTY(bool edited MEMBER edited CONSTANT)
+    Q_PROPERTY(QString hash MEMBER hash CONSTANT)
+    Q_PROPERTY(bool existOnDb MEMBER existOnDb CONSTANT)
+
+    Q_PROPERTY(int rating MEMBER rating CONSTANT)
+
+    Q_PROPERTY(bool hasBeenOpened MEMBER hasBeenOpened CONSTANT)
+
+    Q_PROPERTY(int currentPage MEMBER currentPage CONSTANT)
+    Q_PROPERTY(int bookmark1 MEMBER bookmark1 CONSTANT)
+    Q_PROPERTY(int bookmark2 MEMBER bookmark2 CONSTANT)
+    Q_PROPERTY(int bookmark3 MEMBER bookmark3 CONSTANT)
+    Q_PROPERTY(int brightness MEMBER brightness CONSTANT)
+    Q_PROPERTY(int contrast MEMBER contrast CONSTANT)
+    Q_PROPERTY(int gamma MEMBER gamma CONSTANT)
+
+    Q_PROPERTY(QVariant title MEMBER title CONSTANT)
+
+    Q_PROPERTY(QVariant coverPage MEMBER coverPage CONSTANT)
+    Q_PROPERTY(QVariant numPages MEMBER numPages CONSTANT)
+
+    Q_PROPERTY(QVariant number MEMBER number CONSTANT)
+    Q_PROPERTY(QVariant isBis MEMBER isBis CONSTANT)
+    Q_PROPERTY(QVariant count MEMBER count CONSTANT)
+
+    Q_PROPERTY(QVariant volume MEMBER volume CONSTANT)
+    Q_PROPERTY(QVariant storyArc MEMBER storyArc CONSTANT)
+    Q_PROPERTY(QVariant arcNumber MEMBER arcNumber CONSTANT)
+    Q_PROPERTY(QVariant arcCount MEMBER arcCount CONSTANT)
+
+    Q_PROPERTY(QVariant genere MEMBER genere CONSTANT)
+
+    Q_PROPERTY(QVariant writer MEMBER writer CONSTANT)
+    Q_PROPERTY(QVariant penciller MEMBER penciller CONSTANT)
+    Q_PROPERTY(QVariant inker MEMBER inker CONSTANT)
+    Q_PROPERTY(QVariant colorist MEMBER colorist CONSTANT)
+    Q_PROPERTY(QVariant letterer MEMBER letterer CONSTANT)
+    Q_PROPERTY(QVariant coverArtist MEMBER coverArtist CONSTANT)
+
+    Q_PROPERTY(QVariant date MEMBER date CONSTANT)
+    Q_PROPERTY(QVariant publisher MEMBER publisher CONSTANT)
+    Q_PROPERTY(QVariant format MEMBER format CONSTANT)
+    Q_PROPERTY(QVariant color MEMBER color CONSTANT)
+    Q_PROPERTY(QVariant ageRating MEMBER ageRating CONSTANT)
+
+    Q_PROPERTY(QVariant synopsis MEMBER synopsis CONSTANT)
+    Q_PROPERTY(QVariant characters MEMBER characters CONSTANT)
+    Q_PROPERTY(QVariant notes MEMBER notes CONSTANT)
+
+    Q_PROPERTY(QVariant comicVineID MEMBER comicVineID CONSTANT)
+
+    Q_PROPERTY(QImage cover MEMBER cover CONSTANT)
 
 private:
 
@@ -137,23 +207,27 @@ public:
 	QString getFileName() const;
 
 	//returns comic title if it isn't null or empty, in other case returns fileName
-	QString getTitleOrFileName() const;
+    Q_INVOKABLE QString getTitleOrFileName() const;
 
 	//returns parent folder name
 	QString getParentFolderName() const;
 
     //return the size of the file in bytes
-    qulonglong getFileSize() const;
+    Q_INVOKABLE qulonglong getFileSize() const;
 
-	QString toTXT();
-	
-	ComicInfo info;
+    Q_INVOKABLE QString getTitleIncludingNumber() const;
+
+    QString toTXT();
+
+    ComicInfo info;
+    Q_PROPERTY(ComicInfo info MEMBER info)
 
     ComicDB & operator=(const ComicDB & other);
     bool operator==(const ComicDB & other){return id == other.id;}
 
 	friend QDataStream &operator<<(QDataStream &, const ComicDB &);
-	friend QDataStream &operator>>(QDataStream &, ComicDB &);
+    friend QDataStream &operator>>(QDataStream &, ComicDB &);
+
 };
 
 Q_DECLARE_METATYPE(ComicDB)
