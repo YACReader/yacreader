@@ -401,7 +401,7 @@ Rectangle {
                 spacing: 20
                 Repeater {
                     id: characters
-                    model: comicInfo.getCharacters().lenght
+                    model: comicInfo.getCharacters().length
 
                     Text {
                         color: "white"
