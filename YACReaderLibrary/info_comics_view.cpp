@@ -100,7 +100,6 @@ void InfoComicsView::updateInfoForIndex(int index)
     ComicInfo *comicInfo = &(comicDB->info);
     ctxt->setContextProperty("comic", comicDB);
     ctxt->setContextProperty("comicInfo", comicInfo);
-    int FIXME;
 }
 
 QModelIndex InfoComicsView::currentIndex()
