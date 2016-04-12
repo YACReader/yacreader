@@ -36,6 +36,7 @@ protected:
     QWidget *container;
     QObject *flow;
     QObject *list;
+    ComicDB *comicDB;
 };
 
 #endif // INFOCOMICSVIEW_H

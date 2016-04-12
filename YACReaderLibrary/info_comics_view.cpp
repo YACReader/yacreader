@@ -8,9 +8,10 @@
 #include "QsLog.h"
 
 InfoComicsView::InfoComicsView(QWidget *parent)
-    :ComicsView(parent)
+    :ComicsView(parent), comicDB(0)
 {
     qmlRegisterType<ComicModel>("com.yacreader.ComicModel",1,0,"ComicModel");
+    qmlRegisterType<ComicDB>("com.yacreader.ComicDB",1,0,"ComicDB");
     qmlRegisterType<ComicInfo>("com.yacreader.ComicInfo",1,0,"ComicInfo");
 
     view = new QQuickView();
@@ -80,7 +81,10 @@ void InfoComicsView::setModel(ComicModel *model)
     updateBackgroundConfig();*/
 
     if(model->rowCount()>0)
+    {
         setCurrentIndex(model->index(0,0));
+        updateInfoForIndex(0);
+    }
 }
 
 void InfoComicsView::setCurrentIndex(const QModelIndex &index)
@@ -91,6 +95,14 @@ void InfoComicsView::setCurrentIndex(const QModelIndex &index)
 
 void InfoComicsView::updateInfoForIndex(int index)
 {
+    QQmlContext *ctxt = view->rootContext();
+
+    if(comicDB) delete comicDB;
+
+    comicDB = new ComicDB(model->getComic(this->model->index(index, 0)));
+    ComicInfo *comicInfo = &(comicDB->info);
+    ctxt->setContextProperty("comic", comicDB);
+    ctxt->setContextProperty("comicInfo", comicInfo);
     int FIXME;
 }
 
