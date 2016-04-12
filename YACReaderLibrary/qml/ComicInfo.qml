@@ -6,6 +6,7 @@ import QtQuick.Layouts 1.2
 import QtGraphicalEffects 1.0
 
 import com.yacreader.ComicInfo 1.0
+import com.yacreader.ComicDB 1.0
 
 Rectangle {
 
@@ -24,8 +25,6 @@ Rectangle {
     property int topMargin : 27
 
     property bool compact : width <= 650
-
-    property ComicInfo comicInfo
 
     RowLayout
     {
@@ -112,7 +111,7 @@ Rectangle {
                     font.pixelSize: mainContainer.compact ? 18 : 21;
                     wrapMode: Text.WordWrap
 
-                    text: "#1" + "  -  " + "A Single Dream Can Spark A Revolution"
+                    text: comic.getTitleIncludingNumber()
                 }
 
                 RowLayout
@@ -143,49 +142,59 @@ Rectangle {
                     id: volume
                     color: infoColor
                     font: mainContainer.infoFont
-                    text: "Clive Barker's Next Testament"
+                    text: comicInfo.volume
                     rightPadding: 20
+                    visible: comicInfo.volume
                 }
 
                 Text {
                     id: numbering
                     color: infoColor
                     font: mainContainer.infoFont
-                    text: "1/12"
+                    text: comicInfo.number + "/" + comicInfo.count
                     rightPadding: 20
+                    visible : comicInfo.number
                 }
 
                 Text {
                     id: genre
                     color: infoColor
                     font: mainContainer.infoFont
-                    text: "Terror"
+                    text: comicInfo.genere
                     rightPadding: 20
+                    visible: comicInfo.genere
                 }
 
                 Text {
                     id: date
                     color: infoColor
                     font: mainContainer.infoFont
-                    text: "21/03/2016"
+                    text: comicInfo.date
                     rightPadding: 20
+                    visible: comicInfo.date
                 }
 
                 Text {
                     id: pages
                     color: infoColor
                     font: mainContainer.infoFont
-                    text: "23 pages"
+                    text: comicInfo.numPages + " pages"
                     rightPadding: 20
+                    visible: comicInfo.numPages
                 }
 
                 Text {
                     id: showInComicVinw
-                    color: "#ffcc00"
                     font: mainContainer.infoFont
+                    color: "#ffcc00"
                     text: "Show in Comic Vine"
-
-                    onLinkActivated: Qt.openUrlExternally(link)
+                    visible: comicInfo.comicVineID
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            Qt.openUrlExternally("http://www.comicvine.com/comic/4000-%1/".arg(comicInfo.comicVineID));
+                        }
+                    }
                 }
             }
 
@@ -200,7 +209,8 @@ Rectangle {
                 font.pixelSize: 15
                 wrapMode: Text.WordWrap
                 horizontalAlignment: Text.AlignJustify
-                text: "The first original comic series created and written by Clive Barker is here!Julian Edmond, captain of industry, has left behind everything to begin a walkabout -- he believes he’s on a mission from God. While in the wasteland, he comes across a figure unlike any other, who calls himself Wick...and claims to be God. Their journey will span the globe, as neither man merely wants to make a mark on the world, but a scar.Clive Barker, with internationally acclaimed artist Haemi Jang (HELLRAISER: THE ROAD BELOW), come together to create the next legendary work in the canon of one of the great writers of our era. Ask your retailer about the ultra-limited edition signed Clive Barker variant cover, painted by the master of horror himself!"
+                text: comicInfo.synopsis
+                visible: comicInfo.synopsis
             }
 
             Text {
@@ -214,21 +224,28 @@ Rectangle {
                 font.bold: true
 
                 text: "Authors"
+
+                visible: comicInfo.getWriters().length +
+                         comicInfo.getPencillers().length +
+                         comicInfo.getInkers().length +
+                         comicInfo.getColorists().length +
+                         comicInfo.getLetterers().length +
+                         comicInfo.getCoverArtists().length > 0
             }
 
             Flow {
                 Layout.fillWidth: true
                 spacing: 20
                 Repeater {
-                    id: authors
-                    model: 50
+                    id: writers
+                    model: comicInfo.getWriters().length
                     Column{
                         Text {
                             color: "white"
                             font.family: "Arial"
                             font.pixelSize: 15
 
-                            text: "Author"
+                            text: comicInfo.getWriters()[index]
                         }
 
                         Text {
@@ -237,6 +254,116 @@ Rectangle {
                             font.pixelSize: 13
                             font.italic: true
                             text: "writer"
+                        }
+                    }
+                }
+
+                Repeater {
+                    id: pencilllers
+                    model: comicInfo.getPencillers().length
+                    Column{
+                        Text {
+                            color: "white"
+                            font.family: "Arial"
+                            font.pixelSize: 15
+
+                            text: comicInfo.getPencillers()[index]
+                        }
+
+                        Text {
+                            color: "#b0b0b0"
+                            font.family: "Arial"
+                            font.pixelSize: 13
+                            font.italic: true
+                            text: "penciller"
+                        }
+                    }
+                }
+
+                Repeater {
+                    id: inkers
+                    model: comicInfo.getInkers().length
+                    Column{
+                        Text {
+                            color: "white"
+                            font.family: "Arial"
+                            font.pixelSize: 15
+
+                            text: comicInfo.getInkers()[index]
+                        }
+
+                        Text {
+                            color: "#b0b0b0"
+                            font.family: "Arial"
+                            font.pixelSize: 13
+                            font.italic: true
+                            text: "inker"
+                        }
+                    }
+                }
+
+                Repeater {
+                    id: colorist
+                    model: comicInfo.getColorists().length
+                    Column{
+                        Text {
+                            color: "white"
+                            font.family: "Arial"
+                            font.pixelSize: 15
+
+                            text: comicInfo.getColorists()[index]
+                        }
+
+                        Text {
+                            color: "#b0b0b0"
+                            font.family: "Arial"
+                            font.pixelSize: 13
+                            font.italic: true
+                            text: "colorist"
+                        }
+                    }
+                }
+
+                Repeater {
+                    id: letterers
+                    model: comicInfo.getLetterers().length
+                    Column{
+                        Text {
+                            color: "white"
+                            font.family: "Arial"
+                            font.pixelSize: 15
+
+                            text: comicInfo.getLetterers()[index]
+                        }
+
+                        Text {
+                            color: "#b0b0b0"
+                            font.family: "Arial"
+                            font.pixelSize: 13
+                            font.italic: true
+                            text: "letterer"
+                        }
+                    }
+                }
+
+                Repeater {
+                    id: cover_artist
+                    model: comicInfo.getCoverArtists().length
+                    Column{
+                        Text {
+                            color: "white"
+                            font.family: "Arial"
+                            font.pixelSize: 15
+
+                            text: comicInfo.getCoverArtists()[index]
+                        }
+
+                        Text {
+                            color: "#b0b0b0"
+                            font.family: "Arial"
+                            font.pixelSize: 13
+                            font.italic: true
+                            text: "cover artist"
                         }
                     }
                 }
@@ -251,7 +378,7 @@ Rectangle {
                 font.pixelSize: 18
                 font.bold: true
 
-                text: "Publiser"
+                text: "Publisher"
             }
 
             Text {
@@ -265,6 +392,8 @@ Rectangle {
                 font.bold: true
 
                 text: "Characters"
+
+                visible: comicInfo.getCharacters().length > 0
             }
 
             Flow {
@@ -272,14 +401,14 @@ Rectangle {
                 spacing: 20
                 Repeater {
                     id: characters
-                    model: 50
+                    model: comicInfo.getCharacters().lenght
 
                     Text {
                         color: "white"
                         font.family: "Arial"
                         font.pixelSize: 15
 
-                        text: "character"
+                        text: comicInfo.getCharacters()[index]
                     }
                 }
             }
