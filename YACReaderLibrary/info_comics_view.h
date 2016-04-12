@@ -14,6 +14,7 @@ class InfoComicsView : public ComicsView
     Q_OBJECT
 public:
     explicit InfoComicsView(QWidget *parent = 0);
+    ~InfoComicsView();
     void setToolBar(QToolBar * toolBar);
     void setModel(ComicModel *model);
     void setCurrentIndex(const QModelIndex &index);
@@ -32,6 +33,7 @@ public slots:
     void selectAll();
 
 protected:
+    QToolBar * toolbar;
     QQuickView *view;
     QWidget *container;
     QObject *flow;
