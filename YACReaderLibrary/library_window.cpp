@@ -1267,6 +1267,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 
 void LibraryWindow::loadCoversFromCurrentModel()
 {
+    comicsViewsManager->comicsView->setModel(new ComicModel());  //TODO fix this
     comicsViewsManager->comicsView->setModel(comicsModel);
 }
 
