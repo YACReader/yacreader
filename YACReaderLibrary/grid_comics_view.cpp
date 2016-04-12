@@ -157,8 +157,6 @@ void GridComicsView::setToolBar(QToolBar *toolBar)
 
 void GridComicsView::setModel(ComicModel *model)
 {
-    BOOL setModel = model != this->model;
-
     if(model == NULL)
         return;
 
@@ -171,8 +169,7 @@ void GridComicsView::setModel(ComicModel *model)
 
     _selectionModel = new QItemSelectionModel(model);
 
-    if(setModel)
-        ctxt->setContextProperty("comicsList", model);
+    ctxt->setContextProperty("comicsList", model);
     ctxt->setContextProperty("comicsSelection", _selectionModel);
     ctxt->setContextProperty("contextMenuHelper",this);
     ctxt->setContextProperty("comicsSelectionHelper", this);
