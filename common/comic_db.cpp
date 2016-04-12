@@ -152,6 +152,16 @@ qulonglong ComicDB::getFileSize() const
     return info.hash.right(info.hash.length()-40).toLongLong();
 }
 
+QString ComicDB::getTitleIncludingNumber() const
+{
+    if(!info.number.isNull())
+    {
+        return "#" + info.number.toString() + " - " + getTitleOrFileName();
+    }
+
+    return getTitleOrFileName();
+}
+
 //-----------------------------------------------------------------------------
 //COMIC_INFO-------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -362,8 +372,79 @@ QPixmap ComicInfo::getCover(const QString & basePath)
 	}
 	QPixmap c;
 	c.convertFromImage(cover);
-	return c;
+    return c;
 }
+
+QStringList ComicInfo::getWriters()
+{
+    if(writer.toString().length()>0)
+    {
+        return writer.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList ComicInfo::getPencillers()
+{
+    if(penciller.toString().length()>0)
+    {
+        return penciller.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList ComicInfo::getInkers()
+{
+    if(inker.toString().length()>0)
+    {
+        return inker.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList ComicInfo::getColorists()
+{
+    if(colorist.toString().length()>0)
+    {
+        return colorist.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList ComicInfo::getLetterers()
+{
+    if(letterer.toString().length()>0)
+    {
+        return letterer.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList ComicInfo::getCoverArtists()
+{
+    if(coverArtist.toString().length()>0)
+    {
+        return coverArtist.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList ComicInfo::getCharacters()
+{
+    if(characters.toString().length()>0)
+    {
+       return characters.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
 QDataStream &operator<<(QDataStream & stream, const ComicDB & comic)
 {
 	stream << comic.id;
