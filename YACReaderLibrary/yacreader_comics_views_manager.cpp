@@ -220,5 +220,6 @@ void YACReaderComicsViewsManager::_toggleComicsView()
 
     libraryWindow->settings->setValue(COMICS_VIEW_STATUS, comicsViewStatus);
 
-    showComicsView();
+    if(comicsViewStack->currentWidget()==comicsViewTransition)
+        showComicsView();
 }
