@@ -445,6 +445,24 @@ QStringList ComicInfo::getCharacters()
     return QStringList();
 }
 
+void ComicInfo::setRead(bool r)
+{
+    if(r != read)
+    {
+        read = r;
+        emit readChanged();
+    }
+}
+
+void ComicInfo::setRating(int r)
+{
+    if(r != rating)
+    {
+        rating = r;
+        emit ratingChanged();
+    }
+}
+
 QDataStream &operator<<(QDataStream & stream, const ComicDB & comic)
 {
 	stream << comic.id;
