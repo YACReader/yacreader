@@ -103,9 +103,11 @@ void YACReaderComicsViewsManager::toggleComicsView()
 {
     if(comicsViewStack->currentWidget()==comicsView) {
         QTimer::singleShot(0,this,SLOT(showComicsViewTransition()));
-        QTimer::singleShot(100,this,SLOT(toggleComicsView_delayed()));
+        QTimer::singleShot(100,this,SLOT(_toggleComicsView()));
     } else
-        toggleComicsView_delayed();
+    {
+        _toggleComicsView();
+    }
 }
 
 //PROTECTED
@@ -168,7 +170,7 @@ void YACReaderComicsViewsManager::showComicsViewTransition()
     comicsViewStack->setCurrentWidget(comicsViewTransition);
 }
 
-void YACReaderComicsViewsManager::toggleComicsView_delayed()
+void YACReaderComicsViewsManager::_toggleComicsView()
 {
     switch(comicsViewStatus)
     {

@@ -63,7 +63,7 @@ public slots:
 
 protected slots:
     void showComicsViewTransition();
-    void toggleComicsView_delayed();
+    void _toggleComicsView();
 
     void disconnectComicsViewConnections(ComicsView * widget);
     void doComicsViewConnections();
