@@ -50,7 +50,6 @@ Rectangle {
 
     anchors.margins: 0
 
-
     MouseArea {
         anchors.fill : list
         onWheel: {
@@ -135,6 +134,16 @@ Rectangle {
                     mipmap: true
                     asynchronous : true
                     cache: false
+                }
+
+                //mark
+                Image {
+                    id: mark
+                    width: 23
+                    height: 23
+                    source: read_column&&show_marks?"tick.png":has_been_opened&&show_marks?"reading.png":""
+                    anchors {right: coverElement.right; top: coverElement.top; topMargin: 9; rightMargin: 9}
+                    asynchronous : true
                 }
 
                 //border
