@@ -132,12 +132,12 @@ public:
 	friend QDataStream &operator>>(QDataStream & stream, ComicInfo & comicInfo);
 
     Q_PROPERTY(qulonglong id MEMBER id CONSTANT)
-    Q_PROPERTY(bool read MEMBER read CONSTANT)
+    Q_PROPERTY(bool read MEMBER read WRITE setRead NOTIFY readChanged)
     Q_PROPERTY(bool edited MEMBER edited CONSTANT)
     Q_PROPERTY(QString hash MEMBER hash CONSTANT)
     Q_PROPERTY(bool existOnDb MEMBER existOnDb CONSTANT)
 
-    Q_PROPERTY(int rating MEMBER rating CONSTANT)
+    Q_PROPERTY(int rating MEMBER rating WRITE setRating NOTIFY ratingChanged)
 
     Q_PROPERTY(bool hasBeenOpened MEMBER hasBeenOpened CONSTANT)
 
@@ -186,7 +186,14 @@ public:
 
     Q_PROPERTY(QImage cover MEMBER cover CONSTANT)
 
+    //setters, used in QML only by now
+    void setRead(bool r);
+    void setRating(int r);
 private:
+
+signals:
+    void readChanged();
+    void ratingChanged();
 
 };
 
