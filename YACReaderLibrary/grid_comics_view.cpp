@@ -194,7 +194,7 @@ void GridComicsView::updateBackgroundConfig()
     //backgroun image configuration
     bool useBackgroundImage = settings->value(USE_BACKGROUND_IMAGE_IN_GRID_VIEW, true).toBool();
 
-    if(useBackgroundImage)
+    if(useBackgroundImage && this->model->rowCount() > 0)
     {
         float opacity = settings->value(OPACITY_BACKGROUND_IMAGE_IN_GRID_VIEW, 0.2).toFloat();
         float blurRadius = settings->value(BLUR_RADIUS_BACKGROUND_IMAGE_IN_GRID_VIEW, 75).toInt();

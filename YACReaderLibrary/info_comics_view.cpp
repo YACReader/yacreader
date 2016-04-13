@@ -67,7 +67,10 @@ void InfoComicsView::setModel(ComicModel *model)
     _selectionModel = new QItemSelectionModel(model);*/
 
     ctxt->setContextProperty("comicsList", model);
-    ctxt->setContextProperty("backgroundImage", this->model->data(this->model->index(0, 0), ComicModel::CoverPathRole));
+    if(model->rowCount()>0)
+        ctxt->setContextProperty("backgroundImage", this->model->data(this->model->index(0, 0), ComicModel::CoverPathRole));
+    else
+        ctxt->setContextProperty("backgroundImage", QUrl());
 
     /*ctxt->setContextProperty("comicsSelection", _selectionModel);
     ctxt->setContextProperty("contextMenuHelper",this);
