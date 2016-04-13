@@ -36,6 +36,8 @@ InfoComicsView::InfoComicsView(QWidget *parent)
     l->setContentsMargins(0,0,0,0);
     l->setSpacing(0);
 
+    setShowMarks(true);
+
     QLOG_TRACE() << "GridComicsView";
 }
 
@@ -148,7 +150,8 @@ void InfoComicsView::selectIndex(int index)
 
 void InfoComicsView::setShowMarks(bool show)
 {
-    int FIXME;
+    QQmlContext *ctxt = view->rootContext();
+    ctxt->setContextProperty("show_marks", show);
 }
 
 void InfoComicsView::selectAll()
