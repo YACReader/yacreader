@@ -50,6 +50,12 @@ Rectangle {
                 InfoTick {
                     x: 27
                     y: 5
+
+                    read: comicInfo.read
+
+                    onReadChangedByUser: {
+                        comicInfo.read = read;
+                    }
                 }
             }
 
@@ -76,6 +82,12 @@ Rectangle {
 
                 InfoTick {
                     Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
+
+                    read: comicInfo.read
+
+                    onReadChangedByUser: {
+                        comicInfo.read = read;
+                    }
                 }
 
                 Item {
