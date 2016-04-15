@@ -17,7 +17,7 @@
 #include "options_dialog.h"
 
 YACReaderComicsViewsManager::YACReaderComicsViewsManager(QSettings *settings, LibraryWindow *parent)
-    : QObject(parent), libraryWindow(parent)
+    : QObject(parent), libraryWindow(parent), classicComicsView(nullptr), gridComicsView(nullptr), infoComicsView(nullptr)
 {
     comicsViewStack = new QStackedWidget();
 
@@ -154,7 +154,7 @@ void YACReaderComicsViewsManager::switchToComicsView(ComicsView * from, ComicsVi
     comicsViewStack->removeWidget(from);
     comicsViewStack->addWidget(comicsView);
 
-    delete from;
+    //delete from; No need to delete the previews view, because all views are going to be kept in memory
 
     //load content into current view
     libraryWindow->loadCoversFromCurrentModel();
@@ -182,7 +182,10 @@ void YACReaderComicsViewsManager::_toggleComicsView()
 #ifdef Q_OS_MAC
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
 #endif
-        switchToComicsView(classicComicsView, gridComicsView = new GridComicsView());
+        if(gridComicsView == nullptr)
+            gridComicsView = new GridComicsView();
+
+        switchToComicsView(classicComicsView, gridComicsView);
         connect(libraryWindow->optionsDialog, SIGNAL(optionsChanged()), gridComicsView, SLOT(updateBackgroundConfig()));
         comicsViewStatus = Grid;
 
@@ -197,7 +200,10 @@ void YACReaderComicsViewsManager::_toggleComicsView()
 #ifdef Q_OS_MAC
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
 #endif
-        switchToComicsView(gridComicsView, infoComicsView = new InfoComicsView());
+        if(infoComicsView == nullptr)
+           infoComicsView = new InfoComicsView();
+
+        switchToComicsView(gridComicsView, infoComicsView);
         comicsViewStatus = Info;
 
         break;
@@ -211,7 +217,10 @@ void YACReaderComicsViewsManager::_toggleComicsView()
 #ifdef Q_OS_MAC
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
 #endif
-        switchToComicsView(infoComicsView, classicComicsView = new ClassicComicsView());
+        if(classicComicsView == nullptr)
+            classicComicsView = new ClassicComicsView();
+
+        switchToComicsView(infoComicsView, classicComicsView);
         comicsViewStatus = Flow;
 
         break;
