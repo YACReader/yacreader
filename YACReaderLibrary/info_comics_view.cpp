@@ -123,27 +123,28 @@ QItemSelectionModel *InfoComicsView::selectionModel()
 
 void InfoComicsView::scrollTo(const QModelIndex &mi, QAbstractItemView::ScrollHint hint)
 {
-    int FIXME;
+    Q_UNUSED(mi);
+    Q_UNUSED(hint);
 }
 
 void InfoComicsView::toFullScreen()
 {
-    int FIXME;
+    toolbar->hide();
 }
 
 void InfoComicsView::toNormal()
 {
-    int FIXME;
+    toolbar->show();
 }
 
 void InfoComicsView::updateConfig(QSettings *settings)
 {
-    int FIXME;
+    Q_UNUSED(settings);
 }
 
 void InfoComicsView::enableFilterMode(bool enabled)
 {
-    int FIXME;
+    Q_UNUSED(enabled);
 }
 
 void InfoComicsView::selectIndex(int index)
