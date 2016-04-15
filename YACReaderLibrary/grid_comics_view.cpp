@@ -477,10 +477,11 @@ void GridComicsView::closeEvent(QCloseEvent *event)
     toolbar->removeAction(toolBarStretchAction);
     toolbar->removeAction(coverSizeSliderAction);
 
-    QObject *object = view->rootObject();
+    /*QObject *object = view->rootObject();
     QMetaObject::invokeMethod(object, "exit");
     container->close();
-    view->close();
+    view->close();*/
+
     event->accept();
     ComicsView::closeEvent(event);
 
