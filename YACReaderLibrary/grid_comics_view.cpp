@@ -187,7 +187,11 @@ void GridComicsView::setModel(ComicModel *model)
     updateBackgroundConfig();
 
     if(model->rowCount()>0)
+    {
         setCurrentIndex(model->index(0,0));
+        if(showInfoAction->isChecked())
+            updateInfoForIndex(0);
+    }
 }
 
 void GridComicsView::updateBackgroundConfig()
@@ -233,6 +237,8 @@ void GridComicsView::showInfo()
 {
     QQmlContext *ctxt = view->rootContext();
     ctxt->setContextProperty("showInfo", showInfoAction->isChecked());
+
+    updateInfoForIndex(currentIndex().row());
 }
 
 void GridComicsView::setCurrentIndex(const QModelIndex &index)
@@ -243,6 +249,9 @@ void GridComicsView::setCurrentIndex(const QModelIndex &index)
 
     if(settings->value(USE_SELECTED_COMIC_COVER_AS_BACKGROUND_IMAGE_IN_GRID_VIEW, false).toBool())
         updateBackgroundConfig();
+
+    if(showInfoAction->isChecked())
+        updateInfoForIndex(index.row());
 }
 
 QModelIndex GridComicsView::currentIndex()
