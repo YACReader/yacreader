@@ -38,6 +38,8 @@ public slots:
 
     void updateBackgroundConfig();
 
+    void showInfo();
+
 protected slots:
     //QML - selection helper
     void selectIndex(int index);
@@ -71,6 +73,7 @@ private:
     QWidget * coverSizeSliderWidget;
     QSlider * coverSizeSlider;
     QAction * coverSizeSliderAction;
+    QAction * showInfoAction;
     QItemSelectionModel * _selectionModel;
     QQuickView *view;
     QWidget *container;

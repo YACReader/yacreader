@@ -43,13 +43,6 @@ GridComicsView::GridComicsView(QWidget *parent) :
     container->setMinimumSize(200, 200);
     container->setFocusPolicy(Qt::TabFocus);
 
-    createCoverSizeSliderWidget();
-
-    int coverSize = settings->value(COMICS_GRID_COVER_SIZES, YACREADER_MIN_COVER_WIDTH).toInt();
-
-    coverSizeSlider->setValue(coverSize);
-    setCoversSize(coverSize);
-
     QQmlContext *ctxt = view->rootContext();
 
 #ifdef Q_OS_MAC
@@ -99,8 +92,13 @@ GridComicsView::GridComicsView(QWidget *parent) :
     ctxt->setContextProperty("dragManager", this);
     ctxt->setContextProperty("dropManager", this);
 
+    ctxt->setContextProperty("showInfo", false);
+
     view->setSource(QUrl("qrc:/qml/GridComicsView.qml"));
 
+    showInfoAction = new QAction("Show info",this);
+    showInfoAction->setCheckable(true);
+    connect(showInfoAction, &QAction::toggled, this, &GridComicsView::showInfo);
 
     setShowMarks(true);//TODO save this in settings
 
@@ -144,6 +142,11 @@ void GridComicsView::createCoverSizeSliderWidget()
     //TODO add shortcuts (ctrl-+ and ctrl-- for zooming in out, + ctrl-0 for reseting the zoom)
 
     connect(coverSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(setCoversSize(int)));
+
+    int coverSize = settings->value(COMICS_GRID_COVER_SIZES, YACREADER_MIN_COVER_WIDTH).toInt();
+
+    coverSizeSlider->setValue(coverSize);
+    setCoversSize(coverSize);
 }
 
 void GridComicsView::setToolBar(QToolBar *toolBar)
@@ -151,8 +154,11 @@ void GridComicsView::setToolBar(QToolBar *toolBar)
     static_cast<QVBoxLayout *>(this->layout())->insertWidget(1,toolBar);
     this->toolbar = toolBar;
 
-     toolBarStretchAction = toolBar->addWidget(toolBarStretch);
-     coverSizeSliderAction = toolBar->addWidget(coverSizeSliderWidget);
+    createCoverSizeSliderWidget();
+
+    toolBarStretchAction = toolBar->addWidget(toolBarStretch);
+    toolBar->addAction(showInfoAction);
+    coverSizeSliderAction = toolBar->addWidget(coverSizeSliderWidget);
 }
 
 void GridComicsView::setModel(ComicModel *model)
@@ -221,6 +227,12 @@ void GridComicsView::updateBackgroundConfig()
     ctxt->setContextProperty("cellColor", useBackgroundImage?"#99212121":"#212121");
     ctxt->setContextProperty("selectedColor", "#121212");
 #endif
+}
+
+void GridComicsView::showInfo()
+{
+    QQmlContext *ctxt = view->rootContext();
+    ctxt->setContextProperty("showInfo", showInfoAction->isChecked());
 }
 
 void GridComicsView::setCurrentIndex(const QModelIndex &index)
