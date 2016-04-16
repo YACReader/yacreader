@@ -392,6 +392,61 @@ Rectangle {
                 font.bold: true
 
                 text: "Publisher"
+
+                visible: publisher.visible || format.visible || color.visible || age_rating.visible
+            }
+
+            Flow {
+                Layout.fillWidth: true
+                spacing: 20
+
+                Text {
+                    id: publisher
+
+                    color: "white"
+                    font.family: "Arial"
+                    font.pixelSize: 15
+
+                    text: comicInfo.publisher
+
+                    visible: comicInfo.publisher
+                }
+
+                Text {
+                    id: format
+
+                    color: "white"
+                    font.family: "Arial"
+                    font.pixelSize: 15
+
+                    text: comicInfo.format
+
+                    visible: comicInfo.format
+                }
+
+                Text {
+                    id: color
+
+                    color: "white"
+                    font.family: "Arial"
+                    font.pixelSize: 15
+
+                    text: comicInfo.color ? "color" : "b/w"
+
+                    visible: comicInfo.color
+                }
+
+                Text {
+                    id: age_rating
+
+                    color: "white"
+                    font.family: "Arial"
+                    font.pixelSize: 15
+
+                    text: comicInfo.ageRating
+
+                    visible: comicInfo.ageRating
+                }
             }
 
             Text {
