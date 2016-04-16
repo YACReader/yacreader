@@ -39,14 +39,6 @@ Rectangle {
     height: parent.height
     anchors.margins: 0
 
-    function selectAll(from,to)
-    {
-        for(var i = from;i<=to;i++)
-        {
-            comicsSelectionHelper.selectIndex(i);
-        }
-    }
-
     Component {
         id: appDelegate
         Rectangle
@@ -158,6 +150,14 @@ Rectangle {
                         comicsSelectionHelper.selectIndex(index);
                         grid.currentIndex = index;
                         comicsSelectionHelper.selectedItem(index);
+                    }
+
+                    function selectAll(from,to)
+                    {
+                        for(var i = from;i<=to;i++)
+                        {
+                            comicsSelectionHelper.selectIndex(i);
+                        }
                     }
 
                     onPressed: {
