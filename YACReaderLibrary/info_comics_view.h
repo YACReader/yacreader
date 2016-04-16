@@ -28,17 +28,13 @@ public:
     void selectIndex(int index);
 
 public slots:
-    void updateInfoForIndex(int index);
     void setShowMarks(bool show);
     void selectAll();
 
 protected:
     QToolBar * toolbar;
-    QQuickView *view;
-    QWidget *container;
     QObject *flow;
     QObject *list;
-    ComicDB *comicDB;
 };
 
 #endif // INFOCOMICSVIEW_H

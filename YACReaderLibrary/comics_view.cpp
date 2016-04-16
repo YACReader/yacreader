@@ -1,11 +1,14 @@
 #include "comics_view.h"
 #include "comic.h"
 #include "comic_files_manager.h"
+#include "comic_db.h"
 
 #include "QsLog.h"
 
+#include <QtQuick>
+
 ComicsView::ComicsView(QWidget *parent) :
-    QWidget(parent),model(NULL)
+    QWidget(parent),model(NULL),comicDB(nullptr)
 {
     setAcceptDrops(true);
 }
@@ -13,6 +16,18 @@ ComicsView::ComicsView(QWidget *parent) :
 void ComicsView::setModel(ComicModel *m)
 {
     model = m;
+}
+
+void ComicsView::updateInfoForIndex(int index)
+{
+    QQmlContext *ctxt = view->rootContext();
+
+    if(comicDB != nullptr) delete comicDB;
+
+    comicDB = new ComicDB(model->getComic(this->model->index(index, 0)));
+    ComicInfo *comicInfo = &(comicDB->info);
+    ctxt->setContextProperty("comic", comicDB);
+    ctxt->setContextProperty("comicInfo", comicInfo);
 }
 
 void ComicsView::dragEnterEvent(QDragEnterEvent *event)

@@ -10,6 +10,8 @@ class QSplitter;
 class ComicFlowWidget;
 class QToolBar;
 class ComicModel;
+class QQuickView;
+
 class ComicsView : public QWidget
 {
     Q_OBJECT
@@ -28,6 +30,7 @@ public:
     virtual void selectIndex(int index) = 0;
 
 public slots:
+    virtual void updateInfoForIndex(int index);
     virtual void setShowMarks(bool show) = 0;
     virtual void selectAll() = 0;
 
@@ -49,6 +52,11 @@ protected:
     //Drop to import
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
+
+    QQuickView *view;
+    QWidget *container;
+
+    ComicDB *comicDB;
 
 private:
 
