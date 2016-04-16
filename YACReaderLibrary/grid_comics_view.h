@@ -31,41 +31,36 @@ public:
     QSize sizeHint();
     QByteArray getMimeDataFromSelection();
 
-
-signals:
-    void comicRated(int,QModelIndex);
-
 public slots:
-    //selection helper
+    //ComicsView
+    void setShowMarks(bool show);
+    void selectAll();
+
+    void updateBackgroundConfig();
+
+protected slots:
+    //QML - selection helper
     void selectIndex(int index);
     void setCurrentIndex(int index);
     void deselectIndex(int index);
     bool isSelectedIndex(int index);
     void clear();
-    //double clicked item
+    //QML - double clicked item
     void selectedItem(int index);
     int numItemsSelected();
     int lastSelectedIndex();
-
-    //ComicsView
-    void setShowMarks(bool show);
-    void selectAll();
-
-    //rating
+    //QML - rating
     void rate(int index, int rating);
-
-    //dragManager
+    //QML - dragManager
     void startDrag();
-    //dropManager
+    //QML - dropManager
     bool canDropUrls(const QList<QUrl> & urls, Qt::DropAction action);
     bool canDropFormats(const QString &formats);
     void droppedFiles(const QList<QUrl> & urls, Qt::DropAction action);
     void droppedComicsForResortingAt(const QString & data, int index);
-
-    void updateBackgroundConfig();
-
-protected slots:
+    //QML - context menu
     void requestedContextMenu(const QPoint & point);
+
     void setCoversSize(int width);
 
 private:
