@@ -443,7 +443,7 @@ void GridComicsView::clear()
 
 void GridComicsView::selectedItem(int index)
 {
-    emit doubleClicked(model->index(index,0));
+    emit selected(index);
 }
 
 int GridComicsView::numItemsSelected()

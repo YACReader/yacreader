@@ -117,7 +117,6 @@ void YACReaderComicsViewsManager::disconnectComicsViewConnections(ComicsView * w
     disconnect(widget, SIGNAL(comicRated(int,QModelIndex)), libraryWindow->comicsModel, SLOT(updateRating(int,QModelIndex)));
     disconnect(libraryWindow->showHideMarksAction,SIGNAL(toggled(bool)),widget,SLOT(setShowMarks(bool)));
     disconnect(widget,SIGNAL(selected(unsigned int)),libraryWindow,SLOT(openComic()));
-    disconnect(widget,SIGNAL(doubleClicked(QModelIndex)),libraryWindow,SLOT(openComic()));
     disconnect(libraryWindow->selectAllComicsAction,SIGNAL(triggered()),widget,SLOT(selectAll()));
     disconnect(comicsView, SIGNAL(copyComicsToCurrentFolder(QList<QPair<QString, QString> >)), libraryWindow, SLOT(copyAndImportComicsToCurrentFolder(QList<QPair<QString, QString> >)));
     disconnect(comicsView, SIGNAL(moveComicsToCurrentFolder(QList<QPair<QString, QString> >)), libraryWindow, SLOT(moveAndImportComicsToCurrentFolder(QList<QPair<QString, QString> >)));
@@ -130,7 +129,6 @@ void YACReaderComicsViewsManager::doComicsViewConnections()
     connect(comicsView, SIGNAL(comicRated(int,QModelIndex)), libraryWindow->comicsModel, SLOT(updateRating(int,QModelIndex)));
     connect(libraryWindow->showHideMarksAction,SIGNAL(toggled(bool)),comicsView,SLOT(setShowMarks(bool)));
     connect(comicsView,SIGNAL(selected(unsigned int)),libraryWindow,SLOT(openComic()));
-    connect(comicsView,SIGNAL(doubleClicked(QModelIndex)),libraryWindow,SLOT(openComic()));
     connect(libraryWindow->selectAllComicsAction,SIGNAL(triggered()),comicsView,SLOT(selectAll()));
 
     connect(comicsView,SIGNAL(customContextMenuViewRequested(QPoint)),libraryWindow,SLOT(showComicsViewContextMenu(QPoint)));
