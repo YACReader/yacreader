@@ -588,7 +588,7 @@ Rectangle {
 
     color: "#2e2e2e"
 
-    visible: false
+    visible: showInfo
 
     ScrollView {
         anchors.fill: parent
