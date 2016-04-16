@@ -34,7 +34,6 @@ public:
 
 signals:
     void comicRated(int,QModelIndex);
-    void doubleClicked(QModelIndex);
 
 public slots:
     //selection helper
