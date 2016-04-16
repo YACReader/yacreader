@@ -75,8 +75,6 @@ private:
     QAction * coverSizeSliderAction;
     QAction * showInfoAction;
     QItemSelectionModel * _selectionModel;
-    QQuickView *view;
-    QWidget *container;
     bool dummy;
     void closeEvent ( QCloseEvent * event );
     void createCoverSizeSliderWidget();
