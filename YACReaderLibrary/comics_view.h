@@ -27,6 +27,10 @@ public:
     virtual void enableFilterMode(bool enabled) = 0;
     virtual void selectIndex(int index) = 0;
 
+public slots:
+    virtual void setShowMarks(bool show) = 0;
+    virtual void selectAll() = 0;
+
 signals:
     void selected(unsigned int);
     void comicRated(int,QModelIndex);
@@ -39,9 +43,6 @@ signals:
     void copyComicsToCurrentFolder(QList<QPair<QString, QString> >);
     void moveComicsToCurrentFolder(QList<QPair<QString, QString> >);
 
-public slots:
-    virtual void setShowMarks(bool show) = 0;
-    virtual void selectAll() = 0;
 protected:
     ComicModel * model;
 
