@@ -496,6 +496,7 @@ void GridComicsView::setShowMarks(bool show)
 void GridComicsView::closeEvent(QCloseEvent *event)
 {
     toolbar->removeAction(toolBarStretchAction);
+    toolbar->removeAction(showInfoAction);
     toolbar->removeAction(coverSizeSliderAction);
 
     /*QObject *object = view->rootObject();
