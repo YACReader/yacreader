@@ -105,6 +105,7 @@ Rectangle {
                 InfoRating {
                     Layout.alignment: Qt.AlignTop
                     Layout.rightMargin: 30
+                    rating: comicInfo.rating
                 }
 
                 visible: mainContainer.compact
@@ -146,6 +147,7 @@ Rectangle {
                     InfoRating {
                         Layout.alignment: Qt.AlignTop
                         Layout.rightMargin: 30
+                        rating: comicInfo.rating
                     }
                 }
             }
