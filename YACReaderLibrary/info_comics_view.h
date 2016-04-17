@@ -31,10 +31,15 @@ public slots:
     void setShowMarks(bool show);
     void selectAll();
 
+protected slots:
+    void setCurrentIndex(int index);
+
 protected:
     QToolBar * toolbar;
     QObject *flow;
     QObject *list;
+
+    QItemSelectionModel * _selectionModel;
 };
 
 #endif // INFOCOMICSVIEW_H
