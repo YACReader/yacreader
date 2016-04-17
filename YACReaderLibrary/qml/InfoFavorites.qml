@@ -5,6 +5,18 @@ import QtGraphicalEffects 1.0
 Item {
     width: 20
     height: 20
+
+    property bool active
+
+    signal activeChangedByUser(bool read)
+
+    MouseArea {
+        anchors.fill: favorites_button_compact
+        onClicked: {
+            activeChangedByUser(!active);
+        }
+    }
+
     Image {
         anchors.centerIn: parent
         id: favorites_button_compact
@@ -14,7 +26,7 @@ Item {
     ColorOverlay {
         anchors.fill: favorites_button_compact
         source: favorites_button_compact
-        color: "#e84852"
+        color: active ? "#e84852" : "#1c1c1c"
     }
 }
 
