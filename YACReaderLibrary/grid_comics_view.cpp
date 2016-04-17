@@ -28,7 +28,7 @@ const unsigned int YACREADER_MIN_ITEM_WIDTH = YACREADER_MIN_COVER_WIDTH;
 
 
 GridComicsView::GridComicsView(QWidget *parent) :
-    ComicsView(parent),_selectionModel(NULL)
+    ComicsView(parent),_selectionModel(nullptr)
 {
     settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini", QSettings::IniFormat, this);
     settings->beginGroup("libraryConfig");
@@ -170,7 +170,7 @@ void GridComicsView::setModel(ComicModel *model)
 
     QQmlContext *ctxt = view->rootContext();
 
-    if(_selectionModel != NULL)
+    if(_selectionModel != nullptr)
         delete _selectionModel;
 
     _selectionModel = new QItemSelectionModel(model);
@@ -419,7 +419,7 @@ void GridComicsView::droppedComicsForResortingAt(const QString &data, int index)
 //helper
 void GridComicsView::selectIndex(int index)
 {
-    if(_selectionModel != NULL && model!=NULL)
+    if(_selectionModel != nullptr && model!=NULL)
     {
         _selectionModel->select(model->index(index,0),QItemSelectionModel::Select | QItemSelectionModel::Rows);
         view->rootContext()->setContextProperty("dummyValue", true);
@@ -433,7 +433,7 @@ void GridComicsView::setCurrentIndex(int index)
 
 void GridComicsView::deselectIndex(int index)
 {
-    if(_selectionModel != NULL && model!=NULL)
+    if(_selectionModel != nullptr && model!=NULL)
     {
         _selectionModel->select(model->index(index,0),QItemSelectionModel::Deselect | QItemSelectionModel::Rows);
         view->rootContext()->setContextProperty("dummyValue", true);
@@ -442,7 +442,7 @@ void GridComicsView::deselectIndex(int index)
 
 bool GridComicsView::isSelectedIndex(int index)
 {
-    if(_selectionModel != NULL && model!=NULL)
+    if(_selectionModel != nullptr && model!=NULL)
     {
         QModelIndex mi = model->index(index,0);
         return _selectionModel->isSelected(mi);
@@ -452,7 +452,7 @@ bool GridComicsView::isSelectedIndex(int index)
 
 void GridComicsView::clear()
 {
-    if(_selectionModel != NULL)
+    if(_selectionModel != nullptr)
     {
         _selectionModel->clear();
 
@@ -469,7 +469,7 @@ void GridComicsView::selectedItem(int index)
 
 int GridComicsView::numItemsSelected()
 {
-    if(_selectionModel != NULL)
+    if(_selectionModel != nullptr)
     {
         return _selectionModel->selectedRows().length();
     }
@@ -479,7 +479,7 @@ int GridComicsView::numItemsSelected()
 
 int GridComicsView::lastSelectedIndex()
 {
-    if(_selectionModel != NULL)
+    if(_selectionModel != nullptr)
     {
         return _selectionModel->selectedRows().last().row();
     }
