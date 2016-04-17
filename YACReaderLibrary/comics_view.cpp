@@ -28,6 +28,8 @@ void ComicsView::updateInfoForIndex(int index)
     ComicInfo *comicInfo = &(comicDB->info);
     ctxt->setContextProperty("comic", comicDB);
     ctxt->setContextProperty("comicInfo", comicInfo);
+
+    ctxt->setContextProperty("is_favorite", model->isFavorite(model->index(index,0)));
 }
 
 void ComicsView::dragEnterEvent(QDragEnterEvent *event)
