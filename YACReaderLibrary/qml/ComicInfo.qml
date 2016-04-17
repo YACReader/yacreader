@@ -98,6 +98,8 @@ Rectangle {
                     Layout.topMargin: 1
                     Layout.rightMargin: 17
                     Layout.alignment: Qt.AlignTop
+
+                    active: is_favorite
                 }
 
                 InfoRating {
@@ -137,6 +139,8 @@ Rectangle {
                         Layout.topMargin: 1
                         Layout.rightMargin: 17
                         Layout.alignment: Qt.AlignTop
+
+                        active: is_favorite
                     }
 
                     InfoRating {
