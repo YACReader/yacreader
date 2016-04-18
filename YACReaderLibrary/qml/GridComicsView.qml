@@ -188,7 +188,7 @@ Rectangle {
                         {
                             if(!comicsSelectionHelper.isSelectedIndex(index)) //the context menu is requested outside the current selection, the selection will be
                             {
-                                comicsSelectionHelper.setCurrentIndex(index)
+                                currentIndexHelper.setCurrentIndex(index)
                                 grid.currentIndex = index;
                             }
 
@@ -225,7 +225,7 @@ Rectangle {
                                 }
                                 else
                                 {
-                                    comicsSelectionHelper.setCurrentIndex(index)
+                                    currentIndexHelper.setCurrentIndex(index)
                                 }
 
                                 grid.currentIndex = index;
@@ -239,7 +239,7 @@ Rectangle {
                         {
                             if(comicsSelectionHelper.isSelectedIndex(index))
                             {
-                                comicsSelectionHelper.setCurrentIndex(index)
+                                currentIndexHelper.setCurrentIndex(index)
                                 grid.currentIndex = index;
                             }
                         }
@@ -547,7 +547,7 @@ Rectangle {
             //var ci = grid.currentIndex;
             grid.currentIndex = -1
             comicsSelectionHelper.clear();
-            comicsSelectionHelper.setCurrentIndex(ci);
+            currentIndexHelper.setCurrentIndex(ci);
             grid.currentIndex = ci;
         }
         //}
