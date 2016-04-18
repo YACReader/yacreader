@@ -590,6 +590,7 @@ Rectangle {
     visible: showInfo
 
     ScrollView {
+        __wheelAreaScrollSpeed: 75
         anchors.fill: parent
         anchors.margins: 0
 
