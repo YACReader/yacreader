@@ -81,8 +81,9 @@ void InfoComicsView::setModel(ComicModel *model)
         ctxt->setContextProperty("backgroundImage", QUrl());
 
     ctxt->setContextProperty("comicsSelection", selectionHelper->selectionModel());
-    /*ctxt->setContextProperty("contextMenuHelper",this);
-    ctxt->setContextProperty("comicsSelectionHelper", this);
+    ctxt->setContextProperty("contextMenuHelper",this);
+    ctxt->setContextProperty("currentIndexHelper", this);
+    /*ctxt->setContextProperty("comicsSelectionHelper", this);
     ctxt->setContextProperty("comicRatingHelper", this);
     ctxt->setContextProperty("dummyValue", true);
     ctxt->setContextProperty("dragManager", this);*/
@@ -187,4 +188,14 @@ void InfoComicsView::droppedFiles(const QList<QUrl> &urls, Qt::DropAction action
         QList<QPair<QString, QString> > droppedFiles = ComicFilesManager::getDroppedFiles(urls);
         emit copyComicsToCurrentFolder(droppedFiles);
     }
+}
+
+void InfoComicsView::requestedContextMenu(const QPoint &point)
+{
+    emit customContextMenuViewRequested(point);
+}
+
+void InfoComicsView::selectedItem(int index)
+{
+    emit selected(index);
 }
