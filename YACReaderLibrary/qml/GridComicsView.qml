@@ -415,33 +415,23 @@ Rectangle {
             }
         }
 
-        //QTBUG-39453
-        //Another fu%$·#& bug in Qt
-        //https://bugreports.qt.io/browse/QTBUG-39453
-        //To solve this I am going to accept any input drag, drops will be filtered in "onDropped"
         DropArea {
             anchors.fill: parent
 
-            /*
             onEntered: {
-                console.log("onEntered");
                 if(drag.hasUrls)
                 {
-                    console.log("HAS URLS -> ", drag.urls);
                     if(dropManager.canDropUrls(drag.urls, drag.action))
                     {
                         drag.accepted = true;
-                        console.log("canDropUrls");
                     }else
                         drag.accepted = false;
                 }
                 else if (dropManager.canDropFormats(drag.formats)) {
                     drag.accepted = true;
-                    console.log("canDropFormats");
                 } else
                     drag.accepted = false;
-            }*/
-
+            }
 
             onDropped: {
                 if(drop.hasUrls && dropManager.canDropUrls(drop.urls, drop.action))
