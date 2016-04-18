@@ -5,6 +5,8 @@
 
 #include <QModelIndex>
 
+
+
 class QAbstractListModel;
 class QItemSelectionModel;
 class QQuickView;
@@ -12,6 +14,9 @@ class QQuickView;
 
 class YACReaderToolBarStretch;
 class YACReaderComicsSelectionHelper;
+class YACReaderComicInfoHelper;
+
+
 
 class GridComicsView : public ComicsView
 {
@@ -74,6 +79,7 @@ private:
     QAction * showInfoAction;
 
     YACReaderComicsSelectionHelper * selectionHelper;
+    YACReaderComicInfoHelper * comicInfoHelper;
 
     bool dummy;
     void closeEvent ( QCloseEvent * event );

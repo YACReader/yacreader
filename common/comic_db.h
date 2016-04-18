@@ -186,14 +186,20 @@ public:
 
     Q_PROPERTY(QImage cover MEMBER cover CONSTANT)
 
+    //-new properties, not loaded from the DB automatically
+    bool isFavorite;
+    Q_PROPERTY(bool isFavorite MEMBER isFavorite WRITE setFavorite NOTIFY favoriteChanged)
+
     //setters, used in QML only by now
     void setRead(bool r);
     void setRating(int r);
+    void setFavorite(bool f);
 private:
 
 signals:
     void readChanged();
     void ratingChanged();
+    void favoriteChanged();
 
 };
 

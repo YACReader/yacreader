@@ -8,7 +8,7 @@ Item {
 
     property bool active
 
-    signal activeChangedByUser(bool read)
+    signal activeChangedByUser(bool active)
 
     MouseArea {
         anchors.fill: favorites_button_compact

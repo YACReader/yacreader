@@ -6,6 +6,7 @@
 #include "comic_files_manager.h"
 #include "comic_model.h"
 #include "comic_db.h"
+#include "yacreader_comic_info_helper.h"
 #include "yacreader_comics_selection_helper.h"
 
 #include "QsLog.h"
@@ -33,6 +34,7 @@ InfoComicsView::InfoComicsView(QWidget *parent)
     connect(flow, SIGNAL(currentCoverChanged(int)), this, SLOT(setCurrentIndex(int)));
 
     selectionHelper = new YACReaderComicsSelectionHelper(this);
+    comicInfoHelper = new YACReaderComicInfoHelper(this);
 
     QVBoxLayout * l = new QVBoxLayout;
     l->addWidget(container);
@@ -64,6 +66,7 @@ void InfoComicsView::setModel(ComicModel *model)
         return;
 
     selectionHelper->setModel(model);
+    comicInfoHelper->setModel(model);
 
     ComicsView::setModel(model);
 
@@ -83,9 +86,8 @@ void InfoComicsView::setModel(ComicModel *model)
     ctxt->setContextProperty("comicsSelection", selectionHelper->selectionModel());
     ctxt->setContextProperty("contextMenuHelper",this);
     ctxt->setContextProperty("currentIndexHelper", this);
+    ctxt->setContextProperty("comicInfoHelper", comicInfoHelper);
     /*ctxt->setContextProperty("comicsSelectionHelper", this);
-    ctxt->setContextProperty("comicRatingHelper", this);
-    ctxt->setContextProperty("dummyValue", true);
     ctxt->setContextProperty("dragManager", this);*/
     ctxt->setContextProperty("dropManager", this);
 
