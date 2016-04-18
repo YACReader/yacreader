@@ -4,11 +4,12 @@
 
 #include "comic_model.h"
 #include "comic_db.h"
+#include "yacreader_comics_selection_helper.h"
 
 #include "QsLog.h"
 
 InfoComicsView::InfoComicsView(QWidget *parent)
-    :ComicsView(parent),_selectionModel(nullptr)
+    :ComicsView(parent)
 {
     qmlRegisterType<ComicModel>("com.yacreader.ComicModel",1,0,"ComicModel");
     qmlRegisterType<ComicDB>("com.yacreader.ComicDB",1,0,"ComicDB");
@@ -28,6 +29,8 @@ InfoComicsView::InfoComicsView(QWidget *parent)
 
     connect(flow, SIGNAL(currentCoverChanged(int)), this, SLOT(updateInfoForIndex(int)));
     connect(flow, SIGNAL(currentCoverChanged(int)), this, SLOT(setCurrentIndex(int)));
+
+    selectionHelper = new YACReaderComicsSelectionHelper(this);
 
     QVBoxLayout * l = new QVBoxLayout;
     l->addWidget(container);
@@ -58,10 +61,7 @@ void InfoComicsView::setModel(ComicModel *model)
     if(model == NULL)
         return;
 
-    if(_selectionModel != nullptr)
-        delete _selectionModel;
-
-    _selectionModel = new QItemSelectionModel(model);
+    selectionHelper->setModel(model);
 
     ComicsView::setModel(model);
 
@@ -78,7 +78,7 @@ void InfoComicsView::setModel(ComicModel *model)
     else
         ctxt->setContextProperty("backgroundImage", QUrl());
 
-    ctxt->setContextProperty("comicsSelection", _selectionModel);
+    ctxt->setContextProperty("comicsSelection", selectionHelper->selectionModel());
     /*ctxt->setContextProperty("contextMenuHelper",this);
     ctxt->setContextProperty("comicsSelectionHelper", this);
     ctxt->setContextProperty("comicRatingHelper", this);
@@ -99,40 +99,24 @@ void InfoComicsView::setCurrentIndex(const QModelIndex &index)
 {
     QQmlProperty(list, "currentIndex").write(index.row());
 
-    _selectionModel->clear();
-    _selectionModel->select(index, QItemSelectionModel::Select | QItemSelectionModel::Rows);
+    selectionHelper->clear();
+    selectionHelper->selectIndex(index.row());
 }
 
 void InfoComicsView::setCurrentIndex(int index)
 {
-    _selectionModel->clear();
-    _selectionModel->select(model->index(index,0), QItemSelectionModel::Select | QItemSelectionModel::Rows);
+    selectionHelper->clear();
+    selectionHelper->selectIndex(index);
 }
 
 QModelIndex InfoComicsView::currentIndex()
 {
-    if(!_selectionModel)
-        return QModelIndex();
-
-    QModelIndexList indexes = _selectionModel->selectedRows();
-    if(indexes.length()>0)
-        return indexes[0];
-
-    this->selectIndex(0);
-    indexes = _selectionModel->selectedRows();
-    if(indexes.length()>0)
-        return indexes[0];
-    else
-        return QModelIndex();
+    return selectionHelper->currentIndex();
 }
 
 QItemSelectionModel *InfoComicsView::selectionModel()
 {
-    QModelIndexList indexes = _selectionModel->selectedRows();
-     if(indexes.length()==0)
-         this->selectIndex(0);
-
-    return _selectionModel;
+    return selectionHelper->selectionModel();
 }
 
 void InfoComicsView::scrollTo(const QModelIndex &mi, QAbstractItemView::ScrollHint hint)
@@ -163,10 +147,7 @@ void InfoComicsView::enableFilterMode(bool enabled)
 
 void InfoComicsView::selectIndex(int index)
 {
-    if(_selectionModel != nullptr && model!=NULL)
-    {
-        _selectionModel->select(model->index(index,0),QItemSelectionModel::Select | QItemSelectionModel::Rows);
-    }
+    selectionHelper->selectIndex(index);
 }
 
 void InfoComicsView::setShowMarks(bool show)
@@ -177,8 +158,5 @@ void InfoComicsView::setShowMarks(bool show)
 
 void InfoComicsView::selectAll()
 {
-    QModelIndex top = model->index(0, 0);
-    QModelIndex bottom = model->index(model->rowCount()-1, 0);
-    QItemSelection selection(top, bottom);
-    _selectionModel->select(selection, QItemSelectionModel::Select | QItemSelectionModel::Rows);
+    selectionHelper->selectAll();
 }
