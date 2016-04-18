@@ -1,13 +1,21 @@
 import QtQuick 2.3
 
-import QtQuick.Controls 1.2
+import QtQuick.Controls 1.4
+import QtQuick.Layouts 1.2
+
 import QtGraphicalEffects 1.0
 import QtQuick.Controls.Styles 1.4
 
 import com.yacreader.ComicModel 1.0
 
-Rectangle {
+SplitView {
     anchors.fill: parent
+    orientation: Qt.Horizontal
+    handleDelegate:Rectangle {
+        width: 1
+        height: 1
+        color: "#202020"
+    }
 
 Rectangle {
     id: main
@@ -36,6 +44,7 @@ Rectangle {
 
     color: backgroundColor
     width: parent.width - (info_container.visible ? info_container.width : 0)
+    Layout.fillWidth: true
     height: parent.height
     anchors.margins: 0
 
@@ -581,9 +590,9 @@ Rectangle {
 }
 Rectangle {
     id: info_container
-    width: 350
-    y: 0
-    x: main.width
+    Layout.preferredWidth: 350
+    Layout.minimumWidth: 350
+    Layout.maximumWidth: 960
     height: parent.height
 
     color: "#2e2e2e"
@@ -620,7 +629,6 @@ Rectangle {
 
         ComicInfo {
             width: info_container.width
-            height: 2048
         }
     }
 }
