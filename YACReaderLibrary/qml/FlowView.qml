@@ -6,6 +6,8 @@ import QtGraphicalEffects 1.0
 import com.yacreader.ComicModel 1.0
 
 Rectangle {
+    id: main
+
     property url backgroundImageURL;
 
     property real backgroundBlurRadius : 100; //85;
@@ -163,8 +165,23 @@ Rectangle {
                     anchors.fill: parent
                     acceptedButtons: Qt.LeftButton | Qt.RightButton
 
-                    onClicked: {
+                    hoverEnabled: true
+
+                    onDoubleClicked: {
                         list.currentIndex = index;
+                        currentIndexHelper.selectedItem(index);
+                    }
+
+                    onReleased: {
+                        list.currentIndex = index;
+
+                        if(mouse.button === Qt.RightButton) // context menu is requested
+                        {
+                            var coordinates = main.mapFromItem(coverElement,mouseX,mouseY)
+                            contextMenuHelper.requestedContextMenu(Qt.point(coordinates.x,coordinates.y));
+                        }
+
+                        mouse.accepted = true;
                     }
                 }
             }

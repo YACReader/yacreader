@@ -39,6 +39,10 @@ protected slots:
     bool canDropUrls(const QList<QUrl> & urls, Qt::DropAction action);
     void droppedFiles(const QList<QUrl> & urls, Qt::DropAction action);
 
+    void requestedContextMenu(const QPoint & point);
+
+    void selectedItem(int index);
+
 protected:
     QToolBar * toolbar;
     QObject *flow;
