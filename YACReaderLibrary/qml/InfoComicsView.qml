@@ -62,6 +62,7 @@ Rectangle {
         color: "#2e2e2e"
 
         ScrollView {
+            __wheelAreaScrollSpeed: 75
             anchors.fill: parent
             anchors.margins: 0
 
