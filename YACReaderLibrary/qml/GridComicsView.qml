@@ -158,7 +158,7 @@ Rectangle {
 
                         comicsSelectionHelper.selectIndex(index);
                         grid.currentIndex = index;
-                        comicsSelectionHelper.selectedItem(index);
+                        currentIndexHelper.selectedItem(index);
                     }
 
                     function selectAll(from,to)
