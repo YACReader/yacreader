@@ -45,6 +45,7 @@ Rectangle {
     color: backgroundColor
     width: parent.width - (info_container.visible ? info_container.width : 0)
     Layout.fillWidth: true
+    Layout.minimumWidth: coverWidth + 100
     height: parent.height
     anchors.margins: 0
 
