@@ -11,6 +11,7 @@ class QQuickView;
 class QQuickView;
 
 class YACReaderToolBarStretch;
+class YACReaderComicsSelectionHelper;
 
 class GridComicsView : public ComicsView
 {
@@ -35,22 +36,17 @@ public slots:
     //ComicsView
     void setShowMarks(bool show);
     void selectAll();
+    void selectIndex(int index);
 
     void updateBackgroundConfig();
 
     void showInfo();
 
 protected slots:
-    //QML - selection helper
-    void selectIndex(int index);
     void setCurrentIndex(int index);
-    void deselectIndex(int index);
-    bool isSelectedIndex(int index);
-    void clear();
     //QML - double clicked item
     void selectedItem(int index);
-    int numItemsSelected();
-    int lastSelectedIndex();
+
     //QML - rating
     void rate(int index, int rating);
     //QML - dragManager
@@ -65,6 +61,8 @@ protected slots:
 
     void setCoversSize(int width);
 
+    void dummyUpdater(); //TODO remove this
+
 private:
     QSettings * settings;
     QToolBar * toolbar;
@@ -74,7 +72,9 @@ private:
     QSlider * coverSizeSlider;
     QAction * coverSizeSliderAction;
     QAction * showInfoAction;
-    QItemSelectionModel * _selectionModel;
+
+    YACReaderComicsSelectionHelper * selectionHelper;
+
     bool dummy;
     void closeEvent ( QCloseEvent * event );
     void createCoverSizeSliderWidget();

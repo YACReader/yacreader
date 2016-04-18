@@ -9,6 +9,7 @@
 #include "yacreader_global.h"
 #include "yacreader_tool_bar_stretch.h"
 #include "comic_db.h"
+#include "yacreader_comics_selection_helper.h"
 
 //values relative to visible cells
 const unsigned int YACREADER_MIN_GRID_ZOOM_WIDTH = 156;
@@ -28,7 +29,7 @@ const unsigned int YACREADER_MIN_ITEM_WIDTH = YACREADER_MIN_COVER_WIDTH;
 
 
 GridComicsView::GridComicsView(QWidget *parent) :
-    ComicsView(parent),_selectionModel(nullptr)
+    ComicsView(parent)
 {
     settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini", QSettings::IniFormat, this);
     settings->beginGroup("libraryConfig");
@@ -42,6 +43,9 @@ GridComicsView::GridComicsView(QWidget *parent) :
 
     container->setMinimumSize(200, 200);
     container->setFocusPolicy(Qt::TabFocus);
+
+    selectionHelper = new YACReaderComicsSelectionHelper(this);
+    connect(selectionHelper, &YACReaderComicsSelectionHelper::selectionChanged, this, &GridComicsView::dummyUpdater);
 
     QQmlContext *ctxt = view->rootContext();
 
@@ -82,11 +86,12 @@ GridComicsView::GridComicsView(QWidget *parent) :
     ctxt->setContextProperty("backgroundBlurVisible", false);
 
     ComicModel *model = new ComicModel();
-    QItemSelectionModel *selectionModel = new QItemSelectionModel(model);
+    selectionHelper->setModel(model);
     ctxt->setContextProperty("comicsList", model);
-    ctxt->setContextProperty("comicsSelection", selectionModel);
+    ctxt->setContextProperty("comicsSelection", selectionHelper->selectionModel());
     ctxt->setContextProperty("contextMenuHelper",this);
-    ctxt->setContextProperty("comicsSelectionHelper", this);
+    ctxt->setContextProperty("comicsSelectionHelper", selectionHelper);
+    ctxt->setContextProperty("currentIndexHelper", this);
     ctxt->setContextProperty("comicRatingHelper", this);
     ctxt->setContextProperty("dummyValue", true);
     ctxt->setContextProperty("dragManager", this);
@@ -168,17 +173,15 @@ void GridComicsView::setModel(ComicModel *model)
 
     ComicsView::setModel(model);
 
+    selectionHelper->setModel(model);
+
     QQmlContext *ctxt = view->rootContext();
 
-    if(_selectionModel != nullptr)
-        delete _selectionModel;
-
-    _selectionModel = new QItemSelectionModel(model);
-
     ctxt->setContextProperty("comicsList", model);
-    ctxt->setContextProperty("comicsSelection", _selectionModel);
+    ctxt->setContextProperty("comicsSelection", selectionHelper->selectionModel());
     ctxt->setContextProperty("contextMenuHelper",this);
-    ctxt->setContextProperty("comicsSelectionHelper", this);
+    ctxt->setContextProperty("comicsSelectionHelper", selectionHelper);
+    ctxt->setContextProperty("currentIndexHelper", this);
     ctxt->setContextProperty("comicRatingHelper", this);
     ctxt->setContextProperty("dummyValue", true);
     ctxt->setContextProperty("dragManager", this);
@@ -243,9 +246,8 @@ void GridComicsView::showInfo()
 
 void GridComicsView::setCurrentIndex(const QModelIndex &index)
 {
-    _selectionModel->clear();
-    _selectionModel->select(index, QItemSelectionModel::Select | QItemSelectionModel::Rows);
-    view->rootContext()->setContextProperty("dummyValue", true);
+    selectionHelper->clear();
+    selectionHelper->selectIndex(index.row());
 
     if(settings->value(USE_SELECTED_COMIC_COVER_AS_BACKGROUND_IMAGE_IN_GRID_VIEW, false).toBool())
         updateBackgroundConfig();
@@ -254,31 +256,19 @@ void GridComicsView::setCurrentIndex(const QModelIndex &index)
         updateInfoForIndex(index.row());
 }
 
+void GridComicsView::setCurrentIndex(int index)
+{
+    setCurrentIndex(model->index(index,0));
+}
+
 QModelIndex GridComicsView::currentIndex()
 {
-
-    if(!_selectionModel)
-        return QModelIndex();
-
-    QModelIndexList indexes = _selectionModel->selectedRows();
-    if(indexes.length()>0)
-        return indexes[0];
-
-    this->selectIndex(0);
-    indexes = _selectionModel->selectedRows();
-    if(indexes.length()>0)
-        return indexes[0];
-    else
-        return QModelIndex();
+    return selectionHelper->currentIndex();
 }
 
 QItemSelectionModel *GridComicsView::selectionModel()
 {
-    QModelIndexList indexes = _selectionModel->selectedRows();
-    if(indexes.length()==0)
-        this->selectIndex(0);
-
-    return _selectionModel;
+    return selectionHelper->selectionModel();
 }
 
 void GridComicsView::scrollTo(const QModelIndex &mi, QAbstractItemView::ScrollHint hint)
@@ -309,11 +299,12 @@ void GridComicsView::enableFilterMode(bool enabled)
 
 void GridComicsView::selectAll()
 {
-    QModelIndex top = model->index(0, 0);
-    QModelIndex bottom = model->index(model->rowCount()-1, 0);
-    QItemSelection selection(top, bottom);
-    _selectionModel->select(selection, QItemSelectionModel::Select | QItemSelectionModel::Rows);
-    view->rootContext()->setContextProperty("dummyValue", true);
+    selectionHelper->selectAll();
+}
+
+void GridComicsView::selectIndex(int index)
+{
+    selectionHelper->selectIndex(index);
 }
 
 void GridComicsView::rate(int index, int rating)
@@ -351,6 +342,12 @@ void GridComicsView::setCoversSize(int width)
     ctxt->setContextProperty("coverHeight", (width * YACREADER_MAX_COVER_HEIGHT) / YACREADER_MIN_COVER_WIDTH);
 }
 
+void GridComicsView::dummyUpdater()
+{
+    QQmlContext *ctxt = view->rootContext();
+    ctxt->setContextProperty("dummyValue", true);
+}
+
 QSize GridComicsView::sizeHint()
 {
     return QSize(1280,768);
@@ -360,7 +357,7 @@ QByteArray GridComicsView::getMimeDataFromSelection()
 {
     QByteArray data;
 
-    QMimeData * mimeData = model->mimeData(_selectionModel->selectedIndexes());
+    QMimeData * mimeData = model->mimeData(selectionHelper->selectedIndexes());
     data = mimeData->data(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat);
 
     delete mimeData;
@@ -371,7 +368,7 @@ QByteArray GridComicsView::getMimeDataFromSelection()
 void GridComicsView::startDrag()
 {
     QDrag *drag = new QDrag(this);
-    drag->setMimeData(model->mimeData(_selectionModel->selectedRows()));
+    drag->setMimeData(model->mimeData(selectionHelper->selectedRows()));
     drag->setPixmap(QPixmap(":/images/comics_view_toolbar/openInYACReader.png")); //TODO add better image
 
     /*Qt::DropAction dropAction =*/ drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
@@ -413,78 +410,12 @@ void GridComicsView::droppedComicsForResortingAt(const QString &data, int index)
 {
     Q_UNUSED(data);
 
-    model->dropMimeData(model->mimeData(_selectionModel->selectedRows()), Qt::MoveAction, index, 0, QModelIndex());
-}
-
-//helper
-void GridComicsView::selectIndex(int index)
-{
-    if(_selectionModel != nullptr && model!=NULL)
-    {
-        _selectionModel->select(model->index(index,0),QItemSelectionModel::Select | QItemSelectionModel::Rows);
-        view->rootContext()->setContextProperty("dummyValue", true);
-    }
-}
-
-void GridComicsView::setCurrentIndex(int index)
-{
-    setCurrentIndex(model->index(index,0));
-}
-
-void GridComicsView::deselectIndex(int index)
-{
-    if(_selectionModel != nullptr && model!=NULL)
-    {
-        _selectionModel->select(model->index(index,0),QItemSelectionModel::Deselect | QItemSelectionModel::Rows);
-        view->rootContext()->setContextProperty("dummyValue", true);
-    }
-}
-
-bool GridComicsView::isSelectedIndex(int index)
-{
-    if(_selectionModel != nullptr && model!=NULL)
-    {
-        QModelIndex mi = model->index(index,0);
-        return _selectionModel->isSelected(mi);
-    }
-    return false;
-}
-
-void GridComicsView::clear()
-{
-    if(_selectionModel != nullptr)
-    {
-        _selectionModel->clear();
-
-        QQmlContext *ctxt = view->rootContext();
-        ctxt->setContextProperty("dummyValue", true);
-    }
-    //model->forceClear();
+    model->dropMimeData(model->mimeData(selectionHelper->selectedRows()), Qt::MoveAction, index, 0, QModelIndex());
 }
 
 void GridComicsView::selectedItem(int index)
 {
     emit selected(index);
-}
-
-int GridComicsView::numItemsSelected()
-{
-    if(_selectionModel != nullptr)
-    {
-        return _selectionModel->selectedRows().length();
-    }
-
-    return 0;
-}
-
-int GridComicsView::lastSelectedIndex()
-{
-    if(_selectionModel != nullptr)
-    {
-        return _selectionModel->selectedRows().last().row();
-    }
-
-    return -1;
 }
 
 void GridComicsView::setShowMarks(bool show)
