@@ -147,7 +147,8 @@ HEADERS += comic_flow.h \
     ../common/scroll_management.h \
     ../common/opengl_checker.h \
     yacreader_comics_views_manager.h \
-    info_comics_view.h
+    info_comics_view.h \
+    yacreader_comics_selection_helper.h
 
 !CONFIG(no_opengl) {
     CONFIG(legacy_gl_widget) {
@@ -219,7 +220,8 @@ SOURCES += comic_flow.cpp \
     ../common/scroll_management.cpp \
     ../common/opengl_checker.cpp \
     yacreader_comics_views_manager.cpp \
-    info_comics_view.cpp
+    info_comics_view.cpp \
+    yacreader_comics_selection_helper.cpp
 
 !CONFIG(no_opengl) {
     CONFIG(legacy_gl_widget) {
