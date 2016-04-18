@@ -36,6 +36,9 @@ public slots:
 protected slots:
     void setCurrentIndex(int index);
 
+    bool canDropUrls(const QList<QUrl> & urls, Qt::DropAction action);
+    void droppedFiles(const QList<QUrl> & urls, Qt::DropAction action);
+
 protected:
     QToolBar * toolbar;
     QObject *flow;

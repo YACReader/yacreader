@@ -2,6 +2,8 @@
 
 #include <QtQuick>
 
+#include "comic.h"
+#include "comic_files_manager.h"
 #include "comic_model.h"
 #include "comic_db.h"
 #include "yacreader_comics_selection_helper.h"
@@ -83,10 +85,9 @@ void InfoComicsView::setModel(ComicModel *model)
     ctxt->setContextProperty("comicsSelectionHelper", this);
     ctxt->setContextProperty("comicRatingHelper", this);
     ctxt->setContextProperty("dummyValue", true);
-    ctxt->setContextProperty("dragManager", this);
+    ctxt->setContextProperty("dragManager", this);*/
     ctxt->setContextProperty("dropManager", this);
 
-    updateBackgroundConfig();*/
 
     if(model->rowCount()>0)
     {
@@ -159,4 +160,31 @@ void InfoComicsView::setShowMarks(bool show)
 void InfoComicsView::selectAll()
 {
     selectionHelper->selectAll();
+}
+
+bool InfoComicsView::canDropUrls(const QList<QUrl> &urls, Qt::DropAction action)
+{
+    if(action == Qt::CopyAction)
+    {
+        QString currentPath;
+        foreach (QUrl url, urls)
+        {
+            //comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
+            currentPath = url.toLocalFile();
+            if(Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir())
+                return true;
+        }
+    }
+    return false;
+}
+
+void InfoComicsView::droppedFiles(const QList<QUrl> &urls, Qt::DropAction action)
+{
+    bool validAction = action == Qt::CopyAction; //TODO add move
+
+    if(validAction)
+    {
+        QList<QPair<QString, QString> > droppedFiles = ComicFilesManager::getDroppedFiles(urls);
+        emit copyComicsToCurrentFolder(droppedFiles);
+    }
 }
