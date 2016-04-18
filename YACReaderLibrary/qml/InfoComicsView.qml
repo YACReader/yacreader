@@ -108,10 +108,6 @@ Rectangle {
                 }else
                     drag.accepted = false;
             }
-            else if (dropManager.canDropFormats(drag.formats)) {
-                drag.accepted = true;
-            } else
-                drag.accepted = false;
         }
 
         onDropped: {
