@@ -95,4 +95,30 @@ Rectangle {
             }
         }
     }
+
+    DropArea {
+        anchors.fill: parent
+
+        onEntered: {
+            if(drag.hasUrls)
+            {
+                if(dropManager.canDropUrls(drag.urls, drag.action))
+                {
+                    drag.accepted = true;
+                }else
+                    drag.accepted = false;
+            }
+            else if (dropManager.canDropFormats(drag.formats)) {
+                drag.accepted = true;
+            } else
+                drag.accepted = false;
+        }
+
+        onDropped: {
+            if(drop.hasUrls && dropManager.canDropUrls(drop.urls, drop.action))
+            {
+                dropManager.droppedFiles(drop.urls, drop.action);
+            }
+        }
+    }
 }
