@@ -55,6 +55,7 @@ Rectangle {
 
                     onReadChangedByUser: {
                         comicInfo.read = read;
+                        comicInfoHelper.setRead(comic_info_index, read);
                     }
                 }
             }
@@ -87,6 +88,7 @@ Rectangle {
 
                     onReadChangedByUser: {
                         comicInfo.read = read;
+                        comicInfoHelper.setRead(comic_info_index, read);
                     }
                 }
 
@@ -99,13 +101,27 @@ Rectangle {
                     Layout.rightMargin: 17
                     Layout.alignment: Qt.AlignTop
 
-                    active: is_favorite
+                    active: comicInfo.isFavorite
+
+                    onActiveChangedByUser: {
+                        if(active)
+                            comicInfoHelper.addToFavorites(comic_info_index);
+                        else
+                            comicInfoHelper.removeFromFavorites(comic_info_index);
+
+                        comicInfo.isFavorite = active;
+                    }
                 }
 
                 InfoRating {
                     Layout.alignment: Qt.AlignTop
                     Layout.rightMargin: 30
                     rating: comicInfo.rating
+
+                    onRatingChangedByUser: {
+                        comicInfo.rating = rating;
+                        comicInfoHelper.rate(comic_info_index, rating);
+                    }
                 }
 
                 visible: mainContainer.compact
@@ -141,13 +157,27 @@ Rectangle {
                         Layout.rightMargin: 17
                         Layout.alignment: Qt.AlignTop
 
-                        active: is_favorite
+                        active: comicInfo.isFavorite
+
+                        onActiveChangedByUser: {
+                            if(active)
+                                comicInfoHelper.addToFavorites(comic_info_index);
+                            else
+                                comicInfoHelper.removeFromFavorites(comic_info_index);
+
+                            comicInfo.isFavorite = active;
+                        }
                     }
 
                     InfoRating {
                         Layout.alignment: Qt.AlignTop
                         Layout.rightMargin: 30
                         rating: comicInfo.rating
+
+                        onRatingChangedByUser: {
+                            comicInfo.rating = rating;
+                            comicInfoHelper.rate(comic_info_index, rating);
+                        }
                     }
                 }
             }

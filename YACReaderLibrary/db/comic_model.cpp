@@ -1107,8 +1107,8 @@ void ComicModel::deleteComicsFromFavorites(const QList<QModelIndex> &comicsList)
     db.close();
     QSqlDatabase::removeDatabase(_databasePath);
 
-    deleteComicsFromModel(comicsList);
-
+    if(mode == Favorites)
+        deleteComicsFromModel(comicsList);
 }
 
 void ComicModel::deleteComicsFromLabel(const QList<QModelIndex> &comicsList, qulonglong labelId)

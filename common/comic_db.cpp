@@ -463,6 +463,15 @@ void ComicInfo::setRating(int r)
     }
 }
 
+void ComicInfo::setFavorite(bool f)
+{
+    if(f != isFavorite)
+    {
+        isFavorite = f;
+        emit favoriteChanged();
+    }
+}
+
 QDataStream &operator<<(QDataStream & stream, const ComicDB & comic)
 {
 	stream << comic.id;

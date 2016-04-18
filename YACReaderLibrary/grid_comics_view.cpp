@@ -10,6 +10,7 @@
 #include "yacreader_tool_bar_stretch.h"
 #include "comic_db.h"
 #include "yacreader_comics_selection_helper.h"
+#include "yacreader_comic_info_helper.h"
 
 //values relative to visible cells
 const unsigned int YACREADER_MIN_GRID_ZOOM_WIDTH = 156;
@@ -46,6 +47,8 @@ GridComicsView::GridComicsView(QWidget *parent) :
 
     selectionHelper = new YACReaderComicsSelectionHelper(this);
     connect(selectionHelper, &YACReaderComicsSelectionHelper::selectionChanged, this, &GridComicsView::dummyUpdater);
+
+    comicInfoHelper = new YACReaderComicInfoHelper(this);
 
     QQmlContext *ctxt = view->rootContext();
 
@@ -174,6 +177,7 @@ void GridComicsView::setModel(ComicModel *model)
     ComicsView::setModel(model);
 
     selectionHelper->setModel(model);
+    comicInfoHelper->setModel(model);
 
     QQmlContext *ctxt = view->rootContext();
 
@@ -186,6 +190,7 @@ void GridComicsView::setModel(ComicModel *model)
     ctxt->setContextProperty("dummyValue", true);
     ctxt->setContextProperty("dragManager", this);
     ctxt->setContextProperty("dropManager", this);
+    ctxt->setContextProperty("comicInfoHelper", comicInfoHelper);
 
     updateBackgroundConfig();
 

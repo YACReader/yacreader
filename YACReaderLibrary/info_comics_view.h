@@ -8,6 +8,7 @@
 class QQuickView;
 
 class YACReaderComicsSelectionHelper;
+class YACReaderComicInfoHelper;
 
 
 
@@ -49,6 +50,7 @@ protected:
     QObject *list;
 
     YACReaderComicsSelectionHelper * selectionHelper;
+    YACReaderComicInfoHelper * comicInfoHelper;
 };
 
 #endif // INFOCOMICSVIEW_H
