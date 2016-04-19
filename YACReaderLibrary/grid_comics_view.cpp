@@ -105,6 +105,11 @@ GridComicsView::GridComicsView(QWidget *parent) :
 
     view->setSource(QUrl("qrc:/qml/GridComicsView.qml"));
 
+    QObject *rootObject = dynamic_cast<QObject*>(view->rootObject());
+    QObject *infoContainer = rootObject->findChild<QObject*>("infoContainer");
+
+    QQmlProperty(infoContainer, "width").write(settings->value(COMICS_GRID_INFO_WIDTH, 350));
+
     showInfoAction = new QAction(tr("Show info"),this);
     showInfoAction->setIcon(QIcon(":/images/comics_view_toolbar/show_comic_info.png"));
     showInfoAction->setCheckable(true);
@@ -440,6 +445,11 @@ void GridComicsView::closeEvent(QCloseEvent *event)
     toolbar->removeAction(showInfoSeparatorAction);
     toolbar->removeAction(coverSizeSliderAction);
 
+    QObject *rootObject = dynamic_cast<QObject*>(view->rootObject());
+    QObject *infoContainer = rootObject->findChild<QObject*>("infoContainer");
+
+    int infoWidth = QQmlProperty(infoContainer, "width").read().toInt();
+
     /*QObject *object = view->rootObject();
     QMetaObject::invokeMethod(object, "exit");
     container->close();
@@ -451,4 +461,5 @@ void GridComicsView::closeEvent(QCloseEvent *event)
     //save settings
     settings->setValue(COMICS_GRID_COVER_SIZES, coverSizeSlider->value());
     settings->setValue(COMICS_GRID_SHOW_INFO, showInfoAction->isChecked());
+    settings->setValue(COMICS_GRID_INFO_WIDTH, infoWidth);
 }

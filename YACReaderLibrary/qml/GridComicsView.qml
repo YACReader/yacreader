@@ -581,6 +581,7 @@ Rectangle {
 }
 Rectangle {
     id: info_container
+    objectName: "infoContainer"
     Layout.preferredWidth: 350
     Layout.minimumWidth: 350
     Layout.maximumWidth: 960
