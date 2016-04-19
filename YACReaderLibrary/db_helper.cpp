@@ -1062,3 +1062,18 @@ QList<QString> DBHelper::loadSubfoldersNames(qulonglong folderId, QSqlDatabase &
     }
     return result;
 }
+
+bool DBHelper::isFavoriteComic(qulonglong id, QSqlDatabase &db)
+{
+    QSqlQuery selectQuery(db);
+    selectQuery.prepare("SELECT * FROM comic_default_reading_list cl WHERE cl.comic_id = :comic_id AND cl.default_reading_list_id = 1");
+    selectQuery.bindValue(":comic_id", id);
+    selectQuery.exec();
+
+    if(selectQuery.next())
+    {
+        return true;
+    }
+
+    return false;
+}

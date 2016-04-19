@@ -1,8 +1,21 @@
 import QtQuick 2.3
 
-import QtQuick.Controls 1.2
-import comicModel 1.0
+import QtQuick.Controls 1.4
+import QtQuick.Layouts 1.2
+
 import QtGraphicalEffects 1.0
+import QtQuick.Controls.Styles 1.4
+
+import com.yacreader.ComicModel 1.0
+
+SplitView {
+    anchors.fill: parent
+    orientation: Qt.Horizontal
+    handleDelegate:Rectangle {
+        width: 1
+        height: 1
+        color: "#202020"
+    }
 
 Rectangle {
     id: main
@@ -30,17 +43,11 @@ Rectangle {
     }
 
     color: backgroundColor
-    width: parent.width
+    width: parent.width - (info_container.visible ? info_container.width : 0)
+    Layout.fillWidth: true
+    Layout.minimumWidth: coverWidth + 100
     height: parent.height
     anchors.margins: 0
-
-    function selectAll(from,to)
-    {
-        for(var i = from;i<=to;i++)
-        {
-            comicsSelectionHelper.selectIndex(i);
-        }
-    }
 
     Component {
         id: appDelegate
@@ -121,7 +128,13 @@ Rectangle {
                     }
 
                     border.color: (Qt.platform.os === "osx") ? selectedBorderColor : "#ffcc00"
-                    border.width:  (dummyValue || !dummyValue) && (comicsSelectionHelper.isSelectedIndex(index) || mouseArea.containsMouse) ? 3 : 0
+                    border.width: 3
+
+                    opacity: (dummyValue || !dummyValue) && (comicsSelectionHelper.isSelectedIndex(index) || mouseArea.containsMouse) ? 1 : 0
+
+                    Behavior on opacity {
+                        NumberAnimation { duration: 300 }
+                    }
 
                     radius : 2
                 }
@@ -146,7 +159,15 @@ Rectangle {
 
                         comicsSelectionHelper.selectIndex(index);
                         grid.currentIndex = index;
-                        comicsSelectionHelper.selectedItem(index);
+                        currentIndexHelper.selectedItem(index);
+                    }
+
+                    function selectAll(from,to)
+                    {
+                        for(var i = from;i<=to;i++)
+                        {
+                            comicsSelectionHelper.selectIndex(i);
+                        }
                     }
 
                     onPressed: {
@@ -177,7 +198,7 @@ Rectangle {
                         {
                             if(!comicsSelectionHelper.isSelectedIndex(index)) //the context menu is requested outside the current selection, the selection will be
                             {
-                                comicsSelectionHelper.setCurrentIndex(index)
+                                currentIndexHelper.setCurrentIndex(index)
                                 grid.currentIndex = index;
                             }
 
@@ -214,7 +235,7 @@ Rectangle {
                                 }
                                 else
                                 {
-                                    comicsSelectionHelper.setCurrentIndex(index)
+                                    currentIndexHelper.setCurrentIndex(index)
                                 }
 
                                 grid.currentIndex = index;
@@ -228,7 +249,7 @@ Rectangle {
                         {
                             if(comicsSelectionHelper.isSelectedIndex(index))
                             {
-                                comicsSelectionHelper.setCurrentIndex(index)
+                                currentIndexHelper.setCurrentIndex(index)
                                 grid.currentIndex = index;
                             }
                         }
@@ -369,33 +390,49 @@ Rectangle {
         id: scrollView
         anchors.fill: parent
         anchors.margins: 0
-        //QTBUG-39453
-        //Another fu%$·#& bug in Qt
-        //https://bugreports.qt.io/browse/QTBUG-39453
-        //To solve this I am going to accept any input drag, drops will be filtered in "onDropped"
+
+        style: YACReaderScrollViewStyle {
+            transientScrollBars: false
+            incrementControl: Item {}
+            decrementControl: Item {}
+            handle: Item {
+                implicitWidth: 16
+                implicitHeight: 26
+                Rectangle {
+                    color: "#88424242"
+                    anchors.fill: parent
+                    anchors.topMargin: 6
+                    anchors.leftMargin: 4
+                    anchors.rightMargin: 4
+                    anchors.bottomMargin: 6
+                    border.color: "#AA313131"
+                    border.width: 1
+                    radius: 8
+                }
+            }
+            scrollBarBackground: Item {
+                implicitWidth: 16
+                implicitHeight: 26
+            }
+        }
+
         DropArea {
             anchors.fill: parent
 
-            /*
             onEntered: {
-                console.log("onEntered");
                 if(drag.hasUrls)
                 {
-                    console.log("HAS URLS -> ", drag.urls);
                     if(dropManager.canDropUrls(drag.urls, drag.action))
                     {
                         drag.accepted = true;
-                        console.log("canDropUrls");
                     }else
                         drag.accepted = false;
                 }
                 else if (dropManager.canDropFormats(drag.formats)) {
                     drag.accepted = true;
-                    console.log("canDropFormats");
                 } else
                     drag.accepted = false;
-            }*/
-
+            }
 
             onDropped: {
                 if(drop.hasUrls && dropManager.canDropUrls(drop.urls, drop.action))
@@ -434,7 +471,7 @@ Rectangle {
             anchors.rightMargin: 10
             pixelAligned: true
             //flickDeceleration: -2000
-            snapMode: GridView.SnapToRow
+
             currentIndex: 0
             cacheBuffer: 0
 
@@ -494,7 +531,7 @@ Rectangle {
             var numCells = grid.numCellsPerRow();
             var ci
             if (event.key === Qt.Key_Right) {
-                ci = Math.min(grid.currentIndex+1,grid.count);
+                ci = Math.min(grid.currentIndex+1,grid.count - 1);
             }
             else if (event.key === Qt.Key_Left) {
                 ci = Math.max(0,grid.currentIndex-1);
@@ -503,14 +540,14 @@ Rectangle {
                 ci = Math.max(0,grid.currentIndex-numCells);
             }
             else if (event.key === Qt.Key_Down) {
-                ci = Math.min(grid.currentIndex+numCells,grid.count);
+                ci = Math.min(grid.currentIndex+numCells,grid.count - 1);
             }
 
             event.accepted = true;
             //var ci = grid.currentIndex;
             grid.currentIndex = -1
             comicsSelectionHelper.clear();
-            comicsSelectionHelper.setCurrentIndex(ci);
+            currentIndexHelper.setCurrentIndex(ci);
             grid.currentIndex = ci;
         }
         //}
@@ -539,7 +576,55 @@ Rectangle {
         height: 64
         enabled: (dummyValue || !dummyValue)
     }*/
+
     }
+}
+Rectangle {
+    id: info_container
+    objectName: "infoContainer"
+    Layout.preferredWidth: 350
+    Layout.minimumWidth: 350
+    Layout.maximumWidth: 960
+    height: parent.height
+
+    color: "#2e2e2e"
+
+    visible: showInfo
+
+    ScrollView {
+        __wheelAreaScrollSpeed: 75
+        anchors.fill: parent
+        anchors.margins: 0
+
+        horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+
+        style: ScrollViewStyle {
+            transientScrollBars: false
+            incrementControl: Item {}
+            decrementControl: Item {}
+            handle: Item {
+                implicitWidth: 10
+                implicitHeight: 26
+                Rectangle {
+                    color: "#424246"
+                    anchors.fill: parent
+                    anchors.topMargin: 6
+                    anchors.leftMargin: 4
+                    anchors.rightMargin: 4
+                    anchors.bottomMargin: 6
+                }
+            }
+            scrollBarBackground: Item {
+                implicitWidth: 14
+                implicitHeight: 26
+            }
+        }
+
+        ComicInfo {
+            width: info_container.width
+        }
+    }
+}
 }
 
 
