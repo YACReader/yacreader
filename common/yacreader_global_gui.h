@@ -53,6 +53,8 @@
 #define COMICS_VIEW_FLOW_SPLITTER_STATUS "COMICS_VIEW_FLOW_SPLITTER_STATUS"
 #define SIDEBAR_SPLITTER_STATUS "SIDEBAR_SPLITTER_STATUS"
 #define COMICS_GRID_COVER_SIZES "COMICS_GRID_COVER_SIZES"
+#define COMICS_GRID_SHOW_INFO "COMICS_GRID_SHOW_INFO"
+#define COMICS_GRID_INFO_WIDTH "COMICS_GRID_INFO_WIDTH"
 
 #define COMIC_VINE_API_KEY "COMIC_VINE_API_KEY"
 #define COMIC_VINE_BASE_URL "COMIC_VINE_BASE_URL"
@@ -76,7 +78,8 @@ static const QString YACReaderLibrarSubReadingListMimeDataFormat = "application/
  enum ComicsViewStatus
  {
      Flow,
-     Grid
+     Grid,
+     Info
  };
 
  enum FitMode{

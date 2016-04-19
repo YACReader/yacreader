@@ -88,8 +88,6 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
         sVertical->restoreState(settings->value(COMICS_VIEW_FLOW_SPLITTER_STATUS).toByteArray());
 
     //hide flow widgets
-    toolBarStretch = new YACReaderToolBarStretch(this);
-
     hideFlowViewAction = new QAction(this);
     hideFlowViewAction->setText(tr("Hide comic flow"));
     hideFlowViewAction->setData(HIDE_COMIC_VIEW_ACTION_YL);
@@ -126,6 +124,8 @@ void ClassicComicsView::setToolBar(QToolBar *toolBar)
 {
     static_cast<QVBoxLayout *>(comics->layout())->insertWidget(0,toolBar);
     this->toolbar = toolBar;
+
+    toolBarStretch = new YACReaderToolBarStretch(this);
 
     toolBarStretchAction = toolBar->addWidget(toolBarStretch);
     toolBar->addAction(hideFlowViewAction);

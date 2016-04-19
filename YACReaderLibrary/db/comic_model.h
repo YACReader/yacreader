@@ -81,6 +81,8 @@ public:
 
     void deleteComicsFromModel(const QList<QModelIndex> &comicsList);
 
+    bool isFavorite(const QModelIndex &index);
+
     QHash<int, QByteArray> roleNames() const;
 
 	enum Columns {
