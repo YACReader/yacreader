@@ -35,7 +35,9 @@
         <file>../images/comics_view_toolbar/small_size_grid_zoom.png</file>
         <file>../images/comics_view_toolbar/small_size_grid_zoom@2x.png</file>
         <file>../images/comics_view_toolbar/trash.png</file>
-        <file>../images/comics_view_toolbar/trash.png</file>
+        <file>../images/comics_view_toolbar/trash@2x.png</file>
+        <file>../images/comics_view_toolbar/show_comic_info.png</file>
+        <file>../images/comics_view_toolbar/show_comic_info@2x.png</file>
         <file>../images/coversPackage.png</file>
         <file>../images/db.png</file>
         <file>../images/defaultCover.png</file>

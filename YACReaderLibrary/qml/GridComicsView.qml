@@ -471,7 +471,7 @@ Rectangle {
             anchors.rightMargin: 10
             pixelAligned: true
             //flickDeceleration: -2000
-            snapMode: GridView.SnapToRow
+
             currentIndex: 0
             cacheBuffer: 0
 

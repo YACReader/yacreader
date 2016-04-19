@@ -100,12 +100,15 @@ GridComicsView::GridComicsView(QWidget *parent) :
     ctxt->setContextProperty("dragManager", this);
     ctxt->setContextProperty("dropManager", this);
 
-    ctxt->setContextProperty("showInfo", false);
+    bool showInfo = settings->value(COMICS_GRID_SHOW_INFO, false).toBool();
+    ctxt->setContextProperty("showInfo", showInfo);
 
     view->setSource(QUrl("qrc:/qml/GridComicsView.qml"));
 
-    showInfoAction = new QAction("Show info",this);
+    showInfoAction = new QAction(tr("Show info"),this);
+    showInfoAction->setIcon(QIcon(":/images/comics_view_toolbar/show_comic_info.png"));
     showInfoAction->setCheckable(true);
+    showInfoAction->setChecked(showInfo);
     connect(showInfoAction, &QAction::toggled, this, &GridComicsView::showInfo);
 
     setShowMarks(true);//TODO save this in settings
@@ -166,6 +169,7 @@ void GridComicsView::setToolBar(QToolBar *toolBar)
 
     toolBarStretchAction = toolBar->addWidget(toolBarStretch);
     toolBar->addAction(showInfoAction);
+    showInfoSeparatorAction = toolBar->addSeparator();
     coverSizeSliderAction = toolBar->addWidget(coverSizeSliderWidget);
 }
 
@@ -433,6 +437,7 @@ void GridComicsView::closeEvent(QCloseEvent *event)
 {
     toolbar->removeAction(toolBarStretchAction);
     toolbar->removeAction(showInfoAction);
+    toolbar->removeAction(showInfoSeparatorAction);
     toolbar->removeAction(coverSizeSliderAction);
 
     /*QObject *object = view->rootObject();
@@ -445,4 +450,5 @@ void GridComicsView::closeEvent(QCloseEvent *event)
 
     //save settings
     settings->setValue(COMICS_GRID_COVER_SIZES, coverSizeSlider->value());
+    settings->setValue(COMICS_GRID_SHOW_INFO, showInfoAction->isChecked());
 }

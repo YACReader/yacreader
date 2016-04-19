@@ -77,6 +77,7 @@ private:
     QSlider * coverSizeSlider;
     QAction * coverSizeSliderAction;
     QAction * showInfoAction;
+    QAction * showInfoSeparatorAction;
 
     YACReaderComicsSelectionHelper * selectionHelper;
     YACReaderComicInfoHelper * comicInfoHelper;
