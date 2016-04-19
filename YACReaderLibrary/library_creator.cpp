@@ -162,6 +162,9 @@ void LibraryCreator::run()
 		_database.transaction();
 		//se crea la librería
 		create(QDir(_source));
+
+        DBHelper::updateChildrenInfo(_database);
+
 		_database.commit();
 		_database.close();
 		QSqlDatabase::removeDatabase(_database.connectionName());
@@ -199,6 +202,12 @@ void LibraryCreator::run()
 		{
 		update(QDir(_source));
 		}
+
+        if(partialUpdate)
+            DBHelper::updateChildrenInfo(folderDestinationModelIndex.data(FolderModel::IdRole).toULongLong(),_database);
+        else
+            DBHelper::updateChildrenInfo(_database);
+
 		_database.commit();
 		_database.close();
 		QSqlDatabase::removeDatabase(_target);
@@ -243,7 +252,7 @@ qulonglong LibraryCreator::insertFolders()
 		if(!(i->knownId))
 		{
 			i->setFather(currentId);
-			currentId = DBHelper::insert(&(*i),_database);//insertFolder(currentId,*i);
+            currentId = DBHelper::insert(&(*i),_database);//insertFolder(currentId,*i);
 			i->setId(currentId);
 		}
 		else

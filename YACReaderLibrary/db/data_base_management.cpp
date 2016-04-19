@@ -124,99 +124,101 @@ QSqlDatabase DataBaseManagement::loadDatabaseFromFile(QString filePath)
 
 bool DataBaseManagement::createTables(QSqlDatabase & database)
 {
-	bool success = true;
+    bool success = true;
 
-	//FOLDER (representa una carpeta en disco)
-	{
-	QSqlQuery queryFolder(database);
-    queryFolder.prepare("CREATE TABLE folder ("
-                        "id INTEGER PRIMARY KEY,"
-                        "parentId INTEGER NOT NULL,"
-                        "name TEXT NOT NULL,"
-                        "path TEXT NOT NULL,"
-                        //new 7.1 fields
-                        "finished BOOLEAN DEFAULT 0,"   //reading
-                        "completed BOOLEAN DEFAULT 1,"  //collecting
-                        //--
-                        "FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE)");
-	success = success && queryFolder.exec();
+    {
+        //COMIC INFO (representa la información de un cómic, cada cómic tendrá un idéntificador único formado por un hash sha1'de los primeros 512kb' + su tamaño en bytes)
+        QSqlQuery queryComicInfo(database);
+        queryComicInfo.prepare("CREATE TABLE comic_info ("
+                               "id INTEGER PRIMARY KEY,"
+                               "title TEXT,"
 
-    //COMIC INFO (representa la información de un cómic, cada cómic tendrá un idéntificador único formado por un hash sha1'de los primeros 512kb' + su tamaño en bytes)
-	QSqlQuery queryComicInfo(database);
-	queryComicInfo.prepare("CREATE TABLE comic_info ("
-		"id INTEGER PRIMARY KEY,"
-		"title TEXT,"
+                               "coverPage INTEGER DEFAULT 1,"
+                               "numPages INTEGER,"
 
-		"coverPage INTEGER DEFAULT 1,"
-		"numPages INTEGER,"
+                               "number INTEGER,"
+                               "isBis BOOLEAN,"
+                               "count INTEGER,"
 
-		"number INTEGER,"
-		"isBis BOOLEAN,"
-		"count INTEGER,"
+                               "volume TEXT,"
+                               "storyArc TEXT,"
+                               "arcNumber INTEGER,"
+                               "arcCount INTEGER,"
 
-		"volume TEXT,"
-		"storyArc TEXT,"
-		"arcNumber INTEGER,"
-		"arcCount INTEGER,"
+                               "genere TEXT,"
 
-		"genere TEXT,"
+                               "writer TEXT,"
+                               "penciller TEXT,"
+                               "inker TEXT,"
+                               "colorist TEXT,"
+                               "letterer TEXT,"
+                               "coverArtist TEXT,"
 
-		"writer TEXT,"
-		"penciller TEXT,"
-		"inker TEXT,"
-		"colorist TEXT,"
-		"letterer TEXT,"
-		"coverArtist TEXT,"
+                               "date TEXT," //dd/mm/yyyy --> se mostrará en 3 campos diferentes
+                               "publisher TEXT,"
+                               "format TEXT,"
+                               "color BOOLEAN,"
+                               "ageRating BOOLEAN,"
 
-		"date TEXT," //dd/mm/yyyy --> se mostrará en 3 campos diferentes
-		"publisher TEXT,"
-		"format TEXT,"
-		"color BOOLEAN,"
-		"ageRating BOOLEAN,"
+                               "synopsis TEXT,"
+                               "characters TEXT,"
+                               "notes TEXT,"
 
-		"synopsis TEXT,"
-		"characters TEXT,"
-		"notes TEXT,"
+                               "hash TEXT UNIQUE NOT NULL,"
+                               "edited BOOLEAN DEFAULT 0,"
+                               "read BOOLEAN DEFAULT 0,"
+                               //new 7.0 fields
 
-		"hash TEXT UNIQUE NOT NULL,"
-		"edited BOOLEAN DEFAULT 0,"
-		"read BOOLEAN DEFAULT 0,"
-//new 7.0 fields
-		
-		"hasBeenOpened BOOLEAN DEFAULT 0,"
-		"rating INTEGER DEFAULT 0,"
-		"currentPage INTEGER DEFAULT 1, "
-		"bookmark1 INTEGER DEFAULT -1, "
-		"bookmark2 INTEGER DEFAULT -1, "
-		"bookmark3 INTEGER DEFAULT -1, "
-		"brightness INTEGER DEFAULT -1, "
-		"contrast INTEGER DEFAULT -1, "
-        "gamma INTEGER DEFAULT -1, "
-//new 7.1 fields
-        "comicVineID TEXT"
+                               "hasBeenOpened BOOLEAN DEFAULT 0,"
+                               "rating INTEGER DEFAULT 0,"
+                               "currentPage INTEGER DEFAULT 1, "
+                               "bookmark1 INTEGER DEFAULT -1, "
+                               "bookmark2 INTEGER DEFAULT -1, "
+                               "bookmark3 INTEGER DEFAULT -1, "
+                               "brightness INTEGER DEFAULT -1, "
+                               "contrast INTEGER DEFAULT -1, "
+                               "gamma INTEGER DEFAULT -1, "
+                               //new 7.1 fields
+                               "comicVineID TEXT"
 
-                                ")");
-	success = success && queryComicInfo.exec();
-	//queryComicInfo.finish();
+                               ")");
+        success = success && queryComicInfo.exec();
+        //queryComicInfo.finish();
 
-	//COMIC (representa un cómic en disco, contiene el nombre de fichero)
-	QSqlQuery queryComic(database);
-	queryComic.prepare("CREATE TABLE comic (id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, comicInfoId INTEGER NOT NULL,  fileName TEXT NOT NULL, path TEXT, FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE, FOREIGN KEY(comicInfoId) REFERENCES comic_info(id))");
-	success = success && queryComic.exec();
-	//queryComic.finish();
-	//DB INFO
-	QSqlQuery queryDBInfo(database);
-	queryDBInfo.prepare("CREATE TABLE db_info (version TEXT NOT NULL)");
-	success = success && queryDBInfo.exec();
-	//queryDBInfo.finish();
+        //FOLDER (representa una carpeta en disco)
+        QSqlQuery queryFolder(database);
+        queryFolder.prepare("CREATE TABLE folder ("
+                            "id INTEGER PRIMARY KEY,"
+                            "parentId INTEGER NOT NULL,"
+                            "name TEXT NOT NULL,"
+                            "path TEXT NOT NULL,"
+                            //new 7.1 fields
+                            "finished BOOLEAN DEFAULT 0,"   //reading
+                            "completed BOOLEAN DEFAULT 1,"  //collecting
+                            //new 8.6 fields
+                            "numChildren INTEGER,"
+                            "firstChildHash TEXT,"
+                            "customImage TEXT,"
+                            "FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE)");
+        success = success && queryFolder.exec();
 
-	QSqlQuery query("INSERT INTO db_info (version) "
-                   "VALUES ('" VERSION "')",database);
-	//query.finish();
+        //COMIC (representa un cómic en disco, contiene el nombre de fichero)
+        QSqlQuery queryComic(database);
+        queryComic.prepare("CREATE TABLE comic (id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, comicInfoId INTEGER NOT NULL,  fileName TEXT NOT NULL, path TEXT, FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE, FOREIGN KEY(comicInfoId) REFERENCES comic_info(id))");
+        success = success && queryComic.exec();
+        //queryComic.finish();
+        //DB INFO
+        QSqlQuery queryDBInfo(database);
+        queryDBInfo.prepare("CREATE TABLE db_info (version TEXT NOT NULL)");
+        success = success && queryDBInfo.exec();
+        //queryDBInfo.finish();
 
-    //8.0> tables
-    success = success && DataBaseManagement::createV8Tables(database);
+        QSqlQuery query("INSERT INTO db_info (version) "
+                        "VALUES ('" VERSION "')",database);
+        //query.finish();
 
+        //8.0> tables
+        success = success && DataBaseManagement::createV8Tables(database);
     }
 
     return success;
@@ -616,6 +618,19 @@ bool DataBaseManagement::addColumns(const QString &tableName, const QStringList 
     return returnValue;
 }
 
+bool DataBaseManagement::addConstraint(const QString &tableName, const QString &constraint, const QSqlDatabase &db)
+{
+    QString sql = "ALTER TABLE %1 ADD %2";
+    bool returnValue = true;
+
+    QSqlQuery alterTable(db);
+    alterTable.prepare(sql.arg(tableName).arg(constraint));
+    alterTable.exec();
+    returnValue = returnValue && (alterTable.numRowsAffected() > 0);
+
+    return returnValue;
+}
+
 void DataBaseManagement::bindString(const QString & name, const QSqlRecord & record, QSqlQuery & query)
 {
 	if(!record.value(name).isNull())
@@ -686,6 +701,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
     bool pre7 = false;
     bool pre7_1 = false;
     bool pre8 = false;
+    bool pre8_6 = false;
 
     if(compareVersions(DataBaseManagement::checkValidDB(fullPath),"7.0.0")<0)
         pre7 = true;
@@ -693,6 +709,8 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
         pre7_1 = true;
     if(compareVersions(DataBaseManagement::checkValidDB(fullPath),"8.0.0")<0)
         pre8 = true;
+    if(compareVersions(DataBaseManagement::checkValidDB(fullPath),"8.6.0")<0)
+        pre8_6 = true;
 
 	QSqlDatabase db = loadDatabaseFromFile(fullPath);
 	bool returnValue = false;
@@ -744,6 +762,16 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
         if(pre8)
         {
             returnValue = returnValue && createV8Tables(db);
+        }
+
+        if(pre8_6)
+        {
+            QStringList columnDefs;
+            //TODO
+            columnDefs << "numChildren INTEGER";
+            columnDefs << "firstChildHash TEXT";
+            columnDefs << "customImage TEXT";
+            //returnValue = returnValue && addColumns("folder", columnDefs, db);
         }
 	}
 

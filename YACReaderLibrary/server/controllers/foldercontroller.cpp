@@ -167,11 +167,11 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
             {
                 t.setVariable(QString("element%1.class").arg(i),"folder");
 
-                QList<LibraryItem *> children = DBHelper::getFolderComicsFromLibrary(libraryId, item->id);
-                if(children.length()>0)
+                const Folder * folder = static_cast<Folder*>(item);
+
+                if(folder->getFirstChildHash().length()>0)
                 {
-                    const ComicDB * comic = static_cast<ComicDB*>(children.at(0));
-                    t.setVariable(QString("element%1.image.url").arg(i),QString("/library/%1/cover/%2.jpg?folderCover=true").arg(libraryId).arg(comic->info.hash));
+                    t.setVariable(QString("element%1.image.url").arg(i),QString("/library/%1/cover/%2.jpg?folderCover=true").arg(libraryId).arg(folder->getFirstChildHash()));
                 }
                 else
                     t.setVariable(QString("element%1.image.url").arg(i),"/images/f.png");
