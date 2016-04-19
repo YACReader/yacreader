@@ -16,7 +16,7 @@ ComicDB::ComicDB(const ComicDB &comicDB)
     operator=(comicDB);
 }
 
-bool ComicDB::isDir()
+bool ComicDB::isDir() const
 {
 	return false;
 }

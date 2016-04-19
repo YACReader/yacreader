@@ -1233,7 +1233,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 				
 				if(d.exists(path+"/library.ydb"))
 				{
-					QSqlDatabase db = DataBaseManagement::loadDatabase(path);
+                    QSqlDatabase db = DataBaseManagement::loadDatabase(path);
 					manageOpeningLibraryError(db.lastError().databaseText() + "-" + db.lastError().driverText());
 					//será possible renombrar y borrar estas bibliotecas
 					renameLibraryAction->setEnabled(true);
@@ -2420,7 +2420,7 @@ void LibraryWindow::deleteComicsFromDisk()
             QLOG_TRACE() << comic.parentId;
         }
 
-        ComicsRemover * remover = new ComicsRemover(indexList,paths);
+        ComicsRemover * remover = new ComicsRemover(indexList,paths,comics.at(0).parentId);
         QThread * thread = NULL;
 
         thread = new QThread(this);
@@ -2433,6 +2433,8 @@ void LibraryWindow::deleteComicsFromDisk()
         connect(remover, SIGNAL(remove(int)), comicsModel, SLOT(remove(int)));
         connect(remover, SIGNAL(removeError()),this,SLOT(setRemoveError()));
         connect(remover, SIGNAL(finished()), comicsModel, SLOT(finishTransaction()));
+        connect(remover, SIGNAL(finished()), comicsModel, SLOT(finishTransaction()));
+        connect(remover, SIGNAL(removedItemsFromFolder(qulonglong)), foldersModel, SLOT(updateFolderChildrenInfo(qulonglong)));
 
         connect(remover, SIGNAL(finished()),this,SLOT(checkEmptyFolder()));
         connect(remover, SIGNAL(finished()),this,SLOT(checkRemoveError()));

@@ -981,7 +981,7 @@ void ComicModel::removeInTransaction(int row)
 
     endRemoveRows();
 }
-
+/*
 void ComicModel::remove(ComicDB * comic, int row)
 {
 	beginRemoveRows(QModelIndex(),row,row);
@@ -997,7 +997,7 @@ void ComicModel::remove(ComicDB * comic, int row)
 	QSqlDatabase::removeDatabase(_databasePath);
 	endRemoveRows();
 }
-
+*/
 /*ComicDB TableModel::getComic(int row)
 {
 	return getComic(index(row,0));
