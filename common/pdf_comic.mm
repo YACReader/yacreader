@@ -97,6 +97,15 @@ QImage MacOSXPDFComic::getPage(const int pageNum)
 
     lastPageData = (void *)dataRef;
 
+    if(!lastPageData)
+    {
+        QLOG_ERROR() << "Unable to extract image from PDF file using CGPDFDocument";
+        CGImageRelease(image);
+        CGContextRelease(bitmapContext);
+        CGColorSpaceRelease(genericColorSpace);
+        return QImage();
+    }
+
     const uchar *bytes = (const uchar *)CFDataGetBytePtr(dataRef);
 
     qtImage = QImage(bytes, pageRect.size.width, pageRect.size.height, QImage::Format_ARGB32);
