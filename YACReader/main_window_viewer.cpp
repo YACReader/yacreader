@@ -189,6 +189,10 @@ void MainWindowViewer::setupUI()
 	//	setWindowFlags(this->windowFlags() | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
 	//}
 
+    previousWindowFlags = windowFlags();
+    previousPos = pos();
+    previousSize = size();
+
 	if(fullscreen)
 		toFullScreen();
 	if(conf.getMaximized())
@@ -1000,6 +1004,57 @@ void MainWindowViewer::toggleFullScreen()
 	Configuration::getConfiguration().setFullScreen(fullscreen = !fullscreen);
 }
 
+#ifdef Q_OS_WIN //fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
+
+void MainWindowViewer::toFullScreen()
+{
+    fromMaximized = this->isMaximized();
+
+    hideToolBars();
+    viewer->hide();
+    viewer->fullscreen = true;//TODO, change by the right use of windowState();
+
+    previousWindowFlags = windowFlags();
+    previousPos = pos();
+    previousSize = size();
+
+    showNormal();
+    setWindowFlags(previousWindowFlags | Qt::FramelessWindowHint);
+
+    const QRect r = windowHandle()->screen()->geometry();
+
+    move(r.x(), r.y());
+    resize(r.width(),r.height()+1);
+    show();
+
+    viewer->show();
+    if(viewer->magnifyingGlassIsVisible())
+        viewer->showMagnifyingGlass();
+}
+
+void MainWindowViewer::toNormal()
+{
+    //show all
+    viewer->hide();
+    viewer->fullscreen = false;//TODO, change by the right use of windowState();
+    //viewer->hideMagnifyingGlass();
+
+    setWindowFlags(previousWindowFlags);
+    move(previousPos);
+    resize(previousSize);
+    show();
+
+    if(fromMaximized)
+        showMaximized();
+
+    if(Configuration::getConfiguration().getShowToolbars())
+        showToolBars();
+    viewer->show();
+    if(viewer->magnifyingGlassIsVisible())
+        viewer->showMagnifyingGlass();
+}
+
+#else
 void MainWindowViewer::toFullScreen()
 {
     fromMaximized = this->isMaximized();
@@ -1030,6 +1085,7 @@ void MainWindowViewer::toNormal()
     if(viewer->magnifyingGlassIsVisible())
         viewer->showMagnifyingGlass();
 }
+#endif
 
 void MainWindowViewer::toggleToolBars()
 {
