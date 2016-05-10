@@ -138,9 +138,9 @@ else:CONFIG(server_bundled) {
 	INSTALLS += bin
 }
 else {
-	message(No build type specified. Defaulting to standalone server build.)
+	message("No build type specified. Defaulting to standalone server build (CONFIG+=server_bundled).")
+	message("If you wish to run YACReaderLibraryServer on a system with an existing install of YACReaderLibrary, please specify CONFIG+=server_bundled as an option when running qmake.")
 }
-	
 
 bin.path = $$BINDIR
 isEmpty(DESTDIR) {
