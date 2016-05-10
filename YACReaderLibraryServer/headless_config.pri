@@ -31,13 +31,13 @@ lessThan(QT_VER_MIN, 3){
 
 unix { 
 	!macx {
-		packagesExist(QtCore) {
+		packagesExist(Qt5Core) {
 				message("Found QtCore")
 			}
 			else: {
 				error("Missing dependency: QtCore")
 			}
-		packagesExist(QtGui) {
+		packagesExist(Qt5Gui) {
 				message("Found QtGui")
 			}
 			else: {
@@ -49,13 +49,13 @@ unix {
 			else: {
 				error("Missing dependency: poppler-qt5")
 			}
-		packagesExist(QtNetwork) {
+		packagesExist(Qt5Network) {
 				message("Found QtNetwork")
 			}
 			else: {
 				error("Missing dependency: QtNetwork")
 			}
-		packagesExist(QtSql) {
+		packagesExist(Qt5Sql) {
 				message("Found QtSql")
 			}
 			else: {
