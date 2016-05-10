@@ -131,7 +131,16 @@ DATADIR = $$PREFIX/share
 DEFINES += "LIBDIR=\\\"$$LIBDIR\\\""  "DATADIR=\\\"$$DATADIR\\\"" "BINDIR=\\\"$$BINDIR\\\""
 
 #MAKE INSTALL
-INSTALLS += bin #server #translation #manpage
+CONFIG(server_standalone) {
+	INSTALLS += bin server translation manpage
+}
+else:CONFIG(server_bundled) {
+	INSTALLS += bin
+}
+else {
+	message(No build type specified. Defaulting to standalone server build.)
+}
+	
 
 bin.path = $$BINDIR
 isEmpty(DESTDIR) {
