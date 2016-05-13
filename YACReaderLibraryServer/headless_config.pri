@@ -35,37 +35,37 @@ unix {
 				message("Found QtCore")
 			}
 			else: {
-				error("Missing dependency: QtCore")
+				message("Missing dependency: QtCore")
 			}
 		packagesExist(Qt5Gui) {
 				message("Found QtGui")
 			}
 			else: {
-				error("Missing dependency: QtGui")
+				message("Missing dependency: QtGui")
 			}
 		packagesExist(poppler-qt5) {
 				message("Found poppler-qt5")
 			}
 			else: {
-				error("Missing dependency: poppler-qt5")
+				message("Missing dependency: poppler-qt5")
 			}
 		packagesExist(Qt5Network) {
 				message("Found QtNetwork")
 			}
 			else: {
-				error("Missing dependency: QtNetwork")
+				message("Missing dependency: QtNetwork")
 			}
 		packagesExist(Qt5Sql) {
 				message("Found QtSql")
 			}
 			else: {
-				error("Missing dependency: QtSql")
+				message("Missing dependency: QtSql")
 			}
 		packagesExist(sqlite3) {
 				message("Found sqlite3")
 			}
 			else: {
-				error("Missing dependency: sqlite3")
+				message("Missing dependency: sqlite3")
 			}
 		}
 }
