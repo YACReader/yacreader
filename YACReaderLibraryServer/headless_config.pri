@@ -32,16 +32,16 @@ lessThan(QT_VER_MIN, 3){
 unix { 
 	!macx {
 		packagesExist(Qt5Core) {
-				message("Found QtCore")
+				message("Found Qt5Core")
 			}
 			else: {
-				message("Missing dependency: QtCore")
+				message("Missing dependency: Qt5Core")
 			}
 		packagesExist(Qt5Gui) {
-				message("Found QtGui")
+				message("Found Qt5Gui")
 			}
 			else: {
-				message("Missing dependency: QtGui")
+				message("Missing dependency: Qt5Gui")
 			}
 		packagesExist(poppler-qt5) {
 				message("Found poppler-qt5")
@@ -50,16 +50,16 @@ unix {
 				message("Missing dependency: poppler-qt5")
 			}
 		packagesExist(Qt5Network) {
-				message("Found QtNetwork")
+				message("Found Qt5Network")
 			}
 			else: {
-				message("Missing dependency: QtNetwork")
+				message("Missing dependency: Qt5Network")
 			}
 		packagesExist(Qt5Sql) {
-				message("Found QtSql")
+				message("Found Qt5Sql")
 			}
 			else: {
-				message("Missing dependency: QtSql")
+				message("Missing dependency: Qt5Sql")
 			}
 		packagesExist(sqlite3) {
 				message("Found sqlite3")
