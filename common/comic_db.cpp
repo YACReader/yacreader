@@ -11,6 +11,11 @@ ComicDB::ComicDB()
 
 }
 
+ComicDB::ComicDB(const ComicDB &comicDB)
+{
+    operator=(comicDB);
+}
+
 bool ComicDB::isDir()
 {
 	return false;
@@ -105,7 +110,18 @@ QString ComicDB::toTXT()
 	if(!info.notes.isNull())
 		txt.append(QString("notes:%1\r\n").arg(info.notes.toString()));
 
-	return txt;
+    return txt;
+}
+
+ComicDB &ComicDB::operator=(const ComicDB &other)
+{
+    LibraryItem::operator =(other);
+
+    this->_hasCover = other._hasCover;
+
+    this->info = other.info;
+
+    return *this;
 }
 
 QString ComicDB::getFileName() const
@@ -134,6 +150,16 @@ qulonglong ComicDB::getFileSize() const
 {
     //the size is encoded in the hash after the SHA-1
     return info.hash.right(info.hash.length()-40).toLongLong();
+}
+
+QString ComicDB::getTitleIncludingNumber() const
+{
+    if(!info.number.isNull())
+    {
+        return "#" + info.number.toString() + " - " + getTitleOrFileName();
+    }
+
+    return getTitleOrFileName();
 }
 
 //-----------------------------------------------------------------------------
@@ -346,8 +372,106 @@ QPixmap ComicInfo::getCover(const QString & basePath)
 	}
 	QPixmap c;
 	c.convertFromImage(cover);
-	return c;
+    return c;
 }
+
+QStringList ComicInfo::getWriters()
+{
+    if(writer.toString().length()>0)
+    {
+        return writer.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList ComicInfo::getPencillers()
+{
+    if(penciller.toString().length()>0)
+    {
+        return penciller.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList ComicInfo::getInkers()
+{
+    if(inker.toString().length()>0)
+    {
+        return inker.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList ComicInfo::getColorists()
+{
+    if(colorist.toString().length()>0)
+    {
+        return colorist.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList ComicInfo::getLetterers()
+{
+    if(letterer.toString().length()>0)
+    {
+        return letterer.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList ComicInfo::getCoverArtists()
+{
+    if(coverArtist.toString().length()>0)
+    {
+        return coverArtist.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList ComicInfo::getCharacters()
+{
+    if(characters.toString().length()>0)
+    {
+       return characters.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+void ComicInfo::setRead(bool r)
+{
+    if(r != read)
+    {
+        read = r;
+        emit readChanged();
+    }
+}
+
+void ComicInfo::setRating(int r)
+{
+    if(r != rating)
+    {
+        rating = r;
+        emit ratingChanged();
+    }
+}
+
+void ComicInfo::setFavorite(bool f)
+{
+    if(f != isFavorite)
+    {
+        isFavorite = f;
+        emit favoriteChanged();
+    }
+}
+
 QDataStream &operator<<(QDataStream & stream, const ComicDB & comic)
 {
 	stream << comic.id;

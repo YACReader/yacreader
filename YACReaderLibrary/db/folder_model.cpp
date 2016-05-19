@@ -329,6 +329,8 @@ void FolderModel::setupModelData(QSqlQuery &sqlquery, FolderItem *parent)
 
 void FolderModel::updateFolderModelData(QSqlQuery &sqlquery, FolderItem *parent)
 {
+    Q_UNUSED(parent);
+
     while (sqlquery.next()) {
         QLOG_DEBUG () << "habia next";
         QList<QVariant> data;

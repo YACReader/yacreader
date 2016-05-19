@@ -177,6 +177,8 @@ void YACReaderSideBar::paintEvent(QPaintEvent * event)
 
 void YACReaderSideBar::closeEvent(QCloseEvent *event)
 {
+    QWidget::closeEvent(event);
+
     settings->setValue(SIDEBAR_SPLITTER_STATUS, splitter->saveState());
 }
 

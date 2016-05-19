@@ -3,6 +3,8 @@
 
 #include <QFileIconProvider>
 
+#include "QsLog.h"
+
 ListItem::ListItem(const QList<QVariant> &data)
     :itemData(data)
 {
@@ -39,6 +41,10 @@ QIcon SpecialListItem::getIcon() const
         QString id = itemData.at(Id).toString();
         return YACReader::noHighlightedIcon(QString(":/images/lists/default_%1.png").arg(id));
     }
+
+    QLOG_WARN() << "Icon for SpecialListItem not available";
+
+    return QIcon();
 }
 
 ReadingListModel::TypeSpecialList SpecialListItem::getType() const
@@ -48,6 +54,10 @@ ReadingListModel::TypeSpecialList SpecialListItem::getType() const
         int id = itemData.at(Id).toInt();
         return (ReadingListModel::TypeSpecialList)id;
     }
+
+    QLOG_WARN() << "TypeSpecialList not available";
+
+    return (ReadingListModel::TypeSpecialList)0;
 }
 
 //------------------------------------------------------
@@ -65,6 +75,10 @@ QIcon LabelItem::getIcon() const
         QString color = itemData.at(Color).toString();
         return YACReader::noHighlightedIcon(QString(":/images/lists/label_%1.png").arg(color).toLower());
     }
+
+    QLOG_WARN() << "Icon for label item not available";
+
+    return QIcon();
 }
 
 YACReader::LabelColors LabelItem::colorid() const
@@ -73,6 +87,10 @@ YACReader::LabelColors LabelItem::colorid() const
     {
         return YACReader::LabelColors(itemData.at(Ordering).toInt());
     }
+
+    QLOG_WARN() << "Label color for label item not available";
+
+    return (YACReader::LabelColors)0;
 }
 
 QString LabelItem::name() const
@@ -81,6 +99,10 @@ QString LabelItem::name() const
     {
         return itemData.at(Name).toString();
     }
+
+    QLOG_WARN() << "Name for label item not available";
+
+    return "";
 }
 
 void LabelItem::setName(const QString &name)
@@ -97,6 +119,10 @@ qulonglong LabelItem::getId() const
     {
         return YACReader::LabelColors(itemData.at(Id).toULongLong());
     }
+
+    QLOG_WARN() << "Id for Label item not available";
+
+    return 0;
 }
 
 //------------------------------------------------------
@@ -187,12 +213,20 @@ qulonglong ReadingListItem::getId() const
 {
     if(itemData.count()>Id)
         return itemData.at(Id).toULongLong();
+
+    QLOG_WARN() << "Name for reading list item not available";
+
+    return 0;
 }
 
 QString ReadingListItem::name() const
 {
     if(itemData.count()>Name)
         return itemData.at(Name).toString();
+
+    QLOG_WARN() << "Name for reading list item not available";
+
+    return "";
 }
 
 void ReadingListItem::setName(const QString &name)
@@ -205,6 +239,9 @@ int ReadingListItem::getOrdering() const
 {
     if(itemData.count()>Ordering)
         return itemData[Ordering].toInt();
+
+    QLOG_WARN() << "Ordering for Item not available";
+    return 0;
 }
 
 void ReadingListItem::setOrdering(const int ordering)

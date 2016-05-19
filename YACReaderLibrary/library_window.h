@@ -71,6 +71,7 @@ class YACReaderHistoryController;
 class EmptyLabelWidget;
 class EmptySpecialListWidget;
 class EmptyReadingListWidget;
+class YACReaderComicsViewsManager;
 
 #include "comic_db.h"
 
@@ -81,7 +82,7 @@ class LibraryWindow : public QMainWindow
     friend class YACReaderNavigationController;
 
 	Q_OBJECT
-private:
+public:
 	YACReaderSideBar * sideBar;
 
 	CreateLibraryDialog * createLibraryDialog;
@@ -117,17 +118,7 @@ private:
 	//-------------
 
     YACReaderNavigationController * navigationController;
-
-    ComicsView * comicsView;
-    ClassicComicsView * classicComicsView;
-    GridComicsView * gridComicsView;
-    QStackedWidget * comicsViewStack;
-    ComicsViewTransition * comicsViewTransition;
-    EmptyFolderWidget * emptyFolderWidget;
-    EmptyLabelWidget * emptyLabelWidget;
-    EmptySpecialListWidget * emptySpecialList;
-    EmptyReadingListWidget * emptyReadingList;
-    NoSearchResultsWidget * noSearchResultsWidget;
+    YACReaderComicsViewsManager * comicsViewsManager;
 
     YACReaderFoldersView * foldersView;
     YACReaderReadingListsView * listsView;
@@ -261,9 +252,6 @@ private:
 	void doDialogs();
     void setUpShortcutsManagement();
 	void doModels();
-    void disconnectComicsViewConnections(ComicsView * widget);
-    void doComicsViewConnections();
-
 
     //ACTIONS MANAGEMENT
     void disableComicsActions(bool disabled);
@@ -286,8 +274,6 @@ private:
     YACReaderHistoryController * historyController;
 
     bool removeError;
-
-    ComicsViewStatus comicsViewStatus;
 
     //QTBUG-41883
     QSize _size;
@@ -361,16 +347,6 @@ public slots:
     void setRemoveError();
     void checkRemoveError();
     void resetComicRating();
-    void switchToComicsView(ComicsView *from, ComicsView *to);
-    void showComicsViewTransition();
-    void toggleComicsView_delayed();//used in orther to avoid flickering;
-    void showComicsView();
-    void showEmptyFolderView();
-    void showEmptyLabelView();
-    void showEmptySpecialList();
-    void showEmptyReadingListWidget();
-    void showNoSearchResultsView();
-    void toggleComicsView();
     void checkSearchNumResults(int numResults);
     void loadCoversFromCurrentModel();
     void copyAndImportComicsToCurrentFolder(const QList<QPair<QString,QString> > & comics);
@@ -399,7 +375,6 @@ public slots:
     void onAddComicsToLabel();
     void setToolbarTitle(const QModelIndex & modelIndex);
     void saveSelectedCoversTo();
-
 };
 
 #endif
