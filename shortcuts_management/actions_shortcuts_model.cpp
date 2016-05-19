@@ -11,11 +11,15 @@ ActionsShortcutsModel::ActionsShortcutsModel(QObject *parent) :
 
 int ActionsShortcutsModel::rowCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent);
+
     return actions.length();
 }
 
 int ActionsShortcutsModel::columnCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent);
+
     return 3;
 }
 
@@ -78,6 +82,8 @@ QVariant ActionsShortcutsModel::data(const QModelIndex &index, int role) const
 
 bool ActionsShortcutsModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
+    Q_UNUSED(role);
+
     if(index.column() == KEYS)
     {
         ShortcutsManager sm = ShortcutsManager::getShortcutsManager();
@@ -95,6 +101,8 @@ bool ActionsShortcutsModel::setData(const QModelIndex &index, const QVariant &va
 
 QModelIndex ActionsShortcutsModel::parent(const QModelIndex &index) const
 {
+    Q_UNUSED(index);
+
     return QModelIndex();
 }
 

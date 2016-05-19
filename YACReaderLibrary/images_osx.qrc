@@ -15,13 +15,10 @@
         <file alias="images/main_toolbar/flow@2x.png">../images/main_toolbar/flow_osx@2x.png</file>
         <file alias="images/main_toolbar/grid.png">../images/main_toolbar/grid_osx.png</file>
         <file alias="images/main_toolbar/grid@2x.png">../images/main_toolbar/grid_osx@2x.png</file>
-        <file alias="images/flow_to_grid.gif">../images/flow_to_grid_osx.gif</file>
-        <file alias="images/grid_to_flow.gif">../images/grid_to_flow_osx.gif</file>
         <file alias="images/empty_folder.png">../images/empty_folder_osx.png</file>
         <file alias="images/empty_search.png">../images/empty_search_osx.png</file>
         <file>../images/iconSearch.png</file>
         <file>../images/clearSearch.png</file>
-        <!--reading lists-->
         <file alias="images/lists/default_0.png">../images/lists/default_0_osx.png</file>
         <file alias="images/lists/default_1.png">../images/lists/default_1_osx.png</file>
         <file alias="images/lists/label_blue.png">../images/lists/label_blue_osx.png</file>
@@ -38,7 +35,6 @@
         <file alias="images/lists/label_yellow.png">../images/lists/label_yellow_osx.png</file>
         <file alias="images/lists/list.png">../images/lists/list_osx.png</file>
         <file alias="images/empty_reading_list.png">../images/empty_reading_list_osx.png</file>
-        <!--reading lists @2x-->
         <file alias="images/lists/default_0@2x.png">../images/lists/default_0_osx@2x.png</file>
         <file alias="images/lists/default_1@2x.png">../images/lists/default_1_osx@2x.png</file>
         <file alias="images/lists/label_blue@2x.png">../images/lists/label_blue_osx@2x.png</file>
@@ -54,7 +50,6 @@
         <file alias="images/lists/label_white@2x.png">../images/lists/label_white_osx@2x.png</file>
         <file alias="images/lists/label_yellow@2x.png">../images/lists/label_yellow_osx@2x.png</file>
         <file alias="images/lists/list@2x.png">../images/lists/list_osx@2x.png</file>
-        <!--sidebar-->
         <file alias="images/sidebar/libraryIcon.png">../images/sidebar/libraryIcon_osx.png</file>
         <file alias="images/sidebar/setRoot.png">../images/sidebar/setRoot_osx.png</file>
         <file alias="images/sidebar/expand.png">../images/sidebar/expand_osx.png</file>
@@ -65,8 +60,6 @@
         <file alias="images/sidebar/delete_sidebar.png">../images/sidebar/delete_sidebar_osx.png</file>
         <file alias="images/sidebar/addLabelIcon.png">../images/sidebar/addLabelIcon_osx.png</file>
         <file alias="images/sidebar/renameListIcon.png">../images/sidebar/renameListIcon_osx.png</file>
-        <!--sidebar @2x-->
-        <!-- <file alias="images/sidebar/libraryIcon@2x.png">../images/sidebar/libraryIcon_osx@2x.png</file> -->
         <file alias="images/sidebar/setRoot@2x.png">../images/sidebar/setRoot_osx@2x.png</file>
         <file alias="images/sidebar/expand@2x.png">../images/sidebar/expand_osx@2x.png</file>
         <file alias="images/sidebar/colapse@2x.png">../images/sidebar/colapse_osx@2x.png</file>
