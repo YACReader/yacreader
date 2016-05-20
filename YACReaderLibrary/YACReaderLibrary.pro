@@ -81,7 +81,7 @@ CONFIG += c++11
 
 #CONFIG += release
 CONFIG -= flat
-QT += sql network widgets
+QT += sql network widgets script
 !CONFIG(no_opengl) {
 	QT += opengl
 }
