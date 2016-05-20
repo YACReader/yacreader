@@ -46,7 +46,7 @@ CONFIG += c++11
 
 #CONFIG += release
 CONFIG -= flat
-QT += core sql network script
+QT += core sql network
 
 # Input
 HEADERS += ../YACReaderLibrary/library_creator.h \
