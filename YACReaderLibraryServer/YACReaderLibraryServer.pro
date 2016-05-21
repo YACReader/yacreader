@@ -132,13 +132,14 @@ DEFINES += "LIBDIR=\\\"$$LIBDIR\\\""  "DATADIR=\\\"$$DATADIR\\\"" "BINDIR=\\\"$$
 
 #MAKE INSTALL
 CONFIG(server_standalone) {
-	INSTALLS += bin server translation manpage
+        INSTALLS += bin server translation
 }
 else:CONFIG(server_bundled) {
 	INSTALLS += bin
 }
 else {
-	message("No build type specified. Defaulting to standalone server build (CONFIG+=server_bundled).")
+        INSTALLS += bin server translation
+        message("No build type specified. Defaulting to standalone server build (CONFIG+=server_standalone).")
 	message("If you wish to run YACReaderLibraryServer on a system with an existing install of YACReaderLibrary, please specify CONFIG+=server_bundled as an option when running qmake.")
 }
 
