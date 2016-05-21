@@ -95,10 +95,10 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 		tries = 0;
         int dataRead = 0;
 		localSocket->waitForReadyRead(1000);
-		while(data.length() < totalSize && tries < 20 )
+        while((unsigned int)data.length() < totalSize && tries < 20 )
 		{
 			data.append(localSocket->readAll());
-			if(data.length() < totalSize)
+            if((unsigned int)data.length() < totalSize)
 				localSocket->waitForReadyRead(100);
             if(data.length() == dataRead)
                 tries++;

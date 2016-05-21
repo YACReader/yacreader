@@ -9,6 +9,9 @@ EditShortcutItemDelegate::EditShortcutItemDelegate(QObject *parent) :
 
 QWidget *EditShortcutItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    Q_UNUSED(option);
+    Q_UNUSED(index);
+
     KeySequenceLineEdit * editor = new KeySequenceLineEdit(parent);
     connect(editor,SIGNAL(editingFinished()),this,SLOT(closeShortcutEditor()));
     return editor;
@@ -31,6 +34,8 @@ void EditShortcutItemDelegate::setModelData(QWidget *editor, QAbstractItemModel 
 
 void EditShortcutItemDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &mi) const
 {
+    Q_UNUSED(mi);
+
    editor->setGeometry(option.rect);
 }
 

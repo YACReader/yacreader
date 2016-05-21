@@ -5,12 +5,18 @@
 
 #include <QModelIndex>
 
+
+
 class QAbstractListModel;
 class QItemSelectionModel;
 class QQuickView;
 class QQuickView;
 
 class YACReaderToolBarStretch;
+class YACReaderComicsSelectionHelper;
+class YACReaderComicInfoHelper;
+
+
 
 class GridComicsView : public ComicsView
 {
@@ -31,43 +37,36 @@ public:
     QSize sizeHint();
     QByteArray getMimeDataFromSelection();
 
-
-signals:
-    void comicRated(int,QModelIndex);
-    void doubleClicked(QModelIndex);
-
 public slots:
-    //selection helper
-    void selectIndex(int index);
-    void setCurrentIndex(int index);
-    void deselectIndex(int index);
-    bool isSelectedIndex(int index);
-    void clear();
-    //double clicked item
-    void selectedItem(int index);
-    int numItemsSelected();
-    int lastSelectedIndex();
-
     //ComicsView
     void setShowMarks(bool show);
     void selectAll();
+    void selectIndex(int index);
 
-    //rating
+    void updateBackgroundConfig();
+
+    void showInfo();
+
+protected slots:
+    void setCurrentIndex(int index);
+    //QML - double clicked item
+    void selectedItem(int index);
+
+    //QML - rating
     void rate(int index, int rating);
-
-    //dragManager
+    //QML - dragManager
     void startDrag();
-    //dropManager
+    //QML - dropManager
     bool canDropUrls(const QList<QUrl> & urls, Qt::DropAction action);
     bool canDropFormats(const QString &formats);
     void droppedFiles(const QList<QUrl> & urls, Qt::DropAction action);
     void droppedComicsForResortingAt(const QString & data, int index);
-
-    void updateBackgroundConfig();
-
-protected slots:
+    //QML - context menu
     void requestedContextMenu(const QPoint & point);
+
     void setCoversSize(int width);
+
+    void dummyUpdater(); //TODO remove this
 
 private:
     QSettings * settings;
@@ -77,9 +76,12 @@ private:
     QWidget * coverSizeSliderWidget;
     QSlider * coverSizeSlider;
     QAction * coverSizeSliderAction;
-    QItemSelectionModel * _selectionModel;
-    QQuickView *view;
-    QWidget *container;
+    QAction * showInfoAction;
+    QAction * showInfoSeparatorAction;
+
+    YACReaderComicsSelectionHelper * selectionHelper;
+    YACReaderComicInfoHelper * comicInfoHelper;
+
     bool dummy;
     void closeEvent ( QCloseEvent * event );
     void createCoverSizeSliderWidget();
