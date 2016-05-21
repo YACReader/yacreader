@@ -17,7 +17,10 @@ void ConsoleUILibraryCreator::createLibrary(const QString & name, const QString 
     QEventLoop eventLoop;
     LibraryCreator * libraryCreator = new LibraryCreator();
 
-    libraryCreator->createLibrary(QDir::cleanPath(path),QDir::cleanPath(path)+"/.yacreaderlibrary");
+    QDir pathDir(path);
+    QString cleanPath = QDir::cleanPath(pathDir.absolutePath());
+
+    libraryCreator->createLibrary(cleanPath,QDir::cleanPath(pathDir.absolutePath()+"/.yacreaderlibrary"));
 
     connect(libraryCreator, &LibraryCreator::finished, this, &ConsoleUILibraryCreator::done);
     connect(libraryCreator, &LibraryCreator::comicAdded, this, &ConsoleUILibraryCreator::newComic);
@@ -33,7 +36,7 @@ void ConsoleUILibraryCreator::createLibrary(const QString & name, const QString 
     //TODO, at some point some checking is needed for avoiding duplicated libraries
     YACReaderLibraries yacreaderLibraries;
     yacreaderLibraries.load();
-    yacreaderLibraries.addLibrary(name, path);
+    yacreaderLibraries.addLibrary(name, cleanPath);
     yacreaderLibraries.save();
 }
 
@@ -42,7 +45,10 @@ void ConsoleUILibraryCreator::updateLibrary(const QString & path)
     QEventLoop eventLoop;
     LibraryCreator * libraryCreator = new LibraryCreator();
 
-    libraryCreator->updateLibrary(QDir::cleanPath(path),QDir::cleanPath(path)+"/.yacreaderlibrary");
+    QDir pathDir(path);
+    QString cleanPath = QDir::cleanPath(pathDir.absolutePath());
+
+    libraryCreator->updateLibrary(cleanPath,QDir::cleanPath(pathDir.absolutePath()+"/.yacreaderlibrary"));
 
     connect(libraryCreator, &LibraryCreator::finished, this, &ConsoleUILibraryCreator::done);
     connect(libraryCreator, &LibraryCreator::comicAdded, this, &ConsoleUILibraryCreator::newComic);
@@ -58,13 +64,16 @@ void ConsoleUILibraryCreator::updateLibrary(const QString & path)
 
 void ConsoleUILibraryCreator::addExistingLibrary(const QString & name, const QString & path)
 {
+    QDir pathDir(path);
+    QString cleanPath = QDir::cleanPath(pathDir.absolutePath());
+
     //TODO add error handling
     YACReaderLibraries yacreaderLibraries;
     yacreaderLibraries.load();
-    yacreaderLibraries.addLibrary(name, path);
+    yacreaderLibraries.addLibrary(name, cleanPath);
     yacreaderLibraries.save();
 
-    std::cout << "Library added : " << name.toUtf8().constData() << " at " << path.toUtf8().constData() << std::endl;
+    std::cout << "Library added : " << name.toUtf8().constData() << " at " << cleanPath.toUtf8().constData() << std::endl;
 }
 
 void ConsoleUILibraryCreator::removeLibrary(const QString & name)
