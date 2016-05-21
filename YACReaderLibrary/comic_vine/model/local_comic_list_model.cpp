@@ -66,6 +66,7 @@ Qt::ItemFlags LocalComicListModel::flags(const QModelIndex &index) const
 
 QVariant LocalComicListModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
+    Q_UNUSED(section);
 
 	if ( role == Qt::TextAlignmentRole)
 		return QVariant(Qt::AlignLeft | Qt::AlignVCenter);

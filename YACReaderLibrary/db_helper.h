@@ -76,6 +76,8 @@ public:
     static ComicDB loadComic(QString cname, QString cpath, QString chash, QSqlDatabase & database);
 	static ComicInfo loadComicInfo(QString hash, QSqlDatabase & db);
     static QList<QString> loadSubfoldersNames(qulonglong folderId, QSqlDatabase & db);
+    //queries
+    static bool isFavoriteComic(qulonglong id, QSqlDatabase & db);
 };
 
 #endif
