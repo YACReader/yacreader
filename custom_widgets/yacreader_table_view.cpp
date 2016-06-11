@@ -8,6 +8,7 @@
 #include <QMimeData>
 #include <QApplication>
 #include <QBuffer>
+#include <qmath.h>
 
 #include "QsLog.h"
 
