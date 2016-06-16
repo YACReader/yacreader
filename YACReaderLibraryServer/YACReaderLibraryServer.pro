@@ -5,11 +5,11 @@
 TEMPLATE = app
 TARGET = YACReaderLibraryServer
 CONFIG += console
-DEPENDPATH += .
-INCLUDEPATH += .
+DEPENDPATH += ../YACReaderLibrary
+INCLUDEPATH += ../YACReaderLibrary
 INCLUDEPATH += ../common \
-                ./server \
-                ./db
+                ../YACReaderLibrary/server \
+                ../YACReaderLibrary/db
 
 DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY QT_NO_DEBUG_OUTPUT
 QMAKE_MAC_SDK = macosx10.11
@@ -46,14 +46,14 @@ CONFIG += c++11
 
 #CONFIG += release
 CONFIG -= flat
-QT += core sql network script
+QT += core sql network
 
 # Input
-HEADERS += library_creator.h \
-           package_manager.h \
-           bundle_creator.h \
-           db_helper.h \
-           ./db/data_base_management.h \
+HEADERS += ../YACReaderLibrary/library_creator.h \
+           ../YACReaderLibrary/package_manager.h \
+           ../YACReaderLibrary/bundle_creator.h \
+           ../YACReaderLibrary/db_helper.h \
+           ../YACReaderLibrary/db/data_base_management.h \
            ../common/comic_db.h \
            ../common/folder.h \
            ../common/library_item.h \
@@ -61,36 +61,36 @@ HEADERS += library_creator.h \
            ../common/bookmarks.h \
            ../common/qnaturalsorting.h \
            ../common/yacreader_global.h \
-           yacreader_local_server.h \
-           comics_remover.h \
+           ../YACReaderLibrary/yacreader_local_server.h \
+           ../YACReaderLibrary/comics_remover.h \
            ../common/http_worker.h \
-           yacreader_libraries.h \
-           comic_files_manager.h \
-           headless/console_ui_library_creator.h
+           ../YACReaderLibrary/yacreader_libraries.h \
+           ../YACReaderLibrary/comic_files_manager.h \
+           ../YACReaderLibrary/headless/console_ui_library_creator.h
 
 
-SOURCES += library_creator.cpp \
-           .\headless\main.cpp \
-           package_manager.cpp \
-           bundle_creator.cpp \
-           db_helper.cpp \
-           ./db/data_base_management.cpp \
+SOURCES += ../YACReaderLibrary/library_creator.cpp \
+           ../YACReaderLibrary/headless\main.cpp \
+           ../YACReaderLibrary/package_manager.cpp \
+           ../YACReaderLibrary/bundle_creator.cpp \
+           ../YACReaderLibrary/db_helper.cpp \
+           ../YACReaderLibrary/db/data_base_management.cpp \
            ../common/comic_db.cpp \
            ../common/folder.cpp \
            ../common/library_item.cpp \
            ../common/comic.cpp \
            ../common/bookmarks.cpp \
            ../common/qnaturalsorting.cpp \
-           yacreader_local_server.cpp \
-           comics_remover.cpp \
+           ../YACReaderLibrary/yacreader_local_server.cpp \
+           ../YACReaderLibrary/comics_remover.cpp \
            ../common/http_worker.cpp \
            ../common/yacreader_global.cpp \
-           yacreader_libraries.cpp \
-           comic_files_manager.cpp \
-           headless/console_ui_library_creator.cpp
+           ../YACReaderLibrary/yacreader_libraries.cpp \
+           ../YACReaderLibrary/comic_files_manager.cpp \
+           ../YACReaderLibrary/headless/console_ui_library_creator.cpp
 
 				   
-include(./server/server.pri)
+include(../YACReaderLibrary/server/server.pri)
 CONFIG(7zip){
 include(../compressed_archive/wrapper.pri)
 } else:CONFIG(unarr) {
@@ -111,7 +111,7 @@ TRANSLATIONS =  yacreaderlibraryserver_es.ts \
                 yacreaderlibraryserver_source.ts
 
 
-RESOURCES += headless/images.qrc
+RESOURCES += ../YACReaderLibrary/headless/images.qrc
 
 
 Release:DESTDIR = ../release
@@ -131,7 +131,17 @@ DATADIR = $$PREFIX/share
 DEFINES += "LIBDIR=\\\"$$LIBDIR\\\""  "DATADIR=\\\"$$DATADIR\\\"" "BINDIR=\\\"$$BINDIR\\\""
 
 #MAKE INSTALL
-INSTALLS += bin server translation #manpage
+CONFIG(server_standalone) {
+        INSTALLS += bin server translation
+}
+else:CONFIG(server_bundled) {
+	INSTALLS += bin
+}
+else {
+        INSTALLS += bin server translation
+        message("No build type specified. Defaulting to standalone server build (CONFIG+=server_standalone).")
+	message("If you wish to run YACReaderLibraryServer on a system with an existing install of YACReaderLibrary, please specify CONFIG+=server_bundled as an option when running qmake.")
+}
 
 bin.path = $$BINDIR
 isEmpty(DESTDIR) {
