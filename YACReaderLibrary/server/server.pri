@@ -41,8 +41,8 @@ SOURCES += \
     $$PWD/controllers/foldercontentcontroller.cpp \
     $$PWD/controllers/tagscontroller.cpp
 	
-include(lib/bfLogging/bfLogging.pri)
-include(lib/bfHttpServer/bfHttpServer.pri)
-include(lib/bfTemplateEngine/bfTemplateEngine.pri)
+include(lib/logging/logging.pri)
+include(lib/httpserver/httpserver.pri)
+include(lib/templateengine/templateengine.pri)
 
 DEFINES += SERVER_VERSION_NUMBER=\\\"2.0\\\"
