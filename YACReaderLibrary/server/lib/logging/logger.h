@@ -6,13 +6,13 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include <QObject>
-
 #include <QtGlobal>
 #include <QThreadStorage>
 #include <QHash>
 #include <QStringList>
 #include <QMutex>
+#include <QObject>
+#include "logglobal.h"
 #include "logmessage.h"
 
 /**
@@ -45,7 +45,7 @@
   because logging to the console is less useful.
 */
 
-class Logger : public QObject {
+class DECLSPEC Logger : public QObject {
     Q_OBJECT
     Q_DISABLE_COPY(Logger)
 public:
@@ -100,10 +100,11 @@ public:
 
     /**
       Clear the thread-local data of the current thread.
+      This method is thread safe.
       @param buffer Whether to clear the backtrace buffer
       @param variables Whether to clear the log variables
     */
-    static void clear(const bool buffer=true, const bool variables=true);
+    virtual void clear(const bool buffer=true, const bool variables=true);
 
 protected:
 
@@ -119,7 +120,7 @@ protected:
     /** Size of backtrace buffer, number of messages per thread. 0=disabled */
     int bufferSize;
 
-    /** Used to synchronize access to the static members */
+    /** Used to synchronize access of concurrent threads */
     static QMutex mutex;
 
     /**
@@ -176,7 +177,7 @@ private:
     static QThreadStorage<QHash<QString,QString>*> logVars;
 
     /** Thread local backtrace buffers */
-    static QThreadStorage<QList<LogMessage*>*> buffers;
+    QThreadStorage<QList<LogMessage*>*> buffers;
 
 };
 

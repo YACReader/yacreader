@@ -9,6 +9,7 @@
 #include <QtGlobal>
 #include <QDateTime>
 #include <QHash>
+#include "logglobal.h"
 
 /**
   Represents a single log message together with some data
@@ -20,16 +21,17 @@
   - {typeNr}    Type of the message in numeric format (0-3)
   - {type}      Type of the message in string format (DEBUG, WARNING, CRITICAL, FATAL)
   - {thread}    ID number of the thread
-  - {msg}       Message text (only useable in msgFormat)
-  - {file}      Filename where the message was generated #
-  - {function}  Function where the message was generated #
-  - {line}      Line number where the message was generated #
+  - {msg}       Message text
   - {xxx}       For any user-defined logger variable
 
-  # The macros qDebug()...qFatal() dont fill these variable in case of QT versions before 5.0.
+  Plus some new variables since QT 5.0, only filled when compiled in debug mode:
+
+  - {file}      Filename where the message was generated
+  - {function}  Function where the message was generated
+  - {line}      Line number where the message was generated
 */
 
-class LogMessage
+class DECLSPEC LogMessage
 {
     Q_DISABLE_COPY(LogMessage)
 public:
