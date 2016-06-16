@@ -6,11 +6,12 @@
 #ifndef DUALFILELOGGER_H
 #define DUALFILELOGGER_H
 
-#include "logger.h"
-#include "filelogger.h"
 #include <QString>
 #include <QSettings>
 #include <QtGlobal>
+#include "logglobal.h"
+#include "logger.h"
+#include "filelogger.h"
 
 /**
   Logs messages into two log files simultaneously.
@@ -18,7 +19,7 @@
   @see FileLogger for a description of the two underlying loggers.
 */
 
-class DualFileLogger : public Logger {
+class DECLSPEC DualFileLogger : public Logger {
     Q_OBJECT
     Q_DISABLE_COPY(DualFileLogger)
 public:
@@ -37,13 +38,24 @@ public:
     DualFileLogger(QSettings* firstSettings, QSettings* secondSettings, const int refreshInterval=10000, QObject *parent = 0);
 
     /**
-      Decorate and log a message.
+      Decorate and log the message, if type>=minLevel.
       This method is thread safe.
       @param type Message type (level)
       @param message Message text
+      @param file Name of the source file where the message was generated (usually filled with the macro __FILE__)
+      @param function Name of the function where the message was generated (usually filled with the macro __LINE__)
+      @param line Line Number of the source file, where the message was generated (usually filles with the macro __func__ or __FUNCTION__)
       @see LogMessage for a description of the message decoration.
     */
-    virtual void log(const QtMsgType type, const QString& message);
+    virtual void log(const QtMsgType type, const QString& message, const QString &file="", const QString &function="", const int line=0);
+
+    /**
+      Clear the thread-local data of the current thread.
+      This method is thread safe.
+      @param buffer Whether to clear the backtrace buffer
+      @param variables Whether to clear the log variables
+    */
+    virtual void clear(const bool buffer=true, const bool variables=true);
 
 private:
 

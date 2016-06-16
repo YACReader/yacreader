@@ -11,6 +11,7 @@
 #include <QFile>
 #include <QMutex>
 #include <QBasicTimer>
+#include "logglobal.h"
 #include "logger.h"
 
 /**
@@ -45,7 +46,7 @@
   @see Logger for a descrition of the buffer.
 */
 
-class FileLogger : public Logger {
+class DECLSPEC FileLogger : public Logger {
     Q_OBJECT
     Q_DISABLE_COPY(FileLogger)
 public:
