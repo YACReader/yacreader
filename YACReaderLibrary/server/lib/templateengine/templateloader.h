@@ -9,8 +9,9 @@
 #include <QString>
 #include <QSettings>
 #include <QTextCodec>
-#include "template.h"
 #include <QMutex>
+#include "templateglobal.h"
+#include "template.h"
 
 /**
   Loads localized versions of template files. If the caller requests a file with the
@@ -25,7 +26,7 @@
 
   The following settings are required:
   <code><pre>
-  path=.
+  path=../templates
   suffix=.tpl
   encoding=UTF-8
   </pre></code>
@@ -34,9 +35,9 @@
   @see TemplateCache
 */
 
-class TemplateLoader : public QObject {
+class DECLSPEC TemplateLoader : public QObject {
     Q_OBJECT
-    Q_DISABLE_COPY(TemplateLoader);
+    Q_DISABLE_COPY(TemplateLoader)
 public:
 
     /**

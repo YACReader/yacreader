@@ -1,8 +1,9 @@
 #ifndef TEMPLATECACHE_H
 #define TEMPLATECACHE_H
 
-#include "templateloader.h"
 #include <QCache>
+#include "templateglobal.h"
+#include "templateloader.h"
 
 /**
   Caching template loader, reduces the amount of I/O and improves performance
@@ -25,7 +26,7 @@
   <p>
   The following settings are required:
   <code><pre>
-  path=.
+  path=../templates
   suffix=.tpl
   encoding=UTF-8
   cacheSize=1000000
@@ -38,9 +39,9 @@
   @see TemplateLoader
 */
 
-class TemplateCache : public TemplateLoader {
+class DECLSPEC TemplateCache : public TemplateLoader {
     Q_OBJECT
-    Q_DISABLE_COPY(TemplateCache);
+    Q_DISABLE_COPY(TemplateCache)
 public:
 
     /**
