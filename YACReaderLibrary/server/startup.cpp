@@ -35,6 +35,19 @@ void Startup::start() {
 	mainLogSettings->beginGroup("mainLogFile");
     //QSettings* debugLogSettings=new QSettings(configFileName,QSettings::IniFormat,app);
     //debugLogSettings->beginGroup("debugLogFile");
+
+    if(mainLogSettings->value("fileName").isNull())
+        mainLogSettings->setValue("fileName", QFileInfo(YACReader::getSettingsPath(), "server_log.log").absoluteFilePath());
+
+    if(mainLogSettings->value("maxSize").isNull())
+        mainLogSettings->setValue("maxSize",1048576);
+
+    if(mainLogSettings->value("maxBackups").isNull())
+        mainLogSettings->setValue("maxBackups",1);
+
+    if(mainLogSettings->value("minLevel").isNull())
+        mainLogSettings->value("minLevel",QtCriticalMsg).toInt();
+
     Logger* logger=new FileLogger(mainLogSettings,10000,app);
     logger->installMsgHandler();
 
