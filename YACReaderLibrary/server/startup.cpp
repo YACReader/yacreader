@@ -54,6 +54,22 @@ void Startup::start() {
 	// Configure template loader and cache
 	QSettings* templateSettings=new QSettings(configFileName,QSettings::IniFormat,app);
 	templateSettings->beginGroup("templates");
+
+    if(templateSettings->value("cacheSize").isNull())
+        templateSettings->setValue("cacheSize","160000");
+
+    QString baseTemplatePath = QString("./server/templates");
+    QString templatePath;
+
+    #if defined Q_OS_UNIX && !defined Q_OS_MAC
+            templatePath=QFileInfo(QString(DATADIR)+"/yacreader",baseTemplatePath).absoluteFilePath();
+    #else
+            templatePath=QFileInfo(QCoreApplication::applicationDirPath(),baseTemplatePath).absoluteFilePath();
+    #endif
+
+    if(templateSettings->value("path").isNull())
+        templateSettings->setValue("path",templatePath);
+
 	Static::templateLoader=new TemplateCache(templateSettings,app);
 
 	// Configure session store
