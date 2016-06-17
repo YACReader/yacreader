@@ -11,12 +11,14 @@ TemplateCache::TemplateCache(QSettings* settings, QObject* parent)
     qDebug("TemplateCache: timeout=%i, size=%i",cacheTimeout,cache.maxCost());
 }
 
-QString TemplateCache::tryFile(QString localizedName) {
+QString TemplateCache::tryFile(QString localizedName)
+{
     qint64 now=QDateTime::currentMSecsSinceEpoch();
     // search in cache
     qDebug("TemplateCache: trying cached %s",qPrintable(localizedName));
     CacheEntry* entry=cache.object(localizedName);
-    if (entry && (cacheTimeout==0 || entry->created>now-cacheTimeout)) {
+    if (entry && (cacheTimeout==0 || entry->created>now-cacheTimeout))
+    {
         return entry->document;
     }
     // search on filesystem

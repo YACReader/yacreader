@@ -12,6 +12,7 @@
 #include <QTextCodec>
 #include <QFile>
 #include <QString>
+#include "templateglobal.h"
 
 /**
  Enhanced version of QString for template processing. Templates
@@ -37,7 +38,7 @@
  Example code to fill this template:
  <p><code><pre>
  Template t(QFile("test.tpl"),QTextCode::codecForName("UTF-8"));
- t.setVariable("user", "Stefan");
+ t.setVariable("username", "Stefan");
  t.setCondition("locked",false);
  t.loop("user",2);
  t.setVariable("user0.name,"Markus");
@@ -86,7 +87,7 @@
  @see TemplateCache
 */
 
-class Template : public QString {
+class DECLSPEC Template : public QString {
 public:
 
     /**

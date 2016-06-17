@@ -32,18 +32,22 @@ TemplateLoader::TemplateLoader(QSettings* settings, QObject* parent)
     }
     fileNameSuffix=settings->value("suffix",".tpl").toString();
     QString encoding=settings->value("encoding").toString();
-    if (encoding.isEmpty()) {
+    if (encoding.isEmpty())
+    {
         textCodec=QTextCodec::codecForLocale();
     }
-    else {
+    else
+    {
        textCodec=QTextCodec::codecForName(encoding.toLocal8Bit());
    }
    qDebug("TemplateLoader: path=%s, codec=%s",qPrintable(templatePath),textCodec->name().data());
 }
 
-TemplateLoader::~TemplateLoader() {}
+TemplateLoader::~TemplateLoader()
+{}
 
-QString TemplateLoader::tryFile(QString localizedName) {
+QString TemplateLoader::tryFile(QString localizedName)
+{
     QString fileName=templatePath+"/"+localizedName+fileNameSuffix;
     qDebug("TemplateCache: trying file %s",qPrintable(fileName));
     QFile file(fileName);
@@ -51,28 +55,33 @@ QString TemplateLoader::tryFile(QString localizedName) {
         file.open(QIODevice::ReadOnly);
         QString document=textCodec->toUnicode(file.readAll());
         file.close();
-        if (file.error()) {
+        if (file.error())
+        {
             qCritical("TemplateLoader: cannot load file %s, %s",qPrintable(fileName),qPrintable(file.errorString()));
             return "";
         }
-        else {
+        else
+        {
             return document;
         }
     }
     return "";
 }
 
-Template TemplateLoader::getTemplate(QString templateName, QString locales) {
+Template TemplateLoader::getTemplate(QString templateName, QString locales)
+{
     mutex.lock();
     QSet<QString> tried; // used to suppress duplicate attempts
     QStringList locs=locales.split(',',QString::SkipEmptyParts);
 
     // Search for exact match
-    foreach (QString loc,locs) {
+    foreach (QString loc,locs)
+    {
         loc.replace(QRegExp(";.*"),"");
         loc.replace('-','_');
         QString localizedName=templateName+"-"+loc.trimmed();
-        if (!tried.contains(localizedName)) {
+        if (!tried.contains(localizedName))
+        {
             QString document=tryFile(localizedName);
             if (!document.isEmpty()) {
                 mutex.unlock();
@@ -83,12 +92,15 @@ Template TemplateLoader::getTemplate(QString templateName, QString locales) {
     }
 
     // Search for correct language but any country
-    foreach (QString loc,locs) {
+    foreach (QString loc,locs)
+    {
         loc.replace(QRegExp("[;_-].*"),"");
         QString localizedName=templateName+"-"+loc.trimmed();
-        if (!tried.contains(localizedName)) {
+        if (!tried.contains(localizedName))
+        {
             QString document=tryFile(localizedName);
-            if (!document.isEmpty()) {
+            if (!document.isEmpty())
+            {
                 mutex.unlock();
                 return Template(document,localizedName);
             }
@@ -98,7 +110,8 @@ Template TemplateLoader::getTemplate(QString templateName, QString locales) {
 
     // Search for default file
     QString document=tryFile(templateName);
-    if (!document.isEmpty()) {
+    if (!document.isEmpty())
+    {
         mutex.unlock();
         return Template(document,templateName);
     }
