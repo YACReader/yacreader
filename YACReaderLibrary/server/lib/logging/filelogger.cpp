@@ -13,7 +13,6 @@
 #include <QDir>
 #include <QFileInfo>
 #include <stdio.h>
-#include "yacreader_global.h"
 
 void FileLogger::refreshSettings()
 {
@@ -23,7 +22,7 @@ void FileLogger::refreshSettings()
 
     // Load new config settings
     settings->sync();
-	fileName=settings->value("fileName","server_log.log").toString();
+    fileName=settings->value("fileName").toString();
     // Convert relative fileName to absolute, based on the directory of the config file.
 #ifdef Q_OS_WIN32
     if (QDir::isRelativePath(fileName) && settings->format()!=QSettings::NativeFormat)
@@ -31,14 +30,14 @@ void FileLogger::refreshSettings()
     if (QDir::isRelativePath(fileName))
 #endif
     {
-        QFileInfo configFile(YACReader::getSettingsPath());
-        fileName=QFileInfo(YACReader::getSettingsPath(),fileName).absoluteFilePath();
+        QFileInfo configFile(settings->fileName());
+        fileName=QFileInfo(configFile.absolutePath(),fileName).absoluteFilePath();
     }
-    maxSize=settings->value("maxSize",1048576).toLongLong();
-    maxBackups=settings->value("maxBackups",1).toInt();
+    maxSize=settings->value("maxSize",0).toLongLong();
+    maxBackups=settings->value("maxBackups",0).toInt();
     msgFormat=settings->value("msgFormat","{timestamp} {type} {msg}").toString();
     timestampFormat=settings->value("timestampFormat","yyyy-MM-dd hh:mm:ss.zzz").toString();
-    minLevel=static_cast<QtMsgType>(settings->value("minLevel",QtCriticalMsg).toInt());
+    minLevel=static_cast<QtMsgType>(settings->value("minLevel",0).toInt());
     bufferSize=settings->value("bufferSize",0).toInt();
 
     // Create new file if the filename has been changed
