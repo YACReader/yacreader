@@ -46,7 +46,7 @@ void Startup::start() {
         mainLogSettings->setValue("maxBackups",1);
 
     if(mainLogSettings->value("minLevel").isNull())
-        mainLogSettings->value("minLevel",QtCriticalMsg).toInt();
+        mainLogSettings->setValue("minLevel",QtCriticalMsg).toInt();
 
     Logger* logger=new FileLogger(mainLogSettings,10000,app);
     logger->installMsgHandler();
