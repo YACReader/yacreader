@@ -9,12 +9,11 @@
 #include <QStringList>
 #include <QDir>
 #include <QSet>
-#include <QCoreApplication>
 
 TemplateLoader::TemplateLoader(QSettings* settings, QObject* parent)
     : QObject(parent)
 {
-    templatePath=settings->value("path","./server/templates").toString();
+    templatePath=settings->value("path",".").toString();
     // Convert relative path to absolute, based on the directory of the config file.
 #ifdef Q_OS_WIN32
     if (QDir::isRelativePath(templatePath) && settings->format()!=QSettings::NativeFormat)
@@ -22,13 +21,8 @@ TemplateLoader::TemplateLoader(QSettings* settings, QObject* parent)
     if (QDir::isRelativePath(templatePath))
 #endif
     {
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
-        QFileInfo configFile(QString(DATADIR)+"/yacreader");
-        templatePath=QFileInfo(QString(DATADIR)+"/yacreader",templatePath).absoluteFilePath();
-#else
-        QFileInfo configFile(QCoreApplication::applicationDirPath());
-        templatePath=QFileInfo(QCoreApplication::applicationDirPath(),templatePath).absoluteFilePath();
-#endif
+        QFileInfo configFile(settings->fileName());
+        templatePath=QFileInfo(configFile.absolutePath(),templatePath).absoluteFilePath();
     }
     fileNameSuffix=settings->value("suffix",".tpl").toString();
     QString encoding=settings->value("encoding").toString();
