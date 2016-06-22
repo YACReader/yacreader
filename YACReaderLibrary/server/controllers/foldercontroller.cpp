@@ -11,6 +11,8 @@
 
 #include "qnaturalsorting.h"
 
+#include "yacreader_http_session.h"
+
 #include "QsLog.h"
 
 struct LibraryItemSorter
@@ -26,6 +28,7 @@ FolderController::FolderController() {}
 void FolderController::service(HttpRequest& request, HttpResponse& response)
 {
 	HttpSession session=Static::sessionStore->getSession(request,response,false);
+    YACReaderHttpSession *ySession = Static::yacreaderSessionStore.value(session.getId());
 
     response.setHeader("Content-Type", "text/html; charset=utf-8");
 	response.setHeader("Connection","close");
@@ -33,7 +36,7 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	//QString y = session.get("xxx").toString();
 	//response.writeText(QString("session xxx : %1 <br/>").arg(y));
 
-	Template t=Static::templateLoader->getTemplate("folder_"+session.getDeviceType(),request.getHeader("Accept-Language"));
+    Template t = Static::templateLoader->getTemplate("folder_"+ySession->getDeviceType(),request.getHeader("Accept-Language"));
 	t.enableWarnings();
     QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
 	QStringList pathElements = path.split('/');
@@ -85,17 +88,17 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 
     if(folderId == 1)
     {
-        session.clearNavigationPath();
-        session.pushNavigationItem(QPair<qulonglong,quint32>(folderId,page));
+        ySession->clearNavigationPath();
+        ySession->pushNavigationItem(QPair<qulonglong,quint32>(folderId,page));
         t.setVariable(QString("upurl"),"/");
     }
     else
     {
         if(fromUp)
-            session.popNavigationItem();
+            ySession->popNavigationItem();
         else //drill down or direct access
         {
-            QStack<QPair<qulonglong, quint32> > path = session.getNavigationPath();
+            QStack<QPair<qulonglong, quint32> > path = ySession->getNavigationPath();
             bool found=false;
             for(QStack<QPair<qulonglong, quint32> >::const_iterator itr = path.begin(); itr!=path.end(); itr++)
                 if(itr->first == folderId)
@@ -106,16 +109,16 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 
             if(found)
             {
-                while(session.topNavigationItem().first != folderId)
-                    session.popNavigationItem();
+                while(ySession->topNavigationItem().first != folderId)
+                    ySession->popNavigationItem();
 
-                session.updateTopItem(QPair<qulonglong,quint32>(folderId,page));
+                ySession->updateTopItem(QPair<qulonglong,quint32>(folderId,page));
             }
             else
-                session.pushNavigationItem(QPair<qulonglong,quint32>(folderId,page));
+                ySession->pushNavigationItem(QPair<qulonglong,quint32>(folderId,page));
         }
 
-        QStack<QPair<qulonglong, quint32> > path = session.getNavigationPath();
+        QStack<QPair<qulonglong, quint32> > path = ySession->getNavigationPath();
         if(path.count()>1)
         {
             QPair<qulonglong, quint32> parentItem = path.at(path.count()-2);
@@ -146,7 +149,7 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
 	int numFoldersAtCurrentPage = qMax(0,qMin(numFolders - indexCurrentPage, elementsPerPage));
 
     //PATH
-    QStack<QPair<qulonglong,quint32> > foldersPath = session.getNavigationPath();
+    QStack<QPair<qulonglong,quint32> > foldersPath = ySession->getNavigationPath();
     t.setVariable(QString("library.name"),libraryName);
     t.setVariable(QString("library.url"),QString("/library/%1/folder/1").arg(libraryId));
     t.loop("path",foldersPath.count()-1);
@@ -195,9 +198,9 @@ void FolderController::service(HttpRequest& request, HttpResponse& response)
                 const ComicDB * comic = (ComicDB *)item;
                 t.setVariable(QString("element%1.browse").arg(i),"");
                 //t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/comic/"+QString("%1").arg(comic->id));
-                if(!session.isComicOnDevice(comic->info.hash) && !session.isComicDownloaded(comic->info.hash))
+                if(!ySession->isComicOnDevice(comic->info.hash) && !ySession->isComicDownloaded(comic->info.hash))
                     t.setVariable(QString("element%1.download").arg(i),QString("<a onclick=\"this.innerHTML='IMPORTING';this.className='importedButton';\" class =\"importButton\" href=\"%1\">IMPORT</a>").arg("/library/"+QString::number(libraryId)+"/comic/"+QString("%1").arg(comic->id)));
-                else if (session.isComicOnDevice(comic->info.hash))
+                else if (ySession->isComicOnDevice(comic->info.hash))
                     t.setVariable(QString("element%1.download").arg(i),QString("<div class=\"importedButton\">IMPORTED</div>"));
                 else
                     t.setVariable(QString("element%1.download").arg(i),QString("<div class=\"importedButton\">IMPORTING</div>"));
