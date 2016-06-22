@@ -10,6 +10,7 @@
 #include <QMap>
 #include <QTimer>
 #include <QMutex>
+#include "httpglobal.h"
 #include "httpsession.h"
 #include "httpresponse.h"
 #include "httprequest.h"
@@ -25,17 +26,17 @@
   <code><pre>
   cookiePath=/
   cookieComment=Session ID
-  cookieDomain=stefanfrings.de
+  ;cookieDomain=stefanfrings.de
   </pre></code>
 */
 
-class HttpSessionStore : public QObject {
+class DECLSPEC HttpSessionStore : public QObject {
     Q_OBJECT
     Q_DISABLE_COPY(HttpSessionStore)
 public:
 
     /** Constructor. */
-    HttpSessionStore(QSettings* settings, QObject* parent);
+    HttpSessionStore(QSettings* settings, QObject* parent=NULL);
 
     /** Destructor */
     virtual ~HttpSessionStore();
@@ -75,13 +76,14 @@ public:
     /** Delete a session */
     void removeSession(HttpSession session);
 
+protected:
+    /** Storage for the sessions */
+    QMap<QByteArray,HttpSession> sessions;
+
 private:
 
     /** Configuration settings */
     QSettings* settings;
-
-    /** Storage for the sessions */
-    QMap<QByteArray,HttpSession> sessions;
 
     /** Timer to remove expired sessions */
     QTimer cleanupTimer;
@@ -98,7 +100,7 @@ private:
 private slots:
 
     /** Called every minute to cleanup expired sessions. */
-    void timerEvent();
+    void sessionTimerEvent();
 };
 
 #endif // HTTPSESSIONSTORE_H

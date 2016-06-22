@@ -6,6 +6,7 @@
 #ifndef HTTPREQUESTHANDLER_H
 #define HTTPREQUESTHANDLER_H
 
+#include "httpglobal.h"
 #include "httprequest.h"
 #include "httpresponse.h"
 
@@ -21,13 +22,16 @@
    @see StaticFileController which delivers static local files.
 */
 
-class HttpRequestHandler : public QObject {
+class DECLSPEC HttpRequestHandler : public QObject {
     Q_OBJECT
     Q_DISABLE_COPY(HttpRequestHandler)
 public:
 
-    /** Constructor */
-    HttpRequestHandler(QObject* parent=0);
+    /**
+     * Constructor.
+     * @param parent Parent object.
+     */
+    HttpRequestHandler(QObject* parent=NULL);
 
     /** Destructor */
     virtual ~HttpRequestHandler();
