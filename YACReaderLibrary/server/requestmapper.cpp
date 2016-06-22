@@ -29,6 +29,8 @@
 #include "db_helper.h"
 #include "yacreader_libraries.h"
 
+#include "yacreader_http_session.h"
+
 #include "QsLog.h"
 
 RequestMapper::RequestMapper(QObject* parent)
@@ -39,6 +41,8 @@ void RequestMapper::loadSession(HttpRequest & request, HttpResponse& response)
     HttpSession session=Static::sessionStore->getSession(request,response);
     if(session.contains("ySession")) //session is already alive check if it is needed to update comics
     {
+        YACReaderHttpSession *ySession = Static::yacreaderSessionStore.value(session.getId());
+
         QString postData = QString::fromUtf8(request.getBody());
 
         if(postData.contains("currentPage"))
@@ -48,26 +52,30 @@ void RequestMapper::loadSession(HttpRequest & request, HttpResponse& response)
 
             QList<QString> data = postData.split("\n");
             if(data.length() > 2) {
-                session.setDeviceType(data.at(0).split(":").at(1));
-                session.setDisplayType(data.at(1).split(":").at(1));
+                ySession->setDeviceType(data.at(0).split(":").at(1));
+                ySession->setDisplayType(data.at(1).split(":").at(1));
                 QList<QString> comics = data.at(2).split(":").at(1).split("\t");
-                session.clearComics();
+                ySession->clearComics();
                 foreach(QString hash,comics) {
-                    session.setComicOnDevice(hash);
+                    ySession->setComicOnDevice(hash);
                 }
             }
             else
             {
                 if(data.length()>1)
                 {
-                    session.setDeviceType(data.at(0).split(":").at(1));
-                    session.setDisplayType(data.at(1).split(":").at(1));
+                    ySession->setDeviceType(data.at(0).split(":").at(1));
+                    ySession->setDisplayType(data.at(1).split(":").at(1));
                 }
             }
         }
     }
     else
     {
+        YACReaderHttpSession *ySession = new YACReaderHttpSession(this);
+
+        Static::yacreaderSessionStore.insert(session.getId(), ySession);
+
         session.set("ySession","ok");
 
         QString postData = QString::fromUtf8(request.getBody());
@@ -77,18 +85,18 @@ void RequestMapper::loadSession(HttpRequest & request, HttpResponse& response)
 
         if(data.length() > 2)
         {
-            session.setDeviceType(data.at(0).split(":").at(1));
-            session.setDisplayType(data.at(1).split(":").at(1));
+            ySession->setDeviceType(data.at(0).split(":").at(1));
+            ySession->setDisplayType(data.at(1).split(":").at(1));
             QList<QString> comics = data.at(2).split(":").at(1).split("\t");
             foreach(QString hash,comics)
             {
-                session.setComicOnDevice(hash);
+                ySession->setComicOnDevice(hash);
             }
         }
         else //values by default, only for debug purposes.
         {
-            session.setDeviceType("ipad");
-            session.setDisplayType("@2x");
+            ySession->setDeviceType("ipad");
+            ySession->setDisplayType("@2x");
         }
 
     }
