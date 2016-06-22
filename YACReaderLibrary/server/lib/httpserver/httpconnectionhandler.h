@@ -6,12 +6,28 @@
 #ifndef HTTPCONNECTIONHANDLER_H
 #define HTTPCONNECTIONHANDLER_H
 
+#ifndef QT_NO_OPENSSL
+   #include <QSslConfiguration>
+#endif
 #include <QTcpSocket>
 #include <QSettings>
 #include <QTimer>
 #include <QThread>
+#include "httpglobal.h"
 #include "httprequest.h"
 #include "httprequesthandler.h"
+
+/** Alias type definition, for compatibility to different Qt versions */
+#if QT_VERSION >= 0x050000
+    typedef qintptr tSocketDescriptor;
+#else
+    typedef int tSocketDescriptor;
+#endif
+
+/** Alias for QSslConfiguration if OpenSSL is not supported */
+#ifdef QT_NO_OPENSSL
+  #define QSslConfiguration QObject
+#endif
 
 /**
   The connection handler accepts incoming connections and dispatches incoming requests to to a
@@ -26,26 +42,21 @@
   </pre></code>
   <p>
   The readTimeout value defines the maximum time to wait for a complete HTTP request.
-  @see HttpRequest for description of config settings maxRequestSize and maxMultiPartSize
+  @see HttpRequest for description of config settings maxRequestSize and maxMultiPartSize.
 */
-
-#if QT_VERSION >= 0x050000
-    typedef qintptr tSocketDescriptor;
-#else
-    typedef int tSocketDescriptor;
-#endif
-
-class HttpConnectionHandler : public QThread {
+class DECLSPEC HttpConnectionHandler : public QThread {
     Q_OBJECT
     Q_DISABLE_COPY(HttpConnectionHandler)
+
 public:
 
     /**
       Constructor.
       @param settings Configuration settings of the HTTP webserver
-      @param requestHandler handler that will process each incomin HTTP request
+      @param requestHandler Handler that will process each incoming HTTP request
+      @param sslConfiguration SSL (HTTPS) will be used if not NULL
     */
-    HttpConnectionHandler(QSettings* settings, HttpRequestHandler* requestHandler);
+    HttpConnectionHandler(QSettings* settings, HttpRequestHandler* requestHandler, QSslConfiguration* sslConfiguration=NULL);
 
     /** Destructor */
     virtual ~HttpConnectionHandler();
@@ -61,8 +72,8 @@ private:
     /** Configuration settings */
     QSettings* settings;
 
-    /** TCP socket of the current connection */
-    QTcpSocket socket;
+    /** TCP socket of the current connection  */
+    QTcpSocket* socket;
 
     /** Time for read timeout detection */
     QTimer readTimer;
@@ -76,8 +87,14 @@ private:
     /** This shows the busy-state from a very early time */
     bool busy;
 
-    /** Executes the htreads own event loop */
+    /** Configuration for SSL */
+    QSslConfiguration* sslConfiguration;
+
+    /** Executes the threads own event loop */
     void run();
+
+    /**  Create SSL or TCP socket */
+    void createSocket();
 
 public slots:
 

@@ -6,19 +6,20 @@
 #ifndef STATICFILECONTROLLER_H
 #define STATICFILECONTROLLER_H
 
+#include <QCache>
+#include <QMutex>
+#include "httpglobal.h"
 #include "httprequest.h"
 #include "httpresponse.h"
 #include "httprequesthandler.h"
-#include <QCache>
-#include <QMutex>
 
 /**
   Delivers static files. It is usually called by the applications main request handler when
-  the caller request a path that is mapped to static files.
+  the caller requests a path that is mapped to static files.
   <p>
   The following settings are required in the config file:
   <code><pre>
-  path=docroot
+  path=../docroot
   encoding=UTF-8
   maxAge=60000
   cacheTime=60000
@@ -39,54 +40,48 @@
   received a related HTTP request.
 */
 
-class StaticFileController : public HttpRequestHandler  {
-	Q_OBJECT
-	Q_DISABLE_COPY(StaticFileController);
+class DECLSPEC StaticFileController : public HttpRequestHandler  {
+    Q_OBJECT
+    Q_DISABLE_COPY(StaticFileController)
 public:
 
-	/** Constructor */
-	StaticFileController(QSettings* settings, QObject* parent = 0);
+    /** Constructor */
+    StaticFileController(QSettings* settings, QObject* parent = NULL);
 
-	/** Generates the response */
-	void service(HttpRequest& request, HttpResponse& response);
+    /** Generates the response */
+    void service(HttpRequest& request, HttpResponse& response);
 
 private:
 
-	/** Encoding of text files */
-	QString encoding;
+    /** Encoding of text files */
+    QString encoding;
 
-	/** Root directory of documents */
-	QString docroot;
+    /** Root directory of documents */
+    QString docroot;
 
-	/** Maximum age of files in the browser cache */
-	int maxAge;    
+    /** Maximum age of files in the browser cache */
+    int maxAge;
 
-	struct CacheEntry {
-		QByteArray document;
-		qint64 created;
-	};
+    struct CacheEntry {
+        QByteArray document;
+        qint64 created;
+        QByteArray filename;
+    };
 
-	/** Timeout for each cached file */
-	int cacheTimeout;
+    /** Timeout for each cached file */
+    int cacheTimeout;
 
+    /** Maximum size of files in cache, larger files are not cached */
+    int maxCachedFileSize;
 
-	/** Maximum size of files in cache, larger files are not cached */
-	int maxCachedFileSize;
+    /** Cache storage */
+    QCache<QString,CacheEntry> cache;
 
-	/** Cache storage */
-	QCache<QString,CacheEntry> cache;
+    /** Used to synchronize cache access for threads */
+    QMutex mutex;
 
-	/** Used to synchronize cache access for threads */
-	QMutex mutex;
-
-	/** Set a content-type header in the response depending on the ending of the filename */
-	void setContentType(QString file, HttpResponse& response) const;
-
-	QString getLocalizedFileName(QString fileName, QString locales, QString path) const;
-	QString getDeviceAwareFileName(QString fileName, QString device, QString locales, QString path) const;
-    QString getDeviceAwareFileName(QString fileName, QString device, QString display, QString locales, QString path) const;
-
-	bool exists(QString localizedName, QString path) const;
+    /** Set a content-type header in the response depending on the ending of the filename */
+    void setContentType(QString file, HttpResponse& response) const;
 };
 
 #endif // STATICFILECONTROLLER_H
