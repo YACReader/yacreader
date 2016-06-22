@@ -36,5 +36,5 @@ void LibrariesController::service(HttpRequest& request, HttpResponse& response)
 	}
 
     response.setStatus(200,"OK");
-    response.writeText(t,true);
+    response.write(t.toUtf8(),true);
 }

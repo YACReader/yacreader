@@ -32,7 +32,7 @@ void FolderContentController::service(HttpRequest& request, HttpResponse& respon
 
     serviceContent(libraryId, parentId, response);
 
-    response.writeText("",true);
+    response.write("",true);
 }
 
 void FolderContentController::serviceContent(const int &library, const qulonglong &folderId, HttpResponse &response)
@@ -54,17 +54,17 @@ void FolderContentController::serviceContent(const int &library, const qulonglon
         if((*itr)->isDir())
         {
             currentFolder = (Folder *)(*itr);
-            response.writeText(QString("f\t%1\t%2\t%3\t%4\t%5\r\n").arg(library).arg(currentFolder->id).arg(currentFolder->name).arg(currentFolder->getNumChildren()).arg(currentFolder->getFirstChildHash()));
+            response.write(QString("f\t%1\t%2\t%3\t%4\t%5\r\n").arg(library).arg(currentFolder->id).arg(currentFolder->name).arg(currentFolder->getNumChildren()).arg(currentFolder->getFirstChildHash()).toUtf8());
         }
         else
         {
             currentComic = (ComicDB *)(*itr);
-            response.writeText(QString("c\t%1\t%2\t%3\t%4\t%5\r\n").arg(library).arg(currentComic->id).arg(currentComic->getFileName()).arg(currentComic->getFileSize()).arg(currentComic->info.hash));
+            response.write(QString("c\t%1\t%2\t%3\t%4\t%5\r\n").arg(library).arg(currentComic->id).arg(currentComic->getFileName()).arg(currentComic->getFileSize()).arg(currentComic->info.hash).toUtf8());
         }
     }
 
     clock_t end = clock();
     double msecs = double(end - begin);
 
-    response.writeText(QString("%1ms").arg(msecs));
+    response.write(QString("%1ms").arg(msecs).toUtf8());
 }

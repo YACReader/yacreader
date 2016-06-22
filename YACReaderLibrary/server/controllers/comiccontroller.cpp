@@ -81,8 +81,8 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 
         response.setHeader("Content-Type", "text/plain; charset=utf-8");
 		//TODO this field is not used by the client!
-		response.writeText(QString("library:%1\r\n").arg(libraryName));
-        response.writeText(QString("libraryId:%1\r\n").arg(libraryId));
+        response.write(QString("library:%1\r\n").arg(libraryName).toUtf8());
+        response.write(QString("libraryId:%1\r\n").arg(libraryId).toUtf8());
         if(remoteComic) //send previous and next comics id
         {
             QList<LibraryItem *> siblings = DBHelper::getFolderComicsFromLibrary(libraryId, comic.parentId, true);
@@ -99,9 +99,9 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
             if(found)
             {
                 if(i>0)
-                    response.writeText(QString("previousComic:%1\r\n").arg(siblings.at(i-1)->id));
+                    response.write(QString("previousComic:%1\r\n").arg(siblings.at(i-1)->id).toUtf8());
                 if(i<siblings.length()-1)
-                    response.writeText(QString("nextComic:%1\r\n").arg(siblings.at(i+1)->id));
+                    response.write(QString("nextComic:%1\r\n").arg(siblings.at(i+1)->id).toUtf8());
             }
             else
             {
@@ -109,7 +109,7 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
             }
             qDeleteAll(siblings);
         }
-        response.writeText(comic.toTXT(),true);
+        response.write(comic.toTXT().toUtf8(),true);
 	}
 	else
 	{
