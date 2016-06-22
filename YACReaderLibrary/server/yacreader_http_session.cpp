@@ -54,7 +54,7 @@ qulonglong YACReaderHttpSession::getCurrentComicId()
 
 Comic* YACReaderHttpSession::getCurrentComic()
 {
-    comic;
+    return comic;
 }
 
 void YACReaderHttpSession::dismissCurrentComic()
@@ -70,7 +70,7 @@ void YACReaderHttpSession::setCurrentComic(qulonglong id, Comic * comic)
 {
     dismissCurrentComic();
     comicId = id;
-    comic = comic;
+    this->comic = comic;
 }
 
 //current comic (read)
@@ -114,12 +114,12 @@ void YACReaderHttpSession::setDeviceType(const QString & device)
 {
     //comicsOnDevice.clear(); //TODO crear un m�todo clear que limpie la sesi�n completamente
     //downloadedComics.clear();
-    device = device;
+    this->device = device;
 }
 
 void YACReaderHttpSession::setDisplayType(const QString & display)
 {
-    display = display;
+    this->display = display;
 }
 
 void YACReaderHttpSession::clearNavigationPath()
