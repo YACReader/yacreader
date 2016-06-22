@@ -17,6 +17,8 @@ HttpSessionStore* Static::sessionStore=0;
 
 StaticFileController* Static::staticFileController=0;
 
+QMap<QByteArray, YACReaderHttpSession *> Static::yacreaderSessionStore;
+
 QString Static::getConfigFileName() {
     return QString("%1/%2.ini").arg(getConfigDir()).arg(QCoreApplication::applicationName());
 }
