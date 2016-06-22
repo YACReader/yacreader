@@ -2,6 +2,7 @@
 
 #include "db_helper.h"
 #include "yacreader_libraries.h"
+#include "yacreader_http_session.h"
 
 #include "template.h"
 #include "../static.h"
@@ -18,6 +19,7 @@ ComicController::ComicController() {}
 void ComicController::service(HttpRequest& request, HttpResponse& response)
 {
 	HttpSession session=Static::sessionStore->getSession(request,response,false);
+    YACReaderHttpSession *ySession = Static::yacreaderSessionStore.value(session.getId());
 
     QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
 	QStringList pathElements = path.split('/');
@@ -44,7 +46,7 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
     ComicDB comic = DBHelper::getComicInfo(libraryId, comicId);
 
     if(!remoteComic)
-        session.setDownloadedComic(comic.info.hash);
+        ySession->setDownloadedComic(comic.info.hash);
 
     Comic * comicFile = FactoryComic::newComic(libraries.getPath(libraryId)+comic.path);
 
@@ -70,13 +72,13 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
         if(remoteComic)
         {
             QLOG_TRACE() << "remote comic requested";
-            session.setCurrentRemoteComic(comic.id, comicFile);
+            ySession->setCurrentRemoteComic(comic.id, comicFile);
 
         }
         else
         {
             QLOG_TRACE() << "comic requested";
-            session.setCurrentComic(comic.id, comicFile);
+            ySession->setCurrentComic(comic.id, comicFile);
         }
 
         response.setHeader("Content-Type", "text/plain; charset=utf-8");
