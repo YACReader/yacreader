@@ -6,6 +6,15 @@ YACReaderHttpSession::YACReaderHttpSession(QObject *parent)
 
 }
 
+YACReaderHttpSession::~YACReaderHttpSession()
+{
+    if(comic != nullptr)
+        delete comic;
+
+    if(remoteComic != nullptr)
+        delete remoteComic;
+}
+
 bool YACReaderHttpSession::isComicOnDevice(const QString & hash)
 {
     return comicsOnDevice.contains(hash);
