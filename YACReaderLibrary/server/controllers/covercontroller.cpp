@@ -11,7 +11,7 @@ CoverController::CoverController() {}
 void CoverController::service(HttpRequest& request, HttpResponse& response)
 {
 	HttpSession session=Static::sessionStore->getSession(request,response,false);
-    YACReaderHttpSession *ySession = Static::yacreaderSessionStore.value(session.getId());
+    YACReaderHttpSession *ySession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(session.getId());
 
 	response.setHeader("Content-Type", "image/jpeg");
 	response.setHeader("Connection","close");

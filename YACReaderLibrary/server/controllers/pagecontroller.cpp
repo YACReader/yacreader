@@ -18,7 +18,7 @@ PageController::PageController() {}
 void PageController::service(HttpRequest& request, HttpResponse& response)
 {
 	HttpSession session=Static::sessionStore->getSession(request,response,false);
-    YACReaderHttpSession *ySession = Static::yacreaderSessionStore.value(session.getId());
+    YACReaderHttpSession *ySession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(session.getId());
 
     QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
     bool remote = path.endsWith("remote");

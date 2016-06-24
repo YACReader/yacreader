@@ -41,7 +41,7 @@ void RequestMapper::loadSession(HttpRequest & request, HttpResponse& response)
     HttpSession session=Static::sessionStore->getSession(request,response);
     if(session.contains("ySession")) //session is already alive check if it is needed to update comics
     {
-        YACReaderHttpSession *ySession = Static::yacreaderSessionStore.value(session.getId());
+        YACReaderHttpSession *ySession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(session.getId());
 
         QString postData = QString::fromUtf8(request.getBody());
 
@@ -74,7 +74,7 @@ void RequestMapper::loadSession(HttpRequest & request, HttpResponse& response)
     {
         YACReaderHttpSession *ySession = new YACReaderHttpSession(this);
 
-        Static::yacreaderSessionStore.insert(session.getId(), ySession);
+        Static::yacreaderSessionStore->addYACReaderHttpSession(session.getId(), ySession);
 
         session.set("ySession","ok");
 

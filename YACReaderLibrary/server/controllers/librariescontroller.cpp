@@ -13,7 +13,7 @@ LibrariesController::LibrariesController() {}
 void LibrariesController::service(HttpRequest& request, HttpResponse& response)
 {
     HttpSession session=Static::sessionStore->getSession(request,response,false);
-    YACReaderHttpSession *ySession = Static::yacreaderSessionStore.value(session.getId());
+    YACReaderHttpSession *ySession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(session.getId());
 
     response.setHeader("Content-Type", "text/html; charset=utf-8");
     response.setHeader("Connection","close");
