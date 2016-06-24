@@ -82,6 +82,21 @@ void Startup::start() {
 	// Configure static file controller
 	QSettings* fileSettings=new QSettings(configFileName,QSettings::IniFormat,app);
 	fileSettings->beginGroup("docroot");
+
+    QString basedocroot = "./server/docroot";
+    QString docroot;
+
+    #if defined Q_OS_UNIX && ! defined Q_OS_MAC
+        QFileInfo configFile(QString(DATADIR)+"/yacreader");
+        docroot=QFileInfo(QString(DATADIR)+"/yacreader",basedocroot).absoluteFilePath();
+    #else
+        QFileInfo configFile(QCoreApplication::applicationDirPath());
+        docroot=QFileInfo(QCoreApplication::applicationDirPath(),basedocroot).absoluteFilePath();
+    #endif
+
+    if(fileSettings->value("path").isNull())
+        fileSettings->setValue("path",docroot);
+
 	Static::staticFileController=new StaticFileController(fileSettings,app);
 
 	// Configure and start the TCP listener
