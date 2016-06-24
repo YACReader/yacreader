@@ -82,6 +82,13 @@ private:
 
     /** Set a content-type header in the response depending on the ending of the filename */
     void setContentType(QString file, HttpResponse& response) const;
+
+    //YACReader------------------------------------------------------------------------
+    QString getLocalizedFileName(QString fileName, QString locales, QString path) const;
+    QString getDeviceAwareFileName(QString fileName, QString device, QString locales, QString path) const;
+    QString getDeviceAwareFileName(QString fileName, QString device, QString display, QString locales, QString path) const;
+
+    bool exists(QString localizedName, QString path) const;
 };
 
 #endif // STATICFILECONTROLLER_H
