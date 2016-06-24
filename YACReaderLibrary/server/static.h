@@ -11,7 +11,7 @@
 #include "httpsessionstore.h"
 #include "staticfilecontroller.h"
 
-#include "yacreader_http_session.h"
+#include "yacreader_http_session_store.h"
 
 /**
   This class contains some static resources that are used by the application.
@@ -53,7 +53,7 @@ public:
     /** Storage for session cookies */
     static HttpSessionStore* sessionStore;
 
-    static QMap<QByteArray, YACReaderHttpSession *> yacreaderSessionStore;
+    static YACReaderHttpSessionStore* yacreaderSessionStore;
 
     /** Controller for static files */
     static StaticFileController* staticFileController;
