@@ -77,6 +77,8 @@ void Startup::start() {
 	sessionSettings->beginGroup("sessions");
 	Static::sessionStore=new HttpSessionStore(sessionSettings,app);
 
+    Static::yacreaderSessionStore = new YACReaderHttpSessionStore(Static::sessionStore, sessionSettings, app);
+
 	// Configure static file controller
 	QSettings* fileSettings=new QSettings(configFileName,QSettings::IniFormat,app);
 	fileSettings->beginGroup("docroot");
