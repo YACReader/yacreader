@@ -22,7 +22,7 @@ YACReaderHttpSession *YACReaderHttpSessionStore::getYACReaderSessionHttpSession(
 {
     QMutexLocker locker(&mutex);
 
-    return sessions.value(id, nullptr);
+    return sessions.value(httpSessionId, nullptr);
 }
 
 void YACReaderHttpSessionStore::sessionTimerEvent()
