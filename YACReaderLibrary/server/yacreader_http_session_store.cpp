@@ -11,7 +11,7 @@ YACReaderHttpSessionStore::YACReaderHttpSessionStore(HttpSessionStore *sessionSt
     cleanupTimer.start(60000);
 }
 
-void YACReaderHttpSessionStore::setYACReaderHttpSession(const QByteArray &httpSessionId, YACReaderHttpSession *yacreaderHttpSession)
+void YACReaderHttpSessionStore::addYACReaderHttpSession(const QByteArray &httpSessionId, YACReaderHttpSession *yacreaderHttpSession)
 {
     QMutexLocker locker(&mutex);
 
