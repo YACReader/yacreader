@@ -20,7 +20,8 @@ HEADERS += \
     $$PWD/controllers/versioncontroller.h \
     $$PWD/controllers/foldercontentcontroller.h \
     $$PWD/controllers/tagscontroller.h \
-    $$PWD/yacreader_http_session.h
+    $$PWD/yacreader_http_session.h \
+    $$PWD/yacreader_http_session_store.h
 
 SOURCES += \
     $$PWD/static.cpp \
@@ -41,7 +42,8 @@ SOURCES += \
     $$PWD/controllers/versioncontroller.cpp \
     $$PWD/controllers/foldercontentcontroller.cpp \
     $$PWD/controllers/tagscontroller.cpp \
-    $$PWD/yacreader_http_session.cpp
+    $$PWD/yacreader_http_session.cpp \
+    $$PWD/yacreader_http_session_store.cpp
 	
 include(lib/logging/logging.pri)
 include(lib/httpserver/httpserver.pri)
