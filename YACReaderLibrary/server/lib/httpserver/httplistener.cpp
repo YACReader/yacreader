@@ -39,9 +39,19 @@ void HttpListener::listen()
     QString host = settings->value("host").toString();
     int port=settings->value("port").toInt();
     QTcpServer::listen(host.isEmpty() ? QHostAddress::Any : QHostAddress(host), port);
+
+    //YACReader---------------------------------------------
+    //try to listen even if the default port is no available
+    int i = 0;
+    while (!isListening() && i < 1000) {
+        listen(QHostAddress::Any, (rand() % 45535)+20000);
+        i++;
+    }
+    //------------------------------------------------------
+
     if (!isListening())
     {
-        qCritical("HttpListener: Cannot bind on port %i: %s",port,qPrintable(errorString()));
+        qDebug("HttpListener: Cannot bind on port %i: %s",port,qPrintable(errorString()));
     }
     else {
         qDebug("HttpListener: Listening on port %i",port);
