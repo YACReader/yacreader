@@ -44,7 +44,7 @@ void HttpListener::listen()
     //try to listen even if the default port is no available
     int i = 0;
     while (!isListening() && i < 1000) {
-        listen(QHostAddress::Any, (rand() % 45535)+20000);
+        QTcpServer::listen(QHostAddress::Any, (rand() % 45535)+20000);
         i++;
     }
     //------------------------------------------------------
