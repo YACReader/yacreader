@@ -75,6 +75,10 @@ void Startup::start() {
 	// Configure session store
 	QSettings* sessionSettings=new QSettings(configFileName,QSettings::IniFormat,app);
 	sessionSettings->beginGroup("sessions");
+
+    if(sessionSettings->value("expirationTime").isNull())
+        sessionSettings->setValue("expirationTime",864000000);
+
 	Static::sessionStore=new HttpSessionStore(sessionSettings,app);
 
     Static::yacreaderSessionStore = new YACReaderHttpSessionStore(Static::sessionStore, app);
@@ -103,6 +107,22 @@ void Startup::start() {
 	qDebug("ServiceHelper: Starting service");
 	QSettings* listenerSettings=new QSettings(configFileName,QSettings::IniFormat,app);
 	listenerSettings->beginGroup("listener");
+
+    if(listenerSettings->value("maxRequestSize").isNull())
+        listenerSettings->setValue("maxRequestSize","32000000");
+
+    if(listenerSettings->value("maxMultiPartSize").isNull())
+        listenerSettings->setValue("maxMultiPartSize","32000000");
+
+    if(listenerSettings->value("cleanupInterval").isNull())
+        listenerSettings->setValue("cleanupInterval",10000);
+
+    if(listenerSettings->value("minThreads").isNull())
+        listenerSettings->setValue("maxThreads",1000);
+
+    if(listenerSettings->value("minThreads").isNull())
+        listenerSettings->setValue("minThreads",50);
+
 	listener = new HttpListener(listenerSettings,new RequestMapper(app),app);
 
 	qDebug("ServiceHelper: Service has started");
