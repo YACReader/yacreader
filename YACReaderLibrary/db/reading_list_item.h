@@ -17,6 +17,7 @@ public:
     QVariant data(int column) const;
     virtual qulonglong getId() const;
     QList<QVariant> itemData;
+    virtual ~ListItem() {}
 };
 
 //------------------------------------------------------
