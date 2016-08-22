@@ -41,6 +41,8 @@ QString YACReader::colorToName(LabelColors colors)
     case YDark:
         return "dark";
     }
+
+    return "";
 }
 
 QString YACReader::labelColorToRGBString(LabelColors color)
@@ -84,7 +86,7 @@ QString YACReader::labelColorToRGBString(LabelColors color)
         return "#C8C8C8";
     case YDark:
         return "#ABABAB";
-
-
     }
+
+    return "";
 }

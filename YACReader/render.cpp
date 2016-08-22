@@ -876,7 +876,7 @@ void Render::nextDoublePage()
 		update();
 		emit pageChanged(currentIndex);
 	}
-	else if (hasLoadedComic() && (currentIndex >= numPages()-2))
+    else if (hasLoadedComic() && ((unsigned int)currentIndex >= numPages()-2))
 	{
 		emit isLast();
 	}
