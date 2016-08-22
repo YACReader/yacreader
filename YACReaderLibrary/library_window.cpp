@@ -2022,6 +2022,48 @@ void LibraryWindow::toggleFullScreen()
 	fullscreen = !fullscreen;
 }
 
+#ifdef Q_OS_WIN //fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
+void LibraryWindow::toFullScreen()
+{
+    fromMaximized = this->isMaximized();
+
+    sideBar->hide();
+    libraryToolBar->hide();
+
+    previousWindowFlags = windowFlags();
+    previousPos = pos();
+    previousSize = size();
+
+    showNormal();
+    setWindowFlags(previousWindowFlags | Qt::FramelessWindowHint);
+
+    const QRect r = windowHandle()->screen()->geometry();
+
+    move(r.x(), r.y());
+    resize(r.width(),r.height()+1);
+    show();
+
+    comicsViewsManager->comicsView->toFullScreen();
+}
+
+void LibraryWindow::toNormal()
+{
+    sideBar->show();
+    libraryToolBar->show();
+
+    setWindowFlags(previousWindowFlags);
+    move(previousPos);
+    resize(previousSize);
+    show();
+
+    if(fromMaximized)
+        showMaximized();
+
+    comicsViewsManager->comicsView->toNormal();
+}
+
+#else
+
 void LibraryWindow::toFullScreen()
 {
     fromMaximized = this->isMaximized();
@@ -2056,6 +2098,8 @@ void LibraryWindow::toNormal()
 #endif
 
 }
+
+#endif
 
 void LibraryWindow::setSearchFilter(const YACReader::SearchModifiers modifier, QString filter)
 {
