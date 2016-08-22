@@ -19,7 +19,9 @@ HEADERS += \
     #v2
     $$PWD/controllers/versioncontroller.h \
     $$PWD/controllers/foldercontentcontroller.h \
-    $$PWD/controllers/tagscontroller.h
+    $$PWD/controllers/tagscontroller.h \
+    $$PWD/yacreader_http_session.h \
+    $$PWD/yacreader_http_session_store.h
 
 SOURCES += \
     $$PWD/static.cpp \
@@ -39,10 +41,12 @@ SOURCES += \
     #v2
     $$PWD/controllers/versioncontroller.cpp \
     $$PWD/controllers/foldercontentcontroller.cpp \
-    $$PWD/controllers/tagscontroller.cpp
+    $$PWD/controllers/tagscontroller.cpp \
+    $$PWD/yacreader_http_session.cpp \
+    $$PWD/yacreader_http_session_store.cpp
 	
-include(lib/bfLogging/bfLogging.pri)
-include(lib/bfHttpServer/bfHttpServer.pri)
-include(lib/bfTemplateEngine/bfTemplateEngine.pri)
+include(lib/logging/logging.pri)
+include(lib/httpserver/httpserver.pri)
+include(lib/templateengine/templateengine.pri)
 
 DEFINES += SERVER_VERSION_NUMBER=\\\"2.0\\\"

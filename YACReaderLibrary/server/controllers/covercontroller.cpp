@@ -1,6 +1,7 @@
 #include "covercontroller.h"
 #include "db_helper.h"  //get libraries
 #include "yacreader_libraries.h"
+#include "yacreader_http_session.h"
 
 #include "template.h"
 #include "../static.h"
@@ -9,8 +10,8 @@ CoverController::CoverController() {}
 
 void CoverController::service(HttpRequest& request, HttpResponse& response)
 {
-
 	HttpSession session=Static::sessionStore->getSession(request,response,false);
+    YACReaderHttpSession *ySession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(session.getId());
 
 	response.setHeader("Content-Type", "image/jpeg");
 	response.setHeader("Connection","close");
@@ -47,7 +48,7 @@ void CoverController::service(HttpRequest& request, HttpResponse& response)
 	if (!img.isNull()) {
 
         int width = 80, height = 120;
-        if(session.getDisplayType()=="@2x")
+        if(ySession->getDisplayType()=="@2x")
         {
 			width = 160;
             height = 240;
@@ -66,7 +67,7 @@ void CoverController::service(HttpRequest& request, HttpResponse& response)
 
         if(folderCover)
         {
-             if(session.getDisplayType()=="@2x")
+             if(ySession->getDisplayType()=="@2x")
                 p.drawImage(0,0,QImage(":/images/f_overlayed_retina.png"));
              else
                 p.drawImage(0,0,QImage(":/images/f_overlayed.png"));

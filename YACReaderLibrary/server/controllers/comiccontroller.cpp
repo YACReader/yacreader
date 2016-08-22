@@ -2,6 +2,7 @@
 
 #include "db_helper.h"
 #include "yacreader_libraries.h"
+#include "yacreader_http_session.h"
 
 #include "template.h"
 #include "../static.h"
@@ -18,6 +19,7 @@ ComicController::ComicController() {}
 void ComicController::service(HttpRequest& request, HttpResponse& response)
 {
 	HttpSession session=Static::sessionStore->getSession(request,response,false);
+    YACReaderHttpSession *ySession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(session.getId());
 
     QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
 	QStringList pathElements = path.split('/');
@@ -44,7 +46,7 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
     ComicDB comic = DBHelper::getComicInfo(libraryId, comicId);
 
     if(!remoteComic)
-        session.setDownloadedComic(comic.info.hash);
+        ySession->setDownloadedComic(comic.info.hash);
 
     Comic * comicFile = FactoryComic::newComic(libraries.getPath(libraryId)+comic.path);
 
@@ -70,19 +72,19 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
         if(remoteComic)
         {
             QLOG_TRACE() << "remote comic requested";
-            session.setCurrentRemoteComic(comic.id, comicFile);
+            ySession->setCurrentRemoteComic(comic.id, comicFile);
 
         }
         else
         {
             QLOG_TRACE() << "comic requested";
-            session.setCurrentComic(comic.id, comicFile);
+            ySession->setCurrentComic(comic.id, comicFile);
         }
 
         response.setHeader("Content-Type", "text/plain; charset=utf-8");
 		//TODO this field is not used by the client!
-		response.writeText(QString("library:%1\r\n").arg(libraryName));
-        response.writeText(QString("libraryId:%1\r\n").arg(libraryId));
+        response.write(QString("library:%1\r\n").arg(libraryName).toUtf8());
+        response.write(QString("libraryId:%1\r\n").arg(libraryId).toUtf8());
         if(remoteComic) //send previous and next comics id
         {
             QList<LibraryItem *> siblings = DBHelper::getFolderComicsFromLibrary(libraryId, comic.parentId, true);
@@ -99,9 +101,9 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
             if(found)
             {
                 if(i>0)
-                    response.writeText(QString("previousComic:%1\r\n").arg(siblings.at(i-1)->id));
+                    response.write(QString("previousComic:%1\r\n").arg(siblings.at(i-1)->id).toUtf8());
                 if(i<siblings.length()-1)
-                    response.writeText(QString("nextComic:%1\r\n").arg(siblings.at(i+1)->id));
+                    response.write(QString("nextComic:%1\r\n").arg(siblings.at(i+1)->id).toUtf8());
             }
             else
             {
@@ -109,7 +111,7 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
             }
             qDeleteAll(siblings);
         }
-        response.writeText(comic.toTXT(),true);
+        response.write(comic.toTXT().toUtf8(),true);
 	}
 	else
 	{
