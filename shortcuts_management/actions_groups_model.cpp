@@ -7,11 +7,15 @@ ActionsGroupsModel::ActionsGroupsModel(QObject *parent) :
 
 int ActionsGroupsModel::rowCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent);
+
     return groups.length();
 }
 
 int ActionsGroupsModel::columnCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent);
+
     return 1;
 }
 
@@ -39,6 +43,8 @@ QVariant ActionsGroupsModel::data(const QModelIndex &index, int role) const
 
 QModelIndex ActionsGroupsModel::parent(const QModelIndex &index) const
 {
+    Q_UNUSED(index);
+
     return QModelIndex();
 }
 

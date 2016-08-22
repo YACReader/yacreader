@@ -63,18 +63,10 @@
 #include "api_key_dialog.h"
 //#include "yacreader_social_dialog.h"
 
-#include "classic_comics_view.h"
-#include "grid_comics_view.h"
-#include "comics_view_transition.h"
-#include "empty_folder_widget.h"
-#include "empty_label_widget.h"
-#include "empty_special_list.h"
-#include "empty_reading_list_widget.h"
+#include "comics_view.h"
 
 #include "edit_shortcuts_dialog.h"
 #include "shortcuts_manager.h"
-
-#include "no_search_results_widget.h"
 
 #include "comic_files_manager.h"
 
@@ -87,6 +79,8 @@
 
 #include "reading_list_item.h"
 #include "opengl_checker.h"
+
+#include "yacreader_comics_views_manager.h"
 
 #include "QsLog.h"
 
@@ -140,7 +134,7 @@ void LibraryWindow::setupUI()
 	createToolBars();
 	createMenus();
 
-    navigationController = new YACReaderNavigationController(this);
+    navigationController = new YACReaderNavigationController(this, comicsViewsManager);
 
 	createConnections();
 
@@ -237,37 +231,14 @@ void LibraryWindow::doLayout()
     readingListsTitle->addSpacing(3);
 
 	//FINAL LAYOUT-------------------------------------------------------------
-    comicsViewStack = new QStackedWidget();
 
-    if(!settings->contains(COMICS_VIEW_STATUS) || settings->value(COMICS_VIEW_STATUS) == Flow) {
-        comicsView = classicComicsView = new ClassicComicsView();
-        comicsViewStatus = Flow;
-        //comicsViewStack->setCurrentIndex(Flow);
-    } else {
-        comicsView = gridComicsView = new GridComicsView();
-        connect(optionsDialog, SIGNAL(optionsChanged()), gridComicsView, SLOT(updateBackgroundConfig()));
-        comicsViewStatus = Grid;
-        //comicsViewStack->setCurrentIndex(Grid);
-    }
-
-    doComicsViewConnections();
-
-    comicsViewStack->addWidget(comicsViewTransition = new ComicsViewTransition());
-    comicsViewStack->addWidget(emptyFolderWidget = new EmptyFolderWidget());
-    comicsViewStack->addWidget(emptyLabelWidget = new EmptyLabelWidget());
-    comicsViewStack->addWidget(emptySpecialList = new EmptySpecialListWidget());
-    comicsViewStack->addWidget(emptyReadingList = new EmptyReadingListWidget());
-    comicsViewStack->addWidget(noSearchResultsWidget = new NoSearchResultsWidget());
-
-    comicsViewStack->addWidget(comicsView);
-
-    comicsViewStack->setCurrentWidget(comicsView);
+    comicsViewsManager = new YACReaderComicsViewsManager(settings, this);
 
 	sHorizontal->addWidget(sideBar);
 #ifndef Q_OS_MAC
 	QVBoxLayout * rightLayout = new QVBoxLayout;
 	rightLayout->addWidget(libraryToolBar);
-    rightLayout->addWidget(comicsViewStack);
+    rightLayout->addWidget(comicsViewsManager->containerWidget());
 
 	rightLayout->setMargin(0);
 	rightLayout->setSpacing(0);
@@ -277,7 +248,7 @@ void LibraryWindow::doLayout()
 
 	sHorizontal->addWidget(rightWidget);
 #else
-    sHorizontal->addWidget(comicsViewStack);
+    sHorizontal->addWidget(comicsViewsManager->containerWidget());
 #endif
 	
 	sHorizontal->setStretchFactor(0,0);
@@ -433,40 +404,12 @@ void LibraryWindow::doModels()
     foldersModelProxy = new FolderModelProxy();
     //foldersModelProxy->setSourceModel(foldersModel);
 	//comics
-    comicsModel =  new ComicModel();
+    comicsModel =  new ComicModel(this);
     //lists
     listsModel = new ReadingListModel();
     listsModelProxy = new ReadingListModelProxy();
 
     //setSearchFilter(YACReader::NoModifiers, ""); //clear search filter
-}
-
-void LibraryWindow::disconnectComicsViewConnections(ComicsView * widget)
-{
-    disconnect(widget, SIGNAL(comicRated(int,QModelIndex)), comicsModel, SLOT(updateRating(int,QModelIndex)));
-    disconnect(showHideMarksAction,SIGNAL(toggled(bool)),widget,SLOT(setShowMarks(bool)));
-    disconnect(widget,SIGNAL(selected(unsigned int)),this,SLOT(openComic()));
-    disconnect(widget,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openComic()));
-    disconnect(selectAllComicsAction,SIGNAL(triggered()),widget,SLOT(selectAll()));
-    disconnect(comicsView, SIGNAL(copyComicsToCurrentFolder(QList<QPair<QString, QString> >)), this, SLOT(copyAndImportComicsToCurrentFolder(QList<QPair<QString, QString> >)));
-    disconnect(comicsView, SIGNAL(moveComicsToCurrentFolder(QList<QPair<QString, QString> >)), this, SLOT(moveAndImportComicsToCurrentFolder(QList<QPair<QString, QString> >)));
-    disconnect(comicsView,SIGNAL(customContextMenuViewRequested(QPoint)),this,SLOT(showComicsViewContextMenu(QPoint)));
-    disconnect(comicsView,SIGNAL(customContextMenuItemRequested(QPoint)),this,SLOT(showComicsItemContextMenu(QPoint)));
-}
-
-void LibraryWindow::doComicsViewConnections()
-{
-    connect(comicsView, SIGNAL(comicRated(int,QModelIndex)), comicsModel, SLOT(updateRating(int,QModelIndex)));
-    connect(showHideMarksAction,SIGNAL(toggled(bool)),comicsView,SLOT(setShowMarks(bool)));
-    connect(comicsView,SIGNAL(selected(unsigned int)),this,SLOT(openComic()));
-    connect(comicsView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(openComic()));
-    connect(selectAllComicsAction,SIGNAL(triggered()),comicsView,SLOT(selectAll()));
-
-    connect(comicsView,SIGNAL(customContextMenuViewRequested(QPoint)),this,SLOT(showComicsViewContextMenu(QPoint)));
-    connect(comicsView,SIGNAL(customContextMenuItemRequested(QPoint)),this,SLOT(showComicsItemContextMenu(QPoint)));
-    //Drops
-    connect(comicsView, SIGNAL(copyComicsToCurrentFolder(QList<QPair<QString, QString> >)), this, SLOT(copyAndImportComicsToCurrentFolder(QList<QPair<QString, QString> >)));
-    connect(comicsView, SIGNAL(moveComicsToCurrentFolder(QList<QPair<QString, QString> >)), this, SLOT(moveAndImportComicsToCurrentFolder(QList<QPair<QString, QString> >)));
 }
 
 void LibraryWindow::createActions()
@@ -647,10 +590,14 @@ void LibraryWindow::createActions()
     toggleComicsViewAction = new QAction(tr("Change between comics views"),this);
     toggleComicsViewAction->setToolTip(tr("Change between comics views"));
     QIcon icoViewsButton;
+
     if(!settings->contains(COMICS_VIEW_STATUS) || settings->value(COMICS_VIEW_STATUS) == Flow)
         icoViewsButton.addFile(":/images/main_toolbar/grid.png", QSize(), QIcon::Normal);
+    else if(settings->value(COMICS_VIEW_STATUS) == Grid)
+        icoViewsButton.addFile(":/images/main_toolbar/info.png", QSize(), QIcon::Normal);
     else
         icoViewsButton.addFile(":/images/main_toolbar/flow.png", QSize(), QIcon::Normal);
+
     toggleComicsViewAction->setData(TOGGLE_COMICS_VIEW_ACTION_YL);
     toggleComicsViewAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_COMICS_VIEW_ACTION_YL));
     toggleComicsViewAction->setIcon(icoViewsButton);
@@ -930,7 +877,7 @@ void LibraryWindow::createToolBars()
 	editInfoToolBar->addAction(deleteComicsAction);
 
 
-    comicsView->setToolBar(editInfoToolBar);
+    comicsViewsManager->comicsView->setToolBar(editInfoToolBar);
 }
 
 void LibraryWindow::createMenus()
@@ -1109,7 +1056,7 @@ void LibraryWindow::createConnections()
 #ifndef Q_OS_MAC
     connect(toggleFullScreenAction,SIGNAL(triggered()),this,SLOT(toggleFullScreen()));
 #endif
-    connect(toggleComicsViewAction,SIGNAL(triggered()),this,SLOT(toggleComicsView()));
+    connect(toggleComicsViewAction,SIGNAL(triggered()),comicsViewsManager,SLOT(toggleComicsView()));
     connect(optionsAction, SIGNAL(triggered()),optionsDialog,SLOT(show()));
 #ifdef SERVER_RELEASE
     connect(serverConfigAction, SIGNAL(triggered()), serverConfigDialog, SLOT(show()));
@@ -1143,14 +1090,9 @@ void LibraryWindow::createConnections()
 
     //connect(socialAction,SIGNAL(triggered()),this,SLOT(showSocial()));
 
-    connect(comicsViewTransition,SIGNAL(transitionFinished()),this,SLOT(showComicsView()));
-
     //connect(comicsModel,SIGNAL(isEmpty()),this,SLOT(showEmptyFolderView()));
     //connect(comicsModel,SIGNAL(searchNumResults(int)),this,SLOT(checkSearchNumResults(int)));
     //connect(emptyFolderWidget,SIGNAL(subfolderSelected(QModelIndex,int)),this,SLOT(selectSubfolder(QModelIndex,int)));
-    //Drops
-    connect(emptyFolderWidget, SIGNAL(copyComicsToCurrentFolder(QList<QPair<QString, QString> >)), this, SLOT(copyAndImportComicsToCurrentFolder(QList<QPair<QString, QString> >)));
-    connect(emptyFolderWidget, SIGNAL(moveComicsToCurrentFolder(QList<QPair<QString, QString> >)), this, SLOT(moveAndImportComicsToCurrentFolder(QList<QPair<QString, QString> >)));
 
     connect(showEditShortcutsAction,SIGNAL(triggered()),editShortcutsDialog,SLOT(show()));
 
@@ -1200,7 +1142,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 					}
 					else
                     {
-                        comicsView->setModel(NULL);
+                        comicsViewsManager->comicsView->setModel(NULL);
 						foldersView->setModel(NULL);
                         listsView->setModel(NULL);
 						disableAllActions();//TODO comprobar que se deben deshabilitar
@@ -1257,7 +1199,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 					if(ret == QMessageBox::Yes)
 						QDesktopServices::openUrl(QUrl("http://www.yacreader.com"));
 
-                    comicsView->setModel(NULL);
+                    comicsViewsManager->comicsView->setModel(NULL);
 					foldersView->setModel(NULL);
                     listsView->setModel(NULL);
 					disableAllActions();//TODO comprobar que se deben deshabilitar
@@ -1268,7 +1210,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 		}
 		else
 		{
-            comicsView->setModel(NULL);
+            comicsViewsManager->comicsView->setModel(NULL);
 			foldersView->setModel(NULL);
             listsView->setModel(NULL);
 			disableAllActions();//TODO comprobar que se deben deshabilitar
@@ -1325,10 +1267,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 
 void LibraryWindow::loadCoversFromCurrentModel()
 {
-    //TODO this is a workaround for the crash in GridComicsView::setModel crash on views switching
-    if(typeid(*comicsView) == typeid(GridComicsView))
-        comicsView->setModel(new ComicModel());
-    comicsView->setModel(comicsModel);
+    comicsViewsManager->comicsView->setModel(comicsModel);
 }
 
 void LibraryWindow::copyAndImportComicsToCurrentFolder(const QList<QPair<QString, QString> > &comics)
@@ -1521,7 +1460,7 @@ void LibraryWindow::addFolderToCurrentIndex()
             navigationController->loadFolderInfo(newIndex);
             historyController->updateHistory(YACReaderLibrarySourceContainer(newIndex,YACReaderLibrarySourceContainer::Folder));
             //a new folder is always an empty folder
-            showEmptyFolderView();
+            comicsViewsManager->showEmptyFolderView();
         }
     }
 }
@@ -1694,7 +1633,7 @@ void LibraryWindow::showComicsViewContextMenu(const QPoint &point)
     menu.addAction(toggleFullScreenAction);
 #endif
 
-    menu.exec(comicsView->mapToGlobal(point));
+    menu.exec(comicsViewsManager->comicsView->mapToGlobal(point));
 }
 
 void LibraryWindow::showComicsItemContextMenu(const QPoint &point)
@@ -1722,7 +1661,7 @@ void LibraryWindow::showComicsItemContextMenu(const QPoint &point)
     QMenu subMenu;
     setupAddToSubmenu(subMenu);
 
-    menu.exec(comicsView->mapToGlobal(point));
+    menu.exec(comicsViewsManager->comicsView->mapToGlobal(point));
 }
 
 void LibraryWindow::setupAddToSubmenu(QMenu &menu)
@@ -1819,7 +1758,7 @@ void LibraryWindow::openComic()
 {
 	if(!importedCovers)
 	{
-        ComicDB comic = comicsModel->getComic(comicsView->currentIndex());
+        ComicDB comic = comicsModel->getComic(comicsViewsManager->comicsView->currentIndex());
         QString path = currentPath();
         QList<ComicDB> siblings = comicsModel->getAllComics();
 
@@ -1972,7 +1911,7 @@ void LibraryWindow::deleteCurrentLibrary()
     d.removeRecursively();
 	if(libraries.isEmpty())//no more libraries available.
 	{
-        comicsView->setModel(NULL);
+        comicsViewsManager->comicsView->setModel(NULL);
 		foldersView->setModel(NULL);
         listsView->setModel(NULL);
 
@@ -1997,7 +1936,7 @@ void LibraryWindow::removeLibrary()
 		//selectedLibrary->setCurrentIndex(0);
 		if(libraries.isEmpty())//no more libraries available.
 		{
-            comicsView->setModel(NULL);
+            comicsViewsManager->comicsView->setModel(NULL);
 			foldersView->setModel(NULL);
             listsView->setModel(NULL);
 
@@ -2069,7 +2008,7 @@ void LibraryWindow::setRootIndex()
 		}
 		else
 		{
-            comicsView->setModel(NULL);
+            comicsViewsManager->comicsView->setModel(NULL);
 		}
 
         foldersView->selectionModel()->clear();
@@ -2083,6 +2022,7 @@ void LibraryWindow::toggleFullScreen()
 	fullscreen = !fullscreen;
 }
 
+#ifdef Q_OS_WIN //fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
 void LibraryWindow::toFullScreen()
 {
     fromMaximized = this->isMaximized();
@@ -2090,7 +2030,48 @@ void LibraryWindow::toFullScreen()
     sideBar->hide();
     libraryToolBar->hide();
 
-    comicsView->toFullScreen();
+    previousWindowFlags = windowFlags();
+    previousPos = pos();
+    previousSize = size();
+
+    showNormal();
+    setWindowFlags(previousWindowFlags | Qt::FramelessWindowHint);
+
+    const QRect r = windowHandle()->screen()->geometry();
+
+    move(r.x(), r.y());
+    resize(r.width(),r.height()+1);
+    show();
+
+    comicsViewsManager->comicsView->toFullScreen();
+}
+
+void LibraryWindow::toNormal()
+{
+    sideBar->show();
+    libraryToolBar->show();
+
+    setWindowFlags(previousWindowFlags);
+    move(previousPos);
+    resize(previousSize);
+    show();
+
+    if(fromMaximized)
+        showMaximized();
+
+    comicsViewsManager->comicsView->toNormal();
+}
+
+#else
+
+void LibraryWindow::toFullScreen()
+{
+    fromMaximized = this->isMaximized();
+
+    sideBar->hide();
+    libraryToolBar->hide();
+
+    comicsViewsManager->comicsView->toFullScreen();
 
     showFullScreen();
 }
@@ -2099,7 +2080,7 @@ void LibraryWindow::toNormal()
 {
     sideBar->show();
 
-    comicsView->toNormal();
+    comicsViewsManager->comicsView->toNormal();
 
     if(fromMaximized)
         showMaximized();
@@ -2118,6 +2099,8 @@ void LibraryWindow::toNormal()
 
 }
 
+#endif
+
 void LibraryWindow::setSearchFilter(const YACReader::SearchModifiers modifier, QString filter)
 {
     if(!filter.isEmpty())
@@ -2125,14 +2108,14 @@ void LibraryWindow::setSearchFilter(const YACReader::SearchModifiers modifier, Q
         status = LibraryWindow::Searching;
         foldersModelProxy->setFilter(modifier, filter, true);//includeComicsCheckBox->isChecked());
         comicsModel->setupModelData(modifier, filter, foldersModel->getDatabase());
-        comicsView->enableFilterMode(true);
-        comicsView->setModel(comicsModel); //TODO, columns are messed up after ResetModel some times, this shouldn't be necesary
+        comicsViewsManager->comicsView->enableFilterMode(true);
+        comicsViewsManager->comicsView->setModel(comicsModel); //TODO, columns are messed up after ResetModel some times, this shouldn't be necesary
         foldersView->expandAll();
 
         if(comicsModel->rowCount() == 0)
-            showNoSearchResultsView();
+            comicsViewsManager->showNoSearchResultsView();
         else
-            showComicsView();
+            comicsViewsManager->showComicsView();
     }
     else if(status == LibraryWindow::Searching)
     {//if no searching, then ignore this
@@ -2144,7 +2127,7 @@ void LibraryWindow::setSearchFilter(const YACReader::SearchModifiers modifier, Q
 void LibraryWindow::clearSearchFilter()
 {
     foldersModelProxy->clear();
-    comicsView->enableFilterMode(false);
+    comicsViewsManager->comicsView->enableFilterMode(false);
     foldersView->collapseAll();
     status = LibraryWindow::Normal;
 }
@@ -2219,110 +2202,12 @@ void LibraryWindow::resetComicRating()
     comicsModel->finishTransaction();
 }
 
-void LibraryWindow::switchToComicsView(ComicsView * from, ComicsView * to)
-{
-    //setup views
-    disconnectComicsViewConnections(from);
-    from->close();
-
-    comicsView = to;
-    doComicsViewConnections();
-
-    comicsView->setToolBar(editInfoToolBar);
-
-    comicsViewStack->removeWidget(from);
-    comicsViewStack->addWidget(comicsView);
-
-    delete from;
-
-    //load content into current view
-    loadCoversFromCurrentModel();
-
-    if(!searchEdit->text().isEmpty())
-    {
-       comicsView->enableFilterMode(true);
-    }
-}
-
-void LibraryWindow::showComicsViewTransition()
-{
-    comicsViewStack->setCurrentWidget(comicsViewTransition);
-    comicsViewTransition->startMovie();
-}
-
-void LibraryWindow::toggleComicsView_delayed()
-{
-    if(comicsViewStatus == Flow){
-        QIcon icoViewsButton;
-        icoViewsButton.addFile(":/images/main_toolbar/flow.png", QSize(), QIcon::Normal);
-        toggleComicsViewAction->setIcon(icoViewsButton);
-#ifdef Q_OS_MAC
-        libraryToolBar->updateViewSelectorIcon(icoViewsButton);
-#endif
-        switchToComicsView(classicComicsView, gridComicsView = new GridComicsView());
-        connect(optionsDialog, SIGNAL(optionsChanged()), gridComicsView, SLOT(updateBackgroundConfig()));
-        comicsViewStatus = Grid;
-    }
-    else{
-        QIcon icoViewsButton;
-        icoViewsButton.addFile(":/images/main_toolbar/grid.png", QSize(), QIcon::Normal);
-        toggleComicsViewAction->setIcon(icoViewsButton);
-#ifdef Q_OS_MAC
-        libraryToolBar->updateViewSelectorIcon(icoViewsButton);
-#endif
-        switchToComicsView(gridComicsView, classicComicsView = new ClassicComicsView());
-        comicsViewStatus = Flow;
-    }
-
-    settings->setValue(COMICS_VIEW_STATUS, comicsViewStatus);
-}
-
-void LibraryWindow::showComicsView()
-{
-    comicsViewStack->setCurrentWidget(comicsView);
-}
-
-void LibraryWindow::showEmptyFolderView()
-{
-    comicsViewStack->setCurrentWidget(emptyFolderWidget);
-}
-
-void LibraryWindow::showEmptyLabelView()
-{
-    comicsViewStack->setCurrentWidget(emptyLabelWidget);
-}
-
-void LibraryWindow::showEmptySpecialList()
-{
-    comicsViewStack->setCurrentWidget(emptySpecialList);
-}
-
-void LibraryWindow::showEmptyReadingListWidget()
-{
-    comicsViewStack->setCurrentWidget(emptyReadingList);
-}
-
-void LibraryWindow::showNoSearchResultsView()
-{
-    comicsViewStack->setCurrentWidget(noSearchResultsWidget);
-}
-
-//TODO recover the current comics selection and restore it in the destination
-void LibraryWindow::toggleComicsView()
-{
-    if(comicsViewStack->currentWidget()==comicsView) {
-        QTimer::singleShot(0,this,SLOT(showComicsViewTransition()));
-        QTimer::singleShot(32,this,SLOT(toggleComicsView_delayed()));
-    } else
-        toggleComicsView_delayed();
-}
-
 void LibraryWindow::checkSearchNumResults(int numResults)
 {
     if(numResults == 0)
-        showNoSearchResultsView();
+        comicsViewsManager->showNoSearchResultsView();
     else
-        showComicsView();
+        comicsViewsManager->showComicsView();
 }
 
 void LibraryWindow::asignNumbers()
@@ -2348,14 +2233,14 @@ void LibraryWindow::asignNumbers()
     const QModelIndex & mi = comicsModel->getIndexFromId(edited);
     if(mi.isValid())
     {
-        comicsView->scrollTo(mi,QAbstractItemView::PositionAtCenter);
-        comicsView->setCurrentIndex(mi);
+        comicsViewsManager->comicsView->scrollTo(mi,QAbstractItemView::PositionAtCenter);
+        comicsViewsManager->comicsView->setCurrentIndex(mi);
     }
 }
 
 void LibraryWindow::openContainingFolderComic()
 {
-QModelIndex modelIndex = comicsView->currentIndex();
+QModelIndex modelIndex = comicsViewsManager->comicsView->currentIndex();
 QFileInfo file = QDir::cleanPath(currentPath() + comicsModel->getComicPath(modelIndex));
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
 	QString path = file.absolutePath();
@@ -2435,7 +2320,7 @@ void LibraryWindow::importLibrary(QString clc,QString destPath,QString name)
 void LibraryWindow::reloadOptions()
 {
 	//comicFlow->setFlowType(flowType);
-    comicsView->updateConfig(settings);
+    comicsViewsManager->comicsView->updateConfig(settings);
 }
 
 QString LibraryWindow::currentPath()
@@ -2475,7 +2360,7 @@ void LibraryWindow::closeEvent ( QCloseEvent * event )
     s->stop();
     settings->setValue(MAIN_WINDOW_GEOMETRY, saveGeometry());
 
-    comicsView->close();
+    comicsViewsManager->comicsView->close();
     sideBar->close();
 
     QApplication::instance()->processEvents();
@@ -2534,14 +2419,14 @@ QModelIndexList LibraryWindow::getSelectedComics()
 {
 	//se fuerza a que haya almenos una fila seleccionada TODO comprobar se se puede forzar a la tabla a que lo haga automáticamente
     //avoid selection.count()==0 forcing selection in comicsView
-    QModelIndexList selection = comicsView->selectionModel()->selectedRows();
+    QModelIndexList selection = comicsViewsManager->comicsView->selectionModel()->selectedRows();
     QLOG_TRACE() << "selection count " << selection.length();
 	qSort(selection.begin(),selection.end(),lessThanModelIndexRow);
 
     if(selection.count()==0)
 	{
-        comicsView->selectIndex(0);
-        selection = comicsView->selectionModel()->selectedRows();
+        comicsViewsManager->comicsView->selectIndex(0);
+        selection = comicsViewsManager->comicsView->selectionModel()->selectedRows();
     }
 	return selection;
 }

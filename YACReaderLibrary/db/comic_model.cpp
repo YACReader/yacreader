@@ -42,6 +42,11 @@ int ComicModel::columnCount(const QModelIndex &parent) const
 
 bool ComicModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
 {
+    Q_UNUSED(action);
+    Q_UNUSED(row);
+    Q_UNUSED(column);
+    Q_UNUSED(parent);
+
     if(!enableResorting)
         return false;
     return data->formats().contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat);
@@ -1102,8 +1107,8 @@ void ComicModel::deleteComicsFromFavorites(const QList<QModelIndex> &comicsList)
     db.close();
     QSqlDatabase::removeDatabase(_databasePath);
 
-    deleteComicsFromModel(comicsList);
-
+    if(mode == Favorites)
+        deleteComicsFromModel(comicsList);
 }
 
 void ComicModel::deleteComicsFromLabel(const QList<QModelIndex> &comicsList, qulonglong labelId)
@@ -1150,6 +1155,19 @@ void ComicModel::deleteComicsFromModel(const QList<QModelIndex> &comicsList)
         emit isEmpty();
 }
 
+bool ComicModel::isFavorite(const QModelIndex &index)
+{
+    bool isFavorite;
+
+    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+
+    isFavorite = DBHelper::isFavoriteComic(_data[index.row()]->data(Id).toLongLong(),db);
+
+    db.close();
+    QSqlDatabase::removeDatabase(_databasePath);
+
+    return isFavorite;
+}
 
 void ComicModel::updateRating(int rating, QModelIndex mi)
 {
