@@ -1,5 +1,7 @@
 #include "yacreader_http_session_store.h"
 
+#include "yacreader_http_session.h"
+
 #include "httpsessionstore.h"
 
 
