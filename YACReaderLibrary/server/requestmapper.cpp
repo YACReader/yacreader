@@ -25,6 +25,7 @@
 #include "controllers/versioncontroller.h"
 #include "controllers/foldercontentcontroller.h"
 #include "controllers/tagscontroller.h"
+#include "controllers/tagcontentcontroller.h"
 
 #include "db_helper.h"
 #include "yacreader_libraries.h"
@@ -119,6 +120,7 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
     QRegExp serverVersion("/version/?");
     QRegExp folderContent("/library/.+/folder/[0-9]+/content/?");
     QRegExp tags("/library/.+/tags/?");
+    QRegExp tagContent("/library/.+/tag/[0-9]+/content/?");
 
     QRegExp sync("/sync");
 
@@ -188,6 +190,10 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
                     else if(tags.exactMatch(path))
                     {
                         TagsController().service(request, response);
+                    }
+                    else if(tagContent.exactMatch(path))
+                    {
+                        TagContentController().service(request, response);
                     }
                 }
                 else
