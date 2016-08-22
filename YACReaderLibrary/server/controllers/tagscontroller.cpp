@@ -23,8 +23,8 @@ void TagsController::service(HttpRequest& request, HttpResponse& response)
 
     foreach(LabelItem * tag, tags)
     {
-        response.writeText(QString("%1\t%2\t%3\r\n").arg(tag->getId()).arg(tag->name()).arg(labelColorToRGBString(tag->colorid())));
+        response.write(QString("%1\t%2\t%3\r\n").arg(tag->getId()).arg(tag->name()).arg(labelColorToRGBString(tag->colorid())).toUtf8());
     }
 
-    response.writeText("",true);
+    response.write("",true);
 }
