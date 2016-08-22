@@ -6,6 +6,8 @@
 #include "comic_db.h"
 #include "folder.h"
 
+#include "yacreader_server_data_helper.h"
+
 #include "qnaturalsorting.h"
 
 #include <ctime>
@@ -54,12 +56,12 @@ void FolderContentController::serviceContent(const int &library, const qulonglon
         if((*itr)->isDir())
         {
             currentFolder = (Folder *)(*itr);
-            response.write(QString("f\t%1\t%2\t%3\t%4\t%5\r\n").arg(library).arg(currentFolder->id).arg(currentFolder->name).arg(currentFolder->getNumChildren()).arg(currentFolder->getFirstChildHash()).toUtf8());
+            response.write(YACReaderServerDataHelper::folderToYSFormat(library, *currentFolder).toUtf8());
         }
         else
         {
             currentComic = (ComicDB *)(*itr);
-            response.write(QString("c\t%1\t%2\t%3\t%4\t%5\r\n").arg(library).arg(currentComic->id).arg(currentComic->getFileName()).arg(currentComic->getFileSize()).arg(currentComic->info.hash).toUtf8());
+            response.write(YACReaderServerDataHelper::comicToYSFormat(library, *currentComic).toUtf8());
         }
     }
 
