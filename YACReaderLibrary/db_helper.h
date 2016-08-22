@@ -31,6 +31,7 @@ public:
     static	QString getFolderName(qulonglong libraryId, qulonglong id);
 	static  QList<QString> getLibrariesNames();
 	static  QString getLibraryName(int id);
+    static QList<ComicDB> getLabelComics(qulonglong libraryId, qulonglong labelId);
 
 	//objects management
 	//deletes
@@ -75,6 +76,7 @@ public:
 	static QList<ComicDB> getSortedComicsFromParent(qulonglong parentId, QSqlDatabase & db);
 	static QList<LibraryItem *> getComicsFromParent(qulonglong parentId, QSqlDatabase & db, bool sort = true);
     static QList<LabelItem *> getLabelItems(qulonglong libraryId);
+
     //load
 	static Folder loadFolder(qulonglong id, QSqlDatabase & db);
     static Folder loadFolder(const QString & folderName, qulonglong parentId, QSqlDatabase & db);
