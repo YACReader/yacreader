@@ -169,7 +169,7 @@ QList<ComicDB> DBHelper::getLabelComics(qulonglong libraryId, qulonglong labelId
 
     {
         QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
+        selectQuery.prepare("SELECT c.id,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                             "INNER JOIN comic_label cl ON (c.id == cl.comic_id) "
                             "WHERE cl.label_id = :parentLabelId "
@@ -186,11 +186,13 @@ QList<ComicDB> DBHelper::getLabelComics(qulonglong libraryId, qulonglong labelId
             for(int i=0;i<record.count();i++)
                 data << record.value(i);
 
-            comic.id = record.value("id").toULongLong();
+            comic.id = record.value(0).toULongLong();
             comic.parentId = labelId;
             comic.name = record.value(1).toString();
-            comic.path = record.value(6).toString();
-            comic.info = DBHelper::loadComicInfo(record.value(7).toString(),db);
+            comic.info.title = record.value(2).toString();
+            comic.info.currentPage = record.value(3).toInt();
+            comic.info.numPages = record.value(4).toInt();
+            comic.info.hash = record.value(5).toString();
 
             list.append(comic);
         }
