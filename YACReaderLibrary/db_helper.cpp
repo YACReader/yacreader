@@ -203,6 +203,48 @@ QList<ComicDB> DBHelper::getLabelComics(qulonglong libraryId, qulonglong labelId
     return list;
 }
 
+QList<ComicDB> DBHelper::getFavorites(qulonglong libraryId)
+{
+    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
+    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
+
+    QList<ComicDB> list;
+
+    const int FAV_ID = 1;
+
+    {
+        QSqlQuery selectQuery(db);
+        selectQuery.prepare("SELECT c.id,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash "
+                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                            "INNER JOIN comic_default_reading_list cdrl ON (c.id == cdrl.comic_id) "
+                            "WHERE cdrl.default_reading_list_id = :parentDefaultListId "
+                            "ORDER BY cdrl.ordering");
+        selectQuery.bindValue(":parentDefaultListId", 1);
+        selectQuery.exec();
+
+        while (selectQuery.next())
+        {
+            ComicDB comic;
+
+            QSqlRecord record = selectQuery.record();
+
+            comic.id = record.value(0).toULongLong();
+            comic.parentId = FAV_ID;
+            comic.name = record.value(1).toString();
+            comic.info.title = record.value(2).toString();
+            comic.info.currentPage = record.value(3).toInt();
+            comic.info.numPages = record.value(4).toInt();
+            comic.info.hash = record.value(5).toString();
+
+            list.append(comic);
+        }
+
+        db.close();
+    }
+
+    return list;
+}
+
 //objects management
 //deletes
 void DBHelper::removeFromDB(LibraryItem * item, QSqlDatabase & db)
