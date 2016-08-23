@@ -650,7 +650,7 @@ void DBHelper::reasignOrderToComicsInFavorites(QList<qulonglong> comicIds, QSqlD
     QSqlQuery updateOrdering(db);
     updateOrdering.prepare("UPDATE comic_default_reading_list SET "
                            "ordering = :ordering "
-                           "WHERE comic_id = :comic_id AND default_reading_list_id = 0");
+                           "WHERE comic_id = :comic_id AND default_reading_list_id = 1");
     db.transaction();
     int order = 0;
     foreach(qulonglong id, comicIds)
