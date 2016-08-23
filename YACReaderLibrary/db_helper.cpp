@@ -220,7 +220,7 @@ QList<ComicDB> DBHelper::getFavorites(qulonglong libraryId)
                             "INNER JOIN comic_default_reading_list cdrl ON (c.id == cdrl.comic_id) "
                             "WHERE cdrl.default_reading_list_id = :parentDefaultListId "
                             "ORDER BY cdrl.ordering");
-        selectQuery.bindValue(":parentDefaultListId", 1);
+        selectQuery.bindValue(":parentDefaultListId", FAV_ID);
         selectQuery.exec();
 
         while (selectQuery.next())
