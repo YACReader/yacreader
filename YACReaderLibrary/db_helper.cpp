@@ -169,7 +169,7 @@ QList<ComicDB> DBHelper::getLabelComics(qulonglong libraryId, qulonglong labelId
 
     {
         QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT c.id,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash "
+        selectQuery.prepare("SELECT c.id,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                             "INNER JOIN comic_label cl ON (c.id == cl.comic_id) "
                             "WHERE cl.label_id = :parentLabelId "
@@ -193,6 +193,7 @@ QList<ComicDB> DBHelper::getLabelComics(qulonglong libraryId, qulonglong labelId
             comic.info.currentPage = record.value(3).toInt();
             comic.info.numPages = record.value(4).toInt();
             comic.info.hash = record.value(5).toString();
+            comic.info.read = record.value(6).toBool();
 
             list.append(comic);
         }
@@ -214,7 +215,7 @@ QList<ComicDB> DBHelper::getFavorites(qulonglong libraryId)
 
     {
         QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT c.id,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash "
+        selectQuery.prepare("SELECT c.id,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                             "INNER JOIN comic_default_reading_list cdrl ON (c.id == cdrl.comic_id) "
                             "WHERE cdrl.default_reading_list_id = :parentDefaultListId "
@@ -235,6 +236,45 @@ QList<ComicDB> DBHelper::getFavorites(qulonglong libraryId)
             comic.info.currentPage = record.value(3).toInt();
             comic.info.numPages = record.value(4).toInt();
             comic.info.hash = record.value(5).toString();
+            comic.info.read = record.value(6).toBool();
+
+            list.append(comic);
+        }
+
+        db.close();
+    }
+
+    return list;
+}
+
+QList<ComicDB> DBHelper::getReading(qulonglong libraryId)
+{
+    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
+    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
+
+    QList<ComicDB> list;
+
+    {
+        QSqlQuery selectQuery(db);
+        selectQuery.prepare("SELECT c.id,c.parentId,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read "
+                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                            "WHERE ci.hasBeenOpened = 1 AND ci.read = 0 AND ci.currentPage != ci.numPages AND ci.currentPage != 1");
+        selectQuery.exec();
+
+        while (selectQuery.next())
+        {
+            ComicDB comic;
+
+            QSqlRecord record = selectQuery.record();
+
+            comic.id = record.value(0).toULongLong();
+            comic.parentId = record.value(1).toULongLong();
+            comic.name = record.value(2).toString();
+            comic.info.title = record.value(3).toString();
+            comic.info.currentPage = record.value(4).toInt();
+            comic.info.numPages = record.value(5).toInt();
+            comic.info.hash = record.value(6).toString();
+            comic.info.read = record.value(7).toBool();
 
             list.append(comic);
         }
