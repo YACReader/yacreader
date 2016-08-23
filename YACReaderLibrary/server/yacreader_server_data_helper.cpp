@@ -20,7 +20,4 @@ QString YACReaderServerDataHelper::comicToYSFormat(const qulonglong libraryId,co
             .arg(comic.info.hash);
 }
 
-YACReaderServerDataHelper::YACReaderServerDataHelper()
-{
-
-}
+YACReaderServerDataHelper::YACReaderServerDataHelper() {}
