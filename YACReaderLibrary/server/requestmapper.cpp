@@ -27,6 +27,7 @@
 #include "controllers/tagscontroller.h"
 #include "controllers/tagcontentcontroller.h"
 #include "controllers/favoritescontroller.h"
+#include "controllers/readingcomicscontroller.h"
 
 #include "db_helper.h"
 #include "yacreader_libraries.h"
@@ -121,6 +122,7 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
     QRegExp serverVersion("/version/?");
     QRegExp folderContent("/library/.+/folder/[0-9]+/content/?");
     QRegExp favs("/library/.+/favs/?");
+    QRegExp reading("/library/.+/reading/?");
     QRegExp tags("/library/.+/tags/?");
     QRegExp tagContent("/library/.+/tag/[0-9]+/content/?");
 
@@ -200,6 +202,10 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
                     else if(favs.exactMatch(path))
                     {
                         FavoritesController().service(request, response);
+                    }
+                    else if(reading.exactMatch(path))
+                    {
+                        ReadingComicsController().service(request, response);
                     }
                 }
                 else
