@@ -32,6 +32,7 @@ public:
 	static  QList<QString> getLibrariesNames();
 	static  QString getLibraryName(int id);
     static QList<ComicDB> getLabelComics(qulonglong libraryId, qulonglong labelId);
+    static QList<ComicDB> getFavorites(qulonglong libraryId);
 
 	//objects management
 	//deletes
