@@ -582,7 +582,7 @@ void ComicModel::setupFavoritesModelData(const QString &databasePath)
                             "ORDER BY cdrl.ordering");
         selectQuery.bindValue(":parentDefaultListId", 1);
         selectQuery.exec();
-        setupModelData(selectQuery);
+        setupModelDataForList(selectQuery);
     }
     db.close();
     QSqlDatabase::removeDatabase(_databasePath);
