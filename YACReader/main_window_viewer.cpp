@@ -926,6 +926,11 @@ void MainWindowViewer::enableActions()
     showInfoAction->setDisabled(false); //TODO enable goTo and showInfo (or update) when numPages emited
 	showDictionaryAction->setDisabled(false);
 	showFlowAction->setDisabled(false);
+
+#ifdef Q_OS_MAC
+    activateWindow();
+    raise();
+#endif
 }
 void MainWindowViewer::disableActions()
 {
