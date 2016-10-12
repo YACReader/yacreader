@@ -800,6 +800,7 @@ void Viewer::doubleMangaPageSwitch()
 	doubleMangaPage = !doubleMangaPage;
 	render->doubleMangaPageSwitch();
 	Configuration::getConfiguration().setDoubleMangaPage(doubleMangaPage);
+	goToFlow->setFlowRightToLeft(doubleMangaPage);
 }
 
 void Viewer::resetContent()
