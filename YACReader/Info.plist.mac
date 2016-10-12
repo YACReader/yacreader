@@ -24,6 +24,8 @@
         <dict>
             <key>CFBundleTypeName</key>
             <string></string>
+            <key>CFBundleTypeRole</key>
+            <string>Viewer</string>
             <key>LSHandlerRank</key>
             <string>Alternate</string>
             <key>LSItemContentTypes</key>
