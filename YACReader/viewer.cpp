@@ -118,6 +118,11 @@ zoom(100)
 	//animations
 	verticalScroller = new QPropertyAnimation(verticalScrollBar(), "sliderPosition");
 	connect(verticalScroller,SIGNAL(valueChanged (const QVariant &)),this,SIGNAL(backgroundChanges()));
+	horizontalScroller = new QPropertyAnimation(horizontalScrollBar(), "sliderPosition");
+	groupScroller = new QParallelAnimationGroup();
+	groupScroller->addAnimation(verticalScroller);
+	groupScroller->addAnimation(horizontalScroller);
+	connect(groupScroller,SIGNAL(valueChanged (const QVariant &)),this,SIGNAL(backgroundChanges()));
 
 	notificationsLabel = new NotificationsLabelWidget(this);
 	notificationsLabel->hide();
@@ -137,6 +142,8 @@ Viewer::~Viewer()
 	delete hideCursorTimer;
 	delete informationLabel;
 	delete verticalScroller;
+	delete horizontalScroller;
+	delete groupScroller;
 	delete bd;
 	delete notificationsLabel;
 	delete mglass;
@@ -456,6 +463,244 @@ void Viewer::scrollUp()
 	}
 }
 
+void Viewer::scrollForwardHorizontalFirst()
+{
+	if (!doubleMangaPage)
+	// left to right mode. scroll right -> lower left -> right -> ...-> next page
+	{
+		if(horizontalScrollBar()->sliderPosition()!=horizontalScrollBar()->maximum())
+		{
+			// scroll straight right
+			scrollTo(horizontalScrollBar()->sliderPosition()+static_cast<int>((width()*0.80)), 
+				verticalScrollBar()->sliderPosition());
+		}
+		else if(verticalScrollBar()->sliderPosition()!=verticalScrollBar()->maximum())
+		{
+			// scroll lower left
+			scrollTo(horizontalScrollBar()->minimum(),
+				std::min(verticalScrollBar()->sliderPosition()+static_cast<int>((height()*0.80)), verticalScrollBar()->maximum()));
+		}
+		else
+		{
+			// next page's upper left corner
+			int savedPageNumber = getCurrentPageNumber();
+			next();
+			if(savedPageNumber != getCurrentPageNumber()){
+				horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->minimum());
+				emit backgroundChanges();
+			}
+		}
+	}
+	else
+	// right to left mode (manga mode). scroll down -> upper left -> down -> ...-> next page
+	{
+		if(horizontalScrollBar()->sliderPosition()!=horizontalScrollBar()->minimum())
+		{
+			// scroll straight left
+			scrollTo(horizontalScrollBar()->sliderPosition()-static_cast<int>((width()*0.80)), 
+				verticalScrollBar()->sliderPosition());
+		}
+		else if(verticalScrollBar()->sliderPosition()!=verticalScrollBar()->maximum())
+		{
+			// scroll lower right
+			scrollTo(horizontalScrollBar()->maximum(),
+				std::min(verticalScrollBar()->sliderPosition()+static_cast<int>((height()*0.80)), verticalScrollBar()->maximum()));
+		}
+		else
+		{
+			// next page's upper right corner
+			int savedPageNumber = getCurrentPageNumber();
+			next();
+			if(savedPageNumber != getCurrentPageNumber()){
+				horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->maximum());
+				emit backgroundChanges();
+			}
+		}
+	}
+}
+
+void Viewer::scrollBackwardHorizontalFirst()
+{
+	if (!doubleMangaPage)
+	// left to right mode. scroll left -> upper right -> left -> ...-> prev page
+	{
+		if(horizontalScrollBar()->sliderPosition()!=horizontalScrollBar()->minimum())
+		{
+			// scroll straight left
+			scrollTo(horizontalScrollBar()->sliderPosition()-static_cast<int>((width()*0.80)), 
+				verticalScrollBar()->sliderPosition());
+		}
+		else if(verticalScrollBar()->sliderPosition()!=verticalScrollBar()->minimum())
+		{
+			// scroll upper right
+			scrollTo(horizontalScrollBar()->maximum(),
+				std::max(verticalScrollBar()->sliderPosition()-static_cast<int>((height()*0.80)), verticalScrollBar()->minimum()));
+		}
+		else
+		{
+			// prev page's lower right corner
+			int savedPageNumber = getCurrentPageNumber();
+			prev();
+			if(savedPageNumber != getCurrentPageNumber()){
+				horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->maximum());
+				emit backgroundChanges();
+			}
+		}
+	}
+	else
+	// right to left mode (manga mode). scroll right -> upper left -> right -> ...-> prev page
+	{
+		if(horizontalScrollBar()->sliderPosition()!=horizontalScrollBar()->maximum())
+		{
+			// scroll straight right
+			scrollTo(horizontalScrollBar()->sliderPosition()+static_cast<int>((width()*0.80)), 
+				verticalScrollBar()->sliderPosition());
+		}
+		else if(verticalScrollBar()->sliderPosition()!=verticalScrollBar()->minimum())
+		{
+			// scroll upper left
+			scrollTo(horizontalScrollBar()->minimum(),
+				std::max(verticalScrollBar()->sliderPosition()-static_cast<int>((height()*0.80)), verticalScrollBar()->minimum()));
+		}
+		else
+		{
+			// next page's lower left corner
+			int savedPageNumber = getCurrentPageNumber();
+			prev();
+			if(savedPageNumber != getCurrentPageNumber()){
+				horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->minimum());
+				emit backgroundChanges();
+			}
+		}
+	}
+}
+
+void Viewer::scrollForwardVerticalFirst()
+{
+	if (!doubleMangaPage)
+	// left to right mode. scroll down -> upper right -> down -> ...-> next page
+	{
+		if(verticalScrollBar()->sliderPosition()!=verticalScrollBar()->maximum())
+		{
+			// scroll straight down
+			scrollTo(horizontalScrollBar()->sliderPosition(), 
+				verticalScrollBar()->sliderPosition()+static_cast<int>((height()*0.80)));
+		}
+		else if(horizontalScrollBar()->sliderPosition()!=horizontalScrollBar()->maximum())
+		{
+			// scroll upper right
+			scrollTo(std::min(horizontalScrollBar()->sliderPosition()+static_cast<int>((width()*0.80)), horizontalScrollBar()->maximum()), 
+				verticalScrollBar()->minimum());
+		}
+		else
+		{
+			// next page's upper left corner
+			int savedPageNumber = getCurrentPageNumber();
+			next();
+			if(savedPageNumber != getCurrentPageNumber()){
+				horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->minimum());
+				emit backgroundChanges();
+			}
+		}
+	}
+	else
+	// right to left mode (manga mode). scroll down -> upper left -> down -> ...-> next page
+	{
+		if(verticalScrollBar()->sliderPosition()!=verticalScrollBar()->maximum())
+		{
+			// scroll straight down
+			scrollTo(horizontalScrollBar()->sliderPosition(), 
+				verticalScrollBar()->sliderPosition()+static_cast<int>((height()*0.80)));
+		}
+		else if(horizontalScrollBar()->sliderPosition()!=horizontalScrollBar()->minimum())
+		{
+			// scroll upper left
+			scrollTo(std::max(horizontalScrollBar()->sliderPosition()-static_cast<int>((width()*0.80)), horizontalScrollBar()->minimum()), 
+				verticalScrollBar()->minimum());
+		}
+		else
+		{
+			// next page's upper right corner
+			int savedPageNumber = getCurrentPageNumber();
+			next();
+			if(savedPageNumber != getCurrentPageNumber()){
+				horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->maximum());
+				emit backgroundChanges();
+			}
+		}
+	}
+}
+
+void Viewer::scrollBackwardVerticalFirst()
+{
+	if (!doubleMangaPage)
+	// left to right mode. scroll up -> lower left -> up -> ...-> prev page
+	{
+		if(verticalScrollBar()->sliderPosition()!=verticalScrollBar()->minimum())
+		{
+			// scroll straight up
+			scrollTo(horizontalScrollBar()->sliderPosition(), 
+				verticalScrollBar()->sliderPosition()-static_cast<int>((height()*0.80)));
+		}
+		else if(horizontalScrollBar()->sliderPosition()!=horizontalScrollBar()->minimum())
+		{
+			// scroll lower left
+			scrollTo(std::max(horizontalScrollBar()->sliderPosition()-static_cast<int>((width()*0.80)), horizontalScrollBar()->minimum()), 
+				verticalScrollBar()->maximum());
+		}
+		else
+		{
+			// prev page's lower right corner
+			int savedPageNumber = getCurrentPageNumber();
+			prev();
+			if(savedPageNumber != getCurrentPageNumber()){
+				horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->maximum());
+				emit backgroundChanges();
+			}
+		}
+	}
+	else
+	// right to left mode (manga mode). scroll up -> lower left -> up -> ...-> prev page
+	{
+		if(verticalScrollBar()->sliderPosition()!=verticalScrollBar()->minimum())
+		{
+			// scroll straight up
+			scrollTo(horizontalScrollBar()->sliderPosition(), 
+				verticalScrollBar()->sliderPosition()-static_cast<int>((height()*0.80)));
+		}
+		else if(horizontalScrollBar()->sliderPosition()!=horizontalScrollBar()->maximum())
+		{
+			// scroll lower right
+			scrollTo(std::min(horizontalScrollBar()->sliderPosition()+static_cast<int>((width()*0.80)), horizontalScrollBar()->maximum()), 
+				verticalScrollBar()->maximum());
+		}
+		else
+		{
+			// next page's lower left corner
+			int savedPageNumber = getCurrentPageNumber();
+			prev();
+			if(savedPageNumber != getCurrentPageNumber()){
+				horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->minimum());
+				emit backgroundChanges();
+			}
+		}
+	}
+}
+
+void Viewer::scrollTo(int x, int y)
+{
+	if(groupScroller->state() == QAbstractAnimation::Running)
+		return;
+	horizontalScroller->setDuration(250);
+	horizontalScroller->setStartValue(horizontalScrollBar()->sliderPosition());
+	horizontalScroller->setEndValue(x);
+	verticalScroller->setDuration(250);
+	verticalScroller->setStartValue(verticalScrollBar()->sliderPosition());
+	verticalScroller->setEndValue(y);
+	groupScroller->start();
+	emit backgroundChanges();
+}
+
 void Viewer::keyPressEvent(QKeyEvent *event)
 {
     if(render->hasLoadedComic())
@@ -489,6 +734,26 @@ void Viewer::keyPressEvent(QKeyEvent *event)
             posByStep = height()/numScrollSteps;
             nextPos=verticalScrollBar()->sliderPosition()-static_cast<int>((height()*0.80));
             scrollUp();
+        }
+
+        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_HORIZONTAL_FIRST_ACTION_Y))
+        {
+            scrollForwardHorizontalFirst();
+        }
+
+        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_HORIZONTAL_FIRST_ACTION_Y))
+        {
+            scrollBackwardHorizontalFirst();
+        }
+
+        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_VERTICAL_FIRST_ACTION_Y))
+        {
+            scrollForwardVerticalFirst();
+        }
+
+        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_VERTICAL_FIRST_ACTION_Y))
+        {
+            scrollBackwardVerticalFirst();
         }
 
         else if (key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_DOWN_ACTION_Y) ||

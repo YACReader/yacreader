@@ -1274,6 +1274,22 @@ void MainWindowViewer::setUpShortcutsManagement()
     autoScrollBackwardAction->setData(AUTO_SCROLL_BACKWARD_ACTION_Y);
     autoScrollBackwardAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_ACTION_Y));
 
+    QAction * autoScrollForwardHorizontalFirstAction = new QAction(tr("Autoscroll forward, horizontal first"),orphanActions);
+    autoScrollForwardHorizontalFirstAction->setData(AUTO_SCROLL_FORWARD_HORIZONTAL_FIRST_ACTION_Y);
+    autoScrollForwardHorizontalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_HORIZONTAL_FIRST_ACTION_Y));
+
+    QAction * autoScrollBackwardHorizontalFirstAction = new QAction(tr("Autoscroll backward, horizontal first"),orphanActions);
+    autoScrollBackwardHorizontalFirstAction->setData(AUTO_SCROLL_BACKWARD_HORIZONTAL_FIRST_ACTION_Y);
+    autoScrollBackwardHorizontalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_HORIZONTAL_FIRST_ACTION_Y));
+
+    QAction * autoScrollForwardVerticalFirstAction = new QAction(tr("Autoscroll forward, vertical first"),orphanActions);
+    autoScrollForwardVerticalFirstAction->setData(AUTO_SCROLL_FORWARD_VERTICAL_FIRST_ACTION_Y);
+    autoScrollForwardVerticalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_VERTICAL_FIRST_ACTION_Y));
+
+    QAction * autoScrollBackwardVerticalFirstAction = new QAction(tr("Autoscroll backward, vertical first"),orphanActions);
+    autoScrollBackwardVerticalFirstAction->setData(AUTO_SCROLL_BACKWARD_VERTICAL_FIRST_ACTION_Y);
+    autoScrollBackwardVerticalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_VERTICAL_FIRST_ACTION_Y));
+
     QAction * moveDownAction = new QAction(tr("Move down"),orphanActions);
     moveDownAction->setData(MOVE_DOWN_ACTION_Y);
     moveDownAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(MOVE_DOWN_ACTION_Y));
@@ -1306,6 +1322,10 @@ void MainWindowViewer::setUpShortcutsManagement()
                                          << showBookmarksAction
                                          << autoScrollForwardAction
                                          << autoScrollBackwardAction
+                                         << autoScrollForwardHorizontalFirstAction
+                                         << autoScrollBackwardHorizontalFirstAction
+                                         << autoScrollForwardVerticalFirstAction
+                                         << autoScrollBackwardVerticalFirstAction
                                          << moveDownAction
                                          << moveUpAction
                                          << moveLeftAction
