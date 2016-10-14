@@ -466,223 +466,121 @@ void Viewer::scrollUp()
 void Viewer::scrollForwardHorizontalFirst()
 {
 	if (!doubleMangaPage)
-	// left to right mode. scroll right -> lower left -> right -> ...-> next page
 	{
-		if(horizontalScrollBar()->sliderPosition()!=horizontalScrollBar()->maximum())
-		{
-			// scroll straight right
-			scrollTo(horizontalScrollBar()->sliderPosition()+static_cast<int>((width()*0.80)), 
-				verticalScrollBar()->sliderPosition());
-		}
-		else if(verticalScrollBar()->sliderPosition()!=verticalScrollBar()->maximum())
-		{
-			// scroll lower left
-			scrollTo(horizontalScrollBar()->minimum(),
-				std::min(verticalScrollBar()->sliderPosition()+static_cast<int>((height()*0.80)), verticalScrollBar()->maximum()));
-		}
-		else
-		{
-			// next page's upper left corner
-			int savedPageNumber = getCurrentPageNumber();
-			next();
-			if(savedPageNumber != getCurrentPageNumber()){
-				horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->minimum());
-				emit backgroundChanges();
-			}
-		}
+		scrollZigzag(RIGHT, DOWN, true); // right->right->lower left->right->...->next page
 	}
 	else
-	// right to left mode (manga mode). scroll down -> upper left -> down -> ...-> next page
 	{
-		if(horizontalScrollBar()->sliderPosition()!=horizontalScrollBar()->minimum())
-		{
-			// scroll straight left
-			scrollTo(horizontalScrollBar()->sliderPosition()-static_cast<int>((width()*0.80)), 
-				verticalScrollBar()->sliderPosition());
-		}
-		else if(verticalScrollBar()->sliderPosition()!=verticalScrollBar()->maximum())
-		{
-			// scroll lower right
-			scrollTo(horizontalScrollBar()->maximum(),
-				std::min(verticalScrollBar()->sliderPosition()+static_cast<int>((height()*0.80)), verticalScrollBar()->maximum()));
-		}
-		else
-		{
-			// next page's upper right corner
-			int savedPageNumber = getCurrentPageNumber();
-			next();
-			if(savedPageNumber != getCurrentPageNumber()){
-				horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->maximum());
-				emit backgroundChanges();
-			}
-		}
+		scrollZigzag(LEFT, DOWN, true); // left->left->lower right->left->...->next page
 	}
 }
 
 void Viewer::scrollBackwardHorizontalFirst()
 {
 	if (!doubleMangaPage)
-	// left to right mode. scroll left -> upper right -> left -> ...-> prev page
 	{
-		if(horizontalScrollBar()->sliderPosition()!=horizontalScrollBar()->minimum())
-		{
-			// scroll straight left
-			scrollTo(horizontalScrollBar()->sliderPosition()-static_cast<int>((width()*0.80)), 
-				verticalScrollBar()->sliderPosition());
-		}
-		else if(verticalScrollBar()->sliderPosition()!=verticalScrollBar()->minimum())
-		{
-			// scroll upper right
-			scrollTo(horizontalScrollBar()->maximum(),
-				std::max(verticalScrollBar()->sliderPosition()-static_cast<int>((height()*0.80)), verticalScrollBar()->minimum()));
-		}
-		else
-		{
-			// prev page's lower right corner
-			int savedPageNumber = getCurrentPageNumber();
-			prev();
-			if(savedPageNumber != getCurrentPageNumber()){
-				horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->maximum());
-				emit backgroundChanges();
-			}
-		}
+		scrollZigzag(LEFT, UP, false); // left->left->upper right->left->...->prev page
 	}
 	else
-	// right to left mode (manga mode). scroll right -> upper left -> right -> ...-> prev page
 	{
-		if(horizontalScrollBar()->sliderPosition()!=horizontalScrollBar()->maximum())
-		{
-			// scroll straight right
-			scrollTo(horizontalScrollBar()->sliderPosition()+static_cast<int>((width()*0.80)), 
-				verticalScrollBar()->sliderPosition());
-		}
-		else if(verticalScrollBar()->sliderPosition()!=verticalScrollBar()->minimum())
-		{
-			// scroll upper left
-			scrollTo(horizontalScrollBar()->minimum(),
-				std::max(verticalScrollBar()->sliderPosition()-static_cast<int>((height()*0.80)), verticalScrollBar()->minimum()));
-		}
-		else
-		{
-			// next page's lower left corner
-			int savedPageNumber = getCurrentPageNumber();
-			prev();
-			if(savedPageNumber != getCurrentPageNumber()){
-				horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->minimum());
-				emit backgroundChanges();
-			}
-		}
+		scrollZigzag(RIGHT, UP, false); // right->right->upper left->right->...->prev page
 	}
 }
 
 void Viewer::scrollForwardVerticalFirst()
 {
 	if (!doubleMangaPage)
-	// left to right mode. scroll down -> upper right -> down -> ...-> next page
 	{
-		if(verticalScrollBar()->sliderPosition()!=verticalScrollBar()->maximum())
-		{
-			// scroll straight down
-			scrollTo(horizontalScrollBar()->sliderPosition(), 
-				verticalScrollBar()->sliderPosition()+static_cast<int>((height()*0.80)));
-		}
-		else if(horizontalScrollBar()->sliderPosition()!=horizontalScrollBar()->maximum())
-		{
-			// scroll upper right
-			scrollTo(std::min(horizontalScrollBar()->sliderPosition()+static_cast<int>((width()*0.80)), horizontalScrollBar()->maximum()), 
-				verticalScrollBar()->minimum());
-		}
-		else
-		{
-			// next page's upper left corner
-			int savedPageNumber = getCurrentPageNumber();
-			next();
-			if(savedPageNumber != getCurrentPageNumber()){
-				horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->minimum());
-				emit backgroundChanges();
-			}
-		}
+		scrollZigzag(DOWN, RIGHT, true); // down->down->upper right->down->...->next page
 	}
 	else
-	// right to left mode (manga mode). scroll down -> upper left -> down -> ...-> next page
 	{
-		if(verticalScrollBar()->sliderPosition()!=verticalScrollBar()->maximum())
-		{
-			// scroll straight down
-			scrollTo(horizontalScrollBar()->sliderPosition(), 
-				verticalScrollBar()->sliderPosition()+static_cast<int>((height()*0.80)));
-		}
-		else if(horizontalScrollBar()->sliderPosition()!=horizontalScrollBar()->minimum())
-		{
-			// scroll upper left
-			scrollTo(std::max(horizontalScrollBar()->sliderPosition()-static_cast<int>((width()*0.80)), horizontalScrollBar()->minimum()), 
-				verticalScrollBar()->minimum());
-		}
-		else
-		{
-			// next page's upper right corner
-			int savedPageNumber = getCurrentPageNumber();
-			next();
-			if(savedPageNumber != getCurrentPageNumber()){
-				horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->maximum());
-				emit backgroundChanges();
-			}
-		}
+		scrollZigzag(DOWN, LEFT, true); // down->down->upper left->down->...->next page
 	}
 }
 
 void Viewer::scrollBackwardVerticalFirst()
 {
 	if (!doubleMangaPage)
-	// left to right mode. scroll up -> lower left -> up -> ...-> prev page
 	{
-		if(verticalScrollBar()->sliderPosition()!=verticalScrollBar()->minimum())
-		{
-			// scroll straight up
-			scrollTo(horizontalScrollBar()->sliderPosition(), 
-				verticalScrollBar()->sliderPosition()-static_cast<int>((height()*0.80)));
-		}
-		else if(horizontalScrollBar()->sliderPosition()!=horizontalScrollBar()->minimum())
-		{
-			// scroll lower left
-			scrollTo(std::max(horizontalScrollBar()->sliderPosition()-static_cast<int>((width()*0.80)), horizontalScrollBar()->minimum()), 
-				verticalScrollBar()->maximum());
-		}
-		else
-		{
-			// prev page's lower right corner
-			int savedPageNumber = getCurrentPageNumber();
-			prev();
-			if(savedPageNumber != getCurrentPageNumber()){
-				horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->maximum());
-				emit backgroundChanges();
-			}
-		}
+		scrollZigzag(UP, LEFT, false); // up->up->lower left->up->...->prev page
 	}
 	else
-	// right to left mode (manga mode). scroll up -> lower left -> up -> ...-> prev page
 	{
-		if(verticalScrollBar()->sliderPosition()!=verticalScrollBar()->minimum())
-		{
-			// scroll straight up
+		scrollZigzag(UP, RIGHT, false); // up->up->lower right->up->...->prev page
+	}
+}
+
+bool Viewer::isEdge(scrollDirection d)
+{
+	if(d == UP)
+		return verticalScrollBar()->sliderPosition() == verticalScrollBar()->minimum();
+	else if(d == DOWN)
+		return verticalScrollBar()->sliderPosition() == verticalScrollBar()->maximum();
+	else if(d == LEFT)
+		return horizontalScrollBar()->sliderPosition() == horizontalScrollBar()->minimum();
+	else // d == RIGHT
+		return horizontalScrollBar()->sliderPosition() == horizontalScrollBar()->maximum();
+}
+
+void Viewer::scrollZigzag(scrollDirection d1, scrollDirection d2, bool forward)
+{
+	if(!isEdge(d1))
+	{
+		if(d1 == UP)
 			scrollTo(horizontalScrollBar()->sliderPosition(), 
 				verticalScrollBar()->sliderPosition()-static_cast<int>((height()*0.80)));
+		else if(d1 == DOWN)
+			scrollTo(horizontalScrollBar()->sliderPosition(), 
+				verticalScrollBar()->sliderPosition()+static_cast<int>((height()*0.80)));
+		else if(d1 == LEFT)
+			scrollTo(horizontalScrollBar()->sliderPosition()-static_cast<int>((width()*0.80)), 
+				verticalScrollBar()->sliderPosition());
+		else // d1 == RIGHT
+			scrollTo(horizontalScrollBar()->sliderPosition()+static_cast<int>((width()*0.80)), 
+				verticalScrollBar()->sliderPosition());
 		}
-		else if(horizontalScrollBar()->sliderPosition()!=horizontalScrollBar()->maximum())
-		{
-			// scroll lower right
-			scrollTo(std::min(horizontalScrollBar()->sliderPosition()+static_cast<int>((width()*0.80)), horizontalScrollBar()->maximum()), 
-				verticalScrollBar()->maximum());
-		}
+	else if(!isEdge(d2))
+	{
+		int x = 0;
+		int y = 0;
+	
+		if(d1 == UP)
+			y = verticalScrollBar()->maximum();
+		else if(d1 == DOWN)
+			y = verticalScrollBar()->minimum();
+		else if(d1 == LEFT)
+			x = horizontalScrollBar()->maximum();
+		else // d1 == RIGHT
+			x = horizontalScrollBar()->minimum();
+	
+		if(d2 == UP)
+			y = std::max(verticalScrollBar()->sliderPosition()-static_cast<int>((height()*0.80)), verticalScrollBar()->minimum());
+		else if(d2 == DOWN)
+			y = std::min(verticalScrollBar()->sliderPosition()+static_cast<int>((height()*0.80)), verticalScrollBar()->maximum());
+		else if(d2 == LEFT)
+			x = std::max(horizontalScrollBar()->sliderPosition()-static_cast<int>((width()*0.80)), horizontalScrollBar()->minimum());
+		else // d2 == RIGHT
+			x = std::min(horizontalScrollBar()->sliderPosition()+static_cast<int>((width()*0.80)), horizontalScrollBar()->maximum());
+	
+		scrollTo(x, y);
+	}
+	else
+	{
+		// next or prev page's corner
+		int savedPageNumber = getCurrentPageNumber();
+
+		if(forward)
+			next();
 		else
-		{
-			// next page's lower left corner
-			int savedPageNumber = getCurrentPageNumber();
 			prev();
-			if(savedPageNumber != getCurrentPageNumber()){
+
+		if(savedPageNumber != getCurrentPageNumber()){
+			if(d1 == LEFT || d2 == LEFT)
+				horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->maximum());
+			else
 				horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->minimum());
-				emit backgroundChanges();
-			}
+			emit backgroundChanges();
 		}
 	}
 }
