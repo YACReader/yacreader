@@ -119,10 +119,10 @@ zoom(100)
 	verticalScroller = new QPropertyAnimation(verticalScrollBar(), "sliderPosition");
 	connect(verticalScroller,SIGNAL(valueChanged (const QVariant &)),this,SIGNAL(backgroundChanges()));
 	horizontalScroller = new QPropertyAnimation(horizontalScrollBar(), "sliderPosition");
+	connect(horizontalScroller,SIGNAL(valueChanged (const QVariant &)),this,SIGNAL(backgroundChanges()));
 	groupScroller = new QParallelAnimationGroup();
 	groupScroller->addAnimation(verticalScroller);
 	groupScroller->addAnimation(horizontalScroller);
-	connect(groupScroller,SIGNAL(valueChanged (const QVariant &)),this,SIGNAL(backgroundChanges()));
 
 	notificationsLabel = new NotificationsLabelWidget(this);
 	notificationsLabel->hide();
