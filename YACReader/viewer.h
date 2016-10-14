@@ -60,7 +60,6 @@ class NotificationsLabelWidget;
 		void scrollBackwardHorizontalFirst();
 		void scrollForwardVerticalFirst();
 		void scrollBackwardVerticalFirst();
-		void scrollTo(int x, int y);
 		void magnifyingGlassSwitch();
 		void showMagnifyingGlass();
 		void hideMagnifyingGlass();
@@ -161,6 +160,12 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		void resizeEvent(QResizeEvent * event);
 		void wheelEvent(QWheelEvent * event);
 		void mouseMoveEvent(QMouseEvent * event);
+
+		//!ZigzagScroll
+		enum scrollDirection{ UP, DOWN, LEFT, RIGHT };
+		bool isEdge(scrollDirection d);
+		void scrollZigzag(scrollDirection d1, scrollDirection d2, bool forward);
+		void scrollTo(int x, int y);
 
 	public:
 		Viewer(QWidget * parent = 0);
