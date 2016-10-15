@@ -655,13 +655,68 @@ void MainWindowViewer::createToolBars()
     fileMenu->addAction(openFolderAction);
     fileMenu->addSeparator();
     fileMenu->addAction(saveImageAction);
+    fileMenu->addSeparator();
+
+	QMenu * recentmenu = new QMenu(tr("Open recent"));
+	recentmenu->addActions(recentFilesActionList);
+	recentmenu->addSeparator();
+	recentmenu->addAction(clearRecentFilesAction);
+	refreshRecentFilesActionList();
+    fileMenu->addMenu(recentmenu);
+
+    fileMenu->addSeparator();
+    fileMenu->addAction(closeAction);
+
+    QMenu * editMenu = new QMenu(tr("Edit"));
+    editMenu->addAction(leftRotationAction);
+    editMenu->addAction(rightRotationAction);
+
+    QMenu * viewMenu = new QMenu(tr("View"));
+    viewMenu->addAction(adjustHeightAction);
+    viewMenu->addAction(adjustWidthAction);
+    viewMenu->addAction(fitToPageAction);
+    viewMenu->addAction(adjustToFullSizeAction);
+    viewMenu->addSeparator();
+    viewMenu->addAction(increasePageZoomAction);
+    viewMenu->addAction(decreasePageZoomAction);
+    viewMenu->addAction(resetZoomAction);
+    viewMenu->addAction(showZoomSliderlAction);
+    viewMenu->addSeparator();
+    viewMenu->addAction(doublePageAction);
+    viewMenu->addAction(doubleMangaPageAction);
+    viewMenu->addSeparator();
+    viewMenu->addAction(showMagnifyingGlassAction);
+
+    QMenu * goMenu = new QMenu(tr("Go"));
+    goMenu->addAction(prevAction);
+    goMenu->addAction(nextAction);
+    goMenu->addAction(goToPageAction);
+	goMenu->addSeparator();
+    goMenu->addAction(setBookmarkAction);
+    goMenu->addAction(showBookmarksAction);
+
+    QMenu * windowMenu = new QMenu(tr("Window"));
+    windowMenu->addAction(optionsAction); // this action goes to MacOS's Preference menu by Qt
+    windowMenu->addAction(showShorcutsAction);
+    windowMenu->addAction(showFlowAction);
+    windowMenu->addAction(showInfoAction);
+    windowMenu->addAction(showDictionaryAction);
+
+    QMenu * helpMenu = new QMenu(tr("Help"));
+    helpMenu->addAction(helpAboutAction);
+
+    menuBar->addMenu(fileMenu);
+    menuBar->addMenu(editMenu);
+    menuBar->addMenu(viewMenu);
+    menuBar->addMenu(goMenu);
+    menuBar->addMenu(windowMenu);
+    menuBar->addMenu(helpMenu);
 
     //tool bar
     //QMenu * toolbarMenu = new QMenu(tr("Toolbar"));
     //toolbarMenu->addAction();
     //TODO
 
-    menuBar->addMenu(fileMenu);
     //menu->addMenu(toolbarMenu);
 
     //attach toolbar
