@@ -841,25 +841,18 @@ void PDFComic::process()
 void PDFComic::renderPage(int page)
 {
 #ifdef Q_OS_MAC
+	QImage img = pdfComic->getPage(page);
+	if(!img.isNull())
 	{
-		QImage img = pdfComic->getPage(page);
-		if(!img.isNull())
-		{
-			QByteArray ba;
-			QBuffer buf(&ba);
-			img.save(&buf, "jpg");
-			_pages[page] = ba;
-			emit imageLoaded(page);
-			emit imageLoaded(page,_pages[page]);
-		}
-	}
-	pdfComic->releaseLastPageData();
+		pdfComic->releaseLastPageData();
+
 #else
 	Poppler::Page* pdfpage = pdfComic->page(page);
 	if (pdfpage)
 	{
 		QImage img = pdfpage->renderToImage(150,150);
 		delete pdfpage;
+#endif
 		QByteArray ba;
 		QBuffer buf(&ba);
 		img.save(&buf, "jpg");
@@ -867,7 +860,6 @@ void PDFComic::renderPage(int page)
 		emit imageLoaded(page);
 		emit imageLoaded(page,_pages[page]);
 	}
-#endif
 }
 
 Comic * FactoryComic::newComic(const QString & path)
