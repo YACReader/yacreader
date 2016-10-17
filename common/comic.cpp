@@ -769,7 +769,7 @@ bool PDFComic::load(const QString & path, const ComicDB & comic)
 
 void PDFComic::process()
 {
-#ifdef Q_OS_MAC
+#if defined Q_OS_MAC && defined USE_PDFKIT
 	pdfComic = new MacOSXPDFComic();
 	if(!pdfComic->openComic(_path))
 	{
@@ -777,8 +777,15 @@ void PDFComic::process()
 		emit errorOpening();
 		return;
 	}
+#elif defined USE_PDFIUM
+	pdfComic = new PdfiumComic();
+	if(!pdfComic->openComic(_path))
+	{
+		delete pdfComic;
+		emit errorOpening();
+		return;
+	}
 #else
-
 	pdfComic = Poppler::Document::load(_path);
 	if (!pdfComic)
 	{
@@ -840,12 +847,15 @@ void PDFComic::process()
 
 void PDFComic::renderPage(int page)
 {
-#ifdef Q_OS_MAC
+#if defined Q_OS_MAC && defined USE_PDFKIT
 	QImage img = pdfComic->getPage(page);
 	if(!img.isNull())
 	{
 		pdfComic->releaseLastPageData();
-
+#elif defined USE_PDFIUM
+	QImage img = pdfComic->getPage(page);
+	if(!img.isNull())
+	{
 #else
 	Poppler::Page* pdfpage = pdfComic->page(page);
 	if (pdfpage)

@@ -46,9 +46,18 @@ win32 {
 }
 
 unix:!macx{
-
-INCLUDEPATH  += /usr/include/poppler/qt5
-LIBS         += -L/usr/lib -lpoppler-qt5
+!CONFIG(pdfium) {
+	INCLUDEPATH  += /usr/include/poppler/qt5
+	LIBS         += -L/usr/lib -lpoppler-qt5
+	}
+	else {
+	DEFINES 		+= "USE_PDFIUM"
+	INCLUDEPATH  += /usr/include/pdfium
+	LIBS                 += -L/usr/lib/pdfium -Wl,--start-group -lpdfium -lfpdfapi -lfxge -lfpdfdoc \
+					-lfxcrt -lfx_agg -lfxcodec -lfx_lpng -lfx_libopenjpeg -lfx_lcms2 -ljpeg \
+					-lfx_zlib -lfdrm -lfxedit -lformfiller -lpdfwindow -lpdfium -lbigint -ljavascript \
+					-lfxedit -Wl,--end-group -lfreetype
+	}
 
 !CONFIG(no_opengl) {
 	LIBS	     += -lGLU
@@ -161,69 +170,70 @@ HEADERS += comic_flow.h \
 }
 		   
 SOURCES += comic_flow.cpp \
-           create_library_dialog.cpp \
-           library_creator.cpp \
-           library_window.cpp \
-           main.cpp \
-           add_library_dialog.cpp \
-           rename_library_dialog.cpp \
-           properties_dialog.cpp \
-           options_dialog.cpp \
-           export_library_dialog.cpp \
-           import_library_dialog.cpp \
-           package_manager.cpp \
-           bundle_creator.cpp \
-           export_comics_info_dialog.cpp \
-           import_comics_info_dialog.cpp \
-           server_config_dialog.cpp \
-           comic_flow_widget.cpp \
-           db_helper.cpp \
-           ./db/data_base_management.cpp \
-           ./db/folder_item.cpp \
-           ./db/folder_model.cpp \
-           ./db/comic_model.cpp \
-           ./db/comic_item.cpp \
-           ../common/comic_db.cpp \
-           ../common/folder.cpp \
-           ../common/library_item.cpp \
-           ../common/comic.cpp \
-           ../common/bookmarks.cpp \
-           ../common/pictureflow.cpp \
-           ../common/custom_widgets.cpp \
-           ../common/qnaturalsorting.cpp \
-           ../common/onstart_flow_selection_dialog.cpp \
-           no_libraries_widget.cpp \
-           import_widget.cpp \
-           yacreader_local_server.cpp \
-           yacreader_main_toolbar.cpp \
-           comics_remover.cpp \
-           ../common/http_worker.cpp \
-           ../common/yacreader_global.cpp \
-           ../common/yacreader_global_gui.cpp \
-           yacreader_libraries.cpp \
-           ../common/exit_check.cpp \
-           comics_view.cpp \
-           classic_comics_view.cpp \
-           empty_folder_widget.cpp \
-           no_search_results_widget.cpp \
-           comic_files_manager.cpp \
-           db/reading_list_model.cpp \
-           db/reading_list_item.cpp \
-    yacreader_folders_view.cpp \
-    yacreader_reading_lists_view.cpp \
-    add_label_dialog.cpp \
-    yacreader_history_controller.cpp \
-    yacreader_navigation_controller.cpp \
-    empty_label_widget.cpp \
-    empty_container_info.cpp \
-    empty_special_list.cpp \
-    empty_reading_list_widget.cpp \
-    ../common/scroll_management.cpp \
-    ../common/opengl_checker.cpp \
-    yacreader_comics_views_manager.cpp \
-    info_comics_view.cpp \
-    yacreader_comics_selection_helper.cpp \
-    yacreader_comic_info_helper.cpp
+		create_library_dialog.cpp \
+		library_creator.cpp \
+		library_window.cpp \
+		main.cpp \
+		add_library_dialog.cpp \
+		rename_library_dialog.cpp \
+		properties_dialog.cpp \
+		options_dialog.cpp \
+		export_library_dialog.cpp \
+		import_library_dialog.cpp \
+		package_manager.cpp \
+		bundle_creator.cpp \
+		export_comics_info_dialog.cpp \
+		import_comics_info_dialog.cpp \
+		server_config_dialog.cpp \
+		comic_flow_widget.cpp \
+		db_helper.cpp \
+		./db/data_base_management.cpp \
+		./db/folder_item.cpp \
+		./db/folder_model.cpp \
+		./db/comic_model.cpp \
+		./db/comic_item.cpp \
+		../common/comic_db.cpp \
+		../common/folder.cpp \
+		../common/library_item.cpp \
+		../common/comic.cpp \
+		../common/bookmarks.cpp \
+		../common/pictureflow.cpp \
+		../common/custom_widgets.cpp \
+		../common/qnaturalsorting.cpp \
+		../common/onstart_flow_selection_dialog.cpp \
+		no_libraries_widget.cpp \
+		import_widget.cpp \
+		yacreader_local_server.cpp \
+		yacreader_main_toolbar.cpp \
+		comics_remover.cpp \
+		../common/http_worker.cpp \
+		../common/yacreader_global.cpp \
+		../common/yacreader_global_gui.cpp \
+		yacreader_libraries.cpp \
+		../common/exit_check.cpp \
+		../common/pdf_comic.cpp \
+		comics_view.cpp \
+		classic_comics_view.cpp \
+		empty_folder_widget.cpp \
+		no_search_results_widget.cpp \
+		comic_files_manager.cpp \
+		db/reading_list_model.cpp \
+		db/reading_list_item.cpp \
+		yacreader_folders_view.cpp \
+		yacreader_reading_lists_view.cpp \
+		add_label_dialog.cpp \
+		yacreader_history_controller.cpp \
+		yacreader_navigation_controller.cpp \
+		empty_label_widget.cpp \
+		empty_container_info.cpp \
+		empty_special_list.cpp \
+		empty_reading_list_widget.cpp \
+		../common/scroll_management.cpp \
+		../common/opengl_checker.cpp \
+		yacreader_comics_views_manager.cpp \
+		info_comics_view.cpp \
+		yacreader_comics_selection_helper.cpp \
+		yacreader_comic_info_helper.cpp
 
 !CONFIG(no_opengl) {
     CONFIG(legacy_gl_widget) {
