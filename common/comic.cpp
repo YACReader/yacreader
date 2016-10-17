@@ -865,7 +865,7 @@ void PDFComic::renderPage(int page)
 #endif
 		QByteArray ba;
 		QBuffer buf(&ba);
-		img.save(&buf, "jpg");
+		img.save(&buf, "jpg", 96);
 		_pages[page] = ba;
 		emit imageLoaded(page);
 		emit imageLoaded(page,_pages[page]);
