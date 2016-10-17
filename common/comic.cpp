@@ -17,9 +17,9 @@
 
 enum YACReaderPageSortingMode
 {
-    YACReaderNumericalSorting,
-    YACReaderHeuristicSorting,
-    YACReaderAlphabeticalSorting
+	YACReaderNumericalSorting,
+	YACReaderHeuristicSorting,
+	YACReaderAlphabeticalSorting
 };
 
 void comic_pages_sort(QList<QString> & pageNames, YACReaderPageSortingMode sortingMode);
@@ -219,20 +219,23 @@ bool Comic::fileIsComic(const QString &path)
 
 QList<QString> Comic::findValidComicFiles(const QList<QUrl> &list)
 {
-    QLOG_DEBUG() << "-findValidComicFiles-";
-    QList<QString> validComicFiles;
-    QString currentPath;
-    foreach (QUrl url, list) {
-        currentPath = url.toLocalFile();
-        if(Comic::fileIsComic(currentPath))
-            validComicFiles << currentPath;
-        else if(QFileInfo(currentPath).isDir())
-        {
-           validComicFiles << findValidComicFilesInFolder(currentPath);
-        }
-    }
-    QLOG_DEBUG() << "-" << validComicFiles << "-";
-    return validComicFiles;
+	QLOG_DEBUG() << "-findValidComicFiles-";
+	QList<QString> validComicFiles;
+	QString currentPath;
+	foreach (QUrl url, list) 
+	{
+		currentPath = url.toLocalFile();
+		if(Comic::fileIsComic(currentPath))
+		{
+			validComicFiles << currentPath;
+		}
+		else if(QFileInfo(currentPath).isDir())
+		{
+			validComicFiles << findValidComicFilesInFolder(currentPath);
+		}
+	}
+	QLOG_DEBUG() << "-" << validComicFiles << "-";
+	return validComicFiles;
 }
 
 QList<QString> Comic::findValidComicFilesInFolder(const QString &path)
@@ -484,9 +487,13 @@ QList<QVector<quint32> > FileComic::getSections(int & sectionIndex)
 			foreach(quint32 si,section)
 			{
 				if(si<realIdx)
+				{
 					section1.append(si);
+				}
 				else
+				{
 					section2.append(si);
+				}
 			}
 			sectionIndex++;
 			sections.append(section1);
@@ -744,7 +751,9 @@ bool PDFComic::load(const QString & path, const ComicDB & comic)
 		QList<int> bookmarkIndexes;
 		bookmarkIndexes << comic.info.bookmark1 << comic.info.bookmark2 << comic.info.bookmark3;
 		if(bm->load(bookmarkIndexes,comic.info.currentPage-1))
+		{
 			emit bookmarksUpdated();
+		}
 		_firstPage = comic.info.currentPage-1;
 		_path = QDir::cleanPath(path);
 		return true;
@@ -1000,17 +1009,21 @@ QString get_most_common_prefix(const QList<QString> & pageNames)
 
 void get_double_pages(const QList<QString> & pageNames, QList<QString> & singlePageNames/*out*/, QList<QString> & doublePageNames/*out*/)
 {
-    uint maxExpectedDoublePagesNumberLenght = (int)(log10(pageNames.length())+1) * 2;
+	uint maxExpectedDoublePagesNumberLenght = (int)(log10(pageNames.length())+1) * 2;
 
-    QString mostCommonPrefix = get_most_common_prefix(pageNames);
+	QString mostCommonPrefix = get_most_common_prefix(pageNames);
 
-    foreach(const QString & pageName, pageNames)
-    {
-        if(is_double_page(pageName.split('/').last(), mostCommonPrefix, maxExpectedDoublePagesNumberLenght))
-            doublePageNames.append(pageName);
-        else
-            singlePageNames.append(pageName);
-    }
+	foreach(const QString & pageName, pageNames)
+	{
+		if(is_double_page(pageName.split('/').last(), mostCommonPrefix, maxExpectedDoublePagesNumberLenght))
+		{
+			doublePageNames.append(pageName);
+		}
+		else
+		{
+			singlePageNames.append(pageName);
+		}
+	}
 }
 
 QList<QString> merge_pages(QList<QString> & singlePageNames, QList<QString> & doublePageNames)
@@ -1066,7 +1079,7 @@ void comic_pages_sort(QList<QString> & pageNames, YACReaderPageSortingMode sorti
 
 			if(doublePageNames.length() > 0)
 			{
-			    pageNames = merge_pages(singlePageNames, doublePageNames);
+				pageNames = merge_pages(singlePageNames, doublePageNames);
 			}
 		}
 		break;
