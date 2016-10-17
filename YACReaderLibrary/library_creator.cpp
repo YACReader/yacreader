@@ -14,25 +14,13 @@
 
 #include "compressed_archive.h"
 #include "comic.h"
-
+#include "pdf_comic.h"
 #include "yacreader_global.h"
 
 #include "QsLog.h"
 
 #include <algorithm>
 using namespace std;
-
-#ifdef Q_OS_MAC
-    #include "pdf_comic.h"
-#else
-
-#if QT_VERSION >= 0x050000
-	#include "poppler-qt5.h"
-#else
-	#include "poppler-qt4.h"
-#endif
-
-#endif
 
 //--------------------------------------------------------------------------------
 LibraryCreator::LibraryCreator()
@@ -594,8 +582,7 @@ void ThumbnailCreator::create()
 
 	if(fi.suffix().compare("pdf",Qt::CaseInsensitive) == 0)
 	{
-
-#ifdef Q_OS_MAC
+#if defined Q_OS_MAC && defined USE_PDFKIT
 		MacOSXPDFComic * pdfComic = new MacOSXPDFComic();
 		if(!pdfComic->openComic(_fileSource))
 		{
@@ -603,40 +590,50 @@ void ThumbnailCreator::create()
 			//QImage p;
 			//p.load(":/images/notCover.png");
 			//p.save(_target);
-		return;
-        }
+			return;
+		}
+#elif defined USE_PDFIUM
+		PdfiumComic * pdfComic =  new PdfiumComic();
+		if(!pdfComic->openComic(_fileSource))
+		{
+			delete pdfComic;
+			return;
+		}
 #else
 		Poppler::Document * pdfComic = Poppler::Document::load(_fileSource);
 #endif
-        if (!pdfComic)
-	{
-		QLOG_WARN() << "Extracting cover: unable to open PDF file " << _fileSource;
-		//delete pdfComic; //TODO check if the delete is needed
-		pdfComic = 0;
-		//QImage p;
-		//p.load(":/images/notCover.png");
-		//p.save(_target);
-		return;
-	}
-#ifndef Q_OS_MAC
-		//poppler only, not mac
-	if (pdfComic->isLocked())
-	{
-		QLOG_WARN() << "Extracting cover: unable to open PDF file " << _fileSource;
-		delete pdfComic;
-		return;
-	}
-#endif
-	_numPages = pdfComic->numPages();
-	if(_numPages >= _coverPage)
+	
+		if (!pdfComic)
 		{
-#ifdef Q_OS_MAC
-            { //TODO is this "{" one too much?
+			QLOG_WARN() << "Extracting cover: unable to open PDF file " << _fileSource;
+			//delete pdfComic; //TODO check if the delete is needed
+			pdfComic = 0;
+			//QImage p;
+			//p.load(":/images/notCover.png");
+			//p.save(_target);
+			return;
+		}
+#if !defined USE_PDFKIT && !defined USE_PDFIUM
+		//poppler only, not mac
+		if (pdfComic->isLocked())
+		{
+			QLOG_WARN() << "Extracting cover: unable to open PDF file " << _fileSource;
+			delete pdfComic;
+			return;
+		}
+#endif
+		_numPages = pdfComic->numPages();
+		if(_numPages >= _coverPage)
+		{
+#if defined Q_OS_MAC || defined USE_PDFIUM
 			QImage p = pdfComic->getPage(_coverPage-1); //TODO check if the page is valid
+		#ifdef USE_PDFKIT
+			pdfComic->releaseLastPageData();
+		#endif
 #else
 			QImage p = pdfComic->page(_coverPage-1)->renderToImage(72,72);
 #endif
-            _cover = p;
+			_cover = p;
 			if(_target!="")
 			{
 				QImage scaled;
@@ -648,22 +645,17 @@ void ThumbnailCreator::create()
 				{
 					scaled = p.scaledToWidth(480,Qt::SmoothTransformation);
 				}
-				scaled.save(_target,0,75);
+					scaled.save(_target,0,75);
 			}
-#ifdef Q_OS_MAC
-        } //TODO  is this "{" one too much?
-        pdfComic->releaseLastPageData();
-#endif
+			else if(_target!="")
+			{
+				QLOG_WARN() << "Extracting cover: requested cover index greater than numPages " << _fileSource;
+				//QImage p;
+				//p.load(":/images/notCover.png");
+				//p.save(_target);
+			}
+			delete pdfComic;
 		}
-		else if(_target!="")
-		{
-			QLOG_WARN() << "Extracting cover: requested cover index greater than numPages " << _fileSource;
-			//QImage p;
-			//p.load(":/images/notCover.png");
-			//p.save(_target);
-		}
-
-        delete pdfComic;
 	}
 	else
 	{

@@ -154,14 +154,16 @@ class PDFComic : public Comic
 	Q_OBJECT
 	
 	private:
+		
 		//pdf
-#ifdef Q_OS_MAC
-			MacOSXPDFComic * pdfComic;
-#else
+		#if defined Q_OS_MAC && defined USE_PDFKIT
+		MacOSXPDFComic * pdfComic;
+		#elif defined USE_PDFIUM
+		PdfiumComic * pdfComic;
+		#else
 		Poppler::Document * pdfComic;
-#endif
+		#endif
 		void renderPage(int page);
-
 		//void run();
 	
 	public:

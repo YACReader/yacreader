@@ -58,9 +58,17 @@ win32 {
 }
 
 unix:!macx{
-
+!CONFIG(pdfium){
 INCLUDEPATH  += /usr/include/poppler/qt5
 LIBS         += -L/usr/lib -lpoppler-qt5
+} else {
+	DEFINES 		+= "USE_PDFIUM"
+	INCLUDEPATH  += /usr/include/pdfium
+	LIBS                 += -L/usr/lib/pdfium -Wl,--start-group -lpdfium -lfpdfapi -lfxge -lfpdfdoc \
+					-lfxcrt -lfx_agg -lfxcodec -lfx_lpng -lfx_libopenjpeg -lfx_lcms2 -ljpeg \
+					-lfx_zlib -lfdrm -lfxedit -lformfiller -lpdfwindow -lpdfium -lbigint -ljavascript \
+					-lfxedit -Wl,--end-group -lfreetype
+}
 
 !CONFIG(no_opengl) {
         LIBS += -lGLU
@@ -172,6 +180,7 @@ SOURCES +=  ../common/comic.cpp \
             ../common/library_item.cpp \
             yacreader_local_client.cpp \
             ../common/http_worker.cpp \
+	    ../common/pdf_comic.cpp \
             ../common/yacreader_global.cpp \
             ../common/yacreader_global_gui.cpp \
                 ../common/exit_check.cpp \
