@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QImage>
 
+#ifdef Q_OS_MAC
 class MacOSXPDFComic
 {
 public:
@@ -18,5 +19,9 @@ private:
     void * document;
     void * lastPageData;
 };
+
+#else
+#include "poppler-qt5.h"
+#endif // Q_OS_MAC
 
 #endif // PDF_COMIC_H
