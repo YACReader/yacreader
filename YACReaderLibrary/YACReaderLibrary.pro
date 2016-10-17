@@ -70,7 +70,6 @@ macx{
 LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 
 OBJECTIVE_SOURCES += $$PWD/../common/pdf_comic.mm
-HEADERS += $$PWD/../common/pdf_comic.h
 CONFIG += objective_c
 QT += macextras gui-private
 }
@@ -88,68 +87,69 @@ QT += sql network widgets script
 
 # Input
 HEADERS += comic_flow.h \
-           create_library_dialog.h \
-           library_creator.h \
-           library_window.h \
-           add_library_dialog.h \
-           rename_library_dialog.h \
-           properties_dialog.h \
-           options_dialog.h \
-           export_library_dialog.h \
-           import_library_dialog.h \
-           package_manager.h \
-           bundle_creator.h \
-           export_comics_info_dialog.h \
-           import_comics_info_dialog.h \
-           server_config_dialog.h \
-           comic_flow_widget.h \
-           db_helper.h \
-           ./db/data_base_management.h \
-           ./db/folder_item.h \
-           ./db/folder_model.h \
-           ./db/comic_model.h \
-           ./db/comic_item.h \
-           ../common/comic_db.h \
-           ../common/folder.h \
-           ../common/library_item.h \
-           ../common/comic.h \
-           ../common/bookmarks.h \
-           ../common/pictureflow.h \
-           ../common/custom_widgets.h \
-           ../common/qnaturalsorting.h \
-           ../common/yacreader_global.h \
-           ../common/yacreader_global_gui.h \
-           ../common/onstart_flow_selection_dialog.h \
-           no_libraries_widget.h \
-           import_widget.h \
-           yacreader_local_server.h \
-           yacreader_main_toolbar.h \
-           comics_remover.h \
-           ../common/http_worker.h \
-           yacreader_libraries.h \
-           ../common/exit_check.h \
-           comics_view.h \
-           classic_comics_view.h \
-           empty_folder_widget.h \
-           no_search_results_widget.h \
-           comic_files_manager.h \
-           db/reading_list_model.h \
-           db/reading_list_item.h \
-    yacreader_folders_view.h \
-    yacreader_reading_lists_view.h \
-    add_label_dialog.h \
-    yacreader_history_controller.h \
-    yacreader_navigation_controller.h \
-    empty_label_widget.h \
-    empty_container_info.h \
-    empty_special_list.h \
-    empty_reading_list_widget.h \
-    ../common/scroll_management.h \
-    ../common/opengl_checker.h \
-    yacreader_comics_views_manager.h \
-    info_comics_view.h \
-    yacreader_comics_selection_helper.h \
-    yacreader_comic_info_helper.h
+	create_library_dialog.h \
+	library_creator.h \
+	library_window.h \
+	add_library_dialog.h \
+	rename_library_dialog.h \
+	properties_dialog.h \
+	options_dialog.h \
+	export_library_dialog.h \
+	import_library_dialog.h \
+	package_manager.h \
+	bundle_creator.h \
+	export_comics_info_dialog.h \
+	import_comics_info_dialog.h \
+	server_config_dialog.h \
+	comic_flow_widget.h \
+	db_helper.h \
+	./db/data_base_management.h \
+	./db/folder_item.h \
+	./db/folder_model.h \
+	./db/comic_model.h \
+	./db/comic_item.h \
+	../common/comic_db.h \
+	../common/folder.h \
+	../common/library_item.h \
+	../common/comic.h \
+	../common/bookmarks.h \
+	../common/pictureflow.h \
+	../common/custom_widgets.h \
+	../common/qnaturalsorting.h \
+	../common/yacreader_global.h \
+	../common/yacreader_global_gui.h \
+	../common/onstart_flow_selection_dialog.h \
+	../common/pdf_comic.h \
+	no_libraries_widget.h \
+	import_widget.h \
+	yacreader_local_server.h \
+	yacreader_main_toolbar.h \
+	comics_remover.h \
+	../common/http_worker.h \
+	yacreader_libraries.h \
+	../common/exit_check.h \
+	comics_view.h \
+	classic_comics_view.h \
+	empty_folder_widget.h \
+	no_search_results_widget.h \
+	comic_files_manager.h \
+	db/reading_list_model.h \
+	db/reading_list_item.h \
+	yacreader_folders_view.h \
+	yacreader_reading_lists_view.h \
+	add_label_dialog.h \
+	yacreader_history_controller.h \
+	yacreader_navigation_controller.h \
+	empty_label_widget.h \
+	empty_container_info.h \
+	empty_special_list.h \
+	empty_reading_list_widget.h \
+	../common/scroll_management.h \
+	../common/opengl_checker.h \
+	yacreader_comics_views_manager.h \
+	info_comics_view.h \
+	yacreader_comics_selection_helper.h \
+	yacreader_comic_info_helper.h
 
 !CONFIG(no_opengl) {
     CONFIG(legacy_gl_widget) {
