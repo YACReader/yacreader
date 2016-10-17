@@ -76,6 +76,9 @@ macx{
 #}
 #QT += macextras
 
+#TODO:support for pdfium on mac
+DEFINES += "USE_PDFKIT"
+
 LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 
 OBJECTIVE_SOURCES += $$PWD/../common/pdf_comic.mm

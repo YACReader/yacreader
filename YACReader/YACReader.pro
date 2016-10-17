@@ -86,6 +86,10 @@ macx{
 #INCLUDEPATH  += /usr/local/include/poppler/qt4
 #LIBS         += -L/usr/local/lib -lpoppler-qt4
 #}
+
+#TODO: pdfium support
+DEFINES += "USE_PDFKIT"
+
 CONFIG += objective_c
 QT += macextras gui-private
 
