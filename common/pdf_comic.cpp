@@ -48,8 +48,6 @@ unsigned int PdfiumComic::numPages()
 
 QImage PdfiumComic::getPage(const int page)
 {
-	QTime time;
-	time.start();
 	QImage image;
 	FPDF_PAGE pdfpage;
 	FPDF_BITMAP bitmap;
@@ -74,8 +72,6 @@ QImage PdfiumComic::getPage(const int page)
 	FPDF_RenderPageBitmap(bitmap, pdfpage, 0,0, image.width(), image.height(), 0, (FPDF_REVERSE_BYTE_ORDER | FPDF_LCD_TEXT));
 	FPDFBitmap_Destroy(bitmap);
 	FPDF_ClosePage(pdfpage);
-	
-	qDebug()<< "Render time:" << time.elapsed();
 	return image;
 }
 #endif //USE_PDFIUM
