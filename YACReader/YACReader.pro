@@ -85,7 +85,6 @@ QT += macextras gui-private
 LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 
 OBJECTIVE_SOURCES += ../common/pdf_comic.mm
-HEADERS += ../common/pdf_comic.h
 }
 
 QT += network widgets core
@@ -131,7 +130,8 @@ HEADERS +=  ../common/comic.h \
             ../common/http_worker.h \
             ../common/exit_check.h \
             ../common/scroll_management.h \
-            ../common/opengl_checker.h
+            ../common/opengl_checker.h \
+	    ../common/pdf_comic.h
 
 !CONFIG(no_opengl) {
     CONFIG(legacy_gl_widget) {
