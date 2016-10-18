@@ -27,7 +27,7 @@
 
 
 GoToFlow::GoToFlow(QWidget *parent,FlowType flowType)
-:GoToFlowWidget(parent),ready(false)
+	:GoToFlowWidget(parent),ready(false)
 {
 	updateTimer = new QTimer;
 	connect(updateTimer, SIGNAL(timeout()), this, SLOT(updateImageData()));
@@ -43,12 +43,12 @@ GoToFlow::GoToFlow(QWidget *parent,FlowType flowType)
 	connect(flow,SIGNAL(selected(unsigned int)),this,SIGNAL(goToPage(unsigned int)));
 
 	connect(toolBar,SIGNAL(goTo(unsigned int)),this,SIGNAL(goToPage(unsigned int)));
-	connect(toolBar,SIGNAL(setCenter(unsigned int)),flow,SLOT(showSlide(unsigned int))); 
+	connect(toolBar,SIGNAL(setCenter(unsigned int)),flow,SLOT(showSlide(unsigned int)));
 
-    mainLayout->addWidget(flow);
-    toolBar->raise();
+	mainLayout->addWidget(flow);
+	toolBar->raise();
 
-    resize(static_cast<int>(5*imageSize.width()),toolBar->height() + static_cast<int>(imageSize.height()*1.7));
+	resize(static_cast<int>(5*imageSize.width()),toolBar->height() + static_cast<int>(imageSize.height()*1.7));
 
 	this->setCursor(QCursor(Qt::ArrowCursor));
 }
@@ -64,11 +64,11 @@ void GoToFlow::keyPressEvent(QKeyEvent *event)
 {
 	switch (event->key())
 	{
-		case Qt::Key_Left: case Qt::Key_Right: case Qt::Key_Up:
-			QApplication::sendEvent(flow,event);
-			return;
-		default:
-			break;
+	case Qt::Key_Left: case Qt::Key_Right: case Qt::Key_Up:
+		QApplication::sendEvent(flow,event);
+		return;
+	default:
+		break;
 	}
 
 	GoToFlowWidget::keyPressEvent(event);
@@ -76,10 +76,10 @@ void GoToFlow::keyPressEvent(QKeyEvent *event)
 
 void GoToFlow::resizeEvent(QResizeEvent *event)
 {
-    QWidget::resizeEvent(event);
+	QWidget::resizeEvent(event);
 
-    toolBar->move(0, event->size().height() - toolBar->height());
-    toolBar->setFixedWidth(width());
+	toolBar->move(0, event->size().height() - toolBar->height());
+	toolBar->setFixedWidth(width());
 }
 
 
@@ -169,11 +169,11 @@ void GoToFlow::updateImageData()
 			imagesLoaded[idx]=true;
 		}
 
-	} 
+	}
 
-	// try to load only few images on the left and right side 
+	// try to load only few images on the left and right side
 	// i.e. all visible ones plus some extra
-#define COUNT 8  
+#define COUNT 8
 	int indexes[2*COUNT+1];
 	int center = flow->centerIndex();
 	indexes[0] = center;
@@ -181,7 +181,7 @@ void GoToFlow::updateImageData()
 	{
 		indexes[j*2+1] = center+j+1;
 		indexes[j*2+2] = center-j-1;
-	}  
+	}
 	for(int c = 0; c < 2*COUNT+1; c++)
 	{
 		int i = indexes[c];
@@ -189,7 +189,7 @@ void GoToFlow::updateImageData()
 			if(!imagesLoaded[i]&&imagesReady[i])//slide(i).isNull())
 			{
 				// schedule thumbnail generation
-				
+
 				worker->generate(i, flow->slideSize(),rawImages[i]);
 				return;
 			}
@@ -229,7 +229,7 @@ void GoToFlow::updateConfig(QSettings * settings)
 //SlideInitializer
 //-----------------------------------------------------------------------------
 SlideInitializer::SlideInitializer(QMutex * m,PictureFlow * flow,int slides)
-:QThread(),mutex(m),_flow(flow),_slides(slides)		
+	:QThread(),mutex(m),_flow(flow),_slides(slides)
 {
 
 }
@@ -249,8 +249,8 @@ void SlideInitializer::run()
 //-----------------------------------------------------------------------------
 
 
-PageLoader::PageLoader(QMutex * m): 
-QThread(),mutex(m), restart(false), working(false), idx(-1)
+PageLoader::PageLoader(QMutex * m):
+	QThread(),mutex(m), restart(false), working(false), idx(-1)
 {
 }
 
@@ -265,7 +265,7 @@ PageLoader::~PageLoader()
 bool PageLoader::busy() const
 {
 	return isRunning() ? working : false;
-}  
+}
 
 void PageLoader::generate(int index, QSize size,const QByteArray & rImage)
 {
