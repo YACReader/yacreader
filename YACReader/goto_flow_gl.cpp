@@ -26,12 +26,12 @@ GoToFlowGL::GoToFlowGL(QWidget* parent, FlowType flowType)
 	connect(flow,SIGNAL(selected(unsigned int)),this,SIGNAL(goToPage(unsigned int)));
 
 	connect(toolBar,SIGNAL(goTo(unsigned int)),this,SIGNAL(goToPage(unsigned int)));
-	connect(toolBar,SIGNAL(setCenter(unsigned int)),flow,SLOT(setCenterIndex(unsigned int))); 
+	connect(toolBar,SIGNAL(setCenter(unsigned int)),flow,SLOT(setCenterIndex(unsigned int)));
 
-    mainLayout->addWidget(flow);
-    toolBar->raise();
+	mainLayout->addWidget(flow);
+	toolBar->raise();
 
-    resize(static_cast<int>(5*imageSize.width()),toolBar->height() + static_cast<int>(imageSize.height()*1.7));
+	resize(static_cast<int>(5*imageSize.width()),toolBar->height() + static_cast<int>(imageSize.height()*1.7));
 
 	this->setCursor(QCursor(Qt::ArrowCursor));
 }
@@ -138,7 +138,7 @@ void GoToFlowGL::updateConfig(QSettings * settings)
 	flow->setLightStrenght(settings->value(LIGHT_STRENGTH).toInt());
 	flow->setMaxAngle(settings->value(MAX_ANGLE).toInt());
 
-/*	flow->setVisibility(settings->value("visibilityDistance").toInt());
+	/*	flow->setVisibility(settings->value("visibilityDistance").toInt());
 	flow->setLightStrenght(settings->value("lightStrength").toInt())*/;
 
 }
@@ -147,11 +147,11 @@ void GoToFlowGL::keyPressEvent(QKeyEvent* event)
 {
 	switch (event->key())
 	{
-		case Qt::Key_Left: case Qt::Key_Right: case Qt::Key_Up:
-			QApplication::sendEvent(flow,event);
-			return;
-		default:
-			break;
+	case Qt::Key_Left: case Qt::Key_Right: case Qt::Key_Up:
+		QApplication::sendEvent(flow,event);
+		return;
+	default:
+		break;
 	}
 
 	GoToFlowWidget::keyPressEvent(event);
@@ -159,8 +159,8 @@ void GoToFlowGL::keyPressEvent(QKeyEvent* event)
 
 void GoToFlowGL::resizeEvent(QResizeEvent *event)
 {
-    QWidget::resizeEvent(event);
+	QWidget::resizeEvent(event);
 
-    toolBar->move(0, event->size().height() - toolBar->height());
-    toolBar->setFixedWidth(width());
+	toolBar->move(0, event->size().height() - toolBar->height());
+	toolBar->setFixedWidth(width());
 }
