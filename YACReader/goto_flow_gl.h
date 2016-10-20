@@ -23,7 +23,6 @@ public:
 	void setFlowType(FlowType flowType);
 	void setNumSlides(unsigned int slides);
 	void setImageReady(int index,const QByteArray & image);
-	void updateSize();
 
 	void updateConfig(QSettings * settings);
 

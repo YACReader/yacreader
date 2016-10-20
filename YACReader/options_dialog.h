@@ -23,6 +23,7 @@ Q_OBJECT
 		//QLabel * pathLabel;
 		QLineEdit * pathEdit;
 		QPushButton * pathFindButton;
+		QCheckBox * quickNavi;
 
 		QLabel * magGlassSizeLabel;
 
