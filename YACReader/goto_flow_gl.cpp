@@ -79,8 +79,9 @@ void GoToFlowGL::setImageReady(int index,const QByteArray & imageData)
 
 void GoToFlowGL::updateConfig(QSettings * settings)
 {
-	Performance performance = medium;
+	GoToFlowWidget::updateConfig(settings);
 
+	Performance performance = medium;
 	switch (settings->value(PERFORMANCE).toInt())
 	{
 	case 0:

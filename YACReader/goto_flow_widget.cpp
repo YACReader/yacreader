@@ -51,6 +51,12 @@ void GoToFlowWidget::keyPressEvent(QKeyEvent* event)
 	event->accept();
 }
 
+void GoToFlowWidget::updateConfig(QSettings * settings)
+{
+	Q_UNUSED(settings)
+	toolBar->switchLayout();
+}
+
 void GoToFlowWidget::updateSize()
 {
 	// called by parent in resizeEvent

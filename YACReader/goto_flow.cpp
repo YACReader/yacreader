@@ -216,7 +216,8 @@ void GoToFlow::setFlowType(FlowType flowType)
 
 void GoToFlow::updateConfig(QSettings * settings)
 {
-	Q_UNUSED(settings)
+	GoToFlowWidget::updateConfig(settings);
+
 	imageSize = Configuration::getConfiguration().getGotoSlideSize();
 	flow->setFlowType(Configuration::getConfiguration().getFlowType());
 	resize(5*imageSize.width(), toolBar->height() + imageSize.height()*1.7);
