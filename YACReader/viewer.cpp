@@ -587,7 +587,8 @@ void Viewer::wheelEvent(QWheelEvent * event)
 void Viewer::resizeEvent(QResizeEvent * event)
 {
 	updateContentSize();
-	goToFlow->move(QPoint((width()-goToFlow->width())/2,height()-goToFlow->height()));
+	goToFlow->updateSize();
+	goToFlow->move((width()-goToFlow->width())/2,height()-goToFlow->height());
 	informationLabel->updatePosition();
 	QScrollArea::resizeEvent(event);
 }
@@ -865,7 +866,6 @@ void Viewer::updateOptions()
 	goToFlow->setFlowType(Configuration::getConfiguration().getFlowType());
 	updateBackgroundColor(Configuration::getConfiguration().getBackgroundColor());
 	updateContentSize();
-	//goToFlow->updateSize();
 }
 
 void Viewer::updateBackgroundColor(const QColor & color)

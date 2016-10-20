@@ -77,11 +77,6 @@ void GoToFlowGL::setImageReady(int index,const QByteArray & imageData)
 	flow->imagesReady[index] = true;
 }
 
-void GoToFlowGL::updateSize()
-{
-
-}
-
 void GoToFlowGL::updateConfig(QSettings * settings)
 {
 	Performance performance = medium;
@@ -102,45 +97,45 @@ void GoToFlowGL::updateConfig(QSettings * settings)
 		break;
 	}
 
+	imageSize = Configuration::getConfiguration().getGotoSlideSize();
+	resize(5*imageSize.width(), toolBar->height() + imageSize.height()*1.7);
+	updateSize();
+
 	flow->setPerformance(performance);
 
 	switch (settings->value(FLOW_TYPE_GL).toInt())
 	{
-	case 0:
+	case FlowType::CoverFlowLike:
 		flow->setPreset(presetYACReaderFlowClassicConfig);
-		return;
-	case 1:
+		break;
+	case FlowType::Strip:
 		flow->setPreset(presetYACReaderFlowStripeConfig);
-		return;
-	case 2:
+		break;
+	case FlowType::StripOverlapped:
 		flow->setPreset(presetYACReaderFlowOverlappedStripeConfig);
-		return;
-	case 3:
+		break;
+	case FlowType::Modern:
 		flow->setPreset(defaultYACReaderFlowConfig);
-		return;
-	case 4:
+		break;
+	case FlowType::Roulette:
 		flow->setPreset(pressetYACReaderFlowDownConfig);
-		return;
+		break;
+	case FlowType::Custom:
+		flow->setCF_RX(settings->value(X_ROTATION).toInt());
+		flow->setCF_Y(settings->value(Y_POSITION).toInt());
+		flow->setX_Distance(settings->value(COVER_DISTANCE).toInt());
+		flow->setCenter_Distance(settings->value(CENTRAL_DISTANCE).toInt());
+		flow->setCF_Z(settings->value(ZOOM_LEVEL).toInt());
+		flow->setY_Distance(settings->value(Y_COVER_OFFSET).toInt());
+		flow->setZ_Distance(settings->value(Z_COVER_OFFSET).toInt());
+		flow->setRotation(settings->value(COVER_ROTATION).toInt());
+		flow->setFadeOutDist(settings->value(FADE_OUT_DIST).toInt());
+		flow->setLightStrenght(settings->value(LIGHT_STRENGTH).toInt());
+		flow->setMaxAngle(settings->value(MAX_ANGLE).toInt());
+		break;
 	}
-
-
-	//custom config
-
-	flow->setCF_RX(settings->value(X_ROTATION).toInt());
-	flow->setCF_Y(settings->value(Y_POSITION).toInt());
-	flow->setX_Distance(settings->value(COVER_DISTANCE).toInt());
-	flow->setCenter_Distance(settings->value(CENTRAL_DISTANCE).toInt());
-	flow->setCF_Z(settings->value(ZOOM_LEVEL).toInt());
-	flow->setY_Distance(settings->value(Y_COVER_OFFSET).toInt());
-	flow->setZ_Distance(settings->value(Z_COVER_OFFSET).toInt());
-	flow->setRotation(settings->value(COVER_ROTATION).toInt());
-	flow->setFadeOutDist(settings->value(FADE_OUT_DIST).toInt());
-	flow->setLightStrenght(settings->value(LIGHT_STRENGTH).toInt());
-	flow->setMaxAngle(settings->value(MAX_ANGLE).toInt());
-
-	/*	flow->setVisibility(settings->value("visibilityDistance").toInt());
-	flow->setLightStrenght(settings->value("lightStrength").toInt())*/;
-
+	if (Configuration::getConfiguration().getQuickNaviMode())
+		flow->setFadeOutDist(20);
 }
 
 void GoToFlowGL::keyPressEvent(QKeyEvent* event)

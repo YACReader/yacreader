@@ -214,16 +214,13 @@ void GoToFlow::setFlowType(FlowType flowType)
 	flow->setFlowType(flowType);
 }
 
-void GoToFlow::updateSize() //TODO : fix. it doesn't work.
-{
-	imageSize = Configuration::getConfiguration().getGotoSlideSize();
-	flow->setSlideSize(imageSize);
-	resize(static_cast<int>(5*imageSize.width()),static_cast<int>(imageSize.height()*1.7));
-}
-
 void GoToFlow::updateConfig(QSettings * settings)
 {
 	Q_UNUSED(settings)
+	imageSize = Configuration::getConfiguration().getGotoSlideSize();
+	flow->setFlowType(Configuration::getConfiguration().getFlowType());
+	resize(5*imageSize.width(), toolBar->height() + imageSize.height()*1.7);
+	updateSize();
 }
 //-----------------------------------------------------------------------------
 //SlideInitializer

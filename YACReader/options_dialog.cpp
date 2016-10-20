@@ -104,6 +104,8 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 	gammaS->setTracking(false);
 	connect(gammaS,SIGNAL(valueChanged(int)),this,SLOT(gammaChanged(int)));
 	//connect(brightnessS,SIGNAL(valueChanged(int)),this,SIGNAL(changedOptions()));
+	
+	quickNavi = new QCheckBox(tr("Quick Navigation Mode"));
 
 	QHBoxLayout * buttons = new QHBoxLayout();
 	buttons->addStretch();
@@ -122,6 +124,7 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 	layoutFlow->addWidget(gl);
 	layoutFlow->addWidget(useGL);
 #endif
+	layoutFlow->addWidget(quickNavi);
 	layoutFlow->addStretch();
 	layoutImage->addWidget(new QLabel(tr("Brightness")),0,0);
 	layoutImage->addWidget(new QLabel(tr("Contrast")),1,0);
@@ -191,6 +194,7 @@ void OptionsDialog::saveOptions()
 
 	settings->setValue(BACKGROUND_COLOR,colorDialog->currentColor());
 	//settings->setValue(FIT_TO_WIDTH_RATIO,fitToWidthRatioS->sliderPosition()/100.0);
+	settings->setValue(QUICK_NAVI_MODE,quickNavi->isChecked());
 
 	YACReaderOptionsDialog::saveOptions();
 }
@@ -220,6 +224,8 @@ void OptionsDialog::restoreOptions(QSettings * settings)
 
 	updateColor(settings->value(BACKGROUND_COLOR).value<QColor>());
 	//fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
+
+	quickNavi->setChecked(settings->value(QUICK_NAVI_MODE).toBool());
 
 	brightnessS->setValue(settings->value(BRIGHTNESS,0).toInt());
 	contrastS->setValue(settings->value(CONTRAST,100).toInt());
