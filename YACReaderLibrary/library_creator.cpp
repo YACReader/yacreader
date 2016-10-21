@@ -579,7 +579,7 @@ void ThumbnailCreator::create()
 		QLOG_WARN() << "Extracting cover: file not found " << _fileSource;
 		return;
 	}
-
+#ifndef NO_PDF
 	if(fi.suffix().compare("pdf",Qt::CaseInsensitive) == 0)
 	{
 #if defined Q_OS_MAC && defined USE_PDFKIT
@@ -632,7 +632,7 @@ void ThumbnailCreator::create()
 		#endif
 #else
 			QImage p = pdfComic->page(_coverPage-1)->renderToImage(72,72);
-#endif
+#endif //
 			_cover = p;
 			if(_target!="")
 			{
@@ -656,78 +656,77 @@ void ThumbnailCreator::create()
 			}
 			delete pdfComic;
 		}
+		return;
+	}
+#endif //NO_PDF
+	
+	if(crash)
+	{
+		return;
+	}
+
+	CompressedArchive archive(_fileSource);
+	if(!archive.toolsLoaded())
+	{
+		QLOG_WARN() << "Extracting cover: 7z lib not loaded";
+		crash = true;
+		return;
+	}
+	if(!archive.isValid())
+	{
+		QLOG_WARN() << "Extracting cover: file format not supported " << _fileSource;	
+	}
+	//se filtran para obtener sólo los formatos soportados
+	QList<QString> order = archive.getFileNames();
+	QList<QString> fileNames = FileComic::filter(order);
+	_numPages = fileNames.size();
+	if(_numPages == 0)
+	{
+		QLOG_WARN() << "Extracting cover: empty comic " << _fileSource;
+		_cover.load(":/images/notCover.png");
+		if(_target!="")
+		{
+			_cover.save(_target);
+		}
 	}
 	else
 	{
+		if(_coverPage > _numPages)
+		{
+			_coverPage = 1;
+		}
+		qSort(fileNames.begin(),fileNames.end(), naturalSortLessThanCI);
+		int index = order.indexOf(fileNames.at(_coverPage-1));
 
-		if(crash)
+		if(_target=="")
 		{
-			return;
-		}
-
-		CompressedArchive archive(_fileSource);
-		if(!archive.toolsLoaded())
-		{
-			QLOG_WARN() << "Extracting cover: 7z lib not loaded";
-			crash = true;
-			return;
-		}
-		if(!archive.isValid())
-		{
-			QLOG_WARN() << "Extracting cover: file format not supported " << _fileSource;	
-		}
-		//se filtran para obtener sólo los formatos soportados
-		QList<QString> order = archive.getFileNames();
-		QList<QString> fileNames = FileComic::filter(order);
-		_numPages = fileNames.size();
-		if(_numPages == 0)
-		{
-			QLOG_WARN() << "Extracting cover: empty comic " << _fileSource;
-			_cover.load(":/images/notCover.png");
-			if(_target!="")
+			if(!_cover.loadFromData(archive.getRawDataAtIndex(index)))
 			{
-				_cover.save(_target);
+				QLOG_WARN() << "Extracting cover: unable to load image from extracted cover " << _fileSource;
+				_cover.load(":/images/notCover.png");
 			}
 		}
 		else
 		{
-			if(_coverPage > _numPages)
+			QImage p;
+			if(p.loadFromData(archive.getRawDataAtIndex(index)))
 			{
-				_coverPage = 1;
-			}
-			qSort(fileNames.begin(),fileNames.end(), naturalSortLessThanCI);
-			int index = order.indexOf(fileNames.at(_coverPage-1));
-
-			if(_target=="")
-			{
-				if(!_cover.loadFromData(archive.getRawDataAtIndex(index)))
+				QImage scaled;
+				if(p.width()>p.height()) //landscape??
 				{
-					QLOG_WARN() << "Extracting cover: unable to load image from extracted cover " << _fileSource;
-					_cover.load(":/images/notCover.png");
-				}
-			}
-			else
-			{
-				QImage p;
-				if(p.loadFromData(archive.getRawDataAtIndex(index)))
-				{
-					QImage scaled;
-					if(p.width()>p.height()) //landscape??
-					{
-						scaled = p.scaledToWidth(640,Qt::SmoothTransformation);
-					}
-					else
-					{
-						scaled = p.scaledToWidth(480,Qt::SmoothTransformation);
-					}
-					scaled.save(_target,0,75);
+					scaled = p.scaledToWidth(640,Qt::SmoothTransformation);
 				}
 				else
 				{
-					QLOG_WARN() << "Extracting cover: unable to load image from extracted cover " << _fileSource;
-			//p.load(":/images/notCover.png");
-			//p.save(_target);
+					scaled = p.scaledToWidth(480,Qt::SmoothTransformation);
 				}
+				scaled.save(_target,0,75);
+			}
+			else
+			{
+				QLOG_WARN() << "Extracting cover: unable to load image from extracted cover " << _fileSource;
+		//p.load(":/images/notCover.png");
+		//p.save(_target);
 			}
 		}
 	}

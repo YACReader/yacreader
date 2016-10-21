@@ -8,8 +8,9 @@
 
 #include "extract_delegate.h"
 #include "bookmarks.h"
+#ifndef NO_PDF
 #include "pdf_comic.h"
-
+#endif //NO_PDF
 class ComicDB;
 //#define EXTENSIONS << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp" Comic::getSupportedImageFormats()
 //#define EXTENSIONS_LITERAL << ".jpg" << ".jpeg" << ".png" << ".gif" << ".tiff" << ".tif" << ".bmp" //Comic::getSupportedImageLiteralFormats()
@@ -149,6 +150,7 @@ class FolderComic : public Comic
 		void process();
 };
 
+#ifndef NO_PDF
 class PDFComic : public Comic 
 {
 	Q_OBJECT
@@ -179,7 +181,7 @@ class PDFComic : public Comic
 	
 		void process();
 };
-
+#endif //NO_PDF
 class FactoryComic
 {
 	public:

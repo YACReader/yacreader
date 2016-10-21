@@ -28,12 +28,20 @@ const QStringList Comic::imageExtensions = QStringList() << "*.jpg" << "*.jpeg" 
 const QStringList Comic::literalImageExtensions = QStringList() << "jpg" << "jpeg" << "png" << "gif" << "tiff" << "tif" << "bmp" << "webp";
 
 #ifndef use_unarr
-const QStringList Comic::comicExtensions = QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.7z" << "*.cb7" << "*.arj" << "*.cbt";
-const QStringList Comic::literalComicExtensions = QStringList() << "cbr" << "cbz" << "rar" << "zip" << "tar" << "pdf" << "7z" << "cb7" << "arj" << "cbt";
+const QStringList ComicArchiveExtensions = QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.7z" << "*.cb7" << "*.arj" << "*.cbt";
+const QStringList LiteralComicArchiveExtensions = QStringList() << "cbr" << "cbz" << "rar" << "zip" << "tar" << "pdf" << "7z" << "cb7" << "arj" << "cbt";
 #else
-const QStringList Comic::comicExtensions = QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.cbt";
-const QStringList Comic::literalComicExtensions = QStringList() << "cbr" << "cbz" << "rar" << "zip" << "tar" << "pdf" << "cbt";
-#endif
+const QStringList ComicArchiveExtensions = QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.cbt";
+const QStringList LiteralComicArchiveExtensions = QStringList() << "cbr" << "cbz" << "rar" << "zip" << "tar" << "pdf" << "cbt";
+#endif //use_unarr
+#ifndef NO_PDF
+const QStringList Comic::comicExtensions = QStringList() << ComicArchiveExtensions << "*.pdf";
+const QStringList Comic::literalComicExtensions = QStringList() << LiteralComicArchiveExtensions << "pdf";
+#else
+const QStringList Comic::comicExtensions = QStringList() << ComicArchiveExtensions << "*.pdf";
+const QStringList Comic::literalComicExtensions = QStringList() << LiteralComicArchiveExtensions << "pdf";
+#endif //NO_PDF
+
 //-----------------------------------------------------------------------------
 Comic::Comic()
 :_pages(),_index(0),_path(),_loaded(false),bm(new Bookmarks()),_loadedPages(),_isPDF(false)
@@ -701,6 +709,8 @@ void FolderComic::process()
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+#ifndef NO_PDF
+
 PDFComic::PDFComic()
 	:Comic()
 {
@@ -872,6 +882,8 @@ void PDFComic::renderPage(int page)
 	}
 }
 
+#endif //NO_PDF
+
 Comic * FactoryComic::newComic(const QString & path)
 {
 
@@ -879,7 +891,8 @@ Comic * FactoryComic::newComic(const QString & path)
 	if(fi.exists())
 	{
 		if(fi.isFile())
-		{
+		{	
+			#ifndef NO_PDF
 			if(fi.suffix().compare("pdf",Qt::CaseInsensitive) == 0)
 			{
 				return new PDFComic();
@@ -888,6 +901,9 @@ Comic * FactoryComic::newComic(const QString & path)
 			{
 				return new FileComic();
 			}
+			#else
+			return new FileComic();
+			#endif
 		}
 		else
 		{
