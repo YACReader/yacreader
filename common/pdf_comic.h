@@ -1,4 +1,4 @@
-#ifndef PDF_COMIC_H
+#if !defined PDF_COMIC_H && !defined NO_PDF
 #define PDF_COMIC_H
 
 #include <QObject>

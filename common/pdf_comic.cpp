@@ -1,6 +1,6 @@
 #include "comic.h"
 #include "pdf_comic.h"
-#ifdef USE_PDFIUM
+#if defined USE_PDFIUM && !defined NO_PDF
 PdfiumComic::PdfiumComic()
 {
 	FPDF_InitLibrary();
