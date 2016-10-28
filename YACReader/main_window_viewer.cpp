@@ -655,13 +655,68 @@ void MainWindowViewer::createToolBars()
     fileMenu->addAction(openFolderAction);
     fileMenu->addSeparator();
     fileMenu->addAction(saveImageAction);
+    fileMenu->addSeparator();
+
+	QMenu * recentmenu = new QMenu(tr("Open recent"));
+	recentmenu->addActions(recentFilesActionList);
+	recentmenu->addSeparator();
+	recentmenu->addAction(clearRecentFilesAction);
+	refreshRecentFilesActionList();
+    fileMenu->addMenu(recentmenu);
+
+    fileMenu->addSeparator();
+    fileMenu->addAction(closeAction);
+
+    QMenu * editMenu = new QMenu(tr("Edit"));
+    editMenu->addAction(leftRotationAction);
+    editMenu->addAction(rightRotationAction);
+
+    QMenu * viewMenu = new QMenu(tr("View"));
+    viewMenu->addAction(adjustHeightAction);
+    viewMenu->addAction(adjustWidthAction);
+    viewMenu->addAction(fitToPageAction);
+    viewMenu->addAction(adjustToFullSizeAction);
+    viewMenu->addSeparator();
+    viewMenu->addAction(increasePageZoomAction);
+    viewMenu->addAction(decreasePageZoomAction);
+    viewMenu->addAction(resetZoomAction);
+    viewMenu->addAction(showZoomSliderlAction);
+    viewMenu->addSeparator();
+    viewMenu->addAction(doublePageAction);
+    viewMenu->addAction(doubleMangaPageAction);
+    viewMenu->addSeparator();
+    viewMenu->addAction(showMagnifyingGlassAction);
+
+    QMenu * goMenu = new QMenu(tr("Go"));
+    goMenu->addAction(prevAction);
+    goMenu->addAction(nextAction);
+    goMenu->addAction(goToPageAction);
+	goMenu->addSeparator();
+    goMenu->addAction(setBookmarkAction);
+    goMenu->addAction(showBookmarksAction);
+
+    QMenu * windowMenu = new QMenu(tr("Window"));
+    windowMenu->addAction(optionsAction); // this action goes to MacOS's Preference menu by Qt
+    windowMenu->addAction(showShorcutsAction);
+    windowMenu->addAction(showFlowAction);
+    windowMenu->addAction(showInfoAction);
+    windowMenu->addAction(showDictionaryAction);
+
+    QMenu * helpMenu = new QMenu(tr("Help"));
+    helpMenu->addAction(helpAboutAction);
+
+    menuBar->addMenu(fileMenu);
+    menuBar->addMenu(editMenu);
+    menuBar->addMenu(viewMenu);
+    menuBar->addMenu(goMenu);
+    menuBar->addMenu(windowMenu);
+    menuBar->addMenu(helpMenu);
 
     //tool bar
     //QMenu * toolbarMenu = new QMenu(tr("Toolbar"));
     //toolbarMenu->addAction();
     //TODO
 
-    menuBar->addMenu(fileMenu);
     //menu->addMenu(toolbarMenu);
 
     //attach toolbar
@@ -1279,6 +1334,22 @@ void MainWindowViewer::setUpShortcutsManagement()
     autoScrollBackwardAction->setData(AUTO_SCROLL_BACKWARD_ACTION_Y);
     autoScrollBackwardAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_ACTION_Y));
 
+    QAction * autoScrollForwardHorizontalFirstAction = new QAction(tr("Autoscroll forward, horizontal first"),orphanActions);
+    autoScrollForwardHorizontalFirstAction->setData(AUTO_SCROLL_FORWARD_HORIZONTAL_FIRST_ACTION_Y);
+    autoScrollForwardHorizontalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_HORIZONTAL_FIRST_ACTION_Y));
+
+    QAction * autoScrollBackwardHorizontalFirstAction = new QAction(tr("Autoscroll backward, horizontal first"),orphanActions);
+    autoScrollBackwardHorizontalFirstAction->setData(AUTO_SCROLL_BACKWARD_HORIZONTAL_FIRST_ACTION_Y);
+    autoScrollBackwardHorizontalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_HORIZONTAL_FIRST_ACTION_Y));
+
+    QAction * autoScrollForwardVerticalFirstAction = new QAction(tr("Autoscroll forward, vertical first"),orphanActions);
+    autoScrollForwardVerticalFirstAction->setData(AUTO_SCROLL_FORWARD_VERTICAL_FIRST_ACTION_Y);
+    autoScrollForwardVerticalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_VERTICAL_FIRST_ACTION_Y));
+
+    QAction * autoScrollBackwardVerticalFirstAction = new QAction(tr("Autoscroll backward, vertical first"),orphanActions);
+    autoScrollBackwardVerticalFirstAction->setData(AUTO_SCROLL_BACKWARD_VERTICAL_FIRST_ACTION_Y);
+    autoScrollBackwardVerticalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_VERTICAL_FIRST_ACTION_Y));
+
     QAction * moveDownAction = new QAction(tr("Move down"),orphanActions);
     moveDownAction->setData(MOVE_DOWN_ACTION_Y);
     moveDownAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(MOVE_DOWN_ACTION_Y));
@@ -1311,6 +1382,10 @@ void MainWindowViewer::setUpShortcutsManagement()
                                          << showBookmarksAction
                                          << autoScrollForwardAction
                                          << autoScrollBackwardAction
+                                         << autoScrollForwardHorizontalFirstAction
+                                         << autoScrollBackwardHorizontalFirstAction
+                                         << autoScrollForwardVerticalFirstAction
+                                         << autoScrollBackwardVerticalFirstAction
                                          << moveDownAction
                                          << moveUpAction
                                          << moveLeftAction

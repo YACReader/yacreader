@@ -118,6 +118,11 @@ zoom(100)
 	//animations
 	verticalScroller = new QPropertyAnimation(verticalScrollBar(), "sliderPosition");
 	connect(verticalScroller,SIGNAL(valueChanged (const QVariant &)),this,SIGNAL(backgroundChanges()));
+	horizontalScroller = new QPropertyAnimation(horizontalScrollBar(), "sliderPosition");
+	connect(horizontalScroller,SIGNAL(valueChanged (const QVariant &)),this,SIGNAL(backgroundChanges()));
+	groupScroller = new QParallelAnimationGroup();
+	groupScroller->addAnimation(verticalScroller);
+	groupScroller->addAnimation(horizontalScroller);
 
 	notificationsLabel = new NotificationsLabelWidget(this);
 	notificationsLabel->hide();
@@ -137,6 +142,8 @@ Viewer::~Viewer()
 	delete hideCursorTimer;
 	delete informationLabel;
 	delete verticalScroller;
+	delete horizontalScroller;
+	delete groupScroller;
 	delete bd;
 	delete notificationsLabel;
 	delete mglass;
@@ -456,6 +463,142 @@ void Viewer::scrollUp()
 	}
 }
 
+void Viewer::scrollForwardHorizontalFirst()
+{
+	if (!doubleMangaPage)
+	{
+		scrollZigzag(RIGHT, DOWN, true); // right->right->lower left->right->...->next page
+	}
+	else
+	{
+		scrollZigzag(LEFT, DOWN, true); // left->left->lower right->left->...->next page
+	}
+}
+
+void Viewer::scrollBackwardHorizontalFirst()
+{
+	if (!doubleMangaPage)
+	{
+		scrollZigzag(LEFT, UP, false); // left->left->upper right->left->...->prev page
+	}
+	else
+	{
+		scrollZigzag(RIGHT, UP, false); // right->right->upper left->right->...->prev page
+	}
+}
+
+void Viewer::scrollForwardVerticalFirst()
+{
+	if (!doubleMangaPage)
+	{
+		scrollZigzag(DOWN, RIGHT, true); // down->down->upper right->down->...->next page
+	}
+	else
+	{
+		scrollZigzag(DOWN, LEFT, true); // down->down->upper left->down->...->next page
+	}
+}
+
+void Viewer::scrollBackwardVerticalFirst()
+{
+	if (!doubleMangaPage)
+	{
+		scrollZigzag(UP, LEFT, false); // up->up->lower left->up->...->prev page
+	}
+	else
+	{
+		scrollZigzag(UP, RIGHT, false); // up->up->lower right->up->...->prev page
+	}
+}
+
+bool Viewer::isEdge(scrollDirection d)
+{
+	if(d == UP)
+		return verticalScrollBar()->sliderPosition() == verticalScrollBar()->minimum();
+	else if(d == DOWN)
+		return verticalScrollBar()->sliderPosition() == verticalScrollBar()->maximum();
+	else if(d == LEFT)
+		return horizontalScrollBar()->sliderPosition() == horizontalScrollBar()->minimum();
+	else // d == RIGHT
+		return horizontalScrollBar()->sliderPosition() == horizontalScrollBar()->maximum();
+}
+
+void Viewer::scrollZigzag(scrollDirection d1, scrollDirection d2, bool forward)
+{
+	if(!isEdge(d1))
+	{
+		if(d1 == UP)
+			scrollTo(horizontalScrollBar()->sliderPosition(), 
+				verticalScrollBar()->sliderPosition()-static_cast<int>((height()*0.80)));
+		else if(d1 == DOWN)
+			scrollTo(horizontalScrollBar()->sliderPosition(), 
+				verticalScrollBar()->sliderPosition()+static_cast<int>((height()*0.80)));
+		else if(d1 == LEFT)
+			scrollTo(horizontalScrollBar()->sliderPosition()-static_cast<int>((width()*0.80)), 
+				verticalScrollBar()->sliderPosition());
+		else // d1 == RIGHT
+			scrollTo(horizontalScrollBar()->sliderPosition()+static_cast<int>((width()*0.80)), 
+				verticalScrollBar()->sliderPosition());
+		}
+	else if(!isEdge(d2))
+	{
+		int x = 0;
+		int y = 0;
+	
+		if(d1 == UP)
+			y = verticalScrollBar()->maximum();
+		else if(d1 == DOWN)
+			y = verticalScrollBar()->minimum();
+		else if(d1 == LEFT)
+			x = horizontalScrollBar()->maximum();
+		else // d1 == RIGHT
+			x = horizontalScrollBar()->minimum();
+	
+		if(d2 == UP)
+			y = std::max(verticalScrollBar()->sliderPosition()-static_cast<int>((height()*0.80)), verticalScrollBar()->minimum());
+		else if(d2 == DOWN)
+			y = std::min(verticalScrollBar()->sliderPosition()+static_cast<int>((height()*0.80)), verticalScrollBar()->maximum());
+		else if(d2 == LEFT)
+			x = std::max(horizontalScrollBar()->sliderPosition()-static_cast<int>((width()*0.80)), horizontalScrollBar()->minimum());
+		else // d2 == RIGHT
+			x = std::min(horizontalScrollBar()->sliderPosition()+static_cast<int>((width()*0.80)), horizontalScrollBar()->maximum());
+	
+		scrollTo(x, y);
+	}
+	else
+	{
+		// next or prev page's corner
+		int savedPageNumber = getCurrentPageNumber();
+
+		if(forward)
+			next();
+		else
+			prev();
+
+		if(savedPageNumber != getCurrentPageNumber()){
+			if(d1 == LEFT || d2 == LEFT)
+				horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->maximum());
+			else
+				horizontalScrollBar()->setSliderPosition(horizontalScrollBar()->minimum());
+			emit backgroundChanges();
+		}
+	}
+}
+
+void Viewer::scrollTo(int x, int y)
+{
+	if(groupScroller->state() == QAbstractAnimation::Running)
+		return;
+	horizontalScroller->setDuration(250);
+	horizontalScroller->setStartValue(horizontalScrollBar()->sliderPosition());
+	horizontalScroller->setEndValue(x);
+	verticalScroller->setDuration(250);
+	verticalScroller->setStartValue(verticalScrollBar()->sliderPosition());
+	verticalScroller->setEndValue(y);
+	groupScroller->start();
+	emit backgroundChanges();
+}
+
 void Viewer::keyPressEvent(QKeyEvent *event)
 {
     if(render->hasLoadedComic())
@@ -489,6 +632,26 @@ void Viewer::keyPressEvent(QKeyEvent *event)
             posByStep = height()/numScrollSteps;
             nextPos=verticalScrollBar()->sliderPosition()-static_cast<int>((height()*0.80));
             scrollUp();
+        }
+
+        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_HORIZONTAL_FIRST_ACTION_Y))
+        {
+            scrollForwardHorizontalFirst();
+        }
+
+        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_HORIZONTAL_FIRST_ACTION_Y))
+        {
+            scrollBackwardHorizontalFirst();
+        }
+
+        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_VERTICAL_FIRST_ACTION_Y))
+        {
+            scrollForwardVerticalFirst();
+        }
+
+        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_VERTICAL_FIRST_ACTION_Y))
+        {
+            scrollBackwardVerticalFirst();
         }
 
         else if (key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_DOWN_ACTION_Y) ||
@@ -800,6 +963,7 @@ void Viewer::doubleMangaPageSwitch()
 	doubleMangaPage = !doubleMangaPage;
 	render->doubleMangaPageSwitch();
 	Configuration::getConfiguration().setDoubleMangaPage(doubleMangaPage);
+	goToFlow->setFlowRightToLeft(doubleMangaPage);
 }
 
 void Viewer::resetContent()

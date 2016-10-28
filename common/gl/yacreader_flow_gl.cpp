@@ -200,7 +200,7 @@ struct Preset pressetYACReaderFlowDownConfig = {
 };
 /*Constructor*/
 YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
-    :QOpenGLWidget(/*QOpenGLWidget migration QGLFormat(QGL::SampleBuffers),*/ parent),numObjects(0),lazyPopulateObjects(-1),bUseVSync(false),hasBeenInitialized(false)
+    :QOpenGLWidget(/*QOpenGLWidget migration QGLFormat(QGL::SampleBuffers),*/ parent),numObjects(0),lazyPopulateObjects(-1),bUseVSync(false),hasBeenInitialized(false),flowRightToLeft(false)
 {
 	updateCount = 0;
 	config = p;
@@ -385,7 +385,11 @@ void YACReaderFlowGL::udpatePerspective(int width, int height)
 /*Private*/
 void YACReaderFlowGL::calcPos(YACReader3DImage & image, int pos)
 {
-	if(pos == 0){
+    if(flowRightToLeft){
+        pos = pos * -1;
+    }
+
+    if(pos == 0){
         image.current = centerPos;
     }else{
 		if(pos > 0){
@@ -1052,6 +1056,11 @@ void YACReaderFlowGL::render()
 	//do nothing
 }
 
+void YACReaderFlowGL::setFlowRightToLeft(bool b)
+{
+    flowRightToLeft = b;
+}
+
 //EVENTOS
 
 void YACReaderFlowGL::wheelEvent(QWheelEvent * event)
@@ -1073,7 +1082,7 @@ void YACReaderFlowGL::wheelEvent(QWheelEvent * event)
 
 void YACReaderFlowGL::keyPressEvent(QKeyEvent *event)
 {
-	if(event->key() == Qt::Key_Left)
+	if((event->key() == Qt::Key_Left && !flowRightToLeft) || (event->key() == Qt::Key_Right && flowRightToLeft))
 	{
 		if(event->modifiers() == Qt::ControlModifier)
 			setCurrentIndex((currentSelected-10<0)?0:currentSelected-10);
@@ -1083,7 +1092,7 @@ void YACReaderFlowGL::keyPressEvent(QKeyEvent *event)
 		return;
 	}
 
-	if(event->key() == Qt::Key_Right)
+	if((event->key() == Qt::Key_Right && !flowRightToLeft) || (event->key() == Qt::Key_Left && flowRightToLeft))
 	{
 		if(event->modifiers() == Qt::ControlModifier)
 			setCurrentIndex((currentSelected+10>=numObjects)?numObjects-1:currentSelected+10);
@@ -1128,7 +1137,7 @@ void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 
         gluUnProject(winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
 
-		if(posX >= 0.5)
+		if((posX >= 0.5 && !flowRightToLeft) || (posX <=-0.5 && flowRightToLeft))
 		{
 			//int index = currentSelected+1;
 			//while((cfImages[index].current.x-cfImages[index].width/(2.0*config.rotation)) < posX)
@@ -1136,7 +1145,7 @@ void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 			//setCurrentIndex(index-1);
 			showNext();
 		}
-		else if(posX <=-0.5)
+		else if((posX <=-0.5 && !flowRightToLeft) || (posX >= 0.5 && flowRightToLeft) )
 			showPrevious();
 	} else
         QOpenGLWidget::mousePressEvent(event);
