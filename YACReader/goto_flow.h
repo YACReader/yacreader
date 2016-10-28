@@ -63,6 +63,8 @@ private slots:
     void setFlowType(FlowType flowType);
     void updateSize();
     void updateConfig(QSettings * settings);
+    void setFlowRightToLeft(bool b);
+
 signals:
     void goToPage(unsigned int page);
 
