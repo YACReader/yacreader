@@ -29,6 +29,7 @@ public slots:
 	virtual void setImageReady(int index,const QByteArray & image) = 0;
 	virtual void updateSize() = 0;
 	virtual void updateConfig(QSettings * settings) = 0;
+	virtual void setFlowRightToLeft(bool b) = 0;
 
 protected:
 	void keyPressEvent(QKeyEvent* event);

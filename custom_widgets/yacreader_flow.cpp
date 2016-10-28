@@ -7,12 +7,7 @@ YACReaderFlow::YACReaderFlow(QWidget * parent,FlowType flowType) : PictureFlow(p
 
 void YACReaderFlow::mousePressEvent(QMouseEvent* event)
 {
-	if(event->x() > (width()+slideSize().width())/2)
-		showNext();
-	else
-		if(event->x() < (width()-slideSize().width())/2)
-			showPrevious();
-	//else (centered cover space)
+    PictureFlow::mousePressEvent(event, slideSize().width());
 }
 
 void YACReaderFlow::mouseDoubleClickEvent(QMouseEvent* event)
