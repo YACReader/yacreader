@@ -173,6 +173,9 @@ protected:
     //sets the updateInterval in ms
     static int updateInterval;
 
+    // sets flow direction right-to-left (manga mode)
+    bool flowRightToLeft;    
+
     void startAnimationTimer();
     void stopAnimationTimer();
 	
@@ -250,6 +253,8 @@ public:
 	void setPerformance(Performance performance);
 
 	void useVSync(bool b);
+
+	void setFlowRightToLeft(bool b);
 
 	virtual void updateImageData() = 0;
 

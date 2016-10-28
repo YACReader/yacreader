@@ -225,6 +225,12 @@ void GoToFlow::updateConfig(QSettings * settings)
 {
 	Q_UNUSED(settings)
 }
+
+void GoToFlow::setFlowRightToLeft(bool b)
+{
+    flow->setFlowRightToLeft(b);
+}
+
 //-----------------------------------------------------------------------------
 //SlideInitializer
 //-----------------------------------------------------------------------------

@@ -26,6 +26,7 @@ public:
 	void updateSize();
 
 	void updateConfig(QSettings * settings);
+	void setFlowRightToLeft(bool b);
 
 signals:
 	void goToPage(unsigned int page);

@@ -164,3 +164,8 @@ void GoToFlowGL::resizeEvent(QResizeEvent *event)
     toolBar->move(0, event->size().height() - toolBar->height());
     toolBar->setFixedWidth(width());
 }
+
+void GoToFlowGL::setFlowRightToLeft(bool b)
+{
+    flow->setFlowRightToLeft(b);
+}
