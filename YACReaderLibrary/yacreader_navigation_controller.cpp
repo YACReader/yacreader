@@ -18,8 +18,6 @@
 #include "empty_special_list.h"
 #include "yacreader_comics_views_manager.h"
 
-#include "yacreader_sidebar.h"
-
 #include "QsLog.h"
 
 YACReaderNavigationController::YACReaderNavigationController(LibraryWindow *parent, YACReaderComicsViewsManager *comicsViewsManager) :
@@ -46,10 +44,6 @@ void YACReaderNavigationController::selectedFolder(const QModelIndex &mi)
     }
 
     loadFolderInfo(modelIndex);
-
-    //BUG, ugly workaround for glitch when QOpenGLWidget (flow) is used just after any other widget in the views stack
-    //Somehow QOpenGLWidget is messing with the rendering of the side bar (wrong buffer swapping)
-    libraryWindow->sideBar->update();
 
     libraryWindow->setToolbarTitle(modelIndex);
 }
