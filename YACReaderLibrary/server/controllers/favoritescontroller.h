@@ -7,7 +7,7 @@
 
 class FavoritesController : public HttpRequestHandler {
     Q_OBJECT
-    Q_DISABLE_COPY(FavoritesController);
+    Q_DISABLE_COPY(FavoritesController)
 public:
     FavoritesController();
 
