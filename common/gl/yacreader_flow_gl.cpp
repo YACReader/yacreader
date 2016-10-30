@@ -1460,7 +1460,8 @@ QImage ImageLoaderGL::loadImage(const QString& fileName)
 	case high:
 		image = image.scaledToWidth(320,Qt::SmoothTransformation);
 		break;
-
+	case ultraHigh:
+		break; //no scaling in ultraHigh
 	}
 
 	if(!result)

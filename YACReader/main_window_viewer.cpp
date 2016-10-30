@@ -938,7 +938,7 @@ void MainWindowViewer::openFolderFromPath(QString pathDir, QString atFileName)
 	if(i < list.count())
 		index = i;
 
-	viewer->open(pathDir,i);	
+	viewer->open(pathDir,index);	
 }
 
 void MainWindowViewer::saveImage()

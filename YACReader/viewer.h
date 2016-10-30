@@ -121,7 +121,6 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		QPropertyAnimation * showGoToFlowAnimation;
 		GoToDialog * goToDialog;
 		//!Image properties
-		float adjustToWidthRatio;
 		//! Comic
 		//Comic * comic;
 		int index;
