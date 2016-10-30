@@ -51,6 +51,7 @@ using namespace YACReader;
 			static Configuration configuration;
 			return configuration;
 		};
+        QSettings *getSettings();
 		void load(QSettings * settings);
 		QString getDefaultPath() { return settings->value(PATH).toString(); }
 		void setDefaultPath(QString defaultPath){settings->setValue(PATH,defaultPath);}

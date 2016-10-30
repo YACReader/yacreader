@@ -32,6 +32,7 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget * parent)
         "  border-radius: 1px;"
 		"}"
 	);
+
 	connect(slider, &QSlider::valueChanged, this, [&](int v) { emit(setCenter(v)); });
 
 	pageHint = new QLabel("<b>" + tr("Page : ") + "</b>",this);
@@ -85,17 +86,9 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget * parent)
 	naviLayout->addWidget(slider);
 	naviLayout->addWidget(goToButton);
 
-	switchLayout();
+    updateOptions();
 
     setFixedHeight(50);
-}
-
-void GoToFlowToolBar::switchLayout()
-{
-	if (Configuration::getConfiguration().getQuickNaviMode())
-		setCurrentIndex(1);
-	else
-		setCurrentIndex(0);
 }
 
 void GoToFlowToolBar::paintEvent(QPaintEvent *)
@@ -130,5 +123,15 @@ void GoToFlowToolBar::goTo()
 void GoToFlowToolBar::centerSlide()
 {
 	if(edit->text().toInt()!=0)
-		emit(setCenter(edit->text().toInt()-1));
+        emit(setCenter(edit->text().toInt()-1));
+}
+
+void GoToFlowToolBar::updateOptions()
+{
+    if (Configuration::getConfiguration().getQuickNaviMode())
+        setCurrentIndex(1);
+    else
+        setCurrentIndex(0);
+
+    slider->setInvertedAppearance(Configuration::getConfiguration().getDoubleMangaPage());
 }
