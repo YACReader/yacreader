@@ -12,7 +12,12 @@
 Configuration::Configuration()
 {
 	//read configuration
-	//load("/YACReader.conf");
+    //load("/YACReader.conf");
+}
+
+QSettings *Configuration::getSettings()
+{
+    return settings;
 }
 
 /*Configuration::Configuration(const Configuration & conf)
