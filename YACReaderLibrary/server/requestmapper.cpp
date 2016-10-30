@@ -125,6 +125,8 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
     QRegExp reading("/library/.+/reading/?");
     QRegExp tags("/library/.+/tags/?");
     QRegExp tagContent("/library/.+/tag/[0-9]+/content/?");
+    QRegExp readingLists("/library/.+/reading_lists/?");
+    QRegExp readingListContent("/library/.+/reading_list/[0-9]+/content/?");
 
     QRegExp sync("/sync");
 
@@ -206,6 +208,14 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
                     else if(reading.exactMatch(path))
                     {
                         ReadingComicsController().service(request, response);
+                    }
+                    else if(readingLists.exactMatch(path))
+                    {
+                        //ReadingListsController().service(request, response);
+                    }
+                    else if(readingListContent.exactMatch(path))
+                    {
+                        //ReadingListContentController().service(request, response);
                     }
                 }
                 else
