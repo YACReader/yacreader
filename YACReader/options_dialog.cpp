@@ -19,7 +19,7 @@
 #endif
 
 OptionsDialog::OptionsDialog(QWidget * parent)
-:YACReaderOptionsDialog(parent)
+	:YACReaderOptionsDialog(parent)
 {
 
 	QTabWidget * tabWidget = new QTabWidget();
@@ -49,7 +49,7 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 
 	QHBoxLayout * path = new QHBoxLayout();
 	path->addWidget(pathEdit = new QLineEdit());
-    path->addWidget(pathFindButton = new QPushButton(QIcon(":/images/find_folder.png"),""));
+	path->addWidget(pathFindButton = new QPushButton(QIcon(":/images/find_folder.png"),""));
 	pathBox->setLayout(path);
 
 	connect(pathFindButton,SIGNAL(clicked()),this,SLOT(findFolder()));
@@ -91,7 +91,7 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 	//brightnessS->setText(tr("Brightness"));
 	brightnessS->setTracking(false);
 	connect(brightnessS,SIGNAL(valueChanged(int)),this,SLOT(brightnessChanged(int)));
-	
+
 	contrastS = new YACReaderSpinSliderWidget(this,true);
 	contrastS->setRange(0,250);
 	//contrastS->setText(tr("Contrast"));
@@ -104,6 +104,8 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 	gammaS->setTracking(false);
 	connect(gammaS,SIGNAL(valueChanged(int)),this,SLOT(gammaChanged(int)));
 	//connect(brightnessS,SIGNAL(valueChanged(int)),this,SIGNAL(changedOptions()));
+	
+	quickNavi = new QCheckBox(tr("Quick Navigation Mode"));
 
 	QHBoxLayout * buttons = new QHBoxLayout();
 	buttons->addStretch();
@@ -115,13 +117,14 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 	layoutGeneral->addWidget(slideSizeBox);
 	//layoutGeneral->addWidget(fitBox);
 	layoutGeneral->addWidget(colorBox);
-    layoutGeneral->addWidget(shortcutsBox);
+	layoutGeneral->addWidget(shortcutsBox);
 	layoutGeneral->addStretch();
 	layoutFlow->addWidget(sw);
 #ifndef NO_OPENGL
 	layoutFlow->addWidget(gl);
 	layoutFlow->addWidget(useGL);
 #endif
+	layoutFlow->addWidget(quickNavi);
 	layoutFlow->addStretch();
 	layoutImage->addWidget(new QLabel(tr("Brightness")),0,0);
 	layoutImage->addWidget(new QLabel(tr("Contrast")),1,0);
@@ -177,7 +180,7 @@ void OptionsDialog::findFolder()
 
 void OptionsDialog::saveOptions()
 {
-	
+
 	settings->setValue(GO_TO_FLOW_SIZE,QSize(static_cast<int>(slideSize->sliderPosition()/SLIDE_ASPECT_RATIO),slideSize->sliderPosition()));
 
 	if(sw->radio1->isChecked())
@@ -191,6 +194,7 @@ void OptionsDialog::saveOptions()
 
 	settings->setValue(BACKGROUND_COLOR,colorDialog->currentColor());
 	//settings->setValue(FIT_TO_WIDTH_RATIO,fitToWidthRatioS->sliderPosition()/100.0);
+	settings->setValue(QUICK_NAVI_MODE,quickNavi->isChecked());
 
 	YACReaderOptionsDialog::saveOptions();
 }
@@ -198,28 +202,30 @@ void OptionsDialog::saveOptions()
 void OptionsDialog::restoreOptions(QSettings * settings)
 {
 	YACReaderOptionsDialog::restoreOptions(settings);
-	
+
 	slideSize->setSliderPosition(settings->value(GO_TO_FLOW_SIZE).toSize().height());
 	switch(settings->value(FLOW_TYPE_SW).toInt())
 	{
-		case 0:
-			sw->radio1->setChecked(true);
-			break;
-		case 1:
-			sw->radio2->setChecked(true);
-			break;
-		case 2:
-			sw->radio3->setChecked(true);
-			break;
-		default:
-			sw->radio1->setChecked(true);
-			break;
+	case 0:
+		sw->radio1->setChecked(true);
+		break;
+	case 1:
+		sw->radio2->setChecked(true);
+		break;
+	case 2:
+		sw->radio3->setChecked(true);
+		break;
+	default:
+		sw->radio1->setChecked(true);
+		break;
 	}
 
 	pathEdit->setText(settings->value(PATH).toString());
 
 	updateColor(settings->value(BACKGROUND_COLOR).value<QColor>());
 	//fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
+
+	quickNavi->setChecked(settings->value(QUICK_NAVI_MODE).toBool());
 
 	brightnessS->setValue(settings->value(BRIGHTNESS,0).toInt());
 	contrastS->setValue(settings->value(CONTRAST,100).toInt());
@@ -234,7 +240,7 @@ void OptionsDialog::updateColor(const QColor & color)
 	backgroundColor->setPalette(pal);
 	backgroundColor->setAutoFillBackground(true);
 	colorDialog->setCurrentColor(color);
-	
+
 	settings->setValue(BACKGROUND_COLOR,color);
 
 	emit(changedOptions());

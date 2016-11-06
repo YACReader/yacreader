@@ -2,18 +2,43 @@
 
 #include <QtWidgets>
 
+#include "configuration.h"
+
 GoToFlowToolBar::GoToFlowToolBar(QWidget * parent)
-	:QWidget(parent)
+	:QStackedWidget(parent)
 {
 	//elementos interactivos
-    QVBoxLayout * mainLayout = new QVBoxLayout;
-	bar = new QWidget(this);
-	QHBoxLayout * bottom = new QHBoxLayout(bar);
-	bottom->addStretch();
-    bottom->addWidget(new QLabel("<b>" + tr("Page : ") + "</b>",bar));
-	bottom->addWidget(edit = new QLineEdit(bar));
-	v = new QIntValidator(bar);
+	QWidget * normal = new QWidget(this);  // container widget
+	QWidget * quickNavi = new QWidget(this);  // container widget
+	addWidget(normal);
+	addWidget(quickNavi);
+	QHBoxLayout * normalLayout = new QHBoxLayout(normal);
+	QHBoxLayout * naviLayout = new QHBoxLayout(quickNavi);
+	normal->setLayout(normalLayout);
+	quickNavi->setLayout(naviLayout);
+
+	slider = new QSlider(Qt::Horizontal,this);
+	slider->setStyleSheet(
+		"QSlider::groove:horizontal {"
+        "  border: 1px solid #22FFFFFF;"
+        "  border-radius: 1px;"
+        "  background: #77000000;"
+        "  margin: 2px 0;"
+        "  padding: 1px;"
+		"}"
+		"QSlider::handle:horizontal {"
+        "  background: #55FFFFFF;"
+        "  width: 48px;"
+        "  border-radius: 1px;"
+		"}"
+	);
+
+	connect(slider, &QSlider::valueChanged, this, [&](int v) { emit(setCenter(v)); });
+
+	pageHint = new QLabel("<b>" + tr("Page : ") + "</b>",this);
+	v = new QIntValidator(this);
 	v->setBottom(1);
+	edit = new QLineEdit(this);
 	edit->setValidator(v);
 	edit->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
     edit->setStyleSheet("QLineEdit {border: 1px solid #77000000; background: #55000000; color: white; padding: 3px 5px 5px 5px; margin: 13px 5px 12px 5px; font-weight:bold}");
@@ -29,37 +54,39 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget * parent)
 	QString centerButtonCSS = "QPushButton {background-image: url(:/images/imgCenterSlide.png); width: 100%; height:100%; background-repeat: none; border: none;} "
 		                      "QPushButton:focus { border: none; outline: none;}"
 		                      "QPushButton:pressed  {background-image: url(:/images/imgCenterSlidePressed.png); width: 100%; height:100%; background-repeat: none; border: none;} ";
-	centerButton = new QPushButton(bar);
+	centerButton = new QPushButton(this);
 	//centerButton->setIcon(QIcon(":/images/center.png"));
 	centerButton->setStyleSheet(centerButtonCSS); 
 	centerButton->setFixedSize(26,50);
     centerButton->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
 	connect(centerButton,SIGNAL(clicked()),this,SLOT(centerSlide()));
-	bottom->addWidget(centerButton);
 
 	QString goToButtonCSS = "QPushButton {background-image: url(:/images/imgGoToSlide.png); width: 100%; height:100%; background-repeat: none; border: none;} "
 		                    "QPushButton:focus { border: none; outline: none;}"
 		                    "QPushButton:pressed  {background-image: url(:/images/imgGoToSlidePressed.png); width: 100%; height:100%; background-repeat: none; border: none;} ";
-	goToButton = new QPushButton(bar);
+	goToButton = new QPushButton(this);
 	//goToButton->setIcon(QIcon(":/images/goto.png"));
 	goToButton->setStyleSheet(goToButtonCSS); 
 	goToButton->setFixedSize(32,50);
 	goToButton->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
 	
 	connect(goToButton,SIGNAL(clicked()),this,SLOT(goTo()));
-	bottom->addWidget(goToButton);
 
-	bottom->addStretch();
-	bottom->setMargin(0);
-	bottom->setSpacing(0);
-	
-	bar->setLayout(bottom);
+	normalLayout->setMargin(0);
+	normalLayout->setSpacing(0);
+	normalLayout->addStretch();
+	normalLayout->addWidget(pageHint);
+	normalLayout->addWidget(edit);
+	normalLayout->addWidget(centerButton);
+	normalLayout->addWidget(goToButton);
+	normalLayout->addStretch();
 
-    mainLayout->setMargin(0);
-    mainLayout->setSpacing(0);
-    mainLayout->addWidget(bar);
+	naviLayout->setContentsMargins(5, 0, 0, 0);
+	naviLayout->setSpacing(2);
+	naviLayout->addWidget(slider);
+	naviLayout->addWidget(goToButton);
 
-    setLayout(mainLayout);
+    updateOptions();
 
     setFixedHeight(50);
 }
@@ -78,11 +105,13 @@ void GoToFlowToolBar::paintEvent(QPaintEvent *)
 void GoToFlowToolBar::setPage(int pageNumber)
 {
 	edit->setText(QString::number(pageNumber+1));
+	slider->setValue(pageNumber);
 }
 
 void GoToFlowToolBar::setTop(int numPages)
 {
 	v->setTop(numPages);
+	slider->setMaximum(numPages-1);  // min is 0
 }
 
 void GoToFlowToolBar::goTo()
@@ -94,5 +123,15 @@ void GoToFlowToolBar::goTo()
 void GoToFlowToolBar::centerSlide()
 {
 	if(edit->text().toInt()!=0)
-		emit(setCenter(edit->text().toInt()-1));
+        emit(setCenter(edit->text().toInt()-1));
+}
+
+void GoToFlowToolBar::updateOptions()
+{
+    if (Configuration::getConfiguration().getQuickNaviMode())
+        setCurrentIndex(1);
+    else
+        setCurrentIndex(0);
+
+    slider->setInvertedAppearance(Configuration::getConfiguration().getDoubleMangaPage());
 }

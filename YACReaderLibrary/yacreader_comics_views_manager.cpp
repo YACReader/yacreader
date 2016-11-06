@@ -12,6 +12,8 @@
 #include "empty_reading_list_widget.h"
 #include "no_search_results_widget.h"
 
+#include "yacreader_sidebar.h"
+
 //--
 #include "yacreader_search_line_edit.h"
 #include "options_dialog.h"
@@ -71,6 +73,10 @@ QWidget * YACReaderComicsViewsManager::containerWidget()
 void YACReaderComicsViewsManager::showComicsView()
 {
     comicsViewStack->setCurrentWidget(comicsView);
+
+    //BUG, ugly workaround for glitch when QOpenGLWidget (flow) is used just after any other widget in the views stack
+    //Somehow QOpenGLWidget is messing with the rendering of the side bar (wrong buffer swapping)
+    libraryWindow->sideBar->update();
 }
 
 void YACReaderComicsViewsManager::showEmptyFolderView()

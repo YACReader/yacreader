@@ -169,5 +169,13 @@ int main(int argc, char * argv[])
 	
 	YACReader::exitCheck(ret);
 
+#ifdef Q_OS_MAC
+	// ugly workaround to avoid crash when app exit on MacOS Sierra due to Qt's QColorDialog bug.
+	// cf. https://bugreports.qt.io/browse/QTBUG-56448
+	QColorDialog colorDlg(0);
+	colorDlg.setOption(QColorDialog::NoButtons);
+	colorDlg.setCurrentColor(Qt::white);
+#endif
+
 	return ret;
 }
