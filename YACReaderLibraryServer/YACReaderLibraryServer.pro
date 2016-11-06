@@ -28,15 +28,33 @@ win32 {
 }
 
 unix:!macx{
-INCLUDEPATH  += /usr/include/poppler/qt5
-LIBS         += -L/usr/lib -lpoppler-qt5
+!CONFIG(no_pdf){
+	!CONFIG(pdfium){
+	INCLUDEPATH  += /usr/include/poppler/qt5
+	LIBS         += -L/usr/lib -lpoppler-qt5
+	} else {
+		#static pdfium libraries have to be included *before* dynamic libraries
+		DEFINES 		+= "USE_PDFIUM"
+		INCLUDEPATH	+= /usr/include/pdfium
+		LIBS          	+= -L/usr/lib/pdfium -Wl,--start-group -lpdfium -lfpdfapi -lfxge -lfpdfdoc \
+					-lfxcrt -lfx_agg -lfxcodec -lfx_lpng -lfx_libopenjpeg -lfx_lcms2 -ljpeg \
+					-lfx_zlib -lfdrm -lfxedit -lformfiller -lpdfwindow -lpdfium -lbigint -ljavascript \
+					-lfxedit -Wl,--end-group -lfreetype
+		}
+	}
+}
+else {
+	DEFINES += "NO_PDF"
 }
 
 macx{
+
+#TODO:support for pdfium on mac
+DEFINES += "USE_PDFKIT"
+
 LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 
 OBJECTIVE_SOURCES += $$PWD/../common/pdf_comic.mm
-HEADERS += $$PWD/../common/pdf_comic.h
 CONFIG += objective_c
 }
 
@@ -58,6 +76,7 @@ HEADERS += ../YACReaderLibrary/library_creator.h \
            ../common/folder.h \
            ../common/library_item.h \
            ../common/comic.h \
+	   ../common/pdf_comic.h \
            ../common/bookmarks.h \
            ../common/qnaturalsorting.h \
            ../common/yacreader_global.h \
@@ -79,6 +98,7 @@ SOURCES += ../YACReaderLibrary/library_creator.cpp \
            ../common/folder.cpp \
            ../common/library_item.cpp \
            ../common/comic.cpp \
+	   ../common/pdf_comic.cpp \
            ../common/bookmarks.cpp \
            ../common/qnaturalsorting.cpp \
            ../YACReaderLibrary/yacreader_local_server.cpp \
