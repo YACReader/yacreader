@@ -27,8 +27,9 @@ public slots:
 	virtual void setFlowType(FlowType flowType) = 0;
 	virtual void setNumSlides(unsigned int slides) = 0;
 	virtual void setImageReady(int index,const QByteArray & image) = 0;
-	virtual void updateSize() = 0;
-	virtual void updateConfig(QSettings * settings) = 0;
+	virtual void updateSize();
+	virtual void updateConfig(QSettings * settings);
+	virtual void setFlowRightToLeft(bool b) = 0;
 
 protected:
 	void keyPressEvent(QKeyEvent* event);

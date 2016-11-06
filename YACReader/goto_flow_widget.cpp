@@ -6,19 +6,16 @@
 #include <QCoreApplication>
 
 #include "goto_flow_toolbar.h"
+#include "configuration.h"
 
 GoToFlowWidget::GoToFlowWidget(QWidget * parent)
 	:QWidget(parent)
 {
 	mainLayout = new QVBoxLayout;
-
 	mainLayout->setMargin(0);
 	mainLayout->setSpacing(0);
 
 	toolBar = new GoToFlowToolBar(this);
-
-	mainLayout->setMargin(0);
-	mainLayout->setSpacing(0);
 
 	setLayout(mainLayout);
 
@@ -52,6 +49,21 @@ void GoToFlowWidget::keyPressEvent(QKeyEvent* event)
 	}
 
 	event->accept();
+}
+
+void GoToFlowWidget::updateConfig(QSettings * settings)
+{
+	Q_UNUSED(settings)
+    toolBar->updateOptions();
+}
+
+void GoToFlowWidget::updateSize()
+{
+	// called by parent in resizeEvent
+	// no need to update width when QuickNaviMode disabled
+	// height is set in updateConfig
+	if (Configuration::getConfiguration().getQuickNaviMode() && parentWidget() != nullptr)
+		resize(parentWidget()->width(),height());
 }
 
 /*bool GoToFlowWidget::eventFilter(QObject * target, QEvent * event)
