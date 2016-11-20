@@ -1176,9 +1176,9 @@ void Render::updateFilters(int brightness, int contrast, int gamma)
    {
 	   if(typeid(*filters[i]) == typeid(BrightnessFilter))
 		   filters[i]->setLevel(brightness);
-	   if(typeid(*filters[i]) == typeid(ContrastFilter))
+	   else if(typeid(*filters[i]) == typeid(ContrastFilter))
 		   filters[i]->setLevel(contrast);
-	   if(typeid(*filters[i]) == typeid(GammaFilter))
+	   else if(typeid(*filters[i]) == typeid(GammaFilter))
 		   filters[i]->setLevel(gamma);
    }
 
