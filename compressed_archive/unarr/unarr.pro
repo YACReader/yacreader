@@ -3,7 +3,9 @@ DEPENDPATH += $$PWD/unarr-master/
 
 unix:QMAKE_CFLAGS_RELEASE -= "-O2"
 unix:QMAKE_CFLAGS += "-O3"
-QMAKE_CFLAGS_RELEASE += "-DNDEBUG"
+unix:QMAKE_CFLAGS_RELEASE += "-DNDEBUG"
+
+win32:QMAKE_CFLAGS_RELEASE += "/DNDEBUG"
 
 HEADERS+=$$PWD/unarr-master/common/allocator.h\
 		 $$PWD/unarr-master/common/unarr-imp.h\
