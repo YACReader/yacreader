@@ -3,7 +3,7 @@ DEPENDPATH += $$PWD/unarr-master/
 
 HEADERS+=$$PWD/unarr-master/common/allocator.h\
 		 $$PWD/unarr-master/common/unarr-imp.h\
-		 $$PWD/unarr-master/lzmasdk/Types.h\
+		 $$PWD/unarr-master/lzmasdk/7zTypes.h\
 		 $$PWD/unarr-master/lzmasdk/CpuArch.h\
 		 $$PWD/unarr-master/lzmasdk/Ppmd7.h\
 		 $$PWD/unarr-master/lzmasdk/Ppmd.h\
