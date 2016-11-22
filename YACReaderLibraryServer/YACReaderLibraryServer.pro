@@ -24,7 +24,7 @@ win32 {
     INCLUDEPATH += ../dependencies/poppler/include/qt5
     }
     else {
-    DEFINES += "NO_PDF
+    DEFINES += "NO_PDF"
     }
 
     QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
@@ -47,11 +47,10 @@ unix:!macx{
 					-lfxedit -Wl,--end-group -lfreetype
 		}
 	}
-}
 else {
 	DEFINES += "NO_PDF"
 }
-
+}
 macx{
 
 #TODO:support for pdfium on mac
