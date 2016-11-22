@@ -861,7 +861,6 @@ void PDFComic::renderPage(int page)
 	QImage img = pdfComic->getPage(page);
 	if(!img.isNull())
 	{
-		pdfComic->releaseLastPageData();
 #elif defined USE_PDFIUM
 	QImage img = pdfComic->getPage(page);
 	if(!img.isNull())

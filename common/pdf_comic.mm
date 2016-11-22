@@ -108,7 +108,7 @@ QImage MacOSXPDFComic::getPage(const int pageNum)
 
     const uchar *bytes = (const uchar *)CFDataGetBytePtr(dataRef);
 
-    qtImage = QImage(bytes, pageRect.size.width, pageRect.size.height, QImage::Format_ARGB32);
+    qtImage = QImage(bytes, pageRect.size.width, pageRect.size.height, QImage::Format_ARGB32, &releaseLastPageData());
 
     CGImageRelease(image);
     //CFRelease(dataRef);
