@@ -78,12 +78,20 @@ INSTALL_ROOT=""
 
 On embedded devices that don't support desktop OpenGL, it is recommended to use the no_opengl config option:
 
-qmake CONFIG+=no_opengl
+qmake-qt5 CONFIG+=no_opengl
 
 This will remove any dependency on desktop OpenGL and hardlock YACReader's coverflow to software rendering. Please note that it 
 doesn't actually remove OpenGL from the build, the Qt toolkit will still make use of it.
 
+Pdf support can be disabled by using the no_pdf option:
+
+qmake-qt5 CONFIG+=no_pdf
+
+This also removes the need for the poppler-qt5 library to be installed.
+
 
 DO YOU WANT TO HELP YACREADER?
 ******************************
-If you have experience creating packages, please help to create a package for your favourite Linux distro! Send me an e-mail to: info@yacreader.com
+If you're compiling YACReader because there is no package available for your Linux distribution please consider creating and submitting a package.
+While we do provide packages for .deb based distributions aus well as an AUR package for Archlinux we are in need of packagers especially for RPM based
+distributions. If you are interested, please contact selmf on the YACReader forums or write an email to info@yacreader.com
