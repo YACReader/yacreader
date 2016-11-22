@@ -48,9 +48,13 @@ win32 {
     } else {
         LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
     }
-
-    LIBS += -lpoppler-qt5
-    INCLUDEPATH += ../dependencies/poppler/include/qt5
+    !CONFIG(no_pdf) {
+        LIBS += -lpoppler-qt5
+        INCLUDEPATH += ../dependencies/poppler/include/qt5
+	}
+        else {
+	    DEFINES += "NO_PDF"
+	}
 
     QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
     QMAKE_LFLAGS_RELEASE += /LTCG
@@ -94,7 +98,12 @@ macx{
 #}
 
 #TODO: pdfium support
+!CONFIG(no_pdf) {
 DEFINES += "USE_PDFKIT"
+}
+else {
+DEFINES += "NO_PDF"
+}
 
 CONFIG += objective_c
 QT += macextras gui-private

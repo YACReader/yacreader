@@ -36,10 +36,14 @@ win32 {
     } else {
         LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
     }
-
-    LIBS += -lpoppler-qt5
-    INCLUDEPATH += ../dependencies/poppler/include/qt5
-
+    !CONFIG(no_pdf) {
+        LIBS += -lpoppler-qt5
+        INCLUDEPATH += ../dependencies/poppler/include/qt5
+    }
+    else {
+	DEFINES += "NO_PDF"
+    }
+    #TODO: pdfium for windows support
     QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
     QMAKE_LFLAGS_RELEASE += /LTCG
     CONFIG -= embed_manifest_exe
@@ -81,8 +85,13 @@ macx{
 #}
 #QT += macextras
 
-#TODO:support for pdfium on mac
-DEFINES += "USE_PDFKIT"
+!CONFIG(no_pdf){
+    #TODO:support for pdfium on mac
+    DEFINES += "USE_PDFKIT"
+    }
+    else {
+    DEFINES += "NO_PDF"
+    }
 
 LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 
