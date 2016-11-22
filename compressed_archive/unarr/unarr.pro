@@ -2,7 +2,7 @@ INCLUDEPATH += $$PWD/unarr-master/
 DEPENDPATH += $$PWD/unarr-master/
 
 unix:QMAKE_CFLAGS_RELEASE -= "-O2"
-unix:QMAKE_CFLAGS += "-O3"
+unix:QMAKE_CFLAGS_RELEASE += "-O3"
 unix:QMAKE_CFLAGS_RELEASE += "-DNDEBUG"
 unix:QMAKE_CFLAGS += "-D_FILE_OFFSET_BITS=64"
 
