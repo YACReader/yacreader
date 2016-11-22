@@ -2,7 +2,7 @@
 #define GOTO_FLOW_TOOLBAR_H
 
 #include <QWidget>
-#include <QStackedWidget.h>
+#include <QStackedWidget>
 
 class QLineEdit;
 class QIntValidator;
