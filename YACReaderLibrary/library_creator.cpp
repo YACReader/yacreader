@@ -627,9 +627,6 @@ void ThumbnailCreator::create()
 		{
 #if defined Q_OS_MAC || defined USE_PDFIUM
 			QImage p = pdfComic->getPage(_coverPage-1); //TODO check if the page is valid
-		#ifdef USE_PDFKIT
-			pdfComic->releaseLastPageData();
-		#endif
 #else
 			QImage p = pdfComic->page(_coverPage-1)->renderToImage(72,72);
 #endif //
