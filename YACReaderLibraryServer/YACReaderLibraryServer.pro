@@ -20,11 +20,10 @@ include(headless_config.pri)
 win32 {
     LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32 -luser32
     !CONFIG(no_pdf) {
-    LIBS += -lpoppler-qt5
-    INCLUDEPATH += ../dependencies/poppler/include/qt5
-    }
-    else {
-    DEFINES += "NO_PDF"
+        LIBS += -lpoppler-qt5
+        INCLUDEPATH += ../dependencies/poppler/include/qt5
+    } else {
+        DEFINES += "NO_PDF"
     }
 
     QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
@@ -34,31 +33,29 @@ win32 {
 
 unix:!macx{
 !CONFIG(no_pdf){
-	!CONFIG(pdfium){
-	INCLUDEPATH  += /usr/include/poppler/qt5
-	LIBS         += -L/usr/lib -lpoppler-qt5
-	} else {
-		#static pdfium libraries have to be included *before* dynamic libraries
-		DEFINES 		+= "USE_PDFIUM"
-		INCLUDEPATH	+= /usr/include/pdfium
-		LIBS          	+= -L/usr/lib/pdfium -Wl,--start-group -lpdfium -lfpdfapi -lfxge -lfpdfdoc \
+    !CONFIG(pdfium){
+    INCLUDEPATH  += /usr/include/poppler/qt5
+    LIBS         += -L/usr/lib -lpoppler-qt5
+    } else {
+    	#static pdfium libraries have to be included *before* dynamic libraries
+	DEFINES 		+= "USE_PDFIUM"
+	INCLUDEPATH	+= /usr/include/pdfium
+	LIBS          	+= -L/usr/lib/pdfium -Wl,--start-group -lpdfium -lfpdfapi -lfxge -lfpdfdoc \
 					-lfxcrt -lfx_agg -lfxcodec -lfx_lpng -lfx_libopenjpeg -lfx_lcms2 -ljpeg \
 					-lfx_zlib -lfdrm -lfxedit -lformfiller -lpdfwindow -lpdfium -lbigint -ljavascript \
 					-lfxedit -Wl,--end-group -lfreetype
-		}
-	}
-else {
-	DEFINES += "NO_PDF"
+    }
+} else {
+    DEFINES += "NO_PDF"
 }
 }
 macx{
 
 #TODO:support for pdfium on mac
 !CONFIG(no_pdf) {
-DEFINES += "USE_PDFKIT"
-}
-else {
-DEFINES += "NO_PDF"
+    DEFINES += "USE_PDFKIT"
+} else {
+    DEFINES += "NO_PDF"
 }
 
 LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
