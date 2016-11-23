@@ -48,13 +48,13 @@ win32 {
     } else {
         LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
     }
+    
     !CONFIG(no_pdf) {
         LIBS += -lpoppler-qt5
         INCLUDEPATH += ../dependencies/poppler/include/qt5
-	}
-        else {
-	    DEFINES += "NO_PDF"
-	}
+    } else {
+        DEFINES += "NO_PDF"
+    }
 
     QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
     QMAKE_LFLAGS_RELEASE += /LTCG
@@ -62,23 +62,22 @@ win32 {
 }
 
 unix:!macx{
-	!CONFIG(no_pdf){
-		!CONFIG(pdfium){
-		INCLUDEPATH  += /usr/include/poppler/qt5
-		LIBS         += -L/usr/lib -lpoppler-qt5
-		} else {
-				#static pdfium libraries have to be included *before* dynamic libraries
-				DEFINES 		+= "USE_PDFIUM"
-				INCLUDEPATH	+= /usr/include/pdfium
-				LIBS          	+= -L/usr/lib/pdfium -Wl,--start-group -lpdfium -lfpdfapi -lfxge -lfpdfdoc \
-							-lfxcrt -lfx_agg -lfxcodec -lfx_lpng -lfx_libopenjpeg -lfx_lcms2 -ljpeg \
-							-lfx_zlib -lfdrm -lfxedit -lformfiller -lpdfwindow -lpdfium -lbigint -ljavascript \
-							-lfxedit -Wl,--end-group -lfreetype
-		}
-	}
-else {
-	DEFINES += "NO_PDF"
-}
+    !CONFIG(no_pdf){
+        !CONFIG(pdfium){
+	    INCLUDEPATH  += /usr/include/poppler/qt5
+	    LIBS         += -L/usr/lib -lpoppler-qt5
+	    } else {
+	        #static pdfium libraries have to be included *before* dynamic libraries
+		DEFINES += "USE_PDFIUM"
+		INCLUDEPATH += /usr/include/pdfium
+		LIBS += -L/usr/lib/pdfium -Wl,--start-group -lpdfium -lfpdfapi -lfxge -lfpdfdoc \
+		    -lfxcrt -lfx_agg -lfxcodec -lfx_lpng -lfx_libopenjpeg -lfx_lcms2 -ljpeg \
+		    -lfx_zlib -lfdrm -lfxedit -lformfiller -lpdfwindow -lpdfium -lbigint -ljavascript \
+		    -lfxedit -Wl,--end-group -lfreetype
+	    }
+    } else {
+        DEFINES += "NO_PDF"
+    }
 
 !CONFIG(no_opengl) {
         LIBS += -lGLU
@@ -99,10 +98,9 @@ macx{
 
 #TODO: pdfium support
 !CONFIG(no_pdf) {
-DEFINES += "USE_PDFKIT"
-}
-else {
-DEFINES += "NO_PDF"
+    DEFINES += "USE_PDFKIT"
+} else {
+    DEFINES += "NO_PDF"
 }
 
 CONFIG += objective_c
