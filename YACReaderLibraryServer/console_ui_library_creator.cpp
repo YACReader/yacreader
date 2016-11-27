@@ -42,7 +42,7 @@ void ConsoleUILibraryCreator::createLibrary(const QString & name, const QString 
 
     connect(libraryCreator, &LibraryCreator::finished, &eventLoop, &QEventLoop::quit);
 
-    std::cout << "Processing comics";
+    std::cout << "Processing comics" << std::endl;
 
     libraryCreator->start();
     eventLoop.exec();
@@ -72,7 +72,7 @@ void ConsoleUILibraryCreator::updateLibrary(const QString & path)
 
     connect(libraryCreator, &LibraryCreator::finished, &eventLoop, &QEventLoop::quit);
 
-    std::cout << "Processing comics";
+    std::cout << "Processing comics" << std::endl;
 
     libraryCreator->start();
     eventLoop.exec();
@@ -131,12 +131,12 @@ void ConsoleUILibraryCreator::newComic(const QString & /*relativeComicPath*/, co
 
 void ConsoleUILibraryCreator::manageCreatingError(const QString & error)
 {
-    std::cout << std::endl << "Error creating library! " << error.toUtf8().constData();
+    std::cout << std::endl << "Error creating library! " << error.toUtf8().constData() << std::endl;
 }
 
 void ConsoleUILibraryCreator::manageUpdatingError(const QString & error)
 {
-    std::cout << std::endl << "Error updating library! " << error.toUtf8().constData();
+    std::cout << std::endl << "Error updating library! " << error.toUtf8().constData() << std::endl;
 }
 
 void ConsoleUILibraryCreator::done()
