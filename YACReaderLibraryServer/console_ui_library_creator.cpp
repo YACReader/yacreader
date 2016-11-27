@@ -18,7 +18,21 @@ void ConsoleUILibraryCreator::createLibrary(const QString & name, const QString 
     LibraryCreator * libraryCreator = new LibraryCreator();
 
     QDir pathDir(path);
+    if (!pathDir.exists())
+    {
+	manageCreatingError(QString("Directory not found.") );
+	return;
+    }
+
     QString cleanPath = QDir::cleanPath(pathDir.absolutePath());
+    
+    YACReaderLibraries yacreaderLibraries;
+    yacreaderLibraries.load();
+    if (yacreaderLibraries.getNames().contains(name))
+    {
+        std::cout << "A Library named \"" << name.toUtf8().constData() << "\" already exists in database." << std::endl;
+        return;
+    }
 
     libraryCreator->createLibrary(cleanPath,QDir::cleanPath(pathDir.absolutePath()+"/.yacreaderlibrary"));
 
@@ -33,9 +47,6 @@ void ConsoleUILibraryCreator::createLibrary(const QString & name, const QString 
     libraryCreator->start();
     eventLoop.exec();
 
-    //TODO, at some point some checking is needed for avoiding duplicated libraries
-    YACReaderLibraries yacreaderLibraries;
-    yacreaderLibraries.load();
     yacreaderLibraries.addLibrary(name, cleanPath);
     yacreaderLibraries.save();
 }
@@ -46,6 +57,11 @@ void ConsoleUILibraryCreator::updateLibrary(const QString & path)
     LibraryCreator * libraryCreator = new LibraryCreator();
 
     QDir pathDir(path);
+    if (!pathDir.exists())
+    {
+	manageCreatingError(QString("Directory not found.") );
+	return;
+    }
     QString cleanPath = QDir::cleanPath(pathDir.absolutePath());
 
     libraryCreator->updateLibrary(cleanPath,QDir::cleanPath(pathDir.absolutePath()+"/.yacreaderlibrary"));
@@ -65,11 +81,26 @@ void ConsoleUILibraryCreator::updateLibrary(const QString & path)
 void ConsoleUILibraryCreator::addExistingLibrary(const QString & name, const QString & path)
 {
     QDir pathDir(path);
+    if (!pathDir.exists())
+    {
+	manageCreatingError(QString("Directory not found."));
+	return;
+    }
     QString cleanPath = QDir::cleanPath(pathDir.absolutePath());
+    
+    if (!QDir(cleanPath + "/.yacreaderlibrary").exists())
+    {
+	manageCreatingError(QString("No library database found in directory."));
+	return;
+    }
 
-    //TODO add error handling
     YACReaderLibraries yacreaderLibraries;
     yacreaderLibraries.load();
+    if (yacreaderLibraries.getNames().contains(name))
+    {
+        std::cout << "A Library named \"" << name.toUtf8().constData() << "\" already exists in the database." << std::endl;
+        return;
+    }
     yacreaderLibraries.addLibrary(name, cleanPath);
     yacreaderLibraries.save();
 
@@ -81,6 +112,11 @@ void ConsoleUILibraryCreator::removeLibrary(const QString & name)
     //TODO add error handling
     YACReaderLibraries yacreaderLibraries;
     yacreaderLibraries.load();
+    if (!yacreaderLibraries.getNames().contains(name))
+    {
+        std::cout << "No Library named \"" << name.toUtf8().constData() << "\" in database." << std::endl;
+        return;
+    }
     yacreaderLibraries.remove(name);
     yacreaderLibraries.save();
 
