@@ -28,7 +28,7 @@ void ConsoleUILibraryCreator::createLibrary(const QString & name, const QString 
     
     YACReaderLibraries yacreaderLibraries;
     yacreaderLibraries.load();
-    if (yacreaderLibraries.getNames().contains(name))
+    if (yacreaderLibraries.contains(name))
     {
         std::cout << "A Library named \"" << name.toUtf8().constData() << "\" already exists in database." << std::endl;
         return;
@@ -96,7 +96,7 @@ void ConsoleUILibraryCreator::addExistingLibrary(const QString & name, const QSt
 
     YACReaderLibraries yacreaderLibraries;
     yacreaderLibraries.load();
-    if (yacreaderLibraries.getNames().contains(name))
+    if (yacreaderLibraries.contains(name))
     {
         std::cout << "A Library named \"" << name.toUtf8().constData() << "\" already exists in the database." << std::endl;
         return;
@@ -112,7 +112,7 @@ void ConsoleUILibraryCreator::removeLibrary(const QString & name)
     //TODO add error handling
     YACReaderLibraries yacreaderLibraries;
     yacreaderLibraries.load();
-    if (!yacreaderLibraries.getNames().contains(name))
+    if (!yacreaderLibraries.contains(name))
     {
         std::cout << "No Library named \"" << name.toUtf8().constData() << "\" in database." << std::endl;
         return;
