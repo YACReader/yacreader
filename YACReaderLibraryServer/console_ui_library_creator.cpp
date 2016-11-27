@@ -20,7 +20,7 @@ void ConsoleUILibraryCreator::createLibrary(const QString & name, const QString 
     QDir pathDir(path);
     if (!pathDir.exists())
     {
-	manageCreatingError(QString("Directory not found.") );
+	std::cout << "Directory not found." << std::endl;
 	return;
     }
 
@@ -42,7 +42,7 @@ void ConsoleUILibraryCreator::createLibrary(const QString & name, const QString 
 
     connect(libraryCreator, &LibraryCreator::finished, &eventLoop, &QEventLoop::quit);
 
-    std::cout << "Processing comics" << std::endl;
+    std::cout << "Processing comics";
 
     libraryCreator->start();
     eventLoop.exec();
@@ -59,7 +59,7 @@ void ConsoleUILibraryCreator::updateLibrary(const QString & path)
     QDir pathDir(path);
     if (!pathDir.exists())
     {
-	manageCreatingError(QString("Directory not found.") );
+	std::cout << "Directory not found." << std::endl;
 	return;
     }
     QString cleanPath = QDir::cleanPath(pathDir.absolutePath());
@@ -72,7 +72,7 @@ void ConsoleUILibraryCreator::updateLibrary(const QString & path)
 
     connect(libraryCreator, &LibraryCreator::finished, &eventLoop, &QEventLoop::quit);
 
-    std::cout << "Processing comics" << std::endl;
+    std::cout << "Processing comics";
 
     libraryCreator->start();
     eventLoop.exec();
@@ -83,14 +83,14 @@ void ConsoleUILibraryCreator::addExistingLibrary(const QString & name, const QSt
     QDir pathDir(path);
     if (!pathDir.exists())
     {
-	manageCreatingError(QString("Directory not found."));
+	std::cout << "Directory not found." << std::endl;
 	return;
     }
     QString cleanPath = QDir::cleanPath(pathDir.absolutePath());
     
     if (!QDir(cleanPath + "/.yacreaderlibrary").exists())
     {
-	manageCreatingError(QString("No library database found in directory."));
+	std::cout << "No library database found in directory." << std::endl;
 	return;
     }
 
