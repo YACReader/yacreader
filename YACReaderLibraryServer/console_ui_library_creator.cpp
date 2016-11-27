@@ -144,5 +144,5 @@ void ConsoleUILibraryCreator::done()
     std::cout << "Done!" << std::endl;
 
     if(numComicsProcessed > 0)
-        std::cout << "Number of comis processed = " << numComicsProcessed << std::endl;
+        std::cout << "Number of comics processed = " << numComicsProcessed << std::endl;
 }
