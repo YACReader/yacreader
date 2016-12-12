@@ -356,46 +356,46 @@ void YACReaderOptionsDialog::setOverlappedStripeConfigSW()
 #ifndef NO_OPENGL
 void YACReaderOptionsDialog::setClassicConfig()
 {
-	settings->setValue(FLOW_TYPE_GL,CoverFlowLike);
-
 	gl->setValues(presetYACReaderFlowClassicConfig);
 
 	saveFlowParameters();
+
+    settings->setValue(FLOW_TYPE_GL,CoverFlowLike);
 }
 
 void YACReaderOptionsDialog::setStripeConfig()
 {
-	settings->setValue(FLOW_TYPE_GL,Strip);
-
 	gl->setValues(presetYACReaderFlowStripeConfig);
 
 	saveFlowParameters();
+
+    settings->setValue(FLOW_TYPE_GL,Strip);
 }
 
 void YACReaderOptionsDialog::setOverlappedStripeConfig()
 {
-	settings->setValue(FLOW_TYPE_GL,StripOverlapped);
-
 	gl->setValues(presetYACReaderFlowOverlappedStripeConfig);
 
 	saveFlowParameters();
+
+    settings->setValue(FLOW_TYPE_GL,StripOverlapped);
 }
 
 void YACReaderOptionsDialog::setModernConfig()
 {
-	settings->setValue(FLOW_TYPE_GL,Modern);
-
 	gl->setValues(defaultYACReaderFlowConfig);
 
 	saveFlowParameters();
+
+    settings->setValue(FLOW_TYPE_GL,Modern);
 }
 
 void YACReaderOptionsDialog::setRouletteConfig()
 {
-	settings->setValue(FLOW_TYPE_GL,Roulette);
-
 	gl->setValues(pressetYACReaderFlowDownConfig);
 	
 	saveFlowParameters();
+
+    settings->setValue(FLOW_TYPE_GL,Roulette);
 }
 #endif

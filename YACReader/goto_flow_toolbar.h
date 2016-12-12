@@ -25,12 +25,13 @@ class GoToFlowToolBar : public QStackedWidget
 
 	public:
 		GoToFlowToolBar(QWidget * parent = 0);
-		void switchLayout();
+
 	public slots:
 		void setPage(int pageNumber);
 		void setTop(int numPages);
 		void goTo();
 		void centerSlide();
+        void updateOptions();
 	signals:
 		void setCenter(unsigned int);
 		void goTo(unsigned int);

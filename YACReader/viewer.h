@@ -14,6 +14,7 @@
 #include <QMouseEvent>
 #include <QCloseEvent>
 #include <QPropertyAnimation>
+#include <QParallelAnimationGroup>
 #include <QSettings>
 
 #include "scroll_management.h"
@@ -55,6 +56,10 @@ class NotificationsLabelWidget;
 		void updateOptions();
 		void scrollDown();
 		void scrollUp();
+		void scrollForwardHorizontalFirst();
+		void scrollBackwardHorizontalFirst();
+		void scrollForwardVerticalFirst();
+		void scrollBackwardVerticalFirst();
 		void magnifyingGlassSwitch();
 		void showMagnifyingGlass();
 		void hideMagnifyingGlass();
@@ -108,6 +113,8 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		PageLabelWidget * informationLabel;
 		//QTimer * scroller;
 		QPropertyAnimation * verticalScroller;
+		QPropertyAnimation * horizontalScroller;
+		QParallelAnimationGroup * groupScroller;
 		int posByStep;
 		int nextPos;
 		GoToFlowWidget * goToFlow;
@@ -152,6 +159,12 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		void resizeEvent(QResizeEvent * event);
 		void wheelEvent(QWheelEvent * event);
 		void mouseMoveEvent(QMouseEvent * event);
+
+		//!ZigzagScroll
+		enum scrollDirection{ UP, DOWN, LEFT, RIGHT };
+		bool isEdge(scrollDirection d);
+		void scrollZigzag(scrollDirection d1, scrollDirection d2, bool forward);
+		void scrollTo(int x, int y);
 
 	public:
 		Viewer(QWidget * parent = 0);

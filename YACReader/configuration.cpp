@@ -12,7 +12,12 @@
 Configuration::Configuration()
 {
 	//read configuration
-	//load("/YACReader.conf");
+    //load("/YACReader.conf");
+}
+
+QSettings *Configuration::getSettings()
+{
+    return settings;
 }
 
 /*Configuration::Configuration(const Configuration & conf)
@@ -50,7 +55,7 @@ void Configuration::load(QSettings * settings)
 	if(!settings->contains(SHOW_TOOLBARS))
 		settings->setValue(SHOW_TOOLBARS, true);
 	if(!settings->contains(QUICK_NAVI_MODE))
-		settings->setValue(QUICK_NAVI_MODE, true);
+        settings->setValue(QUICK_NAVI_MODE, false);
 	//old fit stuff
 	/*if(!settings->contains(FIT))
 		settings->setValue(FIT,false);
