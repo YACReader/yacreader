@@ -167,6 +167,11 @@ class EditShortcutsDialog;
 		bool isClient;
 		QString startComicPath;
 		quint64 libraryId;
+
+        //fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
+        Qt::WindowFlags previousWindowFlags;
+        QPoint previousPos;
+        QSize previousSize;
 signals:
 		void closed();
 	protected:

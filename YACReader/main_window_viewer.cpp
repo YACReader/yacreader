@@ -189,6 +189,10 @@ void MainWindowViewer::setupUI()
 	//	setWindowFlags(this->windowFlags() | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
 	//}
 
+    previousWindowFlags = windowFlags();
+    previousPos = pos();
+    previousSize = size();
+
 	if(fullscreen)
 		toFullScreen();
 	if(conf.getMaximized())
@@ -651,13 +655,68 @@ void MainWindowViewer::createToolBars()
     fileMenu->addAction(openFolderAction);
     fileMenu->addSeparator();
     fileMenu->addAction(saveImageAction);
+    fileMenu->addSeparator();
+
+	QMenu * recentmenu = new QMenu(tr("Open recent"));
+	recentmenu->addActions(recentFilesActionList);
+	recentmenu->addSeparator();
+	recentmenu->addAction(clearRecentFilesAction);
+	refreshRecentFilesActionList();
+    fileMenu->addMenu(recentmenu);
+
+    fileMenu->addSeparator();
+    fileMenu->addAction(closeAction);
+
+    QMenu * editMenu = new QMenu(tr("Edit"));
+    editMenu->addAction(leftRotationAction);
+    editMenu->addAction(rightRotationAction);
+
+    QMenu * viewMenu = new QMenu(tr("View"));
+    viewMenu->addAction(adjustHeightAction);
+    viewMenu->addAction(adjustWidthAction);
+    viewMenu->addAction(fitToPageAction);
+    viewMenu->addAction(adjustToFullSizeAction);
+    viewMenu->addSeparator();
+    viewMenu->addAction(increasePageZoomAction);
+    viewMenu->addAction(decreasePageZoomAction);
+    viewMenu->addAction(resetZoomAction);
+    viewMenu->addAction(showZoomSliderlAction);
+    viewMenu->addSeparator();
+    viewMenu->addAction(doublePageAction);
+    viewMenu->addAction(doubleMangaPageAction);
+    viewMenu->addSeparator();
+    viewMenu->addAction(showMagnifyingGlassAction);
+
+    QMenu * goMenu = new QMenu(tr("Go"));
+    goMenu->addAction(prevAction);
+    goMenu->addAction(nextAction);
+    goMenu->addAction(goToPageAction);
+	goMenu->addSeparator();
+    goMenu->addAction(setBookmarkAction);
+    goMenu->addAction(showBookmarksAction);
+
+    QMenu * windowMenu = new QMenu(tr("Window"));
+    windowMenu->addAction(optionsAction); // this action goes to MacOS's Preference menu by Qt
+    windowMenu->addAction(showShorcutsAction);
+    windowMenu->addAction(showFlowAction);
+    windowMenu->addAction(showInfoAction);
+    windowMenu->addAction(showDictionaryAction);
+
+    QMenu * helpMenu = new QMenu(tr("Help"));
+    helpMenu->addAction(helpAboutAction);
+
+    menuBar->addMenu(fileMenu);
+    menuBar->addMenu(editMenu);
+    menuBar->addMenu(viewMenu);
+    menuBar->addMenu(goMenu);
+    menuBar->addMenu(windowMenu);
+    menuBar->addMenu(helpMenu);
 
     //tool bar
     //QMenu * toolbarMenu = new QMenu(tr("Toolbar"));
     //toolbarMenu->addAction();
     //TODO
 
-    menuBar->addMenu(fileMenu);
     //menu->addMenu(toolbarMenu);
 
     //attach toolbar
@@ -922,6 +981,11 @@ void MainWindowViewer::enableActions()
     showInfoAction->setDisabled(false); //TODO enable goTo and showInfo (or update) when numPages emited
 	showDictionaryAction->setDisabled(false);
 	showFlowAction->setDisabled(false);
+
+#ifdef Q_OS_MAC
+    activateWindow();
+    raise();
+#endif
 }
 void MainWindowViewer::disableActions()
 {
@@ -1000,6 +1064,57 @@ void MainWindowViewer::toggleFullScreen()
 	Configuration::getConfiguration().setFullScreen(fullscreen = !fullscreen);
 }
 
+#ifdef Q_OS_WIN //fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
+
+void MainWindowViewer::toFullScreen()
+{
+    fromMaximized = this->isMaximized();
+
+    hideToolBars();
+    viewer->hide();
+    viewer->fullscreen = true;//TODO, change by the right use of windowState();
+
+    previousWindowFlags = windowFlags();
+    previousPos = pos();
+    previousSize = size();
+
+    showNormal();
+    setWindowFlags(previousWindowFlags | Qt::FramelessWindowHint);
+
+    const QRect r = windowHandle()->screen()->geometry();
+
+    move(r.x(), r.y());
+    resize(r.width(),r.height()+1);
+    show();
+
+    viewer->show();
+    if(viewer->magnifyingGlassIsVisible())
+        viewer->showMagnifyingGlass();
+}
+
+void MainWindowViewer::toNormal()
+{
+    //show all
+    viewer->hide();
+    viewer->fullscreen = false;//TODO, change by the right use of windowState();
+    //viewer->hideMagnifyingGlass();
+
+    setWindowFlags(previousWindowFlags);
+    move(previousPos);
+    resize(previousSize);
+    show();
+
+    if(fromMaximized)
+        showMaximized();
+
+    if(Configuration::getConfiguration().getShowToolbars())
+        showToolBars();
+    viewer->show();
+    if(viewer->magnifyingGlassIsVisible())
+        viewer->showMagnifyingGlass();
+}
+
+#else
 void MainWindowViewer::toFullScreen()
 {
     fromMaximized = this->isMaximized();
@@ -1030,6 +1145,7 @@ void MainWindowViewer::toNormal()
     if(viewer->magnifyingGlassIsVisible())
         viewer->showMagnifyingGlass();
 }
+#endif
 
 void MainWindowViewer::toggleToolBars()
 {
@@ -1218,6 +1334,22 @@ void MainWindowViewer::setUpShortcutsManagement()
     autoScrollBackwardAction->setData(AUTO_SCROLL_BACKWARD_ACTION_Y);
     autoScrollBackwardAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_ACTION_Y));
 
+    QAction * autoScrollForwardHorizontalFirstAction = new QAction(tr("Autoscroll forward, horizontal first"),orphanActions);
+    autoScrollForwardHorizontalFirstAction->setData(AUTO_SCROLL_FORWARD_HORIZONTAL_FIRST_ACTION_Y);
+    autoScrollForwardHorizontalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_HORIZONTAL_FIRST_ACTION_Y));
+
+    QAction * autoScrollBackwardHorizontalFirstAction = new QAction(tr("Autoscroll backward, horizontal first"),orphanActions);
+    autoScrollBackwardHorizontalFirstAction->setData(AUTO_SCROLL_BACKWARD_HORIZONTAL_FIRST_ACTION_Y);
+    autoScrollBackwardHorizontalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_HORIZONTAL_FIRST_ACTION_Y));
+
+    QAction * autoScrollForwardVerticalFirstAction = new QAction(tr("Autoscroll forward, vertical first"),orphanActions);
+    autoScrollForwardVerticalFirstAction->setData(AUTO_SCROLL_FORWARD_VERTICAL_FIRST_ACTION_Y);
+    autoScrollForwardVerticalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_VERTICAL_FIRST_ACTION_Y));
+
+    QAction * autoScrollBackwardVerticalFirstAction = new QAction(tr("Autoscroll backward, vertical first"),orphanActions);
+    autoScrollBackwardVerticalFirstAction->setData(AUTO_SCROLL_BACKWARD_VERTICAL_FIRST_ACTION_Y);
+    autoScrollBackwardVerticalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_VERTICAL_FIRST_ACTION_Y));
+
     QAction * moveDownAction = new QAction(tr("Move down"),orphanActions);
     moveDownAction->setData(MOVE_DOWN_ACTION_Y);
     moveDownAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(MOVE_DOWN_ACTION_Y));
@@ -1250,6 +1382,10 @@ void MainWindowViewer::setUpShortcutsManagement()
                                          << showBookmarksAction
                                          << autoScrollForwardAction
                                          << autoScrollBackwardAction
+                                         << autoScrollForwardHorizontalFirstAction
+                                         << autoScrollBackwardHorizontalFirstAction
+                                         << autoScrollForwardVerticalFirstAction
+                                         << autoScrollBackwardVerticalFirstAction
                                          << moveDownAction
                                          << moveUpAction
                                          << moveLeftAction

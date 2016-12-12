@@ -119,7 +119,12 @@ public:
   */  
   void setReflectionEffect(ReflectionEffect effect);
 
+  /*!
+    Sets the flow direction right-to-left (manga mode)
+  */  
+  void setFlowRightToLeft(bool b);
 
+  
 public slots:
 
   /*!
@@ -213,6 +218,7 @@ public:
   void paintEvent(QPaintEvent *event);
   void keyPressEvent(QKeyEvent* event);
   void mousePressEvent(QMouseEvent* event);
+  void mousePressEvent(QMouseEvent* event, int slideWidth);
   void resizeEvent(QResizeEvent* event);
 
 private slots:
