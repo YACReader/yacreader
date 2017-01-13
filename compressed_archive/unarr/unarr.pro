@@ -1,26 +1,21 @@
 INCLUDEPATH += $$PWD/unarr-master/
 DEPENDPATH += $$PWD/unarr-master/
 
+unix:QMAKE_CFLAGS_RELEASE -= "-O2"
+unix:QMAKE_CFLAGS_RELEASE += "-O3"
+unix:QMAKE_CFLAGS_RELEASE += "-DNDEBUG"
+unix:QMAKE_CFLAGS += "-D_FILE_OFFSET_BITS=64"
+
+win32:QMAKE_CFLAGS_RELEASE += "/DNDEBUG"
+
 HEADERS+=$$PWD/unarr-master/common/allocator.h\
 		 $$PWD/unarr-master/common/unarr-imp.h\
-		 $$PWD/unarr-master/lzmasdk/CpuArch.h\
-		 $$PWD/unarr-master/lzmasdk/Ppmd7.h\
-		 $$PWD/unarr-master/lzmasdk/Ppmd.h\
-		 $$PWD/unarr-master/lzmasdk/LzmaDec.h\
-		 $$PWD/unarr-master/lzmasdk/Ppmd8.h\
-		 $$PWD/unarr-master/lzmasdk/Types.h\
-		 $$PWD/unarr-master/lzmasdk/CpuArch.h\
-		 $$PWD/unarr-master/lzmasdk/Ppmd7.h\
-		 $$PWD/unarr-master/lzmasdk/Ppmd.h\
-		 $$PWD/unarr-master/lzmasdk/LzmaDec.h\
-		 $$PWD/unarr-master/lzmasdk/Ppmd8.h\
-		 $$PWD/unarr-master/lzmasdk/Types.h\
-		 $$PWD/unarr-master/lzmasdk/CpuArch.h\
-		 $$PWD/unarr-master/lzmasdk/Ppmd7.h\
-		 $$PWD/unarr-master/lzmasdk/Ppmd.h\
-		 $$PWD/unarr-master/lzmasdk/LzmaDec.h\
-		 $$PWD/unarr-master/lzmasdk/Ppmd8.h\
 		 $$PWD/unarr-master/lzmasdk/7zTypes.h\
+		 $$PWD/unarr-master/lzmasdk/CpuArch.h\
+		 $$PWD/unarr-master/lzmasdk/Ppmd7.h\
+		 $$PWD/unarr-master/lzmasdk/Ppmd.h\
+		 $$PWD/unarr-master/lzmasdk/LzmaDec.h\
+		 $$PWD/unarr-master/lzmasdk/Ppmd8.h\
 		 $$PWD/unarr-master/tar/tar.h\
 		 $$PWD/unarr-master/_7z/_7z.h\
 		 $$PWD/unarr-master/unarr.h

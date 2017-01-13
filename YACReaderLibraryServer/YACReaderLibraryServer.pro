@@ -91,11 +91,10 @@ HEADERS += ../YACReaderLibrary/library_creator.h \
            ../common/http_worker.h \
            ../YACReaderLibrary/yacreader_libraries.h \
            ../YACReaderLibrary/comic_files_manager.h \
-           ../YACReaderLibrary/headless/console_ui_library_creator.h
+           console_ui_library_creator.h
 
 
 SOURCES += ../YACReaderLibrary/library_creator.cpp \
-           ../YACReaderLibrary/headless\main.cpp \
            ../YACReaderLibrary/package_manager.cpp \
            ../YACReaderLibrary/bundle_creator.cpp \
            ../YACReaderLibrary/db_helper.cpp \
@@ -113,7 +112,9 @@ SOURCES += ../YACReaderLibrary/library_creator.cpp \
            ../common/yacreader_global.cpp \
            ../YACReaderLibrary/yacreader_libraries.cpp \
            ../YACReaderLibrary/comic_files_manager.cpp \
-           ../YACReaderLibrary/headless/console_ui_library_creator.cpp
+           console_ui_library_creator.cpp \
+           main.cpp
+
 
 				   
 include(../YACReaderLibrary/server/server.pri)
@@ -137,7 +138,7 @@ TRANSLATIONS =  yacreaderlibraryserver_es.ts \
                 yacreaderlibraryserver_source.ts
 
 
-RESOURCES += ../YACReaderLibrary/headless/images.qrc
+RESOURCES += images.qrc
 
 
 Release:DESTDIR = ../release
