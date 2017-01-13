@@ -14,7 +14,7 @@ class MacOSXPDFComic
 		void closeComic();
 		unsigned int numPages();
 		QImage getPage(const int page);
-		void releaseLastPageData();
+        //void releaseLastPageData();
 	
 	private:
 		void * document;

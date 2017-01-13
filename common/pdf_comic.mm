@@ -64,12 +64,15 @@ QImage MacOSXPDFComic::getPage(const int pageNum)
     pageRect.origin = CGPointZero;
 
     CGColorSpaceRef genericColorSpace = CGColorSpaceCreateDeviceRGB();
-    CGContextRef bitmapContext = CGBitmapContextCreate(NULL,
+	
+    QImage renderImage = QImage(pageRect.size.width, pageRect.size.height, QImage::Format_ARGB32_Premultiplied);
+	
+    CGContextRef bitmapContext = CGBitmapContextCreate(renderImage.scanLine(0),
                                                        pageRect.size.width,
                                                        pageRect.size.height,
-                                                       8, 0,
+                                                       8,renderImage.bytesPerLine(),
                                                        genericColorSpace,
-                                                       kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little
+                                                       kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little //may need to be changed to kCGBitmapByteOrder32Big
                                                        );
 
     CGContextSetInterpolationQuality(bitmapContext, kCGInterpolationHigh);
@@ -89,13 +92,13 @@ QImage MacOSXPDFComic::getPage(const int pageNum)
 
     CGContextDrawPDFPage(bitmapContext, page);
 
-    CGImageRef image = CGBitmapContextCreateImage(bitmapContext);
+    //CGImageRef image = CGBitmapContextCreateImage(bitmapContext);
 
-    QImage qtImage;
+    //QImage qtImage;
 
-    CFDataRef dataRef = CGDataProviderCopyData(CGImageGetDataProvider(image));
+    //CFDataRef dataRef = CGDataProviderCopyData(CGImageGetDataProvider(image));
 
-    lastPageData = (void *)dataRef;
+    /*lastPageData = (void *)dataRef;
 
     if(!lastPageData)
     {
@@ -108,19 +111,20 @@ QImage MacOSXPDFComic::getPage(const int pageNum)
 
     const uchar *bytes = (const uchar *)CFDataGetBytePtr(dataRef);
 
-    qtImage = QImage(bytes, pageRect.size.width, pageRect.size.height, QImage::Format_ARGB32, &releaseLastPageData());
-
-    CGImageRelease(image);
+    qtImage = QImage(bytes, pageRect.size.width, pageRect.size.height, QImage::Format_ARGB32);
+    */
+    //CGImageRelease(image);
     //CFRelease(dataRef);
     CGContextRelease(bitmapContext);
     //CGPDFPageRelease(page);
     CGColorSpaceRelease(genericColorSpace);
 
-    return qtImage;
+    //return qtImage;
+    return renderImage;
 }
 
-void MacOSXPDFComic::releaseLastPageData()
+/*void MacOSXPDFComic::releaseLastPageData()
 {
     CFRelease((CFDataRef)lastPageData);
-}
+}*/
 
