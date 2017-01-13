@@ -7,8 +7,7 @@ DEPENDPATH += . \
     release
 
 DEFINES += NOMINMAX YACREADER
-QMAKE_MAC_SDK = macosx10.11
-QMAKE_MAC_SDK = macosx10.11
+QMAKE_MAC_SDK = macosx10.12
 
 #load default build flags
 include (../config.pri)
@@ -197,7 +196,6 @@ SOURCES +=  ../common/comic.cpp \
             ../common/library_item.cpp \
             yacreader_local_client.cpp \
             ../common/http_worker.cpp \
-	    ../common/pdf_comic.cpp \
             ../common/yacreader_global.cpp \
             ../common/yacreader_global_gui.cpp \
                 ../common/exit_check.cpp \

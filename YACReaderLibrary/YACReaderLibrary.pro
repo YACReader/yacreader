@@ -14,7 +14,7 @@ INCLUDEPATH += ../common \
 			   ./comic_vine/model
 
 DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY
-QMAKE_MAC_SDK = macosx10.11
+QMAKE_MAC_SDK = macosx10.12
 #load default build flags
 include (../config.pri)
 
