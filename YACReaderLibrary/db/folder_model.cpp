@@ -146,6 +146,18 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
 
     FolderItem *item = static_cast<FolderItem*>(index.internalPointer());
 
+    if (role == Qt::ToolTipRole)
+    {
+        QString toolTip = item->data(FolderModel::Name).toString();
+        int totalNumOfChildren = item->childCount() + item->comicNames.size();
+        if(totalNumOfChildren > 0)
+        {
+           toolTip = toolTip + " - " + QString::number(totalNumOfChildren);
+        }
+
+        return toolTip;
+    }
+
 	if (role == Qt::DecorationRole)
 
 #ifdef Q_OS_MAC
@@ -174,8 +186,6 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
 
 	if (role != Qt::DisplayRole)
 		return QVariant();
-
-
 
 	return item->data(index.column());
 }
