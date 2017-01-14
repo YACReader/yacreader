@@ -47,8 +47,15 @@ void VolumeComicsModel::load(const QString & json)
 		}
 
 		qSort(_data.begin(),_data.end(),lessThan);
-	}
+    }
 }
+
+/*void VolumeComicsModel::load(const QStringList &jsonList)
+{
+    foreach (QString json, jsonList) {
+        load(json);
+    }
+}*/
 
 QModelIndex VolumeComicsModel::parent(const QModelIndex &index) const
 {

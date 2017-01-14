@@ -1,4 +1,5 @@
 #include "comic_vine_dialog.h"
+#include <QtWidgets>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -36,6 +37,8 @@
 ComicVineDialog::ComicVineDialog(QWidget *parent) :
 	QDialog(parent)
 {
+    setWindowFlags(Qt::Window);
+
 	doLayout();
 	doStackedWidgets();
 	doConnections();
@@ -75,15 +78,13 @@ void ComicVineDialog::doLayout()
 	buttonLayout->addWidget(closeButton);
 	buttonLayout->setContentsMargins(0,0,0,0);
 
-	mainLayout->addWidget(titleHeader = new TitleHeader);
-	mainLayout->addWidget(content);
-	mainLayout->addStretch();
-	mainLayout->addLayout(buttonLayout);
+    mainLayout->addWidget(titleHeader = new TitleHeader, 0);
+    mainLayout->addWidget(content, 1);
+    mainLayout->addLayout(buttonLayout, 0);
 
 	mainLayout->setContentsMargins(26,16,26,11);
 
 	setLayout(mainLayout);
-	setFixedSize(872,529);
 
 	setWindowTitle("Comic Vine Scraper (beta)");
 }
@@ -197,7 +198,26 @@ void ComicVineDialog::goBack()
 
 void ComicVineDialog::setComics(const QList<ComicDB> & comics)
 {
-	this->comics = comics;
+    this->comics = comics;
+}
+
+QSize ComicVineDialog::sizeHint() const
+{
+    int heightDesktopResolution = QApplication::desktop()->screenGeometry().height();
+    int widthDesktopResolution = QApplication::desktop()->screenGeometry().width();
+    int height,width;
+    height = qMax(529, static_cast<int>(heightDesktopResolution*0.5));
+    width = height * 1.65;
+
+    if (width > widthDesktopResolution)
+        return minimumSizeHint();
+
+    return QSize(width, height);
+}
+
+QSize ComicVineDialog::minimumSizeHint() const
+{
+    return QSize(872, 529);
 }
 
 void ComicVineDialog::show()
@@ -698,7 +718,7 @@ void ComicVineDialog::getVolumeComicsInfo(const QString &vID, int page)
 
 	QLOG_TRACE() << vID;
 
-	comicVineClient->getVolumeComicsInfo(vID,page);
+    comicVineClient->getAllVolumeComicsInfo(vID);
 }
 
 void ComicVineDialog::launchSearchVolume()

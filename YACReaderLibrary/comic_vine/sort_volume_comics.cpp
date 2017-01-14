@@ -38,7 +38,7 @@ SortVolumeComics::SortVolumeComics(QWidget *parent) :
 	//connect(moveUpButtonIL,SIGNAL(clicked()),this,SLOT(moveDownIL()));
 
 	QVBoxLayout * l = new QVBoxLayout;
-	QHBoxLayout * content = new QHBoxLayout;
+    QGridLayout * content = new QGridLayout;
 	QHBoxLayout * sortButtonsLayout = new QHBoxLayout;
 
 	tableFiles = new ScraperTableView();
@@ -47,10 +47,6 @@ SortVolumeComics::SortVolumeComics(QWidget *parent) :
 	tableFiles->setSelectionBehavior(QAbstractItemView::SelectRows);
 	tableFiles->setSelectionMode(QAbstractItemView::ContiguousSelection);
 
-	tableFiles->setFixedSize(407,341);
-	tableVolumeComics->setFixedSize(407,341);
-	content->addWidget(tableFiles,0,Qt::AlignLeft|Qt::AlignTop);
-	content->addWidget(tableVolumeComics,0,Qt::AlignRight|Qt::AlignTop);
 	//content->addWidget(tableVolumes,0,Qt::AlignRight|Qt::AlignTop);
 
 	connect(tableVolumeComics->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(synchronizeScroll(int)));
@@ -66,22 +62,22 @@ SortVolumeComics::SortVolumeComics(QWidget *parent) :
 	sortButtonsLayout->addWidget(ScrapperToolButton::getSeparator());
 	sortButtonsLayout->addWidget(moveDownButtonCL);
 	sortButtonsLayout->addSpacing(10);
-	//sortButtonsLayout->addStretch();
 	sortButtonsLayout->addWidget(sortLabel);
-	sortButtonsLayout->addStretch();
-	sortButtonsLayout->addWidget(paginator);
-	//sortButtonsLayout->addStretch();
-	//sortButtonsLayout->addWidget(moveUpButtonIL);
-	//sortButtonsLayout->addWidget(ScrapperToolButton::getSeparator());
-	//sortButtonsLayout->addWidget(moveDownButtonIL);
-	sortButtonsLayout->setSpacing(0);
+    sortButtonsLayout->addStretch();
+    sortButtonsLayout->setSpacing(0);
 
-	l->addSpacing(15);
-	l->addWidget(label);
+    content->addWidget(tableFiles, 0, 0);
+    content->addWidget(tableVolumeComics, 0, 1);
+    content->addLayout(sortButtonsLayout, 1, 0);
+    content->addWidget(paginator, 1, 1);
+
+    content->setRowStretch(0, 1);
+
+    l->addSpacing(15);
+    l->addWidget(label, 0);
 	l->addSpacing(5);
-	l->addLayout(content);
-	l->addLayout(sortButtonsLayout);
-	l->addStretch();
+    l->addLayout(content, 1);
+    l->addLayout(sortButtonsLayout, 0);
 
 	l->setContentsMargins(0,0,0,0);
 	setLayout(l);

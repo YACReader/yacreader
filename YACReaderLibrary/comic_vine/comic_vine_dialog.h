@@ -30,7 +30,8 @@ public:
 	QString databasePath;
 	QString basePath;
 	void setComics(const QList<ComicDB> & comics);
-
+    QSize sizeHint() const;
+    QSize minimumSizeHint() const;
 
 signals:
 	
