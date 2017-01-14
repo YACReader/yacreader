@@ -9,6 +9,7 @@ class VolumeComicsModel : public JSONModel
 public:
 	explicit VolumeComicsModel(QObject *parent = 0);
 	void load(const QString & json);
+    //void load(const QStringList & jsonList);
 
 	QModelIndex parent(const QModelIndex &index) const;
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;

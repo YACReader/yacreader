@@ -77,19 +77,36 @@ QVariant VolumesModel::data(const QModelIndex &index, int role) const
 
 	if (role == Qt::DecorationRole)
 	{
-			return QVariant();
+        return QVariant();
 	}
+
+    int row = index.row();
+    int column = index.column();
+
 	if (role == Qt::TextAlignmentRole)
 	{
-		//TODO
+        switch(column)
+        {
+        case YEAR:
+            return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+        case ISSUES:
+            return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+        default:
+            return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
+        }
 	}
 
-	if(role != Qt::DisplayRole)
+    if(role != Qt::DisplayRole)
 		return QVariant();
 
-	int row = index.row();
-	int column = index.column();
-	return _data[row][column];
+    if (column == YEAR || column == ISSUES)
+    {
+        return _data[row][column].toInt();
+    }
+    else
+    {
+        return _data[row][column];
+    }
 }
 
 Qt::ItemFlags VolumesModel::flags(const QModelIndex &index) const
@@ -113,7 +130,7 @@ QVariant VolumesModel::headerData(int section, Qt::Orientation orientation, int 
 		case ISSUES:
 			return QVariant(QString(tr("issues")));
 		case PUBLISHER:
-			return QVariant(QString(tr("publisher")));
+            return QVariant(QString(tr("publisher")));
 		}
 	}
 
@@ -125,6 +142,8 @@ QVariant VolumesModel::headerData(int section, Qt::Orientation orientation, int 
 			return QVariant(Qt::AlignRight | Qt::AlignVCenter);
 		case ISSUES:
 			return QVariant(Qt::AlignRight | Qt::AlignVCenter);
+        default:
+            return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
 		}
 	}
 

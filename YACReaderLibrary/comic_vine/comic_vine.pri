@@ -20,7 +20,8 @@ HEADERS += \
     comic_vine/scraper_scroll_label.h \
     comic_vine/scraper_results_paginator.h \
     comic_vine/scraper_selector.h \
-    comic_vine/api_key_dialog.h
+    comic_vine/api_key_dialog.h \
+    $$PWD/comic_vine_all_volume_comics_retriever.h
 
 SOURCES += \
 	comic_vine/comic_vine_dialog.cpp \
@@ -43,4 +44,5 @@ SOURCES += \
     comic_vine/scraper_scroll_label.cpp \
     comic_vine/scraper_results_paginator.cpp \
     comic_vine/scraper_selector.cpp \
-    comic_vine/api_key_dialog.cpp
+    comic_vine/api_key_dialog.cpp \
+    $$PWD/comic_vine_all_volume_comics_retriever.cpp
