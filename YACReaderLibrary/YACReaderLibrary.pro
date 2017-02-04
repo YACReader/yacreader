@@ -39,8 +39,14 @@ win32 {
 
     #TODO: pdfium for windows support
     !CONFIG(no_pdf) {
-        LIBS += -lpoppler-qt5
-        INCLUDEPATH += ../dependencies/poppler/include/qt5
+        !CONFIG(pdfium) {
+            LIBS += -lpoppler-qt5
+            INCLUDEPATH += ../dependencies/poppler/include/qt5
+	    } else {
+	    DEFINES += "USE_PDFIUM"
+	    LIBS += -L../dependencies/pdfium/x86 -lpdfium
+	    INCLUDEPATH += ../dependencies/pdfium/public
+	    }
     } else {
         DEFINES += "NO_PDF"
     }
