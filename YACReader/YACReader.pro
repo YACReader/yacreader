@@ -54,8 +54,8 @@ win32 {
             INCLUDEPATH += ../dependencies/poppler/include/qt5
 	    } else {
 	    DEFINES += "USE_PDFIUM"
-	    LIBS += -L../dependencies/pdfium/x86 -lpdfium
-	    INCLUDEPATH += ../dependencies/pdfium/public
+	    LIBS += -L$$PWD../dependencies/pdfium/x86 -lpdfium
+	    INCLUDEPATH += $$PWD../dependencies/pdfium/public
 	    }
     } else {
         DEFINES += "NO_PDF"
@@ -207,6 +207,10 @@ SOURCES +=  ../common/comic.cpp \
                 ../common/exit_check.cpp \
             ../common/scroll_management.cpp \
             ../common/opengl_checker.cpp
+
+CONFIG(pdfium) {
+	SOURCES+= ../common/pdf_comic.cpp
+	}
 
 !CONFIG(no_opengl) {
     CONFIG(legacy_gl_widget) {

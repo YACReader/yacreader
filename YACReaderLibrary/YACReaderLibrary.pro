@@ -44,8 +44,8 @@ win32 {
             INCLUDEPATH += ../dependencies/poppler/include/qt5
 	    } else {
 	    DEFINES += "USE_PDFIUM"
-	    LIBS += -L../dependencies/pdfium/x86 -lpdfium
-	    INCLUDEPATH += ../dependencies/pdfium/public
+	    LIBS += -L$$PWD../dependencies/pdfium/x86 -lpdfium
+	    INCLUDEPATH += $$PWD../dependencies/pdfium/public
 	    }
     } else {
         DEFINES += "NO_PDF"
@@ -233,7 +233,6 @@ SOURCES += comic_flow.cpp \
 		../common/yacreader_global_gui.cpp \
 		yacreader_libraries.cpp \
 		../common/exit_check.cpp \
-		../common/pdf_comic.cpp \
 		comics_view.cpp \
 		classic_comics_view.cpp \
 		empty_folder_widget.cpp \
@@ -256,6 +255,11 @@ SOURCES += comic_flow.cpp \
 		info_comics_view.cpp \
 		yacreader_comics_selection_helper.cpp \
 		yacreader_comic_info_helper.cpp
+
+CONFIG(pdfium) {
+	SOURCES += 	../common/pdf_comic.cpp
+	}
+
 
 !CONFIG(no_opengl) {
     CONFIG(legacy_gl_widget) {

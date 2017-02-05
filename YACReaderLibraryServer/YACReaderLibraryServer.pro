@@ -20,8 +20,14 @@ include(headless_config.pri)
 win32 {
     LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32 -luser32
     !CONFIG(no_pdf) {
-        LIBS += -lpoppler-qt5
-        INCLUDEPATH += ../dependencies/poppler/include/qt5
+        !CONFIG(pdfium) {
+            LIBS += -lpoppler-qt5
+            INCLUDEPATH += ../dependencies/poppler/include/qt5
+	    } else {
+	    DEFINES += "USE_PDFIUM"
+	    LIBS += -L$$PWD../dependencies/pdfium/x86 -lpdfium
+	    INCLUDEPATH += $$PWD../dependencies/pdfium/public
+	    }
     } else {
         DEFINES += "NO_PDF"
     }
@@ -103,7 +109,6 @@ SOURCES += ../YACReaderLibrary/library_creator.cpp \
            ../common/folder.cpp \
            ../common/library_item.cpp \
            ../common/comic.cpp \
-	   ../common/pdf_comic.cpp \
            ../common/bookmarks.cpp \
            ../common/qnaturalsorting.cpp \
            ../YACReaderLibrary/yacreader_local_server.cpp \
@@ -115,6 +120,9 @@ SOURCES += ../YACReaderLibrary/library_creator.cpp \
            console_ui_library_creator.cpp \
            main.cpp
 
+CONFIG(pdfium) {
+	SOURCES += ../common/pdf_comic.cpp
+	}
 
 				   
 include(../YACReaderLibrary/server/server.pri)
