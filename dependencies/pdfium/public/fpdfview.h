@@ -126,14 +126,19 @@ typedef struct _FS_RECTF_ {
 // Const Pointer to FS_RECTF structure.
 typedef const FS_RECTF* FS_LPCRECTF;
 
-#if defined(_WIN32) && defined(FPDFSDK_EXPORTS)
+#if defined(_WIN32) && defined (_MSC_VER)
+#if defined(FPDFSDK_EXPORTS)
 // On Windows system, functions are exported in a DLL
 #define DLLEXPORT __declspec(dllexport)
 #define STDCALL __stdcall
+#else 
+#define DLLEXPORT __declspec(dllimport)
+#define STDCALL __stdcall
+#endif //FPDF_EXPORTS
 #else
-#define DLLEXPORT
-#define STDCALL
-#endif
+#define DLLEXPORT __declspec(dllimport)
+#define STDCALL __stdcall
+#endif //WIN32
 
 // Exported Functions
 #ifdef __cplusplus
