@@ -25,8 +25,12 @@ win32 {
             INCLUDEPATH += ../dependencies/poppler/include/qt5
 	    } else {
 	    DEFINES += "USE_PDFIUM"
-	    LIBS += -L$$PWD../dependencies/pdfium/x86 -lpdfium
-	    INCLUDEPATH += $$PWD../dependencies/pdfium/public
+	    contains(QMAKE_TARGET.arch, x86_64): {
+	        LIBS += -L$$PWD/../dependencies/pdfium/x64 -lpdfium
+	        } else {
+		LIBS += -L$$PWD/../dependencies/pdfium/x86 -lpdfium
+	    }
+	    INCLUDEPATH += ../dependencies/pdfium/public
 	    }
     } else {
         DEFINES += "NO_PDF"

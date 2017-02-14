@@ -37,15 +37,18 @@ win32 {
         LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
     }
 
-    #TODO: pdfium for windows support
     !CONFIG(no_pdf) {
         !CONFIG(pdfium) {
             LIBS += -lpoppler-qt5
             INCLUDEPATH += ../dependencies/poppler/include/qt5
 	    } else {
 	    DEFINES += "USE_PDFIUM"
-	    LIBS += -L$$PWD../dependencies/pdfium/x86 -lpdfium
-	    INCLUDEPATH += $$PWD../dependencies/pdfium/public
+	    contains(QMAKE_TARGET.arch, x86_64): {
+	        LIBS += -L$$PWD/../dependencies/pdfium/x64 -lpdfium
+	        } else {
+		LIBS += -L$$PWD/../dependencies/pdfium/x86 -lpdfium
+	    } 
+	    INCLUDEPATH += ../dependencies/pdfium/public
 	    }
     } else {
         DEFINES += "NO_PDF"
