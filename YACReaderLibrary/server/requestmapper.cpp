@@ -22,9 +22,17 @@
 #include "controllers/errorcontroller.h"
 #include "controllers/comicdownloadinfocontroller.h"
 #include "controllers/synccontroller.h"
+#include "controllers/versioncontroller.h"
+#include "controllers/foldercontentcontroller.h"
+#include "controllers/tagscontroller.h"
+#include "controllers/tagcontentcontroller.h"
+#include "controllers/favoritescontroller.h"
+#include "controllers/readingcomicscontroller.h"
 
 #include "db_helper.h"
 #include "yacreader_libraries.h"
+
+#include "yacreader_http_session.h"
 
 #include "QsLog.h"
 
@@ -36,6 +44,8 @@ void RequestMapper::loadSession(HttpRequest & request, HttpResponse& response)
     HttpSession session=Static::sessionStore->getSession(request,response);
     if(session.contains("ySession")) //session is already alive check if it is needed to update comics
     {
+        YACReaderHttpSession *ySession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(session.getId());
+
         QString postData = QString::fromUtf8(request.getBody());
 
         if(postData.contains("currentPage"))
@@ -45,26 +55,30 @@ void RequestMapper::loadSession(HttpRequest & request, HttpResponse& response)
 
             QList<QString> data = postData.split("\n");
             if(data.length() > 2) {
-                session.setDeviceType(data.at(0).split(":").at(1));
-                session.setDisplayType(data.at(1).split(":").at(1));
+                ySession->setDeviceType(data.at(0).split(":").at(1));
+                ySession->setDisplayType(data.at(1).split(":").at(1));
                 QList<QString> comics = data.at(2).split(":").at(1).split("\t");
-                session.clearComics();
+                ySession->clearComics();
                 foreach(QString hash,comics) {
-                    session.setComicOnDevice(hash);
+                    ySession->setComicOnDevice(hash);
                 }
             }
             else
             {
                 if(data.length()>1)
                 {
-                    session.setDeviceType(data.at(0).split(":").at(1));
-                    session.setDisplayType(data.at(1).split(":").at(1));
+                    ySession->setDeviceType(data.at(0).split(":").at(1));
+                    ySession->setDisplayType(data.at(1).split(":").at(1));
                 }
             }
         }
     }
     else
     {
+        YACReaderHttpSession *ySession = new YACReaderHttpSession(this);
+
+        Static::yacreaderSessionStore->addYACReaderHttpSession(session.getId(), ySession);
+
         session.set("ySession","ok");
 
         QString postData = QString::fromUtf8(request.getBody());
@@ -74,18 +88,18 @@ void RequestMapper::loadSession(HttpRequest & request, HttpResponse& response)
 
         if(data.length() > 2)
         {
-            session.setDeviceType(data.at(0).split(":").at(1));
-            session.setDisplayType(data.at(1).split(":").at(1));
+            ySession->setDeviceType(data.at(0).split(":").at(1));
+            ySession->setDisplayType(data.at(1).split(":").at(1));
             QList<QString> comics = data.at(2).split(":").at(1).split("\t");
             foreach(QString hash,comics)
             {
-                session.setComicOnDevice(hash);
+                ySession->setComicOnDevice(hash);
             }
         }
         else //values by default, only for debug purposes.
         {
-            session.setDeviceType("ipad");
-            session.setDisplayType("@2x");
+            ySession->setDeviceType("ipad");
+            ySession->setDisplayType("@2x");
         }
 
     }
@@ -105,6 +119,14 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
     QRegExp cover("/library/.+/cover/[0-9a-f]+.jpg"); //get comic cover (navigation)
     QRegExp comicPage("/library/.+/comic/[0-9]+/page/[0-9]+/?"); //get comic page
     QRegExp comicPageRemote("/library/.+/comic/[0-9]+/page/[0-9]+/remote?"); //get comic page (remote reading)
+    QRegExp serverVersion("/version/?");
+    QRegExp folderContent("/library/.+/folder/[0-9]+/content/?");
+    QRegExp favs("/library/.+/favs/?");
+    QRegExp reading("/library/.+/reading/?");
+    QRegExp tags("/library/.+/tags/?");
+    QRegExp tagContent("/library/.+/tag/[0-9]+/content/?");
+    QRegExp readingLists("/library/.+/reading_lists/?");
+    QRegExp readingListContent("/library/.+/reading_list/[0-9]+/content/?");
 
     QRegExp sync("/sync");
 
@@ -122,8 +144,14 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
     }
     else
     {
-        if(sync.exactMatch(path))
+        if(serverVersion.exactMatch(path))
+        {
+            VersionController().service(request, response);
+        }
+        else if(sync.exactMatch(path))
+        {
             SyncController().service(request, response);
+        }
         else
         {
             //se comprueba que la sesión sea la correcta con el fin de evitar accesos no autorizados
@@ -160,6 +188,34 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
                     else if(comicUpdate.exactMatch(path))
                     {
                         UpdateComicController().service(request, response);
+                    }
+                    else if(folderContent.exactMatch(path))
+                    {
+                        FolderContentController().service(request, response);
+                    }
+                    else if(tags.exactMatch(path))
+                    {
+                        TagsController().service(request, response);
+                    }
+                    else if(tagContent.exactMatch(path))
+                    {
+                        TagContentController().service(request, response);
+                    }
+                    else if(favs.exactMatch(path))
+                    {
+                        FavoritesController().service(request, response);
+                    }
+                    else if(reading.exactMatch(path))
+                    {
+                        ReadingComicsController().service(request, response);
+                    }
+                    else if(readingLists.exactMatch(path))
+                    {
+                        //ReadingListsController().service(request, response);
+                    }
+                    else if(readingListContent.exactMatch(path))
+                    {
+                        //ReadingListContentController().service(request, response);
                     }
                 }
                 else

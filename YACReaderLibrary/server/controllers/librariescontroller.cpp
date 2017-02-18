@@ -1,6 +1,7 @@
 #include "librariescontroller.h"
 #include "db_helper.h"  //get libraries
 #include "yacreader_libraries.h"
+#include "yacreader_http_session.h"
 
 #include "template.h"
 #include "../static.h"
@@ -12,13 +13,14 @@ LibrariesController::LibrariesController() {}
 void LibrariesController::service(HttpRequest& request, HttpResponse& response)
 {
     HttpSession session=Static::sessionStore->getSession(request,response,false);
+    YACReaderHttpSession *ySession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(session.getId());
 
     response.setHeader("Content-Type", "text/html; charset=utf-8");
     response.setHeader("Connection","close");
 
-    session.clearNavigationPath();
+    ySession->clearNavigationPath();
 
-    Template t=Static::templateLoader->getTemplate("libraries_"+session.getDeviceType(),request.getHeader("Accept-Language"));
+    Template t=Static::templateLoader->getTemplate("libraries_"+ySession->getDeviceType(),request.getHeader("Accept-Language"));
 	t.enableWarnings();
 
 	YACReaderLibraries libraries = DBHelper::getLibraries();
@@ -36,5 +38,5 @@ void LibrariesController::service(HttpRequest& request, HttpResponse& response)
 	}
 
     response.setStatus(200,"OK");
-    response.writeText(t,true);
+    response.write(t.toUtf8(),true);
 }

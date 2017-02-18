@@ -55,7 +55,7 @@ void SyncController::service(HttpRequest &request, HttpResponse &response)
     else
     {
         response.setStatus(412,"No comic info received");
-        response.writeText("",true);
+        response.write("",true);
         return;
     }
 

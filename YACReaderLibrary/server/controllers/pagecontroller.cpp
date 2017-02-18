@@ -4,6 +4,8 @@
 
 #include "comic.h"
 #include "comiccontroller.h"
+#include "yacreader_http_session.h"
+
 #include <QDataStream>
 #include <QPointer>
 
@@ -16,6 +18,7 @@ PageController::PageController() {}
 void PageController::service(HttpRequest& request, HttpResponse& response)
 {
 	HttpSession session=Static::sessionStore->getSession(request,response,false);
+    YACReaderHttpSession *ySession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(session.getId());
 
     QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
     bool remote = path.endsWith("remote");
@@ -35,14 +38,14 @@ void PageController::service(HttpRequest& request, HttpResponse& response)
     if(remote)
     {
         QLOG_TRACE() << "se recupera comic remoto para servir páginas";
-        comicFile = session.getCurrentRemoteComic();
-        currentComicId = session.getCurrentRemoteComicId();
+        comicFile = ySession->getCurrentRemoteComic();
+        currentComicId = ySession->getCurrentRemoteComicId();
     }
     else
     {
         QLOG_TRACE() << "se recupera comic para servir páginas";
-        comicFile = session.getCurrentComic();
-        currentComicId = session.getCurrentComicId();
+        comicFile = ySession->getCurrentComic();
+        currentComicId = ySession->getCurrentComicId();
     }
 
     if(currentComicId != 0 && !QPointer<Comic>(comicFile).isNull())
@@ -77,9 +80,9 @@ void PageController::service(HttpRequest& request, HttpResponse& response)
 			{
                 //delete comicFile;
                 if(remote)
-                    session.dismissCurrentRemoteComic();
+                    ySession->dismissCurrentRemoteComic();
                 else
-                    session.dismissCurrentComic();
+                    ySession->dismissCurrentComic();
             }
 			response.setStatus(404,"not found"); //TODO qué mensaje enviar
 			response.write("404 not found",true);

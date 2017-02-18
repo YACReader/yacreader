@@ -12,7 +12,7 @@ FolderInfoController::FolderInfoController() {}
 
 void FolderInfoController::service(HttpRequest& request, HttpResponse& response)
 {
-    response.setHeader("Content-Type", "plain/text; charset=utf-8");
+    response.setHeader("Content-Type", "text/plain; charset=utf-8");
 
     QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
 	QStringList pathElements = path.split('/');
@@ -22,7 +22,7 @@ void FolderInfoController::service(HttpRequest& request, HttpResponse& response)
 
     serviceComics(libraryId, parentId, response);
 
-    response.writeText("",true);
+    response.write("",true);
 }
 
 void FolderInfoController::serviceComics(const int &library, const qulonglong &folderId, HttpResponse &response)
@@ -34,7 +34,7 @@ void FolderInfoController::serviceComics(const int &library, const qulonglong &f
     for(QList<LibraryItem *>::const_iterator itr = folderComics.constBegin();itr!=folderComics.constEnd();itr++)
     {
         currentComic = (ComicDB *)(*itr);
-        response.writeText(QString("/library/%1/comic/%2:%3:%4\r\n").arg(library).arg(currentComic->id).arg(currentComic->getFileName()).arg(currentComic->getFileSize()));
+        response.write(QString("/library/%1/comic/%2:%3:%4\r\n").arg(library).arg(currentComic->id).arg(currentComic->getFileName()).arg(currentComic->getFileSize()).toUtf8());
         delete currentComic;
     }
 
