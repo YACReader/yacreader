@@ -210,7 +210,7 @@ public:
 	ComicDB();
     ComicDB(const ComicDB & comicDB);
 	
-	bool isDir();
+    bool isDir() const;
 	
 	bool _hasCover;
 
