@@ -765,9 +765,14 @@ void Viewer::mouseMoveEvent(QMouseEvent * event)
 		mglass->move(static_cast<int>(event->x()-float(mglass->width())/2),static_cast<int>(event->y()-float(mglass->height())/2));
 
 	if(render->hasLoadedComic())
-	{
+	{   
 		if(showGoToFlowAnimation->state()!=QPropertyAnimation::Running)
 		{
+            if(Configuration::getConfiguration().getDisableShowOnMouseOver())
+            {
+                return;
+            }
+
 			if(goToFlow->isVisible())
 			{
 				QPoint gtfPos = goToFlow->mapFrom(this,event->pos());
@@ -776,7 +781,7 @@ void Viewer::mouseMoveEvent(QMouseEvent * event)
 				//goToFlow->hide();
 			}
 			else
-			{
+			{   
 				int umbral = (width()-goToFlow->width())/2;
 				if((event->y()>height()-15)&&(event->x()>umbral)&&(event->x()<width()-umbral))
 				{
@@ -903,6 +908,11 @@ void Viewer::animateHideGoToFlow()
 
 void Viewer::moveCursoToGoToFlow()
 {
+    if(Configuration::getConfiguration().getDisableShowOnMouseOver())
+    {
+        return;
+    }
+
 	//Move cursor to goToFlow widget on show (this avoid hide when mouse is moved)
 	int y = goToFlow->pos().y();
 	int x1 = goToFlow->pos().x();
