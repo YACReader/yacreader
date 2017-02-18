@@ -320,8 +320,14 @@ void YACReaderOptionsDialog::restoreOptions(QSettings * settings)
 	}
 
 	//END FLOW CONFIG
-	#endif
+#endif
 }
+
+void YACReaderOptionsDialog::restoreOptions()
+{
+    restoreOptions(settings);
+}
+
 #ifndef NO_OPENGL
 void YACReaderOptionsDialog::loadConfig()
 {
