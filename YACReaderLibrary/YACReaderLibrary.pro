@@ -65,13 +65,15 @@ unix:!macx{
         INCLUDEPATH  += /usr/include/poppler/qt5
 	LIBS         += -L/usr/lib -lpoppler-qt5
     } else {
-        #static pdfium libraries have to be included *before* dynamic libraries
         DEFINES 		+= "USE_PDFIUM"
         INCLUDEPATH	+= /usr/include/pdfium
-        LIBS          	+= -L/usr/lib/pdfium -Wl,--start-group -lpdfium -lfpdfapi -lfxge -lfpdfdoc \
-					-lfxcrt -lfx_agg -lfxcodec -lfx_lpng -lfx_libopenjpeg -lfx_lcms2 -ljpeg \
-					-lfx_zlib -lfdrm -lfxedit -lformfiller -lpdfwindow -lpdfium -lbigint -ljavascript \
-					-lfxedit -Wl,--end-group -lfreetype
+        LIBS          	+= -L/usr/lib/pdfium -lfreetype
+
+	#static pdfium libraries have to be included *before* dynamic libraries
+        #LIBS          	+= -L/usr/lib/pdfium -Wl,--start-group -lpdfium -lfpdfapi -lfxge -lfpdfdoc \
+	#				-lfxcrt -lfx_agg -lfxcodec -lfx_lpng -lfx_libopenjpeg -lfx_lcms2 -ljpeg \
+	#				-lfx_zlib -lfdrm -lfxedit -lformfiller -lpdfwindow -lpdfium -lbigint -ljavascript \
+	#				-lfxedit -Wl,--end-group -lfreetype
     }
 } else {
     DEFINES += "NO_PDF"
