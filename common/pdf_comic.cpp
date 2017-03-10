@@ -64,12 +64,12 @@ QImage PdfiumComic::getPage(const int page)
 	double width = (FPDF_GetPageWidth(pdfpage)/72)*150;
 	double height = (FPDF_GetPageHeight(pdfpage)/72)*150;
 	
-	image = QImage(width, height, QImage::Format_RGB888);// QImage::Format_RGBX8888);
+	image = QImage(width, height, QImage::Format_ARGB32);// QImage::Format_RGBX8888);
 	image.fill(0xFFFFFFFF);
 
-	bitmap = FPDFBitmap_CreateEx(image.width(), image.height(), FPDFBitmap_BGR, image.scanLine(0), image.bytesPerLine());
+	bitmap = FPDFBitmap_CreateEx(image.width(), image.height(), FPDFBitmap_BGRA, image.scanLine(0), image.bytesPerLine());
 	//TODO: make render flags costumizable
-	FPDF_RenderPageBitmap(bitmap, pdfpage, 0,0, image.width(), image.height(), 0, (FPDF_REVERSE_BYTE_ORDER | FPDF_LCD_TEXT));
+	FPDF_RenderPageBitmap(bitmap, pdfpage, 0,0, image.width(), image.height(), 0, (FPDF_LCD_TEXT));
 	FPDFBitmap_Destroy(bitmap);
 	FPDF_ClosePage(pdfpage);
 	return image;
