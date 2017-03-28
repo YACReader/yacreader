@@ -28,18 +28,18 @@ const QStringList Comic::imageExtensions = QStringList() << "*.jpg" << "*.jpeg" 
 const QStringList Comic::literalImageExtensions = QStringList() << "jpg" << "jpeg" << "png" << "gif" << "tiff" << "tif" << "bmp" << "webp";
 
 #ifndef use_unarr
-const QStringList ComicArchiveExtensions = QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.7z" << "*.cb7" << "*.arj" << "*.cbt";
-const QStringList LiteralComicArchiveExtensions = QStringList() << "cbr" << "cbz" << "rar" << "zip" << "tar" << "pdf" << "7z" << "cb7" << "arj" << "cbt";
+const QStringList ComicArchiveExtensions = QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.7z" << "*.cb7" << "*.arj" << "*.cbt";
+const QStringList LiteralComicArchiveExtensions = QStringList() << "cbr" << "cbz" << "rar" << "zip" << "tar" << "7z" << "cb7" << "arj" << "cbt";
 #else
-const QStringList ComicArchiveExtensions = QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.pdf" << "*.cbt";
-const QStringList LiteralComicArchiveExtensions = QStringList() << "cbr" << "cbz" << "rar" << "zip" << "tar" << "pdf" << "cbt";
+const QStringList ComicArchiveExtensions = QStringList() << "*.cbr" << "*.cbz" << "*.rar" << "*.zip" << "*.tar" << "*.cbt";
+const QStringList LiteralComicArchiveExtensions = QStringList() << "cbr" << "cbz" << "rar" << "zip" << "tar" << "cbt";
 #endif //use_unarr
 #ifndef NO_PDF
 const QStringList Comic::comicExtensions = QStringList() << ComicArchiveExtensions << "*.pdf";
 const QStringList Comic::literalComicExtensions = QStringList() << LiteralComicArchiveExtensions << "pdf";
 #else
-const QStringList Comic::comicExtensions = QStringList() << ComicArchiveExtensions << "*.pdf";
-const QStringList Comic::literalComicExtensions = QStringList() << LiteralComicArchiveExtensions << "pdf";
+const QStringList Comic::comicExtensions = ComicArchiveExtensions;
+const QStringList Comic::literalComicExtensions = LiteralComicArchiveExtensions;
 #endif //NO_PDF
 
 //-----------------------------------------------------------------------------
