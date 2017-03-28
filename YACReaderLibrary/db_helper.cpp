@@ -258,7 +258,8 @@ QList<ComicDB> DBHelper::getReading(qulonglong libraryId)
         QSqlQuery selectQuery(db);
         selectQuery.prepare("SELECT c.id,c.parentId,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                            "WHERE ci.hasBeenOpened = 1 AND ci.read = 0 AND ci.currentPage != ci.numPages AND ci.currentPage != 1");
+                            "WHERE ci.hasBeenOpened = 1 AND ci.read = 0 AND ci.currentPage != ci.numPages AND ci.currentPage != 1 "
+                            "ORDER BY ci.lastTimeOpened DESC");
         selectQuery.exec();
 
         while (selectQuery.next())
@@ -452,7 +453,10 @@ void DBHelper::update(ComicInfo * comicInfo, QSqlDatabase & db)
         "rating = :rating,"
 
         //new 7.1 fields
-        "comicVineID = :comicVineID"
+        "comicVineID = :comicVineID,"
+
+        //new 8.6 fields
+        "lastTimeOpened = :lastTimeOpened"
 		//--
 		" WHERE id = :id ");
 
@@ -506,6 +510,8 @@ void DBHelper::update(ComicInfo * comicInfo, QSqlDatabase & db)
 	updateComicInfo.bindValue(":rating", comicInfo->rating);
 
     updateComicInfo.bindValue(":comicVineID", comicInfo->comicVineID);
+
+    updateComicInfo.bindValue(":lastTimeOpened", comicInfo->lastTimeOpened);
 
     updateComicInfo.exec();
 }
@@ -589,6 +595,8 @@ void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
     comic.info.currentPage = comicInfo.currentPage;
     comic.info.hasBeenOpened = true;
 
+    comic.info.lastTimeOpened = QDateTime::currentSecsSinceEpoch();
+
     DBHelper::update(&comic.info,db);
 
     db.close();
@@ -602,12 +610,14 @@ void DBHelper::updateReadingRemoteProgress(const ComicInfo &comicInfo, QSqlDatab
                             "read = :read, "
                             "currentPage = :currentPage, "
                             "hasBeenOpened = :hasBeenOpened, "
+                            "lastTimeOpened = :lastTimeOpened"
                             "rating = :rating"
                             " WHERE id = :id ");
 
     updateComicInfo.bindValue(":read", comicInfo.read?1:0);
     updateComicInfo.bindValue(":currentPage", comicInfo.currentPage);
     updateComicInfo.bindValue(":hasBeenOpened", comicInfo.hasBeenOpened?1:0);
+    updateComicInfo.bindValue(":lastTimeOpened", QDateTime::currentSecsSinceEpoch());
     updateComicInfo.bindValue(":id", comicInfo.id);
     updateComicInfo.bindValue(":rating", comicInfo.rating);
     updateComicInfo.exec();
@@ -1282,6 +1292,10 @@ ComicInfo DBHelper::loadComicInfo(QString hash, QSqlDatabase & db)
 		comicInfo.gamma = record.value("gamma").toInt();
 		comicInfo.rating = record.value("rating").toInt();
 		//--
+
+        //new 8.6 fields
+        comicInfo.lastTimeOpened = record.value("lastTimeOpened");
+        //--
 
         comicInfo.title = record.value("title");
         comicInfo.numPages = record.value("numPages");
