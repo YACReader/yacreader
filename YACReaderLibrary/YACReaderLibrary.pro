@@ -37,10 +37,19 @@ win32 {
         LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
     }
 
-    #TODO: pdfium for windows support
     !CONFIG(no_pdf) {
-        LIBS += -lpoppler-qt5
-        INCLUDEPATH += ../dependencies/poppler/include/qt5
+        !CONFIG(pdfium) {
+            LIBS += -lpoppler-qt5
+            INCLUDEPATH += ../dependencies/poppler/include/qt5
+	    } else {
+	    DEFINES += "USE_PDFIUM"
+	    contains(QMAKE_TARGET.arch, x86_64): {
+	        LIBS += -L$$PWD/../dependencies/pdfium/x64 -lpdfium
+	        } else {
+		LIBS += -L$$PWD/../dependencies/pdfium/x86 -lpdfium
+	    } 
+	    INCLUDEPATH += ../dependencies/pdfium/public
+	    }
     } else {
         DEFINES += "NO_PDF"
     }
@@ -56,13 +65,15 @@ unix:!macx{
         INCLUDEPATH  += /usr/include/poppler/qt5
 	LIBS         += -L/usr/lib -lpoppler-qt5
     } else {
-        #static pdfium libraries have to be included *before* dynamic libraries
         DEFINES 		+= "USE_PDFIUM"
         INCLUDEPATH	+= /usr/include/pdfium
-        LIBS          	+= -L/usr/lib/pdfium -Wl,--start-group -lpdfium -lfpdfapi -lfxge -lfpdfdoc \
-					-lfxcrt -lfx_agg -lfxcodec -lfx_lpng -lfx_libopenjpeg -lfx_lcms2 -ljpeg \
-					-lfx_zlib -lfdrm -lfxedit -lformfiller -lpdfwindow -lpdfium -lbigint -ljavascript \
-					-lfxedit -Wl,--end-group -lfreetype
+        LIBS          	+= -L/usr/lib/pdfium -lfreetype
+
+	#static pdfium libraries have to be included *before* dynamic libraries
+        #LIBS          	+= -L/usr/lib/pdfium -Wl,--start-group -lpdfium -lfpdfapi -lfxge -lfpdfdoc \
+	#				-lfxcrt -lfx_agg -lfxcodec -lfx_lpng -lfx_libopenjpeg -lfx_lcms2 -ljpeg \
+	#				-lfx_zlib -lfdrm -lfxedit -lformfiller -lpdfwindow -lpdfium -lbigint -ljavascript \
+	#				-lfxedit -Wl,--end-group -lfreetype
     }
 } else {
     DEFINES += "NO_PDF"
@@ -227,7 +238,6 @@ SOURCES += comic_flow.cpp \
 		../common/yacreader_global_gui.cpp \
 		yacreader_libraries.cpp \
 		../common/exit_check.cpp \
-		../common/pdf_comic.cpp \
 		comics_view.cpp \
 		classic_comics_view.cpp \
 		empty_folder_widget.cpp \
@@ -250,6 +260,11 @@ SOURCES += comic_flow.cpp \
 		info_comics_view.cpp \
 		yacreader_comics_selection_helper.cpp \
 		yacreader_comic_info_helper.cpp
+
+CONFIG(pdfium) {
+	SOURCES += 	../common/pdf_comic.cpp
+	}
+
 
 !CONFIG(no_opengl) {
     CONFIG(legacy_gl_widget) {
