@@ -83,6 +83,8 @@ public:
 
 	QImage cover;
 
+    QVariant lastTimeOpened;//integer/date
+
     /*void setTitle(QVariant value);
 
     void setCoverPage(QVariant value);
@@ -185,6 +187,8 @@ public:
     Q_PROPERTY(QVariant comicVineID MEMBER comicVineID CONSTANT)
 
     Q_PROPERTY(QImage cover MEMBER cover CONSTANT)
+
+    Q_PROPERTY(QVariant lastTimeOpened MEMBER lastTimeOpened CONSTANT)
 
     //-new properties, not loaded from the DB automatically
     bool isFavorite;
