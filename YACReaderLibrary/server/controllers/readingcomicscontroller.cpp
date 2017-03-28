@@ -25,12 +25,9 @@ void ReadingComicsController::service(HttpRequest &request, HttpResponse &respon
 
 void ReadingComicsController::serviceContent(const int &library, HttpResponse &response)
 {
-    //TODO sort comics before serving them
-    int FIXME;
+    QList<ComicDB> readingComics = DBHelper::getReading(library);
 
-    QList<ComicDB> tagComics = DBHelper::getReading(library);
-
-    for(const ComicDB &comic : tagComics)
+    for(const ComicDB &comic : readingComics)
     {
         response.write(YACReaderServerDataHelper::comicToYSFormat(library, comic).toUtf8());
     }
