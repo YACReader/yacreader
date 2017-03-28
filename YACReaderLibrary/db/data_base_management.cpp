@@ -179,7 +179,9 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
                                "contrast INTEGER DEFAULT -1, "
                                "gamma INTEGER DEFAULT -1, "
                                //new 7.1 fields
-                               "comicVineID TEXT"
+                               "comicVineID TEXT,"
+                               //new 8.6 fields
+                               "lastTimeOpened INTEGER"
 
                                ")");
         success = success && queryComicInfo.exec();
@@ -417,7 +419,9 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 
             "edited = :edited,"
 
-            "comicVineID = :comicVineID"
+            "comicVineID = :comicVineID,"
+
+            "lastTimeOpened = :lastTimeOpened"
 
 			" WHERE hash = :hash ");
 
@@ -451,6 +455,7 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 			"read,"
 			"edited,"
             "comicVineID,"
+            "lastTimeOpened,"
 			"hash)"
 
 			"VALUES (:title,"
@@ -487,6 +492,8 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 			":read,"
 			":edited,"
             ":comicVineID,"
+
+            ":lastTimeOpened,"
 
 			":hash )");
 
@@ -597,6 +604,8 @@ void DataBaseManagement::bindValuesFromRecord(const QSqlRecord & record, QSqlQue
 	bindString("notes",record,query);
 
     bindString("comicVineID",record,query);
+
+    bindString("lastTimeOpened",record,query);
 
     bindString("hash",record,query);
 }
@@ -766,12 +775,23 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
 
         if(pre8_6)
         {
-            QStringList columnDefs;
-            //TODO
-            columnDefs << "numChildren INTEGER";
-            columnDefs << "firstChildHash TEXT";
-            columnDefs << "customImage TEXT";
-            //returnValue = returnValue && addColumns("folder", columnDefs, db);
+            {//folder
+                QStringList columnDefs;
+                //a full library update is needed after updating the table
+                columnDefs << "numChildren INTEGER";
+                columnDefs << "firstChildHash TEXT";
+                columnDefs << "customImage TEXT";
+                returnValue = returnValue && addColumns("folder", columnDefs, db);
+            }
+
+            {//comic_info
+                QStringList columnDefs;
+                columnDefs << "lastTimeOpened INTEGER";
+                returnValue = returnValue && addColumns("comic_info", columnDefs, db);
+
+                QSqlQuery queryIndexLastTimeOpened(db);
+                returnValue = returnValue && queryIndexLastTimeOpened.exec("CREATE INDEX last_time_opened_index ON comic_info (lastTimeOpened)");
+            }
         }
 	}
 
