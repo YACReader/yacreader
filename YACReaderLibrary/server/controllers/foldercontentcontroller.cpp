@@ -39,7 +39,7 @@ void FolderContentController::service(HttpRequest& request, HttpResponse& respon
 
 void FolderContentController::serviceContent(const int &library, const qulonglong &folderId, HttpResponse &response)
 {
-     clock_t begin = clock();
+    //clock_t begin = clock();
 
     QList<LibraryItem *> folderContent = DBHelper::getFolderSubfoldersFromLibrary(library,folderId);
     QList<LibraryItem *> folderComics = DBHelper::getFolderComicsFromLibrary(library,folderId);
@@ -65,8 +65,8 @@ void FolderContentController::serviceContent(const int &library, const qulonglon
         }
     }
 
-    clock_t end = clock();
+    /*clock_t end = clock();
     double msecs = double(end - begin);
 
-    response.write(QString("%1ms").arg(msecs).toUtf8());
+    response.write(QString("%1ms").arg(msecs).toUtf8());*/
 }
