@@ -235,6 +235,8 @@ ComicInfo & ComicInfo::operator=(const ComicInfo & comicInfo)
     notes = comicInfo.notes;
     comicVineID = comicInfo.comicVineID;
 
+    lastTimeOpened = comicInfo.lastTimeOpened;
+
 	return *this;
 }
 
@@ -547,6 +549,8 @@ QDataStream &operator<<(QDataStream & stream, const ComicInfo & comicInfo)
 
     stream << comicInfo.comicVineID;
 
+    stream << comicInfo.lastTimeOpened;
+
 	return stream;
 }
 
@@ -602,6 +606,8 @@ QDataStream &operator>>(QDataStream & stream, ComicInfo & comicInfo)
 	stream >> comicInfo.notes;
 
     stream >> comicInfo.comicVineID;
+
+    stream >> comicInfo.lastTimeOpened;
 	
 	return stream;
 }
