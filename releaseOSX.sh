@@ -1,17 +1,18 @@
 #!/bin/bash
 
-/Users/luisangel/my_dev/Qt5.5.1/5.5/clang_64/bin/macdeployqt YACReader.app
-/Users/luisangel/my_dev/Qt5.5.1/5.5/clang_64/bin/macdeployqt YACReaderLibrary.app -qmldir=./YACReaderLibrary/qml
-/Users/luisangel/my_dev/Qt5.5.1/5.5/clang_64/bin/macdeployqt YACReaderLibraryServer.app
+hash macdeployqt 2>/dev/null || { echo >&2 "Qmake command not available. Please add the bin subfolder of your Qt installation  to the PATH environment variable."; exit 1; }
 
-cp -R ./utils ./YACReader.app/Contents/MacOS/
-cp -R ./utils ./YACReaderLibrary.app/Contents/MacOS/
-cp -R ./utils ./YACReaderLibraryServer.app/Contents/MacOS/
-cp -R ./release/server ./YACReaderLibrary.app/Contents/MacOS/
-cp -R ./release/server ./YACReaderLibraryServer.app/Contents/MacOS/
-cp -R ./release/languages ./YACReader.app/Contents/MacOS/
-cp -R ./release/languages ./YACReaderLibrary.app/Contents/MacOS/
-cp -R ./release/languages ./YACReaderLibraryServer.app/Contents/MacOS/
+macdeployqt YACReader.app
+macdeployqt YACReaderLibrary.app -qmldir=YACReaderLibrary/qml
+macdeployqt YACReaderLibraryServer.app
+
+cp -R utils YACReader.app/Contents/MacOS/
+cp -R utils YACReaderLibrary.app/Contents/MacOS/
+cp -R utils YACReaderLibraryServer.app/Contents/MacOS/
+cp -R release/server YACReaderLibrary.app/Contents/MacOS/
+cp -R release/server YACReaderLibraryServer.app/Contents/MacOS/
+cp -R release/languages YACReader.app/Contents/MacOS/
+cp -R release/languages YACReaderLibrary.app/Contents/MacOS/
+cp -R release/languages YACReaderLibraryServer.app/Contents/MacOS/
 
 #./signapps.sh
-
