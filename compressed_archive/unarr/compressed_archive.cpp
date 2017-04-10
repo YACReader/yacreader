@@ -6,7 +6,7 @@
 #include "extract_delegate.h"
 
 extern"C" {
-#include "unarr.h"
+#include <unarr.h>
 }
 
 CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) :

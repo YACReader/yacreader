@@ -16,17 +16,12 @@ lessThan(QT_VER_MIN, 3){
 	}
 !CONFIG(unarr):!CONFIG(7zip) {
 	unix {
-		!macx {
-				CONFIG+=unarr
-			}
-		else {
-				CONFIG+=7zip
-			}
-	
-		}
+		CONFIG+=unarr
+		}	
+		
 	win32 {
-			CONFIG+=7zip
-		  }
+		CONFIG+=7zip
+		 }
 }
 
 unix { 
