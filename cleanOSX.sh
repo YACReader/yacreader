@@ -10,5 +10,7 @@ cd ..
 cd YACReaderLibrary
 make clean
 rm -R YACReaderLibrary.app
+cd ..
+cd YACReaderLibraryServer
 rm -R YACReaderLibraryServer.app
 cd ..
