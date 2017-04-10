@@ -11,8 +11,10 @@ unix:!macx:exists (/usr/include/unarr.h) {
 		LIBS+=-lunarr
 		DEFINES+=use_unarr
 		}
-else:macx:exists (../../dependencies/unarr/libunarr.dynlib) {
-		LIBS += -L../../dependencies/unarr/ -lunarr
+else:macx:exists (../../dependencies/unarr/libunarr.a) {
+		message(Found prebuilt unarr library.)
+		INCLUDEPATH += $$PWD/../../dependencies/unarr
+		LIBS += -L$$PWD/../../dependencies/unarr/ -lunarr -lz -lbz2
 		DEFINES+=use_unarr
 		}
 
