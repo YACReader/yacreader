@@ -8,21 +8,7 @@ QT_VERSION = $$split(QT_VERSION, ".")
 QT_VER_MAJ = $$member(QT_VERSION, 0)
 QT_VER_MIN = $$member(QT_VERSION, 1)
 
-lessThan(QT_VER_MAJ, 5) {
-error(YACReader requires Qt 5 or newer but Qt $$[QT_VERSION] was detected.)
-	}
-lessThan(QT_VER_MIN, 3){
-	error ("You need at least Qt 5.3 to build YACReader or YACReaderLibrary")
-	}
-!CONFIG(unarr):!CONFIG(7zip) {
-	unix {
-		CONFIG+=unarr
-		}	
-		
-	win32 {
-		CONFIG+=7zip
-		 }
-}
+include (../config.pri)
 
 unix { 
 	!macx {
