@@ -8,15 +8,15 @@ CONFIG(pdfium) {
 	win32 {
 		INCLUDEPATH += ../dependencies/pdfium/win/public
 		contains(QMAKE_TARGET.arch, x86_64): {
-			LIBS += -L$$PWD/../dependencies/pdfium/win/x64 -lpdfium
+			LIBS += -L$$PWD/pdfium/win/x64 -lpdfium
 		} else {
-			LIBS += -L$$PWD/../dependencies/pdfium/win/x86 -lpdfium
+			LIBS += -L$$PWD/pdfium/win/x86 -lpdfium
 	    	}
 	}
 		unix {
 			macx {
-				LIBS += -L$$PWD/../dependencies/pdfium/macx/bin -lpdfium
-				INCLUDEPATH += $$PWD/../dependencies/pdfium/macx/public
+				LIBS += -L$$PWD/pdfium/macx/bin -lpdfium
+					INCLUDEPATH += $$PWD/pdfium/macx/include
 			} 
 			!macx {
 				INCLUDEPATH += /usr/include/pdfium
