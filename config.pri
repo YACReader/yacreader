@@ -42,5 +42,5 @@ unix:!macx:!CONFIG(poppler):!CONFIG(pdfium) {
 }
 
 macx:!CONFIG(pdfkit):!CONFIG(pdfium) {
-	CONFIG += pdfkit
+	CONFIG += pdfium
 }
