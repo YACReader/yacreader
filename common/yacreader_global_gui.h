@@ -92,6 +92,11 @@ static const QString YACReaderLibrarSubReadingListMimeDataFormat = "application/
 	//Text=0x05
  };
 
+ enum LibraryUITheme
+ {
+     Light,
+     Dark
+ };
 
 void addSperator(QWidget * w);
 QAction * createSeparator();
