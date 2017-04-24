@@ -587,7 +587,7 @@ Rectangle {
     Layout.maximumWidth: 960
     height: parent.height
 
-    color: "#2e2e2e"
+    color: infoBackgroundColor
 
     visible: showInfo
 
