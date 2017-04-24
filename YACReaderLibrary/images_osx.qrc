@@ -15,6 +15,8 @@
         <file alias="images/main_toolbar/flow@2x.png">../images/main_toolbar/flow_osx@2x.png</file>
         <file alias="images/main_toolbar/grid.png">../images/main_toolbar/grid_osx.png</file>
         <file alias="images/main_toolbar/grid@2x.png">../images/main_toolbar/grid_osx@2x.png</file>
+        <file alias="images/main_toolbar/info.png">../images/main_toolbar/info_osx.png</file>
+        <file alias="images/main_toolbar/info@2x.png">../images/main_toolbar/info_osx@2x.png</file>
         <file alias="images/empty_folder.png">../images/empty_folder_osx.png</file>
         <file alias="images/empty_search.png">../images/empty_search_osx.png</file>
         <file>../images/iconSearch.png</file>
