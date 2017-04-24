@@ -26,7 +26,7 @@ Item {
     ColorOverlay {
         anchors.fill: favorites_button_compact
         source: favorites_button_compact
-        color: active ? "#e84852" : "#1c1c1c"
+        color: active ? favCheckedColor : favUncheckedColor
     }
 }
 
