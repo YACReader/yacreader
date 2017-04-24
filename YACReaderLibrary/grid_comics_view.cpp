@@ -54,7 +54,7 @@ GridComicsView::GridComicsView(QWidget *parent) :
 
     LibraryUITheme theme;
     #ifdef Q_OS_MAC
-    theme = Light
+    theme = Light;
     #else
     theme = Dark;
     #endif
