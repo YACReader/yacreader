@@ -17,6 +17,7 @@ DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY
 QMAKE_MAC_SDK = macosx10.12
 #load default build flags
 include (../config.pri)
+include (../dependencies/pdf_backend.pri)
 
 CONFIG(legacy_gl_widget) {
     INCLUDEPATH += ../common/gl_legacy \
@@ -28,30 +29,13 @@ CONFIG(legacy_gl_widget) {
 win32 {
     CONFIG(force_angle) {
         message("using ANGLE")
-        LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
+        LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
         #linking extra libs are necesary for a successful compilation, a better approach should be
         #to remove any OpenGL (desktop) dependencies
         #the OpenGL stuff should be migrated to OpenGL ES
         DEFINES += FORCE_ANGLE
     } else {
-        LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
-    }
-
-    !CONFIG(no_pdf) {
-        !CONFIG(pdfium) {
-            LIBS += -lpoppler-qt5
-            INCLUDEPATH += ../dependencies/poppler/include/qt5
-	    } else {
-	    DEFINES += "USE_PDFIUM"
-	    contains(QMAKE_TARGET.arch, x86_64): {
-	        LIBS += -L$$PWD/../dependencies/pdfium/x64 -lpdfium
-	        } else {
-		LIBS += -L$$PWD/../dependencies/pdfium/x86 -lpdfium
-	    } 
-	    INCLUDEPATH += ../dependencies/pdfium/public
-	    }
-    } else {
-        DEFINES += "NO_PDF"
+        LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
     }
     
     QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
@@ -60,27 +44,9 @@ win32 {
 }
 
 unix:!macx{
-!CONFIG(no_pdf){
-    !CONFIG(pdfium){
-        INCLUDEPATH  += /usr/include/poppler/qt5
-	LIBS         += -L/usr/lib -lpoppler-qt5
-    } else {
-        DEFINES 		+= "USE_PDFIUM"
-        INCLUDEPATH	+= /usr/include/pdfium
-        LIBS          	+= -L/usr/lib/pdfium -lfreetype
-
-	#static pdfium libraries have to be included *before* dynamic libraries
-        #LIBS          	+= -L/usr/lib/pdfium -Wl,--start-group -lpdfium -lfpdfapi -lfxge -lfpdfdoc \
-	#				-lfxcrt -lfx_agg -lfxcodec -lfx_lpng -lfx_libopenjpeg -lfx_lcms2 -ljpeg \
-	#				-lfx_zlib -lfdrm -lfxedit -lformfiller -lpdfwindow -lpdfium -lbigint -ljavascript \
-	#				-lfxedit -Wl,--end-group -lfreetype
-    }
-} else {
-    DEFINES += "NO_PDF"
-}
 
 !CONFIG(no_opengl) {
-	LIBS	     += -lGLU
+	LIBS += -lGLU
 	}
 }
 
@@ -96,16 +62,8 @@ macx{
 #}
 #QT += macextras
 
-!CONFIG(no_pdf){
-    #TODO:support for pdfium on mac
-    DEFINES += "USE_PDFKIT"
-} else {
-    DEFINES += "NO_PDF"
-}
-
 LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 
-OBJECTIVE_SOURCES += $$PWD/../common/pdf_comic.mm
 CONFIG += objective_c
 QT += macextras gui-private
 }
@@ -260,11 +218,6 @@ SOURCES += comic_flow.cpp \
 		info_comics_view.cpp \
 		yacreader_comics_selection_helper.cpp \
 		yacreader_comic_info_helper.cpp
-
-CONFIG(pdfium) {
-	SOURCES += 	../common/pdf_comic.cpp
-	}
-
 
 !CONFIG(no_opengl) {
     CONFIG(legacy_gl_widget) {

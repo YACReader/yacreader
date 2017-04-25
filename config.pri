@@ -26,15 +26,21 @@ CONFIG(no_opengl) {
 
 !CONFIG(unarr):!CONFIG(7zip) {
 	unix {
-		!macx {
-				CONFIG+=unarr
-			}
-		else {
-				CONFIG+=7zip
-			}
-	
+		CONFIG += unarr
 		}
 	win32 {
-			CONFIG+=7zip
-		  }
+		CONFIG += 7zip
+		}
+}
+
+win32:!CONFIG(poppler):!CONFIG(pdfium) {
+	CONFIG += poppler
+}
+
+unix:!macx:!CONFIG(poppler):!CONFIG(pdfium) {
+	CONFIG += poppler
+}
+
+macx:!CONFIG(pdfkit):!CONFIG(pdfium) {
+	CONFIG += pdfium
 }

@@ -1,5 +1,6 @@
 COMPILATION GUIDE FOR LINUX/UNIX USERS
-**********************************
+**************************************
+
 YACReader and YACReaderLibrary are build using qmake. To build and install the program, run:
 
 qmake-qt5 CONFIG+=[Options]
@@ -8,15 +9,12 @@ make install
 
 from the source dir. For seperate builds of YACReader or YACReaderLibrary, enter their respective subfolders and run the commands from there.
 
-For the headless version of YACReaderLibrary enter the YACReaderLibrary folder and run:
-
-qmake-qt5 YACReaderLibraryServer.pro
-
-This will select the build config for the headless version instead of the gui version. You can then continue the build as described above.
+The headless version of YACReaderLibrary is located in the YACReaderLibraryServer folder. To build it, enter the folder and run the steps as
+described above.
 
 
 Dependencies:
------------------------
+-------------
 
 - Qt >= 5.3 with the following modules:
 	- declarative
@@ -29,8 +27,8 @@ Dependencies:
 	- sql-sqlite
 	- network
 	
-- poppler-qt5
-- qrencode
+- a pdf rendering backend, poppler-qt5 or pdfium (optional, see below)
+- qrencode (optional)
 - sqllite
 - glu
 - a decompression backend, either 7zip or unarr (see below)
@@ -40,7 +38,7 @@ silently fail and only show a white page if the proper qml modules (declarative,
 
 
 Decompression backend:
---------------------------------------
+----------------------
 
 YACReader supports two decompression backends:
 
@@ -59,12 +57,31 @@ If you chose to build YACReader with p7zip as a backend on Linux/Unix, please ta
 - p7zip 9.20.1 has known bugs that are fixed only in the later versions
 - a system update that replaces p7zip 9.20.1 with a later version will make YACReader unusable
 
-If your system already ships with p7zip > 9.20.1 you can place 7z.so and the Codecs folder with the Rar29.so from p7zip 9.20.1 in /usr/lib/yacreader 
+If your system already ships with p7zip > 9.20.1 you can place 7z.so and the Codecs folder with the Rar29.so file from p7zip 9.20.1 in /usr/lib/yacreader 
 YACReader will check this folder first and can thus continue using 7zip as a backend with p7zip > 9.20.1 installed on your system.
 
 
+Pdf backend:
+------------
+
+Starting with version 8.6.0 YACReader supports the following pdf render backends:
+
+- poppler (Linux default)
+- pdfium
+- pdfkit (macOS only, macOS default)
+- no_pdf (disables pdf support)
+
+To select one of them just add CONFIG+=[backend] when running qmake.
+
+While the Poppler backend is well-tested and has been the standard for YACReader for a long time, its performance is a bit lacking. 
+Pdfium, the pdf render engine developed by Google's Chromium project and used in the
+ Chrome browser, offers much better performance (about 10x as fast on some pdf files we tested). 
+However, at the time of this writing, it isn't easily available as an installable package and a bit challenging to build. 
+If you are interested in using this backend, you can find further informations on how to proceed in the dependencies subfolder.
+
+
 Other build options:
-------------------------------
+--------------------
 
 You can adjust the installation prefix as well als the path make install uses to install the files.
 Use "qmake PREFIX=DIR" to configure YACReader for your systems default prefix (for example "/", "/usr", "/usr/local").
@@ -83,15 +100,12 @@ qmake-qt5 CONFIG+=no_opengl
 This will remove any dependency on desktop OpenGL and hardlock YACReader's coverflow to software rendering. Please note that it 
 doesn't actually remove OpenGL from the build, the Qt toolkit will still make use of it.
 
-Pdf support can be disabled by using the no_pdf option:
-
-qmake-qt5 CONFIG+=no_pdf
-
-This also removes the need for the poppler-qt5 library to be installed.
-
 
 DO YOU WANT TO HELP YACREADER?
 ******************************
+
 If you're compiling YACReader because there is no package available for your Linux distribution please consider creating and submitting a package.
-While we do provide packages for .deb based distributions aus well as an AUR package for Archlinux we are in need of packagers especially for RPM based
+While we do provide packages for .deb based distributions as well as an AUR package for Archlinux we are in need of packagers especially for RPM based
 distributions. If you are interested, please contact selmf on the YACReader forums or write an email to info@yacreader.com
+
+If you have already created a package for your Linux distribution please let us know so whe can add it to our downloads list ;)
