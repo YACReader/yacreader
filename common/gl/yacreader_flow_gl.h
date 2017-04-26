@@ -16,7 +16,7 @@
 #include "scroll_management.h"
 
 class ImageLoaderGL;
-class QGLContext;
+//class QGLContext;
 class WidgetLoader;
 class ImageLoaderByteArrayGL;
 

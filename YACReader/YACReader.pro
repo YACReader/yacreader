@@ -90,9 +90,9 @@ unix:!macx{
         DEFINES += "NO_PDF"
     }
 
-!CONFIG(no_opengl) {
-        LIBS += -lGLU
-}
+#!CONFIG(no_opengl) {
+#        LIBS += -lGLU
+#}
 
 }
 
