@@ -506,33 +506,33 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 	//first triangle!
 	
 	//down left edge
-	glColor4f(LDOWN*opacity,LDOWN*opacity,LDOWN*opacity,1);
+	glColor3f(LDOWN*opacity,LDOWN*opacity,LDOWN*opacity);
 	glTexCoord2f(0.0f, 1.0f);
 	glVertex3f(w/2.f*-1.f, -0.5f, 0.f);
 
 	//down right edge
-	glColor4f(RDOWN*opacity,RDOWN*opacity,RDOWN*opacity,1);
+	glColor3f(RDOWN*opacity,RDOWN*opacity,RDOWN*opacity);
 	glTexCoord2f(1.0f, 1.0f);
 	glVertex3f(w/2.f, -0.5f, 0.f);
 
-	//upper right edge
-	glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
+	//upper right edgeb
+	glColor3f(RUP*opacity,RUP*opacity,RUP*opacity);
 	glTexCoord2f(1.0f, 0.0f);
 	glVertex3f(w/2.f, -0.5f+h, 0.f);
 	
 	//second triangle!
 	//down left edge
-	glColor4f(LDOWN*opacity,LDOWN*opacity,LDOWN*opacity,1);
+	glColor3f(LDOWN*opacity,LDOWN*opacity,LDOWN*opacity);
 	glTexCoord2f(0.0f, 1.0f);
 	glVertex3f(w/2.f*-1.f, -0.5f, 0.f);
 
 	//upper right edge
-	glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
+	glColor3f(RUP*opacity,RUP*opacity,RUP*opacity);
 	glTexCoord2f(1.0f, 0.0f);
 	glVertex3f(w/2.f, -0.5f+h, 0.f);
 
 	//upper left edge
-	glColor4f(LUP*opacity,LUP*opacity,LUP*opacity,1);
+	glColor3f(LUP*opacity,LUP*opacity,LUP*opacity);
 	glTexCoord2f(0.0f, 0.0f);
 	glVertex3f(w/2.f*-1.f, -0.5f+h, 0.f);
 
@@ -544,33 +544,33 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 	glBegin(GL_TRIANGLES);
 
 	//down left edge
-    glColor4f(LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,1);
+    glColor3f(LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2);
 	glTexCoord2f(0.0f, 0.0f);
 	glVertex3f(w/2.f*-1.f, -0.5f-h, 0.f);
 
 	//down right edge
-    glColor4f(RUP*opacity*reflectionUp/2,RUP*opacity*reflectionUp/2,RUP*opacity*reflectionUp/2,1);
+    glColor3f(RUP*opacity*reflectionUp/2,RUP*opacity*reflectionUp/2,RUP*opacity*reflectionUp/2);
 	glTexCoord2f(1.0f, 0.0f);
 	glVertex3f(w/2.f, -0.5f-h, 0.f);
 
 	//upper right edge
-    glColor4f(RDOWN*opacity/3,RDOWN*opacity/3,RDOWN*opacity/3,1);
+    glColor3f(RDOWN*opacity/3,RDOWN*opacity/3,RDOWN*opacity/3);
 	glTexCoord2f(1.0f, 1.0f);
 	glVertex3f(w/2.f, -0.5f, 0.f);
 
 	//second triangle!
 	//down left edge
-    glColor4f(LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,1);
+    glColor3f(LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2);
 	glTexCoord2f(0.0f, 0.0f);
 	glVertex3f(w/2.f*-1.f, -0.5f-h, 0.f);
 
 	//upper right edge
-    glColor4f(RDOWN*opacity/3,RDOWN*opacity/3,RDOWN*opacity/3,1);
+    glColor3f(RDOWN*opacity/3,RDOWN*opacity/3,RDOWN*opacity/3);
 	glTexCoord2f(1.0f, 1.0f);
 	glVertex3f(w/2.f, -0.5f, 0.f);
 
 	//upper left edge
-    glColor4f(LDOWN*opacity/3,LDOWN*opacity/3,LDOWN*opacity/3,1);
+    glColor3f(LDOWN*opacity/3,LDOWN*opacity/3,LDOWN*opacity/3);
 	glTexCoord2f(0.0f, 1.0f);
 	glVertex3f(w/2.f*-1.f, -0.5f, 0.f);
 
@@ -591,32 +591,32 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 		glBegin(GL_TRIANGLES);
 
 		//down left edge
-		glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
+		glColor3f(RUP*opacity,RUP*opacity,RUP*opacity);
 		glTexCoord2f(0.0f, 1.0f);
         glVertex3f(w/2.f-0.2, -0.688f+h, 0.001f);
 
 		//down right edge
-		glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
+		glColor3f(RUP*opacity,RUP*opacity,RUP*opacity);
 		glTexCoord2f(1.0f, 1.0f);
         glVertex3f(w/2.f-0.05, -0.688f+h, 0.001f);
 
 		//upper right edge
-		glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
+		glColor3f(RUP*opacity,RUP*opacity,RUP*opacity);
 		glTexCoord2f(1.0f, 0.0f);
         glVertex3f(w/2.f-0.05, -0.488f+h, 0.001f);
 		
 		//down left edge
-		glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
+		glColor3f(RUP*opacity,RUP*opacity,RUP*opacity);
 		glTexCoord2f(0.0f, 1.0f);
         glVertex3f(w/2.f-0.2, -0.688f+h, 0.001f);
 		
 		//upper right edge
-		glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
+		glColor3f(RUP*opacity,RUP*opacity,RUP*opacity);
 		glTexCoord2f(1.0f, 0.0f);
         glVertex3f(w/2.f-0.05, -0.488f+h, 0.001f);
 		
 		//upper left edge
-		glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
+		glColor3f(RUP*opacity,RUP*opacity,RUP*opacity);
 		glTexCoord2f(0.0f, 0.0f);
         glVertex3f(w/2.f-0.2, -0.488f+h, 0.001f);
 
