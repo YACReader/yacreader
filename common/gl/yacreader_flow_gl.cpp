@@ -467,19 +467,28 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 
 	//fadeout 
     float opacity = 1-1/(config.animationFadeOutDist+config.viewRotateLightStrenght*fabs(viewRotate))*fabs(0-image.current.x);
-
+	
+	QMatrix4x4 matrix;
+	matrix.translate(config.cfX,config.cfY,config.cfZ);
+	matrix.rotate(config.cfRX,1,0,0);
+	matrix.rotate(viewRotate*config.viewAngle+config.cfRY,0,1,0);
+	matrix.rotate(config.cfRZ,0,0,1);
+	matrix.translate(image.current.x, image.current.y, image.current.z);
+	matrix.rotate(image.current.rot,0,1,0);
+	glLoadMatrixf(matrix.data());
+	
+	/*
 	glLoadIdentity();
 	glTranslatef(config.cfX,config.cfY,config.cfZ);
 	glRotatef(config.cfRX,1,0,0);
 	glRotatef(viewRotate*config.viewAngle+config.cfRY,0,1,0);
 	glRotatef(config.cfRZ,0,0,1);
-
     glTranslatef( image.current.x, image.current.y, image.current.z );
 
 	glPushMatrix();
-    glRotatef(image.current.rot,0,1,0);
-
-	glEnable(GL_TEXTURE_2D);
+    glRotatef(image.current.rot,0,1,0);//????
+	*/
+	glEnable(GL_TEXTURE_2D); //???
     image.texture->bind();
 
 	//calculate shading
@@ -582,7 +591,7 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 	}
 
 	
-	glPopMatrix();
+	//glPopMatrix();
 }
 
 /*Public*/
@@ -931,10 +940,10 @@ void YACReaderFlowGL::setZoom(int zoom)
 	
 	QMatrix4x4 matrix;
 	matrix.perspective(zoom, (float) width/ (float)height, 1.0, 200.0);
-	glLoadMatrixf(matrix.constData());
+	glLoadMatrixf(matrix.data());
 	
 	
-	//glOrtho(-sideX, sideX, -sideY+0.2, +sideY+0.2, 4, 11.0);
+	//(-sideX, sideX, -sideY+0.2, +sideY+0.2, 4, 11.0);
 
 	glMatrixMode(GL_MODELVIEW);
 
