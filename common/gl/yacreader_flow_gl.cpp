@@ -501,24 +501,37 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 
 
 	//DrawCover
-	glBegin(GL_QUADS);
-
-	//esquina inferior izquierda
+	glBegin(GL_TRIANGLES);
+	
+	//first triangle!
+	
+	//down left edge
 	glColor4f(LDOWN*opacity,LDOWN*opacity,LDOWN*opacity,1);
 	glTexCoord2f(0.0f, 1.0f);
 	glVertex3f(w/2.f*-1.f, -0.5f, 0.f);
 
-	//esquina inferior derecha
+	//down right edge
 	glColor4f(RDOWN*opacity,RDOWN*opacity,RDOWN*opacity,1);
 	glTexCoord2f(1.0f, 1.0f);
 	glVertex3f(w/2.f, -0.5f, 0.f);
 
-	//esquina superior derecha
+	//upper right edge
+	glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(w/2.f, -0.5f+h, 0.f);
+	
+	//second triangle!
+	//down left edge
+	glColor4f(LDOWN*opacity,LDOWN*opacity,LDOWN*opacity,1);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(w/2.f*-1.f, -0.5f, 0.f);
+
+	//upper right edge
 	glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
 	glTexCoord2f(1.0f, 0.0f);
 	glVertex3f(w/2.f, -0.5f+h, 0.f);
 
-	//esquina superior izquierda
+	//upper left edge
 	glColor4f(LUP*opacity,LUP*opacity,LUP*opacity,1);
 	glTexCoord2f(0.0f, 0.0f);
 	glVertex3f(w/2.f*-1.f, -0.5f+h, 0.f);
@@ -528,24 +541,35 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 
 
 	//Draw reflection
-	glBegin(GL_QUADS);
+	glBegin(GL_TRIANGLES);
 
-	//esquina inferior izquierda
+	//down left edge
     glColor4f(LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,1);
 	glTexCoord2f(0.0f, 0.0f);
 	glVertex3f(w/2.f*-1.f, -0.5f-h, 0.f);
 
-	//esquina inferior derecha
+	//down right edge
     glColor4f(RUP*opacity*reflectionUp/2,RUP*opacity*reflectionUp/2,RUP*opacity*reflectionUp/2,1);
 	glTexCoord2f(1.0f, 0.0f);
 	glVertex3f(w/2.f, -0.5f-h, 0.f);
 
-	//esquina superior derecha
+	//upper right edge
     glColor4f(RDOWN*opacity/3,RDOWN*opacity/3,RDOWN*opacity/3,1);
 	glTexCoord2f(1.0f, 1.0f);
 	glVertex3f(w/2.f, -0.5f, 0.f);
 
-	//esquina superior izquierda
+	//second triangle!
+	//down left edge
+    glColor4f(LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,1);
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(w/2.f*-1.f, -0.5f-h, 0.f);
+
+	//upper right edge
+    glColor4f(RDOWN*opacity/3,RDOWN*opacity/3,RDOWN*opacity/3,1);
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(w/2.f, -0.5f, 0.f);
+
+	//upper left edge
     glColor4f(LDOWN*opacity/3,LDOWN*opacity/3,LDOWN*opacity/3,1);
 	glTexCoord2f(0.0f, 1.0f);
 	glVertex3f(w/2.f*-1.f, -0.5f, 0.f);
@@ -564,24 +588,34 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 		{
             readingTexture->bind();
 		}
-		glBegin(GL_QUADS);
+		glBegin(GL_TRIANGLES);
 
-		//esquina inferior izquierda
+		//down left edge
 		glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
 		glTexCoord2f(0.0f, 1.0f);
         glVertex3f(w/2.f-0.2, -0.688f+h, 0.001f);
 
-		//esquina inferior derecha
+		//down right edge
 		glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
 		glTexCoord2f(1.0f, 1.0f);
         glVertex3f(w/2.f-0.05, -0.688f+h, 0.001f);
 
-		//esquina superior derecha
+		//upper right edge
 		glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
 		glTexCoord2f(1.0f, 0.0f);
         glVertex3f(w/2.f-0.05, -0.488f+h, 0.001f);
-
-		//esquina superior izquierda
+		
+		//down left edge
+		glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
+		glTexCoord2f(0.0f, 1.0f);
+        glVertex3f(w/2.f-0.2, -0.688f+h, 0.001f);
+		
+		//upper right edge
+		glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
+		glTexCoord2f(1.0f, 0.0f);
+        glVertex3f(w/2.f-0.05, -0.488f+h, 0.001f);
+		
+		//upper left edge
 		glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
 		glTexCoord2f(0.0f, 0.0f);
         glVertex3f(w/2.f-0.2, -0.488f+h, 0.001f);
