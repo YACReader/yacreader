@@ -10,6 +10,7 @@
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QOpenGLTexture>
+#include <QOpenGLBuffer>
 #include <QtWidgets>
 
 #include "pictureflow.h" //TODO mover los tipos de flow de sitio
@@ -131,6 +132,11 @@ protected:
     QOpenGLTexture * defaultTexture;
     QOpenGLTexture * markTexture;
     QOpenGLTexture * readingTexture;
+    
+    QOpenGLBuffer * v_buffer;
+    QOpenGLBuffer * t_buffer;
+    QOpenGLBuffer * c_buffer;
+    
 	void initializeGL();
 	void paintGL();
 	void timerEvent(QTimerEvent *);

@@ -4,6 +4,7 @@
 #include <QtOpenGL>
 #include <QMatrix4x4>
 #include <QVector3D>
+
 //#include <math.h>
 
 #include <cmath>
@@ -293,7 +294,29 @@ void YACReaderFlowGL::initializeGL()
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
+	
+	v_buffer = new QOpenGLBuffer();
+	t_buffer = new QOpenGLBuffer();
+	c_buffer = new QOpenGLBuffer();
+	
+	v_buffer->create();
+	v_buffer->bind();
+	glVertexPointer(3, GL_FLOAT, 0, NULL);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	v_buffer->release();
+	
+	t_buffer->create();
+	t_buffer->bind();
+	glTexCoordPointer(2, GL_SHORT, 0, NULL);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	t_buffer->release();
+	
+	c_buffer->create();
+	c_buffer->bind();
+	glColorPointer(3, GL_FLOAT, 0, NULL);
+	glEnableClientState(GL_COLOR_ARRAY);
+	c_buffer->release();
+	
     defaultTexture = new QOpenGLTexture(QImage(":/images/defaultCover.png"));
     defaultTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::LinearMipMapLinear);
 #ifdef YACREADER_LIBRARY
@@ -303,7 +326,7 @@ void YACReaderFlowGL::initializeGL()
     readingTexture = new QOpenGLTexture(QImage(":/images/readingRibbon.png"));
     readingTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::LinearMipMapLinear);
 #endif
-    if(lazyPopulateObjects!=-1)
+    if (lazyPopulateObjects!=-1)
     {
 		populate(lazyPopulateObjects);
 	}
@@ -477,18 +500,7 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 	matrix.rotate(image.current.rot,0,1,0);
 	glLoadMatrixf(matrix.data());
 	
-	/*
-	glLoadIdentity();
-	glTranslatef(config.cfX,config.cfY,config.cfZ);
-	glRotatef(config.cfRX,1,0,0);
-	glRotatef(viewRotate*config.viewAngle+config.cfRY,0,1,0);
-	glRotatef(config.cfRZ,0,0,1);
-    glTranslatef( image.current.x, image.current.y, image.current.z );
-
-	glPushMatrix();
-    glRotatef(image.current.rot,0,1,0);//????
-	*/
-	glEnable(GL_TEXTURE_2D); //???
+	glEnable(GL_TEXTURE_2D);
     image.texture->bind();
 
 	//calculate shading
@@ -497,89 +509,89 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 	float LUP = shadingTop+(1-shadingTop)*LShading;
 	float LDOWN = shadingBottom+(1-shadingBottom)*LShading;
 	float RUP =  shadingTop+(1-shadingTop)*RShading;
-	float RDOWN =  shadingBottom+(1-shadingBottom)*RShading;;
+	float RDOWN =  shadingBottom+(1-shadingBottom)*RShading;
 
-
-	//DrawCover
-	glBegin(GL_TRIANGLES);
+	//vertices and coordinates
 	
-	//first triangle!
+	float cover[] = {w/2.f*-1.f, -0.5f, 0.f,
+					w/2.f, -0.5f, 0.f,
+					w/2.f, -0.5f+h, 0.f,
+					w/2.f*-1.f, -0.5f, 0.f,
+					w/2.f, -0.5f+h, 0.f,
+					w/2.f*-1.f, -0.5f+h, 0.f};
 	
-	//down left edge
-	glColor3f(LDOWN*opacity,LDOWN*opacity,LDOWN*opacity);
-	glTexCoord2f(0.0f, 1.0f);
-	glVertex3f(w/2.f*-1.f, -0.5f, 0.f);
-
-	//down right edge
-	glColor3f(RDOWN*opacity,RDOWN*opacity,RDOWN*opacity);
-	glTexCoord2f(1.0f, 1.0f);
-	glVertex3f(w/2.f, -0.5f, 0.f);
-
-	//upper right edgeb
-	glColor3f(RUP*opacity,RUP*opacity,RUP*opacity);
-	glTexCoord2f(1.0f, 0.0f);
-	glVertex3f(w/2.f, -0.5f+h, 0.f);
+	float rcover[] = {w/2.f*-1.f, -0.5f-h, 0.f,
+						w/2.f, -0.5f-h, 0.f,
+						w/2.f, -0.5f, 0.f,
+						w/2.f*-1.f, -0.5f-h, 0.f,
+						w/2.f, -0.5f, 0.f,
+						w/2.f*-1.f, -0.5f, 0.f};
 	
-	//second triangle!
-	//down left edge
-	glColor3f(LDOWN*opacity,LDOWN*opacity,LDOWN*opacity);
-	glTexCoord2f(0.0f, 1.0f);
-	glVertex3f(w/2.f*-1.f, -0.5f, 0.f);
-
-	//upper right edge
-	glColor3f(RUP*opacity,RUP*opacity,RUP*opacity);
-	glTexCoord2f(1.0f, 0.0f);
-	glVertex3f(w/2.f, -0.5f+h, 0.f);
-
-	//upper left edge
-	glColor3f(LUP*opacity,LUP*opacity,LUP*opacity);
-	glTexCoord2f(0.0f, 0.0f);
-	glVertex3f(w/2.f*-1.f, -0.5f+h, 0.f);
-
-	glEnd();
-
-
-
-	//Draw reflection
-	glBegin(GL_TRIANGLES);
-
-	//down left edge
-    glColor3f(LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2);
-	glTexCoord2f(0.0f, 0.0f);
-	glVertex3f(w/2.f*-1.f, -0.5f-h, 0.f);
-
-	//down right edge
-    glColor3f(RUP*opacity*reflectionUp/2,RUP*opacity*reflectionUp/2,RUP*opacity*reflectionUp/2);
-	glTexCoord2f(1.0f, 0.0f);
-	glVertex3f(w/2.f, -0.5f-h, 0.f);
-
-	//upper right edge
-    glColor3f(RDOWN*opacity/3,RDOWN*opacity/3,RDOWN*opacity/3);
-	glTexCoord2f(1.0f, 1.0f);
-	glVertex3f(w/2.f, -0.5f, 0.f);
-
-	//second triangle!
-	//down left edge
-    glColor3f(LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2);
-	glTexCoord2f(0.0f, 0.0f);
-	glVertex3f(w/2.f*-1.f, -0.5f-h, 0.f);
-
-	//upper right edge
-    glColor3f(RDOWN*opacity/3,RDOWN*opacity/3,RDOWN*opacity/3);
-	glTexCoord2f(1.0f, 1.0f);
-	glVertex3f(w/2.f, -0.5f, 0.f);
-
-	//upper left edge
-    glColor3f(LDOWN*opacity/3,LDOWN*opacity/3,LDOWN*opacity/3);
-	glTexCoord2f(0.0f, 1.0f);
-	glVertex3f(w/2.f*-1.f, -0.5f, 0.f);
-
-	glEnd();
-	glDisable(GL_TEXTURE_2D);
+	const short cover_t[] = {0, 1,
+							1, 1,
+							1, 0,
+							0, 1,
+							1, 0,
+							0, 0};
+		
+	const short rcover_t[] = {0, 0,
+							1, 0,
+							1, 1,
+							0, 0,
+							1, 1,
+							0, 1};
 	
+	float cover_c[] = {LDOWN*opacity,LDOWN*opacity,LDOWN*opacity,
+						RDOWN*opacity,RDOWN*opacity,RDOWN*opacity,
+						RUP*opacity,RUP*opacity,RUP*opacity,
+						LDOWN*opacity,LDOWN*opacity,LDOWN*opacity,
+						RUP*opacity,RUP*opacity,RUP*opacity,
+						LUP*opacity,LUP*opacity,LUP*opacity};
+						
+						
+	float rcover_c[] = {LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,
+						RUP*opacity*reflectionUp/2,RUP*opacity*reflectionUp/2,RUP*opacity*reflectionUp/2,
+						RDOWN*opacity/3,RDOWN*opacity/3,RDOWN*opacity/3,
+						LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,
+						RDOWN*opacity/3,RDOWN*opacity/3,RDOWN*opacity/3,
+						LDOWN*opacity/3,LDOWN*opacity/3,LDOWN*opacity/3};
+	
+	//vertex buffer
+	v_buffer->bind();
+	v_buffer->allocate(cover, sizeof(cover));
+	v_buffer->release();
+	
+	//texture buffer
+	t_buffer->bind();
+	t_buffer->allocate(cover_t, sizeof(cover_t));
+	t_buffer->release();
+	
+	//color buffer
+	c_buffer->bind();
+	c_buffer->allocate(cover_c, sizeof(cover_c));
+	c_buffer->release();
+	
+	//draw cover
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	
+	v_buffer->bind();
+	v_buffer->write(0, rcover, sizeof(rcover));
+	v_buffer->release();
+	
+	t_buffer->bind();
+	t_buffer->write(0, rcover_t, sizeof(rcover_t));
+	t_buffer->release();
+
+	c_buffer->bind();
+	c_buffer->write(0, rcover_c, sizeof(rcover_c));
+	c_buffer->release();
+
+	//draw reflection
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+		
     if (showMarks && loaded[image.index] && marks[image.index] != Unread)
 	{
-		glEnable(GL_TEXTURE_2D);
+		//glEnable(GL_TEXTURE_2D);
         if (marks[image.index] == Read)
         {
             markTexture->bind();
@@ -588,44 +600,45 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 		{
             readingTexture->bind();
 		}
-		glBegin(GL_TRIANGLES);
-
-		//down left edge
-		glColor3f(RUP*opacity,RUP*opacity,RUP*opacity);
-		glTexCoord2f(0.0f, 1.0f);
-        glVertex3f(w/2.f-0.2, -0.688f+h, 0.001f);
-
-		//down right edge
-		glColor3f(RUP*opacity,RUP*opacity,RUP*opacity);
-		glTexCoord2f(1.0f, 1.0f);
-        glVertex3f(w/2.f-0.05, -0.688f+h, 0.001f);
-
-		//upper right edge
-		glColor3f(RUP*opacity,RUP*opacity,RUP*opacity);
-		glTexCoord2f(1.0f, 0.0f);
-        glVertex3f(w/2.f-0.05, -0.488f+h, 0.001f);
 		
-		//down left edge
-		glColor3f(RUP*opacity,RUP*opacity,RUP*opacity);
-		glTexCoord2f(0.0f, 1.0f);
-        glVertex3f(w/2.f-0.2, -0.688f+h, 0.001f);
-		
-		//upper right edge
-		glColor3f(RUP*opacity,RUP*opacity,RUP*opacity);
-		glTexCoord2f(1.0f, 0.0f);
-        glVertex3f(w/2.f-0.05, -0.488f+h, 0.001f);
-		
-		//upper left edge
-		glColor3f(RUP*opacity,RUP*opacity,RUP*opacity);
-		glTexCoord2f(0.0f, 0.0f);
-        glVertex3f(w/2.f-0.2, -0.488f+h, 0.001f);
+		float mark[] = {w/2.f-0.2f, -0.688f+h, 0.001f,
+						w/2.f-0.05f, -0.688f+h, 0.001f,
+						w/2.f-0.05f, -0.488f+h, 0.001f,
+						w/2.f-0.2f, -0.688f+h, 0.001f,
+						w/2.f-0.05f, -0.488f+h, 0.001f,
+						w/2.f-0.2f, -0.488f+h, 0.001f};
+						
+		short mark_t[] = {0, 1,
+							1, 1,
+							1, 0,
+							0, 1,
+							1, 0,
+							0, 0};
+								
+			
+		float mark_c[] = {RUP*opacity,RUP*opacity,RUP*opacity,
+							RUP*opacity,RUP*opacity,RUP*opacity,
+							RUP*opacity,RUP*opacity,RUP*opacity,
+							RUP*opacity,RUP*opacity,RUP*opacity,
+							RUP*opacity,RUP*opacity,RUP*opacity,
+							RUP*opacity,RUP*opacity,RUP*opacity};
+			
+		v_buffer->bind();
+		v_buffer->write(0, mark, sizeof(mark));
+		v_buffer->release();
+	
+		t_buffer->bind();
+		t_buffer->write(0, mark_t, sizeof(mark_t));
+		t_buffer->release();
 
-		glEnd();
+		c_buffer->bind();
+		c_buffer->write(0, mark_c, sizeof(mark_c));
+		c_buffer->release();
+
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glDisable(GL_TEXTURE_2D);
 	}
-
 	
-	//glPopMatrix();
 }
 
 /*Public*/
@@ -1235,10 +1248,8 @@ void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 		GLint viewport[4];
 		QMatrix4x4 modelview;
 		QMatrix4x4 projection;
-		//GLdouble modelview[16];
-		//GLdouble projection[16];
+
 		GLfloat winX, winY, winZ;
-		//GLdouble posX, posY, posZ;
 
 		glGetFloatv( GL_MODELVIEW_MATRIX, modelview.data() );
 		glGetFloatv( GL_PROJECTION_MATRIX, projection.data() );
@@ -1246,7 +1257,7 @@ void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 
 		winX = (float)x;
 		winY = (float)viewport[3] - (float)y;
-
+		
         glReadPixels(winX, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
 	
 		//needs Qt 5.5!
@@ -1284,11 +1295,8 @@ void YACReaderFlowGL::mouseDoubleClickEvent(QMouseEvent* event)
     GLint viewport[4];
     QMatrix4x4 modelview;
     QMatrix4x4 projection;
-	
-    //GLdouble modelview[16];
-    //GLdouble projection[16];
+	  
     GLfloat winX, winY, winZ;
-    //GLdouble posX, posY, posZ;
 
     glGetFloatv( GL_MODELVIEW_MATRIX, modelview.data() );
     glGetFloatv( GL_PROJECTION_MATRIX, projection.data() );
@@ -1482,6 +1490,11 @@ YACReaderPageFlowGL::~YACReaderPageFlowGL()
     {
         delete(images[i].texture);
     }
+    
+    delete v_buffer;
+    delete t_buffer;
+    delete c_buffer;
+    
 }
 
 //////////////////////////////////////////////////////////////////////////
