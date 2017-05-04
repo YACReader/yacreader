@@ -290,10 +290,10 @@ QSize YACReaderFlowGL::minimumSizeHint() const
 
 void YACReaderFlowGL::initializeGL()
 {
-    glShadeModel(GL_SMOOTH);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//use a vertex array object to safe all OpenGL settings
+	vao = new QOpenGLVertexArrayObject();
+	vao->create();
+	vao->bind();
 	
 	v_buffer = new QOpenGLBuffer();
 	t_buffer = new QOpenGLBuffer();
@@ -330,8 +330,20 @@ void YACReaderFlowGL::initializeGL()
     {
 		populate(lazyPopulateObjects);
 	}
+	
+	//fixed function shader setup
+	glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_COLOR_MATERIAL);
+    glEnable(GL_BLEND);
+    glEnable(GL_MULTISAMPLE);
+	glEnable(GL_TEXTURE_2D);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glClearColor(0,0,0,1);
 
 	hasBeenInitialized = true;
+	vao->release();
 }
 
 void YACReaderFlowGL::paintGL()
@@ -340,16 +352,9 @@ void YACReaderFlowGL::paintGL()
     painter.begin(this);
 
     painter.beginNativePainting();
-
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_COLOR_MATERIAL);
-    glEnable(GL_BLEND);
-    glEnable(GL_MULTISAMPLE);
-
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    glClearColor(0,0,0,1);
+	
+	vao->bind();
+    
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if (numObjects>0)
@@ -359,12 +364,8 @@ void YACReaderFlowGL::paintGL()
         draw();
     }
 
-    glDisable(GL_MULTISAMPLE);
-    glDisable(GL_BLEND);
-    glDisable(GL_COLOR_MATERIAL);
-    glDisable(GL_CULL_FACE);
-    glDisable(GL_DEPTH_TEST);
-
+	vao->release();
+	
     painter.endNativePainting();
 
     QFont font = painter.font() ;
@@ -380,6 +381,7 @@ void YACReaderFlowGL::paintGL()
 
 void YACReaderFlowGL::resizeGL(int width, int height)
 {
+	vao->bind();
     float pixelRatio = devicePixelRatio();
     fontSize = (width + height) * 0.010 * pixelRatio;
 	if(fontSize < 10)
@@ -391,6 +393,7 @@ void YACReaderFlowGL::resizeGL(int width, int height)
 
 	if(numObjects>0)
 		updatePositions();
+	vao->release();
 }
 
 void YACReaderFlowGL::udpatePerspective(int width, int height)
@@ -500,7 +503,6 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 	matrix.rotate(image.current.rot,0,1,0);
 	glLoadMatrixf(matrix.data());
 	
-	glEnable(GL_TEXTURE_2D);
     image.texture->bind();
 
 	//calculate shading
@@ -591,7 +593,6 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 		
     if (showMarks && loaded[image.index] && marks[image.index] != Unread)
 	{
-		//glEnable(GL_TEXTURE_2D);
         if (marks[image.index] == Read)
         {
             markTexture->bind();
@@ -636,7 +637,6 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 		c_buffer->release();
 
 		glDrawArrays(GL_TRIANGLES, 0, 6);
-		glDisable(GL_TEXTURE_2D);
 	}
 	
 }
