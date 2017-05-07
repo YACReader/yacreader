@@ -9,7 +9,7 @@ import com.yacreader.ComicModel 1.0
 Rectangle {
     id: main
 
-    color: "#2e2e2e"
+    color: infoBackgroundColor
 
     width: parent.width
     height: parent.height
@@ -29,7 +29,7 @@ Rectangle {
 
     Image {
         id: top_shadow
-        source: "info-top-shadow.png"
+        source: topShadow
         width: parent.width
         fillMode: Image.TileHorizontally
     }
@@ -41,14 +41,14 @@ Rectangle {
 
         Image {
             id: indicator
-            source: "info-indicator.png"
+            source: infoIndicator
         }
 
         Image {
             id: bottom_shadow
             x: indicator.width
             width: parent.width - indicator.width
-            source: "info-shadow.png"
+            source: infoShadow
             fillMode: Image.TileHorizontally
         }
     }
@@ -59,7 +59,7 @@ Rectangle {
         y: flow.height + flow.additionalBottomSpace - 6
         height: parent.height - y
 
-        color: "#2e2e2e"
+        color: infoBackgroundColor
 
         ScrollView {
             __wheelAreaScrollSpeed: 75

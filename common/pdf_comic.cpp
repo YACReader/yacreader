@@ -17,7 +17,7 @@ PdfiumComic::~PdfiumComic()
 
 bool PdfiumComic::openComic(const QString & path)
 {
-	doc = FPDF_LoadDocument(path.toStdString().c_str(), NULL);
+    doc = FPDF_LoadDocument(path.toLocal8Bit().constData(), NULL);
 	if (doc)
 	{
 		return true;
