@@ -768,29 +768,27 @@ void Viewer::mouseMoveEvent(QMouseEvent * event)
 	{   
 		if(showGoToFlowAnimation->state()!=QPropertyAnimation::Running)
 		{
-            if(Configuration::getConfiguration().getDisableShowOnMouseOver())
+            if(Configuration::getConfiguration().getDisableShowOnMouseOver() == false)
             {
-                return;
+                if(goToFlow->isVisible())
+                {
+                    QPoint gtfPos = goToFlow->mapFrom(this,event->pos());
+                    if(gtfPos.y() < 0 || gtfPos.x()<0 || gtfPos.x()>goToFlow->width())//TODO this extra check is for Mavericks (mouseMove over goToFlowGL seems to be broken)
+                        animateHideGoToFlow();
+                    //goToFlow->hide();
+                }
+                else
+                {
+                    int umbral = (width()-goToFlow->width())/2;
+                    if((event->y()>height()-15)&&(event->x()>umbral)&&(event->x()<width()-umbral))
+                    {
+
+                        animateShowGoToFlow();
+                        hideCursorTimer->stop();
+                    }
+                }
             }
-
-			if(goToFlow->isVisible())
-			{
-				QPoint gtfPos = goToFlow->mapFrom(this,event->pos());
-				if(gtfPos.y() < 0 || gtfPos.x()<0 || gtfPos.x()>goToFlow->width())//TODO this extra check is for Mavericks (mouseMove over goToFlowGL seems to be broken)
-					animateHideGoToFlow();
-				//goToFlow->hide();
-			}
-			else
-			{   
-				int umbral = (width()-goToFlow->width())/2;
-				if((event->y()>height()-15)&&(event->x()>umbral)&&(event->x()<width()-umbral))
-				{
-
-					animateShowGoToFlow();
-					hideCursorTimer->stop();
-				}
-			}
-		}
+        }
 
 		if(drag)
 		{
