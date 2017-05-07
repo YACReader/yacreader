@@ -1,0 +1,12 @@
+<RCC>
+  <qresource>
+    <file>../files/about.html</file>
+    <file>../files/helpYACReaderLibrary.html</file>
+  </qresource>
+
+  <qresource lang="es_ES">
+    <file alias="/files/about.html">../files/about_es_ES.html</file>
+    <file alias="/files/helpYACReaderLibrary.html">../files/helpYACReaderLibrary_es_ES.html</file>
+  </qresource>
+
+</RCC>
