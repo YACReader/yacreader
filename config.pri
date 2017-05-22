@@ -24,6 +24,7 @@ CONFIG(no_opengl) {
 	DEFINES += NO_OPENGL
 }
 
+#default values for decompression backends
 !CONFIG(unarr):!CONFIG(7zip) {
 	unix {
 		CONFIG += unarr
@@ -33,8 +34,9 @@ CONFIG(no_opengl) {
 		}
 }
 
+#default values for pdf render backend
 win32:!CONFIG(poppler):!CONFIG(pdfium) {
-	CONFIG += poppler
+        CONFIG += pdfium
 }
 
 unix:!macx:!CONFIG(poppler):!CONFIG(pdfium) {
