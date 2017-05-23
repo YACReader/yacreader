@@ -3,6 +3,9 @@
 # #####################################################################
 TEMPLATE = app
 TARGET = YACReader
+
+QMAKE_TARGET_BUNDLE_PREFIX = "com.yacreader"
+
 DEPENDPATH += . \
     release
 
@@ -259,4 +262,4 @@ manpage.files = ../YACReader.1
 
 #remove leftover doc files when 'make clean' is invoked
 QMAKE_CLEAN += "../changelog" "../README"
-}
+}
