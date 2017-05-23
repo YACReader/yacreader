@@ -24,17 +24,25 @@ CONFIG(no_opengl) {
 	DEFINES += NO_OPENGL
 }
 
+#default values for decompression backends
 !CONFIG(unarr):!CONFIG(7zip) {
 	unix {
-		!macx {
-				CONFIG+=unarr
-			}
-		else {
-				CONFIG+=7zip
-			}
-	
+		CONFIG += unarr
 		}
 	win32 {
-			CONFIG+=7zip
-		  }
+		CONFIG += 7zip
+		}
+}
+
+#default values for pdf render backend
+win32:!CONFIG(poppler):!CONFIG(pdfium) {
+        CONFIG += pdfium
+}
+
+unix:!macx:!CONFIG(poppler):!CONFIG(pdfium) {
+	CONFIG += poppler
+}
+
+macx:!CONFIG(pdfkit):!CONFIG(pdfium) {
+	CONFIG += pdfium
 }
