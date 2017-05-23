@@ -4,6 +4,9 @@
 
 TEMPLATE = app
 TARGET = YACReaderLibraryServer
+
+QMAKE_TARGET_BUNDLE_PREFIX = "com.yacreader"
+
 CONFIG += console
 DEPENDPATH += ../YACReaderLibrary
 INCLUDEPATH += ../YACReaderLibrary
@@ -148,4 +151,4 @@ translation.files = ../release/languages/yacreaderlibrary_*
 
 #manpage.path = $$DATADIR/man/man1
 #manpage.files = ../YACReaderLibrary.1
-}
+}

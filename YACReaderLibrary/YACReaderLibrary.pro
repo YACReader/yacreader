@@ -4,6 +4,9 @@
 
 TEMPLATE = app
 TARGET = YACReaderLibrary
+
+QMAKE_TARGET_BUNDLE_PREFIX = "com.yacreader"
+
 DEPENDPATH += .
 INCLUDEPATH += .
 INCLUDEPATH += ../common \
