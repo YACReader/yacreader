@@ -15,7 +15,7 @@ Rectangle {
 
     height: info.height + 2 * topMargin
 
-    property string infoColor: "#b0b0b0"
+    property string infoColor: infoTextColor
     property font infoFont: Qt.font({
 
                                         family: "Arial",
@@ -136,7 +136,7 @@ Rectangle {
 
                     id: title
 
-                    color: "#ffffff"
+                    color: infoTitleColor
                     font.family: "Arial"
                     font.bold: true
                     font.pixelSize: mainContainer.compact ? 18 : 21;
@@ -232,7 +232,7 @@ Rectangle {
                 }
 
                 Text {
-                    id: showInComicVinw
+                    id: showInComicVine
                     font: mainContainer.infoFont
                     color: "#ffcc00"
                     text: "Show in Comic Vine"
@@ -253,7 +253,7 @@ Rectangle {
                 Layout.fillWidth: true
 
                 id: sinopsis
-                color: "white"
+                color: infoTitleColor
                 font.family: "Arial"
                 font.pixelSize: 15
                 wrapMode: Text.WordWrap
@@ -267,7 +267,7 @@ Rectangle {
                 Layout.bottomMargin: 5
 
                 id: authors_title
-                color: "white"
+                color: infoTitleColor
                 font.family: "Arial"
                 font.pixelSize: 18
                 font.bold: true
@@ -290,7 +290,7 @@ Rectangle {
                     model: comicInfo.getWriters().length
                     Column{
                         Text {
-                            color: "white"
+                            color: infoTitleColor
                             font.family: "Arial"
                             font.pixelSize: 15
 
@@ -298,7 +298,7 @@ Rectangle {
                         }
 
                         Text {
-                            color: "#b0b0b0"
+                            color: infoTextColor
                             font.family: "Arial"
                             font.pixelSize: 13
                             font.italic: true
@@ -312,7 +312,7 @@ Rectangle {
                     model: comicInfo.getPencillers().length
                     Column{
                         Text {
-                            color: "white"
+                            color: infoTitleColor
                             font.family: "Arial"
                             font.pixelSize: 15
 
@@ -320,7 +320,7 @@ Rectangle {
                         }
 
                         Text {
-                            color: "#b0b0b0"
+                            color: infoTextColor
                             font.family: "Arial"
                             font.pixelSize: 13
                             font.italic: true
@@ -334,7 +334,7 @@ Rectangle {
                     model: comicInfo.getInkers().length
                     Column{
                         Text {
-                            color: "white"
+                            color: infoTitleColor
                             font.family: "Arial"
                             font.pixelSize: 15
 
@@ -342,7 +342,7 @@ Rectangle {
                         }
 
                         Text {
-                            color: "#b0b0b0"
+                            color: infoTextColor
                             font.family: "Arial"
                             font.pixelSize: 13
                             font.italic: true
@@ -356,7 +356,7 @@ Rectangle {
                     model: comicInfo.getColorists().length
                     Column{
                         Text {
-                            color: "white"
+                            color: infoTitleColor
                             font.family: "Arial"
                             font.pixelSize: 15
 
@@ -364,7 +364,7 @@ Rectangle {
                         }
 
                         Text {
-                            color: "#b0b0b0"
+                            color: infoTextColor
                             font.family: "Arial"
                             font.pixelSize: 13
                             font.italic: true
@@ -378,7 +378,7 @@ Rectangle {
                     model: comicInfo.getLetterers().length
                     Column{
                         Text {
-                            color: "white"
+                            color: infoTitleColor
                             font.family: "Arial"
                             font.pixelSize: 15
 
@@ -386,7 +386,7 @@ Rectangle {
                         }
 
                         Text {
-                            color: "#b0b0b0"
+                            color: infoTextColor
                             font.family: "Arial"
                             font.pixelSize: 13
                             font.italic: true
@@ -400,7 +400,7 @@ Rectangle {
                     model: comicInfo.getCoverArtists().length
                     Column{
                         Text {
-                            color: "white"
+                            color: infoTitleColor
                             font.family: "Arial"
                             font.pixelSize: 15
 
@@ -408,7 +408,7 @@ Rectangle {
                         }
 
                         Text {
-                            color: "#b0b0b0"
+                            color: infoTextColor
                             font.family: "Arial"
                             font.pixelSize: 13
                             font.italic: true
@@ -422,7 +422,7 @@ Rectangle {
                 Layout.topMargin: 25
 
                 id: publisher_title
-                color: "white"
+                color: infoTitleColor
                 font.family: "Arial"
                 font.pixelSize: 18
                 font.bold: true
@@ -439,7 +439,7 @@ Rectangle {
                 Text {
                     id: publisher
 
-                    color: "white"
+                    color: infoTitleColor
                     font.family: "Arial"
                     font.pixelSize: 15
 
@@ -451,7 +451,7 @@ Rectangle {
                 Text {
                     id: format
 
-                    color: "white"
+                    color: infoTitleColor
                     font.family: "Arial"
                     font.pixelSize: 15
 
@@ -463,7 +463,7 @@ Rectangle {
                 Text {
                     id: color
 
-                    color: "white"
+                    color: infoTitleColor
                     font.family: "Arial"
                     font.pixelSize: 15
 
@@ -475,7 +475,7 @@ Rectangle {
                 Text {
                     id: age_rating
 
-                    color: "white"
+                    color: infoTitleColor
                     font.family: "Arial"
                     font.pixelSize: 15
 
@@ -490,7 +490,7 @@ Rectangle {
                 Layout.bottomMargin: 5
 
                 id: characters_title
-                color: "white"
+                color: infoTitleColor
                 font.family: "Arial"
                 font.pixelSize: 18
                 font.bold: true
@@ -508,7 +508,7 @@ Rectangle {
                     model: comicInfo.getCharacters().length
 
                     Text {
-                        color: "white"
+                        color: infoTitleColor
                         font.family: "Arial"
                         font.pixelSize: 15
 

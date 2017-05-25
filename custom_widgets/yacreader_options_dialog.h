@@ -34,6 +34,7 @@ public:
 	YACReaderOptionsDialog(QWidget * parent);
 public slots:
 	virtual void restoreOptions(QSettings * settings);
+    virtual void restoreOptions();
 	virtual void saveOptions();
 protected slots:
 #ifndef NO_OPENGL

@@ -4,6 +4,9 @@
 
 TEMPLATE = app
 TARGET = YACReaderLibraryServer
+
+QMAKE_TARGET_BUNDLE_PREFIX = "com.yacreader"
+
 CONFIG += console
 DEPENDPATH += ../YACReaderLibrary
 INCLUDEPATH += ../YACReaderLibrary
@@ -16,56 +19,22 @@ QMAKE_MAC_SDK = macosx10.12
 #load default build flags
 #do a basic dependency check
 include(headless_config.pri)
+include(../dependencies/pdf_backend.pri)
 
 win32 {
-    LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32 -luser32
-    !CONFIG(no_pdf) {
-        LIBS += -lpoppler-qt5
-        INCLUDEPATH += ../dependencies/poppler/include/qt5
-    } else {
-        DEFINES += "NO_PDF"
-    }
-
+    LIBS += -loleaut32 -lole32 -lshell32 -luser32
     QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
     QMAKE_LFLAGS_RELEASE += /LTCG
     CONFIG -= embed_manifest_exe
 }
 
-unix:!macx{
-!CONFIG(no_pdf){
-    !CONFIG(pdfium){
-    INCLUDEPATH  += /usr/include/poppler/qt5
-    LIBS         += -L/usr/lib -lpoppler-qt5
-    } else {
-    	#static pdfium libraries have to be included *before* dynamic libraries
-	DEFINES 		+= "USE_PDFIUM"
-	INCLUDEPATH	+= /usr/include/pdfium
-	LIBS          	+= -L/usr/lib/pdfium -Wl,--start-group -lpdfium -lfpdfapi -lfxge -lfpdfdoc \
-					-lfxcrt -lfx_agg -lfxcodec -lfx_lpng -lfx_libopenjpeg -lfx_lcms2 -ljpeg \
-					-lfx_zlib -lfdrm -lfxedit -lformfiller -lpdfwindow -lpdfium -lbigint -ljavascript \
-					-lfxedit -Wl,--end-group -lfreetype
-    }
-} else {
-    DEFINES += "NO_PDF"
-}
-}
-macx{
-
-#TODO:support for pdfium on mac
-!CONFIG(no_pdf) {
-    DEFINES += "USE_PDFKIT"
-} else {
-    DEFINES += "NO_PDF"
+macx {
+	LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
+	CONFIG += objective_c
 }
 
-LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
-
-OBJECTIVE_SOURCES += $$PWD/../common/pdf_comic.mm
-CONFIG += objective_c
-}
-
-unix{
-CONFIG += c++11
+unix {
+	CONFIG += c++11
 }
 
 #CONFIG += release
@@ -82,7 +51,7 @@ HEADERS += ../YACReaderLibrary/library_creator.h \
            ../common/folder.h \
            ../common/library_item.h \
            ../common/comic.h \
-	   ../common/pdf_comic.h \
+		   ../common/pdf_comic.h \
            ../common/bookmarks.h \
            ../common/qnaturalsorting.h \
            ../common/yacreader_global.h \
@@ -103,7 +72,6 @@ SOURCES += ../YACReaderLibrary/library_creator.cpp \
            ../common/folder.cpp \
            ../common/library_item.cpp \
            ../common/comic.cpp \
-	   ../common/pdf_comic.cpp \
            ../common/bookmarks.cpp \
            ../common/qnaturalsorting.cpp \
            ../YACReaderLibrary/yacreader_local_server.cpp \
@@ -115,8 +83,6 @@ SOURCES += ../YACReaderLibrary/library_creator.cpp \
            console_ui_library_creator.cpp \
            main.cpp
 
-
-				   
 include(../YACReaderLibrary/server/server.pri)
 CONFIG(7zip){
 include(../compressed_archive/wrapper.pri)
@@ -167,7 +133,7 @@ else:CONFIG(server_bundled) {
 else {
         INSTALLS += bin server translation
         message("No build type specified. Defaulting to standalone server build (CONFIG+=server_standalone).")
-	message("If you wish to run YACReaderLibraryServer on a system with an existing install of YACReaderLibrary, please specify CONFIG+=server_bundled as an option when running qmake.")
+		message("If you wish to run YACReaderLibraryServer on a system with an existing install of YACReaderLibrary, please specify CONFIG+=server_bundled as an option when running qmake.")
 }
 
 bin.path = $$BINDIR
@@ -185,4 +151,4 @@ translation.files = ../release/languages/yacreaderlibrary_*
 
 #manpage.path = $$DATADIR/man/man1
 #manpage.files = ../YACReaderLibrary.1
-}
+}
