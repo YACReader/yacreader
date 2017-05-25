@@ -3,6 +3,9 @@
 # #####################################################################
 TEMPLATE = app
 TARGET = YACReader
+
+QMAKE_TARGET_BUNDLE_PREFIX = "com.yacreader"
+
 DEPENDPATH += . \
     release
 
@@ -11,6 +14,7 @@ QMAKE_MAC_SDK = macosx10.12
 
 #load default build flags
 include (../config.pri)
+include (../dependencies/pdf_backend.pri)
 
 unix:!macx{
     QMAKE_CXXFLAGS += -std=c++11
@@ -27,7 +31,7 @@ CONFIG(force_angle) {
 SOURCES += main.cpp
 
 INCLUDEPATH += ../common \
-                            ../custom_widgets
+               ../custom_widgets
 
 !CONFIG(no_opengl):CONFIG(legacy_gl_widget) {
     INCLUDEPATH += ../common/gl_legacy \
@@ -39,49 +43,22 @@ INCLUDEPATH += ../common \
 win32 {
     CONFIG(force_angle) {
         message("using ANGLE")
-        LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
+        LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
         #linking extra libs are necesary for a successful compilation, a better approach should be
         #to remove any OpenGL (desktop) dependencies
         #the OpenGL stuff should be migrated to OpenGL ES
         DEFINES += FORCE_ANGLE
     } else {
-        LIBS += -L../dependencies/poppler/lib -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
+        LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
     }
     
-    !CONFIG(no_pdf) {
-        LIBS += -lpoppler-qt5
-        INCLUDEPATH += ../dependencies/poppler/include/qt5
-    } else {
-        DEFINES += "NO_PDF"
-    }
-
     QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
     QMAKE_LFLAGS_RELEASE += /LTCG
     CONFIG -= embed_manifest_exe
 }
 
-unix:!macx{
-    !CONFIG(no_pdf){
-        !CONFIG(pdfium){
-	    INCLUDEPATH  += /usr/include/poppler/qt5
-	    LIBS         += -L/usr/lib -lpoppler-qt5
-	    } else {
-	        #static pdfium libraries have to be included *before* dynamic libraries
-		DEFINES += "USE_PDFIUM"
-		INCLUDEPATH += /usr/include/pdfium
-		LIBS += -L/usr/lib/pdfium -Wl,--start-group -lpdfium -lfpdfapi -lfxge -lfpdfdoc \
-		    -lfxcrt -lfx_agg -lfxcodec -lfx_lpng -lfx_libopenjpeg -lfx_lcms2 -ljpeg \
-		    -lfx_zlib -lfdrm -lfxedit -lformfiller -lpdfwindow -lpdfium -lbigint -ljavascript \
-		    -lfxedit -Wl,--end-group -lfreetype
-	    }
-    } else {
-        DEFINES += "NO_PDF"
-    }
-
-!CONFIG(no_opengl) {
+unix:!macx:!CONFIG(no_opengl) {
         LIBS += -lGLU
-}
-
 }
 
 macx{
@@ -95,20 +72,11 @@ macx{
 #LIBS         += -L/usr/local/lib -lpoppler-qt4
 #}
 
-#TODO: pdfium support
-!CONFIG(no_pdf) {
-    DEFINES += "USE_PDFKIT"
-} else {
-    DEFINES += "NO_PDF"
-}
-
 CONFIG += objective_c
 QT += macextras gui-private
 
-
 LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 
-OBJECTIVE_SOURCES += ../common/pdf_comic.mm
 }
 
 QT += network widgets core
@@ -155,7 +123,7 @@ HEADERS +=  ../common/comic.h \
             ../common/exit_check.h \
             ../common/scroll_management.h \
             ../common/opengl_checker.h \
-	    ../common/pdf_comic.h
+	        ../common/pdf_comic.h
 
 !CONFIG(no_opengl) {
     CONFIG(legacy_gl_widget) {
@@ -294,4 +262,4 @@ manpage.files = ../YACReader.1
 
 #remove leftover doc files when 'make clean' is invoked
 QMAKE_CLEAN += "../changelog" "../README"
-}
+}
