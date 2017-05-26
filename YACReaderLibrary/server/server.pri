@@ -26,7 +26,8 @@ HEADERS += \
     $$PWD/yacreader_server_data_helper.h \
     $$PWD/controllers/favoritescontroller.h \
     $$PWD/controllers/readingcomicscontroller.h \
-    $$PWD/controllers/readinglistscontroller.h
+    $$PWD/controllers/readinglistscontroller.h \
+    $$PWD/controllers/readinglistcontentcontroller.h
 
 SOURCES += \
     $$PWD/static.cpp \
@@ -53,7 +54,8 @@ SOURCES += \
     $$PWD/yacreader_server_data_helper.cpp \
     $$PWD/controllers/favoritescontroller.cpp \
     $$PWD/controllers/readingcomicscontroller.cpp \
-    $$PWD/controllers/readinglistscontroller.cpp
+    $$PWD/controllers/readinglistscontroller.cpp \
+    $$PWD/controllers/readinglistcontentcontroller.cpp
 	
 include(lib/logging/logging.pri)
 include(lib/httpserver/httpserver.pri)
