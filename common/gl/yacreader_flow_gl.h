@@ -12,6 +12,7 @@
 #include <QOpenGLTexture>
 #include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
+#include <QOpenGLShaderProgram>
 #include <QtWidgets>
 
 #include "pictureflow.h" //TODO mover los tipos de flow de sitio
@@ -139,6 +140,8 @@ protected:
     QOpenGLBuffer * c_buffer;
     
     QOpenGLVertexArrayObject * vao;
+       
+    QOpenGLShaderProgram * pipeline;
     
 	void initializeGL();
 	void paintGL();

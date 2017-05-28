@@ -283,17 +283,53 @@ QSize YACReaderFlowGL::minimumSizeHint() const
 	return QSize(320, 200);
 }
 
-/*QSize YACReaderFlowGL::sizeHint() const
-{
-	return QSize(320, 200);
-}*/
-
 void YACReaderFlowGL::initializeGL()
 {
+	static QString vertex_shader =
+		"#version 110\n"
+		"\n"
+		"attribute vec3 position;\n"
+		"attribute vec3 color;\n"
+		"attribute vec2 texCoord;\n"
+		
+		"varying vec3 v_color;\n"
+		"varying vec2 v_texCoord;\n"
+		
+		"uniform mat4 modelview;\n"
+		"uniform mat4 projection;\n"
+		
+		"void main()\n"
+		"{\n"
+		"	v_color = color;\n"
+		"	v_texCoord = texCoord;\n"
+		"	gl_Position = (projection * modelview) * vec4(position, 1);\n"
+		"}\n";
+		
+	static QString fragment_shader =
+		"#version 110\n"
+		"\n"
+		"varying vec3 v_color;\n"
+		"varying vec2 v_texCoord;\n"
+		"uniform sampler2D texture;\n"
+		
+		"void main()\n"
+		"{\n"
+		"	gl_FragColor = vec4(v_color, 1.0) * texture2D(texture, v_texCoord);\n" //mix benutzen??
+		"}\n";
+	//vec4(v_color, 1) * 
+	//texture2D(texture, v_texCoord);\n"
 	//use a vertex array object to safe all OpenGL settings
 	vao = new QOpenGLVertexArrayObject();
 	vao->create();
-	vao->bind();
+	if (vao->isCreated())
+	{
+		vao->bind();
+	}
+	
+	pipeline = new QOpenGLShaderProgram(this);
+	pipeline->addShaderFromSourceCode(QOpenGLShader::Vertex, vertex_shader);
+	pipeline->addShaderFromSourceCode(QOpenGLShader::Fragment, fragment_shader);
+	pipeline->link();
 	
 	v_buffer = new QOpenGLBuffer();
 	t_buffer = new QOpenGLBuffer();
@@ -301,44 +337,47 @@ void YACReaderFlowGL::initializeGL()
 	
 	v_buffer->create();
 	v_buffer->bind();
-	glVertexPointer(3, GL_FLOAT, 0, NULL);
-	glEnableClientState(GL_VERTEX_ARRAY);
+	pipeline->setAttributeBuffer("position", GL_FLOAT, 0, 3);
+	pipeline->enableAttributeArray("position");
 	v_buffer->release();
-	
+		
 	t_buffer->create();
 	t_buffer->bind();
-	glTexCoordPointer(2, GL_SHORT, 0, NULL);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	pipeline->setAttributeBuffer("texCoord", GL_FLOAT, 0, 2);
+	pipeline->enableAttributeArray("texCoord");
 	t_buffer->release();
 	
 	c_buffer->create();
 	c_buffer->bind();
-	glColorPointer(3, GL_FLOAT, 0, NULL);
-	glEnableClientState(GL_COLOR_ARRAY);
+	pipeline->setAttributeBuffer("color", GL_FLOAT, 0, 3);
+	pipeline->enableAttributeArray("color");
 	c_buffer->release();
 	
+   	qDebug() << "texture 1" << glGetError();
     defaultTexture = new QOpenGLTexture(QImage(":/images/defaultCover.png"));
-    defaultTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::LinearMipMapLinear);
+    defaultTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::Linear);
+   	qDebug() << "texture 1" << glGetError();
+
 #ifdef YACREADER_LIBRARY
     markTexture = new QOpenGLTexture(QImage(":/images/readRibbon.png"));
-    markTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::LinearMipMapLinear);
-
+    markTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::Linear);
+	
     readingTexture = new QOpenGLTexture(QImage(":/images/readingRibbon.png"));
-    readingTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::LinearMipMapLinear);
+    readingTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::Linear);
 #endif
     if (lazyPopulateObjects!=-1)
     {
 		populate(lazyPopulateObjects);
 	}
-	
+
 	//fixed function shader setup
 	glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    glEnable(GL_COLOR_MATERIAL);
-    glEnable(GL_BLEND);
-    glEnable(GL_MULTISAMPLE);
-	glEnable(GL_TEXTURE_2D);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glEnable(GL_COLOR_MATERIAL);
+    //glEnable(GL_BLEND);
+    //glEnable(GL_MULTISAMPLE);
+	//glEnable(GL_TEXTURE_2D);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glClearColor(0,0,0,1);
 
@@ -354,7 +393,7 @@ void YACReaderFlowGL::paintGL()
     painter.beginNativePainting();
 	
 	vao->bind();
-    
+    pipeline->bind();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if (numObjects>0)
@@ -365,6 +404,7 @@ void YACReaderFlowGL::paintGL()
     }
 
 	vao->release();
+	pipeline->release();
 	
     painter.endNativePainting();
 
@@ -381,36 +421,33 @@ void YACReaderFlowGL::paintGL()
 
 void YACReaderFlowGL::resizeGL(int width, int height)
 {
-	vao->bind();
+	//pipeline->bind();
+	//vao->bind();
     float pixelRatio = devicePixelRatio();
     fontSize = (width + height) * 0.010 * pixelRatio;
-	if(fontSize < 10)
+	if (fontSize < 10)
 	{
 		fontSize = 10;
 	}
 	//int side = qMin(width, height);
 	udpatePerspective(width,height);
 
-	if(numObjects>0)
+	if (numObjects>0)
+	{
 		updatePositions();
-	vao->release();
+	}
+	//vao->release();
 }
 
 void YACReaderFlowGL::udpatePerspective(int width, int height)
 {
+	//pipeline->bind();
 	float pixelRatio = devicePixelRatio();
 	glViewport(0, 0, width*pixelRatio, height*pixelRatio);
 	
-	glMatrixMode(GL_PROJECTION);
-	
-	//glLoadIdentity();
-	
 	QMatrix4x4 matrix;
 	matrix.perspective(20.0, ((float)width/(float)height), 1.0, 200.0);
-	glLoadMatrixf(matrix.constData());
-	//gluPerspective(20.0, GLdouble(width) / (float)height, 1.0, 200.0);
-	
-	glMatrixMode(GL_MODELVIEW);
+	pipeline->setUniformValue("projection", matrix);
 }
 
 //-----------------------------------------------------------------------------
@@ -488,6 +525,7 @@ bool YACReaderFlowGL::animate(YACReader3DVector & currentVector,YACReader3DVecto
 }
 void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 {
+   	//qDebug() << "drawCover" << glGetError();
     float w = image.width;
     float h = image.height;
 
@@ -501,10 +539,10 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 	matrix.rotate(config.cfRZ,0,0,1);
 	matrix.translate(image.current.x, image.current.y, image.current.z);
 	matrix.rotate(image.current.rot,0,1,0);
-	glLoadMatrixf(matrix.data());
 	
+	pipeline->setUniformValue("modelview", matrix);
     image.texture->bind();
-
+	
 	//calculate shading
     float LShading = ((config.rotation != 0 )?((image.current.rot < 0)?1-1/config.rotation*image.current.rot:1):1);
     float RShading = ((config.rotation != 0 )?((image.current.rot > 0)?1-1/(config.rotation*-1)*image.current.rot:1):1);
@@ -529,14 +567,14 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 						w/2.f, -0.5f, 0.f,
 						w/2.f*-1.f, -0.5f, 0.f};
 	
-	const short cover_t[] = {0, 1,
+	const float cover_t[] = {0, 1,
 							1, 1,
 							1, 0,
 							0, 1,
 							1, 0,
 							0, 0};
 		
-	const short rcover_t[] = {0, 0,
+	const float rcover_t[] = {0, 0,
 							1, 0,
 							1, 1,
 							0, 0,
@@ -561,36 +599,38 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 	//vertex buffer
 	v_buffer->bind();
 	v_buffer->allocate(cover, sizeof(cover));
-	v_buffer->release();
+	//v_buffer->release();
 	
 	//texture buffer
 	t_buffer->bind();
 	t_buffer->allocate(cover_t, sizeof(cover_t));
-	t_buffer->release();
+	//t_buffer->release();
 	
 	//color buffer
 	c_buffer->bind();
 	c_buffer->allocate(cover_c, sizeof(cover_c));
-	c_buffer->release();
+	//c_buffer->release();
 	
 	//draw cover
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	
 	v_buffer->bind();
 	v_buffer->write(0, rcover, sizeof(rcover));
-	v_buffer->release();
+	//v_buffer->release();
 	
 	t_buffer->bind();
 	t_buffer->write(0, rcover_t, sizeof(rcover_t));
-	t_buffer->release();
+	//t_buffer->release();
 
 	c_buffer->bind();
 	c_buffer->write(0, rcover_c, sizeof(rcover_c));
-	c_buffer->release();
+	//c_buffer->release();
 
 	//draw reflection
 	glDrawArrays(GL_TRIANGLES, 0, 6);
-		
+    image.texture->release();
+
+	
     if (showMarks && loaded[image.index] && marks[image.index] != Unread)
 	{
         if (marks[image.index] == Read)
@@ -972,27 +1012,16 @@ void YACReaderFlowGL::setCF_RZ(int value)
 
 void YACReaderFlowGL::setZoom(int zoom)
 {
+	//pipeline->bind();
     startAnimationTimer();
 
 	int width = this->width();
 	int height = this->height();
 	glViewport(0, 0, width, height);
-
-	glMatrixMode(GL_PROJECTION);
-	//glLoadIdentity();
-	//float sideX = ((float(width)/height)/2)*1.5;
-	//float sideY = 0.5*1.5;
-	
-	//gluPerspective(zoom, (float)width / (float)height, 1.0, 200.0);
 	
 	QMatrix4x4 matrix;
 	matrix.perspective(zoom, (float) width/ (float)height, 1.0, 200.0);
-	glLoadMatrixf(matrix.data());
-	
-	
-	//(-sideX, sideX, -sideY+0.2, +sideY+0.2, 4, 11.0);
-
-	glMatrixMode(GL_MODELVIEW);
+	pipeline->setUniformValue("projection", matrix);
 
 }
 
@@ -1267,10 +1296,6 @@ void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 
 		if ((vector.x() >= 0.5 && !flowRightToLeft) || (vector.x() <=-0.5 && flowRightToLeft))
 		{
-			//int index = currentSelected+1;
-			//while((cfImages[index].current.x-cfImages[index].width/(2.0*config.rotation)) < posX)
-			//	index++;
-			//setCurrentIndex(index-1);
 			showNext();
 		}
 		else if ((vector.x() <=-0.5 && !flowRightToLeft) || (vector.x() >= 0.5 && flowRightToLeft))
@@ -1491,9 +1516,12 @@ YACReaderPageFlowGL::~YACReaderPageFlowGL()
         delete(images[i].texture);
     }
     
+    //TODO: vao, pipeline
     delete v_buffer;
     delete t_buffer;
     delete c_buffer;
+    delete vao;
+    delete pipeline;
     
 }
 
