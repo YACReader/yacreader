@@ -316,8 +316,8 @@ void YACReaderFlowGL::initializeGL()
 		"{\n"
 		"	gl_FragColor = vec4(v_color, 1.0) * texture2D(texture, v_texCoord);\n" //mix benutzen??
 		"}\n";
-	//vec4(v_color, 1) * 
-	//texture2D(texture, v_texCoord);\n"
+	
+	
 	//use a vertex array object to safe all OpenGL settings
 	vao = new QOpenGLVertexArrayObject();
 	vao->create();
@@ -353,10 +353,8 @@ void YACReaderFlowGL::initializeGL()
 	pipeline->enableAttributeArray("color");
 	c_buffer->release();
 	
-   	qDebug() << "texture 1" << glGetError();
     defaultTexture = new QOpenGLTexture(QImage(":/images/defaultCover.png"));
     defaultTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::Linear);
-   	qDebug() << "texture 1" << glGetError();
 
 #ifdef YACREADER_LIBRARY
     markTexture = new QOpenGLTexture(QImage(":/images/readRibbon.png"));
@@ -445,9 +443,11 @@ void YACReaderFlowGL::udpatePerspective(int width, int height)
 	float pixelRatio = devicePixelRatio();
 	glViewport(0, 0, width*pixelRatio, height*pixelRatio);
 	
-	QMatrix4x4 matrix;
-	matrix.perspective(20.0, ((float)width/(float)height), 1.0, 200.0);
-	pipeline->setUniformValue("projection", matrix);
+	//QMatrix4x4 matrix;
+	//matrix.perspective(20.0, ((float)width/(float)height), 1.0, 200.0);
+	m_projection.setToIdentity();
+	m_projection.perspective(20.0, ((float)width/(float)height), 1.0, 200.0);
+	pipeline->setUniformValue("projection", m_projection);
 }
 
 //-----------------------------------------------------------------------------
@@ -532,15 +532,16 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 	//fadeout 
     float opacity = 1-1/(config.animationFadeOutDist+config.viewRotateLightStrenght*fabs(viewRotate))*fabs(0-image.current.x);
 	
-	QMatrix4x4 matrix;
-	matrix.translate(config.cfX,config.cfY,config.cfZ);
-	matrix.rotate(config.cfRX,1,0,0);
-	matrix.rotate(viewRotate*config.viewAngle+config.cfRY,0,1,0);
-	matrix.rotate(config.cfRZ,0,0,1);
-	matrix.translate(image.current.x, image.current.y, image.current.z);
-	matrix.rotate(image.current.rot,0,1,0);
+	//QMatrix4x4 matrix;
+	m_modelview.setToIdentity();
+	m_modelview.translate(config.cfX,config.cfY,config.cfZ);
+	m_modelview.rotate(config.cfRX,1,0,0);
+	m_modelview.rotate(viewRotate*config.viewAngle+config.cfRY,0,1,0);
+	m_modelview.rotate(config.cfRZ,0,0,1);
+	m_modelview.translate(image.current.x, image.current.y, image.current.z);
+	m_modelview.rotate(image.current.rot,0,1,0);
 	
-	pipeline->setUniformValue("modelview", matrix);
+	pipeline->setUniformValue("modelview", m_modelview);
     image.texture->bind();
 	
 	//calculate shading
@@ -1019,9 +1020,10 @@ void YACReaderFlowGL::setZoom(int zoom)
 	int height = this->height();
 	glViewport(0, 0, width, height);
 	
-	QMatrix4x4 matrix;
-	matrix.perspective(zoom, (float) width/ (float)height, 1.0, 200.0);
-	pipeline->setUniformValue("projection", matrix);
+	//QMatrix4x4 matrix;
+	m_projection.setToIdentity();
+	m_projection.perspective(zoom, (float) width/ (float)height, 1.0, 200.0);
+	pipeline->setUniformValue("projection", m_projection);
 
 }
 
@@ -1275,13 +1277,9 @@ void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 		x = event->x()*pixelRatio;
 		y = event->y()*pixelRatio;
 		GLint viewport[4];
-		QMatrix4x4 modelview;
-		QMatrix4x4 projection;
 
 		GLfloat winX, winY, winZ;
 
-		glGetFloatv( GL_MODELVIEW_MATRIX, modelview.data() );
-		glGetFloatv( GL_PROJECTION_MATRIX, projection.data() );
 		glGetIntegerv( GL_VIEWPORT, viewport );
 
 		winX = (float)x;
@@ -1291,8 +1289,7 @@ void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 	
 		//needs Qt 5.5!
 		QVector3D vector(winX, winY, winZ);
-		vector = vector.unproject(modelview, projection, QRect(viewport[0], viewport[1], viewport[2], viewport[3]));
-        //gluUnProject(winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
+		vector = vector.unproject(m_modelview, m_projection, QRect(viewport[0], viewport[1], viewport[2], viewport[3]));
 
 		if ((vector.x() >= 0.5 && !flowRightToLeft) || (vector.x() <=-0.5 && flowRightToLeft))
 		{
@@ -1318,25 +1315,20 @@ void YACReaderFlowGL::mouseDoubleClickEvent(QMouseEvent* event)
     x = event->x()*pixelRatio;
     y = event->y()*pixelRatio;
     GLint viewport[4];
-    QMatrix4x4 modelview;
-    QMatrix4x4 projection;
 	  
     GLfloat winX, winY, winZ;
 
-    glGetFloatv( GL_MODELVIEW_MATRIX, modelview.data() );
-    glGetFloatv( GL_PROJECTION_MATRIX, projection.data() );
     glGetIntegerv( GL_VIEWPORT, viewport );
 
     winX = (float)x;
     winY = (float)viewport[3] - (float)y;
     glReadPixels( x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
 
-    //gluUnProject( winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
     QVector3D vector(winX, winY, winZ);
-    vector = vector.unproject(modelview, projection, QRect(viewport[0], viewport[1], viewport[2], viewport[3]));
+    //needs Qt 5.5!!
+    vector = vector.unproject(m_modelview, m_projection, QRect(viewport[0], viewport[1], viewport[2], viewport[3]));
 
-    //if(vector.x() <= 0.5 && vector.x() >= -0.5)
-    if (winX <= 0.5 && winX >= -0.5)
+    if (vector.x() <= 0.5 && vector.x() >= -0.5)
     {
         emit selected(centerIndex());
         event->accept();
@@ -1393,7 +1385,7 @@ void YACReaderComicFlowGL::updateImageData()
             if (performance == high || performance == ultraHigh)
             {
                 texture->setAutoMipMapGenerationEnabled(true);
-                texture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::LinearMipMapLinear);
+                texture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::Linear);
             }
 			else
             {
@@ -1552,7 +1544,7 @@ void YACReaderPageFlowGL::updateImageData()
             if (performance == high || performance == ultraHigh)
             {
                 texture->setAutoMipMapGenerationEnabled(true);
-                texture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::LinearMipMapLinear);
+                texture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::Linear);
             }
 			else
             {

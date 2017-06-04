@@ -143,6 +143,9 @@ protected:
        
     QOpenGLShaderProgram * pipeline;
     
+    QMatrix4x4 m_projection;
+    QMatrix4x4 m_modelview;
+    
 	void initializeGL();
 	void paintGL();
 	void timerEvent(QTimerEvent *);
