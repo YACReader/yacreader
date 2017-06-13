@@ -332,36 +332,27 @@ void YACReaderFlowGL::initializeGL()
 	pipeline->link();
 	
 	v_buffer = new QOpenGLBuffer();
-	t_buffer = new QOpenGLBuffer();
-	c_buffer = new QOpenGLBuffer();
-	
 	v_buffer->create();
 	v_buffer->bind();
-	pipeline->setAttributeBuffer("position", GL_FLOAT, 0, 3);
+	pipeline->setAttributeBuffer("position", GL_FLOAT, 0, 3, 8*sizeof(float));
+	pipeline->setAttributeBuffer("texCoord", GL_FLOAT, 3*sizeof(float), 2, 8*sizeof(float));
+	pipeline->setAttributeBuffer("color", GL_FLOAT, 5*sizeof(float), 3, 8*sizeof(float));
 	pipeline->enableAttributeArray("position");
-	v_buffer->release();
-		
-	t_buffer->create();
-	t_buffer->bind();
-	pipeline->setAttributeBuffer("texCoord", GL_FLOAT, 0, 2);
 	pipeline->enableAttributeArray("texCoord");
-	t_buffer->release();
-	
-	c_buffer->create();
-	c_buffer->bind();
-	pipeline->setAttributeBuffer("color", GL_FLOAT, 0, 3);
 	pipeline->enableAttributeArray("color");
-	c_buffer->release();
-	
+	v_buffer->allocate(3*6*8*sizeof(float));
+	v_buffer->release();
+			
     defaultTexture = new QOpenGLTexture(QImage(":/images/defaultCover.png"));
     defaultTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::Linear);
 
 #ifdef YACREADER_LIBRARY
     markTexture = new QOpenGLTexture(QImage(":/images/readRibbon.png"));
     markTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::Linear);
-	
+	qDebug()<<glGetError();
     readingTexture = new QOpenGLTexture(QImage(":/images/readingRibbon.png"));
     readingTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::Linear);
+    qDebug()<<glGetError();
 #endif
     if (lazyPopulateObjects!=-1)
     {
@@ -525,24 +516,14 @@ bool YACReaderFlowGL::animate(YACReader3DVector & currentVector,YACReader3DVecto
 }
 void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 {
-   	//qDebug() << "drawCover" << glGetError();
+   	
+   	//prepare render data
+   	
     float w = image.width;
     float h = image.height;
 
 	//fadeout 
     float opacity = 1-1/(config.animationFadeOutDist+config.viewRotateLightStrenght*fabs(viewRotate))*fabs(0-image.current.x);
-	
-	//QMatrix4x4 matrix;
-	m_modelview.setToIdentity();
-	m_modelview.translate(config.cfX,config.cfY,config.cfZ);
-	m_modelview.rotate(config.cfRX,1,0,0);
-	m_modelview.rotate(viewRotate*config.viewAngle+config.cfRY,0,1,0);
-	m_modelview.rotate(config.cfRZ,0,0,1);
-	m_modelview.translate(image.current.x, image.current.y, image.current.z);
-	m_modelview.rotate(image.current.rot,0,1,0);
-	
-	pipeline->setUniformValue("modelview", m_modelview);
-    image.texture->bind();
 	
 	//calculate shading
     float LShading = ((config.rotation != 0 )?((image.current.rot < 0)?1-1/config.rotation*image.current.rot:1):1);
@@ -597,52 +578,23 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 						RDOWN*opacity/3,RDOWN*opacity/3,RDOWN*opacity/3,
 						LDOWN*opacity/3,LDOWN*opacity/3,LDOWN*opacity/3};
 	
-	//vertex buffer
-	v_buffer->bind();
-	v_buffer->allocate(cover, sizeof(cover));
-	//v_buffer->release();
+	float vertex[3*6*8]; //buffer array
 	
-	//texture buffer
-	t_buffer->bind();
-	t_buffer->allocate(cover_t, sizeof(cover_t));
-	//t_buffer->release();
+	for (int i=0; i<6; i++)
+	{
+		memcpy(&vertex[i*8], &cover[i*3], 3*sizeof(float));
+		memcpy(&vertex[(i*8)+3], &cover_t[i*2], 2*sizeof(float));
+		memcpy(&vertex[(i*8)+5], &cover_c[i*3], 3*sizeof(float));
+	}
 	
-	//color buffer
-	c_buffer->bind();
-	c_buffer->allocate(cover_c, sizeof(cover_c));
-	//c_buffer->release();
-	
-	//draw cover
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	
-	v_buffer->bind();
-	v_buffer->write(0, rcover, sizeof(rcover));
-	//v_buffer->release();
-	
-	t_buffer->bind();
-	t_buffer->write(0, rcover_t, sizeof(rcover_t));
-	//t_buffer->release();
-
-	c_buffer->bind();
-	c_buffer->write(0, rcover_c, sizeof(rcover_c));
-	//c_buffer->release();
-
-	//draw reflection
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-    image.texture->release();
-
-	
+	for (int i=6; i<12; i++)
+	{	
+		memcpy(&vertex[i*8], &rcover[(i-6)*3], 3*sizeof(float));
+		memcpy(&vertex[(i*8)+3], &rcover_t[(i-6)*2], 2*sizeof(float));
+		memcpy(&vertex[(i*8)+5], &rcover_c[(i-6)*3], 3*sizeof(float));
+	}
     if (showMarks && loaded[image.index] && marks[image.index] != Unread)
 	{
-        if (marks[image.index] == Read)
-        {
-            markTexture->bind();
-		}
-		else
-		{
-            readingTexture->bind();
-		}
-		
 		float mark[] = {w/2.f-0.2f, -0.688f+h, 0.001f,
 						w/2.f-0.05f, -0.688f+h, 0.001f,
 						w/2.f-0.05f, -0.488f+h, 0.001f,
@@ -650,7 +602,7 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 						w/2.f-0.05f, -0.488f+h, 0.001f,
 						w/2.f-0.2f, -0.488f+h, 0.001f};
 						
-		short mark_t[] = {0, 1,
+		float mark_t[] = {0, 1,
 							1, 1,
 							1, 0,
 							0, 1,
@@ -664,22 +616,55 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 							RUP*opacity,RUP*opacity,RUP*opacity,
 							RUP*opacity,RUP*opacity,RUP*opacity,
 							RUP*opacity,RUP*opacity,RUP*opacity};
-			
-		v_buffer->bind();
-		v_buffer->write(0, mark, sizeof(mark));
-		v_buffer->release();
-	
-		t_buffer->bind();
-		t_buffer->write(0, mark_t, sizeof(mark_t));
-		t_buffer->release();
-
-		c_buffer->bind();
-		c_buffer->write(0, mark_c, sizeof(mark_c));
-		c_buffer->release();
-
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+    
+		for (int i=12; i<18; i++)
+		{
+			memcpy(&vertex[i*8], &mark[(i-12)*3], 3*sizeof(float));
+			memcpy(&vertex[(i*8)+3], &mark_t[(i-12)*2], 2*sizeof(float));
+			memcpy(&vertex[(i*8)+5], &mark_c[(i-12)*3], 3*sizeof(float));
+		}        
 	}
 	
+	//draw cover
+	
+	//set matrices
+	m_modelview.setToIdentity();
+	m_modelview.translate(config.cfX,config.cfY,config.cfZ);
+	m_modelview.rotate(config.cfRX,1,0,0);
+	m_modelview.rotate(viewRotate*config.viewAngle+config.cfRY,0,1,0);
+	m_modelview.rotate(config.cfRZ,0,0,1);
+	m_modelview.translate(image.current.x, image.current.y, image.current.z);
+	m_modelview.rotate(image.current.rot,0,1,0);
+	
+	pipeline->setUniformValue("modelview", m_modelview);
+    
+    //bind cover texture
+    image.texture->bind();
+	
+	//update vertices
+	v_buffer->bind();
+	v_buffer->allocate(vertex, sizeof(vertex));
+
+	//draw cover and reflectaion
+	glDrawArrays(GL_TRIANGLES, 0, 12);
+    image.texture->release();
+    
+    //reading marks
+    if (showMarks && loaded[image.index] && marks[image.index] != Unread)
+    {
+		if (marks[image.index] == Read)
+        {
+            markTexture->bind();
+		}
+		else
+		{
+            readingTexture->bind();
+		}			
+		glDrawArrays(GL_TRIANGLES, 12, 6);
+        markTexture->release();
+        readingTexture->release();
+	}
+	v_buffer->release();
 }
 
 /*Public*/
@@ -1510,8 +1495,6 @@ YACReaderPageFlowGL::~YACReaderPageFlowGL()
     
     //TODO: vao, pipeline
     delete v_buffer;
-    delete t_buffer;
-    delete c_buffer;
     delete vao;
     delete pipeline;
     

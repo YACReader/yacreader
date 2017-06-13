@@ -136,8 +136,6 @@ protected:
     QOpenGLTexture * readingTexture;
     
     QOpenGLBuffer * v_buffer;
-    QOpenGLBuffer * t_buffer;
-    QOpenGLBuffer * c_buffer;
     
     QOpenGLVertexArrayObject * vao;
        
