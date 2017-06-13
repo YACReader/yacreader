@@ -260,7 +260,7 @@ void ComicFlowWidgetGL::mousePressEvent(QMouseEvent* event)
 }
 void ComicFlowWidgetGL::resizeEvent(QResizeEvent* event)
 {
-	flow->resizeGL(event->size().width(),event->size().height());
+	flow->resize(event->size().width(),event->size().height());
 }
 void ComicFlowWidgetGL::mouseDoubleClickEvent(QMouseEvent* event)
 {
