@@ -342,6 +342,7 @@ void YACReaderFlowGL::initializeGL()
 	pipeline->enableAttributeArray("position");
 	pipeline->enableAttributeArray("texCoord");
 	pipeline->enableAttributeArray("color");
+	v_buffer->setUsagePattern(QOpenGLBuffer::DynamicDraw);
 	v_buffer->allocate(3*6*8*sizeof(float));
 	v_buffer->release();
 			
@@ -649,7 +650,17 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 	
 	//update vertices
 	v_buffer->bind();
-	v_buffer->allocate(vertex, sizeof(vertex));
+	auto pointer = v_buffer->map(QOpenGLBuffer::WriteOnly);
+	if (pointer)
+	{
+		mempcpy(pointer, vertex, sizeof(vertex));
+		v_buffer->unmap();
+		//qmdelete pointer;
+	}
+	else
+	{
+		v_buffer->allocate(vertex, sizeof(vertex));
+	}
 
 	//draw cover and reflectaion
 	glDrawArrays(GL_TRIANGLES, 0, 12);
