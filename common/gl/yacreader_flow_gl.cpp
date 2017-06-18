@@ -241,6 +241,8 @@ YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
     f.setVersion(2, 1);
     f.setSwapInterval(0);
 	setFormat(f);
+	
+
 
     timerId = startTimer(updateInterval);
 }
@@ -314,7 +316,7 @@ void YACReaderFlowGL::initializeGL()
 		
 		"void main()\n"
 		"{\n"
-		"	gl_FragColor = vec4(v_color, 1.0) * texture2D(texture, v_texCoord);\n" //mix benutzen??
+		"	gl_FragColor = texture2D(texture, v_texCoord) * vec4(v_color, 1.0);\n" //mix benutzen??
 		"}\n";
 	
 	
@@ -349,10 +351,8 @@ void YACReaderFlowGL::initializeGL()
 #ifdef YACREADER_LIBRARY
     markTexture = new QOpenGLTexture(QImage(":/images/readRibbon.png"));
     markTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::Linear);
-	qDebug()<<glGetError();
     readingTexture = new QOpenGLTexture(QImage(":/images/readingRibbon.png"));
     readingTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::Linear);
-    qDebug()<<glGetError();
 #endif
     if (lazyPopulateObjects!=-1)
     {
@@ -360,18 +360,18 @@ void YACReaderFlowGL::initializeGL()
 	}
 
 	//fixed function shader setup
-	glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+	//glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_CULL_FACE);
     //glEnable(GL_COLOR_MATERIAL);
     //glEnable(GL_BLEND);
     //glEnable(GL_MULTISAMPLE);
 	//glEnable(GL_TEXTURE_2D);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    glClearColor(0,0,0,1);
+    //glClearColor(0,0,0,1);
 
 	hasBeenInitialized = true;
 	vao->release();
+	
 }
 
 void YACReaderFlowGL::paintGL()
@@ -383,8 +383,14 @@ void YACReaderFlowGL::paintGL()
 	
 	vao->bind();
     pipeline->bind();
+    
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glClearColor(0,0,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    
     if (numObjects>0)
     {
         updatePositions();
@@ -659,7 +665,7 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 		else
 		{
             readingTexture->bind();
-		}			
+		}
 		glDrawArrays(GL_TRIANGLES, 12, 6);
         markTexture->release();
         readingTexture->release();

@@ -146,6 +146,7 @@ protected:
     
 	void initializeGL();
 	void paintGL();
+	void resizeGL(int width, int height);
 	void timerEvent(QTimerEvent *);
 
 	//number of Covers
@@ -193,7 +194,6 @@ protected:
     void stopAnimationTimer();
 	
 public:
-
 
 	/*Constructor*/
 	YACReaderFlowGL(QWidget *parent = 0,struct Preset p = pressetYACReaderFlowDownConfig);
@@ -294,7 +294,6 @@ public:
 	void mousePressEvent(QMouseEvent *event);
 	void wheelEvent(QWheelEvent * event);
 	void keyPressEvent(QKeyEvent *event);
-	void resizeGL(int width, int height);
 	friend class ImageLoaderGL;
 	friend class ImageLoaderByteArrayGL;
 
