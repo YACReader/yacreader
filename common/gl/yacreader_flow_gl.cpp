@@ -1499,6 +1499,11 @@ YACReaderPageFlowGL::~YACReaderPageFlowGL()
         delete(images[i].texture);
     }
     
+#ifdef YACREADER_LIBRARY
+	delete markTexture;
+    delete readingTexture;
+#endif
+    
     //TODO: vao, pipeline
     delete v_buffer;
     delete vao;
