@@ -144,6 +144,9 @@ protected:
     QMatrix4x4 m_projection;
     QMatrix4x4 m_modelview;
     
+    int m_projection_location;
+    int m_modelview_location;
+    
 	void initializeGL();
 	void paintGL();
 	void resizeGL(int width, int height);

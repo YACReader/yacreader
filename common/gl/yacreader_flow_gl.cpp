@@ -337,12 +337,18 @@ void YACReaderFlowGL::initializeGL()
 	v_buffer = new QOpenGLBuffer();
 	v_buffer->create();
 	v_buffer->bind();
+	
 	pipeline->setAttributeBuffer("position", GL_FLOAT, 0, 3, 8*sizeof(float));
 	pipeline->setAttributeBuffer("texCoord", GL_FLOAT, 3*sizeof(float), 2, 8*sizeof(float));
 	pipeline->setAttributeBuffer("color", GL_FLOAT, 5*sizeof(float), 3, 8*sizeof(float));
 	pipeline->enableAttributeArray("position");
 	pipeline->enableAttributeArray("texCoord");
 	pipeline->enableAttributeArray("color");
+	
+	//cache uniform locations for later use
+	m_projection_location = pipeline->uniformLocation("projection");
+	m_modelview_location = pipeline->uniformLocation("modelview");
+	
 	v_buffer->setUsagePattern(QOpenGLBuffer::DynamicDraw);
 	v_buffer->allocate(3*6*8*sizeof(float));
 	v_buffer->release();
@@ -446,7 +452,7 @@ void YACReaderFlowGL::udpatePerspective(int width, int height)
 	//matrix.perspective(20.0, ((float)width/(float)height), 1.0, 200.0);
 	m_projection.setToIdentity();
 	m_projection.perspective(20.0, ((float)width/(float)height), 1.0, 200.0);
-	pipeline->setUniformValue("projection", m_projection);
+	pipeline->setUniformValue(m_projection_location, m_projection);
 }
 
 //-----------------------------------------------------------------------------
@@ -644,7 +650,7 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 	m_modelview.translate(image.current.x, image.current.y, image.current.z);
 	m_modelview.rotate(image.current.rot,0,1,0);
 	
-	pipeline->setUniformValue("modelview", m_modelview);
+	pipeline->setUniformValue(m_modelview_location, m_modelview);
     
     //bind cover texture
     image.texture->bind();
@@ -1026,7 +1032,7 @@ void YACReaderFlowGL::setZoom(int zoom)
 	//QMatrix4x4 matrix;
 	m_projection.setToIdentity();
 	m_projection.perspective(zoom, (float) width/ (float)height, 1.0, 200.0);
-	pipeline->setUniformValue("projection", m_projection);
+	pipeline->setUniformValue(m_projection_location, m_projection);
 
 }
 
