@@ -288,7 +288,7 @@ QSize YACReaderFlowGL::minimumSizeHint() const
 void YACReaderFlowGL::initializeGL()
 {
 	static QString vertex_shader =
-		"#version 110\n"
+		"//#version 110\n"
 		"\n"
 		"attribute vec3 position;\n"
 		"attribute vec3 color;\n"
@@ -308,8 +308,10 @@ void YACReaderFlowGL::initializeGL()
 		"}\n";
 		
 	static QString fragment_shader =
-		"#version 110\n"
-		"\n"
+		"//#version 110\n"
+		"#ifdef GL_ES\n"
+		"	precision mediump float;\n"
+		"#endif\n"
 		"varying vec3 v_color;\n"
 		"varying vec2 v_texCoord;\n"
 		"uniform sampler2D texture;\n"
@@ -318,7 +320,6 @@ void YACReaderFlowGL::initializeGL()
 		"{\n"
 		"	gl_FragColor = texture2D(texture, v_texCoord) * vec4(v_color, 1.0);\n" //mix benutzen??
 		"}\n";
-	
 	
 	//use a vertex array object to safe all OpenGL settings
 	vao = new QOpenGLVertexArrayObject();
