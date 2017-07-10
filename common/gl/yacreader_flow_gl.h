@@ -293,8 +293,11 @@ public:
 	void render();
 
 	//void paintEvent(QPaintEvent *event);
-	void mouseDoubleClickEvent(QMouseEvent* event);
 	void mousePressEvent(QMouseEvent *event);
+	void mouseDoubleClickEvent(QMouseEvent* event);
+	
+	QVector3D getPlaneIntersection(int x, int y, YACReader3DImage plane);
+	
 	void wheelEvent(QWheelEvent * event);
 	void keyPressEvent(QKeyEvent *event);
 	friend class ImageLoaderGL;
