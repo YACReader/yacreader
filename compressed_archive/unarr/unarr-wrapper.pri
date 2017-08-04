@@ -19,11 +19,15 @@ else:macx:exists (../../dependencies/unarr/macx/libunarr.a) {
 		}
 
 else:win32:exists (../../dependencies/unarr/win/unarr.h) {
-		message(Found prebuilt unarr library in dependencies directory.)
-		INCLUDEPATH += $$PWD/../../dependencies/unarr/win
-		LIBS += -L../../dependencies/unarr/win/ -lunarr
-		DEFINES+=use_unarr
-		}
+                message(Found prebuilt unarr library in dependencies directory.)
+                INCLUDEPATH += $$PWD/../../dependencies/unarr/win
+                contains(QMAKE_TARGET.arch, x86_64): {
+                        LIBS += -L$$PWD/../../dependencies/unarr/win/x64 -lunarr
+                } else {
+                        LIBS += -L$$PWD/../../dependencies/unarr/win/x86 -lunarr
+                }
+                DEFINES+=use_unarr UNARR_IS_SHARED_LIBRARY
+                }
 
 else:exists ($$PWD/unarr-master) {
 		message(Found unarr source-code)
@@ -34,7 +38,7 @@ else:exists ($$PWD/unarr-master) {
 		include(unarr.pro)
 		DEFINES+=use_unarr
 		}
-	else {
+else {
 		error(Missing dependency: unarr decrompression backend. Please install libunarr on your system\
 		or provide a copy of the unarr source code in compressed_archive/unarr/unarr-master)
 		}
