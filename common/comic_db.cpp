@@ -16,7 +16,7 @@ ComicDB::ComicDB(const ComicDB &comicDB)
     operator=(comicDB);
 }
 
-bool ComicDB::isDir()
+bool ComicDB::isDir() const
 {
 	return false;
 }
@@ -234,6 +234,8 @@ ComicInfo & ComicInfo::operator=(const ComicInfo & comicInfo)
     characters = comicInfo.characters;
     notes = comicInfo.notes;
     comicVineID = comicInfo.comicVineID;
+
+    lastTimeOpened = comicInfo.lastTimeOpened;
 
 	return *this;
 }
@@ -547,6 +549,8 @@ QDataStream &operator<<(QDataStream & stream, const ComicInfo & comicInfo)
 
     stream << comicInfo.comicVineID;
 
+    stream << comicInfo.lastTimeOpened;
+
 	return stream;
 }
 
@@ -602,6 +606,8 @@ QDataStream &operator>>(QDataStream & stream, ComicInfo & comicInfo)
 	stream >> comicInfo.notes;
 
     stream >> comicInfo.comicVineID;
+
+    stream >> comicInfo.lastTimeOpened;
 	
 	return stream;
 }

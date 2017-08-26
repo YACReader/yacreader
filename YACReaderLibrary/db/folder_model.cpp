@@ -184,6 +184,9 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
     if(role == FolderModel::FinishedRole)
         return item->data(FolderModel::Finished);
 
+    if(role == FolderModel::IdRole)
+        return item->id;
+
 	if (role != Qt::DisplayRole)
 		return QVariant();
 
@@ -315,7 +318,7 @@ void FolderModel::setupModelData(QSqlQuery &sqlquery, FolderItem *parent)
 	//el diccionario permitir� encontrar cualquier nodo del �rbol r�pidamente, de forma que a�adir un hijo a un padre sea O(1)
 	items.clear();
 	//se a�ade el nodo 0
-	items.insert(parent->id,parent);
+    items.insert(parent->id,parent);
 
     QSqlRecord record = sqlquery.record();
 
@@ -562,6 +565,7 @@ QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QMod
 
     QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
     newFolder.id = DBHelper::insert(&newFolder, db);
+    DBHelper::updateChildrenInfo(parentItem->id, db);
     QSqlDatabase::removeDatabase(_databasePath);
 
     int destRow = 0;
@@ -600,11 +604,18 @@ void FolderModel::deleteFolder(const QModelIndex &mi)
 
    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
    DBHelper::removeFromDB(&f,db);
+   DBHelper::updateChildrenInfo(item->parent()->id, db);
    QSqlDatabase::removeDatabase(_databasePath);
 
    endRemoveRows();
 }
 
+void FolderModel::updateFolderChildrenInfo(qulonglong folderId)
+{
+    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+    DBHelper::updateChildrenInfo(folderId, db);
+    QSqlDatabase::removeDatabase(_databasePath);
+}
 
 //PROXY
 
