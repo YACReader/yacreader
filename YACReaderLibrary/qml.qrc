@@ -1,0 +1,32 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/GridComicsView.qml</file>
+        <file>qml/YACReaderScrollView.qml</file>
+        <file>qml/tick.png</file>
+        <file>qml/reading.png</file>
+        <file>qml/star_menu.png</file>
+        <file>qml/star_menu@2x.png</file>
+        <file>qml/InfoComicsView.qml</file>
+        <file>qml/FlowView.qml</file>
+        <file>qml/info-indicator.png</file>
+        <file>qml/info-shadow.png</file>
+        <file>qml/info-indicator-light.png</file>
+        <file>qml/info-shadow-light.png</file>
+        <file>qml/info-indicator-light@2x.png</file>
+        <file>qml/info-shadow-light@2x.png</file>
+        <file>qml/info-top-shadow.png</file>
+        <file>qml/ComicInfo.qml</file>
+        <file>qml/info-favorites.png</file>
+        <file>qml/info-favorites@2x.png</file>
+        <file>qml/info-rating.png</file>
+        <file>qml/info-rating@2x.png</file>
+        <file>qml/info-tag.png</file>
+        <file>qml/info-tag@2x.png</file>
+        <file>qml/info-tick.png</file>
+        <file>qml/info-tick@2x.png</file>
+        <file>qml/InfoTick.qml</file>
+        <file>qml/InfoFavorites.qml</file>
+        <file>qml/InfoRating.qml</file>
+        <file>qml/YACReaderScrollViewStyle.qml</file>
+    </qresource>
+</RCC>
