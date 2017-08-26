@@ -140,8 +140,7 @@ QString DBHelper::getFolderName(qulonglong libraryId, qulonglong id)
 
 		if(selectQuery.next()) 
 		{
-			QSqlRecord record = selectQuery.record();
-            name = record.value(0).toString();
+            name = selectQuery.value(0).toString();
 		}
 	}
 
@@ -181,19 +180,14 @@ QList<ComicDB> DBHelper::getLabelComics(qulonglong libraryId, qulonglong labelId
         {
             ComicDB comic;
 
-            QList<QVariant> data;
-            QSqlRecord record = selectQuery.record();
-            for(int i=0;i<record.count();i++)
-                data << record.value(i);
-
-            comic.id = record.value(0).toULongLong();
+            comic.id = selectQuery.value(0).toULongLong();
             comic.parentId = labelId;
-            comic.name = record.value(1).toString();
-            comic.info.title = record.value(2).toString();
-            comic.info.currentPage = record.value(3).toInt();
-            comic.info.numPages = record.value(4).toInt();
-            comic.info.hash = record.value(5).toString();
-            comic.info.read = record.value(6).toBool();
+            comic.name = selectQuery.value(1).toString();
+            comic.info.title = selectQuery.value(2).toString();
+            comic.info.currentPage = selectQuery.value(3).toInt();
+            comic.info.numPages = selectQuery.value(4).toInt();
+            comic.info.hash = selectQuery.value(5).toString();
+            comic.info.read = selectQuery.value(6).toBool();
 
             list.append(comic);
         }
@@ -227,16 +221,14 @@ QList<ComicDB> DBHelper::getFavorites(qulonglong libraryId)
         {
             ComicDB comic;
 
-            QSqlRecord record = selectQuery.record();
-
-            comic.id = record.value(0).toULongLong();
+            comic.id = selectQuery.value(0).toULongLong();
             comic.parentId = FAV_ID;
-            comic.name = record.value(1).toString();
-            comic.info.title = record.value(2).toString();
-            comic.info.currentPage = record.value(3).toInt();
-            comic.info.numPages = record.value(4).toInt();
-            comic.info.hash = record.value(5).toString();
-            comic.info.read = record.value(6).toBool();
+            comic.name = selectQuery.value(1).toString();
+            comic.info.title = selectQuery.value(2).toString();
+            comic.info.currentPage = selectQuery.value(3).toInt();
+            comic.info.numPages = selectQuery.value(4).toInt();
+            comic.info.hash = selectQuery.value(5).toString();
+            comic.info.read = selectQuery.value(6).toBool();
 
             list.append(comic);
         }
@@ -266,16 +258,14 @@ QList<ComicDB> DBHelper::getReading(qulonglong libraryId)
         {
             ComicDB comic;
 
-            QSqlRecord record = selectQuery.record();
-
-            comic.id = record.value(0).toULongLong();
-            comic.parentId = record.value(1).toULongLong();
-            comic.name = record.value(2).toString();
-            comic.info.title = record.value(3).toString();
-            comic.info.currentPage = record.value(4).toInt();
-            comic.info.numPages = record.value(5).toInt();
-            comic.info.hash = record.value(6).toString();
-            comic.info.read = record.value(7).toBool();
+            comic.id = selectQuery.value(0).toULongLong();
+            comic.parentId = selectQuery.value(1).toULongLong();
+            comic.name = selectQuery.value(2).toString();
+            comic.info.title = selectQuery.value(3).toString();
+            comic.info.currentPage = selectQuery.value(4).toInt();
+            comic.info.numPages = selectQuery.value(5).toInt();
+            comic.info.hash = selectQuery.value(6).toString();
+            comic.info.read = selectQuery.value(7).toBool();
 
             list.append(comic);
         }
@@ -1156,14 +1146,20 @@ QList<LabelItem *> DBHelper::getLabelItems(qulonglong libraryId)
     QSqlQuery selectQuery("SELECT * FROM label ORDER BY ordering,name",db); //TODO add some kind of
     QList<LabelItem *> labels;
 
+    QSqlRecord record = selectQuery.record();
+
+    int name =  record.indexOf("name");
+    int color = record.indexOf("color");
+    int id = record.indexOf("id");
+    int ordering = record.indexOf("ordering");
+
     while(selectQuery.next())
     {
-        QSqlRecord record = selectQuery.record();
         LabelItem *item = new LabelItem(QList<QVariant>()
-                                       << record.value("name")
-                                       << record.value("color")
-                                       << record.value("id")
-                                       << record.value("ordering"));
+                                       << selectQuery.value(name)
+                                       << selectQuery.value(color)
+                                       << selectQuery.value(id)
+                                       << selectQuery.value(ordering));
 
         if(labels.isEmpty())
         {
