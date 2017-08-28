@@ -31,6 +31,7 @@ void ShortcutsManager::initDefaultShorcuts()
     //COMMANDS (used in keypressevent)
 #else
     defaultShorcuts.insert(OPEN_ACTION_Y, Qt::Key_O);
+    defaultShorcuts.insert(OPEN_LATEST_COMIC_Y, Qt::CTRL | Qt::Key_R);
     defaultShorcuts.insert(OPEN_FOLDER_ACTION_Y, Qt::CTRL | Qt::Key_O);
     defaultShorcuts.insert(OPEN_PREVIOUS_COMIC_ACTION_Y, Qt::CTRL | Qt::Key_Left);
     defaultShorcuts.insert(OPEN_NEXT_COMIC_ACTION_Y, Qt::CTRL | Qt::Key_Right);
