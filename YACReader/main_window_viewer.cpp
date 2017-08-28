@@ -523,6 +523,10 @@ void MainWindowViewer::createToolBars()
     comicToolBar->setStyleSheet("QToolBar{border:none;}");
 #endif
 
+#ifdef Q_OS_MAC
+    comicToolBar->addAction(openAction);
+    comicToolBar->addAction(openFolderAction);
+#else
 	QMenu * recentmenu = new QMenu(tr("Open recent"));
 	recentmenu->addActions(recentFilesActionList);
 	recentmenu->addSeparator();
@@ -538,6 +542,7 @@ void MainWindowViewer::createToolBars()
 	tb->setDefaultAction(openAction);
 
 	comicToolBar->addWidget(tb);
+#endif
 
 	comicToolBar->addAction(saveImageAction);
 	comicToolBar->addAction(openPreviousComicAction);
@@ -656,6 +661,7 @@ void MainWindowViewer::createToolBars()
     QMenu * fileMenu = new QMenu(tr("File"));
 
     fileMenu->addAction(openAction);
+    fileMenu->addAction(openLatestComicAction);
     fileMenu->addAction(openFolderAction);
     fileMenu->addSeparator();
     fileMenu->addAction(saveImageAction);
