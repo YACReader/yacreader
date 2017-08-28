@@ -10,7 +10,7 @@ extern"C" {
 }
 
 CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) :
-    QObject(parent),valid(false),tools(true),numFiles(0),ar(NULL),stream(NULL)
+    QObject(parent),tools(true),valid(false),numFiles(0),ar(NULL),stream(NULL)
 {
 	//open file
 	stream = ar_open_file(filePath.toStdString().c_str());

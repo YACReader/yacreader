@@ -14,7 +14,7 @@
 
 #include <limits>
 
-#include "reading_list_item.h"
+#include "reading_list.h"
 #include "library_item.h"
 #include "comic_db.h"
 #include "data_base_management.h"
@@ -271,6 +271,94 @@ QList<ComicDB> DBHelper::getReading(qulonglong libraryId)
         }
 
         db.close();
+    }
+
+    return list;
+}
+
+QList<ReadingList> DBHelper::getReadingLists(qulonglong libraryId)
+{
+    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
+    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
+
+    QList<ReadingList> list;
+
+    QSqlQuery selectQuery("SELECT * from reading_list WHERE parentId IS NULL ORDER BY name DESC",db);
+
+    selectQuery.exec();
+
+    while (selectQuery.next())
+    {
+        QSqlRecord record = selectQuery.record();
+
+        ReadingList item(record.value("name").toString(), record.value("id").toLongLong(),record.value("ordering").toInt());
+
+        if(list.isEmpty())
+        {
+            list.append(item);
+        }
+        else
+        {
+            int i= 0;
+            while(i<list.length() && naturalSortLessThanCI(list.at(i).getName(),item.getName()))
+                i++;
+            list.insert(i,item);
+        }
+    }
+
+    return list;
+}
+
+QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulonglong readingListId)
+{
+    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
+    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
+
+    QList<ComicDB> list;
+
+    {
+        QList<qulonglong> ids;
+        ids << readingListId;
+
+        QSqlQuery subfolders(db);
+        subfolders.prepare("SELECT id "
+                           "FROM reading_list "
+                           "WHERE parentId = :parentId "
+                           "ORDER BY ordering ASC");
+        subfolders.bindValue(":parentId", readingListId);
+        subfolders.exec();
+        while(subfolders.next())
+           ids << subfolders.record().value(0).toULongLong();
+
+        foreach(qulonglong id, ids)
+        {
+            QSqlQuery selectQuery(db);
+            selectQuery.prepare("SELECT c.id,c.parentId,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read "
+                                "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                                "INNER JOIN comic_reading_list crl ON (c.id == crl.comic_id) "
+                                "WHERE crl.reading_list_id = :parentReadingList "
+                                "ORDER BY crl.ordering");
+            selectQuery.bindValue(":parentReadingList", id);
+            selectQuery.exec();
+
+            while (selectQuery.next())
+            {
+                ComicDB comic;
+
+                QSqlRecord record = selectQuery.record();
+
+                comic.id = record.value(0).toULongLong();
+                comic.parentId = record.value(1).toULongLong();
+                comic.name = record.value(2).toString();
+                comic.info.title = record.value(3).toString();
+                comic.info.currentPage = record.value(4).toInt();
+                comic.info.numPages = record.value(5).toInt();
+                comic.info.hash = record.value(6).toString();
+                comic.info.read = record.value(7).toBool();
+
+                list.append(comic);
+            }
+        }
     }
 
     return list;
@@ -930,7 +1018,7 @@ QList<LibraryItem *> DBHelper::getFoldersFromParent(qulonglong parentId, QSqlDat
 			QList<LibraryItem *>::iterator i;
 			i = list.end();
 			i--;
-			while ((0 > (lessThan = naturalSortLessThanCI(nameCurrent,nameLast))) && i != list.begin())
+            while ((0 > (lessThan = naturalCompare(nameCurrent,nameLast,Qt::CaseInsensitive))) && i != list.begin())
 			{
 				i--;
 				nameLast = (*i)->name;
@@ -1138,13 +1226,13 @@ QList<LibraryItem *> DBHelper::getComicsFromParent(qulonglong parentId, QSqlData
 	return list;
 }
 
-QList<LabelItem *> DBHelper::getLabelItems(qulonglong libraryId)
+QList<Label> DBHelper::getLabels(qulonglong libraryId)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
     QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
 
     QSqlQuery selectQuery("SELECT * FROM label ORDER BY ordering,name",db); //TODO add some kind of
-    QList<LabelItem *> labels;
+    QList<Label> labels;
 
     QSqlRecord record = selectQuery.record();
 
@@ -1155,11 +1243,9 @@ QList<LabelItem *> DBHelper::getLabelItems(qulonglong libraryId)
 
     while(selectQuery.next())
     {
-        LabelItem *item = new LabelItem(QList<QVariant>()
-                                       << selectQuery.value(name)
-                                       << selectQuery.value(color)
-                                       << selectQuery.value(id)
-                                       << selectQuery.value(ordering));
+        Label item(selectQuery.value(name).toString(),
+                   selectQuery.value(id).toLongLong(),
+                   static_cast<YACReader::LabelColors>(selectQuery.value(color).toInt()));
 
         if(labels.isEmpty())
         {
@@ -1169,14 +1255,14 @@ QList<LabelItem *> DBHelper::getLabelItems(qulonglong libraryId)
         {
             int i = 0;
 
-            while (i < labels.count() && (labels.at(i)->colorid() < item->colorid()) )
+            while (i < labels.count() && (labels.at(i).getColorID() < item.getColorID()) )
                 i++;
 
             if(i < labels.count())
             {
-                if(labels.at(i)->colorid() == item->colorid()) //sort by name
+                if(labels.at(i).getColorID() == item.getColorID()) //sort by name
                 {
-                    while( i < labels.count() && labels.at(i)->colorid() == item->colorid() && naturalSortLessThanCI(labels.at(i)->name(),item->name()))
+                    while( i < labels.count() && labels.at(i).getColorID() == item.getColorID() && naturalSortLessThanCI(labels.at(i).getName(),item.getName()))
                         i++;
                 }
             }

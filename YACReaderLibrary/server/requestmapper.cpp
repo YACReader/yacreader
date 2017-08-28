@@ -28,6 +28,8 @@
 #include "controllers/tagcontentcontroller.h"
 #include "controllers/favoritescontroller.h"
 #include "controllers/readingcomicscontroller.h"
+#include "controllers/readinglistscontroller.h"
+#include "controllers/readinglistcontentcontroller.h"
 
 #include "db_helper.h"
 #include "yacreader_libraries.h"
@@ -211,11 +213,11 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
                     }
                     else if(readingLists.exactMatch(path))
                     {
-                        //ReadingListsController().service(request, response);
+                        ReadingListsController().service(request, response);
                     }
                     else if(readingListContent.exactMatch(path))
                     {
-                        //ReadingListContentController().service(request, response);
+                        ReadingListContentController().service(request, response);
                     }
                 }
                 else
