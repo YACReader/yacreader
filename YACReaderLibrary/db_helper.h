@@ -9,12 +9,13 @@ class QString;
 class ComicDB;
 class Folder;
 class LibraryItem;
-class LabelItem;
+class Label;
 class QSqlDatabase;
 class ComicInfo;
 class QSqlRecord;
 class QSqlQuery;
 class YACReaderLibraries;
+class ReadingList;
 
 class DBHelper
 {
@@ -34,6 +35,8 @@ public:
     static QList<ComicDB> getLabelComics(qulonglong libraryId, qulonglong labelId);
     static QList<ComicDB> getFavorites(qulonglong libraryId);
     static QList<ComicDB> getReading(qulonglong libraryId);
+    static QList<ReadingList> getReadingLists(qulonglong libraryId);
+    static QList<ComicDB> getReadingListFullContent(qulonglong libraryId, qulonglong readingListId);
 
 	//objects management
 	//deletes
@@ -77,7 +80,7 @@ public:
 	static QList<LibraryItem *> getFoldersFromParent(qulonglong parentId, QSqlDatabase & db, bool sort = true);
 	static QList<ComicDB> getSortedComicsFromParent(qulonglong parentId, QSqlDatabase & db);
 	static QList<LibraryItem *> getComicsFromParent(qulonglong parentId, QSqlDatabase & db, bool sort = true);
-    static QList<LabelItem *> getLabelItems(qulonglong libraryId);
+    static QList<Label> getLabels(qulonglong libraryId);
 
     //load
 	static Folder loadFolder(qulonglong id, QSqlDatabase & db);

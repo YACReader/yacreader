@@ -60,7 +60,8 @@ HEADERS += ../YACReaderLibrary/library_creator.h \
            ../common/http_worker.h \
            ../YACReaderLibrary/yacreader_libraries.h \
            ../YACReaderLibrary/comic_files_manager.h \
-           console_ui_library_creator.h
+           console_ui_library_creator.h \
+           ../YACReaderLibrary/db/reading_list.h
 
 
 SOURCES += ../YACReaderLibrary/library_creator.cpp \
@@ -81,6 +82,7 @@ SOURCES += ../YACReaderLibrary/library_creator.cpp \
            ../YACReaderLibrary/yacreader_libraries.cpp \
            ../YACReaderLibrary/comic_files_manager.cpp \
            console_ui_library_creator.cpp \
+           ../YACReaderLibrary/db/reading_list.cpp \
            main.cpp
 
 include(../YACReaderLibrary/server/server.pri)
@@ -151,4 +153,4 @@ translation.files = ../release/languages/yacreaderlibrary_*
 
 #manpage.path = $$DATADIR/man/man1
 #manpage.files = ../YACReaderLibrary.1
-}
+}
