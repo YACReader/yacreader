@@ -287,11 +287,15 @@ QList<ReadingList> DBHelper::getReadingLists(qulonglong libraryId)
 
     selectQuery.exec();
 
+    QSqlRecord record = selectQuery.record();
+
+    int name = record.indexOf("name");
+    int id = record.indexOf("id");
+    int ordering = record.indexOf("ordering");
+
     while (selectQuery.next())
     {
-        QSqlRecord record = selectQuery.record();
-
-        ReadingList item(record.value("name").toString(), record.value("id").toLongLong(),record.value("ordering").toInt());
+        ReadingList item(selectQuery.value(name).toString(), selectQuery.value(id).toLongLong(),selectQuery.value(ordering).toInt());
 
         if(list.isEmpty())
         {
@@ -328,7 +332,7 @@ QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulongl
         subfolders.bindValue(":parentId", readingListId);
         subfolders.exec();
         while(subfolders.next())
-           ids << subfolders.record().value(0).toULongLong();
+           ids << subfolders.value(0).toULongLong();
 
         foreach(qulonglong id, ids)
         {
@@ -345,16 +349,14 @@ QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulongl
             {
                 ComicDB comic;
 
-                QSqlRecord record = selectQuery.record();
-
-                comic.id = record.value(0).toULongLong();
-                comic.parentId = record.value(1).toULongLong();
-                comic.name = record.value(2).toString();
-                comic.info.title = record.value(3).toString();
-                comic.info.currentPage = record.value(4).toInt();
-                comic.info.numPages = record.value(5).toInt();
-                comic.info.hash = record.value(6).toString();
-                comic.info.read = record.value(7).toBool();
+                comic.id = selectQuery.value(0).toULongLong();
+                comic.parentId = selectQuery.value(1).toULongLong();
+                comic.name = selectQuery.value(2).toString();
+                comic.info.title = selectQuery.value(3).toString();
+                comic.info.currentPage = selectQuery.value(4).toInt();
+                comic.info.numPages = selectQuery.value(5).toInt();
+                comic.info.hash = selectQuery.value(6).toString();
+                comic.info.read = selectQuery.value(7).toBool();
 
                 list.append(comic);
             }
@@ -660,7 +662,7 @@ void DBHelper::updateChildrenInfo(QSqlDatabase & db)
 
     while (selectQuery.next())
     {
-        DBHelper::updateChildrenInfo(selectQuery.record().value(0).toULongLong(), db);
+        DBHelper::updateChildrenInfo(selectQuery.value(0).toULongLong(), db);
     }
 }
 
