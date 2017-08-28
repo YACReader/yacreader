@@ -84,6 +84,7 @@ MainWindowViewer::~MainWindowViewer()
 	//delete sliderAction;
 	delete openAction;
 	delete openFolderAction;
+    delete openLatestComicAction;
 	delete saveImageAction;
 	delete openPreviousComicAction; 
 	delete openNextComicAction;
@@ -222,7 +223,13 @@ void MainWindowViewer::createActions()
     openFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_FOLDER_ACTION_Y));
     connect(openFolderAction, SIGNAL(triggered()), this, SLOT(openFolder()));
 
-    QAction* recentFileAction = 0;
+    openLatestComicAction = new QAction(tr("Open latest comic"), this);
+    openLatestComicAction->setToolTip(tr("Open the latest comic opened in the previous reading session"));
+    openLatestComicAction->setData(OPEN_LATEST_COMIC_Y);
+    openLatestComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_LATEST_COMIC_Y));
+    connect(openLatestComicAction, SIGNAL(triggered()), this, SLOT(openLatestComic()));
+
+    QAction* recentFileAction = nullptr;
     //TODO: Replace limit with a configurable value
     for (int i = 0; i < 10; i++)
 	{
@@ -516,10 +523,6 @@ void MainWindowViewer::createToolBars()
     comicToolBar->setStyleSheet("QToolBar{border:none;}");
 #endif
 
-#ifdef Q_OS_MAC
-    comicToolBar->addAction(openAction);
-    comicToolBar->addAction(openFolderAction);
-#else
 	QMenu * recentmenu = new QMenu(tr("Open recent"));
 	recentmenu->addActions(recentFilesActionList);
 	recentmenu->addSeparator();
@@ -528,13 +531,14 @@ void MainWindowViewer::createToolBars()
 
 	QToolButton * tb = new QToolButton();
 	tb->addAction(openAction);
+    tb->addAction(openLatestComicAction);
 	tb->addAction(openFolderAction);
 	tb->addAction(recentmenu->menuAction());
 	tb->setPopupMode(QToolButton::MenuButtonPopup);
 	tb->setDefaultAction(openAction);
 
 	comicToolBar->addWidget(tb);
-#endif
+
 	comicToolBar->addAction(saveImageAction);
 	comicToolBar->addAction(openPreviousComicAction);
 	comicToolBar->addAction(openNextComicAction);
@@ -757,22 +761,39 @@ void MainWindowViewer::clearRecentFiles()
 void MainWindowViewer::openRecent()
 {
 	QAction *action = qobject_cast<QAction *>(sender());
-	if (action)
-	{
-		QFileInfo info1 (action->data().toString());
-		if (info1.exists())
-		{
-			 if (info1.isFile())
-			{
-				openComicFromPath(action->data().toString());
-			}
-			else if (info1.isDir())
-			{
-				openFolderFromPath(action->data().toString());
-			}
-		}
-				
-	}
+
+    openComicFromRecentAction(action);
+}
+
+void MainWindowViewer::openLatestComic()
+{
+    if (recentFilesActionList.isEmpty())
+    {
+        return;
+    }
+
+    openComicFromRecentAction(recentFilesActionList[0]);
+}
+
+void MainWindowViewer::openComicFromRecentAction(QAction *action)
+{
+    if (action == nullptr)
+    {
+        return;
+    }
+
+    QFileInfo info1 (action->data().toString());
+    if (info1.exists())
+    {
+         if (info1.isFile())
+        {
+            openComicFromPath(action->data().toString());
+        }
+        else if (info1.isDir())
+        {
+            openFolderFromPath(action->data().toString());
+        }
+    }
 }
 
 void MainWindowViewer::reloadOptions()
@@ -1245,12 +1266,12 @@ void MainWindowViewer::setUpShortcutsManagement()
 
 
     editShortcutsDialog->addActionsGroup(tr("Comics"),QIcon(":/images/shortcuts_group_comics.png"),
-                                         tmpList = QList<QAction *>()
-                                         << openAction
-                                         << openFolderAction
-                                         << saveImageAction
-                                         << openPreviousComicAction
-                                         << openNextComicAction);
+                                        tmpList = { openAction,
+                                          openLatestComicAction,
+                                          openFolderAction,
+                                          saveImageAction,
+                                          openPreviousComicAction,
+                                          openNextComicAction });
 
     allActions << tmpList;
 
