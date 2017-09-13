@@ -1769,13 +1769,25 @@ void LibraryWindow::openComic()
 		//                 %1        %2      %3        NO-->%4          %5        %6        %7        %8         %9       %10
 		//Invoke YACReader comicPath comicId libraryId NO-->currentPage bookmark1 bookmark2 bookmark3 brightness contrast gamma
         bool yacreaderFound = false;
-#ifdef Q_OS_MAC
+
         QString comicIdS = QString("--comicId=") + QString("%1").arg(comicId);
         QString libraryIdS = QString("--libraryId=") + QString("%1").arg(libraryId);
-        QString yacreaderPath = QDir::cleanPath(QCoreApplication::applicationDirPath()+"/../../../YACReader.app");
-        if(yacreaderFound = QFileInfo(yacreaderPath).exists())
-            QProcess::startDetached("open", QStringList() << "-n" << yacreaderPath << "--args" << path << comicIdS << libraryIdS ); /*<< page << bookmark1 << bookmark2 << bookmark3 << brightness << contrast << gamma*///,QStringList() << path);
 
+#ifdef Q_OS_MAC
+        QStringList possiblePaths;
+
+        possiblePaths.append(QDir::cleanPath(QCoreApplication::applicationDirPath()+"/../../../"));
+        possiblePaths.append(QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation));
+        for(auto && path: possiblePaths)
+        {
+            QString yacreaderPath = QDir::cleanPath(path + "/YACReader.app");
+            if(QFileInfo(yacreaderPath).exists())
+            {
+                yacreaderFound = true;
+                QProcess::startDetached("open", QStringList() << "-n" << yacreaderPath << "--args" << path << comicIdS << libraryIdS ); /*<< page << bookmark1 << bookmark2 << bookmark3 << brightness << contrast << gamma*///,QStringList() << path);
+                break;
+            }
+        }
 #endif
 
 #ifdef Q_OS_WIN																														  /* \"%4\" \"%5\" \"%6\" \"%7\" \"%8\" \"%9\" \"%10\" */
