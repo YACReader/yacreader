@@ -21,6 +21,8 @@
 
 #define LIBRARIES "LIBRARIES"
 
+#define MAX_LIBRARIES_WARNING_NUM 10
+
 namespace YACReader
 {
 

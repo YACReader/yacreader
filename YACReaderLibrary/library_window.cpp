@@ -1727,6 +1727,14 @@ void LibraryWindow::saveSelectedCoversTo()
     }
 }
 
+void LibraryWindow::checkMaxNumLibraries()
+{
+    int numLibraries = libraries.getNames().length();
+    if(numLibraries >= MAX_LIBRARIES_WARNING_NUM) {
+        QMessageBox::warning(this,tr("You are adding too many libraries."),tr("You are adding too many libraries.\n\nYou probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.\n\nYACReaderLibrary will not stop you from creating more libraries but you should keep the number of libraries low."));
+    }
+}
+
 void LibraryWindow::selectSubfolder(const QModelIndex &mi, int child)
 {
     QModelIndex dest = foldersModel->index(child,0,mi);
@@ -1823,6 +1831,7 @@ void LibraryWindow::setCurrentComicUnreaded() {
 }
 
 void LibraryWindow::createLibrary() {
+    checkMaxNumLibraries();
     createLibraryDialog->open(libraries);
 }
 
@@ -1861,6 +1870,7 @@ void LibraryWindow::openLastCreated()
 
 void LibraryWindow::showAddLibrary()
 {
+    checkMaxNumLibraries();
     addLibraryDialog->open();
 }
 
