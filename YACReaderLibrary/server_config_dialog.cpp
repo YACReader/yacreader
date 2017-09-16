@@ -147,6 +147,10 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	check->setText(tr("enable the server"));
     check->setStyleSheet("QCheckBox {color:#262626; font-size:13px; font-family: Arial;}");
 	
+    performanceWorkaroundCheck = new QCheckBox(this);
+    performanceWorkaroundCheck->move(332,354);
+    performanceWorkaroundCheck->setText(tr("display less information about folders in the browser\nto improve the performance"));
+    performanceWorkaroundCheck->setStyleSheet("QCheckBox {color:#262626; font-size:13px; font-family: Arial;}");
 
     //accept->move(444, 242);
 	//check->setLayoutDirection(Qt::RightToLeft);
@@ -184,9 +188,12 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	else
 		check->setChecked(false);
 
+    performanceWorkaroundCheck->setChecked(settings->value(REMOTE_BROWSE_PERFORMANCE_WORKAROUND,false).toBool());
+
 	settings->endGroup();
 
     connect(check,SIGNAL(stateChanged(int)),this,SLOT(enableServer(int)));
+    connect(performanceWorkaroundCheck,SIGNAL(stateChanged(int)),this,SLOT(enableperformanceWorkaround(int)));
 }
 
 void ServerConfigDialog::enableServer(int status)
@@ -208,7 +215,23 @@ void ServerConfigDialog::enableServer(int status)
 		port->setText("");
 		settings->setValue(SERVER_ON,false);
 	}
-	settings->endGroup();
+    settings->endGroup();
+}
+
+void ServerConfigDialog::enableperformanceWorkaround(int status)
+{
+    QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+    settings->beginGroup("libraryConfig");
+
+    if(status == Qt::Checked)
+    {
+        settings->setValue(REMOTE_BROWSE_PERFORMANCE_WORKAROUND,true);
+    }
+    else
+    {
+        settings->setValue(REMOTE_BROWSE_PERFORMANCE_WORKAROUND,false);
+    }
+    settings->endGroup();
 }
 
 void ServerConfigDialog::generateQR()
