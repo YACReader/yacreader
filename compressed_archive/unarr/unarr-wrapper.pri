@@ -6,10 +6,11 @@ HEADERS += $$PWD/extract_delegate.h \
 
 SOURCES += $$PWD/compressed_archive.cpp \
 
-unix:!macx:exists (/usr/include/unarr.h) {
+unix:!macx {
 		message(Using system provided unarr installation)
-		LIBS+=-lunarr
-		DEFINES+=use_unarr
+		CONFIG += link_pkgconfig
+		PKGCONFIG += libunarr
+		DEFINES += use_unarr
 		}
 else:macx:exists (../../dependencies/unarr/macx/libunarr.a) {
 		message(Found prebuilt unarr library in dependencies directory.)
@@ -32,7 +33,7 @@ else:win32:exists (../../dependencies/unarr/win/unarr.h) {
 else:exists ($$PWD/unarr-master) {
 		message(Found unarr source-code)
 		message(Unarr will be build as a part of YACReader)
-		
+
 		#qmake based unarr build system
 		#this should only be used for testing or as a last resort
 		include(unarr.pro)
