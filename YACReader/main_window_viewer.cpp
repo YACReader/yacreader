@@ -231,7 +231,7 @@ void MainWindowViewer::createActions()
 
     QAction* recentFileAction = nullptr;
     //TODO: Replace limit with a configurable value
-    for (int i = 0; i < 25; i++)
+    for (int i = 0; i < Configuration::getConfiguration().getOpenRecentSize(); i++)
 	{
 		recentFileAction = new QAction(this);
 		recentFileAction->setVisible(false);
@@ -742,8 +742,8 @@ void MainWindowViewer::refreshRecentFilesActionList()
 	QStringList recentFilePaths = Configuration::getConfiguration().openRecentList();
 
 	//TODO: Replace limit with something configurable
-	int iteration = (recentFilePaths.size() < 25) ? recentFilePaths.size() : 25;
-
+	int iteration = (recentFilePaths.size() < Configuration::getConfiguration().getOpenRecentSize())
+	 									? recentFilePaths.size() : Configuration::getConfiguration().getOpenRecentSize();
 	for (int i = 0; i < iteration; i++)
 	{
 		QString strippedName = QFileInfo(recentFilePaths.at(i)).fileName();
@@ -752,7 +752,7 @@ void MainWindowViewer::refreshRecentFilesActionList()
 		recentFilesActionList.at(i)->setVisible(true);
 	}
 
-	for (int i = iteration; i < 25; i++)
+	for (int i = iteration; i < Configuration::getConfiguration().getOpenRecentSize(); i++)
 	{
 		recentFilesActionList.at(i)->setVisible(false);
 	}
