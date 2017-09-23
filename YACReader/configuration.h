@@ -67,6 +67,7 @@ using namespace YACReader;
 		void setFitMode ( YACReader::FitMode fitMode ){ settings->setValue(FITMODE, static_cast<int>(fitMode)); }
 
 		//openRecent
+		int getOpenRecentSize() { return settings->value("recentSize", 25).toInt();}
 		QStringList openRecentList() { return settings->value("recentFiles").toStringList(); }
 		void updateOpenRecentList (QString path);
 		void clearOpenRecentList() { settings->remove("recentFiles"); }

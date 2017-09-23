@@ -71,7 +71,7 @@ void Configuration::updateOpenRecentList (QString path)
 	list.removeAll(path);
 	list.prepend(path);
 	//TODO: Make list lenght configurable
-	while (list.length() > 25)
+	while (list.length() > getOpenRecentSize())
 	{
 		list.removeLast();
 	}
