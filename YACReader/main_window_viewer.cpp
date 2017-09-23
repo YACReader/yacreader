@@ -906,7 +906,7 @@ void MainWindowViewer::openComic(QString pathFile)
     enableActions();
 
     viewer->open(pathFile);
-    Configuration::getConfiguration().updateOpenRecentList(pathFile);
+    Configuration::getConfiguration().updateOpenRecentList(fi.absoluteFilePath());
     refreshRecentFilesActionList();
  }
 
@@ -932,7 +932,7 @@ void MainWindowViewer::openFolderFromPath(QString pathDir)
 	enableActions();
 
 	viewer->open(pathDir);
-	Configuration::getConfiguration().updateOpenRecentList(pathDir);
+	Configuration::getConfiguration().updateOpenRecentList(fi.absoluteFilePath());
 	refreshRecentFilesActionList();
 }
 
