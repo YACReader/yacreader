@@ -51,7 +51,7 @@ win32 {
     } else {
         LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
     }
-    
+
     QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
     QMAKE_LFLAGS_RELEASE += /LTCG
     CONFIG -= embed_manifest_exe
@@ -208,13 +208,13 @@ macx {
 }
 
 TRANSLATIONS = yacreader_es.ts \
-								  yacreader_fr.ts \ 
+								  yacreader_fr.ts \
 								  yacreader_ru.ts \
 								  yacreader_pt.ts \
 								  yacreader_nl.ts \
 								  yacreader_tr.ts \
 								  yacreader_de.ts \
-								  yacreader_source.ts  
+								  yacreader_source.ts
 
 unix:!macx {
 #set install prefix if it's empty
@@ -242,8 +242,8 @@ isEmpty(DESTDIR) {
 docs.path = $$DATADIR/doc/yacreader
 
 #rename docs for better packageability
-docs.extra = cp ../CHANGELOG.txt ../changelog; cp ../README.txt ../README
-docs.files = ../README ../changelog
+docs.extra = cp ../README.txt ../README
+docs.files = ../README ../CHANGELOG.md
 
 icon.path = $$DATADIR/yacreader
 icon.files = ../images/icon.png
@@ -261,5 +261,5 @@ manpage.path = $$DATADIR/man/man1
 manpage.files = ../YACReader.1
 
 #remove leftover doc files when 'make clean' is invoked
-QMAKE_CLEAN += "../changelog" "../README"
+QMAKE_CLEAN += "../README"
 }
