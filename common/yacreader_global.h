@@ -1,11 +1,7 @@
 #ifndef __YACREADER_GLOBAL_H
 #define __YACREADER_GLOBAL_H
 
-#if QT_VERSION >= 0x050000
-	#include <QStandardPaths>
-#else
-	#include <QDesktopServices>
-#endif
+#include <QStandardPaths>
 
 #define VERSION "8.6.0"
 
@@ -67,11 +63,10 @@ namespace YACReader
      YLight,
      YDark
  };
- 
+
 QString getSettingsPath();
 QString colorToName(LabelColors colors);
 QString labelColorToRGBString(LabelColors color);
 
 }
 #endif
-
