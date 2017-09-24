@@ -1,0 +1,11 @@
+--- libp7zip/CPP/myWindows/StdAfx.h	2014-06-06 23:52:13.397311952 +0200
++++ libp7zip/CPP/myWindows/StdAfx.h	2014-06-06 23:53:20.353981756 +0200
+@@ -114,7 +114,7 @@
+ 
+ #if defined( __x86_64__ )
+ 
+-#define _WIN64 1
++//#define _WIN64 1
+ 
+ #endif
+ 
