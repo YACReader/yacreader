@@ -4,7 +4,28 @@ Please note: this is a work in progress. Keeping a changelog has been neglected
 in the past so information is missing and older release information is in
 spanish only. Sorry for the mess.
 
-## 9.0.0 - unreleased
+## 9.0.0 - (unreleased)
+
+## 8.6.0 - (development release)
+
+### Library and Reader
+
+* Updated Qt to 5.8.0
+* Faster (way faster) pdf backend based on pdfium
+* Fixed fullscreen context menus (windows)
+* Minor fixes.
+
+### YACReaderLibrary
+* New comics view in addition to flow and grid views: info view.
+* New side view for showing current comic info in the grid view (it can be shown using the icon in the right bottom part of the window)
+* Improved the look and feel of the grid view.
+* Fixed Comic Vine integration (using the new https end point)
+* Usability fixes to Comic View scraper.
+
+### YACReader
+* Added an option to disable showing the go to flow on mouse over.
+* New "Quick Navigation Mode" for the go to flow feature, full-wide + a scroll bar, it can be enabled in the settings dialog. (this was an user contribution, credits will be updated on the final release)
+* Zig-zag autoscroll reading mode, please see the reading section in the shortcuts dialog for enabling this, by default there are no keys assigned to the scrolling actions (thanks to dcato, another contribution)
 
 ## 8.5.0 - 2016-03-28
 * headless version of YACReaderLibrary's server (no gui)
@@ -20,7 +41,7 @@ spanish only. Sorry for the mess.
 * Tags
 * 'Favorites' and 'being read' lists
 * New search engine, now you can filter folders and comics
-* New grid view
+* New grid viewb
 * Add and delete folders
 * Update a single folder (no need for updating the whole library to rescan a single folder)
 * Drag and drop for adding new comics and folders
