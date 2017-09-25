@@ -245,14 +245,11 @@ docs.path = $$DATADIR/doc/yacreader
 docs.extra = cp ../README.txt ../README
 docs.files = ../README ../CHANGELOG.md
 
-icon.path = $$DATADIR/yacreader
-icon.files = ../images/icon.png
+icon.path = $$DATADIR/icons/hicolor/48x48/apps
+icon.files = ../YACReader.png
 
 desktop.path = $$DATADIR/applications
-desktop.extra = desktop-file-edit --set-icon=$$DATADIR/yacreader/icon.png ../YACReader.desktop
 desktop.files = ../YACReader.desktop
-
-#TODO: icons should be located at /usr/share/icons and have the same basename as their application
 
 translation.path = $$DATADIR/yacreader/languages
 translation.files = ../release/languages/yacreader_*

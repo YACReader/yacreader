@@ -40,7 +40,7 @@ win32 {
     } else {
         LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
     }
-    
+
     QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
     QMAKE_LFLAGS_RELEASE += /LTCG
     CONFIG -= embed_manifest_exe
@@ -156,7 +156,7 @@ HEADERS += comic_flow.h \
         HEADERS += ../common/gl/yacreader_flow_gl.h
     }
 }
-		   
+
 SOURCES += comic_flow.cpp \
 		create_library_dialog.cpp \
 		library_creator.cpp \
@@ -231,7 +231,7 @@ SOURCES += comic_flow.cpp \
     }
 }
 
-				   
+
 include(./server/server.pri)
 include(../custom_widgets/custom_widgets_yacreaderlibrary.pri)
 CONFIG(7zip){
@@ -257,7 +257,7 @@ macx {
 	ICON = YACReaderLibrary.icns
 }
 
-TRANSLATIONS    = yacreaderlibrary_es.ts \ 
+TRANSLATIONS    = yacreaderlibrary_es.ts \
 									yacreaderlibrary_ru.ts \
 									yacreaderlibrary_pt.ts \
 									yacreaderlibrary_fr.ts \
@@ -313,11 +313,10 @@ isEmpty(DESTDIR) {
 server.path = $$DATADIR/yacreader
 server.files = ../release/server
 
-icon.path = $$DATADIR/yacreader
-icon.files = ../images/iconLibrary.png ../images/db.png ../images/coversPackage.png
+icon.path = $$DATADIR/icons/hicolor/48x48/apps
+icon.files = ../YACReaderLibrary.png
 
 desktop.path = $$DATADIR/applications
-desktop.extra = desktop-file-edit --set-icon=$$DATADIR/yacreader/iconLibrary.png $$PWD/../YACReaderLibrary.desktop
 desktop.files = ../YACReaderLibrary.desktop
 #TODO: icons should be located at /usr/share/icons and have the same basename as their application
 
