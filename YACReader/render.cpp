@@ -373,7 +373,7 @@ filters(f)
 void PageRender::run()
 {
 	QMutexLocker locker(&(render->mutex));
-	
+
 	QImage img;
 	img.loadFromData(data);
 	if(degrees > 0)
@@ -387,7 +387,7 @@ void PageRender::run()
 		img = filters[i]->setFilter(img);
 	}
 
-	
+
 	*page = img;
 
 	emit pageReady(numPage);
@@ -687,7 +687,7 @@ void Render::setComic(Comic * c)
 
 void Render::prepareAvailablePage(int page)
 {
-	if(!doublePage) 
+	if(!doublePage)
 	{
 		if (currentIndex == page)
 		{
@@ -701,7 +701,7 @@ void Render::prepareAvailablePage(int page)
 		{
 			emit currentPageReady();
 		}
-		else if ((currentIndex == page && !buffer[currentPageBufferedIndex+1]->isNull()) || 
+		else if ((currentIndex == page && !buffer[currentPageBufferedIndex+1]->isNull()) ||
 			(currentIndex+1 == page && !buffer[currentPageBufferedIndex]->isNull()))
 		{
 			emit currentPageReady();
@@ -769,7 +769,7 @@ void Render::createComic(const QString & path)
 		//comic->moveToThread(QApplication::instance()->thread());
 	comic = FactoryComic::newComic(path);
 
-	
+
 	if(comic == NULL)//archivo no encontrado o no válido
 	{
 		emit errorOpening();
@@ -871,7 +871,7 @@ void Render::nextDoublePage()
 	else
 	{
 		nextPage = currentIndex;
-	}	
+	}
 	if(currentIndex != nextPage)
 	{
 		comic->setIndex(nextPage);
@@ -885,14 +885,14 @@ void Render::nextDoublePage()
 		emit isLast();
 	}
 }
-	
+
 //si se solicita la página anterior, se calcula cuál debe ser en función de si se lee en modo a doble página o no.
 //la página sólo se renderiza, si realmente ha cambiado.
 void Render::previousPage()
 {
 	int previousPage; //indica cuál será la próxima página
 	previousPage = comic->previousPage();
-		
+
 	//se fuerza renderizado si la página ha cambiado
 	if(currentIndex != previousPage)
 	{
@@ -920,7 +920,7 @@ void Render::previousDoublePage()
 		emit pageChanged(currentIndex);
 	}
 }
-	
+
 unsigned int Render::getIndex()
 {
 	return comic->getIndex();
@@ -1006,7 +1006,7 @@ void Render::updateBuffer()
 {
 	QMutexLocker locker(&mutex);
 	int windowSize = currentIndex - previousIndex;
-	
+
 	if(windowSize > 0)//add pages to right pages and remove on the left
 	{
 		windowSize = qMin(windowSize,buffer.size());
@@ -1023,7 +1023,7 @@ void Render::updateBuffer()
 			pageRenders.push_back(0);
 
 			//images
-			
+
 			if(buffer.front()!=0)
 				delete buffer.front();
 			buffer.pop_front();
@@ -1060,10 +1060,15 @@ void Render::updateBuffer()
 
 void Render::fillBuffer()
 {
+	if (pagesReady.size() < 1)
+	{
+		return;
+	}
+
 	for(int i = 1; i <= qMax(numLeftPages,numRightPages); i++)
 	{
-		if ((currentIndex+i < (int)comic->numPages()) && 
-			buffer[currentPageBufferedIndex+i]->isNull() && 
+		if ((currentIndex+i < (int)comic->numPages()) &&
+			buffer[currentPageBufferedIndex+i]->isNull() &&
 			i <= numRightPages &&
 			pageRenders[currentPageBufferedIndex+i]==0 &&
 			pagesReady[currentIndex+i]) //preload next pages
@@ -1073,8 +1078,8 @@ void Render::fillBuffer()
 			pageRenders[currentPageBufferedIndex+i]->start();
 		}
 
-		if ((currentIndex-i > 0) && 
-			buffer[currentPageBufferedIndex-i]->isNull() && 
+		if ((currentIndex-i > 0) &&
+			buffer[currentPageBufferedIndex-i]->isNull() &&
 			i <= numLeftPages &&
 			pageRenders[currentPageBufferedIndex-i]==0 &&
 			pagesReady[currentIndex-i]) //preload previous pages

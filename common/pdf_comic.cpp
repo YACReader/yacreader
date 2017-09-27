@@ -48,23 +48,31 @@ unsigned int PdfiumComic::numPages()
 
 QImage PdfiumComic::getPage(const int page)
 {
+	if (!doc)
+	{
+		return QImage();
+	}
+
 	QImage image;
 	FPDF_PAGE pdfpage;
 	FPDF_BITMAP bitmap;
-	
+
 	pdfpage = FPDF_LoadPage(doc, page);
-	
+
 	if (!pdfpage)
 	{
-		qDebug() << FPDF_GetLastError();
 		return QImage();
 	}
-	
+
 	//TODO: make target DPI configurable
 	double width = (FPDF_GetPageWidth(pdfpage)/72)*150;
 	double height = (FPDF_GetPageHeight(pdfpage)/72)*150;
-	
+
 	image = QImage(width, height, QImage::Format_ARGB32);// QImage::Format_RGBX8888);
+	if (image.isNull())
+	{
+		return image;
+	}
 	image.fill(0xFFFFFFFF);
 
 	bitmap = FPDFBitmap_CreateEx(image.width(), image.height(), FPDFBitmap_BGRA, image.scanLine(0), image.bytesPerLine());
