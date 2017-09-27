@@ -777,19 +777,19 @@ void Render::createComic(const QString & path)
 
 	previousIndex = currentIndex = 0;
 
-	connect(comic,SIGNAL(errorOpening()),this,SIGNAL(errorOpening()));
-	connect(comic,SIGNAL(errorOpening(QString)),this,SIGNAL(errorOpening(QString)));
-	connect(comic,SIGNAL(crcErrorFound(QString)),this,SIGNAL(crcError(QString)));
-	connect(comic,SIGNAL(errorOpening()),this,SLOT(reset()));
-	connect(comic,SIGNAL(imageLoaded(int)),this,SIGNAL(imageLoaded(int)));
-	connect(comic,SIGNAL(imageLoaded(int)),this,SLOT(pageRawDataReady(int)));
-	connect(comic,SIGNAL(openAt(int)),this,SLOT(renderAt(int)));
-	connect(comic,SIGNAL(numPages(unsigned int)),this,SIGNAL(numPages(unsigned int)));
-	connect(comic,SIGNAL(numPages(unsigned int)),this,SLOT(setNumPages(unsigned int)));
-	connect(comic,SIGNAL(imageLoaded(int,QByteArray)),this,SIGNAL(imageLoaded(int,QByteArray)));
-	connect(comic,SIGNAL(isBookmark(bool)),this,SIGNAL(currentPageIsBookmark(bool)));
+    connect(comic,SIGNAL(errorOpening()),this,SIGNAL(errorOpening()), Qt::QueuedConnection);
+    connect(comic,SIGNAL(errorOpening(QString)),this,SIGNAL(errorOpening(QString)), Qt::QueuedConnection);
+    connect(comic,SIGNAL(crcErrorFound(QString)),this,SIGNAL(crcError(QString)), Qt::QueuedConnection);
+    connect(comic,SIGNAL(errorOpening()),this,SLOT(reset()), Qt::QueuedConnection);
+    connect(comic,SIGNAL(imageLoaded(int)),this,SIGNAL(imageLoaded(int)), Qt::QueuedConnection);
+    connect(comic,SIGNAL(imageLoaded(int)),this,SLOT(pageRawDataReady(int)), Qt::QueuedConnection);
+    connect(comic,SIGNAL(openAt(int)),this,SLOT(renderAt(int)), Qt::QueuedConnection);
+    connect(comic,SIGNAL(numPages(unsigned int)),this,SIGNAL(numPages(unsigned int)), Qt::QueuedConnection);
+    connect(comic,SIGNAL(numPages(unsigned int)),this,SLOT(setNumPages(unsigned int)), Qt::QueuedConnection);
+    connect(comic,SIGNAL(imageLoaded(int,QByteArray)),this,SIGNAL(imageLoaded(int,QByteArray)), Qt::QueuedConnection);
+    connect(comic,SIGNAL(isBookmark(bool)),this,SIGNAL(currentPageIsBookmark(bool)), Qt::QueuedConnection);
 
-	connect(comic,SIGNAL(bookmarksUpdated()),this,SIGNAL(bookmarksUpdated()));
+    connect(comic,SIGNAL(bookmarksUpdated()),this,SIGNAL(bookmarksUpdated()), Qt::QueuedConnection);
 
 	//connect(comic,SIGNAL(isLast()),this,SIGNAL(isLast()));
 	//connect(comic,SIGNAL(isCover()),this,SIGNAL(isCover()));
@@ -807,19 +807,20 @@ void Render::loadComic(const QString & path, int atPage)
 
 void Render::startLoad()
 {
-	QThread * thread = NULL;
+    QThread * thread = nullptr;
 
 	thread = new QThread();
 
 	comic->moveToThread(thread);
 
-    connect(comic, SIGNAL(errorOpening()), thread, SLOT(quit()));
-    connect(comic, SIGNAL(errorOpening(QString)), thread, SLOT(quit()));
-    connect(comic, SIGNAL(imagesLoaded()), thread, SLOT(quit()));
+    connect(comic, SIGNAL(errorOpening()), thread, SLOT(quit()), Qt::QueuedConnection);
+    connect(comic, SIGNAL(errorOpening(QString)), thread, SLOT(quit()), Qt::QueuedConnection);
+    connect(comic, SIGNAL(imagesLoaded()), thread, SLOT(quit()), Qt::QueuedConnection);
+    connect(comic, SIGNAL(destroyed()), thread, SLOT(quit()), Qt::QueuedConnection);
 	connect(thread, SIGNAL(started()), comic, SLOT(process()));
 	connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
-	if(thread != NULL)
+    if(thread != nullptr)
 		thread->start();
 
 	invalidate();
