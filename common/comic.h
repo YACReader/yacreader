@@ -86,8 +86,10 @@ class Comic : public QObject
 		void checkIsBookmark(int index);
 		void updateBookmarkImage(int);
 		void setPageLoaded(int page);
+        void invalidate();
 		
 	signals:
+        void invalidated();
         void destroyed();
 		void imagesLoaded();
 		void imageLoaded(int index);

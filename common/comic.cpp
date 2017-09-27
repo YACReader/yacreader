@@ -199,7 +199,12 @@ void Comic::updateBookmarkImage(int index)
 //-----------------------------------------------------------------------------
 void Comic::setPageLoaded(int page)
 {
-	_loadedPages[page] = true;
+    _loadedPages[page] = true;
+}
+
+void Comic::invalidate()
+{
+    emit invalidated();
 }
 //-----------------------------------------------------------------------------
 QByteArray Comic::getRawPage(int page)

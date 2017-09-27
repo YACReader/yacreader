@@ -761,6 +761,8 @@ void Render::createComic(const QString & path)
 	if(comic!=0)
 	{
 		//comic->moveToThread(QApplication::instance()->thread());
+        comic->invalidate();
+
 		comic->disconnect();
 		comic->deleteLater();
 	}
@@ -817,6 +819,7 @@ void Render::startLoad()
     connect(comic, SIGNAL(errorOpening(QString)), thread, SLOT(quit()), Qt::QueuedConnection);
     connect(comic, SIGNAL(imagesLoaded()), thread, SLOT(quit()), Qt::QueuedConnection);
     connect(comic, SIGNAL(destroyed()), thread, SLOT(quit()), Qt::QueuedConnection);
+    connect(comic, SIGNAL(invalidated()), thread, SLOT(quit()), Qt::QueuedConnection);
 	connect(thread, SIGNAL(started()), comic, SLOT(process()));
 	connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
