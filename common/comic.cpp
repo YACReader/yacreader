@@ -44,7 +44,7 @@ const QStringList Comic::literalComicExtensions = LiteralComicArchiveExtensions;
 
 //-----------------------------------------------------------------------------
 Comic::Comic()
-:_pages(),_index(0),_path(),_loaded(false),bm(new Bookmarks()),_loadedPages(),_isPDF(false)
+:_pages(),_index(0),_path(),_loaded(false),bm(new Bookmarks()),_loadedPages(),_isPDF(false),_invalidated(false)
 {
 	setup();
 }
@@ -57,6 +57,7 @@ Comic::Comic(const QString & pathFile, int atPage )
 //-----------------------------------------------------------------------------
 Comic::~Comic()
 {
+    emit destroyed();
 	delete bm;
 }
 //-----------------------------------------------------------------------------
@@ -198,7 +199,13 @@ void Comic::updateBookmarkImage(int index)
 //-----------------------------------------------------------------------------
 void Comic::setPageLoaded(int page)
 {
-	_loadedPages[page] = true;
+    _loadedPages[page] = true;
+}
+
+void Comic::invalidate()
+{
+    _invalidated = true;
+    emit invalidated();
 }
 //-----------------------------------------------------------------------------
 QByteArray Comic::getRawPage(int page)
@@ -585,10 +592,20 @@ void FileComic::process()
 
 	for(int i = sectionIndex; i<sections.count() ; i++)
 	{
+        if(_invalidated)
+        {
+            moveToThread(QCoreApplication::instance()->thread());
+            return;
+        }
 		archive.getAllData(sections.at(i),this);
 	}
 	for(int i = 0; i<sectionIndex; i++)
 	{
+        if(_invalidated)
+        {
+            moveToThread(QCoreApplication::instance()->thread());
+            return;
+        }
 		archive.getAllData(sections.at(i),this);
 	}
 	//archive.getAllData(QVector<quint32>(),this);
@@ -688,6 +705,12 @@ void FolderComic::process()
 		int i=_firstPage;
 		while(count<nPages)
 		{
+            if(_invalidated)
+            {
+                moveToThread(QCoreApplication::instance()->thread());
+                return;
+            }
+
 			QFile f(list.at(i).absoluteFilePath());
 			f.open(QIODevice::ReadOnly);
 			_pages[i]=f.readAll();
@@ -843,10 +866,23 @@ void PDFComic::process()
 	int buffered_index = _index;
 	for(int i=buffered_index;i<nPages;i++)
 	{
+        if(_invalidated)
+        {
+            delete pdfComic;
+            moveToThread(QCoreApplication::instance()->thread());
+            return;
+        }
+
 		renderPage(i);
 	}
 	for(int i=0;i<buffered_index;i++)
 	{
+        if(_invalidated)
+        {
+            delete pdfComic;
+            moveToThread(QCoreApplication::instance()->thread());
+            return;
+        }
 		renderPage(i);
 	}
 	
