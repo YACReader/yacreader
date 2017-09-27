@@ -79,7 +79,6 @@ class Comic : public QObject
 		static QList<QString> findValidComicFilesInFolder(const QString &path);
 	
 	public slots:
-	
 		void loadFinished();
 		void setBookmark();
 		void removeBookmark();
@@ -89,7 +88,7 @@ class Comic : public QObject
 		void setPageLoaded(int page);
 		
 	signals:
-	
+        void destroyed();
 		void imagesLoaded();
 		void imageLoaded(int index);
 		void imageLoaded(int index,const QByteArray & image);
