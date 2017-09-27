@@ -38,6 +38,8 @@ class Comic : public QObject
 
 		bool _isPDF;
 
+        bool _invalidated;
+
 	public:
 		
 		static const QStringList imageExtensions;
@@ -79,7 +81,6 @@ class Comic : public QObject
 		static QList<QString> findValidComicFilesInFolder(const QString &path);
 	
 	public slots:
-	
 		void loadFinished();
 		void setBookmark();
 		void removeBookmark();
@@ -87,9 +88,11 @@ class Comic : public QObject
 		void checkIsBookmark(int index);
 		void updateBookmarkImage(int);
 		void setPageLoaded(int page);
+        void invalidate();
 		
 	signals:
-	
+        void invalidated();
+        void destroyed();
 		void imagesLoaded();
 		void imageLoaded(int index);
 		void imageLoaded(int index,const QByteArray & image);

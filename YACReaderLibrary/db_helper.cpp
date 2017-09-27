@@ -243,6 +243,9 @@ void DBHelper::update(qulonglong libraryId, ComicInfo & comicInfo)
 
 void DBHelper::update(ComicInfo * comicInfo, QSqlDatabase & db)
 {
+    if(comicInfo == nullptr)
+        return;
+
 	QSqlQuery updateComicInfo(db);
 	updateComicInfo.prepare("UPDATE comic_info SET "
 		"title = :title,"
@@ -385,7 +388,7 @@ void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
     comic.info.currentPage = comicInfo.currentPage;
     comic.info.hasBeenOpened = true;
 
-    DBHelper::update(&comic.info,db);
+    DBHelper::updateReadingRemoteProgress(comic.info,db);
 
     db.close();
     QSqlDatabase::removeDatabase(libraryPath);
@@ -407,6 +410,8 @@ void DBHelper::updateReadingRemoteProgress(const ComicInfo &comicInfo, QSqlDatab
     updateComicInfo.bindValue(":id", comicInfo.id);
     updateComicInfo.bindValue(":rating", comicInfo.rating);
     updateComicInfo.exec();
+
+    updateComicInfo.clear();
 }
 
 

@@ -244,6 +244,7 @@ void HttpSession::dismissCurrentComic()
 	{
 		if(dataPtr->yacreaderSessionData.comic != 0)
 		{
+            dataPtr->yacreaderSessionData.comic->invalidate();
 			dataPtr->yacreaderSessionData.comic->deleteLater();
 			dataPtr->yacreaderSessionData.comic = 0;
 		}
@@ -283,6 +284,7 @@ void HttpSession::dismissCurrentRemoteComic()
     {
         if(dataPtr->yacreaderSessionData.remoteComic != 0)
         {
+            dataPtr->yacreaderSessionData.remoteComic->invalidate();
             dataPtr->yacreaderSessionData.remoteComic->deleteLater();
             dataPtr->yacreaderSessionData.remoteComic = 0;
         }
