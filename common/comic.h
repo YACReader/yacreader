@@ -38,6 +38,8 @@ class Comic : public QObject
 
 		bool _isPDF;
 
+        bool _invalidated;
+
 	public:
 		
 		static const QStringList imageExtensions;
