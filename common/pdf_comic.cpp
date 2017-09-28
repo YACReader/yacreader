@@ -1,6 +1,27 @@
 #include "comic.h"
 #include "pdf_comic.h"
+
 #if defined USE_PDFIUM && !defined NO_PDF
+
+int pdfRead(void* param,
+            unsigned long position,
+            unsigned char* pBuf,
+            unsigned long size) {
+
+    QFile *file = static_cast<QFile *>(param);
+
+    file->seek(position);
+
+    qint64 numBytesRead = file->read(reinterpret_cast<char *>(pBuf), size);
+
+    if(numBytesRead > 0)
+    {
+        return numBytesRead;
+    }
+
+    return 0;
+}
+
 PdfiumComic::PdfiumComic()
 {
 	FPDF_InitLibrary();
@@ -17,7 +38,19 @@ PdfiumComic::~PdfiumComic()
 
 bool PdfiumComic::openComic(const QString & path)
 {
-    doc = FPDF_LoadDocument(path.toLocal8Bit().constData(), NULL);
+    pdfFile.setFileName(path);
+
+    if(pdfFile.open(QIODevice::ReadOnly) == false)
+    {
+        qDebug() << "unable to open file : " << path;
+        return false;
+    }
+
+    fileAccess.m_FileLen = pdfFile.size();
+    fileAccess.m_GetBlock = pdfRead;
+    fileAccess.m_Param = &pdfFile;
+
+    doc = FPDF_LoadCustomDocument(&fileAccess, NULL);
 	if (doc)
 	{
 		return true;
