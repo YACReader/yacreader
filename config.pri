@@ -30,7 +30,7 @@ CONFIG(no_opengl) {
 		CONFIG += unarr
 		}
 	win32 {
-		CONFIG += 7zip
+                CONFIG += unarr
 		}
 }
 
