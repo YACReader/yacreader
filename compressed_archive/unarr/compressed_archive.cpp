@@ -4,21 +4,22 @@
 #include <QDebug>
 
 #include "extract_delegate.h"
-
-extern"C" {
 #include <unarr.h>
-}
 
 CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) :
     QObject(parent),valid(false),tools(true),numFiles(0),ar(NULL),stream(NULL)
 {
 	//open file
-	stream = ar_open_file(filePath.toStdString().c_str());
+  #ifdef Q_OS_WIN
+  stream = ar_open_file_w((wchar_t *)filePath.utf16());
+  #else
+	stream = ar_open_file(filePath.toLocal8Bit().constData());
+  #endif
 	if (!stream)
 	{
 		return;
 	}
-	
+
 	//open archive
 	ar = ar_open_rar_archive(stream);
 	//TODO: build unarr with 7z support and test this!
@@ -30,9 +31,9 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 	{
 		return;
 	}
-	
+
 	//initial parse
-	while (ar_parse_entry(ar)) 
+	while (ar_parse_entry(ar))
 	{
 		//make sure we really got a file header
 		if (ar_entry_get_size(ar) > 0)
@@ -43,7 +44,7 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 		}
 	}
 	if (!ar_at_eof(ar))
-	{	
+	{
 		//fail if the initial parse didn't reach EOF
 		//this might be a bit too drastic
 		qDebug() << "Error while parsing archive";
@@ -84,11 +85,11 @@ int CompressedArchive::getNumFiles()
 
 void CompressedArchive::getAllData(const QVector<quint32> & indexes, ExtractDelegate * delegate)
 {
-	if (indexes.isEmpty())	
+	if (indexes.isEmpty())
 		return;
-	
+
 	QByteArray buffer;
-	
+
 	int i=0;
 	while (i < indexes.count())
 	{
@@ -102,7 +103,7 @@ void CompressedArchive::getAllData(const QVector<quint32> & indexes, ExtractDele
 		else
 		{
 			delegate->crcError(indexes.at(i)); 	//we could not extract it...
-		}								
+		}
 		i++;
 	}
 }
