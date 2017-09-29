@@ -123,7 +123,7 @@ HEADERS +=  ../common/comic.h \
             ../common/exit_check.h \
             ../common/scroll_management.h \
             ../common/opengl_checker.h \
-	        ../common/pdf_comic.h
+	    ../common/pdf_comic.h
 
 !CONFIG(no_opengl) {
     CONFIG(legacy_gl_widget) {
@@ -259,4 +259,5 @@ manpage.files = ../YACReader.1
 
 #remove leftover doc files when 'make clean' is invoked
 QMAKE_CLEAN += "../README"
-}
+}
+

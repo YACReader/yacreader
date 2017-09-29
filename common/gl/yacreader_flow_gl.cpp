@@ -1,22 +1,17 @@
 #include "yacreader_flow_gl.h"
 
 #include <QtGui>
-#include <QtOpenGL>
+#include <QMatrix4x4>
+#include <QVector3D>
+
 //#include <math.h>
 
-#ifdef Q_OS_MAC
-	#include <OpenGL/glu.h>
-#else
-    #include <GL/glu.h>
-#endif
-
-#include <QGLContext>
-#include <QGLPixelBuffer>
 #include <cmath>
 #include <iostream>
 /*** Animation Settings ***/
 
 /*** Position Configuration ***/
+
 
 int YACReaderFlowGL::updateInterval = 16;
 
@@ -241,18 +236,22 @@ YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
     QSurfaceFormat f = format();
 
     //TODO add antialiasing
-    //f.setSamples(4);
+    f.setSamples(4);
     f.setVersion(2, 1);
     f.setSwapInterval(0);
 	setFormat(f);
+	
+
 
     timerId = startTimer(updateInterval);
 }
 
 void YACReaderFlowGL::timerEvent(QTimerEvent * event)
 {
-	if(timerId == event->timerId())
+	if (timerId == event->timerId())
+	{
         update();
+	}
 	
 	//if(!worker->isRunning())
     //worker->start();
@@ -260,13 +259,15 @@ void YACReaderFlowGL::timerEvent(QTimerEvent * event)
 
 void YACReaderFlowGL::startAnimationTimer()
 {
-    if(timerId == -1)
+    if (timerId == -1)
+    {
         timerId = startTimer(updateInterval);
+	}
 }
 
 void YACReaderFlowGL::stopAnimationTimer()
 {
-    if(timerId != -1)
+    if (timerId != -1)
     {
         killTimer(timerId);
         timerId = -1;
@@ -283,31 +284,101 @@ QSize YACReaderFlowGL::minimumSizeHint() const
 	return QSize(320, 200);
 }
 
-/*QSize YACReaderFlowGL::sizeHint() const
-{
-	return QSize(320, 200);
-}*/
-
 void YACReaderFlowGL::initializeGL()
 {
-    glShadeModel(GL_SMOOTH);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
+	static QString vertex_shader =
+		"//#version 110\n"
+		"\n"
+		"attribute vec3 position;\n"
+		"attribute vec3 color;\n"
+		"attribute vec2 texCoord;\n"
+		
+		"varying vec3 v_color;\n"
+		"varying vec2 v_texCoord;\n"
+		
+		"uniform mat4 modelview;\n"
+		"uniform mat4 projection;\n"
+		
+		"void main()\n"
+		"{\n"
+		"	v_color = color;\n"
+		"	v_texCoord = texCoord;\n"
+		"	gl_Position = (projection * modelview) * vec4(position, 1);\n"
+		"}\n";
+		
+	static QString fragment_shader =
+		"//#version 110\n"
+		"#ifdef GL_ES\n"
+		"	precision mediump float;\n"
+		"#endif\n"
+		"varying vec3 v_color;\n"
+		"varying vec2 v_texCoord;\n"
+		"uniform sampler2D texture;\n"
+		
+		"void main()\n"
+		"{\n"
+		"	gl_FragColor = texture2D(texture, v_texCoord) * vec4(v_color, 1.0);\n" //mix benutzen??
+		"}\n";
+	
+	//use a vertex array object to safe all OpenGL settings
+	vao = new QOpenGLVertexArrayObject();
+	vao->create();
+	if (vao->isCreated())
+	{
+		vao->bind();
+	}
+	
+	pipeline = new QOpenGLShaderProgram(this);
+	pipeline->addShaderFromSourceCode(QOpenGLShader::Vertex, vertex_shader);
+	pipeline->addShaderFromSourceCode(QOpenGLShader::Fragment, fragment_shader);
+	pipeline->link();
+	
+	v_buffer = new QOpenGLBuffer();
+	v_buffer->create();
+	v_buffer->bind();
+	
+	pipeline->setAttributeBuffer("position", GL_FLOAT, 0, 3, 8*sizeof(float));
+	pipeline->setAttributeBuffer("texCoord", GL_FLOAT, 3*sizeof(float), 2, 8*sizeof(float));
+	pipeline->setAttributeBuffer("color", GL_FLOAT, 5*sizeof(float), 3, 8*sizeof(float));
+	pipeline->enableAttributeArray("position");
+	pipeline->enableAttributeArray("texCoord");
+	pipeline->enableAttributeArray("color");
+	
+	//cache uniform locations for later use
+	m_projection_location = pipeline->uniformLocation("projection");
+	m_modelview_location = pipeline->uniformLocation("modelview");
+	
+	v_buffer->setUsagePattern(QOpenGLBuffer::DynamicDraw);
+	v_buffer->allocate(3*6*8*sizeof(float));
+	v_buffer->release();
+			
     defaultTexture = new QOpenGLTexture(QImage(":/images/defaultCover.png"));
-    defaultTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::LinearMipMapLinear);
+    defaultTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::Linear);
+
 #ifdef YACREADER_LIBRARY
     markTexture = new QOpenGLTexture(QImage(":/images/readRibbon.png"));
-    markTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::LinearMipMapLinear);
-
+    markTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::Linear);
     readingTexture = new QOpenGLTexture(QImage(":/images/readingRibbon.png"));
-    readingTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::LinearMipMapLinear);
+    readingTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::Linear);
 #endif
-    if(lazyPopulateObjects!=-1)
+    if (lazyPopulateObjects!=-1)
+    {
 		populate(lazyPopulateObjects);
+	}
+
+	//fixed function shader setup
+	//glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_CULL_FACE);
+    //glEnable(GL_COLOR_MATERIAL);
+    //glEnable(GL_BLEND);
+    //glEnable(GL_MULTISAMPLE);
+	//glEnable(GL_TEXTURE_2D);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glClearColor(0,0,0,1);
 
 	hasBeenInitialized = true;
+	vao->release();
+	
 }
 
 void YACReaderFlowGL::paintGL()
@@ -316,31 +387,28 @@ void YACReaderFlowGL::paintGL()
     painter.begin(this);
 
     painter.beginNativePainting();
-
+	
+	vao->bind();
+    pipeline->bind();
+    
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_BLEND);
     glEnable(GL_MULTISAMPLE);
-
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glClearColor(0,0,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    if(numObjects>0)
+    
+    if (numObjects>0)
     {
         updatePositions();
         udpatePerspective(width(),height());
         draw();
     }
 
-    glDisable(GL_MULTISAMPLE);
-    glDisable(GL_BLEND);
-    glDisable(GL_COLOR_MATERIAL);
-    glDisable(GL_CULL_FACE);
-    glDisable(GL_DEPTH_TEST);
-
+	vao->release();
+	pipeline->release();
+	
     painter.endNativePainting();
 
     QFont font = painter.font() ;
@@ -356,48 +424,54 @@ void YACReaderFlowGL::paintGL()
 
 void YACReaderFlowGL::resizeGL(int width, int height)
 {
+	pipeline->bind();
     float pixelRatio = devicePixelRatio();
     fontSize = (width + height) * 0.010 * pixelRatio;
-	if(fontSize < 10)
+	if (fontSize < 10)
+	{
 		fontSize = 10;
-
-	//int side = qMin(width, height);
+	}
 	udpatePerspective(width,height);
 
-	if(numObjects>0)
+	if (numObjects>0)
+	{
 		updatePositions();
+	}
+	pipeline->release();
 }
 
 void YACReaderFlowGL::udpatePerspective(int width, int height)
 {
-    float pixelRatio = devicePixelRatio();
-    glViewport(0, 0, width*pixelRatio, height*pixelRatio);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-    gluPerspective(20.0, GLdouble(width) / (float)height, 1.0, 200.0);
-
-	glMatrixMode(GL_MODELVIEW);
+	float pixelRatio = devicePixelRatio();
+	glViewport(0, 0, width*pixelRatio, height*pixelRatio);
+	m_projection.setToIdentity();
+	m_projection.perspective(20.0, ((float)width/(float)height), 1.0, 200.0);
+	pipeline->setUniformValue(m_projection_location, m_projection);
 }
 
 //-----------------------------------------------------------------------------
 /*Private*/
 void YACReaderFlowGL::calcPos(YACReader3DImage & image, int pos)
 {
-    if(flowRightToLeft){
+    if (flowRightToLeft)
+    {
         pos = pos * -1;
     }
 
-    if(pos == 0){
+    if (pos == 0)
+    {
         image.current = centerPos;
-    }else{
-		if(pos > 0){
+    }
+    else
+    {
+		if (pos > 0){
             image.current.x = (config.centerDistance)+(config.xDistance*pos);
             image.current.y = config.yDistance*pos*-1;
             image.current.z = config.zDistance*pos*-1;
             image.current.rot = config.rotation;
-		}else{
+		}
+		else
+		{
             image.current.x = (config.centerDistance)*-1+(config.xDistance*pos);
             image.current.y =  config.yDistance*pos;
             image.current.z = config.zDistance*pos;
@@ -406,6 +480,7 @@ void YACReaderFlowGL::calcPos(YACReader3DImage & image, int pos)
 	}
 
 }
+
 void YACReaderFlowGL::calcVector(YACReader3DVector & vector, int pos)
 {
     calcPos(dummy,pos);
@@ -423,18 +498,21 @@ bool YACReaderFlowGL::animate(YACReader3DVector & currentVector,YACReader3DVecto
     float yDiff = toVector.y-currentVector.y;
     float zDiff = toVector.z-currentVector.z;
 
-    if(fabs(rotDiff) < 0.01
-       && fabs(xDiff)  < 0.001
-       && fabs(yDiff)  < 0.001
-       && fabs(zDiff)  < 0.001)
-        return true;
+    if (fabs(rotDiff) < 0.01
+		&& fabs(xDiff)  < 0.001
+		&& fabs(yDiff)  < 0.001
+		&& fabs(zDiff)  < 0.001)
+		{
+			return true;
+		}
 
 	//calculate and apply positions
     currentVector.x = currentVector.x+(xDiff)*config.animationStep;
     currentVector.y = currentVector.y+(yDiff)*config.animationStep;
     currentVector.z = currentVector.z+(zDiff)*config.animationStep;
 
-    if(fabs(rotDiff) > 0.01){
+    if (fabs(rotDiff) > 0.01)
+    {
         currentVector.rot = currentVector.rot+(rotDiff)*(config.animationStep*config.preRotation);
 	}
 	else
@@ -446,123 +524,165 @@ bool YACReaderFlowGL::animate(YACReader3DVector & currentVector,YACReader3DVecto
 }
 void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 {
+   	
+   	//prepare render data
+   	
     float w = image.width;
     float h = image.height;
 
 	//fadeout 
     float opacity = 1-1/(config.animationFadeOutDist+config.viewRotateLightStrenght*fabs(viewRotate))*fabs(0-image.current.x);
-
-	glLoadIdentity();
-	glTranslatef(config.cfX,config.cfY,config.cfZ);
-	glRotatef(config.cfRX,1,0,0);
-	glRotatef(viewRotate*config.viewAngle+config.cfRY,0,1,0);
-	glRotatef(config.cfRZ,0,0,1);
-
-    glTranslatef( image.current.x, image.current.y, image.current.z );
-
-	glPushMatrix();
-    glRotatef(image.current.rot,0,1,0);
-
-	glEnable(GL_TEXTURE_2D);
-    image.texture->bind();
-
+	
 	//calculate shading
     float LShading = ((config.rotation != 0 )?((image.current.rot < 0)?1-1/config.rotation*image.current.rot:1):1);
     float RShading = ((config.rotation != 0 )?((image.current.rot > 0)?1-1/(config.rotation*-1)*image.current.rot:1):1);
 	float LUP = shadingTop+(1-shadingTop)*LShading;
 	float LDOWN = shadingBottom+(1-shadingBottom)*LShading;
 	float RUP =  shadingTop+(1-shadingTop)*RShading;
-	float RDOWN =  shadingBottom+(1-shadingBottom)*RShading;;
+	float RDOWN =  shadingBottom+(1-shadingBottom)*RShading;
 
-
-	//DrawCover
-	glBegin(GL_QUADS);
-
-	//esquina inferior izquierda
-	glColor4f(LDOWN*opacity,LDOWN*opacity,LDOWN*opacity,1);
-	glTexCoord2f(0.0f, 1.0f);
-	glVertex3f(w/2.f*-1.f, -0.5f, 0.f);
-
-	//esquina inferior derecha
-	glColor4f(RDOWN*opacity,RDOWN*opacity,RDOWN*opacity,1);
-	glTexCoord2f(1.0f, 1.0f);
-	glVertex3f(w/2.f, -0.5f, 0.f);
-
-	//esquina superior derecha
-	glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
-	glTexCoord2f(1.0f, 0.0f);
-	glVertex3f(w/2.f, -0.5f+h, 0.f);
-
-	//esquina superior izquierda
-	glColor4f(LUP*opacity,LUP*opacity,LUP*opacity,1);
-	glTexCoord2f(0.0f, 0.0f);
-	glVertex3f(w/2.f*-1.f, -0.5f+h, 0.f);
-
-	glEnd();
-
-
-
-	//Draw reflection
-	glBegin(GL_QUADS);
-
-	//esquina inferior izquierda
-    glColor4f(LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,1);
-	glTexCoord2f(0.0f, 0.0f);
-	glVertex3f(w/2.f*-1.f, -0.5f-h, 0.f);
-
-	//esquina inferior derecha
-    glColor4f(RUP*opacity*reflectionUp/2,RUP*opacity*reflectionUp/2,RUP*opacity*reflectionUp/2,1);
-	glTexCoord2f(1.0f, 0.0f);
-	glVertex3f(w/2.f, -0.5f-h, 0.f);
-
-	//esquina superior derecha
-    glColor4f(RDOWN*opacity/3,RDOWN*opacity/3,RDOWN*opacity/3,1);
-	glTexCoord2f(1.0f, 1.0f);
-	glVertex3f(w/2.f, -0.5f, 0.f);
-
-	//esquina superior izquierda
-    glColor4f(LDOWN*opacity/3,LDOWN*opacity/3,LDOWN*opacity/3,1);
-	glTexCoord2f(0.0f, 1.0f);
-	glVertex3f(w/2.f*-1.f, -0.5f, 0.f);
-
-	glEnd();
-	glDisable(GL_TEXTURE_2D);
+	//vertices and coordinates
 	
-    if(showMarks && loaded[image.index] && marks[image.index] != Unread)
+	float cover[] = {w/2.f*-1.f, -0.5f, 0.f,
+					w/2.f, -0.5f, 0.f,
+					w/2.f, -0.5f+h, 0.f,
+					w/2.f*-1.f, -0.5f, 0.f,
+					w/2.f, -0.5f+h, 0.f,
+					w/2.f*-1.f, -0.5f+h, 0.f};
+	
+	float rcover[] = {w/2.f*-1.f, -0.5f-h, 0.f,
+						w/2.f, -0.5f-h, 0.f,
+						w/2.f, -0.5f, 0.f,
+						w/2.f*-1.f, -0.5f-h, 0.f,
+						w/2.f, -0.5f, 0.f,
+						w/2.f*-1.f, -0.5f, 0.f};
+	
+	const float cover_t[] = {0, 1,
+							1, 1,
+							1, 0,
+							0, 1,
+							1, 0,
+							0, 0};
+		
+	const float rcover_t[] = {0, 0,
+							1, 0,
+							1, 1,
+							0, 0,
+							1, 1,
+							0, 1};
+	
+	float cover_c[] = {LDOWN*opacity,LDOWN*opacity,LDOWN*opacity,
+						RDOWN*opacity,RDOWN*opacity,RDOWN*opacity,
+						RUP*opacity,RUP*opacity,RUP*opacity,
+						LDOWN*opacity,LDOWN*opacity,LDOWN*opacity,
+						RUP*opacity,RUP*opacity,RUP*opacity,
+						LUP*opacity,LUP*opacity,LUP*opacity};
+						
+						
+	float rcover_c[] = {LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,
+						RUP*opacity*reflectionUp/2,RUP*opacity*reflectionUp/2,RUP*opacity*reflectionUp/2,
+						RDOWN*opacity/3,RDOWN*opacity/3,RDOWN*opacity/3,
+						LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,
+						RDOWN*opacity/3,RDOWN*opacity/3,RDOWN*opacity/3,
+						LDOWN*opacity/3,LDOWN*opacity/3,LDOWN*opacity/3};
+	
+	float vertex[3*6*8]; //buffer array
+	
+	for (int i=0; i<6; i++)
 	{
-		glEnable(GL_TEXTURE_2D);
-        if(marks[image.index] == Read)
-            markTexture->bind();
-		else
-            readingTexture->bind();
-		glBegin(GL_QUADS);
-
-		//esquina inferior izquierda
-		glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
-		glTexCoord2f(0.0f, 1.0f);
-        glVertex3f(w/2.f-0.2, -0.688f+h, 0.001f);
-
-		//esquina inferior derecha
-		glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
-		glTexCoord2f(1.0f, 1.0f);
-        glVertex3f(w/2.f-0.05, -0.688f+h, 0.001f);
-
-		//esquina superior derecha
-		glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
-		glTexCoord2f(1.0f, 0.0f);
-        glVertex3f(w/2.f-0.05, -0.488f+h, 0.001f);
-
-		//esquina superior izquierda
-		glColor4f(RUP*opacity,RUP*opacity,RUP*opacity,1);
-		glTexCoord2f(0.0f, 0.0f);
-        glVertex3f(w/2.f-0.2, -0.488f+h, 0.001f);
-
-		glEnd();
-		glDisable(GL_TEXTURE_2D);
+		memcpy(&vertex[i*8], &cover[i*3], 3*sizeof(float));
+		memcpy(&vertex[(i*8)+3], &cover_t[i*2], 2*sizeof(float));
+		memcpy(&vertex[(i*8)+5], &cover_c[i*3], 3*sizeof(float));
+	}
+	
+	for (int i=6; i<12; i++)
+	{	
+		memcpy(&vertex[i*8], &rcover[(i-6)*3], 3*sizeof(float));
+		memcpy(&vertex[(i*8)+3], &rcover_t[(i-6)*2], 2*sizeof(float));
+		memcpy(&vertex[(i*8)+5], &rcover_c[(i-6)*3], 3*sizeof(float));
+	}
+    if (showMarks && loaded[image.index] && marks[image.index] != Unread)
+	{
+		float mark[] = {w/2.f-0.2f, -0.688f+h, 0.001f,
+						w/2.f-0.05f, -0.688f+h, 0.001f,
+						w/2.f-0.05f, -0.488f+h, 0.001f,
+						w/2.f-0.2f, -0.688f+h, 0.001f,
+						w/2.f-0.05f, -0.488f+h, 0.001f,
+						w/2.f-0.2f, -0.488f+h, 0.001f};
+						
+		float mark_t[] = {0, 1,
+							1, 1,
+							1, 0,
+							0, 1,
+							1, 0,
+							0, 0};
+								
+			
+		float mark_c[] = {RUP*opacity,RUP*opacity,RUP*opacity,
+							RUP*opacity,RUP*opacity,RUP*opacity,
+							RUP*opacity,RUP*opacity,RUP*opacity,
+							RUP*opacity,RUP*opacity,RUP*opacity,
+							RUP*opacity,RUP*opacity,RUP*opacity,
+							RUP*opacity,RUP*opacity,RUP*opacity};
+    
+		for (int i=12; i<18; i++)
+		{
+			memcpy(&vertex[i*8], &mark[(i-12)*3], 3*sizeof(float));
+			memcpy(&vertex[(i*8)+3], &mark_t[(i-12)*2], 2*sizeof(float));
+			memcpy(&vertex[(i*8)+5], &mark_c[(i-12)*3], 3*sizeof(float));
+		}        
+	}
+	
+	//draw cover
+	
+	//set matrices
+	m_modelview.setToIdentity();
+	m_modelview.translate(config.cfX,config.cfY,config.cfZ);
+	m_modelview.rotate(config.cfRX,1,0,0);
+	m_modelview.rotate(viewRotate*config.viewAngle+config.cfRY,0,1,0);
+	m_modelview.rotate(config.cfRZ,0,0,1);
+	m_modelview.translate(image.current.x, image.current.y, image.current.z);
+	m_modelview.rotate(image.current.rot,0,1,0);
+	
+	pipeline->setUniformValue(m_modelview_location, m_modelview);
+    
+    //bind cover texture
+    image.texture->bind();
+	
+	//update vertices
+	v_buffer->bind();
+	auto pointer = v_buffer->map(QOpenGLBuffer::WriteOnly);
+	if (pointer)
+	{
+		mempcpy(pointer, vertex, sizeof(vertex));
+		v_buffer->unmap();
+		//qmdelete pointer;
+	}
+	else
+	{
+		v_buffer->allocate(vertex, sizeof(vertex));
 	}
 
-	
-	glPopMatrix();
+	//draw cover and reflectaion
+	glDrawArrays(GL_TRIANGLES, 0, 12);
+    image.texture->release();
+    
+    //reading marks
+    if (showMarks && loaded[image.index] && marks[image.index] != Unread)
+    {
+		if (marks[image.index] == Read)
+        {
+            markTexture->bind();
+		}
+		else
+		{
+            readingTexture->bind();
+		}
+		glDrawArrays(GL_TRIANGLES, 12, 6);
+        markTexture->release();
+        readingTexture->release();
+	}
+	v_buffer->release();
 }
 
 /*Public*/
@@ -579,15 +699,19 @@ void YACReaderFlowGL::draw()
 
 
 	//Draw right Covers
-	for(count = numObjects-1;count > -1;count--){
-		if(count > CS){
+	for (count = numObjects-1;count > -1;count--)
+	{
+		if (count > CS)
+		{
             drawCover(images[count]);
 		}
 	}
 
 	//Draw left Covers
-	for(count = 0;count < numObjects-1;count++){
-		if(count < CS){
+	for (count = 0;count < numObjects-1;count++)
+	{
+		if (count < CS)
+		{
             drawCover(images[count]);
 		}
 	}
@@ -602,17 +726,20 @@ void YACReaderFlowGL::showPrevious()
 {
     startAnimationTimer();
 
-	if(currentSelected > 0){
+	if (currentSelected > 0)
+	{
 
 		currentSelected--;
 		emit centerIndexChanged(currentSelected);
 		config.animationStep *= config.animationSpeedUp;
 
-		if(config.animationStep > config.animationStepMax){
+		if (config.animationStep > config.animationStepMax)
+		{
 			config.animationStep = config.animationStepMax;
 		}
 
-		if(viewRotateActive && viewRotate > -1){
+		if (viewRotateActive && viewRotate > -1)
+		{
 			viewRotate -= config.viewRotateAdd;
 		}
 
@@ -625,17 +752,18 @@ void YACReaderFlowGL::showNext()
 {
     startAnimationTimer();
 
-	if(currentSelected < numObjects-1){
+	if (currentSelected < numObjects-1)
+	{
 
 		currentSelected++;
 		emit centerIndexChanged(currentSelected);
 		config.animationStep *= config.animationSpeedUp;
 
-		if(config.animationStep > config.animationStepMax){
+		if (config.animationStep > config.animationStepMax){
 			config.animationStep = config.animationStepMax;
 		}
 
-		if(viewRotateActive && viewRotate < 1){
+		if (viewRotateActive && viewRotate < 1){
 			viewRotate += config.viewRotateAdd;
 		}
 
@@ -645,26 +773,32 @@ void YACReaderFlowGL::showNext()
 
 void YACReaderFlowGL::setCurrentIndex(int pos)
 {
-    if(!(pos>=0 && pos < images.length() && images.length()>0))
+    if (!(pos>=0 && pos < images.length() && images.length()>0))
+    {
         return;
-    if(pos >= images.length() && images.length() > 0)
+	}
+    if (pos >= images.length() && images.length() > 0)
+    {
         pos = images.length()-1;
+	}
 
-        startAnimationTimer();
+    startAnimationTimer();
 
-        currentSelected = pos;
+    currentSelected = pos;
 
-        config.animationStep *= config.animationSpeedUp;
+    config.animationStep *= config.animationSpeedUp;
 
-        if(config.animationStep > config.animationStepMax){
-            config.animationStep = config.animationStepMax;
-        }
+    if (config.animationStep > config.animationStepMax)
+    {
+		config.animationStep = config.animationStepMax;
+    }
 
-        if(viewRotateActive && viewRotate < 1){
-            viewRotate += config.viewRotateAdd;
-        }
+    if (viewRotateActive && viewRotate < 1)
+    {
+		viewRotate += config.viewRotateAdd;
+    }
 
-        viewRotateActive = 1;
+    viewRotateActive = 1;
 
 }
 
@@ -673,35 +807,42 @@ void YACReaderFlowGL::updatePositions()
 	int count;
 
     bool stopAnimation = true;
-	for(count = numObjects-1;count > -1;count--){
+	for (count = numObjects-1; count > -1; count--)
+	{
         calcVector(images[count].animEnd,count-currentSelected);
-        if(!animate(images[count].current,images[count].animEnd))
+        if (!animate(images[count].current,images[count].animEnd))
+        {
             stopAnimation = false;
+		}
     }
 
 	//slowly reset view angle
-	if(!viewRotateActive){
+	if (!viewRotateActive)
+	{
 		viewRotate += (0-viewRotate)*config.viewRotateSub;
 	}
 
-    if(fabs (images[currentSelected].current.x - images[currentSelected].animEnd.x) < 1)//viewRotate < 0.2)
+    if (fabs (images[currentSelected].current.x - images[currentSelected].animEnd.x) < 1)//viewRotate < 0.2)
     {
 		cleanupAnimation();
-		if(updateCount >= 0) //TODO parametrizar
+		if (updateCount >= 0) //TODO parametrizar
 		{
-
 			updateCount = 0;
 			updateImageData();
 		}
 		else
+		{
 			updateCount++;
+		}
 	}
 	else
+	{
 		updateCount++;
-
-    if(stopAnimation)
+	}
+    if (stopAnimation)
+    {
         stopAnimationTimer();
-
+	}
 }
 
 void YACReaderFlowGL::insert(char *name, QOpenGLTexture * texture, float x, float y,int item)
@@ -710,7 +851,8 @@ void YACReaderFlowGL::insert(char *name, QOpenGLTexture * texture, float x, floa
 
 	Q_UNUSED(name)
 	//set a new entry 
-	if(item == -1){
+	if (item == -1)
+	{
         images.push_back(YACReader3DImage());
 
 		item = numObjects;
@@ -731,31 +873,35 @@ void YACReaderFlowGL::insert(char *name, QOpenGLTexture * texture, float x, floa
 
 void YACReaderFlowGL::remove(int item)
 {
-    if(item < 0 || item >= images.size())
+    if (item < 0 || item >= images.size())
+    {
         return;
-
+	}
     startAnimationTimer();
 
 	loaded.remove(item);
 	marks.remove(item);
 
 	//reposition current selection
-    if(item <= currentSelected && currentSelected != 0){
+    if (item <= currentSelected && currentSelected != 0)
+    {
 		currentSelected--;
 	}
 
     QOpenGLTexture * texture = images[item].texture;
 
 	int count = item;
-	while(count <= numObjects-2){
+	while (count <= numObjects-2)
+	{
         images[count].index--;
 		count++;
 	}
     images.removeAt(item);
 
-    if(texture != defaultTexture)
+    if (texture != defaultTexture)
+    {
         delete(texture);
-
+	}
 	numObjects--;
 }
 
@@ -770,7 +916,7 @@ void YACReaderFlowGL::replace(char *name, QOpenGLTexture * texture, float x, flo
     startAnimationTimer();
 
 	Q_UNUSED(name)
-    if(images[item].index == item)
+    if (images[item].index == item)
 	{
         images[item].texture = texture;
         images[item].width = x;
@@ -778,7 +924,9 @@ void YACReaderFlowGL::replace(char *name, QOpenGLTexture * texture, float x, flo
 		loaded[item]=true;
 	}
 	else
+	{
 		loaded[item]=false;
+	}
 }
 
 void YACReaderFlowGL::populate(int n)
@@ -788,7 +936,8 @@ void YACReaderFlowGL::populate(int n)
 	float y = 1 * (700.f/480.0f);
 	int i;
 	
-	for(i = 0;i<n;i++){
+	for (i = 0;i<n;i++)
+	{
         QString s = "cover";
         insert(s.toLocal8Bit().data(), defaultTexture, x, y);
 	}
@@ -818,17 +967,21 @@ void YACReaderFlowGL::reset()
 	currentSelected = 0;
 	loaded.clear();
 
-	for(int i = 0;i<numObjects;i++){
-        if(images[i].texture != defaultTexture)
+	for (int i = 0; i < numObjects; i++)
+	{
+        if (images[i].texture != defaultTexture)
+        {
             delete(images[i].texture);
+		}
 	}
 
 	numObjects = 0;
     images.clear();
 	
 	if(!hasBeenInitialized)
+	{
 		lazyPopulateObjects = -1;
-
+	}
     doneCurrent();
 }
 
@@ -863,20 +1016,17 @@ void YACReaderFlowGL::setCF_RZ(int value)
 
 void YACReaderFlowGL::setZoom(int zoom)
 {
+	//pipeline->bind();
     startAnimationTimer();
 
 	int width = this->width();
 	int height = this->height();
 	glViewport(0, 0, width, height);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	//float sideX = ((float(width)/height)/2)*1.5;
-	//float sideY = 0.5*1.5;
-	gluPerspective(zoom, (float)width / (float)height, 1.0, 200.0);
-	//glOrtho(-sideX, sideX, -sideY+0.2, +sideY+0.2, 4, 11.0);
-
-	glMatrixMode(GL_MODELVIEW);
+	
+	//QMatrix4x4 matrix;
+	m_projection.setToIdentity();
+	m_projection.perspective(zoom, (float) width/ (float)height, 1.0, 200.0);
+	pipeline->setUniformValue(m_projection_location, m_projection);
 
 }
 
@@ -1066,43 +1216,52 @@ void YACReaderFlowGL::setFlowRightToLeft(bool b)
 void YACReaderFlowGL::wheelEvent(QWheelEvent * event)
 {
     Movement m = getMovement(event);
-    switch (m) {
-    case None:
-        return;
-    case Forward:
-        showNext();
-        break;
-    case Backward:
-        showPrevious();
-        break;
-    default:
-        break;
+    switch (m) 
+    {
+		case None:
+			return;
+		case Forward:
+			showNext();
+			break;
+		case Backward:
+			showPrevious();
+			break;
+		default:
+			break;
     }
 }
 
 void YACReaderFlowGL::keyPressEvent(QKeyEvent *event)
 {
-	if((event->key() == Qt::Key_Left && !flowRightToLeft) || (event->key() == Qt::Key_Right && flowRightToLeft))
+	if ((event->key() == Qt::Key_Left && !flowRightToLeft) || (event->key() == Qt::Key_Right && flowRightToLeft))
 	{
-		if(event->modifiers() == Qt::ControlModifier)
+		if (event->modifiers() == Qt::ControlModifier)
+		{
 			setCurrentIndex((currentSelected-10<0)?0:currentSelected-10);
+		}
 		else
+		{
 			showPrevious();
+		}
 		event->accept();
 		return;
 	}
 
-	if((event->key() == Qt::Key_Right && !flowRightToLeft) || (event->key() == Qt::Key_Left && flowRightToLeft))
+	if ((event->key() == Qt::Key_Right && !flowRightToLeft) || (event->key() == Qt::Key_Left && flowRightToLeft))
 	{
-		if(event->modifiers() == Qt::ControlModifier)
+		if (event->modifiers() == Qt::ControlModifier)
+		{
 			setCurrentIndex((currentSelected+10>=numObjects)?numObjects-1:currentSelected+10);
+		}
 		else
+		{
 			showNext();
+		}
 		event->accept();
 		return;
 	}
 
-	if(event->key() == Qt::Key_Up)
+	if (event->key() == Qt::Key_Up)
 	{
         //emit selected(centerIndex());
 		return;
@@ -1113,75 +1272,83 @@ void YACReaderFlowGL::keyPressEvent(QKeyEvent *event)
 
 void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 {
-    makeCurrent();
-	if(event->button() == Qt::LeftButton)
+	if (event->button() == Qt::LeftButton)
 	{
-		float x,y;
-        float pixelRatio = devicePixelRatio();
-        x = event->x()*pixelRatio;
-        y = event->y()*pixelRatio;
-		GLint viewport[4];
-		GLdouble modelview[16];
-		GLdouble projection[16];
-		GLfloat winX, winY, winZ;
-		GLdouble posX, posY, posZ;
-
-		glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
-		glGetDoublev( GL_PROJECTION_MATRIX, projection );
-		glGetIntegerv( GL_VIEWPORT, viewport );
-
-		winX = (float)x;
-		winY = (float)viewport[3] - (float)y;
-
-        glReadPixels(winX, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
-
-        gluUnProject(winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
-
-		if((posX >= 0.5 && !flowRightToLeft) || (posX <=-0.5 && flowRightToLeft))
+		
+		QVector3D intersection = getPlaneIntersection(event->x(), event->y(), images[currentSelected]);
+				
+		if ((intersection.x() > 0.5 && !flowRightToLeft) || (intersection.x() < -0.5 && flowRightToLeft))
 		{
-			//int index = currentSelected+1;
-			//while((cfImages[index].current.x-cfImages[index].width/(2.0*config.rotation)) < posX)
-			//	index++;
-			//setCurrentIndex(index-1);
 			showNext();
 		}
-		else if((posX <=-0.5 && !flowRightToLeft) || (posX >= 0.5 && flowRightToLeft) )
+		else if ((intersection.x() < -0.5 && !flowRightToLeft) || (intersection.x() > 0.5 && flowRightToLeft))
+		{
 			showPrevious();
-	} else
-        QOpenGLWidget::mousePressEvent(event);
-    doneCurrent();
+		}
+	} 
+	else
+	{
+		QOpenGLWidget::mousePressEvent(event);
+	}
 }
 
 void YACReaderFlowGL::mouseDoubleClickEvent(QMouseEvent* event)
 {
-    makeCurrent();
-    float x,y;
-    float pixelRatio = devicePixelRatio();
-    x = event->x()*pixelRatio;
-    y = event->y()*pixelRatio;
-    GLint viewport[4];
-    GLdouble modelview[16];
-    GLdouble projection[16];
-    GLfloat winX, winY, winZ;
-    GLdouble posX, posY, posZ;
+ 	QVector3D intersection = getPlaneIntersection(event->x(), event->y(), images[currentSelected]);
 
-    glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
-    glGetDoublev( GL_PROJECTION_MATRIX, projection );
-    glGetIntegerv( GL_VIEWPORT, viewport );
-
-    winX = (float)x;
-    winY = (float)viewport[3] - (float)y;
-    glReadPixels( x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
-
-    gluUnProject( winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
-
-    if(posX <= 0.5 && posX >= -0.5)
+    if (intersection.x() < 0.5 && intersection.x() > -0.5)
     {
         emit selected(centerIndex());
         event->accept();
     }
-    doneCurrent();
 }
+
+QVector3D YACReaderFlowGL::getPlaneIntersection(int x, int y, YACReader3DImage plane)
+{
+	
+	//get viewport (TODO: cache viewport!)
+	GLint viewport[4];
+    makeCurrent();
+    glGetIntegerv( GL_VIEWPORT, viewport );
+    doneCurrent();
+    
+    //create the picking ray
+    QVector3D ray_origin(x*devicePixelRatio(), y*devicePixelRatio(), 0);
+    QVector3D ray_end(x*devicePixelRatio(), y*devicePixelRatio(), 1.0);
+    
+    ray_origin = ray_origin.unproject(m_modelview, m_projection, QRect(viewport[0], viewport[1], viewport[2], viewport[3]));
+    ray_end = ray_end.unproject(m_modelview, m_projection, QRect(viewport[0], viewport[1], viewport[2], viewport[3]));
+    
+    QVector3D ray_vector = ray_end - ray_origin;
+    
+    //calculate the plane vectors
+    QVector3D plane_origin((plane.width/2)*-1, -0.5, 0);
+    QVector3D plane_vektor_1 = QVector3D(plane.width/2, -0.5, 0) - plane_origin;
+    QVector3D plane_vektor_2 = QVector3D((plane.width/2)*-1, -0.5*plane.height, 0) - plane_origin;
+    
+    
+    //get the intersection using Cramer's rule. We only x for the line, not the plane
+    double intersection_LES_determinant = ((plane_vektor_1.x()*plane_vektor_2.y()*(-1)*ray_vector.z())
+											+ (plane_vektor_2.x()*(-1)*ray_vector.y()*plane_vektor_1.z())
+											+ ((-1)*ray_vector.x()*plane_vektor_1.y()*plane_vektor_2.z())
+											- ((-1)*ray_vector.x()*plane_vektor_2.y()*plane_vektor_1.z())
+											- (plane_vektor_1.x()*(-1)*ray_vector.y()*plane_vektor_2.z())
+											- (plane_vektor_2.x()*plane_vektor_1.y()*(-1)*ray_vector.z()));
+    
+    QVector3D det = ray_origin - plane_origin;
+    
+    double intersection_ray_determinant = ((plane_vektor_1.x()*plane_vektor_2.y()*det.z())
+											+ (plane_vektor_2.x()*det.y()*plane_vektor_1.z())
+											+ (det.x()*plane_vektor_1.y()*plane_vektor_2.z())
+											- (det.x()*plane_vektor_2.y()*plane_vektor_1.z())
+											- (plane_vektor_1.x()*det.y()*plane_vektor_2.z())
+											- (plane_vektor_2.x()*plane_vektor_1.y()*det.z()));
+											
+	//return the intersection point
+    return ray_origin + ray_vector * (intersection_ray_determinant / intersection_LES_determinant);
+
+}
+
 
 YACReaderComicFlowGL::YACReaderComicFlowGL(QWidget *parent,struct Preset p )
 	:YACReaderFlowGL(parent,p)
@@ -1195,8 +1362,10 @@ void YACReaderComicFlowGL::setImagePaths(QStringList paths)
 	worker->reset();
 	reset();
 	numObjects = 0;
-	if(lazyPopulateObjects!=-1 || hasBeenInitialized)
+	if (lazyPopulateObjects!=-1 || hasBeenInitialized)
+	{
 		YACReaderFlowGL::populate(paths.size());
+	}
 	lazyPopulateObjects = paths.size();
 	this->paths = paths;
 	//numObjects = paths.size();
@@ -1212,23 +1381,25 @@ void YACReaderComicFlowGL::setImagePaths(QStringList paths)
 void YACReaderComicFlowGL::updateImageData()
 {
 	// can't do anything, wait for the next possibility
-	if(worker->busy())
+	if (worker->busy())
+	{
 		return;
-
+	}
+	
 	// set image of last one
 	int idx = worker->index();
-	if( idx >= 0 && !worker->result().isNull())
+	if ( idx >= 0 && !worker->result().isNull())
 	{
-		if(!loaded[idx])
+		if (!loaded[idx])
 		{
 			float x = 1;
 			QImage img = worker->result();
             QOpenGLTexture * texture = new QOpenGLTexture(img);
 
-            if(performance == high || performance == ultraHigh)
+            if (performance == high || performance == ultraHigh)
             {
                 texture->setAutoMipMapGenerationEnabled(true);
-                texture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::LinearMipMapLinear);
+                texture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::Linear);
             }
 			else
             {
@@ -1243,40 +1414,41 @@ void YACReaderComicFlowGL::updateImageData()
 
 	// try to load only few images on the left and right side 
 	// i.e. all visible ones plus some extra
-	int count=8;
-	switch(performance)
+	int count = 8;
+	switch (performance)
 	{
-	case low:
-		count = 8;
-		break;
-	case medium:
-		count = 10;
-		break;
-	case high:
-		count = 12;
-		break;
-	case ultraHigh:
-		count = 14;
-		break;
+		case low:
+			count = 8;
+			break;
+		case medium:
+			count = 10;
+			break;
+		case high:
+			count = 12;
+			break;
+		case ultraHigh:
+			count = 14;
+			break;
 	}
 	int * indexes = new int[2*count+1];
 	int center = currentSelected;
 	indexes[0] = center;
-	for(int j = 0; j < count; j++)
+	for (int j = 0; j < count; j++)
 	{
 		indexes[j*2+1] = center+j+1;
 		indexes[j*2+2] = center-j-1;
 	}  
-	for(int c = 0; c < 2*count+1; c++)
+	for (int c = 0; c < 2*count+1; c++)
 	{
 		int i = indexes[c];
-		if((i >= 0) && (i < numObjects))
-            if(!loaded[i])//slide(i).isNull())
+		if ((i >= 0) && (i < numObjects))
+		{
+            if (!loaded[i])//slide(i).isNull())
             {
 				//loader->loadTexture(i);
 				//loaded[i]=true;
 				// schedule thumbnail generation
-				if(paths.size()>0)
+				if (paths.size()>0)
 				{
 					QString fname = paths.at(i);
 					//loaded[i]=true;
@@ -1286,6 +1458,7 @@ void YACReaderComicFlowGL::updateImageData()
 				delete[] indexes;
 				return;
             }
+		}
 	}
 
     delete[] indexes;
@@ -1296,8 +1469,10 @@ void YACReaderComicFlowGL::remove(int item)
 	worker->lock();
 	worker->reset();
 	YACReaderFlowGL::remove(item);
-    if(item >= 0 && item < paths.size())
+    if (item >= 0 && item < paths.size())
+    {
         paths.removeAt(item);
+	}
     worker->unlock();
 }
 
@@ -1312,7 +1487,8 @@ void YACReaderComicFlowGL::resortCovers(QList<int> newOrder)
     QVector<YACReader3DImage> imagesNew;
 
     int index = 0;
-    foreach (int i, newOrder) {
+    foreach (int i, newOrder) 
+    {
         pathsNew << paths.at(i);
         loadedNew << loaded.at(i);
         marksNew << marks.at(i);
@@ -1341,9 +1517,21 @@ YACReaderPageFlowGL::~YACReaderPageFlowGL()
 	this->killTimer(timerId);
 	//worker->deleteLater();
 	rawImages.clear();
-    for(int i = 0;i<numObjects;i++){
+    for (int i = 0;i<numObjects;i++)
+    {
         delete(images[i].texture);
     }
+    
+#ifdef YACREADER_LIBRARY
+	delete markTexture;
+    delete readingTexture;
+#endif
+    
+    //TODO: vao, pipeline
+    delete v_buffer;
+    delete vao;
+    delete pipeline;
+    
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1355,23 +1543,25 @@ YACReaderPageFlowGL::~YACReaderPageFlowGL()
 void YACReaderPageFlowGL::updateImageData()
 {
 		// can't do anything, wait for the next possibility
-	if(worker->busy())
+	if (worker->busy())
+	{
 		return;
+	}
 
 	// set image of last one
 	int idx = worker->index();
-	if( idx >= 0 && !worker->result().isNull())
+	if ( idx >= 0 && !worker->result().isNull())
 	{
-		if(!loaded[idx])
+		if (!loaded[idx])
 		{
 			float x = 1;
 			QImage img = worker->result();
             QOpenGLTexture * texture = new QOpenGLTexture(img);
 
-            if(performance == high || performance == ultraHigh)
+            if (performance == high || performance == ultraHigh)
             {
                 texture->setAutoMipMapGenerationEnabled(true);
-                texture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::LinearMipMapLinear);
+                texture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::Linear);
             }
 			else
             {
@@ -1388,42 +1578,42 @@ void YACReaderPageFlowGL::updateImageData()
 	// try to load only few images on the left and right side 
 	// i.e. all visible ones plus some extra
 	int count=8;
-	switch(performance)
+	switch (performance)
 	{
-	case low:
-		count = 8;
-		break;
-	case medium:
-		count = 10;
-		break;
-	case high:
-		count = 12;
-		break;
-	case ultraHigh:
-		count = 14;
-		break;
+		case low:
+			count = 8;
+			break;
+		case medium:
+			count = 10;
+			break;
+		case high:
+			count = 12;
+			break;
+		case ultraHigh:
+			count = 14;
+			break;
 	}
 	int * indexes = new int[2*count+1];
 	int center = currentSelected;
 	indexes[0] = center;
-	for(int j = 0; j < count; j++)
+	for (int j = 0; j < count; j++)
 	{
 		indexes[j*2+1] = center+j+1;
 		indexes[j*2+2] = center-j-1;
 	}  
-	for(int c = 0; c < 2*count+1; c++)
+	for (int c = 0; c < 2*count+1; c++)
 	{
 		int i = indexes[c];
-		if((i >= 0) && (i < numObjects))
-			if(rawImages.size()>0)
-			
-			if(!loaded[i]&&imagesReady[i])//slide(i).isNull())
+		if ((i >= 0) && (i < numObjects))
+		{	
+			if ((rawImages.size() > 0) && !loaded[i]&&imagesReady[i])//slide(i).isNull())
 			{
 				worker->generate(i, rawImages.at(i));
 				
 				delete[] indexes;
 				return;
 			}
+		}
 	}
 
     delete[] indexes;
@@ -1432,8 +1622,10 @@ void YACReaderPageFlowGL::updateImageData()
 void YACReaderPageFlowGL::populate(int n)
 {
 	worker->reset();
-	if(lazyPopulateObjects!=-1 || hasBeenInitialized)
+	if (lazyPopulateObjects!=-1 || hasBeenInitialized)
+	{
 		YACReaderFlowGL::populate(n);
+	}
 	lazyPopulateObjects = n;
 	imagesReady = QVector<bool> (n,false);
 	rawImages = QVector<QByteArray> (n);
@@ -1451,22 +1643,23 @@ QImage ImageLoaderGL::loadImage(const QString& fileName)
 
 	switch(flow->performance)
 	{
-	case low:
-		image = image.scaledToWidth(200,Qt::SmoothTransformation);
-		break;
-	case medium:
-		image = image.scaledToWidth(256,Qt::SmoothTransformation);
-		break;
-	case high:
-		image = image.scaledToWidth(320,Qt::SmoothTransformation);
-		break;
-	case ultraHigh:
-		break; //no scaling in ultraHigh
+		case low:
+			image = image.scaledToWidth(200,Qt::SmoothTransformation);
+			break;
+		case medium:
+			image = image.scaledToWidth(256,Qt::SmoothTransformation);
+			break;
+		case high:
+			image = image.scaledToWidth(320,Qt::SmoothTransformation);
+			break;
+		case ultraHigh:
+			break; //no scaling in ultraHigh
 	}
 
 	if(!result)
+	{
 		return QImage();
-
+	}
 	return image;
 }
 
@@ -1499,7 +1692,9 @@ void ImageLoaderGL::generate(int index, const QString& fileName)
 	mutex.unlock();
 
 	if (!isRunning())
+	{
 		start();
+	}
 	else
 	{
 		// already running, wake up whenever ready
@@ -1520,7 +1715,7 @@ void ImageLoaderGL::unlock()
 
 void ImageLoaderGL::run()
 {
-	for(;;)
+	for (;;)
 	{
 		// copy necessary data
 		mutex.lock();
@@ -1539,7 +1734,9 @@ void ImageLoaderGL::run()
 		// put to sleep
 		mutex.lock();
 		if (!this->restart)
+		{
 			condition.wait(&mutex);
+		}
 		restart = false;
 		mutex.unlock();
 	}
@@ -1558,25 +1755,26 @@ QImage ImageLoaderByteArrayGL::loadImage(const QByteArray& raw)
 	QImage image;
 	bool result = image.loadFromData(raw);
 
-	switch(flow->performance)
+	switch (flow->performance)
 	{
-	case low:
-		image = image.scaledToWidth(128,Qt::SmoothTransformation);
-		break;
-	case medium:
-		image = image.scaledToWidth(196,Qt::SmoothTransformation);
-		break;
-	case high:
-		image = image.scaledToWidth(256,Qt::SmoothTransformation);
-		break;
-	case ultraHigh:
-		image = image.scaledToWidth(320,Qt::SmoothTransformation);
-		break;
+		case low:
+			image = image.scaledToWidth(128,Qt::SmoothTransformation);
+				break;
+		case medium:
+			image = image.scaledToWidth(196,Qt::SmoothTransformation);
+			break;
+		case high:
+			image = image.scaledToWidth(256,Qt::SmoothTransformation);
+			break;
+		case ultraHigh:
+			image = image.scaledToWidth(320,Qt::SmoothTransformation);
+			break;
 	}
 
-	if(!result)
+	if (!result)
+	{
 		return QImage();
-
+	}
 	return image;
 }
 
@@ -1609,7 +1807,9 @@ void ImageLoaderByteArrayGL::generate(int index, const QByteArray& raw)
 	mutex.unlock();
 
 	if (!isRunning())
+	{
 		start();
+	}
 	else
 	{
 		// already running, wake up whenever ready
@@ -1620,7 +1820,7 @@ void ImageLoaderByteArrayGL::generate(int index, const QByteArray& raw)
 
 void ImageLoaderByteArrayGL::run()
 {
-	for(;;)
+	for (;;)
 	{
 		// copy necessary data
 		mutex.lock();
@@ -1639,7 +1839,9 @@ void ImageLoaderByteArrayGL::run()
 		// put to sleep
 		mutex.lock();
 		if (!this->restart)
+		{
 			condition.wait(&mutex);
+		}
 		restart = false;
 		mutex.unlock();
 	}

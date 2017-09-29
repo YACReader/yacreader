@@ -10,13 +10,16 @@
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QOpenGLTexture>
+#include <QOpenGLBuffer>
+#include <QOpenGLVertexArrayObject>
+#include <QOpenGLShaderProgram>
 #include <QtWidgets>
 
 #include "pictureflow.h" //TODO mover los tipos de flow de sitio
 #include "scroll_management.h"
 
 class ImageLoaderGL;
-class QGLContext;
+//class QGLContext;
 class WidgetLoader;
 class ImageLoaderByteArrayGL;
 
@@ -131,8 +134,22 @@ protected:
     QOpenGLTexture * defaultTexture;
     QOpenGLTexture * markTexture;
     QOpenGLTexture * readingTexture;
+    
+    QOpenGLBuffer * v_buffer;
+    
+    QOpenGLVertexArrayObject * vao;
+       
+    QOpenGLShaderProgram * pipeline;
+    
+    QMatrix4x4 m_projection;
+    QMatrix4x4 m_modelview;
+    
+    int m_projection_location;
+    int m_modelview_location;
+    
 	void initializeGL();
 	void paintGL();
+	void resizeGL(int width, int height);
 	void timerEvent(QTimerEvent *);
 
 	//number of Covers
@@ -180,7 +197,6 @@ protected:
     void stopAnimationTimer();
 	
 public:
-
 
 	/*Constructor*/
 	YACReaderFlowGL(QWidget *parent = 0,struct Preset p = pressetYACReaderFlowDownConfig);
@@ -277,11 +293,13 @@ public:
 	void render();
 
 	//void paintEvent(QPaintEvent *event);
-	void mouseDoubleClickEvent(QMouseEvent* event);
 	void mousePressEvent(QMouseEvent *event);
+	void mouseDoubleClickEvent(QMouseEvent* event);
+	
+	QVector3D getPlaneIntersection(int x, int y, YACReader3DImage plane);
+	
 	void wheelEvent(QWheelEvent * event);
 	void keyPressEvent(QKeyEvent *event);
-	void resizeGL(int width, int height);
 	friend class ImageLoaderGL;
 	friend class ImageLoaderByteArrayGL;
 
