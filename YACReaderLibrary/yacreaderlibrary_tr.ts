@@ -427,6 +427,13 @@
     </message>
 </context>
 <context>
+    <name>GridComicsView</name>
+    <message>
+        <source>Show info</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>HelpAboutDialog</name>
     <message>
         <source>Help</source>
@@ -1014,6 +1021,18 @@
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>You are adding too many libraries.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You are adding too many libraries.
+
+You probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.
+
+YACReaderLibrary will not stop you from creating more libraries but you should keep the number of libraries low.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LocalComicListModel</name>
@@ -1403,6 +1422,11 @@
     </message>
     <message>
         <source>Choose an IP address</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>display less information about folders in the browser
+to improve the performance</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
