@@ -19,15 +19,15 @@ struct Preset defaultYACReaderFlowConfig = {
 	0.08f, //Animation_step sets the speed of the animation
 	1.5f,  //Animation_speedup sets the acceleration of the animation
 	0.1f,  //Animation_step_max sets the maximum speed of the animation
-	3.f,    //Animation_Fade_out_dis sets the distance of view 
+	3.f,    //Animation_Fade_out_dis sets the distance of view
 
 	1.5f,  //pre_rotation sets the rotation increasion
 	3.f,    //View_rotate_light_strenght sets the light strenght on rotation
-	0.01f, //View_rotate_add sets the speed of the rotation 
-	0.02f, //View_rotate_sub sets the speed of reversing the rotation 
+	0.01f, //View_rotate_add sets the speed of the rotation
+	0.02f, //View_rotate_sub sets the speed of reversing the rotation
 	20.f,   //View_angle sets the maximum view angle
 
-	0.f,    //CF_X the X Position of the Coverflow 
+	0.f,    //CF_X the X Position of the Coverflow
 	0.f,    //CF_Y the Y Position of the Coverflow
 	-8.f,  //CF_Z the Z Position of the Coverflow
 
@@ -38,7 +38,7 @@ struct Preset defaultYACReaderFlowConfig = {
 	-50.f,  //Rotation sets the rotation of each cover
 	0.18f, //X_Distance sets the distance between the covers
 	1.f,    //Center_Distance sets the distance between the centered and the non centered covers
-	0.1f,  //Z_Distance sets the pushback amount 
+	0.1f,  //Z_Distance sets the pushback amount
 	0.0f,  //Y_Distance sets the elevation amount
 
 	30.f    //zoom level
@@ -49,15 +49,15 @@ struct Preset presetYACReaderFlowClassicConfig = {
 	0.08f, //Animation_step sets the speed of the animation
 	1.5f,  //Animation_speedup sets the acceleration of the animation
 	0.1f,  //Animation_step_max sets the maximum speed of the animation
-	2.f,	  //Animation_Fade_out_dis sets the distance of view 
+	2.f,	  //Animation_Fade_out_dis sets the distance of view
 
 	1.5f,  //pre_rotation sets the rotation increasion
 	3.f,	  //View_rotate_light_strenght sets the light strenght on rotation
-	0.08f, //View_rotate_add sets the speed of the rotation 
-	0.08f, //View_rotate_sub sets the speed of reversing the rotation 
+	0.08f, //View_rotate_add sets the speed of the rotation
+	0.08f, //View_rotate_sub sets the speed of reversing the rotation
 	30.f,	  //View_angle sets the maximum view angle
 
-	0.f,	  //CF_X the X Position of the Coverflow 
+	0.f,	  //CF_X the X Position of the Coverflow
 	-0.2f, //CF_Y the Y Position of the Coverflow
 	-7.f,	  //CF_Z the Z Position of the Coverflow
 
@@ -68,9 +68,9 @@ struct Preset presetYACReaderFlowClassicConfig = {
 	-40.f,  //Rotation sets the rotation of each cover
 	0.18f, //X_Distance sets the distance between the covers
 	1.f,	  //Center_Distance sets the distance between the centered and the non centered covers
-	0.1f,  //Z_Distance sets the pushback amount 
+	0.1f,  //Z_Distance sets the pushback amount
 	0.0f,  //Y_Distance sets the elevation amount
-	
+
 	22.f    //zoom level
 
 };
@@ -79,15 +79,15 @@ struct Preset presetYACReaderFlowStripeConfig = {
 	0.08f, //Animation_step sets the speed of the animation
 	1.5f,  //Animation_speedup sets the acceleration of the animation
 	0.1f,  //Animation_step_max sets the maximum speed of the animation
-	6.f,    //Animation_Fade_out_dis sets the distance of view 
+	6.f,    //Animation_Fade_out_dis sets the distance of view
 
 	1.5f,  //pre_rotation sets the rotation increasion
 	4.f,	  //View_rotate_light_strenght sets the light strenght on rotation
-	0.08f, //View_rotate_add sets the speed of the rotation 
-	0.08f, //View_rotate_sub sets the speed of reversing the rotation 
+	0.08f, //View_rotate_add sets the speed of the rotation
+	0.08f, //View_rotate_sub sets the speed of reversing the rotation
 	30.f,	  //View_angle sets the maximum view angle
 
-	0.f,	  //CF_X the X Position of the Coverflow 
+	0.f,	  //CF_X the X Position of the Coverflow
 	-0.2f, //CF_Y the Y Position of the Coverflow
 	-7.f,	  //CF_Z the Z Position of the Coverflow
 
@@ -98,7 +98,7 @@ struct Preset presetYACReaderFlowStripeConfig = {
 	0.f,	  //Rotation sets the rotation of each cover
 	1.1f, //X_Distance sets the distance between the covers
 	0.2f,	  //Center_Distance sets the distance between the centered and the non centered covers
-	0.01f,  //Z_Distance sets the pushback amount 
+	0.01f,  //Z_Distance sets the pushback amount
 	0.0f,  //Y_Distance sets the elevation amount
 
 	22.f    //zoom level
@@ -109,15 +109,15 @@ struct Preset presetYACReaderFlowOverlappedStripeConfig = {
 	0.08f, //Animation_step sets the speed of the animation
 	1.5f,  //Animation_speedup sets the acceleration of the animation
 	0.1f,  //Animation_step_max sets the maximum speed of the animation
-	2.f,	  //Animation_Fade_out_dis sets the distance of view 
+	2.f,	  //Animation_Fade_out_dis sets the distance of view
 
 	1.5f,  //pre_rotation sets the rotation increasion
 	3.f,	  //View_rotate_light_strenght sets the light strenght on rotation
-	0.08f, //View_rotate_add sets the speed of the rotation 
-	0.08f, //View_rotate_sub sets the speed of reversing the rotation 
+	0.08f, //View_rotate_add sets the speed of the rotation
+	0.08f, //View_rotate_sub sets the speed of reversing the rotation
 	30.f,	  //View_angle sets the maximum view angle
 
-	0.f,	  //CF_X the X Position of the Coverflow 
+	0.f,	  //CF_X the X Position of the Coverflow
 	-0.2f, //CF_Y the Y Position of the Coverflow
 	-7.f,	  //CF_Z the Z Position of the Coverflow
 
@@ -128,7 +128,7 @@ struct Preset presetYACReaderFlowOverlappedStripeConfig = {
 	0.f,	  //Rotation sets the rotation of each cover
 	0.18f, //X_Distance sets the distance between the covers
 	1.f,	  //Center_Distance sets the distance between the centered and the non centered covers
-	0.1f,  //Z_Distance sets the pushback amount 
+	0.1f,  //Z_Distance sets the pushback amount
 	0.0f,  //Y_Distance sets the elevation amount
 
 	22.f    //zoom level
@@ -139,15 +139,15 @@ struct Preset pressetYACReaderFlowUpConfig = {
 	0.08f, //Animation_step sets the speed of the animation
 	1.5f,  //Animation_speedup sets the acceleration of the animation
 	0.1f,  //Animation_step_max sets the maximum speed of the animation
-	2.5f,	  //Animation_Fade_out_dis sets the distance of view 
+	2.5f,	  //Animation_Fade_out_dis sets the distance of view
 
 	1.5f,  //pre_rotation sets the rotation increasion
 	3.f,	  //View_rotate_light_strenght sets the light strenght on rotation
-	0.08f, //View_rotate_add sets the speed of the rotation 
-	0.08f, //View_rotate_sub sets the speed of reversing the rotation 
+	0.08f, //View_rotate_add sets the speed of the rotation
+	0.08f, //View_rotate_sub sets the speed of reversing the rotation
 	5.f,	  //View_angle sets the maximum view angle
 
-	0.f,	  //CF_X the X Position of the Coverflow 
+	0.f,	  //CF_X the X Position of the Coverflow
 	-0.2f, //CF_Y the Y Position of the Coverflow
 	-7.f,	  //CF_Z the Z Position of the Coverflow
 
@@ -158,7 +158,7 @@ struct Preset pressetYACReaderFlowUpConfig = {
 	-50.f,	  //Rotation sets the rotation of each cover
 	0.18f, //X_Distance sets the distance between the covers
 	1.f,	  //Center_Distance sets the distance between the centered and the non centered covers
-	0.1f,  //Z_Distance sets the pushback amount 
+	0.1f,  //Z_Distance sets the pushback amount
 	-0.1f,  //Y_Distance sets the elevation amount
 
 	22.f    //zoom level
@@ -169,15 +169,15 @@ struct Preset pressetYACReaderFlowDownConfig = {
 	0.08f, //Animation_step sets the speed of the animation
 	1.5f,  //Animation_speedup sets the acceleration of the animation
 	0.1f,  //Animation_step_max sets the maximum speed of the animation
-	2.5f,	  //Animation_Fade_out_dis sets the distance of view 
+	2.5f,	  //Animation_Fade_out_dis sets the distance of view
 
 	1.5f,  //pre_rotation sets the rotation increasion
 	3.f,	  //View_rotate_light_strenght sets the light strenght on rotation
-	0.08f, //View_rotate_add sets the speed of the rotation 
-	0.08f, //View_rotate_sub sets the speed of reversing the rotation 
+	0.08f, //View_rotate_add sets the speed of the rotation
+	0.08f, //View_rotate_sub sets the speed of reversing the rotation
 	5.f,	  //View_angle sets the maximum view angle
 
-	0.f,	  //CF_X the X Position of the Coverflow 
+	0.f,	  //CF_X the X Position of the Coverflow
 	-0.2f, //CF_Y the Y Position of the Coverflow
 	-7.f,	  //CF_Z the Z Position of the Coverflow
 
@@ -188,14 +188,19 @@ struct Preset pressetYACReaderFlowDownConfig = {
 	-50.f,	  //Rotation sets the rotation of each cover
 	0.18f, //X_Distance sets the distance between the covers
 	1.f,	  //Center_Distance sets the distance between the centered and the non centered covers
-	0.1f,  //Z_Distance sets the pushback amount 
+	0.1f,  //Z_Distance sets the pushback amount
 	0.1f,  //Y_Distance sets the elevation amount
 
 	22.f    //zoom level
 };
 /*Constructor*/
-YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
-    :QOpenGLWidget(/*QOpenGLWidget migration QGLFormat(QGL::SampleBuffers),*/ parent),numObjects(0),lazyPopulateObjects(-1),bUseVSync(false),hasBeenInitialized(false),flowRightToLeft(false)
+YACReaderFlowGL::YACReaderFlowGL(QWidget *parent, struct Preset p)
+    :QOpenGLWidget(parent),
+		numObjects(0),
+		lazyPopulateObjects(-1),
+		bUseVSync(false),
+		hasBeenInitialized(false),
+		flowRightToLeft(false)
 {
 	updateCount = 0;
 	config = p;
@@ -240,7 +245,7 @@ YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
     f.setVersion(2, 1);
     f.setSwapInterval(0);
 	setFormat(f);
-	
+
 
 
     timerId = startTimer(updateInterval);
@@ -252,7 +257,7 @@ void YACReaderFlowGL::timerEvent(QTimerEvent * event)
 	{
         update();
 	}
-	
+
 	//if(!worker->isRunning())
     //worker->start();
 }
@@ -292,20 +297,20 @@ void YACReaderFlowGL::initializeGL()
 		"attribute vec3 position;\n"
 		"attribute vec3 color;\n"
 		"attribute vec2 texCoord;\n"
-		
+
 		"varying vec3 v_color;\n"
 		"varying vec2 v_texCoord;\n"
-		
+
 		"uniform mat4 modelview;\n"
 		"uniform mat4 projection;\n"
-		
+
 		"void main()\n"
 		"{\n"
 		"	v_color = color;\n"
 		"	v_texCoord = texCoord;\n"
 		"	gl_Position = (projection * modelview) * vec4(position, 1);\n"
 		"}\n";
-		
+
 	static QString fragment_shader =
 		"//#version 110\n"
 		"#ifdef GL_ES\n"
@@ -314,12 +319,12 @@ void YACReaderFlowGL::initializeGL()
 		"varying vec3 v_color;\n"
 		"varying vec2 v_texCoord;\n"
 		"uniform sampler2D texture;\n"
-		
+
 		"void main()\n"
 		"{\n"
-		"	gl_FragColor = texture2D(texture, v_texCoord) * vec4(v_color, 1.0);\n" //mix benutzen??
+		"	gl_FragColor = texture2D(texture, v_texCoord) * vec4(v_color, 1.0);\n"
 		"}\n";
-	
+
 	//use a vertex array object to safe all OpenGL settings
 	vao = new QOpenGLVertexArrayObject();
 	vao->create();
@@ -327,31 +332,32 @@ void YACReaderFlowGL::initializeGL()
 	{
 		vao->bind();
 	}
-	
+
 	pipeline = new QOpenGLShaderProgram(this);
 	pipeline->addShaderFromSourceCode(QOpenGLShader::Vertex, vertex_shader);
 	pipeline->addShaderFromSourceCode(QOpenGLShader::Fragment, fragment_shader);
 	pipeline->link();
-	
+
 	v_buffer = new QOpenGLBuffer();
 	v_buffer->create();
 	v_buffer->bind();
-	
+
 	pipeline->setAttributeBuffer("position", GL_FLOAT, 0, 3, 8*sizeof(float));
 	pipeline->setAttributeBuffer("texCoord", GL_FLOAT, 3*sizeof(float), 2, 8*sizeof(float));
 	pipeline->setAttributeBuffer("color", GL_FLOAT, 5*sizeof(float), 3, 8*sizeof(float));
 	pipeline->enableAttributeArray("position");
 	pipeline->enableAttributeArray("texCoord");
 	pipeline->enableAttributeArray("color");
-	
+
 	//cache uniform locations for later use
 	m_projection_location = pipeline->uniformLocation("projection");
 	m_modelview_location = pipeline->uniformLocation("modelview");
-	
+
 	v_buffer->setUsagePattern(QOpenGLBuffer::DynamicDraw);
-	v_buffer->allocate(3*6*8*sizeof(float));
+	//v_buffer->allocate(3*6*8*sizeof(float));
+	v_buffer->allocate(3*12*8*sizeof(float));
 	v_buffer->release();
-			
+
     defaultTexture = new QOpenGLTexture(QImage(":/images/defaultCover.png"));
     defaultTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear,QOpenGLTexture::Linear);
 
@@ -378,7 +384,7 @@ void YACReaderFlowGL::initializeGL()
 
 	hasBeenInitialized = true;
 	vao->release();
-	
+
 }
 
 void YACReaderFlowGL::paintGL()
@@ -387,18 +393,18 @@ void YACReaderFlowGL::paintGL()
     painter.begin(this);
 
     painter.beginNativePainting();
-	
-	vao->bind();
+
+		vao->bind();
     pipeline->bind();
-    
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     glEnable(GL_MULTISAMPLE);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glClearColor(0,0,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+
     if (numObjects>0)
     {
         updatePositions();
@@ -406,9 +412,9 @@ void YACReaderFlowGL::paintGL()
         draw();
     }
 
-	vao->release();
-	pipeline->release();
-	
+		vao->release();
+		pipeline->release();
+
     painter.endNativePainting();
 
     QFont font = painter.font() ;
@@ -424,7 +430,7 @@ void YACReaderFlowGL::paintGL()
 
 void YACReaderFlowGL::resizeGL(int width, int height)
 {
-	pipeline->bind();
+		pipeline->bind();
     float pixelRatio = devicePixelRatio();
     fontSize = (width + height) * 0.010 * pixelRatio;
 	if (fontSize < 10)
@@ -524,117 +530,174 @@ bool YACReaderFlowGL::animate(YACReader3DVector & currentVector,YACReader3DVecto
 }
 void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 {
-   	
-   	//prepare render data
-   	
-    float w = image.width;
-    float h = image.height;
 
-	//fadeout 
-    float opacity = 1-1/(config.animationFadeOutDist+config.viewRotateLightStrenght*fabs(viewRotate))*fabs(0-image.current.x);
+  //prepare render data
+
+  float w = image.width;
+  float h = image.height;
+
+	//fadeout
+  float opacity = 1-1/(config.animationFadeOutDist+config.viewRotateLightStrenght*fabs(viewRotate))*fabs(0-image.current.x);
 	
 	//calculate shading
-    float LShading = ((config.rotation != 0 )?((image.current.rot < 0)?1-1/config.rotation*image.current.rot:1):1);
-    float RShading = ((config.rotation != 0 )?((image.current.rot > 0)?1-1/(config.rotation*-1)*image.current.rot:1):1);
+  float LShading = ((config.rotation != 0 )?((image.current.rot < 0)?1-1/config.rotation*image.current.rot:1):1);
+  float RShading = ((config.rotation != 0 )?((image.current.rot > 0)?1-1/(config.rotation*-1)*image.current.rot:1):1);
 	float LUP = shadingTop+(1-shadingTop)*LShading;
 	float LDOWN = shadingBottom+(1-shadingBottom)*LShading;
 	float RUP =  shadingTop+(1-shadingTop)*RShading;
 	float RDOWN =  shadingBottom+(1-shadingBottom)*RShading;
 
 	//vertices and coordinates
-	
-	float cover[] = {w/2.f*-1.f, -0.5f, 0.f,
-					w/2.f, -0.5f, 0.f,
-					w/2.f, -0.5f+h, 0.f,
-					w/2.f*-1.f, -0.5f, 0.f,
-					w/2.f, -0.5f+h, 0.f,
-					w/2.f*-1.f, -0.5f+h, 0.f};
-	
-	float rcover[] = {w/2.f*-1.f, -0.5f-h, 0.f,
+
+	// create vertexes from quad coordinates
+	auto quad3 = [] (std::array<float, 12> quad)
+	{
+		auto half = [] (float eins, float zwei) {
+			return eins + (zwei-eins)/2;
+		};
+		float test = half(1,2);
+		return std::array<float, 36> {
+			quad[0], quad[1], quad[2],
+			quad[3], quad[4], quad[5],
+			half(quad[0], quad[6]),half(quad[1], quad[7]),half(quad[2], quad[8]),
+			quad[3], quad[4], quad[5],
+			quad[6], quad[7], quad[8],
+			half(quad[0], quad[6]),half(quad[1], quad[7]),half(quad[2], quad[8]),
+			quad[6], quad[7], quad[8],
+			quad[9], quad[10], quad[11],
+			half(quad[0], quad[6]),half(quad[1], quad[7]),half(quad[2], quad[8]),
+			quad[9], quad[10], quad[11],
+			quad[0], quad[1], quad[2],
+			half(quad[0], quad[6]),half(quad[1], quad[7]),half(quad[2], quad[8])};
+		};
+
+		auto quadc = [] (std::array<float, 12> quad)
+		{
+			auto half = [] (float eins, float zwei,
+															float drei, float vier) {
+				return (((eins + zwei)/2 + (drei + vier)/2)/2);
+			};
+			return std::array<float, 36> {
+				quad[0], quad[1], quad[2],
+				quad[3], quad[4], quad[5],
+
+				half(quad[0], quad[6], quad[3], quad[9]),
+				half(quad[1], quad[7], quad[4], quad[10]),
+				half(quad[2], quad[8], quad[5], quad[11]),
+
+				quad[3], quad[4], quad[5],
+				quad[6], quad[7], quad[8],
+
+				half(quad[0], quad[6], quad[3], quad[9]),
+				half(quad[1], quad[7], quad[4], quad[10]),
+				half(quad[2], quad[8], quad[5], quad[11]),
+
+				quad[6], quad[7], quad[8],
+				quad[9], quad[10], quad[11],
+
+				half(quad[0], quad[6], quad[3], quad[9]),
+				half(quad[1], quad[7], quad[4], quad[10]),
+				half(quad[2], quad[8], quad[5], quad[11]),
+
+				quad[9], quad[10], quad[11],
+				quad[0], quad[1], quad[2],
+
+				half(quad[0], quad[6], quad[3], quad[9]),
+				half(quad[1], quad[7], quad[4], quad[10]),
+				half(quad[2], quad[8], quad[5], quad[11])};
+			};
+
+	auto quad2 = [] (std::array<float, 8> quad)	{
+		return std::array<float, 24> {
+			quad[0], quad[1],
+			quad[2], quad[3],
+			0.5,0.5,
+			quad[2], quad[3],
+			quad[4], quad[5],
+			0.5,0.5,
+			quad[4], quad[5],
+			quad[6], quad[7],
+			0.5,0.5,
+			quad[6], quad[7],
+			quad[0], quad[1],
+			0.5,0.5};
+	};
+
+	auto interweave = [] (std::array<float, 36> coord,
+												std::array<float, 24> cover,
+												std::array<float, 36> color)
+												{
+														std::array<float, coord.size()
+																						+ cover.size()
+																						+ color.size()> interweaved;
+														for (int i=0; i < coord.size()/3; i++)
+														{
+															std::copy(&coord[i*3], &coord[i*3]+3, &interweaved[i*8]);
+															std::copy(&cover[i*2], &cover[i*2]+2, &interweaved[i*8]+3);
+															std::copy(&color[i*3], &color[i*3]+3, &interweaved[i*8]+5);
+														}
+														return interweaved;
+												};
+
+	// cover position
+	std::array<float, 12> cover = {w/2.f*-1.f, -0.5f, 0.f, //LU
+					w/2.f, -0.5f, 0.f, //RU
+					w/2.f, -0.5f+h, 0.f, //RO
+					w/2.f*-1.f, -0.5f+h, 0.f}; //LO
+
+	std::array<float, 12> rcover = {w/2.f*-1.f, -0.5f-h, 0.f,
 						w/2.f, -0.5f-h, 0.f,
 						w/2.f, -0.5f, 0.f,
-						w/2.f*-1.f, -0.5f-h, 0.f,
-						w/2.f, -0.5f, 0.f,
 						w/2.f*-1.f, -0.5f, 0.f};
-	
-	const float cover_t[] = {0, 1,
+
+//cover texture
+
+	std::array<float, 8> cover_t = {0, 1,
 							1, 1,
-							1, 0,
-							0, 1,
 							1, 0,
 							0, 0};
-		
-	const float rcover_t[] = {0, 0,
+
+  std::array<float, 8> rcover_t = {0, 0,
 							1, 0,
-							1, 1,
-							0, 0,
 							1, 1,
 							0, 1};
-	
-	float cover_c[] = {LDOWN*opacity,LDOWN*opacity,LDOWN*opacity,
+
+//cover shadow
+
+	std::array<float, 12> cover_c = {LDOWN*opacity,LDOWN*opacity,LDOWN*opacity,
 						RDOWN*opacity,RDOWN*opacity,RDOWN*opacity,
 						RUP*opacity,RUP*opacity,RUP*opacity,
-						LDOWN*opacity,LDOWN*opacity,LDOWN*opacity,
-						RUP*opacity,RUP*opacity,RUP*opacity,
 						LUP*opacity,LUP*opacity,LUP*opacity};
-						
-						
-	float rcover_c[] = {LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,
+
+	std::array<float, 12> rcover_c = {LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,
 						RUP*opacity*reflectionUp/2,RUP*opacity*reflectionUp/2,RUP*opacity*reflectionUp/2,
 						RDOWN*opacity/3,RDOWN*opacity/3,RDOWN*opacity/3,
-						LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,LUP*opacity*reflectionUp/2,
-						RDOWN*opacity/3,RDOWN*opacity/3,RDOWN*opacity/3,
 						LDOWN*opacity/3,LDOWN*opacity/3,LDOWN*opacity/3};
-	
-	float vertex[3*6*8]; //buffer array
-	
-	for (int i=0; i<6; i++)
+
+	auto vertex1 = interweave(quad3(cover), quad2(cover_t), quadc(cover_c));
+	auto vertex2 = interweave(quad3(rcover), quad2(rcover_t), quadc(rcover_c));
+	std::array <float, 96> vertex3;
+  if (showMarks && loaded[image.index] && marks[image.index] != Unread)
 	{
-		memcpy(&vertex[i*8], &cover[i*3], 3*sizeof(float));
-		memcpy(&vertex[(i*8)+3], &cover_t[i*2], 2*sizeof(float));
-		memcpy(&vertex[(i*8)+5], &cover_c[i*3], 3*sizeof(float));
-	}
-	
-	for (int i=6; i<12; i++)
-	{	
-		memcpy(&vertex[i*8], &rcover[(i-6)*3], 3*sizeof(float));
-		memcpy(&vertex[(i*8)+3], &rcover_t[(i-6)*2], 2*sizeof(float));
-		memcpy(&vertex[(i*8)+5], &rcover_c[(i-6)*3], 3*sizeof(float));
-	}
-    if (showMarks && loaded[image.index] && marks[image.index] != Unread)
-	{
-		float mark[] = {w/2.f-0.2f, -0.688f+h, 0.001f,
+		std::array <float, 12> mark = {w/2.f-0.2f, -0.688f+h, 0.001f,
 						w/2.f-0.05f, -0.688f+h, 0.001f,
 						w/2.f-0.05f, -0.488f+h, 0.001f,
-						w/2.f-0.2f, -0.688f+h, 0.001f,
-						w/2.f-0.05f, -0.488f+h, 0.001f,
 						w/2.f-0.2f, -0.488f+h, 0.001f};
-						
-		float mark_t[] = {0, 1,
+
+		std::array <float, 8> mark_t = {0, 1,
 							1, 1,
 							1, 0,
-							0, 1,
-							1, 0,
 							0, 0};
-								
-			
-		float mark_c[] = {RUP*opacity,RUP*opacity,RUP*opacity,
-							RUP*opacity,RUP*opacity,RUP*opacity,
-							RUP*opacity,RUP*opacity,RUP*opacity,
+
+		std::array <float, 12> mark_c = {RUP*opacity,RUP*opacity,RUP*opacity,
 							RUP*opacity,RUP*opacity,RUP*opacity,
 							RUP*opacity,RUP*opacity,RUP*opacity,
 							RUP*opacity,RUP*opacity,RUP*opacity};
-    
-		for (int i=12; i<18; i++)
-		{
-			memcpy(&vertex[i*8], &mark[(i-12)*3], 3*sizeof(float));
-			memcpy(&vertex[(i*8)+3], &mark_t[(i-12)*2], 2*sizeof(float));
-			memcpy(&vertex[(i*8)+5], &mark_c[(i-12)*3], 3*sizeof(float));
-		}        
+		vertex3 = interweave(quad3(mark), quad2(mark_t), quadc(mark_c));
 	}
-	
+
 	//draw cover
-	
+
 	//set matrices
 	m_modelview.setToIdentity();
 	m_modelview.translate(config.cfX,config.cfY,config.cfZ);
@@ -643,44 +706,44 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 	m_modelview.rotate(config.cfRZ,0,0,1);
 	m_modelview.translate(image.current.x, image.current.y, image.current.z);
 	m_modelview.rotate(image.current.rot,0,1,0);
-	
+
 	pipeline->setUniformValue(m_modelview_location, m_modelview);
-    
-    //bind cover texture
-    image.texture->bind();
-	
-	//update vertices
+
+  //bind cover texture
+  image.texture->bind();
+
+	//load vertices to buffer
 	v_buffer->bind();
 	auto pointer = v_buffer->map(QOpenGLBuffer::WriteOnly);
-	if (pointer)
-	{
-		mempcpy(pointer, vertex, sizeof(vertex));
-		v_buffer->unmap();
-		//qmdelete pointer;
-	}
-	else
-	{
-		v_buffer->allocate(vertex, sizeof(vertex));
-	}
 
-	//draw cover and reflectaion
-	glDrawArrays(GL_TRIANGLES, 0, 12);
-    image.texture->release();
-    
-    //reading marks
-    if (showMarks && loaded[image.index] && marks[image.index] != Unread)
-    {
+	std::copy(vertex1.begin(), vertex1.end(), (float*)pointer);
+	std::copy(vertex2.begin(), vertex2.end(), (float*)pointer + vertex1.size());
+	if (showMarks && loaded[image.index] && marks[image.index] != Unread)
+	{
+	std::copy(vertex3.begin(), vertex3.end(), (float*)pointer
+																						+ vertex1.size()
+																						+ vertex2.size());
+	}
+	v_buffer->unmap();
+
+	//draw cover and reflection
+	glDrawArrays(GL_TRIANGLES, 0, 24);
+  image.texture->release();
+
+  //reading marks
+  if (showMarks && loaded[image.index] && marks[image.index] != Unread)
+  {
 		if (marks[image.index] == Read)
-        {
-            markTexture->bind();
+	      {
+	          markTexture->bind();
 		}
 		else
 		{
-            readingTexture->bind();
+	          readingTexture->bind();
 		}
-		glDrawArrays(GL_TRIANGLES, 12, 6);
-        markTexture->release();
-        readingTexture->release();
+		glDrawArrays(GL_TRIANGLES, 24, 12);
+	  markTexture->release();
+	  readingTexture->release();
 	}
 	v_buffer->release();
 }
@@ -697,13 +760,12 @@ void YACReaderFlowGL::draw()
 	int CS = currentSelected;
 	int count;
 
-
 	//Draw right Covers
 	for (count = numObjects-1;count > -1;count--)
 	{
 		if (count > CS)
 		{
-            drawCover(images[count]);
+    	drawCover(images[count]);
 		}
 	}
 
@@ -712,7 +774,7 @@ void YACReaderFlowGL::draw()
 	{
 		if (count < CS)
 		{
-            drawCover(images[count]);
+      drawCover(images[count]);
 		}
 	}
 
@@ -745,7 +807,7 @@ void YACReaderFlowGL::showPrevious()
 
 		viewRotateActive = 1;
 
-	}	
+	}
 }
 
 void YACReaderFlowGL::showNext()
@@ -850,7 +912,7 @@ void YACReaderFlowGL::insert(char *name, QOpenGLTexture * texture, float x, floa
     startAnimationTimer();
 
 	Q_UNUSED(name)
-	//set a new entry 
+	//set a new entry
 	if (item == -1)
 	{
         images.push_back(YACReader3DImage());
@@ -935,7 +997,7 @@ void YACReaderFlowGL::populate(int n)
 	float x = 1;
 	float y = 1 * (700.f/480.0f);
 	int i;
-	
+
 	for (i = 0;i<n;i++)
 	{
         QString s = "cover";
@@ -953,7 +1015,7 @@ void YACReaderFlowGL::populate(int n)
 	loaded = QVector<bool>(n,false);
 	//marks = QVector<bool>(n,false);
 
-	
+
 
 	//worker->start();
 }
@@ -977,7 +1039,7 @@ void YACReaderFlowGL::reset()
 
 	numObjects = 0;
     images.clear();
-	
+
 	if(!hasBeenInitialized)
 	{
 		lazyPopulateObjects = -1;
@@ -1022,7 +1084,7 @@ void YACReaderFlowGL::setZoom(int zoom)
 	int width = this->width();
 	int height = this->height();
 	glViewport(0, 0, width, height);
-	
+
 	//QMatrix4x4 matrix;
 	m_projection.setToIdentity();
 	m_projection.perspective(zoom, (float) width/ (float)height, 1.0, 200.0);
@@ -1050,7 +1112,7 @@ void YACReaderFlowGL::setCenter_Distance(int distance)
 
 	config.centerDistance = distance/100.0;
 }
-//sets the pushback amount 
+//sets the pushback amount
 void YACReaderFlowGL::setZ_Distance(int distance)
 {
     startAnimationTimer();
@@ -1216,7 +1278,7 @@ void YACReaderFlowGL::setFlowRightToLeft(bool b)
 void YACReaderFlowGL::wheelEvent(QWheelEvent * event)
 {
     Movement m = getMovement(event);
-    switch (m) 
+    switch (m)
     {
 		case None:
 			return;
@@ -1274,9 +1336,9 @@ void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 {
 	if (event->button() == Qt::LeftButton)
 	{
-		
+
 		QVector3D intersection = getPlaneIntersection(event->x(), event->y(), images[currentSelected]);
-				
+
 		if ((intersection.x() > 0.5 && !flowRightToLeft) || (intersection.x() < -0.5 && flowRightToLeft))
 		{
 			showNext();
@@ -1285,7 +1347,7 @@ void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 		{
 			showPrevious();
 		}
-	} 
+	}
 	else
 	{
 		QOpenGLWidget::mousePressEvent(event);
@@ -1305,28 +1367,28 @@ void YACReaderFlowGL::mouseDoubleClickEvent(QMouseEvent* event)
 
 QVector3D YACReaderFlowGL::getPlaneIntersection(int x, int y, YACReader3DImage plane)
 {
-	
+
 	//get viewport (TODO: cache viewport!)
 	GLint viewport[4];
     makeCurrent();
     glGetIntegerv( GL_VIEWPORT, viewport );
     doneCurrent();
-    
+
     //create the picking ray
     QVector3D ray_origin(x*devicePixelRatio(), y*devicePixelRatio(), 0);
     QVector3D ray_end(x*devicePixelRatio(), y*devicePixelRatio(), 1.0);
-    
+
     ray_origin = ray_origin.unproject(m_modelview, m_projection, QRect(viewport[0], viewport[1], viewport[2], viewport[3]));
     ray_end = ray_end.unproject(m_modelview, m_projection, QRect(viewport[0], viewport[1], viewport[2], viewport[3]));
-    
+
     QVector3D ray_vector = ray_end - ray_origin;
-    
+
     //calculate the plane vectors
     QVector3D plane_origin((plane.width/2)*-1, -0.5, 0);
     QVector3D plane_vektor_1 = QVector3D(plane.width/2, -0.5, 0) - plane_origin;
     QVector3D plane_vektor_2 = QVector3D((plane.width/2)*-1, -0.5*plane.height, 0) - plane_origin;
-    
-    
+
+
     //get the intersection using Cramer's rule. We only x for the line, not the plane
     double intersection_LES_determinant = ((plane_vektor_1.x()*plane_vektor_2.y()*(-1)*ray_vector.z())
 											+ (plane_vektor_2.x()*(-1)*ray_vector.y()*plane_vektor_1.z())
@@ -1334,16 +1396,16 @@ QVector3D YACReaderFlowGL::getPlaneIntersection(int x, int y, YACReader3DImage p
 											- ((-1)*ray_vector.x()*plane_vektor_2.y()*plane_vektor_1.z())
 											- (plane_vektor_1.x()*(-1)*ray_vector.y()*plane_vektor_2.z())
 											- (plane_vektor_2.x()*plane_vektor_1.y()*(-1)*ray_vector.z()));
-    
+
     QVector3D det = ray_origin - plane_origin;
-    
+
     double intersection_ray_determinant = ((plane_vektor_1.x()*plane_vektor_2.y()*det.z())
 											+ (plane_vektor_2.x()*det.y()*plane_vektor_1.z())
 											+ (det.x()*plane_vektor_1.y()*plane_vektor_2.z())
 											- (det.x()*plane_vektor_2.y()*plane_vektor_1.z())
 											- (plane_vektor_1.x()*det.y()*plane_vektor_2.z())
 											- (plane_vektor_2.x()*plane_vektor_1.y()*det.z()));
-											
+
 	//return the intersection point
     return ray_origin + ray_vector * (intersection_ray_determinant / intersection_LES_determinant);
 
@@ -1385,7 +1447,7 @@ void YACReaderComicFlowGL::updateImageData()
 	{
 		return;
 	}
-	
+
 	// set image of last one
 	int idx = worker->index();
 	if ( idx >= 0 && !worker->result().isNull())
@@ -1412,7 +1474,7 @@ void YACReaderComicFlowGL::updateImageData()
 		}
 	}
 
-	// try to load only few images on the left and right side 
+	// try to load only few images on the left and right side
 	// i.e. all visible ones plus some extra
 	int count = 8;
 	switch (performance)
@@ -1437,7 +1499,7 @@ void YACReaderComicFlowGL::updateImageData()
 	{
 		indexes[j*2+1] = center+j+1;
 		indexes[j*2+2] = center-j-1;
-	}  
+	}
 	for (int c = 0; c < 2*count+1; c++)
 	{
 		int i = indexes[c];
@@ -1487,7 +1549,7 @@ void YACReaderComicFlowGL::resortCovers(QList<int> newOrder)
     QVector<YACReader3DImage> imagesNew;
 
     int index = 0;
-    foreach (int i, newOrder) 
+    foreach (int i, newOrder)
     {
         pathsNew << paths.at(i);
         loadedNew << loaded.at(i);
@@ -1521,17 +1583,17 @@ YACReaderPageFlowGL::~YACReaderPageFlowGL()
     {
         delete(images[i].texture);
     }
-    
+
 #ifdef YACREADER_LIBRARY
 	delete markTexture;
     delete readingTexture;
 #endif
-    
+
     //TODO: vao, pipeline
     delete v_buffer;
     delete vao;
     delete pipeline;
-    
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1575,7 +1637,7 @@ void YACReaderPageFlowGL::updateImageData()
 		}
 	}
 
-	// try to load only few images on the left and right side 
+	// try to load only few images on the left and right side
 	// i.e. all visible ones plus some extra
 	int count=8;
 	switch (performance)
@@ -1600,16 +1662,16 @@ void YACReaderPageFlowGL::updateImageData()
 	{
 		indexes[j*2+1] = center+j+1;
 		indexes[j*2+2] = center-j-1;
-	}  
+	}
 	for (int c = 0; c < 2*count+1; c++)
 	{
 		int i = indexes[c];
 		if ((i >= 0) && (i < numObjects))
-		{	
+		{
 			if ((rawImages.size() > 0) && !loaded[i]&&imagesReady[i])//slide(i).isNull())
 			{
 				worker->generate(i, rawImages.at(i));
-				
+
 				delete[] indexes;
 				return;
 			}
@@ -1663,7 +1725,7 @@ QImage ImageLoaderGL::loadImage(const QString& fileName)
 	return image;
 }
 
-ImageLoaderGL::ImageLoaderGL(YACReaderFlowGL * flow): 
+ImageLoaderGL::ImageLoaderGL(YACReaderFlowGL * flow):
 QThread(),flow(flow),restart(false), working(false), idx(-1)
 {
 
@@ -1680,7 +1742,7 @@ ImageLoaderGL::~ImageLoaderGL()
 bool ImageLoaderGL::busy() const
 {
 	return isRunning() ? working : false;
-}  
+}
 
 void ImageLoaderGL::generate(int index, const QString& fileName)
 {
@@ -1742,9 +1804,9 @@ void ImageLoaderGL::run()
 	}
 }
 
-QImage ImageLoaderGL::result() 
-{ 
-	return img; 
+QImage ImageLoaderGL::result()
+{
+	return img;
 }
 
 //-----------------------------------------------------------------------------
@@ -1778,7 +1840,7 @@ QImage ImageLoaderByteArrayGL::loadImage(const QByteArray& raw)
 	return image;
 }
 
-ImageLoaderByteArrayGL::ImageLoaderByteArrayGL(YACReaderFlowGL * flow): 
+ImageLoaderByteArrayGL::ImageLoaderByteArrayGL(YACReaderFlowGL * flow):
 QThread(),flow(flow),restart(false), working(false), idx(-1)
 {
 
@@ -1795,7 +1857,7 @@ ImageLoaderByteArrayGL::~ImageLoaderByteArrayGL()
 bool ImageLoaderByteArrayGL::busy() const
 {
 	return isRunning() ? working : false;
-}  
+}
 
 void ImageLoaderByteArrayGL::generate(int index, const QByteArray& raw)
 {
@@ -1847,7 +1909,7 @@ void ImageLoaderByteArrayGL::run()
 	}
 }
 
-QImage ImageLoaderByteArrayGL::result() 
-{ 
-	return img; 
+QImage ImageLoaderByteArrayGL::result()
+{
+	return img;
 }
