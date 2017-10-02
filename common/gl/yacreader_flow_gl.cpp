@@ -538,6 +538,10 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 
 	//fadeout
   float opacity = 1-1/(config.animationFadeOutDist+config.viewRotateLightStrenght*fabs(viewRotate))*fabs(0-image.current.x);
+	if (opacity <= 0)
+	{
+		return;
+	}
 	
 	//calculate shading
   float LShading = ((config.rotation != 0 )?((image.current.rot < 0)?1-1/config.rotation*image.current.rot:1):1);
