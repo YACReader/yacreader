@@ -43,22 +43,18 @@ INCLUDEPATH += ../common \
 win32 {
     CONFIG(force_angle) {
         message("using ANGLE")
-        LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
+        LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -luser32
         #linking extra libs are necesary for a successful compilation, a better approach should be
         #to remove any OpenGL (desktop) dependencies
         #the OpenGL stuff should be migrated to OpenGL ES
         DEFINES += FORCE_ANGLE
     } else {
-        LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
+        LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -luser32
     }
 
     QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
     QMAKE_LFLAGS_RELEASE += /LTCG
     CONFIG -= embed_manifest_exe
-}
-
-unix:!macx:!CONFIG(no_opengl) {
-        LIBS += -lGLU
 }
 
 macx{
@@ -260,4 +256,3 @@ manpage.files = ../YACReader.1
 #remove leftover doc files when 'make clean' is invoked
 QMAKE_CLEAN += "../README"
 }
-
