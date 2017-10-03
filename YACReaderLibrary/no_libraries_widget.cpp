@@ -23,7 +23,7 @@ NoLibrariesWidget::NoLibrariesWidget(QWidget *parent) :
 	QLabel * lineLabel = new QLabel();
 	lineLabel->setPixmap(line);
 
-	QLabel * text = new QLabel("<font color=\"#495252\">"+tr("You don't have any librarires yet")+"</font>");
+    QLabel * text = new QLabel("<font color=\"#495252\">"+tr("You don't have any libraries yet")+"</font>");
 	text->setStyleSheet("QLabel {font-size:25px;font-weight:bold;}");
 	QLabel * textDescription = new QLabel("<font color=\"#565959\">"+tr("<p>You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.</p><p>Don't forget that you can use YACReader as a stand alone application for reading the comics on your computer.</p>")+"</font>");
 	textDescription->setWordWrap(true);
