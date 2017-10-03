@@ -1786,9 +1786,9 @@ void LibraryWindow::openComic()
 
         possiblePaths.append(QDir::cleanPath(QCoreApplication::applicationDirPath()+"/../../../"));
         possiblePaths.append(QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation));
-        for(auto && path: possiblePaths)
+        for(auto && ypath: possiblePaths)
         {
-            QString yacreaderPath = QDir::cleanPath(path + "/YACReader.app");
+            QString yacreaderPath = QDir::cleanPath(ypath + "/YACReader.app");
             if(QFileInfo(yacreaderPath).exists())
             {
                 yacreaderFound = true;
