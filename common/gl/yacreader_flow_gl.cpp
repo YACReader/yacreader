@@ -4,14 +4,11 @@
 #include <QMatrix4x4>
 #include <QVector3D>
 
-//#include <math.h>
-
 #include <cmath>
 #include <iostream>
 /*** Animation Settings ***/
 
 /*** Position Configuration ***/
-
 
 int YACReaderFlowGL::updateInterval = 16;
 
@@ -372,19 +369,8 @@ void YACReaderFlowGL::initializeGL()
 		populate(lazyPopulateObjects);
 	}
 
-	//fixed function shader setup
-	//glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_CULL_FACE);
-    //glEnable(GL_COLOR_MATERIAL);
-    //glEnable(GL_BLEND);
-    //glEnable(GL_MULTISAMPLE);
-	//glEnable(GL_TEXTURE_2D);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //glClearColor(0,0,0,1);
-
 	hasBeenInitialized = true;
 	vao->release();
-
 }
 
 void YACReaderFlowGL::paintGL()
@@ -531,8 +517,6 @@ bool YACReaderFlowGL::animate(YACReader3DVector & currentVector,YACReader3DVecto
 void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 {
 
-  //prepare render data
-
   float w = image.width;
   float h = image.height;
 
@@ -542,7 +526,7 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 	{
 		return;
 	}
-	
+
 	//calculate shading
   float LShading = ((config.rotation != 0 )?((image.current.rot < 0)?1-1/config.rotation*image.current.rot:1):1);
   float RShading = ((config.rotation != 0 )?((image.current.rot > 0)?1-1/(config.rotation*-1)*image.current.rot:1):1);
@@ -551,66 +535,65 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 	float RUP =  shadingTop+(1-shadingTop)*RShading;
 	float RDOWN =  shadingBottom+(1-shadingBottom)*RShading;
 
-	//vertices and coordinates
-
-	// create vertexes from quad coordinates
+	//3d coordinates
 	auto quad3 = [] (std::array<float, 12> quad)
 	{
-		auto half = [] (float eins, float zwei) {
-			return eins + (zwei-eins)/2;
+		auto interpolate = [] (float first, float second) {
+			return first + (second-first)/2;
 		};
-		float test = half(1,2);
 		return std::array<float, 36> {
 			quad[0], quad[1], quad[2],
 			quad[3], quad[4], quad[5],
-			half(quad[0], quad[6]),half(quad[1], quad[7]),half(quad[2], quad[8]),
+			interpolate(quad[0], quad[6]),interpolate(quad[1], quad[7]),interpolate(quad[2], quad[8]),
 			quad[3], quad[4], quad[5],
 			quad[6], quad[7], quad[8],
-			half(quad[0], quad[6]),half(quad[1], quad[7]),half(quad[2], quad[8]),
+			interpolate(quad[0], quad[6]),interpolate(quad[1], quad[7]),interpolate(quad[2], quad[8]),
 			quad[6], quad[7], quad[8],
 			quad[9], quad[10], quad[11],
-			half(quad[0], quad[6]),half(quad[1], quad[7]),half(quad[2], quad[8]),
+			interpolate(quad[0], quad[6]),interpolate(quad[1], quad[7]),interpolate(quad[2], quad[8]),
 			quad[9], quad[10], quad[11],
 			quad[0], quad[1], quad[2],
-			half(quad[0], quad[6]),half(quad[1], quad[7]),half(quad[2], quad[8])};
+			interpolate(quad[0], quad[6]),interpolate(quad[1], quad[7]),interpolate(quad[2], quad[8])};
 		};
 
+		// shadow/colors
 		auto quadc = [] (std::array<float, 12> quad)
 		{
-			auto half = [] (float eins, float zwei,
-															float drei, float vier) {
-				return (((eins + zwei)/2 + (drei + vier)/2)/2);
+			auto interpolate = [] (float first, float second,
+															float third, float fourth) {
+				return (((first + second)/2 + (third + fourth)/2)/2);
 			};
 			return std::array<float, 36> {
 				quad[0], quad[1], quad[2],
 				quad[3], quad[4], quad[5],
 
-				half(quad[0], quad[6], quad[3], quad[9]),
-				half(quad[1], quad[7], quad[4], quad[10]),
-				half(quad[2], quad[8], quad[5], quad[11]),
+				interpolate(quad[0], quad[6], quad[3], quad[9]),
+				interpolate(quad[1], quad[7], quad[4], quad[10]),
+				interpolate(quad[2], quad[8], quad[5], quad[11]),
 
 				quad[3], quad[4], quad[5],
 				quad[6], quad[7], quad[8],
 
-				half(quad[0], quad[6], quad[3], quad[9]),
-				half(quad[1], quad[7], quad[4], quad[10]),
-				half(quad[2], quad[8], quad[5], quad[11]),
+				interpolate(quad[0], quad[6], quad[3], quad[9]),
+				interpolate(quad[1], quad[7], quad[4], quad[10]),
+				interpolate(quad[2], quad[8], quad[5], quad[11]),
 
 				quad[6], quad[7], quad[8],
 				quad[9], quad[10], quad[11],
 
-				half(quad[0], quad[6], quad[3], quad[9]),
-				half(quad[1], quad[7], quad[4], quad[10]),
-				half(quad[2], quad[8], quad[5], quad[11]),
+				interpolate(quad[0], quad[6], quad[3], quad[9]),
+				interpolate(quad[1], quad[7], quad[4], quad[10]),
+				interpolate(quad[2], quad[8], quad[5], quad[11]),
 
 				quad[9], quad[10], quad[11],
 				quad[0], quad[1], quad[2],
 
-				half(quad[0], quad[6], quad[3], quad[9]),
-				half(quad[1], quad[7], quad[4], quad[10]),
-				half(quad[2], quad[8], quad[5], quad[11])};
+				interpolate(quad[0], quad[6], quad[3], quad[9]),
+				interpolate(quad[1], quad[7], quad[4], quad[10]),
+				interpolate(quad[2], quad[8], quad[5], quad[11])};
 			};
 
+	// texture coordinates
 	auto quad2 = [] (std::array<float, 8> quad)	{
 		return std::array<float, 24> {
 			quad[0], quad[1],
@@ -627,6 +610,7 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 			0.5,0.5};
 	};
 
+	// mix vertexes for upload
 	auto interweave = [] (std::array<float, 36> coord,
 												std::array<float, 24> cover,
 												std::array<float, 36> color)
@@ -634,7 +618,7 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 														std::array<float, coord.size()
 																						+ cover.size()
 																						+ color.size()> interweaved;
-														for (int i=0; i < coord.size()/3; i++)
+														for (uint i=0; i < coord.size()/3; i++)
 														{
 															std::copy(&coord[i*3], &coord[i*3]+3, &interweaved[i*8]);
 															std::copy(&cover[i*2], &cover[i*2]+2, &interweaved[i*8]+3);
@@ -643,7 +627,7 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 														return interweaved;
 												};
 
-	// cover position
+	// cover coordinates
 	std::array<float, 12> cover = {w/2.f*-1.f, -0.5f, 0.f, //LU
 					w/2.f, -0.5f, 0.f, //RU
 					w/2.f, -0.5f+h, 0.f, //RO
@@ -654,8 +638,7 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 						w/2.f, -0.5f, 0.f,
 						w/2.f*-1.f, -0.5f, 0.f};
 
-//cover texture
-
+	//cover textures
 	std::array<float, 8> cover_t = {0, 1,
 							1, 1,
 							1, 0,
@@ -666,8 +649,7 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 							1, 1,
 							0, 1};
 
-//cover shadow
-
+  //cover shadows
 	std::array<float, 12> cover_c = {LDOWN*opacity,LDOWN*opacity,LDOWN*opacity,
 						RDOWN*opacity,RDOWN*opacity,RDOWN*opacity,
 						RUP*opacity,RUP*opacity,RUP*opacity,
@@ -678,31 +660,41 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 						RDOWN*opacity/3,RDOWN*opacity/3,RDOWN*opacity/3,
 						LDOWN*opacity/3,LDOWN*opacity/3,LDOWN*opacity/3};
 
-	auto vertex1 = interweave(quad3(cover), quad2(cover_t), quadc(cover_c));
-	auto vertex2 = interweave(quad3(rcover), quad2(rcover_t), quadc(rcover_c));
-	std::array <float, 96> vertex3;
-  if (showMarks && loaded[image.index] && marks[image.index] != Unread)
+	v_buffer->bind();
+	auto pointer = v_buffer->map(QOpenGLBuffer::WriteOnly);
+	if (pointer)
 	{
-		std::array <float, 12> mark = {w/2.f-0.2f, -0.688f+h, 0.001f,
-						w/2.f-0.05f, -0.688f+h, 0.001f,
-						w/2.f-0.05f, -0.488f+h, 0.001f,
-						w/2.f-0.2f, -0.488f+h, 0.001f};
+		auto vertex1 = interweave(quad3(cover), quad2(cover_t), quadc(cover_c));
+		auto vertex2 = interweave(quad3(rcover), quad2(rcover_t), quadc(rcover_c));
 
-		std::array <float, 8> mark_t = {0, 1,
-							1, 1,
-							1, 0,
-							0, 0};
+		std::copy(vertex1.begin(), vertex1.end(), (float*)pointer);
+		std::copy(vertex2.begin(), vertex2.end(), (float*)pointer + vertex1.size());
+		if (showMarks && loaded[image.index] && marks[image.index] != Unread)
+		{
+				std::array <float, 12> mark = {w/2.f-0.2f, -0.688f+h, 0.001f,
+									w/2.f-0.05f, -0.688f+h, 0.001f,
+									w/2.f-0.05f, -0.488f+h, 0.001f,
+									w/2.f-0.2f, -0.488f+h, 0.001f};
 
-		std::array <float, 12> mark_c = {RUP*opacity,RUP*opacity,RUP*opacity,
-							RUP*opacity,RUP*opacity,RUP*opacity,
-							RUP*opacity,RUP*opacity,RUP*opacity,
-							RUP*opacity,RUP*opacity,RUP*opacity};
-		vertex3 = interweave(quad3(mark), quad2(mark_t), quadc(mark_c));
+				std::array <float, 8> mark_t = {0, 1,
+									1, 1,
+									1, 0,
+									0, 0};
+
+				std::array <float, 12> mark_c = {RUP*opacity,RUP*opacity,RUP*opacity,
+									RUP*opacity,RUP*opacity,RUP*opacity,
+									RUP*opacity,RUP*opacity,RUP*opacity,
+									RUP*opacity,RUP*opacity,RUP*opacity};
+
+			auto vertex3 = interweave(quad3(mark), quad2(mark_t), quadc(mark_c));
+			std::copy(vertex3.begin(), vertex3.end(), (float*)pointer
+																							+ vertex1.size()
+																							+ vertex2.size());
+		}
+		v_buffer->unmap();
 	}
 
-	//draw cover
-
-	//set matrices
+	//set transformation matrices
 	m_modelview.setToIdentity();
 	m_modelview.translate(config.cfX,config.cfY,config.cfZ);
 	m_modelview.rotate(config.cfRX,1,0,0);
@@ -715,20 +707,6 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage & image)
 
   //bind cover texture
   image.texture->bind();
-
-	//load vertices to buffer
-	v_buffer->bind();
-	auto pointer = v_buffer->map(QOpenGLBuffer::WriteOnly);
-
-	std::copy(vertex1.begin(), vertex1.end(), (float*)pointer);
-	std::copy(vertex2.begin(), vertex2.end(), (float*)pointer + vertex1.size());
-	if (showMarks && loaded[image.index] && marks[image.index] != Unread)
-	{
-	std::copy(vertex3.begin(), vertex3.end(), (float*)pointer
-																						+ vertex1.size()
-																						+ vertex2.size());
-	}
-	v_buffer->unmap();
 
 	//draw cover and reflection
 	glDrawArrays(GL_TRIANGLES, 0, 24);
@@ -762,10 +740,9 @@ void YACReaderFlowGL::cleanupAnimation()
 void YACReaderFlowGL::draw()
 {
 	int CS = currentSelected;
-	int count;
 
 	//Draw right Covers
-	for (count = numObjects-1;count > -1;count--)
+	for (int count = numObjects-1;count > -1;count--)
 	{
 		if (count > CS)
 		{
@@ -774,7 +751,7 @@ void YACReaderFlowGL::draw()
 	}
 
 	//Draw left Covers
-	for (count = 0;count < numObjects-1;count++)
+	for (int count = 0;count < numObjects-1;count++)
 	{
 		if (count < CS)
 		{
