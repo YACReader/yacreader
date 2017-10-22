@@ -251,4 +251,4 @@ manpage.files = ../YACReader.1
 
 #remove leftover doc files when 'make clean' is invoked
 QMAKE_CLEAN += "../README"
-}
+}
