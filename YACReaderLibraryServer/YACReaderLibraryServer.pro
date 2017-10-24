@@ -5,15 +5,15 @@ QMAKE_TARGET_BUNDLE_PREFIX = "com.yacreader"
 
 CONFIG += console
 DEPENDPATH += ../YACReaderLibrary
-INCLUDEPATH += ../YACReaderLibrary
-INCLUDEPATH += ../common \
+INCLUDEPATH += ../YACReaderLibrary \
+                ../common \
                 ../YACReaderLibrary/server \
                 ../YACReaderLibrary/db
 
 DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY QT_NO_DEBUG_OUTPUT
 QMAKE_MAC_SDK = macosx10.12
-#load default build flags
-#do a basic dependency check
+# load default build flags
+# do a basic dependency check
 include(headless_config.pri)
 include(../dependencies/pdf_backend.pri)
 
@@ -80,7 +80,7 @@ SOURCES += ../YACReaderLibrary/library_creator.cpp \
            main.cpp
 
 include(../YACReaderLibrary/server/server.pri)
-CONFIG(7zip){
+CONFIG(7zip) {
 include(../compressed_archive/wrapper.pri)
 } else:CONFIG(unarr) {
 include(../compressed_archive/unarr/unarr-wrapper.pri)
@@ -88,7 +88,6 @@ include(../compressed_archive/unarr/unarr-wrapper.pri)
   error(No compression backend specified. Did you mess with the build system?)
 }
 include(../QsLog/QsLog.pri)
-
 
 TRANSLATIONS =  yacreaderlibraryserver_es.ts \
                 yacreaderlibraryserver_ru.ts \
@@ -123,13 +122,13 @@ DEFINES += "LIBDIR=\\\"$$LIBDIR\\\""  "DATADIR=\\\"$$DATADIR\\\"" "BINDIR=\\\"$$
 
 #make install
 CONFIG(server_standalone) {
-  INSTALLS += bin server translation
+  INSTALLS += bin server translation systemd
 }
 else:CONFIG(server_bundled) {
-  INSTALLS += bin
+  INSTALLS += bin systemd
 }
 else {
-  INSTALLS += bin server translation
+  INSTALLS += bin server translation systemd
   message("No build type specified. Defaulting to standalone server build (CONFIG+=server_standalone).")
   message("If you wish to run YACReaderLibraryServer on a system with an existing install of YACReaderLibrary,\
             please specify CONFIG+=server_bundled as an option when running qmake.")
@@ -145,11 +144,13 @@ isEmpty(DESTDIR) {
 server.path = $$DATADIR/yacreader
 server.files = ../release/server
 
+systemd.path = $$LIBDIR/systemd/system
+systemd.files = yacreaderlibraryserver.service
+
 translation.path = $$DATADIR/yacreader/languages
 translation.files = ../release/languages/yacreaderlibrary_*
 
 # TODO: We need a manpage for yaclibserver
-# TODO: We need a systemd service file for yaclibserver
 #manpage.path = $$DATADIR/man/man1
 #manpage.files = ../YACReaderLibrary.1
 }
