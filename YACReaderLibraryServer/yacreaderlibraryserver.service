@@ -1,5 +1,5 @@
 [Unit]
-Description=YACReaderLibrary headless server
+Description= YACReaderLibrary headless server
 After=network.target
 
 [Service]
@@ -8,4 +8,4 @@ Restart=always
 ExecStart=/usr/bin/YACReaderLibraryServer start
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
