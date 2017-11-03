@@ -149,7 +149,7 @@ isEmpty(DESTDIR) {
 server.path = $$DATADIR/yacreader
 server.files = ../release/server
 
-systemd.path = $$LIBDIR/systemd/system
+systemd.path = $$LIBDIR/systemd/user
 systemd.files = yacreaderlibraryserver.service
 
 translation.path = $$DATADIR/yacreader/languages
