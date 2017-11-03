@@ -33,6 +33,11 @@ unix {
   CONFIG += c++11
 }
 
+unix:haiku {
+  DEFINES += _BSD_SOURCE
+  LIBS    += -lnetwork -lbsd
+}
+
 #CONFIG += release
 CONFIG -= flat
 QT += core sql network
