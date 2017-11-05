@@ -57,13 +57,13 @@ struct Preset{
 	float animationSpeedUp;
 	//sets the maximum speed of the animation
 	float animationStepMax;
-	//sets the distance of view 
+	//sets the distance of view
 	float animationFadeOutDist;
 	//sets the rotation increasion
 	float preRotation;
-	//sets the light strenght on rotation 
+	//sets the light strenght on rotation
 	float viewRotateLightStrenght;
-	//sets the speed of the rotation 
+	//sets the speed of the rotation
 	float viewRotateAdd;
 	//sets the speed of reversing the rotation
 	float viewRotateSub;
@@ -71,17 +71,17 @@ struct Preset{
 	float viewAngle;
 
 	/*** Position Configuration ***/
-	//the X Position of the Coverflow 
+	//the X Position of the Coverflow
 	float cfX;
-	//the Y Position of the Coverflow 
+	//the Y Position of the Coverflow
 	float cfY;
-	//the Z Position of the Coverflow 
+	//the Z Position of the Coverflow
 	float cfZ;
-	//the X Rotation of the Coverflow 
+	//the X Rotation of the Coverflow
 	float cfRX;
-	//the Y Rotation of the Coverflow 
+	//the Y Rotation of the Coverflow
 	float cfRY;
-	//the Z Rotation of the Coverflow 
+	//the Z Rotation of the Coverflow
 	float cfRZ;
 	//sets the rotation of each cover
 	float rotation;
@@ -89,7 +89,7 @@ struct Preset{
 	float xDistance;
 	//sets the distance between the centered and the non centered covers
 	float centerDistance;
-	//sets the pushback amount 
+	//sets the pushback amount
 	float zDistance;
 	//sets the elevation amount
 	float yDistance;
@@ -122,7 +122,7 @@ protected:
     void drawCover(const YACReader3DImage & image);
 
 	void udpatePerspective(int width, int height);
-	
+
 	int updateCount;
 	WidgetLoader * loader;
 	int fontSize;
@@ -143,16 +143,19 @@ protected:
     QVector<YACReader3DImage> images;
 	bool hasBeenInitialized;
 
+	// sets flow direction right-to-left (manga mode)
+	bool flowRightToLeft;
+
 	Performance performance;
 	bool bUseVSync;
 
 	/*** Animation Settings ***/
 	Preset config;
 
-	//sets/returns the curent selected cover 
+	//sets/returns the curent selected cover
 	int currentSelected;
 
-	//defines the position of the centered cover 
+	//defines the position of the centered cover
     YACReader3DVector centerPos;
 
 	/*** Style ***/
@@ -172,7 +175,7 @@ protected:
 
     void startAnimationTimer();
     void stopAnimationTimer();
-	
+
 public:
 
 
@@ -198,7 +201,7 @@ public:
 	void draw();
 	//updates the coverflow
 	void updatePositions();
-	//inserts a new item to the coverflow 
+	//inserts a new item to the coverflow
 	//if item is set to a value > -1 it updates a already set value
 	//otherwise a new entry is set
     void insert(const char *name, GLuint Tex, float x, float y,int item = -1);
@@ -215,9 +218,9 @@ public:
 
 	public slots:
 	void setCF_RX(int value);
-	//the Y Rotation of the Coverflow 
+	//the Y Rotation of the Coverflow
 	void setCF_RY(int value);
-	//the Z Rotation of the Coverflow 
+	//the Z Rotation of the Coverflow
 	void setCF_RZ(int value);
 
 	//perspective
@@ -228,7 +231,7 @@ public:
 	void setX_Distance(int distance);
 	//sets the distance between the centered and the non centered covers
 	void setCenter_Distance(int distance);
-	//sets the pushback amount 
+	//sets the pushback amount
 	void setZ_Distance(int distance);
 
 	void setCF_Y(int value);
@@ -247,6 +250,8 @@ public:
 	void setPerformance(Performance performance);
 
 	void useVSync(bool b);
+
+	void setFlowRightToLeft(bool b);
 
 	virtual void updateImageData() = 0;
 
@@ -336,7 +341,7 @@ protected:
 private:
 	QMutex mutex;
 	QWaitCondition condition;
-	
+
 
 	bool restart;
 	bool working;
