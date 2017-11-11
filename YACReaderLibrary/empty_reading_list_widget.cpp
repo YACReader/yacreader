@@ -5,5 +5,5 @@ EmptyReadingListWidget::EmptyReadingListWidget(QWidget *parent)
 {
     setUpDefaultLayout(true);
     setPixmap(QPixmap(":/images/empty_reading_list"));
-    setText(tr("This reading list doesn't cotain comics yet"));
+    setText(tr("This reading list does not contain any comics yet"));
 }
