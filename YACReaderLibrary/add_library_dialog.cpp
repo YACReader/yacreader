@@ -19,7 +19,7 @@ void AddLibraryDialog::setupUI()
 	textLabel->setBuddy(path);
 	connect(path,SIGNAL(textChanged(QString)),this,SLOT(pathSetted(QString)));
 
-	nameLabel = new QLabel(tr("Library name : "));
+	nameLabel = new QLabel(tr("Library Name : "));
 	nameEdit = new QLineEdit;
 	nameLabel->setBuddy(nameEdit);
 	connect(nameEdit,SIGNAL(textChanged(QString)),this,SLOT(nameSetted(QString)));
@@ -60,7 +60,7 @@ void AddLibraryDialog::setupUI()
 	imgLabel->setPixmap(p);
 	imgMainLayout->addWidget(imgLabel);//,0,Qt::AlignTop);
 	imgMainLayout->addLayout(mainLayout);
-
+	
 	setLayout(imgMainLayout);
 
 	setModal(true);
