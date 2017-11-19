@@ -1,0 +1,94 @@
+﻿<html>
+<head>
+  <style type="text/css">
+  h1, h2{
+    color: #302f2d;
+	font-weight: normal;
+  }
+  
+  h1{
+	font-size: 20px;
+  }
+  
+  h2{
+	font-size: 14px;
+  }
+  
+  a {
+    color: #C19441;
+}
+  </style>
+</head>
+<body>
+	<h1>Quick start guide</h1>
+	<p> This guide is outdated, get more help on <a href="http://www.yacreader.com">http://www.yacreader.com</a> </p>
+	<h2>Features</h2>
+	<p>
+	YACReader Library is a comic library browser with the following features:
+		<ul>
+			<li>Three different effects for cover viewing (Cover Flow like, Strip and Overlapped Strip)</li>
+			<li>Create, add existing, update, delete or rename various comic collections</li>
+			<li>Export and import covers of your libraries.</li>
+			<li>Fast navigation between comics ussing tree and list views</li>
+			<li>Open your comics on YACReader directly from your collection</li>
+			<li>Fullscreen mode</li>
+			<li>Search folders in your collections</li>
+		</ul>
+	</p>
+	<h2>Functions and shortcuts</h2>
+	<p>
+		<ul>
+			<li>Create a new library: Set a name to your library, select your comics folder and start the creation process</li>
+			<li>Open an existing library: This funcions allows you to select a folder with a comic library previously created</li>
+			<li>Export</li>
+			<li>Import</li>
+			<li>Update current library: Update the selected library, adding covers to the library if new comics were added, or deleting them if comics were removed</li>
+			<li>Rename current library: This funcions allows you to rename the selected library.			
+			<li>Remove current library from your collection: delete the selected library from YACReaderLibrary, although library will not be removed from file system</li>
+			<li>Delete current library from your disk: delete the selected library from YACReaderLibrary and erase it from disk (only covers, comics will never be deleted from disk)</li>
+			<li>Open current comic on YACReader (Enter):Open for reading the centred comic in the cover flow.</li>
+			<li>Comic properties: shows a full quality cover, comic file name, number of pages and size comic</li>
+			<li>Switching to fullscreen mode: you can view your covers bigger in fullscreen mode using 'F' key</li>
+			<li>Browsing your collection:
+				<ul>
+					<li>Select a library: you can select a library from the combo box clicking on it.</li>
+					<li>Browse a library: there are three views.
+						<ul>
+							<li>On the left, there is a treeview with the folders existing in your library,
+					you can select any folder, it is possible to expand or collapse it by double clicking on a folder. Also, you can expand or collapse all folders using '+' and '-' buttons. Root folder
+					can be selected clicking on "Select root node" button. </li>
+							<li>On the top right, there is the covers view. This view shows the comics on the selected folder. You can browse them using left and right cursors (pressing CTRL allows you to fast fordward/backward), or clicking on the right/left of the central cover.</li>
+							<li>On the bottom right, there is the list view. This view shows the comics on the selected folder as a list. You can select any comic clicking on it.</li>
+						</ul>
+					</li>
+					<li>Search: you can search an especific folder using the text field on the left-bottom corner. If you type "<b>sp</b>", the search will match with "<b>Sp</b>iderman - vol 7" and "The dark ages - <b>Sp</b>awn". In any case, the search will be case insensitive.
+				</ul>
+			</li>
+			<li>Configuration dialog:
+			<ul>
+			<li>"How to show covers" : since version 0.2.0, you can choose between three diferent styles: 
+				<ul>
+					<li> Cover Flow : the classic style</li>
+					<li> Strip : a strip of covers flowing horizontaly </li>
+					<li> Overlapped Strip : a strip of covers with overlap effect </li>
+				<ul>
+			</li>
+			</ul>
+			</li>
+
+		</ul>
+	</p>
+	<h2>Usage and considerations</h2>
+	<p></p>You can create a collection in any folder (write privilieges are needed). Creation process involves looking for image files in any 
+	rar,zip,cbr,cbz and tar files. If images are found, the first one (alfabetically) is taken as the comic cover and added
+	to the collection.</p>
+	
+	<p>The hidden folder .yacreaderlibrary is created in the root path of your comics folder. This folder stores
+	the library with cover's tumbnails, so please, don't mess with it.</p>
+	
+	<p><s>.yacreaderlibrary folder can be copied in order to share your comic library with your friends. To do that, you
+	can copy .yacreaderlibrary to any folder, and then "Open an existing library" from this folder (Note:
+	if you update that library, all covers will be removed). Is intended that this task could be done automatically from YACReaderLibrary in a later version.</s></p>
+
+</body>
+</html>
