@@ -63,7 +63,7 @@ OptionsDialog::OptionsDialog(QWidget * parent)
     backgroundImageBlurRadiusSlider = new QSlider(Qt::Horizontal);
     backgroundImageBlurRadiusSlider->setRange(0,100);
 
-    useCurrentComicCoverCheck = new QCheckBox(tr("Use selectec comic cover as background"));
+    useCurrentComicCoverCheck = new QCheckBox(tr("Use selected comic cover as background"));
 
     resetButton = new QPushButton(tr("Restore defautls"));
 
