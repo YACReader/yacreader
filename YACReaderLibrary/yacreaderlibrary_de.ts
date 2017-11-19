@@ -374,7 +374,7 @@
     <name>EmptyReadingListWidget</name>
     <message>
         <location filename="empty_reading_list_widget.cpp" line="8"/>
-        <source>This reading list doesn&apos;t cotain comics yet</source>
+        <source>This reading list doesn&apos;t contain comics yet</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1219,7 +1219,7 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
     <name>NoLibrariesWidget</name>
     <message>
         <location filename="no_libraries_widget.cpp" line="26"/>
-        <source>You don&apos;t have any librarires yet</source>
+        <source>You don&apos;t have any libraries yet</source>
         <translation>Sie haben im Augenblick keine Bibliothek</translation>
     </message>
     <message>
@@ -1267,7 +1267,7 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
     </message>
     <message>
         <location filename="options_dialog.cpp" line="66"/>
-        <source>Use selectec comic cover as background</source>
+        <source>Use selected comic cover as background</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

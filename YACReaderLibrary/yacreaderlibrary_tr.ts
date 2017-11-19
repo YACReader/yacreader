@@ -297,7 +297,7 @@
 <context>
     <name>EmptyReadingListWidget</name>
     <message>
-        <source>This reading list doesn&apos;t cotain comics yet</source>
+        <source>This reading list doesn&apos;t contain comics yet</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1048,7 +1048,7 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
         <translation>İlk kütüphaneni oluştur</translation>
     </message>
     <message>
-        <source>You don&apos;t have any librarires yet</source>
+        <source>You don&apos;t have any libraries yet</source>
         <translation>Henüz bir kütüphaneye sahip değilsin</translation>
     </message>
     <message>
@@ -1087,7 +1087,7 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Use selectec comic cover as background</source>
+        <source>Use selected comic cover as background</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

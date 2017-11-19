@@ -33,6 +33,11 @@ unix {
   CONFIG += c++11
 }
 
+unix:haiku {
+  DEFINES += _BSD_SOURCE
+  LIBS    += -lnetwork -lbsd
+}
+
 #CONFIG += release
 CONFIG -= flat
 QT += core sql network
@@ -144,7 +149,7 @@ isEmpty(DESTDIR) {
 server.path = $$DATADIR/yacreader
 server.files = ../release/server
 
-systemd.path = $$LIBDIR/systemd/system
+systemd.path = $$LIBDIR/systemd/user
 systemd.files = yacreaderlibraryserver.service
 
 translation.path = $$DATADIR/yacreader/languages

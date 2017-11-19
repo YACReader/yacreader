@@ -19,6 +19,11 @@ QMAKE_MAC_SDK = macosx10.12
 include (../config.pri)
 include (../dependencies/pdf_backend.pri)
 
+unix:haiku {
+  DEFINES += _BSD_SOURCE
+  LIBS    += -lnetwork -lbsd
+}
+
 CONFIG(legacy_gl_widget) {
     INCLUDEPATH += ../common/gl_legacy \
 } else {
@@ -48,8 +53,8 @@ CONFIG(force_angle) {
       Release:DESTDIR = ../release64_angle
       Debug:DESTDIR = ../debug64_angle
     } else {
-    Release:DESTDIR = ../release_angle
-    Debug:DESTDIR = ../debug_angle
+      Release:DESTDIR = ../release_angle
+      Debug:DESTDIR = ../debug_angle
     }
 } else {
     contains(QMAKE_TARGET.arch, x86_64) {
@@ -66,11 +71,9 @@ unix:!macx:!CONFIG(no_opengl) {
 }
 
 macx {
-
-LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
-
-CONFIG += objective_c
-QT += macextras gui-private
+  LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
+  CONFIG += objective_c
+  QT += macextras gui-private
 }
 
 unix:!macx {
