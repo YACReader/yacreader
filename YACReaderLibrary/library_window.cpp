@@ -114,8 +114,6 @@ LibraryWindow::LibraryWindow()
 
 void LibraryWindow::setupUI()
 {
-	setWindowIcon(QIcon(":/images/iconLibrary.png"));
-
 	setUnifiedTitleAndToolBarOnMac(true);
 
 	libraryCreator = new LibraryCreator();
