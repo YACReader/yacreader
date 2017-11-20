@@ -875,7 +875,7 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
     {
         if(c1.info.number.isNull() && c2.info.number.isNull())
         {
-            return naturalSortLessThanCI(c1.info.title.toString(), c2.info.title.toString());
+            return naturalSortLessThanCI(c1.name, c2.name);
         }
         else
         {
