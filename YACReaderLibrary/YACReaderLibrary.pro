@@ -311,7 +311,7 @@ isEmpty(DESTDIR) {
 server.path = $$DATADIR/yacreader
 server.files = ../release/server
 
-icon.path = $$DATADIR/icons/hicolor/scaleable/apps
+icon.path = $$DATADIR/icons/hicolor/scalable/apps
 icon.files = ../YACReaderLibrary.svg
 
 desktop.path = $$DATADIR/applications
