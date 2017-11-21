@@ -242,7 +242,7 @@ docs.path = $$DATADIR/doc/yacreader
 docs.extra = cp ../README.txt ../README
 docs.files = ../README ../CHANGELOG.md
 
-icon.path = $$DATADIR/icons/hicolor/scaleable/apps
+icon.path = $$DATADIR/icons/hicolor/scalable/apps
 icon.files = ../YACReader.svg
 
 desktop.path = $$DATADIR/applications
