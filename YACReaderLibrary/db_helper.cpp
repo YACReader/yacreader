@@ -483,6 +483,9 @@ void DBHelper::update(qulonglong libraryId, ComicInfo & comicInfo)
 
 void DBHelper::update(ComicInfo * comicInfo, QSqlDatabase & db)
 {
+    if(comicInfo == nullptr)
+        return;
+
 	QSqlQuery updateComicInfo(db);
 	updateComicInfo.prepare("UPDATE comic_info SET "
 		"title = :title,"
@@ -674,10 +677,9 @@ void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
     ComicDB comic = DBHelper::loadComic(comicInfo.id,db);
     comic.info.currentPage = comicInfo.currentPage;
     comic.info.hasBeenOpened = true;
+    comic.info.read = comic.info.read || comic.info.currentPage == comic.info.numPages;
 
-    comic.info.lastTimeOpened = QDateTime::currentSecsSinceEpoch();
-
-    DBHelper::update(&comic.info,db);
+    DBHelper::updateReadingRemoteProgress(comic.info,db);
 
     db.close();
     QSqlDatabase::removeDatabase(libraryPath);
@@ -701,6 +703,8 @@ void DBHelper::updateReadingRemoteProgress(const ComicInfo &comicInfo, QSqlDatab
     updateComicInfo.bindValue(":id", comicInfo.id);
     updateComicInfo.bindValue(":rating", comicInfo.rating);
     updateComicInfo.exec();
+
+    updateComicInfo.clear();
 }
 
 
@@ -1174,7 +1178,7 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
     {
         if(c1.info.number.isNull() && c2.info.number.isNull())
         {
-            return naturalSortLessThanCI(c1.info.title.toString(), c2.info.title.toString());
+            return naturalSortLessThanCI(c1.name, c2.name);
         }
         else
         {

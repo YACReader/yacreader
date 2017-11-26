@@ -217,7 +217,7 @@ int main( int argc, char ** argv )
 
   LibraryWindow * mw = new LibraryWindow();
 
-  mw->connect(localServer,SIGNAL(comicUpdated(quint64, const ComicDB &)),mw,SLOT(updateComicsView(quint64, const ComicDB &)));
+  mw->connect(localServer,SIGNAL(comicUpdated(quint64, const ComicDB &)),mw,SLOT(updateComicsView(quint64, const ComicDB &)), Qt::QueuedConnection);
 
   //connections to localServer
 

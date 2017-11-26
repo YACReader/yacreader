@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QImage>
+#include <QFile>
 
 #if defined Q_OS_MAC && defined USE_PDFKIT
 class MacOSXPDFComic
@@ -37,6 +38,8 @@ class PdfiumComic
 	private:
 		FPDF_LIBRARY_CONFIG config;
 		FPDF_DOCUMENT doc;
+        FPDF_FILEACCESS fileAccess;
+        QFile pdfFile;
 };
 #else
 #include "poppler-qt5.h"

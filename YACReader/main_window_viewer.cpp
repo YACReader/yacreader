@@ -84,8 +84,9 @@ MainWindowViewer::~MainWindowViewer()
 	//delete sliderAction;
 	delete openAction;
 	delete openFolderAction;
+    delete openLatestComicAction;
 	delete saveImageAction;
-	delete openPreviousComicAction; 
+	delete openPreviousComicAction;
 	delete openNextComicAction;
 	delete prevAction;
 	delete nextAction;
@@ -126,8 +127,6 @@ void MainWindowViewer::loadConfiguration()
 
 void MainWindowViewer::setupUI()
 {
-	setWindowIcon(QIcon(":/images/icon.png"));
-
     //setUnifiedTitleAndToolBarOnMac(true);
 
 	viewer = new Viewer(this);
@@ -180,9 +179,9 @@ void MainWindowViewer::setupUI()
 	setWindowTitle("YACReader");
 
 	checkNewVersion();
-	
+
 	viewer->setFocusPolicy(Qt::StrongFocus);
-	
+
 
 	//if(Configuration::getConfiguration().getAlwaysOnTop())
 	//{
@@ -222,20 +221,26 @@ void MainWindowViewer::createActions()
     openFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_FOLDER_ACTION_Y));
     connect(openFolderAction, SIGNAL(triggered()), this, SLOT(openFolder()));
 
-    QAction* recentFileAction = 0;
+    openLatestComicAction = new QAction(tr("Open latest comic"), this);
+    openLatestComicAction->setToolTip(tr("Open the latest comic opened in the previous reading session"));
+    openLatestComicAction->setData(OPEN_LATEST_COMIC_Y);
+    openLatestComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_LATEST_COMIC_Y));
+    connect(openLatestComicAction, SIGNAL(triggered()), this, SLOT(openLatestComic()));
+
+    QAction* recentFileAction = nullptr;
     //TODO: Replace limit with a configurable value
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < Configuration::getConfiguration().getOpenRecentSize(); i++)
 	{
 		recentFileAction = new QAction(this);
 		recentFileAction->setVisible(false);
 		QObject::connect(recentFileAction, &QAction::triggered, this, &MainWindowViewer::openRecent);
 		recentFilesActionList.append(recentFileAction);
 	}
-    
+
     clearRecentFilesAction = new QAction(tr("Clear"),this);
-    clearRecentFilesAction->setToolTip(tr("Clear openrecent list"));
+    clearRecentFilesAction->setToolTip(tr("Clear open recent list"));
     connect(clearRecentFilesAction, &QAction::triggered, this, &MainWindowViewer::clearRecentFiles);
-	
+
     saveImageAction = new QAction(tr("Save"),this);
     saveImageAction->setIcon(QIcon(":/images/viewer_toolbar/save.png"));
     saveImageAction->setToolTip(tr("Save current page"));
@@ -387,7 +392,7 @@ void MainWindowViewer::createActions()
     doublePageAction->setData(DOUBLE_PAGE_ACTION_Y);
     doublePageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(DOUBLE_PAGE_ACTION_Y));
 	connect(doublePageAction, SIGNAL(triggered()),viewer,SLOT(doublePageSwitch()));
-	
+
 	//inversed pictures mode
 	doubleMangaPageAction = new QAction(tr("Double page manga mode"),this);
 	doubleMangaPageAction->setToolTip(tr("Reverse reading order in double page mode"));
@@ -398,7 +403,7 @@ void MainWindowViewer::createActions()
     doubleMangaPageAction->setData(DOUBLE_MANGA_PAGE_ACTION_Y);
     doubleMangaPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(DOUBLE_MANGA_PAGE_ACTION_Y));
 	connect(doubleMangaPageAction, SIGNAL(triggered()),viewer,SLOT(doubleMangaPageSwitch()));
-	
+
     goToPageAction = new QAction(tr("Go To"),this);
     goToPageAction->setIcon(QIcon(":/images/viewer_toolbar/goto.png"));
     goToPageAction->setDisabled(true);
@@ -528,6 +533,7 @@ void MainWindowViewer::createToolBars()
 
 	QToolButton * tb = new QToolButton();
 	tb->addAction(openAction);
+    tb->addAction(openLatestComicAction);
 	tb->addAction(openFolderAction);
 	tb->addAction(recentmenu->menuAction());
 	tb->setPopupMode(QToolButton::MenuButtonPopup);
@@ -535,6 +541,7 @@ void MainWindowViewer::createToolBars()
 
 	comicToolBar->addWidget(tb);
 #endif
+
 	comicToolBar->addAction(saveImageAction);
 	comicToolBar->addAction(openPreviousComicAction);
 	comicToolBar->addAction(openNextComicAction);
@@ -574,7 +581,7 @@ void MainWindowViewer::createToolBars()
 
     comicToolBar->addAction(setBookmarkAction);
     comicToolBar->addAction(showBookmarksAction);
-	
+
 	comicToolBar->addSeparator();
 
 	comicToolBar->addAction(showDictionaryAction);
@@ -587,7 +594,7 @@ void MainWindowViewer::createToolBars()
     comicToolBar->addWidget(new YACReaderToolBarStretch());
 #endif
 
-	
+
 	comicToolBar->addAction(showShorcutsAction);
 	comicToolBar->addAction(optionsAction);
 	comicToolBar->addAction(helpAboutAction);
@@ -652,6 +659,7 @@ void MainWindowViewer::createToolBars()
     QMenu * fileMenu = new QMenu(tr("File"));
 
     fileMenu->addAction(openAction);
+    fileMenu->addAction(openLatestComicAction);
     fileMenu->addAction(openFolderAction);
     fileMenu->addSeparator();
     fileMenu->addAction(saveImageAction);
@@ -730,19 +738,19 @@ void MainWindowViewer::createToolBars()
 void MainWindowViewer::refreshRecentFilesActionList()
 {
 	QStringList recentFilePaths = Configuration::getConfiguration().openRecentList();
-	
+
 	//TODO: Replace limit with something configurable
-	int iteration = (recentFilePaths.size() < 10) ? recentFilePaths.size() : 10;
-		
-	for (int i = 0; i < iteration; i++) 
+	int iteration = (recentFilePaths.size() < Configuration::getConfiguration().getOpenRecentSize())
+	 									? recentFilePaths.size() : Configuration::getConfiguration().getOpenRecentSize();
+	for (int i = 0; i < iteration; i++)
 	{
 		QString strippedName = QFileInfo(recentFilePaths.at(i)).fileName();
 		recentFilesActionList.at(i)->setText(strippedName);
 		recentFilesActionList.at(i)->setData(recentFilePaths.at(i));
 		recentFilesActionList.at(i)->setVisible(true);
 	}
-	
-	for (int i = iteration; i < 10; i++)
+
+	for (int i = iteration; i < Configuration::getConfiguration().getOpenRecentSize(); i++)
 	{
 		recentFilesActionList.at(i)->setVisible(false);
 	}
@@ -757,22 +765,39 @@ void MainWindowViewer::clearRecentFiles()
 void MainWindowViewer::openRecent()
 {
 	QAction *action = qobject_cast<QAction *>(sender());
-	if (action)
-	{
-		QFileInfo info1 (action->data().toString());
-		if (info1.exists())
-		{
-			 if (info1.isFile())
-			{
-				openComicFromPath(action->data().toString());
-			}
-			else if (info1.isDir())
-			{
-				openFolderFromPath(action->data().toString());
-			}
-		}
-				
-	}
+
+    openComicFromRecentAction(action);
+}
+
+void MainWindowViewer::openLatestComic()
+{
+    if (recentFilesActionList.isEmpty())
+    {
+        return;
+    }
+
+    openComicFromRecentAction(recentFilesActionList[0]);
+}
+
+void MainWindowViewer::openComicFromRecentAction(QAction *action)
+{
+    if (action == nullptr)
+    {
+        return;
+    }
+
+    QFileInfo info1 (action->data().toString());
+    if (info1.exists())
+    {
+         if (info1.isFile())
+        {
+            openComicFromPath(action->data().toString());
+        }
+        else if (info1.isDir())
+        {
+            openFolderFromPath(action->data().toString());
+        }
+    }
 }
 
 void MainWindowViewer::reloadOptions()
@@ -831,9 +856,9 @@ void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId)
 	//libraryId = QCoreApplication::arguments().at(3).split("=").at(1).toULongLong();
 	this->libraryId=libraryId;
 //	this->path=path;
-	
+
 	enableActions();
-	
+
 	currentComicDB.id = comicId;
 	YACReaderLocalClient client;
         int tries = 1;
@@ -848,7 +873,7 @@ void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId)
 	}
 	else
 	{
-		isClient = false; 
+		isClient = false;
 		QMessageBox::information(this,"Connection Error", "Unable to connect to YACReaderLibrary");
 		//error
 	}
@@ -879,7 +904,7 @@ void MainWindowViewer::openComic(QString pathFile)
     enableActions();
 
     viewer->open(pathFile);
-    Configuration::getConfiguration().updateOpenRecentList(pathFile);
+    Configuration::getConfiguration().updateOpenRecentList(fi.absoluteFilePath());
     refreshRecentFilesActionList();
  }
 
@@ -905,7 +930,7 @@ void MainWindowViewer::openFolderFromPath(QString pathDir)
 	enableActions();
 
 	viewer->open(pathDir);
-	Configuration::getConfiguration().updateOpenRecentList(pathDir);
+	Configuration::getConfiguration().updateOpenRecentList(fi.absoluteFilePath());
 	refreshRecentFilesActionList();
 }
 
@@ -938,7 +963,7 @@ void MainWindowViewer::openFolderFromPath(QString pathDir, QString atFileName)
 	if(i < list.count())
 		index = i;
 
-	viewer->open(pathDir,index);	
+	viewer->open(pathDir,index);
 }
 
 void MainWindowViewer::saveImage()
@@ -1245,12 +1270,12 @@ void MainWindowViewer::setUpShortcutsManagement()
 
 
     editShortcutsDialog->addActionsGroup(tr("Comics"),QIcon(":/images/shortcuts_group_comics.png"),
-                                         tmpList = QList<QAction *>()
-                                         << openAction
-                                         << openFolderAction
-                                         << saveImageAction
-                                         << openPreviousComicAction
-                                         << openNextComicAction);
+                                        tmpList = { openAction,
+                                          openLatestComicAction,
+                                          openFolderAction,
+                                          saveImageAction,
+                                          openPreviousComicAction,
+                                          openNextComicAction });
 
     allActions << tmpList;
 
@@ -1463,7 +1488,7 @@ void MainWindowViewer::closeEvent ( QCloseEvent * event )
 		conf.setSize(size());
 	}
 	conf.setMaximized(isMaximized());
-	
+
 	emit (closed());
 }
 
@@ -1572,16 +1597,16 @@ void MainWindowViewer::dropEvent(QDropEvent *event)
 	QList<QUrl> urlList;
 	QString fName;
 	QFileInfo info;
- 
+
 	if (event->mimeData()->hasUrls())
 	{
 		urlList = event->mimeData()->urls();
-	
+
 		if ( urlList.size() > 0 )
 		{
 			fName = urlList[0].toLocalFile(); // convert first QUrl to local path
 			info.setFile( fName ); // information about file
-			if (info.isFile()) 
+			if (info.isFile())
 			{
 				QStringList imageSuffixs = Comic::getSupportedImageLiteralFormats();
                 if(imageSuffixs.contains(info.suffix())) //image dropped
@@ -1589,7 +1614,7 @@ void MainWindowViewer::dropEvent(QDropEvent *event)
 				else
 					openComicFromPath(fName); // if is file, setText
 			}
-			else 
+			else
 				if(info.isDir())
 					openFolderFromPath(fName);
 
@@ -1602,8 +1627,8 @@ void MainWindowViewer::dropEvent(QDropEvent *event)
 void MainWindowViewer::dragEnterEvent(QDragEnterEvent *event)
 {
 	// accept just text/uri-list mime format
-	if (event->mimeData()->hasFormat("text/uri-list")) 
-	{     
+	if (event->mimeData()->hasFormat("text/uri-list"))
+	{
 		event->acceptProposedAction();
 		isClient = false;
 	}
