@@ -35,6 +35,8 @@ class EditShortcutsDialog;
 		void open(QString path, qint64 comicId, qint64 libraryId);
 		void openFolder();
 		void openRecent();
+        void openLatestComic();
+        void openComicFromRecentAction(QAction *action);
 		void saveImage();
 		void toggleToolBars();
 		void hideToolBars();
@@ -106,6 +108,7 @@ class EditShortcutsDialog;
 		//! Actions
 		QAction *openAction;
 		QAction *openFolderAction;
+        QAction *openLatestComicAction;
 		QList<QAction*> recentFilesActionList;
 		QAction *clearRecentFilesAction;
 		QAction *saveImageAction;

@@ -390,15 +390,9 @@ void ReadingListModel::addNewLabel(const QString &name, YACReader::LabelColors c
     QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
     qulonglong id = DBHelper::insertLabel(name, color, db);
 
-    Q_UNUSED(id);
+    int newPos = addLabelIntoList(new LabelItem(QList<QVariant>() << name << YACReader::colorToName(color) << id << color));
+    beginInsertRows(QModelIndex(),specialLists.count()+1+newPos+1, specialLists.count()+1+newPos+1);
 
-    beginInsertRows(QModelIndex(),0, 0);
-
-    // using the specfic row pos for inserting doesnt work
-    // int newPos = addLabelIntoList(new LabelItem(QList<QVariant>() << name << YACReader::colorToName(color) << id << color));
-    // beginInsertRows(QModelIndex(),specialLists.count()+1+newPos+1, specialLists.count()+1+newPos+1);
-
-    // endInsertRows();
 
     endInsertRows();
 
