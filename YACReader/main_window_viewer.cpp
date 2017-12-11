@@ -127,8 +127,6 @@ void MainWindowViewer::loadConfiguration()
 
 void MainWindowViewer::setupUI()
 {
-	setWindowIcon(QIcon(":/images/icon.png"));
-
     //setUnifiedTitleAndToolBarOnMac(true);
 
 	viewer = new Viewer(this);
