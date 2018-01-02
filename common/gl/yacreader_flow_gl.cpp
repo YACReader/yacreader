@@ -1341,8 +1341,20 @@ YACReaderPageFlowGL::~YACReaderPageFlowGL()
 	this->killTimer(timerId);
 	//worker->deleteLater();
 	rawImages.clear();
-    for(int i = 0;i<numObjects;i++){
-        delete(images[i].texture);
+
+    //TODO: remove checking for a valid context
+    //checking is needed because of this bug this bug: https://bugreports.qt.io/browse/QTBUG-60148
+    if (this->context() != nullptr && this->context()->isValid())
+    {
+        for(int i = 0; i<numObjects; i++) {
+            if (images[i].texture != defaultTexture) {
+                delete(images[i].texture);
+            }
+        }
+    }
+
+    if (defaultTexture != nullptr) {
+        delete defaultTexture;
     }
 }
 
