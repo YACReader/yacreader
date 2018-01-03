@@ -380,14 +380,14 @@ void YACReaderFlowGL::paintGL()
 
     painter.beginNativePainting();
 
-		vao->bind();
+    vao->bind();
     pipeline->bind();
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     glEnable(GL_MULTISAMPLE);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glClearColor(0,0,0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -398,8 +398,8 @@ void YACReaderFlowGL::paintGL()
         draw();
     }
 
-		vao->release();
-		pipeline->release();
+    vao->release();
+    pipeline->release();
 
     painter.endNativePainting();
 
@@ -416,7 +416,7 @@ void YACReaderFlowGL::paintGL()
 
 void YACReaderFlowGL::resizeGL(int width, int height)
 {
-		pipeline->bind();
+    pipeline->bind();
     float pixelRatio = devicePixelRatio();
     fontSize = (width + height) * 0.010 * pixelRatio;
 	if (fontSize < 10)
@@ -456,21 +456,20 @@ void YACReaderFlowGL::calcPos(YACReader3DImage & image, int pos)
     }
     else
     {
-		if (pos > 0){
+        if (pos > 0){
             image.current.x = (config.centerDistance)+(config.xDistance*pos);
             image.current.y = config.yDistance*pos*-1;
             image.current.z = config.zDistance*pos*-1;
             image.current.rot = config.rotation;
-		}
-		else
-		{
+	}
+        else
+	{
             image.current.x = (config.centerDistance)*-1+(config.xDistance*pos);
             image.current.y =  config.yDistance*pos;
             image.current.z = config.zDistance*pos;
             image.current.rot = config.rotation*-1;
-		}
 	}
-
+    }
 }
 
 void YACReaderFlowGL::calcVector(YACReader3DVector & vector, int pos)
@@ -823,7 +822,7 @@ void YACReaderFlowGL::setCurrentIndex(int pos)
     if (pos >= images.length() && images.length() > 0)
     {
         pos = images.length()-1;
-	}
+    }
 
     startAnimationTimer();
 
@@ -944,7 +943,7 @@ void YACReaderFlowGL::remove(int item)
     if (texture != defaultTexture)
     {
         delete(texture);
-	}
+    }
 	numObjects--;
 }
 
@@ -1059,7 +1058,6 @@ void YACReaderFlowGL::setCF_RZ(int value)
 
 void YACReaderFlowGL::setZoom(int zoom)
 {
-	//pipeline->bind();
     startAnimationTimer();
 
 	int width = this->width();
@@ -1392,7 +1390,6 @@ QVector3D YACReaderFlowGL::getPlaneIntersection(int x, int y, YACReader3DImage p
 
 }
 
-
 YACReaderComicFlowGL::YACReaderComicFlowGL(QWidget *parent,struct Preset p )
 	:YACReaderFlowGL(parent,p)
 {
@@ -1560,13 +1557,24 @@ YACReaderPageFlowGL::~YACReaderPageFlowGL()
 	this->killTimer(timerId);
 	//worker->deleteLater();
 	rawImages.clear();
-    for (int i = 0;i<numObjects;i++)
+
+    //TODO: remove checking for a valid context
+    //checking is needed because of this bug this bug: https://bugreports.qt.io/browse/QTBUG-60148
+    if (this->context() != nullptr && this->context()->isValid())
     {
-        delete(images[i].texture);
+        for(int i = 0; i<numObjects; i++) {
+            if (images[i].texture != defaultTexture) {
+                delete(images[i].texture);
+            }
+        }
+    }
+
+    if (defaultTexture != nullptr) {
+        delete defaultTexture;
     }
 
 #ifdef YACREADER_LIBRARY
-	delete markTexture;
+    delete markTexture;
     delete readingTexture;
 #endif
 

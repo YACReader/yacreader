@@ -114,8 +114,6 @@ LibraryWindow::LibraryWindow()
 
 void LibraryWindow::setupUI()
 {
-	setWindowIcon(QIcon(":/images/iconLibrary.png"));
-
 	setUnifiedTitleAndToolBarOnMac(true);
 
 	libraryCreator = new LibraryCreator();
@@ -128,7 +126,7 @@ void LibraryWindow::setupUI()
 
 	createActions();
 	doModels();
-	
+
     doDialogs();
 	doLayout();
 	createToolBars();
@@ -250,7 +248,7 @@ void LibraryWindow::doLayout()
 #else
     sHorizontal->addWidget(comicsViewsManager->containerWidget());
 #endif
-	
+
 	sHorizontal->setStretchFactor(0,0);
 	sHorizontal->setStretchFactor(1,1);
 	mainWidget = new QStackedWidget(this);
@@ -566,7 +564,7 @@ void LibraryWindow::createActions()
     expandAllNodesAction->setIcon(QIcon(":/images/sidebar/expand.png"));
 
     colapseAllNodesAction = new QAction(this);
-    colapseAllNodesAction->setToolTip(tr("Colapse all nodes"));
+    colapseAllNodesAction->setToolTip(tr("Collapse all nodes"));
     colapseAllNodesAction->setData(COLAPSE_ALL_NODES_ACTION_YL);
     colapseAllNodesAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(COLAPSE_ALL_NODES_ACTION_YL));
     colapseAllNodesAction->setIcon(QIcon(":/images/sidebar/colapse.png"));
@@ -654,7 +652,7 @@ void LibraryWindow::createActions()
     editSelectedComicsAction->setIcon(QIcon(":/images/comics_view_toolbar/editComic.png"));
 
     asignOrderAction = new QAction(this);
-    asignOrderAction->setText(tr("Asign current order to comics"));
+    asignOrderAction->setText(tr("Assign current order to comics"));
     asignOrderAction->setData(ASIGN_ORDER_ACTION_YL);
     asignOrderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ASIGN_ORDER_ACTION_YL));
     asignOrderAction->setIcon(QIcon(":/images/comics_view_toolbar/asignNumber.png"));
@@ -840,7 +838,7 @@ void LibraryWindow::createToolBars()
 
     libraryToolBar->attachToWindow(this->windowHandle());
 
-	
+
 #else
 	libraryToolBar->backButton->setDefaultAction(backAction);
 	libraryToolBar->forwardButton->setDefaultAction(forwardAction);
@@ -858,9 +856,9 @@ void LibraryWindow::createToolBars()
 	editInfoToolBar->addAction(editSelectedComicsAction);
 	editInfoToolBar->addAction(getInfoAction);
     editInfoToolBar->addAction(asignOrderAction);
-	
+
 	editInfoToolBar->addSeparator();
-	
+
 	editInfoToolBar->addAction(selectAllComicsAction);
 
 	editInfoToolBar->addSeparator();
@@ -873,7 +871,7 @@ void LibraryWindow::createToolBars()
 	editInfoToolBar->addAction(showHideMarksAction);
 
 	editInfoToolBar->addSeparator();
-	
+
 	editInfoToolBar->addAction(deleteComicsAction);
 
 
@@ -897,7 +895,7 @@ void LibraryWindow::createMenus()
     foldersView->addAction(setFolderAsReadAction);
     foldersView->addAction(setFolderAsUnreadAction);
 
-	selectedLibrary->addAction(updateLibraryAction); 
+	selectedLibrary->addAction(updateLibraryAction);
 	selectedLibrary->addAction(renameLibraryAction);
 	selectedLibrary->addAction(removeLibraryAction);
     YACReader::addSperator(selectedLibrary);
@@ -911,7 +909,7 @@ void LibraryWindow::createMenus()
 
 
 
-	
+
 //MacOSX app menus
 #ifdef Q_OS_MACX
     QMenuBar * menu = this->menuBar();
@@ -1120,7 +1118,7 @@ void LibraryWindow::createConnections()
 void LibraryWindow::loadLibrary(const QString & name)
 {
 	if(!libraries.isEmpty())  //si hay bibliotecas...
-	{	
+	{
         historyController->clear();
 
 		showRootWidget();
@@ -1230,7 +1228,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 			}
 			else//si existe el path, puede ser que la librería sea alguna versión pre-5.0 ó que esté corrupta o que no haya drivers sql
 			{
-				
+
 				if(d.exists(path+"/library.ydb"))
 				{
 					QSqlDatabase db = DataBaseManagement::loadDatabase(path);
@@ -1310,7 +1308,7 @@ void LibraryWindow::copyAndImportComicsToFolder(const QList<QPair<QString,QStrin
 {
     QLOG_DEBUG() << "-copyAndImportComicsToFolder-";
     if(comics.size()>0)
-    { 
+    {
         QModelIndex folderDestination = foldersModelProxy->mapToSource(miFolder);
 
         QString destFolderPath = QDir::cleanPath(currentPath()+foldersModel->getFolderPath(folderDestination));
@@ -1773,7 +1771,7 @@ void LibraryWindow::openComic()
 		quint64 comicId = comic.id;
 		//TODO generate IDS for libraries...
         quint64 libraryId = libraries.getId(selectedLibrary->currentText());
-	
+
 		//                 %1        %2      %3        NO-->%4          %5        %6        %7        %8         %9       %10
 		//Invoke YACReader comicPath comicId libraryId NO-->currentPage bookmark1 bookmark2 bookmark3 brightness contrast gamma
         bool yacreaderFound = false;
@@ -1786,9 +1784,9 @@ void LibraryWindow::openComic()
 
         possiblePaths.append(QDir::cleanPath(QCoreApplication::applicationDirPath()+"/../../../"));
         possiblePaths.append(QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation));
-        for(auto && path: possiblePaths)
+        for(auto && ypath: possiblePaths)
         {
-            QString yacreaderPath = QDir::cleanPath(path + "/YACReader.app");
+            QString yacreaderPath = QDir::cleanPath(ypath + "/YACReader.app");
             if(QFileInfo(yacreaderPath).exists())
             {
                 yacreaderFound = true;
@@ -1854,7 +1852,7 @@ void LibraryWindow::reloadCurrentLibrary() {
 
 void LibraryWindow::openLastCreated()
 {
-	
+
 	selectedLibrary->disconnect();
 
 	selectedLibrary->setCurrentIndex(selectedLibrary->findText(_lastAdded));
@@ -1864,7 +1862,7 @@ void LibraryWindow::openLastCreated()
 	libraries.save();
 
 	connect(selectedLibrary,SIGNAL(currentIndexChanged(QString)),this,SLOT(loadLibrary(QString)));
-	
+
 	loadLibrary(_lastAdded);
 }
 
@@ -1875,12 +1873,12 @@ void LibraryWindow::showAddLibrary()
 }
 
 void LibraryWindow::openLibrary(QString path, QString name)
-{	
+{
 	if(!libraries.contains(name))
 	{
 		//TODO: fix bug, /a/b/c/.yacreaderlibrary/d/e
 		path.remove("/.yacreaderlibrary");
-		QDir d; //TODO change this by static methods (utils class?? with delTree for example) 
+		QDir d; //TODO change this by static methods (utils class?? with delTree for example)
 		if(d.exists(path + "/.yacreaderlibrary"))
 		{
 			_lastAdded = name;
@@ -2021,9 +2019,9 @@ void LibraryWindow::stopLibraryCreator()
 void LibraryWindow::setRootIndex()
 {
 	if(!libraries.isEmpty())
-	{	
+	{
 		QString path=libraries.getPath(selectedLibrary->currentText())+"/.yacreaderlibrary";
-		QDir d; //TODO change this by static methods (utils class?? with delTree for example) 
+		QDir d; //TODO change this by static methods (utils class?? with delTree for example)
 		if(d.exists(path))
 		{
             navigationController->selectedFolder(QModelIndex());
@@ -2166,7 +2164,7 @@ void LibraryWindow::showProperties()
     propertiesDialog->databasePath = foldersModel->getDatabase();
 	propertiesDialog->basePath = currentPath();
 	propertiesDialog->setComics(comics);
-	
+
 	propertiesDialog->show();
 }
 
@@ -2240,15 +2238,15 @@ void LibraryWindow::asignNumbers()
 	if(indexList.count()>1)
 	{
 		bool ok;
-		int n = QInputDialog::getInt(this, tr("Asign comics numbers"),
-			tr("Asign numbers starting in:"), startingNumber,0,2147483647,1,&ok);
+		int n = QInputDialog::getInt(this, tr("Assign comics numbers"),
+			tr("Assign numbers starting in:"), startingNumber,0,2147483647,1,&ok);
 		if (ok)
 			startingNumber = n;
 		else
 			return;
 	}
     qint64 edited = comicsModel->asignNumbers(indexList,startingNumber);
-	
+
     //TODO add resorting without reloading
     navigationController->loadFolderInfo(foldersModelProxy->mapToSource(foldersView->currentIndex()));
 
@@ -2282,7 +2280,7 @@ QFileInfo file = QDir::cleanPath(currentPath() + comicsModel->getComicPath(model
 	args << "end tell";
 	QProcess::startDetached("osascript", args);
 #endif
-	
+
 #ifdef Q_OS_WIN
     QString filePath = file.absoluteFilePath();
     QString cmdArgs = QString("/select,\"") + QDir::toNativeSeparators(filePath) + QStringLiteral("\"");
@@ -2569,7 +2567,7 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
 
 /*
 void LibraryWindow::showSocial()
-{	
+{
 	socialDialog->move(this->mapToGlobal(QPoint(width()-socialDialog->width()-10, centralWidget()->pos().y()+10)));
 
 	QModelIndexList indexList = getSelectedComics();

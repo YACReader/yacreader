@@ -387,6 +387,7 @@ void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
     ComicDB comic = DBHelper::loadComic(comicInfo.id,db);
     comic.info.currentPage = comicInfo.currentPage;
     comic.info.hasBeenOpened = true;
+    comic.info.read = comic.info.read || comic.info.currentPage == comic.info.numPages;
 
     DBHelper::updateReadingRemoteProgress(comic.info,db);
 
@@ -874,7 +875,7 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
     {
         if(c1.info.number.isNull() && c2.info.number.isNull())
         {
-            return naturalSortLessThanCI(c1.info.title.toString(), c2.info.title.toString());
+            return naturalSortLessThanCI(c1.name, c2.name);
         }
         else
         {

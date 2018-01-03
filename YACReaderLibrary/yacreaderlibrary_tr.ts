@@ -297,7 +297,7 @@
 <context>
     <name>EmptyReadingListWidget</name>
     <message>
-        <source>This reading list doesn&apos;t cotain comics yet</source>
+        <source>This reading list doesn&apos;t contain comics yet</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -423,6 +423,13 @@
     </message>
     <message>
         <source>Format not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GridComicsView</name>
+    <message>
+        <source>Show info</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1014,6 +1021,18 @@
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>You are adding too many libraries.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You are adding too many libraries.
+
+You probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.
+
+YACReaderLibrary will not stop you from creating more libraries but you should keep the number of libraries low.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LocalComicListModel</name>
@@ -1029,7 +1048,7 @@
         <translation>İlk kütüphaneni oluştur</translation>
     </message>
     <message>
-        <source>You don&apos;t have any librarires yet</source>
+        <source>You don&apos;t have any libraries yet</source>
         <translation>Henüz bir kütüphaneye sahip değilsin</translation>
     </message>
     <message>
@@ -1068,7 +1087,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Use selectec comic cover as background</source>
+        <source>Use selected comic cover as background</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1403,6 +1422,11 @@
     </message>
     <message>
         <source>Choose an IP address</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>display less information about folders in the browser
+to improve the performance</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
