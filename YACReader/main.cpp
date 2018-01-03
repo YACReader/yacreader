@@ -85,12 +85,15 @@ int main(int argc, char * argv[])
 
 	app.setApplicationName("YACReader");
 	app.setOrganizationName("YACReader");
-    app.setAttribute(Qt::AA_UseHighDpiPixmaps);
-	//simple command line parser
+  app.setAttribute(Qt::AA_UseHighDpiPixmaps);
+  if (QIcon::hasThemeIcon("YACReader")) {
+    app.setWindowIcon(QIcon::fromTheme("YACReader"));
+  }
+  //simple command line parser
 	//will be replaced by QCommandLineParser in the future
 	QStringList optlist;
 	QStringList arglist;
-	
+
 	if (argc > 1)
 	{
 		//extract options and arguments
@@ -118,7 +121,7 @@ int main(int argc, char * argv[])
 			}
 		}
 	}
-	
+
 	QString destLog = YACReader::getSettingsPath()+"/yacreader.log";
 	QDir().mkpath(YACReader::getSettingsPath());
 
@@ -133,11 +136,11 @@ int main(int argc, char * argv[])
 
 	QTranslator translator;
 	QString sufix = QLocale::system().name();
-#if defined Q_OS_UNIX && !defined Q_OS_MAC	
+#if defined Q_OS_UNIX && !defined Q_OS_MAC
 	translator.load(QString(DATADIR)+"/yacreader/languages/yacreader_"+sufix);
 #else
 	translator.load(QCoreApplication::applicationDirPath()+"/languages/yacreader_"+sufix);
-#endif	
+#endif
 	app.installTranslator(&translator);
 	MainWindowViewer * mwv = new MainWindowViewer();
 
@@ -145,7 +148,7 @@ int main(int argc, char * argv[])
 	//if we have a valid request, open it - if not, load normally
 	if (argc > 1)
 	{
-		if (!optlist.filter("--comicId=").isEmpty() && !optlist.filter("--libraryId=").isEmpty())	
+		if (!optlist.filter("--comicId=").isEmpty() && !optlist.filter("--libraryId=").isEmpty())
 		{
 			if (arglist.count()>1)
 			{
@@ -168,7 +171,7 @@ int main(int argc, char * argv[])
     delete mwv;
 
 	//Configuration::getConfiguration().save();
-	
+
 	YACReader::exitCheck(ret);
 
 #ifdef Q_OS_MAC
