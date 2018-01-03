@@ -18,7 +18,7 @@ CONFIG(pdfium) {
       LIBS += -L$$PWD/pdfium/macx/bin -lpdfium
       INCLUDEPATH += $$PWD/pdfium/macx/include
     }
-    !macx:packagesExist(libpdfium) {
+    else:!macx:packagesExist(libpdfium) {
       message(Using system provided installation of libpdfium.)
       CONFIG += link_pkgconfig
       PKGCONFIG += libpdfium
