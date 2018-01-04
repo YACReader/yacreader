@@ -421,15 +421,16 @@ Render::~Render()
 		comic->deleteLater();
 	}
 
-	foreach(ImageFilter * filter, filters)
-		delete filter;
-
 	foreach(PageRender * pr,pageRenders)
 		if(pr !=0)
 		{
 			if(pr->wait())
 				delete pr;
 		}
+
+    //TODO move to share_ptr
+    foreach(ImageFilter * filter, filters)
+        delete filter;
 }
 //Este método se encarga de forzar el renderizado de las páginas.
 //Actualiza el buffer según es necesario.
