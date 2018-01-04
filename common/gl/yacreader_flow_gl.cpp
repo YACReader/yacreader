@@ -1351,10 +1351,10 @@ YACReaderPageFlowGL::~YACReaderPageFlowGL()
                 delete(images[i].texture);
             }
         }
-    }
 
-    if (defaultTexture != nullptr) {
-        delete defaultTexture;
+        if (defaultTexture != nullptr) {
+            delete defaultTexture;
+        }
     }
 }
 
