@@ -121,13 +121,16 @@ class FileComic : public Comic, public ExtractDelegate
 		FileComic();
 		FileComic(const QString & path, int atPage = -1);
 		~FileComic();
-		void fileExtracted(int index, const QByteArray & rawData);
 		virtual bool load(const QString & path, int atPage = -1);
 		virtual bool load(const QString & path, const ComicDB & comic);
+        static QList<QString> filter(const QList<QString> & src);
+
+        //ExtractDelegate
+        void fileExtracted(int index, const QByteArray & rawData);
 		void crcError(int index);
 		void unknownError(int index);
-		static QList<QString> filter(const QList<QString> & src);
-	
+        bool isCancelled();
+
 	public slots:
 		
 		void process();

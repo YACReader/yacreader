@@ -419,6 +419,11 @@ void FileComic::unknownError(int index)
 	//emit errorOpening();
 }
 
+bool FileComic::isCancelled()
+{
+    return _invalidated;
+}
+
 //--------------------------------------
 
 QList<QVector<quint32> > FileComic::getSections(int & sectionIndex)
