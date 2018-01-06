@@ -759,6 +759,9 @@ void Render::load(const QString & path, const ComicDB & comicDB)
 
 void Render::createComic(const QString & path)
 {
+    previousIndex = currentIndex = 0;
+    pagesEmited.clear();
+
 	if(comic!=0)
 	{
 		//comic->moveToThread(QApplication::instance()->thread());
@@ -770,7 +773,6 @@ void Render::createComic(const QString & path)
 		//comic->moveToThread(QApplication::instance()->thread());
 	comic = FactoryComic::newComic(path);
 
-
 	if(comic == NULL)//archivo no encontrado o no válido
 	{
 		emit errorOpening();
@@ -778,14 +780,12 @@ void Render::createComic(const QString & path)
 		return;
 	}
 
-	previousIndex = currentIndex = 0;
-
     connect(comic,SIGNAL(errorOpening()),this,SIGNAL(errorOpening()), Qt::QueuedConnection);
     connect(comic,SIGNAL(errorOpening(QString)),this,SIGNAL(errorOpening(QString)), Qt::QueuedConnection);
     connect(comic,SIGNAL(crcErrorFound(QString)),this,SIGNAL(crcError(QString)), Qt::QueuedConnection);
     connect(comic,SIGNAL(errorOpening()),this,SLOT(reset()), Qt::QueuedConnection);
-    connect(comic,SIGNAL(imageLoaded(int)),this,SIGNAL(imageLoaded(int)), Qt::QueuedConnection);
     connect(comic,SIGNAL(imageLoaded(int)),this,SLOT(pageRawDataReady(int)), Qt::QueuedConnection);
+    connect(comic,SIGNAL(imageLoaded(int)),this,SIGNAL(imageLoaded(int)), Qt::QueuedConnection);
     connect(comic,SIGNAL(openAt(int)),this,SLOT(renderAt(int)), Qt::QueuedConnection);
     connect(comic,SIGNAL(numPages(unsigned int)),this,SIGNAL(numPages(unsigned int)), Qt::QueuedConnection);
     connect(comic,SIGNAL(numPages(unsigned int)),this,SLOT(setNumPages(unsigned int)), Qt::QueuedConnection);
@@ -954,7 +954,10 @@ void Render::pageRawDataReady(int page)
         for(int i=0;i<pagesEmited.size();i++)
         {
             if(pagesEmited.at(i)>= pagesReady.size())
+            {
+                pagesEmited.clear();
                 return; //Oooops, something went wrong
+            }
 
             pagesReady[pagesEmited.at(i)] = true;
             if(pagesEmited.at(i) == currentIndex)
