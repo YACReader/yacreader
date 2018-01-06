@@ -21,6 +21,8 @@
 		<dict>
 			<key>CFBundleTypeName</key>
 			<string>YACReader Comic rar</string>
+			<key>CFBundleTypeRole</key>
+        	<string>Viewer</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
@@ -31,6 +33,8 @@
 		<dict>
 			<key>CFBundleTypeName</key>
 			<string>YACReader Comic zip</string>
+			<key>CFBundleTypeRole</key>
+        	<string>Viewer</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
@@ -41,6 +45,8 @@
 		<dict>
 			<key>CFBundleTypeName</key>
 			<string>YACReader Comic cbr</string>
+			<key>CFBundleTypeRole</key>
+        	<string>Viewer</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
@@ -51,6 +57,8 @@
 		<dict>
 			<key>CFBundleTypeName</key>
 			<string>YACReader Comic cbz</string>
+			<key>CFBundleTypeRole</key>
+        	<string>Viewer</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
@@ -61,11 +69,13 @@
 		<dict>
 			<key>CFBundleTypeName</key>
 			<string>YACReader Comic pdf</string>
+			<key>CFBundleTypeRole</key>
+        	<string>Viewer</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>com.yacreader.yacreader.pdf</string>
+				<string>com.adobe.pdf</string>
 			</array>
 		</dict>
 	</array>
