@@ -308,8 +308,6 @@ void Viewer::updatePage()
 	content->setPixmap(*currentPage);
 	updateContentSize();
 	updateVerticalScrollBar();
-	emit backgroundChanges();
-	emit(pageAvailable(true));
 
 	if(goToFlow->isHidden())
 		setFocus(Qt::ShortcutFocusReason);
@@ -319,6 +317,10 @@ void Viewer::updatePage()
 
 	if(currentPage->isNull())
 		setPageUnavailableMessage();
+    else
+        emit(pageAvailable(true));
+
+    emit backgroundChanges();
 
 	if(restoreMagnifyingGlass)
 	{
