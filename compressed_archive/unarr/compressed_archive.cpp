@@ -93,6 +93,11 @@ void CompressedArchive::getAllData(const QVector<quint32> & indexes, ExtractDele
 	int i=0;
 	while (i < indexes.count())
 	{
+        if(delegate->isCancelled())
+        {
+            return;
+        }
+
 		//use the offset list so we generated so we're not getting any non-page files
 		ar_parse_entry_at(ar, offsets.at(indexes.at(i))); //set ar_entry to start of indexes
 		buffer.resize(ar_entry_get_size(ar));
