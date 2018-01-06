@@ -158,6 +158,9 @@ int main( int argc, char ** argv )
   app.setApplicationVersion(VERSION);
 
   app.setAttribute(Qt::AA_UseHighDpiPixmaps);
+  if (QIcon::hasThemeIcon("YACReaderLibrary")) {
+    app.setWindowIcon(QIcon::fromTheme("YACReaderLibrary"));
+  }
 
   QString destLog = YACReader::getSettingsPath()+"/yacreaderlibrary.log";
   QDir().mkpath(YACReader::getSettingsPath());
@@ -179,11 +182,11 @@ int main( int argc, char ** argv )
   translator.load(QCoreApplication::applicationDirPath()+"/languages/yacreaderlibrary_"+sufix);
 #endif
   app.installTranslator(&translator);
-  
+
   QTranslator viewerTranslator;
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
   viewerTranslator.load(QString(DATADIR)+"/yacreader/languages/yacreader_"+sufix);
-#else  
+#else
   viewerTranslator.load(QCoreApplication::applicationDirPath()+"/languages/yacreader_"+sufix);
 #endif
   app.installTranslator(&viewerTranslator);
@@ -193,7 +196,7 @@ int main( int argc, char ** argv )
 #ifdef SERVER_RELEASE
   QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creaci�n del fichero de config con el servidor
   settings->beginGroup("libraryConfig");
-  
+
   s = new Startup();
 
   if(settings->value(SERVER_ON,true).toBool())
