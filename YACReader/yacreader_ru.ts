@@ -14,7 +14,7 @@
     <message>
         <location filename="bookmarks_dialog.cpp" line="25"/>
         <source>Lastest Page</source>
-        <translation>Последняя Страница</translation>
+        <translation>Последняя страница</translation>
     </message>
     <message>
         <location filename="bookmarks_dialog.cpp" line="73"/>
@@ -38,27 +38,27 @@
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="21"/>
         <source>Restore defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Вернуть начальные установки</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="22"/>
         <source>To change a shortcut, double click in the key combination and type the new keys.</source>
-        <translation type="unfinished"></translation>
+        <translation>Чтобы изменить горячую клавишу, дважды щелкните и введите новые клавиши.</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="70"/>
         <source>Shortcuts settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки горячих клавиш</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="94"/>
         <source>Shortcut in use</source>
-        <translation type="unfinished"></translation>
+        <translation>Горячая клавиша используется</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="94"/>
         <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation type="unfinished"></translation>
+        <translation>Гарячая клавиша &quot;%1&quot; уже назначена для другой функции</translation>
     </message>
 </context>
 <context>
@@ -66,22 +66,22 @@
     <message>
         <location filename="../common/comic.cpp" line="381"/>
         <source>Unknown error opening the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестная ошибка при открытии файла</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="491"/>
         <source>7z not found</source>
-        <translation type="unfinished">7z не найден</translation>
+        <translation>Распаковщик 7z не найден</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="498"/>
         <source>Format not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Формат не поддерживается</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="374"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка CRC на странице (%1): некоторые страницы будут отображаться неправильно</translation>
     </message>
 </context>
 <context>
@@ -89,7 +89,7 @@
     <message>
         <location filename="goto_dialog.cpp" line="17"/>
         <source>Page : </source>
-        <translation>Страница:</translation>
+        <translation>Страница :</translation>
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="25"/>
@@ -105,7 +105,7 @@
         <location filename="goto_dialog.cpp" line="41"/>
         <location filename="goto_dialog.cpp" line="76"/>
         <source>Total pages : </source>
-        <translation>Общее количеств страниц:</translation>
+        <translation>Общее количеств страниц :</translation>
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="55"/>
@@ -118,7 +118,7 @@
     <message>
         <location filename="goto_flow_toolbar.cpp" line="13"/>
         <source>Page : </source>
-        <translation>Страница:</translation>
+        <translation>Страница :</translation>
     </message>
 </context>
 <context>
@@ -126,7 +126,7 @@
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="21"/>
         <source>About</source>
-        <translation>О программе</translation>
+        <translation>О программе...</translation>
     </message>
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="24"/>
@@ -173,7 +173,7 @@
         <location filename="main_window_viewer.cpp" line="237"/>
         <location filename="main_window_viewer.cpp" line="888"/>
         <source>Save current page</source>
-        <translation>Сохранить нынешнюю страницу</translation>
+        <translation>Сохранить текущию страницу</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="243"/>
@@ -223,17 +223,17 @@
     <message>
         <location filename="main_window_viewer.cpp" line="281"/>
         <source>Fit image to height</source>
-        <translation type="unfinished"></translation>
+        <translation>Подогнать изображение по высоте</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="277"/>
         <source>Fit Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Подогнать по высоте</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="292"/>
         <source>Fit image to width</source>
-        <translation type="unfinished"></translation>
+        <translation>Подгнать изображение по ширине</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="363"/>
@@ -256,12 +256,12 @@
     <message>
         <location filename="main_window_viewer.cpp" line="377"/>
         <source>Double page mode</source>
-        <translation>Двойной режим страницы</translation>
+        <translation>Режим разворота</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="378"/>
         <source>Switch to double page mode</source>
-        <translation>Переключить на двойной режим страницы</translation>
+        <translation>Переключить на режим разворота</translation>
     </message>
     <message>
         <source>D</source>
@@ -337,7 +337,7 @@
     <message>
         <location filename="main_window_viewer.cpp" line="442"/>
         <source>Show the bookmarks of the current comic</source>
-        <translation>Показать закладки текущего комикса</translation>
+        <translation>Показать закладки в текущем комиксе</translation>
     </message>
     <message>
         <source>M</source>
@@ -351,7 +351,7 @@
     <message>
         <location filename="main_window_viewer.cpp" line="456"/>
         <source>Show Info</source>
-        <translation>Показать информацию</translation>
+        <translation>Информацию</translation>
     </message>
     <message>
         <source>I</source>
@@ -365,7 +365,7 @@
     <message>
         <location filename="main_window_viewer.cpp" line="469"/>
         <source>Show Dictionary</source>
-        <translation>Показать словарь</translation>
+        <translation>Словарь</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="478"/>
@@ -380,47 +380,47 @@
     <message>
         <location filename="main_window_viewer.cpp" line="231"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистить</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="232"/>
         <source>Clear openrecent list</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистить список недавно открытых</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="308"/>
         <source>Fit to page</source>
-        <translation type="unfinished"></translation>
+        <translation>По размеру страницы</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="341"/>
         <source>Reset zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Сбросить масштаб</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="347"/>
         <source>Show zoom slider</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать ползунок масштабирования</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="351"/>
         <source>Zoom+</source>
-        <translation type="unfinished"></translation>
+        <translation>Масштаб +</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="357"/>
         <source>Zoom-</source>
-        <translation type="unfinished"></translation>
+        <translation>Масштаб -</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="388"/>
         <source>Double page manga mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим разворота</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="389"/>
         <source>Reverse reading order in double page mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Обратный порядок чтения в режиме разворота</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="487"/>
@@ -430,7 +430,7 @@
     <message>
         <location filename="main_window_viewer.cpp" line="494"/>
         <source>Edit shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать горячие клавиши</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="505"/>
@@ -440,12 +440,12 @@
     <message>
         <location filename="main_window_viewer.cpp" line="519"/>
         <source>Open recent</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть недавний</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="648"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="728"/>
@@ -467,32 +467,32 @@
     <message>
         <location filename="main_window_viewer.cpp" line="888"/>
         <source>Image files (*.jpg)</source>
-        <translation>Файлы изображений</translation>
+        <translation>Файлы изображений (*.jpg)</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="888"/>
         <source>page_%1.jpg</source>
-        <translation type="unfinished"></translation>
+        <translation>Страница_%1.jpg</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1131"/>
         <source>Comics</source>
-        <translation type="unfinished"></translation>
+        <translation>Комикс</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1142"/>
         <source>Toggle fullscreen mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Переключение полноэкранного режима</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1146"/>
         <source>Hide/show toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Скрыть/показать панель инструментов</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1150"/>
         <source>General</source>
-        <translation type="unfinished">Общее</translation>
+        <translation>Общее</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1166"/>
@@ -517,82 +517,82 @@
     <message>
         <location filename="main_window_viewer.cpp" line="1182"/>
         <source>Magnifiying glass</source>
-        <translation type="unfinished"></translation>
+        <translation>Увеличительное стекло</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1193"/>
         <source>Toggle between fit to width and fit to height</source>
-        <translation type="unfinished"></translation>
+        <translation>Переключение между по ширине и по высоте</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1197"/>
         <source>Page adjustement</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройка страницы</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1213"/>
         <source>Autoscroll down</source>
-        <translation type="unfinished"></translation>
+        <translation>Автопрокрутка вниз</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1217"/>
         <source>Autoscroll up</source>
-        <translation type="unfinished"></translation>
+        <translation>Автопрокрутка вверх</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1221"/>
         <source>Move down</source>
-        <translation type="unfinished"></translation>
+        <translation>Двигать вниз</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1225"/>
         <source>Move up</source>
-        <translation type="unfinished"></translation>
+        <translation>Двигать вверх</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1229"/>
         <source>Move left</source>
-        <translation type="unfinished"></translation>
+        <translation>Двигать влево</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1233"/>
         <source>Move right</source>
-        <translation type="unfinished"></translation>
+        <translation>Двигать вправо</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1237"/>
         <source>Go to the first page</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейти на первую страницу</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1241"/>
         <source>Go to the last page</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейти на последнюю страницу</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1245"/>
         <source>Reading</source>
-        <translation type="unfinished"></translation>
+        <translation>Чтение</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1291"/>
         <source>There is a new version available</source>
-        <translation>Доступно новое обновление</translation>
+        <translation>Доступна новая версия</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1292"/>
         <source>Do you want to download the new version?</source>
-        <translation>Хотите загрузить новую версию ?</translation>
+        <translation>Хотите загрузить новую версию?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1295"/>
         <source>Remind me in 14 days</source>
-        <translation type="unfinished"></translation>
+        <translation>Напомните мне через две недели</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1296"/>
         <source>Not now</source>
-        <translation type="unfinished"></translation>
+        <translation>Не сейчас</translation>
     </message>
 </context>
 <context>
@@ -600,7 +600,7 @@
     <message>
         <location filename="options_dialog.cpp" line="37"/>
         <source>&quot;Go to flow&quot; size</source>
-        <translation>Перейти к исходному размеру</translation>
+        <translation>&quot;Перейти к исходному&quot; размеру</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="48"/>
@@ -682,12 +682,12 @@
     <message>
         <location filename="../common/exit_check.cpp" line="14"/>
         <source>7z lib not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Библиотека распоковщика 7z не найдена</translation>
     </message>
     <message>
         <location filename="../common/exit_check.cpp" line="14"/>
         <source>unable to load 7z lib from ./utils</source>
-        <translation type="unfinished"></translation>
+        <translation>не удается загрузить 7z lib из ./ utils</translation>
     </message>
 </context>
 <context>
@@ -729,12 +729,12 @@
     <message>
         <location filename="viewer.cpp" line="236"/>
         <source>Error opening comic</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка открытия комикса</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="242"/>
         <source>CRC Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка CRC (контрольной суммы)</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="822"/>
@@ -744,17 +744,17 @@
     <message>
         <location filename="viewer.cpp" line="833"/>
         <source>Page not available!</source>
-        <translation type="unfinished"></translation>
+        <translation>Страница недоступна!</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="972"/>
         <source>Cover!</source>
-        <translation type="unfinished"></translation>
+        <translation>Обложка!</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="989"/>
         <source>Last page!</source>
-        <translation type="unfinished"></translation>
+        <translation>Последняя страница!</translation>
     </message>
 </context>
 <context>
@@ -845,7 +845,7 @@
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="77"/>
         <source>Show advanced settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать дополнительные настройки</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="86"/>
@@ -943,17 +943,17 @@
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="35"/>
         <source>Edit shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать ярлыки</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="38"/>
         <source>Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Ярлыки</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="47"/>
         <source>Use hardware acceleration (restart needed)</source>
-        <translation>Использовать аппаратное ускорение (Требуется перезагрузка)</translation>
+        <translation>Использовать аппаратное ускорение. (Требуется перезагрузка)</translation>
     </message>
 </context>
 <context>
@@ -969,23 +969,23 @@
     <message>
         <location filename="translator.cpp" line="62"/>
         <source>YACReader translator</source>
-        <translation type="unfinished"></translation>
+        <translation>YACReader переводчик</translation>
     </message>
     <message>
         <location filename="translator.cpp" line="117"/>
         <location filename="translator.cpp" line="210"/>
         <source>Translation</source>
-        <translation type="unfinished"></translation>
+        <translation>Перевод</translation>
     </message>
     <message>
         <location filename="translator.cpp" line="140"/>
         <source>clear</source>
-        <translation type="unfinished"></translation>
+        <translation>очистить</translation>
     </message>
     <message>
         <location filename="translator.cpp" line="219"/>
         <source>Service not available</source>
-        <translation type="unfinished"></translation>
+        <translation>Сервис недоступен</translation>
     </message>
 </context>
 </TS>
