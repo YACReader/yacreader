@@ -22,18 +22,30 @@ int pdfRead(void* param,
     return 0;
 }
 
+// pdfium is not threadsafe
+// We need to use mutex locking & refcounting to avoid crashes
+
+int PdfiumComic::refcount = 0;
+QMutex PdfiumComic::pdfmutex;
+
 PdfiumComic::PdfiumComic()
 {
-	FPDF_InitLibrary();
+  QMutexLocker locker(&pdfmutex);
+  if (++refcount == 1) {
+	   FPDF_InitLibrary();
+   }
 }
 
 PdfiumComic::~PdfiumComic()
 {
+  QMutexLocker locker(&pdfmutex);
 	if (doc)
 	{
 		FPDF_CloseDocument(doc);
 	}
-	FPDF_DestroyLibrary();
+  if (--refcount == 0) {
+    FPDF_DestroyLibrary();
+  }
 }
 
 bool PdfiumComic::openComic(const QString & path)
@@ -50,6 +62,7 @@ bool PdfiumComic::openComic(const QString & path)
     fileAccess.m_GetBlock = pdfRead;
     fileAccess.m_Param = &pdfFile;
 
+    QMutexLocker lock(&pdfmutex);
     doc = FPDF_LoadCustomDocument(&fileAccess, NULL);
 	if (doc)
 	{
@@ -64,13 +77,15 @@ bool PdfiumComic::openComic(const QString & path)
 
 void PdfiumComic::closeComic()
 {
-	FPDF_CloseDocument(doc);
+    QMutexLocker locker(&pdfmutex);
+    FPDF_CloseDocument(doc);
 }
 
 unsigned int PdfiumComic::numPages()
 {
 	if (doc)
 	{
+    QMutexLocker locker(&pdfmutex);
 		return FPDF_GetPageCount(doc);
 	}
 	else
@@ -90,26 +105,31 @@ QImage PdfiumComic::getPage(const int page)
 	FPDF_PAGE pdfpage;
 	FPDF_BITMAP bitmap;
 
+  QMutexLocker locker(&pdfmutex);
 	pdfpage = FPDF_LoadPage(doc, page);
 
 	if (!pdfpage)
 	{
+    // TODO report error
+    qDebug() << FPDF_GetLastError();
 		return QImage();
 	}
 
-	//TODO: make target DPI configurable
+	// TODO: make target DPI configurable
 	double width = (FPDF_GetPageWidth(pdfpage)/72)*150;
 	double height = (FPDF_GetPageHeight(pdfpage)/72)*150;
 
 	image = QImage(width, height, QImage::Format_ARGB32);// QImage::Format_RGBX8888);
 	if (image.isNull())
 	{
+    // TODO report OOM error
+    qDebug() << "Image too large, OOM";
 		return image;
 	}
 	image.fill(0xFFFFFFFF);
 
 	bitmap = FPDFBitmap_CreateEx(image.width(), image.height(), FPDFBitmap_BGRA, image.scanLine(0), image.bytesPerLine());
-	//TODO: make render flags costumizable
+	// TODO: make render flags costumizable
 	FPDF_RenderPageBitmap(bitmap, pdfpage, 0,0, image.width(), image.height(), 0, (FPDF_LCD_TEXT));
 	FPDFBitmap_Destroy(bitmap);
 	FPDF_ClosePage(pdfpage);

@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QImage>
 #include <QFile>
+#include <QMutex>
 
 #if defined Q_OS_MAC && defined USE_PDFKIT
 class MacOSXPDFComic
@@ -16,7 +17,7 @@ class MacOSXPDFComic
 		unsigned int numPages();
 		QImage getPage(const int page);
         //void releaseLastPageData();
-	
+
 	private:
 		void * document;
 		void * lastPageData;
@@ -34,8 +35,10 @@ class PdfiumComic
 		void closeComic();
 		unsigned int numPages();
 		QImage getPage(const int page);
-	
+
 	private:
+		static int refcount;
+		static QMutex pdfmutex;
 		FPDF_LIBRARY_CONFIG config;
 		FPDF_DOCUMENT doc;
         FPDF_FILEACCESS fileAccess;
