@@ -116,10 +116,13 @@ QImage PdfiumComic::getPage(const int page)
 	}
 
 	// TODO: make target DPI configurable
-	double width = (FPDF_GetPageWidth(pdfpage)/72)*150;
-	double height = (FPDF_GetPageHeight(pdfpage)/72)*150;
-
-	image = QImage(width, height, QImage::Format_ARGB32);// QImage::Format_RGBX8888);
+  QSize pagesize((FPDF_GetPageWidth(pdfpage)/72)*150,
+                (FPDF_GetPageHeight(pdfpage)/72)*150);
+  // TODO: max render size too
+	if (pagesize.width() > 3840 || pagesize.height() > 3840) {
+    pagesize.scale(3840, 3840, Qt::KeepAspectRatio);
+  }
+	image = QImage(pagesize, QImage::Format_ARGB32);// QImage::Format_RGBX8888);
 	if (image.isNull())
 	{
     // TODO report OOM error
