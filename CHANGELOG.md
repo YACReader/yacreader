@@ -10,7 +10,9 @@ spanish only. Sorry for the mess.
 
 * Updated Qt to 5.9.1.
 * Faster (way faster) pdf backend based on pdfium.
-* unarr is used now for handling compressed files (there are some temporal side effects: f.e. 7z is not supported). YACReader can still be compiled using 7zip as decompresion library. 
+* unarr is used now for handling compressed files (there are some temporal side
+  effects: f.e. 7z is not supported). YACReader can still be compiled using 7zip
+  as decompresion library.
 * Fixed fullscreen context menus (windows).
 * Minor fixes.
 * New app icons for Windows.
@@ -18,24 +20,31 @@ spanish only. Sorry for the mess.
 
 ### YACReaderLibrary
 * New comics view in addition to flow and grid views: info view.
-* New side view for showing current comic info in the grid view (it can be shown using the icon in the right bottom part of the window).
+* New side view for showing current comic info in the grid view
+  (it can be shown using the icon in the right bottom part of the window).
 * Improved the look and feel of the grid view.
 * Fixed Comic Vine integration (using the new https end point).
 * Usability fixes to Comic View scraper.
 * Fixed UI update when clients update comics status.
-* New server setting for disabling covers on folders in the client's remote browser (iOS), this is a workaround to fix a performance issue in large libraries.
-* Fixed YACReader not found in macos. 
+* New server setting for disabling covers on folders in the client's remote
+  browser (iOS), this is a workaround to fix a performance issue in large
+  libraries.
+* Fixed YACReader not found in macos.
 
 ### YACReader
 * Added an option to disable showing the go to flow on mouse over.
-* New "Quick Navigation Mode" for the go to flow feature, full-wide + a scroll bar, it can be enabled in the settings dialog. (thanks to Yuu Mousou).
-* Zig-zag autoscroll reading mode, please see the reading section in the shortcuts dialog for enabling this, by default there are no keys assigned to the scrolling actions (thanks to Daisuke Cato).
+* New "Quick Navigation Mode" for the go to flow feature, full-wide + a scroll
+  bar, it can be enabled in the settings dialog. (thanks to Yuu Mousou).
+* Zig-zag autoscroll reading mode, please see the reading section in the
+  shortcuts dialog for enabling this, by default there are no keys assigned to
+  the scrolling actions (thanks to Daisuke Cato).
 * Menu bar added for YACReader in macos (thanks to Daisuke Cato).
 * "Go to flow" is now manga aware (thanks to Daisuke Cato).
 * Added "Open recent" menu entry.
+* Fixed issues experienced when opening new comics too fast
 
 ### YACReaderLibraryServer (headless version of YACReaderLibrary)
-* Added a system*d* service file to run yacreaderlibraryserver in Linux based systems.
+* Added a systemd service file to run yacreaderlibraryserver on Linux based systems.
 
 ## 8.5.0 - 2016-03-28
 * headless version of YACReaderLibrary's server (no gui)
