@@ -6,11 +6,18 @@ HEADERS += $$PWD/extract_delegate.h \
 
 SOURCES += $$PWD/compressed_archive.cpp
 
-unix:!macx:packagesExist(libunarr) {
-    message(Using system provided unarr installation)
-    CONFIG += link_pkgconfig
-    PKGCONFIG += libunarr
-    DEFINES += use_unarr
+unix:!macx {
+    !contains(QT_CONFIG, no-pkg-config):packagesExist(libunarr) {
+      message(Using system provided unarr installation found by pkg-config.)
+      CONFIG += link_pkgconfig
+      PKGCONFIG += libunarr
+      DEFINES += use_unarr
+      }
+    else:exists(/usr/include/unarr.h):exists(/usr/lib/libunarr.so) {
+      message(Using system provided unarr installation.)
+      LIBS += -lunarr
+      DEFINES += use_unarr
+    }
   }
 
 else:macx:exists(../../dependencies/unarr/macx/libunarr.a) {
