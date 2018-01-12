@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>../images/f_overlayed.png</file>
+        <file>../images/f_overlayed_retina.png</file>
+    </qresource>
+</RCC>
