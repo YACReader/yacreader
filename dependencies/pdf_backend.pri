@@ -18,11 +18,11 @@ CONFIG(pdfium) {
       LIBS += -L$$PWD/pdfium/macx/bin -lpdfium
       INCLUDEPATH += $$PWD/pdfium/macx/include
     }
-    else:!macx:packagesExist(libpdfium) {
-      message(Using system provided installation of libpdfium.)
+    else:!contains(QT_CONFIG, no-pkg-config):packagesExist(libpdfium) {
+      message(Using system provided installation of libpdfium found by pkg-config.)
       CONFIG += link_pkgconfig
       PKGCONFIG += libpdfium
-    } else:!macx:exists(/usr/include/pdfium):exists(/usr/lib/libpdfium.so) {
+    } else:exists(/usr/include/pdfium):exists(/usr/lib/libpdfium.so) {
       message(Using libpdfium found at /usr/lib/pdfium)
       INCLUDEPATH += /usr/include/pdfium
       LIBS += -L/usr/lib/pdfium -lpdfium
@@ -54,13 +54,18 @@ CONFIG(poppler) {
     LIBS += -L$$PWD/poppler/dependencies/bin
   }
   unix:!macx {
-    packagesExist(poppler-qt5) {
+    !contains(QT_CONFIG, no-pkg-config):packagesExist(poppler-qt5) {
+      message("Using system provided installation of poppler-qt5 found by pkg-config.")
       CONFIG += link_pkgconfig
       PKGCONFIG += poppler-qt5
-    } else {
+    } else:!macx:exists(/usr/include/poppler/qt5):exists(/usr/lib/libpoppler-qt5) {
+      message("Using system provided installation of poppler-qt5.")
       INCLUDEPATH  += /usr/include/poppler/qt5
       LIBS += -L/usr/lib -lpoppler-qt5
+    } else {
+      error("Could not find poppler-qt5")
     }
+
   }
   unix:macx {
     error (Poppler backend is currently not supported on macOS)
