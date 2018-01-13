@@ -35,14 +35,14 @@ CONFIG(no_opengl) {
 }
 
 #default values for pdf render backend
-win32:!CONFIG(poppler):!CONFIG(pdfium) {
+win32:!CONFIG(poppler):!CONFIG(pdfium):!CONFIG(no_pdf) {
   CONFIG += pdfium
 }
 
-unix:!macx:!CONFIG(poppler):!CONFIG(pdfium) {
+unix:!macx:!CONFIG(poppler):!CONFIG(pdfium):!CONFIG(no_pdf) {
   CONFIG += poppler
 }
 
-macx:!CONFIG(pdfkit):!CONFIG(pdfium) {
+macx:!CONFIG(pdfkit):!CONFIG(pdfium):!CONFIG(no_pdf) {
   CONFIG += pdfium
 }
