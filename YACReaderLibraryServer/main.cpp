@@ -12,83 +12,13 @@
 #include "QsLog.h"
 #include "QsLogDest.h"
 
-
-
 using namespace QsLogging;
 
 void logSystemAndConfig()
 {
     QLOG_INFO() << "---------- System & configuration ----------";
-#if defined(Q_OS_WIN)
-    switch (QSysInfo::windowsVersion())
-    {
-        case QSysInfo::WV_NT:
-            QLOG_INFO() << "SO : Windows NT";
-            break;
-        case QSysInfo::WV_2000:
-            QLOG_INFO() << "SO : Windows 2000";
-            break;
-        case QSysInfo::WV_XP:
-            QLOG_INFO() << "SO : Windows XP";
-            break;
-        case QSysInfo::WV_2003:
-            QLOG_INFO() << "SO : Windows 2003";
-            break;
-        case QSysInfo::WV_VISTA:
-            QLOG_INFO() << "SO : Windows Vista";
-            break;
-        case QSysInfo::WV_WINDOWS7:
-            QLOG_INFO() << "SO : Windows 7";
-            break;
-        case QSysInfo::WV_WINDOWS8:
-            QLOG_INFO() << "SO : Windows 8";
-            break;
-        default:
-            QLOG_INFO() << "Windows (unknown version)";
-        break;
-    }
-
-#elif defined(Q_OS_MAC)
-
-    switch (QSysInfo::MacVersion())
-    {
-        case QSysInfo::MV_SNOWLEOPARD:
-            QLOG_INFO() << "SO : MacOSX Snow Leopard";
-            break;
-        case QSysInfo::MV_LION:
-            QLOG_INFO() << "SO : MacOSX Lion";
-            break;
-        case QSysInfo::MV_MOUNTAINLION:
-            QLOG_INFO() << "SO : MacOSX Mountain Lion";
-            break;
-#if QT_VERSION >= 0x050000
-        case QSysInfo::MV_MAVERICKS:
-            QLOG_INFO() << "SO : MacOSX Maverics";
-            break;
-#endif
-        default:
-            QLOG_INFO() << "SO : MacOSX (unknown version)";
-        break;
-    }
-
-#elif defined(Q_OS_LINUX)
-    QLOG_INFO() << "SO : Linux (unknown version)";
-
-#else
-    QLOG_INFO() << "SO : Unknown";
-#endif
-
-#ifdef Q_OS_WIN
-    if(QLibrary::isLibrary(QCoreApplication::applicationDirPath()+"/utils/7z.dll"))
-#elif defined Q_OS_UNIX && !defined Q_OS_MAC
-    if(QLibrary::isLibrary(QString(LIBDIR)+"/yacreader/7z.so") | QLibrary::isLibrary(QString(LIBDIR)+"/p7zip/7z.so"))
-#else
-    if(QLibrary::isLibrary(QCoreApplication::applicationDirPath()+"/utils/7z.so"))
-#endif
-        QLOG_INFO() << "7z : found";
-    else
-        QLOG_ERROR() << "7z : not found";
-
+    QLOG_INFO() << "OS: " + QSysInfo::prettyProductName() + ", Version: " + QSysInfo::productVersion();
+    QLOG_INFO() << "Kernel: " + QSysInfo::kernelType() + " " + QSysInfo::kernelVersion() + " Architecture: " + QSysInfo::currentCpuArchitecture();
     /* TODO: qrencode could be helpfull for showing a qr code in the web client for client devices
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
     if(QFileInfo(QString(BINDIR)+"/qrencode").exists())
@@ -100,7 +30,7 @@ void logSystemAndConfig()
         QLOG_INFO() << "qrencode : not found";
         */
 
-	QLOG_INFO() << "Libraries: " << DBHelper::getLibraries().getLibraries();
+    QLOG_INFO() << "Libraries: " << DBHelper::getLibraries().getLibraries();
     QLOG_INFO() << "--------------------------------------------";
 }
 
@@ -196,11 +126,11 @@ int main( int argc, char ** argv )
     }
     else if(command == "create-library")
     {
-        QCommandLineParser parser;
+        //QCommandLineParser parser;
 
-        parser.addHelpOption();
+        //parser.addHelpOption();
 
-        parser.parse(QCoreApplication::arguments());
+        //parser.parse(QCoreApplication::arguments());
 
         parser.clearPositionalArguments();
         parser.addPositionalArgument("create-library", "Creates a library named \"name\" in the specified destination <path>");
@@ -224,11 +154,11 @@ int main( int argc, char ** argv )
     }
     else if(command == "update-library")
     {
-        QCommandLineParser parser;
+        //QCommandLineParser parser;
 
-        parser.addHelpOption();
+        //parser.addHelpOption();
 
-        parser.parse(QCoreApplication::arguments());
+        //parser.parse(QCoreApplication::arguments());
 
         parser.clearPositionalArguments();
         parser.addPositionalArgument("update-library", "Updates an existing library at <path>");
@@ -251,11 +181,11 @@ int main( int argc, char ** argv )
     }
     else if(command == "add-library")
     {
-        QCommandLineParser parser;
+        //QCommandLineParser parser;
 
-        parser.addHelpOption();
+        //parser.addHelpOption();
 
-        parser.parse(QCoreApplication::arguments());
+        //parser.parse(QCoreApplication::arguments());
 
         parser.clearPositionalArguments();
         parser.addPositionalArgument("add-library", "Adds an exiting library named \"name\" at the specified origin <path>");
@@ -279,11 +209,11 @@ int main( int argc, char ** argv )
     }
     else if(command == "remove-library")
     {
-        QCommandLineParser parser;
+        //QCommandLineParser parser;
 
-        parser.addHelpOption();
+        //parser.addHelpOption();
 
-        parser.parse(QCoreApplication::arguments());
+        //parser.parse(QCoreApplication::arguments());
 
         parser.clearPositionalArguments();
         parser.addPositionalArgument("remove-library", "Removes a library named \"name\" from the list of libraries");
