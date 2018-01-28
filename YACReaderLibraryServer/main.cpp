@@ -139,10 +139,8 @@ int main( int argc, char ** argv )
             return 0;
         }
 
-        const QStringList createArgs = parser.positionalArguments();
-
         ConsoleUILibraryCreator * libraryCreatorUI = new ConsoleUILibraryCreator;
-        libraryCreatorUI->createLibrary(createArgs.at(1), createArgs.at(2));
+        libraryCreatorUI->createLibrary(args.at(1), args.at(2));
 
         return 0;
     }
@@ -160,10 +158,8 @@ int main( int argc, char ** argv )
             return 0;
         }
 
-        const QStringList updateArgs = parser.positionalArguments();
-
         ConsoleUILibraryCreator * libraryCreatorUI = new ConsoleUILibraryCreator;
-        libraryCreatorUI->updateLibrary(updateArgs.at(1));
+        libraryCreatorUI->updateLibrary(args.at(1));
 
         return 0;
     }
@@ -182,10 +178,8 @@ int main( int argc, char ** argv )
             return 0;
         }
 
-        const QStringList addArgs = parser.positionalArguments();
-
         ConsoleUILibraryCreator * libraryCreatorUI = new ConsoleUILibraryCreator;
-        libraryCreatorUI->addExistingLibrary(addArgs.at(1), addArgs.at(2));
+        libraryCreatorUI->addExistingLibrary(args.at(1), args.at(2));
 
         return 0;
     }
@@ -203,10 +197,8 @@ int main( int argc, char ** argv )
             return 0;
         }
 
-        const QStringList removeArgs = parser.positionalArguments();
-
         ConsoleUILibraryCreator * libraryCreatorUI = new ConsoleUILibraryCreator;
-        libraryCreatorUI->removeLibrary(removeArgs.at(1));
+        libraryCreatorUI->removeLibrary(args.at(1));
 
         return 0;
     }
