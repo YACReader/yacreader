@@ -126,12 +126,6 @@ int main( int argc, char ** argv )
     }
     else if(command == "create-library")
     {
-        //QCommandLineParser parser;
-
-        //parser.addHelpOption();
-
-        //parser.parse(QCoreApplication::arguments());
-
         parser.clearPositionalArguments();
         parser.addPositionalArgument("create-library", "Creates a library named \"name\" in the specified destination <path>");
         parser.addPositionalArgument("name", "Library name", "\"name\"");
@@ -154,12 +148,6 @@ int main( int argc, char ** argv )
     }
     else if(command == "update-library")
     {
-        //QCommandLineParser parser;
-
-        //parser.addHelpOption();
-
-        //parser.parse(QCoreApplication::arguments());
-
         parser.clearPositionalArguments();
         parser.addPositionalArgument("update-library", "Updates an existing library at <path>");
         parser.addPositionalArgument("path", "Path to the library to be updated", "<path>");
@@ -181,12 +169,6 @@ int main( int argc, char ** argv )
     }
     else if(command == "add-library")
     {
-        //QCommandLineParser parser;
-
-        //parser.addHelpOption();
-
-        //parser.parse(QCoreApplication::arguments());
-
         parser.clearPositionalArguments();
         parser.addPositionalArgument("add-library", "Adds an exiting library named \"name\" at the specified origin <path>");
         parser.addPositionalArgument("name", "Library name", "\"name\"");
@@ -209,12 +191,6 @@ int main( int argc, char ** argv )
     }
     else if(command == "remove-library")
     {
-        //QCommandLineParser parser;
-
-        //parser.addHelpOption();
-
-        //parser.parse(QCoreApplication::arguments());
-
         parser.clearPositionalArguments();
         parser.addPositionalArgument("remove-library", "Removes a library named \"name\" from the list of libraries");
         parser.addPositionalArgument("name", "Library name", "\"name\"");
