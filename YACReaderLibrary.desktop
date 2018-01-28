@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=YACReader Library
+GenericName=Yet Another Comic Reader - Library
+Comment=A comic library management application with server mode.
+Exec=YACReaderLibrary %f
+Icon=YACReaderLibrary
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=Graphics;Viewer;
+MimeType=
+Keywords=comic;library;server;
+X-Desktop-File-Install-Version=0.22
