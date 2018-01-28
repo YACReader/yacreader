@@ -204,6 +204,10 @@ int main( int argc, char ** argv )
     }
     else if(command == "list-libraries")
     {
+        parser.clearPositionalArguments();
+        parser.addPositionalArgument("list-libraries", "List all available libraries");
+        parser.process(*app);
+
         YACReaderLibraries libraries = DBHelper::getLibraries();
         for(QString libraryName : libraries.getNames())
             qout << libraryName << " : " << libraries.getPath(libraryName) << endl;
