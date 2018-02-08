@@ -11,12 +11,12 @@ from the source dir. For separate builds of YACReader or YACReaderLibrary,
 enter their respective subfolders and run the commands from there.
 
 The headless version of YACReaderLibrary is located in the YACReaderLibraryServer
-folder. To build it, enter the folder and run the steps as described above.
+folder. To build it, enter the folder and run the commands described above.
 
 
 ## Build dependencies:
 
-- Qt >= 5.3 with the following modules:
+- Qt >= 5.6 with the following modules:
 	- declarative
 	- quickcontrols
 	- sql
@@ -26,22 +26,21 @@ folder. To build it, enter the folder and run the steps as described above.
 	- opengl
 	- sql-sqlite
 	- network
-
 - A pdf rendering backend (optional, see below)
 - qrencode (optional)
 - glu
 - (lib)unarr (see below)
 
-Please note that not all of these dependencies are needed at build time.
-A good example for this is YACReaderLibrary's GridView mode which will
-silently fail and only show a white page if the proper qml modules
-(declarative, quickcontrols) are missing.
+Not all dependencies are needed at build time. For example the qml components in
+YACReaderLibrary (GridView, InfoView) will only show a white page if the
+required qml modules (declarative, quickcontrols) are missing.
+This can also happen if these dependencies are too old (i.e Qt < 5.6 is used).
 
 ## Backends
 
 ### Decompression
 
-YACReader uses [(lib)unarr](https://github.com/selmf/unarr) for comic book
+YACReader uses [(lib)unarr](https://github.com/selmf/unarr) for comic book archive
 decompression. Most Linux distributions don't ship this library yet, so you will
 probably have to build it yourself.
 
@@ -56,9 +55,9 @@ Starting with version 9.0.0 YACReader supports the following pdf render engines:
 - poppler (Linux/Unix default)
 - pdfium (default for Windows and MacOS)
 - pdfkit (MacOS only)
-- no_pdf (no pdf support)
+- no_pdf (disable pdf support)
 
-To override the default for a given platform add CONFIG+=[pdfbackend] as an options
+To override the default for a given platform add CONFIG+=[pdfbackend] as an option
 when running qmake.
 
 While the Poppler backend is well tested and has been the standard for YACReader
