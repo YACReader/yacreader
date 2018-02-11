@@ -23,7 +23,16 @@ lessThan(QT_VER_MIN, 3) {
   error ("You need at least Qt 5.3 to compile YACReader or YACReaderLibrary.")
   }
 
-#build without opengl widget support
+# Disable coverflow for arm targets
+isEmpty(QMAKE_TARGET.arch) {
+  QMAKE_TARGET.arch = $$QMAKE_HOST.arch
+}
+contains(QMAKE_TARGET.arch, arm.*) {
+  message("Building for ARM architecture. Disabling OpenGL coverflow ...")
+  CONFIG += no_opengl
+}
+
+# build without opengl widget support
 CONFIG(no_opengl) {
   DEFINES += NO_OPENGL
 }
