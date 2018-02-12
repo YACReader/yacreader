@@ -1,4 +1,7 @@
-#include <QtCore>
+//#include <QtCore>
+#include <QCoreApplication>
+#include <QSysInfo>
+#include <QDir>
 
 #include "comic_db.h"
 #include "db_helper.h"
@@ -17,8 +20,8 @@ using namespace QsLogging;
 void logSystemAndConfig()
 {
     QLOG_INFO() << "---------- System & configuration ----------";
-    QLOG_INFO() << "OS: " + QSysInfo::prettyProductName() + ", Version: " + QSysInfo::productVersion();
-    QLOG_INFO() << "Kernel: " + QSysInfo::kernelType() + " " + QSysInfo::kernelVersion() + " Architecture: " + QSysInfo::currentCpuArchitecture();
+    QLOG_INFO() << "OS:" << QSysInfo::prettyProductName() << "Version: " << QSysInfo::productVersion();
+    QLOG_INFO() << "Kernel:" << QSysInfo::kernelType() << QSysInfo::kernelVersion() << "Architecture:" << QSysInfo::currentCpuArchitecture();
     /* TODO: qrencode could be helpfull for showing a qr code in the web client for client devices
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
     if(QFileInfo(QString(BINDIR)+"/qrencode").exists())
