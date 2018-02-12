@@ -1,15 +1,7 @@
 #include <QApplication>
-#include <QPixmap>
-#include <QLabel>
-//#include <QMetaObject>
-#include <QPushButton>
-#include <QMainWindow>
-#include <QtCore>
-#include <QThread>
-#include <QFile>
-#include <QDataStream>
+#include <QDir>
 #include <QTranslator>
-#include <QSysInfo>
+
 #include "main_window_viewer.h"
 #include "configuration.h"
 #include "exit_check.h"
@@ -19,16 +11,17 @@
 
 using namespace QsLogging;
 
- #if defined(WIN32) && defined(_DEBUG)
-	 #define _CRTDBG_MAP_ALLOC
-	 #include <stdlib.h>
-	 #include <crtdbg.h>
-	 #define DEBUG_NEW new( _NORMAL_BLOCK, __FILE__, __LINE__ )
-	 #define new DEBUG_NEW
-  #endif
+#if defined(WIN32) && defined(_DEBUG)
+	#define _CRTDBG_MAP_ALLOC
+	#include <stdlib.h>
+	#include <crtdbg.h>
+	#define DEBUG_NEW new( _NORMAL_BLOCK, __FILE__, __LINE__ )
+	#define new DEBUG_NEW
+#endif
 
 #ifdef Q_OS_MAC
 #include <QEvent>
+#include <QFileOpenEvent>
 class YACReaderApplication: public QApplication
 {
     public:
@@ -64,23 +57,14 @@ int main(int argc, char * argv[])
 	_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
 #endif
 
-//fix for misplaced text in Qt4.8 and Mavericks
 #ifdef Q_OS_MAC
-    #if QT_VERSION < 0x050000
-        if(QSysInfo::MacintoshVersion > QSysInfo::MV_10_8)
-            QFont::insertSubstitution(".Lucida Grande UI", "Lucida Grande");
-    #endif
-#endif
-
-
-#ifdef Q_OS_MAC
-    YACReaderApplication app(argc,argv);
+  YACReaderApplication app(argc,argv);
 #else
 	QApplication app(argc, argv);
 #endif
 
 #ifdef FORCE_ANGLE
-    app.setAttribute(Qt::AA_UseOpenGLES);
+  app.setAttribute(Qt::AA_UseOpenGLES);
 #endif
 
 	app.setApplicationName("YACReader");
@@ -126,7 +110,7 @@ int main(int argc, char * argv[])
 	QDir().mkpath(YACReader::getSettingsPath());
 
 	Logger& logger = Logger::instance();
-    logger.setLoggingLevel(QsLogging::InfoLevel);
+  logger.setLoggingLevel(QsLogging::InfoLevel);
 
 	DestinationPtr fileDestination(DestinationFactory::MakeFileDestination(
 	  destLog, EnableLogRotation, MaxSizeBytes(1048576), MaxOldLogCount(2)));
@@ -165,22 +149,10 @@ int main(int argc, char * argv[])
     app.setWindow(mwv);
 #endif
 	mwv->show();
-
 	int ret = app.exec();
-
-    delete mwv;
+  delete mwv;
 
 	//Configuration::getConfiguration().save();
-
 	YACReader::exitCheck(ret);
-
-#ifdef Q_OS_MAC
-	// ugly workaround to avoid crash when app exit on MacOS Sierra due to Qt's QColorDialog bug.
-	// cf. https://bugreports.qt.io/browse/QTBUG-56448
-	QColorDialog colorDlg(0);
-	colorDlg.setOption(QColorDialog::NoButtons);
-	colorDlg.setCurrentColor(Qt::white);
-#endif
-
 	return ret;
 }
