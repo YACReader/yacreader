@@ -297,7 +297,7 @@
 <context>
     <name>EmptyReadingListWidget</name>
     <message>
-        <source>This reading list doesn&apos;t contain comics yet</source>
+        <source>This reading list does not contain any comics yet</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -554,7 +554,7 @@
     </message>
     <message>
         <source>Asign current order to comics</source>
-        <translation>Asignar el orden actual a los cómics</translation>
+        <translation type="vanished">Asignar el orden actual a los cómics</translation>
     </message>
     <message>
         <source>Error opening the library</source>
@@ -667,7 +667,7 @@
     </message>
     <message>
         <source>Asign comics numbers</source>
-        <translation>Çizgi roman numaralarını değiştir</translation>
+        <translation type="vanished">Çizgi roman numaralarını değiştir</translation>
     </message>
     <message>
         <source>Delete selected comics</source>
@@ -703,7 +703,7 @@
     </message>
     <message>
         <source>Colapse all nodes</source>
-        <translation>Tüm düğümleri daralt</translation>
+        <translation type="vanished">Tüm düğümleri daralt</translation>
     </message>
     <message>
         <source>YACReader Library</source>
@@ -739,7 +739,7 @@
     </message>
     <message>
         <source>Asign numbers starting in:</source>
-        <translation>Başlangıç sayılarını düzenle:</translation>
+        <translation type="vanished">Başlangıç sayılarını düzenle:</translation>
     </message>
     <message>
         <source>Download new version</source>
@@ -1033,6 +1033,22 @@ You probably only need one library in your top level comics folder, you can brow
 YACReaderLibrary will not stop you from creating more libraries but you should keep the number of libraries low.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Collapse all nodes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assign current order to comics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assign comics numbers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assign numbers starting in:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LocalComicListModel</name>
@@ -1231,7 +1247,7 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
     </message>
     <message>
         <source>Genere:</source>
-        <translation>Tür:</translation>
+        <translation type="vanished">Tür:</translation>
     </message>
     <message>
         <source>Letterer(s):</source>
@@ -1239,6 +1255,10 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
     </message>
     <message>
         <source>Comic Vine link: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; view &lt;/a&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Genre:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
