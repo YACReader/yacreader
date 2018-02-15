@@ -14,7 +14,7 @@
     <message>
         <location filename="bookmarks_dialog.cpp" line="25"/>
         <source>Lastest Page</source>
-        <translation>Последняя Страница</translation>
+        <translation>Последняя страница</translation>
     </message>
     <message>
         <location filename="bookmarks_dialog.cpp" line="73"/>
@@ -89,7 +89,7 @@
     <message>
         <location filename="goto_dialog.cpp" line="17"/>
         <source>Page : </source>
-        <translation>Страница:</translation>
+        <translation>Страница :</translation>
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="25"/>
@@ -105,7 +105,7 @@
         <location filename="goto_dialog.cpp" line="41"/>
         <location filename="goto_dialog.cpp" line="76"/>
         <source>Total pages : </source>
-        <translation>Общее количеств страниц:</translation>
+        <translation>Общее количеств страниц :</translation>
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="55"/>
@@ -118,7 +118,7 @@
     <message>
         <location filename="goto_flow_toolbar.cpp" line="38"/>
         <source>Page : </source>
-        <translation>Страница:</translation>
+        <translation>Страница :</translation>
     </message>
 </context>
 <context>
@@ -126,7 +126,7 @@
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="21"/>
         <source>About</source>
-        <translation>О программе</translation>
+        <translation>О программе...</translation>
     </message>
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="24"/>
@@ -188,7 +188,7 @@
         <location filename="main_window_viewer.cpp" line="248"/>
         <location filename="main_window_viewer.cpp" line="974"/>
         <source>Save current page</source>
-        <translation>Сохранить нынешнюю страницу</translation>
+        <translation>Сохранить текущию страницу</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="254"/>
@@ -353,7 +353,7 @@
     <message>
         <location filename="main_window_viewer.cpp" line="453"/>
         <source>Show the bookmarks of the current comic</source>
-        <translation>Показать закладки текущего комикса</translation>
+        <translation>Показать закладки в текущем комиксе</translation>
     </message>
     <message>
         <source>M</source>
@@ -367,7 +367,7 @@
     <message>
         <location filename="main_window_viewer.cpp" line="467"/>
         <source>Show Info</source>
-        <translation>Показать информацию</translation>
+        <translation>Информацию</translation>
     </message>
     <message>
         <source>I</source>
@@ -381,7 +381,7 @@
     <message>
         <location filename="main_window_viewer.cpp" line="480"/>
         <source>Show Dictionary</source>
-        <translation>Показать словарь</translation>
+        <translation>Словарь</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="489"/>
@@ -441,7 +441,7 @@
     <message>
         <location filename="main_window_viewer.cpp" line="505"/>
         <source>Edit shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать горячие клавиши</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="516"/>
@@ -652,7 +652,7 @@
     <message>
         <location filename="options_dialog.cpp" line="37"/>
         <source>&quot;Go to flow&quot; size</source>
-        <translation>Перейти к исходному размеру</translation>
+        <translation>&quot;Перейти к исходному&quot; размеру</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="48"/>
@@ -744,12 +744,12 @@
     <message>
         <location filename="../common/exit_check.cpp" line="14"/>
         <source>7z lib not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Библиотека распоковщика 7z не найдена</translation>
     </message>
     <message>
         <location filename="../common/exit_check.cpp" line="14"/>
         <source>unable to load 7z lib from ./utils</source>
-        <translation type="unfinished"></translation>
+        <translation>не удается загрузить 7z lib из ./ utils</translation>
     </message>
 </context>
 <context>
@@ -907,7 +907,7 @@
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="77"/>
         <source>Show advanced settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать дополнительные настройки</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="86"/>
@@ -1005,17 +1005,17 @@
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="35"/>
         <source>Edit shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать ярлыки</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="38"/>
         <source>Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Ярлыки</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="47"/>
         <source>Use hardware acceleration (restart needed)</source>
-        <translation>Использовать аппаратное ускорение (Требуется перезагрузка)</translation>
+        <translation>Использовать аппаратное ускорение. (Требуется перезагрузка)</translation>
     </message>
 </context>
 <context>
@@ -1031,23 +1031,23 @@
     <message>
         <location filename="translator.cpp" line="62"/>
         <source>YACReader translator</source>
-        <translation type="unfinished"></translation>
+        <translation>YACReader переводчик</translation>
     </message>
     <message>
         <location filename="translator.cpp" line="117"/>
         <location filename="translator.cpp" line="210"/>
         <source>Translation</source>
-        <translation type="unfinished"></translation>
+        <translation>Перевод</translation>
     </message>
     <message>
         <location filename="translator.cpp" line="140"/>
         <source>clear</source>
-        <translation type="unfinished"></translation>
+        <translation>очистить</translation>
     </message>
     <message>
         <location filename="translator.cpp" line="219"/>
         <source>Service not available</source>
-        <translation type="unfinished"></translation>
+        <translation>Сервис недоступен</translation>
     </message>
 </context>
 </TS>
