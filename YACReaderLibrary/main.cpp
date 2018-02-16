@@ -10,6 +10,7 @@
 #ifndef use_unarr
   #include <QLibrary>
 #endif
+#include <QCommandLineParser>
 
 #include "yacreader_global.h"
 #include "startup.h"
@@ -126,6 +127,11 @@ int main( int argc, char ** argv )
   app.installTranslator(&viewerTranslator);
 
   qRegisterMetaType<ComicDB>("ComicDB");
+
+QCommandLineParser parser;
+parser.addHelpOption();
+parser.addVersionOption();
+parser.process(app);
 
 #ifdef SERVER_RELEASE
   QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creaci�n del fichero de config con el servidor
