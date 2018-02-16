@@ -2,6 +2,7 @@
 #include <QCoreApplication>
 #include <QSysInfo>
 #include <QDir>
+#include <QCommandLineParser>
 
 #include "comic_db.h"
 #include "db_helper.h"
@@ -16,6 +17,8 @@
 #include "QsLogDest.h"
 
 using namespace QsLogging;
+//Returns false in case of a parse error (unknown option or missing value); returns true otherwise.
+
 
 void logSystemAndConfig()
 {
@@ -39,22 +42,31 @@ void logSystemAndConfig()
 
 int main( int argc, char ** argv )
 {
-    QCoreApplication *app = new QCoreApplication(argc, argv);
+    QCoreApplication app(argc, argv);
 
-    app->setApplicationName("YACReaderLibrary");
-    app->setOrganizationName("YACReader");
-    app->setApplicationVersion(VERSION);
+    app.setApplicationName("YACReaderLibrary");
+    app.setOrganizationName("YACReader");
+    app.setApplicationVersion(VERSION);
 
     QTextStream qout(stdout);
 
     //general help
+    QTranslator translator;
+    QString sufix = QLocale::system().name();
+
+    #if defined Q_OS_UNIX && !defined Q_OS_MAC
+      translator.load(QString(DATADIR)+"/yacreader/languages/yacreaderlibrary_"+sufix);
+    #else
+      translator.load(QCoreApplication::applicationDirPath()+"/languages/yacreaderlibrary_"+sufix);
+    #endif
+      app.installTranslator(&translator);
+
     QCommandLineParser parser;
     parser.setApplicationDescription(QCoreApplication::tr("\nYACReaderLibraryServer is the headless (no gui) version of YACReaderLibrary"));
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addPositionalArgument("command", "The command to execute. [start, create-library, update-library, add-library, remove-library, list-libraries]");
-
-    parser.parse(QCoreApplication::arguments());
+    parser.parse(app.arguments());
 
     const QStringList args = parser.positionalArguments();
     const QString command = args.isEmpty() ? QString() : args.first();
@@ -80,7 +92,7 @@ int main( int argc, char ** argv )
     #else
         translator.load(QCoreApplication::applicationDirPath()+"/languages/yacreaderlibrary_"+sufix);
     #endif
-        app->installTranslator(&translator);
+        app.installTranslator(&translator);
 
         QTranslator viewerTranslator;
     #if defined Q_OS_UNIX && !defined Q_OS_MAC
@@ -88,7 +100,7 @@ int main( int argc, char ** argv )
     #else
         viewerTranslator.load(QCoreApplication::applicationDirPath()+"/languages/yacreader_"+sufix);
     #endif
-        app->installTranslator(&viewerTranslator);
+        app.installTranslator(&viewerTranslator);
 
         qRegisterMetaType<ComicDB>("ComicDB");
 
@@ -113,7 +125,7 @@ int main( int argc, char ** argv )
 
         YACReaderLocalServer * localServer = new YACReaderLocalServer();
 
-        int ret = app->exec();
+        int ret = app.exec();
 
         QLOG_INFO() << "YACReaderLibrary closed with exit code :" << ret;
 
@@ -133,7 +145,7 @@ int main( int argc, char ** argv )
         parser.addPositionalArgument("create-library", "Creates a library named \"name\" in the specified destination <path>");
         parser.addPositionalArgument("name", "Library name", "\"name\"");
         parser.addPositionalArgument("path", "Path to the folder where the library will be created", "<path>");
-        parser.process(*app);
+        parser.process(app);
 
         const QStringList args = parser.positionalArguments();
         if(args.length() != 3)
@@ -152,7 +164,7 @@ int main( int argc, char ** argv )
         parser.clearPositionalArguments();
         parser.addPositionalArgument("update-library", "Updates an existing library at <path>");
         parser.addPositionalArgument("path", "Path to the library to be updated", "<path>");
-        parser.process(*app);
+        parser.process(app);
 
         const QStringList args = parser.positionalArguments();
         if(args.length() != 2)
@@ -172,7 +184,7 @@ int main( int argc, char ** argv )
         parser.addPositionalArgument("add-library", "Adds an exiting library named \"name\" at the specified origin <path>");
         parser.addPositionalArgument("name", "Library name", "\"name\"");
         parser.addPositionalArgument("path", "Path to the folder where the library is", "<path>");
-        parser.process(*app);
+        parser.process(app);
 
         const QStringList args = parser.positionalArguments();
         if(args.length() != 3)
@@ -191,7 +203,7 @@ int main( int argc, char ** argv )
         parser.clearPositionalArguments();
         parser.addPositionalArgument("remove-library", "Removes a library named \"name\" from the list of libraries");
         parser.addPositionalArgument("name", "Library name", "\"name\"");
-        parser.process(*app);
+        parser.process(app);
 
         const QStringList args = parser.positionalArguments();
         if(args.length() != 2)
@@ -209,7 +221,7 @@ int main( int argc, char ** argv )
     {
         parser.clearPositionalArguments();
         parser.addPositionalArgument("list-libraries", "List all available libraries");
-        parser.process(*app);
+        parser.process(app);
 
         YACReaderLibraries libraries = DBHelper::getLibraries();
         for(QString libraryName : libraries.getNames())
@@ -219,8 +231,8 @@ int main( int argc, char ** argv )
     }
     else //error
     {
+        parser.process(app);
         parser.showHelp();
-
         return 0;
     }
 }
