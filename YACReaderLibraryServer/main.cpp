@@ -73,6 +73,10 @@ int main( int argc, char ** argv )
 
     if(command == "start")
     {
+        parser.clearPositionalArguments();
+        parser.addPositionalArgument("start", "Start YACReaderLibraryServer");
+        parser.process(app);
+
         QString destLog = YACReader::getSettingsPath()+"/yacreaderlibrary.log";
         QDir().mkpath(YACReader::getSettingsPath());
 
