@@ -40,7 +40,7 @@ win32 {
         # the OpenGL stuff should be migrated to OpenGL ES
         DEFINES += FORCE_ANGLE
     } else {
-        LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
+        LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -luser32
     }
 
     QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
@@ -66,9 +66,6 @@ CONFIG(force_angle) {
     }
 }
 
-unix:!macx:!CONFIG(no_opengl) {
-  LIBS += -lGLU
-}
 
 macx {
   LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
