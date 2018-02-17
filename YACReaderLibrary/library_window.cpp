@@ -15,9 +15,6 @@
 #include <QFileIconProvider>
 #include <QMatrix>
 #include <QSettings>
-#ifndef NO_OPENGL
-#include <QGLFormat>
-#endif
 #include <QHeaderView>
 
 #include <iterator>
@@ -88,10 +85,6 @@
     #include <shellapi.h>
 #endif
 
-#ifdef Q_OS_MAC
-//#include <QtMacExtras>
-#endif
-
 LibraryWindow::LibraryWindow()
     :QMainWindow(),fullscreen(false),fetching(false),previousFilter(""),removeError(false),status(LibraryWindow::Normal)
 {
@@ -108,8 +101,6 @@ LibraryWindow::LibraryWindow()
 		showRootWidget();
 		selectedLibrary->setCurrentIndex(0);
 	}
-
-
 }
 
 void LibraryWindow::setupUI()
@@ -147,18 +138,36 @@ void LibraryWindow::setupUI()
 		//if(settings->value(USE_OPEN_GL).toBool() == false)
 			showMaximized();
 
-	/*if(settings->contains(COMICS_VIEW_HEADERS_GEOMETRY))
-        comicsView->horizontalHeader()->restoreGeometry(settings->value(COMICS_VIEW_HEADERS_GEOMETRY).toByteArray());*/
+  trayIcon.setIcon(QApplication::windowIcon());
+  trayIcon.show();
+  connect(&trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+   this, SLOT(trayActivation(QSystemTrayIcon::ActivationReason)));
+}
 
-	/*socialDialog = new YACReaderSocialDialog(this);
-	socialDialog->setHidden(true);*/
+void LibraryWindow::trayActivation(QSystemTrayIcon::ActivationReason reason)
+{
+  if (reason == QSystemTrayIcon::Trigger)
+  {
+    setWindowState((windowState() & ~Qt::WindowMinimized));
+    show();
+  }
+}
+
+void LibraryWindow::changeEvent(QEvent *event)
+{
+  if (event->type() == QEvent::WindowStateChange && isMinimized())
+  {
+    hide();
+  }
+  else
+  {
+    QMainWindow::changeEvent(event);
+  }
 }
 
 void LibraryWindow::doLayout()
 {
 	//LAYOUT ELEMENTS------------------------------------------------------------
-	//---------------------------------------------------------------------------
-
 	QSplitter * sHorizontal = new QSplitter(Qt::Horizontal);  //spliter principal
 #ifdef Q_OS_MAC
 	sHorizontal->setStyleSheet("QSplitter::handle{image:none;background-color:#B8B8B8;} QSplitter::handle:vertical {height:1px;}");
