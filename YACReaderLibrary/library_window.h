@@ -5,6 +5,8 @@
 #include <QMap>
 #include <QModelIndex>
 #include <QFileInfo>
+#include <QSystemTrayIcon>
+
 #include "yacreader_global_gui.h"
 #include "yacreader_libraries.h"
 
@@ -138,14 +140,14 @@ public:
 	bool fetching;
 
 	int i;
-	
+
 	QAction  * backAction;
 	QAction  * forwardAction;
 
 	QAction * openComicAction;
 	QAction * createLibraryAction;
 	QAction * openLibraryAction;
-	
+
     QAction * exportComicsInfoAction;
     QAction * importComicsInfoAction;
 
@@ -377,14 +379,17 @@ public slots:
     void saveSelectedCoversTo();
     void checkMaxNumLibraries();
 
+    void changeEvent(QEvent *event);
+
 private:
     //fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
     Qt::WindowFlags previousWindowFlags;
     QPoint previousPos;
     QSize previousSize;
+    QSystemTrayIcon trayIcon;
+private slots:
+    void trayActivation(QSystemTrayIcon::ActivationReason reason);
+
 };
 
 #endif
-
-
-
