@@ -11,6 +11,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QColorDialog>
+#include <QCheckBox>
 
 #include "yacreader_spin_slider_widget.h"
 #include "yacreader_flow_config_widget.h"
@@ -104,7 +105,7 @@ OptionsDialog::OptionsDialog(QWidget * parent)
 	gammaS->setTracking(false);
 	connect(gammaS,SIGNAL(valueChanged(int)),this,SLOT(gammaChanged(int)));
 	//connect(brightnessS,SIGNAL(valueChanged(int)),this,SIGNAL(changedOptions()));
-	
+
     quickNavi = new QCheckBox(tr("Quick Navigation Mode"));
     disableShowOnMouseOver = new QCheckBox(tr("Disable mouse over activation"));
 

@@ -13,7 +13,7 @@ unix:!macx {
       PKGCONFIG += libunarr
       DEFINES += use_unarr
       }
-    else:exists(/usr/include/unarr.h):exists(/usr/lib/libunarr.so) {
+    else:exists(/usr/include/unarr.h) {
       message(Using system provided unarr installation.)
       LIBS += -lunarr
       DEFINES += use_unarr
