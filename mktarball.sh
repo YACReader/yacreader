@@ -2,7 +2,7 @@
 #Script to create a source tarball for YACReader distribution and packaging
 #This should be run from YACReaders top source directory
 
-YACVERSION=9.0.0-rc1
+YACVERSION=9.0.0
 if [ ! -f "yacreader-${YACVERSION}-src.tar.xz" ]
 then
 	echo "Building source tarball"

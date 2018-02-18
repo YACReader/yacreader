@@ -4,7 +4,7 @@ Please note: this is a work in progress. Keeping a changelog has been neglected
 in the past so information is missing and older release information is in
 spanish only. Sorry for the mess.
 
-## 9.0.0 (WIP)
+## 9.0.0 (2018-2-18)
 
 ### Library and Reader
 
