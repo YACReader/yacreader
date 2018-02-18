@@ -22,10 +22,10 @@ CONFIG(pdfium) {
       message(Using system provided installation of libpdfium found by pkg-config.)
       CONFIG += link_pkgconfig
       PKGCONFIG += libpdfium
-    } else:exists(/usr/include/pdfium):exists(/usr/lib/libpdfium.so) {
+    } else:exists(/usr/include/pdfium) {
       message(Using libpdfium found at /usr/lib/pdfium)
       INCLUDEPATH += /usr/include/pdfium
-      LIBS += -L/usr/lib/pdfium -lpdfium
+      LIBS += -lpdfium
     } else {
       error(Could not find libpdfium.)
     }
@@ -58,10 +58,10 @@ CONFIG(poppler) {
       message("Using system provided installation of poppler-qt5 found by pkg-config.")
       CONFIG += link_pkgconfig
       PKGCONFIG += poppler-qt5
-    } else:!macx:exists(/usr/include/poppler/qt5):exists(/usr/lib/libpoppler-qt5) {
+    } else:!macx:exists(/usr/include/poppler/qt5) {
       message("Using system provided installation of poppler-qt5.")
       INCLUDEPATH  += /usr/include/poppler/qt5
-      LIBS += -L/usr/lib -lpoppler-qt5
+      LIBS += -lpoppler-qt5
     } else {
       error("Could not find poppler-qt5")
     }
