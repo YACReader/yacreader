@@ -1,6 +1,8 @@
 #include "comic_vine_client.h"
 #include "yacreader_global_gui.h"
 
+#include "comic_vine_all_volume_comics_retriever.h"
+
 //this is the API key used by YACReader to access Comic Vine
 //please, do not use it in your own software, get one for free at Comic Vine
 static const QString CV_API_KEY = "%CV_API_KEY%"; //get from settings
@@ -22,7 +24,7 @@ static const QString CV_SERIES_DETAIL = CV_WEB_ADDRESS + "/volume/4050-%1/?api_k
 
 //gets info for comics in a volume id %1
 static const QString CV_COMICS_INFO = CV_WEB_ADDRESS + "/issues/?api_key=" + CV_API_KEY +
-									"&format=json&field_list=name,issue_number,id,image&filter=volume:%1"
+                                    "&limit=1000&format=json&field_list=name,issue_number,id,image&filter=volume:%1"
 									"&sort=cover_date:asc"  //sorting by cover_date, because comic vine doesn't use natural sorting (issue_number -> 1 10 11 ... 100 2 20 21....)
 									"&offset=%2";
 
@@ -47,7 +49,7 @@ ComicVineClient::ComicVineClient(QObject *parent) :
 {
     settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
     settings->beginGroup("ComicVine");
-    baseURL = settings->value(COMIC_VINE_BASE_URL, "http://comicvine.gamespot.com/api").toString();
+    baseURL = settings->value(COMIC_VINE_BASE_URL, "https://comicvine.gamespot.com/api").toString();
 }
 
 ComicVineClient::~ComicVineClient()
@@ -115,11 +117,24 @@ void ComicVineClient::getSeriesCover(const QString & url)
 //CV_COMIC_IDS
 void ComicVineClient::getVolumeComicsInfo(const QString & idVolume, int page)
 {
-    HttpWorker * search = new HttpWorker(QString(CV_COMICS_INFO).replace(CV_WEB_ADDRESS, baseURL).replace(CV_API_KEY,settings->value(COMIC_VINE_API_KEY,CV_API_KEY_DEFAULT).toString()).arg(idVolume).arg((page-1)*100)); //page on works for search, using offset instead
+    HttpWorker * search = new HttpWorker(QString(CV_COMICS_INFO).replace(CV_WEB_ADDRESS, baseURL).replace(CV_API_KEY,settings->value(COMIC_VINE_API_KEY,CV_API_KEY_DEFAULT).toString()).arg(idVolume).arg((page-1)*100)); //page doesn't work for search, using offset instead
 	connect(search,SIGNAL(dataReady(const QByteArray &)),this,SLOT(processVolumeComicsInfo(const QByteArray &)));
 	connect(search,SIGNAL(timeout()),this,SIGNAL(timeOut())); //TODO
 	connect(search,SIGNAL(finished()),search,SLOT(deleteLater()));
-	search->get();
+    search->get();
+}
+
+void ComicVineClient::getAllVolumeComicsInfo(const QString &idVolume)
+{
+    QString url = QString(CV_COMICS_INFO).replace(CV_WEB_ADDRESS, baseURL).replace(CV_API_KEY,settings->value(COMIC_VINE_API_KEY,CV_API_KEY_DEFAULT).toString()).arg(idVolume);
+    ComicVineAllVolumeComicsRetriever * comicsRetriever = new ComicVineAllVolumeComicsRetriever(url);
+
+    connect(comicsRetriever, &ComicVineAllVolumeComicsRetriever::allVolumeComicsInfo, this, &ComicVineClient::volumeComicsInfo);
+    connect(comicsRetriever, &ComicVineAllVolumeComicsRetriever::finished, this, &ComicVineClient::finished);
+    connect(comicsRetriever, &ComicVineAllVolumeComicsRetriever::finished, this, &ComicVineAllVolumeComicsRetriever::deleteLater);
+    connect(comicsRetriever, &ComicVineAllVolumeComicsRetriever::timeOut, this, &ComicVineClient::timeOut);
+
+    comicsRetriever->getAllVolumeComics();
 }
 
 //CV_COMIC_ID

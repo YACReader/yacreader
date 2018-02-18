@@ -4,7 +4,7 @@
 #include <QObject>
 #include "extract_delegate.h"
 extern"C" {
-#include "unarr.h"
+#include <unarr.h>
 }
 
 class CompressedArchive : public QObject

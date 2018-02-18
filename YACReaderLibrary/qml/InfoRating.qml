@@ -24,7 +24,7 @@ Row {
             ColorOverlay {
                 anchors.fill: star
                 source: star
-                color: index < (mouseIndex > 0 ? mouseIndex : rating) ? "#ffffff" : "#1c1c1c"
+                color: index < (mouseIndex > 0 ? mouseIndex : rating) ? ratingSelectedColor : ratingUnselectedColor
             }
 
             MouseArea {

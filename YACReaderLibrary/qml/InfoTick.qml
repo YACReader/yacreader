@@ -23,7 +23,7 @@ Item {
     ColorOverlay {
         anchors.fill: read_compact
         source: read_compact
-        color: read ? "#e84852" : "#1c1c1c"
+        color: read ? readTickCheckedColor : readTickUncheckedColor
     }
 }
 

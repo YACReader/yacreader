@@ -52,35 +52,87 @@ GridComicsView::GridComicsView(QWidget *parent) :
 
     QQmlContext *ctxt = view->rootContext();
 
+    LibraryUITheme theme;
+    #ifdef Q_OS_MAC
+    theme = Light;
+    #else
+    theme = Dark;
+    #endif
+
+    if(theme == Light)
+    {
+        ctxt->setContextProperty("backgroundColor", "#F6F6F6");
+        ctxt->setContextProperty("cellColor", "#FFFFFF");
+        ctxt->setContextProperty("selectedColor", "#FFFFFF");
+        ctxt->setContextProperty("selectedBorderColor", "#007AFF");
+        ctxt->setContextProperty("borderColor", "#DBDBDB");
+        ctxt->setContextProperty("titleColor", "#121212");
+        ctxt->setContextProperty("textColor", "#636363");
+        //fonts settings
+        ctxt->setContextProperty("fontSize", 11);
+        ctxt->setContextProperty("fontFamily", QApplication::font().family());
+        ctxt->setContextProperty("fontSpacing", 0.5);
+
+        //info - copy/pasted from info_comics_view TODO create helpers for setting the UI config
+        ctxt->setContextProperty("infoBackgroundColor", "#FFFFFF");
+        ctxt->setContextProperty("topShadow", QUrl());
+        ctxt->setContextProperty("infoShadow", "info-shadow-light.png");
+        ctxt->setContextProperty("infoIndicator", "info-indicator-light.png");
+
+        ctxt->setContextProperty("infoTextColor", "#404040");
+        ctxt->setContextProperty("infoTitleColor", "#2E2E2E");
+
+        ctxt->setContextProperty("ratingUnselectedColor", "#DEDEDE");
+        ctxt->setContextProperty("ratingSelectedColor", "#2B2B2B");
+
+        ctxt->setContextProperty("favUncheckedColor", "#DEDEDE");
+        ctxt->setContextProperty("favCheckedColor", "#E84852");
+
+        ctxt->setContextProperty("readTickUncheckedColor", "#DEDEDE");
+        ctxt->setContextProperty("readTickCheckedColor", "#E84852");
+    }
+    else
+    {
+        ctxt->setContextProperty("backgroundColor", "#2A2A2A");
+        ctxt->setContextProperty("cellColor", "#212121");
+        ctxt->setContextProperty("selectedColor", "#121212");
+        ctxt->setContextProperty("selectedBorderColor", "#121212");
+        ctxt->setContextProperty("borderColor", "#121212");
+        ctxt->setContextProperty("titleColor", "#FFFFFF");
+        ctxt->setContextProperty("textColor", "#A8A8A8");
+        ctxt->setContextProperty("dropShadow",false);
+        //fonts settings
+        int fontSize = QApplication::font().pointSize();
+        if(fontSize == -1)
+            fontSize = QApplication::font().pixelSize();
+        ctxt->setContextProperty("fontSize", fontSize);
+        ctxt->setContextProperty("fontFamily", QApplication::font().family());
+        ctxt->setContextProperty("fontSpacing", 0.5);
+
+        //info - copy/pasted from info_comics_view TODO create helpers for setting the UI config
+        ctxt->setContextProperty("infoBackgroundColor", "#2E2E2E");
+        ctxt->setContextProperty("topShadow", "info-top-shadow.png");
+        ctxt->setContextProperty("infoShadow", "info-shadow.png");
+        ctxt->setContextProperty("infoIndicator", "info-indicator.png");
+
+        ctxt->setContextProperty("infoTextColor", "#B0B0B0");
+        ctxt->setContextProperty("infoTitleColor", "#FFFFFF");
+
+        ctxt->setContextProperty("ratingUnselectedColor", "#1C1C1C");
+        ctxt->setContextProperty("ratingSelectedColor", "#FFFFFF");
+
+        ctxt->setContextProperty("favUncheckedColor", "#1C1C1C");
+        ctxt->setContextProperty("favCheckedColor", "#E84852");
+
+        ctxt->setContextProperty("readTickUncheckedColor", "#1C1C1C");
+        ctxt->setContextProperty("readTickCheckedColor", "#E84852");
+    }
+
 #ifdef Q_OS_MAC
-    ctxt->setContextProperty("backgroundColor", "#F6F6F6");
-    ctxt->setContextProperty("cellColor", "#FFFFFF");
-    ctxt->setContextProperty("selectedColor", "#FFFFFF");
-    ctxt->setContextProperty("selectedBorderColor", "#007AFF");
-    ctxt->setContextProperty("borderColor", "#DBDBDB");
-    ctxt->setContextProperty("titleColor", "#121212");
-    ctxt->setContextProperty("textColor", "#636363");
-    //fonts settings
-    ctxt->setContextProperty("fontSize", 11);
-    ctxt->setContextProperty("fontFamily", QApplication::font().family());
-    ctxt->setContextProperty("fontSpacing", 0.5);
+
 
 #else
-    ctxt->setContextProperty("backgroundColor", "#2A2A2A");
-    ctxt->setContextProperty("cellColor", "#212121");
-    ctxt->setContextProperty("selectedColor", "#121212");
-    ctxt->setContextProperty("selectedBorderColor", "#121212");
-    ctxt->setContextProperty("borderColor", "#121212");
-    ctxt->setContextProperty("titleColor", "#FFFFFF");
-    ctxt->setContextProperty("textColor", "#A8A8A8");
-    ctxt->setContextProperty("dropShadow",false);
-    //fonts settings
-    int fontSize = QApplication::font().pointSize();
-    if(fontSize == -1)
-        fontSize = QApplication::font().pixelSize();
-    ctxt->setContextProperty("fontSize", fontSize);
-    ctxt->setContextProperty("fontFamily", QApplication::font().family());
-    ctxt->setContextProperty("fontSpacing", 0.5);
+
 #endif
 
     ctxt->setContextProperty("backgroundImage", QUrl());

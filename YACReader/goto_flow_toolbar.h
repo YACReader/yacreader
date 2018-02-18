@@ -2,7 +2,7 @@
 #define GOTO_FLOW_TOOLBAR_H
 
 #include <QWidget>
-#include <QStackedWidget.h>
+#include <QStackedWidget>
 
 class QLineEdit;
 class QIntValidator;
@@ -25,12 +25,13 @@ class GoToFlowToolBar : public QStackedWidget
 
 	public:
 		GoToFlowToolBar(QWidget * parent = 0);
-		void switchLayout();
+
 	public slots:
 		void setPage(int pageNumber);
 		void setTop(int numPages);
 		void goTo();
 		void centerSlide();
+        void updateOptions();
 	signals:
 		void setCenter(unsigned int);
 		void goTo(unsigned int);

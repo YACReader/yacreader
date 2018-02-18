@@ -67,7 +67,7 @@ public:
 signals:
 
 public slots:
-	void setData(QList<ComicDB> & comics, const QString & json, const QString & vID);
+    void setData(QList<ComicDB> & comics, const QString &json, const QString & vID);
 	QList<QPair<ComicDB,QString> > getMatchingInfo();
 
 protected slots:
