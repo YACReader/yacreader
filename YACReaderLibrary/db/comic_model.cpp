@@ -695,100 +695,47 @@ QString ComicModel::getComicPath(QModelIndex mi)
 
 void ComicModel::setupModelData(QSqlQuery &sqlquery)
 {
-    ComicItem * currentItem;
-	while (sqlquery.next()) 
+    int numColumns = sqlquery.record().count();
+
+    while (sqlquery.next())
 	{
 		QList<QVariant> data;
-		QSqlRecord record = sqlquery.record();
-		for(int i=0;i<record.count();i++)
-			data << record.value(i);
 
-        currentItem = new ComicItem(data);
-		bool lessThan = false;
-		if(_data.isEmpty())
-			_data.append(currentItem);
-		else
-		{
-            ComicItem * last = _data.back();
-            QString nameLast = last->data(ComicModel::FileName).toString();
-            QString nameCurrent = currentItem->data(ComicModel::FileName).toString();
-			int numberLast,numberCurrent;
-			int max = (std::numeric_limits<int>::max)();
-			numberLast = numberCurrent = max;
+        for(int i=0;i<numColumns;i++)
+            data << sqlquery.value(i);
 
-            if(!last->data(ComicModel::Number).isNull())
-            numberLast = last->data(ComicModel::Number).toInt();
-			
-            if(!currentItem->data(ComicModel::Number).isNull())
-            numberCurrent = currentItem->data(ComicModel::Number).toInt();
-			
-            QList<ComicItem *>::iterator i;
-			i = _data.end();
-			i--;
-
-            if(numberCurrent != max) //sort the current item by issue number
-			{
-                while ((lessThan =numberCurrent < numberLast) && i != _data.begin())
-				{
-                    i--;
-					numberLast = max;
-
-                    if(!(*i)->data(ComicModel::Number).isNull())
-                        numberLast = (*i)->data(ComicModel::Number).toInt();
-				}
-
-                if(lessThan)
-                    _data.insert(i,currentItem);
-                else
-                {
-                    if(numberCurrent == numberLast)
-                        if(currentItem->data(ComicModel::IsBis).toBool())
-                        {
-                            _data.insert(++i,currentItem);
-                        }
-                        else
-                            _data.insert(i,currentItem);
-                    else
-                        _data.insert(++i,currentItem);
-                }
-                continue;
-			}
-
-            else //sort the current item by title
-			{
-                while ((lessThan = naturalSortLessThanCI(nameCurrent,nameLast)) && i != _data.begin() && numberLast == max)
-				{
-					i--;
-                    nameLast = (*i)->data(ComicModel::FileName).toString();
-					numberLast = max;
-
-                    if(!(*i)->data(ComicModel::Number).isNull())
-                        numberLast = (*i)->data(ComicModel::Number).toInt();
-				}
-
-                if(numberLast != max)
-                    _data.insert(++i,currentItem);
-                else
-                    if(lessThan)
-                        _data.insert(i,currentItem);
-                    else
-                        _data.insert(++i,currentItem);
-                continue;
-
-			}
-		}
+        _data.append(new ComicItem(data));
     }
+
+    std::sort(_data.begin(), _data.end(), [](const ComicItem *c1, const ComicItem *c2) {
+        if(c1->data(ComicModel::Number).isNull() && c2->data(ComicModel::Number).isNull())
+        {
+            return naturalSortLessThanCI(c1->data(ComicModel::FileName).toString(), c2->data(ComicModel::FileName).toString());
+        }
+        else
+        {
+            if (c1->data(ComicModel::Number).isNull() == false && c2->data(ComicModel::Number).isNull() == false)
+            {
+                return c1->data(ComicModel::Number).toInt() < c2->data(ComicModel::Number).toInt();
+            }
+            else
+            {
+                return c2->data(ComicModel::Number).isNull();
+            }
+        }
+    });
 }
 
 //comics are sorted by "ordering", the sorting is done in the sql query
 void ComicModel::setupModelDataForList(QSqlQuery &sqlquery)
 {
+    int numColumns = sqlquery.record().count();
+
     while (sqlquery.next())
     {
         QList<QVariant> data;
-        QSqlRecord record = sqlquery.record();
-        for(int i=0;i<record.count();i++)
-            data << record.value(i);
+        for(int i=0;i<numColumns;i++)
+            data << sqlquery.value(i);
 
         _data.append(new ComicItem(data));
     }

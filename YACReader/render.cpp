@@ -373,7 +373,7 @@ filters(f)
 void PageRender::run()
 {
 	QMutexLocker locker(&(render->mutex));
-	
+
 	QImage img;
 	img.loadFromData(data);
 	if(degrees > 0)
@@ -387,7 +387,7 @@ void PageRender::run()
 		img = filters[i]->setFilter(img);
 	}
 
-	
+
 	*page = img;
 
 	emit pageReady(numPage);
@@ -421,15 +421,16 @@ Render::~Render()
 		comic->deleteLater();
 	}
 
-	foreach(ImageFilter * filter, filters)
-		delete filter;
-
 	foreach(PageRender * pr,pageRenders)
 		if(pr !=0)
 		{
 			if(pr->wait())
 				delete pr;
 		}
+
+    //TODO move to share_ptr
+    foreach(ImageFilter * filter, filters)
+        delete filter;
 }
 //Este método se encarga de forzar el renderizado de las páginas.
 //Actualiza el buffer según es necesario.
@@ -687,7 +688,7 @@ void Render::setComic(Comic * c)
 
 void Render::prepareAvailablePage(int page)
 {
-	if(!doublePage) 
+	if(!doublePage)
 	{
 		if (currentIndex == page)
 		{
@@ -701,7 +702,7 @@ void Render::prepareAvailablePage(int page)
 		{
 			emit currentPageReady();
 		}
-		else if ((currentIndex == page && !buffer[currentPageBufferedIndex+1]->isNull()) || 
+		else if ((currentIndex == page && !buffer[currentPageBufferedIndex+1]->isNull()) ||
 			(currentIndex+1 == page && !buffer[currentPageBufferedIndex]->isNull()))
 		{
 			emit currentPageReady();
@@ -758,16 +759,20 @@ void Render::load(const QString & path, const ComicDB & comicDB)
 
 void Render::createComic(const QString & path)
 {
+    previousIndex = currentIndex = 0;
+    pagesEmited.clear();
+
 	if(comic!=0)
 	{
 		//comic->moveToThread(QApplication::instance()->thread());
+        comic->invalidate();
+
 		comic->disconnect();
 		comic->deleteLater();
 	}
 		//comic->moveToThread(QApplication::instance()->thread());
 	comic = FactoryComic::newComic(path);
 
-	
 	if(comic == NULL)//archivo no encontrado o no válido
 	{
 		emit errorOpening();
@@ -775,21 +780,19 @@ void Render::createComic(const QString & path)
 		return;
 	}
 
-	previousIndex = currentIndex = 0;
+    connect(comic,SIGNAL(errorOpening()),this,SIGNAL(errorOpening()), Qt::QueuedConnection);
+    connect(comic,SIGNAL(errorOpening(QString)),this,SIGNAL(errorOpening(QString)), Qt::QueuedConnection);
+    connect(comic,SIGNAL(crcErrorFound(QString)),this,SIGNAL(crcError(QString)), Qt::QueuedConnection);
+    connect(comic,SIGNAL(errorOpening()),this,SLOT(reset()), Qt::QueuedConnection);
+    connect(comic,SIGNAL(imageLoaded(int)),this,SLOT(pageRawDataReady(int)), Qt::QueuedConnection);
+    connect(comic,SIGNAL(imageLoaded(int)),this,SIGNAL(imageLoaded(int)), Qt::QueuedConnection);
+    connect(comic,SIGNAL(openAt(int)),this,SLOT(renderAt(int)), Qt::QueuedConnection);
+    connect(comic,SIGNAL(numPages(unsigned int)),this,SIGNAL(numPages(unsigned int)), Qt::QueuedConnection);
+    connect(comic,SIGNAL(numPages(unsigned int)),this,SLOT(setNumPages(unsigned int)), Qt::QueuedConnection);
+    connect(comic,SIGNAL(imageLoaded(int,QByteArray)),this,SIGNAL(imageLoaded(int,QByteArray)), Qt::QueuedConnection);
+    connect(comic,SIGNAL(isBookmark(bool)),this,SIGNAL(currentPageIsBookmark(bool)), Qt::QueuedConnection);
 
-	connect(comic,SIGNAL(errorOpening()),this,SIGNAL(errorOpening()));
-	connect(comic,SIGNAL(errorOpening(QString)),this,SIGNAL(errorOpening(QString)));
-	connect(comic,SIGNAL(crcErrorFound(QString)),this,SIGNAL(crcError(QString)));
-	connect(comic,SIGNAL(errorOpening()),this,SLOT(reset()));
-	connect(comic,SIGNAL(imageLoaded(int)),this,SIGNAL(imageLoaded(int)));
-	connect(comic,SIGNAL(imageLoaded(int)),this,SLOT(pageRawDataReady(int)));
-	connect(comic,SIGNAL(openAt(int)),this,SLOT(renderAt(int)));
-	connect(comic,SIGNAL(numPages(unsigned int)),this,SIGNAL(numPages(unsigned int)));
-	connect(comic,SIGNAL(numPages(unsigned int)),this,SLOT(setNumPages(unsigned int)));
-	connect(comic,SIGNAL(imageLoaded(int,QByteArray)),this,SIGNAL(imageLoaded(int,QByteArray)));
-	connect(comic,SIGNAL(isBookmark(bool)),this,SIGNAL(currentPageIsBookmark(bool)));
-
-	connect(comic,SIGNAL(bookmarksUpdated()),this,SIGNAL(bookmarksUpdated()));
+    connect(comic,SIGNAL(bookmarksUpdated()),this,SIGNAL(bookmarksUpdated()), Qt::QueuedConnection);
 
 	//connect(comic,SIGNAL(isLast()),this,SIGNAL(isLast()));
 	//connect(comic,SIGNAL(isCover()),this,SIGNAL(isCover()));
@@ -807,19 +810,21 @@ void Render::loadComic(const QString & path, int atPage)
 
 void Render::startLoad()
 {
-	QThread * thread = NULL;
+    QThread * thread = nullptr;
 
 	thread = new QThread();
 
 	comic->moveToThread(thread);
 
-    connect(comic, SIGNAL(errorOpening()), thread, SLOT(quit()));
-    connect(comic, SIGNAL(errorOpening(QString)), thread, SLOT(quit()));
-    connect(comic, SIGNAL(imagesLoaded()), thread, SLOT(quit()));
+    connect(comic, SIGNAL(errorOpening()), thread, SLOT(quit()), Qt::QueuedConnection);
+    connect(comic, SIGNAL(errorOpening(QString)), thread, SLOT(quit()), Qt::QueuedConnection);
+    connect(comic, SIGNAL(imagesLoaded()), thread, SLOT(quit()), Qt::QueuedConnection);
+    connect(comic, SIGNAL(destroyed()), thread, SLOT(quit()), Qt::QueuedConnection);
+    connect(comic, SIGNAL(invalidated()), thread, SLOT(quit()), Qt::QueuedConnection);
 	connect(thread, SIGNAL(started()), comic, SLOT(process()));
 	connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
-	if(thread != NULL)
+    if(thread != nullptr)
 		thread->start();
 
 	invalidate();
@@ -867,7 +872,7 @@ void Render::nextDoublePage()
 	else
 	{
 		nextPage = currentIndex;
-	}	
+	}
 	if(currentIndex != nextPage)
 	{
 		comic->setIndex(nextPage);
@@ -881,14 +886,14 @@ void Render::nextDoublePage()
 		emit isLast();
 	}
 }
-	
+
 //si se solicita la página anterior, se calcula cuál debe ser en función de si se lee en modo a doble página o no.
 //la página sólo se renderiza, si realmente ha cambiado.
 void Render::previousPage()
 {
 	int previousPage; //indica cuál será la próxima página
 	previousPage = comic->previousPage();
-		
+
 	//se fuerza renderizado si la página ha cambiado
 	if(currentIndex != previousPage)
 	{
@@ -916,7 +921,7 @@ void Render::previousDoublePage()
 		emit pageChanged(currentIndex);
 	}
 }
-	
+
 unsigned int Render::getIndex()
 {
 	return comic->getIndex();
@@ -949,7 +954,10 @@ void Render::pageRawDataReady(int page)
         for(int i=0;i<pagesEmited.size();i++)
         {
             if(pagesEmited.at(i)>= pagesReady.size())
+            {
+                pagesEmited.clear();
                 return; //Oooops, something went wrong
+            }
 
             pagesReady[pagesEmited.at(i)] = true;
             if(pagesEmited.at(i) == currentIndex)
@@ -1002,7 +1010,7 @@ void Render::updateBuffer()
 {
 	QMutexLocker locker(&mutex);
 	int windowSize = currentIndex - previousIndex;
-	
+
 	if(windowSize > 0)//add pages to right pages and remove on the left
 	{
 		windowSize = qMin(windowSize,buffer.size());
@@ -1019,7 +1027,7 @@ void Render::updateBuffer()
 			pageRenders.push_back(0);
 
 			//images
-			
+
 			if(buffer.front()!=0)
 				delete buffer.front();
 			buffer.pop_front();
@@ -1056,10 +1064,15 @@ void Render::updateBuffer()
 
 void Render::fillBuffer()
 {
+	if (pagesReady.size() < 1)
+	{
+		return;
+	}
+
 	for(int i = 1; i <= qMax(numLeftPages,numRightPages); i++)
 	{
-		if ((currentIndex+i < (int)comic->numPages()) && 
-			buffer[currentPageBufferedIndex+i]->isNull() && 
+		if ((currentIndex+i < (int)comic->numPages()) &&
+			buffer[currentPageBufferedIndex+i]->isNull() &&
 			i <= numRightPages &&
 			pageRenders[currentPageBufferedIndex+i]==0 &&
 			pagesReady[currentIndex+i]) //preload next pages
@@ -1069,8 +1082,8 @@ void Render::fillBuffer()
 			pageRenders[currentPageBufferedIndex+i]->start();
 		}
 
-		if ((currentIndex-i > 0) && 
-			buffer[currentPageBufferedIndex-i]->isNull() && 
+		if ((currentIndex-i > 0) &&
+			buffer[currentPageBufferedIndex-i]->isNull() &&
 			i <= numLeftPages &&
 			pageRenders[currentPageBufferedIndex-i]==0 &&
 			pagesReady[currentIndex-i]) //preload previous pages

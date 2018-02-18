@@ -375,6 +375,13 @@ public slots:
     void onAddComicsToLabel();
     void setToolbarTitle(const QModelIndex & modelIndex);
     void saveSelectedCoversTo();
+    void checkMaxNumLibraries();
+
+private:
+    //fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
+    Qt::WindowFlags previousWindowFlags;
+    QPoint previousPos;
+    QSize previousSize;
 };
 
 #endif

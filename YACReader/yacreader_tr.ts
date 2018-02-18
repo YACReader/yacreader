@@ -428,10 +428,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Clear openrecent list</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Fit to page</source>
         <translation type="unfinished"></translation>
     </message>
@@ -547,6 +543,50 @@
         <source>Reading</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Open latest comic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open the latest comic opened in the previous reading session</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear open recent list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Go</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Autoscroll forward, horizontal first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Autoscroll backward, horizontal first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Autoscroll forward, vertical first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Autoscroll backward, vertical first</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>OptionsDialog</name>
@@ -613,6 +653,14 @@
     <message>
         <source>Restart is needed</source>
         <translation>Yeniden başlatılmalı</translation>
+    </message>
+    <message>
+        <source>Quick Navigation Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Disable mouse over activation</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

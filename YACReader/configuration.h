@@ -51,6 +51,7 @@ using namespace YACReader;
 			static Configuration configuration;
 			return configuration;
 		};
+        QSettings *getSettings();
 		void load(QSettings * settings);
 		QString getDefaultPath() { return settings->value(PATH).toString(); }
 		void setDefaultPath(QString defaultPath){settings->setValue(PATH,defaultPath);}
@@ -66,6 +67,7 @@ using namespace YACReader;
 		void setFitMode ( YACReader::FitMode fitMode ){ settings->setValue(FITMODE, static_cast<int>(fitMode)); }
 
 		//openRecent
+		int getOpenRecentSize() { return settings->value("recentSize", 25).toInt();}
 		QStringList openRecentList() { return settings->value("recentFiles").toStringList(); }
 		void updateOpenRecentList (QString path);
 		void clearOpenRecentList() { settings->remove("recentFiles"); }
@@ -109,6 +111,7 @@ using namespace YACReader;
 		int getNumDaysBetweenVersionChecks() {return settings->value(NUM_DAYS_BETWEEN_VERSION_CHECKS,1).toInt();}
 		void setNumDaysBetweenVersionChecks(int days) {return settings->setValue(NUM_DAYS_BETWEEN_VERSION_CHECKS,days);}
 		bool getQuickNaviMode(){return settings->value(QUICK_NAVI_MODE).toBool();}
+        bool getDisableShowOnMouseOver(){return settings->value(DISABLE_MOUSE_OVER_GOTO_FLOW).toBool();}
 	};
 
 #endif

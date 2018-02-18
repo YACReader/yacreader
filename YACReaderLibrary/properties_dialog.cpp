@@ -89,7 +89,7 @@ void PropertiesDialog::createCoverBox()
 	layout->addStretch();
 
 	coverPageEdit = new YACReaderFieldEdit();
-	
+
 	showPreviousCoverPageButton = new QToolButton();
 	showPreviousCoverPageButton->setIcon(QIcon(":/images/previousCoverPage.png"));
 	showPreviousCoverPageButton->setStyleSheet("QToolButton {border:none;}");
@@ -122,7 +122,7 @@ void PropertiesDialog::createCoverBox()
 
     connect(showPreviousCoverPageButton,SIGNAL(clicked()),this,SLOT(loadPreviousCover()));
     connect(showNextCoverPageButton,SIGNAL(clicked()),this,SLOT(loadNextCover()));
-	
+
 }
 
 QFrame * createLine()
@@ -145,7 +145,7 @@ void PropertiesDialog::createGeneralInfoBox()
 	generalInfoLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
 	//generalInfoLayout->setRowWrapPolicy(QFormLayout::WrapAllRows);
 	generalInfoLayout->addRow(tr("Title:"), title = new YACReaderFieldEdit());
-	
+
 
 	QHBoxLayout * number = new QHBoxLayout;
 	number->addWidget(numberEdit = new YACReaderFieldEdit());
@@ -161,7 +161,7 @@ void PropertiesDialog::createGeneralInfoBox()
 	/*generalInfoLayout->addRow(tr("&Issue number:"), );
 	generalInfoLayout->addRow(tr("&Bis:"), );*/
 	generalInfoLayout->addRow(tr("Issue number:"), number);
-	
+
 	generalInfoLayout->addRow(tr("Volume:"), volumeEdit = new YACReaderFieldEdit());
 
 	QHBoxLayout * arc = new QHBoxLayout;
@@ -176,9 +176,9 @@ void PropertiesDialog::createGeneralInfoBox()
 	arcCountEdit->setValidator(&arcCountValidator);
 	arc->addStretch(1);
 	generalInfoLayout->addRow(tr("Story arc:"), arc);
-	
-	generalInfoLayout->addRow(tr("Genere:"),  genereEdit = new YACReaderFieldEdit());
-	
+
+	generalInfoLayout->addRow(tr("Genre:"),  genereEdit = new YACReaderFieldEdit());
+
 	generalInfoLayout->addRow(tr("Size:"), size = new QLabel("size"));
 
     //generalInfoLayout->addRow(tr("Comic Vine link:"), comicVineLink = new QLabel("..."));
@@ -196,7 +196,7 @@ void PropertiesDialog::createGeneralInfoBox()
 void PropertiesDialog::createAuthorsBox()
 {
 	authorsBox = new QWidget;
-	
+
 	QVBoxLayout *authorsLayout = new QVBoxLayout;
 
 	//authorsLayout->setRowWrapPolicy(QFormLayout::WrapAllRows);
@@ -220,7 +220,7 @@ void PropertiesDialog::createAuthorsBox()
 	vr2->addWidget(new QLabel(tr("Colorist(s):")));
 	vr2->addWidget(colorist = new YACReaderFieldPlainTextEdit());
 	h2->addLayout(vr2);
-	
+
 	//authorsLayout->addRow(tr("Inker(s):"), new YACReaderFieldPlainTextEdit());
 	//authorsLayout->addRow(tr("Colorist(s):"), new YACReaderFieldPlainTextEdit());
 
@@ -247,7 +247,7 @@ void PropertiesDialog::createAuthorsBox()
 void PropertiesDialog::createPublishingBox()
 {
 	publishingBox = new QWidget;
-	
+
 	QFormLayout *publishingLayout = new QFormLayout;
 
 	publishingLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
@@ -399,10 +399,10 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
         int coverPage = comic.info.coverPage.toInt();
 		coverPageNumberLabel->setText(QString::number(coverPage));
 		coverPageNumberLabel->adjustSize();
-		
+
 		showPreviousCoverPageButton->setEnabled(true);
 		showNextCoverPageButton->setEnabled(true);
-		
+
 		if(coverPage == 1)
 			showPreviousCoverPageButton->setDisabled(true);
         if(coverPage == comic.info.numPages.toInt())
@@ -496,7 +496,7 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
 		{
             if(itr->info.title.isNull() || itr->info.title.toString() != title->text())
 				title->clear();
-			
+
             if(itr->info.count.isNull() || itr->info.count.toString() != countEdit->text())
 				countEdit->clear();
 
@@ -605,7 +605,7 @@ void PropertiesDialog::setNumpages(int pagesNum)
 }
 void PropertiesDialog::setSize(float sizeFloat)
 {
-	 
+
 	size->setText(QString::number(sizeFloat,'f',2) + " MB");
 }
 
@@ -813,7 +813,7 @@ void PropertiesDialog::closeEvent ( QCloseEvent * e )
 	synopsis->clear();
 	characters->clear();
 	notes->clear();
-	
+
 	setDisableUniqueValues(false);
 
 	tabBar->setCurrentIndex(0);
@@ -850,7 +850,7 @@ void PropertiesDialog::loadNextCover()
     if(current < comics.at(0).info.numPages.toInt())
 	{
 		updateCoverPageNumberLabel(current+1);
-		
+
 		ThumbnailCreator tc(basePath+comics[0].path,"",current+1);
 		tc.create();
 		setCover(tc.getCover());

@@ -5,7 +5,7 @@
 ScraperTableView::ScraperTableView(QWidget *parent) :
 	QTableView(parent)
 {
-	QString tableStylesheet = "QTableView {color:white; border:0px;alternate-background-color: #2E2E2E;background-color: #2B2B2B; outline: 0px;}"
+    QString tableStylesheet = "QTableView {color:white; border:0px;alternate-background-color: #2E2E2E;background-color: #2B2B2B; outline: 0px;}"
 			"QTableView::item {outline: 0px; border: 0px; color:#FFFFFF;}"
 			"QTableView::item:selected {outline: 0px; background-color: #555555;  }"
 			"QHeaderView::section:horizontal {background-color:#292929; border-bottom:1px solid #1F1F1F; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #292929, stop: 1 #1F1F1F); border-left:none; border-top:none; padding:4px; color:#ebebeb;}"
@@ -33,8 +33,7 @@ ScraperTableView::ScraperTableView(QWidget *parent) :
 	verticalHeader()->setResizeMode(QHeaderView::Fixed);
 #endif
 
-	//comicView->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
-	horizontalHeader()->setStretchLastSection(true);
+    horizontalHeader()->setStretchLastSection(true);
 #if QT_VERSION >= 0x050000
 	horizontalHeader()->setSectionsClickable(false);
 #else
@@ -57,5 +56,5 @@ ScraperTableView::ScraperTableView(QWidget *parent) :
 
 	verticalHeader()->hide();
 
-	setSelectionMode(QAbstractItemView::SingleSelection);
+    setSelectionMode(QAbstractItemView::SingleSelection);
 }

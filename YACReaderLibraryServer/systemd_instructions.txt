@@ -1,0 +1,32 @@
+Starting with YACReader 9.0.0 we supply a systemd service file for use with
+YACReaderLibraryServer. To make use of it, follow these instructions:
+
+1. Open yacreaderlibraryserver.service in a text editor of your choice.
+ Change the path used in the ExecStart variable to the location where your headless
+ server binary resides. If yacreaderlibraryserver was installed as part of a
+ package you can probably skip this step.
+
+2. Copy the service file into ~/.local/share/systemd/user
+
+3. Enable the service file by running:
+ "systemctl --user enable yacreaderlibraryserver"
+
+4. Start the server by running:
+ "systemctl --user start yacreaderlibraryserver"
+
+5. Check the server status by running:
+ "systemctl --user status yacreaderlibraryserver"
+
+Important: Don't run this as root. None of these steps require root privileges.
+
+By the default, the service is configured to restart yacreaderlibraryserver in
+case of a crash and will automatically restart even after a kill or reboot.
+This might give you some trouble when running YACReaderLibrary on the same machine.
+
+To temporarily disable the server, run systemctl with the stop command:
+
+"systemctl --user stop yacreaderlibraryserver"
+
+To permanently disable it, use the "disable" command:
+
+"systemctl --user disable yacreaderlibraryserver"

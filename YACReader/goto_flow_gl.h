@@ -25,6 +25,7 @@ public:
 	void setImageReady(int index,const QByteArray & image);
 
 	void updateConfig(QSettings * settings);
+	void setFlowRightToLeft(bool b);
 
 signals:
 	void goToPage(unsigned int page);

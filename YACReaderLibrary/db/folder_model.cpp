@@ -146,6 +146,18 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
 
     FolderItem *item = static_cast<FolderItem*>(index.internalPointer());
 
+    if (role == Qt::ToolTipRole)
+    {
+        QString toolTip = item->data(FolderModel::Name).toString();
+        int totalNumOfChildren = item->childCount() + item->comicNames.size();
+        if(totalNumOfChildren > 0)
+        {
+           toolTip = toolTip + " - " + QString::number(totalNumOfChildren);
+        }
+
+        return toolTip;
+    }
+
 	if (role == Qt::DecorationRole)
 
 #ifdef Q_OS_MAC
@@ -174,8 +186,6 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
 
 	if (role != Qt::DisplayRole)
 		return QVariant();
-
-
 
 	return item->data(index.column());
 }
@@ -307,19 +317,27 @@ void FolderModel::setupModelData(QSqlQuery &sqlquery, FolderItem *parent)
 	//se a�ade el nodo 0
 	items.insert(parent->id,parent);
 
+    QSqlRecord record = sqlquery.record();
+
+    int name = record.indexOf("name");
+    int path = record.indexOf("path");
+    int finished = record.indexOf("finished");
+    int completed = record.indexOf("completed");
+    int id = record.indexOf("id");
+    int parentId = record.indexOf("parentId");
+
 	while (sqlquery.next()) {
 		QList<QVariant> data;
-		QSqlRecord record = sqlquery.record();
 
-		data << record.value("name").toString();
-		data << record.value("path").toString();
-        data << record.value("finished").toBool();
-        data << record.value("completed").toBool();
+        data << sqlquery.value(name).toString();
+        data << sqlquery.value(path).toString();
+        data << sqlquery.value(finished).toBool();
+        data << sqlquery.value(completed).toBool();
         FolderItem * item = new FolderItem(data);
 
-		item->id = record.value("id").toULongLong();
+        item->id = sqlquery.value(id).toULongLong();
 		//la inserci�n de hijos se hace de forma ordenada
-        FolderItem * parent = items.value(record.value("parentId").toULongLong());
+        FolderItem * parent = items.value(sqlquery.value(parentId).toULongLong());
         //if(parent !=0) //TODO if parent==0 the parent of item was removed from the DB and delete on cascade didn't work, ERROR.
 			parent->appendChild(item);
 		//se a�ade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
@@ -331,20 +349,27 @@ void FolderModel::updateFolderModelData(QSqlQuery &sqlquery, FolderItem *parent)
 {
     Q_UNUSED(parent);
 
-    while (sqlquery.next()) {
-        QLOG_DEBUG () << "habia next";
-        QList<QVariant> data;
-        QSqlRecord record = sqlquery.record();
+    QSqlRecord record = sqlquery.record();
 
-        data << record.value("name").toString();
-        data << record.value("path").toString();
-        data << record.value("finished").toBool();
-        data << record.value("completed").toBool();
+    int name = record.indexOf("name");
+    int path = record.indexOf("path");
+    int finished = record.indexOf("finished");
+    int completed = record.indexOf("completed");
+    int id = record.indexOf("id");
+    int parentId = record.indexOf("parentId");
+
+    while (sqlquery.next()) {
+        QList<QVariant> data;
+
+        data << sqlquery.value(name).toString();
+        data << sqlquery.value(path).toString();
+        data << sqlquery.value(finished).toBool();
+        data << sqlquery.value(completed).toBool();
         FolderItem * item = new FolderItem(data);
 
-        item->id = record.value("id").toULongLong();
+        item->id = sqlquery.value(id).toULongLong();
         //la inserci�n de hijos se hace de forma ordenada
-        FolderItem * parent = items.value(record.value("parentId").toULongLong());
+        FolderItem * parent = items.value(sqlquery.value(parentId).toULongLong());
         if(parent !=0) //TODO if parent==0 the parent of item was removed from the DB and delete on cascade didn't work, ERROR.
             parent->appendChild(item);
         //se a�ade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
@@ -717,21 +742,28 @@ void FolderModelProxy::setupFilteredModelData(QSqlQuery &sqlquery, FolderItem *p
     //se a�ade el nodo 0 al modelo que representa el arbol de elementos que cumplen con el filtro
     filteredItems.insert(parent->id,parent);
 
+    QSqlRecord record = sqlquery.record();
+
+    int name = record.indexOf("name");
+    int path = record.indexOf("path");
+    int finished = record.indexOf("finished");
+    int completed = record.indexOf("completed");
+    int parentIdIndex = record.indexOf("parentId");
+
     while (sqlquery.next()) {  //se procesan todos los folders que cumplen con el filtro
         //datos de la base de datos
         QList<QVariant> data;
-        QSqlRecord record = sqlquery.record();
 
-        data << record.value("name").toString();
-        data << record.value("path").toString();
-        data << record.value("finished").toBool();
-        data << record.value("completed").toBool();
+        data << sqlquery.value(name).toString();
+        data << sqlquery.value(path).toString();
+        data << sqlquery.value(finished).toBool();
+        data << sqlquery.value(completed).toBool();
 
         FolderItem * item = new FolderItem(data);
         item->id = sqlquery.value(0).toULongLong();
 
         //id del padre
-        quint64 parentId = record.value("parentId").toULongLong();
+        quint64 parentId = sqlquery.value(parentIdIndex).toULongLong();
 
         //se a�ade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
         if(!filteredItems.contains(item->id))

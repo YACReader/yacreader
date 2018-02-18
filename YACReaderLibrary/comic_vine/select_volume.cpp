@@ -35,10 +35,7 @@ SelectVolume::SelectVolume(QWidget *parent)
 	QVBoxLayout * l = new QVBoxLayout;
 	QWidget * leftWidget = new QWidget;
 	QVBoxLayout * left = new QVBoxLayout;
-	QVBoxLayout * right = new QVBoxLayout;
-	QHBoxLayout * content = new QHBoxLayout;
-
-	right->setContentsMargins(0,0,0,0);
+    QGridLayout * content = new QGridLayout;
 
 	//widgets
 	cover = new QLabel();
@@ -46,9 +43,9 @@ SelectVolume::SelectVolume(QWidget *parent)
 	cover->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
 	cover->setMinimumSize(168,168*5.0/3);
 	cover->setStyleSheet("QLabel {background-color: #2B2B2B; color:white; font-size:12px; font-family:Arial; }");
-	detailLabel = new ScraperScrollLabel(this);
+    detailLabel = new ScraperScrollLabel();
 
-	tableVolumes = new ScraperTableView(this);
+    tableVolumes = new ScraperTableView();
 	tableVolumes->setSortingEnabled(true);
 #if QT_VERSION >= 0x050000
 	tableVolumes->horizontalHeader()->setSectionsClickable(true);
@@ -64,23 +61,22 @@ SelectVolume::SelectVolume(QWidget *parent)
 
 	left->addWidget(cover);
 	left->addWidget(detailLabel,1);
-	left->addStretch();
 	leftWidget->setMaximumWidth(180);
 	leftWidget->setLayout(left);
 	left->setContentsMargins(0,0,0,0);
 	leftWidget->setContentsMargins(0,0,0,0);
 
-	right->addWidget(tableVolumes,0,Qt::AlignRight|Qt::AlignTop);
-	right->addWidget(paginator);
+    content->addWidget(leftWidget, 0, 0);
+    content->addWidget(tableVolumes, 0, 1);
+    content->addWidget(paginator, 1, 1);
 
-	content->addWidget(leftWidget);
-	content->addLayout(right);
+    content->setColumnStretch(1, 1);
+    content->setRowStretch(0, 1);
 
-	l->addSpacing(15);
+    l->addSpacing(15);
 	l->addWidget(label);
-	l->addSpacing(5);
-	l->addLayout(content);
-	l->addStretch();
+    l->addSpacing(5);
+    l->addLayout(content);
 
 	l->setContentsMargins(0,0,0,0);
 	setLayout(l);
@@ -98,8 +94,6 @@ void SelectVolume::load(const QString & json, const QString & searchString)
 	tableVolumes->sortByColumn(0,Qt::AscendingOrder);
 	tableVolumes->resizeColumnsToContents();
 
-	tableVolumes->setFixedSize(619,341);
-
 	if(model != 0)
 		delete model;
 
@@ -109,9 +103,9 @@ void SelectVolume::load(const QString & json, const QString & searchString)
 	{
 		tableVolumes->selectRow(0);
 		loadVolumeInfo(proxyModel->index(0,0));
-	}
+    }
 
-	tableVolumes->setColumnWidth(0,350);
+    tableVolumes->setColumnWidth(0,350);
 
 	ScraperSelector::load(json,searchString);
 }

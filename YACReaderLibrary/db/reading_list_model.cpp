@@ -390,15 +390,9 @@ void ReadingListModel::addNewLabel(const QString &name, YACReader::LabelColors c
     QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
     qulonglong id = DBHelper::insertLabel(name, color, db);
 
-    Q_UNUSED(id);
+    int newPos = addLabelIntoList(new LabelItem(QList<QVariant>() << name << YACReader::colorToName(color) << id << color));
+    beginInsertRows(QModelIndex(),specialLists.count()+1+newPos+1, specialLists.count()+1+newPos+1);
 
-    beginInsertRows(QModelIndex(),0, 0);
-
-    // using the specfic row pos for inserting doesnt work
-    // int newPos = addLabelIntoList(new LabelItem(QList<QVariant>() << name << YACReader::colorToName(color) << id << color));
-    // beginInsertRows(QModelIndex(),specialLists.count()+1+newPos+1, specialLists.count()+1+newPos+1);
-
-    // endInsertRows();
 
     endInsertRows();
 
@@ -596,21 +590,29 @@ void ReadingListModel::setupReadingListsData(QSqlQuery &sqlquery, ReadingListIte
 {
     items.insert(parent->getId(),parent);
 
+    QSqlRecord record = sqlquery.record();
+
+    int name = record.indexOf("name");
+    int id = record.indexOf("id");
+    int finished = record.indexOf("finished");
+    int completed = record.indexOf("completed");
+    int ordering = record.indexOf("ordering");
+    int parentId = record.indexOf("parentId");
+
     while (sqlquery.next())
     {
-        QSqlRecord record = sqlquery.record();
         ReadingListItem * rli = new ReadingListItem(QList<QVariant>()
-                                                    << record.value("name")
-                                                    << record.value("id")
-                                                    << record.value("finished")
-                                                    << record.value("completed")
-                                                    << record.value("ordering"));
+                                                    << sqlquery.value(name)
+                                                    << sqlquery.value(id)
+                                                    << sqlquery.value(finished)
+                                                    << sqlquery.value(completed)
+                                                    << sqlquery.value(ordering));
 
         ReadingListItem * currentParent;
-        if(record.value("parentId").isNull())
+        if(sqlquery.value(parentId).isNull())
             currentParent = rootItem;
         else
-            currentParent = items.value(record.value("parentId").toULongLong());
+            currentParent = items.value(sqlquery.value(parentId).toULongLong());
 
         currentParent->appendChild(rli);
 
@@ -620,14 +622,19 @@ void ReadingListModel::setupReadingListsData(QSqlQuery &sqlquery, ReadingListIte
 
 QList<SpecialListItem *> ReadingListModel::setupSpecialLists(QSqlDatabase & db)
 {
-    QList<SpecialListItem *> list;
+    QList<SpecialListItem *> list;       
 
     QSqlQuery selectQuery("SELECT * FROM default_reading_list ORDER BY id,name",db);
+
+    QSqlRecord record = selectQuery.record();
+
+    int name = record.indexOf("name");
+    int id = record.indexOf("id");
+
     while(selectQuery.next()) {
-        QSqlRecord record = selectQuery.record();
         list << new SpecialListItem(QList<QVariant>()
-                                    << record.value("name")
-                                    << record.value("id"));
+                                    << selectQuery.value(name)
+                                    << selectQuery.value(id));
     }
 
     //Reading after Favorites, Why? Because I want to :P
@@ -638,14 +645,21 @@ QList<SpecialListItem *> ReadingListModel::setupSpecialLists(QSqlDatabase & db)
 
 void ReadingListModel::setupLabels(QSqlDatabase & db)
 {
-    QSqlQuery selectQuery("SELECT * FROM label ORDER BY ordering,name",db); //TODO add some kind of
+    QSqlQuery selectQuery("SELECT * FROM label ORDER BY ordering,name",db);
+
+    QSqlRecord record = selectQuery.record();
+
+    int name = record.indexOf("name");
+    int color = record.indexOf("color");
+    int id = record.indexOf("id");
+    int ordering = record.indexOf("ordering");
+
     while(selectQuery.next()) {
-        QSqlRecord record = selectQuery.record();
         addLabelIntoList(new LabelItem(QList<QVariant>()
-                                       << record.value("name")
-                                       << record.value("color")
-                                       << record.value("id")
-                                       << record.value("ordering")));
+                                       << selectQuery.value(name)
+                                       << selectQuery.value(color)
+                                       << selectQuery.value(id)
+                                       << selectQuery.value(ordering)));
     }
 
     //TEST

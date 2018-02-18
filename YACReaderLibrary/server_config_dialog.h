@@ -21,6 +21,7 @@ Q_OBJECT
 		QLineEdit * port;
 		
 		QCheckBox * check;
+        QCheckBox * performanceWorkaroundCheck;
 
 		QPushButton * close;
 		QPushButton * accept;
@@ -35,6 +36,7 @@ Q_OBJECT
 		void regenerateQR(const QString & ip);
 		void updateImage();
 		void enableServer(int status);
+        void enableperformanceWorkaround(int status);
 		void updatePort();
 signals:
 		void portChanged(QString port);

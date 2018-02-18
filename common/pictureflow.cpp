@@ -207,6 +207,8 @@ public:
   QVector<SlideInfo> leftSlides;
   QVector<SlideInfo> rightSlides;
   int centerIndex;
+
+  bool flowRightToLeft;
 };
 
 class PictureFlowAnimator
@@ -281,7 +283,7 @@ private:
 
 PictureFlowState::PictureFlowState(int a, float sr):
 backgroundColor(0), slideWidth(150), slideHeight(200),
-reflectionEffect(PictureFlow::BlurredReflection), centerIndex(0) , rawAngle(a), spacingRatio(sr)
+reflectionEffect(PictureFlow::BlurredReflection), centerIndex(0) , rawAngle(a), spacingRatio(sr), flowRightToLeft(false)
 {
 }
 
@@ -327,7 +329,10 @@ void PictureFlowState::reset()
 	si.angle = angle;
 	si.cx = -(offsetX + spacing*(i)*PFREAL_ONE);
 	si.cy = offsetY;
-	si.slideIndex = centerIndex-1-i;
+	if(!flowRightToLeft)
+	  si.slideIndex = centerIndex-1-i;
+	else
+	  si.slideIndex = centerIndex+1+i;
 	si.blend = 200;
 	if(i == (int)leftSlides.count()-2)
 	  si.blend = 128;
@@ -344,7 +349,10 @@ void PictureFlowState::reset()
 	si.angle = -angle;
 	si.cx = offsetX + spacing*(i)*PFREAL_ONE;
 	si.cy = offsetY;
-	si.slideIndex = centerIndex+1+i;
+	if(!flowRightToLeft)
+	  si.slideIndex = centerIndex+1+i;
+	else
+	  si.slideIndex = centerIndex-1-i;
 	si.blend = 200;
 	if(i == (int)rightSlides.count()-2)
 	  si.blend = 128;
@@ -423,13 +431,31 @@ void PictureFlowAnimator::update()
 	frame = index << 16;
 	state->centerSlide.slideIndex = state->centerIndex;
 	for(int i = 0; i < (int)state->leftSlides.count(); i++)
-	  state->leftSlides[i].slideIndex = state->centerIndex-1-i;
+	{
+	  if(!state->flowRightToLeft)
+		state->leftSlides[i].slideIndex = state->centerIndex-1-i;
+	  else
+		state->leftSlides[i].slideIndex = state->centerIndex+1+i;
+	}
 	for(int i = 0; i < (int)state->rightSlides.count(); i++)
-	  state->rightSlides[i].slideIndex = state->centerIndex+1+i;
+	{
+	  if(!state->flowRightToLeft)
+		state->rightSlides[i].slideIndex = state->centerIndex+1+i;
+	  else
+		state->rightSlides[i].slideIndex = state->centerIndex-1-i;
+	}
   }
 
-  state->centerSlide.angle = (step * tick * state->angle) >> 16;
-  state->centerSlide.cx = -step * fmul(state->offsetX, ftick);
+  if(!state->flowRightToLeft)
+  {
+	state->centerSlide.angle = (step * tick * state->angle) >> 16;
+	state->centerSlide.cx = -step * fmul(state->offsetX, ftick);
+  }
+  else
+  {
+	state->centerSlide.angle = (-step * tick * state->angle) >> 16;
+	state->centerSlide.cx = step * fmul(state->offsetX, ftick);
+  }
   state->centerSlide.cy = fmul(state->offsetY, ftick);
 
   if(state->centerIndex == target)
@@ -443,7 +469,10 @@ void PictureFlowAnimator::update()
   {
 	SlideInfo& si = state->leftSlides[i];
 	si.angle = state->angle;
-	si.cx = -(state->offsetX + state->spacing*(i)*PFREAL_ONE + step*state->spacing*ftick);
+	if(!state->flowRightToLeft)
+	  si.cx = -(state->offsetX + state->spacing*(i)*PFREAL_ONE + step*state->spacing*ftick);
+	else
+      si.cx = -(state->offsetX + state->spacing*(i)*PFREAL_ONE - step*state->spacing*ftick);
 	si.cy = state->offsetY;
   }
 
@@ -451,21 +480,38 @@ void PictureFlowAnimator::update()
   {
 	SlideInfo& si = state->rightSlides[i];
 	si.angle = -state->angle;
-	si.cx = state->offsetX + state->spacing*(i)*PFREAL_ONE - step*state->spacing*ftick;
+	if(!state->flowRightToLeft)
+	  si.cx = state->offsetX + state->spacing*(i)*PFREAL_ONE - step*state->spacing*ftick;
+	else
+	  si.cx = state->offsetX + state->spacing*(i)*PFREAL_ONE + step*state->spacing*ftick;
 	si.cy = state->offsetY;
   }
 
-  if(step > 0)
+  if(step > 0 && !state->flowRightToLeft)
   {
 	PFreal ftick = (neg * PFREAL_ONE) >> 16;
 	state->rightSlides[0].angle = -(neg * state->angle) >> 16;
 	state->rightSlides[0].cx = fmul(state->offsetX, ftick);
 	state->rightSlides[0].cy = fmul(state->offsetY, ftick);
   }
-  else
+  else if(!state->flowRightToLeft)
   {
 	PFreal ftick = (pos * PFREAL_ONE) >> 16;
 	state->leftSlides[0].angle = (pos * state->angle) >> 16;
+	state->leftSlides[0].cx = -fmul(state->offsetX, ftick);
+	state->leftSlides[0].cy = fmul(state->offsetY, ftick);
+  }
+  else if(step < 0)
+  {
+	PFreal ftick = (pos * PFREAL_ONE) >> 16;
+	state->rightSlides[0].angle = -(pos * state->angle) >> 16;
+	state->rightSlides[0].cx = fmul(state->offsetX, ftick);
+	state->rightSlides[0].cy = fmul(state->offsetY, ftick);
+  }
+  else
+  {
+	PFreal ftick = (neg * PFREAL_ONE) >> 16;
+	state->leftSlides[0].angle = (neg * state->angle) >> 16;
 	state->leftSlides[0].cx = -fmul(state->offsetX, ftick);
 	state->leftSlides[0].cy = fmul(state->offsetY, ftick);
   }
@@ -1053,6 +1099,13 @@ void PictureFlow::setReflectionEffect(ReflectionEffect effect)
   triggerRender();
 }
 
+void PictureFlow::setFlowRightToLeft(bool b)
+{
+  d->state->flowRightToLeft = b;
+  d->state->reset();
+  triggerRender();
+}
+
 QImage PictureFlow::slide(int index) const
 {
   QImage* i = 0;
@@ -1225,7 +1278,8 @@ void PictureFlow::showSlide(unsigned int index)
 
 void PictureFlow::keyPressEvent(QKeyEvent* event)
 {
-  if(event->key() == Qt::Key_Left)
+  if((event->key() == Qt::Key_Left && !(d->state->flowRightToLeft))
+     || (event->key() == Qt::Key_Right && d->state->flowRightToLeft))
   {
 	/*if(event->modifiers() == Qt::ControlModifier)
 	  showSlide(centerIndex()-10);
@@ -1235,7 +1289,8 @@ void PictureFlow::keyPressEvent(QKeyEvent* event)
 	return;
   }
 
-  if(event->key() == Qt::Key_Right)
+  if((event->key() == Qt::Key_Right && !(d->state->flowRightToLeft))
+     || (event->key() == Qt::Key_Left && d->state->flowRightToLeft))
   {
 	/*if(event->modifiers() == Qt::ControlModifier)
 	  showSlide(centerIndex()+10);
@@ -1256,10 +1311,19 @@ void PictureFlow::keyPressEvent(QKeyEvent* event)
 
 void PictureFlow::mousePressEvent(QMouseEvent* event)
 {
-  if(event->x() > width()/2)
+    mousePressEvent(event, 0);
+}
+
+void PictureFlow::mousePressEvent(QMouseEvent* event, int slideWidth)
+{
+  if((event->x() > (width() + slideWidth)/2 && !(d->state->flowRightToLeft))
+     || (event->x() < (width() - slideWidth)/2 && d->state->flowRightToLeft))
 	showNext();
-  else
-	showPrevious();
+  else if((event->x() < (width() - slideWidth)/2 && !(d->state->flowRightToLeft))
+     || (event->x() > (width() + slideWidth)/2 && d->state->flowRightToLeft))
+    showPrevious();
+
+  //else (centered slide space)
 }
 
 void PictureFlow::paintEvent(QPaintEvent* event)

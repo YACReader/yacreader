@@ -45,6 +45,9 @@ public:
 		ID
 	};
 
+    enum Role {
+          SORT_ROLE = Qt::UserRole
+       };
 };
 
 #endif // VOLUMES_MODEL_H

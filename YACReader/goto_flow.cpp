@@ -223,6 +223,12 @@ void GoToFlow::updateConfig(QSettings * settings)
 	resize(5*imageSize.width(), toolBar->height() + imageSize.height()*1.7);
 	updateSize();
 }
+
+void GoToFlow::setFlowRightToLeft(bool b)
+{
+    flow->setFlowRightToLeft(b);
+}
+
 //-----------------------------------------------------------------------------
 //SlideInitializer
 //-----------------------------------------------------------------------------
