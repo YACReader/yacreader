@@ -24,11 +24,7 @@ unix:haiku {
   LIBS    += -lnetwork -lbsd
 }
 
-CONFIG(legacy_gl_widget) {
-    INCLUDEPATH += ../common/gl_legacy \
-} else {
-    INCLUDEPATH += ../common/gl \
-}
+INCLUDEPATH += ../common/gl
 
 # there are two builds for Windows, Desktop OpenGL based and ANGLE OpenGL ES based
 win32 {
@@ -154,12 +150,7 @@ HEADERS += comic_flow.h \
   yacreader_comic_info_helper.h
 
 !CONFIG(no_opengl) {
-    CONFIG(legacy_gl_widget) {
-        message("using legacy YACReaderFlowGL (QGLWidget) header")
-        HEADERS += ../common/gl_legacy/yacreader_flow_gl.h
-    } else {
         HEADERS += ../common/gl/yacreader_flow_gl.h
-    }
 }
 
 SOURCES += comic_flow.cpp \
@@ -228,14 +219,8 @@ SOURCES += comic_flow.cpp \
     yacreader_comic_info_helper.cpp
 
 !CONFIG(no_opengl) {
-    CONFIG(legacy_gl_widget) {
-        message("using legacy YACReaderFlowGL (QGLWidget) source code")
-        SOURCES += ../common/gl_legacy/yacreader_flow_gl.cpp
-    } else {
-        SOURCES += ../common/gl/yacreader_flow_gl.cpp
-    }
+    SOURCES += ../common/gl/yacreader_flow_gl.cpp
 }
-
 
 include(./server/server.pri)
 include(../custom_widgets/custom_widgets_yacreaderlibrary.pri)

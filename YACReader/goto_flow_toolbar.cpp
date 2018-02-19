@@ -56,7 +56,7 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget * parent)
 		                      "QPushButton:pressed  {background-image: url(:/images/imgCenterSlidePressed.png); width: 100%; height:100%; background-repeat: none; border: none;} ";
 	centerButton = new QPushButton(this);
 	//centerButton->setIcon(QIcon(":/images/center.png"));
-	centerButton->setStyleSheet(centerButtonCSS); 
+	centerButton->setStyleSheet(centerButtonCSS);
 	centerButton->setFixedSize(26,50);
     centerButton->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
 	connect(centerButton,SIGNAL(clicked()),this,SLOT(centerSlide()));
@@ -66,10 +66,10 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget * parent)
 		                    "QPushButton:pressed  {background-image: url(:/images/imgGoToSlidePressed.png); width: 100%; height:100%; background-repeat: none; border: none;} ";
 	goToButton = new QPushButton(this);
 	//goToButton->setIcon(QIcon(":/images/goto.png"));
-	goToButton->setStyleSheet(goToButtonCSS); 
+	goToButton->setStyleSheet(goToButtonCSS);
 	goToButton->setFixedSize(32,50);
 	goToButton->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
-	
+
 	connect(goToButton,SIGNAL(clicked()),this,SLOT(goTo()));
 
 	normalLayout->setMargin(0);
@@ -94,12 +94,7 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget * parent)
 void GoToFlowToolBar::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-
-#ifdef YACREADER_LEGACY_FLOW_GL
-    painter.fillRect(0,0,width(),height(),QColor("#FF000000"));
-#else
     painter.fillRect(0,0,width(),height(),QColor("#99000000"));
-#endif
 }
 
 void GoToFlowToolBar::setPage(int pageNumber)
