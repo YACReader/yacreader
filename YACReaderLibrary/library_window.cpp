@@ -150,6 +150,8 @@ void LibraryWindow::trayActivation(QSystemTrayIcon::ActivationReason reason)
   {
     setWindowState((windowState() & ~Qt::WindowMinimized));
     show();
+    activateWindow();
+    raise();
   }
 }
 
