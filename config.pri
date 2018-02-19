@@ -15,12 +15,7 @@ lessThan(QT_VER_MIN, 6) {
   warning ("Qt < 5.6 detected. Compilation will probably work, but some qml based components in YACReaderLibrary (GridView, InfoView) will fail at runtime.")
   }
 lessThan(QT_VER_MIN, 4):!CONFIG(no_opengl) {
-  CONFIG += legacy_gl_widget
-  warning ("Qt < 5.4 detected. Using QGLWidget for coverflow.")
-  warning ("QGLWidget based coverflow is scheduled for removal.")
-  }
-lessThan(QT_VER_MIN, 3) {
-  error ("You need at least Qt 5.3 to compile YACReader or YACReaderLibrary.")
+  error ("You need at least Qt 5.4 to compile YACReader or YACReaderLibrary.")
   }
 
 # Disable coverflow for arm targets
