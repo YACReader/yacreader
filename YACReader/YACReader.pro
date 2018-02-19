@@ -45,10 +45,8 @@ SOURCES += main.cpp
 INCLUDEPATH += ../common \
                ../custom_widgets
 
-!CONFIG(no_opengl):CONFIG(legacy_gl_widget) {
-    INCLUDEPATH += ../common/gl_legacy \
-} else {
-    INCLUDEPATH += ../common/gl \
+!CONFIG(no_opengl) {
+    INCLUDEPATH += ../common/gl
 }
 
 #there are going to be two builds for windows, OpenGL based and ANGLE based
@@ -124,14 +122,8 @@ HEADERS +=  ../common/comic.h \
             ../common/pdf_comic.h
 
 !CONFIG(no_opengl) {
-    CONFIG(legacy_gl_widget) {
-        message("Using legacy YACReaderFlowGL (QGLWidget) header")
-        DEFINES += YACREADER_LEGACY_FLOW_GL
-        HEADERS += ../common/gl_legacy/yacreader_flow_gl.h
-    } else {
-        HEADERS += ../common/gl/yacreader_flow_gl.h
-    }
-    HEADERS +=   goto_flow_gl.h
+    HEADERS += ../common/gl/yacreader_flow_gl.h \
+                goto_flow_gl.h
 }
 
 SOURCES +=  ../common/comic.cpp \
@@ -169,13 +161,8 @@ SOURCES +=  ../common/comic.cpp \
             ../common/opengl_checker.cpp
 
 !CONFIG(no_opengl) {
-    CONFIG(legacy_gl_widget) {
-        message("using legacy YACReaderFlowGL (QGLWidget) source code")
-        SOURCES += ../common/gl_legacy/yacreader_flow_gl.cpp
-    } else {
-        SOURCES += ../common/gl/yacreader_flow_gl.cpp
-    }
-    SOURCES += goto_flow_gl.cpp
+        SOURCES += ../common/gl/yacreader_flow_gl.cpp \
+                    goto_flow_gl.cpp
 }
 
 include(../custom_widgets/custom_widgets_yacreader.pri)
