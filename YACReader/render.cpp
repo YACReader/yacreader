@@ -417,7 +417,7 @@ Render::~Render()
 {
 	if(comic!=0)
 	{
-		comic->moveToThread(QApplication::instance()->thread());
+		//comic->moveToThread(QApplication::instance()->thread());
 		comic->deleteLater();
 	}
 
@@ -679,7 +679,7 @@ void Render::setComic(Comic * c)
 {
 	if(comic !=0)
 	{
-		comic->moveToThread(QApplication::instance()->thread());
+		//comic->moveToThread(QApplication::instance()->thread());
 		comic->disconnect();
 		comic->deleteLater();
 	}
