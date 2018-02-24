@@ -571,12 +571,12 @@
     <message>
         <location filename="import_widget.cpp" line="156"/>
         <source>stop</source>
-        <translation>остановить</translation>
+        <translation>Остановить</translation>
     </message>
     <message>
         <location filename="import_widget.cpp" line="195"/>
         <source>Some of the comics being added...</source>
-        <translation>Некоторые из комиксов добавляются...</translation>
+        <translation>Поиск новых комиксов...</translation>
     </message>
     <message>
         <location filename="import_widget.cpp" line="348"/>
