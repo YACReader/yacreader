@@ -24,7 +24,7 @@
     <message>
         <location filename="bookmarks_dialog.cpp" line="83"/>
         <source>Click on any image to go to the bookmark</source>
-        <translation>Нажмите на любое изображение, чтобы перейти к закладке</translation>
+        <translation>Нажмите на любое изображение чтобы перейти к закладке</translation>
     </message>
     <message>
         <location filename="bookmarks_dialog.cpp" line="107"/>
@@ -43,22 +43,22 @@
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="22"/>
         <source>To change a shortcut, double click in the key combination and type the new keys.</source>
-        <translation type="unfinished"></translation>
+        <translation>Чтобы изменить горячую клавишу дважды щелкните по выбранной комбинации клавиш и введите новые сочетания клавиш.</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="70"/>
         <source>Shortcuts settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Горячие клавиши</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="96"/>
         <source>Shortcut in use</source>
-        <translation type="unfinished"></translation>
+        <translation>Горячая клавиша уже занята</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="96"/>
         <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation type="unfinished"></translation>
+        <translation>Сочетание клавиш &quot;%1&quot; уже назначено для другой функции</translation>
     </message>
 </context>
 <context>
@@ -66,22 +66,22 @@
     <message>
         <location filename="../common/comic.cpp" line="418"/>
         <source>Unknown error opening the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестная ошибка при открытии файла</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="544"/>
         <source>7z not found</source>
-        <translation type="unfinished">7z не найден</translation>
+        <translation>7z не найден</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="551"/>
         <source>Format not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Формат не поддерживается</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="411"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка контрольной суммы CRC на странице (%1): некоторые страницы будут отображаться неправильно</translation>
     </message>
 </context>
 <context>
@@ -94,7 +94,7 @@
     <message>
         <location filename="goto_dialog.cpp" line="25"/>
         <source>Go To</source>
-        <translation>Перейти</translation>
+        <translation>Перейти к странице...</translation>
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="27"/>
@@ -285,7 +285,7 @@
     <message>
         <location filename="main_window_viewer.cpp" line="407"/>
         <source>Go To</source>
-        <translation>Перейти к</translation>
+        <translation>Перейти к странице...</translation>
     </message>
     <message>
         <source>G</source>
@@ -294,7 +294,7 @@
     <message>
         <location filename="main_window_viewer.cpp" line="410"/>
         <source>Go to page ...</source>
-        <translation>Перейти к странице ...</translation>
+        <translation>Перейти к странице...</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="415"/>
@@ -381,7 +381,7 @@
     <message>
         <location filename="main_window_viewer.cpp" line="478"/>
         <source>Show Dictionary</source>
-        <translation>Показать словарь</translation>
+        <translation>Переводчик YACreader</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="487"/>
@@ -446,7 +446,7 @@
     <message>
         <location filename="main_window_viewer.cpp" line="514"/>
         <source>&amp;File</source>
-        <translation>&amp;Файл</translation>
+        <translation>&amp;Отображать панель инструментов</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="528"/>
@@ -489,7 +489,7 @@
         <location filename="main_window_viewer.cpp" line="812"/>
         <location filename="main_window_viewer.cpp" line="814"/>
         <source>Comic files</source>
-        <translation>Файлы комикса</translation>
+        <translation>Файлы комикса </translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="914"/>
@@ -686,7 +686,7 @@
     <message>
         <location filename="options_dialog.cpp" line="113"/>
         <source>Restart is needed</source>
-        <translation>Необходима перезагрузка</translation>
+        <translation> </translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="133"/>
@@ -776,7 +776,7 @@
         <location filename="viewer.cpp" line="50"/>
         <location filename="viewer.cpp" line="983"/>
         <source>Press &apos;O&apos; to open comic.</source>
-        <translation>Нажмите &quot;O&quot; , чтобы открыть комикс.</translation>
+        <translation>Нажмите &quot;O&quot; чтобы открыть комикс.</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="234"/>
@@ -791,12 +791,12 @@
     <message>
         <location filename="viewer.cpp" line="240"/>
         <source>Error opening comic</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка открытия комикса</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="246"/>
         <source>CRC Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка CRC</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="996"/>
@@ -806,17 +806,17 @@
     <message>
         <location filename="viewer.cpp" line="1007"/>
         <source>Page not available!</source>
-        <translation type="unfinished"></translation>
+        <translation>Страница недоступна!</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="1145"/>
         <source>Cover!</source>
-        <translation type="unfinished"></translation>
+        <translation>Это первая страница!</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="1162"/>
         <source>Last page!</source>
-        <translation type="unfinished"></translation>
+        <translation>Это последняя страница!</translation>
     </message>
 </context>
 <context>
@@ -825,7 +825,7 @@
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="9"/>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="29"/>
         <source>Click to overwrite</source>
-        <translation>Нажмите, чтобы переписать</translation>
+        <translation>Изменить</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="11"/>
@@ -841,7 +841,7 @@
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="45"/>
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="51"/>
         <source>Click to overwrite</source>
-        <translation>Нажмите, чтобы переписать</translation>
+        <translation>Изменить</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="10"/>
@@ -854,7 +854,7 @@
     <message>
         <location filename="../custom_widgets/yacreader_flow_config_widget.cpp" line="13"/>
         <source>How to show covers:</source>
-        <translation>Как показать обложки:</translation>
+        <translation>Как отображать обложки:</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_flow_config_widget.cpp" line="15"/>
@@ -1023,7 +1023,7 @@
     <message>
         <location filename="width_slider.cpp" line="48"/>
         <source>Reset</source>
-        <translation type="unfinished">Перезапуск</translation>
+        <translation>Сброс мастштаба</translation>
     </message>
 </context>
 <context>
