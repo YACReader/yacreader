@@ -321,22 +321,22 @@
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="22"/>
         <source>To change a shortcut, double click in the key combination and type the new keys.</source>
-        <translation type="unfinished"></translation>
+        <translation>Чтобы изменить горячую клавишу щелкните дважды по выбранной комбинации клавиш и введите новые сочетания клавиш.</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="70"/>
         <source>Shortcuts settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Горячие клавиши</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="96"/>
         <source>Shortcut in use</source>
-        <translation type="unfinished"></translation>
+        <translation>Горячая клавиша уже занята</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="96"/>
         <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation type="unfinished"></translation>
+        <translation>Сочетание клавиш &quot;%1&quot; уже назначено для другой функции</translation>
     </message>
 </context>
 <context>
@@ -471,7 +471,7 @@
     <message>
         <location filename="../common/comic.cpp" line="411"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка контрольной суммы CRC на странице (%1): некоторые страницы будут отображаться неправильно</translation>
     </message>
 </context>
 <context>
@@ -839,7 +839,7 @@
     <message>
         <location filename="library_window.cpp" line="1244"/>
         <source>Old library</source>
-        <translation type="unfinished"></translation>
+        <translation>Библиотека из старой версии YACreader</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="1808"/>
@@ -900,7 +900,7 @@
     <message>
         <location filename="library_window.cpp" line="2513"/>
         <source>Remove comics</source>
-        <translation type="unfinished"></translation>
+        <translation>Убрать комиксы</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="2513"/>
@@ -1224,7 +1224,7 @@ YACReaderLibrary не помешает вам создать больше биб
     <message>
         <location filename="no_libraries_widget.cpp" line="28"/>
         <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Вы можете создать библиотеку в любой папке, YACReaderLibrary будет импортировать все комиксы и папки из этой папки. Если вы уже ранее создавали библиотеки, их можно будет открыть.&lt; / p &gt; &lt;p&gt;Не забывайте, что Вы можете использовать YACReader в качестве отдельного приложения для чтения комиксов на вашем компьютере.&lt;/п&gt;</translation>
     </message>
     <message>
         <location filename="no_libraries_widget.cpp" line="32"/>
@@ -1335,7 +1335,7 @@ YACReaderLibrary не помешает вам создать больше биб
     <message>
         <location filename="properties_dialog.cpp" line="163"/>
         <source>Issue number:</source>
-        <translation type="unfinished"></translation>
+        <translation>Номер выпуска</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="165"/>
@@ -1345,7 +1345,7 @@ YACReaderLibrary не помешает вам создать больше биб
     <message>
         <location filename="properties_dialog.cpp" line="178"/>
         <source>Story arc:</source>
-        <translation type="unfinished"></translation>
+        <translation>Сюжетная арка:</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="180"/>
@@ -1361,32 +1361,32 @@ YACReaderLibrary не помешает вам создать больше биб
     <message>
         <location filename="properties_dialog.cpp" line="206"/>
         <source>Writer(s):</source>
-        <translation type="unfinished"></translation>
+        <translation>Писатель(и):</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="209"/>
         <source>Penciller(s):</source>
-        <translation type="unfinished"></translation>
+        <translation>Художник(и):</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="217"/>
         <source>Inker(s):</source>
-        <translation type="unfinished"></translation>
+        <translation>Контуровщик(и):</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="220"/>
         <source>Colorist(s):</source>
-        <translation type="unfinished"></translation>
+        <translation>Колорист(ы):</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="230"/>
         <source>Letterer(s):</source>
-        <translation type="unfinished"></translation>
+        <translation>Гравёр-шрифтовик(и):</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="233"/>
         <source>Cover Artist(s):</source>
-        <translation>Обложка Исполнитель (и):</translation>
+        <translation>Художник(и) Обложки:</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="256"/>
@@ -1441,7 +1441,7 @@ YACReaderLibrary не помешает вам создать больше биб
     <message>
         <location filename="properties_dialog.cpp" line="388"/>
         <source>Comic Vine link: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; view &lt;/a&gt;</source>
-        <translation>Comic Vine ссылка: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; view &lt;/a&gt;</translation>
+        <translation>&lt;a style=&apos;color: ##666666; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; Открыть страницу этого комикса на сайте Comic Vine &lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="416"/>
@@ -1469,12 +1469,12 @@ YACReaderLibrary не помешает вам создать больше биб
     <message>
         <location filename="../common/exit_check.cpp" line="14"/>
         <source>7z lib not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Библиотека распаковщика 7z не найдена</translation>
     </message>
     <message>
         <location filename="../common/exit_check.cpp" line="14"/>
         <source>unable to load 7z lib from ./utils</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удается загрузить библиотеку распаковщика 7z из ./utils</translation>
     </message>
 </context>
 <context>
@@ -1529,7 +1529,7 @@ YACReaderLibrary не помешает вам создать больше биб
     <message>
         <location filename="comic_vine/search_single_comic.cpp" line="19"/>
         <source>Series:</source>
-        <translation type="unfinished"></translation>
+        <translation>Серия:</translation>
     </message>
 </context>
 <context>
@@ -1537,12 +1537,12 @@ YACReaderLibrary не помешает вам создать больше биб
     <message>
         <location filename="comic_vine/search_volume.cpp" line="11"/>
         <source>Please provide some additional information.</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, введите инфомарцию для поиска.</translation>
     </message>
     <message>
         <location filename="comic_vine/search_volume.cpp" line="14"/>
         <source>Series:</source>
-        <translation type="unfinished"></translation>
+        <translation>Серия:</translation>
     </message>
 </context>
 <context>
@@ -1550,27 +1550,27 @@ YACReaderLibrary не помешает вам создать больше биб
     <message>
         <location filename="comic_vine/select_comic.cpp" line="17"/>
         <source>Please, select the right comic info.</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, выберите правильную информацию об комиксе.</translation>
     </message>
     <message>
         <location filename="comic_vine/select_comic.cpp" line="37"/>
         <source>comics</source>
-        <translation type="unfinished"></translation>
+        <translation>комиксы</translation>
     </message>
     <message>
         <location filename="comic_vine/select_comic.cpp" line="93"/>
         <source>loading cover</source>
-        <translation type="unfinished"></translation>
+        <translation>загрузка обложки</translation>
     </message>
     <message>
         <location filename="comic_vine/select_comic.cpp" line="94"/>
         <source>loading description</source>
-        <translation type="unfinished"></translation>
+        <translation>загрузка описания</translation>
     </message>
     <message>
         <location filename="comic_vine/select_comic.cpp" line="137"/>
         <source>description unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>описание недоступно</translation>
     </message>
 </context>
 <context>
@@ -1578,27 +1578,27 @@ YACReaderLibrary не помешает вам создать больше биб
     <message>
         <location filename="comic_vine/select_volume.cpp" line="32"/>
         <source>Please, select the right series for your comic.</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, выберите правильную серию для вашего комикса.</translation>
     </message>
     <message>
         <location filename="comic_vine/select_volume.cpp" line="60"/>
         <source>volumes</source>
-        <translation type="unfinished"></translation>
+        <translation>тома</translation>
     </message>
     <message>
         <location filename="comic_vine/select_volume.cpp" line="122"/>
         <source>loading cover</source>
-        <translation type="unfinished"></translation>
+        <translation>загрузка обложки</translation>
     </message>
     <message>
         <location filename="comic_vine/select_volume.cpp" line="123"/>
         <source>loading description</source>
-        <translation type="unfinished"></translation>
+        <translation>загрузка описания</translation>
     </message>
     <message>
         <location filename="comic_vine/select_volume.cpp" line="166"/>
         <source>description unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>описание недоступно</translation>
     </message>
 </context>
 <context>
@@ -1629,17 +1629,17 @@ YACReaderLibrary не помешает вам создать больше биб
     <message>
         <location filename="server_config_dialog.cpp" line="91"/>
         <source>Server connectivity information</source>
-        <translation type="unfinished"></translation>
+        <translation>Информация о подключении</translation>
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="95"/>
         <source>Scan it!</source>
-        <translation type="unfinished"></translation>
+        <translation>Сканируйте!</translation>
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="101"/>
         <source>YACReader is available for iOS devices. &lt;a href=&apos;http://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt; Discover it! &lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;a href=&apos;http://ios.yacreader.com&apos; style=&apos;color:rgb(102,102,102)&apos;&gt;YACReader доступен для устройств с iOS.&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="110"/>
@@ -1660,7 +1660,8 @@ YACReaderLibrary не помешает вам создать больше биб
         <location filename="server_config_dialog.cpp" line="152"/>
         <source>display less information about folders in the browser
 to improve the performance</source>
-        <translation type="unfinished"></translation>
+        <translation>отображать меньше информации о папках в браузере
+для улучшения производительности</translation>
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="331"/>
@@ -1673,32 +1674,32 @@ to improve the performance</source>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="18"/>
         <source>Please, sort the list of comics on the left until it matches the comics&apos; information.</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, отсортируйте список комиксов слева, пока он не будет соответствовать информации комикса.</translation>
     </message>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="21"/>
         <source>sort comics to match comic information</source>
-        <translation type="unfinished"></translation>
+        <translation>сортировать комиксы, чтобы соответствовать информации комиксов</translation>
     </message>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="58"/>
         <source>issues</source>
-        <translation type="unfinished"></translation>
+        <translation>выпуск</translation>
     </message>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="87"/>
         <source>remove selected comics</source>
-        <translation type="unfinished"></translation>
+        <translation>удалить выбранные комиксы</translation>
     </message>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="88"/>
         <source>restore all removed comics</source>
-        <translation type="unfinished"></translation>
+        <translation>восстановить все удаленные комиксы</translation>
     </message>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="89"/>
         <source>restore removed comics</source>
-        <translation type="unfinished"></translation>
+        <translation>восстановить удаленные комиксы</translation>
     </message>
 </context>
 <context>
@@ -1721,7 +1722,7 @@ to improve the performance</source>
     <message>
         <location filename="comic_vine/title_header.cpp" line="30"/>
         <source>SEARCH</source>
-        <translation type="unfinished"></translation>
+        <translation>ПОИСК</translation>
     </message>
 </context>
 <context>
@@ -1747,7 +1748,7 @@ to improve the performance</source>
     <message>
         <location filename="comic_vine/model/volume_comics_model.cpp" line="129"/>
         <source>title</source>
-        <translation type="unfinished"></translation>
+        <translation>название</translation>
     </message>
 </context>
 <context>
@@ -1760,7 +1761,7 @@ to improve the performance</source>
     <message>
         <location filename="comic_vine/model/volumes_model.cpp" line="131"/>
         <source>issues</source>
-        <translation type="unfinished"></translation>
+        <translation>выпуск</translation>
     </message>
     <message>
         <location filename="comic_vine/model/volumes_model.cpp" line="133"/>
@@ -1773,12 +1774,12 @@ to improve the performance</source>
     <message>
         <location filename="../custom_widgets/yacreader_deleting_progress.cpp" line="20"/>
         <source>Please wait, deleting in progress...</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста подождите, удаление в процессе...</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_deleting_progress.cpp" line="35"/>
         <source>cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>отменить</translation>
     </message>
 </context>
 <context>
@@ -1787,7 +1788,7 @@ to improve the performance</source>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="9"/>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="29"/>
         <source>Click to overwrite</source>
-        <translation>Нажмите для перезаписи</translation>
+        <translation>Изменить</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="11"/>
@@ -1803,7 +1804,7 @@ to improve the performance</source>
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="45"/>
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="51"/>
         <source>Click to overwrite</source>
-        <translation>Нажмите для перезаписи</translation>
+        <translation>Изменить</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="10"/>
@@ -1869,7 +1870,7 @@ to improve the performance</source>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="77"/>
         <source>Show advanced settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать дополнительные настройки</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="86"/>
@@ -1944,7 +1945,7 @@ to improve the performance</source>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="194"/>
         <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
-        <translation>Использовать VSync (повысить формат изображения в полноэкранном режиме , хуже производительность)</translation>
+        <translation>Использовать VSync (повысить качество изображения в полноэкранном режиме , хуже производительность)</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="202"/>
@@ -1980,12 +1981,12 @@ to improve the performance</source>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="35"/>
         <source>Edit shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать горячие клавиши</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="38"/>
         <source>Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Горячие клавиши</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="47"/>
