@@ -63,6 +63,6 @@ void ApiKeyDialog::enableAccept(const QString &text)
 
 void ApiKeyDialog::saveApiKey()
 {
-    settings->setValue(COMIC_VINE_API_KEY,edit->text());
+    settings->setValue(COMIC_VINE_API_KEY,edit->text().trimmed());
     accept();
 }
