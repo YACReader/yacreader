@@ -801,7 +801,7 @@
     <message>
         <location filename="viewer.cpp" line="996"/>
         <source>Loading...please wait!</source>
-        <translation>Загрузка ... Пожалуйста подождите!</translation>
+        <translation>Загрузка... Пожалуйста подождите!</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="1007"/>
@@ -811,12 +811,12 @@
     <message>
         <location filename="viewer.cpp" line="1145"/>
         <source>Cover!</source>
-        <translation>Это первая страница!</translation>
+        <translation>Начало!</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="1162"/>
         <source>Last page!</source>
-        <translation>Это последняя страница!</translation>
+        <translation>Конец!</translation>
     </message>
 </context>
 <context>
