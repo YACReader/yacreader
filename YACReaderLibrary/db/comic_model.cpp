@@ -582,7 +582,7 @@ void ComicModel::setupFavoritesModelData(const QString &databasePath)
                             "ORDER BY cdrl.ordering");
         selectQuery.bindValue(":parentDefaultListId", 1);
         selectQuery.exec();
-        setupModelData(selectQuery);
+        setupModelDataForList(selectQuery);
     }
     db.close();
     QSqlDatabase::removeDatabase(_databasePath);
@@ -607,9 +607,11 @@ void ComicModel::setupReadingModelData(const QString &databasePath)
         QSqlQuery selectQuery(db);
         selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                            "WHERE ci.hasBeenOpened = 1 AND ci.read = 0 AND ci.currentPage != ci.numPages AND ci.currentPage != 1");
+                            "WHERE ci.hasBeenOpened = 1 AND ci.read = 0 AND ci.currentPage != ci.numPages AND ci.currentPage != 1 "
+                            "ORDER BY ci.lastTimeOpened DESC");
         selectQuery.exec();
-        setupModelData(selectQuery);
+
+        setupModelDataForList(selectQuery);
     }
     db.close();
     QSqlDatabase::removeDatabase(_databasePath);
@@ -928,7 +930,7 @@ void ComicModel::removeInTransaction(int row)
 
     endRemoveRows();
 }
-
+/*
 void ComicModel::remove(ComicDB * comic, int row)
 {
 	beginRemoveRows(QModelIndex(),row,row);
@@ -944,7 +946,7 @@ void ComicModel::remove(ComicDB * comic, int row)
 	QSqlDatabase::removeDatabase(_databasePath);
 	endRemoveRows();
 }
-
+*/
 /*ComicDB TableModel::getComic(int row)
 {
 	return getComic(index(row,0));

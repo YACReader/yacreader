@@ -38,6 +38,7 @@ private:
 	static void bindValuesFromRecord(const QSqlRecord & record, QSqlQuery & query);
 
     static bool addColumns(const QString & tableName, const QStringList & columnDefs, const QSqlDatabase & db);
+    static bool addConstraint(const QString  &tableName, const QString & constraint, const QSqlDatabase & db);
 
 public:
 	DataBaseManagement();
