@@ -7,8 +7,9 @@
 #include "yacreader_flow_config_widget.h"
 #include "api_key_dialog.h"
 
-
+#ifndef NO_OPENGL
 FlowType flowType = Strip;
+#endif
 
 OptionsDialog::OptionsDialog(QWidget * parent)
 :YACReaderOptionsDialog(parent)
