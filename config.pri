@@ -27,7 +27,7 @@ lessThan(QT_VER_MIN, 3) {
 isEmpty(QMAKE_TARGET.arch) {
   QMAKE_TARGET.arch = $$QMAKE_HOST.arch
 }
-contains(QMAKE_TARGET.arch, arm.*) {
+contains(QMAKE_TARGET.arch, arm.*)|contains(QMAKE_TARGET.arch, aarch.*) {
   message("Building for ARM architecture. Disabling OpenGL coverflow ...")
   CONFIG += no_opengl
 }
