@@ -83,6 +83,8 @@ public:
 
 	QImage cover;
 
+    QVariant lastTimeOpened;//integer/date
+
     /*void setTitle(QVariant value);
 
     void setCoverPage(QVariant value);
@@ -186,6 +188,8 @@ public:
 
     Q_PROPERTY(QImage cover MEMBER cover CONSTANT)
 
+    Q_PROPERTY(QVariant lastTimeOpened MEMBER lastTimeOpened CONSTANT)
+
     //-new properties, not loaded from the DB automatically
     bool isFavorite;
     Q_PROPERTY(bool isFavorite MEMBER isFavorite WRITE setFavorite NOTIFY favoriteChanged)
@@ -210,7 +214,7 @@ public:
 	ComicDB();
     ComicDB(const ComicDB & comicDB);
 	
-	bool isDir();
+    bool isDir() const;
 	
 	bool _hasCover;
 
