@@ -2,7 +2,7 @@
 
 QString YACReaderServerDataHelper::folderToYSFormat(const qulonglong libraryId, const Folder & folder)
 {
-    return QString("f\t%1\t%2\t%3\t%4\t%5\r\n")
+    return QString("f\x1F\t%1\x1F\t%2\x1F\t%3\x1F\t%4\x1F\t%5\x1E\r\n")
             .arg(libraryId)
             .arg(folder.id)
             .arg(folder.name)
@@ -12,7 +12,7 @@ QString YACReaderServerDataHelper::folderToYSFormat(const qulonglong libraryId, 
 
 QString YACReaderServerDataHelper::comicToYSFormat(const qulonglong libraryId,const ComicDB & comic)
 {
-    return QString("c\t%1\t%2\t%3\t%4\t%5\t%6\t%7\t%8\r\n")
+    return QString("c\x1F\t%1\x1F\t%2\x1F\t%3\x1F\t%4\x1F\t%5\x1F\t%6\x1F\t%7\x1F\t%8\x1E\r\n")
             .arg(libraryId)
             .arg(comic.id)
             .arg(comic.getFileName())
