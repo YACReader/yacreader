@@ -344,7 +344,6 @@ public slots:
     void libraryAlreadyExists(const QString & name);
     void importLibraryPackage();
     void updateComicsView(quint64 libraryId, const ComicDB & comic);
-    void setCurrentComicOpened();
     void showComicVineScraper();
     void setRemoveError();
     void checkRemoveError();
