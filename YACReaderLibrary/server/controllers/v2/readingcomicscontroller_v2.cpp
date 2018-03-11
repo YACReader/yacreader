@@ -12,7 +12,7 @@ ReadingComicsControllerV2::ReadingComicsControllerV2()
 
 void ReadingComicsControllerV2::service(HttpRequest &request, HttpResponse &response)
 {
-    response.setHeader("Content-Type", "text/plain; charset=utf-8");
+    response.setHeader("Content-Type", "application/json");
 
     QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
     QStringList pathElements = path.split('/');
@@ -20,6 +20,7 @@ void ReadingComicsControllerV2::service(HttpRequest &request, HttpResponse &resp
 
     serviceContent(libraryId, response);
 
+    response.setStatus(200,"OK");
     response.write("",true);
 }
 
@@ -27,8 +28,12 @@ void ReadingComicsControllerV2::serviceContent(const int &library, HttpResponse 
 {
     QList<ComicDB> readingComics = DBHelper::getReading(library);
 
+    QJsonArray comics;
+
     for(const ComicDB &comic : readingComics)
     {
-        response.write(YACReaderServerDataHelper::comicToYSFormat(library, comic).toUtf8());
+        comics.append(YACReaderServerDataHelper::comicToJSON(library, comic));
     }
+
+    response.write(comics.toJson());
 }
