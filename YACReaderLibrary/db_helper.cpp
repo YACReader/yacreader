@@ -538,8 +538,11 @@ void DBHelper::update(ComicInfo * comicInfo, QSqlDatabase & db)
         //new 7.1 fields
         "comicVineID = :comicVineID,"
 
-        //new 8.6 fields
-        "lastTimeOpened = :lastTimeOpened"
+        //new 9.5 fields
+        "lastTimeOpened = :lastTimeOpened,"
+
+        "coverSizeRatio = :coverSizeRatio,"
+        "originalCoverSize = :originalCoverSize"
 		//--
 		" WHERE id = :id ");
 
@@ -595,6 +598,9 @@ void DBHelper::update(ComicInfo * comicInfo, QSqlDatabase & db)
     updateComicInfo.bindValue(":comicVineID", comicInfo->comicVineID);
 
     updateComicInfo.bindValue(":lastTimeOpened", comicInfo->lastTimeOpened);
+
+    updateComicInfo.bindValue(":coverSizeRatio", comicInfo->coverSizeRatio);
+    updateComicInfo.bindValue(":originalCoverSize", comicInfo->originalCoverSize);
 
     updateComicInfo.exec();
 }
@@ -855,10 +861,12 @@ qulonglong DBHelper::insert(ComicDB * comic, QSqlDatabase & db)
 	if(!comic->info.existOnDb)
 	{
 		QSqlQuery comicInfoInsert(db);
-		comicInfoInsert.prepare("INSERT INTO comic_info (hash,numPages) "
-			"VALUES (:hash,:numPages)");
+        comicInfoInsert.prepare("INSERT INTO comic_info (hash,numPages,coverSizeRatio,originalCoverSize) "
+            "VALUES (:hash,:numPages,:coverSizeRatio,:originalCoverSize)");
 		comicInfoInsert.bindValue(":hash", comic->info.hash);
         comicInfoInsert.bindValue(":numPages", comic->info.numPages);
+        comicInfoInsert.bindValue(":coverSizeRatio", comic->info.coverSizeRatio);
+        comicInfoInsert.bindValue(":originalCoverSize", comic->info.originalCoverSize);
 		comicInfoInsert.exec();
 		comic->info.id =comicInfoInsert.lastInsertId().toULongLong();
 		comic->_hasCover = false;
@@ -1318,11 +1326,12 @@ Folder DBHelper::loadFolder(qulonglong id, QSqlDatabase & db)
         folder.name = query.value(name).toString();
         folder.path = query.value(path).toString();
         folder.knownId = true;
-        //new 7.1
 
+        //new 7.1
         folder.setFinished(query.value(finished).toBool());
         folder.setCompleted(query.value(completed).toBool());
-        //new 8.6
+
+        //new 9.5
         if(!query.value(numChildren).isNull() && query.value(numChildren).isValid())
              folder.setNumChildren(query.value(numChildren).toInt());
         folder.setFirstChildHash(query.value(firstChildHash).toString());
@@ -1360,10 +1369,12 @@ Folder DBHelper::loadFolder(const QString &folderName, qulonglong parentId, QSql
         folder.name = query.value(name).toString();
         folder.path = query.value(path).toString();
         folder.knownId = true;
+
         //new 7.1
         folder.setFinished(query.value(finished).toBool());
         folder.setCompleted(query.value(completed).toBool());
-        //new 8.6
+
+        //new 9.5
         if(!query.value(numChildren).isNull() && query.value(numChildren).isValid())
              folder.setNumChildren(query.value(numChildren).toInt());
         folder.setFirstChildHash(query.value(firstChildHash).toString());
@@ -1487,6 +1498,9 @@ ComicInfo DBHelper::loadComicInfo(QString hash, QSqlDatabase & db)
 
     int lastTimeOpened = record.indexOf("lastTimeOpened");
 
+    int coverSizeRatio = record.indexOf("coverSizeRatio");
+    int originalCoverSize = record.indexOf("originalCoverSize");
+
 	if(findComicInfo.next())
 	{
 		comicInfo.hash = hash;
@@ -1540,8 +1554,11 @@ ComicInfo DBHelper::loadComicInfo(QString hash, QSqlDatabase & db)
 
         comicInfo.comicVineID = findComicInfo.value(comicVineID);
 
-        //new 8.6 fields
+        //new 9.5 fields
         comicInfo.lastTimeOpened = findComicInfo.value(lastTimeOpened);
+
+        comicInfo.coverSizeRatio = findComicInfo.value(coverSizeRatio);
+        comicInfo.originalCoverSize = findComicInfo.value(originalCoverSize);
         //--
 
 		comicInfo.existOnDb = true;
