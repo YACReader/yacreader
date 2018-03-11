@@ -201,14 +201,19 @@ TRANSLATIONS =    yacreader_es.ts \
                   yacreader_source.ts
 
 unix:!macx {
-#set install prefix if it's empty
+# set install prefix if it's empty
 isEmpty(PREFIX) {
   PREFIX = /usr
 }
-
-BINDIR = $$PREFIX/bin
-LIBDIR = $$PREFIX/lib
-DATADIR = $$PREFIX/share
+isEmpty(BINDIR) {
+  BINDIR = $$PREFIX/bin
+}
+isEmpty(LIBDIR) {
+  LIBDIR = $$PREFIX/lib
+}
+isEmpty(DATADIR) {
+  DATADIR = $$PREFIX/share
+}
 
 DEFINES += "LIBDIR=\\\"$$LIBDIR\\\""  "DATADIR=\\\"$$DATADIR\\\""
 

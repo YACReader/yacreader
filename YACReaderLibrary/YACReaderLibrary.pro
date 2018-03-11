@@ -276,10 +276,17 @@ unix:!macx {
 isEmpty(PREFIX) {
   PREFIX = /usr
 }
+isEmpty(BINDIR) {
+  BINDIR = $$PREFIX/bin
+}
+isEmpty(LIBDIR) {
+  LIBDIR = $$PREFIX/lib
+}
+isEmpty(DATADIR) {
+  DATADIR = $$PREFIX/share
+}
 
-BINDIR = $$PREFIX/bin
-LIBDIR = $$PREFIX/lib
-DATADIR = $$PREFIX/share
+DEFINES += "LIBDIR=\\\"$$LIBDIR\\\""  "DATADIR=\\\"$$DATADIR\\\""
 
 DEFINES += "LIBDIR=\\\"$$LIBDIR\\\""  "DATADIR=\\\"$$DATADIR\\\"" "BINDIR=\\\"$$BINDIR\\\""
 
