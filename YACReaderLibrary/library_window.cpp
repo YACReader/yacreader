@@ -1776,53 +1776,48 @@ void LibraryWindow::openComic()
 	if(!importedCovers)
 	{
         ComicDB comic = comicsModel->getComic(comicsViewsManager->comicsView->currentIndex());
-        QString path = currentPath();
         QList<ComicDB> siblings = comicsModel->getAllComics();
 
-		quint64 comicId = comic.id;
 		//TODO generate IDS for libraries...
         quint64 libraryId = libraries.getId(selectedLibrary->currentText());
-
-		//                 %1        %2      %3        NO-->%4          %5        %6        %7        %8         %9       %10
-		//Invoke YACReader comicPath comicId libraryId NO-->currentPage bookmark1 bookmark2 bookmark3 brightness contrast gamma
         bool yacreaderFound = false;
 
 #ifdef Q_OS_MAC
-        QStringList possiblePaths;
+        QStringList possiblePaths{
+            QDir::cleanPath(QCoreApplication::applicationDirPath()+"/../../../"),
+            QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation)
+        };
 
-        possiblePaths.append(QDir::cleanPath(QCoreApplication::applicationDirPath()+"/../../../"));
-        possiblePaths.append(QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation));
-        for(auto && ypath: possiblePaths)
+        for (auto && ypath: possiblePaths)
         {
             QString yacreaderPath = QDir::cleanPath(ypath + "/YACReader.app");
-            if(QFileInfo(yacreaderPath).exists())
+            if (QFileInfo(yacreaderPath).exists())
             {
                 yacreaderFound = true;
-                QStringList parameters = QStringList() << "-n" << yacreaderPath << path << (QString("--comicId=") + QString::number(comicId)) << (QString("--libraryId=") + QString::number(libraryId));
-                QProcess::startDetached("open", parameters);
+                QStringList parameters{"-n", yacreaderPath, currentPath(), QString("--comicId=%1").arg(comic.id), QString("--libraryId=%1").arg(libraryId)};
+                QProcess::startDetached(QStringLiteral("open"), parameters);
                 break;
             }
         }
 #endif
 
 #ifdef Q_OS_WIN
-        QStringList parameters = QStringList() << path << (QString("--comicId=") + QString::number(comicId)) << (QString("--libraryId=") + QString::number(libraryId));
+        QStringList parameters {currentPath(), QString("--comicId=%1").arg(comic.id), QString("--libraryId=%1").arg(libraryId)};
         yacreaderFound = QProcess::startDetached(QDir::cleanPath(QCoreApplication::applicationDirPath()), parameters);
 #endif
 
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
-        QStringList parameters = QStringList() << path << (QString("--comicId=") + QString::number(comicId)) << (QString("--libraryId=") + QString::number(libraryId));
-      	yacreaderFound = QProcess::startDetached(QString("YACReader"), parameters);
+        QStringList parameters {currentPath(), QString("--comicId=%1").arg(comic.id), QString("--libraryId=%1").arg(libraryId)};
+      	yacreaderFound = QProcess::startDetached(QStringLiteral("YACReader"), parameters);
 #endif
         if(!yacreaderFound)
         {
             #ifdef Q_OS_WIN
-            QMessageBox::critical(this,tr("YACReader not found"),tr("YACReader not found, YACReader should be installed in the same folder as YACReaderLibrary."));
+            QMessageBox::critical(this,tr("YACReader not found"),tr("YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary."));
             #else
             QMessageBox::critical(this,tr("YACReader not found"),tr("YACReader not found. There might be a problem with your YACReader installation."));
             #endif
         }
-	setCurrentComicOpened();
   }
 }
 
@@ -1832,11 +1827,6 @@ void LibraryWindow::setCurrentComicsStatusReaded(YACReaderComicReadStatus readSt
 
 void LibraryWindow::setCurrentComicReaded() {
 	this->setCurrentComicsStatusReaded(YACReader::Read);
-}
-
-void LibraryWindow::setCurrentComicOpened()
-{
-    //TODO: remove?
 }
 
 void LibraryWindow::setCurrentComicUnreaded() {
