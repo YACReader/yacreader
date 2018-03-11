@@ -23,4 +23,20 @@ QString YACReaderServerDataHelper::comicToYSFormat(const qulonglong libraryId,co
             .arg(comic.info.read?1:0);
 }
 
+static QJsonObject YACReaderServerDataHelper::comicToJSON(const qulonglong libraryId, const ComicDB & comic)
+{
+    QJsonObject json;
+
+    json["type"] = "comic";
+    json["id"] = comic.id;
+    json["file_name"] = comic.getFileName();
+    json["file_size"] = comic.getFileSize();
+    json["hash"] = comic.info.hash;
+    json["current_page"] = comic.info.currentPage;
+    json["num_pages"] = comic.info.numPages.toInt();
+    json["read"] = comic.info.read;
+
+    return json;
+}
+
 YACReaderServerDataHelper::YACReaderServerDataHelper() {}
