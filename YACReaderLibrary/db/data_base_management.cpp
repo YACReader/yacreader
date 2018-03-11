@@ -181,9 +181,10 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
                                "gamma INTEGER DEFAULT -1, "
                                //new 7.1 fields
                                "comicVineID TEXT,"
-                               //new 8.6 fields
+                               //new 9.5 fields
                                "lastTimeOpened INTEGER,"
-                               "coverSizeRatio REAL" //h/w
+                               "coverSizeRatio REAL,"
+                               "originalCoverSize STRING"//h/w
 
                                ")");
         success = success && queryComicInfo.exec();
@@ -199,7 +200,7 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
                             //new 7.1 fields
                             "finished BOOLEAN DEFAULT 0,"   //reading
                             "completed BOOLEAN DEFAULT 1,"  //collecting
-                            //new 8.6 fields
+                            //new 9.5 fields
                             "numChildren INTEGER,"
                             "firstChildHash TEXT,"
                             "customImage TEXT,"
@@ -425,7 +426,8 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 
             "lastTimeOpened = :lastTimeOpened,"
 
-             "coverSizeRatio = :coverSizeRatio"
+            "coverSizeRatio = :coverSizeRatio,"
+            "originalCoverSize = :originalCoverSize"
 
 			" WHERE hash = :hash ");
 
@@ -501,6 +503,7 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
             ":lastTimeOpened,"
 
             ":coverSizeRatio,"
+            ":originalCoverSize,"
 
 			":hash )");
 
@@ -615,6 +618,7 @@ void DataBaseManagement::bindValuesFromRecord(const QSqlRecord & record, QSqlQue
     bindString("lastTimeOpened",record,query);
 
     bindDouble("coverSizeRatio",record,query);
+    bindString("originalCoverSize",record,query);
 
     bindString("hash",record,query);
 }
@@ -727,7 +731,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
     bool pre7 = false;
     bool pre7_1 = false;
     bool pre8 = false;
-    bool pre8_6 = false;
+    bool pre9_5 = false;
 
     if(compareVersions(DataBaseManagement::checkValidDB(fullPath),"7.0.0")<0)
         pre7 = true;
@@ -735,8 +739,8 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
         pre7_1 = true;
     if(compareVersions(DataBaseManagement::checkValidDB(fullPath),"8.0.0")<0)
         pre8 = true;
-    if(compareVersions(DataBaseManagement::checkValidDB(fullPath),"8.6.0")<0)
-        pre8_6 = true;
+    if(compareVersions(DataBaseManagement::checkValidDB(fullPath),"9.5.0")<0)
+        pre9_5 = true;
 
 	QSqlDatabase db = loadDatabaseFromFile(fullPath);
 	bool returnValue = false;
@@ -790,7 +794,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
             returnValue = returnValue && createV8Tables(db);
         }
 
-        if(pre8_6)
+        if(pre9_5)
         {
             {//folder
                 QStringList columnDefs;
@@ -805,6 +809,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
                 QStringList columnDefs;
                 columnDefs << "lastTimeOpened INTEGER";
                 columnDefs << "coverSizeRatio REAL";
+                columnDefs << "originalCoverSize STRING";
                 returnValue = returnValue && addColumns("comic_info", columnDefs, db);
 
                 QSqlQuery queryIndexLastTimeOpened(db);
