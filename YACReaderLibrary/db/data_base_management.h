@@ -35,6 +35,7 @@ private:
 	QList<QString> dataBasesList;
 	static void bindString(const QString & name, const QSqlRecord & record, QSqlQuery & query);
 	static void bindInt(const QString & name, const QSqlRecord & record, QSqlQuery & query);
+    static void bindDouble(const QString & name, const QSqlRecord & record, QSqlQuery & query);
 	static void bindValuesFromRecord(const QSqlRecord & record, QSqlQuery & query);
 
     static bool addColumns(const QString & tableName, const QStringList & columnDefs, const QSqlDatabase & db);

@@ -3,6 +3,7 @@
 #include <QtCore>
 #include "library_creator.h"
 #include "check_new_version.h"
+#include "db_helper.h"
 
 
 static QString fields = 		"title ,"
@@ -181,7 +182,8 @@ bool DataBaseManagement::createTables(QSqlDatabase & database)
                                //new 7.1 fields
                                "comicVineID TEXT,"
                                //new 8.6 fields
-                               "lastTimeOpened INTEGER"
+                               "lastTimeOpened INTEGER,"
+                               "coverSizeRatio REAL" //h/w
 
                                ")");
         success = success && queryComicInfo.exec();
@@ -421,7 +423,9 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 
             "comicVineID = :comicVineID,"
 
-            "lastTimeOpened = :lastTimeOpened"
+            "lastTimeOpened = :lastTimeOpened,"
+
+             "coverSizeRatio = :coverSizeRatio"
 
 			" WHERE hash = :hash ");
 
@@ -456,6 +460,7 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 			"edited,"
             "comicVineID,"
             "lastTimeOpened,"
+            "coverSizeRatio,"
 			"hash)"
 
 			"VALUES (:title,"
@@ -494,6 +499,8 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
             ":comicVineID,"
 
             ":lastTimeOpened,"
+
+            ":coverSizeRatio,"
 
 			":hash )");
 
@@ -607,6 +614,8 @@ void DataBaseManagement::bindValuesFromRecord(const QSqlRecord & record, QSqlQue
 
     bindString("lastTimeOpened",record,query);
 
+    bindDouble("coverSizeRatio",record,query);
+
     bindString("hash",record,query);
 }
 
@@ -653,6 +662,14 @@ void DataBaseManagement::bindInt(const QString & name, const QSqlRecord & record
 	{
 		query.bindValue(":"+name,record.value(name).toInt());
 	}
+}
+
+void DataBaseManagement::bindDouble(const QString & name, const QSqlRecord & record, QSqlQuery & query)
+{
+    if(!record.value(name).isNull())
+    {
+        query.bindValue(":"+name,record.value(name).toDouble());
+    }
 }
 
 QString DataBaseManagement::checkValidDB(const QString & fullPath)
@@ -787,10 +804,21 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
             {//comic_info
                 QStringList columnDefs;
                 columnDefs << "lastTimeOpened INTEGER";
+                columnDefs << "coverSizeRatio REAL";
                 returnValue = returnValue && addColumns("comic_info", columnDefs, db);
 
                 QSqlQuery queryIndexLastTimeOpened(db);
                 returnValue = returnValue && queryIndexLastTimeOpened.exec("CREATE INDEX last_time_opened_index ON comic_info (lastTimeOpened)");
+            }
+
+            //update folders info
+            {
+                DBHelper::updateChildrenInfo(db);
+            }
+
+            //TODO udate covers info
+            {
+                //cover sizes...
             }
         }
 	}

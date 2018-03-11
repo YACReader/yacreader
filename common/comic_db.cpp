@@ -237,6 +237,9 @@ ComicInfo & ComicInfo::operator=(const ComicInfo & comicInfo)
 
     lastTimeOpened = comicInfo.lastTimeOpened;
 
+    coverSizeRatio = comicInfo.coverSizeRatio;
+    originalCoverSize = comicInfo.originalCoverSize;
+
 	return *this;
 }
 
@@ -551,6 +554,9 @@ QDataStream &operator<<(QDataStream & stream, const ComicInfo & comicInfo)
 
     stream << comicInfo.lastTimeOpened;
 
+    stream << comicInfo.coverSizeRatio;
+    stream << comicInfo.originalCoverSize;
+
 	return stream;
 }
 
@@ -608,6 +614,9 @@ QDataStream &operator>>(QDataStream & stream, ComicInfo & comicInfo)
     stream >> comicInfo.comicVineID;
 
     stream >> comicInfo.lastTimeOpened;
+
+    stream >> comicInfo.coverSizeRatio;
+    stream >> comicInfo.originalCoverSize;
 	
 	return stream;
 }

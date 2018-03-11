@@ -309,12 +309,14 @@ void LibraryCreator::insertComic(const QString & relativePath,const QFileInfo & 
 	QString hash = QString(crypto.result().toHex().constData()) + QString::number(fileInfo.size());
 	ComicDB comic = DBHelper::loadComic(fileInfo.fileName(),relativePath,hash,_database);
 	int numPages = 0;
+    QPair<int,int> originalCoverSize = {0,0};
 	bool exists = checkCover(hash);
 	if(! ( comic.hasCover() && exists))
 	{
 		ThumbnailCreator tc(QDir::cleanPath(fileInfo.absoluteFilePath()),_target+"/covers/"+hash+".jpg",comic.info.coverPage.toInt());
 		tc.create();
 		numPages = tc.getNumPages();
+        originalCoverSize = tc.getOriginalCoverSize();
 		if (numPages > 0)
 		{
 			emit(comicAdded(relativePath,_target+"/covers/"+hash+".jpg"));
@@ -326,6 +328,12 @@ void LibraryCreator::insertComic(const QString & relativePath,const QFileInfo & 
 		//en este punto sabemos que todos los folders que hay en _currentPath, deberían estar añadidos a la base de datos
 		insertFolders();
 		comic.info.numPages = numPages;
+        if(originalCoverSize.first > 0)
+        {
+            comic.info.originalCoverSize = QString("%1x%2").arg(originalCoverSize.first, originalCoverSize.second);
+            comic.info.coverSizeRatio = static_cast<float>(originalCoverSize.first) / originalCoverSize.second;
+        }
+
 		comic.parentId = _currentPathFolders.last().id;
 		DBHelper::insert(&comic,_database);
 	}
@@ -640,6 +648,7 @@ void ThumbnailCreator::create()
 			QImage p = pdfComic->page(_coverPage-1)->renderToImage(72,72);
 #endif //
 			_cover = p;
+            _coverSize = QPair<int,int>(p.width(), p.height());
 			if(_target!="")
 			{
 				QImage scaled;
@@ -651,7 +660,7 @@ void ThumbnailCreator::create()
 				{
 					scaled = p.scaledToWidth(480,Qt::SmoothTransformation);
 				}
-					scaled.save(_target,0,75);
+                scaled.save(_target,0,75);
 			}
 			else if(_target!="")
 			{
@@ -717,6 +726,7 @@ void ThumbnailCreator::create()
 			QImage p;
 			if(p.loadFromData(archive.getRawDataAtIndex(index)))
 			{
+                _coverSize = QPair<int,int>(p.width(), p.height());
 				QImage scaled;
 				if(p.width()>p.height()) //landscape??
 				{

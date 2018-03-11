@@ -84,6 +84,8 @@ public:
 	QImage cover;
 
     QVariant lastTimeOpened;//integer/date
+    QVariant coverSizeRatio;//h/w
+    QVariant originalCoverSize; //string "WxH"
 
     /*void setTitle(QVariant value);
 
@@ -189,6 +191,9 @@ public:
     Q_PROPERTY(QImage cover MEMBER cover CONSTANT)
 
     Q_PROPERTY(QVariant lastTimeOpened MEMBER lastTimeOpened CONSTANT)
+
+    Q_PROPERTY(QVariant coverSizeRatio MEMBER coverSizeRatio CONSTANT)
+    Q_PROPERTY(QVariant originalCoverSize MEMBER originalCoverSize CONSTANT)
 
     //-new properties, not loaded from the DB automatically
     bool isFavorite;
