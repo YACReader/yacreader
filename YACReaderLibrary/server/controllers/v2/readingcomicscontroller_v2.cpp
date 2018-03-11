@@ -35,5 +35,7 @@ void ReadingComicsControllerV2::serviceContent(const int &library, HttpResponse 
         comics.append(YACReaderServerDataHelper::comicToJSON(library, comic));
     }
 
-    response.write(comics.toJson());
+    QJsonDocument output(comics);
+
+    response.write(output.toJson());
 }
