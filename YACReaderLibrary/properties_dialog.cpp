@@ -757,15 +757,24 @@ void PropertiesDialog::save()
 
 		itr->info.edited = edited;
 	}
-	updateComics();
+
 	if(comics.count() == 1)
 	{
 		if(coverChanged)// && coverPageEdit->text().toInt() != *comics[0].info.coverPage)
 		{
             ThumbnailCreator tc(basePath+comics[0].path,basePath+"/.yacreaderlibrary/covers/"+comics[0].info.hash+".jpg", comics[0].info.coverPage.toInt());
 			tc.create();
+
+            if(tc.getOriginalCoverSize().second > 0)
+            {
+                comics[0].info.originalCoverSize = QString("%1x%2").arg(tc.getOriginalCoverSize().first).arg(tc.getOriginalCoverSize().second);
+                comics[0].info.coverSizeRatio = static_cast<float>(tc.getOriginalCoverSize().first) / tc.getOriginalCoverSize().second;
+            }
 		}
 	}
+
+    updateComics();
+
 	close();
 	emit(accepted());
 }
