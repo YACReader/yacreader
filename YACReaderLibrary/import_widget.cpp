@@ -42,8 +42,6 @@ YACReaderActivityIndicatorWidget::YACReaderActivityIndicatorWidget(QWidget * par
 	normal->setPixmap(line);
 	glow->setPixmap(glowLine);
 
-	
-
 	QHBoxLayout * layout = new QHBoxLayout();
 
 	layout->addWidget(normal,0,Qt::AlignVCenter);
@@ -155,6 +153,7 @@ ImportWidget::ImportWidget(QWidget *parent) :
 
 	QPushButton * stop = new QPushButton(tr("stop"));
 	stop->setSizePolicy(QSizePolicy::Maximum,QSizePolicy::Maximum);
+    stopButton = stop;
 
 	QVBoxLayout * layout = new QVBoxLayout(this);
 	QHBoxLayout * buttonLayout = new QHBoxLayout();
@@ -192,7 +191,7 @@ ImportWidget::ImportWidget(QWidget *parent) :
 	layout->addLayout(buttonLayout,0);
 	layout->addSpacing(10);
 	layout->addStretch();
-	portadasLabel = new QLabel("<font color=\"#565959\">"+tr("Some of the comics being added...")+"</font>");
+    coversLabel = new QLabel("<font color=\"#565959\">"+tr("Some of the comics being added...")+"</font>");
 	
 	hideButton = new QToolButton(this);
 	hideButton->setFixedSize(25,18);
@@ -202,7 +201,7 @@ ImportWidget::ImportWidget(QWidget *parent) :
 
 	connect(hideButton,SIGNAL(toggled(bool)),this,SLOT(showCovers(bool)));
 
-	layout->addWidget(portadasLabel,0,Qt::AlignHCenter);
+    layout->addWidget(coversLabel,0,Qt::AlignHCenter);
 	layout->addWidget(coversViewContainer);
 	//layout->addStretch();
 	layout->addWidget(currentComicLabel,0,Qt::AlignHCenter);
@@ -346,6 +345,11 @@ void ImportWidget::setImportLook()
 	iconLabel->setPixmap(QPixmap(":/images/importingIcon.png"));
 	text->setText("<font color=\"#495252\">"+tr("Importing comics")+"</font>");
 	textDescription->setText("<font color=\"#565959\">"+tr("<p>YACReaderLibrary is now creating a new library.</p><p>Create a library could take several minutes. You can stop the process and update the library later for completing the task.</p>")+"</font>");
+
+    stopButton->setVisible(true);
+    coversLabel->setVisible(true);
+    coversViewContainer->setVisible(true);
+    hideButton->setVisible(true);
 }
 
 void ImportWidget::setUpdateLook()
@@ -353,6 +357,23 @@ void ImportWidget::setUpdateLook()
 	iconLabel->setPixmap(QPixmap(":/images/updatingIcon.png"));
 	text->setText("<font color=\"#495252\">"+tr("Updating the library")+"</font>");
 	textDescription->setText("<font color=\"#565959\">"+tr("<p>The current library is being updated. For faster updates, please, update your libraries frequently.</p><p>You can stop the process and continue updating this library later.</p>")+"</font>");
+
+    stopButton->setVisible(true);
+    coversLabel->setVisible(true);
+    coversViewContainer->setVisible(true);
+    hideButton->setVisible(true);
+}
+
+void ImportWidget::setUpgradeLook()
+{
+    iconLabel->setPixmap(QPixmap(":/images/updatingIcon.png"));
+    text->setText("<font color=\"#495252\">"+tr("Upgrading the library")+"</font>");
+    textDescription->setText("<font color=\"#565959\">"+tr("<p>The current library is being upgraded, please wait.</p>")+"</font>");
+
+    stopButton->setVisible(false);
+    coversLabel->setVisible(false);
+    coversViewContainer->setVisible(false);
+    hideButton->setVisible(false);
 }
 
 void ImportWidget::clearScene()
@@ -363,7 +384,7 @@ void ImportWidget::clearScene()
 
 void ImportWidget::showCovers(bool hide)
 {
-	portadasLabel->setHidden(hide);
+    coversLabel->setHidden(hide);
     coversViewContainer->setHidden(hide);
 }
 
