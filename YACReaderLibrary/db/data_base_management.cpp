@@ -5,6 +5,7 @@
 #include "check_new_version.h"
 #include "db_helper.h"
 
+#include "QsLog.h"
 
 static QString fields = 		"title ,"
 
@@ -324,7 +325,7 @@ void DataBaseManagement::exportComicsInfo(QString source, QString dest)
 	//QSqlDatabase sourceDB = loadDatabase(source);
 	QSqlDatabase destDB = loadDatabaseFromFile(dest);
 	//sourceDB.open();
-	{
+    {
 	QSqlQuery attach(destDB);
 	attach.prepare("ATTACH DATABASE '"+QDir().toNativeSeparators(dest) +"' AS dest;");
 	//attach.bindValue(":dest",QDir().toNativeSeparators(dest));
@@ -633,8 +634,12 @@ bool DataBaseManagement::addColumns(const QString &tableName, const QStringList 
         QSqlQuery alterTable(db);
         alterTable.prepare(sql.arg(tableName).arg(columnDef));
         //alterTableComicInfo.bindValue(":column_def",columnDef);
-        alterTable.exec();
-        returnValue = returnValue && (alterTable.numRowsAffected() > 0);
+        bool exec = alterTable.exec();
+        returnValue = returnValue && exec;
+        if (!exec) {
+            QLOG_ERROR() << alterTable.lastError().text();
+        }
+        //returnValue = returnValue && (alterTable.numRowsAffected() > 0);
     }
 
     return returnValue;
@@ -726,12 +731,14 @@ int DataBaseManagement::compareVersions(const QString & v1, const QString v2)
 	return 0;
 }
 
-bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
+bool DataBaseManagement::updateToCurrentVersion(const QString & path)
 {
     bool pre7 = false;
     bool pre7_1 = false;
     bool pre8 = false;
     bool pre9_5 = false;
+
+    QString fullPath = path + "/library.ydb";
 
     if(compareVersions(DataBaseManagement::checkValidDB(fullPath),"7.0.0")<0)
         pre7 = true;
@@ -752,7 +759,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
 		updateVersion.bindValue(":version",VERSION);
 		updateVersion.exec();
 
-		if(updateVersion.numRowsAffected() > 0)
+        if(updateVersion.numRowsAffected() > 0)
             returnValue = true;
 
         if(pre7) //TODO: execute only if previous version was < 7.0
@@ -769,7 +776,8 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
 					   << "contrast INTEGER DEFAULT -1"
 					   << "gamma INTEGER DEFAULT -1";
 
-            returnValue = returnValue && addColumns("comic_info", columnDefs, db);
+            bool successAddingColumns = addColumns("comic_info", columnDefs, db);
+            returnValue = returnValue && successAddingColumns;
 		}
 		//TODO update hasBeenOpened value
 
@@ -779,19 +787,22 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
                 QStringList columnDefs;
                 columnDefs << "finished BOOLEAN DEFAULT 0"
                            << "completed BOOLEAN DEFAULT 1";
-                returnValue = returnValue && addColumns("folder", columnDefs, db);
+                bool successAddingColumns = addColumns("folder", columnDefs, db);
+                returnValue = returnValue && successAddingColumns;
             }
 
             {//comic_info
                 QStringList columnDefs;
                 columnDefs << "comicVineID TEXT DEFAULT NULL";
-                returnValue = returnValue && addColumns("comic_info", columnDefs, db);
+                bool successAddingColumns = addColumns("comic_info", columnDefs, db);
+                returnValue = returnValue && successAddingColumns;
             }
         }
 
         if(pre8)
         {
-            returnValue = returnValue && createV8Tables(db);
+            bool successCreatingNewTables = createV8Tables(db);
+            returnValue = returnValue && successCreatingNewTables;
         }
 
         if(pre9_5)
@@ -802,18 +813,21 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
                 columnDefs << "numChildren INTEGER";
                 columnDefs << "firstChildHash TEXT";
                 columnDefs << "customImage TEXT";
-                returnValue = returnValue && addColumns("folder", columnDefs, db);
+                bool successAddingColumns = addColumns("folder", columnDefs, db);
+                returnValue = returnValue && successAddingColumns;
             }
 
             {//comic_info
                 QStringList columnDefs;
                 columnDefs << "lastTimeOpened INTEGER";
                 columnDefs << "coverSizeRatio REAL";
-                columnDefs << "originalCoverSize STRING";
-                returnValue = returnValue && addColumns("comic_info", columnDefs, db);
+                columnDefs << "originalCoverSize TEXT";
+                bool successAddingColumns = addColumns("comic_info", columnDefs, db);
+                returnValue = returnValue && successAddingColumns;
 
                 QSqlQuery queryIndexLastTimeOpened(db);
-                returnValue = returnValue && queryIndexLastTimeOpened.exec("CREATE INDEX last_time_opened_index ON comic_info (lastTimeOpened)");
+                bool successCreatingIndex = queryIndexLastTimeOpened.exec("CREATE INDEX last_time_opened_index ON comic_info (lastTimeOpened)");
+                returnValue = returnValue && successCreatingIndex;
             }
 
             //update folders info
@@ -821,9 +835,29 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & fullPath)
                 DBHelper::updateChildrenInfo(db);
             }
 
-            //TODO udate covers info
             {
-                //cover sizes...
+                QSqlQuery selectQuery(db);
+                selectQuery.prepare("SELECT id, hash FROM comic_info");
+                selectQuery.exec();
+
+                db.transaction();
+
+                QSqlQuery updateCoverInfo(db);
+                updateCoverInfo.prepare("UPDATE comic_info SET coverSizeRatio = :coverSizeRatio WHERE id = :id");
+
+                QImageReader thumbnail;
+                while (selectQuery.next())
+                {
+                    thumbnail.setFileName(path % "/covers/" % selectQuery.value(1).toString() % ".jpg");
+
+                    float coverSizeRatio = static_cast<float>(thumbnail.size().width()) / thumbnail.size().height();
+                    updateCoverInfo.bindValue(":coverSizeRatio", coverSizeRatio);
+                    updateCoverInfo.bindValue(":id", selectQuery.value(0));
+
+                    updateCoverInfo.exec();
+                }
+
+                db.commit();
             }
         }
 	}
