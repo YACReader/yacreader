@@ -328,9 +328,9 @@ void LibraryCreator::insertComic(const QString & relativePath,const QFileInfo & 
 		//en este punto sabemos que todos los folders que hay en _currentPath, deberían estar añadidos a la base de datos
 		insertFolders();
 		comic.info.numPages = numPages;
-        if(originalCoverSize.first > 0)
+        if(originalCoverSize.second > 0)
         {
-            comic.info.originalCoverSize = QString("%1x%2").arg(originalCoverSize.first, originalCoverSize.second);
+            comic.info.originalCoverSize = QString("%1x%2").arg(originalCoverSize.first).arg(originalCoverSize.second);
             comic.info.coverSizeRatio = static_cast<float>(originalCoverSize.first) / originalCoverSize.second;
         }
 
