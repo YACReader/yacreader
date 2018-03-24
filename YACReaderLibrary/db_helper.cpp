@@ -699,7 +699,7 @@ void DBHelper::updateReadingRemoteProgress(const ComicInfo &comicInfo, QSqlDatab
                             "read = :read, "
                             "currentPage = :currentPage, "
                             "hasBeenOpened = :hasBeenOpened, "
-                            "lastTimeOpened = :lastTimeOpened"
+                            "lastTimeOpened = :lastTimeOpened, "
                             "rating = :rating"
                             " WHERE id = :id ");
 
