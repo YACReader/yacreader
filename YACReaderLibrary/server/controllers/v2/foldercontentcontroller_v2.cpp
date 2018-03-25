@@ -25,7 +25,7 @@ FolderContentControllerV2::FolderContentControllerV2() {}
 
 void FolderContentControllerV2::service(HttpRequest& request, HttpResponse& response)
 {
-    response.setHeader("Content-Type", "text/plain; charset=utf-8");
+    response.setHeader("Content-Type", "application/json");
 
     QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
     QStringList pathElements = path.split('/');
@@ -34,13 +34,12 @@ void FolderContentControllerV2::service(HttpRequest& request, HttpResponse& resp
 
     serviceContent(libraryId, parentId, response);
 
+    response.setStatus(200,"OK");
     response.write("",true);
 }
 
 void FolderContentControllerV2::serviceContent(const int &library, const qulonglong &folderId, HttpResponse &response)
 {
-    //clock_t begin = clock();
-
     QList<LibraryItem *> folderContent = DBHelper::getFolderSubfoldersFromLibrary(library,folderId);
     QList<LibraryItem *> folderComics = DBHelper::getFolderComicsFromLibrary(library,folderId);
 
@@ -49,6 +48,8 @@ void FolderContentControllerV2::serviceContent(const int &library, const qulongl
 
     folderComics.clear();
 
+    QJsonArray items;
+
     ComicDB * currentComic;
     Folder * currentFolder;
     for(QList<LibraryItem *>::const_iterator itr = folderContent.constBegin();itr!=folderContent.constEnd();itr++)
@@ -56,17 +57,16 @@ void FolderContentControllerV2::serviceContent(const int &library, const qulongl
         if((*itr)->isDir())
         {
             currentFolder = (Folder *)(*itr);
-            response.write(YACReaderServerDataHelper::folderToYSFormat(library, *currentFolder).toUtf8());
+            items.append(YACReaderServerDataHelper::folderToJSON(library, *currentFolder));
         }
         else
         {
             currentComic = (ComicDB *)(*itr);
-            response.write(YACReaderServerDataHelper::comicToYSFormat(library, *currentComic).toUtf8());
+            items.append(YACReaderServerDataHelper::comicToJSON(library, *currentComic));
         }
     }
 
-    /*clock_t end = clock();
-    double msecs = double(end - begin);
+    QJsonDocument output(items);
 
-    response.write(QString("%1ms").arg(msecs).toUtf8());*/
+    response.write(output.toJson());
 }
