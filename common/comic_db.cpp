@@ -131,7 +131,7 @@ QString ComicDB::getFileName() const
 
 QString ComicDB::getTitleOrFileName() const
 {
-    if(!info.title.isNull() && info.title.toString().isEmpty())
+    if(!info.title.isNull() && !info.title.toString().isEmpty())
         return info.title.toString();
 	else
 		return QFileInfo(path).fileName();
