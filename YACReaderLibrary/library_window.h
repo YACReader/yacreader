@@ -10,6 +10,8 @@
 
 #include "yacreader_navigation_controller.h"
 
+#include <future>
+
 #ifdef Q_OS_MAC
     #include "yacreader_macosx_toolbar.h"
 #endif
@@ -284,6 +286,9 @@ protected:
 public:
     LibraryWindow();
 
+signals:
+    void libraryUpgraded(const QString & libraryName);
+    void errorUpgradingLibrary(const QString & path);
 public slots:
     void loadLibrary(const QString & path);
     void selectSubfolder(const QModelIndex & mi, int child);
@@ -376,12 +381,15 @@ public slots:
     void setToolbarTitle(const QModelIndex & modelIndex);
     void saveSelectedCoversTo();
     void checkMaxNumLibraries();
+    void showErrorUpgradingLibrary(const QString & path);
 
 private:
     //fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
     Qt::WindowFlags previousWindowFlags;
     QPoint previousPos;
     QSize previousSize;
+
+    std::future<void> upgradeLibraryFuture;
 };
 
 #endif

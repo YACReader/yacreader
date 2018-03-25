@@ -5,8 +5,8 @@
 
 #include "QsLog.h"
 
-ComicsRemover::ComicsRemover(QModelIndexList & il, QList<QString> &  ps, QObject *parent)
-    :QObject(parent),indexList(il), paths(ps)
+ComicsRemover::ComicsRemover(QModelIndexList & il, QList<QString> &  ps, qulonglong parentId, QObject *parent)
+    :QObject(parent),indexList(il), paths(ps), parentId(parentId)
 {
 }
 
@@ -29,6 +29,7 @@ void ComicsRemover::process()
 	}
 
 	emit finished();
+    emit removedItemsFromFolder(parentId);
 }
 
 
