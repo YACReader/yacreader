@@ -114,6 +114,8 @@ class QToolButton;
 		void updateCoverPageNumberLabel(int n);
 
 		bool coverChanged;
+        float coverSizeRatio;
+        QString originalCoverSize;
 
 	public:
 		PropertiesDialog(QWidget * parent = 0);
