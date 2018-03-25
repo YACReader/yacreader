@@ -23,12 +23,27 @@ QString YACReaderServerDataHelper::comicToYSFormat(const qulonglong libraryId,co
             .arg(comic.info.read?1:0);
 }
 
+QJsonObject YACReaderServerDataHelper::folderToJSON(const qulonglong libraryId, const Folder & folder)
+{
+    QJsonObject json;
+
+    json["type"] = "folder";
+    json["id"] = QString::number(folder.id);
+    json["library_id"] = QString::number(libraryId);
+    json["folder_name"] = folder.name;
+    json["num_children"] = QString::number(folder.getNumChildren());
+    json["first_comic_hash"] = folder.getFirstChildHash();
+
+    return json;
+}
+
 QJsonObject YACReaderServerDataHelper::comicToJSON(const qulonglong libraryId, const ComicDB & comic)
 {
     QJsonObject json;
 
     json["type"] = "comic";
     json["id"] = QString::number(comic.id);
+    json["library_id"] = QString::number(libraryId);
     json["file_name"] = comic.name;
     json["file_size"] = QString::number(comic.getFileSize());
     json["hash"] = comic.info.hash;
