@@ -1782,11 +1782,9 @@ void LibraryWindow::openComic()
         quint64 libraryId = libraries.getId(selectedLibrary->currentText());
         bool yacreaderFound = false;
 
-#ifdef Q_OS_MAC
-        QStringList possiblePaths{
-            QDir::cleanPath(QCoreApplication::applicationDirPath()+"/../../../"),
-            QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation)
-        };
+#ifdef Q_OS_MACOS
+        QStringList possiblePaths {QDir::cleanPath(QCoreApplication::applicationDirPath()+"/../../../")};
+        possiblePaths += QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation);
 
         for (auto && ypath: possiblePaths)
         {
@@ -1794,8 +1792,8 @@ void LibraryWindow::openComic()
             if (QFileInfo(yacreaderPath).exists())
             {
                 yacreaderFound = true;
-                QStringList parameters{"-n", yacreaderPath, currentPath(), QString("--comicId=%1").arg(comic.id), QString("--libraryId=%1").arg(libraryId)};
-                QProcess::startDetached(QStringLiteral("open"), parameters);
+                QStringList parameters {"-n", yacreaderPath, "--args", currentPath(), QString("--comicId=%1").arg(comic.id), QString("--libraryId=%1").arg(libraryId)};
+                QProcess::startDetached("open", parameters);
                 break;
             }
         }
