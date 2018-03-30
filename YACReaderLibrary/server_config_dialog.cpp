@@ -321,7 +321,11 @@ void ServerConfigDialog::updatePort()
 
 QrEncoder::QrEncoder()
 {
+#ifdef Q_OS_MACOS
+    QLibrary encoder(QCoreApplication::applicationDirPath() + "/utils/libqrencode.dylib");
+#else
     QLibrary encoder("qrencode");
+#endif
     QRcode_encodeString8bit = (_QRcode_encodeString8bit) encoder.resolve("QRcode_encodeString8bit");
     QRcode_free = (_QRcode_free) encoder.resolve("QRcode_free");
 }
