@@ -31,7 +31,7 @@ QJsonObject YACReaderServerDataHelper::folderToJSON(const qulonglong libraryId, 
     json["id"] = QString::number(folder.id);
     json["library_id"] = QString::number(libraryId);
     json["folder_name"] = folder.name;
-    json["num_children"] = QString::number(folder.getNumChildren());
+    json["num_children"] = folder.getNumChildren();
     json["first_comic_hash"] = folder.getFirstChildHash();
 
     return json;
