@@ -13,9 +13,15 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Remove legacy OpenGL flow needed for Qt 5.3 compatibility
 * Improve commandline handling
 
+### YACReader
+* Slightly improved multihread handling (goodbye thread pingpong)
+
 ### YACReaderLibrary
 * Fix system log functions
 * Add tray icon support
+* Replace Qrencode executables with dynamic loaded library
+* Add prebuilt qrencode libraries for win and mac
+* Update Qrencode to version 4.0.0
 
 ## 9.0.0 (2018-2-18)
 
