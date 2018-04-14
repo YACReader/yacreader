@@ -127,11 +127,13 @@ public:
 
     enum Roles {
         FinishedRole = Qt::UserRole + 1,
-        CompletedRole
+        CompletedRole,
+        IdRole
     };
 
 public slots:
     void deleteFolder(const QModelIndex & mi);
+    void updateFolderChildrenInfo(qulonglong folderId);
 
 private:
 	void setupModelData( QSqlQuery &sqlquery, FolderItem *parent);

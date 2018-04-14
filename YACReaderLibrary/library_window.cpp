@@ -19,6 +19,8 @@
 
 #include <iterator>
 #include <typeinfo>
+#include <thread>
+#include <future>
 
 #include "data_base_management.h"
 #include "yacreader_global.h"
@@ -1124,6 +1126,15 @@ void LibraryWindow::createConnections()
 
     //save covers
     connect(saveCoversToAction,SIGNAL(triggered()),this,SLOT(saveSelectedCoversTo()));
+
+    //upgrade library
+    connect(this, SIGNAL(libraryUpgraded(QString)), this, SLOT(loadLibrary(QString)), Qt::QueuedConnection);
+    connect(this, SIGNAL(errorUpgradingLibrary(QString)), this, SLOT(showErrorUpgradingLibrary(QString)), Qt::QueuedConnection);
+}
+
+void LibraryWindow::showErrorUpgradingLibrary(const QString & path)
+{
+    QMessageBox::critical(this,tr("Upgrade failed"), tr("There were errors during library upgrade in: ") + path+"/library.ydb");
 }
 
 void LibraryWindow::loadLibrary(const QString & name)
@@ -1139,29 +1150,39 @@ void LibraryWindow::loadLibrary(const QString & name)
 		if(d.exists(path) && d.exists(path+"/library.ydb") && (dbVersion = DataBaseManagement::checkValidDB(path+"/library.ydb")) != "") //si existe en disco la biblioteca seleccionada, y es válida..
 		{
 			int comparation = DataBaseManagement::compareVersions(dbVersion,VERSION);
-			bool updated = false;
-			if(comparation < 0)
-				{
-					int ret = QMessageBox::question(this,tr("Update needed"),tr("This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?"),QMessageBox::Yes,QMessageBox::No);
-					if(ret == QMessageBox::Yes)
-					{
-						updated = DataBaseManagement::updateToCurrentVersion(path+"/library.ydb");
-						if(!updated)
-							QMessageBox::critical(this,tr("Update failed"), tr("The current library can't be udpated. Check for write write permissions on: ") + path+"/library.ydb");
-					}
-					else
-                    {
-                        comicsViewsManager->comicsView->setModel(NULL);
-						foldersView->setModel(NULL);
-                        listsView->setModel(NULL);
-						disableAllActions();//TODO comprobar que se deben deshabilitar
-						//será possible renombrar y borrar estas bibliotecas
-						renameLibraryAction->setEnabled(true);
-						removeLibraryAction->setEnabled(true);
-					}
-				}
 
-			if(comparation == 0 || updated) //en caso de que la versión se igual que la actual
+            if(comparation < 0)
+            {
+                int ret = QMessageBox::question(this,tr("Update needed"),tr("This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?"),QMessageBox::Yes,QMessageBox::No);
+                if(ret == QMessageBox::Yes)
+                {
+                    importWidget->setUpgradeLook();
+                    showImportingWidget();
+
+                    upgradeLibraryFuture = std::async(std::launch::async, [this, name, path] {
+                        bool updated = DataBaseManagement::updateToCurrentVersion(path);
+
+                        if(!updated)
+                            emit errorUpgradingLibrary(path);
+
+                        emit libraryUpgraded(name);
+                    });
+
+                    return;
+                }
+                else
+                {
+                    comicsViewsManager->comicsView->setModel(NULL);
+                    foldersView->setModel(NULL);
+                    listsView->setModel(NULL);
+                    disableAllActions();//TODO comprobar que se deben deshabilitar
+                    //será possible renombrar y borrar estas bibliotecas
+                    renameLibraryAction->setEnabled(true);
+                    removeLibraryAction->setEnabled(true);
+                }
+            }
+
+            if(comparation == 0) //en caso de que la versión se igual que la actual
 			{
                 foldersModel->setupModelData(path);
                 foldersModelProxy->setSourceModel(foldersModel);
@@ -1242,7 +1263,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 
 				if(d.exists(path+"/library.ydb"))
 				{
-					QSqlDatabase db = DataBaseManagement::loadDatabase(path);
+                    QSqlDatabase db = DataBaseManagement::loadDatabase(path);
 					manageOpeningLibraryError(db.lastError().databaseText() + "-" + db.lastError().driverText());
 					//será possible renombrar y borrar estas bibliotecas
 					renameLibraryAction->setEnabled(true);
@@ -2487,7 +2508,7 @@ void LibraryWindow::deleteComicsFromDisk()
             QLOG_TRACE() << comic.parentId;
         }
 
-        ComicsRemover * remover = new ComicsRemover(indexList,paths);
+        ComicsRemover * remover = new ComicsRemover(indexList,paths,comics.at(0).parentId);
         QThread * thread = NULL;
 
         thread = new QThread(this);
@@ -2500,6 +2521,8 @@ void LibraryWindow::deleteComicsFromDisk()
         connect(remover, SIGNAL(remove(int)), comicsModel, SLOT(remove(int)));
         connect(remover, SIGNAL(removeError()),this,SLOT(setRemoveError()));
         connect(remover, SIGNAL(finished()), comicsModel, SLOT(finishTransaction()));
+        connect(remover, SIGNAL(finished()), comicsModel, SLOT(finishTransaction()));
+        connect(remover, SIGNAL(removedItemsFromFolder(qulonglong)), foldersModel, SLOT(updateFolderChildrenInfo(qulonglong)));
 
         connect(remover, SIGNAL(finished()),this,SLOT(checkEmptyFolder()));
         connect(remover, SIGNAL(finished()),this,SLOT(checkRemoveError()));

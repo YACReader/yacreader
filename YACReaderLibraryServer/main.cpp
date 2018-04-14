@@ -13,6 +13,8 @@
 
 #include "console_ui_library_creator.h"
 
+#include <iostream>
+
 #include "QsLog.h"
 #include "QsLogDest.h"
 
@@ -64,12 +66,19 @@ int main( int argc, char ** argv )
     QCommandLineParser parser;
     parser.setApplicationDescription(QCoreApplication::tr("\nYACReaderLibraryServer is the headless (no gui) version of YACReaderLibrary"));
     parser.addHelpOption();
-    parser.addVersionOption();
+    const QCommandLineOption versionOption = parser.addVersionOption();
     parser.addPositionalArgument("command", "The command to execute. [start, create-library, update-library, add-library, remove-library, list-libraries]");
     parser.parse(app.arguments());
 
     const QStringList args = parser.positionalArguments();
     const QString command = args.isEmpty() ? QString() : args.first();
+
+    if(parser.isSet(versionOption))
+    {
+        qout << "YACReaderLibraryServer" << " " << VERSION << endl;
+
+        return 0;
+    }
 
     if(command == "start")
     {
