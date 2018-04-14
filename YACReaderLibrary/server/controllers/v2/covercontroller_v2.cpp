@@ -47,7 +47,7 @@ void CoverControllerV2::service(HttpRequest& request, HttpResponse& response)
 	QImage img(libraries.getPath(libraryName)+"/.yacreaderlibrary/covers/"+fileName);
 	if (!img.isNull()) {
 
-        int width = 80, height = 120;
+        /*int width = 80, height = 120;
         if(ySession->getDisplayType()=="@2x")
         {
 			width = 160;
@@ -72,11 +72,11 @@ void CoverControllerV2::service(HttpRequest& request, HttpResponse& response)
              else
                 p.drawImage(0,0,QImage(":/images/f_overlayed.png"));
         }
-
+*/
 		QByteArray ba;
 		QBuffer buffer(&ba);
 		buffer.open(QIODevice::WriteOnly);
-        destImg.save(&buffer, "JPG");
+        img.save(&buffer, "JPG");
 		response.write(ba,true);
 	}
 	//DONE else, hay que devolver un 404
