@@ -78,6 +78,7 @@
 		QString _target;
 		QString _currentName;
 		int _numPages;
+        QPair<int,int> _coverSize;
         QImage _cover;
 		int _coverPage;
 		static bool crash;
@@ -86,6 +87,7 @@
 		void create();		
         int getNumPages(){return _numPages;}
         QPixmap getCover(){return QPixmap::fromImage(_cover);}
+        QPair<int,int> getOriginalCoverSize(){return _coverSize;}
 	signals:
 		void openingError(QProcess::ProcessError error);
 
