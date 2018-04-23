@@ -43,7 +43,8 @@ HEADERS += \
     $$PWD/controllers/v2/favoritescontroller_v2.h \
     $$PWD/controllers/v2/readingcomicscontroller_v2.h \
     $$PWD/controllers/v2/readinglistscontroller_v2.h \
-    $$PWD/controllers/v2/readinglistcontentcontroller_v2.h
+    $$PWD/controllers/v2/readinglistcontentcontroller_v2.h \
+    $$PWD/controllers/v2/comicfullinfocontroller_v2.h
 
 
 SOURCES += \
@@ -81,7 +82,8 @@ SOURCES += \
     $$PWD/controllers/v2/favoritescontroller_v2.cpp \
     $$PWD/controllers/v2/readingcomicscontroller_v2.cpp \
     $$PWD/controllers/v2/readinglistscontroller_v2.cpp \
-    $$PWD/controllers/v2/readinglistcontentcontroller_v2.cpp
+    $$PWD/controllers/v2/readinglistcontentcontroller_v2.cpp \
+    $$PWD/controllers/v2/comicfullinfocontroller_v2.cpp
 	
 
 include(lib/logging/logging.pri)

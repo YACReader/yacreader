@@ -11,8 +11,9 @@ public:
     static QString folderToYSFormat(const qulonglong libraryId, const Folder & folder);
     static QString comicToYSFormat(const qulonglong libraryId, const ComicDB & comic);
 
-    static QJsonObject folderToJSON(const qulonglong libraryId, const Folder & folder);
+    static QJsonObject folderToJSON(const qulonglong libraryId, const Folder & folder);    
     static QJsonObject comicToJSON(const qulonglong libraryId, const ComicDB & comic);
+    static QJsonObject fullComicToJSON(const qulonglong libraryId, const ComicDB & comic);
 
 private:
     YACReaderServerDataHelper();
