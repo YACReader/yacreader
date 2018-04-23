@@ -5,6 +5,7 @@
 
 #include <QModelIndex>
 
+#include "comic_db.h"
 
 
 class QAbstractListModel;
@@ -15,7 +16,6 @@ class QQuickView;
 class YACReaderToolBarStretch;
 class YACReaderComicsSelectionHelper;
 class YACReaderComicInfoHelper;
-
 
 
 class GridComicsView : public ComicsView
@@ -36,12 +36,14 @@ public:
     void enableFilterMode(bool enabled);
     QSize sizeHint();
     QByteArray getMimeDataFromSelection();
+    void updateCurrentComicView();
 
 public slots:
     //ComicsView
     void setShowMarks(bool show);
     void selectAll();
     void selectIndex(int index);
+    void triggerOpenCurrentComic();
 
     void updateBackgroundConfig();
 
@@ -68,6 +70,13 @@ protected slots:
 
     void dummyUpdater(); //TODO remove this
 
+    void setCurrentComicIfNeeded();
+
+    void resetScroll();
+
+signals:
+    void onScrollToOrigin();
+
 private:
     QSettings * settings;
     QToolBar * toolbar;
@@ -79,8 +88,12 @@ private:
     QAction * showInfoAction;
     QAction * showInfoSeparatorAction;
 
+    boolean filterEnabled;
+
     YACReaderComicsSelectionHelper * selectionHelper;
     YACReaderComicInfoHelper * comicInfoHelper;
+
+    ComicDB currentComic;
 
     bool dummy;
     void closeEvent ( QCloseEvent * event );

@@ -201,6 +201,11 @@ void InfoComicsView::selectIndex(int index)
     selectionHelper->selectIndex(index);
 }
 
+void InfoComicsView::updateCurrentComicView()
+{
+
+}
+
 void InfoComicsView::setShowMarks(bool show)
 {
     QQmlContext *ctxt = view->rootContext();

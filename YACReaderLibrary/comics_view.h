@@ -28,6 +28,7 @@ public:
     virtual void updateConfig(QSettings * settings) = 0;
     virtual void enableFilterMode(bool enabled) = 0;
     virtual void selectIndex(int index) = 0;
+    virtual void updateCurrentComicView() = 0;
 
 public slots:
     virtual void updateInfoForIndex(int index);
@@ -36,6 +37,7 @@ public slots:
 
 signals:
     void selected(unsigned int);
+    void openComic(const ComicDB& comic);
     void comicRated(int,QModelIndex);
 
     //Context menus
