@@ -295,7 +295,7 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
     else if (role == RatingRole)
         return item->data(Rating);
     else if (role == CoverPathRole)
-        return QUrl("file:"+_databasePath+"/covers/"+item->data(Hash).toString()+".jpg");
+        return getCoverUrlPathForComicHash(item->data(Hash).toString());
     else if (role == NumPagesRole)
         return item->data(NumPages);
     else if (role == CurrentPageRole)
@@ -992,6 +992,11 @@ void ComicModel::resetComicRating(const QModelIndex &mi)
 
     db.close();
     QSqlDatabase::removeDatabase(_databasePath);
+}
+
+QUrl ComicModel::getCoverUrlPathForComicHash(const QString &hash) const
+{
+    return QUrl("file:"+_databasePath+"/covers/"+hash+".jpg");
 }
 
 void ComicModel::addComicsToFavorites(const QList<qulonglong> &comicIds)

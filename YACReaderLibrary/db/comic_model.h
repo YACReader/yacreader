@@ -6,6 +6,7 @@
 #include <QVariant>
 #include <QSqlQuery>
 #include <QSqlDatabase>
+#include <QUrl>
 
 #include "yacreader_global_gui.h"
 
@@ -69,6 +70,8 @@ public:
 	void removeInTransaction(int row);
 	void reload(const ComicDB & comic);
     void resetComicRating(const QModelIndex & mi);
+
+    Q_INVOKABLE QUrl getCoverUrlPathForComicHash(const QString& hash) const;
 
 
     void addComicsToFavorites(const QList<QModelIndex> &comicsList);

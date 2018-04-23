@@ -265,6 +265,11 @@ void ClassicComicsView::selectIndex(int index)
     tableView->selectRow(index);
 }
 
+void ClassicComicsView::updateCurrentComicView()
+{
+
+}
+
 void ClassicComicsView::selectAll()
 {
     tableView->selectAll();
