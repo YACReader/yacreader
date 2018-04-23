@@ -1792,14 +1792,12 @@ void LibraryWindow::checkEmptyFolder()
 	}
 }
 
-void LibraryWindow::openComic()
+void LibraryWindow::openComic(const ComicDB &comic)
 {
-	if(!importedCovers)
-	{
-        ComicDB comic = comicsModel->getComic(comicsViewsManager->comicsView->currentIndex());
+    if(!importedCovers) {
         QList<ComicDB> siblings = comicsModel->getAllComics();
 
-		//TODO generate IDS for libraries...
+        //TODO generate IDS for libraries...
         quint64 libraryId = libraries.getId(selectedLibrary->currentText());
         bool yacreaderFound = false;
 
@@ -1822,26 +1820,36 @@ void LibraryWindow::openComic()
 
 #ifdef Q_OS_WIN
         QStringList parameters {currentPath(), QString("--comicId=%1").arg(comic.id), QString("--libraryId=%1").arg(libraryId)};
-        yacreaderFound = QProcess::startDetached(QDir::cleanPath(QCoreApplication::applicationDirPath()), parameters);
+        yacreaderFound = QProcess::startDetached(QDir::cleanPath(QCoreApplication::applicationDirPath()+"/YACReader.exe"), parameters);
 #endif
 
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
         QStringList parameters {currentPath(), QString("--comicId=%1").arg(comic.id), QString("--libraryId=%1").arg(libraryId)};
-      	yacreaderFound = QProcess::startDetached(QStringLiteral("YACReader"), parameters);
+        yacreaderFound = QProcess::startDetached(QStringLiteral("YACReader"), parameters);
 #endif
         if(!yacreaderFound)
         {
-            #ifdef Q_OS_WIN
+#ifdef Q_OS_WIN
             QMessageBox::critical(this,tr("YACReader not found"),tr("YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary."));
-            #else
+#else
             QMessageBox::critical(this,tr("YACReader not found"),tr("YACReader not found. There might be a problem with your YACReader installation."));
-            #endif
+#endif
         }
+    }
+}
+
+void LibraryWindow::openComic()
+{
+	if(!importedCovers)
+	{
+       ComicDB comic = comicsModel->getComic(comicsViewsManager->comicsView->currentIndex());
+       openComic(comic);
   }
 }
 
 void LibraryWindow::setCurrentComicsStatusReaded(YACReaderComicReadStatus readStatus) {
     comicsModel->setComicsRead(getSelectedComics(),readStatus);
+    comicsViewsManager->updateCurrentComicView();
 }
 
 void LibraryWindow::setCurrentComicReaded() {
@@ -2618,5 +2626,6 @@ void LibraryWindow::updateComicsView(quint64 libraryId, const ComicDB & comic)
 {
     if(libraryId == libraries.getId(selectedLibrary->currentText())) {
         comicsModel->reload(comic);
+        comicsViewsManager->updateCurrentComicView();
     }
 }

@@ -31,6 +31,7 @@ public:
     void updateConfig(QSettings * settings);
     void enableFilterMode(bool enabled);
     void selectIndex(int index);
+    void updateCurrentComicView();
 
 public slots:
     void setCurrentIndex(const QModelIndex &index);

@@ -101,7 +101,7 @@ int main( int argc, char ** argv )
   QDir().mkpath(YACReader::getSettingsPath());
 
   Logger& logger = Logger::instance();
-  logger.setLoggingLevel(QsLogging::InfoLevel);
+  logger.setLoggingLevel(QsLogging::TraceLevel);
 
   DestinationPtr fileDestination(DestinationFactory::MakeFileDestination(
     destLog, EnableLogRotation, MaxSizeBytes(1048576), MaxOldLogCount(2)));

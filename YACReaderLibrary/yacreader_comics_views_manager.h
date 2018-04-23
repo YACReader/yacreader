@@ -39,6 +39,8 @@ public:
 
     NoSearchResultsWidget * noSearchResultsWidget;
 
+    void updateCurrentComicView();
+
 protected:
     QStackedWidget * comicsViewStack;
     LibraryWindow * libraryWindow;

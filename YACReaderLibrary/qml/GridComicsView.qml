@@ -1,12 +1,15 @@
-import QtQuick 2.3
+import QtQuick 2.9
 
 import QtQuick.Controls 1.4
-import QtQuick.Layouts 1.2
+import QtQuick.Layouts 1.3
 
 import QtGraphicalEffects 1.0
 import QtQuick.Controls.Styles 1.4
 
 import com.yacreader.ComicModel 1.0
+
+import com.yacreader.ComicInfo 1.0
+import com.yacreader.ComicDB 1.0
 
 SplitView {
     anchors.fill: parent
@@ -171,7 +174,6 @@ Rectangle {
                     }
 
                     onPressed: {
-
                         var ci = grid.currentIndex; //save current index
 
                         /*if(mouse.button != Qt.RightButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
@@ -385,11 +387,17 @@ Rectangle {
         }
     }
 
-    YACReaderScrollView {
-        __wheelAreaScrollSpeed: grid.cellHeight * 0.30
+    ScrollView {
+        __wheelAreaScrollSpeed: grid.cellHeight * 0.40
         id: scrollView
+        objectName: "topScrollView"
         anchors.fill: parent
         anchors.margins: 0
+
+        function scrollToOrigin() {
+            flickableItem.contentY = showCurrentComic ? -270 : -20
+            flickableItem.contentX = 0
+        }
 
         style: YACReaderScrollViewStyle {
             transientScrollBars: false
@@ -456,21 +464,243 @@ Rectangle {
             }
         }
 
+        Component {
+            id: currentComicView
+            Rectangle {
+                id: currentComicViewTopView
+                color: "#00000000"
+
+                height: showCurrentComic ? 270 : 20
+
+                Rectangle {
+                    color: "#88000000"
+
+                    id: currentComicVisualView
+
+                    width: main.width
+                    height: 250
+
+                    visible: showCurrentComic
+
+                    //cover
+                    Image {
+                        id: currentCoverElement
+                        anchors.fill: parent
+                        width: paintedWidth
+
+                        anchors.leftMargin: 15
+                        anchors.topMargin: 15
+                        anchors.bottomMargin: 15
+                        anchors.rightMargin: 15
+                        horizontalAlignment: Image.AlignLeft
+                        anchors {horizontalCenter: parent.horizontalCenter; top: realCell.top; topMargin: 0}
+                        source: comicsList.getCoverUrlPathForComicHash(currentComicInfo.hash.toString())
+                        fillMode: Image.PreserveAspectFit
+                        smooth: true
+                        mipmap: true
+                        asynchronous : true
+                        cache: false //TODO clear cache only when it is needed
+                    }
+
+                    DropShadow {
+                        anchors.fill: currentCoverElement
+                        horizontalOffset: 0
+                        verticalOffset: 0
+                        radius: 8.0
+                        samples: 17
+                        color: "#FF000000"
+                        source: currentCoverElement
+                        visible: (Qt.platform.os === "osx") ? false : true;
+                    }
+
+                    ColumnLayout
+                    {
+                        id: currentComicInfoView
+
+                        x: currentCoverElement.anchors.rightMargin + currentCoverElement.paintedWidth + currentCoverElement.anchors.rightMargin
+                        //y: currentCoverElement.anchors.topMargin
+
+                        anchors.top: currentCoverElement.top
+                        anchors.right: parent.right
+                        anchors.left: readButton.left
+
+                        spacing: 9
+
+                        Text {
+                            Layout.topMargin: 7
+                            Layout.fillWidth: true
+                            Layout.rightMargin: 20
+
+                            Layout.alignment: Qt.AlignTop | Qt.AlignLeft
+
+                            id: currentComicInfoTitleView
+
+                            color: infoTitleColor
+                            font.family: "Arial"
+                            font.bold: true
+                            font.pixelSize: 21
+                            wrapMode: Text.WordWrap
+
+                            text: currentComic.getTitleIncludingNumber()
+                        }
+
+                        Flow {
+                            spacing: 0
+                            Layout.alignment: Qt.AlignTop | Qt.AlignLeft
+                            Layout.fillWidth: true
+                            Layout.fillHeight: false
+
+                            id: currentComicDetailsFlowView
+                            property font infoFont: Qt.font({
+                                                                family: "Arial",
+                                                                pixelSize: 14
+                                                            });
+                            property string infoFlowTextColor: infoTextColor
+
+                            Text {
+                                id: currentComicInfoVolume
+                                color: currentComicDetailsFlowView.infoFlowTextColor
+                                font: currentComicDetailsFlowView.infoFont
+                                text: currentComicInfo.volume
+                                rightPadding: 20
+                                visible: currentComicInfo.volume
+                            }
+
+                            Text {
+                                id: currentComicInfoNumbering
+                                color: currentComicDetailsFlowView.infoFlowTextColor
+                                font: currentComicDetailsFlowView.infoFont
+                                text: currentComicInfo.number + "/" + currentComicInfo.count
+                                rightPadding: 20
+                                visible : currentComicInfo.number
+                            }
+
+                            Text {
+                                id: currentComicInfoGenre
+                                color: currentComicDetailsFlowView.infoFlowTextColor
+                                font: currentComicDetailsFlowView.infoFont
+                                text: currentComicInfo.genere
+                                rightPadding: 20
+                                visible: currentComicInfo.genere
+                            }
+
+                            Text {
+                                id: currentComicInfoDate
+                                color: currentComicDetailsFlowView.infoFlowTextColor
+                                font: currentComicDetailsFlowView.infoFont
+                                text: currentComicInfo.date
+                                rightPadding: 20
+                                visible: currentComicInfo.date
+                            }
+
+                            Text {
+                                id: currentComicInfoPages
+                                color: currentComicDetailsFlowView.infoFlowTextColor
+                                font: currentComicDetailsFlowView.infoFont
+                                text: currentComicInfo.numPages + " pages"
+                                rightPadding: 20
+                                visible: currentComicInfo.numPages
+                            }
+
+                            Text {
+                                id: currentComicInfoShowInComicVine
+                                font: currentComicDetailsFlowView.infoFont
+                                color: "#ffcc00"
+                                text: "Show in Comic Vine"
+                                visible: currentComicInfo.comicVineID
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: {
+                                        Qt.openUrlExternally("http://www.comicvine.com/comic/4000-%1/".arg(comicInfo.comicVineID));
+                                    }
+                                }
+                            }
+                        }
+
+                        Text {
+                            Layout.topMargin: 6
+                            Layout.rightMargin: 30
+                            Layout.bottomMargin: 5
+                            Layout.fillWidth: true
+                            Layout.maximumHeight: (currentComicVisualView.height * 0.32)
+                            Layout.maximumWidth: 960
+
+                            id: currentComicInfoSinopsis
+                            color: infoTitleColor
+                            font.family: "Arial"
+                            font.pixelSize: 14
+                            wrapMode: Text.WordWrap
+                            elide: Text.ElideRight
+                            horizontalAlignment: Text.AlignJustify
+                            text: currentComicInfo.synopsis
+                            visible: currentComicInfo.synopsis
+                        }
+                    }
+
+                    Button {
+                        text: "Read"
+                        id: readButton
+                        x: currentCoverElement.anchors.rightMargin + currentCoverElement.paintedWidth + currentCoverElement.anchors.rightMargin
+                        anchors.bottom: currentCoverElement.bottom
+                        anchors.bottomMargin: 15
+
+                        onClicked: comicOpener.triggerOpenCurrentComic()
+
+                        style: ButtonStyle {
+                            background: Rectangle {
+                                implicitWidth: 100
+                                implicitHeight: 30
+                                border.width: control.activeFocus ? 2 : 1
+                                border.color: "#FFCC00"
+                                radius: height / 2
+                                color: "#FFCC00"
+
+                            }
+                            label: Text {
+                                renderType: Text.NativeRendering
+                                verticalAlignment: Text.AlignVCenter
+                                horizontalAlignment: Text.AlignHCenter
+                                font.family: "Arial"
+                                font.pointSize: 12
+                                font.bold: true
+                                color: "white"
+                                text: control.text
+                            }
+                        }
+                    }
+
+
+                    DropShadow {
+                        anchors.fill: readButton
+                        horizontalOffset: 0
+                        verticalOffset: 0
+                        radius: 8.0
+                        samples: 17
+                        color: "#AA000000"
+                        source: readButton
+                        visible: ((Qt.platform.os === "osx") ? false : true) && !readButton.pressed
+                    }
+                }
+            }
+        }
+
         GridView {
             id:grid
             objectName: "grid"
             anchors.fill: parent
             cellHeight: cellCustomHeight
+            header: currentComicView
             //highlight: appHighlight
             focus: true
             model: comicsList
             delegate: appDelegate
-            anchors.topMargin: 20
+            anchors.topMargin: 0 //showCurrentComic ? 0 : 20
             anchors.bottomMargin: 20
-            anchors.leftMargin: 10
-            anchors.rightMargin: 10
+            anchors.leftMargin: 0
+            anchors.rightMargin: 0
             pixelAligned: true
             //flickDeceleration: -2000
+
 
             currentIndex: 0
             cacheBuffer: 0
@@ -620,7 +850,7 @@ Rectangle {
             }
         }
 
-        ComicInfo {
+        ComicInfoView {
             width: info_container.width
         }
     }
