@@ -36,6 +36,7 @@
 #include "controllers/v2/readingcomicscontroller_v2.h"
 #include "controllers/v2/readinglistscontroller_v2.h"
 #include "controllers/v2/readinglistcontentcontroller_v2.h"
+#include "controllers/v2/comicfullinfocontroller_v2.h"
 
 #include "db_helper.h"
 #include "yacreader_libraries.h"
@@ -218,8 +219,9 @@ void RequestMapper::serviceV2(HttpRequest& request, HttpResponse& response)
 
     QRegExp folderInfo("/v2/library/.+/folder/[0-9]+/info/?"); //get folder info
     QRegExp comicDownloadInfo("/v2/library/.+/comic/[0-9]+/?"); //get comic info (basic/download info)
-    QRegExp comicFullInfo("/v2/library/.+/comic/[0-9]+/info/?"); //get comic info (full info)
-    QRegExp comicOpen("/v2/library/.+/comic/[0-9]+/remote/?"); //the server will open for reading the comic
+    QRegExp comicOpenForDownloading("/v2/library/.+/comic/[0-9]+/info/?"); //get comic info (full info + opening)
+    QRegExp comicOpenForRemoteReading("/v2/library/.+/comic/[0-9]+/remote/?"); //the server will open for reading the comic
+    QRegExp comicFullInfo("/v2/library/.+/comic/[0-9]+/fullinfo/?"); //get comic info (full info + opening)
     QRegExp comicUpdate("/v2/library/.+/comic/[0-9]+/update/?"); //get comic info
     QRegExp comicClose("/v2/library/.+/comic/[0-9]+/close/?"); //the server will close the comic and free memory
     QRegExp cover("/v2/library/.+/cover/[0-9a-f]+.jpg"); //get comic cover (navigation)
@@ -278,9 +280,11 @@ void RequestMapper::serviceV2(HttpRequest& request, HttpResponse& response)
                     {
                         ComicDownloadInfoControllerV2().service(request, response);
                     }
-                    else if(comicFullInfo.exactMatch(path) || comicOpen.exactMatch(path))//start download or start remote reading
+                    else if(comicOpenForDownloading.exactMatch(path) || comicOpenForRemoteReading.exactMatch(path))//start download or start remote reading
                     {
                         ComicControllerV2().service(request, response);
+                    } else if(comicFullInfo.exactMatch(path)) {
+                        ComicFullinfoController_v2().service(request, response);
                     }
                     else if(comicPage.exactMatch(path) || comicPageRemote.exactMatch(path))
                     {

@@ -57,4 +57,18 @@ QJsonObject YACReaderServerDataHelper::comicToJSON(const qulonglong libraryId, c
     return json;
 }
 
+QJsonObject YACReaderServerDataHelper::fullComicToJSON(const qulonglong libraryId, const ComicDB & comic)
+{
+    QJsonObject json = comicToJSON(libraryId, comic);
+
+    json["volume"] = comic.info.volume.toString();
+    json["total_volume_count"] = comic.info.count.toInt();
+    json["genre"] = comic.info.genere.toString();
+    json["date"] = comic.info.date.toString();
+
+    json["synopsis"] = comic.info.synopsis.toString();
+
+    return json;
+}
+
 YACReaderServerDataHelper::YACReaderServerDataHelper() {}
