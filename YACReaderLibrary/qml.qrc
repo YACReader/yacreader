@@ -15,7 +15,7 @@
         <file>qml/info-indicator-light@2x.png</file>
         <file>qml/info-shadow-light@2x.png</file>
         <file>qml/info-top-shadow.png</file>
-        <file>qml/ComicInfo.qml</file>
+        <file>qml/ComicInfoView.qml</file>
         <file>qml/info-favorites.png</file>
         <file>qml/info-favorites@2x.png</file>
         <file>qml/info-rating.png</file>

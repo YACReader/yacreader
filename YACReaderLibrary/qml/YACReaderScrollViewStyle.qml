@@ -50,7 +50,7 @@ Style {
     id: root
 
     /*! The \l ScrollView this style is attached to. */
-    readonly property YACReaderScrollView control: __control
+    readonly property ScrollView control: __control
 
     /*! This property controls the frame border padding of the scrollView. */
     padding {left: 1; top: 1; right: 1; bottom: 1}

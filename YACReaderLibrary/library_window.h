@@ -296,6 +296,7 @@ public slots:
     void selectSubfolder(const QModelIndex & mi, int child);
     void checkEmptyFolder();
     void openComic();
+    void openComic(const ComicDB & comic);
     void createLibrary();
     void create(QString source,QString dest, QString name);
     void showAddLibrary();
