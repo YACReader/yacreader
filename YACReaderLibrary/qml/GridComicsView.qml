@@ -486,7 +486,6 @@ Rectangle {
                     Image {
                         id: currentCoverElement
                         anchors.fill: parent
-                        width: paintedWidth
 
                         anchors.leftMargin: 15
                         anchors.topMargin: 15
@@ -561,9 +560,9 @@ Rectangle {
                                 id: currentComicInfoVolume
                                 color: currentComicDetailsFlowView.infoFlowTextColor
                                 font: currentComicDetailsFlowView.infoFont
-                                text: currentComicInfo.volume
+                                text: currentComicInfo.volume ? currentComicInfo.volume : ""
                                 rightPadding: 20
-                                visible: currentComicInfo.volume
+                                visible: currentComicInfo.volume ? true : false
                             }
 
                             Text {
@@ -572,34 +571,34 @@ Rectangle {
                                 font: currentComicDetailsFlowView.infoFont
                                 text: currentComicInfo.number + "/" + currentComicInfo.count
                                 rightPadding: 20
-                                visible : currentComicInfo.number
+                                visible : currentComicInfo.number ? true : false
                             }
 
                             Text {
                                 id: currentComicInfoGenre
                                 color: currentComicDetailsFlowView.infoFlowTextColor
                                 font: currentComicDetailsFlowView.infoFont
-                                text: currentComicInfo.genere
+                                text: currentComicInfo.genere ? currentComicInfo.genere : ""
                                 rightPadding: 20
-                                visible: currentComicInfo.genere
+                                visible: currentComicInfo.genere ? true : false
                             }
 
                             Text {
                                 id: currentComicInfoDate
                                 color: currentComicDetailsFlowView.infoFlowTextColor
                                 font: currentComicDetailsFlowView.infoFont
-                                text: currentComicInfo.date
+                                text: currentComicInfo.date ? currentComicInfo.date : ""
                                 rightPadding: 20
-                                visible: currentComicInfo.date
+                                visible: currentComicInfo.date ? true : false
                             }
 
                             Text {
                                 id: currentComicInfoPages
                                 color: currentComicDetailsFlowView.infoFlowTextColor
                                 font: currentComicDetailsFlowView.infoFont
-                                text: currentComicInfo.numPages + " pages"
+                                text: (currentComicInfo.numPages ? currentComicInfo.numPages : "") + " pages"
                                 rightPadding: 20
-                                visible: currentComicInfo.numPages
+                                visible: currentComicInfo.numPages ? true : false
                             }
 
                             Text {
@@ -607,7 +606,7 @@ Rectangle {
                                 font: currentComicDetailsFlowView.infoFont
                                 color: "#ffcc00"
                                 text: "Show in Comic Vine"
-                                visible: currentComicInfo.comicVineID
+                                visible: currentComicInfo.comicVineID ? true : false
                                 MouseArea {
                                     anchors.fill: parent
                                     onClicked: {
@@ -632,8 +631,8 @@ Rectangle {
                             wrapMode: Text.WordWrap
                             elide: Text.ElideRight
                             horizontalAlignment: Text.AlignJustify
-                            text: currentComicInfo.synopsis
-                            visible: currentComicInfo.synopsis
+                            text: currentComicInfo.synopsis ? currentComicInfo.synopsis : ""
+                            visible: currentComicInfo.synopsis ? true : false
                         }
                     }
 
