@@ -454,7 +454,7 @@ void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString> > & matchingIn
 	}
 	db.commit();
 	db.close();
-	QSqlDatabase::removeDatabase(databasePath);
+	QSqlDatabase::removeDatabase(db.connectionName());
 
 	close();
     emit accepted();
@@ -492,7 +492,7 @@ void ComicVineDialog::getComicInfo(const QString &comicId, int count, const QStr
 
     db.commit();
     db.close();
-    QSqlDatabase::removeDatabase(databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 
     if(mode == SingleComic || currentIndex == (comics.count()-1))
     {

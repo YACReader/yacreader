@@ -306,7 +306,7 @@ void FolderModel::setupModelData(QString path)
 	}
 	//selectQuery.finish();
 	db.close();
-	QSqlDatabase::removeDatabase(path);
+	QSqlDatabase::removeDatabase(db.connectionName());
 	endResetModel();
 
 }
@@ -428,7 +428,7 @@ void FolderModel::updateFolderCompletedStatus(const QModelIndexList &list, bool 
     }
     db.commit();
     db.close();
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 
     emit dataChanged(index(list.first().row(),FolderModel::Name),index(list.last().row(),FolderModel::Completed));
 }
@@ -448,7 +448,7 @@ void FolderModel::updateFolderFinishedStatus(const QModelIndexList &list, bool s
     }
     db.commit();
     db.close();
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 
     emit dataChanged(index(list.first().row(),FolderModel::Name),index(list.last().row(),FolderModel::Completed));
 }
@@ -469,7 +469,7 @@ QStringList FolderModel::getSubfoldersNames(const QModelIndex &mi)
 
     db.commit();
     db.close();
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 
     //TODO sort result))
     qSort(result.begin(),result.end(),naturalSortLessThanCI);
@@ -546,7 +546,7 @@ void FolderModel::fetchMoreFromDB(const QModelIndex &parent)
 
 
     db.close();
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 }
 
 QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QModelIndex &parent)
@@ -566,7 +566,7 @@ QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QMod
     QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
     newFolder.id = DBHelper::insert(&newFolder, db);
     DBHelper::updateChildrenInfo(parentItem->id, db);
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 
     int destRow = 0;
 
@@ -605,7 +605,7 @@ void FolderModel::deleteFolder(const QModelIndex &mi)
    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
    DBHelper::removeFromDB(&f,db);
    DBHelper::updateChildrenInfo(item->parent()->id, db);
-   QSqlDatabase::removeDatabase(_databasePath);
+   QSqlDatabase::removeDatabase(db.connectionName());
 
    endRemoveRows();
 }
@@ -614,7 +614,7 @@ void FolderModel::updateFolderChildrenInfo(qulonglong folderId)
 {
     QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
     DBHelper::updateChildrenInfo(folderId, db);
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 }
 
 //PROXY
@@ -729,7 +729,7 @@ void FolderModelProxy::setupFilteredModelData()
     }
     //selectQuery.finish();
     db.close();
-    QSqlDatabase::removeDatabase(model->_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 
     endResetModel();
 }

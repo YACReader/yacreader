@@ -40,7 +40,7 @@ QList<LibraryItem *> DBHelper::getFolderSubfoldersFromLibrary(qulonglong library
 	QList<LibraryItem *> list = DBHelper::getFoldersFromParent(folderId,db,false);
 	
 	db.close();
-	QSqlDatabase::removeDatabase(libraryPath);
+	QSqlDatabase::removeDatabase(db.connectionName());
 	return list;
 }
 QList<LibraryItem *> DBHelper::getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId)
@@ -56,7 +56,7 @@ QList<LibraryItem *> DBHelper::getFolderComicsFromLibrary(qulonglong libraryId, 
     QList<LibraryItem *> list = DBHelper::getComicsFromParent(folderId,db,sort);
 
     db.close();
-    QSqlDatabase::removeDatabase(libraryPath);
+    QSqlDatabase::removeDatabase(db.connectionName());
     return list;
 }
 
@@ -86,7 +86,7 @@ quint32 DBHelper::getNumChildrenFromFolder(qulonglong libraryId, qulonglong fold
     }
 
     db.close();
-    QSqlDatabase::removeDatabase(libraryPath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 
     return result;
 }
@@ -99,7 +99,7 @@ qulonglong DBHelper::getParentFromComicFolderId(qulonglong libraryId, qulonglong
 	Folder f = DBHelper::loadFolder(id,db);
 
 	db.close();
-	QSqlDatabase::removeDatabase(libraryPath);
+	QSqlDatabase::removeDatabase(db.connectionName());
 	return f.parentId;
 }
 ComicDB DBHelper::getComicInfo(qulonglong libraryId, qulonglong id)
@@ -110,7 +110,7 @@ ComicDB DBHelper::getComicInfo(qulonglong libraryId, qulonglong id)
 	ComicDB comic = DBHelper::loadComic(id,db);
 
 	db.close();
-	QSqlDatabase::removeDatabase(libraryPath);
+	QSqlDatabase::removeDatabase(db.connectionName());
 	return comic;
 }
 
@@ -121,7 +121,7 @@ QList<ComicDB> DBHelper::getSiblings(qulonglong libraryId, qulonglong parentId)
 
 	QList<ComicDB> comics =  DBHelper::getSortedComicsFromParent(parentId,db);
 	db.close();
-	QSqlDatabase::removeDatabase(libraryPath);
+	QSqlDatabase::removeDatabase(db.connectionName());
 	return comics;
 }
 
@@ -145,7 +145,7 @@ QString DBHelper::getFolderName(qulonglong libraryId, qulonglong id)
 	}
 
 	db.close();
-	QSqlDatabase::removeDatabase(libraryPath);
+	QSqlDatabase::removeDatabase(db.connectionName());
 	return name;
 }
 QList<QString> DBHelper::getLibrariesNames()
@@ -194,6 +194,8 @@ QList<ComicDB> DBHelper::getLabelComics(qulonglong libraryId, qulonglong labelId
 
         db.close();
     }
+    //TODO ?
+    //QSqlDatabase::removeDatabase(db.connectionName());
 
     return list;
 }
@@ -235,7 +237,9 @@ QList<ComicDB> DBHelper::getFavorites(qulonglong libraryId)
 
         db.close();
     }
-
+    //TODO ?
+    //QSqlDatabase::removeDatabase(db.connectionName());
+    
     return list;
 }
 
@@ -273,7 +277,9 @@ QList<ComicDB> DBHelper::getReading(qulonglong libraryId)
 
         db.close();
     }
-
+    //TODO ?
+    //QSqlDatabase::removeDatabase(db.connectionName());
+    
     return list;
 }
 
@@ -311,6 +317,9 @@ QList<ReadingList> DBHelper::getReadingLists(qulonglong libraryId)
         }
     }
 
+    //TODO ?
+    //QSqlDatabase::removeDatabase(db.connectionName());
+    
     return list;
 }
 
@@ -363,7 +372,10 @@ QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulongl
             }
         }
     }
-
+    
+    //TODO ?
+    //QSqlDatabase::removeDatabase(db.connectionName());
+    
     return list;
 }
 
@@ -479,7 +491,7 @@ void DBHelper::update(qulonglong libraryId, ComicInfo & comicInfo)
 	DBHelper::update(&comicInfo,db);
 
 	db.close();
-	QSqlDatabase::removeDatabase(libraryPath);
+	QSqlDatabase::removeDatabase(db.connectionName());
 }
 
 void DBHelper::update(ComicInfo * comicInfo, QSqlDatabase & db)
@@ -689,7 +701,7 @@ void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
     DBHelper::updateReadingRemoteProgress(comic.info,db);
 
     db.close();
-    QSqlDatabase::removeDatabase(libraryPath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 }
 
 void DBHelper::updateReadingRemoteProgress(const ComicInfo &comicInfo, QSqlDatabase &db)
@@ -741,7 +753,7 @@ void DBHelper::updateFromRemoteClient(qulonglong libraryId,const ComicInfo & com
     }
 
     db.close();
-    QSqlDatabase::removeDatabase(libraryPath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 }
 
 void DBHelper::renameLabel(qulonglong id, const QString &name, QSqlDatabase &db)
@@ -1293,7 +1305,7 @@ QList<Label> DBHelper::getLabels(qulonglong libraryId)
     }
 
     db.close();
-    QSqlDatabase::removeDatabase(libraryPath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 
     return labels;
 }

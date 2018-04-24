@@ -176,7 +176,7 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
         break;
     }
 
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 
     //endMoveRows();
 
@@ -470,7 +470,7 @@ void ComicModel::setupFolderModelData(unsigned long long int folderId,const QStr
         setupModelData(selectQuery);
     }
     db.close();
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
     endResetModel();
 
     /*if(_data.length()==0)
@@ -501,7 +501,7 @@ void ComicModel::setupLabelModelData(unsigned long long parentLabel, const QStri
         setupModelDataForList(selectQuery);
     }
     db.close();
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
     endResetModel();
 
     /*if(_data.length()==0)
@@ -558,7 +558,7 @@ void ComicModel::setupReadingListModelData(unsigned long long parentReadingList,
 
     }
     db.close();
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
     endResetModel();
 }
 
@@ -585,7 +585,7 @@ void ComicModel::setupFavoritesModelData(const QString &databasePath)
         setupModelDataForList(selectQuery);
     }
     db.close();
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
     endResetModel();
 
     /*if(_data.length()==0)
@@ -614,7 +614,7 @@ void ComicModel::setupReadingModelData(const QString &databasePath)
         setupModelDataForList(selectQuery);
     }
     db.close();
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
     endResetModel();
 
     /*if(_data.length()==0)
@@ -682,7 +682,7 @@ void ComicModel::setupModelData(const SearchModifiers modifier, const QString &f
     //selectQuery.finish();
     }
     db.close();
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
     endResetModel();
 
     emit searchNumResults(_data.length());
@@ -748,7 +748,7 @@ ComicDB ComicModel::getComic(const QModelIndex & mi)
 	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
     ComicDB c = DBHelper::loadComic(_data.at(mi.row())->data(ComicModel::Id).toULongLong(),db);
 	db.close();
-	QSqlDatabase::removeDatabase(_databasePath);
+	QSqlDatabase::removeDatabase(db.connectionName());
 
 	return c;
 }
@@ -758,7 +758,7 @@ ComicDB ComicModel::_getComic(const QModelIndex & mi)
 	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
     ComicDB c = DBHelper::loadComic(_data.at(mi.row())->data(ComicModel::Id).toULongLong(),db);
 	db.close();
-	QSqlDatabase::removeDatabase(_databasePath);
+	QSqlDatabase::removeDatabase(db.connectionName());
 
 	return c;
 }
@@ -801,7 +801,7 @@ QList<ComicDB> ComicModel::getAllComics()
 
 	db.commit();
 	db.close();
-	QSqlDatabase::removeDatabase(_databasePath);
+	QSqlDatabase::removeDatabase(db.connectionName());
 
 	return comics;
 }
@@ -819,7 +819,7 @@ QList<ComicDB> ComicModel::getComics(QList<QModelIndex> list)
 	}
 	db.commit();
 	db.close();
-	QSqlDatabase::removeDatabase(_databasePath);
+	QSqlDatabase::removeDatabase(db.connectionName());
 	return comics;
 }
 //TODO
@@ -850,7 +850,7 @@ QVector<YACReaderComicReadStatus> ComicModel::setComicsRead(QList<QModelIndex> l
 	}
 	db.commit();
 	db.close();
-	QSqlDatabase::removeDatabase(_databasePath);
+	QSqlDatabase::removeDatabase(db.connectionName());
 
     emit dataChanged(index(list.first().row(),ComicModel::ReadColumn),index(list.last().row(),ComicModel::HasBeenOpened),QVector<int>() << ReadColumnRole << CurrentPageRole << HasBeenOpenedRole);
 
@@ -873,7 +873,7 @@ qint64 ComicModel::asignNumbers(QList<QModelIndex> list,int startingNumber)
 
 	db.commit();
 	db.close();
-	QSqlDatabase::removeDatabase(_databasePath);
+	QSqlDatabase::removeDatabase(db.connectionName());
 
     //emit dataChanged(index(0,ComicModel::Number),index(_data.count()-1,ComicModel::HasBeenOpened));
 
@@ -906,7 +906,6 @@ QList<QModelIndex> ComicModel::getIndexesFromIds(const QList<qulonglong> &comicI
 
 void ComicModel::startTransaction()
 {
-	
 	dbTransaction = DataBaseManagement::loadDatabase(_databasePath);
 	dbTransaction.transaction();
 }
@@ -915,7 +914,7 @@ void ComicModel::finishTransaction()
 {
 	dbTransaction.commit();
 	dbTransaction.close();
-	QSqlDatabase::removeDatabase(_databasePath);
+	QSqlDatabase::removeDatabase(dbTransaction.connectionName());
 }
 
 void ComicModel::removeInTransaction(int row)
@@ -943,7 +942,7 @@ void ComicModel::remove(ComicDB * comic, int row)
 	_data.removeAt(row);
 
 	db.close();
-	QSqlDatabase::removeDatabase(_databasePath);
+	QSqlDatabase::removeDatabase(db.connectionName());
 	endRemoveRows();
 }
 */
@@ -991,7 +990,7 @@ void ComicModel::resetComicRating(const QModelIndex &mi)
     emit dataChanged(mi,mi);
 
     db.close();
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 }
 
 QUrl ComicModel::getCoverUrlPathForComicHash(const QString &hash) const
@@ -1013,7 +1012,7 @@ void ComicModel::addComicsToFavorites(const QList<QModelIndex> & comicsList)
     DBHelper::insertComicsInFavorites(comics,db);
 
     db.close();
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 }
 
 void ComicModel::addComicsToLabel(const QList<qulonglong> &comicIds, qulonglong labelId)
@@ -1030,7 +1029,7 @@ void ComicModel::addComicsToLabel(const QList<QModelIndex> &comicsList, qulonglo
     DBHelper::insertComicsInLabel(comics,labelId,db);
 
     db.close();
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 }
 
 void ComicModel::addComicsToReadingList(const QList<qulonglong> &comicIds, qulonglong readingListId)
@@ -1047,7 +1046,7 @@ void ComicModel::addComicsToReadingList(const QList<QModelIndex> &comicsList, qu
     DBHelper::insertComicsInReadingList(comics,readingListId,db);
 
     db.close();
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 }
 
 void ComicModel::deleteComicsFromFavorites(const QList<QModelIndex> &comicsList)
@@ -1059,7 +1058,7 @@ void ComicModel::deleteComicsFromFavorites(const QList<QModelIndex> &comicsList)
     DBHelper::deleteComicsFromFavorites(comics,db);
 
     db.close();
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 
     if(mode == Favorites)
         deleteComicsFromModel(comicsList);
@@ -1074,7 +1073,7 @@ void ComicModel::deleteComicsFromLabel(const QList<QModelIndex> &comicsList, qul
     DBHelper::deleteComicsFromLabel(comics,labelId,db);
 
     db.close();
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 
     deleteComicsFromModel(comicsList);
 }
@@ -1088,7 +1087,7 @@ void ComicModel::deleteComicsFromReadingList(const QList<QModelIndex> &comicsLis
     DBHelper::deleteComicsFromReadingList(comics,readingListId,db);
 
     db.close();
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 
     deleteComicsFromModel(comicsList);
 }
@@ -1118,7 +1117,7 @@ bool ComicModel::isFavorite(const QModelIndex &index)
     isFavorite = DBHelper::isFavoriteComic(_data[index.row()]->data(Id).toLongLong(),db);
 
     db.close();
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 
     return isFavorite;
 }
@@ -1137,5 +1136,5 @@ void ComicModel::updateRating(int rating, QModelIndex mi)
 	emit dataChanged(mi,mi);
 
 	db.close();
-	QSqlDatabase::removeDatabase(_databasePath);
+	QSqlDatabase::removeDatabase(db.connectionName());
 }

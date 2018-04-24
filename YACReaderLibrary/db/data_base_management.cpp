@@ -68,7 +68,8 @@ QSqlDatabase DataBaseManagement::createDatabase(QString name, QString path)
 
 QSqlDatabase DataBaseManagement::createDatabase(QString dest)
 {
-	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE",dest);
+    QString threadId = QString::number((long long)QThread::currentThreadId(), 16);
+	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE",dest+threadId);
 	db.setDatabaseName(dest);
 	if (!db.open())
 		qDebug() << db.lastError();
@@ -93,8 +94,9 @@ QSqlDatabase DataBaseManagement::createDatabase(QString dest)
 QSqlDatabase DataBaseManagement::loadDatabase(QString path)
 {
 	//TODO check path
-	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE",path);
-	db.setDatabaseName(path+"/library.ydb");
+    QString threadId = QString::number((long long)QThread::currentThreadId(), 16);
+	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE",path+threadId);
+    db.setDatabaseName(path + "/library.ydb");
 	if (!db.open()) {
 		//se devuelve una base de datos vacía e inválida
 		
@@ -109,7 +111,8 @@ QSqlDatabase DataBaseManagement::loadDatabase(QString path)
 QSqlDatabase DataBaseManagement::loadDatabaseFromFile(QString filePath)
 {
 	//TODO check path
-	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE",filePath);
+    QString threadId = QString::number((long long)QThread::currentThreadId(), 16);
+	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE",filePath+threadId);
 	db.setDatabaseName(filePath);
 	if (!db.open()) {
 		//se devuelve una base de datos vacía e inválida
@@ -696,7 +699,8 @@ QString DataBaseManagement::checkValidDB(const QString & fullPath)
 	}
 
 	db.close();
-	QSqlDatabase::removeDatabase(fullPath);
+    QSqlDatabase::removeDatabase(db.connectionName());
+    
 	return versionString;
 }
 
@@ -863,7 +867,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & path)
 	}
 
 	db.close();
-	QSqlDatabase::removeDatabase(fullPath);
+	QSqlDatabase::removeDatabase(db.connectionName());
 	return returnValue;
 }
 
