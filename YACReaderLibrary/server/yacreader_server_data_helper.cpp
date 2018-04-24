@@ -71,4 +71,36 @@ QJsonObject YACReaderServerDataHelper::fullComicToJSON(const qulonglong libraryI
     return json;
 }
 
+QJsonObject YACReaderServerDataHelper::readingListToJSON(const qulonglong libraryId, const ReadingList &readingList)
+{
+    QJsonObject json;
+
+    json["type"] = "reading_list";
+    json["id"] = QString::number(readingList.getId());
+    json["library_id"] = QString::number(libraryId);
+    json["reading_list_name"] = readingList.getName();
+
+    //TODO
+    //json["num_children"] = readingList.getNumChildren();
+    //json["first_comic_hash"] = readingList.getFirstChildHash();
+
+    return json;
+}
+
+QJsonObject YACReaderServerDataHelper::labelToJSON(const qulonglong libraryId, const Label &label)
+{
+    QJsonObject json;
+
+    json["type"] = "label";
+    json["id"] = QString::number(label.getId());
+    json["library_id"] = QString::number(libraryId);
+    json["label_list_name"] = label.getName();
+    json["color_id"] = label.getColorID();
+
+    //TODO
+    //json["num_children"] = label.getNumChildren();
+
+    return json;
+}
+
 YACReaderServerDataHelper::YACReaderServerDataHelper() {}
