@@ -396,7 +396,7 @@ void ReadingListModel::addNewLabel(const QString &name, YACReader::LabelColors c
 
     endInsertRows();
 
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 }
 
 void ReadingListModel::addReadingList(const QString &name)
@@ -423,7 +423,7 @@ void ReadingListModel::addReadingList(const QString &name)
 
     endInsertRows();
 
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 }
 
 void ReadingListModel::addReadingListAt(const QString &name, const QModelIndex &mi)
@@ -452,7 +452,7 @@ void ReadingListModel::addReadingListAt(const QString &name, const QModelIndex &
 
     endInsertRows();
 
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 }
 
 bool ReadingListModel::isEditable(const QModelIndex &mi)
@@ -523,7 +523,7 @@ void ReadingListModel::rename(const QModelIndex &mi, const QString &name)
         emit dataChanged(index(mi.row(), 0), index(mi.row(), 0));
     }
 
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 }
 
 void ReadingListModel::deleteItem(const QModelIndex &mi)
@@ -557,7 +557,7 @@ void ReadingListModel::deleteItem(const QModelIndex &mi)
             DBHelper::removeLabelFromDB(item->getId(), db);
         }
 
-        QSqlDatabase::removeDatabase(_databasePath);
+        QSqlDatabase::removeDatabase(db.connectionName());
 
         endRemoveRows();
     }
@@ -746,7 +746,7 @@ void ReadingListModel::reorderingChildren(QList<ReadingListItem *> children)
 
     QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
     DBHelper::reasignOrderToSublists(childrenIds, db);
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 }
 
 bool ReadingListModel::rowIsSpecialList(int row, const QModelIndex &parent) const

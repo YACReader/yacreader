@@ -198,7 +198,7 @@ void LibraryCreator::run()
 
 		_database.commit();
 		_database.close();
-		QSqlDatabase::removeDatabase(_target);
+		QSqlDatabase::removeDatabase(_database.databaseName());
 		//si estabamos en modo creación, se está añadiendo una librería que ya existía y se ha actualizado antes de añadirse.
 		if(!partialUpdate)
 		{
