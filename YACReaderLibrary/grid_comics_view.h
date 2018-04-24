@@ -88,7 +88,7 @@ private:
     QAction * showInfoAction;
     QAction * showInfoSeparatorAction;
 
-    boolean filterEnabled;
+    bool filterEnabled;
 
     YACReaderComicsSelectionHelper * selectionHelper;
     YACReaderComicInfoHelper * comicInfoHelper;
