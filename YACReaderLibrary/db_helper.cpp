@@ -1008,7 +1008,7 @@ ComicDB DBHelper::loadComic(qulonglong id, QSqlDatabase & db)
     QSqlRecord record = selectQuery.record();
 
     int parentId = record.indexOf("parentId");
-    int name = record.indexOf("name");
+    int name = record.indexOf("fileName");
     int path = record.indexOf("path");
     int hash = record.indexOf("hash");
 
