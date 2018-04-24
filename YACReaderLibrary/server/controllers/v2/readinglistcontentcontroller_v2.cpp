@@ -28,8 +28,14 @@ void ReadingListContentControllerV2::serviceContent(const int &library, const qu
 {
     QList<ComicDB> comics = DBHelper::getReadingListFullContent(library, readingListId);
 
+    QJsonArray items;
+
     for(const ComicDB &comic : comics)
     {
-        response.write(YACReaderServerDataHelper::comicToYSFormat(library, comic).toUtf8());
+        items.append(YACReaderServerDataHelper::comicToJSON(library, comic));
     }
+
+    QJsonDocument output(items);
+
+    response.write(output.toJson());
 }
