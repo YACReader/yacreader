@@ -177,6 +177,10 @@ void Comic::checkIsBookmark(int index)
 //-----------------------------------------------------------------------------
 void Comic::updateBookmarkImage(int index)
 {
+    if (bm == nullptr) {
+        return;
+    }
+    
 	if(bm->isBookmark(index))
 	{
 		QImage p;
