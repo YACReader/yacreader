@@ -93,7 +93,7 @@ void CompressedArchive::getAllData(const QVector<quint32> & indexes, ExtractDele
 	int i=0;
 	while (i < indexes.count())
 	{
-        if(delegate->isCancelled())
+        if(delegate == nullptr || delegate->isCancelled())
         {
             return;
         }
