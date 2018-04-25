@@ -34,7 +34,7 @@ void FolderInfoControllerV2::serviceComics(const int &library, const qulonglong 
     for(QList<LibraryItem *>::const_iterator itr = folderComics.constBegin();itr!=folderComics.constEnd();itr++)
     {
         currentComic = (ComicDB *)(*itr);
-        response.write(QString("/library/%1/comic/%2:%3:%4:%5:%6\r\n")
+        response.write(QString("/v2/library/%1/comic/%2:%3:%4:%5:%6\r\n")
                        .arg(library)
                        .arg(currentComic->id)
                        .arg(currentComic->getFileName())
