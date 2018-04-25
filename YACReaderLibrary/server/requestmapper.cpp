@@ -45,11 +45,16 @@
 
 #include "QsLog.h"
 
+QMutex RequestMapper::mutex;
+
+
 RequestMapper::RequestMapper(QObject* parent)
 	:HttpRequestHandler(parent) {}
 
-void RequestMapper::loadSession(HttpRequest & request, HttpResponse& response)
+void RequestMapper::loadSessionV1(HttpRequest & request, HttpResponse& response)
 {
+    QMutexLocker locker(&mutex);
+    
     HttpSession session=Static::sessionStore->getSession(request,response);
     if(session.contains("ySession")) //session is already alive check if it is needed to update comics
     {
@@ -114,9 +119,31 @@ void RequestMapper::loadSession(HttpRequest & request, HttpResponse& response)
     }
 }
 
+void RequestMapper::loadSessionV2(HttpRequest & request, HttpResponse& response)
+{
+    QMutexLocker locker(&mutex);
+    
+    QByteArray token = request.getHeader("x-request-id");
+    
+    if (token.isEmpty()) {
+        return;
+    }
+    
+    YACReaderHttpSession *yRecoveredSession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(token);
+    
+    if(yRecoveredSession == nullptr) //session is already alive check if it is needed to update comics
+    {
+        YACReaderHttpSession *ySession = new YACReaderHttpSession(this);
+        
+        Static::yacreaderSessionStore->addYACReaderHttpSession(token, ySession);
+    }
+}
+
 void RequestMapper::service(HttpRequest& request, HttpResponse& response) {
     QByteArray path=request.getPath();
-    qDebug("RequestMapper: path=%s",path.data());
+    
+    QLOG_TRACE() << "RequestMapper: path=" << path.data();
+    QLOG_TRACE() << "X-Request-Id: " << request.getHeader("x-request-id");
 
     if (path.startsWith("/v2"))
     {
@@ -150,7 +177,7 @@ void RequestMapper::serviceV1(HttpRequest& request, HttpResponse& response)
     path = QUrl::fromPercentEncoding(path).toUtf8();
 
     if(!sync.exactMatch(path)) //no session is needed for syncback info, until security will be added
-        loadSession(request, response);
+        loadSessionV1(request, response);
 
     //primera petición, se ha hecho un post, se sirven las bibliotecas si la seguridad mediante login no está habilitada
     if(path == "/")  //Don't send data to the server using '/' !!!!
@@ -221,7 +248,7 @@ void RequestMapper::serviceV2(HttpRequest& request, HttpResponse& response)
     QRegExp comicDownloadInfo("/v2/library/.+/comic/[0-9]+/?"); //get comic info (basic/download info)
     QRegExp comicOpenForDownloading("/v2/library/.+/comic/[0-9]+/info/?"); //get comic info (full info + opening)
     QRegExp comicOpenForRemoteReading("/v2/library/.+/comic/[0-9]+/remote/?"); //the server will open for reading the comic
-    QRegExp comicFullInfo("/v2/library/.+/comic/[0-9]+/fullinfo/?"); //get comic info (full info + opening)
+    QRegExp comicFullInfo("/v2/library/.+/comic/[0-9]+/fullinfo/?"); //get comic info
     QRegExp comicUpdate("/v2/library/.+/comic/[0-9]+/update/?"); //get comic info
     QRegExp comicClose("/v2/library/.+/comic/[0-9]+/close/?"); //the server will close the comic and free memory
     QRegExp cover("/v2/library/.+/cover/[0-9a-f]+.jpg"); //get comic cover (navigation)
@@ -243,7 +270,7 @@ void RequestMapper::serviceV2(HttpRequest& request, HttpResponse& response)
     path = QUrl::fromPercentEncoding(path).toUtf8();
 
     if(!sync.exactMatch(path)) //no session is needed for syncback info, until security will be added
-        loadSession(request, response);
+        loadSessionV2(request, response);
 
     //primera petición, se ha hecho un post, se sirven las bibliotecas si la seguridad mediante login no está habilitada
     if(path == "/v2/libraries")  //Don't send data to the server using '/' !!!!
@@ -262,10 +289,6 @@ void RequestMapper::serviceV2(HttpRequest& request, HttpResponse& response)
         }
         else
         {
-            //se comprueba que la sesión sea la correcta con el fin de evitar accesos no autorizados
-            HttpSession session=Static::sessionStore->getSession(request,response,false);
-            if(!session.isNull() && session.contains("ySession"))
-            {
                 if(library.indexIn(path)!=-1 && DBHelper::getLibraries().contains(library.cap(1).toInt()) )
                 {
                     if (folderInfo.exactMatch(path))
@@ -328,11 +351,6 @@ void RequestMapper::serviceV2(HttpRequest& request, HttpResponse& response)
                     //response.writeText(library.cap(1));
                     Static::staticFileController->service(request, response);
                 }
-            }
-            else //acceso no autorizado, redirección
-            {
-                ErrorControllerV2(300).service(request,response);
-            }
         }
     }
 }

@@ -11,8 +11,6 @@ LibrariesControllerV2::LibrariesControllerV2() {}
 
 void LibrariesControllerV2::service(HttpRequest& request, HttpResponse& response)
 {
-    HttpSession session=Static::sessionStore->getSession(request,response,false);
-
     response.setHeader("Content-Type", "application/json");
     response.setHeader("Connection","close");
 

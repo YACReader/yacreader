@@ -10,9 +10,6 @@ CoverControllerV2::CoverControllerV2() {}
 
 void CoverControllerV2::service(HttpRequest& request, HttpResponse& response)
 {
-	HttpSession session=Static::sessionStore->getSession(request,response,false);
-    YACReaderHttpSession *ySession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(session.getId());
-
 	response.setHeader("Content-Type", "image/jpeg");
 	response.setHeader("Connection","close");
 	//response.setHeader("Content-Type", "plain/text; charset=ISO-8859-1");
@@ -23,8 +20,6 @@ void CoverControllerV2::service(HttpRequest& request, HttpResponse& response)
 	QStringList pathElements = path.split('/');
     QString libraryName = DBHelper::getLibraryName(pathElements.at(3).toInt());
     QString fileName = pathElements.at(5);
-
-    bool folderCover = request.getParameter("folderCover").length()>0;
 
 	//response.writeText(path+"<br/>");
 	//response.writeText(libraryName+"<br/>");

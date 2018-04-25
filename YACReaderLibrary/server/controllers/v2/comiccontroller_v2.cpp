@@ -18,9 +18,15 @@ ComicControllerV2::ComicControllerV2() {}
 
 void ComicControllerV2::service(HttpRequest& request, HttpResponse& response)
 {
-	HttpSession session=Static::sessionStore->getSession(request,response,false);
-    YACReaderHttpSession *ySession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(session.getId());
-
+    QByteArray token = request.getHeader("x-request-id");
+    YACReaderHttpSession *ySession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(token);
+    
+    if (ySession == nullptr) {
+        response.setStatus(404,"not found");
+        response.write("404 not found",true);
+        return;
+    }
+    
     QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
 	QStringList pathElements = path.split('/');
     qulonglong libraryId = pathElements.at(3).toLongLong();
@@ -44,9 +50,6 @@ void ComicControllerV2::service(HttpRequest& request, HttpResponse& response)
 	YACReaderLibraries libraries = DBHelper::getLibraries();
 	
     ComicDB comic = DBHelper::getComicInfo(libraryId, comicId);
-
-    if(!remoteComic)
-        ySession->setDownloadedComic(comic.info.hash);
 
     Comic * comicFile = FactoryComic::newComic(libraries.getPath(libraryId)+comic.path);
 

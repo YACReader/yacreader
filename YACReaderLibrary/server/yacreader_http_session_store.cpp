@@ -9,8 +9,10 @@
 YACReaderHttpSessionStore::YACReaderHttpSessionStore(HttpSessionStore *sessionStore, QObject *parent)
     : QObject(parent), sessionStore(sessionStore)
 {
-    connect(&cleanupTimer,SIGNAL(timeout()),this,SLOT(sessionTimerEvent()));
-    cleanupTimer.start(60000);
+    //sessions are no longer http sessions in v2, we need another mechanism for cleaning
+
+    //connect(&cleanupTimer,SIGNAL(timeout()),this,SLOT(sessionTimerEvent()));
+    //cleanupTimer.start(60000);
 }
 
 void YACReaderHttpSessionStore::addYACReaderHttpSession(const QByteArray &httpSessionId, YACReaderHttpSession *yacreaderHttpSession)
@@ -29,7 +31,8 @@ YACReaderHttpSession *YACReaderHttpSessionStore::getYACReaderSessionHttpSession(
 
 void YACReaderHttpSessionStore::sessionTimerEvent()
 {
-    QMutexLocker locker(&mutex);
+    //sessions are no longer http sessions in v2, we are using a token, so sessionStore->getSession(id).isNull() is always true.
+    /*QMutexLocker locker(&mutex);
     for(const QByteArray &id : sessions.keys())
     {
         if(sessionStore->getSession(id).isNull())
@@ -40,5 +43,5 @@ void YACReaderHttpSessionStore::sessionTimerEvent()
 
             sessions.remove(id);
         }
-    }
+    }*/
 }
