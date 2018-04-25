@@ -17,11 +17,14 @@ public:
     RequestMapper(QObject* parent=0);
 
     void service(HttpRequest& request, HttpResponse& response);
-    void loadSession(HttpRequest & request, HttpResponse& response);
+    void loadSessionV1(HttpRequest & request, HttpResponse& response);
+    void loadSessionV2(HttpRequest & request, HttpResponse& response);
 
 private:
     void serviceV1(HttpRequest& request, HttpResponse& response);
     void serviceV2(HttpRequest& request, HttpResponse& response);
+    
+    static QMutex mutex;
 };
 
 #endif // REQUESTMAPPER_H

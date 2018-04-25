@@ -15,8 +15,6 @@ UpdateComicControllerV2::UpdateComicControllerV2(){}
 
 void UpdateComicControllerV2::service(HttpRequest &request, HttpResponse &response)
 {
-    HttpSession session=Static::sessionStore->getSession(request,response,false);
-
     QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
     QStringList pathElements = path.split('/');
     qulonglong libraryId = pathElements.at(3).toULongLong();

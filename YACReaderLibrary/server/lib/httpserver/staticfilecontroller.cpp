@@ -69,8 +69,13 @@ void StaticFileController::service(HttpRequest& request, HttpResponse& response)
         stringPath.remove(fileName);
         HttpSession session=Static::sessionStore->getSession(request,response,false);
         YACReaderHttpSession *ySession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(session.getId());
-        QString device = ySession->getDeviceType();
-        QString display = ySession->getDisplayType();
+        QString device = "ipad";
+        QString display = "@2x";
+        if (ySession != nullptr) {
+            device = ySession->getDeviceType();
+            display = ySession->getDisplayType();
+        }
+        
         if(fileName.endsWith(".png"))
             fileName = getDeviceAwareFileName(fileName, device, display, request.getHeader("Accept-Language"), stringPath);
         else
