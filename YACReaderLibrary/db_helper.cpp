@@ -953,6 +953,8 @@ void DBHelper::insertComicsInFavorites(const QList<ComicDB> &comicsList, QSqlDat
         query.exec();
     }
 
+    QLOG_TRACE() << query.lastError();
+    
     db.commit();
 }
 
@@ -977,6 +979,8 @@ void DBHelper::insertComicsInLabel(const QList<ComicDB> &comicsList, qulonglong 
         query.exec();
     }
 
+    QLOG_TRACE() << query.lastError();
+    
     db.commit();
 }
 
@@ -1272,7 +1276,7 @@ QList<Label> DBHelper::getLabels(qulonglong libraryId)
     {
         Label item(selectQuery.value(name).toString(),
                    selectQuery.value(id).toLongLong(),
-                   static_cast<YACReader::LabelColors>(selectQuery.value(color).toInt()));
+                   static_cast<YACReader::LabelColors>(selectQuery.value(ordering).toInt()));
 
         if(labels.isEmpty())
         {
