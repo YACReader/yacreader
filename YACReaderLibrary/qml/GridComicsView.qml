@@ -473,7 +473,7 @@ Rectangle {
                 height: showCurrentComic ? 270 : 20
 
                 Rectangle {
-                    color: "#88000000"
+                    color: (Qt.platform.os === "osx") ? "#88FFFFFF" : "#88000000"
 
                     id: currentComicVisualView
 
