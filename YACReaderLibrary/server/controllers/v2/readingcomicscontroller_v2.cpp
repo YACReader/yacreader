@@ -37,5 +37,5 @@ void ReadingComicsControllerV2::serviceContent(const int &library, HttpResponse 
 
     QJsonDocument output(comics);
 
-    response.write(output.toJson());
+    response.write(output.toJson(QJsonDocument::Compact));
 }

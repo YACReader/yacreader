@@ -33,5 +33,5 @@ void LibrariesControllerV2::service(HttpRequest& request, HttpResponse& response
     QJsonDocument output(librariesJson);
 
     response.setStatus(200,"OK");
-    response.write(output.toJson(),true);
+    response.write(output.toJson(QJsonDocument::Compact),true);
 }
