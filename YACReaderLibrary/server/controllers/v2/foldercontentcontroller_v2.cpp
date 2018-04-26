@@ -10,6 +10,8 @@
 
 #include "qnaturalsorting.h"
 
+#include "QsLog.h"
+
 #include <ctime>
 using namespace std;
 
@@ -40,6 +42,9 @@ void FolderContentControllerV2::service(HttpRequest& request, HttpResponse& resp
 
 void FolderContentControllerV2::serviceContent(const int &library, const qulonglong &folderId, HttpResponse &response)
 {
+#ifdef QT_DEBUG
+    auto started = std::chrono::high_resolution_clock::now();
+#endif
     QList<LibraryItem *> folderContent = DBHelper::getFolderSubfoldersFromLibrary(library,folderId);
     QList<LibraryItem *> folderComics = DBHelper::getFolderComicsFromLibrary(library,folderId);
 
@@ -69,4 +74,10 @@ void FolderContentControllerV2::serviceContent(const int &library, const qulongl
     QJsonDocument output(items);
 
     response.write(output.toJson());
+#ifdef QT_DEBUG
+    auto done = std::chrono::high_resolution_clock::now();
+    
+    QLOG_TRACE() << "num items = " << items.count();
+    QLOG_TRACE() << std::chrono::duration_cast<std::chrono::milliseconds>(done-started).count();
+#endif
 }
