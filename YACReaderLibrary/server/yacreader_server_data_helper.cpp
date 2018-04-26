@@ -94,7 +94,7 @@ QJsonObject YACReaderServerDataHelper::labelToJSON(const qulonglong libraryId, c
     json["type"] = "label";
     json["id"] = QString::number(label.getId());
     json["library_id"] = QString::number(libraryId);
-    json["label_list_name"] = label.getName();
+    json["label_name"] = label.getName();
     json["color_id"] = label.getColorID();
 
     //TODO
