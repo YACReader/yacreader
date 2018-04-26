@@ -28,10 +28,16 @@ void TagContentControllerV2::service(HttpRequest &request, HttpResponse &respons
 
 void TagContentControllerV2::serviceContent(const int &library, const qulonglong &tagId, HttpResponse &response)
 {
-    QList<ComicDB> tagComics = DBHelper::getLabelComics(library, tagId);
-
-    for(const ComicDB &comic : tagComics)
+    QList<ComicDB> comics = DBHelper::getLabelComics(library, tagId);
+    
+    QJsonArray items;
+    
+    for(const ComicDB &comic : comics)
     {
-        response.write(YACReaderServerDataHelper::comicToYSFormat(library, comic).toUtf8());
+        items.append(YACReaderServerDataHelper::comicToJSON(library, comic));
     }
+    
+    QJsonDocument output(items);
+    
+    response.write(output.toJson(QJsonDocument::Compact));
 }
