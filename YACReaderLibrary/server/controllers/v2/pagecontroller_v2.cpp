@@ -29,15 +29,10 @@ void PageControllerV2::service(HttpRequest& request, HttpResponse& response)
     QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
     bool remote = path.endsWith("remote");
     
-    //QByteArray path2=request.getPath();
-    //qDebug("PageController: request to -> %s ",path2.data());
-    
     QStringList pathElements = path.split('/');
     QString libraryName = DBHelper::getLibraryName(pathElements.at(2).toInt());
     qulonglong comicId = pathElements.at(5).toULongLong();
     unsigned int page = pathElements.at(7).toUInt();
-    
-    //qDebug("lib name : %s",pathElements.at(2).data());
     
     Comic * comicFile;
     qulonglong currentComicId;
@@ -64,7 +59,6 @@ void PageControllerV2::service(HttpRequest& request, HttpResponse& response)
             {
                 if(comicFile->pageIsLoaded(page))
                 {
-                    //qDebug("PageController: La página estaba cargada -> %s ",path.data());
                     response.setHeader("Content-Type", "image/jpeg");
                     response.setHeader("Transfer-Encoding","chunked");
                     QByteArray pageData = comicFile->getRawPage(page);
@@ -74,13 +68,11 @@ void PageControllerV2::service(HttpRequest& request, HttpResponse& response)
                         int len = data.readRawData(buffer,100000);
                         response.write(QByteArray(buffer,len));
                     }
-                    //response.write(pageData,true);
                     response.write(QByteArray(),true);
                 }
                 else
                 {
-                    //qDebug("PageController: La página NO estaba cargada 404 -> %s ",path.data());
-                    response.setStatus(412,"loading page"); //TODO qué mensaje enviar
+                    response.setStatus(412,"loading page");
                     response.write("412 loading page",true);
                 }
             }
@@ -94,7 +86,7 @@ void PageControllerV2::service(HttpRequest& request, HttpResponse& response)
                     else
                         ySession->dismissCurrentComic();
                 }
-                response.setStatus(412,"not found"); //TODO qué mensaje enviar
+                response.setStatus(412,"not found");
                 response.write("412 not found",true);
             }
         }
@@ -104,7 +96,4 @@ void PageControllerV2::service(HttpRequest& request, HttpResponse& response)
         response.setStatus(404,"not found");
         response.write("404 not found",true);
     }
-    
-    //response.write(t.toLatin1(),true);
-    
 }
