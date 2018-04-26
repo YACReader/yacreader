@@ -22,12 +22,18 @@ void FavoritesControllerV2::service(HttpRequest &request, HttpResponse &response
 
 void FavoritesControllerV2::serviceContent(const int library, HttpResponse &response)
 {
-    QList<ComicDB> tagComics = DBHelper::getFavorites(library);
+    QList<ComicDB> comics = DBHelper::getFavorites(library);
 
-    for(const ComicDB &comic : tagComics)
+    QJsonArray items;
+    
+    for(const ComicDB &comic : comics)
     {
-        response.write(YACReaderServerDataHelper::comicToYSFormat(library, comic).toUtf8());
+        items.append(YACReaderServerDataHelper::comicToJSON(library, comic));
     }
+    
+    QJsonDocument output(items);
+    
+    response.write(output.toJson(QJsonDocument::Compact));
 }
 
 
