@@ -37,5 +37,5 @@ void ReadingListContentControllerV2::serviceContent(const int &library, const qu
 
     QJsonDocument output(items);
 
-    response.write(output.toJson());
+    response.write(output.toJson(QJsonDocument::Compact));
 }

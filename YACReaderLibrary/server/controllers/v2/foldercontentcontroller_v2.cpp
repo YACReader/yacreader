@@ -73,7 +73,7 @@ void FolderContentControllerV2::serviceContent(const int &library, const qulongl
 
     QJsonDocument output(items);
 
-    response.write(output.toJson());
+    response.write(output.toJson(QJsonDocument::Compact));
 #ifdef QT_DEBUG
     auto done = std::chrono::high_resolution_clock::now();
     

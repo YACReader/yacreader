@@ -42,5 +42,5 @@ void ComicFullinfoController_v2::serviceContent(const int &libraryId, const qulo
 
     QJsonDocument output(json);
 
-    response.write(output.toJson());
+    response.write(output.toJson(QJsonDocument::Compact));
 }

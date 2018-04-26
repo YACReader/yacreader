@@ -32,5 +32,5 @@ void TagsControllerV2::service(HttpRequest& request, HttpResponse& response)
 
     QJsonDocument output(items);
 
-    response.write(output.toJson());;
+    response.write(output.toJson(QJsonDocument::Compact));;
 }
