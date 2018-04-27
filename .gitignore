@@ -45,3 +45,8 @@ target_wrapper.*
 
 # QtCreator CMake
 CMakeLists.txt.user*
+*.stash
+
+*.plist
+
+YACReaderLibrary/YACReaderLibrary\.xcodeproj/
