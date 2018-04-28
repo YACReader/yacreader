@@ -11,6 +11,8 @@
 #include "yacreader_libraries.h"
 #include "yacreader_local_server.h"
 
+#include "libraries_updater.h"
+
 #include "console_ui_library_creator.h"
 
 #include <iostream>
@@ -135,6 +137,10 @@ int main( int argc, char ** argv )
             return 0;
         }
         QLOG_INFO() << "YACReaderLibrary starting";
+
+        //Update libraries to now versions
+        LibrariesUpdater updater;
+        updater.updateIfNeeded();
 
         YACReaderLocalServer * localServer = new YACReaderLocalServer();
 
