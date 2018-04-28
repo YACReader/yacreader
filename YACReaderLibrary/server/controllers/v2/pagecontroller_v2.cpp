@@ -48,6 +48,18 @@ void PageControllerV2::service(HttpRequest& request, HttpResponse& response)
         comicFile = ySession->getCurrentComic();
         currentComicId = ySession->getCurrentComicId();
     }
+
+    if (comicFile->hasBeenAnErrorOpening()) {
+        //delete comicFile;
+        if(remote)
+            ySession->dismissCurrentRemoteComic();
+        else
+            ySession->dismissCurrentComic();
+
+        response.setStatus(404,"not found");
+        response.write("404 not found",true);
+        return;
+    }
     
     if(currentComicId != 0 && !QPointer<Comic>(comicFile).isNull())
     {
