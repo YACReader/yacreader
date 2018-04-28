@@ -86,8 +86,8 @@ void PageControllerV2::service(HttpRequest& request, HttpResponse& response)
                     else
                         ySession->dismissCurrentComic();
                 }
-                response.setStatus(412,"not found");
-                response.write("412 not found",true);
+                response.setStatus(404,"not found");
+                response.write("404 not found",true);
             }
         }
     }
