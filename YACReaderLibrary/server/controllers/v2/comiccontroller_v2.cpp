@@ -53,23 +53,21 @@ void ComicControllerV2::service(HttpRequest &request, HttpResponse &response)
 
     Comic *comicFile = FactoryComic::newComic(libraries.getPath(libraryId) + comic.path);
 
-    if (comicFile != nullptr) {
-        QThread *thread = nullptr;
-
-        thread = new QThread();
+    if (comicFile != NULL) {
+        QThread *thread = new QThread();
 
         comicFile->moveToThread(thread);
 
-        connect(comicFile, SIGNAL(errorOpening()), thread, SLOT(quit()));
-        connect(comicFile, SIGNAL(errorOpening(QString)), thread, SLOT(quit()));
-        connect(comicFile, SIGNAL(imagesLoaded()), thread, SLOT(quit()));
+        //connect(comicFile, SIGNAL(errorOpening()), thread, SLOT(quit()));
+        //connect(comicFile, SIGNAL(errorOpening(QString)), thread, SLOT(quit()));
+        //connect(comicFile, SIGNAL(imagesLoaded()), thread, SLOT(quit()));
+        connect(comicFile, SIGNAL(destroyed()), thread, SLOT(quit()));
         connect(thread, SIGNAL(started()), comicFile, SLOT(process()));
         connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
         comicFile->load(libraries.getPath(libraryId) + comic.path);
 
-        if (thread != nullptr)
-            thread->start();
+        thread->start();
 
         if (remoteComic) {
             QLOG_TRACE() << "remote comic requested";
