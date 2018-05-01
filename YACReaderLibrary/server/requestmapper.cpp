@@ -32,10 +32,12 @@
 #include "controllers/v2/foldercontentcontroller_v2.h"
 #include "controllers/v2/tagscontroller_v2.h"
 #include "controllers/v2/tagcontentcontroller_v2.h"
+#include "controllers/v2/taginfocontroller_v2.h"
 #include "controllers/v2/favoritescontroller_v2.h"
 #include "controllers/v2/readingcomicscontroller_v2.h"
 #include "controllers/v2/readinglistscontroller_v2.h"
 #include "controllers/v2/readinglistcontentcontroller_v2.h"
+#include "controllers/v2/readinglistinfocontroller_v2.h"
 #include "controllers/v2/comicfullinfocontroller_v2.h"
 
 #include "db_helper.h"
@@ -260,8 +262,10 @@ void RequestMapper::serviceV2(HttpRequest& request, HttpResponse& response)
     QRegExp reading("/v2/library/.+/reading/?");
     QRegExp tags("/v2/library/.+/tags/?");
     QRegExp tagContent("/v2/library/.+/tag/[0-9]+/content/?");
+    QRegExp tagInfo("/v2/library/.+/tag/[0-9]+/info/?");
     QRegExp readingLists("/v2/library/.+/reading_lists/?");
     QRegExp readingListContent("/v2/library/.+/reading_list/[0-9]+/content/?");
+    QRegExp readingListInfo("/v2/library/.+/reading_list/[0-9]+/info/?");
 
     QRegExp sync("/v2/sync");
 
@@ -344,6 +348,14 @@ void RequestMapper::serviceV2(HttpRequest& request, HttpResponse& response)
                     else if(readingListContent.exactMatch(path))
                     {
                         ReadingListContentControllerV2().service(request, response);
+                    }
+                    else if(readingListInfo.exactMatch(path))
+                    {
+                        ReadingListInfoControllerV2().service(request, response);
+                    }
+                    else if(tagInfo.exactMatch(path))
+                    {
+                        TagInfoControllerV2().service(request, response);
                     }
                 }
                 else
