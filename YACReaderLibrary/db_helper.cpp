@@ -1149,6 +1149,11 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
 
     int comicVineID = record.indexOf("comicVineID");
 
+    int lastTimeOpened = record.indexOf("lastTimeOpened");
+
+    int coverSizeRatio = record.indexOf("coverSizeRatio");
+    int originalCoverSize = record.indexOf("originalCoverSize");
+
 	ComicDB currentItem;
 	while (selectQuery.next()) 
 	{
@@ -1208,6 +1213,11 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
         currentItem.info.notes = selectQuery.value(notes);
 
         currentItem.info.comicVineID = selectQuery.value(comicVineID);
+
+        currentItem.info.lastTimeOpened = selectQuery.value(lastTimeOpened);
+
+        currentItem.info.coverSizeRatio = selectQuery.value(coverSizeRatio);
+        currentItem.info.originalCoverSize = selectQuery.value(originalCoverSize);
 
         currentItem.info.existOnDb = true;
 
