@@ -99,6 +99,7 @@ void YACReaderClientConnectionWorker::run()
 
 	quint64 libraryId;
 	ComicDB comic;
+    qulonglong nextComicId;
 	int tries = 0;
 	int dataAvailable = 0;
 	QByteArray packageSize;
@@ -147,6 +148,15 @@ void YACReaderClientConnectionWorker::run()
 	dataStream >> libraryId;
 	dataStream >> comic;
 
+    bool nextComicInfoAvailable;
+
+    if(dataStream.atEnd()) {
+        nextComicInfoAvailable = false;
+    } else {
+        nextComicInfoAvailable = true;
+        dataStream >> nextComicId;
+    }
+
 	switch (msgType)
 	{
 	case YACReader::RequestComicInfo:
@@ -183,11 +193,13 @@ void YACReaderClientConnectionWorker::run()
 		}
 	case YACReader::SendComicInfo:
 		{
+        if (nextComicInfoAvailable) {
+            updateComic(libraryId,comic,nextComicId);
+        } else {
 			updateComic(libraryId,comic);
-			//clientConnection->disconnectFromServer();
+        }
 			break;
 		}
-
 	}
 
 	clientConnection->waitForDisconnected();
@@ -215,4 +227,15 @@ void YACReaderClientConnectionWorker::updateComic(quint64 libraryId, ComicDB & c
 	QMutexLocker locker(&dbMutex);
     DBHelper::update(libraryId, comic.info);
 	emit comicUpdated(libraryId, comic);
+}
+
+void YACReaderClientConnectionWorker::updateComic(quint64 libraryId, ComicDB & comic, qulonglong nextComicId)
+{
+    QMutexLocker locker(&dbMutex);
+    DBHelper::update(libraryId, comic.info);
+    ComicInfo nextcomicinfo;
+    nextcomicinfo.id = nextComicId;
+    DBHelper::setComicAsReading(libraryId, nextcomicinfo);
+
+    emit comicUpdated(libraryId, comic);
 }
