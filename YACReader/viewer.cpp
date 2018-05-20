@@ -1189,11 +1189,11 @@ void Viewer::updateComic(ComicDB & comic)
 		//set currentPage
         if(render->currentPageIsDoublePage() == false)
         {
-            comic.info.currentPage = render->getIndex()+1;
+            comic.info.currentPage = render->getIndex();
         }
         else
         {
-            comic.info.currentPage = std::min(render->numPages(), render->getIndex()+2);
+            comic.info.currentPage = std::min(render->numPages(), render->getIndex()+1);
         }
 		//set bookmarks
 		Bookmarks * boomarks = render->getBookmarks();
