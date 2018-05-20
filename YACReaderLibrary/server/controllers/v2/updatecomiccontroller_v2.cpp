@@ -27,11 +27,19 @@ void UpdateComicControllerV2::service(HttpRequest &request, HttpResponse &respon
 
     if(postData.length()>0) {
         QList<QString> data = postData.split("\n");
-        int currentPage = data.at(0).split(":").at(1).toInt();
+        QString currentComicData = data.at(0);
+        int currentPage = currentComicData.split(":").at(1).toInt();
         ComicInfo info;
         info.currentPage = currentPage;
         info.id = comicId;
         DBHelper::updateProgress(libraryId,info);
+
+        if (data.length() > 1) {
+            QString nextComicId = data.at(1);
+            ComicInfo info;
+            info.id = nextComicId.toULongLong();
+            DBHelper::setComicAsReading(libraryId,info);
+        }
     }
     else
     {
