@@ -35,10 +35,12 @@ void UpdateComicControllerV2::service(HttpRequest &request, HttpResponse &respon
         DBHelper::updateProgress(libraryId,info);
 
         if (data.length() > 1) {
-            QString nextComicId = data.at(1);
-            ComicInfo info;
-            info.id = nextComicId.toULongLong();
-            DBHelper::setComicAsReading(libraryId,info);
+            if (data.at(1).isEmpty() == false) {
+                QString nextComicId = data.at(1);
+                ComicInfo info;
+                info.id = nextComicId.toULongLong();
+                DBHelper::setComicAsReading(libraryId,info);
+            }
         }
     }
     else
