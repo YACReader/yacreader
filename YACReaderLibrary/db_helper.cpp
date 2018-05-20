@@ -254,7 +254,7 @@ QList<ComicDB> DBHelper::getReading(qulonglong libraryId)
         QSqlQuery selectQuery(db);
         selectQuery.prepare("SELECT c.id,c.parentId,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read,ci.coverSizeRatio "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                            "WHERE ci.hasBeenOpened = 1 AND ci.read = 0 AND ci.currentPage != ci.numPages AND ci.currentPage != 1 "
+                            "WHERE ci.hasBeenOpened = 1 AND ci.read = 0 "
                             "ORDER BY ci.lastTimeOpened DESC");
         selectQuery.exec();
 
