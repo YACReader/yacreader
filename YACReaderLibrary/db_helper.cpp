@@ -704,6 +704,21 @@ void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
     QSqlDatabase::removeDatabase(db.connectionName());
 }
 
+void DBHelper::setComicAsReading(qulonglong libraryId, const ComicInfo &comicInfo)
+{
+    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
+    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
+
+    ComicDB comic = DBHelper::loadComic(comicInfo.id,db);
+    comic.info.hasBeenOpened = true;
+    comic.info.read = comic.info.read || comic.info.currentPage == comic.info.numPages;
+
+    DBHelper::updateReadingRemoteProgress(comic.info,db);
+
+    db.close();
+    QSqlDatabase::removeDatabase(db.connectionName());
+}
+
 void DBHelper::updateReadingRemoteProgress(const ComicInfo &comicInfo, QSqlDatabase &db)
 {
     QSqlQuery updateComicInfo(db);
