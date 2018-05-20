@@ -1682,7 +1682,6 @@ void MainWindowViewer::decreasePageZoomLevel()
 void MainWindowViewer::sendComic()
 {
 	YACReaderLocalClient  * client = new YACReaderLocalClient;
-	currentComicDB.info.hasBeenOpened = true;
     currentComicDB.info.lastTimeOpened = QDateTime::currentSecsSinceEpoch();
 	viewer->updateComic(currentComicDB);
     int retries = 1;
