@@ -695,7 +695,7 @@ void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
 
     ComicDB comic = DBHelper::loadComic(comicInfo.id,db);
     comic.info.currentPage = comicInfo.currentPage;
-    comic.info.hasBeenOpened = true;
+    comic.info.hasBeenOpened = comicInfo.currentPage > 0 || comic.info.hasBeenOpened;
     comic.info.read = comic.info.read || comic.info.currentPage == comic.info.numPages;
 
     DBHelper::updateReadingRemoteProgress(comic.info,db);
