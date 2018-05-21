@@ -24,12 +24,13 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
         qulonglong comicId;
         int currentPage;
         int currentRating;
+        unsigned long lastTimeOpened;
         QString hash;
         foreach(QString comicInfo, data)
         {
             QList<QString> comicInfoProgress = comicInfo.split("\t");
 
-            if(comicInfoProgress.length() == 4 || comicInfoProgress.length() == 5)
+            if(comicInfoProgress.length() == 6)
             {
                 if (comicInfoProgress.at(0) == "unknown")
                 {
@@ -43,12 +44,11 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
                     info.hash = hash; //TODO remove the hash check and add UUIDs for libraries
                     info.id = comicId;
 
-                    //Client 2.1+ version
-                    if(comicInfoProgress.length() > 4)
-                    {
-                        currentRating = comicInfoProgress.at(4).toInt();
-                        info.rating = currentRating;
-                    }
+                    currentRating = comicInfoProgress.at(4).toInt();
+                    info.rating = currentRating;
+
+                    lastTimeOpened = comicInfoProgress.at(5).toULong();
+                    info.lastTimeOpened = lastTimeOpened;
 
                     DBHelper::updateFromRemoteClient(libraryId,info);
                 }
@@ -61,12 +61,11 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
                     info.currentPage = currentPage;
                     info.hash = hash; //TODO remove the hash check and add UUIDs for libraries
 
-                    //Client 2.1+ version
-                    if(comicInfoProgress.length() > 4)
-                    {
-                        currentRating = comicInfoProgress.at(4).toInt();
-                        info.rating = currentRating;
-                    }
+                    currentRating = comicInfoProgress.at(4).toInt();
+                    info.rating = currentRating;
+
+                    lastTimeOpened = comicInfoProgress.at(5).toULong();
+                    info.lastTimeOpened = lastTimeOpened;
 
                     DBHelper::updateFromRemoteClientWithHash(info);
                 }
