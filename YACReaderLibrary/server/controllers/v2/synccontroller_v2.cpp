@@ -32,7 +32,7 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
 
             if(comicInfoProgress.length() == 6)
             {
-                if (comicInfoProgress.at(0) == "unknown")
+                if (comicInfoProgress.at(0) != "unknown")
                 {
                     libraryId = comicInfoProgress.at(0).toULongLong();
                     comicId = comicInfoProgress.at(1).toULongLong();
