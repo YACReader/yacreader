@@ -31,24 +31,45 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
 
             if(comicInfoProgress.length() == 4 || comicInfoProgress.length() == 5)
             {
-                libraryId = comicInfoProgress.at(0).toULongLong();
-                comicId = comicInfoProgress.at(1).toULongLong();
-                hash = comicInfoProgress.at(2);
-                currentPage = comicInfoProgress.at(3).toInt();
-
-                ComicInfo info;
-                info.currentPage = currentPage;
-                info.hash = hash; //TODO remove the hash check and add UUIDs for libraries
-                info.id = comicId;
-
-                //Client 2.1+ version
-                if(comicInfoProgress.length() > 4)
+                if (comicInfoProgress.at(0) == "unknown")
                 {
-                    currentRating = comicInfoProgress.at(4).toInt();
-                    info.rating = currentRating;
-                }
+                    libraryId = comicInfoProgress.at(0).toULongLong();
+                    comicId = comicInfoProgress.at(1).toULongLong();
+                    hash = comicInfoProgress.at(2);
+                    currentPage = comicInfoProgress.at(3).toInt();
 
-                DBHelper::updateFromRemoteClient(libraryId,info);
+                    ComicInfo info;
+                    info.currentPage = currentPage;
+                    info.hash = hash; //TODO remove the hash check and add UUIDs for libraries
+                    info.id = comicId;
+
+                    //Client 2.1+ version
+                    if(comicInfoProgress.length() > 4)
+                    {
+                        currentRating = comicInfoProgress.at(4).toInt();
+                        info.rating = currentRating;
+                    }
+
+                    DBHelper::updateFromRemoteClient(libraryId,info);
+                }
+                else
+                {
+                    hash = comicInfoProgress.at(2);
+                    currentPage = comicInfoProgress.at(3).toInt();
+
+                    ComicInfo info;
+                    info.currentPage = currentPage;
+                    info.hash = hash; //TODO remove the hash check and add UUIDs for libraries
+
+                    //Client 2.1+ version
+                    if(comicInfoProgress.length() > 4)
+                    {
+                        currentRating = comicInfoProgress.at(4).toInt();
+                        info.rating = currentRating;
+                    }
+
+                    DBHelper::updateFromRemoteClientWithHash(info);
+                }
             }
         }
     }
