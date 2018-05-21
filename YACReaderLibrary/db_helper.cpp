@@ -771,6 +771,41 @@ void DBHelper::updateFromRemoteClient(qulonglong libraryId,const ComicInfo & com
     QSqlDatabase::removeDatabase(db.connectionName());
 }
 
+void DBHelper::updateFromRemoteClientWithHash(const ComicInfo & comicInfo)
+{
+     YACReaderLibraries libraries = DBHelper::getLibraries();
+
+     QStringList names = libraries.getNames();
+
+     foreach (QString name, names) {
+         QString libraryPath = DBHelper::getLibraries().getPath(libraries.getId(name));
+
+         QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath+"/.yacreaderlibrary");
+
+         ComicInfo info = loadComicInfo(comicInfo.hash, db);
+
+         if(comicInfo.currentPage > 0)
+         {
+             info.currentPage = comicInfo.currentPage;
+
+             if(info.currentPage == info.numPages)
+                 info.read = true;
+             else
+                 info.lastTimeOpened = QDateTime::currentSecsSinceEpoch();
+
+             info.hasBeenOpened = true;
+         }
+
+         if(comicInfo.rating > 0)
+             info.rating = comicInfo.rating;
+
+         DBHelper::update(&info, db);
+
+         db.close();
+         QSqlDatabase::removeDatabase(db.connectionName());
+     }
+}
+
 void DBHelper::renameLabel(qulonglong id, const QString &name, QSqlDatabase &db)
 {
     QSqlQuery renameLabelQuery(db);
