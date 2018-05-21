@@ -753,10 +753,10 @@ void DBHelper::updateFromRemoteClient(qulonglong libraryId,const ComicInfo & com
     {
         if(comicInfo.currentPage > 0)
         {
+            comic.info.currentPage = comicInfo.currentPage;
+
             if(comic.info.currentPage == comic.info.numPages)
                 comic.info.read = true;
-
-            comic.info.currentPage = comicInfo.currentPage;
 
             comic.info.hasBeenOpened = true;
         }
