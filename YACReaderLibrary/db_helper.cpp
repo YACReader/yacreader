@@ -793,8 +793,6 @@ void DBHelper::updateFromRemoteClientWithHash(const ComicInfo & comicInfo)
 
              if(info.currentPage == info.numPages)
                  info.read = true;
-             else
-                 info.lastTimeOpened = QDateTime::currentSecsSinceEpoch();
 
              info.hasBeenOpened = true;
 
