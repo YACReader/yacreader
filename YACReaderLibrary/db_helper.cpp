@@ -759,6 +759,9 @@ void DBHelper::updateFromRemoteClient(qulonglong libraryId,const ComicInfo & com
                 comic.info.read = true;
 
             comic.info.hasBeenOpened = true;
+
+            if (comic.info.lastTimeOpened.toULongLong() < comicInfo.lastTimeOpened.toULongLong())
+                comic.info.lastTimeOpened = comicInfo.lastTimeOpened;
         }
 
         if(comicInfo.rating > 0)
@@ -794,6 +797,9 @@ void DBHelper::updateFromRemoteClientWithHash(const ComicInfo & comicInfo)
                  info.lastTimeOpened = QDateTime::currentSecsSinceEpoch();
 
              info.hasBeenOpened = true;
+
+             if (info.lastTimeOpened.toULongLong() < comicInfo.lastTimeOpened.toULongLong())
+                 info.lastTimeOpened = comicInfo.lastTimeOpened;
          }
 
          if(comicInfo.rating > 0)
