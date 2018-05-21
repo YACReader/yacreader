@@ -24,7 +24,7 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
         qulonglong comicId;
         int currentPage;
         int currentRating;
-        unsigned long lastTimeOpened;
+        unsigned long long lastTimeOpened;
         QString hash;
         foreach(QString comicInfo, data)
         {
