@@ -59,7 +59,7 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
 
                     ComicInfo info;
                     info.currentPage = currentPage;
-                    info.hash = hash; //TODO remove the hash check and add UUIDs for libraries
+                    info.hash = hash;
 
                     currentRating = comicInfoProgress.at(4).toInt();
                     info.rating = currentRating;
