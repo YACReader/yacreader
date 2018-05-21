@@ -32,6 +32,13 @@ ui_*.h
 *.jsc
 Makefile*
 *build-*
+*.build*
+*.app*
+*.pbxproj
+*.mak
+*.xcworkspace*
+*xcshareddata*
+*.swp
 
 # Qt unit tests
 target_wrapper.*
