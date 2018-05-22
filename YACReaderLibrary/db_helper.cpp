@@ -168,7 +168,7 @@ QList<ComicDB> DBHelper::getLabelComics(qulonglong libraryId, qulonglong labelId
 
     {
         QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT c.id,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read "
+        selectQuery.prepare("SELECT c.id,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read,ci.coverSizeRatio "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                             "INNER JOIN comic_label cl ON (c.id == cl.comic_id) "
                             "WHERE cl.label_id = :parentLabelId "
@@ -188,6 +188,7 @@ QList<ComicDB> DBHelper::getLabelComics(qulonglong libraryId, qulonglong labelId
             comic.info.numPages = selectQuery.value(4).toInt();
             comic.info.hash = selectQuery.value(5).toString();
             comic.info.read = selectQuery.value(6).toBool();
+            comic.info.coverSizeRatio = selectQuery.value(7).toFloat();
 
             list.append(comic);
         }
@@ -211,7 +212,7 @@ QList<ComicDB> DBHelper::getFavorites(qulonglong libraryId)
 
     {
         QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT c.id,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read "
+        selectQuery.prepare("SELECT c.id,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read,ci.coverSizeRatio "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                             "INNER JOIN comic_default_reading_list cdrl ON (c.id == cdrl.comic_id) "
                             "WHERE cdrl.default_reading_list_id = :parentDefaultListId "
@@ -231,6 +232,7 @@ QList<ComicDB> DBHelper::getFavorites(qulonglong libraryId)
             comic.info.numPages = selectQuery.value(4).toInt();
             comic.info.hash = selectQuery.value(5).toString();
             comic.info.read = selectQuery.value(6).toBool();
+            comic.info.coverSizeRatio = selectQuery.value(7).toFloat();
 
             list.append(comic);
         }
@@ -347,7 +349,7 @@ QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulongl
         foreach(qulonglong id, ids)
         {
             QSqlQuery selectQuery(db);
-            selectQuery.prepare("SELECT c.id,c.parentId,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read "
+            selectQuery.prepare("SELECT c.id,c.parentId,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read,ci.coverSizeRatio "
                                 "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                                 "INNER JOIN comic_reading_list crl ON (c.id == crl.comic_id) "
                                 "WHERE crl.reading_list_id = :parentReadingList "
@@ -367,6 +369,7 @@ QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulongl
                 comic.info.numPages = selectQuery.value(5).toInt();
                 comic.info.hash = selectQuery.value(6).toString();
                 comic.info.read = selectQuery.value(7).toBool();
+                comic.info.coverSizeRatio = selectQuery.value(8).toFloat();
 
                 list.append(comic);
             }
