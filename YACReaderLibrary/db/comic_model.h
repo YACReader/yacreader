@@ -6,6 +6,7 @@
 #include <QVariant>
 #include <QSqlQuery>
 #include <QSqlDatabase>
+#include <QUrl>
 
 #include "yacreader_global_gui.h"
 
@@ -65,10 +66,12 @@ public:
 	//setComicInfoForSelectedComis(QList<QModelIndex> list); -->inserta la información común para los comics seleccionados
 	QVector<YACReaderComicReadStatus> setComicsRead(QList<QModelIndex> list,YACReaderComicReadStatus read);
 	qint64 asignNumbers(QList<QModelIndex> list,int startingNumber);
-	void remove(ComicDB * comic, int row);
+    //void remove(ComicDB * comic, int row);
 	void removeInTransaction(int row);
 	void reload(const ComicDB & comic);
     void resetComicRating(const QModelIndex & mi);
+
+    Q_INVOKABLE QUrl getCoverUrlPathForComicHash(const QString& hash) const;
 
 
     void addComicsToFavorites(const QList<QModelIndex> &comicsList);

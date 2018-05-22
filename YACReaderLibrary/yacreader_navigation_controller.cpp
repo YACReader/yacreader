@@ -60,12 +60,12 @@ void YACReaderNavigationController::loadFolderInfo(const QModelIndex &modelIndex
 
     //check comics in folder with id = folderId
     libraryWindow->comicsModel->setupFolderModelData(folderId,libraryWindow->foldersModel->getDatabase());
-    comicsViewsManager->comicsView->setModel(libraryWindow->comicsModel);
 
     //configure views
     if(libraryWindow->comicsModel->rowCount() > 0)
     {
         //updateView
+        comicsViewsManager->comicsView->setModel(libraryWindow->comicsModel);
         comicsViewsManager->showComicsView();
         libraryWindow->disableComicsActions(false);
     }

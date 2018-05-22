@@ -7,7 +7,7 @@
 #include <unarr.h>
 
 CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) :
-    QObject(parent),valid(false),tools(true),numFiles(0),ar(NULL),stream(NULL)
+    QObject(parent),tools(true),valid(false),numFiles(0),ar(NULL),stream(NULL)
 {
 	//open file
   #ifdef Q_OS_WIN
@@ -93,7 +93,7 @@ void CompressedArchive::getAllData(const QVector<quint32> & indexes, ExtractDele
 	int i=0;
 	while (i < indexes.count())
 	{
-        if(delegate->isCancelled())
+        if(delegate == nullptr || delegate->isCancelled())
         {
             return;
         }

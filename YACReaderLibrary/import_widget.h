@@ -1,16 +1,9 @@
 #ifndef IMPORT_WIDGET_H
 #define IMPORT_WIDGET_H
 
-#include <QWidget>
 
-class QLabel;
-class QGraphicsView;
-class QGraphicsScene;
-class QElapsedTimer;
-class QVBoxLayout;
-class QToolButton;
-class QResizeEvent;
-class QPropertyAnimation;
+#include <QtWidgets>
+
 
 class ImportWidget : public QWidget
 {
@@ -28,11 +21,12 @@ public slots:
     void clearScene();
     void setImportLook();
     void setUpdateLook();
+    void setUpgradeLook();
     void showCovers(bool hide);
 
 private:
     QLabel * currentComicLabel;
-    QLabel * portadasLabel;
+    QLabel * coversLabel;
     QLabel * iconLabel;
     QLabel * text;
     QLabel * textDescription;
@@ -40,6 +34,7 @@ private:
     QGraphicsView * coversView;
     QGraphicsScene * coversScene;
     QPropertyAnimation * scrollAnimation;
+    QPushButton * stopButton;
 
     int previousWidth;
     bool updatingCovers;

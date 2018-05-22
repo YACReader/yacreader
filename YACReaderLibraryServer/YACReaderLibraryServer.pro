@@ -48,6 +48,7 @@ HEADERS += ../YACReaderLibrary/library_creator.h \
            ../YACReaderLibrary/bundle_creator.h \
            ../YACReaderLibrary/db_helper.h \
            ../YACReaderLibrary/db/data_base_management.h \
+           ../YACReaderLibrary/db/reading_list.h \
            ../common/comic_db.h \
            ../common/folder.h \
            ../common/library_item.h \
@@ -61,7 +62,8 @@ HEADERS += ../YACReaderLibrary/library_creator.h \
            ../common/http_worker.h \
            ../YACReaderLibrary/yacreader_libraries.h \
            ../YACReaderLibrary/comic_files_manager.h \
-           console_ui_library_creator.h
+           console_ui_library_creator.h \
+           libraries_updater.h
 
 
 SOURCES += ../YACReaderLibrary/library_creator.cpp \
@@ -69,6 +71,7 @@ SOURCES += ../YACReaderLibrary/library_creator.cpp \
            ../YACReaderLibrary/bundle_creator.cpp \
            ../YACReaderLibrary/db_helper.cpp \
            ../YACReaderLibrary/db/data_base_management.cpp \
+           ../YACReaderLibrary/db/reading_list.cpp \
            ../common/comic_db.cpp \
            ../common/folder.cpp \
            ../common/library_item.cpp \
@@ -82,7 +85,8 @@ SOURCES += ../YACReaderLibrary/library_creator.cpp \
            ../YACReaderLibrary/yacreader_libraries.cpp \
            ../YACReaderLibrary/comic_files_manager.cpp \
            console_ui_library_creator.cpp \
-           main.cpp
+           main.cpp \
+           libraries_updater.cpp
 
 include(../YACReaderLibrary/server/server.pri)
 CONFIG(7zip) {

@@ -12,6 +12,8 @@
 
 #include "yacreader_navigation_controller.h"
 
+#include <future>
+
 #ifdef Q_OS_MAC
     #include "yacreader_macosx_toolbar.h"
 #endif
@@ -286,11 +288,15 @@ protected:
 public:
     LibraryWindow();
 
+signals:
+    void libraryUpgraded(const QString & libraryName);
+    void errorUpgradingLibrary(const QString & path);
 public slots:
     void loadLibrary(const QString & path);
     void selectSubfolder(const QModelIndex & mi, int child);
     void checkEmptyFolder();
     void openComic();
+    void openComic(const ComicDB & comic);
     void createLibrary();
     void create(QString source,QString dest, QString name);
     void showAddLibrary();
@@ -377,6 +383,7 @@ public slots:
     void setToolbarTitle(const QModelIndex & modelIndex);
     void saveSelectedCoversTo();
     void checkMaxNumLibraries();
+    void showErrorUpgradingLibrary(const QString & path);
 
     void changeEvent(QEvent *event);
 
@@ -385,10 +392,11 @@ private:
     Qt::WindowFlags previousWindowFlags;
     QPoint previousPos;
     QSize previousSize;
+    std::future<void> upgradeLibraryFuture;
     QSystemTrayIcon trayIcon;
+
 private slots:
     void trayActivation(QSystemTrayIcon::ActivationReason reason);
-
 };
 
 #endif

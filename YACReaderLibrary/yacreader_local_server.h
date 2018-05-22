@@ -43,6 +43,8 @@ private:
 	
 	void getComicInfo(quint64 libraryId, ComicDB & comic, QList<ComicDB> & sibling);
 	void updateComic(quint64 libraryId, ComicDB & comic);
+    void updateComic(quint64 libraryId, ComicDB & comic, qulonglong nextComicId);
+
 
 	QLocalSocket *clientConnection;
 };

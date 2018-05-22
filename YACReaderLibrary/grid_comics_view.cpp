@@ -11,6 +11,7 @@
 #include "comic_db.h"
 #include "yacreader_comics_selection_helper.h"
 #include "yacreader_comic_info_helper.h"
+#include "current_comic_view_helper.h"
 
 //values relative to visible cells
 const unsigned int YACREADER_MIN_GRID_ZOOM_WIDTH = 156;
@@ -30,7 +31,7 @@ const unsigned int YACREADER_MIN_ITEM_WIDTH = YACREADER_MIN_COVER_WIDTH;
 
 
 GridComicsView::GridComicsView(QWidget *parent) :
-    ComicsView(parent)
+    ComicsView(parent), filterEnabled(false)
 {
     settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini", QSettings::IniFormat, this);
     settings->beginGroup("libraryConfig");
@@ -161,6 +162,7 @@ GridComicsView::GridComicsView(QWidget *parent) :
     ctxt->setContextProperty("dummyValue", true);
     ctxt->setContextProperty("dragManager", this);
     ctxt->setContextProperty("dropManager", this);
+    ctxt->setContextProperty("comicOpener", this);
 
     bool showInfo = settings->value(COMICS_GRID_SHOW_INFO, false).toBool();
     ctxt->setContextProperty("showInfo", showInfo);
@@ -247,6 +249,8 @@ void GridComicsView::setModel(ComicModel *model)
 
     ComicsView::setModel(model);
 
+    setCurrentComicIfNeeded();
+
     selectionHelper->setModel(model);
     comicInfoHelper->setModel(model);
 
@@ -265,12 +269,18 @@ void GridComicsView::setModel(ComicModel *model)
 
     updateBackgroundConfig();
 
+    selectionHelper->clear();
+
     if(model->rowCount()>0)
     {
         setCurrentIndex(model->index(0,0));
         if(showInfoAction->isChecked())
             updateInfoForIndex(0);
     }
+
+    //If the currentComicView was hidden before showing it sometimes the scroll view doesn't show it
+    //this is a hacky solution...
+    QTimer::singleShot(0, this, SLOT(resetScroll()));
 }
 
 void GridComicsView::updateBackgroundConfig()
@@ -370,7 +380,16 @@ void GridComicsView::updateConfig(QSettings *settings)
 
 void GridComicsView::enableFilterMode(bool enabled)
 {
-    Q_UNUSED(enabled);
+    filterEnabled = enabled;
+
+    QQmlContext *ctxt = view->rootContext();
+
+    if (enabled) {
+        ctxt->setContextProperty("showCurrentComic", false);
+        ctxt->setContextProperty("currentComic", nullptr);
+    } else {
+        setCurrentComicIfNeeded();
+    }
 }
 
 void GridComicsView::selectAll()
@@ -381,6 +400,11 @@ void GridComicsView::selectAll()
 void GridComicsView::selectIndex(int index)
 {
     selectionHelper->selectIndex(index);
+}
+
+void GridComicsView::triggerOpenCurrentComic()
+{
+    emit openComic(currentComic);
 }
 
 void GridComicsView::rate(int index, int rating)
@@ -424,6 +448,36 @@ void GridComicsView::dummyUpdater()
     ctxt->setContextProperty("dummyValue", true);
 }
 
+void GridComicsView::setCurrentComicIfNeeded()
+{
+    bool found;
+    currentComic = currentComicFromModel(model, found);
+
+    QQmlContext *ctxt = view->rootContext();
+
+    if (found && filterEnabled == false) {
+        ctxt->setContextProperty("currentComic", &currentComic);
+        ctxt->setContextProperty("currentComicInfo", &(currentComic.info));
+        ctxt->setContextProperty("showCurrentComic", true);
+    }
+    else
+    {
+        ctxt->setContextProperty("currentComic", &currentComic);
+        ctxt->setContextProperty("currentComicInfo", &(currentComic.info));
+        ctxt->setContextProperty("showCurrentComic", false);
+        //ctxt->setContextProperty("currentComic", nullptr);
+
+    }
+}
+
+void GridComicsView::resetScroll()
+{
+    QObject *rootObject = dynamic_cast<QObject*>(view->rootObject());
+    QObject *scrollView = rootObject->findChild<QObject*>("topScrollView", Qt::FindChildrenRecursively);
+
+    QMetaObject::invokeMethod(scrollView, "scrollToOrigin");
+}
+
 QSize GridComicsView::sizeHint()
 {
     return QSize(1280,768);
@@ -439,6 +493,11 @@ QByteArray GridComicsView::getMimeDataFromSelection()
     delete mimeData;
 
     return data;
+}
+
+void GridComicsView::updateCurrentComicView()
+{
+    setCurrentComicIfNeeded();
 }
 
 void GridComicsView::startDrag()
@@ -508,7 +567,7 @@ void GridComicsView::closeEvent(QCloseEvent *event)
     toolbar->removeAction(coverSizeSliderAction);
 
     QObject *rootObject = dynamic_cast<QObject*>(view->rootObject());
-    QObject *infoContainer = rootObject->findChild<QObject*>("infoContainer");
+    QObject *infoContainer = rootObject->findChild<QObject*>("infoContainer", Qt::FindChildrenRecursively);
 
     int infoWidth = QQmlProperty(infoContainer, "width").read().toInt();
 

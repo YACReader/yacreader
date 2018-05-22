@@ -91,7 +91,7 @@ Rectangle {
                 }
             }
 
-            ComicInfo {
+            ComicInfoView {
                 width: info_container.width - 14
             }
         }
