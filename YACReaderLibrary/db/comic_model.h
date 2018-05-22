@@ -22,6 +22,50 @@ class ComicModel : public QAbstractItemModel
 	Q_OBJECT
 
 public:
+    enum Columns {
+        Number = 0,
+        Title = 1,
+        FileName = 2,
+        NumPages = 3,
+        Id = 4,
+        Parent_Id = 5,
+        Path = 6,
+        Hash = 7,
+        ReadColumn = 8,
+        IsBis = 9,
+        CurrentPage = 10,
+        Rating = 11,
+        HasBeenOpened = 12
+    };
+
+    enum Roles {
+        NumberRole = Qt::UserRole + 1,
+        TitleRole,
+        FileNameRole,
+        NumPagesRole,
+        IdRole,
+        Parent_IdRole,
+        PathRole,
+        HashRole,
+        ReadColumnRole,
+        IsBisRole,
+        CurrentPageRole,
+        RatingRole,
+        HasBeenOpenedRole,
+        CoverPathRole
+
+    };
+
+    enum Mode {
+        Folder,
+        Favorites,
+        Reading,
+        Label,
+        ReadingList
+    };
+
+
+public:
     ComicModel(QObject *parent = 0);
     ComicModel( QSqlQuery &sqlquery, QObject *parent = 0);
     ~ComicModel();
@@ -86,51 +130,9 @@ public:
 
     bool isFavorite(const QModelIndex &index);
 
+    ComicModel::Mode getMode() {return mode;}
+
     QHash<int, QByteArray> roleNames() const;
-
-	enum Columns {
-	Number = 0,
-	Title = 1,
-	FileName = 2,
-	NumPages = 3,
-	Id = 4,
-	Parent_Id = 5,
-	Path = 6,
-	Hash = 7,
-	ReadColumn = 8,
-	IsBis = 9,
-	CurrentPage = 10,
-	Rating = 11,
-	HasBeenOpened = 12
-};
-
-    enum Roles {
-        NumberRole = Qt::UserRole + 1,
-        TitleRole,
-        FileNameRole,
-        NumPagesRole,
-        IdRole,
-        Parent_IdRole,
-        PathRole,
-        HashRole,
-        ReadColumnRole,
-        IsBisRole,
-        CurrentPageRole,
-        RatingRole,
-        HasBeenOpenedRole,
-        CoverPathRole
-
-    };
-
-    enum Mode {
-        Folder,
-        Favorites,
-        Reading,
-        Label,
-        ReadingList
-    };
-
-
 
 public slots:
 	void remove(int row);

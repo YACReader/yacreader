@@ -455,7 +455,13 @@ void GridComicsView::setCurrentComicIfNeeded()
 
     QQmlContext *ctxt = view->rootContext();
 
-    if (found && filterEnabled == false) {
+    ComicModel::Mode mode = model->getMode();
+
+    bool showCurrentComic = found &&
+            filterEnabled == false &&
+            (mode == ComicModel::Mode::Folder || mode == ComicModel::Mode::ReadingList);
+
+    if (showCurrentComic) {
         ctxt->setContextProperty("currentComic", &currentComic);
         ctxt->setContextProperty("currentComicInfo", &(currentComic.info));
         ctxt->setContextProperty("showCurrentComic", true);
