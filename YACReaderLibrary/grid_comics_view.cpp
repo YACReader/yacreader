@@ -40,6 +40,16 @@ GridComicsView::GridComicsView(QWidget *parent) :
     qmlRegisterType<ComicInfo>("com.yacreader.ComicInfo",1,0,"ComicInfo");
 
     view = new QQuickView();
+    connect(
+        view, &QQuickView::statusChanged,
+        [=] (QQuickView::Status status)
+        {
+            if (status == QQuickView::Error)
+            {
+                QLOG_ERROR() << view->errors();
+            }
+        }
+      );
     container = QWidget::createWindowContainer(view, this);
 
     container->setMinimumSize(200, 200);
