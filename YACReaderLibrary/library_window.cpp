@@ -139,11 +139,13 @@ void LibraryWindow::setupUI()
 	else
 		//if(settings->value(USE_OPEN_GL).toBool() == false)
 			showMaximized();
-
-  trayIcon.setIcon(QApplication::windowIcon());
-  trayIcon.show();
-  connect(&trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
-   this, SLOT(trayActivation(QSystemTrayIcon::ActivationReason)));
+}
+    /* //disabled until icons are ready and macos native code is done
+        trayIcon.setIcon(QApplication::windowIcon());
+        trayIcon.show();
+        connect(&trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+                this, SLOT(trayActivation(QSystemTrayIcon::ActivationReason)));
+    }
 }
 
 void LibraryWindow::trayActivation(QSystemTrayIcon::ActivationReason reason)
@@ -157,6 +159,7 @@ void LibraryWindow::trayActivation(QSystemTrayIcon::ActivationReason reason)
   }
 }
 
+
 void LibraryWindow::changeEvent(QEvent *event)
 {
   if (event->type() == QEvent::WindowStateChange && isMinimized())
@@ -167,7 +170,7 @@ void LibraryWindow::changeEvent(QEvent *event)
   {
     QMainWindow::changeEvent(event);
   }
-}
+}*/
 
 void LibraryWindow::doLayout()
 {
