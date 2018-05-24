@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>qml/page.png</file>
         <file>qml/star.png</file>
+        <file alias="qml/RatingContextMenu.qml">qml/RatingContextMenu-win.qml</file>
     </qresource>
 </RCC>
