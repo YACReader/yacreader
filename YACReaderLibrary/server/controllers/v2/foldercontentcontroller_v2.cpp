@@ -12,6 +12,7 @@
 
 #include "QsLog.h"
 
+#include <chrono>
 #include <ctime>
 using namespace std;
 
