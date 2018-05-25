@@ -601,7 +601,7 @@ void DBHelper::update(ComicInfo * comicInfo, QSqlDatabase & db)
 	updateComicInfo.bindValue(":id", comicInfo->id);
 	updateComicInfo.bindValue(":edited", comicInfo->edited?1:0);
 
-	updateComicInfo.bindValue(":hasBeenOpened", comicInfo->hasBeenOpened?1:0);
+    updateComicInfo.bindValue(":hasBeenOpened", comicInfo->hasBeenOpened?1:0 || comicInfo->currentPage > 1);
 	updateComicInfo.bindValue(":currentPage", comicInfo->currentPage);
 	updateComicInfo.bindValue(":bookmark1", comicInfo->bookmark1);
 	updateComicInfo.bindValue(":bookmark2", comicInfo->bookmark2);
