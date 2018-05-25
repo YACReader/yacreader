@@ -346,13 +346,13 @@ Rectangle {
 
             //rating icon
             RatingContextMenu {
-
+                id: ratingContextMenu
             }
 
             //comic rating
             Text {
                 id: comicRating
-                anchors {bottom: realCell.bottom; right: ratingImage.left; margins: 4}
+                anchors {bottom: realCell.bottom; right: ratingContextMenu.left; margins: 4}
                 text: rating>0?rating:"-"
                 color: textColor
             }
