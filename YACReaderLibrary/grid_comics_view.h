@@ -10,8 +10,7 @@
 
 class QAbstractListModel;
 class QItemSelectionModel;
-class QQuickView;
-class QQuickView;
+class QQuickWidget;
 
 class YACReaderToolBarStretch;
 class YACReaderComicsSelectionHelper;

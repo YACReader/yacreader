@@ -12,7 +12,7 @@ import com.yacreader.ComicInfo 1.0
 import com.yacreader.ComicDB 1.0
 
 SplitView {
-    anchors.fill: parent
+    //anchors.fill: parent
     orientation: Qt.Horizontal
     handleDelegate:Rectangle {
         width: 1
@@ -827,5 +827,3 @@ Rectangle {
     }
 }
 }
-
-

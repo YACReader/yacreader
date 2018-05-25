@@ -11,8 +11,8 @@ Rectangle {
 
     color: infoBackgroundColor
 
-    width: parent.width
-    height: parent.height
+    //width: parent.width
+    //height: parent.height
     anchors.margins: 0
 
     FlowView {

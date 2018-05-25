@@ -10,7 +10,7 @@ class QSplitter;
 class ComicFlowWidget;
 class QToolBar;
 class ComicModel;
-class QQuickView;
+class QQuickWidget;
 
 class ComicsView : public QWidget
 {
@@ -55,7 +55,7 @@ protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
 
-    QQuickView *view;
+    QQuickWidget *view;
     QWidget *container;
 
     ComicDB *comicDB;

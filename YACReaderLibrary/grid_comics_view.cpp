@@ -1,6 +1,7 @@
 #include "grid_comics_view.h"
 
 #include <QtQuick>
+#include <QQuickWidget>
 #include <QtWidgets>
 
 #include "comic.h"
@@ -40,21 +41,20 @@ GridComicsView::GridComicsView(QWidget *parent) :
     qmlRegisterType<ComicDB>("com.yacreader.ComicDB",1,0,"ComicDB");
     qmlRegisterType<ComicInfo>("com.yacreader.ComicInfo",1,0,"ComicInfo");
 
-    view = new QQuickView();
+    view = new QQuickWidget(this);
+    view->setResizeMode(QQuickWidget::SizeRootObjectToView);
     connect(
-        view, &QQuickView::statusChanged,
-        [=] (QQuickView::Status status)
+        view, &QQuickWidget::statusChanged,
+        [=] (QQuickWidget::Status status)
         {
-            if (status == QQuickView::Error)
+            if (status == QQuickWidget::Error)
             {
                 QLOG_ERROR() << view->errors();
             }
         }
       );
-    container = QWidget::createWindowContainer(view, this);
 
-    container->setMinimumSize(200, 200);
-    container->setFocusPolicy(Qt::TabFocus);
+    //view->setFocusPolicy(Qt::TabFocus);
 
     selectionHelper = new YACReaderComicsSelectionHelper(this);
     connect(selectionHelper, &YACReaderComicsSelectionHelper::selectionChanged, this, &GridComicsView::dummyUpdater);
@@ -183,7 +183,7 @@ GridComicsView::GridComicsView(QWidget *parent) :
     setShowMarks(true);//TODO save this in settings
 
     QVBoxLayout * l = new QVBoxLayout;
-    l->addWidget(container);
+    l->addWidget(view);
     this->setLayout(l);
 
     setContentsMargins(0,0,0,0);

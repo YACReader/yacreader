@@ -262,7 +262,7 @@ TRANSLATIONS =   yacreaderlibrary_es.ts \
                 yacreaderlibrary_source.ts
 
 #QML/GridView
-QT += quick qml
+QT += quick qml quickwidgets
 
 HEADERS += grid_comics_view.h \
            comics_view_transition.h
