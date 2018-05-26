@@ -1682,6 +1682,7 @@ void MainWindowViewer::decreasePageZoomLevel()
 void MainWindowViewer::sendComic()
 {
     YACReaderLocalClient  * client = new YACReaderLocalClient;
+		connect(client, &YACReaderLocalClient::finished, client, &YACReaderLocalClient::deleteLater);
     currentComicDB.info.lastTimeOpened = QDateTime::currentSecsSinceEpoch();
     viewer->updateComic(currentComicDB);
 
@@ -1692,15 +1693,12 @@ void MainWindowViewer::sendComic()
             ComicDB & nextComic = siblingComics[currentIndex+1];
             nextComic.info.hasBeenOpened = true;
             int retries = 1;
-            while(!client->sendComicInfo(libraryId,currentComicDB,nextComic.id) && retries!=0)
+            while(!client->sendComicInfo(libraryId, currentComicDB, nextComic.id) && retries!=0)
                 retries--;
-            connect(client,SIGNAL(finished()),client,SLOT(deleteLater()));
         }
     } else {
         int retries = 1;
-        while(!client->sendComicInfo(libraryId,currentComicDB) && retries!=0)
+        while(!client->sendComicInfo(libraryId, currentComicDB) && retries!=0)
             retries--;
-        connect(client,SIGNAL(finished()),client,SLOT(deleteLater()));
     }
-    //delete client;
 }
