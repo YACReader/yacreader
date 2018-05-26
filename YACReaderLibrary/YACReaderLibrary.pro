@@ -221,6 +221,11 @@ SOURCES += comic_flow.cpp \
     SOURCES += ../common/gl/yacreader_flow_gl.cpp
 }
 
+macx {
+	HEADERS += trayhandler.h
+	OBJECTIVE_SOURCES += trayhandler.mm
+}
+
 include(./server/server.pri)
 include(../custom_widgets/custom_widgets_yacreaderlibrary.pri)
 

@@ -86,6 +86,9 @@
 #ifdef Q_OS_WIN
 #include <shellapi.h>
 #endif
+#ifdef Q_OS_MACOS
+    #include "trayhandler.h"
+#endif
 
 LibraryWindow::LibraryWindow()
     : QMainWindow(), fullscreen(false), previousFilter(""), fetching(false), status(LibraryWindow::Normal), removeError(false)
@@ -139,35 +142,41 @@ void LibraryWindow::setupUI()
 }
 /* //disabled until icons are ready and macos native code is done
         trayIcon.setIcon(QApplication::windowIcon());
-        trayIcon.show();
-        connect(&trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
-                this, SLOT(trayActivation(QSystemTrayIcon::ActivationReason)));
     }
-}
+    else
+    {
+        // TODO: Luis: This is a placeholder. Add MacOS, Windows and maybe a fallback
+        // for other systems here.
+        trayIcon.setIcon(QIcon(":/images/iconLibrary.png"));
+    }
 
-void LibraryWindow::trayActivation(QSystemTrayIcon::ActivationReason reason)
-{
-  if (reason == QSystemTrayIcon::Trigger)
-  {
-    setWindowState((windowState() & ~Qt::WindowMinimized));
-    show();
-    activateWindow();
-    raise();
-  }
+    connect(&trayIcon, &QSystemTrayIcon::activated,
+        [=] (QSystemTrayIcon::ActivationReason reason) {
+            if (reason == QSystemTrayIcon::Trigger)
+            {
+                #ifdef Q_OS_MACOS
+                OSXShowDockIcon();
+                #endif
+                setWindowState((windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
+                show();
+            }
+        });
+    trayIcon.setVisible(settings->value(MINIMIZE_TO_TRAY, true).toBool());
 }
-
 
 void LibraryWindow::changeEvent(QEvent *event)
 {
-  if (event->type() == QEvent::WindowStateChange && isMinimized())
-  {
-    hide();
-  }
-  else
-  {
+    if (event->type() == QEvent::WindowStateChange && isMinimized() &&
+        trayIcon.isVisible())
+    {
+        #ifdef Q_OS_MACOS
+        OSXHideDockIcon();
+        #endif
+        hide();
+        return;
+    }
     QMainWindow::changeEvent(event);
-  }
-}*/
+}
 
 void LibraryWindow::doLayout()
 {

@@ -385,7 +385,7 @@ public slots:
     void checkMaxNumLibraries();
     void showErrorUpgradingLibrary(const QString &path);
 
-    //void changeEvent(QEvent *event);
+    void changeEvent(QEvent *event);
 
 private:
     //fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
@@ -394,9 +394,6 @@ private:
     QSize previousSize;
     std::future<void> upgradeLibraryFuture;
     QSystemTrayIcon trayIcon;
-
-private slots:
-    //void trayActivation(QSystemTrayIcon::ActivationReason reason);
 };
 
 #endif
