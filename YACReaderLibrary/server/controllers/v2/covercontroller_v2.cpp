@@ -11,7 +11,6 @@ CoverControllerV2::CoverControllerV2() {}
 void CoverControllerV2::service(HttpRequest& request, HttpResponse& response)
 {
 	response.setHeader("Content-Type", "image/jpeg");
-	response.setHeader("Connection","close");
 	//response.setHeader("Content-Type", "plain/text; charset=ISO-8859-1");
 
 	YACReaderLibraries libraries = DBHelper::getLibraries();
