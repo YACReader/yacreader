@@ -23,5 +23,6 @@ void ComicDownloadInfoControllerV2::service(HttpRequest& request, HttpResponse& 
     //TODO: check if the comic wasn't found;
     response.write(QString("fileName:%1\r\n").arg(comic.getFileName()).toUtf8());
     response.write(QString("fileSize:%1\r\n").arg(comic.getFileSize()).toUtf8());
-    response.write(QString("hash:%1\r\n").arg(comic.info.hash).toUtf8(),true);
+    response.write(QString("libraryId:%1\r\n").arg(libraryId).toUtf8());
+    response.write(comic.toTXT().toUtf8(),true);
 }
