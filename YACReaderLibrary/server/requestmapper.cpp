@@ -247,8 +247,8 @@ void RequestMapper::serviceV2(HttpRequest& request, HttpResponse& response)
     QByteArray path=request.getPath();
 
     QRegExp folderInfo("/v2/library/.+/folder/[0-9]+/info/?"); //get folder info
-    QRegExp comicDownloadInfo("/v2/library/.+/comic/[0-9]+/?"); //get comic info (basic/download info)
-    QRegExp comicOpenForDownloading("/v2/library/.+/comic/[0-9]+/info/?"); //get comic info (full info + opening)
+    QRegExp comicDownloadInfo("/v2/library/.+/comic/[0-9]+/info/?"); //get comic info (full download info)
+    QRegExp comicOpenForDownloading("/v2/library/.+/comic/[0-9]+/?"); //get comic info (full info + opening)
     QRegExp comicOpenForRemoteReading("/v2/library/.+/comic/[0-9]+/remote/?"); //the server will open for reading the comic
     QRegExp comicFullInfo("/v2/library/.+/comic/[0-9]+/fullinfo/?"); //get comic info
     QRegExp comicUpdate("/v2/library/.+/comic/[0-9]+/update/?"); //get comic info
