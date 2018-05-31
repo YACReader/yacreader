@@ -1054,7 +1054,7 @@ void LibraryWindow::createConnections()
     connect(propertiesDialog,SIGNAL(accepted()),navigationController,SLOT(reselectCurrentSource()));
 
     //comic vine
-    connect(comicVineDialog,SIGNAL(accepted()),navigationController,SLOT(reselectCurrentSource()));
+    connect(comicVineDialog,SIGNAL(accepted()),navigationController,SLOT(reselectCurrentSource()), Qt::QueuedConnection);
 
     connect(updateLibraryAction,SIGNAL(triggered()),this,SLOT(updateLibrary()));
     connect(renameLibraryAction,SIGNAL(triggered()),this,SLOT(renameLibrary()));
