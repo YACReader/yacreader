@@ -92,8 +92,8 @@ void FileLogger::write(const LogMessage* logMessage)
         // Check for success
         if (file->error())
         {
-            close();
             qWarning("Cannot write to log file %s: %s",qPrintable(fileName),qPrintable(file->errorString()));
+            close();
         }
 
     }

@@ -70,37 +70,37 @@ YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget * parent)
 
 	connect(gl->xRotation,SIGNAL(valueChanged(int)),this,SLOT(saveXRotation(int)));
 	connect(gl->xRotation,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
-	
+
 	connect(gl->yPosition,SIGNAL(valueChanged(int)),this,SLOT(saveYPosition(int)));
 	connect(gl->yPosition,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
-	
+
 	connect(gl->coverDistance,SIGNAL(valueChanged(int)),this,SLOT(saveCoverDistance(int)));
 	connect(gl->coverDistance,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
-	
+
 	connect(gl->centralDistance,SIGNAL(valueChanged(int)),this,SLOT(saveCentralDistance(int)));
 	connect(gl->centralDistance,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
-	
+
 	connect(gl->zoomLevel,SIGNAL(valueChanged(int)),this,SLOT(saveZoomLevel(int)));
 	connect(gl->zoomLevel,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
-	
+
 	connect(gl->yCoverOffset,SIGNAL(valueChanged(int)),this,SLOT(saveYCoverOffset(int)));
 	connect(gl->yCoverOffset,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
-	
+
 	connect(gl->zCoverOffset,SIGNAL(valueChanged(int)),this,SLOT(saveZCoverOffset(int)));
 	connect(gl->zCoverOffset,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
-	
+
 	connect(gl->coverRotation,SIGNAL(valueChanged(int)),this,SLOT(saveCoverRotation(int)));
 	connect(gl->coverRotation,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
-	
+
 	connect(gl->fadeOutDist,SIGNAL(valueChanged(int)),this,SLOT(saveFadeOutDist(int)));
 	connect(gl->fadeOutDist,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
-	
+
 	connect(gl->lightStrength,SIGNAL(valueChanged(int)),this,SLOT(saveLightStrength(int)));
 	connect(gl->lightStrength,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
-	
+
 	connect(gl->maxAngle,SIGNAL(valueChanged(int)),this,SLOT(saveMaxAngle(int)));
 	connect(gl->maxAngle,SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
-	
+
 	connect(gl->performanceSlider, SIGNAL(valueChanged(int)),this,SLOT(savePerformance(int)));
 	connect(gl->performanceSlider, SIGNAL(valueChanged(int)),this,SIGNAL(optionsChanged()));
 
@@ -237,7 +237,7 @@ void YACReaderOptionsDialog::restoreOptions(QSettings * settings)
 		sw->setVisible(true);
 		useGL->setChecked(false);
 	}
-		
+
 
 	if(!settings->contains(FLOW_TYPE_GL))
 	{
@@ -253,7 +253,7 @@ void YACReaderOptionsDialog::restoreOptions(QSettings * settings)
 		gl->vSyncCheck->setChecked(false);
 
 	gl->performanceSlider->setValue(settings->value(PERFORMANCE).toInt());
-	
+
 	FlowType flowType;
 	switch(settings->value(FLOW_TYPE_GL).toInt())
 	{
@@ -275,8 +275,10 @@ void YACReaderOptionsDialog::restoreOptions(QSettings * settings)
 	case 5:
 		flowType = Custom;
 		break;
+	default:
+		flowType = CoverFlowLike;
 	}
-	
+
 
 	if(flowType == Custom)
 	{
@@ -311,7 +313,7 @@ void YACReaderOptionsDialog::restoreOptions(QSettings * settings)
 		gl->radionModern->setChecked(true);
 		return;
 	}
-	
+
 	if(flowType == Roulette)
 	{
 		setRouletteConfig();
@@ -399,7 +401,7 @@ void YACReaderOptionsDialog::setModernConfig()
 void YACReaderOptionsDialog::setRouletteConfig()
 {
 	gl->setValues(pressetYACReaderFlowDownConfig);
-	
+
 	saveFlowParameters();
 
     settings->setValue(FLOW_TYPE_GL,Roulette);

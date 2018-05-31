@@ -823,7 +823,13 @@ void FolderModelProxy::setupFilteredModelData(QSqlQuery &sqlquery, FolderItem *p
 
             //si el nodo es hijo de 1 y no hab�a sido previamente insertado como hijo, se a�ade como tal
             if(!parentPreviousInserted)
+            {
                 filteredItems.value(ROOT)->appendChild(item);
+            }
+            else
+            {
+                delete item;
+            }
         }
     }
 }

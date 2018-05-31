@@ -86,7 +86,7 @@ SortVolumeComics::SortVolumeComics(QWidget *parent) :
     //rows actions
     QAction * removeItemFromList = new QAction(tr("remove selected comics"),this);
     QAction * restoreAllItems = new QAction(tr("restore all removed comics"),this);
-    QAction * restoreItems = new QAction(tr("restore removed comics"),this);
+    //QAction * restoreItems = new QAction(tr("restore removed comics"),this);
 
     tableFiles->setContextMenuPolicy(Qt::ActionsContextMenu);
     tableFiles->addAction(removeItemFromList);
@@ -95,7 +95,7 @@ SortVolumeComics::SortVolumeComics(QWidget *parent) :
 
     connect(removeItemFromList,SIGNAL(triggered()),this,SLOT(removeSelectedComics()));
     connect(restoreAllItems,SIGNAL(triggered()),this,SLOT(restoreAllComics()));
-    connect(restoreItems,SIGNAL(triggered()),this,SLOT(showRemovedComicsSelector()));
+    //connect(restoreItems,SIGNAL(triggered()),this,SLOT(showRemovedComicsSelector()));
 }
 
 void SortVolumeComics::setData(QList<ComicDB> & comics, const QString &json, const QString &vID)

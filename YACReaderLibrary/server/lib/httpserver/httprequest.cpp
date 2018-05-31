@@ -460,16 +460,23 @@ void HttpRequest::parseMultiPartFile()
                 else if (!fileName.isEmpty() && !fieldName.isEmpty())
                 {
                     // last field was a file
-                    #ifdef SUPERVERBOSE
-                        qDebug("HttpRequest: finishing writing to uploaded file");
-                    #endif
-                    uploadedFile->resize(uploadedFile->size()-2);
-                    uploadedFile->flush();
-                    uploadedFile->seek(0);
-                    parameters.insert(fieldName,fileName);
-                    qDebug("HttpRequest: set parameter %s=%s",fieldName.data(),fileName.data());
-                    uploadedFiles.insert(fieldName,uploadedFile);
-                    qDebug("HttpRequest: uploaded file size is %i",(int) uploadedFile->size());
+                    if (uploadedFile)
+                    {
+                        #ifdef SUPERVERBOSE
+                            qDebug("HttpRequest: finishing writing to uploaded file");
+                        #endif
+                        uploadedFile->resize(uploadedFile->size()-2);
+                        uploadedFile->flush();
+                        uploadedFile->seek(0);
+                        parameters.insert(fieldName,fileName);
+                        qDebug("HttpRequest: set parameter %s=%s",fieldName.data(),fileName.data());
+                        uploadedFiles.insert(fieldName,uploadedFile);
+                        qDebug("HttpRequest: uploaded file size is %i",(int) uploadedFile->size());
+                    }
+                    else
+                    {
+                        qWarning("HttpRequest: format error, unexpected end of file data");
+                    }
                 }
                 if (line.contains(boundary+"--"))
                 {
@@ -546,4 +553,3 @@ QHostAddress HttpRequest::getPeerAddress() const
 {
     return peerAddress;
 }
-
