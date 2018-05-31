@@ -12,7 +12,6 @@ LibrariesControllerV2::LibrariesControllerV2() {}
 void LibrariesControllerV2::service(HttpRequest& request, HttpResponse& response)
 {
     response.setHeader("Content-Type", "application/json");
-    response.setHeader("Connection","close");
 
 	YACReaderLibraries libraries = DBHelper::getLibraries();
 	QList<QString> names = DBHelper::getLibrariesNames();

@@ -111,6 +111,8 @@ void ComicVineDialog::doConnections()
 	connect(selectVolumeWidget,SIGNAL(loadPage(QString,int)),this,SLOT(searchVolume(QString,int)));
 	connect(selectComicWidget,SIGNAL(loadPage(QString,int)),this,SLOT(getVolumeComicsInfo(QString,int)));
 	connect(sortVolumeComicsWidget,SIGNAL(loadPage(QString,int)),this,SLOT(getVolumeComicsInfo(QString,int)));
+
+    connect(this, SIGNAL(accepted()), this, SLOT(close()), Qt::QueuedConnection);
 }
 
 void ComicVineDialog::goNext()
@@ -456,7 +458,6 @@ void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString> > & matchingIn
 	db.close();
 	QSqlDatabase::removeDatabase(db.connectionName());
 
-	close();
     emit accepted();
 }
 
@@ -472,8 +473,7 @@ void ComicVineDialog::getComicInfo(const QString &comicId, int count, const QStr
 		//TODO
 		if(mode == SingleComic || currentIndex == (comics.count()-1))
 		{
-			close();
-			emit accepted();
+            emit accepted();
 		} else
 		{
 		   goToNextComic();
@@ -496,7 +496,6 @@ void ComicVineDialog::getComicInfo(const QString &comicId, int count, const QStr
 
     if(mode == SingleComic || currentIndex == (comics.count()-1))
     {
-        close();
         emit accepted();
     } else
     {
@@ -645,7 +644,6 @@ void ComicVineDialog::goToNextComic()
 {
 	if(mode == SingleComic || currentIndex == (comics.count()-1))
 	{
-		close();
 		emit accepted();
 		return;
 	}

@@ -736,7 +736,7 @@ void DBHelper::updateReadingRemoteProgress(const ComicInfo &comicInfo, QSqlDatab
     updateComicInfo.bindValue(":read", comicInfo.read?1:0);
     updateComicInfo.bindValue(":currentPage", comicInfo.currentPage);
     updateComicInfo.bindValue(":hasBeenOpened", comicInfo.hasBeenOpened?1:0);
-    updateComicInfo.bindValue(":lastTimeOpened", QDateTime::currentSecsSinceEpoch());
+    updateComicInfo.bindValue(":lastTimeOpened", QDateTime::currentMSecsSinceEpoch() / 1000);
     updateComicInfo.bindValue(":id", comicInfo.id);
     updateComicInfo.bindValue(":rating", comicInfo.rating);
     updateComicInfo.exec();
