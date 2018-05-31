@@ -38,7 +38,8 @@ void VolumeComicsModel::load(const QString & json)
                 continue;
 			resultsValue = it.value();
 			QString issueNumber = resultsValue.property("issue_number").toString();
-			QString name = resultsValue.property("name").toString();
+            QScriptValue propertyName = resultsValue.property("name");
+            QString name = propertyName.isNull() ? "-" : propertyName.toString();
 			QString coverURL = resultsValue.property("image").property("medium_url").toString();
 			QString id = resultsValue.property("id").toString();
 			QStringList l;

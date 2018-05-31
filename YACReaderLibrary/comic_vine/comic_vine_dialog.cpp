@@ -553,7 +553,9 @@ ComicDB ComicVineDialog::parseComicInfo(ComicDB & comic, const QString & json, i
             QString synopsis = result.property("description").toString().remove(QRegExp("<[^>]*>")); //description
             QString characters = getCharacters(result.property("character_credits"));
 
-            comic.info.title = title;
+            if (title != "null") {
+                comic.info.title = title;
+            }
 
             comic.info.number = number;
             comic.info.count = count;
