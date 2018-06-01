@@ -135,7 +135,29 @@ int main( int argc, char ** argv )
 QCommandLineParser parser;
 parser.addHelpOption();
 parser.addVersionOption();
+parser.addOption({"loglevel", "Set log level. Valid values: trace, info, debug, warn, error.", "loglevel", "warning"});
 parser.process(app);
+
+if (parser.isSet("loglevel")) {
+    if (parser.value("loglevel") == "trace") {
+        logger.setLoggingLevel(QsLogging::TraceLevel);
+    }
+    else if (parser.value("loglevel") == "info") {
+        logger.setLoggingLevel(QsLogging::InfoLevel);
+    }
+    else if (parser.value("loglevel") == "debug") {
+        logger.setLoggingLevel(QsLogging::DebugLevel);
+    }
+    else if (parser.value("loglevel") == "warn") {
+      logger.setLoggingLevel(QsLogging::WarnLevel);
+    }
+    else if (parser.value("loglevel") == "error") {
+        logger.setLoggingLevel(QsLogging::ErrorLevel);
+    }
+    else {
+        parser.showHelp();
+    }
+}
 
 #ifdef SERVER_RELEASE
   QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creaci�n del fichero de config con el servidor

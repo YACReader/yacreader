@@ -70,6 +70,7 @@ int main( int argc, char ** argv )
     parser.addHelpOption();
     const QCommandLineOption versionOption = parser.addVersionOption();
     parser.addPositionalArgument("command", "The command to execute. [start, create-library, update-library, add-library, remove-library, list-libraries]");
+    parser.addOption({"loglevel", "Set log level. Valid values: trace, info, debug, warn, error.", "loglevel", "info"});
     parser.parse(app.arguments());
 
     const QStringList args = parser.positionalArguments();
@@ -92,7 +93,27 @@ int main( int argc, char ** argv )
         QDir().mkpath(YACReader::getSettingsPath());
 
         Logger& logger = Logger::instance();
-        logger.setLoggingLevel(QsLogging::InfoLevel);
+
+        if (parser.isSet("loglevel")) {
+            if (parser.value("loglevel") == "trace") {
+                logger.setLoggingLevel(QsLogging::TraceLevel);
+            }
+            else if (parser.value("loglevel") == "info") {
+                logger.setLoggingLevel(QsLogging::InfoLevel);
+            }
+            else if (parser.value("loglevel") == "debug") {
+                logger.setLoggingLevel(QsLogging::DebugLevel);
+            }
+            else if (parser.value("loglevel") == "warn") {
+              logger.setLoggingLevel(QsLogging::WarnLevel);
+            }
+            else if (parser.value("loglevel") == "error") {
+                logger.setLoggingLevel(QsLogging::ErrorLevel);
+            }
+            else {
+                parser.showHelp();
+            }
+        }
 
         DestinationPtr fileDestination(DestinationFactory::MakeFileDestination(
                                            destLog, EnableLogRotation, MaxSizeBytes(1048576), MaxOldLogCount(2)));
