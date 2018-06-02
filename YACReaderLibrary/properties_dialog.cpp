@@ -153,7 +153,7 @@ void PropertiesDialog::createGeneralInfoBox()
 	numberEdit->setValidator(&numberValidator);
 	number->addWidget(new QLabel("Bis:"));
 	number->addWidget(isBisCheck = new QCheckBox());
-	number->addWidget(new QLabel("of:"));
+    number->addWidget(new QLabel(tr("of:")));
 	number->addWidget(countEdit = new YACReaderFieldEdit());
 	countValidator.setBottom(0);
 	countEdit->setValidator(&countValidator);
@@ -166,11 +166,11 @@ void PropertiesDialog::createGeneralInfoBox()
 
 	QHBoxLayout * arc = new QHBoxLayout;
 	arc->addWidget(storyArcEdit = new YACReaderFieldEdit());
-	arc->addWidget(new QLabel("Arc number:"));
+	arc->addWidget(new QLabel(tr("Arc number:")));
 	arc->addWidget(arcNumberEdit = new YACReaderFieldEdit());
 	arcNumberValidator.setBottom(0);
 	arcNumberEdit->setValidator(&arcNumberValidator);
-	arc->addWidget(new QLabel("of:"));
+	arc->addWidget(new QLabel(tr("of:")));
 	arc->addWidget(arcCountEdit = new YACReaderFieldEdit());
 	arcCountValidator.setBottom(0);
 	arcCountEdit->setValidator(&arcCountValidator);
