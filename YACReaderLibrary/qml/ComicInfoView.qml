@@ -272,7 +272,7 @@ Rectangle {
                 font.pixelSize: 18
                 font.bold: true
 
-                text: "Authors"
+                text: qsTr("Authors")
 
                 visible: comicInfo.getWriters().length +
                          comicInfo.getPencillers().length +
@@ -302,7 +302,7 @@ Rectangle {
                             font.family: "Arial"
                             font.pixelSize: 13
                             font.italic: true
-                            text: "writer"
+                            text: qsTr("writer")
                         }
                     }
                 }
@@ -324,7 +324,7 @@ Rectangle {
                             font.family: "Arial"
                             font.pixelSize: 13
                             font.italic: true
-                            text: "penciller"
+                            text: qsTr("penciller")
                         }
                     }
                 }
@@ -346,7 +346,7 @@ Rectangle {
                             font.family: "Arial"
                             font.pixelSize: 13
                             font.italic: true
-                            text: "inker"
+                            text: qsTr("inker")
                         }
                     }
                 }
@@ -368,7 +368,7 @@ Rectangle {
                             font.family: "Arial"
                             font.pixelSize: 13
                             font.italic: true
-                            text: "colorist"
+                            text: qsTr("colorist")
                         }
                     }
                 }
@@ -390,7 +390,7 @@ Rectangle {
                             font.family: "Arial"
                             font.pixelSize: 13
                             font.italic: true
-                            text: "letterer"
+                            text: qsTr("letterer")
                         }
                     }
                 }
@@ -412,7 +412,7 @@ Rectangle {
                             font.family: "Arial"
                             font.pixelSize: 13
                             font.italic: true
-                            text: "cover artist"
+                            text: qsTr("cover artist")
                         }
                     }
                 }
@@ -427,7 +427,7 @@ Rectangle {
                 font.pixelSize: 18
                 font.bold: true
 
-                text: "Publisher"
+                text: qsTr("Publisher")
 
                 visible: publisher.visible || format.visible || color.visible || age_rating.visible
             }
@@ -467,7 +467,7 @@ Rectangle {
                     font.family: "Arial"
                     font.pixelSize: 15
 
-                    text: comicInfo.color ? "color" : "b/w"
+                    text: comicInfo.color ? qsTr("color") : qsTr("b/w")
 
                     visible: comicInfo.color
                 }
@@ -495,7 +495,7 @@ Rectangle {
                 font.pixelSize: 18
                 font.bold: true
 
-                text: "Characters"
+                text: qsTr("Characters")
 
                 visible: comicInfo.getCharacters().length > 0
             }
