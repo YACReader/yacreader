@@ -2106,4 +2106,62 @@ to improve the performance</source>
         <translation type="vanished">Recherche de dossiers et de comics</translation>
     </message>
 </context>
+<context>
+    <name>ComicInfoView</name>
+    <message>
+        <location filename="qml/ComicInfoView.qml" line="275"/>
+        <source>Authors</source>
+        <translation>Auteurs</translation>
+    </message>
+    <message>
+        <location filename="qml/ComicInfoView.qml" line="305"/>
+        <source>writer</source>
+        <translation>scénario</translation>
+    </message>
+    <message>
+        <location filename="qml/ComicInfoView.qml" line="327"/>
+        <source>penciller</source>
+        <translation>dessin</translation>
+    </message>
+    <message>
+        <location filename="qml/ComicInfoView.qml" line="349"/>
+        <source>inker</source>
+        <translation>encre</translation>
+    </message>
+    <message>
+        <location filename="qml/ComicInfoView.qml" line="371"/>
+        <source>colorist</source>
+        <translation>couleur</translation>
+    </message>
+    <message>
+        <location filename="qml/ComicInfoView.qml" line="393"/>
+        <source>letterer</source>
+        <translation>lettreur</translation>
+    </message>
+    <message>
+        <location filename="qml/ComicInfoView.qml" line="415"/>
+        <source>cover artist</source>
+        <translation>couverture</translation>
+    </message>
+    <message>
+        <location filename="qml/ComicInfoView.qml" line="430"/>
+        <source>Publisher</source>
+        <translation>Editeur</translation>
+    </message>
+    <message>
+        <location filename="qml/ComicInfoView.qml" line="470"/>
+        <source>color</source>
+        <translation>couleur</translation>
+    </message>
+    <message>
+        <location filename="qml/ComicInfoView.qml" line="470"/>
+        <source>b/w</source>
+        <translation>noir et blanc</translation>
+    </message>
+    <message>
+        <location filename="qml/ComicInfoView.qml" line="498"/>
+        <source>Characters</source>
+        <translation>Personnages</translation>
+    </message>
+</context>
 </TS>
