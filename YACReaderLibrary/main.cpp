@@ -136,7 +136,31 @@ QCommandLineParser parser;
 parser.addHelpOption();
 parser.addVersionOption();
 parser.addOption({"loglevel", "Set log level. Valid values: trace, info, debug, warn, error.", "loglevel", "warning"});
+#ifdef Q_OS_WIN
+parser.addOption({"opengl", "Set opengl renderer. Valid values: desktop, es, software.", "gl_renderer"});
+#endif
 parser.process(app);
+
+#ifdef Q_OS_WIN
+if (parser.isSet("opengl")) {
+    QTextStream qout(stdout);
+    if (parser.value("opengl") == "desktop") {
+        app.setAttribute(Qt::AA_UseDesktopOpenGL);
+    }
+    else if (parser.value("opengl") == "es") {
+        app.setAttribute(Qt::AA_UseOpenGLES);
+    }
+    else if (parser.value("opengl") == "software") {
+        qout << "Warning! This will be slow as hell. Only use this setting for"
+            "testing or as a last resort.";
+        app.setAttribute(Qt::AA_UseSoftwareOpenGL);
+    }
+    else {
+        qout << "Invalid value:" << parser.value("gl_renderer");
+        parser.showHelp();
+    }
+}
+#endif
 
 if (parser.isSet("loglevel")) {
     if (parser.value("loglevel") == "trace") {
