@@ -44,8 +44,48 @@ void logSystemAndConfig()
     QLOG_INFO() << "--------------------------------------------";
 }
 
+void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg)
+{
+	Q_UNUSED(context);
+
+	QByteArray localMsg = msg.toLocal8Bit();
+    switch (type)
+	{
+    case QtInfoMsg:
+    {
+      QLOG_INFO() << localMsg.constData();
+      break;
+    }
+		case QtDebugMsg:
+		{
+			QLOG_DEBUG() << localMsg.constData();
+			break;
+		}
+
+		case QtWarningMsg:
+		{
+			QLOG_WARN() << localMsg.constData();
+			break;
+		}
+
+		case QtCriticalMsg:
+		{
+			QLOG_ERROR() << localMsg.constData();
+			break;
+		}
+
+		case QtFatalMsg:
+		{
+			QLOG_FATAL() << localMsg.constData();
+			break;
+		}
+  }
+}
+
 int main( int argc, char ** argv )
 {
+    qInstallMessageHandler(messageHandler);
+
     QCoreApplication app(argc, argv);
 
     app.setApplicationName("YACReaderLibrary");
