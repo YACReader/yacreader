@@ -64,22 +64,22 @@
 <context>
     <name>FileComic</name>
     <message>
-        <location filename="../common/comic.cpp" line="418"/>
+        <location filename="../common/comic.cpp" line="437"/>
         <source>Unknown error opening the file</source>
         <translation>Неизвестная ошибка при открытии файла</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="544"/>
+        <location filename="../common/comic.cpp" line="563"/>
         <source>7z not found</source>
         <translation>7z не найден</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="551"/>
+        <location filename="../common/comic.cpp" line="570"/>
         <source>Format not supported</source>
         <translation>Формат не поддерживается</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="411"/>
+        <location filename="../common/comic.cpp" line="430"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
         <translation>Ошибка контрольной суммы CRC на странице (%1): некоторые страницы будут отображаться неправильно</translation>
     </message>
@@ -650,12 +650,12 @@
 <context>
     <name>OptionsDialog</name>
     <message>
-        <location filename="options_dialog.cpp" line="37"/>
+        <location filename="options_dialog.cpp" line="38"/>
         <source>&quot;Go to flow&quot; size</source>
         <translation>Размер потока страниц</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="48"/>
+        <location filename="options_dialog.cpp" line="49"/>
         <source>My comics path</source>
         <translation>Папка комиксов</translation>
     </message>
@@ -664,77 +664,77 @@
         <translation type="vanished">Растянуть страницу в ширину</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="79"/>
+        <location filename="options_dialog.cpp" line="80"/>
         <source>Background color</source>
         <translation>Фоновый цвет</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="82"/>
+        <location filename="options_dialog.cpp" line="83"/>
         <source>Choose</source>
         <translation>Выбрать</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="108"/>
+        <location filename="options_dialog.cpp" line="109"/>
         <source>Quick Navigation Mode</source>
         <translation>Ползунок для быстрой навигации по страницам</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="109"/>
+        <location filename="options_dialog.cpp" line="110"/>
         <source>Disable mouse over activation</source>
         <translation>Отключить активацию потока при наведении мыши</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="113"/>
+        <location filename="options_dialog.cpp" line="114"/>
         <source>Restart is needed</source>
         <translation> </translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="133"/>
+        <location filename="options_dialog.cpp" line="134"/>
         <source>Brightness</source>
         <translation>Яркость</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="134"/>
+        <location filename="options_dialog.cpp" line="135"/>
         <source>Contrast</source>
         <translation>Контраст</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="135"/>
+        <location filename="options_dialog.cpp" line="136"/>
         <source>Gamma</source>
         <translation>Гамма</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="139"/>
+        <location filename="options_dialog.cpp" line="140"/>
         <source>Reset</source>
         <translation>Вернуть к первоначальным значениям</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="145"/>
+        <location filename="options_dialog.cpp" line="146"/>
         <source>Image options</source>
         <translation>Настройки изображения</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="155"/>
+        <location filename="options_dialog.cpp" line="156"/>
         <source>General</source>
         <translation>Общие</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="156"/>
+        <location filename="options_dialog.cpp" line="157"/>
         <source>Page Flow</source>
         <translation>Поток Страниц</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="157"/>
+        <location filename="options_dialog.cpp" line="158"/>
         <source>Image adjustment</source>
         <translation>Настройка изображения</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="171"/>
+        <location filename="options_dialog.cpp" line="172"/>
         <source>Options</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="178"/>
+        <location filename="options_dialog.cpp" line="179"/>
         <source>Comics directory</source>
         <translation>Папка комиксов</translation>
     </message>
