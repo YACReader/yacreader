@@ -4,6 +4,7 @@ debug64*
 * MacOSX-Intel*
 dependencies/create-dmg
 signapps.sh
+lib7zip
 
 # C++ objects and libs
 *.slo
