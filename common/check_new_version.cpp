@@ -36,7 +36,7 @@ bool HttpVersionChecker::checkNewVersion(QString sourceContent)
 #ifdef  Q_OS_MAC
     QRegExp rx("YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}Mac");
 #endif
-
+	
 	int index = 0;
 	bool newVersion = false;
 	bool sameVersion = true;
