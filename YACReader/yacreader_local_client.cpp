@@ -125,47 +125,92 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB & comic, 
 	}
 }
 
+
 bool YACReaderLocalClient::sendComicInfo(quint64 libraryId, ComicDB & comic)
 {
-	localSocket->connectToServer(YACREADERLIBRARY_GUID);
-	if(localSocket->isOpen())
-	{
+    localSocket->connectToServer(YACREADERLIBRARY_GUID);
+    if(localSocket->isOpen())
+    {
         //QLOG_INFO() << "Connection opened for sending ComicInfo";
-		QByteArray block;
-		QDataStream out(&block, QIODevice::WriteOnly);
-		out.setVersion(QDataStream::Qt_4_8);
-		out << (quint32)0;
-		out << (quint8)YACReader::SendComicInfo;
-		out << libraryId;
-		out << comic;
-		out.device()->seek(0);
-		out << (quint32)(block.size() - sizeof(quint32));
+        QByteArray block;
+        QDataStream out(&block, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_4_8);
+        out << (quint32)0;
+        out << (quint8)YACReader::SendComicInfo;
+        out << libraryId;
+        out << comic;
+        out.device()->seek(0);
+        out << (quint32)(block.size() - sizeof(quint32));
 
-		int  written, previousWritten;
-		written = previousWritten = 0;
-		int tries = 0;
-		while(written != block.size() && tries < 100)
-		{
-			written += localSocket->write(block);
+        int  written, previousWritten;
+        written = previousWritten = 0;
+        int tries = 0;
+        while(written != block.size() && tries < 100)
+        {
+            written += localSocket->write(block);
             if(written == previousWritten)
                 tries++;
             previousWritten = written;
-		}
+        }
         localSocket->waitForBytesWritten(2000);
-		localSocket->close();
+        localSocket->close();
         //QLOG_INFO() << QString("Sending Comic Info : writen data (%1,%2)").arg(written).arg(block.size());
-		if(tries == 100 && written != block.size())
-		{
-			emit finished();
-			QLOG_ERROR() << QString("Sending Comic Info : unable to write data (%1,%2)").arg(written).arg(block.size());
-			return false;
-		}
-		emit finished();
-		return true;
-	}
+        if(tries == 100 && written != block.size())
+        {
+            emit finished();
+            QLOG_ERROR() << QString("Sending Comic Info : unable to write data (%1,%2)").arg(written).arg(block.size());
+            return false;
+        }
+        emit finished();
+        return true;
+    }
 
-	emit finished();
-	QLOG_ERROR() << "Sending Comic Info : unable to connect to the server";
-	return false;
+    emit finished();
+    QLOG_ERROR() << "Sending Comic Info : unable to connect to the server";
+    return false;
+}
 
+bool YACReaderLocalClient::sendComicInfo(quint64 libraryId, ComicDB & comic, qulonglong nextComicId)
+{
+    localSocket->connectToServer(YACREADERLIBRARY_GUID);
+    if(localSocket->isOpen())
+    {
+        //QLOG_INFO() << "Connection opened for sending ComicInfo";
+        QByteArray block;
+        QDataStream out(&block, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_4_8);
+        out << (quint32)0;
+        out << (quint8)YACReader::SendComicInfo;
+        out << libraryId;
+        out << comic;
+        out << nextComicId;
+        out.device()->seek(0);
+        out << (quint32)(block.size() - sizeof(quint32));
+
+        int  written, previousWritten;
+        written = previousWritten = 0;
+        int tries = 0;
+        while(written != block.size() && tries < 100)
+        {
+            written += localSocket->write(block);
+            if(written == previousWritten)
+                tries++;
+            previousWritten = written;
+        }
+        localSocket->waitForBytesWritten(2000);
+        localSocket->close();
+        //QLOG_INFO() << QString("Sending Comic Info : writen data (%1,%2)").arg(written).arg(block.size());
+        if(tries == 100 && written != block.size())
+        {
+            emit finished();
+            QLOG_ERROR() << QString("Sending Comic Info : unable to write data (%1,%2)").arg(written).arg(block.size());
+            return false;
+        }
+        emit finished();
+        return true;
+    }
+
+    emit finished();
+    QLOG_ERROR() << "Sending Comic Info : unable to connect to the server";
+    return false;
 }

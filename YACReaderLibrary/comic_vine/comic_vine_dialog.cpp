@@ -111,6 +111,8 @@ void ComicVineDialog::doConnections()
 	connect(selectVolumeWidget,SIGNAL(loadPage(QString,int)),this,SLOT(searchVolume(QString,int)));
 	connect(selectComicWidget,SIGNAL(loadPage(QString,int)),this,SLOT(getVolumeComicsInfo(QString,int)));
 	connect(sortVolumeComicsWidget,SIGNAL(loadPage(QString,int)),this,SLOT(getVolumeComicsInfo(QString,int)));
+
+    connect(this, SIGNAL(accepted()), this, SLOT(close()), Qt::QueuedConnection);
 }
 
 void ComicVineDialog::goNext()
@@ -454,9 +456,8 @@ void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString> > & matchingIn
 	}
 	db.commit();
 	db.close();
-	QSqlDatabase::removeDatabase(databasePath);
+	QSqlDatabase::removeDatabase(db.connectionName());
 
-	close();
     emit accepted();
 }
 
@@ -472,8 +473,7 @@ void ComicVineDialog::getComicInfo(const QString &comicId, int count, const QStr
 		//TODO
 		if(mode == SingleComic || currentIndex == (comics.count()-1))
 		{
-			close();
-			emit accepted();
+            emit accepted();
 		} else
 		{
 		   goToNextComic();
@@ -492,11 +492,10 @@ void ComicVineDialog::getComicInfo(const QString &comicId, int count, const QStr
 
     db.commit();
     db.close();
-    QSqlDatabase::removeDatabase(databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 
     if(mode == SingleComic || currentIndex == (comics.count()-1))
     {
-        close();
         emit accepted();
     } else
     {
@@ -554,7 +553,9 @@ ComicDB ComicVineDialog::parseComicInfo(ComicDB & comic, const QString & json, i
             QString synopsis = result.property("description").toString().remove(QRegExp("<[^>]*>")); //description
             QString characters = getCharacters(result.property("character_credits"));
 
-            comic.info.title = title;
+            if (title != "null") {
+                comic.info.title = title;
+            }
 
             comic.info.number = number;
             comic.info.count = count;
@@ -645,7 +646,6 @@ void ComicVineDialog::goToNextComic()
 {
 	if(mode == SingleComic || currentIndex == (comics.count()-1))
 	{
-		close();
 		emit accepted();
 		return;
 	}

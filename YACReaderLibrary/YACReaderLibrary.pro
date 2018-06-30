@@ -24,11 +24,7 @@ unix:haiku {
   LIBS    += -lnetwork -lbsd
 }
 
-CONFIG(legacy_gl_widget) {
-    INCLUDEPATH += ../common/gl_legacy \
-} else {
-    INCLUDEPATH += ../common/gl \
-}
+INCLUDEPATH += ../common/gl
 
 # there are two builds for Windows, Desktop OpenGL based and ANGLE OpenGL ES based
 win32 {
@@ -151,15 +147,12 @@ HEADERS += comic_flow.h \
   yacreader_comics_views_manager.h \
   info_comics_view.h \
   yacreader_comics_selection_helper.h \
-  yacreader_comic_info_helper.h
+  yacreader_comic_info_helper.h \
+  db/reading_list.h \
+  current_comic_view_helper.h
 
 !CONFIG(no_opengl) {
-    CONFIG(legacy_gl_widget) {
-        message("using legacy YACReaderFlowGL (QGLWidget) header")
-        HEADERS += ../common/gl_legacy/yacreader_flow_gl.h
-    } else {
         HEADERS += ../common/gl/yacreader_flow_gl.h
-    }
 }
 
 SOURCES += comic_flow.cpp \
@@ -225,17 +218,13 @@ SOURCES += comic_flow.cpp \
     yacreader_comics_views_manager.cpp \
     info_comics_view.cpp \
     yacreader_comics_selection_helper.cpp \
-    yacreader_comic_info_helper.cpp
+    yacreader_comic_info_helper.cpp\
+    db/reading_list.cpp \
+    current_comic_view_helper.cpp
 
 !CONFIG(no_opengl) {
-    CONFIG(legacy_gl_widget) {
-        message("using legacy YACReaderFlowGL (QGLWidget) source code")
-        SOURCES += ../common/gl_legacy/yacreader_flow_gl.cpp
-    } else {
-        SOURCES += ../common/gl/yacreader_flow_gl.cpp
-    }
+    SOURCES += ../common/gl/yacreader_flow_gl.cpp
 }
-
 
 include(./server/server.pri)
 include(../custom_widgets/custom_widgets_yacreaderlibrary.pri)
@@ -291,10 +280,17 @@ unix:!macx {
 isEmpty(PREFIX) {
   PREFIX = /usr
 }
+isEmpty(BINDIR) {
+  BINDIR = $$PREFIX/bin
+}
+isEmpty(LIBDIR) {
+  LIBDIR = $$PREFIX/lib
+}
+isEmpty(DATADIR) {
+  DATADIR = $$PREFIX/share
+}
 
-BINDIR = $$PREFIX/bin
-LIBDIR = $$PREFIX/lib
-DATADIR = $$PREFIX/share
+DEFINES += "LIBDIR=\\\"$$LIBDIR\\\""  "DATADIR=\\\"$$DATADIR\\\""
 
 DEFINES += "LIBDIR=\\\"$$LIBDIR\\\""  "DATADIR=\\\"$$DATADIR\\\"" "BINDIR=\\\"$$BINDIR\\\""
 

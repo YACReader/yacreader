@@ -18,6 +18,8 @@ public slots:
     void readMessage();
     bool requestComicInfo(quint64 libraryId, ComicDB & comic,QList<ComicDB> & siblings);
     bool sendComicInfo(quint64 libraryId, ComicDB & comic);
+    bool sendComicInfo(quint64 libraryId, ComicDB & comic, qulonglong nextComicId);
+
 
 private:
     QLocalSocket * localSocket;

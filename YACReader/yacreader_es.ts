@@ -64,22 +64,22 @@
 <context>
     <name>FileComic</name>
     <message>
-        <location filename="../common/comic.cpp" line="418"/>
+        <location filename="../common/comic.cpp" line="437"/>
         <source>Unknown error opening the file</source>
         <translation>Error desconocido abriendo el archivo</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="544"/>
+        <location filename="../common/comic.cpp" line="563"/>
         <source>7z not found</source>
         <translation>7z no encontrado</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="551"/>
+        <location filename="../common/comic.cpp" line="570"/>
         <source>Format not supported</source>
         <translation>Formato no soportado</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="411"/>
+        <location filename="../common/comic.cpp" line="430"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
         <translation>Error CRC en la página (%1): algunas de las páginas no se mostrarán correctamente</translation>
     </message>
@@ -651,12 +651,12 @@
 <context>
     <name>OptionsDialog</name>
     <message>
-        <location filename="options_dialog.cpp" line="37"/>
+        <location filename="options_dialog.cpp" line="38"/>
         <source>&quot;Go to flow&quot; size</source>
         <translation>Tamaño de &quot;Go to flow&quot;</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="48"/>
+        <location filename="options_dialog.cpp" line="49"/>
         <source>My comics path</source>
         <translation>Ruta a mis cómics</translation>
     </message>
@@ -665,77 +665,77 @@
         <translation type="vanished">Ajuste en anchura de la página</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="79"/>
+        <location filename="options_dialog.cpp" line="80"/>
         <source>Background color</source>
         <translation>Color de fondo</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="82"/>
+        <location filename="options_dialog.cpp" line="83"/>
         <source>Choose</source>
         <translation>Elegir</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="108"/>
+        <location filename="options_dialog.cpp" line="109"/>
         <source>Quick Navigation Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="109"/>
+        <location filename="options_dialog.cpp" line="110"/>
         <source>Disable mouse over activation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="113"/>
+        <location filename="options_dialog.cpp" line="114"/>
         <source>Restart is needed</source>
         <translation>Es necesario reiniciar</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="133"/>
+        <location filename="options_dialog.cpp" line="134"/>
         <source>Brightness</source>
         <translation>Brillo</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="134"/>
+        <location filename="options_dialog.cpp" line="135"/>
         <source>Contrast</source>
         <translation>Contraste</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="135"/>
+        <location filename="options_dialog.cpp" line="136"/>
         <source>Gamma</source>
         <translation>Gamma</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="139"/>
+        <location filename="options_dialog.cpp" line="140"/>
         <source>Reset</source>
         <translation>Reset</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="145"/>
+        <location filename="options_dialog.cpp" line="146"/>
         <source>Image options</source>
         <translation>Opciones de imagen</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="155"/>
+        <location filename="options_dialog.cpp" line="156"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="156"/>
+        <location filename="options_dialog.cpp" line="157"/>
         <source>Page Flow</source>
         <translation>Page Flow</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="157"/>
+        <location filename="options_dialog.cpp" line="158"/>
         <source>Image adjustment</source>
         <translation>Ajustes de imagen</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="171"/>
+        <location filename="options_dialog.cpp" line="172"/>
         <source>Options</source>
         <translation>Opciones</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="178"/>
+        <location filename="options_dialog.cpp" line="179"/>
         <source>Comics directory</source>
         <translation>Directorio de cómics</translation>
     </message>

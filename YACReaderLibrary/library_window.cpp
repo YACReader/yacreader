@@ -15,13 +15,12 @@
 #include <QFileIconProvider>
 #include <QMatrix>
 #include <QSettings>
-#ifndef NO_OPENGL
-#include <QGLFormat>
-#endif
 #include <QHeaderView>
 
 #include <iterator>
 #include <typeinfo>
+#include <thread>
+#include <future>
 
 #include "data_base_management.h"
 #include "yacreader_global.h"
@@ -88,10 +87,6 @@
     #include <shellapi.h>
 #endif
 
-#ifdef Q_OS_MAC
-//#include <QtMacExtras>
-#endif
-
 LibraryWindow::LibraryWindow()
     :QMainWindow(),fullscreen(false),fetching(false),previousFilter(""),removeError(false),status(LibraryWindow::Normal)
 {
@@ -108,8 +103,6 @@ LibraryWindow::LibraryWindow()
 		showRootWidget();
 		selectedLibrary->setCurrentIndex(0);
 	}
-
-
 }
 
 void LibraryWindow::setupUI()
@@ -122,17 +115,17 @@ void LibraryWindow::setupUI()
 	settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
 	settings->beginGroup("libraryConfig");
 
-    historyController = new YACReaderHistoryController(this);
+        historyController = new YACReaderHistoryController(this);
 
 	createActions();
 	doModels();
 
-    doDialogs();
+        doDialogs();
 	doLayout();
 	createToolBars();
 	createMenus();
 
-    navigationController = new YACReaderNavigationController(this, comicsViewsManager);
+        navigationController = new YACReaderNavigationController(this, comicsViewsManager);
 
 	createConnections();
 
@@ -146,19 +139,42 @@ void LibraryWindow::setupUI()
 	else
 		//if(settings->value(USE_OPEN_GL).toBool() == false)
 			showMaximized();
-
-	/*if(settings->contains(COMICS_VIEW_HEADERS_GEOMETRY))
-        comicsView->horizontalHeader()->restoreGeometry(settings->value(COMICS_VIEW_HEADERS_GEOMETRY).toByteArray());*/
-
-	/*socialDialog = new YACReaderSocialDialog(this);
-	socialDialog->setHidden(true);*/
 }
+    /* //disabled until icons are ready and macos native code is done
+        trayIcon.setIcon(QApplication::windowIcon());
+        trayIcon.show();
+        connect(&trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+                this, SLOT(trayActivation(QSystemTrayIcon::ActivationReason)));
+    }
+}
+
+void LibraryWindow::trayActivation(QSystemTrayIcon::ActivationReason reason)
+{
+  if (reason == QSystemTrayIcon::Trigger)
+  {
+    setWindowState((windowState() & ~Qt::WindowMinimized));
+    show();
+    activateWindow();
+    raise();
+  }
+}
+
+
+void LibraryWindow::changeEvent(QEvent *event)
+{
+  if (event->type() == QEvent::WindowStateChange && isMinimized())
+  {
+    hide();
+  }
+  else
+  {
+    QMainWindow::changeEvent(event);
+  }
+}*/
 
 void LibraryWindow::doLayout()
 {
 	//LAYOUT ELEMENTS------------------------------------------------------------
-	//---------------------------------------------------------------------------
-
 	QSplitter * sHorizontal = new QSplitter(Qt::Horizontal);  //spliter principal
 #ifdef Q_OS_MAC
 	sHorizontal->setStyleSheet("QSplitter::handle{image:none;background-color:#B8B8B8;} QSplitter::handle:vertical {height:1px;}");
@@ -1038,7 +1054,7 @@ void LibraryWindow::createConnections()
     connect(propertiesDialog,SIGNAL(accepted()),navigationController,SLOT(reselectCurrentSource()));
 
     //comic vine
-    connect(comicVineDialog,SIGNAL(accepted()),navigationController,SLOT(reselectCurrentSource()));
+    connect(comicVineDialog,SIGNAL(accepted()),navigationController,SLOT(reselectCurrentSource()), Qt::QueuedConnection);
 
     connect(updateLibraryAction,SIGNAL(triggered()),this,SLOT(updateLibrary()));
     connect(renameLibraryAction,SIGNAL(triggered()),this,SLOT(renameLibrary()));
@@ -1113,6 +1129,15 @@ void LibraryWindow::createConnections()
 
     //save covers
     connect(saveCoversToAction,SIGNAL(triggered()),this,SLOT(saveSelectedCoversTo()));
+
+    //upgrade library
+    connect(this, SIGNAL(libraryUpgraded(QString)), this, SLOT(loadLibrary(QString)), Qt::QueuedConnection);
+    connect(this, SIGNAL(errorUpgradingLibrary(QString)), this, SLOT(showErrorUpgradingLibrary(QString)), Qt::QueuedConnection);
+}
+
+void LibraryWindow::showErrorUpgradingLibrary(const QString & path)
+{
+    QMessageBox::critical(this,tr("Upgrade failed"), tr("There were errors during library upgrade in: ") + path+"/library.ydb");
 }
 
 void LibraryWindow::loadLibrary(const QString & name)
@@ -1128,29 +1153,39 @@ void LibraryWindow::loadLibrary(const QString & name)
 		if(d.exists(path) && d.exists(path+"/library.ydb") && (dbVersion = DataBaseManagement::checkValidDB(path+"/library.ydb")) != "") //si existe en disco la biblioteca seleccionada, y es válida..
 		{
 			int comparation = DataBaseManagement::compareVersions(dbVersion,VERSION);
-			bool updated = false;
-			if(comparation < 0)
-				{
-					int ret = QMessageBox::question(this,tr("Update needed"),tr("This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?"),QMessageBox::Yes,QMessageBox::No);
-					if(ret == QMessageBox::Yes)
-					{
-						updated = DataBaseManagement::updateToCurrentVersion(path+"/library.ydb");
-						if(!updated)
-							QMessageBox::critical(this,tr("Update failed"), tr("The current library can't be udpated. Check for write write permissions on: ") + path+"/library.ydb");
-					}
-					else
-                    {
-                        comicsViewsManager->comicsView->setModel(NULL);
-						foldersView->setModel(NULL);
-                        listsView->setModel(NULL);
-						disableAllActions();//TODO comprobar que se deben deshabilitar
-						//será possible renombrar y borrar estas bibliotecas
-						renameLibraryAction->setEnabled(true);
-						removeLibraryAction->setEnabled(true);
-					}
-				}
 
-			if(comparation == 0 || updated) //en caso de que la versión se igual que la actual
+            if(comparation < 0)
+            {
+                int ret = QMessageBox::question(this,tr("Update needed"),tr("This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?"),QMessageBox::Yes,QMessageBox::No);
+                if(ret == QMessageBox::Yes)
+                {
+                    importWidget->setUpgradeLook();
+                    showImportingWidget();
+
+                    upgradeLibraryFuture = std::async(std::launch::async, [this, name, path] {
+                        bool updated = DataBaseManagement::updateToCurrentVersion(path);
+
+                        if(!updated)
+                            emit errorUpgradingLibrary(path);
+
+                        emit libraryUpgraded(name);
+                    });
+
+                    return;
+                }
+                else
+                {
+                    comicsViewsManager->comicsView->setModel(NULL);
+                    foldersView->setModel(NULL);
+                    listsView->setModel(NULL);
+                    disableAllActions();//TODO comprobar que se deben deshabilitar
+                    //será possible renombrar y borrar estas bibliotecas
+                    renameLibraryAction->setEnabled(true);
+                    removeLibraryAction->setEnabled(true);
+                }
+            }
+
+            if(comparation == 0) //en caso de que la versión se igual que la actual
 			{
                 foldersModel->setupModelData(path);
                 foldersModelProxy->setSourceModel(foldersModel);
@@ -1231,7 +1266,7 @@ void LibraryWindow::loadLibrary(const QString & name)
 
 				if(d.exists(path+"/library.ydb"))
 				{
-					QSqlDatabase db = DataBaseManagement::loadDatabase(path);
+                    QSqlDatabase db = DataBaseManagement::loadDatabase(path);
 					manageOpeningLibraryError(db.lastError().databaseText() + "-" + db.lastError().driverText());
 					//será possible renombrar y borrar estas bibliotecas
 					renameLibraryAction->setEnabled(true);
@@ -1760,68 +1795,68 @@ void LibraryWindow::checkEmptyFolder()
 	}
 }
 
-void LibraryWindow::openComic()
+void LibraryWindow::openComic(const ComicDB &comic)
 {
-	if(!importedCovers)
-	{
-        ComicDB comic = comicsModel->getComic(comicsViewsManager->comicsView->currentIndex());
-        QString path = currentPath();
+    if(!importedCovers) {
         QList<ComicDB> siblings = comicsModel->getAllComics();
 
-		quint64 comicId = comic.id;
-		//TODO generate IDS for libraries...
+        //TODO generate IDS for libraries...
         quint64 libraryId = libraries.getId(selectedLibrary->currentText());
-
-		//                 %1        %2      %3        NO-->%4          %5        %6        %7        %8         %9       %10
-		//Invoke YACReader comicPath comicId libraryId NO-->currentPage bookmark1 bookmark2 bookmark3 brightness contrast gamma
         bool yacreaderFound = false;
 
-        QString comicIdS = QString("--comicId=") + QString("%1").arg(comicId);
-        QString libraryIdS = QString("--libraryId=") + QString("%1").arg(libraryId);
+#ifdef Q_OS_MACOS
+        QStringList possiblePaths {QDir::cleanPath(QCoreApplication::applicationDirPath()+"/../../../")};
+        possiblePaths += QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation);
 
-#ifdef Q_OS_MAC
-        QStringList possiblePaths;
-
-        possiblePaths.append(QDir::cleanPath(QCoreApplication::applicationDirPath()+"/../../../"));
-        possiblePaths.append(QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation));
-        for(auto && ypath: possiblePaths)
+        for (auto && ypath: possiblePaths)
         {
             QString yacreaderPath = QDir::cleanPath(ypath + "/YACReader.app");
-            if(QFileInfo(yacreaderPath).exists())
+            if (QFileInfo(yacreaderPath).exists())
             {
                 yacreaderFound = true;
-                QProcess::startDetached("open", QStringList() << "-n" << yacreaderPath << "--args" << path << comicIdS << libraryIdS ); /*<< page << bookmark1 << bookmark2 << bookmark3 << brightness << contrast << gamma*///,QStringList() << path);
+                QStringList parameters {"-n", yacreaderPath, "--args", currentPath(), QString("--comicId=%1").arg(comic.id), QString("--libraryId=%1").arg(libraryId)};
+                QProcess::startDetached("open", parameters);
                 break;
             }
         }
 #endif
 
-#ifdef Q_OS_WIN																														  /* \"%4\" \"%5\" \"%6\" \"%7\" \"%8\" \"%9\" \"%10\" */
-        yacreaderFound = QProcess::startDetached(QDir::cleanPath(QCoreApplication::applicationDirPath())+QString("/YACReader \"%1\" \"%2\" \"%3\"").arg(path).arg(QString("--comicId=") + QString::number(comicId)).arg(QString("--libraryId=") + QString::number(libraryId))/*.arg(page).arg(bookmark1).arg(bookmark2).arg(bookmark3).arg(brightness).arg(contrast).arg(gamma)*/,QStringList());
+#ifdef Q_OS_WIN
+        QStringList parameters {currentPath(), QString("--comicId=%1").arg(comic.id), QString("--libraryId=%1").arg(libraryId)};
+        yacreaderFound = QProcess::startDetached(QDir::cleanPath(QCoreApplication::applicationDirPath()+"/YACReader.exe"), parameters);
 #endif
 
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
-        QStringList parameters = QStringList() << path << (QString("--comicId=") + QString::number(comicId)) << (QString("--libraryId=") + QString::number(libraryId));
-	yacreaderFound = QProcess::startDetached(QString("YACReader"),parameters);
+        QStringList parameters {currentPath(), QString("--comicId=%1").arg(comic.id), QString("--libraryId=%1").arg(libraryId)};
+        yacreaderFound = QProcess::startDetached(QStringLiteral("YACReader"), parameters);
 #endif
         if(!yacreaderFound)
-            QMessageBox::critical(this,tr("YACReader not found"),tr("YACReader not found, YACReader should be installed in the same folder as YACReaderLibrary."));
+        {
+#ifdef Q_OS_WIN
+            QMessageBox::critical(this,tr("YACReader not found"),tr("YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary."));
+#else
+            QMessageBox::critical(this,tr("YACReader not found"),tr("YACReader not found. There might be a problem with your YACReader installation."));
+#endif
+        }
+    }
+}
 
-		setCurrentComicOpened();
-	}
+void LibraryWindow::openComic()
+{
+	if(!importedCovers)
+	{
+       ComicDB comic = comicsModel->getComic(comicsViewsManager->comicsView->currentIndex());
+       openComic(comic);
+  }
 }
 
 void LibraryWindow::setCurrentComicsStatusReaded(YACReaderComicReadStatus readStatus) {
     comicsModel->setComicsRead(getSelectedComics(),readStatus);
+    comicsViewsManager->updateCurrentComicView();
 }
 
 void LibraryWindow::setCurrentComicReaded() {
 	this->setCurrentComicsStatusReaded(YACReader::Read);
-}
-
-void LibraryWindow::setCurrentComicOpened()
-{
-    //TODO: remove?
 }
 
 void LibraryWindow::setCurrentComicUnreaded() {
@@ -2484,7 +2519,7 @@ void LibraryWindow::deleteComicsFromDisk()
             QLOG_TRACE() << comic.parentId;
         }
 
-        ComicsRemover * remover = new ComicsRemover(indexList,paths);
+        ComicsRemover * remover = new ComicsRemover(indexList,paths,comics.at(0).parentId);
         QThread * thread = NULL;
 
         thread = new QThread(this);
@@ -2497,6 +2532,8 @@ void LibraryWindow::deleteComicsFromDisk()
         connect(remover, SIGNAL(remove(int)), comicsModel, SLOT(remove(int)));
         connect(remover, SIGNAL(removeError()),this,SLOT(setRemoveError()));
         connect(remover, SIGNAL(finished()), comicsModel, SLOT(finishTransaction()));
+        connect(remover, SIGNAL(finished()), comicsModel, SLOT(finishTransaction()));
+        connect(remover, SIGNAL(removedItemsFromFolder(qulonglong)), foldersModel, SLOT(updateFolderChildrenInfo(qulonglong)));
 
         connect(remover, SIGNAL(finished()),this,SLOT(checkEmptyFolder()));
         connect(remover, SIGNAL(finished()),this,SLOT(checkRemoveError()));
@@ -2592,5 +2629,6 @@ void LibraryWindow::updateComicsView(quint64 libraryId, const ComicDB & comic)
 {
     if(libraryId == libraries.getId(selectedLibrary->currentText())) {
         comicsModel->reload(comic);
+        comicsViewsManager->updateCurrentComicView();
     }
 }

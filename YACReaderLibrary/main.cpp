@@ -7,10 +7,10 @@
 #include <QDir>
 #include <QSysInfo>
 #include <QFileInfo>
-#include <QSettings>
-#include <QLibrary>
-#include <QMessageBox>
-#include <QTextStream>
+#ifndef use_unarr
+  #include <QLibrary>
+#endif
+#include <QCommandLineParser>
 
 #include "yacreader_global.h"
 #include "startup.h"
@@ -33,80 +33,25 @@ using namespace QsLogging;
 
 void logSystemAndConfig()
 {
-    QLOG_INFO() << "---------- System & configuration ----------";
-#if defined(Q_OS_WIN)
-    switch (QSysInfo::windowsVersion())
-    {
-        case QSysInfo::WV_NT:
-            QLOG_INFO() << "SO : Windows NT";
-            break;
-        case QSysInfo::WV_2000:
-            QLOG_INFO() << "SO : Windows 2000";
-            break;
-        case QSysInfo::WV_XP:
-            QLOG_INFO() << "SO : Windows XP";
-            break;
-        case QSysInfo::WV_2003:
-            QLOG_INFO() << "SO : Windows 2003";
-            break;
-        case QSysInfo::WV_VISTA:
-            QLOG_INFO() << "SO : Windows Vista";
-            break;
-        case QSysInfo::WV_WINDOWS7:
-            QLOG_INFO() << "SO : Windows 7";
-            break;
-        case QSysInfo::WV_WINDOWS8:
-            QLOG_INFO() << "SO : Windows 8";
-            break;
-        default:
-            QLOG_INFO() << "Windows (unknown version)";
-        break;
-    }
-
-#elif defined(Q_OS_MAC)
-
-    switch (QSysInfo::MacVersion())
-    {
-        case QSysInfo::MV_SNOWLEOPARD:
-            QLOG_INFO() << "SO : MacOSX Snow Leopard";
-            break;
-        case QSysInfo::MV_LION:
-            QLOG_INFO() << "SO : MacOSX Lion";
-            break;
-        case QSysInfo::MV_MOUNTAINLION:
-            QLOG_INFO() << "SO : MacOSX Mountain Lion";
-            break;
-#if QT_VERSION >= 0x050000
-        case QSysInfo::MV_MAVERICKS:
-            QLOG_INFO() << "SO : MacOSX Maverics";
-            break;
-#endif
-        default:
-            QLOG_INFO() << "SO : MacOSX (unknown version)";
-        break;
-    }
-
-#elif defined(Q_OS_LINUX)
-    QLOG_INFO() << "SO : Linux (unknown version)";
-
-#else
-    QLOG_INFO() << "SO : Unknown";
-#endif
+  QLOG_INFO() << "---------- System & configuration ----------";
+  QLOG_INFO() << "OS:" << QSysInfo::prettyProductName() << "Version: " << QSysInfo::productVersion();
+  QLOG_INFO() << "Kernel:" << QSysInfo::kernelType() << QSysInfo::kernelVersion() << "Architecture:" << QSysInfo::currentCpuArchitecture();
 
 #ifndef use_unarr
-#ifdef Q_OS_WIN
+  #ifdef Q_OS_WIN
     if(QLibrary::isLibrary(QApplication::applicationDirPath()+"/utils/7z.dll"))
-#elif defined Q_OS_UNIX && !defined Q_OS_MAC
+  #elif defined Q_OS_UNIX && !defined Q_OS_MAC
     if(QLibrary::isLibrary(QString(LIBDIR)+"/yacreader/7z.so") | QLibrary::isLibrary(QString(LIBDIR)+"/p7zip/7z.so"))
-#else
+  #else
     if(QLibrary::isLibrary(QApplication::applicationDirPath()+"/utils/7z.so"))
-#endif
-        QLOG_INFO() << "7z : found";
+  #endif
+    QLOG_INFO() << "7z : found";
     else
-        QLOG_ERROR() << "7z : not found";
-#else
+    QLOG_ERROR() << "7z : not found";
+#else // use_unarr
 	QLOG_INFO() << "using unarr decompression backend";
-#endif
+#endif // use_unarr
+
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
     if(QFileInfo(QString(BINDIR)+"/qrencode").exists())
 #else
@@ -131,33 +76,23 @@ void logSystemAndConfig()
     OpenGLChecker checker;
     QLOG_INFO() << "OpenGL version : " << checker.textVersionDescription();
 
-	QLOG_INFO() << "Libraries: " << DBHelper::getLibraries().getLibraries();
+	  QLOG_INFO() << "Libraries: " << DBHelper::getLibraries().getLibraries();
     QLOG_INFO() << "--------------------------------------------";
 }
 
 int main( int argc, char ** argv )
 {
-
-//fix for misplaced text in Qt4.8 and Mavericks
-#ifdef Q_OS_MAC
-  #if QT_VERSION < 0x050000
-    if(QSysInfo::MacintoshVersion > QSysInfo::MV_10_8)
-        QFont::insertSubstitution(".Lucida Grande UI", "Lucida Grande");
-  #endif
-
-#endif
-
   QApplication app( argc, argv );
 
 #ifdef FORCE_ANGLE
-    app.setAttribute(Qt::AA_UseOpenGLES);
+  app.setAttribute(Qt::AA_UseOpenGLES);
 #endif
 
   app.setApplicationName("YACReaderLibrary");
   app.setOrganizationName("YACReader");
   app.setApplicationVersion(VERSION);
-
   app.setAttribute(Qt::AA_UseHighDpiPixmaps);
+
   if (QIcon::hasThemeIcon("YACReaderLibrary")) {
     app.setWindowIcon(QIcon::fromTheme("YACReaderLibrary"));
   }
@@ -166,7 +101,11 @@ int main( int argc, char ** argv )
   QDir().mkpath(YACReader::getSettingsPath());
 
   Logger& logger = Logger::instance();
-  logger.setLoggingLevel(QsLogging::InfoLevel);
+#ifdef QT_DEBUG
+  logger.setLoggingLevel(QsLogging::TraceLevel);
+#else
+  logger.setLoggingLevel(QsLogging::ErrorLevel);
+#endif
 
   DestinationPtr fileDestination(DestinationFactory::MakeFileDestination(
     destLog, EnableLogRotation, MaxSizeBytes(1048576), MaxOldLogCount(2)));
@@ -192,6 +131,11 @@ int main( int argc, char ** argv )
   app.installTranslator(&viewerTranslator);
 
   qRegisterMetaType<ComicDB>("ComicDB");
+
+QCommandLineParser parser;
+parser.addHelpOption();
+parser.addVersionOption();
+parser.process(app);
 
 #ifdef SERVER_RELEASE
   QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creaci�n del fichero de config con el servidor

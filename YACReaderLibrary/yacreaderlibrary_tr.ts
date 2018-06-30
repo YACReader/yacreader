@@ -95,7 +95,11 @@
     </message>
     <message>
         <source>Library Name : </source>
-        <translation>Kütüphane adı :</translation>
+        <translation type="vanished">Kütüphane adı :</translation>
+    </message>
+    <message>
+        <source>Library name : </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -122,6 +126,53 @@
     <message>
         <source>Hide comic flow</source>
         <translation type="unfinished">Çizgi roman akışını gizle</translation>
+    </message>
+</context>
+<context>
+    <name>ComicInfoView</name>
+    <message>
+        <source>Authors</source>
+        <translation type="unfinished">Yazarlar</translation>
+    </message>
+    <message>
+        <source>writer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>penciller</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>inker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>colorist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>letterer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>cover artist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Publisher</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>b/w</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Characters</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -525,6 +576,14 @@
         <source>&lt;p&gt;The current library is being updated. For faster updates, please, update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
         <translation>&lt;p&gt;Kütüphane güncelleniyor&lt;/p&gt;&lt;p&gt;Güncellemeyi daha sonra iptal edebilirsin.&lt;/p&gt;</translation>
     </message>
+    <message>
+        <source>Upgrading the library</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;The current library is being upgraded, please wait.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LibraryWindow</name>
@@ -695,7 +754,7 @@
     </message>
     <message>
         <source>The current library can&apos;t be udpated. Check for write write permissions on: </source>
-        <translation>Kütüphane güncellenmemiş. Lütfen yazım izinlerini kontrol et:</translation>
+        <translation type="vanished">Kütüphane güncellenmemiş. Lütfen yazım izinlerini kontrol et:</translation>
     </message>
     <message>
         <source>Open current comic</source>
@@ -715,7 +774,7 @@
     </message>
     <message>
         <source>Update failed</source>
-        <translation>Güncelleme başarısız</translation>
+        <translation type="vanished">Güncelleme başarısız</translation>
     </message>
     <message>
         <source>Unpack covers</source>
@@ -831,10 +890,6 @@
     </message>
     <message>
         <source>YACReader not found</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>YACReader not found, YACReader should be installed in the same folder as YACReaderLibrary.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1049,6 +1104,22 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
         <source>Assign numbers starting in:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Upgrade failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There were errors during library upgrade in: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>YACReader not found. There might be a problem with your YACReader installation.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LocalComicListModel</name>
@@ -1261,6 +1332,14 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
         <source>Genre:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>of:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arc number:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -1418,7 +1497,7 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
     </message>
     <message>
         <source>QR generator error!</source>
-        <translation>QR kod oluşturma hatası!</translation>
+        <translation type="vanished">QR kod oluşturma hatası!</translation>
     </message>
     <message>
         <source>set port</source>
@@ -1449,6 +1528,10 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
 to improve the performance</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Could not load libqrencode.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SortVolumeComics</name>
@@ -1470,10 +1553,6 @@ to improve the performance</source>
     </message>
     <message>
         <source>restore all removed comics</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>restore removed comics</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

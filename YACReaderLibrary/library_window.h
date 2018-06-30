@@ -5,10 +5,14 @@
 #include <QMap>
 #include <QModelIndex>
 #include <QFileInfo>
+#include <QSystemTrayIcon>
+
 #include "yacreader_global_gui.h"
 #include "yacreader_libraries.h"
 
 #include "yacreader_navigation_controller.h"
+
+#include <future>
 
 #ifdef Q_OS_MAC
     #include "yacreader_macosx_toolbar.h"
@@ -138,14 +142,14 @@ public:
 	bool fetching;
 
 	int i;
-	
+
 	QAction  * backAction;
 	QAction  * forwardAction;
 
 	QAction * openComicAction;
 	QAction * createLibraryAction;
 	QAction * openLibraryAction;
-	
+
     QAction * exportComicsInfoAction;
     QAction * importComicsInfoAction;
 
@@ -284,11 +288,15 @@ protected:
 public:
     LibraryWindow();
 
+signals:
+    void libraryUpgraded(const QString & libraryName);
+    void errorUpgradingLibrary(const QString & path);
 public slots:
     void loadLibrary(const QString & path);
     void selectSubfolder(const QModelIndex & mi, int child);
     void checkEmptyFolder();
     void openComic();
+    void openComic(const ComicDB & comic);
     void createLibrary();
     void create(QString source,QString dest, QString name);
     void showAddLibrary();
@@ -342,7 +350,6 @@ public slots:
     void libraryAlreadyExists(const QString & name);
     void importLibraryPackage();
     void updateComicsView(quint64 libraryId, const ComicDB & comic);
-    void setCurrentComicOpened();
     void showComicVineScraper();
     void setRemoveError();
     void checkRemoveError();
@@ -376,15 +383,20 @@ public slots:
     void setToolbarTitle(const QModelIndex & modelIndex);
     void saveSelectedCoversTo();
     void checkMaxNumLibraries();
+    void showErrorUpgradingLibrary(const QString & path);
+
+    //void changeEvent(QEvent *event);
 
 private:
     //fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
     Qt::WindowFlags previousWindowFlags;
     QPoint previousPos;
     QSize previousSize;
+    std::future<void> upgradeLibraryFuture;
+    QSystemTrayIcon trayIcon;
+
+private slots:
+    //void trayActivation(QSystemTrayIcon::ActivationReason reason);
 };
 
 #endif
-
-
-

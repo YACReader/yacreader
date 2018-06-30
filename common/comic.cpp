@@ -44,13 +44,13 @@ const QStringList Comic::literalComicExtensions = LiteralComicArchiveExtensions;
 
 //-----------------------------------------------------------------------------
 Comic::Comic()
-:_pages(),_index(0),_path(),_loaded(false),bm(new Bookmarks()),_loadedPages(),_isPDF(false),_invalidated(false)
+:_pages(),_index(0),_path(),_loaded(false),bm(new Bookmarks()),_loadedPages(),_isPDF(false),_invalidated(false),_errorOpening(false)
 {
 	setup();
 }
 //-----------------------------------------------------------------------------
 Comic::Comic(const QString & pathFile, int atPage )
-:_pages(),_index(0),_path(pathFile),_loaded(false),bm(new Bookmarks()),_loadedPages(),_isPDF(false),_firstPage(atPage)
+:_pages(),_index(0),_path(pathFile),_loaded(false),bm(new Bookmarks()),_loadedPages(),_isPDF(false),_firstPage(atPage),_errorOpening(false)
 {
 	setup();
 }
@@ -66,6 +66,16 @@ void Comic::setup()
 	connect(this,SIGNAL(pageChanged(int)),this,SLOT(checkIsBookmark(int)));
 	connect(this,SIGNAL(imageLoaded(int)),this,SLOT(updateBookmarkImage(int)));
 	connect(this,SIGNAL(imageLoaded(int)),this,SLOT(setPageLoaded(int)));
+
+    auto l = [&](){ _errorOpening = true; };
+
+    void (Comic::* errorOpeningPtr)() = &Comic::errorOpening;
+    void (Comic::* errorOpeningWithStringPtr)(QString) = &Comic::errorOpening;
+
+    connect(this, errorOpeningPtr, l);
+    connect(this, errorOpeningWithStringPtr, l);
+
+    connect(this, &Comic::crcErrorFound, l);
 }
 //-----------------------------------------------------------------------------
 int Comic::nextPage()
@@ -177,6 +187,10 @@ void Comic::checkIsBookmark(int index)
 //-----------------------------------------------------------------------------
 void Comic::updateBookmarkImage(int index)
 {
+    if (bm == nullptr) {
+        return;
+    }
+    
 	if(bm->isBookmark(index))
 	{
 		QImage p;
@@ -224,6 +238,11 @@ bool Comic::pageIsLoaded(int page)
 		return false;
 	}
 	return _loadedPages[page];
+}
+
+bool Comic::hasBeenAnErrorOpening()
+{
+    return _errorOpening;
 }
 
 bool Comic::fileIsComic(const QString &path)

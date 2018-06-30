@@ -1186,8 +1186,8 @@ void Viewer::updateComic(ComicDB & comic)
 {
 	if(render->hasLoadedComic())
 	{
-		//set currentPage
-        if(render->currentPageIsDoublePage() == false)
+        //set currentPage
+        if(!doublePage || (doublePage && render->currentPageIsDoublePage() == false))
         {
             comic.info.currentPage = render->getIndex()+1;
         }

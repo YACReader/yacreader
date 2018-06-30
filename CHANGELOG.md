@@ -4,6 +4,26 @@ Please note: this is a work in progress. Keeping a changelog has been neglected
 in the past so information is missing and older release information is in
 spanish only. Sorry for the mess.
 
+Version counting is based on semantic versioning (Major.Feature.Patch)
+
+## 9.5.0
+* Require at least Qt 5.4 for compiling, Qt 5.6 for qml based views
+
+### Reader and Library
+* Remove legacy OpenGL flow needed for Qt 5.3 compatibility
+* Improve commandline handling
+
+### YACReaderLibrary
+* New current/next comic view in the grid view, available for folders and reading lists.
+* Comics in `Reading` are now sorted by last time opened.
+* Fix system log functions
+* Replace Qrencode executables with dynamic loaded library
+* Add prebuilt qrencode libraries for win and mac
+* Update Qrencode to version 4.0.0
+
+### Server
+* New API V2 implementation.
+
 ## 9.0.0 (2018-2-18)
 
 ### Library and Reader
@@ -45,6 +65,7 @@ spanish only. Sorry for the mess.
 
 ### YACReaderLibraryServer (headless version of YACReaderLibrary)
 * Added a systemd service file to run yacreaderlibraryserver on Linux based systems.
+* Added safety checks to the commandline interface to avoid creation of empty libraries
 
 ## 8.5.0 - 2016-03-28
 * headless version of YACReaderLibrary's server (no gui)

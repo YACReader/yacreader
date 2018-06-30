@@ -9,6 +9,7 @@
 #include <QIntValidator>
 #include <QFormLayout>
 #include <QBitmap>
+#include <QPainter>
 
 #include "startup.h"
 #include "yacreader_global_gui.h"
@@ -37,8 +38,8 @@ bool ipComparator(const QString & ip1, const QString & ip2)
 
 #include <sys/types.h>
 #include <ifaddrs.h>
-#include <netinet/in.h> 
-#include <string.h> 
+#include <netinet/in.h>
+#include <string.h>
 #include <arpa/inet.h>
 
 QList<QString> addresses()
@@ -46,7 +47,7 @@ QList<QString> addresses()
 	struct ifaddrs * ifAddrStruct=NULL;
 	struct ifaddrs * ifa=NULL;
 	void * tmpAddrPtr=NULL;
-	
+
 	QList<QString> localAddreses;
 
 	getifaddrs(&ifAddrStruct);
@@ -60,14 +61,14 @@ QList<QString> addresses()
 				inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
 				QString add(addressBuffer);
 				localAddreses.push_back(QString(addressBuffer));
-				//printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer); 
+				//printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer);
 			} else if (ifa->ifa_addr->sa_family==AF_INET6) { // check it is IP6
 				// is a valid IP6 Address
 				tmpAddrPtr=&((struct sockaddr_in6 *)ifa->ifa_addr)->sin6_addr;
 				char addressBuffer[INET6_ADDRSTRLEN];
 				inet_ntop(AF_INET6, tmpAddrPtr, addressBuffer, INET6_ADDRSTRLEN);
-				//printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer); 
-			} 
+				//printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer);
+			}
 		}
 	}
 	if (ifAddrStruct!=NULL) freeifaddrs(ifAddrStruct);
@@ -79,10 +80,9 @@ QList<QString> addresses()
 extern Startup * s;
 
 ServerConfigDialog::ServerConfigDialog(QWidget * parent)
-	:QDialog(parent)	
+	:QDialog(parent)
 {
 	accept = new QPushButton(tr("set port"),this);
-	qrCodeImage = new QPixmap();
 	qrCode = new QLabel(this);
     qrCode->move(64, 112);
     qrCode->setFixedSize(200,200);
@@ -132,7 +132,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	port->setValidator(validator);
 
     QWidget * portWidget = new QWidget(this);
-    QHBoxLayout * portWidgetLayout = new QHBoxLayout;
+    QHBoxLayout * portWidgetLayout = new QHBoxLayout(this);
     portWidgetLayout->addWidget(port);
     portWidgetLayout->addWidget(accept);
     portWidgetLayout->setMargin(0);
@@ -146,28 +146,13 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
     check->move(332,314);
 	check->setText(tr("enable the server"));
     check->setStyleSheet("QCheckBox {color:#262626; font-size:13px; font-family: Arial;}");
-	
+
     performanceWorkaroundCheck = new QCheckBox(this);
     performanceWorkaroundCheck->move(332,354);
     performanceWorkaroundCheck->setText(tr("display less information about folders in the browser\nto improve the performance"));
     performanceWorkaroundCheck->setStyleSheet("QCheckBox {color:#262626; font-size:13px; font-family: Arial;}");
 
-    //accept->move(444, 242);
-	//check->setLayoutDirection(Qt::RightToLeft);
-	
-	//elementsLayout->setSpacing(40);
-	//elementsLayout->addWidget(iphone);
-	//elementsLayout->addStretch();
-	//elementsLayout->addLayout(configLayout);
-
-	//QVBoxLayout *	mainLayout = new QVBoxLayout;
-	//mainLayout->addLayout(elementsLayout);
-	//mainLayout->addLayout(buttons);
-	//mainLayout->addWidget(qrCode,0,1);
-
-	//this->setLayout(mainLayout);
-
-	QPalette Pal(palette()); 
+	QPalette Pal(palette());
 	// set black background
 	QPalette palette;
 	QImage image(":/images/serverConfigBackground.png");
@@ -176,7 +161,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 	setPalette(palette);
 
 	this->setFixedSize(image.size());
-	
+
 	QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
 	settings->beginGroup("libraryConfig");
 
@@ -190,7 +175,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget * parent)
 
     performanceWorkaroundCheck->setChecked(settings->value(REMOTE_BROWSE_PERFORMANCE_WORKAROUND,false).toBool());
 
-	settings->endGroup();
+	  settings->endGroup();
 
     connect(check,SIGNAL(stateChanged(int)),this,SLOT(enableServer(int)));
     connect(performanceWorkaroundCheck,SIGNAL(stateChanged(int)),this,SLOT(enableperformanceWorkaround(int)));
@@ -236,16 +221,6 @@ void ServerConfigDialog::enableperformanceWorkaround(int status)
 
 void ServerConfigDialog::generateQR()
 {
-	//QString items;
-	//foreach(QNetworkInterface interface, QNetworkInterface::allInterfaces())
-	//{
-	//	if (~interface.flags() & QNetworkInterface::IsLoopBack)//interface.flags().testFlag(QNetworkInterface::IsRunning))
-	//		foreach (QNetworkAddressEntry entry, interface.addressEntries())
-	//		{
-	//			if ( interface.hardwareAddress() != "00:00:00:00:00:00" &&     entry.ip().toString().contains("."))
-	//				items.append(interface.name() + entry.ip().toString());
-	//		}
-	//}
 	ip->clear();
 	QString dir;
 
@@ -258,13 +233,13 @@ void ServerConfigDialog::generateQR()
 		QString tmp = add.toString();
 		if(tmp.contains(".") && !tmp.startsWith("127"))
 		{
-            otherAddresses.push_back(tmp);
-		}	
+        otherAddresses.push_back(tmp);
+		}
 	}
 
 #else
 	QList<QString> list = addresses();
-	
+
 	QList<QString> otherAddresses;
 	foreach(QString add, list)
 	{
@@ -272,7 +247,7 @@ void ServerConfigDialog::generateQR()
 		if(tmp.contains(".") && !tmp.startsWith("127"))
 		{
             otherAddresses.push_back(tmp);
-		}	
+		}
 	}
 #endif
 
@@ -289,7 +264,7 @@ void ServerConfigDialog::generateQR()
 		if(!dir.isEmpty())
 		{
 		generateQR(dir+":"+s->getPort());
-		
+
 		ip->addItem(dir);
 		}
 		else
@@ -299,58 +274,29 @@ void ServerConfigDialog::generateQR()
 		ip->addItems(otherAddresses);
 		port->setText(s->getPort());
 	}
-	else
-	{
-
-	}
-	//qrCode->setText(dir+":8080");
 }
 
 void ServerConfigDialog::generateQR(const QString & serverAddress)
 {
-	qrCode->clear();
-	qrGenerator = new QProcess();
-    QStringList attributes;
-    int pixels = devicePixelRatio() * 8;
-    attributes << "-o" << "-" /*QCoreApplication::applicationDirPath()+"/utils/tmp.png"*/ << "-s" << QString::number(pixels) << "-l" << "H" << "-m" << "0" << serverAddress;
-	connect(qrGenerator,SIGNAL(finished(int,QProcess::ExitStatus)),this,SLOT(updateImage(void)));
-	connect(qrGenerator,SIGNAL(error(QProcess::ProcessError)),this,SLOT(openingError(QProcess::ProcessError))); //TODO: implement openingError
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
-	qrGenerator->start(QString("qrencode"),attributes);
-#else
-	qrGenerator->start(QCoreApplication::applicationDirPath()+"/utils/qrencode",attributes);
-#endif
-}
+    qrCode->clear();
 
-void ServerConfigDialog::updateImage()
-{
-	QByteArray imgBinary = qrGenerator->readAllStandardOutput();
-	//imgBinary = imgBinary.replace(0x0D0A,0x0A);
-
-	if(!qrCodeImage->loadFromData(imgBinary))
-		qrCode->setText(tr("QR generator error!"));
-	else
+    QrEncoder encoder;
+    QBitmap image = encoder.encode(serverAddress);
+    if (image.isNull())
     {
-        QPixmap p = *qrCodeImage;
-        QPixmap pMask( p.size() );
-        pMask.fill( QColor(66, 66, 66) );
-        pMask.setMask( p.createMaskFromColor( Qt::white ) );
+        qrCode->setText(tr("Could not load libqrencode."));
+    }
+    else
+    {
+        image = image.scaled(qrCode->size()*devicePixelRatio());
 
+        QPixmap pMask(image.size());
+        pMask.fill( QColor(66, 66, 66) );
+        pMask.setMask(image.createMaskFromColor(Qt::white));
         pMask.setDevicePixelRatio(devicePixelRatio());
 
-        *qrCodeImage = pMask;
-
-		qrCode->setPixmap(*qrCodeImage);
+        qrCode->setPixmap(pMask);
     }
-	
-	delete qrGenerator;
-
-	
-
-/*	qrCodeImage->load(QCoreApplication::applicationDirPath()+"/utils/tmp.png");
-	qrCode->setPixmap(*qrCodeImage);
-
-	delete qrGenerator;*/
 }
 
 void ServerConfigDialog::regenerateQR(const QString & ip)
@@ -371,4 +317,42 @@ void ServerConfigDialog::updatePort()
 
 	generateQR(ip->currentText()+":"+port->text());
 
+}
+
+QrEncoder::QrEncoder()
+{
+#ifdef Q_OS_MACOS
+    QLibrary encoder(QCoreApplication::applicationDirPath() + "/utils/libqrencode.dylib");
+#else
+    QLibrary encoder("qrencode");
+#endif
+    QRcode_encodeString8bit = (_QRcode_encodeString8bit) encoder.resolve("QRcode_encodeString8bit");
+    QRcode_free = (_QRcode_free) encoder.resolve("QRcode_free");
+}
+
+QBitmap QrEncoder::encode(const QString & string)
+{
+    if (!QRcode_encodeString8bit)
+    {
+        return QBitmap();
+    }
+    QRcode *code;
+    code = QRcode_encodeString8bit(string.toUtf8().data(), 0, 0);
+    QBitmap result(code->width, code->width);
+    result.fill();
+    /* convert to QBitmap */
+    QPainter painter;
+    painter.begin(&result);
+    unsigned char * pointer = code->data;
+    for (int x=0; x < code->width; x++) {
+        for (int y=0; y < code->width; y++) {
+            if ((*pointer++ & 0x1)==1)
+            {
+                painter.drawPoint(x, y);
+            }
+        }
+    }
+    painter.end();
+    QRcode_free(code);
+    return result;
 }

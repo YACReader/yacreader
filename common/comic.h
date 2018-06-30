@@ -40,6 +40,8 @@ class Comic : public QObject
 
         bool _invalidated;
 
+        bool _errorOpening;
+
 	public:
 		
 		static const QStringList imageExtensions;
@@ -72,6 +74,9 @@ class Comic : public QObject
 		QVector<QByteArray> * getRawData(){return &_pages;}
 		QByteArray getRawPage(int page);
 		bool pageIsLoaded(int page);
+
+        //check if the comic has failed loading
+        bool hasBeenAnErrorOpening();
 
 		inline static QStringList getSupportedImageFormats() { return imageExtensions;}
 		inline static QStringList getSupportedImageLiteralFormats() { return literalImageExtensions;}

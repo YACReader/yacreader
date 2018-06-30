@@ -184,6 +184,9 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
     if(role == FolderModel::FinishedRole)
         return item->data(FolderModel::Finished);
 
+    if(role == FolderModel::IdRole)
+        return item->id;
+
 	if (role != Qt::DisplayRole)
 		return QVariant();
 
@@ -303,7 +306,7 @@ void FolderModel::setupModelData(QString path)
 	}
 	//selectQuery.finish();
 	db.close();
-	QSqlDatabase::removeDatabase(path);
+	QSqlDatabase::removeDatabase(db.connectionName());
 	endResetModel();
 
 }
@@ -315,7 +318,7 @@ void FolderModel::setupModelData(QSqlQuery &sqlquery, FolderItem *parent)
 	//el diccionario permitir� encontrar cualquier nodo del �rbol r�pidamente, de forma que a�adir un hijo a un padre sea O(1)
 	items.clear();
 	//se a�ade el nodo 0
-	items.insert(parent->id,parent);
+    items.insert(parent->id,parent);
 
     QSqlRecord record = sqlquery.record();
 
@@ -425,7 +428,7 @@ void FolderModel::updateFolderCompletedStatus(const QModelIndexList &list, bool 
     }
     db.commit();
     db.close();
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 
     emit dataChanged(index(list.first().row(),FolderModel::Name),index(list.last().row(),FolderModel::Completed));
 }
@@ -445,7 +448,7 @@ void FolderModel::updateFolderFinishedStatus(const QModelIndexList &list, bool s
     }
     db.commit();
     db.close();
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 
     emit dataChanged(index(list.first().row(),FolderModel::Name),index(list.last().row(),FolderModel::Completed));
 }
@@ -466,7 +469,7 @@ QStringList FolderModel::getSubfoldersNames(const QModelIndex &mi)
 
     db.commit();
     db.close();
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 
     //TODO sort result))
     qSort(result.begin(),result.end(),naturalSortLessThanCI);
@@ -543,7 +546,7 @@ void FolderModel::fetchMoreFromDB(const QModelIndex &parent)
 
 
     db.close();
-    QSqlDatabase::removeDatabase(_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 }
 
 QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QModelIndex &parent)
@@ -562,7 +565,8 @@ QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QMod
 
     QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
     newFolder.id = DBHelper::insert(&newFolder, db);
-    QSqlDatabase::removeDatabase(_databasePath);
+    DBHelper::updateChildrenInfo(parentItem->id, db);
+    QSqlDatabase::removeDatabase(db.connectionName());
 
     int destRow = 0;
 
@@ -600,11 +604,18 @@ void FolderModel::deleteFolder(const QModelIndex &mi)
 
    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
    DBHelper::removeFromDB(&f,db);
-   QSqlDatabase::removeDatabase(_databasePath);
+   DBHelper::updateChildrenInfo(item->parent()->id, db);
+   QSqlDatabase::removeDatabase(db.connectionName());
 
    endRemoveRows();
 }
 
+void FolderModel::updateFolderChildrenInfo(qulonglong folderId)
+{
+    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+    DBHelper::updateChildrenInfo(folderId, db);
+    QSqlDatabase::removeDatabase(db.connectionName());
+}
 
 //PROXY
 
@@ -718,7 +729,7 @@ void FolderModelProxy::setupFilteredModelData()
     }
     //selectQuery.finish();
     db.close();
-    QSqlDatabase::removeDatabase(model->_databasePath);
+    QSqlDatabase::removeDatabase(db.connectionName());
 
     endResetModel();
 }
@@ -812,7 +823,13 @@ void FolderModelProxy::setupFilteredModelData(QSqlQuery &sqlquery, FolderItem *p
 
             //si el nodo es hijo de 1 y no hab�a sido previamente insertado como hijo, se a�ade como tal
             if(!parentPreviousInserted)
+            {
                 filteredItems.value(ROOT)->appendChild(item);
+            }
+            else
+            {
+                delete item;
+            }
         }
     }
 }

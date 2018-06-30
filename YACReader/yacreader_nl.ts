@@ -64,22 +64,22 @@
 <context>
     <name>FileComic</name>
     <message>
-        <location filename="../common/comic.cpp" line="418"/>
+        <location filename="../common/comic.cpp" line="437"/>
         <source>Unknown error opening the file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="544"/>
+        <location filename="../common/comic.cpp" line="563"/>
         <source>7z not found</source>
         <translation type="unfinished">7Z Archiefbestand niet gevonden</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="551"/>
+        <location filename="../common/comic.cpp" line="570"/>
         <source>Format not supported</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="411"/>
+        <location filename="../common/comic.cpp" line="430"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
         <translation type="unfinished"></translation>
     </message>
@@ -650,12 +650,12 @@
 <context>
     <name>OptionsDialog</name>
     <message>
-        <location filename="options_dialog.cpp" line="37"/>
+        <location filename="options_dialog.cpp" line="38"/>
         <source>&quot;Go to flow&quot; size</source>
         <translation type="unfinished">&quot;Naar Omslagbrowser&quot; afmetingen</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="48"/>
+        <location filename="options_dialog.cpp" line="49"/>
         <source>My comics path</source>
         <translation type="unfinished">Pad naar mijn strips</translation>
     </message>
@@ -664,77 +664,77 @@
         <translation type="obsolete">Pagina breedte</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="79"/>
+        <location filename="options_dialog.cpp" line="80"/>
         <source>Background color</source>
         <translation type="unfinished">Achtergrondkleur</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="82"/>
+        <location filename="options_dialog.cpp" line="83"/>
         <source>Choose</source>
         <translation type="unfinished">Kies</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="108"/>
+        <location filename="options_dialog.cpp" line="109"/>
         <source>Quick Navigation Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="109"/>
+        <location filename="options_dialog.cpp" line="110"/>
         <source>Disable mouse over activation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="113"/>
+        <location filename="options_dialog.cpp" line="114"/>
         <source>Restart is needed</source>
         <translation type="unfinished">Herstart is nodig</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="133"/>
+        <location filename="options_dialog.cpp" line="134"/>
         <source>Brightness</source>
         <translation type="unfinished">Helderheid</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="134"/>
+        <location filename="options_dialog.cpp" line="135"/>
         <source>Contrast</source>
         <translation type="unfinished">Contrast</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="135"/>
+        <location filename="options_dialog.cpp" line="136"/>
         <source>Gamma</source>
         <translation type="unfinished">Gamma</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="139"/>
+        <location filename="options_dialog.cpp" line="140"/>
         <source>Reset</source>
         <translation type="unfinished">Standaardwaarden terugzetten</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="145"/>
+        <location filename="options_dialog.cpp" line="146"/>
         <source>Image options</source>
         <translation type="unfinished">Afbeelding opties</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="155"/>
+        <location filename="options_dialog.cpp" line="156"/>
         <source>General</source>
         <translation type="unfinished">Algemeen</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="156"/>
+        <location filename="options_dialog.cpp" line="157"/>
         <source>Page Flow</source>
         <translation type="unfinished">Omslagbrowser</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="157"/>
+        <location filename="options_dialog.cpp" line="158"/>
         <source>Image adjustment</source>
         <translation type="unfinished">Beeldaanpassing</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="171"/>
+        <location filename="options_dialog.cpp" line="172"/>
         <source>Options</source>
         <translation type="unfinished">Opties</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="178"/>
+        <location filename="options_dialog.cpp" line="179"/>
         <source>Comics directory</source>
         <translation type="unfinished">Strips map</translation>
     </message>
