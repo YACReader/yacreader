@@ -193,10 +193,10 @@ Rectangle {
             if (event.modifiers & Qt.ControlModifier || event.modifiers & Qt.ShiftModifier)
                 return;
             var ci
-            if (event.key === Qt.Key_Right) {
+            if (event.key === Qt.Key_Right || event.key === Qt.Key_Down) {
                 ci = Math.min(list.currentIndex+1, list.count - 1);
             }
-            else if (event.key === Qt.Key_Left) {
+            else if (event.key === Qt.Key_Left || event.key === Qt.Key_Up) {
                 ci = Math.max(0,list.currentIndex-1);
             } else {
                 return;
