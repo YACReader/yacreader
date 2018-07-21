@@ -83,8 +83,14 @@ int main(int argc, char * argv[])
   QCommandLineOption comicId("comicId", "", "comicId");
   QCommandLineOption libraryId("libraryId", "", "libraryId");
   // hide comicId and libraryId from help
+  #if QT_VERSION >= 0x050800
   comicId.setFlags(QCommandLineOption::HiddenFromHelp);
   libraryId.setFlags(QCommandLineOption::HiddenFromHelp);
+  #else
+  comicId.setHidden(true);
+  libraryId.setHidden(true);
+  #endif
+
   // process
   parser.addOption(comicId);
   parser.addOption(libraryId);

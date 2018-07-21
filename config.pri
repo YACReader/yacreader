@@ -11,11 +11,8 @@ QT_VER_MIN = $$member(QT_VERSION, 1)
 lessThan(QT_VER_MAJ, 5) {
 error(YACReader requires Qt 5 or newer but Qt $$[QT_VERSION] was detected.)
   }
-lessThan(QT_VER_MIN, 6) {
-  warning ("Qt < 5.6 detected. Compilation will probably work, but some qml based components in YACReaderLibrary (GridView, InfoView) will fail at runtime.")
-  }
-lessThan(QT_VER_MIN, 4):!CONFIG(no_opengl) {
-  error ("You need at least Qt 5.4 to compile YACReader or YACReaderLibrary.")
+lessThan(QT_VER_MIN, 6):!CONFIG(no_opengl) {
+  error ("You need at least Qt 5.6 to compile YACReader or YACReaderLibrary.")
   }
 
 # Disable coverflow for arm targets
