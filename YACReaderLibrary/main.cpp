@@ -80,8 +80,47 @@ void logSystemAndConfig()
     QLOG_INFO() << "--------------------------------------------";
 }
 
+void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg)
+{
+	Q_UNUSED(context);
+
+	QByteArray localMsg = msg.toLocal8Bit();
+    switch (type)
+	{
+    case QtInfoMsg:
+    {
+      QLOG_INFO() << localMsg.constData();
+      break;
+    }
+		case QtDebugMsg:
+		{
+			QLOG_DEBUG() << localMsg.constData();
+			break;
+		}
+
+		case QtWarningMsg:
+		{
+			QLOG_WARN() << localMsg.constData();
+			break;
+		}
+
+		case QtCriticalMsg:
+		{
+			QLOG_ERROR() << localMsg.constData();
+			break;
+		}
+
+		case QtFatalMsg:
+		{
+			QLOG_FATAL() << localMsg.constData();
+			break;
+		}
+  }
+}
+
 int main( int argc, char ** argv )
 {
+  qInstallMessageHandler(messageHandler);
   QApplication app( argc, argv );
 
 #ifdef FORCE_ANGLE
@@ -135,7 +174,53 @@ int main( int argc, char ** argv )
 QCommandLineParser parser;
 parser.addHelpOption();
 parser.addVersionOption();
+parser.addOption({"loglevel", "Set log level. Valid values: trace, info, debug, warn, error.", "loglevel", "warning"});
+#ifdef Q_OS_WIN
+parser.addOption({"opengl", "Set opengl renderer. Valid values: desktop, es, software.", "gl_renderer"});
+#endif
 parser.process(app);
+
+#ifdef Q_OS_WIN
+if (parser.isSet("opengl")) {
+    QTextStream qout(stdout);
+    if (parser.value("opengl") == "desktop") {
+        app.setAttribute(Qt::AA_UseDesktopOpenGL);
+    }
+    else if (parser.value("opengl") == "es") {
+        app.setAttribute(Qt::AA_UseOpenGLES);
+    }
+    else if (parser.value("opengl") == "software") {
+        qout << "Warning! This will be slow as hell. Only use this setting for"
+            "testing or as a last resort.";
+        app.setAttribute(Qt::AA_UseSoftwareOpenGL);
+    }
+    else {
+        qout << "Invalid value:" << parser.value("gl_renderer");
+        parser.showHelp();
+    }
+}
+#endif
+
+if (parser.isSet("loglevel")) {
+    if (parser.value("loglevel") == "trace") {
+        logger.setLoggingLevel(QsLogging::TraceLevel);
+    }
+    else if (parser.value("loglevel") == "info") {
+        logger.setLoggingLevel(QsLogging::InfoLevel);
+    }
+    else if (parser.value("loglevel") == "debug") {
+        logger.setLoggingLevel(QsLogging::DebugLevel);
+    }
+    else if (parser.value("loglevel") == "warn") {
+      logger.setLoggingLevel(QsLogging::WarnLevel);
+    }
+    else if (parser.value("loglevel") == "error") {
+        logger.setLoggingLevel(QsLogging::ErrorLevel);
+    }
+    else {
+        parser.showHelp();
+    }
+}
 
 #ifdef SERVER_RELEASE
   QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creaci�n del fichero de config con el servidor

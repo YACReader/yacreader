@@ -5,7 +5,7 @@
 
 #include "static.h"
 #include "startup.h"
-#include "dualfilelogger.h"
+//#include "dualfilelogger.h"
 #include "httplistener.h"
 #include "requestmapper.h"
 #include "staticfilecontroller.h"
@@ -27,9 +27,9 @@
 void Startup::start() {
 	// Initialize the core application
     QCoreApplication* app = QCoreApplication::instance();
-
 	QString configFileName=YACReader::getSettingsPath()+"/"+QCoreApplication::applicationName()+".ini";
 
+/*
 	// Configure logging into files
 	QSettings* mainLogSettings=new QSettings(configFileName,QSettings::IniFormat,app);
 	mainLogSettings->beginGroup("mainLogFile");
@@ -49,7 +49,7 @@ void Startup::start() {
         mainLogSettings->setValue("minLevel",QtCriticalMsg);
 
     Logger* logger=new FileLogger(mainLogSettings,10000,app);
-    logger->installMsgHandler();
+    logger->installMsgHandler();*/
 
 	// Configure template loader and cache
 	QSettings* templateSettings=new QSettings(configFileName,QSettings::IniFormat,app);
@@ -150,5 +150,3 @@ QString Startup::getPort()
 {
 	return QString("%1").arg(listener->serverPort());
 }
-
-
