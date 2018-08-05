@@ -59,6 +59,7 @@
 *.h text
 *.h++ text
 *.hh text
+*.qml text
 
 # Compiled Object files
 *.slo binary
