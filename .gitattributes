@@ -34,6 +34,7 @@
 *.tab text
 *.tsv text
 *.sql text
+*.txt text
 
 # Graphics
 *.png binary
@@ -43,6 +44,7 @@
 *.tif binary
 *.tiff binary
 *.ico binary
+*.icns binary
 # SVG treated as an asset (binary) by default. If you want to treat it as text,
 # comment-out the following line and uncomment the line after.
 *.svg binary
@@ -50,8 +52,10 @@
 *.eps binary
 
 # Sources
+*.bat text eol=crlf
 *.c text
 *.cc text
+*.css text
 *.cxx text
 *.cpp text
 *.c++ text
@@ -59,6 +63,26 @@
 *.h text
 *.h++ text
 *.hh text
+*.html text
+*.m text
+*.mm text
+*.patch text
+*.sh text eol=lf
+*.tpl text
+
+# Qt specific
+*.qm text
+*.qml text
+*.qrc text
+*.pro text
+*.pri text
+*.rc text
+*.ts text
+*.qm text
+
+# Git
+.gitignore text
+.gitattributes text
 
 # Compiled Object files
 *.slo binary
