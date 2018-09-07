@@ -11,6 +11,8 @@
 
 #include "yacreader_navigation_controller.h"
 
+#include "theme.h"
+
 #include <future>
 
 #ifdef Q_OS_MAC
@@ -61,7 +63,6 @@ class ComicVineDialog;
 class ComicsView;
 class ClassicComicsView;
 class GridComicsView;
-class ComicsViewTransition;
 class EmptyFolderWidget;
 class NoSearchResultsWidget;
 class EditShortcutsDialog;
@@ -398,6 +399,7 @@ private:
     QSize previousSize;
     std::future<void> upgradeLibraryFuture;
 
+    Theme theme = Theme::currentTheme();
     TrayIconController *trayIconController;
 };
 
