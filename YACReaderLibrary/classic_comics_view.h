@@ -19,7 +19,7 @@ class ClassicComicsView : public ComicsView
 {
     Q_OBJECT
 public:
-    ClassicComicsView(QWidget *parent = 0);
+    ClassicComicsView(bool disableCollapsing, QWidget *parent = nullptr);
     void setToolBar(QToolBar *toolBar) override;
     void setModel(ComicModel *model) override;
 
@@ -74,6 +74,8 @@ private:
     void updateSearchingIconPosition();
 
     QMutex settingsMutex;
+
+    bool disableCollapsing;
 };
 
 #endif // CLASSIC_COMICS_VIEW_H
