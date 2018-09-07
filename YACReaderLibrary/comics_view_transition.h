@@ -1,7 +1,7 @@
 #ifndef COMICS_VIEW_TRANSITION_H
 #define COMICS_VIEW_TRANSITION_H
 
-#include <QWidget>
+#include <QtWidgets>
 
 class ComicsViewTransition : public QWidget
 {
