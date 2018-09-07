@@ -24,6 +24,8 @@ public:
 
             t.comicsViewTransitionBackground = "#2A2A2A";
         }
+
+        return t;
     }
 
     bool isMacosNative;
