@@ -10,14 +10,10 @@
 
 #include "yacreader_global_gui.h"
 
-ComicsViewTransition::ComicsViewTransition(QWidget *parent)
-    : QWidget(parent)
+ComicsViewTransition::ComicsViewTransition(const QString &backgroundColor, QWidget *parent)
+    : QWidget(parent), backgroundColor(backgroundColor), painter(this)
 {
-#ifdef Q_OS_MAC
-    setStyleSheet("QWidget {background:#FFFFFF}");
-#else
-    setStyleSheet("QWidget {background:#2A2A2A}");
-#endif
+    setStyleSheet(QString("QWidget {background:%1").arg(backgroundColor));
 }
 
 QSize ComicsViewTransition::sizeHint()
@@ -27,11 +23,5 @@ QSize ComicsViewTransition::sizeHint()
 
 void ComicsViewTransition::paintEvent(QPaintEvent *)
 {
-    QPainter painter(this);
-
-#ifdef Q_OS_MAC
-    painter.fillRect(0, 0, width(), height(), QColor("#FFFFFF"));
-#else
-    painter.fillRect(0, 0, width(), height(), QColor("#2A2A2A"));
-#endif
+    painter.fillRect(0, 0, width(), height(), backgroundColor);
 }
