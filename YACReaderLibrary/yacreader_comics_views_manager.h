@@ -4,6 +4,7 @@
 #include <QtWidgets>
 
 #include "yacreader_global_gui.h"
+#include "theme.h"
 
 class LibraryWindow;
 
@@ -17,6 +18,7 @@ class EmptyLabelWidget;
 class EmptySpecialListWidget;
 class EmptyReadingListWidget;
 class NoSearchResultsWidget;
+class Theme;
 
 using namespace YACReader;
 
@@ -24,7 +26,7 @@ class YACReaderComicsViewsManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit YACReaderComicsViewsManager(QSettings *settings, LibraryWindow *parent = nullptr);
+    explicit YACReaderComicsViewsManager(QSettings *settings, const Theme &theme, LibraryWindow *parent = nullptr);
 
     QWidget *containerWidget();
 
@@ -50,6 +52,8 @@ protected:
     ClassicComicsView *classicComicsView;
     GridComicsView *gridComicsView;
     InfoComicsView *infoComicsView;
+
+    Theme theme;
 
 signals:
 

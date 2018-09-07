@@ -14,12 +14,14 @@
 
 #include "yacreader_sidebar.h"
 
+#include "theme.h"
+
 //--
 #include "yacreader_search_line_edit.h"
 #include "options_dialog.h"
 
-YACReaderComicsViewsManager::YACReaderComicsViewsManager(QSettings *settings, LibraryWindow *parent)
-    : QObject(parent), libraryWindow(parent), classicComicsView(nullptr), gridComicsView(nullptr), infoComicsView(nullptr)
+YACReaderComicsViewsManager::YACReaderComicsViewsManager(QSettings *settings, const Theme &theme, LibraryWindow *parent)
+    : QObject(parent), libraryWindow(parent), classicComicsView(nullptr), gridComicsView(nullptr), infoComicsView(nullptr), theme(theme)
 {
     comicsViewStack = new QStackedWidget();
 
