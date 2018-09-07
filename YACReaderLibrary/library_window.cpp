@@ -237,7 +237,7 @@ void LibraryWindow::doLayout()
 
     //FINAL LAYOUT-------------------------------------------------------------
 
-    comicsViewsManager = new YACReaderComicsViewsManager(settings, Theme::currentTheme(), this);
+    comicsViewsManager = new YACReaderComicsViewsManager(settings, theme, this);
 
     sHorizontal->addWidget(sideBar);
 #ifndef Q_OS_MAC
