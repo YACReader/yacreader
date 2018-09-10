@@ -20,6 +20,8 @@ public:
 
             t.itemLibrarySelectedStyleSheet = "color: white; background-color:#91c4f4; border-bottom:1px solid #91c4f4;";
             t.itemLibraryNoSelectedStyleSheet = "background-color:transparent;";
+
+            t.useNativeFolderIcons = true;
         } else {
             t.isMacosNative = false;
 
@@ -29,6 +31,8 @@ public:
 
             t.itemLibrarySelectedStyleSheet = "color: white; background-color:#2E2E2E; font-weight:bold;";
             t.itemLibraryNoSelectedStyleSheet = "background-color:transparent; color:#DDDFDF;";
+
+            t.useNativeFolderIcons = false;
         }
 
         return t;
@@ -45,6 +49,9 @@ public:
     //library item
     QString itemLibrarySelectedStyleSheet;
     QString itemLibraryNoSelectedStyleSheet;
+
+    //tree folders
+    bool useNativeFolderIcons;
 };
 
 #endif // THEME_H
