@@ -1,6 +1,8 @@
 #include "reading_list_item.h"
 #include "qnaturalsorting.h"
 
+#include "theme.h"
+
 #include <QFileIconProvider>
 
 #include "QsLog.h"
@@ -126,12 +128,12 @@ QIcon ReadingListItem::getIcon() const
 {
     if (parent->getId() == 0)
         return YACReader::noHighlightedIcon(":/images/lists/list.png"); //top level list
-    else
-#ifdef Q_OS_MAC
-        return QFileIconProvider().icon(QFileIconProvider::Folder);
-#else
-        return YACReader::noHighlightedIcon(":/images/sidebar/folder.png"); //sublist
-#endif
+    else {
+        if(Theme::currentTheme().useNativeFolderIcons)
+            return QFileIconProvider().icon(QFileIconProvider::Folder);
+        else
+            return YACReader::noHighlightedIcon(":/images/sidebar/folder.png"); //sublist
+    }
 }
 
 int ReadingListItem::childCount() const
