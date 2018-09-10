@@ -22,6 +22,9 @@ public:
             t.itemLibraryNoSelectedStyleSheet = "background-color:transparent;";
 
             t.useNativeFolderIcons = true;
+
+            t.noComicsContentBackgroundColor = "#FFFFFF";
+            t.noComicsContentTitleLabelStyle = "QLabel {color:#888888; font-size:24px;font-family:Arial;font-weight:bold;}";
         } else {
             t.isMacosNative = false;
 
@@ -33,6 +36,9 @@ public:
             t.itemLibraryNoSelectedStyleSheet = "background-color:transparent; color:#DDDFDF;";
 
             t.useNativeFolderIcons = false;
+
+            t.noComicsContentBackgroundColor = "#2A2A2A";
+            t.noComicsContentTitleLabelStyle = "QLabel {color:#CCCCCC; font-size:24px;font-family:Arial;font-weight:bold;}";
         }
 
         return t;
@@ -52,6 +58,10 @@ public:
 
     //tree folders
     bool useNativeFolderIcons;
+
+    //EmptyContainerInfo & NoSearchResultsWidget
+    QString noComicsContentBackgroundColor;
+    QString noComicsContentTitleLabelStyle;
 };
 
 #endif // THEME_H

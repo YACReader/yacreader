@@ -1,15 +1,14 @@
 #include "empty_container_info.h"
 
+#include "theme.h"
+
 EmptyContainerInfo::EmptyContainerInfo(QWidget *parent)
-    : QWidget(parent), iconLabel(new QLabel()), titleLabel(new QLabel())
+        : QWidget(parent), iconLabel(new QLabel()), titleLabel(new QLabel())
 {
-#ifdef Q_OS_MAC
-    backgroundColor = "#FFFFFF";
-    titleLabel->setStyleSheet("QLabel {color:#888888; font-size:24px;font-family:Arial;font-weight:bold;}");
-#else
-    backgroundColor = "#2A2A2A";
-    titleLabel->setStyleSheet("QLabel {color:#CCCCCC; font-size:24px;font-family:Arial;font-weight:bold;}");
-#endif
+    auto theme = Theme::currentTheme();
+
+    backgroundColor = theme.noComicsContentBackgroundColor;
+    titleLabel->setStyleSheet(theme.noComicsContentTitleLabelStyle);
 
     iconLabel->setAlignment(Qt::AlignCenter);
     titleLabel->setAlignment(Qt::AlignCenter);

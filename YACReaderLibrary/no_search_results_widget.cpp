@@ -1,5 +1,7 @@
 #include "no_search_results_widget.h"
 
+#include "theme.h"
+
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPainter>
@@ -7,12 +9,6 @@
 NoSearchResultsWidget::NoSearchResultsWidget(QWidget *parent)
     : QWidget(parent)
 {
-#ifdef Q_OS_MAC
-    backgroundColor = "#FFFFFF";
-#else
-    backgroundColor = "#2A2A2A";
-#endif
-
     auto layout = new QVBoxLayout;
 
     iconLabel = new QLabel();
@@ -22,11 +18,10 @@ NoSearchResultsWidget::NoSearchResultsWidget(QWidget *parent)
     titleLabel = new QLabel("No results");
     titleLabel->setAlignment(Qt::AlignCenter);
 
-#ifdef Q_OS_MAC
-    titleLabel->setStyleSheet("QLabel {color:#888888; font-size:24px;font-family:Arial;font-weight:bold;}");
-#else
-    titleLabel->setStyleSheet("QLabel {color:#CCCCCC; font-size:24px;font-family:Arial;font-weight:bold;}");
-#endif
+    auto theme = Theme::currentTheme();
+
+    backgroundColor = theme.noComicsContentBackgroundColor;
+    titleLabel->setStyleSheet(theme.noComicsContentTitleLabelStyle);
 
     layout->addSpacing(100);
     layout->addWidget(iconLabel);
