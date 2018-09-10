@@ -50,12 +50,6 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QStrin
     setMinimumHeight(20);
 }
 
-void YACReaderLibraryItemWidget::showUpDownButtons(bool show)
-{
-    up->setHidden(!show);
-    down->setHidden(!show);
-}
-
 void YACReaderLibraryItemWidget::deselect()
 {
     setStyleSheet(Theme::currentTheme().itemLibraryNoSelectedStyleSheet);

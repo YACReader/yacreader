@@ -13,7 +13,7 @@ class YACReaderLibraryItemWidget : public QWidget
     Q_OBJECT
 
 public:
-    YACReaderLibraryItemWidget(QString name, QString path, QWidget *parent = 0);
+    YACReaderLibraryItemWidget(QString name, QString path, QWidget *parent = nullptr);
     QString name;
     QString path;
 
@@ -22,12 +22,9 @@ signals:
     void showOptions();
 
 public slots:
-    void showUpDownButtons(bool show);
-
-    //bool eventFilter(QObject *object, QEvent *event);
     void select();
     void deselect();
-    void setName(const QString &name);
+    void setName(const QString & name);
 
 private:
     QLabel *icon;
