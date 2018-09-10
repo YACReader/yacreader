@@ -179,11 +179,11 @@ void LibraryWindow::doLayout()
     editInfoToolBar = new QToolBar();
     editInfoToolBar->setStyleSheet("QToolBar {border: none;}");
 
-#ifdef Q_OS_MAC
-    libraryToolBar = new YACReaderMacOSXToolbar(this);
-#else
-    libraryToolBar = new YACReaderMainToolBar(this);
-#endif
+    if (theme.isMacosNative) {
+        libraryToolBar = new YACReaderMacOSXToolbar(this);
+    } else {
+        libraryToolBar = new YACReaderMainToolBar(this);
+    }
 
 #ifndef NO_OPENGL
     //FLOW-----------------------------------------------------------------------
