@@ -109,24 +109,14 @@ bool YACReaderLibraryItemWidget::eventFilter(QObject *object, QEvent *event){
 
 void YACReaderLibraryItemWidget::deselect()
 {
-<<<<<<< HEAD
-
-#ifdef Q_OS_MAC
-    QString styleSheet = "background-color:transparent;";
-    setStyleSheet(styleSheet);
-#else
-    QString styleSheet = "background-color:transparent; color:#DDDFDF;";
-    setStyleSheet(styleSheet);
-#endif
-=======
     setStyleSheet(Theme::currentTheme().itemLibraryNoSelectedStyleSheet);
->>>>>>> 1611385... Use theme for styling item libraries.
 
     QPixmap iconPixmap(":/images/sidebar/libraryIcon.png");
     icon->setPixmap(iconPixmap);
 
     /*up->setHidden(true);
 	down->setHidden(true);*/
+
     options->setHidden(true);
 
     isSelected = false;
@@ -134,17 +124,7 @@ void YACReaderLibraryItemWidget::deselect()
 
 void YACReaderLibraryItemWidget::select()
 {
-<<<<<<< HEAD
-#ifdef Q_OS_MAC
-    //QString styleSheet ="color: white; background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6BAFE4, stop: 1 #3984D2); border-top: 2px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #5EA3DF, stop: 1 #73B8EA); border-left:none;border-right:none;border-bottom:1px solid #3577C2;";
-    QString styleSheet = "color: white; background-color:#91c4f4; border-bottom:1px solid #91c4f4;";
-#else
-    QString styleSheet = "color: white; background-color:#2E2E2E; font-weight:bold;";
-#endif
-    setStyleSheet(styleSheet);
-=======
     setStyleSheet(Theme::currentTheme().itemLibrarySelectedStyleSheet);
->>>>>>> 1611385... Use theme for styling item libraries.
 
     options->setHidden(false);
 
