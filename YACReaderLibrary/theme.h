@@ -11,8 +11,15 @@ public:
     static Theme currentTheme() {
         Theme t;
 
-        if (true) { //native macos theme
+#ifdef Q_OS_MAC
+        bool macosNative = true;
+#else
+        bool macosNative = false;
+#endif
+
+        if (macosNative) { //native macos theme
             t.isMacosNative = true;
+            t.useNativeFullScreen = true;
 
             t.disableClassicViewCollapsing = true;
 
@@ -27,6 +34,11 @@ public:
             t.noComicsContentTitleLabelStyle = "QLabel {color:#888888; font-size:24px;font-family:Arial;font-weight:bold;}";
         } else {
             t.isMacosNative = false;
+            #ifdef Q_OS_MAC
+            t.useNativeFullScreen = true;
+            #else
+            t.useNativeFullScreen = false;
+            #endif
 
             t.disableClassicViewCollapsing = false;
 
@@ -45,6 +57,7 @@ public:
     }
 
     bool isMacosNative;
+    bool useNativeFullScreen;
 
     //
     bool disableClassicViewCollapsing;
