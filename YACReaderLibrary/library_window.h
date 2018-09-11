@@ -15,9 +15,8 @@
 
 #include <future>
 
-#ifdef Q_OS_MAC
-#include "yacreader_macosx_toolbar.h"
-#endif
+#include "yacreader_library_toolbar.h"
+#include "yacreader_library_search_edit.h"
 
 class QTreeView;
 class QDirModel;
@@ -91,35 +90,29 @@ class LibraryWindow : public QMainWindow
 
     Q_OBJECT
 public:
-    YACReaderSideBar *sideBar;
+    YACReaderSideBar * sideBar;
 
-    CreateLibraryDialog *createLibraryDialog;
-    ExportLibraryDialog *exportLibraryDialog;
-    ImportLibraryDialog *importLibraryDialog;
-    ExportComicsInfoDialog *exportComicsInfoDialog;
-    ImportComicsInfoDialog *importComicsInfoDialog;
-    AddLibraryDialog *addLibraryDialog;
-    LibraryCreator *libraryCreator;
-    HelpAboutDialog *had;
-    RenameLibraryDialog *renameLibraryDialog;
-    PropertiesDialog *propertiesDialog;
-    ComicVineDialog *comicVineDialog;
-    EditShortcutsDialog *editShortcutsDialog;
+    CreateLibraryDialog * createLibraryDialog;
+    ExportLibraryDialog * exportLibraryDialog;
+    ImportLibraryDialog * importLibraryDialog;
+    ExportComicsInfoDialog * exportComicsInfoDialog;
+    ImportComicsInfoDialog * importComicsInfoDialog;
+    AddLibraryDialog * addLibraryDialog;
+    LibraryCreator * libraryCreator;
+    HelpAboutDialog * had;
+    RenameLibraryDialog * renameLibraryDialog;
+    PropertiesDialog * propertiesDialog;
+    ComicVineDialog * comicVineDialog;
+    EditShortcutsDialog * editShortcutsDialog;
     //YACReaderSocialDialog * socialDialog;
     bool fullscreen;
     bool importedCovers; //if true, the library is read only (not updates,open comic or properties)
     bool fromMaximized;
 
-    PackageManager *packageManager;
+    PackageManager * packageManager;
 
     QSize slideSizeW;
     QSize slideSizeF;
-    //search filter
-#ifdef Q_OS_MAC
-    YACReaderMacOSXSearchLineEdit *searchEdit;
-#else
-    YACReaderSearchLineEdit *searchEdit;
-#endif
 
     QString previousFilter;
     QCheckBox *includeComicsCheckBox;
@@ -145,11 +138,6 @@ public:
 
     bool fetching;
 
-    int i;
-
-    QAction *backAction;
-    QAction *forwardAction;
-
     QAction *openComicAction;
     QAction *createLibraryAction;
     QAction *openLibraryAction;
@@ -160,21 +148,15 @@ public:
     QAction *exportLibraryAction;
     QAction *importLibraryAction;
 
-    QAction *updateLibraryAction;
-    QAction *removeLibraryAction;
-    QAction *helpAboutAction;
-    QAction *renameLibraryAction;
-#ifndef Q_OS_MAC
-    QAction *toggleFullScreenAction;
-#endif
-    QAction *optionsAction;
-    QAction *serverConfigAction;
-    QAction *toggleComicsViewAction;
+    QAction * updateLibraryAction;
+    QAction * removeLibraryAction;
+    QAction * renameLibraryAction;
+
     //QAction * socialAction;
 
     //tree actions
-    QAction *addFolderAction;
-    QAction *deleteFolderAction;
+    QAction * addFolderAction;
+    QAction * deleteFolderAction;
     //--
     QAction *setRootIndexAction;
     QAction *expandAllNodesAction;
@@ -219,11 +201,8 @@ public:
     QAction *addToMenuAction;
     QAction *addToFavoritesAction;
 
-#ifdef Q_OS_MAC
-    YACReaderMacOSXToolbar *libraryToolBar;
-#else
-    YACReaderMainToolBar *libraryToolBar;
-#endif
+    YACReaderLibraryToolbar *libraryToolBar;
+
     QToolBar *treeActions;
     QToolBar *comicsToolBar;
     QToolBar *editInfoToolBar;

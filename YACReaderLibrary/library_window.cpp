@@ -102,7 +102,8 @@ LibraryWindow::LibraryWindow()
 
     if (libraries.isEmpty()) {
         showNoLibrariesWidget();
-    } else {
+    }
+    else {
         showRootWidget();
         selectedLibrary->setCurrentIndex(0);
     }
@@ -115,18 +116,20 @@ void LibraryWindow::setupUI()
     libraryCreator = new LibraryCreator();
     packageManager = new PackageManager();
 
-    settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+    settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
     settings->beginGroup("libraryConfig");
 
     historyController = new YACReaderHistoryController(this);
 
+    libraryToolBar = new YACReaderLibraryToolbar(this, theme.isMacosNative, theme.useNativeFullScreen, settings);
+
     createActions();
     doModels();
 
-    doDialogs();
     doLayout();
     createToolBars();
     createMenus();
+    doDialogs();
 
     navigationController = new YACReaderNavigationController(this, comicsViewsManager);
 
@@ -179,12 +182,6 @@ void LibraryWindow::doLayout()
     editInfoToolBar = new QToolBar();
     editInfoToolBar->setStyleSheet("QToolBar {border: none;}");
 
-    if (theme.isMacosNative) {
-        libraryToolBar = new YACReaderMacOSXToolbar(this);
-    } else {
-        libraryToolBar = new YACReaderMainToolBar(this);
-    }
-
 #ifndef NO_OPENGL
     //FLOW-----------------------------------------------------------------------
     //---------------------------------------------------------------------------
@@ -197,13 +194,6 @@ void LibraryWindow::doLayout()
     else if (!openGLAvailable)
         settings->setValue(USE_OPEN_GL, 0);
 #endif
-        //FOLDERS FILTER-------------------------------------------------------------
-        //---------------------------------------------------------------------------
-#ifndef Q_OS_MAC
-    //in MacOSX the searchEdit is created using the toolbar wrapper
-    searchEdit = new YACReaderSearchLineEdit();
-#endif
-
     //SIDEBAR--------------------------------------------------------------------
     //---------------------------------------------------------------------------
     sideBar = new YACReaderSideBar;
@@ -240,21 +230,22 @@ void LibraryWindow::doLayout()
     comicsViewsManager = new YACReaderComicsViewsManager(settings, theme, this);
 
     sHorizontal->addWidget(sideBar);
-#ifndef Q_OS_MAC
-    QVBoxLayout *rightLayout = new QVBoxLayout;
-    rightLayout->addWidget(libraryToolBar);
-    rightLayout->addWidget(comicsViewsManager->containerWidget());
 
-    rightLayout->setMargin(0);
-    rightLayout->setSpacing(0);
+    if (libraryToolBar->widget() != nullptr) {
+        auto rightLayout = new QVBoxLayout;
+        rightLayout->addWidget(libraryToolBar->widget());
+        rightLayout->addWidget(comicsViewsManager->containerWidget());
 
-    QWidget *rightWidget = new QWidget();
-    rightWidget->setLayout(rightLayout);
+        rightLayout->setMargin(0);
+        rightLayout->setSpacing(0);
 
-    sHorizontal->addWidget(rightWidget);
-#else
-    sHorizontal->addWidget(comicsViewsManager->containerWidget());
-#endif
+        auto rightWidget = new QWidget();
+        rightWidget->setLayout(rightLayout);
+
+        sHorizontal->addWidget(rightWidget);
+    } else {
+        sHorizontal->addWidget(comicsViewsManager->containerWidget());
+    }
 
     sHorizontal->setStretchFactor(0, 0);
     sHorizontal->setStretchFactor(1, 1);
@@ -361,11 +352,11 @@ void LibraryWindow::setUpShortcutsManagement()
 
     editShortcutsDialog->addActionsGroup("General", QIcon(":/images/shortcuts_group_general.png"),
                                          tmpList = QList<QAction *>()
-                                                 << backAction
-                                                 << forwardAction
-                                                 << helpAboutAction
-                                                 << optionsAction
-                                                 << serverConfigAction
+                                                 << libraryToolBar->backAction
+                                                 << libraryToolBar->forwardAction
+                                                 << libraryToolBar->helpAboutAction
+                                                 << libraryToolBar->optionsAction
+                                                 << libraryToolBar->serverConfigAction
                                                  << showEditShortcutsAction);
 
     allActions << tmpList;
@@ -384,13 +375,17 @@ void LibraryWindow::setUpShortcutsManagement()
 
     allActions << tmpList;
 
+    tmpList = QList<QAction *>();
+    tmpList.append(showHideMarksAction);
+
+    if (libraryToolBar->toggleFullScreenAction != nullptr) {
+        tmpList.append(libraryToolBar->toggleFullScreenAction);
+    }
+
+    tmpList.append(libraryToolBar->toggleComicsViewAction);
+
     editShortcutsDialog->addActionsGroup("Visualization", QIcon(":/images/shortcuts_group_visualization.png"),
-                                         tmpList = QList<QAction *>()
-                                                 << showHideMarksAction
-#ifndef Q_OS_MAC
-                                                 << toggleFullScreenAction
-#endif
-                                                 << toggleComicsViewAction);
+                                         tmpList);
 
     allActions << tmpList;
 
@@ -414,24 +409,6 @@ void LibraryWindow::doModels()
 
 void LibraryWindow::createActions()
 {
-    backAction = new QAction(this);
-    QIcon icoBackButton;
-    icoBackButton.addFile(":/images/main_toolbar/back.png", QSize(), QIcon::Normal);
-    //icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back_disabled.png"), QIcon::Disabled);
-    backAction->setData(BACK_ACTION_YL);
-    backAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(BACK_ACTION_YL));
-    backAction->setIcon(icoBackButton);
-    backAction->setDisabled(true);
-
-    forwardAction = new QAction(this);
-    QIcon icoFordwardButton;
-    icoFordwardButton.addFile(":/images/main_toolbar/forward.png", QSize(), QIcon::Normal);
-    //icoFordwardButton.addPixmap(QPixmap(":/images/main_toolbar/forward_disabled.png"), QIcon::Disabled);
-    forwardAction->setData(FORWARD_ACTION_YL);
-    forwardAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(FORWARD_ACTION_YL));
-    forwardAction->setIcon(icoFordwardButton);
-    forwardAction->setDisabled(true);
-
     createLibraryAction = new QAction(this);
     createLibraryAction->setToolTip(tr("Create a new library"));
     createLibraryAction->setData(CREATE_LIBRARY_ACTION_YL);
@@ -524,22 +501,6 @@ void LibraryWindow::createActions()
     showHideMarksAction->setCheckable(true);
     showHideMarksAction->setIcon(QIcon(":/images/comics_view_toolbar/showMarks.png"));
     showHideMarksAction->setChecked(true);
-#ifndef Q_OS_MAC
-    toggleFullScreenAction = new QAction(tr("Fullscreen mode on/off"), this);
-    toggleFullScreenAction->setToolTip(tr("Fullscreen mode on/off"));
-    toggleFullScreenAction->setData(TOGGLE_FULL_SCREEN_ACTION_YL);
-    toggleFullScreenAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_FULL_SCREEN_ACTION_YL));
-    QIcon icoFullscreenButton;
-    icoFullscreenButton.addPixmap(QPixmap(":/images/main_toolbar/fullscreen.png"), QIcon::Normal);
-    toggleFullScreenAction->setIcon(icoFullscreenButton);
-#endif
-    helpAboutAction = new QAction(this);
-    helpAboutAction->setToolTip(tr("Help, About YACReader"));
-    helpAboutAction->setData(HELP_ABOUT_ACTION_YL);
-    helpAboutAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(HELP_ABOUT_ACTION_YL));
-    QIcon icoHelpButton;
-    icoHelpButton.addFile(":/images/main_toolbar/help.png", QSize(), QIcon::Normal);
-    helpAboutAction->setIcon(icoHelpButton);
 
     addFolderAction = new QAction(tr("Add new folder"), this);
     addFolderAction->setData(ADD_FOLDER_ACTION_YL);
@@ -571,36 +532,6 @@ void LibraryWindow::createActions()
     colapseAllNodesAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(COLAPSE_ALL_NODES_ACTION_YL));
     colapseAllNodesAction->setIcon(QIcon(":/images/sidebar/colapse.png"));
 
-    optionsAction = new QAction(this);
-    optionsAction->setToolTip(tr("Show options dialog"));
-    optionsAction->setData(OPTIONS_ACTION_YL);
-    optionsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPTIONS_ACTION_YL));
-    QIcon icoSettingsButton;
-    icoSettingsButton.addFile(":/images/main_toolbar/settings.png", QSize(), QIcon::Normal);
-    optionsAction->setIcon(icoSettingsButton);
-
-    serverConfigAction = new QAction(this);
-    serverConfigAction->setToolTip(tr("Show comics server options dialog"));
-    serverConfigAction->setData(SERVER_CONFIG_ACTION_YL);
-    serverConfigAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SERVER_CONFIG_ACTION_YL));
-    QIcon icoServerButton;
-    icoServerButton.addFile(":/images/main_toolbar/server.png", QSize(), QIcon::Normal);
-    serverConfigAction->setIcon(icoServerButton);
-
-    toggleComicsViewAction = new QAction(tr("Change between comics views"), this);
-    toggleComicsViewAction->setToolTip(tr("Change between comics views"));
-    QIcon icoViewsButton;
-
-    if (!settings->contains(COMICS_VIEW_STATUS) || settings->value(COMICS_VIEW_STATUS) == Flow)
-        icoViewsButton.addFile(":/images/main_toolbar/grid.png", QSize(), QIcon::Normal);
-    else if (settings->value(COMICS_VIEW_STATUS) == Grid)
-        icoViewsButton.addFile(":/images/main_toolbar/info.png", QSize(), QIcon::Normal);
-    else
-        icoViewsButton.addFile(":/images/main_toolbar/flow.png", QSize(), QIcon::Normal);
-
-    toggleComicsViewAction->setData(TOGGLE_COMICS_VIEW_ACTION_YL);
-    toggleComicsViewAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_COMICS_VIEW_ACTION_YL));
-    toggleComicsViewAction->setIcon(icoViewsButton);
     //socialAction = new QAction(this);
 
     openContainingFolderAction = new QAction(this);
@@ -734,9 +665,10 @@ void LibraryWindow::createActions()
     this->addAction(setFolderAsNotCompletedAction);
     this->addAction(setFolderAsReadAction);
     this->addAction(setFolderAsUnreadAction);
-#ifndef Q_OS_MAC
-    this->addAction(toggleFullScreenAction);
-#endif
+
+    if (libraryToolBar->toggleFullScreenAction != nullptr) {
+        this->addAction(libraryToolBar->toggleFullScreenAction);
+    }
 
     //disable actions
     disableAllActions();
@@ -744,9 +676,10 @@ void LibraryWindow::createActions()
 void LibraryWindow::disableComicsActions(bool disabled)
 {
     //if there aren't comics, no fullscreen option will be available
-#ifndef Q_OS_MAC
-    toggleFullScreenAction->setDisabled(disabled);
-#endif
+    if (libraryToolBar->toggleFullScreenAction != nullptr) {
+        libraryToolBar->toggleFullScreenAction->setDisabled(disabled);
+    }
+
     //edit toolbar
     openComicAction->setDisabled(disabled);
     editSelectedComicsAction->setDisabled(disabled);
@@ -766,6 +699,7 @@ void LibraryWindow::disableComicsActions(bool disabled)
 
     updateCurrentFolderAction->setDisabled(disabled);
 }
+
 void LibraryWindow::disableLibrariesActions(bool disabled)
 {
     updateLibraryAction->setDisabled(disabled);
@@ -805,55 +739,12 @@ void LibraryWindow::disableAllActions()
 
 void LibraryWindow::createToolBars()
 {
-
-#ifdef Q_OS_MAC
-    //libraryToolBar->setIconSize(QSize(16,16)); //TODO make icon size dynamic
-
-    libraryToolBar->addAction(backAction);
-    libraryToolBar->addAction(forwardAction);
-
-    libraryToolBar->addSpace(10);
-
-#ifdef SERVER_RELEASE
-    libraryToolBar->addAction(serverConfigAction);
-#endif
-    libraryToolBar->addAction(optionsAction);
-    libraryToolBar->addAction(helpAboutAction);
-
-    libraryToolBar->addSpace(10);
-
-    libraryToolBar->addAction(toggleComicsViewAction);
-#ifndef Q_OS_MAC
-    libraryToolBar->addAction(toggleFullScreenAction);
-#endif
-
-    libraryToolBar->addStretch();
-
-    //Native toolbar search edit
-    //libraryToolBar->addWidget(searchEdit);
-    searchEdit = libraryToolBar->addSearchEdit();
-    //connect(libraryToolBar,SIGNAL(searchTextChanged(YACReader::SearchModifiers,QString)),this,SLOT(setSearchFilter(YACReader::SearchModifiers, QString)));
-
-    //libraryToolBar->setMovable(false);
-
-    libraryToolBar->attachToWindow(this->windowHandle());
-
-#else
-    libraryToolBar->backButton->setDefaultAction(backAction);
-    libraryToolBar->forwardButton->setDefaultAction(forwardAction);
-    libraryToolBar->settingsButton->setDefaultAction(optionsAction);
-    libraryToolBar->serverButton->setDefaultAction(serverConfigAction);
-    libraryToolBar->helpButton->setDefaultAction(helpAboutAction);
-    libraryToolBar->toggleComicsViewButton->setDefaultAction(toggleComicsViewAction);
-    libraryToolBar->fullscreenButton->setDefaultAction(toggleFullScreenAction);
-    libraryToolBar->setSearchWidget(searchEdit);
-#endif
-
-    editInfoToolBar->setIconSize(QSize(18, 18));
+    editInfoToolBar->setIconSize(QSize(18,18));
     editInfoToolBar->addAction(openComicAction);
     editInfoToolBar->addSeparator();
     editInfoToolBar->addAction(editSelectedComicsAction);
     editInfoToolBar->addAction(getInfoAction);
+
     editInfoToolBar->addAction(asignOrderAction);
 
     editInfoToolBar->addSeparator();
@@ -871,7 +762,8 @@ void LibraryWindow::createToolBars()
 
     editInfoToolBar->addSeparator();
 
-    editInfoToolBar->addAction(deleteComicsAction);
+    //TODO this was removed, commented while rebasing, not sure where/when this action is added
+    //editInfoToolBar->addAction(deleteComicsAction);
 
     comicsViewsManager->comicsView->setToolBar(editInfoToolBar);
 }
@@ -953,11 +845,12 @@ void LibraryWindow::createMenus()
 void LibraryWindow::createConnections()
 {
     //history navigation
-    connect(backAction, SIGNAL(triggered()), historyController, SLOT(backward()));
-    connect(forwardAction, SIGNAL(triggered()), historyController, SLOT(forward()));
+    connect(libraryToolBar->backAction, SIGNAL(triggered()), historyController, SLOT(backward()));
+    connect(libraryToolBar->forwardAction, SIGNAL(triggered()), historyController, SLOT(forward()));
     //--
-    connect(historyController, SIGNAL(enabledBackward(bool)), backAction, SLOT(setEnabled(bool)));
-    connect(historyController, SIGNAL(enabledForward(bool)), forwardAction, SLOT(setEnabled(bool)));
+    connect(historyController, SIGNAL(enabledBackward(bool)), libraryToolBar->backAction, SLOT(setEnabled(bool)));
+    connect(historyController, SIGNAL(enabledForward(bool)), libraryToolBar->forwardAction, SLOT(setEnabled(bool)));
+
     //connect(foldersView, SIGNAL(clicked(QModelIndex)), historyController, SLOT(updateHistory(QModelIndex)));
 
     //libraryCreator connections
@@ -1038,26 +931,28 @@ void LibraryWindow::createConnections()
     //connect(deleteLibraryAction,SIGNAL(triggered()),this,SLOT(deleteLibrary()));
     connect(removeLibraryAction, SIGNAL(triggered()), this, SLOT(removeLibrary()));
     connect(openComicAction, SIGNAL(triggered()), this, SLOT(openComic()));
-    connect(helpAboutAction, SIGNAL(triggered()), had, SLOT(show()));
+    connect(libraryToolBar->helpAboutAction, SIGNAL(triggered()), had, SLOT(show()));
     connect(addFolderAction, SIGNAL(triggered()), this, SLOT(addFolderToCurrentIndex()));
     connect(deleteFolderAction, SIGNAL(triggered()), this, SLOT(deleteSelectedFolder()));
     connect(setRootIndexAction, SIGNAL(triggered()), this, SLOT(setRootIndex()));
     connect(expandAllNodesAction, SIGNAL(triggered()), foldersView, SLOT(expandAll()));
     connect(colapseAllNodesAction, SIGNAL(triggered()), foldersView, SLOT(collapseAll()));
-#ifndef Q_OS_MAC
-    connect(toggleFullScreenAction, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
-#endif
-    connect(toggleComicsViewAction, SIGNAL(triggered()), comicsViewsManager, SLOT(toggleComicsView()));
-    connect(optionsAction, SIGNAL(triggered()), optionsDialog, SLOT(show()));
+
+    if (libraryToolBar->toggleFullScreenAction != nullptr) {
+        connect(libraryToolBar->toggleFullScreenAction, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
+    }
+
+    connect(libraryToolBar->toggleComicsViewAction,SIGNAL(triggered()),comicsViewsManager,SLOT(toggleComicsView()));
+    connect(libraryToolBar->optionsAction, SIGNAL(triggered()),optionsDialog,SLOT(show()));
 #ifdef SERVER_RELEASE
-    connect(serverConfigAction, SIGNAL(triggered()), serverConfigDialog, SLOT(show()));
+    connect(libraryToolBar->serverConfigAction, SIGNAL(triggered()), serverConfigDialog, SLOT(show()));
 #endif
     connect(optionsDialog, SIGNAL(optionsChanged()), this, SLOT(reloadOptions()));
     connect(optionsDialog, SIGNAL(editShortcuts()), editShortcutsDialog, SLOT(show()));
 
     //Folders filter
     //connect(clearFoldersFilter,SIGNAL(clicked()),foldersFilter,SLOT(clear()));
-    connect(searchEdit, SIGNAL(filterChanged(YACReader::SearchModifiers, QString)), this, SLOT(setSearchFilter(YACReader::SearchModifiers, QString)));
+    connect(libraryToolBar->searchEdit, SIGNAL(filterChanged(YACReader::SearchModifiers, QString)), this, SLOT(setSearchFilter(YACReader::SearchModifiers, QString)));
     //connect(includeComicsCheckBox,SIGNAL(stateChanged(int)),this,SLOT(searchInFiles(int)));
 
     //ContextMenus
@@ -1158,8 +1053,7 @@ void LibraryWindow::loadLibrary(const QString &name)
                 }
             }
 
-            if (comparation == 0) //en caso de que la versión se igual que la actual
-            {
+            if (comparation == 0) { //en caso de que la versión se igual que la actual
                 foldersModel->setupModelData(path);
                 foldersModelProxy->setSourceModel(foldersModel);
                 foldersView->setModel(foldersModelProxy);
@@ -1176,44 +1070,46 @@ void LibraryWindow::loadLibrary(const QString &name)
 
                 d.setCurrent(libraries.getPath(name));
                 d.setFilter(QDir::AllDirs | QDir::Files | QDir::Hidden | QDir::NoSymLinks | QDir::NoDotAndDotDot);
-                if (d.count() <= 1) //librería de sólo lectura
-                {
+                if (d.count() <= 1) { //librería de sólo lectura
                     //QMessageBox::critical(NULL,QString::number(d.count()),QString::number(d.count()));
                     disableLibrariesActions(false);
                     updateLibraryAction->setDisabled(true);
                     openContainingFolderAction->setDisabled(true);
                     disableComicsActions(true);
-#ifndef Q_OS_MAC
-                    toggleFullScreenAction->setEnabled(true);
-#endif
+
+                    if (libraryToolBar->toggleFullScreenAction != nullptr) {
+                        libraryToolBar->toggleFullScreenAction->setEnabled(true);
+                    }
 
                     importedCovers = true;
-                } else //librería normal abierta
-                {
+                } else { //librería normal abierta
                     disableLibrariesActions(false);
                     importedCovers = false;
                 }
 
                 setRootIndex();
 
-                searchEdit->clear();
-            } else if (comparation > 0) {
-                int ret = QMessageBox::question(this, tr("Download new version"), tr("This library was created with a newer version of YACReaderLibrary. Download the new version now?"), QMessageBox::Yes, QMessageBox::No);
-                if (ret == QMessageBox::Yes)
+
+                libraryToolBar->searchEdit->clear();
+            }
+            else if(comparation > 0) {
+                int ret = QMessageBox::question(this,tr("Download new version"),tr("This library was created with a newer version of YACReaderLibrary. Download the new version now?"),QMessageBox::Yes,QMessageBox::No);
+                if(ret == QMessageBox::Yes)
                     QDesktopServices::openUrl(QUrl("http://www.yacreader.com"));
 
-                comicsViewsManager->comicsView->setModel(NULL);
-                foldersView->setModel(NULL);
-                listsView->setModel(NULL);
-                disableAllActions(); //TODO comprobar que se deben deshabilitar
+                comicsViewsManager->comicsView->setModel(nullptr);
+                foldersView->setModel(nullptr);
+                listsView->setModel(nullptr);
+                disableAllActions();//TODO comprobar que se deben deshabilitar
                 //será possible renombrar y borrar estas bibliotecas
                 renameLibraryAction->setEnabled(true);
                 removeLibraryAction->setEnabled(true);
             }
-        } else {
-            comicsViewsManager->comicsView->setModel(NULL);
-            foldersView->setModel(NULL);
-            listsView->setModel(NULL);
+        }
+        else {
+            comicsViewsManager->comicsView->setModel(nullptr);
+            foldersView->setModel(nullptr);
+            listsView->setModel(nullptr);
             disableAllActions(); //TODO comprobar que se deben deshabilitar
 
             //si la librería no existe en disco, se ofrece al usuario la posibiliad de eliminarla
@@ -1601,10 +1497,10 @@ void LibraryWindow::showComicsViewContextMenu(const QPoint &point)
     QMenu subMenu;
     setupAddToSubmenu(subMenu);
 
-#ifndef Q_OS_MAC
-    menu.addSeparator();
-    menu.addAction(toggleFullScreenAction);
-#endif
+    if (libraryToolBar->toggleFullScreenAction != nullptr) {
+        menu.addSeparator();
+        menu.addAction(libraryToolBar->toggleFullScreenAction);
+    }
 
     menu.exec(comicsViewsManager->comicsView->mapToGlobal(point));
 }
@@ -1718,12 +1614,15 @@ void LibraryWindow::checkEmptyFolder()
 {
     if (comicsModel->rowCount() > 0 && !importedCovers) {
         disableComicsActions(false);
-    } else {
+    }
+    else {
         disableComicsActions(true);
-#ifndef Q_OS_MAC
-        if (comicsModel->rowCount() > 0)
-            toggleFullScreenAction->setEnabled(true);
-#endif
+
+        if (libraryToolBar->toggleFullScreenAction != nullptr) {
+            if(comicsModel->rowCount() > 0)
+                libraryToolBar->toggleFullScreenAction->setEnabled(true);
+        }
+
         if (comicsModel->rowCount() == 0)
             navigationController->reselectCurrentFolder();
     }
@@ -2056,15 +1955,15 @@ void LibraryWindow::toNormal()
     else
         showNormal();
 
-#ifdef Q_OS_MAC
-    auto timer = new QTimer();
-    timer->setSingleShot(true);
-    timer->start();
-    connect(timer, SIGNAL(timeout()), libraryToolBar, SLOT(show()));
-    connect(timer, SIGNAL(timeout()), timer, SLOT(deleteLater()));
-#else
-    libraryToolBar->show();
-#endif
+    if (theme.isMacosNative) {
+        auto timer = new QTimer();
+        timer->setSingleShot(true);
+        timer->start();
+        connect(timer, SIGNAL(timeout()), libraryToolBar, SLOT(show()));
+        connect(timer, SIGNAL(timeout()), timer, SLOT(deleteLater()));
+    } else {
+        libraryToolBar->show();
+    }
 }
 
 #endif
@@ -2343,7 +2242,7 @@ void LibraryWindow::closeApp()
 void LibraryWindow::showNoLibrariesWidget()
 {
     disableAllActions();
-    searchEdit->setDisabled(true);
+    libraryToolBar->searchEdit->setDisabled(true);
     mainWidget->setCurrentIndex(1);
 }
 
@@ -2352,7 +2251,7 @@ void LibraryWindow::showRootWidget()
 #ifndef Q_OS_MAC
     libraryToolBar->setDisabled(false);
 #endif
-    searchEdit->setEnabled(true);
+    libraryToolBar->searchEdit->setEnabled(true);
     mainWidget->setCurrentIndex(0);
 }
 
@@ -2363,7 +2262,7 @@ void LibraryWindow::showImportingWidget()
 #ifndef Q_OS_MAC
     libraryToolBar->setDisabled(true);
 #endif
-    searchEdit->setDisabled(true);
+    libraryToolBar->searchEdit->setDisabled(true);
     mainWidget->setCurrentIndex(2);
 }
 

@@ -36,7 +36,7 @@ void YACReaderNavigationController::selectedFolder(const QModelIndex &mi)
 
     if (libraryWindow->status == LibraryWindow::Searching) {
         //when a folder is selected the search mode has to be reset
-        libraryWindow->searchEdit->clearText();
+        libraryWindow->libraryToolBar->searchEdit->clearText();
         libraryWindow->clearSearchFilter();
         libraryWindow->foldersView->scrollTo(mi, QAbstractItemView::PositionAtTop);
         libraryWindow->foldersView->setCurrentIndex(mi);
@@ -184,7 +184,7 @@ void YACReaderNavigationController::selectedList(const QModelIndex &mi)
 
     if (libraryWindow->status == LibraryWindow::Searching) {
         //when a list is selected the search mode has to be reset
-        libraryWindow->searchEdit->clearText();
+        libraryWindow->libraryToolBar->searchEdit->clearText();
         libraryWindow->clearSearchFilter();
         libraryWindow->listsView->scrollTo(mi, QAbstractItemView::PositionAtTop);
         libraryWindow->listsView->setCurrentIndex(mi);
@@ -214,7 +214,7 @@ void YACReaderNavigationController::selectedIndexFromHistory(const YACReaderLibr
     //TODO NO searching allowed, just disable backward/forward actions in searching mode
     if (libraryWindow->status == LibraryWindow::Searching) {
         //when a folder is selected the search mode has to be reset
-        libraryWindow->searchEdit->clearText();
+        libraryWindow->libraryToolBar->searchEdit->clearText();
         libraryWindow->clearSearchFilter();
     }
 

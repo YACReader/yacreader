@@ -173,8 +173,9 @@ void YACReaderComicsViewsManager::switchToComicsView(ComicsView *from, ComicsVie
     //load content into current view
     libraryWindow->loadCoversFromCurrentModel();
 
-    if (!libraryWindow->searchEdit->text().isEmpty()) {
-        comicsView->enableFilterMode(true);
+    if (!libraryWindow->libraryToolBar->searchEdit->text().isEmpty())
+    {
+       comicsView->enableFilterMode(true);
     }
 }
 
@@ -189,10 +190,9 @@ void YACReaderComicsViewsManager::_toggleComicsView()
     case Flow: {
         QIcon icoViewsButton;
         icoViewsButton.addFile(":/images/main_toolbar/info.png", QSize(), QIcon::Normal);
-        libraryWindow->toggleComicsViewAction->setIcon(icoViewsButton);
-#ifdef Q_OS_MAC
+        libraryWindow->libraryToolBar->toggleComicsViewAction->setIcon(icoViewsButton);
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
-#endif
+
         if (gridComicsView == nullptr)
             gridComicsView = new GridComicsView();
 
@@ -206,12 +206,11 @@ void YACReaderComicsViewsManager::_toggleComicsView()
     case Grid: {
         QIcon icoViewsButton;
         icoViewsButton.addFile(":/images/main_toolbar/flow.png", QSize(), QIcon::Normal);
-        libraryWindow->toggleComicsViewAction->setIcon(icoViewsButton);
-#ifdef Q_OS_MAC
+        libraryWindow->libraryToolBar->toggleComicsViewAction->setIcon(icoViewsButton);
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
-#endif
+
         if (infoComicsView == nullptr)
-            infoComicsView = new InfoComicsView();
+           infoComicsView = new InfoComicsView();
 
         switchToComicsView(gridComicsView, infoComicsView);
         comicsViewStatus = Info;
@@ -222,10 +221,9 @@ void YACReaderComicsViewsManager::_toggleComicsView()
     case Info: {
         QIcon icoViewsButton;
         icoViewsButton.addFile(":/images/main_toolbar/grid.png", QSize(), QIcon::Normal);
-        libraryWindow->toggleComicsViewAction->setIcon(icoViewsButton);
-#ifdef Q_OS_MAC
+        libraryWindow->libraryToolBar->toggleComicsViewAction->setIcon(icoViewsButton);
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
-#endif
+
         if(classicComicsView == nullptr)
             classicComicsView = new ClassicComicsView(theme.disableClassicViewCollapsing);
 
