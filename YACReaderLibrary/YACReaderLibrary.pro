@@ -146,7 +146,9 @@ HEADERS += comic_flow.h \
   yacreader_comic_info_helper.h \
   db/reading_list.h \
   current_comic_view_helper.h \
-    theme.h
+    theme.h \
+    yacreader_library_toolbar.h \
+    yacreader_library_search_edit.h
 
 !CONFIG(no_opengl) {
         HEADERS += ../common/gl/yacreader_flow_gl.h
@@ -219,7 +221,9 @@ SOURCES += comic_flow.cpp \
     yacreader_comic_info_helper.cpp\
     db/reading_list.cpp \
     current_comic_view_helper.cpp \
-    theme.cpp
+    theme.cpp \
+    yacreader_library_toolbar.cpp \
+    yacreader_library_search_edit.cpp
 
 !CONFIG(no_opengl) {
     SOURCES += ../common/gl/yacreader_flow_gl.cpp
