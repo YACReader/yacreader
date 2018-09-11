@@ -68,8 +68,11 @@ YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent)
     mainLayout->addStretch();
 
     mainLayout->addWidget(toggleComicsViewButton, 0, Qt::AlignVCenter);
-    addWideDivider();
-    mainLayout->addWidget(fullscreenButton, 0, Qt::AlignVCenter);
+
+    if (!fullscreenButton->actions().isEmpty()) {
+        addWideDivider();
+        mainLayout->addWidget(fullscreenButton, 0, Qt::AlignVCenter);
+    }
 
     setLayout(mainLayout);
 
