@@ -102,7 +102,7 @@ YACReaderLibraryToolbar::YACReaderLibraryToolbar(QMainWindow *mainWindow, bool i
         macosxToolbar->attachToWindow(mainWindow->windowHandle());
 #endif
     } else {
-        defaultToolbar = new YACReaderMainToolBar(mainWindow);
+        defaultToolbar = new YACReaderMainToolBar(!useNativeFullScreen, mainWindow);
         auto actualSearchEdit = new YACReaderSearchLineEdit();
         searchEdit = new YACReaderLibrarySearchEdit(actualSearchEdit);
 

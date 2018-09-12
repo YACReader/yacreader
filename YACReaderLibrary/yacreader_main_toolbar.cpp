@@ -8,8 +8,8 @@
 #include <QPaintEvent>
 #include <QAction>
 
-YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent)
-    : QWidget(parent)
+YACReaderMainToolBar::YACReaderMainToolBar(bool enableFullscreen, QWidget *parent)
+    : QWidget(parent), enableFullscreen(enableFullscreen)
 {
     mainLayout = new QHBoxLayout;
 
@@ -69,7 +69,7 @@ YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent)
 
     mainLayout->addWidget(toggleComicsViewButton, 0, Qt::AlignVCenter);
 
-    if (!fullscreenButton->actions().isEmpty()) {
+    if (enableFullscreen) {
         addWideDivider();
         mainLayout->addWidget(fullscreenButton, 0, Qt::AlignVCenter);
     }

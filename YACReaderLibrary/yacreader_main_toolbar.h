@@ -14,7 +14,7 @@ class YACReaderMainToolBar : public QWidget
 {
     Q_OBJECT
 public:
-    explicit YACReaderMainToolBar(QWidget *parent = nullptr);
+    explicit YACReaderMainToolBar(bool enableFullscreen, QWidget *parent = nullptr);
     QSize sizeHint() const override;
 
     QToolButton *backButton;
@@ -34,6 +34,8 @@ public slots:
 private:
     void paintEvent(QPaintEvent *) override;
     void resizeEvent(QResizeEvent *) override;
+
+    bool enableFullscreen;
 
     QHBoxLayout *mainLayout;
 
