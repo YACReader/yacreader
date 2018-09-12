@@ -105,7 +105,6 @@ HEADERS +=  ../common/comic.h \
             ../common/qnaturalsorting.h \
             ../common/yacreader_global.h \
             ../common/yacreader_global_gui.h \
-            ../common/onstart_flow_selection_dialog.h \
             ../common/comic_db.h \
             ../common/folder.h \
             ../common/library_item.h \
@@ -143,7 +142,6 @@ SOURCES +=  ../common/comic.cpp \
             ../common/custom_widgets.cpp \
             ../common/check_new_version.cpp \
             ../common/qnaturalsorting.cpp \
-            ../common/onstart_flow_selection_dialog.cpp \
             ../common/comic_db.cpp \
             ../common/folder.cpp \
             ../common/library_item.cpp \
