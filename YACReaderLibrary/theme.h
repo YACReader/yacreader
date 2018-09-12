@@ -52,6 +52,10 @@ public:
 
             t.sidebarBackgroundColor = "#F1F1F1";
             t.sidebarSplitterStyle = "QSplitter::handle:vertical { height: 29px; background-color: transparent;}";
+
+            t.titledToolBarSeparatorColor = "#AFAFAF";
+            t.titledToolBarTitleColor = "#808080";
+            t.titledToolBarTitleShadowColor = "#00000000";
         } else {
             t.isMacosNative = false;
             #ifdef Q_OS_MAC
@@ -94,6 +98,10 @@ public:
                             " image: none; background-color = black; "
                             " }"
                             "QSplitter::handle:vertical { height: 39px;}"*/
+
+            t.titledToolBarSeparatorColor = "#6F6F6F";
+            t.titledToolBarTitleColor = "#BDBFBF";
+            t.titledToolBarTitleShadowColor = "#000000";
         }
 
         return t;
@@ -126,6 +134,11 @@ public:
     //Sidebar
     QString sidebarBackgroundColor;
     QString sidebarSplitterStyle;
+
+    //YACReaderTitledToolBar
+    QString titledToolBarSeparatorColor;
+    QString titledToolBarTitleColor;
+    QString titledToolBarTitleShadowColor;
 };
 
 #endif // THEME_H
