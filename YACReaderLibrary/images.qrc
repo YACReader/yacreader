@@ -11,7 +11,6 @@
         <file>../images/comic_vine/rowDown.png</file>
         <file>../images/comic_vine/rowUp.png</file>
         <file>../images/comic_vine/upArrow.png</file>
-        <file>../images/comicFolder.png</file>
         <file>../images/comics_view_toolbar/asignNumber.png</file>
         <file>../images/comics_view_toolbar/asignNumber@2x.png</file>
         <file>../images/comics_view_toolbar/big_size_grid_zoom.png</file>
@@ -38,8 +37,6 @@
         <file>../images/comics_view_toolbar/trash@2x.png</file>
         <file>../images/comics_view_toolbar/show_comic_info.png</file>
         <file>../images/comics_view_toolbar/show_comic_info@2x.png</file>
-        <file>../images/coversPackage.png</file>
-        <file>../images/db.png</file>
         <file>../images/defaultCover.png</file>
         <file>../images/edit.png</file>
         <file>../images/empty_current_readings.png</file>
@@ -64,7 +61,6 @@
         <file>../images/importingIcon.png</file>
         <file>../images/importLibrary.png</file>
         <file>../images/importTopCoversDecoration.png</file>
-        <file>../images/iphoneConfig.png</file>
         <file>../images/main_toolbar/divider.png</file>
         <file>../images/menus_icons/editIcon.png</file>
         <file>../images/menus_icons/editIcon@2x.png</file>
@@ -93,7 +89,6 @@
         <file>../images/readRibbon.png</file>
         <file>../images/searching_icon.png</file>
         <file>../images/serverConfigBackground.png</file>
-        <file>../images/setRead.png</file>
         <file>../images/shortcuts_group_comics.png</file>
         <file>../images/shortcuts_group_folders.png</file>
         <file>../images/shortcuts_group_general.png</file>
@@ -115,7 +110,5 @@
         <file>../images/sidebar/libraryOptions.png</file>
         <file>../images/sidebar/libraryOptions@2x.png</file>
         <file>../images/updatingIcon.png</file>
-        <file>../images/useNewFlowButton.png</file>
-        <file>../images/useOldFlowButton.png</file>
     </qresource>
 </RCC>
