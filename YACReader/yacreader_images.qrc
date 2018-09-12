@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>../images/icon.png</file>
+        <file>../images/icon.svg</file>
         <file>../images/goto.png</file>
         <file>../images/find_folder.png</file>
         <file>../images/flow1.png</file>
