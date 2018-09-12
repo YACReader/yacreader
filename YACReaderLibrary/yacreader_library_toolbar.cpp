@@ -153,3 +153,10 @@ void YACReaderLibraryToolbar::setDisabled(bool disabled)
         defaultToolbar->setDisabled(disabled);
     }
 }
+
+void YACReaderLibraryToolbar::setTitle(const QString &title)
+{
+    if (defaultToolbar != nullptr) {
+        defaultToolbar->setTitle(title);
+    }
+}

@@ -37,6 +37,8 @@ public slots:
 
     void setDisabled(bool disabled);
 
+    void setTitle(const QString &title);
+
 private:
     QMainWindow *mainWindow;
     bool isMacosNative;

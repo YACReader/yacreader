@@ -26,7 +26,7 @@ public:
     QToolButton *fullscreenButton;
 
     void setSearchWidget(QWidget *w);
-    void setCurrentFolderName(const QString &name);
+    void setTitle(const QString &name);
 signals:
 
 public slots:

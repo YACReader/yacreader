@@ -132,7 +132,7 @@ void YACReaderMainToolBar::addWideDivider()
     mainLayout->addSpacing(3);
 }
 
-void YACReaderMainToolBar::setCurrentFolderName(const QString &name)
+void YACReaderMainToolBar::setTitle(const QString & name)
 {
     currentFolder->setText(name);
     currentFolderName = name;
