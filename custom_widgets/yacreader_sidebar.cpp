@@ -23,27 +23,20 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
     readingListsView = new YACReaderReadingListsView;
     selectedLibrary = new YACReaderLibraryListWidget;
 
-#ifdef Q_OS_MAC
-    librariesTitle = new YACReaderTitledToolBar(tr("Libraries"));
-    foldersTitle = new YACReaderTitledToolBar(tr("Folders"));
-    readingListsTitle = new YACReaderTitledToolBar(tr("Reading Lists"));
-#else
-    librariesTitle = new YACReaderTitledToolBar(tr("LIBRARIES"));
-    foldersTitle = new YACReaderTitledToolBar(tr("FOLDERS"));
-    readingListsTitle = new YACReaderTitledToolBar(tr("READING LISTS"));
-#endif
+    if (theme.isMacosNative) {
+        librariesTitle = new YACReaderTitledToolBar(tr("Libraries"));
+        foldersTitle = new YACReaderTitledToolBar(tr("Folders"));
+        readingListsTitle = new YACReaderTitledToolBar(tr("Reading Lists"));
+    } else {
+        librariesTitle = new YACReaderTitledToolBar(tr("LIBRARIES"));
+        foldersTitle = new YACReaderTitledToolBar(tr("FOLDERS"));
+        readingListsTitle = new YACReaderTitledToolBar(tr("READING LISTS"));
+    }
 
     splitter = new QSplitter(this);
     splitter->setOrientation(Qt::Vertical);
 
-#ifndef Q_OS_MAC
-    splitter->setStyleSheet("QSplitter::handle { "
-                            " image: none; background-color = black; "
-                            " }"
-                            "QSplitter::handle:vertical { height: 39px;}");
-#else
-    splitter->setStyleSheet("QSplitter::handle:vertical { height: 26px; background-color: transparent;}");
-#endif
+    splitter->setStyleSheet(theme.sidebarSplitterStyle);
 
     selectedLibrary->setContextMenuPolicy(Qt::ActionsContextMenu);
     selectedLibrary->setAttribute(Qt::WA_MacShowFocusRect, false);
@@ -55,24 +48,25 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
     l->setContentsMargins(0, 0, 0, 0);
 
     //LIBRARIES-------------------------------------------------------
-#ifndef Q_OS_MAC
-    l->addSpacing(5);
-#endif
+    if (!theme.isMacosNative) {
+        l->addSpacing(5);
+    }
 
     l->addWidget(librariesTitle);
 
-#ifndef Q_OS_MAC
-    l->addSpacing(4);
-    l->addWidget(new YACReaderSideBarSeparator(this));
-    l->addSpacing(3);
-#endif
+    if (!theme.isMacosNative) {
+        l->addSpacing(4);
+        l->addWidget(new YACReaderSideBarSeparator(this));
+        l->addSpacing(3);
+    }
 
-    l->addWidget(selectedLibrary);
-#ifndef Q_OS_MAC
-    l->addSpacing(11);
-#else
-    l->addSpacing(6);
-#endif
+	l->addWidget(selectedLibrary);
+
+    if (!theme.isMacosNative) {
+        l->addSpacing(11);
+    } else {
+        l->addSpacing(6);
+    }
 
     //END LIBRARIES---------------------------------------------------
 
@@ -82,23 +76,18 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
     foldersLayout->setContentsMargins(0, 0, 0, 0);
     foldersLayout->setSpacing(0);
 
-#ifndef Q_OS_MAC
-    //foldersLayout->addSpacing(6);
-
-    //foldersLayout->addSpacing(5);
-    foldersLayout->addWidget(new YACReaderSideBarSeparator(this));
-    foldersLayout->addSpacing(4);
-#else
-    //foldersLayout->addSpacing(6);
-#endif
+    if (!theme.isMacosNative) {
+        foldersLayout->addWidget(new YACReaderSideBarSeparator(this));
+        foldersLayout->addSpacing(4);
+    }
 
     foldersLayout->addWidget(foldersTitle);
 
-#ifndef Q_OS_MAC
-    foldersLayout->addSpacing(4);
-    foldersLayout->addWidget(new YACReaderSideBarSeparator(this));
-    foldersLayout->addSpacing(4);
-#endif
+    if (!theme.isMacosNative) {
+        foldersLayout->addSpacing(4);
+        foldersLayout->addWidget(new YACReaderSideBarSeparator(this));
+        foldersLayout->addSpacing(4);
+    }
 
     foldersLayout->addWidget(foldersView);
     foldersLayout->addSpacing(6);
@@ -114,23 +103,18 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
     readingListsHeaderLayout->setContentsMargins(0, 0, 0, 0);
     readingListsHeaderLayout->setSpacing(0);
 
-#ifndef Q_OS_MAC
-    //readingListsHeaderLayout->addSpacing(6);
-
-    //readingListsHeaderLayout->addSpacing(5);
-    readingListsHeaderLayout->addWidget(new YACReaderSideBarSeparator(this));
-    readingListsHeaderLayout->addSpacing(4);
-#else
-    //readingListsHeaderLayout->addSpacing(6);
-#endif
+    if (!theme.isMacosNative) {
+        readingListsHeaderLayout->addWidget(new YACReaderSideBarSeparator(this));
+        readingListsHeaderLayout->addSpacing(4);
+    }
 
     readingListsHeaderLayout->addWidget(readingListsTitle);
 
-#ifndef Q_OS_MAC
-    readingListsHeaderLayout->addSpacing(4);
-    readingListsHeaderLayout->addWidget(new YACReaderSideBarSeparator(this));
-    readingListsHeaderLayout->addSpacing(4);
-#endif
+    if (!theme.isMacosNative) {
+        readingListsHeaderLayout->addSpacing(4);
+        readingListsHeaderLayout->addWidget(new YACReaderSideBarSeparator(this));
+        readingListsHeaderLayout->addSpacing(4);
+    }
 
     //readingListsLayout->addWidget(readingListsView);
     readingListsHeaderLayout->addStretch();
@@ -152,24 +136,9 @@ void YACReaderSideBar::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)
 
-#ifdef Q_OS_MAC
     QPainter painter(this);
 
-    painter.fillRect(0, 0, width(), height(), QColor("#F1F1F1"));
-#else
-    QPainter painter(this);
-
-    painter.fillRect(0, 0, width(), height(), QColor("#454545"));
-    //QWidget::paintEvent(event);
-#endif
-
-    //QPixmap shadow(":/images/side_bar/shadow.png");
-    //painter.drawPixmap(width()-shadow.width(),0,shadow.width(),height(),shadow);
-
-    //   painter.setRenderHint(QPainter::Antialiasing);
-    // painter.drawLine(rect().topLeft(), rect().bottomRight());
-
-    //QWidget::paintEvent(event);
+    painter.fillRect(0, 0, width(), height(), QColor(theme.sidebarBackgroundColor));
 }
 
 void YACReaderSideBar::closeEvent(QCloseEvent *event)

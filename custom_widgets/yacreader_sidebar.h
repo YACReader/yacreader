@@ -3,6 +3,8 @@
 
 #include <QtWidgets>
 
+#include "theme.h"
+
 class YACReaderFoldersView;
 class YACReaderLibraryListWidget;
 class YACReaderSearchLineEdit;
@@ -13,7 +15,7 @@ class YACReaderReadingListsView;
 class YACReaderSideBarSeparator : public QWidget
 {
 public:
-    explicit YACReaderSideBarSeparator(QWidget *parent = 0);
+    explicit YACReaderSideBarSeparator(QWidget *parent = nullptr);
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -23,7 +25,7 @@ class YACReaderSideBar : public QWidget
 {
     Q_OBJECT
 public:
-    explicit YACReaderSideBar(QWidget *parent = 0);
+    explicit YACReaderSideBar(QWidget *parent = nullptr);
     QSize sizeHint() const;
 
     YACReaderFoldersView *foldersView;
@@ -39,9 +41,10 @@ public slots:
 
 protected:
     void paintEvent(QPaintEvent *);
-    void closeEvent(QCloseEvent *event);
+    void closeEvent ( QCloseEvent * event );
     QSettings *settings;
     QSplitter *splitter;
+    Theme theme = Theme::currentTheme();
 };
 
 #endif // YACREADER_SIDEBAR_H

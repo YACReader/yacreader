@@ -49,6 +49,9 @@ public:
 
                                        "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none; }"
                                        "QScrollBar:horizontal{height:0px;}";
+
+            t.sidebarBackgroundColor = "#F1F1F1";
+            t.sidebarSplitterStyle = "QSplitter::handle:vertical { height: 29px; background-color: transparent;}";
         } else {
             t.isMacosNative = false;
             #ifdef Q_OS_MAC
@@ -85,6 +88,12 @@ public:
 
                                        "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none; }"
                                        "QScrollBar:horizontal{height:0px;}";
+
+            t.sidebarBackgroundColor = "#454545";
+            t.sidebarSplitterStyle = "QSplitter::handle:vertical { height: 39px; background-color: transparent;}";/*"QSplitter::handle { "
+                            " image: none; background-color = black; "
+                            " }"
+                            "QSplitter::handle:vertical { height: 39px;}"*/
         }
 
         return t;
@@ -113,6 +122,10 @@ public:
     //EmptyFolderWidget
     QString emptyFolderWidgetImage;
     QString emptyFolderWidgetStyle;
+
+    //Sidebar
+    QString sidebarBackgroundColor;
+    QString sidebarSplitterStyle;
 };
 
 #endif // THEME_H
