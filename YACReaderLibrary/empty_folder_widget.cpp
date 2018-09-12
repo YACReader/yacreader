@@ -10,7 +10,9 @@
 #include "comic_files_manager.h"
 #include "QsLog.h"
 
-void testListView(QListView *l)
+#include "theme.h"
+
+void testListView(QListView * l)
 {
     QStringListModel *slm = new QStringListModel(QStringList() << "Lorem ipsum"
                                                                << "Hailer skualer"
@@ -71,45 +73,18 @@ EmptyFolderWidget::EmptyFolderWidget(QWidget *parent)
 {
     QVBoxLayout *layout = setUpDefaultLayout(false);
 
-    iconLabel->setPixmap(QPixmap(":/images/empty_folder.png"));
+    auto theme = Theme::currentTheme();
+
+    iconLabel->setPixmap(QPixmap(theme.emptyFolderWidgetImage));
     titleLabel->setText(tr("Subfolders in this folder"));
 
     foldersView = new QListView();
     foldersView->setAttribute(Qt::WA_MacShowFocusRect, false);
     foldersView->setItemDelegate(new ListviewDelegate);
-#ifdef Q_OS_MAC
-    foldersView->setStyleSheet("QListView {background-color:transparent; border: none; color:#959595; outline:0; font-size: 18px; show-decoration-selected: 0; margin:0}"
-                               "QListView::item:selected {background-color: #EFEFEF; color:#CCCCCC;}"
-                               "QListView::item:hover {background-color:#F4F4F8; color:#757575; }"
 
-                               "QScrollBar:vertical { border-radius:3px; background: #FFFFFF; width: 14px; margin: 0 10px 0 0; }"
-                               "QScrollBar::handle:vertical { border: 1px solid #999999; background: #999999; width: 14px; min-height: 20px; border-radius: 2px; }"
-                               "QScrollBar::add-line:vertical { border: none; background: #999999; height: 0px; subcontrol-position: bottom; subcontrol-origin: margin; margin: 0 3px 0 0;}"
+    foldersView->setStyleSheet(theme.emptyFolderWidgetStyle);
 
-                               "QScrollBar::sub-line:vertical {  border: none; background: #999999; height: 0px; subcontrol-position: top; subcontrol-origin: margin; margin: 0 3px 0 0;}"
-                               "QScrollBar::up-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-up.png') center top no-repeat;}"
-                               "QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-down.png') center top no-repeat;}"
-
-                               "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none; }"
-                               "QScrollBar:horizontal{height:0px;}");
-#else
-    foldersView->setStyleSheet("QListView {background-color:transparent; border: none; color:#858585; outline:0; font-size: 18px; font:bold; show-decoration-selected: 0; margin:0}"
-                               "QListView::item:selected {background-color: #212121; color:#CCCCCC;}"
-                               "QListView::item:hover {background-color:#212121; color:#CCCCCC; }"
-
-                               "QScrollBar:vertical { border: none; background: #212121; width: 14px; margin: 0 10px 0 0; }"
-                               "QScrollBar::handle:vertical { background: #858585; width: 14px; min-height: 20px; }"
-                               "QScrollBar::add-line:vertical { border: none; background: #212121; height: 0px; subcontrol-position: bottom; subcontrol-origin: margin; margin: 0 3px 0 0;}"
-
-                               "QScrollBar::sub-line:vertical {  border: none; background: #212121; height: 0px; subcontrol-position: top; subcontrol-origin: margin; margin: 0 3px 0 0;}"
-                               "QScrollBar::up-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-up.png') center top no-repeat;}"
-                               "QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-down.png') center top no-repeat;}"
-
-                               "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none; }"
-                               "QScrollBar:horizontal{height:0px;}");
-
-#endif
-    foldersView->setSizePolicy(QSizePolicy ::Expanding, QSizePolicy ::Expanding);
+    foldersView->setSizePolicy(QSizePolicy ::Expanding, QSizePolicy ::Expanding );
 
     layout->addSpacing(12);
     layout->addWidget(foldersView, 1);
