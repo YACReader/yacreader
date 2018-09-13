@@ -38,7 +38,6 @@ public:
                                        "QListView::item:selected {background-color: #EFEFEF; color:#CCCCCC;}"
                                        "QListView::item:hover {background-color:#F4F4F8; color:#757575; }"
 
-
                                        "QScrollBar:vertical { border-radius:3px; background: #FFFFFF; width: 14px; margin: 0 10px 0 0; }"
                                        "QScrollBar::handle:vertical { border: 1px solid #999999; background: #999999; width: 14px; min-height: 20px; border-radius: 2px; }"
                                        "QScrollBar::add-line:vertical { border: none; background: #999999; height: 0px; subcontrol-position: bottom; subcontrol-origin: margin; margin: 0 3px 0 0;}"
@@ -56,6 +55,8 @@ public:
             t.titledToolBarSeparatorColor = "#AFAFAF";
             t.titledToolBarTitleColor = "#808080";
             t.titledToolBarTitleShadowColor = "#00000000";
+
+            t.foldersViewCompletedColor = "#AABFFF";
         } else {
             t.isMacosNative = false;
             #ifdef Q_OS_MAC
@@ -81,7 +82,6 @@ public:
                                        "QListView::item:selected {background-color: #212121; color:#CCCCCC;}"
                                        "QListView::item:hover {background-color:#212121; color:#CCCCCC; }"
 
-
                                        "QScrollBar:vertical { border: none; background: #212121; width: 14px; margin: 0 10px 0 0; }"
                                        "QScrollBar::handle:vertical { background: #858585; width: 14px; min-height: 20px; }"
                                        "QScrollBar::add-line:vertical { border: none; background: #212121; height: 0px; subcontrol-position: bottom; subcontrol-origin: margin; margin: 0 3px 0 0;}"
@@ -102,6 +102,8 @@ public:
             t.titledToolBarSeparatorColor = "#6F6F6F";
             t.titledToolBarTitleColor = "#BDBFBF";
             t.titledToolBarTitleShadowColor = "#000000";
+
+            t.foldersViewCompletedColor = "#EDC542";
         }
 
         return t;
@@ -139,6 +141,9 @@ public:
     QString titledToolBarSeparatorColor;
     QString titledToolBarTitleColor;
     QString titledToolBarTitleShadowColor;
+
+    //YACReaderFoldersView (tree view)
+    QString foldersViewCompletedColor;
 };
 
 #endif // THEME_H

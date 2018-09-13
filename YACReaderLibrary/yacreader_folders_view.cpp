@@ -6,6 +6,8 @@
 #include "comic.h"
 #include "comic_files_manager.h"
 
+#include "theme.h"
+
 #include "QsLog.h"
 
 YACReaderFoldersView::YACReaderFoldersView(QWidget *parent)
@@ -80,11 +82,9 @@ void YACReaderFoldersViewItemDeletegate::paint(QPainter *painter, const QStyleOp
 {
     if (!index.data(FolderModel::CompletedRole).toBool()) {
         painter->save();
-#ifdef Q_OS_MAC
-        painter->setBrush(QBrush(QColor(85, 95, 127)));
-#else
-        painter->setBrush(QBrush(QColor(237, 197, 24)));
-#endif
+
+        painter->setBrush(QBrush(QColor(Theme::currentTheme().foldersViewCompletedColor)));
+
         painter->setPen(QPen(QBrush(), 0));
         painter->drawRect(0, option.rect.y(), 2, option.rect.height());
         painter->restore();
