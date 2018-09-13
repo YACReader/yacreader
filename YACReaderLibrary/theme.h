@@ -100,6 +100,12 @@ public:
 
             t.infoViewReadTickUncheckedColor = "#DEDEDE";
             t.infoViewReadTickCheckedColor = "#E84852";
+
+            t.treeViewStyle = "QTreeView {background-color:transparent; border: none;}"
+                              "QTreeView::item:selected {background-color:#91c4f4; border-top: 1px solid #91c4f4; border-left:none;border-right:none;border-bottom:1px solid #91c4f4;}"
+                              "QTreeView::branch:selected {background-color:#91c4f4; border-top: 1px solid #91c4f4; border-left:none;border-right:none;border-bottom:1px solid #91c4f4;}"
+                              "QTreeView::branch:open:selected:has-children {image: url(':/images/sidebar/expanded_branch_osx.png');}"
+                              "QTreeView::branch:closed:selected:has-children {image: url(':/images/sidebar/collapsed_branch_osx.png');}";
         } else {
             t.isMacosNative = false;
             #ifdef Q_OS_MAC
@@ -187,6 +193,27 @@ public:
 
             t.infoViewReadTickUncheckedColor = "#1C1C1C";
             t.infoViewReadTickCheckedColor = "#E84852";
+
+            t.treeViewStyle = "QTreeView {background-color:transparent; border: none; color:#DDDFDF; outline:0; show-decoration-selected: 0;}"
+                              "QTreeView::item:selected {background-color: #2E2E2E; color:white; font:bold;}"
+                              "QTreeView::item:hover {background-color:#2E2E2E; color:white; font:bold;}"
+                              "QTreeView::branch:selected {background-color:#2E2E2E;}"
+
+                              "QScrollBar:vertical { border: none; background: #404040; width: 7px; margin: 0 3px 0 0; }"
+                              "QScrollBar::handle:vertical { background: #DDDDDD; width: 7px; min-height: 20px; }"
+                              "QScrollBar::add-line:vertical { border: none; background: #404040; height: 10px; subcontrol-position: bottom; subcontrol-origin: margin; margin: 0 3px 0 0;}"
+
+                              "QScrollBar::sub-line:vertical {  border: none; background: #404040; height: 10px; subcontrol-position: top; subcontrol-origin: margin; margin: 0 3px 0 0;}"
+                              "QScrollBar::up-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-up.png') center top no-repeat;}"
+                              "QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-down.png') center top no-repeat;}"
+
+                              "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none; }"
+
+                              "QTreeView::branch:has-children:!has-siblings:closed,QTreeView::branch:closed:has-children:has-siblings {border-image: none;image: url(':/images/sidebar/branch-closed.png');}"
+                              "QTreeView::branch:has-children:selected:!has-siblings:closed,QTreeView::branch:closed:selected:has-children:has-siblings {border-image: none;image: url(':/images/sidebar/collapsed_branch_selected.png');}"
+
+                              "QTreeView::branch:open:has-children:!has-siblings,QTreeView::branch:open:has-children:has-siblings  {border-image: none;image: url(':/images/sidebar/branch-open.png');}"
+                              "QTreeView::branch:open:has-children:selected:!has-siblings,QTreeView::branch:open:has-children:selected:has-siblings {border-image: none;image: url(':/images/sidebar/expanded_branch_selected.png');}";
         }
 
         return t;
@@ -304,6 +331,9 @@ public:
 
     QString infoViewReadTickUncheckedColor;
     QString infoViewReadTickCheckedColor;
+
+    //TreeView (folders)
+    QString treeViewStyle;
 };
 
 #endif // THEME_H
