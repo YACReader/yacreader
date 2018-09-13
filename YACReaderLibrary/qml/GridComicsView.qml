@@ -69,7 +69,7 @@ Rectangle {
                 samples: 17
                 color: "#FF000000"
                 source: realCell
-                visible: (Qt.platform.os === "osx") ? false : true;
+                visible: useDropShadows;
             }
 
             Rectangle {
@@ -130,7 +130,7 @@ Rectangle {
                         rightMargin  : commonBorder ? -commonBorderWidth : -rBorderwidth
                     }
 
-                    border.color: (Qt.platform.os === "osx") ? selectedBorderColor : "#ffcc00"
+                    border.color: selectedBorderColor
                     border.width: 3
 
                     opacity: (dummyValue || !dummyValue) && (comicsSelectionHelper.isSelectedIndex(index) || mouseArea.containsMouse) ? 1 : 0
@@ -469,7 +469,7 @@ Rectangle {
                 height: showCurrentComic ? 270 : 20
 
                 Rectangle {
-                    color: (Qt.platform.os === "osx") ? "#88FFFFFF" : "#88000000"
+                    color: currentComicBackgroundColor
 
                     id: currentComicVisualView
 
@@ -505,7 +505,7 @@ Rectangle {
                         samples: 17
                         color: "#FF000000"
                         source: currentCoverElement
-                        visible: (Qt.platform.os === "osx") ? false : true;
+                        visible: useDropShadows
                     }
 
                     ColumnLayout
@@ -673,7 +673,7 @@ Rectangle {
                         samples: 17
                         color: "#AA000000"
                         source: readButton
-                        visible: ((Qt.platform.os === "osx") ? false : true) && !readButton.pressed
+                        visible: useDropShadows && !readButton.pressed
                     }
                 }
             }

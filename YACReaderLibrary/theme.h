@@ -2,6 +2,8 @@
 #define THEME_H
 
 #include <QtCore>
+#include <QtWidgets>
+#include <QtQml>
 
 class Theme
 {
@@ -12,7 +14,7 @@ public:
         Theme t;
 
 #ifdef Q_OS_MAC
-        bool macosNative = true;
+        bool macosNative = false;
 #else
         bool macosNative = false;
 #endif
@@ -21,18 +23,24 @@ public:
             t.isMacosNative = true;
             t.useNativeFullScreen = true;
 
+            //
             t.disableClassicViewCollapsing = true;
 
+            //
             t.comicsViewTransitionBackground = "#FFFFFF";
 
+            //
             t.itemLibrarySelectedStyleSheet = "color: white; background-color:#91c4f4; border-bottom:1px solid #91c4f4;";
             t.itemLibraryNoSelectedStyleSheet = "background-color:transparent;";
 
+            //
             t.useNativeFolderIcons = true;
 
+            //
             t.noComicsContentBackgroundColor = "#FFFFFF";
             t.noComicsContentTitleLabelStyle = "QLabel {color:#888888; font-size:24px;font-family:Arial;font-weight:bold;}";
 
+            //
             t.emptyFolderWidgetImage = ":/images/empty_folder.png";
             t.emptyFolderWidgetStyle = "QListView {background-color:transparent; border: none; color:#959595; outline:0; font-size: 18px; show-decoration-selected: 0; margin:0}"
                                        "QListView::item:selected {background-color: #EFEFEF; color:#CCCCCC;}"
@@ -49,14 +57,49 @@ public:
                                        "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none; }"
                                        "QScrollBar:horizontal{height:0px;}";
 
+            //
             t.sidebarBackgroundColor = "#F1F1F1";
             t.sidebarSplitterStyle = "QSplitter::handle:vertical { height: 29px; background-color: transparent;}";
 
+            //
             t.titledToolBarSeparatorColor = "#AFAFAF";
             t.titledToolBarTitleColor = "#808080";
             t.titledToolBarTitleShadowColor = "#00000000";
 
+            //
             t.foldersViewCompletedColor = "#AABFFF";
+
+            //
+            t.gridComicsViewBackgroundColor = "#F6F6F6";
+            t.gridComicsViewCellColor = "#FFFFFF";
+            t.gridComicsViewCellColorWhenBackgroundImageIsUsed = "#99FFFFFF";
+            t.gridComicsViewSelectedColor = "#FFFFFF";
+            t.gridComicsViewSelectedBorderColor = "#007AFF";
+            t.gridComicsViewBorderColor = "#DBDBDB";
+            t.gridComicsViewTitleColor = "#121212";
+            t.gridComicsViewTextColor = "#636363";
+            t.gridComicsViewFontSize = 11;
+            t.gridComicsViewFontSpacing = 0.5;
+            t.useDropShadows = false;
+            t.gridComicsViewCurrentComicBackground = "#88FFFFFF";
+
+            //
+            t.infoViewInfoBackgroundColor = "#FFFFFF";
+            t.infoViewTopShadow = QUrl();
+            t.infoViewInfoShadow = "info-shadow-light.png";
+            t.infoViewInfoIndicator = "info-indicator-light.png";
+
+            t.infoViewInfoTextColor = "#404040";
+            t.infoViewInfoTitleColor = "#2E2E2E";
+
+            t.infoViewRatingUnselectedColor = "#DEDEDE";
+            t.infoViewRatingSelectedColor = "#2B2B2B";
+
+            t.infoViewFavUncheckedColor = "#DEDEDE";
+            t.infoViewFavCheckedColor = "#E84852";
+
+            t.infoViewReadTickUncheckedColor = "#DEDEDE";
+            t.infoViewReadTickCheckedColor = "#E84852";
         } else {
             t.isMacosNative = false;
             #ifdef Q_OS_MAC
@@ -67,16 +110,21 @@ public:
 
             t.disableClassicViewCollapsing = false;
 
+            //
             t.comicsViewTransitionBackground = "#2A2A2A";
 
+            //
             t.itemLibrarySelectedStyleSheet = "color: white; background-color:#2E2E2E; font-weight:bold;";
             t.itemLibraryNoSelectedStyleSheet = "background-color:transparent; color:#DDDFDF;";
 
+            //
             t.useNativeFolderIcons = false;
 
+            //
             t.noComicsContentBackgroundColor = "#2A2A2A";
             t.noComicsContentTitleLabelStyle = "QLabel {color:#CCCCCC; font-size:24px;font-family:Arial;font-weight:bold;}";
 
+            //
             t.emptyFolderWidgetImage = ":/images/empty_folder.png";
             t.emptyFolderWidgetStyle = "QListView {background-color:transparent; border: none; color:#858585; outline:0; font-size: 18px; font:bold; show-decoration-selected: 0; margin:0}"
                                        "QListView::item:selected {background-color: #212121; color:#CCCCCC;}"
@@ -93,20 +141,100 @@ public:
                                        "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none; }"
                                        "QScrollBar:horizontal{height:0px;}";
 
+            //
             t.sidebarBackgroundColor = "#454545";
             t.sidebarSplitterStyle = "QSplitter::handle:vertical { height: 39px; background-color: transparent;}";/*"QSplitter::handle { "
                             " image: none; background-color = black; "
                             " }"
                             "QSplitter::handle:vertical { height: 39px;}"*/
 
+            //
             t.titledToolBarSeparatorColor = "#6F6F6F";
             t.titledToolBarTitleColor = "#BDBFBF";
             t.titledToolBarTitleShadowColor = "#000000";
 
+            //
             t.foldersViewCompletedColor = "#EDC542";
+
+            //
+            t.gridComicsViewBackgroundColor = "#2A2A2A";
+            t.gridComicsViewCellColor = "#212121";
+            t.gridComicsViewCellColorWhenBackgroundImageIsUsed = "#99212121";
+            t.gridComicsViewSelectedColor = "#121212";
+            t.gridComicsViewSelectedBorderColor = "#ffcc00";
+            t.gridComicsViewBorderColor = "#121212";
+            t.gridComicsViewTitleColor = "#FFFFFF";
+            t.gridComicsViewTextColor = "#A8A8A8";
+            t.gridComicsViewFontSize = 0;
+            t.gridComicsViewFontSpacing = 0.5;
+            t.useDropShadows = true;
+            t.gridComicsViewCurrentComicBackground = "#88000000";
+
+            //
+            t.infoViewInfoBackgroundColor = "#2E2E2E";
+            t.infoViewTopShadow = "info-top-shadow.png";
+            t.infoViewInfoShadow = "info-shadow.png";
+            t.infoViewInfoIndicator = "info-indicator.png";
+
+            t.infoViewInfoTextColor = "#B0B0B0";
+            t.infoViewInfoTitleColor = "#FFFFFF";
+
+            t.infoViewRatingUnselectedColor = "#1C1C1C";
+            t.infoViewRatingSelectedColor = "#FFFFFF";
+
+            t.infoViewFavUncheckedColor = "#1C1C1C";
+            t.infoViewFavCheckedColor = "#E84852";
+
+            t.infoViewReadTickUncheckedColor = "#1C1C1C";
+            t.infoViewReadTickCheckedColor = "#E84852";
         }
 
         return t;
+    }
+
+    void configureComicsGridView(QQmlContext *ctxt) {
+        ctxt->setContextProperty("backgroundColor", gridComicsViewBackgroundColor );
+        ctxt->setContextProperty("cellColor", gridComicsViewCellColor);
+        ctxt->setContextProperty("selectedColor", gridComicsViewSelectedColor);
+        ctxt->setContextProperty("selectedBorderColor", gridComicsViewSelectedBorderColor);
+        ctxt->setContextProperty("borderColor", gridComicsViewBorderColor);
+        ctxt->setContextProperty("titleColor", gridComicsViewTitleColor);
+        ctxt->setContextProperty("textColor", gridComicsViewTextColor);
+        ctxt->setContextProperty("useDropShadows",useDropShadows);
+        //fonts settings
+        if (gridComicsViewFontSize < 1) {
+            int fontSize = QApplication::font().pointSize();
+            if(fontSize == -1)
+                fontSize = QApplication::font().pixelSize();
+
+            ctxt->setContextProperty("fontSize", fontSize);
+        } else {
+            ctxt->setContextProperty("fontSize", gridComicsViewFontSize);
+        }
+
+        ctxt->setContextProperty("fontFamily", QApplication::font().family());
+        ctxt->setContextProperty("fontSpacing", 0.5);
+
+        ctxt->setContextProperty("currentComicBackgroundColor", gridComicsViewCurrentComicBackground);
+    }
+
+    void configureInfoView(QQmlContext *ctxt) {
+        ctxt->setContextProperty("infoBackgroundColor", infoViewInfoBackgroundColor);
+        ctxt->setContextProperty("topShadow", infoViewTopShadow);
+        ctxt->setContextProperty("infoShadow", infoViewInfoShadow);
+        ctxt->setContextProperty("infoIndicator", infoViewInfoIndicator);
+
+        ctxt->setContextProperty("infoTextColor", infoViewInfoTextColor);
+        ctxt->setContextProperty("infoTitleColor", infoViewInfoTitleColor);
+
+        ctxt->setContextProperty("ratingUnselectedColor", infoViewRatingUnselectedColor);
+        ctxt->setContextProperty("ratingSelectedColor", infoViewRatingSelectedColor);
+
+        ctxt->setContextProperty("favUncheckedColor", infoViewFavUncheckedColor);
+        ctxt->setContextProperty("favCheckedColor", infoViewFavCheckedColor);
+
+        ctxt->setContextProperty("readTickUncheckedColor", infoViewReadTickUncheckedColor);
+        ctxt->setContextProperty("readTickCheckedColor", infoViewReadTickCheckedColor);
     }
 
     bool isMacosNative;
@@ -144,6 +272,38 @@ public:
 
     //YACReaderFoldersView (tree view)
     QString foldersViewCompletedColor;
+
+    //GridComicsView
+    QString gridComicsViewBackgroundColor;
+    QString gridComicsViewCellColor;
+    QString gridComicsViewCellColorWhenBackgroundImageIsUsed;
+    QString gridComicsViewSelectedColor;
+    QString gridComicsViewSelectedBorderColor;
+    QString gridComicsViewBorderColor;
+    QString gridComicsViewTitleColor;
+    QString gridComicsViewTextColor;
+    float gridComicsViewFontSize;
+    float gridComicsViewFontSpacing;
+    bool useDropShadows;
+    QString gridComicsViewCurrentComicBackground;
+
+    //InfoView
+    QString infoViewInfoBackgroundColor;
+    QVariant infoViewTopShadow;
+    QString infoViewInfoShadow;
+    QString infoViewInfoIndicator;
+
+    QString infoViewInfoTextColor;
+    QString infoViewInfoTitleColor;
+
+    QString infoViewRatingUnselectedColor;
+    QString infoViewRatingSelectedColor;
+
+    QString infoViewFavUncheckedColor;
+    QString infoViewFavCheckedColor;
+
+    QString infoViewReadTickUncheckedColor;
+    QString infoViewReadTickCheckedColor;
 };
 
 #endif // THEME_H

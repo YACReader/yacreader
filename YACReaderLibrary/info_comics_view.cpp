@@ -9,6 +9,7 @@
 #include "comic_db.h"
 #include "yacreader_comic_info_helper.h"
 #include "yacreader_comics_selection_helper.h"
+#include "theme.h"
 
 #include "QsLog.h"
 
@@ -33,48 +34,9 @@ InfoComicsView::InfoComicsView(QWidget *parent)
 
     QQmlContext *ctxt = view->rootContext();
 
-    LibraryUITheme theme;
-#ifdef Q_OS_MAC
-    theme = Light;
-#else
-    theme = Dark;
-#endif
+    auto theme = Theme::currentTheme();
 
-    if (theme == Light) {
-        ctxt->setContextProperty("infoBackgroundColor", "#FFFFFF");
-        ctxt->setContextProperty("topShadow", QUrl());
-        ctxt->setContextProperty("infoShadow", "info-shadow-light.png");
-        ctxt->setContextProperty("infoIndicator", "info-indicator-light.png");
-
-        ctxt->setContextProperty("infoTextColor", "#404040");
-        ctxt->setContextProperty("infoTitleColor", "#2E2E2E");
-
-        ctxt->setContextProperty("ratingUnselectedColor", "#DEDEDE");
-        ctxt->setContextProperty("ratingSelectedColor", "#2B2B2B");
-
-        ctxt->setContextProperty("favUncheckedColor", "#DEDEDE");
-        ctxt->setContextProperty("favCheckedColor", "#E84852");
-
-        ctxt->setContextProperty("readTickUncheckedColor", "#DEDEDE");
-        ctxt->setContextProperty("readTickCheckedColor", "#E84852");
-    } else {
-        ctxt->setContextProperty("infoBackgroundColor", "#2E2E2E");
-        ctxt->setContextProperty("topShadow", "info-top-shadow.png");
-        ctxt->setContextProperty("infoShadow", "info-shadow.png");
-        ctxt->setContextProperty("infoIndicator", "info-indicator.png");
-
-        ctxt->setContextProperty("infoTextColor", "#B0B0B0");
-        ctxt->setContextProperty("infoTitleColor", "#FFFFFF");
-
-        ctxt->setContextProperty("ratingUnselectedColor", "#1C1C1C");
-        ctxt->setContextProperty("ratingSelectedColor", "#FFFFFF");
-
-        ctxt->setContextProperty("favUncheckedColor", "#1C1C1C");
-        ctxt->setContextProperty("favCheckedColor", "#E84852");
-
-        ctxt->setContextProperty("readTickUncheckedColor", "#1C1C1C");
-        ctxt->setContextProperty("readTickCheckedColor", "#E84852");
-    }
+    theme.configureInfoView(ctxt);
 
     view->setSource(QUrl("qrc:/qml/InfoComicsView.qml"));
 
