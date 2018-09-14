@@ -14,7 +14,7 @@ public:
         Theme t;
 
 #ifdef Q_OS_MAC
-        bool macosNative = false;
+        bool macosNative = true;
 #else
         bool macosNative = false;
 #endif
