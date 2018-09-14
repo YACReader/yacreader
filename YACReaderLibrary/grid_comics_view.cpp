@@ -287,7 +287,7 @@ void GridComicsView::toNormal()
 
 void GridComicsView::updateConfig(QSettings *settings)
 {
-    Q_UNUSED(settings);
+    setCurrentComicIfNeeded();
 }
 
 void GridComicsView::enableFilterMode(bool enabled)
