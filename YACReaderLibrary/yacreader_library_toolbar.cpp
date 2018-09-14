@@ -143,7 +143,9 @@ void YACReaderLibraryToolbar::hide()
 void YACReaderLibraryToolbar::updateViewSelectorIcon(const QIcon &icon)
 {
 #ifdef Q_OS_MAC
+    if (macosxToolbar != nullptr) {
         macosxToolbar->updateViewSelectorIcon(icon);
+    }
 #endif
 }
 

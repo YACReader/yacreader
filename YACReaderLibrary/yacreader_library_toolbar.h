@@ -46,7 +46,7 @@ private:
     QSettings * settings;
 
 #ifdef Q_OS_MAC
-    YACReaderMacOSXToolbar *macosxToolbar;
+    YACReaderMacOSXToolbar *macosxToolbar = nullptr;
 #endif
 
     YACReaderMainToolBar *defaultToolbar = nullptr;
