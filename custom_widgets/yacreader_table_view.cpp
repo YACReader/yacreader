@@ -13,31 +13,20 @@
 #include "QsLog.h"
 
 #include "comic_item.h"
+#include "theme.h"
 
 YACReaderTableView::YACReaderTableView(QWidget *parent)
-    : QTableView(parent), showDelete(false), editing(false), myeditor(0)
+    : QTableView(parent), showDelete(false), editing(false), myeditor(nullptr)
 {
     setAlternatingRowColors(true);
     verticalHeader()->setAlternatingRowColors(true);
-    setStyleSheet("QTableView {alternate-background-color: #F2F2F2;background-color: #FAFAFA; outline: 0px;}" // border: 1px solid #999999; border-right:none; border-bottom:none;}"
-                  "QTableCornerButton::section {background-color:#F5F5F5; border:none; border-bottom:1px solid #B8BDC4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #D1D1D1, stop: 1 #B8BDC4);}"
-                  "QTableView::item {outline: 0px; border-bottom: 1px solid #DFDFDF;border-top: 1px solid #FEFEFE; padding-bottom:1px; color:#252626;}"
-                  "QTableView {border-top:1px solid #B8B8B8;border-bottom:none;border-left:1px solid #B8B8B8;border-right:none;}"
-#ifdef Q_OS_MAC
-                  "QTableView {border-top:1px solid #B8B8B8;border-bottom:none;border-left:none;border-right:none;}"
-                  "QTableView::item:selected {outline: 0px; border-bottom: 1px solid #3875D7;border-top: 1px solid #3875D7; padding-bottom:1px; background-color: #3875D7; color: #FFFFFF; }"
+    setStyleSheet(Theme::currentTheme().tableViewStyle);
 
-#else
-                  "QTableView::item:selected {outline: 0px; border-bottom: 1px solid #D4D4D4;border-top: 1px solid #D4D4D4; padding-bottom:1px; background-color: #D4D4D4;  }"
-#endif
-                  "QHeaderView::section:horizontal {background-color:#F5F5F5; border-bottom:1px solid #B8BDC4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #D1D1D1, stop: 1 #B8BDC4); border-left:none; border-top:none; padding:4px; color:#313232;}"
-                  "QHeaderView::section:vertical {border-bottom: 1px solid #DFDFDF;border-top: 1px solid #FEFEFE;}"
-                  //"QTableView::item:hover {border-bottom: 1px solid #A3A3A3;border-top: 1px solid #A3A3A3; padding-bottom:1px; background-color: #A3A3A3; color: #FFFFFF; }"
-                  "");
     //comicView->setItemDelegate(new YACReaderComicViewDelegate());
     setContextMenuPolicy(Qt::ActionsContextMenu);
 
     setShowGrid(false);
+
 #if QT_VERSION >= 0x050000
     verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 #else
@@ -181,15 +170,15 @@ void YACReaderTableView::dropEvent(QDropEvent *event)
 void YACReaderTableView::closeRatingEditor()
 {
     editing = false;
-    if (myeditor != 0)
+    if (myeditor != nullptr)
         closeEditor(myeditor, QAbstractItemDelegate::NoHint);
-    myeditor = 0;
+    myeditor = nullptr;
 }
 
 void YACReaderTableView::closeEditor(QWidget *editor, QAbstractItemDelegate::EndEditHint hint)
 {
     editing = false;
-    myeditor = 0;
+    myeditor = nullptr;
     QTableView::closeEditor(editor, hint);
 }
 void YACReaderTableView::commitData(QWidget *editor)
