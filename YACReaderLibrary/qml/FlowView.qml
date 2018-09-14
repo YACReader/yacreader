@@ -124,7 +124,7 @@ Rectangle {
                     samples: 17
                     color: "#BB000000"
                     source: coverElement
-                    visible: (Qt.platform.os === "osx") ? false : true;
+                    visible: useDropShadows;
                 }
 
                 Image {

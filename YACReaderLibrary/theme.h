@@ -283,6 +283,8 @@ public:
 
         ctxt->setContextProperty("readTickUncheckedColor", infoViewReadTickUncheckedColor);
         ctxt->setContextProperty("readTickCheckedColor", infoViewReadTickCheckedColor);
+
+        ctxt->setContextProperty("useDropShadows",useDropShadows);
     }
 
     bool isMacosNative;
