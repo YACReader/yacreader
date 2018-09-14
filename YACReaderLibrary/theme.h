@@ -117,6 +117,8 @@ public:
 
                                "QHeaderView::section:horizontal {background-color:#F5F5F5; border-bottom:1px solid #B8BDC4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #D1D1D1, stop: 1 #B8BDC4); border-left:none; border-top:none; padding:4px; color:#313232;}"
                                "QHeaderView::section:vertical {border-bottom: 1px solid #DFDFDF;border-top: 1px solid #FEFEFE;}";
+
+            t.mainWindowHorizontalSpliterStyle = "QSplitter::handle{image:none;background-color:#B8B8B8;} QSplitter::handle:vertical {height:1px;}";
         } else {
             t.isMacosNative = false;
             #ifdef Q_OS_MAC
@@ -235,6 +237,7 @@ public:
                                          "QHeaderView::section:horizontal {background-color:#F5F5F5; border-bottom:1px solid #B8BDC4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #D1D1D1, stop: 1 #B8BDC4); border-left:none; border-top:none; padding:4px; color:#313232;}"
                                "QHeaderView::section:vertical {border-bottom: 1px solid #DFDFDF;border-top: 1px solid #FEFEFE;}";
 
+            t.mainWindowHorizontalSpliterStyle = "QSplitter::handle:vertical {height:4px;}";
         }
 
         return t;
@@ -360,6 +363,9 @@ public:
 
     //TableView (comics)
     QString tableViewStyle;
+
+    //Main window
+    QString mainWindowHorizontalSpliterStyle;
 };
 
 #endif // THEME_H
