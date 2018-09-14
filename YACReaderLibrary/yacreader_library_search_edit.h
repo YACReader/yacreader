@@ -13,6 +13,7 @@
 
 class YACReaderLibrarySearchEdit: public QObject
 {
+        Q_OBJECT
 public:
 #ifdef Q_OS_MAC
     YACReaderLibrarySearchEdit(YACReaderMacOSXSearchLineEdit *searchEdit);

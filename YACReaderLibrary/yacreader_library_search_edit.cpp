@@ -4,14 +4,20 @@
 YACReaderLibrarySearchEdit::YACReaderLibrarySearchEdit(YACReaderMacOSXSearchLineEdit *searchEdit)
     :macosSearchEdit(searchEdit), defaultSearchEdit(nullptr)
 {
-
+    connect(searchEdit,
+            &YACReaderMacOSXSearchLineEdit::filterChanged,
+            this,
+            &YACReaderLibrarySearchEdit::filterChanged);
 }
 #endif
 
 YACReaderLibrarySearchEdit::YACReaderLibrarySearchEdit(YACReaderSearchLineEdit *searchEdit)
     :defaultSearchEdit(searchEdit)
 {
-
+    connect(searchEdit,
+            &YACReaderSearchLineEdit::filterChanged,
+            this,
+            &YACReaderLibrarySearchEdit::filterChanged);
 }
 
 void YACReaderLibrarySearchEdit::clear()
