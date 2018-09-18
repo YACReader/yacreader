@@ -1,6 +1,6 @@
 #! /bin/bash
 
-VERSION=${1:-"8.6.0"}
+VERSION=${1:-"9.5.0"}
 
 if [ "$2" == "clean" ]; then
 ./cleanOSX.sh
