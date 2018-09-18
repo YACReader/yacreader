@@ -5,6 +5,7 @@ debug64*
 dependencies/create-dmg
 signapps.sh
 lib7zip
+libp7zip
 
 # C++ objects and libs
 *.slo
@@ -16,6 +17,7 @@ lib7zip
 *.so
 *.dll
 *.dylib
+*.pch
 
 # Qt-es
 object_script.*.Release
