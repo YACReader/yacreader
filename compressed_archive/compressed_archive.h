@@ -8,22 +8,8 @@
     #include "libp7zip/CPP/Common/MyCom.h"
 #endif
 
+
 class ExtractDelegate;
-
-#ifdef Q_OS_WIN
-	#include "7z_includes.h"
-	#define _MY_WINAPI WINAPI
-#else
-	#define _MY_WINAPI
-#endif
-
-typedef quint32 (_MY_WINAPI * CreateObjectFunc)(const GUID *clsID,const GUID *interfaceID,void **outObject);
-typedef quint32 (_MY_WINAPI *GetMethodPropertyFunc)(quint32 index, PROPID propID, PROPVARIANT *value);
-typedef quint32 (_MY_WINAPI *GetNumberOfMethodsFunc)(quint32 *numMethods);
-typedef quint32 (_MY_WINAPI *GetNumberOfFormatsFunc)(quint32 *numFormats);
-typedef quint32 (_MY_WINAPI *GetHandlerPropertyFunc)(PROPID propID, PROPVARIANT *value);
-typedef quint32 (_MY_WINAPI *GetHandlerPropertyFunc2)(quint32 index, PROPID propID, PROPVARIANT *value);
-typedef quint32 (_MY_WINAPI *SetLargePageModeFunc)();
 
 class QLibrary;
 #include <QString>
@@ -48,7 +34,7 @@ public:
 #ifdef Q_OS_UNIX
     MY_UNKNOWN_IMP
 
-    STDMETHOD(GetNumberOfMethods)(UInt32 *numMethods);
+    STDMETHOD(GetNumMethods)(UInt32 *numMethods);
     STDMETHOD(GetProperty)(UInt32 index, PROPID propID, PROPVARIANT *value);
     STDMETHOD(CreateDecoder)(UInt32 index, const GUID *iid, void **coder);
     STDMETHOD(CreateEncoder)(UInt32 index, const GUID *iid, void **coder);

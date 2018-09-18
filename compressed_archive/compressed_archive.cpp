@@ -1,3 +1,7 @@
+#ifdef Q_OS_UNIX
+#include "libp7zip/CPP/Common/MyInitGuid.h"
+#endif
+
 #include "compressed_archive.h"
 #include "extract_delegate.h"
 
@@ -9,12 +13,28 @@
 #include "open_callbacks.h"
 #include "extract_callbacks.h"
 
+#include "7z_includes.h"
+
+#ifdef Q_OS_WIN
+    #define _MY_WINAPI WINAPI
+#else
+    #define _MY_WINAPI
+#endif
+
+typedef quint32 (_MY_WINAPI * CreateObjectFunc)(const GUID *clsID,const GUID *interfaceID,void **outObject);
+typedef quint32 (_MY_WINAPI *GetMethodPropertyFunc)(quint32 index, PROPID propID, PROPVARIANT *value);
+typedef quint32 (_MY_WINAPI *GetNumberOfMethodsFunc)(quint32 *numMethods);
+typedef quint32 (_MY_WINAPI *GetNumberOfFormatsFunc)(quint32 *numFormats);
+typedef quint32 (_MY_WINAPI *GetHandlerPropertyFunc)(PROPID propID, PROPVARIANT *value);
+typedef quint32 (_MY_WINAPI *GetHandlerPropertyFunc2)(quint32 index, PROPID propID, PROPVARIANT *value);
+typedef quint32 (_MY_WINAPI *SetLargePageModeFunc)();
 
 //DEFINE_GUID(CLSID_CFormat7z,0x23170F69, 0x40C1, 0x278A, 0x10, 0x00, 0x00, 0x01, 0x10, 0x07, 0x00, 0x00);
 //DEFINE_GUID(IArchiveKK,0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x06, 0x00, 0x60, 0x00, 0x00);        
 
 DEFINE_GUID(CLSID_CFormat7z,      0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 0x01, 0x10, 0x07, 0x00, 0x00);
 DEFINE_GUID(CLSID_CFormatRar,     0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 0x01, 0x10, 0x03, 0x00, 0x00);
+DEFINE_GUID(CLSID_CFormatRar5,    0X23170F69, 0x40C1, 0x278A, 0x10, 0x00, 0x00, 0x01, 0x10, 0xCC, 0x00, 0x00);
 DEFINE_GUID(CLSID_CFormatZip,     0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 0x01, 0x10, 0x01, 0x00, 0x00);
 DEFINE_GUID(CLSID_CFormatTar,     0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 0x01, 0x10, 0xee, 0x00, 0x00);
 DEFINE_GUID(CLSID_CFormatArj,     0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 0x01, 0x10, 0x04, 0x00, 0x00);
@@ -37,21 +57,21 @@ DEFINE_GUID(CLSID_CFormatWim,     0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 
 DEFINE_GUID(CLSID_CFormatZ,       0x23170f69, 0x40c1, 0x278a, 0x10, 0x00, 0x00, 0x01, 0x10, 0x05, 0x00, 0x00);*/
 
 #ifdef Q_OS_WIN
-GUID _supportedFileFormats[] = {CLSID_CFormatRar,CLSID_CFormatZip,CLSID_CFormatTar,CLSID_CFormat7z,CLSID_CFormatArj};
+GUID _supportedFileFormats[] = {CLSID_CFormatRar,CLSID_CFormatZip,CLSID_CFormatTar,CLSID_CFormat7z,CLSID_CFormatArj,CLSID_CFormatRar5};
 #else
 GUID _supportedFileFormats[] = {CLSID_CFormatZip,CLSID_CFormatTar,CLSID_CFormat7z,CLSID_CFormatArj};
 #endif
 std::vector<GUID> supportedFileFormats (_supportedFileFormats, _supportedFileFormats + sizeof(_supportedFileFormats) / sizeof(_supportedFileFormats[0]) );
 
 DEFINE_GUID(IID_InArchive,                0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x06, 0x00, 0x60, 0x00, 0x00);
-DEFINE_GUID(IID_ISetCompressCodecsInfo,   0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x04, 0x00, 0x61, 0x00, 0x00);
+DEFINE_GUID(IID_ISetCompressCodecsInfoX,   0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x04, 0x00, 0x61, 0x00, 0x00);
 
-#ifdef Q_OS_UNIX
+/*#ifdef Q_OS_UNIX
 DEFINE_GUID(IID_IOutStream,   0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x03, 0x00, 0x04, 0x00, 0x00);
 DEFINE_GUID(IID_IInStream,   0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x03, 0x00, 0x03, 0x00, 0x00);
 DEFINE_GUID(IID_IStreamGetSize,   0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x03, 0x00, 0x06, 0x00, 0x00);
 DEFINE_GUID(IID_ISequentialInStream,   0x23170F69, 0x40C1, 0x278A, 0x00, 0x00, 0x00, 0x03, 0x00, 0x01, 0x00, 0x00);
-#endif
+#endif*/
 
 struct SevenZipInterface {
 	CreateObjectFunc createObjectFunc;
@@ -101,7 +121,7 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 		CInFileStream *fileSpec = new CInFileStream;
 		CMyComPtr<IInStream> file = fileSpec;
 
-		CArchiveOpenCallback *openCallbackSpec = new CArchiveOpenCallback;
+        YCArchiveOpenCallback *openCallbackSpec = new YCArchiveOpenCallback;
 		CMyComPtr<IArchiveOpenCallback> openCallback = openCallbackSpec;
 		openCallbackSpec->PasswordIsDefined = false;
 		// openCallbackSpec->PasswordIsDefined = true;
@@ -151,7 +171,7 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 #else
 		if (memcmp(magicNumber,rar,6) == 0)
 			if (memcmp(magicNumber,rar5,7) == 0)
-				return;
+                i=5;
 			else
 				i=0;
 		else if (memcmp(magicNumber,zip,2)==0)
@@ -218,11 +238,16 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
 	}
 	else
 	{
-	     if (memcmp(magicNumber,rar5,7) == 0)
-		return;//we don't support rar5
-	
+        //RAR in macos and unix
+        GUID clsidRar;
+        if (memcmp(magicNumber,rar5,7) == 0) {
+            clsidRar = CLSID_CFormatRar5;
+        } else {
+            clsidRar = CLSID_CFormatRar;
+        }
+
 	    isRar=true; //tell the destructor we *tried* to open a rar file!
-            if (szInterface->createObjectFunc(&CLSID_CFormatRar, &IID_InArchive, (void **)&szInterface->archive) != S_OK)
+            if (szInterface->createObjectFunc(&clsidRar, &IID_InArchive, (void **)&szInterface->archive) != S_OK)
             {
                 qDebug() << "Error creating rar archive :" + filePath;
                 return;
@@ -230,7 +255,7 @@ CompressedArchive::CompressedArchive(const QString & filePath, QObject *parent) 
        	    
 	    CMyComPtr<ISetCompressCodecsInfo> codecsInfo;
 
-            if (szInterface->archive->QueryInterface(IID_ISetCompressCodecsInfo,(void **)&codecsInfo) != S_OK)
+            if (szInterface->archive->QueryInterface(IID_ISetCompressCodecsInfoX,(void **)&codecsInfo) != S_OK)
             {
                 qDebug() << "Error getting rar codec :" + filePath;
                 return;
@@ -296,22 +321,22 @@ bool CompressedArchive::loadFunctions()
     {
 #if defined Q_OS_UNIX
     #if defined Q_OS_MAC
-        rarLib = new QLibrary(QCoreApplication::applicationDirPath()+"/utils/Codecs/Rar29");
+        rarLib = new QLibrary(QCoreApplication::applicationDirPath()+"/utils/Codecs/Rar");
     #else
         //check if a yacreader specific version of p7zip exists on the system
-        QFileInfo rarCodec(QString(LIBDIR)+"/yacreader/Codecs/Rar29.so");
+        QFileInfo rarCodec(QString(LIBDIR)+"/yacreader/Codecs/Rar.so");
         if (rarCodec.exists())
         {
             rarLib = new QLibrary(rarCodec.absoluteFilePath());
         }
         else
         {
-            rarLib = new QLibrary(QString(LIBDIR)+"/p7zip/Codecs/Rar29.so");
+            rarLib = new QLibrary(QString(LIBDIR)+"/p7zip/Codecs/Rar.so");
         }
     #endif
         if(!rarLib->load())
         {
-            qDebug() << "Error Loading Rar29.so : " + rarLib->errorString() << endl;
+            qDebug() << "Error Loading Rar.so : " + rarLib->errorString() << endl;
             QCoreApplication::exit(700); //TODO yacreader_global can't be used here, it is GUI dependant, YACReader::SevenZNotFound
             return false;
         }
@@ -387,7 +412,7 @@ void CompressedArchive::setupFilesNames()
         if(!isDir)
         {
             szInterface->archive->GetProperty(i, kpidPath, &prop);
-            UString s = ConvertPropVariantToString(prop);
+            UString s = prop.bstrVal;
             const wchar_t * chars = s.operator const wchar_t *();
             files.append(QString::fromWCharArray(chars));
             offsets.append(i);
@@ -440,7 +465,7 @@ int CompressedArchive::getNumEntries()
 
 QList<QByteArray> CompressedArchive::getAllData(const QVector<quint32> & indexes, ExtractDelegate * delegate)
 {
-    CArchiveExtractCallback *extractCallbackSpec = new CArchiveExtractCallback(indexesToPages, true, delegate);
+    YCArchiveExtractCallback *extractCallbackSpec = new YCArchiveExtractCallback(indexesToPages, true, delegate);
     CMyComPtr<IArchiveExtractCallback> extractCallback(extractCallbackSpec);
     extractCallbackSpec->Init(szInterface->archive, L""); // second parameter is output folder path
     extractCallbackSpec->PasswordIsDefined = false;
@@ -464,7 +489,7 @@ QByteArray CompressedArchive::getRawDataAtIndex(int index)
 {
     if(index>=0 && index < getNumFiles())
     {
-        CArchiveExtractCallback *extractCallbackSpec = new CArchiveExtractCallback(indexesToPages);
+        YCArchiveExtractCallback *extractCallbackSpec = new YCArchiveExtractCallback(indexesToPages);
         CMyComPtr<IArchiveExtractCallback> extractCallback(extractCallbackSpec);
         extractCallbackSpec->Init(szInterface->archive, L""); // second parameter is output folder path
         extractCallbackSpec->PasswordIsDefined = false;
@@ -489,7 +514,7 @@ QByteArray CompressedArchive::getRawDataAtIndex(int index)
 
 #ifdef Q_OS_UNIX
 
-STDMETHODIMP CompressedArchive::GetNumberOfMethods(UInt32 *numMethods)
+STDMETHODIMP CompressedArchive::GetNumMethods(UInt32 *numMethods)
 {
     return szInterface->getNumberOfMethodsFuncRar(numMethods);
 }
