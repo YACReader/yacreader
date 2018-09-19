@@ -1,4 +1,5 @@
-#ifdef Q_OS_UNIX
+#include <QtCore>
+#ifndef Q_OS_WIN
 #include "libp7zip/CPP/Common/MyInitGuid.h"
 #endif
 
