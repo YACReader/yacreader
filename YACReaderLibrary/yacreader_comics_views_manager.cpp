@@ -189,7 +189,7 @@ void YACReaderComicsViewsManager::_toggleComicsView()
     switch (comicsViewStatus) {
     case Flow: {
         QIcon icoViewsButton;
-        icoViewsButton.addFile(":/images/main_toolbar/info.png", QSize(), QIcon::Normal);
+        icoViewsButton.addFile(":/images/main_toolbar/info.svg", QSize(), QIcon::Normal);
         libraryWindow->libraryToolBar->toggleComicsViewAction->setIcon(icoViewsButton);
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
 
@@ -205,7 +205,7 @@ void YACReaderComicsViewsManager::_toggleComicsView()
 
     case Grid: {
         QIcon icoViewsButton;
-        icoViewsButton.addFile(":/images/main_toolbar/flow.png", QSize(), QIcon::Normal);
+        icoViewsButton.addFile(":/images/main_toolbar/flow.svg", QSize(), QIcon::Normal);
         libraryWindow->libraryToolBar->toggleComicsViewAction->setIcon(icoViewsButton);
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
 
@@ -220,7 +220,7 @@ void YACReaderComicsViewsManager::_toggleComicsView()
 
     case Info: {
         QIcon icoViewsButton;
-        icoViewsButton.addFile(":/images/main_toolbar/grid.png", QSize(), QIcon::Normal);
+        icoViewsButton.addFile(":/images/main_toolbar/grid.svg", QSize(), QIcon::Normal);
         libraryWindow->libraryToolBar->toggleComicsViewAction->setIcon(icoViewsButton);
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
 

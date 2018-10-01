@@ -11,8 +11,8 @@ YACReaderLibraryToolbar::YACReaderLibraryToolbar(QMainWindow *mainWindow, bool i
 {
     backAction = new QAction(mainWindow);
     QIcon icoBackButton;
-    icoBackButton.addFile(":/images/main_toolbar/back.png",QSize(), QIcon::Normal);
-    //icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back_disabled.png"), QIcon::Disabled);
+    icoBackButton.addFile(":/images/main_toolbar/back.svg",QSize(), QIcon::Normal);
+    //icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back_disabled.svg"), QIcon::Disabled);
     backAction->setData(BACK_ACTION_YL);
     backAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(BACK_ACTION_YL));
     backAction->setIcon(icoBackButton);
@@ -20,8 +20,7 @@ YACReaderLibraryToolbar::YACReaderLibraryToolbar(QMainWindow *mainWindow, bool i
 
     forwardAction = new QAction(mainWindow);
     QIcon icoFordwardButton;
-    icoFordwardButton.addFile(":/images/main_toolbar/forward.png", QSize(), QIcon::Normal);
-    //icoFordwardButton.addPixmap(QPixmap(":/images/main_toolbar/forward_disabled.png"), QIcon::Disabled);
+    icoFordwardButton.addFile(":/images/main_toolbar/forward.svg", QSize(), QIcon::Normal);
     forwardAction->setData(FORWARD_ACTION_YL);
     forwardAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(FORWARD_ACTION_YL));
     forwardAction->setIcon(icoFordwardButton);
@@ -32,7 +31,7 @@ YACReaderLibraryToolbar::YACReaderLibraryToolbar(QMainWindow *mainWindow, bool i
     optionsAction->setData(OPTIONS_ACTION_YL);
     optionsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPTIONS_ACTION_YL));
     QIcon icoSettingsButton;
-    icoSettingsButton.addFile(":/images/main_toolbar/settings.png", QSize(), QIcon::Normal);
+    icoSettingsButton.addFile(":/images/main_toolbar/settings.svg", QSize(), QIcon::Normal);
     optionsAction->setIcon(icoSettingsButton);
 
     serverConfigAction = new QAction(mainWindow);
@@ -40,7 +39,7 @@ YACReaderLibraryToolbar::YACReaderLibraryToolbar(QMainWindow *mainWindow, bool i
     serverConfigAction->setData(SERVER_CONFIG_ACTION_YL);
     serverConfigAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SERVER_CONFIG_ACTION_YL));
     QIcon icoServerButton;
-    icoServerButton.addFile(":/images/main_toolbar/server.png", QSize(), QIcon::Normal);
+    icoServerButton.addFile(":/images/main_toolbar/server.svg", QSize(), QIcon::Normal);
     serverConfigAction->setIcon(icoServerButton);
 
     toggleComicsViewAction = new QAction(tr("Change between comics views"),mainWindow);
@@ -48,11 +47,11 @@ YACReaderLibraryToolbar::YACReaderLibraryToolbar(QMainWindow *mainWindow, bool i
     QIcon icoViewsButton;
 
     if(!settings->contains(COMICS_VIEW_STATUS) || settings->value(COMICS_VIEW_STATUS) == Flow)
-        icoViewsButton.addFile(":/images/main_toolbar/grid.png", QSize(), QIcon::Normal);
+        icoViewsButton.addFile(":/images/main_toolbar/grid.svg", QSize(), QIcon::Normal);
     else if(settings->value(COMICS_VIEW_STATUS) == Grid)
-        icoViewsButton.addFile(":/images/main_toolbar/info.png", QSize(), QIcon::Normal);
+        icoViewsButton.addFile(":/images/main_toolbar/info.svg", QSize(), QIcon::Normal);
     else
-        icoViewsButton.addFile(":/images/main_toolbar/flow.png", QSize(), QIcon::Normal);
+        icoViewsButton.addFile(":/images/main_toolbar/flow.svg", QSize(), QIcon::Normal);
 
     toggleComicsViewAction->setData(TOGGLE_COMICS_VIEW_ACTION_YL);
     toggleComicsViewAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_COMICS_VIEW_ACTION_YL));
@@ -63,7 +62,7 @@ YACReaderLibraryToolbar::YACReaderLibraryToolbar(QMainWindow *mainWindow, bool i
     helpAboutAction->setData(HELP_ABOUT_ACTION_YL);
     helpAboutAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(HELP_ABOUT_ACTION_YL));
     QIcon icoHelpButton;
-    icoHelpButton.addFile(":/images/main_toolbar/help.png",QSize(), QIcon::Normal);
+    icoHelpButton.addFile(":/images/main_toolbar/help.svg",QSize(), QIcon::Normal);
     helpAboutAction->setIcon(icoHelpButton);
 
     if (!useNativeFullScreen) {
@@ -72,7 +71,7 @@ YACReaderLibraryToolbar::YACReaderLibraryToolbar(QMainWindow *mainWindow, bool i
         toggleFullScreenAction->setData(TOGGLE_FULL_SCREEN_ACTION_YL);
         toggleFullScreenAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_FULL_SCREEN_ACTION_YL));
         QIcon icoFullscreenButton;
-        icoFullscreenButton.addPixmap(QPixmap(":/images/main_toolbar/fullscreen.png"), QIcon::Normal);
+        icoFullscreenButton.addPixmap(QPixmap(":/images/main_toolbar/fullscreen.svg"), QIcon::Normal);
         toggleFullScreenAction->setIcon(icoFullscreenButton);
     }
 

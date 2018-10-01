@@ -1,28 +1,15 @@
 <RCC>
     <qresource prefix="/">
-        <file>../images/main_toolbar/back.png</file>
-        <file>../images/main_toolbar/back_disabled.png</file>
-        <file>../images/main_toolbar/forward.png</file>
-        <file>../images/main_toolbar/forward_disabled.png</file>
-        <file>../images/main_toolbar/settings.png</file>
-        <file>../images/main_toolbar/server.png</file>
-        <file>../images/main_toolbar/help.png</file>
-        <file>../images/main_toolbar/fullscreen.png</file>
         <file>../images/sidebar/libraryIcon.png</file>
         <file>../images/sidebar/setRoot.png</file>
         <file>../images/sidebar/expand.png</file>
         <file>../images/sidebar/colapse.png</file>
         <file>../images/sidebar/newLibraryIcon.png</file>
         <file>../images/sidebar/openLibraryIcon.png</file>
-        <file>../images/main_toolbar/flow.png</file>
-        <file>../images/main_toolbar/grid.png</file>
-        <file>../images/main_toolbar/info.png</file>
         <file>../images/empty_folder.png</file>
         <file>../images/empty_search.png</file>
         <file>../images/sidebar/addNew_sidebar.png</file>
         <file>../images/sidebar/delete_sidebar.png</file>
-        <file alias="images/iconSearch.png">../images/iconSearchNew.png</file>
-        <file alias="images/clearSearch.png">../images/clearSearchNew.png</file>
         <file>../images/sidebar/addLabelIcon.png</file>
         <file>../images/sidebar/renameListIcon.png</file>
         <file>../images/lists/default_0.png</file>
