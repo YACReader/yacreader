@@ -1683,21 +1683,21 @@ void MainWindowViewer::sendComic()
 {
     YACReaderLocalClient  * client = new YACReaderLocalClient;
   
-		connect(client, &YACReaderLocalClient::finished, client, &YACReaderLocalClient::deleteLater);
+    connect(client, &YACReaderLocalClient::finished, client, &YACReaderLocalClient::deleteLater);
     currentComicDB.info.lastTimeOpened = QDateTime::currentMSecsSinceEpoch() / 1000;
 
     viewer->updateComic(currentComicDB);
 
-    if (currentComicDB.info.currentPage == currentComicDB.info.numPages) {
-        int currentIndex = siblingComics.indexOf(currentComicDB);
-        if(currentIndex+1 > 0 && currentIndex+1 < siblingComics.count())
-        {
+    int currentIndex = siblingComics.indexOf(currentComicDB);
+    bool sendNextComicInfo = (currentComicDB.info.currentPage == currentComicDB.info.numPages)
+            && (currentIndex+1 > 0 && currentIndex+1 < siblingComics.count());
+
+    if (sendNextComicInfo) {
             ComicDB & nextComic = siblingComics[currentIndex+1];
             nextComic.info.hasBeenOpened = true;
             int retries = 1;
             while(!client->sendComicInfo(libraryId, currentComicDB, nextComic.id) && retries!=0)
                 retries--;
-        }
     } else {
         int retries = 1;
         while(!client->sendComicInfo(libraryId, currentComicDB) && retries!=0)
