@@ -145,7 +145,42 @@ HEADERS += comic_flow.h \
   yacreader_comics_selection_helper.h \
   yacreader_comic_info_helper.h \
   db/reading_list.h \
-  current_comic_view_helper.h
+  current_comic_view_helper.h \
+    lexertl/parser/tokeniser/re_token.hpp \
+    lexertl/parser/tokeniser/re_tokeniser.hpp \
+    lexertl/parser/tokeniser/re_tokeniser_helper.hpp \
+    lexertl/parser/tokeniser/re_tokeniser_state.hpp \
+    lexertl/parser/tree/end_node.hpp \
+    lexertl/parser/tree/iteration_node.hpp \
+    lexertl/parser/tree/leaf_node.hpp \
+    lexertl/parser/tree/node.hpp \
+    lexertl/parser/tree/selection_node.hpp \
+    lexertl/parser/tree/sequence_node.hpp \
+    lexertl/parser/parser.hpp \
+    lexertl/partition/charset.hpp \
+    lexertl/partition/equivset.hpp \
+    lexertl/char_traits.hpp \
+    lexertl/debug.hpp \
+    lexertl/dot.hpp \
+    lexertl/enums.hpp \
+    lexertl/generate_cpp.hpp \
+    lexertl/generator.hpp \
+    lexertl/internals.hpp \
+    lexertl/iterator.hpp \
+    lexertl/lookup.hpp \
+    lexertl/match_results.hpp \
+    lexertl/memory_file.hpp \
+    lexertl/narrow.hpp \
+    lexertl/observer_ptr.hpp \
+    lexertl/rules.hpp \
+    lexertl/runtime_error.hpp \
+    lexertl/serialise.hpp \
+    lexertl/sm_to_csm.hpp \
+    lexertl/sm_traits.hpp \
+    lexertl/state_machine.hpp \
+    lexertl/stream_shared_iterator.hpp \
+    lexertl/string_token.hpp \
+    lexertl/utf_iterators.hpp
 
 !CONFIG(no_opengl) {
         HEADERS += ../common/gl/yacreader_flow_gl.h
@@ -322,3 +357,6 @@ translation.files = ../release/languages/yacreaderlibrary_*
 manpage.path = $$DATADIR/man/man1
 manpage.files = ../YACReaderLibrary.1
 }
+
+DISTFILES += \
+    lexertl/licence_1_0.txt
