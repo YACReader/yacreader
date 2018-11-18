@@ -67,8 +67,8 @@ macx {
   QT += macextras gui-private
 }
 
-unix:!macx {
-  CONFIG += c++11
+unix {
+  CONFIG += c++1z
 }
 
 #CONFIG += release
@@ -147,6 +147,7 @@ HEADERS += comic_flow.h \
   yacreader_comics_selection_helper.h \
   yacreader_comic_info_helper.h \
   db/reading_list.h \
+  db/query_parser.h \
   current_comic_view_helper.h \
     lexertl/parser/tokeniser/re_token.hpp \
     lexertl/parser/tokeniser/re_tokeniser.hpp \
@@ -254,7 +255,8 @@ SOURCES += comic_flow.cpp \
     yacreader_comics_selection_helper.cpp \
     yacreader_comic_info_helper.cpp\
     db/reading_list.cpp \
-    current_comic_view_helper.cpp
+    current_comic_view_helper.cpp \
+    db/query_parser.cpp
 
 !CONFIG(no_opengl) {
     SOURCES += ../common/gl/yacreader_flow_gl.cpp
