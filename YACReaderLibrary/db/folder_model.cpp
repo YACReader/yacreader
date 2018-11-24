@@ -701,39 +701,37 @@ void FolderModelProxy::setupFilteredModelData()
 
                 switch (modifier) {
                 case YACReader::NoModifiers:
-                    queryString += "AND f.id <> 1 ORDER BY f.parentId,f.name";
+                    queryString += " AND f.id <> 1 ORDER BY f.parentId,f.name";
                     break;
 
                 case YACReader::OnlyRead:
-                    queryString += "AND f.id <> 1 AND ci.read = 1 ORDER BY f.parentId,f.name";
+                    queryString += " AND f.id <> 1 AND ci.read = 1 ORDER BY f.parentId,f.name";
                     break;
 
                 case YACReader::OnlyUnread:
-                    queryString += "AND f.id <> 1 AND ci.read = 0 ORDER BY f.parentId,f.name";
+                    queryString += " AND f.id <> 1 AND ci.read = 0 ORDER BY f.parentId,f.name";
                     break;
 
                 default:
-                    queryString += "AND f.id <> 1 ORDER BY f.parentId,f.name";
+                    queryString += " AND f.id <> 1 ORDER BY f.parentId,f.name";
                     QLOG_ERROR() << "not implemented";
                     break;
+
+                    selectQuery.prepare(queryString.c_str());
+                    result.bindValues(selectQuery);
                 }
-
-                selectQuery.prepare(QString(queryString.c_str()));
-                result.bindValues(selectQuery);
-
             } catch (const std::exception &e) {
                 QLOG_ERROR() << "Unable to parse query: " << e.what();
             }
+            selectQuery.exec();
+            QLOG_DEBUG() << selectQuery.lastError() << "--";
+
+            setupFilteredModelData(selectQuery, rootItem);
         }
-        selectQuery.exec();
-        QLOG_DEBUG() << selectQuery.lastError() << "--";
+        QSqlDatabase::removeDatabase(db.connectionName());
 
-        setupFilteredModelData(selectQuery, rootItem);
-        connectionName = db.connectionName();
+        endResetModel();
     }
-    QSqlDatabase::removeDatabase(connectionName);
-
-    endResetModel();
 }
 
 void FolderModelProxy::clear()
