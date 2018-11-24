@@ -11,20 +11,27 @@ const std::map<QueryParser::FieldType, std::vector<std::string>> QueryParser::fi
     {FieldType::text, {"title", "volume", "storyarc", "genere", "writer", "penciller", "inker", "colorist", "letterer",
                       "coverartist", "publisher", "format", "agerating", "synopsis", "characters", "notes"}},
     {FieldType::boolean, {"isbis", "color"}},
-    {FieldType::date, {"date"} } };
+    {FieldType::date, {"date"}},
+    {FieldType::filename, {"filename"}},
+    {FieldType::folder, {"folder"}} };
 
 int QueryParser::TreeNode::buildSqlString(std::string& sqlString, int bindPosition) const {
         if (t == "token") {
             ++bindPosition;
             std::ostringstream oss;
-            if (children[0].t == "all") {
+            if (toLower(children[0].t) == "all") {
                 oss << "(";
                 for (const auto& field: fieldNames.at(FieldType::text)) {
                     oss << "UPPER(ci." << field << ") LIKE UPPER(:bindPosition" << bindPosition << ") OR ";
                 }
-                oss << "UPPER(c.fileName) LIKE UPPER(:bindPosition" << bindPosition << ")) ";
+                oss << "UPPER(c.filename) LIKE UPPER(:bindPosition" << bindPosition << ") OR ";
+                oss << "UPPER(f.name) LIKE UPPER(:bindPosition" << bindPosition << ")) ";
             } else if (isIn(fieldType(children[0].t), FieldType::numeric, FieldType::boolean)) {
                 oss << "ci." << children[0].t << " = :bindPosition" << bindPosition << " ";
+            } else if (fieldType(children[0].t) == FieldType::filename) {
+                oss << "(UPPER(c." << children[0].t << ") LIKE UPPER(:bindPosition" << bindPosition << ")) ";
+            } else if (fieldType(children[0].t) == FieldType::folder) {
+                oss << "(UPPER(f.name) LIKE UPPER(:bindPosition" << bindPosition << ")) ";
             } else {
                 oss << "(UPPER(ci." << children[0].t << ") LIKE UPPER(:bindPosition" << bindPosition << ")) ";
             }

@@ -39,7 +39,7 @@ private:
     template<typename First, typename ... T>
     static bool isIn(First &&first, T && ... t) {return ((first == t) || ...);}
 
-    enum class FieldType {unknown, numeric, text, boolean, date};
+    enum class FieldType {unknown, numeric, text, boolean, date, folder, filename};
     static FieldType fieldType(const std::string& str);
 
     void tokenize (const std::string& expr);
