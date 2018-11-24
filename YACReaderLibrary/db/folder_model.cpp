@@ -55,6 +55,7 @@
 #include "qnaturalsorting.h"
 #include "yacreader_global_gui.h"
 #include "QsLog.h"
+#include "query_parser.h"
 
 #ifdef Q_OS_MAC
 #include <QFileIconProvider>
@@ -667,37 +668,43 @@ void FolderModelProxy::setupFilteredModelData()
             selectQuery.prepare("select * from folder where id <> 1 and upper(name) like upper(:filter) order by parentId,name ");
             selectQuery.bindValue(":filter", "%%" + filter + "%%");
         } else {
-            switch (modifier) {
-            case YACReader::NoModifiers:
-                selectQuery.prepare("SELECT DISTINCT f.id, f.parentId, f.name, f.path, f.finished, f.completed "
+            std::string queryString("SELECT DISTINCT f.id, f.parentId, f.name, f.path, f.finished, f.completed "
                                     "FROM folder f LEFT JOIN comic c ON (f.id = c.parentId) "
-                                    "WHERE f.id <> 1 AND ((UPPER(c.fileName) like UPPER(:filter)) OR (UPPER(f.name) like UPPER(:filter2))) ORDER BY f.parentId,f.name");
-                selectQuery.bindValue(":filter", "%%" + filter + "%%");
-                selectQuery.bindValue(":filter2", "%%" + filter + "%%");
-                break;
+                                    "INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE ");
 
-            case YACReader::OnlyRead:
-                selectQuery.prepare("SELECT DISTINCT f.id, f.parentId, f.name, f.path, f.finished, f.completed "
-                                    "FROM folder f LEFT JOIN (comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id)) ON (f.id = c.parentId) "
-                                    "WHERE f.id <> 1 AND ((UPPER(c.fileName) like UPPER(:filter)) OR (UPPER(f.name) like UPPER(:filter2))) AND ci.read = 1  ORDER BY f.parentId,f.name;");
-                selectQuery.bindValue(":filter", "%%" + filter + "%%");
-                selectQuery.bindValue(":filter2", "%%" + filter + "%%");
-                break;
+            try {
+                QueryParser parser;
+                auto result = parser.parse(filter.toStdString());
+                result.buildSqlString(queryString);
 
-            case YACReader::OnlyUnread:
-                selectQuery.prepare("SELECT DISTINCT f.id, f.parentId, f.name, f.path, f.finished, f.completed "
-                                    "FROM folder f LEFT JOIN (comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id)) ON (f.id = c.parentId) "
-                                    "WHERE f.id <> 1 AND ((UPPER(c.fileName) like UPPER(:filter)) OR (UPPER(f.name) like UPPER(:filter2))) AND ci.read = 0  ORDER BY f.parentId,f.name;");
-                selectQuery.bindValue(":filter", "%%" + filter + "%%");
-                selectQuery.bindValue(":filter2", "%%" + filter + "%%");
-                break;
+                switch (modifier) {
+                case YACReader::NoModifiers:
+                    queryString += "AND f.id <> 1 ORDER BY f.parentId,f.name";
+                    break;
 
-            default:
-                QLOG_ERROR() << "not implemented";
-                break;
+                case YACReader::OnlyRead:
+                    queryString += "AND f.id <> 1 AND ci.read = 1 ORDER BY f.parentId,f.name";
+                    break;
+
+                case YACReader::OnlyUnread:
+                    queryString += "AND f.id <> 1 AND ci.read = 0 ORDER BY f.parentId,f.name";
+                    break;
+
+                default:
+                    queryString += "AND f.id <> 1 ORDER BY f.parentId,f.name";
+                    QLOG_ERROR() << "not implemented";
+                    break;
+                }
+
+                selectQuery.prepare(QString(queryString.c_str()));
+                result.bindValues(selectQuery);
+
+            } catch (const std::exception &e) {
+                QLOG_ERROR() << "Unable to parse query: " << e.what();
             }
         }
         selectQuery.exec();
+        QLOG_DEBUG() << selectQuery.lastError() << "--";
 
         setupFilteredModelData(selectQuery, rootItem);
     }
