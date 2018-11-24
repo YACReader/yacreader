@@ -148,17 +148,7 @@ QueryParser::FieldType QueryParser::fieldType(const std::string& str) {
 }
 
 void QueryParser::tokenize (const std::string& expr) {
-    // TODO: Strip out escaped backslashes, quotes and parens so that the
-    // lex scanner doesn't get confused. We put them back later.
-
     iter = lexertl::siterator(expr.begin(), expr.end(), sm);
-
-    /* for (; !isEof() ; advance())
-    {
-        std::cout << "Id: " << iter->id << ", Token: '" << token() << "'\n";
-    }
-    iter = lexertl::siterator(expr.begin(), expr.end(), sm);
-    */
 }
 
 std::string QueryParser::join(const std::vector<std::string>& strings, const std::string& delim) {
