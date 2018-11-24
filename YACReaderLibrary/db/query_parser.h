@@ -9,8 +9,35 @@
 #include <string>
 #include <vector>
 
-class QSqlQuery;
-
+/**
+ * This class is used to generate an SQL query string from a search expression,
+ * with a syntax very similar to that used by the Google search engine.
+ *
+ * The code herin is based upon the SearchQueryParser python class written by
+ * Kovid Goyal as part of the Calibre eBook manager (https://calibre-ebook.com)
+ *
+ * Grammar:
+ *   prog ::= or_expression
+ *   or_expression ::= and_expression [ 'or' or_expression ]
+ *   and_expression ::= not_expression [ [ 'and' ] and_expression ]
+ *   not_expression ::= [ 'not' ] location_expression
+ *   location_expression ::= base_token | ( '(' or_expression ')' )
+ *   base_token ::= a sequence of letters and colons, perhaps quoted
+ *
+ * Usage Example:
+ *    QSqlQuery selectQuery(db);
+ *    std::string queryString("SELECT ... FROM ... WHERE ");
+ *
+ *    QueryParser parser;                   // Create the parser object
+ *    TreeNode result = parser.parse(expr); // Parse the query expression
+ *
+ *    result.buildSqlString(queryString);   // Append the SQL query to a string
+ *
+ *    selectQuery.prepare(queryString.c_str()); // Convert the string to a query
+ *    result.bindValues(selectQuery);       // Populate the SQL query variables
+ *
+ *    selectQuery.exec();
+ */
 class QueryParser {
 public:
 
