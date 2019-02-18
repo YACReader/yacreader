@@ -75,10 +75,10 @@ void PageControllerV2::service(HttpRequest& request, HttpResponse& response)
                     response.setHeader("Transfer-Encoding","chunked");
                     QByteArray pageData = comicFile->getRawPage(page);
                     QDataStream data(pageData);
-                    char buffer[100000];
+                    std::vector<char> buffer(100000);
                     while (!data.atEnd()) {
-                        int len = data.readRawData(buffer,100000);
-                        response.write(QByteArray(buffer,len));
+                        int len = data.readRawData(&buffer[0],buffer.size());
+                        response.write(QByteArray(&buffer[0],len));
                     }
                     response.write(QByteArray(),true);
                 }
