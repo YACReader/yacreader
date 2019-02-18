@@ -8,12 +8,16 @@ macdeployqt YACReader.app
 macdeployqt YACReaderLibrary.app -qmldir=YACReaderLibrary/qml
 macdeployqt YACReaderLibraryServer.app
 
+mkdir -p YACReader.app/Contents/MacOS/utils
 mkdir -p YACReaderLibrary.app/Contents/MacOS/utils
+mkdir -p YACReaderLibraryServer.app/Contents/MacOS/utils
 
 cp dependencies/qrencode/macx/libqrencode.4.0.0.dylib \
 YACReaderLibrary.app/Contents/MacOS/utils/libqrencode.dylib
 
-chmod +w YACReaderLibrary.app/Contents/MacOS/utils/*
+cp -R dependencies/7zip/macx/* YACReader.app/Contents/MacOS/utils/
+cp -R dependencies/7zip/macx/* YACReaderLibrary.app/Contents/MacOS/utils/
+cp -R dependencies/7zip/macx/* YACReaderLibraryServer.app/Contents/MacOS/utils/
 
 cp -R release/server YACReaderLibrary.app/Contents/MacOS/
 cp -R release/server YACReaderLibraryServer.app/Contents/MacOS/

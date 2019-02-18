@@ -7,7 +7,7 @@
 // Archive Open callback class
 
 
-class CArchiveOpenCallback:
+class YCArchiveOpenCallback:
   public IArchiveOpenCallback,
   public ICryptoGetTextPassword,
   public CMyUnknownImp
@@ -23,20 +23,20 @@ public:
   bool PasswordIsDefined;
   UString Password;
 
-  CArchiveOpenCallback() : PasswordIsDefined(false) {}
+  YCArchiveOpenCallback() : PasswordIsDefined(false) {}
 };
 
-STDMETHODIMP CArchiveOpenCallback::SetTotal(const UInt64 * /* files */, const UInt64 * /* bytes */)
+STDMETHODIMP YCArchiveOpenCallback::SetTotal(const UInt64 * /* files */, const UInt64 * /* bytes */)
 {
   return S_OK;
 }
 
-STDMETHODIMP CArchiveOpenCallback::SetCompleted(const UInt64 * /* files */, const UInt64 * /* bytes */)
+STDMETHODIMP YCArchiveOpenCallback::SetCompleted(const UInt64 * /* files */, const UInt64 * /* bytes */)
 {
   return S_OK;
 }
   
-STDMETHODIMP CArchiveOpenCallback::CryptoGetTextPassword(BSTR *password)
+STDMETHODIMP YCArchiveOpenCallback::CryptoGetTextPassword(BSTR *password)
 {
   if (!PasswordIsDefined)
   {
