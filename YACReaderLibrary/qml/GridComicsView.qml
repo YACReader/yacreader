@@ -12,7 +12,7 @@ import com.yacreader.ComicInfo 1.0
 import com.yacreader.ComicDB 1.0
 
 SplitView {
-    anchors.fill: parent
+    //anchors.fill: parent
     orientation: Qt.Horizontal
     handleDelegate:Rectangle {
         width: 1
@@ -345,14 +345,38 @@ Rectangle {
             }
 
             //rating icon
-            RatingContextMenu {
-                id: ratingContextMenu
+            Image {
+                id: ratingImage
+                anchors {bottom: realCell.bottom; right: pageImage.left; bottomMargin: 5; rightMargin: Math.floor(pages.width)+12}
+                source: "star.png"
+                width: 13
+                height: 11
+
+                MouseArea  {
+                    anchors.fill: parent
+                    onPressed: {
+                        console.log("rating");
+                        comicsSelectionHelper.clear();
+                        comicsSelectionHelper.selectIndex(index);
+                        grid.currentIndex = index;
+                        ratingConextMenu.popup();
+                    }
+                }
+
+                Menu {
+                    id: ratingConextMenu
+                    MenuItem { text: "1"; enabled: true; iconSource:"star_menu.png"; onTriggered: comicRatingHelper.rate(index,1) }
+                    MenuItem { text: "2"; enabled: true; iconSource:"star_menu.png"; onTriggered: comicRatingHelper.rate(index,2) }
+                    MenuItem { text: "3"; enabled: true; iconSource:"star_menu.png"; onTriggered: comicRatingHelper.rate(index,3) }
+                    MenuItem { text: "4"; enabled: true; iconSource:"star_menu.png"; onTriggered: comicRatingHelper.rate(index,4) }
+                    MenuItem { text: "5"; enabled: true; iconSource:"star_menu.png"; onTriggered: comicRatingHelper.rate(index,5) }
+                }
             }
 
             //comic rating
             Text {
                 id: comicRating
-                anchors {bottom: realCell.bottom; right: ratingContextMenu.left; margins: 4}
+                anchors {bottom: realCell.bottom; right: ratingImage.left; margins: 4}
                 text: rating>0?rating:"-"
                 color: textColor
             }
@@ -827,5 +851,3 @@ Rectangle {
     }
 }
 }
-
-

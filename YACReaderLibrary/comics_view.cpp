@@ -6,6 +6,7 @@
 #include "QsLog.h"
 
 #include <QtQuick>
+#include <QQuickWidget>
 
 ComicsView::ComicsView(QWidget *parent) :
     QWidget(parent),model(NULL),comicDB(nullptr)

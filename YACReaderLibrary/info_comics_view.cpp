@@ -1,6 +1,7 @@
 #include "info_comics_view.h"
 
 #include <QtQuick>
+#include <QQuickWidget>
 
 #include "comic.h"
 #include "comic_files_manager.h"
@@ -18,21 +19,20 @@ InfoComicsView::InfoComicsView(QWidget *parent)
     qmlRegisterType<ComicDB>("com.yacreader.ComicDB",1,0,"ComicDB");
     qmlRegisterType<ComicInfo>("com.yacreader.ComicInfo",1,0,"ComicInfo");
 
-    view = new QQuickView();
+    view = new QQuickWidget();
+    view->setResizeMode(QQuickWidget::SizeRootObjectToView);
     connect(
-        view, &QQuickView::statusChanged,
-        [=] (QQuickView::Status status)
+        view, &QQuickWidget::statusChanged,
+        [=] (QQuickWidget::Status status)
         {
-            if (status == QQuickView::Error)
+            if (status == QQuickWidget::Error)
             {
                 QLOG_ERROR() << view->errors();
             }
         }
       );
 
-    container = QWidget::createWindowContainer(view, this);
-
-    container->setFocusPolicy(Qt::StrongFocus);
+    //container->setFocusPolicy(Qt::StrongFocus);
 
     QQmlContext *ctxt = view->rootContext();
 
@@ -95,7 +95,7 @@ InfoComicsView::InfoComicsView(QWidget *parent)
     comicInfoHelper = new YACReaderComicInfoHelper(this);
 
     QVBoxLayout * l = new QVBoxLayout;
-    l->addWidget(container);
+    l->addWidget(view);
     this->setLayout(l);
 
     setContentsMargins(0,0,0,0);
