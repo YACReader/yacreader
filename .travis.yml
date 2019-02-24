@@ -1,0 +1,44 @@
+os:
+  - linux
+  - osx
+dist:
+  - xenial
+
+language:
+  - c++
+
+compiler:
+  - gcc
+  - clang
+
+addons:
+  apt:
+    sources:
+      - sourceline: 'deb http://download.opensuse.org/repositories/home:/selmf/xUbuntu_16.04/ /'
+        key_url: 'https://download.opensuse.org/repositories/home:selmf/xUbuntu_16.04/Release.key'
+      - sourceline: 'ppa:kubuntu-ppa/backports'
+    packages:
+      - qt-default
+      - qt5-qmake
+      - qtbase5-dev
+      - qtmultimedia5-dev
+      - libpoppler-qt5-dev
+      - qtscript5-dev
+      - libqt5opengl5-dev
+      - libglu1-mesa-dev
+      - libunarr-dev
+      - qtdeclarative5-dev
+  homebrew:
+    packages:
+      - qt
+
+before_script:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]];
+    then brew link qt --force;
+    qmake CONFIG+=unarr;
+    fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]];
+    then QT_SELECT=qt5 qmake CONFIG+=unarr;
+    fi
+
+script: make
