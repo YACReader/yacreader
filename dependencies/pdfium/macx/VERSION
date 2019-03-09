@@ -1,6 +1,6 @@
 YACReader for macOS uses a precompiled single static library version of pdfium.
 
-pdfium branch used for building: chromium/3071 (current beta)
+pdfium branch used for building: chromium/3729
 
 build parameters used (gn args):
 
@@ -8,11 +8,13 @@ pdf_enable_xfa = false
 pdf_enable_v8 = false
 pdf_is_complete_lib = true
 is_official_build = true
+use_jumbo_build = true
+is_debug = false
 symbol_level = 0
  
 Instructions on building pdfium can be found at https://pdfium.googlesource.com/pdfium
 
-It is recommended to always use the branch the current stable version of chromium uses.
+It is recommended to always use the branch the current stable version of Chromium uses.
 To get the pdfium branch corresponding to Chromium stable, look at 
 http://omahaproxy.appspot.com and search for the true_branch variable associated with
 the current stable dev channel of Chromium.
