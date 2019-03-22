@@ -121,7 +121,7 @@ void RequestMapper::loadSessionV1(HttpRequest & request, HttpResponse& response)
     }
 }
 
-void RequestMapper::loadSessionV2(HttpRequest & request, HttpResponse& response)
+void RequestMapper::loadSessionV2(HttpRequest & request, HttpResponse& /* response */)
 {
     QMutexLocker locker(&mutex);
     
