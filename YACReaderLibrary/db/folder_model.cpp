@@ -159,6 +159,7 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
     }
 
 	if (role == Qt::DecorationRole)
+	{
 
 #ifdef Q_OS_MAC
         if(item->data(FolderModel::Finished).toBool()){
@@ -177,6 +178,7 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
         else
             return QVariant(YACReader::noHighlightedIcon(":/images/sidebar/folder.png"));
 #endif
+	}
 
     if(role == FolderModel::CompletedRole)
         return item->data(FolderModel::Completed);

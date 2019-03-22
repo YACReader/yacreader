@@ -185,10 +185,14 @@ void YACReaderClientConnectionWorker::run()
 					clientConnection->flush();
 				}
 				else
+				{
 					tries++;
+				}
 			}
 			if(tries == 200 && written != block.size())
+			{
 				QLOG_ERROR() << QString("Local connection (comic info requested): unable to send response (%1,%2)").arg(written).arg(block.size());
+			}
 			break;
 		}
 	case YACReader::SendComicInfo:

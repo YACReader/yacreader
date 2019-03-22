@@ -734,20 +734,26 @@ void Render::load(const QString & path, const ComicDB & comicDB)
    for(int i = 0; i < filters.count(); i++)
    {
 	   if(typeid(*filters[i]) == typeid(BrightnessFilter))
+	   {
 		   if(comicDB.info.brightness == -1)
 			   filters[i]->setLevel(0);
 		   else
 			filters[i]->setLevel(comicDB.info.brightness);
+	   }
 	   if(typeid(*filters[i]) == typeid(ContrastFilter))
+	   {
 		   if(comicDB.info.contrast == -1)
 			   filters[i]->setLevel(100);
 		   else
 			   filters[i]->setLevel(comicDB.info.contrast);
+	   }
 	   if(typeid(*filters[i]) == typeid(GammaFilter))
+	   {
 		   if(comicDB.info.gamma == -1)
 			   filters[i]->setLevel(100);
 		   else
 			   filters[i]->setLevel(comicDB.info.gamma);
+	   }
    }
    createComic(path);
    if (comic!=0)
@@ -1035,6 +1041,7 @@ void Render::updateBuffer()
 		}
 	}
 	else //add pages to left pages and remove on the right
+	{
 		if(windowSize<0)
 		{
 			windowSize = -windowSize;
@@ -1060,6 +1067,7 @@ void Render::updateBuffer()
 			}
 		}
 		previousIndex = currentIndex;
+	}
 }
 
 void Render::fillBuffer()
