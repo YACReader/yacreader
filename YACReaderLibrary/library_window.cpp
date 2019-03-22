@@ -2571,6 +2571,8 @@ void LibraryWindow::deleteComicsFromList()
         case ReadingListModel::ReadingList:
             comicsModel->deleteComicsFromReadingList(indexList,id);
             break;
+	default:
+	    break;
         }
     }
 

@@ -1017,6 +1017,10 @@ PictureFlow::PictureFlow(QWidget* parent,FlowType flowType): QWidget(parent)
 	case StripOverlapped:
 	  d->state = new PictureFlowState(0,0);
 	  break;
+	case Modern:
+	case Roulette:
+	case Custom:
+	  break;
   }
 
   framesSkip = 0;
@@ -1396,6 +1400,10 @@ void PictureFlow::setFlowType(FlowType flowType)
 			  d->state->rawAngle = 0;
 		  d->state->spacingRatio = 0;
 		  d->state->reposition();
+	  break;
+	case Modern:
+	case Roulette:
+	case Custom:
 	  break;
   }
   d->state->reset();

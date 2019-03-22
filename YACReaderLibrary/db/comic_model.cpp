@@ -174,6 +174,9 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
     case ReadingList:
         DBHelper::reasignOrderToComicsInReadingList(sourceId,allComicIds,db);
         break;
+    case Folder:
+    case Reading:
+        break;
     }
 
     QSqlDatabase::removeDatabase(db.connectionName());
