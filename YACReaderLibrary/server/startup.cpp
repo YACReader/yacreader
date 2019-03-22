@@ -67,8 +67,10 @@ void Startup::start() {
             templatePath=QFileInfo(QCoreApplication::applicationDirPath(),baseTemplatePath).absoluteFilePath();
     #endif
 
-    if(templateSettings->value("path").isNull())
-        templateSettings->setValue("path",templatePath);
+	if(templateSettings->value("path").isNull())
+	{
+		templateSettings->setValue("path",templatePath);
+	}
 
 	Static::templateLoader=new TemplateCache(templateSettings,app);
 
@@ -76,8 +78,10 @@ void Startup::start() {
 	QSettings* sessionSettings=new QSettings(configFileName,QSettings::IniFormat,app);
 	sessionSettings->beginGroup("sessions");
 
-    if(sessionSettings->value("expirationTime").isNull())
-        sessionSettings->setValue("expirationTime",864000000);
+	if(sessionSettings->value("expirationTime").isNull())
+	{
+		sessionSettings->setValue("expirationTime",864000000);
+	}
 
 	Static::sessionStore=new HttpSessionStore(sessionSettings,app);
 
@@ -98,8 +102,10 @@ void Startup::start() {
         docroot=QFileInfo(QCoreApplication::applicationDirPath(),basedocroot).absoluteFilePath();
     #endif
 
-    if(fileSettings->value("path").isNull())
-        fileSettings->setValue("path",docroot);
+	if(fileSettings->value("path").isNull())
+	{
+		fileSettings->setValue("path",docroot);
+	}
 
 	Static::staticFileController=new StaticFileController(fileSettings,app);
 
@@ -108,20 +114,20 @@ void Startup::start() {
 	QSettings* listenerSettings=new QSettings(configFileName,QSettings::IniFormat,app);
 	listenerSettings->beginGroup("listener");
 
-    if(listenerSettings->value("maxRequestSize").isNull())
-        listenerSettings->setValue("maxRequestSize","32000000");
+	if(listenerSettings->value("maxRequestSize").isNull())
+		listenerSettings->setValue("maxRequestSize","32000000");
 
-    if(listenerSettings->value("maxMultiPartSize").isNull())
-        listenerSettings->setValue("maxMultiPartSize","32000000");
+	if(listenerSettings->value("maxMultiPartSize").isNull())
+		listenerSettings->setValue("maxMultiPartSize","32000000");
 
-    if(listenerSettings->value("cleanupInterval").isNull())
-        listenerSettings->setValue("cleanupInterval",10000);
+	if(listenerSettings->value("cleanupInterval").isNull())
+		listenerSettings->setValue("cleanupInterval",10000);
 
-    if(listenerSettings->value("minThreads").isNull())
-        listenerSettings->setValue("maxThreads",1000);
+	if(listenerSettings->value("minThreads").isNull())
+		listenerSettings->setValue("maxThreads",1000);
 
-    if(listenerSettings->value("minThreads").isNull())
-        listenerSettings->setValue("minThreads",50);
+	if(listenerSettings->value("minThreads").isNull())
+		listenerSettings->setValue("minThreads",50);
 
 	listener = new HttpListener(listenerSettings,new RequestMapper(app),app);
 

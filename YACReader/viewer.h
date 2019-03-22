@@ -108,7 +108,7 @@ virtual void mouseReleaseEvent ( QMouseEvent * event );
 		bool doublePage;
 		bool doubleMangaPage;
 	
-        int zoom;
+		int zoom;
 	
 		PageLabelWidget * informationLabel;
 		//QTimer * scroller;

@@ -189,10 +189,10 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
     if(role == FolderModel::IdRole)
         return item->id;
 
-	if (role != Qt::DisplayRole)
-		return QVariant();
+    if (role != Qt::DisplayRole)
+        return QVariant();
 
-	return item->data(index.column());
+    return item->data(index.column());
 }
 //! [3]
 
