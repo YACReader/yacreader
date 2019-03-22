@@ -23,7 +23,7 @@ ScrollManagement::Movement ScrollManagement::getMovement(QWheelEvent *event)
     }
 
     // Accumulate the delta
-    if(event->delta()<0 != wheelAccumulator<0 ) //different sign means change in direction
+    if((event->delta()<0) != (wheelAccumulator<0)) //different sign means change in direction
         wheelAccumulator = 0;
 
     wheelAccumulator += event->delta();
