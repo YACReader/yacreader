@@ -267,8 +267,6 @@ void ImportWidget::newCover(const QPixmap & image)
 {
 	Q_UNUSED(image)
 }
-static int i = 1;
-static int previousWidth = 10;
 static int j = 0;
 void ImportWidget::addCoverTest()
 {
