@@ -88,7 +88,7 @@
 #endif
 
 LibraryWindow::LibraryWindow()
-    :QMainWindow(),fullscreen(false),fetching(false),previousFilter(""),removeError(false),status(LibraryWindow::Normal)
+    :QMainWindow(),fullscreen(false),previousFilter(""),fetching(false),status(LibraryWindow::Normal),removeError(false)
 {
     setupUI();
 

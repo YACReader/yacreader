@@ -22,23 +22,20 @@ class Comic : public QObject
 		
 		//Comic pages, one QPixmap for each file.
 		QVector<QByteArray> _pages;
+		int _index;
+		QString _path;
+		bool _loaded;
 		QVector<bool> _loadedPages;
+		bool _isPDF;
+		bool _invalidated;
+		//open the comic at this point
+		int _firstPage;
 		//QVector<uint> _sizes;
 		QStringList _fileNames;
 		QMap<QString,int> _newOrder;
 		QList<QString> _order;
-		int _index;
-		QString _path;
-		bool _loaded;
 
 		int _cfi;
-
-		//open the comic at this point
-		int _firstPage;
-
-		bool _isPDF;
-
-        bool _invalidated;
 
         bool _errorOpening;
 

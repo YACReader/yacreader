@@ -620,7 +620,7 @@ void FolderModel::updateFolderChildrenInfo(qulonglong folderId)
 //PROXY
 
 FolderModelProxy::FolderModelProxy(QObject *parent)
-    :QSortFilterProxyModel(parent),rootItem(0),filterEnabled(false),filter(""),includeComics(true)
+    :QSortFilterProxyModel(parent),rootItem(0),includeComics(true),filter(""),filterEnabled(false)
 {
 
 }

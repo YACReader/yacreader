@@ -44,13 +44,13 @@ const QStringList Comic::literalComicExtensions = LiteralComicArchiveExtensions;
 
 //-----------------------------------------------------------------------------
 Comic::Comic()
-:_pages(),_index(0),_path(),_loaded(false),bm(new Bookmarks()),_loadedPages(),_isPDF(false),_invalidated(false),_errorOpening(false)
+:_pages(),_index(0),_path(),_loaded(false),_loadedPages(),_isPDF(false),_invalidated(false),_errorOpening(false),bm(new Bookmarks())
 {
 	setup();
 }
 //-----------------------------------------------------------------------------
 Comic::Comic(const QString & pathFile, int atPage )
-:_pages(),_index(0),_path(pathFile),_loaded(false),bm(new Bookmarks()),_loadedPages(),_isPDF(false),_firstPage(atPage),_errorOpening(false)
+:_pages(),_index(0),_path(pathFile),_loaded(false),_loadedPages(),_isPDF(false),_firstPage(atPage),_errorOpening(false),bm(new Bookmarks())
 {
 	setup();
 }

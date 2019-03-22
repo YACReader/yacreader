@@ -283,7 +283,7 @@ private:
 
 PictureFlowState::PictureFlowState(int a, float sr):
 backgroundColor(0), slideWidth(150), slideHeight(200),
-reflectionEffect(PictureFlow::BlurredReflection), centerIndex(0) , rawAngle(a), spacingRatio(sr), flowRightToLeft(false)
+reflectionEffect(PictureFlow::BlurredReflection), rawAngle(a), spacingRatio(sr), centerIndex(0), flowRightToLeft(false)
 {
 }
 

@@ -81,13 +81,13 @@ public:
 	void setRotation(unsigned int d){degrees = d;};
 	void setFilters(QVector<ImageFilter *> f){filters = f;};
 private:
+	Render * render;
 	int numPage;
 	QByteArray data;
-		QImage * page;
+	QImage * page;
 	unsigned int degrees;
 	QVector<ImageFilter *> filters;
 	void run();
-	Render * render;
 signals:
 	void pageReady(int);
 

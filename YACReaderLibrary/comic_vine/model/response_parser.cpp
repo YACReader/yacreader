@@ -4,7 +4,7 @@
 #include <QDebug>
 
 ResponseParser::ResponseParser(QObject *parent) :
-    QObject(parent),error(false),numResults(-1),currentPage(-1),totalPages(-1),errorTxt("None")
+    QObject(parent),error(false),errorTxt("None"),numResults(-1),currentPage(-1),totalPages(-1)
 {
 }
 
