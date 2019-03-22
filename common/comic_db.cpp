@@ -181,6 +181,7 @@ ComicInfo::ComicInfo()
 }
 
 ComicInfo::ComicInfo(const ComicInfo & comicInfo)
+	: QObject()
 {
 	operator=(comicInfo);
 }
