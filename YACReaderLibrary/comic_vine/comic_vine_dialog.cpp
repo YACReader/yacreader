@@ -189,6 +189,7 @@ void ComicVineDialog::goBack()
 			showSearchVolume();
 		else
 			showSearchSingleComic();
+		break;
 	default:
 		if(mode == Volume)
 			showSearchVolume();
