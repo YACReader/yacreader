@@ -1,7 +1,7 @@
 #include "yacreader_http_session.h"
 
 YACReaderHttpSession::YACReaderHttpSession(QObject *parent)
-    : QObject(parent), comic(nullptr), remoteComic(nullptr), comicId(0), remoteComicId(0)
+    : QObject(parent), comicId(0), remoteComicId(0), comic(nullptr), remoteComic(nullptr)
 {
 
 }
