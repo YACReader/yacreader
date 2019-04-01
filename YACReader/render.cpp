@@ -398,7 +398,7 @@ void PageRender::run()
 //-----------------------------------------------------------------------------
 
 Render::Render()
-:currentIndex(0),doublePage(false),doubleMangaPage(false),comic(0),loadedComic(false),imageRotation(0),numLeftPages(4),numRightPages(4)
+:comic(0),doublePage(false),doubleMangaPage(false),currentIndex(0),numLeftPages(4),numRightPages(4),loadedComic(false),imageRotation(0)
 {
 	int size = numLeftPages+numRightPages+1;
 	currentPageBufferedIndex = numLeftPages;
