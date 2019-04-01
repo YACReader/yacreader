@@ -361,12 +361,12 @@ PageRender::PageRender()
 }
 PageRender::PageRender(Render * r,int np, const QByteArray & rd, QImage * p,unsigned int d, QVector<ImageFilter *> f)
 :QThread(),
-render(r),
 numPage(np),
 data(rd),
 page(p),
 degrees(d),
-filters(f)
+filters(f),
+render(r)
 {
 }
 
