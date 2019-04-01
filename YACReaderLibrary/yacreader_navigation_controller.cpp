@@ -259,6 +259,8 @@ void YACReaderNavigationController::loadIndexFromHistory(const YACReaderLibraryS
         loadListInfo(sourceMI);
         break;
     }
+    case YACReaderLibrarySourceContainer::None:
+        break;
     }
 }
 
