@@ -2629,7 +2629,7 @@ void LibraryWindow::importLibraryPackage()
 
 void LibraryWindow::updateComicsView(quint64 libraryId, const ComicDB & comic)
 {
-    if(libraryId == libraries.getId(selectedLibrary->currentText())) {
+    if(libraryId == (quint64)libraries.getId(selectedLibrary->currentText())) {
         comicsModel->reload(comic);
         comicsViewsManager->updateCurrentComicView();
     }
