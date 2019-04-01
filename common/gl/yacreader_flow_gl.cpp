@@ -755,7 +755,7 @@ void YACReaderFlowGL::remove(int item)
     if(texture != defaultTexture)
         delete(texture);
 
-	numObjects--;
+    numObjects--;
 }
 
 /*Info*/
