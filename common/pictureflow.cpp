@@ -1399,6 +1399,8 @@ void PictureFlow::setFlowType(FlowType flowType)
 		  d->state->spacingRatio = 0;
 		  d->state->reposition();
 	  break;
+	default:
+	  break;
   }
   d->state->reset();
   d->renderer->init();
