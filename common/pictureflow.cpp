@@ -1261,7 +1261,7 @@ void PictureFlow::showSlide(unsigned int index)
 {
   index = qMax<unsigned int>(index, 0);
   index = qMin<unsigned int>(slideCount()-1, index);
-  if(index == d->state->centerSlide.slideIndex)
+  if((int)index == d->state->centerSlide.slideIndex)
     return;
 
     int distance = centerIndex()-index;
