@@ -1017,6 +1017,8 @@ PictureFlow::PictureFlow(QWidget* parent,FlowType flowType): QWidget(parent)
 	case StripOverlapped:
 	  d->state = new PictureFlowState(0,0);
 	  break;
+	default:
+	  break;
   }
 
   framesSkip = 0;
