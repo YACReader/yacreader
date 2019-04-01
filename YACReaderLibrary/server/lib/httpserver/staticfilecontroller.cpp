@@ -273,7 +273,7 @@ QString StaticFileController::getDeviceAwareFileName(QString fileName, QString d
         return getLocalizedFileName(fileName,locales,path); //no hay archivo específico para el dispositivo, pero puede haberlo para estas locales
 }
 
-QString StaticFileController::getDeviceAwareFileName(QString fileName, QString device, QString display, QString locales, QString path) const
+QString StaticFileController::getDeviceAwareFileName(QString fileName, QString device, QString display, QString /* locales */, QString path) const
 {
     QFileInfo fi(fileName);
     QString baseName = fi.baseName();
