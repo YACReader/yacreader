@@ -9,7 +9,7 @@
 
 LibrariesControllerV2::LibrariesControllerV2() {}
 
-void LibrariesControllerV2::service(HttpRequest& request, HttpResponse& response)
+void LibrariesControllerV2::service(HttpRequest& /* request */, HttpResponse& response)
 {
     response.setHeader("Content-Type", "application/json");
 
