@@ -1035,6 +1035,7 @@ void Render::updateBuffer()
 		}
 	}
 	else //add pages to left pages and remove on the right
+	{
 		if(windowSize<0)
 		{
 			windowSize = -windowSize;
@@ -1060,6 +1061,7 @@ void Render::updateBuffer()
 			}
 		}
 		previousIndex = currentIndex;
+	}
 }
 
 void Render::fillBuffer()
