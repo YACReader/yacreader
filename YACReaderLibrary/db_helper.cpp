@@ -1335,7 +1335,6 @@ QList<Label> DBHelper::getLabels(qulonglong libraryId)
     QSqlRecord record = selectQuery.record();
 
     int name =  record.indexOf("name");
-    int color = record.indexOf("color");
     int id = record.indexOf("id");
     int ordering = record.indexOf("ordering");
 
