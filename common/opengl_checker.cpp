@@ -31,6 +31,7 @@ OpenGLChecker::OpenGLChecker()
 
     case QSurfaceFormat::OpenVG:
         type = "OpenVG";
+        break;
 
     default: case QSurfaceFormat::DefaultRenderableType:
         type = "unknown";
