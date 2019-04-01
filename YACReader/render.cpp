@@ -863,7 +863,7 @@ void Render::nextPage()
 		update();
 		emit pageChanged(currentIndex);
 	}
-	else if (hasLoadedComic() && (currentIndex == numPages()-1))
+	else if (hasLoadedComic() && ((unsigned int)currentIndex == numPages()-1))
 	{
 		emit isLast();
 	}
