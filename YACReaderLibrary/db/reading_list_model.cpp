@@ -219,6 +219,7 @@ bool ReadingListModel::canDropMimeData(const QMimeData *data, Qt::DropAction act
         return true;
 
     if(rowIsReadingList(row,parent))// TODO avoid droping in a different parent
+    {
         if(!parent.isValid())
             return false;
         else
@@ -232,6 +233,7 @@ bool ReadingListModel::canDropMimeData(const QMimeData *data, Qt::DropAction act
             return data->formats().contains(YACReader::YACReaderLibrarSubReadingListMimeDataFormat);
 
         }
+    }
 
     return false;
 }
