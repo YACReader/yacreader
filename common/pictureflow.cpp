@@ -1261,18 +1261,19 @@ void PictureFlow::showSlide(unsigned int index)
 {
   index = qMax<unsigned int>(index, 0);
   index = qMin<unsigned int>(slideCount()-1, index);
-  if((int)index == d->state->centerSlide.slideIndex)
+  if((int)index == d->state->centerSlide.slideIndex) {
     return;
+  }
 
-    int distance = centerIndex()-index;
+  int distance = centerIndex()-index;
 
-    if(abs(distance)>10)
-    {
-        if(distance<0)
-            setCenterIndex(centerIndex()+(-distance)-10);
-        else
-            setCenterIndex(centerIndex()-distance+10);
-    }
+  if(abs(distance)>10)
+  {
+    if(distance<0)
+      setCenterIndex(centerIndex()+(-distance)-10);
+    else
+      setCenterIndex(centerIndex()-distance+10);
+  }
 
   d->state->centerIndex = index;
   d->animator->start(index);
