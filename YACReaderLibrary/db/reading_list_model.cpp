@@ -344,7 +344,9 @@ QMimeData *ReadingListModel::mimeData(const QModelIndexList &indexes) const
     }
 
     if(indexes.length() > 1)
+    {
         QLOG_DEBUG() << "mimeData requested for more than one index, this shouldn't be possible";
+    }
 
     QModelIndex modelIndex = indexes.at(0);
 
