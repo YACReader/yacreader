@@ -650,22 +650,21 @@ void YACReaderFlowGL::setCurrentIndex(int pos)
     if(pos >= images.length() && images.length() > 0)
         pos = images.length()-1;
 
-        startAnimationTimer();
+    startAnimationTimer();
 
-        currentSelected = pos;
+    currentSelected = pos;
 
-        config.animationStep *= config.animationSpeedUp;
+    config.animationStep *= config.animationSpeedUp;
 
-        if(config.animationStep > config.animationStepMax){
-            config.animationStep = config.animationStepMax;
-        }
+    if(config.animationStep > config.animationStepMax){
+        config.animationStep = config.animationStepMax;
+    }
 
-        if(viewRotateActive && viewRotate < 1){
-            viewRotate += config.viewRotateAdd;
-        }
+    if(viewRotateActive && viewRotate < 1){
+        viewRotate += config.viewRotateAdd;
+    }
 
-        viewRotateActive = 1;
-
+    viewRotateActive = 1;
 }
 
 void YACReaderFlowGL::updatePositions()
