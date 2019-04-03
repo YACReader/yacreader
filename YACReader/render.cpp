@@ -1060,8 +1060,8 @@ void Render::updateBuffer()
 				buffer.pop_back();
 			}
 		}
-		previousIndex = currentIndex;
 	}
+	previousIndex = currentIndex;
 }
 
 void Render::fillBuffer()
