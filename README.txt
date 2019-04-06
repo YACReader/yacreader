@@ -1,6 +1,6 @@
 LICENSE
 *******
-This software has been developed by Luis ¡ngel San MartÌn RodrÌguez (luisangelsm@gmail.com) under GPL v3 license 
+This software has been developed by Luis √Ångel San Mart√≠n Rodr√≠guez (luisangelsm@gmail.com) under GPL v3 license 
 (for more details read COPYING.txt).
 
 CONTACT
