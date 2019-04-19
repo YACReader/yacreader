@@ -422,37 +422,37 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
 	numPagesEdit->setText(QString::number(*comic.info.numPages));*/
 
 
-    if(!comic.info.number.isNull())
-        numberEdit->setText(comic.info.number.toString());
-    if(!comic.info.isBis.isNull())
-        isBisCheck->setChecked(comic.info.isBis.toBool());
-    if(!comic.info.count.isNull())
-        countEdit->setText(comic.info.count.toString());
+	if(!comic.info.number.isNull())
+		numberEdit->setText(comic.info.number.toString());
+	if(!comic.info.isBis.isNull())
+		isBisCheck->setChecked(comic.info.isBis.toBool());
+	if(!comic.info.count.isNull())
+		countEdit->setText(comic.info.count.toString());
 
-    if(!comic.info.volume.isNull())
-        volumeEdit->setText(comic.info.volume.toString());
-    if(!comic.info.storyArc.isNull())
-        storyArcEdit->setText(comic.info.storyArc.toString());
-    if(!comic.info.arcNumber.isNull())
-        arcNumberEdit->setText(comic.info.arcNumber.toString());
+	if(!comic.info.volume.isNull())
+		volumeEdit->setText(comic.info.volume.toString());
+	if(!comic.info.storyArc.isNull())
+		storyArcEdit->setText(comic.info.storyArc.toString());
+	if(!comic.info.arcNumber.isNull())
+		arcNumberEdit->setText(comic.info.arcNumber.toString());
 	if(!comic.info.arcCount.isNull())
-        arcCountEdit->setText(comic.info.arcCount.toString());
+		arcCountEdit->setText(comic.info.arcCount.toString());
 
 	if(!comic.info.genere.isNull())
-        genereEdit->setText(comic.info.genere.toString());
+		genereEdit->setText(comic.info.genere.toString());
 
 	if(!comic.info.writer.isNull())
-        writer->setPlainText(comic.info.writer.toString());
+		writer->setPlainText(comic.info.writer.toString());
 	if(!comic.info.penciller.isNull())
-        penciller->setPlainText(comic.info.penciller.toString());
+		penciller->setPlainText(comic.info.penciller.toString());
 	if(!comic.info.inker.isNull())
-        inker->setPlainText(comic.info.inker.toString());
+		inker->setPlainText(comic.info.inker.toString());
 	if(!comic.info.colorist.isNull())
-        colorist->setPlainText(comic.info.colorist.toString());
+		colorist->setPlainText(comic.info.colorist.toString());
 	if(!comic.info.letterer.isNull())
-        letterer->setPlainText(comic.info.letterer.toString());
+		letterer->setPlainText(comic.info.letterer.toString());
 	if(!comic.info.coverArtist.isNull())
-        coverArtist->setPlainText(comic.info.coverArtist.toString());
+		coverArtist->setPlainText(comic.info.coverArtist.toString());
 
 	size->setText(QString::number(comic.info.hash.right(comic.info.hash.length()-40).toInt()/1024.0/1024.0,'f',2)+"Mb");
 

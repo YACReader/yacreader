@@ -24,20 +24,20 @@
 
 Viewer::Viewer(QWidget * parent)
 	:QScrollArea(parent),
-	  currentPage(0),
-	  magnifyingGlassShowed(false),
 	  fullscreen(false),
 	  information(false),
 	  doublePage(false),
 	  doubleMangaPage(false),
+	  zoom(100),
+	  currentPage(0),
 	  wheelStop(false),
 	  direction(1),
-	  restoreMagnifyingGlass(false),
 	  drag(false),
 	  numScrollSteps(22),
 	  shouldOpenNext(false),
 	  shouldOpenPrevious(false),
-	  zoom(100)
+	  magnifyingGlassShowed(false),
+	  restoreMagnifyingGlass(false)
 {
 	translator = new YACReaderTranslator(this);
 	translator->hide();

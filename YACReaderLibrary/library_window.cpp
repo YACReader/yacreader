@@ -88,7 +88,7 @@
 #endif
 
 LibraryWindow::LibraryWindow()
-    :QMainWindow(),fullscreen(false),fetching(false),previousFilter(""),removeError(false),status(LibraryWindow::Normal)
+    :QMainWindow(),fullscreen(false),previousFilter(""),fetching(false),status(LibraryWindow::Normal),removeError(false)
 {
     setupUI();
 
@@ -2571,6 +2571,8 @@ void LibraryWindow::deleteComicsFromList()
         case ReadingListModel::ReadingList:
             comicsModel->deleteComicsFromReadingList(indexList,id);
             break;
+        case ReadingListModel::Separator:
+            break;
         }
     }
 
@@ -2627,7 +2629,7 @@ void LibraryWindow::importLibraryPackage()
 
 void LibraryWindow::updateComicsView(quint64 libraryId, const ComicDB & comic)
 {
-    if(libraryId == libraries.getId(selectedLibrary->currentText())) {
+    if(libraryId == (quint64)libraries.getId(selectedLibrary->currentText())) {
         comicsModel->reload(comic);
         comicsViewsManager->updateCurrentComicView();
     }

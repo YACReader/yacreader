@@ -159,7 +159,7 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
     }
 
 	if (role == Qt::DecorationRole)
-
+	{
 #ifdef Q_OS_MAC
         if(item->data(FolderModel::Finished).toBool()){
             if(finishedFolderIcon.isNull()){
@@ -177,6 +177,7 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
         else
             return QVariant(YACReader::noHighlightedIcon(":/images/sidebar/folder.png"));
 #endif
+	}
 
     if(role == FolderModel::CompletedRole)
         return item->data(FolderModel::Completed);
@@ -187,10 +188,10 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
     if(role == FolderModel::IdRole)
         return item->id;
 
-	if (role != Qt::DisplayRole)
-		return QVariant();
+    if (role != Qt::DisplayRole)
+        return QVariant();
 
-	return item->data(index.column());
+    return item->data(index.column());
 }
 //! [3]
 
@@ -620,7 +621,7 @@ void FolderModel::updateFolderChildrenInfo(qulonglong folderId)
 //PROXY
 
 FolderModelProxy::FolderModelProxy(QObject *parent)
-    :QSortFilterProxyModel(parent),rootItem(0),filterEnabled(false),filter(""),includeComics(true)
+    :QSortFilterProxyModel(parent),rootItem(0),includeComics(true),filter(""),filterEnabled(false)
 {
 
 }

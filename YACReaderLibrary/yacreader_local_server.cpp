@@ -104,7 +104,7 @@ void YACReaderClientConnectionWorker::run()
 	int dataAvailable = 0;
 	QByteArray packageSize;
     clientConnection->waitForReadyRead(1000);
-	while(packageSize.size() < sizeof(quint32) && tries < 20)
+	while(((long unsigned int)packageSize.size() < sizeof(quint32)) && (tries < 20))
 	{
 		packageSize.append(clientConnection->read(sizeof(quint32) - packageSize.size()));
 		clientConnection->waitForReadyRead(100);
@@ -188,7 +188,9 @@ void YACReaderClientConnectionWorker::run()
 					tries++;
 			}
 			if(tries == 200 && written != block.size())
+			{
 				QLOG_ERROR() << QString("Local connection (comic info requested): unable to send response (%1,%2)").arg(written).arg(block.size());
+			}
 			break;
 		}
 	case YACReader::SendComicInfo:

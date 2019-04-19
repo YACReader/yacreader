@@ -361,12 +361,12 @@ PageRender::PageRender()
 }
 PageRender::PageRender(Render * r,int np, const QByteArray & rd, QImage * p,unsigned int d, QVector<ImageFilter *> f)
 :QThread(),
-render(r),
 numPage(np),
 data(rd),
 page(p),
 degrees(d),
-filters(f)
+filters(f),
+render(r)
 {
 }
 
@@ -398,7 +398,7 @@ void PageRender::run()
 //-----------------------------------------------------------------------------
 
 Render::Render()
-:currentIndex(0),doublePage(false),doubleMangaPage(false),comic(0),loadedComic(false),imageRotation(0),numLeftPages(4),numRightPages(4)
+:comic(0),doublePage(false),doubleMangaPage(false),currentIndex(0),numLeftPages(4),numRightPages(4),loadedComic(false),imageRotation(0)
 {
 	int size = numLeftPages+numRightPages+1;
 	currentPageBufferedIndex = numLeftPages;
@@ -734,20 +734,26 @@ void Render::load(const QString & path, const ComicDB & comicDB)
    for(int i = 0; i < filters.count(); i++)
    {
 	   if(typeid(*filters[i]) == typeid(BrightnessFilter))
+	   {
 		   if(comicDB.info.brightness == -1)
 			   filters[i]->setLevel(0);
 		   else
 			filters[i]->setLevel(comicDB.info.brightness);
+	   }
 	   if(typeid(*filters[i]) == typeid(ContrastFilter))
+	   {
 		   if(comicDB.info.contrast == -1)
 			   filters[i]->setLevel(100);
 		   else
 			   filters[i]->setLevel(comicDB.info.contrast);
+	   }
 	   if(typeid(*filters[i]) == typeid(GammaFilter))
+	   {
 		   if(comicDB.info.gamma == -1)
 			   filters[i]->setLevel(100);
 		   else
 			   filters[i]->setLevel(comicDB.info.gamma);
+	   }
    }
    createComic(path);
    if (comic!=0)
@@ -857,7 +863,7 @@ void Render::nextPage()
 		update();
 		emit pageChanged(currentIndex);
 	}
-	else if (hasLoadedComic() && (currentIndex == numPages()-1))
+	else if (hasLoadedComic() && ((unsigned int)currentIndex == numPages()-1))
 	{
 		emit isLast();
 	}

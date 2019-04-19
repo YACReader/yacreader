@@ -29,7 +29,7 @@ QString ComicDB::toTXT()
 	txt.append(QString("comicid:%1\r\n").arg(id));
 	txt.append(QString("hash:%1\r\n").arg(info.hash));
 	txt.append(QString("path:%1\r\n").arg(path));
-    txt.append(QString("numpages:%1\r\n").arg(info.numPages.toString()));
+	txt.append(QString("numpages:%1\r\n").arg(info.numPages.toString()));
 
 	//new 7.0
 	txt.append(QString("rating:%1\r\n").arg(info.rating));
@@ -37,23 +37,23 @@ QString ComicDB::toTXT()
 	txt.append(QString("contrast:%1\r\n").arg(info.contrast));
 
 	//Informaci�n general
-    if(!info.coverPage.isNull())
-        txt.append(QString("coverPage:%1\r\n").arg(info.coverPage.toString()));
+	if(!info.coverPage.isNull())
+		txt.append(QString("coverPage:%1\r\n").arg(info.coverPage.toString()));
 
-    if(!info.title.isNull())
-        txt.append(QString("title:%1\r\n").arg(info.title.toString()));
+	if(!info.title.isNull())
+		txt.append(QString("title:%1\r\n").arg(info.title.toString()));
 
 	if(!info.number.isNull())
-        txt.append(QString("number:%1\r\n").arg(info.number.toString()));
+		txt.append(QString("number:%1\r\n").arg(info.number.toString()));
 
 	if(!info.isBis.isNull())
-        txt.append(QString("isBis:%1\r\n").arg(info.isBis.toBool()?"1":"0"));
+		txt.append(QString("isBis:%1\r\n").arg(info.isBis.toBool()?"1":"0"));
 
 	if(!info.count.isNull())
-        txt.append(QString("count:%1\r\n").arg(info.count.toString()));
+		txt.append(QString("count:%1\r\n").arg(info.count.toString()));
 
 	if(!info.volume.isNull())
-        txt.append(QString("volume:%1\r\n").arg(info.volume.toString()));
+		txt.append(QString("volume:%1\r\n").arg(info.volume.toString()));
 
 	if(!info.storyArc.isNull())
 		txt.append(QString("storyArc:%1\r\n").arg(info.storyArc.toString()));
@@ -88,7 +88,7 @@ QString ComicDB::toTXT()
 	//Publicaci�n
 	if(!info.date.isNull())
 		txt.append(QString("date:%1\r\n").arg(info.date.toString()));
-	
+
 	if(!info.publisher.isNull())
 		txt.append(QString("publisher:%1\r\n").arg(info.publisher.toString()));
 
@@ -110,7 +110,7 @@ QString ComicDB::toTXT()
 	if(!info.notes.isNull())
 		txt.append(QString("notes:%1\r\n").arg(info.notes.toString()));
 
-    return txt;
+	return txt;
 }
 
 ComicDB &ComicDB::operator=(const ComicDB &other)
@@ -181,6 +181,7 @@ ComicInfo::ComicInfo()
 }
 
 ComicInfo::ComicInfo(const ComicInfo & comicInfo)
+	:QObject()
 {
 	operator=(comicInfo);
 }

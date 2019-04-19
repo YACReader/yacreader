@@ -219,6 +219,7 @@ bool ReadingListModel::canDropMimeData(const QMimeData *data, Qt::DropAction act
         return true;
 
     if(rowIsReadingList(row,parent))// TODO avoid droping in a different parent
+    {
         if(!parent.isValid())
             return false;
         else
@@ -232,6 +233,7 @@ bool ReadingListModel::canDropMimeData(const QMimeData *data, Qt::DropAction act
             return data->formats().contains(YACReader::YACReaderLibrarSubReadingListMimeDataFormat);
 
         }
+    }
 
     return false;
 }
@@ -342,7 +344,9 @@ QMimeData *ReadingListModel::mimeData(const QModelIndexList &indexes) const
     }
 
     if(indexes.length() > 1)
+    {
         QLOG_DEBUG() << "mimeData requested for more than one index, this shouldn't be possible";
+    }
 
     QModelIndex modelIndex = indexes.at(0);
 

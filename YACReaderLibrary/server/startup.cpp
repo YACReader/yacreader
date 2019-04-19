@@ -70,16 +70,16 @@ void Startup::start() {
     if(templateSettings->value("path").isNull())
         templateSettings->setValue("path",templatePath);
 
-	Static::templateLoader=new TemplateCache(templateSettings,app);
+    Static::templateLoader=new TemplateCache(templateSettings,app);
 
-	// Configure session store
-	QSettings* sessionSettings=new QSettings(configFileName,QSettings::IniFormat,app);
-	sessionSettings->beginGroup("sessions");
+    // Configure session store
+    QSettings* sessionSettings=new QSettings(configFileName,QSettings::IniFormat,app);
+    sessionSettings->beginGroup("sessions");
 
     if(sessionSettings->value("expirationTime").isNull())
         sessionSettings->setValue("expirationTime",864000000);
 
-	Static::sessionStore=new HttpSessionStore(sessionSettings,app);
+    Static::sessionStore=new HttpSessionStore(sessionSettings,app);
 
     Static::yacreaderSessionStore = new YACReaderHttpSessionStore(Static::sessionStore, app);
 
@@ -101,12 +101,12 @@ void Startup::start() {
     if(fileSettings->value("path").isNull())
         fileSettings->setValue("path",docroot);
 
-	Static::staticFileController=new StaticFileController(fileSettings,app);
+    Static::staticFileController=new StaticFileController(fileSettings,app);
 
-	// Configure and start the TCP listener
-	qDebug("ServiceHelper: Starting service");
-	QSettings* listenerSettings=new QSettings(configFileName,QSettings::IniFormat,app);
-	listenerSettings->beginGroup("listener");
+    // Configure and start the TCP listener
+    qDebug("ServiceHelper: Starting service");
+    QSettings* listenerSettings=new QSettings(configFileName,QSettings::IniFormat,app);
+    listenerSettings->beginGroup("listener");
 
     if(listenerSettings->value("maxRequestSize").isNull())
         listenerSettings->setValue("maxRequestSize","32000000");
@@ -123,9 +123,9 @@ void Startup::start() {
     if(listenerSettings->value("minThreads").isNull())
         listenerSettings->setValue("minThreads",50);
 
-	listener = new HttpListener(listenerSettings,new RequestMapper(app),app);
+    listener = new HttpListener(listenerSettings,new RequestMapper(app),app);
 
-	qDebug("ServiceHelper: Service has started");
+    qDebug("ServiceHelper: Service has started");
 }
 
 

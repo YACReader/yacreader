@@ -499,8 +499,8 @@ void DBHelper::update(qulonglong libraryId, ComicInfo & comicInfo)
 
 void DBHelper::update(ComicInfo * comicInfo, QSqlDatabase & db)
 {
-    if(comicInfo == nullptr)
-        return;
+	if(comicInfo == nullptr)
+		return;
 
 	QSqlQuery updateComicInfo(db);
 	updateComicInfo.prepare("UPDATE comic_info SET "
@@ -1335,7 +1335,6 @@ QList<Label> DBHelper::getLabels(qulonglong libraryId)
     QSqlRecord record = selectQuery.record();
 
     int name =  record.indexOf("name");
-    int color = record.indexOf("color");
     int id = record.indexOf("id");
     int ordering = record.indexOf("ordering");
 

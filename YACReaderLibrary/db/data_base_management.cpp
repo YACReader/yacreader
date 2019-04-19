@@ -753,8 +753,8 @@ bool DataBaseManagement::updateToCurrentVersion(const QString & path)
     if(compareVersions(DataBaseManagement::checkValidDB(fullPath),"9.5.0")<0)
         pre9_5 = true;
 
-	QSqlDatabase db = loadDatabaseFromFile(fullPath);
-	bool returnValue = false;
+    QSqlDatabase db = loadDatabaseFromFile(fullPath);
+    bool returnValue = false;
     if(db.isValid() && db.isOpen())
 	{
 		QSqlQuery updateVersion(db);

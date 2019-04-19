@@ -283,7 +283,7 @@ private:
 
 PictureFlowState::PictureFlowState(int a, float sr):
 backgroundColor(0), slideWidth(150), slideHeight(200),
-reflectionEffect(PictureFlow::BlurredReflection), centerIndex(0) , rawAngle(a), spacingRatio(sr), flowRightToLeft(false)
+reflectionEffect(PictureFlow::BlurredReflection), rawAngle(a), spacingRatio(sr), centerIndex(0), flowRightToLeft(false)
 {
 }
 
@@ -1017,6 +1017,8 @@ PictureFlow::PictureFlow(QWidget* parent,FlowType flowType): QWidget(parent)
 	case StripOverlapped:
 	  d->state = new PictureFlowState(0,0);
 	  break;
+	default:
+	  break;
   }
 
   framesSkip = 0;
@@ -1259,18 +1261,19 @@ void PictureFlow::showSlide(unsigned int index)
 {
   index = qMax<unsigned int>(index, 0);
   index = qMin<unsigned int>(slideCount()-1, index);
-  if(index == d->state->centerSlide.slideIndex)
+  if((int)index == d->state->centerSlide.slideIndex) {
     return;
+  }
 
-    int distance = centerIndex()-index;
+  int distance = centerIndex()-index;
 
-    if(abs(distance)>10)
-    {
-        if(distance<0)
-            setCenterIndex(centerIndex()+(-distance)-10);
-        else
-            setCenterIndex(centerIndex()-distance+10);
-    }
+  if(abs(distance)>10)
+  {
+    if(distance<0)
+      setCenterIndex(centerIndex()+(-distance)-10);
+    else
+      setCenterIndex(centerIndex()-distance+10);
+  }
 
   d->state->centerIndex = index;
   d->animator->start(index);
@@ -1396,6 +1399,8 @@ void PictureFlow::setFlowType(FlowType flowType)
 			  d->state->rawAngle = 0;
 		  d->state->spacingRatio = 0;
 		  d->state->reposition();
+	  break;
+	default:
 	  break;
   }
   d->state->reset();

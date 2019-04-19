@@ -189,6 +189,7 @@ void ComicVineDialog::goBack()
 			showSearchVolume();
 		else
 			showSearchSingleComic();
+		break;
 	default:
 		if(mode == Volume)
 			showSearchVolume();
@@ -702,7 +703,7 @@ void ComicVineDialog::searchVolume(const QString &v, int page)
 	status = SearchingVolume;
 }
 
-void ComicVineDialog::getVolumeComicsInfo(const QString &vID, int page)
+void ComicVineDialog::getVolumeComicsInfo(const QString &vID, int /* page */)
 {
 	showLoading(tr("Retrieving volume info..."));
 

@@ -200,7 +200,7 @@ struct Preset pressetYACReaderFlowDownConfig = {
 };
 /*Constructor*/
 YACReaderFlowGL::YACReaderFlowGL(QWidget *parent,struct Preset p)
-    :QOpenGLWidget(/*QOpenGLWidget migration QGLFormat(QGL::SampleBuffers),*/ parent),numObjects(0),lazyPopulateObjects(-1),bUseVSync(false),hasBeenInitialized(false),flowRightToLeft(false)
+    :QOpenGLWidget(/*QOpenGLWidget migration QGLFormat(QGL::SampleBuffers),*/ parent),numObjects(0),lazyPopulateObjects(-1),hasBeenInitialized(false),bUseVSync(false),flowRightToLeft(false)
 {
 	updateCount = 0;
 	config = p;
@@ -650,22 +650,21 @@ void YACReaderFlowGL::setCurrentIndex(int pos)
     if(pos >= images.length() && images.length() > 0)
         pos = images.length()-1;
 
-        startAnimationTimer();
+    startAnimationTimer();
 
-        currentSelected = pos;
+    currentSelected = pos;
 
-        config.animationStep *= config.animationSpeedUp;
+    config.animationStep *= config.animationSpeedUp;
 
-        if(config.animationStep > config.animationStepMax){
-            config.animationStep = config.animationStepMax;
-        }
+    if(config.animationStep > config.animationStepMax){
+        config.animationStep = config.animationStepMax;
+    }
 
-        if(viewRotateActive && viewRotate < 1){
-            viewRotate += config.viewRotateAdd;
-        }
+    if(viewRotateActive && viewRotate < 1){
+        viewRotate += config.viewRotateAdd;
+    }
 
-        viewRotateActive = 1;
-
+    viewRotateActive = 1;
 }
 
 void YACReaderFlowGL::updatePositions()
@@ -756,7 +755,7 @@ void YACReaderFlowGL::remove(int item)
     if(texture != defaultTexture)
         delete(texture);
 
-	numObjects--;
+    numObjects--;
 }
 
 /*Info*/
