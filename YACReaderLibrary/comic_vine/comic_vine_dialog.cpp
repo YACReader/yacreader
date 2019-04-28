@@ -562,8 +562,11 @@ ComicDB ComicVineDialog::parseComicInfo(ComicDB & comic, const QString & json, i
                 QString date = result.property("cover_date").toString();
 
                 QStringList tempList = date.split("-");
-                std::reverse(tempList.begin(),tempList.end());
-                comic.info.date = tempList.join("/");
+
+                if (tempList.length() == 3) {
+                    std::reverse(tempList.begin(),tempList.end());
+                    comic.info.date = tempList.join("/");
+                }
             }
 
             if (!result.property("description").isNull()) {
