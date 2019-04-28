@@ -459,10 +459,14 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
 	if(!comic.info.date.isNull())
 	{
         QStringList date = (comic.info.date.toString()).split("/");
-		dayEdit->setText(date[0]);
-		monthEdit->setText(date[1]);
-		yearEdit->setText(date[2]);
+
+        if (date.length() == 3) {
+            dayEdit->setText(date[0]);
+            monthEdit->setText(date[1]);
+            yearEdit->setText(date[2]);
+        }
 	}
+
 	if(!comic.info.publisher.isNull())
         publisherEdit->setText(comic.info.publisher.toString());
 	if(!comic.info.format.isNull())
