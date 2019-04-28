@@ -20,7 +20,7 @@
 #define FXFONT_CHINESEBIG5_CHARSET 136
 
 /* Font pitch and family flags */
-#define FXFONT_FF_FIXEDPITCH 1
+#define FXFONT_FF_FIXEDPITCH (1 << 0)
 #define FXFONT_FF_ROMAN (1 << 4)
 #define FXFONT_FF_SCRIPT (4 << 4)
 
@@ -106,10 +106,7 @@ typedef struct _FPDF_SYSFONTINFO {
    *constants.
    *          face        -   Typeface name. Currently use system local encoding
    *only.
-   *          bExact      -   Pointer to a boolean value receiving the indicator
-   *whether mapper found the exact match.
-   *                          If mapper is not sure whether it's exact match,
-   *ignore this paramter.
+   *          bExact      -   Obsolete: this parameter is now ignored.
    * Return Value:
    *          An opaque pointer for font handle, or NULL if system mapping is
    *not supported.
@@ -244,7 +241,7 @@ typedef struct FPDF_CharsetFontMap_ {
  * Return Value:
  *     Pointer to the Charset Font Map.
  **/
-DLLEXPORT const FPDF_CharsetFontMap* STDCALL FPDF_GetDefaultTTFMap();
+FPDF_EXPORT const FPDF_CharsetFontMap* FPDF_CALLCONV FPDF_GetDefaultTTFMap();
 
 /**
  * Function: FPDF_AddInstalledFont
@@ -259,9 +256,9 @@ DLLEXPORT const FPDF_CharsetFontMap* STDCALL FPDF_GetDefaultTTFMap();
  * Return Value:
  *          None.
  **/
-DLLEXPORT void STDCALL FPDF_AddInstalledFont(void* mapper,
-                                             const char* face,
-                                             int charset);
+FPDF_EXPORT void FPDF_CALLCONV FPDF_AddInstalledFont(void* mapper,
+                                                     const char* face,
+                                                     int charset);
 
 /**
  * Function: FPDF_SetSystemFontInfo
@@ -275,7 +272,8 @@ DLLEXPORT void STDCALL FPDF_AddInstalledFont(void* mapper,
  * Return Value:
  *          None
  **/
-DLLEXPORT void STDCALL FPDF_SetSystemFontInfo(FPDF_SYSFONTINFO* pFontInfo);
+FPDF_EXPORT void FPDF_CALLCONV
+FPDF_SetSystemFontInfo(FPDF_SYSFONTINFO* pFontInfo);
 
 /**
  * Function: FPDF_GetDefaultSystemFontInfo
@@ -294,7 +292,7 @@ DLLEXPORT void STDCALL FPDF_SetSystemFontInfo(FPDF_SYSFONTINFO* pFontInfo);
  *          Application should call FPDF_FreeDefaultSystemFontInfo to free the
  *returned pointer.
  **/
-DLLEXPORT FPDF_SYSFONTINFO* STDCALL FPDF_GetDefaultSystemFontInfo();
+FPDF_EXPORT FPDF_SYSFONTINFO* FPDF_CALLCONV FPDF_GetDefaultSystemFontInfo();
 
 /**
  * Function: FPDF_FreeDefaultSystemFontInfo
@@ -307,7 +305,8 @@ DLLEXPORT FPDF_SYSFONTINFO* STDCALL FPDF_GetDefaultSystemFontInfo();
  * Return Value:
  *          None
  **/
-DLLEXPORT void FPDF_FreeDefaultSystemFontInfo(FPDF_SYSFONTINFO* pFontInfo);
+FPDF_EXPORT void FPDF_CALLCONV
+FPDF_FreeDefaultSystemFontInfo(FPDF_SYSFONTINFO* pFontInfo);
 
 #ifdef __cplusplus
 }
