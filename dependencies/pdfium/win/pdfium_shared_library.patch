@@ -1,0 +1,56 @@
+From 0706085c41f645d68e29732f21da733e191abc34 Mon Sep 17 00:00:00 2001
+From: Felix Kauselmann <licorn@gmail.com>
+Date: Sat, 27 Apr 2019 16:57:01 +0200
+Subject: [PATCH] Build a shared library
+
+---
+ BUILD.gn          | 3 ++-
+ public/fpdfview.h | 9 +++++++--
+ 2 files changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/BUILD.gn b/BUILD.gn
+index 6885fc27d..06335fcd3 100644
+--- a/BUILD.gn
++++ b/BUILD.gn
+@@ -22,6 +22,7 @@ config("pdfium_common_config") {
+   defines = [
+     "PNG_PREFIX",
+     "PNG_USE_READ_MACROS",
++    "FPDFSDK_EXPORTS",
+   ]
+ 
+   if (!use_system_libopenjpeg2) {
+@@ -132,7 +133,7 @@ jumbo_source_set("pdfium_public_headers") {
+   public_configs = [ ":pdfium_public_config" ]
+ }
+ 
+-jumbo_static_library("pdfium") {
++shared_library("pdfium") {
+   sources = [
+     "fpdfsdk/fpdf_annot.cpp",
+     "fpdfsdk/fpdf_attachment.cpp",
+diff --git a/public/fpdfview.h b/public/fpdfview.h
+index 8892da536..8453ee66e 100644
+--- a/public/fpdfview.h
++++ b/public/fpdfview.h
+@@ -154,10 +154,15 @@ typedef int FPDF_ANNOT_APPEARANCEMODE;
+ // Dictionary value types.
+ typedef int FPDF_OBJECT_TYPE;
+ 
+-#if defined(_WIN32) && defined(FPDFSDK_EXPORTS)
++#if defined(_WIN32)
++#if defined(FPDFSDK_EXPORTS)
+ // On Windows system, functions are exported in a DLL
+ #define FPDF_EXPORT __declspec(dllexport)
+-#define FPDF_CALLCONV __stdcall
++#define FPDF_CALLCONV __cdecl
++#else
++#define FPDF_EXPORT __declspec(dllimport)
++#define FPDF_CALLCONV __cdecl
++#endif
+ #else
+ #define FPDF_EXPORT
+ #define FPDF_CALLCONV
+-- 
+2.20.1.windows.1
+
