@@ -10,13 +10,39 @@
 // NOLINTNEXTLINE(build/include)
 #include "fpdfview.h"
 
-typedef void* FPDF_FORMHANDLE;
+// These values are return values for a public API, so should not be changed
+// other than the count when adding new values.
+#define FORMTYPE_NONE 0            // Document contains no forms
+#define FORMTYPE_ACRO_FORM 1       // Forms are specified using AcroForm spec
+#define FORMTYPE_XFA_FULL 2        // Forms are specified using the entire XFA
+                                   // spec
+#define FORMTYPE_XFA_FOREGROUND 3  // Forms are specified using the XFAF subset
+                                   // of XFA spec
+#define FORMTYPE_COUNT 4           // The number of form types
 
-#ifdef PDF_ENABLE_XFA
-#define DOCTYPE_PDF 0          // Normal pdf Document
-#define DOCTYPE_DYNAMIC_XFA 1  // Dynamic xfa Document Type
-#define DOCTYPE_STATIC_XFA 2   // Static xfa Document Type
-#endif  // PDF_ENABLE_XFA
+#define JSPLATFORM_ALERT_BUTTON_OK 0           // OK button
+#define JSPLATFORM_ALERT_BUTTON_OKCANCEL 1     // OK & Cancel buttons
+#define JSPLATFORM_ALERT_BUTTON_YESNO 2        // Yes & No buttons
+#define JSPLATFORM_ALERT_BUTTON_YESNOCANCEL 3  // Yes, No & Cancel buttons
+#define JSPLATFORM_ALERT_BUTTON_DEFAULT JSPLATFORM_ALERT_BUTTON_OK
+
+#define JSPLATFORM_ALERT_ICON_ERROR 0     // Error
+#define JSPLATFORM_ALERT_ICON_WARNING 1   // Warning
+#define JSPLATFORM_ALERT_ICON_QUESTION 2  // Question
+#define JSPLATFORM_ALERT_ICON_STATUS 3    // Status
+#define JSPLATFORM_ALERT_ICON_ASTERISK 4  // Asterisk
+#define JSPLATFORM_ALERT_ICON_DEFAULT JSPLATFORM_ALERT_ICON_ERROR
+
+#define JSPLATFORM_ALERT_RETURN_OK 1      // OK
+#define JSPLATFORM_ALERT_RETURN_CANCEL 2  // Cancel
+#define JSPLATFORM_ALERT_RETURN_NO 3      // No
+#define JSPLATFORM_ALERT_RETURN_YES 4     // Yes
+
+#define JSPLATFORM_BEEP_ERROR 0     // Error
+#define JSPLATFORM_BEEP_WARNING 1   // Warning
+#define JSPLATFORM_BEEP_QUESTION 2  // Question
+#define JSPLATFORM_BEEP_STATUS 3    // Status
+#define JSPLATFORM_BEEP_DEFAULT 4   // Default
 
 // Exported Functions
 #ifdef __cplusplus
@@ -32,34 +58,25 @@ typedef struct _IPDF_JsPlatform {
   /* Version 1. */
 
   /**
-  * Method: app_alert
-  *           pop up a dialog to show warning or hint.
-  * Interface Version:
-  *           1
-  * Implementation Required:
-  *           yes
-  * Parameters:
-  *           pThis       -   Pointer to the interface structure itself
-  *           Msg         -   A string containing the message to be displayed.
-  *           Title       -   The title of the dialog.
-  *           Type        -   The stype of button group.
-  *                           0-OK(default);
-  *                           1-OK,Cancel;
-  *                           2-Yes,NO;
-  *                           3-Yes, NO, Cancel.
-  *           nIcon       -   The Icon type.
-  *                           0-Error(default);
-  *                           1-Warning;
-  *                           2-Question;
-  *                           3-Status.
-  *                           4-Asterisk
-  * Return Value:
-  *           The return value could be the folowing type:
-  *                           1-OK;
-  *                           2-Cancel;
-  *                           3-NO;
-  *                           4-Yes;
-  */
+   * Method: app_alert
+   *           pop up a dialog to show warning or hint.
+   * Interface Version:
+   *           1
+   * Implementation Required:
+   *           yes
+   * Parameters:
+   *           pThis       -   Pointer to the interface structure itself.
+   *           Msg         -   A string containing the message to be displayed.
+   *           Title       -   The title of the dialog.
+   *           Type        -   The type of button group, see
+   *                           JSPLATFORM_ALERT_BUTTON_* above.
+   *           nIcon       -   The icon type, see see
+   *                           JSPLATFORM_ALERT_ICON_* above .
+   *
+   * Return Value:
+   *           Option selected by user in dialogue, see
+   *           JSPLATFORM_ALERT_RETURN_* above.
+   */
   int (*app_alert)(struct _IPDF_JsPlatform* pThis,
                    FPDF_WIDESTRING Msg,
                    FPDF_WIDESTRING Title,
@@ -67,23 +84,20 @@ typedef struct _IPDF_JsPlatform {
                    int Icon);
 
   /**
-  * Method: app_beep
-  *           Causes the system to play a sound.
-  * Interface Version:
-  *           1
-  * Implementation Required:
-  *           yes
-  * Parameters:
-  *           pThis       -   Pointer to the interface structure itself
-  *           nType       -   The sound type.
-  *                           0 - Error
-  *                           1 - Warning
-  *                           2 - Question
-  *                           3 - Status
-  *                           4 - Default (default value)
-  * Return Value:
-  *           None
-  */
+   * Method: app_beep
+   *           Causes the system to play a sound.
+   * Interface Version:
+   *           1
+   * Implementation Required:
+   *           yes
+   * Parameters:
+   *           pThis       -   Pointer to the interface structure itself
+   *           nType       -   The sound type, see see JSPLATFORM_BEEP_TYPE_*
+   *                           above.
+   *
+   * Return Value:
+   *           None
+   */
   void (*app_beep)(struct _IPDF_JsPlatform* pThis, int nType);
 
   /**
@@ -382,49 +396,48 @@ typedef struct _FPDF_FORMFILLINFO {
 
   /* Version 1. */
   /**
-   *Method: Release
-   *         Give implementation a chance to release any data after the
-   *         interface is no longer used
-   *Interface Version:
-   *         1
-   *Implementation Required:
-   *         No
-   *Comments:
-   *         Called by Foxit SDK during the final cleanup process.
-   *Parameters:
-   *         pThis       -   Pointer to the interface structure itself
-   *Return Value:
-   *         None
+   * Method: Release
+   *     Give the implementation a chance to release any resources after the
+   *     interface is no longer used.
+   * Interface Version:
+   *     1
+   * Implementation Required:
+   *     No
+   * Comments:
+   *     Called by PDFium during the final cleanup process.
+   * Parameters:
+   *     pThis       -   Pointer to the interface structure itself
+   * Return Value:
+   *     None
    */
   void (*Release)(struct _FPDF_FORMFILLINFO* pThis);
 
   /**
    * Method: FFI_Invalidate
-   *          Invalidate the client area within the specified rectangle.
+   *     Invalidate the client area within the specified rectangle.
    * Interface Version:
-   *          1
+   *     1
    * Implementation Required:
-      *           yes
+   *     yes
    * Parameters:
-   *          pThis       -   Pointer to the interface structure itself.
-   *          page        -   Handle to the page. Returned by FPDF_LoadPage
-   *function.
-   *          left        -   Left position of the client area in PDF page
-   *coordinate.
-   *          top         -   Top  position of the client area in PDF page
-   *coordinate.
-   *          right       -   Right position of the client area in PDF page
-   *coordinate.
-   *          bottom      -   Bottom position of the client area in PDF page
-   *coordinate.
+   *     pThis       -   Pointer to the interface structure itself.
+   *     page        -   Handle to the page. Returned by FPDF_LoadPage().
+   *     left        -   Left position of the client area in PDF page
+   *                     coordinates.
+   *     top         -   Top position of the client area in PDF page
+   *                     coordinates.
+   *     right       -   Right position of the client area in PDF page
+   *                     coordinates.
+   *     bottom      -   Bottom position of the client area in PDF page
+   *                     coordinates.
    * Return Value:
-   *          None.
+   *     None.
    *
-   *comments:
-   *          All positions are measured in PDF "user space".
-   *          Implementation should call FPDF_RenderPageBitmap() function for
-   *repainting a specified page area.
-  */
+   * Comments:
+   *     All positions are measured in PDF "user space".
+   *     Implementation should call FPDF_RenderPageBitmap() for repainting the
+   *     specified page area.
+   */
   void (*FFI_Invalidate)(struct _FPDF_FORMFILLINFO* pThis,
                          FPDF_PAGE page,
                          double left,
@@ -434,36 +447,34 @@ typedef struct _FPDF_FORMFILLINFO {
 
   /**
    * Method: FFI_OutputSelectedRect
-   *          When user is taking the mouse to select texts on a form field,
-   * this callback function will keep
-   *          returning the selected areas to the implementation.
+   *     When the user selects text in form fields with the mouse, this
+   *     callback function will be invoked with the selected areas.
    *
    * Interface Version:
-   *          1
+   *     1
    * Implementation Required:
-   *          No
+   *     No
    * Parameters:
-   *          pThis       -   Pointer to the interface structure itself.
-   *          page        -   Handle to the page. Returned by FPDF_LoadPage
-   * function.
-   *          left        -   Left position of the client area in PDF page
-   * coordinate.
-   *          top         -   Top  position of the client area in PDF page
-   * coordinate.
-   *          right       -   Right position of the client area in PDF page
-   * coordinate.
-   *          bottom      -   Bottom position of the client area in PDF page
-   * coordinate.
+   *     pThis       -   Pointer to the interface structure itself.
+   *     page        -   Handle to the page. Returned by FPDF_LoadPage()/
+   *     left        -   Left position of the client area in PDF page
+   *                     coordinates.
+   *     top         -   Top position of the client area in PDF page
+   *                     coordinates.
+   *     right       -   Right position of the client area in PDF page
+   *                     coordinates.
+   *     bottom      -   Bottom position of the client area in PDF page
+   *                     coordinates.
    * Return Value:
-   *          None.
+   *     None.
    *
-   * comments:
-   *          This CALLBACK function is useful for implementing special text
-   * selection effect. Implementation should
-   *          first records the returned rectangles, then draw them one by one
-   * at the painting period, last,remove all
-   *          the recorded rectangles when finish painting.
-  */
+   * Comments:
+   *     This callback function is useful for implementing special text
+   *     selection effects. An implementation should first record the returned
+   *     rectangles, then draw them one by one during the next painting period.
+   *     Lastly, it should remove all the recorded rectangles when finished
+   *     painting.
+   */
   void (*FFI_OutputSelectedRect)(struct _FPDF_FORMFILLINFO* pThis,
                                  FPDF_PAGE page,
                                  double left,
@@ -472,238 +483,248 @@ typedef struct _FPDF_FORMFILLINFO {
                                  double bottom);
 
   /**
-  * Method: FFI_SetCursor
-  *           Set the Cursor shape.
-  * Interface Version:
-  *           1
-  * Implementation Required:
-  *           yes
-  * Parameters:
-  *       pThis       -   Pointer to the interface structure itself.
-  *       nCursorType -   Cursor type. see Flags for Cursor type for the
-  * details.
-  *   Return value:
-  *       None.
-  * */
+   * Method: FFI_SetCursor
+   *     Set the Cursor shape.
+   * Interface Version:
+   *     1
+   * Implementation Required:
+   *     yes
+   * Parameters:
+   *     pThis       -   Pointer to the interface structure itself.
+   *     nCursorType -   Cursor type, see Flags for Cursor type for the details.
+   * Return value:
+   *     None.
+   */
   void (*FFI_SetCursor)(struct _FPDF_FORMFILLINFO* pThis, int nCursorType);
 
   /**
-  * Method: FFI_SetTimer
-  *       This method installs a system timer. An interval value is specified,
-  *       and every time that interval elapses, the system must call into the
-  *       callback function with the timer ID as returned by this function.
-  * Interface Version:
-  *       1
-  * Implementation Required:
-  *       yes
-  * Parameters:
-  *       pThis       -   Pointer to the interface structure itself.
-  *       uElapse     -   Specifies the time-out value, in milliseconds.
-  *       lpTimerFunc -   A pointer to the callback function-TimerCallback.
-  * Return value:
-  *       The timer identifier of the new timer if the function is successful.
-  *       An application passes this value to the FFI_KillTimer method to kill
-  *       the timer. Nonzero if it is successful; otherwise, it is zero.
-  * */
+   * Method: FFI_SetTimer
+   *     This method installs a system timer. An interval value is specified,
+   *     and every time that interval elapses, the system must call into the
+   *     callback function with the timer ID as returned by this function.
+   * Interface Version:
+   *     1
+   * Implementation Required:
+   *     yes
+   * Parameters:
+   *     pThis       -   Pointer to the interface structure itself.
+   *     uElapse     -   Specifies the time-out value, in milliseconds.
+   *     lpTimerFunc -   A pointer to the callback function-TimerCallback.
+   * Return value:
+   *     The timer identifier of the new timer if the function is successful.
+   *     An application passes this value to the FFI_KillTimer method to kill
+   *     the timer. Nonzero if it is successful; otherwise, it is zero.
+   */
   int (*FFI_SetTimer)(struct _FPDF_FORMFILLINFO* pThis,
                       int uElapse,
                       TimerCallback lpTimerFunc);
 
   /**
-  * Method: FFI_KillTimer
-  *       This method uninstalls a system timer identified by nIDEvent, as
-  *       set by an earlier call to FFI_SetTimer.
-  * Interface Version:
-  *       1
-  * Implementation Required:
-  *       yes
-  * Parameters:
-  *       pThis       -   Pointer to the interface structure itself.
-  *       nTimerID    -   The timer ID returned by FFI_SetTimer function.
-  * Return value:
-  *       None.
-  * */
+   * Method: FFI_KillTimer
+   *     This method uninstalls a system timer, as set by an earlier call to
+   *     FFI_SetTimer.
+   * Interface Version:
+   *     1
+   * Implementation Required:
+   *     yes
+   * Parameters:
+   *     pThis       -   Pointer to the interface structure itself.
+   *     nTimerID    -   The timer ID returned by FFI_SetTimer function.
+   * Return value:
+   *     None.
+   */
   void (*FFI_KillTimer)(struct _FPDF_FORMFILLINFO* pThis, int nTimerID);
 
   /**
-  * Method: FFI_GetLocalTime
-  *           This method receives the current local time on the system.
-  * Interface Version:
-  *           1
-  * Implementation Required:
-  *           yes
-  * Parameters:
-  *       pThis       -   Pointer to the interface structure itself.
-  *   Return value:
-  *       None.
-  * */
+   * Method: FFI_GetLocalTime
+   *     This method receives the current local time on the system.
+   * Interface Version:
+   *     1
+   * Implementation Required:
+   *     yes
+   * Parameters:
+   *     pThis       -   Pointer to the interface structure itself.
+   * Return value:
+   *     The local time. See FPDF_SYSTEMTIME above for details.
+   * Note: Unused.
+   */
   FPDF_SYSTEMTIME (*FFI_GetLocalTime)(struct _FPDF_FORMFILLINFO* pThis);
 
   /**
-  * Method: FFI_OnChange
-  *           This method will be invoked to notify implementation when the
-  * value of any FormField on the document had been changed.
-  * Interface Version:
-  *           1
-  * Implementation Required:
-  *           no
-  * Parameters:
-  *       pThis       -   Pointer to the interface structure itself.
-  *   Return value:
-  *       None.
-  * */
+   * Method: FFI_OnChange
+   *     This method will be invoked to notify the implementation when the
+   *     value of any FormField on the document had been changed.
+   * Interface Version:
+   *     1
+   * Implementation Required:
+   *     no
+   * Parameters:
+   *     pThis       -   Pointer to the interface structure itself.
+   * Return value:
+   *     None.
+   */
   void (*FFI_OnChange)(struct _FPDF_FORMFILLINFO* pThis);
 
   /**
-  * Method: FFI_GetPage
-  *           This method receives the page pointer associated with a specified
-  * page index.
-  * Interface Version:
-  *           1
-  * Implementation Required:
-  *           yes
-  * Parameters:
-  *       pThis       -   Pointer to the interface structure itself.
-  *       document    -   Handle to document. Returned by FPDF_LoadDocument
-  * function.
-  *       nPageIndex  -   Index number of the page. 0 for the first page.
-  * Return value:
-  *       Handle to the page. Returned by FPDF_LoadPage function.
-  * Comments:
-  *       In some cases, the document-level JavaScript action may refer to a
-  * page which hadn't been loaded yet.
-  *       To successfully run the javascript action, implementation need to load
-  * the page for SDK.
-  * */
+   * Method: FFI_GetPage
+   *     This method receives the page handle associated with a specified page
+   *     index.
+   * Interface Version:
+   *     1
+   * Implementation Required:
+   *     yes
+   * Parameters:
+   *     pThis       -   Pointer to the interface structure itself.
+   *     document    -   Handle to document. Returned by FPDF_LoadDocument().
+   *     nPageIndex  -   Index number of the page. 0 for the first page.
+   * Return value:
+   *     Handle to the page, as previously returned to the implementation by
+   *     FPDF_LoadPage().
+   * Comments:
+   *     The implementation is expected to keep track of the page handles it
+   *     receives from PDFium, and their mappings to page numbers.
+   *     In some cases, the document-level JavaScript action may refer to a
+   *     page which hadn't been loaded yet. To successfully run the Javascript
+   *     action, the implementation need to load the page.
+   */
   FPDF_PAGE (*FFI_GetPage)(struct _FPDF_FORMFILLINFO* pThis,
                              FPDF_DOCUMENT document,
                              int nPageIndex);
 
   /**
-  * Method: FFI_GetCurrentPage
-  *       This method receives the current page pointer.
-  * Interface Version:
-  *           1
-  * Implementation Required:
-  *           yes
-  * Parameters:
-  *       pThis       -   Pointer to the interface structure itself.
-  *       document    -   Handle to document. Returned by FPDF_LoadDocument
-  * function.
-  * Return value:
-  *       Handle to the page. Returned by FPDF_LoadPage function.
-  * */
+   * Method: FFI_GetCurrentPage
+   *     This method receives the handle to the current page.
+   * Interface Version:
+   *     1
+   * Implementation Required:
+   *     yes
+   * Parameters:
+   *     pThis       -   Pointer to the interface structure itself.
+   *     document    -   Handle to document. Returned by FPDF_LoadDocument().
+   * Return value:
+   *     Handle to the page. Returned by FPDF_LoadPage().
+   * Comments:
+   *     The implementation is expected to keep track of the current page. e.g.
+   *     The current page can be the one that is most visible on screen.
+   */
   FPDF_PAGE (*FFI_GetCurrentPage)(struct _FPDF_FORMFILLINFO* pThis,
                                     FPDF_DOCUMENT document);
 
   /**
-  * Method: FFI_GetRotation
-  *           This method receives currently rotation of the page view.
-  * Interface Version:
-  *           1
-  * Implementation Required:
-  *           yes
-  * Parameters:
-  *       pThis       -   Pointer to the interface structure itself.
-  *       page        -   Handle to page. Returned by FPDF_LoadPage function.
-  * Return value:
-  *       The page rotation. Should be 0(0 degree),1(90 degree),2(180
-  * degree),3(270 degree), in a clockwise direction.
-  *
-  * Note: Unused.
-  * */
+   * Method: FFI_GetRotation
+   *     This method receives currently rotation of the page view.
+   * Interface Version:
+   *     1
+   * Implementation Required:
+   *     yes
+   * Parameters:
+   *     pThis       -   Pointer to the interface structure itself.
+   *     page        -   Handle to page. Returned by FPDF_LoadPage function.
+   * Return value:
+   *     A number to indicate the page rotation in 90 degree increments in a
+   *     clockwise direction:
+   *     0 - 0 degrees
+   *     1 - 90 degrees
+   *     2 - 180 degrees
+   *     3 - 270 degrees
+   * Note: Unused.
+   */
   int (*FFI_GetRotation)(struct _FPDF_FORMFILLINFO* pThis, FPDF_PAGE page);
 
   /**
-  * Method: FFI_ExecuteNamedAction
-  *           This method will execute an named action.
-  * Interface Version:
-  *           1
-  * Implementation Required:
-  *           yes
-  * Parameters:
-  *       pThis           -   Pointer to the interface structure itself.
-  *       namedAction     -   A byte string which indicates the named action,
-  * terminated by 0.
-  * Return value:
-  *       None.
-  * Comments:
-  *       See the named actions description of <<PDF Reference, version 1.7>>
-  * for more details.
-  * */
+   * Method: FFI_ExecuteNamedAction
+   *     This method will execute a named action.
+   * Interface Version:
+   *     1
+   * Implementation Required:
+   *     yes
+   * Parameters:
+   *     pThis           -   Pointer to the interface structure itself.
+   *     namedAction     -   A byte string which indicates the named action,
+   *                         terminated by 0.
+   * Return value:
+   *     None.
+   * Comments:
+   *     See the named actions description of <<PDF Reference, version 1.7>>
+   *     for more details.
+   */
   void (*FFI_ExecuteNamedAction)(struct _FPDF_FORMFILLINFO* pThis,
                                  FPDF_BYTESTRING namedAction);
   /**
-  * @brief This method will be called when a text field is getting or losing a
-  * focus.
-  *
-  * @param[in] pThis      Pointer to the interface structure itself.
-  * @param[in] value      The string value of the form field, in UTF-16LE
-  * format.
-  * @param[in] valueLen   The length of the string value, number of characters
-  * (not bytes).
-  * @param[in] is_focus   True if the form field is getting a focus, False for
-  * losing a focus.
-  *
-  * @return None.
-  *
-  * @note Currently,only support text field and combobox field.
-  * */
+   * Method: FFI_SetTextFieldFocus
+   *     Called when a text field is getting or losing focus.
+   * Interface Version:
+   *     1
+   * Implementation Required:
+   *     no
+   * Parameters:
+   *     pThis           -   Pointer to the interface structure itself.
+   *     value           -   The string value of the form field, in UTF-16LE
+   *                         format.
+   *     valueLen        -   The length of the string value. This is the number
+   *                         of characters, not bytes.
+   *     is_focus        -   True if the form field is getting focus, False if
+   *                         the form field is losing focus.
+   * Return value:
+   *     None.
+   * Comments:
+   *     Only supports text fields and combobox fields.
+   */
   void (*FFI_SetTextFieldFocus)(struct _FPDF_FORMFILLINFO* pThis,
                                 FPDF_WIDESTRING value,
                                 FPDF_DWORD valueLen,
                                 FPDF_BOOL is_focus);
 
   /**
-  * Method: FFI_DoURIAction
-  *           This action resolves to a uniform resource identifier.
-  * Interface Version:
-  *           1
-  * Implementation Required:
-  *           No
-  * Parameters:
-  *       pThis           -   Pointer to the interface structure itself.
-  *       bsURI           -   A byte string which indicates the uniform resource
-  * identifier, terminated by 0.
-  * Return value:
-  *       None.
-  * Comments:
-  *       See the URI actions description of <<PDF Reference, version 1.7>> for
-  * more details.
-  * */
+   * Method: FFI_DoURIAction
+   *     Ask the implementation to navigate to a uniform resource identifier.
+   * Interface Version:
+   *     1
+   * Implementation Required:
+   *     No
+   * Parameters:
+   *     pThis           -   Pointer to the interface structure itself.
+   *     bsURI           -   A byte string which indicates the uniform resource
+   *                         identifier, terminated by 0.
+   * Return value:
+   *     None.
+   * Comments:
+   *     See the URI actions description of <<PDF Reference, version 1.7>> for
+   *     more details.
+   */
   void (*FFI_DoURIAction)(struct _FPDF_FORMFILLINFO* pThis,
                           FPDF_BYTESTRING bsURI);
 
   /**
-  * Method: FFI_DoGoToAction
-  *           This action changes the view to a specified destination.
-  * Interface Version:
-  *           1
-  * Implementation Required:
-  *           No
-  * Parameters:
-  *       pThis           -   Pointer to the interface structure itself.
-  *       nPageIndex      -   The index of the PDF page.
-  *       zoomMode        -   The zoom mode for viewing page. See below.
-  *       fPosArray       -   The float array which carries the position info.
-  *       sizeofArray     -   The size of float array.
-  *
-  * PDFZoom values:
-  *   - XYZ = 1
-  *   - FITPAGE = 2
-  *   - FITHORZ = 3
-  *   - FITVERT = 4
-  *   - FITRECT = 5
-  *   - FITBBOX = 6
-  *   - FITBHORZ = 7
-  *   - FITBVERT = 8
-  *
-  * Return value:
-  *       None.
-  * Comments:
-  *       See the Destinations description of <<PDF Reference, version 1.7>> in
-  *8.2.1 for more details.
-  **/
+   * Method: FFI_DoGoToAction
+   *     This action changes the view to a specified destination.
+   * Interface Version:
+   *     1
+   * Implementation Required:
+   *     No
+   * Parameters:
+   *     pThis           -   Pointer to the interface structure itself.
+   *     nPageIndex      -   The index of the PDF page.
+   *     zoomMode        -   The zoom mode for viewing page. See below.
+   *     fPosArray       -   The float array which carries the position info.
+   *     sizeofArray     -   The size of float array.
+   *
+   * PDFZoom values:
+   *   - XYZ = 1
+   *   - FITPAGE = 2
+   *   - FITHORZ = 3
+   *   - FITVERT = 4
+   *   - FITRECT = 5
+   *   - FITBBOX = 6
+   *   - FITBHORZ = 7
+   *   - FITBVERT = 8
+   *
+   * Return value:
+   *     None.
+   * Comments:
+   *     See the Destinations description of <<PDF Reference, version 1.7>> in
+   *     8.2.1 for more details.
+   */
   void (*FFI_DoGoToAction)(struct _FPDF_FORMFILLINFO* pThis,
                            int nPageIndex,
                            int zoomMode,
@@ -711,34 +732,35 @@ typedef struct _FPDF_FORMFILLINFO {
                            int sizeofArray);
 
   /**
-  *   pointer to IPDF_JSPLATFORM interface
-  **/
+   *   Pointer to IPDF_JSPLATFORM interface.
+   *   Unused if PDFium is built without V8 support. Otherwise, if NULL, then
+   *   JavaScript will be prevented from executing while rendering the document.
+   **/
   IPDF_JSPLATFORM* m_pJsPlatform;
 
 #ifdef PDF_ENABLE_XFA
   /* Version 2. */
   /**
-    * Method: FFI_DisplayCaret
-    *           This method will show the caret at specified position.
-    * Interface Version:
-    *           2
-    * Implementation Required:
-    *           yes
-    * Parameters:
-    *       pThis           -   Pointer to the interface structure itself.
-    *       page            -   Handle to page. Returned by FPDF_LoadPage
-    *function.
-    *       left            -   Left position of the client area in PDF page
-    *coordinate.
-    *       top             -   Top position of the client area in PDF page
-    *coordinate.
-    *       right           -   Right position of the client area in PDF page
-    *coordinate.
-    *       bottom          -   Bottom position of the client area in PDF page
-    *coordinate.
-    * Return value:
-    *       None.
-    **/
+   * Method: FFI_DisplayCaret
+   *     This method will show the caret at specified position.
+   * Interface Version:
+   *     2
+   * Implementation Required:
+   *     yes
+   * Parameters:
+   *     pThis           -   Pointer to the interface structure itself.
+   *     page            -   Handle to page. Returned by FPDF_LoadPage().
+   *     left            -   Left position of the client area in PDF page
+   *                         coordinates.
+   *     top             -   Top position of the client area in PDF page
+   *                         coordinates.
+   *     right           -   Right position of the client area in PDF page
+   *                         coordinates.
+   *     bottom          -   Bottom position of the client area in PDF page
+   *                         coordinates.
+   * Return value:
+   *     None.
+   */
   void (*FFI_DisplayCaret)(struct _FPDF_FORMFILLINFO* pThis,
                            FPDF_PAGE page,
                            FPDF_BOOL bVisible,
@@ -803,27 +825,26 @@ typedef struct _FPDF_FORMFILLINFO {
                       FPDF_WIDESTRING wsURL);
 
   /**
-  * Method: FFI_GetPageViewRect
-  *           This method will get the current page view rectangle.
-  * Interface Version:
-  *           2
-  * Implementation Required:
-  *           yes
-  * Parameters:
-  *       pThis           -   Pointer to the interface structure itself.
-  *       page            -   Handle to page. Returned by FPDF_LoadPage
-  *function.
-  *       left            -   The pointer to receive left position of the page
-  *view area in PDF page coordinate.
-  *       top             -   The pointer to receive top position of the page
-  *view area in PDF page coordinate.
-  *       right           -   The pointer to receive right position of the
-  *client area in PDF page coordinate.
-  *       bottom          -   The pointer to receive bottom position of the
-  *client area in PDF page coordinate.
-  * Return value:
-  *       None.
-  **/
+   * Method: FFI_GetPageViewRect
+   *     This method will get the current page view rectangle.
+   * Interface Version:
+   *     2
+   * Implementation Required:
+   *     yes
+   * Parameters:
+   *     pThis           -   Pointer to the interface structure itself.
+   *     page            -   Handle to page. Returned by FPDF_LoadPage().
+   *     left            -   The pointer to receive left position of the page
+   *                         view area in PDF page coordinates.
+   *     top             -   The pointer to receive top position of the page
+   *                         view area in PDF page coordinates.
+   *     right           -   The pointer to receive right position of the page
+   *                         view area in PDF page coordinates.
+   *     bottom          -   The pointer to receive bottom position of the page
+   *                         view area in PDF page coordinates.
+   * Return value:
+   *     None.
+   */
   void (*FFI_GetPageViewRect)(struct _FPDF_FORMFILLINFO* pThis,
                               FPDF_PAGE page,
                               double* left,
@@ -859,26 +880,26 @@ typedef struct _FPDF_FORMFILLINFO {
                         FPDF_DWORD event_type);
 
   /**
-  * Method: FFI_PopupMenu
-  *           This method will track the right context menu for XFA fields.
-  * Interface Version:
-  *           2
-  * Implementation Required:
-  *           yes
-  * Parameters:
-  *       pThis           -   Pointer to the interface structure itself.
-  *       page            -   Handle to page. Returned by FPDF_LoadPage
-  *function.
-  *       hWidget         -   Handle to XFA fields.
-  *       menuFlag        -   The menu flags. Please refer to macro definition
-  *of FXFA_MENU_XXX and this can be one or a combination of these macros.
-  *       x               -   X position of the client area in PDF page
-  *coordinate.
-  *       y               -   Y position of the client area in PDF page
-  *coordinate.
-  * Return value:
-  *       TRUE indicates success; otherwise false.
-  **/
+   * Method: FFI_PopupMenu
+   *     This method will track the right context menu for XFA fields.
+   * Interface Version:
+   *     2
+   * Implementation Required:
+   *     yes
+   * Parameters:
+   *     pThis           -   Pointer to the interface structure itself.
+   *     page            -   Handle to page. Returned by FPDF_LoadPage().
+   *     hWidget         -   Handle to XFA fields.
+   *     menuFlag        -   The menu flags. Please refer to macro definition
+   *                         of FXFA_MENU_XXX and this can be one or a
+   *                         combination of these macros.
+   *     x               -   X position of the client area in PDF page
+   *                         coordinates.
+   *     y               -   Y position of the client area in PDF page
+   *                         coordinates.
+   * Return value:
+   *     TRUE indicates success; otherwise false.
+   */
   FPDF_BOOL (*FFI_PopupMenu)(struct _FPDF_FORMFILLINFO* pThis,
                              FPDF_PAGE page,
                              FPDF_WIDGET hWidget,
@@ -1081,7 +1102,7 @@ typedef struct _FPDF_FORMFILLINFO {
  * Return Value:
  *          Return handler to the form fill module. NULL means fails.
  **/
-DLLEXPORT FPDF_FORMHANDLE STDCALL
+FPDF_EXPORT FPDF_FORMHANDLE FPDF_CALLCONV
 FPDFDOC_InitFormFillEnvironment(FPDF_DOCUMENT document,
                                 FPDF_FORMFILLINFO* formInfo);
 
@@ -1094,7 +1115,8 @@ FPDFDOC_InitFormFillEnvironment(FPDF_DOCUMENT document,
  * Return Value:
  *          NULL.
  **/
-DLLEXPORT void STDCALL FPDFDOC_ExitFormFillEnvironment(FPDF_FORMHANDLE hHandle);
+FPDF_EXPORT void FPDF_CALLCONV
+FPDFDOC_ExitFormFillEnvironment(FPDF_FORMHANDLE hHandle);
 
 /**
  * Function: FORM_OnAfterLoadPage
@@ -1108,8 +1130,8 @@ DLLEXPORT void STDCALL FPDFDOC_ExitFormFillEnvironment(FPDF_FORMHANDLE hHandle);
  * Return Value:
  *          NONE.
  **/
-DLLEXPORT void STDCALL FORM_OnAfterLoadPage(FPDF_PAGE page,
-                                            FPDF_FORMHANDLE hHandle);
+FPDF_EXPORT void FPDF_CALLCONV FORM_OnAfterLoadPage(FPDF_PAGE page,
+                                                    FPDF_FORMHANDLE hHandle);
 
 /**
  * Function: FORM_OnBeforeClosePage
@@ -1124,8 +1146,8 @@ DLLEXPORT void STDCALL FORM_OnAfterLoadPage(FPDF_PAGE page,
  * Return Value:
  *          NONE.
  **/
-DLLEXPORT void STDCALL FORM_OnBeforeClosePage(FPDF_PAGE page,
-                                              FPDF_FORMHANDLE hHandle);
+FPDF_EXPORT void FPDF_CALLCONV FORM_OnBeforeClosePage(FPDF_PAGE page,
+                                                      FPDF_FORMHANDLE hHandle);
 
 /**
 * Function: FORM_DoDocumentJSAction
@@ -1142,7 +1164,7 @@ DLLEXPORT void STDCALL FORM_OnBeforeClosePage(FPDF_PAGE page,
 *document, this method will execute the javascript action;
 *           otherwise, the method will do nothing.
 **/
-DLLEXPORT void STDCALL FORM_DoDocumentJSAction(FPDF_FORMHANDLE hHandle);
+FPDF_EXPORT void FPDF_CALLCONV FORM_DoDocumentJSAction(FPDF_FORMHANDLE hHandle);
 
 /**
 * Function: FORM_DoDocumentOpenAction
@@ -1157,65 +1179,65 @@ DLLEXPORT void STDCALL FORM_DoDocumentJSAction(FPDF_FORMHANDLE hHandle);
 *           This method will do nothing if there is no open-actions embedded in
 *the document.
 **/
-DLLEXPORT void STDCALL FORM_DoDocumentOpenAction(FPDF_FORMHANDLE hHandle);
+FPDF_EXPORT void FPDF_CALLCONV
+FORM_DoDocumentOpenAction(FPDF_FORMHANDLE hHandle);
 
-// additional actions type of document.
-#define FPDFDOC_AACTION_WC \
-  0x10  // WC, before closing document, JavaScript action.
-#define FPDFDOC_AACTION_WS \
-  0x11  // WS, before saving document, JavaScript action.
-#define FPDFDOC_AACTION_DS 0x12  // DS, after saving document, JavaScript
-                                 // action.
-#define FPDFDOC_AACTION_WP \
-  0x13  // WP, before printing document, JavaScript action.
-#define FPDFDOC_AACTION_DP \
-  0x14  // DP, after printing document, JavaScript action.
-
-/**
-* Function: FORM_DoDocumentAAction
-*           This method is required for performing the document's
-*additional-action.
-* Parameters:
-*           hHandle     -   Handle to the form fill module. Returned by
-*FPDFDOC_InitFormFillEnvironment.
-*           aaType      -   The type of the additional-actions which defined
-*above.
-* Return Value:
-*           NONE
-* Comments:
-*           This method will do nothing if there is no document
-*additional-action corresponding to the specified aaType.
-**/
-
-DLLEXPORT void STDCALL FORM_DoDocumentAAction(FPDF_FORMHANDLE hHandle,
-                                              int aaType);
-
-// Additional-action types of page object
-#define FPDFPAGE_AACTION_OPEN \
-  0  // /O -- An action to be performed when the page is opened
-#define FPDFPAGE_AACTION_CLOSE \
-  1  // /C -- An action to be performed when the page is closed
+// Additional actions type of document:
+//   WC, before closing document, JavaScript action.
+//   WS, before saving document, JavaScript action.
+//   DS, after saving document, JavaScript action.
+//   WP, before printing document, JavaScript action.
+//   DP, after printing document, JavaScript action.
+#define FPDFDOC_AACTION_WC 0x10
+#define FPDFDOC_AACTION_WS 0x11
+#define FPDFDOC_AACTION_DS 0x12
+#define FPDFDOC_AACTION_WP 0x13
+#define FPDFDOC_AACTION_DP 0x14
 
 /**
-* Function: FORM_DoPageAAction
-*           This method is required for performing the page object's
-*additional-action when opened or closed.
-* Parameters:
-*           page        -   Handle to the page. Returned by FPDF_LoadPage
-*function.
-*           hHandle     -   Handle to the form fill module. Returned by
-*FPDFDOC_InitFormFillEnvironment.
-*           aaType      -   The type of the page object's additional-actions
-*which defined above.
-* Return Value:
-*           NONE
-* Comments:
-*           This method will do nothing if no additional-action corresponding to
-*the specified aaType exists.
-**/
-DLLEXPORT void STDCALL FORM_DoPageAAction(FPDF_PAGE page,
-                                          FPDF_FORMHANDLE hHandle,
-                                          int aaType);
+ * Function: FORM_DoDocumentAAction
+ *           This method is required for performing the document's
+ *           additional-action.
+ * Parameters:
+ *           hHandle     -   Handle to the form fill module. Returned by
+ *                           FPDFDOC_InitFormFillEnvironment.
+ *           aaType      -   The type of the additional-actions which defined
+ *                           above.
+ * Return Value:
+ *           NONE
+ * Comments:
+ *           This method will do nothing if there is no document
+ *           additional-action corresponding to the specified aaType.
+ **/
+FPDF_EXPORT void FPDF_CALLCONV FORM_DoDocumentAAction(FPDF_FORMHANDLE hHandle,
+                                                      int aaType);
+
+// Additional-action types of page object:
+//   OPEN (/O) -- An action to be performed when the page is opened
+//   CLOSE (/C) -- An action to be performed when the page is closed
+#define FPDFPAGE_AACTION_OPEN 0
+#define FPDFPAGE_AACTION_CLOSE 1
+
+/**
+ * Function: FORM_DoPageAAction
+ *           This method is required for performing the page object's
+ *           additional-action when opened or closed.
+ * Parameters:
+ *           page        -   Handle to the page. Returned by FPDF_LoadPage
+ *                           function.
+ *           hHandle     -   Handle to the form fill module. Returned by
+ *                           FPDFDOC_InitFormFillEnvironment.
+ *           aaType      -   The type of the page object's additional-actions
+ *                           which defined above.
+ * Return Value:
+ *           NONE
+ * Comments:
+ *           This method will do nothing if no additional-action corresponding
+ *           to the specified aaType exists.
+ **/
+FPDF_EXPORT void FPDF_CALLCONV FORM_DoPageAAction(FPDF_PAGE page,
+                                                  FPDF_FORMHANDLE hHandle,
+                                                  int aaType);
 
 /**
  * Function: FORM_OnMouseMove
@@ -1233,42 +1255,65 @@ DLLEXPORT void STDCALL FORM_DoPageAAction(FPDF_PAGE page,
  * Return Value:
  *          TRUE indicates success; otherwise false.
  **/
-DLLEXPORT FPDF_BOOL STDCALL FORM_OnMouseMove(FPDF_FORMHANDLE hHandle,
-                                             FPDF_PAGE page,
-                                             int modifier,
-                                             double page_x,
-                                             double page_y);
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV FORM_OnMouseMove(FPDF_FORMHANDLE hHandle,
+                                                     FPDF_PAGE page,
+                                                     int modifier,
+                                                     double page_x,
+                                                     double page_y);
+
+/**
+ * Function: FORM_OnFocus
+ *          This function focuses the form annotation at a given point. If the
+ *          annotation at the point already has focus, nothing happens. If there
+ *          is no annotation at the point, remove form focus.
+ * Parameters:
+ *          hHandle     -   Handle to the form fill module. Returned by
+ *                          FPDFDOC_InitFormFillEnvironment.
+ *          page        -   Handle to the page. Returned by FPDF_LoadPage.
+ *          modifier    -   Indicates whether various virtual keys are down.
+ *          page_x      -   Specifies the x-coordinate of the cursor in PDF user
+ *                          space.
+ *          page_y      -   Specifies the y-coordinate of the cursor in PDF user
+ *                          space.
+ * Return Value:
+ *          TRUE if there is an annotation at the given point and it has focus.
+ **/
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV FORM_OnFocus(FPDF_FORMHANDLE hHandle,
+                                                 FPDF_PAGE page,
+                                                 int modifier,
+                                                 double page_x,
+                                                 double page_y);
 
 /**
  * Function: FORM_OnLButtonDown
  *          You can call this member function when the user presses the left
- *mouse button.
+ *          mouse button.
  * Parameters:
  *          hHandle     -   Handle to the form fill module. Returned by
- *FPDFDOC_InitFormFillEnvironment.
+ *                          FPDFDOC_InitFormFillEnvironment().
  *          page        -   Handle to the page. Returned by FPDF_LoadPage
- *function.
- *          modifier        -   Indicates whether various virtual keys are down.
+ *                          function.
+ *          modifier    -   Indicates whether various virtual keys are down.
  *          page_x      -   Specifies the x-coordinate of the cursor in PDF user
- *space.
+ *                          space.
  *          page_y      -   Specifies the y-coordinate of the cursor in PDF user
- *space.
+ *                          space.
  * Return Value:
  *          TRUE indicates success; otherwise false.
  **/
-DLLEXPORT FPDF_BOOL STDCALL FORM_OnLButtonDown(FPDF_FORMHANDLE hHandle,
-                                               FPDF_PAGE page,
-                                               int modifier,
-                                               double page_x,
-                                               double page_y);
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV FORM_OnLButtonDown(FPDF_FORMHANDLE hHandle,
+                                                       FPDF_PAGE page,
+                                                       int modifier,
+                                                       double page_x,
+                                                       double page_y);
 
 /**
  * Function: FORM_OnLButtonUp
  *          You can call this member function when the user releases the left
- *mouse button.
+ *          mouse button.
  * Parameters:
  *          hHandle     -   Handle to the form fill module. Returned by
- *FPDFDOC_InitFormFillEnvironment.
+ *                          FPDFDOC_InitFormFillEnvironment().
  *          page        -   Handle to the page. Returned by FPDF_LoadPage
  *function.
  *          modifier    -   Indicates whether various virtual keys are down.
@@ -1277,23 +1322,47 @@ DLLEXPORT FPDF_BOOL STDCALL FORM_OnLButtonDown(FPDF_FORMHANDLE hHandle,
  * Return Value:
  *          TRUE indicates success; otherwise false.
  **/
-DLLEXPORT FPDF_BOOL STDCALL FORM_OnLButtonUp(FPDF_FORMHANDLE hHandle,
-                                             FPDF_PAGE page,
-                                             int modifier,
-                                             double page_x,
-                                             double page_y);
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV FORM_OnLButtonUp(FPDF_FORMHANDLE hHandle,
+                                                     FPDF_PAGE page,
+                                                     int modifier,
+                                                     double page_x,
+                                                     double page_y);
+
+/**
+ * Function: FORM_OnLButtonDoubleClick
+ *          You can call this member function when the user double clicks the
+ *          left mouse button.
+ * Parameters:
+ *          hHandle     -   Handle to the form fill module. Returned by
+ *                          FPDFDOC_InitFormFillEnvironment().
+ *          page        -   Handle to the page. Returned by FPDF_LoadPage
+ *                          function.
+ *          modifier    -   Indicates whether various virtual keys are down.
+ *          page_x      -   Specifies the x-coordinate of the cursor in PDF user
+ *                          space.
+ *          page_y      -   Specifies the y-coordinate of the cursor in PDF user
+ *                          space.
+ * Return Value:
+ *          TRUE indicates success; otherwise false.
+ **/
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV
+FORM_OnLButtonDoubleClick(FPDF_FORMHANDLE hHandle,
+                          FPDF_PAGE page,
+                          int modifier,
+                          double page_x,
+                          double page_y);
 
 #ifdef PDF_ENABLE_XFA
-DLLEXPORT FPDF_BOOL STDCALL FORM_OnRButtonDown(FPDF_FORMHANDLE hHandle,
-                                               FPDF_PAGE page,
-                                               int modifier,
-                                               double page_x,
-                                               double page_y);
-DLLEXPORT FPDF_BOOL STDCALL FORM_OnRButtonUp(FPDF_FORMHANDLE hHandle,
-                                             FPDF_PAGE page,
-                                             int modifier,
-                                             double page_x,
-                                             double page_y);
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV FORM_OnRButtonDown(FPDF_FORMHANDLE hHandle,
+                                                       FPDF_PAGE page,
+                                                       int modifier,
+                                                       double page_x,
+                                                       double page_y);
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV FORM_OnRButtonUp(FPDF_FORMHANDLE hHandle,
+                                                     FPDF_PAGE page,
+                                                     int modifier,
+                                                     double page_x,
+                                                     double page_y);
 #endif  // PDF_ENABLE_XFA
 
 /**
@@ -1310,10 +1379,10 @@ DLLEXPORT FPDF_BOOL STDCALL FORM_OnRButtonUp(FPDF_FORMHANDLE hHandle,
  * Return Value:
  *          TRUE indicates success; otherwise false.
  **/
-DLLEXPORT FPDF_BOOL STDCALL FORM_OnKeyDown(FPDF_FORMHANDLE hHandle,
-                                           FPDF_PAGE page,
-                                           int nKeyCode,
-                                           int modifier);
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV FORM_OnKeyDown(FPDF_FORMHANDLE hHandle,
+                                                   FPDF_PAGE page,
+                                                   int nKeyCode,
+                                                   int modifier);
 
 /**
  * Function: FORM_OnKeyUp
@@ -1329,10 +1398,10 @@ DLLEXPORT FPDF_BOOL STDCALL FORM_OnKeyDown(FPDF_FORMHANDLE hHandle,
  * Return Value:
  *          TRUE indicates success; otherwise false.
  **/
-DLLEXPORT FPDF_BOOL STDCALL FORM_OnKeyUp(FPDF_FORMHANDLE hHandle,
-                                         FPDF_PAGE page,
-                                         int nKeyCode,
-                                         int modifier);
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV FORM_OnKeyUp(FPDF_FORMHANDLE hHandle,
+                                                 FPDF_PAGE page,
+                                                 int nKeyCode,
+                                                 int modifier);
 
 /**
  * Function: FORM_OnChar
@@ -1349,10 +1418,136 @@ DLLEXPORT FPDF_BOOL STDCALL FORM_OnKeyUp(FPDF_FORMHANDLE hHandle,
  * Return Value:
  *          TRUE indicates success; otherwise false.
  **/
-DLLEXPORT FPDF_BOOL STDCALL FORM_OnChar(FPDF_FORMHANDLE hHandle,
-                                        FPDF_PAGE page,
-                                        int nChar,
-                                        int modifier);
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV FORM_OnChar(FPDF_FORMHANDLE hHandle,
+                                                FPDF_PAGE page,
+                                                int nChar,
+                                                int modifier);
+
+/**
+ * Experimental API
+ * Function: FORM_GetFocusedText
+ *          You can call this function to obtain the text within the current
+ *          focused field, if any.
+ * Parameters:
+ *          hHandle     -   Handle to the form fill module. Returned by
+ *                          FPDFDOC_InitFormFillEnvironment.
+ *          page        -   Handle to the page. Returned by FPDF_LoadPage
+ *                          function.
+ *          buffer      -   Buffer for holding the form text, encoded in
+ *                          UTF16-LE. If NULL, |buffer| is not modified.
+ *          buflen      -   Length of |buffer| in bytes. If |buflen| is less
+                            than the length of the form text string, |buffer| is
+                            not modified.
+ * Return Value:
+ *          Length in bytes for the text in the focused field.
+ **/
+FPDF_EXPORT unsigned long FPDF_CALLCONV
+FORM_GetFocusedText(FPDF_FORMHANDLE hHandle,
+                    FPDF_PAGE page,
+                    void* buffer,
+                    unsigned long buflen);
+
+/**
+ * Function: FORM_GetSelectedText
+ *          You can call this function to obtain selected text within
+ *          a form text field or form combobox text field.
+ * Parameters:
+ *          hHandle     -   Handle to the form fill module. Returned by
+ *                          FPDFDOC_InitFormFillEnvironment.
+ *          page        -   Handle to the page. Returned by FPDF_LoadPage
+ *                          function.
+ *          buffer      -   Buffer for holding the selected text, encoded in
+ *                          UTF16-LE. If NULL, |buffer| is not modified.
+ *          buflen      -   Length of |buffer| in bytes. If |buflen| is less
+                            than the length of the selected text string,
+                            |buffer| is not modified.
+ * Return Value:
+ *          Length in bytes of selected text in form text field or form combobox
+ *          text field.
+ **/
+FPDF_EXPORT unsigned long FPDF_CALLCONV
+FORM_GetSelectedText(FPDF_FORMHANDLE hHandle,
+                     FPDF_PAGE page,
+                     void* buffer,
+                     unsigned long buflen);
+
+/**
+ * Function: FORM_ReplaceSelection
+ *          You can call this function to replace the selected text in a form
+ *          text field or user-editable form combobox text field with another
+ *          text string (which can be empty or non-empty). If there is no
+ *          selected text, this function will append the replacement text after
+ *          the current caret position.
+ * Parameters:
+ *          hHandle     -   Handle to the form fill module. Returned by
+ *                          FPDFDOC_InitFormFillEnvironment.
+ *          page        -   Handle to the page. Returned by FPDF_LoadPage
+ *                          function.
+ *          wsText      -   The text to be inserted, in UTF-16LE format.
+ * Return Value:
+ *          None.
+ **/
+FPDF_EXPORT void FPDF_CALLCONV FORM_ReplaceSelection(FPDF_FORMHANDLE hHandle,
+                                                     FPDF_PAGE page,
+                                                     FPDF_WIDESTRING wsText);
+
+/**
+ * Function: FORM_CanUndo
+ *          Find out if it is possible for the current focused widget in a given
+ *          form to perform an undo operation.
+ * Parameters:
+ *          hHandle     -   Handle to the form fill module. Returned by
+ *                          FPDFDOC_InitFormFillEnvironment.
+ *          page        -   Handle to the page. Returned by FPDF_LoadPage
+ *                          function.
+ * Return Value:
+ *          True if it is possible to undo.
+ **/
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV FORM_CanUndo(FPDF_FORMHANDLE hHandle,
+                                                 FPDF_PAGE page);
+
+/**
+ * Function: FORM_CanRedo
+ *          Find out if it is possible for the current focused widget in a given
+ *          form to perform a redo operation.
+ * Parameters:
+ *          hHandle     -   Handle to the form fill module. Returned by
+ *                          FPDFDOC_InitFormFillEnvironment.
+ *          page        -   Handle to the page. Returned by FPDF_LoadPage
+ *                          function.
+ * Return Value:
+ *          True if it is possible to redo.
+ **/
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV FORM_CanRedo(FPDF_FORMHANDLE hHandle,
+                                                 FPDF_PAGE page);
+
+/**
+ * Function: FORM_Undo
+ *          Make the current focussed widget perform an undo operation.
+ * Parameters:
+ *          hHandle     -   Handle to the form fill module. Returned by
+ *                          FPDFDOC_InitFormFillEnvironment.
+ *          page        -   Handle to the page. Returned by FPDF_LoadPage
+ *                          function.
+ * Return Value:
+ *          True if the undo operation succeeded.
+ **/
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV FORM_Undo(FPDF_FORMHANDLE hHandle,
+                                              FPDF_PAGE page);
+
+/**
+ * Function: FORM_Redo
+ *          Make the current focussed widget perform a redo operation.
+ * Parameters:
+ *          hHandle     -   Handle to the form fill module. Returned by
+ *                          FPDFDOC_InitFormFillEnvironment.
+ *          page        -   Handle to the page. Returned by FPDF_LoadPage
+ *                          function.
+ * Return Value:
+ *          True if the redo operation succeeded.
+ **/
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV FORM_Redo(FPDF_FORMHANDLE hHandle,
+                                              FPDF_PAGE page);
 
 /**
  * Function: FORM_ForceToKillFocus.
@@ -1366,9 +1561,12 @@ DLLEXPORT FPDF_BOOL STDCALL FORM_OnChar(FPDF_FORMHANDLE hHandle,
  * Return Value:
  *          TRUE indicates success; otherwise false.
  **/
-DLLEXPORT FPDF_BOOL STDCALL FORM_ForceToKillFocus(FPDF_FORMHANDLE hHandle);
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV
+FORM_ForceToKillFocus(FPDF_FORMHANDLE hHandle);
 
-// Field Types
+// Form Field Types
+// The names of the defines are stable, but the specific values associated with
+// them are not, so do not hardcode their values.
 #define FPDF_FORMFIELD_UNKNOWN 0      // Unknown.
 #define FPDF_FORMFIELD_PUSHBUTTON 1   // push button type.
 #define FPDF_FORMFIELD_CHECKBOX 2     // check box type.
@@ -1376,8 +1574,34 @@ DLLEXPORT FPDF_BOOL STDCALL FORM_ForceToKillFocus(FPDF_FORMHANDLE hHandle);
 #define FPDF_FORMFIELD_COMBOBOX 4     // combo box type.
 #define FPDF_FORMFIELD_LISTBOX 5      // list box type.
 #define FPDF_FORMFIELD_TEXTFIELD 6    // text field type.
+#define FPDF_FORMFIELD_SIGNATURE 7    // text field type.
 #ifdef PDF_ENABLE_XFA
-#define FPDF_FORMFIELD_XFA 7          // text field type.
+#define FPDF_FORMFIELD_XFA 8              // Generic XFA type.
+#define FPDF_FORMFIELD_XFA_CHECKBOX 9     // XFA check box type.
+#define FPDF_FORMFIELD_XFA_COMBOBOX 10    // XFA combo box type.
+#define FPDF_FORMFIELD_XFA_IMAGEFIELD 11  // XFA image field type.
+#define FPDF_FORMFIELD_XFA_LISTBOX 12     // XFA list box type.
+#define FPDF_FORMFIELD_XFA_PUSHBUTTON 13  // XFA push button type.
+#define FPDF_FORMFIELD_XFA_SIGNATURE 14   // XFA signture field type.
+#define FPDF_FORMFIELD_XFA_TEXTFIELD 15   // XFA text field type.
+#endif                                    // PDF_ENABLE_XFA
+
+#ifdef PDF_ENABLE_XFA
+#define FPDF_FORMFIELD_COUNT 16
+#else  // PDF_ENABLE_XFA
+#define FPDF_FORMFIELD_COUNT 8
+#endif  // PDF_ENABLE_XFA
+
+#ifdef PDF_ENABLE_XFA
+#define IS_XFA_FORMFIELD(type)                  \
+  (((type) == FPDF_FORMFIELD_XFA) ||            \
+   ((type) == FPDF_FORMFIELD_XFA_CHECKBOX) ||   \
+   ((type) == FPDF_FORMFIELD_XFA_COMBOBOX) ||   \
+   ((type) == FPDF_FORMFIELD_XFA_IMAGEFIELD) || \
+   ((type) == FPDF_FORMFIELD_XFA_LISTBOX) ||    \
+   ((type) == FPDF_FORMFIELD_XFA_PUSHBUTTON) || \
+   ((type) == FPDF_FORMFIELD_XFA_SIGNATURE) ||  \
+   ((type) == FPDF_FORMFIELD_XFA_TEXTFIELD))
 #endif  // PDF_ENABLE_XFA
 
 /**
@@ -1393,19 +1617,11 @@ DLLEXPORT FPDF_BOOL STDCALL FORM_ForceToKillFocus(FPDF_FORMHANDLE hHandle);
  *     Return the type of the form field; -1 indicates no field.
  *     See field types above.
  **/
-DLLEXPORT int STDCALL FPDFPage_HasFormFieldAtPoint(FPDF_FORMHANDLE hHandle,
-                                                   FPDF_PAGE page,
-                                                   double page_x,
-                                                   double page_y);
-
-/**
- * Function: FPDPage_HasFormFieldAtPoint
- *     DEPRECATED. Please use FPDFPage_HasFormFieldAtPoint.
- **/
-DLLEXPORT int STDCALL FPDPage_HasFormFieldAtPoint(FPDF_FORMHANDLE hHandle,
-                                                  FPDF_PAGE page,
-                                                  double page_x,
-                                                  double page_y);
+FPDF_EXPORT int FPDF_CALLCONV
+FPDFPage_HasFormFieldAtPoint(FPDF_FORMHANDLE hHandle,
+                             FPDF_PAGE page,
+                             double page_x,
+                             double page_y);
 
 /**
  * Function: FPDFPage_FormFieldZOrderAtPoint
@@ -1420,10 +1636,11 @@ DLLEXPORT int STDCALL FPDPage_HasFormFieldAtPoint(FPDF_FORMHANDLE hHandle,
  *     Return the z-order of the form field; -1 indicates no field.
  *     Higher numbers are closer to the front.
  **/
-DLLEXPORT int STDCALL FPDFPage_FormFieldZOrderAtPoint(FPDF_FORMHANDLE hHandle,
-                                                      FPDF_PAGE page,
-                                                      double page_x,
-                                                      double page_y);
+FPDF_EXPORT int FPDF_CALLCONV
+FPDFPage_FormFieldZOrderAtPoint(FPDF_FORMHANDLE hHandle,
+                                FPDF_PAGE page,
+                                double page_x,
+                                double page_y);
 
 /**
  * Function: FPDF_SetFormFieldHighlightColor
@@ -1441,15 +1658,16 @@ DLLEXPORT int STDCALL FPDFPage_FormFieldZOrderAtPoint(FPDF_FORMHANDLE hHandle,
  * Return Value:
  *          NONE.
  * Comments:
- *          When the parameter fieldType is set to zero, the highlight color
- *will be applied to all the form fields in the
+ *          When the parameter fieldType is set to FPDF_FORMFIELD_UNKNOWN, the
+ *          highlight color will be applied to all the form fields in the
  *          document.
  *          Please refresh the client window to show the highlight immediately
- *if necessary.
+ *          if necessary.
  **/
-DLLEXPORT void STDCALL FPDF_SetFormFieldHighlightColor(FPDF_FORMHANDLE hHandle,
-                                                       int fieldType,
-                                                       unsigned long color);
+FPDF_EXPORT void FPDF_CALLCONV
+FPDF_SetFormFieldHighlightColor(FPDF_FORMHANDLE hHandle,
+                                int fieldType,
+                                unsigned long color);
 
 /**
  * Function: FPDF_SetFormFieldHighlightAlpha
@@ -1465,8 +1683,8 @@ DLLEXPORT void STDCALL FPDF_SetFormFieldHighlightColor(FPDF_FORMHANDLE hHandle,
  * Return Value:
  *          NONE.
  **/
-DLLEXPORT void STDCALL FPDF_SetFormFieldHighlightAlpha(FPDF_FORMHANDLE hHandle,
-                                                       unsigned char alpha);
+FPDF_EXPORT void FPDF_CALLCONV
+FPDF_SetFormFieldHighlightAlpha(FPDF_FORMHANDLE hHandle, unsigned char alpha);
 
 /**
  * Function: FPDF_RemoveFormFieldHighlight
@@ -1480,7 +1698,8 @@ DLLEXPORT void STDCALL FPDF_SetFormFieldHighlightAlpha(FPDF_FORMHANDLE hHandle,
  *          Please refresh the client window to remove the highlight immediately
  *if necessary.
  **/
-DLLEXPORT void STDCALL FPDF_RemoveFormFieldHighlight(FPDF_FORMHANDLE hHandle);
+FPDF_EXPORT void FPDF_CALLCONV
+FPDF_RemoveFormFieldHighlight(FPDF_FORMHANDLE hHandle);
 
 /**
 * Function: FPDF_FFLDraw
@@ -1520,45 +1739,93 @@ DLLEXPORT void STDCALL FPDF_RemoveFormFieldHighlight(FPDF_FORMHANDLE hHandle);
 *call this function after rendering functions, such as FPDF_RenderPageBitmap or
 *FPDF_RenderPageBitmap_Start, finish rendering the page contents.
 **/
-DLLEXPORT void STDCALL FPDF_FFLDraw(FPDF_FORMHANDLE hHandle,
-                                    FPDF_BITMAP bitmap,
-                                    FPDF_PAGE page,
-                                    int start_x,
-                                    int start_y,
-                                    int size_x,
-                                    int size_y,
-                                    int rotate,
-                                    int flags);
+FPDF_EXPORT void FPDF_CALLCONV FPDF_FFLDraw(FPDF_FORMHANDLE hHandle,
+                                            FPDF_BITMAP bitmap,
+                                            FPDF_PAGE page,
+                                            int start_x,
+                                            int start_y,
+                                            int size_x,
+                                            int size_y,
+                                            int rotate,
+                                            int flags);
 
 #ifdef _SKIA_SUPPORT_
-DLLEXPORT void STDCALL FPDF_FFLRecord(FPDF_FORMHANDLE hHandle,
-                                      FPDF_RECORDER recorder,
-                                      FPDF_PAGE page,
-                                      int start_x,
-                                      int start_y,
-                                      int size_x,
-                                      int size_y,
-                                      int rotate,
-                                      int flags);
+FPDF_EXPORT void FPDF_CALLCONV FPDF_FFLRecord(FPDF_FORMHANDLE hHandle,
+                                              FPDF_RECORDER recorder,
+                                              FPDF_PAGE page,
+                                              int start_x,
+                                              int start_y,
+                                              int size_x,
+                                              int size_y,
+                                              int rotate,
+                                              int flags);
 #endif
 
-#ifdef PDF_ENABLE_XFA
 /**
- * Function: FPDF_HasXFAField
- *                      This method is designed to check whether a pdf document
- *has XFA fields.
+ * Experimental API
+ * Function: FPDF_GetFormType
+ *           Returns the type of form contained in the PDF document.
  * Parameters:
- *                      document                -       Handle to document.
- *Returned by FPDF_LoadDocument function.
- *                      docType                 -       Document type defined as
- *DOCTYPE_xxx.
+ *           document - Handle to document.
  * Return Value:
- *                      TRUE indicates that the input document has XFA fields,
- *otherwise FALSE.
+ *           Integer value representing one of the FORMTYPE_ values.
+ * Comments:
+ *           If |document| is NULL, then the return value is FORMTYPE_NONE.
  **/
-DLLEXPORT FPDF_BOOL STDCALL FPDF_HasXFAField(FPDF_DOCUMENT document,
-                                             int* docType);
+FPDF_EXPORT int FPDF_CALLCONV FPDF_GetFormType(FPDF_DOCUMENT document);
 
+/**
+ * Experimental API
+ * Function: FORM_SetIndexSelected
+ *           Selects/deselects the value at the given |index| of the focused
+ *           annotation.
+ * Parameters:
+ *           hHandle     -   Handle to the form fill module. Returned by
+ *                           FPDFDOC_InitFormFillEnvironment.
+ *           page        -   Handle to the page. Returned by FPDF_LoadPage
+ *           index       -   0-based index of value to be set as
+ *                           selected/unselected
+ *           selected    -   true to select, false to deselect
+ * Return Value:
+ *           TRUE if the operation succeeded.
+ *           FALSE if the operation failed or widget is not a supported type.
+ * Comments:
+ *           Intended for use with listbox/combobox widget types. Comboboxes
+ *           have at most a single value selected at a time which cannot be
+ *           deselected. Deselect on a combobox is a no-op that returns false.
+ *           Default implementation is a no-op that will return false for
+ *           other types.
+ *           Not currently supported for XFA forms - will return false.
+ **/
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV
+FORM_SetIndexSelected(FPDF_FORMHANDLE hHandle,
+                      FPDF_PAGE page,
+                      int index,
+                      FPDF_BOOL selected);
+
+/**
+ * Experimental API
+ * Function: FORM_IsIndexSelected
+ *           Returns whether or not the value at |index| of the focused
+ *           annotation is currently selected.
+ * Parameters:
+ *           hHandle     -   Handle to the form fill module. Returned by
+ *                           FPDFDOC_InitFormFillEnvironment.
+ *           page        -   Handle to the page. Returned by FPDF_LoadPage
+ *           index       -   0-based Index of value to check
+ * Return Value:
+ *           TRUE if value at |index| is currently selected.
+ *           FALSE if value at |index| is not selected or widget is not a
+ *           supported type.
+ * Comments:
+ *           Intended for use with listbox/combobox widget types. Default
+ *           implementation is a no-op that will return false for other types.
+ *           Not currently supported for XFA forms - will return false.
+ **/
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV
+FORM_IsIndexSelected(FPDF_FORMHANDLE hHandle, FPDF_PAGE page, int index);
+
+#ifdef PDF_ENABLE_XFA
 /**
  * Function: FPDF_LoadXFA
  *          If the document consists of XFA fields, there should call this
@@ -1569,192 +1836,7 @@ DLLEXPORT FPDF_BOOL STDCALL FPDF_HasXFAField(FPDF_DOCUMENT document,
  * Return Value:
  *          TRUE indicates success,otherwise FALSE.
  **/
-DLLEXPORT FPDF_BOOL STDCALL FPDF_LoadXFA(FPDF_DOCUMENT document);
-
-/**
- * Function: FPDF_Widget_Undo
- *          This method will implement the undo feature for the specified xfa
- *field.
- * Parameters:
- *          document        -   Handle to document. Returned by
- *FPDF_LoadDocument function.
- *          hWidget         -   Handle to the xfa field.
- * Return Value:
- *          None.
- **/
-DLLEXPORT void STDCALL FPDF_Widget_Undo(FPDF_DOCUMENT document,
-                                        FPDF_WIDGET hWidget);
-/**
- * Function: FPDF_Widget_Redo
- *          This method will implement the redo feature for the specified xfa
- *field.
- * Parameters:
- *          document        -   Handle to document. Returned by
- *FPDF_LoadDocument function.
- *          hWidget         -   Handle to the xfa field.
- * Return Value:
- *          None.
- **/
-DLLEXPORT void STDCALL FPDF_Widget_Redo(FPDF_DOCUMENT document,
-                                        FPDF_WIDGET hWidget);
-/**
- * Function: FPDF_Widget_SelectAll
- *          This method will implement the select all feature for the specified
- *xfa field.
- * Parameters:
- *          document        -   Handle to document. Returned by
- *FPDF_LoadDocument function.
- *          hWidget         -   Handle to the xfa field.
- * Return Value:
- *          None.
- **/
-DLLEXPORT void STDCALL FPDF_Widget_SelectAll(FPDF_DOCUMENT document,
-                                             FPDF_WIDGET hWidget);
-/**
- * Function: FPDF_Widget_Copy
- *          This method will implement the copy feature for the specified xfa
- *field.
- * Parameters:
- *          document        -   Handle to document. Returned by
- *FPDF_LoadDocument function.
- *          hWidget         -   Handle to the xfa field.
- *          wsText          -   Pointer to data buffer to receive the copied
- *data, in UTF-16LE format.
- *          size            -   The data buffer size.
- * Return Value:
- *          None.
- **/
-DLLEXPORT void STDCALL FPDF_Widget_Copy(FPDF_DOCUMENT document,
-                                        FPDF_WIDGET hWidget,
-                                        FPDF_WIDESTRING wsText,
-                                        FPDF_DWORD* size);
-/**
- * Function: FPDF_Widget_Cut
- *          This method will implement the cut feature for the specified xfa
- *field.
- * Parameters:
- *          document        -   Handle to document. Returned by
- *FPDF_LoadDocument function.
- *          hWidget         -   Handle to the xfa field.
- *          wsText          -   Pointer to data buffer to receive the cut
- *data,in UTF-16LE format.
- *          size            -   The data buffer size,not the byte number.
- * Return Value:
- *          None.
- **/
-DLLEXPORT void STDCALL FPDF_Widget_Cut(FPDF_DOCUMENT document,
-                                       FPDF_WIDGET hWidget,
-                                       FPDF_WIDESTRING wsText,
-                                       FPDF_DWORD* size);
-/**
- * Function: FPDF_Widget_Paste
- *          This method will implement the paste feature for the specified xfa
- *field.
- * Parameters:
- *          document        -   Handle to document. Returned by
- *FPDF_LoadDocument function.
- *          hWidget         -   Handle to the xfa field.
- *          wsText          -   The paste text buffer, in UTF-16LE format.
- *          size            -   The data buffer size,not the byte number.
- * Return Value:
- *          None.
- **/
-DLLEXPORT void STDCALL FPDF_Widget_Paste(FPDF_DOCUMENT document,
-                                         FPDF_WIDGET hWidget,
-                                         FPDF_WIDESTRING wsText,
-                                         FPDF_DWORD size);
-/**
- * Function: FPDF_Widget_ReplaceSpellCheckWord
- *          This method will implement the spell check feature for the specified
- *xfa field.
- * Parameters:
- *          document        -   Handle to document. Returned by
- *FPDF_LoadDocument function.
- *          hWidget         -   Handle to the xfa field.
- *          x               -   The x value of the specified point.
- *          y               -   The y value of the specified point.
- *          bsText          -   The text buffer needed to be speck check, in
- *UTF-16LE format.
- * Return Value:
- *          None.
- **/
-DLLEXPORT void STDCALL
-FPDF_Widget_ReplaceSpellCheckWord(FPDF_DOCUMENT document,
-                                  FPDF_WIDGET hWidget,
-                                  float x,
-                                  float y,
-                                  FPDF_BYTESTRING bsText);
-/**
- * Function: FPDF_Widget_GetSpellCheckWords
- *          This method will implement the spell check feature for the specified
- *xfa field.
- * Parameters:
- *          document        -   Handle to document. Returned by
- *FPDF_LoadDocument function.
- *          hWidget         -   Handle to the xfa field.
- *          x               -   The x value of the specified point.
- *          y               -   The y value of the specified point.
- *          stringHandle    -   Pointer to FPDF_STRINGHANDLE to receive the
- *speck check text buffer, in UTF-16LE format.
- * Return Value:
- *          None.
- **/
-DLLEXPORT void STDCALL
-FPDF_Widget_GetSpellCheckWords(FPDF_DOCUMENT document,
-                               FPDF_WIDGET hWidget,
-                               float x,
-                               float y,
-                               FPDF_STRINGHANDLE* stringHandle);
-/**
- * Function: FPDF_StringHandleCounts
- *          This method will get the count of the text buffer.
- * Parameters:
- *          stringHandle    -   Pointer to FPDF_STRINGHANDLE.
- * Return Value:
- *          None.
- **/
-DLLEXPORT int STDCALL FPDF_StringHandleCounts(FPDF_STRINGHANDLE stringHandle);
-/**
- * Function: FPDF_StringHandleGetStringByIndex
- *          This method will get the specified index of the text buffer.
- * Parameters:
- *          stringHandle    -   Pointer to FPDF_STRINGHANDLE.
- *          index           -   The specified index of text buffer.
- *          bsText          -   Pointer to data buffer to receive the text
- *buffer, in UTF-16LE format.
- *          size            -   The byte size of data buffer.
- * Return Value:
- *          TRUE indicates success, otherwise FALSE.
- **/
-DLLEXPORT FPDF_BOOL STDCALL
-FPDF_StringHandleGetStringByIndex(FPDF_STRINGHANDLE stringHandle,
-                                  int index,
-                                  FPDF_BYTESTRING bsText,
-                                  FPDF_DWORD* size);
-/**
- * Function: FPDF_StringHandleRelease
- *          This method will release the FPDF_STRINGHANDLE.
- * Parameters:
- *          stringHandle    -   Pointer to FPDF_STRINGHANDLE.
- * Return Value:
- *          None.
- **/
-DLLEXPORT void STDCALL FPDF_StringHandleRelease(FPDF_STRINGHANDLE stringHandle);
-/**
- * Function: FPDF_StringHandleAddString
- *          This method will add the specified text buffer.
- * Parameters:
- *          stringHandle    -   Pointer to FPDF_STRINGHANDLE.
- *          bsText          -   Pointer to data buffer of the text buffer, in
- *UTF-16LE format.
- *          size            -   The byte size of data buffer.
- * Return Value:
- *          TRUE indicates success, otherwise FALSE.
- **/
-DLLEXPORT FPDF_BOOL STDCALL
-FPDF_StringHandleAddString(FPDF_STRINGHANDLE stringHandle,
-                           FPDF_BYTESTRING bsText,
-                           FPDF_DWORD size);
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV FPDF_LoadXFA(FPDF_DOCUMENT document);
 #endif  // PDF_ENABLE_XFA
 
 #ifdef __cplusplus
