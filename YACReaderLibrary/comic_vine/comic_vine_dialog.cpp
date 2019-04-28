@@ -522,63 +522,67 @@ ComicDB ComicVineDialog::parseComicInfo(ComicDB & comic, const QString & json, i
 		{
 			QScriptValue result = sc.property("results");
 
-			QString title = result.property("name").toString();
+            if (!result.property("name").isNull()) {
+                QString title = result.property("name").toString();
 
-			QString number = result.property("issue_number").toString();
-            //QString count; //get from select volume
-
-
-			QString volume = result.property("volume").property("name").toString();
-            // QString storyArc; //story_arc
-            // QString arcNumber; //??
-            // QString arcCount; //count_of_issue_appearances -> NO
-
-            // QString genere; //no
-
-            QMap<QString,QString> authors = getAuthors(result.property("person_credits"));
-
-            QString writer = QStringList(authors.values("writer")).join("\n");
-            QString penciller = QStringList(authors.values("penciller")).join("\n");
-            QString inker = QStringList(authors.values("inker")).join("\n");
-            QString colorist = QStringList(authors.values("colorist")).join("\n");
-            QString letterer = QStringList(authors.values("letterer")).join("\n");
-            QString coverArtist = QStringList(authors.values("cover")).join("\n");
-
-			QString date = result.property("cover_date").toString();
-
-            //QString publisher; //get from select volume
-            // QString format; //no
-            // bool color; //no
-            // QString ageRating; //no
-
-            QString synopsis = result.property("description").toString().remove(QRegExp("<[^>]*>")); //description
-            QString characters = getCharacters(result.property("character_credits"));
-
-            if (title != "null") {
                 comic.info.title = title;
             }
 
-            comic.info.number = number;
+            if (!result.property("issue_number").isNull()) {
+                QString number = result.property("issue_number").toString();
+
+                comic.info.number = number;
+            }
+
+            if (!result.property("volume").property("name").isNull()) {
+                QString volume = result.property("volume").property("name").toString();
+
+                comic.info.volume = volume;
+            }
+
+            if (!result.property("person_credits").isNull()) {
+                QMap<QString,QString> authors = getAuthors(result.property("person_credits"));
+
+                QString writer = QStringList(authors.values("writer")).join("\n");
+                QString penciller = QStringList(authors.values("penciller")).join("\n");
+                QString inker = QStringList(authors.values("inker")).join("\n");
+                QString colorist = QStringList(authors.values("colorist")).join("\n");
+                QString letterer = QStringList(authors.values("letterer")).join("\n");
+                QString coverArtist = QStringList(authors.values("cover")).join("\n");
+
+                comic.info.writer = writer;
+                comic.info.penciller = penciller;
+                comic.info.inker = inker;
+                comic.info.colorist = colorist;
+                comic.info.letterer = letterer;
+                comic.info.coverArtist = coverArtist;
+            }
+
+            if (!result.property("cover_date").isNull()) {
+                QString date = result.property("cover_date").toString();
+
+                QStringList tempList = date.split("-");
+                std::reverse(tempList.begin(),tempList.end());
+                comic.info.date = tempList.join("/");
+            }
+
+            if (!result.property("description").isNull()) {
+                QString synopsis = result.property("description").toString().remove(QRegExp("<[^>]*>")); //description
+                comic.info.synopsis = synopsis;
+            }
+
+            if (!result.property("character_credits").isNull()) {
+                QString characters = getCharacters(result.property("character_credits"));
+
+                comic.info.characters = characters;
+            }
+
             comic.info.count = count;
 
-            comic.info.writer = writer;
-            comic.info.penciller = penciller;
-            comic.info.inker = inker;
-            comic.info.colorist = colorist;
-            comic.info.letterer = letterer;
-            comic.info.coverArtist = coverArtist;
-
-			QStringList tempList = date.split("-");
-			std::reverse(tempList.begin(),tempList.end());
-            comic.info.date = tempList.join("/");
-            comic.info.volume = volume;
-
             comic.info.publisher = publisher;
-
-            comic.info.synopsis = synopsis;
-            comic.info.characters = characters;
 		}
 	}
+
     return comic;
 }
 
