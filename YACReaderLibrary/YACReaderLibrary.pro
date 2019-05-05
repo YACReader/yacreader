@@ -30,13 +30,13 @@ INCLUDEPATH += ../common/gl
 win32 {
     CONFIG(force_angle) {
         message("using ANGLE")
-        LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
+        LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -luser32
         # linking extra libs are necesary for a successful compilation, a better approach should be
         # to remove any OpenGL (desktop) dependencies
         # the OpenGL stuff should be migrated to OpenGL ES
         DEFINES += FORCE_ANGLE
     } else {
-        LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
+        LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -luser32
     }
 
     QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
@@ -60,10 +60,6 @@ CONFIG(force_angle) {
       Release:DESTDIR = ../release
       Debug:DESTDIR = ../debug
     }
-}
-
-unix:!macx:!CONFIG(no_opengl) {
-  LIBS += -lGLU
 }
 
 macx {

@@ -2,13 +2,7 @@
 
 #include <QtGui>
 #include <QtOpenGL>
-
-#ifdef Q_OS_MAC
-	#include <OpenGL/glu.h>
-#else
-    #include <GL/glu.h>
-#endif
-
+#include <QMatrix4x4>
 #include <cmath>
 
 /*** Animation Settings ***/
@@ -371,10 +365,10 @@ void YACReaderFlowGL::udpatePerspective(int width, int height)
     glViewport(0, 0, width*pixelRatio, height*pixelRatio);
 
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-    gluPerspective(20.0, GLdouble(width) / (float)height, 1.0, 200.0);
-
+	QMatrix4x4 perspectiveMatrix;
+    perspectiveMatrix.setToIdentity();
+    perspectiveMatrix.perspective(20.0, GLdouble(width) / (float)height, 1.0, 200.0);
+    glLoadMatrixf(perspectiveMatrix.constData());
 	glMatrixMode(GL_MODELVIEW);
 }
 
@@ -866,12 +860,10 @@ void YACReaderFlowGL::setZoom(int zoom)
 	glViewport(0, 0, width, height);
 
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	//float sideX = ((float(width)/height)/2)*1.5;
-	//float sideY = 0.5*1.5;
-	gluPerspective(zoom, (float)width / (float)height, 1.0, 200.0);
-	//glOrtho(-sideX, sideX, -sideY+0.2, +sideY+0.2, 4, 11.0);
-
+    QMatrix4x4 zoomMatrix;
+    zoomMatrix.setToIdentity();
+    zoomMatrix.perspective(zoom, (float)width / (float)height, 1.0, 200.0);
+    glLoadMatrixf(zoomMatrix.constData());
 	glMatrixMode(GL_MODELVIEW);
 
 }
@@ -1113,38 +1105,34 @@ void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 	if(event->button() == Qt::LeftButton)
 	{
 		float x,y;
-        float pixelRatio = devicePixelRatio();
-        x = event->x()*pixelRatio;
-        y = event->y()*pixelRatio;
+        x = event->x()*devicePixelRatio();
+        y = event->y()*devicePixelRatio();
 		GLint viewport[4];
-		GLdouble modelview[16];
-		GLdouble projection[16];
-		GLfloat winX, winY, winZ;
-		GLdouble posX, posY, posZ;
+        QMatrix4x4 modelview;
+        QMatrix4x4 projection;
+		GLfloat winZ;
 
-		glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
-		glGetDoublev( GL_PROJECTION_MATRIX, projection );
-		glGetIntegerv( GL_VIEWPORT, viewport );
+		glGetFloatv(GL_MODELVIEW_MATRIX, modelview.data());
+		glGetFloatv(GL_PROJECTION_MATRIX, projection.data());
+		glGetIntegerv(GL_VIEWPORT, viewport);
+        glReadPixels(x, int((float)viewport[3] - (float)y), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
 
-		winX = (float)x;
-		winY = (float)viewport[3] - (float)y;
+        auto clickVector = QVector3D(x, (float)viewport[3] - (float)y, winZ);
+        clickVector = clickVector.unproject(modelview, projection, QRect(viewport[0], viewport[1], viewport[2],viewport[3]));
 
-        glReadPixels(winX, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
-
-        gluUnProject(winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
-
-		if((posX >= 0.5 && !flowRightToLeft) || (posX <=-0.5 && flowRightToLeft))
-		{
-			//int index = currentSelected+1;
-			//while((cfImages[index].current.x-cfImages[index].width/(2.0*config.rotation)) < posX)
-			//	index++;
-			//setCurrentIndex(index-1);
-			showNext();
-		}
-		else if((posX <=-0.5 && !flowRightToLeft) || (posX >= 0.5 && flowRightToLeft) )
-			showPrevious();
-	} else
+        if((clickVector.x() >= 0.5 && !flowRightToLeft) || (clickVector.x() <=-0.5 && flowRightToLeft))
+        {
+            showNext();
+        }
+        else if((clickVector.x() <=-0.5 && !flowRightToLeft) || (clickVector.x() >= 0.5 && flowRightToLeft) )
+        {
+            showPrevious();
+        }
+	}
+    else
+    {
         QOpenGLWidget::mousePressEvent(event);
+    }
     doneCurrent();
 }
 
@@ -1152,26 +1140,22 @@ void YACReaderFlowGL::mouseDoubleClickEvent(QMouseEvent* event)
 {
     makeCurrent();
     float x,y;
-    float pixelRatio = devicePixelRatio();
-    x = event->x()*pixelRatio;
-    y = event->y()*pixelRatio;
+    x = event->x()*devicePixelRatio();
+    y = event->y()*devicePixelRatio();
     GLint viewport[4];
-    GLdouble modelview[16];
-    GLdouble projection[16];
-    GLfloat winX, winY, winZ;
-    GLdouble posX, posY, posZ;
+    QMatrix4x4 modelview;
+    QMatrix4x4 projection;
+    GLfloat winZ;
 
-    glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
-    glGetDoublev( GL_PROJECTION_MATRIX, projection );
-    glGetIntegerv( GL_VIEWPORT, viewport );
+    glGetFloatv(GL_MODELVIEW_MATRIX, modelview.data());
+    glGetFloatv(GL_PROJECTION_MATRIX, projection.data());
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    glReadPixels(x, int((float)viewport[3] - (float)y), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
 
-    winX = (float)x;
-    winY = (float)viewport[3] - (float)y;
-    glReadPixels( x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
+    auto clickVector = QVector3D(x, (float)viewport[3] - (float)y, winZ);
+    clickVector = clickVector.unproject(modelview, projection, QRect(viewport[0], viewport[1], viewport[2],viewport[3]));
 
-    gluUnProject( winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
-
-    if(posX <= 0.5 && posX >= -0.5)
+    if(clickVector.x() <= 0.5 && clickVector.x() >= -0.5)
     {
         emit selected(centerIndex());
         event->accept();
