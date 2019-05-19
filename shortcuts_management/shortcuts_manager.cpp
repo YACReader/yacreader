@@ -13,6 +13,7 @@ void ShortcutsManager::initDefaultShorcuts()
 {
 #ifdef YACREADER_LIBRARY
     //ACTIONS
+    defaultShorcuts.insert(FOCUS_SEARCH_LINE_ACTION_YL, Qt::CTRL | Qt::Key_F);
     defaultShorcuts.insert(CREATE_LIBRARY_ACTION_YL, Qt::Key_A);
     defaultShorcuts.insert(OPEN_LIBRARY_ACTION_YL, Qt::Key_O);
     defaultShorcuts.insert(UPDATE_LIBRARY_ACTION_YL, Qt::Key_U);

@@ -377,6 +377,7 @@ void LibraryWindow::setUpShortcutsManagement()
                                          tmpList = QList<QAction *>()
                                                  << backAction
                                                  << forwardAction
+                                                 << focusSearchLineAction
                                                  << helpAboutAction
                                                  << optionsAction
                                                  << serverConfigAction
@@ -718,6 +719,12 @@ void LibraryWindow::createActions()
     getInfoAction->setText(tr("Download tags from Comic Vine"));
     getInfoAction->setIcon(QIcon(":/images/comics_view_toolbar/getInfo.png"));
     //-------------------------------------------------------------------------
+
+    focusSearchLineAction = new QAction(tr("Focus search line"), this);
+    focusSearchLineAction->setData(FOCUS_SEARCH_LINE_ACTION_YL);
+    focusSearchLineAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(FOCUS_SEARCH_LINE_ACTION_YL));
+    focusSearchLineAction->setIcon(QIcon(":/images/iconSearch.png"));
+    addAction(focusSearchLineAction);
 
     showEditShortcutsAction = new QAction(tr("Edit shortcuts"), this);
     showEditShortcutsAction->setData(SHOW_EDIT_SHORTCUTS_ACTION_YL);
@@ -1147,6 +1154,7 @@ void LibraryWindow::createConnections()
     //connect(comicsModel,SIGNAL(searchNumResults(int)),this,SLOT(checkSearchNumResults(int)));
     //connect(emptyFolderWidget,SIGNAL(subfolderSelected(QModelIndex,int)),this,SLOT(selectSubfolder(QModelIndex,int)));
 
+    connect(focusSearchLineAction, &QAction::triggered, searchEdit, [this] { searchEdit->setFocus(Qt::ShortcutFocusReason); });
     connect(showEditShortcutsAction, SIGNAL(triggered()), editShortcutsDialog, SLOT(show()));
 
     //update folders (partial updates)
