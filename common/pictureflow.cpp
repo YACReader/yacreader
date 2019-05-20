@@ -1421,7 +1421,6 @@ void PictureFlow::markSlide(int index, YACReaderComicReadStatus readStatus)
 void PictureFlow::updateMarks()
 {
 	d->renderer->init();
-	d->renderer->paint();
 	repaint();
 }
 

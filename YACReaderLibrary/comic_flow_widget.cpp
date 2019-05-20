@@ -105,7 +105,7 @@ void ComicFlowWidgetSW::keyPressEvent(QKeyEvent* event)
 }
 void ComicFlowWidgetSW::paintEvent(QPaintEvent *event)
 {
-	flow->paintEvent(event);
+	ComicFlowWidget::paintEvent(event);
 }
 void ComicFlowWidgetSW::mousePressEvent(QMouseEvent* event)
 {
