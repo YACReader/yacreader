@@ -32,6 +32,7 @@ public:
     void enableFilterMode(bool enabled) override;
     void selectIndex(int index) override;
     void updateCurrentComicView() override;
+    void focusComicsNavigation(Qt::FocusReason reason) override;
 
 public slots:
     void setCurrentIndex(const QModelIndex &index) override;

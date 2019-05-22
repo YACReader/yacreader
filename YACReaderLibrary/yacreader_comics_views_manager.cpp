@@ -121,6 +121,11 @@ void YACReaderComicsViewsManager::toggleComicsView()
     }
 }
 
+void YACReaderComicsViewsManager::focusComicsViewViaShortcut()
+{
+    comicsView->focusComicsNavigation(Qt::ShortcutFocusReason);
+}
+
 //PROTECTED
 
 void YACReaderComicsViewsManager::disconnectComicsViewConnections(ComicsView *widget)

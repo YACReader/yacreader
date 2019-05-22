@@ -34,6 +34,7 @@ public:
     QSize sizeHint();
     QByteArray getMimeDataFromSelection();
     void updateCurrentComicView() override;
+    void focusComicsNavigation(Qt::FocusReason reason) override;
 
 public slots:
     //ComicsView

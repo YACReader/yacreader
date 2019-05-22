@@ -55,6 +55,7 @@ signals:
 
 public slots:
     void toggleComicsView();
+    void focusComicsViewViaShortcut();
 
     void showComicsView();
     void showEmptyFolderView();
