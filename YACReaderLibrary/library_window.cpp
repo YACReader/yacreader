@@ -1798,8 +1798,6 @@ void LibraryWindow::checkEmptyFolder()
 void LibraryWindow::openComic(const ComicDB &comic)
 {
     if(!importedCovers) {
-        QList<ComicDB> siblings = comicsModel->getAllComics();
-
         //TODO generate IDS for libraries...
         quint64 libraryId = libraries.getId(selectedLibrary->currentText());
         bool yacreaderFound = false;
