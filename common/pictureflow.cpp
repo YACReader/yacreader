@@ -999,7 +999,6 @@ public:
   PictureFlowState* state;
   PictureFlowAnimator* animator;
   PictureFlowAbstractRenderer* renderer;
-  QTimer triggerTimer;
 };
 
 
@@ -1034,8 +1033,6 @@ PictureFlow::PictureFlow(QWidget* parent,FlowType flowType): QWidget(parent)
   d->animator = new PictureFlowAnimator;
   d->animator->state = d->state;
   QObject::connect(&d->animator->animateTimer, SIGNAL(timeout()), this, SLOT(updateAnimation()));
-
-  QObject::connect(&d->triggerTimer, SIGNAL(timeout()), this, SLOT(render()));
 
 #ifdef PICTUREFLOW_QT4
   setAttribute(Qt::WA_StaticContents, true);
@@ -1194,13 +1191,7 @@ void PictureFlow::render()
 
 void PictureFlow::triggerRender()
 {
-#ifdef PICTUREFLOW_QT4
-  d->triggerTimer.setSingleShot(true);
-  d->triggerTimer.start(0);
-#endif
-#if defined(PICTUREFLOW_QT3) || defined(PICTUREFLOW_QT2)
-  d->triggerTimer.start(0, true);
-#endif
+  QTimer::singleShot(0, this, &PictureFlow::render);
 }
 
 void PictureFlow::showPrevious()
