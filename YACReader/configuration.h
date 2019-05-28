@@ -22,34 +22,14 @@ class Configuration : public QObject
 private:
     QSettings *settings;
 
-    QString defaultPath;
-    //configuration properties
-    QSize magnifyingGlassSize;
-    QSize gotoSlideSize;
-    float zoomLevel;
-    bool adjustToWidth;
-    bool fullScreen;
-    FlowType flowType;
-    float fitToWidthRatio;
-    QPoint windowPos;
-    QSize windowSize;
-    bool maximized;
-    bool doublePage;
-    bool doubleMangaPage;
-    bool alwaysOnTop;
-    bool adjustToFullSize;
-    QColor backgroundColor;
-
     Configuration();
-    //Configuration(const Configuration & conf);
-    void load(const QString &path = CONF_FILE_PATH);
 
 public:
     static Configuration &getConfiguration()
     {
         static Configuration configuration;
         return configuration;
-    };
+    }
     QSettings *getSettings();
     void load(QSettings *settings);
     QString getDefaultPath() { return settings->value(PATH).toString(); }
