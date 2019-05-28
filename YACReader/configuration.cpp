@@ -35,8 +35,6 @@ void Configuration::load(QSettings *settings)
         settings->setValue(FLOW_TYPE, 0);
     if (!settings->contains(FULLSCREEN))
         settings->setValue(FULLSCREEN, false);
-    if (!settings->contains(Y_WINDOW_SIZE))
-        settings->setValue(Y_WINDOW_SIZE, QSize(0, 0));
     if (!settings->contains(MAXIMIZED))
         settings->setValue(MAXIMIZED, false);
     if (!settings->contains(DOUBLE_PAGE))

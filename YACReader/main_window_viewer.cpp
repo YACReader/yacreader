@@ -142,12 +142,7 @@ void MainWindowViewer::setupUI()
     height = static_cast<int>(heightDesktopResolution * 0.84);
     width = static_cast<int>(height * 0.70);
     Configuration &conf = Configuration::getConfiguration();
-    QPoint p = conf.getPos();
-    QSize s = conf.getSize();
-    if (s.width() != 0) {
-        move(p);
-        resize(s);
-    } else {
+    if (!restoreGeometry(conf.getGeometry())) {
         move(QPoint((widthDesktopResolution - width) / 2, ((heightDesktopResolution - height) - 40) / 2));
         resize(QSize(width, height));
     }
@@ -1438,10 +1433,8 @@ void MainWindowViewer::closeEvent(QCloseEvent *event)
 
     viewer->save();
     Configuration &conf = Configuration::getConfiguration();
-    if (!fullscreen && !isMaximized()) {
-        conf.setPos(pos());
-        conf.setSize(size());
-    }
+    if (!fullscreen && !isMaximized())
+        conf.setGeometry(saveGeometry());
     conf.setMaximized(isMaximized());
 
     event->accept();
