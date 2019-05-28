@@ -1433,8 +1433,6 @@ void MainWindowViewer::newVersion()
 
 void MainWindowViewer::closeEvent(QCloseEvent *event)
 {
-    Q_UNUSED(event)
-
     if (isClient)
         sendComic();
 
@@ -1446,7 +1444,7 @@ void MainWindowViewer::closeEvent(QCloseEvent *event)
     }
     conf.setMaximized(isMaximized());
 
-    emit(closed());
+    event->accept();
 }
 
 void MainWindowViewer::openPreviousComic()

@@ -174,8 +174,6 @@ private:
     Qt::WindowFlags previousWindowFlags;
     QPoint previousPos;
     QSize previousSize;
-signals:
-    void closed();
 
 protected:
     void closeEvent(QCloseEvent *event) override;
