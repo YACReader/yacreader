@@ -108,8 +108,6 @@ void GoToFlow::setNumSlides(unsigned int slides)
 
 	toolBar->setTop(slides);
 
-	SlideInitializer * si = new SlideInitializer(&mutexGoToFlow,flow,slides);
-
 	imagesLoaded.clear();
 	imagesLoaded.fill(false,slides);
 
@@ -124,7 +122,10 @@ void GoToFlow::setNumSlides(unsigned int slides)
 	ready = true;
 	worker->reset();
 
-	si->start();
+	flow->clear();
+	for(unsigned int i=0;i<slides;i++)
+		flow->addSlide(QImage());
+	flow->setCenterIndex(0);
 }
 
 void GoToFlow::reset()
@@ -230,28 +231,8 @@ void GoToFlow::setFlowRightToLeft(bool b)
 }
 
 //-----------------------------------------------------------------------------
-//SlideInitializer
-//-----------------------------------------------------------------------------
-SlideInitializer::SlideInitializer(QMutex * m,PictureFlow * flow,int slides)
-	:QThread(),mutex(m),_flow(flow),_slides(slides)
-{
-
-}
-void SlideInitializer::run()
-{
-	mutex->lock();
-
-	_flow->clear();
-	for(int i=0;i<_slides;i++)
-		_flow->addSlide(QImage());
-	_flow->setCenterIndex(0);
-
-	mutex->unlock();
-}
-//-----------------------------------------------------------------------------
 //PageLoader
 //-----------------------------------------------------------------------------
-
 
 PageLoader::PageLoader(QMutex * m):
 	QThread(),mutex(m), restart(false), working(false), idx(-1)

@@ -21,7 +21,6 @@ class QLabel;
 
 
 class Comic;
-class SlideInitializer;
 class PageLoader;
 class YACReaderFlow;
 class PictureFlow;
@@ -68,23 +67,10 @@ signals:
     void goToPage(unsigned int page);
 
 };
-//-----------------------------------------------------------------------------
-//SlideInitializer
-//-----------------------------------------------------------------------------
-class SlideInitializer : public QThread
-{
-public:
-	SlideInitializer(QMutex * m,PictureFlow * flow,int slides);
-private:
-	QMutex * mutex;
-	PictureFlow * _flow;
-	int _slides;
-	void run();
-};
+
 //-----------------------------------------------------------------------------
 //PageLoader
 //-----------------------------------------------------------------------------
-
 class PageLoader : public QThread
 {
 public:
