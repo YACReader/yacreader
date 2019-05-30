@@ -260,6 +260,8 @@ PageLoader::PageLoader(QMutex * m):
 
 PageLoader::~PageLoader()
 {
+	//TODO this destructor never runs. If it is ever called, it will hang, because
+	//the implementation is broken due to the absolutely endless loop in run().
 	mutex->lock();
 	condition.wakeOne();
 	mutex->unlock();
@@ -284,9 +286,11 @@ void PageLoader::generate(int index, QSize size,const QByteArray & rImage)
 		start();
 	else
 	{
+		mutex->lock();
 		// already running, wake up whenever ready
 		restart = true;
 		condition.wakeOne();
+		mutex->unlock();
 	}
 }
 
@@ -314,7 +318,7 @@ void PageLoader::run()
 
 		// put to sleep
 		mutex->lock();
-		if (!this->restart)
+		while (!this->restart)
 			condition.wait(mutex);
 		restart = false;
 		mutex->unlock();
