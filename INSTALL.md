@@ -3,8 +3,8 @@
 YACReader and YACReaderLibrary are build using qmake. To build and install the
 program, run:
 
-> qmake-qt5 CONFIG+=[Options]  
-> make  
+> qmake-qt5 CONFIG+=[Options]
+> make
 > make install
 
 from the source dir. For separate builds of YACReader or YACReaderLibrary,
@@ -28,7 +28,6 @@ folder. To build it, enter the folder and run the commands described above.
 	- network
 - A pdf rendering backend (optional, see below)
 - qrencode (optional)
-- glu
 - (lib)unarr (see below)
 
 Not all dependencies are needed at build time. For example the qml components in
@@ -81,7 +80,7 @@ can be used to install to a different location, which is usefull for packaging.
 
 Default values:
 
->PREFIX=/usr  
+>PREFIX=/usr
 >INSTALL_ROOT=""
 
 On embedded devices that don't support desktop OpenGL, it is recommended to use
