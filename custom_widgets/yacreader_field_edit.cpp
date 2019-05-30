@@ -3,37 +3,36 @@
 #include <QAction>
 #include <QFocusEvent>
 
-YACReaderFieldEdit::YACReaderFieldEdit(QWidget * parent)
-	:QLineEdit(parent)
+YACReaderFieldEdit::YACReaderFieldEdit(QWidget *parent)
+    : QLineEdit(parent)
 {
-	setPlaceholderText(tr("Click to overwrite"));
-	setModified(false);
-	restore = new QAction(tr("Restore to default"),this);
-	this->addAction(restore);
-	//this->setContextMenuPolicy(Qt::ActionsContextMenu);
+    setPlaceholderText(tr("Click to overwrite"));
+    setModified(false);
+    restore = new QAction(tr("Restore to default"), this);
+    this->addAction(restore);
+    //this->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
-void YACReaderFieldEdit::focusInEvent(QFocusEvent* e)
+void YACReaderFieldEdit::focusInEvent(QFocusEvent *e)
 {
-	if (e->reason() == Qt::MouseFocusReason)
-	{
-	  setModified(true);
-	  setPlaceholderText("");
-	}
+    if (e->reason() == Qt::MouseFocusReason) {
+        setModified(true);
+        setPlaceholderText("");
+    }
 
-	QLineEdit::focusInEvent(e);
+    QLineEdit::focusInEvent(e);
 }
 
 void YACReaderFieldEdit::clear()
 {
-	setPlaceholderText(tr("Click to overwrite"));
-	QLineEdit::clear();
-	QLineEdit::setModified(false);
+    setPlaceholderText(tr("Click to overwrite"));
+    QLineEdit::clear();
+    QLineEdit::setModified(false);
 }
 
 void YACReaderFieldEdit::setDisabled(bool disabled)
 {
-	if(disabled)
-		setPlaceholderText("");
-	QLineEdit::setDisabled(disabled);
+    if (disabled)
+        setPlaceholderText("");
+    QLineEdit::setDisabled(disabled);
 }

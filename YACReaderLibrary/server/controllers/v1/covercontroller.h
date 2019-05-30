@@ -5,16 +5,17 @@
 #include "httpresponse.h"
 #include "httprequesthandler.h"
 
-class CoverController : public HttpRequestHandler {
+class CoverController : public HttpRequestHandler
+{
     Q_OBJECT
     Q_DISABLE_COPY(CoverController);
-public:
 
+public:
     /** Constructor */
     CoverController();
 
     /** Generates the response */
-    void service(HttpRequest& request, HttpResponse& response);
+    void service(HttpRequest &request, HttpResponse &response);
 };
 
 #endif // COVERCONTROLLER_H

@@ -4,13 +4,14 @@
 
 #include "configuration.h"
 
-YACReaderSliderAction::YACReaderSliderAction (QWidget * parent) 
-	:QWidgetAction (parent) {
-	
+YACReaderSliderAction::YACReaderSliderAction(QWidget *parent)
+    : QWidgetAction(parent)
+{
+
     widget = new YACReaderSlider();
     setDefaultWidget(widget);
 
-    connect(widget,SIGNAL(zoomRatioChanged(int)),this,SIGNAL(zoomRatioChanged(int)));
+    connect(widget, SIGNAL(zoomRatioChanged(int)), this, SIGNAL(zoomRatioChanged(int)));
 }
 
 void YACReaderSliderAction::updateText(int value)
@@ -24,7 +25,7 @@ void YACReaderSliderAction::updateZoomRatio(int value)
 }
 
 YACReaderSlider::YACReaderSlider(QWidget *parent)
-    :QWidget(parent)
+    : QWidget(parent)
 {
     const int sliderWidth = 200;
     const int contentsMargin = 10;
@@ -33,7 +34,7 @@ YACReaderSlider::YACReaderSlider(QWidget *parent)
 
     setFocusPolicy(Qt::StrongFocus);
 
-    QHBoxLayout* pLayout = new QHBoxLayout();
+    QHBoxLayout *pLayout = new QHBoxLayout();
 
     pLayout->addStretch();
 
@@ -56,10 +57,10 @@ YACReaderSlider::YACReaderSlider(QWidget *parent)
 
     pLayout->setMargin(0);
 
-    setLayout (pLayout);
+    setLayout(pLayout);
     setAutoFillBackground(false);
 
-    setContentsMargins(contentsMargin,contentsMargin,contentsMargin,contentsMargin);
+    setContentsMargins(contentsMargin, contentsMargin, contentsMargin, contentsMargin);
     setFixedSize(sliderWidth + 2 * contentsMargin + 2 * elementsSpacing + percentageLabelWidth + resetButton->sizeHint().width(), 45);
 
     slider->setMinimum(30);
@@ -78,7 +79,7 @@ void YACReaderSlider::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
-    painter.fillRect(0,0,width(),height(),QColor("#BB000000"));
+    painter.fillRect(0, 0, width(), height(), QColor("#BB000000"));
 }
 
 void YACReaderSlider::show()
@@ -87,7 +88,7 @@ void YACReaderSlider::show()
     setFocus();
 }
 
-void YACReaderSlider::focusOutEvent(QFocusEvent * event)
+void YACReaderSlider::focusOutEvent(QFocusEvent *event)
 {
     QWidget::focusOutEvent(event);
     hide();

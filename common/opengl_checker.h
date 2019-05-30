@@ -9,6 +9,7 @@ public:
     OpenGLChecker();
     bool hasCompatibleOpenGLVersion();
     QString textVersionDescription();
+
 private:
     QString description;
     bool compatibleOpenGLVersion;

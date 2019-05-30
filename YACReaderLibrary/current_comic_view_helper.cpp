@@ -2,7 +2,8 @@
 
 #include "comic_db.h"
 
-ComicDB currentComicFromModel(ComicModel *model, bool &found) {
+ComicDB currentComicFromModel(ComicModel *model, bool &found)
+{
     auto comics = model->getAllComics();
 
     foreach (auto comic, comics) {

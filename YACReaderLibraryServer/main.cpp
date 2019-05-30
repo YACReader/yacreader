@@ -23,7 +23,6 @@
 using namespace QsLogging;
 //Returns false in case of a parse error (unknown option or missing value); returns true otherwise.
 
-
 void logSystemAndConfig()
 {
     QLOG_INFO() << "---------- System & configuration ----------";
@@ -44,45 +43,39 @@ void logSystemAndConfig()
     QLOG_INFO() << "--------------------------------------------";
 }
 
-void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg)
+void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
-	Q_UNUSED(context);
+    Q_UNUSED(context);
 
-	QByteArray localMsg = msg.toLocal8Bit();
-    switch (type)
-	{
-    case QtInfoMsg:
-    {
-      QLOG_INFO() << localMsg.constData();
-      break;
+    QByteArray localMsg = msg.toLocal8Bit();
+    switch (type) {
+    case QtInfoMsg: {
+        QLOG_INFO() << localMsg.constData();
+        break;
     }
-		case QtDebugMsg:
-		{
-			QLOG_DEBUG() << localMsg.constData();
-			break;
-		}
+    case QtDebugMsg: {
+        QLOG_DEBUG() << localMsg.constData();
+        break;
+    }
 
-		case QtWarningMsg:
-		{
-			QLOG_WARN() << localMsg.constData();
-			break;
-		}
+    case QtWarningMsg: {
+        QLOG_WARN() << localMsg.constData();
+        break;
+    }
 
-		case QtCriticalMsg:
-		{
-			QLOG_ERROR() << localMsg.constData();
-			break;
-		}
+    case QtCriticalMsg: {
+        QLOG_ERROR() << localMsg.constData();
+        break;
+    }
 
-		case QtFatalMsg:
-		{
-			QLOG_FATAL() << localMsg.constData();
-			break;
-		}
-  }
+    case QtFatalMsg: {
+        QLOG_FATAL() << localMsg.constData();
+        break;
+    }
+    }
 }
 
-int main( int argc, char ** argv )
+int main(int argc, char **argv)
 {
     qInstallMessageHandler(messageHandler);
 
@@ -98,89 +91,83 @@ int main( int argc, char ** argv )
     QTranslator translator;
     QString sufix = QLocale::system().name();
 
-    #if defined Q_OS_UNIX && !defined Q_OS_MAC
-      translator.load(QString(DATADIR)+"/yacreader/languages/yacreaderlibrary_"+sufix);
-    #else
-      translator.load(QCoreApplication::applicationDirPath()+"/languages/yacreaderlibrary_"+sufix);
-    #endif
-      app.installTranslator(&translator);
+#if defined Q_OS_UNIX && !defined Q_OS_MAC
+    translator.load(QString(DATADIR) + "/yacreader/languages/yacreaderlibrary_" + sufix);
+#else
+    translator.load(QCoreApplication::applicationDirPath() + "/languages/yacreaderlibrary_" + sufix);
+#endif
+    app.installTranslator(&translator);
 
     QCommandLineParser parser;
     parser.setApplicationDescription(QCoreApplication::tr("\nYACReaderLibraryServer is the headless (no gui) version of YACReaderLibrary"));
     parser.addHelpOption();
     const QCommandLineOption versionOption = parser.addVersionOption();
     parser.addPositionalArgument("command", "The command to execute. [start, create-library, update-library, add-library, remove-library, list-libraries]");
-    parser.addOption({"loglevel", "Set log level. Valid values: trace, info, debug, warn, error.", "loglevel", "info"});
+    parser.addOption({ "loglevel", "Set log level. Valid values: trace, info, debug, warn, error.", "loglevel", "info" });
     parser.parse(app.arguments());
 
     const QStringList args = parser.positionalArguments();
     const QString command = args.isEmpty() ? QString() : args.first();
 
-    if(parser.isSet(versionOption))
-    {
-        qout << "YACReaderLibraryServer" << " " << VERSION << endl;
+    if (parser.isSet(versionOption)) {
+        qout << "YACReaderLibraryServer"
+             << " " << VERSION << endl;
 
         return 0;
     }
 
-    if(command == "start")
-    {
+    if (command == "start") {
         parser.clearPositionalArguments();
         parser.addPositionalArgument("start", "Start YACReaderLibraryServer");
         parser.process(app);
 
-        QString destLog = YACReader::getSettingsPath()+"/yacreaderlibrary.log";
+        QString destLog = YACReader::getSettingsPath() + "/yacreaderlibrary.log";
         QDir().mkpath(YACReader::getSettingsPath());
 
-        Logger& logger = Logger::instance();
+        Logger &logger = Logger::instance();
 
         if (parser.isSet("loglevel")) {
             if (parser.value("loglevel") == "trace") {
                 logger.setLoggingLevel(QsLogging::TraceLevel);
-            }
-            else if (parser.value("loglevel") == "info") {
+            } else if (parser.value("loglevel") == "info") {
                 logger.setLoggingLevel(QsLogging::InfoLevel);
-            }
-            else if (parser.value("loglevel") == "debug") {
+            } else if (parser.value("loglevel") == "debug") {
                 logger.setLoggingLevel(QsLogging::DebugLevel);
-            }
-            else if (parser.value("loglevel") == "warn") {
-              logger.setLoggingLevel(QsLogging::WarnLevel);
-            }
-            else if (parser.value("loglevel") == "error") {
+            } else if (parser.value("loglevel") == "warn") {
+                logger.setLoggingLevel(QsLogging::WarnLevel);
+            } else if (parser.value("loglevel") == "error") {
                 logger.setLoggingLevel(QsLogging::ErrorLevel);
-            }
-            else {
+            } else {
                 parser.showHelp();
             }
         }
 
         DestinationPtr fileDestination(DestinationFactory::MakeFileDestination(
-                                           destLog, EnableLogRotation, MaxSizeBytes(1048576), MaxOldLogCount(2)));
+                destLog, EnableLogRotation, MaxSizeBytes(1048576), MaxOldLogCount(2)));
         DestinationPtr debugDestination(DestinationFactory::MakeDebugOutputDestination());
         logger.addDestination(debugDestination);
         logger.addDestination(fileDestination);
 
         QTranslator translator;
         QString sufix = QLocale::system().name();
-    #if defined Q_OS_UNIX && !defined Q_OS_MAC
-        translator.load(QString(DATADIR)+"/yacreader/languages/yacreaderlibrary_"+sufix);
-    #else
-        translator.load(QCoreApplication::applicationDirPath()+"/languages/yacreaderlibrary_"+sufix);
-    #endif
+#if defined Q_OS_UNIX && !defined Q_OS_MAC
+        translator.load(QString(DATADIR) + "/yacreader/languages/yacreaderlibrary_" + sufix);
+#else
+        translator.load(QCoreApplication::applicationDirPath() + "/languages/yacreaderlibrary_" + sufix);
+#endif
         app.installTranslator(&translator);
 
         QTranslator viewerTranslator;
-    #if defined Q_OS_UNIX && !defined Q_OS_MAC
-        viewerTranslator.load(QString(DATADIR)+"/yacreader/languages/yacreader_"+sufix);
-    #else
-        viewerTranslator.load(QCoreApplication::applicationDirPath()+"/languages/yacreader_"+sufix);
-    #endif
+#if defined Q_OS_UNIX && !defined Q_OS_MAC
+        viewerTranslator.load(QString(DATADIR) + "/yacreader/languages/yacreader_" + sufix);
+#else
+        viewerTranslator.load(QCoreApplication::applicationDirPath() + "/languages/yacreader_" + sufix);
+#endif
         app.installTranslator(&viewerTranslator);
 
         qRegisterMetaType<ComicDB>("ComicDB");
 
-        QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/"+QCoreApplication::applicationName()+".ini",QSettings::IniFormat);
+        QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/" + QCoreApplication::applicationName() + ".ini", QSettings::IniFormat);
         settings->beginGroup("libraryConfig");
 
         //server
@@ -191,7 +178,7 @@ int main( int argc, char ** argv )
 
         logSystemAndConfig();
 
-        if(YACReaderLocalServer::isRunning()) //sï¿½lo se permite una instancia de YACReaderLibrary
+        if (YACReaderLocalServer::isRunning()) //sï¿½lo se permite una instancia de YACReaderLibrary
         {
             QLOG_WARN() << "another instance of YACReaderLibrary is running";
             QsLogging::Logger::destroyInstance();
@@ -203,7 +190,7 @@ int main( int argc, char ** argv )
         LibrariesUpdater updater;
         updater.updateIfNeeded();
 
-        YACReaderLocalServer * localServer = new YACReaderLocalServer();
+        YACReaderLocalServer *localServer = new YACReaderLocalServer();
 
         int ret = app.exec();
 
@@ -218,9 +205,7 @@ int main( int argc, char ** argv )
         QsLogging::Logger::destroyInstance();
 
         return ret;
-    }
-    else if(command == "create-library")
-    {
+    } else if (command == "create-library") {
         parser.clearPositionalArguments();
         parser.addPositionalArgument("create-library", "Creates a library named \"name\" in the specified destination <path>");
         parser.addPositionalArgument("name", "Library name", "\"name\"");
@@ -228,38 +213,32 @@ int main( int argc, char ** argv )
         parser.process(app);
 
         const QStringList args = parser.positionalArguments();
-        if(args.length() != 3)
-        {
+        if (args.length() != 3) {
             parser.showHelp();
             return 0;
         }
 
-        ConsoleUILibraryCreator * libraryCreatorUI = new ConsoleUILibraryCreator;
+        ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator;
         libraryCreatorUI->createLibrary(args.at(1), args.at(2));
 
         return 0;
-    }
-    else if(command == "update-library")
-    {
+    } else if (command == "update-library") {
         parser.clearPositionalArguments();
         parser.addPositionalArgument("update-library", "Updates an existing library at <path>");
         parser.addPositionalArgument("path", "Path to the library to be updated", "<path>");
         parser.process(app);
 
         const QStringList args = parser.positionalArguments();
-        if(args.length() != 2)
-        {
+        if (args.length() != 2) {
             parser.showHelp();
             return 0;
         }
 
-        ConsoleUILibraryCreator * libraryCreatorUI = new ConsoleUILibraryCreator;
+        ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator;
         libraryCreatorUI->updateLibrary(args.at(1));
 
         return 0;
-    }
-    else if(command == "add-library")
-    {
+    } else if (command == "add-library") {
         parser.clearPositionalArguments();
         parser.addPositionalArgument("add-library", "Adds an exiting library named \"name\" at the specified origin <path>");
         parser.addPositionalArgument("name", "Library name", "\"name\"");
@@ -267,49 +246,42 @@ int main( int argc, char ** argv )
         parser.process(app);
 
         const QStringList args = parser.positionalArguments();
-        if(args.length() != 3)
-        {
+        if (args.length() != 3) {
             parser.showHelp();
             return 0;
         }
 
-        ConsoleUILibraryCreator * libraryCreatorUI = new ConsoleUILibraryCreator;
+        ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator;
         libraryCreatorUI->addExistingLibrary(args.at(1), args.at(2));
 
         return 0;
-    }
-    else if(command == "remove-library")
-    {
+    } else if (command == "remove-library") {
         parser.clearPositionalArguments();
         parser.addPositionalArgument("remove-library", "Removes a library named \"name\" from the list of libraries");
         parser.addPositionalArgument("name", "Library name", "\"name\"");
         parser.process(app);
 
         const QStringList args = parser.positionalArguments();
-        if(args.length() != 2)
-        {
+        if (args.length() != 2) {
             parser.showHelp();
             return 0;
         }
 
-        ConsoleUILibraryCreator * libraryCreatorUI = new ConsoleUILibraryCreator;
+        ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator;
         libraryCreatorUI->removeLibrary(args.at(1));
 
         return 0;
-    }
-    else if(command == "list-libraries")
-    {
+    } else if (command == "list-libraries") {
         parser.clearPositionalArguments();
         parser.addPositionalArgument("list-libraries", "List all available libraries");
         parser.process(app);
 
         YACReaderLibraries libraries = DBHelper::getLibraries();
-        for(QString libraryName : libraries.getNames())
+        for (QString libraryName : libraries.getNames())
             qout << libraryName << " : " << libraries.getPath(libraryName) << endl;
 
         return 0;
-    }
-    else //error
+    } else //error
     {
         parser.process(app);
         parser.showHelp();

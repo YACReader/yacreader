@@ -3,11 +3,8 @@
 #include "yacreader_libraries.h"
 #include "data_base_management.h"
 
-
-
 LibrariesUpdater::LibrariesUpdater()
 {
-
 }
 
 void LibrariesUpdater::updateIfNeeded()
@@ -16,23 +13,20 @@ void LibrariesUpdater::updateIfNeeded()
 
     libraries.load();
 
-    foreach(QString name, libraries.getNames()) {
+    foreach (QString name, libraries.getNames()) {
         QString path = libraries.getPath(name) + "/.yacreaderlibrary";
 
         QDir d;
 
         QString dbVersion;
-        if(d.exists(path) && d.exists(path+"/library.ydb") && (dbVersion = DataBaseManagement::checkValidDB(path+"/library.ydb")) != "")
-        {
-            int comparation = DataBaseManagement::compareVersions(dbVersion,VERSION);
+        if (d.exists(path) && d.exists(path + "/library.ydb") && (dbVersion = DataBaseManagement::checkValidDB(path + "/library.ydb")) != "") {
+            int comparation = DataBaseManagement::compareVersions(dbVersion, VERSION);
 
-            if(comparation < 0)
-            {
+            if (comparation < 0) {
                 bool updated = DataBaseManagement::updateToCurrentVersion(path);
-                if(!updated) {
+                if (!updated) {
                     //TODO log error
                 }
-
             }
         }
     }

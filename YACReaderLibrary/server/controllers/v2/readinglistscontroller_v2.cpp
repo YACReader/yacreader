@@ -4,11 +4,8 @@
 #include "reading_list.h"
 #include "yacreader_server_data_helper.h"
 
-
-
 ReadingListsControllerV2::ReadingListsControllerV2()
 {
-
 }
 
 void ReadingListsControllerV2::service(HttpRequest &request, HttpResponse &response)
@@ -21,7 +18,7 @@ void ReadingListsControllerV2::service(HttpRequest &request, HttpResponse &respo
 
     serviceContent(libraryId, response);
 
-    response.write("",true);
+    response.write("", true);
 }
 
 void ReadingListsControllerV2::serviceContent(const int library, HttpResponse &response)
@@ -30,8 +27,7 @@ void ReadingListsControllerV2::serviceContent(const int library, HttpResponse &r
 
     QJsonArray items;
 
-    for(QList<ReadingList>::const_iterator itr = readingLists.constBegin();itr!=readingLists.constEnd();itr++)
-    {
+    for (QList<ReadingList>::const_iterator itr = readingLists.constBegin(); itr != readingLists.constEnd(); itr++) {
         items.append(YACReaderServerDataHelper::readingListToJSON(library, *itr));
     }
 

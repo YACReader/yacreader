@@ -1,12 +1,9 @@
 #include "bundle_creator.h"
 
-
 BundleCreator::BundleCreator(void)
-	:QObject()
+    : QObject()
 {
-
 }
-
 
 BundleCreator::~BundleCreator(void)
 {

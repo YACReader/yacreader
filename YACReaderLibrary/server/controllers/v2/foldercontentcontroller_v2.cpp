@@ -16,17 +16,16 @@
 #include <ctime>
 using namespace std;
 
-struct LibraryItemSorter
-{
-    bool operator()(const LibraryItem * a,const LibraryItem * b) const
+struct LibraryItemSorter {
+    bool operator()(const LibraryItem *a, const LibraryItem *b) const
     {
-        return naturalSortLessThanCI(a->name,b->name);
+        return naturalSortLessThanCI(a->name, b->name);
     }
 };
 
 FolderContentControllerV2::FolderContentControllerV2() {}
 
-void FolderContentControllerV2::service(HttpRequest& request, HttpResponse& response)
+void FolderContentControllerV2::service(HttpRequest &request, HttpResponse &response)
 {
     response.setHeader("Content-Type", "application/json");
 
@@ -37,8 +36,8 @@ void FolderContentControllerV2::service(HttpRequest& request, HttpResponse& resp
 
     serviceContent(libraryId, parentId, response);
 
-    response.setStatus(200,"OK");
-    response.write("",true);
+    response.setStatus(200, "OK");
+    response.write("", true);
 }
 
 void FolderContentControllerV2::serviceContent(const int &library, const qulonglong &folderId, HttpResponse &response)
@@ -46,27 +45,23 @@ void FolderContentControllerV2::serviceContent(const int &library, const qulongl
 #ifdef QT_DEBUG
     auto started = std::chrono::high_resolution_clock::now();
 #endif
-    QList<LibraryItem *> folderContent = DBHelper::getFolderSubfoldersFromLibrary(library,folderId);
-    QList<LibraryItem *> folderComics = DBHelper::getFolderComicsFromLibrary(library,folderId);
+    QList<LibraryItem *> folderContent = DBHelper::getFolderSubfoldersFromLibrary(library, folderId);
+    QList<LibraryItem *> folderComics = DBHelper::getFolderComicsFromLibrary(library, folderId);
 
     folderContent.append(folderComics);
-    qSort(folderContent.begin(),folderContent.end(),LibraryItemSorter());
+    qSort(folderContent.begin(), folderContent.end(), LibraryItemSorter());
 
     folderComics.clear();
 
     QJsonArray items;
 
-    ComicDB * currentComic;
-    Folder * currentFolder;
-    for(QList<LibraryItem *>::const_iterator itr = folderContent.constBegin();itr!=folderContent.constEnd();itr++)
-    {
-        if((*itr)->isDir())
-        {
+    ComicDB *currentComic;
+    Folder *currentFolder;
+    for (QList<LibraryItem *>::const_iterator itr = folderContent.constBegin(); itr != folderContent.constEnd(); itr++) {
+        if ((*itr)->isDir()) {
             currentFolder = (Folder *)(*itr);
             items.append(YACReaderServerDataHelper::folderToJSON(library, *currentFolder));
-        }
-        else
-        {
+        } else {
             currentComic = (ComicDB *)(*itr);
             items.append(YACReaderServerDataHelper::comicToJSON(library, *currentComic));
         }
@@ -77,8 +72,8 @@ void FolderContentControllerV2::serviceContent(const int &library, const qulongl
     response.write(output.toJson(QJsonDocument::Compact));
 #ifdef QT_DEBUG
     auto done = std::chrono::high_resolution_clock::now();
-    
+
     QLOG_TRACE() << "num items = " << items.count();
-    QLOG_TRACE() << std::chrono::duration_cast<std::chrono::milliseconds>(done-started).count();
+    QLOG_TRACE() << std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count();
 #endif
 }

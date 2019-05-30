@@ -5,10 +5,10 @@
 
 class BundleCreator : public QObject
 {
-Q_OBJECT
+    Q_OBJECT
 public:
-	BundleCreator(void);
-	~BundleCreator(void);
+    BundleCreator(void);
+    ~BundleCreator(void);
 };
 
 #endif

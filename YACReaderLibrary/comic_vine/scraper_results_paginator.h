@@ -8,27 +8,27 @@ class QLabel;
 
 class ScraperResultsPaginator : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit ScraperResultsPaginator(QWidget *parent = 0);
-	void update(const QString & json);
-	int getCurrentPage();
-	void setCustomLabel(const QString & label);
+    explicit ScraperResultsPaginator(QWidget *parent = 0);
+    void update(const QString &json);
+    int getCurrentPage();
+    void setCustomLabel(const QString &label);
 signals:
-	void loadNextPage();
-	void loadPreviousPage();
+    void loadNextPage();
+    void loadPreviousPage();
 
 public slots:
 
 private:
-	QToolButton * nextPage;
-	QToolButton * previousPage;
-	QLabel * numElements;
-	QLabel * numPages;
+    QToolButton *nextPage;
+    QToolButton *previousPage;
+    QLabel *numElements;
+    QLabel *numPages;
 
-	int currentPage;
+    int currentPage;
 
-	QString customLabel;
+    QString customLabel;
 };
 
 #endif // SCRAPER_RESULTS_PAGINATOR_H

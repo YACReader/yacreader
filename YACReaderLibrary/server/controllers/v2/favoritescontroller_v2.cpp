@@ -17,7 +17,7 @@ void FavoritesControllerV2::service(HttpRequest &request, HttpResponse &response
 
     serviceContent(libraryId, response);
 
-    response.write("",true);
+    response.write("", true);
 }
 
 void FavoritesControllerV2::serviceContent(const int library, HttpResponse &response)
@@ -25,15 +25,12 @@ void FavoritesControllerV2::serviceContent(const int library, HttpResponse &resp
     QList<ComicDB> comics = DBHelper::getFavorites(library);
 
     QJsonArray items;
-    
-    for(const ComicDB &comic : comics)
-    {
+
+    for (const ComicDB &comic : comics) {
         items.append(YACReaderServerDataHelper::comicToJSON(library, comic));
     }
-    
+
     QJsonDocument output(items);
-    
+
     response.write(output.toJson(QJsonDocument::Compact));
 }
-
-

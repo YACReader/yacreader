@@ -61,49 +61,44 @@
 #define COMIC_VINE_API_KEY "COMIC_VINE_API_KEY"
 #define COMIC_VINE_BASE_URL "COMIC_VINE_BASE_URL"
 
-namespace YACReader
-{
+namespace YACReader {
 
 static const QString YACReaderLibrarComiscSelectionMimeDataFormat = "application/yacreaderlibrary-comics-ids";
 static const QString YACReaderLibrarSubReadingListMimeDataFormat = "application/yacreaderlibrary-sublist-rows";
 
- enum FlowType
-  {
-	CoverFlowLike=0,
-	Strip,
-	StripOverlapped,
-	Modern,
-	Roulette,
-	Custom
-  };
+enum FlowType {
+    CoverFlowLike = 0,
+    Strip,
+    StripOverlapped,
+    Modern,
+    Roulette,
+    Custom
+};
 
- enum ComicsViewStatus
- {
-     Flow,
-     Grid,
-     Info
- };
+enum ComicsViewStatus {
+    Flow,
+    Grid,
+    Info
+};
 
- enum FitMode{
-	ToWidth=0x01,
-	ToHeight=0x02,
-	FullRes=0x03,
-	FullPage=0x04//,
-	//Text=0x05
- };
+enum FitMode {
+    ToWidth = 0x01,
+    ToHeight = 0x02,
+    FullRes = 0x03,
+    FullPage = 0x04 //,
+    //Text=0x05
+};
 
- enum LibraryUITheme
- {
-     Light,
-     Dark
- };
+enum LibraryUITheme {
+    Light,
+    Dark
+};
 
-void addSperator(QWidget * w);
-QAction * createSeparator();
-QIcon noHighlightedIcon(const QString & path);
+void addSperator(QWidget *w);
+QAction *createSeparator();
+QIcon noHighlightedIcon(const QString &path);
 void colorize(QImage &img, QColor &col);
-QList<qulonglong> mimeDataToComicsIds(const QMimeData * data);
+QList<qulonglong> mimeDataToComicsIds(const QMimeData *data);
 
 }
 #endif
-

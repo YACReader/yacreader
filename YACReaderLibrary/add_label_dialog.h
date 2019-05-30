@@ -18,14 +18,14 @@ public slots:
     int exec();
 
 protected slots:
-    void validateName(const QString & name);
+    void validateName(const QString &name);
 
 protected:
-    QLineEdit * edit;
-    QListWidget * list;
+    QLineEdit *edit;
+    QListWidget *list;
 
-    QPushButton * acceptButton;
-    QPushButton * cancelButton;
+    QPushButton *acceptButton;
+    QPushButton *cancelButton;
 };
 
 #endif // ADD_LABEL_DIALOG_H

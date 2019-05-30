@@ -7,10 +7,8 @@
 #include "QsLog.h"
 #include "QsLogDest.h"
 
-
 MacOSXPDFComic::MacOSXPDFComic()
 {
-
 }
 
 MacOSXPDFComic::~MacOSXPDFComic()
@@ -23,8 +21,8 @@ bool MacOSXPDFComic::openComic(const QString &path)
 
     CFURLRef pdfFileUrl;
     CFStringRef str;
-    str=CFStringCreateWithCString( kCFAllocatorDefault,path.toUtf8().data(),kCFStringEncodingUTF8);
-    pdfFileUrl=CFURLCreateWithFileSystemPath( kCFAllocatorDefault,str,kCFURLPOSIXPathStyle,true );
+    str = CFStringCreateWithCString(kCFAllocatorDefault, path.toUtf8().data(), kCFStringEncodingUTF8);
+    pdfFileUrl = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, str, kCFURLPOSIXPathStyle, true);
 
     CGPDFDocumentRef pdf = CGPDFDocumentCreateWithURL((CFURLRef)pdfFileUrl);
 
@@ -43,48 +41,45 @@ void MacOSXPDFComic::closeComic()
 
 unsigned int MacOSXPDFComic::numPages()
 {
-   return (int)CGPDFDocumentGetNumberOfPages((CGPDFDocumentRef)document);
+    return (int)CGPDFDocumentGetNumberOfPages((CGPDFDocumentRef)document);
 }
 
 QImage MacOSXPDFComic::getPage(const int pageNum)
 {
-    CGPDFPageRef page = CGPDFDocumentGetPage((CGPDFDocumentRef)document, pageNum+1);
+    CGPDFPageRef page = CGPDFDocumentGetPage((CGPDFDocumentRef)document, pageNum + 1);
     // Changed this line for the line above which is a generic line
     //CGPDFPageRef page = [self getPage:page_number];
-
-
 
     CGRect pageRect = CGPDFPageGetBoxRect(page, kCGPDFMediaBox);
     int width = 1200;
 
     //NSLog(@"-----%f",pageRect.size.width);
-    CGFloat pdfScale = float(width)/pageRect.size.width;
+    CGFloat pdfScale = float(width) / pageRect.size.width;
 
-    pageRect.size = CGSizeMake(pageRect.size.width*pdfScale, pageRect.size.height*pdfScale);
+    pageRect.size = CGSizeMake(pageRect.size.width * pdfScale, pageRect.size.height * pdfScale);
     pageRect.origin = CGPointZero;
 
     CGColorSpaceRef genericColorSpace = CGColorSpaceCreateDeviceRGB();
-	
+
     QImage renderImage = QImage(pageRect.size.width, pageRect.size.height, QImage::Format_ARGB32_Premultiplied);
-	
+
     CGContextRef bitmapContext = CGBitmapContextCreate(renderImage.scanLine(0),
                                                        pageRect.size.width,
                                                        pageRect.size.height,
-                                                       8,renderImage.bytesPerLine(),
+                                                       8, renderImage.bytesPerLine(),
                                                        genericColorSpace,
                                                        kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little //may need to be changed to kCGBitmapByteOrder32Big
-                                                       );
+    );
 
     CGContextSetInterpolationQuality(bitmapContext, kCGInterpolationHigh);
     CGContextSetRenderingIntent(bitmapContext, kCGRenderingIntentDefault);
-    CGContextSetRGBFillColor( bitmapContext, 1.0, 1.0, 1.0, 1.0 );
-    CGContextFillRect( bitmapContext, CGContextGetClipBoundingBox( bitmapContext ));
+    CGContextSetRGBFillColor(bitmapContext, 1.0, 1.0, 1.0, 1.0);
+    CGContextFillRect(bitmapContext, CGContextGetClipBoundingBox(bitmapContext));
 
     //CGContextTranslateCTM( bitmapContext, 0, pageRect.size.height );
     //CGContextScaleCTM( bitmapContext, 1.0, -1.0 );
 
     CGContextConcatCTM(bitmapContext, CGAffineTransformMakeScale(pdfScale, pdfScale));
-
 
     /*CGAffineTransform pdfXfm = CGPDFPageGetDrawingTransform( page, kCGPDFMediaBox, CGRectMake(pageRect.origin.x, pageRect.origin.y, pageRect.size.width, pageRect.size.height) , 0, true );
     */
@@ -127,4 +122,3 @@ QImage MacOSXPDFComic::getPage(const int pageNum)
 {
     CFRelease((CFDataRef)lastPageData);
 }*/
-

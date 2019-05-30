@@ -13,38 +13,34 @@
 #include "QsLog.h"
 
 InfoComicsView::InfoComicsView(QWidget *parent)
-    :ComicsView(parent)
+    : ComicsView(parent)
 {
-    qmlRegisterType<ComicModel>("com.yacreader.ComicModel",1,0,"ComicModel");
-    qmlRegisterType<ComicDB>("com.yacreader.ComicDB",1,0,"ComicDB");
-    qmlRegisterType<ComicInfo>("com.yacreader.ComicInfo",1,0,"ComicInfo");
+    qmlRegisterType<ComicModel>("com.yacreader.ComicModel", 1, 0, "ComicModel");
+    qmlRegisterType<ComicDB>("com.yacreader.ComicDB", 1, 0, "ComicDB");
+    qmlRegisterType<ComicInfo>("com.yacreader.ComicInfo", 1, 0, "ComicInfo");
 
     view = new QQuickWidget();
     view->setResizeMode(QQuickWidget::SizeRootObjectToView);
     connect(
-        view, &QQuickWidget::statusChanged,
-        [=] (QQuickWidget::Status status)
-        {
-            if (status == QQuickWidget::Error)
-            {
-                QLOG_ERROR() << view->errors();
-            }
-        }
-      );
+            view, &QQuickWidget::statusChanged,
+            [=](QQuickWidget::Status status) {
+                if (status == QQuickWidget::Error) {
+                    QLOG_ERROR() << view->errors();
+                }
+            });
 
     //container->setFocusPolicy(Qt::StrongFocus);
 
     QQmlContext *ctxt = view->rootContext();
 
     LibraryUITheme theme;
-    #ifdef Q_OS_MAC
+#ifdef Q_OS_MAC
     theme = Light;
-    #else
+#else
     theme = Dark;
-    #endif
+#endif
 
-    if(theme == Light)
-    {
+    if (theme == Light) {
         ctxt->setContextProperty("infoBackgroundColor", "#FFFFFF");
         ctxt->setContextProperty("topShadow", QUrl());
         ctxt->setContextProperty("infoShadow", "info-shadow-light.png");
@@ -61,9 +57,7 @@ InfoComicsView::InfoComicsView(QWidget *parent)
 
         ctxt->setContextProperty("readTickUncheckedColor", "#DEDEDE");
         ctxt->setContextProperty("readTickCheckedColor", "#E84852");
-    }
-    else
-    {
+    } else {
         ctxt->setContextProperty("infoBackgroundColor", "#2E2E2E");
         ctxt->setContextProperty("topShadow", "info-top-shadow.png");
         ctxt->setContextProperty("infoShadow", "info-shadow.png");
@@ -84,9 +78,9 @@ InfoComicsView::InfoComicsView(QWidget *parent)
 
     view->setSource(QUrl("qrc:/qml/InfoComicsView.qml"));
 
-    QObject *rootObject = dynamic_cast<QObject*>(view->rootObject());
-    flow = rootObject->findChild<QObject*>("flow");
-    list = rootObject->findChild<QObject*>("list");
+    QObject *rootObject = dynamic_cast<QObject *>(view->rootObject());
+    flow = rootObject->findChild<QObject *>("flow");
+    list = rootObject->findChild<QObject *>("list");
 
     connect(flow, SIGNAL(currentCoverChanged(int)), this, SLOT(updateInfoForIndex(int)));
     connect(flow, SIGNAL(currentCoverChanged(int)), this, SLOT(setCurrentIndex(int)));
@@ -94,12 +88,12 @@ InfoComicsView::InfoComicsView(QWidget *parent)
     selectionHelper = new YACReaderComicsSelectionHelper(this);
     comicInfoHelper = new YACReaderComicInfoHelper(this);
 
-    QVBoxLayout * l = new QVBoxLayout;
+    QVBoxLayout *l = new QVBoxLayout;
     l->addWidget(view);
     this->setLayout(l);
 
-    setContentsMargins(0,0,0,0);
-    l->setContentsMargins(0,0,0,0);
+    setContentsMargins(0, 0, 0, 0);
+    l->setContentsMargins(0, 0, 0, 0);
     l->setSpacing(0);
 
     setShowMarks(true);
@@ -114,13 +108,13 @@ InfoComicsView::~InfoComicsView()
 
 void InfoComicsView::setToolBar(QToolBar *toolBar)
 {
-    static_cast<QVBoxLayout *>(this->layout())->insertWidget(1,toolBar);
+    static_cast<QVBoxLayout *>(this->layout())->insertWidget(1, toolBar);
     this->toolbar = toolBar;
 }
 
 void InfoComicsView::setModel(ComicModel *model)
 {
-    if(model == NULL)
+    if (model == NULL)
         return;
 
     selectionHelper->setModel(model);
@@ -136,23 +130,21 @@ void InfoComicsView::setModel(ComicModel *model)
     _selectionModel = new QItemSelectionModel(model);*/
 
     ctxt->setContextProperty("comicsList", model);
-    if(model->rowCount()>0)
+    if (model->rowCount() > 0)
         ctxt->setContextProperty("backgroundImage", this->model->data(this->model->index(0, 0), ComicModel::CoverPathRole));
     else
         ctxt->setContextProperty("backgroundImage", QUrl());
 
     ctxt->setContextProperty("comicsSelection", selectionHelper->selectionModel());
-    ctxt->setContextProperty("contextMenuHelper",this);
+    ctxt->setContextProperty("contextMenuHelper", this);
     ctxt->setContextProperty("currentIndexHelper", this);
     ctxt->setContextProperty("comicInfoHelper", comicInfoHelper);
     /*ctxt->setContextProperty("comicsSelectionHelper", this);
     ctxt->setContextProperty("dragManager", this);*/
     ctxt->setContextProperty("dropManager", this);
 
-
-    if(model->rowCount()>0)
-    {
-        setCurrentIndex(model->index(0,0));
+    if (model->rowCount() > 0) {
+        setCurrentIndex(model->index(0, 0));
         updateInfoForIndex(0);
     }
 }
@@ -214,7 +206,6 @@ void InfoComicsView::selectIndex(int index)
 
 void InfoComicsView::updateCurrentComicView()
 {
-
 }
 
 void InfoComicsView::setShowMarks(bool show)
@@ -230,14 +221,12 @@ void InfoComicsView::selectAll()
 
 bool InfoComicsView::canDropUrls(const QList<QUrl> &urls, Qt::DropAction action)
 {
-    if(action == Qt::CopyAction)
-    {
+    if (action == Qt::CopyAction) {
         QString currentPath;
-        foreach (QUrl url, urls)
-        {
+        foreach (QUrl url, urls) {
             //comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
             currentPath = url.toLocalFile();
-            if(Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir())
+            if (Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir())
                 return true;
         }
     }
@@ -248,9 +237,8 @@ void InfoComicsView::droppedFiles(const QList<QUrl> &urls, Qt::DropAction action
 {
     bool validAction = action == Qt::CopyAction; //TODO add move
 
-    if(validAction)
-    {
-        QList<QPair<QString, QString> > droppedFiles = ComicFilesManager::getDroppedFiles(urls);
+    if (validAction) {
+        QList<QPair<QString, QString>> droppedFiles = ComicFilesManager::getDroppedFiles(urls);
         emit copyComicsToCurrentFolder(droppedFiles);
     }
 }

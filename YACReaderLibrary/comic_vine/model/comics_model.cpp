@@ -1,6 +1,6 @@
 #include "comics_model.h"
 
-ComicsModel::ComicsModel(QObject *parent) :
-	JSONModel(parent)
+ComicsModel::ComicsModel(QObject *parent)
+    : JSONModel(parent)
 {
 }

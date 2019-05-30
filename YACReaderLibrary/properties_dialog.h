@@ -20,124 +20,121 @@ class QToolButton;
 
 #include "comic_db.h"
 
-	class PropertiesDialog : public QDialog
-	{
-		Q_OBJECT
-	private: 
-		QWidget * mainWidget;
-		//YACReaderBusyWidget * busyIndicator;
+class PropertiesDialog : public QDialog
+{
+    Q_OBJECT
+private:
+    QWidget *mainWidget;
+    //YACReaderBusyWidget * busyIndicator;
 
-		QGridLayout * mainLayout;
-		
-		QTabWidget * tabBar;
+    QGridLayout *mainLayout;
 
-		QWidget * coverBox;
-		QLabel * cover;
-		QScrollArea * sa;
+    QTabWidget *tabBar;
 
-		QWidget * generalInfoBox;
-		YACReaderFieldEdit * title;
-		YACReaderFieldEdit * numPagesEdit;
-		QLabel * size;
-        QLabel * comicVineLink;
+    QWidget *coverBox;
+    QLabel *cover;
+    QScrollArea *sa;
 
-		YACReaderFieldEdit * coverPageEdit;
-		QIntValidator coverPageValidator;
+    QWidget *generalInfoBox;
+    YACReaderFieldEdit *title;
+    YACReaderFieldEdit *numPagesEdit;
+    QLabel *size;
+    QLabel *comicVineLink;
 
-		YACReaderFieldEdit * numberEdit;
-		QIntValidator numberValidator;
-		QCheckBox * isBisCheck;
-		YACReaderFieldEdit * countEdit;
-		QIntValidator countValidator;
+    YACReaderFieldEdit *coverPageEdit;
+    QIntValidator coverPageValidator;
 
-		YACReaderFieldEdit * volumeEdit;
-		YACReaderFieldEdit * storyArcEdit;
-		YACReaderFieldEdit * arcNumberEdit;
-		QIntValidator arcNumberValidator;
-		YACReaderFieldEdit * arcCountEdit;
-		QIntValidator arcCountValidator;
+    YACReaderFieldEdit *numberEdit;
+    QIntValidator numberValidator;
+    QCheckBox *isBisCheck;
+    YACReaderFieldEdit *countEdit;
+    QIntValidator countValidator;
 
-		YACReaderFieldEdit * genereEdit;
+    YACReaderFieldEdit *volumeEdit;
+    YACReaderFieldEdit *storyArcEdit;
+    YACReaderFieldEdit *arcNumberEdit;
+    QIntValidator arcNumberValidator;
+    YACReaderFieldEdit *arcCountEdit;
+    QIntValidator arcCountValidator;
 
-		YACReaderFieldPlainTextEdit * writer;
-		YACReaderFieldPlainTextEdit * penciller;
-		YACReaderFieldPlainTextEdit * inker;
-		YACReaderFieldPlainTextEdit * colorist;
-		YACReaderFieldPlainTextEdit * letterer;
-		YACReaderFieldPlainTextEdit * coverArtist;
+    YACReaderFieldEdit *genereEdit;
 
-		YACReaderFieldEdit * dayEdit;
-		QIntValidator dayValidator;
-		YACReaderFieldEdit * monthEdit;
-		QIntValidator monthValidator;
-		YACReaderFieldEdit * yearEdit;
-		QIntValidator yearValidator;
-		YACReaderFieldEdit * publisherEdit;
-		YACReaderFieldEdit * formatEdit;
-		QCheckBox * colorCheck;
-		YACReaderFieldEdit * ageRatingEdit;
+    YACReaderFieldPlainTextEdit *writer;
+    YACReaderFieldPlainTextEdit *penciller;
+    YACReaderFieldPlainTextEdit *inker;
+    YACReaderFieldPlainTextEdit *colorist;
+    YACReaderFieldPlainTextEdit *letterer;
+    YACReaderFieldPlainTextEdit *coverArtist;
 
-		YACReaderFieldPlainTextEdit * synopsis;
-		YACReaderFieldPlainTextEdit * characters;
-		YACReaderFieldPlainTextEdit * notes;
+    YACReaderFieldEdit *dayEdit;
+    QIntValidator dayValidator;
+    YACReaderFieldEdit *monthEdit;
+    QIntValidator monthValidator;
+    YACReaderFieldEdit *yearEdit;
+    QIntValidator yearValidator;
+    YACReaderFieldEdit *publisherEdit;
+    YACReaderFieldEdit *formatEdit;
+    QCheckBox *colorCheck;
+    YACReaderFieldEdit *ageRatingEdit;
 
-		QWidget * authorsBox;
+    YACReaderFieldPlainTextEdit *synopsis;
+    YACReaderFieldPlainTextEdit *characters;
+    YACReaderFieldPlainTextEdit *notes;
 
-		QWidget * publishingBox;
+    QWidget *authorsBox;
 
-		QWidget * plotBox;
+    QWidget *publishingBox;
 
-		QDialogButtonBox *buttonBox;
-		QPushButton *closeButton;
-		QPushButton *saveButton;
-		QPushButton *restoreButton; //??
-		
-		QPixmap coverImage;
+    QWidget *plotBox;
 
-		QToolButton * showPreviousCoverPageButton;
-		QToolButton * showNextCoverPageButton;
-		QLabel * coverPageNumberLabel;
+    QDialogButtonBox *buttonBox;
+    QPushButton *closeButton;
+    QPushButton *saveButton;
+    QPushButton *restoreButton; //??
 
-		void createTabBar();
-		void createCoverBox();
-		void createGeneralInfoBox();
-		void createAuthorsBox();
-		void createPublishingBox();
-		void createPlotBox();
+    QPixmap coverImage;
 
-		void createButtonBox();
+    QToolButton *showPreviousCoverPageButton;
+    QToolButton *showNextCoverPageButton;
+    QLabel *coverPageNumberLabel;
 
-		void setDisableUniqueValues(bool disabled);
+    void createTabBar();
+    void createCoverBox();
+    void createGeneralInfoBox();
+    void createAuthorsBox();
+    void createPublishingBox();
+    void createPlotBox();
 
-		QList<ComicDB> comics;
-		void closeEvent ( QCloseEvent * e );
-		void updateCoverPageNumberLabel(int n);
+    void createButtonBox();
 
-		bool coverChanged;
-        float coverSizeRatio;
-        QString originalCoverSize;
+    void setDisableUniqueValues(bool disabled);
 
-	public:
-		PropertiesDialog(QWidget * parent = 0);
-		QString databasePath;
-		QString basePath;
-		QSize sizeHint();
-		void paintEvent(QPaintEvent * event);
+    QList<ComicDB> comics;
+    void closeEvent(QCloseEvent *e);
+    void updateCoverPageNumberLabel(int n);
 
-	public slots:
-		void setComics(QList<ComicDB> comics);
-		void updateComics();
-		void save();
-		//Deprecated
-		void setCover(const QPixmap & cover);
-		void setMultipleCover();
-		void setFilename(const QString & name);
-		void setNumpages(int pages);
-		void setSize(float size);
-		void loadNextCover();
-		void loadPreviousCover();
+    bool coverChanged;
+    float coverSizeRatio;
+    QString originalCoverSize;
 
+public:
+    PropertiesDialog(QWidget *parent = 0);
+    QString databasePath;
+    QString basePath;
+    QSize sizeHint();
+    void paintEvent(QPaintEvent *event);
 
-	};
+public slots:
+    void setComics(QList<ComicDB> comics);
+    void updateComics();
+    void save();
+    //Deprecated
+    void setCover(const QPixmap &cover);
+    void setMultipleCover();
+    void setFilename(const QString &name);
+    void setNumpages(int pages);
+    void setSize(float size);
+    void loadNextCover();
+    void loadPreviousCover();
+};
 #endif
-

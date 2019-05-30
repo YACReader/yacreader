@@ -5,45 +5,45 @@
 #include <QToolButton>
 #include <QMouseEvent>
 
-YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n/*ame*/, QString p/*ath*/, QWidget *parent) :
-	QWidget(parent),name(n),path(p),isSelected(false)
+YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QString p /*ath*/, QWidget *parent)
+    : QWidget(parent), name(n), path(p), isSelected(false)
 {
-	QHBoxLayout * mainLayout = new QHBoxLayout;
-	mainLayout->setMargin(0);
-	mainLayout->setSpacing(0);
+    QHBoxLayout *mainLayout = new QHBoxLayout;
+    mainLayout->setMargin(0);
+    mainLayout->setSpacing(0);
 
-	//installEventFilter(this);
+    //installEventFilter(this);
 
     QPixmap iconPixmap(":/images/sidebar/libraryIcon.png");
-	icon = new QLabel(this);
+    icon = new QLabel(this);
     icon->setPixmap(iconPixmap);
 
-	nameLabel = new QLabel(name,this);
+    nameLabel = new QLabel(name, this);
 
     options = new QToolButton(this);
 #ifdef Q_OS_MAC
     //TODO fix this crazy hack for having a propper retina icon for the options
     //this hack has been perpetrated using Qt 5.5.0
     QString sourceOptionsImage;
-    if(devicePixelRatio()>1)
+    if (devicePixelRatio() > 1)
         sourceOptionsImage = ":/images/sidebar/libraryOptions@2x.png";
     else
         sourceOptionsImage = ":/images/sidebar/libraryOptions.png";
     QPixmap iconOptionsPixmap(sourceOptionsImage);
     iconOptionsPixmap.setDevicePixelRatio(devicePixelRatio());
-    QLabel * helperLabel = new QLabel(options);
-    helperLabel->move(4,2);
-    helperLabel->setFixedSize(14,14);
+    QLabel *helperLabel = new QLabel(options);
+    helperLabel->move(4, 2);
+    helperLabel->setFixedSize(14, 14);
     helperLabel->setPixmap(iconOptionsPixmap);
 #else
     options->setIcon(QIcon(":/images/sidebar/libraryOptions.png"));
 #endif
-	options->setHidden(true);
+    options->setHidden(true);
     options->setFixedWidth(18);
-    options->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Minimum);
+    options->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     options->setStyleSheet("QToolButton {border:none;}");
-	connect(options,SIGNAL(clicked()),this,SIGNAL(showOptions()));
-	/*up = new QToolButton(this);
+    connect(options, SIGNAL(clicked()), this, SIGNAL(showOptions()));
+    /*up = new QToolButton(this);
 	up->setIcon(QIcon(":/images/libraryUp.png"));
 	up->setHidden(true);
 	up->setFixedWidth(18);
@@ -55,34 +55,32 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n/*ame*/, QString
 	down->setFixedWidth(18);
 	down->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Minimum);*/
 
-
-	mainLayout->addWidget(icon);
-	mainLayout->addWidget(nameLabel,Qt::AlignLeft);
-	mainLayout->addStretch();
-	mainLayout->addWidget(options);
-	/*mainLayout->addWidget(up);
+    mainLayout->addWidget(icon);
+    mainLayout->addWidget(nameLabel, Qt::AlignLeft);
+    mainLayout->addStretch();
+    mainLayout->addWidget(options);
+    /*mainLayout->addWidget(up);
 	mainLayout->addWidget(down);*/
 
-	setLayout(mainLayout);
+    setLayout(mainLayout);
 #ifndef Q_OS_MAC
-	QString styleSheet = "background-color:transparent; color:#DDDFDF;";
-	setStyleSheet(styleSheet);
+    QString styleSheet = "background-color:transparent; color:#DDDFDF;";
+    setStyleSheet(styleSheet);
 #endif
 
-	
-	QString iconStyleSheet = "QLabel {padding:0 0 0 24px; margin:0px}";
-	icon->setStyleSheet(iconStyleSheet);
+    QString iconStyleSheet = "QLabel {padding:0 0 0 24px; margin:0px}";
+    icon->setStyleSheet(iconStyleSheet);
 
-	QString nameLabelStyleSheet = "QLabel {padding:0 0 0 3px; margin:0px;}";
-	nameLabel->setStyleSheet(nameLabelStyleSheet);
+    QString nameLabelStyleSheet = "QLabel {padding:0 0 0 3px; margin:0px;}";
+    nameLabel->setStyleSheet(nameLabelStyleSheet);
 
-	setMinimumHeight(20);
+    setMinimumHeight(20);
 }
 
 void YACReaderLibraryItemWidget::showUpDownButtons(bool show)
 {
-	up->setHidden(!show);
-	down->setHidden(!show);
+    up->setHidden(!show);
+    down->setHidden(!show);
 }
 
 /*
@@ -122,29 +120,25 @@ bool YACReaderLibraryItemWidget::eventFilter(QObject *object, QEvent *event){
 	return false;
 }*/
 
-
-
 void YACReaderLibraryItemWidget::deselect()
 {
 
 #ifdef Q_OS_MAC
-	QString styleSheet = "background-color:transparent;";
-	setStyleSheet(styleSheet);
+    QString styleSheet = "background-color:transparent;";
+    setStyleSheet(styleSheet);
 #else
-	QString styleSheet = "background-color:transparent; color:#DDDFDF;";
-	setStyleSheet(styleSheet);
+    QString styleSheet = "background-color:transparent; color:#DDDFDF;";
+    setStyleSheet(styleSheet);
 #endif
 
     QPixmap iconPixmap(":/images/sidebar/libraryIcon.png");
-	icon->setPixmap(iconPixmap);
+    icon->setPixmap(iconPixmap);
 
-	/*up->setHidden(true);
+    /*up->setHidden(true);
 	down->setHidden(true);*/
-	options->setHidden(true);
+    options->setHidden(true);
 
-	isSelected = false;
-
-
+    isSelected = false;
 }
 
 void YACReaderLibraryItemWidget::select()
@@ -155,18 +149,18 @@ void YACReaderLibraryItemWidget::select()
 #else
     QString styleSheet = "color: white; background-color:#2E2E2E; font-weight:bold;";
 #endif
-	setStyleSheet(styleSheet);
+    setStyleSheet(styleSheet);
 
-	options->setHidden(false);
+    options->setHidden(false);
 
     QPixmap iconPixmap(":/images/sidebar/libraryIconSelected.png");
-	icon->setPixmap(iconPixmap);
+    icon->setPixmap(iconPixmap);
 
-	isSelected = true;
+    isSelected = true;
 }
 
-void YACReaderLibraryItemWidget::setName(const QString & name)
+void YACReaderLibraryItemWidget::setName(const QString &name)
 {
-	this->name = name;
-	nameLabel->setText(name);
+    this->name = name;
+    nameLabel->setText(name);
 }

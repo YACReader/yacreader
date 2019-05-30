@@ -16,18 +16,19 @@ class HttpListener;
 class Startup
 {
 private:
-	//QTcpServer
-	HttpListener * listener;
+    //QTcpServer
+    HttpListener *listener;
+
 public:
+    /** Constructor */
+    Startup();
+    /** Start the server */
+    void start();
+    /** Stop the server */
+    void stop();
 
-	/** Constructor */
-	Startup();
-	/** Start the server */
-	void start();
-	/** Stop the server */
-	void stop();
+    QString getPort();
 
-	QString getPort();
 protected:
 };
 

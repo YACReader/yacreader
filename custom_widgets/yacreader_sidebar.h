@@ -13,35 +13,35 @@ class YACReaderReadingListsView;
 class YACReaderSideBarSeparator : public QWidget
 {
 public:
-    explicit YACReaderSideBarSeparator(QWidget * parent = 0);
+    explicit YACReaderSideBarSeparator(QWidget *parent = 0);
+
 protected:
     void paintEvent(QPaintEvent *event);
 };
 
 class YACReaderSideBar : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit YACReaderSideBar(QWidget *parent = 0);
-	QSize sizeHint() const;
+    explicit YACReaderSideBar(QWidget *parent = 0);
+    QSize sizeHint() const;
 
-    YACReaderFoldersView * foldersView;
-    YACReaderReadingListsView * readingListsView;
-	YACReaderLibraryListWidget * selectedLibrary;
-	YACReaderTitledToolBar * librariesTitle;
-	YACReaderTitledToolBar * foldersTitle;
-    YACReaderTitledToolBar * readingListsTitle;
-	
+    YACReaderFoldersView *foldersView;
+    YACReaderReadingListsView *readingListsView;
+    YACReaderLibraryListWidget *selectedLibrary;
+    YACReaderTitledToolBar *librariesTitle;
+    YACReaderTitledToolBar *foldersTitle;
+    YACReaderTitledToolBar *readingListsTitle;
+
 signals:
-	
+
 public slots:
 
 protected:
-	void paintEvent(QPaintEvent *);
-    void closeEvent ( QCloseEvent * event );
-    QSettings * settings;
-    QSplitter * splitter;
-	
+    void paintEvent(QPaintEvent *);
+    void closeEvent(QCloseEvent *event);
+    QSettings *settings;
+    QSplitter *splitter;
 };
 
 #endif // YACREADER_SIDEBAR_H

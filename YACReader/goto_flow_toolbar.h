@@ -12,29 +12,29 @@ class QLabel;
 
 class GoToFlowToolBar : public QStackedWidget
 {
-	Q_OBJECT
-	private:
-		QLineEdit * edit;
-		QSlider * slider;
-		QIntValidator * v;
-		QPushButton * centerButton;
-		QPushButton * goToButton;
-		QLabel * pageHint;
-		QWidget * bar;
-        void paintEvent(QPaintEvent *);
+    Q_OBJECT
+private:
+    QLineEdit *edit;
+    QSlider *slider;
+    QIntValidator *v;
+    QPushButton *centerButton;
+    QPushButton *goToButton;
+    QLabel *pageHint;
+    QWidget *bar;
+    void paintEvent(QPaintEvent *);
 
-	public:
-		GoToFlowToolBar(QWidget * parent = 0);
+public:
+    GoToFlowToolBar(QWidget *parent = 0);
 
-	public slots:
-		void setPage(int pageNumber);
-		void setTop(int numPages);
-		void goTo();
-		void centerSlide();
-        void updateOptions();
-	signals:
-		void setCenter(unsigned int);
-		void goTo(unsigned int);
+public slots:
+    void setPage(int pageNumber);
+    void setTop(int numPages);
+    void goTo();
+    void centerSlide();
+    void updateOptions();
+signals:
+    void setCenter(unsigned int);
+    void goTo(unsigned int);
 };
 
 #endif

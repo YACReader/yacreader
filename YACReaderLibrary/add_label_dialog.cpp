@@ -1,15 +1,15 @@
 #include "add_label_dialog.h"
 
-AddLabelDialog::AddLabelDialog(QWidget *parent) :
-    QDialog(parent)
+AddLabelDialog::AddLabelDialog(QWidget *parent)
+    : QDialog(parent)
 {
-    QVBoxLayout * layout = new QVBoxLayout;
+    QVBoxLayout *layout = new QVBoxLayout;
 
     layout->addWidget(new QLabel(tr("Label name:")));
     layout->addWidget(edit = new QLineEdit());
 
     layout->addWidget(new QLabel(tr("Choose a color:")));
-    layout->addWidget(list = new QListWidget() );
+    layout->addWidget(list = new QListWidget());
 
     list->addItem(new QListWidgetItem(QIcon(":/images/lists/label_red.png"), tr("red")));
     list->addItem(new QListWidgetItem(QIcon(":/images/lists/label_orange.png"), tr("orange")));
@@ -33,10 +33,10 @@ AddLabelDialog::AddLabelDialog(QWidget *parent) :
     setMinimumHeight(340);
 
     //buttons
-    acceptButton = new QPushButton(tr("accept"),this);
-    cancelButton = new QPushButton(tr("cancel"),this);
+    acceptButton = new QPushButton(tr("accept"), this);
+    cancelButton = new QPushButton(tr("cancel"), this);
 
-    QHBoxLayout * buttons = new QHBoxLayout;
+    QHBoxLayout *buttons = new QHBoxLayout;
     buttons->addStretch();
     buttons->addWidget(acceptButton);
     buttons->addWidget(cancelButton);
@@ -47,15 +47,14 @@ AddLabelDialog::AddLabelDialog(QWidget *parent) :
     setLayout(layout);
 
     //connections
-    connect(edit,SIGNAL(textChanged(QString)),this,SLOT(validateName(QString)));
-    connect(cancelButton,SIGNAL(clicked()),this,SLOT(close()));
-    connect(acceptButton,SIGNAL(clicked()),this,SLOT(accept()));
-
+    connect(edit, SIGNAL(textChanged(QString)), this, SLOT(validateName(QString)));
+    connect(cancelButton, SIGNAL(clicked()), this, SLOT(close()));
+    connect(acceptButton, SIGNAL(clicked()), this, SLOT(accept()));
 }
 
 YACReader::LabelColors AddLabelDialog::selectedColor()
 {
-    return YACReader::LabelColors(list->currentRow()+1);
+    return YACReader::LabelColors(list->currentRow() + 1);
 }
 
 QString AddLabelDialog::name()
@@ -63,7 +62,7 @@ QString AddLabelDialog::name()
     return edit->text();
 }
 
-int  AddLabelDialog::exec()
+int AddLabelDialog::exec()
 {
     edit->clear();
     list->clearSelection();
@@ -77,7 +76,7 @@ int  AddLabelDialog::exec()
 
 void AddLabelDialog::validateName(const QString &name)
 {
-    if(name.isEmpty())
+    if (name.isEmpty())
         acceptButton->setDisabled(true);
     else
         acceptButton->setEnabled(true);

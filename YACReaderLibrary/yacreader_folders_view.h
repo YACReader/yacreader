@@ -9,12 +9,12 @@ class YACReaderFoldersView : public YACReaderTreeView
 {
     Q_OBJECT
 public:
-    explicit YACReaderFoldersView(QWidget * parent = 0);
+    explicit YACReaderFoldersView(QWidget *parent = 0);
 
 signals:
     //Drops
-    void copyComicsToFolder(QList<QPair<QString,QString> >,QModelIndex);
-    void moveComicsToFolder(QList<QPair<QString,QString> >,QModelIndex);
+    void copyComicsToFolder(QList<QPair<QString, QString>>, QModelIndex);
+    void moveComicsToFolder(QList<QPair<QString, QString>>, QModelIndex);
 
 protected:
     //Drop to import
@@ -24,13 +24,12 @@ protected:
     void dropEvent(QDropEvent *event);
 };
 
-class YACReaderFoldersViewItemDeletegate: public QStyledItemDelegate
+class YACReaderFoldersViewItemDeletegate : public QStyledItemDelegate
 {
     Q_OBJECT
 public:
     explicit YACReaderFoldersViewItemDeletegate(QObject *parent = 0);
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
-
 
 #endif // YACREADER_FOLDERS_VIEW_H

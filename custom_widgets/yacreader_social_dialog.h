@@ -14,15 +14,16 @@ public:
     explicit YACReaderSocialDialog(QWidget *parent = 0);
     QSize sizeHint() const;
 signals:
-    
+
 public slots:
-	void setComic(ComicDB & comic,QString & basePath);
+    void setComic(ComicDB &comic, QString &basePath);
+
 protected:
-	void paintEvent(QPaintEvent *);
+    void paintEvent(QPaintEvent *);
 
 private:
-	QPixmap cover;
-	QTextEdit * plainText;
+    QPixmap cover;
+    QTextEdit *plainText;
 };
 
 #endif // YACREADER_SOCIAL_DIALOG_H

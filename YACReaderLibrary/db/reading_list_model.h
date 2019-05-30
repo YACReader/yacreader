@@ -44,15 +44,15 @@ public:
 
     //Convenience methods
     void setupReadingListsData(QString path);
-    void addNewLabel(const QString & name, YACReader::LabelColors color);
-    void addReadingList(const QString & name);//top level reading list
-    void addReadingListAt(const QString & name, const QModelIndex & mi);
-    bool isEditable(const QModelIndex & mi);
-    bool isReadingList(const QModelIndex & mi);
-    bool isReadingSubList(const QModelIndex & mi);
-    QString name(const QModelIndex & mi);
-    void rename(const QModelIndex & mi, const QString & name);
-    void deleteItem(const QModelIndex & mi);
+    void addNewLabel(const QString &name, YACReader::LabelColors color);
+    void addReadingList(const QString &name); //top level reading list
+    void addReadingListAt(const QString &name, const QModelIndex &mi);
+    bool isEditable(const QModelIndex &mi);
+    bool isReadingList(const QModelIndex &mi);
+    bool isReadingSubList(const QModelIndex &mi);
+    QString name(const QModelIndex &mi);
+    void rename(const QModelIndex &mi, const QString &name);
+    void deleteItem(const QModelIndex &mi);
     const QList<LabelItem *> getLabels();
 
     enum Roles {
@@ -76,9 +76,9 @@ public:
 
 signals:
 
-    void addComicsToFavorites(const QList<qulonglong> & comicIds);
-    void addComicsToLabel(const QList<qulonglong> & comicIds, qulonglong labelId);
-    void addComicsToReadingList(const QList<qulonglong> & comicIds, qulonglong readingListId);
+    void addComicsToFavorites(const QList<qulonglong> &comicIds);
+    void addComicsToLabel(const QList<qulonglong> &comicIds, qulonglong labelId);
+    void addComicsToReadingList(const QList<qulonglong> &comicIds, qulonglong readingListId);
 
 private:
     void cleanAll();
@@ -89,10 +89,10 @@ private:
     int addLabelIntoList(LabelItem *item);
     void reorderingChildren(QList<ReadingListItem *> children);
 
-    bool rowIsSpecialList(int row, const QModelIndex & parent = QModelIndex()) const;
-    bool rowIsLabel(int row, const QModelIndex & parent = QModelIndex()) const;
-    bool rowIsReadingList(int row, const QModelIndex & parent = QModelIndex()) const;
-    bool rowIsSeparator(int row, const QModelIndex & parent = QModelIndex()) const;
+    bool rowIsSpecialList(int row, const QModelIndex &parent = QModelIndex()) const;
+    bool rowIsLabel(int row, const QModelIndex &parent = QModelIndex()) const;
+    bool rowIsReadingList(int row, const QModelIndex &parent = QModelIndex()) const;
+    bool rowIsSeparator(int row, const QModelIndex &parent = QModelIndex()) const;
 
     bool dropComics(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
     bool dropSublist(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
@@ -103,15 +103,14 @@ private:
     QList<LabelItem *> labels;
 
     //Reading lists
-    ReadingListItem * rootItem; //
+    ReadingListItem *rootItem; //
     QMap<unsigned long long int, ReadingListItem *> items; //lists relationship
 
     //separators
-    ReadingListSeparatorItem * separator1;
-    ReadingListSeparatorItem * separator2;
+    ReadingListSeparatorItem *separator1;
+    ReadingListSeparatorItem *separator2;
 
     QString _databasePath;
-
 };
 
 #endif // READING_LIST_MODEL_H

@@ -1,7 +1,7 @@
 #include "empty_container_info.h"
 
-EmptyContainerInfo::EmptyContainerInfo(QWidget *parent) :
-    QWidget(parent), iconLabel(new QLabel()), titleLabel(new QLabel())
+EmptyContainerInfo::EmptyContainerInfo(QWidget *parent)
+    : QWidget(parent), iconLabel(new QLabel()), titleLabel(new QLabel())
 {
 #ifdef Q_OS_MAC
     backgroundColor = "#FFFFFF";
@@ -25,15 +25,15 @@ void EmptyContainerInfo::setText(const QString &text)
     titleLabel->setText(text);
 }
 
-QVBoxLayout * EmptyContainerInfo::setUpDefaultLayout(bool addStretch)
+QVBoxLayout *EmptyContainerInfo::setUpDefaultLayout(bool addStretch)
 {
-    QVBoxLayout * layout = new QVBoxLayout;
+    QVBoxLayout *layout = new QVBoxLayout;
 
     layout->addSpacing(100);
     layout->addWidget(iconLabel);
     layout->addSpacing(30);
     layout->addWidget(titleLabel);
-    if(addStretch)
+    if (addStretch)
         layout->addStretch();
 
     setLayout(layout);
@@ -42,6 +42,6 @@ QVBoxLayout * EmptyContainerInfo::setUpDefaultLayout(bool addStretch)
 
 void EmptyContainerInfo::paintEvent(QPaintEvent *)
 {
-    QPainter painter (this);
-    painter.fillRect(0,0,width(),height(),QColor(backgroundColor));
+    QPainter painter(this);
+    painter.fillRect(0, 0, width(), height(), QColor(backgroundColor));
 }
