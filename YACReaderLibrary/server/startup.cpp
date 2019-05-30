@@ -142,6 +142,7 @@ void Startup::stop() {
 
 
 Startup::Startup()
+    : listener(nullptr)
 {
 
 }
