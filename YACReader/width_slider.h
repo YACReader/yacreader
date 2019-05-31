@@ -14,7 +14,7 @@ private:
     QSlider *slider;
 
 public:
-    YACReaderSlider(QWidget *parent = 0);
+    YACReaderSlider(QWidget *parent = nullptr);
     void show();
 
 protected:
@@ -37,7 +37,7 @@ private:
     YACReaderSlider *widget;
 
 public:
-    YACReaderSliderAction(QWidget *parent = 0);
+    YACReaderSliderAction(QWidget *parent = nullptr);
 
 public slots:
     void updateText(int value);

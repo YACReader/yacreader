@@ -68,7 +68,7 @@ void NotificationsLabelWidget::setText(const QString &text)
 void NotificationsLabelWidget::updatePosition()
 {
     QWidget *parent = dynamic_cast<QWidget *>(this->parent());
-    if (parent == 0) {
+    if (parent == nullptr) {
         return;
     }
     move(QPoint((parent->geometry().size().width() - this->width()) / 2, (parent->geometry().size().height() - this->height()) / 2));

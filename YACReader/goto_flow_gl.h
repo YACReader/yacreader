@@ -16,7 +16,7 @@ class GoToFlowGL : public GoToFlowWidget
 {
     Q_OBJECT
 public:
-    GoToFlowGL(QWidget *parent = 0, FlowType flowType = CoverFlowLike);
+    GoToFlowGL(QWidget *parent = nullptr, FlowType flowType = CoverFlowLike);
     ~GoToFlowGL();
     void reset();
     void centerSlide(int slide);

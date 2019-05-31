@@ -365,7 +365,7 @@ void PageRender::run()
 //-----------------------------------------------------------------------------
 
 Render::Render()
-    : comic(0), doublePage(false), doubleMangaPage(false), currentIndex(0), numLeftPages(4), numRightPages(4), loadedComic(false), imageRotation(0)
+    : comic(nullptr), doublePage(false), doubleMangaPage(false), currentIndex(0), numLeftPages(4), numRightPages(4), loadedComic(false), imageRotation(0)
 {
     int size = numLeftPages + numRightPages + 1;
     currentPageBufferedIndex = numLeftPages;
@@ -381,13 +381,13 @@ Render::Render()
 
 Render::~Render()
 {
-    if (comic != 0) {
+    if (comic != nullptr) {
         comic->moveToThread(QApplication::instance()->thread());
         comic->deleteLater();
     }
 
     foreach (PageRender *pr, pageRenders)
-        if (pr != 0) {
+        if (pr != nullptr) {
             if (pr->wait())
                 delete pr;
         }
@@ -480,7 +480,7 @@ QPixmap *Render::getCurrentDoublePage()
             leftpage.setY(rightsize.rheight());
             break;
         default:
-            return NULL;
+            return nullptr;
         }
         QPixmap *page = new QPixmap(totalWidth, totalHeight);
         QPainter painter(page);
@@ -488,7 +488,7 @@ QPixmap *Render::getCurrentDoublePage()
         painter.drawImage(QRect(rightpage, rightsize), *buffer[currentPageBufferedIndex + 1]);
         return page;
     } else {
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -530,7 +530,7 @@ QPixmap *Render::getCurrentDoubleMangaPage()
             leftpage.setY(rightsize.rheight());
             break;
         default:
-            return NULL;
+            return nullptr;
         }
         QPixmap *page = new QPixmap(totalWidth, totalHeight);
         QPainter painter(page);
@@ -538,7 +538,7 @@ QPixmap *Render::getCurrentDoubleMangaPage()
         painter.drawImage(QRect(leftpage, leftsize), *buffer[currentPageBufferedIndex + 1]);
         return page;
     } else {
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -607,7 +607,7 @@ void Render::setRotation(int degrees)
 
 void Render::setComic(Comic *c)
 {
-    if (comic != 0) {
+    if (comic != nullptr) {
         comic->moveToThread(QApplication::instance()->thread());
         comic->disconnect();
         comic->deleteLater();
@@ -642,7 +642,7 @@ void Render::update()
 void Render::load(const QString &path, int atPage)
 {
     createComic(path);
-    if (comic != 0) {
+    if (comic != nullptr) {
         loadComic(path, atPage);
         startLoad();
     }
@@ -673,7 +673,7 @@ void Render::load(const QString &path, const ComicDB &comicDB)
         }
     }
     createComic(path);
-    if (comic != 0) {
+    if (comic != nullptr) {
         loadComic(path, comicDB);
         startLoad();
     }
@@ -684,7 +684,7 @@ void Render::createComic(const QString &path)
     previousIndex = currentIndex = 0;
     pagesEmited.clear();
 
-    if (comic != 0) {
+    if (comic != nullptr) {
         //comic->moveToThread(QApplication::instance()->thread());
         comic->invalidate();
 
@@ -694,7 +694,7 @@ void Render::createComic(const QString &path)
     //comic->moveToThread(QApplication::instance()->thread());
     comic = FactoryComic::newComic(path);
 
-    if (comic == NULL) //archivo no encontrado o no válido
+    if (comic == nullptr) //archivo no encontrado o no válido
     {
         emit errorOpening();
         reset();
@@ -841,7 +841,7 @@ unsigned int Render::numPages()
 
 bool Render::hasLoadedComic()
 {
-    if (comic != 0)
+    if (comic != nullptr)
         return comic->loaded();
     return false;
 }
@@ -920,7 +920,7 @@ void Render::updateBuffer()
             //renders
             PageRender *pr = pageRenders.front();
             pageRenders.pop_front();
-            if (pr != 0) {
+            if (pr != nullptr) {
                 if (pr->wait())
                     delete pr;
             }
@@ -942,7 +942,7 @@ void Render::updateBuffer()
                 //renders
                 PageRender *pr = pageRenders.back();
                 pageRenders.pop_back();
-                if (pr != 0) {
+                if (pr != nullptr) {
                     if (pr->wait())
                         delete pr;
                 }
@@ -951,7 +951,7 @@ void Render::updateBuffer()
                 //images
                 buffer.push_front(new QImage());
                 QImage *p = buffer.back();
-                if (p != 0)
+                if (p != nullptr)
                     delete p;
                 buffer.pop_back();
             }

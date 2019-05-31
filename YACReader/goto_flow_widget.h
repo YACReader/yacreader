@@ -19,7 +19,7 @@ protected:
     GoToFlowToolBar *toolBar;
 
 public:
-    GoToFlowWidget(QWidget *paret = 0);
+    GoToFlowWidget(QWidget *paret = nullptr);
     virtual ~GoToFlowWidget() = 0;
 public slots:
     virtual void reset() = 0;

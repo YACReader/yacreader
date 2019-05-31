@@ -31,7 +31,7 @@ protected:
     //QPropertyAnimation * animation;
 
 public:
-    BookmarksDialog(QWidget *parent = 0);
+    BookmarksDialog(QWidget *parent = nullptr);
 
 public slots:
     void setBookmarks(const Bookmarks &bookmarks);

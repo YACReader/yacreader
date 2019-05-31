@@ -29,7 +29,7 @@ Viewer::Viewer(QWidget *parent)
       doublePage(false),
       doubleMangaPage(false),
       zoom(100),
-      currentPage(0),
+      currentPage(nullptr),
       wheelStop(false),
       direction(1),
       drag(false),
@@ -145,7 +145,7 @@ Viewer::~Viewer()
     delete bd;
     delete notificationsLabel;
     delete mglass;
-    if (currentPage != 0)
+    if (currentPage != nullptr)
         delete currentPage;
 }
 
@@ -286,7 +286,7 @@ void Viewer::updatePage()
         else {
             currentPage = render->getCurrentDoubleMangaPage();
         }
-        if (currentPage == NULL) {
+        if (currentPage == nullptr) {
             currentPage = render->getCurrentPage();
         }
     } else {
@@ -318,7 +318,7 @@ void Viewer::updatePage()
 void Viewer::updateContentSize()
 {
     //there is an image to resize
-    if (currentPage != 0 && !currentPage->isNull()) {
+    if (currentPage != nullptr && !currentPage->isNull()) {
         QSize pagefit;
         YACReader::FitMode fitmode = Configuration::getConfiguration().getFitMode();
         switch (fitmode) {

@@ -24,7 +24,7 @@ private:
     void paintEvent(QPaintEvent *);
 
 public:
-    GoToFlowToolBar(QWidget *parent = 0);
+    GoToFlowToolBar(QWidget *parent = nullptr);
 
 public slots:
     void setPage(int pageNumber);

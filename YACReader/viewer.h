@@ -170,7 +170,7 @@ private:
     void scrollTo(int x, int y);
 
 public:
-    Viewer(QWidget *parent = 0);
+    Viewer(QWidget *parent = nullptr);
     ~Viewer();
     void toggleFullScreen();
     const QPixmap *pixmap();

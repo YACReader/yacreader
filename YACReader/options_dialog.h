@@ -17,7 +17,7 @@ class OptionsDialog : public YACReaderOptionsDialog
 {
     Q_OBJECT
 public:
-    OptionsDialog(QWidget *parent = 0);
+    OptionsDialog(QWidget *parent = nullptr);
 
 private:
     //QLabel * pathLabel;

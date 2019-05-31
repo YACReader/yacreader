@@ -174,7 +174,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 
 void OptionsDialog::findFolder()
 {
-    QString s = QFileDialog::getExistingDirectory(0, tr("Comics directory"), ".");
+    QString s = QFileDialog::getExistingDirectory(nullptr, tr("Comics directory"), ".");
     if (!s.isEmpty()) {
         pathEdit->setText(s);
     }
