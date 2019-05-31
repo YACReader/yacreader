@@ -42,7 +42,7 @@ YACReaderActivityIndicatorWidget::YACReaderActivityIndicatorWidget(QWidget *pare
     normal->setPixmap(line);
     glow->setPixmap(glowLine);
 
-    QHBoxLayout *layout = new QHBoxLayout();
+    auto layout = new QHBoxLayout();
 
     layout->addWidget(normal, 0, Qt::AlignVCenter);
 
@@ -56,7 +56,7 @@ YACReaderActivityIndicatorWidget::YACReaderActivityIndicatorWidget(QWidget *pare
     glow->setGeometry(4, 4, glowLine.width(), glowLine.height());
     //normal->setGeometry(0,1,579,1);
 
-    QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect();
+    auto effect = new QGraphicsOpacityEffect();
     //effect->setOpacity(1.0);
 
     QPropertyAnimation *animation = new QPropertyAnimation(effect, "opacity");
@@ -99,7 +99,7 @@ ImportWidget::ImportWidget(QWidget *parent)
 	QLabel * lineLabel = new QLabel();
 	lineLabel->setPixmap(line);*/
 
-    YACReaderActivityIndicatorWidget *activityIndicator = new YACReaderActivityIndicatorWidget();
+    auto activityIndicator = new YACReaderActivityIndicatorWidget();
 
     text = new QLabel(); //"<font color=\"#495252\">"+tr("Importing comics")+"</font>");
     text->setStyleSheet("QLabel {font-size:25px;font-weight:bold;}");
@@ -109,7 +109,7 @@ ImportWidget::ImportWidget(QWidget *parent)
     currentComicLabel = new QLabel("<font color=\"#565959\">...</font>");
 
     coversViewContainer = new QWidget(this);
-    QVBoxLayout *coversViewLayout = new QVBoxLayout;
+    auto coversViewLayout = new QVBoxLayout;
     coversViewContainer->setLayout(coversViewLayout);
     coversViewContainer->setMaximumHeight(316);
     coversViewContainer->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Maximum);
@@ -151,10 +151,10 @@ ImportWidget::ImportWidget(QWidget *parent)
     stop->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     stopButton = stop;
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    QHBoxLayout *buttonLayout = new QHBoxLayout();
-    QHBoxLayout *topLayout = new QHBoxLayout();
-    QVBoxLayout *textLayout = new QVBoxLayout();
+    auto layout = new QVBoxLayout(this);
+    auto buttonLayout = new QHBoxLayout();
+    auto topLayout = new QHBoxLayout();
+    auto textLayout = new QVBoxLayout();
 
     QWidget *topWidget = new QWidget();
     topWidget->setFixedWidth(650);
@@ -227,14 +227,14 @@ void ImportWidget::newComic(const QString &path, const QString &coverPath)
         QPixmap p(coverPath);
         p = p.scaledToHeight(300, Qt::SmoothTransformation);
 
-        QGraphicsPixmapItem *item = new QGraphicsPixmapItem(p);
+        auto item = new QGraphicsPixmapItem(p);
         item->setPos(previousWidth, 0);
         coversScene->addItem(item);
 
         previousWidth += 10 + p.width();
 
         foreach (QGraphicsItem *itemToRemove, coversScene->items()) {
-            QGraphicsPixmapItem *last = dynamic_cast<QGraphicsPixmapItem *>(itemToRemove);
+            auto last = dynamic_cast<QGraphicsPixmapItem *>(itemToRemove);
 
             if ((last->pos().x() + last->pixmap().width()) < coversView->horizontalScrollBar()->value()) //TODO check this
             {
@@ -267,7 +267,7 @@ void ImportWidget::addCoverTest()
 {
     QPixmap p(QString("c:/temp/%1.jpg").arg(i));
     p = p.scaledToHeight(300, Qt::SmoothTransformation);
-    QGraphicsPixmapItem *item = new QGraphicsPixmapItem(p);
+    auto item = new QGraphicsPixmapItem(p);
     item->setPos(previousWidth, 0);
     item->setZValue(i / 10000.0);
     previousWidth += 10 + p.width();
@@ -283,10 +283,10 @@ void ImportWidget::addCoverTest()
 
         foreach (QGraphicsItem *itemToMove, coversScene->items()) {
 
-            QTimeLine *timer = new QTimeLine(/*350*/ 1000);
+            auto timer = new QTimeLine(/*350*/ 1000);
             timer->setFrameRange(0, 60);
 
-            QGraphicsItemAnimation *animation = new QGraphicsItemAnimation;
+            auto animation = new QGraphicsItemAnimation;
             animation->setItem(itemToMove);
             animation->setTimeLine(timer);
 

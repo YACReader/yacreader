@@ -41,7 +41,7 @@ void ImportLibraryDialog::setupUI()
     findDest = new QPushButton(QIcon(":/images/find_folder.png"), "");
     connect(findDest, SIGNAL(clicked()), this, SLOT(findDestination()));
 
-    QGridLayout *content = new QGridLayout;
+    auto content = new QGridLayout;
 
     content->addWidget(nameLabel, 0, 0);
     content->addWidget(nameEdit, 0, 1);
@@ -56,7 +56,7 @@ void ImportLibraryDialog::setupUI()
     content->addWidget(findDest, 2, 2);
     //destLayout->setStretchFactor(findDest,0); //TODO
 
-    QHBoxLayout *bottomLayout = new QHBoxLayout;
+    auto bottomLayout = new QHBoxLayout;
     bottomLayout->addStretch();
     bottomLayout->addWidget(accept);
     bottomLayout->addWidget(cancel);
@@ -67,14 +67,14 @@ void ImportLibraryDialog::setupUI()
     progressBar->setTextVisible(false);
     progressBar->hide();
 
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    auto mainLayout = new QVBoxLayout;
     mainLayout->addLayout(content);
     //mainLayout->addWidget(progress = new QLabel());
     mainLayout->addStretch();
     mainLayout->addWidget(progressBar);
     mainLayout->addLayout(bottomLayout);
 
-    QHBoxLayout *imgMainLayout = new QHBoxLayout;
+    auto imgMainLayout = new QHBoxLayout;
     QLabel *imgLabel = new QLabel(this);
     QPixmap p(":/images/importLibrary.png");
     imgLabel->setPixmap(p);

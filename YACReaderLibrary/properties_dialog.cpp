@@ -81,7 +81,7 @@ void PropertiesDialog::createCoverBox()
 {
     coverBox = new QWidget(this);
 
-    QHBoxLayout *layout = new QHBoxLayout;
+    auto layout = new QHBoxLayout;
 
     QLabel *label = new QLabel(tr("Cover page"));
     label->setStyleSheet("QLabel {color: white; font-weight:bold; font-size:14px;}");
@@ -139,13 +139,13 @@ void PropertiesDialog::createGeneralInfoBox()
 {
     generalInfoBox = new QWidget;
 
-    QFormLayout *generalInfoLayout = new QFormLayout;
+    auto generalInfoLayout = new QFormLayout;
 
     generalInfoLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     //generalInfoLayout->setRowWrapPolicy(QFormLayout::WrapAllRows);
     generalInfoLayout->addRow(tr("Title:"), title = new YACReaderFieldEdit());
 
-    QHBoxLayout *number = new QHBoxLayout;
+    auto number = new QHBoxLayout;
     number->addWidget(numberEdit = new YACReaderFieldEdit());
     numberValidator.setBottom(0);
     numberEdit->setValidator(&numberValidator);
@@ -162,7 +162,7 @@ void PropertiesDialog::createGeneralInfoBox()
 
     generalInfoLayout->addRow(tr("Volume:"), volumeEdit = new YACReaderFieldEdit());
 
-    QHBoxLayout *arc = new QHBoxLayout;
+    auto arc = new QHBoxLayout;
     arc->addWidget(storyArcEdit = new YACReaderFieldEdit());
     arc->addWidget(new QLabel(tr("Arc number:")));
     arc->addWidget(arcNumberEdit = new YACReaderFieldEdit());
@@ -182,7 +182,7 @@ void PropertiesDialog::createGeneralInfoBox()
     //generalInfoLayout->addRow(tr("Comic Vine link:"), comicVineLink = new QLabel("..."));
     //generalInfoLayout->addRow(bottom);
 
-    QVBoxLayout *main = new QVBoxLayout;
+    auto main = new QVBoxLayout;
     main->addLayout(generalInfoLayout);
     main->addStretch();
     main->addWidget(comicVineLink = new QLabel("Comic Vine link : ..."));
@@ -195,12 +195,12 @@ void PropertiesDialog::createAuthorsBox()
 {
     authorsBox = new QWidget;
 
-    QVBoxLayout *authorsLayout = new QVBoxLayout;
+    auto authorsLayout = new QVBoxLayout;
 
     //authorsLayout->setRowWrapPolicy(QFormLayout::WrapAllRows);
-    QHBoxLayout *h1 = new QHBoxLayout;
-    QVBoxLayout *vl1 = new QVBoxLayout;
-    QVBoxLayout *vr1 = new QVBoxLayout;
+    auto h1 = new QHBoxLayout;
+    auto vl1 = new QVBoxLayout;
+    auto vr1 = new QVBoxLayout;
     vl1->addWidget(new QLabel(tr("Writer(s):")));
     vl1->addWidget(writer = new YACReaderFieldPlainTextEdit());
     h1->addLayout(vl1);
@@ -209,9 +209,9 @@ void PropertiesDialog::createAuthorsBox()
     h1->addLayout(vr1);
     //authorsLayout->addRow(tr("Writer(s):"), new YACReaderFieldPlainTextEdit());
     //authorsLayout->addRow(tr("Penciller(s):"), new YACReaderFieldPlainTextEdit());
-    QHBoxLayout *h2 = new QHBoxLayout;
-    QVBoxLayout *vl2 = new QVBoxLayout;
-    QVBoxLayout *vr2 = new QVBoxLayout;
+    auto h2 = new QHBoxLayout;
+    auto vl2 = new QVBoxLayout;
+    auto vr2 = new QVBoxLayout;
     vl2->addWidget(new QLabel(tr("Inker(s):")));
     vl2->addWidget(inker = new YACReaderFieldPlainTextEdit());
     h2->addLayout(vl2);
@@ -222,9 +222,9 @@ void PropertiesDialog::createAuthorsBox()
     //authorsLayout->addRow(tr("Inker(s):"), new YACReaderFieldPlainTextEdit());
     //authorsLayout->addRow(tr("Colorist(s):"), new YACReaderFieldPlainTextEdit());
 
-    QHBoxLayout *h3 = new QHBoxLayout;
-    QVBoxLayout *vl3 = new QVBoxLayout;
-    QVBoxLayout *vr3 = new QVBoxLayout;
+    auto h3 = new QHBoxLayout;
+    auto vl3 = new QVBoxLayout;
+    auto vr3 = new QVBoxLayout;
     vl3->addWidget(new QLabel(tr("Letterer(s):")));
     vl3->addWidget(letterer = new YACReaderFieldPlainTextEdit());
     h3->addLayout(vl3);
@@ -245,11 +245,11 @@ void PropertiesDialog::createPublishingBox()
 {
     publishingBox = new QWidget;
 
-    QFormLayout *publishingLayout = new QFormLayout;
+    auto publishingLayout = new QFormLayout;
 
     publishingLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
 
-    QHBoxLayout *date = new QHBoxLayout;
+    auto date = new QHBoxLayout;
     date->addWidget(new QLabel(tr("Day:")));
     date->addWidget(dayEdit = new YACReaderFieldEdit());
     dayValidator.setRange(1, 31);
@@ -278,7 +278,7 @@ void PropertiesDialog::createPlotBox()
 {
     plotBox = new QWidget;
 
-    QFormLayout *plotLayout = new QFormLayout;
+    auto plotLayout = new QFormLayout;
     plotLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
 
     plotLayout->setRowWrapPolicy(QFormLayout::WrapAllRows);

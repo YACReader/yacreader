@@ -550,7 +550,7 @@ void ThumbnailCreator::create()
             return;
         }
 #elif defined USE_PDFIUM
-        PdfiumComic *pdfComic = new PdfiumComic();
+        auto pdfComic = new PdfiumComic();
         if (!pdfComic->openComic(_fileSource)) {
             delete pdfComic;
             return;

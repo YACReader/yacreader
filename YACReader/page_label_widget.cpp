@@ -11,7 +11,7 @@ PageLabelWidget::PageLabelWidget(QWidget *parent)
 
     int verticalRes = QApplication::desktop()->screenGeometry().height();
 
-    QHBoxLayout *layout = new QHBoxLayout;
+    auto layout = new QHBoxLayout;
     layout->setMargin(0);
     setContentsMargins(0, 0, 0, 0);
 
@@ -44,7 +44,7 @@ PageLabelWidget::PageLabelWidget(QWidget *parent)
 void PageLabelWidget::show()
 {
     if (this->pos().y() <= 0 && animation->state() != QPropertyAnimation::Running) {
-        QWidget *parent = dynamic_cast<QWidget *>(this->parent());
+        auto *parent = dynamic_cast<QWidget *>(this->parent());
         if (parent == nullptr) {
             return;
         }
@@ -62,7 +62,7 @@ void PageLabelWidget::show()
 void PageLabelWidget::hide()
 {
     if (this->pos().y() >= 0 && animation->state() != QPropertyAnimation::Running) {
-        QWidget *parent = dynamic_cast<QWidget *>(this->parent());
+        auto *parent = dynamic_cast<QWidget *>(this->parent());
         if (parent == nullptr) {
             return;
         }
@@ -87,7 +87,7 @@ void PageLabelWidget::paintEvent(QPaintEvent *)
 
 void PageLabelWidget::updatePosition()
 {
-    QWidget *parent = dynamic_cast<QWidget *>(this->parent());
+    auto *parent = dynamic_cast<QWidget *>(this->parent());
     if (parent == nullptr) {
         return;
     }

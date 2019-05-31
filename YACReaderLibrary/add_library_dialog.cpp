@@ -33,7 +33,7 @@ void AddLibraryDialog::setupUI()
     find = new QPushButton(QIcon(":/images/find_folder.png"), "");
     connect(find, SIGNAL(clicked()), this, SLOT(findPath()));
 
-    QGridLayout *content = new QGridLayout;
+    auto content = new QGridLayout;
 
     content->addWidget(nameLabel, 0, 0);
     content->addWidget(nameEdit, 0, 1);
@@ -43,17 +43,17 @@ void AddLibraryDialog::setupUI()
     content->addWidget(find, 1, 2);
     content->setColumnStretch(2, 0);
 
-    QHBoxLayout *bottomLayout = new QHBoxLayout;
+    auto bottomLayout = new QHBoxLayout;
     bottomLayout->addStretch();
     bottomLayout->addWidget(accept);
     bottomLayout->addWidget(cancel);
 
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    auto mainLayout = new QVBoxLayout;
     mainLayout->addLayout(content);
     mainLayout->addStretch();
     mainLayout->addLayout(bottomLayout);
 
-    QHBoxLayout *imgMainLayout = new QHBoxLayout;
+    auto imgMainLayout = new QHBoxLayout;
     QLabel *imgLabel = new QLabel(this);
     QPixmap p(":/images/openLibrary.png");
     imgLabel->setPixmap(p);

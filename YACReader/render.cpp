@@ -437,7 +437,7 @@ void Render::render()
 
 QPixmap *Render::getCurrentPage()
 {
-    QPixmap *page = new QPixmap();
+    auto page = new QPixmap();
     *page = page->fromImage(*buffer[currentPageBufferedIndex]);
     return page;
 }
@@ -482,7 +482,7 @@ QPixmap *Render::getCurrentDoublePage()
         default:
             return nullptr;
         }
-        QPixmap *page = new QPixmap(totalWidth, totalHeight);
+        auto page = new QPixmap(totalWidth, totalHeight);
         QPainter painter(page);
         painter.drawImage(QRect(leftpage, leftsize), *buffer[currentPageBufferedIndex]);
         painter.drawImage(QRect(rightpage, rightsize), *buffer[currentPageBufferedIndex + 1]);
@@ -532,7 +532,7 @@ QPixmap *Render::getCurrentDoubleMangaPage()
         default:
             return nullptr;
         }
-        QPixmap *page = new QPixmap(totalWidth, totalHeight);
+        auto page = new QPixmap(totalWidth, totalHeight);
         QPainter painter(page);
         painter.drawImage(QRect(rightpage, rightsize), *buffer[currentPageBufferedIndex]);
         painter.drawImage(QRect(leftpage, leftsize), *buffer[currentPageBufferedIndex + 1]);

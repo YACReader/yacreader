@@ -3,7 +3,7 @@
 AddLabelDialog::AddLabelDialog(QWidget *parent)
     : QDialog(parent)
 {
-    QVBoxLayout *layout = new QVBoxLayout;
+    auto layout = new QVBoxLayout;
 
     layout->addWidget(new QLabel(tr("Label name:")));
     layout->addWidget(edit = new QLineEdit());
@@ -36,7 +36,7 @@ AddLabelDialog::AddLabelDialog(QWidget *parent)
     acceptButton = new QPushButton(tr("accept"), this);
     cancelButton = new QPushButton(tr("cancel"), this);
 
-    QHBoxLayout *buttons = new QHBoxLayout;
+    auto buttons = new QHBoxLayout;
     buttons->addStretch();
     buttons->addWidget(acceptButton);
     buttons->addWidget(cancelButton);

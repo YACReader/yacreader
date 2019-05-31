@@ -13,7 +13,7 @@ ComicFlowWidgetSW::ComicFlowWidgetSW(QWidget *parent)
     connect(flow, SIGNAL(centerIndexChanged(int)), this, SIGNAL(centerIndexChanged(int)));
     connect(flow, SIGNAL(selected(unsigned int)), this, SIGNAL(selected(unsigned int)));
 
-    QVBoxLayout *l = new QVBoxLayout;
+    auto l = new QVBoxLayout;
     l->addWidget(flow);
     setLayout(l);
 
@@ -158,7 +158,7 @@ ComicFlowWidgetGL::ComicFlowWidgetGL(QWidget *parent)
     connect(flow, SIGNAL(centerIndexChanged(int)), this, SIGNAL(centerIndexChanged(int)));
     connect(flow, SIGNAL(selected(unsigned int)), this, SIGNAL(selected(unsigned int)));
 
-    QVBoxLayout *l = new QVBoxLayout;
+    auto l = new QVBoxLayout;
     l->addWidget(flow);
     l->setContentsMargins(0, 0, 0, 0);
     setLayout(l);

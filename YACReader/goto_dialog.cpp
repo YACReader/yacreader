@@ -25,24 +25,24 @@ void GoToDialog::setupUI()
     cancel = new QPushButton(tr("Cancel"));
     connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
 
-    QHBoxLayout *topLayout = new QHBoxLayout;
+    auto topLayout = new QHBoxLayout;
 
     topLayout->addWidget(textLabel);
     topLayout->addWidget(pageNumber);
 
-    QHBoxLayout *bottomLayout = new QHBoxLayout;
+    auto bottomLayout = new QHBoxLayout;
     bottomLayout->addStretch();
     bottomLayout->addWidget(accept);
     bottomLayout->addWidget(cancel);
 
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    auto mainLayout = new QVBoxLayout;
     mainLayout->addWidget(numPagesLabel = new QLabel(tr("Total pages : ")));
     mainLayout->addLayout(topLayout);
     mainLayout->addStretch();
     mainLayout->addLayout(bottomLayout);
 
-    QHBoxLayout *imgMainLayout = new QHBoxLayout;
-    QLabel *imgLabel = new QLabel();
+    auto imgMainLayout = new QHBoxLayout;
+    auto imgLabel = new QLabel();
     QPixmap p(":/images/goto.png");
     imgLabel->setPixmap(p);
     imgMainLayout->addWidget(imgLabel);

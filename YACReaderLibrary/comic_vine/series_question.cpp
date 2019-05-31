@@ -7,7 +7,7 @@
 SeriesQuestion::SeriesQuestion(QWidget *parent)
     : QWidget(parent)
 {
-    QVBoxLayout *l = new QVBoxLayout;
+    auto l = new QVBoxLayout;
 
     QLabel *questionLabel = new QLabel(tr("You are trying to get information for various comics at once, are they part of the same series?"));
     questionLabel->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");

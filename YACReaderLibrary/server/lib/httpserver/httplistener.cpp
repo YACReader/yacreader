@@ -92,7 +92,7 @@ void HttpListener::incomingConnection(tSocketDescriptor socketDescriptor) {
     {
         // Reject the connection
         qDebug("HttpListener: Too many incoming connections");
-        QTcpSocket* socket=new QTcpSocket(this);
+        auto* socket=new QTcpSocket(this);
         socket->setSocketDescriptor(socketDescriptor);
         connect(socket, SIGNAL(disconnected()), socket, SLOT(deleteLater()));
         socket->write("HTTP/1.1 503 too many connections\r\nConnection: close\r\n\r\nToo many connections\r\n");

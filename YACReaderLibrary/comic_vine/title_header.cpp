@@ -13,8 +13,8 @@ TitleHeader::TitleHeader(QWidget *parent)
     mainTitleLabel->setStyleSheet("QLabel {color:white; font-size:18px;font-family:Arial;}");
     subTitleLabel->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
 
-    QHBoxLayout *titleLayout = new QHBoxLayout;
-    QVBoxLayout *titleLabelsLayout = new QVBoxLayout;
+    auto titleLayout = new QHBoxLayout;
+    auto titleLabelsLayout = new QVBoxLayout;
 
     titleLabelsLayout->addWidget(mainTitleLabel);
     titleLabelsLayout->addWidget(subTitleLabel);

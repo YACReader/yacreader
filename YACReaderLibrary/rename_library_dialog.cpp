@@ -24,22 +24,22 @@ void RenameLibraryDialog::setupUI()
     cancel = new QPushButton(tr("Cancel"));
     connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
 
-    QHBoxLayout *nameLayout = new QHBoxLayout;
+    auto nameLayout = new QHBoxLayout;
 
     nameLayout->addWidget(newNameLabel);
     nameLayout->addWidget(newNameEdit);
 
-    QHBoxLayout *bottomLayout = new QHBoxLayout;
+    auto bottomLayout = new QHBoxLayout;
     bottomLayout->addStretch();
     bottomLayout->addWidget(accept);
     bottomLayout->addWidget(cancel);
 
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    auto mainLayout = new QVBoxLayout;
     mainLayout->addLayout(nameLayout);
     mainLayout->addStretch();
     mainLayout->addLayout(bottomLayout);
 
-    QHBoxLayout *imgMainLayout = new QHBoxLayout;
+    auto imgMainLayout = new QHBoxLayout;
     QLabel *imgLabel = new QLabel(this);
     QPixmap p(":/images/edit.png");
     imgLabel->setPixmap(p);

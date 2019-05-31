@@ -8,12 +8,12 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
     : QStackedWidget(parent)
 {
     //elementos interactivos
-    QWidget *normal = new QWidget(this); // container widget
-    QWidget *quickNavi = new QWidget(this); // container widget
+    auto normal = new QWidget(this); // container widget
+    auto quickNavi = new QWidget(this); // container widget
     addWidget(normal);
     addWidget(quickNavi);
-    QHBoxLayout *normalLayout = new QHBoxLayout(normal);
-    QHBoxLayout *naviLayout = new QHBoxLayout(quickNavi);
+    auto normalLayout = new QHBoxLayout(normal);
+    auto naviLayout = new QHBoxLayout(quickNavi);
     normal->setLayout(normalLayout);
     quickNavi->setLayout(naviLayout);
 

@@ -161,7 +161,7 @@ void Viewer::createConnections()
     connect(goToFlow, SIGNAL(goToPage(unsigned int)), this, SLOT(goTo(unsigned int)));
 
     //current time
-    QTimer *t = new QTimer();
+    auto t = new QTimer();
     connect(t, SIGNAL(timeout()), this, SLOT(updateInformation()));
     t->start(1000);
 
@@ -206,7 +206,7 @@ void Viewer::prepareForOpening()
     verticalScrollBar()->setSliderPosition(verticalScrollBar()->minimum());
 
     if (Configuration::getConfiguration().getShowInformation() && !information) {
-        QTimer *timer = new QTimer();
+        auto timer = new QTimer();
         connect(timer, SIGNAL(timeout()), this, SLOT(informationSwitch()));
         connect(timer, SIGNAL(timeout()), timer, SLOT(deleteLater()));
         timer->start();

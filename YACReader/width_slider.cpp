@@ -34,7 +34,7 @@ YACReaderSlider::YACReaderSlider(QWidget *parent)
 
     setFocusPolicy(Qt::StrongFocus);
 
-    QHBoxLayout *pLayout = new QHBoxLayout();
+    auto pLayout = new QHBoxLayout();
 
     pLayout->addStretch();
 

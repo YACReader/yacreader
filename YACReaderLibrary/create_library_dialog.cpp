@@ -35,7 +35,7 @@ void CreateLibraryDialog::setupUI()
     find = new QPushButton(QIcon(":/images/find_folder.png"), "");
     connect(find, SIGNAL(clicked()), this, SLOT(findPath()));
 
-    QGridLayout *content = new QGridLayout;
+    auto content = new QGridLayout;
 
     //QHBoxLayout *nameLayout = new QHBoxLayout;
 
@@ -49,7 +49,7 @@ void CreateLibraryDialog::setupUI()
     content->addWidget(find, 1, 2);
     content->setColumnMinimumWidth(2, 0); //TODO
 
-    QHBoxLayout *bottomLayout = new QHBoxLayout;
+    auto bottomLayout = new QHBoxLayout;
     bottomLayout->addWidget(message = new QLabel(tr("Create a library could take several minutes. You can stop the process and update the library later for completing the task.")));
     message->setWordWrap(true);
     //message->hide();
@@ -57,12 +57,12 @@ void CreateLibraryDialog::setupUI()
     bottomLayout->addWidget(accept);
     bottomLayout->addWidget(cancel);
 
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    auto mainLayout = new QVBoxLayout;
     mainLayout->addLayout(content);
 
     mainLayout->addLayout(bottomLayout);
 
-    QHBoxLayout *imgMainLayout = new QHBoxLayout;
+    auto imgMainLayout = new QHBoxLayout;
     QLabel *imgLabel = new QLabel(this);
     QPixmap p(":/images/new.png");
     imgLabel->setPixmap(p);
@@ -151,12 +151,12 @@ void CreateLibraryDialog::setDataAndStart(QString name, QString path)
 UpdateLibraryDialog::UpdateLibraryDialog(QWidget *parent)
     : QDialog(parent)
 {
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    auto mainLayout = new QVBoxLayout;
     mainLayout->addWidget(message = new QLabel(tr("Updating....")));
     mainLayout->addWidget(currentFileLabel = new QLabel("\n\n\n\n"));
     currentFileLabel->setWordWrap(true);
 
-    QHBoxLayout *bottom = new QHBoxLayout;
+    auto bottom = new QHBoxLayout;
     bottom->addStretch();
     bottom->addWidget(cancel = new QPushButton(tr("Cancel")));
 
@@ -167,7 +167,7 @@ UpdateLibraryDialog::UpdateLibraryDialog(QWidget *parent)
 
     mainLayout->addLayout(bottom);
 
-    QHBoxLayout *imgMainLayout = new QHBoxLayout;
+    auto imgMainLayout = new QHBoxLayout;
     QLabel *imgLabel = new QLabel(this);
     QPixmap p(":/images/updateLibrary.png");
     imgLabel->setPixmap(p);

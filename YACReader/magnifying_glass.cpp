@@ -36,7 +36,7 @@ void MagnifyingGlass::updateImage(int x, int y)
     //image section augmented
     int zoomWidth = static_cast<int>(width() * zoomLevel);
     int zoomHeight = static_cast<int>(height() * zoomLevel);
-    Viewer *p = (Viewer *)parent();
+    auto p = (Viewer *)parent();
     int currentPos = p->verticalScrollBar()->sliderPosition();
     const QPixmap *image = p->pixmap();
     int iWidth = image->width();
@@ -186,7 +186,7 @@ void MagnifyingGlass::zoomOut()
 
 void MagnifyingGlass::sizeUp()
 {
-    Viewer *p = (Viewer *)parent();
+    auto p = (Viewer *)parent();
     if (width() < (p->width() * 0.90f))
         resize(width() + 30, height() + 15);
 }
@@ -199,7 +199,7 @@ void MagnifyingGlass::sizeDown()
 
 void MagnifyingGlass::heightUp()
 {
-    Viewer *p = (Viewer *)parent();
+    auto p = (Viewer *)parent();
     if (height() < (p->height() * 0.90f))
         resize(width(), height() + 15);
 }
@@ -212,7 +212,7 @@ void MagnifyingGlass::heightDown()
 
 void MagnifyingGlass::widthUp()
 {
-    Viewer *p = (Viewer *)parent();
+    auto p = (Viewer *)parent();
     if (width() < (p->width() * 0.90f))
         resize(width() + 30, height());
 }

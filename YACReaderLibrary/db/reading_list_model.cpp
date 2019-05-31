@@ -24,10 +24,10 @@ int ReadingListModel::rowCount(const QModelIndex &parent) const
         int separatorsCount = 2; //labels.isEmpty()?1:2;
         return specialLists.count() + labels.count() + rootItem->childCount() + separatorsCount;
     } else {
-        ListItem *item = static_cast<ListItem *>(parent.internalPointer());
+        auto item = static_cast<ListItem *>(parent.internalPointer());
 
         if (typeid(*item) == typeid(ReadingListItem)) {
-            ReadingListItem *item = static_cast<ReadingListItem *>(parent.internalPointer());
+            auto item = static_cast<ReadingListItem *>(parent.internalPointer());
             return item->childCount();
         }
     }
@@ -38,7 +38,7 @@ int ReadingListModel::rowCount(const QModelIndex &parent) const
 int ReadingListModel::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid()) {
-        ListItem *item = static_cast<ListItem *>(parent.internalPointer());
+        auto item = static_cast<ListItem *>(parent.internalPointer());
         if (typeid(*item) == typeid(ReadingListSeparatorItem))
             return 0;
     }
@@ -54,7 +54,7 @@ QVariant ReadingListModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    ListItem *item = static_cast<ListItem *>(index.internalPointer());
+    auto item = static_cast<ListItem *>(index.internalPointer());
 
     if (role == ReadingListModel::TypeListsRole) {
         if (typeid(*item) == typeid(SpecialListItem))
@@ -71,7 +71,7 @@ QVariant ReadingListModel::data(const QModelIndex &index, int role) const
     }
 
     if (role == ReadingListModel::LabelColorRole && typeid(*item) == typeid(LabelItem)) {
-        LabelItem *labelItem = static_cast<LabelItem *>(item);
+        auto labelItem = static_cast<LabelItem *>(item);
         return QVariant(labelItem->colorid());
     }
 
@@ -81,7 +81,7 @@ QVariant ReadingListModel::data(const QModelIndex &index, int role) const
     }
 
     if (role == ReadingListModel::SpecialListTypeRole && typeid(*item) == typeid(SpecialListItem)) {
-        SpecialListItem *specialListItem = static_cast<SpecialListItem *>(item);
+        auto specialListItem = static_cast<SpecialListItem *>(item);
         return QVariant(specialListItem->getType());
     }
 
@@ -103,7 +103,7 @@ Qt::ItemFlags ReadingListModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return 0;
 
-    ListItem *item = static_cast<ListItem *>(index.internalPointer());
+    auto item = static_cast<ListItem *>(index.internalPointer());
     if (typeid(*item) == typeid(ReadingListSeparatorItem))
         return 0;
 
@@ -170,10 +170,10 @@ QModelIndex ReadingListModel::parent(const QModelIndex &index) const
     if (!index.isValid())
         return QModelIndex();
 
-    ListItem *item = static_cast<ListItem *>(index.internalPointer());
+    auto item = static_cast<ListItem *>(index.internalPointer());
 
     if (typeid(*item) == typeid(ReadingListItem)) {
-        ReadingListItem *childItem = static_cast<ReadingListItem *>(index.internalPointer());
+        auto childItem = static_cast<ReadingListItem *>(index.internalPointer());
         ReadingListItem *parent = childItem->parent;
         if (parent->getId() != 0)
             return createIndex(parent->row() + specialLists.count() + labels.count() + 2, 0, parent);
@@ -305,7 +305,7 @@ bool ReadingListModel::dropSublist(const QMimeData *data, Qt::DropAction action,
 
     //beginMoveRows(destParent,sourceRow,sourceRow,destParent,destRow);
 
-    ReadingListItem *parentItem = static_cast<ReadingListItem *>(destParent.internalPointer());
+    auto parentItem = static_cast<ReadingListItem *>(destParent.internalPointer());
     ReadingListItem *child = parentItem->child(sourceRow);
     parentItem->removeChild(child);
     parentItem->appendChild(child, destRow);
@@ -339,7 +339,7 @@ QMimeData *ReadingListModel::mimeData(const QModelIndexList &indexes) const
     QDataStream out(&data, QIODevice::WriteOnly);
     out << rows; //serialize the list of identifiers
 
-    QMimeData *mimeData = new QMimeData();
+    auto mimeData = new QMimeData();
     mimeData->setData(YACReader::YACReaderLibrarSubReadingListMimeDataFormat, data);
 
     return mimeData;
@@ -415,7 +415,7 @@ void ReadingListModel::addReadingListAt(const QString &name, const QModelIndex &
 
     beginInsertRows(mi, 0, 0); //TODO calculate the right coordinates before inserting
 
-    ReadingListItem *readingListParent = static_cast<ReadingListItem *>(mi.internalPointer());
+    auto readingListParent = static_cast<ReadingListItem *>(mi.internalPointer());
     qulonglong id = DBHelper::insertReadingSubList(name, mi.data(IDRole).toULongLong(), readingListParent->childCount(), db);
     ReadingListItem *newItem;
 
@@ -441,7 +441,7 @@ bool ReadingListModel::isEditable(const QModelIndex &mi)
 {
     if (!mi.isValid())
         return false;
-    ListItem *item = static_cast<ListItem *>(mi.internalPointer());
+    auto item = static_cast<ListItem *>(mi.internalPointer());
     return typeid(*item) != typeid(SpecialListItem);
 }
 
@@ -449,7 +449,7 @@ bool ReadingListModel::isReadingList(const QModelIndex &mi)
 {
     if (!mi.isValid())
         return false;
-    ListItem *item = static_cast<ListItem *>(mi.internalPointer());
+    auto item = static_cast<ListItem *>(mi.internalPointer());
     return typeid(*item) == typeid(ReadingListItem);
 }
 
@@ -457,9 +457,9 @@ bool ReadingListModel::isReadingSubList(const QModelIndex &mi)
 {
     if (!mi.isValid())
         return false;
-    ListItem *item = static_cast<ListItem *>(mi.internalPointer());
+    auto item = static_cast<ListItem *>(mi.internalPointer());
     if (typeid(*item) == typeid(ReadingListItem)) {
-        ReadingListItem *readingListItem = static_cast<ReadingListItem *>(item);
+        auto readingListItem = static_cast<ReadingListItem *>(item);
         if (readingListItem->parent == rootItem)
             return false;
         else
@@ -480,10 +480,10 @@ void ReadingListModel::rename(const QModelIndex &mi, const QString &name)
 
     QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-    ListItem *item = static_cast<ListItem *>(mi.internalPointer());
+    auto item = static_cast<ListItem *>(mi.internalPointer());
 
     if (typeid(*item) == typeid(ReadingListItem)) {
-        ReadingListItem *rli = static_cast<ReadingListItem *>(item);
+        auto rli = static_cast<ReadingListItem *>(item);
         rli->setName(name);
         DBHelper::renameList(item->getId(), name, db);
 
@@ -493,7 +493,7 @@ void ReadingListModel::rename(const QModelIndex &mi, const QString &name)
         } else
             emit dataChanged(index(mi.row(), 0), index(mi.row(), 0));
     } else if (typeid(*item) == typeid(LabelItem)) {
-        LabelItem *li = static_cast<LabelItem *>(item);
+        auto li = static_cast<LabelItem *>(item);
         li->setName(name);
         DBHelper::renameLabel(item->getId(), name, db);
         emit dataChanged(index(mi.row(), 0), index(mi.row(), 0));
@@ -510,10 +510,10 @@ void ReadingListModel::deleteItem(const QModelIndex &mi)
 
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-        ListItem *item = static_cast<ListItem *>(mi.internalPointer());
+        auto item = static_cast<ListItem *>(mi.internalPointer());
 
         if (typeid(*item) == typeid(ReadingListItem)) {
-            ReadingListItem *rli = static_cast<ReadingListItem *>(item);
+            auto rli = static_cast<ReadingListItem *>(item);
             QLOG_DEBUG() << "num children : " << rli->parent->childCount();
             rli->parent->removeChild(rli);
             QLOG_DEBUG() << "num children : " << rli->parent->childCount();
@@ -523,7 +523,7 @@ void ReadingListModel::deleteItem(const QModelIndex &mi)
             }
             QLOG_DEBUG() << "num children : " << rli->parent->childCount();
         } else if (typeid(*item) == typeid(LabelItem)) {
-            LabelItem *li = static_cast<LabelItem *>(item);
+            auto li = static_cast<LabelItem *>(item);
             labels.removeOne(li);
             DBHelper::removeLabelFromDB(item->getId(), db);
         }

@@ -9,7 +9,7 @@
 ScraperResultsPaginator::ScraperResultsPaginator(QWidget *parent)
     : QWidget(parent), customLabel("items")
 {
-    QHBoxLayout *pagesButtonsLayout = new QHBoxLayout;
+    auto pagesButtonsLayout = new QHBoxLayout;
 
     QString labelStylesheet = "QLabel {color:white; font-size:12px;font-family:Arial;}";
 

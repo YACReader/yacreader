@@ -132,7 +132,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     port->setValidator(validator);
 
     QWidget *portWidget = new QWidget(this);
-    QHBoxLayout *portWidgetLayout = new QHBoxLayout(this);
+    auto portWidgetLayout = new QHBoxLayout(this);
     portWidgetLayout->addWidget(port);
     portWidgetLayout->addWidget(accept);
     portWidgetLayout->setMargin(0);

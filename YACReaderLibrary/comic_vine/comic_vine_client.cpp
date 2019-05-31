@@ -107,7 +107,7 @@ void ComicVineClient::getSeriesDetail(const QString &id)
 
 void ComicVineClient::getSeriesCover(const QString &url)
 {
-    HttpWorker *search = new HttpWorker(url);
+    auto search = new HttpWorker(url);
     connect(search, SIGNAL(dataReady(const QByteArray &)), this, SIGNAL(seriesCover(const QByteArray &)));
     connect(search, SIGNAL(timeout()), this, SIGNAL(timeOut())); //TODO
     connect(search, SIGNAL(finished()), search, SLOT(deleteLater()));
@@ -127,7 +127,7 @@ void ComicVineClient::getVolumeComicsInfo(const QString &idVolume, int page)
 void ComicVineClient::getAllVolumeComicsInfo(const QString &idVolume)
 {
     QString url = QString(CV_COMICS_INFO).replace(CV_WEB_ADDRESS, baseURL).replace(CV_API_KEY, settings->value(COMIC_VINE_API_KEY, CV_API_KEY_DEFAULT).toString()).arg(idVolume);
-    ComicVineAllVolumeComicsRetriever *comicsRetriever = new ComicVineAllVolumeComicsRetriever(url);
+    auto comicsRetriever = new ComicVineAllVolumeComicsRetriever(url);
 
     connect(comicsRetriever, &ComicVineAllVolumeComicsRetriever::allVolumeComicsInfo, this, &ComicVineClient::volumeComicsInfo);
     connect(comicsRetriever, &ComicVineAllVolumeComicsRetriever::finished, this, &ComicVineClient::finished);
@@ -175,7 +175,7 @@ void ComicVineClient::getComicDetailAsync(const QString &id)
 
 void ComicVineClient::getComicCover(const QString &url)
 {
-    HttpWorker *search = new HttpWorker(url);
+    auto search = new HttpWorker(url);
     connect(search, SIGNAL(dataReady(const QByteArray &)), this, SIGNAL(comicCover(QByteArray)));
     connect(search, SIGNAL(timeout()), this, SIGNAL(timeOut())); //TODO
     connect(search, SIGNAL(finished()), search, SLOT(deleteLater()));

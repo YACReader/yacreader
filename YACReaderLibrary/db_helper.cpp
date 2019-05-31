@@ -1071,7 +1071,7 @@ QList<LibraryItem *> DBHelper::getFoldersFromParent(qulonglong parentId, QSqlDat
         if (list.isEmpty() || !sort)
             list.append(currentItem);
         else {
-            Folder *last = static_cast<Folder *>(list.back());
+            auto last = static_cast<Folder *>(list.back());
             QString nameLast = last->name;
             QString nameCurrent = currentItem->name;
             QList<LibraryItem *>::iterator i;

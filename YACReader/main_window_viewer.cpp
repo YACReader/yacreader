@@ -317,7 +317,7 @@ void MainWindowViewer::createActions()
     connect(fitToPageAction, SIGNAL(triggered()), this, SLOT(fitToPageSwitch()));
 
     //fit modes have to be exclusive and checkable
-    QActionGroup *fitModes = new QActionGroup(this);
+    auto fitModes = new QActionGroup(this);
     fitModes->addAction(adjustHeightAction);
     fitModes->addAction(adjustWidthAction);
     fitModes->addAction(adjustToFullSizeAction);
@@ -518,13 +518,13 @@ void MainWindowViewer::createToolBars()
     comicToolBar->addAction(openAction);
     comicToolBar->addAction(openFolderAction);
 #else
-    QMenu *recentmenu = new QMenu(tr("Open recent"));
+    auto recentmenu = new QMenu(tr("Open recent"));
     recentmenu->addActions(recentFilesActionList);
     recentmenu->addSeparator();
     recentmenu->addAction(clearRecentFilesAction);
     refreshRecentFilesActionList();
 
-    QToolButton *tb = new QToolButton();
+    auto tb = new QToolButton();
     tb->addAction(openAction);
     tb->addAction(openLatestComicAction);
     tb->addAction(openFolderAction);
@@ -643,12 +643,12 @@ void MainWindowViewer::createToolBars()
 
     //MacOSX app menus
 #ifdef Q_OS_MAC
-    QMenuBar *menuBar = this->menuBar();
+    auto menuBar = this->menuBar();
     //about / preferences
     //TODO
 
     //file
-    QMenu *fileMenu = new QMenu(tr("File"));
+    auto fileMenu = new QMenu(tr("File"));
 
     fileMenu->addAction(openAction);
     fileMenu->addAction(openLatestComicAction);
@@ -657,7 +657,7 @@ void MainWindowViewer::createToolBars()
     fileMenu->addAction(saveImageAction);
     fileMenu->addSeparator();
 
-    QMenu *recentmenu = new QMenu(tr("Open recent"));
+    auto recentmenu = new QMenu(tr("Open recent"));
     recentmenu->addActions(recentFilesActionList);
     recentmenu->addSeparator();
     recentmenu->addAction(clearRecentFilesAction);
@@ -667,11 +667,11 @@ void MainWindowViewer::createToolBars()
     fileMenu->addSeparator();
     fileMenu->addAction(closeAction);
 
-    QMenu *editMenu = new QMenu(tr("Edit"));
+    auto editMenu = new QMenu(tr("Edit"));
     editMenu->addAction(leftRotationAction);
     editMenu->addAction(rightRotationAction);
 
-    QMenu *viewMenu = new QMenu(tr("View"));
+    auto viewMenu = new QMenu(tr("View"));
     viewMenu->addAction(adjustHeightAction);
     viewMenu->addAction(adjustWidthAction);
     viewMenu->addAction(fitToPageAction);
@@ -687,7 +687,7 @@ void MainWindowViewer::createToolBars()
     viewMenu->addSeparator();
     viewMenu->addAction(showMagnifyingGlassAction);
 
-    QMenu *goMenu = new QMenu(tr("Go"));
+    auto goMenu = new QMenu(tr("Go"));
     goMenu->addAction(prevAction);
     goMenu->addAction(nextAction);
     goMenu->addAction(goToPageAction);
@@ -695,14 +695,14 @@ void MainWindowViewer::createToolBars()
     goMenu->addAction(setBookmarkAction);
     goMenu->addAction(showBookmarksAction);
 
-    QMenu *windowMenu = new QMenu(tr("Window"));
+    auto windowMenu = new QMenu(tr("Window"));
     windowMenu->addAction(optionsAction); // this action goes to MacOS's Preference menu by Qt
     windowMenu->addAction(showShorcutsAction);
     windowMenu->addAction(showFlowAction);
     windowMenu->addAction(showInfoAction);
     windowMenu->addAction(showDictionaryAction);
 
-    QMenu *helpMenu = new QMenu(tr("Help"));
+    auto helpMenu = new QMenu(tr("Help"));
     helpMenu->addAction(helpAboutAction);
 
     menuBar->addMenu(fileMenu);
@@ -754,7 +754,7 @@ void MainWindowViewer::clearRecentFiles()
 
 void MainWindowViewer::openRecent()
 {
-    QAction *action = qobject_cast<QAction *>(sender());
+    auto *action = qobject_cast<QAction *>(sender());
 
     openComicFromRecentAction(action);
 }
@@ -1199,7 +1199,7 @@ void MainWindowViewer::checkNewVersion()
         connect(versionChecker, SIGNAL(newVersionDetected()),
                 this, SLOT(newVersion()));
 
-        QTimer *tT = new QTimer;
+        auto tT = new QTimer;
         tT->setSingleShot(true);
         connect(tT, SIGNAL(timeout()), versionChecker, SLOT(get()));
         //versionChecker->get(); //TOD�
@@ -1227,7 +1227,7 @@ void MainWindowViewer::processReset()
 void MainWindowViewer::setUpShortcutsManagement()
 {
     //actions holder
-    QObject *orphanActions = new QObject;
+    auto orphanActions = new QObject;
 
     QList<QAction *> allActions;
     QList<QAction *> tmpList;
@@ -1267,19 +1267,19 @@ void MainWindowViewer::setUpShortcutsManagement()
     allActions << tmpList;
 
     //keys without actions (MGlass)
-    QAction *sizeUpMglassAction = new QAction(tr("Size up magnifying glass"), orphanActions);
+    auto sizeUpMglassAction = new QAction(tr("Size up magnifying glass"), orphanActions);
     sizeUpMglassAction->setData(SIZE_UP_MGLASS_ACTION_Y);
     sizeUpMglassAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SIZE_UP_MGLASS_ACTION_Y));
 
-    QAction *sizeDownMglassAction = new QAction(tr("Size down magnifying glass"), orphanActions);
+    auto sizeDownMglassAction = new QAction(tr("Size down magnifying glass"), orphanActions);
     sizeDownMglassAction->setData(SIZE_DOWN_MGLASS_ACTION_Y);
     sizeDownMglassAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SIZE_DOWN_MGLASS_ACTION_Y));
 
-    QAction *zoomInMglassAction = new QAction(tr("Zoom in magnifying glass"), orphanActions);
+    auto zoomInMglassAction = new QAction(tr("Zoom in magnifying glass"), orphanActions);
     zoomInMglassAction->setData(ZOOM_IN_MGLASS_ACTION_Y);
     zoomInMglassAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_IN_MGLASS_ACTION_Y));
 
-    QAction *zoomOutMglassAction = new QAction(tr("Zoom out magnifying glass"), orphanActions);
+    auto zoomOutMglassAction = new QAction(tr("Zoom out magnifying glass"), orphanActions);
     zoomOutMglassAction->setData(ZOOM_OUT_MGLASS_ACTION_Y);
     zoomOutMglassAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_OUT_MGLASS_ACTION_Y));
 
@@ -1294,7 +1294,7 @@ void MainWindowViewer::setUpShortcutsManagement()
     allActions << tmpList;
 
     //keys without actions
-    QAction *toggleFitToScreenAction = new QAction(tr("Toggle between fit to width and fit to height"), orphanActions);
+    auto toggleFitToScreenAction = new QAction(tr("Toggle between fit to width and fit to height"), orphanActions);
     toggleFitToScreenAction->setData(CHANGE_FIT_ACTION_Y);
     toggleFitToScreenAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(CHANGE_FIT_ACTION_Y));
 
@@ -1314,51 +1314,51 @@ void MainWindowViewer::setUpShortcutsManagement()
 
     allActions << tmpList;
 
-    QAction *autoScrollForwardAction = new QAction(tr("Autoscroll down"), orphanActions);
+    auto autoScrollForwardAction = new QAction(tr("Autoscroll down"), orphanActions);
     autoScrollForwardAction->setData(AUTO_SCROLL_FORWARD_ACTION_Y);
     autoScrollForwardAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_ACTION_Y));
 
-    QAction *autoScrollBackwardAction = new QAction(tr("Autoscroll up"), orphanActions);
+    auto autoScrollBackwardAction = new QAction(tr("Autoscroll up"), orphanActions);
     autoScrollBackwardAction->setData(AUTO_SCROLL_BACKWARD_ACTION_Y);
     autoScrollBackwardAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_ACTION_Y));
 
-    QAction *autoScrollForwardHorizontalFirstAction = new QAction(tr("Autoscroll forward, horizontal first"), orphanActions);
+    auto autoScrollForwardHorizontalFirstAction = new QAction(tr("Autoscroll forward, horizontal first"), orphanActions);
     autoScrollForwardHorizontalFirstAction->setData(AUTO_SCROLL_FORWARD_HORIZONTAL_FIRST_ACTION_Y);
     autoScrollForwardHorizontalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_HORIZONTAL_FIRST_ACTION_Y));
 
-    QAction *autoScrollBackwardHorizontalFirstAction = new QAction(tr("Autoscroll backward, horizontal first"), orphanActions);
+    auto autoScrollBackwardHorizontalFirstAction = new QAction(tr("Autoscroll backward, horizontal first"), orphanActions);
     autoScrollBackwardHorizontalFirstAction->setData(AUTO_SCROLL_BACKWARD_HORIZONTAL_FIRST_ACTION_Y);
     autoScrollBackwardHorizontalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_HORIZONTAL_FIRST_ACTION_Y));
 
-    QAction *autoScrollForwardVerticalFirstAction = new QAction(tr("Autoscroll forward, vertical first"), orphanActions);
+    auto autoScrollForwardVerticalFirstAction = new QAction(tr("Autoscroll forward, vertical first"), orphanActions);
     autoScrollForwardVerticalFirstAction->setData(AUTO_SCROLL_FORWARD_VERTICAL_FIRST_ACTION_Y);
     autoScrollForwardVerticalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_VERTICAL_FIRST_ACTION_Y));
 
-    QAction *autoScrollBackwardVerticalFirstAction = new QAction(tr("Autoscroll backward, vertical first"), orphanActions);
+    auto autoScrollBackwardVerticalFirstAction = new QAction(tr("Autoscroll backward, vertical first"), orphanActions);
     autoScrollBackwardVerticalFirstAction->setData(AUTO_SCROLL_BACKWARD_VERTICAL_FIRST_ACTION_Y);
     autoScrollBackwardVerticalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_VERTICAL_FIRST_ACTION_Y));
 
-    QAction *moveDownAction = new QAction(tr("Move down"), orphanActions);
+    auto moveDownAction = new QAction(tr("Move down"), orphanActions);
     moveDownAction->setData(MOVE_DOWN_ACTION_Y);
     moveDownAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(MOVE_DOWN_ACTION_Y));
 
-    QAction *moveUpAction = new QAction(tr("Move up"), orphanActions);
+    auto moveUpAction = new QAction(tr("Move up"), orphanActions);
     moveUpAction->setData(MOVE_UP_ACTION_Y);
     moveUpAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(MOVE_UP_ACTION_Y));
 
-    QAction *moveLeftAction = new QAction(tr("Move left"), orphanActions);
+    auto moveLeftAction = new QAction(tr("Move left"), orphanActions);
     moveLeftAction->setData(MOVE_LEFT_ACTION_Y);
     moveLeftAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(MOVE_LEFT_ACTION_Y));
 
-    QAction *moveRightAction = new QAction(tr("Move right"), orphanActions);
+    auto moveRightAction = new QAction(tr("Move right"), orphanActions);
     moveRightAction->setData(MOVE_RIGHT_ACTION_Y);
     moveRightAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(MOVE_RIGHT_ACTION_Y));
 
-    QAction *goToFirstPageAction = new QAction(tr("Go to the first page"), orphanActions);
+    auto goToFirstPageAction = new QAction(tr("Go to the first page"), orphanActions);
     goToFirstPageAction->setData(GO_TO_FIRST_PAGE_ACTION_Y);
     goToFirstPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(GO_TO_FIRST_PAGE_ACTION_Y));
 
-    QAction *goToLastPageAction = new QAction(tr("Go to the last page"), orphanActions);
+    auto goToLastPageAction = new QAction(tr("Go to the last page"), orphanActions);
     goToLastPageAction->setData(GO_TO_LAST_PAGE_ACTION_Y);
     goToLastPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(GO_TO_LAST_PAGE_ACTION_Y));
 
@@ -1634,7 +1634,7 @@ void MainWindowViewer::decreasePageZoomLevel()
 
 void MainWindowViewer::sendComic()
 {
-    YACReaderLocalClient *client = new YACReaderLocalClient;
+    auto client = new YACReaderLocalClient;
 
     connect(client, &YACReaderLocalClient::finished, client, &YACReaderLocalClient::deleteLater);
     currentComicDB.info.lastTimeOpened = QDateTime::currentMSecsSinceEpoch() / 1000;

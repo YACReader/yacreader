@@ -231,9 +231,9 @@ int main(int argc, char **argv)
     }
     QLOG_INFO() << "YACReaderLibrary starting";
 
-    YACReaderLocalServer *localServer = new YACReaderLocalServer();
+    auto localServer = new YACReaderLocalServer();
 
-    LibraryWindow *mw = new LibraryWindow();
+    auto mw = new LibraryWindow();
 
     mw->connect(localServer, SIGNAL(comicUpdated(quint64, const ComicDB &)), mw, SLOT(updateComicsView(quint64, const ComicDB &)), Qt::QueuedConnection);
 

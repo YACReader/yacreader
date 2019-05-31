@@ -34,10 +34,10 @@ NoLibrariesWidget::NoLibrariesWidget(QWidget *parent)
     QPushButton *addButton = new QPushButton(tr("add an existing one"));
     addButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    QHBoxLayout *buttonLayout = new QHBoxLayout();
-    QHBoxLayout *topLayout = new QHBoxLayout();
-    QVBoxLayout *textLayout = new QVBoxLayout();
+    auto layout = new QVBoxLayout(this);
+    auto buttonLayout = new QHBoxLayout();
+    auto topLayout = new QHBoxLayout();
+    auto textLayout = new QVBoxLayout();
 
     QWidget *topWidget = new QWidget();
     topWidget->setFixedWidth(650);
