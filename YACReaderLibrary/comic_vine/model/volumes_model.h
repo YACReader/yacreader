@@ -7,7 +7,7 @@ class VolumesModel : public JSONModel
 {
     Q_OBJECT
 public:
-    explicit VolumesModel(QObject *parent = 0);
+    explicit VolumesModel(QObject *parent = nullptr);
     virtual ~VolumesModel();
     //receive a valid json with a list of volumes
     void load(const QString &json);

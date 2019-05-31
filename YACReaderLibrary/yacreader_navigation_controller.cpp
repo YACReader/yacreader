@@ -280,7 +280,7 @@ qulonglong YACReaderNavigationController::folderModelIndexToID(const QModelIndex
         return 1;
 
     auto folderItem = static_cast<FolderItem *>(mi.internalPointer());
-    if (folderItem != 0)
+    if (folderItem != nullptr)
         return folderItem->id;
 
     return 1;

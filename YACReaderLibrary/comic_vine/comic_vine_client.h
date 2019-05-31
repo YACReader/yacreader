@@ -10,7 +10,7 @@ class ComicVineClient : public QObject
 {
     Q_OBJECT
 public:
-    explicit ComicVineClient(QObject *parent = 0);
+    explicit ComicVineClient(QObject *parent = nullptr);
     ~ComicVineClient();
 
 signals:

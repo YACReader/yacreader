@@ -24,7 +24,7 @@ class ImportComicsInfoDialog : public QDialog
     Q_OBJECT
 
 public:
-    ImportComicsInfoDialog(QWidget *parent = 0);
+    ImportComicsInfoDialog(QWidget *parent = nullptr);
     ~ImportComicsInfoDialog();
     QString dest;
 

@@ -2,7 +2,7 @@
 #include <QCoreApplication>
 
 PackageManager::PackageManager()
-    : _7z(0)
+    : _7z(nullptr)
 {
 }
 
@@ -41,7 +41,7 @@ void PackageManager::extractPackage(const QString &packagePath, const QString &d
 
 void PackageManager::cancel()
 {
-    if (_7z != 0) {
+    if (_7z != nullptr) {
         _7z->disconnect();
         _7z->kill();
         if (creating) {

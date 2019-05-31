@@ -16,7 +16,7 @@ class ComicsView : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ComicsView(QWidget *parent = 0);
+    explicit ComicsView(QWidget *parent = nullptr);
     virtual void setToolBar(QToolBar *toolBar) = 0;
     virtual void setModel(ComicModel *model);
     virtual void setCurrentIndex(const QModelIndex &index) = 0;

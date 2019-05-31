@@ -31,7 +31,7 @@ public:
      * Constructor.
      * @param parent Parent object.
      */
-    HttpRequestHandler(QObject* parent=NULL);
+    HttpRequestHandler(QObject* parent=nullptr);
 
     /** Destructor */
     virtual ~HttpRequestHandler();

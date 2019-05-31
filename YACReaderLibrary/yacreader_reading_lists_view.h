@@ -9,7 +9,7 @@ class YACReaderReadingListsView : public YACReaderTreeView
 {
     Q_OBJECT
 public:
-    explicit YACReaderReadingListsView(QWidget *parent = 0);
+    explicit YACReaderReadingListsView(QWidget *parent = nullptr);
 
 protected:
     //Drop to import & internal Drag&Drop for resorting
@@ -22,7 +22,7 @@ class YACReaderReadingListsViewItemDeletegate : public QStyledItemDelegate
 {
     Q_OBJECT
 public:
-    explicit YACReaderReadingListsViewItemDeletegate(QObject *parent = 0);
+    explicit YACReaderReadingListsViewItemDeletegate(QObject *parent = nullptr);
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };

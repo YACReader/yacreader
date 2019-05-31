@@ -9,7 +9,7 @@ class ScraperLineEdit : public QLineEdit
 {
     Q_OBJECT
 public:
-    ScraperLineEdit(const QString &title, QWidget *widget = 0);
+    ScraperLineEdit(const QString &title, QWidget *widget = nullptr);
 
 protected:
     void resizeEvent(QResizeEvent *);

@@ -12,7 +12,7 @@ class ComicFlowWidget : public QWidget
 {
     Q_OBJECT
 public:
-    ComicFlowWidget(QWidget *paret = 0);
+    ComicFlowWidget(QWidget *paret = nullptr);
 
 public slots:
     virtual void setShowMarks(bool value) = 0;
@@ -44,7 +44,7 @@ private:
     ComicFlow *flow;
 
 public:
-    ComicFlowWidgetSW(QWidget *parent = 0);
+    ComicFlowWidgetSW(QWidget *parent = nullptr);
 
     void setShowMarks(bool value);
     void setMarks(QVector<YACReaderComicReadStatus> marks);
@@ -84,7 +84,7 @@ private:
     YACReaderComicFlowGL *flow;
 
 public:
-    ComicFlowWidgetGL(QWidget *parent = 0);
+    ComicFlowWidgetGL(QWidget *parent = nullptr);
 
     void setShowMarks(bool value);
     void setMarks(QVector<YACReaderComicReadStatus> marks);

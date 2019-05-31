@@ -13,7 +13,7 @@ class YACReaderLocalServer : public QObject
 {
     Q_OBJECT
 public:
-    explicit YACReaderLocalServer(QObject *parent = 0);
+    explicit YACReaderLocalServer(QObject *parent = nullptr);
 
 signals:
     void comicUpdated(quint64 libraryId, const ComicDB &comic);

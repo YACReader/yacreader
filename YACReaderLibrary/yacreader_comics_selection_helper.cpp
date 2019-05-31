@@ -9,7 +9,7 @@ YACReaderComicsSelectionHelper::YACReaderComicsSelectionHelper(QObject *parent)
 
 void YACReaderComicsSelectionHelper::setModel(ComicModel *model)
 {
-    if (model == NULL)
+    if (model == nullptr)
         return;
 
     this->model = model;
@@ -22,7 +22,7 @@ void YACReaderComicsSelectionHelper::setModel(ComicModel *model)
 
 void YACReaderComicsSelectionHelper::selectIndex(int index)
 {
-    if (_selectionModel != nullptr && model != NULL) {
+    if (_selectionModel != nullptr && model != nullptr) {
         _selectionModel->select(model->index(index, 0), QItemSelectionModel::Select | QItemSelectionModel::Rows);
 
         emit selectionChanged();
@@ -31,7 +31,7 @@ void YACReaderComicsSelectionHelper::selectIndex(int index)
 
 void YACReaderComicsSelectionHelper::deselectIndex(int index)
 {
-    if (_selectionModel != nullptr && model != NULL) {
+    if (_selectionModel != nullptr && model != nullptr) {
         _selectionModel->select(model->index(index, 0), QItemSelectionModel::Deselect | QItemSelectionModel::Rows);
 
         emit selectionChanged();
@@ -40,7 +40,7 @@ void YACReaderComicsSelectionHelper::deselectIndex(int index)
 
 bool YACReaderComicsSelectionHelper::isSelectedIndex(int index) const
 {
-    if (_selectionModel != nullptr && model != NULL) {
+    if (_selectionModel != nullptr && model != nullptr) {
         QModelIndex mi = model->index(index, 0);
         return _selectionModel->isSelected(mi);
     }

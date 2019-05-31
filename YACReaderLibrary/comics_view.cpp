@@ -9,7 +9,7 @@
 #include <QQuickWidget>
 
 ComicsView::ComicsView(QWidget *parent)
-    : QWidget(parent), model(NULL), comicDB(nullptr)
+    : QWidget(parent), model(nullptr), comicDB(nullptr)
 {
     setAcceptDrops(true);
 }

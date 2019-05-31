@@ -8,7 +8,7 @@ class EmptyFolderWidget : public EmptyContainerInfo
 {
     Q_OBJECT
 public:
-    explicit EmptyFolderWidget(QWidget *parent = 0);
+    explicit EmptyFolderWidget(QWidget *parent = nullptr);
     void setSubfolders(const QModelIndex &mi, const QStringList &foldersNames);
 signals:
     void subfolderSelected(QModelIndex, int);

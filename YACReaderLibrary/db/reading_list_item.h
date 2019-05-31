@@ -62,7 +62,7 @@ private:
 class ReadingListItem : public ListItem
 {
 public:
-    ReadingListItem(const QList<QVariant> &data, ReadingListItem *parent = 0);
+    ReadingListItem(const QList<QVariant> &data, ReadingListItem *parent = nullptr);
     QIcon getIcon() const;
     ReadingListItem *parent;
     int childCount() const;

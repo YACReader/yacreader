@@ -45,7 +45,7 @@ public:
       @param settings configurations settings
       @param parent parent object
     */
-    TemplateLoader(QSettings* settings, QObject* parent=0);
+    TemplateLoader(QSettings* settings, QObject* parent=nullptr);
 
     /** Destructor */
     virtual ~TemplateLoader();

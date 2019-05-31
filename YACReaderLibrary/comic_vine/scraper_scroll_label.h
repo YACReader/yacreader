@@ -9,7 +9,7 @@ class ScraperScrollLabel : public QScrollArea
 {
     Q_OBJECT
 public:
-    explicit ScraperScrollLabel(QWidget *parent = 0);
+    explicit ScraperScrollLabel(QWidget *parent = nullptr);
 
 signals:
 

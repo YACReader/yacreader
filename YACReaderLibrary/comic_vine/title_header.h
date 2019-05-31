@@ -9,7 +9,7 @@ class TitleHeader : public QWidget
 {
     Q_OBJECT
 public:
-    TitleHeader(QWidget *parent = 0);
+    TitleHeader(QWidget *parent = nullptr);
 public slots:
     void setTitle(const QString &title);
     void setSubTitle(const QString &title);

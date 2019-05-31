@@ -7,7 +7,7 @@ class ScraperTableView : public QTableView
 {
     Q_OBJECT
 public:
-    explicit ScraperTableView(QWidget *parent = 0);
+    explicit ScraperTableView(QWidget *parent = nullptr);
 
 signals:
 

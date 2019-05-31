@@ -118,7 +118,7 @@ private:
     QString originalCoverSize;
 
 public:
-    PropertiesDialog(QWidget *parent = 0);
+    PropertiesDialog(QWidget *parent = nullptr);
     QString databasePath;
     QString basePath;
     QSize sizeHint();

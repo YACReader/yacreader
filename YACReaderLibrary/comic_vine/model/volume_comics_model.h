@@ -7,7 +7,7 @@ class VolumeComicsModel : public JSONModel
 {
     Q_OBJECT
 public:
-    explicit VolumeComicsModel(QObject *parent = 0);
+    explicit VolumeComicsModel(QObject *parent = nullptr);
     void load(const QString &json);
     //void load(const QStringList & jsonList);
 

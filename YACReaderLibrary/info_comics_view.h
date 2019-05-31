@@ -12,7 +12,7 @@ class InfoComicsView : public ComicsView
 {
     Q_OBJECT
 public:
-    explicit InfoComicsView(QWidget *parent = 0);
+    explicit InfoComicsView(QWidget *parent = nullptr);
     ~InfoComicsView();
     void setToolBar(QToolBar *toolBar);
     void setModel(ComicModel *model);

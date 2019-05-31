@@ -11,7 +11,7 @@ class ExportComicsInfoDialog : public QDialog
     Q_OBJECT
 
 public:
-    ExportComicsInfoDialog(QWidget *parent = 0);
+    ExportComicsInfoDialog(QWidget *parent = nullptr);
     ~ExportComicsInfoDialog();
     QString source;
 

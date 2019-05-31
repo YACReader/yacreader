@@ -9,7 +9,7 @@ class YACReaderComicInfoHelper : public QObject
 {
     Q_OBJECT
 public:
-    explicit YACReaderComicInfoHelper(QObject *parent = 0);
+    explicit YACReaderComicInfoHelper(QObject *parent = nullptr);
 
     void setModel(ComicModel *model);
 

@@ -10,7 +10,7 @@ class ScraperResultsPaginator : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ScraperResultsPaginator(QWidget *parent = 0);
+    explicit ScraperResultsPaginator(QWidget *parent = nullptr);
     void update(const QString &json);
     int getCurrentPage();
     void setCustomLabel(const QString &label);

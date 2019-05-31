@@ -13,7 +13,7 @@ class ImportLibraryDialog : public QDialog
 {
     Q_OBJECT
 public:
-    ImportLibraryDialog(QWidget *parent = 0);
+    ImportLibraryDialog(QWidget *parent = nullptr);
 
 private:
     QLabel *nameLabel;

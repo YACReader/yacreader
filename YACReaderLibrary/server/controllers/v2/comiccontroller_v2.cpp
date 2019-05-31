@@ -53,8 +53,8 @@ void ComicControllerV2::service(HttpRequest &request, HttpResponse &response)
 
     Comic *comicFile = FactoryComic::newComic(libraries.getPath(libraryId) + comic.path);
 
-    if (comicFile != NULL) {
-        QThread *thread = NULL;
+    if (comicFile != nullptr) {
+        QThread *thread = nullptr;
 
         thread = new QThread();
 
@@ -68,7 +68,7 @@ void ComicControllerV2::service(HttpRequest &request, HttpResponse &response)
 
         comicFile->load(libraries.getPath(libraryId) + comic.path);
 
-        if (thread != NULL)
+        if (thread != nullptr)
             thread->start();
 
         if (remoteComic) {

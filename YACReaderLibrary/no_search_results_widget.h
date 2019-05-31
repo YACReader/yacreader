@@ -9,7 +9,7 @@ class NoSearchResultsWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit NoSearchResultsWidget(QWidget *parent = 0);
+    explicit NoSearchResultsWidget(QWidget *parent = nullptr);
 
 signals:
 

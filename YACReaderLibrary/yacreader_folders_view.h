@@ -9,7 +9,7 @@ class YACReaderFoldersView : public YACReaderTreeView
 {
     Q_OBJECT
 public:
-    explicit YACReaderFoldersView(QWidget *parent = 0);
+    explicit YACReaderFoldersView(QWidget *parent = nullptr);
 
 signals:
     //Drops
@@ -28,7 +28,7 @@ class YACReaderFoldersViewItemDeletegate : public QStyledItemDelegate
 {
     Q_OBJECT
 public:
-    explicit YACReaderFoldersViewItemDeletegate(QObject *parent = 0);
+    explicit YACReaderFoldersViewItemDeletegate(QObject *parent = nullptr);
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 

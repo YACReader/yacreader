@@ -14,7 +14,7 @@ class YACReaderMainToolBar : public QWidget
 {
     Q_OBJECT
 public:
-    explicit YACReaderMainToolBar(QWidget *parent = 0);
+    explicit YACReaderMainToolBar(QWidget *parent = nullptr);
     QSize sizeHint() const;
 
     QToolButton *backButton;

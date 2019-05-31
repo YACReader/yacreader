@@ -10,7 +10,7 @@ class YACReaderComicsSelectionHelper : public QObject
 {
     Q_OBJECT
 public:
-    explicit YACReaderComicsSelectionHelper(QObject *parent = 0);
+    explicit YACReaderComicsSelectionHelper(QObject *parent = nullptr);
 
     void setModel(ComicModel *model);
 

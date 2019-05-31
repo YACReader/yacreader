@@ -23,7 +23,7 @@ public:
         RIGHT
     };
 
-    ScrapperToolButton(ScrapperToolButton::Appearance appearance = DEFAULT, QWidget *parent = 0)
+    ScrapperToolButton(ScrapperToolButton::Appearance appearance = DEFAULT, QWidget *parent = nullptr)
         : QPushButton(parent), appearance(appearance)
     {
         setStyleSheet("QPushButton {border: none; background: #2e2e2e; color:white; border-radius:2px;}"
@@ -67,7 +67,7 @@ class SortVolumeComics : public ScraperSelector
 {
     Q_OBJECT
 public:
-    explicit SortVolumeComics(QWidget *parent = 0);
+    explicit SortVolumeComics(QWidget *parent = nullptr);
 
 signals:
 

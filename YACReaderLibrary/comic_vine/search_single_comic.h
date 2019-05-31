@@ -9,7 +9,7 @@ class SearchSingleComic : public QWidget
 {
     Q_OBJECT
 public:
-    SearchSingleComic(QWidget *parent = 0);
+    SearchSingleComic(QWidget *parent = nullptr);
     QString getVolumeInfo();
     QString getComicInfo();
     int getComicNumber();

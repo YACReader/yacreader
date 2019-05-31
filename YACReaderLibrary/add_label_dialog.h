@@ -9,7 +9,7 @@ class AddLabelDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit AddLabelDialog(QWidget *parent = 0);
+    explicit AddLabelDialog(QWidget *parent = nullptr);
     YACReader::LabelColors selectedColor();
     QString name();
 signals:

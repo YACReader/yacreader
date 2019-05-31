@@ -9,7 +9,7 @@ class LocalComicListModel : public QAbstractItemModel
 {
     Q_OBJECT
 public:
-    explicit LocalComicListModel(QObject *parent = 0);
+    explicit LocalComicListModel(QObject *parent = nullptr);
 
     void load(QList<ComicDB> &comics);
 

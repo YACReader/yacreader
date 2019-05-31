@@ -7,7 +7,7 @@ class ComicVineAllVolumeComicsRetriever : public QObject
 {
     Q_OBJECT
 public:
-    explicit ComicVineAllVolumeComicsRetriever(const QString &volumeURLString, QObject *parent = 0);
+    explicit ComicVineAllVolumeComicsRetriever(const QString &volumeURLString, QObject *parent = nullptr);
     void getAllVolumeComics();
 
 protected:

@@ -11,7 +11,7 @@ class AddLibraryDialog : public QDialog
 {
     Q_OBJECT
 public:
-    AddLibraryDialog(QWidget *parent = 0);
+    AddLibraryDialog(QWidget *parent = nullptr);
 
 private:
     QLabel *nameLabel;

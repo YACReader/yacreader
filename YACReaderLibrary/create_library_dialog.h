@@ -14,7 +14,7 @@ class CreateLibraryDialog : public QDialog
 {
     Q_OBJECT
 public:
-    CreateLibraryDialog(QWidget *parent = 0);
+    CreateLibraryDialog(QWidget *parent = nullptr);
 
 private:
     QLabel *nameLabel;
@@ -46,7 +46,7 @@ class UpdateLibraryDialog : public QDialog
 {
     Q_OBJECT
 public:
-    UpdateLibraryDialog(QWidget *parent = 0);
+    UpdateLibraryDialog(QWidget *parent = nullptr);
 
 private:
     QLabel *message;

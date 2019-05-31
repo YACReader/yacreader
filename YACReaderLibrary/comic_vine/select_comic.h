@@ -14,7 +14,7 @@ class SelectComic : public ScraperSelector
 {
     Q_OBJECT
 public:
-    SelectComic(QWidget *parent = 0);
+    SelectComic(QWidget *parent = nullptr);
     void load(const QString &json, const QString &searchString);
     virtual ~SelectComic();
 
