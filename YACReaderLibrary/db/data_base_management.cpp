@@ -537,12 +537,6 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
                 insert.bindValue(":read", 0);
 
                 insert.exec();
-
-                QString error1 = insert.lastError().databaseText();
-                QString error2 = insert.lastError().driverText();
-
-                //QMessageBox::critical(NULL,"db",error1);
-                //QMessageBox::critical(NULL,"driver",error2);
             }
             //update.finish();
             //insert.finish();

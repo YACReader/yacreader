@@ -59,7 +59,6 @@ QList<QString> addresses()
                 tmpAddrPtr = &((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
                 char addressBuffer[INET_ADDRSTRLEN];
                 inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
-                QString add(addressBuffer);
                 localAddreses.push_back(QString(addressBuffer));
                 //printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer);
             } else if (ifa->ifa_addr->sa_family == AF_INET6) { // check it is IP6
@@ -152,7 +151,6 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     performanceWorkaroundCheck->setText(tr("display less information about folders in the browser\nto improve the performance"));
     performanceWorkaroundCheck->setStyleSheet("QCheckBox {color:#262626; font-size:13px; font-family: Arial;}");
 
-    QPalette Pal(palette());
     // set black background
     QPalette palette;
     QImage image(":/images/serverConfigBackground.png");
