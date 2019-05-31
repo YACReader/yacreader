@@ -4,10 +4,6 @@ Standard: Cpp11
 
 ColumnLimit: 0
 
-# Disable reflow of qdoc comments: indentation rules are different.
-# Translation comments are also excluded.
-CommentPragmas: "^!|^:"
-
 # We want a space between the type and the star for pointer types.
 PointerBindsToType: false
 
