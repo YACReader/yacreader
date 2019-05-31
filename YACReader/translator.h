@@ -25,7 +25,7 @@ class YACReaderTranslator : public QWidget
 {
     Q_OBJECT
 public:
-    YACReaderTranslator(QWidget *parent = 0);
+    YACReaderTranslator(QWidget *parent = nullptr);
     ~YACReaderTranslator();
 
 public slots:
