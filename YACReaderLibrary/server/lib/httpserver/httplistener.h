@@ -71,7 +71,7 @@ public:
 protected:
 
     /** Serves new incoming connection requests */
-    void incomingConnection(tSocketDescriptor socketDescriptor);
+    void incomingConnection(tSocketDescriptor socketDescriptor) override;
 
 private:
 

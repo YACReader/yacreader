@@ -11,7 +11,7 @@ class ComicVineClient : public QObject
     Q_OBJECT
 public:
     explicit ComicVineClient(QObject *parent = nullptr);
-    ~ComicVineClient();
+    ~ComicVineClient() override;
 
 signals:
     void searchResult(QString);

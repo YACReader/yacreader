@@ -41,7 +41,7 @@ public:
     virtual ~ScrapperToolButton() {}
 
 protected:
-    void paintEvent(QPaintEvent *e)
+    void paintEvent(QPaintEvent *e) override
     {
         QPainter p(this);
 

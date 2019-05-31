@@ -16,7 +16,7 @@ signals:
 public slots:
 
 protected:
-    void paintEvent(QPaintEvent *);
+    void paintEvent(QPaintEvent *) override;
 
     QLabel *iconLabel;
     QLabel *titleLabel;

@@ -41,7 +41,7 @@ private:
 
     QToolButton *hideButton;
 
-    void resizeEvent(QResizeEvent *event);
+    void resizeEvent(QResizeEvent *event) override;
 };
 
 #endif // IMPORT_WIDGET_H

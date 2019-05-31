@@ -18,7 +18,7 @@ public:
     LibrariesControllerV2();
 
     /** Generates the response */
-    void service(HttpRequest &request, HttpResponse &response);
+    void service(HttpRequest &request, HttpResponse &response) override;
 };
 
 #endif // LIBRARIESCONTROLLER_H

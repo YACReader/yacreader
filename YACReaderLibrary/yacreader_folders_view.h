@@ -18,10 +18,10 @@ signals:
 
 protected:
     //Drop to import
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dragLeaveEvent(QDragLeaveEvent *event);
-    void dragMoveEvent(QDragMoveEvent *event);
-    void dropEvent(QDropEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dragLeaveEvent(QDragLeaveEvent *event) override;
+    void dragMoveEvent(QDragMoveEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
 };
 
 class YACReaderFoldersViewItemDeletegate : public QStyledItemDelegate
@@ -29,7 +29,7 @@ class YACReaderFoldersViewItemDeletegate : public QStyledItemDelegate
     Q_OBJECT
 public:
     explicit YACReaderFoldersViewItemDeletegate(QObject *parent = nullptr);
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 };
 
 #endif // YACREADER_FOLDERS_VIEW_H

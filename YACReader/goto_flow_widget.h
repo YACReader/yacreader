@@ -20,7 +20,7 @@ protected:
 
 public:
     GoToFlowWidget(QWidget *paret = nullptr);
-    virtual ~GoToFlowWidget() = 0;
+    ~GoToFlowWidget() override = 0;
 public slots:
     virtual void reset() = 0;
     virtual void centerSlide(int slide) = 0;
@@ -33,7 +33,7 @@ public slots:
     virtual void setFlowRightToLeft(bool b) = 0;
 
 protected:
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event) override;
     //bool eventFilter(QObject *, QEvent *);
 };
 

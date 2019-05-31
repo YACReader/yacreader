@@ -10,7 +10,7 @@ class YACReaderHttpSession : public QObject
     Q_OBJECT
 public:
     explicit YACReaderHttpSession(QObject *parent = nullptr);
-    ~YACReaderHttpSession();
+    ~YACReaderHttpSession() override;
 
     void setComicsOnDevice(const QSet<QString> &set);
     void setComicOnDevice(const QString &hash);

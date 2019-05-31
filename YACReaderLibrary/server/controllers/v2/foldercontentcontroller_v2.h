@@ -14,7 +14,7 @@ public:
     FolderContentControllerV2();
 
     /** Generates the response */
-    void service(HttpRequest &request, HttpResponse &response);
+    void service(HttpRequest &request, HttpResponse &response) override;
 
 private:
     void serviceContent(const int &library, const qulonglong &folderId, HttpResponse &response);

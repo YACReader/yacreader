@@ -13,9 +13,9 @@ public:
 
 protected:
     //Drop to import & internal Drag&Drop for resorting
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dragMoveEvent(QDragMoveEvent *event);
-    void dropEvent(QDropEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dragMoveEvent(QDragMoveEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
 };
 
 class YACReaderReadingListsViewItemDeletegate : public QStyledItemDelegate
@@ -23,7 +23,7 @@ class YACReaderReadingListsViewItemDeletegate : public QStyledItemDelegate
     Q_OBJECT
 public:
     explicit YACReaderReadingListsViewItemDeletegate(QObject *parent = nullptr);
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 

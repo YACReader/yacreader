@@ -15,7 +15,7 @@ public:
 signals:
 
 public slots:
-    int exec();
+    int exec() override;
 
 protected slots:
     void validateName(const QString &name);

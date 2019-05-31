@@ -46,32 +46,32 @@ private:
 public:
     ComicFlowWidgetSW(QWidget *parent = nullptr);
 
-    void setShowMarks(bool value);
-    void setMarks(QVector<YACReaderComicReadStatus> marks);
-    void setMarkImage(QImage &image);
-    void markSlide(int index, YACReaderComicReadStatus status);
-    void unmarkSlide(int index);
-    void setSlideSize(QSize size);
-    void clear();
-    void setImagePaths(QStringList paths);
-    void setCenterIndex(int index);
-    void showSlide(int index);
+    void setShowMarks(bool value) override;
+    void setMarks(QVector<YACReaderComicReadStatus> marks) override;
+    void setMarkImage(QImage &image) override;
+    void markSlide(int index, YACReaderComicReadStatus status) override;
+    void unmarkSlide(int index) override;
+    void setSlideSize(QSize size) override;
+    void clear() override;
+    void setImagePaths(QStringList paths) override;
+    void setCenterIndex(int index) override;
+    void showSlide(int index) override;
     int centerIndex();
-    void updateMarks();
-    void setFlowType(FlowType flowType);
-    void render();
-    void updateConfig(QSettings *settings);
-    void remove(int cover);
-    void resortCovers(QList<int> newOrder);
+    void updateMarks() override;
+    void setFlowType(FlowType flowType) override;
+    void render() override;
+    void updateConfig(QSettings *settings) override;
+    void remove(int cover) override;
+    void resortCovers(QList<int> newOrder) override;
 
 protected:
-    void keyPressEvent(QKeyEvent *event);
-    void paintEvent(QPaintEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void resizeEvent(QResizeEvent *event);
-    void mouseDoubleClickEvent(QMouseEvent *event);
+    void keyPressEvent(QKeyEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
     QSize minimumSizeHint() const;
-    QSize sizeHint() const;
+    QSize sizeHint() const override;
     QSize slideSizeW;
     QSize slideSizeF;
 };
@@ -86,23 +86,23 @@ private:
 public:
     ComicFlowWidgetGL(QWidget *parent = nullptr);
 
-    void setShowMarks(bool value);
-    void setMarks(QVector<YACReaderComicReadStatus> marks);
-    void setMarkImage(QImage &image);
-    void markSlide(int index, YACReaderComicReadStatus status);
-    void unmarkSlide(int index);
-    void setSlideSize(QSize size);
-    void clear();
-    void setImagePaths(QStringList paths);
-    void setCenterIndex(int index);
-    void showSlide(int index);
+    void setShowMarks(bool value) override;
+    void setMarks(QVector<YACReaderComicReadStatus> marks) override;
+    void setMarkImage(QImage &image) override;
+    void markSlide(int index, YACReaderComicReadStatus status) override;
+    void unmarkSlide(int index) override;
+    void setSlideSize(QSize size) override;
+    void clear() override;
+    void setImagePaths(QStringList paths) override;
+    void setCenterIndex(int index) override;
+    void showSlide(int index) override;
     int centerIndex();
-    void updateMarks();
-    void setFlowType(FlowType flowType);
-    void render();
-    void updateConfig(QSettings *settings);
-    void remove(int cover);
-    void resortCovers(QList<int> newOrder);
+    void updateMarks() override;
+    void setFlowType(FlowType flowType) override;
+    void render() override;
+    void updateConfig(QSettings *settings) override;
+    void remove(int cover) override;
+    void resortCovers(QList<int> newOrder) override;
     //public slots:
     //	void setCF_RX(int value);
     //	//the Y Rotation of the Coverflow
@@ -122,13 +122,13 @@ public:
     //	void setY_Distance(int value);
     //	void setPreset(const Preset & p);
 protected:
-    void keyPressEvent(QKeyEvent *event);
-    void paintEvent(QPaintEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void resizeEvent(QResizeEvent *event);
-    void mouseDoubleClickEvent(QMouseEvent *event);
-    QSize minimumSizeHint() const;
-    QSize sizeHint() const;
+    void keyPressEvent(QKeyEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
+    QSize minimumSizeHint() const override;
+    QSize sizeHint() const override;
 };
 #endif
 #endif

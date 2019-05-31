@@ -16,7 +16,7 @@ public:
     QString dest;
 
 private:
-    void run();
+    void run() override;
 };
 
 class ImportComicsInfoDialog : public QDialog

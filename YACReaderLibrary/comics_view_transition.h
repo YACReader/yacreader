@@ -11,7 +11,7 @@ public:
     QSize sizeHint();
 
 protected:
-    void paintEvent(QPaintEvent *);
+    void paintEvent(QPaintEvent *) override;
 };
 
 #endif // COMICS_VIEW_TRANSITION_H

@@ -14,7 +14,7 @@ public:
     UpdateComicControllerV2();
 
     /** Generates the response */
-    void service(HttpRequest &request, HttpResponse &response);
+    void service(HttpRequest &request, HttpResponse &response) override;
 };
 
 #endif // UPDATECOMICCONTROLLER_H

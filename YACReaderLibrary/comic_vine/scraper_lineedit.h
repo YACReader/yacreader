@@ -12,7 +12,7 @@ public:
     ScraperLineEdit(const QString &title, QWidget *widget = nullptr);
 
 protected:
-    void resizeEvent(QResizeEvent *);
+    void resizeEvent(QResizeEvent *) override;
 
 private:
     QLabel *titleLabel;

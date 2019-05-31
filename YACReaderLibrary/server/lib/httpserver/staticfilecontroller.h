@@ -49,7 +49,7 @@ public:
     StaticFileController(QSettings* settings, QObject* parent = nullptr);
 
     /** Generates the response */
-    void service(HttpRequest& request, HttpResponse& response);
+    void service(HttpRequest& request, HttpResponse& response) override;
 
 private:
 

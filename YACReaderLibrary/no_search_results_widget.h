@@ -18,7 +18,7 @@ public slots:
 protected:
     QLabel *iconLabel;
     QLabel *titleLabel;
-    void paintEvent(QPaintEvent *);
+    void paintEvent(QPaintEvent *) override;
     QString backgroundColor;
 };
 

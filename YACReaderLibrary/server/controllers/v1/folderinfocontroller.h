@@ -15,7 +15,7 @@ public:
     FolderInfoController();
 
     /** Generates the response */
-    void service(HttpRequest &request, HttpResponse &response);
+    void service(HttpRequest &request, HttpResponse &response) override;
 
 private:
     void serviceComics(const int &library, const qulonglong &folderId, HttpResponse &response);

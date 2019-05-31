@@ -12,7 +12,7 @@ class ExportComicsInfoDialog : public QDialog
 
 public:
     ExportComicsInfoDialog(QWidget *parent = nullptr);
-    ~ExportComicsInfoDialog();
+    ~ExportComicsInfoDialog() override;
     QString source;
 
 public slots:

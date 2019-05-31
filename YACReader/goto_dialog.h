@@ -24,7 +24,7 @@ private:
 public slots:
     void goTo();
     void setNumPages(unsigned int numPages);
-    void open();
+    void open() override;
 signals:
     void goToPage(unsigned int page);
 };

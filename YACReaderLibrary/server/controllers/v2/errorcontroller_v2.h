@@ -14,7 +14,7 @@ public:
     ErrorControllerV2(int errorCode);
 
     /** Generates the response */
-    void service(HttpRequest &request, HttpResponse &response);
+    void service(HttpRequest &request, HttpResponse &response) override;
 
 private:
     int error;

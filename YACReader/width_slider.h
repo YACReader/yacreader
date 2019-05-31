@@ -18,8 +18,8 @@ public:
     void show();
 
 protected:
-    virtual void focusOutEvent(QFocusEvent *event);
-    virtual void paintEvent(QPaintEvent *);
+    void focusOutEvent(QFocusEvent *event) override;
+    void paintEvent(QPaintEvent *) override;
 
 public slots:
     void updateText(int value);

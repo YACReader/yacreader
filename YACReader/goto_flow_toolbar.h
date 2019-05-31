@@ -21,7 +21,7 @@ private:
     QPushButton *goToButton;
     QLabel *pageHint;
     QWidget *bar;
-    void paintEvent(QPaintEvent *);
+    void paintEvent(QPaintEvent *) override;
 
 public:
     GoToFlowToolBar(QWidget *parent = nullptr);

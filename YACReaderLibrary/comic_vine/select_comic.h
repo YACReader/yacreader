@@ -15,7 +15,7 @@ class SelectComic : public ScraperSelector
     Q_OBJECT
 public:
     SelectComic(QWidget *parent = nullptr);
-    void load(const QString &json, const QString &searchString);
+    void load(const QString &json, const QString &searchString) override;
     virtual ~SelectComic();
 
 public slots:

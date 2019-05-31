@@ -26,7 +26,7 @@ class YACReaderTranslator : public QWidget
     Q_OBJECT
 public:
     YACReaderTranslator(QWidget *parent = nullptr);
-    ~YACReaderTranslator();
+    ~YACReaderTranslator() override;
 
 public slots:
     void play();
@@ -39,9 +39,9 @@ protected slots:
     void clear();
 
 protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
     void hideResults();
 
     void populateCombos();
@@ -80,7 +80,7 @@ private:
     QString text;
     QString from;
     QString to;
-    void run();
+    void run() override;
 };
 
 class TextToSpeachLoader : public QThread
@@ -96,6 +96,6 @@ signals:
 private:
     QString text;
     QString language;
-    void run();
+    void run() override;
 };
 #endif

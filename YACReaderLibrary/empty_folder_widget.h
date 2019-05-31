@@ -27,8 +27,8 @@ protected:
     QString backgroundColor;
 
     //Drop to import
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dropEvent(QDropEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
 };
 
 #endif // EMPTY_FOLDER_WIDGET_H

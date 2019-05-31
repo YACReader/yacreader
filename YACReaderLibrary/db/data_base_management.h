@@ -15,7 +15,7 @@ public:
     void exportComicsInfo(QSqlDatabase &source, QSqlDatabase &dest);
 
 private:
-    void run();
+    void run() override;
 };
 
 class ComicsInfoImporter : public QThread
@@ -26,7 +26,7 @@ public:
     void importComicsInfo(QSqlDatabase &source, QSqlDatabase &dest);
 
 private:
-    void run();
+    void run() override;
 };
 
 class DataBaseManagement : public QObject

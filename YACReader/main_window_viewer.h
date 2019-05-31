@@ -156,11 +156,11 @@ private:
     void getSiblingComics(QString path, QString currentComic);
 
     //! Manejadores de evento:
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event) override;
     //void resizeEvent(QResizeEvent * event);
-    void mouseDoubleClickEvent(QMouseEvent *event);
-    void dropEvent(QDropEvent *event);
-    void dragEnterEvent(QDragEnterEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
+    void dragEnterEvent(QDragEnterEvent *event) override;
 
     QSettings *settings;
 
@@ -178,11 +178,11 @@ signals:
     void closed();
 
 protected:
-    virtual void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *event) override;
     void sendComic();
 
 public:
     MainWindowViewer();
-    ~MainWindowViewer();
+    ~MainWindowViewer() override;
 };
 #endif

@@ -91,7 +91,7 @@ private:
     QSslConfiguration* sslConfiguration;
 
     /** Executes the threads own event loop */
-    void run();
+    void run() override;
 
     /**  Create SSL or TCP socket */
     void createSocket();

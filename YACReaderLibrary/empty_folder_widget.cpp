@@ -38,7 +38,7 @@ public:
     virtual ~ListviewDelegate() {}
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option,
-               const QModelIndex &index) const
+               const QModelIndex &index) const override
     {
         painter->save();
 
@@ -57,7 +57,7 @@ public:
     }
 
     QSize sizeHint(const QStyleOptionViewItem &option,
-                   const QModelIndex &index) const
+                   const QModelIndex &index) const override
     {
         QFontMetrics fm(option.font);
         QString text = qvariant_cast<QString>(index.data(Qt::DisplayRole));

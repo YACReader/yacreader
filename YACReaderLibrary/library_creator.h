@@ -43,7 +43,7 @@ private:
     //recursive method
     void create(QDir currentDirectory);
     void update(QDir currentDirectory);
-    void run();
+    void run() override;
     qulonglong insertFolders(); //devuelve el id del último folder añadido (último en la ruta)
     bool checkCover(const QString &hash);
     void insertComic(const QString &relativePath, const QFileInfo &fileInfo);

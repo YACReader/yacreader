@@ -12,7 +12,7 @@ class ReadingListContentControllerV2 : public HttpRequestHandler
 public:
     ReadingListContentControllerV2();
 
-    void service(HttpRequest &request, HttpResponse &response);
+    void service(HttpRequest &request, HttpResponse &response) override;
 
 private:
     void serviceContent(const int &library, const qulonglong &readingListId, HttpResponse &response);

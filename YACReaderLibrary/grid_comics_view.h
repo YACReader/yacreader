@@ -21,25 +21,25 @@ class GridComicsView : public ComicsView
 public:
     explicit GridComicsView(QWidget *parent = 0);
     virtual ~GridComicsView();
-    void setToolBar(QToolBar *toolBar);
-    void setModel(ComicModel *model);
-    void setCurrentIndex(const QModelIndex &index);
-    QModelIndex currentIndex();
-    QItemSelectionModel *selectionModel();
-    void scrollTo(const QModelIndex &mi, QAbstractItemView::ScrollHint hint);
-    void toFullScreen();
-    void toNormal();
-    void updateConfig(QSettings *settings);
-    void enableFilterMode(bool enabled);
+    void setToolBar(QToolBar *toolBar) override;
+    void setModel(ComicModel *model) override;
+    void setCurrentIndex(const QModelIndex &index) override;
+    QModelIndex currentIndex() override;
+    QItemSelectionModel *selectionModel() override;
+    void scrollTo(const QModelIndex &mi, QAbstractItemView::ScrollHint hint) override;
+    void toFullScreen() override;
+    void toNormal() override;
+    void updateConfig(QSettings *settings) override;
+    void enableFilterMode(bool enabled) override;
     QSize sizeHint();
     QByteArray getMimeDataFromSelection();
-    void updateCurrentComicView();
+    void updateCurrentComicView() override;
 
 public slots:
     //ComicsView
-    void setShowMarks(bool show);
-    void selectAll();
-    void selectIndex(int index);
+    void setShowMarks(bool show) override;
+    void selectAll() override;
+    void selectIndex(int index) override;
     void triggerOpenCurrentComic();
 
     void updateBackgroundConfig();
@@ -93,7 +93,7 @@ private:
     ComicDB currentComic;
 
     bool dummy;
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *event) override;
     void createCoverSizeSliderWidget();
 };
 

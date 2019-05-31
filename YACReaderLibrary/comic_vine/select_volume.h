@@ -17,7 +17,7 @@ class SelectVolume : public ScraperSelector
     Q_OBJECT
 public:
     SelectVolume(QWidget *parent = nullptr);
-    void load(const QString &json, const QString &searchString);
+    void load(const QString &json, const QString &searchString) override;
     virtual ~SelectVolume();
 
 public slots:

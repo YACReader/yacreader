@@ -17,7 +17,7 @@ public:
 
 public slots:
     void editApiKey();
-    void restoreOptions(QSettings *settings);
+    void restoreOptions(QSettings *settings) override;
 
 private slots:
     void useBackgroundImageCheckClicked(bool checked);

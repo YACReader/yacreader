@@ -48,8 +48,8 @@ private:
     YACReaderSpinSliderWidget *gammaS;
 
 public slots:
-    void saveOptions();
-    void restoreOptions(QSettings *settings);
+    void saveOptions() override;
+    void restoreOptions(QSettings *settings) override;
     void findFolder();
     void updateColor(const QColor &color);
     //void fitToWidthRatio(int value);

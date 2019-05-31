@@ -20,21 +20,21 @@ class ClassicComicsView : public ComicsView
     Q_OBJECT
 public:
     ClassicComicsView(QWidget *parent = 0);
-    void setToolBar(QToolBar *toolBar);
-    void setModel(ComicModel *model);
+    void setToolBar(QToolBar *toolBar) override;
+    void setModel(ComicModel *model) override;
 
-    QModelIndex currentIndex();
-    QItemSelectionModel *selectionModel();
-    void scrollTo(const QModelIndex &mi, QAbstractItemView::ScrollHint hint);
-    void toFullScreen();
-    void toNormal();
-    void updateConfig(QSettings *settings);
-    void enableFilterMode(bool enabled);
-    void selectIndex(int index);
-    void updateCurrentComicView();
+    QModelIndex currentIndex() override;
+    QItemSelectionModel *selectionModel() override;
+    void scrollTo(const QModelIndex &mi, QAbstractItemView::ScrollHint hint) override;
+    void toFullScreen() override;
+    void toNormal() override;
+    void updateConfig(QSettings *settings) override;
+    void enableFilterMode(bool enabled) override;
+    void selectIndex(int index) override;
+    void updateCurrentComicView() override;
 
 public slots:
-    void setCurrentIndex(const QModelIndex &index);
+    void setCurrentIndex(const QModelIndex &index) override;
     void centerComicFlow(const QModelIndex &mi);
     void updateTableView(int i);
     void saveTableHeadersStatus();
@@ -42,8 +42,8 @@ public slots:
     void applyModelChanges(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles);
     void removeItemsFromFlow(const QModelIndex &parent, int from, int to);
     //ComicsView
-    void setShowMarks(bool show);
-    void selectAll();
+    void setShowMarks(bool show) override;
+    void selectAll() override;
     void selectedComicForOpening(const QModelIndex &mi);
 
 protected slots:
@@ -60,7 +60,7 @@ private:
     QSplitter *sVertical;
     ComicFlowWidget *comicFlow;
     QSettings *settings;
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *event) override;
     QAction *hideFlowViewAction;
 
     QStackedWidget *stack;

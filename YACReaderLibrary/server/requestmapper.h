@@ -16,7 +16,7 @@ class RequestMapper : public HttpRequestHandler
 public:
     RequestMapper(QObject *parent = nullptr);
 
-    void service(HttpRequest &request, HttpResponse &response);
+    void service(HttpRequest &request, HttpResponse &response) override;
     void loadSessionV1(HttpRequest &request, HttpResponse &response);
     void loadSessionV2(HttpRequest &request, HttpResponse &response);
 

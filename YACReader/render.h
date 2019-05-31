@@ -37,7 +37,7 @@ public:
     enum NeighborghoodSize { SMALL = 9,
                              LARGE = 25 };
     MeanNoiseReductionFilter(enum NeighborghoodSize ns = SMALL);
-    virtual QImage setFilter(const QImage &image);
+    QImage setFilter(const QImage &image) override;
 
 private:
     enum NeighborghoodSize neighborghoodSize;
@@ -49,7 +49,7 @@ public:
     enum NeighborghoodSize { SMALL = 9,
                              LARGE = 25 };
     MedianNoiseReductionFilter(enum NeighborghoodSize ns = SMALL);
-    virtual QImage setFilter(const QImage &image);
+    QImage setFilter(const QImage &image) override;
 
 private:
     enum NeighborghoodSize neighborghoodSize;
@@ -59,21 +59,21 @@ class BrightnessFilter : public ImageFilter
 {
 public:
     BrightnessFilter(int l = -1);
-    virtual QImage setFilter(const QImage &image);
+    QImage setFilter(const QImage &image) override;
 };
 
 class ContrastFilter : public ImageFilter
 {
 public:
     ContrastFilter(int l = -1);
-    virtual QImage setFilter(const QImage &image);
+    QImage setFilter(const QImage &image) override;
 };
 
 class GammaFilter : public ImageFilter
 {
 public:
     GammaFilter(int l = -1);
-    virtual QImage setFilter(const QImage &image);
+    QImage setFilter(const QImage &image) override;
 };
 
 //-----------------------------------------------------------------------------
@@ -98,7 +98,7 @@ private:
     QImage *page;
     unsigned int degrees;
     QVector<ImageFilter *> filters;
-    void run();
+    void run() override;
     Render *render;
 signals:
     void pageReady(int);
@@ -132,7 +132,7 @@ class Render : public QObject
     Q_OBJECT
 public:
     Render();
-    ~Render();
+    ~Render() override;
 
 public slots:
     void render();

@@ -52,8 +52,8 @@ protected:
     ComicModel *model;
 
     //Drop to import
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dropEvent(QDropEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
 
     QQuickWidget *view;
     QWidget *container;

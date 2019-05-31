@@ -12,7 +12,7 @@ class TagInfoControllerV2 : public HttpRequestHandler
 public:
     TagInfoControllerV2();
 
-    void service(HttpRequest &request, HttpResponse &response);
+    void service(HttpRequest &request, HttpResponse &response) override;
 
 private:
     void serviceComics(const int &library, const qulonglong &tagId, HttpResponse &response);
