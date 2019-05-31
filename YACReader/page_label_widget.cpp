@@ -44,7 +44,7 @@ PageLabelWidget::PageLabelWidget(QWidget *parent)
 void PageLabelWidget::show()
 {
     if (this->pos().y() <= 0 && animation->state() != QPropertyAnimation::Running) {
-        auto *parent = dynamic_cast<QWidget *>(this->parent());
+        auto parent = dynamic_cast<QWidget *>(this->parent());
         if (parent == nullptr) {
             return;
         }
@@ -62,7 +62,7 @@ void PageLabelWidget::show()
 void PageLabelWidget::hide()
 {
     if (this->pos().y() >= 0 && animation->state() != QPropertyAnimation::Running) {
-        auto *parent = dynamic_cast<QWidget *>(this->parent());
+        auto parent = dynamic_cast<QWidget *>(this->parent());
         if (parent == nullptr) {
             return;
         }
@@ -87,7 +87,7 @@ void PageLabelWidget::paintEvent(QPaintEvent *)
 
 void PageLabelWidget::updatePosition()
 {
-    auto *parent = dynamic_cast<QWidget *>(this->parent());
+    auto parent = dynamic_cast<QWidget *>(this->parent());
     if (parent == nullptr) {
         return;
     }

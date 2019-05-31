@@ -53,7 +53,7 @@ void Startup::start()
     logger->installMsgHandler();*/
 
     // Configure template loader and cache
-    auto *templateSettings = new QSettings(configFileName, QSettings::IniFormat, app);
+    auto templateSettings = new QSettings(configFileName, QSettings::IniFormat, app);
     templateSettings->beginGroup("templates");
 
     if (templateSettings->value("cacheSize").isNull())
@@ -74,7 +74,7 @@ void Startup::start()
     Static::templateLoader = new TemplateCache(templateSettings, app);
 
     // Configure session store
-    auto *sessionSettings = new QSettings(configFileName, QSettings::IniFormat, app);
+    auto sessionSettings = new QSettings(configFileName, QSettings::IniFormat, app);
     sessionSettings->beginGroup("sessions");
 
     if (sessionSettings->value("expirationTime").isNull())
@@ -85,7 +85,7 @@ void Startup::start()
     Static::yacreaderSessionStore = new YACReaderHttpSessionStore(Static::sessionStore, app);
 
     // Configure static file controller
-    auto *fileSettings = new QSettings(configFileName, QSettings::IniFormat, app);
+    auto fileSettings = new QSettings(configFileName, QSettings::IniFormat, app);
     fileSettings->beginGroup("docroot");
 
     QString basedocroot = "./server/docroot";
@@ -106,7 +106,7 @@ void Startup::start()
 
     // Configure and start the TCP listener
     qDebug("ServiceHelper: Starting service");
-    auto *listenerSettings = new QSettings(configFileName, QSettings::IniFormat, app);
+    auto listenerSettings = new QSettings(configFileName, QSettings::IniFormat, app);
     listenerSettings->beginGroup("listener");
 
     if (listenerSettings->value("maxRequestSize").isNull())

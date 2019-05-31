@@ -754,7 +754,7 @@ void MainWindowViewer::clearRecentFiles()
 
 void MainWindowViewer::openRecent()
 {
-    auto *action = qobject_cast<QAction *>(sender());
+    auto action = qobject_cast<QAction *>(sender());
 
     openComicFromRecentAction(action);
 }
