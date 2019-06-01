@@ -37,9 +37,9 @@ SortVolumeComics::SortVolumeComics(QWidget *parent)
     //connect(moveUpButtonIL,SIGNAL(clicked()),this,SLOT(moveUpIL()));
     //connect(moveUpButtonIL,SIGNAL(clicked()),this,SLOT(moveDownIL()));
 
-    QVBoxLayout *l = new QVBoxLayout;
-    QGridLayout *content = new QGridLayout;
-    QHBoxLayout *sortButtonsLayout = new QHBoxLayout;
+    auto l = new QVBoxLayout;
+    auto content = new QGridLayout;
+    auto sortButtonsLayout = new QHBoxLayout;
 
     tableFiles = new ScraperTableView();
     tableVolumeComics = new ScraperTableView();

@@ -37,7 +37,7 @@ class YACReaderHistoryController : public QObject
 {
     Q_OBJECT
 public:
-    explicit YACReaderHistoryController(QObject *parent = 0);
+    explicit YACReaderHistoryController(QObject *parent = nullptr);
 
 signals:
     void enabledForward(bool enabled);

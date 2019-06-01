@@ -14,9 +14,9 @@ class RequestMapper : public HttpRequestHandler
     Q_OBJECT
     Q_DISABLE_COPY(RequestMapper)
 public:
-    RequestMapper(QObject *parent = 0);
+    RequestMapper(QObject *parent = nullptr);
 
-    void service(HttpRequest &request, HttpResponse &response);
+    void service(HttpRequest &request, HttpResponse &response) override;
     void loadSessionV1(HttpRequest &request, HttpResponse &response);
     void loadSessionV2(HttpRequest &request, HttpResponse &response);
 

@@ -12,8 +12,8 @@
 ApiKeyDialog::ApiKeyDialog(QWidget *parent)
     : QDialog(parent)
 {
-    QVBoxLayout *layout = new QVBoxLayout;
-    QHBoxLayout *buttonsLayout = new QHBoxLayout;
+    auto layout = new QVBoxLayout;
+    auto buttonsLayout = new QHBoxLayout;
 
     settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
     settings->beginGroup("ComicVine");

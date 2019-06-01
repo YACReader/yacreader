@@ -14,8 +14,8 @@ class YACReaderMainToolBar : public QWidget
 {
     Q_OBJECT
 public:
-    explicit YACReaderMainToolBar(QWidget *parent = 0);
-    QSize sizeHint() const;
+    explicit YACReaderMainToolBar(QWidget *parent = nullptr);
+    QSize sizeHint() const override;
 
     QToolButton *backButton;
     QToolButton *forwardButton;
@@ -32,8 +32,8 @@ signals:
 public slots:
 
 private:
-    void paintEvent(QPaintEvent *);
-    void resizeEvent(QResizeEvent *);
+    void paintEvent(QPaintEvent *) override;
+    void resizeEvent(QResizeEvent *) override;
 
     QHBoxLayout *mainLayout;
 

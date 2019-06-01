@@ -19,8 +19,8 @@ protected:
     GoToFlowToolBar *toolBar;
 
 public:
-    GoToFlowWidget(QWidget *paret = 0);
-    virtual ~GoToFlowWidget() = 0;
+    GoToFlowWidget(QWidget *paret = nullptr);
+    ~GoToFlowWidget() override = 0;
 public slots:
     virtual void reset() = 0;
     virtual void centerSlide(int slide) = 0;
@@ -33,7 +33,7 @@ public slots:
     virtual void setFlowRightToLeft(bool b) = 0;
 
 protected:
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event) override;
     //bool eventFilter(QObject *, QEvent *);
 };
 

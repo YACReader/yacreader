@@ -14,7 +14,7 @@ public:
     TagsControllerV2();
 
     /** Generates the response */
-    void service(HttpRequest &request, HttpResponse &response);
+    void service(HttpRequest &request, HttpResponse &response) override;
 };
 
 #endif // TAGSCONTROLLER_H

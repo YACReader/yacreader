@@ -9,13 +9,13 @@ class AddLabelDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit AddLabelDialog(QWidget *parent = 0);
+    explicit AddLabelDialog(QWidget *parent = nullptr);
     YACReader::LabelColors selectedColor();
     QString name();
 signals:
 
 public slots:
-    int exec();
+    int exec() override;
 
 protected slots:
     void validateName(const QString &name);

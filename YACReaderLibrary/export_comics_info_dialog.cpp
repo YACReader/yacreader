@@ -26,25 +26,25 @@ ExportComicsInfoDialog::ExportComicsInfoDialog(QWidget *parent)
     find = new QPushButton(QIcon(":/images/find_folder.png"), "");
     connect(find, SIGNAL(clicked()), this, SLOT(findPath()));
 
-    QHBoxLayout *libraryLayout = new QHBoxLayout;
+    auto libraryLayout = new QHBoxLayout;
 
     libraryLayout->addWidget(textLabel);
     libraryLayout->addWidget(path);
     libraryLayout->addWidget(find);
     libraryLayout->setStretchFactor(find, 0); //TODO
 
-    QHBoxLayout *bottomLayout = new QHBoxLayout;
+    auto bottomLayout = new QHBoxLayout;
     bottomLayout->addStretch();
     bottomLayout->addWidget(accept);
     bottomLayout->addWidget(cancel);
 
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    auto mainLayout = new QVBoxLayout;
     mainLayout->addLayout(libraryLayout);
     mainLayout->addWidget(progress = new QLabel());
     mainLayout->addStretch();
     mainLayout->addLayout(bottomLayout);
 
-    QHBoxLayout *imgMainLayout = new QHBoxLayout;
+    auto imgMainLayout = new QHBoxLayout;
     QLabel *imgLabel = new QLabel(this);
     QPixmap p(":/images/exportComicsInfo.png");
     imgLabel->setPixmap(p);

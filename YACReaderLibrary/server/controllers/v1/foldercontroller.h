@@ -15,7 +15,7 @@ public:
     FolderController();
 
     /** Generates the response */
-    void service(HttpRequest &request, HttpResponse &response);
+    void service(HttpRequest &request, HttpResponse &response) override;
 };
 
 #endif // FOLDERCONTROLLER_H

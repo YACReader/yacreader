@@ -11,7 +11,7 @@ class YACReaderHttpSessionStore : public QObject
 {
     Q_OBJECT
 public:
-    explicit YACReaderHttpSessionStore(HttpSessionStore *sessionStore, QObject *parent = 0);
+    explicit YACReaderHttpSessionStore(HttpSessionStore *sessionStore, QObject *parent = nullptr);
 
     void addYACReaderHttpSession(const QByteArray &httpSessionId, YACReaderHttpSession *yacreaderHttpSession);
     YACReaderHttpSession *getYACReaderSessionHttpSession(const QByteArray &httpSessionId);

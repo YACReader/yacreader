@@ -7,7 +7,7 @@ class ComicsModel : public JSONModel
 {
     Q_OBJECT
 public:
-    explicit ComicsModel(QObject *parent = 0);
+    explicit ComicsModel(QObject *parent = nullptr);
 
 signals:
 

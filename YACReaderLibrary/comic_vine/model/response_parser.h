@@ -7,7 +7,7 @@ class ResponseParser : public QObject
 {
     Q_OBJECT
 public:
-    explicit ResponseParser(QObject *parent = 0);
+    explicit ResponseParser(QObject *parent = nullptr);
     bool responseError();
     QString errorDescription();
     qint32 getNumResults();

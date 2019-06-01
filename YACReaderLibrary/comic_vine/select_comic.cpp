@@ -17,10 +17,10 @@ SelectComic::SelectComic(QWidget *parent)
     QLabel *label = new QLabel(tr("Please, select the right comic info."));
     label->setStyleSheet(labelStylesheet);
 
-    QVBoxLayout *l = new QVBoxLayout;
+    auto l = new QVBoxLayout;
     QWidget *leftWidget = new QWidget;
-    QVBoxLayout *left = new QVBoxLayout;
-    QGridLayout *content = new QGridLayout;
+    auto left = new QVBoxLayout;
+    auto content = new QGridLayout;
 
     //widgets
     cover = new QLabel();
@@ -63,7 +63,7 @@ SelectComic::SelectComic(QWidget *parent)
 
 void SelectComic::load(const QString &json, const QString &searchString)
 {
-    VolumeComicsModel *tempM = new VolumeComicsModel();
+    auto tempM = new VolumeComicsModel();
     tempM->load(json);
     tableComics->setModel(tempM);
 
@@ -93,12 +93,12 @@ void SelectComic::loadComicInfo(const QModelIndex &mi)
     cover->setText(loadingStyle.arg(tr("loading cover")));
     detailLabel->setAltText(loadingStyle.arg(tr("loading description")));
 
-    ComicVineClient *comicVineClient = new ComicVineClient;
+    auto comicVineClient = new ComicVineClient;
     connect(comicVineClient, SIGNAL(comicCover(const QByteArray &)), this, SLOT(setCover(const QByteArray &)));
     connect(comicVineClient, SIGNAL(finished()), comicVineClient, SLOT(deleteLater()));
     comicVineClient->getComicCover(coverURL);
 
-    ComicVineClient *comicVineClient2 = new ComicVineClient;
+    auto comicVineClient2 = new ComicVineClient;
     connect(comicVineClient2, SIGNAL(comicDetail(QString)), this, SLOT(setDescription(QString)));
     connect(comicVineClient2, SIGNAL(finished()), comicVineClient2, SLOT(deleteLater()));
     comicVineClient2->getComicDetailAsync(id);

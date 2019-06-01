@@ -202,7 +202,7 @@ QMimeData *ComicModel::mimeData(const QModelIndexList &indexes) const
     QDataStream out(&data, QIODevice::WriteOnly);
     out << ids; //serialize the list of identifiers
 
-    QMimeData *mimeData = new QMimeData();
+    auto mimeData = new QMimeData();
     mimeData->setData(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat, data);
 
     return mimeData;
@@ -272,7 +272,7 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
     //TODO check here if any view is asking for TableModel::Roles
     //these roles will be used from QML/GridView
 
-    ComicItem *item = static_cast<ComicItem *>(index.internalPointer());
+    auto item = static_cast<ComicItem *>(index.internalPointer());
 
     if (role == NumberRole)
         return item->data(Number);

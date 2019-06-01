@@ -5,7 +5,7 @@
 NotificationsLabelWidget::NotificationsLabelWidget(QWidget *parent)
     : QWidget(parent)
 {
-    QVBoxLayout *layout = new QVBoxLayout;
+    auto layout = new QVBoxLayout;
     layout->setSpacing(0);
     layout->setMargin(0);
 
@@ -67,8 +67,8 @@ void NotificationsLabelWidget::setText(const QString &text)
 
 void NotificationsLabelWidget::updatePosition()
 {
-    QWidget *parent = dynamic_cast<QWidget *>(this->parent());
-    if (parent == 0) {
+    auto parent = dynamic_cast<QWidget *>(this->parent());
+    if (parent == nullptr) {
         return;
     }
     move(QPoint((parent->geometry().size().width() - this->width()) / 2, (parent->geometry().size().height() - this->height()) / 2));

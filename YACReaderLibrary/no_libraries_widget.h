@@ -7,7 +7,7 @@ class NoLibrariesWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit NoLibrariesWidget(QWidget *parent = 0);
+    explicit NoLibrariesWidget(QWidget *parent = nullptr);
 
 signals:
     void createNewLibrary();

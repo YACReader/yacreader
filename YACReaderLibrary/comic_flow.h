@@ -17,12 +17,12 @@ class ComicFlow : public YACReaderFlow
 {
     Q_OBJECT
 public:
-    ComicFlow(QWidget *parent = 0, FlowType flowType = CoverFlowLike);
+    ComicFlow(QWidget *parent = nullptr, FlowType flowType = CoverFlowLike);
     virtual ~ComicFlow();
 
     void setImagePaths(const QStringList &paths);
     //bool eventFilter(QObject *target, QEvent *event);
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event) override;
     void removeSlide(int cover);
     void resortCovers(QList<int> newOrder);
 
@@ -48,7 +48,7 @@ class ImageLoader : public QThread
 {
 public:
     ImageLoader();
-    ~ImageLoader();
+    ~ImageLoader() override;
     // returns FALSE if worker is still busy and can't take the task
     bool busy() const;
     void generate(int index, const QString &fileName, QSize size);
@@ -59,7 +59,7 @@ public:
     QImage result();
 
 protected:
-    void run();
+    void run() override;
 
 private:
     QMutex mutex;

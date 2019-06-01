@@ -28,7 +28,7 @@ ImportComicsInfoDialog::ImportComicsInfoDialog(QWidget *parent)
     find = new QPushButton(QIcon(":/images/find_folder.png"), "");
     connect(find, SIGNAL(clicked()), this, SLOT(findPath()));
 
-    QHBoxLayout *libraryLayout = new QHBoxLayout;
+    auto libraryLayout = new QHBoxLayout;
 
     libraryLayout->addWidget(textLabel);
     libraryLayout->addWidget(path);
@@ -42,18 +42,18 @@ ImportComicsInfoDialog::ImportComicsInfoDialog(QWidget *parent)
     progressBar->hide();
     connect(accept, SIGNAL(clicked()), progressBar, SLOT(show()));
 
-    QHBoxLayout *bottomLayout = new QHBoxLayout;
+    auto bottomLayout = new QHBoxLayout;
     bottomLayout->addStretch();
     bottomLayout->addWidget(accept);
     bottomLayout->addWidget(cancel);
 
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    auto mainLayout = new QVBoxLayout;
     mainLayout->addLayout(libraryLayout);
     mainLayout->addStretch();
     mainLayout->addWidget(progressBar);
     mainLayout->addLayout(bottomLayout);
 
-    QHBoxLayout *imgMainLayout = new QHBoxLayout;
+    auto imgMainLayout = new QHBoxLayout;
     QLabel *imgLabel = new QLabel(this);
     QPixmap p(":/images/importComicsInfo.png");
     imgLabel->setPixmap(p);
@@ -82,7 +82,7 @@ void ImportComicsInfoDialog::import()
 {
     progressBar->show();
 
-    Importer *importer = new Importer();
+    auto importer = new Importer();
     importer->source = path->text();
     importer->dest = dest;
     connect(importer, SIGNAL(finished()), this, SLOT(close()));

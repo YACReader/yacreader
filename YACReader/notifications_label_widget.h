@@ -16,7 +16,7 @@ private:
     QGraphicsOpacityEffect *effect;
 
 protected:
-    void paintEvent(QPaintEvent *);
+    void paintEvent(QPaintEvent *) override;
 
 public:
     NotificationsLabelWidget(QWidget *parent);

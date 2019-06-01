@@ -7,7 +7,7 @@ class EmptyContainerInfo : public QWidget
 {
     Q_OBJECT
 public:
-    explicit EmptyContainerInfo(QWidget *parent = 0);
+    explicit EmptyContainerInfo(QWidget *parent = nullptr);
     void setPixmap(const QPixmap &pixmap);
     void setText(const QString &text);
     QVBoxLayout *setUpDefaultLayout(bool addStretch);
@@ -16,7 +16,7 @@ signals:
 public slots:
 
 protected:
-    void paintEvent(QPaintEvent *);
+    void paintEvent(QPaintEvent *) override;
 
     QLabel *iconLabel;
     QLabel *titleLabel;

@@ -87,8 +87,8 @@ public slots:
     void translatorSwitch();
     void animateShowTranslator();
     void animateHideTranslator();
-    virtual void mousePressEvent(QMouseEvent *event);
-    virtual void mouseReleaseEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
     void updateBackgroundColor(const QColor &color);
     void updateConfig(QSettings *settings);
     void showMessageErrorOpening();
@@ -155,10 +155,10 @@ private:
     bool restoreMagnifyingGlass;
 
     //! Manejadores de evento:
-    void keyPressEvent(QKeyEvent *event);
-    void resizeEvent(QResizeEvent *event);
-    void wheelEvent(QWheelEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
+    void keyPressEvent(QKeyEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
 
     //!ZigzagScroll
     enum scrollDirection { UP,
@@ -170,7 +170,7 @@ private:
     void scrollTo(int x, int y);
 
 public:
-    Viewer(QWidget *parent = 0);
+    Viewer(QWidget *parent = nullptr);
     ~Viewer();
     void toggleFullScreen();
     const QPixmap *pixmap();

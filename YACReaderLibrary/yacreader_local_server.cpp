@@ -44,7 +44,7 @@ void YACReaderLocalServer::sendResponse()
     //connect(clientConnection, SIGNAL(disconnected()),clientConnection, SLOT(deleteLater()));
     clientConnection->setParent(0);
 
-    YACReaderClientConnectionWorker *worker = new YACReaderClientConnectionWorker(clientConnection);
+    auto worker = new YACReaderClientConnectionWorker(clientConnection);
     if (worker != 0) {
         clientConnection->moveToThread(worker);
         connect(worker, SIGNAL(comicUpdated(quint64, ComicDB)), this, SIGNAL(comicUpdated(quint64, ComicDB)));

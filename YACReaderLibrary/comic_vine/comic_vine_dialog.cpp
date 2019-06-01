@@ -64,9 +64,9 @@ void ComicVineDialog::doLayout()
 
     content = new QStackedWidget(this);
 
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    auto mainLayout = new QVBoxLayout;
 
-    QHBoxLayout *buttonLayout = new QHBoxLayout;
+    auto buttonLayout = new QHBoxLayout;
 
     buttonLayout->addStretch();
     buttonLayout->addWidget(skipButton);
@@ -244,9 +244,9 @@ void ComicVineDialog::show()
 void ComicVineDialog::doLoading()
 {
     QWidget *w = new QWidget;
-    QVBoxLayout *l = new QVBoxLayout;
+    auto l = new QVBoxLayout;
 
-    YACReaderBusyWidget *bw = new YACReaderBusyWidget;
+    auto bw = new YACReaderBusyWidget;
     loadingMessage = new QLabel;
 
     loadingMessage->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
@@ -416,7 +416,7 @@ void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString>> &matchingInfo
     QPair<ComicDB, QString> p;
     QList<ComicDB> comics;
     foreach (p, matchingInfo) {
-        ComicVineClient *comicVineClient = new ComicVineClient;
+        auto comicVineClient = new ComicVineClient;
         //connect(comicVineClient,SIGNAL(searchResult(QString)),this,SLOT(debugClientResults(QString)));
         //connect(comicVineClient,SIGNAL(timeOut()),this,SLOT(queryTimeOut()));
         //connect(comicVineClient,SIGNAL(finished()),comicVineClient,SLOT(deleteLater()));
@@ -448,7 +448,7 @@ void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString>> &matchingInfo
 void ComicVineDialog::getComicInfo(const QString &comicId, int count, const QString &publisher)
 {
 
-    ComicVineClient *comicVineClient = new ComicVineClient;
+    auto comicVineClient = new ComicVineClient;
     bool error;
     bool timeout;
     QByteArray result = comicVineClient->getComicDetail(comicId, error, timeout); //TODO check timeOut or Connection error
@@ -673,7 +673,7 @@ void ComicVineDialog::searchVolume(const QString &v, int page)
 
     currentVolumeSearchString = v;
 
-    ComicVineClient *comicVineClient = new ComicVineClient;
+    auto comicVineClient = new ComicVineClient;
     connect(comicVineClient, SIGNAL(searchResult(QString)), this, SLOT(debugClientResults(QString)));
     connect(comicVineClient, SIGNAL(timeOut()), this, SLOT(queryTimeOut()));
     connect(comicVineClient, SIGNAL(finished()), comicVineClient, SLOT(deleteLater()));
@@ -688,7 +688,7 @@ void ComicVineDialog::getVolumeComicsInfo(const QString &vID, int /* page */)
 
     status = GettingVolumeComics;
 
-    ComicVineClient *comicVineClient = new ComicVineClient;
+    auto comicVineClient = new ComicVineClient;
     if (mode == Volume)
         connect(comicVineClient, SIGNAL(volumeComicsInfo(QString)), this, SLOT(showSortVolumeComics(QString)));
     else

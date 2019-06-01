@@ -11,7 +11,7 @@ class ComicFilesManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit ComicFilesManager(QObject *parent = 0);
+    explicit ComicFilesManager(QObject *parent = nullptr);
     void copyComicsTo(const QList<QPair<QString, QString>> &sourceComics, const QString &folderDest, const QModelIndex &dest);
     void moveComicsTo(const QList<QPair<QString, QString>> &comics, const QString &folderDest, const QModelIndex &dest);
     static QList<QPair<QString, QString>> getDroppedFiles(const QList<QUrl> &urls);

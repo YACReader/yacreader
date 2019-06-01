@@ -10,7 +10,7 @@ class ComicItem : public QObject
     Q_OBJECT
 public:
     ComicItem(const QList<QVariant> &data);
-    ~ComicItem();
+    ~ComicItem() override;
     int columnCount() const;
     QVariant data(int column) const;
     void setData(int column, const QVariant &value);

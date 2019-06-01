@@ -11,7 +11,7 @@
 ClassicComicsView::ClassicComicsView(QWidget *parent)
     : ComicsView(parent), searching(false)
 {
-    QHBoxLayout *layout = new QHBoxLayout;
+    auto layout = new QHBoxLayout;
 
     settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
     settings->beginGroup("libraryConfig");
@@ -45,7 +45,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
 
     sVertical->addWidget(stack);
     comics = new QWidget;
-    QVBoxLayout *comicsLayout = new QVBoxLayout;
+    auto comicsLayout = new QVBoxLayout;
     comicsLayout->setSpacing(0);
     comicsLayout->setContentsMargins(0, 0, 0, 0);
     //TODO ComicsView:(set toolbar) comicsLayout->addWidget(editInfoToolBar);
@@ -340,7 +340,7 @@ void ClassicComicsView::setupSearchingIcon()
 {
     searchingIcon = new QWidget(comicFlow);
 
-    QHBoxLayout *h = new QHBoxLayout;
+    auto h = new QHBoxLayout;
 
     QPixmap p(":/images/searching_icon.png");
     QLabel *l = new QLabel(searchingIcon);

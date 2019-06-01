@@ -7,18 +7,18 @@ class VolumeComicsModel : public JSONModel
 {
     Q_OBJECT
 public:
-    explicit VolumeComicsModel(QObject *parent = 0);
-    void load(const QString &json);
+    explicit VolumeComicsModel(QObject *parent = nullptr);
+    void load(const QString &json) override;
     //void load(const QStringList & jsonList);
 
-    QModelIndex parent(const QModelIndex &index) const;
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    int columnCount(const QModelIndex &parent) const;
+    QModelIndex parent(const QModelIndex &index) const override;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    int columnCount(const QModelIndex &parent) const override;
     QVariant data(const QModelIndex &index, int role) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
     QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const;
-    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
+                        int role = Qt::DisplayRole) const override;
+    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
 signals:
 
 public slots:

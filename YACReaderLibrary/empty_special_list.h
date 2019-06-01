@@ -7,7 +7,7 @@
 class EmptySpecialListWidget : public EmptyContainerInfo
 {
 public:
-    EmptySpecialListWidget(QWidget *parent = 0);
+    EmptySpecialListWidget(QWidget *parent = nullptr);
 };
 
 #endif // EMPTY_SPECIAL_LIST_H

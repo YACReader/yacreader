@@ -12,7 +12,7 @@ class ComicFullinfoController_v2 : public HttpRequestHandler
 public:
     ComicFullinfoController_v2();
 
-    void service(HttpRequest &request, HttpResponse &response);
+    void service(HttpRequest &request, HttpResponse &response) override;
 
 private:
     void serviceContent(const int &library, const qulonglong &comicId, HttpResponse &response);

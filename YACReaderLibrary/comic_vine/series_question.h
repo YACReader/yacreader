@@ -10,7 +10,7 @@ class SeriesQuestion : public QWidget
     Q_OBJECT
 
 public:
-    SeriesQuestion(QWidget *parent = 0);
+    SeriesQuestion(QWidget *parent = nullptr);
     bool getYes();
     void setYes(bool yes = true);
 

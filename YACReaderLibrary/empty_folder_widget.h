@@ -8,7 +8,7 @@ class EmptyFolderWidget : public EmptyContainerInfo
 {
     Q_OBJECT
 public:
-    explicit EmptyFolderWidget(QWidget *parent = 0);
+    explicit EmptyFolderWidget(QWidget *parent = nullptr);
     void setSubfolders(const QModelIndex &mi, const QStringList &foldersNames);
 signals:
     void subfolderSelected(QModelIndex, int);
@@ -27,8 +27,8 @@ protected:
     QString backgroundColor;
 
     //Drop to import
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dropEvent(QDropEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
 };
 
 #endif // EMPTY_FOLDER_WIDGET_H

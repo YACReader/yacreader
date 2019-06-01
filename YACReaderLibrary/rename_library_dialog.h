@@ -10,7 +10,7 @@ class RenameLibraryDialog : public QDialog
 {
     Q_OBJECT
 public:
-    RenameLibraryDialog(QWidget *parent = 0);
+    RenameLibraryDialog(QWidget *parent = nullptr);
 
 private:
     QLabel *newNameLabel;

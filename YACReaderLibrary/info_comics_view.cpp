@@ -78,7 +78,7 @@ InfoComicsView::InfoComicsView(QWidget *parent)
 
     view->setSource(QUrl("qrc:/qml/InfoComicsView.qml"));
 
-    QObject *rootObject = dynamic_cast<QObject *>(view->rootObject());
+    auto rootObject = dynamic_cast<QObject *>(view->rootObject());
     flow = rootObject->findChild<QObject *>("flow");
     list = rootObject->findChild<QObject *>("list");
 
@@ -88,7 +88,7 @@ InfoComicsView::InfoComicsView(QWidget *parent)
     selectionHelper = new YACReaderComicsSelectionHelper(this);
     comicInfoHelper = new YACReaderComicInfoHelper(this);
 
-    QVBoxLayout *l = new QVBoxLayout;
+    auto l = new QVBoxLayout;
     l->addWidget(view);
     this->setLayout(l);
 

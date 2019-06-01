@@ -27,7 +27,7 @@ void EmptyContainerInfo::setText(const QString &text)
 
 QVBoxLayout *EmptyContainerInfo::setUpDefaultLayout(bool addStretch)
 {
-    QVBoxLayout *layout = new QVBoxLayout;
+    auto layout = new QVBoxLayout;
 
     layout->addSpacing(100);
     layout->addWidget(iconLabel);

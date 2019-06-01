@@ -56,7 +56,7 @@ public:
       @param requestHandler Handler that will process each incoming HTTP request
       @param sslConfiguration SSL (HTTPS) will be used if not NULL
     */
-    HttpConnectionHandler(QSettings* settings, HttpRequestHandler* requestHandler, QSslConfiguration* sslConfiguration=NULL);
+    HttpConnectionHandler(QSettings* settings, HttpRequestHandler* requestHandler, QSslConfiguration* sslConfiguration=nullptr);
 
     /** Destructor */
     virtual ~HttpConnectionHandler();
@@ -91,7 +91,7 @@ private:
     QSslConfiguration* sslConfiguration;
 
     /** Executes the threads own event loop */
-    void run();
+    void run() override;
 
     /**  Create SSL or TCP socket */
     void createSocket();

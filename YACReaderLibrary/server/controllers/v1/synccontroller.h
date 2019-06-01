@@ -16,7 +16,7 @@ public:
     SyncController();
 
     /** Generates the response */
-    void service(HttpRequest &request, HttpResponse &response);
+    void service(HttpRequest &request, HttpResponse &response) override;
 };
 
 #endif // SYNCCONTROLLER_H

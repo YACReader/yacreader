@@ -17,10 +17,10 @@ BookmarksDialog::BookmarksDialog(QWidget *parent)
     //animation = new QPropertyAnimation(this,"windowOpacity");
     //animation->setDuration(150);
 
-    QHBoxLayout *layout = new QHBoxLayout();
+    auto layout = new QHBoxLayout();
 
     //bookmarks
-    QGridLayout *bookmarksL = new QGridLayout();
+    auto bookmarksL = new QGridLayout();
 
     pages.push_back(new QLabel(tr("Lastest Page")));
     for (int i = 0; i < 3; i++)
@@ -55,17 +55,17 @@ BookmarksDialog::BookmarksDialog(QWidget *parent)
         bookmarksL->addWidget(images.at(i + 1), 1, i, Qt::AlignCenter);
 
     //last page
-    QGridLayout *lp = new QGridLayout();
+    auto lp = new QGridLayout();
     lp->addWidget(pages.at(0), 0, 0, Qt::AlignCenter);
     lp->addWidget(images.at(0), 1, 0, Qt::AlignCenter);
 
     layout->addLayout(bookmarksL);
-    QFrame *f = new QFrame(this);
+    auto f = new QFrame(this);
     f->setFrameStyle(QFrame::VLine | QFrame::Sunken);
     layout->addWidget(f);
     layout->addLayout(lp);
 
-    QHBoxLayout *buttons = new QHBoxLayout();
+    auto buttons = new QHBoxLayout();
 
     cancel = new QPushButton(tr("Close"));
     cancel->setFlat(true);
@@ -75,7 +75,7 @@ BookmarksDialog::BookmarksDialog(QWidget *parent)
 
     cancel->setStyleSheet("QPushButton {border: 1px solid #242424; background: #2e2e2e; color:white; padding: 5px 26px 5px 26px; font-size:12px;font-family:Arial; font-weight:bold;}");
 
-    QVBoxLayout *l = new QVBoxLayout();
+    auto l = new QVBoxLayout();
 
     l->addWidget(new QLabel("<font color=\"#FFFFFF\">" + tr("Click on any image to go to the bookmark") + "</font>"), 0, Qt::AlignCenter);
     l->addLayout(layout);

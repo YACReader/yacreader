@@ -13,7 +13,7 @@ NoSearchResultsWidget::NoSearchResultsWidget(QWidget *parent)
     backgroundColor = "#2A2A2A";
 #endif
 
-    QVBoxLayout *layout = new QVBoxLayout;
+    auto layout = new QVBoxLayout;
 
     iconLabel = new QLabel();
     iconLabel->setPixmap(QPixmap(":/images/empty_search.png"));

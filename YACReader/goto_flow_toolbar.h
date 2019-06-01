@@ -21,10 +21,10 @@ private:
     QPushButton *goToButton;
     QLabel *pageHint;
     QWidget *bar;
-    void paintEvent(QPaintEvent *);
+    void paintEvent(QPaintEvent *) override;
 
 public:
-    GoToFlowToolBar(QWidget *parent = 0);
+    GoToFlowToolBar(QWidget *parent = nullptr);
 
 public slots:
     void setPage(int pageNumber);

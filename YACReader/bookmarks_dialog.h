@@ -26,12 +26,12 @@ protected:
 
     QSize coverSize;
 
-    bool eventFilter(QObject *obj, QEvent *event);
-    void keyPressEvent(QKeyEvent *event);
+    bool eventFilter(QObject *obj, QEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
     //QPropertyAnimation * animation;
 
 public:
-    BookmarksDialog(QWidget *parent = 0);
+    BookmarksDialog(QWidget *parent = nullptr);
 
 public slots:
     void setBookmarks(const Bookmarks &bookmarks);

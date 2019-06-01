@@ -23,17 +23,17 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     : YACReaderOptionsDialog(parent)
 {
 
-    QTabWidget *tabWidget = new QTabWidget();
+    auto tabWidget = new QTabWidget();
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
+    auto layout = new QVBoxLayout(this);
 
     QWidget *pageGeneral = new QWidget();
     QWidget *pageFlow = new QWidget();
     QWidget *pageImage = new QWidget();
-    QVBoxLayout *layoutGeneral = new QVBoxLayout();
-    QVBoxLayout *layoutFlow = new QVBoxLayout();
-    QVBoxLayout *layoutImageV = new QVBoxLayout();
-    QGridLayout *layoutImage = new QGridLayout();
+    auto layoutGeneral = new QVBoxLayout();
+    auto layoutFlow = new QVBoxLayout();
+    auto layoutImageV = new QVBoxLayout();
+    auto layoutImage = new QGridLayout();
 
     QGroupBox *slideSizeBox = new QGroupBox(tr("\"Go to flow\" size"));
     //slideSizeLabel = new QLabel(,this);
@@ -42,13 +42,13 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     slideSize->setMaximum(350);
     slideSize->setPageStep(5);
     slideSize->setOrientation(Qt::Horizontal);
-    QHBoxLayout *slideLayout = new QHBoxLayout();
+    auto slideLayout = new QHBoxLayout();
     slideLayout->addWidget(slideSize);
     slideSizeBox->setLayout(slideLayout);
 
     QGroupBox *pathBox = new QGroupBox(tr("My comics path"));
 
-    QHBoxLayout *path = new QHBoxLayout();
+    auto path = new QHBoxLayout();
     path->addWidget(pathEdit = new QLineEdit());
     path->addWidget(pathFindButton = new QPushButton(QIcon(":/images/find_folder.png"), ""));
     pathBox->setLayout(path);
@@ -67,7 +67,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 	fitLayout->addWidget(fitToWidthRatioS);
 	fitBox->setLayout(fitLayout);*/
 
-    QHBoxLayout *colorSelection = new QHBoxLayout;
+    auto colorSelection = new QHBoxLayout;
     backgroundColor = new QLabel();
     QPalette pal = backgroundColor->palette();
     pal.setColor(backgroundColor->backgroundRole(), Qt::black);
@@ -109,7 +109,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     quickNavi = new QCheckBox(tr("Quick Navigation Mode"));
     disableShowOnMouseOver = new QCheckBox(tr("Disable mouse over activation"));
 
-    QHBoxLayout *buttons = new QHBoxLayout();
+    auto buttons = new QHBoxLayout();
     buttons->addStretch();
     buttons->addWidget(new QLabel(tr("Restart is needed")));
     buttons->addWidget(accept);
@@ -174,7 +174,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 
 void OptionsDialog::findFolder()
 {
-    QString s = QFileDialog::getExistingDirectory(0, tr("Comics directory"), ".");
+    QString s = QFileDialog::getExistingDirectory(nullptr, tr("Comics directory"), ".");
     if (!s.isEmpty()) {
         pathEdit->setText(s);
     }

@@ -12,16 +12,16 @@ class MagnifyingGlass : public QLabel
 private:
     float zoomLevel;
     void setup(const QSize &size);
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event) override;
 
 public:
     MagnifyingGlass(int width, int height, QWidget *parent);
     MagnifyingGlass(const QSize &size, QWidget *parent);
-    void mouseMoveEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event) override;
 public slots:
     void updateImage(int x, int y);
     void updateImage();
-    void wheelEvent(QWheelEvent *event);
+    void wheelEvent(QWheelEvent *event) override;
     void zoomIn();
     void zoomOut();
     void sizeUp();

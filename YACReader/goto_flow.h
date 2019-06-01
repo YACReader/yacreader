@@ -29,12 +29,12 @@ class GoToFlow : public GoToFlowWidget
 {
     Q_OBJECT
 public:
-    GoToFlow(QWidget *parent = 0, FlowType flowType = CoverFlowLike);
-    ~GoToFlow();
+    GoToFlow(QWidget *parent = nullptr, FlowType flowType = CoverFlowLike);
+    ~GoToFlow() override;
     bool ready; //comic is ready for read.
 private:
     YACReaderFlow *flow;
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event) override;
     //Comic * comic;
     QSize imageSize;
 
@@ -45,22 +45,22 @@ private:
     QVector<QByteArray> rawImages;
     QTimer *updateTimer;
     PageLoader *worker;
-    virtual void wheelEvent(QWheelEvent *event);
+    void wheelEvent(QWheelEvent *event) override;
     QMutex mutexGoToFlow;
 
 private slots:
     void preload();
     void updateImageData();
-    void resizeEvent(QResizeEvent *event);
+    void resizeEvent(QResizeEvent *event) override;
 
 public slots:
-    void centerSlide(int slide);
-    void reset();
-    void setNumSlides(unsigned int slides);
-    void setImageReady(int index, const QByteArray &image);
-    void setFlowType(FlowType flowType);
-    void updateConfig(QSettings *settings);
-    void setFlowRightToLeft(bool b);
+    void centerSlide(int slide) override;
+    void reset() override;
+    void setNumSlides(unsigned int slides) override;
+    void setImageReady(int index, const QByteArray &image) override;
+    void setFlowType(FlowType flowType) override;
+    void updateConfig(QSettings *settings) override;
+    void setFlowRightToLeft(bool b) override;
 
 signals:
     void goToPage(unsigned int page);
@@ -73,7 +73,7 @@ class PageLoader : public QThread
 {
 public:
     PageLoader(QMutex *m);
-    ~PageLoader();
+    ~PageLoader() override;
     // returns FALSE if worker is still busy and can't take the task
     bool busy() const;
     void generate(int index, QSize size, const QByteArray &rImage);
@@ -82,7 +82,7 @@ public:
     QImage result() const { return img; }
 
 protected:
-    void run();
+    void run() override;
 
 private:
     QMutex *mutex;

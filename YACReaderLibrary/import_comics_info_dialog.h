@@ -16,7 +16,7 @@ public:
     QString dest;
 
 private:
-    void run();
+    void run() override;
 };
 
 class ImportComicsInfoDialog : public QDialog
@@ -24,7 +24,7 @@ class ImportComicsInfoDialog : public QDialog
     Q_OBJECT
 
 public:
-    ImportComicsInfoDialog(QWidget *parent = 0);
+    ImportComicsInfoDialog(QWidget *parent = nullptr);
     ~ImportComicsInfoDialog();
     QString dest;
 

@@ -10,8 +10,8 @@ class YACReaderLocalClient : public QObject
 {
     Q_OBJECT
 public:
-    explicit YACReaderLocalClient(QObject *parent = 0);
-    ~YACReaderLocalClient();
+    explicit YACReaderLocalClient(QObject *parent = nullptr);
+    ~YACReaderLocalClient() override;
 signals:
     void finished();
 public slots:

@@ -9,7 +9,7 @@ class NoSearchResultsWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit NoSearchResultsWidget(QWidget *parent = 0);
+    explicit NoSearchResultsWidget(QWidget *parent = nullptr);
 
 signals:
 
@@ -18,7 +18,7 @@ public slots:
 protected:
     QLabel *iconLabel;
     QLabel *titleLabel;
-    void paintEvent(QPaintEvent *);
+    void paintEvent(QPaintEvent *) override;
     QString backgroundColor;
 };
 

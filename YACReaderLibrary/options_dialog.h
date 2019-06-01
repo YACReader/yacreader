@@ -13,11 +13,11 @@ class OptionsDialog : public YACReaderOptionsDialog
 {
     Q_OBJECT
 public:
-    OptionsDialog(QWidget *parent = 0);
+    OptionsDialog(QWidget *parent = nullptr);
 
 public slots:
     void editApiKey();
-    void restoreOptions(QSettings *settings);
+    void restoreOptions(QSettings *settings) override;
 
 private slots:
     void useBackgroundImageCheckClicked(bool checked);

@@ -14,7 +14,7 @@ class ExportLibraryDialog : public QDialog
 {
     Q_OBJECT
 public:
-    ExportLibraryDialog(QWidget *parent = 0);
+    ExportLibraryDialog(QWidget *parent = nullptr);
 public slots:
     void exportLibrary();
     void findPath();

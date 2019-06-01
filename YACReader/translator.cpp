@@ -53,13 +53,13 @@ YACReaderTranslator::YACReaderTranslator(QWidget *parent)
     p.setColor(QPalette::Window, QColor("#404040"));
     this->setPalette(p);
 
-    QVBoxLayout *layout = new QVBoxLayout(this);
+    auto layout = new QVBoxLayout(this);
 
     //TITLE BAR
-    QHBoxLayout *titleBar = new QHBoxLayout();
-    QPushButton *close = new QPushButton(QIcon(QPixmap(":/images/close.png")), "");
+    auto titleBar = new QHBoxLayout();
+    auto close = new QPushButton(QIcon(QPixmap(":/images/close.png")), "");
     close->setFlat(true);
-    QLabel *title = new QLabel(tr("YACReader translator"));
+    auto title = new QLabel(tr("YACReader translator"));
     title->setStyleSheet("QLabel {font-size:18px; font-family:Arial; color:white;}");
     titleBar->addWidget(title);
     titleBar->addStretch();
@@ -81,7 +81,7 @@ YACReaderTranslator::YACReaderTranslator(QWidget *parent)
     text->setStyleSheet("QTextEdit{border:none;background:#2a2a2a;color:white; font-size:12px; padding:6px;}" + scrollBarStyle);
 
     //COMBOBOXES
-    QHBoxLayout *combos = new QHBoxLayout();
+    auto combos = new QHBoxLayout();
     from = new QComboBox(this);
     to = new QComboBox(this);
     QString comboBoxStyle = "QComboBox {border:none;background:#2a2a2a;color:white;font-size:12px;font-family:Arial;padding-left:8px;}"
@@ -97,7 +97,7 @@ YACReaderTranslator::YACReaderTranslator(QWidget *parent)
     QLabel *arrow = new QLabel(this);
     QPixmap arrowPixmap(":/images/fromTo.png");
     arrow->setPixmap(arrowPixmap);
-    QPushButton *searchButton = new QPushButton(this);
+    auto searchButton = new QPushButton(this);
     searchButton->setIcon(QIcon(":/images/translatorSearch.png"));
     searchButton->setStyleSheet("QPushButton {border:none; background:#2a2a2a;}");
     searchButton->setFixedSize(22, 22);
@@ -112,7 +112,7 @@ YACReaderTranslator::YACReaderTranslator(QWidget *parent)
     layout->addLayout(combos);
 
     //RESULTS
-    QHBoxLayout *resultsTitleLayout = new QHBoxLayout();
+    auto resultsTitleLayout = new QHBoxLayout();
     resultsTitle = new QLabel(tr("Translation"));
     resultsTitle->setStyleSheet("QLabel {font-family:Arial;font-size:14px;color:#e3e3e3;}");
     speakButton = new QPushButton(this);
@@ -130,7 +130,7 @@ YACReaderTranslator::YACReaderTranslator(QWidget *parent)
     resultText = new QLabel();
     resultText->setWordWrap(true);
     resultText->setStyleSheet("QLabel {color:white;font-size:12px;}");
-    resultText->setText("ñlkas lakj dflkaj lasd jflie lkajd fie kljads ijef lasei afsliej ljse f");
+    resultText->setText("");
     layout->addWidget(resultText);
 
     layout->addStretch();

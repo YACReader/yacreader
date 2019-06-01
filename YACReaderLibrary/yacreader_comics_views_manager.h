@@ -24,7 +24,7 @@ class YACReaderComicsViewsManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit YACReaderComicsViewsManager(QSettings *settings, LibraryWindow *parent = 0);
+    explicit YACReaderComicsViewsManager(QSettings *settings, LibraryWindow *parent = nullptr);
 
     QWidget *containerWidget();
 

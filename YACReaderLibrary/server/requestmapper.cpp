@@ -59,7 +59,7 @@ void RequestMapper::loadSessionV1(HttpRequest &request, HttpResponse &response)
     HttpSession session = Static::sessionStore->getSession(request, response);
     if (session.contains("ySession")) //session is already alive check if it is needed to update comics
     {
-        YACReaderHttpSession *ySession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(session.getId());
+        auto ySession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(session.getId());
 
         QString postData = QString::fromUtf8(request.getBody());
 
@@ -85,7 +85,7 @@ void RequestMapper::loadSessionV1(HttpRequest &request, HttpResponse &response)
             }
         }
     } else {
-        YACReaderHttpSession *ySession = new YACReaderHttpSession(this);
+        auto ySession = new YACReaderHttpSession(this);
 
         Static::yacreaderSessionStore->addYACReaderHttpSession(session.getId(), ySession);
 
@@ -121,11 +121,11 @@ void RequestMapper::loadSessionV2(HttpRequest &request, HttpResponse & /* respon
         return;
     }
 
-    YACReaderHttpSession *yRecoveredSession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(token);
+    auto yRecoveredSession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(token);
 
     if (yRecoveredSession == nullptr) //session is already alive check if it is needed to update comics
     {
-        YACReaderHttpSession *ySession = new YACReaderHttpSession(this);
+        auto ySession = new YACReaderHttpSession(this);
 
         Static::yacreaderSessionStore->addYACReaderHttpSession(token, ySession);
     }

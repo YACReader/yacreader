@@ -14,12 +14,12 @@ private:
     QSlider *slider;
 
 public:
-    YACReaderSlider(QWidget *parent = 0);
+    YACReaderSlider(QWidget *parent = nullptr);
     void show();
 
 protected:
-    virtual void focusOutEvent(QFocusEvent *event);
-    virtual void paintEvent(QPaintEvent *);
+    void focusOutEvent(QFocusEvent *event) override;
+    void paintEvent(QPaintEvent *) override;
 
 public slots:
     void updateText(int value);
@@ -37,7 +37,7 @@ private:
     YACReaderSlider *widget;
 
 public:
-    YACReaderSliderAction(QWidget *parent = 0);
+    YACReaderSliderAction(QWidget *parent = nullptr);
 
 public slots:
     void updateText(int value);

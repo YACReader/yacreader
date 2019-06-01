@@ -13,7 +13,7 @@ class ImportLibraryDialog : public QDialog
 {
     Q_OBJECT
 public:
-    ImportLibraryDialog(QWidget *parent = 0);
+    ImportLibraryDialog(QWidget *parent = nullptr);
 
 private:
     QLabel *nameLabel;
@@ -29,7 +29,7 @@ private:
     QProgressBar *progressBar;
     void setupUI();
     int progressCount;
-    void closeEvent(QCloseEvent *e);
+    void closeEvent(QCloseEvent *e) override;
     YACReaderLibraries libraries;
 public slots:
     void add();

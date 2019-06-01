@@ -48,7 +48,7 @@
 class FolderItem
 {
 public:
-    FolderItem(const QList<QVariant> &data, FolderItem *parent = 0);
+    FolderItem(const QList<QVariant> &data, FolderItem *parent = nullptr);
     ~FolderItem();
 
     void appendChild(FolderItem *child);

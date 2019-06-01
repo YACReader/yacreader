@@ -143,7 +143,7 @@ GridComicsView::GridComicsView(QWidget *parent)
     ctxt->setContextProperty("backgroundBlurRadius", 0.0);
     ctxt->setContextProperty("backgroundBlurVisible", false);
 
-    ComicModel *model = new ComicModel();
+    auto model = new ComicModel();
     selectionHelper->setModel(model);
     ctxt->setContextProperty("comicsList", model);
     ctxt->setContextProperty("comicsSelection", selectionHelper->selectionModel());
@@ -161,8 +161,8 @@ GridComicsView::GridComicsView(QWidget *parent)
 
     view->setSource(QUrl("qrc:/qml/GridComicsView.qml"));
 
-    QObject *rootObject = dynamic_cast<QObject *>(view->rootObject());
-    QObject *infoContainer = rootObject->findChild<QObject *>("infoContainer");
+    auto rootObject = dynamic_cast<QObject *>(view->rootObject());
+    auto infoContainer = rootObject->findChild<QObject *>("infoContainer");
 
     QQmlProperty(infoContainer, "width").write(settings->value(COMICS_GRID_INFO_WIDTH, 350));
 
@@ -174,7 +174,7 @@ GridComicsView::GridComicsView(QWidget *parent)
 
     setShowMarks(true); //TODO save this in settings
 
-    QVBoxLayout *l = new QVBoxLayout;
+    auto l = new QVBoxLayout;
     l->addWidget(view);
     this->setLayout(l);
 
@@ -199,7 +199,7 @@ void GridComicsView::createCoverSizeSliderWidget()
     coverSizeSlider->setOrientation(Qt::Horizontal);
     coverSizeSlider->setRange(YACREADER_MIN_GRID_ZOOM_WIDTH, YACREADER_MAX_GRID_ZOOM_WIDTH);
 
-    QHBoxLayout *horizontalLayout = new QHBoxLayout();
+    auto horizontalLayout = new QHBoxLayout();
     QLabel *smallLabel = new QLabel();
     smallLabel->setPixmap(QPixmap(":/images/comics_view_toolbar/small_size_grid_zoom.png"));
     horizontalLayout->addWidget(smallLabel);
@@ -409,7 +409,7 @@ void GridComicsView::setCoversSize(int width)
 {
     QQmlContext *ctxt = view->rootContext();
 
-    QQuickItem *grid = view->rootObject()->findChild<QQuickItem *>(QStringLiteral("grid"));
+    auto grid = view->rootObject()->findChild<QQuickItem *>(QStringLiteral("grid"));
 
     if (grid != 0) {
         QVariant cellCustomWidth = (width * YACREADER_MIN_CELL_CUSTOM_WIDTH) / YACREADER_MIN_GRID_ZOOM_WIDTH;
@@ -462,8 +462,8 @@ void GridComicsView::setCurrentComicIfNeeded()
 
 void GridComicsView::resetScroll()
 {
-    QObject *rootObject = dynamic_cast<QObject *>(view->rootObject());
-    QObject *scrollView = rootObject->findChild<QObject *>("topScrollView", Qt::FindChildrenRecursively);
+    auto rootObject = dynamic_cast<QObject *>(view->rootObject());
+    auto scrollView = rootObject->findChild<QObject *>("topScrollView", Qt::FindChildrenRecursively);
 
     QMetaObject::invokeMethod(scrollView, "scrollToOrigin");
 }
@@ -492,7 +492,7 @@ void GridComicsView::updateCurrentComicView()
 
 void GridComicsView::startDrag()
 {
-    QDrag *drag = new QDrag(this);
+    auto drag = new QDrag(this);
     drag->setMimeData(model->mimeData(selectionHelper->selectedRows()));
     drag->setPixmap(QPixmap(":/images/comics_view_toolbar/openInYACReader.png")); //TODO add better image
 
@@ -553,8 +553,8 @@ void GridComicsView::closeEvent(QCloseEvent *event)
     toolbar->removeAction(showInfoSeparatorAction);
     toolbar->removeAction(coverSizeSliderAction);
 
-    QObject *rootObject = dynamic_cast<QObject *>(view->rootObject());
-    QObject *infoContainer = rootObject->findChild<QObject *>("infoContainer", Qt::FindChildrenRecursively);
+    auto rootObject = dynamic_cast<QObject *>(view->rootObject());
+    auto infoContainer = rootObject->findChild<QObject *>("infoContainer", Qt::FindChildrenRecursively);
 
     int infoWidth = QQmlProperty(infoContainer, "width").read().toInt();
 

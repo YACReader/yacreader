@@ -11,8 +11,8 @@ class ApiKeyDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit ApiKeyDialog(QWidget *parent = 0);
-    ~ApiKeyDialog();
+    explicit ApiKeyDialog(QWidget *parent = nullptr);
+    ~ApiKeyDialog() override;
 signals:
 
 public slots:

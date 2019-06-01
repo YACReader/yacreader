@@ -14,7 +14,7 @@ private:
     QPropertyAnimation *animation;
 
 protected:
-    virtual void paintEvent(QPaintEvent *);
+    void paintEvent(QPaintEvent *) override;
 
 public:
     PageLabelWidget(QWidget *parent);

@@ -172,7 +172,7 @@ void LibraryWindow::changeEvent(QEvent *event)
 void LibraryWindow::doLayout()
 {
     //LAYOUT ELEMENTS------------------------------------------------------------
-    QSplitter *sHorizontal = new QSplitter(Qt::Horizontal); //spliter principal
+    auto sHorizontal = new QSplitter(Qt::Horizontal); //spliter principal
 #ifdef Q_OS_MAC
     sHorizontal->setStyleSheet("QSplitter::handle{image:none;background-color:#B8B8B8;} QSplitter::handle:vertical {height:1px;}");
 #else
@@ -1278,7 +1278,7 @@ void LibraryWindow::copyAndImportComicsToCurrentFolder(const QList<QPair<QString
 
         QProgressDialog *progressDialog = newProgressDialog(tr("Copying comics..."), comics.size());
 
-        ComicFilesManager *comicFilesManager = new ComicFilesManager();
+        auto comicFilesManager = new ComicFilesManager();
         comicFilesManager->copyComicsTo(comics, destFolderPath, folderDestination);
 
         processComicFiles(comicFilesManager, progressDialog);
@@ -1295,7 +1295,7 @@ void LibraryWindow::moveAndImportComicsToCurrentFolder(const QList<QPair<QString
 
         QProgressDialog *progressDialog = newProgressDialog(tr("Moving comics..."), comics.size());
 
-        ComicFilesManager *comicFilesManager = new ComicFilesManager();
+        auto comicFilesManager = new ComicFilesManager();
         comicFilesManager->moveComicsTo(comics, destFolderPath, folderDestination);
 
         processComicFiles(comicFilesManager, progressDialog);
@@ -1314,7 +1314,7 @@ void LibraryWindow::copyAndImportComicsToFolder(const QList<QPair<QString, QStri
 
         QProgressDialog *progressDialog = newProgressDialog(tr("Copying comics..."), comics.size());
 
-        ComicFilesManager *comicFilesManager = new ComicFilesManager();
+        auto comicFilesManager = new ComicFilesManager();
         comicFilesManager->copyComicsTo(comics, destFolderPath, folderDestination);
 
         processComicFiles(comicFilesManager, progressDialog);
@@ -1333,7 +1333,7 @@ void LibraryWindow::moveAndImportComicsToFolder(const QList<QPair<QString, QStri
 
         QProgressDialog *progressDialog = newProgressDialog(tr("Moving comics..."), comics.size());
 
-        ComicFilesManager *comicFilesManager = new ComicFilesManager();
+        auto comicFilesManager = new ComicFilesManager();
         comicFilesManager->moveComicsTo(comics, destFolderPath, folderDestination);
 
         processComicFiles(comicFilesManager, progressDialog);
@@ -1478,7 +1478,7 @@ void LibraryWindow::deleteSelectedFolder()
                 QList<QString> paths;
                 paths << folderPath;
 
-                FoldersRemover *remover = new FoldersRemover(indexList, paths);
+                auto remover = new FoldersRemover(indexList, paths);
 
                 QThread *thread = NULL;
 
@@ -1544,7 +1544,7 @@ void LibraryWindow::deleteSelectedReadingList()
 
 void LibraryWindow::showAddNewLabelDialog()
 {
-    AddLabelDialog *dialog = new AddLabelDialog();
+    auto dialog = new AddLabelDialog();
     int ret = dialog->exec();
 
     if (ret == QDialog::Accepted) {
@@ -1651,7 +1651,7 @@ void LibraryWindow::setupAddToSubmenu(QMenu &menu)
     if (labels.count() > 0)
         menu.addSeparator();
     foreach (LabelItem *label, labels) {
-        QAction *action = new QAction(this);
+        auto action = new QAction(this);
         action->setIcon(label->getIcon());
         action->setText(label->name());
 
@@ -1665,7 +1665,7 @@ void LibraryWindow::setupAddToSubmenu(QMenu &menu)
 
 void LibraryWindow::onAddComicsToLabel()
 {
-    QAction *action = static_cast<QAction *>(sender());
+    auto action = static_cast<QAction *>(sender());
 
     qulonglong labelId = action->data().toULongLong();
 
@@ -2061,7 +2061,7 @@ void LibraryWindow::toNormal()
         showNormal();
 
 #ifdef Q_OS_MAC
-    QTimer *timer = new QTimer();
+    auto timer = new QTimer();
     timer->setSingleShot(true);
     timer->start();
     connect(timer, SIGNAL(timeout()), libraryToolBar, SLOT(show()));
@@ -2421,7 +2421,7 @@ void LibraryWindow::deleteComicsFromDisk()
             QLOG_TRACE() << comic.parentId;
         }
 
-        ComicsRemover *remover = new ComicsRemover(indexList, paths, comics.at(0).parentId);
+        auto remover = new ComicsRemover(indexList, paths, comics.at(0).parentId);
         QThread *thread = NULL;
 
         thread = new QThread(this);

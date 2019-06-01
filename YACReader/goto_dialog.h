@@ -11,7 +11,7 @@ class GoToDialog : public QDialog
 {
     Q_OBJECT
 public:
-    GoToDialog(QWidget *parent = 0);
+    GoToDialog(QWidget *parent = nullptr);
 
 private:
     QLabel *numPagesLabel;
@@ -24,7 +24,7 @@ private:
 public slots:
     void goTo();
     void setNumPages(unsigned int numPages);
-    void open();
+    void open() override;
 signals:
     void goToPage(unsigned int page);
 };

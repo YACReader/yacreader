@@ -12,7 +12,7 @@ class ReadingComicsControllerV2 : public HttpRequestHandler
 public:
     ReadingComicsControllerV2();
 
-    void service(HttpRequest &request, HttpResponse &response);
+    void service(HttpRequest &request, HttpResponse &response) override;
 
 private:
     void serviceContent(const int &library, HttpResponse &response);

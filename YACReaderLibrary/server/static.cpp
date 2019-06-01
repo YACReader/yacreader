@@ -9,15 +9,15 @@
 #include <QFile>
 #include <QString>
 
-QString Static::configDir = 0;
+QString Static::configDir = nullptr;
 
-TemplateLoader *Static::templateLoader = 0;
+TemplateLoader *Static::templateLoader = nullptr;
 
-HttpSessionStore *Static::sessionStore = 0;
+HttpSessionStore *Static::sessionStore = nullptr;
 
 StaticFileController *Static::staticFileController = 0;
 
-YACReaderHttpSessionStore *Static::yacreaderSessionStore = 0;
+YACReaderHttpSessionStore *Static::yacreaderSessionStore = nullptr;
 
 QString Static::getConfigFileName()
 {
@@ -62,5 +62,5 @@ QString Static::getConfigDir()
     }
     qWarning("Cannot find config file %s", qPrintable(configFileName)); //TODO establecer los valores por defecto
 
-    return 0;
+    return nullptr;
 }

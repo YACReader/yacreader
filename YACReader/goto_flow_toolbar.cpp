@@ -8,12 +8,12 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
     : QStackedWidget(parent)
 {
     //elementos interactivos
-    QWidget *normal = new QWidget(this); // container widget
-    QWidget *quickNavi = new QWidget(this); // container widget
+    auto normal = new QWidget(this); // container widget
+    auto quickNavi = new QWidget(this); // container widget
     addWidget(normal);
     addWidget(quickNavi);
-    QHBoxLayout *normalLayout = new QHBoxLayout(normal);
-    QHBoxLayout *naviLayout = new QHBoxLayout(quickNavi);
+    auto normalLayout = new QHBoxLayout(normal);
+    auto naviLayout = new QHBoxLayout(quickNavi);
     normal->setLayout(normalLayout);
     quickNavi->setLayout(naviLayout);
 
@@ -41,7 +41,6 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
     edit->setValidator(v);
     edit->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     edit->setStyleSheet("QLineEdit {border: 1px solid #77000000; background: #55000000; color: white; padding: 3px 5px 5px 5px; margin: 13px 5px 12px 5px; font-weight:bold}");
-    QPixmap p(":/images/imgEdit.png");
     edit->setFixedSize(54, 50);
     edit->setAttribute(Qt::WA_MacShowFocusRect, false);
     //edit->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);

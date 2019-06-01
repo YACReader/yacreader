@@ -110,7 +110,7 @@ private:
     void setDisableUniqueValues(bool disabled);
 
     QList<ComicDB> comics;
-    void closeEvent(QCloseEvent *e);
+    void closeEvent(QCloseEvent *e) override;
     void updateCoverPageNumberLabel(int n);
 
     bool coverChanged;
@@ -118,11 +118,11 @@ private:
     QString originalCoverSize;
 
 public:
-    PropertiesDialog(QWidget *parent = 0);
+    PropertiesDialog(QWidget *parent = nullptr);
     QString databasePath;
     QString basePath;
     QSize sizeHint();
-    void paintEvent(QPaintEvent *event);
+    void paintEvent(QPaintEvent *event) override;
 
 public slots:
     void setComics(QList<ComicDB> comics);

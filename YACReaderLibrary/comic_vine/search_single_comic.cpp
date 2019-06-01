@@ -20,7 +20,7 @@ SearchSingleComic::SearchSingleComic(QWidget *parent)
 
     //numberEdit->setMaximumWidth(126);
 
-    QVBoxLayout *l = new QVBoxLayout;
+    auto l = new QVBoxLayout;
     //QHBoxLayout * hl = new QHBoxLayout;
     //hl->addWidget(titleEdit);
     //hl->addWidget(numberEdit);

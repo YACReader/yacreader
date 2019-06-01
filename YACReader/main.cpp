@@ -37,7 +37,7 @@ public:
     }
 
 protected:
-    bool event(QEvent *event)
+    bool event(QEvent *event) override
     {
         switch (event->type()) {
         case QEvent::FileOpen:
@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
     translator.load(QCoreApplication::applicationDirPath() + "/languages/yacreader_" + sufix);
 #endif
     app.installTranslator(&translator);
-    MainWindowViewer *mwv = new MainWindowViewer();
+    auto mwv = new MainWindowViewer();
 
     // some arguments need to be parsed after MainWindowViewer creation
     QStringList arglist = parser.positionalArguments();

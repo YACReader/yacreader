@@ -9,7 +9,7 @@ class ScraperSelector : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ScraperSelector(QWidget *parent = 0);
+    explicit ScraperSelector(QWidget *parent = nullptr);
     virtual void load(const QString &json, const QString &searchString);
 public slots:
 

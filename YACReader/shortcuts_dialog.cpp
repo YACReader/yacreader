@@ -15,16 +15,16 @@ ShortcutsDialog::ShortcutsDialog(QWidget *parent)
     setWindowIcon(QIcon(":/images/shortcuts.png"));
     setWindowTitle(tr("YACReader keyboard shortcuts"));
 
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    auto mainLayout = new QVBoxLayout;
 
     close = new QPushButton(tr("Close"));
     connect(close, SIGNAL(clicked()), this, SLOT(close()));
 
-    QHBoxLayout *bottomLayout = new QHBoxLayout;
+    auto bottomLayout = new QHBoxLayout;
     bottomLayout->addStretch();
     bottomLayout->addWidget(close);
 
-    QHBoxLayout *shortcutsLayout = new QHBoxLayout;
+    auto shortcutsLayout = new QHBoxLayout;
 
     shortcuts = new QTextEdit();
     shortcuts->setFrameStyle(QFrame::NoFrame);

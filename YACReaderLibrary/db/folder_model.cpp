@@ -142,7 +142,7 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    FolderItem *item = static_cast<FolderItem *>(index.internalPointer());
+    auto item = static_cast<FolderItem *>(index.internalPointer());
 
     if (role == Qt::ToolTipRole) {
         QString toolTip = item->data(FolderModel::Name).toString();
@@ -238,7 +238,7 @@ QModelIndex FolderModel::parent(const QModelIndex &index) const
     if (!index.isValid())
         return QModelIndex();
 
-    FolderItem *childItem = static_cast<FolderItem *>(index.internalPointer());
+    auto childItem = static_cast<FolderItem *>(index.internalPointer());
     FolderItem *parentItem = childItem->parent();
 
     if (parentItem == rootItem)
@@ -328,7 +328,7 @@ void FolderModel::setupModelData(QSqlQuery &sqlquery, FolderItem *parent)
         data << sqlquery.value(path).toString();
         data << sqlquery.value(finished).toBool();
         data << sqlquery.value(completed).toBool();
-        FolderItem *item = new FolderItem(data);
+        auto item = new FolderItem(data);
 
         item->id = sqlquery.value(id).toULongLong();
         //la inserci�n de hijos se hace de forma ordenada
@@ -360,7 +360,7 @@ void FolderModel::updateFolderModelData(QSqlQuery &sqlquery, FolderItem *parent)
         data << sqlquery.value(path).toString();
         data << sqlquery.value(finished).toBool();
         data << sqlquery.value(completed).toBool();
-        FolderItem *item = new FolderItem(data);
+        auto item = new FolderItem(data);
 
         item->id = sqlquery.value(id).toULongLong();
         //la inserci�n de hijos se hace de forma ordenada
@@ -410,7 +410,7 @@ void FolderModel::updateFolderCompletedStatus(const QModelIndexList &list, bool 
     QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
     db.transaction();
     foreach (QModelIndex mi, list) {
-        FolderItem *item = static_cast<FolderItem *>(mi.internalPointer());
+        auto item = static_cast<FolderItem *>(mi.internalPointer());
         item->setData(FolderModel::Completed, status);
 
         Folder f = DBHelper::loadFolder(item->id, db);
@@ -429,7 +429,7 @@ void FolderModel::updateFolderFinishedStatus(const QModelIndexList &list, bool s
     QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
     db.transaction();
     foreach (QModelIndex mi, list) {
-        FolderItem *item = static_cast<FolderItem *>(mi.internalPointer());
+        auto item = static_cast<FolderItem *>(mi.internalPointer());
         item->setData(FolderModel::Finished, status);
 
         Folder f = DBHelper::loadFolder(item->id, db);
@@ -448,7 +448,7 @@ QStringList FolderModel::getSubfoldersNames(const QModelIndex &mi)
     QStringList result;
     qulonglong id = 1;
     if (mi.isValid()) {
-        FolderItem *item = static_cast<FolderItem *>(mi.internalPointer());
+        auto item = static_cast<FolderItem *>(mi.internalPointer());
         id = item->id;
     }
 
@@ -559,7 +559,7 @@ QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QMod
     data << false; //finished
     data << true; //completed
 
-    FolderItem *item = new FolderItem(data);
+    auto item = new FolderItem(data);
     item->id = newFolder.id;
 
     beginInsertRows(parent, 0, 0); //TODO calculate the destRow before inserting the new child
@@ -577,7 +577,7 @@ void FolderModel::deleteFolder(const QModelIndex &mi)
 {
     beginRemoveRows(mi.parent(), mi.row(), mi.row());
 
-    FolderItem *item = static_cast<FolderItem *>(mi.internalPointer());
+    auto item = static_cast<FolderItem *>(mi.internalPointer());
 
     FolderItem *parent = item->parent();
     parent->removeChild(mi.row());
@@ -616,7 +616,7 @@ bool FolderModelProxy::filterAcceptsRow(int source_row, const QModelIndex &sourc
     if (!filterEnabled)
         return true;
 
-    FolderItem *parent = static_cast<FolderItem *>(source_parent.internalPointer());
+    auto parent = static_cast<FolderItem *>(source_parent.internalPointer());
 
     if (parent == 0)
         parent = static_cast<FolderModel *>(sourceModel())->rootItem;
@@ -656,7 +656,7 @@ void FolderModelProxy::setupFilteredModelData()
     rootItem->id = ROOT;
     rootItem->parentItem = 0;
 
-    FolderModel *model = static_cast<FolderModel *>(sourceModel());
+    auto model = static_cast<FolderModel *>(sourceModel());
 
     //cargar la base de datos
     QSqlDatabase db = DataBaseManagement::loadDatabase(model->_databasePath);
@@ -719,7 +719,7 @@ void FolderModelProxy::clear()
 
 void FolderModelProxy::setupFilteredModelData(QSqlQuery &sqlquery, FolderItem *parent)
 {
-    FolderModel *model = static_cast<FolderModel *>(sourceModel());
+    auto model = static_cast<FolderModel *>(sourceModel());
 
     //64 bits para la primary key, es decir la misma precisi�n que soporta sqlit 2^64
     filteredItems.clear();
@@ -744,7 +744,7 @@ void FolderModelProxy::setupFilteredModelData(QSqlQuery &sqlquery, FolderItem *p
         data << sqlquery.value(finished).toBool();
         data << sqlquery.value(completed).toBool();
 
-        FolderItem *item = new FolderItem(data);
+        auto item = new FolderItem(data);
         item->id = sqlquery.value(0).toULongLong();
 
         //id del padre
