@@ -77,14 +77,15 @@ void MagnifyingGlass::updateImage(int x, int y)
         }
         if (outImage) {
             QImage img(zoomWidth, zoomHeight, QImage::Format_RGB32);
+            img.setDevicePixelRatio(devicePixelRatio());
             img.fill(Configuration::getConfiguration().getBackgroundColor());
             if (zw > 0 && zh > 0) {
                 QPainter painter(&img);
-                painter.drawPixmap(xOffset, yOffset, p->pixmap()->copy(xp, yp, zw, zh));
+                painter.drawPixmap(xOffset, yOffset, image->copy(xp, yp, zw, zh));
             }
             setPixmap(QPixmap().fromImage(img));
         } else
-            setPixmap(p->pixmap()->copy(xp, yp, zoomWidth, zoomHeight));
+            setPixmap(image->copy(xp, yp, zoomWidth, zoomHeight));
     } else {
         int xp = static_cast<int>(((x - p->widget()->pos().x()) * wFactor) - zoomWidth / 2);
         int yp = static_cast<int>((y + currentPos) * hFactor - zoomHeight / 2);
@@ -117,14 +118,15 @@ void MagnifyingGlass::updateImage(int x, int y)
         }
         if (outImage) {
             QImage img(zoomWidth, zoomHeight, QImage::Format_RGB32);
+            img.setDevicePixelRatio(devicePixelRatio());
             img.fill(Configuration::getConfiguration().getBackgroundColor());
             if (zw > 0 && zh > 0) {
                 QPainter painter(&img);
-                painter.drawPixmap(xOffset, yOffset, p->pixmap()->copy(xp, yp, zw, zh));
+                painter.drawPixmap(xOffset, yOffset, image->copy(xp, yp, zw, zh));
             }
             setPixmap(QPixmap().fromImage(img));
         } else
-            setPixmap(p->pixmap()->copy(xp, yp, zoomWidth, zoomHeight));
+            setPixmap(image->copy(xp, yp, zoomWidth, zoomHeight));
     }
     move(static_cast<int>(x - float(width()) / 2), static_cast<int>(y - float(height()) / 2));
 }
