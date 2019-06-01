@@ -231,8 +231,7 @@ YACReaderFlowGL::YACReaderFlowGL(QWidget *parent, struct Preset p)
 
     QSurfaceFormat f = format();
 
-    //TODO add antialiasing
-    //f.setSamples(4);
+    f.setSamples(4);
     f.setVersion(2, 1);
     f.setSwapInterval(0);
     setFormat(f);
