@@ -1066,27 +1066,15 @@ void YACReaderFlowGL::keyPressEvent(QKeyEvent *event)
 
 void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 {
-    makeCurrent();
-    if (event->button() == Qt::LeftButton) {
-        float x, y;
-        x = event->x() * devicePixelRatio();
-        y = event->y() * devicePixelRatio();
-        GLint viewport[4];
-        QMatrix4x4 modelview;
-        QMatrix4x4 projection;
-        GLfloat winZ;
-
-        glGetFloatv(GL_MODELVIEW_MATRIX, modelview.data());
-        glGetFloatv(GL_PROJECTION_MATRIX, projection.data());
-        glGetIntegerv(GL_VIEWPORT, viewport);
-        glReadPixels(x, int((float)viewport[3] - (float)y), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
-
-        auto clickVector = QVector3D(x, (float)viewport[3] - (float)y, winZ);
-        clickVector = clickVector.unproject(modelview, projection, QRect(viewport[0], viewport[1], viewport[2], viewport[3]));
-
-        if ((clickVector.x() >= 0.5 && !flowRightToLeft) || (clickVector.x() <= -0.5 && flowRightToLeft)) {
+	if(event->button() == Qt::LeftButton)
+	{
+        QVector3D intersection = getPlaneIntersection(event->x(), event->y(), images[currentSelected]);
+        if((intersection.x() > 0.5 && !flowRightToLeft) || (intersection.x() < -0.5 && flowRightToLeft))
+        {
             showNext();
-        } else if ((clickVector.x() <= -0.5 && !flowRightToLeft) || (clickVector.x() >= 0.5 && flowRightToLeft)) {
+        }
+        else if((intersection.x() < -0.5 && !flowRightToLeft) || (intersection.x() > 0.5 && flowRightToLeft) )
+        {
             showPrevious();
         }
     } else {
@@ -1097,24 +1085,10 @@ void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 
 void YACReaderFlowGL::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    makeCurrent();
-    float x, y;
-    x = event->x() * devicePixelRatio();
-    y = event->y() * devicePixelRatio();
-    GLint viewport[4];
-    QMatrix4x4 modelview;
-    QMatrix4x4 projection;
-    GLfloat winZ;
+    QVector3D intersection = getPlaneIntersection(event->x(), event->y(), images[currentSelected]);
 
-    glGetFloatv(GL_MODELVIEW_MATRIX, modelview.data());
-    glGetFloatv(GL_PROJECTION_MATRIX, projection.data());
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    glReadPixels(x, int((float)viewport[3] - (float)y), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
-
-    auto clickVector = QVector3D(x, (float)viewport[3] - (float)y, winZ);
-    clickVector = clickVector.unproject(modelview, projection, QRect(viewport[0], viewport[1], viewport[2], viewport[3]));
-
-    if (clickVector.x() <= 0.5 && clickVector.x() >= -0.5) {
+    if(intersection.x() < 0.5 && intersection.x() > -0.5)
+    {
         emit selected(centerIndex());
         event->accept();
     }
