@@ -101,8 +101,7 @@ LibraryWindow::LibraryWindow()
 
     if (libraries.isEmpty()) {
         showNoLibrariesWidget();
-    }
-    else {
+    } else {
         showRootWidget();
         selectedLibrary->setCurrentIndex(0);
     }
@@ -115,7 +114,7 @@ void LibraryWindow::setupUI()
     libraryCreator = new LibraryCreator();
     packageManager = new PackageManager();
 
-    settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+    settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
     settings->beginGroup("libraryConfig");
 
     historyController = new YACReaderHistoryController(this);
@@ -169,7 +168,7 @@ void LibraryWindow::setupUI()
 void LibraryWindow::doLayout()
 {
     //LAYOUT ELEMENTS------------------------------------------------------------
-    auto sHorizontal = new QSplitter(Qt::Horizontal);  //spliter principal
+    auto sHorizontal = new QSplitter(Qt::Horizontal); //spliter principal
 
     sHorizontal->setStyleSheet(theme.mainWindowHorizontalSpliterStyle);
 
@@ -263,7 +262,7 @@ void LibraryWindow::doLayout()
 
     //collapsible disabled in macosx (only temporaly)
     if (theme.isMacosNative) {
-        sHorizontal->setCollapsible(0,false);
+        sHorizontal->setCollapsible(0, false);
     }
 }
 
@@ -735,7 +734,7 @@ void LibraryWindow::disableAllActions()
 
 void LibraryWindow::createToolBars()
 {
-    editInfoToolBar->setIconSize(QSize(18,18));
+    editInfoToolBar->setIconSize(QSize(18, 18));
     editInfoToolBar->addAction(openComicAction);
     editInfoToolBar->addSeparator();
     editInfoToolBar->addAction(editSelectedComicsAction);
@@ -938,8 +937,8 @@ void LibraryWindow::createConnections()
         connect(libraryToolBar->toggleFullScreenAction, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
     }
 
-    connect(libraryToolBar->toggleComicsViewAction,SIGNAL(triggered()),comicsViewsManager,SLOT(toggleComicsView()));
-    connect(libraryToolBar->optionsAction, SIGNAL(triggered()),optionsDialog,SLOT(show()));
+    connect(libraryToolBar->toggleComicsViewAction, SIGNAL(triggered()), comicsViewsManager, SLOT(toggleComicsView()));
+    connect(libraryToolBar->optionsAction, SIGNAL(triggered()), optionsDialog, SLOT(show()));
 #ifdef SERVER_RELEASE
     connect(libraryToolBar->serverConfigAction, SIGNAL(triggered()), serverConfigDialog, SLOT(show()));
 #endif
@@ -1085,24 +1084,21 @@ void LibraryWindow::loadLibrary(const QString &name)
 
                 setRootIndex();
 
-
                 libraryToolBar->searchEdit->clear();
-            }
-            else if(comparation > 0) {
-                int ret = QMessageBox::question(this,tr("Download new version"),tr("This library was created with a newer version of YACReaderLibrary. Download the new version now?"),QMessageBox::Yes,QMessageBox::No);
-                if(ret == QMessageBox::Yes)
+            } else if (comparation > 0) {
+                int ret = QMessageBox::question(this, tr("Download new version"), tr("This library was created with a newer version of YACReaderLibrary. Download the new version now?"), QMessageBox::Yes, QMessageBox::No);
+                if (ret == QMessageBox::Yes)
                     QDesktopServices::openUrl(QUrl("http://www.yacreader.com"));
 
                 comicsViewsManager->comicsView->setModel(nullptr);
                 foldersView->setModel(nullptr);
                 listsView->setModel(nullptr);
-                disableAllActions();//TODO comprobar que se deben deshabilitar
+                disableAllActions(); //TODO comprobar que se deben deshabilitar
                 //será possible renombrar y borrar estas bibliotecas
                 renameLibraryAction->setEnabled(true);
                 removeLibraryAction->setEnabled(true);
             }
-        }
-        else {
+        } else {
             comicsViewsManager->comicsView->setModel(nullptr);
             foldersView->setModel(nullptr);
             listsView->setModel(nullptr);
@@ -1610,12 +1606,11 @@ void LibraryWindow::checkEmptyFolder()
 {
     if (comicsModel->rowCount() > 0 && !importedCovers) {
         disableComicsActions(false);
-    }
-    else {
+    } else {
         disableComicsActions(true);
 
         if (libraryToolBar->toggleFullScreenAction != nullptr) {
-            if(comicsModel->rowCount() > 0)
+            if (comicsModel->rowCount() > 0)
                 libraryToolBar->toggleFullScreenAction->setEnabled(true);
         }
 
@@ -1699,7 +1694,7 @@ void LibraryWindow::create(QString source, QString dest, QString name)
 {
     QLOG_INFO() << QString("About to create a library from '%1' to '%2' with name '%3'").arg(source).arg(dest).arg(name);
 
-    libraryCreator->createLibrary(source,dest);
+    libraryCreator->createLibrary(source, dest);
     libraryCreator->start();
     _lastAdded = name;
     _sourceLastAdded = source;
@@ -1836,7 +1831,7 @@ void LibraryWindow::rename(QString newName) //TODO replace
     QString currentLibrary = selectedLibrary->currentText();
     if (newName != currentLibrary) {
         if (!libraries.contains(newName)) {
-            libraries.rename(currentLibrary,newName);
+            libraries.rename(currentLibrary, newName);
             //selectedLibrary->removeItem(selectedLibrary->currentIndex());
             //libraries.addLibrary(newName,path);
             selectedLibrary->renameCurrentLibrary(newName);
@@ -1844,15 +1839,13 @@ void LibraryWindow::rename(QString newName) //TODO replace
             renameLibraryDialog->close();
 
             if (!theme.isMacosNative) {
-                if(!foldersModelProxy->mapToSource(foldersView->currentIndex()).isValid())
+                if (!foldersModelProxy->mapToSource(foldersView->currentIndex()).isValid())
                     libraryToolBar->setTitle(selectedLibrary->currentText());
             }
-        }
-        else {
+        } else {
             libraryAlreadyExists(newName);
         }
-    }
-    else
+    } else
         renameLibraryDialog->close();
     //selectedLibrary->setCurrentIndex(selectedLibrary->findText(newName));
 }

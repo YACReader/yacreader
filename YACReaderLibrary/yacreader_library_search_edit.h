@@ -11,9 +11,9 @@
 #include "yacreader_macosx_toolbar.h"
 #endif
 
-class YACReaderLibrarySearchEdit: public QObject
+class YACReaderLibrarySearchEdit : public QObject
 {
-        Q_OBJECT
+    Q_OBJECT
 public:
 #ifdef Q_OS_MAC
     YACReaderLibrarySearchEdit(YACReaderMacOSXSearchLineEdit *searchEdit);

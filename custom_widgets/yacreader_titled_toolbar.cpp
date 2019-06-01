@@ -88,7 +88,7 @@ YACReaderTitledToolBar::YACReaderTitledToolBar(const QString &title, QWidget *pa
 
 void YACReaderTitledToolBar::addAction(QAction *action)
 {
-   auto mainLayout = dynamic_cast<QHBoxLayout *>(layout());
+    auto mainLayout = dynamic_cast<QHBoxLayout *>(layout());
 
     auto tb = new QToolButton(this);
     tb->setCursor(QCursor(Qt::ArrowCursor));

@@ -41,7 +41,7 @@ public slots:
 
 protected:
     void paintEvent(QPaintEvent *);
-    void closeEvent ( QCloseEvent * event );
+    void closeEvent(QCloseEvent *event);
     QSettings *settings;
     QSplitter *splitter;
     Theme theme = Theme::currentTheme();

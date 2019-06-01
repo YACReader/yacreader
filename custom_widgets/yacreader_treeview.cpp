@@ -2,7 +2,6 @@
 
 #include "theme.h"
 
-
 YACReaderTreeView::YACReaderTreeView(QWidget *parent)
     : QTreeView(parent)
 {

@@ -10,7 +10,8 @@ class Theme
 public:
     Theme();
 
-    static Theme currentTheme() {
+    static Theme currentTheme()
+    {
         Theme t;
 
 #ifdef Q_OS_MAC
@@ -121,11 +122,11 @@ public:
             t.mainWindowHorizontalSpliterStyle = "QSplitter::handle{image:none;background-color:#B8B8B8;} QSplitter::handle:vertical {height:1px;}";
         } else {
             t.isMacosNative = false;
-            #ifdef Q_OS_MAC
+#ifdef Q_OS_MAC
             t.useNativeFullScreen = true;
-            #else
+#else
             t.useNativeFullScreen = false;
-            #endif
+#endif
 
             t.disableClassicViewCollapsing = false;
 
@@ -162,7 +163,7 @@ public:
 
             //
             t.sidebarBackgroundColor = "#454545";
-            t.sidebarSplitterStyle = "QSplitter::handle:vertical { height: 39px; background-color: transparent;}";/*"QSplitter::handle { "
+            t.sidebarSplitterStyle = "QSplitter::handle:vertical { height: 39px; background-color: transparent;}"; /*"QSplitter::handle { "
                             " image: none; background-color = black; "
                             " }"
                             "QSplitter::handle:vertical { height: 39px;}"*/
@@ -234,7 +235,7 @@ public:
                                "QTableView {border-top:1px solid #B8B8B8;border-bottom:none;border-left:1px solid #B8B8B8;border-right:none;}"
 
                                "QTableView::item:selected {outline: 0px; border-bottom: 1px solid #D4D4D4;border-top: 1px solid #D4D4D4; padding-bottom:1px; background-color: #D4D4D4;  }"
-                                         "QHeaderView::section:horizontal {background-color:#F5F5F5; border-bottom:1px solid #B8BDC4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #D1D1D1, stop: 1 #B8BDC4); border-left:none; border-top:none; padding:4px; color:#313232;}"
+                               "QHeaderView::section:horizontal {background-color:#F5F5F5; border-bottom:1px solid #B8BDC4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #D1D1D1, stop: 1 #B8BDC4); border-left:none; border-top:none; padding:4px; color:#313232;}"
                                "QHeaderView::section:vertical {border-bottom: 1px solid #DFDFDF;border-top: 1px solid #FEFEFE;}";
 
             t.mainWindowHorizontalSpliterStyle = "QSplitter::handle:vertical {height:4px;}";
@@ -243,19 +244,20 @@ public:
         return t;
     }
 
-    void configureComicsGridView(QQmlContext *ctxt) {
-        ctxt->setContextProperty("backgroundColor", gridComicsViewBackgroundColor );
+    void configureComicsGridView(QQmlContext *ctxt)
+    {
+        ctxt->setContextProperty("backgroundColor", gridComicsViewBackgroundColor);
         ctxt->setContextProperty("cellColor", gridComicsViewCellColor);
         ctxt->setContextProperty("selectedColor", gridComicsViewSelectedColor);
         ctxt->setContextProperty("selectedBorderColor", gridComicsViewSelectedBorderColor);
         ctxt->setContextProperty("borderColor", gridComicsViewBorderColor);
         ctxt->setContextProperty("titleColor", gridComicsViewTitleColor);
         ctxt->setContextProperty("textColor", gridComicsViewTextColor);
-        ctxt->setContextProperty("useDropShadows",useDropShadows);
+        ctxt->setContextProperty("useDropShadows", useDropShadows);
         //fonts settings
         if (gridComicsViewFontSize < 1) {
             int fontSize = QApplication::font().pointSize();
-            if(fontSize == -1)
+            if (fontSize == -1)
                 fontSize = QApplication::font().pixelSize();
 
             ctxt->setContextProperty("fontSize", fontSize);
@@ -269,7 +271,8 @@ public:
         ctxt->setContextProperty("currentComicBackgroundColor", gridComicsViewCurrentComicBackground);
     }
 
-    void configureInfoView(QQmlContext *ctxt) {
+    void configureInfoView(QQmlContext *ctxt)
+    {
         ctxt->setContextProperty("infoBackgroundColor", infoViewInfoBackgroundColor);
         ctxt->setContextProperty("topShadow", infoViewTopShadow);
         ctxt->setContextProperty("infoShadow", infoViewInfoShadow);
@@ -287,7 +290,7 @@ public:
         ctxt->setContextProperty("readTickUncheckedColor", infoViewReadTickUncheckedColor);
         ctxt->setContextProperty("readTickCheckedColor", infoViewReadTickCheckedColor);
 
-        ctxt->setContextProperty("useDropShadows",useDropShadows);
+        ctxt->setContextProperty("useDropShadows", useDropShadows);
     }
 
     bool isMacosNative;

@@ -24,7 +24,7 @@ signals:
 public slots:
     void select();
     void deselect();
-    void setName(const QString & name);
+    void setName(const QString &name);
 
 private:
     QLabel *icon;

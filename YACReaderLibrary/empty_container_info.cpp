@@ -3,7 +3,7 @@
 #include "theme.h"
 
 EmptyContainerInfo::EmptyContainerInfo(QWidget *parent)
-        : QWidget(parent), iconLabel(new QLabel()), titleLabel(new QLabel())
+    : QWidget(parent), iconLabel(new QLabel()), titleLabel(new QLabel())
 {
     auto theme = Theme::currentTheme();
 

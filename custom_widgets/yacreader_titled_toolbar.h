@@ -25,7 +25,7 @@ private:
     QColor dropShadowColor;
     QColor textColor;
     void drawText(QPainter *painter, QPoint offset);
-    void drawTextEffect(QPainter* painter, QPoint offset);
+    void drawTextEffect(QPainter *painter, QPoint offset);
 
     Theme theme = Theme::currentTheme();
 };
@@ -44,7 +44,7 @@ public slots:
     void addSepartor();
 
 private:
-    DropShadowLabel * nameLabel;
+    DropShadowLabel *nameLabel;
     Theme theme = Theme::currentTheme();
 };
 

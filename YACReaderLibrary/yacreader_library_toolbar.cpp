@@ -7,11 +7,11 @@
 using namespace YACReader;
 
 YACReaderLibraryToolbar::YACReaderLibraryToolbar(QMainWindow *mainWindow, bool isMacosNative, bool useNativeFullScreen, QSettings *settings)
-    :QObject(mainWindow), mainWindow(mainWindow), isMacosNative(isMacosNative), useNativeFullScreen(useNativeFullScreen), settings(settings)
+    : QObject(mainWindow), mainWindow(mainWindow), isMacosNative(isMacosNative), useNativeFullScreen(useNativeFullScreen), settings(settings)
 {
     backAction = new QAction(mainWindow);
     QIcon icoBackButton;
-    icoBackButton.addFile(":/images/main_toolbar/back.svg",QSize(), QIcon::Normal);
+    icoBackButton.addFile(":/images/main_toolbar/back.svg", QSize(), QIcon::Normal);
     //icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back_disabled.svg"), QIcon::Disabled);
     backAction->setData(BACK_ACTION_YL);
     backAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(BACK_ACTION_YL));
@@ -42,13 +42,13 @@ YACReaderLibraryToolbar::YACReaderLibraryToolbar(QMainWindow *mainWindow, bool i
     icoServerButton.addFile(":/images/main_toolbar/server.svg", QSize(), QIcon::Normal);
     serverConfigAction->setIcon(icoServerButton);
 
-    toggleComicsViewAction = new QAction(tr("Change between comics views"),mainWindow);
+    toggleComicsViewAction = new QAction(tr("Change between comics views"), mainWindow);
     toggleComicsViewAction->setToolTip(tr("Change between comics views"));
     QIcon icoViewsButton;
 
-    if(!settings->contains(COMICS_VIEW_STATUS) || settings->value(COMICS_VIEW_STATUS) == Flow)
+    if (!settings->contains(COMICS_VIEW_STATUS) || settings->value(COMICS_VIEW_STATUS) == Flow)
         icoViewsButton.addFile(":/images/main_toolbar/grid.svg", QSize(), QIcon::Normal);
-    else if(settings->value(COMICS_VIEW_STATUS) == Grid)
+    else if (settings->value(COMICS_VIEW_STATUS) == Grid)
         icoViewsButton.addFile(":/images/main_toolbar/info.svg", QSize(), QIcon::Normal);
     else
         icoViewsButton.addFile(":/images/main_toolbar/flow.svg", QSize(), QIcon::Normal);
@@ -62,11 +62,11 @@ YACReaderLibraryToolbar::YACReaderLibraryToolbar(QMainWindow *mainWindow, bool i
     helpAboutAction->setData(HELP_ABOUT_ACTION_YL);
     helpAboutAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(HELP_ABOUT_ACTION_YL));
     QIcon icoHelpButton;
-    icoHelpButton.addFile(":/images/main_toolbar/help.svg",QSize(), QIcon::Normal);
+    icoHelpButton.addFile(":/images/main_toolbar/help.svg", QSize(), QIcon::Normal);
     helpAboutAction->setIcon(icoHelpButton);
 
     if (!useNativeFullScreen) {
-        toggleFullScreenAction = new QAction(tr("Fullscreen mode on/off"),mainWindow);
+        toggleFullScreenAction = new QAction(tr("Fullscreen mode on/off"), mainWindow);
         toggleFullScreenAction->setToolTip(tr("Fullscreen mode on/off"));
         toggleFullScreenAction->setData(TOGGLE_FULL_SCREEN_ACTION_YL);
         toggleFullScreenAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_FULL_SCREEN_ACTION_YL));

@@ -90,26 +90,26 @@ class LibraryWindow : public QMainWindow
 
     Q_OBJECT
 public:
-    YACReaderSideBar * sideBar;
+    YACReaderSideBar *sideBar;
 
-    CreateLibraryDialog * createLibraryDialog;
-    ExportLibraryDialog * exportLibraryDialog;
-    ImportLibraryDialog * importLibraryDialog;
-    ExportComicsInfoDialog * exportComicsInfoDialog;
-    ImportComicsInfoDialog * importComicsInfoDialog;
-    AddLibraryDialog * addLibraryDialog;
-    LibraryCreator * libraryCreator;
-    HelpAboutDialog * had;
-    RenameLibraryDialog * renameLibraryDialog;
-    PropertiesDialog * propertiesDialog;
-    ComicVineDialog * comicVineDialog;
-    EditShortcutsDialog * editShortcutsDialog;
+    CreateLibraryDialog *createLibraryDialog;
+    ExportLibraryDialog *exportLibraryDialog;
+    ImportLibraryDialog *importLibraryDialog;
+    ExportComicsInfoDialog *exportComicsInfoDialog;
+    ImportComicsInfoDialog *importComicsInfoDialog;
+    AddLibraryDialog *addLibraryDialog;
+    LibraryCreator *libraryCreator;
+    HelpAboutDialog *had;
+    RenameLibraryDialog *renameLibraryDialog;
+    PropertiesDialog *propertiesDialog;
+    ComicVineDialog *comicVineDialog;
+    EditShortcutsDialog *editShortcutsDialog;
     //YACReaderSocialDialog * socialDialog;
     bool fullscreen;
     bool importedCovers; //if true, the library is read only (not updates,open comic or properties)
     bool fromMaximized;
 
-    PackageManager * packageManager;
+    PackageManager *packageManager;
 
     QSize slideSizeW;
     QSize slideSizeF;
@@ -148,15 +148,15 @@ public:
     QAction *exportLibraryAction;
     QAction *importLibraryAction;
 
-    QAction * updateLibraryAction;
-    QAction * removeLibraryAction;
-    QAction * renameLibraryAction;
+    QAction *updateLibraryAction;
+    QAction *removeLibraryAction;
+    QAction *renameLibraryAction;
 
     //QAction * socialAction;
 
     //tree actions
-    QAction * addFolderAction;
-    QAction * deleteFolderAction;
+    QAction *addFolderAction;
+    QAction *deleteFolderAction;
     //--
     QAction *setRootIndexAction;
     QAction *expandAllNodesAction;

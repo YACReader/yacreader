@@ -7,7 +7,7 @@ class ComicsViewTransition : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ComicsViewTransition(const QString& backgroundColor, QWidget *parent = nullptr);
+    explicit ComicsViewTransition(const QString &backgroundColor, QWidget *parent = nullptr);
     QSize sizeHint();
 
 protected:

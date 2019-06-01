@@ -173,9 +173,8 @@ void YACReaderComicsViewsManager::switchToComicsView(ComicsView *from, ComicsVie
     //load content into current view
     libraryWindow->loadCoversFromCurrentModel();
 
-    if (!libraryWindow->libraryToolBar->searchEdit->text().isEmpty())
-    {
-       comicsView->enableFilterMode(true);
+    if (!libraryWindow->libraryToolBar->searchEdit->text().isEmpty()) {
+        comicsView->enableFilterMode(true);
     }
 }
 
@@ -210,7 +209,7 @@ void YACReaderComicsViewsManager::_toggleComicsView()
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
 
         if (infoComicsView == nullptr)
-           infoComicsView = new InfoComicsView();
+            infoComicsView = new InfoComicsView();
 
         switchToComicsView(gridComicsView, infoComicsView);
         comicsViewStatus = Info;
@@ -224,7 +223,7 @@ void YACReaderComicsViewsManager::_toggleComicsView()
         libraryWindow->libraryToolBar->toggleComicsViewAction->setIcon(icoViewsButton);
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
 
-        if(classicComicsView == nullptr)
+        if (classicComicsView == nullptr)
             classicComicsView = new ClassicComicsView(theme.disableClassicViewCollapsing);
 
         switchToComicsView(infoComicsView, classicComicsView);

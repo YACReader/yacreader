@@ -162,8 +162,7 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
                 }
 
                 return QVariant(finishedFolderIcon);
-            }
-            else {
+            } else {
                 return QVariant(QFileIconProvider().icon(QFileIconProvider::Folder));
             }
         } else {

@@ -60,7 +60,7 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
         l->addSpacing(3);
     }
 
-	l->addWidget(selectedLibrary);
+    l->addWidget(selectedLibrary);
 
     if (!theme.isMacosNative) {
         l->addSpacing(11);

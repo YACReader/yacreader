@@ -12,7 +12,7 @@
 
 #include "theme.h"
 
-void testListView(QListView * l)
+void testListView(QListView *l)
 {
     QStringListModel *slm = new QStringListModel(QStringList() << "Lorem ipsum"
                                                                << "Hailer skualer"
@@ -84,7 +84,7 @@ EmptyFolderWidget::EmptyFolderWidget(QWidget *parent)
 
     foldersView->setStyleSheet(theme.emptyFolderWidgetStyle);
 
-    foldersView->setSizePolicy(QSizePolicy ::Expanding, QSizePolicy ::Expanding );
+    foldersView->setSizePolicy(QSizePolicy ::Expanding, QSizePolicy ::Expanding);
 
     layout->addSpacing(12);
     layout->addWidget(foldersView, 1);

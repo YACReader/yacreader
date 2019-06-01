@@ -10,23 +10,23 @@
 
 #include "yacreader_library_search_edit.h"
 
-class YACReaderLibraryToolbar: public QObject
+class YACReaderLibraryToolbar : public QObject
 {
 public:
     YACReaderLibraryToolbar(QMainWindow *mainWindow, bool isMacosNative, bool useNativeFullScreen, QSettings *settings);
 
-    QWidget * widget() { return defaultToolbar; }
+    QWidget *widget() { return defaultToolbar; }
 
-    QAction  * backAction;
-    QAction  * forwardAction;
+    QAction *backAction;
+    QAction *forwardAction;
 
-    QAction * optionsAction;
-    QAction * serverConfigAction;
-    QAction * toggleComicsViewAction;
+    QAction *optionsAction;
+    QAction *serverConfigAction;
+    QAction *toggleComicsViewAction;
 
-    QAction * helpAboutAction;
+    QAction *helpAboutAction;
 
-    QAction * toggleFullScreenAction = nullptr;
+    QAction *toggleFullScreenAction = nullptr;
 
     YACReaderLibrarySearchEdit *searchEdit;
 public slots:
@@ -43,15 +43,13 @@ private:
     QMainWindow *mainWindow;
     bool isMacosNative;
     bool useNativeFullScreen;
-    QSettings * settings;
+    QSettings *settings;
 
 #ifdef Q_OS_MAC
     YACReaderMacOSXToolbar *macosxToolbar = nullptr;
 #endif
 
     YACReaderMainToolBar *defaultToolbar = nullptr;
-
-
 };
 
 #endif // YACREADER_LIBRARY_TOOLBAR_H
