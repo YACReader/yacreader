@@ -11,11 +11,11 @@
 
 #include "QsLog.h"
 
-UpdateComicController::UpdateComicController(){}
+UpdateComicController::UpdateComicController() {}
 
 void UpdateComicController::service(HttpRequest &request, HttpResponse &response)
 {
-    HttpSession session=Static::sessionStore->getSession(request,response,false);
+    HttpSession session = Static::sessionStore->getSession(request, response, false);
 
     QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
     QStringList pathElements = path.split('/');
@@ -27,20 +27,18 @@ void UpdateComicController::service(HttpRequest &request, HttpResponse &response
 
     QLOG_TRACE() << "POST DATA: " << postData;
 
-    if(postData.length()>0) {
+    if (postData.length() > 0) {
         QList<QString> data = postData.split("\n");
         int currentPage = data.at(0).split(":").at(1).toInt();
         ComicInfo info;
         info.currentPage = currentPage;
         info.id = comicId;
-        DBHelper::updateProgress(libraryId,info);
-    }
-    else
-    {
-        response.setStatus(412,"No comic info received");
-        response.write("",true);
+        DBHelper::updateProgress(libraryId, info);
+    } else {
+        response.setStatus(412, "No comic info received");
+        response.write("", true);
         return;
     }
 
-    response.write("OK",true);
+    response.write("OK", true);
 }

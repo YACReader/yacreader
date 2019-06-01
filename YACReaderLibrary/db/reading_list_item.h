@@ -28,12 +28,12 @@ public:
     SpecialListItem(const QList<QVariant> &data);
     QIcon getIcon() const;
     ReadingListModel::TypeSpecialList getType() const;
+
 private:
     enum DataIndexes {
         Name,
         Id
     };
-
 };
 
 //------------------------------------------------------
@@ -45,9 +45,8 @@ public:
     QIcon getIcon() const;
     YACReader::LabelColors colorid() const;
     QString name() const;
-    void setName(const QString & name);
+    void setName(const QString &name);
     qulonglong getId() const;
-
 
 private:
     enum DataIndexes {
@@ -63,24 +62,24 @@ private:
 class ReadingListItem : public ListItem
 {
 public:
-    ReadingListItem(const QList<QVariant> &data, ReadingListItem * parent = 0);
+    ReadingListItem(const QList<QVariant> &data, ReadingListItem *parent = 0);
     QIcon getIcon() const;
-    ReadingListItem * parent;
+    ReadingListItem *parent;
     int childCount() const;
     int row() const;
-    ReadingListItem * child(int row);
+    ReadingListItem *child(int row);
     void appendChild(ReadingListItem *item);
     void appendChild(ReadingListItem *item, int pos);
     void removeChild(ReadingListItem *item);
     qulonglong getId() const;
     QString name() const;
-    void setName(const QString & name);
+    void setName(const QString &name);
     int getOrdering() const;
     void setOrdering(const int ordering);
-    QList<ReadingListItem*> children();
+    QList<ReadingListItem *> children();
 
 private:
-    QList<ReadingListItem*> childItems;
+    QList<ReadingListItem *> childItems;
 
     enum DataIndexes {
         Name,
@@ -89,7 +88,6 @@ private:
         Completed,
         Ordering
     };
-
 };
 
 //------------------------------------------------------

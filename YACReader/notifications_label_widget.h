@@ -9,22 +9,22 @@ class QGraphicsOpacityEffect;
 
 class NotificationsLabelWidget : public QWidget
 {
-Q_OBJECT
+    Q_OBJECT
 private:
-	QLabel * textLabel;
-	QPropertyAnimation * anim;
-	QGraphicsOpacityEffect * effect;
+    QLabel *textLabel;
+    QPropertyAnimation *anim;
+    QGraphicsOpacityEffect *effect;
 
 protected:
     void paintEvent(QPaintEvent *);
 
 public:
-	NotificationsLabelWidget(QWidget * parent);
+    NotificationsLabelWidget(QWidget *parent);
 
 public slots:
-	void flash();
-	void setText(const QString & text);
-	void updatePosition();
+    void flash();
+    void setText(const QString &text);
+    void updatePosition();
 };
 
 #endif

@@ -8,7 +8,6 @@
 ComicVineAllVolumeComicsRetriever::ComicVineAllVolumeComicsRetriever(const QString &volumeURLString, QObject *parent)
     : QObject(parent), volumeURLString(volumeURLString)
 {
-
 }
 
 void ComicVineAllVolumeComicsRetriever::getAllVolumeComics()
@@ -18,11 +17,11 @@ void ComicVineAllVolumeComicsRetriever::getAllVolumeComics()
 
 void ComicVineAllVolumeComicsRetriever::getAllVolumeComics(int range)
 {
-    HttpWorker * search = new HttpWorker(volumeURLString.arg(range));
-    connect(search,SIGNAL(dataReady(const QByteArray &)),this,SLOT(appendVolumeComicsInfo(const QByteArray &)));
-    connect(search,SIGNAL(timeout()),this,SIGNAL(timeOut()));
-    connect(search,SIGNAL(timeout()),this,SIGNAL(finished()));
-    connect(search,SIGNAL(finished()),search,SLOT(deleteLater()));
+    HttpWorker *search = new HttpWorker(volumeURLString.arg(range));
+    connect(search, SIGNAL(dataReady(const QByteArray &)), this, SLOT(appendVolumeComicsInfo(const QByteArray &)));
+    connect(search, SIGNAL(timeout()), this, SIGNAL(timeOut()));
+    connect(search, SIGNAL(timeout()), this, SIGNAL(finished()));
+    connect(search, SIGNAL(finished()), search, SLOT(deleteLater()));
     search->get();
 }
 
@@ -42,9 +41,7 @@ void ComicVineAllVolumeComicsRetriever::appendVolumeComicsInfo(const QByteArray 
 
     if (!isLastResponse) {
         getAllVolumeComics(currentPage * 100);
-    }
-    else
-    {
+    } else {
         emit allVolumeComicsInfo(consolidateJSON());
         emit finished();
     }
@@ -58,28 +55,23 @@ QString ComicVineAllVolumeComicsRetriever::consolidateJSON()
     foreach (QByteArray json, jsonResponses) {
         QJsonDocument doc = QJsonDocument::fromJson(json);
 
-        if(doc.isNull() || !doc.isObject() || doc.isEmpty())
-        {
+        if (doc.isNull() || !doc.isObject() || doc.isEmpty()) {
             continue;
         }
 
         QJsonObject main = doc.object();
         QJsonValue error = main["error"];
 
-        if (error.isUndefined() || error.toString() != "OK")
-        {
+        if (error.isUndefined() || error.toString() != "OK") {
             continue;
-        }
-        else
-        {
+        } else {
             QJsonValue results = main["results"];
-            if (results.isUndefined() || !results.isArray())
-            {
+            if (results.isUndefined() || !results.isArray()) {
                 continue;
             }
 
             QJsonArray resultsArray = results.toArray();
-            foreach (const QJsonValue & v, resultsArray)
+            foreach (const QJsonValue &v, resultsArray)
                 comicsInfo.append(v);
         }
     }
@@ -93,5 +85,3 @@ QString ComicVineAllVolumeComicsRetriever::consolidateJSON()
     QJsonDocument doc(consolidatedJSON);
     return doc.toJson(QJsonDocument::Compact);
 }
-
-

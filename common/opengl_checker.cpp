@@ -3,13 +3,12 @@
 #include "QsLog.h"
 
 OpenGLChecker::OpenGLChecker()
-    :compatibleOpenGLVersion(true)
+    : compatibleOpenGLVersion(true)
 {
-    QOpenGLContext * openGLContext = new QOpenGLContext();
+    QOpenGLContext *openGLContext = new QOpenGLContext();
     openGLContext->create();
 
-    if(!openGLContext->isValid())
-    {
+    if (!openGLContext->isValid()) {
         compatibleOpenGLVersion = false;
         description = "unable to create QOpenGLContext";
     }
@@ -33,7 +32,8 @@ OpenGLChecker::OpenGLChecker()
         type = "OpenVG";
         break;
 
-    default: case QSurfaceFormat::DefaultRenderableType:
+    default:
+    case QSurfaceFormat::DefaultRenderableType:
         type = "unknown";
         break;
     }
@@ -42,7 +42,7 @@ OpenGLChecker::OpenGLChecker()
 
     description = QString("%1.%2 %3").arg(majorVersion).arg(minorVersion).arg(type);
 
-    if(format.renderableType() != QSurfaceFormat::OpenGL) //Desktop OpenGL
+    if (format.renderableType() != QSurfaceFormat::OpenGL) //Desktop OpenGL
         compatibleOpenGLVersion = false;
 
 #ifdef Q_OS_WIN //TODO check Qt version, and set this values depending on the use of QOpenGLWidget or QGLWidget
@@ -53,9 +53,9 @@ OpenGLChecker::OpenGLChecker()
     static const int minorTargetVersion = 0;
 #endif
 
-    if(majorVersion < majorTargetVersion)
+    if (majorVersion < majorTargetVersion)
         compatibleOpenGLVersion = false;
-    if(majorVersion == majorTargetVersion && minorVersion < minorTargetVersion)
+    if (majorVersion == majorTargetVersion && minorVersion < minorTargetVersion)
         compatibleOpenGLVersion = false;
 }
 

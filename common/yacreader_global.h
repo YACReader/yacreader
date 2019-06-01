@@ -21,48 +21,44 @@
 
 #define MAX_LIBRARIES_WARNING_NUM 10
 
-namespace YACReader
-{
+namespace YACReader {
 
- enum YACReaderIPCMessages
- {
-	 RequestComicInfo = 0,
-	 SendComicInfo,
- };
+enum YACReaderIPCMessages {
+    RequestComicInfo = 0,
+    SendComicInfo,
+};
 
- enum YACReaderComicReadStatus
- {
-	 Unread = 0,
-	 Read = 1,
-	 Opened = 2
- };
+enum YACReaderComicReadStatus {
+    Unread = 0,
+    Read = 1,
+    Opened = 2
+};
 
- enum YACReaderErrors
- {
-	 SevenZNotFound = 700
- };
+enum YACReaderErrors {
+    SevenZNotFound = 700
+};
 
- enum SearchModifiers{
-     NoModifiers = 0,
-     OnlyRead,
-     OnlyUnread,
-     ByAuthor
- };
+enum SearchModifiers {
+    NoModifiers = 0,
+    OnlyRead,
+    OnlyUnread,
+    ByAuthor
+};
 
- enum LabelColors{
-     YRed = 1,
-     YOrange,
-     YYellow,
-     YGreen,
-     YCyan,
-     YBlue,
-     YViolet,
-     YPurple,
-     YPink,
-     YWhite,
-     YLight,
-     YDark
- };
+enum LabelColors {
+    YRed = 1,
+    YOrange,
+    YYellow,
+    YGreen,
+    YCyan,
+    YBlue,
+    YViolet,
+    YPurple,
+    YPink,
+    YWhite,
+    YLight,
+    YDark
+};
 
 QString getSettingsPath();
 QString colorToName(LabelColors colors);

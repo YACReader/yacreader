@@ -26,29 +26,29 @@ class YACReaderComicsViewsManager : public QObject
 public:
     explicit YACReaderComicsViewsManager(QSettings *settings, LibraryWindow *parent = 0);
 
-    QWidget * containerWidget();
+    QWidget *containerWidget();
 
-    ComicsView * comicsView;
+    ComicsView *comicsView;
 
-    ComicsViewTransition * comicsViewTransition;
+    ComicsViewTransition *comicsViewTransition;
 
-    EmptyFolderWidget * emptyFolderWidget;
-    EmptyLabelWidget * emptyLabelWidget;
-    EmptySpecialListWidget * emptySpecialList;
-    EmptyReadingListWidget * emptyReadingList;
+    EmptyFolderWidget *emptyFolderWidget;
+    EmptyLabelWidget *emptyLabelWidget;
+    EmptySpecialListWidget *emptySpecialList;
+    EmptyReadingListWidget *emptyReadingList;
 
-    NoSearchResultsWidget * noSearchResultsWidget;
+    NoSearchResultsWidget *noSearchResultsWidget;
 
     void updateCurrentComicView();
 
 protected:
-    QStackedWidget * comicsViewStack;
-    LibraryWindow * libraryWindow;
+    QStackedWidget *comicsViewStack;
+    LibraryWindow *libraryWindow;
 
     ComicsViewStatus comicsViewStatus;
 
-    ClassicComicsView * classicComicsView;
-    GridComicsView * gridComicsView;
+    ClassicComicsView *classicComicsView;
+    GridComicsView *gridComicsView;
     InfoComicsView *infoComicsView;
 
 signals:
@@ -67,11 +67,10 @@ protected slots:
     void showComicsViewTransition();
     void _toggleComicsView();
 
-    void disconnectComicsViewConnections(ComicsView * widget);
+    void disconnectComicsViewConnections(ComicsView *widget);
     void doComicsViewConnections();
 
     void switchToComicsView(ComicsView *from, ComicsView *to);
-
 };
 
 #endif // COMICSVIEWSMANAGER_H

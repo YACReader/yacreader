@@ -1,7 +1,7 @@
 #include "actions_groups_model.h"
 
-ActionsGroupsModel::ActionsGroupsModel(QObject *parent) :
-    QAbstractItemModel(parent)
+ActionsGroupsModel::ActionsGroupsModel(QObject *parent)
+    : QAbstractItemModel(parent)
 {
 }
 
@@ -50,14 +50,14 @@ QModelIndex ActionsGroupsModel::parent(const QModelIndex &index) const
 
 void ActionsGroupsModel::addActionsGroup(const ActionsGroup &group)
 {
-    beginInsertRows(QModelIndex(),groups.length(),groups.length());
+    beginInsertRows(QModelIndex(), groups.length(), groups.length());
     groups.push_back(group);
     endInsertRows();
 }
 
 QList<QAction *> ActionsGroupsModel::getActions(const QModelIndex &mi)
 {
-    if(mi.isValid())
+    if (mi.isValid())
         return groups[mi.row()].getActions();
     return QList<QAction *>();
 }
@@ -65,9 +65,8 @@ QList<QAction *> ActionsGroupsModel::getActions(const QModelIndex &mi)
 //-------------------------------------------------------------------
 
 ActionsGroup::ActionsGroup(const QString &name, const QIcon &icon, QList<QAction *> &actions)
-    :name(name), icon(icon), actions(actions)
+    : name(name), icon(icon), actions(actions)
 {
-
 }
 
 QString ActionsGroup::getName() const

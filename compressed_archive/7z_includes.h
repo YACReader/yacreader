@@ -3,15 +3,13 @@
 
 //WIN includes
 #ifdef Q_OS_WIN
-extern "C"
-{
+extern "C" {
 #include "lib7zip/C/Alloc.h"
 #include "lib7zip/C/7zTypes.h"
 }
 
 #include "lib7zip/CPP/Common/Common.h"
 #include "lib7zip/CPP/Common/MyWindows.h"
-
 
 #include "lib7zip/CPP/Common/StringConvert.h"
 #include "lib7zip/CPP/Common/MyInitGuid.h"
@@ -33,14 +31,12 @@ extern "C"
 #else
 //POSIX includes
 
-extern "C"
-{
+extern "C" {
 #include "libp7zip/C/Alloc.h"
 #include "libp7zip/C/7zTypes.h"
 }
 
 #include "libp7zip/CPP/Windows/Defs.h"
-
 
 #include "libp7zip/CPP/Common/Common.h"
 #include "libp7zip/CPP/Common/MyCom.h"
@@ -72,7 +68,6 @@ extern "C"
 #include "libp7zip/CPP/7zip/Common/StreamUtils.h"
 
 #include "libp7zip/CPP/7zip/ICoder.h"
-
 
 #endif
 

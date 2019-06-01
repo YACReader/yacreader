@@ -11,6 +11,7 @@ public:
     qulonglong getId() const;
     QString getName() const;
     int getOrdering() const;
+
 private:
     QString name;
     qulonglong id;
@@ -30,7 +31,6 @@ private:
     QString name;
     qulonglong id;
     YACReader::LabelColors colorid;
-
 };
 
 #endif // READING_LIST_H

@@ -1,6 +1,6 @@
 #include "json_model.h"
 
-JSONModel::JSONModel(QObject *parent) :
-	QAbstractItemModel(parent)
+JSONModel::JSONModel(QObject *parent)
+    : QAbstractItemModel(parent)
 {
 }

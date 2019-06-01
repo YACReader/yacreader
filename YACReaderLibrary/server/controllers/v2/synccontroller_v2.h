@@ -7,7 +7,8 @@
 #include "httpresponse.h"
 #include "httprequesthandler.h"
 
-class SyncControllerV2 : public HttpRequestHandler {
+class SyncControllerV2 : public HttpRequestHandler
+{
     Q_OBJECT
     Q_DISABLE_COPY(SyncControllerV2)
 public:
@@ -15,7 +16,7 @@ public:
     SyncControllerV2();
 
     /** Generates the response */
-    void service(HttpRequest& request, HttpResponse& response);
+    void service(HttpRequest &request, HttpResponse &response);
 };
 
 #endif // SYNCCONTROLLER_H

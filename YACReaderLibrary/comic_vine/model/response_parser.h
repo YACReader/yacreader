@@ -5,26 +5,26 @@
 
 class ResponseParser : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit ResponseParser(QObject *parent = 0);
-	bool responseError();
+    explicit ResponseParser(QObject *parent = 0);
+    bool responseError();
     QString errorDescription();
-	qint32 getNumResults();
-	qint32 getCurrentPage();
-	qint32 getTotalPages();
+    qint32 getNumResults();
+    qint32 getCurrentPage();
+    qint32 getTotalPages();
     bool isError(qint32 error);
 signals:
 
 public slots:
-	void loadJSONResponse(const QString & response);
+    void loadJSONResponse(const QString &response);
 
 protected:
-	bool error;
+    bool error;
     QString errorTxt;
-	qint32 numResults;
-	qint32 currentPage;
-	qint32 totalPages;
+    qint32 numResults;
+    qint32 currentPage;
+    qint32 totalPages;
 };
 
 #endif // RESPONSE_PARSER_H

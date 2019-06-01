@@ -13,7 +13,7 @@
 
 TagsControllerV2::TagsControllerV2() {}
 
-void TagsControllerV2::service(HttpRequest& request, HttpResponse& response)
+void TagsControllerV2::service(HttpRequest &request, HttpResponse &response)
 {
     response.setHeader("Content-Type", "text/plain; charset=utf-8");
 
@@ -25,12 +25,12 @@ void TagsControllerV2::service(HttpRequest& request, HttpResponse& response)
 
     QJsonArray items;
 
-    for(QList<Label>::const_iterator itr = labels.constBegin();itr!=labels.constEnd();itr++)
-    {
+    for (QList<Label>::const_iterator itr = labels.constBegin(); itr != labels.constEnd(); itr++) {
         items.append(YACReaderServerDataHelper::labelToJSON(libraryId, *itr));
     }
 
     QJsonDocument output(items);
 
-    response.write(output.toJson(QJsonDocument::Compact));;
+    response.write(output.toJson(QJsonDocument::Compact));
+    ;
 }

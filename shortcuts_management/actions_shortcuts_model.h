@@ -21,7 +21,6 @@ public:
     void addActions(const QList<QAction *> actions);
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
-
     enum Columns {
         ICON = 0,
         NAME,

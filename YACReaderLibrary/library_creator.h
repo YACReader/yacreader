@@ -18,79 +18,79 @@
 #include "folder.h"
 #include "comic_db.h"
 
+class LibraryCreator : public QThread
+{
+    Q_OBJECT
+public:
+    LibraryCreator();
+    void createLibrary(const QString &source, const QString &target);
+    void updateLibrary(const QString &source, const QString &target);
+    void updateFolder(const QString &source, const QString &target, const QString &folder, const QModelIndex &dest);
+    void stop();
 
-	class LibraryCreator : public QThread
-	{
-		Q_OBJECT
-	public:
-        LibraryCreator();
-        void createLibrary(const QString & source, const QString & target);
-        void updateLibrary(const QString & source, const QString & target);
-        void updateFolder(const QString & source, const QString & target, const QString & folder, const QModelIndex &dest);
-        void stop();
+private:
+    void processLibrary(const QString &source, const QString &target);
+    enum Mode { CREATOR,
+                UPDATER };
+    //atributos "globales" durante el proceso de creación y actualización
+    enum Mode _mode;
+    QString _source;
+    QString _target;
+    QString _sourceFolder; //used for partial updates
+    QStringList _nameFilter;
+    QSqlDatabase _database;
+    QList<Folder> _currentPathFolders; //lista de folders en el orden en el que están siendo explorados, el último es el folder actual
+    //recursive method
+    void create(QDir currentDirectory);
+    void update(QDir currentDirectory);
+    void run();
+    qulonglong insertFolders(); //devuelve el id del último folder añadido (último en la ruta)
+    bool checkCover(const QString &hash);
+    void insertComic(const QString &relativePath, const QFileInfo &fileInfo);
+    //qulonglong insertFolder(qulonglong parentId,const Folder & folder);
+    //qulonglong insertComic(const Comic & comic);
+    bool stopRunning;
+    //LibraryCreator está en modo creación si creation == true;
+    bool creation;
+    bool partialUpdate;
+    QModelIndex folderDestinationModelIndex;
 
-	private:
-		void processLibrary(const QString & source, const QString & target);
-		enum Mode {CREATOR,UPDATER};
-		//atributos "globales" durante el proceso de creación y actualización
-		enum Mode _mode;
-		QString _source;
-		QString _target;
-        QString _sourceFolder; //used for partial updates
-		QStringList _nameFilter;
-		QSqlDatabase _database;
-		QList<Folder> _currentPathFolders; //lista de folders en el orden en el que están siendo explorados, el último es el folder actual
-		//recursive method
-		void create(QDir currentDirectory);
-		void update(QDir currentDirectory);
-		void run();
-		qulonglong insertFolders();//devuelve el id del último folder añadido (último en la ruta)
-		bool checkCover(const QString & hash);
-		void insertComic(const QString & relativePath,const QFileInfo & fileInfo);
-		//qulonglong insertFolder(qulonglong parentId,const Folder & folder);
-		//qulonglong insertComic(const Comic & comic);
-		bool stopRunning;
-		//LibraryCreator está en modo creación si creation == true;
-		bool creation;
-        bool partialUpdate;
-        QModelIndex folderDestinationModelIndex;
+signals:
+    void finished();
+    void coverExtracted(QString);
+    void folderUpdated(QString);
+    void comicAdded(QString, QString);
+    void updated();
+    void created();
+    void failedCreatingDB(QString);
+    void failedOpeningDB(QString);
+    void updatedCurrentFolder(QModelIndex);
+};
 
-	signals:
-		void finished();
-		void coverExtracted(QString);
-		void folderUpdated(QString);
-		void comicAdded(QString,QString);
-		void updated();
-		void created();
-		void failedCreatingDB(QString);
-		void failedOpeningDB(QString);
-        void updatedCurrentFolder(QModelIndex);
-	};
+class ThumbnailCreator : public QObject
+{
+    Q_OBJECT
 
-	class ThumbnailCreator : public QObject
-	{
-		Q_OBJECT
+public:
+    ThumbnailCreator(QString fileSource, QString target = "", int coverPage = 1);
 
-	public:
-		ThumbnailCreator(QString fileSource, QString target="", int coverPage = 1);
-	private:
-		QString _fileSource;
-		QString _target;
-		QString _currentName;
-		int _numPages;
-        QPair<int,int> _coverSize;
-        QImage _cover;
-		int _coverPage;
-		static bool crash;
+private:
+    QString _fileSource;
+    QString _target;
+    QString _currentName;
+    int _numPages;
+    QPair<int, int> _coverSize;
+    QImage _cover;
+    int _coverPage;
+    static bool crash;
 
-	public slots:
-		void create();		
-        int getNumPages(){return _numPages;}
-        QPixmap getCover(){return QPixmap::fromImage(_cover);}
-        QPair<int,int> getOriginalCoverSize(){return _coverSize;}
-	signals:
-		void openingError(QProcess::ProcessError error);
-
-	};
+public slots:
+    void create();
+    int getNumPages() { return _numPages; }
+    QPixmap getCover() { return QPixmap::fromImage(_cover); }
+    QPair<int, int> getOriginalCoverSize() { return _coverSize; }
+signals:
+    void openingError(QProcess::ProcessError error);
+};
 
 #endif

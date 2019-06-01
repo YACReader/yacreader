@@ -8,7 +8,6 @@
 
 SyncControllerV2::SyncControllerV2()
 {
-
 }
 
 void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
@@ -17,7 +16,7 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
 
     QLOG_TRACE() << "POST DATA: " << postData;
 
-    if(postData.length()>0) {
+    if (postData.length() > 0) {
         QList<QString> data = postData.split("\n");
 
         qulonglong libraryId;
@@ -26,14 +25,11 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
         int currentRating;
         unsigned long long lastTimeOpened;
         QString hash;
-        foreach(QString comicInfo, data)
-        {
+        foreach (QString comicInfo, data) {
             QList<QString> comicInfoProgress = comicInfo.split("\t");
 
-            if(comicInfoProgress.length() == 6)
-            {
-                if (comicInfoProgress.at(0) != "unknown")
-                {
+            if (comicInfoProgress.length() == 6) {
+                if (comicInfoProgress.at(0) != "unknown") {
                     libraryId = comicInfoProgress.at(0).toULongLong();
                     comicId = comicInfoProgress.at(1).toULongLong();
                     hash = comicInfoProgress.at(2);
@@ -50,10 +46,8 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
                     lastTimeOpened = comicInfoProgress.at(5).toULong();
                     info.lastTimeOpened = lastTimeOpened;
 
-                    DBHelper::updateFromRemoteClient(libraryId,info);
-                }
-                else
-                {
+                    DBHelper::updateFromRemoteClient(libraryId, info);
+                } else {
                     hash = comicInfoProgress.at(2);
                     currentPage = comicInfoProgress.at(3).toInt();
 
@@ -71,14 +65,11 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
                 }
             }
         }
-    }
-    else
-    {
-        response.setStatus(412,"No comic info received");
-        response.write("",true);
+    } else {
+        response.setStatus(412, "No comic info received");
+        response.write("", true);
         return;
     }
 
-    response.write("OK",true);
+    response.write("OK", true);
 }
-

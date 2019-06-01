@@ -5,14 +5,13 @@
 
 class ComicsModel : public JSONModel
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit ComicsModel(QObject *parent = 0);
+    explicit ComicsModel(QObject *parent = 0);
 
 signals:
 
 public slots:
-
 };
 
 #endif // COMICS_MODEL_H

@@ -54,23 +54,24 @@ public:
     void appendChild(FolderItem *child);
 
     FolderItem *child(int row);
-	int childCount() const;
-	int columnCount() const;
-	QVariant data(int column) const;
-	QList<QVariant> getData() const;
-	int row() const;
+    int childCount() const;
+    int columnCount() const;
+    QVariant data(int column) const;
+    QList<QVariant> getData() const;
+    int row() const;
     FolderItem *parent();
     FolderItem *parentItem;
-	unsigned long long int id;
-	QList<QString> comicNames;
-    FolderItem * originalItem;
+    unsigned long long int id;
+    QList<QString> comicNames;
+    FolderItem *originalItem;
     void setData(int column, const QVariant &value);
     void removeChild(int childIndex);
     void clearChildren();
-    QList<FolderItem*> children();
+    QList<FolderItem *> children();
+
 private:
-    QList<FolderItem*> childItems;
-	QList<QVariant> itemData;	
+    QList<FolderItem *> childItems;
+    QList<QVariant> itemData;
 };
 //! [0]
 

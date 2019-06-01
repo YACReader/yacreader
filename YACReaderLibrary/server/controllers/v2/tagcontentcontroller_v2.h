@@ -5,7 +5,8 @@
 #include "httpresponse.h"
 #include "httprequesthandler.h"
 
-class TagContentControllerV2 : public HttpRequestHandler {
+class TagContentControllerV2 : public HttpRequestHandler
+{
     Q_OBJECT
     Q_DISABLE_COPY(TagContentControllerV2)
 public:
@@ -13,7 +14,7 @@ public:
     TagContentControllerV2();
 
     /** Generates the response */
-    void service(HttpRequest& request, HttpResponse& response);
+    void service(HttpRequest &request, HttpResponse &response);
 
 private:
     void serviceContent(const int &library, const qulonglong &tagId, HttpResponse &response);

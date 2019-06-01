@@ -3,9 +3,7 @@
 
 #include <QObject>
 
-
 class ComicModel;
-
 
 class YACReaderComicInfoHelper : public QObject
 {

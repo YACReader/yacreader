@@ -36,13 +36,12 @@ public:
     void setEditorData(QWidget *editor, const QModelIndex &index) const;
     void setModelData(QWidget *editor, QAbstractItemModel *model,
                       const QModelIndex &index) const;
-    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex & mi) const;
+    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &mi) const;
     bool eventFilter(QObject *editor, QEvent *event);
 signals:
 
 public slots:
     void closeShortcutEditor();
-
 };
 
 #endif // EDIT_SHORTCUT_ITEM_DELEGATE_H

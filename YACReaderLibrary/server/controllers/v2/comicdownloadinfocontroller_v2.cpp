@@ -7,8 +7,7 @@
 
 ComicDownloadInfoControllerV2::ComicDownloadInfoControllerV2() {}
 
-
-void ComicDownloadInfoControllerV2::service(HttpRequest& request, HttpResponse& response)
+void ComicDownloadInfoControllerV2::service(HttpRequest &request, HttpResponse &response)
 {
     response.setHeader("Content-Type", "text/plain; charset=utf-8");
 
@@ -24,5 +23,5 @@ void ComicDownloadInfoControllerV2::service(HttpRequest& request, HttpResponse& 
     response.write(QString("fileName:%1\r\n").arg(comic.getFileName()).toUtf8());
     response.write(QString("fileSize:%1\r\n").arg(comic.getFileSize()).toUtf8());
     response.write(QString("libraryId:%1\r\n").arg(libraryId).toUtf8());
-    response.write(comic.toTXT().toUtf8(),true);
+    response.write(comic.toTXT().toUtf8(), true);
 }

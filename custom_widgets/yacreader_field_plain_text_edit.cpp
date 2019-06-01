@@ -2,31 +2,30 @@
 
 #include <QAction>
 
-YACReaderFieldPlainTextEdit::YACReaderFieldPlainTextEdit(QWidget * parent)
-	:QPlainTextEdit(parent)
+YACReaderFieldPlainTextEdit::YACReaderFieldPlainTextEdit(QWidget *parent)
+    : QPlainTextEdit(parent)
 {
-	document()->setModified(false);
-	setPlainText(tr("Click to overwrite"));
-	restore = new QAction(tr("Restore to default"),this);
-	this->addAction(restore);
-	//this->setContextMenuPolicy(Qt::ActionsContextMenu);
+    document()->setModified(false);
+    setPlainText(tr("Click to overwrite"));
+    restore = new QAction(tr("Restore to default"), this);
+    this->addAction(restore);
+    //this->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
-void YACReaderFieldPlainTextEdit::focusInEvent(QFocusEvent* e)
+void YACReaderFieldPlainTextEdit::focusInEvent(QFocusEvent *e)
 {
-	if (e->reason() == Qt::MouseFocusReason  || e->reason() == Qt::TabFocusReason)
-	{
-	  document()->setModified(true);
-	  if(toPlainText()==tr("Click to overwrite"))
-		setPlainText("");
-	}
+    if (e->reason() == Qt::MouseFocusReason || e->reason() == Qt::TabFocusReason) {
+        document()->setModified(true);
+        if (toPlainText() == tr("Click to overwrite"))
+            setPlainText("");
+    }
 
-	QPlainTextEdit::focusInEvent(e);
+    QPlainTextEdit::focusInEvent(e);
 }
 
-void YACReaderFieldPlainTextEdit::focusOutEvent(QFocusEvent* e)
+void YACReaderFieldPlainTextEdit::focusOutEvent(QFocusEvent *e)
 {
-	/*if (e->reason() == Qt::MouseFocusReason  || e->reason() == Qt::TabFocusReason)
+    /*if (e->reason() == Qt::MouseFocusReason  || e->reason() == Qt::TabFocusReason)
 	{
 		if(toPlainText().isEmpty())
 		{
@@ -35,19 +34,19 @@ void YACReaderFieldPlainTextEdit::focusOutEvent(QFocusEvent* e)
 		}
 	}
 	*/
-	QPlainTextEdit::focusOutEvent(e);
+    QPlainTextEdit::focusOutEvent(e);
 }
 
 void YACReaderFieldPlainTextEdit::clear()
 {
-	QPlainTextEdit::clear();
-	document()->setModified(false);
-	setPlainText(tr("Click to overwrite"));
+    QPlainTextEdit::clear();
+    document()->setModified(false);
+    setPlainText(tr("Click to overwrite"));
 }
 
 void YACReaderFieldPlainTextEdit::setDisabled(bool disabled)
 {
-	if(disabled)
-		setPlainText(tr("Click to overwrite"));
-	QPlainTextEdit::setDisabled(disabled);
+    if (disabled)
+        setPlainText(tr("Click to overwrite"));
+    QPlainTextEdit::setDisabled(disabled);
 }

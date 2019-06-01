@@ -18,14 +18,14 @@ signals:
 public slots:
 
 protected slots:
-    void enableAccept(const QString & text);
+    void enableAccept(const QString &text);
     void saveApiKey();
 
 protected:
-    QPushButton * acceptButton;
-    QPushButton * cancelButton;
-    QLineEdit * edit;
-    QSettings * settings;
+    QPushButton *acceptButton;
+    QPushButton *cancelButton;
+    QLineEdit *edit;
+    QSettings *settings;
 };
 
 #endif // API_KEY_DIALOG_H

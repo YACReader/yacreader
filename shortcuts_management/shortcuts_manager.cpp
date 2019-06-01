@@ -13,20 +13,20 @@ void ShortcutsManager::initDefaultShorcuts()
 {
 #ifdef YACREADER_LIBRARY
     //ACTIONS
-    defaultShorcuts.insert(CREATE_LIBRARY_ACTION_YL,Qt::Key_A);
-    defaultShorcuts.insert(OPEN_LIBRARY_ACTION_YL,Qt::Key_O);
-    defaultShorcuts.insert(UPDATE_LIBRARY_ACTION_YL,Qt::Key_U);
-    defaultShorcuts.insert(RENAME_LIBRARY_ACTION_YL,Qt::Key_R);
-    defaultShorcuts.insert(OPEN_COMIC_ACTION_YL,Qt::Key_Return);
-    defaultShorcuts.insert(SHOW_HIDE_MARKS_ACTION_YL,Qt::Key_M);
-    defaultShorcuts.insert(TOGGLE_FULL_SCREEN_ACTION_YL,Qt::Key_F);
-    defaultShorcuts.insert(HELP_ABOUT_ACTION_YL,Qt::Key_F1);
-    defaultShorcuts.insert(SET_ROOT_INDEX_ACTION_YL,Qt::Key_0);
-    defaultShorcuts.insert(EXPAND_ALL_NODES_ACTION_YL,Qt::Key_Plus);
-    defaultShorcuts.insert(COLAPSE_ALL_NODES_ACTION_YL,Qt::Key_Minus);
-    defaultShorcuts.insert(OPTIONS_ACTION_YL,Qt::Key_C);
-    defaultShorcuts.insert(SERVER_CONFIG_ACTION_YL,Qt::Key_S);
-    defaultShorcuts.insert(TOGGLE_COMICS_VIEW_ACTION_YL,Qt::Key_V);
+    defaultShorcuts.insert(CREATE_LIBRARY_ACTION_YL, Qt::Key_A);
+    defaultShorcuts.insert(OPEN_LIBRARY_ACTION_YL, Qt::Key_O);
+    defaultShorcuts.insert(UPDATE_LIBRARY_ACTION_YL, Qt::Key_U);
+    defaultShorcuts.insert(RENAME_LIBRARY_ACTION_YL, Qt::Key_R);
+    defaultShorcuts.insert(OPEN_COMIC_ACTION_YL, Qt::Key_Return);
+    defaultShorcuts.insert(SHOW_HIDE_MARKS_ACTION_YL, Qt::Key_M);
+    defaultShorcuts.insert(TOGGLE_FULL_SCREEN_ACTION_YL, Qt::Key_F);
+    defaultShorcuts.insert(HELP_ABOUT_ACTION_YL, Qt::Key_F1);
+    defaultShorcuts.insert(SET_ROOT_INDEX_ACTION_YL, Qt::Key_0);
+    defaultShorcuts.insert(EXPAND_ALL_NODES_ACTION_YL, Qt::Key_Plus);
+    defaultShorcuts.insert(COLAPSE_ALL_NODES_ACTION_YL, Qt::Key_Minus);
+    defaultShorcuts.insert(OPTIONS_ACTION_YL, Qt::Key_C);
+    defaultShorcuts.insert(SERVER_CONFIG_ACTION_YL, Qt::Key_S);
+    defaultShorcuts.insert(TOGGLE_COMICS_VIEW_ACTION_YL, Qt::Key_V);
 
     //COMMANDS (used in keypressevent)
 #else
@@ -75,7 +75,6 @@ void ShortcutsManager::initDefaultShorcuts()
     defaultShorcuts.insert(ZOOM_OUT_MGLASS_ACTION_Y, Qt::Key_Underscore);
 
 #endif
-
 }
 
 void ShortcutsManager::resetToDefaults()
@@ -90,10 +89,10 @@ QString ShortcutsManager::getShortcut(const QString &name)
 #else
     QString filePath = "/YACReaderLibrary.ini";
 #endif
-    QSettings s(YACReader::getSettingsPath()+filePath,QSettings::IniFormat);
+    QSettings s(YACReader::getSettingsPath() + filePath, QSettings::IniFormat);
     s.beginGroup("shortcuts");
 
-    return s.value(name,defaultShorcuts.value(name)).toString();
+    return s.value(name, defaultShorcuts.value(name)).toString();
 }
 
 void ShortcutsManager::saveShortcut(QAction *action)
@@ -103,10 +102,10 @@ void ShortcutsManager::saveShortcut(QAction *action)
 #else
     QString filePath = "/YACReaderLibrary.ini";
 #endif
-    QSettings s(YACReader::getSettingsPath()+filePath,QSettings::IniFormat);
+    QSettings s(YACReader::getSettingsPath() + filePath, QSettings::IniFormat);
     s.beginGroup("shortcuts");
 
-    return s.setValue(action->data().toString() , action->shortcut().toString());
+    return s.setValue(action->data().toString(), action->shortcut().toString());
 }
 
 void ShortcutsManager::registerActions(const QList<QAction *> &a)
@@ -114,15 +113,14 @@ void ShortcutsManager::registerActions(const QList<QAction *> &a)
     actions = a;
 }
 
-bool ShortcutsManager::checkConflicts(const QKeySequence & shortcut, const QAction *dest)
+bool ShortcutsManager::checkConflicts(const QKeySequence &shortcut, const QAction *dest)
 {
-    if(shortcut.isEmpty())
+    if (shortcut.isEmpty())
         return false;
 
-    foreach(QAction * action, actions)
-    {
-        if(action != dest) //if the same shortcut is setted there is no conflict
-            if(action->shortcut() == shortcut)
+    foreach (QAction *action, actions) {
+        if (action != dest) //if the same shortcut is setted there is no conflict
+            if (action->shortcut() == shortcut)
                 return true;
     }
 

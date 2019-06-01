@@ -9,15 +9,16 @@
 class Comic;
 class QString;
 
-class ComicControllerV2 : public HttpRequestHandler {
-	Q_OBJECT
+class ComicControllerV2 : public HttpRequestHandler
+{
+    Q_OBJECT
     Q_DISABLE_COPY(ComicControllerV2)
 public:
-	/** Constructor */
+    /** Constructor */
     ComicControllerV2();
 
-	/** Generates the response */
-	void service(HttpRequest& request, HttpResponse& response);
+    /** Generates the response */
+    void service(HttpRequest &request, HttpResponse &response);
 };
 
 #endif // COMICCONTROLLER_H

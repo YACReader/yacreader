@@ -20,7 +20,6 @@
 class Static
 {
 public:
-
     /**
       Search the main config file and return its full path.
       On the first call, the INI file gets searched. If not found,
@@ -48,21 +47,19 @@ public:
     static QString getConfigDir();
 
     /** Cache for template files */
-    static TemplateLoader* templateLoader;
+    static TemplateLoader *templateLoader;
 
     /** Storage for session cookies */
-    static HttpSessionStore* sessionStore;
+    static HttpSessionStore *sessionStore;
 
-    static YACReaderHttpSessionStore* yacreaderSessionStore;
+    static YACReaderHttpSessionStore *yacreaderSessionStore;
 
     /** Controller for static files */
-    static StaticFileController* staticFileController;
+    static StaticFileController *staticFileController;
 
 private:
-
     /** Directory of the main config file */
     static QString configDir;
-
 };
 
 #endif // STATIC_H

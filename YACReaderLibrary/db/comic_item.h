@@ -7,20 +7,18 @@
 //! [0]
 class ComicItem : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
     ComicItem(const QList<QVariant> &data);
     ~ComicItem();
-	int columnCount() const;
-	QVariant data(int column) const;
-	void setData(int column,const QVariant & value);
-	int row() const;
-	//unsigned long long int id; //TODO sustituir por una clase adecuada
-	//Comic comic;
+    int columnCount() const;
+    QVariant data(int column) const;
+    void setData(int column, const QVariant &value);
+    int row() const;
+    //unsigned long long int id; //TODO sustituir por una clase adecuada
+    //Comic comic;
 private:
-	QList<QVariant> itemData;
-	
-	
+    QList<QVariant> itemData;
 };
 //! [0]
 

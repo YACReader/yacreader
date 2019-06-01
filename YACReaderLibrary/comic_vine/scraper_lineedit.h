@@ -7,13 +7,15 @@ class QLabel;
 
 class ScraperLineEdit : public QLineEdit
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	ScraperLineEdit(const QString & title, QWidget * widget = 0);
+    ScraperLineEdit(const QString &title, QWidget *widget = 0);
+
 protected:
-	void resizeEvent(QResizeEvent *);
+    void resizeEvent(QResizeEvent *);
+
 private:
-	QLabel * titleLabel;
+    QLabel *titleLabel;
 };
 
 #endif // SCRAPPER_LINEEDIT_H

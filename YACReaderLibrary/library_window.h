@@ -15,7 +15,7 @@
 #include <future>
 
 #ifdef Q_OS_MAC
-    #include "yacreader_macosx_toolbar.h"
+#include "yacreader_macosx_toolbar.h"
 #endif
 
 class QTreeView;
@@ -85,177 +85,176 @@ class LibraryWindow : public QMainWindow
 {
     friend class YACReaderNavigationController;
 
-	Q_OBJECT
+    Q_OBJECT
 public:
-	YACReaderSideBar * sideBar;
+    YACReaderSideBar *sideBar;
 
-	CreateLibraryDialog * createLibraryDialog;
-	ExportLibraryDialog * exportLibraryDialog;
-	ImportLibraryDialog * importLibraryDialog;
-	ExportComicsInfoDialog * exportComicsInfoDialog;
-	ImportComicsInfoDialog * importComicsInfoDialog;
-	AddLibraryDialog * addLibraryDialog;
-	LibraryCreator * libraryCreator;
-	HelpAboutDialog * had;
-	RenameLibraryDialog * renameLibraryDialog;
-	PropertiesDialog * propertiesDialog;
-	ComicVineDialog * comicVineDialog;
-    EditShortcutsDialog * editShortcutsDialog;
-	//YACReaderSocialDialog * socialDialog;
-	bool fullscreen;
-	bool importedCovers; //if true, the library is read only (not updates,open comic or properties)
-	bool fromMaximized;
+    CreateLibraryDialog *createLibraryDialog;
+    ExportLibraryDialog *exportLibraryDialog;
+    ImportLibraryDialog *importLibraryDialog;
+    ExportComicsInfoDialog *exportComicsInfoDialog;
+    ImportComicsInfoDialog *importComicsInfoDialog;
+    AddLibraryDialog *addLibraryDialog;
+    LibraryCreator *libraryCreator;
+    HelpAboutDialog *had;
+    RenameLibraryDialog *renameLibraryDialog;
+    PropertiesDialog *propertiesDialog;
+    ComicVineDialog *comicVineDialog;
+    EditShortcutsDialog *editShortcutsDialog;
+    //YACReaderSocialDialog * socialDialog;
+    bool fullscreen;
+    bool importedCovers; //if true, the library is read only (not updates,open comic or properties)
+    bool fromMaximized;
 
-	PackageManager * packageManager;
+    PackageManager *packageManager;
 
-	QSize slideSizeW;
-	QSize slideSizeF;
-	//search filter
+    QSize slideSizeW;
+    QSize slideSizeF;
+    //search filter
 #ifdef Q_OS_MAC
-    YACReaderMacOSXSearchLineEdit * searchEdit;
+    YACReaderMacOSXSearchLineEdit *searchEdit;
 #else
-    YACReaderSearchLineEdit * searchEdit;
+    YACReaderSearchLineEdit *searchEdit;
 #endif
 
-	QString previousFilter;
-	QCheckBox * includeComicsCheckBox;
-	//-------------
+    QString previousFilter;
+    QCheckBox *includeComicsCheckBox;
+    //-------------
 
-    YACReaderNavigationController * navigationController;
-    YACReaderComicsViewsManager * comicsViewsManager;
+    YACReaderNavigationController *navigationController;
+    YACReaderComicsViewsManager *comicsViewsManager;
 
-    YACReaderFoldersView * foldersView;
-    YACReaderReadingListsView * listsView;
-	YACReaderLibraryListWidget * selectedLibrary;
-    FolderModel * foldersModel;
-    FolderModelProxy * foldersModelProxy;
-    ComicModel * comicsModel;
-    ReadingListModel * listsModel;
-    ReadingListModelProxy * listsModelProxy;
-	//QStringList paths;
-	YACReaderLibraries libraries;
+    YACReaderFoldersView *foldersView;
+    YACReaderReadingListsView *listsView;
+    YACReaderLibraryListWidget *selectedLibrary;
+    FolderModel *foldersModel;
+    FolderModelProxy *foldersModelProxy;
+    ComicModel *comicsModel;
+    ReadingListModel *listsModel;
+    ReadingListModelProxy *listsModelProxy;
+    //QStringList paths;
+    YACReaderLibraries libraries;
 
-	QStackedWidget * mainWidget;
-	NoLibrariesWidget * noLibrariesWidget;
-	ImportWidget * importWidget;
+    QStackedWidget *mainWidget;
+    NoLibrariesWidget *noLibrariesWidget;
+    ImportWidget *importWidget;
 
-	bool fetching;
+    bool fetching;
 
-	int i;
+    int i;
 
-	QAction  * backAction;
-	QAction  * forwardAction;
+    QAction *backAction;
+    QAction *forwardAction;
 
-	QAction * openComicAction;
-	QAction * createLibraryAction;
-	QAction * openLibraryAction;
+    QAction *openComicAction;
+    QAction *createLibraryAction;
+    QAction *openLibraryAction;
 
-    QAction * exportComicsInfoAction;
-    QAction * importComicsInfoAction;
+    QAction *exportComicsInfoAction;
+    QAction *importComicsInfoAction;
 
-	QAction * exportLibraryAction;
-	QAction * importLibraryAction;
+    QAction *exportLibraryAction;
+    QAction *importLibraryAction;
 
-	QAction * updateLibraryAction;
-	QAction * removeLibraryAction;
-	QAction * helpAboutAction;
-	QAction * renameLibraryAction;
+    QAction *updateLibraryAction;
+    QAction *removeLibraryAction;
+    QAction *helpAboutAction;
+    QAction *renameLibraryAction;
 #ifndef Q_OS_MAC
-	QAction * toggleFullScreenAction;
+    QAction *toggleFullScreenAction;
 #endif
-	QAction * optionsAction;
-	QAction * serverConfigAction;
-    QAction * toggleComicsViewAction;
-	//QAction * socialAction;
+    QAction *optionsAction;
+    QAction *serverConfigAction;
+    QAction *toggleComicsViewAction;
+    //QAction * socialAction;
 
-	//tree actions
-    QAction * addFolderAction;
-    QAction * deleteFolderAction;
+    //tree actions
+    QAction *addFolderAction;
+    QAction *deleteFolderAction;
     //--
-	QAction * setRootIndexAction;
-	QAction * expandAllNodesAction;
-	QAction * colapseAllNodesAction;
+    QAction *setRootIndexAction;
+    QAction *expandAllNodesAction;
+    QAction *colapseAllNodesAction;
 
-    QAction * openContainingFolderAction;
-    QAction * saveCoversToAction;
+    QAction *openContainingFolderAction;
+    QAction *saveCoversToAction;
     //--
-    QAction * setFolderAsNotCompletedAction;
-    QAction * setFolderAsCompletedAction;
+    QAction *setFolderAsNotCompletedAction;
+    QAction *setFolderAsCompletedAction;
     //--
-    QAction * setFolderAsReadAction;
-    QAction * setFolderAsUnreadAction;
+    QAction *setFolderAsReadAction;
+    QAction *setFolderAsUnreadAction;
 
-	QAction * openContainingFolderComicAction;
-	QAction * setAsReadAction;
-	QAction * setAsNonReadAction;
-	//QAction * setAllAsReadAction;
-	//QAction * setAllAsNonReadAction;
-	QAction * showHideMarksAction;
-	QAction * getInfoAction; //comic vine
-    QAction * resetComicRatingAction;
+    QAction *openContainingFolderComicAction;
+    QAction *setAsReadAction;
+    QAction *setAsNonReadAction;
+    //QAction * setAllAsReadAction;
+    //QAction * setAllAsNonReadAction;
+    QAction *showHideMarksAction;
+    QAction *getInfoAction; //comic vine
+    QAction *resetComicRatingAction;
 
-	//edit info actions
-	QAction * selectAllComicsAction;
-	QAction * editSelectedComicsAction;
-    QAction * asignOrderAction;
-    QAction * forceCoverExtractedAction;
-	QAction * deleteComicsAction;
+    //edit info actions
+    QAction *selectAllComicsAction;
+    QAction *editSelectedComicsAction;
+    QAction *asignOrderAction;
+    QAction *forceCoverExtractedAction;
+    QAction *deleteComicsAction;
 
     QAction *showEditShortcutsAction;
 
-    QAction * updateFolderAction;
-    QAction * updateCurrentFolderAction;
+    QAction *updateFolderAction;
+    QAction *updateCurrentFolderAction;
 
     //reading lists actions
-    QAction * addReadingListAction;
-    QAction * deleteReadingListAction;
-    QAction * addLabelAction;
-    QAction * renameListAction;
+    QAction *addReadingListAction;
+    QAction *deleteReadingListAction;
+    QAction *addLabelAction;
+    QAction *renameListAction;
     //--
-    QAction * addToMenuAction;
-    QAction * addToFavoritesAction;
+    QAction *addToMenuAction;
+    QAction *addToFavoritesAction;
 
 #ifdef Q_OS_MAC
-    YACReaderMacOSXToolbar * libraryToolBar;
+    YACReaderMacOSXToolbar *libraryToolBar;
 #else
-	YACReaderMainToolBar * libraryToolBar;
+    YACReaderMainToolBar *libraryToolBar;
 #endif
-	QToolBar * treeActions;
-	QToolBar * comicsToolBar;
-	QToolBar * editInfoToolBar;
+    QToolBar *treeActions;
+    QToolBar *comicsToolBar;
+    QToolBar *editInfoToolBar;
 
-	OptionsDialog * optionsDialog;
-	ServerConfigDialog * serverConfigDialog;
+    OptionsDialog *optionsDialog;
+    ServerConfigDialog *serverConfigDialog;
 
-	QString libraryPath;
-	QString comicsPath;
+    QString libraryPath;
+    QString comicsPath;
 
-	QString _lastAdded;
-	QString _sourceLastAdded;
+    QString _lastAdded;
+    QString _sourceLastAdded;
 
-	//QModelIndex _rootIndex;
-	//QModelIndex _rootIndexCV;
+    //QModelIndex _rootIndex;
+    //QModelIndex _rootIndexCV;
     //QModelIndex updateDestination;
 
-	quint64 _comicIdEdited;
+    quint64 _comicIdEdited;
 
-    enum NavigationStatus
-    {
+    enum NavigationStatus {
         Normal, //
         Searching
     };
 
     NavigationStatus status;
 
-	void setupUI();
-	void createActions();
-	void createToolBars();
-	void createMenus();
-	void createConnections();
-	void doLayout();
-	void doDialogs();
+    void setupUI();
+    void createActions();
+    void createToolBars();
+    void createMenus();
+    void createConnections();
+    void doLayout();
+    void doDialogs();
     void setUpShortcutsManagement();
-	void doModels();
+    void doModels();
 
     //ACTIONS MANAGEMENT
     void disableComicsActions(bool disabled);
@@ -272,10 +271,10 @@ public:
     QString currentFolderPath();
 
     //settings
-    QSettings * settings;
+    QSettings *settings;
 
     //navigation backward and forward
-    YACReaderHistoryController * historyController;
+    YACReaderHistoryController *historyController;
 
     bool removeError;
 
@@ -284,21 +283,22 @@ public:
     QPoint _pos;
 
 protected:
-    virtual void closeEvent ( QCloseEvent * event );
+    virtual void closeEvent(QCloseEvent *event);
+
 public:
     LibraryWindow();
 
 signals:
-    void libraryUpgraded(const QString & libraryName);
-    void errorUpgradingLibrary(const QString & path);
+    void libraryUpgraded(const QString &libraryName);
+    void errorUpgradingLibrary(const QString &path);
 public slots:
-    void loadLibrary(const QString & path);
-    void selectSubfolder(const QModelIndex & mi, int child);
+    void loadLibrary(const QString &path);
+    void selectSubfolder(const QModelIndex &mi, int child);
     void checkEmptyFolder();
     void openComic();
-    void openComic(const ComicDB & comic);
+    void openComic(const ComicDB &comic);
     void createLibrary();
-    void create(QString source,QString dest, QString name);
+    void create(QString source, QString dest, QString name);
     void showAddLibrary();
     void openLibrary(QString path, QString name);
     void loadLibraries();
@@ -327,7 +327,7 @@ public slots:
     void clearSearchFilter();
     void showProperties();
     void exportLibrary(QString destPath);
-    void importLibrary(QString clc,QString destPath,QString name);
+    void importLibrary(QString clc, QString destPath, QString name);
     void reloadOptions();
     void setCurrentComicsStatusReaded(YACReaderComicReadStatus readStatus);
     void setCurrentComicReaded();
@@ -338,33 +338,33 @@ public slots:
     void showNoLibrariesWidget();
     void showRootWidget();
     void showImportingWidget();
-    void manageCreatingError(const QString & error);
-    void manageUpdatingError(const QString & error);
-    void manageOpeningLibraryError(const QString & error);
+    void manageCreatingError(const QString &error);
+    void manageUpdatingError(const QString &error);
+    void manageOpeningLibraryError(const QString &error);
     QModelIndexList getSelectedComics();
     void deleteComics();
     void deleteComicsFromDisk();
     void deleteComicsFromList();
     //void showSocial();
-    void showFoldersContextMenu(const QPoint & point);
-    void libraryAlreadyExists(const QString & name);
+    void showFoldersContextMenu(const QPoint &point);
+    void libraryAlreadyExists(const QString &name);
     void importLibraryPackage();
-    void updateComicsView(quint64 libraryId, const ComicDB & comic);
+    void updateComicsView(quint64 libraryId, const ComicDB &comic);
     void showComicVineScraper();
     void setRemoveError();
     void checkRemoveError();
     void resetComicRating();
     void checkSearchNumResults(int numResults);
     void loadCoversFromCurrentModel();
-    void copyAndImportComicsToCurrentFolder(const QList<QPair<QString,QString> > & comics);
-    void moveAndImportComicsToCurrentFolder(const QList<QPair<QString, QString> > &comics);
-    void copyAndImportComicsToFolder(const QList<QPair<QString,QString> > & comics, const QModelIndex & miFolder);
-    void moveAndImportComicsToFolder(const QList<QPair<QString,QString> > & comics, const QModelIndex & miFolder);
-    void processComicFiles(ComicFilesManager * comicFilesManager, QProgressDialog * progressDialog);
-    void updateCopyMoveFolderDestination(const QModelIndex & mi); //imports new comics from the current folder
+    void copyAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics);
+    void moveAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics);
+    void copyAndImportComicsToFolder(const QList<QPair<QString, QString>> &comics, const QModelIndex &miFolder);
+    void moveAndImportComicsToFolder(const QList<QPair<QString, QString>> &comics, const QModelIndex &miFolder);
+    void processComicFiles(ComicFilesManager *comicFilesManager, QProgressDialog *progressDialog);
+    void updateCopyMoveFolderDestination(const QModelIndex &mi); //imports new comics from the current folder
     void updateCurrentFolder();
-    void updateFolder(const QModelIndex & miFolder);
-    QProgressDialog * newProgressDialog(const QString & label, int maxValue);
+    void updateFolder(const QModelIndex &miFolder);
+    QProgressDialog *newProgressDialog(const QString &label, int maxValue);
     void reloadAfterCopyMove(const QModelIndex &mi);
     QModelIndex getCurrentFolderIndex();
     void enableNeededActions();
@@ -376,14 +376,14 @@ public slots:
     void showAddNewLabelDialog();
     void showRenameCurrentList();
     void addSelectedComicsToFavorites();
-    void showComicsViewContextMenu(const QPoint & point);
-    void showComicsItemContextMenu(const QPoint & point);
-    void setupAddToSubmenu(QMenu & menu);
+    void showComicsViewContextMenu(const QPoint &point);
+    void showComicsItemContextMenu(const QPoint &point);
+    void setupAddToSubmenu(QMenu &menu);
     void onAddComicsToLabel();
-    void setToolbarTitle(const QModelIndex & modelIndex);
+    void setToolbarTitle(const QModelIndex &modelIndex);
     void saveSelectedCoversTo();
     void checkMaxNumLibraries();
-    void showErrorUpgradingLibrary(const QString & path);
+    void showErrorUpgradingLibrary(const QString &path);
 
     //void changeEvent(QEvent *event);
 

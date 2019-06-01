@@ -16,11 +16,10 @@ signals:
 public slots:
 
 protected:
-    QLabel * iconLabel;
-    QLabel * titleLabel;
+    QLabel *iconLabel;
+    QLabel *titleLabel;
     void paintEvent(QPaintEvent *);
     QString backgroundColor;
-
 };
 
 #endif // NO_SEARCH_RESULTS_WIDGET_H

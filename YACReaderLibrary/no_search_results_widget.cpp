@@ -4,8 +4,8 @@
 #include <QLabel>
 #include <QPainter>
 
-NoSearchResultsWidget::NoSearchResultsWidget(QWidget *parent) :
-    QWidget(parent)
+NoSearchResultsWidget::NoSearchResultsWidget(QWidget *parent)
+    : QWidget(parent)
 {
 #ifdef Q_OS_MAC
     backgroundColor = "#FFFFFF";
@@ -13,7 +13,7 @@ NoSearchResultsWidget::NoSearchResultsWidget(QWidget *parent) :
     backgroundColor = "#2A2A2A";
 #endif
 
-    QVBoxLayout * layout = new QVBoxLayout;
+    QVBoxLayout *layout = new QVBoxLayout;
 
     iconLabel = new QLabel();
     iconLabel->setPixmap(QPixmap(":/images/empty_search.png"));
@@ -36,16 +36,16 @@ NoSearchResultsWidget::NoSearchResultsWidget(QWidget *parent) :
     layout->setMargin(0);
     layout->setSpacing(0);
 
-    setContentsMargins(0,0,0,0);
+    setContentsMargins(0, 0, 0, 0);
 
     setStyleSheet(QString("QWidget {background:%1}").arg(backgroundColor));
 
-    setSizePolicy(QSizePolicy ::Expanding , QSizePolicy ::Expanding );
+    setSizePolicy(QSizePolicy ::Expanding, QSizePolicy ::Expanding);
     setLayout(layout);
 }
 
 void NoSearchResultsWidget::paintEvent(QPaintEvent *)
 {
-    QPainter painter (this);
-    painter.fillRect(0,0,width(),height(),QColor(backgroundColor));
+    QPainter painter(this);
+    painter.fillRect(0, 0, width(), height(), QColor(backgroundColor));
 }

@@ -8,7 +8,7 @@
 #include "template.h"
 #include "../static.h"
 
-ReadingListInfoControllerV2::ReadingListInfoControllerV2(){}
+ReadingListInfoControllerV2::ReadingListInfoControllerV2() {}
 
 void ReadingListInfoControllerV2::service(HttpRequest &request, HttpResponse &response)
 {
@@ -22,22 +22,21 @@ void ReadingListInfoControllerV2::service(HttpRequest &request, HttpResponse &re
 
     serviceComics(libraryId, listId, response);
 
-    response.write("",true);
+    response.write("", true);
 }
 
 void ReadingListInfoControllerV2::serviceComics(const int &library, const qulonglong &readingListId, HttpResponse &response)
 {
     QList<ComicDB> comics = DBHelper::getReadingListFullContent(library, readingListId);
 
-    for(const ComicDB &comic : comics)
-    {
+    for (const ComicDB &comic : comics) {
         response.write(QString("/v2/library/%1/comic/%2:%3:%4:%5:%6\r\n")
-                       .arg(library)
-                       .arg(comic.id)
-                       .arg(comic.getFileName())
-                       .arg(comic.getFileSize())
-                       .arg(comic.info.read ? 1 : 0)
-                       .arg(comic.info.hash)
-                       .toUtf8());
+                               .arg(library)
+                               .arg(comic.id)
+                               .arg(comic.getFileName())
+                               .arg(comic.getFileSize())
+                               .arg(comic.info.read ? 1 : 0)
+                               .arg(comic.info.hash)
+                               .toUtf8());
     }
 }

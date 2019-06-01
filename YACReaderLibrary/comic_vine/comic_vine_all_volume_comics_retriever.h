@@ -9,6 +9,7 @@ class ComicVineAllVolumeComicsRetriever : public QObject
 public:
     explicit ComicVineAllVolumeComicsRetriever(const QString &volumeURLString, QObject *parent = 0);
     void getAllVolumeComics();
+
 protected:
     void getAllVolumeComics(const int range);
 signals:
