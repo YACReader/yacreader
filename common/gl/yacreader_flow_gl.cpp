@@ -1270,16 +1270,22 @@ YACReaderPageFlowGL::~YACReaderPageFlowGL()
 
     makeCurrent();
 
-    for(auto image : images) {
-        if (image.texture != defaultTexture) {
-            image.texture->destroy();
-            delete image.texture;
+    if (this->context() != nullptr && this->context()->isValid()) {
+        for (auto image : images) {
+            if (image.texture != defaultTexture) {
+                if (image.texture->isCreated()) {
+                    image.texture->destroy();
+                }
+                delete image.texture;
+            }
         }
-    }
 
-    if (defaultTexture != nullptr) {
-        defaultTexture->destroy();
-        delete defaultTexture;
+        if (defaultTexture != nullptr) {
+            if (defaultTexture->isCreated()) {
+                defaultTexture->destroy();
+            }
+            delete defaultTexture;
+        }
     }
 
     doneCurrent();
