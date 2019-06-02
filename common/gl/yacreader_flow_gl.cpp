@@ -191,7 +191,7 @@ struct Preset pressetYACReaderFlowDownConfig = {
 };
 /*Constructor*/
 YACReaderFlowGL::YACReaderFlowGL(QWidget *parent, struct Preset p)
-    : QOpenGLWidget(/*QOpenGLWidget migration QGLFormat(QGL::SampleBuffers),*/ parent), numObjects(0), lazyPopulateObjects(-1), hasBeenInitialized(false), bUseVSync(false), flowRightToLeft(false)
+    : QOpenGLWidget(/*QOpenGLWidget migration QGLFormat(QGL::SampleBuffers),*/ parent), numObjects(0), lazyPopulateObjects(-1), defaultTexture(nullptr), hasBeenInitialized(false), bUseVSync(false), flowRightToLeft(false)
 {
     updateCount = 0;
     config = p;
@@ -1270,22 +1270,20 @@ YACReaderPageFlowGL::~YACReaderPageFlowGL()
 
     makeCurrent();
 
-    if (this->context() != nullptr && this->context()->isValid()) {
-        for (auto image : images) {
-            if (image.texture != defaultTexture) {
-                if (image.texture->isCreated()) {
-                    image.texture->destroy();
-                }
-                delete image.texture;
+    for (auto image : images) {
+        if (image.texture != defaultTexture) {
+            if (image.texture->isCreated()) {
+                image.texture->destroy();
             }
+            delete image.texture;
         }
+    }
 
-        if (defaultTexture != nullptr) {
-            if (defaultTexture->isCreated()) {
-                defaultTexture->destroy();
-            }
-            delete defaultTexture;
+    if (defaultTexture != nullptr) {
+        if (defaultTexture->isCreated()) {
+            defaultTexture->destroy();
         }
+        delete defaultTexture;
     }
 
     doneCurrent();
