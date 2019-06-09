@@ -244,7 +244,7 @@ PageLoader::~PageLoader()
 
 bool PageLoader::busy() const
 {
-    return isRunning() ? working : false;
+    return isRunning() ? working.load() : false;
 }
 
 void PageLoader::generate(int index, QSize size, const QByteArray &rImage)
@@ -283,8 +283,8 @@ void PageLoader::run()
         mutex->unlock();
 
         mutex->lock();
-        this->working = false;
         this->img = image;
+        this->working = false;
         mutex->unlock();
 
         // put to sleep
