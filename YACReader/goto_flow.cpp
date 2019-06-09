@@ -40,6 +40,8 @@ GoToFlow::GoToFlow(QWidget *parent, FlowType flowType)
     flow->setSlideSize(imageSize);
     connect(flow, SIGNAL(centerIndexChanged(int)), this, SLOT(setPageNumber(int)));
     connect(flow, SIGNAL(selected(unsigned int)), this, SIGNAL(goToPage(unsigned int)));
+    connect(flow, &PictureFlow::centerIndexChanged, this, &GoToFlow::preload);
+    connect(flow, &PictureFlow::centerIndexChangedSilent, this, &GoToFlow::preload);
 
     connect(toolBar, SIGNAL(goTo(unsigned int)), this, SIGNAL(goToPage(unsigned int)));
     connect(toolBar, SIGNAL(setCenter(unsigned int)), flow, SLOT(showSlide(unsigned int)));
@@ -113,9 +115,6 @@ void GoToFlow::setNumSlides(unsigned int slides)
     imagesSetted.fill(false, slides);
 
     numImagesLoaded = 0;
-
-    connect(flow, SIGNAL(centerIndexChanged(int)), this, SLOT(preload()));
-    connect(flow, SIGNAL(centerIndexChangedSilent(int)), this, SLOT(preload()));
 
     ready = true;
     worker->reset();
