@@ -460,7 +460,7 @@ Rectangle {
             }
         }
 
-        Component {
+        property Component currentComicView: Component {
             id: currentComicView
             Rectangle {
                 id: currentComicViewTopView
