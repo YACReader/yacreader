@@ -446,7 +446,8 @@ void GridComicsView::setCurrentComicIfNeeded()
 
     bool showCurrentComic = found &&
             filterEnabled == false &&
-            (mode == ComicModel::Mode::Folder || mode == ComicModel::Mode::ReadingList);
+            (mode == ComicModel::Mode::Folder || mode == ComicModel::Mode::ReadingList) &&
+            settings->value(DISPLAY_CONTINUE_READING_IN_GRID_VIEW, true).toBool();
 
     if (showCurrentComic) {
         ctxt->setContextProperty("currentComic", &currentComic);

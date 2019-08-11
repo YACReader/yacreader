@@ -7,6 +7,8 @@
 #include "yacreader_flow_config_widget.h"
 #include "api_key_dialog.h"
 
+#include "yacreader_global_gui.h"
+
 #ifndef NO_OPENGL
 FlowType flowType = Strip;
 #endif
@@ -80,7 +82,16 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     auto gridBackgroundGroup = new QGroupBox(tr("Background"));
     gridBackgroundGroup->setLayout(gridBackgroundLayout);
 
+    displayContinueReadingBannerCheck = new QCheckBox(tr("Display continue reading banner"));
+
+    auto continueReadingLayout = new QVBoxLayout();
+    continueReadingLayout->addWidget(displayContinueReadingBannerCheck);
+
+    auto continueReadingGroup = new QGroupBox(tr("Continue reading"));
+    continueReadingGroup->setLayout(continueReadingLayout);
+
     gridViewLayout->addWidget(gridBackgroundGroup);
+    gridViewLayout->addWidget(continueReadingGroup);
     gridViewLayout->addStretch();
 
     connect(useBackgroundImageCheck, SIGNAL(clicked(bool)), this, SLOT(useBackgroundImageCheckClicked(bool)));
@@ -89,6 +100,12 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     connect(useCurrentComicCoverCheck, &QCheckBox::clicked, this, &OptionsDialog::useCurrentComicCoverCheckClicked);
     connect(resetButton, &QPushButton::clicked, this, &OptionsDialog::resetToDefaults);
     //end grid view background config
+
+    connect(displayContinueReadingBannerCheck, &QCheckBox::clicked, this, [this]() {
+        this->settings->setValue(DISPLAY_CONTINUE_READING_IN_GRID_VIEW, this->displayContinueReadingBannerCheck->isChecked());
+
+        emit optionsChanged();
+    });
 
     auto comicFlowW = new QWidget;
     comicFlowW->setLayout(flowLayout);
@@ -141,6 +158,8 @@ void OptionsDialog::restoreOptions(QSettings *settings)
     opacityLabel->setVisible(useBackgroundImage);
     blurLabel->setVisible(useBackgroundImage);
     useCurrentComicCoverCheck->setVisible(useBackgroundImage);
+
+    displayContinueReadingBannerCheck->setChecked(settings->value(DISPLAY_CONTINUE_READING_IN_GRID_VIEW, true).toBool());
 }
 
 void OptionsDialog::useBackgroundImageCheckClicked(bool checked)
