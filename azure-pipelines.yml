@@ -33,8 +33,7 @@ jobs:
       mv $(Build.SourcesDirectory)/compressed_archive/p7zip_16.02 $(Build.SourcesDirectory)/compressed_archive/libp7zip
     displayName: 'Install dependencies'
   - script: |
-      qmake CONFIG+="7zip"
-      make
+      $(Build.SourcesDirectory)/compileOSX.sh
     displayName: 'Build'
 - job: Windows
   pool:
