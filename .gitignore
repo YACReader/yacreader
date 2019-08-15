@@ -65,3 +65,5 @@ CMakeLists.txt.user*
 
 YACReaderLibrary/YACReaderLibrary\.xcodeproj/
 .DS_Store
+compressed_archive/libp7zip
+c_x86_64.pch
