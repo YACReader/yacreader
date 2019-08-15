@@ -40,7 +40,7 @@ jobs:
   - script: |
       pip install aqtinstall
       mkdir C:\Qt
-      aqt install -O c:\Qt 5.12.4 windows desktop win64_msvc2017_64
+      python -m aqt install -O c:\Qt 5.12.4 windows desktop win64_msvc2017_64
     displayName: 'Install dependencies'
   - script: |
       qmake CONFIG+="7zip"
