@@ -41,6 +41,7 @@ jobs:
       pip install aqtinstall
       mkdir C:\Qt
       python -m aqt install -O c:\Qt 5.12.4 windows desktop win64_msvc2017_64
+      choco install wget
       wget "https://sourceforge.net/projects/sevenzip/files/7-Zip/18.05/7z1805-src.7z" -P $(Build.SourcesDirectory)\compressed_archive
       7z x $(Build.SourcesDirectory)\compressed_archive\7z1805-src.7z -o$(Build.SourcesDirectory)\compressed_archive\lib7zip
     displayName: 'Install dependencies'
