@@ -49,8 +49,9 @@ jobs:
       7z x $(Build.SourcesDirectory)\compressed_archive\7z1805-src.7z -o$(Build.SourcesDirectory)\compressed_archive\lib7zip
     displayName: 'Install dependencies'
   - script: |
+      call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       set PATH=%PATH%;C:\Qt\Qt5.12.4\5.12.4\msvc2017_64\bin
       qmake CONFIG+="7zip"
-      make
+      nmake
     displayName: 'Build'
     
