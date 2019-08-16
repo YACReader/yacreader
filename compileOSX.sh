@@ -51,7 +51,6 @@ cp README.md "${dest}/"
 
 echo "Creating dmg package"
 #tar -czf "${dest}".tar.gz "${dest}"
-#hdiutil create "${dest}".dmg -srcfolder "./${dest}" -ov
-./dependencies/create-dmg/create-dmg --volname "YACReader $VERSION Installer" --volicon icon.icns --window-size 600 403 --icon-size 128 --app-drop-link 485 90 --background background.png --icon YACReader 80 90 --icon YACReaderLibrary 235 90 --eula COPYING.txt --icon YACReaderLibraryServer 470 295 --icon README.md 120 295 --icon COPYING.txt 290 295 "$dest.dmg" "$dest"
+#hdiutil create "${dest}".dmg -srcfolder "./${dest}" -ov create-dmg --volname "YACReader $VERSION Installer" --volicon icon.icns --window-size 600 403 --icon-size 128 --app-drop-link 485 90 --background background.png --icon YACReader 80 90 --icon YACReaderLibrary 235 90 --eula COPYING.txt --icon YACReaderLibraryServer 470 295 --icon README.md 120 295 --icon COPYING.txt 290 295 "$dest.dmg" "$dest"
 
 echo "Done!"
