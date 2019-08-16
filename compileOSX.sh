@@ -1,4 +1,5 @@
 #! /bin/bash
+set -e
 
 VERSION=${1:-"9.5.0"}
 
