@@ -43,7 +43,7 @@ cp -R YACReaderLibrary.app "${dest}/YACReaderLibrary.app"
 cp -R YACReaderLibraryServer.app "${dest}/YACReaderLibraryServer"
 
 cp COPYING.txt "${dest}/"
-cp README.txt "${dest}/"
+cp README.md "${dest}/"
 
 #mkdir -p "${dest}/icons/"
 #cp images/db.png "${dest}/icons/"
