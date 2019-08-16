@@ -37,6 +37,14 @@ jobs:
       cd $(Build.SourcesDirectory)
       ./compileOSX.sh
     displayName: 'Build'
+  - task: CopyFiles@2
+    inputs:
+      contents: '*.dmg'
+      targetFolder: $(Build.ArtifactStagingDirectory)
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathToPublish: $(Build.ArtifactStagingDirectory)
+      artifactName: dmg
 - job: Windows
   pool:
     vmImage: 'vs2017-win2016'
