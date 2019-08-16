@@ -37,6 +37,7 @@ jobs:
       cd $(Build.SourcesDirectory)
       ./compileOSX.sh
       mkdir output
+      ls -alh
       cp *.dmg ./output
     displayName: 'Build'
   - task: CopyFiles@2
