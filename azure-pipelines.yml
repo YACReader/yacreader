@@ -16,7 +16,13 @@ jobs:
       sudo apt-get install -y --allow-unauthenticated qt-default qt5-qmake \
       qtbase5-dev qtmultimedia5-dev libpoppler-qt5-dev qtscript5-dev \
       libqt5opengl5-dev libglu1-mesa-dev libunarr-dev qtdeclarative5-dev
+      sudo apt-get install -y --allow-unauthenticated clang-format
     displayName: 'Install dependencies'
+  - script: |
+      cd $(Build.SourcesDirectory)
+      find . \( -name '*.h' -or -name '*.cpp' -or -name '*.c' -or -name '*.mm' -or -name '*.m' \) -print0 | xargs -0 clang-format -style=file -i
+      if [ "$(git diff $(Build.SourceVersion))" != "" ]; then exit 1; fi
+    displayName: 'Check format'
   - script: |
       qmake CONFIG+="unarr"
       make
