@@ -35,7 +35,7 @@
 ComicVineDialog::ComicVineDialog(QWidget *parent)
     : QDialog(parent)
 {
-        setWindowFlags(Qt::Window);
+    setWindowFlags(Qt::Window);
 
     doLayout();
     doStackedWidgets();
