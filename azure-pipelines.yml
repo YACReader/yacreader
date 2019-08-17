@@ -35,7 +35,8 @@ jobs:
     displayName: 'Install dependencies'
   - script: |
       cd $(Build.SourcesDirectory)
-      ./compileOSX.sh
+      VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
+      ./compileOSX.sh $VERSION
       mkdir output
       ls -alh
       cp *.dmg ./output
