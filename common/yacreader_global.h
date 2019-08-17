@@ -3,7 +3,7 @@
 
 #include <QStandardPaths>
 
-#define VERSION "9.5.0"
+#define VERSION "9.6.0"
 
 #define REMOTE_BROWSE_PERFORMANCE_WORKAROUND "REMOTE_BROWSE_PERFORMANCE_WORKAROUND"
 
