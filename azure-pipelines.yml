@@ -29,10 +29,16 @@ jobs:
       brew install qt
       brew link qt --force
       brew install create-dmg
+      brew install clang-format
       wget "https://sourceforge.net/projects/p7zip/files/p7zip/16.02/p7zip_16.02_src_all.tar.bz2" -P $(Build.SourcesDirectory)/compressed_archive
       tar xjf $(Build.SourcesDirectory)/compressed_archive/p7zip_16.02_src_all.tar.bz2 -C $(Build.SourcesDirectory)/compressed_archive
       mv $(Build.SourcesDirectory)/compressed_archive/p7zip_16.02 $(Build.SourcesDirectory)/compressed_archive/libp7zip
     displayName: 'Install dependencies'
+  - script: |
+      cd $(Build.SourcesDirectory)
+      find . \( -name '*.h' -or -name '*.cpp' -or -name '*.c' -or -name '*.mm' -or -name '*.m' \) -print0 | xargs -0 clang-format -style=file -i
+      if [ "$(git diff $(Build.SourceVersion))" != "" ]; then exit 1; fi
+    displayName: 'Check format'
   - script: |
       cd $(Build.SourcesDirectory)
       VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
