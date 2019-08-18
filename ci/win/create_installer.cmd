@@ -50,6 +50,11 @@ set /p VERSION= < tmp
 set VERSION=%VERSION:#define VERSION "=%
 set VERSION=%VERSION:"=%
 echo %VERSION%
+del
+
+if "%1"=="x86" (
+	type build_installer.iss | findstr /v ArchitecturesInstallIn64BitMode | findstr /v ArchitecturesAllowed > build_installer.iss 
+)
 
 iscc /DVERSION=%VERSION% /DPLATFORM=%1 /DCOMPRESSED_ARCHIVE_BACKEND=%2 build_installer.iss
 
