@@ -65,7 +65,7 @@ jobs:
       wget "https://sourceforge.net/projects/sevenzip/files/7-Zip/18.05/7z1805-src.7z" -P $(Build.SourcesDirectory)\compressed_archive
       7z x $(Build.SourcesDirectory)\compressed_archive\7z1805-src.7z -o$(Build.SourcesDirectory)\compressed_archive\lib7zip
       wget "https://go.microsoft.com/fwlink/?LinkId=746572" -O $(Build.SourcesDirectory)\vc_redist.x64.exe
-      # 32bit https://go.microsoft.com/fwlink/?LinkId=746571
+# 32bit https://go.microsoft.com/fwlink/?LinkId=746571
     displayName: 'Install dependencies'
   - script: |
       call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
