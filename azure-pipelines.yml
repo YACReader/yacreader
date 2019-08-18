@@ -76,7 +76,7 @@ jobs:
   - script: |
       set PATH=%PATH%;C:\Qt\Qt5.12.4\5.12.4\msvc2017_64\bin
       cd $(Build.SourcesDirectory)\ci\win
-      .\create_installer.cmd x64 7z
+      .\create_installer.cmd x64 7z $(Build.BuildNumber)
     displayName: 'Create installer'
   - task: CopyFiles@2
     inputs:
