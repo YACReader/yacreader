@@ -67,7 +67,8 @@ Source:playlistformats\*;  DestDir: {app}\playlistformats\
 Source:qmltooling\*;  DestDir: {app}\qmltooling\          
 Source:scenegraph\*;  DestDir: {app}\scenegraph\                         
 Source:sqldrivers\qsqlite.dll;  DestDir: {app}\sqldrivers\
-Source:translations\*;  DestDir: {app}\translations\            
+Source:translations\*;  DestDir: {app}\translations\    
+Source:styles\*;  DestDir: {app}\styles\            
 
 ;Libs
 Source: pdfium.dll; DestDir: {app}
