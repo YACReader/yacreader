@@ -11,8 +11,8 @@ OutputDir=..\Output
 ChangesAssociations=true
 SetupIconFile=setup.ico
 UninstallDisplayIcon=uninstall.ico
-;//TODO avoid setting ArchitecturesInstallIn64BitMode in 32bit installer
-ArchitecturesInstallIn64BitMode={#PLATFORM}
+ArchitecturesInstallIn64BitMode=x64
+ArchitecturesAllowed=x64
 
 [Registry]
 Root: HKCR; SubKey: .cbz; ValueType: string; ValueData: Comic Book (zip); Flags: uninsdeletekey; Tasks: File_association
