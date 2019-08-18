@@ -44,11 +44,11 @@ jobs:
       VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
       ./compileOSX.sh $VERSION
     displayName: 'Build'
-  - task: CopyDMGFile@1
+  - task: CopyFiles@2
     inputs:
       contents: '*.dmg'
       targetFolder: $(Build.ArtifactStagingDirectory)
-  - task: PublishDMGFile@1
+  - task: PublishBuildArtifacts@1
     inputs:
       pathToPublish: $(Build.ArtifactStagingDirectory)
       artifactName: dmg
@@ -78,11 +78,11 @@ jobs:
       cd $(Build.SourcesDirectory)\ci\win
       .\create_installer.cmd x64 7z
     displayName: 'Create installer'
-  - task: CopyInstallerFile@1
+  - task: CopyFiles@2
     inputs:
       contents: $(Build.SourcesDirectory)\ci\win\Output\*.exe
       targetFolder: $(Build.ArtifactStagingDirectory)
-  - task: PublishInstaller@1
+  - task: PublishBuildArtifacts@1
     inputs:
       pathToPublish: $(Build.ArtifactStagingDirectory)
       artifactName: Installer
