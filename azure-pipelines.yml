@@ -43,13 +43,10 @@ jobs:
       cd $(Build.SourcesDirectory)
       VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
       ./compileOSX.sh $VERSION
-      mkdir output
-      ls -alh
-      cp *.dmg ./output
     displayName: 'Build'
   - task: CopyFiles@2
     inputs:
-      contents: 'output/**'
+      contents: '*.dmg'
       targetFolder: $(Build.ArtifactStagingDirectory)
   - task: PublishBuildArtifacts@1
     inputs:
