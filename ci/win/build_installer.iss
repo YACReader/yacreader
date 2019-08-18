@@ -2,9 +2,9 @@
 DefaultGroupName=YACReader
 LanguageDetectionMethod=locale
 AppName=YACReader
-AppVerName=YACReader v{#VERSION}
+AppVerName=YACReader v{#VERSION}.{#BUILD_NUMBER}
 DefaultDirName={pf}\YACReader
-OutputBaseFilename=YACReader-v{#VERSION}-win{#PLATFORM}-{#COMPRESSED_ARCHIVE_BACKEND}
+OutputBaseFilename=YACReader-v{#VERSION}.{#BUILD_NUMBER}-win{#PLATFORM}-{#COMPRESSED_ARCHIVE_BACKEND}
 LicenseFile=COPYING.txt
 AlwaysUsePersonalGroup=true
 OutputDir=..\Output
