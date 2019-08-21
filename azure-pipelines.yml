@@ -5,7 +5,7 @@ trigger:
 - develop
 
 variables:
-  build_number: 'x'
+  build_number: '$(Date:yyMMdd)$(Rev:.r)'
 
 jobs:
 - job: Linux
