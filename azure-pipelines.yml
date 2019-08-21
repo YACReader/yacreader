@@ -21,7 +21,7 @@ jobs:
       libqt5opengl5-dev libglu1-mesa-dev libunarr-dev qtdeclarative5-dev
     displayName: 'Install dependencies'
   - script: |
-      export DEFINES_VAR=DEFINES+\=\"BUILD_NUMBER=\\\"$(build_number)\\\"\"
+      export DEFINES_VAR=DEFINES+\=\"BUILD_NUMBER=\\\\\"$(build_number)\\\\\"\"
       qmake CONFIG+="unarr" $DEFINES_VAR
       make
     displayName: 'Build'
