@@ -21,6 +21,7 @@ jobs:
       libqt5opengl5-dev libglu1-mesa-dev libunarr-dev qtdeclarative5-dev
     displayName: 'Install dependencies'
   - script: |
+      export BUILD_NUMBER=$(build_number)
       qmake CONFIG+="unarr" DEFINES+="BUILD_NUMBER=\\\"$BUILD_NUMBER\\\""
       make
     displayName: 'Build'
@@ -73,7 +74,8 @@ jobs:
   - script: |
       call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       set PATH=%PATH%;C:\Qt\Qt5.12.4\5.12.4\msvc2017_64\bin
-      qmake CONFIG+="7zip" DEFINES+="BUILD_NUMBER=\\\"%BUILD_NUMBER%\\\"
+      set BUILD_NUMBER=$(build_number)
+      qmake CONFIG+="7zip" DEFINES+="BUILD_NUMBER=\\\"%BUILD_NUMBER%\\\""
       nmake
     displayName: 'Build'
   - script: |
