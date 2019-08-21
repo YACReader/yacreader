@@ -74,7 +74,7 @@ jobs:
   - script: |
       call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       set PATH=%PATH%;C:\Qt\Qt5.12.4\5.12.4\msvc2017_64\bin
-      set DEFINES_VAR=DEFINES="BUILD_NUMBER=\"$(build_number)\""
+      set DEFINES_VAR=DEFINES="BUILD_NUMBER=\\\\\"$(build_number)\\\\\""
       qmake CONFIG+="7zip" %DEFINES_VAR%
       nmake
     displayName: 'Build'
