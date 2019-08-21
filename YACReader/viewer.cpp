@@ -1088,7 +1088,9 @@ void Viewer::updateComic(ComicDB &comic)
         if (!doublePage || (doublePage && render->currentPageIsDoublePage() == false)) {
             comic.info.currentPage = render->getIndex() + 1;
         } else {
-            comic.info.currentPage = std::min(render->numPages(), render->getIndex() + 2);
+            if (!(render->getIndex() + 1 == comic.info.currentPage || render->getIndex() + 2 == comic.info.currentPage)) {
+                comic.info.currentPage = std::min(render->numPages(), render->getIndex() + 1);
+            }
         }
         //set bookmarks
         Bookmarks *boomarks = render->getBookmarks();
