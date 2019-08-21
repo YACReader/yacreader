@@ -87,7 +87,7 @@ int main(int argc, char **argv)
     QString buildNumber = ".0";
 
 #ifdef BUILD_NUMBER
-    buildNumber = "." + BUILD_NUMBER;
+    buildNumber = QString(".%1").arg(BUILD_NUMBER);
 #endif
 
     app.setApplicationVersion(VERSION + buildNumber);
