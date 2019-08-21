@@ -50,7 +50,13 @@ HelpAboutDialog::HelpAboutDialog(const QString &pathAbout, const QString &pathHe
 
 void HelpAboutDialog::loadAboutInformation(const QString &path)
 {
-    aboutText->setHtml(fileToString(path).arg(VERSION));
+    QString buildNumber = "0";
+
+#ifdef BUILD_NUMBER
+    buildNumber = BUILD_NUMBER;
+#endif
+
+    aboutText->setHtml(fileToString(path).arg(VERSION).arg(buildNumber));
     aboutText->moveCursor(QTextCursor::Start);
 }
 

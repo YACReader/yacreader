@@ -83,7 +83,14 @@ int main(int argc, char **argv)
 
     app.setApplicationName("YACReaderLibrary");
     app.setOrganizationName("YACReader");
-    app.setApplicationVersion(VERSION);
+
+    QString buildNumber = ".0";
+
+#ifdef BUILD_NUMBER
+    buildNumber = "." + BUILD_NUMBER;
+#endif
+
+    app.setApplicationVersion(VERSION + buildNumber);
 
     QTextStream qout(stdout);
 
