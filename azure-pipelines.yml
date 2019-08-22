@@ -51,9 +51,9 @@ jobs:
     inputs:
       contents: '*.dmg'
       targetFolder: $(Build.ArtifactStagingDirectory)
-  - task: PublishBuildArtifacts@1
+  - task: PublishPipelineArtifact@1
     inputs:
-      pathToPublish: $(Build.ArtifactStagingDirectory)
+      path: $(Build.ArtifactStagingDirectory)
       artifactName: Macos dmg
 - job: Windows
   pool:
@@ -87,9 +87,9 @@ jobs:
     inputs:
       contents: $(Build.SourcesDirectory)\ci\win\Output\*.exe
       targetFolder: $(Build.ArtifactStagingDirectory)
-  - task: PublishBuildArtifacts@1
+  - task: PublishPipelineArtifact@1
     inputs:
-      pathToPublish: $(Build.ArtifactStagingDirectory)
+      path: $(Build.ArtifactStagingDirectory)
       artifactName: Windows 64 7z Installer
   
 
