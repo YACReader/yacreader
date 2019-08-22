@@ -4,14 +4,12 @@ trigger:
 - master
 - develop
 
-variables:
-  build_number: '$(Date:yyMMdd)$(Rev:.r)'
-
 jobs:
 - job: Linux
   pool:
     vmImage: 'ubuntu-16.04'
   steps:
+  - template: azure-pipelines-build-number.yml
   - script: |
       sudo add-apt-repository 'deb http://download.opensuse.org/repositories/home:/selmf/xUbuntu_16.04/ /'
       sudo add-apt-repository ppa:kubuntu-ppa/backports
@@ -21,7 +19,7 @@ jobs:
       libqt5opengl5-dev libglu1-mesa-dev libunarr-dev qtdeclarative5-dev
     displayName: 'Install dependencies'
   - script: |
-      export DEFINES_VAR=DEFINES+\=\"BUILD_NUMBER=\\\\\\\"$(build_number)\\\\\\\"\"
+      export DEFINES_VAR=DEFINES+\=\"BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\"\"
       qmake CONFIG+="unarr" $DEFINES_VAR
       make
     displayName: 'Build'
@@ -29,6 +27,7 @@ jobs:
   pool:
     vmImage: 'macOS-10.14'
   steps:
+  - template: azure-pipelines-build-number.yml
   - script: |
       brew install qt
       brew link qt --force
@@ -60,6 +59,7 @@ jobs:
   pool:
     vmImage: 'vs2017-win2016'
   steps:
+  - template: azure-pipelines-build-number.yml
   - script: |
       pip install aqtinstall
       mkdir C:\Qt
@@ -74,7 +74,7 @@ jobs:
   - script: |
       call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
       set PATH=%PATH%;C:\Qt\Qt5.12.4\5.12.4\msvc2017_64\bin
-      set DEFINES_VAR=DEFINES+="BUILD_NUMBER=\\\\\\\"$(build_number)\\\\\\\""
+      set DEFINES_VAR=DEFINES+="BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\""
       qmake CONFIG+="7zip" %DEFINES_VAR%
       nmake
     displayName: 'Build'
