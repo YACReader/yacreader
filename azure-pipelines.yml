@@ -45,7 +45,7 @@ jobs:
   - script: |
       cd $(Build.SourcesDirectory)
       VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
-      ./compileOSX.sh $VERSION
+      ./compileOSX.sh $VERSION $(Build.BuildNumber)
     displayName: 'Build'
   - task: CopyFiles@2
     inputs:
@@ -85,7 +85,8 @@ jobs:
     displayName: 'Create installer'
   - task: CopyFiles@2
     inputs:
-      contents: $(Build.SourcesDirectory)\ci\win\Output\*.exe
+      sourceFolder: $(Build.SourcesDirectory)\ci\win\Output\
+      contents: *
       targetFolder: $(Build.ArtifactStagingDirectory)
   - task: PublishPipelineArtifact@1
     inputs:
