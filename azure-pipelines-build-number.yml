@@ -3,4 +3,10 @@ steps:
   inputs:
     targetType: inline
     script: |
-      Write-Host "##vso[build.updatebuildnumber]$(Date:yyMMdd)$(Rev:.r)" 
+      $date = (Get-Date).ToString("yyMMdd")
+      $previousBuildNumber = $($env:BUILD_BUILDNUMBER) 
+
+      $buildNumberParts = $($env:BUILD_BUILDNUMBER) -split '\.' 
+      $revision = [int]$buildNumberParts[$buildNumberParts.Length-1] 
+      $newBuildNumber = "$date$revision"
+      Write-Host "##vso[build.updatebuildnumber]$newBuildNumber" 
