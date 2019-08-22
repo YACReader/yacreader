@@ -54,7 +54,7 @@ jobs:
   - task: PublishPipelineArtifact@1
     inputs:
       path: $(Build.ArtifactStagingDirectory)
-      artifactName: Macos dmg
+      artifactName: Macos $(Build.BuildNumber) dmg
 - job: Windows
   pool:
     vmImage: 'vs2017-win2016'
@@ -90,7 +90,7 @@ jobs:
   - task: PublishPipelineArtifact@1
     inputs:
       path: $(Build.ArtifactStagingDirectory)
-      artifactName: Windows 64 7z Installer
+      artifactName: Windows 64 $(Build.BuildNumber) 7z Installer
   
 
     
