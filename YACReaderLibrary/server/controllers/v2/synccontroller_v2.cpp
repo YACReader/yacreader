@@ -17,6 +17,8 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
     QLOG_TRACE() << "POST DATA: " << postData;
 
     if (postData.length() > 0) {
+        response.write("OK", true);
+
         QList<QString> data = postData.split("\n");
 
         qulonglong libraryId;
@@ -70,6 +72,4 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
         response.write("", true);
         return;
     }
-
-    response.write("OK", true);
 }
