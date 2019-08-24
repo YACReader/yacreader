@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 hash macdeployqt 2>/dev/null || { echo >&2 "macdeployqt command not available. Please add the bin subfolder of your Qt installation  to the PATH environment variable."; exit 1; }
 
