@@ -27,6 +27,8 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
         int currentRating;
         unsigned long long lastTimeOpened;
         QString hash;
+        QMap<qulonglong, QList<ComicInfo>> comics;
+        QList<ComicInfo> comicsWithNoLibrary;
         foreach (QString comicInfo, data) {
             QList<QString> comicInfoProgress = comicInfo.split("\t");
 
@@ -47,8 +49,10 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
 
                     lastTimeOpened = comicInfoProgress.at(5).toULong();
                     info.lastTimeOpened = lastTimeOpened;
-
-                    DBHelper::updateFromRemoteClient(libraryId, info);
+                    if (!comics.contains(libraryId)) {
+                        comics[libraryId] = QList<ComicInfo>();
+                    }
+                    comics[libraryId].push_back(info);
                 } else {
                     hash = comicInfoProgress.at(2);
                     currentPage = comicInfoProgress.at(3).toInt();
@@ -63,10 +67,13 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
                     lastTimeOpened = comicInfoProgress.at(5).toULong();
                     info.lastTimeOpened = lastTimeOpened;
 
-                    DBHelper::updateFromRemoteClientWithHash(info);
+                    comicsWithNoLibrary.push_back(info);
                 }
             }
         }
+
+        DBHelper::updateFromRemoteClient(comics);
+        DBHelper::updateFromRemoteClientWithHash(comicsWithNoLibrary);
     } else {
         response.setStatus(412, "No comic info received");
         response.write("", true);
