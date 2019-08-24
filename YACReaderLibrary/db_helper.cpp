@@ -773,6 +773,10 @@ void DBHelper::updateFromRemoteClientWithHash(const ComicInfo &comicInfo)
 
         ComicInfo info = loadComicInfo(comicInfo.hash, db);
 
+        if (!info.existOnDb) {
+            continue;
+        }
+
         if (comicInfo.currentPage > 0) {
             info.currentPage = comicInfo.currentPage;
 
@@ -789,6 +793,121 @@ void DBHelper::updateFromRemoteClientWithHash(const ComicInfo &comicInfo)
             info.rating = comicInfo.rating;
 
         DBHelper::update(&info, db);
+
+        db.close();
+        QSqlDatabase::removeDatabase(db.connectionName());
+    }
+}
+
+void DBHelper::updateFromRemoteClient(const QMap<qulonglong, QList<ComicInfo>> &comics)
+{
+    foreach (qulonglong libraryId, comics.keys()) {
+        QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
+
+        db.transaction();
+
+        QSqlQuery updateComicInfo(db);
+        updateComicInfo.prepare("UPDATE comic_info SET "
+                                "read = :read, "
+                                "currentPage = :currentPage, "
+                                "hasBeenOpened = :hasBeenOpened, "
+                                "lastTimeOpened = :lastTimeOpened, "
+                                "rating = :rating"
+                                " WHERE id = :id ");
+
+        foreach (ComicInfo comicInfo, comics[libraryId]) {
+            ComicDB comic = DBHelper::loadComic(comicInfo.id, db);
+
+            if (comic.info.hash == comicInfo.hash) {
+                if (comicInfo.currentPage > 0) {
+                    comic.info.currentPage = comicInfo.currentPage;
+
+                    if (comic.info.currentPage == comic.info.numPages)
+                        comic.info.read = true;
+
+                    comic.info.hasBeenOpened = true;
+
+                    if (comic.info.lastTimeOpened.toULongLong() < comicInfo.lastTimeOpened.toULongLong())
+                        comic.info.lastTimeOpened = comicInfo.lastTimeOpened;
+                }
+
+                if (comicInfo.rating > 0)
+                    comic.info.rating = comicInfo.rating;
+
+                updateComicInfo.bindValue(":read", comic.info.read ? 1 : 0);
+                updateComicInfo.bindValue(":currentPage", comic.info.currentPage);
+                updateComicInfo.bindValue(":hasBeenOpened", comic.info.hasBeenOpened ? 1 : 0);
+                updateComicInfo.bindValue(":lastTimeOpened", QDateTime::currentMSecsSinceEpoch() / 1000);
+                updateComicInfo.bindValue(":id", comic.info.id);
+                updateComicInfo.bindValue(":rating", comic.info.rating);
+                updateComicInfo.exec();
+
+                updateComicInfo.clear();
+            }
+        }
+
+        db.commit();
+
+        db.close();
+        QSqlDatabase::removeDatabase(db.connectionName());
+    }
+}
+
+void DBHelper::updateFromRemoteClientWithHash(const QList<ComicInfo> &comics)
+{
+    YACReaderLibraries libraries = DBHelper::getLibraries();
+
+    QStringList names = libraries.getNames();
+
+    foreach (QString name, names) {
+        QString libraryPath = DBHelper::getLibraries().getPath(libraries.getId(name));
+
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
+
+        db.transaction();
+
+        QSqlQuery updateComicInfo(db);
+        updateComicInfo.prepare("UPDATE comic_info SET "
+                                "read = :read, "
+                                "currentPage = :currentPage, "
+                                "hasBeenOpened = :hasBeenOpened, "
+                                "lastTimeOpened = :lastTimeOpened, "
+                                "rating = :rating"
+                                " WHERE id = :id ");
+
+        foreach (ComicInfo comicInfo, comics) {
+            ComicInfo info = loadComicInfo(comicInfo.hash, db);
+
+            if (!info.existOnDb) {
+                continue;
+            }
+
+            if (comicInfo.currentPage > 0) {
+                info.currentPage = comicInfo.currentPage;
+
+                if (info.currentPage == info.numPages)
+                    info.read = true;
+
+                info.hasBeenOpened = true;
+
+                if (info.lastTimeOpened.toULongLong() < comicInfo.lastTimeOpened.toULongLong())
+                    info.lastTimeOpened = comicInfo.lastTimeOpened;
+            }
+
+            if (comicInfo.rating > 0) {
+                info.rating = comicInfo.rating;
+            }
+
+            updateComicInfo.bindValue(":read", info.read ? 1 : 0);
+            updateComicInfo.bindValue(":currentPage", info.currentPage);
+            updateComicInfo.bindValue(":hasBeenOpened", info.hasBeenOpened ? 1 : 0);
+            updateComicInfo.bindValue(":lastTimeOpened", QDateTime::currentMSecsSinceEpoch() / 1000);
+            updateComicInfo.bindValue(":id", info.id);
+            updateComicInfo.bindValue(":rating", info.rating);
+            updateComicInfo.exec();
+            ;
+        }
 
         db.close();
         QSqlDatabase::removeDatabase(db.connectionName());
