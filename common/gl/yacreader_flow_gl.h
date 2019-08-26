@@ -266,6 +266,7 @@ public slots:
     void render();
 
     //void paintEvent(QPaintEvent *event);
+    QVector3D getPlaneIntersection(int x, int y, YACReader3DImage plane);
     void mouseDoubleClickEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent *event);

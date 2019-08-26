@@ -231,8 +231,7 @@ YACReaderFlowGL::YACReaderFlowGL(QWidget *parent, struct Preset p)
 
     QSurfaceFormat f = format();
 
-    //TODO add antialiasing
-    //f.setSamples(4);
+    f.setSamples(4);
     f.setVersion(2, 1);
     f.setSwapInterval(0);
     setFormat(f);
@@ -1066,27 +1065,11 @@ void YACReaderFlowGL::keyPressEvent(QKeyEvent *event)
 
 void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 {
-    makeCurrent();
     if (event->button() == Qt::LeftButton) {
-        float x, y;
-        x = event->x() * devicePixelRatio();
-        y = event->y() * devicePixelRatio();
-        GLint viewport[4];
-        QMatrix4x4 modelview;
-        QMatrix4x4 projection;
-        GLfloat winZ;
-
-        glGetFloatv(GL_MODELVIEW_MATRIX, modelview.data());
-        glGetFloatv(GL_PROJECTION_MATRIX, projection.data());
-        glGetIntegerv(GL_VIEWPORT, viewport);
-        glReadPixels(x, int((float)viewport[3] - (float)y), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
-
-        auto clickVector = QVector3D(x, (float)viewport[3] - (float)y, winZ);
-        clickVector = clickVector.unproject(modelview, projection, QRect(viewport[0], viewport[1], viewport[2], viewport[3]));
-
-        if ((clickVector.x() >= 0.5 && !flowRightToLeft) || (clickVector.x() <= -0.5 && flowRightToLeft)) {
+        QVector3D intersection = getPlaneIntersection(event->x(), event->y(), images[currentSelected]);
+        if ((intersection.x() > 0.5 && !flowRightToLeft) || (intersection.x() < -0.5 && flowRightToLeft)) {
             showNext();
-        } else if ((clickVector.x() <= -0.5 && !flowRightToLeft) || (clickVector.x() >= 0.5 && flowRightToLeft)) {
+        } else if ((intersection.x() < -0.5 && !flowRightToLeft) || (intersection.x() > 0.5 && flowRightToLeft)) {
             showPrevious();
         }
     } else {
@@ -1097,28 +1080,52 @@ void YACReaderFlowGL::mousePressEvent(QMouseEvent *event)
 
 void YACReaderFlowGL::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    makeCurrent();
-    float x, y;
-    x = event->x() * devicePixelRatio();
-    y = event->y() * devicePixelRatio();
-    GLint viewport[4];
-    QMatrix4x4 modelview;
-    QMatrix4x4 projection;
-    GLfloat winZ;
+    QVector3D intersection = getPlaneIntersection(event->x(), event->y(), images[currentSelected]);
 
-    glGetFloatv(GL_MODELVIEW_MATRIX, modelview.data());
-    glGetFloatv(GL_PROJECTION_MATRIX, projection.data());
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    glReadPixels(x, int((float)viewport[3] - (float)y), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
-
-    auto clickVector = QVector3D(x, (float)viewport[3] - (float)y, winZ);
-    clickVector = clickVector.unproject(modelview, projection, QRect(viewport[0], viewport[1], viewport[2], viewport[3]));
-
-    if (clickVector.x() <= 0.5 && clickVector.x() >= -0.5) {
+    if (intersection.x() < 0.5 && intersection.x() > -0.5) {
         emit selected(centerIndex());
         event->accept();
     }
+}
+
+QVector3D YACReaderFlowGL::getPlaneIntersection(int x, int y, YACReader3DImage plane)
+{
+    // get viewport and matrices
+    // TODO: these should be cached!!!
+    GLint viewport[4];
+    QMatrix4x4 m_modelview;
+    QMatrix4x4 m_projection;
+    makeCurrent();
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    glGetFloatv(GL_MODELVIEW_MATRIX, m_modelview.data());
+    glGetFloatv(GL_PROJECTION_MATRIX, m_projection.data());
     doneCurrent();
+
+    //create the picking ray
+    QVector3D ray_origin(x * devicePixelRatio(), y * devicePixelRatio(), 0);
+    QVector3D ray_end(x * devicePixelRatio(), y * devicePixelRatio(), 1.0);
+
+    // TODO: These should be cached in the class
+
+    ray_origin = ray_origin.unproject(m_modelview, m_projection, QRect(viewport[0], viewport[1], viewport[2], viewport[3]));
+    ray_end = ray_end.unproject(m_modelview, m_projection, QRect(viewport[0], viewport[1], viewport[2], viewport[3]));
+
+    QVector3D ray_vector = ray_end - ray_origin;
+
+    //calculate the plane vectors
+    QVector3D plane_origin((plane.width / 2) * -1, -0.5, 0);
+    QVector3D plane_vektor_1 = QVector3D(plane.width / 2, -0.5, 0) - plane_origin;
+    QVector3D plane_vektor_2 = QVector3D((plane.width / 2) * -1, -0.5 * plane.height, 0) - plane_origin;
+
+    //get the intersection using Cramer's rule. We only x for the line, not the plane
+    double intersection_LES_determinant = ((plane_vektor_1.x() * plane_vektor_2.y() * (-1) * ray_vector.z()) + (plane_vektor_2.x() * (-1) * ray_vector.y() * plane_vektor_1.z()) + ((-1) * ray_vector.x() * plane_vektor_1.y() * plane_vektor_2.z()) - ((-1) * ray_vector.x() * plane_vektor_2.y() * plane_vektor_1.z()) - (plane_vektor_1.x() * (-1) * ray_vector.y() * plane_vektor_2.z()) - (plane_vektor_2.x() * plane_vektor_1.y() * (-1) * ray_vector.z()));
+
+    QVector3D det = ray_origin - plane_origin;
+
+    double intersection_ray_determinant = ((plane_vektor_1.x() * plane_vektor_2.y() * det.z()) + (plane_vektor_2.x() * det.y() * plane_vektor_1.z()) + (det.x() * plane_vektor_1.y() * plane_vektor_2.z()) - (det.x() * plane_vektor_2.y() * plane_vektor_1.z()) - (plane_vektor_1.x() * det.y() * plane_vektor_2.z()) - (plane_vektor_2.x() * plane_vektor_1.y() * det.z()));
+
+    //return the intersection point
+    return ray_origin + ray_vector * (intersection_ray_determinant / intersection_LES_determinant);
 }
 
 YACReaderComicFlowGL::YACReaderComicFlowGL(QWidget *parent, struct Preset p)
