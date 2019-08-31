@@ -245,6 +245,7 @@ RC_FILE = icon.rc
 
 macx {
   ICON = YACReaderLibrary.icns
+  QMAKE_INFO_PLIST = YACReaderLibraryInfo.plist
 }
 
 TRANSLATIONS =   yacreaderlibrary_es.ts \
