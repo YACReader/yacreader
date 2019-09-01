@@ -57,8 +57,8 @@ echo "Creating dmg package"
 
 #create-dmg --volname "YACReader $VERSION.$BUILD_NUMBER Installer" --volicon icon.icns --window-size 600 403 --icon-size 128 --app-drop-link 485 90 --background background.png --icon YACReader 80 90 --icon YACReaderLibrary 235 90 --eula COPYING.txt --icon YACReaderLibraryServer 470 295 --icon README.md 120 295 --icon COPYING.txt 290 295 "$dest.dmg" "$dest"
 
-sed -i'' -e 's/#VERSION#/${VERSION}/g' dmg.json
-sed -i'' -e 's/#BUILD_NUMBER#/${BUILD_NUMBER}/g' dmg.json
+sed -i'' -e "s/#VERSION#/$VERSION/g" dmg.json
+sed -i'' -e "s/#BUILD_NUMBER#/$BUILD_NUMBER/g" dmg.json
 appdmg dmg.json "$dest.dmg"
 
 echo "Done!"
