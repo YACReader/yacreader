@@ -20,31 +20,31 @@
       "x": 80,
       "y": 90,
       "type": "file",
-      "path": "YACReader-9.5.0 MacOSX-Intel/YACReader.app"
+      "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-Intel/YACReader.app"
     },
     {
       "x": 235,
       "y": 90,
       "type": "file",
-      "path": "YACReader-9.5.0 MacOSX-Intel/YACReaderLibrary.app"
+      "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-Intel/YACReaderLibrary.app"
     },
     {
       "x": 470,
       "y": 295,
       "type": "file",
-      "path": "YACReader-9.5.0 MacOSX-Intel/YACReaderLibraryServer"
+      "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-Intel/YACReaderLibraryServer"
     },
     {
       "x": 120,
       "y": 295,
       "type": "file",
-      "path": "YACReader-9.5.0 MacOSX-Intel/README.md"
+      "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-Intel/README.md"
     },
     {
       "x": 290,
       "y": 295,
       "type": "file",
-      "path": "YACReader-9.5.0 MacOSX-Intel/COPYING.txt"
+      "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-Intel/COPYING.txt"
     }
   ]
 }
