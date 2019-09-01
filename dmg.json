@@ -1,5 +1,5 @@
 {
-  "title": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-Intel",
+  "title": "YACReader-#VERSION#.#BUILD_NUMBER#",
   "icon": "icon.icns",
   "background": "background.png",
   "window": {
