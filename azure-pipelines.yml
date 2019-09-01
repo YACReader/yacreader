@@ -33,6 +33,7 @@ jobs:
       brew link qt --force
       brew install create-dmg
       brew install clang-format
+      npm install -g appdmg
       wget "https://sourceforge.net/projects/p7zip/files/p7zip/16.02/p7zip_16.02_src_all.tar.bz2" -P $(Build.SourcesDirectory)/compressed_archive
       tar xjf $(Build.SourcesDirectory)/compressed_archive/p7zip_16.02_src_all.tar.bz2 -C $(Build.SourcesDirectory)/compressed_archive
       mv $(Build.SourcesDirectory)/compressed_archive/p7zip_16.02 $(Build.SourcesDirectory)/compressed_archive/libp7zip

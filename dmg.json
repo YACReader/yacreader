@@ -1,0 +1,50 @@
+{
+  "title": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-Intel",
+  "icon": "icon.icns",
+  "background": "background.png",
+  "window": {
+    "size": {
+      "width": 600,
+      "height": 403
+    }
+  },
+  "icon-size": 128,
+  "contents": [
+    {
+      "x": 485,
+      "y": 90,
+      "type": "link",
+      "path": "/Applications"
+    },
+    {
+      "x": 80,
+      "y": 90,
+      "type": "file",
+      "path": "YACReader-9.5.0 MacOSX-Intel/YACReader.app"
+    },
+    {
+      "x": 235,
+      "y": 90,
+      "type": "file",
+      "path": "YACReader-9.5.0 MacOSX-Intel/YACReaderLibrary.app"
+    },
+    {
+      "x": 470,
+      "y": 295,
+      "type": "file",
+      "path": "YACReader-9.5.0 MacOSX-Intel/YACReaderLibraryServer"
+    },
+    {
+      "x": 120,
+      "y": 295,
+      "type": "file",
+      "path": "YACReader-9.5.0 MacOSX-Intel/README.md"
+    },
+    {
+      "x": 290,
+      "y": 295,
+      "type": "file",
+      "path": "YACReader-9.5.0 MacOSX-Intel/COPYING.txt"
+    }
+  ]
+}
