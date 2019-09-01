@@ -24,7 +24,7 @@ jobs:
       make
     displayName: 'Build'
 - job: MacOS
-  variable:
+  variables:
   - group: macos-codesign
   pool:
     vmImage: 'macOS-10.14'
