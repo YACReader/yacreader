@@ -45,6 +45,10 @@ jobs:
       find . \( -name '*.h' -or -name '*.cpp' -or -name '*.c' -or -name '*.mm' -or -name '*.m' \) -print0 | xargs -0 clang-format -style=file -i
       if [ "$(git diff $(Build.SourceVersion))" != "" ]; then exit 1; fi
     displayName: 'Check format'
+  - task: InstallAppleCertificate@2
+    inputs:
+      certSecureFile: 'developerID_application.p12'
+      certPwd: $(P12Password)
   - script: |
       cd $(Build.SourcesDirectory)
       VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"

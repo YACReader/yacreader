@@ -61,4 +61,6 @@ sed -i'' -e "s/#VERSION#/$VERSION/g" dmg.json
 sed -i'' -e "s/#BUILD_NUMBER#/$BUILD_NUMBER/g" dmg.json
 appdmg dmg.json "$dest.dmg"
 
+codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" "./${dest}.dmg"
+
 echo "Done!"

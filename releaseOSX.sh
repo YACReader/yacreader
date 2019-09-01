@@ -26,5 +26,7 @@ cp -R release/languages YACReader.app/Contents/MacOS/
 cp -R release/languages YACReaderLibrary.app/Contents/MacOS/
 cp -R release/languages YACReaderLibraryServer.app/Contents/MacOS/
 
+./signapps.sh
+
 echo "Done."
-#./signapps.sh
+
