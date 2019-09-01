@@ -34,6 +34,7 @@ jobs:
       brew install create-dmg
       brew install clang-format
       brew install node
+      brew link --overwrite node
       npm install -g appdmg
       wget "https://sourceforge.net/projects/p7zip/files/p7zip/16.02/p7zip_16.02_src_all.tar.bz2" -P $(Build.SourcesDirectory)/compressed_archive
       tar xjf $(Build.SourcesDirectory)/compressed_archive/p7zip_16.02_src_all.tar.bz2 -C $(Build.SourcesDirectory)/compressed_archive
