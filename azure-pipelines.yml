@@ -66,20 +66,20 @@ jobs:
       artifactName: Macos $(Build.BuildNumber) dmg
 - template: azure-pipelines-windows-template.yml
   parameters:
-    name: Windows x64
-    arquitecture: x64
-    qt_version: 5.12.4
-    qt_spec: msvc2017_64
-    qt_aqt_spec: win64_msvc2017_64
-    vc_redist_url: https://go.microsoft.com/fwlink/?LinkId=746572
-    vc_redist_file_name: vc_redist.x64.exe
-    vc_vars: vcvars64.bat
+    name: 'Windows x64'
+    arquitecture: 'x64'
+    qt_version: '5.12.4'
+    qt_spec: 'msvc2017_64'
+    qt_aqt_spec: 'win64_msvc2017_64'
+    vc_redist_url: 'https://go.microsoft.com/fwlink/?LinkId=746572'
+    vc_redist_file_name: 'vc_redist.x64.exe'
+    vc_vars: 'vcvars64.bat'
 - template: azure-pipelines-windows-template.yml
-    name: Windows x86
-    arquitecture: x86
-    qt_version: 5.12.4
-    qt_spec: msvc2017
-    qt_aqt_spec: win32_msvc2017
-    vc_redist_url: https://go.microsoft.com/fwlink/?LinkId=746571
-    vc_redist_file_name: vc_redist.x86.exe
-    vc_vars: vcvars32.bat
+    name: 'Windows x86'
+    arquitecture: 'x86'
+    qt_version: '5.12.4'
+    qt_spec: 'msvc2017'
+    qt_aqt_spec: 'win32_msvc2017'
+    vc_redist_url: 'https://go.microsoft.com/fwlink/?LinkId=746571'
+    vc_redist_file_name: 'vc_redist.x86.exe'
+    vc_vars: 'vcvars32.bat'
