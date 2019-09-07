@@ -53,7 +53,8 @@ echo %VERSION%
 del
 
 if "%1"=="x86" (
-	type build_installer.iss | findstr /v ArchitecturesInstallIn64BitMode | findstr /v ArchitecturesAllowed > build_installer.iss 
+	type build_installer.iss | findstr /v ArchitecturesInstallIn64BitMode | findstr /v ArchitecturesAllowed > copy_build_installer.iss
+	type copy_build_installer.iss > build_installer.iss
 )
 
 iscc /DVERSION=%VERSION% /DPLATFORM=%1 /DCOMPRESSED_ARCHIVE_BACKEND=%2 /DBUILD_NUMBER=%3 build_installer.iss || exit /b
