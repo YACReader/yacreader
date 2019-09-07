@@ -66,7 +66,7 @@ jobs:
       artifactName: Macos $(Build.BuildNumber) dmg
 - template: azure-pipelines-windows-template.yml
   parameters:
-    name: Windows x64
+    name: Windows_x64
     arquitecture: 'x64'
     qt_version: '5.12.4'
     qt_spec: 'msvc2017_64'
@@ -76,7 +76,7 @@ jobs:
     vc_vars: 'vcvars64.bat'
 - template: azure-pipelines-windows-template.yml
   parameters: 
-    name: Windows x86
+    name: Windows_x86
     arquitecture: 'x86'
     qt_version: '5.12.4'
     qt_spec: 'msvc2017'

@@ -1,5 +1,5 @@
 parameters:
-  name: Windows x64
+  name: Windows_x64
   arquitecture: 'x64'
   qt_version: '5.12.4'
   qt_spec: 'msvc2017_64'
