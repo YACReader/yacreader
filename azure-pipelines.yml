@@ -19,10 +19,24 @@ jobs:
       libqt5opengl5-dev libglu1-mesa-dev libunarr-dev qtdeclarative5-dev
     displayName: 'Install dependencies'
   - script: |
+      VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
+      .\mktarball.sh $VERSION.$(Build.BuildNumber)
+      mkdir tarball
+      cp yacreader-*-src.tar.xz* tarball\
+    displayName: 'Create tarball'
+  - script: |
       export DEFINES_VAR=DEFINES+\=\"BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\"\"
       qmake CONFIG+="unarr" $DEFINES_VAR
       make
     displayName: 'Build'
+  - task: CopyFiles@2
+    inputs:
+      contents: 'tarball\*'
+      targetFolder: $(Build.ArtifactStagingDirectory)
+  - task: PublishPipelineArtifact@1
+    inputs:
+      path: $(Build.ArtifactStagingDirectory)
+      artifactName: src $(Build.BuildNumber) tarball
 - job: MacOS
   variables:
   - group: macos-codesign
