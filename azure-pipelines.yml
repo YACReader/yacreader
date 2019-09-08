@@ -32,7 +32,8 @@ jobs:
     displayName: 'Build'
   - task: CopyFiles@2
     inputs:
-      contents: 'tarball\*'
+      sourceFolder: $(Build.SourcesDirectory)/tarball
+      contents: '*'
       targetFolder: $(Build.ArtifactStagingDirectory)
   - task: PublishPipelineArtifact@1
     inputs:
