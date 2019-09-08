@@ -64,43 +64,23 @@ jobs:
     inputs:
       path: $(Build.ArtifactStagingDirectory)
       artifactName: Macos $(Build.BuildNumber) dmg
-- job: Windows
-  pool:
-    vmImage: 'vs2017-win2016'
-  steps:
-  - template: azure-pipelines-build-number.yml
-  - script: |
-      pip install aqtinstall
-      mkdir C:\Qt
-      python -m aqt install -O c:\Qt 5.12.4 windows desktop win64_msvc2017_64
-      choco install -y wget
-      choco install innosetup 
-      wget "https://sourceforge.net/projects/sevenzip/files/7-Zip/18.05/7z1805-src.7z" -P $(Build.SourcesDirectory)\compressed_archive
-      7z x $(Build.SourcesDirectory)\compressed_archive\7z1805-src.7z -o$(Build.SourcesDirectory)\compressed_archive\lib7zip
-      wget "https://go.microsoft.com/fwlink/?LinkId=746572" -O $(Build.SourcesDirectory)\vc_redist.x64.exe
-# 32bit https://go.microsoft.com/fwlink/?LinkId=746571
-    displayName: 'Install dependencies'
-  - script: |
-      call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-      set PATH=%PATH%;C:\Qt\Qt5.12.4\5.12.4\msvc2017_64\bin
-      set DEFINES_VAR=DEFINES+="BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\""
-      qmake CONFIG+="7zip" %DEFINES_VAR%
-      nmake
-    displayName: 'Build'
-  - script: |
-      set PATH=%PATH%;C:\Qt\Qt5.12.4\5.12.4\msvc2017_64\bin
-      cd $(Build.SourcesDirectory)\ci\win
-      .\create_installer.cmd x64 7z $(Build.BuildNumber)
-    displayName: 'Create installer'
-  - task: CopyFiles@2
-    inputs:
-      sourceFolder: $(Build.SourcesDirectory)\ci\win\Output\
-      contents: '*'
-      targetFolder: $(Build.ArtifactStagingDirectory)
-  - task: PublishPipelineArtifact@1
-    inputs:
-      path: $(Build.ArtifactStagingDirectory)
-      artifactName: Windows 64 $(Build.BuildNumber) 7z Installer
-  
-
-    
+- template: azure-pipelines-windows-template.yml
+  parameters:
+    name: Windows_x64
+    arquitecture: 'x64'
+    qt_version: '5.12.4'
+    qt_spec: 'msvc2017_64'
+    qt_aqt_spec: 'win64_msvc2017_64'
+    vc_redist_url: 'https://go.microsoft.com/fwlink/?LinkId=746572'
+    vc_redist_file_name: 'vc_redist.x64.exe'
+    vc_vars: 'vcvars64.bat'
+- template: azure-pipelines-windows-template.yml
+  parameters: 
+    name: Windows_x86
+    arquitecture: 'x86'
+    qt_version: '5.12.4'
+    qt_spec: 'msvc2017'
+    qt_aqt_spec: 'win32_msvc2017'
+    vc_redist_url: 'https://go.microsoft.com/fwlink/?LinkId=746571'
+    vc_redist_file_name: 'vc_redist.x86.exe'
+    vc_vars: 'vcvars32.bat'
