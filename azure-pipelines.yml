@@ -19,6 +19,7 @@ jobs:
       libqt5opengl5-dev libglu1-mesa-dev libunarr-dev qtdeclarative5-dev
     displayName: 'Install dependencies'
   - script: |
+      cd $(Build.SourcesDirectory)
       VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
       .\mktarball.sh $VERSION.$(Build.BuildNumber)
       mkdir tarball
