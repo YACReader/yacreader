@@ -109,6 +109,9 @@ QString ComicDB::toTXT()
     if (!info.notes.isNull())
         txt.append(QString("notes:%1\r\n").arg(info.notes.toString()));
 
+    if (!info.lastTimeOpened.isNull())
+        txt.append(QString("lastTimeOpened:%1\r\n").arg(info.lastTimeOpened.toULongLong()));
+
     return txt;
 }
 
