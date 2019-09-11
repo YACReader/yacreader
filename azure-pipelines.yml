@@ -5,11 +5,16 @@ trigger:
 - develop
 
 jobs:
+- job: Initialization
+  pool:
+    vmImage: 'vs2017-win2016'
+  steps:
+  - template: azure-pipelines-build-number.yml
 - job: Linux
+  dependsOn: Initialization
   pool:
     vmImage: 'ubuntu-16.04'
   steps:
-  - template: azure-pipelines-build-number.yml
   - script: |
       sudo add-apt-repository 'deb http://download.opensuse.org/repositories/home:/selmf/xUbuntu_16.04/ /'
       sudo add-apt-repository ppa:kubuntu-ppa/backports
@@ -40,12 +45,12 @@ jobs:
       path: $(Build.ArtifactStagingDirectory)
       artifactName: src $(Build.BuildNumber) tarball
 - job: MacOS
+  dependsOn: Initialization
   variables:
   - group: macos-codesign
   pool:
     vmImage: 'macOS-10.14'
   steps:
-  - template: azure-pipelines-build-number.yml
   - script: |
       brew install qt
       brew link qt --force
@@ -100,3 +105,32 @@ jobs:
     vc_redist_url: 'https://go.microsoft.com/fwlink/?LinkId=746571'
     vc_redist_file_name: 'vc_redist.x86.exe'
     vc_vars: 'vcvars32.bat'
+- job: PublishDevBuilds
+  dependsOn: 
+  - Linux
+  - MacOS
+  - Windows_x86
+  - Windows_x64
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'develop'))
+  variables:
+  - group: bintray
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'current'
+        targetPath: $(Build.SourcesDirectory)/dev_bin
+    - script: |
+        ls -lah $(Build.SourcesDirectory)/dev_bin/**/*.*
+    - task: cURLUploader@2
+      inputs:
+        files: '$(Build.SourcesDirectory)/dev_bin/**/*.*'
+        authType: 'userAndPass'
+        username: $(username)
+        password: $(api-key)
+        options: -H "X-Bintray-Publish:1"
+        remotePath: ''
+        url: https://api.bintray.com/content/luisangelsm/YACReader/DevBuilds/$(Build.BuildNumber)/
+      
+      
