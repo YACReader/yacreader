@@ -107,13 +107,24 @@ jobs:
   - Windows_x86
   - Windows_x64
   condition: succeeded()
+  variables:
+  - group: bintray
   pool:
     vmImage: 'ubuntu-16.04'
   steps:
+    - template: azure-pipelines-build-number.yml
     - task: DownloadPipelineArtifact@2
       inputs:
         buildType: 'current'
         targetPath: $(Build.SourcesDirectory)/dev_bin
     - script: |
         ls -lah $(Build.SourcesDirectory)/dev_bin
+    - task: cURLUploader@2
+      inputs:
+        files: '$(Build.SourcesDirectory)/dev_bin/**/*.*'
+        authType: 'userAndPass'
+        username: $(username)
+        password: $(api-key)
+        url: https://api.bintray.com/content/luisangelsm/YACReader/DevBuilds/$(Build.BuildNumber)
+      
       
