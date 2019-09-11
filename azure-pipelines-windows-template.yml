@@ -10,10 +10,10 @@ parameters:
 
 jobs:
 - job: ${{ parameters.name }}
+  dependsOn: Initialization
   pool:
     vmImage: 'vs2017-win2016'
   steps:
-  - template: azure-pipelines-build-number.yml
   - script: |
       pip install aqtinstall
       mkdir C:\Qt
