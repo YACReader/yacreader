@@ -15,6 +15,7 @@ jobs:
   steps:
   - template: azure-pipelines-build-number.yml
   - script: |
+      echo %PATH%
       pip install aqtinstall
       mkdir C:\Qt
       python -m aqt install -O c:\Qt ${{ parameters.qt_version }} windows desktop ${{ parameters.qt_aqt_spec }}
@@ -29,7 +30,7 @@ jobs:
       set PATH=%PATH%;C:\Qt\Qt${{ parameters.qt_version }}\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin
       dir C:\Qt\Qt${{ parameters.qt_version }}\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin
       set DEFINES_VAR=DEFINES+="BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\""
-      qmake -spec ${{ parameters.qt_spec }} CONFIG+="7zip" %DEFINES_VAR%
+      qmake CONFIG+="7zip" %DEFINES_VAR%
       nmake
     displayName: 'Build'
   - script: |
