@@ -27,6 +27,7 @@ jobs:
   - script: |
       call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\${{ parameters.vc_vars }}"
       set PATH=%PATH%;C:\Qt\Qt${{ parameters.qt_version }}\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin
+      dir C:\Qt\Qt${{ parameters.qt_version }}\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin
       set DEFINES_VAR=DEFINES+="BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\""
       qmake -spec ${{ parameters.qt_spec }} CONFIG+="7zip" %DEFINES_VAR%
       nmake
