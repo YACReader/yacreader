@@ -125,6 +125,7 @@ jobs:
         authType: 'userAndPass'
         username: $(username)
         password: $(api-key)
-        url: https://api.bintray.com/content/luisangelsm/YACReader/DevBuilds/$(Build.BuildNumber)
+        remotePath: ''
+        url: https://api.bintray.com/content/luisangelsm/YACReader/DevBuilds/$(Build.BuildNumber)/
       
       
