@@ -104,8 +104,8 @@ jobs:
   dependsOn: 
   - Linux
   - MacOS
-  - Windows_x86
-  - Windows_x64
+#  - Windows_x86
+#  - Windows_x64
   condition: succeeded()
   variables:
   - group: bintray
