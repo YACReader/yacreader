@@ -6,7 +6,8 @@ trigger:
 
 jobs:
 - job: Initialization
-  pool: Default
+  pool:
+    vmImage: 'vs2017-win2016'
   steps:
   - template: azure-pipelines-build-number.yml
 - job: Linux
