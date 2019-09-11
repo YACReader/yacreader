@@ -118,10 +118,10 @@ jobs:
         buildType: 'current'
         targetPath: $(Build.SourcesDirectory)/dev_bin
     - script: |
-        ls -lah $(Build.SourcesDirectory)/dev_bin/***.*
+        ls -lah $(Build.SourcesDirectory)/dev_bin/**/*.*
     - task: cURLUploader@2
       inputs:
-        files: '$(Build.SourcesDirectory)/dev_bin/***.*'
+        files: '$(Build.SourcesDirectory)/dev_bin/**/*.*'
         authType: 'userAndPass'
         username: $(username)
         password: $(api-key)
