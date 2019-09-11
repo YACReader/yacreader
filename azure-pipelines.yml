@@ -111,7 +111,7 @@ jobs:
   - MacOS
   - Windows_x86
   - Windows_x64
-  condition: succeeded()
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'develop'))
   variables:
   - group: bintray
   pool:
