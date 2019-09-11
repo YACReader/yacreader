@@ -18,7 +18,7 @@ jobs:
       pip install aqtinstall
       mkdir C:\Qt
       python -m aqt install -O c:\Qt ${{ parameters.qt_version }} windows desktop ${{ parameters.qt_aqt_spec }}
-      dir C:\Qt\Qt${{ parameters.qt_version }}\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\mkspecs\win32-msvc
+      dir C:\Qt\Qt${{ parameters.qt_version }}\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin
       choco install -y wget
       choco install innosetup 
       wget "https://sourceforge.net/projects/sevenzip/files/7-Zip/18.05/7z1805-src.7z" -P $(Build.SourcesDirectory)\compressed_archive
