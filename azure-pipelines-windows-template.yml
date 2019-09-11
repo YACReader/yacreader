@@ -15,10 +15,10 @@ jobs:
   steps:
   - template: azure-pipelines-build-number.yml
   - script: |
-      echo %PATH%
       pip install aqtinstall
       mkdir C:\Qt
       python -m aqt install -O c:\Qt ${{ parameters.qt_version }} windows desktop ${{ parameters.qt_aqt_spec }}
+      dir C:\Qt\Qt${{ parameters.qt_version }}\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\mkspecs
       choco install -y wget
       choco install innosetup 
       wget "https://sourceforge.net/projects/sevenzip/files/7-Zip/18.05/7z1805-src.7z" -P $(Build.SourcesDirectory)\compressed_archive
@@ -27,14 +27,13 @@ jobs:
     displayName: 'Install dependencies'
   - script: |
       call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\${{ parameters.vc_vars }}"
-      set PATH=%PATH%;C:\Qt\Qt${{ parameters.qt_version }}\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin
-      dir C:\Qt\Qt${{ parameters.qt_version }}\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin
+      set PATH=C:\Qt\Qt${{ parameters.qt_version }}\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
       set DEFINES_VAR=DEFINES+="BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\""
       qmake CONFIG+="7zip" %DEFINES_VAR%
       nmake
     displayName: 'Build'
   - script: |
-      set PATH=%PATH%;C:\Qt\Qt${{ parameters.qt_version }}\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin
+      set PATH=%PATH%;C:\Qt\Qt${{ parameters.qt_version }}\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
       cd $(Build.SourcesDirectory)\ci\win
       .\create_installer.cmd ${{ parameters.arquitecture }} 7z $(Build.BuildNumber)
     displayName: 'Create installer'
