@@ -157,5 +157,8 @@ jobs:
       gitHubConnection: yacreader-releases
       assets: $(Build.SourcesDirectory)/dev_bin/**/*.*'
       title: $VERSION
+      tagSource: 'manual'
+      tag: $VERSION
+
       
       
