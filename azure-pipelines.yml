@@ -161,6 +161,7 @@ jobs:
       title: $(VERSION)
       tagSource: 'manual'
       tag: $(VERSION)
+      addChangeLog: false
 
       
       
