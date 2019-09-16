@@ -138,7 +138,7 @@ jobs:
   - MacOS
   - Windows_x86
   - Windows_x64
-  condition: and(succeeded())
+  condition: succeeded()
   variables:
   - group: github-releases
   pool:
