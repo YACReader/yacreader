@@ -138,7 +138,7 @@ jobs:
   - MacOS
   - Windows_x86
   - Windows_x64
-  condition: succeeded()
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   variables:
   - group: github-releases
   pool:
