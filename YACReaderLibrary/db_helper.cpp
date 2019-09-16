@@ -842,8 +842,6 @@ void DBHelper::updateFromRemoteClient(const QMap<qulonglong, QList<ComicInfo>> &
                 updateComicInfo.bindValue(":id", comic.info.id);
                 updateComicInfo.bindValue(":rating", comic.info.rating);
                 updateComicInfo.exec();
-
-                updateComicInfo.clear();
             }
         }
 
@@ -906,8 +904,9 @@ void DBHelper::updateFromRemoteClientWithHash(const QList<ComicInfo> &comics)
             updateComicInfo.bindValue(":id", info.id);
             updateComicInfo.bindValue(":rating", info.rating);
             updateComicInfo.exec();
-            ;
         }
+
+        db.commit();
 
         db.close();
         QSqlDatabase::removeDatabase(db.connectionName());
