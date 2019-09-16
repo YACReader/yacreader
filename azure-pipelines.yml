@@ -147,15 +147,17 @@ jobs:
   - task: DownloadPipelineArtifact@2
     inputs:
       buildType: 'current'
-      targetPath: $(Build.SourcesDirectory)/dev_bin
+      targetPath: $(Build.ArtifactStagingDirectory)
+  - script: |
+      find $(Build.ArtifactStagingDirectory) -name '*.*' -exec cp {} $(Build.ArtifactStagingDirectory) \;
+    displayName: 'flatten artifact staging directory'
   - script: |
       VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
       echo "##vso[task.setvariable variable=VERSION]$VERSION"
-    displayName: 'Create tarball'
+    displayName: 'Version'
   - task: GitHubRelease@0
     inputs:
       gitHubConnection: yacreader-releases
-      assets: $(Build.SourcesDirectory)/dev_bin/**/*.*'
       title: $(VERSION)
       tagSource: 'manual'
       tag: $(VERSION)
