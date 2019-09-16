@@ -154,7 +154,7 @@ jobs:
     displayName: 'Create tarball'
   - task: GitHubRelease@0
     inputs:
-      gitHubConnection: YACReader
+      gitHubConnection: yacreader-releases
       assets: $(Build.SourcesDirectory)/dev_bin/**/*.*'
       title: $VERSION
       
