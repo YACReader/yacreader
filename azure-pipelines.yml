@@ -132,5 +132,30 @@ jobs:
         options: -H "X-Bintray-Publish:1"
         remotePath: ''
         url: https://api.bintray.com/content/luisangelsm/YACReader/DevBuilds/$(Build.BuildNumber)/
+- job: Release
+  dependsOn: 
+  - Linux
+  - MacOS
+  - Windows_x86
+  - Windows_x64
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+  variables:
+  - group: github-releases
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      buildType: 'current'
+      targetPath: $(Build.SourcesDirectory)/dev_bin
+  - script: |
+      VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
+      echo "##vso[task.setvariable variable=VERSION]$VERSION"
+    displayName: 'Create tarball'
+  - task: GitHubRelease@0
+    inputs:
+      gitHubConnection: YACReader
+      assets: $(Build.SourcesDirectory)/dev_bin/**/*.*'
+      title: $VERSION
       
       
