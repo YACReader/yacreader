@@ -226,7 +226,7 @@ isEmpty(DESTDIR) {
 docs.path = $$DATADIR/doc/yacreader
 
 #rename docs for better packageability
-docs.extra = cp ../README.txt ../README
+docs.extra = cp ../README.md ../README
 docs.files = ../README ../CHANGELOG.md
 
 icon.path = $$DATADIR/icons/hicolor/scalable/apps
