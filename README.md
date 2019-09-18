@@ -24,14 +24,15 @@ See [INSTALL.md](./INSTALL.md)
 
 ## Contact
 
-Project home page : www.yacreader.com
-e-mail:
-    info@yacreader.com
-    support@yacreader.com
-Social:
-    Facebook - http://www.facebook.com/YACReader
-    Twitter  - https://twitter.com/yacreader
-    YouTube  - https://www.youtube.com/user/yacreader
+- Project home page : www.yacreader.com
+- e-mail:
+   - info@yacreader.com
+   - support@yacreader.com
+- Social:
+   - Facebook  - http://www.facebook.com/YACReader
+   - Twitter   - https://twitter.com/yacreader
+   - YouTube   - https://www.youtube.com/user/yacreader
+   - Instagram - https://www.instagram.com/yacreader/
 
 If you need help or have any suggestion, please, send me an e-mail.
 
