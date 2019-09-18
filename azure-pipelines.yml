@@ -82,7 +82,7 @@ jobs:
   - script: |
       cd $(Build.SourcesDirectory)
       VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
-      SKIP_CODESIGN=$(System.PullRequest.IsFork)
+      SKIP_CODESIGN="$(tr [A-Z] [a-z] <<< "$(System.PullRequest.IsFork)")"
       ./compileOSX.sh $VERSION $(Build.BuildNumber) $SKIP_CODESIGN
     displayName: 'Build'
   - task: CopyFiles@2
