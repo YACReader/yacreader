@@ -14,8 +14,7 @@ This software has been developed by Luis Ángel San Martín Rodríguez
 
 ### As a package:
 
-[![Packaging status](https://repology.org/badge/vertical-allrepos/yacreader.svg)]
-(https://repology.org/metapackage/yacreader)
+[![Packaging status](https://repology.org/badge/vertical-allrepos/yacreader.svg)](https://repology.org/metapackage/yacreader)
 
 ### From OBS build service:
 
