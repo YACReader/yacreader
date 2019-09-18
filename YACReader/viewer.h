@@ -172,7 +172,6 @@ private:
 public:
     Viewer(QWidget *parent = nullptr);
     ~Viewer();
-    void toggleFullScreen();
     const QPixmap *pixmap();
     //Comic * getComic(){return comic;}
     const BookmarksDialog *getBookmarksDialog() { return bd; }

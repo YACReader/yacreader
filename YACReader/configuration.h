@@ -1,9 +1,9 @@
 #ifndef __CONFIGURATION_H
 #define __CONFIGURATION_H
+#include <QByteArray>
 #include <QString>
 #include <QSize>
 #include <QObject>
-#include <QPoint>
 #include <QColor>
 #include <QSettings>
 #include <QDate>
@@ -22,34 +22,14 @@ class Configuration : public QObject
 private:
     QSettings *settings;
 
-    QString defaultPath;
-    //configuration properties
-    QSize magnifyingGlassSize;
-    QSize gotoSlideSize;
-    float zoomLevel;
-    bool adjustToWidth;
-    bool fullScreen;
-    FlowType flowType;
-    float fitToWidthRatio;
-    QPoint windowPos;
-    QSize windowSize;
-    bool maximized;
-    bool doublePage;
-    bool doubleMangaPage;
-    bool alwaysOnTop;
-    bool adjustToFullSize;
-    QColor backgroundColor;
-
     Configuration();
-    //Configuration(const Configuration & conf);
-    void load(const QString &path = CONF_FILE_PATH);
 
 public:
     static Configuration &getConfiguration()
     {
         static Configuration configuration;
         return configuration;
-    };
+    }
     QSettings *getSettings();
     void load(QSettings *settings);
     QString getDefaultPath() { return settings->value(PATH).toString(); }
@@ -86,10 +66,8 @@ public:
     bool getFullScreen() { return settings->value(FULLSCREEN).toBool(); }
     void setFullScreen(bool f) { settings->setValue(FULLSCREEN, f); }
 
-    QPoint getPos() { return settings->value(Y_WINDOW_POS).toPoint(); }
-    void setPos(QPoint p) { settings->setValue(Y_WINDOW_POS, p); }
-    QSize getSize() { return settings->value(Y_WINDOW_SIZE).toSize(); }
-    void setSize(QSize s) { settings->setValue(Y_WINDOW_SIZE, s); }
+    QByteArray getGeometry() const { return settings->value(Y_WINDOW_GEOMETRY).toByteArray(); }
+    void setGeometry(const QByteArray &g) { settings->setValue(Y_WINDOW_GEOMETRY, g); }
     bool getMaximized() { return settings->value(MAXIMIZED).toBool(); }
     void setMaximized(bool b) { settings->setValue(MAXIMIZED, b); }
     bool getDoublePage() { return settings->value(DOUBLE_PAGE).toBool(); }
