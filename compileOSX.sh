@@ -63,7 +63,7 @@ cp -R release/languages YACReaderLibrary.app/Contents/MacOS/
 cp -R release/languages YACReaderLibraryServer.app/Contents/MacOS/
 
 if [ "$SKIP_CODESIGN" = false ]; then
-./signapps.sh
+	./signapps.sh
 fi
 
 echo "Preparing apps for release, Done."
@@ -93,7 +93,8 @@ sed -i'' -e "s/#BUILD_NUMBER#/$BUILD_NUMBER/g" dmg.json
 appdmg dmg.json "$dest.dmg"
 
 if [ "$SKIP_CODESIGN" = false ]; then
-codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" "./${dest}.dmg"
+	echo "Signing dmg"
+	codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" "./${dest}.dmg"
 fi
 
 echo "Done!"
