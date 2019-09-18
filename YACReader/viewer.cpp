@@ -634,9 +634,30 @@ void Viewer::keyPressEvent(QKeyEvent *event)
         QAbstractScrollArea::keyPressEvent(event);
 }
 
+static void animateScroll(QPropertyAnimation &scroller, const QScrollBar &scrollBar, int delta)
+{
+    int deltaNotFinished = 0;
+    if (scroller.state() == QAbstractAnimation::Running) {
+        deltaNotFinished = scroller.startValue().toInt() - scroller.endValue().toInt();
+        scroller.stop();
+    }
+
+    const int currentPos = scrollBar.sliderPosition();
+    scroller.setDuration(250);
+    scroller.setStartValue(currentPos);
+    scroller.setEndValue(currentPos - delta - deltaNotFinished);
+
+    scroller.start();
+}
+
 void Viewer::wheelEvent(QWheelEvent *event)
 {
     if (render->hasLoadedComic()) {
+        if (event->orientation() == Qt::Horizontal) {
+            animateScroll(*horizontalScroller, *horizontalScrollBar(), event->delta());
+            return;
+        }
+
         if ((event->delta() < 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->maximum())) {
             if (wheelStop) {
                 if (getMovement(event) == Forward) {
@@ -663,20 +684,7 @@ void Viewer::wheelEvent(QWheelEvent *event)
             }
         }
 
-        int deltaNotFinished = 0;
-        if (verticalScroller->state() == QAbstractAnimation::Running) {
-            deltaNotFinished = verticalScroller->startValue().toInt() - verticalScroller->endValue().toInt();
-            verticalScroller->stop();
-        }
-
-        int currentPos = verticalScrollBar()->sliderPosition();
-        verticalScroller->setDuration(250);
-        verticalScroller->setStartValue(currentPos);
-        verticalScroller->setEndValue(currentPos - event->delta() - deltaNotFinished);
-
-        verticalScroller->start();
-
-        //QAbstractScrollArea::wheelEvent(event);
+        animateScroll(*verticalScroller, *verticalScrollBar(), event->delta());
     }
 }
 
