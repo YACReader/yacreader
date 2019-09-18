@@ -9,6 +9,8 @@
 #include <QWaitCondition>
 #include <QMutex>
 
+#include <atomic>
+
 class QLineEdit;
 class QPushButton;
 class QPixmap;
@@ -89,7 +91,7 @@ private:
     QWaitCondition condition;
 
     bool restart;
-    bool working;
+    std::atomic<bool> working;
     int idx;
 
     QSize size;
