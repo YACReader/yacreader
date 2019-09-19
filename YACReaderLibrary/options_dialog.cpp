@@ -44,8 +44,8 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     sw->hide();
 #endif
     // Tray icon settings
-    QGroupBox * trayIconBox = new QGroupBox(tr("Tray icon settings"));
-    QVBoxLayout * trayLayout = new QVBoxLayout();
+    QGroupBox *trayIconBox = new QGroupBox(tr("Tray icon settings"));
+    QVBoxLayout *trayLayout = new QVBoxLayout();
 
     auto apiKeyLayout = new QVBoxLayout();
     auto apiKeyButton = new QPushButton(tr("Edit Comic Vine API key"));

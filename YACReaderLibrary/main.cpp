@@ -21,7 +21,7 @@
 #include "exit_check.h"
 #include "opengl_checker.h"
 #ifdef Q_OS_MACOS
-    #include "trayhandler.h"
+#include "trayhandler.h"
 #endif
 
 #include "QsLog.h"
@@ -130,12 +130,12 @@ int main(int argc, char **argv)
     app.setApplicationVersion(VERSION);
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 
-  // Set window icon according to Freedesktop icon specification
-  // This is mostly relevant for Linux and other Unix systems
-  if (QIcon::hasThemeIcon("YACReaderLibrary")) {
-    app.setWindowIcon(QIcon::fromTheme("YACReaderLibrary"));
-  }
-  // TODO: We might want to add a fallback icon here.
+    // Set window icon according to Freedesktop icon specification
+    // This is mostly relevant for Linux and other Unix systems
+    if (QIcon::hasThemeIcon("YACReaderLibrary")) {
+        app.setWindowIcon(QIcon::fromTheme("YACReaderLibrary"));
+    }
+    // TODO: We might want to add a fallback icon here.
 
     QString destLog = YACReader::getSettingsPath() + "/yacreaderlibrary.log";
     QDir().mkpath(YACReader::getSettingsPath());
@@ -216,18 +216,18 @@ int main(int argc, char **argv)
     }
 
 #ifdef SERVER_RELEASE
-  QSettings * settings = new QSettings(YACReader::getSettingsPath()+"/YACReaderLibrary.ini",QSettings::IniFormat); //TODO unificar la creaci�n del fichero de config con el servidor
-  settings->beginGroup("libraryConfig");
+    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creaci�n del fichero de config con el servidor
+    settings->beginGroup("libraryConfig");
 
-  s = new Startup();
+    s = new Startup();
 
     if (settings->value(SERVER_ON, true).toBool()) {
         s->start();
     }
 #endif
-  QLOG_INFO() << "YACReaderLibrary attempting to start";
+    QLOG_INFO() << "YACReaderLibrary attempting to start";
 
-  logSystemAndConfig();
+    logSystemAndConfig();
 
     if (YACReaderLocalServer::isRunning()) //s�lo se permite una instancia de YACReaderLibrary
     {
@@ -241,24 +241,24 @@ int main(int argc, char **argv)
 
     auto mw = new LibraryWindow();
 
-  mw->connect(localServer,SIGNAL(comicUpdated(quint64, const ComicDB &)),mw,SLOT(updateComicsView(quint64, const ComicDB &)), Qt::QueuedConnection);
+    mw->connect(localServer, SIGNAL(comicUpdated(quint64, const ComicDB &)), mw, SLOT(updateComicsView(quint64, const ComicDB &)), Qt::QueuedConnection);
 
-  //connections to localServer
+    //connections to localServer
 
-  mw->show();
+    mw->show();
 
-  int ret = app.exec();
+    int ret = app.exec();
 
     QLOG_INFO() << "YACReaderLibrary closed with exit code :" << ret;
 
     YACReader::exitCheck(ret);
 
-  //shutdown
-  s->stop();
-  delete s;
-  localServer->close();
-  delete localServer;
-  delete mw;
+    //shutdown
+    s->stop();
+    delete s;
+    localServer->close();
+    delete localServer;
+    delete mw;
 
     QsLogging::Logger::destroyInstance();
 
