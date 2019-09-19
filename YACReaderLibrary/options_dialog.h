@@ -34,6 +34,9 @@ private:
     QLabel *opacityLabel;
     QLabel *blurLabel;
     QPushButton *resetButton;
+    QCheckBox *displayContinueReadingBannerCheck;
+    QCheckBox *trayIconCheckbox;
+    QCheckBox *startToTrayCheckbox;
 };
 
 #endif
