@@ -47,6 +47,24 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     QGroupBox *trayIconBox = new QGroupBox(tr("Tray icon settings"));
     QVBoxLayout *trayLayout = new QVBoxLayout();
 
+    trayIconCheckbox = new QCheckBox(tr("Minimize to tray"));
+    startToTrayCheckbox = new QCheckBox(tr("Start minimized"));
+
+    connect(trayIconCheckbox, &QCheckBox::clicked,
+            [=](bool checked) {
+                settings->setValue(MINIMIZE_TO_TRAY, checked);
+                startToTrayCheckbox->setEnabled(checked);
+                emit optionsChanged();
+            });
+    connect(startToTrayCheckbox, &QCheckBox::clicked,
+            [=](bool checked) {
+                settings->setValue(START_TO_TRAY, checked);
+            });
+
+    trayLayout->addWidget(trayIconCheckbox);
+    trayLayout->addWidget(startToTrayCheckbox);
+    trayIconBox->setLayout(trayLayout);
+
     auto apiKeyLayout = new QVBoxLayout();
     auto apiKeyButton = new QPushButton(tr("Edit Comic Vine API key"));
     apiKeyLayout->addWidget(apiKeyButton);
