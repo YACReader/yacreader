@@ -10,8 +10,21 @@ jobs:
     vmImage: 'vs2017-win2016'
   steps:
   - template: azure-pipelines-build-number.yml
-- job: Linux
+- job: CodeFormatValidation
   dependsOn: Initialization
+  pool:
+    vmImage: 'macOS-10.14'
+  steps:
+  - script: |
+      brew install clang-format
+    displayName: 'Install dependencies'
+  - script: |
+      cd $(Build.SourcesDirectory)
+      find . \( -name '*.h' -or -name '*.cpp' -or -name '*.c' -or -name '*.mm' -or -name '*.m' \) -print0 | xargs -0 clang-format -style=file -i
+      if [ "$(git diff $(Build.SourceVersion))" != "" ]; then exit 1; fi
+    displayName: 'clang-format'
+- job: Linux
+  dependsOn: CodeFormatValidation
   pool:
     vmImage: 'ubuntu-16.04'
   steps:
@@ -45,7 +58,7 @@ jobs:
       path: $(Build.ArtifactStagingDirectory)
       artifactName: src $(Build.BuildNumber) tarball
 - job: MacOS
-  dependsOn: Initialization
+  dependsOn: CodeFormatValidation
   variables:
   - group: macos-codesign
   pool:
@@ -55,7 +68,6 @@ jobs:
       brew install qt
       brew link qt --force
       brew install create-dmg
-      brew install clang-format
       brew install node
       brew link --overwrite node
       npm install -g appdmg
@@ -63,11 +75,6 @@ jobs:
       tar xjf $(Build.SourcesDirectory)/compressed_archive/p7zip_16.02_src_all.tar.bz2 -C $(Build.SourcesDirectory)/compressed_archive
       mv $(Build.SourcesDirectory)/compressed_archive/p7zip_16.02 $(Build.SourcesDirectory)/compressed_archive/libp7zip
     displayName: 'Install dependencies'
-  - script: |
-      cd $(Build.SourcesDirectory)
-      find . \( -name '*.h' -or -name '*.cpp' -or -name '*.c' -or -name '*.mm' -or -name '*.m' \) -print0 | xargs -0 clang-format -style=file -i
-      if [ "$(git diff $(Build.SourceVersion))" != "" ]; then exit 1; fi
-    displayName: 'Check format'
   - task: InstallAppleCertificate@2
     inputs:
       certSecureFile: 'developerID_application.p12'
@@ -75,7 +82,8 @@ jobs:
   - script: |
       cd $(Build.SourcesDirectory)
       VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
-      ./compileOSX.sh $VERSION $(Build.BuildNumber)
+      SKIP_CODESIGN="$(tr [A-Z] [a-z] <<< "$(System.PullRequest.IsFork)")"
+      ./compileOSX.sh $VERSION $(Build.BuildNumber) $SKIP_CODESIGN
     displayName: 'Build'
   - task: CopyFiles@2
     inputs:

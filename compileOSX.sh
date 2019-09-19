@@ -5,7 +5,9 @@ VERSION=${1:-"9.5.0"}
 
 BUILD_NUMBER=${2:-"0"}
 
-if [ "$3" == "clean" ]; then
+SKIP_CODESIGN=${3:-false}
+
+if [ "$4" == "clean" ]; then
 ./cleanOSX.sh
 fi
 
@@ -35,7 +37,36 @@ cp -R YACReader/YACReader.app YACReader.app
 cp -R YACReaderLibrary/YACReaderLibrary.app YACReaderLibrary.app
 cp -R YACReaderLibraryServer/YACReaderLibraryServer.app YACReaderLibraryServer.app
 
-./releaseOSX.sh
+hash macdeployqt 2>/dev/null || { echo >&2 "macdeployqt command not available. Please add the bin subfolder of your Qt installation  to the PATH environment variable."; exit 1; }
+
+echo "Preparing apps for release ..."
+
+macdeployqt YACReader.app
+macdeployqt YACReaderLibrary.app -qmldir=YACReaderLibrary/qml
+macdeployqt YACReaderLibraryServer.app
+
+mkdir -p YACReader.app/Contents/MacOS/utils
+mkdir -p YACReaderLibrary.app/Contents/MacOS/utils
+mkdir -p YACReaderLibraryServer.app/Contents/MacOS/utils
+
+cp dependencies/qrencode/macx/libqrencode.4.0.0.dylib \
+YACReaderLibrary.app/Contents/MacOS/utils/libqrencode.dylib
+
+cp -R dependencies/7zip/macx/* YACReader.app/Contents/MacOS/utils/
+cp -R dependencies/7zip/macx/* YACReaderLibrary.app/Contents/MacOS/utils/
+cp -R dependencies/7zip/macx/* YACReaderLibraryServer.app/Contents/MacOS/utils/
+
+cp -R release/server YACReaderLibrary.app/Contents/MacOS/
+cp -R release/server YACReaderLibraryServer.app/Contents/MacOS/
+cp -R release/languages YACReader.app/Contents/MacOS/
+cp -R release/languages YACReaderLibrary.app/Contents/MacOS/
+cp -R release/languages YACReaderLibraryServer.app/Contents/MacOS/
+
+if [ "$SKIP_CODESIGN" = false ]; then
+	./signapps.sh
+fi
+
+echo "Preparing apps for release, Done."
 
 echo "Copying to destination folder"
 dest="YACReader-$VERSION.$BUILD_NUMBER MacOSX-Intel"
@@ -61,6 +92,9 @@ sed -i'' -e "s/#VERSION#/$VERSION/g" dmg.json
 sed -i'' -e "s/#BUILD_NUMBER#/$BUILD_NUMBER/g" dmg.json
 appdmg dmg.json "$dest.dmg"
 
-codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" "./${dest}.dmg"
+if [ "$SKIP_CODESIGN" = false ]; then
+	echo "Signing dmg"
+	codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" "./${dest}.dmg"
+fi
 
 echo "Done!"

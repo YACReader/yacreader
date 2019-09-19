@@ -10,7 +10,7 @@ parameters:
 
 jobs:
 - job: ${{ parameters.name }}
-  dependsOn: Initialization
+  dependsOn: CodeFormatValidation
   pool:
     vmImage: 'vs2017-win2016'
   steps:
