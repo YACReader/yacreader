@@ -150,7 +150,7 @@ void LibraryWindow::setupUI()
         trayIcon.setIcon(QIcon(":/icon.ico"));
 #else
 #ifdef Q_OS_MACOS
-        auto icon = QIcon(":/YACReaderLibrary.icns");
+        auto icon = QIcon(":/macostrayicon.svg");
         icon.setIsMask(true);
         trayIcon.setIcon(icon);
 #else
