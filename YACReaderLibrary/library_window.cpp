@@ -143,13 +143,20 @@ void LibraryWindow::setupUI()
     // If a window icon was set in main() we reuse it for the tray too.
     // This allows support for third party icon themes on Freedesktop(Linux/Unix)
     // systems.
-    // TODO: Luis, please tweak this to your liking and add OS macros if needed.
     if (!QApplication::windowIcon().isNull()) {
         trayIcon.setIcon(QApplication::windowIcon());
     } else {
-        // TODO: Luis: This is a placeholder. Add MacOS, Windows and maybe a fallback
-        // for other systems here.
+#ifdef Q_OS_WIN
+        trayIcon.setIcon(QIcon(":/icon.ico"));
+#else
+#ifdef Q_OS_MACOS
+        auto icon = QIcon(":/YACReaderLibrary.icns");
+        icon.setIsMask(true);
+        trayIcon.setIcon(icon);
+#else
         trayIcon.setIcon(QIcon(":/images/iconLibrary.png"));
+#endif
+#endif
     }
 
     connect(&trayIcon, &QSystemTrayIcon::activated,
