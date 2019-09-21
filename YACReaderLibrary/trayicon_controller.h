@@ -4,6 +4,8 @@
 #include <QtWidgets>
 #include <QSystemTrayIcon>
 
+class LibraryWindow;
+
 namespace YACReader {
 
 class TrayIconController : public QObject
@@ -11,7 +13,7 @@ class TrayIconController : public QObject
     Q_OBJECT
 public:
     TrayIconController(QSettings *settings,
-                       QMainWindow *window);
+                       LibraryWindow *window);
 
     void updateIconVisibility();
 
@@ -24,7 +26,7 @@ public slots:
 
 private:
     QSettings *settings;
-    QMainWindow *window;
+    LibraryWindow *window;
 
     QMenu *trayIconMenu;
 };

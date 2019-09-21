@@ -2,6 +2,8 @@
 
 #include "yacreader_global_gui.h"
 
+#include "library_window.h"
+
 #include <QtWidgets>
 #include <QMessageBox>
 
@@ -11,7 +13,7 @@
 
 using namespace YACReader;
 
-TrayIconController::TrayIconController(QSettings *settings, QMainWindow *window)
+TrayIconController::TrayIconController(QSettings *settings, LibraryWindow *window)
     : QObject(nullptr), settings(settings), window(window)
 {
 
