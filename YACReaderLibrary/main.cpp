@@ -245,7 +245,15 @@ int main(int argc, char **argv)
 
     //connections to localServer
 
-    mw->show();
+    // start as tray
+    if (!settings->value(START_TO_TRAY, false).toBool() || !settings->value(CLOSE_TO_TRAY, false).toBool()) {
+        mw->show();
+    }
+#ifdef Q_OS_MACOS
+    else {
+        OSXHideDockIcon();
+    }
+#endif
 
     int ret = app.exec();
 
