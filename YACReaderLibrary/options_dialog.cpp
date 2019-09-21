@@ -52,7 +52,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 
     connect(trayIconCheckbox, &QCheckBox::clicked,
             [=](bool checked) {
-                settings->setValue(MINIMIZE_TO_TRAY, checked);
+                settings->setValue(CLOSE_TO_TRAY, checked);
                 startToTrayCheckbox->setEnabled(checked);
                 emit optionsChanged();
             });
@@ -168,7 +168,7 @@ void OptionsDialog::restoreOptions(QSettings *settings)
 {
     YACReaderOptionsDialog::restoreOptions(settings);
 
-    trayIconCheckbox->setChecked(settings->value(MINIMIZE_TO_TRAY, true).toBool());
+    trayIconCheckbox->setChecked(settings->value(CLOSE_TO_TRAY, false).toBool());
     startToTrayCheckbox->setChecked(settings->value(START_TO_TRAY, false).toBool());
     startToTrayCheckbox->setEnabled(trayIconCheckbox->isChecked());
 
