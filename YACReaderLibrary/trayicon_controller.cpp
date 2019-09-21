@@ -47,7 +47,7 @@ TrayIconController::TrayIconController(QSettings *settings, LibraryWindow *windo
     connect(restoreAction, &QAction::triggered, this, &TrayIconController::showWindow);
 
     auto quitAction = new QAction(tr("&Quit"), this);
-    connect(quitAction, &QAction::triggered, window, &QMainWindow::close);
+    connect(quitAction, &QAction::triggered, window, &LibraryWindow::closeApp);
 
     trayIconMenu = new QMenu(this->window);
     trayIconMenu->addAction(restoreAction);
