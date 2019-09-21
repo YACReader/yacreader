@@ -43,8 +43,6 @@ TrayIconController::TrayIconController(QSettings *settings, LibraryWindow *windo
                 }
             });
 
-    updateIconVisibility();
-
     auto restoreAction = new QAction(tr("&Restore"), this);
     connect(restoreAction, &QAction::triggered, this, &TrayIconController::showWindow);
 
@@ -57,6 +55,8 @@ TrayIconController::TrayIconController(QSettings *settings, LibraryWindow *windo
     trayIconMenu->addAction(quitAction);
 
     trayIcon.setContextMenu(trayIconMenu);
+
+    updateIconVisibility();
 }
 
 void TrayIconController::updateIconVisibility()
