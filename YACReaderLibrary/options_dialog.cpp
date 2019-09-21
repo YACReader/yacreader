@@ -44,11 +44,11 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     sw->hide();
 #endif
     // Tray icon settings
-    QGroupBox *trayIconBox = new QGroupBox(tr("Tray icon settings"));
+    QGroupBox *trayIconBox = new QGroupBox(tr("Tray icon settings (experimental)"));
     QVBoxLayout *trayLayout = new QVBoxLayout();
 
-    trayIconCheckbox = new QCheckBox(tr("Minimize to tray"));
-    startToTrayCheckbox = new QCheckBox(tr("Start minimized"));
+    trayIconCheckbox = new QCheckBox(tr("Close to tray"));
+    startToTrayCheckbox = new QCheckBox(tr("Start into the system tray"));
 
     connect(trayIconCheckbox, &QCheckBox::clicked,
             [=](bool checked) {
