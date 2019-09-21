@@ -388,7 +388,8 @@ public slots:
     void checkMaxNumLibraries();
     void showErrorUpgradingLibrary(const QString &path);
 
-    void closeApp(QCloseEvent *event);
+    void prepareToCloseApp();
+    void closeApp();
 
 private:
     //fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309

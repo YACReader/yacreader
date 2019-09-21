@@ -2314,11 +2314,12 @@ extern Startup *s;
 void LibraryWindow::closeEvent(QCloseEvent *event)
 {
     if (!trayIconController->handleCloseToTrayIcon(event)) {
-        closeApp(event);
+        event->accept();
+        closeApp();
     }
 }
 
-void LibraryWindow::closeApp(QCloseEvent *event)
+void LibraryWindow::prepareToCloseApp()
 {
     s->stop();
     settings->setValue(MAIN_WINDOW_GEOMETRY, saveGeometry());
@@ -2327,8 +2328,13 @@ void LibraryWindow::closeApp(QCloseEvent *event)
     sideBar->close();
 
     QApplication::instance()->processEvents();
-    event->accept();
-    QMainWindow::closeEvent(event);
+}
+
+void LibraryWindow::closeApp()
+{
+    prepareToCloseApp();
+
+    qApp->exit(0);
 }
 
 void LibraryWindow::showNoLibrariesWidget()
