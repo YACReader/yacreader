@@ -5,7 +5,6 @@
 #include <QMap>
 #include <QModelIndex>
 #include <QFileInfo>
-#include <QSystemTrayIcon>
 
 #include "yacreader_global_gui.h"
 #include "yacreader_libraries.h"
@@ -76,6 +75,10 @@ class EmptyLabelWidget;
 class EmptySpecialListWidget;
 class EmptyReadingListWidget;
 class YACReaderComicsViewsManager;
+
+namespace YACReader {
+class TrayIconController;
+}
 
 #include "comic_db.h"
 
@@ -385,7 +388,7 @@ public slots:
     void checkMaxNumLibraries();
     void showErrorUpgradingLibrary(const QString &path);
 
-    void changeEvent(QEvent *event);
+    void closeApp(QCloseEvent *event);
 
 private:
     //fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
@@ -393,7 +396,8 @@ private:
     QPoint previousPos;
     QSize previousSize;
     std::future<void> upgradeLibraryFuture;
-    QSystemTrayIcon trayIcon;
+
+    TrayIconController *trayIconController;
 };
 
 #endif

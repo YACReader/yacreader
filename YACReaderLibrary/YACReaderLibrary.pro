@@ -13,6 +13,7 @@ INCLUDEPATH += . \
               ./comic_vine/model
 
 DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY
+QMAKE_MAC_SDK = macosx10.15
 
 # load default build flags
 include (../config.pri)
@@ -115,6 +116,7 @@ HEADERS += comic_flow.h \
   ../common/pdf_comic.h \
   no_libraries_widget.h \
   import_widget.h \
+  trayicon_controller.h \
   yacreader_local_server.h \
   yacreader_main_toolbar.h \
   comics_remover.h \
@@ -184,6 +186,7 @@ SOURCES += comic_flow.cpp \
     ../common/onstart_flow_selection_dialog.cpp \
     no_libraries_widget.cpp \
     import_widget.cpp \
+    trayicon_controller.cpp \
     yacreader_local_server.cpp \
     yacreader_main_toolbar.cpp \
     comics_remover.cpp \

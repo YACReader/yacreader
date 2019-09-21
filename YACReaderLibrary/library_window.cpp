@@ -81,14 +81,15 @@
 
 #include "yacreader_comics_views_manager.h"
 
+#include "trayicon_controller.h"
+
 #include "QsLog.h"
 
 #ifdef Q_OS_WIN
 #include <shellapi.h>
 #endif
-#ifdef Q_OS_MACOS
-#include "trayhandler.h"
-#endif
+
+using namespace YACReader;
 
 LibraryWindow::LibraryWindow()
     : QMainWindow(), fullscreen(false), previousFilter(""), fetching(false), status(LibraryWindow::Normal), removeError(false)
@@ -140,50 +141,26 @@ void LibraryWindow::setupUI()
         //if(settings->value(USE_OPEN_GL).toBool() == false)
         showMaximized();
 
-    // If a window icon was set in main() we reuse it for the tray too.
-    // This allows support for third party icon themes on Freedesktop(Linux/Unix)
-    // systems.
-    if (!QApplication::windowIcon().isNull()) {
-        trayIcon.setIcon(QApplication::windowIcon());
-    } else {
-#ifdef Q_OS_WIN
-        trayIcon.setIcon(QIcon(":/icon.ico"));
-#else
-#ifdef Q_OS_MACOS
-        auto icon = QIcon(":/macostrayicon.svg");
-        icon.setIsMask(true);
-        trayIcon.setIcon(icon);
-#else
-        trayIcon.setIcon(QIcon(":/images/iconLibrary.png"));
-#endif
-#endif
-    }
-
-    connect(&trayIcon, &QSystemTrayIcon::activated,
-            [=](QSystemTrayIcon::ActivationReason reason) {
-                if (reason == QSystemTrayIcon::Trigger) {
-#ifdef Q_OS_MACOS
-                    OSXShowDockIcon();
-#endif
-                    setWindowState((windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
-                    show();
-                }
-            });
-    trayIcon.setVisible(settings->value(MINIMIZE_TO_TRAY, true).toBool());
+    trayIconController = new TrayIconController(settings, this);
 }
 
-void LibraryWindow::changeEvent(QEvent *event)
+/*void LibraryWindow::changeEvent(QEvent *event)
 {
+    QMainWindow::changeEvent(event);
+
     if (event->type() == QEvent::WindowStateChange && isMinimized() &&
         trayIcon.isVisible()) {
 #ifdef Q_OS_MACOS
         OSXHideDockIcon();
 #endif
         hide();
-        return;
+    } else if (event->type() == QEvent::WindowStateChange) {
+#ifdef Q_OS_MACOS
+        OSXShowDockIcon();
+#endif
+        show();
     }
-    QMainWindow::changeEvent(event);
-}
+}*/
 
 void LibraryWindow::doLayout()
 {
@@ -2297,8 +2274,9 @@ void LibraryWindow::importLibrary(QString clc, QString destPath, QString name)
 
 void LibraryWindow::reloadOptions()
 {
-    //comicFlow->setFlowType(flowType);
     comicsViewsManager->comicsView->updateConfig(settings);
+
+    trayIconController->updateIconVisibility();
 }
 
 QString LibraryWindow::currentPath()
@@ -2334,6 +2312,13 @@ void LibraryWindow::showImportComicsInfo()
 #include "startup.h"
 extern Startup *s;
 void LibraryWindow::closeEvent(QCloseEvent *event)
+{
+    if (!trayIconController->handleCloseToTrayIcon(event)) {
+        closeApp(event);
+    }
+}
+
+void LibraryWindow::closeApp(QCloseEvent *event)
 {
     s->stop();
     settings->setValue(MAIN_WINDOW_GEOMETRY, saveGeometry());
