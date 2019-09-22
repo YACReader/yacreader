@@ -103,7 +103,11 @@ void TrayIconController::showWindow()
     OSXShowDockIcon();
     window->showNormal();
 #else
-    window->show();
+    if (window->isMinimized()) {
+        window->setWindowState((window->windowState() & ~Qt::WindowMinimized));
+    } else {
+        window->show();
+    }
 #endif
     window->raise(); // for MacOS
     window->activateWindow(); // for Windows
