@@ -96,7 +96,7 @@ void TrayIconController::showWindow()
 #ifdef Q_OS_MACOS
     OSXShowDockIcon();
 #endif
-    window->showNormal();
+    window->show();
     window->raise(); // for MacOS
     window->activateWindow(); // for Windows
 }
