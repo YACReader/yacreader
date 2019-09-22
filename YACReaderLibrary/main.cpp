@@ -20,6 +20,9 @@
 #include "yacreader_libraries.h"
 #include "exit_check.h"
 #include "opengl_checker.h"
+#ifdef Q_OS_MACOS
+#include "trayhandler.h"
+#endif
 
 #include "QsLog.h"
 #include "QsLogDest.h"
@@ -127,9 +130,12 @@ int main(int argc, char **argv)
     app.setApplicationVersion(VERSION);
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 
+    // Set window icon according to Freedesktop icon specification
+    // This is mostly relevant for Linux and other Unix systems
     if (QIcon::hasThemeIcon("YACReaderLibrary")) {
         app.setWindowIcon(QIcon::fromTheme("YACReaderLibrary"));
     }
+    // TODO: We might want to add a fallback icon here.
 
     QString destLog = YACReader::getSettingsPath() + "/yacreaderlibrary.log";
     QDir().mkpath(YACReader::getSettingsPath());
@@ -239,7 +245,15 @@ int main(int argc, char **argv)
 
     //connections to localServer
 
-    mw->show();
+    // start as tray
+    if (!settings->value(START_TO_TRAY, false).toBool() || !settings->value(CLOSE_TO_TRAY, false).toBool()) {
+        mw->show();
+    }
+#ifdef Q_OS_MACOS
+    else {
+        OSXHideDockIcon();
+    }
+#endif
 
     int ret = app.exec();
 

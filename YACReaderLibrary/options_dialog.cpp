@@ -43,6 +43,27 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 #ifndef NO_OPENGL
     sw->hide();
 #endif
+    // Tray icon settings
+    QGroupBox *trayIconBox = new QGroupBox(tr("Tray icon settings (experimental)"));
+    QVBoxLayout *trayLayout = new QVBoxLayout();
+
+    trayIconCheckbox = new QCheckBox(tr("Close to tray"));
+    startToTrayCheckbox = new QCheckBox(tr("Start into the system tray"));
+
+    connect(trayIconCheckbox, &QCheckBox::clicked,
+            [=](bool checked) {
+                settings->setValue(CLOSE_TO_TRAY, checked);
+                startToTrayCheckbox->setEnabled(checked);
+                emit optionsChanged();
+            });
+    connect(startToTrayCheckbox, &QCheckBox::clicked,
+            [=](bool checked) {
+                settings->setValue(START_TO_TRAY, checked);
+            });
+
+    trayLayout->addWidget(trayIconCheckbox);
+    trayLayout->addWidget(startToTrayCheckbox);
+    trayIconBox->setLayout(trayLayout);
 
     auto apiKeyLayout = new QVBoxLayout();
     auto apiKeyButton = new QPushButton(tr("Edit Comic Vine API key"));
@@ -115,6 +136,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 
     auto generalW = new QWidget;
     generalW->setLayout(generalLayout);
+    generalLayout->addWidget(trayIconBox);
     generalLayout->addWidget(shortcutsBox);
     generalLayout->addWidget(apiKeyBox);
     generalLayout->addStretch();
@@ -145,6 +167,10 @@ void OptionsDialog::editApiKey()
 void OptionsDialog::restoreOptions(QSettings *settings)
 {
     YACReaderOptionsDialog::restoreOptions(settings);
+
+    trayIconCheckbox->setChecked(settings->value(CLOSE_TO_TRAY, false).toBool());
+    startToTrayCheckbox->setChecked(settings->value(START_TO_TRAY, false).toBool());
+    startToTrayCheckbox->setEnabled(trayIconCheckbox->isChecked());
 
     bool useBackgroundImage = settings->value(USE_BACKGROUND_IMAGE_IN_GRID_VIEW, true).toBool();
 

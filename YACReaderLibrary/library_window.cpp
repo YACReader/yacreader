@@ -81,11 +81,15 @@
 
 #include "yacreader_comics_views_manager.h"
 
+#include "trayicon_controller.h"
+
 #include "QsLog.h"
 
 #ifdef Q_OS_WIN
 #include <shellapi.h>
 #endif
+
+using namespace YACReader;
 
 LibraryWindow::LibraryWindow()
     : QMainWindow(), fullscreen(false), previousFilter(""), fetching(false), status(LibraryWindow::Normal), removeError(false)
@@ -136,37 +140,26 @@ void LibraryWindow::setupUI()
     else
         //if(settings->value(USE_OPEN_GL).toBool() == false)
         showMaximized();
-}
-/* //disabled until icons are ready and macos native code is done
-        trayIcon.setIcon(QApplication::windowIcon());
-        trayIcon.show();
-        connect(&trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
-                this, SLOT(trayActivation(QSystemTrayIcon::ActivationReason)));
-    }
+
+    trayIconController = new TrayIconController(settings, this);
 }
 
-void LibraryWindow::trayActivation(QSystemTrayIcon::ActivationReason reason)
+/*void LibraryWindow::changeEvent(QEvent *event)
 {
-  if (reason == QSystemTrayIcon::Trigger)
-  {
-    setWindowState((windowState() & ~Qt::WindowMinimized));
-    show();
-    activateWindow();
-    raise();
-  }
-}
-
-
-void LibraryWindow::changeEvent(QEvent *event)
-{
-  if (event->type() == QEvent::WindowStateChange && isMinimized())
-  {
-    hide();
-  }
-  else
-  {
     QMainWindow::changeEvent(event);
-  }
+
+    if (event->type() == QEvent::WindowStateChange && isMinimized() &&
+        trayIcon.isVisible()) {
+#ifdef Q_OS_MACOS
+        OSXHideDockIcon();
+#endif
+        hide();
+    } else if (event->type() == QEvent::WindowStateChange) {
+#ifdef Q_OS_MACOS
+        OSXShowDockIcon();
+#endif
+        show();
+    }
 }*/
 
 void LibraryWindow::doLayout()
@@ -2281,8 +2274,9 @@ void LibraryWindow::importLibrary(QString clc, QString destPath, QString name)
 
 void LibraryWindow::reloadOptions()
 {
-    //comicFlow->setFlowType(flowType);
     comicsViewsManager->comicsView->updateConfig(settings);
+
+    trayIconController->updateIconVisibility();
 }
 
 QString LibraryWindow::currentPath()
@@ -2319,6 +2313,14 @@ void LibraryWindow::showImportComicsInfo()
 extern Startup *s;
 void LibraryWindow::closeEvent(QCloseEvent *event)
 {
+    if (!trayIconController->handleCloseToTrayIcon(event)) {
+        event->accept();
+        closeApp();
+    }
+}
+
+void LibraryWindow::prepareToCloseApp()
+{
     s->stop();
     settings->setValue(MAIN_WINDOW_GEOMETRY, saveGeometry());
 
@@ -2326,8 +2328,13 @@ void LibraryWindow::closeEvent(QCloseEvent *event)
     sideBar->close();
 
     QApplication::instance()->processEvents();
-    event->accept();
-    QMainWindow::closeEvent(event);
+}
+
+void LibraryWindow::closeApp()
+{
+    prepareToCloseApp();
+
+    qApp->exit(0);
 }
 
 void LibraryWindow::showNoLibrariesWidget()
@@ -2506,14 +2513,14 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
 /*
 void LibraryWindow::showSocial()
 {
-	socialDialog->move(this->mapToGlobal(QPoint(width()-socialDialog->width()-10, centralWidget()->pos().y()+10)));
+        socialDialog->move(this->mapToGlobal(QPoint(width()-socialDialog->width()-10, centralWidget()->pos().y()+10)));
 
-	QModelIndexList indexList = getSelectedComics();
+        QModelIndexList indexList = getSelectedComics();
 
-	ComicDB comic = dmCV->getComic(indexList.at(0));
+        ComicDB comic = dmCV->getComic(indexList.at(0));
 
-	socialDialog->setComic(comic,currentPath());
-	socialDialog->setHidden(false);
+        socialDialog->setComic(comic,currentPath());
+        socialDialog->setHidden(false);
 }*/
 
 void LibraryWindow::libraryAlreadyExists(const QString &name)
