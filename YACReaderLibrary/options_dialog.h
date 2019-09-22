@@ -24,7 +24,6 @@ private slots:
     void backgroundImageOpacitySliderChanged(int value);
     void backgroundImageBlurRadiusSliderChanged(int value);
     void useCurrentComicCoverCheckClicked(bool checked);
-    void showCurrentComicBannerCheckClicked(bool checked);
     void resetToDefaults();
 
 private:
