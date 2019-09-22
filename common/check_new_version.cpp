@@ -13,7 +13,7 @@
 #define PREVIOUS_VERSION_TESTING "6.0.0"
 
 HttpVersionChecker::HttpVersionChecker()
-    : HttpWorker("https://bitbucket.org/luisangelsm/yacreader/wiki/Home")
+    : HttpWorker("https://raw.githubusercontent.com/YACReader/yacreader/master/common/yacreader_global.h")
 {
     connect(this, SIGNAL(dataReady(const QByteArray &)), this, SLOT(checkNewVersion(const QByteArray &)));
 }
@@ -25,17 +25,7 @@ void HttpVersionChecker::checkNewVersion(const QByteArray &data)
 
 bool HttpVersionChecker::checkNewVersion(QString sourceContent)
 {
-#ifdef Q_OS_WIN32
-    QRegExp rx("YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}win32");
-#endif
-
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
-    QRegExp rx("YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}X11");
-#endif
-
-#ifdef Q_OS_MAC
-    QRegExp rx("YACReader\\-([0-9]+).([0-9]+).([0-9]+)\\.?([0-9]+)?.{0,5}Mac");
-#endif
+    QRegExp rx("#define VERSION \"([0-9]+).([0-9]+).([0-9]+)\"");
 
     int index = 0;
     bool newVersion = false;
