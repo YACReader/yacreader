@@ -38,7 +38,13 @@ TrayIconController::TrayIconController(QSettings *settings, LibraryWindow *windo
 
     connect(&trayIcon, &QSystemTrayIcon::activated,
             [=](QSystemTrayIcon::ActivationReason reason) {
-                if (reason == QSystemTrayIcon::DoubleClick) {
+#ifdef Q_OS_LINUX
+                auto expectedReason = QSystemTrayIcon::Trigger;
+#else
+                auto expectedReason = QSystemTrayIcon::DoubleClick;
+#endif
+
+                if (reason == expectedReason) {
                     showWindow();
                 }
             });
