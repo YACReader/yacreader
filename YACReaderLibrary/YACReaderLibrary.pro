@@ -67,10 +67,6 @@ macx {
   QT += macextras gui-private
 }
 
-unix {
-  CONFIG += c++1z
-}
-
 #CONFIG += release
 CONFIG -= flat
 QT += sql network widgets script

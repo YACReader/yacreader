@@ -26,7 +26,7 @@ int QueryParser::TreeNode::buildSqlString(std::string &sqlString, int bindPositi
             }
             oss << "UPPER(c.filename) LIKE UPPER(:bindPosition" << bindPosition << ") OR ";
             oss << "UPPER(f.name) LIKE UPPER(:bindPosition" << bindPosition << ")) ";
-        } else if (isIn(fieldType(children[0].t), FieldType::numeric, FieldType::boolean)) {
+        } else if (isIn(fieldType(children[0].t), { FieldType::numeric, FieldType::boolean })) {
             oss << "ci." << children[0].t << " = :bindPosition" << bindPosition << " ";
         } else if (fieldType(children[0].t) == FieldType::filename) {
             oss << "(UPPER(c." << children[0].t << ") LIKE UPPER(:bindPosition" << bindPosition << ")) ";
@@ -56,7 +56,7 @@ int QueryParser::TreeNode::bindValues(QSqlQuery &selectQuery, int bindPosition) 
     if (t == "token") {
         std::ostringstream oss;
         oss << ":bindPosition" << ++bindPosition;
-        if (isIn(fieldType(children[0].t), FieldType::numeric, FieldType::boolean)) {
+        if (isIn(fieldType(children[0].t), { FieldType::numeric, FieldType::boolean })) {
             selectQuery.bindValue(oss.str().c_str(), std::stoi(children[1].t));
         } else {
             selectQuery.bindValue(oss.str().c_str(), ("%%" + children[1].t + "%%").c_str());
@@ -201,7 +201,7 @@ QueryParser::TreeNode QueryParser::andExpression()
         return { "and", { lhs, andExpression() } };
     }
 
-    if ((isIn(tokenType(), TokenType::atWord, TokenType::word, TokenType::quotedWord) || token() == "(") && lcaseToken() != "or") {
+    if ((isIn(tokenType(), { TokenType::atWord, TokenType::word, TokenType::quotedWord }) || token() == "(") && lcaseToken() != "or") {
         return { "and", { lhs, andExpression() } };
     }
 
@@ -227,7 +227,7 @@ QueryParser::TreeNode QueryParser::locationExpression()
         }
         return res;
     }
-    if (!isIn(tokenType(), TokenType::atWord, TokenType::word, TokenType::quotedWord)) {
+    if (!isIn(tokenType(), { TokenType::atWord, TokenType::word, TokenType::quotedWord })) {
         throw std::invalid_argument("Invalid syntax. Expected a lookup name or a word");
     }
     return baseToken();
