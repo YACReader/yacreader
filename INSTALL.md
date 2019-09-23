@@ -28,7 +28,8 @@ folder. To build it, enter the folder and run the commands described above.
 	- network
 - A pdf rendering backend (optional, see below)
 - qrencode (optional)
-- (lib)unarr (see below)
+- 7zip or p7zip (see below)
+- (lib)unarr (optional, see below)
 
 Not all dependencies are needed at build time. For example the qml components in
 YACReaderLibrary (GridView, InfoView) will only show a white page if the
@@ -39,7 +40,16 @@ This can also happen if these dependencies are too old (i.e Qt < 5.6 is used).
 
 ### Decompression
 
-YACReader uses [(lib)unarr](https://github.com/selmf/unarr) for comic book archive
+Configure the library you want to use throught `qmake` `CONFIG`. `CONFIG += 7zip` or `CONFIG += unarr`, if not specified `7zip` is used in MacOS and Windows and `unarr` in Linux.
+
+#### 7zip
+
+YACReader uses by default [7zip](https://www.7-zip.org/) for comic book archive
+decompression. In MacOS and Linux, it uses [p7zip](http://p7zip.sourceforge.net/). Please read `compressed_archive/README_7zip.txt` for more details. This is the recomended library since supports a wider variety of formats, including RAR5 and 7z.
+
+#### unarr
+
+YACReader can use [(lib)unarr](https://github.com/selmf/unarr) for comic book archive
 decompression. Most Linux distributions don't ship this library yet, so you will
 probably have to build it yourself.
 
