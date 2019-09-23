@@ -6,6 +6,21 @@ spanish only. Sorry for the mess.
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## 9.6.0
+### Reader and Library
+* RAR5 support.
+
+### YACReader
+* Fix some issues in magnifying glass when used in hdpi screens
+
+### YACReaderLibrary
+* New setting to close YACReaderLibrary to the system tray.
+* Fastest sync back from iOS.
+* Option to hide current/next comic banner in the grid view.
+* Fix saving progress when reading in double page mode.
+* Fixes in Comic Vine integration.
+* Other fixes and stability improvements.
+
 ## 9.5.0
 * Require at least Qt 5.4 for compiling, Qt 5.6 for qml based views
 
