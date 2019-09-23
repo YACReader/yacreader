@@ -68,10 +68,10 @@ private:
     bool isEof() const;
     void advance();
 
-    template<typename First, typename... T>
-    static bool isIn(First &&first, T &&... t)
+    template<typename T>
+    static bool isIn(const T &e, const std::list<T> &v)
     {
-        return ((first == t) || ...);
+        return std::find(v.begin(), v.end(), e) != v.end();
     }
 
     enum class FieldType { unknown,
