@@ -716,13 +716,14 @@ void FolderModelProxy::setupFilteredModelData()
                     queryString += " AND f.id <> 1 ORDER BY f.parentId,f.name";
                     QLOG_ERROR() << "not implemented";
                     break;
-
-                    selectQuery.prepare(queryString.c_str());
-                    result.bindValues(selectQuery);
                 }
             } catch (const std::exception &e) {
                 QLOG_ERROR() << "Unable to parse query: " << e.what();
             }
+
+            selectQuery.prepare(queryString.c_str());
+            selectQuery.bindValues(selectQuery);
+
             selectQuery.exec();
             QLOG_DEBUG() << selectQuery.lastError() << "--";
 
