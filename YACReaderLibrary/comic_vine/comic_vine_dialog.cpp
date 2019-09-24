@@ -553,20 +553,20 @@ ComicDB ComicVineDialog::parseComicInfo(ComicDB &comic, const QString &json, int
 
                 comic.info.characters = characters;
             }
-            
+
             if (!result.property("story_arc_credits").isNull()) {
                 QPair<QString, QString> storyArcIdAndName = getFirstStoryArcIdAndName(result.property("story_arc_credits"));
                 QString storyArcId = storyArcIdAndName.first;
                 QString storyArcName = storyArcIdAndName.second;
                 if (!storyArcId.isNull()) {
-                    
+
                     QString comicId = result.property("id").toString();
 
                     QPair<QString, QString> arcNumberAndArcCount = getArcNumberAndArcCount(storyArcId, comicId);
                     if (!arcNumberAndArcCount.first.isNull()) {
                         QString arcNumber = arcNumberAndArcCount.first;
                         QString arcCount = arcNumberAndArcCount.second;
-                        
+
                         comic.info.storyArc = storyArcName;
                         comic.info.arcNumber = arcNumber;
                         comic.info.arcCount = arcCount;
@@ -639,7 +639,7 @@ QPair<QString, QString> ComicVineDialog::getFirstStoryArcIdAndName(const QScript
 {
     QString story_arc_id = QString();
     QString story_arc_name = QString();
-    
+
     QScriptValueIterator it(json_story_arcs);
     QScriptValue resultsValue;
     while (it.hasNext()) {
@@ -654,7 +654,8 @@ QPair<QString, QString> ComicVineDialog::getFirstStoryArcIdAndName(const QScript
     return qMakePair(story_arc_id, story_arc_name);
 }
 
-QPair<QString, QString> ComicVineDialog::getArcNumberAndArcCount(const QString &storyArcId, const QString &comicId) {
+QPair<QString, QString> ComicVineDialog::getArcNumberAndArcCount(const QString &storyArcId, const QString &comicId)
+{
     auto comicVineClient = new ComicVineClient;
     bool error;
     bool timeout;
@@ -678,10 +679,10 @@ QPair<QString, QString> ComicVineDialog::getArcNumberAndArcCount(const QString &
 
             if (!result.property("issues").isNull()) {
                 QScriptValue issues = result.property("issues");
-                
+
                 int arcNumber = 0;
                 int arcCount = 0;
-                
+
                 QScriptValueIterator it(issues);
                 QScriptValue resultsValue;
                 while (it.hasNext()) {
