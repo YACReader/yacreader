@@ -381,8 +381,8 @@ Render::Render()
 
 Render::~Render()
 {
-    if (comic != 0) {
-        //comic->moveToThread(QApplication::instance()->thread());
+    if (comic != nullptr) {
+        comic->moveToThread(QApplication::instance()->thread());
         comic->deleteLater();
     }
 
@@ -607,8 +607,8 @@ void Render::setRotation(int degrees)
 
 void Render::setComic(Comic *c)
 {
-    if (comic != 0) {
-        //comic->moveToThread(QApplication::instance()->thread());
+    if (comic != nullptr) {
+        comic->moveToThread(QApplication::instance()->thread());
         comic->disconnect();
         comic->deleteLater();
     }
