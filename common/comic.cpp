@@ -234,21 +234,6 @@ void Comic::updateBookmarkImage(int index)
         emit bookmarksUpdated();
         //emit bookmarksLoaded(*bm);
     }
-
-    if (bm->isBookmark(index)) {
-        QImage p;
-        p.loadFromData(_pages[index]);
-        bm->setBookmark(index, p);
-        emit bookmarksUpdated();
-        //emit bookmarksLoaded(*bm);
-    }
-    if (bm->getLastPage() == index) {
-        QImage p;
-        p.loadFromData(_pages[index]);
-        bm->setLastPage(index, p);
-        emit bookmarksUpdated();
-        //emit bookmarksLoaded(*bm);
-    }
 }
 //-----------------------------------------------------------------------------
 void Comic::setPageLoaded(int page)
@@ -393,7 +378,7 @@ bool FileComic::load(const QString &path, const ComicDB &comic)
         return true;
     } else {
         //QMessageBox::critical(NULL,tr("Not found"),tr("Comic not found")+" : " + path);
-        //moveToThread(QCoreApplication::instance()->thread());
+        moveToThread(QCoreApplication::instance()->thread());
         emit errorOpening();
         return false;
     }
@@ -534,32 +519,11 @@ QList<QVector<quint32>> FileComic::getSections(int &sectionIndex)
             sections.append(section2);
             //out << "SPLIT" << endl;
 
-            idx++;
-        }
-
-        if (sectionIndex == sectionCount) //found
-        {
-            if (section.indexOf(realIdx) != 0) {
-                QVector<quint32> section1;
-                QVector<quint32> section2;
-                foreach (quint32 si, section) {
-                    if (si < realIdx) {
-                        section1.append(si);
-                    } else {
-                        section2.append(si);
-                    }
-                }
-                sectionIndex++;
-                sections.append(section1);
-                sections.append(section2);
-                //out << "SPLIT" << endl;
-
-            } else {
-                sections.append(section);
-            }
         } else {
             sections.append(section);
         }
+    } else {
+        sections.append(section);
     }
 
     //out << "se han encontrado : " << sections.count() << " sectionIndex : " << sectionIndex << endl;
@@ -570,13 +534,13 @@ void FileComic::process()
 {
     CompressedArchive archive(_path);
     if (!archive.toolsLoaded()) {
-        //moveToThread(QCoreApplication::instance()->thread());
+        moveToThread(QCoreApplication::instance()->thread());
         emit errorOpening(tr("7z not found"));
         return;
     }
 
     if (!archive.isValid()) {
-        //moveToThread(QCoreApplication::instance()->thread());
+        moveToThread(QCoreApplication::instance()->thread());
         emit errorOpening(tr("Format not supported"));
         return;
     }
@@ -587,7 +551,7 @@ void FileComic::process()
 
     if (_fileNames.size() == 0) {
         //QMessageBox::critical(NULL,tr("File error"),tr("File not found or not images in file"));
-        //moveToThread(QCoreApplication::instance()->thread());
+        moveToThread(QCoreApplication::instance()->thread());
         emit errorOpening();
         return;
     }
@@ -623,14 +587,14 @@ void FileComic::process()
 
     for (int i = sectionIndex; i < sections.count(); i++) {
         if (_invalidated) {
-            //moveToThread(QCoreApplication::instance()->thread());
+            moveToThread(QCoreApplication::instance()->thread());
             return;
         }
         archive.getAllData(sections.at(i), this);
     }
     for (int i = 0; i < sectionIndex; i++) {
         if (_invalidated) {
-            //moveToThread(QCoreApplication::instance()->thread());
+            moveToThread(QCoreApplication::instance()->thread());
             return;
         }
         archive.getAllData(sections.at(i), this);
@@ -645,7 +609,7 @@ void FileComic::process()
 		emit imageLoaded(sortedIndex);
 		emit imageLoaded(sortedIndex,_pages[sortedIndex]);
 	}*/
-    //moveToThread(QCoreApplication::instance()->thread());
+    moveToThread(QCoreApplication::instance()->thread());
     emit imagesLoaded();
 }
 
@@ -700,7 +664,7 @@ void FolderComic::process()
     if (nPages == 0) {
         //TODO emitir este mensaje en otro sitio
         //QMessageBox::critical(NULL,QObject::tr("No images found"),QObject::tr("There are not images on the selected folder"));
-        //moveToThread(QCoreApplication::instance()->thread());
+        moveToThread(QCoreApplication::instance()->thread());
         emit errorOpening();
     } else {
         if (_firstPage == -1) {
@@ -723,7 +687,7 @@ void FolderComic::process()
         int i = _firstPage;
         while (count < nPages) {
             if (_invalidated) {
-                //moveToThread(QCoreApplication::instance()->thread());
+                moveToThread(QCoreApplication::instance()->thread());
                 return;
             }
 
@@ -739,7 +703,7 @@ void FolderComic::process()
             count++;
         }
     }
-    //moveToThread(QCoreApplication::instance()->thread());
+    moveToThread(QCoreApplication::instance()->thread());
     emit imagesLoaded();
 }
 
@@ -778,7 +742,7 @@ bool PDFComic::load(const QString &path, int atPage)
         //emit bookmarksLoaded(*bm);
         return true;
     } else {
-        //moveToThread(QCoreApplication::instance()->thread());
+        moveToThread(QCoreApplication::instance()->thread());
         emit errorOpening();
         return false;
     }
@@ -799,7 +763,7 @@ bool PDFComic::load(const QString &path, const ComicDB &comic)
         return true;
     } else {
         //QMessageBox::critical(NULL,tr("Not found"),tr("Comic not found")+" : " + path);
-        //moveToThread(QCoreApplication::instance()->thread());
+        moveToThread(QCoreApplication::instance()->thread());
         emit errorOpening();
         return false;
     }
@@ -826,12 +790,12 @@ void PDFComic::process()
     if (!pdfComic) {
         //delete pdfComic;
         //pdfComic = 0;
-        //moveToThread(QCoreApplication::instance()->thread());
+        moveToThread(QCoreApplication::instance()->thread());
         emit errorOpening();
         return;
     }
     if (pdfComic->isLocked()) {
-        //moveToThread(QCoreApplication::instance()->thread());
+        moveToThread(QCoreApplication::instance()->thread());
         emit errorOpening();
         return;
     }
@@ -866,7 +830,7 @@ void PDFComic::process()
     for (int i = buffered_index; i < nPages; i++) {
         if (_invalidated) {
             delete pdfComic;
-            //moveToThread(QCoreApplication::instance()->thread());
+            moveToThread(QCoreApplication::instance()->thread());
             return;
         }
 
@@ -875,14 +839,14 @@ void PDFComic::process()
     for (int i = 0; i < buffered_index; i++) {
         if (_invalidated) {
             delete pdfComic;
-            //moveToThread(QCoreApplication::instance()->thread());
+            moveToThread(QCoreApplication::instance()->thread());
             return;
         }
         renderPage(i);
     }
 
     delete pdfComic;
-    //moveToThread(QCoreApplication::instance()->thread());
+    moveToThread(QCoreApplication::instance()->thread());
     emit imagesLoaded();
 }
 
