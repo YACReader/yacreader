@@ -553,6 +553,26 @@ ComicDB ComicVineDialog::parseComicInfo(ComicDB &comic, const QString &json, int
 
                 comic.info.characters = characters;
             }
+            
+            if (!result.property("story_arc_credits").isNull()) {
+                QPair<QString, QString> storyArcIdAndName = getFirstStoryArcIdAndName(result.property("story_arc_credits"));
+                QString storyArcId = storyArcIdAndName.first;
+                QString storyArcName = storyArcIdAndName.second;
+                if (!storyArcId.isNull()) {
+                    
+                    QString comicId = result.property("id").toString();
+
+                    QPair<QString, QString> arcNumberAndArcCount = getArcNumberAndArcCount(storyArcId, comicId);
+                    if (!arcNumberAndArcCount.first.isNull()) {
+                        QString arcNumber = arcNumberAndArcCount.first;
+                        QString arcCount = arcNumberAndArcCount.second;
+                        
+                        comic.info.storyArc = storyArcName;
+                        comic.info.arcNumber = arcNumber;
+                        comic.info.arcCount = arcCount;
+                    }
+                }
+            }
 
             comic.info.count = count;
 
@@ -613,6 +633,74 @@ QMap<QString, QString> ComicVineDialog::getAuthors(const QScriptValue &json_auth
     }
 
     return authors;
+}
+
+QPair<QString, QString> ComicVineDialog::getFirstStoryArcIdAndName(const QScriptValue &json_story_arcs)
+{
+    QString story_arc_id = QString();
+    QString story_arc_name = QString();
+    
+    QScriptValueIterator it(json_story_arcs);
+    QScriptValue resultsValue;
+    while (it.hasNext()) {
+        it.next();
+        if (it.flags() & QScriptValue::SkipInEnumeration)
+            continue;
+        resultsValue = it.value();
+        story_arc_id = resultsValue.property("id").toString();
+        story_arc_name = resultsValue.property("name").toString();
+        break;
+    }
+    return qMakePair(story_arc_id, story_arc_name);
+}
+
+QPair<QString, QString> ComicVineDialog::getArcNumberAndArcCount(const QString &storyArcId, const QString &comicId) {
+    auto comicVineClient = new ComicVineClient;
+    bool error;
+    bool timeout;
+    QByteArray result = comicVineClient->getStoryArcDetail(storyArcId, error, timeout);
+    if (error || timeout)
+        return qMakePair(QString(), QString());
+    QString json = result;
+
+    QScriptEngine engine;
+    QScriptValue sc;
+    sc = engine.evaluate("(" + json + ")");
+
+    if (!sc.property("error").isValid() && sc.property("error").toString() != "OK") {
+        qDebug("Error detected");
+        return qMakePair(QString(), QString());
+    } else {
+        int numResults = sc.property("number_of_total_results").toString().toInt(); //fix to weird behaviour using hasNext
+
+        if (numResults > 0) {
+            QScriptValue result = sc.property("results");
+
+            if (!result.property("issues").isNull()) {
+                QScriptValue issues = result.property("issues");
+                
+                int arcNumber = 0;
+                int arcCount = 0;
+                
+                QScriptValueIterator it(issues);
+                QScriptValue resultsValue;
+                while (it.hasNext()) {
+                    it.next();
+                    if (it.flags() & QScriptValue::SkipInEnumeration)
+                        continue;
+                    resultsValue = it.value();
+                    if (comicId == resultsValue.property("id").toString()) {
+                        arcNumber = arcCount + 1;
+                    }
+                    arcCount++;
+                }
+                return qMakePair(QString::number(arcNumber), QString::number(arcCount));
+            }
+            return qMakePair(QString(), QString());
+        }
+        return qMakePair(QString(), QString());
+    }
+    return qMakePair(QString(), QString());
 }
 
 void ComicVineDialog::toggleSkipButton()
