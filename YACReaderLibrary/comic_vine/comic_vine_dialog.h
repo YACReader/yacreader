@@ -66,6 +66,8 @@ protected slots:
 private:
     QString getCharacters(const QScriptValue &json_characters);
     QMap<QString, QString> getAuthors(const QScriptValue &json_authors);
+    QPair<QString, QString> getFirstStoryArcIdAndName(const QScriptValue &json_story_arcs);
+    QPair<QString, QString> getArcNumberAndArcCount(const QString &storyArcId, const QString &comicId);
 
     void toggleSkipButton();
 
