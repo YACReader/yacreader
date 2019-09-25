@@ -35,10 +35,11 @@ IF "%2"=="7z" (
     copy %src_path%\dependencies\unarr\win\%1\unarr.dll .
 )
 
+mkdir openssl
+
 copy %src_path%\dependencies\qrencode\win\%1\qrencode.dll .
 copy %src_path%\dependencies\pdfium\win\%1\pdfium.dll .
-copy %src_path%\dependencies\openssl\win\%1\libeay32.dll .
-copy %src_path%\dependencies\openssl\win\%1\ssleay32.dll .
+copy %src_path%\dependencies\openssl\win\%1\* .\openssl\
 
 xcopy %src_path%\release\server .\server /i /e
 xcopy %src_path%\release\languages .\languages /i /e
