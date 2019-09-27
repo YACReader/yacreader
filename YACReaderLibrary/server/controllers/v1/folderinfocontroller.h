@@ -5,19 +5,20 @@
 #include "httpresponse.h"
 #include "httprequesthandler.h"
 
-class FolderInfoController : public HttpRequestHandler {
-	Q_OBJECT
-		Q_DISABLE_COPY(FolderInfoController);
+class FolderInfoController : public HttpRequestHandler
+{
+    Q_OBJECT
+    Q_DISABLE_COPY(FolderInfoController);
+
 public:
+    /** Constructor */
+    FolderInfoController();
 
-	/** Constructor */
-	FolderInfoController();
-
-	/** Generates the response */
-	void service(HttpRequest& request, HttpResponse& response);
+    /** Generates the response */
+    void service(HttpRequest &request, HttpResponse &response) override;
 
 private:
-    void serviceComics(const int  &library, const qulonglong & folderId, HttpResponse& response);
+    void serviceComics(const int &library, const qulonglong &folderId, HttpResponse &response);
 };
 
 #endif // FOLDERINFOCONTROLLER_H

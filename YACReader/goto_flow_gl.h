@@ -14,27 +14,28 @@ class QKeyEvent;
 
 class GoToFlowGL : public GoToFlowWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	GoToFlowGL(QWidget* parent = 0,FlowType flowType = CoverFlowLike);
-	~GoToFlowGL();
-	void reset();
-	void centerSlide(int slide);
-	void setFlowType(FlowType flowType);
-	void setNumSlides(unsigned int slides);
-	void setImageReady(int index,const QByteArray & image);
+    GoToFlowGL(QWidget *parent = nullptr, FlowType flowType = CoverFlowLike);
+    ~GoToFlowGL() override;
+    void reset() override;
+    void centerSlide(int slide) override;
+    void setFlowType(FlowType flowType) override;
+    void setNumSlides(unsigned int slides) override;
+    void setImageReady(int index, const QByteArray &image) override;
 
-	void updateConfig(QSettings * settings);
-	void setFlowRightToLeft(bool b);
+    void updateConfig(QSettings *settings);
+    void setFlowRightToLeft(bool b) override;
 
 signals:
-	void goToPage(unsigned int page);
+    void goToPage(unsigned int page);
+
 private:
-	YACReaderPageFlowGL * flow;
-	void keyPressEvent(QKeyEvent* event);
-    void resizeEvent(QResizeEvent *event);
-	//Comic * comic;
-	QSize imageSize;
+    YACReaderPageFlowGL *flow;
+    void keyPressEvent(QKeyEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
+    //Comic * comic;
+    QSize imageSize;
 };
 
 #endif

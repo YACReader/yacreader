@@ -1,7 +1,5 @@
 #include "comicfullinfocontroller_v2.h"
 
-
-
 #include <QUrl>
 
 #include "db_helper.h"
@@ -15,11 +13,9 @@
 #include <ctime>
 using namespace std;
 
-
-
 ComicFullinfoController_v2::ComicFullinfoController_v2() {}
 
-void ComicFullinfoController_v2::service(HttpRequest& request, HttpResponse& response)
+void ComicFullinfoController_v2::service(HttpRequest &request, HttpResponse &response)
 {
     response.setHeader("Content-Type", "application/json");
 
@@ -30,8 +26,8 @@ void ComicFullinfoController_v2::service(HttpRequest& request, HttpResponse& res
 
     serviceContent(libraryId, comicId, response);
 
-    response.setStatus(200,"OK");
-    response.write("",true);
+    response.setStatus(200, "OK");
+    response.write("", true);
 }
 
 void ComicFullinfoController_v2::serviceContent(const int &libraryId, const qulonglong &comicId, HttpResponse &response)

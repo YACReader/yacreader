@@ -9,7 +9,7 @@ class EmptyLabelWidget : public EmptyContainerInfo
 {
     Q_OBJECT
 public:
-    explicit EmptyLabelWidget(QWidget *parent = 0);
+    explicit EmptyLabelWidget(QWidget *parent = nullptr);
     void setColor(YACReader::LabelColors color);
 
 signals:

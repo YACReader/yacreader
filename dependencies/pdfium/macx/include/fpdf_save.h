@@ -59,9 +59,9 @@ typedef struct FPDF_FILEWRITE_ {
 // Return value:
 //          TRUE for succeed, FALSE for failed.
 //
-DLLEXPORT FPDF_BOOL STDCALL FPDF_SaveAsCopy(FPDF_DOCUMENT document,
-                                            FPDF_FILEWRITE* pFileWrite,
-                                            FPDF_DWORD flags);
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV FPDF_SaveAsCopy(FPDF_DOCUMENT document,
+                                                    FPDF_FILEWRITE* pFileWrite,
+                                                    FPDF_DWORD flags);
 
 // Function: FPDF_SaveWithVersion
 //          Same as function ::FPDF_SaveAsCopy, except the file version of the
@@ -75,10 +75,11 @@ DLLEXPORT FPDF_BOOL STDCALL FPDF_SaveAsCopy(FPDF_DOCUMENT document,
 // Return value:
 //          TRUE if succeed, FALSE if failed.
 //
-DLLEXPORT FPDF_BOOL STDCALL FPDF_SaveWithVersion(FPDF_DOCUMENT document,
-                                                 FPDF_FILEWRITE* pFileWrite,
-                                                 FPDF_DWORD flags,
-                                                 int fileVersion);
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV
+FPDF_SaveWithVersion(FPDF_DOCUMENT document,
+                     FPDF_FILEWRITE* pFileWrite,
+                     FPDF_DWORD flags,
+                     int fileVersion);
 
 #ifdef __cplusplus
 }

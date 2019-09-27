@@ -7,20 +7,20 @@
 #include <QByteArray>
 #include <QThread>
 
- class HttpVersionChecker : public HttpWorker
- {
-		 Q_OBJECT
-	public:
-		HttpVersionChecker();
-	public slots:
+class HttpVersionChecker : public HttpWorker
+{
+    Q_OBJECT
+public:
+    HttpVersionChecker();
+public slots:
 
-	private:
-		bool found;
-	private slots:
-		bool checkNewVersion(QString sourceContent);
-		void checkNewVersion(const QByteArray & data);
-	signals:
-		void newVersionDetected();
- };
+private:
+    bool found;
+private slots:
+    bool checkNewVersion(QString sourceContent);
+    void checkNewVersion(const QByteArray &data);
+signals:
+    void newVersionDetected();
+};
 
 #endif

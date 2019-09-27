@@ -17,19 +17,18 @@ public:
     };
 
     explicit YACReaderLibrarySourceContainer();
-    explicit YACReaderLibrarySourceContainer(const QModelIndex & sourceModelIndex, YACReaderLibrarySourceContainer::SourceType type);
+    explicit YACReaderLibrarySourceContainer(const QModelIndex &sourceModelIndex, YACReaderLibrarySourceContainer::SourceType type);
     QModelIndex getSourceModelIndex() const;
     YACReaderLibrarySourceContainer::SourceType getType() const;
 
-    bool operator==(const YACReaderLibrarySourceContainer& other) const;
-    bool operator!=(const YACReaderLibrarySourceContainer& other) const;
+    bool operator==(const YACReaderLibrarySourceContainer &other) const;
+    bool operator!=(const YACReaderLibrarySourceContainer &other) const;
 
 protected:
     QModelIndex sourceModelIndex;
     YACReaderLibrarySourceContainer::SourceType type;
 
     friend class YACReaderHistoryController;
-
 };
 
 Q_DECLARE_METATYPE(YACReaderLibrarySourceContainer)
@@ -38,7 +37,7 @@ class YACReaderHistoryController : public QObject
 {
     Q_OBJECT
 public:
-    explicit YACReaderHistoryController(QObject *parent = 0);
+    explicit YACReaderHistoryController(QObject *parent = nullptr);
 
 signals:
     void enabledForward(bool enabled);
@@ -49,14 +48,13 @@ public slots:
     void clear();
     void backward();
     void forward();
-    void updateHistory(const YACReaderLibrarySourceContainer & source);
+    void updateHistory(const YACReaderLibrarySourceContainer &source);
     YACReaderLibrarySourceContainer lastSourceContainer();
     YACReaderLibrarySourceContainer currentSourceContainer();
 
 protected:
     int currentFolderNavigation;
     QList<YACReaderLibrarySourceContainer> history;
-
 };
 
 #endif // YACREADER_HISTORY_CONTROLLER_H

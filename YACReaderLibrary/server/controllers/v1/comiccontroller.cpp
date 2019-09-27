@@ -16,9 +16,9 @@
 
 ComicController::ComicController() {}
 
-void ComicController::service(HttpRequest& request, HttpResponse& response)
+void ComicController::service(HttpRequest &request, HttpResponse &response)
 {
-    HttpSession session=Static::sessionStore->getSession(request,response,false);
+    HttpSession session = Static::sessionStore->getSession(request, response, false);
     YACReaderHttpSession *ySession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(session.getId());
 
     QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
@@ -45,14 +45,13 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
 
     ComicDB comic = DBHelper::getComicInfo(libraryId, comicId);
 
-    if(!remoteComic)
+    if (!remoteComic)
         ySession->setDownloadedComic(comic.info.hash);
 
-    Comic * comicFile = FactoryComic::newComic(libraries.getPath(libraryId)+comic.path);
+    Comic *comicFile = FactoryComic::newComic(libraries.getPath(libraryId) + comic.path);
 
-    if(comicFile != NULL)
-    {
-        QThread * thread = NULL;
+    if (comicFile != nullptr) {
+        QThread *thread = nullptr;
 
         thread = new QThread();
 
@@ -64,19 +63,16 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
         connect(thread, SIGNAL(started()), comicFile, SLOT(process()));
         connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
-        comicFile->load(libraries.getPath(libraryId)+comic.path);
+        comicFile->load(libraries.getPath(libraryId) + comic.path);
 
-        if(thread != NULL)
+        if (thread != nullptr)
             thread->start();
 
-        if(remoteComic)
-        {
+        if (remoteComic) {
             QLOG_TRACE() << "remote comic requested";
             ySession->setCurrentRemoteComic(comic.id, comicFile);
 
-        }
-        else
-        {
+        } else {
             QLOG_TRACE() << "comic requested";
             ySession->setCurrentComic(comic.id, comicFile);
         }
@@ -85,40 +81,32 @@ void ComicController::service(HttpRequest& request, HttpResponse& response)
         //TODO this field is not used by the client!
         response.write(QString("library:%1\r\n").arg(libraryName).toUtf8());
         response.write(QString("libraryId:%1\r\n").arg(libraryId).toUtf8());
-        if(remoteComic) //send previous and next comics id
+        if (remoteComic) //send previous and next comics id
         {
             QList<LibraryItem *> siblings = DBHelper::getFolderComicsFromLibrary(libraryId, comic.parentId, true);
             bool found = false;
             int i;
-            for(i = 0; i < siblings.length(); i++)
-            {
-                if (siblings.at(i)->id == comic.id)
-                {
+            for (i = 0; i < siblings.length(); i++) {
+                if (siblings.at(i)->id == comic.id) {
                     found = true;
                     break;
                 }
             }
-            if(found)
-            {
-                if(i>0)
-                    response.write(QString("previousComic:%1\r\n").arg(siblings.at(i-1)->id).toUtf8());
-                if(i<siblings.length()-1)
-                    response.write(QString("nextComic:%1\r\n").arg(siblings.at(i+1)->id).toUtf8());
-            }
-            else
-            {
+            if (found) {
+                if (i > 0)
+                    response.write(QString("previousComic:%1\r\n").arg(siblings.at(i - 1)->id).toUtf8());
+                if (i < siblings.length() - 1)
+                    response.write(QString("nextComic:%1\r\n").arg(siblings.at(i + 1)->id).toUtf8());
+            } else {
                 //ERROR
             }
             qDeleteAll(siblings);
         }
-        response.write(comic.toTXT().toUtf8(),true);
-    }
-    else
-    {
+        response.write(comic.toTXT().toUtf8(), true);
+    } else {
         //delete comicFile;
-        response.setStatus(404,"not found");
-        response.write("404 not found",true);
+        response.setStatus(404, "not found");
+        response.write("404 not found", true);
     }
     //response.write(t.toLatin1(),true);
-
 }

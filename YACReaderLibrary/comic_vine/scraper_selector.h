@@ -7,22 +7,22 @@
 
 class ScraperSelector : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit ScraperSelector(QWidget *parent = 0);
-	virtual void load(const QString & json, const QString & searchString);
+    explicit ScraperSelector(QWidget *parent = nullptr);
+    virtual void load(const QString &json, const QString &searchString);
 public slots:
 
 signals:
-	void loadPage(QString,int);
+    void loadPage(QString, int);
 
 private slots:
-	void loadNextPage();
-	void loadPreviousPage();
+    void loadNextPage();
+    void loadPreviousPage();
 
 protected:
-	QString currentSearchString;
-	ScraperResultsPaginator * paginator;
+    QString currentSearchString;
+    ScraperResultsPaginator *paginator;
 };
 
 #endif // SCRAPER_SELECTOR_H

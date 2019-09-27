@@ -10,7 +10,7 @@ class YACReaderComicsSelectionHelper : public QObject
 {
     Q_OBJECT
 public:
-    explicit YACReaderComicsSelectionHelper(QObject *parent = 0);
+    explicit YACReaderComicsSelectionHelper(QObject *parent = nullptr);
 
     void setModel(ComicModel *model);
 
@@ -25,7 +25,7 @@ public:
     Q_INVOKABLE QModelIndexList selectedIndexes() const;
     Q_INVOKABLE QModelIndexList selectedRows(int column = 0) const;
 
-    QItemSelectionModel * selectionModel();
+    QItemSelectionModel *selectionModel();
 
 signals:
     void selectionChanged();
@@ -33,9 +33,9 @@ signals:
 public slots:
 
 protected:
-    QItemSelectionModel * _selectionModel;
+    QItemSelectionModel *_selectionModel;
 
-    ComicModel * model;
+    ComicModel *model;
 };
 
 #endif // YACREADERCOMICSSELECTIONHELPER_H

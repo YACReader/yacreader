@@ -6,6 +6,21 @@ spanish only. Sorry for the mess.
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## 9.6.0
+### Reader and Library
+* RAR5 support.
+
+### YACReader
+* Fix some issues in magnifying glass when used in hdpi screens
+
+### YACReaderLibrary
+* New setting to close YACReaderLibrary to the system tray.
+* Fastest sync back from iOS.
+* Option to hide current/next comic banner in the grid view.
+* Fix saving progress when reading in double page mode.
+* Fixes in Comic Vine integration.
+* Other fixes and stability improvements.
+
 ## 9.5.0
 * Require at least Qt 5.4 for compiling, Qt 5.6 for qml based views
 
@@ -108,119 +123,119 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Bug fixes.
 
 ## 7.1.0
-* A�adida opci�n para resetear el rating de un comics
-* Corregidos bugs que afectaban a la informaci�n de p�gina.
-* Corregido error que marcaba un comic terminado como empezado si se volv�a a leer.
-* A�adidos 2 estados para las carpetas (Completo/Terminado)
-* Corregido bug en la comunicaci�n YACReaderLibrary <-> YACReader
-* A�adidas las acciones relativas a los comics al men� contextual de la tabla de c�mics.
+* Añadida opción para resetear el rating de un comics
+* Corregidos bugs que afectaban a la información de página.
+* Corregido error que marcaba un comic terminado como empezado si se volvía a leer.
+* Añadidos 2 estados para las carpetas (Completo/Terminado)
+* Corregido bug en la comunicación YACReaderLibrary <-> YACReader
+* Añadidas las acciones relativas a los comics al menú contextual de la tabla de cómics.
 * Corrgido bug que provocaba el crecimiento ilimatado del log del servidor
 * Corregidos bugs menores
 
-7.0.2 (S�lo MacOSX)
-* Eliminado el uso de Poppler en la versi�n de MacOSX
+## 7.0.2 (Sólo MacOSX)
+* Eliminado el uso de Poppler en la versión de MacOSX
 * Trabajo en traducciones.
 * Corregidos bugs menores
 
-7.0.1
-* A�adido QsLog a YACReader
-* Corregido bug en la comunicaci�n YACReaderLibrary <-> YACReader
+## 7.0.1
+* Añadido QsLog a YACReader
+* Corregido bug en la comunicación YACReaderLibrary <-> YACReader
 
-7.0 (Final)
-* Corregidos eventos de teclado en algunos di�logos
+## 7.0 (Final)
+* Corregidos eventos de teclado en algunos diálogos
 * Corregido soporte para archivos Rar en sistemas Unix
-* Corregidos problemas borrando c�mics
-* Mejorada la gesti�n de errores
-* Corregida la comunicaci�n entre YACReader y YACReaderLibrary
+* Corregidos problemas borrando cómics
+* Mejorada la gestión de errores
+* Corregida la comunicación entre YACReader y YACReaderLibrary
 * Corregida la toolBar en MacOSX
 * Mejorada la compatabilidad de OpenGL en tarjetas NVIDIA
 * Corregidos bugs menores
 
-## 6.9 - (No p�blica)
-* A�adida la apertura autom�tica del siguiente/anterior c�mic al llegar al final/portada del c�mic actual
-* Corregido el comportamiento del di�logo de nueva versi�n detectada. Ahora avisa una vez al d�a o si el usuario lo elige cada 14 d�as.
-* Corregido el ajuste a lo ancho del t�tulo de la toolbar en YACReaderLibrary.
-* A�adido log a YACReaderLibrary (permitir� a los usuarios ofrecer m�s informaci�n sobre sus bugs)
-* Corregido bug en el historial de navegaci�n (y al editar comics) despu�s de usar el motor de b�squeda.
+## 6.9 (No pública)
+* Añadida la apertura automática del siguiente/anterior cómic al llegar al final/portada del cómic actual
+* Corregido el comportamiento del diálogo de nueva versión detectada. Ahora avisa una vez al día o si el usuario  lo elige cada 14 días.
+* Corregido el ajuste a lo ancho del título de la toolbar en YACReaderLibrary.
+* Añadido log a YACReaderLibrary (permitirá a los usuarios ofrecer más información sobre sus bugs)
+* Corregido bug en el historial de navegación (y al editar comics) después de usar el motor de búsqueda.
 
-## 6.8 - (No p�blica)
-* Corregido bug que causaba un cierre inesperado despu�s de cambiar el modo de sincronizaci�n vertical (flow)
-* Corregido bug que causaba que la toolbar en el visor no se pudiese ocultar/mostrar sin un c�mic abierto
-* Mejorada la gesti�n de errores al abrir c�mics
-* Corregidos algunos bugs relacionados con la apertura de c�mics
-* A�adida funci�n de rating
-* El visor ahora puede abrir archivos de imagen directamente. Si se abre un archivo de imagen se abre el directorio que lo contiene con todas las im�genes.
-* Corregida la ordenaci�n de carpetas y c�mics usada en la navegaci�n desde dispositivos iOS
+## 6.8 (No pública)
+* Corregido bug que causaba un cierre inesperado después de cambiar el modo de sincronización vertical (flow)
+* Corregido bug que causaba que la toolbar en el visor no se pudiese ocultar/mostrar sin un cómic abierto
+* Mejorada la gestión de errores al abrir cómics
+* Corregidos algunos bugs relacionados con la apertura de cómics
+* Añadida función de rating
+* El visor ahora puede abrir archivos de imagen directamente. Si se abre un archivo de imagen se abre el directorio que lo contiene con todas las imágenes.
+* Corregida la ordenación de carpetas y cómics usada en la navegación desde dispositivos iOS
 
-## 6.7 - (No p�blica)
-* A�adidos nuevos campos en la base de datos para almacenar informaci�n adicional sobre c�mics: rating, p�gina actual, bookmarks y configuraci�n de imagen
-* A�adida comunicaci�n entre YACReaderLibrary y YACReader para poder almacenar el progreso de los c�mics e informaci�n adicional
+## 6.7 (No pública)
+* Añadidos nuevos campos en la base de datos para almacenar información adicional sobre cómics: rating, página actual, bookmarks y configuración de imagen
+* Añadida comunicación entre YACReaderLibrary y YACReader para poder almacenar el progreso de los cómics e información adicional
 
-## 6.6 - (No p�blica)
+## 6.6 (No pública)
 * Modificado YACReader para que abra los archivos comprimidos usando 7z.dll (.so, .dylib)
-* YACReader abre ahora los c�mics por la �ltima p�gina le�da.
-* Corregido bug que causaba que algunos c�mics no se pudiesen abrir desde * YACReaderLibrary en YACReader
+* YACReader abre ahora los cómics por la última página leída.
+* Corregido bug que causaba que algunos cómics no se pudiesen abrir desde YACReaderLibrary en YACReader
 * Corregido el modo en el que se actualizaba la "information label"
 
 ## 6.5
 * Nueva interfaz principal de YACReaderLibrary y YACReader
 * Corregido bug que causaba que el servidor no se activase en el primer arranque en MacOSX
 * Corregido bug que causaba un fallo al cerrar YACReaderLibrary cada vez que se usaba el servidor
-* Nuevo dise�o para el di�logo de propiedades de los c�mics.
-* A�adida navegaci�n alante y atr�s de las carpetas visitadas.
-* La edici�n del nombre de una biblioteca no fuerza ahora que se recargue la biblioteca
+* Nuevo diseño para el diálogo de propiedades de los cómics.
+* Añadida navegación alante y atrás de las carpetas visitadas.
+* La edición del nombre de una biblioteca no fuerza ahora que se recargue la biblioteca
 * Corregido el color de fondo en la lupa
-* Nuevo bot�n para ajustar a lo alto
-* Eliminada la opci�n always on top
+* Nuevo botón para ajustar a lo alto
+* Eliminada la opción always on top
 * Mostrar en carpeta contenedora arreglado en Windows y MacOSX
 
-## 6.4 - (No p�blica)
-Normalizado el renderizado de p�ginas en modo doble p�gina
-A�adida la funci�n de borrar c�mics desde el disco duro
-Nuevos iconos de la barra de herramientas de c�mics
+## 6.4 (No pública)
+* Normalizado el renderizado de páginas en modo doble página
+* Añadida la función de borrar cómics desde el disco duro
+* Nuevos iconos de la barra de herramientas de cómics
 
-## 6.3 (No p�blica)
-* Mejorada la gesti�n de errores relacionada con las bibliotecas
-* A�adido bot�n que permite ocultar las portadas en la pantalla de importaci�n
-* A�adidos t�tulos "Bibliotecas" y "Carpetas" a la barra de navegaci�n
-* Nuevos iconos para seleccionar la carpeta ra�z, expandir y contraer todos.
-* Bot�n para cambiar el puerto del servidor por el usuario.
-* Ahora las columnas de la lista de c�mics pueden reordenarse
-* Ahora YACReaderLibrary s�lo permite una instancia ejecutandose.
-* Columna le�do a�adida.
-* Cambiado estilo de la lista de c�mics
-* Corregidos bugs relacionados con realizar operaciones sobre c�mics cuando no hab�a ninguno seleccionado en la lista de c�mics
+## 6.3 (No pública)
+* Mejorada la gestión de errores relacionada con las bibliotecas
+* Añadido botón que permite ocultar las portadas en la pantalla de importación
+* Añadidos títulos "Bibliotecas" y "Carpetas" a la barra de navegación
+* Nuevos iconos para seleccionar la carpeta raíz, expandir y contraer todos.
+* Botón para cambiar el puerto del servidor por el usuario.
+* Ahora las columnas de la lista de cómics pueden reordenarse
+* Ahora YACReaderLibrary sólo permite una instancia ejecutandose.
+* Columna leído añadida.
+* Cambiado estilo de la lista de cómics
+* Corregidos bugs relacionados con realizar operaciones sobre cómics cuando no había ninguno seleccionado en la lista de cómics
 
 ## 6.2
 * Nueva ventana de "bienvenida"
 * Nueva ventana de importar/actualizar
-* Nuevo control para la b�squeda
-* Nueva imagen para las marcas de c�mics le�dos (s�lo en OpenGL)
-* Cambiada la distribuci�n de algunos iconos
-* Cambiado el modo de eliminar la metainformaci�n (borrar base de datos/portadas de disco)
-* Ocultadas las opciones avanzadas de configuraci�n de YACReader Flow, accesibles ahora tras pulsar un bot�n (di�logos de configuraci�n m�s simples)
+* Nuevo control para la búsqueda
+* Nueva imagen para las marcas de cómics leídos (sólo en OpenGL)
+* Cambiada la distribución de algunos iconos
+* Cambiado el modo de eliminar la metainformación (borrar base de datos/portadas de disco)
+* Ocultadas las opciones avanzadas de configuración de YACReader Flow, accesibles ahora tras pulsar un botón (diálogos de configuración más simples)
 
-## 6.0.1 - (No p�blica)
+## 6.0.1 (No pública)
 * Corregido bug al usar las teclas Inicio/fin
-* Corregido bug que al arrancar YACReaderLibrary por primera vez causaba que no se * mostrasen las portadas (s�lo bajo ciertas circunstancias)
-* A�adidos algunos atajos de teclado a YACReaderLibrary a los ya existentes
+* Corregido bug que al arrancar YACReaderLibrary por primera vez causaba que no se mostrasen las portadas (sólo bajo ciertas circunstancias)
+* Añadidos algunos atajos de teclado a YACReaderLibrary a los ya existentes
 
 ## 6.0
-* Mejorada la velocidad de inicio gracias al uso de /LTCG como opci�n de compilaci�n
+* Mejorada la velocidad de inicio gracias al uso de /LTCG como opción de compilación
 * Corregido bug relacionado con OpenGL que causaba consumo excesivo de CPU en tarjetas NVidia
-* A�adidos iconos para cada tipo de archivo soportado en YACReaderLibrary
+* Añadidos iconos para cada tipo de archivo soportado en YACReaderLibrary
 * Cambiado el icono "folder" en YACReaderLibrary
-* A�adida barra para ajustar el ancho de p�gina en la toolbar de YACReader
-* A�adido widget para la information label
-* A�adido nuevo estilo visual a goToFlow
-* A�adidos filtros para controlar el brillo, el contraste y el valor gamma
-* A�adidas notificaciones de portada y �ltima p�gina
+* Añadida barra para ajustar el ancho de página en la toolbar de YACReader
+* Añadido widget para la information label
+* Añadido nuevo estilo visual a goToFlow
+* Añadidos filtros para controlar el brillo, el contraste y el valor gamma
+* Añadidas notificaciones de portada y última página
 * InformationLabel se muestra ahora en la esquina superiror derecha.
-* InformationLabel se muestra en 3 tama�os diferentes en funci�n de la resoluci�n
-* Corregido bug que causaba que las marcas de c�mic le�do no se dibujasen adecuadamente.
-* Se recuerda si se debe mostrar o no la "label" informaci�n.
-* Corregido bug que provocaba el fallo de YACReader al pasar muy r�pido las p�ginas.
-* A�adida columna "Tama�o" a la lista de c�mics en YACReaderLibrary
-* A�adida la ordinaci�n "natural" de los comics que hay en directorio del c�mic actual.
-* Corregido bug que causaba que se abriese el c�mic erroneo en YACReaderLibrary.
-* Cambiado el modo en el que se cargan los lenguages, ahora se pueden a�adir traducciones sin necesidad de recompilar.
+* InformationLabel se muestra en 3 tamaños diferentes en función de la resolución
+* Corregido bug que causaba que las marcas de cómic leído no se dibujasen adecuadamente.
+* Se recuerda si se debe mostrar o no la "label" información.
+* Corregido bug que provocaba el fallo de YACReader al pasar muy rápido las páginas.
+* Añadida columna "Tamaño" a la lista de cómics en YACReaderLibrary
+* Añadida la ordinación "natural" de los comics que hay en directorio del cómic actual.
+* Corregido bug que causaba que se abriese el cómic erroneo en YACReaderLibrary.
+* Cambiado el modo en el que se cargan los lenguages, ahora se pueden añadir traducciones sin necesidad de recompilar.

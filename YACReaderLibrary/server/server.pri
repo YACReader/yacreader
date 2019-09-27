@@ -90,7 +90,7 @@ SOURCES += \
     $$PWD/controllers/v2/taginfocontroller_v2.cpp
 	
 
-include(lib/logging/logging.pri)
+#include(lib/logging/logging.pri)
 include(lib/httpserver/httpserver.pri)
 include(lib/templateengine/templateengine.pri)
 

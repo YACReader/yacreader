@@ -11,65 +11,71 @@
 
 #include "yacreader_global.h"
 
-HelpAboutDialog::HelpAboutDialog(QWidget * parent)
-:QDialog(parent)
+HelpAboutDialog::HelpAboutDialog(QWidget *parent)
+    : QDialog(parent)
 {
-	QVBoxLayout * layout = new QVBoxLayout();
+    QVBoxLayout *layout = new QVBoxLayout();
 
-	tabWidget = new QTabWidget();
+    tabWidget = new QTabWidget();
 
-	tabWidget->addTab(aboutText = new QTextBrowser(), tr("About"));
-	aboutText->setOpenExternalLinks(true);
-	//aboutText->setFont(QFont("Comic Sans MS", 10)); //purisa
-	tabWidget->addTab(helpText = new QTextBrowser(), tr("Help"));
-	helpText->setOpenExternalLinks(true);
-	//helpText->setFont(QFont("Comic Sans MS", 10));
-	//helpText->setDisabled(true);
-	//tabWidget->addTab(,"About Qt");
+    tabWidget->addTab(aboutText = new QTextBrowser(), tr("About"));
+    aboutText->setOpenExternalLinks(true);
+    //aboutText->setFont(QFont("Comic Sans MS", 10)); //purisa
+    tabWidget->addTab(helpText = new QTextBrowser(), tr("Help"));
+    helpText->setOpenExternalLinks(true);
+    //helpText->setFont(QFont("Comic Sans MS", 10));
+    //helpText->setDisabled(true);
+    //tabWidget->addTab(,"About Qt");
 
-	layout->addWidget(tabWidget);
-	layout->setContentsMargins(1,3,1,1);
+    layout->addWidget(tabWidget);
+    layout->setContentsMargins(1, 3, 1, 1);
 
-	setLayout(layout);
-	resize(500, QApplication::desktop()->availableGeometry().height()*0.83);
+    setLayout(layout);
+    resize(500, QApplication::desktop()->availableGeometry().height() * 0.83);
 }
 
 HelpAboutDialog::~HelpAboutDialog()
 {
-	delete aboutText;
-	delete helpText;
-	delete tabWidget;
+    delete aboutText;
+    delete helpText;
+    delete tabWidget;
 }
 
-HelpAboutDialog::HelpAboutDialog(const QString & pathAbout,const QString & pathHelp,QWidget * parent)
-:QDialog(parent)
+HelpAboutDialog::HelpAboutDialog(const QString &pathAbout, const QString &pathHelp, QWidget *parent)
+    : QDialog(parent)
 {
-	loadAboutInformation(pathAbout);
-	loadHelp(pathHelp);
+    loadAboutInformation(pathAbout);
+    loadHelp(pathHelp);
 }
 
-void HelpAboutDialog::loadAboutInformation(const QString & path)
+void HelpAboutDialog::loadAboutInformation(const QString &path)
 {
-	aboutText->setHtml(fileToString(path).arg(VERSION));
-	aboutText->moveCursor(QTextCursor::Start);
+    QString buildNumber = "0";
+
+#ifdef BUILD_NUMBER
+    buildNumber = BUILD_NUMBER;
+#endif
+
+    aboutText->setHtml(fileToString(path).arg(VERSION).arg(buildNumber));
+    aboutText->moveCursor(QTextCursor::Start);
 }
 
-void HelpAboutDialog::loadHelp(const QString & path)
+void HelpAboutDialog::loadHelp(const QString &path)
 {
-	helpText->setHtml(fileToString(path));
-	helpText->moveCursor(QTextCursor::Start);
+    helpText->setHtml(fileToString(path));
+    helpText->moveCursor(QTextCursor::Start);
 }
 
-QString HelpAboutDialog::fileToString(const QString & path)
+QString HelpAboutDialog::fileToString(const QString &path)
 {
-	QFile f(path);
-	f.open(QIODevice::ReadOnly);
-	QTextStream txtS(&f);
+    QFile f(path);
+    f.open(QIODevice::ReadOnly);
+    QTextStream txtS(&f);
 
-	txtS.setCodec(QTextCodec::codecForName("UTF-8"));
+    txtS.setCodec(QTextCodec::codecForName("UTF-8"));
 
-	QString content = txtS.readAll();
-	f.close();
+    QString content = txtS.readAll();
+    f.close();
 
-	return content;
+    return content;
 }

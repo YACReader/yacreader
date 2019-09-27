@@ -11,7 +11,7 @@
 
 #include "QsLog.h"
 
-UpdateComicControllerV2::UpdateComicControllerV2(){}
+UpdateComicControllerV2::UpdateComicControllerV2() {}
 
 void UpdateComicControllerV2::service(HttpRequest &request, HttpResponse &response)
 {
@@ -25,30 +25,28 @@ void UpdateComicControllerV2::service(HttpRequest &request, HttpResponse &respon
 
     QLOG_TRACE() << "POST DATA: " << postData;
 
-    if(postData.length()>0) {
+    if (postData.length() > 0) {
         QList<QString> data = postData.split("\n");
         QString currentComicData = data.at(0);
         int currentPage = currentComicData.split(":").at(1).toInt();
         ComicInfo info;
         info.currentPage = currentPage;
         info.id = comicId;
-        DBHelper::updateProgress(libraryId,info);
+        DBHelper::updateProgress(libraryId, info);
 
         if (data.length() > 1) {
             if (data.at(1).isEmpty() == false) {
                 QString nextComicId = data.at(1);
                 ComicInfo info;
                 info.id = nextComicId.toULongLong();
-                DBHelper::setComicAsReading(libraryId,info);
+                DBHelper::setComicAsReading(libraryId, info);
             }
         }
-    }
-    else
-    {
-        response.setStatus(412,"No comic info received");
-        response.write("",true);
+    } else {
+        response.setStatus(412, "No comic info received");
+        response.write("", true);
         return;
     }
 
-    response.write("OK",true);
+    response.write("OK", true);
 }

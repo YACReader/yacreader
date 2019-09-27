@@ -5,15 +5,14 @@
 
 class JSONModel : public QAbstractItemModel
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit JSONModel(QObject *parent = 0);
-	virtual void load(const QString & json) = 0 ;
+    explicit JSONModel(QObject *parent = nullptr);
+    virtual void load(const QString &json) = 0;
 
 signals:
 
 public slots:
-
 };
 
 #endif // JSON_MODEL_H

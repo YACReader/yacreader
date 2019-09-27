@@ -1,0 +1,1 @@
+p7zip 16.02 built from the orignal sources using makefile.macosx_llvm_64bits

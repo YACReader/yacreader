@@ -7,19 +7,20 @@ class QLabel;
 
 class ScraperScrollLabel : public QScrollArea
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit ScraperScrollLabel(QWidget *parent = 0);
+    explicit ScraperScrollLabel(QWidget *parent = nullptr);
 
 signals:
 
 public slots:
-	void setText(const QString & text);
-	void setAltText(const QString &text);
+    void setText(const QString &text);
+    void setAltText(const QString &text);
 
-	void openLink(const QString &link);
+    void openLink(const QString &link);
+
 private:
-	QLabel * textLabel;
+    QLabel *textLabel;
 };
 
 #endif // SCRAPER_SCROLL_LABEL_H

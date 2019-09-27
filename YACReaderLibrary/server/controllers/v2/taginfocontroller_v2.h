@@ -5,16 +5,17 @@
 #include "httpresponse.h"
 #include "httprequesthandler.h"
 
-class TagInfoControllerV2 : public HttpRequestHandler {
+class TagInfoControllerV2 : public HttpRequestHandler
+{
     Q_OBJECT
-        Q_DISABLE_COPY(TagInfoControllerV2)
+    Q_DISABLE_COPY(TagInfoControllerV2)
 public:
     TagInfoControllerV2();
 
-    void service(HttpRequest& request, HttpResponse& response);
+    void service(HttpRequest &request, HttpResponse &response) override;
 
 private:
-    void serviceComics(const int  &library, const qulonglong & tagId, HttpResponse& response);
+    void serviceComics(const int &library, const qulonglong &tagId, HttpResponse &response);
 };
 
 #endif // TAGINFOCONTROLLER_V2_H

@@ -1,11 +1,11 @@
---- libp7zip/CPP/myWindows/StdAfx.h	2014-06-06 23:52:13.397311952 +0200
-+++ libp7zip/CPP/myWindows/StdAfx.h	2014-06-06 23:53:20.353981756 +0200
-@@ -114,7 +114,7 @@
+--- libp7zip/CPP/include_windows/windows.h	2018-09-18 17:17:26.000000000 +0200
+--- libp7zip/CPP/include_windows/windows.h	2018-09-18 17:17:24.000000000 +0200
+@@ -36,7 +36,7 @@
+ #define WINAPI 
  
- #if defined( __x86_64__ )
+ #undef BOOL
+-typedef int BOOL;
++typedef signed char BOOL;
  
--#define _WIN64 1
-+//#define _WIN64 1
  
- #endif
- 
+ #define CREATE_NEW	  1

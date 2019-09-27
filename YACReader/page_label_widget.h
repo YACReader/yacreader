@@ -8,22 +8,22 @@ class QPropertyAnimation;
 
 class PageLabelWidget : public QWidget
 {
-Q_OBJECT
+    Q_OBJECT
 private:
-	QLabel * textLabel;
-	QPropertyAnimation * animation;
+    QLabel *textLabel;
+    QPropertyAnimation *animation;
 
 protected:
-    virtual void paintEvent(QPaintEvent *);
+    void paintEvent(QPaintEvent *) override;
 
 public:
-	PageLabelWidget(QWidget * parent);
+    PageLabelWidget(QWidget *parent);
 
 public slots:
-	void show();
-	void hide();
-	void setText(const QString & text);
-	void updatePosition();
+    void show();
+    void hide();
+    void setText(const QString &text);
+    void updatePosition();
 };
 
 #endif

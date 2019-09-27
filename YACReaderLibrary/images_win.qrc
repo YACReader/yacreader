@@ -41,5 +41,6 @@
         <file>../images/lists/label_yellow.png</file>
         <file>../images/lists/list.png</file>
         <file>../images/empty_reading_list.png</file>
+        <file>icon.ico</file>
     </qresource>
 </RCC>

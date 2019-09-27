@@ -17,34 +17,34 @@ ScrollManagement::Movement ScrollManagement::getMovement(QWheelEvent *event)
     int minimumMove = 70;
 
     //avoid any events overflood
-    if((wheelTimer->elapsed() < tooFast)){
+    if ((wheelTimer->elapsed() < tooFast)) {
         event->setAccepted(true);
         return None;
     }
 
     // Accumulate the delta
-    if(event->delta()<0 != wheelAccumulator<0 ) //different sign means change in direction
+    if ((event->delta() < 0) != (wheelAccumulator < 0)) //different sign means change in direction
         wheelAccumulator = 0;
 
     wheelAccumulator += event->delta();
 
     //Do not process events too fast
-    if((wheelTimer->elapsed() < timeThrottle)){
+    if ((wheelTimer->elapsed() < timeThrottle)) {
         event->setAccepted(true);
         return None;
     }
 
     //small intervals are ignored until with have enough acumulated delta
-    if((wheelAccumulator < minimumMove) && (wheelAccumulator > -minimumMove)){
+    if ((wheelAccumulator < minimumMove) && (wheelAccumulator > -minimumMove)) {
         event->setAccepted(true);
         return None;
     }
 
     Movement m;
-    if(wheelAccumulator<0)
-            m = Forward;
-        else
-            m = Backward;
+    if (wheelAccumulator < 0)
+        m = Forward;
+    else
+        m = Backward;
 
     event->accept();
     //Clean up
@@ -56,6 +56,4 @@ ScrollManagement::Movement ScrollManagement::getMovement(QWheelEvent *event)
 
 ScrollManagement::~ScrollManagement()
 {
-
 }
-

@@ -30,8 +30,16 @@ CONFIG(no_opengl) {
 }
 
 # default value for comic archive decompression backend
-!CONFIG(unarr):!CONFIG(7zip) {
+unix:!macx:!CONFIG(unarr):!CONFIG(7zip) {
   CONFIG += unarr
+}
+
+win32:!CONFIG(unarr):!CONFIG(7zip) {
+  CONFIG += 7zip
+}
+
+macx:!CONFIG(unarr):!CONFIG(7zip) {
+  CONFIG += 7zip
 }
 
 # default values for pdf render backend

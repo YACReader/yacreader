@@ -15,9 +15,9 @@
 
 PageController::PageController() {}
 
-void PageController::service(HttpRequest& request, HttpResponse& response)
+void PageController::service(HttpRequest &request, HttpResponse &response)
 {
-    HttpSession session=Static::sessionStore->getSession(request,response,false);
+    HttpSession session = Static::sessionStore->getSession(request, response, false);
     YACReaderHttpSession *ySession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(session.getId());
 
     QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
@@ -33,67 +33,53 @@ void PageController::service(HttpRequest& request, HttpResponse& response)
 
     //qDebug("lib name : %s",pathElements.at(2).data());
 
-    Comic * comicFile;
+    Comic *comicFile;
     qulonglong currentComicId;
-    if(remote)
-    {
+    if (remote) {
         QLOG_TRACE() << "se recupera comic remoto para servir páginas";
         comicFile = ySession->getCurrentRemoteComic();
         currentComicId = ySession->getCurrentRemoteComicId();
-    }
-    else
-    {
+    } else {
         QLOG_TRACE() << "se recupera comic para servir páginas";
         comicFile = ySession->getCurrentComic();
         currentComicId = ySession->getCurrentComicId();
     }
 
-    if(currentComicId != 0 && !QPointer<Comic>(comicFile).isNull())
-    {
-        if(comicId == currentComicId && page < comicFile->numPages())
-        {
-            if(comicFile->pageIsLoaded(page))
-            {
+    if (currentComicId != 0 && !QPointer<Comic>(comicFile).isNull()) {
+        if (comicId == currentComicId && page < comicFile->numPages()) {
+            if (comicFile->pageIsLoaded(page)) {
                 //qDebug("PageController: La página estaba cargada -> %s ",path.data());
                 response.setHeader("Content-Type", "image/jpeg");
-                response.setHeader("Transfer-Encoding","chunked");
+                response.setHeader("Transfer-Encoding", "chunked");
                 QByteArray pageData = comicFile->getRawPage(page);
                 QDataStream data(pageData);
                 char buffer[4096];
                 while (!data.atEnd()) {
-                    int len = data.readRawData(buffer,4096);
-                    response.write(QByteArray(buffer,len));
+                    int len = data.readRawData(buffer, 4096);
+                    response.write(QByteArray(buffer, len));
                 }
                 //response.write(pageData,true);
-                response.write(QByteArray(),true);
-            }
-            else
-            {
+                response.write(QByteArray(), true);
+            } else {
                 //qDebug("PageController: La página NO estaba cargada 404 -> %s ",path.data());
-                response.setStatus(404,"not found"); //TODO qué mensaje enviar
-                response.write("404 not found",true);
+                response.setStatus(404, "not found"); //TODO qué mensaje enviar
+                response.write("404 not found", true);
             }
-        }
-        else
-        {
-            if(comicId != currentComicId)
-            {
+        } else {
+            if (comicId != currentComicId) {
                 //delete comicFile;
-                if(remote)
+                if (remote)
                     ySession->dismissCurrentRemoteComic();
                 else
                     ySession->dismissCurrentComic();
             }
-            response.setStatus(404,"not found"); //TODO qué mensaje enviar
-            response.write("404 not found",true);
+            response.setStatus(404, "not found"); //TODO qué mensaje enviar
+            response.write("404 not found", true);
         }
-    }
-    else
-    {
-        response.setStatus(404,"not found");
-        response.write("404 not found",true);
+    } else {
+        response.setStatus(404, "not found");
+        response.write("404 not found", true);
     }
 
     //response.write(t.toLatin1(),true);
-
 }

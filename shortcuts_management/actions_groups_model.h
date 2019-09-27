@@ -9,10 +9,11 @@ class QAction;
 class ActionsGroup
 {
 public:
-    ActionsGroup(const QString & name, const QIcon & icon, QList<QAction *> & actions);
+    ActionsGroup(const QString &name, const QIcon &icon, QList<QAction *> &actions);
     QString getName() const;
     QIcon getIcon() const;
     QList<QAction *> getActions() const;
+
 protected:
     QString name;
     QIcon icon;
@@ -31,8 +32,8 @@ public:
     QVariant data(const QModelIndex &index, int role) const;
     QModelIndex parent(const QModelIndex &index) const;
 
-    void addActionsGroup(const ActionsGroup & group);
-    QList<QAction *> getActions(const QModelIndex & mi);
+    void addActionsGroup(const ActionsGroup &group);
+    QList<QAction *> getActions(const QModelIndex &mi);
 signals:
 
 public slots:

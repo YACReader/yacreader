@@ -103,7 +103,7 @@
         <location filename="add_library_dialog.cpp" line="22"/>
         <source>Library name : </source>
         <oldsource>Library Name : </oldsource>
-        <translation type="unfinished">Имя библиотеки : </translation>
+        <translation>Имя библиотеки : </translation>
     </message>
     <message>
         <location filename="add_library_dialog.cpp" line="27"/>
@@ -157,7 +157,7 @@
     <message>
         <location filename="qml/ComicInfoView.qml" line="275"/>
         <source>Authors</source>
-        <translation type="unfinished">Авторы</translation>
+        <translation>Авторы</translation>
     </message>
     <message>
         <location filename="qml/ComicInfoView.qml" line="305"/>
@@ -439,7 +439,7 @@
     <message>
         <location filename="export_comics_info_dialog.cpp" line="14"/>
         <source>Output file : </source>
-        <translation>Выходной файл (*.ydb) : </translation>
+        <translation>Путь сохранения : </translation>
     </message>
     <message>
         <location filename="export_comics_info_dialog.cpp" line="18"/>
@@ -564,7 +564,7 @@
     <message>
         <location filename="import_comics_info_dialog.cpp" line="17"/>
         <source>Info database location : </source>
-        <translation>Путь к файлу (*.ydb) : </translation>
+        <translation>Путь к файлу : </translation>
     </message>
     <message>
         <location filename="import_comics_info_dialog.cpp" line="21"/>
@@ -652,17 +652,18 @@
         <location filename="import_widget.cpp" line="359"/>
         <source>&lt;p&gt;The current library is being updated. For faster updates, please, update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
         <oldsource>&lt;p&gt;The current library is being updated. For faster updates, please, update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.</oldsource>
-        <translation>&lt;p&gt;Текущая библиотека обновляется. Для более быстрого обновления в дальнейшем старайтесь почаще обновлять вашу библиотеку после добавления новых комиксов.&lt;/p&gt;&lt;p&gt;Вы можете остановить этот процесс и продолжить обновление этой библиотеки позже.&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Для сокращения времени этого процесса периодически обновляйте вашу библиотеку после добавления новых комиксов.
+Вы можете остановить этот процесс и продолжить обновление этой библиотеки позже.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="import_widget.cpp" line="370"/>
         <source>Upgrading the library</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновление библиотеки</translation>
     </message>
     <message>
         <location filename="import_widget.cpp" line="371"/>
         <source>&lt;p&gt;The current library is being upgraded, please wait.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Библиотека обновляется, пожалуйста подождите.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -690,13 +691,13 @@
         <location filename="library_window.cpp" line="461"/>
         <location filename="library_window.cpp" line="462"/>
         <source>Export comics info</source>
-        <translation>Экспортировать информацию комикса</translation>
+        <translation>Экспортировать данные комиксов</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="467"/>
         <location filename="library_window.cpp" line="468"/>
         <source>Import comics info</source>
-        <translation>Импортировать информацию комикса</translation>
+        <translation>Импортировать данные комиксов</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="473"/>
@@ -1113,12 +1114,12 @@
     <message>
         <location filename="library_window.cpp" line="1140"/>
         <source>Upgrade failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновить не удалось</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="1140"/>
         <source>There were errors during library upgrade in: </source>
-        <translation type="unfinished"></translation>
+        <translation>При обновлении библиотеки произошли ошибки: </translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="1159"/>
@@ -1128,7 +1129,7 @@
     <message>
         <location filename="library_window.cpp" line="1159"/>
         <source>This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?</source>
-        <translation>Эта библиотека была создана с предыдущей версией YACReaderLibrary. Она должна быть обновлена. Обновить сейчас?</translation>
+        <translation>Эта библиотека была создана в предыдущей версии YACReaderLibrary. Требуется обновление. Обновить сейчас?</translation>
     </message>
     <message>
         <source>Update failed</source>
@@ -1247,12 +1248,12 @@ YACReaderLibrary не помешает вам создать больше биб
     <message>
         <location filename="library_window.cpp" line="1836"/>
         <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
-        <translation type="unfinished"></translation>
+        <translation>YACReader не найден, YACReader должен быть установлен в ту же папку что и YACReaderLibrary.</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="1838"/>
         <source>YACReader not found. There might be a problem with your YACReader installation.</source>
-        <translation type="unfinished"></translation>
+        <translation>YACReader не найден. Возможно, повреждены системные файлы YACReader. Переустановите YACReader.</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="1925"/>

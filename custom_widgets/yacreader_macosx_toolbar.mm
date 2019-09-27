@@ -18,10 +18,10 @@
 
 @end
 
-
 @implementation CustomSeparator
 
-- (void) drawRect:(NSRect)rect {
+- (void)drawRect:(NSRect)rect
+{
     [[NSColor colorWithDeviceRed:0.5 green:0.5 blue:0.5 alpha:1] setFill];
     NSRectFill(rect);
     [super drawRect:rect];
@@ -31,49 +31,46 @@
 
 //----------------------------
 //Toolbar delegate, needed for allow disabled/enabled items
-@interface MyToolbarDelegate : NSObject <NSToolbarDelegate>
-{
+@interface MyToolbarDelegate : NSObject <NSToolbarDelegate> {
 @public
-    YACReaderMacOSXToolbar * mytoolbar;
+    YACReaderMacOSXToolbar *mytoolbar;
 }
 
-- (NSToolbarItem *) toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted;
-- (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar*)toolbar;
-- (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar*)toolbar;
+- (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdent willBeInsertedIntoToolbar:(BOOL)willBeInserted;
+- (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar;
+- (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar;
 //- (NSArray *)toolbarSelectableItemIdentifiers:(NSToolbar *)toolbar;
 - (IBAction)itemClicked:(id)sender;
 - (BOOL)validateToolbarItem:(NSToolbarItem *)theItem;
 @end
 
-
 @implementation MyToolbarDelegate
 
-- (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar*)toolbar
+- (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar
 {
     Q_UNUSED(toolbar);
 
     NSMutableArray *array = [[NSMutableArray alloc] init];
 
     QList<QMacToolBarItem *> items = mytoolbar->items();
-    foreach (const QMacToolBarItem * item, items) {
-        [array addObject : item->nativeToolBarItem().itemIdentifier];
+    foreach (const QMacToolBarItem *item, items) {
+        [array addObject:item->nativeToolBarItem().itemIdentifier];
     }
     return array;
 }
 
-- (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar*)toolbar
+- (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar
 {
     Q_UNUSED(toolbar);
 
     NSMutableArray *array = [[NSMutableArray alloc] init];
 
     QList<QMacToolBarItem *> items = mytoolbar->items();
-    foreach (const QMacToolBarItem * item, items) {
-        [array addObject : item->nativeToolBarItem().itemIdentifier];
+    foreach (const QMacToolBarItem *item, items) {
+        [array addObject:item->nativeToolBarItem().itemIdentifier];
     }
     return array;
 }
-
 
 /*
 - (NSArray *)toolbarSelectableItemIdentifiers: (NSToolbar *)toolbar
@@ -94,8 +91,7 @@
 
 - (IBAction)itemClicked:(id)sender
 {
-    if([sender respondsToSelector:@selector(itemIdentifier)])
-    {
+    if ([sender respondsToSelector:@selector(itemIdentifier)]) {
         NSToolbarItem *item = reinterpret_cast<NSToolbarItem *>(sender);
 
         QString identifier = QString::fromNSString([item itemIdentifier]);
@@ -104,21 +100,20 @@
     }
 }
 
-- (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdentifier willBeInsertedIntoToolbar:(BOOL) willBeInserted
+- (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdentifier willBeInsertedIntoToolbar:(BOOL)willBeInserted
 {
     Q_UNUSED(toolbar);
     Q_UNUSED(willBeInserted);
     QList<QMacToolBarItem *> items = mytoolbar->items();
 
-    foreach (const QMacToolBarItem * item, items) {
+    foreach (const QMacToolBarItem *item, items) {
         NSToolbarItem *toolbarItem = item->nativeToolBarItem();
-        if([toolbarItem.itemIdentifier isEqual:itemIdentifier])
-        {
+        if ([toolbarItem.itemIdentifier isEqual:itemIdentifier]) {
 
-        [toolbarItem setTarget:self];
-        [toolbarItem setAction:@selector(itemClicked:)];
+            [toolbarItem setTarget:self];
+            [toolbarItem setAction:@selector(itemClicked:)];
 
-        return toolbarItem;
+            return toolbarItem;
         }
     }
     return nil;
@@ -128,29 +123,28 @@
 {
     QString identifier = QString::fromNSString(theItem.itemIdentifier);
 
-    if(mytoolbar->actions.contains(identifier))
-    {
+    if (mytoolbar->actions.contains(identifier)) {
         return mytoolbar->actions.value(identifier)->isEnabled();
-    }
-    else return NO;
+    } else
+        return NO;
 }
 @end
 
 //----------------------------
 //detect changes in native text field
 //TODO implement validation and auto completion
-@interface MyTextFieldDelegate : NSObject <NSTextFieldDelegate>
-{
+@interface MyTextFieldDelegate : NSObject <NSTextFieldDelegate> {
 @public
-    YACReaderMacOSXSearchLineEdit * mylineedit;
+    YACReaderMacOSXSearchLineEdit *mylineedit;
 }
 @end
 
 @implementation MyTextFieldDelegate
 
-- (void)controlTextDidChange:(NSNotification *)notification {
+- (void)controlTextDidChange:(NSNotification *)notification
+{
     NSTextField *textField = [notification object];
-    NSLog(@"%@",[textField stringValue]);
+    NSLog(@"%@", [textField stringValue]);
     Q_EMIT mylineedit->filterChanged(YACReader::NoModifiers, QString::fromNSString([textField stringValue]));
 }
 
@@ -158,10 +152,10 @@
 //----------------------------
 
 YACReaderMacOSXToolbar::YACReaderMacOSXToolbar(QObject *parent)
-    :viewSelector(0)
+    : viewSelector(0)
 {
     //setup native toolbar
-    nativeToolBar= nativeToolbar();
+    nativeToolBar = nativeToolbar();
     [nativeToolBar setDisplayMode:NSToolbarDisplayModeIconOnly];
     [nativeToolBar setAllowsUserCustomization:NO];
 
@@ -170,17 +164,15 @@ YACReaderMacOSXToolbar::YACReaderMacOSXToolbar(QObject *parent)
     [nativeToolBar setDelegate:(MyToolbarDelegate *)delegate];
 
 #ifdef YACREADER_LIBRARY
-    NSWindow *nswindow = (NSWindow*) qApp->platformNativeInterface()->nativeResourceForWindow("nswindow", ((QMainWindow*)parent)->windowHandle());
-    if([nswindow respondsToSelector:@selector(setTitleVisibility:)])
-    {
+    NSWindow *nswindow = (NSWindow *)qApp->platformNativeInterface()->nativeResourceForWindow("nswindow", ((QMainWindow *)parent)->windowHandle());
+    if ([nswindow respondsToSelector:@selector(setTitleVisibility:)]) {
         yosemite = true;
         //TODO yosemite new constants are not found in compilation time
         [nswindow setTitleVisibility:NSWindowTitleHidden];
         //TODO NSFullSizeContentViewWindowMask produces an offset in the windows' content
         //nswindow.styleMask |= 1 << 15; // NSFullSizeContentViewWindowMask;
         [nativeToolBar setSizeMode:NSToolbarSizeModeSmall]; //TODO figure out how to load specific images in Yosemite
-    }else
-    {
+    } else {
         [nativeToolBar setSizeMode:NSToolbarSizeModeSmall];
         yosemite = false;
     }
@@ -193,15 +185,15 @@ YACReaderMacOSXToolbar::YACReaderMacOSXToolbar(QObject *parent)
 
 void YACReaderMacOSXToolbar::addAction(QAction *action)
 {
-    QMacToolBarItem *toolBarItem = addItem(action->icon(),action->text());
-    if(action->data().toString() == TOGGLE_COMICS_VIEW_ACTION_YL)
+    QMacToolBarItem *toolBarItem = addItem(action->icon(), action->text());
+    if (action->data().toString() == TOGGLE_COMICS_VIEW_ACTION_YL)
         viewSelector = toolBarItem;
-    connect(toolBarItem,SIGNAL(activated()),action, SIGNAL(triggered()));
+    connect(toolBarItem, SIGNAL(activated()), action, SIGNAL(triggered()));
 
-    NSToolbarItem * nativeItem = toolBarItem->nativeToolBarItem();
-    actions.insert(QString::fromNSString(nativeItem.itemIdentifier),action);
+    NSToolbarItem *nativeItem = toolBarItem->nativeToolBarItem();
+    actions.insert(QString::fromNSString(nativeItem.itemIdentifier), action);
 
-    MacToolBarItemWrapper * wrapper = new MacToolBarItemWrapper(action,toolBarItem);
+    MacToolBarItemWrapper *wrapper = new MacToolBarItemWrapper(action, toolBarItem);
     //wrapper->actionToogled(true);
 }
 
@@ -212,8 +204,8 @@ void YACReaderMacOSXToolbar::addDropDownItem(const QList<QAction *> &actions, co
 
 void YACReaderMacOSXToolbar::addSpace(int size)
 {
-    QMacToolBarItem *toolBarItem = addItem(QIcon(),"");
-    NSToolbarItem * nativeItem = toolBarItem->nativeToolBarItem();
+    QMacToolBarItem *toolBarItem = addItem(QIcon(), "");
+    NSToolbarItem *nativeItem = toolBarItem->nativeToolBarItem();
 
     static const NSRect frameRect = { { 0.0, 0.0 }, { CGFloat(size), 16.0 } };
     NSView *view = [[NSView alloc] initWithFrame:frameRect];
@@ -226,8 +218,8 @@ void YACReaderMacOSXToolbar::addSeparator()
 {
     //QMacToolBar::addSeparator();
 
-    QMacToolBarItem *toolBarItem = addItem(QIcon(),"");
-    NSToolbarItem * nativeItem = toolBarItem->nativeToolBarItem();
+    QMacToolBarItem *toolBarItem = addItem(QIcon(), "");
+    NSToolbarItem *nativeItem = toolBarItem->nativeToolBarItem();
 
     static const NSRect frameRect = { { 0.0, 0.0 }, { 1, 16.0 } };
     CustomSeparator *view = [[CustomSeparator alloc] initWithFrame:frameRect];
@@ -237,14 +229,14 @@ void YACReaderMacOSXToolbar::addSeparator()
 
 void YACReaderMacOSXToolbar::addStretch()
 {
-    QMacToolBarItem *toolBarItem = addItem(QIcon(),"");
+    QMacToolBarItem *toolBarItem = addItem(QIcon(), "");
     toolBarItem->setStandardItem(QMacToolBarItem::FlexibleSpace);
 }
 
 void YACReaderMacOSXToolbar::addWidget(QWidget *widget)
 {
     //TODO fix it
-   /* QMacNativeWidget *nativeWidget = new QMacNativeWidget();
+    /* QMacNativeWidget *nativeWidget = new QMacNativeWidget();
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(widget);
     nativeWidget->setLayout(layout);
@@ -266,20 +258,18 @@ void YACReaderMacOSXToolbar::hide()
     [nativeToolBar setVisible:NO];
 }
 
-YACReaderMacOSXSearchLineEdit * YACReaderMacOSXToolbar::addSearchEdit()
+YACReaderMacOSXSearchLineEdit *YACReaderMacOSXToolbar::addSearchEdit()
 {
-    QMacToolBarItem *toolBarItem = addItem(QIcon(),"");
-    NSToolbarItem * nativeItem = toolBarItem->nativeToolBarItem();
+    QMacToolBarItem *toolBarItem = addItem(QIcon(), "");
+    NSToolbarItem *nativeItem = toolBarItem->nativeToolBarItem();
 
-    YACReaderMacOSXSearchLineEdit * searchEdit = new YACReaderMacOSXSearchLineEdit();
+    YACReaderMacOSXSearchLineEdit *searchEdit = new YACReaderMacOSXSearchLineEdit();
 
-
-    if(yosemite)
+    if (yosemite)
         [nativeItem setView:(NSTextField *)searchEdit->getNSTextField()];
-    else
-    {
+    else {
         static const NSRect searchEditFrameRect = { { 0.0, 0.0 }, { 165, 26.0 } };
-        NSView * view = [[NSView alloc] initWithFrame:searchEditFrameRect];
+        NSView *view = [[NSView alloc] initWithFrame:searchEditFrameRect];
         [view addSubview:((NSTextField *)searchEdit->getNSTextField())];
         [nativeItem setView:view];
     }
@@ -290,37 +280,36 @@ YACReaderMacOSXSearchLineEdit * YACReaderMacOSXToolbar::addSearchEdit()
 //deprecated
 QAction *YACReaderMacOSXToolbar::addFitToWidthSlider(QAction *attachToAction)
 {
-    QMacToolBarItem *toolBarItem = addItem(QIcon(":/images/viewer_toolbar/toWidthSlider.png"),"fit to width slider");
+    QMacToolBarItem *toolBarItem = addItem(QIcon(":/images/viewer_toolbar/toWidthSlider.png"), "fit to width slider");
 
-    NSToolbarItem * nativeItem = toolBarItem->nativeToolBarItem();
-    actions.insert(QString::fromNSString(nativeItem.itemIdentifier),attachToAction);
+    NSToolbarItem *nativeItem = toolBarItem->nativeToolBarItem();
+    actions.insert(QString::fromNSString(nativeItem.itemIdentifier), attachToAction);
 
-    QAction * action = new QAction("",attachToAction->parent());
+    QAction *action = new QAction("", attachToAction->parent());
 
-    connect(toolBarItem,SIGNAL(activated()), action, SIGNAL(triggered()));
+    connect(toolBarItem, SIGNAL(activated()), action, SIGNAL(triggered()));
 
     return action;
 }
 
 void YACReaderMacOSXToolbar::updateViewSelectorIcon(const QIcon &icon)
 {
-    if(viewSelector)
+    if (viewSelector)
         viewSelector->setIcon(icon);
 }
 
-
 YACReaderMacOSXSearchLineEdit::YACReaderMacOSXSearchLineEdit()
-    :QObject()
+    : QObject()
 {
     NSRect searchEditFrameRect = { { 0.0, -3.0 }, { 165, 32.0 } };
     //NSTextField * searchEdit = [[NSTextField alloc] initWithFrame:searchEditFrameRect];
 
-    NSTextField * searchEdit = [[NSSearchField alloc] initWithFrame:searchEditFrameRect];
+    NSTextField *searchEdit = [[NSSearchField alloc] initWithFrame:searchEditFrameRect];
     //[searchEdit setBezelStyle:NSTextFieldRoundedBezel];
 
     [[searchEdit cell] setPlaceholderString:@"type to search"];
 
-    MyTextFieldDelegate * delegate = [[MyTextFieldDelegate alloc] init];
+    MyTextFieldDelegate *delegate = [[MyTextFieldDelegate alloc] init];
     delegate->mylineedit = this;
     [searchEdit setDelegate:delegate];
 
@@ -359,14 +348,12 @@ void YACReaderMacOSXSearchLineEdit::setEnabled(bool enabled)
     [((NSTextField *)nstextfield) setEnabled:enabled];
 }
 
-
 MacToolBarItemWrapper::MacToolBarItemWrapper(QAction *action, QMacToolBarItem *toolbaritem)
-    :action(action),toolbaritem(toolbaritem)
+    : action(action), toolbaritem(toolbaritem)
 {
-    if(action->isCheckable())
-    {
-        connect(action,SIGNAL(toggled(bool)),this,SLOT(actionToggled(bool)));
-        connect(toolbaritem,SIGNAL(activated()), action, SLOT(toggle()));
+    if (action->isCheckable()) {
+        connect(action, SIGNAL(toggled(bool)), this, SLOT(actionToggled(bool)));
+        connect(toolbaritem, SIGNAL(activated()), action, SLOT(toggle()));
         updateIcon(action->isChecked());
     }
 }
@@ -378,19 +365,17 @@ void MacToolBarItemWrapper::actionToggled(bool toogled)
 
 void MacToolBarItemWrapper::updateIcon(bool enabled)
 {
-    if(enabled)
-    {
+    if (enabled) {
         QIcon icon = action->icon();
-        QPixmap tempPixmap = icon.pixmap(QSize(24,24));
+        QPixmap tempPixmap = icon.pixmap(QSize(24, 24));
         QPainter painter;
         painter.begin(&tempPixmap);
-        painter.fillRect(QRect(3,21,18,1),QColor("#3F3F3F"));
-        painter.fillRect(QRect(3,22,18,1),QColor("#6E6E6E"));
-        painter.fillRect(QRect(3,23,18,1),QColor("#EEEEEE"));
+        painter.fillRect(QRect(3, 21, 18, 1), QColor("#3F3F3F"));
+        painter.fillRect(QRect(3, 22, 18, 1), QColor("#6E6E6E"));
+        painter.fillRect(QRect(3, 23, 18, 1), QColor("#EEEEEE"));
         painter.end();
 
         toolbaritem->setIcon(QIcon(tempPixmap));
-    }
-    else
+    } else
         toolbaritem->setIcon(action->icon());
 }

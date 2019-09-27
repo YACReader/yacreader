@@ -7,16 +7,13 @@
 
 #include "comic_db.h"
 
-
 class QAbstractListModel;
 class QItemSelectionModel;
-class QQuickView;
-class QQuickView;
+class QQuickWidget;
 
 class YACReaderToolBarStretch;
 class YACReaderComicsSelectionHelper;
 class YACReaderComicInfoHelper;
-
 
 class GridComicsView : public ComicsView
 {
@@ -24,25 +21,25 @@ class GridComicsView : public ComicsView
 public:
     explicit GridComicsView(QWidget *parent = 0);
     virtual ~GridComicsView();
-    void setToolBar(QToolBar * toolBar);
-    void setModel(ComicModel *model);
-    void setCurrentIndex(const QModelIndex &index);
-    QModelIndex currentIndex();
-    QItemSelectionModel * selectionModel();
-    void scrollTo(const QModelIndex & mi, QAbstractItemView::ScrollHint hint );
-    void toFullScreen();
-    void toNormal();
-    void updateConfig(QSettings * settings);
-    void enableFilterMode(bool enabled);
+    void setToolBar(QToolBar *toolBar) override;
+    void setModel(ComicModel *model) override;
+    void setCurrentIndex(const QModelIndex &index) override;
+    QModelIndex currentIndex() override;
+    QItemSelectionModel *selectionModel() override;
+    void scrollTo(const QModelIndex &mi, QAbstractItemView::ScrollHint hint) override;
+    void toFullScreen() override;
+    void toNormal() override;
+    void updateConfig(QSettings *settings) override;
+    void enableFilterMode(bool enabled) override;
     QSize sizeHint();
     QByteArray getMimeDataFromSelection();
-    void updateCurrentComicView();
+    void updateCurrentComicView() override;
 
 public slots:
     //ComicsView
-    void setShowMarks(bool show);
-    void selectAll();
-    void selectIndex(int index);
+    void setShowMarks(bool show) override;
+    void selectAll() override;
+    void selectIndex(int index) override;
     void triggerOpenCurrentComic();
 
     void updateBackgroundConfig();
@@ -59,12 +56,12 @@ protected slots:
     //QML - dragManager
     void startDrag();
     //QML - dropManager
-    bool canDropUrls(const QList<QUrl> & urls, Qt::DropAction action);
+    bool canDropUrls(const QList<QUrl> &urls, Qt::DropAction action);
     bool canDropFormats(const QString &formats);
-    void droppedFiles(const QList<QUrl> & urls, Qt::DropAction action);
-    void droppedComicsForResortingAt(const QString & data, int index);
+    void droppedFiles(const QList<QUrl> &urls, Qt::DropAction action);
+    void droppedComicsForResortingAt(const QString &data, int index);
     //QML - context menu
-    void requestedContextMenu(const QPoint & point);
+    void requestedContextMenu(const QPoint &point);
 
     void setCoversSize(int width);
 
@@ -78,27 +75,26 @@ signals:
     void onScrollToOrigin();
 
 private:
-    QSettings * settings;
-    QToolBar * toolbar;
-    YACReaderToolBarStretch * toolBarStretch;
-    QAction * toolBarStretchAction;
-    QWidget * coverSizeSliderWidget;
-    QSlider * coverSizeSlider;
-    QAction * coverSizeSliderAction;
-    QAction * showInfoAction;
-    QAction * showInfoSeparatorAction;
+    QSettings *settings;
+    QToolBar *toolbar;
+    YACReaderToolBarStretch *toolBarStretch;
+    QAction *toolBarStretchAction;
+    QWidget *coverSizeSliderWidget;
+    QSlider *coverSizeSlider;
+    QAction *coverSizeSliderAction;
+    QAction *showInfoAction;
+    QAction *showInfoSeparatorAction;
 
     bool filterEnabled;
 
-    YACReaderComicsSelectionHelper * selectionHelper;
-    YACReaderComicInfoHelper * comicInfoHelper;
+    YACReaderComicsSelectionHelper *selectionHelper;
+    YACReaderComicInfoHelper *comicInfoHelper;
 
     ComicDB currentComic;
 
     bool dummy;
-    void closeEvent ( QCloseEvent * event );
+    void closeEvent(QCloseEvent *event) override;
     void createCoverSizeSliderWidget();
-
 };
 
 #endif // GRID_COMICS_VIEW_H

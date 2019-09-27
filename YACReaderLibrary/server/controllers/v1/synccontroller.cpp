@@ -8,7 +8,6 @@
 
 SyncController::SyncController()
 {
-
 }
 
 void SyncController::service(HttpRequest &request, HttpResponse &response)
@@ -17,7 +16,7 @@ void SyncController::service(HttpRequest &request, HttpResponse &response)
 
     QLOG_TRACE() << "POST DATA: " << postData;
 
-    if(postData.length()>0) {
+    if (postData.length() > 0) {
         QList<QString> data = postData.split("\n");
 
         qulonglong libraryId;
@@ -25,12 +24,10 @@ void SyncController::service(HttpRequest &request, HttpResponse &response)
         int currentPage;
         int currentRating;
         QString hash;
-        foreach(QString comicInfo, data)
-        {
+        foreach (QString comicInfo, data) {
             QList<QString> comicInfoProgress = comicInfo.split("\t");
 
-            if(comicInfoProgress.length() == 4 || comicInfoProgress.length() == 5)
-            {
+            if (comicInfoProgress.length() == 4 || comicInfoProgress.length() == 5) {
                 libraryId = comicInfoProgress.at(0).toULongLong();
                 comicId = comicInfoProgress.at(1).toULongLong();
                 hash = comicInfoProgress.at(2);
@@ -42,23 +39,19 @@ void SyncController::service(HttpRequest &request, HttpResponse &response)
                 info.id = comicId;
 
                 //Client 2.1+ version
-                if(comicInfoProgress.length() > 4)
-                {
+                if (comicInfoProgress.length() > 4) {
                     currentRating = comicInfoProgress.at(4).toInt();
                     info.rating = currentRating;
                 }
 
-                DBHelper::updateFromRemoteClient(libraryId,info);
+                DBHelper::updateFromRemoteClient(libraryId, info);
             }
         }
-    }
-    else
-    {
-        response.setStatus(412,"No comic info received");
-        response.write("",true);
+    } else {
+        response.setStatus(412, "No comic info received");
+        response.write("", true);
         return;
     }
 
-    response.write("OK",true);
+    response.write("OK", true);
 }
-

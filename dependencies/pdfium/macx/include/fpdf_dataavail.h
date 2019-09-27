@@ -59,14 +59,14 @@ typedef void* FPDF_AVAIL;
 //
 // Returns a handle to the document availability provider, or NULL on error.
 //
-// |FPDFAvail_Destroy| must be called when done with the availability provider.
-DLLEXPORT FPDF_AVAIL STDCALL FPDFAvail_Create(FX_FILEAVAIL* file_avail,
-                                              FPDF_FILEACCESS* file);
+// FPDFAvail_Destroy() must be called when done with the availability provider.
+FPDF_EXPORT FPDF_AVAIL FPDF_CALLCONV FPDFAvail_Create(FX_FILEAVAIL* file_avail,
+                                                      FPDF_FILEACCESS* file);
 
 // Destroy the |avail| document availability provider.
 //
 //   avail - handle to document availability provider to be destroyed.
-DLLEXPORT void STDCALL FPDFAvail_Destroy(FPDF_AVAIL avail);
+FPDF_EXPORT void FPDF_CALLCONV FPDFAvail_Destroy(FPDF_AVAIL avail);
 
 // Download hints interface. Used to receive hints for further downloading.
 typedef struct _FX_DOWNLOADHINTS {
@@ -103,11 +103,12 @@ typedef struct _FX_DOWNLOADHINTS {
 // Applications should call this function whenever new data arrives, and process
 // all the generated download hints, if any, until the function returns
 // |PDF_DATA_ERROR| or |PDF_DATA_AVAIL|.
+// if hints is nullptr, the function just check current document availability.
 //
-// Once all data is available, call |FPDFAvail_GetDocument| to get a document
+// Once all data is available, call FPDFAvail_GetDocument() to get a document
 // handle.
-DLLEXPORT int STDCALL
-FPDFAvail_IsDocAvail(FPDF_AVAIL avail, FX_DOWNLOADHINTS* hints);
+FPDF_EXPORT int FPDF_CALLCONV FPDFAvail_IsDocAvail(FPDF_AVAIL avail,
+                                                   FX_DOWNLOADHINTS* hints);
 
 // Get document from the availability provider.
 //
@@ -116,10 +117,12 @@ FPDFAvail_IsDocAvail(FPDF_AVAIL avail, FX_DOWNLOADHINTS* hints);
 //
 // Returns a handle to the document.
 //
-// When |FPDFAvail_IsDocAvail| returns TRUE, call |FPDFAvail_GetDocument| to
+// When FPDFAvail_IsDocAvail() returns TRUE, call FPDFAvail_GetDocument() to
 // retrieve the document handle.
-DLLEXPORT FPDF_DOCUMENT STDCALL FPDFAvail_GetDocument(FPDF_AVAIL avail,
-                                                      FPDF_BYTESTRING password);
+// See the comments for FPDF_LoadDocument() regarding the encoding for
+// |password|.
+FPDF_EXPORT FPDF_DOCUMENT FPDF_CALLCONV
+FPDFAvail_GetDocument(FPDF_AVAIL avail, FPDF_BYTESTRING password);
 
 // Get the page number for the first available page in a linearized PDF.
 //
@@ -130,7 +133,7 @@ DLLEXPORT FPDF_DOCUMENT STDCALL FPDFAvail_GetDocument(FPDF_AVAIL avail,
 // For most linearized PDFs, the first available page will be the first page,
 // however, some PDFs might make another page the first available page.
 // For non-linearized PDFs, this function will always return zero.
-DLLEXPORT int STDCALL FPDFAvail_GetFirstPageNum(FPDF_DOCUMENT doc);
+FPDF_EXPORT int FPDF_CALLCONV FPDFAvail_GetFirstPageNum(FPDF_DOCUMENT doc);
 
 // Check if |page_index| is ready for loading, if not, get the
 // |FX_DOWNLOADHINTS|.
@@ -145,14 +148,16 @@ DLLEXPORT int STDCALL FPDFAvail_GetFirstPageNum(FPDF_DOCUMENT doc);
 //   PDF_DATA_NOTAVAIL: Data not yet available.
 //   PDF_DATA_AVAIL: Data available.
 //
-// This function can be called only after |FPDFAvail_GetDocument| is called.
+// This function can be called only after FPDFAvail_GetDocument() is called.
 // Applications should call this function whenever new data arrives and process
 // all the generated download |hints|, if any, until this function returns
 // |PDF_DATA_ERROR| or |PDF_DATA_AVAIL|. Applications can then perform page
 // loading.
-DLLEXPORT int STDCALL FPDFAvail_IsPageAvail(FPDF_AVAIL avail,
-                                            int page_index,
-                                            FX_DOWNLOADHINTS* hints);
+// if hints is nullptr, the function just check current availability of
+// specified page.
+FPDF_EXPORT int FPDF_CALLCONV FPDFAvail_IsPageAvail(FPDF_AVAIL avail,
+                                                    int page_index,
+                                                    FX_DOWNLOADHINTS* hints);
 
 // Check if form data is ready for initialization, if not, get the
 // |FX_DOWNLOADHINTS|.
@@ -167,14 +172,16 @@ DLLEXPORT int STDCALL FPDFAvail_IsPageAvail(FPDF_AVAIL avail,
 //   PDF_FORM_AVAIL: Data available.
 //   PDF_FORM_NOTEXIST: No form data.
 //
-// This function can be called only after |FPDFAvail_GetDocument| is called.
+// This function can be called only after FPDFAvail_GetDocument() is called.
 // The application should call this function whenever new data arrives and
 // process all the generated download |hints|, if any, until the function
 // |PDF_FORM_ERROR|, |PDF_FORM_AVAIL| or |PDF_FORM_NOTEXIST|.
+// if hints is nullptr, the function just check current form availability.
+//
 // Applications can then perform page loading. It is recommend to call
-// |FPDFDOC_InitFormFillEnvironment| when |PDF_FORM_AVAIL| is returned.
-DLLEXPORT int STDCALL FPDFAvail_IsFormAvail(FPDF_AVAIL avail,
-                                            FX_DOWNLOADHINTS* hints);
+// FPDFDOC_InitFormFillEnvironment() when |PDF_FORM_AVAIL| is returned.
+FPDF_EXPORT int FPDF_CALLCONV FPDFAvail_IsFormAvail(FPDF_AVAIL avail,
+                                                    FX_DOWNLOADHINTS* hints);
 
 // Check whether a document is a linearized PDF.
 //
@@ -185,11 +192,11 @@ DLLEXPORT int STDCALL FPDFAvail_IsFormAvail(FPDF_AVAIL avail,
 //   PDF_NOT_LINEARIZED
 //   PDF_LINEARIZATION_UNKNOWN
 //
-// |FPDFAvail_IsLinearized| will return |PDF_LINEARIZED| or |PDF_NOT_LINEARIZED|
+// FPDFAvail_IsLinearized() will return |PDF_LINEARIZED| or |PDF_NOT_LINEARIZED|
 // when we have 1k  of data. If the files size less than 1k, it returns
 // |PDF_LINEARIZATION_UNKNOWN| as there is insufficient information to determine
 // if the PDF is linearlized.
-DLLEXPORT int STDCALL FPDFAvail_IsLinearized(FPDF_AVAIL avail);
+FPDF_EXPORT int FPDF_CALLCONV FPDFAvail_IsLinearized(FPDF_AVAIL avail);
 
 #ifdef __cplusplus
 }  // extern "C"

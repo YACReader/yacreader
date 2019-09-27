@@ -7,7 +7,7 @@
 class EmptyReadingListWidget : public EmptyContainerInfo
 {
 public:
-    EmptyReadingListWidget(QWidget * parent = 0);
+    EmptyReadingListWidget(QWidget *parent = nullptr);
 };
 
 #endif // EMPTY_READING_LIST_WIDGET_H

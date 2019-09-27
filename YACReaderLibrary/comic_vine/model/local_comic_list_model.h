@@ -7,35 +7,35 @@
 
 class LocalComicListModel : public QAbstractItemModel
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	explicit LocalComicListModel(QObject *parent = 0);
+    explicit LocalComicListModel(QObject *parent = nullptr);
 
-	void load(QList<ComicDB> & comics);
+    void load(QList<ComicDB> &comics);
 
-	//QAbstractItemModel methods
-	QModelIndex parent(const QModelIndex &index) const;
-	int rowCount(const QModelIndex &parent = QModelIndex()) const;
-	int columnCount(const QModelIndex &parent) const;
-	QVariant data(const QModelIndex &index, int role) const;
-	Qt::ItemFlags flags(const QModelIndex &index) const;
-	QVariant headerData(int section, Qt::Orientation orientation,
-						int role = Qt::DisplayRole) const;
-	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
-	QList<ComicDB> getData();
+    //QAbstractItemModel methods
+    QModelIndex parent(const QModelIndex &index) const override;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    int columnCount(const QModelIndex &parent) const override;
+    QVariant data(const QModelIndex &index, int role) const;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
+    QVariant headerData(int section, Qt::Orientation orientation,
+                        int role = Qt::DisplayRole) const override;
+    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
+    QList<ComicDB> getData();
 
-    void removeComics(const QList<QModelIndex> & selectedIndexes);
+    void removeComics(const QList<QModelIndex> &selectedIndexes);
     void restoreAll();
 signals:
 
 public slots:
-	void moveSelectionUp(const QList<QModelIndex> & selectedIndexes);
-	void moveSelectionDown(const QList<QModelIndex> & selectedIndexes);
-	void addExtraRows(int numRows);
+    void moveSelectionUp(const QList<QModelIndex> &selectedIndexes);
+    void moveSelectionDown(const QList<QModelIndex> &selectedIndexes);
+    void addExtraRows(int numRows);
 
 private:
-	int numExtraRows;
-	QList<ComicDB> _data;
+    int numExtraRows;
+    QList<ComicDB> _data;
     QList<ComicDB> _removed;
 };
 

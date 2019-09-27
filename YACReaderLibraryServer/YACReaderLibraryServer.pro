@@ -11,7 +11,6 @@ INCLUDEPATH += ../YACReaderLibrary \
                 ../YACReaderLibrary/db
 
 DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY QT_NO_DEBUG_OUTPUT
-QMAKE_MAC_SDK = macosx10.12
 # load default build flags
 # do a basic dependency check
 include(headless_config.pri)

@@ -49,7 +49,7 @@ public:
       @param settings configurations settings
       @param parent Parent object
     */
-    TemplateCache(QSettings* settings, QObject* parent=0);
+    TemplateCache(QSettings* settings, QObject* parent=nullptr);
 
 protected:
 

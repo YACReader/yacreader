@@ -52,7 +52,7 @@ public:
       @param parent Parent object.
       @warning Ensure to close or delete the listener before deleting the request handler.
     */
-    HttpListener(QSettings* settings, HttpRequestHandler* requestHandler, QObject* parent = NULL);
+    HttpListener(QSettings* settings, HttpRequestHandler* requestHandler, QObject* parent = nullptr);
 
     /** Destructor */
     virtual ~HttpListener();
@@ -71,7 +71,7 @@ public:
 protected:
 
     /** Serves new incoming connection requests */
-    void incomingConnection(tSocketDescriptor socketDescriptor);
+    void incomingConnection(tSocketDescriptor socketDescriptor) override;
 
 private:
 

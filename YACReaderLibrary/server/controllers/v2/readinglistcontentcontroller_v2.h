@@ -5,13 +5,14 @@
 #include "httpresponse.h"
 #include "httprequesthandler.h"
 
-class ReadingListContentControllerV2 : public HttpRequestHandler {
+class ReadingListContentControllerV2 : public HttpRequestHandler
+{
     Q_OBJECT
     Q_DISABLE_COPY(ReadingListContentControllerV2)
 public:
     ReadingListContentControllerV2();
 
-    void service(HttpRequest& request, HttpResponse& response);
+    void service(HttpRequest &request, HttpResponse &response) override;
 
 private:
     void serviceContent(const int &library, const qulonglong &readingListId, HttpResponse &response);

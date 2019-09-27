@@ -1,7 +1,7 @@
 #include "empty_label_widget.h"
 
-EmptyLabelWidget::EmptyLabelWidget(QWidget *parent) :
-    EmptyContainerInfo(parent)
+EmptyLabelWidget::EmptyLabelWidget(QWidget *parent)
+    : EmptyContainerInfo(parent)
 {
     setUpDefaultLayout(true);
 
@@ -16,6 +16,6 @@ void EmptyLabelWidget::setColor(YACReader::LabelColors color)
     QPixmap p(":/images/empty_label.png");
     QImage img = p.toImage().convertToFormat(QImage::Format_ARGB32);
     QColor destColor(YACReader::labelColorToRGBString(color));
-    YACReader::colorize(img,destColor);
+    YACReader::colorize(img, destColor);
     iconLabel->setPixmap(QPixmap::fromImage(img));
 }

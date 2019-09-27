@@ -3,10 +3,11 @@
 
 #if defined USE_PDFIUM && !defined NO_PDF
 
-int pdfRead(void* param,
+int pdfRead(void *param,
             unsigned long position,
-            unsigned char* pBuf,
-            unsigned long size) {
+            unsigned char *pBuf,
+            unsigned long size)
+{
 
     QFile *file = static_cast<QFile *>(param);
 
@@ -14,8 +15,7 @@ int pdfRead(void* param,
 
     qint64 numBytesRead = file->read(reinterpret_cast<char *>(pBuf), size);
 
-    if(numBytesRead > 0)
-    {
+    if (numBytesRead > 0) {
         return numBytesRead;
     }
 
@@ -30,30 +30,28 @@ QMutex PdfiumComic::pdfmutex;
 
 PdfiumComic::PdfiumComic()
 {
-  QMutexLocker locker(&pdfmutex);
-  if (++refcount == 1) {
-	   FPDF_InitLibrary();
-   }
+    QMutexLocker locker(&pdfmutex);
+    if (++refcount == 1) {
+        FPDF_InitLibrary();
+    }
 }
 
 PdfiumComic::~PdfiumComic()
 {
-  QMutexLocker locker(&pdfmutex);
-	if (doc)
-	{
-		FPDF_CloseDocument(doc);
-	}
-  if (--refcount == 0) {
-    FPDF_DestroyLibrary();
-  }
+    QMutexLocker locker(&pdfmutex);
+    if (doc) {
+        FPDF_CloseDocument(doc);
+    }
+    if (--refcount == 0) {
+        FPDF_DestroyLibrary();
+    }
 }
 
-bool PdfiumComic::openComic(const QString & path)
+bool PdfiumComic::openComic(const QString &path)
 {
     pdfFile.setFileName(path);
 
-    if(pdfFile.open(QIODevice::ReadOnly) == false)
-    {
+    if (pdfFile.open(QIODevice::ReadOnly) == false) {
         qDebug() << "unable to open file : " << path;
         return false;
     }
@@ -64,15 +62,12 @@ bool PdfiumComic::openComic(const QString & path)
 
     QMutexLocker lock(&pdfmutex);
     doc = FPDF_LoadCustomDocument(&fileAccess, NULL);
-	if (doc)
-	{
-		return true;
-	}
-	else
-	{
-		qDebug() << FPDF_GetLastError();
-		return false;
-	}
+    if (doc) {
+        return true;
+    } else {
+        qDebug() << FPDF_GetLastError();
+        return false;
+    }
 }
 
 void PdfiumComic::closeComic()
@@ -83,59 +78,53 @@ void PdfiumComic::closeComic()
 
 unsigned int PdfiumComic::numPages()
 {
-	if (doc)
-	{
-    QMutexLocker locker(&pdfmutex);
-		return FPDF_GetPageCount(doc);
-	}
-	else
-	{
-		return 0; //-1?
-	}
+    if (doc) {
+        QMutexLocker locker(&pdfmutex);
+        return FPDF_GetPageCount(doc);
+    } else {
+        return 0; //-1?
+    }
 }
 
 QImage PdfiumComic::getPage(const int page)
 {
-	if (!doc)
-	{
-		return QImage();
-	}
+    if (!doc) {
+        return QImage();
+    }
 
-	QImage image;
-	FPDF_PAGE pdfpage;
-	FPDF_BITMAP bitmap;
+    QImage image;
+    FPDF_PAGE pdfpage;
+    FPDF_BITMAP bitmap;
 
-  QMutexLocker locker(&pdfmutex);
-	pdfpage = FPDF_LoadPage(doc, page);
+    QMutexLocker locker(&pdfmutex);
+    pdfpage = FPDF_LoadPage(doc, page);
 
-	if (!pdfpage)
-	{
-    // TODO report error
-    qDebug() << FPDF_GetLastError();
-		return QImage();
-	}
+    if (!pdfpage) {
+        // TODO report error
+        qDebug() << FPDF_GetLastError();
+        return QImage();
+    }
 
-	// TODO: make target DPI configurable
-  QSize pagesize((FPDF_GetPageWidth(pdfpage)/72)*150,
-                (FPDF_GetPageHeight(pdfpage)/72)*150);
-  // TODO: max render size too
-	if (pagesize.width() > 3840 || pagesize.height() > 3840) {
-    pagesize.scale(3840, 3840, Qt::KeepAspectRatio);
-  }
-	image = QImage(pagesize, QImage::Format_ARGB32);// QImage::Format_RGBX8888);
-	if (image.isNull())
-	{
-    // TODO report OOM error
-    qDebug() << "Image too large, OOM";
-		return image;
-	}
-	image.fill(0xFFFFFFFF);
+    // TODO: make target DPI configurable
+    QSize pagesize((FPDF_GetPageWidth(pdfpage) / 72) * 150,
+                   (FPDF_GetPageHeight(pdfpage) / 72) * 150);
+    // TODO: max render size too
+    if (pagesize.width() > 3840 || pagesize.height() > 3840) {
+        pagesize.scale(3840, 3840, Qt::KeepAspectRatio);
+    }
+    image = QImage(pagesize, QImage::Format_ARGB32); // QImage::Format_RGBX8888);
+    if (image.isNull()) {
+        // TODO report OOM error
+        qDebug() << "Image too large, OOM";
+        return image;
+    }
+    image.fill(0xFFFFFFFF);
 
-	bitmap = FPDFBitmap_CreateEx(image.width(), image.height(), FPDFBitmap_BGRA, image.scanLine(0), image.bytesPerLine());
-	// TODO: make render flags costumizable
-	FPDF_RenderPageBitmap(bitmap, pdfpage, 0,0, image.width(), image.height(), 0, (FPDF_LCD_TEXT));
-	FPDFBitmap_Destroy(bitmap);
-	FPDF_ClosePage(pdfpage);
-	return image;
+    bitmap = FPDFBitmap_CreateEx(image.width(), image.height(), FPDFBitmap_BGRA, image.scanLine(0), image.bytesPerLine());
+    // TODO: make render flags costumizable
+    FPDF_RenderPageBitmap(bitmap, pdfpage, 0, 0, image.width(), image.height(), 0, (FPDF_LCD_TEXT));
+    FPDFBitmap_Destroy(bitmap);
+    FPDF_ClosePage(pdfpage);
+    return image;
 }
 #endif //USE_PDFIUM

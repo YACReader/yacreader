@@ -5,32 +5,32 @@
 #include <QLabel>
 #include <QVBoxLayout>
 
-SearchVolume::SearchVolume(QWidget * parent)
-	:QWidget(parent)
+SearchVolume::SearchVolume(QWidget *parent)
+    : QWidget(parent)
 {
-	QLabel * label = new QLabel(tr("Please provide some additional information."));
-	label->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
+    QLabel *label = new QLabel(tr("Please provide some additional information."));
+    label->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
 
-	volumeEdit = new ScraperLineEdit(tr("Series:"));
+    volumeEdit = new ScraperLineEdit(tr("Series:"));
 
-	QVBoxLayout * l = new QVBoxLayout;
+    QVBoxLayout *l = new QVBoxLayout;
 
-	l->addSpacing(35);
-	l->addWidget(label);
-	l->addWidget(volumeEdit);
-	l->addStretch();
+    l->addSpacing(35);
+    l->addWidget(label);
+    l->addWidget(volumeEdit);
+    l->addStretch();
 
-	l->setContentsMargins(0,0,0,0);
-	setLayout(l);
-	setContentsMargins(0,0,0,0);
+    l->setContentsMargins(0, 0, 0, 0);
+    setLayout(l);
+    setContentsMargins(0, 0, 0, 0);
 }
 
 void SearchVolume::clean()
 {
-	volumeEdit->clear();
+    volumeEdit->clear();
 }
 
 QString SearchVolume::getVolumeInfo()
 {
-	return volumeEdit->text();
+    return volumeEdit->text();
 }

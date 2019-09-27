@@ -5,17 +5,17 @@
 
 class ScraperLineEdit;
 
-
 class SearchVolume : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	SearchVolume(QWidget * parent = 0);
-	void clean();
+    SearchVolume(QWidget *parent = nullptr);
+    void clean();
 public slots:
-	QString getVolumeInfo();
+    QString getVolumeInfo();
+
 private:
-	ScraperLineEdit * volumeEdit;
+    ScraperLineEdit *volumeEdit;
 };
 
 #endif // SEARCH_VOLUME_H

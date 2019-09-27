@@ -8,83 +8,82 @@
 #include <QImage>
 #include <QMetaType>
 
-typedef QPair<QString,QString> YACReaderComicInfoPair;
+typedef QPair<QString, QString> YACReaderComicInfoPair;
 Q_DECLARE_METATYPE(YACReaderComicInfoPair)
 
 class ComicInfo : public QObject
 {
     Q_OBJECT
 public:
-	ComicInfo();
-	ComicInfo(const ComicInfo & comicInfo);
-	~ComicInfo();
+    ComicInfo();
+    ComicInfo(const ComicInfo &comicInfo);
+    ~ComicInfo();
 
-	ComicInfo & operator=(const ComicInfo & comicInfo);
+    ComicInfo &operator=(const ComicInfo &comicInfo);
 
-    bool operator==(const ComicInfo & other){return id == other.id;}
-    bool operator!=(const ComicInfo & other){return id != other.id;}
+    bool operator==(const ComicInfo &other) { return id == other.id; }
+    bool operator!=(const ComicInfo &other) { return id != other.id; }
 
     //mandatory fields
-	qulonglong id;
-	bool read;
-	bool edited;
-	QString hash;
-	bool existOnDb;
+    qulonglong id;
+    bool read;
+    bool edited;
+    QString hash;
+    bool existOnDb;
 
-	int rating;
+    int rating;
 
-	bool hasBeenOpened;
+    bool hasBeenOpened;
 
-	//viewer
-	int currentPage;
-	int bookmark1;
-	int bookmark2;
-	int bookmark3;
-	int brightness;
-	int contrast;
-	int gamma;
+    //viewer
+    int currentPage;
+    int bookmark1;
+    int bookmark2;
+    int bookmark3;
+    int brightness;
+    int contrast;
+    int gamma;
     //-----------------
 
-	
-    QVariant title;//string
-	
-    QVariant coverPage;//int
-    QVariant numPages;//int
+    QVariant title; //string
 
-    QVariant number;//int
-    QVariant isBis;//bool
-    QVariant count;//int
+    QVariant coverPage; //int
+    QVariant numPages; //int
 
-    QVariant volume;//string
-    QVariant storyArc;//string
-    QVariant arcNumber;//int
-    QVariant arcCount;//int
+    QVariant number; //int
+    QVariant isBis; //bool
+    QVariant count; //int
 
-    QVariant genere;//string
+    QVariant volume; //string
+    QVariant storyArc; //string
+    QVariant arcNumber; //int
+    QVariant arcCount; //int
 
-    QVariant writer;//string
-    QVariant penciller;//string
-    QVariant inker;//string
-    QVariant colorist;//string
-    QVariant letterer;//string
-    QVariant coverArtist;//string
+    QVariant genere; //string
 
-    QVariant date;//string
-    QVariant publisher;//string
-    QVariant format;//string
-    QVariant color;//bool
-    QVariant ageRating;//string
+    QVariant writer; //string
+    QVariant penciller; //string
+    QVariant inker; //string
+    QVariant colorist; //string
+    QVariant letterer; //string
+    QVariant coverArtist; //string
 
-    QVariant synopsis;//string
-    QVariant characters;//string
-    QVariant notes;//string
+    QVariant date; //string
+    QVariant publisher; //string
+    QVariant format; //string
+    QVariant color; //bool
+    QVariant ageRating; //string
 
-    QVariant comicVineID;//string
+    QVariant synopsis; //string
+    QVariant characters; //string
+    QVariant notes; //string
 
-	QImage cover;
+    QVariant comicVineID; //string
 
-    QVariant lastTimeOpened;//integer/date
-    QVariant coverSizeRatio;//h/w
+    QImage cover;
+
+    QVariant lastTimeOpened; //integer/date
+    QVariant coverSizeRatio; //h/w
     QVariant originalCoverSize; //string "WxH"
 
     /*void setTitle(QVariant value);
@@ -120,7 +119,7 @@ public:
     void setCharacters(QVariant value);
     void setNotes(QVariant value);*/
 
-	QPixmap getCover(const QString & basePath);
+    QPixmap getCover(const QString &basePath);
 
     Q_INVOKABLE QStringList getWriters();
     Q_INVOKABLE QStringList getPencillers();
@@ -131,9 +130,9 @@ public:
 
     Q_INVOKABLE QStringList getCharacters();
 
-	friend QDataStream &operator<<(QDataStream & stream, const ComicInfo & comicInfo);
+    friend QDataStream &operator<<(QDataStream &stream, const ComicInfo &comicInfo);
 
-	friend QDataStream &operator>>(QDataStream & stream, ComicInfo & comicInfo);
+    friend QDataStream &operator>>(QDataStream &stream, ComicInfo &comicInfo);
 
     Q_PROPERTY(qulonglong id MEMBER id CONSTANT)
     Q_PROPERTY(bool read MEMBER read WRITE setRead NOTIFY readChanged)
@@ -203,36 +202,35 @@ public:
     void setRead(bool r);
     void setRating(int r);
     void setFavorite(bool f);
-private:
 
+private:
 signals:
     void readChanged();
     void ratingChanged();
     void favoriteChanged();
-
 };
 
 class ComicDB : public LibraryItem
 {
     Q_OBJECT
 public:
-	ComicDB();
-    ComicDB(const ComicDB & comicDB);
-	
+    ComicDB();
+    ComicDB(const ComicDB &comicDB);
+
     bool isDir() const;
-	
-	bool _hasCover;
 
-    bool hasCover() {return _hasCover;}
+    bool _hasCover;
 
-	//return comic file name
-	QString getFileName() const;
+    bool hasCover() { return _hasCover; }
 
-	//returns comic title if it isn't null or empty, in other case returns fileName
+    //return comic file name
+    QString getFileName() const;
+
+    //returns comic title if it isn't null or empty, in other case returns fileName
     Q_INVOKABLE QString getTitleOrFileName() const;
 
-	//returns parent folder name
-	QString getParentFolderName() const;
+    //returns parent folder name
+    QString getParentFolderName() const;
 
     //return the size of the file in bytes
     Q_INVOKABLE qulonglong getFileSize() const;
@@ -244,12 +242,11 @@ public:
     ComicInfo info;
     Q_PROPERTY(ComicInfo info MEMBER info)
 
-    ComicDB & operator=(const ComicDB & other);
-    bool operator==(const ComicDB & other){return id == other.id;}
+    ComicDB &operator=(const ComicDB &other);
+    bool operator==(const ComicDB &other) { return id == other.id; }
 
-	friend QDataStream &operator<<(QDataStream &, const ComicDB &);
+    friend QDataStream &operator<<(QDataStream &, const ComicDB &);
     friend QDataStream &operator>>(QDataStream &, ComicDB &);
-
 };
 
 Q_DECLARE_METATYPE(ComicDB)

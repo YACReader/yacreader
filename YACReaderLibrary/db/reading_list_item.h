@@ -26,14 +26,14 @@ class SpecialListItem : public ListItem
 {
 public:
     SpecialListItem(const QList<QVariant> &data);
-    QIcon getIcon() const;
+    QIcon getIcon() const override;
     ReadingListModel::TypeSpecialList getType() const;
+
 private:
     enum DataIndexes {
         Name,
         Id
     };
-
 };
 
 //------------------------------------------------------
@@ -42,12 +42,11 @@ class LabelItem : public ListItem
 {
 public:
     LabelItem(const QList<QVariant> &data);
-    QIcon getIcon() const;
+    QIcon getIcon() const override;
     YACReader::LabelColors colorid() const;
     QString name() const;
-    void setName(const QString & name);
-    qulonglong getId() const;
-
+    void setName(const QString &name);
+    qulonglong getId() const override;
 
 private:
     enum DataIndexes {
@@ -63,24 +62,24 @@ private:
 class ReadingListItem : public ListItem
 {
 public:
-    ReadingListItem(const QList<QVariant> &data, ReadingListItem * parent = 0);
-    QIcon getIcon() const;
-    ReadingListItem * parent;
+    ReadingListItem(const QList<QVariant> &data, ReadingListItem *parent = nullptr);
+    QIcon getIcon() const override;
+    ReadingListItem *parent;
     int childCount() const;
     int row() const;
-    ReadingListItem * child(int row);
+    ReadingListItem *child(int row);
     void appendChild(ReadingListItem *item);
     void appendChild(ReadingListItem *item, int pos);
     void removeChild(ReadingListItem *item);
-    qulonglong getId() const;
+    qulonglong getId() const override;
     QString name() const;
-    void setName(const QString & name);
+    void setName(const QString &name);
     int getOrdering() const;
     void setOrdering(const int ordering);
-    QList<ReadingListItem*> children();
+    QList<ReadingListItem *> children();
 
 private:
-    QList<ReadingListItem*> childItems;
+    QList<ReadingListItem *> childItems;
 
     enum DataIndexes {
         Name,
@@ -89,7 +88,6 @@ private:
         Completed,
         Ordering
     };
-
 };
 
 //------------------------------------------------------
@@ -98,7 +96,7 @@ class ReadingListSeparatorItem : public ListItem
 {
 public:
     ReadingListSeparatorItem();
-    QIcon getIcon() const;
+    QIcon getIcon() const override;
 };
 
 #endif // READING_LIST_ITEM_H

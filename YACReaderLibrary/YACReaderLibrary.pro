@@ -13,7 +13,6 @@ INCLUDEPATH += . \
               ./comic_vine/model
 
 DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY
-QMAKE_MAC_SDK = macosx10.12
 
 # load default build flags
 include (../config.pri)
@@ -30,13 +29,13 @@ INCLUDEPATH += ../common/gl
 win32 {
     CONFIG(force_angle) {
         message("using ANGLE")
-        LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
+        LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -luser32
         # linking extra libs are necesary for a successful compilation, a better approach should be
         # to remove any OpenGL (desktop) dependencies
         # the OpenGL stuff should be migrated to OpenGL ES
         DEFINES += FORCE_ANGLE
     } else {
-        LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -lglu32 -luser32
+        LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -luser32
     }
 
     QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
@@ -60,10 +59,6 @@ CONFIG(force_angle) {
       Release:DESTDIR = ../release
       Debug:DESTDIR = ../debug
     }
-}
-
-unix:!macx:!CONFIG(no_opengl) {
-  LIBS += -lGLU
 }
 
 macx {
@@ -120,6 +115,7 @@ HEADERS += comic_flow.h \
   ../common/pdf_comic.h \
   no_libraries_widget.h \
   import_widget.h \
+  trayicon_controller.h \
   yacreader_local_server.h \
   yacreader_main_toolbar.h \
   comics_remover.h \
@@ -189,6 +185,7 @@ SOURCES += comic_flow.cpp \
     ../common/onstart_flow_selection_dialog.cpp \
     no_libraries_widget.cpp \
     import_widget.cpp \
+    trayicon_controller.cpp \
     yacreader_local_server.cpp \
     yacreader_main_toolbar.cpp \
     comics_remover.cpp \
@@ -226,6 +223,11 @@ SOURCES += comic_flow.cpp \
     SOURCES += ../common/gl/yacreader_flow_gl.cpp
 }
 
+macx {
+	HEADERS += trayhandler.h
+	OBJECTIVE_SOURCES += trayhandler.mm
+}
+
 include(./server/server.pri)
 include(../custom_widgets/custom_widgets_yacreaderlibrary.pri)
 
@@ -250,6 +252,7 @@ RC_FILE = icon.rc
 
 macx {
   ICON = YACReaderLibrary.icns
+  QMAKE_INFO_PLIST = Info.plist
 }
 
 TRANSLATIONS =   yacreaderlibrary_es.ts \
@@ -262,7 +265,7 @@ TRANSLATIONS =   yacreaderlibrary_es.ts \
                 yacreaderlibrary_source.ts
 
 #QML/GridView
-QT += quick qml
+QT += quick qml quickwidgets
 
 HEADERS += grid_comics_view.h \
            comics_view_transition.h

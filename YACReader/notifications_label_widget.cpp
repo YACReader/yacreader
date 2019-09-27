@@ -2,29 +2,29 @@
 
 #include <QtWidgets>
 
-NotificationsLabelWidget::NotificationsLabelWidget(QWidget * parent)
-	:QWidget(parent)
+NotificationsLabelWidget::NotificationsLabelWidget(QWidget *parent)
+    : QWidget(parent)
 {
-    QVBoxLayout *layout = new QVBoxLayout;
+    auto layout = new QVBoxLayout;
     layout->setSpacing(0);
     layout->setMargin(0);
 
-	setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
-	effect = new QGraphicsOpacityEffect(this);
+    setAttribute(Qt::WA_LayoutUsesWidgetRect, true);
+    effect = new QGraphicsOpacityEffect(this);
     effect->setOpacity(1.0);
 
-	anim = new QPropertyAnimation(effect,"opacity");
-	anim->setDuration(500);
+    anim = new QPropertyAnimation(effect, "opacity");
+    anim->setDuration(500);
     anim->setStartValue(1.0);
     anim->setEndValue(0.0);
-	anim->setEasingCurve(QEasingCurve::InExpo);
+    anim->setEasingCurve(QEasingCurve::InExpo);
 
-    connect(anim,SIGNAL(finished()),this,SLOT(hide()));
+    connect(anim, SIGNAL(finished()), this, SLOT(hide()));
 
-	textLabel = new QLabel(this);
-	textLabel->setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
-	textLabel->setStyleSheet("QLabel { color : white; font-size:24px; }");
-	textLabel->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
+    textLabel = new QLabel(this);
+    textLabel->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+    textLabel->setStyleSheet("QLabel { color : white; font-size:24px; }");
+    textLabel->setAttribute(Qt::WA_LayoutUsesWidgetRect, true);
 
     textLabel->setFixedSize(200, 120);
 
@@ -37,7 +37,7 @@ NotificationsLabelWidget::NotificationsLabelWidget(QWidget * parent)
     setLayout(layout);
 
     setFixedSize(200, 120);
-	updatePosition();
+    updatePosition();
 }
 
 void NotificationsLabelWidget::paintEvent(QPaintEvent *)
@@ -53,24 +53,23 @@ void NotificationsLabelWidget::paintEvent(QPaintEvent *)
 
 void NotificationsLabelWidget::flash()
 {
-	updatePosition();
-	anim->stop();
-	anim->start();
+    updatePosition();
+    anim->stop();
+    anim->start();
 
-	setVisible(true);
+    setVisible(true);
 }
 
-void NotificationsLabelWidget::setText(const QString & text)
+void NotificationsLabelWidget::setText(const QString &text)
 {
-	textLabel->setText(text);
+    textLabel->setText(text);
 }
 
 void NotificationsLabelWidget::updatePosition()
 {
-	QWidget * parent = dynamic_cast<QWidget *>(this->parent());
-	if(parent == 0)
-	{
-		return;
-	}
-	move(QPoint((parent->geometry().size().width()-this->width())/2,(parent->geometry().size().height()-this->height())/2));
+    auto parent = dynamic_cast<QWidget *>(this->parent());
+    if (parent == nullptr) {
+        return;
+    }
+    move(QPoint((parent->geometry().size().width() - this->width()) / 2, (parent->geometry().size().height() - this->height()) / 2));
 }

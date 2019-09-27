@@ -9,7 +9,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleGetInfoString</key>
-	<string>Created by Qt/QMake</string>
+	<string>YACReader</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleExecutable</key>
@@ -22,7 +22,7 @@
 			<key>CFBundleTypeName</key>
 			<string>YACReader Comic rar</string>
 			<key>CFBundleTypeRole</key>
-        	<string>Viewer</string>
+			<string>Viewer</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
@@ -34,7 +34,7 @@
 			<key>CFBundleTypeName</key>
 			<string>YACReader Comic zip</string>
 			<key>CFBundleTypeRole</key>
-        	<string>Viewer</string>
+			<string>Viewer</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
@@ -46,7 +46,7 @@
 			<key>CFBundleTypeName</key>
 			<string>YACReader Comic cbr</string>
 			<key>CFBundleTypeRole</key>
-        	<string>Viewer</string>
+			<string>Viewer</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
@@ -58,7 +58,7 @@
 			<key>CFBundleTypeName</key>
 			<string>YACReader Comic cbz</string>
 			<key>CFBundleTypeRole</key>
-        	<string>Viewer</string>
+			<string>Viewer</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
@@ -70,7 +70,7 @@
 			<key>CFBundleTypeName</key>
 			<string>YACReader Comic pdf</string>
 			<key>CFBundleTypeRole</key>
-        	<string>Viewer</string>
+			<string>Viewer</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
@@ -167,5 +167,7 @@
 			</dict>
 		</dict>
 	</array>
+	<key>NSRequiresAquaSystemAppearance</key>
+	<true/>
 </dict>
 </plist>

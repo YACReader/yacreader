@@ -7,7 +7,6 @@
 
 ReadingListContentControllerV2::ReadingListContentControllerV2()
 {
-
 }
 
 void ReadingListContentControllerV2::service(HttpRequest &request, HttpResponse &response)
@@ -21,7 +20,7 @@ void ReadingListContentControllerV2::service(HttpRequest &request, HttpResponse 
 
     serviceContent(libraryId, readingListId, response);
 
-    response.write("",true);
+    response.write("", true);
 }
 
 void ReadingListContentControllerV2::serviceContent(const int &library, const qulonglong &readingListId, HttpResponse &response)
@@ -30,8 +29,7 @@ void ReadingListContentControllerV2::serviceContent(const int &library, const qu
 
     QJsonArray items;
 
-    for(const ComicDB &comic : comics)
-    {
+    for (const ComicDB &comic : comics) {
         items.append(YACReaderServerDataHelper::comicToJSON(library, comic));
     }
 

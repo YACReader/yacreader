@@ -15,9 +15,11 @@
 #define FITMODE "FITMODE"
 #define FLOW_TYPE "FLOW_TYPE"
 #define FULLSCREEN "FULLSCREEN"
-#define Y_WINDOW_POS "POS"
-#define Y_WINDOW_SIZE "SIZE"
+#define Y_WINDOW_GEOMETRY "GEOMETRY"
 #define MAXIMIZED "MAXIMIZED"
+#define CLOSE_TO_TRAY "CLOSE_TO_TRAY"
+#define CLOSE_TO_TRAY_NOTIFIED "CLOSE_TO_TRAY_NOTIFIED"
+#define START_TO_TRAY "START_TO_TRAY"
 #define DOUBLE_PAGE "DOUBLE_PAGE"
 #define DOUBLE_MANGA_PAGE "DOUBLE_MANGA_PAGE"
 #define BACKGROUND_COLOR "BACKGROUND_COLOR"
@@ -61,49 +63,50 @@
 #define COMIC_VINE_API_KEY "COMIC_VINE_API_KEY"
 #define COMIC_VINE_BASE_URL "COMIC_VINE_BASE_URL"
 
-namespace YACReader
-{
+#define USE_BACKGROUND_IMAGE_IN_GRID_VIEW "USE_BACKGROUND_IMAGE_IN_GRID_VIEW"
+#define OPACITY_BACKGROUND_IMAGE_IN_GRID_VIEW "OPACITY_BACKGROUND_IMAGE_IN_GRID_VIEW"
+#define BLUR_RADIUS_BACKGROUND_IMAGE_IN_GRID_VIEW "BLUR_RADIUS_BACKGROUND_IMAGE_IN_GRID_VIEW"
+#define USE_SELECTED_COMIC_COVER_AS_BACKGROUND_IMAGE_IN_GRID_VIEW "USE_SELECTED_COMIC_COVER_AS_BACKGROUND_IMAGE_IN_GRID_VIEW"
+#define DISPLAY_CONTINUE_READING_IN_GRID_VIEW "DISPLAY_CONTINUE_READING_IN_GRID_VIEW"
+
+namespace YACReader {
 
 static const QString YACReaderLibrarComiscSelectionMimeDataFormat = "application/yacreaderlibrary-comics-ids";
 static const QString YACReaderLibrarSubReadingListMimeDataFormat = "application/yacreaderlibrary-sublist-rows";
 
- enum FlowType
-  {
-	CoverFlowLike=0,
-	Strip,
-	StripOverlapped,
-	Modern,
-	Roulette,
-	Custom
-  };
+enum FlowType {
+    CoverFlowLike = 0,
+    Strip,
+    StripOverlapped,
+    Modern,
+    Roulette,
+    Custom
+};
 
- enum ComicsViewStatus
- {
-     Flow,
-     Grid,
-     Info
- };
+enum ComicsViewStatus {
+    Flow,
+    Grid,
+    Info
+};
 
- enum FitMode{
-	ToWidth=0x01,
-	ToHeight=0x02,
-	FullRes=0x03,
-	FullPage=0x04//,
-	//Text=0x05
- };
+enum FitMode {
+    ToWidth = 0x01,
+    ToHeight = 0x02,
+    FullRes = 0x03,
+    FullPage = 0x04 //,
+    //Text=0x05
+};
 
- enum LibraryUITheme
- {
-     Light,
-     Dark
- };
+enum LibraryUITheme {
+    Light,
+    Dark
+};
 
-void addSperator(QWidget * w);
-QAction * createSeparator();
-QIcon noHighlightedIcon(const QString & path);
+void addSperator(QWidget *w);
+QAction *createSeparator();
+QIcon noHighlightedIcon(const QString &path);
 void colorize(QImage &img, QColor &col);
-QList<qulonglong> mimeDataToComicsIds(const QMimeData * data);
+QList<qulonglong> mimeDataToComicsIds(const QMimeData *data);
 
 }
 #endif
-

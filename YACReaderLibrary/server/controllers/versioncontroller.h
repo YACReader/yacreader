@@ -7,15 +7,17 @@
 
 #include <QThread>
 
-class VersionController : public HttpRequestHandler {
-	Q_OBJECT
+class VersionController : public HttpRequestHandler
+{
+    Q_OBJECT
     Q_DISABLE_COPY(VersionController);
+
 public:
-	/** Constructor */
+    /** Constructor */
     VersionController();
 
-	/** Generates the response */
-	void service(HttpRequest& request, HttpResponse& response);
+    /** Generates the response */
+    void service(HttpRequest &request, HttpResponse &response) override;
 };
 
 #endif // VERSIONCONTROLLER_H

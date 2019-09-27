@@ -12,23 +12,23 @@ class ScraperTableView;
 
 class SelectComic : public ScraperSelector
 {
-	Q_OBJECT
+    Q_OBJECT
 public:
-	SelectComic(QWidget * parent = 0);
-	void load(const QString & json, const QString & searchString);
-	virtual ~SelectComic();
+    SelectComic(QWidget *parent = nullptr);
+    void load(const QString &json, const QString &searchString) override;
+    virtual ~SelectComic();
 
 public slots:
-	void loadComicInfo(const QModelIndex & mi);
-	void setCover(const QByteArray &);
-	void setDescription(const QString & jsonDetail);
-	QString getSelectedComicId();
+    void loadComicInfo(const QModelIndex &mi);
+    void setCover(const QByteArray &);
+    void setDescription(const QString &jsonDetail);
+    QString getSelectedComicId();
 
 private:
-	QLabel * cover;
-	ScraperScrollLabel * detailLabel;
-	ScraperTableView * tableComics;
-	VolumeComicsModel * model;
+    QLabel *cover;
+    ScraperScrollLabel *detailLabel;
+    ScraperTableView *tableComics;
+    VolumeComicsModel *model;
 };
 
 #endif // SELECT_COMIC_H

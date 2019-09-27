@@ -1,11 +1,9 @@
 #ifndef UPDATECOMICCONTROLLER_H
 #define UPDATECOMICCONTROLLER_H
 
-
 #include "httprequest.h"
 #include "httpresponse.h"
 #include "httprequesthandler.h"
-
 
 class UpdateComicController : public HttpRequestHandler
 {
@@ -16,7 +14,7 @@ public:
     UpdateComicController();
 
     /** Generates the response */
-    void service(HttpRequest& request, HttpResponse& response);
+    void service(HttpRequest &request, HttpResponse &response) override;
 };
 
 #endif // UPDATECOMICCONTROLLER_H
