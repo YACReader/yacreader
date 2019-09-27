@@ -1,5 +1,4 @@
 # aka.ms/yaml
-# TODO: reuse steps
 trigger:
 - master
 - develop
