@@ -3,6 +3,7 @@ CONFIG(no_pdf) {
 }
 
 CONFIG(pdfium) {
+  message(Using pdfium.)
   DEFINES += "USE_PDFIUM"
   SOURCES += ../common/pdf_comic.cpp
   win32 {
