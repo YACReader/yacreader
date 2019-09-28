@@ -204,6 +204,26 @@ void MainWindowViewer::createActions()
     openAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_ACTION_Y));
     connect(openAction, SIGNAL(triggered()), this, SLOT(open()));
 
+#ifdef Q_OS_MAC
+    newInstanceAction = new QAction(tr("New instance"), this);
+    newInstanceAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(NEW_INSTANCE_ACTION_Y));
+    connect(newInstanceAction, &QAction::triggered,
+            [=]() {
+                QStringList possiblePaths { QDir::cleanPath(QCoreApplication::applicationDirPath() + "/../../../") };
+                possiblePaths += QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation);
+
+                for (auto &&ypath : possiblePaths) {
+                    QString yacreaderPath = QDir::cleanPath(ypath + "/YACReader.app");
+                    if (QFileInfo(yacreaderPath).exists()) {
+                        QStringList parameters { "-n", "-a", yacreaderPath };
+                        QProcess::startDetached("open", parameters);
+                        break;
+                    }
+                }
+            });
+    newInstanceAction->setData(NEW_INSTANCE_ACTION_Y);
+#endif
+
     openFolderAction = new QAction(tr("Open Folder"), this);
     openFolderAction->setIcon(QIcon(":/images/viewer_toolbar/openFolder.png"));
     openFolderAction->setToolTip(tr("Open image folder"));
@@ -645,6 +665,8 @@ void MainWindowViewer::createToolBars()
     //file
     auto fileMenu = new QMenu(tr("File"));
 
+    fileMenu->addAction(newInstanceAction);
+    fileMenu->addSeparator();
     fileMenu->addAction(openAction);
     fileMenu->addAction(openLatestComicAction);
     fileMenu->addAction(openFolderAction);
@@ -1258,7 +1280,11 @@ void MainWindowViewer::setUpShortcutsManagement()
                                                  << showFlowAction
                                                  << toggleFullScreenAction
                                                  << toggleToolbarsAction
-                                                 << showEditShortcutsAction);
+                                                 << showEditShortcutsAction
+#ifdef Q_OS_MAC
+                                                 << newInstanceAction
+#endif
+    );
 
     allActions << tmpList;
 
