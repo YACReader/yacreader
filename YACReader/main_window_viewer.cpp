@@ -1070,12 +1070,13 @@ void MainWindowViewer::toFullScreen()
     previousSize = size();
 
     showNormal();
-    setWindowFlags(previousWindowFlags | Qt::FramelessWindowHint);
+    setWindowFlags(previousWindowFlags | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 
-    const QRect r = windowHandle()->screen()->geometry();
+    QRect r = windowHandle()->screen()->geometry();
 
-    move(r.x(), r.y());
-    resize(r.width(), r.height() + 1);
+    r.setHeight(r.height() + 1);
+
+    setGeometry(r);
     show();
 
     viewer->show();
