@@ -10,7 +10,7 @@ This software has been developed by Luis Ángel San Martín Rodríguez
 ## Getting YACReader
 
 ### Official releases:
-[https://github.com/YACReader/yacreader/releases](Releases)
+[https://github.com/YACReader/yacreader/releases](https://github.com/YACReader/yacreader/releases)
 
 ### As a package:
 
