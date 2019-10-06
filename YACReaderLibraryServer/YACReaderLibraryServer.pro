@@ -129,17 +129,19 @@ DATADIR = $$PREFIX/share
 DEFINES += "LIBDIR=\\\"$$LIBDIR\\\""  "DATADIR=\\\"$$DATADIR\\\"" "BINDIR=\\\"$$BINDIR\\\""
 
 #make install
+
+!CONFIG(server_bundled):!CONFIG(server_standalone): {
+    CONFIG+=server_bundled
+    message("No build type specified. Defaulting to bundled server build (CONFIG+=server_bundled).")
+    message("If you wish to run YACReaderLibraryServer on a system without an existing install of YACReaderLibrary,\
+            please specify CONFIG+=server_standalone as an option when running qmake to avoid missing dependencies.")
+}
+
 CONFIG(server_standalone) {
   INSTALLS += bin server translation systemd
 }
 else:CONFIG(server_bundled) {
   INSTALLS += bin systemd
-}
-else {
-  INSTALLS += bin server translation systemd
-  message("No build type specified. Defaulting to standalone server build (CONFIG+=server_standalone).")
-  message("If you wish to run YACReaderLibraryServer on a system with an existing install of YACReaderLibrary,\
-            please specify CONFIG+=server_bundled as an option when running qmake.")
 }
 
 bin.path = $$BINDIR
