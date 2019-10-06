@@ -10,7 +10,7 @@ INCLUDEPATH += ../YACReaderLibrary \
                 ../YACReaderLibrary/server \
                 ../YACReaderLibrary/db
 
-DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY QT_NO_DEBUG_OUTPUT
+DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY
 # load default build flags
 # do a basic dependency check
 include(headless_config.pri)
