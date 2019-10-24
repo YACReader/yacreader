@@ -19,63 +19,25 @@
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleTypeName</key>
-			<string>YACReader Comic rar</string>
-			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
-			<key>LSHandlerRank</key>
-			<string>Owner</string>
-			<key>LSItemContentTypes</key>
+			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>com.yacreader.yacreader.rar</string>
+				<string>zip</string>
+				<string>rar</string>
+				<string>cbz</string>
+				<string>cbr</string>
+				<string>pdf</string>
 			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeName</key>
-			<string>YACReader Comic zip</string>
-			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
-			<key>LSHandlerRank</key>
-			<string>Owner</string>
-			<key>LSItemContentTypes</key>
+			<key>CFBundleTypeIconFiles</key>
 			<array>
-				<string>com.yacreader.yacreader.zip</string>
+				<string>Icon</string>
 			</array>
-		</dict>
-		<dict>
 			<key>CFBundleTypeName</key>
-			<string>YACReader Comic cbr</string>
-			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
+			<string>Unknown</string>
 			<key>LSHandlerRank</key>
-			<string>Owner</string>
+			<string>Alternate</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>com.yacreader.yacreader.cbr</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeName</key>
-			<string>YACReader Comic cbz</string>
-			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
-			<key>LSHandlerRank</key>
-			<string>Owner</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>com.yacreader.yacreader.cbz</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeName</key>
-			<string>YACReader Comic pdf</string>
-			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
-			<key>LSHandlerRank</key>
-			<string>Owner</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>com.adobe.pdf</string>
+				<string>public.data</string>
 			</array>
 		</dict>
 	</array>
@@ -93,15 +55,17 @@
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
-				<string>rar</string>
+				<array>
+					<string>rar</string>
+				</array>
 				<key>public.mime-type</key>
-				<string>application/comic-rar</string>
+				<string>application/x-rar-compressed</string>
 			</dict>
 		</dict>
 		<dict>
 			<key>UTTypeConformsTo</key>
 			<array>
-				<string>public.data</string>
+				<string>public.item</string>
 			</array>
 			<key>UTTypeDescription</key>
 			<string>YACReader Comic</string>
@@ -110,9 +74,11 @@
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
-				<string>zip</string>
+				<array>
+					<string>zip</string>
+				</array>
 				<key>public.mime-type</key>
-				<string>application/comic-zip</string>
+				<string>application/zip</string>
 			</dict>
 		</dict>
 		<dict>
@@ -127,9 +93,11 @@
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
-				<string>cbr</string>
+				<array>
+					<string>cbr</string>
+				</array>
 				<key>public.mime-type</key>
-				<string>application/comic-cbr</string>
+				<string>application/x-rar-compressed</string>
 			</dict>
 		</dict>
 		<dict>
@@ -144,9 +112,11 @@
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
-				<string>cbz</string>
+				<array>
+					<string>cbz</string>
+				</array>
 				<key>public.mime-type</key>
-				<string>application/comic-cbz</string>
+				<string>application/zip</string>
 			</dict>
 		</dict>
 		<dict>
@@ -161,9 +131,11 @@
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
-				<string>pdf</string>
+				<array>
+					<string>pdf</string>
+				</array>
 				<key>public.mime-type</key>
-				<string>application/comic-pdf</string>
+				<string>application/pdf</string>
 			</dict>
 		</dict>
 	</array>

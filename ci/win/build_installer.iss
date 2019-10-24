@@ -73,8 +73,7 @@ Source:styles\*;  DestDir: {app}\styles\
 ;Libs
 Source: pdfium.dll; DestDir: {app}
 Source: qrencode.dll; DestDir: {app}
-Source: libeay32.dll; DestDir: {app}
-Source: ssleay32.dll; DestDir: {app}
+Source: openssl\*; DestDir: {app}
 
 ;vcredist
 Source: "vc_redist.{#PLATFORM}.exe"; DestDir: {tmp}; Flags: deleteafterinstall
