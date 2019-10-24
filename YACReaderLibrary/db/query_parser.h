@@ -84,8 +84,8 @@ private:
     static FieldType fieldType(const std::string &str);
 
     void tokenize(const std::string &expr);
-    static std::string join(const std::vector<std::string> &strings, const std::string &delim);
-    static std::vector<std::string> split(const std::string &string, char delim);
+    static std::string join(const QStringList &strings, const std::string &delim);
+    static QStringList split(const std::string &string, char delim);
 
     TreeNode orExpression();
     TreeNode andExpression();

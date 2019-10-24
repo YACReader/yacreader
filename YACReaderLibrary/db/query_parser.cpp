@@ -1,7 +1,6 @@
 #include "query_parser.h"
 
 #include <QVariant>
-#include <sstream>
 #include <type_traits>
 #include <numeric>
 
@@ -18,24 +17,22 @@ int QueryParser::TreeNode::buildSqlString(std::string &sqlString, int bindPositi
 {
     if (t == "token") {
         ++bindPosition;
-        std::ostringstream oss;
         if (toLower(children[0].t) == "all") {
-            oss << "(";
+            sqlString += "(";
             for (const auto &field : fieldNames.at(FieldType::text)) {
-                oss << "UPPER(ci." << field << ") LIKE UPPER(:bindPosition" << bindPosition << ") OR ";
+                sqlString += "UPPER(ci." + field + ") LIKE UPPER(:bindPosition" + std::to_string(bindPosition) + ") OR ";
             }
-            oss << "UPPER(c.filename) LIKE UPPER(:bindPosition" << bindPosition << ") OR ";
-            oss << "UPPER(f.name) LIKE UPPER(:bindPosition" << bindPosition << ")) ";
+            sqlString += "UPPER(c.filename) LIKE UPPER(:bindPosition" + std::to_string(bindPosition) + ") OR ";
+            sqlString += "UPPER(f.name) LIKE UPPER(:bindPosition" + std::to_string(bindPosition) + ")) ";
         } else if (isIn(fieldType(children[0].t), { FieldType::numeric, FieldType::boolean })) {
-            oss << "ci." << children[0].t << " = :bindPosition" << bindPosition << " ";
+            sqlString += "ci." + children[0].t + " = :bindPosition" + std::to_string(bindPosition) + " ";
         } else if (fieldType(children[0].t) == FieldType::filename) {
-            oss << "(UPPER(c." << children[0].t << ") LIKE UPPER(:bindPosition" << bindPosition << ")) ";
+            sqlString += "(UPPER(c." + children[0].t + ") LIKE UPPER(:bindPosition" + std::to_string(bindPosition) + ")) ";
         } else if (fieldType(children[0].t) == FieldType::folder) {
-            oss << "(UPPER(f.name) LIKE UPPER(:bindPosition" << bindPosition << ")) ";
+            sqlString += "(UPPER(f.name) LIKE UPPER(:bindPosition" + std::to_string(bindPosition) + ")) ";
         } else {
-            oss << "(UPPER(ci." << children[0].t << ") LIKE UPPER(:bindPosition" << bindPosition << ")) ";
+            sqlString += "(UPPER(ci." + children[0].t + ") LIKE UPPER(:bindPosition" + std::to_string(bindPosition) + ")) ";
         }
-        sqlString += oss.str();
     } else if (t == "not") {
         sqlString += "(NOT ";
         bindPosition = children[0].buildSqlString(sqlString, bindPosition);
@@ -54,12 +51,11 @@ int QueryParser::TreeNode::buildSqlString(std::string &sqlString, int bindPositi
 int QueryParser::TreeNode::bindValues(QSqlQuery &selectQuery, int bindPosition) const
 {
     if (t == "token") {
-        std::ostringstream oss;
-        oss << ":bindPosition" << ++bindPosition;
+        std::string bind_string(":bindPosition" + std::to_string(++bindPosition));
         if (isIn(fieldType(children[0].t), { FieldType::numeric, FieldType::boolean })) {
-            selectQuery.bindValue(oss.str().c_str(), std::stoi(children[1].t));
+            selectQuery.bindValue(bind_string.c_str(), std::stoi(children[1].t));
         } else {
-            selectQuery.bindValue(oss.str().c_str(), ("%%" + children[1].t + "%%").c_str());
+            selectQuery.bindValue(bind_string.c_str(), ("%%" + children[1].t + "%%").c_str());
         }
     } else if (t == "not") {
         bindPosition = children[0].bindValues(selectQuery, bindPosition);
@@ -163,23 +159,17 @@ void QueryParser::tokenize(const std::string &expr)
     iter = lexertl::siterator(expr.begin(), expr.end(), sm);
 }
 
-std::string QueryParser::join(const std::vector<std::string> &strings, const std::string &delim)
+std::string QueryParser::join(const QStringList &strings, const std::string &delim)
 {
     return std::accumulate(strings.begin(), strings.end(), std::string(),
-                           [&delim](const std::string &a, const std::string &b) -> std::string {
-                               return a + (a.length() > 0 && b.length() > 0 ? delim : "") + b;
+                           [&delim](const std::string &a, const QString &b) -> std::string {
+                               return a + (a.length() > 0 && b.length() > 0 ? delim : "") + b.toStdString();
                            });
 }
 
-std::vector<std::string> QueryParser::split(const std::string &string, char delim)
+QStringList QueryParser::split(const std::string &string, char delim)
 {
-    std::istringstream iss(string);
-    std::vector<std::string> words;
-    while (iss) {
-        std::string substr;
-        std::getline(iss, substr, delim);
-        words.push_back(substr);
-    }
+    auto words = QString(string.c_str()).split(delim);
     return words;
 }
 
@@ -241,8 +231,8 @@ QueryParser::TreeNode QueryParser::baseToken()
 
     auto words(split(token(true), ':'));
 
-    if (words.size() > 1 && fieldType(words[0]) != FieldType::unknown) {
-        auto loc(toLower(words[0]));
+    if (words.size() > 1 && fieldType(words[0].toStdString()) != FieldType::unknown) {
+        auto loc(toLower(words[0].toStdString()));
         words.erase(words.begin());
         if (words.size() == 1 && tokenType() == TokenType::quotedWord) {
             return { "token", { { loc, {} }, { token(true), {} } } };
