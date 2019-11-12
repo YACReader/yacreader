@@ -107,6 +107,8 @@ HEADERS += comic_flow.h \
   ../common/comic.h \
   ../common/bookmarks.h \
   ../common/pictureflow.h \
+  ../common/release_acquire_atomic.h \
+  ../common/worker_thread.h \
   ../common/custom_widgets.h \
   ../common/qnaturalsorting.h \
   ../common/yacreader_global.h \
