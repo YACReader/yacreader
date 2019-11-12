@@ -1,21 +1,17 @@
 #include "comic_flow.h"
-#include "qnaturalsorting.h"
+#include "worker_thread.h"
 
 #include "yacreader_global.h"
 
-#include <algorithm>
-
-#include <QMutex>
-#include <QImageReader>
 #include <QTimer>
 
 ComicFlow::ComicFlow(QWidget *parent, FlowType flowType)
-    : YACReaderFlow(parent, flowType)
+    : YACReaderFlow(parent, flowType), worker(new WorkerThread<QImage>)
 {
+    resetWorkerIndex();
     updateTimer = new QTimer;
     connect(updateTimer, SIGNAL(timeout()), this, SLOT(updateImageData()));
 
-    worker = new ImageLoader;
     connect(this, SIGNAL(centerIndexChanged(int)), this, SLOT(preload()));
     connect(this, SIGNAL(centerIndexChangedSilent(int)), this, SLOT(preload()));
 
@@ -24,8 +20,6 @@ ComicFlow::ComicFlow(QWidget *parent, FlowType flowType)
 
 ComicFlow::~ComicFlow()
 {
-    worker->terminate();
-    delete worker;
     delete updateTimer;
 }
 
@@ -33,7 +27,6 @@ void ComicFlow::setImagePaths(const QStringList &paths)
 {
     clear();
 
-    //imagePath = path;
     imageFiles = paths;
     imagesLoaded.clear();
     imagesLoaded.fill(false, imageFiles.size());
@@ -54,7 +47,8 @@ void ComicFlow::setImagePaths(const QStringList &paths)
     }
 
     setCenterIndex(0);
-    worker->reset();
+
+    resetWorkerIndex();
     preload();
 }
 
@@ -71,10 +65,11 @@ void ComicFlow::updateImageData()
         return;
 
     // set image of last one
-    int idx = worker->index();
-    if (idx >= 0 && !worker->result().isNull()) {
-        if (!imagesSetted[idx]) {
-            setSlide(idx, worker->result());
+    const int idx = workerIndex;
+    if (idx >= 0) {
+        const QImage result = worker->extractResult();
+        if (!result.isNull() && !imagesSetted[idx]) {
+            setSlide(idx, result);
             imagesSetted[idx] = true;
             numImagesLoaded++;
             imagesLoaded[idx] = true;
@@ -99,7 +94,8 @@ void ComicFlow::updateImageData()
                 // schedule thumbnail generation
                 QString fname = imageFiles[i];
 
-                worker->generate(i, fname, slideSize());
+                workerIndex = i;
+                worker->performTask([fname] { return QImage { fname }; });
                 return;
             }
     }
@@ -124,10 +120,6 @@ void ComicFlow::wheelEvent(QWheelEvent *event)
 
 void ComicFlow::removeSlide(int cover)
 {
-    worker->lock();
-
-    worker->reset();
-
     imageFiles.removeAt(cover);
     if (imagesLoaded[cover])
         numImagesLoaded--;
@@ -135,16 +127,13 @@ void ComicFlow::removeSlide(int cover)
     imagesSetted.remove(cover);
 
     YACReaderFlow::removeSlide(cover);
-    worker->unlock();
 
+    resetWorkerIndex();
     preload();
 }
 
 void ComicFlow::resortCovers(QList<int> newOrder)
 {
-    worker->lock();
-    worker->reset();
-
     YACReaderFlow::resortCovers(newOrder);
 
     QStringList imageFilesNew;
@@ -160,95 +149,5 @@ void ComicFlow::resortCovers(QList<int> newOrder)
     imagesLoaded = imagesLoadedNew;
     imagesSetted = imagesSettedNew;
 
-    worker->unlock();
-}
-//-----------------------------------------------------------------------------
-//ImageLoader
-//-----------------------------------------------------------------------------
-static QImage loadImage(const QString &fileName)
-{
-    QImage image;
-    bool result = image.load(fileName);
-
-    if (!result)
-        return QImage();
-
-    return image;
-}
-
-ImageLoader::ImageLoader()
-    : QThread(), restart(false), working(false), idx(-1)
-{
-}
-
-ImageLoader::~ImageLoader()
-{
-    mutex.lock();
-    condition.wakeOne();
-    mutex.unlock();
-    wait();
-}
-
-bool ImageLoader::busy() const
-{
-    return isRunning() ? working : false;
-}
-
-void ImageLoader::generate(int index, const QString &fileName, QSize size)
-{
-    mutex.lock();
-    this->idx = index;
-    this->fileName = fileName;
-    this->size = size;
-    this->img = QImage();
-    mutex.unlock();
-
-    if (!isRunning())
-        start();
-    else {
-        // already running, wake up whenever ready
-        restart = true;
-        condition.wakeOne();
-    }
-}
-
-void ImageLoader::lock()
-{
-    mutex.lock();
-}
-
-void ImageLoader::unlock()
-{
-    mutex.unlock();
-}
-
-void ImageLoader::run()
-{
-    for (;;) {
-        // copy necessary data
-        mutex.lock();
-        this->working = true;
-        QString fileName = this->fileName;
-        mutex.unlock();
-
-        QImage image = loadImage(fileName);
-
-        // let everyone knows it is ready
-        mutex.lock();
-        this->working = false;
-        this->img = image;
-        mutex.unlock();
-
-        // put to sleep
-        mutex.lock();
-        if (!this->restart)
-            condition.wait(&mutex);
-        restart = false;
-        mutex.unlock();
-    }
-}
-
-QImage ImageLoader::result()
-{
-    return img;
+    resetWorkerIndex();
 }
