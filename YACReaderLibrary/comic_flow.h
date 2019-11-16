@@ -6,6 +6,7 @@
 #include <QtCore>
 #include <QImage>
 #include <QString>
+#include <QTimer>
 #include <QWheelEvent>
 
 #include <memory>
@@ -38,7 +39,7 @@ private:
     QVector<bool> imagesSetted;
     int numImagesLoaded;
     int workerIndex;
-    QTimer *updateTimer;
+    QTimer updateTimer;
     std::unique_ptr<WorkerThread<QImage>> worker;
     virtual void wheelEvent(QWheelEvent *event);
 };

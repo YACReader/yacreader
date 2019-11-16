@@ -3,14 +3,11 @@
 
 #include "yacreader_global.h"
 
-#include <QTimer>
-
 ComicFlow::ComicFlow(QWidget *parent, FlowType flowType)
     : YACReaderFlow(parent, flowType), worker(new WorkerThread<QImage>)
 {
     resetWorkerIndex();
-    updateTimer = new QTimer;
-    connect(updateTimer, SIGNAL(timeout()), this, SLOT(updateImageData()));
+    connect(&updateTimer, SIGNAL(timeout()), this, SLOT(updateImageData()));
 
     connect(this, SIGNAL(centerIndexChanged(int)), this, SLOT(preload()));
     connect(this, SIGNAL(centerIndexChangedSilent(int)), this, SLOT(preload()));
@@ -18,10 +15,7 @@ ComicFlow::ComicFlow(QWidget *parent, FlowType flowType)
     setReflectionEffect(PlainReflection);
 }
 
-ComicFlow::~ComicFlow()
-{
-    delete updateTimer;
-}
+ComicFlow::~ComicFlow() = default;
 
 void ComicFlow::setImagePaths(const QStringList &paths)
 {
@@ -55,7 +49,7 @@ void ComicFlow::setImagePaths(const QStringList &paths)
 void ComicFlow::preload()
 {
     if (numImagesLoaded < imagesLoaded.size())
-        updateTimer->start(30); //TODO comprobar rendimiento, originalmente era 70
+        updateTimer.start(30); //TODO comprobar rendimiento, originalmente era 70
 }
 
 void ComicFlow::updateImageData()
@@ -101,7 +95,7 @@ void ComicFlow::updateImageData()
     }
 
     // no need to generate anything? stop polling...
-    updateTimer->stop();
+    updateTimer.stop();
 }
 
 void ComicFlow::keyPressEvent(QKeyEvent *event)
