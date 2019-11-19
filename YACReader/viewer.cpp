@@ -161,7 +161,7 @@ void Viewer::createConnections()
     connect(goToFlow, SIGNAL(goToPage(unsigned int)), this, SLOT(goTo(unsigned int)));
 
     //current time
-    auto t = new QTimer();
+    auto t = new QTimer(this);
     connect(t, SIGNAL(timeout()), this, SLOT(updateInformation()));
     t->start(1000);
 
