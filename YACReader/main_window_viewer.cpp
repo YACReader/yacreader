@@ -1217,11 +1217,7 @@ void MainWindowViewer::checkNewVersion()
         connect(versionChecker, SIGNAL(newVersionDetected()),
                 this, SLOT(newVersion()));
 
-        auto tT = new QTimer;
-        tT->setSingleShot(true);
-        connect(tT, SIGNAL(timeout()), versionChecker, SLOT(get()));
-        //versionChecker->get(); //TOD�
-        tT->start(100);
+        QTimer::singleShot(100, versionChecker, &HttpVersionChecker::get);
 
         conf.setLastVersionCheck(current);
     }
