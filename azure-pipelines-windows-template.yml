@@ -1,7 +1,7 @@
 parameters:
   name: Windows_x64
   architecture: 'x64'
-  qt_version: '5.12.4'
+  qt_version: '5.12.6'
   qt_spec: 'msvc2017_64'
   qt_aqt_spec: 'win64_msvc2017_64'
   vc_redist_url: 'https://go.microsoft.com/fwlink/?LinkId=746572'
