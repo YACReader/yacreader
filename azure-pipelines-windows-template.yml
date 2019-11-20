@@ -1,6 +1,6 @@
 parameters:
   name: Windows_x64
-  arquitecture: 'x64'
+  architecture: 'x64'
   qt_version: '5.12.4'
   qt_spec: 'msvc2017_64'
   qt_aqt_spec: 'win64_msvc2017_64'
@@ -35,7 +35,7 @@ jobs:
   - script: |
       set PATH=%PATH%;C:\Qt\Qt${{ parameters.qt_version }}\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
       cd $(Build.SourcesDirectory)\ci\win
-      .\create_installer.cmd ${{ parameters.arquitecture }} 7z $(Build.BuildNumber)
+      .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber)
     displayName: 'Create installer'
   - task: CopyFiles@2
     inputs:
@@ -45,7 +45,7 @@ jobs:
   - task: PublishPipelineArtifact@1
     inputs:
       path: $(Build.ArtifactStagingDirectory)
-      artifactName: Windows ${{ parameters.arquitecture }} $(Build.BuildNumber) 7z Installer
-  
+      artifactName: Windows ${{ parameters.architecture }} $(Build.BuildNumber) 7z Installer
+
 
     
