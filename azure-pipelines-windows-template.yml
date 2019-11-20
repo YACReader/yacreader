@@ -33,7 +33,7 @@ jobs:
       nmake
     displayName: 'Build'
   - script: |
-      set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin
+      set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
       cd $(Build.SourcesDirectory)\ci\win
       .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber)
     displayName: 'Create installer'
