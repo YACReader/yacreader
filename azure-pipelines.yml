@@ -60,6 +60,8 @@ jobs:
   dependsOn: CodeFormatValidation
   variables:
   - group: macos-codesign
+  - name: skip_codesign
+    value: $[or(System.PullRequest.IsFork, not(eq(Build.Repository.Uri, 'https://github.com/yacreader/yacreader')))]
   pool:
     vmImage: 'macOS-10.14'
   steps:
@@ -78,11 +80,11 @@ jobs:
     inputs:
       certSecureFile: 'developerID_application.p12'
       certPwd: $(P12Password)
+    condition: $[not(eq(variables.skip_codesign, 'True'))]
   - script: |
       cd $(Build.SourcesDirectory)
       VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
-      SKIP_CODESIGN="$(tr [A-Z] [a-z] <<< "$(System.PullRequest.IsFork)")"
-      ./compileOSX.sh $VERSION $(Build.BuildNumber) $SKIP_CODESIGN
+      ./compileOSX.sh $VERSION $(Build.BuildNumber) $(tr [A-Z] [a-z] <<< "$(skip_codesign)")
     displayName: 'Build'
   - task: CopyFiles@2
     inputs:
