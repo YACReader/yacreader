@@ -38,6 +38,7 @@ bool ipComparator(const QString &ip1, const QString &ip2)
 
 #include <sys/types.h>
 #include <ifaddrs.h>
+#include <sys/socket.h>
 #include <netinet/in.h>
 #include <string.h>
 #include <arpa/inet.h>

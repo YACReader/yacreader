@@ -95,25 +95,25 @@ jobs:
 - template: azure-pipelines-windows-template.yml
   parameters:
     name: Windows_x64
-    arquitecture: 'x64'
-    qt_version: '5.12.4'
+    architecture: 'x64'
+    qt_version: '5.12.6'
     qt_spec: 'msvc2017_64'
     qt_aqt_spec: 'win64_msvc2017_64'
     vc_redist_url: 'https://go.microsoft.com/fwlink/?LinkId=746572'
     vc_redist_file_name: 'vc_redist.x64.exe'
     vc_vars: 'vcvars64.bat'
 - template: azure-pipelines-windows-template.yml
-  parameters: 
+  parameters:
     name: Windows_x86
-    arquitecture: 'x86'
-    qt_version: '5.12.4'
+    architecture: 'x86'
+    qt_version: '5.12.6'
     qt_spec: 'msvc2017'
     qt_aqt_spec: 'win32_msvc2017'
     vc_redist_url: 'https://go.microsoft.com/fwlink/?LinkId=746571'
     vc_redist_file_name: 'vc_redist.x86.exe'
     vc_vars: 'vcvars32.bat'
 - job: PublishDevBuilds
-  dependsOn: 
+  dependsOn:
   - Linux
   - MacOS
   - Windows_x86
@@ -140,7 +140,7 @@ jobs:
         remotePath: ''
         url: https://api.bintray.com/content/luisangelsm/YACReader/DevBuilds/$(Build.BuildNumber)/
 - job: Release
-  dependsOn: 
+  dependsOn:
   - Linux
   - MacOS
   - Windows_x86
@@ -169,6 +169,3 @@ jobs:
       tagSource: 'manual'
       tag: $(VERSION)
       addChangeLog: false
-
-      
-      
