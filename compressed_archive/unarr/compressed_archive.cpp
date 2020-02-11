@@ -22,7 +22,8 @@ CompressedArchive::CompressedArchive(const QString &filePath, QObject *parent)
     //open archive
     ar = ar_open_rar_archive(stream);
     //TODO: build unarr with 7z support and test this!
-    if (!ar) ar = ar_open_7z_archive(stream);
+    if (!ar)
+        ar = ar_open_7z_archive(stream);
     if (!ar)
         ar = ar_open_tar_archive(stream);
     //zip detection is costly, so it comes last...
