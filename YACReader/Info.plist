@@ -39,9 +39,15 @@
 			<array>
 				<string>com.adobe.pdf</string>
 				<string>com.rarlab.rar-archive</string>
-                <string>com.pkware.zip-archive</string>
-                <string>cx.c3.cbz-archive</string>
-                <string>cx.c3.cbr-archive</string>
+				<string>com.pkware.zip-archive</string>
+				<string>cx.c3.cbz-archive</string>
+				<string>cx.c3.cbr-archive</string>
+				<string>com.simplecomic.cbz-archive</string>
+				<string>com.macitbetter.cbz-archive</string>
+				<string>public.cbz-archive</string>
+				<string>com.simplecomic.cbr-archive</string>
+				<string>com.macitbetter.cbr-archive</string>
+				<string>public.cbr-archive</string>
 			</array>
 		</dict>
 	</array>
@@ -50,7 +56,7 @@
 		<dict>
 			<key>UTTypeConformsTo</key>
 			<array>
-                <string>public.archive</string>
+				<string>public.archive</string>
 				<string>public.data</string>
 			</array>
 			<key>UTTypeDescription</key>
@@ -65,14 +71,15 @@
 				</array>
 				<key>public.mime-type</key>
                 <array>
-				    <string>application/x-rar-compressed</string>
+					<string>application/x-rar-compressed</string>
                 </array>
 			</dict>
 		</dict>
 		<dict>
 			<key>UTTypeConformsTo</key>
 			<array>
-				<string>public.item</string>
+				<string>public.archive</string>
+				<string>public.data</string>
 			</array>
 			<key>UTTypeDescription</key>
 			<string>YACReader Comic</string>
@@ -86,7 +93,7 @@
 				</array>
 				<key>public.mime-type</key>
                 <array>
-				    <string>application/zip</string>
+					<string>application/zip</string>
                 </array>
 			</dict>
 		</dict>
