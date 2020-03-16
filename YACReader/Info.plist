@@ -37,21 +37,26 @@
 			<string>Alternate</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>public.data</string>
+				<string>com.adobe.pdf</string>
+				<string>com.rarlab.rar-archive</string>
+                <string>com.pkware.zip-archive</string>
+                <string>cx.c3.cbz-archive</string>
+                <string>cx.c3.cbr-archive</string>
 			</array>
 		</dict>
 	</array>
-	<key>UTExportedTypeDeclarations</key>
+	<key>UTImportedTypeDeclarations</key>
 	<array>
 		<dict>
 			<key>UTTypeConformsTo</key>
 			<array>
+                <string>public.archive</string>
 				<string>public.data</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>YACReader Comic</string>
+			<string>RAR archive</string>
 			<key>UTTypeIdentifier</key>
-			<string>com.yacreader.yacreader.rar</string>
+			<string>com.rarlab.rar-archive</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
@@ -59,7 +64,9 @@
 					<string>rar</string>
 				</array>
 				<key>public.mime-type</key>
-				<string>application/x-rar-compressed</string>
+                <array>
+				    <string>application/x-rar-compressed</string>
+                </array>
 			</dict>
 		</dict>
 		<dict>
@@ -70,7 +77,7 @@
 			<key>UTTypeDescription</key>
 			<string>YACReader Comic</string>
 			<key>UTTypeIdentifier</key>
-			<string>com.yacreader.yacreader.zip</string>
+			<string>com.pkware.zip-archive</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
@@ -78,64 +85,43 @@
 					<string>zip</string>
 				</array>
 				<key>public.mime-type</key>
-				<string>application/zip</string>
+                <array>
+				    <string>application/zip</string>
+                </array>
 			</dict>
 		</dict>
 		<dict>
 			<key>UTTypeConformsTo</key>
 			<array>
-				<string>public.data</string>
+				<string>com.rarlab.rar-archive</string>
 			</array>
 			<key>UTTypeDescription</key>
 			<string>YACReader Comic</string>
 			<key>UTTypeIdentifier</key>
-			<string>com.yacreader.yacreader.cbr</string>
+			<string>cx.c3.cbr-archive</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
 				<array>
 					<string>cbr</string>
 				</array>
-				<key>public.mime-type</key>
-				<string>application/x-rar-compressed</string>
 			</dict>
 		</dict>
 		<dict>
 			<key>UTTypeConformsTo</key>
 			<array>
-				<string>public.data</string>
+				<string>public.zip-archive</string>
 			</array>
 			<key>UTTypeDescription</key>
 			<string>YACReader Comic</string>
 			<key>UTTypeIdentifier</key>
-			<string>com.yacreader.yacreader.cbz</string>
+			<string>cx.c3.cbz-archive</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
 				<array>
 					<string>cbz</string>
 				</array>
-				<key>public.mime-type</key>
-				<string>application/zip</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.data</string>
-			</array>
-			<key>UTTypeDescription</key>
-			<string>YACReader Comic</string>
-			<key>UTTypeIdentifier</key>
-			<string>com.yacreader.yacreader.pdf</string>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>pdf</string>
-				</array>
-				<key>public.mime-type</key>
-				<string>application/pdf</string>
 			</dict>
 		</dict>
 	</array>
