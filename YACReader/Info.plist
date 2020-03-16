@@ -70,9 +70,9 @@
 					<string>rar</string>
 				</array>
 				<key>public.mime-type</key>
-                <array>
+				<array>
 					<string>application/x-rar-compressed</string>
-                </array>
+				</array>
 			</dict>
 		</dict>
 		<dict>
@@ -92,9 +92,9 @@
 					<string>zip</string>
 				</array>
 				<key>public.mime-type</key>
-                <array>
+				<array>
 					<string>application/zip</string>
-                </array>
+				</array>
 			</dict>
 		</dict>
 		<dict>
