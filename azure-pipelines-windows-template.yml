@@ -17,7 +17,7 @@ jobs:
   - script: |
       pip install aqtinstall
       mkdir C:\Qt
-      python -m aqt install -O c:\Qt ${{ parameters.qt_version }} windows desktop ${{ parameters.qt_aqt_spec }}
+      python -m aqt install -O c:\Qt ${{ parameters.qt_version }} windows desktop ${{ parameters.qt_aqt_spec }} -m qtscript
       dir C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin
       choco install -y wget
       choco install innosetup
