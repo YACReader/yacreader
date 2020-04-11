@@ -4,8 +4,8 @@ trigger:
 - develop
 
 variables:
-  is_original_repo: ${{ eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/') }}
-  is_fork: ${{ not(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/')) }}
+  is_original_repo: ${{ and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}
+  is_fork: ${{ not(and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop')))) }}
 
 jobs:
 - job: Initialization
@@ -63,7 +63,7 @@ jobs:
 - job: MacOS
   dependsOn: CodeFormatValidation
   variables:
-  - ${{ if eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/') }}:
+  - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
     - group: macos-codesign
   pool:
     vmImage: 'macOS-10.15'
@@ -79,7 +79,7 @@ jobs:
       tar xjf $(Build.SourcesDirectory)/compressed_archive/p7zip_16.02_src_all.tar.bz2 -C $(Build.SourcesDirectory)/compressed_archive
       mv $(Build.SourcesDirectory)/compressed_archive/p7zip_16.02 $(Build.SourcesDirectory)/compressed_archive/libp7zip
     displayName: 'Install dependencies'
-  - ${{ if eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/') }}:
+  - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
     - task: InstallAppleCertificate@2
       inputs:
         certSecureFile: 'developerID_application.p12'
@@ -120,7 +120,7 @@ jobs:
     vc_redist_file_name: 'vc_redist.x86.exe'
     vc_vars: 'vcvars32.bat'
 
-- ${{ if eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/') }}:
+- ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
   - job: PublishDevBuilds
     dependsOn:
     - Linux
@@ -149,7 +149,7 @@ jobs:
           remotePath: ''
           url: https://api.bintray.com/content/luisangelsm/YACReader/DevBuilds/$(Build.BuildNumber)/
 
-- ${{ if eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/') }}:
+- ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
   - job: Release
     dependsOn:
     - Linux
