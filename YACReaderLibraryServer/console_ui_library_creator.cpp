@@ -12,21 +12,21 @@ ConsoleUILibraryCreator::ConsoleUILibraryCreator(QObject *parent)
 
 void ConsoleUILibraryCreator::createLibrary(const QString &name, const QString &path)
 {
-    QEventLoop eventLoop;
-    LibraryCreator *libraryCreator = new LibraryCreator();
-
     QDir pathDir(path);
     if (!pathDir.exists()) {
         std::cout << "Directory not found." << std::endl;
         return;
     }
 
+    QEventLoop eventLoop;
+    LibraryCreator *libraryCreator = new LibraryCreator();
     QString cleanPath = QDir::cleanPath(pathDir.absolutePath());
 
     YACReaderLibraries yacreaderLibraries;
     yacreaderLibraries.load();
     if (yacreaderLibraries.contains(name)) {
         std::cout << "A Library named \"" << name.toUtf8().constData() << "\" already exists in database." << std::endl;
+        delete libraryCreator;
         return;
     }
 
@@ -49,14 +49,14 @@ void ConsoleUILibraryCreator::createLibrary(const QString &name, const QString &
 
 void ConsoleUILibraryCreator::updateLibrary(const QString &path)
 {
-    QEventLoop eventLoop;
-    LibraryCreator *libraryCreator = new LibraryCreator();
-
     QDir pathDir(path);
     if (!pathDir.exists()) {
         std::cout << "Directory not found." << std::endl;
         return;
     }
+
+    QEventLoop eventLoop;
+    LibraryCreator *libraryCreator = new LibraryCreator();
     QString cleanPath = QDir::cleanPath(pathDir.absolutePath());
 
     libraryCreator->updateLibrary(cleanPath, QDir::cleanPath(pathDir.absolutePath() + "/.yacreaderlibrary"));
