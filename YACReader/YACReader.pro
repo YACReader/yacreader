@@ -177,7 +177,7 @@ win32:RESOURCES += yacreader_images_win.qrc
 unix:!macx:RESOURCES += yacreader_images_win.qrc
 macx:RESOURCES += yacreader_images_osx.qrc
 
-include(../QsLog/QsLog.pri)
+include(../third_party/QsLog/QsLog.pri)
 
 RC_FILE = icon.rc
 

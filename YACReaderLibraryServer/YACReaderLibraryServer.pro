@@ -95,7 +95,7 @@ include(../compressed_archive/unarr/unarr-wrapper.pri)
 } else {
   error(No compression backend specified. Did you mess with the build system?)
 }
-include(../QsLog/QsLog.pri)
+include(../third_party/QsLog/QsLog.pri)
 
 TRANSLATIONS =  yacreaderlibraryserver_es.ts \
                 yacreaderlibraryserver_ru.ts \
