@@ -240,7 +240,7 @@ include(../compressed_archive/unarr/unarr-wrapper.pri)
 }
 
 include(./comic_vine/comic_vine.pri)
-include(../QsLog/QsLog.pri)
+include(../third_party/QsLog/QsLog.pri)
 include(../shortcuts_management/shortcuts_management.pri)
 
 RESOURCES += images.qrc files.qrc
