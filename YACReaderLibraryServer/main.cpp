@@ -149,11 +149,11 @@ int main(int argc, char **argv)
             }
         }
 
-        DestinationPtr fileDestination(DestinationFactory::MakeFileDestination(
-                destLog, EnableLogRotation, MaxSizeBytes(1048576), MaxOldLogCount(2)));
-        DestinationPtr debugDestination(DestinationFactory::MakeDebugOutputDestination());
-        logger.addDestination(debugDestination);
-        logger.addDestination(fileDestination);
+        DestinationPtrU fileDestination(DestinationFactory::MakeFileDestination(
+                destLog, LogRotationOption::EnableLogRotation, MaxSizeBytes(1048576), MaxOldLogCount(2)));
+        DestinationPtrU debugDestination(DestinationFactory::MakeDebugOutputDestination());
+        logger.addDestination(std::move(debugDestination));
+        logger.addDestination(std::move(fileDestination));
 
         QTranslator translator;
         QString sufix = QLocale::system().name();
@@ -188,7 +188,9 @@ int main(int argc, char **argv)
         if (YACReaderLocalServer::isRunning()) //sï¿½lo se permite una instancia de YACReaderLibrary
         {
             QLOG_WARN() << "another instance of YACReaderLibrary is running";
-            QsLogging::Logger::destroyInstance();
+#ifdef Q_OS_WIN
+            logger.shutDownLoggerThread();
+#endif
             return 0;
         }
         QLOG_INFO() << "YACReaderLibrary starting";
@@ -208,9 +210,9 @@ int main(int argc, char **argv)
         delete s;
         localServer->close();
         delete localServer;
-
-        QsLogging::Logger::destroyInstance();
-
+#ifdef Q_OS_WIN
+        logger.shutDownLoggerThread();
+#endif
         return ret;
     } else if (command == "create-library") {
         parser.clearPositionalArguments();
