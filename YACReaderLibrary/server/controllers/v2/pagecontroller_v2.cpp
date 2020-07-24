@@ -13,7 +13,7 @@
 
 #include "db_helper.h"
 
-PageControllerV2::PageControllerV2() {}
+PageControllerV2::PageControllerV2() { }
 
 void PageControllerV2::service(HttpRequest &request, HttpResponse &response)
 {

@@ -33,9 +33,9 @@ class ListviewDelegate : public QStyledItemDelegate
 {
 public:
     ListviewDelegate()
-        : QStyledItemDelegate() {}
+        : QStyledItemDelegate() { }
 
-    virtual ~ListviewDelegate() {}
+    virtual ~ListviewDelegate() { }
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option,
                const QModelIndex &index) const override

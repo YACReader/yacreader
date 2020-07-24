@@ -5,7 +5,7 @@
 
 #include "comic_db.h"
 
-ComicDownloadInfoController::ComicDownloadInfoController() {}
+ComicDownloadInfoController::ComicDownloadInfoController() { }
 
 void ComicDownloadInfoController::service(HttpRequest &request, HttpResponse &response)
 {

@@ -32,7 +32,7 @@ public:
         }
     };
     BookmarksList()
-        : numMaxBookmarks(400) {}
+        : numMaxBookmarks(400) { }
     void load();
     void save();
     void add(const QString &comicID, const Bookmark &b);

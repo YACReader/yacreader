@@ -7,7 +7,7 @@
 #include "template.h"
 #include "../static.h"
 
-FolderInfoController::FolderInfoController() {}
+FolderInfoController::FolderInfoController() { }
 
 void FolderInfoController::service(HttpRequest &request, HttpResponse &response)
 {

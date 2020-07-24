@@ -11,7 +11,7 @@
 
 #include "QsLog.h"
 
-UpdateComicController::UpdateComicController() {}
+UpdateComicController::UpdateComicController() { }
 
 void UpdateComicController::service(HttpRequest &request, HttpResponse &response)
 {

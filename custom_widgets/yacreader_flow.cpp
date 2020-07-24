@@ -3,7 +3,7 @@
 #include <QMouseEvent>
 
 YACReaderFlow::YACReaderFlow(QWidget *parent, FlowType flowType)
-    : PictureFlow(parent, flowType) {}
+    : PictureFlow(parent, flowType) { }
 
 void YACReaderFlow::mousePressEvent(QMouseEvent *event)
 {
