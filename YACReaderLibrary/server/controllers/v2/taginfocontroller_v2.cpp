@@ -8,7 +8,7 @@
 #include "template.h"
 #include "../static.h"
 
-TagInfoControllerV2::TagInfoControllerV2() {}
+TagInfoControllerV2::TagInfoControllerV2() { }
 
 void TagInfoControllerV2::service(HttpRequest &request, HttpResponse &response)
 {

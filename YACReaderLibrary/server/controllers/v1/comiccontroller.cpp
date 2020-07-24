@@ -14,7 +14,7 @@
 
 #include <typeinfo>
 
-ComicController::ComicController() {}
+ComicController::ComicController() { }
 
 void ComicController::service(HttpRequest &request, HttpResponse &response)
 {

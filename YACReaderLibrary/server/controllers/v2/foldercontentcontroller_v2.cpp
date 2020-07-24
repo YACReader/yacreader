@@ -23,7 +23,7 @@ struct LibraryItemSorter {
     }
 };
 
-FolderContentControllerV2::FolderContentControllerV2() {}
+FolderContentControllerV2::FolderContentControllerV2() { }
 
 void FolderContentControllerV2::service(HttpRequest &request, HttpResponse &response)
 {

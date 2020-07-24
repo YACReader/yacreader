@@ -8,7 +8,7 @@
 #include "template.h"
 #include "../static.h"
 
-ReadingListInfoControllerV2::ReadingListInfoControllerV2() {}
+ReadingListInfoControllerV2::ReadingListInfoControllerV2() { }
 
 void ReadingListInfoControllerV2::service(HttpRequest &request, HttpResponse &response)
 {

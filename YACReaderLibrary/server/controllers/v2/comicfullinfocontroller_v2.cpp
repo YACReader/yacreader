@@ -13,7 +13,7 @@
 #include <ctime>
 using namespace std;
 
-ComicFullinfoController_v2::ComicFullinfoController_v2() {}
+ComicFullinfoController_v2::ComicFullinfoController_v2() { }
 
 void ComicFullinfoController_v2::service(HttpRequest &request, HttpResponse &response)
 {

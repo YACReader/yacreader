@@ -82,7 +82,7 @@ void SelectComic::load(const QString &json, const QString &searchString)
     ScraperSelector::load(json, searchString);
 }
 
-SelectComic::~SelectComic() {}
+SelectComic::~SelectComic() { }
 
 void SelectComic::loadComicInfo(const QModelIndex &mi)
 {

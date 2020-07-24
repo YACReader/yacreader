@@ -6,7 +6,7 @@
 #include "template.h"
 #include "../static.h"
 
-CoverController::CoverController() {}
+CoverController::CoverController() { }
 
 void CoverController::service(HttpRequest &request, HttpResponse &response)
 {

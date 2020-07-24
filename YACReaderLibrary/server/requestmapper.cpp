@@ -50,7 +50,7 @@
 QMutex RequestMapper::mutex;
 
 RequestMapper::RequestMapper(QObject *parent)
-    : HttpRequestHandler(parent) {}
+    : HttpRequestHandler(parent) { }
 
 void RequestMapper::loadSessionV1(HttpRequest &request, HttpResponse &response)
 {

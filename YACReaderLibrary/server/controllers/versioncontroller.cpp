@@ -1,6 +1,6 @@
 #include "versioncontroller.h"
 
-VersionController::VersionController() {}
+VersionController::VersionController() { }
 
 void VersionController::service(HttpRequest &request, HttpResponse &response)
 {

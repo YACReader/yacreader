@@ -38,7 +38,7 @@ public:
         return w;
     }
     void setAppearance(ScrapperToolButton::Appearance appearance) { this->appearance = appearance; }
-    virtual ~ScrapperToolButton() {}
+    virtual ~ScrapperToolButton() { }
 
 protected:
     void paintEvent(QPaintEvent *e) override

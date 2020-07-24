@@ -8,7 +8,7 @@
 #include <QVariant>
 #include <QDateTime>
 
-SessionController::SessionController() {}
+SessionController::SessionController() { }
 
 void SessionController::service(HttpRequest &request, HttpResponse &response)
 {

@@ -8,7 +8,7 @@
 
 #include "QsLog.h"
 
-LibrariesController::LibrariesController() {}
+LibrariesController::LibrariesController() { }
 
 void LibrariesController::service(HttpRequest &request, HttpResponse &response)
 {
