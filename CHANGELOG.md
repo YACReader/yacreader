@@ -6,6 +6,11 @@ spanish only. Sorry for the mess.
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## 9.6.7 (unreleased)
+
+### YACReaderLibrary
+* update QsLog logger to version 2.1, snapshot 46b643d5bcbc
+
 ## 9.6.0
 ### Reader and Library
 * RAR5 support.
