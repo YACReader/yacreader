@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Razvan Petru
+// Copyright (c) 2015, Axel Gembe <axel@gembe.net>
 // All rights reserved.
 
 // Redistribution and use in source and binary forms, with or without modification,
@@ -23,26 +23,57 @@
 // OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef QSLOGLEVEL_H
-#define QSLOGLEVEL_H
-class QString;
+#ifndef QSLOGWINDOW_H
+#define QSLOGWINDOW_H
+
+#include "QsLogWindowModel.h"
+#include <QDialog>
+#include <memory>
+class QModelIndex;
+
+namespace Ui {
+class LogWindow;
+class LogMessage;
+}
 
 namespace QsLogging
 {
-enum Level
-{
-    TraceLevel = 0,
-    DebugLevel,
-    InfoLevel,
-    WarnLevel,
-    ErrorLevel,
-    FatalLevel,
-    OffLevel
-};
 
-const char* LevelName(Level theLevel);
-QString LocalizedLevelName(Level theLevel);
+class WindowLogFilterProxyModel;
+
+class QSLOG_SHARED_OBJECT Window : public QDialog
+{
+    Q_OBJECT
+
+public:
+    explicit Window(QWidget* parent = nullptr);
+    virtual ~Window() noexcept;
+
+    virtual bool eventFilter(QObject* obj, QEvent* event);
+
+private slots:
+    void addLogMessage(const QsLogging::LogMessage& m);
+
+    void OnPauseClicked();
+    void OnSaveClicked();
+    void OnClearClicked();
+    void OnCopyClicked();
+    void OnLevelChanged(int value);
+    void OnAutoScrollChanged(bool checked);
+    void ModelRowsInserted(const QModelIndex& parent, int start, int last);
+
+private:
+    void copySelection() const;
+    void saveSelection();
+    QString getSelectionText() const;
+
+    LogWindowModel mModel;
+    std::unique_ptr<Ui::LogWindow> mUi;
+    std::unique_ptr<WindowLogFilterProxyModel> mProxyModel;
+    bool mIsPaused;
+    bool mHasAutoScroll;
+};
 
 }
 
-#endif // QSLOGLEVEL_H
+#endif // QSLOGWINDOW_H

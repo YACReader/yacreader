@@ -27,30 +27,55 @@
 #define QSLOG_H
 
 #include "QsLogLevel.h"
-#include "QsLogDest.h"
+#include "QsLogMessage.h"
+#include "QsLogSharedLibrary.h"
 #include <QDebug>
 #include <QString>
+#include <memory>
 
-#define QS_LOG_VERSION "2.0b3"
+#define QS_LOG_VERSION "2.1"
 
 namespace QsLogging
 {
+
 class Destination;
 class LoggerImpl; // d pointer
+using DestinationPtrU = std::unique_ptr<Destination>;
 
 class QSLOG_SHARED_OBJECT Logger
 {
 public:
     static Logger& instance();
-    static void destroyInstance();
     static Level levelFromLogMessage(const QString& logMessage, bool* conversionSucceeded = 0);
 
-    ~Logger();
+public:
+    Logger(const Logger&) = delete;
+    Logger& operator=(const Logger&) = delete;
+
+    ~Logger() noexcept;
+
+#if defined(Q_OS_WIN)
+    //! When QS_LOG_SEPARATE_THREAD is defined on Windows, and you are using this library as a DLL,
+    //! this function must be called before your program ends, to ensure a clean shutdown of the logger thread.
+    //! Failing to call it will result in an assert being triggered, an error message being printed
+    //! out and most probably a deadlock.
+    //! Returns the wait result for the thread. When called on a non-threaded logger returns true
+    //! immediately.
+    bool shutDownLoggerThread();
+#endif
 
     //! Adds a log message destination. Don't add null destinations.
-    void addDestination(DestinationPtr destination);
-    //! Logging at a level < 'newLevel' will be ignored
+    void addDestination(DestinationPtrU &&destination);
+
+    //! Removes and returns a previously added destination. Returns null if not found.
+    DestinationPtrU removeDestination(const QString& type);
+
+    //! Checks if a destination of a specific type has been added. Pass T::Type as parameter.
+    bool hasDestinationOfType(const char* type) const;
+
+    //! Messages at a level < 'newLevel' will be ignored
     void setLoggingLevel(Level newLevel);
+
     //! The default level is INFO
     Level loggingLevel() const;
 
@@ -62,12 +87,10 @@ public:
         explicit Helper(Level logLevel) :
             level(logLevel),
             qtDebug(&buffer) {}
-        ~Helper();
+        ~Helper() noexcept;
         QDebug& stream(){ return qtDebug; }
 
     private:
-        void writeToLog();
-
         Level level;
         QString buffer;
         QDebug qtDebug;
@@ -75,15 +98,13 @@ public:
 
 private:
     Logger();
-    Logger(const Logger&);            // not available
-    Logger& operator=(const Logger&); // not available
 
-    void enqueueWrite(const QString& message, Level level);
-    void write(const QString& message, Level level);
+    void enqueueWrite(const LogMessage& message);
+    void write(const LogMessage& message);
 
-    LoggerImpl* d;
+    std::unique_ptr<LoggerImpl> d;
 
-    friend class LogWriterRunnable;
+    friend class LoggerThread;
 };
 
 } // end namespace

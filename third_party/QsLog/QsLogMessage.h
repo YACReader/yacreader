@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Razvan Petru
+// Copyright (c) 2015, Axel Gembe <axel@gembe.net>
 // All rights reserved.
 
 // Redistribution and use in source and binary forms, with or without modification,
@@ -23,26 +23,35 @@
 // OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef QSLOGLEVEL_H
-#define QSLOGLEVEL_H
-class QString;
+#ifndef QSLOGMESSAGE_H
+#define QSLOGMESSAGE_H
+
+#include "QsLogLevel.h"
+
+#include <QString>
+#include <QDateTime>
 
 namespace QsLogging
 {
-enum Level
-{
-    TraceLevel = 0,
-    DebugLevel,
-    InfoLevel,
-    WarnLevel,
-    ErrorLevel,
-    FatalLevel,
-    OffLevel
-};
 
-const char* LevelName(Level theLevel);
-QString LocalizedLevelName(Level theLevel);
+struct LogMessage
+{
+    LogMessage() = default; // Needs to be accessible for qRegisterMetaType
+    LogMessage(const QString& m, const QDateTime& t, const Level l); // Construct and format message
+
+    //! Log message
+    QString message;
+
+    //! Time stamp in UTC, use .toLocalTime() to get local time
+    QDateTime time;
+
+    //! Log level
+    Level level;
+
+    //! Formatted log message ([level] [time] [message])
+    const QString formatted;
+};
 
 }
 
-#endif // QSLOGLEVEL_H
+#endif // QSLOGMESSAGE_H

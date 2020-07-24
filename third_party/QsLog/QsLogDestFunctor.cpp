@@ -27,31 +27,40 @@
 #include "QsLogDestFunctor.h"
 #include <cstddef>
 #include <QtGlobal>
+#include <QString>
+
+const char* const QsLogging::FunctorDestination::Type = "functor";
 
 QsLogging::FunctorDestination::FunctorDestination(LogFunction f)
-    : QObject(NULL)
+    : QObject(nullptr)
     , mLogFunction(f)
 {
 }
 
-QsLogging::FunctorDestination::FunctorDestination(QObject *receiver, const char *member)
-    : QObject(NULL)
-    , mLogFunction(NULL)
+QsLogging::FunctorDestination::FunctorDestination(QObject* receiver, const char* member)
+    : QObject(nullptr)
+    , mLogFunction(nullptr)
 {
-    connect(this, SIGNAL(logMessageReady(QString,int)), receiver, member, Qt::QueuedConnection);
+    connect(this, SIGNAL(logMessageReady(QsLogging::LogMessage)),
+            receiver, member, Qt::QueuedConnection);
 }
 
 
-void QsLogging::FunctorDestination::write(const QString &message, QsLogging::Level level)
+void QsLogging::FunctorDestination::write(const LogMessage& message)
 {
     if (mLogFunction)
-        mLogFunction(message, level);
+        mLogFunction(message);
 
-    if (level > QsLogging::TraceLevel)
-        emit logMessageReady(message, static_cast<int>(level));
+    if (message.level > QsLogging::TraceLevel)
+        emit logMessageReady(message);
 }
 
 bool QsLogging::FunctorDestination::isValid()
 {
     return true;
+}
+
+QString QsLogging::FunctorDestination::type() const
+{
+    return QString::fromLatin1(Type);
 }
