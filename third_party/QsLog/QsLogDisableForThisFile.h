@@ -1,9 +1,14 @@
 #ifndef QSLOGDISABLEFORTHISFILE_H
 #define QSLOGDISABLEFORTHISFILE_H
 
+// When included after all includes of QsLog.h (direct and indirect includes through other headers)
+// this file will disable logging in that translation unit.
+
+#ifndef QLOG_TRACE
+#error "This file must be included after QsLog.h"
+#endif
+
 #include <QtDebug>
-// When included AFTER QsLog.h, this file will disable logging in that C++ file. When included
-// before, it will lead to compiler warnings or errors about macro redefinitions.
 
 #undef QLOG_TRACE
 #undef QLOG_DEBUG

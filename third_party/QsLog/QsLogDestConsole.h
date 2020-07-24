@@ -27,7 +27,6 @@
 #define QSLOGDESTCONSOLE_H
 
 #include "QsLogDest.h"
-
 class QString;
 
 class QsDebugOutput
@@ -40,11 +39,14 @@ namespace QsLogging
 {
 
 // debugger sink
-class DebugOutputDestination : public Destination
+class QSLOG_SHARED_OBJECT DebugOutputDestination : public Destination
 {
 public:
-    virtual void write(const QString& message, Level level);
-    virtual bool isValid();
+    static const char* const Type;
+
+    void write(const LogMessage& message) override;
+    bool isValid() override;
+    QString type() const override;
 };
 
 }

@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Razvan Petru
+// Copyright (c) 2015, Axel Gembe <axel@gembe.net>
 // All rights reserved.
 
 // Redistribution and use in source and binary forms, with or without modification,
@@ -23,26 +23,24 @@
 // OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef QSLOGLEVEL_H
-#define QSLOGLEVEL_H
-class QString;
+#include "QsLogMessage.h"
+#include "QsLogLevel.h"
 
 namespace QsLogging
 {
-enum Level
-{
-    TraceLevel = 0,
-    DebugLevel,
-    InfoLevel,
-    WarnLevel,
-    ErrorLevel,
-    FatalLevel,
-    OffLevel
-};
 
-const char* LevelName(Level theLevel);
-QString LocalizedLevelName(Level theLevel);
+// not using Qt::ISODate because we need the milliseconds too
+static const char DateTimePattern[] = "yyyy-MM-ddThh:mm:ss.zzz";
+
+LogMessage::LogMessage(const QString& m, const QDateTime& t, const Level l)
+    : message(m)
+    , time(t)
+    , level(l)
+    , formatted(QString("%1 %2 %3").arg(LevelName(level))
+        .arg(t.toLocalTime().toString(DateTimePattern))
+        .arg(message))
+{
 
 }
 
-#endif // QSLOGLEVEL_H
+}

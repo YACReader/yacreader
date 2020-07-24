@@ -27,29 +27,36 @@
 #include <QString>
 #include <QtGlobal>
 
-#if defined(Q_OS_WIN)
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-void QsDebugOutput::output( const QString& message )
-{
-   OutputDebugStringW(reinterpret_cast<const WCHAR*>(message.utf16()));
-   OutputDebugStringW(L"\n");
-}
-#elif defined(Q_OS_UNIX)
+#if defined(Q_OS_UNIX) || defined(Q_OS_WIN) && defined(QS_LOG_WIN_PRINTF_CONSOLE)
 #include <cstdio>
 void QsDebugOutput::output( const QString& message )
 {
    fprintf(stderr, "%s\n", qPrintable(message));
    fflush(stderr);
 }
+#elif defined(Q_OS_WIN)
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+void QsDebugOutput::output( const QString& message )
+{
+   OutputDebugStringW(reinterpret_cast<const WCHAR*>(message.utf16()));
+   OutputDebugStringW(L"\n");
+}
 #endif
 
-void QsLogging::DebugOutputDestination::write(const QString& message, Level)
+const char* const QsLogging::DebugOutputDestination::Type = "console";
+
+void QsLogging::DebugOutputDestination::write(const LogMessage& message)
 {
-    QsDebugOutput::output(message);
+    QsDebugOutput::output(message.formatted);
 }
 
 bool QsLogging::DebugOutputDestination::isValid()
 {
     return true;
+}
+
+QString QsLogging::DebugOutputDestination::type() const
+{
+    return QString::fromLatin1(Type);
 }

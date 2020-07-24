@@ -29,71 +29,92 @@
 #include "QsLogDest.h"
 #include <QFile>
 #include <QTextStream>
+#include <QString>
+#include <QByteArray>
 #include <QtGlobal>
-#include <QSharedPointer>
+#include <memory>
 
 namespace QsLogging
 {
-class RotationStrategy
+class QSLOG_SHARED_OBJECT RotationStrategy
 {
 public:
-    virtual ~RotationStrategy();
+    virtual ~RotationStrategy() noexcept;
 
     virtual void setInitialInfo(const QFile &file) = 0;
     virtual void includeMessageInCalculation(const QString &message) = 0;
+    virtual void includeMessageInCalculation(const QByteArray &message) = 0;
     virtual bool shouldRotate() = 0;
     virtual void rotate() = 0;
     virtual QIODevice::OpenMode recommendedOpenModeFlag() = 0;
 };
 
 // Never rotates file, overwrites existing file.
-class NullRotationStrategy : public RotationStrategy
+class QSLOG_SHARED_OBJECT NullRotationStrategy : public RotationStrategy
 {
 public:
-    virtual void setInitialInfo(const QFile &) {}
-    virtual void includeMessageInCalculation(const QString &) {}
-    virtual bool shouldRotate() { return false; }
-    virtual void rotate() {}
-    virtual QIODevice::OpenMode recommendedOpenModeFlag() { return QIODevice::Truncate; }
+    void setInitialInfo(const QFile &) override {}
+    void includeMessageInCalculation(const QString &) override {}
+    void includeMessageInCalculation(const QByteArray &) override {}
+    bool shouldRotate() override
+    {
+        return false;
+    }
+    void rotate() override {}
+    QIODevice::OpenMode recommendedOpenModeFlag() override
+    {
+        return QIODevice::Truncate;
+    }
 };
 
 // Rotates after a size is reached, keeps a number of <= 10 backups, appends to existing file.
-class SizeRotationStrategy : public RotationStrategy
+class QSLOG_SHARED_OBJECT SizeRotationStrategy : public RotationStrategy
 {
 public:
-    SizeRotationStrategy();
+    SizeRotationStrategy() = default;
     static const int MaxBackupCount;
 
-    virtual void setInitialInfo(const QFile &file);
-    virtual void includeMessageInCalculation(const QString &message);
-    virtual bool shouldRotate();
-    virtual void rotate();
-    virtual QIODevice::OpenMode recommendedOpenModeFlag();
+    void setInitialInfo(const QFile &file) override;
+    void setInitialInfo(const QString& filePath, int fileSize);
+    void includeMessageInCalculation(const QString &message) override;
+    void includeMessageInCalculation(const QByteArray &message) override;
+    bool shouldRotate() override;
+    void rotate() override;
+    QIODevice::OpenMode recommendedOpenModeFlag() override;
 
     void setMaximumSizeInBytes(qint64 size);
     void setBackupCount(int backups);
 
+protected:
+    // can be overridden for testing
+    virtual bool removeFileAtPath(const QString& path);
+    virtual bool fileExistsAtPath(const QString& path);
+    virtual bool renameFileFromTo(const QString& from, const QString& to);
+
 private:
     QString mFileName;
-    qint64 mCurrentSizeInBytes;
-    qint64 mMaxSizeInBytes;
-    int mBackupsCount;
+    qint64 mCurrentSizeInBytes{0};
+    qint64 mMaxSizeInBytes{0};
+    int mBackupsCount{0};
 };
 
-typedef QSharedPointer<RotationStrategy> RotationStrategyPtr;
+using RotationStrategyPtrU = std::unique_ptr<RotationStrategy>;
 
 // file message sink
-class FileDestination : public Destination
+class QSLOG_SHARED_OBJECT FileDestination : public Destination
 {
 public:
-    FileDestination(const QString& filePath, RotationStrategyPtr rotationStrategy);
-    virtual void write(const QString& message, Level level);
-    virtual bool isValid();
+    static const char* const Type;
+
+    FileDestination(const QString& filePath, RotationStrategyPtrU &&rotationStrategy);
+    void write(const LogMessage& message) override;
+    bool isValid() override;
+    QString type() const override;
 
 private:
     QFile mFile;
     QTextStream mOutputStream;
-    QSharedPointer<RotationStrategy> mRotationStrategy;
+    RotationStrategyPtrU mRotationStrategy;
 };
 
 }

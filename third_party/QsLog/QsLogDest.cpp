@@ -32,39 +32,37 @@
 namespace QsLogging
 {
 
-Destination::~Destination()
-{
-}
+Destination::~Destination() noexcept = default;
 
 //! destination factory
-DestinationPtr DestinationFactory::MakeFileDestination(const QString& filePath,
+DestinationPtrU DestinationFactory::MakeFileDestination(const QString& filePath,
     LogRotationOption rotation, const MaxSizeBytes &sizeInBytesToRotateAfter,
     const MaxOldLogCount &oldLogsToKeep)
 {
-    if (EnableLogRotation == rotation) {
-        QScopedPointer<SizeRotationStrategy> logRotation(new SizeRotationStrategy);
+    if (LogRotationOption::EnableLogRotation == rotation) {
+        std::unique_ptr<SizeRotationStrategy> logRotation(new SizeRotationStrategy);
         logRotation->setMaximumSizeInBytes(sizeInBytesToRotateAfter.size);
         logRotation->setBackupCount(oldLogsToKeep.count);
 
-        return DestinationPtr(new FileDestination(filePath, RotationStrategyPtr(logRotation.take())));
+        return DestinationPtrU(new FileDestination(filePath, std::move(logRotation)));
     }
 
-    return DestinationPtr(new FileDestination(filePath, RotationStrategyPtr(new NullRotationStrategy)));
+    return DestinationPtrU(new FileDestination(filePath, RotationStrategyPtrU(new NullRotationStrategy)));
 }
 
-DestinationPtr DestinationFactory::MakeDebugOutputDestination()
+DestinationPtrU DestinationFactory::MakeDebugOutputDestination()
 {
-    return DestinationPtr(new DebugOutputDestination);
+    return DestinationPtrU(new DebugOutputDestination);
 }
 
-DestinationPtr DestinationFactory::MakeFunctorDestination(QsLogging::Destination::LogFunction f)
+DestinationPtrU DestinationFactory::MakeFunctorDestination(QsLogging::Destination::LogFunction f)
 {
-    return DestinationPtr(new FunctorDestination(f));
+    return DestinationPtrU(new FunctorDestination(f));
 }
 
-DestinationPtr DestinationFactory::MakeFunctorDestination(QObject *receiver, const char *member)
+DestinationPtrU DestinationFactory::MakeFunctorDestination(QObject *receiver, const char *member)
 {
-    return DestinationPtr(new FunctorDestination(receiver, member));
+    return DestinationPtrU(new FunctorDestination(receiver, member));
 }
 
 } // end namespace
