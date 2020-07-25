@@ -81,6 +81,7 @@ int main(int argc, char *argv[])
     QCommandLineParser parser;
     parser.addHelpOption();
     parser.addVersionOption();
+    parser.addOption({ "loglevel", "Set log level. Valid values: trace, info, debug, warn, error.", "loglevel", "warning" });
     parser.addPositionalArgument("[File|Directory]", "File or directory to open.");
     QCommandLineOption comicId("comicId", "", "comicId");
     QCommandLineOption libraryId("libraryId", "", "libraryId");
@@ -103,6 +104,22 @@ int main(int argc, char *argv[])
 
     Logger &logger = Logger::instance();
     logger.setLoggingLevel(QsLogging::InfoLevel);
+
+    if (parser.isSet("loglevel")) {
+        if (parser.value("loglevel") == "trace") {
+            logger.setLoggingLevel(QsLogging::TraceLevel);
+        } else if (parser.value("loglevel") == "info") {
+            logger.setLoggingLevel(QsLogging::InfoLevel);
+        } else if (parser.value("loglevel") == "debug") {
+            logger.setLoggingLevel(QsLogging::DebugLevel);
+        } else if (parser.value("loglevel") == "warn") {
+            logger.setLoggingLevel(QsLogging::WarnLevel);
+        } else if (parser.value("loglevel") == "error") {
+            logger.setLoggingLevel(QsLogging::ErrorLevel);
+        } else {
+            parser.showHelp();
+        }
+    }
 
     DestinationPtrU fileDestination(DestinationFactory::MakeFileDestination(
             destLog, LogRotationOption::EnableLogRotation, MaxSizeBytes(1048576), MaxOldLogCount(2)));
