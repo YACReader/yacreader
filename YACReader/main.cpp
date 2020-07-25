@@ -53,8 +53,41 @@ private:
 };
 #endif
 
+void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    Q_UNUSED(context);
+
+    QByteArray localMsg = msg.toLocal8Bit();
+    switch (type) {
+    case QtInfoMsg: {
+        QLOG_INFO() << localMsg.constData();
+        break;
+    }
+    case QtDebugMsg: {
+        QLOG_DEBUG() << localMsg.constData();
+        break;
+    }
+
+    case QtWarningMsg: {
+        QLOG_WARN() << localMsg.constData();
+        break;
+    }
+
+    case QtCriticalMsg: {
+        QLOG_ERROR() << localMsg.constData();
+        break;
+    }
+
+    case QtFatalMsg: {
+        QLOG_FATAL() << localMsg.constData();
+        break;
+    }
+    }
+}
+
 int main(int argc, char *argv[])
 {
+    qInstallMessageHandler(messageHandler);
 
 #if defined(_MSC_VER) && defined(_DEBUG)
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
