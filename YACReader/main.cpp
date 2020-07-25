@@ -104,11 +104,11 @@ int main(int argc, char *argv[])
     Logger &logger = Logger::instance();
     logger.setLoggingLevel(QsLogging::InfoLevel);
 
-    DestinationPtr fileDestination(DestinationFactory::MakeFileDestination(
-            destLog, EnableLogRotation, MaxSizeBytes(1048576), MaxOldLogCount(2)));
-    DestinationPtr debugDestination(DestinationFactory::MakeDebugOutputDestination());
-    logger.addDestination(debugDestination);
-    logger.addDestination(fileDestination);
+    DestinationPtrU fileDestination(DestinationFactory::MakeFileDestination(
+            destLog, LogRotationOption::EnableLogRotation, MaxSizeBytes(1048576), MaxOldLogCount(2)));
+    DestinationPtrU debugDestination(DestinationFactory::MakeDebugOutputDestination());
+    logger.addDestination(std::move(debugDestination));
+    logger.addDestination(std::move(fileDestination));
 
     QTranslator translator;
     QString sufix = QLocale::system().name();
@@ -137,5 +137,8 @@ int main(int argc, char *argv[])
 
     //Configuration::getConfiguration().save();
     YACReader::exitCheck(ret);
+#ifdef Q_OS_WIN
+    logger.shutDownLoggerThread();
+#endif
     return ret;
 }
