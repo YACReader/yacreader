@@ -88,11 +88,8 @@ SOURCES += \
     $$PWD/controllers/v2/comicfullinfocontroller_v2.cpp \
     $$PWD/controllers/v2/readinglistinfocontroller_v2.cpp \
     $$PWD/controllers/v2/taginfocontroller_v2.cpp
-	
 
-#include(lib/logging/logging.pri)
-include(lib/httpserver/httpserver.pri)
-include(lib/templateengine/templateengine.pri)
-
+include(../../third_party/QtWebApp/httpserver/httpserver.pri)
+include(../../third_party/QtWebApp/templateengine/templateengine.pri)
 
 DEFINES += SERVER_VERSION_NUMBER=\\\"2.0\\\"
