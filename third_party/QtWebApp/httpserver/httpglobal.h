@@ -23,5 +23,6 @@
 /** Get the library version number */
 DECLSPEC const char* getQtWebAppLibVersion();
 
+
 #endif // HTTPGLOBAL_H
 

@@ -15,6 +15,8 @@
 #include "httpresponse.h"
 #include "httprequest.h"
 
+namespace stefanfrings {
+
 /**
   Stores HTTP sessions and deletes them when they have expired.
   The following configuration settings are required in the config file:
@@ -35,8 +37,17 @@ class DECLSPEC HttpSessionStore : public QObject {
     Q_DISABLE_COPY(HttpSessionStore)
 public:
 
-    /** Constructor. */
-    HttpSessionStore(QSettings* settings, QObject* parent=nullptr);
+    /**
+      Constructor.
+      @param settings Configuration settings, usually stored in an INI file. Must not be 0.
+      Settings are read from the current group, so the caller must have called settings->beginGroup().
+      Because the group must not change during runtime, it is recommended to provide a
+      separate QSettings instance that is not used by other parts of the program.
+      The HttpSessionStore does not take over ownership of the QSettings instance, so the
+      caller should destroy it during shutdown.
+      @param parent Parent object
+     */
+    HttpSessionStore(const QSettings* settings, QObject* parent=nullptr);
 
     /** Destructor */
     virtual ~HttpSessionStore();
@@ -62,7 +73,7 @@ public:
        @return If autoCreate is disabled, the function returns a null session if there is no session.
        @see HttpSession::isNull()
     */
-    HttpSession getSession(HttpRequest& request, HttpResponse& response, bool allowCreate=true);
+    HttpSession getSession(HttpRequest& request, HttpResponse& response, const bool allowCreate=true);
 
     /**
        Get a HTTP session by it's ID number.
@@ -74,7 +85,7 @@ public:
     HttpSession getSession(const QByteArray id);
 
     /** Delete a session */
-    void removeSession(HttpSession session);
+    void removeSession(const HttpSession session);
 
 protected:
     /** Storage for the sessions */
@@ -83,7 +94,7 @@ protected:
 private:
 
     /** Configuration settings */
-    QSettings* settings;
+    const QSettings* settings;
 
     /** Timer to remove expired sessions */
     QTimer cleanupTimer;
@@ -102,5 +113,7 @@ private slots:
     /** Called every minute to cleanup expired sessions. */
     void sessionTimerEvent();
 };
+
+} // end of namespace
 
 #endif // HTTPSESSIONSTORE_H

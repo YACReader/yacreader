@@ -5,7 +5,9 @@
 
 #include "httpresponse.h"
 
-HttpResponse::HttpResponse(QTcpSocket* socket)
+using namespace stefanfrings;
+
+HttpResponse::HttpResponse(QTcpSocket *socket)
 {
     this->socket=socket;
     statusCode=200;
@@ -67,6 +69,7 @@ void HttpResponse::writeHeaders()
     }
     buffer.append("\r\n");
     writeToSocket(buffer);
+    socket->flush();
     sentHeaders=true;
 }
 
@@ -82,7 +85,7 @@ bool HttpResponse::writeToSocket(QByteArray data)
             socket->waitForBytesWritten(-1);
         }
 
-        int written=socket->write(ptr,remaining);
+        qint64 written=socket->write(ptr,remaining);
         if (written==-1)
         {
           return false;

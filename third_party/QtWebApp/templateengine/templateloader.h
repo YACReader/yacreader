@@ -13,6 +13,8 @@
 #include "templateglobal.h"
 #include "template.h"
 
+namespace stefanfrings {
+
 /**
   Loads localized versions of template files. If the caller requests a file with the
   name "index" and the suffix is ".tpl" and the requested locale is "de_DE, de, en-US",
@@ -20,7 +22,7 @@
 
   - index-de_DE.tpl
   - index-de.tpl
-  - index-en_US.tpl  
+  - index-en_US.tpl
   - index-en.tpl
   - index.tpl
 
@@ -45,7 +47,7 @@ public:
       @param settings configurations settings
       @param parent parent object
     */
-    TemplateLoader(QSettings* settings, QObject* parent=nullptr);
+    TemplateLoader(const QSettings* settings, QObject* parent=nullptr);
 
     /** Destructor */
     virtual ~TemplateLoader();
@@ -59,7 +61,7 @@ public:
       ignored.
       @return If the template cannot be loaded, an error message is logged and an empty template is returned.
     */
-    Template getTemplate(QString templateName, QString locales=QString());
+    Template getTemplate(const QString templateName, const QString locales=QString());
 
 protected:
 
@@ -68,7 +70,7 @@ protected:
       @param localizedName Name of the template with locale to find
       @return The template document, or empty string if not found
     */
-    virtual QString tryFile(QString localizedName);
+    virtual QString tryFile(const QString localizedName);
 
     /** Directory where the templates are searched */
     QString templatePath;
@@ -78,9 +80,8 @@ protected:
 
     /** Codec for decoding the files */
     QTextCodec* textCodec;
-
-    /** Used to synchronize threads */
-    QMutex mutex;
 };
+
+} // end of namespace
 
 #endif // TEMPLATELOADER_H

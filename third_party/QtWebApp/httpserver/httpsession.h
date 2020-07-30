@@ -11,6 +11,8 @@
 #include <QReadWriteLock>
 #include "httpglobal.h"
 
+namespace stefanfrings {
+
 /**
   This class stores data for a single HTTP session.
   A session can store any number of key/value pairs. This class uses implicit
@@ -27,7 +29,7 @@ public:
       @param canStore The session can store data, if this parameter is true.
       Otherwise all calls to set() and remove() do not have any effect.
      */
-    HttpSession(bool canStore=false);
+    HttpSession(const bool canStore=false);
 
     /**
       Copy constructor. Creates another HttpSession object that shares the
@@ -114,5 +116,7 @@ private:
     HttpSessionData* dataPtr;
 
 };
+
+} // end of namespace
 
 #endif // HTTPSESSION_H

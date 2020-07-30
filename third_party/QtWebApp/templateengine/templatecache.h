@@ -5,6 +5,8 @@
 #include "templateglobal.h"
 #include "templateloader.h"
 
+namespace stefanfrings {
+
 /**
   Caching template loader, reduces the amount of I/O and improves performance
   on remote file systems. The cache has a limited size, it prefers to keep
@@ -46,10 +48,15 @@ public:
 
     /**
       Constructor.
-      @param settings configurations settings
+      @param settings Configuration settings, usually stored in an INI file. Must not be 0.
+      Settings are read from the current group, so the caller must have called settings->beginGroup().
+      Because the group must not change during runtime, it is recommended to provide a
+      separate QSettings instance that is not used by other parts of the program.
+      The TemplateCache does not take over ownership of the QSettings instance, so the caller
+      should destroy it during shutdown.
       @param parent Parent object
     */
-    TemplateCache(QSettings* settings, QObject* parent=nullptr);
+    TemplateCache(const QSettings* settings, QObject* parent=nullptr);
 
 protected:
 
@@ -58,7 +65,7 @@ protected:
       @param localizedName Name of the template with locale to find
       @return The template document, or empty string if not found
     */
-    virtual QString tryFile(QString localizedName);
+    virtual QString tryFile(const QString localizedName);
 
 private:
 
@@ -73,6 +80,10 @@ private:
     /** Cache storage */
     QCache<QString,CacheEntry> cache;
 
+    /** Used to synchronize threads */
+    QMutex mutex;
 };
+
+} // end of namespace
 
 #endif // TEMPLATECACHE_H

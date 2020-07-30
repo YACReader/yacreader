@@ -10,7 +10,9 @@
 #include <QDir>
 #include <QSet>
 
-TemplateLoader::TemplateLoader(QSettings* settings, QObject* parent)
+using namespace stefanfrings;
+
+TemplateLoader::TemplateLoader(const QSettings *settings, QObject *parent)
     : QObject(parent)
 {
     templatePath=settings->value("path",".").toString();
@@ -64,7 +66,6 @@ QString TemplateLoader::tryFile(QString localizedName)
 
 Template TemplateLoader::getTemplate(QString templateName, QString locales)
 {
-    mutex.lock();
     QSet<QString> tried; // used to suppress duplicate attempts
     QStringList locs=locales.split(',',QString::SkipEmptyParts);
 
@@ -78,7 +79,6 @@ Template TemplateLoader::getTemplate(QString templateName, QString locales)
         {
             QString document=tryFile(localizedName);
             if (!document.isEmpty()) {
-                mutex.unlock();
                 return Template(document,localizedName);
             }
             tried.insert(localizedName);
@@ -95,7 +95,6 @@ Template TemplateLoader::getTemplate(QString templateName, QString locales)
             QString document=tryFile(localizedName);
             if (!document.isEmpty())
             {
-                mutex.unlock();
                 return Template(document,localizedName);
             }
             tried.insert(localizedName);
@@ -106,11 +105,9 @@ Template TemplateLoader::getTemplate(QString templateName, QString locales)
     QString document=tryFile(templateName);
     if (!document.isEmpty())
     {
-        mutex.unlock();
         return Template(document,templateName);
     }
 
     qCritical("TemplateCache: cannot find template %s",qPrintable(templateName));
-    mutex.unlock();
     return Template("",templateName);
 }
