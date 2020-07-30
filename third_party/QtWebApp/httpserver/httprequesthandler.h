@@ -10,6 +10,8 @@
 #include "httprequest.h"
 #include "httpresponse.h"
 
+namespace stefanfrings {
+
 /**
    The request handler generates a response for each HTTP request. Web Applications
    usually have one central request handler that maps incoming requests to several
@@ -45,5 +47,7 @@ public:
     virtual void service(HttpRequest& request, HttpResponse& response);
 
 };
+
+} // end of namespace
 
 #endif // HTTPREQUESTHANDLER_H

@@ -5,6 +5,8 @@
 
 #include "httpcookie.h"
 
+using namespace stefanfrings;
+
 HttpCookie::HttpCookie()
 {
     version=1;

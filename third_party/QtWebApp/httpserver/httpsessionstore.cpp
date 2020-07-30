@@ -7,7 +7,9 @@
 #include <QDateTime>
 #include <QUuid>
 
-HttpSessionStore::HttpSessionStore(QSettings* settings, QObject* parent)
+using namespace stefanfrings;
+
+HttpSessionStore::HttpSessionStore(const QSettings *settings, QObject* parent)
     :QObject(parent)
 {
     this->settings=settings;

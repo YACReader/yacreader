@@ -12,6 +12,8 @@
 #include "httpglobal.h"
 #include "httpcookie.h"
 
+namespace stefanfrings {
+
 /**
   This object represents a HTTP response, used to return something to the web client.
   <p>
@@ -39,7 +41,7 @@ public:
       Constructor.
       @param socket used to write the response
     */
-    HttpResponse(QTcpSocket* socket);
+    HttpResponse(QTcpSocket *socket);
 
     /**
       Set a HTTP response header.
@@ -47,7 +49,7 @@ public:
       @param name name of the header
       @param value value of the header
     */
-    void setHeader(QByteArray name, QByteArray value);
+    void setHeader(const QByteArray name, const QByteArray value);
 
     /**
       Set a HTTP response header.
@@ -55,7 +57,7 @@ public:
       @param name name of the header
       @param value value of the header
     */
-    void setHeader(QByteArray name, int value);
+    void setHeader(const QByteArray name, const int value);
 
     /** Get the map of HTTP response headers */
     QMap<QByteArray,QByteArray>& getHeaders();
@@ -67,7 +69,7 @@ public:
       Set status code and description. The default is 200,OK.
       You must call this method before the first write().
     */
-    void setStatus(int statusCode, QByteArray description=QByteArray());
+    void setStatus(const int statusCode, const QByteArray description=QByteArray());
 
     /** Return the status code. */
     int getStatusCode() const;
@@ -85,7 +87,7 @@ public:
       @param data Data bytes of the body
       @param lastPart Indicates that this is the last chunk of data and flushes the output buffer.
     */
-    void write(QByteArray data, bool lastPart=false);
+    void write(const QByteArray data, const bool lastPart=false);
 
     /**
       Indicates whether the body has been sent completely (write() has been called with lastPart=true).
@@ -155,5 +157,7 @@ private:
     void writeHeaders();
 
 };
+
+} // end of namespace
 
 #endif // HTTPRESPONSE_H

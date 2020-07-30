@@ -14,6 +14,8 @@
 #include <QString>
 #include "templateglobal.h"
 
+namespace stefanfrings {
+
 /**
  Enhanced version of QString for template processing. Templates
  are usually loaded from files, but may also be loaded from
@@ -41,10 +43,10 @@
  t.setVariable("username", "Stefan");
  t.setCondition("locked",false);
  t.loop("user",2);
- t.setVariable("user0.name,"Markus");
- t.setVariable("user0.time,"8:30");
- t.setVariable("user1.name,"Roland");
- t.setVariable("user1.time,"8:45");
+ t.setVariable("user0.name","Markus");
+ t.setVariable("user0.time","8:30");
+ t.setVariable("user1.name","Roland");
+ t.setVariable("user1.time","8:45");
  </pre></code></p>
  <p>
  The code example above shows how variable within loops are numbered.
@@ -95,7 +97,7 @@ public:
       @param source The template source text
       @param sourceName Name of the source file, used for logging
     */
-    Template(QString source, QString sourceName);
+    Template(const QString source, const QString sourceName);
 
     /**
       Constructor that reads the template from a file. Note that this class does not
@@ -106,7 +108,7 @@ public:
       @see TemplateLoader
       @see TemplateCache
     */
-    Template(QFile& file, QTextCodec* textCodec);
+    Template(QFile &file, const QTextCodec* textCodec);
 
     /**
       Replace a variable by the given value.
@@ -121,7 +123,7 @@ public:
       @param value new value
       @return The count of variables that have been processed
     */
-    int setVariable(QString name, QString value);
+    int setVariable(const QString name, const QString value);
 
     /**
       Set a condition. This affects tags with the syntax
@@ -135,7 +137,7 @@ public:
      @param value Value of the condition
      @return The count of conditions that have been processed
     */
-    int setCondition(QString name, bool value);
+    int setCondition(const QString name, bool value);
 
     /**
      Set number of repetitions of a loop.
@@ -148,13 +150,13 @@ public:
      @param repetitions The number of repetitions
      @return The number of loops that have been processed
     */
-    int loop(QString name, int repetitions);
+    int loop(QString name, const int repetitions);
 
     /**
      Enable warnings for missing tags
      @param enable Warnings are enabled, if true
     */
-    void enableWarnings(bool enable=true);
+    void enableWarnings(const bool enable=true);
 
 private:
 
@@ -164,5 +166,7 @@ private:
     /** Enables warnings, if true */
     bool warnings;
 };
+
+} // end of namespace
 
 #endif // TEMPLATE_H

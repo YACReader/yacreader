@@ -8,13 +8,9 @@
 #include <QDir>
 #include <QDateTime>
 
-//YACReader-----
-#include "httpsession.h"
-#include "yacreader_http_session.h"
-#include "static.h"
-//--
+using namespace stefanfrings;
 
-StaticFileController::StaticFileController(QSettings* settings, QObject* parent)
+StaticFileController::StaticFileController(const QSettings *settings, QObject* parent)
     :HttpRequestHandler(parent)
 {
     maxAge=settings->value("maxAge","60000").toInt();
@@ -41,7 +37,7 @@ StaticFileController::StaticFileController(QSettings* settings, QObject* parent)
 }
 
 
-void StaticFileController::service(HttpRequest& request, HttpResponse& response)
+void StaticFileController::service(HttpRequest &request, HttpResponse &response)
 {
     QByteArray path=request.getPath();
     // Check if we have the file in cache
@@ -61,32 +57,6 @@ void StaticFileController::service(HttpRequest& request, HttpResponse& response)
     else
     {
         mutex.unlock();
-
-        //TODO(DONE) carga sensible al dispositivo y a la localización
-        QString stringPath = path;
-        QStringList paths = QString(path).split('/');
-        QString fileName = paths.last();
-        stringPath.remove(fileName);
-        HttpSession session=Static::sessionStore->getSession(request,response,false);
-        YACReaderHttpSession *ySession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(session.getId());
-        QString device = "ipad";
-        QString display = "@2x";
-        if (ySession != nullptr) {
-            device = ySession->getDeviceType();
-            display = ySession->getDisplayType();
-        }
-        
-        if(fileName.endsWith(".png"))
-            fileName = getDeviceAwareFileName(fileName, device, display, request.getHeader("Accept-Language"), stringPath);
-        else
-            fileName = getDeviceAwareFileName(fileName, device, request.getHeader("Accept-Language"), stringPath);
-        QString newPath = stringPath.append(fileName);
-        path = newPath.toLocal8Bit();
-
-        //CAMBIADO
-        //response.setHeader("Connection","close");
-        //END_TODO
-
         // The file is not in cache.
         qDebug("StaticFileController: Cache miss for %s",path.data());
         // Forbid access to files outside the docroot directory
@@ -151,7 +121,7 @@ void StaticFileController::service(HttpRequest& request, HttpResponse& response)
     }
 }
 
-void StaticFileController::setContentType(QString fileName, HttpResponse& response) const
+void StaticFileController::setContentType(const QString fileName, HttpResponse &response) const
 {
     if (fileName.endsWith(".png"))
     {
@@ -209,85 +179,17 @@ void StaticFileController::setContentType(QString fileName, HttpResponse& respon
     {
         response.setHeader("Content-Type", "application/font-otf");
     }
+    else if (fileName.endsWith(".json"))
+    {
+        response.setHeader("Content-Type", "application/json");
+    }
+    else if (fileName.endsWith(".xml"))
+    {
+        response.setHeader("Content-Type", "text/xml");
+    }
     // Todo: add all of your content types
     else
     {
         qDebug("StaticFileController: unknown MIME type for filename '%s'", qPrintable(fileName));
     }
-}
-
-//YACReader------------------------------------------------------------------------
-
-bool StaticFileController::exists(QString localizedName, QString path) const
-{
-    QString fileName=docroot+"/"+path + localizedName;
-    QFile file(fileName);
-    return file.exists();
-}
-
-//retorna fileName si no se encontró alternativa traducida ó fileName-locale.extensión si se encontró
-QString StaticFileController::getLocalizedFileName(QString fileName, QString locales, QString path) const
-{
-    QSet<QString> tried; // used to suppress duplicate attempts
-    QStringList locs=locales.split(',',QString::SkipEmptyParts);
-    QStringList fileNameParts = fileName.split('.');
-    QString file = fileNameParts.first();
-    QString extension = fileNameParts.last();
-    // Search for exact match
-    foreach (QString loc,locs) {
-        loc.replace(QRegExp(";.*"),"");
-        loc.replace('-','_');
-        QString localizedName=file+"-"+loc.trimmed()+"."+extension;
-        if (!tried.contains(localizedName)) {
-            if(exists(localizedName, path))
-                return localizedName;
-            tried.insert(localizedName);
-        }
-    }
-
-    // Search for correct language but any country
-    foreach (QString loc,locs) {
-        loc.replace(QRegExp("[;_-].*"),"");
-        QString localizedName=file+"-"+loc.trimmed()+"."+extension;
-        if (!tried.contains(localizedName)) {
-            if(exists(localizedName, path))
-                return localizedName;
-            tried.insert(localizedName);
-        }
-    }
-
-    return fileName;
-}
-
-QString StaticFileController::getDeviceAwareFileName(QString fileName, QString device, QString locales, QString path) const
-{
-    QFileInfo fi(fileName);
-    QString baseName = fi.baseName();
-    QString extension = fi.completeSuffix();
-
-    QString completeFileName = getLocalizedFileName(baseName+"_"+device+"."+extension,locales,path);
-
-    if(QFile(docroot+"/"+path+completeFileName).exists())
-        return completeFileName; //existe un archivo específico para este dispositivo y locales
-    else
-        return getLocalizedFileName(fileName,locales,path); //no hay archivo específico para el dispositivo, pero puede haberlo para estas locales
-}
-
-QString StaticFileController::getDeviceAwareFileName(QString fileName, QString device, QString display, QString /* locales */, QString path) const
-{
-    QFileInfo fi(fileName);
-    QString baseName = fi.baseName();
-    QString extension = fi.completeSuffix();
-
-    QString completeFileName = baseName+display+"."+extension;
-    if(QFile(docroot+"/"+path+completeFileName).exists())
-        return completeFileName;
-    else
-    {
-        completeFileName = baseName+"_"+device+display+"."+extension;
-        if((QFile(docroot+"/"+path+completeFileName).exists()))
-            return completeFileName;
-    }
-
-    return fileName;
 }

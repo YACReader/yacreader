@@ -1,4 +1,4 @@
-#ifndef QT_NO_OPENSSL
+#ifndef QT_NO_SSL
     #include <QSslSocket>
     #include <QSslKey>
     #include <QSslCertificate>
@@ -7,13 +7,15 @@
 #include <QDir>
 #include "httpconnectionhandlerpool.h"
 
-HttpConnectionHandlerPool::HttpConnectionHandlerPool(QSettings* settings, HttpRequestHandler* requestHandler)
+using namespace stefanfrings;
+
+HttpConnectionHandlerPool::HttpConnectionHandlerPool(const QSettings *settings, HttpRequestHandler *requestHandler)
     : QObject()
 {
-    Q_ASSERT(settings!=nullptr);
+    Q_ASSERT(settings!=0);
     this->settings=settings;
     this->requestHandler=requestHandler;
-    this->sslConfiguration=nullptr;
+    this->sslConfiguration=NULL;
     loadSslConfig();
     cleanupTimer.start(settings->value("cleanupInterval",1000).toInt());
     connect(&cleanupTimer, SIGNAL(timeout()), SLOT(cleanup()));
@@ -34,7 +36,7 @@ HttpConnectionHandlerPool::~HttpConnectionHandlerPool()
 
 HttpConnectionHandler* HttpConnectionHandlerPool::getConnectionHandler()
 {
-    HttpConnectionHandler* freeHandler=nullptr;
+    HttpConnectionHandler* freeHandler=0;
     mutex.lock();
     // find a free handler in pool
     foreach(HttpConnectionHandler* handler, pool)
@@ -91,7 +93,7 @@ void HttpConnectionHandlerPool::loadSslConfig()
     QString sslCertFileName=settings->value("sslCertFile","").toString();
     if (!sslKeyFileName.isEmpty() && !sslCertFileName.isEmpty())
     {
-        #ifdef QT_NO_OPENSSL
+        #ifdef QT_NO_SSL
             qWarning("HttpConnectionHandlerPool: SSL is not supported");
         #else
             // Convert relative fileNames to absolute, based on the directory of the config file.

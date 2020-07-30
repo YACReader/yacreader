@@ -16,6 +16,8 @@
 #include <QUuid>
 #include "httpglobal.h"
 
+namespace stefanfrings {
+
 /**
   This object represents a single HTTP request. It reads the request
   from a TCP socket and provides getters for the individual parts
@@ -46,7 +48,7 @@ public:
       Constructor.
       @param settings Configuration settings
     */
-    HttpRequest(QSettings* settings);
+    HttpRequest(const QSettings* settings);
 
     /**
       Destructor.
@@ -59,7 +61,7 @@ public:
       until the status is RequestStatus::complete or RequestStatus::abort.
       @param socket Source of the data
     */
-    void readFromSocket(QTcpSocket* socket);
+    void readFromSocket(QTcpSocket *socket);
 
     /**
       Get the status of this reqeust.
@@ -207,9 +209,9 @@ private:
     QByteArray boundary;
 
     /** Temp file, that is used to store the multipart/form-data body */
-    QTemporaryFile tempFile;
+    QTemporaryFile* tempFile;
 
-    /** Parset he multipart body, that has been stored in the temp file. */
+    /** Parse the multipart body, that has been stored in the temp file. */
     void parseMultiPartFile();
 
     /** Sub-procedure of readFromSocket(), read the first line of a request. */
@@ -231,5 +233,7 @@ private:
     QByteArray lineBuffer;
 
 };
+
+} // end of namespace
 
 #endif // HTTPREQUEST_H

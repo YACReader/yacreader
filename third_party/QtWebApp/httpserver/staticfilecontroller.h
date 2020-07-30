@@ -13,6 +13,8 @@
 #include "httpresponse.h"
 #include "httprequesthandler.h"
 
+namespace stefanfrings {
+
 /**
   Delivers static files. It is usually called by the applications main request handler when
   the caller requests a path that is mapped to static files.
@@ -45,11 +47,20 @@ class DECLSPEC StaticFileController : public HttpRequestHandler  {
     Q_DISABLE_COPY(StaticFileController)
 public:
 
-    /** Constructor */
-    StaticFileController(QSettings* settings, QObject* parent = nullptr);
+    /**
+      Constructor.
+      @param settings Configuration settings, usually stored in an INI file. Must not be 0.
+      Settings are read from the current group, so the caller must have called settings->beginGroup().
+      Because the group must not change during runtime, it is recommended to provide a
+      separate QSettings instance that is not used by other parts of the program.
+      The StaticFileController does not take over ownership of the QSettings instance, so the
+      caller should destroy it during shutdown.
+      @param parent Parent object
+     */
+    StaticFileController(const QSettings* settings, QObject* parent = nullptr);
 
     /** Generates the response */
-    void service(HttpRequest& request, HttpResponse& response) override;
+    void service(HttpRequest& request, HttpResponse& response);
 
 private:
 
@@ -81,14 +92,9 @@ private:
     QMutex mutex;
 
     /** Set a content-type header in the response depending on the ending of the filename */
-    void setContentType(QString file, HttpResponse& response) const;
-
-    //YACReader------------------------------------------------------------------------
-    QString getLocalizedFileName(QString fileName, QString locales, QString path) const;
-    QString getDeviceAwareFileName(QString fileName, QString device, QString locales, QString path) const;
-    QString getDeviceAwareFileName(QString fileName, QString device, QString display, QString locales, QString path) const;
-
-    bool exists(QString localizedName, QString path) const;
+    void setContentType(const QString file, HttpResponse &response) const;
 };
+
+} // end of namespace
 
 #endif // STATICFILECONTROLLER_H
