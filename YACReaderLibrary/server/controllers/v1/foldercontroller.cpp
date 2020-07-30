@@ -16,6 +16,11 @@
 
 #include "QsLog.h"
 
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
+using stefanfrings::HttpSession;
+using stefanfrings::Template;
+
 struct LibraryItemSorter {
     bool operator()(const LibraryItem *a, const LibraryItem *b) const
     {
@@ -41,8 +46,14 @@ void FolderController::service(HttpRequest &request, HttpResponse &response)
     //QString y = session.get("xxx").toString();
     //response.writeText(QString("session xxx : %1 <br/>").arg(y));
 
-    Template t = Static::templateLoader->getTemplate("folder_" + ySession->getDeviceType(), request.getHeader("Accept-Language"));
+    Template t = Static::templateLoader->getTemplate("folder", request.getHeader("Accept-Language"));
     t.enableWarnings();
+
+    // set device type for templates
+    t.setVariable("device", ySession->getDeviceType());
+    t.setVariable("display", ySession->getDisplayType());
+    t.setCondition("device.ipad", ySession->getDeviceType() == "ipad");
+
     QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
     QStringList pathElements = path.split('/');
     int libraryId = pathElements.at(2).toInt();

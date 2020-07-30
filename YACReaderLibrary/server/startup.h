@@ -8,7 +8,10 @@
 
 #include <QString>
 
+namespace stefanfrings {
 class HttpListener;
+}
+
 /**
   Helper class to install and run the application as a windows
   service.
@@ -17,7 +20,7 @@ class Startup
 {
 private:
     //QTcpServer
-    HttpListener *listener;
+    stefanfrings::HttpListener *listener;
 
 public:
     /** Constructor */

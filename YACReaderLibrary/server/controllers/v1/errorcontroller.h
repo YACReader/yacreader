@@ -5,7 +5,7 @@
 #include "httpresponse.h"
 #include "httprequesthandler.h"
 
-class ErrorController : public HttpRequestHandler
+class ErrorController : public stefanfrings::HttpRequestHandler
 {
     Q_OBJECT
     Q_DISABLE_COPY(ErrorController);
@@ -15,7 +15,7 @@ public:
     ErrorController(int errorCode);
 
     /** Generates the response */
-    void service(HttpRequest &request, HttpResponse &response) override;
+    void service(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response) override;
 
 private:
     int error;

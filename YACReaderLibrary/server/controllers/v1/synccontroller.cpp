@@ -6,6 +6,9 @@
 #include "comic_db.h"
 #include "db_helper.h"
 
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
+
 SyncController::SyncController()
 {
 }

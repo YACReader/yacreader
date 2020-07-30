@@ -3,8 +3,8 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<link rel="stylesheet" href="/css/reset.css" type="text/css" />
-	<link rel="stylesheet" href="/css/styles.css" type="text/css" />
-	<title>Folder</title>	
+	<link rel="stylesheet" href="/css/styles_{device}.css" type="text/css" />
+	<title>Folder</title>
 </head>
 <body>
 	<div id="content">
@@ -15,14 +15,17 @@
 
 
 				<div id="folder-subheader1">
+				{if device.ipad}
+					<h1>{folder.name}</h1>
+				{end device.ipad}
 				</div>
 
 				<div id ="folder-subheader2">
-					<a class="path" href="/">Libraries</a> <!--<img class="indicator" src="/images/indicator.png" style="width: 5px"/> <a class="path" href="{library.url}">{library.name}</a> -->{loop path}  <img class="indicator" src="/images/indicator.png" style="width: 5px"/> <a class="path" href="{path.url}">{path.name}</a> {end path} 
+					<a class="pat" href="/">Libraries</a> <img class="indicator" src="/images/indicator{display}.png" style="width: 5px"/> <a class="path" href="{library.url}">{library.name}</a> {loop path}  <img class="indicator" src="/images/indicator.png" style="width: 5px"/> <a class="path" href="{path.url}">{path.name}</a> {end path}
 				</div>
 				<div id ="header-combos">
 					{if pageIndex}
-						<img class="comboIndicator" src="/images/combo.png"/>
+						<img class="comboIndicator" src="/images/combo{display}.png"/>
 						<select name="indexnumber" id="indexnumber" onchange="navigateTo(this, 'window', false);">
 							<option value="" disabled selected>{page}/{pages}</option>
 							{loop page}
@@ -32,7 +35,7 @@
 					{end pageIndex}
 
 					{if alphaIndex}
-						<img class="comboIndicator" src="/images/combo.png"/>
+						<img class="comboIndicator" src="/images/combo{display}.png"/>
 						<select name="indexalpha" id="indexalpha" onchange="navigateTo(this, 'window', false);">
 							<option value="" disabled selected>index</option>
 							{loop index}
@@ -51,13 +54,13 @@
 					<li>
 						<div class="{element.class}">
 							{element.cover.browse} <img style="width: 80px" src="{element.image.url}"/> {element.cover.browse.end}
-						</div> 
-						<div class="info"> 
-							<div class="title"><p>{element.name}</p> 
+						</div>
+						<div class="info">
+							<div class="title"><p>{element.name}</p>
 							</div>
-							<div class="elementInfo"> {element.pages} {element.size} 
+							<div class="elementInfo"> {element.pages} {element.size}
 							</div>
-							<div class="buttons"> {element.download} {element.read} {element.browse}  
+							<div class="buttons"> {element.download} {element.read} {element.browse}
 							</div>
 						</div>
 						{element.status}
@@ -74,7 +77,7 @@
 
 		<div class="index">
 			<ul id="alphaIndex">
-				{loop index} 
+				{loop index}
 
 				<li>  <a href="{index.url}"> {index.indexname} </a> </li>
 
@@ -93,7 +96,7 @@
 <!--				<li> <a class="first" href="{page.first}">first</a> </li>
 				<li> <a class="previous" href="{page.previous}">previous</a> </li>-->
 
-				{loop page} <li>  <a class="{page.current}" href="{page.url}"> {page.number} </a> </li> {end page} 
+				{loop page} <li>  <a class="{page.current}" href="{page.url}"> {page.number} </a> </li> {end page}
 
 <!--				<li> <a class="next" href="{page.next}">next</a> </li>
 				<li> <a class="last" href="{page.last}">last</a> </li>-->
@@ -106,7 +109,7 @@
 
 		<script type="text/javascript">
 		function navigateTo(sel, target) {
-		    window[target].location.href = sel.options[sel.selectedIndex].value;
+			window[target].location.href = sel.options[sel.selectedIndex].value;
 		}
 		</script>
 

@@ -9,7 +9,7 @@
   This controller displays a HTML form and dumps the submitted input.
 */
 
-class LibrariesController : public HttpRequestHandler
+class LibrariesController : public stefanfrings::HttpRequestHandler
 {
     Q_OBJECT
     Q_DISABLE_COPY(LibrariesController);
@@ -19,7 +19,7 @@ public:
     LibrariesController();
 
     /** Generates the response */
-    void service(HttpRequest &request, HttpResponse &response) override;
+    void service(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response) override;
 };
 
 #endif // LIBRARIESCONTROLLER_H

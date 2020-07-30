@@ -11,6 +11,9 @@
 
 #include "QsLog.h"
 
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
+
 UpdateComicControllerV2::UpdateComicControllerV2() { }
 
 void UpdateComicControllerV2::service(HttpRequest &request, HttpResponse &response)

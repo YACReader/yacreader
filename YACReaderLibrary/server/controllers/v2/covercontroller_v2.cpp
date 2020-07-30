@@ -6,6 +6,9 @@
 #include "template.h"
 #include "../static.h"
 
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
+
 CoverControllerV2::CoverControllerV2() { }
 
 void CoverControllerV2::service(HttpRequest &request, HttpResponse &response)

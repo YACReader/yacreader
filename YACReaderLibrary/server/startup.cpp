@@ -24,6 +24,14 @@
 /** Short description of this application */
 #define DESCRIPTION "Comic reader and organizer"
 
+using stefanfrings::HttpListener;
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
+
+using stefanfrings::HttpSessionStore;
+using stefanfrings::StaticFileController;
+using stefanfrings::TemplateCache;
+
 void Startup::start()
 {
     // Initialize the core application
@@ -125,6 +133,11 @@ void Startup::start()
         listenerSettings->setValue("minThreads", 50);
 
     listener = new HttpListener(listenerSettings, new RequestMapper(app), app);
+
+    // if the requested port is busy, use random port
+    if (!listener->isListening()) {
+        listener->QTcpServer::listen(QHostAddress::Any, 0);
+    }
 
     qDebug("ServiceHelper: Service has started");
 }

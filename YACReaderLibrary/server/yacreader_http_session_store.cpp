@@ -4,6 +4,8 @@
 
 #include "httpsessionstore.h"
 
+using stefanfrings::HttpSessionStore;
+
 YACReaderHttpSessionStore::YACReaderHttpSessionStore(HttpSessionStore *sessionStore, QObject *parent)
     : QObject(parent), sessionStore(sessionStore)
 {

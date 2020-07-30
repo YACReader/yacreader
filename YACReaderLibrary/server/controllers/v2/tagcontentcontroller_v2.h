@@ -5,7 +5,7 @@
 #include "httpresponse.h"
 #include "httprequesthandler.h"
 
-class TagContentControllerV2 : public HttpRequestHandler
+class TagContentControllerV2 : public stefanfrings::HttpRequestHandler
 {
     Q_OBJECT
     Q_DISABLE_COPY(TagContentControllerV2)
@@ -14,10 +14,10 @@ public:
     TagContentControllerV2();
 
     /** Generates the response */
-    void service(HttpRequest &request, HttpResponse &response) override;
+    void service(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response) override;
 
 private:
-    void serviceContent(const int &library, const qulonglong &tagId, HttpResponse &response);
+    void serviceContent(const int &library, const qulonglong &tagId, stefanfrings::HttpResponse &response);
 };
 
 #endif // TAGCONTENTCONTROLLER_H

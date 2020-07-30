@@ -9,6 +9,11 @@
 #include <QFile>
 #include <QString>
 
+using stefanfrings::HttpResponse;
+using stefanfrings::HttpSessionStore;
+using stefanfrings::StaticFileController;
+using stefanfrings::TemplateLoader;
+
 QString Static::configDir = nullptr;
 
 TemplateLoader *Static::templateLoader = nullptr;

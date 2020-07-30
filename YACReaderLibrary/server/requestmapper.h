@@ -9,20 +9,20 @@
 #include "httprequesthandler.h"
 #include <QMutex>
 
-class RequestMapper : public HttpRequestHandler
+class RequestMapper : public stefanfrings::HttpRequestHandler
 {
     Q_OBJECT
     Q_DISABLE_COPY(RequestMapper)
 public:
     RequestMapper(QObject *parent = nullptr);
 
-    void service(HttpRequest &request, HttpResponse &response) override;
-    void loadSessionV1(HttpRequest &request, HttpResponse &response);
-    void loadSessionV2(HttpRequest &request, HttpResponse &response);
+    void service(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response) override;
+    void loadSessionV1(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
+    void loadSessionV2(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
 
 private:
-    void serviceV1(HttpRequest &request, HttpResponse &response);
-    void serviceV2(HttpRequest &request, HttpResponse &response);
+    void serviceV1(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
+    void serviceV2(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
 
     static QMutex mutex;
 };

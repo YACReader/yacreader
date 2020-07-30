@@ -5,17 +5,17 @@
 #include "httpresponse.h"
 #include "httprequesthandler.h"
 
-class ReadingListInfoControllerV2 : public HttpRequestHandler
+class ReadingListInfoControllerV2 : public stefanfrings::HttpRequestHandler
 {
     Q_OBJECT
     Q_DISABLE_COPY(ReadingListInfoControllerV2)
 public:
     ReadingListInfoControllerV2();
 
-    void service(HttpRequest &request, HttpResponse &response) override;
+    void service(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response) override;
 
 private:
-    void serviceComics(const int &library, const qulonglong &readingListId, HttpResponse &response);
+    void serviceComics(const int &library, const qulonglong &readingListId, stefanfrings::HttpResponse &response);
 };
 
 #endif // READINGLISTINFOCONTROLLER_V2_H

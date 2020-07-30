@@ -5,7 +5,7 @@
 #include "httpresponse.h"
 #include "httprequesthandler.h"
 
-class PageControllerV2 : public HttpRequestHandler
+class PageControllerV2 : public stefanfrings::HttpRequestHandler
 {
     Q_OBJECT
     Q_DISABLE_COPY(PageControllerV2)
@@ -14,7 +14,7 @@ public:
     PageControllerV2();
 
     /** Generates the response */
-    void service(HttpRequest &request, HttpResponse &response) override;
+    void service(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response) override;
 };
 
 #endif // PAGECONTROLLER_H

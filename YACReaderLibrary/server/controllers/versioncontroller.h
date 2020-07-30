@@ -7,7 +7,7 @@
 
 #include <QThread>
 
-class VersionController : public HttpRequestHandler
+class VersionController : public stefanfrings::HttpRequestHandler
 {
     Q_OBJECT
     Q_DISABLE_COPY(VersionController);
@@ -17,7 +17,7 @@ public:
     VersionController();
 
     /** Generates the response */
-    void service(HttpRequest &request, HttpResponse &response) override;
+    void service(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response) override;
 };
 
 #endif // VERSIONCONTROLLER_H
