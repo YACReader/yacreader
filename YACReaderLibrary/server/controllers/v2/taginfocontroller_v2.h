@@ -5,17 +5,17 @@
 #include "httpresponse.h"
 #include "httprequesthandler.h"
 
-class TagInfoControllerV2 : public HttpRequestHandler
+class TagInfoControllerV2 : public stefanfrings::HttpRequestHandler
 {
     Q_OBJECT
     Q_DISABLE_COPY(TagInfoControllerV2)
 public:
     TagInfoControllerV2();
 
-    void service(HttpRequest &request, HttpResponse &response) override;
+    void service(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response) override;
 
 private:
-    void serviceComics(const int &library, const qulonglong &tagId, HttpResponse &response);
+    void serviceComics(const int &library, const qulonglong &tagId, stefanfrings::HttpResponse &response);
 };
 
 #endif // TAGINFOCONTROLLER_V2_H

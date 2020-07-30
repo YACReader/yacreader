@@ -47,15 +47,15 @@ public:
     static QString getConfigDir();
 
     /** Cache for template files */
-    static TemplateLoader *templateLoader;
+    static stefanfrings::TemplateLoader *templateLoader;
 
     /** Storage for session cookies */
-    static HttpSessionStore *sessionStore;
+    static stefanfrings::HttpSessionStore *sessionStore;
 
     static YACReaderHttpSessionStore *yacreaderSessionStore;
 
     /** Controller for static files */
-    static StaticFileController *staticFileController;
+    static stefanfrings::StaticFileController *staticFileController;
 
 private:
     /** Directory of the main config file */

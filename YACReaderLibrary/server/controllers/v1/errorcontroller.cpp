@@ -3,6 +3,9 @@
 #include "template.h"
 #include "../static.h"
 
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
+
 ErrorController::ErrorController(int errorCode)
     : error(errorCode)
 {

@@ -13,6 +13,9 @@
 
 #include "db_helper.h"
 
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
+
 PageControllerV2::PageControllerV2() { }
 
 void PageControllerV2::service(HttpRequest &request, HttpResponse &response)

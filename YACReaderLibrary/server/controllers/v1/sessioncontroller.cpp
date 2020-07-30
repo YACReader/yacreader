@@ -8,6 +8,9 @@
 #include <QVariant>
 #include <QDateTime>
 
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
+
 SessionController::SessionController() { }
 
 void SessionController::service(HttpRequest &request, HttpResponse &response)

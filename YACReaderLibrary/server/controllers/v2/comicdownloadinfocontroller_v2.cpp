@@ -5,6 +5,9 @@
 
 #include "comic_db.h"
 
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
+
 ComicDownloadInfoControllerV2::ComicDownloadInfoControllerV2() { }
 
 void ComicDownloadInfoControllerV2::service(HttpRequest &request, HttpResponse &response)

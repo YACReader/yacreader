@@ -11,6 +11,9 @@
 #include "qnaturalsorting.h"
 
 #include <ctime>
+
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
 using namespace std;
 
 ComicFullinfoController_v2::ComicFullinfoController_v2() { }
