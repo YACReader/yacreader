@@ -6,11 +6,12 @@ spanish only. Sorry for the mess.
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
-## 9.6.7 (unreleased)
+## 9.7.0 (unreleased)
 
 ### YACReaderLibrary
 * update QsLog logger to version 2.1, snapshot 46b643d5bcbc
 * fix object leaks in database code
+* add bidirectional sync support
 
 ## 9.6.0
 ### Reader and Library
