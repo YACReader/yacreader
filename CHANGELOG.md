@@ -10,6 +10,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ### YACReaderLibrary
 * update QsLog logger to version 2.1, snapshot 46b643d5bcbc
+* fix object leaks in database code
 
 ## 9.6.0
 ### Reader and Library

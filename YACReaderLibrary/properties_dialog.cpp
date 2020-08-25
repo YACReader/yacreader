@@ -552,17 +552,20 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
 
 void PropertiesDialog::updateComics()
 {
-    QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
-    db.open();
-    db.transaction();
-    QList<ComicDB>::iterator itr;
-    for (itr = comics.begin(); itr != comics.end(); itr++) {
-        if (itr->info.edited)
-            DBHelper::update(&(itr->info), db);
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+        db.open();
+        db.transaction();
+        QList<ComicDB>::iterator itr;
+        for (itr = comics.begin(); itr != comics.end(); itr++) {
+            if (itr->info.edited)
+                DBHelper::update(&(itr->info), db);
+        }
+        db.commit();
+        connectionName = db.connectionName();
     }
-    db.commit();
-    db.close();
-    QSqlDatabase::removeDatabase(databasePath);
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 void PropertiesDialog::setMultipleCover()

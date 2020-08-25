@@ -35,12 +35,15 @@ YACReaderLibraries DBHelper::getLibraries()
 QList<LibraryItem *> DBHelper::getFolderSubfoldersFromLibrary(qulonglong libraryId, qulonglong folderId)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
+    QString connectionName = "";
+    QList<LibraryItem *> list;
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
+        list = DBHelper::getFoldersFromParent(folderId, db, false);
 
-    QList<LibraryItem *> list = DBHelper::getFoldersFromParent(folderId, db, false);
-
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
     return list;
 }
 QList<LibraryItem *> DBHelper::getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId)
@@ -51,42 +54,43 @@ QList<LibraryItem *> DBHelper::getFolderComicsFromLibrary(qulonglong libraryId, 
 QList<LibraryItem *> DBHelper::getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId, bool sort)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
+    QString connectionName = "";
+    QList<LibraryItem *> list;
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
+        list = DBHelper::getComicsFromParent(folderId, db, sort);
 
-    QList<LibraryItem *> list = DBHelper::getComicsFromParent(folderId, db, sort);
-
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
     return list;
 }
 
 quint32 DBHelper::getNumChildrenFromFolder(qulonglong libraryId, qulonglong folderId)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
-
     quint32 result = 0;
+    QString connectionName = "";
 
     {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
+
         QSqlQuery selectQuery(db);
         selectQuery.prepare("SELECT count(*) FROM folder WHERE parentId = :parentId and id <> 1");
         selectQuery.bindValue(":parentId", folderId);
         selectQuery.exec();
 
         result += selectQuery.record().value(0).toULongLong();
-    }
 
-    {
-        QSqlQuery selectQuery(db);
         selectQuery.prepare("SELECT count(*) FROM comic c WHERE c.parentId = :parentId");
         selectQuery.bindValue(":parentId", folderId);
         selectQuery.exec();
 
         result += selectQuery.record().value(0).toULongLong();
+        connectionName = db.connectionName();
     }
 
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
 
     return result;
 }
@@ -94,45 +98,57 @@ quint32 DBHelper::getNumChildrenFromFolder(qulonglong libraryId, qulonglong fold
 qulonglong DBHelper::getParentFromComicFolderId(qulonglong libraryId, qulonglong id)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
+    QString connectionName = "";
+    Folder f;
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
 
-    Folder f = DBHelper::loadFolder(id, db);
+        f = DBHelper::loadFolder(id, db);
+        connectionName = db.connectionName();
+    }
 
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
     return f.parentId;
 }
 ComicDB DBHelper::getComicInfo(qulonglong libraryId, qulonglong id)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
+    QString connectionName = "";
+    ComicDB comic;
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
 
-    ComicDB comic = DBHelper::loadComic(id, db);
-
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+        comic = DBHelper::loadComic(id, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
     return comic;
 }
 
 QList<ComicDB> DBHelper::getSiblings(qulonglong libraryId, qulonglong parentId)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
+    QString connectionName = "";
+    QList<ComicDB> comics;
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
+        comics = DBHelper::getSortedComicsFromParent(parentId, db);
+        connectionName = db.connectionName();
+    }
 
-    QList<ComicDB> comics = DBHelper::getSortedComicsFromParent(parentId, db);
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
     return comics;
 }
 
 QString DBHelper::getFolderName(qulonglong libraryId, qulonglong id)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
 
     QString name = "";
+    QString connectionName = "";
 
     {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
         QSqlQuery selectQuery(db); //TODO check
         selectQuery.prepare("SELECT name FROM folder WHERE id = :id");
         selectQuery.bindValue(":id", id);
@@ -141,10 +157,10 @@ QString DBHelper::getFolderName(qulonglong libraryId, qulonglong id)
         if (selectQuery.next()) {
             name = selectQuery.value(0).toString();
         }
+        connectionName = db.connectionName();
     }
 
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
     return name;
 }
 QList<QString> DBHelper::getLibrariesNames()
@@ -161,11 +177,12 @@ QString DBHelper::getLibraryName(int id)
 QList<ComicDB> DBHelper::getLabelComics(qulonglong libraryId, qulonglong labelId)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
 
     QList<ComicDB> list;
+    QString connectionName = "";
 
     {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
         QSqlQuery selectQuery(db);
         selectQuery.prepare("SELECT c.id,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read,ci.coverSizeRatio "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
@@ -190,11 +207,9 @@ QList<ComicDB> DBHelper::getLabelComics(qulonglong libraryId, qulonglong labelId
 
             list.append(comic);
         }
-
-        db.close();
+        connectionName = db.connectionName();
     }
-    //TODO ?
-    //QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
 
     return list;
 }
@@ -202,13 +217,13 @@ QList<ComicDB> DBHelper::getLabelComics(qulonglong libraryId, qulonglong labelId
 QList<ComicDB> DBHelper::getFavorites(qulonglong libraryId)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
-
     QList<ComicDB> list;
 
     const int FAV_ID = 1;
+    QString connectionName = "";
 
     {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
         QSqlQuery selectQuery(db);
         selectQuery.prepare("SELECT c.id,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read,ci.coverSizeRatio "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
@@ -234,10 +249,10 @@ QList<ComicDB> DBHelper::getFavorites(qulonglong libraryId)
             list.append(comic);
         }
 
-        db.close();
+        connectionName = db.connectionName();
     }
     //TODO ?
-    //QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
 
     return list;
 }
@@ -245,11 +260,11 @@ QList<ComicDB> DBHelper::getFavorites(qulonglong libraryId)
 QList<ComicDB> DBHelper::getReading(qulonglong libraryId)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
-
     QList<ComicDB> list;
+    QString connectionName = "";
 
     {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
         QSqlQuery selectQuery(db);
         selectQuery.prepare("SELECT c.id,c.parentId,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read,ci.coverSizeRatio "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
@@ -272,11 +287,10 @@ QList<ComicDB> DBHelper::getReading(qulonglong libraryId)
 
             list.append(comic);
         }
-
-        db.close();
+        connectionName = db.connectionName();
     }
     //TODO ?
-    //QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
 
     return list;
 }
@@ -284,35 +298,38 @@ QList<ComicDB> DBHelper::getReading(qulonglong libraryId)
 QList<ReadingList> DBHelper::getReadingLists(qulonglong libraryId)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
-
+    QString connectionName = "";
     QList<ReadingList> list;
 
-    QSqlQuery selectQuery("SELECT * from reading_list WHERE parentId IS NULL ORDER BY name DESC", db);
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
 
-    selectQuery.exec();
+        QSqlQuery selectQuery("SELECT * from reading_list WHERE parentId IS NULL ORDER BY name DESC", db);
 
-    QSqlRecord record = selectQuery.record();
+        selectQuery.exec();
 
-    int name = record.indexOf("name");
-    int id = record.indexOf("id");
-    int ordering = record.indexOf("ordering");
+        QSqlRecord record = selectQuery.record();
 
-    while (selectQuery.next()) {
-        ReadingList item(selectQuery.value(name).toString(), selectQuery.value(id).toLongLong(), selectQuery.value(ordering).toInt());
+        int name = record.indexOf("name");
+        int id = record.indexOf("id");
+        int ordering = record.indexOf("ordering");
 
-        if (list.isEmpty()) {
-            list.append(item);
-        } else {
-            int i = 0;
-            while (i < list.length() && naturalSortLessThanCI(list.at(i).getName(), item.getName()))
-                i++;
-            list.insert(i, item);
+        while (selectQuery.next()) {
+            ReadingList item(selectQuery.value(name).toString(), selectQuery.value(id).toLongLong(), selectQuery.value(ordering).toInt());
+
+            if (list.isEmpty()) {
+                list.append(item);
+            } else {
+                int i = 0;
+                while (i < list.length() && naturalSortLessThanCI(list.at(i).getName(), item.getName()))
+                    i++;
+                list.insert(i, item);
+            }
         }
+        connectionName = db.connectionName();
     }
-
     //TODO ?
-    //QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
 
     return list;
 }
@@ -320,11 +337,11 @@ QList<ReadingList> DBHelper::getReadingLists(qulonglong libraryId)
 QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulonglong readingListId)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
-
     QList<ComicDB> list;
+    QString connectionName = "";
 
     {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
         QList<qulonglong> ids;
         ids << readingListId;
 
@@ -364,10 +381,11 @@ QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulongl
                 list.append(comic);
             }
         }
+        connectionName = db.connectionName();
     }
 
     //TODO ?
-    //QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
 
     return list;
 }
@@ -476,12 +494,13 @@ void DBHelper::update(ComicDB *comic, QSqlDatabase &db)
 void DBHelper::update(qulonglong libraryId, ComicInfo &comicInfo)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
-
-    DBHelper::update(&comicInfo, db);
-
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
+        DBHelper::update(&comicInfo, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
@@ -680,32 +699,38 @@ void DBHelper::updateChildrenInfo(QSqlDatabase &db)
 void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
 
-    ComicDB comic = DBHelper::loadComic(comicInfo.id, db);
-    comic.info.currentPage = comicInfo.currentPage;
-    comic.info.hasBeenOpened = comicInfo.currentPage > 0 || comic.info.hasBeenOpened;
-    comic.info.read = comic.info.read || comic.info.currentPage == comic.info.numPages;
+        ComicDB comic = DBHelper::loadComic(comicInfo.id, db);
+        comic.info.currentPage = comicInfo.currentPage;
+        comic.info.hasBeenOpened = comicInfo.currentPage > 0 || comic.info.hasBeenOpened;
+        comic.info.read = comic.info.read || comic.info.currentPage == comic.info.numPages;
 
-    DBHelper::updateReadingRemoteProgress(comic.info, db);
+        DBHelper::updateReadingRemoteProgress(comic.info, db);
 
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+        connectionName = db.connectionName();
+    }
+
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 void DBHelper::setComicAsReading(qulonglong libraryId, const ComicInfo &comicInfo)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
 
-    ComicDB comic = DBHelper::loadComic(comicInfo.id, db);
-    comic.info.hasBeenOpened = true;
-    comic.info.read = comic.info.read || comic.info.currentPage == comic.info.numPages;
+        ComicDB comic = DBHelper::loadComic(comicInfo.id, db);
+        comic.info.hasBeenOpened = true;
+        comic.info.read = comic.info.read || comic.info.currentPage == comic.info.numPages;
 
-    DBHelper::updateReadingRemoteProgress(comic.info, db);
-
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+        DBHelper::updateReadingRemoteProgress(comic.info, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 void DBHelper::updateReadingRemoteProgress(const ComicInfo &comicInfo, QSqlDatabase &db)
@@ -733,31 +758,33 @@ void DBHelper::updateReadingRemoteProgress(const ComicInfo &comicInfo, QSqlDatab
 void DBHelper::updateFromRemoteClient(qulonglong libraryId, const ComicInfo &comicInfo)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
 
-    ComicDB comic = DBHelper::loadComic(comicInfo.id, db);
+        ComicDB comic = DBHelper::loadComic(comicInfo.id, db);
 
-    if (comic.info.hash == comicInfo.hash) {
-        if (comicInfo.currentPage > 0) {
-            comic.info.currentPage = comicInfo.currentPage;
+        if (comic.info.hash == comicInfo.hash) {
+            if (comicInfo.currentPage > 0) {
+                comic.info.currentPage = comicInfo.currentPage;
 
-            if (comic.info.currentPage == comic.info.numPages)
-                comic.info.read = true;
+                if (comic.info.currentPage == comic.info.numPages)
+                    comic.info.read = true;
 
-            comic.info.hasBeenOpened = true;
+                comic.info.hasBeenOpened = true;
 
-            if (comic.info.lastTimeOpened.toULongLong() < comicInfo.lastTimeOpened.toULongLong())
-                comic.info.lastTimeOpened = comicInfo.lastTimeOpened;
+                if (comic.info.lastTimeOpened.toULongLong() < comicInfo.lastTimeOpened.toULongLong())
+                    comic.info.lastTimeOpened = comicInfo.lastTimeOpened;
+            }
+
+            if (comicInfo.rating > 0)
+                comic.info.rating = comicInfo.rating;
+
+            DBHelper::updateReadingRemoteProgress(comic.info, db);
         }
-
-        if (comicInfo.rating > 0)
-            comic.info.rating = comicInfo.rating;
-
-        DBHelper::updateReadingRemoteProgress(comic.info, db);
+        connectionName = db.connectionName();
     }
-
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 void DBHelper::updateFromRemoteClientWithHash(const ComicInfo &comicInfo)
@@ -765,116 +792,13 @@ void DBHelper::updateFromRemoteClientWithHash(const ComicInfo &comicInfo)
     YACReaderLibraries libraries = DBHelper::getLibraries();
 
     QStringList names = libraries.getNames();
+    QString connectionName = "";
 
     foreach (QString name, names) {
         QString libraryPath = DBHelper::getLibraries().getPath(libraries.getId(name));
 
-        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
-
-        ComicInfo info = loadComicInfo(comicInfo.hash, db);
-
-        if (!info.existOnDb) {
-            continue;
-        }
-
-        if (comicInfo.currentPage > 0) {
-            info.currentPage = comicInfo.currentPage;
-
-            if (info.currentPage == info.numPages)
-                info.read = true;
-
-            info.hasBeenOpened = true;
-
-            if (info.lastTimeOpened.toULongLong() < comicInfo.lastTimeOpened.toULongLong())
-                info.lastTimeOpened = comicInfo.lastTimeOpened;
-        }
-
-        if (comicInfo.rating > 0)
-            info.rating = comicInfo.rating;
-
-        DBHelper::update(&info, db);
-
-        db.close();
-        QSqlDatabase::removeDatabase(db.connectionName());
-    }
-}
-
-void DBHelper::updateFromRemoteClient(const QMap<qulonglong, QList<ComicInfo>> &comics)
-{
-    foreach (qulonglong libraryId, comics.keys()) {
-        QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
-
-        db.transaction();
-
-        QSqlQuery updateComicInfo(db);
-        updateComicInfo.prepare("UPDATE comic_info SET "
-                                "read = :read, "
-                                "currentPage = :currentPage, "
-                                "hasBeenOpened = :hasBeenOpened, "
-                                "lastTimeOpened = :lastTimeOpened, "
-                                "rating = :rating"
-                                " WHERE id = :id ");
-
-        foreach (ComicInfo comicInfo, comics[libraryId]) {
-            ComicDB comic = DBHelper::loadComic(comicInfo.id, db);
-
-            if (comic.info.hash == comicInfo.hash) {
-                if (comicInfo.currentPage > 0) {
-                    comic.info.currentPage = comicInfo.currentPage;
-
-                    if (comic.info.currentPage == comic.info.numPages)
-                        comic.info.read = true;
-
-                    comic.info.hasBeenOpened = true;
-
-                    if (comic.info.lastTimeOpened.toULongLong() < comicInfo.lastTimeOpened.toULongLong())
-                        comic.info.lastTimeOpened = comicInfo.lastTimeOpened;
-                }
-
-                if (comicInfo.rating > 0)
-                    comic.info.rating = comicInfo.rating;
-
-                updateComicInfo.bindValue(":read", comic.info.read ? 1 : 0);
-                updateComicInfo.bindValue(":currentPage", comic.info.currentPage);
-                updateComicInfo.bindValue(":hasBeenOpened", comic.info.hasBeenOpened ? 1 : 0);
-                updateComicInfo.bindValue(":lastTimeOpened", QDateTime::currentMSecsSinceEpoch() / 1000);
-                updateComicInfo.bindValue(":id", comic.info.id);
-                updateComicInfo.bindValue(":rating", comic.info.rating);
-                updateComicInfo.exec();
-            }
-        }
-
-        db.commit();
-
-        db.close();
-        QSqlDatabase::removeDatabase(db.connectionName());
-    }
-}
-
-void DBHelper::updateFromRemoteClientWithHash(const QList<ComicInfo> &comics)
-{
-    YACReaderLibraries libraries = DBHelper::getLibraries();
-
-    QStringList names = libraries.getNames();
-
-    foreach (QString name, names) {
-        QString libraryPath = DBHelper::getLibraries().getPath(libraries.getId(name));
-
-        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
-
-        db.transaction();
-
-        QSqlQuery updateComicInfo(db);
-        updateComicInfo.prepare("UPDATE comic_info SET "
-                                "read = :read, "
-                                "currentPage = :currentPage, "
-                                "hasBeenOpened = :hasBeenOpened, "
-                                "lastTimeOpened = :lastTimeOpened, "
-                                "rating = :rating"
-                                " WHERE id = :id ");
-
-        foreach (ComicInfo comicInfo, comics) {
+        {
+            QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
             ComicInfo info = loadComicInfo(comicInfo.hash, db);
 
             if (!info.existOnDb) {
@@ -893,23 +817,131 @@ void DBHelper::updateFromRemoteClientWithHash(const QList<ComicInfo> &comics)
                     info.lastTimeOpened = comicInfo.lastTimeOpened;
             }
 
-            if (comicInfo.rating > 0) {
+            if (comicInfo.rating > 0)
                 info.rating = comicInfo.rating;
+
+            DBHelper::update(&info, db);
+            connectionName = db.connectionName();
+        }
+        QSqlDatabase::removeDatabase(connectionName);
+    }
+}
+
+void DBHelper::updateFromRemoteClient(const QMap<qulonglong, QList<ComicInfo>> &comics)
+{
+    foreach (qulonglong libraryId, comics.keys()) {
+        QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
+        QString connectionName = "";
+        {
+            QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
+
+            db.transaction();
+
+            QSqlQuery updateComicInfo(db);
+            updateComicInfo.prepare("UPDATE comic_info SET "
+                                    "read = :read, "
+                                    "currentPage = :currentPage, "
+                                    "hasBeenOpened = :hasBeenOpened, "
+                                    "lastTimeOpened = :lastTimeOpened, "
+                                    "rating = :rating"
+                                    " WHERE id = :id ");
+
+            foreach (ComicInfo comicInfo, comics[libraryId]) {
+                ComicDB comic = DBHelper::loadComic(comicInfo.id, db);
+
+                if (comic.info.hash == comicInfo.hash) {
+                    if (comicInfo.currentPage > 0) {
+                        comic.info.currentPage = comicInfo.currentPage;
+
+                        if (comic.info.currentPage == comic.info.numPages)
+                            comic.info.read = true;
+
+                        comic.info.hasBeenOpened = true;
+
+                        if (comic.info.lastTimeOpened.toULongLong() < comicInfo.lastTimeOpened.toULongLong())
+                            comic.info.lastTimeOpened = comicInfo.lastTimeOpened;
+                    }
+
+                    if (comicInfo.rating > 0)
+                        comic.info.rating = comicInfo.rating;
+
+                    updateComicInfo.bindValue(":read", comic.info.read ? 1 : 0);
+                    updateComicInfo.bindValue(":currentPage", comic.info.currentPage);
+                    updateComicInfo.bindValue(":hasBeenOpened", comic.info.hasBeenOpened ? 1 : 0);
+                    updateComicInfo.bindValue(":lastTimeOpened", QDateTime::currentMSecsSinceEpoch() / 1000);
+                    updateComicInfo.bindValue(":id", comic.info.id);
+                    updateComicInfo.bindValue(":rating", comic.info.rating);
+                    updateComicInfo.exec();
+                }
             }
 
-            updateComicInfo.bindValue(":read", info.read ? 1 : 0);
-            updateComicInfo.bindValue(":currentPage", info.currentPage);
-            updateComicInfo.bindValue(":hasBeenOpened", info.hasBeenOpened ? 1 : 0);
-            updateComicInfo.bindValue(":lastTimeOpened", QDateTime::currentMSecsSinceEpoch() / 1000);
-            updateComicInfo.bindValue(":id", info.id);
-            updateComicInfo.bindValue(":rating", info.rating);
-            updateComicInfo.exec();
+            db.commit();
+            connectionName = db.connectionName();
         }
 
-        db.commit();
+        QSqlDatabase::removeDatabase(connectionName);
+    }
+}
 
-        db.close();
-        QSqlDatabase::removeDatabase(db.connectionName());
+void DBHelper::updateFromRemoteClientWithHash(const QList<ComicInfo> &comics)
+{
+    YACReaderLibraries libraries = DBHelper::getLibraries();
+
+    QStringList names = libraries.getNames();
+
+    foreach (QString name, names) {
+        QString libraryPath = DBHelper::getLibraries().getPath(libraries.getId(name));
+        QString connectionName = "";
+        {
+            QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
+
+            db.transaction();
+
+            QSqlQuery updateComicInfo(db);
+            updateComicInfo.prepare("UPDATE comic_info SET "
+                                    "read = :read, "
+                                    "currentPage = :currentPage, "
+                                    "hasBeenOpened = :hasBeenOpened, "
+                                    "lastTimeOpened = :lastTimeOpened, "
+                                    "rating = :rating"
+                                    " WHERE id = :id ");
+
+            foreach (ComicInfo comicInfo, comics) {
+                ComicInfo info = loadComicInfo(comicInfo.hash, db);
+
+                if (!info.existOnDb) {
+                    continue;
+                }
+
+                if (comicInfo.currentPage > 0) {
+                    info.currentPage = comicInfo.currentPage;
+
+                    if (info.currentPage == info.numPages)
+                        info.read = true;
+
+                    info.hasBeenOpened = true;
+
+                    if (info.lastTimeOpened.toULongLong() < comicInfo.lastTimeOpened.toULongLong())
+                        info.lastTimeOpened = comicInfo.lastTimeOpened;
+                }
+
+                if (comicInfo.rating > 0) {
+                    info.rating = comicInfo.rating;
+                }
+
+                updateComicInfo.bindValue(":read", info.read ? 1 : 0);
+                updateComicInfo.bindValue(":currentPage", info.currentPage);
+                updateComicInfo.bindValue(":hasBeenOpened", info.hasBeenOpened ? 1 : 0);
+                updateComicInfo.bindValue(":lastTimeOpened", QDateTime::currentMSecsSinceEpoch() / 1000);
+                updateComicInfo.bindValue(":id", info.id);
+                updateComicInfo.bindValue(":rating", info.rating);
+                updateComicInfo.exec();
+            }
+
+            db.commit();
+            connectionName = db.connectionName();
+        }
+        QSqlDatabase::removeDatabase(connectionName);
     }
 }
 
@@ -1405,47 +1437,48 @@ QList<LibraryItem *> DBHelper::getComicsFromParent(qulonglong parentId, QSqlData
 QList<Label> DBHelper::getLabels(qulonglong libraryId)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-    QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
-
-    QSqlQuery selectQuery("SELECT * FROM label ORDER BY ordering,name", db); //TODO add some kind of
+    QString connectionName = "";
     QList<Label> labels;
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
 
-    QSqlRecord record = selectQuery.record();
+        QSqlQuery selectQuery("SELECT * FROM label ORDER BY ordering,name", db); //TODO add some kind of
+        QSqlRecord record = selectQuery.record();
 
-    int name = record.indexOf("name");
-    int id = record.indexOf("id");
-    int ordering = record.indexOf("ordering");
+        int name = record.indexOf("name");
+        int id = record.indexOf("id");
+        int ordering = record.indexOf("ordering");
 
-    while (selectQuery.next()) {
-        Label item(selectQuery.value(name).toString(),
-                   selectQuery.value(id).toLongLong(),
-                   static_cast<YACReader::LabelColors>(selectQuery.value(ordering).toInt()));
+        while (selectQuery.next()) {
+            Label item(selectQuery.value(name).toString(),
+                       selectQuery.value(id).toLongLong(),
+                       static_cast<YACReader::LabelColors>(selectQuery.value(ordering).toInt()));
 
-        if (labels.isEmpty()) {
-            labels << item;
-        } else {
-            int i = 0;
-
-            while (i < labels.count() && (labels.at(i).getColorID() < item.getColorID()))
-                i++;
-
-            if (i < labels.count()) {
-                if (labels.at(i).getColorID() == item.getColorID()) //sort by name
-                {
-                    while (i < labels.count() && labels.at(i).getColorID() == item.getColorID() && naturalSortLessThanCI(labels.at(i).getName(), item.getName()))
-                        i++;
-                }
-            }
-            if (i >= labels.count()) {
+            if (labels.isEmpty()) {
                 labels << item;
             } else {
-                labels.insert(i, item);
+                int i = 0;
+
+                while (i < labels.count() && (labels.at(i).getColorID() < item.getColorID()))
+                    i++;
+
+                if (i < labels.count()) {
+                    if (labels.at(i).getColorID() == item.getColorID()) //sort by name
+                    {
+                        while (i < labels.count() && labels.at(i).getColorID() == item.getColorID() && naturalSortLessThanCI(labels.at(i).getName(), item.getName()))
+                            i++;
+                    }
+                }
+                if (i >= labels.count()) {
+                    labels << item;
+                } else {
+                    labels.insert(i, item);
+                }
             }
         }
+        connectionName = db.connectionName();
     }
-
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
 
     return labels;
 }

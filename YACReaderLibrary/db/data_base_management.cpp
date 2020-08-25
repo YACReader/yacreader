@@ -97,13 +97,10 @@ QSqlDatabase DataBaseManagement::loadDatabase(QString path)
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", path + threadId);
     db.setDatabaseName(path + "/library.ydb");
     if (!db.open()) {
-        //se devuelve una base de datos vacía e inválida
-
         return QSqlDatabase();
     }
     QSqlQuery pragma("PRAGMA foreign_keys = ON", db);
-    //pragma.finish();
-    //devuelve la base de datos
+
     return db;
 }
 
@@ -118,11 +115,8 @@ QSqlDatabase DataBaseManagement::loadDatabaseFromFile(QString filePath)
 
         return QSqlDatabase();
     }
-    {
-        QSqlQuery pragma("PRAGMA foreign_keys = ON", db);
-    }
-    //pragma.finish();
-    //devuelve la base de datos
+    QSqlQuery pragma("PRAGMA foreign_keys = ON", db);
+
     return db;
 }
 
@@ -324,46 +318,34 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
 
 void DataBaseManagement::exportComicsInfo(QString source, QString dest)
 {
-    //QSqlDatabase sourceDB = loadDatabase(source);
-    QSqlDatabase destDB = loadDatabaseFromFile(dest);
-    //sourceDB.open();
+    QString connectionName = "";
     {
+        QSqlDatabase destDB = loadDatabaseFromFile(dest);
+
         QSqlQuery attach(destDB);
         attach.prepare("ATTACH DATABASE '" + QDir().toNativeSeparators(dest) + "' AS dest;");
-        //attach.bindValue(":dest",QDir().toNativeSeparators(dest));
         attach.exec();
-        //attach.finish();
 
         QSqlQuery attach2(destDB);
         attach2.prepare("ATTACH DATABASE '" + QDir().toNativeSeparators(source) + "' AS source;");
         attach2.exec();
-        //attach2.finish();
 
-        //sourceDB.close();
         QSqlQuery queryDBInfo(destDB);
         queryDBInfo.prepare("CREATE TABLE dest.db_info (version TEXT NOT NULL)");
         queryDBInfo.exec();
-        //queryDBInfo.finish();
-
-        /*QSqlQuery queryComicsInfo(sourceDB);
-	queryComicsInfo.prepare("CREATE TABLE dest.comic_info (id INTEGER PRIMARY KEY, hash TEXT NOT NULL, edited BOOLEAN DEFAULT FALSE, title TEXT, read BOOLEAN)");
-	queryComicsInfo.exec();*/
 
         QSqlQuery query("INSERT INTO dest.db_info (version) "
                         "VALUES ('" VERSION "')",
                         destDB);
-        //query.finish();
 
         QSqlQuery exportData(destDB);
         exportData.prepare("create table dest.comic_info as select " + fields +
                            " from source.comic_info where source.comic_info.edited = 1");
         exportData.exec();
-        //exportData.finish();
+        connectionName = destDB.connectionName();
     }
 
-    //sourceDB.close();
-    destDB.close();
-    QSqlDatabase::removeDatabase(dest);
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 bool DataBaseManagement::importComicsInfo(QString source, QString dest)
@@ -374,10 +356,13 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 
     bool b = false;
 
-    QSqlDatabase sourceDB = loadDatabaseFromFile(source);
-    QSqlDatabase destDB = loadDatabaseFromFile(dest);
+    QString sourceDBconnection = "";
+    QString destDBconnection = "";
 
     {
+        QSqlDatabase sourceDB = loadDatabaseFromFile(source);
+        QSqlDatabase destDB = loadDatabaseFromFile(dest);
+
         QSqlQuery pragma("PRAGMA synchronous=OFF", destDB);
 
         QSqlQuery newInfo(sourceDB);
@@ -538,31 +523,30 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 
                 insert.exec();
             }
-            //update.finish();
-            //insert.finish();
         }
+
+        destDB.commit();
+        QString hash;
+        foreach (hash, hashes) {
+            QSqlQuery getComic(destDB);
+            getComic.prepare("SELECT c.path,ci.coverPage FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) where ci.hash = :hash");
+            getComic.bindValue(":hash", hash);
+            getComic.exec();
+            if (getComic.next()) {
+                QString basePath = QString(dest).remove("/.yacreaderlibrary/library.ydb");
+                QString path = basePath + getComic.record().value("path").toString();
+                int coverPage = getComic.record().value("coverPage").toInt();
+                ThumbnailCreator tc(path, basePath + "/.yacreaderlibrary/covers/" + hash + ".jpg", coverPage);
+                tc.create();
+            }
+        }
+        sourceDBconnection = sourceDB.connectionName();
+        destDBconnection = sourceDB.connectionName();
     }
 
-    destDB.commit();
-    QString hash;
-    foreach (hash, hashes) {
-        QSqlQuery getComic(destDB);
-        getComic.prepare("SELECT c.path,ci.coverPage FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) where ci.hash = :hash");
-        getComic.bindValue(":hash", hash);
-        getComic.exec();
-        if (getComic.next()) {
-            QString basePath = QString(dest).remove("/.yacreaderlibrary/library.ydb");
-            QString path = basePath + getComic.record().value("path").toString();
-            int coverPage = getComic.record().value("coverPage").toInt();
-            ThumbnailCreator tc(path, basePath + "/.yacreaderlibrary/covers/" + hash + ".jpg", coverPage);
-            tc.create();
-        }
-    }
+    QSqlDatabase::removeDatabase(sourceDBconnection);
+    QSqlDatabase::removeDatabase(destDBconnection);
 
-    destDB.close();
-    sourceDB.close();
-    QSqlDatabase::removeDatabase(source);
-    QSqlDatabase::removeDatabase(dest);
     return b;
 }
 //TODO fix these bindings
@@ -666,19 +650,23 @@ void DataBaseManagement::bindDouble(const QString &name, const QSqlRecord &recor
 
 QString DataBaseManagement::checkValidDB(const QString &fullPath)
 {
-    QSqlDatabase db = loadDatabaseFromFile(fullPath);
     QString versionString = "";
-    if (db.isValid() && db.isOpen()) {
-        QSqlQuery version(db);
-        version.prepare("SELECT * FROM db_info");
-        version.exec();
+    QString connectionName = "";
+    {
+        QSqlDatabase db = loadDatabaseFromFile(fullPath);
 
-        if (version.next())
-            versionString = version.record().value("version").toString();
+        if (db.isValid() && db.isOpen()) {
+            QSqlQuery version(db);
+            version.prepare("SELECT * FROM db_info");
+            version.exec();
+
+            if (version.next())
+                versionString = version.record().value("version").toString();
+        }
+        connectionName = db.connectionName();
     }
 
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
 
     return versionString;
 }
@@ -731,116 +719,120 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &path)
     if (compareVersions(DataBaseManagement::checkValidDB(fullPath), "9.5.0") < 0)
         pre9_5 = true;
 
-    QSqlDatabase db = loadDatabaseFromFile(fullPath);
+    QString connectionName = "";
     bool returnValue = false;
-    if (db.isValid() && db.isOpen()) {
-        QSqlQuery updateVersion(db);
-        updateVersion.prepare("UPDATE db_info SET "
-                              "version = :version");
-        updateVersion.bindValue(":version", VERSION);
-        updateVersion.exec();
 
-        if (updateVersion.numRowsAffected() > 0)
-            returnValue = true;
+    {
+        QSqlDatabase db = loadDatabaseFromFile(fullPath);
+        if (db.isValid() && db.isOpen()) {
+            QSqlQuery updateVersion(db);
+            updateVersion.prepare("UPDATE db_info SET "
+                                  "version = :version");
+            updateVersion.bindValue(":version", VERSION);
+            updateVersion.exec();
 
-        if (pre7) //TODO: execute only if previous version was < 7.0
-        {
-            //new 7.0 fields
-            QStringList columnDefs;
-            columnDefs << "hasBeenOpened BOOLEAN DEFAULT 0"
-                       << "rating INTEGER DEFAULT 0"
-                       << "currentPage INTEGER DEFAULT 1"
-                       << "bookmark1 INTEGER DEFAULT -1"
-                       << "bookmark2 INTEGER DEFAULT -1"
-                       << "bookmark3 INTEGER DEFAULT -1"
-                       << "brightness INTEGER DEFAULT -1"
-                       << "contrast INTEGER DEFAULT -1"
-                       << "gamma INTEGER DEFAULT -1";
+            if (updateVersion.numRowsAffected() > 0)
+                returnValue = true;
 
-            bool successAddingColumns = addColumns("comic_info", columnDefs, db);
-            returnValue = returnValue && successAddingColumns;
-        }
-        //TODO update hasBeenOpened value
-
-        if (pre7_1) {
+            if (pre7) //TODO: execute only if previous version was < 7.0
             {
+                //new 7.0 fields
                 QStringList columnDefs;
-                columnDefs << "finished BOOLEAN DEFAULT 0"
-                           << "completed BOOLEAN DEFAULT 1";
-                bool successAddingColumns = addColumns("folder", columnDefs, db);
-                returnValue = returnValue && successAddingColumns;
-            }
+                columnDefs << "hasBeenOpened BOOLEAN DEFAULT 0"
+                           << "rating INTEGER DEFAULT 0"
+                           << "currentPage INTEGER DEFAULT 1"
+                           << "bookmark1 INTEGER DEFAULT -1"
+                           << "bookmark2 INTEGER DEFAULT -1"
+                           << "bookmark3 INTEGER DEFAULT -1"
+                           << "brightness INTEGER DEFAULT -1"
+                           << "contrast INTEGER DEFAULT -1"
+                           << "gamma INTEGER DEFAULT -1";
 
-            { //comic_info
-                QStringList columnDefs;
-                columnDefs << "comicVineID TEXT DEFAULT NULL";
                 bool successAddingColumns = addColumns("comic_info", columnDefs, db);
                 returnValue = returnValue && successAddingColumns;
             }
-        }
+            //TODO update hasBeenOpened value
 
-        if (pre8) {
-            bool successCreatingNewTables = createV8Tables(db);
-            returnValue = returnValue && successCreatingNewTables;
-        }
-
-        if (pre9_5) {
-            { //folder
-                QStringList columnDefs;
-                //a full library update is needed after updating the table
-                columnDefs << "numChildren INTEGER";
-                columnDefs << "firstChildHash TEXT";
-                columnDefs << "customImage TEXT";
-                bool successAddingColumns = addColumns("folder", columnDefs, db);
-                returnValue = returnValue && successAddingColumns;
-            }
-
-            { //comic_info
-                QStringList columnDefs;
-                columnDefs << "lastTimeOpened INTEGER";
-                columnDefs << "coverSizeRatio REAL";
-                columnDefs << "originalCoverSize TEXT";
-                bool successAddingColumns = addColumns("comic_info", columnDefs, db);
-                returnValue = returnValue && successAddingColumns;
-
-                QSqlQuery queryIndexLastTimeOpened(db);
-                bool successCreatingIndex = queryIndexLastTimeOpened.exec("CREATE INDEX last_time_opened_index ON comic_info (lastTimeOpened)");
-                returnValue = returnValue && successCreatingIndex;
-            }
-
-            //update folders info
-            {
-                DBHelper::updateChildrenInfo(db);
-            }
-
-            {
-                QSqlQuery selectQuery(db);
-                selectQuery.prepare("SELECT id, hash FROM comic_info");
-                selectQuery.exec();
-
-                db.transaction();
-
-                QSqlQuery updateCoverInfo(db);
-                updateCoverInfo.prepare("UPDATE comic_info SET coverSizeRatio = :coverSizeRatio WHERE id = :id");
-
-                QImageReader thumbnail;
-                while (selectQuery.next()) {
-                    thumbnail.setFileName(path % "/covers/" % selectQuery.value(1).toString() % ".jpg");
-
-                    float coverSizeRatio = static_cast<float>(thumbnail.size().width()) / thumbnail.size().height();
-                    updateCoverInfo.bindValue(":coverSizeRatio", coverSizeRatio);
-                    updateCoverInfo.bindValue(":id", selectQuery.value(0));
-
-                    updateCoverInfo.exec();
+            if (pre7_1) {
+                {
+                    QStringList columnDefs;
+                    columnDefs << "finished BOOLEAN DEFAULT 0"
+                               << "completed BOOLEAN DEFAULT 1";
+                    bool successAddingColumns = addColumns("folder", columnDefs, db);
+                    returnValue = returnValue && successAddingColumns;
                 }
 
-                db.commit();
+                { //comic_info
+                    QStringList columnDefs;
+                    columnDefs << "comicVineID TEXT DEFAULT NULL";
+                    bool successAddingColumns = addColumns("comic_info", columnDefs, db);
+                    returnValue = returnValue && successAddingColumns;
+                }
+            }
+
+            if (pre8) {
+                bool successCreatingNewTables = createV8Tables(db);
+                returnValue = returnValue && successCreatingNewTables;
+            }
+
+            if (pre9_5) {
+                { //folder
+                    QStringList columnDefs;
+                    //a full library update is needed after updating the table
+                    columnDefs << "numChildren INTEGER";
+                    columnDefs << "firstChildHash TEXT";
+                    columnDefs << "customImage TEXT";
+                    bool successAddingColumns = addColumns("folder", columnDefs, db);
+                    returnValue = returnValue && successAddingColumns;
+                }
+
+                { //comic_info
+                    QStringList columnDefs;
+                    columnDefs << "lastTimeOpened INTEGER";
+                    columnDefs << "coverSizeRatio REAL";
+                    columnDefs << "originalCoverSize TEXT";
+                    bool successAddingColumns = addColumns("comic_info", columnDefs, db);
+                    returnValue = returnValue && successAddingColumns;
+
+                    QSqlQuery queryIndexLastTimeOpened(db);
+                    bool successCreatingIndex = queryIndexLastTimeOpened.exec("CREATE INDEX last_time_opened_index ON comic_info (lastTimeOpened)");
+                    returnValue = returnValue && successCreatingIndex;
+                }
+
+                //update folders info
+                {
+                    DBHelper::updateChildrenInfo(db);
+                }
+
+                {
+                    QSqlQuery selectQuery(db);
+                    selectQuery.prepare("SELECT id, hash FROM comic_info");
+                    selectQuery.exec();
+
+                    db.transaction();
+
+                    QSqlQuery updateCoverInfo(db);
+                    updateCoverInfo.prepare("UPDATE comic_info SET coverSizeRatio = :coverSizeRatio WHERE id = :id");
+
+                    QImageReader thumbnail;
+                    while (selectQuery.next()) {
+                        thumbnail.setFileName(path % "/covers/" % selectQuery.value(1).toString() % ".jpg");
+
+                        float coverSizeRatio = static_cast<float>(thumbnail.size().width()) / thumbnail.size().height();
+                        updateCoverInfo.bindValue(":coverSizeRatio", coverSizeRatio);
+                        updateCoverInfo.bindValue(":id", selectQuery.value(0));
+
+                        updateCoverInfo.exec();
+                    }
+
+                    db.commit();
+                }
             }
         }
+        connectionName = db.connectionName();
     }
 
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
     return returnValue;
 }
 
