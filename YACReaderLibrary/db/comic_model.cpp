@@ -798,6 +798,7 @@ QVector<YACReaderComicReadStatus> ComicModel::setComicsRead(QList<QModelIndex> l
                 c.info.read = false;
                 c.info.currentPage = 1;
                 c.info.hasBeenOpened = false;
+                c.info.lastTimeOpened.setValue(nullptr);
                 DBHelper::update(&(c.info), db);
             }
         }
