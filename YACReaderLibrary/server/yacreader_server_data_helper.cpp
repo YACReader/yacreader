@@ -104,4 +104,4 @@ QJsonObject YACReaderServerDataHelper::labelToJSON(const qulonglong libraryId, c
     return json;
 }
 
-YACReaderServerDataHelper::YACReaderServerDataHelper() {}
+YACReaderServerDataHelper::YACReaderServerDataHelper() { }
