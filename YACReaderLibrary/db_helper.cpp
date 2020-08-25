@@ -827,10 +827,15 @@ void DBHelper::updateFromRemoteClientWithHash(const ComicInfo &comicInfo)
     }
 }
 
-void DBHelper::updateFromRemoteClient(const QMap<qulonglong, QList<ComicInfo>> &comics)
+QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qulonglong, QList<ComicInfo>> &comics)
 {
+    QMap<qulonglong, QList<ComicDB>> moreRecentComics;
+
     foreach (qulonglong libraryId, comics.keys()) {
+        QList<ComicDB> libraryMoreRecentComics;
+
         QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
+
         QString connectionName = "";
         {
             QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
@@ -850,17 +855,28 @@ void DBHelper::updateFromRemoteClient(const QMap<qulonglong, QList<ComicInfo>> &
                 ComicDB comic = DBHelper::loadComic(comicInfo.id, db);
 
                 if (comic.info.hash == comicInfo.hash) {
-                    if (comicInfo.currentPage > 0) {
-                        comic.info.currentPage = comicInfo.currentPage;
+                    bool isMoreRecent = false;
 
-                        if (comic.info.currentPage == comic.info.numPages)
-                            comic.info.read = true;
-
-                        comic.info.hasBeenOpened = true;
-
-                        if (comic.info.lastTimeOpened.toULongLong() < comicInfo.lastTimeOpened.toULongLong())
-                            comic.info.lastTimeOpened = comicInfo.lastTimeOpened;
+                    //completion takes precedence over lastTimeOpened, if we just want to synchronize the lastest status we should use only lastTimeOpened
+                    if ((comic.info.currentPage > 1 && comic.info.currentPage > comicInfo.currentPage) || comic.info.hasBeenOpened || (comic.info.read && !comicInfo.read)) {
+                        isMoreRecent = true;
                     }
+
+                    if (comic.info.lastTimeOpened.toULongLong() > 0 && comicInfo.lastTimeOpened.toULongLong() == 0) {
+                        isMoreRecent = true;
+                    }
+
+                    comic.info.currentPage = qMax(comic.info.currentPage, comicInfo.currentPage);
+
+                    if (comic.info.currentPage == comic.info.numPages)
+                        comic.info.read = true;
+
+                    comic.info.read = comic.info.read || comicInfo.read;
+
+                    comic.info.hasBeenOpened = comic.info.hasBeenOpened || comicInfo.currentPage > 0;
+
+                    if (comic.info.lastTimeOpened.toULongLong() < comicInfo.lastTimeOpened.toULongLong() && comicInfo.lastTimeOpened.toULongLong() > 0)
+                        comic.info.lastTimeOpened = comicInfo.lastTimeOpened;
 
                     if (comicInfo.rating > 0)
                         comic.info.rating = comicInfo.rating;
@@ -868,11 +884,19 @@ void DBHelper::updateFromRemoteClient(const QMap<qulonglong, QList<ComicInfo>> &
                     updateComicInfo.bindValue(":read", comic.info.read ? 1 : 0);
                     updateComicInfo.bindValue(":currentPage", comic.info.currentPage);
                     updateComicInfo.bindValue(":hasBeenOpened", comic.info.hasBeenOpened ? 1 : 0);
-                    updateComicInfo.bindValue(":lastTimeOpened", QDateTime::currentMSecsSinceEpoch() / 1000);
+                    updateComicInfo.bindValue(":lastTimeOpened", comic.info.lastTimeOpened);
                     updateComicInfo.bindValue(":id", comic.info.id);
                     updateComicInfo.bindValue(":rating", comic.info.rating);
                     updateComicInfo.exec();
+
+                    if (isMoreRecent) {
+                        libraryMoreRecentComics.append(comic);
+                    }
                 }
+            }
+
+            if (!libraryMoreRecentComics.isEmpty()) {
+                moreRecentComics[libraryId] = libraryMoreRecentComics;
             }
 
             db.commit();
@@ -881,6 +905,8 @@ void DBHelper::updateFromRemoteClient(const QMap<qulonglong, QList<ComicInfo>> &
 
         QSqlDatabase::removeDatabase(connectionName);
     }
+
+    return moreRecentComics;
 }
 
 void DBHelper::updateFromRemoteClientWithHash(const QList<ComicInfo> &comics)
