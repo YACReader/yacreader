@@ -53,6 +53,7 @@ QJsonObject YACReaderServerDataHelper::comicToJSON(const qulonglong libraryId, c
     json["cover_size_ratio"] = comic.info.coverSizeRatio.toFloat();
     json["title"] = comic.info.title.toString();
     json["number"] = comic.info.number.toInt();
+    json["last_time_opened"] = comic.info.lastTimeOpened.toLongLong();
 
     return json;
 }
