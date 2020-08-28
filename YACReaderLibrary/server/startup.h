@@ -26,7 +26,7 @@ public:
     /** Constructor */
     Startup();
     /** Start the server */
-    void start();
+    void start(quint16 port = 0);
     /** Stop the server */
     void stop();
 
