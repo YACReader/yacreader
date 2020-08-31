@@ -24,6 +24,7 @@ jobs:
   - script: |
       cd $(Build.SourcesDirectory)
       find . \( -name '*.h' -or -name '*.cpp' -or -name '*.c' -or -name '*.mm' -or -name '*.m' \) -print0 | xargs -0 clang-format -style=file -i
+      git diff $(Build.SourceVersion)
       if [ "$(git diff $(Build.SourceVersion))" != "" ]; then exit 1; fi
     displayName: 'clang-format'
 - job: Linux
