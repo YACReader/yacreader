@@ -8,7 +8,7 @@ class ReleaseAcquireAtomic
 {
 public:
     constexpr ReleaseAcquireAtomic(T desired) noexcept
-        : value(desired) {}
+        : value(desired) { }
 
     T operator=(T desired) noexcept
     {
