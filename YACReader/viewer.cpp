@@ -205,8 +205,9 @@ void Viewer::prepareForOpening()
 
     verticalScrollBar()->setSliderPosition(verticalScrollBar()->minimum());
 
-    if (Configuration::getConfiguration().getShowInformation() && !information)
+    if (Configuration::getConfiguration().getShowInformation() && !information) {
         QTimer::singleShot(0, this, &Viewer::informationSwitch);
+    }
 
     informationLabel->setText("...");
 }

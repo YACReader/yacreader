@@ -51,8 +51,9 @@ WorkerThread<Result>::~WorkerThread()
         abort = true;
     }
     condition.notify_one();
-    if (thread.joinable())
+    if (thread.joinable()) {
         thread.join();
+    }
 }
 
 template<typename Result>
