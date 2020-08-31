@@ -13,6 +13,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * fix object leaks in database code
 * add bidirectional sync support
 
+### YACReaderLibraryServer
+* add support for port setting from the commandline
+
 ## 9.6.0
 ### Reader and Library
 * RAR5 support.

@@ -32,33 +32,11 @@ using stefanfrings::HttpSessionStore;
 using stefanfrings::StaticFileController;
 using stefanfrings::TemplateCache;
 
-void Startup::start()
+void Startup::start(quint16 port)
 {
     // Initialize the core application
     QCoreApplication *app = QCoreApplication::instance();
     QString configFileName = YACReader::getSettingsPath() + "/" + QCoreApplication::applicationName() + ".ini";
-
-    /*
-	// Configure logging into files
-	QSettings* mainLogSettings=new QSettings(configFileName,QSettings::IniFormat,app);
-	mainLogSettings->beginGroup("mainLogFile");
-    //QSettings* debugLogSettings=new QSettings(configFileName,QSettings::IniFormat,app);
-    //debugLogSettings->beginGroup("debugLogFile");
-
-    if(mainLogSettings->value("fileName").isNull())
-        mainLogSettings->setValue("fileName", QFileInfo(YACReader::getSettingsPath(), "server_log.log").absoluteFilePath());
-
-    if(mainLogSettings->value("maxSize").isNull())
-        mainLogSettings->setValue("maxSize",1048576);
-
-    if(mainLogSettings->value("maxBackups").isNull())
-        mainLogSettings->setValue("maxBackups",1);
-
-    if(mainLogSettings->value("minLevel").isNull())
-        mainLogSettings->setValue("minLevel",QtCriticalMsg);
-
-    Logger* logger=new FileLogger(mainLogSettings,10000,app);
-    logger->installMsgHandler();*/
 
     // Configure template loader and cache
     auto templateSettings = new QSettings(configFileName, QSettings::IniFormat, app);
@@ -134,6 +112,12 @@ void Startup::start()
 
     listener = new HttpListener(listenerSettings, new RequestMapper(app), app);
 
+    if (port != 0) {
+        if (listener->isListening()) {
+            listener->close();
+        }
+        listener->QTcpServer::listen(QHostAddress::Any, port);
+    }
     // if the requested port is busy, use random port
     if (!listener->isListening()) {
         listener->QTcpServer::listen(QHostAddress::Any, 0);

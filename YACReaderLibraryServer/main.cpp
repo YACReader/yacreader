@@ -109,8 +109,9 @@ int main(int argc, char **argv)
     parser.setApplicationDescription(QCoreApplication::tr("\nYACReaderLibraryServer is the headless (no gui) version of YACReaderLibrary"));
     parser.addHelpOption();
     const QCommandLineOption versionOption = parser.addVersionOption();
-    parser.addPositionalArgument("command", "The command to execute. [start, create-library, update-library, add-library, remove-library, list-libraries]");
+    parser.addPositionalArgument("command", "The command to execute. [start, create-library, update-library, add-library, remove-library, list-libraries, set-port]");
     parser.addOption({ "loglevel", "Set log level. Valid values: trace, info, debug, warn, error.", "loglevel", "info" });
+    parser.addOption({ "port", "Set server port (temporary). Valid values: 1-65535", "port" });
     parser.parse(app.arguments());
 
     const QStringList args = parser.positionalArguments();
@@ -179,13 +180,26 @@ int main(int argc, char **argv)
 
         //server
         Startup *s = new Startup();
-        s->start();
+        if (parser.isSet("port")) {
+            bool valid;
+            qint32 port = parser.value("port").toInt(&valid);
+            if (!valid || port < 1 || port > 65535) {
+                qout << "Error: " << parser.value("port") << " is not a valid port" << endl;
+                parser.showHelp();
+                return 0;
+            } else {
+                s->start(port);
+            }
+
+        } else {
+            s->start();
+        }
 
         QLOG_INFO() << "YACReaderLibraryServer attempting to start";
 
         logSystemAndConfig();
 
-        if (YACReaderLocalServer::isRunning()) //sï¿½lo se permite una instancia de YACReaderLibrary
+        if (YACReaderLocalServer::isRunning()) // allow one server instance
         {
             QLOG_WARN() << "another instance of YACReaderLibrary is running";
 #ifdef Q_OS_WIN
@@ -194,6 +208,7 @@ int main(int argc, char **argv)
             return 0;
         }
         QLOG_INFO() << "YACReaderLibrary starting";
+        QLOG_INFO() << "Running on port" << s->getPort();
 
         //Update libraries to now versions
         LibrariesUpdater updater;
@@ -290,6 +305,31 @@ int main(int argc, char **argv)
             qout << libraryName << " : " << libraries.getPath(libraryName) << endl;
 
         return 0;
+    } else if (command == "set-port") {
+        parser.clearPositionalArguments();
+        parser.addPositionalArgument("set-port", "Set server port (persistent).");
+        parser.addPositionalArgument("port", "1-65535", "<port>");
+        parser.process(app);
+
+        const QStringList args = parser.positionalArguments();
+        if (args.length() != 2) {
+            parser.showHelp();
+            return 0;
+        }
+
+        bool valid;
+        qint32 port = args.at(1).toInt(&valid);
+        if (!valid || port < 1 || port > 65535) {
+            qout << "Invalid server port";
+            parser.showHelp();
+            return 0;
+        }
+
+        QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/" + QCoreApplication::applicationName() + ".ini", QSettings::IniFormat);
+        settings->setValue("listener/port", QString::number(port));
+        delete settings;
+        return 0;
+
     } else //error
     {
         parser.process(app);
