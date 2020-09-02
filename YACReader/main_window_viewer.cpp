@@ -156,6 +156,7 @@ void MainWindowViewer::setupUI()
     connect(optionsDialog, SIGNAL(accepted()), viewer, SLOT(updateOptions()));
     connect(optionsDialog, SIGNAL(optionsChanged()), this, SLOT(reloadOptions()));
     connect(optionsDialog, SIGNAL(changedFilters(int, int, int)), viewer, SLOT(updateFilters(int, int, int)));
+    connect(optionsDialog, &OptionsDialog::changedImageOptions, viewer, &Viewer::updatePage);
 
     optionsDialog->restoreOptions(settings);
     //shortcutsDialog = new ShortcutsDialog(this);

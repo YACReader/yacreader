@@ -25,6 +25,7 @@ private:
     QPushButton *pathFindButton;
     QCheckBox *quickNavi;
     QCheckBox *disableShowOnMouseOver;
+    QCheckBox *scaleCheckbox;
 
     QLabel *magGlassSizeLabel;
 

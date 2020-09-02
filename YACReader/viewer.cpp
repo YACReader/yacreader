@@ -316,24 +316,27 @@ void Viewer::updateContentSize()
 {
     //there is an image to resize
     if (currentPage != nullptr && !currentPage->isNull()) {
-        QSize pagefit;
+        QSize pagefit = currentPage->size();
+        bool stretchImages = Configuration::getConfiguration().getSettings()->value(ENLARGE_IMAGES).toBool();
         YACReader::FitMode fitmode = Configuration::getConfiguration().getFitMode();
         switch (fitmode) {
         case YACReader::FitMode::FullRes:
-            pagefit = currentPage->size();
             break;
         case YACReader::FitMode::ToWidth:
-            pagefit = currentPage->size();
+            if (!stretchImages && width() > pagefit.width()) {
+                break;
+            }
             pagefit.scale(width(), 0, Qt::KeepAspectRatioByExpanding);
             break;
         case YACReader::FitMode::ToHeight:
-            pagefit = currentPage->size();
+            if (!stretchImages && height() > pagefit.height()) {
+                break;
+            }
             pagefit.scale(0, height(), Qt::KeepAspectRatioByExpanding);
             break;
             //if everything fails showing the full page is a good idea
         case YACReader::FitMode::FullPage:
         default:
-            pagefit = currentPage->size();
             pagefit.scale(size(), Qt::KeepAspectRatio);
             break;
         }
