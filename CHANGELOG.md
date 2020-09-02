@@ -7,6 +7,9 @@ spanish only. Sorry for the mess.
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ## 9.7.0 (unreleased)
+### YACReader
+* Image enlargement/stretching can now be disabled for fit
+  to width and height
 
 ### YACReaderLibrary
 * update QsLog logger to version 2.1, snapshot 46b643d5bcbc
