@@ -19,6 +19,10 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ### YACReaderLibraryServer
 * add support for port setting from the commandline
+* update internal server code to QtWebApp 1.7.11
+
+### Refactoring
+* Move QtWebApp and QsLog to new third_party directory
 
 ## 9.6.0
 ### Reader and Library
