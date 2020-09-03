@@ -3,6 +3,10 @@ trigger:
 - master
 - develop
 
+variables:
+  is_original_repo: ${{ and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}
+  is_fork: ${{ not(and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop')))) }}
+
 jobs:
 - job: Initialization
   pool:
@@ -12,7 +16,7 @@ jobs:
 - job: CodeFormatValidation
   dependsOn: Initialization
   pool:
-    vmImage: 'macOS-10.14'
+    vmImage: 'macOS-10.15'
   steps:
   - script: |
       brew install clang-format
@@ -20,6 +24,7 @@ jobs:
   - script: |
       cd $(Build.SourcesDirectory)
       find . \( -name '*.h' -or -name '*.cpp' -or -name '*.c' -or -name '*.mm' -or -name '*.m' \) -print0 | xargs -0 clang-format -style=file -i
+      git diff $(Build.SourceVersion)
       if [ "$(git diff $(Build.SourceVersion))" != "" ]; then exit 1; fi
     displayName: 'clang-format'
 - job: Linux
@@ -59,9 +64,10 @@ jobs:
 - job: MacOS
   dependsOn: CodeFormatValidation
   variables:
-  - group: macos-codesign
+  - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
+    - group: macos-codesign
   pool:
-    vmImage: 'macOS-10.14'
+    vmImage: 'macOS-10.15'
   steps:
   - script: |
       brew install qt
@@ -74,14 +80,16 @@ jobs:
       tar xjf $(Build.SourcesDirectory)/compressed_archive/p7zip_16.02_src_all.tar.bz2 -C $(Build.SourcesDirectory)/compressed_archive
       mv $(Build.SourcesDirectory)/compressed_archive/p7zip_16.02 $(Build.SourcesDirectory)/compressed_archive/libp7zip
     displayName: 'Install dependencies'
-  - task: InstallAppleCertificate@2
-    inputs:
-      certSecureFile: 'developerID_application.p12'
-      certPwd: $(P12Password)
+  - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
+    - task: InstallAppleCertificate@2
+      inputs:
+        certSecureFile: 'developerID_application.p12'
+        certPwd: $(P12Password)
   - script: |
       cd $(Build.SourcesDirectory)
       VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
-      SKIP_CODESIGN="$(tr [A-Z] [a-z] <<< "$(System.PullRequest.IsFork)")"
+      echo "Trying to know if we are in a forked repo: $IS_FORK"
+      SKIP_CODESIGN="$(tr [A-Z] [a-z] <<< "$IS_FORK")"
       ./compileOSX.sh $VERSION $(Build.BuildNumber) $SKIP_CODESIGN
     displayName: 'Build'
   - task: CopyFiles@2
@@ -95,80 +103,81 @@ jobs:
 - template: azure-pipelines-windows-template.yml
   parameters:
     name: Windows_x64
-    arquitecture: 'x64'
-    qt_version: '5.12.4'
+    architecture: 'x64'
+    qt_version: '5.12.6'
     qt_spec: 'msvc2017_64'
     qt_aqt_spec: 'win64_msvc2017_64'
     vc_redist_url: 'https://go.microsoft.com/fwlink/?LinkId=746572'
     vc_redist_file_name: 'vc_redist.x64.exe'
     vc_vars: 'vcvars64.bat'
 - template: azure-pipelines-windows-template.yml
-  parameters: 
+  parameters:
     name: Windows_x86
-    arquitecture: 'x86'
-    qt_version: '5.12.4'
+    architecture: 'x86'
+    qt_version: '5.12.6'
     qt_spec: 'msvc2017'
     qt_aqt_spec: 'win32_msvc2017'
     vc_redist_url: 'https://go.microsoft.com/fwlink/?LinkId=746571'
     vc_redist_file_name: 'vc_redist.x86.exe'
     vc_vars: 'vcvars32.bat'
-- job: PublishDevBuilds
-  dependsOn: 
-  - Linux
-  - MacOS
-  - Windows_x86
-  - Windows_x64
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
-  variables:
-  - group: bintray
-  pool:
-    vmImage: 'ubuntu-16.04'
-  steps:
+
+- ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
+  - job: PublishDevBuilds
+    dependsOn:
+    - Linux
+    - MacOS
+    - Windows_x86
+    - Windows_x64
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'), true)
+    variables:
+    - group: bintray
+    pool:
+      vmImage: 'ubuntu-16.04'
+    steps:
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          buildType: 'current'
+          targetPath: $(Build.SourcesDirectory)/dev_bin
+      - script: |
+          ls -lah $(Build.SourcesDirectory)/dev_bin/**/*.*
+      - task: cURLUploader@2
+        inputs:
+          files: '$(Build.SourcesDirectory)/dev_bin/**/*.*'
+          authType: 'userAndPass'
+          username: $(username)
+          password: $(api-key)
+          options: -H "X-Bintray-Publish:1"
+          remotePath: ''
+          url: https://api.bintray.com/content/luisangelsm/YACReader/DevBuilds/$(Build.BuildNumber)/
+
+- ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
+  - job: Release
+    dependsOn:
+    - Linux
+    - MacOS
+    - Windows_x86
+    - Windows_x64
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    variables:
+    - group: github-releases
+    pool:
+      vmImage: 'ubuntu-16.04'
+    steps:
     - task: DownloadPipelineArtifact@2
       inputs:
         buildType: 'current'
-        targetPath: $(Build.SourcesDirectory)/dev_bin
+        targetPath: $(Build.ArtifactStagingDirectory)
     - script: |
-        ls -lah $(Build.SourcesDirectory)/dev_bin/**/*.*
-    - task: cURLUploader@2
+        find $(Build.ArtifactStagingDirectory) -name '*.*' -exec cp {} $(Build.ArtifactStagingDirectory) \;
+      displayName: 'flatten artifact staging directory'
+    - script: |
+        VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
+        echo "##vso[task.setvariable variable=VERSION]$VERSION"
+      displayName: 'Version'
+    - task: GitHubRelease@0
       inputs:
-        files: '$(Build.SourcesDirectory)/dev_bin/**/*.*'
-        authType: 'userAndPass'
-        username: $(username)
-        password: $(api-key)
-        options: -H "X-Bintray-Publish:1"
-        remotePath: ''
-        url: https://api.bintray.com/content/luisangelsm/YACReader/DevBuilds/$(Build.BuildNumber)/
-- job: Release
-  dependsOn: 
-  - Linux
-  - MacOS
-  - Windows_x86
-  - Windows_x64
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-  variables:
-  - group: github-releases
-  pool:
-    vmImage: 'ubuntu-16.04'
-  steps:
-  - task: DownloadPipelineArtifact@2
-    inputs:
-      buildType: 'current'
-      targetPath: $(Build.ArtifactStagingDirectory)
-  - script: |
-      find $(Build.ArtifactStagingDirectory) -name '*.*' -exec cp {} $(Build.ArtifactStagingDirectory) \;
-    displayName: 'flatten artifact staging directory'
-  - script: |
-      VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
-      echo "##vso[task.setvariable variable=VERSION]$VERSION"
-    displayName: 'Version'
-  - task: GitHubRelease@0
-    inputs:
-      gitHubConnection: yacreader-releases
-      title: $(VERSION)
-      tagSource: 'manual'
-      tag: $(VERSION)
-      addChangeLog: false
-
-      
-      
+        gitHubConnection: yacreader-releases
+        title: $(VERSION)
+        tagSource: 'manual'
+        tag: $(VERSION)
+        addChangeLog: false

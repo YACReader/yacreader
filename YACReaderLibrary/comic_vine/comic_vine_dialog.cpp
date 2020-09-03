@@ -431,16 +431,18 @@ void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString>> &matchingInfo
 
         setLoadingMessage(tr("Retrieving tags for : %1").arg(p.first.getFileName()));
     }
-
-    QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
-    db.open();
-    db.transaction();
-    foreach (ComicDB comic, comics) {
-        DBHelper::update(&(comic.info), db);
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+        db.open();
+        db.transaction();
+        foreach (ComicDB comic, comics) {
+            DBHelper::update(&(comic.info), db);
+        }
+        db.commit();
+        connectionName = db.connectionName();
     }
-    db.commit();
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
 
     emit accepted();
 }
@@ -464,16 +466,18 @@ void ComicVineDialog::getComicInfo(const QString &comicId, int count, const QStr
     ComicDB comic = parseComicInfo(comics[currentIndex], result, count, publisher); //TODO check result error
     comic.info.comicVineID = comicId;
     setLoadingMessage(tr("Retrieving tags for : %1").arg(comics[currentIndex].getFileName()));
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+        db.open();
+        db.transaction();
 
-    QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
-    db.open();
-    db.transaction();
+        DBHelper::update(&(comic.info), db);
 
-    DBHelper::update(&(comic.info), db);
-
-    db.commit();
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+        db.commit();
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 
     if (mode == SingleComic || currentIndex == (comics.count() - 1)) {
         emit accepted();

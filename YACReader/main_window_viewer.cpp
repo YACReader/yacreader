@@ -156,6 +156,7 @@ void MainWindowViewer::setupUI()
     connect(optionsDialog, SIGNAL(accepted()), viewer, SLOT(updateOptions()));
     connect(optionsDialog, SIGNAL(optionsChanged()), this, SLOT(reloadOptions()));
     connect(optionsDialog, SIGNAL(changedFilters(int, int, int)), viewer, SLOT(updateFilters(int, int, int)));
+    connect(optionsDialog, &OptionsDialog::changedImageOptions, viewer, &Viewer::updatePage);
 
     optionsDialog->restoreOptions(settings);
     //shortcutsDialog = new ShortcutsDialog(this);
@@ -203,6 +204,26 @@ void MainWindowViewer::createActions()
     openAction->setData(OPEN_ACTION_Y);
     openAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_ACTION_Y));
     connect(openAction, SIGNAL(triggered()), this, SLOT(open()));
+
+#ifdef Q_OS_MAC
+    newInstanceAction = new QAction(tr("New instance"), this);
+    newInstanceAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(NEW_INSTANCE_ACTION_Y));
+    connect(newInstanceAction, &QAction::triggered,
+            [=]() {
+                QStringList possiblePaths { QDir::cleanPath(QCoreApplication::applicationDirPath() + "/../../../") };
+                possiblePaths += QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation);
+
+                for (auto &&ypath : possiblePaths) {
+                    QString yacreaderPath = QDir::cleanPath(ypath + "/YACReader.app");
+                    if (QFileInfo(yacreaderPath).exists()) {
+                        QStringList parameters { "-n", "-a", yacreaderPath };
+                        QProcess::startDetached("open", parameters);
+                        break;
+                    }
+                }
+            });
+    newInstanceAction->setData(NEW_INSTANCE_ACTION_Y);
+#endif
 
     openFolderAction = new QAction(tr("Open Folder"), this);
     openFolderAction->setIcon(QIcon(":/images/viewer_toolbar/openFolder.png"));
@@ -645,6 +666,8 @@ void MainWindowViewer::createToolBars()
     //file
     auto fileMenu = new QMenu(tr("File"));
 
+    fileMenu->addAction(newInstanceAction);
+    fileMenu->addSeparator();
     fileMenu->addAction(openAction);
     fileMenu->addAction(openLatestComicAction);
     fileMenu->addAction(openFolderAction);
@@ -1195,11 +1218,7 @@ void MainWindowViewer::checkNewVersion()
         connect(versionChecker, SIGNAL(newVersionDetected()),
                 this, SLOT(newVersion()));
 
-        auto tT = new QTimer;
-        tT->setSingleShot(true);
-        connect(tT, SIGNAL(timeout()), versionChecker, SLOT(get()));
-        //versionChecker->get(); //TOD�
-        tT->start(100);
+        QTimer::singleShot(100, versionChecker, &HttpVersionChecker::get);
 
         conf.setLastVersionCheck(current);
     }
@@ -1258,7 +1277,11 @@ void MainWindowViewer::setUpShortcutsManagement()
                                                  << showFlowAction
                                                  << toggleFullScreenAction
                                                  << toggleToolbarsAction
-                                                 << showEditShortcutsAction);
+                                                 << showEditShortcutsAction
+#ifdef Q_OS_MAC
+                                                 << newInstanceAction
+#endif
+    );
 
     allActions << tmpList;
 

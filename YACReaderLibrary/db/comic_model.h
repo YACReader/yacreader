@@ -150,8 +150,7 @@ private:
     QList<ComicItem *> _data;
 
     QString _databasePath;
-
-    QSqlDatabase dbTransaction;
+    QString _databaseConnection;
 
     bool enableResorting;
     Mode mode;

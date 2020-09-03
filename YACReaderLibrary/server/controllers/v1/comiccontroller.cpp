@@ -14,7 +14,11 @@
 
 #include <typeinfo>
 
-ComicController::ComicController() {}
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
+using stefanfrings::HttpSession;
+
+ComicController::ComicController() { }
 
 void ComicController::service(HttpRequest &request, HttpResponse &response)
 {

@@ -7,7 +7,10 @@
 #include "template.h"
 #include "../static.h"
 
-FolderInfoController::FolderInfoController() {}
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
+
+FolderInfoController::FolderInfoController() { }
 
 void FolderInfoController::service(HttpRequest &request, HttpResponse &response)
 {

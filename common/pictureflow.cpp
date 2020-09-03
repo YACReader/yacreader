@@ -231,8 +231,8 @@ class PictureFlowAbstractRenderer
 {
 public:
     PictureFlowAbstractRenderer()
-        : state(0), dirty(false), widget(0) {}
-    virtual ~PictureFlowAbstractRenderer() {}
+        : state(0), dirty(false), widget(0) { }
+    virtual ~PictureFlowAbstractRenderer() { }
 
     PictureFlowState *state;
     bool dirty;

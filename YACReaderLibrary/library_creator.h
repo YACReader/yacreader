@@ -38,7 +38,7 @@ private:
     QString _target;
     QString _sourceFolder; //used for partial updates
     QStringList _nameFilter;
-    QSqlDatabase _database;
+    QString _databaseConnection;
     QList<Folder> _currentPathFolders; //lista de folders en el orden en el que están siendo explorados, el último es el folder actual
     //recursive method
     void create(QDir currentDirectory);

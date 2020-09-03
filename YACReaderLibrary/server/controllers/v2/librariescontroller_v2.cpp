@@ -7,7 +7,10 @@
 
 #include "QsLog.h"
 
-LibrariesControllerV2::LibrariesControllerV2() {}
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
+
+LibrariesControllerV2::LibrariesControllerV2() { }
 
 void LibrariesControllerV2::service(HttpRequest & /* request */, HttpResponse &response)
 {

@@ -97,7 +97,7 @@ public:
     QMap<qint32, qint32> indexesToPages;
 
     YCArchiveExtractCallback(const QMap<qint32, qint32> &indexesToPages, bool c = false, ExtractDelegate *d = 0)
-        : PasswordIsDefined(false), all(c), delegate(d), indexesToPages(indexesToPages) {}
+        : PasswordIsDefined(false), all(c), delegate(d), indexesToPages(indexesToPages) { }
     ~YCArchiveExtractCallback() { MidFree(data); }
 };
 

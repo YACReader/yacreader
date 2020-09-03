@@ -106,6 +106,9 @@ private:
 
     //! Actions
     QAction *openAction;
+#ifdef Q_OS_MAC
+    QAction *newInstanceAction; //needed in macos
+#endif
     QAction *openFolderAction;
     QAction *openLatestComicAction;
     QList<QAction *> recentFilesActionList;

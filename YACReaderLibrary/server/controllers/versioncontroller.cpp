@@ -1,6 +1,9 @@
 #include "versioncontroller.h"
 
-VersionController::VersionController() {}
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
+
+VersionController::VersionController() { }
 
 void VersionController::service(HttpRequest &request, HttpResponse &response)
 {

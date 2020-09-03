@@ -291,16 +291,17 @@ void FolderModel::setupModelData(QString path)
 
     //cargar la base de datos
     _databasePath = path;
-    QSqlDatabase db = DataBaseManagement::loadDatabase(path);
     //crear la consulta
+    QString connectionName = "";
     {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(path);
         QSqlQuery selectQuery("select * from folder where id <> 1 order by parentId,name", db);
 
         setupModelData(selectQuery, rootItem);
+        connectionName = db.connectionName();
     }
     //selectQuery.finish();
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
     endResetModel();
 }
 
@@ -407,38 +408,44 @@ void FolderModel::resetFilter()
 
 void FolderModel::updateFolderCompletedStatus(const QModelIndexList &list, bool status)
 {
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-    db.transaction();
-    foreach (QModelIndex mi, list) {
-        auto item = static_cast<FolderItem *>(mi.internalPointer());
-        item->setData(FolderModel::Completed, status);
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        db.transaction();
+        foreach (QModelIndex mi, list) {
+            auto item = static_cast<FolderItem *>(mi.internalPointer());
+            item->setData(FolderModel::Completed, status);
 
-        Folder f = DBHelper::loadFolder(item->id, db);
-        f.setCompleted(status);
-        DBHelper::update(f, db);
+            Folder f = DBHelper::loadFolder(item->id, db);
+            f.setCompleted(status);
+            DBHelper::update(f, db);
+        }
+        db.commit();
+        connectionName = db.connectionName();
     }
-    db.commit();
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
 
     emit dataChanged(index(list.first().row(), FolderModel::Name), index(list.last().row(), FolderModel::Completed));
 }
 
 void FolderModel::updateFolderFinishedStatus(const QModelIndexList &list, bool status)
 {
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-    db.transaction();
-    foreach (QModelIndex mi, list) {
-        auto item = static_cast<FolderItem *>(mi.internalPointer());
-        item->setData(FolderModel::Finished, status);
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        db.transaction();
+        foreach (QModelIndex mi, list) {
+            auto item = static_cast<FolderItem *>(mi.internalPointer());
+            item->setData(FolderModel::Finished, status);
 
-        Folder f = DBHelper::loadFolder(item->id, db);
-        f.setFinished(status);
-        DBHelper::update(f, db);
+            Folder f = DBHelper::loadFolder(item->id, db);
+            f.setFinished(status);
+            DBHelper::update(f, db);
+        }
+        db.commit();
+        connectionName = db.connectionName();
     }
-    db.commit();
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
 
     emit dataChanged(index(list.first().row(), FolderModel::Name), index(list.last().row(), FolderModel::Completed));
 }
@@ -451,15 +458,17 @@ QStringList FolderModel::getSubfoldersNames(const QModelIndex &mi)
         auto item = static_cast<FolderItem *>(mi.internalPointer());
         id = item->id;
     }
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        db.transaction();
 
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-    db.transaction();
+        result = DBHelper::loadSubfoldersNames(id, db);
 
-    result = DBHelper::loadSubfoldersNames(id, db);
-
-    db.commit();
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+        db.commit();
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 
     //TODO sort result))
     qSort(result.begin(), result.end(), naturalSortLessThanCI);
@@ -481,55 +490,57 @@ void FolderModel::fetchMoreFromDB(const QModelIndex &parent)
         endRemoveRows();
     }
 
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-    QList<FolderItem *> items;
-    QList<FolderItem *> nextLevelItems;
+        QList<FolderItem *> items;
+        QList<FolderItem *> nextLevelItems;
 
-    QSqlQuery selectQuery(db);
-    selectQuery.prepare("select * from folder where id <> 1 and parentId = :parentId order by parentId,name");
+        QSqlQuery selectQuery(db);
+        selectQuery.prepare("select * from folder where id <> 1 and parentId = :parentId order by parentId,name");
 
-    items << item;
-    bool firstLevelUpdated = false;
-    while (items.size() > 0) {
-        nextLevelItems.clear();
-        foreach (FolderItem *item, items) {
-            QLOG_DEBUG() << "ID " << item->id;
-            selectQuery.bindValue(":parentId", item->id);
+        items << item;
+        bool firstLevelUpdated = false;
+        while (items.size() > 0) {
+            nextLevelItems.clear();
+            foreach (FolderItem *item, items) {
+                QLOG_DEBUG() << "ID " << item->id;
+                selectQuery.bindValue(":parentId", item->id);
 
-            selectQuery.exec();
+                selectQuery.exec();
 
-            if (!firstLevelUpdated) {
-                //NO size support
-                int numResults = 0;
-                while (selectQuery.next())
-                    numResults++;
+                if (!firstLevelUpdated) {
+                    //NO size support
+                    int numResults = 0;
+                    while (selectQuery.next())
+                        numResults++;
 
-                if (!selectQuery.seek(-1))
-                    selectQuery.exec();
-                //END no size support
+                    if (!selectQuery.seek(-1))
+                        selectQuery.exec();
+                    //END no size support
 
-                beginInsertRows(parent, 0, numResults - 1);
+                    beginInsertRows(parent, 0, numResults - 1);
+                }
+
+                updateFolderModelData(selectQuery, item);
+
+                if (!firstLevelUpdated) {
+                    endInsertRows();
+                    firstLevelUpdated = true;
+                }
+
+                nextLevelItems << item->children();
             }
 
-            updateFolderModelData(selectQuery, item);
-
-            if (!firstLevelUpdated) {
-                endInsertRows();
-                firstLevelUpdated = true;
-            }
-
-            nextLevelItems << item->children();
+            items.clear();
+            items = nextLevelItems;
         }
-
-        items.clear();
-        items = nextLevelItems;
+        connectionName = db.connectionName();
     }
-
     QLOG_DEBUG() << "item->childCount()-1" << item->childCount() - 1;
 
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QModelIndex &parent)
@@ -545,11 +556,14 @@ QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QMod
     newFolder.name = folderName;
     newFolder.parentId = parentItem->id;
     newFolder.path = parentItem->data(1).toString() + "/" + folderName;
-
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-    newFolder.id = DBHelper::insert(&newFolder, db);
-    DBHelper::updateChildrenInfo(parentItem->id, db);
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        newFolder.id = DBHelper::insert(&newFolder, db);
+        DBHelper::updateChildrenInfo(parentItem->id, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 
     int destRow = 0;
 
@@ -585,19 +599,27 @@ void FolderModel::deleteFolder(const QModelIndex &mi)
     Folder f;
     f.setId(item->id);
 
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-    DBHelper::removeFromDB(&f, db);
-    DBHelper::updateChildrenInfo(item->parent()->id, db);
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        DBHelper::removeFromDB(&f, db);
+        DBHelper::updateChildrenInfo(item->parent()->id, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 
     endRemoveRows();
 }
 
 void FolderModel::updateFolderChildrenInfo(qulonglong folderId)
 {
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-    DBHelper::updateChildrenInfo(folderId, db);
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        DBHelper::updateChildrenInfo(folderId, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 //PROXY
@@ -658,10 +680,10 @@ void FolderModelProxy::setupFilteredModelData()
 
     auto model = static_cast<FolderModel *>(sourceModel());
 
-    //cargar la base de datos
-    QSqlDatabase db = DataBaseManagement::loadDatabase(model->_databasePath);
-    //crear la consulta
+    QString connectionName = "";
     {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(model->_databasePath);
+
         QSqlQuery selectQuery(db); //TODO check
         if (!includeComics) {
             selectQuery.prepare("select * from folder where id <> 1 and upper(name) like upper(:filter) order by parentId,name ");
@@ -700,10 +722,9 @@ void FolderModelProxy::setupFilteredModelData()
         selectQuery.exec();
 
         setupFilteredModelData(selectQuery, rootItem);
+        connectionName = db.connectionName();
     }
-    //selectQuery.finish();
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
 
     endResetModel();
 }

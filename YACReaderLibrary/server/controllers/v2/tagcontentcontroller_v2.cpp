@@ -7,6 +7,9 @@
 
 #include <QUrl>
 
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
+
 TagContentControllerV2::TagContentControllerV2()
 {
 }

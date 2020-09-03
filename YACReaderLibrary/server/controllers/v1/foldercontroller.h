@@ -5,7 +5,7 @@
 #include "httpresponse.h"
 #include "httprequesthandler.h"
 
-class FolderController : public HttpRequestHandler
+class FolderController : public stefanfrings::HttpRequestHandler
 {
     Q_OBJECT
     Q_DISABLE_COPY(FolderController);
@@ -15,7 +15,7 @@ public:
     FolderController();
 
     /** Generates the response */
-    void service(HttpRequest &request, HttpResponse &response) override;
+    void service(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response) override;
 };
 
 #endif // FOLDERCONTROLLER_H

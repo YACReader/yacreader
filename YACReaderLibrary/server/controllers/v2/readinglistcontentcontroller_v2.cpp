@@ -5,6 +5,9 @@
 
 #include "yacreader_server_data_helper.h"
 
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
+
 ReadingListContentControllerV2::ReadingListContentControllerV2()
 {
 }

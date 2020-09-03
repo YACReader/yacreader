@@ -47,14 +47,6 @@ void Configuration::load(QSettings *settings)
         settings->setValue(SHOW_TOOLBARS, true);
     if (!settings->contains(QUICK_NAVI_MODE))
         settings->setValue(QUICK_NAVI_MODE, false);
-    //old fit stuff
-    /*if(!settings->contains(FIT))
-		settings->setValue(FIT,false);
-	if(!settings->contains(FIT_TO_WIDTH_RATIO))
-		settings->setValue(FIT_TO_WIDTH_RATIO,1);
-	if(!settings->contains(ADJUST_TO_FULL_SIZE))
-		settings->setValue(ADJUST_TO_FULL_SIZE,false);
-	*/
 }
 void Configuration::updateOpenRecentList(QString path)
 {

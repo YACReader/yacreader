@@ -8,7 +8,10 @@
 #include "template.h"
 #include "../static.h"
 
-TagInfoControllerV2::TagInfoControllerV2() {}
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
+
+TagInfoControllerV2::TagInfoControllerV2() { }
 
 void TagInfoControllerV2::service(HttpRequest &request, HttpResponse &response)
 {

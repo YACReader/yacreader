@@ -65,12 +65,16 @@ const QStringList ComicArchiveExtensions = QStringList() << "*.cbr"
                                                          << "*.rar"
                                                          << "*.zip"
                                                          << "*.tar"
+                                                         << "*.7z"
+                                                         << "*.cb7"
                                                          << "*.cbt";
 const QStringList LiteralComicArchiveExtensions = QStringList() << "cbr"
                                                                 << "cbz"
                                                                 << "rar"
                                                                 << "zip"
                                                                 << "tar"
+                                                                << "7z"
+                                                                << "cb7"
                                                                 << "cbt";
 #endif //use_unarr
 #ifndef NO_PDF

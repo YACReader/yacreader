@@ -35,6 +35,9 @@ QString ComicDB::toTXT()
     txt.append(QString("currentPage:%1\r\n").arg(info.currentPage));
     txt.append(QString("contrast:%1\r\n").arg(info.contrast));
 
+    //send read status, at some point downloads have to migrate to use comicfullinfocontroller
+    txt.append(QString("read:%1\r\n").arg(info.read ? 1 : 0));
+
     //Informaci�n general
     if (!info.coverPage.isNull())
         txt.append(QString("coverPage:%1\r\n").arg(info.coverPage.toString()));
