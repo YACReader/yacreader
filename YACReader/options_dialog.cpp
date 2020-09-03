@@ -146,6 +146,19 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     scaleLayout->addWidget(scaleCheckbox);
     scaleBox->setLayout(scaleLayout);
     layoutImageV->addWidget(scaleBox);
+
+    auto doublePageBox = new QGroupBox(tr("Double Page options"));
+    auto doublePageBoxLayout = new QVBoxLayout();
+    coverSPCheckBox = new QCheckBox(tr("Show covers as single page"));
+    connect(coverSPCheckBox, &QCheckBox::clicked,
+            [=](bool checked) {
+                settings->setValue(COVER_IS_SP, checked);
+                emit(changedImageOptions());
+            });
+
+    doublePageBoxLayout->addWidget(coverSPCheckBox);
+    doublePageBox->setLayout(doublePageBoxLayout);
+    layoutImageV->addWidget(doublePageBox);
     layoutImageV->addStretch();
 
     pageGeneral->setLayout(layoutGeneral);
@@ -236,6 +249,7 @@ void OptionsDialog::restoreOptions(QSettings *settings)
     gammaS->setValue(settings->value(GAMMA, 100).toInt());
 
     scaleCheckbox->setChecked(settings->value(ENLARGE_IMAGES, true).toBool());
+    coverSPCheckBox->setChecked(settings->value(COVER_IS_SP, true).toBool());
 }
 
 void OptionsDialog::updateColor(const QColor &color)

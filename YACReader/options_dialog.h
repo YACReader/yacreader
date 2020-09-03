@@ -26,6 +26,7 @@ private:
     QCheckBox *quickNavi;
     QCheckBox *disableShowOnMouseOver;
     QCheckBox *scaleCheckbox;
+    QCheckBox *coverSPCheckBox;
 
     QLabel *magGlassSizeLabel;
 
