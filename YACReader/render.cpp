@@ -11,6 +11,7 @@
 
 #include "comic_db.h"
 #include "yacreader_global_gui.h"
+#include "configuration.h"
 
 template<class T>
 inline const T &kClamp(const T &x, const T &low, const T &high)
@@ -544,6 +545,9 @@ QPixmap *Render::getCurrentDoubleMangaPage()
 
 bool Render::currentPageIsDoublePage()
 {
+    if (currentIndex == 0 && Configuration::getConfiguration().getSettings()->value(COVER_IS_SP, true).toBool()) {
+        return false;
+    }
     if (buffer[currentPageBufferedIndex]->isNull() || buffer[currentPageBufferedIndex + 1]->isNull()) {
         return false;
     }
@@ -583,6 +587,12 @@ bool Render::nextPageIsDoublePage()
 
 bool Render::previousPageIsDoublePage()
 {
+    qWarning("Previous page is doublepage!");
+    qWarning("%d", currentIndex);
+    qWarning("%d", currentPageBufferedIndex);
+    if (currentIndex == 2 && Configuration::getConfiguration().getSettings()->value(COVER_IS_SP, true).toBool()) {
+        return false;
+    }
     if (buffer[currentPageBufferedIndex - 1]->isNull() || buffer[currentPageBufferedIndex - 2]->isNull()) {
         return false;
     }

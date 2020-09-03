@@ -10,6 +10,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ### YACReader
 * Image enlargement/stretching can now be disabled for fit
   to width and height
+* New option to show covers as single pages in double page mode (enabled by default)
 
 ### YACReaderLibrary
 * update QsLog logger to version 2.1, snapshot 46b643d5bcbc
