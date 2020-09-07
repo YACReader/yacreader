@@ -6,7 +6,11 @@ spanish only. Sorry for the mess.
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
-## 9.7.0 (unreleased)
+## WIP
+### YACReader
+* Fix enlargement/stretching default value
+
+## 9.7.0
 ### YACReader
 * Image enlargement/stretching can now be disabled for fit
   to width and height
