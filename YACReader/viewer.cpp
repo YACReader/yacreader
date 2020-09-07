@@ -317,7 +317,7 @@ void Viewer::updateContentSize()
     //there is an image to resize
     if (currentPage != nullptr && !currentPage->isNull()) {
         QSize pagefit = currentPage->size();
-        bool stretchImages = Configuration::getConfiguration().getSettings()->value(ENLARGE_IMAGES).toBool();
+        bool stretchImages = Configuration::getConfiguration().getSettings()->value(ENLARGE_IMAGES, true).toBool();
         YACReader::FitMode fitmode = Configuration::getConfiguration().getFitMode();
         switch (fitmode) {
         case YACReader::FitMode::FullRes:
