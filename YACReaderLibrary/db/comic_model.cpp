@@ -153,23 +153,25 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
     foreach (ComicItem *item, _data) {
         allComicIds << item->data(Id).toULongLong();
     }
-
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-    switch (mode) {
-    case Favorites:
-        DBHelper::reasignOrderToComicsInFavorites(allComicIds, db);
-        break;
-    case Label:
-        DBHelper::reasignOrderToComicsInLabel(sourceId, allComicIds, db);
-        break;
-    case ReadingList:
-        DBHelper::reasignOrderToComicsInReadingList(sourceId, allComicIds, db);
-        break;
-    default:
-        break;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        switch (mode) {
+        case Favorites:
+            DBHelper::reasignOrderToComicsInFavorites(allComicIds, db);
+            break;
+        case Label:
+            DBHelper::reasignOrderToComicsInLabel(sourceId, allComicIds, db);
+            break;
+        case ReadingList:
+            DBHelper::reasignOrderToComicsInReadingList(sourceId, allComicIds, db);
+            break;
+        default:
+            break;
+        }
+        connectionName = db.connectionName();
     }
-
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
 
     //endMoveRows();
 
@@ -442,8 +444,9 @@ void ComicModel::setupFolderModelData(unsigned long long int folderId, const QSt
     _data.clear();
 
     _databasePath = databasePath;
-    QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+    QString connectionName = "";
     {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         QSqlQuery selectQuery(db);
         selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
@@ -451,13 +454,10 @@ void ComicModel::setupFolderModelData(unsigned long long int folderId, const QSt
         selectQuery.bindValue(":parentId", folderId);
         selectQuery.exec();
         setupModelData(selectQuery);
+        connectionName = db.connectionName();
     }
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
     endResetModel();
-
-    /*if(_data.length()==0)
-        emit isEmpty();*/
 }
 
 void ComicModel::setupLabelModelData(unsigned long long parentLabel, const QString &databasePath)
@@ -471,8 +471,9 @@ void ComicModel::setupLabelModelData(unsigned long long parentLabel, const QStri
     _data.clear();
 
     _databasePath = databasePath;
-    QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+    QString connectionName = "";
     {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         QSqlQuery selectQuery(db);
         selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
@@ -482,13 +483,10 @@ void ComicModel::setupLabelModelData(unsigned long long parentLabel, const QStri
         selectQuery.bindValue(":parentLabelId", parentLabel);
         selectQuery.exec();
         setupModelDataForList(selectQuery);
+        connectionName = db.connectionName();
     }
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
     endResetModel();
-
-    /*if(_data.length()==0)
-        emit isEmpty();*/
 }
 
 void ComicModel::setupReadingListModelData(unsigned long long parentReadingList, const QString &databasePath)
@@ -501,8 +499,9 @@ void ComicModel::setupReadingListModelData(unsigned long long parentReadingList,
     _data.clear();
 
     _databasePath = databasePath;
-    QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+    QString connectionName = "";
     {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         QList<qulonglong> ids;
         ids << parentReadingList;
 
@@ -536,9 +535,9 @@ void ComicModel::setupReadingListModelData(unsigned long long parentReadingList,
 
             _data = tempData << _data;
         }
+        connectionName = db.connectionName();
     }
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
     endResetModel();
 }
 
@@ -552,8 +551,9 @@ void ComicModel::setupFavoritesModelData(const QString &databasePath)
     _data.clear();
 
     _databasePath = databasePath;
-    QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+    QString connectionName = "";
     {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         QSqlQuery selectQuery(db);
         selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
@@ -563,13 +563,10 @@ void ComicModel::setupFavoritesModelData(const QString &databasePath)
         selectQuery.bindValue(":parentDefaultListId", 1);
         selectQuery.exec();
         setupModelDataForList(selectQuery);
+        connectionName = db.connectionName();
     }
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
     endResetModel();
-
-    /*if(_data.length()==0)
-        emit isEmpty();*/
 }
 
 void ComicModel::setupReadingModelData(const QString &databasePath)
@@ -582,8 +579,9 @@ void ComicModel::setupReadingModelData(const QString &databasePath)
     _data.clear();
 
     _databasePath = databasePath;
-    QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+    QString connectionName = "";
     {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         QSqlQuery selectQuery(db);
         selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
@@ -592,32 +590,22 @@ void ComicModel::setupReadingModelData(const QString &databasePath)
         selectQuery.exec();
 
         setupModelDataForList(selectQuery);
+        connectionName = db.connectionName();
     }
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
     endResetModel();
-
-    /*if(_data.length()==0)
-        emit isEmpty();*/
 }
 
 void ComicModel::setupModelData(const SearchModifiers modifier, const QString &filter, const QString &databasePath)
 {
-    //QFile f(QCoreApplication::applicationDirPath()+"/performance.txt");
-    //f.open(QIODevice::Append);
     beginResetModel();
-    //QElapsedTimer timer;
-    //timer.start();
     qDeleteAll(_data);
     _data.clear();
-
-    //QTextStream txtS(&f);
-    //txtS << "TABLEMODEL: Tiempo de borrado: " << timer.elapsed() << "ms\r\n";
     _databasePath = databasePath;
-    QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+    QString connectionName = "";
+
     {
-        //crear la consulta
-        //timer.restart();
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         QSqlQuery selectQuery(db);
 
         std::string queryString("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
@@ -654,14 +642,10 @@ void ComicModel::setupModelData(const SearchModifiers modifier, const QString &f
         }
         selectQuery.exec();
 
-        //txtS << "TABLEMODEL: Tiempo de consulta: " << timer.elapsed() << "ms\r\n";
-        //timer.restart();
         setupModelData(selectQuery);
-        //txtS << "TABLEMODEL: Tiempo de creaciï¿½n del modelo: " << timer.elapsed() << "ms\r\n";
-        //selectQuery.finish();
+        connectionName = db.connectionName();
     }
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
     endResetModel();
 
     emit searchNumResults(_data.length());
@@ -716,20 +700,28 @@ void ComicModel::setupModelDataForList(QSqlQuery &sqlquery)
 
 ComicDB ComicModel::getComic(const QModelIndex &mi)
 {
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-    ComicDB c = DBHelper::loadComic(_data.at(mi.row())->data(ComicModel::Id).toULongLong(), db);
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    ComicDB c;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        c = DBHelper::loadComic(_data.at(mi.row())->data(ComicModel::Id).toULongLong(), db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 
     return c;
 }
 
 ComicDB ComicModel::_getComic(const QModelIndex &mi)
 {
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-    ComicDB c = DBHelper::loadComic(_data.at(mi.row())->data(ComicModel::Id).toULongLong(), db);
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    ComicDB c;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        c = DBHelper::loadComic(_data.at(mi.row())->data(ComicModel::Id).toULongLong(), db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 
     return c;
 }
@@ -758,18 +750,21 @@ QVector<YACReaderComicReadStatus> ComicModel::setAllComicsRead(YACReaderComicRea
 
 QList<ComicDB> ComicModel::getAllComics()
 {
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-    db.transaction();
-
     QList<ComicDB> comics;
-    int numComics = _data.count();
-    for (int i = 0; i < numComics; i++) {
-        comics.append(DBHelper::loadComic(_data.value(i)->data(ComicModel::Id).toULongLong(), db));
-    }
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        db.transaction();
 
-    db.commit();
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+        int numComics = _data.count();
+        for (int i = 0; i < numComics; i++) {
+            comics.append(DBHelper::loadComic(_data.value(i)->data(ComicModel::Id).toULongLong(), db));
+        }
+
+        db.commit();
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 
     return comics;
 }
@@ -777,44 +772,41 @@ QList<ComicDB> ComicModel::getAllComics()
 QList<ComicDB> ComicModel::getComics(QList<QModelIndex> list)
 {
     QList<ComicDB> comics;
-
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-    db.transaction();
-    QList<QModelIndex>::const_iterator itr;
-    for (itr = list.constBegin(); itr != list.constEnd(); itr++) {
+    for (auto itr = list.constBegin(); itr != list.constEnd(); itr++) {
         comics.append(_getComic(*itr));
     }
-    db.commit();
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
     return comics;
 }
 //TODO
 QVector<YACReaderComicReadStatus> ComicModel::setComicsRead(QList<QModelIndex> list, YACReaderComicReadStatus read)
 {
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-    db.transaction();
-    foreach (QModelIndex mi, list) {
-        if (read == YACReader::Read) {
-            _data.value(mi.row())->setData(ComicModel::ReadColumn, QVariant(true));
-            ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(ComicModel::Id).toULongLong(), db);
-            c.info.read = true;
-            DBHelper::update(&(c.info), db);
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        db.transaction();
+        foreach (QModelIndex mi, list) {
+            if (read == YACReader::Read) {
+                _data.value(mi.row())->setData(ComicModel::ReadColumn, QVariant(true));
+                ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(ComicModel::Id).toULongLong(), db);
+                c.info.read = true;
+                DBHelper::update(&(c.info), db);
+            }
+            if (read == YACReader::Unread) {
+                _data.value(mi.row())->setData(ComicModel::ReadColumn, QVariant(false));
+                _data.value(mi.row())->setData(ComicModel::CurrentPage, QVariant(1));
+                _data.value(mi.row())->setData(ComicModel::HasBeenOpened, QVariant(false));
+                ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(ComicModel::Id).toULongLong(), db);
+                c.info.read = false;
+                c.info.currentPage = 1;
+                c.info.hasBeenOpened = false;
+                c.info.lastTimeOpened.setValue(QVariant());
+                DBHelper::update(&(c.info), db);
+            }
         }
-        if (read == YACReader::Unread) {
-            _data.value(mi.row())->setData(ComicModel::ReadColumn, QVariant(false));
-            _data.value(mi.row())->setData(ComicModel::CurrentPage, QVariant(1));
-            _data.value(mi.row())->setData(ComicModel::HasBeenOpened, QVariant(false));
-            ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(ComicModel::Id).toULongLong(), db);
-            c.info.read = false;
-            c.info.currentPage = 1;
-            c.info.hasBeenOpened = false;
-            DBHelper::update(&(c.info), db);
-        }
+        db.commit();
+        connectionName = db.connectionName();
     }
-    db.commit();
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
 
     emit dataChanged(index(list.first().row(), ComicModel::ReadColumn), index(list.last().row(), ComicModel::HasBeenOpened), QVector<int>() << ReadColumnRole << CurrentPageRole << HasBeenOpenedRole);
 
@@ -822,23 +814,25 @@ QVector<YACReaderComicReadStatus> ComicModel::setComicsRead(QList<QModelIndex> l
 }
 qint64 ComicModel::asignNumbers(QList<QModelIndex> list, int startingNumber)
 {
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-    db.transaction();
-    qint64 idFirst = _data.value(list[0].row())->data(ComicModel::Id).toULongLong();
-    int i = 0;
-    foreach (QModelIndex mi, list) {
-        ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(ComicModel::Id).toULongLong(), db);
-        c.info.number = startingNumber + i;
-        c.info.edited = true;
-        DBHelper::update(&(c.info), db);
-        i++;
+    qint64 idFirst;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        db.transaction();
+        idFirst = _data.value(list[0].row())->data(ComicModel::Id).toULongLong();
+        int i = 0;
+        foreach (QModelIndex mi, list) {
+            ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(ComicModel::Id).toULongLong(), db);
+            c.info.number = startingNumber + i;
+            c.info.edited = true;
+            DBHelper::update(&(c.info), db);
+            i++;
+        }
+        db.commit();
+        connectionName = db.connectionName();
     }
 
-    db.commit();
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
-
-    //emit dataChanged(index(0,ComicModel::Number),index(_data.count()-1,ComicModel::HasBeenOpened));
+    QSqlDatabase::removeDatabase(connectionName);
 
     return idFirst;
 }
@@ -868,19 +862,22 @@ QList<QModelIndex> ComicModel::getIndexesFromIds(const QList<qulonglong> &comicI
 
 void ComicModel::startTransaction()
 {
-    dbTransaction = DataBaseManagement::loadDatabase(_databasePath);
+    auto dbTransaction = DataBaseManagement::loadDatabase(_databasePath);
+    _databaseConnection = dbTransaction.connectionName();
     dbTransaction.transaction();
 }
 
 void ComicModel::finishTransaction()
 {
-    dbTransaction.commit();
-    dbTransaction.close();
-    QSqlDatabase::removeDatabase(dbTransaction.connectionName());
+    {
+        QSqlDatabase::database(_databaseConnection).commit();
+    }
+    QSqlDatabase::removeDatabase(_databaseConnection);
 }
 
 void ComicModel::removeInTransaction(int row)
 {
+    auto dbTransaction = QSqlDatabase::database(_databaseConnection);
     ComicDB c = DBHelper::loadComic(_data.at(row)->data(ComicModel::Id).toULongLong(), dbTransaction);
 
     DBHelper::removeFromDB(&c, dbTransaction);
@@ -891,27 +888,6 @@ void ComicModel::removeInTransaction(int row)
 
     endRemoveRows();
 }
-/*
-void ComicModel::remove(ComicDB * comic, int row)
-{
-	beginRemoveRows(QModelIndex(),row,row);
-	QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-
-	DBHelper::removeFromDB(comic,db);
-	
-	removeRow(row);
-	delete _data.at(row);
-	_data.removeAt(row);
-
-	db.close();
-	QSqlDatabase::removeDatabase(db.connectionName());
-	endRemoveRows();
-}
-*/
-/*ComicDB TableModel::getComic(int row)
-{
-	return getComic(index(row,0));
-}*/
 
 void ComicModel::remove(int row)
 {
@@ -939,17 +915,18 @@ void ComicModel::reload(const ComicDB &comic)
 void ComicModel::resetComicRating(const QModelIndex &mi)
 {
     ComicDB comic = getComic(mi);
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        comic.info.rating = 0;
+        _data[mi.row()]->setData(ComicModel::Rating, 0);
+        DBHelper::update(&(comic.info), db);
 
-    comic.info.rating = 0;
-    _data[mi.row()]->setData(ComicModel::Rating, 0);
-    DBHelper::update(&(comic.info), db);
-
-    emit dataChanged(mi, mi);
-
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+        emit dataChanged(mi, mi);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 QUrl ComicModel::getCoverUrlPathForComicHash(const QString &hash) const
@@ -965,13 +942,14 @@ void ComicModel::addComicsToFavorites(const QList<qulonglong> &comicIds)
 void ComicModel::addComicsToFavorites(const QList<QModelIndex> &comicsList)
 {
     QList<ComicDB> comics = getComics(comicsList);
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-
-    DBHelper::insertComicsInFavorites(comics, db);
-
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+        DBHelper::insertComicsInFavorites(comics, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 void ComicModel::addComicsToLabel(const QList<qulonglong> &comicIds, qulonglong labelId)
@@ -982,13 +960,14 @@ void ComicModel::addComicsToLabel(const QList<qulonglong> &comicIds, qulonglong 
 void ComicModel::addComicsToLabel(const QList<QModelIndex> &comicsList, qulonglong labelId)
 {
     QList<ComicDB> comics = getComics(comicsList);
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-
-    DBHelper::insertComicsInLabel(comics, labelId, db);
-
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+        DBHelper::insertComicsInLabel(comics, labelId, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 void ComicModel::addComicsToReadingList(const QList<qulonglong> &comicIds, qulonglong readingListId)
@@ -999,25 +978,27 @@ void ComicModel::addComicsToReadingList(const QList<qulonglong> &comicIds, qulon
 void ComicModel::addComicsToReadingList(const QList<QModelIndex> &comicsList, qulonglong readingListId)
 {
     QList<ComicDB> comics = getComics(comicsList);
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-
-    DBHelper::insertComicsInReadingList(comics, readingListId, db);
-
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+        DBHelper::insertComicsInReadingList(comics, readingListId, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 void ComicModel::deleteComicsFromFavorites(const QList<QModelIndex> &comicsList)
 {
     QList<ComicDB> comics = getComics(comicsList);
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-
-    DBHelper::deleteComicsFromFavorites(comics, db);
-
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+        DBHelper::deleteComicsFromFavorites(comics, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 
     if (mode == Favorites)
         deleteComicsFromModel(comicsList);
@@ -1026,13 +1007,14 @@ void ComicModel::deleteComicsFromFavorites(const QList<QModelIndex> &comicsList)
 void ComicModel::deleteComicsFromLabel(const QList<QModelIndex> &comicsList, qulonglong labelId)
 {
     QList<ComicDB> comics = getComics(comicsList);
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-
-    DBHelper::deleteComicsFromLabel(comics, labelId, db);
-
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+        DBHelper::deleteComicsFromLabel(comics, labelId, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 
     deleteComicsFromModel(comicsList);
 }
@@ -1040,13 +1022,14 @@ void ComicModel::deleteComicsFromLabel(const QList<QModelIndex> &comicsList, qul
 void ComicModel::deleteComicsFromReadingList(const QList<QModelIndex> &comicsList, qulonglong readingListId)
 {
     QList<ComicDB> comics = getComics(comicsList);
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-
-    DBHelper::deleteComicsFromReadingList(comics, readingListId, db);
-
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+        DBHelper::deleteComicsFromReadingList(comics, readingListId, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 
     deleteComicsFromModel(comicsList);
 }
@@ -1069,13 +1052,14 @@ void ComicModel::deleteComicsFromModel(const QList<QModelIndex> &comicsList)
 bool ComicModel::isFavorite(const QModelIndex &index)
 {
     bool isFavorite;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-
-    isFavorite = DBHelper::isFavoriteComic(_data[index.row()]->data(Id).toLongLong(), db);
-
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+        isFavorite = DBHelper::isFavoriteComic(_data[index.row()]->data(Id).toLongLong(), db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 
     return isFavorite;
 }
@@ -1083,16 +1067,17 @@ bool ComicModel::isFavorite(const QModelIndex &index)
 void ComicModel::updateRating(int rating, QModelIndex mi)
 {
     ComicDB comic = getComic(mi);
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        //TODO optimize update
 
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-    //TODO optimize update
+        comic.info.rating = rating;
+        _data[mi.row()]->setData(ComicModel::Rating, rating);
+        DBHelper::update(&(comic.info), db);
 
-    comic.info.rating = rating;
-    _data[mi.row()]->setData(ComicModel::Rating, rating);
-    DBHelper::update(&(comic.info), db);
-
-    emit dataChanged(mi, mi);
-
-    db.close();
-    QSqlDatabase::removeDatabase(db.connectionName());
+        emit dataChanged(mi, mi);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 }

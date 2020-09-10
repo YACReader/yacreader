@@ -161,7 +161,7 @@ void Viewer::createConnections()
     connect(goToFlow, SIGNAL(goToPage(unsigned int)), this, SLOT(goTo(unsigned int)));
 
     //current time
-    auto t = new QTimer();
+    auto t = new QTimer(this);
     connect(t, SIGNAL(timeout()), this, SLOT(updateInformation()));
     t->start(1000);
 
@@ -206,10 +206,7 @@ void Viewer::prepareForOpening()
     verticalScrollBar()->setSliderPosition(verticalScrollBar()->minimum());
 
     if (Configuration::getConfiguration().getShowInformation() && !information) {
-        auto timer = new QTimer();
-        connect(timer, SIGNAL(timeout()), this, SLOT(informationSwitch()));
-        connect(timer, SIGNAL(timeout()), timer, SLOT(deleteLater()));
-        timer->start();
+        QTimer::singleShot(0, this, &Viewer::informationSwitch);
     }
 
     informationLabel->setText("...");
@@ -319,24 +316,27 @@ void Viewer::updateContentSize()
 {
     //there is an image to resize
     if (currentPage != nullptr && !currentPage->isNull()) {
-        QSize pagefit;
+        QSize pagefit = currentPage->size();
+        bool stretchImages = Configuration::getConfiguration().getEnlargeImages();
         YACReader::FitMode fitmode = Configuration::getConfiguration().getFitMode();
         switch (fitmode) {
         case YACReader::FitMode::FullRes:
-            pagefit = currentPage->size();
             break;
         case YACReader::FitMode::ToWidth:
-            pagefit = currentPage->size();
+            if (!stretchImages && width() > pagefit.width()) {
+                break;
+            }
             pagefit.scale(width(), 0, Qt::KeepAspectRatioByExpanding);
             break;
         case YACReader::FitMode::ToHeight:
-            pagefit = currentPage->size();
+            if (!stretchImages && height() > pagefit.height()) {
+                break;
+            }
             pagefit.scale(0, height(), Qt::KeepAspectRatioByExpanding);
             break;
             //if everything fails showing the full page is a good idea
         case YACReader::FitMode::FullPage:
         default:
-            pagefit = currentPage->size();
             pagefit.scale(size(), Qt::KeepAspectRatio);
             break;
         }

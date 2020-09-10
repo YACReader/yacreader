@@ -5,7 +5,10 @@
 
 #include "yacreader_server_data_helper.h"
 
-FavoritesControllerV2::FavoritesControllerV2() {}
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
+
+FavoritesControllerV2::FavoritesControllerV2() { }
 
 void FavoritesControllerV2::service(HttpRequest &request, HttpResponse &response)
 {

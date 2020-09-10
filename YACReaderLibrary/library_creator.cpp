@@ -64,19 +64,21 @@ void LibraryCreator::updateFolder(const QString &source, const QString &target, 
     }
 
     QLOG_DEBUG() << "folders found in relative path : " << folders << "-" << relativeFolderPath;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(target);
 
-    QSqlDatabase db = DataBaseManagement::loadDatabase(target);
-
-    foreach (QString folderName, folders) {
-        if (folderName.isEmpty()) {
-            break;
+        foreach (QString folderName, folders) {
+            if (folderName.isEmpty()) {
+                break;
+            }
+            qulonglong parentId = _currentPathFolders.last().id;
+            _currentPathFolders.append(DBHelper::loadFolder(folderName, parentId, db));
+            QLOG_DEBUG() << "Folder appended : " << _currentPathFolders.last().id << " " << _currentPathFolders.last().name << " with parent" << _currentPathFolders.last().parentId;
         }
-        qulonglong parentId = _currentPathFolders.last().id;
-        _currentPathFolders.append(DBHelper::loadFolder(folderName, parentId, db));
-        QLOG_DEBUG() << "Folder appended : " << _currentPathFolders.last().id << " " << _currentPathFolders.last().name << " with parent" << _currentPathFolders.last().parentId;
+        connectionName = db.connectionName();
     }
-
-    QSqlDatabase::removeDatabase(_database.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
 
     QLOG_DEBUG() << "Relative path : " << relativeFolderPath;
 
@@ -127,25 +129,28 @@ void LibraryCreator::run()
         dir.mkpath(_target + "/covers");
 
         //se crea la base de datos .yacreaderlibrary/library.ydb
-        _database = DataBaseManagement::createDatabase("library", _target); //
-        if (!_database.isOpen()) {
-            QLOG_ERROR() << "Unable to create data base" << _database.lastError().databaseText() + "-" + _database.lastError().driverText();
-            emit failedCreatingDB(_database.lastError().databaseText() + "-" + _database.lastError().driverText());
-            emit finished();
-            creation = false;
-            return;
+        {
+            auto _database = DataBaseManagement::createDatabase("library", _target); //
+            _databaseConnection = _database.connectionName();
+            if (!_database.isOpen()) {
+                QLOG_ERROR() << "Unable to create data base" << _database.lastError().databaseText() + "-" + _database.lastError().driverText();
+                emit failedCreatingDB(_database.lastError().databaseText() + "-" + _database.lastError().driverText());
+                emit finished();
+                creation = false;
+                return;
+            }
+
+            /*QSqlQuery pragma("PRAGMA foreign_keys = ON",_database);*/
+            _database.transaction();
+            //se crea la librería
+            create(QDir(_source));
+
+            DBHelper::updateChildrenInfo(_database);
+
+            _database.commit();
+            _database.close();
         }
-
-        /*QSqlQuery pragma("PRAGMA foreign_keys = ON",_database);*/
-        _database.transaction();
-        //se crea la librería
-        create(QDir(_source));
-
-        DBHelper::updateChildrenInfo(_database);
-
-        _database.commit();
-        _database.close();
-        QSqlDatabase::removeDatabase(_database.connectionName());
+        QSqlDatabase::removeDatabase(_databaseConnection);
         emit(created());
         QLOG_INFO() << "Create library END";
     } else {
@@ -155,33 +160,38 @@ void LibraryCreator::run()
             _currentPathFolders.append(Folder(1, 1, "root", "/"));
             QLOG_DEBUG() << "update whole library";
         }
+        {
+            auto _database = DataBaseManagement::loadDatabase(_target);
+            _databaseConnection = _database.connectionName();
 
-        _database = DataBaseManagement::loadDatabase(_target);
-        //_database.setDatabaseName(_target+"/library.ydb");
-        if (!_database.open()) {
-            QLOG_ERROR() << "Unable to open data base" << _database.lastError().databaseText() + "-" + _database.lastError().driverText();
-            emit failedOpeningDB(_database.lastError().databaseText() + "-" + _database.lastError().driverText());
-            emit finished();
-            creation = false;
-            return;
+            //_database.setDatabaseName(_target+"/library.ydb");
+            if (!_database.open()) {
+                QLOG_ERROR() << "Unable to open data base" << _database.lastError().databaseText() + "-" + _database.lastError().driverText();
+                emit failedOpeningDB(_database.lastError().databaseText() + "-" + _database.lastError().driverText());
+                emit finished();
+                creation = false;
+                return;
+            }
+            QSqlQuery pragma("PRAGMA foreign_keys = ON", _database);
+            _database.transaction();
+
+            if (partialUpdate) {
+                update(QDir(_sourceFolder));
+            } else {
+                update(QDir(_source));
+            }
+
+            if (partialUpdate)
+                DBHelper::updateChildrenInfo(folderDestinationModelIndex.data(FolderModel::IdRole).toULongLong(), _database);
+            else
+                DBHelper::updateChildrenInfo(_database);
+
+            _database.commit();
+            _database.close();
         }
-        QSqlQuery pragma("PRAGMA foreign_keys = ON", _database);
-        _database.transaction();
 
-        if (partialUpdate) {
-            update(QDir(_sourceFolder));
-        } else {
-            update(QDir(_source));
-        }
+        QSqlDatabase::removeDatabase(_databaseConnection);
 
-        if (partialUpdate)
-            DBHelper::updateChildrenInfo(folderDestinationModelIndex.data(FolderModel::IdRole).toULongLong(), _database);
-        else
-            DBHelper::updateChildrenInfo(_database);
-
-        _database.commit();
-        _database.close();
-        QSqlDatabase::removeDatabase(_database.databaseName());
         //si estabamos en modo creación, se está añadiendo una librería que ya existía y se ha actualizado antes de añadirse.
         if (!partialUpdate) {
             if (!creation) {
@@ -203,13 +213,14 @@ void LibraryCreator::run()
 
 void LibraryCreator::stop()
 {
-    _database.commit();
+    QSqlDatabase::database(_databaseConnection).commit();
     stopRunning = true;
 }
 
 //retorna el id del ultimo de los folders
 qulonglong LibraryCreator::insertFolders()
 {
+    auto _database = QSqlDatabase::database(_databaseConnection);
     QList<Folder>::iterator i;
     int currentId = 0;
     for (i = _currentPathFolders.begin(); i != _currentPathFolders.end(); ++i) {
@@ -266,6 +277,7 @@ bool LibraryCreator::checkCover(const QString &hash)
 
 void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &fileInfo)
 {
+    auto _database = QSqlDatabase::database(_databaseConnection);
     //Se calcula el hash del cómic
 
     QCryptographicHash crypto(QCryptographicHash::Sha1);
@@ -305,6 +317,7 @@ void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
 
 void LibraryCreator::update(QDir dirS)
 {
+    auto _database = QSqlDatabase::database(_databaseConnection);
     //QLOG_TRACE() << "Updating" << dirS.absolutePath();
     //QLOG_TRACE() << "Getting info from dir" << dirS.absolutePath();
     dirS.setNameFilters(_nameFilter);

@@ -372,69 +372,68 @@ void ReadingListModel::setupReadingListsData(QString path)
 
 void ReadingListModel::addNewLabel(const QString &name, YACReader::LabelColors color)
 {
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-    qulonglong id = DBHelper::insertLabel(name, color, db);
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        qulonglong id = DBHelper::insertLabel(name, color, db);
 
-    int newPos = addLabelIntoList(new LabelItem(QList<QVariant>() << name << YACReader::colorToName(color) << id << color));
-    beginInsertRows(QModelIndex(), specialLists.count() + 1 + newPos + 1, specialLists.count() + 1 + newPos + 1);
+        int newPos = addLabelIntoList(new LabelItem(QList<QVariant>() << name << YACReader::colorToName(color) << id << color));
+        beginInsertRows(QModelIndex(), specialLists.count() + 1 + newPos + 1, specialLists.count() + 1 + newPos + 1);
 
-    endInsertRows();
-
-    QSqlDatabase::removeDatabase(db.connectionName());
+        endInsertRows();
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 void ReadingListModel::addReadingList(const QString &name)
 {
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        beginInsertRows(QModelIndex(), 0, 0); //TODO calculate the right coordinates before inserting
 
-    beginInsertRows(QModelIndex(), 0, 0); //TODO calculate the right coordinates before inserting
+        qulonglong id = DBHelper::insertReadingList(name, db);
+        ReadingListItem *newItem;
+        rootItem->appendChild(newItem = new ReadingListItem(QList<QVariant>()
+                                                            << name
+                                                            << id
+                                                            << false
+                                                            << true
+                                                            << 0));
 
-    qulonglong id = DBHelper::insertReadingList(name, db);
-    ReadingListItem *newItem;
-    rootItem->appendChild(newItem = new ReadingListItem(QList<QVariant>()
-                                                        << name
-                                                        << id
-                                                        << false
-                                                        << true
-                                                        << 0));
+        items.insert(id, newItem);
 
-    items.insert(id, newItem);
-
-    /*int pos = rootItem->children().indexOf(newItem);
-
-    pos += specialLists.count()+1+labels.count()+labels.count()>0?1:0;*/
-
-    endInsertRows();
-
-    QSqlDatabase::removeDatabase(db.connectionName());
+        endInsertRows();
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 void ReadingListModel::addReadingListAt(const QString &name, const QModelIndex &mi)
 {
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-    beginInsertRows(mi, 0, 0); //TODO calculate the right coordinates before inserting
+        beginInsertRows(mi, 0, 0); //TODO calculate the right coordinates before inserting
 
-    auto readingListParent = static_cast<ReadingListItem *>(mi.internalPointer());
-    qulonglong id = DBHelper::insertReadingSubList(name, mi.data(IDRole).toULongLong(), readingListParent->childCount(), db);
-    ReadingListItem *newItem;
+        auto readingListParent = static_cast<ReadingListItem *>(mi.internalPointer());
+        qulonglong id = DBHelper::insertReadingSubList(name, mi.data(IDRole).toULongLong(), readingListParent->childCount(), db);
+        ReadingListItem *newItem;
 
-    readingListParent->appendChild(newItem = new ReadingListItem(QList<QVariant>()
-                                                                 << name
-                                                                 << id
-                                                                 << false
-                                                                 << true
-                                                                 << readingListParent->childCount()));
+        readingListParent->appendChild(newItem = new ReadingListItem(QList<QVariant>()
+                                                                     << name
+                                                                     << id
+                                                                     << false
+                                                                     << true
+                                                                     << readingListParent->childCount()));
 
-    items.insert(id, newItem);
-
-    /*int pos = readingListParent->children().indexOf(newItem);
-
-    pos += specialLists.count()+1+labels.count()+labels.count()>0?1:0;*/
-
-    endInsertRows();
-
-    QSqlDatabase::removeDatabase(db.connectionName());
+        items.insert(id, newItem);
+        endInsertRows();
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 bool ReadingListModel::isEditable(const QModelIndex &mi)
@@ -477,29 +476,31 @@ void ReadingListModel::rename(const QModelIndex &mi, const QString &name)
 {
     if (!isEditable(mi))
         return;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        auto item = static_cast<ListItem *>(mi.internalPointer());
 
-    auto item = static_cast<ListItem *>(mi.internalPointer());
+        if (typeid(*item) == typeid(ReadingListItem)) {
+            auto rli = static_cast<ReadingListItem *>(item);
+            rli->setName(name);
+            DBHelper::renameList(item->getId(), name, db);
 
-    if (typeid(*item) == typeid(ReadingListItem)) {
-        auto rli = static_cast<ReadingListItem *>(item);
-        rli->setName(name);
-        DBHelper::renameList(item->getId(), name, db);
-
-        if (rli->parent->getId() != 0) {
-            //TODO
-            //move row depending on the name
-        } else
+            if (rli->parent->getId() != 0) {
+                //TODO
+                //move row depending on the name
+            } else
+                emit dataChanged(index(mi.row(), 0), index(mi.row(), 0));
+        } else if (typeid(*item) == typeid(LabelItem)) {
+            auto li = static_cast<LabelItem *>(item);
+            li->setName(name);
+            DBHelper::renameLabel(item->getId(), name, db);
             emit dataChanged(index(mi.row(), 0), index(mi.row(), 0));
-    } else if (typeid(*item) == typeid(LabelItem)) {
-        auto li = static_cast<LabelItem *>(item);
-        li->setName(name);
-        DBHelper::renameLabel(item->getId(), name, db);
-        emit dataChanged(index(mi.row(), 0), index(mi.row(), 0));
+        }
+        connectionName = db.connectionName();
     }
-
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 void ReadingListModel::deleteItem(const QModelIndex &mi)
@@ -507,28 +508,30 @@ void ReadingListModel::deleteItem(const QModelIndex &mi)
     if (isEditable(mi)) {
         QLOG_DEBUG() << "parent row :" << mi.parent().data() << "-" << mi.row();
         beginRemoveRows(mi.parent(), mi.row(), mi.row());
+        QString connectionName = "";
+        {
+            QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+            auto item = static_cast<ListItem *>(mi.internalPointer());
 
-        auto item = static_cast<ListItem *>(mi.internalPointer());
-
-        if (typeid(*item) == typeid(ReadingListItem)) {
-            auto rli = static_cast<ReadingListItem *>(item);
-            QLOG_DEBUG() << "num children : " << rli->parent->childCount();
-            rli->parent->removeChild(rli);
-            QLOG_DEBUG() << "num children : " << rli->parent->childCount();
-            DBHelper::removeListFromDB(item->getId(), db);
-            if (rli->parent->getId() != 0) {
-                reorderingChildren(rli->parent->children());
+            if (typeid(*item) == typeid(ReadingListItem)) {
+                auto rli = static_cast<ReadingListItem *>(item);
+                QLOG_DEBUG() << "num children : " << rli->parent->childCount();
+                rli->parent->removeChild(rli);
+                QLOG_DEBUG() << "num children : " << rli->parent->childCount();
+                DBHelper::removeListFromDB(item->getId(), db);
+                if (rli->parent->getId() != 0) {
+                    reorderingChildren(rli->parent->children());
+                }
+                QLOG_DEBUG() << "num children : " << rli->parent->childCount();
+            } else if (typeid(*item) == typeid(LabelItem)) {
+                auto li = static_cast<LabelItem *>(item);
+                labels.removeOne(li);
+                DBHelper::removeLabelFromDB(item->getId(), db);
             }
-            QLOG_DEBUG() << "num children : " << rli->parent->childCount();
-        } else if (typeid(*item) == typeid(LabelItem)) {
-            auto li = static_cast<LabelItem *>(item);
-            labels.removeOne(li);
-            DBHelper::removeLabelFromDB(item->getId(), db);
+            connectionName = db.connectionName();
         }
-
-        QSqlDatabase::removeDatabase(db.connectionName());
+        QSqlDatabase::removeDatabase(connectionName);
 
         endRemoveRows();
     }
@@ -705,10 +708,13 @@ void ReadingListModel::reorderingChildren(QList<ReadingListItem *> children)
         item->setOrdering(i++);
         childrenIds << item->getId();
     }
-
-    QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-    DBHelper::reasignOrderToSublists(childrenIds, db);
-    QSqlDatabase::removeDatabase(db.connectionName());
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        DBHelper::reasignOrderToSublists(childrenIds, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 bool ReadingListModel::rowIsSpecialList(int row, const QModelIndex &parent) const

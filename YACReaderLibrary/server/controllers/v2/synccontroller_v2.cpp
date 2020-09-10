@@ -5,6 +5,10 @@
 
 #include "comic_db.h"
 #include "db_helper.h"
+#include "yacreader_server_data_helper.h"
+
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
 
 SyncControllerV2::SyncControllerV2()
 {
@@ -12,13 +16,13 @@ SyncControllerV2::SyncControllerV2()
 
 void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
 {
+    response.setHeader("Content-Type", "text/plain; charset=utf-8");
+
     QString postData = QString::fromUtf8(request.getBody());
 
     QLOG_TRACE() << "POST DATA: " << postData;
 
     if (postData.length() > 0) {
-        response.write("OK", true);
-
         QList<QString> data = postData.split("\n");
 
         qulonglong libraryId;
@@ -32,7 +36,7 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
         foreach (QString comicInfo, data) {
             QList<QString> comicInfoProgress = comicInfo.split("\t");
 
-            if (comicInfoProgress.length() == 6) {
+            if (comicInfoProgress.length() >= 6) {
                 if (comicInfoProgress.at(0) != "unknown") {
                     libraryId = comicInfoProgress.at(0).toULongLong();
                     comicId = comicInfoProgress.at(1).toULongLong();
@@ -49,6 +53,11 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
 
                     lastTimeOpened = comicInfoProgress.at(5).toULong();
                     info.lastTimeOpened = lastTimeOpened;
+
+                    if (comicInfoProgress.length() >= 7) {
+                        info.read = comicInfoProgress.at(6).toInt();
+                    }
+
                     if (!comics.contains(libraryId)) {
                         comics[libraryId] = QList<ComicInfo>();
                     }
@@ -72,11 +81,26 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
             }
         }
 
-        DBHelper::updateFromRemoteClient(comics);
+        auto moreRecentComicsFound = DBHelper::updateFromRemoteClient(comics);
+
+        QJsonArray items;
+
+        foreach (qulonglong libraryId, moreRecentComicsFound.keys()) {
+            foreach (ComicDB comic, moreRecentComicsFound[libraryId]) {
+                items.append(YACReaderServerDataHelper::comicToJSON(libraryId, comic));
+            }
+        }
+
+        QJsonDocument output(items);
+
+        response.write(output.toJson(QJsonDocument::Compact), true);
+
+        //TODO does it make sense to send these back? The source is not YACReaderLibrary...
         DBHelper::updateFromRemoteClientWithHash(comicsWithNoLibrary);
+
     } else {
         response.setStatus(412, "No comic info received");
-        response.write("", true);
+        response.write("[]", true);
         return;
     }
 }

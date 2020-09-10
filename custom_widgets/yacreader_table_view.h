@@ -55,7 +55,7 @@ class YACReaderRatingDelegate : public QStyledItemDelegate
 
 public:
     YACReaderRatingDelegate(QWidget *parent = 0)
-        : QStyledItemDelegate(parent) {}
+        : QStyledItemDelegate(parent) { }
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option,
                const QModelIndex &index) const;

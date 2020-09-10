@@ -11,7 +11,10 @@
 
 #include "QsLog.h"
 
-TagsControllerV2::TagsControllerV2() {}
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
+
+TagsControllerV2::TagsControllerV2() { }
 
 void TagsControllerV2::service(HttpRequest &request, HttpResponse &response)
 {

@@ -6,6 +6,28 @@ spanish only. Sorry for the mess.
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## WIP
+### YACReader
+* Fix enlargement/stretching default value
+
+## 9.7.0
+### YACReader
+* Image enlargement/stretching can now be disabled for fit
+  to width and height
+* New option to show covers as single pages in double page mode (enabled by default)
+
+### YACReaderLibrary
+* update QsLog logger to version 2.1, snapshot 46b643d5bcbc
+* fix object leaks in database code
+* add bidirectional sync support
+
+### YACReaderLibraryServer
+* add support for port setting from the commandline
+* update internal server code to QtWebApp 1.7.11
+
+### Refactoring
+* Move QtWebApp and QsLog to new third_party directory
+
 ## 9.6.0
 ### Reader and Library
 * RAR5 support.

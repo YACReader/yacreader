@@ -103,6 +103,8 @@ HEADERS += comic_flow.h \
   ../common/comic.h \
   ../common/bookmarks.h \
   ../common/pictureflow.h \
+  ../common/release_acquire_atomic.h \
+  ../common/worker_thread.h \
   ../common/custom_widgets.h \
   ../common/qnaturalsorting.h \
   ../common/yacreader_global.h \
@@ -273,7 +275,7 @@ include(../compressed_archive/unarr/unarr-wrapper.pri)
 }
 
 include(./comic_vine/comic_vine.pri)
-include(../QsLog/QsLog.pri)
+include(../third_party/QsLog/QsLog.pri)
 include(../shortcuts_management/shortcuts_management.pri)
 
 RESOURCES += images.qrc files.qrc

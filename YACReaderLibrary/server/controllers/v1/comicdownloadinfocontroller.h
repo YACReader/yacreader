@@ -5,7 +5,7 @@
 #include "httpresponse.h"
 #include "httprequesthandler.h"
 
-class ComicDownloadInfoController : public HttpRequestHandler
+class ComicDownloadInfoController : public stefanfrings::HttpRequestHandler
 {
     Q_OBJECT
     Q_DISABLE_COPY(ComicDownloadInfoController);
@@ -15,7 +15,7 @@ public:
     ComicDownloadInfoController();
 
     /** Generates the response */
-    void service(HttpRequest &request, HttpResponse &response) override;
+    void service(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response) override;
 };
 
 #endif // COMICDOWNLOADINFOCONTROLLER_H

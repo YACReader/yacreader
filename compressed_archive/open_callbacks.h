@@ -25,7 +25,7 @@ public:
     UString Password;
 
     YCArchiveOpenCallback()
-        : PasswordIsDefined(false) {}
+        : PasswordIsDefined(false) { }
 };
 
 STDMETHODIMP YCArchiveOpenCallback::SetTotal(const UInt64 * /* files */, const UInt64 * /* bytes */)

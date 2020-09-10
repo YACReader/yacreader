@@ -13,7 +13,11 @@
 
 #include "db_helper.h"
 
-PageController::PageController() {}
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
+using stefanfrings::HttpSession;
+
+PageController::PageController() { }
 
 void PageController::service(HttpRequest &request, HttpResponse &response)
 {

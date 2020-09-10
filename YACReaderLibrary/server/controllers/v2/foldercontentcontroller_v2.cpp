@@ -14,6 +14,9 @@
 
 #include <chrono>
 #include <ctime>
+
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
 using namespace std;
 
 struct LibraryItemSorter {
@@ -23,7 +26,7 @@ struct LibraryItemSorter {
     }
 };
 
-FolderContentControllerV2::FolderContentControllerV2() {}
+FolderContentControllerV2::FolderContentControllerV2() { }
 
 void FolderContentControllerV2::service(HttpRequest &request, HttpResponse &response)
 {

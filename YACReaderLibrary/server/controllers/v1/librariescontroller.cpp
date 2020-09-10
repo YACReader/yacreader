@@ -8,7 +8,12 @@
 
 #include "QsLog.h"
 
-LibrariesController::LibrariesController() {}
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
+using stefanfrings::HttpSession;
+using stefanfrings::Template;
+
+LibrariesController::LibrariesController() { }
 
 void LibrariesController::service(HttpRequest &request, HttpResponse &response)
 {
@@ -20,8 +25,12 @@ void LibrariesController::service(HttpRequest &request, HttpResponse &response)
 
     ySession->clearNavigationPath();
 
-    Template t = Static::templateLoader->getTemplate("libraries_" + ySession->getDeviceType(), request.getHeader("Accept-Language"));
+    Template t = Static::templateLoader->getTemplate("libraries", request.getHeader("Accept-Language"));
     t.enableWarnings();
+
+    // set device type and display
+    t.setVariable("device", ySession->getDeviceType());
+    t.setVariable("display", ySession->getDisplayType());
 
     YACReaderLibraries libraries = DBHelper::getLibraries();
     QList<QString> names = DBHelper::getLibrariesNames();

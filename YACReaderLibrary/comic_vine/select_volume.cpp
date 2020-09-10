@@ -109,7 +109,7 @@ void SelectVolume::load(const QString &json, const QString &searchString)
     ScraperSelector::load(json, searchString);
 }
 
-SelectVolume::~SelectVolume() {}
+SelectVolume::~SelectVolume() { }
 
 void SelectVolume::loadVolumeInfo(const QModelIndex &omi)
 {

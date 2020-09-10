@@ -55,18 +55,6 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 
     connect(pathFindButton, SIGNAL(clicked()), this, SLOT(findFolder()));
 
-    //fitToWidthRatioLabel = new QLabel(tr("Page width stretch"),this);
-    /*QGroupBox *fitBox = new QGroupBox(tr("Page width stretch"));
-	fitToWidthRatioS = new QSlider(this);
-	fitToWidthRatioS->setMinimum(50);
-	fitToWidthRatioS->setMaximum(100);
-	fitToWidthRatioS->setPageStep(5);
-	fitToWidthRatioS->setOrientation(Qt::Horizontal);
-	//connect(fitToWidthRatioS,SIGNAL(valueChanged(int)),this,SLOT(fitToWidthRatio(int)));
-	QHBoxLayout * fitLayout = new QHBoxLayout;
-	fitLayout->addWidget(fitToWidthRatioS);
-	fitBox->setLayout(fitLayout);*/
-
     auto colorSelection = new QHBoxLayout;
     backgroundColor = new QLabel();
     QPalette pal = backgroundColor->palette();
@@ -145,6 +133,32 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     QGroupBox *imageBox = new QGroupBox(tr("Image options"));
     imageBox->setLayout(layoutImage);
     layoutImageV->addWidget(imageBox);
+
+    auto scaleBox = new QGroupBox(tr("Fit options"));
+    auto scaleLayout = new QVBoxLayout();
+    scaleCheckbox = new QCheckBox(tr("Enlarge images to fit width/height"));
+    connect(scaleCheckbox, &QCheckBox::clicked,
+            [=](bool checked) {
+                Configuration::getConfiguration().setEnlargeImages(checked);
+                emit(changedImageOptions());
+            });
+
+    scaleLayout->addWidget(scaleCheckbox);
+    scaleBox->setLayout(scaleLayout);
+    layoutImageV->addWidget(scaleBox);
+
+    auto doublePageBox = new QGroupBox(tr("Double Page options"));
+    auto doublePageBoxLayout = new QVBoxLayout();
+    coverSPCheckBox = new QCheckBox(tr("Show covers as single page"));
+    connect(coverSPCheckBox, &QCheckBox::clicked,
+            [=](bool checked) {
+                settings->setValue(COVER_IS_SP, checked);
+                emit(changedImageOptions());
+            });
+
+    doublePageBoxLayout->addWidget(coverSPCheckBox);
+    doublePageBox->setLayout(doublePageBoxLayout);
+    layoutImageV->addWidget(doublePageBox);
     layoutImageV->addStretch();
 
     pageGeneral->setLayout(layoutGeneral);
@@ -233,6 +247,9 @@ void OptionsDialog::restoreOptions(QSettings *settings)
     brightnessS->setValue(settings->value(BRIGHTNESS, 0).toInt());
     contrastS->setValue(settings->value(CONTRAST, 100).toInt());
     gammaS->setValue(settings->value(GAMMA, 100).toInt());
+
+    scaleCheckbox->setChecked(settings->value(ENLARGE_IMAGES, true).toBool());
+    coverSPCheckBox->setChecked(settings->value(COVER_IS_SP, true).toBool());
 }
 
 void OptionsDialog::updateColor(const QColor &color)
@@ -247,12 +264,6 @@ void OptionsDialog::updateColor(const QColor &color)
 
     emit(changedOptions());
 }
-
-/*void OptionsDialog::fitToWidthRatio(int value)
-{
-	Configuration::getConfiguration().setFitToWidthRatio(value/100.0);
-	emit(fitToWidthRatioChanged(value/100.0));
-}*/
 
 void OptionsDialog::brightnessChanged(int value)
 {

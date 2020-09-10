@@ -1,9 +1,11 @@
 # List files and directories to exclude from git archive
+/dependencies/7zip export-ignore
+/dependencies/create-dmg export-ignore
+/dependencies/openssl export-ignore
 /dependencies/pdfium export-ignore
 /dependencies/poppler export-ignore
 /dependencies/qrencode export-ignore
 /dependencies/unarr export-ignore
-/dependencies/create-dmg export-ignore
 .gitignore export-ignore
 .gitattributes export-ignore
 

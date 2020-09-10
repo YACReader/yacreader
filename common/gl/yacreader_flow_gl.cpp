@@ -1388,7 +1388,10 @@ void YACReaderPageFlowGL::populate(int n)
 QImage ImageLoaderGL::loadImage(const QString &fileName)
 {
     QImage image;
-    bool result = image.load(fileName);
+
+    if (!image.load(fileName)) {
+        return QImage();
+    }
 
     switch (flow->performance) {
     case low:
@@ -1403,9 +1406,6 @@ QImage ImageLoaderGL::loadImage(const QString &fileName)
     case ultraHigh:
         break; //no scaling in ultraHigh
     }
-
-    if (!result)
-        return QImage();
 
     return image;
 }
@@ -1493,7 +1493,10 @@ QImage ImageLoaderGL::result()
 QImage ImageLoaderByteArrayGL::loadImage(const QByteArray &raw)
 {
     QImage image;
-    bool result = image.loadFromData(raw);
+
+    if (!image.loadFromData(raw)) {
+        return QImage();
+    }
 
     switch (flow->performance) {
     case low:
@@ -1509,9 +1512,6 @@ QImage ImageLoaderByteArrayGL::loadImage(const QByteArray &raw)
         image = image.scaledToWidth(320, Qt::SmoothTransformation);
         break;
     }
-
-    if (!result)
-        return QImage();
 
     return image;
 }

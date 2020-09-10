@@ -9,7 +9,7 @@
 class Comic;
 class QString;
 
-class ComicController : public HttpRequestHandler
+class ComicController : public stefanfrings::HttpRequestHandler
 {
     Q_OBJECT
     Q_DISABLE_COPY(ComicController);
@@ -19,7 +19,7 @@ public:
     ComicController();
 
     /** Generates the response */
-    void service(HttpRequest &request, HttpResponse &response) override;
+    void service(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response) override;
 };
 
 #endif // COMICCONTROLLER_H

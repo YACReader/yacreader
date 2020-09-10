@@ -14,7 +14,10 @@
 
 #include <typeinfo>
 
-ComicControllerV2::ComicControllerV2() {}
+using stefanfrings::HttpRequest;
+using stefanfrings::HttpResponse;
+
+ComicControllerV2::ComicControllerV2() { }
 
 void ComicControllerV2::service(HttpRequest &request, HttpResponse &response)
 {
