@@ -139,7 +139,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     scaleCheckbox = new QCheckBox(tr("Enlarge images to fit width/height"));
     connect(scaleCheckbox, &QCheckBox::clicked,
             [=](bool checked) {
-                settings->setValue(ENLARGE_IMAGES, checked);
+                Configuration::getConfiguration().setEnlargeImages(checked);
                 emit(changedImageOptions());
             });
 

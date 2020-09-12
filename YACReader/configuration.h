@@ -64,6 +64,8 @@ public:
     void setDoublePage(bool b) { settings->setValue(DOUBLE_PAGE, b); }
     bool getDoubleMangaPage() { return settings->value(DOUBLE_MANGA_PAGE).toBool(); }
     void setDoubleMangaPage(bool b) { settings->setValue(DOUBLE_MANGA_PAGE, b); }
+    bool getEnlargeImages() { return settings->value(ENLARGE_IMAGES, true).toBool(); }
+    void setEnlargeImages(bool b) { settings->setValue(ENLARGE_IMAGES, b); }
 
     QColor getBackgroundColor() { return settings->value(BACKGROUND_COLOR).value<QColor>(); }
     void setBackgroundColor(const QColor &color) { settings->value(BACKGROUND_COLOR, color); }
