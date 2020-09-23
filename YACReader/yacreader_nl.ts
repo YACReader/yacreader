@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="nl_BE" sourcelanguage="en">
+<TS version="2.1" language="nl" sourcelanguage="en">
 <context>
     <name>ActionsShortcutsModel</name>
     <message>
         <location filename="../shortcuts_management/actions_shortcuts_model.cpp" line="76"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen</translation>
     </message>
 </context>
 <context>
@@ -14,23 +14,23 @@
     <message>
         <location filename="bookmarks_dialog.cpp" line="25"/>
         <source>Lastest Page</source>
-        <translation type="unfinished">Laatste Pagina</translation>
+        <translation>Laatste pagina</translation>
     </message>
     <message>
         <location filename="bookmarks_dialog.cpp" line="73"/>
         <source>Close</source>
-        <translation type="unfinished">Sluiten</translation>
+        <translation>Sluiten</translation>
     </message>
     <message>
         <location filename="bookmarks_dialog.cpp" line="83"/>
         <source>Click on any image to go to the bookmark</source>
-        <translation type="unfinished">Klik op een afbeelding om naar de bladwijzer te gaan </translation>
+        <translation>Klik op een afbeelding om naar de bladwijzer te gaan</translation>
     </message>
     <message>
         <location filename="bookmarks_dialog.cpp" line="107"/>
         <location filename="bookmarks_dialog.cpp" line="131"/>
         <source>Loading...</source>
-        <translation type="unfinished">Inladen...</translation>
+        <translation>Bezig met laden...</translation>
     </message>
 </context>
 <context>
@@ -38,27 +38,27 @@
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="21"/>
         <source>Restore defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaardwaarden herstellen</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="22"/>
         <source>To change a shortcut, double click in the key combination and type the new keys.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sneltoets aanpassen? Dubbelklik op de huidige sneltoets en druk de nieuwe toetsen in.</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="70"/>
         <source>Shortcuts settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Sneltoetsinstellingen</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="96"/>
         <source>Shortcut in use</source>
-        <translation type="unfinished"></translation>
+        <translation>Sneltoets is in gebruik</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="96"/>
         <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation type="unfinished"></translation>
+        <translation>De sneltoets &apos;%1&apos; is al toegewezen aan een andere functie</translation>
     </message>
 </context>
 <context>
@@ -66,22 +66,22 @@
     <message>
         <location filename="../common/comic.cpp" line="437"/>
         <source>Unknown error opening the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Onbekende fout tijdens openen van bestand</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="563"/>
         <source>7z not found</source>
-        <translation type="unfinished">7Z Archiefbestand niet gevonden</translation>
+        <translation>7Z is niet aangetroffen</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="570"/>
         <source>Format not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Dit formaat wordt niet ondersteund</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="430"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
-        <translation type="unfinished"></translation>
+        <translation>CRC-fout op pagina (%1): sommige pagina&apos;s worden niet goed getoond</translation>
     </message>
 </context>
 <context>
@@ -89,28 +89,28 @@
     <message>
         <location filename="goto_dialog.cpp" line="17"/>
         <source>Page : </source>
-        <translation type="unfinished">Pagina : </translation>
+        <translation>Pagina: </translation>
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="25"/>
         <source>Go To</source>
-        <translation type="unfinished">Ga Naar</translation>
+        <translation>Ga naar</translation>
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="27"/>
         <source>Cancel</source>
-        <translation type="unfinished">Annuleren</translation>
+        <translation>Annuleren</translation>
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="41"/>
         <location filename="goto_dialog.cpp" line="76"/>
         <source>Total pages : </source>
-        <translation type="unfinished">Totaal aantal pagina&apos;s : </translation>
+        <translation>Totaal aantal pagina&apos;s: </translation>
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="55"/>
         <source>Go to...</source>
-        <translation type="unfinished">Ga naar...</translation>
+        <translation>Ga naar...</translation>
     </message>
 </context>
 <context>
@@ -118,7 +118,7 @@
     <message>
         <location filename="goto_flow_toolbar.cpp" line="38"/>
         <source>Page : </source>
-        <translation type="unfinished">Pagina : </translation>
+        <translation>Pagina: </translation>
     </message>
 </context>
 <context>
@@ -126,12 +126,12 @@
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="21"/>
         <source>About</source>
-        <translation type="unfinished">Over</translation>
+        <translation>Over</translation>
     </message>
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="24"/>
         <source>Help</source>
-        <translation type="unfinished">Help</translation>
+        <translation>Hulp</translation>
     </message>
 </context>
 <context>
@@ -139,7 +139,7 @@
     <message>
         <location filename="main_window_viewer.cpp" line="210"/>
         <source>&amp;Open</source>
-        <translation type="unfinished">&amp;Open</translation>
+        <translation>&amp;Openen</translation>
     </message>
     <message>
         <source>O</source>
@@ -148,12 +148,12 @@
     <message>
         <location filename="main_window_viewer.cpp" line="212"/>
         <source>Open a comic</source>
-        <translation type="unfinished">Open een strip</translation>
+        <translation>Open een strip</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="217"/>
         <source>Open Folder</source>
-        <translation type="unfinished">Map Openen</translation>
+        <translation>Map openen</translation>
     </message>
     <message>
         <source>Ctrl+O</source>
@@ -162,98 +162,98 @@
     <message>
         <location filename="main_window_viewer.cpp" line="219"/>
         <source>Open image folder</source>
-        <translation type="unfinished">Open afbeeldings map</translation>
+        <translation>Afbeeldingsmap openen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="224"/>
         <source>Open latest comic</source>
-        <translation type="unfinished"></translation>
+        <translation>Recentste strip openen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="225"/>
         <source>Open the latest comic opened in the previous reading session</source>
-        <translation type="unfinished"></translation>
+        <translation>Open de strip van de vorige leessessie</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="241"/>
         <source>Clear open recent list</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Onlangs geopend&apos; wissen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="244"/>
         <source>Save</source>
-        <translation type="unfinished">Bewaar</translation>
+        <translation>Opslaan</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="246"/>
         <location filename="main_window_viewer.cpp" line="972"/>
         <source>Save current page</source>
-        <translation type="unfinished">Bewaren huidige pagina</translation>
+        <translation>Sla de huidige pagina op</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="252"/>
         <source>Previous Comic</source>
-        <translation type="unfinished">Vorige Strip</translation>
+        <translation>Vorige strip</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="254"/>
         <source>Open previous comic</source>
-        <translation type="unfinished">Open de vorige strip</translation>
+        <translation>Open de vorige strip</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="260"/>
         <source>Next Comic</source>
-        <translation type="unfinished">Volgende Strip</translation>
+        <translation>Volgende strip</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="262"/>
         <source>Open next comic</source>
-        <translation type="unfinished">Open volgende strip</translation>
+        <translation>Open de volgende strip</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="268"/>
         <source>&amp;Previous</source>
-        <translation type="unfinished">&amp;Vorige</translation>
+        <translation>&amp;Vorige</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="271"/>
         <source>Go to previous page</source>
-        <translation type="unfinished">Ga naar de vorige pagina</translation>
+        <translation>Ga naar de vorige pagina</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="277"/>
         <source>&amp;Next</source>
-        <translation type="unfinished">&amp;Volgende</translation>
+        <translation>&amp;Volgende</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="280"/>
         <source>Go to next page</source>
-        <translation type="unfinished">Ga naar de volgende pagina</translation>
+        <translation>Ga naar de volgende pagina</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="297"/>
         <source>Fit Width</source>
-        <translation type="unfinished">Vensterbreedte aanpassen</translation>
+        <translation>Inpassen in breedte</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="290"/>
         <source>Fit image to height</source>
-        <translation type="unfinished">Afbeelding aanpassen aan hoogte</translation>
+        <translation>Inpassen in hoogte</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="286"/>
         <source>Fit Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Inpassen in hoogte</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="301"/>
         <source>Fit image to width</source>
-        <translation type="unfinished">Afbeelding aanpassen aan breedte</translation>
+        <translation>Inpassen in breedte</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="372"/>
         <source>Rotate image to the left</source>
-        <translation type="unfinished">Links omdraaien</translation>
+        <translation>Naar links draaien</translation>
     </message>
     <message>
         <source>L</source>
@@ -262,7 +262,7 @@
     <message>
         <location filename="main_window_viewer.cpp" line="379"/>
         <source>Rotate image to the right</source>
-        <translation type="unfinished">Rechts omdraaien</translation>
+        <translation>Naar rechts draaien</translation>
     </message>
     <message>
         <source>R</source>
@@ -271,12 +271,12 @@
     <message>
         <location filename="main_window_viewer.cpp" line="386"/>
         <source>Double page mode</source>
-        <translation type="unfinished">Dubbele bladzijde modus</translation>
+        <translation>Dubbelebladzijdemodus</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="387"/>
         <source>Switch to double page mode</source>
-        <translation type="unfinished">Naar dubbele bladzijde modus</translation>
+        <translation>Schakel over naar de dubbelebladzijdemodus</translation>
     </message>
     <message>
         <source>D</source>
@@ -285,7 +285,7 @@
     <message>
         <location filename="main_window_viewer.cpp" line="407"/>
         <source>Go To</source>
-        <translation type="unfinished">Ga Naar</translation>
+        <translation>Ga naar</translation>
     </message>
     <message>
         <source>G</source>
@@ -294,12 +294,12 @@
     <message>
         <location filename="main_window_viewer.cpp" line="410"/>
         <source>Go to page ...</source>
-        <translation type="unfinished">Ga naar bladzijde ...</translation>
+        <translation>Ga naar bladzijde...</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="415"/>
         <source>Options</source>
-        <translation type="unfinished">Opties</translation>
+        <translation>Opties</translation>
     </message>
     <message>
         <source>C</source>
@@ -308,28 +308,28 @@
     <message>
         <location filename="main_window_viewer.cpp" line="416"/>
         <source>YACReader options</source>
-        <translation type="unfinished">YACReader opties</translation>
+        <translation>YACReader-opties</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="423"/>
         <location filename="main_window_viewer.cpp" line="713"/>
         <source>Help</source>
-        <translation type="unfinished">Help</translation>
+        <translation>Hulp</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="424"/>
         <source>Help, About YACReader</source>
-        <translation type="unfinished">Help, Over YACReader</translation>
+        <translation>Hulp, Over YACReader</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="430"/>
         <source>Magnifying glass</source>
-        <translation type="unfinished">Vergrootglas</translation>
+        <translation>Vergrootglas</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="431"/>
         <source>Switch Magnifying glass</source>
-        <translation type="unfinished">Overschakelen naar Vergrootglas</translation>
+        <translation>Vergrootglas openen</translation>
     </message>
     <message>
         <source>Z</source>
@@ -338,22 +338,22 @@
     <message>
         <location filename="main_window_viewer.cpp" line="439"/>
         <source>Set bookmark</source>
-        <translation type="unfinished">Bladwijzer instellen</translation>
+        <translation>Bladwijzer instellen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="440"/>
         <source>Set a bookmark on the current page</source>
-        <translation type="unfinished">Een bladwijzer toevoegen aan de huidige pagina</translation>
+        <translation>Stel een bladwijzer in op de huidige pagina</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="450"/>
         <source>Show bookmarks</source>
-        <translation type="unfinished">Bladwijzers weergeven</translation>
+        <translation>Bladwijzers tonen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="451"/>
         <source>Show the bookmarks of the current comic</source>
-        <translation type="unfinished">Toon de bladwijzers van de huidige strip</translation>
+        <translation>Toon de bladwijzers van de huidige strip</translation>
     </message>
     <message>
         <source>M</source>
@@ -362,12 +362,12 @@
     <message>
         <location filename="main_window_viewer.cpp" line="458"/>
         <source>Show keyboard shortcuts</source>
-        <translation type="unfinished">Toon de sneltoetsen</translation>
+        <translation>Sneltoetsen tonen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="465"/>
         <source>Show Info</source>
-        <translation type="unfinished">Info tonen</translation>
+        <translation>Informatie tonen</translation>
     </message>
     <message>
         <source>I</source>
@@ -376,275 +376,275 @@
     <message>
         <location filename="main_window_viewer.cpp" line="472"/>
         <source>Close</source>
-        <translation type="unfinished">Sluiten</translation>
+        <translation>Sluiten</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="478"/>
         <source>Show Dictionary</source>
-        <translation type="unfinished">Woordenlijst weergeven</translation>
+        <translation>Woordenboek tonen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="487"/>
         <source>Always on top</source>
-        <translation type="unfinished">Altijd op voorgrond</translation>
+        <translation>Altijd op voorgrond</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="308"/>
         <source>Show full size</source>
-        <translation type="unfinished">Volledig Scherm </translation>
+        <translation>Oorspronkelijke grootte</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="240"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Wissen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="317"/>
         <source>Fit to page</source>
-        <translation type="unfinished"></translation>
+        <translation>Pagina inpassen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="350"/>
         <source>Reset zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard zoomniveau</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="356"/>
         <source>Show zoom slider</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoomschuifbalk tonen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="360"/>
         <source>Zoom+</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom+</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="366"/>
         <source>Zoom-</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom-</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="397"/>
         <source>Double page manga mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Dubbelebladzijdemangamodus</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="398"/>
         <source>Reverse reading order in double page mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Leesvolgorde omdraaien in dubbelebladzijdemodus</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="496"/>
         <source>Show go to flow</source>
-        <translation type="unfinished">Toon ga naar de Omslagbrowser</translation>
+        <translation>Omslagverkenner tonen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="503"/>
         <source>Edit shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Sneltoetsen aanpassen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="514"/>
         <source>&amp;File</source>
-        <translation type="unfinished">&amp;Bestand</translation>
+        <translation>&amp;Bestand</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="528"/>
         <location filename="main_window_viewer.cpp" line="668"/>
         <source>Open recent</source>
-        <translation type="unfinished"></translation>
+        <translation>Onlangs geopend bestand</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="659"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestand</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="678"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Bewerken</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="682"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Beeld</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="698"/>
         <source>Go</source>
-        <translation type="unfinished"></translation>
+        <translation>Ga</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="706"/>
         <source>Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Venster</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="812"/>
         <location filename="main_window_viewer.cpp" line="814"/>
         <source>Open Comic</source>
-        <translation type="unfinished">Open een Strip</translation>
+        <translation>Strip openen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="812"/>
         <location filename="main_window_viewer.cpp" line="814"/>
         <source>Comic files</source>
-        <translation type="unfinished">Strip bestanden</translation>
+        <translation>Stripbestanden</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="914"/>
         <source>Open folder</source>
-        <translation type="unfinished">Open een Map</translation>
+        <translation>Map openen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="972"/>
         <source>Image files (*.jpg)</source>
-        <translation type="unfinished">Afbeelding bestanden (*.jpg)</translation>
+        <translation>Afbeeldingsbestanden (*.jpg)</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="972"/>
         <source>page_%1.jpg</source>
-        <translation type="unfinished">pagina_%1.jpg</translation>
+        <translation>pagina_%1.jpg</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1272"/>
         <source>Comics</source>
-        <translation type="unfinished"></translation>
+        <translation>Strips</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1283"/>
         <source>Toggle fullscreen mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Beeldvullende modus aan/uit</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1287"/>
         <source>Hide/show toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Werkbalk tonen/verbergen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1291"/>
         <source>General</source>
-        <translation type="unfinished">Algemeen</translation>
+        <translation>Algemeen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1307"/>
         <source>Size up magnifying glass</source>
-        <translation type="unfinished"></translation>
+        <translation>Bladzijde vergroten</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1311"/>
         <source>Size down magnifying glass</source>
-        <translation type="unfinished"></translation>
+        <translation>Bladzijde verkleinen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1315"/>
         <source>Zoom in magnifying glass</source>
-        <translation type="unfinished"></translation>
+        <translation>Inzoomen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1319"/>
         <source>Zoom out magnifying glass</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitzoomen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1323"/>
         <source>Magnifiying glass</source>
-        <translation type="unfinished"></translation>
+        <translation>Vergrootglas</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1334"/>
         <source>Toggle between fit to width and fit to height</source>
-        <translation type="unfinished"></translation>
+        <translation>Schakelen tussen inpassen in breedte en inpassen in hoogte</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1338"/>
         <source>Page adjustement</source>
-        <translation type="unfinished"></translation>
+        <translation>Pagina inpassen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1354"/>
         <source>Autoscroll down</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisch omlaag scrollen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1358"/>
         <source>Autoscroll up</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisch omhoog scrollen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1362"/>
         <source>Autoscroll forward, horizontal first</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisch vooruit scrollen - eerst horizontaal</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1366"/>
         <source>Autoscroll backward, horizontal first</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisch achteruit scrollen - eerst horizontaal</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1370"/>
         <source>Autoscroll forward, vertical first</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisch vooruit scrollen - eerst verticaal</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1374"/>
         <source>Autoscroll backward, vertical first</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatisch achteruit scrollen - eerst verticaal</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1378"/>
         <source>Move down</source>
-        <translation type="unfinished"></translation>
+        <translation>Omlaag</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1382"/>
         <source>Move up</source>
-        <translation type="unfinished"></translation>
+        <translation>Omhoog</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1386"/>
         <source>Move left</source>
-        <translation type="unfinished"></translation>
+        <translation>Naar links</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1390"/>
         <source>Move right</source>
-        <translation type="unfinished"></translation>
+        <translation>Naar rechts</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1394"/>
         <source>Go to the first page</source>
-        <translation type="unfinished"></translation>
+        <translation>Ga naar eerste bladzijde</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1398"/>
         <source>Go to the last page</source>
-        <translation type="unfinished"></translation>
+        <translation>Ga naar laatste bladzijde</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1402"/>
         <source>Reading</source>
-        <translation type="unfinished"></translation>
+        <translation>Lezen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1452"/>
         <source>There is a new version available</source>
-        <translation type="unfinished">Er is een nieuwe versie beschikbaar</translation>
+        <translation>Er is een nieuwe versie beschikbaar</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1453"/>
         <source>Do you want to download the new version?</source>
-        <translation type="unfinished">Wilt u de nieuwe versie downloaden?</translation>
+        <translation>Wil je de nieuwe versie downloaden?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1456"/>
         <source>Remind me in 14 days</source>
-        <translation type="unfinished"></translation>
+        <translation>Herinner me over 14 dagen</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1457"/>
         <source>Not now</source>
-        <translation type="unfinished"></translation>
+        <translation>Niet nu</translation>
     </message>
 </context>
 <context>
@@ -652,12 +652,12 @@
     <message>
         <location filename="options_dialog.cpp" line="38"/>
         <source>&quot;Go to flow&quot; size</source>
-        <translation type="unfinished">&quot;Naar Omslagbrowser&quot; afmetingen</translation>
+        <translation>Afmetingen van omslagverkenner</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="49"/>
         <source>My comics path</source>
-        <translation type="unfinished">Pad naar mijn strips</translation>
+        <translation>Pad naar mijn strips</translation>
     </message>
     <message>
         <source>Page width stretch</source>
@@ -666,77 +666,77 @@
     <message>
         <location filename="options_dialog.cpp" line="80"/>
         <source>Background color</source>
-        <translation type="unfinished">Achtergrondkleur</translation>
+        <translation>Achtergrondkleur</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="83"/>
         <source>Choose</source>
-        <translation type="unfinished">Kies</translation>
+        <translation>Kiezen</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="109"/>
         <source>Quick Navigation Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Snellenavigatiemodus</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="110"/>
         <source>Disable mouse over activation</source>
-        <translation type="unfinished"></translation>
+        <translation>Activeren met muiszweving uitschakelen</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="114"/>
         <source>Restart is needed</source>
-        <translation type="unfinished">Herstart is nodig</translation>
+        <translation>Herstart vereist</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="134"/>
         <source>Brightness</source>
-        <translation type="unfinished">Helderheid</translation>
+        <translation>Helderheid</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="135"/>
         <source>Contrast</source>
-        <translation type="unfinished">Contrast</translation>
+        <translation>Contrast</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="136"/>
         <source>Gamma</source>
-        <translation type="unfinished">Gamma</translation>
+        <translation>Gamma</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="140"/>
         <source>Reset</source>
-        <translation type="unfinished">Standaardwaarden terugzetten</translation>
+        <translation>Standaardwaarden</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="146"/>
         <source>Image options</source>
-        <translation type="unfinished">Afbeelding opties</translation>
+        <translation>Afbeeldingsopties</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="156"/>
         <source>General</source>
-        <translation type="unfinished">Algemeen</translation>
+        <translation>Algemeen</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="157"/>
         <source>Page Flow</source>
-        <translation type="unfinished">Omslagbrowser</translation>
+        <translation>Omslagverkenner</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="158"/>
         <source>Image adjustment</source>
-        <translation type="unfinished">Beeldaanpassing</translation>
+        <translation>Afbeeldingen inpassen</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="172"/>
         <source>Options</source>
-        <translation type="unfinished">Opties</translation>
+        <translation>Opties</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="179"/>
         <source>Comics directory</source>
-        <translation type="unfinished">Strips map</translation>
+        <translation>Stripsmap</translation>
     </message>
 </context>
 <context>
@@ -744,12 +744,12 @@
     <message>
         <location filename="../common/exit_check.cpp" line="14"/>
         <source>7z lib not found</source>
-        <translation type="unfinished"></translation>
+        <translation>7Z is niet aangetroffen</translation>
     </message>
     <message>
         <location filename="../common/exit_check.cpp" line="14"/>
         <source>unable to load 7z lib from ./utils</source>
-        <translation type="unfinished"></translation>
+        <translation>kan 7z niet laden uit ./utils</translation>
     </message>
 </context>
 <context>
@@ -757,17 +757,17 @@
     <message>
         <location filename="shortcuts_dialog.cpp" line="16"/>
         <source>YACReader keyboard shortcuts</source>
-        <translation type="unfinished">YACReader sneltoetsen</translation>
+        <translation>YACReader-sneltoetsen</translation>
     </message>
     <message>
         <location filename="shortcuts_dialog.cpp" line="20"/>
         <source>Close</source>
-        <translation type="unfinished">Sluiten</translation>
+        <translation>Sluiten</translation>
     </message>
     <message>
         <location filename="shortcuts_dialog.cpp" line="54"/>
         <source>Keyboard Shortcuts</source>
-        <translation type="unfinished">Sneltoetsen</translation>
+        <translation>Sneltoetsen</translation>
     </message>
 </context>
 <context>
@@ -776,47 +776,47 @@
         <location filename="viewer.cpp" line="50"/>
         <location filename="viewer.cpp" line="983"/>
         <source>Press &apos;O&apos; to open comic.</source>
-        <translation type="unfinished">Druk &apos;O&apos; om een strip te openen.</translation>
+        <translation>Druk op &apos;O&apos; om een strip te openen.</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="234"/>
         <source>Not found</source>
-        <translation type="unfinished">Niet gevonden</translation>
+        <translation>Niet aangetroffen</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="234"/>
         <source>Comic not found</source>
-        <translation type="unfinished">Strip niet gevonden</translation>
+        <translation>Strip is niet aangetroffen</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="240"/>
         <source>Error opening comic</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout tijdens openen</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="246"/>
         <source>CRC Error</source>
-        <translation type="unfinished"></translation>
+        <translation>CRC-fout</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="996"/>
         <source>Loading...please wait!</source>
-        <translation type="unfinished">Inladen...even wachten!</translation>
+        <translation>Bezig met laden...</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="1007"/>
         <source>Page not available!</source>
-        <translation type="unfinished"></translation>
+        <translation>De bladzijde is niet beschikbaar!</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="1145"/>
         <source>Cover!</source>
-        <translation type="unfinished">Omslag!</translation>
+        <translation>Omslag!</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="1162"/>
         <source>Last page!</source>
-        <translation type="unfinished">Laatste pagina!</translation>
+        <translation>Laatste pagina!</translation>
     </message>
 </context>
 <context>
@@ -825,12 +825,12 @@
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="9"/>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="29"/>
         <source>Click to overwrite</source>
-        <translation type="unfinished">Klik hier om te overschrijven</translation>
+        <translation>Klik hier om te overschrijven</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="11"/>
         <source>Restore to default</source>
-        <translation type="unfinished">Standaardwaarden herstellen</translation>
+        <translation>Standaardwaarden herstellen</translation>
     </message>
 </context>
 <context>
@@ -841,12 +841,12 @@
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="45"/>
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="51"/>
         <source>Click to overwrite</source>
-        <translation type="unfinished">Klik hier om te overschrijven</translation>
+        <translation>Klik hier om te overschrijven</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="10"/>
         <source>Restore to default</source>
-        <translation type="unfinished">Standaardwaarden herstellen</translation>
+        <translation>Standaardwaarden herstellen</translation>
     </message>
 </context>
 <context>
@@ -854,22 +854,22 @@
     <message>
         <location filename="../custom_widgets/yacreader_flow_config_widget.cpp" line="13"/>
         <source>How to show covers:</source>
-        <translation type="unfinished">Omslagbladen bekijken:</translation>
+        <translation>Omslagbladweergave:</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_flow_config_widget.cpp" line="15"/>
         <source>CoverFlow look</source>
-        <translation type="unfinished">Omslagbrowser uiterlijk </translation>
+        <translation>Vormgeving van omslagverkenner</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_flow_config_widget.cpp" line="16"/>
         <source>Stripe look</source>
-        <translation type="unfinished">Brede band </translation>
+        <translation>Strepen gebruiken</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_flow_config_widget.cpp" line="17"/>
         <source>Overlapped Stripe look</source>
-        <translation type="unfinished">Overlappende band</translation>
+        <translation>Overlappende strepen gebruiken</translation>
     </message>
 </context>
 <context>
@@ -877,117 +877,117 @@
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="19"/>
         <source>Presets:</source>
-        <translation type="unfinished">Voorinstellingen:</translation>
+        <translation>Voorinstellingen:</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="21"/>
         <source>Classic look</source>
-        <translation type="unfinished">Klassiek</translation>
+        <translation>Klassiek</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="24"/>
         <source>Stripe look</source>
-        <translation type="unfinished">Brede band</translation>
+        <translation>Gestreept</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="27"/>
         <source>Overlapped Stripe look</source>
-        <translation type="unfinished">Overlappende band</translation>
+        <translation>Overlappend gestreept</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="30"/>
         <source>Modern look</source>
-        <translation type="unfinished">Modern</translation>
+        <translation>Modern</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="33"/>
         <source>Roulette look</source>
-        <translation type="unfinished">Roulette</translation>
+        <translation>Roulette</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="77"/>
         <source>Show advanced settings</source>
-        <translation type="unfinished">Toon geavanceerde instellingen</translation>
+        <translation>Geavanceerde instellingen tonen</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="86"/>
         <source>Custom:</source>
-        <translation type="unfinished">Aangepast:</translation>
+        <translation>Aangepast:</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="89"/>
         <source>View angle</source>
-        <translation type="unfinished">Kijkhoek</translation>
+        <translation>Kijkhoek</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="95"/>
         <source>Position</source>
-        <translation type="unfinished">Positie</translation>
+        <translation>Positie</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="101"/>
         <source>Cover gap</source>
-        <translation type="unfinished">Ruimte tss Omslag</translation>
+        <translation>Ruimte tussen omslagen</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="107"/>
         <source>Central gap</source>
-        <translation type="unfinished">Centrale ruimte</translation>
+        <translation>Centrale ruimte</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="113"/>
         <source>Zoom</source>
-        <translation type="unfinished">Zoom</translation>
+        <translation>Zoom</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="119"/>
         <source>Y offset</source>
-        <translation type="unfinished">Y-positie</translation>
+        <translation>Y-positie</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="125"/>
         <source>Z offset</source>
-        <translation type="unfinished">Z- positie</translation>
+        <translation>Z-positie</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="131"/>
         <source>Cover Angle</source>
-        <translation type="unfinished">Omslag hoek</translation>
+        <translation>Omslaghoek</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="137"/>
         <source>Visibility</source>
-        <translation type="unfinished">Zichtbaarheid</translation>
+        <translation>Zichtbaarheid</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="143"/>
         <source>Light</source>
-        <translation type="unfinished">Licht</translation>
+        <translation>Licht</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="149"/>
         <source>Max angle</source>
-        <translation type="unfinished">Maximale hoek</translation>
+        <translation>Maximale hoek</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="181"/>
         <source>Low Performance</source>
-        <translation type="unfinished">Lage Prestaties</translation>
+        <translation>Lage prestaties</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="183"/>
         <source>High Performance</source>
-        <translation type="unfinished">Hoge Prestaties</translation>
+        <translation>Hoge prestaties</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="194"/>
         <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
-        <translation type="unfinished">Gebruik VSync (verbetering van de beeldkwaliteit in de modus volledig scherm, slechtere prestatie)</translation>
+        <translation>VSync gebruiken (verbetert de beeldkwaliteit in de beeldvullende modus, maar vermindert de prestaties)</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_gl_flow_config_widget.cpp" line="202"/>
         <source>Performance:</source>
-        <translation type="unfinished">Prestatie:</translation>
+        <translation>Prestaties:</translation>
     </message>
 </context>
 <context>
@@ -995,27 +995,27 @@
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="28"/>
         <source>Save</source>
-        <translation type="unfinished">Bewaar</translation>
+        <translation>Opslaan</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="29"/>
         <source>Cancel</source>
-        <translation type="unfinished">Annuleren</translation>
+        <translation>Annuleren</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="35"/>
         <source>Edit shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Sneltoetsen aanpassen</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="38"/>
         <source>Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Sneltoetsen</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="47"/>
         <source>Use hardware acceleration (restart needed)</source>
-        <translation type="unfinished">Gebruik hardware versnelling (opnieuw opstarten vereist)</translation>
+        <translation>Hardwareversnelling gebruiken (herstart vereist)</translation>
     </message>
 </context>
 <context>
@@ -1023,7 +1023,7 @@
     <message>
         <location filename="width_slider.cpp" line="48"/>
         <source>Reset</source>
-        <translation type="unfinished">Standaardwaarden terugzetten</translation>
+        <translation>Standaardwaarden</translation>
     </message>
 </context>
 <context>
@@ -1031,23 +1031,23 @@
     <message>
         <location filename="translator.cpp" line="62"/>
         <source>YACReader translator</source>
-        <translation type="unfinished"></translation>
+        <translation>YACReader-vertaler</translation>
     </message>
     <message>
         <location filename="translator.cpp" line="117"/>
         <location filename="translator.cpp" line="210"/>
         <source>Translation</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertaling</translation>
     </message>
     <message>
         <location filename="translator.cpp" line="140"/>
         <source>clear</source>
-        <translation type="unfinished"></translation>
+        <translation>wissen</translation>
     </message>
     <message>
         <location filename="translator.cpp" line="219"/>
         <source>Service not available</source>
-        <translation type="unfinished"></translation>
+        <translation>Dienst niet beschikbaar</translation>
     </message>
 </context>
 </TS>
