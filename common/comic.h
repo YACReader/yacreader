@@ -76,8 +76,8 @@ public:
     //check if the comic has failed loading
     bool hasBeenAnErrorOpening();
 
-    inline static QStringList getSupportedImageFormats() { return imageExtensions; }
-    inline static QStringList getSupportedImageLiteralFormats() { return literalImageExtensions; }
+    static QStringList getSupportedImageFormats();
+    static QStringList getSupportedImageLiteralFormats();
 
     static bool fileIsComic(const QString &path);
     static QList<QString> findValidComicFiles(const QList<QUrl> &list);
