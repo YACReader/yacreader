@@ -23,6 +23,26 @@ enum YACReaderPageSortingMode {
 
 void comic_pages_sort(QList<QString> &pageNames, YACReaderPageSortingMode sortingMode);
 
+QStringList Comic::getSupportedImageFormats()
+{
+    QList<QByteArray> supportedImageFormats = QImageReader::supportedImageFormats();
+    QStringList supportedImageFormatStrings;
+    for (QByteArray item : supportedImageFormats) {
+        supportedImageFormatStrings.append(QString::fromLocal8Bit("*." + item));
+    }
+    return supportedImageFormatStrings;
+}
+
+QStringList Comic::getSupportedImageLiteralFormats()
+{
+    QList<QByteArray> supportedImageFormats = QImageReader::supportedImageFormats();
+    QStringList supportedImageFormatStrings;
+    for (QByteArray item : supportedImageFormats) {
+        supportedImageFormatStrings.append(QString::fromLocal8Bit(item));
+    }
+    return supportedImageFormatStrings;
+}
+
 const QStringList Comic::imageExtensions = QStringList() << "*.jpg"
                                                          << "*.jpeg"
                                                          << "*.png"
