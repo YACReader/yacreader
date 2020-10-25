@@ -362,7 +362,7 @@ void Viewer::updateContentSize()
 
 void Viewer::increaseZoomFactor()
 {
-    zoom = std::min(zoom + 10, 500);
+    zoom = std::min(zoom + 10, 3000);
 
     updateContentSize();
     notificationsLabel->setText(QString::number(getZoomFactor()) + "%");
@@ -390,8 +390,8 @@ int Viewer::getZoomFactor()
 void Viewer::setZoomFactor(int z)
 {
     //this function is mostly used to reset the zoom after a fitmode switch
-    if (z > 500)
-        zoom = 500;
+    if (z > 3000)
+        zoom = 3000;
     else if (z < 30)
         zoom = 30;
     else

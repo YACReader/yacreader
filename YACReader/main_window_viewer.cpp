@@ -1419,7 +1419,7 @@ void MainWindowViewer::toggleFitToWidthSlider()
     if (zoomSliderAction->isVisible()) {
         zoomSliderAction->hide();
     } else {
-        zoomSliderAction->move(250, y);
+        zoomSliderAction->move(100, y);
         zoomSliderAction->show();
     }
 }

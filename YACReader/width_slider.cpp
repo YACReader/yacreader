@@ -27,7 +27,7 @@ void YACReaderSliderAction::updateZoomRatio(int value)
 YACReaderSlider::YACReaderSlider(QWidget *parent)
     : QWidget(parent)
 {
-    const int sliderWidth = 200;
+    const int sliderWidth = 400;
     const int contentsMargin = 10;
     const int elementsSpacing = 10;
     const int percentageLabelWidth = 30;
@@ -64,7 +64,7 @@ YACReaderSlider::YACReaderSlider(QWidget *parent)
     setFixedSize(sliderWidth + 2 * contentsMargin + 2 * elementsSpacing + percentageLabelWidth + resetButton->sizeHint().width(), 45);
 
     slider->setMinimum(30);
-    slider->setMaximum(500);
+    slider->setMaximum(3000);
     slider->setPageStep(5);
 
     slider->setFocusPolicy(Qt::NoFocus);
