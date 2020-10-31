@@ -7,6 +7,8 @@ spanish only. Sorry for the mess.
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ## WIP
+
+## 9.7.1
 ### YACReader
 * Fix enlargement/stretching default value
 
