@@ -629,7 +629,7 @@ void Viewer::keyPressEvent(QKeyEvent *event)
                  key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_UP_ACTION_Y) ||
                  key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_LEFT_ACTION_Y) ||
                  key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_RIGHT_ACTION_Y)) {
-            QAbstractScrollArea::keyPressEvent(event);
+            moveAction(key);
             emit backgroundChanges();
         }
 
@@ -650,6 +650,26 @@ void Viewer::keyPressEvent(QKeyEvent *event)
 
     } else
         QAbstractScrollArea::keyPressEvent(event);
+}
+
+void Viewer::moveAction(QKeySequence key)
+{
+    int _key = 0;
+
+    if (key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_DOWN_ACTION_Y))
+        _key = Qt::Key_Down;
+
+    else if (key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_UP_ACTION_Y))
+        _key = Qt::Key_Up;
+
+    else if (key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_LEFT_ACTION_Y))
+        _key = Qt::Key_Left;
+
+    else if (key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_RIGHT_ACTION_Y))
+        _key = Qt::Key_Right;
+
+    QKeyEvent _event = QKeyEvent(QEvent::KeyPress, _key, Qt::NoModifier);
+    QAbstractScrollArea::keyPressEvent(&_event);
 }
 
 static void animateScroll(QPropertyAnimation &scroller, const QScrollBar &scrollBar, int delta)
