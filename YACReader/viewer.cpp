@@ -629,7 +629,7 @@ void Viewer::keyPressEvent(QKeyEvent *event)
                  key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_UP_ACTION_Y) ||
                  key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_LEFT_ACTION_Y) ||
                  key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_RIGHT_ACTION_Y)) {
-            moveAction(key);
+            moveAction(&key);
             emit backgroundChanges();
         }
 
