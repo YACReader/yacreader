@@ -717,17 +717,17 @@ void FolderModelProxy::setupFilteredModelData()
                     QLOG_ERROR() << "not implemented";
                     break;
                 }
+
+                selectQuery.prepare(queryString.c_str());
+                result.bindValues(selectQuery);
+
+                selectQuery.exec();
+                QLOG_DEBUG() << selectQuery.lastError() << "--";
+
+                setupFilteredModelData(selectQuery, rootItem);
             } catch (const std::exception &e) {
                 QLOG_ERROR() << "Unable to parse query: " << e.what();
             }
-
-            selectQuery.prepare(queryString.c_str());
-            selectQuery.bindValues(selectQuery);
-
-            selectQuery.exec();
-            QLOG_DEBUG() << selectQuery.lastError() << "--";
-
-            setupFilteredModelData(selectQuery, rootItem);
         }
         QSqlDatabase::removeDatabase(db.connectionName());
 
