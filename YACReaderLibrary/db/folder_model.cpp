@@ -729,10 +729,13 @@ void FolderModelProxy::setupFilteredModelData()
                 QLOG_ERROR() << "Unable to parse query: " << e.what();
             }
         }
-        QSqlDatabase::removeDatabase(db.connectionName());
+
+        connectionName = db.connectionName();
 
         endResetModel();
     }
+
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 void FolderModelProxy::clear()
