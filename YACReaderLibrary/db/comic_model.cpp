@@ -637,6 +637,10 @@ void ComicModel::setupModelData(const SearchModifiers modifier, const QString &f
             selectQuery.prepare(queryString.c_str());
             selectQuery.bindValue(":limit", 500); //TODO, load this value from settings
             result.bindValues(selectQuery);
+
+            selectQuery.exec();
+
+            setupModelData(selectQuery);
         } catch (const std::exception &e) {
             QLOG_ERROR() << "Unable to parse query: " << e.what();
         }
