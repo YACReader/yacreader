@@ -644,9 +644,7 @@ void ComicModel::setupModelData(const SearchModifiers modifier, const QString &f
         } catch (const std::exception &e) {
             QLOG_ERROR() << "Unable to parse query: " << e.what();
         }
-        selectQuery.exec();
 
-        setupModelData(selectQuery);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
