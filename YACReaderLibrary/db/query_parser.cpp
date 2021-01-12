@@ -68,21 +68,14 @@ int QueryParser::TreeNode::bindValues(QSqlQuery &selectQuery, int bindPosition) 
 }
 
 QueryParser::QueryParser()
-    : lexScanner(0)
 {
-
-    lexScanner.push("[()]", static_cast<std::underlying_type<TokenType>::type>(TokenType::opcode));
-    lexScanner.push("@[^:]+:[^\\\")\\s]+", static_cast<std::underlying_type<TokenType>::type>(TokenType::atWord));
-    lexScanner.push("[^\\\"()\\s]+", static_cast<std::underlying_type<TokenType>::type>(TokenType::word));
-    lexScanner.push("\\\".*?\\\"", static_cast<std::underlying_type<TokenType>::type>(TokenType::quotedWord));
-    lexScanner.push("\\s+", static_cast<std::underlying_type<TokenType>::type>(TokenType::space));
-
-    lexertl::generator::build(lexScanner, sm);
 }
 
 QueryParser::TreeNode QueryParser::parse(const std::string &expr)
 {
-    tokenize(expr);
+    lexer = QueryLexer(expr);
+    advance();
+
     auto prog = orExpression();
 
     if (!isEof()) {
@@ -104,7 +97,10 @@ std::string QueryParser::token(bool advance)
     if (isEof()) {
         return "";
     }
-    auto res = (tokenType() == TokenType::quotedWord) ? iter->substr(1, 1) : iter->str();
+
+    auto lexeme = currentToken.lexeme();
+
+    auto res = (tokenType() == Token::Type::quotedWord) ? currentToken.lexeme().substr(1, lexeme.size() - 2) : lexeme; //TODO process quotedWordDiferently?
     if (advance) {
         this->advance();
     }
@@ -116,30 +112,32 @@ std::string QueryParser::lcaseToken(bool advance)
     if (isEof()) {
         return "";
     }
-    auto res = (tokenType() == TokenType::quotedWord) ? iter->substr(1, 1) : iter->str();
+
+    auto lexeme = currentToken.lexeme();
+
+    auto res = (tokenType() == Token::Type::quotedWord) ? currentToken.lexeme().substr(1, lexeme.size() - 2) : lexeme;
+
     if (advance) {
         this->advance();
     }
     return toLower(res);
 }
 
-QueryParser::TokenType QueryParser::tokenType()
+Token::Type QueryParser::tokenType()
 {
-    if (isEof()) {
-        return TokenType::eof;
-    }
-    return TokenType(iter->id);
+    return currentToken.type();
 }
 
 bool QueryParser::isEof() const
 {
-    return iter == end;
+    return currentToken.type() == Token::Type::eof;
 }
 
 void QueryParser::advance()
 {
-    ++iter;
-    if (tokenType() == TokenType::space)
+    currentToken = lexer.next();
+
+    if (tokenType() == Token::Type::space)
         advance();
 }
 
@@ -152,11 +150,6 @@ QueryParser::FieldType QueryParser::fieldType(const std::string &str)
     }
 
     return FieldType::unknown;
-}
-
-void QueryParser::tokenize(const std::string &expr)
-{
-    iter = lexertl::siterator(expr.begin(), expr.end(), sm);
 }
 
 std::string QueryParser::join(const QStringList &strings, const std::string &delim)
@@ -191,7 +184,7 @@ QueryParser::TreeNode QueryParser::andExpression()
         return { "and", { lhs, andExpression() } };
     }
 
-    if ((isIn(tokenType(), { TokenType::atWord, TokenType::word, TokenType::quotedWord }) || token() == "(") && lcaseToken() != "or") {
+    if ((isIn(tokenType(), { Token::Type::atWord, Token::Type::word, Token::Type::quotedWord }) || token() == "(") && lcaseToken() != "or") {
         return { "and", { lhs, andExpression() } };
     }
 
@@ -209,15 +202,15 @@ QueryParser::TreeNode QueryParser::notExpression()
 
 QueryParser::TreeNode QueryParser::locationExpression()
 {
-    if (tokenType() == TokenType::opcode && token() == "(") {
+    if (tokenType() == Token::Type::opcode && token() == "(") {
         advance();
         auto res = orExpression();
-        if (tokenType() != TokenType::opcode || token(true) != ")") {
+        if (tokenType() != Token::Type::opcode || token(true) != ")") {
             throw std::invalid_argument("missing )'");
         }
         return res;
     }
-    if (!isIn(tokenType(), { TokenType::atWord, TokenType::word, TokenType::quotedWord })) {
+    if (!isIn(tokenType(), { Token::Type::atWord, Token::Type::word, Token::Type::quotedWord })) {
         throw std::invalid_argument("Invalid syntax. Expected a lookup name or a word");
     }
     return baseToken();
@@ -225,7 +218,7 @@ QueryParser::TreeNode QueryParser::locationExpression()
 
 QueryParser::TreeNode QueryParser::baseToken()
 {
-    if (tokenType() == TokenType::quotedWord) {
+    if (tokenType() == Token::Type::quotedWord) {
         return { "token", { { "all", {} }, { token(true), {} } } };
     }
 
@@ -234,7 +227,7 @@ QueryParser::TreeNode QueryParser::baseToken()
     if (words.size() > 1 && fieldType(words[0].toStdString()) != FieldType::unknown) {
         auto loc(toLower(words[0].toStdString()));
         words.erase(words.begin());
-        if (words.size() == 1 && tokenType() == TokenType::quotedWord) {
+        if (words.size() == 1 && tokenType() == Token::Type::quotedWord) {
             return { "token", { { loc, {} }, { token(true), {} } } };
         }
         return { "token", { { loc, {} }, { join(words, ":"), {} } } };

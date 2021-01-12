@@ -1,19 +1,19 @@
 #ifndef QUERY_PARSER_H
 #define QUERY_PARSER_H
 
-#include "lexertl/generator.hpp"
-#include "lexertl/iterator.hpp"
+#include "query_lexer.h"
 
 #include <map>
 #include <QSqlQuery>
 #include <string>
 #include <vector>
+#include <list>
 
 /**
  * This class is used to generate an SQL query string from a search expression,
  * with a syntax very similar to that used by the Google search engine.
  *
- * The code herin is based upon the SearchQueryParser python class written by
+ * The code herein is based upon the SearchQueryParser python class written by
  * Kovid Goyal as part of the Calibre eBook manager (https://calibre-ebook.com)
  *
  * Grammar:
@@ -41,13 +41,6 @@
 class QueryParser
 {
 public:
-    enum class TokenType { eof,
-                           opcode,
-                           atWord,
-                           word,
-                           quotedWord,
-                           space };
-
     struct TreeNode {
         std::string t;
         std::vector<TreeNode> children;
@@ -64,9 +57,12 @@ private:
 
     std::string token(bool advance = false);
     std::string lcaseToken(bool advance = false);
-    TokenType tokenType();
+    Token::Type tokenType();
     bool isEof() const;
     void advance();
+
+    QueryLexer lexer = QueryLexer("");
+    Token currentToken = Token(Token::Type::eof);
 
     template<typename T>
     static bool isIn(const T &e, const std::list<T> &v)
@@ -83,7 +79,6 @@ private:
                            filename };
     static FieldType fieldType(const std::string &str);
 
-    void tokenize(const std::string &expr);
     static std::string join(const QStringList &strings, const std::string &delim);
     static QStringList split(const std::string &string, char delim);
 
@@ -92,11 +87,6 @@ private:
     TreeNode notExpression();
     TreeNode locationExpression();
     TreeNode baseToken();
-
-    lexertl::rules lexScanner;
-    lexertl::state_machine sm;
-    lexertl::siterator iter;
-    const lexertl::siterator end;
 
     static const std::map<FieldType, std::vector<std::string>> fieldNames;
 };
