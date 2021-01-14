@@ -331,6 +331,3 @@ translation.files = ../release/languages/yacreaderlibrary_*
 manpage.path = $$DATADIR/man/man1
 manpage.files = ../YACReaderLibrary.1
 }
-
-DISTFILES += \
-    lexertl/licence_1_0.txt
