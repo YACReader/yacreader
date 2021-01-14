@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include "yacreader_global_gui.h"
+#include "yacreader_global.h"
 #include "concurrent_queue.h"
 
 class FolderItem;
