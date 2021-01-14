@@ -81,6 +81,7 @@ private:
                            boolean,
                            date,
                            folder,
+                           booleanFolder,
                            filename };
     static FieldType fieldType(const std::string &str);
 

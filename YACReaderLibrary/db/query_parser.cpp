@@ -7,10 +7,11 @@
 const std::map<QueryParser::FieldType, std::vector<std::string>> QueryParser::fieldNames {
     { FieldType::numeric, { "numpages", "number", "count", "arcnumber", "arccount" } },
     { FieldType::text, { "title", "volume", "storyarc", "genere", "writer", "penciller", "inker", "colorist", "letterer", "coverartist", "publisher", "format", "agerating", "synopsis", "characters", "notes" } },
-    { FieldType::boolean, { "isbis", "color" } },
+    { FieldType::boolean, { "isbis", "color", "read" } },
     { FieldType::date, { "date" } },
     { FieldType::filename, { "filename" } },
-    { FieldType::folder, { "folder" } }
+    { FieldType::folder, { "folder" } },
+    { FieldType::booleanFolder, { "completed", "finished" } },
 };
 
 int QueryParser::TreeNode::buildSqlString(std::string &sqlString, int bindPosition) const
@@ -30,6 +31,8 @@ int QueryParser::TreeNode::buildSqlString(std::string &sqlString, int bindPositi
             sqlString += "(UPPER(c." + children[0].t + ") LIKE UPPER(:bindPosition" + std::to_string(bindPosition) + ")) ";
         } else if (fieldType(children[0].t) == FieldType::folder) {
             sqlString += "(UPPER(f.name) LIKE UPPER(:bindPosition" + std::to_string(bindPosition) + ")) ";
+        } else if (fieldType(children[0].t) == FieldType::booleanFolder) {
+            sqlString += "f." + children[0].t + " = :bindPosition" + std::to_string(bindPosition) + " ";
         } else {
             sqlString += "(UPPER(ci." + children[0].t + ") LIKE UPPER(:bindPosition" + std::to_string(bindPosition) + ")) ";
         }
@@ -52,7 +55,7 @@ int QueryParser::TreeNode::bindValues(QSqlQuery &selectQuery, int bindPosition) 
 {
     if (t == "token") {
         std::string bind_string(":bindPosition" + std::to_string(++bindPosition));
-        if (isIn(fieldType(children[0].t), { FieldType::numeric, FieldType::boolean })) {
+        if (isIn(fieldType(children[0].t), { FieldType::numeric, FieldType::boolean, FieldType::booleanFolder })) {
             selectQuery.bindValue(QString::fromStdString(bind_string), std::stoi(children[1].t));
         } else {
             selectQuery.bindValue(QString::fromStdString(bind_string), QString::fromStdString("%%" + children[1].t + "%%"));
