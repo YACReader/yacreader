@@ -9,6 +9,7 @@
 #include "qnaturalsorting.h"
 #include "comic_db.h"
 #include "db_helper.h"
+#include "query_parser.h"
 
 //ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read
 #include "QsLog.h"
@@ -595,59 +596,25 @@ void ComicModel::setupReadingModelData(const QString &databasePath)
     endResetModel();
 }
 
-void ComicModel::setupModelData(const SearchModifiers modifier, const QString &filter, const QString &databasePath)
+void ComicModel::setModelData(QList<ComicItem *> *data, const QString &databasePath)
 {
-    beginResetModel();
-    qDeleteAll(_data);
-    _data.clear();
     _databasePath = databasePath;
-    QString connectionName = "";
 
-    {
-        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
-        QSqlQuery selectQuery(db);
+    beginResetModel();
 
-        switch (modifier) {
-        case YACReader::NoModifiers:
-            selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
-                                "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                                "WHERE UPPER(ci.title) LIKE UPPER(:filter) OR UPPER(c.fileName) LIKE UPPER(:filter) LIMIT :limit");
-            selectQuery.bindValue(":filter", "%%" + filter + "%%");
-            selectQuery.bindValue(":limit", 500); //TODO, load this value from settings
-            break;
+    qDeleteAll(_data);
 
-        case YACReader::OnlyRead:
-            selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
-                                "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                                "WHERE (UPPER(ci.title) LIKE UPPER(:filter) OR UPPER(c.fileName) LIKE UPPER(:filter)) AND ci.read = 1 LIMIT :limit");
-            selectQuery.bindValue(":filter", "%%" + filter + "%%");
-            selectQuery.bindValue(":limit", 500); //TODO, load this value from settings
-            break;
+    _data.clear();
 
-        case YACReader::OnlyUnread:
-            selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
-                                "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                                "WHERE (UPPER(ci.title) LIKE UPPER(:filter) OR UPPER(c.fileName) LIKE UPPER(:filter)) AND ci.read = 0 LIMIT :limit");
-            selectQuery.bindValue(":filter", "%%" + filter + "%%");
-            selectQuery.bindValue(":limit", 500); //TODO, load this value from settings
-            break;
+    QLOG_ERROR() << "-d2>" << data->size();
 
-        default:
-            QLOG_ERROR() << "not implemented";
-            break;
-        }
+    _data.append(*data);
 
-        selectQuery.exec();
-
-        QLOG_DEBUG() << selectQuery.lastError() << "--";
-
-        setupModelData(selectQuery);
-        connectionName = db.connectionName();
-    }
-    QSqlDatabase::removeDatabase(connectionName);
     endResetModel();
 
     emit searchNumResults(_data.length());
+
+    delete data;
 }
 
 QString ComicModel::getComicPath(QModelIndex mi)

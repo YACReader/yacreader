@@ -14,6 +14,8 @@ INCLUDEPATH += . \
 
 DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY
 
+CONFIG += c++11
+
 # load default build flags
 include (../config.pri)
 include (../dependencies/pdf_backend.pri)
@@ -67,10 +69,6 @@ macx {
   QT += macextras gui-private
 }
 
-unix:!macx {
-  CONFIG += c++11
-}
-
 #CONFIG += release
 CONFIG -= flat
 QT += sql network widgets script
@@ -80,7 +78,11 @@ QT += sql network widgets script
 
 # Input
 HEADERS += comic_flow.h \
+  ../common/concurrent_queue.h \
   create_library_dialog.h \
+  db/comic_query_result_procesor.h \
+  db/folder_query_result_processor.h \
+  db/query_lexer.h \
   library_creator.h \
   library_window.h \
   add_library_dialog.h \
@@ -147,6 +149,7 @@ HEADERS += comic_flow.h \
   yacreader_comics_selection_helper.h \
   yacreader_comic_info_helper.h \
   db/reading_list.h \
+  db/query_parser.h \
   current_comic_view_helper.h
 
 !CONFIG(no_opengl) {
@@ -155,6 +158,9 @@ HEADERS += comic_flow.h \
 
 SOURCES += comic_flow.cpp \
     create_library_dialog.cpp \
+    db/comic_query_result_procesor.cpp \
+    db/folder_query_result_processor.cpp \
+    db/query_lexer.cpp \
     library_creator.cpp \
     library_window.cpp \
     main.cpp \
@@ -219,7 +225,8 @@ SOURCES += comic_flow.cpp \
     yacreader_comics_selection_helper.cpp \
     yacreader_comic_info_helper.cpp\
     db/reading_list.cpp \
-    current_comic_view_helper.cpp
+    current_comic_view_helper.cpp \
+    db/query_parser.cpp
 
 !CONFIG(no_opengl) {
     SOURCES += ../common/gl/yacreader_flow_gl.cpp

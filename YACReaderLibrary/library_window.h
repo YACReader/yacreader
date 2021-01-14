@@ -10,6 +10,8 @@
 #include "yacreader_libraries.h"
 
 #include "yacreader_navigation_controller.h"
+#include "comic_query_result_procesor.h"
+#include "folder_query_result_processor.h"
 
 #include <future>
 
@@ -327,6 +329,8 @@ public slots:
     void toNormal();
     void toFullScreen();
     void setSearchFilter(const YACReader::SearchModifiers modifier, QString filter);
+    void setComicSearchFilterData(QList<ComicItem *> *, const QString &);
+    void setFolderSearchFilterData(QMap<unsigned long long int, FolderItem *> *filteredItems, FolderItem *root);
     void clearSearchFilter();
     void showProperties();
     void exportLibrary(QString destPath);
@@ -399,6 +403,8 @@ private:
     std::future<void> upgradeLibraryFuture;
 
     TrayIconController *trayIconController;
+    ComicQueryResultProcesor comicQueryResultProcesor;
+    FolderQueryResultProcessor *folderQueryResultProcessor;
 };
 
 #endif
