@@ -14,6 +14,8 @@ INCLUDEPATH += . \
 
 DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY
 
+CONFIG += c++11
+
 # load default build flags
 include (../config.pri)
 include (../dependencies/pdf_backend.pri)
