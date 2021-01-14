@@ -62,7 +62,7 @@ private:
     void advance();
 
     QueryLexer lexer = QueryLexer("");
-    Token currentToken = Token(Token::Type::eof);
+    Token currentToken = Token(Token::Type::undefined);
 
     template<typename T>
     static bool isIn(const T &e, const std::list<T> &v)

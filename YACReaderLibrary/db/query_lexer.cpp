@@ -7,17 +7,16 @@ QueryLexer::QueryLexer(const std::string &input)
 
 Token QueryLexer::next()
 {
+    while (isSpace(peek())) {
+        get();
+    }
+
     switch (peek()) {
     case '\0':
         return Token(Token::Type::eof);
     case '(':
     case ')':
         return single(Token::Type::opcode);
-    case ' ':
-    case '\t':
-    case '\r':
-    case '\n':
-        return space();
     case '"':
         return quotedWord();
     default:
@@ -38,15 +37,6 @@ char QueryLexer::get()
 Token QueryLexer::single(Token::Type type)
 {
     return Token(type, input.substr(index++, 1));
-}
-
-Token QueryLexer::space()
-{
-    auto start = index;
-    get();
-    while (isSpace(peek()))
-        get();
-    return Token(Token::Type::space, input.substr(start, index - start));
 }
 
 Token QueryLexer::word()

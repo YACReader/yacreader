@@ -9,10 +9,9 @@ public:
     enum class Type {
         eof,
         opcode,
-        atWord,
         word,
         quotedWord,
-        space
+        undefined
     };
 
     Token(Type type, std::string lexeme = "")
@@ -49,7 +48,6 @@ private:
     char get();
 
     Token single(Token::Type type);
-    Token space();
     Token word();
     Token quotedWord();
 

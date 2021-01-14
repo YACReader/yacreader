@@ -136,9 +136,6 @@ bool QueryParser::isEof() const
 void QueryParser::advance()
 {
     currentToken = lexer.next();
-
-    if (tokenType() == Token::Type::space)
-        advance();
 }
 
 QueryParser::FieldType QueryParser::fieldType(const std::string &str)
@@ -184,7 +181,7 @@ QueryParser::TreeNode QueryParser::andExpression()
         return { "and", { lhs, andExpression() } };
     }
 
-    if ((isIn(tokenType(), { Token::Type::atWord, Token::Type::word, Token::Type::quotedWord }) || token() == "(") && lcaseToken() != "or") {
+    if ((isIn(tokenType(), { Token::Type::word, Token::Type::quotedWord }) || token() == "(") && lcaseToken() != "or") {
         return { "and", { lhs, andExpression() } };
     }
 
@@ -210,7 +207,7 @@ QueryParser::TreeNode QueryParser::locationExpression()
         }
         return res;
     }
-    if (!isIn(tokenType(), { Token::Type::atWord, Token::Type::word, Token::Type::quotedWord })) {
+    if (!isIn(tokenType(), { Token::Type::word, Token::Type::quotedWord })) {
         throw std::invalid_argument("Invalid syntax. Expected a lookup name or a word");
     }
     return baseToken();
