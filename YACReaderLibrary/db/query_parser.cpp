@@ -55,8 +55,17 @@ int QueryParser::TreeNode::bindValues(QSqlQuery &selectQuery, int bindPosition) 
 {
     if (t == "token") {
         std::string bind_string(":bindPosition" + std::to_string(++bindPosition));
-        if (isIn(fieldType(children[0].t), { FieldType::numeric, FieldType::boolean, FieldType::booleanFolder })) {
+        if (isIn(fieldType(children[0].t), { FieldType::numeric })) {
             selectQuery.bindValue(QString::fromStdString(bind_string), std::stoi(children[1].t));
+        } else if (isIn(fieldType(children[0].t), { FieldType::boolean, FieldType::booleanFolder })) {
+            auto value = toLower(children[1].t);
+            if (value == "true") {
+                selectQuery.bindValue(QString::fromStdString(bind_string), 1);
+            } else if (value == "false") {
+                selectQuery.bindValue(QString::fromStdString(bind_string), 0);
+            } else {
+                selectQuery.bindValue(QString::fromStdString(bind_string), std::stoi(value));
+            }
         } else {
             selectQuery.bindValue(QString::fromStdString(bind_string), QString::fromStdString("%%" + children[1].t + "%%"));
         }
