@@ -76,6 +76,7 @@ QT += sql network widgets script
 
 # Input
 HEADERS += comic_flow.h \
+  ../common/concurrent_queue.h \
   create_library_dialog.h \
   db/query_lexer.h \
   library_creator.h \
