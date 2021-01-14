@@ -36,8 +36,7 @@ enum YACReaderErrors {
 enum SearchModifiers {
     NoModifiers = 0,
     OnlyRead,
-    OnlyUnread,
-    ByAuthor
+    OnlyUnread
 };
 
 enum LabelColors {
