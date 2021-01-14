@@ -89,8 +89,6 @@ public:
     void setupReadingListModelData(unsigned long long int parentReadingList, const QString &databasePath);
     void setupFavoritesModelData(const QString &databasePath);
     void setupReadingModelData(const QString &databasePath);
-    //configures the model for showing the comics matching the filter criteria.
-    void setupModelData(const SearchModifiers modifier, const QString &filter, const QString &databasePath);
 
     //Métodos de conveniencia
     QStringList getPaths(const QString &_source);
@@ -141,6 +139,8 @@ public slots:
     void addComicsToFavorites(const QList<qulonglong> &comicIds);
     void addComicsToLabel(const QList<qulonglong> &comicIds, qulonglong labelId);
     void addComicsToReadingList(const QList<qulonglong> &comicIds, qulonglong readingListId);
+
+    void setModelData(QList<ComicItem *> *data, const QString &databasePath);
 
 protected:
 private:

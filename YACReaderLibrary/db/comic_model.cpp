@@ -596,61 +596,25 @@ void ComicModel::setupReadingModelData(const QString &databasePath)
     endResetModel();
 }
 
-void ComicModel::setupModelData(const SearchModifiers modifier, const QString &filter, const QString &databasePath)
+void ComicModel::setModelData(QList<ComicItem *> *data, const QString &databasePath)
 {
-    beginResetModel();
-    qDeleteAll(_data);
-    _data.clear();
     _databasePath = databasePath;
-    QString connectionName = "";
 
-    {
-        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
-        QSqlQuery selectQuery(db);
+    beginResetModel();
 
-        std::string queryString("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
-                                "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) LEFT JOIN folder f ON (f.id == c.parentId) WHERE ");
+    qDeleteAll(_data);
 
-        try {
-            QueryParser parser;
-            auto result = parser.parse(filter.toStdString());
-            result.buildSqlString(queryString);
+    _data.clear();
 
-            switch (modifier) {
-            case YACReader::NoModifiers:
-                queryString += " LIMIT :limit";
-                break;
+    QLOG_ERROR() << "-d2>" << data->size();
 
-            case YACReader::OnlyRead:
-                queryString += " AND ci.read = 1 LIMIT :limit";
-                break;
+    _data.append(*data);
 
-            case YACReader::OnlyUnread:
-                queryString += " AND ci.read = 0 LIMIT :limit";
-                break;
-
-            default:
-                queryString += " LIMIT :limit";
-                QLOG_ERROR() << "not implemented";
-                break;
-            }
-            selectQuery.prepare(queryString.c_str());
-            selectQuery.bindValue(":limit", 500); //TODO, load this value from settings
-            result.bindValues(selectQuery);
-
-            selectQuery.exec();
-
-            setupModelData(selectQuery);
-        } catch (const std::exception &e) {
-            QLOG_ERROR() << "Unable to parse query: " << e.what();
-        }
-
-        connectionName = db.connectionName();
-    }
-    QSqlDatabase::removeDatabase(connectionName);
     endResetModel();
 
     emit searchNumResults(_data.length());
+
+    delete data;
 }
 
 QString ComicModel::getComicPath(QModelIndex mi)

@@ -92,7 +92,7 @@
 using namespace YACReader;
 
 LibraryWindow::LibraryWindow()
-    : QMainWindow(), fullscreen(false), previousFilter(""), fetching(false), status(LibraryWindow::Normal), removeError(false)
+    : QMainWindow(), fullscreen(false), previousFilter(""), fetching(false), status(LibraryWindow::Normal), removeError(false), comicQueryResultProcesor()
 {
     setupUI();
 
@@ -1053,10 +1053,9 @@ void LibraryWindow::createConnections()
     connect(optionsDialog, SIGNAL(optionsChanged()), this, SLOT(reloadOptions()));
     connect(optionsDialog, SIGNAL(editShortcuts()), editShortcutsDialog, SLOT(show()));
 
-    //Folders filter
-    //connect(clearFoldersFilter,SIGNAL(clicked()),foldersFilter,SLOT(clear()));
+    //Search filter
     connect(searchEdit, SIGNAL(filterChanged(YACReader::SearchModifiers, QString)), this, SLOT(setSearchFilter(YACReader::SearchModifiers, QString)));
-    //connect(includeComicsCheckBox,SIGNAL(stateChanged(int)),this,SLOT(searchInFiles(int)));
+    connect(&comicQueryResultProcesor, &ComicQueryResultProcesor::newData, this, &LibraryWindow::setComicSearchFilterData);
 
     //ContextMenus
     connect(openContainingFolderComicAction, SIGNAL(triggered()), this, SLOT(openContainingFolderComic()));
@@ -2070,21 +2069,28 @@ void LibraryWindow::toNormal()
 void LibraryWindow::setSearchFilter(const YACReader::SearchModifiers modifier, QString filter)
 {
     if (!filter.isEmpty()) {
-        status = LibraryWindow::Searching;
+        //TODO move search query for folders to its own async processor
         foldersModelProxy->setFilter(modifier, filter, true); //includeComicsCheckBox->isChecked());
-        comicsModel->setupModelData(modifier, filter, foldersModel->getDatabase());
-        comicsViewsManager->comicsView->enableFilterMode(true);
-        comicsViewsManager->comicsView->setModel(comicsModel); //TODO, columns are messed up after ResetModel some times, this shouldn't be necesary
-        foldersView->expandAll();
-
-        if (comicsModel->rowCount() == 0)
-            comicsViewsManager->showNoSearchResultsView();
-        else
-            comicsViewsManager->showComicsView();
+        comicQueryResultProcesor.createModelData(modifier, filter, foldersModel->getDatabase());
     } else if (status == LibraryWindow::Searching) { //if no searching, then ignore this
         clearSearchFilter();
         navigationController->loadPreviousStatus();
     }
+}
+
+void LibraryWindow::setComicSearchFilterData(QList<ComicItem *> *data, const QString &databasePath)
+{
+    status = LibraryWindow::Searching;
+
+    comicsModel->setModelData(data, databasePath);
+    comicsViewsManager->comicsView->enableFilterMode(true);
+    comicsViewsManager->comicsView->setModel(comicsModel); //TODO, columns are messed up after ResetModel some times, this shouldn't be necesary
+    foldersView->expandAll();
+
+    if (comicsModel->rowCount() == 0)
+        comicsViewsManager->showNoSearchResultsView();
+    else
+        comicsViewsManager->showComicsView();
 }
 
 void LibraryWindow::clearSearchFilter()
