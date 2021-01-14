@@ -53,9 +53,9 @@ int QueryParser::TreeNode::bindValues(QSqlQuery &selectQuery, int bindPosition) 
     if (t == "token") {
         std::string bind_string(":bindPosition" + std::to_string(++bindPosition));
         if (isIn(fieldType(children[0].t), { FieldType::numeric, FieldType::boolean })) {
-            selectQuery.bindValue(bind_string.c_str(), std::stoi(children[1].t));
+            selectQuery.bindValue(QString::fromStdString(bind_string), std::stoi(children[1].t));
         } else {
-            selectQuery.bindValue(bind_string.c_str(), ("%%" + children[1].t + "%%").c_str());
+            selectQuery.bindValue(QString::fromStdString(bind_string), QString::fromStdString("%%" + children[1].t + "%%"));
         }
     } else if (t == "not") {
         bindPosition = children[0].bindValues(selectQuery, bindPosition);
@@ -159,7 +159,7 @@ std::string QueryParser::join(const QStringList &strings, const std::string &del
 
 QStringList QueryParser::split(const std::string &string, char delim)
 {
-    auto words = QString(string.c_str()).split(delim);
+    auto words = QString::fromStdString(string).split(delim);
     return words;
 }
 
