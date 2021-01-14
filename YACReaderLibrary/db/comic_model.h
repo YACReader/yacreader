@@ -16,7 +16,6 @@ class ComicItem;
 
 using namespace YACReader;
 
-//! [0]
 class ComicModel : public QAbstractItemModel
 {
     Q_OBJECT
@@ -164,6 +163,5 @@ signals:
     void resortedIndexes(QList<int>);
     void newSelectedIndex(const QModelIndex &);
 };
-//! [0]
 
 #endif
