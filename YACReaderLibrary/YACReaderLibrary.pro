@@ -78,6 +78,7 @@ QT += sql network widgets script
 HEADERS += comic_flow.h \
   ../common/concurrent_queue.h \
   create_library_dialog.h \
+  db/comic_query_result_procesor.h \
   db/query_lexer.h \
   library_creator.h \
   library_window.h \
@@ -154,6 +155,7 @@ HEADERS += comic_flow.h \
 
 SOURCES += comic_flow.cpp \
     create_library_dialog.cpp \
+    db/comic_query_result_procesor.cpp \
     db/query_lexer.cpp \
     library_creator.cpp \
     library_window.cpp \
