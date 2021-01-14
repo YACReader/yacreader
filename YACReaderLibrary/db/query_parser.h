@@ -45,6 +45,11 @@ public:
         std::string t;
         std::vector<TreeNode> children;
 
+        explicit TreeNode(std::string t, std::vector<TreeNode> children)
+            : t(t), children(children)
+        {
+        }
+
         int buildSqlString(std::string &sqlString, int bindPosition = 0) const;
         int bindValues(QSqlQuery &selectQuery, int bindPosition = 0) const;
     };

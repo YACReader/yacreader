@@ -168,7 +168,7 @@ QueryParser::TreeNode QueryParser::orExpression()
     auto lhs = andExpression();
     if (lcaseToken() == "or") {
         advance();
-        return { "or", { lhs, orExpression() } };
+        return TreeNode("or", { lhs, orExpression() });
     }
     return lhs;
 }
@@ -178,11 +178,11 @@ QueryParser::TreeNode QueryParser::andExpression()
     auto lhs = notExpression();
     if (lcaseToken() == "and") {
         advance();
-        return { "and", { lhs, andExpression() } };
+        return TreeNode("and", { lhs, andExpression() });
     }
 
     if ((isIn(tokenType(), { Token::Type::word, Token::Type::quotedWord }) || token() == "(") && lcaseToken() != "or") {
-        return { "and", { lhs, andExpression() } };
+        return TreeNode("and", { lhs, andExpression() });
     }
 
     return lhs;
@@ -192,7 +192,7 @@ QueryParser::TreeNode QueryParser::notExpression()
 {
     if (lcaseToken() == "not") {
         advance();
-        return { "not", { notExpression() } };
+        return TreeNode("not", { notExpression() });
     }
     return locationExpression();
 }
@@ -216,7 +216,7 @@ QueryParser::TreeNode QueryParser::locationExpression()
 QueryParser::TreeNode QueryParser::baseToken()
 {
     if (tokenType() == Token::Type::quotedWord) {
-        return { "token", { { "all", {} }, { token(true), {} } } };
+        return TreeNode("token", { TreeNode("all", {}), TreeNode(token(true), {}) });
     }
 
     auto words(split(token(true), ':'));
@@ -225,9 +225,10 @@ QueryParser::TreeNode QueryParser::baseToken()
         auto loc(toLower(words[0].toStdString()));
         words.erase(words.begin());
         if (words.size() == 1 && tokenType() == Token::Type::quotedWord) {
-            return { "token", { { loc, {} }, { token(true), {} } } };
+            return TreeNode("token", { TreeNode(loc, {}), TreeNode(token(true), {}) });
         }
-        return { "token", { { loc, {} }, { join(words, ":"), {} } } };
+        return TreeNode("token", { TreeNode(loc, {}), TreeNode(join(words, ":"), {}) });
     }
-    return { "token", { { "all", {} }, { join(words, ":"), {} } } };
+
+    return TreeNode("token", { TreeNode("all", {}), TreeNode(join(words, ":"), {}) });
 }
