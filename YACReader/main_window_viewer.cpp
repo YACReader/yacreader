@@ -265,7 +265,7 @@ void MainWindowViewer::createActions()
     openPreviousComicAction->setDisabled(true);
     openPreviousComicAction->setData(OPEN_PREVIOUS_COMIC_ACTION_Y);
     openPreviousComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_PREVIOUS_COMIC_ACTION_Y));
-    connect(openPreviousComicAction, SIGNAL(triggered()), this, SLOT(openPreviousComic()));
+    connect(openPreviousComicAction, &QAction::triggered, this, &MainWindowViewer::openLeftComic);
 
     openNextComicAction = new QAction(tr("Next Comic"), this);
     openNextComicAction->setIcon(QIcon(":/images/viewer_toolbar/openNext.png"));
@@ -273,7 +273,7 @@ void MainWindowViewer::createActions()
     openNextComicAction->setDisabled(true);
     openNextComicAction->setData(OPEN_NEXT_COMIC_ACTION_Y);
     openNextComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_NEXT_COMIC_ACTION_Y));
-    connect(openNextComicAction, SIGNAL(triggered()), this, SLOT(openNextComic()));
+    connect(openNextComicAction, &QAction::triggered, this, &MainWindowViewer::openRightComic);
 
     prevAction = new QAction(tr("&Previous"), this);
     prevAction->setIcon(QIcon(":/images/viewer_toolbar/previous.png"));
@@ -282,7 +282,7 @@ void MainWindowViewer::createActions()
     prevAction->setDisabled(true);
     prevAction->setData(PREV_ACTION_Y);
     prevAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(PREV_ACTION_Y));
-    connect(prevAction, SIGNAL(triggered()), viewer, SLOT(prev()));
+    connect(prevAction, SIGNAL(triggered()), viewer, SLOT(left()));
 
     nextAction = new QAction(tr("&Next"), this);
     nextAction->setIcon(QIcon(":/images/viewer_toolbar/next.png"));
@@ -291,7 +291,7 @@ void MainWindowViewer::createActions()
     nextAction->setDisabled(true);
     nextAction->setData(NEXT_ACTION_Y);
     nextAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(NEXT_ACTION_Y));
-    connect(nextAction, SIGNAL(triggered()), viewer, SLOT(next()));
+    connect(nextAction, SIGNAL(triggered()), viewer, SLOT(right()));
 
     adjustHeightAction = new QAction(tr("Fit Height"), this);
     adjustHeightAction->setIcon(QIcon(":/images/viewer_toolbar/toHeight.png"));
@@ -412,6 +412,7 @@ void MainWindowViewer::createActions()
     doubleMangaPageAction->setData(DOUBLE_MANGA_PAGE_ACTION_Y);
     doubleMangaPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(DOUBLE_MANGA_PAGE_ACTION_Y));
     connect(doubleMangaPageAction, SIGNAL(triggered()), viewer, SLOT(doubleMangaPageSwitch()));
+    connect(doubleMangaPageAction, &QAction::triggered, this, &MainWindowViewer::doubleMangaPageSwitch);
 
     goToPageAction = new QAction(tr("Go To"), this);
     goToPageAction->setIcon(QIcon(":/images/viewer_toolbar/goto.png"));
@@ -822,9 +823,6 @@ void MainWindowViewer::open()
 
 void MainWindowViewer::open(QString path, ComicDB &comic, QList<ComicDB> &siblings)
 {
-    //currentComicDB = comic;
-    //siblingComics = siblings;
-
     QFileInfo fi(path);
 
     if (!comic.info.title.isNull() && !comic.info.title.toString().isEmpty())
@@ -832,31 +830,22 @@ void MainWindowViewer::open(QString path, ComicDB &comic, QList<ComicDB> &siblin
     else
         setWindowTitle("YACReader - " + fi.fileName());
 
+    viewer->setMangaWithoutStoringSetting(comic.info.manga.toBool());
+    doubleMangaPageAction->setChecked(comic.info.manga.toBool());
+
     viewer->open(path, comic);
     enableActions();
     int index = siblings.indexOf(comic);
+    updateOpenPrevNextActions(index > 0, index + 1 < siblings.count());
 
     optionsDialog->setFilters(currentComicDB.info.brightness, currentComicDB.info.contrast, currentComicDB.info.gamma);
-
-    if (index > 0)
-        openPreviousComicAction->setDisabled(false);
-    else
-        openPreviousComicAction->setDisabled(true);
-
-    if (index + 1 < siblings.count())
-        openNextComicAction->setDisabled(false);
-    else
-        openNextComicAction->setDisabled(true);
 }
 
 void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId)
 {
-    //QString pathFile = QCoreApplication::arguments().at(1);
     currentDirectory = path;
-    //quint64 comicId = QCoreApplication::arguments().at(2).split("=").at(1).toULongLong();
-    //libraryId = QCoreApplication::arguments().at(3).split("=").at(1).toULongLong();
+
     this->libraryId = libraryId;
-    //	this->path=path;
 
     enableActions();
 
@@ -881,8 +870,10 @@ void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId)
 
 void MainWindowViewer::openComicFromPath(QString pathFile)
 {
+    doubleMangaPageAction->setChecked(Configuration::getConfiguration().getDoubleMangaPage());
     openComic(pathFile);
     isClient = false; //this method is used for direct openings
+    updateOpenPrevNextActions(!previousComicPath.isEmpty(), !nextComicPath.isEmpty());
 }
 
 //isClient shouldn't be modified when a siblinig comic is opened
@@ -1406,6 +1397,16 @@ void MainWindowViewer::setUpShortcutsManagement()
     ShortcutsManager::getShortcutsManager().registerActions(allActions);
 }
 
+void MainWindowViewer::doubleMangaPageSwitch()
+{
+    if (isClient) {
+        int index = siblingComics.indexOf(currentComicDB);
+        updateOpenPrevNextActions(index > 0, index + 1 < siblingComics.size());
+    } else {
+        updateOpenPrevNextActions(!previousComicPath.isEmpty(), !nextComicPath.isEmpty());
+    }
+}
+
 void MainWindowViewer::toggleFitToWidthSlider()
 {
     int y;
@@ -1497,10 +1498,29 @@ void MainWindowViewer::openNextComic()
             currentComicDB = siblingComics.at(currentIndex + 1);
             open(currentDirectory + currentComicDB.path, currentComicDB, siblingComics);
         }
+
         return;
     }
     if (!nextComicPath.isEmpty()) {
         openSiblingComic(nextComicPath);
+    }
+}
+
+void MainWindowViewer::openLeftComic()
+{
+    if (viewer->getIsMangaMode()) {
+        openNextComic();
+    } else {
+        openPreviousComic();
+    }
+}
+
+void MainWindowViewer::openRightComic()
+{
+    if (viewer->getIsMangaMode()) {
+        openPreviousComic();
+    } else {
+        openNextComic();
     }
 }
 
@@ -1558,15 +1578,13 @@ void MainWindowViewer::getSiblingComics(QString path, QString currentComic)
     previousComicPath = nextComicPath = "";
     if (index > 0) {
         previousComicPath = path + "/" + list.at(index - 1);
-        openPreviousComicAction->setDisabled(false);
-    } else
-        openPreviousComicAction->setDisabled(true);
+    }
 
     if (index + 1 < list.count()) {
         nextComicPath = path + "/" + list.at(index + 1);
-        openNextComicAction->setDisabled(false);
-    } else
-        openNextComicAction->setDisabled(true);
+    }
+
+    updateOpenPrevNextActions(index > 0, index + 1 < list.count());
 }
 
 void MainWindowViewer::dropEvent(QDropEvent *event)
@@ -1669,5 +1687,36 @@ void MainWindowViewer::sendComic()
         int retries = 1;
         while (!client->sendComicInfo(libraryId, currentComicDB) && retries != 0)
             retries--;
+    }
+}
+
+void MainWindowViewer::updateOpenPrevNextActions(bool thereIsPrevious, bool thereIsNext)
+{
+    if (thereIsPrevious) {
+        if (viewer->getIsMangaMode()) {
+            openNextComicAction->setDisabled(false);
+        } else {
+            openPreviousComicAction->setDisabled(false);
+        }
+    } else {
+        if (viewer->getIsMangaMode()) {
+            openNextComicAction->setDisabled(true);
+        } else {
+            openPreviousComicAction->setDisabled(true);
+        }
+    }
+
+    if (thereIsNext) {
+        if (viewer->getIsMangaMode()) {
+            openPreviousComicAction->setDisabled(false);
+        } else {
+            openNextComicAction->setDisabled(false);
+        }
+    } else {
+        if (viewer->getIsMangaMode()) {
+            openPreviousComicAction->setDisabled(true);
+        } else {
+            openNextComicAction->setDisabled(true);
+        }
     }
 }

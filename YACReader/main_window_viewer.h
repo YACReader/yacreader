@@ -50,6 +50,8 @@ public slots:
     void newVersion();
     void openPreviousComic();
     void openNextComic();
+    void openLeftComic();
+    void openRightComic();
     void openComicFromPath(QString pathFile);
     void openSiblingComic(QString pathFile);
     void openComic(QString pathFile);
@@ -68,6 +70,7 @@ public slots:
     void checkNewVersion();
     void processReset();
     void setUpShortcutsManagement();
+    void doubleMangaPageSwitch();
 
     void toggleFitToWidthSlider();
 
@@ -181,6 +184,7 @@ private:
 protected:
     void closeEvent(QCloseEvent *event) override;
     void sendComic();
+    void updateOpenPrevNextActions(bool thereIsPrevious, bool thereIsNext);
 
 public:
     MainWindowViewer();

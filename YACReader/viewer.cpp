@@ -253,6 +253,24 @@ void Viewer::next()
     shouldOpenPrevious = false;
 }
 
+void Viewer::left()
+{
+    if (doubleMangaPage) {
+        next();
+    } else {
+        prev();
+    }
+}
+
+void Viewer::right()
+{
+    if (doubleMangaPage) {
+        prev();
+    } else {
+        next();
+    }
+}
+
 void Viewer::prev()
 {
     direction = -1;
@@ -889,6 +907,14 @@ void Viewer::doublePageSwitch()
     Configuration::getConfiguration().setDoublePage(doublePage);
 }
 
+void Viewer::setMangaWithoutStoringSetting(bool manga)
+{
+    doubleMangaPage = manga;
+    render->setManga(manga);
+    goToFlow->setFlowRightToLeft(doubleMangaPage);
+    //goToFlow->updateConfig(config.getSettings());
+}
+
 void Viewer::doubleMangaPageSwitch()
 {
     doubleMangaPage = !doubleMangaPage;
@@ -1024,6 +1050,11 @@ void Viewer::updateZoomRatio(int ratio)
 {
     zoom = ratio;
     updateContentSize();
+}
+
+bool Viewer::getIsMangaMode()
+{
+    return doubleMangaPage;
 }
 
 void Viewer::updateConfig(QSettings *settings)
