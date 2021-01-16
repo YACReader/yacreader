@@ -7,8 +7,11 @@ spanish only. Sorry for the mess.
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ## WIP
+### YACReader
+* Add support for full manga mode.
 ### YACReaderLibrary
 * New search engine.
+* New `manga` field added to comics to tag comics as manga.
 
 ## 9.7.1
 ### YACReader
