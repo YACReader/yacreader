@@ -707,8 +707,8 @@ void MainWindowViewer::createToolBars()
     viewMenu->addAction(showMagnifyingGlassAction);
 
     auto goMenu = new QMenu(tr("Go"));
-    goMenu->addAction(prevAction);
-    goMenu->addAction(nextAction);
+    goMenu->addAction(goToPageOnTheLeftAction);
+    goMenu->addAction(goToPageOnTheRightAction);
     goMenu->addAction(goToPageAction);
     goMenu->addSeparator();
     goMenu->addAction(setBookmarkAction);
