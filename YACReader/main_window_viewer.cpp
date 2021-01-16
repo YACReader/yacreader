@@ -836,7 +836,7 @@ void MainWindowViewer::open(QString path, ComicDB &comic, QList<ComicDB> &siblin
     viewer->open(path, comic);
     enableActions();
     int index = siblings.indexOf(comic);
-    updateOpenPrevNextActions(index > 0, index + 1 < siblings.count());
+    updatePrevNextActions(index > 0, index + 1 < siblings.count());
 
     optionsDialog->setFilters(currentComicDB.info.brightness, currentComicDB.info.contrast, currentComicDB.info.gamma);
 }
@@ -873,7 +873,7 @@ void MainWindowViewer::openComicFromPath(QString pathFile)
     doubleMangaPageAction->setChecked(Configuration::getConfiguration().getDoubleMangaPage());
     openComic(pathFile);
     isClient = false; //this method is used for direct openings
-    updateOpenPrevNextActions(!previousComicPath.isEmpty(), !nextComicPath.isEmpty());
+    updatePrevNextActions(!previousComicPath.isEmpty(), !nextComicPath.isEmpty());
 }
 
 //isClient shouldn't be modified when a siblinig comic is opened
@@ -1401,9 +1401,9 @@ void MainWindowViewer::doubleMangaPageSwitch()
 {
     if (isClient) {
         int index = siblingComics.indexOf(currentComicDB);
-        updateOpenPrevNextActions(index > 0, index + 1 < siblingComics.size());
+        updatePrevNextActions(index > 0, index + 1 < siblingComics.size());
     } else {
-        updateOpenPrevNextActions(!previousComicPath.isEmpty(), !nextComicPath.isEmpty());
+        updatePrevNextActions(!previousComicPath.isEmpty(), !nextComicPath.isEmpty());
     }
 }
 
@@ -1584,7 +1584,7 @@ void MainWindowViewer::getSiblingComics(QString path, QString currentComic)
         nextComicPath = path + "/" + list.at(index + 1);
     }
 
-    updateOpenPrevNextActions(index > 0, index + 1 < list.count());
+    updatePrevNextActions(index > 0, index + 1 < list.count());
 }
 
 void MainWindowViewer::dropEvent(QDropEvent *event)
@@ -1690,7 +1690,7 @@ void MainWindowViewer::sendComic()
     }
 }
 
-void MainWindowViewer::updateOpenPrevNextActions(bool thereIsPrevious, bool thereIsNext)
+void MainWindowViewer::updatePrevNextActions(bool thereIsPrevious, bool thereIsNext)
 {
     if (thereIsPrevious) {
         if (viewer->getIsMangaMode()) {
