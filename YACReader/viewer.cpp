@@ -912,7 +912,6 @@ void Viewer::setMangaWithoutStoringSetting(bool manga)
     doubleMangaPage = manga;
     render->setManga(manga);
     goToFlow->setFlowRightToLeft(doubleMangaPage);
-    //goToFlow->updateConfig(config.getSettings());
 }
 
 void Viewer::doubleMangaPageSwitch()
