@@ -979,7 +979,7 @@ void LibraryWindow::createMenus()
     folderMenu->addSeparator();
     folderMenu->addAction(setFolderAsReadAction);
     folderMenu->addAction(setFolderAsUnreadAction);
-    folderMenu->addSperator();
+    folderMenu->addSeparator();
     foldersView->addAction(setFolderAsMangaAction);
     foldersView->addAction(setFolderAsNormalAction);
 
