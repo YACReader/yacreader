@@ -649,10 +649,12 @@ void DBHelper::update(const Folder &folder, QSqlDatabase &db)
     QSqlQuery updateFolderInfo(db);
     updateFolderInfo.prepare("UPDATE folder SET "
                              "finished = :finished, "
-                             "completed = :completed "
+                             "completed = :completed, "
+                             "manga = :manga "
                              "WHERE id = :id ");
     updateFolderInfo.bindValue(":finished", folder.isFinished() ? 1 : 0);
     updateFolderInfo.bindValue(":completed", folder.isCompleted() ? 1 : 0);
+    updateFolderInfo.bindValue(":manga", folder.isManga() ? 1 : 0);
     updateFolderInfo.bindValue(":id", folder.id);
     updateFolderInfo.exec();
 }
@@ -1535,6 +1537,7 @@ Folder DBHelper::loadFolder(qulonglong id, QSqlDatabase &db)
     int path = record.indexOf("path");
     int finished = record.indexOf("finished");
     int completed = record.indexOf("completed");
+    int manga = record.indexOf("manga");
     int numChildren = record.indexOf("numChildren");
     int firstChildHash = record.indexOf("firstChildHash");
     int customImage = record.indexOf("customImage");
@@ -1554,6 +1557,9 @@ Folder DBHelper::loadFolder(qulonglong id, QSqlDatabase &db)
             folder.setNumChildren(query.value(numChildren).toInt());
         folder.setFirstChildHash(query.value(firstChildHash).toString());
         folder.setCustomImage(query.value(customImage).toString());
+
+        //new 9.8
+        folder.setManga(query.value(manga).toBool());
     }
 
     return folder;
@@ -1576,6 +1582,7 @@ Folder DBHelper::loadFolder(const QString &folderName, qulonglong parentId, QSql
     int path = record.indexOf("path");
     int finished = record.indexOf("finished");
     int completed = record.indexOf("completed");
+    int manga = record.indexOf("manga");
     int numChildren = record.indexOf("numChildren");
     int firstChildHash = record.indexOf("firstChildHash");
     int customImage = record.indexOf("customImage");
@@ -1596,6 +1603,9 @@ Folder DBHelper::loadFolder(const QString &folderName, qulonglong parentId, QSql
             folder.setNumChildren(query.value(numChildren).toInt());
         folder.setFirstChildHash(query.value(firstChildHash).toString());
         folder.setCustomImage(query.value(customImage).toString());
+
+        //new 9.8
+        folder.setManga(query.value(manga).toBool());
     }
 
     return folder;
