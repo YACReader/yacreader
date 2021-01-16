@@ -270,6 +270,7 @@ void PropertiesDialog::createPublishingBox()
     publishingLayout->addRow(tr("Format:"), formatEdit = new YACReaderFieldEdit());
     publishingLayout->addRow(tr("Color/BW:"), colorCheck = new QCheckBox());
     publishingLayout->addRow(tr("Age rating:"), ageRatingEdit = new YACReaderFieldEdit());
+    publishingLayout->addRow(tr("Manga:"), mangaCheck = new QCheckBox());
 
     publishingBox->setLayout(publishingLayout);
 }
@@ -466,6 +467,8 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
     else
         colorCheck->setCheckState(Qt::PartiallyChecked);
 
+    mangaCheck->setChecked(comic.info.manga.toBool());
+
     if (!comic.info.ageRating.isNull())
         ageRatingEdit->setText(comic.info.ageRating.toString());
 
@@ -534,6 +537,8 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
                 formatEdit->clear();
             if (itr->info.color.isNull() || itr->info.color.toBool() != colorCheck->isChecked())
                 colorCheck->setCheckState(Qt::PartiallyChecked);
+            if (itr->info.manga.toBool() != colorCheck->isChecked())
+                mangaCheck->setCheckState(Qt::PartiallyChecked);
             if (itr->info.ageRating.isNull() || itr->info.ageRating.toString() != ageRatingEdit->text())
                 ageRatingEdit->clear();
 
@@ -699,6 +704,12 @@ void PropertiesDialog::save()
             itr->info.color = colorCheck->isChecked();
             edited = true;
         }
+
+        if (mangaCheck->checkState() != Qt::PartiallyChecked) {
+            itr->info.manga = mangaCheck->isChecked();
+            edited = true;
+        }
+
         if (ageRatingEdit->isModified()) {
             itr->info.ageRating = ageRatingEdit->text();
             edited = true;
@@ -778,6 +789,7 @@ void PropertiesDialog::closeEvent(QCloseEvent *e)
     publisherEdit->clear();
     formatEdit->clear();
     colorCheck->setCheckState(Qt::PartiallyChecked);
+    mangaCheck->setChecked(false);
     ageRatingEdit->clear();
     synopsis->clear();
     characters->clear();
