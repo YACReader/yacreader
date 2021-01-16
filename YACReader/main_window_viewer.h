@@ -117,10 +117,10 @@ private:
     QList<QAction *> recentFilesActionList;
     QAction *clearRecentFilesAction;
     QAction *saveImageAction;
-    QAction *openPreviousComicAction;
-    QAction *openNextComicAction;
-    QAction *nextAction;
-    QAction *prevAction;
+    QAction *openComicOnTheLeftAction;
+    QAction *openComicOnTheRightAction;
+    QAction *goToPageOnTheRightAction;
+    QAction *goToPageOnTheLeftAction;
     QAction *adjustWidthAction;
     QAction *adjustHeightAction;
     QAction *goToPageAction;
