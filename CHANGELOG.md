@@ -11,7 +11,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add support for full manga mode.
 ### YACReaderLibrary
 * New search engine.
-* New `manga` field added to comics to tag comics as manga.
+* New `manga` field added to comics and folders to tag content as manga, any content added to a manga folder will become manga automatically.
 
 ## 9.7.1
 ### YACReader
