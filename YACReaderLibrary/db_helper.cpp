@@ -564,7 +564,11 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
                             "lastTimeOpened = :lastTimeOpened,"
 
                             "coverSizeRatio = :coverSizeRatio,"
-                            "originalCoverSize = :originalCoverSize"
+                            "originalCoverSize = :originalCoverSize,"
+                            //--
+
+                            //new 9.8 fields
+                            "manga = :manga"
                             //--
                             " WHERE id = :id ");
 
@@ -596,6 +600,7 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
     updateComicInfo.bindValue(":format", comicInfo->format);
     updateComicInfo.bindValue(":color", comicInfo->color);
     updateComicInfo.bindValue(":ageRating", comicInfo->ageRating);
+    updateComicInfo.bindValue(":manga", comicInfo->manga);
 
     updateComicInfo.bindValue(":synopsis", comicInfo->synopsis);
     updateComicInfo.bindValue(":characters", comicInfo->characters);
@@ -1330,6 +1335,7 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
     int format = record.indexOf("format");
     int color = record.indexOf("color");
     int ageRating = record.indexOf("ageRating");
+    int manga = record.indexOf("manga");
 
     int synopsis = record.indexOf("synopsis");
     int characters = record.indexOf("characters");
@@ -1394,6 +1400,7 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
         currentItem.info.format = selectQuery.value(format);
         currentItem.info.color = selectQuery.value(color);
         currentItem.info.ageRating = selectQuery.value(ageRating);
+        currentItem.info.manga = selectQuery.value(manga);
 
         currentItem.info.synopsis = selectQuery.value(synopsis);
         currentItem.info.characters = selectQuery.value(characters);
@@ -1696,6 +1703,7 @@ ComicInfo DBHelper::loadComicInfo(QString hash, QSqlDatabase &db)
     int format = record.indexOf("format");
     int color = record.indexOf("color");
     int ageRating = record.indexOf("ageRating");
+    int manga = record.indexOf("manga");
 
     int synopsis = record.indexOf("synopsis");
     int characters = record.indexOf("characters");
@@ -1765,6 +1773,10 @@ ComicInfo DBHelper::loadComicInfo(QString hash, QSqlDatabase &db)
 
         comicInfo.coverSizeRatio = findComicInfo.value(coverSizeRatio);
         comicInfo.originalCoverSize = findComicInfo.value(originalCoverSize);
+        //--
+
+        //new 9.8 fields
+        comicInfo.manga = findComicInfo.value(manga);
         //--
 
         comicInfo.existOnDb = true;
