@@ -266,6 +266,7 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
                                                    "name TEXT NOT NULL, "
                                                    "finished BOOLEAN DEFAULT 0, "
                                                    "completed BOOLEAN DEFAULT 1, "
+                                                   "manga BOOLEAN DEFAULT 0, "
                                                    "FOREIGN KEY(parentId) REFERENCES reading_list(id) ON DELETE CASCADE)");
 
         QSqlQuery queryIndexReadingList(database);
@@ -842,6 +843,12 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &path)
                     QStringList columnDefs;
                     columnDefs << "manga BOOLEAN DEFAULT 0";
                     bool successAddingColumns = addColumns("comic_info", columnDefs, db);
+                    returnValue = returnValue && successAddingColumns;
+                }
+                { //folder
+                    QStringList columnDefs;
+                    columnDefs << "manga BOOLEAN DEFAULT 0";
+                    bool successAddingColumns = addColumns("folder", columnDefs, db);
                     returnValue = returnValue && successAddingColumns;
                 }
             }
