@@ -189,6 +189,8 @@ public:
     //--
     QAction *setFolderAsReadAction;
     QAction *setFolderAsUnreadAction;
+    QAction *setFolderAsMangaAction;
+    QAction *setFolderAsNormalAction;
 
     QAction *openContainingFolderComicAction;
     QAction *setAsReadAction;
@@ -321,6 +323,8 @@ public slots:
     void setFolderAsCompleted();
     void setFolderAsRead();
     void setFolderAsUnread();
+    void setFolderAsManga();
+    void setFolderAsNormal();
     void openContainingFolderComic();
     void deleteCurrentLibrary();
     void removeLibrary();

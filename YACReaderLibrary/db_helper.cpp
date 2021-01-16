@@ -1518,6 +1518,37 @@ QList<Label> DBHelper::getLabels(qulonglong libraryId)
     return labels;
 }
 
+void DBHelper::updateFolderTreeManga(qulonglong id, QSqlDatabase &db, bool manga)
+{
+    QSqlQuery updateFolderQuery(db);
+    updateFolderQuery.prepare("UPDATE folder "
+                              "SET manga = :manga "
+                              "WHERE id = :id");
+    updateFolderQuery.bindValue(":manga", manga ? 1 : 0);
+    updateFolderQuery.bindValue(":id", id);
+    updateFolderQuery.exec();
+
+    QSqlQuery updateComicInfo(db);
+    updateComicInfo.prepare("UPDATE comic_info "
+                            "SET manga = :manga "
+                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                            "WHERE c.parentId = :parentId");
+    updateComicInfo.bindValue(":manga", manga ? 1 : 0);
+    updateComicInfo.bindValue(":parentId", id);
+    updateComicInfo.exec();
+
+    QSqlQuery getSubFoldersQuery(db);
+    getSubFoldersQuery.prepare("SELECT id FROM folder WHERE parentId = :parentId AND id <> 1"); //do not select the root folder
+    getSubFoldersQuery.bindValue(":parentId", id);
+    getSubFoldersQuery.exec();
+
+    int childFolderIdPos = getSubFoldersQuery.record().indexOf("id");
+
+    while (getSubFoldersQuery.next()) {
+        updateFolderTreeManga(getSubFoldersQuery.value(childFolderIdPos).toULongLong(), db, manga);
+    }
+}
+
 //loads
 Folder DBHelper::loadFolder(qulonglong id, QSqlDatabase &db)
 {

@@ -67,6 +67,7 @@ public:
 
     void updateFolderCompletedStatus(const QModelIndexList &list, bool status);
     void updateFolderFinishedStatus(const QModelIndexList &list, bool status);
+    void updateFolderManga(const QModelIndexList &list, bool manga);
 
     QStringList getSubfoldersNames(const QModelIndex &mi);
 
@@ -78,13 +79,15 @@ public:
         Name = 0,
         Path = 1,
         Finished = 2,
-        Completed = 3
+        Completed = 3,
+        Manga = 4
     }; //id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, name TEXT NOT NULL, path TEXT NOT NULL
 
     enum Roles {
         FinishedRole = Qt::UserRole + 1,
         CompletedRole,
-        IdRole
+        IdRole,
+        MangaRole
     };
 
 public slots:

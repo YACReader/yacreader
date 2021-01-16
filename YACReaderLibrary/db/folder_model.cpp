@@ -127,6 +127,9 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
     if (role == FolderModel::FinishedRole)
         return item->data(FolderModel::Finished);
 
+    if (role == FolderModel::MangaRole)
+        return item->data(FolderModel::Manga);
+
     if (role == FolderModel::IdRole)
         return item->id;
 
@@ -246,6 +249,7 @@ void FolderModel::setupModelData(QSqlQuery &sqlquery, FolderItem *parent)
     int path = record.indexOf("path");
     int finished = record.indexOf("finished");
     int completed = record.indexOf("completed");
+    int manga = record.indexOf("manga");
     int id = record.indexOf("id");
     int parentId = record.indexOf("parentId");
 
@@ -256,6 +260,7 @@ void FolderModel::setupModelData(QSqlQuery &sqlquery, FolderItem *parent)
         data << sqlquery.value(path).toString();
         data << sqlquery.value(finished).toBool();
         data << sqlquery.value(completed).toBool();
+        data << sqlquery.value(manga).toBool();
         auto item = new FolderItem(data);
 
         item->id = sqlquery.value(id).toULongLong();
@@ -278,6 +283,7 @@ void FolderModel::updateFolderModelData(QSqlQuery &sqlquery, FolderItem *parent)
     int path = record.indexOf("path");
     int finished = record.indexOf("finished");
     int completed = record.indexOf("completed");
+    int manga = record.indexOf("manga");
     int id = record.indexOf("id");
     int parentId = record.indexOf("parentId");
 
@@ -288,6 +294,7 @@ void FolderModel::updateFolderModelData(QSqlQuery &sqlquery, FolderItem *parent)
         data << sqlquery.value(path).toString();
         data << sqlquery.value(finished).toBool();
         data << sqlquery.value(completed).toBool();
+        data << sqlquery.value(manga).toBool();
         auto item = new FolderItem(data);
 
         item->id = sqlquery.value(id).toULongLong();
@@ -354,6 +361,36 @@ void FolderModel::updateFolderFinishedStatus(const QModelIndexList &list, bool s
     QSqlDatabase::removeDatabase(connectionName);
 
     emit dataChanged(index(list.first().row(), FolderModel::Name), index(list.last().row(), FolderModel::Completed));
+}
+
+void FolderModel::updateFolderManga(const QModelIndexList &list, bool manga)
+{
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        db.transaction();
+        foreach (QModelIndex mi, list) {
+            auto item = static_cast<FolderItem *>(mi.internalPointer());
+
+            std::function<void(FolderItem *, bool)> setManga;
+            setManga = [&setManga](FolderItem *item, bool manga) -> void {
+                item->setData(FolderModel::Manga, manga);
+
+                for (auto child : item->children()) {
+                    setManga(child, manga);
+                }
+            };
+
+            setManga(item, manga);
+
+            DBHelper::updateFolderTreeManga(item->id, db, manga);
+        }
+        db.commit();
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    emit dataChanged(index(list.first().row(), FolderModel::Name), index(list.last().row(), FolderModel::Manga));
 }
 
 QStringList FolderModel::getSubfoldersNames(const QModelIndex &mi)
@@ -461,7 +498,8 @@ QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QMod
     Folder newFolder;
     newFolder.name = folderName;
     newFolder.parentId = parentItem->id;
-    newFolder.path = parentItem->data(1).toString() + "/" + folderName;
+    newFolder.path = parentItem->data(Columns::Path).toString() + "/" + folderName;
+    newFolder.setManga(parentItem->data(Columns::Manga).toBool());
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
@@ -478,6 +516,7 @@ QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QMod
     data << newFolder.path;
     data << false; //finished
     data << true; //completed
+    data << newFolder.isManga();
 
     auto item = new FolderItem(data);
     item->id = newFolder.id;
