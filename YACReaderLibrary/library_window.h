@@ -193,6 +193,10 @@ public:
     QAction *openContainingFolderComicAction;
     QAction *setAsReadAction;
     QAction *setAsNonReadAction;
+
+    QAction *setMangaAction;
+    QAction *setNormalAction;
+
     //QAction * setAllAsReadAction;
     //QAction * setAllAsNonReadAction;
     QAction *showHideMarksAction;
@@ -339,6 +343,8 @@ public slots:
     void setCurrentComicsStatusReaded(YACReaderComicReadStatus readStatus);
     void setCurrentComicReaded();
     void setCurrentComicUnreaded();
+    void setSelectedComicsAsNormal();
+    void setSelectedComicsAsManga();
     void showExportComicsInfo();
     void showImportComicsInfo();
     void asignNumbers();

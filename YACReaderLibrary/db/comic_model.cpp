@@ -778,6 +778,24 @@ QVector<YACReaderComicReadStatus> ComicModel::setComicsRead(QList<QModelIndex> l
 
     return getReadList();
 }
+
+void ComicModel::setComicsManga(QList<QModelIndex> list, bool isManga)
+{
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        db.transaction();
+        foreach (QModelIndex mi, list) {
+            ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(ComicModel::Id).toULongLong(), db);
+            c.info.manga = isManga;
+            DBHelper::update(&(c.info), db);
+        }
+        db.commit();
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+}
+
 qint64 ComicModel::asignNumbers(QList<QModelIndex> list, int startingNumber)
 {
     qint64 idFirst;
