@@ -223,14 +223,18 @@ qulonglong LibraryCreator::insertFolders()
     auto _database = QSqlDatabase::database(_databaseConnection);
     QList<Folder>::iterator i;
     int currentId = 0;
+    Folder currentParent;
     for (i = _currentPathFolders.begin(); i != _currentPathFolders.end(); ++i) {
         if (!(i->knownId)) {
             i->setFather(currentId);
+            i->setManga(currentParent.isManga());
             currentId = DBHelper::insert(&(*i), _database); //insertFolder(currentId,*i);
             i->setId(currentId);
         } else {
             currentId = i->id;
         }
+
+        currentParent = *i;
     }
     return currentId;
 }
@@ -311,6 +315,7 @@ void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
         }
 
         comic.parentId = _currentPathFolders.last().id;
+        comic.info.manga = _currentPathFolders.last().isManga();
         DBHelper::insert(&comic, _database);
     }
 }
