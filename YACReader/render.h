@@ -144,6 +144,7 @@ public slots:
     bool previousPageIsDoublePage();
     void goTo(int index);
     void doublePageSwitch();
+    void setManga(bool manga);
     void doubleMangaPageSwitch();
     void setRotation(int degrees);
     void setComic(Comic *c);

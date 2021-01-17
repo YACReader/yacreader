@@ -324,6 +324,8 @@ void LibraryWindow::setUpShortcutsManagement()
                                                  << saveCoversToAction
                                                  << setAsReadAction
                                                  << setAsNonReadAction
+                                                 << setMangaAction
+                                                 << setNormalAction
                                                  << openContainingFolderComicAction
                                                  << resetComicRatingAction
                                                  << selectAllComicsAction
@@ -346,6 +348,8 @@ void LibraryWindow::setUpShortcutsManagement()
                                                  << setFolderAsCompletedAction
                                                  << setFolderAsReadAction
                                                  << setFolderAsUnreadAction
+                                                 << setFolderAsMangaAction
+                                                 << setFolderAsNormalAction
                                                  << updateCurrentFolderAction);
     allActions << tmpList;
 
@@ -508,6 +512,18 @@ void LibraryWindow::createActions()
     setAsNonReadAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_NON_READ_ACTION_YL));
     setAsNonReadAction->setIcon(QIcon(":/images/comics_view_toolbar/setUnread.png"));
 
+    setMangaAction = new QAction(tr("Set as manga"), this);
+    setMangaAction->setToolTip(tr("Set issue as manga"));
+    setMangaAction->setData(SET_AS_MANGA_ACTION_YL);
+    setMangaAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_MANGA_ACTION_YL));
+    setMangaAction->setIcon(QIcon(":/images/comics_view_toolbar/setManga.png"));
+
+    setNormalAction = new QAction(tr("Set as normal"), this);
+    setNormalAction->setToolTip(tr("Set issue as normal"));
+    setNormalAction->setData(SET_AS_NORMAL_ACTION_YL);
+    setNormalAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_NORMAL_ACTION_YL));
+    setNormalAction->setIcon(QIcon(":/images/comics_view_toolbar/setNormal.png"));
+
     /*setAllAsReadAction = new QAction(tr("Set all as read"),this);
         setAllAsReadAction->setToolTip(tr("Set all comics as read"));
         setAllAsReadAction->setIcon(QIcon(":/images/comics_view_toolbar/setAllRead.png"));
@@ -602,6 +618,8 @@ void LibraryWindow::createActions()
     toggleComicsViewAction->setIcon(icoViewsButton);
     //socialAction = new QAction(this);
 
+    //----
+
     openContainingFolderAction = new QAction(this);
     openContainingFolderAction->setText(tr("Open folder..."));
     openContainingFolderAction->setData(OPEN_CONTAINING_FOLDER_ACTION_YL);
@@ -627,6 +645,18 @@ void LibraryWindow::createActions()
     setFolderAsUnreadAction->setText(tr("Set as unread"));
     setFolderAsUnreadAction->setData(SET_FOLDER_AS_UNREAD_ACTION_YL);
     setFolderAsUnreadAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_FOLDER_AS_UNREAD_ACTION_YL));
+
+    setFolderAsMangaAction = new QAction(this);
+    setFolderAsMangaAction->setText(tr("Set as manga"));
+    setFolderAsMangaAction->setData(SET_FOLDER_AS_MANGA_ACTION_YL);
+    setFolderAsMangaAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_FOLDER_AS_MANGA_ACTION_YL));
+
+    setFolderAsNormalAction = new QAction(this);
+    setFolderAsNormalAction->setText(tr("Set as comic"));
+    setFolderAsNormalAction->setData(SET_FOLDER_AS_NORMAL_ACTION_YL);
+    setFolderAsNormalAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_FOLDER_AS_NORMAL_ACTION_YL));
+
+    //----
 
     openContainingFolderComicAction = new QAction(this);
     openContainingFolderComicAction->setText(tr("Open containing folder..."));
@@ -733,6 +763,8 @@ void LibraryWindow::createActions()
     this->addAction(setFolderAsNotCompletedAction);
     this->addAction(setFolderAsReadAction);
     this->addAction(setFolderAsUnreadAction);
+    this->addAction(setFolderAsMangaAction);
+    this->addAction(setFolderAsNormalAction);
 #ifndef Q_OS_MAC
     this->addAction(toggleFullScreenAction);
 #endif
@@ -753,6 +785,8 @@ void LibraryWindow::disableComicsActions(bool disabled)
     asignOrderAction->setDisabled(disabled);
     setAsReadAction->setDisabled(disabled);
     setAsNonReadAction->setDisabled(disabled);
+    setNormalAction->setDisabled(disabled);
+    setMangaAction->setDisabled(disabled);
     //setAllAsReadAction->setDisabled(disabled);
     //setAllAsNonReadAction->setDisabled(disabled);
     showHideMarksAction->setDisabled(disabled);
@@ -870,6 +904,11 @@ void LibraryWindow::createToolBars()
 
     editInfoToolBar->addSeparator();
 
+    editInfoToolBar->addAction(setNormalAction);
+    editInfoToolBar->addAction(setMangaAction);
+
+    editInfoToolBar->addSeparator();
+
     editInfoToolBar->addAction(deleteComicsAction);
 
     comicsViewsManager->comicsView->setToolBar(editInfoToolBar);
@@ -891,6 +930,10 @@ void LibraryWindow::createMenus()
 
     foldersView->addAction(setFolderAsReadAction);
     foldersView->addAction(setFolderAsUnreadAction);
+    YACReader::addSperator(foldersView);
+
+    foldersView->addAction(setFolderAsMangaAction);
+    foldersView->addAction(setFolderAsNormalAction);
 
     selectedLibrary->addAction(updateLibraryAction);
     selectedLibrary->addAction(renameLibraryAction);
@@ -936,6 +979,9 @@ void LibraryWindow::createMenus()
     folderMenu->addSeparator();
     folderMenu->addAction(setFolderAsReadAction);
     folderMenu->addAction(setFolderAsUnreadAction);
+    folderMenu->addSeparator();
+    foldersView->addAction(setFolderAsMangaAction);
+    foldersView->addAction(setFolderAsNormalAction);
 
     //comic
     QMenu *comicMenu = new QMenu(tr("Comic"));
@@ -1019,6 +1065,8 @@ void LibraryWindow::createConnections()
     connect(openLibraryAction, SIGNAL(triggered()), this, SLOT(showAddLibrary()));
     connect(setAsReadAction, SIGNAL(triggered()), this, SLOT(setCurrentComicReaded()));
     connect(setAsNonReadAction, SIGNAL(triggered()), this, SLOT(setCurrentComicUnreaded()));
+    connect(setNormalAction, &QAction::triggered, this, &LibraryWindow::setSelectedComicsAsNormal);
+    connect(setMangaAction, &QAction::triggered, this, &LibraryWindow::setSelectedComicsAsManga);
     //connect(setAllAsReadAction,SIGNAL(triggered()),this,SLOT(setComicsReaded()));
     //connect(setAllAsNonReadAction,SIGNAL(triggered()),this,SLOT(setComicsUnreaded()));
 
@@ -1066,6 +1114,9 @@ void LibraryWindow::createConnections()
     connect(setFolderAsReadAction, SIGNAL(triggered()), this, SLOT(setFolderAsRead()));
     connect(setFolderAsUnreadAction, SIGNAL(triggered()), this, SLOT(setFolderAsUnread()));
     connect(openContainingFolderAction, SIGNAL(triggered()), this, SLOT(openContainingFolder()));
+    connect(setFolderAsMangaAction, &QAction::triggered, this, &LibraryWindow::setFolderAsManga);
+    connect(setFolderAsNormalAction, &QAction::triggered, this, &LibraryWindow::setFolderAsNormal);
+
     connect(resetComicRatingAction, SIGNAL(triggered()), this, SLOT(resetComicRating()));
 
     //connect(dm,SIGNAL(directoryLoaded(QString)),foldersView,SLOT(expandAll()));
@@ -1594,6 +1645,9 @@ void LibraryWindow::showComicsViewContextMenu(const QPoint &point)
     menu.addAction(setAsReadAction);
     menu.addAction(setAsNonReadAction);
     menu.addSeparator();
+    menu.addAction(setNormalAction);
+    menu.addAction(setMangaAction);
+    menu.addSeparator();
     menu.addAction(deleteComicsAction);
     menu.addSeparator();
     menu.addAction(addToMenuAction);
@@ -1626,6 +1680,9 @@ void LibraryWindow::showComicsItemContextMenu(const QPoint &point)
     menu.addSeparator();
     menu.addAction(setAsReadAction);
     menu.addAction(setAsNonReadAction);
+    menu.addSeparator();
+    menu.addAction(setNormalAction);
+    menu.addAction(setMangaAction);
     menu.addSeparator();
     menu.addAction(deleteComicsAction);
     menu.addSeparator();
@@ -1791,6 +1848,16 @@ void LibraryWindow::setCurrentComicReaded()
 void LibraryWindow::setCurrentComicUnreaded()
 {
     this->setCurrentComicsStatusReaded(YACReader::Unread);
+}
+
+void LibraryWindow::setSelectedComicsAsNormal()
+{
+    comicsModel->setComicsManga(getSelectedComics(), false);
+}
+
+void LibraryWindow::setSelectedComicsAsManga()
+{
+    comicsModel->setComicsManga(getSelectedComics(), true);
 }
 
 void LibraryWindow::createLibrary()
@@ -2271,6 +2338,16 @@ void LibraryWindow::setFolderAsUnread()
     foldersModel->updateFolderFinishedStatus(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()), false);
 }
 
+void LibraryWindow::setFolderAsManga()
+{
+    foldersModel->updateFolderManga(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()), true);
+}
+
+void LibraryWindow::setFolderAsNormal()
+{
+    foldersModel->updateFolderManga(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()), false);
+}
+
 void LibraryWindow::exportLibrary(QString destPath)
 {
     QString currentLibrary = selectedLibrary->currentText();
@@ -2504,6 +2581,7 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
 
     bool isCompleted = sourceMI.data(FolderModel::CompletedRole).toBool();
     bool isRead = sourceMI.data(FolderModel::FinishedRole).toBool();
+    bool isManga = sourceMI.data(FolderModel::MangaRole).toBool();
 
     QMenu menu;
     //QMenu * folderMenu = new QMenu(tr("Folder"));
@@ -2519,6 +2597,11 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
         menu.addAction(setFolderAsUnreadAction);
     else
         menu.addAction(setFolderAsReadAction);
+    menu.addSeparator(); //-------------------------------
+    if (isManga)
+        menu.addAction(setFolderAsNormalAction);
+    else
+        menu.addAction(setFolderAsMangaAction);
 
     menu.exec(foldersView->mapToGlobal(point));
 }

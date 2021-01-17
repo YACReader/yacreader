@@ -181,7 +181,9 @@ bool DataBaseManagement::createTables(QSqlDatabase &database)
                                //new 9.5 fields
                                "lastTimeOpened INTEGER,"
                                "coverSizeRatio REAL,"
-                               "originalCoverSize STRING" //h/w
+                               "originalCoverSize STRING," //h/w
+                               //new 9.8 fields
+                               "manga BOOLEAN DEFAULT 0"
 
                                ")");
         success = success && queryComicInfo.exec();
@@ -264,6 +266,7 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
                                                    "name TEXT NOT NULL, "
                                                    "finished BOOLEAN DEFAULT 0, "
                                                    "completed BOOLEAN DEFAULT 1, "
+                                                   "manga BOOLEAN DEFAULT 0, "
                                                    "FOREIGN KEY(parentId) REFERENCES reading_list(id) ON DELETE CASCADE)");
 
         QSqlQuery queryIndexReadingList(database);
@@ -402,6 +405,7 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
                            "format = :format,"
                            "color = :color,"
                            "ageRating = :ageRating,"
+                           "manga = :manga"
 
                            "synopsis = :synopsis,"
                            "characters = :characters,"
@@ -478,6 +482,7 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
                            ":format,"
                            ":color,"
                            ":ageRating,"
+                           ":manga,"
 
                            ":synopsis,"
                            ":characters,"
@@ -580,6 +585,7 @@ void DataBaseManagement::bindValuesFromRecord(const QSqlRecord &record, QSqlQuer
     bindString("format", record, query);
     bindInt("color", record, query);
     bindString("ageRating", record, query);
+    bindInt("manga", record, query);
 
     bindString("synopsis", record, query);
     bindString("characters", record, query);
@@ -707,6 +713,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &path)
     bool pre7_1 = false;
     bool pre8 = false;
     bool pre9_5 = false;
+    bool pre9_8 = false;
 
     QString fullPath = path + "/library.ydb";
 
@@ -718,6 +725,8 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &path)
         pre8 = true;
     if (compareVersions(DataBaseManagement::checkValidDB(fullPath), "9.5.0") < 0)
         pre9_5 = true;
+    if (compareVersions(DataBaseManagement::checkValidDB(fullPath), "9.8.0") < 0)
+        pre9_8 = true;
 
     QString connectionName = "";
     bool returnValue = false;
@@ -826,6 +835,21 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &path)
                     }
 
                     db.commit();
+                }
+            }
+
+            if (pre9_8) {
+                { //comic_info
+                    QStringList columnDefs;
+                    columnDefs << "manga BOOLEAN DEFAULT 0";
+                    bool successAddingColumns = addColumns("comic_info", columnDefs, db);
+                    returnValue = returnValue && successAddingColumns;
+                }
+                { //folder
+                    QStringList columnDefs;
+                    columnDefs << "manga BOOLEAN DEFAULT 0";
+                    bool successAddingColumns = addColumns("folder", columnDefs, db);
+                    returnValue = returnValue && successAddingColumns;
                 }
             }
         }

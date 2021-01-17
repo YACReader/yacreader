@@ -86,10 +86,10 @@ MainWindowViewer::~MainWindowViewer()
     delete openFolderAction;
     delete openLatestComicAction;
     delete saveImageAction;
-    delete openPreviousComicAction;
-    delete openNextComicAction;
-    delete prevAction;
-    delete nextAction;
+    delete openComicOnTheLeftAction;
+    delete openComicOnTheRightAction;
+    delete goToPageOnTheLeftAction;
+    delete goToPageOnTheRightAction;
     delete adjustHeightAction;
     delete adjustWidthAction;
     delete leftRotationAction;
@@ -259,39 +259,39 @@ void MainWindowViewer::createActions()
     saveImageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SAVE_IMAGE_ACTION_Y));
     connect(saveImageAction, SIGNAL(triggered()), this, SLOT(saveImage()));
 
-    openPreviousComicAction = new QAction(tr("Previous Comic"), this);
-    openPreviousComicAction->setIcon(QIcon(":/images/viewer_toolbar/openPrevious.png"));
-    openPreviousComicAction->setToolTip(tr("Open previous comic"));
-    openPreviousComicAction->setDisabled(true);
-    openPreviousComicAction->setData(OPEN_PREVIOUS_COMIC_ACTION_Y);
-    openPreviousComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_PREVIOUS_COMIC_ACTION_Y));
-    connect(openPreviousComicAction, SIGNAL(triggered()), this, SLOT(openPreviousComic()));
+    openComicOnTheLeftAction = new QAction(tr("Previous Comic"), this);
+    openComicOnTheLeftAction->setIcon(QIcon(":/images/viewer_toolbar/openPrevious.png"));
+    openComicOnTheLeftAction->setToolTip(tr("Open previous comic"));
+    openComicOnTheLeftAction->setDisabled(true);
+    openComicOnTheLeftAction->setData(OPEN_PREVIOUS_COMIC_ACTION_Y);
+    openComicOnTheLeftAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_PREVIOUS_COMIC_ACTION_Y));
+    connect(openComicOnTheLeftAction, &QAction::triggered, this, &MainWindowViewer::openLeftComic);
 
-    openNextComicAction = new QAction(tr("Next Comic"), this);
-    openNextComicAction->setIcon(QIcon(":/images/viewer_toolbar/openNext.png"));
-    openNextComicAction->setToolTip(tr("Open next comic"));
-    openNextComicAction->setDisabled(true);
-    openNextComicAction->setData(OPEN_NEXT_COMIC_ACTION_Y);
-    openNextComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_NEXT_COMIC_ACTION_Y));
-    connect(openNextComicAction, SIGNAL(triggered()), this, SLOT(openNextComic()));
+    openComicOnTheRightAction = new QAction(tr("Next Comic"), this);
+    openComicOnTheRightAction->setIcon(QIcon(":/images/viewer_toolbar/openNext.png"));
+    openComicOnTheRightAction->setToolTip(tr("Open next comic"));
+    openComicOnTheRightAction->setDisabled(true);
+    openComicOnTheRightAction->setData(OPEN_NEXT_COMIC_ACTION_Y);
+    openComicOnTheRightAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_NEXT_COMIC_ACTION_Y));
+    connect(openComicOnTheRightAction, &QAction::triggered, this, &MainWindowViewer::openRightComic);
 
-    prevAction = new QAction(tr("&Previous"), this);
-    prevAction->setIcon(QIcon(":/images/viewer_toolbar/previous.png"));
-    prevAction->setShortcutContext(Qt::WidgetShortcut);
-    prevAction->setToolTip(tr("Go to previous page"));
-    prevAction->setDisabled(true);
-    prevAction->setData(PREV_ACTION_Y);
-    prevAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(PREV_ACTION_Y));
-    connect(prevAction, SIGNAL(triggered()), viewer, SLOT(prev()));
+    goToPageOnTheLeftAction = new QAction(tr("&Previous"), this);
+    goToPageOnTheLeftAction->setIcon(QIcon(":/images/viewer_toolbar/previous.png"));
+    goToPageOnTheLeftAction->setShortcutContext(Qt::WidgetShortcut);
+    goToPageOnTheLeftAction->setToolTip(tr("Go to previous page"));
+    goToPageOnTheLeftAction->setDisabled(true);
+    goToPageOnTheLeftAction->setData(PREV_ACTION_Y);
+    goToPageOnTheLeftAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(PREV_ACTION_Y));
+    connect(goToPageOnTheLeftAction, SIGNAL(triggered()), viewer, SLOT(left()));
 
-    nextAction = new QAction(tr("&Next"), this);
-    nextAction->setIcon(QIcon(":/images/viewer_toolbar/next.png"));
-    nextAction->setShortcutContext(Qt::WidgetShortcut);
-    nextAction->setToolTip(tr("Go to next page"));
-    nextAction->setDisabled(true);
-    nextAction->setData(NEXT_ACTION_Y);
-    nextAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(NEXT_ACTION_Y));
-    connect(nextAction, SIGNAL(triggered()), viewer, SLOT(next()));
+    goToPageOnTheRightAction = new QAction(tr("&Next"), this);
+    goToPageOnTheRightAction->setIcon(QIcon(":/images/viewer_toolbar/next.png"));
+    goToPageOnTheRightAction->setShortcutContext(Qt::WidgetShortcut);
+    goToPageOnTheRightAction->setToolTip(tr("Go to next page"));
+    goToPageOnTheRightAction->setDisabled(true);
+    goToPageOnTheRightAction->setData(NEXT_ACTION_Y);
+    goToPageOnTheRightAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(NEXT_ACTION_Y));
+    connect(goToPageOnTheRightAction, SIGNAL(triggered()), viewer, SLOT(right()));
 
     adjustHeightAction = new QAction(tr("Fit Height"), this);
     adjustHeightAction->setIcon(QIcon(":/images/viewer_toolbar/toHeight.png"));
@@ -412,6 +412,7 @@ void MainWindowViewer::createActions()
     doubleMangaPageAction->setData(DOUBLE_MANGA_PAGE_ACTION_Y);
     doubleMangaPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(DOUBLE_MANGA_PAGE_ACTION_Y));
     connect(doubleMangaPageAction, SIGNAL(triggered()), viewer, SLOT(doubleMangaPageSwitch()));
+    connect(doubleMangaPageAction, &QAction::triggered, this, &MainWindowViewer::doubleMangaPageSwitch);
 
     goToPageAction = new QAction(tr("Go To"), this);
     goToPageAction->setIcon(QIcon(":/images/viewer_toolbar/goto.png"));
@@ -552,13 +553,13 @@ void MainWindowViewer::createToolBars()
 #endif
 
     comicToolBar->addAction(saveImageAction);
-    comicToolBar->addAction(openPreviousComicAction);
-    comicToolBar->addAction(openNextComicAction);
+    comicToolBar->addAction(openComicOnTheLeftAction);
+    comicToolBar->addAction(openComicOnTheRightAction);
 
     comicToolBar->addSeparator();
 
-    comicToolBar->addAction(prevAction);
-    comicToolBar->addAction(nextAction);
+    comicToolBar->addAction(goToPageOnTheLeftAction);
+    comicToolBar->addAction(goToPageOnTheRightAction);
     comicToolBar->addAction(goToPageAction);
 
     comicToolBar->addSeparator();
@@ -615,12 +616,12 @@ void MainWindowViewer::createToolBars()
     viewer->addAction(openAction);
     viewer->addAction(openFolderAction);
     viewer->addAction(saveImageAction);
-    viewer->addAction(openPreviousComicAction);
-    viewer->addAction(openNextComicAction);
+    viewer->addAction(openComicOnTheLeftAction);
+    viewer->addAction(openComicOnTheRightAction);
     YACReader::addSperator(viewer);
 
-    viewer->addAction(prevAction);
-    viewer->addAction(nextAction);
+    viewer->addAction(goToPageOnTheLeftAction);
+    viewer->addAction(goToPageOnTheRightAction);
     viewer->addAction(goToPageAction);
     viewer->addAction(adjustHeightAction);
     viewer->addAction(adjustWidthAction);
@@ -706,8 +707,8 @@ void MainWindowViewer::createToolBars()
     viewMenu->addAction(showMagnifyingGlassAction);
 
     auto goMenu = new QMenu(tr("Go"));
-    goMenu->addAction(prevAction);
-    goMenu->addAction(nextAction);
+    goMenu->addAction(goToPageOnTheLeftAction);
+    goMenu->addAction(goToPageOnTheRightAction);
     goMenu->addAction(goToPageAction);
     goMenu->addSeparator();
     goMenu->addAction(setBookmarkAction);
@@ -822,9 +823,6 @@ void MainWindowViewer::open()
 
 void MainWindowViewer::open(QString path, ComicDB &comic, QList<ComicDB> &siblings)
 {
-    //currentComicDB = comic;
-    //siblingComics = siblings;
-
     QFileInfo fi(path);
 
     if (!comic.info.title.isNull() && !comic.info.title.toString().isEmpty())
@@ -832,31 +830,22 @@ void MainWindowViewer::open(QString path, ComicDB &comic, QList<ComicDB> &siblin
     else
         setWindowTitle("YACReader - " + fi.fileName());
 
+    viewer->setMangaWithoutStoringSetting(comic.info.manga.toBool());
+    doubleMangaPageAction->setChecked(comic.info.manga.toBool());
+
     viewer->open(path, comic);
     enableActions();
     int index = siblings.indexOf(comic);
+    updatePrevNextActions(index > 0, index + 1 < siblings.count());
 
     optionsDialog->setFilters(currentComicDB.info.brightness, currentComicDB.info.contrast, currentComicDB.info.gamma);
-
-    if (index > 0)
-        openPreviousComicAction->setDisabled(false);
-    else
-        openPreviousComicAction->setDisabled(true);
-
-    if (index + 1 < siblings.count())
-        openNextComicAction->setDisabled(false);
-    else
-        openNextComicAction->setDisabled(true);
 }
 
 void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId)
 {
-    //QString pathFile = QCoreApplication::arguments().at(1);
     currentDirectory = path;
-    //quint64 comicId = QCoreApplication::arguments().at(2).split("=").at(1).toULongLong();
-    //libraryId = QCoreApplication::arguments().at(3).split("=").at(1).toULongLong();
+
     this->libraryId = libraryId;
-    //	this->path=path;
 
     enableActions();
 
@@ -881,8 +870,10 @@ void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId)
 
 void MainWindowViewer::openComicFromPath(QString pathFile)
 {
+    doubleMangaPageAction->setChecked(Configuration::getConfiguration().getDoubleMangaPage());
     openComic(pathFile);
     isClient = false; //this method is used for direct openings
+    updatePrevNextActions(!previousComicPath.isEmpty(), !nextComicPath.isEmpty());
 }
 
 //isClient shouldn't be modified when a siblinig comic is opened
@@ -978,8 +969,8 @@ void MainWindowViewer::saveImage()
 void MainWindowViewer::enableActions()
 {
     saveImageAction->setDisabled(false);
-    prevAction->setDisabled(false);
-    nextAction->setDisabled(false);
+    goToPageOnTheLeftAction->setDisabled(false);
+    goToPageOnTheRightAction->setDisabled(false);
     adjustHeightAction->setDisabled(false);
     adjustWidthAction->setDisabled(false);
     goToPageAction->setDisabled(false);
@@ -1010,8 +1001,8 @@ void MainWindowViewer::enableActions()
 void MainWindowViewer::disableActions()
 {
     saveImageAction->setDisabled(true);
-    prevAction->setDisabled(true);
-    nextAction->setDisabled(true);
+    goToPageOnTheLeftAction->setDisabled(true);
+    goToPageOnTheRightAction->setDisabled(true);
     adjustHeightAction->setDisabled(true);
     adjustWidthAction->setDisabled(true);
     goToPageAction->setDisabled(true);
@@ -1030,8 +1021,8 @@ void MainWindowViewer::disableActions()
     setBookmarkAction->setDisabled(true);
     showBookmarksAction->setDisabled(true);
     showInfoAction->setDisabled(true); //TODO enable goTo and showInfo (or update) when numPages emited
-    openPreviousComicAction->setDisabled(true);
-    openNextComicAction->setDisabled(true);
+    openComicOnTheLeftAction->setDisabled(true);
+    openComicOnTheRightAction->setDisabled(true);
     showDictionaryAction->setDisabled(true);
     showFlowAction->setDisabled(true);
 }
@@ -1228,11 +1219,11 @@ void MainWindowViewer::processReset()
 {
     if (isClient) {
         if (siblingComics.count() > 1) {
-            bool openNextB = openNextComicAction->isEnabled();
-            bool openPrevB = openPreviousComicAction->isEnabled();
+            bool openNextB = openComicOnTheRightAction->isEnabled();
+            bool openPrevB = openComicOnTheLeftAction->isEnabled();
             disableActions();
-            openNextComicAction->setEnabled(openNextB);
-            openPreviousComicAction->setEnabled(openPrevB);
+            openComicOnTheRightAction->setEnabled(openNextB);
+            openComicOnTheLeftAction->setEnabled(openPrevB);
         } else
             disableActions();
     } else
@@ -1252,8 +1243,8 @@ void MainWindowViewer::setUpShortcutsManagement()
                                                      openLatestComicAction,
                                                      openFolderAction,
                                                      saveImageAction,
-                                                     openPreviousComicAction,
-                                                     openNextComicAction });
+                                                     openComicOnTheLeftAction,
+                                                     openComicOnTheRightAction });
 
     allActions << tmpList;
 
@@ -1383,8 +1374,8 @@ void MainWindowViewer::setUpShortcutsManagement()
 
     editShortcutsDialog->addActionsGroup(tr("Reading"), QIcon(":/images/shortcuts_group_reading.png"),
                                          tmpList = QList<QAction *>()
-                                                 << nextAction
-                                                 << prevAction
+                                                 << goToPageOnTheRightAction
+                                                 << goToPageOnTheLeftAction
                                                  << setBookmarkAction
                                                  << showBookmarksAction
                                                  << autoScrollForwardAction
@@ -1404,6 +1395,16 @@ void MainWindowViewer::setUpShortcutsManagement()
     allActions << tmpList;
 
     ShortcutsManager::getShortcutsManager().registerActions(allActions);
+}
+
+void MainWindowViewer::doubleMangaPageSwitch()
+{
+    if (isClient) {
+        int index = siblingComics.indexOf(currentComicDB);
+        updatePrevNextActions(index > 0, index + 1 < siblingComics.size());
+    } else {
+        updatePrevNextActions(!previousComicPath.isEmpty(), !nextComicPath.isEmpty());
+    }
 }
 
 void MainWindowViewer::toggleFitToWidthSlider()
@@ -1497,10 +1498,29 @@ void MainWindowViewer::openNextComic()
             currentComicDB = siblingComics.at(currentIndex + 1);
             open(currentDirectory + currentComicDB.path, currentComicDB, siblingComics);
         }
+
         return;
     }
     if (!nextComicPath.isEmpty()) {
         openSiblingComic(nextComicPath);
+    }
+}
+
+void MainWindowViewer::openLeftComic()
+{
+    if (viewer->getIsMangaMode()) {
+        openNextComic();
+    } else {
+        openPreviousComic();
+    }
+}
+
+void MainWindowViewer::openRightComic()
+{
+    if (viewer->getIsMangaMode()) {
+        openPreviousComic();
+    } else {
+        openNextComic();
     }
 }
 
@@ -1558,15 +1578,13 @@ void MainWindowViewer::getSiblingComics(QString path, QString currentComic)
     previousComicPath = nextComicPath = "";
     if (index > 0) {
         previousComicPath = path + "/" + list.at(index - 1);
-        openPreviousComicAction->setDisabled(false);
-    } else
-        openPreviousComicAction->setDisabled(true);
+    }
 
     if (index + 1 < list.count()) {
         nextComicPath = path + "/" + list.at(index + 1);
-        openNextComicAction->setDisabled(false);
-    } else
-        openNextComicAction->setDisabled(true);
+    }
+
+    updatePrevNextActions(index > 0, index + 1 < list.count());
 }
 
 void MainWindowViewer::dropEvent(QDropEvent *event)
@@ -1669,5 +1687,48 @@ void MainWindowViewer::sendComic()
         int retries = 1;
         while (!client->sendComicInfo(libraryId, currentComicDB) && retries != 0)
             retries--;
+    }
+}
+
+void MainWindowViewer::updatePrevNextActions(bool thereIsPrevious, bool thereIsNext)
+{
+    if (thereIsPrevious) {
+        if (viewer->getIsMangaMode()) {
+            openComicOnTheRightAction->setDisabled(false);
+        } else {
+            openComicOnTheLeftAction->setDisabled(false);
+        }
+    } else {
+        if (viewer->getIsMangaMode()) {
+            openComicOnTheRightAction->setDisabled(true);
+        } else {
+            openComicOnTheLeftAction->setDisabled(true);
+        }
+    }
+
+    if (thereIsNext) {
+        if (viewer->getIsMangaMode()) {
+            openComicOnTheLeftAction->setDisabled(false);
+        } else {
+            openComicOnTheRightAction->setDisabled(false);
+        }
+    } else {
+        if (viewer->getIsMangaMode()) {
+            openComicOnTheLeftAction->setDisabled(true);
+        } else {
+            openComicOnTheRightAction->setDisabled(true);
+        }
+    }
+
+    if (viewer->getIsMangaMode()) {
+        openComicOnTheLeftAction->setToolTip(tr("Open next comic"));
+        openComicOnTheRightAction->setToolTip(tr("Open previous comic"));
+        goToPageOnTheLeftAction->setToolTip(tr("Go to next page"));
+        goToPageOnTheRightAction->setToolTip(tr("Go to previous page"));
+    } else {
+        openComicOnTheLeftAction->setToolTip(tr("Open previous comic"));
+        openComicOnTheRightAction->setToolTip(tr("Open next comic"));
+        goToPageOnTheLeftAction->setToolTip(tr("Go to previous page"));
+        goToPageOnTheRightAction->setToolTip(tr("Go to next page"));
     }
 }

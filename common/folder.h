@@ -43,6 +43,11 @@ public:
         return completed;
     }
 
+    inline bool isManga() const
+    {
+        return manga;
+    }
+
     inline void setFinished(bool b)
     {
         finished = b;
@@ -51,6 +56,11 @@ public:
     inline void setCompleted(bool b)
     {
         completed = b;
+    }
+
+    inline void setManga(bool b)
+    {
+        manga = b;
     }
 
     inline qint32 getNumChildren() const
@@ -86,6 +96,7 @@ public:
 private:
     bool finished;
     bool completed;
+    bool manga;
 
     qint32 numChildren; //-1 for unknown number of children
     QString firstChildHash; //empty for unknown first child

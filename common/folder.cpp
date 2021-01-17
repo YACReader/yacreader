@@ -31,6 +31,7 @@ Folder &Folder::operator=(const Folder &other)
     this->knownId = other.knownId;
     this->finished = other.finished;
     this->completed = other.completed;
+    this->manga = other.manga;
 
     return *this;
 }

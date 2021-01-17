@@ -76,6 +76,7 @@ private:
     YACReaderFieldEdit *formatEdit;
     QCheckBox *colorCheck;
     YACReaderFieldEdit *ageRatingEdit;
+    QCheckBox *mangaCheck;
 
     YACReaderFieldPlainTextEdit *synopsis;
     YACReaderFieldPlainTextEdit *characters;

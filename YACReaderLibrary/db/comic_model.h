@@ -105,6 +105,7 @@ public:
     //setComicInfoForAllComics(); --> inserta la información común a todos los cómics de una sola vez.
     //setComicInfoForSelectedComis(QList<QModelIndex> list); -->inserta la información común para los comics seleccionados
     QVector<YACReaderComicReadStatus> setComicsRead(QList<QModelIndex> list, YACReaderComicReadStatus read);
+    void setComicsManga(QList<QModelIndex> list, bool isManga);
     qint64 asignNumbers(QList<QModelIndex> list, int startingNumber);
     //void remove(ComicDB * comic, int row);
     void removeInTransaction(int row);

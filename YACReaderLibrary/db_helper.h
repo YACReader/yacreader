@@ -86,6 +86,8 @@ public:
     static QList<LibraryItem *> getComicsFromParent(qulonglong parentId, QSqlDatabase &db, bool sort = true);
     static QList<Label> getLabels(qulonglong libraryId);
 
+    static void updateFolderTreeManga(qulonglong id, QSqlDatabase &db, bool manga);
+
     //load
     static Folder loadFolder(qulonglong id, QSqlDatabase &db);
     static Folder loadFolder(const QString &folderName, qulonglong parentId, QSqlDatabase &db);

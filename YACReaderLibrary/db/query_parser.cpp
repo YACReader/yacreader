@@ -7,7 +7,7 @@
 const std::map<QueryParser::FieldType, std::vector<std::string>> QueryParser::fieldNames {
     { FieldType::numeric, { "numpages", "number", "count", "arcnumber", "arccount" } },
     { FieldType::text, { "title", "volume", "storyarc", "genere", "writer", "penciller", "inker", "colorist", "letterer", "coverartist", "publisher", "format", "agerating", "synopsis", "characters", "notes" } },
-    { FieldType::boolean, { "isbis", "color", "read" } },
+    { FieldType::boolean, { "isbis", "color", "read", "manga" } },
     { FieldType::date, { "date" } },
     { FieldType::filename, { "filename" } },
     { FieldType::folder, { "folder" } },

@@ -54,6 +54,7 @@ QJsonObject YACReaderServerDataHelper::comicToJSON(const qulonglong libraryId, c
     json["title"] = comic.info.title.toString();
     json["number"] = comic.info.number.toInt();
     json["last_time_opened"] = comic.info.lastTimeOpened.toLongLong();
+    json["manga"] = comic.info.manga.toBool();
 
     return json;
 }

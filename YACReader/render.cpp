@@ -1028,6 +1028,15 @@ void Render::doublePageSwitch()
     }
 }
 
+void Render::setManga(bool manga)
+{
+    doubleMangaPage = manga;
+    if (comic && doublePage) {
+        //invalidate();
+        update();
+    }
+}
+
 void Render::doubleMangaPageSwitch()
 {
     doubleMangaPage = !doubleMangaPage;
