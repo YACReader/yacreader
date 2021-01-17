@@ -164,6 +164,8 @@ private:
     void wheelEvent(QWheelEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
 
+    void moveAction(const QKeySequence &key);
+
     //!ZigzagScroll
     enum scrollDirection { UP,
                            DOWN,

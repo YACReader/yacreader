@@ -9,6 +9,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ## WIP
 ### YACReader
 * Add support for full manga mode.
+* Fix UP,DOWN,LEFT,RIGHT shortcuts for moving a zoomed in page around.
 ### YACReaderLibrary
 * New search engine.
 * New `manga` field added to comics and folders to tag content as manga, any content added to a manga folder will become manga automatically.
