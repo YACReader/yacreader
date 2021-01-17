@@ -1531,8 +1531,7 @@ void DBHelper::updateFolderTreeManga(qulonglong id, QSqlDatabase &db, bool manga
     QSqlQuery updateComicInfo(db);
     updateComicInfo.prepare("UPDATE comic_info "
                             "SET manga = :manga "
-                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                            "WHERE c.parentId = :parentId");
+                            "WHERE id IN (SELECT ci.id FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE c.parentId = :parentId)");
     updateComicInfo.bindValue(":manga", manga ? 1 : 0);
     updateComicInfo.bindValue(":parentId", id);
     updateComicInfo.exec();
