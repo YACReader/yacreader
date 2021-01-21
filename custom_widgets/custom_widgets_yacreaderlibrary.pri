@@ -2,6 +2,9 @@ INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
 HEADERS += $$PWD/help_about_dialog.h \
+    $$PWD/rounded_corners_dialog.h \
+    $$PWD/whats_new_dialog.h \
+    $$PWD/whats_new_controller.h \
 						$$PWD/yacreader_field_edit.h \
                         $$PWD/yacreader_field_plain_text_edit.h \
                         $$PWD/yacreader_flow.h \
@@ -27,6 +30,9 @@ HEADERS += $$PWD/yacreader_macosx_toolbar.h
 }
 						 
 SOURCES += $$PWD/help_about_dialog.cpp \
+    $$PWD/rounded_corners_dialog.cpp \
+    $$PWD/whats_new_dialog.cpp \
+    $$PWD/whats_new_controller.cpp \
 						 $$PWD/yacreader_field_edit.cpp \
                          $$PWD/yacreader_field_plain_text_edit.cpp \
                          $$PWD/yacreader_flow.cpp \

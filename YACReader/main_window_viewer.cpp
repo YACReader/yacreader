@@ -20,6 +20,8 @@
 #include "edit_shortcuts_dialog.h"
 #include "shortcuts_manager.h"
 
+#include "whats_new_controller.h"
+
 #include <ctime>
 #include <algorithm>
 #include <QApplication>
@@ -73,6 +75,14 @@ MainWindowViewer::MainWindowViewer()
 {
     loadConfiguration();
     setupUI();
+    afterLaunchTasks();
+}
+
+void MainWindowViewer::afterLaunchTasks()
+{
+    WhatsNewController whatsNewController;
+
+    whatsNewController.showWhatsNewIfNeeded(this);
 }
 
 MainWindowViewer::~MainWindowViewer()

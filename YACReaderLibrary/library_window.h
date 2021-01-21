@@ -405,6 +405,8 @@ public slots:
     void prepareToCloseApp();
     void closeApp();
 
+    void afterLaunchTasks();
+
 private:
     //fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
     Qt::WindowFlags previousWindowFlags;

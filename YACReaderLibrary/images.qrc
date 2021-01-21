@@ -123,5 +123,7 @@
         <file>../images/updatingIcon.png</file>
         <file>../images/useNewFlowButton.png</file>
         <file>../images/useOldFlowButton.png</file>
+        <file>../images/custom_dialog/custom_close_button.svg</file>
+        <file>../images/whats_new/whatsnew_header.svg</file>
     </qresource>
 </RCC>
