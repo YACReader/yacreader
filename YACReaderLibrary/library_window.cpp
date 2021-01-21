@@ -83,6 +83,8 @@
 
 #include "trayicon_controller.h"
 
+#include "whats_new_controller.h"
+
 #include "QsLog.h"
 
 #ifdef Q_OS_WIN
@@ -104,6 +106,15 @@ LibraryWindow::LibraryWindow()
         showRootWidget();
         selectedLibrary->setCurrentIndex(0);
     }
+
+    afterLaunchTasks();
+}
+
+void LibraryWindow::afterLaunchTasks()
+{
+    WhatsNewController whatsNewController;
+
+    whatsNewController.showWhatsNewIfNeeded(this);
 }
 
 void LibraryWindow::setupUI()

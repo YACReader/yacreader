@@ -185,6 +185,7 @@ protected:
     void closeEvent(QCloseEvent *event) override;
     void sendComic();
     void updatePrevNextActions(bool thereIsPrevious, bool thereIsNext);
+    void afterLaunchTasks();
 
 public:
     MainWindowViewer();
