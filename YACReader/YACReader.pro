@@ -72,7 +72,7 @@ macx {
     LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 }
 
-QT += network widgets core multimedia
+QT += network widgets core multimedia svg
 !CONFIG(no_opengl) {
     QT += opengl
 }

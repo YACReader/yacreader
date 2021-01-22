@@ -71,7 +71,7 @@ macx {
 
 #CONFIG += release
 CONFIG -= flat
-QT += sql network widgets script
+QT += sql network widgets script svg
 !CONFIG(no_opengl) {
   QT += opengl
 }
