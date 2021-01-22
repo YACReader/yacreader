@@ -87,11 +87,19 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
     auto closeButton = new QPushButton(this);
     closeButton->setFlat(true);
     closeButton->setStyleSheet("background-color:transparent;");
-    closeButton->setIcon(QPixmap(":/images/custom_dialog/custom_close_button.svg"));
-    closeButton->setIconSize(QSize(44, 44));
-    closeButton->setFixedSize(44, 44);
-
-    closeButton->move(656, 20);
+    auto closeIcon = QPixmap(":/images/custom_dialog/custom_close_button.svg");
+    if (!closeIcon.isNull()) {
+        closeButton->setIcon(QPixmap(":/images/custom_dialog/custom_close_button.svg"));
+        closeButton->setIconSize(QSize(44, 44));
+        closeButton->setFixedSize(44, 44);
+        closeButton->move(656, 20);
+    } else {
+        closeButton->setText(tr("Close"));
+        auto font = closeButton->font();
+        font.setPointSize(16);
+        closeButton->setFont(font);
+        closeButton->move(616, 20);
+    }
 
     scrollArea->setFixedSize(720, 640);
     setFixedSize(720, 640);
