@@ -215,16 +215,6 @@ int main(int argc, char **argv)
         }
     }
 
-#ifdef SERVER_RELEASE
-    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creaci�n del fichero de config con el servidor
-    settings->beginGroup("libraryConfig");
-
-    s = new Startup();
-
-    if (settings->value(SERVER_ON, true).toBool()) {
-        s->start();
-    }
-#endif
     QLOG_INFO() << "YACReaderLibrary attempting to start";
 
     logSystemAndConfig();
@@ -237,7 +227,19 @@ int main(int argc, char **argv)
 #endif
         return 0;
     }
+
     QLOG_INFO() << "YACReaderLibrary starting";
+
+#ifdef SERVER_RELEASE
+    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creaci�n del fichero de config con el servidor
+    settings->beginGroup("libraryConfig");
+
+    s = new Startup();
+
+    if (settings->value(SERVER_ON, true).toBool()) {
+        s->start();
+    }
+#endif
 
     auto localServer = new YACReaderLocalServer();
 
