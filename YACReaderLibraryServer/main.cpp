@@ -212,7 +212,7 @@ int main(int argc, char **argv)
 
         QLOG_INFO() << "Running on port" << s->getPort();
 
-        //Update libraries to now versions
+        //Update libraries to new versions
         LibrariesUpdater updater;
         updater.updateIfNeeded();
 
