@@ -175,6 +175,21 @@ int main(int argc, char **argv)
 
         qRegisterMetaType<ComicDB>("ComicDB");
 
+        QLOG_INFO() << "YACReaderLibraryServer attempting to start";
+
+        logSystemAndConfig();
+
+        if (YACReaderLocalServer::isRunning()) // allow one server instance
+        {
+            QLOG_WARN() << "another instance of YACReaderLibrary is running";
+#ifdef Q_OS_WIN
+            logger.shutDownLoggerThread();
+#endif
+            return 0;
+        }
+
+        QLOG_INFO() << "YACReaderLibrary starting";
+
         QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/" + QCoreApplication::applicationName() + ".ini", QSettings::IniFormat);
         settings->beginGroup("libraryConfig");
 
@@ -195,22 +210,9 @@ int main(int argc, char **argv)
             s->start();
         }
 
-        QLOG_INFO() << "YACReaderLibraryServer attempting to start";
-
-        logSystemAndConfig();
-
-        if (YACReaderLocalServer::isRunning()) // allow one server instance
-        {
-            QLOG_WARN() << "another instance of YACReaderLibrary is running";
-#ifdef Q_OS_WIN
-            logger.shutDownLoggerThread();
-#endif
-            return 0;
-        }
-        QLOG_INFO() << "YACReaderLibrary starting";
         QLOG_INFO() << "Running on port" << s->getPort();
 
-        //Update libraries to now versions
+        //Update libraries to new versions
         LibrariesUpdater updater;
         updater.updateIfNeeded();
 
