@@ -29,7 +29,7 @@
 
 #define PICTUREFLOW_QT4 1
 
-//interfaz al servidor
+//Server interface
 Startup *s;
 
 using namespace QsLogging;
@@ -219,7 +219,7 @@ int main(int argc, char **argv)
 
     logSystemAndConfig();
 
-    if (YACReaderLocalServer::isRunning()) //s�lo se permite una instancia de YACReaderLibrary
+    if (YACReaderLocalServer::isRunning()) //only a single instance of YACReaderLibrary is allowed
     {
         QLOG_WARN() << "another instance of YACReaderLibrary is running";
 #ifdef Q_OS_WIN
@@ -231,7 +231,7 @@ int main(int argc, char **argv)
     QLOG_INFO() << "YACReaderLibrary starting";
 
 #ifdef SERVER_RELEASE
-    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creaci�n del fichero de config con el servidor
+    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat);
     settings->beginGroup("libraryConfig");
 
     s = new Startup();
