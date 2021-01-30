@@ -1046,36 +1046,6 @@ void MainWindowViewer::disableActions()
     showFlowAction->setDisabled(true);
 }
 
-void MainWindowViewer::keyPressEvent(QKeyEvent *event)
-{
-    // TODO remove unused keys
-    int _key = event->key();
-    Qt::KeyboardModifiers modifiers = event->modifiers();
-
-    if (modifiers & Qt::ShiftModifier)
-        _key |= Qt::SHIFT;
-    if (modifiers & Qt::ControlModifier)
-        _key |= Qt::CTRL;
-    if (modifiers & Qt::MetaModifier)
-        _key |= Qt::META;
-    if (modifiers & Qt::AltModifier)
-        _key |= Qt::ALT;
-
-    QKeySequence key(_key);
-
-    if (key == ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_FULL_SCREEN_ACTION_Y)) {
-        toggleFullScreen();
-        event->accept();
-    } else if (key == ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_TOOL_BARS_ACTION_Y)) {
-        toggleToolBars();
-        event->accept();
-    } else if (key == ShortcutsManager::getShortcutsManager().getShortcut(CHANGE_FIT_ACTION_Y)) {
-        toggleWidthHeight();
-        event->accept();
-    } else
-        QWidget::keyPressEvent(event);
-}
-
 void MainWindowViewer::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
@@ -1269,14 +1239,17 @@ void MainWindowViewer::setUpShortcutsManagement()
 
     allActions << tmpList;
 
-    // keys without actions (General)
     QAction *toggleFullScreenAction = new QAction(tr("Toggle fullscreen mode"), orphanActions);
     toggleFullScreenAction->setData(TOGGLE_FULL_SCREEN_ACTION_Y);
     toggleFullScreenAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_FULL_SCREEN_ACTION_Y));
+    addAction(toggleFullScreenAction);
+    connect(toggleFullScreenAction, &QAction::triggered, this, &MainWindowViewer::toggleFullScreen);
 
     QAction *toggleToolbarsAction = new QAction(tr("Hide/show toolbar"), orphanActions);
     toggleToolbarsAction->setData(TOGGLE_TOOL_BARS_ACTION_Y);
     toggleToolbarsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_TOOL_BARS_ACTION_Y));
+    addAction(toggleToolbarsAction);
+    connect(toggleToolbarsAction, &QAction::triggered, this, &MainWindowViewer::toggleToolBars);
 
     editShortcutsDialog->addActionsGroup(tr("General"), QIcon(":/images/shortcuts_group_general.png"),
                                          tmpList = QList<QAction *>()
@@ -1324,10 +1297,11 @@ void MainWindowViewer::setUpShortcutsManagement()
 
     allActions << tmpList;
 
-    // keys without actions
     auto toggleFitToScreenAction = new QAction(tr("Toggle between fit to width and fit to height"), orphanActions);
     toggleFitToScreenAction->setData(CHANGE_FIT_ACTION_Y);
     toggleFitToScreenAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(CHANGE_FIT_ACTION_Y));
+    addAction(toggleFitToScreenAction);
+    connect(toggleFitToScreenAction, &QAction::triggered, this, &MainWindowViewer::toggleWidthHeight);
 
     editShortcutsDialog->addActionsGroup(tr("Page adjustement"), QIcon(":/images/shortcuts_group_page.png"),
                                          tmpList = QList<QAction *>()
