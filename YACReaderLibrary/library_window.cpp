@@ -91,6 +91,20 @@
 #include <shellapi.h>
 #endif
 
+namespace {
+template<class Remover>
+void moveAndConnectRemoverToThread(Remover *remover, QThread *thread)
+{
+    Q_ASSERT(remover);
+    Q_ASSERT(thread);
+    remover->moveToThread(thread);
+    QObject::connect(thread, &QThread::started, remover, &Remover::process);
+    QObject::connect(remover, &Remover::finished, remover, &QObject::deleteLater);
+    QObject::connect(remover, &Remover::finished, thread, &QThread::quit);
+    QObject::connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+}
+}
+
 using namespace YACReader;
 
 LibraryWindow::LibraryWindow()
@@ -1535,22 +1549,14 @@ void LibraryWindow::deleteSelectedFolder()
                 paths << folderPath;
 
                 auto remover = new FoldersRemover(indexList, paths);
+                const auto thread = new QThread(this);
+                moveAndConnectRemoverToThread(remover, thread);
 
-                QThread *thread = NULL;
-
-                thread = new QThread(this);
-
-                remover->moveToThread(thread);
-
-                connect(thread, SIGNAL(started()), remover, SLOT(process()));
                 connect(remover, SIGNAL(remove(QModelIndex)), foldersModel, SLOT(deleteFolder(QModelIndex)));
                 connect(remover, SIGNAL(removeError()), this, SLOT(errorDeletingFolder()));
                 connect(remover, SIGNAL(finished()), navigationController, SLOT(reselectCurrentFolder()));
-                connect(remover, SIGNAL(finished()), remover, SLOT(deleteLater()));
-                connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
-                if (thread != NULL)
-                    thread->start();
+                thread->start();
             }
         }
     }
@@ -2530,15 +2536,11 @@ void LibraryWindow::deleteComicsFromDisk()
         }
 
         auto remover = new ComicsRemover(indexList, paths, comics.at(0).parentId);
-        QThread *thread = NULL;
-
-        thread = new QThread(this);
-
-        remover->moveToThread(thread);
+        const auto thread = new QThread(this);
+        moveAndConnectRemoverToThread(remover, thread);
 
         comicsModel->startTransaction();
 
-        connect(thread, SIGNAL(started()), remover, SLOT(process()));
         connect(remover, SIGNAL(remove(int)), comicsModel, SLOT(remove(int)));
         connect(remover, SIGNAL(removeError()), this, SLOT(setRemoveError()));
         connect(remover, SIGNAL(finished()), comicsModel, SLOT(finishTransaction()));
@@ -2547,11 +2549,8 @@ void LibraryWindow::deleteComicsFromDisk()
 
         connect(remover, SIGNAL(finished()), this, SLOT(checkEmptyFolder()));
         connect(remover, SIGNAL(finished()), this, SLOT(checkRemoveError()));
-        connect(remover, SIGNAL(finished()), remover, SLOT(deleteLater()));
-        connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
-        if (thread != NULL)
-            thread->start();
+        thread->start();
     }
 }
 
