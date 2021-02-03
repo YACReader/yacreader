@@ -415,7 +415,7 @@ void LibraryWindow::doModels()
     //folders
     foldersModel = new FolderModel();
     foldersModelProxy = new FolderModelProxy();
-    folderQueryResultProcessor = new FolderQueryResultProcessor(foldersModel);
+    folderQueryResultProcessor.reset(new FolderQueryResultProcessor(foldersModel));
     //foldersModelProxy->setSourceModel(foldersModel);
     //comics
     comicsModel = new ComicModel(this);
@@ -1116,7 +1116,7 @@ void LibraryWindow::createConnections()
     //Search filter
     connect(searchEdit, SIGNAL(filterChanged(YACReader::SearchModifiers, QString)), this, SLOT(setSearchFilter(YACReader::SearchModifiers, QString)));
     connect(&comicQueryResultProcesor, &ComicQueryResultProcesor::newData, this, &LibraryWindow::setComicSearchFilterData);
-    connect(folderQueryResultProcessor, &FolderQueryResultProcessor::newData, this, &LibraryWindow::setFolderSearchFilterData);
+    connect(folderQueryResultProcessor.get(), &FolderQueryResultProcessor::newData, this, &LibraryWindow::setFolderSearchFilterData);
 
     //ContextMenus
     connect(openContainingFolderComicAction, SIGNAL(triggered()), this, SLOT(openContainingFolderComic()));

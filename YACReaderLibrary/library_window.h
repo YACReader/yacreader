@@ -14,6 +14,7 @@
 #include "folder_query_result_processor.h"
 
 #include <future>
+#include <memory>
 
 #ifdef Q_OS_MAC
 #include "yacreader_macosx_toolbar.h"
@@ -416,7 +417,7 @@ private:
 
     TrayIconController *trayIconController;
     ComicQueryResultProcesor comicQueryResultProcesor;
-    FolderQueryResultProcessor *folderQueryResultProcessor;
+    std::unique_ptr<FolderQueryResultProcessor> folderQueryResultProcessor;
 };
 
 #endif
