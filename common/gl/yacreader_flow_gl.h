@@ -194,9 +194,7 @@ public:
     //updates the coverflow
     void updatePositions();
     //inserts a new item to the coverflow
-    //if item is set to a value > -1 it updates a already set value
-    //otherwise a new entry is set
-    void insert(char *name, QOpenGLTexture *texture, float x, float y, int item = -1);
+    void insert(const char *name, QOpenGLTexture *texture, float x, float y);
     //removes a item
     virtual void remove(int item);
     //replaces the texture of the item 'item' with Tex

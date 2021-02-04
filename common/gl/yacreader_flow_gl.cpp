@@ -673,21 +673,19 @@ void YACReaderFlowGL::updatePositions()
         stopAnimationTimer();
 }
 
-void YACReaderFlowGL::insert(char *name, QOpenGLTexture *texture, float x, float y, int item)
+void YACReaderFlowGL::insert(const char *name, QOpenGLTexture *texture, float x, float y)
 {
     startAnimationTimer();
 
     Q_UNUSED(name)
-    //set a new entry
-    if (item == -1) {
-        images.push_back(YACReader3DImage());
 
-        item = numObjects;
-        numObjects++;
+    images.push_back(YACReader3DImage());
 
-        calcVector(images[item].current, item);
-        images[item].current.z = images[item].current.z - 1;
-    }
+    const auto item = numObjects;
+    numObjects++;
+
+    calcVector(images[item].current, item);
+    images[item].current.z = images[item].current.z - 1;
 
     images[item].texture = texture;
     images[item].width = x;
