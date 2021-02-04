@@ -2544,7 +2544,6 @@ void LibraryWindow::deleteComicsFromDisk()
         connect(remover, SIGNAL(remove(int)), comicsModel, SLOT(remove(int)));
         connect(remover, SIGNAL(removeError()), this, SLOT(setRemoveError()));
         connect(remover, SIGNAL(finished()), comicsModel, SLOT(finishTransaction()));
-        connect(remover, SIGNAL(finished()), comicsModel, SLOT(finishTransaction()));
         connect(remover, SIGNAL(removedItemsFromFolder(qulonglong)), foldersModel, SLOT(updateFolderChildrenInfo(qulonglong)));
 
         connect(remover, SIGNAL(finished()), this, SLOT(checkEmptyFolder()));
