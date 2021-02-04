@@ -24,60 +24,62 @@ void YACReader::FolderQueryResultProcessor::createModelData(const YACReader::Sea
 {
     querySearchQueue.cancellPending();
 
-    QString connectionName = "";
-    {
-        QSqlDatabase db = DataBaseManagement::loadDatabase(model->getDatabase());
+    querySearchQueue.enqueue([=] {
+        QString connectionName = "";
+        {
+            QSqlDatabase db = DataBaseManagement::loadDatabase(model->getDatabase());
 
-        QSqlQuery selectQuery(db); //TODO check
-        if (!includeComics) {
-            selectQuery.prepare("select * from folder where id <> 1 and upper(name) like upper(:filter) order by parentId,name ");
-            selectQuery.bindValue(":filter", "%%" + filter + "%%");
-        } else {
-            std::string queryString("SELECT DISTINCT f.id, f.parentId, f.name, f.path, f.finished, f.completed "
-                                    "FROM folder f LEFT JOIN comic c ON (f.id = c.parentId) "
-                                    "INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE ");
+            QSqlQuery selectQuery(db); //TODO check
+            if (!includeComics) {
+                selectQuery.prepare("select * from folder where id <> 1 and upper(name) like upper(:filter) order by parentId,name ");
+                selectQuery.bindValue(":filter", "%%" + filter + "%%");
+            } else {
+                std::string queryString("SELECT DISTINCT f.id, f.parentId, f.name, f.path, f.finished, f.completed "
+                                        "FROM folder f LEFT JOIN comic c ON (f.id = c.parentId) "
+                                        "INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE ");
 
-            try {
-                QueryParser parser;
-                auto result = parser.parse(filter.toStdString());
-                result.buildSqlString(queryString);
+                try {
+                    QueryParser parser;
+                    auto result = parser.parse(filter.toStdString());
+                    result.buildSqlString(queryString);
 
-                switch (modifier) {
-                case YACReader::NoModifiers:
-                    queryString += " AND f.id <> 1 ORDER BY f.parentId,f.name";
-                    break;
+                    switch (modifier) {
+                    case YACReader::NoModifiers:
+                        queryString += " AND f.id <> 1 ORDER BY f.parentId,f.name";
+                        break;
 
-                case YACReader::OnlyRead:
-                    queryString += " AND f.id <> 1 AND ci.read = 1 ORDER BY f.parentId,f.name";
-                    break;
+                    case YACReader::OnlyRead:
+                        queryString += " AND f.id <> 1 AND ci.read = 1 ORDER BY f.parentId,f.name";
+                        break;
 
-                case YACReader::OnlyUnread:
-                    queryString += " AND f.id <> 1 AND ci.read = 0 ORDER BY f.parentId,f.name";
-                    break;
+                    case YACReader::OnlyUnread:
+                        queryString += " AND f.id <> 1 AND ci.read = 0 ORDER BY f.parentId,f.name";
+                        break;
 
-                default:
-                    queryString += " AND f.id <> 1 ORDER BY f.parentId,f.name";
-                    QLOG_ERROR() << "not implemented";
-                    break;
+                    default:
+                        queryString += " AND f.id <> 1 ORDER BY f.parentId,f.name";
+                        QLOG_ERROR() << "not implemented";
+                        break;
+                    }
+
+                    selectQuery.prepare(queryString.c_str());
+                    result.bindValues(selectQuery);
+
+                    selectQuery.exec();
+                    QLOG_DEBUG() << selectQuery.lastError() << "--";
+
+                    setupFilteredModelData(selectQuery);
+                } catch (const std::exception &e) {
+                    //Do nothing, uncomplete search string will end here and it is part of how the QueryParser works
+                    //I don't like the idea of using exceptions for this though
                 }
-
-                selectQuery.prepare(queryString.c_str());
-                result.bindValues(selectQuery);
-
-                selectQuery.exec();
-                QLOG_DEBUG() << selectQuery.lastError() << "--";
-
-                setupFilteredModelData(selectQuery);
-            } catch (const std::exception &e) {
-                //Do nothing, uncomplete search string will end here and it is part of how the QueryParser works
-                //I don't like the idea of using exceptions for this though
             }
+
+            connectionName = db.connectionName();
         }
 
-        connectionName = db.connectionName();
-    }
-
-    QSqlDatabase::removeDatabase(connectionName);
+        QSqlDatabase::removeDatabase(connectionName);
+    });
 }
 
 void YACReader::FolderQueryResultProcessor::setupFilteredModelData(QSqlQuery &sqlquery)
