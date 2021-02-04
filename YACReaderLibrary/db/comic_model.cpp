@@ -606,8 +606,6 @@ void ComicModel::setModelData(QList<ComicItem *> *data, const QString &databaseP
 
     _data.clear();
 
-    QLOG_ERROR() << "-d2>" << data->size();
-
     _data.append(*data);
 
     endResetModel();
