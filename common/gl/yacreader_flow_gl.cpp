@@ -711,6 +711,9 @@ void YACReaderFlowGL::remove(int item)
         currentSelected--;
     }
 
+    // TODO: the texture can be deleted before removing item from images. There is
+    // no need for the local texture variable. If this is an attempt to avoid a
+    // data race, then there is undefined behavior, which should be fixed properly.
     QOpenGLTexture *texture = images[item].texture;
 
     int count = item;
@@ -721,7 +724,7 @@ void YACReaderFlowGL::remove(int item)
     images.removeAt(item);
 
     if (texture != defaultTexture)
-        delete (texture);
+        delete (texture); // TODO: ? if (texture->isCreated()) texture->destroy();
 
     numObjects--;
 }
@@ -737,6 +740,7 @@ void YACReaderFlowGL::replace(char *name, QOpenGLTexture *texture, float x, floa
     startAnimationTimer();
 
     Q_UNUSED(name)
+    // TODO: ? auto *t = images[item].texture; if (t && t != defaultTexture) { if (t->isCreated()) t->destroy(); delete t; }
     if (images[item].index == item) {
         images[item].texture = texture;
         images[item].width = x;
@@ -783,7 +787,8 @@ void YACReaderFlowGL::reset()
 
     for (int i = 0; i < numObjects; i++) {
         if (images[i].texture != defaultTexture)
-            delete (images[i].texture);
+            delete (images[i].texture); // TODO: ? if (texture->isCreated()) texture->destroy();
+        // TODO (continued): if so, extract the entire code snippet into a helper function.
     }
 
     numObjects = 0;
@@ -1277,6 +1282,8 @@ YACReaderPageFlowGL::~YACReaderPageFlowGL()
 
     makeCurrent();
 
+    // TODO: shouldn't the destructions below be in the parent class ~YACReaderFlowGL()?
+
     for (auto image : images) {
         if (image.texture != defaultTexture) {
             if (image.texture->isCreated()) {
@@ -1286,6 +1293,8 @@ YACReaderPageFlowGL::~YACReaderPageFlowGL()
         }
     }
 
+    // TODO: do the same for markTexture and readingTexture?
+    // E.g. for (auto *texture : { defaultTexture, markTexture, readingTexture }) ...
     if (defaultTexture != nullptr) {
         if (defaultTexture->isCreated()) {
             defaultTexture->destroy();
