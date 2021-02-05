@@ -52,7 +52,7 @@ public:
     //Constructors
     Comic();
     Comic(const QString &pathFile, int atPage = -1);
-    ~Comic();
+    ~Comic() override;
     void setup();
     //Load pages from file
     virtual bool load(const QString &path, int atPage = -1) = 0;
@@ -120,16 +120,16 @@ private:
 public:
     FileComic();
     FileComic(const QString &path, int atPage = -1);
-    ~FileComic();
-    virtual bool load(const QString &path, int atPage = -1);
-    virtual bool load(const QString &path, const ComicDB &comic);
+    ~FileComic() override;
+    bool load(const QString &path, int atPage = -1) final;
+    bool load(const QString &path, const ComicDB &comic) final;
     static QList<QString> filter(const QList<QString> &src);
 
     //ExtractDelegate
-    void fileExtracted(int index, const QByteArray &rawData);
-    void crcError(int index);
-    void unknownError(int index);
-    bool isCancelled();
+    void fileExtracted(int index, const QByteArray &rawData) override;
+    void crcError(int index) override;
+    void unknownError(int index) override;
+    bool isCancelled() override;
 
 public slots:
 
@@ -144,7 +144,7 @@ public:
     FolderComic();
     FolderComic(const QString &path, int atPage = -1);
 
-    virtual bool load(const QString &path, int atPage = -1);
+    bool load(const QString &path, int atPage = -1) final;
 
 public slots:
 
@@ -171,8 +171,8 @@ public:
     PDFComic();
     PDFComic(const QString &path, int atPage = -1);
 
-    virtual bool load(const QString &path, int atPage = -1);
-    virtual bool load(const QString &path, const ComicDB &comic);
+    bool load(const QString &path, int atPage = -1) final;
+    bool load(const QString &path, const ComicDB &comic) final;
 
 public slots:
 
