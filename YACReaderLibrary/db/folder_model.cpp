@@ -625,5 +625,5 @@ void FolderModelProxy::clear()
 
     filteredItems.clear();
 
-    QSortFilterProxyModel::clear();
+    QSortFilterProxyModel::invalidate();
 }
