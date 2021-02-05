@@ -166,7 +166,7 @@ QString DBHelper::getFolderName(qulonglong libraryId, qulonglong id)
 }
 QList<QString> DBHelper::getLibrariesNames()
 {
-    QStringList names = getLibraries().getNames();
+    auto names = getLibraries().getNames();
     std::sort(names.begin(), names.end(), naturalSortLessThanCI);
     return names;
 }
