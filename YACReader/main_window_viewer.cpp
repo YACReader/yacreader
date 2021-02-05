@@ -948,7 +948,7 @@ void MainWindowViewer::openFolderFromPath(QString pathDir, QString atFileName)
     d.setSorting(QDir::Name | QDir::IgnoreCase | QDir::LocaleAware);
     QStringList list = d.entryList();
 
-    qSort(list.begin(), list.end(), naturalSortLessThanCI);
+    std::sort(list.begin(), list.end(), naturalSortLessThanCI);
     int i = 0;
     foreach (QString path, list) {
         if (path.endsWith(atFileName))
@@ -1560,8 +1560,7 @@ void MainWindowViewer::getSiblingComics(QString path, QString currentComic)
 #endif
     d.setSorting(QDir::Name | QDir::IgnoreCase | QDir::LocaleAware);
     QStringList list = d.entryList();
-    qSort(list.begin(), list.end(), naturalSortLessThanCI);
-    //std::sort(list.begin(),list.end(),naturalSortLessThanCI);
+    std::sort(list.begin(), list.end(), naturalSortLessThanCI);
     int index = list.indexOf(currentComic);
     if (index == -1) //comic not found
     {
