@@ -95,7 +95,6 @@ public slots:
 
 signals:
     void invalidated();
-    void destroyed();
     void imagesLoaded();
     void imageLoaded(int index);
     void imageLoaded(int index, const QByteArray &image);

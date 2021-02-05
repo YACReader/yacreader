@@ -750,7 +750,7 @@ void Render::startLoad()
     connect(comic, SIGNAL(errorOpening()), thread, SLOT(quit()), Qt::QueuedConnection);
     connect(comic, SIGNAL(errorOpening(QString)), thread, SLOT(quit()), Qt::QueuedConnection);
     connect(comic, SIGNAL(imagesLoaded()), thread, SLOT(quit()), Qt::QueuedConnection);
-    connect(comic, SIGNAL(destroyed()), thread, SLOT(quit()), Qt::QueuedConnection);
+    connect(comic, &QObject::destroyed, thread, &QThread::quit, Qt::QueuedConnection);
     connect(comic, SIGNAL(invalidated()), thread, SLOT(quit()), Qt::QueuedConnection);
     connect(thread, SIGNAL(started()), comic, SLOT(process()));
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
