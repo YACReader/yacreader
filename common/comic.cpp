@@ -651,10 +651,6 @@ FolderComic::FolderComic(const QString &path, int atPage)
     load(path, atPage);
 }
 
-FolderComic::~FolderComic()
-{
-}
-
 bool FolderComic::load(const QString &path, int atPage)
 {
     _path = path;
@@ -745,10 +741,6 @@ PDFComic::PDFComic(const QString &path, int atPage)
     : Comic(path, atPage)
 {
     load(path, atPage);
-}
-
-PDFComic::~PDFComic()
-{
 }
 
 bool PDFComic::load(const QString &path, int atPage)

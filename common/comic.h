@@ -140,13 +140,9 @@ class FolderComic : public Comic
 {
     Q_OBJECT
 
-private:
-    //void run();
-
 public:
     FolderComic();
     FolderComic(const QString &path, int atPage = -1);
-    ~FolderComic();
 
     virtual bool load(const QString &path, int atPage = -1);
 
@@ -170,12 +166,10 @@ private:
     Poppler::Document *pdfComic;
 #endif
     void renderPage(int page);
-    //void run();
 
 public:
     PDFComic();
     PDFComic(const QString &path, int atPage = -1);
-    ~PDFComic();
 
     virtual bool load(const QString &path, int atPage = -1);
     virtual bool load(const QString &path, const ComicDB &comic);
