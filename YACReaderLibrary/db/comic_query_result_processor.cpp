@@ -1,4 +1,4 @@
-#include "comic_query_result_procesor.h"
+#include "comic_query_result_processor.h"
 
 #include "comic_item.h"
 #include "comic_model.h"
@@ -20,12 +20,12 @@ QString getLastExecutedQuery(const QSqlQuery &query)
     return str;
 }
 
-YACReader::ComicQueryResultProcesor::ComicQueryResultProcesor()
+YACReader::ComicQueryResultProcessor::ComicQueryResultProcessor()
     : querySearchQueue(1)
 {
 }
 
-void YACReader::ComicQueryResultProcesor::createModelData(const YACReader::SearchModifiers modifier, const QString &filter, const QString &databasePath)
+void YACReader::ComicQueryResultProcessor::createModelData(const YACReader::SearchModifiers modifier, const QString &filter, const QString &databasePath)
 {
     querySearchQueue.cancellPending();
 
@@ -81,7 +81,7 @@ void YACReader::ComicQueryResultProcesor::createModelData(const YACReader::Searc
     });
 }
 
-QList<ComicItem *> *YACReader::ComicQueryResultProcesor::modelData(QSqlQuery &sqlquery)
+QList<ComicItem *> *YACReader::ComicQueryResultProcessor::modelData(QSqlQuery &sqlquery)
 {
     auto list = new QList<ComicItem *>();
 

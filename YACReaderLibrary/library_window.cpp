@@ -94,7 +94,7 @@
 using namespace YACReader;
 
 LibraryWindow::LibraryWindow()
-    : QMainWindow(), fullscreen(false), previousFilter(""), fetching(false), status(LibraryWindow::Normal), removeError(false), comicQueryResultProcesor()
+    : QMainWindow(), fullscreen(false), previousFilter(""), fetching(false), status(LibraryWindow::Normal), removeError(false)
 {
     setupUI();
 
@@ -1115,7 +1115,7 @@ void LibraryWindow::createConnections()
 
     //Search filter
     connect(searchEdit, SIGNAL(filterChanged(YACReader::SearchModifiers, QString)), this, SLOT(setSearchFilter(YACReader::SearchModifiers, QString)));
-    connect(&comicQueryResultProcesor, &ComicQueryResultProcesor::newData, this, &LibraryWindow::setComicSearchFilterData);
+    connect(&comicQueryResultProcessor, &ComicQueryResultProcessor::newData, this, &LibraryWindow::setComicSearchFilterData);
     connect(folderQueryResultProcessor.get(), &FolderQueryResultProcessor::newData, this, &LibraryWindow::setFolderSearchFilterData);
 
     //ContextMenus
@@ -2150,7 +2150,7 @@ void LibraryWindow::setSearchFilter(const YACReader::SearchModifiers modifier, Q
 {
     if (!filter.isEmpty()) {
         folderQueryResultProcessor->createModelData(modifier, filter, true);
-        comicQueryResultProcesor.createModelData(modifier, filter, foldersModel->getDatabase());
+        comicQueryResultProcessor.createModelData(modifier, filter, foldersModel->getDatabase());
     } else if (status == LibraryWindow::Searching) { //if no searching, then ignore this
         clearSearchFilter();
         navigationController->loadPreviousStatus();
