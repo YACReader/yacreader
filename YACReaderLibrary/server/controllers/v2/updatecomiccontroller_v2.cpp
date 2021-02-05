@@ -21,7 +21,6 @@ void UpdateComicControllerV2::service(HttpRequest &request, HttpResponse &respon
     QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
     QStringList pathElements = path.split('/');
     qulonglong libraryId = pathElements.at(3).toULongLong();
-    QString libraryName = DBHelper::getLibraryName(libraryId);
     qulonglong comicId = pathElements.at(5).toULongLong();
 
     QString postData = QString::fromUtf8(request.getBody());

@@ -19,7 +19,6 @@ void FolderInfoControllerV2::service(HttpRequest &request, HttpResponse &respons
     QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
     QStringList pathElements = path.split('/');
     int libraryId = pathElements.at(3).toInt();
-    QString libraryName = DBHelper::getLibraryName(libraryId);
     qulonglong parentId = pathElements.at(5).toULongLong();
 
     serviceComics(libraryId, parentId, response);
