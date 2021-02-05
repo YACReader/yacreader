@@ -12,6 +12,7 @@
 #include "pdf_comic.h"
 #endif //NO_PDF
 class ComicDB;
+class QThread;
 //#define EXTENSIONS << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp" Comic::getSupportedImageFormats()
 //#define EXTENSIONS_LITERAL << ".jpg" << ".jpeg" << ".png" << ".gif" << ".tiff" << ".tif" << ".bmp" //Comic::getSupportedImageLiteralFormats()
 class Comic : public QObject
@@ -83,6 +84,8 @@ public:
     static QList<QString> findValidComicFiles(const QList<QUrl> &list);
     static QList<QString> findValidComicFilesInFolder(const QString &path);
 
+    void moveAndConnectToThread(QThread *thread);
+
 public slots:
     void loadFinished();
     void setBookmark();
@@ -92,6 +95,8 @@ public slots:
     void updateBookmarkImage(int);
     void setPageLoaded(int page);
     void invalidate();
+
+    virtual void process() = 0;
 
 signals:
     void invalidated();
@@ -133,7 +138,7 @@ public:
 
 public slots:
 
-    void process();
+    void process() override;
 };
 
 class FolderComic : public Comic
@@ -147,8 +152,7 @@ public:
     bool load(const QString &path, int atPage = -1) final;
 
 public slots:
-
-    void process();
+    void process() override;
 };
 
 #ifndef NO_PDF
@@ -175,8 +179,7 @@ public:
     bool load(const QString &path, const ComicDB &comic) final;
 
 public slots:
-
-    void process();
+    void process() override;
 };
 #endif //NO_PDF
 class FactoryComic

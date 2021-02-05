@@ -741,22 +741,10 @@ void Render::loadComic(const QString &path, int atPage)
 
 void Render::startLoad()
 {
-    QThread *thread = nullptr;
-
-    thread = new QThread();
-
-    comic->moveToThread(thread);
-
-    connect(comic, SIGNAL(errorOpening()), thread, SLOT(quit()), Qt::QueuedConnection);
-    connect(comic, SIGNAL(errorOpening(QString)), thread, SLOT(quit()), Qt::QueuedConnection);
-    connect(comic, SIGNAL(imagesLoaded()), thread, SLOT(quit()), Qt::QueuedConnection);
+    const auto thread = new QThread();
+    comic->moveAndConnectToThread(thread);
     connect(comic, &QObject::destroyed, thread, &QThread::quit, Qt::QueuedConnection);
-    connect(comic, SIGNAL(invalidated()), thread, SLOT(quit()), Qt::QueuedConnection);
-    connect(thread, SIGNAL(started()), comic, SLOT(process()));
-    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-
-    if (thread != nullptr)
-        thread->start();
+    thread->start();
 
     invalidate();
     loadedComic = true;
