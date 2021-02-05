@@ -144,7 +144,7 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags FolderModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return 0;
+        return {};
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled;
 }
