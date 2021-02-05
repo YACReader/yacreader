@@ -17,6 +17,7 @@
 #include <QSettings>
 #include <QHeaderView>
 
+#include <algorithm>
 #include <iterator>
 #include <typeinfo>
 #include <thread>
@@ -2494,7 +2495,7 @@ QModelIndexList LibraryWindow::getSelectedComics()
     //avoid selection.count()==0 forcing selection in comicsView
     QModelIndexList selection = comicsViewsManager->comicsView->selectionModel()->selectedRows();
     QLOG_TRACE() << "selection count " << selection.length();
-    qSort(selection.begin(), selection.end(), lessThanModelIndexRow);
+    std::sort(selection.begin(), selection.end(), lessThanModelIndexRow);
 
     if (selection.count() == 0) {
         comicsViewsManager->comicsView->selectIndex(0);

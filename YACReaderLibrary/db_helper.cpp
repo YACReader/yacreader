@@ -12,6 +12,7 @@
 #include <QSqlRecord>
 #include <QSqlQuery>
 
+#include <algorithm>
 #include <limits>
 
 #include "reading_list.h"
@@ -166,7 +167,7 @@ QString DBHelper::getFolderName(qulonglong libraryId, qulonglong id)
 QList<QString> DBHelper::getLibrariesNames()
 {
     QStringList names = getLibraries().getNames();
-    qSort(names.begin(), names.end(), naturalSortLessThanCI);
+    std::sort(names.begin(), names.end(), naturalSortLessThanCI);
     return names;
 }
 QString DBHelper::getLibraryName(int id)

@@ -11,6 +11,8 @@
 
 #include <QtGui>
 
+#include <algorithm>
+
 #ifdef Q_OS_MAC
 #include <QFileIconProvider>
 QIcon finishedFolderIcon;
@@ -413,8 +415,7 @@ QStringList FolderModel::getSubfoldersNames(const QModelIndex &mi)
     }
     QSqlDatabase::removeDatabase(connectionName);
 
-    //TODO sort result))
-    qSort(result.begin(), result.end(), naturalSortLessThanCI);
+    std::sort(result.begin(), result.end(), naturalSortLessThanCI);
     return result;
 }
 

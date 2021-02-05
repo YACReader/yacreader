@@ -333,8 +333,8 @@ void LibraryCreator::update(QDir dirS)
     dirS.setSorting(QDir::Name | QDir::IgnoreCase | QDir::LocaleAware);
     QFileInfoList listSFiles = dirS.entryInfoList();
 
-    qSort(listSFolders.begin(), listSFolders.end(), naturalSortLessThanCIFileInfo);
-    qSort(listSFiles.begin(), listSFiles.end(), naturalSortLessThanCIFileInfo);
+    std::sort(listSFolders.begin(), listSFolders.end(), naturalSortLessThanCIFileInfo);
+    std::sort(listSFiles.begin(), listSFiles.end(), naturalSortLessThanCIFileInfo);
 
     QFileInfoList listS;
     listS.append(listSFolders);
@@ -351,8 +351,8 @@ void LibraryCreator::update(QDir dirS)
     //QLOG_TRACE() << "END Getting info from DB" << dirS.absolutePath();
 
     QList<LibraryItem *> listD;
-    qSort(folders.begin(), folders.end(), naturalSortLessThanCILibraryItem);
-    qSort(comics.begin(), comics.end(), naturalSortLessThanCILibraryItem);
+    std::sort(folders.begin(), folders.end(), naturalSortLessThanCILibraryItem);
+    std::sort(comics.begin(), comics.end(), naturalSortLessThanCILibraryItem);
     listD.append(folders);
     listD.append(comics);
     //QLOG_DEBUG() << "---------------------------------------------------------";
@@ -651,7 +651,7 @@ void ThumbnailCreator::create()
         if (_coverPage > _numPages) {
             _coverPage = 1;
         }
-        qSort(fileNames.begin(), fileNames.end(), naturalSortLessThanCI);
+        std::sort(fileNames.begin(), fileNames.end(), naturalSortLessThanCI);
         int index = order.indexOf(fileNames.at(_coverPage - 1));
 
         if (_target == "") {
