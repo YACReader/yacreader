@@ -64,7 +64,7 @@ void GoToFlowGL::setFlowType(FlowType flowType)
         flow->setPreset(defaultYACReaderFlowConfig);
 }
 
-void GoToFlowGL::setNumSlides(unsigned int slides)
+void GoToFlowGL::setNumSlides(int slides)
 {
     flow->populate(slides);
     toolBar->setTop(slides);

@@ -63,9 +63,9 @@ public:
 		void loadFromPDF(const QString & pathPDF);*/
     int nextPage();
     int previousPage();
-    void setIndex(unsigned int index);
-    unsigned int getIndex() { return _index; };
-    unsigned int numPages() { return _pages.size(); }
+    void setIndex(int index);
+    int getIndex() const { return _index; }
+    int numPages() const { return _pages.size(); }
     //QPixmap * currentPage();
     bool loaded();
     //QPixmap * operator[](unsigned int index);
@@ -101,7 +101,7 @@ signals:
     void imageLoaded(int index, const QByteArray &image);
     void pageChanged(int index);
     void openAt(int index);
-    void numPages(unsigned int numPages);
+    void numPagesChanged(int numPages);
     void errorOpening();
     void errorOpening(QString);
     void crcErrorFound(QString);

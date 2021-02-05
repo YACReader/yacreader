@@ -176,9 +176,8 @@ void Viewer::createConnections()
     connect(render, SIGNAL(errorOpening()), this, SLOT(showMessageErrorOpening()));
     connect(render, SIGNAL(errorOpening(QString)), this, SLOT(showMessageErrorOpening(QString)));
     connect(render, SIGNAL(crcError(QString)), this, SLOT(processCRCError(QString)));
-    connect(render, SIGNAL(numPages(unsigned int)), goToFlow, SLOT(setNumSlides(unsigned int)));
-    connect(render, SIGNAL(numPages(unsigned int)), goToDialog, SLOT(setNumPages(unsigned int)));
-    //connect(render,SIGNAL(numPages(unsigned int)),this,SLOT(updateInformation()));
+    connect(render, &Render::numPagesChanged, goToFlow, &GoToFlowWidget::setNumSlides);
+    connect(render, &Render::numPagesChanged, goToDialog, &GoToDialog::setNumPages);
     connect(render, SIGNAL(imageLoaded(int, QByteArray)), goToFlow, SLOT(setImageReady(int, QByteArray)));
     connect(render, SIGNAL(currentPageReady()), this, SLOT(updatePage()));
     connect(render, SIGNAL(processingPage()), this, SLOT(setLoadingMessage()));
@@ -1129,12 +1128,12 @@ void Viewer::showIsLastMessage()
     shouldOpenPrevious = false; //single page comic
 }
 
-unsigned int Viewer::getIndex()
+int Viewer::getIndex() const
 {
     return render->getIndex() + 1;
 }
 
-int Viewer::getCurrentPageNumber()
+int Viewer::getCurrentPageNumber() const
 {
     return render->getIndex();
 }

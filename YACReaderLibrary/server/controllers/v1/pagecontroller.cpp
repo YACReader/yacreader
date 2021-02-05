@@ -33,7 +33,7 @@ void PageController::service(HttpRequest &request, HttpResponse &response)
     QStringList pathElements = path.split('/');
     QString libraryName = DBHelper::getLibraryName(pathElements.at(2).toInt());
     qulonglong comicId = pathElements.at(4).toULongLong();
-    unsigned int page = pathElements.at(6).toUInt();
+    const int page = pathElements.at(6).toInt();
 
     //qDebug("lib name : %s",pathElements.at(2).data());
 

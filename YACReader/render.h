@@ -134,6 +134,9 @@ public:
     Render();
     ~Render() override;
 
+    int getIndex() const;
+    int numPages() const;
+
 public slots:
     void render();
     QPixmap *getCurrentPage();
@@ -150,7 +153,7 @@ public slots:
     void setComic(Comic *c);
     void prepareAvailablePage(int page);
     void update();
-    void setNumPages(unsigned int numPages);
+    void setNumPages(int numPages);
     void pageRawDataReady(int page);
     //--comic interface
     void nextPage();
@@ -165,8 +168,6 @@ public slots:
     void startLoad();
     void rotateRight();
     void rotateLeft();
-    unsigned int getIndex();
-    unsigned int numPages();
     bool hasLoadedComic();
     void updateBuffer();
     void fillBuffer();
@@ -189,7 +190,7 @@ signals:
     void imageLoaded(int index);
     void imageLoaded(int index, const QByteArray &image);
     void pageChanged(int index);
-    void numPages(unsigned int numPages);
+    void numPagesChanged(int numPages);
     void errorOpening();
     void errorOpening(QString);
     void crcError(QString);

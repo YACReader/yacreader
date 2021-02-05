@@ -23,7 +23,7 @@ private:
     void setupUI();
 public slots:
     void goTo();
-    void setNumPages(unsigned int numPages);
+    void setNumPages(int numPages);
     void open() override;
 signals:
     void goToPage(unsigned int page);

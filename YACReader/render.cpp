@@ -633,7 +633,7 @@ void Render::prepareAvailablePage(int page)
         }
     } else {
         //check for last page in double page mode
-        if ((currentIndex == page) && (currentIndex + 1) >= (int)comic->numPages()) {
+        if (currentIndex == page && currentIndex + 1 >= comic->numPages()) {
             emit currentPageReady();
         } else if ((currentIndex == page && !buffer[currentPageBufferedIndex + 1]->isNull()) ||
                    (currentIndex + 1 == page && !buffer[currentPageBufferedIndex]->isNull())) {
@@ -718,8 +718,8 @@ void Render::createComic(const QString &path)
     connect(comic, SIGNAL(imageLoaded(int)), this, SLOT(pageRawDataReady(int)), Qt::QueuedConnection);
     connect(comic, SIGNAL(imageLoaded(int)), this, SIGNAL(imageLoaded(int)), Qt::QueuedConnection);
     connect(comic, SIGNAL(openAt(int)), this, SLOT(renderAt(int)), Qt::QueuedConnection);
-    connect(comic, SIGNAL(numPages(unsigned int)), this, SIGNAL(numPages(unsigned int)), Qt::QueuedConnection);
-    connect(comic, SIGNAL(numPages(unsigned int)), this, SLOT(setNumPages(unsigned int)), Qt::QueuedConnection);
+    connect(comic, &Comic::numPagesChanged, this, &Render::numPagesChanged, Qt::QueuedConnection);
+    connect(comic, &Comic::numPagesChanged, this, &Render::setNumPages, Qt::QueuedConnection);
     connect(comic, SIGNAL(imageLoaded(int, QByteArray)), this, SIGNAL(imageLoaded(int, QByteArray)), Qt::QueuedConnection);
     connect(comic, SIGNAL(isBookmark(bool)), this, SIGNAL(currentPageIsBookmark(bool)), Qt::QueuedConnection);
 
@@ -786,14 +786,14 @@ void Render::nextPage()
         currentIndex = nextPage;
         update();
         emit pageChanged(currentIndex);
-    } else if (hasLoadedComic() && ((unsigned int)currentIndex == numPages() - 1)) {
+    } else if (hasLoadedComic() && currentIndex == numPages() - 1) {
         emit isLast();
     }
 }
 void Render::nextDoublePage()
 {
     int nextPage;
-    if (currentIndex + 2 < (int)comic->numPages()) {
+    if (currentIndex + 2 < comic->numPages()) {
         nextPage = currentIndex + 2;
     } else {
         nextPage = currentIndex;
@@ -804,7 +804,7 @@ void Render::nextDoublePage()
         currentIndex = nextPage;
         update();
         emit pageChanged(currentIndex);
-    } else if (hasLoadedComic() && ((unsigned int)currentIndex >= numPages() - 2)) {
+    } else if (hasLoadedComic() && currentIndex >= numPages() - 2) {
         emit isLast();
     }
 }
@@ -840,11 +840,11 @@ void Render::previousDoublePage()
     }
 }
 
-unsigned int Render::getIndex()
+int Render::getIndex() const
 {
     return comic->getIndex();
 }
-unsigned int Render::numPages()
+int Render::numPages() const
 {
     return comic->numPages();
 }
@@ -856,7 +856,7 @@ bool Render::hasLoadedComic()
     return false;
 }
 
-void Render::setNumPages(unsigned int numPages)
+void Render::setNumPages(int numPages)
 {
     pagesReady.fill(false, numPages);
 }
@@ -977,7 +977,7 @@ void Render::fillBuffer()
     }
 
     for (int i = 1; i <= qMax(numLeftPages, numRightPages); i++) {
-        if ((currentIndex + i < (int)comic->numPages()) &&
+        if (currentIndex + i < comic->numPages() &&
             buffer[currentPageBufferedIndex + i]->isNull() &&
             i <= numRightPages &&
             pageRenders[currentPageBufferedIndex + i] == 0 &&
@@ -1049,7 +1049,7 @@ void Render::doubleMangaPageSwitch()
 QString Render::getCurrentPagesInformation()
 {
     QString s = QString::number(currentIndex + 1);
-    if (doublePage && (currentIndex + 1 < (int)comic->numPages())) {
+    if (doublePage && currentIndex + 1 < comic->numPages()) {
         if (currentPageIsDoublePage()) {
             if (doubleMangaPage)
                 s = QString::number(currentIndex + 2) + "-" + s;
