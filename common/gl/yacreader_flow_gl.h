@@ -36,8 +36,6 @@ struct YACReader3DImage {
     float width;
     float height;
 
-    int index;
-
     YACReader3DVector current;
     YACReader3DVector animEnd;
 };
@@ -112,7 +110,7 @@ protected:
     void calcVector(YACReader3DVector &vector, int pos);
     //returns true if the animation is finished for Current
     bool animate(YACReader3DVector &currentVector, YACReader3DVector &toVector);
-    void drawCover(const YACReader3DImage &image);
+    void drawCover(int index);
 
     void udpatePerspective(int width, int height);
 

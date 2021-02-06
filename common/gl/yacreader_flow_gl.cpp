@@ -425,8 +425,10 @@ bool YACReaderFlowGL::animate(YACReader3DVector &currentVector, YACReader3DVecto
 
     return false;
 }
-void YACReaderFlowGL::drawCover(const YACReader3DImage &image)
+void YACReaderFlowGL::drawCover(int index)
 {
+    const YACReader3DImage &image = images[index];
+
     float w = image.width;
     float h = image.height;
 
@@ -507,9 +509,9 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage &image)
     glEnd();
     glDisable(GL_TEXTURE_2D);
 
-    if (showMarks && loaded[image.index] && marks[image.index] != Unread) {
+    if (showMarks && loaded[index] && marks[index] != Unread) {
         glEnable(GL_TEXTURE_2D);
-        if (marks[image.index] == Read)
+        if (marks[index] == Read)
             markTexture->bind();
         else
             readingTexture->bind();
@@ -551,25 +553,15 @@ void YACReaderFlowGL::cleanupAnimation()
 
 void YACReaderFlowGL::draw()
 {
-    int CS = currentSelected;
-    int count;
-
+    const int CS = currentSelected;
     //Draw right Covers
-    for (count = numObjects - 1; count > -1; count--) {
-        if (count > CS) {
-            drawCover(images[count]);
-        }
-    }
-
+    for (int i = numObjects - 1; i > CS; --i)
+        drawCover(i);
     //Draw left Covers
-    for (count = 0; count < numObjects - 1; count++) {
-        if (count < CS) {
-            drawCover(images[count]);
-        }
-    }
-
+    for (int i = 0; i < CS; ++i)
+        drawCover(i);
     //Draw Center Cover
-    drawCover(images[CS]);
+    drawCover(CS);
 }
 
 void YACReaderFlowGL::showPrevious()
@@ -690,7 +682,6 @@ void YACReaderFlowGL::insert(const char *name, QOpenGLTexture *texture, float x,
     images[item].texture = texture;
     images[item].width = x;
     images[item].height = y;
-    images[item].index = item;
     //strcpy(cfImages[item].name,name);
 }
 
@@ -710,11 +701,7 @@ void YACReaderFlowGL::remove(int item)
     }
 
     QOpenGLTexture *texture = images[item].texture;
-
-    for (int i = item + 1; i < numObjects; ++i)
-        --images[i].index;
     images.removeAt(item);
-
     if (texture != defaultTexture)
         delete (texture);
 
@@ -732,13 +719,10 @@ void YACReaderFlowGL::replace(char *name, QOpenGLTexture *texture, float x, floa
     startAnimationTimer();
 
     Q_UNUSED(name)
-    if (images[item].index == item) {
-        images[item].texture = texture;
-        images[item].width = x;
-        images[item].height = y;
-        loaded[item] = true;
-    } else
-        loaded[item] = false;
+    images[item].texture = texture;
+    images[item].width = x;
+    images[item].height = y;
+    loaded[item] = true;
 }
 
 void YACReaderFlowGL::populate(int n)
@@ -1241,13 +1225,11 @@ void YACReaderComicFlowGL::resortCovers(QList<int> newOrder)
     QVector<YACReaderComicReadStatus> marksNew;
     QVector<YACReader3DImage> imagesNew;
 
-    int index = 0;
     foreach (int i, newOrder) {
         pathsNew << paths.at(i);
         loadedNew << loaded.at(i);
         marksNew << marks.at(i);
         imagesNew << images.at(i);
-        imagesNew.last().index = index++;
     }
 
     paths = pathsNew;
