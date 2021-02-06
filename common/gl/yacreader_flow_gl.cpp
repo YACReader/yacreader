@@ -1303,7 +1303,6 @@ void YACReaderPageFlowGL::updateImageData()
             float y = 1 * (float(img.height()) / img.width());
             QString s = "cover";
             replace(s.toLocal8Bit().data(), texture, x, y, idx);
-            loaded[idx] = true;
         }
     }
 
