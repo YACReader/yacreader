@@ -25,7 +25,7 @@ signals:
 private:
     ConcurrentQueue querySearchQueue;
 
-    QList<ComicItem *> *modelData(QSqlQuery &sqlquery);
+    static QList<ComicItem *> *modelData(QSqlQuery &sqlquery);
 };
 };
 
