@@ -3,6 +3,7 @@
 #include <QVariant>
 #include <type_traits>
 #include <numeric>
+#include <stdexcept>
 
 const std::map<QueryParser::FieldType, std::vector<std::string>> QueryParser::fieldNames {
     { FieldType::numeric, { "numpages", "number", "count", "arcnumber", "arccount" } },
