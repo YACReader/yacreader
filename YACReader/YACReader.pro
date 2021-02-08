@@ -12,10 +12,6 @@ DEFINES += NOMINMAX YACREADER
 include (../config.pri)
 include (../dependencies/pdf_backend.pri)
 
-unix:!macx{
-    QMAKE_CXXFLAGS += -std=c++11
-}
-
 unix:haiku {
   DEFINES += _BSD_SOURCE
   LIBS    += -lnetwork -lbsd

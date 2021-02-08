@@ -2,6 +2,8 @@
 # default values if they're not set on build time
 # for a more detailed description, see INSTALL.TXT
 
+CONFIG += c++11
+
 # check Qt version
 QT_VERSION = $$[QT_VERSION]
 QT_VERSION = $$split(QT_VERSION, ".")
