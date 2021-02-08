@@ -45,7 +45,8 @@ public:
 
     void cancellPending()
     {
-        std::unique_lock<std::mutex> lock(queueMutex);
+        std::unique_lock<std::mutex> lockQueue(queueMutex);
+        std::unique_lock<std::mutex> lockJobsLeft(jobsLeftMutex);
         _queue = std::queue<std::function<void(void)>>();
         jobsLeft = 0;
     }
