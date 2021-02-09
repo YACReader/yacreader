@@ -16,7 +16,7 @@ class GoToFlowGL : public GoToFlowWidget
 {
     Q_OBJECT
 public:
-    GoToFlowGL(QWidget *parent = nullptr, FlowType flowType = CoverFlowLike);
+    explicit GoToFlowGL(QWidget *parent = nullptr, FlowType flowType = CoverFlowLike);
     ~GoToFlowGL() override;
     void reset() override;
     void centerSlide(int slide) override;
@@ -24,7 +24,7 @@ public:
     void setNumSlides(unsigned int slides) override;
     void setImageReady(int index, const QByteArray &image) override;
 
-    void updateConfig(QSettings *settings);
+    void updateConfig(QSettings *settings) override;
     void setFlowRightToLeft(bool b) override;
 
 signals:

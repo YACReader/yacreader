@@ -15,7 +15,7 @@ class YACReaderGLFlowConfigWidget : public QWidget
 {
     Q_OBJECT
 public:
-    YACReaderGLFlowConfigWidget(QWidget *parent = 0);
+    explicit YACReaderGLFlowConfigWidget(QWidget *parent = nullptr);
 
     //GL.........................
     QRadioButton *radioClassic;

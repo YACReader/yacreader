@@ -24,7 +24,7 @@ private:
     void paintEvent(QPaintEvent *) override;
 
 public:
-    GoToFlowToolBar(QWidget *parent = nullptr);
+    explicit GoToFlowToolBar(QWidget *parent = nullptr);
 
 public slots:
     void setPage(int pageNumber);

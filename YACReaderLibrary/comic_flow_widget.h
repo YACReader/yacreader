@@ -12,7 +12,7 @@ class ComicFlowWidget : public QWidget
 {
     Q_OBJECT
 public:
-    ComicFlowWidget(QWidget *paret = nullptr);
+    explicit ComicFlowWidget(QWidget *paret = nullptr);
 
 public slots:
     virtual void setShowMarks(bool value) = 0;
@@ -44,7 +44,7 @@ private:
     ComicFlow *flow;
 
 public:
-    ComicFlowWidgetSW(QWidget *parent = nullptr);
+    explicit ComicFlowWidgetSW(QWidget *parent = nullptr);
 
     void setShowMarks(bool value) override;
     void setMarks(QVector<YACReaderComicReadStatus> marks) override;
@@ -56,7 +56,7 @@ public:
     void setImagePaths(QStringList paths) override;
     void setCenterIndex(int index) override;
     void showSlide(int index) override;
-    int centerIndex();
+    int centerIndex() override;
     void updateMarks() override;
     void setFlowType(FlowType flowType) override;
     void render() override;
@@ -70,7 +70,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
-    QSize minimumSizeHint() const;
+    QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
     QSize slideSizeW;
     QSize slideSizeF;
@@ -84,7 +84,7 @@ private:
     YACReaderComicFlowGL *flow;
 
 public:
-    ComicFlowWidgetGL(QWidget *parent = nullptr);
+    explicit ComicFlowWidgetGL(QWidget *parent = nullptr);
 
     void setShowMarks(bool value) override;
     void setMarks(QVector<YACReaderComicReadStatus> marks) override;
@@ -96,7 +96,7 @@ public:
     void setImagePaths(QStringList paths) override;
     void setCenterIndex(int index) override;
     void showSlide(int index) override;
-    int centerIndex();
+    int centerIndex() override;
     void updateMarks() override;
     void setFlowType(FlowType flowType) override;
     void render() override;

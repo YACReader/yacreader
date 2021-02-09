@@ -31,7 +31,7 @@ class GoToFlow : public GoToFlowWidget
 {
     Q_OBJECT
 public:
-    GoToFlow(QWidget *parent = nullptr, FlowType flowType = CoverFlowLike);
+    explicit GoToFlow(QWidget *parent = nullptr, FlowType flowType = CoverFlowLike);
     ~GoToFlow() override;
     bool ready; //comic is ready for read.
 private:

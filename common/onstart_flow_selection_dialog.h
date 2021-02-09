@@ -7,7 +7,7 @@ class OnStartFlowSelectionDialog : public QDialog
 {
     Q_OBJECT
 public:
-    OnStartFlowSelectionDialog(QWidget *parent = 0);
+    explicit OnStartFlowSelectionDialog(QWidget *parent = nullptr);
 };
 
 #endif
