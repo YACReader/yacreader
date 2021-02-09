@@ -1,7 +1,7 @@
 #ifndef SCROLLMANAGAMENT_H
 #define SCROLLMANAGAMENT_H
 
-#include <QTime>
+#include <QElapsedTimer>
 #include <QWheelEvent>
 
 class ScrollManagement
@@ -18,7 +18,7 @@ public:
     ~ScrollManagement();
 
 private:
-    QTime *wheelTimer;
+    QElapsedTimer wheelTimer;
     int wheelAccumulator;
 };
 

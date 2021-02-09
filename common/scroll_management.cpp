@@ -2,8 +2,7 @@
 
 ScrollManagement::ScrollManagement()
 {
-    wheelTimer = new QTime();
-    wheelTimer->start();
+    wheelTimer.start();
     wheelAccumulator = 0;
 }
 
@@ -16,8 +15,10 @@ ScrollManagement::Movement ScrollManagement::getMovement(QWheelEvent *event)
     int timeThrottle = 16;
     int minimumMove = 70;
 
+    const auto elapsedMs = wheelTimer.elapsed();
+
     //avoid any events overflood
-    if ((wheelTimer->elapsed() < tooFast)) {
+    if (elapsedMs < tooFast) {
         event->setAccepted(true);
         return None;
     }
@@ -29,7 +30,7 @@ ScrollManagement::Movement ScrollManagement::getMovement(QWheelEvent *event)
     wheelAccumulator += event->delta();
 
     //Do not process events too fast
-    if ((wheelTimer->elapsed() < timeThrottle)) {
+    if (elapsedMs < timeThrottle) {
         event->setAccepted(true);
         return None;
     }
@@ -49,7 +50,7 @@ ScrollManagement::Movement ScrollManagement::getMovement(QWheelEvent *event)
     event->accept();
     //Clean up
     wheelAccumulator = 0;
-    wheelTimer->restart();
+    wheelTimer.start();
 
     return m;
 }
