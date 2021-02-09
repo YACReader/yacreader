@@ -11,9 +11,9 @@ ScrollManagement::Movement ScrollManagement::getMovement(QWheelEvent *event)
     /*QLOG_DEBUG() << "WheelEvent angle delta : " << event->angleDelta();
     QLOG_DEBUG() << "WheelEvent pixel delta : " << event->pixelDelta();*/
 
-    int tooFast = 1;
-    int timeThrottle = 16;
-    int minimumMove = 70;
+    constexpr int tooFast = 1;
+    constexpr int timeThrottle = 16;
+    constexpr int minimumMove = 70;
 
     const auto elapsedMs = wheelTimer.elapsed();
 
