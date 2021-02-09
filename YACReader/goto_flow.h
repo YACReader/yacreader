@@ -47,7 +47,6 @@ private:
     QVector<QByteArray> rawImages;
     QTimer *updateTimer;
     PageLoader *worker;
-    void wheelEvent(QWheelEvent *event) override;
     QMutex mutexGoToFlow;
 
 private slots:

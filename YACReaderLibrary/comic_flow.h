@@ -7,7 +7,6 @@
 #include <QImage>
 #include <QString>
 #include <QTimer>
-#include <QWheelEvent>
 
 #include <memory>
 
@@ -41,7 +40,6 @@ private:
     int workerIndex;
     QTimer updateTimer;
     std::unique_ptr<WorkerThread<QImage>> worker;
-    void wheelEvent(QWheelEvent *event) override;
 };
 
 #endif
