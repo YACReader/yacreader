@@ -14,7 +14,8 @@ public:
     };
 
     ScrollManagement();
-    ScrollManagement::Movement getMovement(QWheelEvent *event);
+    ScrollManagement::Movement getMovement(QWheelEvent *event,
+                                           Qt::Orientations orientations = Qt::Horizontal | Qt::Vertical);
     ~ScrollManagement();
 
 private:
