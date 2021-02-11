@@ -31,7 +31,6 @@ public:
     void toNormal() override;
     void updateConfig(QSettings *settings) override;
     void enableFilterMode(bool enabled) override;
-    QSize sizeHint();
     QByteArray getMimeDataFromSelection();
     void updateCurrentComicView() override;
     void focusComicsNavigation(Qt::FocusReason reason) override;

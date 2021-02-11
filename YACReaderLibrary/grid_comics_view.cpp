@@ -469,11 +469,6 @@ void GridComicsView::resetScroll()
     QMetaObject::invokeMethod(scrollView, "scrollToOrigin");
 }
 
-QSize GridComicsView::sizeHint()
-{
-    return QSize(1280, 768);
-}
-
 QByteArray GridComicsView::getMimeDataFromSelection()
 {
     QByteArray data;
