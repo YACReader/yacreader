@@ -766,6 +766,8 @@ Rectangle {
             }
             else if (event.key === Qt.Key_Down) {
                 ci = Math.min(grid.currentIndex+numCells,grid.count - 1);
+            } else {
+                return;
             }
 
             event.accepted = true;
