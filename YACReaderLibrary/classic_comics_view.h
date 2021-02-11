@@ -19,7 +19,7 @@ class ClassicComicsView : public ComicsView
 {
     Q_OBJECT
 public:
-    ClassicComicsView(QWidget *parent = 0);
+    explicit ClassicComicsView(QWidget *parent = nullptr);
     void setToolBar(QToolBar *toolBar) override;
     void setModel(ComicModel *model) override;
 

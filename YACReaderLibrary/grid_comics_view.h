@@ -19,8 +19,8 @@ class GridComicsView : public ComicsView
 {
     Q_OBJECT
 public:
-    explicit GridComicsView(QWidget *parent = 0);
-    virtual ~GridComicsView();
+    explicit GridComicsView(QWidget *parent = nullptr);
+    ~GridComicsView() override;
     void setToolBar(QToolBar *toolBar) override;
     void setModel(ComicModel *model) override;
     void setCurrentIndex(const QModelIndex &index) override;

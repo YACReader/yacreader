@@ -29,7 +29,7 @@ public:
     void focusComicsNavigation(Qt::FocusReason reason) override;
 
 public slots:
-    void setShowMarks(bool show);
+    void setShowMarks(bool show) override;
     void selectAll() override;
 
 protected slots:
