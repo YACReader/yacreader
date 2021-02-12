@@ -15,6 +15,9 @@ lessThan(QT_VER_MIN, 6):!CONFIG(no_opengl) {
   error ("You need at least Qt 5.6 to compile YACReader or YACReaderLibrary.")
   }
 
+# reduce log pollution
+CONFIG += silent
+
 # Disable coverflow for arm targets
 isEmpty(QMAKE_TARGET.arch) {
   QMAKE_TARGET.arch = $$QMAKE_HOST.arch
