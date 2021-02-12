@@ -1572,6 +1572,8 @@ void LibraryWindow::enableNeededActions()
 
 void LibraryWindow::addFolderToCurrentIndex()
 {
+    exitSearchMode(); // Creating a folder in search mode is broken => exit it.
+
     QModelIndex currentIndex = getCurrentFolderIndex();
 
     bool ok;
