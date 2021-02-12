@@ -34,10 +34,8 @@ void YACReaderNavigationController::selectedFolder(const QModelIndex &mi)
     // update history
     libraryWindow->historyController->updateHistory(YACReaderLibrarySourceContainer(modelIndex, YACReaderLibrarySourceContainer::Folder));
 
-    if (libraryWindow->status == LibraryWindow::Searching) {
-        // when a folder is selected the search mode has to be reset
-        libraryWindow->searchEdit->clearText();
-        libraryWindow->clearSearchFilter();
+    // when a folder is selected the search mode has to be reset
+    if (libraryWindow->exitSearchMode()) {
         libraryWindow->foldersView->scrollTo(mi, QAbstractItemView::PositionAtTop);
         libraryWindow->foldersView->setCurrentIndex(mi);
     }
@@ -182,10 +180,9 @@ void YACReaderNavigationController::selectedList(const QModelIndex &mi)
     // update history
     libraryWindow->historyController->updateHistory(YACReaderLibrarySourceContainer(modelIndex, YACReaderLibrarySourceContainer::List));
 
-    if (libraryWindow->status == LibraryWindow::Searching) {
-        // when a list is selected the search mode has to be reset
-        libraryWindow->searchEdit->clearText();
-        libraryWindow->clearSearchFilter();
+    // when a list is selected the search mode has to be reset
+    if (libraryWindow->exitSearchMode()) {
+
         libraryWindow->listsView->scrollTo(mi, QAbstractItemView::PositionAtTop);
         libraryWindow->listsView->setCurrentIndex(mi);
     }
@@ -212,12 +209,8 @@ void YACReaderNavigationController::reselectCurrentSource()
 void YACReaderNavigationController::selectedIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer)
 {
     // TODO NO searching allowed, just disable backward/forward actions in searching mode
-    if (libraryWindow->status == LibraryWindow::Searching) {
-        // when a folder is selected the search mode has to be reset
-        libraryWindow->searchEdit->clearText();
-        libraryWindow->clearSearchFilter();
-    }
-
+    // when a folder or a list is selected the search mode has to be reset
+    libraryWindow->exitSearchMode();
     loadIndexFromHistory(sourceContainer);
     libraryWindow->setToolbarTitle(sourceContainer.getSourceModelIndex());
 }

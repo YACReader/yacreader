@@ -424,6 +424,10 @@ public slots:
     void afterLaunchTasks();
 
 private:
+    //! @brief Exits search mode if it is active.
+    //! @return true If the search mode was active when this function was called.
+    bool exitSearchMode();
+
     // fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
     Qt::WindowFlags previousWindowFlags;
     QPoint previousPos;

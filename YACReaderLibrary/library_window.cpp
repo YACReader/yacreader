@@ -2726,3 +2726,12 @@ void LibraryWindow::updateComicsView(quint64 libraryId, const ComicDB &comic)
         comicsViewsManager->updateCurrentComicView();
     }
 }
+
+bool LibraryWindow::exitSearchMode()
+{
+    if (status != LibraryWindow::Searching)
+        return false;
+    searchEdit->clearText();
+    clearSearchFilter();
+    return true;
+}
