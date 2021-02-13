@@ -219,6 +219,7 @@ void YACReaderNavigationController::selectedIndexFromHistory(const YACReaderLibr
     }
 
     loadIndexFromHistory(sourceContainer);
+    libraryWindow->setToolbarTitle(sourceContainer.getSourceModelIndex());
 }
 
 void YACReaderNavigationController::loadIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer)
@@ -240,6 +241,7 @@ void YACReaderNavigationController::loadIndexFromHistory(const YACReaderLibraryS
         break;
     }
     case YACReaderLibrarySourceContainer::None:
+        QLOG_ERROR() << "Cannot load a source container of type None";
         break;
     }
 }
