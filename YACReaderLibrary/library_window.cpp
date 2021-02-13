@@ -1481,6 +1481,14 @@ void LibraryWindow::reloadAfterCopyMove(const QModelIndex &mi)
     enableNeededActions();
 }
 
+void LibraryWindow::reloadComicsView()
+{
+    if (status == LibraryWindow::Searching)
+        setSearchFilter(lastSearchModifiers, lastSearchFilter);
+    else
+        navigationController->loadPreviousStatus(YACReaderNavigationController::LoadScope::ComicsView);
+}
+
 QModelIndex LibraryWindow::getCurrentFolderIndex()
 {
     if (foldersView->selectionModel()->selectedRows().length() > 0)
@@ -2165,12 +2173,14 @@ void LibraryWindow::toNormal()
 
 void LibraryWindow::setSearchFilter(const YACReader::SearchModifiers modifier, QString filter)
 {
+    lastSearchModifiers = modifier;
+    lastSearchFilter = filter;
     if (!filter.isEmpty()) {
         folderQueryResultProcessor->createModelData(modifier, filter, true);
         comicQueryResultProcessor.createModelData(modifier, filter, foldersModel->getDatabase());
     } else if (status == LibraryWindow::Searching) { //if no searching, then ignore this
         clearSearchFilter();
-        navigationController->loadPreviousStatus();
+        navigationController->loadPreviousStatus(YACReaderNavigationController::LoadScope::ComicsViewAndSideBar);
     }
 }
 
@@ -2295,7 +2305,7 @@ void LibraryWindow::asignNumbers()
     qint64 edited = comicsModel->asignNumbers(indexList, startingNumber);
 
     //TODO add resorting without reloading
-    navigationController->loadFolderInfo(foldersModelProxy->mapToSource(foldersView->currentIndex()));
+    reloadComicsView();
 
     const QModelIndex &mi = comicsModel->getIndexFromId(edited);
     if (mi.isValid()) {

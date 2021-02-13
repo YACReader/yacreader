@@ -218,25 +218,29 @@ void YACReaderNavigationController::selectedIndexFromHistory(const YACReaderLibr
         libraryWindow->clearSearchFilter();
     }
 
-    loadIndexFromHistory(sourceContainer);
+    loadIndexFromHistory(sourceContainer, LoadScope::ComicsViewAndSideBar);
     libraryWindow->setToolbarTitle(sourceContainer.getSourceModelIndex());
 }
 
-void YACReaderNavigationController::loadIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer)
+void YACReaderNavigationController::loadIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer, LoadScope scope)
 {
     QModelIndex sourceMI = sourceContainer.getSourceModelIndex();
     switch (sourceContainer.getType()) {
     case YACReaderLibrarySourceContainer::Folder: {
-        QModelIndex mi = libraryWindow->foldersModelProxy->mapFromSource(sourceMI);
-        libraryWindow->foldersView->scrollTo(mi, QAbstractItemView::PositionAtTop);
-        libraryWindow->foldersView->setCurrentIndex(mi);
+        if (scope == LoadScope::ComicsViewAndSideBar) {
+            QModelIndex mi = libraryWindow->foldersModelProxy->mapFromSource(sourceMI);
+            libraryWindow->foldersView->scrollTo(mi, QAbstractItemView::PositionAtTop);
+            libraryWindow->foldersView->setCurrentIndex(mi);
+        }
         loadFolderInfo(sourceMI);
         break;
     }
     case YACReaderLibrarySourceContainer::List: {
-        QModelIndex mi = libraryWindow->listsModelProxy->mapFromSource(sourceMI);
-        libraryWindow->listsView->scrollTo(mi, QAbstractItemView::PositionAtTop);
-        libraryWindow->listsView->setCurrentIndex(mi);
+        if (scope == LoadScope::ComicsViewAndSideBar) {
+            QModelIndex mi = libraryWindow->listsModelProxy->mapFromSource(sourceMI);
+            libraryWindow->listsView->scrollTo(mi, QAbstractItemView::PositionAtTop);
+            libraryWindow->listsView->setCurrentIndex(mi);
+        }
         loadListInfo(sourceMI);
         break;
     }
@@ -261,10 +265,9 @@ void YACReaderNavigationController::loadEmptyFolderInfo(const QModelIndex &model
     comicsViewsManager->emptyFolderWidget->setSubfolders(modelIndex, subfolders);
 }
 
-void YACReaderNavigationController::loadPreviousStatus()
+void YACReaderNavigationController::loadPreviousStatus(LoadScope scope)
 {
-    YACReaderLibrarySourceContainer sourceContainer = libraryWindow->historyController->currentSourceContainer();
-    loadIndexFromHistory(sourceContainer);
+    loadIndexFromHistory(libraryWindow->historyController->currentSourceContainer(), scope);
 }
 
 void YACReaderNavigationController::setupConnections()

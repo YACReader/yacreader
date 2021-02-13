@@ -387,6 +387,7 @@ public slots:
     void updateFolder(const QModelIndex &miFolder);
     QProgressDialog *newProgressDialog(const QString &label, int maxValue);
     void reloadAfterCopyMove(const QModelIndex &mi);
+    void reloadComicsView();
     QModelIndex getCurrentFolderIndex();
     void enableNeededActions();
     void addFolderToCurrentIndex();
@@ -412,6 +413,9 @@ public slots:
     void afterLaunchTasks();
 
 private:
+    YACReader::SearchModifiers lastSearchModifiers;
+    QString lastSearchFilter;
+
     //fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
     Qt::WindowFlags previousWindowFlags;
     QPoint previousPos;
