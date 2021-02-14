@@ -413,15 +413,15 @@ void LibraryWindow::setUpShortcutsManagement()
 void LibraryWindow::doModels()
 {
     //folders
-    foldersModel = new FolderModel();
-    foldersModelProxy = new FolderModelProxy();
+    foldersModel = new FolderModel(this);
+    foldersModelProxy = new FolderModelProxy(this);
     folderQueryResultProcessor.reset(new FolderQueryResultProcessor(foldersModel));
     //foldersModelProxy->setSourceModel(foldersModel);
     //comics
     comicsModel = new ComicModel(this);
     //lists
-    listsModel = new ReadingListModel();
-    listsModelProxy = new ReadingListModelProxy();
+    listsModel = new ReadingListModel(this);
+    listsModelProxy = new ReadingListModelProxy(this);
 
     //setSearchFilter(YACReader::NoModifiers, ""); //clear search filter
 }
