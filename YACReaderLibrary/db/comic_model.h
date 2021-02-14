@@ -64,8 +64,8 @@ public:
     };
 
 public:
-    ComicModel(QObject *parent = 0);
-    ComicModel(QSqlQuery &sqlquery, QObject *parent = 0);
+    explicit ComicModel(QObject *parent = nullptr);
+    explicit ComicModel(QSqlQuery &sqlquery, QObject *parent = nullptr);
     ~ComicModel() override;
 
     QVariant data(const QModelIndex &index, int role) const override;
@@ -75,13 +75,13 @@ public:
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex parent(const QModelIndex &index) const override;
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     bool canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const override;
     bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) override;
     bool canBeResorted();
-    QMimeData *mimeData(const QModelIndexList &indexes) const;
-    QStringList mimeTypes() const;
+    QMimeData *mimeData(const QModelIndexList &indexes) const override;
+    QStringList mimeTypes() const override;
 
     void setupFolderModelData(unsigned long long int parentFolder, const QString &databasePath);
     void setupLabelModelData(unsigned long long int parentLabel, const QString &databasePath);
