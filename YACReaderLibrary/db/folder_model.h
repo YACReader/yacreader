@@ -17,7 +17,7 @@ class FolderModelProxy : public QSortFilterProxyModel
 {
     Q_OBJECT
 public:
-    explicit FolderModelProxy(QObject *parent = 0);
+    explicit FolderModelProxy(QObject *parent = nullptr);
     ~FolderModelProxy() override;
 
     void setFilterData(QMap<unsigned long long, FolderItem *> *filteredItems, FolderItem *root);
@@ -42,8 +42,8 @@ class FolderModel : public QAbstractItemModel
     friend class YACReader::FolderQueryResultProcessor;
 
 public:
-    FolderModel(QObject *parent = 0);
-    FolderModel(QSqlQuery &sqlquery, QObject *parent = 0);
+    explicit FolderModel(QObject *parent = nullptr);
+    explicit FolderModel(QSqlQuery &sqlquery, QObject *parent = nullptr);
     ~FolderModel() override;
 
     //QAbstractItemModel methods
