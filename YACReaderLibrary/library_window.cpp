@@ -2532,11 +2532,14 @@ QModelIndexList LibraryWindow::getSelectedComics()
 
 void LibraryWindow::deleteComics()
 {
-    //TODO
-    if (!listsView->selectionModel()->selectedRows().isEmpty()) {
-        deleteComicsFromList();
-    } else {
+    switch (currentSourceType()) {
+    case YACReaderLibrarySourceContainer::None:
+    case YACReaderLibrarySourceContainer::Folder:
         deleteComicsFromDisk();
+        break;
+    case YACReaderLibrarySourceContainer::List:
+        deleteComicsFromList();
+        break;
     }
 }
 
@@ -2676,4 +2679,14 @@ void LibraryWindow::updateComicsView(quint64 libraryId, const ComicDB &comic)
         comicsModel->reload(comic);
         comicsViewsManager->updateCurrentComicView();
     }
+}
+
+YACReaderLibrarySourceContainer::SourceType LibraryWindow::currentSourceType() const
+{
+    if (status == LibraryWindow::Searching)
+        return YACReaderLibrarySourceContainer::None;
+    auto type = historyController->currentSourceContainer().getType();
+    Q_ASSERT_X(type != YACReaderLibrarySourceContainer::None, Q_FUNC_INFO,
+               "History controller does not store search states.");
+    return type;
 }
