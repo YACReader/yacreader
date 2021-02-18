@@ -1100,10 +1100,10 @@ void LibraryWindow::createConnections()
     connect(importComicsInfoAction, SIGNAL(triggered()), this, SLOT(showImportComicsInfo()));
 
     //properties & config
-    connect(propertiesDialog, SIGNAL(accepted()), navigationController, SLOT(reselectCurrentSource()));
+    connect(propertiesDialog, &QDialog::accepted, this, &LibraryWindow::reloadComicsView);
 
     //comic vine
-    connect(comicVineDialog, SIGNAL(accepted()), navigationController, SLOT(reselectCurrentSource()), Qt::QueuedConnection);
+    connect(comicVineDialog, &QDialog::accepted, this, &LibraryWindow::reloadComicsView, Qt::QueuedConnection);
 
     connect(updateLibraryAction, SIGNAL(triggered()), this, SLOT(updateLibrary()));
     connect(renameLibraryAction, SIGNAL(triggered()), this, SLOT(renameLibrary()));
@@ -1817,7 +1817,7 @@ void LibraryWindow::checkEmptyFolder()
             toggleFullScreenAction->setEnabled(true);
 #endif
         if (comicsModel->rowCount() == 0)
-            navigationController->reselectCurrentFolder();
+            reloadComicsView();
     }
 }
 
