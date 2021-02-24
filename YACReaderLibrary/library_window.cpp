@@ -2165,10 +2165,13 @@ void LibraryWindow::setComicSearchFilterData(QList<ComicItem *> *data, const QSt
     comicsViewsManager->comicsView->enableFilterMode(true);
     comicsViewsManager->comicsView->setModel(comicsModel); //TODO, columns are messed up after ResetModel some times, this shouldn't be necesary
 
-    if (comicsModel->rowCount() == 0)
+    if (comicsModel->rowCount() == 0) {
         comicsViewsManager->showNoSearchResultsView();
-    else
+        disableComicsActions(true);
+    } else {
         comicsViewsManager->showComicsView();
+        disableComicsActions(false);
+    }
 }
 
 void LibraryWindow::setFolderSearchFilterData(QMap<unsigned long long, FolderItem *> *filteredItems, FolderItem *root)
