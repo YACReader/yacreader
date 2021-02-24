@@ -858,6 +858,9 @@ bool Render::hasLoadedComic()
 
 void Render::setNumPages(unsigned int numPages)
 {
+    if (sender() != comic) {
+        return;
+    }
     pagesReady.fill(false, numPages);
 }
 
