@@ -1,6 +1,7 @@
 #include "volumes_model.h"
 
-#include <QtScript>
+#include <QJsonDocument>
+#include <QJsonParseError>
 
 VolumesModel::VolumesModel(QObject *parent)
     : JSONModel(parent)
@@ -14,34 +15,33 @@ VolumesModel::~VolumesModel()
 
 void VolumesModel::load(const QString &json)
 {
-    QScriptEngine engine;
-    QScriptValue sc;
-    sc = engine.evaluate("(" + json + ")");
+    QJsonParseError Err;
+    QVariantMap sc = QJsonDocument::fromJson(json.toUtf8(), &Err).toVariant().toMap();
 
-    if (!sc.property("error").isValid() && sc.property("error").toString() != "OK") {
+    if (Err.error != QJsonParseError::NoError) {
         qDebug("Error detected");
-    } else {
-        int numResults = sc.property("number_of_total_results").toString().toInt(); //fix to weird behaviour using hasNext
-        QScriptValueIterator it(sc.property("results"));
-        bool test;
-        QScriptValue resultsValue;
-        while (it.hasNext()) {
-            it.next();
-            resultsValue = it.value();
-            QString numIssues = resultsValue.property("count_of_issues").toString();
-            QString year = resultsValue.property("start_year").toString();
-            QString name = resultsValue.property("name").toString();
-            QString publisher = resultsValue.property("publisher").property("name").toString();
-            QString url = resultsValue.property("image").property("medium_url").toString();
-            QString deck = resultsValue.property("deck").toString();
-            QString id = resultsValue.property("id").toString();
-            QStringList l;
-            l << name << year << numIssues << publisher << url << deck << id;
-            test = name.isEmpty() && year.isEmpty() && numIssues.isEmpty() && url.isEmpty();
-            if (numResults > 0 && !test)
-                _data.push_back(l);
-            numResults--;
-        }
+        return;
+    }
+
+    int numResults = sc.value("number_of_total_results").toInt(); //fix to weird behaviour using hasNext
+    QListIterator<QVariant> it(sc.value("results").toList());
+    bool test;
+    QVariantMap resultsValue;
+    while (it.hasNext()) {
+        resultsValue = it.next().toMap();
+        QString numIssues = resultsValue.value("count_of_issues").toString();
+        QString year = resultsValue.value("start_year").toString();
+        QString name = resultsValue.value("name").toString();
+        QString publisher = resultsValue.value("publisher").toMap().value("name").toString();
+        QString url = resultsValue.value("image").toMap().value("medium_url").toString();
+        QString deck = resultsValue.value("deck").toString();
+        QString id = resultsValue.value("id").toString();
+        QStringList l;
+        l << name << year << numIssues << publisher << url << deck << id;
+        test = name.isEmpty() && year.isEmpty() && numIssues.isEmpty() && url.isEmpty();
+        if (numResults > 0 && !test)
+            _data.push_back(l);
+        numResults--;
     }
 }
 

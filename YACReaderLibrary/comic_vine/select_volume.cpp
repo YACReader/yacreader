@@ -1,19 +1,19 @@
 #include "select_volume.h"
 
-#include <QLabel>
-#include <QVBoxLayout>
+#include <QDesktopServices>
 #include <QHBoxLayout>
-#include <QScrollBar>
+#include <QHeaderView>
+#include <QJsonDocument>
+#include <QJsonParseError>
+#include <QLabel>
 #include <QModelIndex>
 #include <QScrollArea>
-#include <QDesktopServices>
-#include <QHeaderView>
-#include <QToolButton>
+#include <QScrollBar>
 #include <QSortFilterProxyModel>
+#include <QToolButton>
+#include <QVBoxLayout>
 
 #include "scraper_tableview.h"
-
-#include <QtScript>
 
 #include "volumes_model.h"
 #include "comic_vine_client.h"
@@ -149,18 +149,17 @@ void SelectVolume::setCover(const QByteArray &data)
 
 void SelectVolume::setDescription(const QString &jsonDetail)
 {
-    QScriptEngine engine;
-    QScriptValue sc;
-    sc = engine.evaluate("(" + jsonDetail + ")");
+    QJsonParseError Err;
+    QVariantMap sc = QJsonDocument::fromJson(jsonDetail.toUtf8(), &Err).toVariant().toMap();
 
-    if (!sc.property("error").isValid() && sc.property("error").toString() != "OK") {
+    if (Err.error != QJsonParseError::NoError) {
         qDebug("Error detected");
-    } else {
-
-        QScriptValue descriptionValues = sc.property("results").property("description");
-        bool valid = !descriptionValues.isNull() && descriptionValues.isValid();
-        detailLabel->setText(valid ? descriptionValues.toString().replace("<a", "<a style = 'color:#827A68; text-decoration:none;'") : tr("description unavailable"));
+        return;
     }
+
+    QVariant descriptionValues = sc.value("results").toMap().value("description");
+    bool valid = !descriptionValues.isNull() && descriptionValues.isValid();
+    detailLabel->setText(valid ? descriptionValues.toString().replace("<a", "<a style = 'color:#827A68; text-decoration:none;'") : tr("description unavailable"));
 }
 
 QString SelectVolume::getSelectedVolumeId()

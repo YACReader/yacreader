@@ -1,21 +1,22 @@
 #include "comic_vine_dialog.h"
-#include <QtWidgets>
-#include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QPushButton>
-#include <QStackedWidget>
-#include <QRadioButton>
 #include <QMessageBox>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QStackedWidget>
 #include <QTableView>
+#include <QVBoxLayout>
+#include <QtWidgets>
 #if QT_VERSION >= 0x050000
 #include <QtConcurrent/QtConcurrentRun>
 #else
 #include <QtConcurrentRun>
 #endif
-#include <QSqlDatabase>
-#include <QtScript>
 #include "data_base_management.h"
+#include <QJsonDocument>
+#include <QJsonParseError>
+#include <QSqlDatabase>
 
 #include "yacreader_busy_widget.h"
 #include "comic_vine_client.h"
@@ -488,138 +489,114 @@ void ComicVineDialog::getComicInfo(const QString &comicId, int count, const QStr
 
 ComicDB ComicVineDialog::parseComicInfo(ComicDB &comic, const QString &json, int count, const QString &publisher)
 {
-    QScriptEngine engine;
-    QScriptValue sc;
-    sc = engine.evaluate("(" + json + ")");
+    QJsonParseError Err;
 
-    if (!sc.property("error").isValid() && sc.property("error").toString() != "OK") {
+    QVariantMap sc = QJsonDocument::fromJson(json.toUtf8(), &Err).toVariant().toMap();
+    if (Err.error != QJsonParseError::NoError) {
         qDebug("Error detected");
-    } else {
-        int numResults = sc.property("number_of_total_results").toString().toInt(); //fix to weird behaviour using hasNext
+        return comic;
+    }
 
-        if (numResults > 0) {
-            QScriptValue result = sc.property("results");
+    int numResults = sc.value("number_of_total_results").toInt(); //fix to weird behaviour using hasNext
 
-            if (!result.property("name").isNull()) {
-                QString title = result.property("name").toString();
+    if (numResults > 0) {
+        QVariantMap result = sc.value("results").toMap();
+        comic.info.title = result.value("name");
+        comic.info.number = result.value("issue_number");
+        comic.info.volume = result.value("volume").toMap().value("name");
 
-                comic.info.title = title;
-            }
+        if (result.contains("person_credits") && !result.value("person_credits").isNull()) {
+            QMap<QString, QString> authors = getAuthors(result.value("person_credits"));
 
-            if (!result.property("issue_number").isNull()) {
-                QString number = result.property("issue_number").toString();
+            QString writer = QStringList(authors.values("writer")).join("\n");
+            QString penciller = QStringList(authors.values("penciller")).join("\n");
+            QString inker = QStringList(authors.values("inker")).join("\n");
+            QString colorist = QStringList(authors.values("colorist")).join("\n");
+            QString letterer = QStringList(authors.values("letterer")).join("\n");
+            QString coverArtist = QStringList(authors.values("cover")).join("\n");
 
-                comic.info.number = number;
-            }
-
-            if (!result.property("volume").property("name").isNull()) {
-                QString volume = result.property("volume").property("name").toString();
-
-                comic.info.volume = volume;
-            }
-
-            if (!result.property("person_credits").isNull()) {
-                QMap<QString, QString> authors = getAuthors(result.property("person_credits"));
-
-                QString writer = QStringList(authors.values("writer")).join("\n");
-                QString penciller = QStringList(authors.values("penciller")).join("\n");
-                QString inker = QStringList(authors.values("inker")).join("\n");
-                QString colorist = QStringList(authors.values("colorist")).join("\n");
-                QString letterer = QStringList(authors.values("letterer")).join("\n");
-                QString coverArtist = QStringList(authors.values("cover")).join("\n");
-
-                comic.info.writer = writer;
-                comic.info.penciller = penciller;
-                comic.info.inker = inker;
-                comic.info.colorist = colorist;
-                comic.info.letterer = letterer;
-                comic.info.coverArtist = coverArtist;
-            }
-
-            if (!result.property("cover_date").isNull()) {
-                QString date = result.property("cover_date").toString();
-
-                QStringList tempList = date.split("-");
-
-                if (tempList.length() == 3) {
-                    std::reverse(tempList.begin(), tempList.end());
-                    comic.info.date = tempList.join("/");
-                }
-            }
-
-            if (!result.property("description").isNull()) {
-                QString synopsis = result.property("description").toString().remove(QRegExp("<[^>]*>")); //description
-                comic.info.synopsis = synopsis;
-            }
-
-            if (!result.property("character_credits").isNull()) {
-                QString characters = getCharacters(result.property("character_credits"));
-
-                comic.info.characters = characters;
-            }
-
-            if (!result.property("story_arc_credits").isNull()) {
-                QPair<QString, QString> storyArcIdAndName = getFirstStoryArcIdAndName(result.property("story_arc_credits"));
-                QString storyArcId = storyArcIdAndName.first;
-                QString storyArcName = storyArcIdAndName.second;
-                if (!storyArcId.isNull()) {
-
-                    QString comicId = result.property("id").toString();
-
-                    QPair<QString, QString> arcNumberAndArcCount = getArcNumberAndArcCount(storyArcId, comicId);
-                    if (!arcNumberAndArcCount.first.isNull()) {
-                        QString arcNumber = arcNumberAndArcCount.first;
-                        QString arcCount = arcNumberAndArcCount.second;
-
-                        comic.info.storyArc = storyArcName;
-                        comic.info.arcNumber = arcNumber;
-                        comic.info.arcCount = arcCount;
-                    }
-                }
-            }
-
-            comic.info.count = count;
-
-            comic.info.publisher = publisher;
+            comic.info.writer = writer;
+            comic.info.penciller = penciller;
+            comic.info.inker = inker;
+            comic.info.colorist = colorist;
+            comic.info.letterer = letterer;
+            comic.info.coverArtist = coverArtist;
         }
+
+        if (result.contains("cover_date") && !result.value("conver_date").isNull()) {
+            QString date = result.value("cover_date").toString();
+
+            QStringList tempList = date.split("-");
+
+            if (tempList.length() == 3) {
+                std::reverse(tempList.begin(), tempList.end());
+                comic.info.date = tempList.join("/");
+            }
+        }
+
+        if (result.contains("description") && !result.value("description").isNull()) {
+            comic.info.synopsis = result.value("description").toString().remove(QRegExp("<[^>]*>")); //description
+        }
+
+        if (result.contains("character_credits") && !result.value("character_credits").isNull()) {
+            comic.info.characters = getCharacters(result.value("character_credits"));
+        }
+
+        if (result.contains("story_arc_credits") && !result.value("story_arc_credits").isNull()) {
+            QPair<QString, QString> storyArcIdAndName = getFirstStoryArcIdAndName(result.value("story_arc_credits"));
+            QString storyArcId = storyArcIdAndName.first;
+            QString storyArcName = storyArcIdAndName.second;
+            if (!storyArcId.isNull()) {
+
+                QString comicId = result.value("id").toString();
+
+                QPair<QString, QString> arcNumberAndArcCount = getArcNumberAndArcCount(storyArcId, comicId);
+                if (!arcNumberAndArcCount.first.isNull()) {
+                    QString arcNumber = arcNumberAndArcCount.first;
+                    QString arcCount = arcNumberAndArcCount.second;
+
+                    comic.info.storyArc = storyArcName;
+                    comic.info.arcNumber = arcNumber;
+                    comic.info.arcCount = arcCount;
+                }
+            }
+        }
+
+        comic.info.count = count;
+
+        comic.info.publisher = publisher;
     }
 
     return comic;
 }
 
-QString ComicVineDialog::getCharacters(const QScriptValue &json_characters)
+QString ComicVineDialog::getCharacters(const QVariant &json_characters)
 {
-    QString characters;
+    QStringList characters;
 
-    QScriptValueIterator it(json_characters);
-    QScriptValue resultsValue;
+    QListIterator<QVariant> it(json_characters.toList());
+    QVariantMap resultsValue;
     while (it.hasNext()) {
-        it.next();
-        if (it.flags() & QScriptValue::SkipInEnumeration)
-            continue;
-        resultsValue = it.value();
+        resultsValue = it.next().toMap();
 
-        characters += resultsValue.property("name").toString() + "\n";
+        characters << resultsValue.value("name").toString();
     }
 
-    return characters;
+    return (characters.isEmpty()) ? "" : (characters.join("\n") + "\n");
 }
 
-QMap<QString, QString> ComicVineDialog::getAuthors(const QScriptValue &json_authors)
+QMap<QString, QString> ComicVineDialog::getAuthors(const QVariant &json_authors)
 {
     QMap<QString, QString> authors;
 
-    QScriptValueIterator it(json_authors);
-    QScriptValue resultsValue;
+    QListIterator<QVariant> it(json_authors.toList());
+    QVariantMap resultsValue;
     while (it.hasNext()) {
-        it.next();
-        if (it.flags() & QScriptValue::SkipInEnumeration)
-            continue;
-        resultsValue = it.value();
+        resultsValue = it.next().toMap();
 
-        QString authorName = resultsValue.property("name").toString();
+        QString authorName = resultsValue.value("name").toString();
 
-        QStringList roles = resultsValue.property("role").toString().split(",");
+        QStringList roles = resultsValue.value("role").toString().split(",");
         foreach (QString role, roles) {
             if (role.trimmed() == "writer")
                 authors.insertMulti("writer", authorName);
@@ -639,20 +616,17 @@ QMap<QString, QString> ComicVineDialog::getAuthors(const QScriptValue &json_auth
     return authors;
 }
 
-QPair<QString, QString> ComicVineDialog::getFirstStoryArcIdAndName(const QScriptValue &json_story_arcs)
+QPair<QString, QString> ComicVineDialog::getFirstStoryArcIdAndName(const QVariant &json_story_arcs)
 {
     QString story_arc_id = QString();
     QString story_arc_name = QString();
 
-    QScriptValueIterator it(json_story_arcs);
-    QScriptValue resultsValue;
+    QListIterator<QVariant> it(json_story_arcs.toList());
+    QVariantMap resultsValue;
     while (it.hasNext()) {
-        it.next();
-        if (it.flags() & QScriptValue::SkipInEnumeration)
-            continue;
-        resultsValue = it.value();
-        story_arc_id = resultsValue.property("id").toString();
-        story_arc_name = resultsValue.property("name").toString();
+        resultsValue = it.next().toMap();
+        story_arc_id = resultsValue.value("id").toString();
+        story_arc_name = resultsValue.value("name").toString();
         break;
     }
     return qMakePair(story_arc_id, story_arc_name);
@@ -668,40 +642,33 @@ QPair<QString, QString> ComicVineDialog::getArcNumberAndArcCount(const QString &
         return qMakePair(QString(), QString());
     QString json = result;
 
-    QScriptEngine engine;
-    QScriptValue sc;
-    sc = engine.evaluate("(" + json + ")");
+    QJsonParseError Err;
+    QVariantMap sc = QJsonDocument::fromJson(json.toUtf8(), &Err).toVariant().toMap();
 
-    if (!sc.property("error").isValid() && sc.property("error").toString() != "OK") {
+    if (Err.error != QJsonParseError::NoError) {
         qDebug("Error detected");
         return qMakePair(QString(), QString());
-    } else {
-        int numResults = sc.property("number_of_total_results").toString().toInt(); //fix to weird behaviour using hasNext
+    }
 
-        if (numResults > 0) {
-            QScriptValue result = sc.property("results");
+    int numResults = sc.value("number_of_total_results").toInt(); //fix to weird behaviour using hasNext
 
-            if (!result.property("issues").isNull()) {
-                QScriptValue issues = result.property("issues");
+    if (numResults > 0) {
+        QVariantMap result = sc.value("results").toMap();
 
-                int arcNumber = 0;
-                int arcCount = 0;
+        if (result.contains("issues")) {
+            QListIterator<QVariant> it(result.value("issues").toList());
+            int arcNumber = 0;
+            int arcCount = 0;
 
-                QScriptValueIterator it(issues);
-                QScriptValue resultsValue;
-                while (it.hasNext()) {
-                    it.next();
-                    if (it.flags() & QScriptValue::SkipInEnumeration)
-                        continue;
-                    resultsValue = it.value();
-                    if (comicId == resultsValue.property("id").toString()) {
-                        arcNumber = arcCount + 1;
-                    }
-                    arcCount++;
+            QVariantMap resultsValue;
+            while (it.hasNext()) {
+                resultsValue = it.next().toMap();
+                if (comicId == resultsValue.value("id").toString()) {
+                    arcNumber = arcCount + 1;
                 }
-                return qMakePair(QString::number(arcNumber), QString::number(arcCount));
+                arcCount++;
             }
-            return qMakePair(QString(), QString());
+            return qMakePair(QString::number(arcNumber), QString::number(arcCount));
         }
         return qMakePair(QString(), QString());
     }
