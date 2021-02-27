@@ -535,7 +535,7 @@ ComicDB ComicVineDialog::parseComicInfo(ComicDB &comic, const QString &json, int
         }
 
         if (result.contains("description") && !result.value("description").isNull()) {
-            comic.info.synopsis = result.value("description").toString().remove(QRegExp("<[^>]*>")); //description
+            comic.info.synopsis = result.value("description");
         }
 
         if (result.contains("character_credits") && !result.value("character_credits").isNull()) {
