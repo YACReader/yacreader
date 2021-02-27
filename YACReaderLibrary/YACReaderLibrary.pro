@@ -69,7 +69,7 @@ macx {
 
 #CONFIG += release
 CONFIG -= flat
-QT += sql network widgets script svg
+QT += sql network widgets svg
 !CONFIG(no_opengl) {
   QT += opengl
 }
@@ -231,8 +231,8 @@ SOURCES += comic_flow.cpp \
 }
 
 macx {
-	HEADERS += trayhandler.h
-	OBJECTIVE_SOURCES += trayhandler.mm
+   HEADERS += trayhandler.h
+   OBJECTIVE_SOURCES += trayhandler.mm
 }
 
 include(./server/server.pri)

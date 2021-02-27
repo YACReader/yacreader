@@ -4,7 +4,6 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QToolButton>
-#include <QtScript>
 
 ScraperResultsPaginator::ScraperResultsPaginator(QWidget *parent)
     : QWidget(parent), customLabel("items")
