@@ -38,7 +38,6 @@ Source: Qt5Multimedia.dll; DestDir: {app}
 Source: Qt5Network.dll; DestDir: {app}
 Source: Qt5Qml.dll; DestDir: {app}
 Source: Qt5Quick.dll; DestDir: {app}
-Source: Qt5Script.dll; DestDir: {app}
 Source: Qt5Sql.dll; DestDir: {app}
 Source: Qt5Svg.dll; DestDir: {app}
 Source: Qt5Widgets.dll; DestDir: {app}
@@ -140,7 +139,7 @@ procedure InitializeWizard();
 begin
 
   URLLabel := TNewStaticText.Create(WizardForm);
-  URLLabel.Caption:='Make a DONATION/Haz una DONACIÓN';
+  URLLabel.Caption:='Make a DONATION/Haz una DONACIï¿½N';
   URLLabel.Cursor:=crHand;
   URLLabel.OnClick:=@URLLabelOnClick;
   URLLabel.Parent:=WizardForm;
@@ -154,7 +153,7 @@ begin
 donationPage := CreateOutputMsgPage(wpWelcome,
   'Iformation', 'Please read the following information before continuing.',
   'YACReader is FREE software. If you like it, please, consider to make a DONATION'#13#13 +
-  'YACReader es software libre y GRATUITO. Si te gusta, por favor, considera realizar una DONACIÓN'#13#13)
+  'YACReader es software libre y GRATUITO. Si te gusta, por favor, considera realizar una DONACIï¿½N'#13#13)
 
 end;
 
