@@ -12,7 +12,7 @@ INCLUDEPATH += . \
               ./comic_vine \
               ./comic_vine/model
 
-DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY
+DEFINES += SERVER_RELEASE YACREADER_LIBRARY
 
 # load default build flags
 include (../config.pri)
