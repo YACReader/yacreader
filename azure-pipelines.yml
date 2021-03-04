@@ -70,8 +70,8 @@ jobs:
     vmImage: 'macOS-10.15'
   steps:
   - script: |
-      brew install qt
-      brew link qt --force
+      brew install qt@5
+      brew link qt@5 --force
       brew install create-dmg
       brew install node
       brew link --overwrite node
