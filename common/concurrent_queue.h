@@ -43,7 +43,7 @@ public:
         jobAvailableVar.notify_one();
     }
 
-    void cancellPending()
+    void cancelPending()
     {
         std::unique_lock<std::mutex> lockQueue(queueMutex);
         std::unique_lock<std::mutex> lockJobsLeft(jobsLeftMutex);
