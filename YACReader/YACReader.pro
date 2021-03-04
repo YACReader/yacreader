@@ -189,6 +189,8 @@ TRANSLATIONS =    yacreader_es.ts \
                   yacreader_nl.ts \
                   yacreader_tr.ts \
                   yacreader_de.ts \
+                  yacreader_zh.ts \
+                  yacreader_it.ts \
                   yacreader_source.ts
 
 unix:!macx {
