@@ -30,15 +30,14 @@ jobs:
 - job: Linux
   dependsOn: CodeFormatValidation
   pool:
-    vmImage: 'ubuntu-16.04'
+    vmImage: 'ubuntu-18.04'
   steps:
   - script: |
-      sudo add-apt-repository 'deb http://download.opensuse.org/repositories/home:/selmf/xUbuntu_16.04/ /'
-      sudo add-apt-repository ppa:kubuntu-ppa/backports
-      sudo apt-get update
-      sudo apt-get install -y --allow-unauthenticated qt-default qt5-qmake \
+      sudo add-apt-repository 'deb http://download.opensuse.org/repositories/home:/selmf/xUbuntu_18.04/ /'
+      sudo apt-get update --allow-insecure-repositories
+      sudo apt-get install -y --allow-unauthenticated qt5-default qt5-qmake \
       qtbase5-dev qtmultimedia5-dev libpoppler-qt5-dev \
-      libqt5opengl5-dev libglu1-mesa-dev libunarr-dev qtdeclarative5-dev libqt5svg5-dev
+      libqt5opengl5-dev libunarr-dev qtdeclarative5-dev libqt5svg5-dev
     displayName: 'Install dependencies'
   - script: |
       cd $(Build.SourcesDirectory)
