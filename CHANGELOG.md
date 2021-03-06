@@ -14,6 +14,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * New search engine.
 * New `manga` field added to comics and folders to tag content as manga, any content added to a manga folder will become manga automatically.
 * Support for HTML in comic synopsis, this fixes the synopsis when it comes from Comic Vine with HTML tags.
+* Improve keyboard navigation in Comic Vine dialog. 
 
 ## 9.7.1
 ### YACReader

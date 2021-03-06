@@ -57,6 +57,11 @@ void ComicVineDialog::doLayout()
     searchButton = new QPushButton(tr("search"));
     closeButton = new QPushButton(tr("close"));
 
+    backButton->setShortcut(QKeySequence(Qt::Key_Backspace));
+
+    closeButton->setDefault(false);
+    closeButton->setAutoDefault(false);
+
     skipButton->setStyleSheet(dialogButtonsStyleSheet);
     backButton->setStyleSheet(dialogButtonsStyleSheet);
     nextButton->setStyleSheet(dialogButtonsStyleSheet);
@@ -303,10 +308,9 @@ void ComicVineDialog::showSeriesQuestion()
     searchButton->setHidden(true);
     closeButton->setVisible(true);
 
-    if (mode == SingleComicInList)
-        skipButton->setVisible(true);
-    else
-        skipButton->setHidden(true);
+    nextButton->setDefault(true);
+
+    toggleSkipButton();
 }
 
 void ComicVineDialog::showSearchSingleComic()
@@ -319,10 +323,9 @@ void ComicVineDialog::showSearchSingleComic()
     searchButton->setVisible(true);
     closeButton->setVisible(true);
 
-    if (mode == SingleComicInList)
-        skipButton->setVisible(true);
-    else
-        skipButton->setHidden(true);
+    searchButton->setDefault(true);
+
+    toggleSkipButton();
 }
 
 void ComicVineDialog::showSearchVolume()
@@ -333,6 +336,9 @@ void ComicVineDialog::showSearchVolume()
     nextButton->setHidden(true);
     searchButton->setVisible(true);
     closeButton->setVisible(true);
+
+    searchButton->setDefault(true);
+
     toggleSkipButton();
 }
 
@@ -352,6 +358,9 @@ void ComicVineDialog::showSelectVolume()
     nextButton->setVisible(true);
     searchButton->setHidden(true);
     closeButton->setVisible(true);
+
+    nextButton->setDefault(true);
+
     toggleSkipButton();
 }
 
@@ -366,6 +375,9 @@ void ComicVineDialog::showSelectComic(const QString &json)
     nextButton->setVisible(true);
     searchButton->setHidden(true);
     closeButton->setVisible(true);
+
+    nextButton->setDefault(true);
+
     toggleSkipButton();
 }
 
@@ -381,6 +393,9 @@ void ComicVineDialog::showSortVolumeComics(const QString &json)
     nextButton->setVisible(true);
     searchButton->setHidden(true);
     closeButton->setVisible(true);
+
+    nextButton->setDefault(true);
+
     toggleSkipButton();
 }
 
