@@ -308,6 +308,8 @@ void ComicVineDialog::showSeriesQuestion()
     searchButton->setHidden(true);
     closeButton->setVisible(true);
 
+    nextButton->setDefault(true);
+
     toggleSkipButton();
 }
 
@@ -321,6 +323,8 @@ void ComicVineDialog::showSearchSingleComic()
     searchButton->setVisible(true);
     closeButton->setVisible(true);
 
+    searchButton->setDefault(true);
+
     toggleSkipButton();
 }
 
@@ -332,6 +336,9 @@ void ComicVineDialog::showSearchVolume()
     nextButton->setHidden(true);
     searchButton->setVisible(true);
     closeButton->setVisible(true);
+
+    searchButton->setDefault(true);
+
     toggleSkipButton();
 }
 
@@ -351,6 +358,9 @@ void ComicVineDialog::showSelectVolume()
     nextButton->setVisible(true);
     searchButton->setHidden(true);
     closeButton->setVisible(true);
+
+    nextButton->setDefault(true);
+
     toggleSkipButton();
 }
 
@@ -365,6 +375,9 @@ void ComicVineDialog::showSelectComic(const QString &json)
     nextButton->setVisible(true);
     searchButton->setHidden(true);
     closeButton->setVisible(true);
+
+    nextButton->setDefault(true);
+
     toggleSkipButton();
 }
 
@@ -380,6 +393,9 @@ void ComicVineDialog::showSortVolumeComics(const QString &json)
     nextButton->setVisible(true);
     searchButton->setHidden(true);
     closeButton->setVisible(true);
+
+    nextButton->setDefault(true);
+
     toggleSkipButton();
 }
 
