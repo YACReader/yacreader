@@ -51,6 +51,8 @@ public slots:
     void left();
     void right();
     void showGoToDialog();
+    void goToFirstPage();
+    void goToLastPage();
     void goTo(unsigned int page);
     void updatePage();
     void updateContentSize();
@@ -58,6 +60,8 @@ public slots:
     void updateOptions();
     void scrollDown();
     void scrollUp();
+    void scrollForward();
+    void scrollBackward();
     void scrollForwardHorizontalFirst();
     void scrollBackwardHorizontalFirst();
     void scrollForwardVerticalFirst();
@@ -162,8 +166,6 @@ private:
     void wheelEvent(QWheelEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
 
-    void moveAction(const QKeySequence &key);
-
     int verticalScrollStep() const;
     int horizontalScrollStep() const;
 
@@ -185,10 +187,13 @@ public:
     // returns the current index starting in 1 [1,nPages]
     unsigned int getIndex();
     void updateComic(ComicDB &comic);
+    void moveView(Qt::Key directionKey);
+
 signals:
     void backgroundChanges();
     void pageAvailable(bool);
     void pageIsBookmark(bool);
+    void comicLoaded();
     void reset();
     void openNextComic();
     void openPreviousComic();

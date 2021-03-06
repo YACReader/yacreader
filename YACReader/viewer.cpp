@@ -178,6 +178,7 @@ void Viewer::createConnections()
     connect(render, &Render::crcError, this, &Viewer::processCRCError);
     connect(render, QOverload<unsigned int>::of(&Render::numPages), goToFlow, &GoToFlowWidget::setNumSlides);
     connect(render, QOverload<unsigned int>::of(&Render::numPages), goToDialog, &GoToDialog::setNumPages);
+    connect(render, qOverload<unsigned int>(&Render::numPages), this, &Viewer::comicLoaded);
     connect(render, QOverload<int, const QByteArray &>::of(&Render::imageLoaded), goToFlow, &GoToFlowWidget::setImageReady);
     connect(render, &Render::currentPageReady, this, &Viewer::updatePage);
     connect(render, &Render::processingPage, this, &Viewer::setLoadingMessage);
@@ -283,6 +284,14 @@ void Viewer::prev()
 void Viewer::showGoToDialog()
 {
     goToDialog->open();
+}
+void Viewer::goToFirstPage()
+{
+    goTo(0);
+}
+void Viewer::goToLastPage()
+{
+    goTo(this->render->numPages() - 1);
 }
 void Viewer::goTo(unsigned int page)
 {
@@ -456,6 +465,18 @@ void Viewer::scrollUp()
     }
 }
 
+void Viewer::scrollForward()
+{
+    nextPos = verticalScrollBar()->sliderPosition() + verticalScrollStep();
+    scrollDown();
+}
+
+void Viewer::scrollBackward()
+{
+    nextPos = verticalScrollBar()->sliderPosition() - verticalScrollStep();
+    scrollUp();
+}
+
 void Viewer::scrollForwardHorizontalFirst()
 {
     if (!doubleMangaPage) {
@@ -603,54 +624,8 @@ void Viewer::keyPressEvent(QKeyEvent *event)
             _key |= Qt::ALT;
 
         QKeySequence key(_key);
-        /*if(goToFlow->isVisible() && event->key()!=Qt::Key_S)
-                        QCoreApplication::sendEvent(goToFlow,event);
-                else*/
 
-        if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_ACTION_Y)) {
-            nextPos = verticalScrollBar()->sliderPosition() + verticalScrollStep();
-            scrollDown();
-        }
-
-        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_ACTION_Y)) {
-            nextPos = verticalScrollBar()->sliderPosition() - verticalScrollStep();
-            scrollUp();
-        }
-
-        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_HORIZONTAL_FIRST_ACTION_Y)) {
-            scrollForwardHorizontalFirst();
-        }
-
-        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_HORIZONTAL_FIRST_ACTION_Y)) {
-            scrollBackwardHorizontalFirst();
-        }
-
-        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_VERTICAL_FIRST_ACTION_Y)) {
-            scrollForwardVerticalFirst();
-        }
-
-        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_VERTICAL_FIRST_ACTION_Y)) {
-            scrollBackwardVerticalFirst();
-        }
-
-        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_DOWN_ACTION_Y) ||
-                 key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_UP_ACTION_Y) ||
-                 key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_LEFT_ACTION_Y) ||
-                 key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_RIGHT_ACTION_Y)) {
-            moveAction(key);
-            emit backgroundChanges();
-        }
-
-        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(GO_TO_FIRST_PAGE_ACTION_Y)) {
-            goTo(0);
-        }
-
-        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(GO_TO_LAST_PAGE_ACTION_Y)) {
-            goTo(this->render->numPages() - 1);
-        }
-
-        else
-            QAbstractScrollArea::keyPressEvent(event);
+        QAbstractScrollArea::keyPressEvent(event);
 
         if (mglass->isVisible() && (key == ShortcutsManager::getShortcutsManager().getShortcut(SIZE_UP_MGLASS_ACTION_Y) || key == ShortcutsManager::getShortcutsManager().getShortcut(SIZE_DOWN_MGLASS_ACTION_Y) || key == ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_IN_MGLASS_ACTION_Y) || key == ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_OUT_MGLASS_ACTION_Y))) {
             QCoreApplication::sendEvent(mglass, event);
@@ -660,24 +635,11 @@ void Viewer::keyPressEvent(QKeyEvent *event)
         QAbstractScrollArea::keyPressEvent(event);
 }
 
-void Viewer::moveAction(const QKeySequence &key)
+void Viewer::moveView(Qt::Key directionKey)
 {
-    int _key = 0;
-
-    if (key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_DOWN_ACTION_Y))
-        _key = Qt::Key_Down;
-
-    else if (key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_UP_ACTION_Y))
-        _key = Qt::Key_Up;
-
-    else if (key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_LEFT_ACTION_Y))
-        _key = Qt::Key_Left;
-
-    else if (key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_RIGHT_ACTION_Y))
-        _key = Qt::Key_Right;
-
-    QKeyEvent _event = QKeyEvent(QEvent::KeyPress, _key, Qt::NoModifier);
-    QAbstractScrollArea::keyPressEvent(&_event);
+    QKeyEvent event(QEvent::KeyPress, directionKey, Qt::NoModifier);
+    QAbstractScrollArea::keyPressEvent(&event);
+    emit backgroundChanges();
 }
 
 static void animateScroll(QPropertyAnimation &scroller, const QScrollBar &scrollBar, int delta)

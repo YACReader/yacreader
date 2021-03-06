@@ -24,6 +24,8 @@
 
 #include <ctime>
 #include <algorithm>
+#include <utility>
+
 #include <QApplication>
 #include <QCoreApplication>
 #include <QToolButton>
@@ -137,6 +139,7 @@ void MainWindowViewer::setupUI()
     // setUnifiedTitleAndToolBarOnMac(true);
 
     viewer = new Viewer(this);
+    connect(viewer, &Viewer::comicLoaded, this, [this] { setLoadedComicActionsEnabled(true); });
     connect(viewer, &Viewer::reset, this, &MainWindowViewer::processReset);
     // detected end of comic
     connect(viewer, &Viewer::openNextComic, this, &MainWindowViewer::openNextComic);
@@ -958,6 +961,7 @@ void MainWindowViewer::enableActions()
 void MainWindowViewer::disableActions()
 {
     setActionsEnabled(false);
+    setLoadedComicActionsEnabled(false);
     setBookmarkAction->setEnabled(false);
 }
 
@@ -1236,50 +1240,76 @@ void MainWindowViewer::setUpShortcutsManagement()
     auto autoScrollForwardAction = new QAction(tr("Autoscroll down"), orphanActions);
     autoScrollForwardAction->setData(AUTO_SCROLL_FORWARD_ACTION_Y);
     autoScrollForwardAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_ACTION_Y));
+    connect(autoScrollForwardAction, &QAction::triggered, viewer, &Viewer::scrollForward);
 
     auto autoScrollBackwardAction = new QAction(tr("Autoscroll up"), orphanActions);
     autoScrollBackwardAction->setData(AUTO_SCROLL_BACKWARD_ACTION_Y);
     autoScrollBackwardAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_ACTION_Y));
+    connect(autoScrollBackwardAction, &QAction::triggered, viewer, &Viewer::scrollBackward);
 
     auto autoScrollForwardHorizontalFirstAction = new QAction(tr("Autoscroll forward, horizontal first"), orphanActions);
     autoScrollForwardHorizontalFirstAction->setData(AUTO_SCROLL_FORWARD_HORIZONTAL_FIRST_ACTION_Y);
     autoScrollForwardHorizontalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_HORIZONTAL_FIRST_ACTION_Y));
+    connect(autoScrollForwardHorizontalFirstAction, &QAction::triggered, viewer, &Viewer::scrollForwardHorizontalFirst);
 
     auto autoScrollBackwardHorizontalFirstAction = new QAction(tr("Autoscroll backward, horizontal first"), orphanActions);
     autoScrollBackwardHorizontalFirstAction->setData(AUTO_SCROLL_BACKWARD_HORIZONTAL_FIRST_ACTION_Y);
     autoScrollBackwardHorizontalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_HORIZONTAL_FIRST_ACTION_Y));
+    connect(autoScrollBackwardHorizontalFirstAction, &QAction::triggered, viewer, &Viewer::scrollBackwardHorizontalFirst);
 
     auto autoScrollForwardVerticalFirstAction = new QAction(tr("Autoscroll forward, vertical first"), orphanActions);
     autoScrollForwardVerticalFirstAction->setData(AUTO_SCROLL_FORWARD_VERTICAL_FIRST_ACTION_Y);
     autoScrollForwardVerticalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_VERTICAL_FIRST_ACTION_Y));
+    connect(autoScrollForwardVerticalFirstAction, &QAction::triggered, viewer, &Viewer::scrollForwardVerticalFirst);
 
     auto autoScrollBackwardVerticalFirstAction = new QAction(tr("Autoscroll backward, vertical first"), orphanActions);
     autoScrollBackwardVerticalFirstAction->setData(AUTO_SCROLL_BACKWARD_VERTICAL_FIRST_ACTION_Y);
     autoScrollBackwardVerticalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_VERTICAL_FIRST_ACTION_Y));
+    connect(autoScrollBackwardVerticalFirstAction, &QAction::triggered, viewer, &Viewer::scrollBackwardVerticalFirst);
 
     auto moveDownAction = new QAction(tr("Move down"), orphanActions);
     moveDownAction->setData(MOVE_DOWN_ACTION_Y);
     moveDownAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(MOVE_DOWN_ACTION_Y));
+    connect(moveDownAction, &QAction::triggered, viewer, [this] { viewer->moveView(Qt::Key_Down); });
 
     auto moveUpAction = new QAction(tr("Move up"), orphanActions);
     moveUpAction->setData(MOVE_UP_ACTION_Y);
     moveUpAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(MOVE_UP_ACTION_Y));
+    connect(moveUpAction, &QAction::triggered, viewer, [this] { viewer->moveView(Qt::Key_Up); });
 
     auto moveLeftAction = new QAction(tr("Move left"), orphanActions);
     moveLeftAction->setData(MOVE_LEFT_ACTION_Y);
     moveLeftAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(MOVE_LEFT_ACTION_Y));
+    connect(moveLeftAction, &QAction::triggered, viewer, [this] { viewer->moveView(Qt::Key_Left); });
 
     auto moveRightAction = new QAction(tr("Move right"), orphanActions);
     moveRightAction->setData(MOVE_RIGHT_ACTION_Y);
     moveRightAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(MOVE_RIGHT_ACTION_Y));
+    connect(moveRightAction, &QAction::triggered, viewer, [this] { viewer->moveView(Qt::Key_Right); });
 
     auto goToFirstPageAction = new QAction(tr("Go to the first page"), orphanActions);
     goToFirstPageAction->setData(GO_TO_FIRST_PAGE_ACTION_Y);
     goToFirstPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(GO_TO_FIRST_PAGE_ACTION_Y));
+    connect(goToFirstPageAction, &QAction::triggered, viewer, &Viewer::goToFirstPage);
 
     auto goToLastPageAction = new QAction(tr("Go to the last page"), orphanActions);
     goToLastPageAction->setData(GO_TO_LAST_PAGE_ACTION_Y);
     goToLastPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(GO_TO_LAST_PAGE_ACTION_Y));
+    connect(goToLastPageAction, &QAction::triggered, viewer, &Viewer::goToLastPage);
+
+    loadedComicActions = { autoScrollForwardAction,
+                           autoScrollBackwardAction,
+                           autoScrollForwardHorizontalFirstAction,
+                           autoScrollBackwardHorizontalFirstAction,
+                           autoScrollForwardVerticalFirstAction,
+                           autoScrollBackwardVerticalFirstAction,
+                           moveDownAction,
+                           moveUpAction,
+                           moveLeftAction,
+                           moveRightAction,
+                           goToFirstPageAction,
+                           goToLastPageAction };
+    addActions(loadedComicActions);
 
     editShortcutsDialog->addActionsGroup(tr("Reading"), QIcon(":/images/shortcuts_group_reading.png"),
                                          tmpList = QList<QAction *>()
@@ -1287,18 +1317,7 @@ void MainWindowViewer::setUpShortcutsManagement()
                                                  << goToPageOnTheLeftAction
                                                  << setBookmarkAction
                                                  << showBookmarksAction
-                                                 << autoScrollForwardAction
-                                                 << autoScrollBackwardAction
-                                                 << autoScrollForwardHorizontalFirstAction
-                                                 << autoScrollBackwardHorizontalFirstAction
-                                                 << autoScrollForwardVerticalFirstAction
-                                                 << autoScrollBackwardVerticalFirstAction
-                                                 << moveDownAction
-                                                 << moveUpAction
-                                                 << moveLeftAction
-                                                 << moveRightAction
-                                                 << goToFirstPageAction
-                                                 << goToLastPageAction
+                                                 << loadedComicActions
                                                  << goToPageAction);
 
     allActions << tmpList;
@@ -1520,6 +1539,12 @@ void MainWindowViewer::setActionsEnabled(bool enabled)
                            showDictionaryAction,
                            showFlowAction };
     for (auto *a : actions)
+        a->setEnabled(enabled);
+}
+
+void MainWindowViewer::setLoadedComicActionsEnabled(bool enabled)
+{
+    for (auto *a : std::as_const(loadedComicActions))
         a->setEnabled(enabled);
 }
 
