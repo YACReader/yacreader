@@ -56,6 +56,7 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
                   "<span style=\"font-weight:600\">YACReaderLibrary</span><br/>"
                   "   &#8226; New fuzzy search engine. Type to search into any field of the database, or target specific content <i>\"read:false manga:true filename:3x3\"</i>, read more about how it works in the <a href=\"https://www.yacreader.com\" style=\"color:#E8B800;\">web site</a>. <br/>"
                   "   &#8226; New `manga` field added to comics and folders to tag content as manga, any content added to a manga folder will become manga automatically.<br/>"
+                  "   &#8226; Support for HTML in comic synopsis, this fixes the synopsis when it comes from Comic Vine with HTML tags.<br/>"
                   "<br/>"
                   "<span style=\"font-weight:600\">Server</span><br/>"
                   "   &#8226; New `manga` field is sent to YACReader for iOS, so comics tagged as manga will be recognized as such when reading remotely or importing comics.<br/>"
