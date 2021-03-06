@@ -308,10 +308,7 @@ void ComicVineDialog::showSeriesQuestion()
     searchButton->setHidden(true);
     closeButton->setVisible(true);
 
-    if (mode == SingleComicInList)
-        skipButton->setVisible(true);
-    else
-        skipButton->setHidden(true);
+    toggleSkipButton();
 }
 
 void ComicVineDialog::showSearchSingleComic()
@@ -324,10 +321,7 @@ void ComicVineDialog::showSearchSingleComic()
     searchButton->setVisible(true);
     closeButton->setVisible(true);
 
-    if (mode == SingleComicInList)
-        skipButton->setVisible(true);
-    else
-        skipButton->setHidden(true);
+    toggleSkipButton();
 }
 
 void ComicVineDialog::showSearchVolume()
