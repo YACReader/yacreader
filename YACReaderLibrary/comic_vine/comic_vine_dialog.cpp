@@ -57,6 +57,8 @@ void ComicVineDialog::doLayout()
     searchButton = new QPushButton(tr("search"));
     closeButton = new QPushButton(tr("close"));
 
+    backButton->setShortcut(QKeySequence(Qt::Key_Backspace));
+
     closeButton->setDefault(false);
     closeButton->setAutoDefault(false);
 
