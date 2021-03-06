@@ -57,6 +57,9 @@ void ComicVineDialog::doLayout()
     searchButton = new QPushButton(tr("search"));
     closeButton = new QPushButton(tr("close"));
 
+    closeButton->setDefault(false);
+    closeButton->setAutoDefault(false);
+
     skipButton->setStyleSheet(dialogButtonsStyleSheet);
     backButton->setStyleSheet(dialogButtonsStyleSheet);
     nextButton->setStyleSheet(dialogButtonsStyleSheet);
