@@ -119,7 +119,6 @@ private:
     QPropertyAnimation *verticalScroller;
     QPropertyAnimation *horizontalScroller;
     QParallelAnimationGroup *groupScroller;
-    int posByStep;
     int nextPos;
     GoToFlowWidget *goToFlow;
     QPropertyAnimation *showGoToFlowAnimation;
@@ -135,7 +134,6 @@ private:
     QTimer *hideCursorTimer;
     int direction;
     bool drag;
-    int numScrollSteps;
 
     //! Widgets
     QLabel *content;
