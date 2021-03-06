@@ -164,6 +164,9 @@ private:
 
     void moveAction(const QKeySequence &key);
 
+    int verticalScrollStep() const;
+    int horizontalScrollStep() const;
+
     //! ZigzagScroll
     enum scrollDirection { UP,
                            DOWN,

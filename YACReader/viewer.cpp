@@ -492,6 +492,18 @@ void Viewer::scrollBackwardVerticalFirst()
     }
 }
 
+static constexpr auto relativeScrollStep = 0.80;
+
+int Viewer::verticalScrollStep() const
+{
+    return static_cast<int>(height() * relativeScrollStep);
+}
+
+int Viewer::horizontalScrollStep() const
+{
+    return static_cast<int>(width() * relativeScrollStep);
+}
+
 bool Viewer::isEdge(scrollDirection d)
 {
     if (d == UP)
@@ -509,15 +521,15 @@ void Viewer::scrollZigzag(scrollDirection d1, scrollDirection d2, bool forward)
     if (!isEdge(d1)) {
         if (d1 == UP)
             scrollTo(horizontalScrollBar()->sliderPosition(),
-                     verticalScrollBar()->sliderPosition() - static_cast<int>((height() * 0.80)));
+                     verticalScrollBar()->sliderPosition() - verticalScrollStep());
         else if (d1 == DOWN)
             scrollTo(horizontalScrollBar()->sliderPosition(),
-                     verticalScrollBar()->sliderPosition() + static_cast<int>((height() * 0.80)));
+                     verticalScrollBar()->sliderPosition() + verticalScrollStep());
         else if (d1 == LEFT)
-            scrollTo(horizontalScrollBar()->sliderPosition() - static_cast<int>((width() * 0.80)),
+            scrollTo(horizontalScrollBar()->sliderPosition() - horizontalScrollStep(),
                      verticalScrollBar()->sliderPosition());
         else // d1 == RIGHT
-            scrollTo(horizontalScrollBar()->sliderPosition() + static_cast<int>((width() * 0.80)),
+            scrollTo(horizontalScrollBar()->sliderPosition() + horizontalScrollStep(),
                      verticalScrollBar()->sliderPosition());
     } else if (!isEdge(d2)) {
         int x = 0;
@@ -533,13 +545,13 @@ void Viewer::scrollZigzag(scrollDirection d1, scrollDirection d2, bool forward)
             x = horizontalScrollBar()->minimum();
 
         if (d2 == UP)
-            y = std::max(verticalScrollBar()->sliderPosition() - static_cast<int>((height() * 0.80)), verticalScrollBar()->minimum());
+            y = std::max(verticalScrollBar()->sliderPosition() - verticalScrollStep(), verticalScrollBar()->minimum());
         else if (d2 == DOWN)
-            y = std::min(verticalScrollBar()->sliderPosition() + static_cast<int>((height() * 0.80)), verticalScrollBar()->maximum());
+            y = std::min(verticalScrollBar()->sliderPosition() + verticalScrollStep(), verticalScrollBar()->maximum());
         else if (d2 == LEFT)
-            x = std::max(horizontalScrollBar()->sliderPosition() - static_cast<int>((width() * 0.80)), horizontalScrollBar()->minimum());
+            x = std::max(horizontalScrollBar()->sliderPosition() - horizontalScrollStep(), horizontalScrollBar()->minimum());
         else // d2 == RIGHT
-            x = std::min(horizontalScrollBar()->sliderPosition() + static_cast<int>((width() * 0.80)), horizontalScrollBar()->maximum());
+            x = std::min(horizontalScrollBar()->sliderPosition() + horizontalScrollStep(), horizontalScrollBar()->maximum());
 
         scrollTo(x, y);
     } else {
@@ -596,12 +608,12 @@ void Viewer::keyPressEvent(QKeyEvent *event)
                 else*/
 
         if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_ACTION_Y)) {
-            nextPos = verticalScrollBar()->sliderPosition() + static_cast<int>((height() * 0.80));
+            nextPos = verticalScrollBar()->sliderPosition() + verticalScrollStep();
             scrollDown();
         }
 
         else if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_ACTION_Y)) {
-            nextPos = verticalScrollBar()->sliderPosition() - static_cast<int>((height() * 0.80));
+            nextPos = verticalScrollBar()->sliderPosition() - verticalScrollStep();
             scrollUp();
         }
 
