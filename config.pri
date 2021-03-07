@@ -2,7 +2,7 @@
 # default values if they're not set on build time
 # for a more detailed description, see INSTALL.TXT
 
-CONFIG += c++11
+CONFIG += c++1z
 
 unix:QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
 win32:QMAKE_CXXFLAGS_RELEASE += /DNDEBUG
@@ -16,8 +16,8 @@ QT_VER_MIN = $$member(QT_VERSION, 1)
 lessThan(QT_VER_MAJ, 5) {
 error(YACReader requires Qt 5 or newer but Qt $$[QT_VERSION] was detected.)
   }
-lessThan(QT_VER_MIN, 6):!CONFIG(no_opengl) {
-  error ("You need at least Qt 5.6 to compile YACReader or YACReaderLibrary.")
+lessThan(QT_VER_MIN, 9) {
+  error ("You need at least Qt 5.9 to compile YACReader or YACReaderLibrary.")
   }
 
 # reduce log pollution
