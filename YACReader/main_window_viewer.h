@@ -59,7 +59,6 @@ public slots:
     void openComic(QString pathFile);
     void openFolderFromPath(QString pathDir);
     void openFolderFromPath(QString pathFile, QString atFileName);
-    void alwaysOnTopSwitch();
     void adjustToFullSizeSwitch();
     void fitToPageSwitch();
     void resetZoomLevel();
@@ -85,7 +84,6 @@ private:
     //! State
     bool fullscreen;
     bool toolbars;
-    bool alwaysOnTop;
     bool fromMaximized;
 
     // QTBUG-41883
@@ -139,7 +137,6 @@ private:
     QAction *doubleMangaPageAction;
     QAction *showShorcutsAction;
     QAction *showDictionaryAction;
-    QAction *alwaysOnTopAction;
     QAction *adjustToFullSizeAction;
     QAction *fitToPageAction;
     QAction *resetZoomAction;

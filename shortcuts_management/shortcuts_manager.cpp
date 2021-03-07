@@ -52,7 +52,6 @@ void ShortcutsManager::initDefaultShorcuts()
     defaultShorcuts.insert(SHOW_INFO_ACTION_Y, Qt::Key_I);
     defaultShorcuts.insert(CLOSE_ACTION_Y, Qt::Key_Escape);
     defaultShorcuts.insert(SHOW_DICTIONARY_ACTION_Y, Qt::Key_T);
-    defaultShorcuts.insert(ALWAYS_ON_TOP_ACTION_Y, Qt::Key_Q); // deprecated
     defaultShorcuts.insert(ADJUST_TO_FULL_SIZE_ACTION_Y, Qt::Key_W);
     defaultShorcuts.insert(SHOW_FLOW_ACTION_Y, Qt::Key_S);
     defaultShorcuts.insert(ZOOM_PLUS_ACTION_Y, Qt::Key_Plus);

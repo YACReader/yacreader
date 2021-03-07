@@ -70,7 +70,7 @@ public:
 #endif*/
 
 MainWindowViewer::MainWindowViewer()
-    : QMainWindow(), fullscreen(false), toolbars(true), alwaysOnTop(false), currentDirectory("."), currentDirectoryImgDest("."), isClient(false)
+    : QMainWindow(), fullscreen(false), toolbars(true), currentDirectory("."), currentDirectoryImgDest("."), isClient(false)
 {
     loadConfiguration();
     setupUI();
@@ -118,7 +118,6 @@ MainWindowViewer::~MainWindowViewer()
     delete showInfoAction;
     delete closeAction;
     delete showDictionaryAction;
-    delete alwaysOnTopAction;
     delete adjustToFullSizeAction;
     delete fitToPageAction;
     delete showFlowAction;
@@ -188,11 +187,6 @@ void MainWindowViewer::setupUI()
     checkNewVersion();
 
     viewer->setFocusPolicy(Qt::StrongFocus);
-
-    // if(Configuration::getConfiguration().getAlwaysOnTop())
-    //{
-    //	setWindowFlags(this->windowFlags() | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-    // }
 
     previousWindowFlags = windowFlags();
     previousPos = pos();
@@ -484,16 +478,6 @@ void MainWindowViewer::createActions()
     showDictionaryAction->setData(SHOW_DICTIONARY_ACTION_Y);
     showDictionaryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_DICTIONARY_ACTION_Y));
     connect(showDictionaryAction, &QAction::triggered, viewer, &Viewer::translatorSwitch);
-
-    // deprecated
-    alwaysOnTopAction = new QAction(tr("Always on top"), this);
-    alwaysOnTopAction->setIcon(QIcon(":/images/alwaysOnTop.png"));
-    alwaysOnTopAction->setCheckable(true);
-    alwaysOnTopAction->setDisabled(true);
-    alwaysOnTopAction->setChecked(Configuration::getConfiguration().getAlwaysOnTop());
-    alwaysOnTopAction->setData(ALWAYS_ON_TOP_ACTION_Y);
-    alwaysOnTopAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ALWAYS_ON_TOP_ACTION_Y));
-    connect(alwaysOnTopAction, &QAction::triggered, this, &MainWindowViewer::alwaysOnTopSwitch);
 
     showFlowAction = new QAction(tr("Show go to flow"), this);
     showFlowAction->setIcon(QIcon(":/images/viewer_toolbar/flow.png"));
@@ -1577,18 +1561,6 @@ void MainWindowViewer::dragEnterEvent(QDragEnterEvent *event)
         event->acceptProposedAction();
         isClient = false;
     }
-}
-
-void MainWindowViewer::alwaysOnTopSwitch()
-{
-    if (!Configuration::getConfiguration().getAlwaysOnTop()) {
-        setWindowFlags(this->windowFlags() | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint); // always on top
-        show();
-    } else {
-        setWindowFlags(this->windowFlags() ^ (Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
-        show();
-    }
-    Configuration::getConfiguration().setAlwaysOnTop(!Configuration::getConfiguration().getAlwaysOnTop());
 }
 
 void MainWindowViewer::adjustToFullSizeSwitch()
