@@ -179,6 +179,7 @@ void MainWindowViewer::setupUI()
 
     createActions();
     setUpShortcutsManagement();
+    disableActions();
 
     createToolBars();
 
@@ -268,7 +269,6 @@ void MainWindowViewer::createActions()
     saveImageAction = new QAction(tr("Save"), this);
     saveImageAction->setIcon(QIcon(":/images/viewer_toolbar/save.png"));
     saveImageAction->setToolTip(tr("Save current page"));
-    saveImageAction->setDisabled(true);
     saveImageAction->setData(SAVE_IMAGE_ACTION_Y);
     saveImageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SAVE_IMAGE_ACTION_Y));
     connect(saveImageAction, &QAction::triggered, this, &MainWindowViewer::saveImage);
@@ -276,7 +276,6 @@ void MainWindowViewer::createActions()
     openComicOnTheLeftAction = new QAction(tr("Previous Comic"), this);
     openComicOnTheLeftAction->setIcon(QIcon(":/images/viewer_toolbar/openPrevious.png"));
     openComicOnTheLeftAction->setToolTip(tr("Open previous comic"));
-    openComicOnTheLeftAction->setDisabled(true);
     openComicOnTheLeftAction->setData(OPEN_PREVIOUS_COMIC_ACTION_Y);
     openComicOnTheLeftAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_PREVIOUS_COMIC_ACTION_Y));
     connect(openComicOnTheLeftAction, &QAction::triggered, this, &MainWindowViewer::openLeftComic);
@@ -284,7 +283,6 @@ void MainWindowViewer::createActions()
     openComicOnTheRightAction = new QAction(tr("Next Comic"), this);
     openComicOnTheRightAction->setIcon(QIcon(":/images/viewer_toolbar/openNext.png"));
     openComicOnTheRightAction->setToolTip(tr("Open next comic"));
-    openComicOnTheRightAction->setDisabled(true);
     openComicOnTheRightAction->setData(OPEN_NEXT_COMIC_ACTION_Y);
     openComicOnTheRightAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_NEXT_COMIC_ACTION_Y));
     connect(openComicOnTheRightAction, &QAction::triggered, this, &MainWindowViewer::openRightComic);
@@ -293,7 +291,6 @@ void MainWindowViewer::createActions()
     goToPageOnTheLeftAction->setIcon(QIcon(":/images/viewer_toolbar/previous.png"));
     goToPageOnTheLeftAction->setShortcutContext(Qt::WidgetShortcut);
     goToPageOnTheLeftAction->setToolTip(tr("Go to previous page"));
-    goToPageOnTheLeftAction->setDisabled(true);
     goToPageOnTheLeftAction->setData(PREV_ACTION_Y);
     goToPageOnTheLeftAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(PREV_ACTION_Y));
     connect(goToPageOnTheLeftAction, &QAction::triggered, viewer, &Viewer::left);
@@ -302,7 +299,6 @@ void MainWindowViewer::createActions()
     goToPageOnTheRightAction->setIcon(QIcon(":/images/viewer_toolbar/next.png"));
     goToPageOnTheRightAction->setShortcutContext(Qt::WidgetShortcut);
     goToPageOnTheRightAction->setToolTip(tr("Go to next page"));
-    goToPageOnTheRightAction->setDisabled(true);
     goToPageOnTheRightAction->setData(NEXT_ACTION_Y);
     goToPageOnTheRightAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(NEXT_ACTION_Y));
     connect(goToPageOnTheRightAction, &QAction::triggered, viewer, &Viewer::right);
@@ -310,7 +306,6 @@ void MainWindowViewer::createActions()
     adjustHeightAction = new QAction(tr("Fit Height"), this);
     adjustHeightAction->setIcon(QIcon(":/images/viewer_toolbar/toHeight.png"));
     // adjustWidth->setCheckable(true);
-    adjustHeightAction->setDisabled(true);
     adjustHeightAction->setToolTip(tr("Fit image to height"));
     // adjustWidth->setIcon(QIcon(":/images/fitWidth.png"));
     adjustHeightAction->setData(ADJUST_HEIGHT_ACTION_Y);
@@ -321,7 +316,6 @@ void MainWindowViewer::createActions()
     adjustWidthAction = new QAction(tr("Fit Width"), this);
     adjustWidthAction->setIcon(QIcon(":/images/viewer_toolbar/toWidth.png"));
     // adjustWidth->setCheckable(true);
-    adjustWidthAction->setDisabled(true);
     adjustWidthAction->setToolTip(tr("Fit image to width"));
     // adjustWidth->setIcon(QIcon(":/images/fitWidth.png"));
     adjustWidthAction->setData(ADJUST_WIDTH_ACTION_Y);
@@ -332,7 +326,6 @@ void MainWindowViewer::createActions()
     adjustToFullSizeAction = new QAction(tr("Show full size"), this);
     adjustToFullSizeAction->setIcon(QIcon(":/images/viewer_toolbar/full.png"));
     adjustToFullSizeAction->setCheckable(false);
-    adjustToFullSizeAction->setDisabled(true);
     adjustToFullSizeAction->setData(ADJUST_TO_FULL_SIZE_ACTION_Y);
     adjustToFullSizeAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADJUST_TO_FULL_SIZE_ACTION_Y));
     adjustToFullSizeAction->setCheckable(true);
@@ -340,7 +333,6 @@ void MainWindowViewer::createActions()
 
     fitToPageAction = new QAction(tr("Fit to page"), this);
     fitToPageAction->setIcon(QIcon(":/images/viewer_toolbar/fitToPage.png"));
-    fitToPageAction->setDisabled(true);
     fitToPageAction->setData(FIT_TO_PAGE_ACTION_Y);
     fitToPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(FIT_TO_PAGE_ACTION_Y));
     fitToPageAction->setCheckable(true);
@@ -371,37 +363,31 @@ void MainWindowViewer::createActions()
     }
 
     resetZoomAction = new QAction(tr("Reset zoom"), this);
-    resetZoomAction->setDisabled(true);
     resetZoomAction->setData(RESET_ZOOM_ACTION_Y);
     resetZoomAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RESET_ZOOM_ACTION_Y));
     connect(resetZoomAction, &QAction::triggered, this, &MainWindowViewer::resetZoomLevel);
 
     showZoomSliderlAction = new QAction(tr("Show zoom slider"), this);
     showZoomSliderlAction->setIcon(QIcon(":/images/viewer_toolbar/zoom.png"));
-    showZoomSliderlAction->setDisabled(true);
 
     increasePageZoomAction = new QAction(tr("Zoom+"), this);
-    increasePageZoomAction->setDisabled(true);
     increasePageZoomAction->setData(ZOOM_PLUS_ACTION_Y);
     increasePageZoomAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_PLUS_ACTION_Y));
     connect(increasePageZoomAction, &QAction::triggered, this, &MainWindowViewer::increasePageZoomLevel);
 
     decreasePageZoomAction = new QAction(tr("Zoom-"), this);
-    decreasePageZoomAction->setDisabled(true);
     decreasePageZoomAction->setData(ZOOM_MINUS_ACTION_Y);
     decreasePageZoomAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_MINUS_ACTION_Y));
     connect(decreasePageZoomAction, &QAction::triggered, this, &MainWindowViewer::decreasePageZoomLevel);
 
     leftRotationAction = new QAction(tr("Rotate image to the left"), this);
     leftRotationAction->setIcon(QIcon(":/images/viewer_toolbar/rotateL.png"));
-    leftRotationAction->setDisabled(true);
     leftRotationAction->setData(LEFT_ROTATION_ACTION_Y);
     leftRotationAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(LEFT_ROTATION_ACTION_Y));
     connect(leftRotationAction, &QAction::triggered, viewer, &Viewer::rotateLeft);
 
     rightRotationAction = new QAction(tr("Rotate image to the right"), this);
     rightRotationAction->setIcon(QIcon(":/images/viewer_toolbar/rotateR.png"));
-    rightRotationAction->setDisabled(true);
     rightRotationAction->setData(RIGHT_ROTATION_ACTION_Y);
     rightRotationAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RIGHT_ROTATION_ACTION_Y));
     connect(rightRotationAction, &QAction::triggered, viewer, &Viewer::rotateRight);
@@ -409,7 +395,6 @@ void MainWindowViewer::createActions()
     doublePageAction = new QAction(tr("Double page mode"), this);
     doublePageAction->setToolTip(tr("Switch to double page mode"));
     doublePageAction->setIcon(QIcon(":/images/viewer_toolbar/doublePage.png"));
-    doublePageAction->setDisabled(true);
     doublePageAction->setCheckable(true);
     doublePageAction->setChecked(Configuration::getConfiguration().getDoublePage());
     doublePageAction->setData(DOUBLE_PAGE_ACTION_Y);
@@ -420,7 +405,6 @@ void MainWindowViewer::createActions()
     doubleMangaPageAction = new QAction(tr("Double page manga mode"), this);
     doubleMangaPageAction->setToolTip(tr("Reverse reading order in double page mode"));
     doubleMangaPageAction->setIcon(QIcon(":/images/viewer_toolbar/doubleMangaPage.png"));
-    doubleMangaPageAction->setDisabled(true);
     doubleMangaPageAction->setCheckable(true);
     doubleMangaPageAction->setChecked(Configuration::getConfiguration().getDoubleMangaPage());
     doubleMangaPageAction->setData(DOUBLE_MANGA_PAGE_ACTION_Y);
@@ -430,7 +414,6 @@ void MainWindowViewer::createActions()
 
     goToPageAction = new QAction(tr("Go To"), this);
     goToPageAction->setIcon(QIcon(":/images/viewer_toolbar/goto.png"));
-    goToPageAction->setDisabled(true);
     goToPageAction->setToolTip(tr("Go to page ..."));
     goToPageAction->setData(GO_TO_PAGE_ACTION_Y);
     goToPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(GO_TO_PAGE_ACTION_Y));
@@ -454,7 +437,6 @@ void MainWindowViewer::createActions()
     showMagnifyingGlassAction = new QAction(tr("Magnifying glass"), this);
     showMagnifyingGlassAction->setToolTip(tr("Switch Magnifying glass"));
     showMagnifyingGlassAction->setIcon(QIcon(":/images/viewer_toolbar/magnifyingGlass.png"));
-    showMagnifyingGlassAction->setDisabled(true);
     showMagnifyingGlassAction->setCheckable(true);
     showMagnifyingGlassAction->setData(SHOW_MAGNIFYING_GLASS_ACTION_Y);
     showMagnifyingGlassAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_MAGNIFYING_GLASS_ACTION_Y));
@@ -463,7 +445,6 @@ void MainWindowViewer::createActions()
     setBookmarkAction = new QAction(tr("Set bookmark"), this);
     setBookmarkAction->setToolTip(tr("Set a bookmark on the current page"));
     setBookmarkAction->setIcon(QIcon(":/images/viewer_toolbar/bookmark.png"));
-    setBookmarkAction->setDisabled(true);
     setBookmarkAction->setCheckable(true);
     setBookmarkAction->setData(SET_BOOKMARK_ACTION_Y);
     setBookmarkAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_BOOKMARK_ACTION_Y));
@@ -474,7 +455,6 @@ void MainWindowViewer::createActions()
     showBookmarksAction = new QAction(tr("Show bookmarks"), this);
     showBookmarksAction->setToolTip(tr("Show the bookmarks of the current comic"));
     showBookmarksAction->setIcon(QIcon(":/images/viewer_toolbar/showBookmarks.png"));
-    showBookmarksAction->setDisabled(true);
     showBookmarksAction->setData(SHOW_BOOKMARKS_ACTION_Y);
     showBookmarksAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_BOOKMARKS_ACTION_Y));
     connect(showBookmarksAction, &QAction::triggered, viewer->getBookmarksDialog(), &QWidget::show);
@@ -488,7 +468,6 @@ void MainWindowViewer::createActions()
 
     showInfoAction = new QAction(tr("Show Info"), this);
     showInfoAction->setIcon(QIcon(":/images/viewer_toolbar/info.png"));
-    showInfoAction->setDisabled(true);
     showInfoAction->setData(SHOW_INFO_ACTION_Y);
     showInfoAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_INFO_ACTION_Y));
     connect(showInfoAction, &QAction::triggered, viewer, &Viewer::informationSwitch);
@@ -502,7 +481,6 @@ void MainWindowViewer::createActions()
     showDictionaryAction = new QAction(tr("Show Dictionary"), this);
     showDictionaryAction->setIcon(QIcon(":/images/viewer_toolbar/translator.png"));
     // showDictionaryAction->setCheckable(true);
-    showDictionaryAction->setDisabled(true);
     showDictionaryAction->setData(SHOW_DICTIONARY_ACTION_Y);
     showDictionaryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_DICTIONARY_ACTION_Y));
     connect(showDictionaryAction, &QAction::triggered, viewer, &Viewer::translatorSwitch);
@@ -519,7 +497,6 @@ void MainWindowViewer::createActions()
 
     showFlowAction = new QAction(tr("Show go to flow"), this);
     showFlowAction->setIcon(QIcon(":/images/viewer_toolbar/flow.png"));
-    showFlowAction->setDisabled(true);
     showFlowAction->setData(SHOW_FLOW_ACTION_Y);
     showFlowAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_FLOW_ACTION_Y));
     connect(showFlowAction, &QAction::triggered, viewer, &Viewer::goToFlowSwitch);
