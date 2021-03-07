@@ -2,6 +2,7 @@
 #include <QtGui>
 #include <QtDebug>
 #include <limits>
+#include <utility>
 
 #include "comic_item.h"
 #include "comic_model.h"
@@ -62,10 +63,10 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
     if (!data->formats().contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat))
         return false;
 
-    QList<qulonglong> comicIds = YACReader::mimeDataToComicsIds(data);
+    QList comicIds = YACReader::mimeDataToComicsIds(data);
     QList<int> currentIndexes;
     int i;
-    foreach (qulonglong id, comicIds) {
+    for (auto id : std::as_const(comicIds)) {
         i = 0;
         foreach (ComicItem *item, _data) {
             if (item->data(Id) == id) {
@@ -528,7 +529,7 @@ void ComicModel::setupReadingListModelData(unsigned long long parentReadingList,
             selectQuery.exec();
 
             //TODO, extra information is needed (resorting)
-            QList<ComicItem *> tempData = _data;
+            QList tempData = _data;
             _data.clear();
 
             setupModelDataForList(selectQuery);
@@ -923,7 +924,7 @@ void ComicModel::addComicsToFavorites(const QList<qulonglong> &comicIds)
 
 void ComicModel::addComicsToFavorites(const QList<QModelIndex> &comicsList)
 {
-    QList<ComicDB> comics = getComics(comicsList);
+    QList comics = getComics(comicsList);
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
@@ -941,7 +942,7 @@ void ComicModel::addComicsToLabel(const QList<qulonglong> &comicIds, qulonglong 
 
 void ComicModel::addComicsToLabel(const QList<QModelIndex> &comicsList, qulonglong labelId)
 {
-    QList<ComicDB> comics = getComics(comicsList);
+    QList comics = getComics(comicsList);
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
@@ -1018,7 +1019,7 @@ void ComicModel::deleteComicsFromReadingList(const QList<QModelIndex> &comicsLis
 
 void ComicModel::deleteComicsFromModel(const QList<QModelIndex> &comicsList)
 {
-    QListIterator<QModelIndex> it(comicsList);
+    QListIterator it(comicsList);
     it.toBack();
     while (it.hasPrevious()) {
         int row = it.previous().row();

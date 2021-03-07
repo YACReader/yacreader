@@ -45,7 +45,7 @@ inline int changeUsingTable(int value, const int table[])
 }
 
 template<int operation(int, int)>
-static QImage changeImage(const QImage &image, int value)
+static auto changeImage(const QImage &image, int value)
 {
     QImage im = image;
     im.detach();
