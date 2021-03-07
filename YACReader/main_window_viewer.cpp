@@ -987,31 +987,7 @@ void MainWindowViewer::saveImage()
 
 void MainWindowViewer::enableActions()
 {
-    saveImageAction->setDisabled(false);
-    goToPageOnTheLeftAction->setDisabled(false);
-    goToPageOnTheRightAction->setDisabled(false);
-    adjustHeightAction->setDisabled(false);
-    adjustWidthAction->setDisabled(false);
-    goToPageAction->setDisabled(false);
-    // alwaysOnTopAction->setDisabled(false);
-    leftRotationAction->setDisabled(false);
-    rightRotationAction->setDisabled(false);
-    showMagnifyingGlassAction->setDisabled(false);
-    doublePageAction->setDisabled(false);
-    doubleMangaPageAction->setDisabled(false);
-    adjustToFullSizeAction->setDisabled(false);
-    adjustToFullSizeAction->setDisabled(false);
-    fitToPageAction->setDisabled(false);
-    showZoomSliderlAction->setDisabled(false);
-    increasePageZoomAction->setDisabled(false);
-    decreasePageZoomAction->setDisabled(false);
-    resetZoomAction->setDisabled(false);
-    // setBookmark->setDisabled(false);
-    showBookmarksAction->setDisabled(false);
-    showInfoAction->setDisabled(false); // TODO enable goTo and showInfo (or update) when numPages emited
-    showDictionaryAction->setDisabled(false);
-    showFlowAction->setDisabled(false);
-
+    setActionsEnabled(true);
 #ifdef Q_OS_MAC
     activateWindow();
     raise();
@@ -1019,31 +995,11 @@ void MainWindowViewer::enableActions()
 }
 void MainWindowViewer::disableActions()
 {
-    saveImageAction->setDisabled(true);
-    goToPageOnTheLeftAction->setDisabled(true);
-    goToPageOnTheRightAction->setDisabled(true);
-    adjustHeightAction->setDisabled(true);
-    adjustWidthAction->setDisabled(true);
-    goToPageAction->setDisabled(true);
-    // alwaysOnTopAction->setDisabled(true);
-    leftRotationAction->setDisabled(true);
-    rightRotationAction->setDisabled(true);
-    showMagnifyingGlassAction->setDisabled(true);
-    doublePageAction->setDisabled(true);
-    doubleMangaPageAction->setDisabled(true);
-    adjustToFullSizeAction->setDisabled(true);
-    fitToPageAction->setDisabled(true);
-    showZoomSliderlAction->setDisabled(true);
-    increasePageZoomAction->setDisabled(true);
-    decreasePageZoomAction->setDisabled(true);
-    resetZoomAction->setDisabled(true);
-    setBookmarkAction->setDisabled(true);
-    showBookmarksAction->setDisabled(true);
-    showInfoAction->setDisabled(true); // TODO enable goTo and showInfo (or update) when numPages emited
-    openComicOnTheLeftAction->setDisabled(true);
-    openComicOnTheRightAction->setDisabled(true);
-    showDictionaryAction->setDisabled(true);
-    showFlowAction->setDisabled(true);
+    setActionsEnabled(false);
+    for (auto *a : { setBookmarkAction,
+                     openComicOnTheLeftAction,
+                     openComicOnTheRightAction })
+        a->setEnabled(false);
 }
 
 void MainWindowViewer::mouseDoubleClickEvent(QMouseEvent *event)
@@ -1580,6 +1536,34 @@ void MainWindowViewer::getSiblingComics(QString path, QString currentComic)
     }
 
     updatePrevNextActions(index > 0, index + 1 < list.count());
+}
+
+void MainWindowViewer::setActionsEnabled(bool enabled)
+{
+    // TODO enable goTo and showInfo (or update) when numPages emited
+    const auto actions = { saveImageAction,
+                           goToPageOnTheLeftAction,
+                           goToPageOnTheRightAction,
+                           adjustHeightAction,
+                           adjustWidthAction,
+                           goToPageAction,
+                           leftRotationAction,
+                           rightRotationAction,
+                           showMagnifyingGlassAction,
+                           doublePageAction,
+                           doubleMangaPageAction,
+                           adjustToFullSizeAction,
+                           fitToPageAction,
+                           showZoomSliderlAction,
+                           increasePageZoomAction,
+                           decreasePageZoomAction,
+                           resetZoomAction,
+                           showBookmarksAction,
+                           showInfoAction,
+                           showDictionaryAction,
+                           showFlowAction };
+    for (auto *a : actions)
+        a->setEnabled(enabled);
 }
 
 void MainWindowViewer::dropEvent(QDropEvent *event)

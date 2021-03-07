@@ -162,6 +162,7 @@ private:
     void refreshRecentFilesActionList();
     void clearRecentFiles();
     void getSiblingComics(QString path, QString currentComic);
+    void setActionsEnabled(bool enabled);
 
     //! Manejadores de evento:
     // void resizeEvent(QResizeEvent * event);
