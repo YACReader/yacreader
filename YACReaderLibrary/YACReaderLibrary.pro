@@ -70,9 +70,6 @@ macx {
 #CONFIG += release
 CONFIG -= flat
 QT += sql network widgets svg
-!CONFIG(no_opengl) {
-  QT += opengl
-}
 
 # Input
 HEADERS += comic_flow.h \

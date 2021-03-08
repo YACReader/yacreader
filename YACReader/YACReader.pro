@@ -69,9 +69,6 @@ macx {
 }
 
 QT += network widgets core multimedia svg
-!CONFIG(no_opengl) {
-    QT += opengl
-}
 
 #CONFIG += release
 CONFIG -= flat
