@@ -22,8 +22,6 @@ private:
     bool growHeight(int &h) const;
     bool shrinkHeight(int &h) const;
 
-    void keyPressEvent(QKeyEvent *event) override;
-
 public:
     MagnifyingGlass(int width, int height, QWidget *parent);
     MagnifyingGlass(const QSize &size, QWidget *parent);

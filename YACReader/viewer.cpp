@@ -20,6 +20,7 @@
 #include "opengl_checker.h"
 
 #include <QFile>
+#include <QKeyEvent>
 
 #include <QsLog.h>
 
@@ -153,6 +154,11 @@ void Viewer::createConnections()
 {
     // magnifyingGlass (update mg after a background change
     connect(this, &Viewer::backgroundChanges, mglass, QOverload<>::of(&MagnifyingGlass::updateImage));
+
+    connect(this, &Viewer::magnifyingGlassSizeUp, mglass, &MagnifyingGlass::sizeUp);
+    connect(this, &Viewer::magnifyingGlassSizeDown, mglass, &MagnifyingGlass::sizeDown);
+    connect(this, &Viewer::magnifyingGlassZoomIn, mglass, &MagnifyingGlass::zoomIn);
+    connect(this, &Viewer::magnifyingGlassZoomOut, mglass, &MagnifyingGlass::zoomOut);
 
     // goToDialog
     connect(goToDialog, &GoToDialog::goToPage, this, &Viewer::goTo);
@@ -608,33 +614,6 @@ void Viewer::scrollTo(int x, int y)
     emit backgroundChanges();
 }
 
-void Viewer::keyPressEvent(QKeyEvent *event)
-{
-    if (render->hasLoadedComic()) {
-        int _key = event->key();
-        Qt::KeyboardModifiers modifiers = event->modifiers();
-
-        if (modifiers & Qt::ShiftModifier)
-            _key |= Qt::SHIFT;
-        if (modifiers & Qt::ControlModifier)
-            _key |= Qt::CTRL;
-        if (modifiers & Qt::MetaModifier)
-            _key |= Qt::META;
-        if (modifiers & Qt::AltModifier)
-            _key |= Qt::ALT;
-
-        QKeySequence key(_key);
-
-        QAbstractScrollArea::keyPressEvent(event);
-
-        if (mglass->isVisible() && (key == ShortcutsManager::getShortcutsManager().getShortcut(SIZE_UP_MGLASS_ACTION_Y) || key == ShortcutsManager::getShortcutsManager().getShortcut(SIZE_DOWN_MGLASS_ACTION_Y) || key == ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_IN_MGLASS_ACTION_Y) || key == ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_OUT_MGLASS_ACTION_Y))) {
-            QCoreApplication::sendEvent(mglass, event);
-        }
-
-    } else
-        QAbstractScrollArea::keyPressEvent(event);
-}
-
 void Viewer::moveView(Qt::Key directionKey)
 {
     QKeyEvent event(QEvent::KeyPress, directionKey, Qt::NoModifier);
@@ -770,14 +749,22 @@ void Viewer::showMagnifyingGlass()
         mglass->move(static_cast<int>(p.x() - float(mglass->width()) / 2), static_cast<int>(p.y() - float(mglass->height()) / 2));
         mglass->show();
         mglass->updateImage(mglass->x() + mglass->width() / 2, mglass->y() + mglass->height() / 2);
-        magnifyingGlassShown = true;
+        setMagnifyingGlassShown(true);
     }
 }
 
 void Viewer::hideMagnifyingGlass()
 {
     mglass->hide();
-    magnifyingGlassShown = false;
+    setMagnifyingGlassShown(false);
+}
+
+void Viewer::setMagnifyingGlassShown(bool shown)
+{
+    if (magnifyingGlassShown != shown) {
+        magnifyingGlassShown = shown;
+        emit magnifyingGlassVisibilityChanged(magnifyingGlassShown);
+    }
 }
 
 void Viewer::informationSwitch()

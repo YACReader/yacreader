@@ -139,7 +139,12 @@ void MainWindowViewer::setupUI()
     // setUnifiedTitleAndToolBarOnMac(true);
 
     viewer = new Viewer(this);
-    connect(viewer, &Viewer::comicLoaded, this, [this] { setLoadedComicActionsEnabled(true); });
+    connect(viewer, &Viewer::comicLoaded, this, [this] {
+        if (viewer->magnifyingGlassIsVisible())
+            setMglassActionsEnabled(true);
+        setLoadedComicActionsEnabled(true);
+    });
+    connect(viewer, &Viewer::magnifyingGlassVisibilityChanged, this, &MainWindowViewer::setMglassActionsEnabled);
     connect(viewer, &Viewer::reset, this, &MainWindowViewer::processReset);
     // detected end of comic
     connect(viewer, &Viewer::openNextComic, this, &MainWindowViewer::openNextComic);
@@ -961,6 +966,7 @@ void MainWindowViewer::enableActions()
 void MainWindowViewer::disableActions()
 {
     setActionsEnabled(false);
+    setMglassActionsEnabled(false);
     setLoadedComicActionsEnabled(false);
     setBookmarkAction->setEnabled(false);
 }
@@ -1187,30 +1193,34 @@ void MainWindowViewer::setUpShortcutsManagement()
 
     allActions << tmpList;
 
-    // keys without actions (MGlass)
     auto sizeUpMglassAction = new QAction(tr("Size up magnifying glass"), orphanActions);
     sizeUpMglassAction->setData(SIZE_UP_MGLASS_ACTION_Y);
     sizeUpMglassAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SIZE_UP_MGLASS_ACTION_Y));
+    connect(sizeUpMglassAction, &QAction::triggered, viewer, &Viewer::magnifyingGlassSizeUp);
 
     auto sizeDownMglassAction = new QAction(tr("Size down magnifying glass"), orphanActions);
     sizeDownMglassAction->setData(SIZE_DOWN_MGLASS_ACTION_Y);
     sizeDownMglassAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SIZE_DOWN_MGLASS_ACTION_Y));
+    connect(sizeDownMglassAction, &QAction::triggered, viewer, &Viewer::magnifyingGlassSizeDown);
 
     auto zoomInMglassAction = new QAction(tr("Zoom in magnifying glass"), orphanActions);
     zoomInMglassAction->setData(ZOOM_IN_MGLASS_ACTION_Y);
     zoomInMglassAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_IN_MGLASS_ACTION_Y));
+    connect(zoomInMglassAction, &QAction::triggered, viewer, &Viewer::magnifyingGlassZoomIn);
 
     auto zoomOutMglassAction = new QAction(tr("Zoom out magnifying glass"), orphanActions);
     zoomOutMglassAction->setData(ZOOM_OUT_MGLASS_ACTION_Y);
     zoomOutMglassAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_OUT_MGLASS_ACTION_Y));
+    connect(zoomOutMglassAction, &QAction::triggered, viewer, &Viewer::magnifyingGlassZoomOut);
+
+    mglassActions = { sizeUpMglassAction, sizeDownMglassAction,
+                      zoomInMglassAction, zoomOutMglassAction };
+    addActions(mglassActions);
 
     editShortcutsDialog->addActionsGroup(tr("Magnifiying glass"), QIcon(":/images/shortcuts_group_mglass.png"),
                                          tmpList = QList<QAction *>()
                                                  << showMagnifyingGlassAction
-                                                 << sizeUpMglassAction
-                                                 << sizeDownMglassAction
-                                                 << zoomInMglassAction
-                                                 << zoomOutMglassAction);
+                                                 << mglassActions);
 
     allActions << tmpList;
 
@@ -1539,6 +1549,12 @@ void MainWindowViewer::setActionsEnabled(bool enabled)
                            showDictionaryAction,
                            showFlowAction };
     for (auto *a : actions)
+        a->setEnabled(enabled);
+}
+
+void MainWindowViewer::setMglassActionsEnabled(bool enabled)
+{
+    for (auto *a : std::as_const(mglassActions))
         a->setEnabled(enabled);
 }
 

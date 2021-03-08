@@ -8,7 +8,6 @@
 #include <QTimer>
 #include <QLabel>
 #include <QPixmap>
-#include <QKeyEvent>
 #include <QResizeEvent>
 #include <QWheelEvent>
 #include <QMouseEvent>
@@ -159,9 +158,9 @@ private:
     MagnifyingGlass *mglass;
     bool magnifyingGlassShown;
     bool restoreMagnifyingGlass;
+    void setMagnifyingGlassShown(bool shown);
 
     //! Manejadores de evento:
-    void keyPressEvent(QKeyEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
@@ -198,6 +197,13 @@ signals:
     void openNextComic();
     void openPreviousComic();
     void zoomUpdated(int);
+    void magnifyingGlassVisibilityChanged(bool visible);
+
+    // The following signals are emitted by users of this class and propagated to mglass.
+    void magnifyingGlassSizeUp();
+    void magnifyingGlassSizeDown();
+    void magnifyingGlassZoomIn();
+    void magnifyingGlassZoomOut();
 };
 
 #endif

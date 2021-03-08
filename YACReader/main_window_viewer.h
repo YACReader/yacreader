@@ -148,6 +148,7 @@ private:
 
     QAction *showEditShortcutsAction;
 
+    QList<QAction *> mglassActions;
     QList<QAction *> loadedComicActions;
 
     YACReaderSlider *zoomSliderAction;
@@ -163,6 +164,7 @@ private:
     void clearRecentFiles();
     void getSiblingComics(QString path, QString currentComic);
     void setActionsEnabled(bool enabled);
+    void setMglassActionsEnabled(bool enabled);
     void setLoadedComicActionsEnabled(bool enabled);
 
     //! Manejadores de evento:
