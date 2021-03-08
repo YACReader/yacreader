@@ -12,6 +12,7 @@ class MagnifyingGlass : public QLabel
 private:
     float zoomLevel;
     void setup(const QSize &size);
+    void resizeAndUpdate(int w, int h);
     void keyPressEvent(QKeyEvent *event) override;
 
 public:

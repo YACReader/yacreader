@@ -170,59 +170,70 @@ void MagnifyingGlass::wheelEvent(QWheelEvent *event)
         else
             zoomOut();
         break;
+    default:
+        break; // Never propagate a wheel event to the parent widget, even if we ignore it.
     }
-    updateImage();
     event->setAccepted(true);
 }
 void MagnifyingGlass::zoomIn()
 {
-    if (zoomLevel > 0.2f)
+    if (zoomLevel > 0.2f) {
         zoomLevel -= 0.025f;
+        updateImage();
+    }
 }
 
 void MagnifyingGlass::zoomOut()
 {
-    if (zoomLevel < 0.9f)
+    if (zoomLevel < 0.9f) {
         zoomLevel += 0.025f;
+        updateImage();
+    }
 }
 
 void MagnifyingGlass::sizeUp()
 {
     auto p = (Viewer *)parent();
     if (width() < (p->width() * 0.90f))
-        resize(width() + 30, height() + 15);
+        resizeAndUpdate(width() + 30, height() + 15);
 }
 
 void MagnifyingGlass::sizeDown()
 {
     if (width() > 175)
-        resize(width() - 30, height() - 15);
+        resizeAndUpdate(width() - 30, height() - 15);
 }
 
 void MagnifyingGlass::heightUp()
 {
     auto p = (Viewer *)parent();
     if (height() < (p->height() * 0.90f))
-        resize(width(), height() + 15);
+        resizeAndUpdate(width(), height() + 15);
 }
 
 void MagnifyingGlass::heightDown()
 {
     if (height() > 80)
-        resize(width(), height() - 15);
+        resizeAndUpdate(width(), height() - 15);
 }
 
 void MagnifyingGlass::widthUp()
 {
     auto p = (Viewer *)parent();
     if (width() < (p->width() * 0.90f))
-        resize(width() + 30, height());
+        resizeAndUpdate(width() + 30, height());
 }
 
 void MagnifyingGlass::widthDown()
 {
     if (width() > 175)
-        resize(width() - 30, height());
+        resizeAndUpdate(width() - 30, height());
+}
+
+void MagnifyingGlass::resizeAndUpdate(int w, int h)
+{
+    resize(w, h);
+    updateImage();
 }
 
 void MagnifyingGlass::keyPressEvent(QKeyEvent *event)
@@ -264,7 +275,6 @@ void MagnifyingGlass::keyPressEvent(QKeyEvent *event)
     }
 
     if (validKey) {
-        updateImage();
         event->setAccepted(true);
     }
 }
