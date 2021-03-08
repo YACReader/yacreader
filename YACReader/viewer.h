@@ -78,7 +78,7 @@ public slots:
     void animateHideGoToFlow();
     void rotateLeft();
     void rotateRight();
-    bool magnifyingGlassIsVisible() { return magnifyingGlassShowed; }
+    bool magnifyingGlassIsVisible() const { return magnifyingGlassShown; }
     void setBookmark(bool);
     void save();
     void doublePageSwitch();
@@ -157,7 +157,7 @@ private:
 private:
     //! Magnifying glass
     MagnifyingGlass *mglass;
-    bool magnifyingGlassShowed;
+    bool magnifyingGlassShown;
     bool restoreMagnifyingGlass;
 
     //! Manejadores de evento:
