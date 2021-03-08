@@ -1,7 +1,6 @@
 #include "yacreader_flow_gl.h"
 
 #include <QtGui>
-#include <QtOpenGL>
 #include <QMatrix4x4>
 #include <cmath>
 
