@@ -254,6 +254,7 @@ void MainWindowViewer::createActions()
     openLatestComicAction->setToolTip(tr("Open the latest comic opened in the previous reading session"));
     openLatestComicAction->setData(OPEN_LATEST_COMIC_Y);
     openLatestComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_LATEST_COMIC_Y));
+    addAction(openLatestComicAction);
     connect(openLatestComicAction, &QAction::triggered, this, &MainWindowViewer::openLatestComic);
 
     QAction *recentFileAction = nullptr;
