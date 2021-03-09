@@ -250,11 +250,8 @@ void MainWindowViewer::createActions()
     openFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_FOLDER_ACTION_Y));
     connect(openFolderAction, &QAction::triggered, this, &MainWindowViewer::openFolder);
 
-    openLatestComicAction = new QAction(tr("Open latest comic"), this);
+    openLatestComicAction = addActionWithShortcut(tr("Open latest comic"), OPEN_LATEST_COMIC_Y);
     openLatestComicAction->setToolTip(tr("Open the latest comic opened in the previous reading session"));
-    openLatestComicAction->setData(OPEN_LATEST_COMIC_Y);
-    openLatestComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_LATEST_COMIC_Y));
-    addAction(openLatestComicAction);
     connect(openLatestComicAction, &QAction::triggered, this, &MainWindowViewer::openLatestComic);
 
     QAction *recentFileAction = nullptr;
@@ -499,6 +496,15 @@ void MainWindowViewer::createActions()
     showEditShortcutsAction->setData(SHOW_EDIT_SHORTCUTS_ACTION_Y);
     showEditShortcutsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_EDIT_SHORTCUTS_ACTION_Y));
     connect(showEditShortcutsAction, &QAction::triggered, editShortcutsDialog, &QWidget::show);
+}
+
+QAction *MainWindowViewer::addActionWithShortcut(const QString &text, const QString &shortcutKey)
+{
+    auto *const action = new QAction(text, this);
+    action->setData(shortcutKey);
+    action->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(shortcutKey));
+    addAction(action);
+    return action;
 }
 
 void MainWindowViewer::createToolBars()
@@ -1147,9 +1153,6 @@ void MainWindowViewer::processReset()
 
 void MainWindowViewer::setUpShortcutsManagement()
 {
-    // actions holder
-    auto orphanActions = new QObject;
-
     QList<QAction *> allActions;
     QList<QAction *> tmpList;
 
@@ -1163,16 +1166,10 @@ void MainWindowViewer::setUpShortcutsManagement()
 
     allActions << tmpList;
 
-    QAction *toggleFullScreenAction = new QAction(tr("Toggle fullscreen mode"), orphanActions);
-    toggleFullScreenAction->setData(TOGGLE_FULL_SCREEN_ACTION_Y);
-    toggleFullScreenAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_FULL_SCREEN_ACTION_Y));
-    addAction(toggleFullScreenAction);
+    auto *const toggleFullScreenAction = addActionWithShortcut(tr("Toggle fullscreen mode"), TOGGLE_FULL_SCREEN_ACTION_Y);
     connect(toggleFullScreenAction, &QAction::triggered, this, &MainWindowViewer::toggleFullScreen);
 
-    QAction *toggleToolbarsAction = new QAction(tr("Hide/show toolbar"), orphanActions);
-    toggleToolbarsAction->setData(TOGGLE_TOOL_BARS_ACTION_Y);
-    toggleToolbarsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_TOOL_BARS_ACTION_Y));
-    addAction(toggleToolbarsAction);
+    auto *const toggleToolbarsAction = addActionWithShortcut(tr("Hide/show toolbar"), TOGGLE_TOOL_BARS_ACTION_Y);
     connect(toggleToolbarsAction, &QAction::triggered, this, &MainWindowViewer::toggleToolBars);
 
     editShortcutsDialog->addActionsGroup(tr("General"), QIcon(":/images/shortcuts_group_general.png"),
@@ -1194,29 +1191,20 @@ void MainWindowViewer::setUpShortcutsManagement()
 
     allActions << tmpList;
 
-    auto sizeUpMglassAction = new QAction(tr("Size up magnifying glass"), orphanActions);
-    sizeUpMglassAction->setData(SIZE_UP_MGLASS_ACTION_Y);
-    sizeUpMglassAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SIZE_UP_MGLASS_ACTION_Y));
+    auto *const sizeUpMglassAction = addActionWithShortcut(tr("Size up magnifying glass"), SIZE_UP_MGLASS_ACTION_Y);
     connect(sizeUpMglassAction, &QAction::triggered, viewer, &Viewer::magnifyingGlassSizeUp);
 
-    auto sizeDownMglassAction = new QAction(tr("Size down magnifying glass"), orphanActions);
-    sizeDownMglassAction->setData(SIZE_DOWN_MGLASS_ACTION_Y);
-    sizeDownMglassAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SIZE_DOWN_MGLASS_ACTION_Y));
+    auto *const sizeDownMglassAction = addActionWithShortcut(tr("Size down magnifying glass"), SIZE_DOWN_MGLASS_ACTION_Y);
     connect(sizeDownMglassAction, &QAction::triggered, viewer, &Viewer::magnifyingGlassSizeDown);
 
-    auto zoomInMglassAction = new QAction(tr("Zoom in magnifying glass"), orphanActions);
-    zoomInMglassAction->setData(ZOOM_IN_MGLASS_ACTION_Y);
-    zoomInMglassAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_IN_MGLASS_ACTION_Y));
+    auto *const zoomInMglassAction = addActionWithShortcut(tr("Zoom in magnifying glass"), ZOOM_IN_MGLASS_ACTION_Y);
     connect(zoomInMglassAction, &QAction::triggered, viewer, &Viewer::magnifyingGlassZoomIn);
 
-    auto zoomOutMglassAction = new QAction(tr("Zoom out magnifying glass"), orphanActions);
-    zoomOutMglassAction->setData(ZOOM_OUT_MGLASS_ACTION_Y);
-    zoomOutMglassAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_OUT_MGLASS_ACTION_Y));
+    auto *const zoomOutMglassAction = addActionWithShortcut(tr("Zoom out magnifying glass"), ZOOM_OUT_MGLASS_ACTION_Y);
     connect(zoomOutMglassAction, &QAction::triggered, viewer, &Viewer::magnifyingGlassZoomOut);
 
     mglassActions = { sizeUpMglassAction, sizeDownMglassAction,
                       zoomInMglassAction, zoomOutMglassAction };
-    addActions(mglassActions);
 
     editShortcutsDialog->addActionsGroup(tr("Magnifiying glass"), QIcon(":/images/shortcuts_group_mglass.png"),
                                          tmpList = QList<QAction *>()
@@ -1225,10 +1213,8 @@ void MainWindowViewer::setUpShortcutsManagement()
 
     allActions << tmpList;
 
-    auto toggleFitToScreenAction = new QAction(tr("Toggle between fit to width and fit to height"), orphanActions);
-    toggleFitToScreenAction->setData(CHANGE_FIT_ACTION_Y);
-    toggleFitToScreenAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(CHANGE_FIT_ACTION_Y));
-    addAction(toggleFitToScreenAction);
+    auto *const toggleFitToScreenAction = addActionWithShortcut(tr("Toggle between fit to width and fit to height"),
+                                                                CHANGE_FIT_ACTION_Y);
     connect(toggleFitToScreenAction, &QAction::triggered, this, &MainWindowViewer::toggleWidthHeight);
 
     editShortcutsDialog->addActionsGroup(tr("Page adjustement"), QIcon(":/images/shortcuts_group_page.png"),
@@ -1248,64 +1234,44 @@ void MainWindowViewer::setUpShortcutsManagement()
 
     allActions << tmpList;
 
-    auto autoScrollForwardAction = new QAction(tr("Autoscroll down"), orphanActions);
-    autoScrollForwardAction->setData(AUTO_SCROLL_FORWARD_ACTION_Y);
-    autoScrollForwardAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_ACTION_Y));
+    auto *const autoScrollForwardAction = addActionWithShortcut(tr("Autoscroll down"), AUTO_SCROLL_FORWARD_ACTION_Y);
     connect(autoScrollForwardAction, &QAction::triggered, viewer, &Viewer::scrollForward);
 
-    auto autoScrollBackwardAction = new QAction(tr("Autoscroll up"), orphanActions);
-    autoScrollBackwardAction->setData(AUTO_SCROLL_BACKWARD_ACTION_Y);
-    autoScrollBackwardAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_ACTION_Y));
+    auto *const autoScrollBackwardAction = addActionWithShortcut(tr("Autoscroll up"), AUTO_SCROLL_BACKWARD_ACTION_Y);
     connect(autoScrollBackwardAction, &QAction::triggered, viewer, &Viewer::scrollBackward);
 
-    auto autoScrollForwardHorizontalFirstAction = new QAction(tr("Autoscroll forward, horizontal first"), orphanActions);
-    autoScrollForwardHorizontalFirstAction->setData(AUTO_SCROLL_FORWARD_HORIZONTAL_FIRST_ACTION_Y);
-    autoScrollForwardHorizontalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_HORIZONTAL_FIRST_ACTION_Y));
+    auto *const autoScrollForwardHorizontalFirstAction = addActionWithShortcut(tr("Autoscroll forward, horizontal first"),
+                                                                               AUTO_SCROLL_FORWARD_HORIZONTAL_FIRST_ACTION_Y);
     connect(autoScrollForwardHorizontalFirstAction, &QAction::triggered, viewer, &Viewer::scrollForwardHorizontalFirst);
 
-    auto autoScrollBackwardHorizontalFirstAction = new QAction(tr("Autoscroll backward, horizontal first"), orphanActions);
-    autoScrollBackwardHorizontalFirstAction->setData(AUTO_SCROLL_BACKWARD_HORIZONTAL_FIRST_ACTION_Y);
-    autoScrollBackwardHorizontalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_HORIZONTAL_FIRST_ACTION_Y));
+    auto *const autoScrollBackwardHorizontalFirstAction = addActionWithShortcut(tr("Autoscroll backward, horizontal first"),
+                                                                                AUTO_SCROLL_BACKWARD_HORIZONTAL_FIRST_ACTION_Y);
     connect(autoScrollBackwardHorizontalFirstAction, &QAction::triggered, viewer, &Viewer::scrollBackwardHorizontalFirst);
 
-    auto autoScrollForwardVerticalFirstAction = new QAction(tr("Autoscroll forward, vertical first"), orphanActions);
-    autoScrollForwardVerticalFirstAction->setData(AUTO_SCROLL_FORWARD_VERTICAL_FIRST_ACTION_Y);
-    autoScrollForwardVerticalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_VERTICAL_FIRST_ACTION_Y));
+    auto *const autoScrollForwardVerticalFirstAction = addActionWithShortcut(tr("Autoscroll forward, vertical first"),
+                                                                             AUTO_SCROLL_FORWARD_VERTICAL_FIRST_ACTION_Y);
     connect(autoScrollForwardVerticalFirstAction, &QAction::triggered, viewer, &Viewer::scrollForwardVerticalFirst);
 
-    auto autoScrollBackwardVerticalFirstAction = new QAction(tr("Autoscroll backward, vertical first"), orphanActions);
-    autoScrollBackwardVerticalFirstAction->setData(AUTO_SCROLL_BACKWARD_VERTICAL_FIRST_ACTION_Y);
-    autoScrollBackwardVerticalFirstAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_VERTICAL_FIRST_ACTION_Y));
+    auto *const autoScrollBackwardVerticalFirstAction = addActionWithShortcut(tr("Autoscroll backward, vertical first"),
+                                                                              AUTO_SCROLL_BACKWARD_VERTICAL_FIRST_ACTION_Y);
     connect(autoScrollBackwardVerticalFirstAction, &QAction::triggered, viewer, &Viewer::scrollBackwardVerticalFirst);
 
-    auto moveDownAction = new QAction(tr("Move down"), orphanActions);
-    moveDownAction->setData(MOVE_DOWN_ACTION_Y);
-    moveDownAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(MOVE_DOWN_ACTION_Y));
+    auto *const moveDownAction = addActionWithShortcut(tr("Move down"), MOVE_DOWN_ACTION_Y);
     connect(moveDownAction, &QAction::triggered, viewer, [this] { viewer->moveView(Qt::Key_Down); });
 
-    auto moveUpAction = new QAction(tr("Move up"), orphanActions);
-    moveUpAction->setData(MOVE_UP_ACTION_Y);
-    moveUpAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(MOVE_UP_ACTION_Y));
+    auto *const moveUpAction = addActionWithShortcut(tr("Move up"), MOVE_UP_ACTION_Y);
     connect(moveUpAction, &QAction::triggered, viewer, [this] { viewer->moveView(Qt::Key_Up); });
 
-    auto moveLeftAction = new QAction(tr("Move left"), orphanActions);
-    moveLeftAction->setData(MOVE_LEFT_ACTION_Y);
-    moveLeftAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(MOVE_LEFT_ACTION_Y));
+    auto *const moveLeftAction = addActionWithShortcut(tr("Move left"), MOVE_LEFT_ACTION_Y);
     connect(moveLeftAction, &QAction::triggered, viewer, [this] { viewer->moveView(Qt::Key_Left); });
 
-    auto moveRightAction = new QAction(tr("Move right"), orphanActions);
-    moveRightAction->setData(MOVE_RIGHT_ACTION_Y);
-    moveRightAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(MOVE_RIGHT_ACTION_Y));
+    auto *const moveRightAction = addActionWithShortcut(tr("Move right"), MOVE_RIGHT_ACTION_Y);
     connect(moveRightAction, &QAction::triggered, viewer, [this] { viewer->moveView(Qt::Key_Right); });
 
-    auto goToFirstPageAction = new QAction(tr("Go to the first page"), orphanActions);
-    goToFirstPageAction->setData(GO_TO_FIRST_PAGE_ACTION_Y);
-    goToFirstPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(GO_TO_FIRST_PAGE_ACTION_Y));
+    auto *const goToFirstPageAction = addActionWithShortcut(tr("Go to the first page"), GO_TO_FIRST_PAGE_ACTION_Y);
     connect(goToFirstPageAction, &QAction::triggered, viewer, &Viewer::goToFirstPage);
 
-    auto goToLastPageAction = new QAction(tr("Go to the last page"), orphanActions);
-    goToLastPageAction->setData(GO_TO_LAST_PAGE_ACTION_Y);
-    goToLastPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(GO_TO_LAST_PAGE_ACTION_Y));
+    auto *const goToLastPageAction = addActionWithShortcut(tr("Go to the last page"), GO_TO_LAST_PAGE_ACTION_Y);
     connect(goToLastPageAction, &QAction::triggered, viewer, &Viewer::goToLastPage);
 
     loadedComicActions = { autoScrollForwardAction,
@@ -1320,7 +1286,6 @@ void MainWindowViewer::setUpShortcutsManagement()
                            moveRightAction,
                            goToFirstPageAction,
                            goToLastPageAction };
-    addActions(loadedComicActions);
 
     editShortcutsDialog->addActionsGroup(tr("Reading"), QIcon(":/images/shortcuts_group_reading.png"),
                                          tmpList = QList<QAction *>()

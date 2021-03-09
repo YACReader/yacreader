@@ -159,6 +159,7 @@ private:
     //! Método que inicializa el interfaz.
     void setupUI();
     void createActions();
+    QAction *addActionWithShortcut(const QString &text, const QString &shortcutKey);
     void createToolBars();
     void refreshRecentFilesActionList();
     void clearRecentFiles();
