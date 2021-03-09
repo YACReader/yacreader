@@ -1,113 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="fr_FR">
+<TS version="2.1" language="it_IT">
 <context>
     <name>ActionsShortcutsModel</name>
     <message>
         <source>None</source>
-        <translation>Rien</translation>
+        <translation>Nessuno</translation>
     </message>
 </context>
 <context>
     <name>BookmarksDialog</name>
     <message>
         <source>Close</source>
-        <translation>Fermer</translation>
+        <translation>Chiudi</translation>
     </message>
     <message>
         <source>Loading...</source>
-        <translation>Chargement...</translation>
+        <translation>Caricamento...</translation>
     </message>
     <message>
         <source>Click on any image to go to the bookmark</source>
-        <translation>Cliquez sur une image pour aller au marque-page</translation>
+        <translation>Click su qualsiasi immagine per andare al bookmark</translation>
     </message>
     <message>
         <source>Lastest Page</source>
-        <translation>Aller à la dernière page</translation>
+        <translation>Ultima Pagina</translation>
     </message>
 </context>
 <context>
     <name>EditShortcutsDialog</name>
     <message>
         <source>Shortcut in use</source>
-        <translation>Raccourci en cours d&apos;utilisation</translation>
+        <translation>Scorciatoia in uso</translation>
     </message>
     <message>
         <source>Restore defaults</source>
-        <translation>Réinitialiser</translation>
+        <translation>Resetta al default</translation>
     </message>
     <message>
         <source>Shortcuts settings</source>
-        <translation>Paramètres de raccourcis</translation>
+        <translation>impostazione scorciatoie</translation>
     </message>
     <message>
         <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation>Le raccourci &quot;%1&quot; est déjà affecté à une autre fonction</translation>
+        <translation>La scorciatoia &quot;%1&quot; è già assegnata ad un&apos;altra funzione</translation>
     </message>
     <message>
         <source>To change a shortcut, double click in the key combination and type the new keys.</source>
-        <translation>Pour modifier un raccourci, double-cliquez sur la combinaison de touches et tapez les nouvelles clés.</translation>
+        <translation>Per cambiare una scorciatoia doppio click sulla combinazione tasti e digita la nuova combinazione.</translation>
     </message>
 </context>
 <context>
     <name>FileComic</name>
     <message>
         <source>Format not supported</source>
-        <translation>Format non supporté</translation>
+        <translation>Formato non supportato</translation>
     </message>
     <message>
         <source>7z not found</source>
-        <translation>7z introuvable</translation>
+        <translation>7z non trovato</translation>
     </message>
     <message>
         <source>Unknown error opening the file</source>
-        <translation>Erreur inconnue lors de l&apos;ouverture du fichier</translation>
+        <translation>Errore sconosciuto aprendo il file</translation>
     </message>
     <message>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
-        <translation>Erreur CRC sur la page (%1): certaines pages ne s&apos;afficheront pas correctement</translation>
+        <translation>Errore CRC alla pagina (%1): alcune pagine non saranno visualizzate correttamente</translation>
     </message>
 </context>
 <context>
     <name>GoToDialog</name>
     <message>
         <source>Go To</source>
-        <translation>Aller à</translation>
+        <translation>Vai a</translation>
     </message>
     <message>
         <source>Go to...</source>
-        <translation>Aller à...</translation>
+        <translation>Vai a...</translation>
     </message>
     <message>
         <source>Total pages : </source>
-        <translation>Nombre de pages :</translation>
+        <translation>Pagine totali: </translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Annuler</translation>
+        <translation>Annulla</translation>
     </message>
     <message>
         <source>Page : </source>
-        <translation>Page :</translation>
+        <translation>Pagina: </translation>
     </message>
 </context>
 <context>
     <name>GoToFlowToolBar</name>
     <message>
         <source>Page : </source>
-        <translation>Page : </translation>
+        <translation>Pagina: </translation>
     </message>
 </context>
 <context>
     <name>HelpAboutDialog</name>
     <message>
         <source>Help</source>
-        <translation>Aide</translation>
+        <translation>Aiuto</translation>
     </message>
     <message>
         <source>About</source>
-        <translation>A propos</translation>
+        <translation>About</translation>
     </message>
 </context>
 <context>
@@ -145,51 +145,55 @@
     <name>MainWindowViewer</name>
     <message>
         <source>Go</source>
-        <translation>Aller</translation>
+        <translation>Vai</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation>Editer</translation>
+        <translation>Edit</translation>
     </message>
     <message>
         <source>File</source>
-        <translation>Fichier</translation>
+        <translation>File</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation>Aide</translation>
+        <translation>Aiuto</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation>Sauvegarder</translation>
+        <translation>Salva</translation>
     </message>
     <message>
         <source>View</source>
-        <translation>Vue</translation>
+        <translation>Mostra</translation>
     </message>
     <message>
         <source>&amp;File</source>
-        <translation>&amp;Fichier</translation>
+        <translation>&amp;File</translation>
     </message>
     <message>
         <source>&amp;Next</source>
-        <translation>&amp;Suivant</translation>
+        <translation>&amp;Prossimo</translation>
     </message>
     <message>
         <source>&amp;Open</source>
-        <translation>&amp;Ouvrir</translation>
+        <translation>&amp;Apri</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation>Cancella</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Fermer</translation>
+        <translation>Chiudi</translation>
     </message>
     <message>
         <source>Open Comic</source>
-        <translation>Ouvrir la bande dessinée</translation>
+        <translation>Apri Fumetto</translation>
     </message>
     <message>
         <source>Go To</source>
-        <translation>Aller à</translation>
+        <translation>Vai a</translation>
     </message>
     <message>
         <source>Zoom+</source>
@@ -201,322 +205,318 @@
     </message>
     <message>
         <source>Open image folder</source>
-        <translation>Ouvrir un dossier d&apos;images</translation>
+        <translation>Apri la crettal immagini</translation>
     </message>
     <message>
         <source>Size down magnifying glass</source>
-        <translation>Réduire la taille de la loupe</translation>
+        <translation>Riduci lente ingrandimento</translation>
     </message>
     <message>
         <source>Zoom out magnifying glass</source>
-        <translation>Dézoomer</translation>
+        <translation>Riduci in lente di ingrandimento</translation>
     </message>
     <message>
         <source>Open latest comic</source>
-        <translation>Ouvrir la dernière bande dessinée</translation>
+        <translation>Apri l&apos;ultimo fumetto</translation>
     </message>
     <message>
         <source>Autoscroll up</source>
-        <translation>Défilement automatique vers le haut</translation>
+        <translation>Autoscorri Sù</translation>
     </message>
     <message>
         <source>Set bookmark</source>
-        <translation>Placer un marque-page</translation>
+        <translation>Imposta Segnalibro</translation>
     </message>
     <message>
         <source>page_%1.jpg</source>
-        <translation>page_%1.jpg</translation>
+        <translation>Pagina_%1.jpg</translation>
     </message>
     <message>
         <source>Autoscroll forward, vertical first</source>
-        <translation>Défilement automatique en avant, vertical</translation>
+        <translation>Autoscorri avanti, priorità Verticale</translation>
     </message>
     <message>
         <source>Switch to double page mode</source>
-        <translation>Passer en mode double page</translation>
+        <translation>Passa alla modalità doppia pagina</translation>
     </message>
     <message>
         <source>Save current page</source>
-        <translation>Sauvegarder la page actuelle</translation>
+        <translation>Salva la pagina corrente</translation>
     </message>
     <message>
         <source>Size up magnifying glass</source>
-        <translation>Augmenter la taille de la loupe</translation>
+        <translation>Ingrandisci lente ingrandimento</translation>
     </message>
     <message>
         <source>Double page mode</source>
-        <translation>Mode double page</translation>
+        <translation>Modalita doppia pagina</translation>
     </message>
     <message>
         <source>Move up</source>
-        <translation>Monter</translation>
+        <translation>Muovi Sù</translation>
     </message>
     <message>
         <source>Switch Magnifying glass</source>
-        <translation>Utiliser la loupe</translation>
+        <translation>Passa a lente ingrandimento</translation>
     </message>
     <message>
         <source>Open Folder</source>
-        <translation>Ouvrir un dossier</translation>
+        <translation>Apri una cartella</translation>
     </message>
     <message>
         <source>Comics</source>
-        <translation>Bandes dessinées</translation>
+        <translation>Fumetto</translation>
     </message>
     <message>
         <source>Fit Height</source>
-        <translation>Ajuster la hauteur</translation>
+        <translation>Adatta altezza</translation>
     </message>
     <message>
         <source>Autoscroll backward, vertical first</source>
-        <translation>Défilement automatique en arrière, verticak</translation>
+        <translation>Autoscorri indietro, priorità Verticale</translation>
     </message>
     <message>
         <source>Comic files</source>
-        <translation>Bande dessinée</translation>
+        <translation>File Fumetto</translation>
     </message>
     <message>
         <source>Not now</source>
-        <translation>Pas maintenant</translation>
+        <translation>Non ora</translation>
     </message>
     <message>
         <source>Go to the first page</source>
-        <translation>Aller à la première page</translation>
+        <translation>Vai alla pagina iniziale</translation>
     </message>
     <message>
         <source>Go to previous page</source>
-        <translation>Aller à la page précédente</translation>
+        <translation>Vai alla pagina precedente</translation>
     </message>
     <message>
         <source>Window</source>
-        <translation>Fenêtre</translation>
+        <translation>Finestra</translation>
     </message>
     <message>
         <source>Open the latest comic opened in the previous reading session</source>
-        <translation>Ouvrir la dernière bande dessinée ouverte lors de la session de lecture précédente</translation>
+        <translation>Apri l&apos;ultimo fumetto aperto nella sessione precedente</translation>
     </message>
     <message>
         <source>Open a comic</source>
-        <translation>Ouvrir une bande dessinée</translation>
+        <translation>Apri un Fumetto</translation>
     </message>
     <message>
         <source>Image files (*.jpg)</source>
-        <translation>Image(*.jpg)</translation>
+        <translation>File immagine (*.jpg)</translation>
     </message>
     <message>
         <source>Next Comic</source>
-        <translation>Bande dessinée suivante</translation>
+        <translation>Prossimo fumetto</translation>
     </message>
     <message>
         <source>Fit Width</source>
-        <translation>Ajuster la largeur</translation>
+        <translation>Adatta Larghezza</translation>
     </message>
     <message>
         <source>Options</source>
-        <translation>Options</translation>
+        <translation>Opzioni</translation>
     </message>
     <message>
         <source>Show Info</source>
-        <translation>Voir les infos</translation>
+        <translation>Mostra info</translation>
     </message>
     <message>
         <source>Open folder</source>
-        <translation>Ouvirir le dossier</translation>
+        <translation>Apri cartella</translation>
     </message>
     <message>
         <source>Go to page ...</source>
-        <translation>Aller à la page ...</translation>
+        <translation>Vai a Pagina ...</translation>
     </message>
     <message>
         <source>Magnifiying glass</source>
-        <translation>Loupe</translation>
+        <translation>Lente ingrandimento</translation>
     </message>
     <message>
         <source>Fit image to width</source>
-        <translation>Ajuster l&apos;image à la largeur</translation>
+        <translation>Adatta immagine in larghezza</translation>
     </message>
     <message>
         <source>Toggle fullscreen mode</source>
-        <translation>Basculer en mode plein écran</translation>
+        <translation>Attiva/Disattiva schermo intero</translation>
     </message>
     <message>
         <source>Toggle between fit to width and fit to height</source>
-        <translation>Basculer entre adapter à la largeur et adapter à la hauteur</translation>
+        <translation>Passa tra adatta in larghezza ad altezza</translation>
     </message>
     <message>
         <source>Move right</source>
-        <translation>Déplacer à droite</translation>
+        <translation>Muovi Destra</translation>
     </message>
     <message>
         <source>Zoom in magnifying glass</source>
-        <translation>Zoomer</translation>
+        <translation>Ingrandisci in lente di ingrandimento</translation>
     </message>
     <message>
         <source>Open recent</source>
-        <translation>Ouvrir récent</translation>
+        <translation>Apri i recenti</translation>
     </message>
     <message>
         <source>Reading</source>
-        <translation>Lecture</translation>
+        <translation>Leggi</translation>
     </message>
     <message>
         <source>&amp;Previous</source>
-        <translation>&amp;Précédent</translation>
+        <translation>&amp;Precedente</translation>
     </message>
     <message>
         <source>Autoscroll forward, horizontal first</source>
-        <translation>Défilement automatique en avant, horizontal</translation>
+        <translation>Autoscorri avanti, priorità Orizzontale</translation>
     </message>
     <message>
         <source>Go to next page</source>
-        <translation>Aller à la page suivante</translation>
+        <translation>Vai alla prossima Pagina</translation>
     </message>
     <message>
         <source>Show keyboard shortcuts</source>
-        <translation>Voir les raccourcis</translation>
+        <translation>Mostra scorciatoie da tastiera</translation>
     </message>
     <message>
         <source>Double page manga mode</source>
-        <translation>Mode manga en double page</translation>
+        <translation>Modalità doppia pagina Manga</translation>
     </message>
     <message>
         <source>There is a new version available</source>
-        <translation>Une nouvelle version est disponible</translation>
+        <translation>Nuova versione disponibile</translation>
     </message>
     <message>
         <source>Autoscroll down</source>
-        <translation>Défilement automatique vers le bas</translation>
+        <translation>Autoscorri Giù</translation>
     </message>
     <message>
         <source>Open next comic</source>
-        <translation>Ouvrir la bande dessinée suivante</translation>
+        <translation>Apri il prossimo fumetto</translation>
     </message>
     <message>
         <source>Remind me in 14 days</source>
-        <translation>Rappelez-moi dans 14 jours</translation>
+        <translation>Ricordamelo in 14 giorni</translation>
     </message>
     <message>
         <source>Fit to page</source>
-        <translation>Ajuster à la page</translation>
+        <translation>Adatta alla pagina</translation>
     </message>
     <message>
         <source>Show bookmarks</source>
-        <translation>Voir les marque-pages</translation>
+        <translation>Mostra segnalibro</translation>
     </message>
     <message>
         <source>Open previous comic</source>
-        <translation>Ouvrir la bande dessiné précédente</translation>
+        <translation>Apri il fumetto precendente</translation>
     </message>
     <message>
         <source>Rotate image to the left</source>
-        <translation>Rotation à gauche</translation>
+        <translation>Ruota immagine a sinistra</translation>
     </message>
     <message>
         <source>Fit image to height</source>
-        <translation>Ajuster l&apos;image à la hauteur</translation>
+        <translation>Adatta immagine all&apos;altezza</translation>
     </message>
     <message>
         <source>Reset zoom</source>
-        <translation>Réinitialiser le zoom</translation>
+        <translation>Resetta Zoom</translation>
     </message>
     <message>
         <source>Show the bookmarks of the current comic</source>
-        <translation>Voir les marque-pages de cette bande dessinée</translation>
+        <translation>Mostra il segnalibro del fumetto corrente</translation>
     </message>
     <message>
         <source>Show Dictionary</source>
-        <translation>Dictionnaire</translation>
+        <translation>Mostra dizionario</translation>
     </message>
     <message>
         <source>Move down</source>
-        <translation>Descendre</translation>
+        <translation>Muovi Giù</translation>
     </message>
     <message>
         <source>Move left</source>
-        <translation>Déplacer à gauche</translation>
+        <translation>Muovi Sinistra</translation>
     </message>
     <message>
         <source>Reverse reading order in double page mode</source>
-        <translation>Ordre de lecture inversée en mode double page</translation>
+        <translation>Ordine lettura inverso in modo doppia pagina</translation>
     </message>
     <message>
         <source>YACReader options</source>
-        <translation>Options de YACReader</translation>
+        <translation>Opzioni YACReader</translation>
     </message>
     <message>
         <source>Clear open recent list</source>
-        <translation>Vider la liste d&apos;ouverture récente</translation>
+        <translation>Svuota la lista degli aperti</translation>
     </message>
     <message>
         <source>Help, About YACReader</source>
-        <translation>Aide, à propos de YACReader</translation>
+        <translation>Aiuto, crediti YACReader</translation>
     </message>
     <message>
         <source>Show go to flow</source>
-        <translation>Afficher le flux</translation>
+        <translation>Mostra vai all&apos;elenco</translation>
     </message>
     <message>
         <source>Previous Comic</source>
-        <translation>Bande dessinée précédente</translation>
+        <translation>Fumetto precendente</translation>
     </message>
     <message>
         <source>Show full size</source>
-        <translation>Plein écran</translation>
+        <translation>Mostra dimesioni reali</translation>
     </message>
     <message>
         <source>Hide/show toolbar</source>
-        <translation>Masquer / afficher la barre d&apos;outils</translation>
+        <translation>Mostra/Nascondi Barra strumenti</translation>
     </message>
     <message>
         <source>Magnifying glass</source>
-        <translation>Loupe</translation>
+        <translation>Lente ingrandimento</translation>
     </message>
     <message>
         <source>Edit shortcuts</source>
-        <translation>Modifier les raccourcis</translation>
+        <translation>Edita scorciatoie</translation>
     </message>
     <message>
         <source>General</source>
-        <translation>Général</translation>
+        <translation>Generale</translation>
     </message>
     <message>
         <source>Set a bookmark on the current page</source>
-        <translation>Placer un marque-page sur la page actuelle</translation>
+        <translation>Imposta segnalibro a pagina corrente</translation>
     </message>
     <message>
         <source>Page adjustement</source>
-        <translation>Ajustement de la page</translation>
+        <translation>Correzioni di pagna</translation>
     </message>
     <message>
         <source>Show zoom slider</source>
-        <translation>Afficher le curseur de zoom</translation>
+        <translation>Mostra cursore di zoom</translation>
     </message>
     <message>
         <source>Go to the last page</source>
-        <translation>Aller à la dernière page</translation>
+        <translation>Vai all&apos;ultima pagina</translation>
     </message>
     <message>
         <source>Do you want to download the new version?</source>
-        <translation>Voulez-vous télécharger la nouvelle version?</translation>
+        <translation>Vuoi scaricare la nuova versione?</translation>
     </message>
     <message>
         <source>Rotate image to the right</source>
-        <translation>Rotation à droite</translation>
+        <translation>Ruota immagine a destra</translation>
     </message>
     <message>
         <source>Always on top</source>
-        <translation>Toujours au dessus</translation>
+        <translation>Sempre in primo piano</translation>
     </message>
     <message>
         <source>Autoscroll backward, horizontal first</source>
-        <translation>Défilement automatique en arrière horizontal</translation>
+        <translation>Autoscorri indietro, priorità Orizzontale</translation>
     </message>
     <message>
         <source>New instance</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -528,67 +528,67 @@
     </message>
     <message>
         <source>Reset</source>
-        <translation>Remise à zéro</translation>
+        <translation>Reset</translation>
     </message>
     <message>
         <source>My comics path</source>
-        <translation>Chemin de mes bandes dessinées</translation>
+        <translation>Percorso dei miei fumetti</translation>
     </message>
     <message>
         <source>Image adjustment</source>
-        <translation>Ajustement de l&apos;image</translation>
+        <translation>Correzioni immagine</translation>
     </message>
     <message>
         <source>&quot;Go to flow&quot; size</source>
-        <translation>Taille du flux</translation>
+        <translation>Dimensione &quot;Vai all&apos;elenco&quot;</translation>
     </message>
     <message>
         <source>Choose</source>
-        <translation>Choisir</translation>
+        <translation>Scegli</translation>
     </message>
     <message>
         <source>Image options</source>
-        <translation>Option de l&apos;image</translation>
+        <translation>Opzione immagine</translation>
     </message>
     <message>
         <source>Contrast</source>
-        <translation>Contraste</translation>
+        <translation>Contrasto</translation>
     </message>
     <message>
         <source>Options</source>
-        <translation>Options</translation>
+        <translation>Opzioni</translation>
     </message>
     <message>
         <source>Comics directory</source>
-        <translation>Répertoire des bandes dessinées</translation>
+        <translation>Cartella Fumetti</translation>
     </message>
     <message>
         <source>Quick Navigation Mode</source>
-        <translation>Mode navigation rapide</translation>
+        <translation>Modo navigazione rapida</translation>
     </message>
     <message>
         <source>Background color</source>
-        <translation>Couleur d&apos;arrière plan</translation>
+        <translation>Colore di sfondo</translation>
     </message>
     <message>
         <source>Disable mouse over activation</source>
-        <translation>Désactiver la souris sur l&apos;activation</translation>
+        <translation>Disabilita il mouse all&apos;attivazione</translation>
     </message>
     <message>
         <source>Page Flow</source>
-        <translation>Flux des pages</translation>
+        <translation>Flusso pagine</translation>
     </message>
     <message>
         <source>General</source>
-        <translation>Général</translation>
+        <translation>Generale</translation>
     </message>
     <message>
         <source>Brightness</source>
-        <translation>Luminosité</translation>
+        <translation>Luminosità</translation>
     </message>
     <message>
         <source>Restart is needed</source>
-        <translation>Redémarrage nécessaire</translation>
+        <translation>Riavvio Necessario</translation>
     </message>
     <message>
         <source>Fit options</source>
@@ -611,11 +611,11 @@
     <name>QObject</name>
     <message>
         <source>7z lib not found</source>
-        <translation>lib 7z introuvable</translation>
+        <translation>Libreria 7z non trovata</translation>
     </message>
     <message>
         <source>unable to load 7z lib from ./utils</source>
-        <translation>impossible de charger 7z depuis ./utils</translation>
+        <translation>Impossibile caricare 7z da ./utils</translation>
     </message>
     <message>
         <source>Trace</source>
@@ -680,102 +680,102 @@
     <name>ShortcutsDialog</name>
     <message>
         <source>Close</source>
-        <translation>Fermer</translation>
+        <translation>Chiudi</translation>
     </message>
     <message>
         <source>YACReader keyboard shortcuts</source>
-        <translation>Raccourcis clavier de YACReader</translation>
+        <translation>Scorciatoie  da tastiera di YACReader</translation>
     </message>
     <message>
         <source>Keyboard Shortcuts</source>
-        <translation>Raccourcis clavier</translation>
+        <translation>Scorciatoia da tastiera</translation>
     </message>
 </context>
 <context>
     <name>Viewer</name>
     <message>
         <source>Page not available!</source>
-        <translation>Page non disponible !</translation>
+        <translation>Pagina non disponibile!</translation>
     </message>
     <message>
         <source>Press &apos;O&apos; to open comic.</source>
-        <translation>Appuyez sur &quot;O&quot; pour ouvrir une bande dessinée.</translation>
+        <translation>Premi &quot;O&quot; per aprire il fumettto.</translation>
     </message>
     <message>
         <source>Error opening comic</source>
-        <translation>Erreur d&apos;ouverture de la bande dessinée</translation>
+        <translation>Errore nell&apos;apertura</translation>
     </message>
     <message>
         <source>Cover!</source>
-        <translation>Couverture!</translation>
+        <translation>Copertina!</translation>
     </message>
     <message>
         <source>CRC Error</source>
-        <translation>Erreur CRC</translation>
+        <translation>Errore CRC</translation>
     </message>
     <message>
         <source>Comic not found</source>
-        <translation>Bande dessinée introuvable</translation>
+        <translation>Fumetto non trovato</translation>
     </message>
     <message>
         <source>Not found</source>
-        <translation>Introuvable</translation>
+        <translation>Non trovato</translation>
     </message>
     <message>
         <source>Last page!</source>
-        <translation>Dernière page!</translation>
+        <translation>Ultima pagina!</translation>
     </message>
     <message>
         <source>Loading...please wait!</source>
-        <translation>Chargement... Patientez</translation>
+        <translation>In caricamento...Attendi!</translation>
     </message>
 </context>
 <context>
     <name>YACReader::WhatsNewDialog</name>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Fermer</translation>
+        <translation type="unfinished">Chiudi</translation>
     </message>
 </context>
 <context>
     <name>YACReaderFieldEdit</name>
     <message>
         <source>Restore to default</source>
-        <translation>Rétablir les paramètres par défaut</translation>
+        <translation>Resetta al default</translation>
     </message>
     <message>
         <source>Click to overwrite</source>
-        <translation>Cliquez pour remplacer</translation>
+        <translation>Click per sovrascrivere</translation>
     </message>
 </context>
 <context>
     <name>YACReaderFieldPlainTextEdit</name>
     <message>
         <source>Restore to default</source>
-        <translation>Rétablir les paramètres par défaut</translation>
+        <translation>Resetta al default</translation>
     </message>
     <message>
         <source>Click to overwrite</source>
-        <translation>Cliquez pour remplacer</translation>
+        <translation>Click per sovrascrivere</translation>
     </message>
 </context>
 <context>
     <name>YACReaderFlowConfigWidget</name>
     <message>
         <source>CoverFlow look</source>
-        <translation>Vue CoverFlow</translation>
+        <translation>Aspetto flusso Copertine</translation>
     </message>
     <message>
         <source>How to show covers:</source>
-        <translation>Comment voir les couvertures:</translation>
+        <translation>Come mostrare le copertine:</translation>
     </message>
     <message>
         <source>Stripe look</source>
-        <translation>Vue alignée</translation>
+        <translation>Aspetto a strisce</translation>
     </message>
     <message>
         <source>Overlapped Stripe look</source>
-        <translation>Vue superposée</translation>
+        <translation>Aspetto a strisce sovrapposto</translation>
     </message>
 </context>
 <context>
@@ -786,140 +786,140 @@
     </message>
     <message>
         <source>Light</source>
-        <translation>Lumière</translation>
+        <translation>Luce</translation>
     </message>
     <message>
         <source>Show advanced settings</source>
-        <translation>Voir les paramètres avancés</translation>
+        <translation>Mostra opzioni avanzate</translation>
     </message>
     <message>
         <source>Roulette look</source>
-        <translation>Vue roulette</translation>
+        <translation>Aspetto Roulette</translation>
     </message>
     <message>
         <source>Cover Angle</source>
-        <translation>Angle des couvertures</translation>
+        <translation>Angolo copertine</translation>
     </message>
     <message>
         <source>Stripe look</source>
-        <translation>Vue alignée</translation>
+        <translation>Aspetto a strisce</translation>
     </message>
     <message>
         <source>Position</source>
-        <translation>Position</translation>
+        <translation>Posizione</translation>
     </message>
     <message>
         <source>Z offset</source>
-        <translation>Axe Z</translation>
+        <translation>Compensazione Z</translation>
     </message>
     <message>
         <source>Y offset</source>
-        <translation>Axe Y</translation>
+        <translation>Compensazione Y</translation>
     </message>
     <message>
         <source>Central gap</source>
-        <translation>Espace couverture centrale</translation>
+        <translation>Distanza centrale</translation>
     </message>
     <message>
         <source>Presets:</source>
-        <translation>Réglages:</translation>
+        <translation>Preselezioni:</translation>
     </message>
     <message>
         <source>Overlapped Stripe look</source>
-        <translation>Vue superposée</translation>
+        <translation>Aspetto a strisce sovrapposto</translation>
     </message>
     <message>
         <source>Modern look</source>
-        <translation>Vue moderne</translation>
+        <translation>Aspetto moderno</translation>
     </message>
     <message>
         <source>View angle</source>
-        <translation>Angle de vue</translation>
+        <translation>Angolo di vista</translation>
     </message>
     <message>
         <source>Max angle</source>
-        <translation>Angle Maximum</translation>
+        <translation>Angolo massimo</translation>
     </message>
     <message>
         <source>Custom:</source>
-        <translation>Personnalisation:</translation>
+        <translation>Personalizzazione:</translation>
     </message>
     <message>
         <source>Classic look</source>
-        <translation>Vue classique</translation>
+        <translation>Aspetto Classico</translation>
     </message>
     <message>
         <source>Cover gap</source>
-        <translation>Espace entre les couvertures</translation>
+        <translation>Distanza Copertine</translation>
     </message>
     <message>
         <source>High Performance</source>
-        <translation>Haute performance</translation>
+        <translation>Prestazioni Alte</translation>
     </message>
     <message>
         <source>Performance:</source>
-        <translation>Performance:</translation>
+        <translation>Prestazioni:</translation>
     </message>
     <message>
         <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
-        <translation>Utiliser VSync (Améliore la qualité d&apos;image en mode plein écran, ralentit la performance)</translation>
+        <translation>Usa VSync (migliora la qualtà a tutto schermo, peggiora le prestazioni)</translation>
     </message>
     <message>
         <source>Visibility</source>
-        <translation>Visibilité</translation>
+        <translation>Visibilità</translation>
     </message>
     <message>
         <source>Low Performance</source>
-        <translation>Faible performance</translation>
+        <translation>Prestazioni Basse</translation>
     </message>
 </context>
 <context>
     <name>YACReaderOptionsDialog</name>
     <message>
         <source>Save</source>
-        <translation>Sauvegarder</translation>
+        <translation>Salva</translation>
     </message>
     <message>
         <source>Use hardware acceleration (restart needed)</source>
-        <translation>Utiliser accélération hardware (redémarrage nécessaire)</translation>
+        <translation>Usa accelerazione Hardware (necessita restart)</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Annuler</translation>
+        <translation>Cancella</translation>
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation>Raccourcis</translation>
+        <translation>Scorciatoia</translation>
     </message>
     <message>
         <source>Edit shortcuts</source>
-        <translation>Modifier les raccourcis</translation>
+        <translation>Edita Scorciatoia</translation>
     </message>
 </context>
 <context>
     <name>YACReaderSlider</name>
     <message>
         <source>Reset</source>
-        <translation>Remise à zéro</translation>
+        <translation>Resetta</translation>
     </message>
 </context>
 <context>
     <name>YACReaderTranslator</name>
     <message>
         <source>clear</source>
-        <translation>effacer</translation>
+        <translation>Cancella</translation>
     </message>
     <message>
         <source>Service not available</source>
-        <translation>Service non disponible</translation>
+        <translation>Servizio non disponibile</translation>
     </message>
     <message>
         <source>Translation</source>
-        <translation>Traduction</translation>
+        <translation>Traduzione</translation>
     </message>
     <message>
         <source>YACReader translator</source>
-        <translation>Traducteur YACReader</translation>
+        <translation>Traduttore YACReader</translation>
     </message>
 </context>
 </TS>

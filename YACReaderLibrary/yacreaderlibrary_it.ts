@@ -1,134 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="ru_RU">
+<TS version="2.1" language="it_IT">
 <context>
     <name>ActionsShortcutsModel</name>
     <message>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessuno</translation>
     </message>
 </context>
 <context>
     <name>AddLabelDialog</name>
     <message>
         <source>red</source>
-        <translation>красный</translation>
+        <translation>Rosso</translation>
     </message>
     <message>
         <source>blue</source>
-        <translation>синий</translation>
+        <translation>Blu</translation>
     </message>
     <message>
         <source>dark</source>
-        <translation>темный</translation>
+        <translation>Scuro</translation>
     </message>
     <message>
         <source>cyan</source>
-        <translation>голубой</translation>
+        <translation>Azzurro</translation>
     </message>
     <message>
         <source>pink</source>
-        <translation>розовый</translation>
+        <translation>Rosa</translation>
     </message>
     <message>
         <source>green</source>
-        <translation>зеленый</translation>
+        <translation>Verde</translation>
     </message>
     <message>
         <source>light</source>
-        <translation>серый</translation>
+        <translation>Luminoso</translation>
     </message>
     <message>
         <source>white</source>
-        <translation>белый</translation>
+        <translation>Bianco</translation>
     </message>
     <message>
         <source>Choose a color:</source>
-        <translation>Выбрать цвет:</translation>
+        <translation>Seleziona un colore:</translation>
     </message>
     <message>
         <source>accept</source>
-        <translation>добавить</translation>
+        <translation>Accetta</translation>
     </message>
     <message>
         <source>cancel</source>
-        <translation>отменить</translation>
+        <translation>Cancella</translation>
     </message>
     <message>
         <source>orange</source>
-        <translation>оранжевый</translation>
+        <translation>Arancione</translation>
     </message>
     <message>
         <source>purple</source>
-        <translation>пурпурный</translation>
+        <translation>Porpora</translation>
     </message>
     <message>
         <source>violet</source>
-        <translation>фиолетовый</translation>
+        <translation>Viola</translation>
     </message>
     <message>
         <source>yellow</source>
-        <translation>желтый</translation>
+        <translation>Giallo</translation>
     </message>
     <message>
         <source>Label name:</source>
-        <translation>Название ярлыка:</translation>
+        <translation>Nome etichetta:</translation>
     </message>
 </context>
 <context>
     <name>AddLibraryDialog</name>
     <message>
         <source>Add</source>
-        <translation>Добавить</translation>
+        <translation>Aggiungi</translation>
     </message>
     <message>
         <source>Add an existing library</source>
-        <translation>Добавить в существующую библиотеку</translation>
+        <translation>Aggiungi ad una libreria esistente</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation>Cancella</translation>
     </message>
     <message>
         <source>Comics folder : </source>
-        <translation>Папка комиксов : </translation>
+        <translation>Cartella fumetti: </translation>
+    </message>
+    <message>
+        <source>Library Name : </source>
+        <translation type="vanished">Nome libreria: </translation>
     </message>
     <message>
         <source>Library name : </source>
-        <translation>Имя библиотеки : </translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>ApiKeyDialog</name>
     <message>
         <source>Accept</source>
-        <translation>Принять</translation>
+        <translation>Accetta</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation>Cancella</translation>
     </message>
     <message>
         <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
-        <translation>Для подключения к Comic Vine вам потребуется ваш личный API ключ. Приобретите его бесплатно вот &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;здесь&lt;/a&gt;</translation>
+        <translation>Prima di conneterti a &quot;Comic Vine&quot; devi avere la tua chiave API. Per favore recuperane una da &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;QUI&lt;/a</translation>
     </message>
     <message>
         <source>Paste here your Comic Vine API key</source>
-        <translation>Вставьте сюда ваш Comic Vine API ключ</translation>
+        <translation>Incolla qui la tua chiave API di &quot;Comic Vine&quot;</translation>
     </message>
 </context>
 <context>
     <name>ClassicComicsView</name>
     <message>
         <source>Hide comic flow</source>
-        <translation>Показать/скрыть поток комиксов</translation>
+        <translation>Nascondi il flusso dei fumetti</translation>
     </message>
 </context>
 <context>
     <name>ComicInfoView</name>
     <message>
         <source>Authors</source>
-        <translation>Авторы</translation>
+        <translation type="unfinished">Autori</translation>
     </message>
     <message>
         <source>writer</source>
@@ -175,357 +179,357 @@
     <name>ComicModel</name>
     <message>
         <source>no</source>
-        <translation>нет</translation>
+        <translation>No</translation>
     </message>
     <message>
         <source>yes</source>
-        <translation>да</translation>
+        <translation>Si</translation>
     </message>
     <message>
         <source>Read</source>
-        <translation>Прочитано</translation>
+        <translation>Leggi</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>Размер</translation>
+        <translation>Dimensione</translation>
     </message>
     <message>
         <source>Pages</source>
-        <translation>Всего страниц</translation>
+        <translation>Pagine</translation>
     </message>
     <message>
         <source>Title</source>
-        <translation>Заголовок</translation>
+        <translation>Titolo</translation>
     </message>
     <message>
         <source>Current Page</source>
-        <translation>Текущая страница</translation>
+        <translation>Pagina corrente</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation>Имя файла</translation>
+        <translation>Nome file</translation>
     </message>
     <message>
         <source>Rating</source>
-        <translation>Рейтинг</translation>
+        <translation>Valutazione</translation>
     </message>
 </context>
 <context>
     <name>ComicVineDialog</name>
     <message>
         <source>back</source>
-        <translation>назад</translation>
+        <translation>Indietro</translation>
     </message>
     <message>
         <source>next</source>
-        <translation>дальше</translation>
+        <translation>Prossimo</translation>
     </message>
     <message>
         <source>skip</source>
-        <translation>пропустить</translation>
+        <translation>Salta</translation>
     </message>
     <message>
         <source>close</source>
-        <translation>закрыть</translation>
+        <translation>Chiudi</translation>
     </message>
     <message>
         <source>Retrieving tags for : %1</source>
-        <translation>Получение тегов для : %1</translation>
+        <translation>Ricezione tag per: %1</translation>
     </message>
     <message>
         <source>Looking for comic...</source>
-        <translation>Поиск комикса...</translation>
+        <translation>Sto cercando il fumetto...</translation>
     </message>
     <message>
         <source>search</source>
-        <translation>искать</translation>
+        <translation>Cerca</translation>
     </message>
     <message>
         <source>Looking for volume...</source>
-        <translation>Поиск информации...</translation>
+        <translation>Sto cercando il fumetto...</translation>
     </message>
     <message>
         <source>comic %1 of %2 - %3</source>
-        <translation>комикс %1 of %2 - %3</translation>
+        <translation>Fumetto %1 di %2 - %3</translation>
     </message>
     <message>
         <source>%1 comics selected</source>
-        <translation>%1 было выбрано</translation>
+        <translation>Fumetto %1 selezionato</translation>
     </message>
     <message>
         <source>Error connecting to ComicVine</source>
-        <translation>Ошибка поключения к ComicVine</translation>
+        <translation>Errore durante la connessione a ComicVine</translation>
     </message>
     <message>
         <source>Retrieving volume info...</source>
-        <translation>Получение информации...</translation>
+        <translation>Sto ricevendo le informazioni per l&apos;abum...</translation>
     </message>
 </context>
 <context>
     <name>CreateLibraryDialog</name>
     <message>
         <source>Create new library</source>
-        <translation>Создать новую библиотеку</translation>
+        <translation>Crea una nuova libreria</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation>Cancella</translation>
     </message>
     <message>
         <source>Create</source>
-        <translation>Создать</translation>
+        <translation>Crea</translation>
     </message>
     <message>
         <source>Create a library could take several minutes. You can stop the process and update the library later for completing the task.</source>
-        <translation>Создание библиотеки может занять несколько минут. Вы можете остановить процесс и обновить библиотеку позже для завершения задачи.</translation>
+        <translation>Creare una Libreria può aver bisogno di alcuni minuti. Puoi fermare il processo ed aggiornare la libreria più tardi.</translation>
     </message>
     <message>
         <source>The selected path does not exist or is not a valid path. Be sure that you have write access to this folder</source>
-        <translation>Выбранный путь отсутствует, либо неверен. Убедитесь , что у вас есть доступ к этой папке</translation>
+        <translation>Il percorso selezionato non esiste oppure non è valido. Controlla di avere i permessi di scrittura per questa cartella</translation>
     </message>
     <message>
         <source>Comics folder : </source>
-        <translation>Папка комиксов : </translation>
+        <translation>Cartella fumetti: </translation>
     </message>
     <message>
         <source>Library Name : </source>
-        <translation>Имя библиотеки:</translation>
+        <translation>Nome libreria: </translation>
     </message>
     <message>
         <source>Path not found</source>
-        <translation>Путь не найден</translation>
+        <translation>Percorso non trovato</translation>
     </message>
 </context>
 <context>
     <name>EditShortcutsDialog</name>
     <message>
         <source>Shortcut in use</source>
-        <translation>Горячая клавиша уже занята</translation>
+        <translation>Scorciatoia in uso</translation>
     </message>
     <message>
         <source>Restore defaults</source>
-        <translation>Вернуть к первоначальным значениям</translation>
+        <translation>Resetta al Default</translation>
     </message>
     <message>
         <source>Shortcuts settings</source>
-        <translation>Горячие клавиши</translation>
+        <translation>Impostazioni scorciatoie</translation>
     </message>
     <message>
         <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation>Сочетание клавиш &quot;%1&quot; уже назначено для другой функции</translation>
+        <translation>La scorciatoia &quot;%1&quot; è già assegnata ad un&apos; altra funzione</translation>
     </message>
     <message>
         <source>To change a shortcut, double click in the key combination and type the new keys.</source>
-        <translation>Чтобы изменить горячую клавишу щелкните дважды по выбранной комбинации клавиш и введите новые сочетания клавиш.</translation>
+        <translation>Per cambiare una sorciatoia fai doppio click sulla combinazione tasti e digita la nuova combinazione.</translation>
     </message>
 </context>
 <context>
     <name>EmptyFolderWidget</name>
     <message>
         <source>Empty folder</source>
-        <translation>Пустая папка</translation>
+        <translation>Cartella vuota</translation>
     </message>
     <message>
         <source>Subfolders in this folder</source>
-        <translation>Подпапки в этой папке</translation>
+        <translation>Sottocartelle in questa cartella</translation>
     </message>
     <message>
         <source>Drag and drop folders and comics here</source>
-        <translation>Перетащите папки и комиксы сюда</translation>
+        <translation>Prendi e sposta le cartelle qui</translation>
     </message>
 </context>
 <context>
     <name>EmptyLabelWidget</name>
     <message>
         <source>This label doesn&apos;t contain comics yet</source>
-        <translation>Этот ярлык пока ничего не содержит</translation>
+        <translation>Per ora questa etichetta non contiene fumetti</translation>
     </message>
 </context>
 <context>
     <name>EmptyReadingListWidget</name>
     <message>
         <source>This reading list does not contain any comics yet</source>
-        <translation>Этот список чтения пока ничего не содержит</translation>
+        <translation>Per ora questa lista non contiene fumetti</translation>
     </message>
 </context>
 <context>
     <name>ExportComicsInfoDialog</name>
     <message>
         <source>Output file : </source>
-        <translation>Выходной файл (*.ydb) : </translation>
+        <translation>File di Output: </translation>
     </message>
     <message>
         <source>Destination database name</source>
-        <translation>Имя этой базы данных</translation>
+        <translation>Nome database di destinazione</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation>Cancella</translation>
     </message>
     <message>
         <source>Create</source>
-        <translation>Создать</translation>
+        <translation>Crea</translation>
     </message>
     <message>
         <source>The selected path for the output file does not exist or is not a valid path. Be sure that you have write access to this folder</source>
-        <translation>Выбранный путь для импортируемого файла отсутствует, либо неверен. Убедитесь , что у вас есть доступ к этой папке</translation>
+        <translation>Il percorso selezionato per il file di Output non esiste oppure non è valido. Controlla di avere i permessi di scrittura per questa cartella</translation>
     </message>
     <message>
         <source>Export comics info</source>
-        <translation>Экспортировать информацию комикса</translation>
+        <translation>Esporta informazioni fumetto</translation>
     </message>
     <message>
         <source>Problem found while writing</source>
-        <translation>Обнаружена Ошибка записи</translation>
+        <translation>Trovato problema durante la scrittura</translation>
     </message>
 </context>
 <context>
     <name>ExportLibraryDialog</name>
     <message>
         <source>Cancel</source>
-        <translation>Отменить</translation>
+        <translation>Cancella</translation>
     </message>
     <message>
         <source>Create</source>
-        <translation>Создать</translation>
+        <translation>Crea</translation>
     </message>
     <message>
         <source>The selected path for the output file does not exist or is not a valid path. Be sure that you have write access to this folder</source>
-        <translation>Выбранный путь для импортируемого файла отсутствует, либо неверен. Убедитесь , что у вас есть доступ к этой папке</translation>
+        <translation>Il percorso selezionato per il file di Output non esiste oppure non è valido. Controlla di avere i permessi di scrittura per questa cartella</translation>
     </message>
     <message>
         <source>Output folder : </source>
-        <translation>Папка вывода : </translation>
+        <translation>Cartella di Output: </translation>
     </message>
     <message>
         <source>Problem found while writing</source>
-        <translation>Проблема при написании</translation>
+        <translation>Trovato problema durante la scrittura</translation>
     </message>
     <message>
         <source>Create covers package</source>
-        <translation>Создать комплект обложек</translation>
+        <translation>Crea pacchetto delle copertine</translation>
     </message>
     <message>
         <source>Destination directory</source>
-        <translation>Назначенная директория</translation>
+        <translation>Cartella di destinazione</translation>
     </message>
 </context>
 <context>
     <name>FileComic</name>
     <message>
         <source>Format not supported</source>
-        <translation>Формат не поддерживается</translation>
+        <translation>Formato non supportato</translation>
     </message>
     <message>
         <source>7z not found</source>
-        <translation>7z не найден</translation>
+        <translation>7z non trovato</translation>
     </message>
     <message>
         <source>Unknown error opening the file</source>
-        <translation>Неизвестная ошибка при открытии файла</translation>
+        <translation>Errore sconosciuto all&apos;apertura del file</translation>
     </message>
     <message>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
-        <translation>Ошибка контрольной суммы CRC на странице (%1): некоторые страницы будут отображаться неправильно</translation>
+        <translation>Errore CRC alla pagina (%1): alcune pagine potrebbero non essere visualizzate correttamente</translation>
     </message>
 </context>
 <context>
     <name>GridComicsView</name>
     <message>
         <source>Show info</source>
-        <translation>Показать информацию</translation>
+        <translation>Mostra informazioni</translation>
     </message>
 </context>
 <context>
     <name>HelpAboutDialog</name>
     <message>
         <source>Help</source>
-        <translation>Настройки</translation>
+        <translation>Aiuto</translation>
     </message>
     <message>
         <source>About</source>
-        <translation>О программе</translation>
+        <translation>Informazioni</translation>
     </message>
 </context>
 <context>
     <name>ImportComicsInfoDialog</name>
     <message>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation>Cancella</translation>
     </message>
     <message>
         <source>Import</source>
-        <translation>Импортировать</translation>
+        <translation>Importa</translation>
     </message>
     <message>
         <source>Info database location : </source>
-        <translation>Путь к файлу (*.ydb) : </translation>
+        <translation>Informazioni posizione database: </translation>
     </message>
     <message>
         <source>Import comics info</source>
-        <translation>Импортировать информацию комикса</translation>
+        <translation>Importa informazioni fumetto</translation>
     </message>
     <message>
         <source>Comics info file (*.ydb)</source>
-        <translation>Инфо файл комикса (*.ydb)</translation>
+        <translation>File informazioni fumetto (*.ydb)</translation>
     </message>
 </context>
 <context>
     <name>ImportLibraryDialog</name>
     <message>
         <source>Destination folder : </source>
-        <translation>Папка назначения : </translation>
+        <translation>Cartella di destinazione: </translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation>Cancella</translation>
     </message>
     <message>
         <source>Unpack</source>
-        <translation>Распаковать</translation>
+        <translation>Decomprimi</translation>
     </message>
     <message>
         <source>Compresed library covers (*.clc)</source>
-        <translation>Сжатая библиотека обложек (*.clc)</translation>
+        <translation>Libreria di copertine compresse (*.clc)</translation>
     </message>
     <message>
         <source>Package location : </source>
-        <translation>Местоположение комплекта : </translation>
+        <translation>Posizione PAcchetto: </translation>
     </message>
     <message>
         <source>Library Name : </source>
-        <translation>Имя библиотеки : </translation>
+        <translation>Nome libreria: </translation>
     </message>
     <message>
         <source>Extract a catalog</source>
-        <translation>Извлечь каталог</translation>
+        <translation>Estrai un catalogo</translation>
     </message>
 </context>
 <context>
     <name>ImportWidget</name>
     <message>
         <source>stop</source>
-        <translation>Остановить</translation>
+        <translation>Ferma</translation>
     </message>
     <message>
         <source>Importing comics</source>
-        <translation>Импорт комиксов</translation>
+        <translation>Sto importando i fumetti</translation>
     </message>
     <message>
         <source>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Create a library could take several minutes. You can stop the process and update the library later for completing the task.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;YACReaderLibrary сейчас создает библиотеку.&lt;/p&gt;&lt;p&gt; Создание библиотеки может занять несколько минут. Вы можете остановить процесс и обновить библиотеку позже для завершения задачи.&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;YacReader sta creando una nuova libreria.&lt;/p&gt;&lt;p&gt;La creazione di una libreria può durare diversi minuti. Puoi fermare l&apos;attività ed aggiornare la libreria più tardi, completando l&apos;attività&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Some of the comics being added...</source>
-        <translation>Поиск новых комиксов...</translation>
+        <translation>Alcuni fumetti che sto aggiungendo...</translation>
     </message>
     <message>
         <source>Updating the library</source>
-        <translation>Обновление библиотеки</translation>
+        <translation>Sto aggiornando la Libreria</translation>
     </message>
     <message>
         <source>&lt;p&gt;The current library is being updated. For faster updates, please, update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Текущая библиотека обновляется. Для более быстрого обновления в дальнейшем старайтесь почаще обновлять вашу библиотеку после добавления новых комиксов.&lt;/p&gt;&lt;p&gt;Вы можете остановить этот процесс и продолжить обновление этой библиотеки позже.&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Quest alibreria si sta aggiornando. Per aggiornamenti più veloci aggiorna la tua libreria di frequente.&lt;/p&gt;&lt;p&gt;Puoi fermare il processo ed aggiornare la libreria più tardi.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Upgrading the library</source>
@@ -540,211 +544,215 @@
     <name>LibraryWindow</name>
     <message>
         <source>Edit</source>
-        <translation>Редактировать информацию</translation>
+        <translation>Edita</translation>
     </message>
     <message>
         <source>The selected folder doesn&apos;t contain any library.</source>
-        <translation>Выбранная папка не содержит ни одной библиотеки.</translation>
+        <translation>La cartella selezionata non contiene nessuna Libreria.</translation>
     </message>
     <message>
         <source>This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?</source>
-        <translation>Эта библиотека была создана с предыдущей версией YACReaderLibrary. Она должна быть обновлена. Обновить сейчас?</translation>
+        <translation>Questa libreria è stata creata con una versione precedente di YACREaderLibrary. Deve essere aggiornata. Aggiorno ora?</translation>
     </message>
     <message>
         <source>Comic</source>
-        <translation>Комикс</translation>
+        <translation>Fumetto</translation>
     </message>
     <message>
         <source>Folder name:</source>
-        <translation>Имя папки:</translation>
+        <translation>Nome della cartella:</translation>
     </message>
     <message>
         <source>The selected folder and all its contents will be deleted from your disk. Are you sure?</source>
-        <translation>Выбранная папка и все ее содержимое будет удалено с вашего жёсткого диска. Вы уверены?</translation>
+        <translation>La cartella seleziona e tutto il suo contenuto verranno cancellati dal tuo disco. Sei sicuro?</translation>
     </message>
     <message>
         <source>Update current folder</source>
-        <translation>Обновить выбранную папку</translation>
+        <translation>Aggiorna la cartella corrente</translation>
     </message>
     <message>
         <source>Error opening the library</source>
-        <translation>Ошибка открытия библиотеки</translation>
+        <translation>Errore nell&apos;apertura della libreria</translation>
     </message>
     <message>
         <source>Show/Hide marks</source>
-        <translation>Показать/Спрятать пометки</translation>
+        <translation>Mostra/Nascondi</translation>
     </message>
     <message>
         <source>YACReader not found</source>
-        <translation>YACReader не найден</translation>
+        <translation>YACReader non trovato</translation>
     </message>
     <message>
         <source>Show comics server options dialog</source>
-        <translation>Настройки сервера YACReader</translation>
+        <translation>Mostra le opzioni per il server dei fumetti</translation>
     </message>
     <message>
         <source>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files.</source>
-        <translation>Возникла проблема при удалении выбранных папок. Пожалуйста, проверьте права на запись и убедитесь что другие приложения не используют эти папки или файлы.</translation>
+        <translation>C&apos;è stato un problema cancellando le cartelle selezionate. Per favore controlla i tuoi permessi di scrittura e sii sicuro che non ci siano altre applicazioni che usano le stesse cartelle.</translation>
     </message>
     <message>
         <source>Remove current library from your collection</source>
-        <translation>Удалить эту библиотеку из своей коллекции</translation>
+        <translation>Rimuovi la libreria corrente dalla tua collezione</translation>
     </message>
     <message>
         <source>Set comic as read</source>
-        <translation>Отметить комикс как прочитано</translation>
+        <translation>Setta il fumetto come letto</translation>
     </message>
     <message>
         <source>Rename list name</source>
-        <translation>Изменить имя списка</translation>
+        <translation>Rinomina la lista</translation>
     </message>
     <message>
         <source>Add selected comics to favorites list</source>
-        <translation>Добавить выбранные комиксы в список избранного</translation>
+        <translation>Aggiungi i fumetti selezionati alla lista dei favoriti</translation>
     </message>
     <message>
         <source>Remove and delete metadata</source>
-        <translation>Удаление метаданных</translation>
+        <translation>Rimuovi e cancella i Metadati</translation>
+    </message>
+    <message>
+        <source>YACReader not found, YACReader should be installed in the same folder as YACReaderLibrary.</source>
+        <translation type="vanished">YACReader non trovato, YACReader deve esere installato nella stessa cartella di YACReaderLibrary.</translation>
     </message>
     <message>
         <source>Old library</source>
-        <translation>Библиотека из старой версии YACreader</translation>
+        <translation>Vecchia libreria</translation>
     </message>
     <message>
         <source>Update cover</source>
-        <translation>Обновить обложки</translation>
+        <translation>Aggiorna copertina</translation>
     </message>
     <message>
         <source>Rename any selected labels or lists</source>
-        <translation>Переименовать выбранный ярлык/список чтения</translation>
+        <translation>Rinomina qualsiasi etichetta o lista selezionata</translation>
     </message>
     <message>
         <source>Set as completed</source>
-        <translation>Отметить как завершено</translation>
+        <translation>Segna come completo</translation>
     </message>
     <message>
         <source>There was an error accessing the folder&apos;s path</source>
-        <translation>Ошибка доступа к пути папки</translation>
+        <translation>C&apos;è stato un errore nell&apos;accesso al percorso della cartella</translation>
     </message>
     <message>
         <source>Library</source>
-        <translation>Библиотека</translation>
+        <translation>Libreria</translation>
     </message>
     <message>
         <source>Add new folder to the current library</source>
-        <translation>Добавить новую папку в текущую библиотеку</translation>
+        <translation>Aggiungi una nuova cartella alla libreria corrente</translation>
     </message>
     <message>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
-        <translation>Комиксы будут удалены только из выбранного списка/ярлыка. Вы уверены?</translation>
+        <translation>I fumetti verranno cancellati dall&apos;etichetta/lista corrente. Sei sicuro?</translation>
     </message>
     <message>
         <source>Rename current library</source>
-        <translation>Переименовать эту библиотеку</translation>
+        <translation>Rinomina la libreria corrente</translation>
     </message>
     <message>
         <source>Fullscreen mode on/off</source>
-        <translation>Полноэкранный режим включить/выключить</translation>
+        <translation>Modalità a schermo interno on/off</translation>
     </message>
     <message>
         <source>This library was created with a newer version of YACReaderLibrary. Download the new version now?</source>
-        <translation>Эта библиотека была создана новой версией YACReaderLibrary. Скачать новую версию сейчас?</translation>
+        <translation>Questa libreria è stata creata con una verisone più recente di YACReaderLibrary. Scarico la versione aggiornata ora?</translation>
     </message>
     <message>
         <source>Moving comics...</source>
-        <translation>Переместить комиксы...</translation>
+        <translation>Sto muovendo i fumetti...</translation>
     </message>
     <message>
         <source>Open current comic on YACReader</source>
-        <translation>Открыть комикс в YACReader</translation>
+        <translation>Apri il fumetto corrente con YACReader</translation>
     </message>
     <message>
         <source>Update current library</source>
-        <translation>Обновить эту библиотеку</translation>
+        <translation>Aggiorna la Libreria corrente</translation>
     </message>
     <message>
         <source>Copying comics...</source>
-        <translation>Скопировать комиксы...</translation>
+        <translation>Sto copiando i fumetti...</translation>
     </message>
     <message>
         <source>Library &apos;%1&apos; is no longer available. Do you want to remove it?</source>
-        <translation>Библиотека &apos;%1&apos; больше не доступна. Вы хотите удалить ее?</translation>
+        <translation>La libreria &apos;%1&apos; non è più disponibile, la vuoi cancellare?</translation>
     </message>
     <message>
         <source>Update library</source>
-        <translation>Обновить библиотеку</translation>
+        <translation>Aggiorna Libreria</translation>
     </message>
     <message>
         <source>Open folder...</source>
-        <translation>Открыть папку...</translation>
+        <translation>Apri Cartella...</translation>
     </message>
     <message>
         <source>Do you want remove </source>
-        <translation>Вы хотите удалить библиотеку </translation>
+        <translation>Vuoi rimuovere </translation>
     </message>
     <message>
         <source>Set as uncompleted</source>
-        <translation>Отметить как не завершено</translation>
+        <translation>Segna come non completo</translation>
     </message>
     <message>
         <source>Error in path</source>
-        <translation>Ошибка в пути</translation>
+        <translation>Errore nel percorso</translation>
     </message>
     <message>
         <source>Reset comic rating</source>
-        <translation>Сбросить рейтинг комикса</translation>
+        <translation>Resetta la valutazione dei fumetti</translation>
     </message>
     <message>
         <source>Error updating the library</source>
-        <translation>Ошибка обновления библиотеки</translation>
+        <translation>Errore aggiornando la libreria</translation>
     </message>
     <message>
         <source>Folder</source>
-        <translation>Папка</translation>
+        <translation>Cartella</translation>
     </message>
     <message>
         <source>The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?</source>
-        <translation>Выбранные элементы будут удалены, ваши комиксы или папки НЕ БУДУТ удалены с вашего жёсткого диска. Вы уверены?</translation>
+        <translation>Gli elementi selezionati verranno cancellati, i tuoi fumetti o cartella NON verranno cancellati dal tuo disco. Sei sicuro?</translation>
     </message>
     <message>
         <source>Expand all nodes</source>
-        <translation>Раскрыть все папки</translation>
+        <translation>Espandi tutti i nodi</translation>
     </message>
     <message>
         <source>Delete current folder from disk</source>
-        <translation>Удалить выбранную папку с жёсткого диска</translation>
+        <translation>Cancella la cartella corrente dal disco</translation>
     </message>
     <message>
         <source>List name:</source>
-        <translation>Имя списка:</translation>
+        <translation>Nome lista:</translation>
     </message>
     <message>
         <source>Add to...</source>
-        <translation>Добавить в...</translation>
+        <translation>Aggiungi a...</translation>
     </message>
     <message>
         <source>Library &apos;%1&apos; has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
-        <translation>Библиотека &apos;%1&apos; была создана старой версией YACReaderLibrary. Она должна быть вновь создана. Вы хотите создать библиотеку сейчас?</translation>
+        <translation>La libreria &apos;%1&apos; è stata creata con una versione precedente di YACREaderLibrary. Deve essere ricreata. Lo vuoi fare ora?</translation>
     </message>
     <message>
         <source>Pack covers</source>
-        <translation>Запаковать обложки</translation>
+        <translation>Compatta Copertine</translation>
     </message>
     <message>
         <source>Save covers</source>
-        <translation>Сохранить обложки</translation>
+        <translation>Salva Copertine</translation>
     </message>
     <message>
         <source>Change between comics views</source>
-        <translation>Изменение внешнего вида потока комиксов</translation>
+        <translation>Cambia tra i modi di visualizzazione dei fumetti</translation>
     </message>
     <message>
         <source>Remove current reading list from the library</source>
-        <translation>Удалить выбранный ярлык/список чтения</translation>
+        <translation>Rimuovi la lista di lettura dalla libreria</translation>
     </message>
     <message>
         <source>Add new reading lists</source>
-        <translation>Добавить новый список чтения</translation>
+        <translation>Aggiungi una lista di lettura</translation>
     </message>
     <message>
         <source>You are adding too many libraries.
@@ -752,239 +760,247 @@
 You probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.
 
 YACReaderLibrary will not stop you from creating more libraries but you should keep the number of libraries low.</source>
-        <translation>Вы добавляете слишком много библиотек.
+        <translation>Stai aggiungendo troppe Libreire
 
-Вероятно, вам нужна только одна библиотека в папке комиксов верхнего уровня, вы можете просматривать любые подпапки, используя раздел папок на левой боковой панели.
+Hai probabilemnte bisogno di una sola Libreria al livello superiore, puoi poi navigare qualsiasi sotto cartella usando la selezione delle cartella a sinistra
 
-YACReaderLibrary не помешает вам создать больше библиотек, но вы должны иметь не большое количество библиотек.</translation>
+YACReader non ti fermerà dal creare altre librerie ma è meglio se terrai il numero di librerie basso.</translation>
     </message>
     <message>
         <source>Set as read</source>
-        <translation>Отметить как прочитано</translation>
+        <translation>Setta come letto</translation>
     </message>
     <message>
         <source>Assign comics numbers</source>
-        <translation>Порядковый номер</translation>
+        <translation>Assegna un numero ai fumetti</translation>
     </message>
     <message>
         <source>Delete selected comics</source>
-        <translation>Удалить выбранное</translation>
+        <translation>Cancella i fumetti selezionati</translation>
     </message>
     <message>
         <source>Export comics info</source>
-        <translation>Экспортировать информацию комикса</translation>
+        <translation>Esporta informazioni fumetto</translation>
     </message>
     <message>
         <source>Show options dialog</source>
-        <translation>Настройки</translation>
+        <translation>Mostra le opzioni</translation>
     </message>
     <message>
         <source>Please, select a folder first</source>
-        <translation>Пожалуйста, сначала выберите папку</translation>
+        <translation>Per cortesia prima seleziona una cartella</translation>
     </message>
     <message>
         <source>Create a new library</source>
-        <translation>Создать новую библиотеку</translation>
+        <translation>Crea una nuova libreria</translation>
     </message>
     <message>
         <source>Library not available</source>
-        <translation>Библиотека не доступна</translation>
+        <translation>Libreria non disponibile</translation>
     </message>
     <message>
         <source>Import comics info</source>
-        <translation>Импортировать информацию комикса</translation>
+        <translation>Importa informazioni fumetto</translation>
+    </message>
+    <message>
+        <source>The current library can&apos;t be udpated. Check for write write permissions on: </source>
+        <translation type="vanished">La libreria corrente non può essere aggiornata. Controlla i tuoi permessi di scrittura su: </translation>
     </message>
     <message>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
-        <translation>Возникла проблема при удалении выбранных комиксов. Пожалуйста, проверьте права на запись для выбранных файлов или содержащую их папку.</translation>
+        <translation>C&apos;è un problema nel cancellare i fumetti selezionati. Per favore controlla i tuoi permessi di scrittura sui file o sulla cartella.</translation>
     </message>
     <message>
         <source>Add new reading list</source>
-        <translation>Создать новый список чтения</translation>
+        <translation>Aggiorna la lista di lettura</translation>
     </message>
     <message>
         <source>Save selected covers to...</source>
-        <translation>Сохранить выбранные обложки в...</translation>
+        <translation>Salva le copertine selezionate in...</translation>
     </message>
     <message>
         <source>Open current comic</source>
-        <translation>Открыть выбранный комикс</translation>
+        <translation>Apri il fumetto corrente</translation>
     </message>
     <message>
         <source>YACReader Library</source>
-        <translation>Библиотека YACReader</translation>
+        <translation>Libreria YACReader</translation>
     </message>
     <message>
         <source>Add a new reading list to the current library</source>
-        <translation>Создать новый список чтения</translation>
+        <translation>Aggiungi una lista di lettura alla libreria corrente</translation>
     </message>
     <message>
         <source>Error creating the library</source>
-        <translation>Ошибка создания библиотеки</translation>
+        <translation>Errore creando la libreria</translation>
+    </message>
+    <message>
+        <source>Update failed</source>
+        <translation type="vanished">Aggiornamento fallito</translation>
     </message>
     <message>
         <source>You are adding too many libraries.</source>
-        <translation>Вы добавляете слишком много библиотек.</translation>
+        <translation>Stai aggiungendto troppe librerie.</translation>
     </message>
     <message>
         <source>Update folder</source>
-        <translation>Обновить папку</translation>
+        <translation>Aggiorna Cartella</translation>
     </message>
     <message>
         <source>Unpack covers</source>
-        <translation>Распаковать обложки</translation>
+        <translation>Scompatta le Copertine</translation>
     </message>
     <message>
         <source>Update needed</source>
-        <translation>Необходимо обновление</translation>
+        <translation>Devi aggiornarmi</translation>
     </message>
     <message>
         <source>Open an existing library</source>
-        <translation>Открыть существующую библиотеку</translation>
+        <translation>Apri una libreria esistente</translation>
     </message>
     <message>
         <source>Show or hide read marks</source>
-        <translation>Показать или спрятать отметку прочтено</translation>
+        <translation>Mostra o nascondi lo stato di lettura</translation>
     </message>
     <message>
         <source>Library name already exists</source>
-        <translation>Имя папки уже используется</translation>
+        <translation>Esiste già una libreria con lo stesso nome</translation>
     </message>
     <message>
         <source>There is another library with the name &apos;%1&apos;.</source>
-        <translation>Уже существует другая папка с именем &apos;%1&apos;.</translation>
+        <translation>Esiste già una libreria con il nome &apos;%1&apos;.</translation>
     </message>
     <message>
         <source>Remove reading list</source>
-        <translation>Удалить список чтения</translation>
+        <translation>Rimuovi la lista di lettura</translation>
     </message>
     <message>
         <source>Delete folder</source>
-        <translation>Удалить папку</translation>
+        <translation>Cancella Cartella</translation>
     </message>
     <message>
         <source>Assign numbers starting in:</source>
-        <translation>Назначить порядковый номер начиная с:</translation>
+        <translation>Assegna numeri partendo da:</translation>
     </message>
     <message>
         <source>Download new version</source>
-        <translation>Загрузить новую версию</translation>
+        <translation>Scarica la nuova versione</translation>
     </message>
     <message>
         <source>Delete comics</source>
-        <translation>Удалить комиксы</translation>
+        <translation>Cancella i fumetti</translation>
     </message>
     <message>
         <source>Add new folder</source>
-        <translation>Добавить новую папку</translation>
+        <translation>Aggiungi una nuova cartella</translation>
     </message>
     <message>
         <source>Select all comics</source>
-        <translation>Выбрать все комиксы</translation>
+        <translation>Seleziona tutti i fumetti</translation>
     </message>
     <message>
         <source>Assign current order to comics</source>
-        <translation>Назначить порядковый номер</translation>
+        <translation>Assegna l&apos;ordinamento corrente ai fumetti</translation>
     </message>
     <message>
         <source>Pack the covers of the selected library</source>
-        <translation>Запаковать обложки выбранной библиотеки</translation>
+        <translation>Compatta le copertine della libreria selezionata</translation>
     </message>
     <message>
         <source>Help, About YACReader</source>
-        <translation>О программе</translation>
+        <translation>Aiuto, Crediti YACReader</translation>
     </message>
     <message>
         <source>Collapse all nodes</source>
-        <translation>Свернуть все папки</translation>
+        <translation>Compatta tutti i nodi</translation>
     </message>
     <message>
         <source>Favorites</source>
-        <translation>Избранное</translation>
+        <translation>Favoriti</translation>
     </message>
     <message>
         <source>Rename selected list</source>
-        <translation>Переименовать выбранный список</translation>
+        <translation>Rinomina la lista selezionata</translation>
     </message>
     <message>
         <source>Delete list/label</source>
-        <translation>Удалить список/ярлык</translation>
+        <translation>Cancella Lista/Etichetta</translation>
     </message>
     <message>
         <source>Set comic as unread</source>
-        <translation>Отметить комикс как не прочитано</translation>
+        <translation>Setta il fumetto come non letto</translation>
     </message>
     <message>
         <source>Edit shortcuts</source>
-        <translation>Редактировать горячие клавиши</translation>
+        <translation>Edita scorciatoie</translation>
     </message>
     <message>
         <source>Select root node</source>
-        <translation>Домашняя папка</translation>
+        <translation>Seleziona il nodo principale</translation>
     </message>
     <message>
         <source>No folder selected</source>
-        <translation>Ни одна папка не была выбрана</translation>
+        <translation>Nessuna cartella selezionata</translation>
     </message>
     <message>
         <source>Unpack a catalog</source>
-        <translation>Распаковать каталог</translation>
+        <translation>Scompatta un catalogo</translation>
     </message>
     <message>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
-        <translation>Все выбранные комиксы будут удалены с вашего жёсткого диска. Вы уверены?</translation>
+        <translation>Tutti i fumetti selezionati saranno cancellati dal tuo disco. Sei sicuro?</translation>
     </message>
     <message>
         <source>Download tags from Comic Vine</source>
-        <translation>Скачать теги из Comic Vine</translation>
+        <translation>Scarica i Tag da Comic Vine</translation>
     </message>
     <message>
         <source>Remove comics</source>
-        <translation>Убрать комиксы</translation>
+        <translation>Rimuovi i fumetti</translation>
     </message>
     <message>
         <source>Add a new label to this library</source>
-        <translation>Создать новый ярлык</translation>
+        <translation>Aggiungi una nuova etichetta a questa libreria</translation>
     </message>
     <message>
         <source>Set as unread</source>
-        <translation>Отметить как не прочитано</translation>
+        <translation>Setta come non letto</translation>
     </message>
     <message>
         <source>Library not found</source>
-        <translation>Библиотека не найдена</translation>
+        <translation>Libreria non trovata</translation>
     </message>
     <message>
         <source>Rename library</source>
-        <translation>Переименовать библиотеку</translation>
+        <translation>Rinomina la libreria</translation>
     </message>
     <message>
         <source>Remove library</source>
-        <translation>Удалить библиотеку</translation>
+        <translation>Rimuovi la libreria</translation>
     </message>
     <message>
         <source>Open containing folder...</source>
-        <translation>Открыть выбранную папку...</translation>
+        <translation>Apri la cartella dei contenuti...</translation>
     </message>
     <message>
         <source>Add new label</source>
-        <translation>Создать новый ярлык</translation>
+        <translation>Aggiungi una nuova etichetta</translation>
     </message>
     <message>
         <source>Unable to delete</source>
-        <translation>Не удалось удалить</translation>
+        <translation>Non posso cancellare</translation>
     </message>
     <message>
         <source> library?</source>
-        <translation>?</translation>
+        <translation> Libreria?</translation>
     </message>
     <message>
         <source>Save covers of the selected comics as JPG files</source>
-        <translation>Сохранить обложки выбранных комиксов как JPG файлы</translation>
+        <translation>Salva le copertine dei fumetti selezionati come file JPG</translation>
     </message>
     <message>
         <source>Are you sure?</source>
-        <translation>Вы уверены?</translation>
+        <translation>Sei sicuro?</translation>
     </message>
     <message>
         <source>Set as manga</source>
@@ -1027,7 +1043,7 @@ YACReaderLibrary не помешает вам создать больше биб
     <name>LocalComicListModel</name>
     <message>
         <source>file name</source>
-        <translation>имя файла</translation>
+        <translation>Nome file</translation>
     </message>
 </context>
 <context>
@@ -1065,70 +1081,70 @@ YACReaderLibrary не помешает вам создать больше биб
     <name>NoLibrariesWidget</name>
     <message>
         <source>create your first library</source>
-        <translation>создайте свою первую библиотеку</translation>
+        <translation>Crea la tua prima libreria</translation>
     </message>
     <message>
         <source>You don&apos;t have any libraries yet</source>
-        <translation>У вас нет ни одной библиотеки</translation>
+        <translation>Per ora non hai ancora nessuna libreria</translation>
     </message>
     <message>
         <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Вы можете создать библиотеку в любой папке, YACReaderLibrary будет импортировать все комиксы и папки из этой папки. Если вы уже ранее создавали библиотеки, их можно будет открыть.&lt; / p &gt; &lt;p&gt;Не забывайте, что Вы можете использовать YACReader в качестве отдельного приложения для чтения комиксов на вашем компьютере.&lt;/п&gt;</translation>
+        <translation>&lt;p&gt;Puoi creare una libreria in qualsiasi cartella, YACReader importerà tutti i fumetti e struttura da questa certella. Se hai creato una qualsiasia libreria nel passato la puoi aprire. &lt;/p&gt;&lt;p&gt;Non dimenticare che puoi usare YACReader come applicazione stand alone per leggere i fumetti sul tuo PC.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>add an existing one</source>
-        <translation>добавить уже существующую</translation>
+        <translation>Aggiungine una esistente</translation>
     </message>
 </context>
 <context>
     <name>OptionsDialog</name>
     <message>
         <source>Restore defautls</source>
-        <translation>Вернуть к первоначальным значениям</translation>
+        <translation>Resetta al Default</translation>
     </message>
     <message>
         <source>Background</source>
-        <translation>Фоновое изображение</translation>
+        <translation>Sfondo</translation>
     </message>
     <message>
         <source>Blur level</source>
-        <translation>Уровень размытия</translation>
+        <translation>Livello di sfumatura</translation>
     </message>
     <message>
         <source>Enable background image</source>
-        <translation>Включить фоновое изображение</translation>
+        <translation>Abilita l&apos;immagine di sfondo</translation>
     </message>
     <message>
         <source>Options</source>
-        <translation>Настройки</translation>
+        <translation>Opzioni</translation>
     </message>
     <message>
         <source>Comic Vine API key</source>
-        <translation>Comic Vine API ключ</translation>
+        <translation>API di ComicVine</translation>
     </message>
     <message>
         <source>Edit Comic Vine API key</source>
-        <translation>Редактировать Comic Vine API ключ</translation>
+        <translation>Edita l&apos;API di ComicVine</translation>
     </message>
     <message>
         <source>Opacity level</source>
-        <translation>Уровень непрозрачности</translation>
+        <translation>Livello di opacità</translation>
     </message>
     <message>
         <source>General</source>
-        <translation>Основные</translation>
+        <translation>Generale</translation>
     </message>
     <message>
         <source>Use selected comic cover as background</source>
-        <translation>Обложка комикса фоновое изображение</translation>
+        <translation>Usa la cover del fumetto selezionato come sfondo</translation>
     </message>
     <message>
         <source>Comic Flow</source>
-        <translation>Поток комиксов</translation>
+        <translation>Flusso dei fumetti</translation>
     </message>
     <message>
         <source>Grid view</source>
-        <translation>Фоновое изображение</translation>
+        <translation>Vista a Griglia</translation>
     </message>
     <message>
         <source>Tray icon settings (experimental)</source>
@@ -1155,131 +1171,131 @@ YACReaderLibrary не помешает вам создать больше биб
     <name>PropertiesDialog</name>
     <message>
         <source>Day:</source>
-        <translation>День:</translation>
+        <translation>Giorno:</translation>
     </message>
     <message>
         <source>Plot</source>
-        <translation>Сюжет</translation>
+        <translation>Trama</translation>
     </message>
     <message>
         <source>Size:</source>
-        <translation>Размер:</translation>
+        <translation>Dimesioni:</translation>
     </message>
     <message>
         <source>Year:</source>
-        <translation>Год:</translation>
+        <translation>Anno:</translation>
     </message>
     <message>
         <source>Inker(s):</source>
-        <translation>Контуровщик(и):</translation>
+        <translation>Inchiostratore(i):</translation>
     </message>
     <message>
         <source>Publishing</source>
-        <translation>Издатели</translation>
+        <translation>Pubblicazione</translation>
     </message>
     <message>
         <source>Publisher:</source>
-        <translation>Издатель:</translation>
+        <translation>Editore:</translation>
     </message>
     <message>
         <source>General info</source>
-        <translation>Общая информация</translation>
+        <translation>Informazioni generali</translation>
     </message>
     <message>
         <source>Color/BW:</source>
-        <translation>Цвет/BW:</translation>
+        <translation>Colore o B/N:</translation>
     </message>
     <message>
         <source>Edit selected comics information</source>
-        <translation>Редактировать информацию выбранного комикса</translation>
+        <translation>Edita le informazioni del fumetto selezionato</translation>
     </message>
     <message>
         <source>Penciller(s):</source>
-        <translation>Художник(и):</translation>
+        <translation>Mine:</translation>
     </message>
     <message>
         <source>Colorist(s):</source>
-        <translation>Колорист(ы):</translation>
+        <translation>Colorista(i):</translation>
     </message>
     <message>
         <source>Genre:</source>
-        <translation>Жанр:</translation>
+        <translation>Genere:</translation>
     </message>
     <message>
         <source>Issue number:</source>
-        <translation>Номер выпуска</translation>
+        <translation>Numeri emessi:</translation>
     </message>
     <message>
         <source>Month:</source>
-        <translation>Месяц:</translation>
+        <translation>Mese:</translation>
     </message>
     <message>
         <source>Notes:</source>
-        <translation>Заметки:</translation>
+        <translation>Note:</translation>
     </message>
     <message>
         <source>Synopsis:</source>
-        <translation>Описание:</translation>
+        <translation>Sinossi:</translation>
     </message>
     <message>
         <source>Title:</source>
-        <translation>Заголовок:</translation>
+        <translation>Titolo:</translation>
     </message>
     <message>
         <source>Not found</source>
-        <translation>Не найдено</translation>
+        <translation>Non trovato</translation>
     </message>
     <message>
         <source>Characters:</source>
-        <translation>Персонажи:</translation>
+        <translation>Personaggi:</translation>
     </message>
     <message>
         <source>Authors</source>
-        <translation>Авторы</translation>
+        <translation>Autori</translation>
     </message>
     <message>
         <source>Age rating:</source>
-        <translation>Возрастной рейтинг:</translation>
+        <translation>Valutazione età:</translation>
     </message>
     <message>
         <source>Story arc:</source>
-        <translation>Сюжетная арка:</translation>
+        <translation>Arco Narrativo:</translation>
     </message>
     <message>
         <source>Writer(s):</source>
-        <translation>Писатель(и):</translation>
+        <translation>Scrittore(i):</translation>
     </message>
     <message>
         <source>Comic not found. You should update your library.</source>
-        <translation>Комикс не найден. Обновите вашу библиотеку.</translation>
+        <translation>Fumetto non trovato, dovresti aggiornare la Libreria.</translation>
     </message>
     <message>
         <source>Edit comic information</source>
-        <translation>Редактировать информацию комикса</translation>
+        <translation>Edita le informazioni del fumetto</translation>
     </message>
     <message>
         <source>Cover page</source>
-        <translation>Страница обложки</translation>
+        <translation>Pagina Copertina</translation>
     </message>
     <message>
         <source>Cover Artist(s):</source>
-        <translation>Художник(и) Обложки:</translation>
+        <translation>Artista(i) copertina:</translation>
     </message>
     <message>
         <source>Comic Vine link: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; view &lt;/a&gt;</source>
-        <translation>&lt;a style=&apos;color: ##666666; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; Открыть страницу этого комикса на сайте Comic Vine &lt;/a&gt;</translation>
+        <translation>Comic Vine link: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; Vai &lt;/a&gt;</translation>
     </message>
     <message>
         <source>Volume:</source>
-        <translation>Объём :</translation>
+        <translation>Album:</translation>
     </message>
     <message>
         <source>Format:</source>
-        <translation>Формат:</translation>
+        <translation>Formato:</translation>
     </message>
     <message>
         <source>Letterer(s):</source>
-        <translation>Гравёр-шрифтовик(и):</translation>
+        <translation>Letterista(i):</translation>
     </message>
     <message>
         <source>of:</source>
@@ -1298,11 +1314,11 @@ YACReaderLibrary не помешает вам создать больше биб
     <name>QObject</name>
     <message>
         <source>7z lib not found</source>
-        <translation>Библиотека распаковщика 7z не найдена</translation>
+        <translation>Libreria 7z non trovata</translation>
     </message>
     <message>
         <source>unable to load 7z lib from ./utils</source>
-        <translation>Не удается загрузить библиотеку распаковщика 7z из ./utils</translation>
+        <translation>Impossibile caricare la libreria 7z da ./utils</translation>
     </message>
     <message>
         <source>Trace</source>
@@ -1367,154 +1383,158 @@ YACReaderLibrary не помешает вам создать больше биб
     <name>RenameLibraryDialog</name>
     <message>
         <source>Rename current library</source>
-        <translation>Переименовать эту библиотеку</translation>
+        <translation>Rinomina la libreria corrente</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation>Cancella</translation>
     </message>
     <message>
         <source>Rename</source>
-        <translation>Переименовать</translation>
+        <translation>Rinomina</translation>
     </message>
     <message>
         <source>New Library Name : </source>
-        <translation>Новое имя библиотеки:</translation>
+        <translation>Nome della nuova libreria: </translation>
     </message>
 </context>
 <context>
     <name>ScraperResultsPaginator</name>
     <message>
         <source>Number of %1 found : %2</source>
-        <translation>Количество из %1 найдено : %2</translation>
+        <translation>Numero di %1 trovati; %2</translation>
     </message>
     <message>
         <source>page %1 of %2</source>
-        <translation>страница %1 из %2</translation>
+        <translation>pagina %1 di %2</translation>
     </message>
     <message>
         <source>Number of volumes found : %1</source>
-        <translation>Количество найденных томов : %1</translation>
+        <translation>Numero di volumi trovati: %1</translation>
     </message>
 </context>
 <context>
     <name>SearchSingleComic</name>
     <message>
         <source>Please provide some additional information.</source>
-        <translation>Пожалуйста, введите инфомарцию для поиска.</translation>
+        <translation>Per favore aggiugi informazioni addizionali.</translation>
     </message>
     <message>
         <source>Series:</source>
-        <translation>Серия:</translation>
+        <translation>Serie:</translation>
     </message>
 </context>
 <context>
     <name>SearchVolume</name>
     <message>
         <source>Please provide some additional information.</source>
-        <translation>Пожалуйста, введите инфомарцию для поиска.</translation>
+        <translation>Per favore aggiugi informazioni addizionali.</translation>
     </message>
     <message>
         <source>Series:</source>
-        <translation>Серия:</translation>
+        <translation>Serie:</translation>
     </message>
 </context>
 <context>
     <name>SelectComic</name>
     <message>
         <source>loading description</source>
-        <translation>загрузка описания</translation>
+        <translation>Caricamento descrizione</translation>
     </message>
     <message>
         <source>comics</source>
-        <translation>комиксы</translation>
+        <translation>Fumetti</translation>
     </message>
     <message>
         <source>loading cover</source>
-        <translation>загрузка обложки</translation>
+        <translation>Caricamento copertine</translation>
     </message>
     <message>
         <source>Please, select the right comic info.</source>
-        <translation>Пожалуйста, выберите правильную информацию об комиксе.</translation>
+        <translation>Per favore seleziona le informazioni corrette per il fumetto.</translation>
     </message>
     <message>
         <source>description unavailable</source>
-        <translation>описание недоступно</translation>
+        <translation>Descrizione non disponibile</translation>
     </message>
 </context>
 <context>
     <name>SelectVolume</name>
     <message>
         <source>loading description</source>
-        <translation>загрузка описания</translation>
+        <translation>Caricamento descrizione</translation>
     </message>
     <message>
         <source>Please, select the right series for your comic.</source>
-        <translation>Пожалуйста, выберите правильную серию для вашего комикса.</translation>
+        <translation>Per favore seleziona la serie corretta per il fumetto.</translation>
     </message>
     <message>
         <source>loading cover</source>
-        <translation>загрузка обложки</translation>
+        <translation>Caricamento copertine</translation>
     </message>
     <message>
         <source>volumes</source>
-        <translation>тома</translation>
+        <translation>Volumi</translation>
     </message>
     <message>
         <source>description unavailable</source>
-        <translation>описание недоступно</translation>
+        <translation>Descrizione non disponibile</translation>
     </message>
 </context>
 <context>
     <name>SeriesQuestion</name>
     <message>
         <source>no</source>
-        <translation>нет</translation>
+        <translation>No</translation>
     </message>
     <message>
         <source>yes</source>
-        <translation>да</translation>
+        <translation>Si</translation>
     </message>
     <message>
         <source>You are trying to get information for various comics at once, are they part of the same series?</source>
-        <translation>Вы пытаетесь получить информацию для нескольких комиксов одновременно, являются ли они все частью одной серии?</translation>
+        <translation>Stai cercando di recuperare informazioni per diversi fumetti in una sola volta, sono parte della stessa serie?</translation>
     </message>
 </context>
 <context>
     <name>ServerConfigDialog</name>
     <message>
         <source>Port</source>
-        <translation>Порт</translation>
+        <translation>Porta</translation>
     </message>
     <message>
         <source>YACReader is available for iOS devices. &lt;a href=&apos;http://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt; Discover it! &lt;/a&gt;</source>
-        <translation>&lt;a href=&apos;http://ios.yacreader.com&apos; style=&apos;color:rgb(102,102,102)&apos;&gt;YACReader доступен для устройств с iOS.&lt;/a&gt;</translation>
+        <translation>YACReader è disponibile per dispositivi iOS. &lt;a href=&apos;http://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt; Provalo! &lt;/a&gt;</translation>
     </message>
     <message>
         <source>enable the server</source>
-        <translation>активировать сервер</translation>
+        <translation>Abilita il server</translation>
     </message>
     <message>
         <source>Server connectivity information</source>
-        <translation>Информация о подключении</translation>
+        <translation>Informazioni sulla connettività del server</translation>
     </message>
     <message>
         <source>display less information about folders in the browser
 to improve the performance</source>
-        <translation>отображать меньше информации о папках в браузере
-для улучшения производительности</translation>
+        <translation>Mostra meno informazioni sulle cartelle nel Browser.
+Migliora le prestazioni!</translation>
     </message>
     <message>
         <source>Scan it!</source>
-        <translation>Сканируйте!</translation>
+        <translation>Scansiona!</translation>
+    </message>
+    <message>
+        <source>QR generator error!</source>
+        <translation type="vanished">Errore nel generatore QR!</translation>
     </message>
     <message>
         <source>set port</source>
-        <translation>указать порт</translation>
+        <translation>Configura porta</translation>
     </message>
     <message>
         <source>Choose an IP address</source>
-        <translation>Выбрать IP адрес</translation>
+        <translation>Scegli un indirizzo IP</translation>
     </message>
     <message>
         <source>Could not load libqrencode.</source>
@@ -1525,67 +1545,71 @@ to improve the performance</source>
     <name>SortVolumeComics</name>
     <message>
         <source>remove selected comics</source>
-        <translation>удалить выбранные комиксы</translation>
+        <translation>Rimuovi i fumetti selezionati</translation>
     </message>
     <message>
         <source>sort comics to match comic information</source>
-        <translation>сортировать комиксы, чтобы соответствовать информации комиксов</translation>
+        <translation>Ordina i fumetti per far corrispondere le informazioni</translation>
     </message>
     <message>
         <source>restore all removed comics</source>
-        <translation>восстановить все удаленные комиксы</translation>
+        <translation>Ripristina tutti i fumetti rimossi</translation>
     </message>
     <message>
         <source>issues</source>
-        <translation>выпуск</translation>
+        <translation>Emissione</translation>
     </message>
     <message>
         <source>Please, sort the list of comics on the left until it matches the comics&apos; information.</source>
-        <translation>Пожалуйста, отсортируйте список комиксов слева, пока он не будет соответствовать информации комикса.</translation>
+        <translation>Per favore ordina la lista dei fumetti a sinistra sino a che corrisponde alle informazioni dei fumetti.</translation>
+    </message>
+    <message>
+        <source>restore removed comics</source>
+        <translation type="vanished">Ripristina i fumetti rimossi</translation>
     </message>
 </context>
 <context>
     <name>TitleHeader</name>
     <message>
         <source>SEARCH</source>
-        <translation>ПОИСК</translation>
+        <translation>CERCA</translation>
     </message>
 </context>
 <context>
     <name>UpdateLibraryDialog</name>
     <message>
         <source>Update library</source>
-        <translation>Обновить библиотеку</translation>
+        <translation>Aggiorna Libreria</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation>Cancella</translation>
     </message>
     <message>
         <source>Updating....</source>
-        <translation>Обновление...</translation>
+        <translation>Aggiornamento...</translation>
     </message>
 </context>
 <context>
     <name>VolumeComicsModel</name>
     <message>
         <source>title</source>
-        <translation>название</translation>
+        <translation>Titolo</translation>
     </message>
 </context>
 <context>
     <name>VolumesModel</name>
     <message>
         <source>year</source>
-        <translation>год</translation>
+        <translation>Anno</translation>
     </message>
     <message>
         <source>issues</source>
-        <translation>выпуск</translation>
+        <translation>Emissione</translation>
     </message>
     <message>
         <source>publisher</source>
-        <translation>издатель</translation>
+        <translation>Pubblicato da</translation>
     </message>
 </context>
 <context>
@@ -1618,215 +1642,215 @@ to improve the performance</source>
     <name>YACReaderDeletingProgress</name>
     <message>
         <source>cancel</source>
-        <translation>отменить</translation>
+        <translation>Cancella</translation>
     </message>
     <message>
         <source>Please wait, deleting in progress...</source>
-        <translation>Пожалуйста подождите, удаление в процессе...</translation>
+        <translation>Aspetta, cancellazione in corso...</translation>
     </message>
 </context>
 <context>
     <name>YACReaderFieldEdit</name>
     <message>
         <source>Restore to default</source>
-        <translation>Вернуть к первоначальным значениям</translation>
+        <translation>Resetta al Default</translation>
     </message>
     <message>
         <source>Click to overwrite</source>
-        <translation>Изменить</translation>
+        <translation>Clikka per sovrascrivere</translation>
     </message>
 </context>
 <context>
     <name>YACReaderFieldPlainTextEdit</name>
     <message>
         <source>Restore to default</source>
-        <translation>Вернуть к первоначальным значениям</translation>
+        <translation>Resetta al Default</translation>
     </message>
     <message>
         <source>Click to overwrite</source>
-        <translation>Изменить</translation>
+        <translation>Clikka per sovrascrivere</translation>
     </message>
 </context>
 <context>
     <name>YACReaderFlowConfigWidget</name>
     <message>
         <source>CoverFlow look</source>
-        <translation>Рулеткой</translation>
+        <translation>Aspetto del flusso copertine</translation>
     </message>
     <message>
         <source>How to show covers:</source>
-        <translation>Выбрать внешний вид потока обложек:</translation>
+        <translation>Come mostrare le copertine:</translation>
     </message>
     <message>
         <source>Stripe look</source>
-        <translation>Вид полосами</translation>
+        <translation>Aspetto a striscia</translation>
     </message>
     <message>
         <source>Overlapped Stripe look</source>
-        <translation>Вид перекрывающимися полосами</translation>
+        <translation>Aspetto a striscia sovrapposta</translation>
     </message>
 </context>
 <context>
     <name>YACReaderGLFlowConfigWidget</name>
     <message>
         <source>Zoom</source>
-        <translation>Масштабировать</translation>
+        <translation>Zoom</translation>
     </message>
     <message>
         <source>Light</source>
-        <translation>Осветить</translation>
+        <translation>Luminoso</translation>
     </message>
     <message>
         <source>Show advanced settings</source>
-        <translation>Показать дополнительные настройки</translation>
+        <translation>Mostra le impostazioni avanzate</translation>
     </message>
     <message>
         <source>Roulette look</source>
-        <translation>Вид рулеткой</translation>
+        <translation>Aspetto a Roulette</translation>
     </message>
     <message>
         <source>Cover Angle</source>
-        <translation>Охватить угол</translation>
+        <translation>Angolo copertine</translation>
     </message>
     <message>
         <source>Stripe look</source>
-        <translation>Вид полосами</translation>
+        <translation>Aspetto a striscia</translation>
     </message>
     <message>
         <source>Position</source>
-        <translation>Позиция</translation>
+        <translation>Posizione</translation>
     </message>
     <message>
         <source>Z offset</source>
-        <translation>Смещение по Z</translation>
+        <translation>Traslazione Z</translation>
     </message>
     <message>
         <source>Y offset</source>
-        <translation>Смещение по Y</translation>
+        <translation>Traslazione Y</translation>
     </message>
     <message>
         <source>Central gap</source>
-        <translation>Сфокусировать разрыв</translation>
+        <translation>Distanza centrale</translation>
     </message>
     <message>
         <source>Presets:</source>
-        <translation>Предустановки:</translation>
+        <translation>Preselezione:</translation>
     </message>
     <message>
         <source>Overlapped Stripe look</source>
-        <translation>Вид перекрывающимися полосами</translation>
+        <translation>Aspetto a Striscia sovrapposto</translation>
     </message>
     <message>
         <source>Modern look</source>
-        <translation>Современный вид</translation>
+        <translation>Aspetto moderno</translation>
     </message>
     <message>
         <source>View angle</source>
-        <translation>Угол зрения</translation>
+        <translation>Vista ad Angolo</translation>
     </message>
     <message>
         <source>Max angle</source>
-        <translation>Максимальный угол</translation>
+        <translation>Angolo massimo</translation>
     </message>
     <message>
         <source>Custom:</source>
-        <translation>Пользовательский:</translation>
+        <translation>Personalizza:</translation>
     </message>
     <message>
         <source>Classic look</source>
-        <translation>Классический вид</translation>
+        <translation>Aspetto Classico</translation>
     </message>
     <message>
         <source>Cover gap</source>
-        <translation>Охватить разрыв</translation>
+        <translation>Distanza tra le Cover</translation>
     </message>
     <message>
         <source>High Performance</source>
-        <translation>Максимальная производительность</translation>
+        <translation>Alte Prestazioni</translation>
     </message>
     <message>
         <source>Performance:</source>
-        <translation>Производительность:</translation>
+        <translation>Prestazioni:</translation>
     </message>
     <message>
         <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
-        <translation>Использовать VSync (повысить качество изображения в полноэкранном режиме , хуже производительность)</translation>
+        <translation>UIsa VSync. (Migliora la qualità dell&apos;immagine a modalità tutto schermo, peggiora le prestazioni)</translation>
     </message>
     <message>
         <source>Visibility</source>
-        <translation>Прозрачность</translation>
+        <translation>Visibilità</translation>
     </message>
     <message>
         <source>Low Performance</source>
-        <translation>Минимальная производительность</translation>
+        <translation>Basse Prestazioni</translation>
     </message>
 </context>
 <context>
     <name>YACReaderNavigationController</name>
     <message>
         <source>You are not reading anything yet, come on!!</source>
-        <translation>Вы пока ничего не читаете. Может самое время почитать?</translation>
+        <translation>Non stai ancora leggendo nulla, Forza!!</translation>
     </message>
     <message>
         <source>No favorites</source>
-        <translation>Нет избранного</translation>
+        <translation>Nessun Favorito</translation>
     </message>
 </context>
 <context>
     <name>YACReaderOptionsDialog</name>
     <message>
         <source>Save</source>
-        <translation>Сохранить</translation>
+        <translation>Salva</translation>
     </message>
     <message>
         <source>Use hardware acceleration (restart needed)</source>
-        <translation>Использовать аппаратное ускорение (необходима перезагрузка)</translation>
+        <translation>Usa accelerazione hardware (necessita riavvio)</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation>Cancella</translation>
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation>Горячие клавиши</translation>
+        <translation>Scorciatoie</translation>
     </message>
     <message>
         <source>Edit shortcuts</source>
-        <translation>Редактировать горячие клавиши</translation>
+        <translation>Modifica scorciatoia</translation>
     </message>
 </context>
 <context>
     <name>YACReaderSearchLineEdit</name>
     <message>
         <source>type to search</source>
-        <translation>Начать поиск</translation>
+        <translation>Digita per cercare</translation>
     </message>
 </context>
 <context>
     <name>YACReaderSideBar</name>
     <message>
         <source>Reading Lists</source>
-        <translation>Списки чтения</translation>
+        <translation>Lista di lettura</translation>
     </message>
     <message>
         <source>LIBRARIES</source>
-        <translation>БИБЛИОТЕКИ</translation>
+        <translation>LIBRERIE</translation>
     </message>
     <message>
         <source>Libraries</source>
-        <translation>Библиотеки</translation>
+        <translation>Librerie</translation>
     </message>
     <message>
         <source>FOLDERS</source>
-        <translation>ПАПКИ</translation>
+        <translation>CARTELLE</translation>
     </message>
     <message>
         <source>Folders</source>
-        <translation>Папки</translation>
+        <translation>Cartelle</translation>
     </message>
     <message>
         <source>READING LISTS</source>
-        <translation>СПИСКИ ЧТЕНИЯ</translation>
+        <translation>LISTA DI LETTURA</translation>
     </message>
 </context>
 </TS>

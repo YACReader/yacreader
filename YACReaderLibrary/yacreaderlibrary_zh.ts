@@ -1,134 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="de_DE">
+<TS version="2.1" language="zh_CN">
 <context>
     <name>ActionsShortcutsModel</name>
     <message>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>不存在</translation>
     </message>
 </context>
 <context>
     <name>AddLabelDialog</name>
     <message>
-        <source>cancel</source>
-        <translation>Abbrechen</translation>
-    </message>
-    <message>
-        <source>Label name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose a color:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>red</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>orange</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>yellow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>green</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>cyan</source>
-        <translation type="unfinished"></translation>
+        <translation>红</translation>
     </message>
     <message>
         <source>blue</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>violet</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>purple</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>pink</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>white</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>light</source>
-        <translation type="unfinished"></translation>
+        <translation>蓝</translation>
     </message>
     <message>
         <source>dark</source>
-        <translation type="unfinished"></translation>
+        <translation>深色</translation>
+    </message>
+    <message>
+        <source>cyan</source>
+        <translation>青</translation>
+    </message>
+    <message>
+        <source>pink</source>
+        <translation>粉</translation>
+    </message>
+    <message>
+        <source>green</source>
+        <translation>绿</translation>
+    </message>
+    <message>
+        <source>light</source>
+        <translation>浅色</translation>
+    </message>
+    <message>
+        <source>white</source>
+        <translation>白</translation>
+    </message>
+    <message>
+        <source>Choose a color:</source>
+        <translation>选择标签颜色: </translation>
     </message>
     <message>
         <source>accept</source>
-        <translation type="unfinished"></translation>
+        <translation>接受</translation>
+    </message>
+    <message>
+        <source>cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <source>orange</source>
+        <translation>橙</translation>
+    </message>
+    <message>
+        <source>purple</source>
+        <translation>紫</translation>
+    </message>
+    <message>
+        <source>violet</source>
+        <translation>紫罗兰</translation>
+    </message>
+    <message>
+        <source>yellow</source>
+        <translation>黄</translation>
+    </message>
+    <message>
+        <source>Label name:</source>
+        <translation>标签名称: </translation>
     </message>
 </context>
 <context>
     <name>AddLibraryDialog</name>
     <message>
         <source>Add</source>
-        <translation>Hinzufügen</translation>
+        <translation>添加</translation>
     </message>
     <message>
         <source>Add an existing library</source>
-        <translation>Eine existierende Bibliothek hinzufügen</translation>
+        <translation>添加一个现有库</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Cancel</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <source>Comics folder : </source>
-        <translation>Comics Ordner :</translation>
+        <translation>漫画文件夹: </translation>
+    </message>
+    <message>
+        <source>Library Name : </source>
+        <translation type="vanished">库名: </translation>
     </message>
     <message>
         <source>Library name : </source>
-        <translation>Bibliothek Name :</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>ApiKeyDialog</name>
     <message>
-        <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Paste here your Comic Vine API key</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Accept</source>
-        <translation type="unfinished"></translation>
+        <translation>接受</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
+        <translation>你需要拥有自己的API密匙才能够连接Comic Vine. 你可以通过这个链接获得一个免费的&lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;API&lt;/a&gt;密匙</translation>
+    </message>
+    <message>
+        <source>Paste here your Comic Vine API key</source>
+        <translation>在此粘贴你的Comic Vine API</translation>
     </message>
 </context>
 <context>
     <name>ClassicComicsView</name>
     <message>
         <source>Hide comic flow</source>
-        <translation>Comic &quot;Flow&quot; verstecken</translation>
+        <translation>隐藏漫画流动预览</translation>
     </message>
 </context>
 <context>
     <name>ComicInfoView</name>
     <message>
         <source>Authors</source>
-        <translation>Autoren</translation>
+        <translation type="unfinished">作者</translation>
     </message>
     <message>
         <source>writer</source>
@@ -175,357 +179,357 @@
     <name>ComicModel</name>
     <message>
         <source>no</source>
-        <translation>Nein</translation>
+        <translation>否</translation>
     </message>
     <message>
         <source>yes</source>
-        <translation>Ja</translation>
+        <translation>是</translation>
     </message>
     <message>
         <source>Read</source>
-        <translation>Lesen</translation>
+        <translation>阅读</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>Größe</translation>
+        <translation>大小</translation>
     </message>
     <message>
         <source>Pages</source>
-        <translation>Seiten</translation>
+        <translation>页码</translation>
     </message>
     <message>
         <source>Title</source>
-        <translation>Titel</translation>
+        <translation>标题</translation>
     </message>
     <message>
         <source>Current Page</source>
-        <translation>Aktuelle Seite</translation>
+        <translation>当前页</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation>File Name</translation>
+        <translation>文件名</translation>
     </message>
     <message>
         <source>Rating</source>
-        <translation>Bewertung</translation>
+        <translation>评分</translation>
     </message>
 </context>
 <context>
     <name>ComicVineDialog</name>
     <message>
         <source>back</source>
-        <translation>zurück</translation>
+        <translation>返回</translation>
     </message>
     <message>
         <source>next</source>
-        <translation>nächste</translation>
+        <translation>下一步</translation>
     </message>
     <message>
         <source>skip</source>
-        <translation>überspringen</translation>
+        <translation>忽略</translation>
     </message>
     <message>
         <source>close</source>
-        <translation>schliessen</translation>
+        <translation>关闭</translation>
     </message>
     <message>
         <source>Retrieving tags for : %1</source>
-        <translation>Runterladen von Tags für : %1</translation>
+        <translation>正在检索标签: %1</translation>
     </message>
     <message>
         <source>Looking for comic...</source>
-        <translation>Suche nach Comic...</translation>
+        <translation>搜索中...</translation>
     </message>
     <message>
         <source>search</source>
-        <translation>suche</translation>
+        <translation>搜索</translation>
     </message>
     <message>
         <source>Looking for volume...</source>
-        <translation>Suche nach Band....</translation>
+        <translation>搜索中...</translation>
     </message>
     <message>
         <source>comic %1 of %2 - %3</source>
-        <translation>Comic %1 von %2 - %3</translation>
+        <translation>第 %1 本 共 %2 本 - %3</translation>
     </message>
     <message>
         <source>%1 comics selected</source>
-        <translation>%1 Comic ausgewählt</translation>
+        <translation>已选择 %1 本漫画</translation>
     </message>
     <message>
         <source>Error connecting to ComicVine</source>
-        <translation>Fehler bei Verbindung zu ComicVine</translation>
+        <translation>ComicVine 连接错误</translation>
     </message>
     <message>
         <source>Retrieving volume info...</source>
-        <translation>Runterladen von Ausgabe Info...</translation>
+        <translation>正在检索卷信息...</translation>
     </message>
 </context>
 <context>
     <name>CreateLibraryDialog</name>
     <message>
         <source>Create new library</source>
-        <translation>Kreiere eine neue Bibliothek</translation>
+        <translation>创建新的文库</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Abbrechen</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <source>Create</source>
-        <translation>Neu erzeugen</translation>
+        <translation>创建</translation>
     </message>
     <message>
         <source>Create a library could take several minutes. You can stop the process and update the library later for completing the task.</source>
-        <translation>Eine neue Bibliothek erzeugen kann einige Minuten dauern. Sie können den Prozess abbrechen und die Bibliothek später updaten um den Prozess zu vervollständigen.</translation>
+        <translation>创建一个新的文件库可能需要几分钟时间，您可以先停止该进程，稍后可以通过更新文件库选项来更新数据。</translation>
     </message>
     <message>
         <source>The selected path does not exist or is not a valid path. Be sure that you have write access to this folder</source>
-        <translation>Der gewählte Pfad existiert nicht oder ist kein gültiger Pfad. Stellen Sie sicher, dass Sie Schreibzugriff zu dem Ordner haben</translation>
+        <translation>所选路径不存在或不是有效路径. 确保您具有此文件夹的写入权限</translation>
     </message>
     <message>
         <source>Comics folder : </source>
-        <translation>Comics Ordner :</translation>
+        <translation>漫画文件夹: </translation>
     </message>
     <message>
         <source>Library Name : </source>
-        <translation>Bibliothek Name :</translation>
+        <translation>库名: </translation>
     </message>
     <message>
         <source>Path not found</source>
-        <translation>Pfad nicht gefunden</translation>
+        <translation>未找到路径</translation>
     </message>
 </context>
 <context>
     <name>EditShortcutsDialog</name>
     <message>
-        <source>Restore defaults</source>
-        <translation type="unfinished"></translation>
+        <source>Shortcut in use</source>
+        <translation>快捷键已使用</translation>
     </message>
     <message>
-        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
-        <translation type="unfinished"></translation>
+        <source>Restore defaults</source>
+        <translation>恢复默认设置</translation>
     </message>
     <message>
         <source>Shortcuts settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Shortcut in use</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑快捷键</translation>
     </message>
     <message>
         <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation type="unfinished"></translation>
+        <translation>快捷键 &quot;%1&quot; 已分配给其他功能</translation>
+    </message>
+    <message>
+        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
+        <translation>要更改快捷键，请双击组合键并键入新键。</translation>
     </message>
 </context>
 <context>
     <name>EmptyFolderWidget</name>
     <message>
-        <source>Subfolders in this folder</source>
-        <translation type="unfinished"></translation>
+        <source>Empty folder</source>
+        <translation>空文件夹</translation>
     </message>
     <message>
-        <source>Empty folder</source>
-        <translation type="unfinished"></translation>
+        <source>Subfolders in this folder</source>
+        <translation>建立子文件夹</translation>
     </message>
     <message>
         <source>Drag and drop folders and comics here</source>
-        <translation type="unfinished"></translation>
+        <translation>拖动文件夹或者漫画到这里</translation>
     </message>
 </context>
 <context>
     <name>EmptyLabelWidget</name>
     <message>
         <source>This label doesn&apos;t contain comics yet</source>
-        <translation type="unfinished"></translation>
+        <translation>此标签尚未包含漫画</translation>
     </message>
 </context>
 <context>
     <name>EmptyReadingListWidget</name>
     <message>
         <source>This reading list does not contain any comics yet</source>
-        <translation type="unfinished"></translation>
+        <translation>此阅读列表尚未包含任何漫画</translation>
     </message>
 </context>
 <context>
     <name>ExportComicsInfoDialog</name>
     <message>
         <source>Output file : </source>
-        <translation>Ziel File :</translation>
+        <translation>输出文件: </translation>
     </message>
     <message>
         <source>Destination database name</source>
-        <translation>Ziel Datenbasis Name</translation>
+        <translation>目标数据库名称</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Abbrechen</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <source>Create</source>
-        <translation>Neu erzeugen</translation>
+        <translation>创建</translation>
     </message>
     <message>
         <source>The selected path for the output file does not exist or is not a valid path. Be sure that you have write access to this folder</source>
-        <translation>Der gewählte Pfad existiert nicht oder ist kein gültiger Pfad. Stellen Sie sicher, dass Sie Schreibzugriff zu dem Ordner haben</translation>
+        <translation>输出文件的选定路径不存在或不是有效路径. 确保您具有此文件夹的写入权限</translation>
     </message>
     <message>
         <source>Export comics info</source>
-        <translation>Export Comic Info</translation>
+        <translation>导出漫画信息</translation>
     </message>
     <message>
         <source>Problem found while writing</source>
-        <translation>Problem gefunden beim Schreiben</translation>
+        <translation>数据库导出失败</translation>
     </message>
 </context>
 <context>
     <name>ExportLibraryDialog</name>
     <message>
         <source>Cancel</source>
-        <translation>Abbrechen</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <source>Create</source>
-        <translation>Erzeuge</translation>
+        <translation>创建</translation>
     </message>
     <message>
         <source>The selected path for the output file does not exist or is not a valid path. Be sure that you have write access to this folder</source>
-        <translation>Der gewählte Pfad existiert nicht oder ist kein gültiger Pfad. Stellen Sie sicher, dass Sie Schreibzugriff zu dem Ordner haben</translation>
+        <translation>输出文件的选定路径不存在或不是有效路径. 确保您具有此文件夹的写入权限</translation>
     </message>
     <message>
         <source>Output folder : </source>
-        <translation>Ziel Ordner :</translation>
+        <translation>输出文件夹: </translation>
     </message>
     <message>
         <source>Problem found while writing</source>
-        <translation>Problem gefunden beim Schreiben</translation>
+        <translation>导出失败</translation>
     </message>
     <message>
         <source>Create covers package</source>
-        <translation>Erzeuge Titelbild Paket</translation>
+        <translation>创建封面包</translation>
     </message>
     <message>
         <source>Destination directory</source>
-        <translation>Ziel Verzeichnis</translation>
+        <translation>目标目录</translation>
     </message>
 </context>
 <context>
     <name>FileComic</name>
     <message>
         <source>Format not supported</source>
-        <translation>Format wird nicht unterstützt</translation>
+        <translation>不支持的格式</translation>
     </message>
     <message>
         <source>7z not found</source>
-        <translation>7z nicht gefunden</translation>
+        <translation>未找到7z文件</translation>
     </message>
     <message>
         <source>Unknown error opening the file</source>
-        <translation>Unbekannter Fehler beim Öffnen des Files</translation>
+        <translation>未知错误</translation>
     </message>
     <message>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
-        <translation>CRC Fehler auf Seite (%1): einige Seiten werden nicht korrekt dargestellt werden</translation>
+        <translation>页面（%1）CRC错误：某些页面无法正确显示</translation>
     </message>
 </context>
 <context>
     <name>GridComicsView</name>
     <message>
         <source>Show info</source>
-        <translation type="unfinished"></translation>
+        <translation>显示信息</translation>
     </message>
 </context>
 <context>
     <name>HelpAboutDialog</name>
     <message>
         <source>Help</source>
-        <translation>Hilfe</translation>
+        <translation>帮助</translation>
     </message>
     <message>
         <source>About</source>
-        <translation>Über</translation>
+        <translation>关于</translation>
     </message>
 </context>
 <context>
     <name>ImportComicsInfoDialog</name>
     <message>
         <source>Cancel</source>
-        <translation>Abbrechen</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <source>Import</source>
-        <translation>Importiere</translation>
+        <translation>导入</translation>
     </message>
     <message>
         <source>Info database location : </source>
-        <translation>Info Datenbasis Speicherort :</translation>
+        <translation>数据库地址: </translation>
     </message>
     <message>
         <source>Import comics info</source>
-        <translation>Importiere Comic Info</translation>
+        <translation>导入漫画信息</translation>
     </message>
     <message>
         <source>Comics info file (*.ydb)</source>
-        <translation>Comics Info File (*.ydb)</translation>
+        <translation>漫画信息文件(*.ydb)</translation>
     </message>
 </context>
 <context>
     <name>ImportLibraryDialog</name>
     <message>
         <source>Destination folder : </source>
-        <translation>Zielordner :</translation>
+        <translation>目标文件夹: </translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Abbrechen</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <source>Unpack</source>
-        <translation>Entpacken</translation>
+        <translation>解压</translation>
     </message>
     <message>
         <source>Compresed library covers (*.clc)</source>
-        <translation>Komprimierte Bibliotheks Bilder (*.clc)</translation>
+        <translation>文件库封面压缩（*.clc）</translation>
     </message>
     <message>
         <source>Package location : </source>
-        <translation>Paket Ort :</translation>
+        <translation>打包地址: </translation>
     </message>
     <message>
         <source>Library Name : </source>
-        <translation>Bibliothek Name :</translation>
+        <translation>库名: </translation>
     </message>
     <message>
         <source>Extract a catalog</source>
-        <translation>Einen Katalog Extrahieren</translation>
+        <translation>提取目录</translation>
     </message>
 </context>
 <context>
     <name>ImportWidget</name>
     <message>
         <source>stop</source>
-        <translation>Stop</translation>
+        <translation>停止</translation>
     </message>
     <message>
         <source>Importing comics</source>
-        <translation>Comics werden importiert</translation>
+        <translation>正在导入漫画</translation>
     </message>
     <message>
         <source>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Create a library could take several minutes. You can stop the process and update the library later for completing the task.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;YACReaderLibrary kreiert nun eine neue Bibliothek. &lt;/p&gt;&lt;p&gt;Eine  neue Bibliothek erzeugen kann einige Minuten dauern. Sie können den Prozess stoppen und die Bibliothek später aktualisieren um den Prozess zu vervollständigen.&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;YACReaderLibrary现在正在创建一个新库。&lt;/p&gt;&lt;p&gt;这可能需要几分钟时间，您可以先停止该进程，稍后可以通过更新文件库选项来更新数据。&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Some of the comics being added...</source>
-        <translation>Einige der Comics werden hinzugefügt...</translation>
+        <translation>正在添加漫画...</translation>
     </message>
     <message>
         <source>Updating the library</source>
-        <translation>Aktualisierung der Bibliothek</translation>
+        <translation>正在更新文库</translation>
     </message>
     <message>
         <source>&lt;p&gt;The current library is being updated. For faster updates, please, update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Die gerade benutzte Bibliothek wird aktualisiert. Für eine schnellere Aktualisierung aktualisieren Sie bitte die Bibliothek regelmäßig.&lt;/p&gt;&lt;p&gt;Sie können den Prozess abbrechen und mit der Aktualisierung später fortfahren.&lt;p&gt;</translation>
+        <translation>&lt;p&gt;正在更新当前文件库。要获得更快的更新，请经常更新您的文件库。&lt;/p&gt;&lt;p&gt;您可以停止该进程，稍后继续更新操作。&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Upgrading the library</source>
@@ -540,271 +544,463 @@
     <name>LibraryWindow</name>
     <message>
         <source>Edit</source>
-        <translation>Editieren</translation>
+        <translation>编辑</translation>
     </message>
     <message>
         <source>The selected folder doesn&apos;t contain any library.</source>
-        <translation>Der ausgewählte Ordner enthält keine Bibliothek.</translation>
+        <translation>所选文件夹不包含任何库。</translation>
     </message>
     <message>
         <source>This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?</source>
-        <translation>Diese Bibliothek wurde mit einer vorherigen Version von YACReader erzeugt. Sie muss geupdated werden. Jetzt updaten?</translation>
+        <translation>此库是使用旧版本的YACReaderLibrary创建的. 它需要更新. 现在更新?</translation>
     </message>
     <message>
         <source>Comic</source>
-        <translation>Comic</translation>
+        <translation>漫画</translation>
+    </message>
+    <message>
+        <source>Folder name:</source>
+        <translation>文件夹名称:</translation>
+    </message>
+    <message>
+        <source>The selected folder and all its contents will be deleted from your disk. Are you sure?</source>
+        <translation>所选文件夹及其所有内容将从磁盘中删除。 你确定吗?</translation>
+    </message>
+    <message>
+        <source>Update current folder</source>
+        <translation>更新当前文件夹</translation>
     </message>
     <message>
         <source>Error opening the library</source>
-        <translation>Fehler beim Öffnen der Bibliothek</translation>
+        <translation>打开库时出错</translation>
     </message>
     <message>
         <source>Show/Hide marks</source>
-        <translation>Zeige/Verstecke Markierungen</translation>
+        <translation>显示/隐藏标记</translation>
     </message>
     <message>
         <source>YACReader not found</source>
-        <translation>YACReader nicht gefunden</translation>
+        <translation>YACReader 未找到</translation>
     </message>
     <message>
         <source>Show comics server options dialog</source>
-        <translation>Zeige den Comics Optionen Dialog</translation>
+        <translation>显示漫画服务器选项对话框</translation>
+    </message>
+    <message>
+        <source>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files.</source>
+        <translation>尝试删除所选文件夹时出现问题。 请检查写入权限，并确保没有其他应用程序在使用这些文件夹或文件。</translation>
     </message>
     <message>
         <source>Remove current library from your collection</source>
-        <translation>Aktuelle Bibliothek aus der Sammlung entfernen</translation>
+        <translation>从您的集合中移除当前库</translation>
     </message>
     <message>
         <source>Set comic as read</source>
-        <translation>Comic als gelesen markieren</translation>
+        <translation>漫画设为已读</translation>
+    </message>
+    <message>
+        <source>Rename list name</source>
+        <translation>重命名列表</translation>
+    </message>
+    <message>
+        <source>Add selected comics to favorites list</source>
+        <translation>将所选漫画添加到收藏夹列表</translation>
     </message>
     <message>
         <source>Remove and delete metadata</source>
-        <translation>Entferne und lösche Metadaten</translation>
+        <translation>移除并删除元数据</translation>
+    </message>
+    <message>
+        <source>YACReader not found, YACReader should be installed in the same folder as YACReaderLibrary.</source>
+        <translation type="vanished">未找到YACReader，YACReader应安装在与YACReaderLibrary相同的文件夹中。</translation>
     </message>
     <message>
         <source>Old library</source>
-        <translation>Alte Bibliothek</translation>
+        <translation>旧的库</translation>
     </message>
     <message>
         <source>Update cover</source>
-        <translation>Titelbild updaten</translation>
+        <translation>更新封面</translation>
+    </message>
+    <message>
+        <source>Rename any selected labels or lists</source>
+        <translation>重命名任何选定的标签或列表</translation>
     </message>
     <message>
         <source>Set as completed</source>
-        <translation>Als gelesen markieren</translation>
+        <translation>设为已完成</translation>
+    </message>
+    <message>
+        <source>There was an error accessing the folder&apos;s path</source>
+        <translation>访问文件夹的路径时出错</translation>
     </message>
     <message>
         <source>Library</source>
-        <translation>Bibliothek</translation>
+        <translation>库</translation>
+    </message>
+    <message>
+        <source>Add new folder to the current library</source>
+        <translation>在当前库下添加新的文件夹</translation>
+    </message>
+    <message>
+        <source>Comics will only be deleted from the current label/list. Are you sure?</source>
+        <translation>漫画只会从当前标签/列表中删除。 你确定吗?</translation>
     </message>
     <message>
         <source>Rename current library</source>
-        <translation>Aktuelle Bibliothek umbenennen</translation>
+        <translation>重命名当前库</translation>
     </message>
     <message>
         <source>Fullscreen mode on/off</source>
-        <translation>Vollbildmodus an/aus</translation>
+        <translation>全屏模式 开/关</translation>
     </message>
     <message>
         <source>This library was created with a newer version of YACReaderLibrary. Download the new version now?</source>
-        <translation>Die Bibliothek wurde mit einer neueren Version von YACReader erzeugt. Die neue Version jetzt herunterladen?</translation>
+        <translation>此库是使用较新版本的YACReaderLibrary创建的。 立即下载新版本?</translation>
+    </message>
+    <message>
+        <source>Moving comics...</source>
+        <translation>移动漫画中...</translation>
     </message>
     <message>
         <source>Open current comic on YACReader</source>
-        <translation>Aktuellen Comic mit YACReader öffnen</translation>
+        <translation>用YACReader打开漫画</translation>
     </message>
     <message>
         <source>Update current library</source>
-        <translation>Aktuelle Bibliothek updaten</translation>
+        <translation>更新当前库</translation>
+    </message>
+    <message>
+        <source>Copying comics...</source>
+        <translation>复制漫画中...</translation>
     </message>
     <message>
         <source>Library &apos;%1&apos; is no longer available. Do you want to remove it?</source>
-        <translation>Bibliothek &apos;%1&apos; ist nicht länger verfügbar. Wollen Sie sie entfernen?</translation>
+        <translation>库 &apos;%1&apos; 不再可用。 你想删除它吗?</translation>
     </message>
     <message>
         <source>Update library</source>
-        <translation>Bibliothek updaten</translation>
+        <translation>更新库</translation>
     </message>
     <message>
         <source>Open folder...</source>
-        <translation>Öffne Ordner...</translation>
+        <translation>打开文件夹...</translation>
     </message>
     <message>
         <source>Do you want remove </source>
-        <translation>Möchten Sie entfernen</translation>
+        <translation>你想要删除</translation>
     </message>
     <message>
         <source>Set as uncompleted</source>
-        <translation>Als nicht gelesen markieren</translation>
+        <translation>设为未完成</translation>
+    </message>
+    <message>
+        <source>Error in path</source>
+        <translation>路径错误</translation>
     </message>
     <message>
         <source>Reset comic rating</source>
-        <translation>Comic Bewertung zurücksetzen</translation>
+        <translation>重置漫画评分</translation>
     </message>
     <message>
         <source>Error updating the library</source>
-        <translation>Fehler beim Updaten der Bibliothek</translation>
+        <translation>更新库时出错</translation>
     </message>
     <message>
         <source>Folder</source>
-        <translation>Ordner</translation>
+        <translation>文件夹</translation>
+    </message>
+    <message>
+        <source>The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?</source>
+        <translation>所选项目将被删除，您的漫画或文件夹将不会从您的磁盘中删除。 你确定吗?</translation>
     </message>
     <message>
         <source>Expand all nodes</source>
-        <translation>Unterordner anzeigen</translation>
+        <translation>展开所有节点</translation>
+    </message>
+    <message>
+        <source>Delete current folder from disk</source>
+        <translation>从磁盘上删除当前文件夹</translation>
+    </message>
+    <message>
+        <source>List name:</source>
+        <translation>列表名称:</translation>
+    </message>
+    <message>
+        <source>Add to...</source>
+        <translation>添加到...</translation>
     </message>
     <message>
         <source>Library &apos;%1&apos; has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
-        <translation>Bibliothek &apos;%1&apos; ist mit einer älteren Version von YACREader erzeugt worden. Sie muss neu erzeugt werden. Wollen Sie die Bibliothek jetzt erzeugen?</translation>
+        <translation>库 &apos;%1&apos; 是通过旧版本的YACReaderLibrary创建的。 必须再次创建。 你想现在创建吗?</translation>
     </message>
     <message>
         <source>Pack covers</source>
-        <translation>Titelbild Paket erzeugen</translation>
+        <translation>打包封面</translation>
+    </message>
+    <message>
+        <source>Save covers</source>
+        <translation>保存封面</translation>
+    </message>
+    <message>
+        <source>Change between comics views</source>
+        <translation>漫画视图之间的变化</translation>
+    </message>
+    <message>
+        <source>Remove current reading list from the library</source>
+        <translation>从当前库移除阅读列表</translation>
+    </message>
+    <message>
+        <source>Add new reading lists</source>
+        <translation>添加新的阅读列表</translation>
+    </message>
+    <message>
+        <source>You are adding too many libraries.
+
+You probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.
+
+YACReaderLibrary will not stop you from creating more libraries but you should keep the number of libraries low.</source>
+        <translation>您添加的库太多了。
+
+一般情况只需要一个顶级的库，您可以使用左侧边栏中的文件夹功能来进行分类管理。
+
+YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低的库数量来提升性能。</translation>
     </message>
     <message>
         <source>Set as read</source>
-        <translation>Als gelesen markieren</translation>
+        <translation>设为已读</translation>
+    </message>
+    <message>
+        <source>Assign comics numbers</source>
+        <translation>分配漫画编号</translation>
     </message>
     <message>
         <source>Delete selected comics</source>
-        <translation>Ausgewählte Comics löschen</translation>
+        <translation>删除所选的漫画</translation>
     </message>
     <message>
         <source>Export comics info</source>
-        <translation>Export Comics Info</translation>
+        <translation>导出漫画信息</translation>
     </message>
     <message>
         <source>Show options dialog</source>
-        <translation>Zeige den Optionen Dialog</translation>
+        <translation>显示选项对话框</translation>
+    </message>
+    <message>
+        <source>Please, select a folder first</source>
+        <translation>请先选择一个文件夹</translation>
     </message>
     <message>
         <source>Create a new library</source>
-        <translation>Neue Bibliothek erzeugen</translation>
+        <translation>创建一个新的库</translation>
     </message>
     <message>
         <source>Library not available</source>
-        <translation>Bibliothek nicht verfügbar</translation>
+        <translation>库不可用</translation>
     </message>
     <message>
         <source>Import comics info</source>
-        <translation>Import Comics Info</translation>
+        <translation>导入漫画信息</translation>
+    </message>
+    <message>
+        <source>The current library can&apos;t be udpated. Check for write write permissions on: </source>
+        <translation type="vanished">无法更新当前库。 检查读写权限: </translation>
     </message>
     <message>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
-        <translation>Es gab ein Problem beim löschen der ausgewählten Comics. Überprüfen Sie bitte die Schreibberechtigung für die ausgewählten Files oder Ordner.</translation>
+        <translation>尝试删除所选漫画时出现问题。 请检查所选文件或包含文件夹中的写入权限。</translation>
     </message>
     <message>
-        <source>Open current comic</source>
-        <translation>Aktuellen Comic öffnen</translation>
-    </message>
-    <message>
-        <source>YACReader Library</source>
-        <translation>YACReader Bibliothek</translation>
-    </message>
-    <message>
-        <source>Error creating the library</source>
-        <translation>Fehler beim Erzeugen der Bibliothek</translation>
-    </message>
-    <message>
-        <source>Unpack covers</source>
-        <translation>Titelbilder entpacken</translation>
-    </message>
-    <message>
-        <source>Update needed</source>
-        <translation>Update benötigt</translation>
-    </message>
-    <message>
-        <source>Open an existing library</source>
-        <translation>Eine existierende Bibliothek öffnen</translation>
-    </message>
-    <message>
-        <source>Library name already exists</source>
-        <translation>Bibliothek Name existiert bereits</translation>
-    </message>
-    <message>
-        <source>There is another library with the name &apos;%1&apos;.</source>
-        <translation>Es gibt eine andere Bibliothek mit dem Namen &apos;%1&apos;.</translation>
-    </message>
-    <message>
-        <source>Download new version</source>
-        <translation>Neue Version herunterladen</translation>
-    </message>
-    <message>
-        <source>Delete comics</source>
-        <translation>Comics löschen</translation>
-    </message>
-    <message>
-        <source>Select all comics</source>
-        <translation>Alle Comics auswählen</translation>
-    </message>
-    <message>
-        <source>Pack the covers of the selected library</source>
-        <translation>Packe die Titelbilder der ausgewählten Bibliothek in ein Paket</translation>
-    </message>
-    <message>
-        <source>Help, About YACReader</source>
-        <translation>Hilfe, Über YACReader</translation>
-    </message>
-    <message>
-        <source>Set comic as unread</source>
-        <translation>Comic als ungelesen markieren</translation>
-    </message>
-    <message>
-        <source>Select root node</source>
-        <translation>Root Knoten auswählen</translation>
-    </message>
-    <message>
-        <source>Unpack a catalog</source>
-        <translation>Katalog entpacken</translation>
-    </message>
-    <message>
-        <source>All the selected comics will be deleted from your disk. Are you sure?</source>
-        <translation>Alle ausgewählten Comics werden von Ihrer Festplatte gelöscht. Sind Sie sicher?</translation>
-    </message>
-    <message>
-        <source>Download tags from Comic Vine</source>
-        <translation>Tags von Comic Vine herunterladen</translation>
-    </message>
-    <message>
-        <source>Set as unread</source>
-        <translation>Als ungelesen markieren</translation>
-    </message>
-    <message>
-        <source>Library not found</source>
-        <translation>Bibliothek nicht gefunden</translation>
-    </message>
-    <message>
-        <source>Rename library</source>
-        <translation>Bibliothek umbenennen</translation>
-    </message>
-    <message>
-        <source>Remove library</source>
-        <translation>Bibliothek entfernen</translation>
-    </message>
-    <message>
-        <source>Open containing folder...</source>
-        <translation>Öffne aktuellen Ordner...</translation>
-    </message>
-    <message>
-        <source>Unable to delete</source>
-        <translation>Löschen nicht möglich</translation>
-    </message>
-    <message>
-        <source> library?</source>
-        <translation>die Bibliothek?</translation>
-    </message>
-    <message>
-        <source>Are you sure?</source>
-        <translation>Sind Sie sicher?</translation>
+        <source>Add new reading list</source>
+        <translation>添加新的阅读列表</translation>
     </message>
     <message>
         <source>Save selected covers to...</source>
-        <translation type="unfinished"></translation>
+        <translation>选中的封面保存到...</translation>
+    </message>
+    <message>
+        <source>Open current comic</source>
+        <translation>打开当前漫画</translation>
+    </message>
+    <message>
+        <source>YACReader Library</source>
+        <translation>YACReader库</translation>
+    </message>
+    <message>
+        <source>Add a new reading list to the current library</source>
+        <translation>在当前库添加新的阅读列表</translation>
+    </message>
+    <message>
+        <source>Error creating the library</source>
+        <translation>创建库时出错</translation>
+    </message>
+    <message>
+        <source>Update failed</source>
+        <translation type="vanished">更新失败</translation>
+    </message>
+    <message>
+        <source>You are adding too many libraries.</source>
+        <translation>您添加的库太多了。</translation>
+    </message>
+    <message>
+        <source>Update folder</source>
+        <translation>更新文件夹</translation>
+    </message>
+    <message>
+        <source>Unpack covers</source>
+        <translation>解压封面</translation>
+    </message>
+    <message>
+        <source>Update needed</source>
+        <translation>需要更新</translation>
+    </message>
+    <message>
+        <source>Open an existing library</source>
+        <translation>打开现有的库</translation>
+    </message>
+    <message>
+        <source>Show or hide read marks</source>
+        <translation>显示或隐藏阅读标记</translation>
+    </message>
+    <message>
+        <source>Library name already exists</source>
+        <translation>库名已存在</translation>
+    </message>
+    <message>
+        <source>There is another library with the name &apos;%1&apos;.</source>
+        <translation>已存在另一个名为&apos;%1&apos;的库。</translation>
+    </message>
+    <message>
+        <source>Remove reading list</source>
+        <translation>移除阅读列表</translation>
+    </message>
+    <message>
+        <source>Delete folder</source>
+        <translation>删除文件夹</translation>
+    </message>
+    <message>
+        <source>Assign numbers starting in:</source>
+        <translation>从以下位置开始分配编号:</translation>
+    </message>
+    <message>
+        <source>Download new version</source>
+        <translation>下载新版本</translation>
+    </message>
+    <message>
+        <source>Delete comics</source>
+        <translation>删除漫画</translation>
+    </message>
+    <message>
+        <source>Add new folder</source>
+        <translation>添加新的文件夹</translation>
+    </message>
+    <message>
+        <source>Select all comics</source>
+        <translation>全选漫画</translation>
+    </message>
+    <message>
+        <source>Assign current order to comics</source>
+        <translation>将当前序号分配给漫画</translation>
+    </message>
+    <message>
+        <source>Pack the covers of the selected library</source>
+        <translation>打包所选库的封面</translation>
+    </message>
+    <message>
+        <source>Help, About YACReader</source>
+        <translation>帮助, 关于YACReader</translation>
+    </message>
+    <message>
+        <source>Collapse all nodes</source>
+        <translation>折叠所有节点</translation>
+    </message>
+    <message>
+        <source>Favorites</source>
+        <translation>收藏夹</translation>
+    </message>
+    <message>
+        <source>Rename selected list</source>
+        <translation>重命名列表</translation>
+    </message>
+    <message>
+        <source>Delete list/label</source>
+        <translation>删除 列表/标签</translation>
+    </message>
+    <message>
+        <source>Set comic as unread</source>
+        <translation>漫画设为未读</translation>
+    </message>
+    <message>
+        <source>Edit shortcuts</source>
+        <translation>编辑快捷键</translation>
+    </message>
+    <message>
+        <source>Select root node</source>
+        <translation>选择根节点</translation>
+    </message>
+    <message>
+        <source>No folder selected</source>
+        <translation>没有选中的文件夹</translation>
+    </message>
+    <message>
+        <source>Unpack a catalog</source>
+        <translation>解压目录</translation>
+    </message>
+    <message>
+        <source>All the selected comics will be deleted from your disk. Are you sure?</source>
+        <translation>所有选定的漫画都将从您的磁盘中删除。你确定吗?</translation>
+    </message>
+    <message>
+        <source>Download tags from Comic Vine</source>
+        <translation>从 Comic Vine 下载标签</translation>
+    </message>
+    <message>
+        <source>Remove comics</source>
+        <translation>移除漫画</translation>
+    </message>
+    <message>
+        <source>Add a new label to this library</source>
+        <translation>在当前库添加标签</translation>
+    </message>
+    <message>
+        <source>Set as unread</source>
+        <translation>设为未读</translation>
+    </message>
+    <message>
+        <source>Library not found</source>
+        <translation>未找到库</translation>
+    </message>
+    <message>
+        <source>Rename library</source>
+        <translation>重命名库</translation>
+    </message>
+    <message>
+        <source>Remove library</source>
+        <translation>移除库</translation>
+    </message>
+    <message>
+        <source>Open containing folder...</source>
+        <translation>打开包含文件夹...</translation>
+    </message>
+    <message>
+        <source>Add new label</source>
+        <translation>添加新标签</translation>
+    </message>
+    <message>
+        <source>Unable to delete</source>
+        <translation>无法删除</translation>
+    </message>
+    <message>
+        <source> library?</source>
+        <translation>库?</translation>
     </message>
     <message>
         <source>Save covers of the selected comics as JPG files</source>
-        <translation type="unfinished"></translation>
+        <translation>保存所选的封面为jpg</translation>
+    </message>
+    <message>
+        <source>Are you sure?</source>
+        <translation>你确定吗?</translation>
     </message>
     <message>
         <source>Set as manga</source>
@@ -823,95 +1019,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Show or hide read marks</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add new folder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add new folder to the current library</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete folder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete current folder from disk</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Collapse all nodes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Change between comics views</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Set as comic</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Assign current order to comics</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Edit shortcuts</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Update folder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Update current folder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add new reading list</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add a new reading list to the current library</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Remove reading list</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Remove current reading list from the library</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add new label</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add a new label to this library</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rename selected list</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rename any selected labels or lists</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add to...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Favorites</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add selected comics to favorites list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -923,78 +1031,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Copying comics...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Moving comics...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Folder name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No folder selected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please, select a folder first</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error in path</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>There was an error accessing the folder&apos;s path</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The selected folder and all its contents will be deleted from your disk. Are you sure?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add new reading lists</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>List name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete list/label</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rename list name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save covers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>You are adding too many libraries.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>You are adding too many libraries.
-
-You probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.
-
-YACReaderLibrary will not stop you from creating more libraries but you should keep the number of libraries low.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1002,28 +1038,12 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
         <source>YACReader not found. There might be a problem with your YACReader installation.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Assign comics numbers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Assign numbers starting in:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Remove comics</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Comics will only be deleted from the current label/list. Are you sure?</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>LocalComicListModel</name>
     <message>
         <source>file name</source>
-        <translation>File Name</translation>
+        <translation>文件名</translation>
     </message>
 </context>
 <context>
@@ -1061,26 +1081,70 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
     <name>NoLibrariesWidget</name>
     <message>
         <source>create your first library</source>
-        <translation>Erzeugen Sie Ihre erste Bibliothek</translation>
+        <translation>创建一个文库</translation>
     </message>
     <message>
         <source>You don&apos;t have any libraries yet</source>
-        <translation>Sie haben im Augenblick keine Bibliothek</translation>
+        <translation>你还没有文件库</translation>
     </message>
     <message>
         <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Sie können eine Bibliothek in einem bliebigen Ordner erzeugen, YACReaderLibrary wird alle Comics und Unterordner von diesem Ordner importieren. Wenn Sie in der Vergangenheit eine Bibliothek erzeugt haben, können Sie sie öffnen.&lt;/p&gt;&lt;p&gt;Vergessen Sie nicht, Sie können YACReader als unabhängige Anwendung benutzen, um Comics auf Ihrem Computer zu lesen.&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;您可以在任何文件夹中创建文件库，YACReaderLibrary将导入此文件夹中的所有漫画和文件夹。如果已有文件库，则可以打开它们。&lt;/p&gt;&lt;p&gt;您可以把YACReader当初独立应用来阅读计算机上的漫画。&lt;/p&gt;</translation>
     </message>
     <message>
         <source>add an existing one</source>
-        <translation>Fügen Sie eine existierende hinzu</translation>
+        <translation>现有基础上添加</translation>
     </message>
 </context>
 <context>
     <name>OptionsDialog</name>
     <message>
+        <source>Restore defautls</source>
+        <translation>恢复默认值</translation>
+    </message>
+    <message>
+        <source>Background</source>
+        <translation>背景</translation>
+    </message>
+    <message>
+        <source>Blur level</source>
+        <translation>模糊</translation>
+    </message>
+    <message>
+        <source>Enable background image</source>
+        <translation>启用背景图片</translation>
+    </message>
+    <message>
         <source>Options</source>
-        <translation>Optionen</translation>
+        <translation>设置</translation>
+    </message>
+    <message>
+        <source>Comic Vine API key</source>
+        <translation>Comic Vine API 密匙</translation>
+    </message>
+    <message>
+        <source>Edit Comic Vine API key</source>
+        <translation>编辑Comic Vine API 密匙</translation>
+    </message>
+    <message>
+        <source>Opacity level</source>
+        <translation>透明度</translation>
+    </message>
+    <message>
+        <source>General</source>
+        <translation>常规</translation>
+    </message>
+    <message>
+        <source>Use selected comic cover as background</source>
+        <translation>使用漫画封面做背景</translation>
+    </message>
+    <message>
+        <source>Comic Flow</source>
+        <translation>漫画流展示</translation>
+    </message>
+    <message>
+        <source>Grid view</source>
+        <translation>网格视图</translation>
     </message>
     <message>
         <source>Tray icon settings (experimental)</source>
@@ -1095,38 +1159,6 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Edit Comic Vine API key</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Comic Vine API key</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enable background image</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Opacity level</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Blur level</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use selected comic cover as background</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Restore defautls</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Background</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Display continue reading banner</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1134,148 +1166,136 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
         <source>Continue reading</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Comic Flow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Grid view</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>PropertiesDialog</name>
     <message>
         <source>Day:</source>
-        <translation>Tag:</translation>
+        <translation>日: </translation>
     </message>
     <message>
         <source>Plot</source>
-        <translation>Inhalt</translation>
+        <translation>情节</translation>
     </message>
     <message>
         <source>Size:</source>
-        <translation>Größe:</translation>
+        <translation>大小: </translation>
     </message>
     <message>
         <source>Year:</source>
-        <translation></translation>
+        <translation>年: </translation>
     </message>
     <message>
         <source>Inker(s):</source>
-        <translation>Tinte:</translation>
+        <translation>墨稿: </translation>
     </message>
     <message>
         <source>Publishing</source>
-        <translation>Publishing</translation>
+        <translation>出版</translation>
     </message>
     <message>
         <source>Publisher:</source>
-        <translation>Verlag:</translation>
+        <translation>发行人: </translation>
     </message>
     <message>
         <source>General info</source>
-        <translation>Generelle Info</translation>
+        <translation>基本信息</translation>
     </message>
     <message>
         <source>Color/BW:</source>
-        <translation>Farbe/BW:</translation>
+        <translation>颜色/BW: </translation>
     </message>
     <message>
         <source>Edit selected comics information</source>
-        <translation>Ausgewählte Comic Informationen editieren</translation>
+        <translation>编辑选中的漫画信息</translation>
     </message>
     <message>
         <source>Penciller(s):</source>
-        <translation>Zeichner:</translation>
+        <translation>线稿: </translation>
     </message>
     <message>
         <source>Colorist(s):</source>
-        <translation>Farbe:</translation>
+        <translation>上色: </translation>
     </message>
     <message>
         <source>Genre:</source>
-        <translation>Genre:</translation>
+        <translation>类型: </translation>
     </message>
     <message>
         <source>Issue number:</source>
-        <translation>Ausgabe Nummer:</translation>
+        <translation>发行数量: </translation>
     </message>
     <message>
         <source>Month:</source>
-        <translation>Monat:</translation>
+        <translation>月: </translation>
     </message>
     <message>
         <source>Notes:</source>
-        <translation>Notizen:</translation>
+        <translation>笔记: </translation>
     </message>
     <message>
         <source>Synopsis:</source>
-        <translation>Übersicht:</translation>
+        <translation>概要: </translation>
     </message>
     <message>
         <source>Title:</source>
-        <translation>Titel:</translation>
+        <translation>标题: </translation>
     </message>
     <message>
         <source>Not found</source>
-        <translation>Nicht gefunden</translation>
+        <translation>未找到</translation>
     </message>
     <message>
         <source>Characters:</source>
-        <translation>Charaktere:</translation>
+        <translation>特点: </translation>
     </message>
     <message>
         <source>Authors</source>
-        <translation>Autoren</translation>
+        <translation>作者</translation>
     </message>
     <message>
         <source>Age rating:</source>
-        <translation>Alterhinweis:</translation>
+        <translation>年龄等级: </translation>
     </message>
     <message>
         <source>Story arc:</source>
-        <translation>Handlung:</translation>
+        <translation>故事线: </translation>
     </message>
     <message>
         <source>Writer(s):</source>
-        <translation>Author(en):</translation>
+        <translation>作者: </translation>
     </message>
     <message>
         <source>Comic not found. You should update your library.</source>
-        <translation>Comic nicht gefunden. Sie sollten Ihre Bibliothek updaten.</translation>
+        <translation>未找到漫画,请先更新您的文件库.</translation>
     </message>
     <message>
         <source>Edit comic information</source>
-        <translation>Comic Informationen editieren</translation>
+        <translation>编辑漫画信息</translation>
     </message>
     <message>
         <source>Cover page</source>
-        <translation>Titelbild</translation>
+        <translation>封面</translation>
     </message>
     <message>
         <source>Cover Artist(s):</source>
-        <translation>Titelbild Künstler:</translation>
+        <translation>封面设计: </translation>
     </message>
     <message>
         <source>Comic Vine link: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; view &lt;/a&gt;</source>
-        <translation></translation>
+        <translation>Comic Vine 连接: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; 查看 &lt;/a&gt;</translation>
     </message>
     <message>
         <source>Volume:</source>
-        <translation>Band:</translation>
+        <translation>卷: </translation>
     </message>
     <message>
         <source>Format:</source>
-        <translation>Format:</translation>
+        <translation>格式: </translation>
     </message>
     <message>
         <source>Letterer(s):</source>
-        <translation>Schrift:</translation>
+        <translation>文本: </translation>
     </message>
     <message>
         <source>of:</source>
@@ -1294,11 +1314,11 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
     <name>QObject</name>
     <message>
         <source>7z lib not found</source>
-        <translation>7z Bibliothek nicht gefunden</translation>
+        <translation></translation>
     </message>
     <message>
         <source>unable to load 7z lib from ./utils</source>
-        <translation>7z Bibliothek kann von ./utils nicht geladen werden</translation>
+        <translation>无法从./utils加载7z lib</translation>
     </message>
     <message>
         <source>Trace</source>
@@ -1363,153 +1383,158 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
     <name>RenameLibraryDialog</name>
     <message>
         <source>Rename current library</source>
-        <translation>Namen der Bibliothek ändern</translation>
+        <translation>重命名当前库</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Abbrechen</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <source>Rename</source>
-        <translation>Namen ändern</translation>
+        <translation>重命名</translation>
     </message>
     <message>
         <source>New Library Name : </source>
-        <translation>Neuer Bibliotheks Name :</translation>
+        <translation>新库名: </translation>
     </message>
 </context>
 <context>
     <name>ScraperResultsPaginator</name>
     <message>
         <source>Number of %1 found : %2</source>
-        <translation>Anzahl von %1 gefunden : %2</translation>
+        <translation>第 %1 页 共: %2 条</translation>
     </message>
     <message>
         <source>page %1 of %2</source>
-        <translation>Seite %1 von %2</translation>
+        <translation>第 %1 页 共 %2 页</translation>
     </message>
     <message>
         <source>Number of volumes found : %1</source>
-        <translation>Anzahl der gefundenen Bände: %1</translation>
+        <translation>搜索结果: %1</translation>
     </message>
 </context>
 <context>
     <name>SearchSingleComic</name>
     <message>
         <source>Please provide some additional information.</source>
-        <translation>Bitte einige zusätzliche Informationen.</translation>
+        <translation>请提供一些其他信息。</translation>
     </message>
     <message>
         <source>Series:</source>
-        <translation>Serie:</translation>
+        <translation>系列: </translation>
     </message>
 </context>
 <context>
     <name>SearchVolume</name>
     <message>
         <source>Please provide some additional information.</source>
-        <translation>Bitte einige zusätzliche Informationen.</translation>
+        <translation>请提供一些其他信息。</translation>
     </message>
     <message>
         <source>Series:</source>
-        <translation>Serie:</translation>
+        <translation>系列: </translation>
     </message>
 </context>
 <context>
     <name>SelectComic</name>
     <message>
         <source>loading description</source>
-        <translation>Beschreibung laden</translation>
+        <translation>加载描述：</translation>
     </message>
     <message>
         <source>comics</source>
-        <translation>Comics</translation>
+        <translation>漫画</translation>
     </message>
     <message>
         <source>loading cover</source>
-        <translation>Cover laden</translation>
+        <translation>加载封面</translation>
     </message>
     <message>
         <source>Please, select the right comic info.</source>
-        <translation>Bitte wählen Sie die richtige Comic Information.</translation>
+        <translation>请正确选择漫画信息。</translation>
     </message>
     <message>
         <source>description unavailable</source>
-        <translation>Beschreibung nicht verfügbar</translation>
+        <translation>描述不可用</translation>
     </message>
 </context>
 <context>
     <name>SelectVolume</name>
     <message>
         <source>loading description</source>
-        <translation>Beschreibung lädt</translation>
+        <translation>加载描述</translation>
     </message>
     <message>
         <source>Please, select the right series for your comic.</source>
-        <translation>Bitte wählen Sie die richtige Serie für Ihre Comics.</translation>
+        <translation>请选择正确的漫画系列。</translation>
     </message>
     <message>
         <source>loading cover</source>
-        <translation>Titelbilder werden geladen</translation>
+        <translation>加载封面</translation>
     </message>
     <message>
         <source>volumes</source>
-        <translation>Bände</translation>
+        <translation>卷</translation>
     </message>
     <message>
         <source>description unavailable</source>
-        <translation>Beschreibung nicht verfügbar</translation>
+        <translation>描述不可用</translation>
     </message>
 </context>
 <context>
     <name>SeriesQuestion</name>
     <message>
         <source>no</source>
-        <translation>Nein</translation>
+        <translation>否</translation>
     </message>
     <message>
         <source>yes</source>
-        <translation>Ja</translation>
+        <translation>是</translation>
     </message>
     <message>
         <source>You are trying to get information for various comics at once, are they part of the same series?</source>
-        <translation>Sie versuchen Informationen zu mehreren Comics auf einmal zu laden, sind sie Teil einer Serie?</translation>
+        <translation>您正在尝试同时获取各种漫画的信息,它们是同一系列的吗?</translation>
     </message>
 </context>
 <context>
     <name>ServerConfigDialog</name>
     <message>
         <source>Port</source>
-        <translation>Port</translation>
-    </message>
-    <message>
-        <source>enable the server</source>
-        <translation>Server aktivieren</translation>
-    </message>
-    <message>
-        <source>set port</source>
-        <translation>Port setzen</translation>
-    </message>
-    <message>
-        <source>Server connectivity information</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Scan it!</source>
-        <translation type="unfinished"></translation>
+        <translation>端口</translation>
     </message>
     <message>
         <source>YACReader is available for iOS devices. &lt;a href=&apos;http://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt; Discover it! &lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>YACReader适用于iOS设备。 &lt;a href=&apos;http://ios.yacreader.com&apos;style =&apos;color：rgb（193,148,65）&apos;&gt;下载&lt;/a&gt;</translation>
     </message>
     <message>
-        <source>Choose an IP address</source>
-        <translation type="unfinished"></translation>
+        <source>enable the server</source>
+        <translation>启用服务器</translation>
+    </message>
+    <message>
+        <source>Server connectivity information</source>
+        <translation>服务器连接信息</translation>
     </message>
     <message>
         <source>display less information about folders in the browser
 to improve the performance</source>
-        <translation type="unfinished"></translation>
+        <translation>在浏览器中尽量少显示显示文件夹的有关信息
+这样能提升浏览效果</translation>
+    </message>
+    <message>
+        <source>Scan it!</source>
+        <translation>扫一扫!</translation>
+    </message>
+    <message>
+        <source>QR generator error!</source>
+        <translation type="vanished">二维码出错!</translation>
+    </message>
+    <message>
+        <source>set port</source>
+        <translation>设置端口</translation>
+    </message>
+    <message>
+        <source>Choose an IP address</source>
+        <translation>选择IP地址</translation>
     </message>
     <message>
         <source>Could not load libqrencode.</source>
@@ -1520,67 +1545,71 @@ to improve the performance</source>
     <name>SortVolumeComics</name>
     <message>
         <source>remove selected comics</source>
-        <translation>Löschen der ausgewählten Comics</translation>
+        <translation>移除所选漫画</translation>
     </message>
     <message>
         <source>sort comics to match comic information</source>
-        <translation>Sortieren Sie die Comics um die Informationen zur Übereinstimmung zu bringen</translation>
+        <translation>排序漫画以匹配漫画信息</translation>
     </message>
     <message>
         <source>restore all removed comics</source>
-        <translation>Wiederherstellen aller gelöschten Comics</translation>
+        <translation>恢复所有移除的漫画</translation>
     </message>
     <message>
         <source>issues</source>
-        <translation>Ausgaben</translation>
+        <translation>发行</translation>
     </message>
     <message>
         <source>Please, sort the list of comics on the left until it matches the comics&apos; information.</source>
-        <translation>Sortieren Sie bitte die Comic Informationen links, bis die Informationen für die Comics übereinstimmen.</translation>
+        <translation>请在左侧对漫画列表进行排序，直到它与漫画的信息相符。</translation>
+    </message>
+    <message>
+        <source>restore removed comics</source>
+        <translation type="vanished">恢复移除的漫画</translation>
     </message>
 </context>
 <context>
     <name>TitleHeader</name>
     <message>
         <source>SEARCH</source>
-        <translation>Suche</translation>
+        <translation>搜索</translation>
     </message>
 </context>
 <context>
     <name>UpdateLibraryDialog</name>
     <message>
         <source>Update library</source>
-        <translation>Aktualisierung der Bibliothek</translation>
+        <translation>更新库</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Abbrechen</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <source>Updating....</source>
-        <translation>Aktualisierung...</translation>
+        <translation>更新中...</translation>
     </message>
 </context>
 <context>
     <name>VolumeComicsModel</name>
     <message>
         <source>title</source>
-        <translation>Titel</translation>
+        <translation>标题</translation>
     </message>
 </context>
 <context>
     <name>VolumesModel</name>
     <message>
         <source>year</source>
-        <translation>Jahr</translation>
+        <translation>年</translation>
     </message>
     <message>
         <source>issues</source>
-        <translation>Bände</translation>
+        <translation>发行</translation>
     </message>
     <message>
         <source>publisher</source>
-        <translation>Herausgeber</translation>
+        <translation>发行人</translation>
     </message>
 </context>
 <context>
@@ -1613,215 +1642,215 @@ to improve the performance</source>
     <name>YACReaderDeletingProgress</name>
     <message>
         <source>cancel</source>
-        <translation>Abbrechen</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <source>Please wait, deleting in progress...</source>
-        <translation>Bitte warten, Löschvorgang läuft...</translation>
+        <translation>请稍候，正在删除...</translation>
     </message>
 </context>
 <context>
     <name>YACReaderFieldEdit</name>
     <message>
         <source>Restore to default</source>
-        <translation>Ursprungseinstellungen wiederherstellen</translation>
+        <translation>恢复默认值</translation>
     </message>
     <message>
         <source>Click to overwrite</source>
-        <translation>Drücken zum Überschreiben</translation>
+        <translation>点击覆盖</translation>
     </message>
 </context>
 <context>
     <name>YACReaderFieldPlainTextEdit</name>
     <message>
         <source>Restore to default</source>
-        <translation>Ursprungseinstellungen wiederherstellen</translation>
+        <translation>恢复默认值</translation>
     </message>
     <message>
         <source>Click to overwrite</source>
-        <translation>Drücken zum Überschreiben</translation>
+        <translation>点击覆盖</translation>
     </message>
 </context>
 <context>
     <name>YACReaderFlowConfigWidget</name>
     <message>
         <source>CoverFlow look</source>
-        <translation>CoverFlow Ansicht</translation>
+        <translation>封面流动展示</translation>
     </message>
     <message>
         <source>How to show covers:</source>
-        <translation>Wie zeige ich Titelseiten an:</translation>
+        <translation>封面显示: </translation>
     </message>
     <message>
         <source>Stripe look</source>
-        <translation>Streifen Ansicht</translation>
+        <translation>条状</translation>
     </message>
     <message>
         <source>Overlapped Stripe look</source>
-        <translation>Überlappende Streifen Ansicht</translation>
+        <translation>重叠条状</translation>
     </message>
 </context>
 <context>
     <name>YACReaderGLFlowConfigWidget</name>
     <message>
         <source>Zoom</source>
-        <translation>Vergößern</translation>
+        <translation>缩放</translation>
     </message>
     <message>
         <source>Light</source>
-        <translation>Helligkeit</translation>
+        <translation>亮度</translation>
     </message>
     <message>
         <source>Show advanced settings</source>
-        <translation>Zeige Fortgeschrittenen Einstellungen</translation>
+        <translation>高级设置</translation>
     </message>
     <message>
         <source>Roulette look</source>
-        <translation>Zufällige Darstellung</translation>
+        <translation>轮盘</translation>
     </message>
     <message>
         <source>Cover Angle</source>
-        <translation>Titelbild Winkel</translation>
+        <translation>封面角度</translation>
     </message>
     <message>
         <source>Stripe look</source>
-        <translation></translation>
+        <translation>条状</translation>
     </message>
     <message>
         <source>Position</source>
-        <translation>Position</translation>
+        <translation>位置</translation>
     </message>
     <message>
         <source>Z offset</source>
-        <translation>Z Abstand</translation>
+        <translation>Z位移</translation>
     </message>
     <message>
         <source>Y offset</source>
-        <translation>Y Abstand</translation>
+        <translation>Y位移</translation>
     </message>
     <message>
         <source>Central gap</source>
-        <translation>Zentral Abstand</translation>
+        <translation>展示区间距</translation>
     </message>
     <message>
         <source>Presets:</source>
-        <translation>Voreinstellungen:</translation>
+        <translation>预设: </translation>
     </message>
     <message>
         <source>Overlapped Stripe look</source>
-        <translation>Überlappende Streifen Darstellung</translation>
+        <translation>重叠条状</translation>
     </message>
     <message>
         <source>Modern look</source>
-        <translation>Moderne Drstellung</translation>
+        <translation>现代</translation>
     </message>
     <message>
         <source>View angle</source>
-        <translation>Zeige Winkel</translation>
+        <translation>视角</translation>
     </message>
     <message>
         <source>Max angle</source>
-        <translation>Max Winkel</translation>
+        <translation>最大角度</translation>
     </message>
     <message>
         <source>Custom:</source>
-        <translation>Benutzerdefiniert:</translation>
+        <translation>自定义:</translation>
     </message>
     <message>
         <source>Classic look</source>
-        <translation>Klassische Darstellung</translation>
+        <translation>经典</translation>
     </message>
     <message>
         <source>Cover gap</source>
-        <translation>Titelbild Abstand</translation>
+        <translation>封面间距</translation>
     </message>
     <message>
         <source>High Performance</source>
-        <translation>Hohe Leistung</translation>
+        <translation>高</translation>
     </message>
     <message>
         <source>Performance:</source>
-        <translation>Leistung:</translation>
+        <translation>性能:</translation>
     </message>
     <message>
         <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
-        <translation>Benutze VSync (verbessert die Darstellung im Vollbild Modus, schlechtere Leistung)</translation>
+        <translation>使用VSync（在全屏模式下提高图像质量，性能更差）</translation>
     </message>
     <message>
         <source>Visibility</source>
-        <translation>Sichtbarkeit</translation>
+        <translation>透明度</translation>
     </message>
     <message>
         <source>Low Performance</source>
-        <translation>Niedrige Leistung</translation>
+        <translation>低</translation>
     </message>
 </context>
 <context>
     <name>YACReaderNavigationController</name>
     <message>
-        <source>No favorites</source>
-        <translation type="unfinished"></translation>
+        <source>You are not reading anything yet, come on!!</source>
+        <translation>你还没有读任何东西，加油!!</translation>
     </message>
     <message>
-        <source>You are not reading anything yet, come on!!</source>
-        <translation type="unfinished"></translation>
+        <source>No favorites</source>
+        <translation>没有收藏</translation>
     </message>
 </context>
 <context>
     <name>YACReaderOptionsDialog</name>
     <message>
         <source>Save</source>
-        <translation>Speichern</translation>
+        <translation>保存</translation>
     </message>
     <message>
         <source>Use hardware acceleration (restart needed)</source>
-        <translation>Hardwarebeschleunigung benutzen (Neustart erforderlich)</translation>
+        <translation>使用硬件加速（需要重启）</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Cancel</translation>
-    </message>
-    <message>
-        <source>Edit shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>取消</translation>
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>快捷方式</translation>
+    </message>
+    <message>
+        <source>Edit shortcuts</source>
+        <translation>编辑快捷方式</translation>
     </message>
 </context>
 <context>
     <name>YACReaderSearchLineEdit</name>
     <message>
         <source>type to search</source>
-        <translation type="unfinished"></translation>
+        <translation>搜索类型</translation>
     </message>
 </context>
 <context>
     <name>YACReaderSideBar</name>
     <message>
-        <source>LIBRARIES</source>
-        <translation>Bibliotheken</translation>
+        <source>Reading Lists</source>
+        <translation>阅读列表</translation>
     </message>
     <message>
-        <source>FOLDERS</source>
-        <translation>ORDNER</translation>
+        <source>LIBRARIES</source>
+        <translation>库</translation>
     </message>
     <message>
         <source>Libraries</source>
-        <translation type="unfinished"></translation>
+        <translation>库</translation>
+    </message>
+    <message>
+        <source>FOLDERS</source>
+        <translation>文件夹</translation>
     </message>
     <message>
         <source>Folders</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Reading Lists</source>
-        <translation type="unfinished"></translation>
+        <translation>文件夹</translation>
     </message>
     <message>
         <source>READING LISTS</source>
-        <translation type="unfinished"></translation>
+        <translation>阅读列表</translation>
     </message>
 </context>
 </TS>
