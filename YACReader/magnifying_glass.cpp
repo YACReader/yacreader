@@ -191,48 +191,94 @@ void MagnifyingGlass::zoomOut()
     }
 }
 
-static constexpr auto maxRelativeDimension = 0.9;
-
 void MagnifyingGlass::sizeUp()
 {
-    if (width() < parentWidget()->width() * maxRelativeDimension)
-        resizeAndUpdate(width() + 30, height() + 15);
+    auto w = width();
+    auto h = height();
+    if (growWidth(w) | growHeight(h)) // bitwise OR prevents short-circuiting
+        resizeAndUpdate(w, h);
 }
 
 void MagnifyingGlass::sizeDown()
 {
-    if (width() > 175)
-        resizeAndUpdate(width() - 30, height() - 15);
+    auto w = width();
+    auto h = height();
+    if (shrinkWidth(w) | shrinkHeight(h)) // bitwise OR prevents short-circuiting
+        resizeAndUpdate(w, h);
 }
 
 void MagnifyingGlass::heightUp()
 {
-    if (height() < parentWidget()->height() * maxRelativeDimension)
-        resizeAndUpdate(width(), height() + 15);
+    auto h = height();
+    if (growHeight(h))
+        resizeAndUpdate(width(), h);
 }
 
 void MagnifyingGlass::heightDown()
 {
-    if (height() > 80)
-        resizeAndUpdate(width(), height() - 15);
+    auto h = height();
+    if (shrinkHeight(h))
+        resizeAndUpdate(width(), h);
 }
 
 void MagnifyingGlass::widthUp()
 {
-    if (width() < parentWidget()->width() * maxRelativeDimension)
-        resizeAndUpdate(width() + 30, height());
+    auto w = width();
+    if (growWidth(w))
+        resizeAndUpdate(w, height());
 }
 
 void MagnifyingGlass::widthDown()
 {
-    if (width() > 175)
-        resizeAndUpdate(width() - 30, height());
+    auto w = width();
+    if (shrinkWidth(w))
+        resizeAndUpdate(w, height());
 }
 
 void MagnifyingGlass::resizeAndUpdate(int w, int h)
 {
     resize(w, h);
     updateImage();
+}
+
+static constexpr auto maxRelativeDimension = 0.9;
+static constexpr auto widthStep = 30;
+static constexpr auto heightStep = 15;
+
+bool MagnifyingGlass::growWidth(int &w) const
+{
+    const auto maxWidth = parentWidget()->width() * maxRelativeDimension;
+    if (w >= maxWidth)
+        return false;
+    w += widthStep;
+    return true;
+}
+
+bool MagnifyingGlass::shrinkWidth(int &w) const
+{
+    constexpr auto minWidth = 175;
+    if (w <= minWidth)
+        return false;
+    w -= widthStep;
+    return true;
+}
+
+bool MagnifyingGlass::growHeight(int &h) const
+{
+    const auto maxHeight = parentWidget()->height() * maxRelativeDimension;
+    if (h >= maxHeight)
+        return false;
+    h += heightStep;
+    return true;
+}
+
+bool MagnifyingGlass::shrinkHeight(int &h) const
+{
+    constexpr auto minHeight = 80;
+    if (h <= minHeight)
+        return false;
+    h -= heightStep;
+    return true;
 }
 
 void MagnifyingGlass::keyPressEvent(QKeyEvent *event)

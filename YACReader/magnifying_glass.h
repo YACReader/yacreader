@@ -13,6 +13,15 @@ private:
     float zoomLevel;
     void setup(const QSize &size);
     void resizeAndUpdate(int w, int h);
+
+    // The following 4 functions increase/decrease their argument and return true,
+    // unless the maximum dimension value has been reached, in which case they
+    // do not modify the argument and return false.
+    bool growWidth(int &w) const;
+    bool shrinkWidth(int &w) const;
+    bool growHeight(int &h) const;
+    bool shrinkHeight(int &h) const;
+
     void keyPressEvent(QKeyEvent *event) override;
 
 public:
