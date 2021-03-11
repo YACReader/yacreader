@@ -47,12 +47,25 @@ struct JobData {
 };
 using JobDataSet = QVector<JobData>;
 
-int expectedTotal(const JobDataSet &jobs)
+int expectedTotal(JobDataSet::const_iterator first, JobDataSet::const_iterator last)
 {
-    return std::accumulate(jobs.cbegin(), jobs.cend(), 0,
+    return std::accumulate(first, last, 0,
                            [](int total, JobData job) {
                                return total + job.summand;
                            });
+}
+
+int expectedTotal(const JobDataSet &jobs)
+{
+    return expectedTotal(jobs.cbegin(), jobs.cend());
+}
+
+int expectedTotal(const JobDataSet &jobs, std::size_t canceledCount)
+{
+    const auto count = jobs.size() - static_cast<int>(canceledCount);
+    if (count < 0)
+        qFatal("Canceled more than the total number of jobs somehow!");
+    return expectedTotal(jobs.cbegin(), jobs.cbegin() + count);
 }
 
 int expectedTotal(const QVector<JobDataSet> &jobs)
@@ -134,29 +147,43 @@ public:
 
     void printStartedMessage() const
     {
-        log() << messageFormatString().arg("started");
+        log() << threadMessageFormatString().arg("started");
     }
-    void printCanceledMessage() const
+    void printCanceledMessage(std::size_t canceledCount) const
     {
-        log() << messageFormatString().arg("canceled");
+        const char *const jobStr = canceledCount == 1 ? "job" : "jobs";
+        const auto format = messageFormatString().arg("%1 %2 %3");
+        log() << format.arg("canceled").arg(canceledCount).arg(jobStr);
     }
     void printWaitedMessage() const
     {
-        log() << messageFormatString().arg("waited for");
+        log() << threadMessageFormatString().arg("waited for");
     }
 
 private:
     QString messageFormatString() const
     {
-        auto format = QStringLiteral("#%1 %5 %2 %3 => %4").arg(threadId);
+        return QStringLiteral("#%1 %3 => %2").arg(threadId).arg(total.load());
+    }
+
+    QString threadMessageFormatString() const
+    {
         const char *const threadStr = threadCount == 1 ? "thread" : "threads";
-        return format.arg(threadCount).arg(threadStr).arg(total.load());
+        const auto format = messageFormatString().arg("%3 %1 %2");
+        return format.arg(threadCount).arg(threadStr);
     }
 
     const Total &total;
     const int threadId;
     const int threadCount;
 };
+
+std::size_t cancelAndPrint(ConcurrentQueue &queue, const QueueControlMessagePrinter &printer)
+{
+    const auto canceledCount = queue.cancelPending();
+    printer.printCanceledMessage(canceledCount);
+    return canceledCount;
+}
 
 void waitAndPrint(ConcurrentQueue &queue, const QueueControlMessagePrinter &printer)
 {
@@ -301,39 +328,38 @@ void ConcurrentQueueTest::cancelPending1UserThread_data()
     QTest::addColumn<int>("threadCount");
     QTest::addColumn<JobDataSet>("jobs");
     QTest::addColumn<Clock::duration>("cancelDelay");
-    QTest::addColumn<int>("expectedTotal");
 
     const auto ms = [](int count) -> Clock::duration { return chrono::milliseconds(count); };
     const auto us = [](int count) -> Clock::duration { return chrono::microseconds(count); };
 
-    QTest::newRow("-") << 0 << JobDataSet {} << ms(0) << 0;
-    QTest::newRow("01") << 2 << JobDataSet {} << ms(0) << 0;
-    QTest::newRow("02") << 3 << JobDataSet {} << ms(1) << 0;
-    QTest::newRow("A") << 1 << JobDataSet { { 5, ms(3) } } << ms(1) << 5;
-    QTest::newRow("B") << 5 << JobDataSet { { 12, ms(1) } } << ms(1) << 12;
+    QTest::newRow("-") << 0 << JobDataSet {} << ms(0);
+    QTest::newRow("01") << 2 << JobDataSet {} << ms(0);
+    QTest::newRow("02") << 3 << JobDataSet {} << ms(1);
+    QTest::newRow("A") << 1 << JobDataSet { { 5, ms(3) } } << ms(1);
+    QTest::newRow("B") << 5 << JobDataSet { { 12, ms(1) } } << ms(1);
 
     JobDataSet dataSet { { 1, ms(3) }, { 5, ms(2) }, { 3, ms(1) } };
-    QTest::newRow("C1") << 1 << dataSet << ms(1) << 1;
-    QTest::newRow("C2") << 1 << dataSet << ms(4) << 6;
-    QTest::newRow("C3") << 2 << dataSet << ms(1) << 6;
-    QTest::newRow("C4") << 3 << dataSet << ms(1) << 9;
-    QTest::newRow("C5") << 1 << dataSet << ms(7) << 9;
+    QTest::newRow("C1") << 1 << dataSet << ms(1);
+    QTest::newRow("C2") << 1 << dataSet << ms(4);
+    QTest::newRow("C3") << 2 << dataSet << ms(1);
+    QTest::newRow("C4") << 3 << dataSet << ms(1);
+    QTest::newRow("C5") << 1 << dataSet << ms(7);
 
     dataSet.push_back({ 10, ms(5) });
     dataSet.push_back({ 20, ms(8) });
     dataSet.push_back({ 40, ms(20) });
     dataSet.push_back({ 80, ms(2) });
-    QTest::newRow("D1") << 1 << dataSet << ms(1) << 1;
-    QTest::newRow("D2") << 1 << dataSet << ms(15) << 39;
-    QTest::newRow("D3") << 1 << dataSet << ms(50) << 159;
-    QTest::newRow("D4") << 2 << dataSet << ms(4) << 39;
-    QTest::newRow("D5") << 3 << dataSet << ms(4) << 79;
-    QTest::newRow("D6") << 4 << dataSet << ms(4) << 159;
-    QTest::newRow("D7") << 2 << dataSet << us(300) << 6;
-    QTest::newRow("D8") << 3 << dataSet << us(500) << 9;
-    QTest::newRow("D9") << 4 << dataSet << us(700) << 19;
+    QTest::newRow("D1") << 1 << dataSet << ms(1);
+    QTest::newRow("D2") << 1 << dataSet << ms(15);
+    QTest::newRow("D3") << 1 << dataSet << ms(50);
+    QTest::newRow("D4") << 2 << dataSet << ms(4);
+    QTest::newRow("D5") << 3 << dataSet << ms(4);
+    QTest::newRow("D6") << 4 << dataSet << ms(4);
+    QTest::newRow("D7") << 2 << dataSet << us(300);
+    QTest::newRow("D8") << 3 << dataSet << us(500);
+    QTest::newRow("D9") << 4 << dataSet << us(700);
 
-    QTest::newRow("E") << 4 << JobDataSet { { 20, ms(1) }, { 8, ms(5) }, { 5, ms(2) } } << ms(1) << 33;
+    QTest::newRow("E") << 4 << JobDataSet { { 20, ms(1) }, { 8, ms(5) }, { 5, ms(2) } } << ms(1);
 }
 
 void ConcurrentQueueTest::cancelPending1UserThread()
@@ -341,7 +367,6 @@ void ConcurrentQueueTest::cancelPending1UserThread()
     QFETCH(const int, threadCount);
     QFETCH(const JobDataSet, jobs);
     QFETCH(const Clock::duration, cancelDelay);
-    QFETCH(const int, expectedTotal);
 
     const auto printer = makeMessagePrinter(threadCount);
 
@@ -351,12 +376,12 @@ void ConcurrentQueueTest::cancelPending1UserThread()
     Enqueuer(queue, total, jobs, primaryThreadId)();
 
     std::this_thread::sleep_for(cancelDelay);
-    queue.cancelPending();
-    printer.printCanceledMessage();
+    const auto canceledCount = cancelAndPrint(queue, printer);
+    QVERIFY(canceledCount <= static_cast<std::size_t>(jobs.size()));
 
     waitAndPrint(queue, printer);
 
-    QCOMPARE(total.load(), expectedTotal);
+    QCOMPARE(total.load(), expectedTotal(jobs, canceledCount));
 }
 
 QTEST_APPLESS_MAIN(ConcurrentQueueTest)
