@@ -43,12 +43,23 @@ public:
         jobAvailableVar.notify_one();
     }
 
-    void cancelPending()
+    //! @brief Cancels all jobs that have not been picked up by worker threads yet.
+    //! @return The number of jobs that were canceled.
+    std::size_t cancelPending()
     {
-        std::unique_lock<std::mutex> lockQueue(queueMutex);
-        std::unique_lock<std::mutex> lockJobsLeft(jobsLeftMutex);
-        jobsLeft -= _queue.size();
-        _queue = {};
+        decltype(_queue) oldQueue;
+        {
+            const std::lock_guard<std::mutex> lock(queueMutex);
+            // The mutex locking time is lower with swap() compared to assigning a
+            // temporary (which destroys _queue's elements and deallocates memory).
+            _queue.swap(oldQueue);
+        }
+        const auto size = oldQueue.size();
+        {
+            const std::lock_guard<std::mutex> lock(jobsLeftMutex);
+            jobsLeft -= size;
+        }
+        return size;
     }
 
     void waitAll()
