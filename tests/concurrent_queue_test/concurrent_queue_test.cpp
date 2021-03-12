@@ -155,9 +155,13 @@ public:
         const auto format = messageFormatString().arg("%1 %2 %3");
         log() << format.arg("canceled").arg(canceledCount).arg(jobStr);
     }
-    void printWaitedMessage() const
+    void printBeginWaitingMessage() const
     {
-        log() << threadMessageFormatString().arg("waited for");
+        log() << threadMessageFormatString().arg("begin waiting for");
+    }
+    void printEndWaitingMessage() const
+    {
+        log() << threadMessageFormatString().arg("end waiting for");
     }
 
 private:
@@ -187,8 +191,9 @@ std::size_t cancelAndPrint(ConcurrentQueue &queue, const QueueControlMessagePrin
 
 void waitAndPrint(ConcurrentQueue &queue, const QueueControlMessagePrinter &printer)
 {
+    printer.printBeginWaitingMessage();
     queue.waitAll();
-    printer.printWaitedMessage();
+    printer.printEndWaitingMessage();
 }
 
 }
@@ -210,6 +215,9 @@ private slots:
 
     void cancelPending1UserThread_data();
     void cancelPending1UserThread();
+
+    void waitAllFromMultipleThreads_data();
+    void waitAllFromMultipleThreads();
 
 private:
     static constexpr int primaryThreadId { 0 };
@@ -382,6 +390,44 @@ void ConcurrentQueueTest::cancelPending1UserThread()
     waitAndPrint(queue, printer);
 
     QCOMPARE(total.load(), expectedTotal(jobs, canceledCount));
+}
+
+void ConcurrentQueueTest::waitAllFromMultipleThreads_data()
+{
+    QTest::addColumn<int>("waitingThreadCount");
+    for (int i : { 1, 2, 4, 7, 19 })
+        QTest::addRow("%d", i) << i;
+}
+
+void ConcurrentQueueTest::waitAllFromMultipleThreads()
+{
+    QFETCH(const int, waitingThreadCount);
+    QVERIFY(waitingThreadCount > 0);
+
+    constexpr auto queueThreadCount = 2;
+    const auto printer = makeMessagePrinter(queueThreadCount);
+
+    ConcurrentQueue queue(queueThreadCount);
+    printer.printStartedMessage();
+
+    using ms = chrono::milliseconds;
+    const JobDataSet jobs { { 5, ms(1) }, { 7, ms(2) } };
+    Enqueuer(queue, total, jobs, primaryThreadId)();
+
+    std::vector<std::thread> waitingThreads;
+    waitingThreads.reserve(waitingThreadCount - 1);
+    for (int id = 1; id < waitingThreadCount; ++id) {
+        waitingThreads.emplace_back([=, &queue] {
+            waitAndPrint(queue, QueueControlMessagePrinter(total, id, queueThreadCount));
+        });
+    }
+
+    waitAndPrint(queue, printer);
+
+    for (auto &t : waitingThreads)
+        t.join();
+
+    QCOMPARE(total.load(), expectedTotal(jobs));
 }
 
 QTEST_APPLESS_MAIN(ConcurrentQueueTest)
