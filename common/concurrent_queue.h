@@ -113,7 +113,7 @@ private:
                 --jobsLeft;
             }
 
-            _waitVar.notify_one();
+            _waitVar.notify_all();
         }
     }
 
