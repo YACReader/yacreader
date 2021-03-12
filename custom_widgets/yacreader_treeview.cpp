@@ -20,44 +20,13 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent)
 
 #ifdef Q_OS_MAC
 
-    bool oldStyle = true;
-    switch (QSysInfo::MacVersion()) {
-    case QSysInfo::MV_SNOWLEOPARD:
-    case QSysInfo::MV_LION:
-    case QSysInfo::MV_MOUNTAINLION:
-    case QSysInfo::MV_MAVERICKS:
-        oldStyle = true; //TODO fix this
-        break;
-    default:
-        oldStyle = false;
-        break;
-    }
+    setStyleSheet("QTreeView {background-color:transparent; border: none;}"
+                  "QTreeView::item:selected {background-color:#91c4f4; border-top: 1px solid #91c4f4; border-left:none;border-right:none;border-bottom:1px solid #91c4f4;}"
+                  "QTreeView::branch:selected {background-color:#91c4f4; border-top: 1px solid #91c4f4; border-left:none;border-right:none;border-bottom:1px solid #91c4f4;}"
+                  "QTreeView::branch:open:selected:has-children {image: url(':/images/sidebar/expanded_branch_osx.png');}"
+                  "QTreeView::branch:closed:selected:has-children {image: url(':/images/sidebar/collapsed_branch_osx.png');}"
 
-    if (oldStyle) {
-        setStyleSheet("QTreeView {background-color:transparent; border: none;}"
-                      "QTreeView::item:selected {background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6BAFE4, stop: 1 #3984D2); border-top: 2px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #5EA3DF, stop: 1 #73B8EA); border-left:none;border-right:none;border-bottom:1px solid #3577C2;}"
-                      "QTreeView::branch:selected {background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6BAFE4, stop: 1 #3984D2); border-top: 2px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #5EA3DF, stop: 1 #73B8EA); border-left:none;border-right:none;border-bottom:1px solid #3577C2;}"
-                      "QTreeView::branch:open:selected:has-children {image: url(':/images/sidebar/expanded_branch_osx.png');}"
-                      "QTreeView::branch:closed:selected:has-children {image: url(':/images/sidebar/collapsed_branch_osx.png');}"
-
-                      "QScrollBar:vertical { border: none; background: #EFEFEF; width: 9px; margin: 0 3px 0 0; }"
-                      "QScrollBar::handle:vertical { background: #DDDDDD; width: 7px; min-height: 20px; margin: 1px; border: 1px solid #D0D0D0; }"
-                      "QScrollBar::add-line:vertical { border: none; background: #EFEFEF; height: 10px; subcontrol-position: bottom; subcontrol-origin: margin; margin: 0 3px 0 0;}"
-
-                      "QScrollBar::sub-line:vertical {  border: none; background: #EFEFEF; height: 10px; subcontrol-position: top; subcontrol-origin: margin; margin: 0 3px 0 0;}"
-                      "QScrollBar::up-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-up.png') center top no-repeat;}"
-                      "QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-down.png') center top no-repeat;}"
-
-                      "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none; }");
-    } else {
-        setStyleSheet("QTreeView {background-color:transparent; border: none;}"
-                      "QTreeView::item:selected {background-color:#91c4f4; border-top: 1px solid #91c4f4; border-left:none;border-right:none;border-bottom:1px solid #91c4f4;}"
-                      "QTreeView::branch:selected {background-color:#91c4f4; border-top: 1px solid #91c4f4; border-left:none;border-right:none;border-bottom:1px solid #91c4f4;}"
-                      "QTreeView::branch:open:selected:has-children {image: url(':/images/sidebar/expanded_branch_osx.png');}"
-                      "QTreeView::branch:closed:selected:has-children {image: url(':/images/sidebar/collapsed_branch_osx.png');}"
-
-        );
-    }
+    );
 
 #else
     setStyleSheet("QTreeView {background-color:transparent; border: none; color:#DDDFDF; outline:0; show-decoration-selected: 0;}"
