@@ -47,8 +47,8 @@ public:
     {
         std::unique_lock<std::mutex> lockQueue(queueMutex);
         std::unique_lock<std::mutex> lockJobsLeft(jobsLeftMutex);
-        _queue = std::queue<std::function<void(void)>>();
-        jobsLeft = 0;
+        jobsLeft -= _queue.size();
+        _queue = {};
     }
 
     void waitAll()
