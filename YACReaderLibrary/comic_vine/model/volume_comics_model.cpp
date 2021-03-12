@@ -41,7 +41,7 @@ void VolumeComicsModel::load(const QString &json)
         _data.push_back(l);
     }
 
-    qSort(_data.begin(), _data.end(), lessThan);
+    std::sort(_data.begin(), _data.end(), lessThan);
 }
 
 /*void VolumeComicsModel::load(const QStringList &jsonList)

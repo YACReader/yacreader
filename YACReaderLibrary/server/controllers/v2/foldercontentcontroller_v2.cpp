@@ -52,7 +52,7 @@ void FolderContentControllerV2::serviceContent(const int &library, const qulongl
     QList<LibraryItem *> folderComics = DBHelper::getFolderComicsFromLibrary(library, folderId);
 
     folderContent.append(folderComics);
-    qSort(folderContent.begin(), folderContent.end(), LibraryItemSorter());
+    std::sort(folderContent.begin(), folderContent.end(), LibraryItemSorter());
 
     folderComics.clear();
 
