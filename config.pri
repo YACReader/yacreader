@@ -8,17 +8,36 @@ unix:QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
 win32:QMAKE_CXXFLAGS_RELEASE += /DNDEBUG
 
 # check Qt version
-QT_VERSION = $$[QT_VERSION]
-QT_VERSION = $$split(QT_VERSION, ".")
-QT_VER_MAJ = $$member(QT_VERSION, 0)
-QT_VER_MIN = $$member(QT_VERSION, 1)
+defineTest(minQtVersion) {
+  maj = $$1
+  min = $$2
+  patch = $$3
+  isEqual(QT_MAJOR_VERSION, $$maj) {
+    isEqual(QT_MINOR_VERSION, $$min) {
+      isEqual(QT_PATCH_VERSION, $$patch) {
+        return(true)
+      }
+      greaterThan(QT_PATCH_VERSION, $$patch) {
+        return(true)
+      }
+    }
+    greaterThan(QT_MINOR_VERSION, $$min) {
+      return(true)
+    }
+  }
+  greaterThan(QT_MAJOR_VERSION, $$maj) {
+    return(true)
+  }
+  return(false)
+}
 
-lessThan(QT_VER_MAJ, 5) {
-error(YACReader requires Qt 5 or newer but Qt $$[QT_VERSION] was detected.)
-  }
-lessThan(QT_VER_MIN, 6):!CONFIG(no_opengl) {
-  error ("You need at least Qt 5.6 to compile YACReader or YACReaderLibrary.")
-  }
+!minQtVersion(5, 9, 0) {
+  error(YACReader requires Qt 5.9 or newer but $$[QT_VERSION] was detected)
+}
+
+minQtVersion(6, 0, 0) {
+  error(YACReader does not support building with Qt6 (yet))
+}
 
 # reduce log pollution
 CONFIG += silent
