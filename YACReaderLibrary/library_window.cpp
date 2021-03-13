@@ -377,6 +377,8 @@ void LibraryWindow::setUpShortcutsManagement()
                                          tmpList = QList<QAction *>()
                                                  << backAction
                                                  << forwardAction
+                                                 << focusSearchLineAction
+                                                 << focusComicsViewAction
                                                  << helpAboutAction
                                                  << optionsAction
                                                  << serverConfigAction
@@ -718,6 +720,17 @@ void LibraryWindow::createActions()
     getInfoAction->setText(tr("Download tags from Comic Vine"));
     getInfoAction->setIcon(QIcon(":/images/comics_view_toolbar/getInfo.png"));
     //-------------------------------------------------------------------------
+
+    focusSearchLineAction = new QAction(tr("Focus search line"), this);
+    focusSearchLineAction->setData(FOCUS_SEARCH_LINE_ACTION_YL);
+    focusSearchLineAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(FOCUS_SEARCH_LINE_ACTION_YL));
+    focusSearchLineAction->setIcon(QIcon(":/images/iconSearch.png"));
+    addAction(focusSearchLineAction);
+
+    focusComicsViewAction = new QAction(tr("Focus comics view"), this);
+    focusComicsViewAction->setData(FOCUS_COMICS_VIEW_ACTION_YL);
+    focusComicsViewAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(FOCUS_COMICS_VIEW_ACTION_YL));
+    addAction(focusComicsViewAction);
 
     showEditShortcutsAction = new QAction(tr("Edit shortcuts"), this);
     showEditShortcutsAction->setData(SHOW_EDIT_SHORTCUTS_ACTION_YL);
@@ -1146,6 +1159,9 @@ void LibraryWindow::createConnections()
     //connect(comicsModel,SIGNAL(isEmpty()),this,SLOT(showEmptyFolderView()));
     //connect(comicsModel,SIGNAL(searchNumResults(int)),this,SLOT(checkSearchNumResults(int)));
     //connect(emptyFolderWidget,SIGNAL(subfolderSelected(QModelIndex,int)),this,SLOT(selectSubfolder(QModelIndex,int)));
+
+    connect(focusSearchLineAction, &QAction::triggered, searchEdit, [this] { searchEdit->setFocus(Qt::ShortcutFocusReason); });
+    connect(focusComicsViewAction, &QAction::triggered, comicsViewsManager, &YACReaderComicsViewsManager::focusComicsViewViaShortcut);
 
     connect(showEditShortcutsAction, SIGNAL(triggered()), editShortcutsDialog, SLOT(show()));
 

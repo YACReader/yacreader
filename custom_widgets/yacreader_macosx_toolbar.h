@@ -12,6 +12,7 @@ class YACReaderMacOSXSearchLineEdit : public QObject
     Q_OBJECT
 public:
     YACReaderMacOSXSearchLineEdit();
+    void setFocus(Qt::FocusReason reason);
     void *getNSTextField();
 
 public slots:

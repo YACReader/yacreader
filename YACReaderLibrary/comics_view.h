@@ -29,6 +29,7 @@ public:
     virtual void enableFilterMode(bool enabled) = 0;
     virtual void selectIndex(int index) = 0;
     virtual void updateCurrentComicView() = 0;
+    virtual void focusComicsNavigation(Qt::FocusReason reason) = 0;
 
 public slots:
     virtual void updateInfoForIndex(int index);

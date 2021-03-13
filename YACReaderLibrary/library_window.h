@@ -213,6 +213,9 @@ public:
     QAction *forceCoverExtractedAction;
     QAction *deleteComicsAction;
 
+    QAction *focusSearchLineAction;
+    QAction *focusComicsViewAction;
+
     QAction *showEditShortcutsAction;
 
     QAction *updateFolderAction;
