@@ -11,8 +11,6 @@
 
 #include <QsLog.h>
 
-#include "db_helper.h"
-
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;
 
@@ -33,7 +31,6 @@ void PageControllerV2::service(HttpRequest &request, HttpResponse &response)
     bool remote = path.endsWith("remote");
 
     QStringList pathElements = path.split('/');
-    QString libraryName = DBHelper::getLibraryName(pathElements.at(2).toInt());
     qulonglong comicId = pathElements.at(5).toULongLong();
     unsigned int page = pathElements.at(7).toUInt();
 
