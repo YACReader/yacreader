@@ -319,7 +319,8 @@ YACReaderMacOSXSearchLineEdit::YACReaderMacOSXSearchLineEdit()
 void YACReaderMacOSXSearchLineEdit::setFocus(Qt::FocusReason reason)
 {
     Q_UNUSED(reason)
-    // TODO: implement
+
+    [((NSTextField *)nstextfield) becomeFirstResponder];
 }
 
 void *YACReaderMacOSXSearchLineEdit::getNSTextField()
