@@ -1328,6 +1328,7 @@ void MainWindowViewer::setUpShortcutsManagement()
                                                  << doublePageAction
                                                  << doubleMangaPageAction
                                                  << adjustToFullSizeAction
+                                                 << fitToPageAction
                                                  << increasePageZoomAction
                                                  << decreasePageZoomAction
                                                  << resetZoomAction);
