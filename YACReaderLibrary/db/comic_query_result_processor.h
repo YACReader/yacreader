@@ -1,5 +1,5 @@
-#ifndef COMIC_QUERY_RESULT_PROCESOR_H
-#define COMIC_QUERY_RESULT_PROCESOR_H
+#ifndef COMIC_QUERY_RESULT_PROCESSOR_H
+#define COMIC_QUERY_RESULT_PROCESSOR_H
 
 #include <QtCore>
 #include <QSqlQuery>
@@ -11,11 +11,11 @@ class ComicItem;
 
 namespace YACReader {
 
-class ComicQueryResultProcesor : public QObject
+class ComicQueryResultProcessor : public QObject
 {
     Q_OBJECT
 public:
-    ComicQueryResultProcesor();
+    ComicQueryResultProcessor();
 
 public slots:
     void createModelData(const SearchModifiers modifier, const QString &filter, const QString &databasePath);
@@ -25,8 +25,8 @@ signals:
 private:
     ConcurrentQueue querySearchQueue;
 
-    QList<ComicItem *> *modelData(QSqlQuery &sqlquery);
+    static QList<ComicItem *> *modelData(QSqlQuery &sqlquery);
 };
 };
 
-#endif // COMIC_QUERY_RESULT_PROCESOR_H
+#endif // COMIC_QUERY_RESULT_PROCESSOR_H

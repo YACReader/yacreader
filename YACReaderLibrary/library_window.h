@@ -10,7 +10,7 @@
 #include "yacreader_libraries.h"
 
 #include "yacreader_navigation_controller.h"
-#include "comic_query_result_procesor.h"
+#include "comic_query_result_processor.h"
 #include "folder_query_result_processor.h"
 
 #include <future>
@@ -416,7 +416,7 @@ private:
     std::future<void> upgradeLibraryFuture;
 
     TrayIconController *trayIconController;
-    ComicQueryResultProcesor comicQueryResultProcesor;
+    ComicQueryResultProcessor comicQueryResultProcessor;
     std::unique_ptr<FolderQueryResultProcessor> folderQueryResultProcessor;
 };
 
