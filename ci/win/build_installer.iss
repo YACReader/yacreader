@@ -106,7 +106,7 @@ LaunchYACReader=Start YACreader after finishing installation
 
 [Run]
 Filename: {tmp}\vc_redist.{#PLATFORM}.exe; \
-Parameters: "/q /passive /norestart /Q:a /c:""msiexec /q /i vcredist.msi"""; \
+Parameters: "/install /quiet /norestart"; \
 StatusMsg: "Installing VC++ Redistributables..."
 
 Filename: {app}\{cm:AppLibrary}.exe; Description: {cm:LaunchYACReaderLibrary,{cm:AppLibrary}}; Flags: nowait postinstall skipifsilent
