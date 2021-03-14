@@ -1,10 +1,10 @@
 parameters:
   name: Windows_x64
   architecture: 'x64'
-  qt_version: '5.12.6'
-  qt_spec: 'msvc2017_64'
-  qt_aqt_spec: 'win64_msvc2017_64'
-  vc_redist_url: 'https://go.microsoft.com/fwlink/?LinkId=746572'
+  qt_version: '5.15.2'
+  qt_spec: 'msvc2019_64'
+  qt_aqt_spec: 'win64_msvc2019_64'
+  vc_redist_url: 'https://aka.ms/vs/16/release/vc_redist.x64.exe'
   vc_redist_file_name: 'vc_redist.x64.exe'
   vc_vars: 'vcvars64.bat'
 
@@ -12,7 +12,7 @@ jobs:
 - job: ${{ parameters.name }}
   dependsOn: CodeFormatValidation
   pool:
-    vmImage: 'vs2017-win2016'
+    vmImage: 'windows-2019'
   steps:
   - script: |
       pip install aqtinstall
@@ -26,7 +26,7 @@ jobs:
       wget "${{ parameters.vc_redist_url }}" -O $(Build.SourcesDirectory)\${{ parameters.vc_redist_file_name }}
     displayName: 'Install dependencies'
   - script: |
-      call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\${{ parameters.vc_vars }}"
+      call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\${{ parameters.vc_vars }}"
       set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
       set DEFINES_VAR=DEFINES+="BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\""
       qmake CONFIG+="7zip" %DEFINES_VAR%
