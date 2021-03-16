@@ -1,11 +1,14 @@
 #ifndef CONCURRENT_QUEUE_H
 #define CONCURRENT_QUEUE_H
 
+#include <cassert>
 #include <thread>
+#include <limits>
 #include <mutex>
 #include <functional>
 #include <condition_variable>
 #include <queue>
+#include <vector>
 
 namespace YACReader {
 class ConcurrentQueue
@@ -54,11 +57,11 @@ public:
             // temporary (which destroys _queue's elements and deallocates memory).
             _queue.swap(oldQueue);
         }
+
         const auto size = oldQueue.size();
-        {
-            const std::lock_guard<std::mutex> lock(jobsLeftMutex);
-            jobsLeft -= size;
-        }
+        assert(size <= std::numeric_limits<int>::max());
+        if (size != 0)
+            finalizeJobs(static_cast<int>(size));
         return size;
     }
 
@@ -107,14 +110,25 @@ private:
             }
 
             job();
-
-            {
-                std::lock_guard<std::mutex> lock(jobsLeftMutex);
-                --jobsLeft;
-            }
-
-            _waitVar.notify_all();
+            finalizeJobs(1);
         }
+    }
+
+    void finalizeJobs(int count)
+    {
+        assert(count > 0);
+
+        int remainingJobs;
+        {
+            std::lock_guard<std::mutex> lock(jobsLeftMutex);
+            assert(jobsLeft >= count);
+            jobsLeft -= count;
+            remainingJobs = jobsLeft;
+        }
+
+        assert(remainingJobs >= 0);
+        if (remainingJobs == 0)
+            _waitVar.notify_all();
     }
 
     void joinAll()
