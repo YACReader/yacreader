@@ -34,13 +34,13 @@ public:
     void enqueue(std::function<void(void)> job)
     {
         {
-            std::lock_guard<std::mutex> lock(queueMutex);
-            _queue.emplace(job);
+            std::lock_guard<std::mutex> lock(jobsLeftMutex);
+            ++jobsLeft;
         }
 
         {
-            std::lock_guard<std::mutex> lock(jobsLeftMutex);
-            ++jobsLeft;
+            std::lock_guard<std::mutex> lock(queueMutex);
+            _queue.emplace(job);
         }
 
         jobAvailableVar.notify_one();
@@ -78,7 +78,7 @@ public:
 private:
     std::vector<std::thread> threads;
     std::queue<std::function<void(void)>> _queue;
-    int jobsLeft;
+    int jobsLeft; //!< @invariant jobsLeft >= _queue.size()
     bool bailout;
     std::condition_variable jobAvailableVar;
     std::condition_variable _waitVar;
