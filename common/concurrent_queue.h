@@ -8,6 +8,7 @@
 #include <functional>
 #include <condition_variable>
 #include <queue>
+#include <utility>
 #include <vector>
 
 namespace YACReader {
@@ -40,7 +41,7 @@ public:
 
         {
             std::lock_guard<std::mutex> lock(queueMutex);
-            _queue.emplace(job);
+            _queue.emplace(std::move(job));
         }
 
         jobAvailableVar.notify_one();
@@ -105,7 +106,7 @@ private:
                     return;
                 }
 
-                job = _queue.front();
+                job = std::move(_queue.front());
                 _queue.pop();
             }
 
