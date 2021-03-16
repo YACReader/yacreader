@@ -3,7 +3,6 @@
 
 #include <cassert>
 #include <thread>
-#include <limits>
 #include <mutex>
 #include <functional>
 #include <condition_variable>
@@ -60,9 +59,8 @@ public:
         }
 
         const auto size = oldQueue.size();
-        assert(size <= std::numeric_limits<int>::max());
         if (size != 0)
-            finalizeJobs(static_cast<int>(size));
+            finalizeJobs(size);
         return size;
     }
 
@@ -79,7 +77,7 @@ public:
 private:
     std::vector<std::thread> threads;
     std::queue<std::function<void(void)>> _queue;
-    int jobsLeft; //!< @invariant jobsLeft >= _queue.size()
+    std::size_t jobsLeft; //!< @invariant jobsLeft >= _queue.size()
     bool bailout;
     std::condition_variable jobAvailableVar;
     std::condition_variable _waitVar;
@@ -115,11 +113,11 @@ private:
         }
     }
 
-    void finalizeJobs(int count)
+    void finalizeJobs(std::size_t count)
     {
         assert(count > 0);
 
-        int remainingJobs;
+        std::size_t remainingJobs;
         {
             std::lock_guard<std::mutex> lock(jobsLeftMutex);
             assert(jobsLeft >= count);
@@ -127,7 +125,6 @@ private:
             remainingJobs = jobsLeft;
         }
 
-        assert(remainingJobs >= 0);
         if (remainingJobs == 0)
             _waitVar.notify_all();
     }
