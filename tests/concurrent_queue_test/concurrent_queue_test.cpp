@@ -288,8 +288,14 @@ class RandomCaller
 {
 public:
     explicit RandomCaller(ConcurrentQueue &queue, Total &total, int threadId,
-                          int queueThreadCount, RandomEngine &engine)
-        : queue(queue), total(total), threadId { threadId }, printer(total, threadId, queueThreadCount), engine(engine)
+                          int queueThreadCount, RandomEngine &engine,
+                          bool boostEnqueueOperationWeight)
+        : queue(queue),
+          total(total),
+          threadId { threadId },
+          boostEnqueueOperationWeight { boostEnqueueOperationWeight },
+          printer(total, threadId, queueThreadCount),
+          engine(engine)
     {
     }
 
@@ -322,19 +328,51 @@ private:
         return uniformInt(engine, decltype(uniformInt)::param_type(a, b));
     }
 
-    std::discrete_distribution<int> operationDistribution()
+    using OperationDistribution = std::discrete_distribution<int>;
+
+    void printProbabilities(const OperationDistribution &distribution) const
+    {
+        auto p = distribution.probabilities();
+        constexpr std::size_t expectedProbabilityCount { 3 };
+        if (p.size() != expectedProbabilityCount)
+            qFatal("Wrong number of operation probabilities: %zu != %zu", p.size(), expectedProbabilityCount);
+
+        for (auto &x : p)
+            x *= 100; // Convert to percentages.
+        log() << QStringLiteral("#%1 operation probabilities: e=%2%, c=%3%, w=%4%.").arg(threadId).arg(p[0]).arg(p[1]).arg(p[2]);
+    }
+
+    OperationDistribution operationDistribution()
+    {
+        auto distribution = boostEnqueueOperationWeight ? boostedEnqueueOperationDistribution()
+                                                        : almostUniformOperationDistribution();
+        printProbabilities(distribution);
+        return distribution;
+    }
+
+    OperationDistribution almostUniformOperationDistribution()
     {
         constexpr int sumOfProbabilities { 100 };
         const auto enqueueProbability = randomInt(0, sumOfProbabilities);
         const auto cancelProbability = randomInt(0, sumOfProbabilities - enqueueProbability);
         const auto waitProbability = sumOfProbabilities - enqueueProbability - cancelProbability;
-
-        log() << QStringLiteral("#%1 operation weights: %2%, %3%, %4%.").arg(threadId).arg(enqueueProbability).arg(cancelProbability).arg(waitProbability);
         if (enqueueProbability + cancelProbability + waitProbability != sumOfProbabilities)
             qFatal("The sum of probabilities is not 100%%.");
 
         const auto real = [](int x) { return static_cast<double>(x); };
         return { real(enqueueProbability), real(cancelProbability), real(waitProbability) };
+    }
+
+    OperationDistribution boostedEnqueueOperationDistribution()
+    {
+        // Make enqueue the most frequent operation to stress-test executing
+        // jobs rather than canceling them almost immediately.
+        const auto enqueueWeight = std::lognormal_distribution<double>(2, 0.5)(engine);
+        const auto cancelWeight = 1.0;
+        // Waiting is uninteresting as it doesn't even modify the queue => make it rare.
+        const auto waitWeight = std::uniform_real_distribution<double>(0, 0.2)(engine);
+
+        return { enqueueWeight, cancelWeight, waitWeight };
     }
 
     JobDataSet createJobs()
@@ -365,6 +403,7 @@ private:
     ConcurrentQueue &queue;
     Total &total;
     const int threadId;
+    const bool boostEnqueueOperationWeight;
     const QueueControlMessagePrinter printer;
     RandomEngine &engine;
     std::uniform_int_distribution<int> uniformInt;
@@ -612,10 +651,14 @@ void ConcurrentQueueTest::randomCalls_data()
 {
     QTest::addColumn<int>("queueThreadCount");
     QTest::addColumn<int>("userThreadCount");
+    QTest::addColumn<bool>("boostEnqueueOperationWeight");
 
-    for (int q : { 1, 2, 3, 4, 8, 12, 16, 20 })
-        for (int u : { 1, 2, 3, 4, 7, 11, 18 })
-            QTest::addRow("queue{%d}; %d user thread(s)", q, u) << q << u;
+    const auto suffix = [](bool boost) { return boost ? " +enqueue" : ""; };
+
+    for (bool boost : { false, true })
+        for (int q : { 1, 2, 4, 9, 12, 20 })
+            for (int u : { 1, 2, 4, 7, 11, 18 })
+                QTest::addRow("queue{%d}; %d user thread(s)%s", q, u, suffix(boost)) << q << u << boost;
 }
 
 void ConcurrentQueueTest::randomCalls()
@@ -623,6 +666,7 @@ void ConcurrentQueueTest::randomCalls()
     QFETCH(const int, queueThreadCount);
     QFETCH(const int, userThreadCount);
     QVERIFY(userThreadCount > 0);
+    QFETCH(const bool, boostEnqueueOperationWeight);
 
     const auto printer = makeMessagePrinter(queueThreadCount);
 
@@ -635,10 +679,12 @@ void ConcurrentQueueTest::randomCalls()
     userThreads.reserve(userThreadCount - 1);
     for (int id = 1; id < userThreadCount; ++id) {
         userThreads.emplace_back(RandomCaller(queue, total, id, queueThreadCount,
-                                              randomEngineProvider.engine(id)));
+                                              randomEngineProvider.engine(id),
+                                              boostEnqueueOperationWeight));
     }
     RandomCaller(queue, total, primaryThreadId, queueThreadCount,
-                 randomEngineProvider.engine(primaryThreadId))();
+                 randomEngineProvider.engine(primaryThreadId),
+                 boostEnqueueOperationWeight)();
 
     for (auto &t : userThreads)
         t.join();
