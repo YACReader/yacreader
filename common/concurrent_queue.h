@@ -14,16 +14,13 @@ namespace YACReader {
 class ConcurrentQueue
 {
 public:
-    explicit ConcurrentQueue(int threadCount)
+    explicit ConcurrentQueue(std::size_t threadCount)
         : jobsLeft(0),
           bailout(false)
     {
-        threads = std::vector<std::thread>(threadCount);
-        for (int index = 0; index < threadCount; ++index) {
-            threads[index] = std::thread([this] {
-                this->nextJob();
-            });
-        }
+        threads.reserve(threadCount);
+        for (; threadCount != 0; --threadCount)
+            threads.emplace_back(&ConcurrentQueue::nextJob, this);
     }
 
     ~ConcurrentQueue()
