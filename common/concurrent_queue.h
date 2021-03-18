@@ -33,7 +33,7 @@ public:
     std::size_t cancelPending();
 
     //! @brief Blocks the current thread until all enqueued jobs are completed.
-    void waitAll();
+    void waitAll() const;
 
 private:
     //! @invariant all worker threads are joinable until the destructor is called.
@@ -42,8 +42,8 @@ private:
     std::size_t jobsLeft = 0; //!< @invariant jobsLeft >= _queue.size()
     bool bailout = false; //!< @invariant is false until the destructor is called.
     std::condition_variable jobAvailableVar;
-    std::condition_variable _waitVar;
-    std::mutex jobsLeftMutex;
+    mutable std::condition_variable _waitVar;
+    mutable std::mutex jobsLeftMutex;
     std::mutex queueMutex;
 
     void nextJob();

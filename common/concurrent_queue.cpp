@@ -59,7 +59,7 @@ std::size_t ConcurrentQueue::cancelPending()
     return size;
 }
 
-void ConcurrentQueue::waitAll()
+void ConcurrentQueue::waitAll() const
 {
     std::unique_lock<std::mutex> lock(jobsLeftMutex);
     _waitVar.wait(lock, [this] { return jobsLeft == 0; });
