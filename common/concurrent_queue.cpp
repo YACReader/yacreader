@@ -62,11 +62,7 @@ std::size_t ConcurrentQueue::cancelPending()
 void ConcurrentQueue::waitAll()
 {
     std::unique_lock<std::mutex> lock(jobsLeftMutex);
-    if (jobsLeft > 0) {
-        _waitVar.wait(lock, [this] {
-            return jobsLeft == 0;
-        });
-    }
+    _waitVar.wait(lock, [this] { return jobsLeft == 0; });
 }
 
 void ConcurrentQueue::nextJob()
@@ -76,10 +72,6 @@ void ConcurrentQueue::nextJob()
 
         {
             std::unique_lock<std::mutex> lock(queueMutex);
-
-            if (bailout) {
-                return;
-            }
 
             jobAvailableVar.wait(lock, [this] {
                 return _queue.size() > 0 || bailout;
