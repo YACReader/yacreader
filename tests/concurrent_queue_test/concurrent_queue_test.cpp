@@ -202,7 +202,7 @@ std::size_t cancelAndPrint(ConcurrentQueue &queue, const QueueControlMessagePrin
     return canceledCount;
 }
 
-void waitAndPrint(ConcurrentQueue &queue, const QueueControlMessagePrinter &printer)
+void waitAndPrint(const ConcurrentQueue &queue, const QueueControlMessagePrinter &printer)
 {
     printer.printBeginWaitingMessage();
     queue.waitAll();
