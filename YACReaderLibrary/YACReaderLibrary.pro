@@ -160,6 +160,7 @@ HEADERS += comic_flow.h \
 }
 
 SOURCES += comic_flow.cpp \
+    ../common/concurrent_queue.cpp \
     create_library_dialog.cpp \
     db/comic_query_result_processor.cpp \
     db/folder_query_result_processor.cpp \
