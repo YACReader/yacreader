@@ -16,7 +16,16 @@ ConcurrentQueue::ConcurrentQueue(std::size_t threadCount)
 
 ConcurrentQueue::~ConcurrentQueue()
 {
-    joinAll();
+    {
+        std::lock_guard<std::mutex> lock(queueMutex);
+        assert(!bailout);
+        bailout = true;
+    }
+    jobAvailableVar.notify_all();
+
+    for (auto &x : threads)
+        x.join();
+    assert(jobsLeft == _queue.size() && "Only not yet started jobs are left.");
 }
 
 void ConcurrentQueue::enqueue(Job job)
@@ -103,25 +112,4 @@ void ConcurrentQueue::finalizeJobs(std::size_t count)
 
     if (remainingJobs == 0)
         _waitVar.notify_all();
-}
-
-void ConcurrentQueue::joinAll()
-{
-    {
-        std::lock_guard<std::mutex> lock(queueMutex);
-
-        if (bailout) {
-            return;
-        }
-
-        bailout = true;
-    }
-
-    jobAvailableVar.notify_all();
-
-    for (auto &x : threads) {
-        if (x.joinable()) {
-            x.join();
-        }
-    }
 }

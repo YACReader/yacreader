@@ -36,10 +36,11 @@ public:
     void waitAll();
 
 private:
+    //! @invariant all worker threads are joinable until the destructor is called.
     std::vector<std::thread> threads;
     std::queue<Job> _queue;
     std::size_t jobsLeft = 0; //!< @invariant jobsLeft >= _queue.size()
-    bool bailout = false;
+    bool bailout = false; //!< @invariant is false until the destructor is called.
     std::condition_variable jobAvailableVar;
     std::condition_variable _waitVar;
     std::mutex jobsLeftMutex;
@@ -47,7 +48,6 @@ private:
 
     void nextJob();
     void finalizeJobs(std::size_t count);
-    void joinAll();
 };
 
 }
