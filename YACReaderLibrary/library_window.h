@@ -218,6 +218,8 @@ public:
 
     QAction *showEditShortcutsAction;
 
+    QAction *quitAction;
+
     QAction *updateFolderAction;
     QAction *updateCurrentFolderAction;
 
