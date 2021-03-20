@@ -52,13 +52,10 @@ TrayIconController::TrayIconController(QSettings *settings, LibraryWindow *windo
     auto restoreAction = new QAction(tr("&Restore"), this);
     connect(restoreAction, &QAction::triggered, this, &TrayIconController::showWindow);
 
-    auto quitAction = new QAction(tr("&Quit"), this);
-    connect(quitAction, &QAction::triggered, window, &LibraryWindow::closeApp);
-
     trayIconMenu = new QMenu(this->window);
     trayIconMenu->addAction(restoreAction);
     trayIconMenu->addSeparator();
-    trayIconMenu->addAction(quitAction);
+    trayIconMenu->addAction(this->window->quitAction);
 
     trayIcon.setContextMenu(trayIconMenu);
 

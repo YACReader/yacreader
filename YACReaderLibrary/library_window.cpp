@@ -382,7 +382,8 @@ void LibraryWindow::setUpShortcutsManagement()
                                                  << helpAboutAction
                                                  << optionsAction
                                                  << serverConfigAction
-                                                 << showEditShortcutsAction);
+                                                 << showEditShortcutsAction
+                                                 << quitAction);
 
     allActions << tmpList;
 
@@ -737,6 +738,13 @@ void LibraryWindow::createActions()
     showEditShortcutsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_EDIT_SHORTCUTS_ACTION_YL));
     showEditShortcutsAction->setShortcutContext(Qt::ApplicationShortcut);
     addAction(showEditShortcutsAction);
+
+    quitAction = new QAction(tr("&Quit"), this);
+    quitAction->setIcon(QIcon(":/images/viewer_toolbar/close.png"));
+    quitAction->setData(QUIT_ACTION_YL);
+    quitAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(QUIT_ACTION_YL));
+    // TODO: is `quitAction->setMenuRole(QAction::QuitRole);` useful on macOS?
+    addAction(quitAction);
 
     updateFolderAction = new QAction(tr("Update folder"), this);
     updateFolderAction->setIcon(QIcon(":/images/menus_icons/updateLibraryIcon.png"));
@@ -1164,6 +1172,8 @@ void LibraryWindow::createConnections()
     connect(focusComicsViewAction, &QAction::triggered, comicsViewsManager, &YACReaderComicsViewsManager::focusComicsViewViaShortcut);
 
     connect(showEditShortcutsAction, SIGNAL(triggered()), editShortcutsDialog, SLOT(show()));
+
+    connect(quitAction, &QAction::triggered, this, &LibraryWindow::closeApp);
 
     //update folders (partial updates)
     connect(updateCurrentFolderAction, SIGNAL(triggered()), this, SLOT(updateCurrentFolder()));

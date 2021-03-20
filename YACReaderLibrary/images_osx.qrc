@@ -71,6 +71,8 @@
         <file alias="images/sidebar/delete_sidebar@2x.png">../images/sidebar/delete_sidebar_osx@2x.png</file>
         <file alias="images/sidebar/addLabelIcon@2x.png">../images/sidebar/addLabelIcon_osx@2x.png</file>
         <file alias="images/sidebar/renameListIcon@2x.png">../images/sidebar/renameListIcon_osx@2x.png</file>
+        <file alias="images/viewer_toolbar/close.png">../images/viewer_toolbar/close_osx.png</file>
+        <file alias="images/viewer_toolbar/close@2x.png">../images/viewer_toolbar/close_osx@2x.png</file>
         <file>macostrayicon.svg</file>
     </qresource>
 </RCC>
