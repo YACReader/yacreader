@@ -92,6 +92,7 @@ HEADERS += comic_flow.h \
   import_comics_info_dialog.h \
   server_config_dialog.h \
   comic_flow_widget.h \
+  database_helper.h \
   db_helper.h \
   ./db/data_base_management.h \
   ./db/folder_item.h \
@@ -171,6 +172,7 @@ SOURCES += comic_flow.cpp \
     import_comics_info_dialog.cpp \
     server_config_dialog.cpp \
     comic_flow_widget.cpp \
+    database_helper.cpp \
     db_helper.cpp \
     ./db/data_base_management.cpp \
     ./db/folder_item.cpp \

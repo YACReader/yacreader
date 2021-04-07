@@ -41,6 +41,7 @@ QT += core sql network
 HEADERS += ../YACReaderLibrary/library_creator.h \
            ../YACReaderLibrary/package_manager.h \
            ../YACReaderLibrary/bundle_creator.h \
+           ../YACReaderLibrary/database_helper.h \
            ../YACReaderLibrary/db_helper.h \
            ../YACReaderLibrary/db/data_base_management.h \
            ../YACReaderLibrary/db/reading_list.h \
@@ -64,6 +65,7 @@ HEADERS += ../YACReaderLibrary/library_creator.h \
 SOURCES += ../YACReaderLibrary/library_creator.cpp \
            ../YACReaderLibrary/package_manager.cpp \
            ../YACReaderLibrary/bundle_creator.cpp \
+           ../YACReaderLibrary/database_helper.cpp \
            ../YACReaderLibrary/db_helper.cpp \
            ../YACReaderLibrary/db/data_base_management.cpp \
            ../YACReaderLibrary/db/reading_list.cpp \
