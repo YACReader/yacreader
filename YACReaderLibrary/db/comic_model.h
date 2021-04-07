@@ -5,7 +5,6 @@
 #include <QModelIndex>
 #include <QVariant>
 #include <QSqlQuery>
-#include <QSqlDatabase>
 #include <QUrl>
 
 #include "yacreader_global_gui.h"

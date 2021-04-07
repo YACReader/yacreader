@@ -9,6 +9,7 @@
 #include <QCoreApplication>
 #include <QTextStream>
 #include <QSqlDatabase>
+#include <QSqlError>
 #include <QSqlRecord>
 #include <QSqlQuery>
 

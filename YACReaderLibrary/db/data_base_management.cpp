@@ -1,11 +1,14 @@
 #include "data_base_management.h"
 
-#include <QtCore>
 #include "library_creator.h"
 #include "check_new_version.h"
 #include "db_helper.h"
 
 #include "QsLog.h"
+
+#include <QDir>
+#include <QImageReader>
+#include <QList>
 
 static QString fields = "title ,"
 

@@ -1,6 +1,7 @@
 #include "library_window.h"
 #include "custom_widgets.h"
 #include "folder_item.h"
+#include "folder_model.h"
 
 #include <QHBoxLayout>
 #include <QSplitter>

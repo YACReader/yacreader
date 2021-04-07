@@ -1,11 +1,13 @@
 #ifndef __DATA_BASE_MANAGEMENT_H
 #define __DATA_BASE_MANAGEMENT_H
 
-#include <QtCore>
-#include <QtSql>
 #include <QSqlDatabase>
-
-#include "folder_model.h"
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QString>
+#include <QStringList>
+#include <QThread>
 
 class ComicsInfoExporter : public QThread
 {

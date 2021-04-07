@@ -12,7 +12,6 @@
 #include <QtGui>
 #include <QMutex>
 #include <QThread>
-#include <QSqlDatabase>
 #include <QModelIndex>
 
 #include "folder.h"
