@@ -1520,7 +1520,7 @@ QList<Label> DBHelper::getLabels(qulonglong libraryId)
     return labels;
 }
 
-void DBHelper::updateFolderTreeManga(qulonglong id, QSqlDatabase &db, bool manga)
+void DBHelper::updateFolderTreeManga(qulonglong id, bool manga, QSqlDatabase &db)
 {
     QSqlQuery updateFolderQuery(db);
     updateFolderQuery.prepare("UPDATE folder "
@@ -1546,7 +1546,7 @@ void DBHelper::updateFolderTreeManga(qulonglong id, QSqlDatabase &db, bool manga
     int childFolderIdPos = getSubFoldersQuery.record().indexOf("id");
 
     while (getSubFoldersQuery.next()) {
-        updateFolderTreeManga(getSubFoldersQuery.value(childFolderIdPos).toULongLong(), db, manga);
+        updateFolderTreeManga(getSubFoldersQuery.value(childFolderIdPos).toULongLong(), manga, db);
     }
 }
 
