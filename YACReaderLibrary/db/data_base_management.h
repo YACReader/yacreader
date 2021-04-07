@@ -44,16 +44,16 @@ private:
 
 public:
     //crea una base de datos y todas sus tablas
-    static QSqlDatabase createDatabase(QString name, QString path);
-    static QSqlDatabase createDatabase(QString dest);
+    static QSqlDatabase createDatabase(const QString &name, const QString &path);
+    static QSqlDatabase createDatabase(const QString &dest);
     //carga una base de datos desde la ruta path
-    static QSqlDatabase loadDatabase(QString path);
-    static QSqlDatabase loadDatabaseFromFile(QString path);
+    static QSqlDatabase loadDatabase(const QString &path);
+    static QSqlDatabase loadDatabaseFromFile(const QString &path);
     static bool createTables(QSqlDatabase &database);
     static bool createV8Tables(QSqlDatabase &database);
 
-    static void exportComicsInfo(QString source, QString dest);
-    static bool importComicsInfo(QString source, QString dest);
+    static void exportComicsInfo(const QString &source, const QString &dest);
+    static bool importComicsInfo(const QString &source, const QString &dest);
 
     static QString checkValidDB(const QString &fullPath); //retorna "" si la DB es inválida ó la versión si es válida.
     static int compareVersions(const QString &v1, const QString v2); //retorna <0 si v1 < v2, 0 si v1 = v2 y >0 si v1 > v2

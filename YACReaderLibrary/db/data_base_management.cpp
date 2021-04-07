@@ -47,12 +47,12 @@ static QString fields = "title ,"
 
                         "hash";
 
-QSqlDatabase DataBaseManagement::createDatabase(QString name, QString path)
+QSqlDatabase DataBaseManagement::createDatabase(const QString &name, const QString &path)
 {
     return createDatabase(QDir::cleanPath(path) + "/" + name + ".ydb");
 }
 
-QSqlDatabase DataBaseManagement::createDatabase(QString dest)
+QSqlDatabase DataBaseManagement::createDatabase(const QString &dest)
 {
     QString threadId = QString::number((long long)QThread::currentThreadId(), 16);
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", dest + threadId);
@@ -78,7 +78,7 @@ QSqlDatabase DataBaseManagement::createDatabase(QString dest)
     return db;
 }
 
-QSqlDatabase DataBaseManagement::loadDatabase(QString path)
+QSqlDatabase DataBaseManagement::loadDatabase(const QString &path)
 {
     //TODO check path
     QString threadId = QString::number((long long)QThread::currentThreadId(), 16);
@@ -92,7 +92,7 @@ QSqlDatabase DataBaseManagement::loadDatabase(QString path)
     return db;
 }
 
-QSqlDatabase DataBaseManagement::loadDatabaseFromFile(QString filePath)
+QSqlDatabase DataBaseManagement::loadDatabaseFromFile(const QString &filePath)
 {
     //TODO check path
     QString threadId = QString::number((long long)QThread::currentThreadId(), 16);
@@ -307,7 +307,7 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
     return success;
 }
 
-void DataBaseManagement::exportComicsInfo(QString source, QString dest)
+void DataBaseManagement::exportComicsInfo(const QString &source, const QString &dest)
 {
     QString connectionName = "";
     {
@@ -339,7 +339,7 @@ void DataBaseManagement::exportComicsInfo(QString source, QString dest)
     QSqlDatabase::removeDatabase(connectionName);
 }
 
-bool DataBaseManagement::importComicsInfo(QString source, QString dest)
+bool DataBaseManagement::importComicsInfo(const QString &source, const QString &dest)
 {
     QString error;
     QString driver;
