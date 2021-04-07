@@ -29,11 +29,9 @@ private:
     void run() override;
 };
 
-class DataBaseManagement : public QObject
+class DataBaseManagement
 {
-    Q_OBJECT
 private:
-    QList<QString> dataBasesList;
     static void bindString(const QString &name, const QSqlRecord &record, QSqlQuery &query);
     static void bindInt(const QString &name, const QSqlRecord &record, QSqlQuery &query);
     static void bindDouble(const QString &name, const QSqlRecord &record, QSqlQuery &query);
@@ -43,8 +41,6 @@ private:
     static bool addConstraint(const QString &tableName, const QString &constraint, const QSqlDatabase &db);
 
 public:
-    DataBaseManagement();
-    //TreeModel * newTreeModel(QString path);
     //crea una base de datos y todas sus tablas
     static QSqlDatabase createDatabase(QString name, QString path);
     static QSqlDatabase createDatabase(QString dest);

@@ -44,21 +44,6 @@ static QString fields = "title ,"
 
                         "hash";
 
-DataBaseManagement::DataBaseManagement()
-    : QObject(), dataBasesList()
-{
-}
-
-/*TreeModel * DataBaseManagement::newTreeModel(QString path)
-{
-	//la consulta se ejecuta...
-	QSqlQuery selectQuery(loadDatabase(path));
-	selectQuery.setForwardOnly(true);
-	selectQuery.exec("select * from folder order by parentId,name");
-	//selectQuery.finish();
-	return new TreeModel(selectQuery);
-}*/
-
 QSqlDatabase DataBaseManagement::createDatabase(QString name, QString path)
 {
     return createDatabase(QDir::cleanPath(path) + "/" + name + ".ydb");
