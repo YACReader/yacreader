@@ -4,6 +4,7 @@
 
 #include "data_base_management.h"
 #include "qnaturalsorting.h"
+#include "database_helper.h"
 #include "db_helper.h"
 
 #include "QsLog.h"
@@ -352,20 +353,20 @@ void ReadingListModel::setupReadingListsData(QString path)
     cleanAll();
 
     _databasePath = path;
-    QSqlDatabase db = DataBaseManagement::loadDatabase(path);
+    YACReader::DatabaseHolder db(path);
 
     //setup special lists
-    specialLists = setupSpecialLists(db);
+    specialLists = setupSpecialLists(*db);
 
     //separator--------------------------------------------
 
     //setup labels
-    setupLabels(db);
+    setupLabels(*db);
 
     //separator--------------------------------------------
 
     //setup reading list
-    setupReadingLists(db);
+    setupReadingLists(*db);
 
     endResetModel();
 }
