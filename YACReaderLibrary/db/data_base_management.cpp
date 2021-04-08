@@ -339,13 +339,9 @@ void DataBaseManagement::exportComicsInfo(const QString &source, const QString &
     QSqlDatabase::removeDatabase(connectionName);
 }
 
-bool DataBaseManagement::importComicsInfo(const QString &source, const QString &dest)
+void DataBaseManagement::importComicsInfo(const QString &source, const QString &dest)
 {
-    QString error;
-    QString driver;
     QStringList hashes;
-
-    bool b = false;
 
     QString sourceDBconnection = "";
     QString destDBconnection = "";
@@ -539,8 +535,6 @@ bool DataBaseManagement::importComicsInfo(const QString &source, const QString &
 
     QSqlDatabase::removeDatabase(sourceDBconnection);
     QSqlDatabase::removeDatabase(destDBconnection);
-
-    return b;
 }
 //TODO fix these bindings
 void DataBaseManagement::bindValuesFromRecord(const QSqlRecord &record, QSqlQuery &query)
