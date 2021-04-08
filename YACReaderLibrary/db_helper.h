@@ -76,10 +76,10 @@ public:
     static void updateFromRemoteClientWithHash(const QList<ComicInfo> &comics);
     static void renameLabel(qulonglong id, const QString &name, QSqlDatabase &db);
     static void renameList(qulonglong id, const QString &name, QSqlDatabase &db);
-    static void reasignOrderToSublists(QList<qulonglong> ids, QSqlDatabase &db);
-    static void reasignOrderToComicsInFavorites(QList<qulonglong> comicIds, QSqlDatabase &db);
-    static void reasignOrderToComicsInLabel(qulonglong labelId, QList<qulonglong> comicIds, QSqlDatabase &db);
-    static void reasignOrderToComicsInReadingList(qulonglong readingListId, QList<qulonglong> comicIds, QSqlDatabase &db);
+    static void reassignOrderToSublists(const QList<qulonglong> &ids, QSqlDatabase &db);
+    static void reassignOrderToComicsInFavorites(const QList<qulonglong> &comicIds, QSqlDatabase &db);
+    static void reassignOrderToComicsInLabel(qulonglong labelId, const QList<qulonglong> &comicIds, QSqlDatabase &db);
+    static void reassignOrderToComicsInReadingList(qulonglong readingListId, const QList<qulonglong> &comicIds, QSqlDatabase &db);
 
     static QList<LibraryItem *> getFoldersFromParent(qulonglong parentId, QSqlDatabase &db, bool sort = true);
     static QList<ComicDB> getSortedComicsFromParent(qulonglong parentId, QSqlDatabase &db);
@@ -92,8 +92,8 @@ public:
     static Folder loadFolder(qulonglong id, QSqlDatabase &db);
     static Folder loadFolder(const QString &folderName, qulonglong parentId, QSqlDatabase &db);
     static ComicDB loadComic(qulonglong id, QSqlDatabase &db);
-    static ComicDB loadComic(QString cname, QString cpath, QString chash, QSqlDatabase &database);
-    static ComicInfo loadComicInfo(QString hash, QSqlDatabase &db);
+    static ComicDB loadComic(QString cname, QString cpath, const QString &chash, QSqlDatabase &database);
+    static ComicInfo loadComicInfo(const QString &hash, QSqlDatabase &db);
     static QList<QString> loadSubfoldersNames(qulonglong folderId, QSqlDatabase &db);
     //queries
     static bool isFavoriteComic(qulonglong id, QSqlDatabase &db);

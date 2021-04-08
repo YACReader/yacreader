@@ -158,13 +158,13 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
         switch (mode) {
         case Favorites:
-            DBHelper::reasignOrderToComicsInFavorites(allComicIds, db);
+            DBHelper::reassignOrderToComicsInFavorites(allComicIds, db);
             break;
         case Label:
-            DBHelper::reasignOrderToComicsInLabel(sourceId, allComicIds, db);
+            DBHelper::reassignOrderToComicsInLabel(sourceId, allComicIds, db);
             break;
         case ReadingList:
-            DBHelper::reasignOrderToComicsInReadingList(sourceId, allComicIds, db);
+            DBHelper::reassignOrderToComicsInReadingList(sourceId, allComicIds, db);
             break;
         default:
             break;

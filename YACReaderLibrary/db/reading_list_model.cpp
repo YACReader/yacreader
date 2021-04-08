@@ -711,7 +711,7 @@ void ReadingListModel::reorderingChildren(QList<ReadingListItem *> children)
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-        DBHelper::reasignOrderToSublists(childrenIds, db);
+        DBHelper::reassignOrderToSublists(childrenIds, db);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
