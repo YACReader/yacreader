@@ -42,6 +42,7 @@ Source: Qt5Sql.dll; DestDir: {app}
 Source: Qt5Svg.dll; DestDir: {app}
 Source: Qt5Widgets.dll; DestDir: {app}
 Source: Qt5QuickWidgets.dll; DestDir: {app}
+Source: Qt5QmlModels.dll; DestDir: {app}
 
 ;Qt Angle
 Source: D3Dcompiler_47.dll; DestDir: {app}
@@ -139,7 +140,7 @@ procedure InitializeWizard();
 begin
 
   URLLabel := TNewStaticText.Create(WizardForm);
-  URLLabel.Caption:='Make a DONATION/Haz una DONACIï¿½N';
+  URLLabel.Caption:='Make a DONATION/Haz una DONACIÓN';
   URLLabel.Cursor:=crHand;
   URLLabel.OnClick:=@URLLabelOnClick;
   URLLabel.Parent:=WizardForm;
