@@ -43,6 +43,7 @@ Source: Qt5Svg.dll; DestDir: {app}
 Source: Qt5Widgets.dll; DestDir: {app}
 Source: Qt5QuickWidgets.dll; DestDir: {app}
 Source: Qt5QmlModels.dll; DestDir: {app}
+Source: Qt5QmlWorkerScript.dll; DestDir: {app}
 
 ;Qt Angle
 Source: D3Dcompiler_47.dll; DestDir: {app}
