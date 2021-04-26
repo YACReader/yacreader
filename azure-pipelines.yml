@@ -129,7 +129,7 @@ jobs:
     - Windows_x64
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'), true)
     variables:
-    - group: bintray
+    - group: artifactory
     pool:
       vmImage: 'ubuntu-16.04'
     steps:
@@ -144,10 +144,9 @@ jobs:
           files: '$(Build.SourcesDirectory)/dev_bin/**/*.*'
           authType: 'userAndPass'
           username: $(username)
-          password: $(api-key)
-          options: -H "X-Bintray-Publish:1"
+          password: $(pass)
           remotePath: ''
-          url: https://api.bintray.com/content/luisangelsm/YACReader/DevBuilds/$(Build.BuildNumber)/
+          url: https://yacreader.jfrog.io/artifactory/yacreader/$(Build.BuildNumber)/
 
 - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
   - job: Release
