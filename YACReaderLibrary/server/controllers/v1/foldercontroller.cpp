@@ -23,13 +23,6 @@ using stefanfrings::HttpResponse;
 using stefanfrings::HttpSession;
 using stefanfrings::Template;
 
-struct LibraryItemSorter {
-    bool operator()(const LibraryItem *a, const LibraryItem *b) const
-    {
-        return naturalSortLessThanCI(a->name, b->name);
-    }
-};
-
 FolderController::FolderController() { }
 
 void FolderController::service(HttpRequest &request, HttpResponse &response)
