@@ -33,6 +33,7 @@ YACReaderLibraries DBHelper::getLibraries()
     libraries.load();
     return libraries;
 }
+
 QList<LibraryItem *> DBHelper::getFolderSubfoldersFromLibrary(qulonglong libraryId, qulonglong folderId)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
@@ -47,9 +48,32 @@ QList<LibraryItem *> DBHelper::getFolderSubfoldersFromLibrary(qulonglong library
     QSqlDatabase::removeDatabase(connectionName);
     return list;
 }
+
 QList<LibraryItem *> DBHelper::getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId)
 {
     return DBHelper::getFolderComicsFromLibrary(libraryId, folderId, false);
+}
+
+QList<LibraryItem *> DBHelper::getFolderComicsFromLibraryForReading(qulonglong libraryId, qulonglong folderId)
+{
+    auto list = DBHelper::getFolderComicsFromLibrary(libraryId, folderId, false);
+
+    std::sort(list.begin(), list.end(), [](LibraryItem *i1, LibraryItem *i2) {
+        auto c1 = static_cast<ComicDB *>(i1);
+        auto c2 = static_cast<ComicDB *>(i2);
+
+        if (c1->info.number.isNull() && c2->info.number.isNull()) {
+            return naturalSortLessThanCI(c1->name, c2->name);
+        } else {
+            if (c1->info.number.isNull() == false && c2->info.number.isNull() == false) {
+                return c1->info.number.toInt() < c2->info.number.toInt();
+            } else {
+                return c2->info.number.isNull();
+            }
+        }
+    });
+
+    return list;
 }
 
 QList<LibraryItem *> DBHelper::getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId, bool sort)
