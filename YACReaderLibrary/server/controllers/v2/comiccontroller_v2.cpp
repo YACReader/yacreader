@@ -10,6 +10,8 @@
 #include "comic_db.h"
 #include "comic.h"
 
+#include "qnaturalsorting.h"
+
 #include "QsLog.h"
 
 #include <typeinfo>
@@ -89,7 +91,10 @@ void ComicControllerV2::service(HttpRequest &request, HttpResponse &response)
         response.write(QString("libraryId:%1\r\n").arg(libraryId).toUtf8());
         if (remoteComic) //send previous and next comics id
         {
-            QList<LibraryItem *> siblings = DBHelper::getFolderComicsFromLibrary(libraryId, comic.parentId, true);
+            QList<LibraryItem *> siblings = DBHelper::getFolderComicsFromLibrary(libraryId, comic.parentId, false);
+
+            std::sort(siblings.begin(), siblings.end(), LibraryItemSorter());
+
             bool found = false;
             int i;
             for (i = 0; i < siblings.length(); i++) {
