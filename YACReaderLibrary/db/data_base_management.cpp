@@ -203,6 +203,8 @@ bool DataBaseManagement::createTables(QSqlDatabase &database)
                             "numChildren INTEGER,"
                             "firstChildHash TEXT,"
                             "customImage TEXT,"
+                            //new 9.8 fields
+                            "manga BOOLEAN DEFAULT 0,"
                             "FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE)");
         success = success && queryFolder.exec();
 
