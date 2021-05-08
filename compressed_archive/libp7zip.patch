@@ -1,6 +1,7 @@
---- libp7zip/CPP/include_windows/windows.h	2018-09-18 17:17:26.000000000 +0200
---- libp7zip/CPP/include_windows/windows.h	2018-09-18 17:17:24.000000000 +0200
+--- libp7zip/CPP/include_windows/windows.h
++++ libp7zip/CPP/include_windows/windows.h
 @@ -36,7 +36,7 @@
+@@ previous patch @@
  #define WINAPI 
  
  #undef BOOL
@@ -9,3 +10,288 @@
  
  
  #define CREATE_NEW	  1
+--- libp7zip/CPP/myWindows/StdAfx.h
++++ libp7zip/CPP/myWindows/StdAfx.h
+@@ -206,8 +206,6 @@
+@@ fix linux build @@
+ 
+ #if defined( __x86_64__ )
+ 
+-#define _WIN64 1
+-
+ #endif
+ 
+ #endif
+--- libp7zip/CPP/7zip/Archive/7z/7zIn.cpp
++++ libp7zip/CPP/7zip/Archive/7z/7zIn.cpp
+@@ -1097,7 +1097,8 @@
+@@ CVE-2016-9296 @@
+       if (CrcCalc(data, unpackSize) != folders.FolderCRCs.Vals[i])
+         ThrowIncorrect();
+   }
+-  HeadersSize += folders.PackPositions[folders.NumPackStreams];
++  if (folders.PackPositions)
++      HeadersSize += folders.PackPositions[folders.NumPackStreams];
+   return S_OK;
+ }
+ 
+--- libp7zip/CPP/7zip/Compress/ShrinkDecoder.cpp
++++ libp7zip/CPP/7zip/Compress/ShrinkDecoder.cpp
+@@ -121,8 +121,13 @@
+@@ CVE-2017-17969 @@
+     {
+       _stack[i++] = _suffixes[cur];
+       cur = _parents[cur];
++      if (cur >= kNumItems || i >= kNumItems)
++        break;
+     }
+-    
++
++    if (cur >= kNumItems || i >= kNumItems)
++      break;
++
+     _stack[i++] = (Byte)cur;
+     lastChar2 = (Byte)cur;
+ 
+
+
+
+--- libp7zip/CPP/7zip/Compress/Rar1Decoder.cpp
++++ libp7zip/CPP/7zip/Compress/Rar1Decoder.cpp
+@@ -29,7 +29,7 @@ public:
+@@ CVE-2018-5996 @@
+ };
+ */
+ 
+-CDecoder::CDecoder(): m_IsSolid(false) { }
++CDecoder::CDecoder(): m_IsSolid(false), _errorMode(false) { }
+ 
+ void CDecoder::InitStructures()
+ {
+@@ -406,9 +406,14 @@ HRESULT CDecoder::CodeReal(ISequentialInStream *inStream, ISequentialOutStream *
+   InitData();
+   if (!m_IsSolid)
+   {
++    _errorMode = false;
+     InitStructures();
+     InitHuff();
+   }
++
++  if (_errorMode)
++    return S_FALSE;
++
+   if (m_UnpackSize > 0)
+   {
+     GetFlagsBuf();
+@@ -477,9 +482,9 @@ STDMETHODIMP CDecoder::Code(ISequentialInStream *inStream, ISequentialOutStream
+     const UInt64 *inSize, const UInt64 *outSize, ICompressProgressInfo *progress)
+ {
+   try { return CodeReal(inStream, outStream, inSize, outSize, progress); }
+-  catch(const CInBufferException &e) { return e.ErrorCode; }
+-  catch(const CLzOutWindowException &e) { return e.ErrorCode; }
+-  catch(...) { return S_FALSE; }
++  catch(const CInBufferException &e) { _errorMode = true; return e.ErrorCode; }
++  catch(const CLzOutWindowException &e) { _errorMode = true; return e.ErrorCode; }
++  catch(...) { _errorMode = true; return S_FALSE; }
+ }
+ 
+ STDMETHODIMP CDecoder::SetDecoderProperties2(const Byte *data, UInt32 size)
+
+--- libp7zip/CPP/7zip/Compress/Rar1Decoder.h
++++ libp7zip/CPP/7zip/Compress/Rar1Decoder.h
+@@ -39,6 +39,7 @@ public:
+@@ CVE-2018-5996 @@
+
+   Int64 m_UnpackSize;
+   bool m_IsSolid;
++  bool _errorMode;
+ 
+   UInt32 ReadBits(int numBits);
+   HRESULT CopyBlock(UInt32 distance, UInt32 len);
+--- libp7zip/CPP/7zip/Compress/Rar2Decoder.cpp
++++ blibp7zip/CPP/7zip/Compress/Rar2Decoder.cpp
+@@ -80,7 +80,8 @@ static const UInt32 kHistorySize = 1 << 20;
+@@ CVE-2018-5996 @@
+ static const UInt32 kWindowReservSize = (1 << 22) + 256;
+ 
+ CDecoder::CDecoder():
+-  m_IsSolid(false)
++  m_IsSolid(false),
++  m_TablesOK(false)
+ {
+ }
+ 
+@@ -100,6 +101,8 @@ UInt32 CDecoder::ReadBits(unsigned numBits) { return m_InBitStream.ReadBits(numB
+ 
+ bool CDecoder::ReadTables(void)
+ {
++  m_TablesOK = false;
++
+   Byte levelLevels[kLevelTableSize];
+   Byte newLevels[kMaxTableSize];
+   m_AudioMode = (ReadBits(1) == 1);
+@@ -170,6 +173,8 @@ bool CDecoder::ReadTables(void)
+   }
+   
+   memcpy(m_LastLevels, newLevels, kMaxTableSize);
++  m_TablesOK = true;
++
+   return true;
+ }
+ 
+@@ -344,6 +349,9 @@ HRESULT CDecoder::CodeReal(ISequentialInStream *inStream, ISequentialOutStream *
+       return S_FALSE;
+   }
+ 
++  if (!m_TablesOK)
++    return S_FALSE;
++
+   UInt64 startPos = m_OutWindowStream.GetProcessedSize();
+   while (pos < unPackSize)
+   {
+--- libp7zip/CPP/7zip/Compress/Rar2Decoder.h
++++ libp7zip/CPP/7zip/Compress/Rar2Decoder.h
+@@ -139,6 +139,7 @@ class CDecoder :
+@@ CVE-2018-5996 @@
+ 
+   UInt64 m_PackSize;
+   bool m_IsSolid;
++  bool m_TablesOK;
+ 
+   void InitStructures();
+   UInt32 ReadBits(unsigned numBits);
+--- libp7zip/CPP/7zip/Compress/Rar3Decoder.cpp
++++ libp7zip/CPP/7zip/Compress/Rar3Decoder.cpp
+@@ -92,7 +92,8 @@ CDecoder::CDecoder():
+@@ CVE-2018-5996 @@
+   _writtenFileSize(0),
+   _vmData(0),
+   _vmCode(0),
+-  m_IsSolid(false)
++  m_IsSolid(false),
++  _errorMode(false)
+ {
+   Ppmd7_Construct(&_ppmd);
+ }
+@@ -545,6 +546,9 @@ HRESULT CDecoder::ReadTables(bool &keepDecompressing)
+     return InitPPM();
+   }
+ 
++  TablesRead = false;
++  TablesOK = false;
++
+   _lzMode = true;
+   PrevAlignBits = 0;
+   PrevAlignCount = 0;
+@@ -606,6 +610,9 @@ HRESULT CDecoder::ReadTables(bool &keepDecompressing)
+       }
+     }
+   }
++  if (InputEofError())
++    return S_FALSE;
++
+   TablesRead = true;
+ 
+   // original code has check here:
+@@ -623,6 +630,9 @@ HRESULT CDecoder::ReadTables(bool &keepDecompressing)
+   RIF(m_LenDecoder.Build(&newLevels[kMainTableSize + kDistTableSize + kAlignTableSize]));
+ 
+   memcpy(m_LastLevels, newLevels, kTablesSizesSum);
++
++  TablesOK = true;
++
+   return S_OK;
+ }
+ 
+@@ -824,7 +834,12 @@ HRESULT CDecoder::CodeReal(ICompressProgressInfo *progress)
+     PpmEscChar = 2;
+     PpmError = true;
+     InitFilters();
++    _errorMode = false;
+   }
++
++  if (_errorMode)
++    return S_FALSE;
++
+   if (!m_IsSolid || !TablesRead)
+   {
+     bool keepDecompressing;
+@@ -838,6 +853,8 @@ HRESULT CDecoder::CodeReal(ICompressProgressInfo *progress)
+     bool keepDecompressing;
+     if (_lzMode)
+     {
++      if (!TablesOK)
++        return S_FALSE;
+       RINOK(DecodeLZ(keepDecompressing))
+     }
+     else
+
+
+@@ -901,8 +918,8 @@ STDMETHODIMP CDecoder::Code(ISequentialInStream *inStream, ISequentialOutStream
+     _unpackSize = outSize ? *outSize : (UInt64)(Int64)-1;
+     return CodeReal(progress);
+   }
+-  catch(const CInBufferException &e)  { return e.ErrorCode; }
+-  catch(...) { return S_FALSE; }
++  catch(const CInBufferException &e)  { _errorMode = true; return e.ErrorCode; }
++  catch(...) { _errorMode = true; return S_FALSE; }
+   // CNewException is possible here. But probably CNewException is caused
+   // by error in data stream.
+ }
+--- libp7zip/CPP/7zip/Compress/Rar3Decoder.h
++++ libp7zip/CPP/7zip/Compress/Rar3Decoder.h
+@@ -192,6 +192,7 @@ class CDecoder:
+@@ CVE-2018-5996 @@
+   UInt32 _lastFilter;
+ 
+   bool m_IsSolid;
++  bool _errorMode;
+ 
+   bool _lzMode;
+   bool _unsupportedFilter;
+@@ -200,6 +201,7 @@ class CDecoder:
+   UInt32 PrevAlignCount;
+ 
+   bool TablesRead;
++  bool TablesOK;
+ 
+   CPpmd7 _ppmd;
+   int PpmEscChar;
+--- libp7zip/CPP/7zip/Common/StreamObjects.cpp
++++ libp7zip/CPP/7zip/Common/StreamObjects.cpp
+@@ -157,6 +157,8 @@ STDMETHODIMP CDynBufSeqOutStream::Write(
+@@ CVE-2021-3465 @@
+ 
+ STDMETHODIMP CBufPtrSeqOutStream::Write(const void *data, UInt32 size, UInt32 *processedSize)
+ {
++  if(_buffer == nullptr || _size == _pos)
++    return E_FAIL;
+   size_t rem = _size - _pos;
+   if (rem > size)
+     rem = (size_t)size;
+--- libp7zip/CPP/Windows/ErrorMsg.cpp	2015-01-18 11:20:28.000000000 -0700
++++ libp7zip/CPP/Windows/ErrorMsg.cpp	2019-09-24 13:01:18.887289152 -0600
+@@ -14,14 +14,14 @@ UString MyFormatMessage(DWORD errorCode)
+@@ gcc10 warning fix @@
+   AString msg;
+ 
+   switch(errorCode) {
+-    case ERROR_NO_MORE_FILES   : txt = "No more files"; break ;
+-    case E_NOTIMPL             : txt = "E_NOTIMPL"; break ;
+-    case E_NOINTERFACE         : txt = "E_NOINTERFACE"; break ;
+-    case E_ABORT               : txt = "E_ABORT"; break ;
+-    case E_FAIL                : txt = "E_FAIL"; break ;
+-    case STG_E_INVALIDFUNCTION : txt = "STG_E_INVALIDFUNCTION"; break ;
+-    case E_OUTOFMEMORY         : txt = "E_OUTOFMEMORY"; break ;
+-    case E_INVALIDARG          : txt = "E_INVALIDARG"; break ;
++    case unsigned (ERROR_NO_MORE_FILES)   : txt = "No more files"; break ;
++    case unsigned (E_NOTIMPL)             : txt = "E_NOTIMPL"; break ;
++    case unsigned (E_NOINTERFACE)         : txt = "E_NOINTERFACE"; break ;
++    case unsigned (E_ABORT)               : txt = "E_ABORT"; break ;
++    case unsigned (E_FAIL)                : txt = "E_FAIL"; break ;
++    case unsigned (STG_E_INVALIDFUNCTION) : txt = "STG_E_INVALIDFUNCTION"; break ;
++    case unsigned (E_OUTOFMEMORY)         : txt = "E_OUTOFMEMORY"; break ;
++    case unsigned (E_INVALIDARG)          : txt = "E_INVALIDARG"; break ;
+     case ERROR_DIRECTORY          : txt = "Error Directory"; break ;
+     default:
+       txt = strerror(errorCode);
