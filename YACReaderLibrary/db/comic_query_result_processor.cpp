@@ -9,6 +9,10 @@
 
 #include "QsLog.h"
 
+#include <QSqlDatabase>
+#include <QSqlRecord>
+#include <QSqlQuery>
+
 QString getLastExecutedQuery(const QSqlQuery &query)
 {
     QString str = query.lastQuery();

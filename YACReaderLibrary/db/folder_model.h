@@ -6,7 +6,6 @@
 #include <QModelIndex>
 #include <QVariant>
 #include <QSqlQuery>
-#include <QSqlDatabase>
 
 #include "yacreader_global.h"
 #include "folder_query_result_processor.h"

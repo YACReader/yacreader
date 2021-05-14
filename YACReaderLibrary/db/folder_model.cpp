@@ -385,7 +385,7 @@ void FolderModel::updateFolderManga(const QModelIndexList &list, bool manga)
 
             setManga(item, manga);
 
-            DBHelper::updateFolderTreeManga(item->id, db, manga);
+            DBHelper::updateFolderTreeManga(item->id, manga, db);
         }
         db.commit();
         connectionName = db.connectionName();

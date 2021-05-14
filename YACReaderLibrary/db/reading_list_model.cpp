@@ -4,6 +4,7 @@
 
 #include "data_base_management.h"
 #include "qnaturalsorting.h"
+#include "database_helper.h"
 #include "db_helper.h"
 
 #include "QsLog.h"
@@ -352,20 +353,20 @@ void ReadingListModel::setupReadingListsData(QString path)
     cleanAll();
 
     _databasePath = path;
-    QSqlDatabase db = DataBaseManagement::loadDatabase(path);
+    YACReader::DatabaseHolder db(path);
 
     //setup special lists
-    specialLists = setupSpecialLists(db);
+    specialLists = setupSpecialLists(*db);
 
     //separator--------------------------------------------
 
     //setup labels
-    setupLabels(db);
+    setupLabels(*db);
 
     //separator--------------------------------------------
 
     //setup reading list
-    setupReadingLists(db);
+    setupReadingLists(*db);
 
     endResetModel();
 }
@@ -476,65 +477,55 @@ void ReadingListModel::rename(const QModelIndex &mi, const QString &name)
 {
     if (!isEditable(mi))
         return;
-    QString connectionName = "";
-    {
-        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+    YACReader::DatabaseHelper dbh(_databasePath);
 
-        auto item = static_cast<ListItem *>(mi.internalPointer());
+    auto item = static_cast<ListItem *>(mi.internalPointer());
+    if (typeid(*item) == typeid(ReadingListItem)) {
+        auto rli = static_cast<ReadingListItem *>(item);
+        rli->setName(name);
+        dbh.renameList(item->getId(), name);
 
-        if (typeid(*item) == typeid(ReadingListItem)) {
-            auto rli = static_cast<ReadingListItem *>(item);
-            rli->setName(name);
-            DBHelper::renameList(item->getId(), name, db);
-
-            if (rli->parent->getId() != 0) {
-                //TODO
-                //move row depending on the name
-            } else
-                emit dataChanged(index(mi.row(), 0), index(mi.row(), 0));
-        } else if (typeid(*item) == typeid(LabelItem)) {
-            auto li = static_cast<LabelItem *>(item);
-            li->setName(name);
-            DBHelper::renameLabel(item->getId(), name, db);
+        if (rli->parent->getId() != 0) {
+            //TODO
+            //move row depending on the name
+        } else
             emit dataChanged(index(mi.row(), 0), index(mi.row(), 0));
-        }
-        connectionName = db.connectionName();
+    } else if (typeid(*item) == typeid(LabelItem)) {
+        auto li = static_cast<LabelItem *>(item);
+        li->setName(name);
+        dbh.renameLabel(item->getId(), name);
+        emit dataChanged(index(mi.row(), 0), index(mi.row(), 0));
     }
-    QSqlDatabase::removeDatabase(connectionName);
 }
 
 void ReadingListModel::deleteItem(const QModelIndex &mi)
 {
-    if (isEditable(mi)) {
-        QLOG_DEBUG() << "parent row :" << mi.parent().data() << "-" << mi.row();
-        beginRemoveRows(mi.parent(), mi.row(), mi.row());
-        QString connectionName = "";
-        {
-            QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+    if (!isEditable(mi))
+        return;
 
-            auto item = static_cast<ListItem *>(mi.internalPointer());
+    QLOG_DEBUG() << "parent row :" << mi.parent().data() << "-" << mi.row();
+    beginRemoveRows(mi.parent(), mi.row(), mi.row());
 
-            if (typeid(*item) == typeid(ReadingListItem)) {
-                auto rli = static_cast<ReadingListItem *>(item);
-                QLOG_DEBUG() << "num children : " << rli->parent->childCount();
-                rli->parent->removeChild(rli);
-                QLOG_DEBUG() << "num children : " << rli->parent->childCount();
-                DBHelper::removeListFromDB(item->getId(), db);
-                if (rli->parent->getId() != 0) {
-                    reorderingChildren(rli->parent->children());
-                }
-                QLOG_DEBUG() << "num children : " << rli->parent->childCount();
-            } else if (typeid(*item) == typeid(LabelItem)) {
-                auto li = static_cast<LabelItem *>(item);
-                labels.removeOne(li);
-                DBHelper::removeLabelFromDB(item->getId(), db);
-            }
-            connectionName = db.connectionName();
+    YACReader::DatabaseHelper dbh(_databasePath);
+
+    auto item = static_cast<ListItem *>(mi.internalPointer());
+    if (typeid(*item) == typeid(ReadingListItem)) {
+        auto rli = static_cast<ReadingListItem *>(item);
+        QLOG_DEBUG() << "num children : " << rli->parent->childCount();
+        rli->parent->removeChild(rli);
+        QLOG_DEBUG() << "num children : " << rli->parent->childCount();
+        dbh.removeListFromDB(item->getId());
+        if (rli->parent->getId() != 0) {
+            reorderingChildren(rli->parent->children());
         }
-        QSqlDatabase::removeDatabase(connectionName);
-
-        endRemoveRows();
+        QLOG_DEBUG() << "num children : " << rli->parent->childCount();
+    } else if (typeid(*item) == typeid(LabelItem)) {
+        auto li = static_cast<LabelItem *>(item);
+        labels.removeOne(li);
+        dbh.removeLabelFromDB(item->getId());
     }
+
+    endRemoveRows();
 }
 
 const QList<LabelItem *> ReadingListModel::getLabels()
@@ -708,13 +699,8 @@ void ReadingListModel::reorderingChildren(QList<ReadingListItem *> children)
         item->setOrdering(i++);
         childrenIds << item->getId();
     }
-    QString connectionName = "";
-    {
-        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-        DBHelper::reasignOrderToSublists(childrenIds, db);
-        connectionName = db.connectionName();
-    }
-    QSqlDatabase::removeDatabase(connectionName);
+    YACReader::DatabaseHelper dbh(_databasePath);
+    dbh.reassignOrderToSublists(childrenIds);
 }
 
 bool ReadingListModel::rowIsSpecialList(int row, const QModelIndex &parent) const

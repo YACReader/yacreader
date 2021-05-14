@@ -3,6 +3,7 @@
 
 #include <QMutex>
 #include <QDebug>
+#include <QSqlError>
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QCoreApplication>
@@ -11,6 +12,7 @@
 #include "data_base_management.h"
 #include "qnaturalsorting.h"
 #include "db_helper.h"
+#include "folder_model.h"
 
 #include "compressed_archive.h"
 #include "comic.h"

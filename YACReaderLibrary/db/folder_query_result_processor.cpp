@@ -9,8 +9,10 @@
 
 #include "QsLog.h"
 
-#include <QSqlQuery>
 #include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QSqlRecord>
 
 //Copy/pasted from "folder_model.cpp"
 #define ROOT 1
