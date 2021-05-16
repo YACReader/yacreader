@@ -66,5 +66,7 @@
     <file>../images/shortcuts_group_page.png</file>
     <file>../images/shortcuts_group_reading.png</file>
     <file>../images/shortcuts_group_visualization.png</file>
+    <file>../images/custom_dialog/custom_close_button.svg</file>
+    <file>../images/whats_new/whatsnew_header.svg</file>
   </qresource>
 </RCC>

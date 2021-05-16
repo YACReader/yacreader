@@ -3,7 +3,7 @@
 
 #include <QStandardPaths>
 
-#define VERSION "9.7.1"
+#define VERSION "9.8.0"
 
 #define REMOTE_BROWSE_PERFORMANCE_WORKAROUND "REMOTE_BROWSE_PERFORMANCE_WORKAROUND"
 
@@ -36,8 +36,7 @@ enum YACReaderErrors {
 enum SearchModifiers {
     NoModifiers = 0,
     OnlyRead,
-    OnlyUnread,
-    ByAuthor
+    OnlyUnread
 };
 
 enum LabelColors {

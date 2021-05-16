@@ -16,7 +16,6 @@ class ComicItem;
 
 using namespace YACReader;
 
-//! [0]
 class ComicModel : public QAbstractItemModel
 {
     Q_OBJECT
@@ -65,8 +64,8 @@ public:
     };
 
 public:
-    ComicModel(QObject *parent = 0);
-    ComicModel(QSqlQuery &sqlquery, QObject *parent = 0);
+    explicit ComicModel(QObject *parent = nullptr);
+    explicit ComicModel(QSqlQuery &sqlquery, QObject *parent = nullptr);
     ~ComicModel() override;
 
     QVariant data(const QModelIndex &index, int role) const override;
@@ -76,21 +75,19 @@ public:
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex parent(const QModelIndex &index) const override;
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     bool canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const override;
     bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) override;
     bool canBeResorted();
-    QMimeData *mimeData(const QModelIndexList &indexes) const;
-    QStringList mimeTypes() const;
+    QMimeData *mimeData(const QModelIndexList &indexes) const override;
+    QStringList mimeTypes() const override;
 
     void setupFolderModelData(unsigned long long int parentFolder, const QString &databasePath);
     void setupLabelModelData(unsigned long long int parentLabel, const QString &databasePath);
     void setupReadingListModelData(unsigned long long int parentReadingList, const QString &databasePath);
     void setupFavoritesModelData(const QString &databasePath);
     void setupReadingModelData(const QString &databasePath);
-    //configures the model for showing the comics matching the filter criteria.
-    void setupModelData(const SearchModifiers modifier, const QString &filter, const QString &databasePath);
 
     //Métodos de conveniencia
     QStringList getPaths(const QString &_source);
@@ -108,6 +105,7 @@ public:
     //setComicInfoForAllComics(); --> inserta la información común a todos los cómics de una sola vez.
     //setComicInfoForSelectedComis(QList<QModelIndex> list); -->inserta la información común para los comics seleccionados
     QVector<YACReaderComicReadStatus> setComicsRead(QList<QModelIndex> list, YACReaderComicReadStatus read);
+    void setComicsManga(QList<QModelIndex> list, bool isManga);
     qint64 asignNumbers(QList<QModelIndex> list, int startingNumber);
     //void remove(ComicDB * comic, int row);
     void removeInTransaction(int row);
@@ -121,6 +119,8 @@ public:
     void addComicsToReadingList(const QList<QModelIndex> &comicsList, qulonglong readingListId);
 
     void deleteComicsFromFavorites(const QList<QModelIndex> &comicsList);
+    void deleteComicsFromReading(const QList<QModelIndex> &comicsList);
+    void deleteComicsFromSpecialList(const QList<QModelIndex> &comicsList, qulonglong specialListId);
     void deleteComicsFromLabel(const QList<QModelIndex> &comicsList, qulonglong labelId);
     void deleteComicsFromReadingList(const QList<QModelIndex> &comicsList, qulonglong readingListId);
 
@@ -141,6 +141,8 @@ public slots:
     void addComicsToFavorites(const QList<qulonglong> &comicIds);
     void addComicsToLabel(const QList<qulonglong> &comicIds, qulonglong labelId);
     void addComicsToReadingList(const QList<qulonglong> &comicIds, qulonglong readingListId);
+
+    void setModelData(QList<ComicItem *> *data, const QString &databasePath);
 
 protected:
 private:
@@ -164,6 +166,5 @@ signals:
     void resortedIndexes(QList<int>);
     void newSelectedIndex(const QModelIndex &);
 };
-//! [0]
 
 #endif

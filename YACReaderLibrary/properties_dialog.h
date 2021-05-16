@@ -76,6 +76,7 @@ private:
     YACReaderFieldEdit *formatEdit;
     QCheckBox *colorCheck;
     YACReaderFieldEdit *ageRatingEdit;
+    QCheckBox *mangaCheck;
 
     YACReaderFieldPlainTextEdit *synopsis;
     YACReaderFieldPlainTextEdit *characters;
@@ -121,6 +122,9 @@ public:
     PropertiesDialog(QWidget *parent = nullptr);
     QString databasePath;
     QString basePath;
+    // TODO: this non-const member function hides rather than overrides
+    // QWidget::sizeHint(). But the function cannot be simply removed as it is used
+    // in our constructor. Will have to investigate and decide how to fix this.
     QSize sizeHint();
     void paintEvent(QPaintEvent *event) override;
 

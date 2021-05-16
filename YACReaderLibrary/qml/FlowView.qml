@@ -97,7 +97,8 @@ Rectangle {
         highlightMoveDuration: 250
 
         onCurrentIndexChanged: {
-            currentCoverChanged(currentIndex);
+            if (currentIndex !== -1)
+                currentCoverChanged(currentIndex);
         }
 
         delegate: Component {

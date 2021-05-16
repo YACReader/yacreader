@@ -10,8 +10,11 @@
 #include "yacreader_libraries.h"
 
 #include "yacreader_navigation_controller.h"
+#include "comic_query_result_processor.h"
+#include "folder_query_result_processor.h"
 
 #include <future>
+#include <memory>
 
 #ifdef Q_OS_MAC
 #include "yacreader_macosx_toolbar.h"
@@ -187,10 +190,16 @@ public:
     //--
     QAction *setFolderAsReadAction;
     QAction *setFolderAsUnreadAction;
+    QAction *setFolderAsMangaAction;
+    QAction *setFolderAsNormalAction;
 
     QAction *openContainingFolderComicAction;
     QAction *setAsReadAction;
     QAction *setAsNonReadAction;
+
+    QAction *setMangaAction;
+    QAction *setNormalAction;
+
     //QAction * setAllAsReadAction;
     //QAction * setAllAsNonReadAction;
     QAction *showHideMarksAction;
@@ -203,6 +212,9 @@ public:
     QAction *asignOrderAction;
     QAction *forceCoverExtractedAction;
     QAction *deleteComicsAction;
+
+    QAction *focusSearchLineAction;
+    QAction *focusComicsViewAction;
 
     QAction *showEditShortcutsAction;
 
@@ -249,6 +261,8 @@ public:
 
     NavigationStatus status;
 
+    void createSettings();
+    void setupOpenglSetting();
     void setupUI();
     void createActions();
     void createToolBars();
@@ -315,6 +329,8 @@ public slots:
     void setFolderAsCompleted();
     void setFolderAsRead();
     void setFolderAsUnread();
+    void setFolderAsManga();
+    void setFolderAsNormal();
     void openContainingFolderComic();
     void deleteCurrentLibrary();
     void removeLibrary();
@@ -327,6 +343,8 @@ public slots:
     void toNormal();
     void toFullScreen();
     void setSearchFilter(const YACReader::SearchModifiers modifier, QString filter);
+    void setComicSearchFilterData(QList<ComicItem *> *, const QString &);
+    void setFolderSearchFilterData(QMap<unsigned long long int, FolderItem *> *filteredItems, FolderItem *root);
     void clearSearchFilter();
     void showProperties();
     void exportLibrary(QString destPath);
@@ -335,6 +353,8 @@ public slots:
     void setCurrentComicsStatusReaded(YACReaderComicReadStatus readStatus);
     void setCurrentComicReaded();
     void setCurrentComicUnreaded();
+    void setSelectedComicsAsNormal();
+    void setSelectedComicsAsManga();
     void showExportComicsInfo();
     void showImportComicsInfo();
     void asignNumbers();
@@ -391,6 +411,8 @@ public slots:
     void prepareToCloseApp();
     void closeApp();
 
+    void afterLaunchTasks();
+
 private:
     //fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
     Qt::WindowFlags previousWindowFlags;
@@ -399,6 +421,8 @@ private:
     std::future<void> upgradeLibraryFuture;
 
     TrayIconController *trayIconController;
+    ComicQueryResultProcessor comicQueryResultProcessor;
+    std::unique_ptr<FolderQueryResultProcessor> folderQueryResultProcessor;
 };
 
 #endif

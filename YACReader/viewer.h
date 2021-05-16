@@ -48,6 +48,8 @@ public slots:
     void open(QString pathFile, const ComicDB &comic);
     void prev();
     void next();
+    void left();
+    void right();
     void showGoToDialog();
     void goTo(unsigned int page);
     void updatePage();
@@ -76,6 +78,7 @@ public slots:
     void setBookmark(bool);
     void save();
     void doublePageSwitch();
+    void setMangaWithoutStoringSetting(bool manga);
     void doubleMangaPageSwitch();
     void resetContent();
     void setLoadingMessage();
@@ -102,6 +105,7 @@ public slots:
     void showIsLastMessage();
     int getCurrentPageNumber();
     void updateZoomRatio(int ratio);
+    bool getIsMangaMode();
 
 private:
     bool information;
@@ -159,6 +163,8 @@ private:
     void resizeEvent(QResizeEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
+
+    void moveAction(const QKeySequence &key);
 
     //!ZigzagScroll
     enum scrollDirection { UP,

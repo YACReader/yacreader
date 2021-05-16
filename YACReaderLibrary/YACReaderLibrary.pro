@@ -67,20 +67,17 @@ macx {
   QT += macextras gui-private
 }
 
-unix:!macx {
-  CONFIG += c++11
-}
-
 #CONFIG += release
 CONFIG -= flat
-QT += sql network widgets script
-!CONFIG(no_opengl) {
-  QT += opengl
-}
+QT += sql network widgets svg
 
 # Input
 HEADERS += comic_flow.h \
+  ../common/concurrent_queue.h \
   create_library_dialog.h \
+  db/comic_query_result_processor.h \
+  db/folder_query_result_processor.h \
+  db/query_lexer.h \
   library_creator.h \
   library_window.h \
   add_library_dialog.h \
@@ -147,6 +144,7 @@ HEADERS += comic_flow.h \
   yacreader_comics_selection_helper.h \
   yacreader_comic_info_helper.h \
   db/reading_list.h \
+  db/query_parser.h \
   current_comic_view_helper.h
 
 !CONFIG(no_opengl) {
@@ -155,6 +153,9 @@ HEADERS += comic_flow.h \
 
 SOURCES += comic_flow.cpp \
     create_library_dialog.cpp \
+    db/comic_query_result_processor.cpp \
+    db/folder_query_result_processor.cpp \
+    db/query_lexer.cpp \
     library_creator.cpp \
     library_window.cpp \
     main.cpp \
@@ -219,15 +220,16 @@ SOURCES += comic_flow.cpp \
     yacreader_comics_selection_helper.cpp \
     yacreader_comic_info_helper.cpp\
     db/reading_list.cpp \
-    current_comic_view_helper.cpp
+    current_comic_view_helper.cpp \
+    db/query_parser.cpp
 
 !CONFIG(no_opengl) {
     SOURCES += ../common/gl/yacreader_flow_gl.cpp
 }
 
 macx {
-	HEADERS += trayhandler.h
-	OBJECTIVE_SOURCES += trayhandler.mm
+   HEADERS += trayhandler.h
+   OBJECTIVE_SOURCES += trayhandler.mm
 }
 
 include(./server/server.pri)
@@ -264,6 +266,8 @@ TRANSLATIONS =   yacreaderlibrary_es.ts \
                 yacreaderlibrary_nl.ts \
                 yacreaderlibrary_tr.ts \
                 yacreaderlibrary_de.ts \
+                yacreaderlibrary_zh.ts \
+                yacreaderlibrary_it.ts \
                 yacreaderlibrary_source.ts
 
 #QML/GridView

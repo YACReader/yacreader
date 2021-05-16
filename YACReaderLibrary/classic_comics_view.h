@@ -19,7 +19,7 @@ class ClassicComicsView : public ComicsView
 {
     Q_OBJECT
 public:
-    ClassicComicsView(QWidget *parent = 0);
+    explicit ClassicComicsView(QWidget *parent = nullptr);
     void setToolBar(QToolBar *toolBar) override;
     void setModel(ComicModel *model) override;
 
@@ -32,6 +32,7 @@ public:
     void enableFilterMode(bool enabled) override;
     void selectIndex(int index) override;
     void updateCurrentComicView() override;
+    void focusComicsNavigation(Qt::FocusReason reason) override;
 
 public slots:
     void setCurrentIndex(const QModelIndex &index) override;

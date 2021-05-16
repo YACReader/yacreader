@@ -11,6 +11,10 @@
 <context>
     <name>AddLabelDialog</name>
     <message>
+        <source>cancel</source>
+        <translation>vazgeç</translation>
+    </message>
+    <message>
         <source>Label name:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -70,10 +74,6 @@
         <source>accept</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>cancel</source>
-        <translation type="unfinished">vazgeç</translation>
-    </message>
 </context>
 <context>
     <name>AddLibraryDialog</name>
@@ -94,16 +94,16 @@
         <translation>Çizfi roman dosyası :</translation>
     </message>
     <message>
-        <source>Library Name : </source>
-        <translation type="vanished">Kütüphane adı :</translation>
-    </message>
-    <message>
         <source>Library name : </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>ApiKeyDialog</name>
+    <message>
+        <source>Cancel</source>
+        <translation>Vazgeç</translation>
+    </message>
     <message>
         <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
@@ -116,23 +116,19 @@
         <source>Accept</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="unfinished">Vazgeç</translation>
-    </message>
 </context>
 <context>
     <name>ClassicComicsView</name>
     <message>
         <source>Hide comic flow</source>
-        <translation type="unfinished">Çizgi roman akışını gizle</translation>
+        <translation>Çizgi roman akışını gizle</translation>
     </message>
 </context>
 <context>
     <name>ComicInfoView</name>
     <message>
         <source>Authors</source>
-        <translation type="unfinished">Yazarlar</translation>
+        <translation>Yazarlar</translation>
     </message>
     <message>
         <source>writer</source>
@@ -178,32 +174,32 @@
 <context>
     <name>ComicModel</name>
     <message>
-        <source>yes</source>
-        <translation type="unfinished">evet</translation>
-    </message>
-    <message>
         <source>no</source>
-        <translation type="unfinished">hayır</translation>
+        <translation>hayır</translation>
     </message>
     <message>
-        <source>Title</source>
-        <translation type="unfinished">Başlık</translation>
-    </message>
-    <message>
-        <source>File Name</source>
-        <translation type="unfinished">Dosya Adı</translation>
-    </message>
-    <message>
-        <source>Pages</source>
-        <translation type="unfinished">Sayfalar</translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation type="unfinished">Boyut</translation>
+        <source>yes</source>
+        <translation>evet</translation>
     </message>
     <message>
         <source>Read</source>
-        <translation type="unfinished">Oku</translation>
+        <translation>Oku</translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation>Boyut</translation>
+    </message>
+    <message>
+        <source>Pages</source>
+        <translation>Sayfalar</translation>
+    </message>
+    <message>
+        <source>Title</source>
+        <translation>Başlık</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation>Dosya Adı</translation>
     </message>
     <message>
         <source>Current Page</source>
@@ -417,52 +413,8 @@
 <context>
     <name>FileComic</name>
     <message>
-        <source>File not found or not images in file</source>
-        <translation type="vanished">Dosya bulunamadı yada dosyada resim yok</translation>
-    </message>
-    <message>
         <source>7z not found</source>
         <translation>7z bulunamadı</translation>
-    </message>
-    <message>
-        <source>Comic not found</source>
-        <translation type="vanished">Çizgi roman bulunamadı</translation>
-    </message>
-    <message>
-        <source>Not found</source>
-        <translation type="vanished">Bulunamadı</translation>
-    </message>
-    <message>
-        <source>File error</source>
-        <translation type="vanished">Dosya hatası</translation>
-    </message>
-    <message>
-        <source>7z problem</source>
-        <translation type="vanished">7z Problemli</translation>
-    </message>
-    <message>
-        <source>7z reading</source>
-        <translation type="vanished">7z Okuyor</translation>
-    </message>
-    <message>
-        <source>7z crashed.</source>
-        <translation type="vanished">7z Bozulmuş.</translation>
-    </message>
-    <message>
-        <source>problem reading from 7z</source>
-        <translation type="vanished">7z Dosyası Okunamıyor</translation>
-    </message>
-    <message>
-        <source>7z crashed</source>
-        <translation type="vanished">7z Bozulmuş</translation>
-    </message>
-    <message>
-        <source>Unknown error 7z</source>
-        <translation type="vanished">Bilinmeyen 7z hatası</translation>
-    </message>
-    <message>
-        <source>7z wasn&apos;t found in your PATH.</source>
-        <translation type="vanished">7z Dosya Yolu Bulunamadı.</translation>
     </message>
     <message>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
@@ -588,14 +540,6 @@
 <context>
     <name>LibraryWindow</name>
     <message>
-        <source>+</source>
-        <translation type="vanished">+</translation>
-    </message>
-    <message>
-        <source>-</source>
-        <translation type="vanished">-</translation>
-    </message>
-    <message>
         <source>Edit</source>
         <translation>Düzenle</translation>
     </message>
@@ -606,14 +550,6 @@
     <message>
         <source>This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?</source>
         <translation>Bu kütüphane YACReaderKütüphabenin bir önceki versiyonun oluşturulmuş, güncellemeye ihtiyacın var. Şimdi güncellemek ister misin ?</translation>
-    </message>
-    <message>
-        <source>&lt;font color=&apos;white&apos;&gt; press &apos;F&apos; to close fullscreen mode &lt;/font&gt;</source>
-        <translation type="vanished">&lt;font color=&apos;white&apos;&gt; &apos;F&apos;ye basarak tam ekran modundan çıkabilirsin &lt;/font&gt;</translation>
-    </message>
-    <message>
-        <source>Asign current order to comics</source>
-        <translation type="vanished">Asignar el orden actual a los cómics</translation>
     </message>
     <message>
         <source>Error opening the library</source>
@@ -693,10 +629,6 @@
         <translation>Kütüphane güncelleme sorunu</translation>
     </message>
     <message>
-        <source>Hide comic flow</source>
-        <translation type="vanished">Çizgi roman akışını gizle</translation>
-    </message>
-    <message>
         <source>Expand all nodes</source>
         <translation>Tüm düğümleri büyüt</translation>
     </message>
@@ -705,28 +637,12 @@
         <translation>Kütüphane &apos;%1 YACRKütüphanenin eski bir sürümünde oluşturulmuş, Kütüphaneyi yeniden oluşturmak ister misin?</translation>
     </message>
     <message>
-        <source>There was a problem saving YACReaderLibrary libraries file. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation type="vanished">YACRKütüphane kütüphane dosyaları kaydedilirken bir sorun çıktı. Lütfen, YACReader root dosyalarını kontrol edin.</translation>
-    </message>
-    <message>
         <source>Pack covers</source>
         <translation>Paket kapakları</translation>
     </message>
     <message>
         <source>Set as read</source>
         <translation>Okundu olarak işaretle</translation>
-    </message>
-    <message>
-        <source>Fullscreen mode on/off (F)</source>
-        <translation type="vanished">Tam ekran modunu aç/kapa(F)</translation>
-    </message>
-    <message>
-        <source>Saving libraries file....</source>
-        <translation type="vanished">Kütüphane dosyalarını kaydet...</translation>
-    </message>
-    <message>
-        <source>Asign comics numbers</source>
-        <translation type="vanished">Çizgi roman numaralarını değiştir</translation>
     </message>
     <message>
         <source>Delete selected comics</source>
@@ -753,16 +669,8 @@
         <translation>Çizgi roman bilgilerini içe aktar</translation>
     </message>
     <message>
-        <source>The current library can&apos;t be udpated. Check for write write permissions on: </source>
-        <translation type="vanished">Kütüphane güncellenmemiş. Lütfen yazım izinlerini kontrol et:</translation>
-    </message>
-    <message>
         <source>Open current comic</source>
         <translation>Seçili çizgi romanı aç</translation>
-    </message>
-    <message>
-        <source>Colapse all nodes</source>
-        <translation type="vanished">Tüm düğümleri daralt</translation>
     </message>
     <message>
         <source>YACReader Library</source>
@@ -771,10 +679,6 @@
     <message>
         <source>Error creating the library</source>
         <translation>Kütüphane oluşturma sorunu</translation>
-    </message>
-    <message>
-        <source>Update failed</source>
-        <translation type="vanished">Güncelleme başarısız</translation>
     </message>
     <message>
         <source>Unpack covers</source>
@@ -797,10 +701,6 @@
         <translation>Bu başka bir kütüphanenin adı &apos;%1&apos;.</translation>
     </message>
     <message>
-        <source>Asign numbers starting in:</source>
-        <translation type="vanished">Başlangıç sayılarını düzenle:</translation>
-    </message>
-    <message>
         <source>Download new version</source>
         <translation>Yeni versiyonu indir</translation>
     </message>
@@ -809,16 +709,8 @@
         <translation>Çizgi romanları sil</translation>
     </message>
     <message>
-        <source>Show or hide readed marks</source>
-        <translation type="vanished">Okunmuş işaretleri göster yada gizle</translation>
-    </message>
-    <message>
         <source>Select all comics</source>
         <translation>Tüm çizgi romanları seç</translation>
-    </message>
-    <message>
-        <source>Set all comics as read</source>
-        <translation type="vanished">Tüm çizgi romanları okundu olarak ayarla</translation>
     </message>
     <message>
         <source>Pack the covers of the selected library</source>
@@ -845,10 +737,6 @@
         <translation>Seçilen tüm çizgi romanlar diskten silinecek emin misin ?</translation>
     </message>
     <message>
-        <source>Set all as read</source>
-        <translation type="vanished">Hepsini okundu işaretle</translation>
-    </message>
-    <message>
         <source>Set as unread</source>
         <translation>Hepsini okunmadı işaretle</translation>
     </message>
@@ -869,56 +757,12 @@
         <translation>Klasör açılıyor...</translation>
     </message>
     <message>
-        <source>Set all comics as unread</source>
-        <translation type="vanished">Tüm çizgiromanları okunmadı olarak işaretle</translation>
-    </message>
-    <message>
         <source> library?</source>
         <translation>kütüphane?</translation>
     </message>
     <message>
-        <source>Set all as unread</source>
-        <translation type="vanished">Hepsini okunmadı olarak ayarla</translation>
-    </message>
-    <message>
         <source>Are you sure?</source>
         <translation>Emin misin?</translation>
-    </message>
-    <message>
-        <source>Download tags from Comic Vine</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>YACReader not found</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to delete</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Set as uncompleted</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Set as completed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Reset comic rating</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Folder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Comic</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Save selected covers to...</source>
@@ -926,6 +770,22 @@
     </message>
     <message>
         <source>Save covers of the selected comics as JPG files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set as manga</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set issue as manga</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set as normal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set issue as normal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -949,7 +809,35 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Collapse all nodes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Change between comics views</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set as uncompleted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set as completed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set as comic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset comic rating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assign current order to comics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download tags from Comic Vine</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1009,6 +897,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Comic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Upgrade failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There were errors during library upgrade in: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Copying comics...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1041,6 +945,10 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Unable to delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1069,14 +977,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Remove comics</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Comics will only be deleted from the current label/list. Are you sure?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>You are adding too many libraries.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1089,11 +989,19 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Collapse all nodes</source>
+        <source>YACReader not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Assign current order to comics</source>
+        <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>YACReader not found. There might be a problem with your YACReader installation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1105,19 +1013,11 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Upgrade failed</source>
+        <source>Remove comics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>There were errors during library upgrade in: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>YACReader not found. There might be a problem with your YACReader installation.</source>
+        <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1125,6 +1025,37 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
     <name>LocalComicListModel</name>
     <message>
         <source>file name</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LogWindow</name>
+    <message>
+        <source>Log window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Pause</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>C&amp;lear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Level:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Auto scroll</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1152,6 +1083,18 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
     <message>
         <source>Options</source>
         <translation>Ayarlar</translation>
+    </message>
+    <message>
+        <source>Tray icon settings (experimental)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close to tray</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start into the system tray</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Edit Comic Vine API key</source>
@@ -1183,6 +1126,14 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
     </message>
     <message>
         <source>Background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display continue reading banner</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Continue reading</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1317,20 +1268,8 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
         <translation>Formato:</translation>
     </message>
     <message>
-        <source>Genere:</source>
-        <translation type="vanished">Tür:</translation>
-    </message>
-    <message>
         <source>Letterer(s):</source>
         <translation>Mesaj(lar):</translation>
-    </message>
-    <message>
-        <source>Comic Vine link: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; view &lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Genre:</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>of:</source>
@@ -1338,6 +1277,18 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
     </message>
     <message>
         <source>Arc number:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Genre:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manga:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Comic Vine link: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; view &lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1349,6 +1300,64 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
     </message>
     <message>
         <source>unable to load 7z lib from ./utils</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Trace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Debug</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fatal</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsLogging::LogWindowModel</name>
+    <message>
+        <source>Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Level</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Message</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsLogging::Window</name>
+    <message>
+        <source>&amp;Pause</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Resume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Log file (*.log)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1457,16 +1466,16 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
 <context>
     <name>SeriesQuestion</name>
     <message>
-        <source>You are trying to get information for various comics at once, are they part of the same series?</source>
-        <translation type="unfinished"></translation>
+        <source>no</source>
+        <translation>hayır</translation>
     </message>
     <message>
         <source>yes</source>
-        <translation type="unfinished">evet</translation>
+        <translation>evet</translation>
     </message>
     <message>
-        <source>no</source>
-        <translation type="unfinished">hayır</translation>
+        <source>You are trying to get information for various comics at once, are they part of the same series?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1476,36 +1485,12 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
         <translation>Port</translation>
     </message>
     <message>
-        <source>EASY SERVER CONNECTION</source>
-        <translation type="vanished">KOLAY SERVER BAĞLANTISI</translation>
-    </message>
-    <message>
-        <source>just scan the code with your device!!</source>
-        <translation type="vanished">Sadece kodu cihaza tarat !!</translation>
-    </message>
-    <message>
         <source>enable the server</source>
         <translation>erişilebilir server</translation>
     </message>
     <message>
-        <source>IP address</source>
-        <translation type="vanished">IP adres</translation>
-    </message>
-    <message>
-        <source>YACReader is now available for iOS devices, the best comic reading experience now in your iPad, iPhone or iPod touch. &lt;a href=&apos;http://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt; Discover it! &lt;/a&gt;</source>
-        <translation type="vanished">YACReader şimdi iOS cihazlarda  Hemen iPad, iPhone veya iPod Touch&apos;ına kapmak için tıkla (Çevirisi yapılmayacak) &lt;a href=&apos;http://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt; ¡Descúbrelo! &lt;/a&gt; </translation>
-    </message>
-    <message>
-        <source>QR generator error!</source>
-        <translation type="vanished">QR kod oluşturma hatası!</translation>
-    </message>
-    <message>
         <source>set port</source>
         <translation>Port Ayarla</translation>
-    </message>
-    <message>
-        <source>SERVER ADDRESS</source>
-        <translation type="vanished">Server Adres</translation>
     </message>
     <message>
         <source>Server connectivity information</source>
@@ -1557,37 +1542,6 @@ to improve the performance</source>
     </message>
 </context>
 <context>
-    <name>TableModel</name>
-    <message>
-        <source>no</source>
-        <translation type="vanished">hayır</translation>
-    </message>
-    <message>
-        <source>yes</source>
-        <translation type="vanished">evet</translation>
-    </message>
-    <message>
-        <source>Read</source>
-        <translation type="vanished">Oku</translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation type="vanished">Boyut</translation>
-    </message>
-    <message>
-        <source>Pages</source>
-        <translation type="vanished">Sayfalar</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation type="vanished">Başlık</translation>
-    </message>
-    <message>
-        <source>File Name</source>
-        <translation type="vanished">Dosya Adı</translation>
-    </message>
-</context>
-<context>
     <name>TitleHeader</name>
     <message>
         <source>SEARCH</source>
@@ -1628,6 +1582,32 @@ to improve the performance</source>
     </message>
     <message>
         <source>publisher</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>YACReader::TrayIconController</name>
+    <message>
+        <source>&amp;Restore</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Systray</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>YACReaderLibrary will keep running in the system tray. To terminate the program, choose &lt;b&gt;Quit&lt;/b&gt; in the context menu of the system tray icon.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>YACReader::WhatsNewDialog</name>
+    <message>
+        <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1822,10 +1802,6 @@ to improve the performance</source>
 <context>
     <name>YACReaderSideBar</name>
     <message>
-        <source>Search folders and comics</source>
-        <translation type="vanished">Klasörleri ve çizgi romanları ara</translation>
-    </message>
-    <message>
         <source>LIBRARIES</source>
         <translation>KÜTÜPHANELER</translation>
     </message>
@@ -1848,21 +1824,6 @@ to improve the performance</source>
     <message>
         <source>READING LISTS</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>YACReaderSocialDialog</name>
-    <message>
-        <source>I am reading %1 using YACReader.</source>
-        <translation type="vanished">YACReader ile okuyorum %1.</translation>
-    </message>
-    <message>
-        <source>send to:</source>
-        <translation type="vanished">Gönder:</translation>
-    </message>
-    <message>
-        <source>Follow YACReader!</source>
-        <translation type="vanished">YACReader&apos;ı takip et !</translation>
     </message>
 </context>
 </TS>

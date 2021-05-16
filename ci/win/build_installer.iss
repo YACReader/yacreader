@@ -38,11 +38,12 @@ Source: Qt5Multimedia.dll; DestDir: {app}
 Source: Qt5Network.dll; DestDir: {app}
 Source: Qt5Qml.dll; DestDir: {app}
 Source: Qt5Quick.dll; DestDir: {app}
-Source: Qt5Script.dll; DestDir: {app}
 Source: Qt5Sql.dll; DestDir: {app}
 Source: Qt5Svg.dll; DestDir: {app}
 Source: Qt5Widgets.dll; DestDir: {app}
 Source: Qt5QuickWidgets.dll; DestDir: {app}
+Source: Qt5QmlModels.dll; DestDir: {app}
+Source: Qt5QmlWorkerScript.dll; DestDir: {app}
 
 ;Qt Angle
 Source: D3Dcompiler_47.dll; DestDir: {app}
@@ -107,7 +108,7 @@ LaunchYACReader=Start YACreader after finishing installation
 
 [Run]
 Filename: {tmp}\vc_redist.{#PLATFORM}.exe; \
-Parameters: "/q /passive /norestart /Q:a /c:""msiexec /q /i vcredist.msi"""; \
+Parameters: "/install /quiet /norestart"; \
 StatusMsg: "Installing VC++ Redistributables..."
 
 Filename: {app}\{cm:AppLibrary}.exe; Description: {cm:LaunchYACReaderLibrary,{cm:AppLibrary}}; Flags: nowait postinstall skipifsilent
@@ -154,7 +155,7 @@ begin
 donationPage := CreateOutputMsgPage(wpWelcome,
   'Iformation', 'Please read the following information before continuing.',
   'YACReader is FREE software. If you like it, please, consider to make a DONATION'#13#13 +
-  'YACReader es software libre y GRATUITO. Si te gusta, por favor, considera realizar una DONACIÓN'#13#13)
+  'YACReader es software libre y GRATUITO. Si te gusta, por favor, considera realizar una DONACIï¿½N'#13#13)
 
 end;
 

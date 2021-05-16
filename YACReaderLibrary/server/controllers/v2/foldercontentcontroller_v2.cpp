@@ -19,13 +19,6 @@ using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;
 using namespace std;
 
-struct LibraryItemSorter {
-    bool operator()(const LibraryItem *a, const LibraryItem *b) const
-    {
-        return naturalSortLessThanCI(a->name, b->name);
-    }
-};
-
 FolderContentControllerV2::FolderContentControllerV2() { }
 
 void FolderContentControllerV2::service(HttpRequest &request, HttpResponse &response)
@@ -52,7 +45,7 @@ void FolderContentControllerV2::serviceContent(const int &library, const qulongl
     QList<LibraryItem *> folderComics = DBHelper::getFolderComicsFromLibrary(library, folderId);
 
     folderContent.append(folderComics);
-    qSort(folderContent.begin(), folderContent.end(), LibraryItemSorter());
+    std::sort(folderContent.begin(), folderContent.end(), LibraryItemSorter());
 
     folderComics.clear();
 

@@ -26,9 +26,10 @@ public:
     void enableFilterMode(bool enabled) override;
     void selectIndex(int index) override;
     void updateCurrentComicView() override;
+    void focusComicsNavigation(Qt::FocusReason reason) override;
 
 public slots:
-    void setShowMarks(bool show);
+    void setShowMarks(bool show) override;
     void selectAll() override;
 
 protected slots:

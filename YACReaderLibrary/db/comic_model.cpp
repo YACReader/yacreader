@@ -9,6 +9,8 @@
 #include "qnaturalsorting.h"
 #include "comic_db.h"
 #include "db_helper.h"
+#include "query_parser.h"
+#include "reading_list_model.h"
 
 //ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read
 #include "QsLog.h"
@@ -316,7 +318,7 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags ComicModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return 0;
+        return {};
     if (index.column() == ComicModel::Rating)
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
@@ -595,59 +597,23 @@ void ComicModel::setupReadingModelData(const QString &databasePath)
     endResetModel();
 }
 
-void ComicModel::setupModelData(const SearchModifiers modifier, const QString &filter, const QString &databasePath)
+void ComicModel::setModelData(QList<ComicItem *> *data, const QString &databasePath)
 {
-    beginResetModel();
-    qDeleteAll(_data);
-    _data.clear();
     _databasePath = databasePath;
-    QString connectionName = "";
 
-    {
-        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
-        QSqlQuery selectQuery(db);
+    beginResetModel();
 
-        switch (modifier) {
-        case YACReader::NoModifiers:
-            selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
-                                "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                                "WHERE UPPER(ci.title) LIKE UPPER(:filter) OR UPPER(c.fileName) LIKE UPPER(:filter) LIMIT :limit");
-            selectQuery.bindValue(":filter", "%%" + filter + "%%");
-            selectQuery.bindValue(":limit", 500); //TODO, load this value from settings
-            break;
+    qDeleteAll(_data);
 
-        case YACReader::OnlyRead:
-            selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
-                                "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                                "WHERE (UPPER(ci.title) LIKE UPPER(:filter) OR UPPER(c.fileName) LIKE UPPER(:filter)) AND ci.read = 1 LIMIT :limit");
-            selectQuery.bindValue(":filter", "%%" + filter + "%%");
-            selectQuery.bindValue(":limit", 500); //TODO, load this value from settings
-            break;
+    _data.clear();
 
-        case YACReader::OnlyUnread:
-            selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
-                                "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                                "WHERE (UPPER(ci.title) LIKE UPPER(:filter) OR UPPER(c.fileName) LIKE UPPER(:filter)) AND ci.read = 0 LIMIT :limit");
-            selectQuery.bindValue(":filter", "%%" + filter + "%%");
-            selectQuery.bindValue(":limit", 500); //TODO, load this value from settings
-            break;
+    _data.append(*data);
 
-        default:
-            QLOG_ERROR() << "not implemented";
-            break;
-        }
-
-        selectQuery.exec();
-
-        QLOG_DEBUG() << selectQuery.lastError() << "--";
-
-        setupModelData(selectQuery);
-        connectionName = db.connectionName();
-    }
-    QSqlDatabase::removeDatabase(connectionName);
     endResetModel();
 
     emit searchNumResults(_data.length());
+
+    delete data;
 }
 
 QString ComicModel::getComicPath(QModelIndex mi)
@@ -811,6 +777,24 @@ QVector<YACReaderComicReadStatus> ComicModel::setComicsRead(QList<QModelIndex> l
 
     return getReadList();
 }
+
+void ComicModel::setComicsManga(QList<QModelIndex> list, bool isManga)
+{
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        db.transaction();
+        foreach (QModelIndex mi, list) {
+            ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(ComicModel::Id).toULongLong(), db);
+            c.info.manga = isManga;
+            DBHelper::update(&(c.info), db);
+        }
+        db.commit();
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+}
+
 qint64 ComicModel::asignNumbers(QList<QModelIndex> list, int startingNumber)
 {
     qint64 idFirst;
@@ -1001,6 +985,36 @@ void ComicModel::deleteComicsFromFavorites(const QList<QModelIndex> &comicsList)
 
     if (mode == Favorites)
         deleteComicsFromModel(comicsList);
+}
+
+void ComicModel::deleteComicsFromReading(const QList<QModelIndex> &comicsList)
+{
+    QList<ComicDB> comics = getComics(comicsList);
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+
+        DBHelper::deleteComicsFromReading(comics, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    if (mode == Reading)
+        deleteComicsFromModel(comicsList);
+}
+
+void ComicModel::deleteComicsFromSpecialList(const QList<QModelIndex> &comicsList, qulonglong specialListId)
+{
+    auto type = (ReadingListModel::TypeSpecialList)specialListId;
+
+    switch (type) {
+    case ReadingListModel::TypeSpecialList::Reading:
+        deleteComicsFromReading(comicsList);
+        break;
+    case ReadingListModel::TypeSpecialList::Favorites:
+        deleteComicsFromFavorites(comicsList);
+        break;
+    }
 }
 
 void ComicModel::deleteComicsFromLabel(const QList<QModelIndex> &comicsList, qulonglong labelId)

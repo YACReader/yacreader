@@ -12,10 +12,6 @@ DEFINES += NOMINMAX YACREADER
 include (../config.pri)
 include (../dependencies/pdf_backend.pri)
 
-unix:!macx{
-    QMAKE_CXXFLAGS += -std=c++11
-}
-
 unix:haiku {
   DEFINES += _BSD_SOURCE
   LIBS    += -lnetwork -lbsd
@@ -72,10 +68,7 @@ macx {
     LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 }
 
-QT += network widgets core multimedia
-!CONFIG(no_opengl) {
-    QT += opengl
-}
+QT += network widgets core multimedia svg
 
 #CONFIG += release
 CONFIG -= flat
@@ -193,6 +186,8 @@ TRANSLATIONS =    yacreader_es.ts \
                   yacreader_nl.ts \
                   yacreader_tr.ts \
                   yacreader_de.ts \
+                  yacreader_zh.ts \
+                  yacreader_it.ts \
                   yacreader_source.ts
 
 unix:!macx {

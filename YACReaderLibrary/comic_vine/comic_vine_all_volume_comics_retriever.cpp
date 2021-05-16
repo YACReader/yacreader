@@ -3,7 +3,9 @@
 #include "http_worker.h"
 #include "response_parser.h"
 
-#include <QtScript>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 ComicVineAllVolumeComicsRetriever::ComicVineAllVolumeComicsRetriever(const QString &volumeURLString, QObject *parent)
     : QObject(parent), volumeURLString(volumeURLString)

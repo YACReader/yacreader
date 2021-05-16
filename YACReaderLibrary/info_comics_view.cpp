@@ -208,6 +208,11 @@ void InfoComicsView::updateCurrentComicView()
 {
 }
 
+void InfoComicsView::focusComicsNavigation(Qt::FocusReason reason)
+{
+    view->setFocus(reason);
+}
+
 void InfoComicsView::setShowMarks(bool show)
 {
     QQmlContext *ctxt = view->rootContext();

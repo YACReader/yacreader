@@ -110,20 +110,42 @@ void Startup::start(quint16 port)
     if (listenerSettings->value("minThreads").isNull())
         listenerSettings->setValue("minThreads", 50);
 
+    if (listenerSettings->value("port").isNull())
+        listenerSettings->setValue("port", 8080);
+
+    // start with a temporary port
+    if (port != 0) {
+        // cache saved port
+        if (!listenerSettings->contains("cachedPort")) {
+            listenerSettings->setValue("cachedPort", listenerSettings->value("port").toInt());
+        }
+        listenerSettings->setValue("port", port);
+    } else {
+        // restore saved port
+        if (listenerSettings->contains("cachedPort")) {
+            listenerSettings->setValue("port", listenerSettings->value("cachedPort"));
+            listenerSettings->remove("cachedPort");
+        }
+    }
+    // test if port is working
+    {
+        QTcpServer testServer;
+        if (!testServer.listen(QHostAddress::Any, listenerSettings->value("port").toInt())) {
+            qDebug("Port is busy.");
+            // get random port
+            testServer.listen(QHostAddress::Any, 0);
+            listenerSettings->setValue("port", testServer.serverPort());
+        }
+        testServer.close();
+    }
+
     listener = new HttpListener(listenerSettings, new RequestMapper(app), app);
 
-    if (port != 0) {
-        if (listener->isListening()) {
-            listener->close();
-        }
-        listener->QTcpServer::listen(QHostAddress::Any, port);
+    if (listener->isListening()) {
+        qDebug("ServiceHelper: Service has started");
+    } else {
+        qDebug("ServiceHelper: Could not launch service");
     }
-    // if the requested port is busy, use random port
-    if (!listener->isListening()) {
-        listener->QTcpServer::listen(QHostAddress::Any, 0);
-    }
-
-    qDebug("ServiceHelper: Service has started");
 }
 
 void Startup::stop()

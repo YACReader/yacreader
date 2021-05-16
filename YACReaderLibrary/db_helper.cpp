@@ -12,6 +12,7 @@
 #include <QSqlRecord>
 #include <QSqlQuery>
 
+#include <algorithm>
 #include <limits>
 
 #include "reading_list.h"
@@ -32,6 +33,7 @@ YACReaderLibraries DBHelper::getLibraries()
     libraries.load();
     return libraries;
 }
+
 QList<LibraryItem *> DBHelper::getFolderSubfoldersFromLibrary(qulonglong libraryId, qulonglong folderId)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
@@ -46,9 +48,32 @@ QList<LibraryItem *> DBHelper::getFolderSubfoldersFromLibrary(qulonglong library
     QSqlDatabase::removeDatabase(connectionName);
     return list;
 }
+
 QList<LibraryItem *> DBHelper::getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId)
 {
     return DBHelper::getFolderComicsFromLibrary(libraryId, folderId, false);
+}
+
+QList<LibraryItem *> DBHelper::getFolderComicsFromLibraryForReading(qulonglong libraryId, qulonglong folderId)
+{
+    auto list = DBHelper::getFolderComicsFromLibrary(libraryId, folderId, false);
+
+    std::sort(list.begin(), list.end(), [](LibraryItem *i1, LibraryItem *i2) {
+        auto c1 = static_cast<ComicDB *>(i1);
+        auto c2 = static_cast<ComicDB *>(i2);
+
+        if (c1->info.number.isNull() && c2->info.number.isNull()) {
+            return naturalSortLessThanCI(c1->name, c2->name);
+        } else {
+            if (c1->info.number.isNull() == false && c2->info.number.isNull() == false) {
+                return c1->info.number.toInt() < c2->info.number.toInt();
+            } else {
+                return c2->info.number.isNull();
+            }
+        }
+    });
+
+    return list;
 }
 
 QList<LibraryItem *> DBHelper::getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId, bool sort)
@@ -165,8 +190,8 @@ QString DBHelper::getFolderName(qulonglong libraryId, qulonglong id)
 }
 QList<QString> DBHelper::getLibrariesNames()
 {
-    QStringList names = getLibraries().getNames();
-    qSort(names.begin(), names.end(), naturalSortLessThanCI);
+    auto names = getLibraries().getNames();
+    std::sort(names.begin(), names.end(), naturalSortLessThanCI);
     return names;
 }
 QString DBHelper::getLibraryName(int id)
@@ -446,6 +471,22 @@ void DBHelper::deleteComicsFromFavorites(const QList<ComicDB> &comicsList, QSqlD
     db.commit();
 }
 
+//a.k.a set comics as unread by reverting the conditions used to load the comics -> void ComicModel::setupReadingModelData(const QString &databasePath)
+void DBHelper::deleteComicsFromReading(const QList<ComicDB> &comicsList, QSqlDatabase &db)
+{
+    db.transaction();
+
+    QLOG_DEBUG() << "deleteComicsFromReading----------------------------------";
+
+    for (auto comic : comicsList) {
+        comic.info.hasBeenOpened = false;
+        comic.info.currentPage = 0; //update sets hasBeenOpened to true if currentPage > 0;
+        DBHelper::update(&comic.info, db);
+    }
+
+    db.commit();
+}
+
 void DBHelper::deleteComicsFromLabel(const QList<ComicDB> &comicsList, qulonglong labelId, QSqlDatabase &db)
 {
     db.transaction();
@@ -564,7 +605,11 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
                             "lastTimeOpened = :lastTimeOpened,"
 
                             "coverSizeRatio = :coverSizeRatio,"
-                            "originalCoverSize = :originalCoverSize"
+                            "originalCoverSize = :originalCoverSize,"
+                            //--
+
+                            //new 9.8 fields
+                            "manga = :manga"
                             //--
                             " WHERE id = :id ");
 
@@ -596,6 +641,7 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
     updateComicInfo.bindValue(":format", comicInfo->format);
     updateComicInfo.bindValue(":color", comicInfo->color);
     updateComicInfo.bindValue(":ageRating", comicInfo->ageRating);
+    updateComicInfo.bindValue(":manga", comicInfo->manga);
 
     updateComicInfo.bindValue(":synopsis", comicInfo->synopsis);
     updateComicInfo.bindValue(":characters", comicInfo->characters);
@@ -644,10 +690,12 @@ void DBHelper::update(const Folder &folder, QSqlDatabase &db)
     QSqlQuery updateFolderInfo(db);
     updateFolderInfo.prepare("UPDATE folder SET "
                              "finished = :finished, "
-                             "completed = :completed "
+                             "completed = :completed, "
+                             "manga = :manga "
                              "WHERE id = :id ");
     updateFolderInfo.bindValue(":finished", folder.isFinished() ? 1 : 0);
     updateFolderInfo.bindValue(":completed", folder.isCompleted() ? 1 : 0);
+    updateFolderInfo.bindValue(":manga", folder.isManga() ? 1 : 0);
     updateFolderInfo.bindValue(":id", folder.id);
     updateFolderInfo.exec();
 }
@@ -1330,6 +1378,7 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
     int format = record.indexOf("format");
     int color = record.indexOf("color");
     int ageRating = record.indexOf("ageRating");
+    int manga = record.indexOf("manga");
 
     int synopsis = record.indexOf("synopsis");
     int characters = record.indexOf("characters");
@@ -1394,6 +1443,7 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
         currentItem.info.format = selectQuery.value(format);
         currentItem.info.color = selectQuery.value(color);
         currentItem.info.ageRating = selectQuery.value(ageRating);
+        currentItem.info.manga = selectQuery.value(manga);
 
         currentItem.info.synopsis = selectQuery.value(synopsis);
         currentItem.info.characters = selectQuery.value(characters);
@@ -1509,6 +1559,36 @@ QList<Label> DBHelper::getLabels(qulonglong libraryId)
     return labels;
 }
 
+void DBHelper::updateFolderTreeManga(qulonglong id, QSqlDatabase &db, bool manga)
+{
+    QSqlQuery updateFolderQuery(db);
+    updateFolderQuery.prepare("UPDATE folder "
+                              "SET manga = :manga "
+                              "WHERE id = :id");
+    updateFolderQuery.bindValue(":manga", manga ? 1 : 0);
+    updateFolderQuery.bindValue(":id", id);
+    updateFolderQuery.exec();
+
+    QSqlQuery updateComicInfo(db);
+    updateComicInfo.prepare("UPDATE comic_info "
+                            "SET manga = :manga "
+                            "WHERE id IN (SELECT ci.id FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE c.parentId = :parentId)");
+    updateComicInfo.bindValue(":manga", manga ? 1 : 0);
+    updateComicInfo.bindValue(":parentId", id);
+    updateComicInfo.exec();
+
+    QSqlQuery getSubFoldersQuery(db);
+    getSubFoldersQuery.prepare("SELECT id FROM folder WHERE parentId = :parentId AND id <> 1"); //do not select the root folder
+    getSubFoldersQuery.bindValue(":parentId", id);
+    getSubFoldersQuery.exec();
+
+    int childFolderIdPos = getSubFoldersQuery.record().indexOf("id");
+
+    while (getSubFoldersQuery.next()) {
+        updateFolderTreeManga(getSubFoldersQuery.value(childFolderIdPos).toULongLong(), db, manga);
+    }
+}
+
 //loads
 Folder DBHelper::loadFolder(qulonglong id, QSqlDatabase &db)
 {
@@ -1528,6 +1608,7 @@ Folder DBHelper::loadFolder(qulonglong id, QSqlDatabase &db)
     int path = record.indexOf("path");
     int finished = record.indexOf("finished");
     int completed = record.indexOf("completed");
+    int manga = record.indexOf("manga");
     int numChildren = record.indexOf("numChildren");
     int firstChildHash = record.indexOf("firstChildHash");
     int customImage = record.indexOf("customImage");
@@ -1547,6 +1628,9 @@ Folder DBHelper::loadFolder(qulonglong id, QSqlDatabase &db)
             folder.setNumChildren(query.value(numChildren).toInt());
         folder.setFirstChildHash(query.value(firstChildHash).toString());
         folder.setCustomImage(query.value(customImage).toString());
+
+        //new 9.8
+        folder.setManga(query.value(manga).toBool());
     }
 
     return folder;
@@ -1569,6 +1653,7 @@ Folder DBHelper::loadFolder(const QString &folderName, qulonglong parentId, QSql
     int path = record.indexOf("path");
     int finished = record.indexOf("finished");
     int completed = record.indexOf("completed");
+    int manga = record.indexOf("manga");
     int numChildren = record.indexOf("numChildren");
     int firstChildHash = record.indexOf("firstChildHash");
     int customImage = record.indexOf("customImage");
@@ -1589,6 +1674,9 @@ Folder DBHelper::loadFolder(const QString &folderName, qulonglong parentId, QSql
             folder.setNumChildren(query.value(numChildren).toInt());
         folder.setFirstChildHash(query.value(firstChildHash).toString());
         folder.setCustomImage(query.value(customImage).toString());
+
+        //new 9.8
+        folder.setManga(query.value(manga).toBool());
     }
 
     return folder;
@@ -1696,6 +1784,7 @@ ComicInfo DBHelper::loadComicInfo(QString hash, QSqlDatabase &db)
     int format = record.indexOf("format");
     int color = record.indexOf("color");
     int ageRating = record.indexOf("ageRating");
+    int manga = record.indexOf("manga");
 
     int synopsis = record.indexOf("synopsis");
     int characters = record.indexOf("characters");
@@ -1765,6 +1854,10 @@ ComicInfo DBHelper::loadComicInfo(QString hash, QSqlDatabase &db)
 
         comicInfo.coverSizeRatio = findComicInfo.value(coverSizeRatio);
         comicInfo.originalCoverSize = findComicInfo.value(originalCoverSize);
+        //--
+
+        //new 9.8 fields
+        comicInfo.manga = findComicInfo.value(manga);
         //--
 
         comicInfo.existOnDb = true;

@@ -20,11 +20,6 @@ ComicsViewTransition::ComicsViewTransition(QWidget *parent)
 #endif
 }
 
-QSize ComicsViewTransition::sizeHint()
-{
-    return QSize(450, 350);
-}
-
 void ComicsViewTransition::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);

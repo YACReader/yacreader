@@ -316,6 +316,13 @@ YACReaderMacOSXSearchLineEdit::YACReaderMacOSXSearchLineEdit()
     nstextfield = searchEdit;
 }
 
+void YACReaderMacOSXSearchLineEdit::setFocus(Qt::FocusReason reason)
+{
+    Q_UNUSED(reason)
+
+    [((NSTextField *)nstextfield) becomeFirstResponder];
+}
+
 void *YACReaderMacOSXSearchLineEdit::getNSTextField()
 {
     return nstextfield;

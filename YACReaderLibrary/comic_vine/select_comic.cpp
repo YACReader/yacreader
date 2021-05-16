@@ -5,9 +5,10 @@
 #include "scraper_tableview.h"
 #include "volume_comics_model.h"
 
+#include <QJsonDocument>
+#include <QJsonParseError>
 #include <QLabel>
 #include <QLayout>
-#include <QtScript>
 
 SelectComic::SelectComic(QWidget *parent)
     : ScraperSelector(parent), model(0)
@@ -121,18 +122,17 @@ void SelectComic::setCover(const QByteArray &data)
 
 void SelectComic::setDescription(const QString &jsonDetail)
 {
-    QScriptEngine engine;
-    QScriptValue sc;
-    sc = engine.evaluate("(" + jsonDetail + ")");
+    QJsonParseError Err;
+    QVariantMap sc = QJsonDocument::fromJson(jsonDetail.toUtf8(), &Err).toVariant().toMap();
 
-    if (!sc.property("error").isValid() && sc.property("error").toString() != "OK") {
+    if (Err.error != QJsonParseError::NoError) {
         qDebug("Error detected");
-    } else {
-
-        QScriptValue descriptionValues = sc.property("results").property("description");
-        bool valid = !descriptionValues.isNull() && descriptionValues.isValid();
-        detailLabel->setText(valid ? descriptionValues.toString().replace("<a", "<a style = 'color:#827A68; text-decoration:none;'") : tr("description unavailable"));
+        return;
     }
+
+    QVariant descriptionValues = sc.value("results").toMap().value("description");
+    bool valid = !descriptionValues.isNull() && descriptionValues.isValid();
+    detailLabel->setText(valid ? descriptionValues.toString().replace("<a", "<a style = 'color:#827A68; text-decoration:none;'") : tr("description unavailable"));
 }
 
 QString SelectComic::getSelectedComicId()

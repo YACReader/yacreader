@@ -16,17 +16,12 @@
 
 #include "QsLog.h"
 
+#include <algorithm>
+
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;
 using stefanfrings::HttpSession;
 using stefanfrings::Template;
-
-struct LibraryItemSorter {
-    bool operator()(const LibraryItem *a, const LibraryItem *b) const
-    {
-        return naturalSortLessThanCI(a->name, b->name);
-    }
-};
 
 FolderController::FolderController() { }
 
@@ -79,7 +74,7 @@ void FolderController::service(HttpRequest &request, HttpResponse &response)
 
     folderContent.append(folderComics);
 
-    qSort(folderContent.begin(), folderContent.end(), LibraryItemSorter());
+    std::sort(folderContent.begin(), folderContent.end(), LibraryItemSorter());
     folderComics.clear();
 
     //qulonglong backId = DBHelper::getParentFromComicFolderId(libraryName,folderId);
@@ -265,7 +260,7 @@ void FolderController::service(HttpRequest &request, HttpResponse &response)
         if (index.length() > 1) {
             t.setCondition("alphaIndex", true);
 
-            qSort(index.begin(), index.end(), naturalSortLessThanCI);
+            std::sort(index.begin(), index.end(), naturalSortLessThanCI);
             t.loop("index", index.length());
             int i = 0;
             int count = 0;

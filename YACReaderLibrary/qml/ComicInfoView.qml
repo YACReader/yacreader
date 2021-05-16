@@ -258,8 +258,14 @@ Rectangle {
                 font.pixelSize: 15
                 wrapMode: Text.WordWrap
                 horizontalAlignment: Text.AlignJustify
-                text: comicInfo.synopsis
+                text: '<html><head><style>
+                        a {
+                            color: #FFCB00;
+                            text-decoration:none;
+                        }
+                    </style></head><body>' + comicInfo.synopsis + '</body></html>'
                 visible: comicInfo.synopsis
+                textFormat: Text.RichText
             }
 
             Text {

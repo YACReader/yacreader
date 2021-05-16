@@ -20,7 +20,6 @@ void TagInfoControllerV2::service(HttpRequest &request, HttpResponse &response)
     QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
     QStringList pathElements = path.split('/');
     int libraryId = pathElements.at(3).toInt();
-    QString libraryName = DBHelper::getLibraryName(libraryId);
     qulonglong listId = pathElements.at(5).toULongLong();
 
     serviceComics(libraryId, listId, response);

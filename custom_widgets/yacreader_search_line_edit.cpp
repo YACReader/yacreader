@@ -40,7 +40,7 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
 #ifdef Q_OS_MAC
     setMaximumWidth(212);
 #else
-    setMaximumWidth(173);
+    setMaximumWidth(255);
     setFixedHeight(26);
 #endif
 

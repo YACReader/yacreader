@@ -258,6 +258,15 @@ void ClassicComicsView::updateCurrentComicView()
 {
 }
 
+void ClassicComicsView::focusComicsNavigation(Qt::FocusReason reason)
+{
+    const bool comicFlowVisible = stack->currentWidget() == comicFlow && sVertical->sizes().constFirst() != 0;
+    if (comicFlowVisible)
+        comicFlow->setFocus(reason);
+    else // Let the user navigate the table.
+        tableView->setFocus(reason);
+}
+
 void ClassicComicsView::selectAll()
 {
     tableView->selectAll();
@@ -291,6 +300,10 @@ void ClassicComicsView::centerComicFlow(const QModelIndex &mi)
 
 void ClassicComicsView::updateTableView(int i)
 {
+    if (model == nullptr) {
+        return;
+    }
+
     QModelIndex mi = model->index(i, 2);
     tableView->setCurrentIndex(mi);
     tableView->scrollTo(mi, QAbstractItemView::EnsureVisible);

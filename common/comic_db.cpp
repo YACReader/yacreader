@@ -102,6 +102,9 @@ QString ComicDB::toTXT()
 
     if (!info.ageRating.isNull())
         txt.append(QString("ageRating:%1\r\n").arg(info.ageRating.toString()));
+
+    if (!info.manga.isNull())
+        txt.append(QString("manga:%1\r\n").arg(info.manga.toString()));
     //Argumento
     if (!info.synopsis.isNull())
         txt.append(QString("synopsis:%1\r\n").arg(info.synopsis.toString()));
@@ -232,6 +235,7 @@ ComicInfo &ComicInfo::operator=(const ComicInfo &comicInfo)
     publisher = comicInfo.publisher;
     format = comicInfo.format;
     color = comicInfo.color;
+    manga = comicInfo.manga;
     ageRating = comicInfo.ageRating;
     synopsis = comicInfo.synopsis;
     characters = comicInfo.characters;
@@ -537,6 +541,7 @@ QDataStream &operator<<(QDataStream &stream, const ComicInfo &comicInfo)
     stream << comicInfo.format;
     stream << comicInfo.color;
     stream << comicInfo.ageRating;
+    stream << comicInfo.manga;
 
     stream << comicInfo.synopsis;
     stream << comicInfo.characters;
@@ -598,6 +603,7 @@ QDataStream &operator>>(QDataStream &stream, ComicInfo &comicInfo)
     stream >> comicInfo.format;
     stream >> comicInfo.color;
     stream >> comicInfo.ageRating;
+    stream >> comicInfo.manga;
 
     stream >> comicInfo.synopsis;
     stream >> comicInfo.characters;

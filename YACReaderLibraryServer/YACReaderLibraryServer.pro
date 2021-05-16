@@ -28,10 +28,6 @@ macx {
   CONFIG += objective_c
 }
 
-unix {
-  CONFIG += c++11
-}
-
 unix:haiku {
   DEFINES += _BSD_SOURCE
   LIBS    += -lnetwork -lbsd

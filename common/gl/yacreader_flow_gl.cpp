@@ -1,7 +1,6 @@
 #include "yacreader_flow_gl.h"
 
 #include <QtGui>
-#include <QtOpenGL>
 #include <QMatrix4x4>
 #include <cmath>
 
@@ -191,7 +190,7 @@ struct Preset pressetYACReaderFlowDownConfig = {
 };
 /*Constructor*/
 YACReaderFlowGL::YACReaderFlowGL(QWidget *parent, struct Preset p)
-    : QOpenGLWidget(/*QOpenGLWidget migration QGLFormat(QGL::SampleBuffers),*/ parent), numObjects(0), lazyPopulateObjects(-1), defaultTexture(nullptr), hasBeenInitialized(false), bUseVSync(false), flowRightToLeft(false)
+    : QOpenGLWidget(/*QOpenGLWidget migration QGLFormat(QGL::SampleBuffers),*/ parent), numObjects(0), lazyPopulateObjects(-1), hasBeenInitialized(false), bUseVSync(false), flowRightToLeft(false)
 {
     updateCount = 0;
     config = p;

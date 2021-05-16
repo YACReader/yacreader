@@ -259,6 +259,12 @@ void GridComicsView::setModel(ComicModel *model)
     ctxt->setContextProperty("dropManager", this);
     ctxt->setContextProperty("comicInfoHelper", comicInfoHelper);
 
+    auto grid = view->rootObject()->findChild<QQuickItem *>(QStringLiteral("grid"));
+
+    if (grid != nullptr) {
+        grid->setProperty("currentIndex", 0);
+    }
+
     updateBackgroundConfig();
 
     selectionHelper->clear();
@@ -469,11 +475,6 @@ void GridComicsView::resetScroll()
     QMetaObject::invokeMethod(scrollView, "scrollToOrigin");
 }
 
-QSize GridComicsView::sizeHint()
-{
-    return QSize(1280, 768);
-}
-
 QByteArray GridComicsView::getMimeDataFromSelection()
 {
     QByteArray data;
@@ -489,6 +490,11 @@ QByteArray GridComicsView::getMimeDataFromSelection()
 void GridComicsView::updateCurrentComicView()
 {
     setCurrentComicIfNeeded();
+}
+
+void GridComicsView::focusComicsNavigation(Qt::FocusReason reason)
+{
+    view->setFocus(reason);
 }
 
 void GridComicsView::startDrag()

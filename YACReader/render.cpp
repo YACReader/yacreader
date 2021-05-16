@@ -695,13 +695,12 @@ void Render::createComic(const QString &path)
     pagesEmited.clear();
 
     if (comic != nullptr) {
-        //comic->moveToThread(QApplication::instance()->thread());
         comic->invalidate();
-
         comic->disconnect();
+        // Dispatch pending events to guard against race conditons
+        QCoreApplication::sendPostedEvents(this);
         comic->deleteLater();
     }
-    //comic->moveToThread(QApplication::instance()->thread());
     comic = FactoryComic::newComic(path);
 
     if (comic == nullptr) //archivo no encontrado o no válido
@@ -1023,6 +1022,15 @@ void Render::doublePageSwitch()
 {
     doublePage = !doublePage;
     if (comic) {
+        //invalidate();
+        update();
+    }
+}
+
+void Render::setManga(bool manga)
+{
+    doubleMangaPage = manga;
+    if (comic && doublePage) {
         //invalidate();
         update();
     }

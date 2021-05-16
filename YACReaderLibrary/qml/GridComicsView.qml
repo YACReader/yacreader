@@ -612,7 +612,7 @@ Rectangle {
                             }
                         }
 
-                        Text {
+                        ScrollView {
                             Layout.topMargin: 6
                             Layout.rightMargin: 30
                             Layout.bottomMargin: 5
@@ -620,15 +620,55 @@ Rectangle {
                             Layout.maximumHeight: (currentComicVisualView.height * 0.32)
                             Layout.maximumWidth: 960
 
-                            id: currentComicInfoSinopsis
-                            color: infoTitleColor
-                            font.family: "Arial"
-                            font.pixelSize: 14
-                            wrapMode: Text.WordWrap
-                            elide: Text.ElideRight
-                            horizontalAlignment: Text.AlignJustify
-                            text: currentComicInfo.synopsis ? currentComicInfo.synopsis : ""
-                            visible: currentComicInfo.synopsis ? true : false
+                            contentItem: currentComicInfoSinopsis
+
+                            horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+
+                            id: synopsisScroller
+
+                            style: ScrollViewStyle {
+                                transientScrollBars: false
+                                incrementControl: Item {}
+                                decrementControl: Item {}
+                                handle: Item {
+                                    implicitWidth: 12
+                                    implicitHeight: 26
+                                    Rectangle {
+                                        color: "#424246"
+                                        anchors.fill: parent
+                                        anchors.topMargin: 6
+                                        anchors.leftMargin: 9
+                                        anchors.rightMargin: 0
+                                        anchors.bottomMargin: 6
+                                        radius: 2
+                                    }
+                                }
+                                scrollBarBackground: Item {
+                                    implicitWidth: 14
+                                    implicitHeight: 26
+                                }
+                            }
+
+                            Text {
+                                Layout.maximumWidth: 960
+
+                                width: synopsisScroller.width
+
+                                id: currentComicInfoSinopsis
+                                color: infoTitleColor
+                                font.family: "Arial"
+                                font.pixelSize: 14
+                                wrapMode: Text.WordWrap
+
+                                text: '<html><head><style>
+                                a {
+                                    color: #FFCB00;
+                                    text-decoration:none;
+                                }
+                                </style></head><body>' + currentComicInfo.synopsis + '</body></html>'
+                                visible: currentComicInfo.synopsis
+                                textFormat: Text.RichText
+                            }
                         }
                     }
 

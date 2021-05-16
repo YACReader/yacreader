@@ -7,7 +7,6 @@
         <file>../images/comic_vine/previousPage.png</file>
         <file>../images/comic_vine/radioChecked.png</file>
         <file>../images/comic_vine/radioUnchecked.png</file>
-        <file>../images/comic_vine/radioUnchecked.png</file>
         <file>../images/comic_vine/rowDown.png</file>
         <file>../images/comic_vine/rowUp.png</file>
         <file>../images/comic_vine/upArrow.png</file>
@@ -38,6 +37,10 @@
         <file>../images/comics_view_toolbar/trash@2x.png</file>
         <file>../images/comics_view_toolbar/show_comic_info.png</file>
         <file>../images/comics_view_toolbar/show_comic_info@2x.png</file>
+        <file>../images/comics_view_toolbar/setManga.png</file>
+        <file>../images/comics_view_toolbar/setManga@2x.png</file>
+        <file>../images/comics_view_toolbar/setNormal.png</file>
+        <file>../images/comics_view_toolbar/setNormal@2x.png</file>
         <file>../images/coversPackage.png</file>
         <file>../images/db.png</file>
         <file>../images/defaultCover.png</file>
@@ -119,5 +122,7 @@
         <file>../images/updatingIcon.png</file>
         <file>../images/useNewFlowButton.png</file>
         <file>../images/useOldFlowButton.png</file>
+        <file>../images/custom_dialog/custom_close_button.svg</file>
+        <file>../images/whats_new/whatsnew_header.svg</file>
     </qresource>
 </RCC>

@@ -1,7 +1,7 @@
 #include "response_parser.h"
-
-#include <QtScript>
 #include <QDebug>
+#include <QJsonDocument>
+#include <QJsonParseError>
 
 ResponseParser::ResponseParser(QObject *parent)
     : QObject(parent), error(false), errorTxt("None"), numResults(-1), currentPage(-1), totalPages(-1)
@@ -46,32 +46,43 @@ bool ResponseParser::isError(qint32 error)
 
 void ResponseParser::loadJSONResponse(const QString &response)
 {
-    QScriptEngine engine;
-    QScriptValue sc;
-    sc = engine.evaluate("(" + response + ")");
+    QJsonParseError Err;
+    QVariantMap sc = QJsonDocument::fromJson(response.toUtf8(), &Err).toVariant().toMap();
 
     errorTxt = "None";
 
-    if (!sc.property("status_code").isValid() || isError(sc.property("status_code").toInt32())) {
+    if (Err.error != QJsonParseError::NoError) {
+        errorTxt = "Json syntax error";
         error = true;
-        if (sc.property("error").isValid())
-            errorTxt = sc.property("error").toString();
-        else
-            errorTxt = "Unknown error";
-    } else {
-        error = false;
-        if (sc.property("number_of_total_results").isValid())
-            numResults = sc.property("number_of_total_results").toString().toInt(); // sc.property("number_of_total_results").toInt32();
-        else
-            qDebug() << sc.property("oops").toString();
+        return;
+    }
 
-        int limit = sc.property("limit").toInt32();
-        int offset = sc.property("offset").toInt32();
-        int total = sc.property("number_of_total_results").toInt32();
-        if (limit > 0) {
-            totalPages = (total / limit) + (total % limit > 0 ? 1 : 0);
-            currentPage = (offset / limit) + 1;
-        } else
-            totalPages = currentPage = 1;
+    if (!sc.value("status_code").isValid() || isError(sc.value("status_code").toInt())) {
+        error = true;
+        if (sc.value("error").isValid()) {
+            errorTxt = sc.value("error").toString();
+
+        } else {
+            errorTxt = "Unknown error";
+        }
+        return;
+    }
+
+    error = false;
+    if (sc.value("number_of_total_results").isValid()) {
+        numResults = sc.value("number_of_total_results").toInt(); // sc.property("number_of_total_results").toInt32();
+
+    } else {
+        qDebug() << sc.value("oops").toString();
+    }
+
+    auto limit = sc.value("limit").toInt();
+    auto offset = sc.value("offset").toInt();
+    auto total = sc.value("number_of_total_results").toInt();
+    if (limit > 0) {
+        totalPages = (total / limit) + (total % limit > 0 ? 1 : 0);
+        currentPage = (offset / limit) + 1;
+    } else {
+        totalPages = currentPage = 1;
     }
 }

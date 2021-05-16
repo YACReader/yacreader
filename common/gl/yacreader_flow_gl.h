@@ -119,9 +119,9 @@ protected:
     int updateCount;
     int fontSize;
 
-    QOpenGLTexture *defaultTexture;
-    QOpenGLTexture *markTexture;
-    QOpenGLTexture *readingTexture;
+    QOpenGLTexture *defaultTexture = nullptr;
+    QOpenGLTexture *markTexture = nullptr;
+    QOpenGLTexture *readingTexture = nullptr;
     void initializeGL();
     void paintGL();
     void timerEvent(QTimerEvent *);

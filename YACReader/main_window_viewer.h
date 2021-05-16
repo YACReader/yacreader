@@ -50,6 +50,8 @@ public slots:
     void newVersion();
     void openPreviousComic();
     void openNextComic();
+    void openLeftComic();
+    void openRightComic();
     void openComicFromPath(QString pathFile);
     void openSiblingComic(QString pathFile);
     void openComic(QString pathFile);
@@ -68,6 +70,7 @@ public slots:
     void checkNewVersion();
     void processReset();
     void setUpShortcutsManagement();
+    void doubleMangaPageSwitch();
 
     void toggleFitToWidthSlider();
 
@@ -114,10 +117,10 @@ private:
     QList<QAction *> recentFilesActionList;
     QAction *clearRecentFilesAction;
     QAction *saveImageAction;
-    QAction *openPreviousComicAction;
-    QAction *openNextComicAction;
-    QAction *nextAction;
-    QAction *prevAction;
+    QAction *openComicOnTheLeftAction;
+    QAction *openComicOnTheRightAction;
+    QAction *goToPageOnTheRightAction;
+    QAction *goToPageOnTheLeftAction;
     QAction *adjustWidthAction;
     QAction *adjustHeightAction;
     QAction *goToPageAction;
@@ -181,6 +184,8 @@ private:
 protected:
     void closeEvent(QCloseEvent *event) override;
     void sendComic();
+    void updatePrevNextActions(bool thereIsPrevious, bool thereIsNext);
+    void afterLaunchTasks();
 
 public:
     MainWindowViewer();

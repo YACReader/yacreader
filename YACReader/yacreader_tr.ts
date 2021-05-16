@@ -28,17 +28,6 @@
     </message>
 </context>
 <context>
-    <name>Configuration</name>
-    <message>
-        <source>There was a problem saving YACReader configuration. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation type="vanished">Yeni ayarlar kaydedilirken bir problem çıktı. Lütfen YACReader dosyasını açın.</translation>
-    </message>
-    <message>
-        <source>Saving config file....</source>
-        <translation type="vanished">Config dosyası kaydediliyor...</translation>
-    </message>
-</context>
-<context>
     <name>EditShortcutsDialog</name>
     <message>
         <source>Restore defaults</source>
@@ -64,52 +53,8 @@
 <context>
     <name>FileComic</name>
     <message>
-        <source>File not found or not images in file</source>
-        <translation type="vanished">Dosya bulunamadı yada dosyada resim yok</translation>
-    </message>
-    <message>
         <source>7z not found</source>
         <translation>7z bulunamadı</translation>
-    </message>
-    <message>
-        <source>Comic not found</source>
-        <translation type="vanished">Çizgi roman bulunamadı</translation>
-    </message>
-    <message>
-        <source>Not found</source>
-        <translation type="vanished">Bulunamadı</translation>
-    </message>
-    <message>
-        <source>File error</source>
-        <translation type="vanished">Dosya hatası</translation>
-    </message>
-    <message>
-        <source>7z problem</source>
-        <translation type="vanished">7z Problemli</translation>
-    </message>
-    <message>
-        <source>7z reading</source>
-        <translation type="vanished">7z Okunuyor</translation>
-    </message>
-    <message>
-        <source>7z crashed.</source>
-        <translation type="vanished">7z Bozulmuş.</translation>
-    </message>
-    <message>
-        <source>problem reading from 7z</source>
-        <translation type="vanished">7z Okunurken Problem Oluştu</translation>
-    </message>
-    <message>
-        <source>7z crashed</source>
-        <translation type="vanished">7z Bozulması</translation>
-    </message>
-    <message>
-        <source>Unknown error 7z</source>
-        <translation type="vanished">Bilinmeyen 7z hatası</translation>
-    </message>
-    <message>
-        <source>7z wasn&apos;t found in your PATH.</source>
-        <translation type="vanished">7z Yolu Bulunamadı.</translation>
     </message>
     <message>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
@@ -166,43 +111,38 @@
     </message>
 </context>
 <context>
+    <name>LogWindow</name>
+    <message>
+        <source>Log window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Pause</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>C&amp;lear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Level:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Auto scroll</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MainWindowViewer</name>
-    <message>
-        <source>C</source>
-        <translation type="vanished">C</translation>
-    </message>
-    <message>
-        <source>D</source>
-        <translation type="vanished">D</translation>
-    </message>
-    <message>
-        <source>G</source>
-        <translation type="vanished">G</translation>
-    </message>
-    <message>
-        <source>I</source>
-        <translation type="vanished">I</translation>
-    </message>
-    <message>
-        <source>L</source>
-        <translation type="vanished">L</translation>
-    </message>
-    <message>
-        <source>M</source>
-        <translation type="vanished">M</translation>
-    </message>
-    <message>
-        <source>O</source>
-        <translation type="vanished">O</translation>
-    </message>
-    <message>
-        <source>R</source>
-        <translation type="vanished">R</translation>
-    </message>
-    <message>
-        <source>Z</source>
-        <translation type="vanished">Z</translation>
-    </message>
     <message>
         <source>Help</source>
         <translation>Yardım</translation>
@@ -268,10 +208,6 @@
         <translation>Dosyayı Aç</translation>
     </message>
     <message>
-        <source>Ctrl+O</source>
-        <translation type="vanished">Ctrl+O</translation>
-    </message>
-    <message>
         <source>Comic files</source>
         <translation>Çizgi Roman Dosyaları</translation>
     </message>
@@ -290,10 +226,6 @@
     <message>
         <source>Next Comic</source>
         <translation>Sırada ki çizgi roman</translation>
-    </message>
-    <message>
-        <source>Saving error log file....</source>
-        <translation type="vanished">Hata dosyasını kaydet...</translation>
     </message>
     <message>
         <source>Fit Width</source>
@@ -332,12 +264,12 @@
         <translation>Kılavye kısayollarını göster</translation>
     </message>
     <message>
-        <source>Open next comic</source>
-        <translation>Sıradaki çizgi romanı aç</translation>
-    </message>
-    <message>
         <source>There is a new version available</source>
         <translation>Yeni versiyon mevcut</translation>
+    </message>
+    <message>
+        <source>Open next comic</source>
+        <translation>Sıradaki çizgi romanı aç</translation>
     </message>
     <message>
         <source>Show bookmarks</source>
@@ -388,16 +320,16 @@
         <translation>Büyüteç</translation>
     </message>
     <message>
+        <source>General</source>
+        <translation>Genel</translation>
+    </message>
+    <message>
         <source>Set a bookmark on the current page</source>
         <translation>Sayfayı yer imi olarak ayarla</translation>
     </message>
     <message>
         <source>Do you want to download the new version?</source>
         <translation>Yeni versiyonu indirmek ister misin ?</translation>
-    </message>
-    <message>
-        <source>There was a problem saving YACReader error log file. Please, check if you have enough permissions in the YACReader root folder.</source>
-        <translation type="vanished">Kaydederken bir problem çıktı YACReader hata kayıt dosyası. Lütfen YACReader root dosyasını ziyaret edin.</translation>
     </message>
     <message>
         <source>Rotate image to the right</source>
@@ -408,23 +340,27 @@
         <translation>Her zaman üstte</translation>
     </message>
     <message>
-        <source>Remind me in 14 days</source>
+        <source>New instance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Not now</source>
+        <source>Open latest comic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Fit Height</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>File</source>
+        <source>Open the latest comic opened in the previous reading session</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Clear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear open recent list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fit Height</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -464,6 +400,26 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Go</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Comics</source>
         <translation type="unfinished"></translation>
     </message>
@@ -474,10 +430,6 @@
     <message>
         <source>Hide/show toolbar</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="unfinished">Genel</translation>
     </message>
     <message>
         <source>Size up magnifying glass</source>
@@ -516,6 +468,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Autoscroll forward, horizontal first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Autoscroll backward, horizontal first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Autoscroll forward, vertical first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Autoscroll backward, vertical first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Move down</source>
         <translation type="unfinished"></translation>
     </message>
@@ -544,47 +512,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Open latest comic</source>
+        <source>Remind me in 14 days</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Open the latest comic opened in the previous reading session</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Clear open recent list</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Go</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Window</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Autoscroll forward, horizontal first</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Autoscroll backward, horizontal first</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Autoscroll forward, vertical first</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Autoscroll backward, vertical first</source>
+        <source>Not now</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -605,10 +537,6 @@
     <message>
         <source>Image adjustment</source>
         <translation>Resim ayarları</translation>
-    </message>
-    <message>
-        <source>Page width stretch</source>
-        <translation type="vanished">Sayfayı uzat</translation>
     </message>
     <message>
         <source>&quot;Go to flow&quot; size</source>
@@ -662,6 +590,22 @@
         <source>Disable mouse over activation</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Fit options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enlarge images to fit width/height</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Double Page options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show covers as single page</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -671,6 +615,64 @@
     </message>
     <message>
         <source>unable to load 7z lib from ./utils</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Trace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Debug</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fatal</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsLogging::LogWindowModel</name>
+    <message>
+        <source>Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Level</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Message</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QsLogging::Window</name>
+    <message>
+        <source>&amp;Pause</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Resume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Log file (*.log)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -729,14 +731,10 @@
     </message>
 </context>
 <context>
-    <name>YACReaderDeletingProgress</name>
+    <name>YACReader::WhatsNewDialog</name>
     <message>
-        <source>cancel</source>
-        <translation type="vanished">vazgeç</translation>
-    </message>
-    <message>
-        <source>Please wait, deleting in progress...</source>
-        <translation type="vanished">Lütfen bekle silme işlemi gerçekleştiriliyor...</translation>
+        <source>Close</source>
+        <translation type="unfinished">Kapat</translation>
     </message>
 </context>
 <context>
@@ -899,25 +897,10 @@
     </message>
 </context>
 <context>
-    <name>YACReaderSideBar</name>
-    <message>
-        <source>Search folders and comics</source>
-        <translation type="vanished">Dosyaları ve çizgi romanları ara</translation>
-    </message>
-    <message>
-        <source>LIBRARIES</source>
-        <translation type="vanished">KÜTÜPHANELER</translation>
-    </message>
-    <message>
-        <source>FOLDERS</source>
-        <translation type="vanished">DOSYALAR</translation>
-    </message>
-</context>
-<context>
     <name>YACReaderSlider</name>
     <message>
         <source>Reset</source>
-        <translation type="unfinished">Yeniden başlat</translation>
+        <translation>Yeniden başlat</translation>
     </message>
 </context>
 <context>

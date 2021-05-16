@@ -102,11 +102,22 @@ void RequestMapper::loadSessionV1(HttpRequest &request, HttpResponse &response)
         QList<QString> data = postData.split("\n");
 
         if (data.length() > 2) {
-            ySession->setDeviceType(data.at(0).split(":").at(1));
-            ySession->setDisplayType(data.at(1).split(":").at(1));
-            QList<QString> comics = data.at(2).split(":").at(1).split("\t");
-            foreach (QString hash, comics) {
-                ySession->setComicOnDevice(hash);
+            auto deviceTypeData = data.at(0).split(":");
+            if (deviceTypeData.length() == 2) {
+                ySession->setDeviceType(deviceTypeData.at(1));
+            }
+
+            auto displayTypeData = data.at(1).split(":");
+            if (displayTypeData.length() == 2) {
+                ySession->setDisplayType(displayTypeData.at(1));
+            }
+
+            auto comicsData = data.at(2).split(":");
+            if (comicsData.length() == 2) {
+                QList<QString> comics = comicsData.at(1).split("\t");
+                foreach (QString hash, comics) {
+                    ySession->setComicOnDevice(hash);
+                }
             }
         } else //values by default, only for debug purposes.
         {

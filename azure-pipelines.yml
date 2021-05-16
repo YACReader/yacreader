@@ -30,15 +30,14 @@ jobs:
 - job: Linux
   dependsOn: CodeFormatValidation
   pool:
-    vmImage: 'ubuntu-16.04'
+    vmImage: 'ubuntu-18.04'
   steps:
   - script: |
-      sudo add-apt-repository 'deb http://download.opensuse.org/repositories/home:/selmf/xUbuntu_16.04/ /'
-      sudo add-apt-repository ppa:kubuntu-ppa/backports
-      sudo apt-get update
-      sudo apt-get install -y --allow-unauthenticated qt-default qt5-qmake \
-      qtbase5-dev qtmultimedia5-dev libpoppler-qt5-dev qtscript5-dev \
-      libqt5opengl5-dev libglu1-mesa-dev libunarr-dev qtdeclarative5-dev
+      sudo add-apt-repository 'deb http://download.opensuse.org/repositories/home:/selmf/xUbuntu_18.04/ /'
+      sudo apt-get update --allow-insecure-repositories
+      sudo apt-get install -y --allow-unauthenticated qt5-default qt5-qmake \
+      qtbase5-dev qtmultimedia5-dev libpoppler-qt5-dev \
+      libqt5opengl5-dev libunarr-dev qtdeclarative5-dev libqt5svg5-dev
     displayName: 'Install dependencies'
   - script: |
       cd $(Build.SourcesDirectory)
@@ -70,8 +69,8 @@ jobs:
     vmImage: 'macOS-10.15'
   steps:
   - script: |
-      brew install qt
-      brew link qt --force
+      brew install qt@5
+      brew link qt@5 --force
       brew install create-dmg
       brew install node
       brew link --overwrite node
@@ -104,20 +103,20 @@ jobs:
   parameters:
     name: Windows_x64
     architecture: 'x64'
-    qt_version: '5.12.6'
-    qt_spec: 'msvc2017_64'
-    qt_aqt_spec: 'win64_msvc2017_64'
-    vc_redist_url: 'https://go.microsoft.com/fwlink/?LinkId=746572'
+    qt_version: '5.15.2'
+    qt_spec: 'msvc2019_64'
+    qt_aqt_spec: 'win64_msvc2019_64'
+    vc_redist_url: 'https://aka.ms/vs/16/release/vc_redist.x64.exe'
     vc_redist_file_name: 'vc_redist.x64.exe'
     vc_vars: 'vcvars64.bat'
 - template: azure-pipelines-windows-template.yml
   parameters:
     name: Windows_x86
     architecture: 'x86'
-    qt_version: '5.12.6'
-    qt_spec: 'msvc2017'
-    qt_aqt_spec: 'win32_msvc2017'
-    vc_redist_url: 'https://go.microsoft.com/fwlink/?LinkId=746571'
+    qt_version: '5.15.2'
+    qt_spec: 'msvc2019'
+    qt_aqt_spec: 'win32_msvc2019'
+    vc_redist_url: 'https://aka.ms/vs/16/release/vc_redist.x86.exe'
     vc_redist_file_name: 'vc_redist.x86.exe'
     vc_vars: 'vcvars32.bat'
 
@@ -130,7 +129,7 @@ jobs:
     - Windows_x64
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'), true)
     variables:
-    - group: bintray
+    - group: artifactory
     pool:
       vmImage: 'ubuntu-16.04'
     steps:
@@ -145,10 +144,9 @@ jobs:
           files: '$(Build.SourcesDirectory)/dev_bin/**/*.*'
           authType: 'userAndPass'
           username: $(username)
-          password: $(api-key)
-          options: -H "X-Bintray-Publish:1"
+          password: $(pass)
           remotePath: ''
-          url: https://api.bintray.com/content/luisangelsm/YACReader/DevBuilds/$(Build.BuildNumber)/
+          url: https://yacreader.jfrog.io/artifactory/yacreader/$(Build.BuildNumber)/
 
 - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
   - job: Release

@@ -25,6 +25,7 @@ public:
     static QList<LibraryItem *> getFolderSubfoldersFromLibrary(qulonglong libraryId, qulonglong folderId);
     static QList<LibraryItem *> getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId);
     static QList<LibraryItem *> getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId, bool sort);
+    static QList<LibraryItem *> getFolderComicsFromLibraryForReading(qulonglong libraryId, qulonglong folderId);
     static quint32 getNumChildrenFromFolder(qulonglong libraryId, qulonglong folderId);
     static qulonglong getParentFromComicFolderId(qulonglong libraryId, qulonglong id);
     static ComicDB getComicInfo(qulonglong libraryId, qulonglong id);
@@ -47,6 +48,7 @@ public:
     static void removeListFromDB(qulonglong id, QSqlDatabase &db);
     //logic deletes
     static void deleteComicsFromFavorites(const QList<ComicDB> &comicsList, QSqlDatabase &db);
+    static void deleteComicsFromReading(const QList<ComicDB> &comicsList, QSqlDatabase &db);
     static void deleteComicsFromLabel(const QList<ComicDB> &comicsList, qulonglong labelId, QSqlDatabase &db);
     static void deleteComicsFromReadingList(const QList<ComicDB> &comicsList, qulonglong readingListId, QSqlDatabase &db);
     //inserts
@@ -85,6 +87,8 @@ public:
     static QList<ComicDB> getSortedComicsFromParent(qulonglong parentId, QSqlDatabase &db);
     static QList<LibraryItem *> getComicsFromParent(qulonglong parentId, QSqlDatabase &db, bool sort = true);
     static QList<Label> getLabels(qulonglong libraryId);
+
+    static void updateFolderTreeManga(qulonglong id, QSqlDatabase &db, bool manga);
 
     //load
     static Folder loadFolder(qulonglong id, QSqlDatabase &db);

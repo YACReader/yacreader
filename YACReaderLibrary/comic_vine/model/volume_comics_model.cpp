@@ -1,7 +1,8 @@
 #include "volume_comics_model.h"
 #include "qnaturalsorting.h"
 
-#include <QtScript>
+#include <QJsonDocument>
+#include <QJsonParseError>
 
 bool lessThan(const QList<QString> &left, const QList<QString> &right)
 {
@@ -18,33 +19,29 @@ VolumeComicsModel::VolumeComicsModel(QObject *parent)
 
 void VolumeComicsModel::load(const QString &json)
 {
-    QScriptEngine engine;
-    QScriptValue sc;
-    sc = engine.evaluate("(" + json + ")");
+    QJsonParseError Err;
+    QVariantMap sc = QJsonDocument::fromJson(json.toUtf8(), &Err).toVariant().toMap();
 
-    if (!sc.property("error").isValid() && sc.property("error").toString() != "OK") {
+    if (Err.error != QJsonParseError::NoError) {
         qDebug("Error detected");
-    } else {
-        QScriptValueIterator it(sc.property("results"));
-        //bool test;
-        QScriptValue resultsValue;
-        while (it.hasNext()) {
-            it.next();
-            if (it.flags() & QScriptValue::SkipInEnumeration)
-                continue;
-            resultsValue = it.value();
-            QString issueNumber = resultsValue.property("issue_number").toString();
-            QScriptValue propertyName = resultsValue.property("name");
-            QString name = propertyName.isNull() ? "-" : propertyName.toString();
-            QString coverURL = resultsValue.property("image").property("medium_url").toString();
-            QString id = resultsValue.property("id").toString();
-            QStringList l;
-            l << issueNumber << name << coverURL << id;
-            _data.push_back(l);
-        }
-
-        qSort(_data.begin(), _data.end(), lessThan);
+        return;
     }
+
+    QListIterator<QVariant> it(sc.value("results").toList());
+    QVariantMap resultsValue;
+    while (it.hasNext()) {
+        resultsValue = it.next().toMap();
+        QString issueNumber = resultsValue.value("issue_number").toString();
+        QVariant propertyName = resultsValue.value("name");
+        QString name = propertyName.isNull() ? "-" : propertyName.toString();
+        QString coverURL = resultsValue.value("image").toMap().value("medium_url").toString();
+        QString id = resultsValue.value("id").toString();
+        QStringList l;
+        l << issueNumber << name << coverURL << id;
+        _data.push_back(l);
+    }
+
+    std::sort(_data.begin(), _data.end(), lessThan);
 }
 
 /*void VolumeComicsModel::load(const QStringList &jsonList)

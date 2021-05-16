@@ -19,14 +19,14 @@ class ReadingListModelProxy : public QSortFilterProxyModel
 {
     Q_OBJECT
 public:
-    explicit ReadingListModelProxy(QObject *parent = 0);
+    explicit ReadingListModelProxy(QObject *parent = nullptr);
 };
 
 class ReadingListModel : public QAbstractItemModel
 {
     Q_OBJECT
 public:
-    explicit ReadingListModel(QObject *parent = 0);
+    explicit ReadingListModel(QObject *parent = nullptr);
 
     //QAbstractItemModel methods
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
