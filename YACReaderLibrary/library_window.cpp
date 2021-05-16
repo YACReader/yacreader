@@ -97,6 +97,8 @@ using namespace YACReader;
 LibraryWindow::LibraryWindow()
     : QMainWindow(), fullscreen(false), previousFilter(""), fetching(false), status(LibraryWindow::Normal), removeError(false)
 {
+    createSettings();
+
     setupUI();
 
     loadLibraries();
@@ -119,15 +121,36 @@ void LibraryWindow::afterLaunchTasks()
     }
 }
 
+void LibraryWindow::createSettings()
+{
+    settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+    settings->beginGroup("libraryConfig");
+}
+
+void LibraryWindow::setupOpenglSetting()
+{
+#ifndef NO_OPENGL
+    //FLOW-----------------------------------------------------------------------
+    //---------------------------------------------------------------------------
+
+    OpenGLChecker openGLChecker;
+    bool openGLAvailable = openGLChecker.hasCompatibleOpenGLVersion();
+
+    if (openGLAvailable && !settings->contains(USE_OPEN_GL))
+        settings->setValue(USE_OPEN_GL, 2);
+    else if (!openGLAvailable)
+        settings->setValue(USE_OPEN_GL, 0);
+#endif
+}
+
 void LibraryWindow::setupUI()
 {
+    setupOpenglSetting();
+
     setUnifiedTitleAndToolBarOnMac(true);
 
     libraryCreator = new LibraryCreator();
     packageManager = new PackageManager();
-
-    settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
-    settings->beginGroup("libraryConfig");
 
     historyController = new YACReaderHistoryController(this);
 
@@ -196,20 +219,8 @@ void LibraryWindow::doLayout()
     libraryToolBar = new YACReaderMainToolBar(this);
 #endif
 
-#ifndef NO_OPENGL
-    //FLOW-----------------------------------------------------------------------
+    //FOLDERS FILTER-------------------------------------------------------------
     //---------------------------------------------------------------------------
-
-    OpenGLChecker openGLChecker;
-    bool openGLAvailable = openGLChecker.hasCompatibleOpenGLVersion();
-
-    if (openGLAvailable && !settings->contains(USE_OPEN_GL))
-        settings->setValue(USE_OPEN_GL, 2);
-    else if (!openGLAvailable)
-        settings->setValue(USE_OPEN_GL, 0);
-#endif
-        //FOLDERS FILTER-------------------------------------------------------------
-        //---------------------------------------------------------------------------
 #ifndef Q_OS_MAC
     //in MacOSX the searchEdit is created using the toolbar wrapper
     searchEdit = new YACReaderSearchLineEdit();
