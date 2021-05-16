@@ -1,4 +1,4 @@
-Starting with YACReader 9.0.0 all versions of YACReader use (lib)unarr >= 1.0.1
+Starting with YACReader 9.0.0 all versions of YACReader can use (lib)unarr >= 1.0.1
 as decompression backend. For Windows and MacOSX precompiled libraries
 are available in the dependencies folder (not included in the source tarballs!).
 
