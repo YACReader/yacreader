@@ -2591,8 +2591,7 @@ void LibraryWindow::deleteComicsFromList()
         qulonglong id = mi.data(ReadingListModel::IDRole).toULongLong();
         switch (typeList) {
         case ReadingListModel::SpecialList:
-            //by now only 'favorites'
-            comicsModel->deleteComicsFromFavorites(indexList);
+            comicsModel->deleteComicsFromSpecialList(indexList, id);
             break;
         case ReadingListModel::Label:
             comicsModel->deleteComicsFromLabel(indexList, id);

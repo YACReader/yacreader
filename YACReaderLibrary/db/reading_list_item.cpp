@@ -44,6 +44,15 @@ QIcon SpecialListItem::getIcon() const
     return QIcon();
 }
 
+qulonglong SpecialListItem::getId() const
+{
+    if (itemData.count() > Id) {
+        return itemData.at(Id).toInt();
+    }
+
+    return 0;
+}
+
 ReadingListModel::TypeSpecialList SpecialListItem::getType() const
 {
     if (itemData.count() > Id) {

@@ -471,6 +471,22 @@ void DBHelper::deleteComicsFromFavorites(const QList<ComicDB> &comicsList, QSqlD
     db.commit();
 }
 
+//a.k.a set comics as unread by reverting the conditions used to load the comics -> void ComicModel::setupReadingModelData(const QString &databasePath)
+void DBHelper::deleteComicsFromReading(const QList<ComicDB> &comicsList, QSqlDatabase &db)
+{
+    db.transaction();
+
+    QLOG_DEBUG() << "deleteComicsFromReading----------------------------------";
+
+    for (auto comic : comicsList) {
+        comic.info.hasBeenOpened = false;
+        comic.info.currentPage = 0; //update sets hasBeenOpened to true if currentPage > 0;
+        DBHelper::update(&comic.info, db);
+    }
+
+    db.commit();
+}
+
 void DBHelper::deleteComicsFromLabel(const QList<ComicDB> &comicsList, qulonglong labelId, QSqlDatabase &db)
 {
     db.transaction();

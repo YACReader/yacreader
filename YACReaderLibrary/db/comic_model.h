@@ -119,6 +119,8 @@ public:
     void addComicsToReadingList(const QList<QModelIndex> &comicsList, qulonglong readingListId);
 
     void deleteComicsFromFavorites(const QList<QModelIndex> &comicsList);
+    void deleteComicsFromReading(const QList<QModelIndex> &comicsList);
+    void deleteComicsFromSpecialList(const QList<QModelIndex> &comicsList, qulonglong specialListId);
     void deleteComicsFromLabel(const QList<QModelIndex> &comicsList, qulonglong labelId);
     void deleteComicsFromReadingList(const QList<QModelIndex> &comicsList, qulonglong readingListId);
 

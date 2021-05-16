@@ -10,6 +10,7 @@
 #include "comic_db.h"
 #include "db_helper.h"
 #include "query_parser.h"
+#include "reading_list_model.h"
 
 //ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read
 #include "QsLog.h"
@@ -984,6 +985,36 @@ void ComicModel::deleteComicsFromFavorites(const QList<QModelIndex> &comicsList)
 
     if (mode == Favorites)
         deleteComicsFromModel(comicsList);
+}
+
+void ComicModel::deleteComicsFromReading(const QList<QModelIndex> &comicsList)
+{
+    QList<ComicDB> comics = getComics(comicsList);
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+
+        DBHelper::deleteComicsFromReading(comics, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    if (mode == Reading)
+        deleteComicsFromModel(comicsList);
+}
+
+void ComicModel::deleteComicsFromSpecialList(const QList<QModelIndex> &comicsList, qulonglong specialListId)
+{
+    auto type = (ReadingListModel::TypeSpecialList)specialListId;
+
+    switch (type) {
+    case ReadingListModel::TypeSpecialList::Reading:
+        deleteComicsFromReading(comicsList);
+        break;
+    case ReadingListModel::TypeSpecialList::Favorites:
+        deleteComicsFromFavorites(comicsList);
+        break;
+    }
 }
 
 void ComicModel::deleteComicsFromLabel(const QList<QModelIndex> &comicsList, qulonglong labelId)

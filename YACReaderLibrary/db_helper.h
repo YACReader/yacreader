@@ -48,6 +48,7 @@ public:
     static void removeListFromDB(qulonglong id, QSqlDatabase &db);
     //logic deletes
     static void deleteComicsFromFavorites(const QList<ComicDB> &comicsList, QSqlDatabase &db);
+    static void deleteComicsFromReading(const QList<ComicDB> &comicsList, QSqlDatabase &db);
     static void deleteComicsFromLabel(const QList<ComicDB> &comicsList, qulonglong labelId, QSqlDatabase &db);
     static void deleteComicsFromReadingList(const QList<ComicDB> &comicsList, qulonglong readingListId, QSqlDatabase &db);
     //inserts

@@ -27,6 +27,7 @@ class SpecialListItem : public ListItem
 public:
     SpecialListItem(const QList<QVariant> &data);
     QIcon getIcon() const override;
+    qulonglong getId() const override;
     ReadingListModel::TypeSpecialList getType() const;
 
 private:
