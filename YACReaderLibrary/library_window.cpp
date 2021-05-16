@@ -113,9 +113,10 @@ LibraryWindow::LibraryWindow()
 
 void LibraryWindow::afterLaunchTasks()
 {
-    WhatsNewController whatsNewController;
-
-    whatsNewController.showWhatsNewIfNeeded(this);
+    if (!libraries.isEmpty()) {
+        WhatsNewController whatsNewController;
+        whatsNewController.showWhatsNewIfNeeded(this);
+    }
 }
 
 void LibraryWindow::setupUI()
