@@ -259,6 +259,12 @@ void GridComicsView::setModel(ComicModel *model)
     ctxt->setContextProperty("dropManager", this);
     ctxt->setContextProperty("comicInfoHelper", comicInfoHelper);
 
+    auto grid = view->rootObject()->findChild<QQuickItem *>(QStringLiteral("grid"));
+
+    if (grid != nullptr) {
+        grid->setProperty("currentIndex", 0);
+    }
+
     updateBackgroundConfig();
 
     selectionHelper->clear();
