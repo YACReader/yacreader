@@ -300,6 +300,10 @@ void ClassicComicsView::centerComicFlow(const QModelIndex &mi)
 
 void ClassicComicsView::updateTableView(int i)
 {
+    if (model == nullptr) {
+        return;
+    }
+
     QModelIndex mi = model->index(i, 2);
     tableView->setCurrentIndex(mi);
     tableView->scrollTo(mi, QAbstractItemView::EnsureVisible);
