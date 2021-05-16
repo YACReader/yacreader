@@ -3,6 +3,8 @@
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ## WIP
+
+## 9.8.0
 ### YACReader
 * Add support for full manga mode.
 * Fix UP,DOWN,LEFT,RIGHT shortcuts for moving a zoomed in page around.
@@ -11,6 +13,8 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * New `manga` field added to comics and folders to tag content as manga, any content added to a manga folder will become manga automatically.
 * Support for HTML in comic synopsis, this fixes the synopsis when it comes from Comic Vine with HTML tags.
 * Improve keyboard navigation in Comic Vine dialog.
+### Server
+* New `manga` field is sent to YACReader for iOS, so comics tagged as manga will be recognized as such when reading remotely or importing comics.
 
 ## 9.7.1
 ### YACReader
