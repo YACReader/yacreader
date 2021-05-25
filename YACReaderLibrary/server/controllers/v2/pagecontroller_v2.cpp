@@ -46,6 +46,12 @@ void PageControllerV2::service(HttpRequest &request, HttpResponse &response)
         currentComicId = ySession->getCurrentComicId();
     }
 
+    if (comicFile == nullptr) {
+        response.setStatus(404, "not found");
+        response.write("404 not found", true);
+        return;
+    }
+
     if (comicFile->hasBeenAnErrorOpening()) {
         //delete comicFile;
         if (remote)
