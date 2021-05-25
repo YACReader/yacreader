@@ -23,6 +23,7 @@ ComicControllerV2::ComicControllerV2() { }
 
 void ComicControllerV2::service(HttpRequest &request, HttpResponse &response)
 {
+
     QByteArray token = request.getHeader("x-request-id");
     YACReaderHttpSession *ySession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(token);
 
