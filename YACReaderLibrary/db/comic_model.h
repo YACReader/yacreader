@@ -129,6 +129,7 @@ public:
     bool isFavorite(const QModelIndex &index);
 
     ComicModel::Mode getMode() { return mode; }
+    unsigned long long int getSourceId() { return sourceId; }
 
     QHash<int, QByteArray> roleNames() const override;
 
