@@ -1333,64 +1333,6 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
     int fileName = record.indexOf("fileName");
     int path = record.indexOf("path");
 
-    int hash = record.indexOf("hash");
-    int comicInfoId = record.indexOf("comicInfoId");
-    int read = record.indexOf("read");
-    int edited = record.indexOf("edited");
-
-    //new 7.0 fields
-    int hasBeenOpened = record.indexOf("hasBeenOpened");
-    int currentPage = record.indexOf("currentPage");
-    int bookmark1 = record.indexOf("bookmark1");
-    int bookmark2 = record.indexOf("bookmark2");
-    int bookmark3 = record.indexOf("bookmark3");
-    int brightness = record.indexOf("brightness");
-    int contrast = record.indexOf("contrast");
-    int gamma = record.indexOf("gamma");
-    int rating = record.indexOf("rating");
-    //--
-
-    int title = record.indexOf("title");
-    int numPages = record.indexOf("numPages");
-
-    int coverPage = record.indexOf("coverPage");
-
-    int number = record.indexOf("number");
-    int isBis = record.indexOf("isBis");
-    int count = record.indexOf("count");
-
-    int volume = record.indexOf("volume");
-    int storyArc = record.indexOf("storyArc");
-    int arcNumber = record.indexOf("arcNumber");
-    int arcCount = record.indexOf("arcCount");
-
-    int genere = record.indexOf("genere");
-
-    int writer = record.indexOf("writer");
-    int penciller = record.indexOf("penciller");
-    int inker = record.indexOf("inker");
-    int colorist = record.indexOf("colorist");
-    int letterer = record.indexOf("letterer");
-    int coverArtist = record.indexOf("coverArtist");
-
-    int date = record.indexOf("date");
-    int publisher = record.indexOf("publisher");
-    int format = record.indexOf("format");
-    int color = record.indexOf("color");
-    int ageRating = record.indexOf("ageRating");
-    int manga = record.indexOf("manga");
-
-    int synopsis = record.indexOf("synopsis");
-    int characters = record.indexOf("characters");
-    int notes = record.indexOf("notes");
-
-    int comicVineID = record.indexOf("comicVineID");
-
-    int lastTimeOpened = record.indexOf("lastTimeOpened");
-
-    int coverSizeRatio = record.indexOf("coverSizeRatio");
-    int originalCoverSize = record.indexOf("originalCoverSize");
-
     ComicDB currentItem;
     while (selectQuery.next()) {
         currentItem.id = selectQuery.value(id).toULongLong();
@@ -1398,65 +1340,7 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
         currentItem.name = selectQuery.value(fileName).toString();
         currentItem.path = selectQuery.value(path).toString();
 
-        currentItem.info.hash = selectQuery.value(hash).toString();
-        currentItem.info.id = selectQuery.value(comicInfoId).toULongLong();
-        currentItem.info.read = selectQuery.value(read).toBool();
-        currentItem.info.edited = selectQuery.value(edited).toBool();
-
-        //new 7.0 fields
-        currentItem.info.hasBeenOpened = selectQuery.value(hasBeenOpened).toBool();
-        currentItem.info.currentPage = selectQuery.value(currentPage).toInt();
-        currentItem.info.bookmark1 = selectQuery.value(bookmark1).toInt();
-        currentItem.info.bookmark2 = selectQuery.value(bookmark2).toInt();
-        currentItem.info.bookmark3 = selectQuery.value(bookmark3).toInt();
-        currentItem.info.brightness = selectQuery.value(brightness).toInt();
-        currentItem.info.contrast = selectQuery.value(contrast).toInt();
-        currentItem.info.gamma = selectQuery.value(gamma).toInt();
-        currentItem.info.rating = selectQuery.value(rating).toInt();
-        //--
-
-        currentItem.info.title = selectQuery.value(title);
-        currentItem.info.numPages = selectQuery.value(numPages);
-
-        currentItem.info.coverPage = selectQuery.value(coverPage);
-
-        currentItem.info.number = selectQuery.value(number);
-        currentItem.info.isBis = selectQuery.value(isBis);
-        currentItem.info.count = selectQuery.value(count);
-
-        currentItem.info.volume = selectQuery.value(volume);
-        currentItem.info.storyArc = selectQuery.value(storyArc);
-        currentItem.info.arcNumber = selectQuery.value(arcNumber);
-        currentItem.info.arcCount = selectQuery.value(arcCount);
-
-        currentItem.info.genere = selectQuery.value(genere);
-
-        currentItem.info.writer = selectQuery.value(writer);
-        currentItem.info.penciller = selectQuery.value(penciller);
-        currentItem.info.inker = selectQuery.value(inker);
-        currentItem.info.colorist = selectQuery.value(colorist);
-        currentItem.info.letterer = selectQuery.value(letterer);
-        currentItem.info.coverArtist = selectQuery.value(coverArtist);
-
-        currentItem.info.date = selectQuery.value(date);
-        currentItem.info.publisher = selectQuery.value(publisher);
-        currentItem.info.format = selectQuery.value(format);
-        currentItem.info.color = selectQuery.value(color);
-        currentItem.info.ageRating = selectQuery.value(ageRating);
-        currentItem.info.manga = selectQuery.value(manga);
-
-        currentItem.info.synopsis = selectQuery.value(synopsis);
-        currentItem.info.characters = selectQuery.value(characters);
-        currentItem.info.notes = selectQuery.value(notes);
-
-        currentItem.info.comicVineID = selectQuery.value(comicVineID);
-
-        currentItem.info.lastTimeOpened = selectQuery.value(lastTimeOpened);
-
-        currentItem.info.coverSizeRatio = selectQuery.value(coverSizeRatio);
-        currentItem.info.originalCoverSize = selectQuery.value(originalCoverSize);
-
-        currentItem.info.existOnDb = true;
+        currentItem.info = getComicInfoFromQuery(selectQuery, "comicInfoId");
 
         list.append(currentItem);
     }
@@ -1738,9 +1622,20 @@ ComicInfo DBHelper::loadComicInfo(QString hash, QSqlDatabase &db)
     findComicInfo.bindValue(":hash", hash);
     findComicInfo.exec();
 
-    QSqlRecord record = findComicInfo.record();
+    if (findComicInfo.next()) {
+        comicInfo = getComicInfoFromQuery(findComicInfo);
+    } else
+        comicInfo.existOnDb = false;
 
-    int id = record.indexOf("id");
+    return comicInfo;
+}
+
+ComicInfo DBHelper::getComicInfoFromQuery(QSqlQuery &query, const QString &idKey)
+{
+    QSqlRecord record = query.record();
+
+    int hash = record.indexOf("hash");
+    int id = record.indexOf(idKey);
     int read = record.indexOf("read");
     int edited = record.indexOf("edited");
 
@@ -1797,72 +1692,71 @@ ComicInfo DBHelper::loadComicInfo(QString hash, QSqlDatabase &db)
     int coverSizeRatio = record.indexOf("coverSizeRatio");
     int originalCoverSize = record.indexOf("originalCoverSize");
 
-    if (findComicInfo.next()) {
-        comicInfo.hash = hash;
-        comicInfo.id = findComicInfo.value(id).toULongLong();
-        comicInfo.read = findComicInfo.value(read).toBool();
-        comicInfo.edited = findComicInfo.value(edited).toBool();
+    ComicInfo comicInfo;
 
-        //new 7.0 fields
-        comicInfo.hasBeenOpened = findComicInfo.value(hasBeenOpened).toBool();
-        comicInfo.currentPage = findComicInfo.value(currentPage).toInt();
-        comicInfo.bookmark1 = findComicInfo.value(bookmark1).toInt();
-        comicInfo.bookmark2 = findComicInfo.value(bookmark2).toInt();
-        comicInfo.bookmark3 = findComicInfo.value(bookmark3).toInt();
-        comicInfo.brightness = findComicInfo.value(brightness).toInt();
-        comicInfo.contrast = findComicInfo.value(contrast).toInt();
-        comicInfo.gamma = findComicInfo.value(gamma).toInt();
-        comicInfo.rating = findComicInfo.value(rating).toInt();
-        //--
-        comicInfo.title = findComicInfo.value(title);
-        comicInfo.numPages = findComicInfo.value(numPages);
+    comicInfo.hash = query.value(hash).toString();
+    comicInfo.id = query.value(id).toULongLong();
+    comicInfo.read = query.value(read).toBool();
+    comicInfo.edited = query.value(edited).toBool();
 
-        comicInfo.coverPage = findComicInfo.value(coverPage);
+    //new 7.0 fields
+    comicInfo.hasBeenOpened = query.value(hasBeenOpened).toBool();
+    comicInfo.currentPage = query.value(currentPage).toInt();
+    comicInfo.bookmark1 = query.value(bookmark1).toInt();
+    comicInfo.bookmark2 = query.value(bookmark2).toInt();
+    comicInfo.bookmark3 = query.value(bookmark3).toInt();
+    comicInfo.brightness = query.value(brightness).toInt();
+    comicInfo.contrast = query.value(contrast).toInt();
+    comicInfo.gamma = query.value(gamma).toInt();
+    comicInfo.rating = query.value(rating).toInt();
+    //--
+    comicInfo.title = query.value(title);
+    comicInfo.numPages = query.value(numPages);
 
-        comicInfo.number = findComicInfo.value(number);
-        comicInfo.isBis = findComicInfo.value(isBis);
-        comicInfo.count = findComicInfo.value(count);
+    comicInfo.coverPage = query.value(coverPage);
 
-        comicInfo.volume = findComicInfo.value(volume);
-        comicInfo.storyArc = findComicInfo.value(storyArc);
-        comicInfo.arcNumber = findComicInfo.value(arcNumber);
-        comicInfo.arcCount = findComicInfo.value(arcCount);
+    comicInfo.number = query.value(number);
+    comicInfo.isBis = query.value(isBis);
+    comicInfo.count = query.value(count);
 
-        comicInfo.genere = findComicInfo.value(genere);
+    comicInfo.volume = query.value(volume);
+    comicInfo.storyArc = query.value(storyArc);
+    comicInfo.arcNumber = query.value(arcNumber);
+    comicInfo.arcCount = query.value(arcCount);
 
-        comicInfo.writer = findComicInfo.value(writer);
-        comicInfo.penciller = findComicInfo.value(penciller);
-        comicInfo.inker = findComicInfo.value(inker);
-        comicInfo.colorist = findComicInfo.value(colorist);
-        comicInfo.letterer = findComicInfo.value(letterer);
-        comicInfo.coverArtist = findComicInfo.value(coverArtist);
+    comicInfo.genere = query.value(genere);
 
-        comicInfo.date = findComicInfo.value(date);
-        comicInfo.publisher = findComicInfo.value(publisher);
-        comicInfo.format = findComicInfo.value(format);
-        comicInfo.color = findComicInfo.value(color);
-        comicInfo.ageRating = findComicInfo.value(ageRating);
+    comicInfo.writer = query.value(writer);
+    comicInfo.penciller = query.value(penciller);
+    comicInfo.inker = query.value(inker);
+    comicInfo.colorist = query.value(colorist);
+    comicInfo.letterer = query.value(letterer);
+    comicInfo.coverArtist = query.value(coverArtist);
 
-        comicInfo.synopsis = findComicInfo.value(synopsis);
-        comicInfo.characters = findComicInfo.value(characters);
-        comicInfo.notes = findComicInfo.value(notes);
+    comicInfo.date = query.value(date);
+    comicInfo.publisher = query.value(publisher);
+    comicInfo.format = query.value(format);
+    comicInfo.color = query.value(color);
+    comicInfo.ageRating = query.value(ageRating);
 
-        comicInfo.comicVineID = findComicInfo.value(comicVineID);
+    comicInfo.synopsis = query.value(synopsis);
+    comicInfo.characters = query.value(characters);
+    comicInfo.notes = query.value(notes);
 
-        //new 9.5 fields
-        comicInfo.lastTimeOpened = findComicInfo.value(lastTimeOpened);
+    comicInfo.comicVineID = query.value(comicVineID);
 
-        comicInfo.coverSizeRatio = findComicInfo.value(coverSizeRatio);
-        comicInfo.originalCoverSize = findComicInfo.value(originalCoverSize);
-        //--
+    //new 9.5 fields
+    comicInfo.lastTimeOpened = query.value(lastTimeOpened);
 
-        //new 9.8 fields
-        comicInfo.manga = findComicInfo.value(manga);
-        //--
+    comicInfo.coverSizeRatio = query.value(coverSizeRatio);
+    comicInfo.originalCoverSize = query.value(originalCoverSize);
+    //--
 
-        comicInfo.existOnDb = true;
-    } else
-        comicInfo.existOnDb = false;
+    //new 9.8 fields
+    comicInfo.manga = query.value(manga);
+    //--
+
+    comicInfo.existOnDb = true;
 
     return comicInfo;
 }
