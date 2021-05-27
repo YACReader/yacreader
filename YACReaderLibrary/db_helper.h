@@ -37,7 +37,7 @@ public:
     static QList<ComicDB> getFavorites(qulonglong libraryId);
     static QList<ComicDB> getReading(qulonglong libraryId);
     static QList<ReadingList> getReadingLists(qulonglong libraryId);
-    static QList<ComicDB> getReadingListFullContent(qulonglong libraryId, qulonglong readingListId);
+    static QList<ComicDB> getReadingListFullContent(qulonglong libraryId, qulonglong readingListId, bool getFullComicInfoFields = false);
 
     //objects management
     //deletes

@@ -359,7 +359,7 @@ QList<ReadingList> DBHelper::getReadingLists(qulonglong libraryId)
     return list;
 }
 
-QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulonglong readingListId)
+QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulonglong readingListId, bool getFullComicInfoFields)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
     QList<ComicDB> list;
@@ -382,26 +382,52 @@ QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulongl
 
         foreach (qulonglong id, ids) {
             QSqlQuery selectQuery(db);
-            selectQuery.prepare("SELECT c.id,c.parentId,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read,ci.coverSizeRatio "
-                                "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                                "INNER JOIN comic_reading_list crl ON (c.id == crl.comic_id) "
-                                "WHERE crl.reading_list_id = :parentReadingList "
-                                "ORDER BY crl.ordering");
+
+            QString params;
+            if (getFullComicInfoFields) {
+                params = "*";
+            } else {
+                params = "c.id,c.parentId,c.fileName,c.path,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read,ci.coverSizeRatio";
+            }
+
+            selectQuery.prepare("SELECT " + params + " "
+                                                     "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                                                     "INNER JOIN comic_reading_list crl ON (c.id == crl.comic_id) "
+                                                     "WHERE crl.reading_list_id = :parentReadingList "
+                                                     "ORDER BY crl.ordering");
             selectQuery.bindValue(":parentReadingList", id);
             selectQuery.exec();
+
+            auto record = selectQuery.record();
+
+            int idComicIndex = record.indexOf("id");
+            int parentIdIndex = record.indexOf("parentId");
+            int fileName = record.indexOf("fileName");
+            int path = record.indexOf("path");
 
             while (selectQuery.next()) {
                 ComicDB comic;
 
-                comic.id = selectQuery.value(0).toULongLong();
-                comic.parentId = selectQuery.value(1).toULongLong();
-                comic.name = selectQuery.value(2).toString();
-                comic.info.title = selectQuery.value(3).toString();
-                comic.info.currentPage = selectQuery.value(4).toInt();
-                comic.info.numPages = selectQuery.value(5).toInt();
-                comic.info.hash = selectQuery.value(6).toString();
-                comic.info.read = selectQuery.value(7).toBool();
-                comic.info.coverSizeRatio = selectQuery.value(8).toFloat();
+                if (getFullComicInfoFields) {
+                    comic.id = selectQuery.value(idComicIndex).toULongLong();
+                    comic.parentId = selectQuery.value(parentIdIndex).toULongLong();
+                    comic.name = selectQuery.value(fileName).toString();
+                    comic.path = selectQuery.value(path).toString();
+
+                    comic.info = getComicInfoFromQuery(selectQuery, "comicInfoId");
+                } else {
+                    comic.id = selectQuery.value(0).toULongLong();
+                    comic.parentId = selectQuery.value(1).toULongLong();
+                    comic.name = selectQuery.value(2).toString();
+                    comic.path = selectQuery.value(3).toString();
+
+                    comic.info.title = selectQuery.value(4).toString();
+                    comic.info.currentPage = selectQuery.value(5).toInt();
+                    comic.info.numPages = selectQuery.value(6).toInt();
+                    comic.info.hash = selectQuery.value(7).toString();
+                    comic.info.read = selectQuery.value(8).toBool();
+                    comic.info.coverSizeRatio = selectQuery.value(9).toFloat();
+                }
 
                 list.append(comic);
             }
