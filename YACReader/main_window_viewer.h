@@ -14,6 +14,7 @@
 #endif
 
 #include "comic_db.h"
+#include "yacreader_global.h"
 
 class Comic;
 class Viewer;
@@ -25,6 +26,8 @@ class YACReaderSliderAction;
 class YACReaderSlider;
 class EditShortcutsDialog;
 
+namespace YACReader {
+
 class MainWindowViewer : public QMainWindow
 {
     Q_OBJECT
@@ -32,7 +35,7 @@ class MainWindowViewer : public QMainWindow
 public slots:
     void open();
     void open(QString path, ComicDB &comic, QList<ComicDB> &siblings);
-    void open(QString path, qint64 comicId, qint64 libraryId);
+    void open(QString path, qint64 comicId, qint64 libraryId, OpenComicSource source);
     void openFolder();
     void openRecent();
     void openLatestComic();
@@ -175,6 +178,7 @@ private:
     bool isClient;
     QString startComicPath;
     quint64 libraryId;
+    OpenComicSource source;
 
     //fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
     Qt::WindowFlags previousWindowFlags;
@@ -191,4 +195,7 @@ public:
     MainWindowViewer();
     ~MainWindowViewer() override;
 };
+
+}
+
 #endif

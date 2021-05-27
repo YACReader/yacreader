@@ -851,11 +851,12 @@ void MainWindowViewer::open(QString path, ComicDB &comic, QList<ComicDB> &siblin
     optionsDialog->setFilters(currentComicDB.info.brightness, currentComicDB.info.contrast, currentComicDB.info.gamma);
 }
 
-void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId)
+void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId, OpenComicSource source)
 {
     currentDirectory = path;
 
     this->libraryId = libraryId;
+    this->source = source;
 
     enableActions();
 
@@ -863,7 +864,7 @@ void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId)
     YACReaderLocalClient client;
     int tries = 1;
     bool success = false;
-    while (!(success = client.requestComicInfo(libraryId, currentComicDB, siblingComics)) && tries != 0)
+    while (!(success = client.requestComicInfo(libraryId, currentComicDB, siblingComics, source)) && tries != 0)
         tries--;
 
     if (success) {
@@ -1507,6 +1508,9 @@ void MainWindowViewer::openNextComic()
         if (currentIndex + 1 > 0 && currentIndex + 1 < siblingComics.count()) {
             siblingComics[currentIndex] = currentComicDB; //updated
             currentComicDB = siblingComics.at(currentIndex + 1);
+
+            QMessageBox::warning(nullptr, "", QString(" current dir %1 - path %2").arg(currentDirectory).arg(currentComicDB.path));
+
             open(currentDirectory + currentComicDB.path, currentComicDB, siblingComics);
         }
 
