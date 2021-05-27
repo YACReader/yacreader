@@ -62,7 +62,7 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
                   "<span style=\"font-weight:600\">Server</span><br/>"
                   "   &#8226; New `manga` field is sent to YACReader for iOS, so comics tagged as manga will be recognized as such when reading remotely or importing comics.<br/>"
                   "<br/>"
-                  "I hope you enjoy the new update. Please, if you like YACReader consider to become a patron in <a href=\"https://www.patreon.com/yacreader\" style=\"color:#E8B800;\">Patreon</a> or donate some money using <a href=\"https://www.paypal.com/donate/?token=xi5MT7fEzaKBbx1-CKNgRHKr3vPp7zjaCc8Ic4VUIxHln58eHfDqdO2K0wlubfxNeFK9IWUKSaB54RhB&locale.x=US\" style=\"color:#E8B800;\">Pay-Pal</a> and help keeping the project alive. Remember that there is an iOS version available in the <a href=\"https://apps.apple.com/app/id635717885\" style=\"color:#E8B800;\">Apple App Store</a>.");
+                  "I hope you enjoy the new update. Please, if you like YACReader consider to become a patron in <a href=\"https://www.patreon.com/yacreader\" style=\"color:#E8B800;\">Patreon</a> or donate some money using <a href=\"https://www.paypal.com/donate/?token=zK6u00aWMSj8nvYqGdJ0r9g6_0Ksi4ShkeGMDULDxS9AoVXwLuTOvex3VxHVrJA4FGiqSH6zuiCGJXbr&locale.x=US&Z3JncnB0=\" style=\"color:#E8B800;\">Pay-Pal</a> and help keeping the project alive. Remember that there is an iOS version available in the <a href=\"https://apps.apple.com/app/id635717885\" style=\"color:#E8B800;\">Apple App Store</a>.");
     QFont textLabelFont("Arial", 15, QFont::Light);
     text->setFont(textLabelFont);
     text->setStyleSheet("padding:51px;"

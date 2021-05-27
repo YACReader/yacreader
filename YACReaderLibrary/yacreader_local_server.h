@@ -42,7 +42,8 @@ private:
     //static int count;
     void run();
 
-    void getComicInfo(quint64 libraryId, ComicDB &comic, QList<ComicDB> &sibling);
+    void getComicInfo(quint64 libraryId, ComicDB &comic, QList<ComicDB> &siblings);
+    void getComicInfoFromReadingList(quint64 libraryId, unsigned long long readingListId, ComicDB &comic, QList<ComicDB> &siblings);
     void updateComic(quint64 libraryId, ComicDB &comic);
     void updateComic(quint64 libraryId, ComicDB &comic, qulonglong nextComicId);
 

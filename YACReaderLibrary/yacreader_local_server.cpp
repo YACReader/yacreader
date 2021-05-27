@@ -95,6 +95,7 @@ void YACReaderClientConnectionWorker::run()
 
     quint64 libraryId;
     ComicDB comic;
+    OpenComicSource source = { OpenComicSource::ReadingList, 0 };
     qulonglong nextComicId;
     int tries = 0;
     int dataAvailable = 0;
@@ -136,22 +137,20 @@ void YACReaderClientConnectionWorker::run()
     QDataStream dataStream(data);
     quint8 msgType;
     dataStream >> msgType;
-    dataStream >> libraryId;
-    dataStream >> comic;
-
-    bool nextComicInfoAvailable;
-
-    if (dataStream.atEnd()) {
-        nextComicInfoAvailable = false;
-    } else {
-        nextComicInfoAvailable = true;
-        dataStream >> nextComicId;
-    }
 
     switch (msgType) {
     case YACReader::RequestComicInfo: {
+        dataStream >> libraryId;
+        dataStream >> source;
+        dataStream >> comic;
+
         QList<ComicDB> siblings;
-        getComicInfo(libraryId, comic, siblings);
+
+        if (source.source == OpenComicSource::ReadingList) {
+            getComicInfoFromReadingList(libraryId, source.sourceId, comic, siblings);
+        } else {
+            getComicInfo(libraryId, comic, siblings);
+        }
 
         QByteArray block;
         QDataStream out(&block, QIODevice::WriteOnly);
@@ -179,6 +178,18 @@ void YACReaderClientConnectionWorker::run()
         break;
     }
     case YACReader::SendComicInfo: {
+        bool nextComicInfoAvailable;
+
+        dataStream >> libraryId;
+        dataStream >> comic;
+
+        if (dataStream.atEnd()) {
+            nextComicInfoAvailable = false;
+        } else {
+            nextComicInfoAvailable = true;
+            dataStream >> nextComicId;
+        }
+
         if (nextComicInfoAvailable) {
             updateComic(libraryId, comic, nextComicId);
         } else {
@@ -206,6 +217,13 @@ void YACReaderClientConnectionWorker::getComicInfo(quint64 libraryId, ComicDB &c
     QMutexLocker locker(&dbMutex);
     comic = DBHelper::getComicInfo(libraryId, comic.id);
     siblings = DBHelper::getSiblings(libraryId, comic.parentId);
+}
+
+void YACReaderClientConnectionWorker::getComicInfoFromReadingList(quint64 libraryId, unsigned long long readingListId, ComicDB &comic, QList<ComicDB> &siblings)
+{
+    QMutexLocker locker(&dbMutex);
+    comic = DBHelper::getComicInfo(libraryId, comic.id);
+    siblings = DBHelper::getReadingListFullContent(libraryId, readingListId, true);
 }
 
 void YACReaderClientConnectionWorker::updateComic(quint64 libraryId, ComicDB &comic)

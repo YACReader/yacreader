@@ -2,6 +2,7 @@
 #define __YACREADER_GLOBAL_H
 
 #include <QStandardPaths>
+#include <QDataStream>
 
 #define VERSION "9.8.0"
 
@@ -54,9 +55,26 @@ enum LabelColors {
     YDark
 };
 
+struct OpenComicSource {
+    enum Source {
+        Folder = 0,
+        ReadingList
+    };
+
+    Source source;
+    qulonglong sourceId;
+};
+
+QDataStream &operator<<(QDataStream &stream, const OpenComicSource &source);
+QDataStream &operator>>(QDataStream &stream, OpenComicSource &source);
+
 QString getSettingsPath();
 QString colorToName(LabelColors colors);
 QString labelColorToRGBString(LabelColors color);
 
 }
+
+Q_DECLARE_METATYPE(YACReader::OpenComicSource::Source)
+Q_DECLARE_METATYPE(YACReader::OpenComicSource)
+
 #endif

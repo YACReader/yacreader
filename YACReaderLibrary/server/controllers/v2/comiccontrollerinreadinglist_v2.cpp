@@ -1,4 +1,4 @@
-#include "comiccontroller_v2.h"
+#include "comiccontrollerinreadinglist_v2.h"
 
 #include "db_helper.h"
 #include "yacreader_libraries.h"
@@ -19,9 +19,9 @@
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;
 
-ComicControllerV2::ComicControllerV2() { }
+ComicControllerInReadingListV2::ComicControllerInReadingListV2() { }
 
-void ComicControllerV2::service(HttpRequest &request, HttpResponse &response)
+void ComicControllerInReadingListV2::service(HttpRequest &request, HttpResponse &response)
 {
 
     QByteArray token = request.getHeader("x-request-id");
@@ -37,21 +37,8 @@ void ComicControllerV2::service(HttpRequest &request, HttpResponse &response)
     QStringList pathElements = path.split('/');
     qulonglong libraryId = pathElements.at(3).toLongLong();
     QString libraryName = DBHelper::getLibraryName(libraryId);
-    qulonglong comicId = pathElements.at(5).toULongLong();
-
-    bool remoteComic = path.endsWith("remote");
-
-    //TODO
-    //if(pathElements.size() == 6)
-    //{
-    //	QString action = pathElements.at(5);
-    //	if(!action.isEmpty() && (action == "close"))
-    //	{
-    //		session.dismissCurrentComic();
-    //		response.write("",true);
-    //		return;
-    //	}
-    //}
+    qulonglong readingListId = pathElements.at(5).toULongLong();
+    qulonglong comicId = pathElements.at(7).toULongLong();
 
     YACReaderLibraries libraries = DBHelper::getLibraries();
 
@@ -77,43 +64,33 @@ void ComicControllerV2::service(HttpRequest &request, HttpResponse &response)
         if (thread != nullptr)
             thread->start();
 
-        if (remoteComic) {
-            QLOG_TRACE() << "remote comic requested";
-            ySession->setCurrentRemoteComic(comic.id, comicFile);
-
-        } else {
-            QLOG_TRACE() << "comic requested";
-            ySession->setCurrentComic(comic.id, comicFile);
-        }
+        QLOG_TRACE() << "remote comic requested";
+        ySession->setCurrentRemoteComic(comic.id, comicFile);
 
         response.setHeader("Content-Type", "text/plain; charset=utf-8");
         //TODO this field is not used by the client!
         response.write(QString("library:%1\r\n").arg(libraryName).toUtf8());
         response.write(QString("libraryId:%1\r\n").arg(libraryId).toUtf8());
-        if (remoteComic) //send previous and next comics id
-        {
-            QList<LibraryItem *> siblings = DBHelper::getFolderComicsFromLibrary(libraryId, comic.parentId, false);
 
-            std::sort(siblings.begin(), siblings.end(), LibraryItemSorter());
+        QList<ComicDB> siblings = DBHelper::getReadingListFullContent(libraryId, readingListId);
 
-            bool found = false;
-            int i;
-            for (i = 0; i < siblings.length(); i++) {
-                if (siblings.at(i)->id == comic.id) {
-                    found = true;
-                    break;
-                }
+        bool found = false;
+        int i;
+        for (i = 0; i < siblings.length(); i++) {
+            if (siblings.at(i).id == comic.id) {
+                found = true;
+                break;
             }
-            if (found) {
-                if (i > 0)
-                    response.write(QString("previousComic:%1\r\n").arg(siblings.at(i - 1)->id).toUtf8());
-                if (i < siblings.length() - 1)
-                    response.write(QString("nextComic:%1\r\n").arg(siblings.at(i + 1)->id).toUtf8());
-            } else {
-                //ERROR
-            }
-            qDeleteAll(siblings);
         }
+        if (found) {
+            if (i > 0)
+                response.write(QString("previousComic:%1\r\n").arg(siblings.at(i - 1).id).toUtf8());
+            if (i < siblings.length() - 1)
+                response.write(QString("nextComic:%1\r\n").arg(siblings.at(i + 1).id).toUtf8());
+        } else {
+            //ERROR
+        }
+
         response.write(comic.toTXT().toUtf8(), true);
     } else {
         //delete comicFile;

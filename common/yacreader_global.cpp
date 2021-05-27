@@ -88,3 +88,19 @@ QString YACReader::labelColorToRGBString(LabelColors color)
 
     return "";
 }
+
+QDataStream &YACReader::operator<<(QDataStream &stream, const OpenComicSource &source)
+{
+    stream << (quint8)source.source;
+    stream << source.sourceId;
+    return stream;
+}
+
+QDataStream &YACReader::operator>>(QDataStream &stream, OpenComicSource &source)
+{
+    quint8 sourceRaw;
+    stream >> sourceRaw;
+    source.source = (OpenComicSource::Source)sourceRaw;
+    stream >> source.sourceId;
+    return stream;
+}

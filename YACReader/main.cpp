@@ -118,18 +118,22 @@ int main(int argc, char *argv[])
     parser.addPositionalArgument("[File|Directory]", "File or directory to open.");
     QCommandLineOption comicId("comicId", "", "comicId");
     QCommandLineOption libraryId("libraryId", "", "libraryId");
+    QCommandLineOption readingListId("readingListId", "", "readingListId");
 // hide comicId and libraryId from help
 #if QT_VERSION >= 0x050800
     comicId.setFlags(QCommandLineOption::HiddenFromHelp);
     libraryId.setFlags(QCommandLineOption::HiddenFromHelp);
+    readingListId.setFlags(QCommandLineOption::HiddenFromHelp);
 #else
     comicId.setHidden(true);
     libraryId.setHidden(true);
+    readingListId.setHidden(true);
 #endif
 
     // process
     parser.addOption(comicId);
     parser.addOption(libraryId);
+    parser.addOption(readingListId);
     parser.process(app);
 
     QString destLog = YACReader::getSettingsPath() + "/yacreader.log";
@@ -173,7 +177,15 @@ int main(int argc, char *argv[])
     // some arguments need to be parsed after MainWindowViewer creation
     QStringList arglist = parser.positionalArguments();
     if (parser.isSet(comicId) && parser.isSet(libraryId) && arglist.count() >= 1) {
-        mwv->open(arglist.at(0), parser.value(comicId).toULongLong(), parser.value(libraryId).toULongLong());
+        OpenComicSource source;
+
+        if (parser.isSet(readingListId)) {
+            source = OpenComicSource { OpenComicSource::ReadingList, parser.value(readingListId).toULongLong() };
+        } else {
+            source = OpenComicSource { OpenComicSource::Folder, 33 }; //Folder is not needed to get the comic information, the comid id points to a unique comic
+        }
+
+        mwv->open(arglist.at(0), parser.value(comicId).toULongLong(), parser.value(libraryId).toULongLong(), source);
     } else if (arglist.count() >= 1) {
         mwv->openComicFromPath(arglist.at(0));
     }

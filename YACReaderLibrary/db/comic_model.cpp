@@ -546,6 +546,7 @@ void ComicModel::setupFavoritesModelData(const QString &databasePath)
 {
     enableResorting = true;
     mode = Favorites;
+    sourceId = -1;
 
     beginResetModel();
     qDeleteAll(_data);
@@ -574,6 +575,7 @@ void ComicModel::setupReadingModelData(const QString &databasePath)
 {
     enableResorting = false;
     mode = Reading;
+    sourceId = -1;
 
     beginResetModel();
     qDeleteAll(_data);
