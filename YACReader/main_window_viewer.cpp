@@ -1508,9 +1508,6 @@ void MainWindowViewer::openNextComic()
         if (currentIndex + 1 > 0 && currentIndex + 1 < siblingComics.count()) {
             siblingComics[currentIndex] = currentComicDB; //updated
             currentComicDB = siblingComics.at(currentIndex + 1);
-
-            QMessageBox::warning(nullptr, "", QString(" current dir %1 - path %2").arg(currentDirectory).arg(currentComicDB.path));
-
             open(currentDirectory + currentComicDB.path, currentComicDB, siblingComics);
         }
 
