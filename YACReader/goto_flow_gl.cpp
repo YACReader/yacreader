@@ -21,11 +21,11 @@ GoToFlowGL::GoToFlowGL(QWidget *parent, FlowType flowType)
     imageSize = Configuration::getConfiguration().getGotoSlideSize();
 
     flow->setSlideSize(imageSize);
-    connect(flow, SIGNAL(centerIndexChanged(int)), this, SLOT(setPageNumber(int)));
-    connect(flow, SIGNAL(selected(unsigned int)), this, SIGNAL(goToPage(unsigned int)));
+    connect(flow, &YACReaderFlowGL::centerIndexChanged, this, &GoToFlowWidget::setPageNumber);
+    connect(flow, &YACReaderFlowGL::selected, this, &GoToFlowGL::goToPage);
 
     connect(toolBar, SIGNAL(goTo(unsigned int)), this, SIGNAL(goToPage(unsigned int)));
-    connect(toolBar, SIGNAL(setCenter(unsigned int)), flow, SLOT(setCenterIndex(unsigned int)));
+    connect(toolBar, &GoToFlowToolBar::setCenter, flow, &YACReaderFlowGL::setCenterIndex);
 
     mainLayout->addWidget(flow);
     toolBar->raise();

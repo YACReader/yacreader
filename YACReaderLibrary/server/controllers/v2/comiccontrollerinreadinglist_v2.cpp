@@ -55,9 +55,9 @@ void ComicControllerInReadingListV2::service(HttpRequest &request, HttpResponse 
 
         connect(comicFile, SIGNAL(errorOpening()), thread, SLOT(quit()));
         connect(comicFile, SIGNAL(errorOpening(QString)), thread, SLOT(quit()));
-        connect(comicFile, SIGNAL(imagesLoaded()), thread, SLOT(quit()));
+        connect(comicFile, &Comic::imagesLoaded, thread, &QThread::quit);
         connect(thread, SIGNAL(started()), comicFile, SLOT(process()));
-        connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+        connect(thread, &QThread::finished, thread, &QObject::deleteLater);
 
         comicFile->load(libraries.getPath(libraryId) + comic.path);
 

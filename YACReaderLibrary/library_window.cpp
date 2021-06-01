@@ -309,8 +309,8 @@ void LibraryWindow::doLayout()
     importWidget = new ImportWidget();
     mainWidget->addWidget(importWidget);
 
-    connect(noLibrariesWidget, SIGNAL(createNewLibrary()), this, SLOT(createLibrary()));
-    connect(noLibrariesWidget, SIGNAL(addExistingLibrary()), this, SLOT(showAddLibrary()));
+    connect(noLibrariesWidget, &NoLibrariesWidget::createNewLibrary, this, &LibraryWindow::createLibrary);
+    connect(noLibrariesWidget, &NoLibrariesWidget::addExistingLibrary, this, &LibraryWindow::showAddLibrary);
 
     //collapsible disabled in macosx (only temporaly)
 #ifdef Q_OS_MAC
@@ -1059,55 +1059,55 @@ void LibraryWindow::createMenus()
 void LibraryWindow::createConnections()
 {
     //history navigation
-    connect(backAction, SIGNAL(triggered()), historyController, SLOT(backward()));
-    connect(forwardAction, SIGNAL(triggered()), historyController, SLOT(forward()));
+    connect(backAction, &QAction::triggered, historyController, &YACReaderHistoryController::backward);
+    connect(forwardAction, &QAction::triggered, historyController, &YACReaderHistoryController::forward);
     //--
-    connect(historyController, SIGNAL(enabledBackward(bool)), backAction, SLOT(setEnabled(bool)));
-    connect(historyController, SIGNAL(enabledForward(bool)), forwardAction, SLOT(setEnabled(bool)));
+    connect(historyController, &YACReaderHistoryController::enabledBackward, backAction, &QAction::setEnabled);
+    connect(historyController, &YACReaderHistoryController::enabledForward, forwardAction, &QAction::setEnabled);
     //connect(foldersView, SIGNAL(clicked(QModelIndex)), historyController, SLOT(updateHistory(QModelIndex)));
 
     //libraryCreator connections
     connect(createLibraryDialog, SIGNAL(createLibrary(QString, QString, QString)), this, SLOT(create(QString, QString, QString)));
-    connect(createLibraryDialog, SIGNAL(libraryExists(QString)), this, SLOT(libraryAlreadyExists(QString)));
-    connect(importComicsInfoDialog, SIGNAL(finished(int)), this, SLOT(reloadCurrentLibrary()));
+    connect(createLibraryDialog, &CreateLibraryDialog::libraryExists, this, &LibraryWindow::libraryAlreadyExists);
+    connect(importComicsInfoDialog, &QDialog::finished, this, &LibraryWindow::reloadCurrentLibrary);
 
     //connect(libraryCreator,SIGNAL(coverExtracted(QString)),createLibraryDialog,SLOT(showCurrentFile(QString)));
     //connect(libraryCreator,SIGNAL(coverExtracted(QString)),updateLibraryDialog,SLOT(showCurrentFile(QString)));
     connect(libraryCreator, SIGNAL(finished()), this, SLOT(showRootWidget()));
-    connect(libraryCreator, SIGNAL(updated()), this, SLOT(reloadCurrentLibrary()));
-    connect(libraryCreator, SIGNAL(created()), this, SLOT(openLastCreated()));
+    connect(libraryCreator, &LibraryCreator::updated, this, &LibraryWindow::reloadCurrentLibrary);
+    connect(libraryCreator, &LibraryCreator::created, this, &LibraryWindow::openLastCreated);
     //connect(libraryCreator,SIGNAL(updatedCurrentFolder()), this, SLOT(showRootWidget()));
-    connect(libraryCreator, SIGNAL(updatedCurrentFolder(QModelIndex)), this, SLOT(reloadAfterCopyMove(QModelIndex)));
-    connect(libraryCreator, SIGNAL(comicAdded(QString, QString)), importWidget, SLOT(newComic(QString, QString)));
+    connect(libraryCreator, &LibraryCreator::updatedCurrentFolder, this, &LibraryWindow::reloadAfterCopyMove);
+    connect(libraryCreator, &LibraryCreator::comicAdded, importWidget, &ImportWidget::newComic);
     //libraryCreator errors
-    connect(libraryCreator, SIGNAL(failedCreatingDB(QString)), this, SLOT(manageCreatingError(QString)));
+    connect(libraryCreator, &LibraryCreator::failedCreatingDB, this, &LibraryWindow::manageCreatingError);
     connect(libraryCreator, SIGNAL(failedUpdatingDB(QString)), this, SLOT(manageUpdatingError(QString))); //TODO: implement failedUpdatingDB
 
     //new import widget
-    connect(importWidget, SIGNAL(stop()), this, SLOT(stopLibraryCreator()));
+    connect(importWidget, &ImportWidget::stop, this, &LibraryWindow::stopLibraryCreator);
 
     //packageManager connections
-    connect(exportLibraryDialog, SIGNAL(exportPath(QString)), this, SLOT(exportLibrary(QString)));
-    connect(exportLibraryDialog, SIGNAL(rejected()), packageManager, SLOT(cancel()));
+    connect(exportLibraryDialog, &ExportLibraryDialog::exportPath, this, &LibraryWindow::exportLibrary);
+    connect(exportLibraryDialog, &QDialog::rejected, packageManager, &PackageManager::cancel);
     connect(packageManager, SIGNAL(exported()), exportLibraryDialog, SLOT(close()));
-    connect(importLibraryDialog, SIGNAL(unpackCLC(QString, QString, QString)), this, SLOT(importLibrary(QString, QString, QString)));
-    connect(importLibraryDialog, SIGNAL(rejected()), packageManager, SLOT(cancel()));
-    connect(importLibraryDialog, SIGNAL(rejected()), this, SLOT(deleteCurrentLibrary()));
-    connect(importLibraryDialog, SIGNAL(libraryExists(QString)), this, SLOT(libraryAlreadyExists(QString)));
-    connect(packageManager, SIGNAL(imported()), importLibraryDialog, SLOT(hide()));
-    connect(packageManager, SIGNAL(imported()), this, SLOT(openLastCreated()));
+    connect(importLibraryDialog, &ImportLibraryDialog::unpackCLC, this, &LibraryWindow::importLibrary);
+    connect(importLibraryDialog, &QDialog::rejected, packageManager, &PackageManager::cancel);
+    connect(importLibraryDialog, &QDialog::rejected, this, &LibraryWindow::deleteCurrentLibrary);
+    connect(importLibraryDialog, &ImportLibraryDialog::libraryExists, this, &LibraryWindow::libraryAlreadyExists);
+    connect(packageManager, &PackageManager::imported, importLibraryDialog, &QWidget::hide);
+    connect(packageManager, &PackageManager::imported, this, &LibraryWindow::openLastCreated);
 
     //create and update dialogs
-    connect(createLibraryDialog, SIGNAL(cancelCreate()), this, SLOT(cancelCreating()));
+    connect(createLibraryDialog, &CreateLibraryDialog::cancelCreate, this, &LibraryWindow::cancelCreating);
 
     //open existing library from dialog.
-    connect(addLibraryDialog, SIGNAL(addLibrary(QString, QString)), this, SLOT(openLibrary(QString, QString)));
+    connect(addLibraryDialog, &AddLibraryDialog::addLibrary, this, &LibraryWindow::openLibrary);
 
     //load library when selected library changes
-    connect(selectedLibrary, SIGNAL(currentIndexChanged(QString)), this, SLOT(loadLibrary(QString)));
+    connect(selectedLibrary, &YACReaderLibraryListWidget::currentIndexChanged, this, &LibraryWindow::loadLibrary);
 
     //rename library dialog
-    connect(renameLibraryDialog, SIGNAL(renameLibrary(QString)), this, SLOT(rename(QString)));
+    connect(renameLibraryDialog, &RenameLibraryDialog::renameLibrary, this, &LibraryWindow::rename);
 
     //navigations between view modes (tree,list and flow)
     //TODO connect(foldersView, SIGNAL(pressed(QModelIndex)), this, SLOT(updateFoldersViewConextMenu(QModelIndex)));
@@ -1116,79 +1116,83 @@ void LibraryWindow::createConnections()
     //drops in folders view
     connect(foldersView, SIGNAL(copyComicsToFolder(QList<QPair<QString, QString>>, QModelIndex)), this, SLOT(copyAndImportComicsToFolder(QList<QPair<QString, QString>>, QModelIndex)));
     connect(foldersView, SIGNAL(moveComicsToFolder(QList<QPair<QString, QString>>, QModelIndex)), this, SLOT(moveAndImportComicsToFolder(QList<QPair<QString, QString>>, QModelIndex)));
-    connect(foldersView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showFoldersContextMenu(QPoint)));
+    connect(foldersView, &QWidget::customContextMenuRequested, this, &LibraryWindow::showFoldersContextMenu);
 
     //actions
-    connect(createLibraryAction, SIGNAL(triggered()), this, SLOT(createLibrary()));
-    connect(exportLibraryAction, SIGNAL(triggered()), exportLibraryDialog, SLOT(open()));
-    connect(importLibraryAction, SIGNAL(triggered()), this, SLOT(importLibraryPackage()));
+    connect(createLibraryAction, &QAction::triggered, this, &LibraryWindow::createLibrary);
+    connect(exportLibraryAction, &QAction::triggered, exportLibraryDialog, &QDialog::open);
+    connect(importLibraryAction, &QAction::triggered, this, &LibraryWindow::importLibraryPackage);
 
-    connect(openLibraryAction, SIGNAL(triggered()), this, SLOT(showAddLibrary()));
-    connect(setAsReadAction, SIGNAL(triggered()), this, SLOT(setCurrentComicReaded()));
-    connect(setAsNonReadAction, SIGNAL(triggered()), this, SLOT(setCurrentComicUnreaded()));
+    connect(openLibraryAction, &QAction::triggered, this, &LibraryWindow::showAddLibrary);
+    connect(setAsReadAction, &QAction::triggered, this, &LibraryWindow::setCurrentComicReaded);
+    connect(setAsNonReadAction, &QAction::triggered, this, &LibraryWindow::setCurrentComicUnreaded);
     connect(setNormalAction, &QAction::triggered, this, &LibraryWindow::setSelectedComicsAsNormal);
     connect(setMangaAction, &QAction::triggered, this, &LibraryWindow::setSelectedComicsAsManga);
     //connect(setAllAsReadAction,SIGNAL(triggered()),this,SLOT(setComicsReaded()));
     //connect(setAllAsNonReadAction,SIGNAL(triggered()),this,SLOT(setComicsUnreaded()));
 
     //comicsInfoManagement
-    connect(exportComicsInfoAction, SIGNAL(triggered()), this, SLOT(showExportComicsInfo()));
-    connect(importComicsInfoAction, SIGNAL(triggered()), this, SLOT(showImportComicsInfo()));
+    connect(exportComicsInfoAction, &QAction::triggered, this, &LibraryWindow::showExportComicsInfo);
+    connect(importComicsInfoAction, &QAction::triggered, this, &LibraryWindow::showImportComicsInfo);
 
     //properties & config
-    connect(propertiesDialog, SIGNAL(accepted()), navigationController, SLOT(reselectCurrentSource()));
+    connect(propertiesDialog, &QDialog::accepted, navigationController, &YACReaderNavigationController::reselectCurrentSource);
 
     //comic vine
-    connect(comicVineDialog, SIGNAL(accepted()), navigationController, SLOT(reselectCurrentSource()), Qt::QueuedConnection);
+    connect(comicVineDialog, &QDialog::accepted, navigationController, &YACReaderNavigationController::reselectCurrentSource, Qt::QueuedConnection);
 
-    connect(updateLibraryAction, SIGNAL(triggered()), this, SLOT(updateLibrary()));
-    connect(renameLibraryAction, SIGNAL(triggered()), this, SLOT(renameLibrary()));
+    connect(updateLibraryAction, &QAction::triggered, this, &LibraryWindow::updateLibrary);
+    connect(renameLibraryAction, &QAction::triggered, this, &LibraryWindow::renameLibrary);
     //connect(deleteLibraryAction,SIGNAL(triggered()),this,SLOT(deleteLibrary()));
-    connect(removeLibraryAction, SIGNAL(triggered()), this, SLOT(removeLibrary()));
-    connect(openComicAction, SIGNAL(triggered()), this, SLOT(openComic()));
-    connect(helpAboutAction, SIGNAL(triggered()), had, SLOT(show()));
-    connect(addFolderAction, SIGNAL(triggered()), this, SLOT(addFolderToCurrentIndex()));
-    connect(deleteFolderAction, SIGNAL(triggered()), this, SLOT(deleteSelectedFolder()));
-    connect(setRootIndexAction, SIGNAL(triggered()), this, SLOT(setRootIndex()));
-    connect(expandAllNodesAction, SIGNAL(triggered()), foldersView, SLOT(expandAll()));
-    connect(colapseAllNodesAction, SIGNAL(triggered()), foldersView, SLOT(collapseAll()));
+    connect(removeLibraryAction, &QAction::triggered, this, &LibraryWindow::removeLibrary);
+    connect(openComicAction, &QAction::triggered, this, QOverload<>::of(&LibraryWindow::openComic));
+    connect(helpAboutAction, &QAction::triggered, had, &QWidget::show);
+    connect(addFolderAction, &QAction::triggered, this, &LibraryWindow::addFolderToCurrentIndex);
+    connect(deleteFolderAction, &QAction::triggered, this, &LibraryWindow::deleteSelectedFolder);
+    connect(setRootIndexAction, &QAction::triggered, this, &LibraryWindow::setRootIndex);
+    connect(expandAllNodesAction, &QAction::triggered, foldersView, &QTreeView::expandAll);
+    connect(colapseAllNodesAction, &QAction::triggered, foldersView, &QTreeView::collapseAll);
 #ifndef Q_OS_MAC
-    connect(toggleFullScreenAction, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
+    connect(toggleFullScreenAction, &QAction::triggered, this, &LibraryWindow::toggleFullScreen);
 #endif
-    connect(toggleComicsViewAction, SIGNAL(triggered()), comicsViewsManager, SLOT(toggleComicsView()));
-    connect(optionsAction, SIGNAL(triggered()), optionsDialog, SLOT(show()));
+    connect(toggleComicsViewAction, &QAction::triggered, comicsViewsManager, &YACReaderComicsViewsManager::toggleComicsView);
+    connect(optionsAction, &QAction::triggered, optionsDialog, &QWidget::show);
 #ifdef SERVER_RELEASE
-    connect(serverConfigAction, SIGNAL(triggered()), serverConfigDialog, SLOT(show()));
+    connect(serverConfigAction, &QAction::triggered, serverConfigDialog, &QWidget::show);
 #endif
-    connect(optionsDialog, SIGNAL(optionsChanged()), this, SLOT(reloadOptions()));
-    connect(optionsDialog, SIGNAL(editShortcuts()), editShortcutsDialog, SLOT(show()));
+    connect(optionsDialog, &YACReaderOptionsDialog::optionsChanged, this, &LibraryWindow::reloadOptions);
+    connect(optionsDialog, &YACReaderOptionsDialog::editShortcuts, editShortcutsDialog, &QWidget::show);
 
-    //Search filter
-    connect(searchEdit, SIGNAL(filterChanged(YACReader::SearchModifiers, QString)), this, SLOT(setSearchFilter(YACReader::SearchModifiers, QString)));
+//Search filter
+#ifdef Q_OS_MAC
+    connect(searchEdit, &YACReaderMacOSXSearchLineEdit::filterChanged, this, &LibraryWindow::setSearchFilter);
+#else
+    connect(searchEdit, &YACReaderSearchLineEdit::filterChanged, this, &LibraryWindow::setSearchFilter);
+#endif
     connect(&comicQueryResultProcessor, &ComicQueryResultProcessor::newData, this, &LibraryWindow::setComicSearchFilterData);
     connect(folderQueryResultProcessor.get(), &FolderQueryResultProcessor::newData, this, &LibraryWindow::setFolderSearchFilterData);
 
     //ContextMenus
-    connect(openContainingFolderComicAction, SIGNAL(triggered()), this, SLOT(openContainingFolderComic()));
-    connect(setFolderAsNotCompletedAction, SIGNAL(triggered()), this, SLOT(setFolderAsNotCompleted()));
-    connect(setFolderAsCompletedAction, SIGNAL(triggered()), this, SLOT(setFolderAsCompleted()));
-    connect(setFolderAsReadAction, SIGNAL(triggered()), this, SLOT(setFolderAsRead()));
-    connect(setFolderAsUnreadAction, SIGNAL(triggered()), this, SLOT(setFolderAsUnread()));
-    connect(openContainingFolderAction, SIGNAL(triggered()), this, SLOT(openContainingFolder()));
+    connect(openContainingFolderComicAction, &QAction::triggered, this, &LibraryWindow::openContainingFolderComic);
+    connect(setFolderAsNotCompletedAction, &QAction::triggered, this, &LibraryWindow::setFolderAsNotCompleted);
+    connect(setFolderAsCompletedAction, &QAction::triggered, this, &LibraryWindow::setFolderAsCompleted);
+    connect(setFolderAsReadAction, &QAction::triggered, this, &LibraryWindow::setFolderAsRead);
+    connect(setFolderAsUnreadAction, &QAction::triggered, this, &LibraryWindow::setFolderAsUnread);
+    connect(openContainingFolderAction, &QAction::triggered, this, &LibraryWindow::openContainingFolder);
     connect(setFolderAsMangaAction, &QAction::triggered, this, &LibraryWindow::setFolderAsManga);
     connect(setFolderAsNormalAction, &QAction::triggered, this, &LibraryWindow::setFolderAsNormal);
 
-    connect(resetComicRatingAction, SIGNAL(triggered()), this, SLOT(resetComicRating()));
+    connect(resetComicRatingAction, &QAction::triggered, this, &LibraryWindow::resetComicRating);
 
     //connect(dm,SIGNAL(directoryLoaded(QString)),foldersView,SLOT(expandAll()));
     //connect(dm,SIGNAL(directoryLoaded(QString)),this,SLOT(updateFoldersView(QString)));
     //Comicts edition
-    connect(editSelectedComicsAction, SIGNAL(triggered()), this, SLOT(showProperties()));
-    connect(asignOrderAction, SIGNAL(triggered()), this, SLOT(asignNumbers()));
+    connect(editSelectedComicsAction, &QAction::triggered, this, &LibraryWindow::showProperties);
+    connect(asignOrderAction, &QAction::triggered, this, &LibraryWindow::asignNumbers);
 
-    connect(deleteComicsAction, SIGNAL(triggered()), this, SLOT(deleteComics()));
+    connect(deleteComicsAction, &QAction::triggered, this, &LibraryWindow::deleteComics);
 
-    connect(getInfoAction, SIGNAL(triggered()), this, SLOT(showComicVineScraper()));
+    connect(getInfoAction, &QAction::triggered, this, &LibraryWindow::showComicVineScraper);
 
     //connect(socialAction,SIGNAL(triggered()),this,SLOT(showSocial()));
 
@@ -1199,33 +1203,33 @@ void LibraryWindow::createConnections()
     connect(focusSearchLineAction, &QAction::triggered, searchEdit, [this] { searchEdit->setFocus(Qt::ShortcutFocusReason); });
     connect(focusComicsViewAction, &QAction::triggered, comicsViewsManager, &YACReaderComicsViewsManager::focusComicsViewViaShortcut);
 
-    connect(showEditShortcutsAction, SIGNAL(triggered()), editShortcutsDialog, SLOT(show()));
+    connect(showEditShortcutsAction, &QAction::triggered, editShortcutsDialog, &QWidget::show);
 
     connect(quitAction, &QAction::triggered, this, &LibraryWindow::closeApp);
 
     //update folders (partial updates)
-    connect(updateCurrentFolderAction, SIGNAL(triggered()), this, SLOT(updateCurrentFolder()));
-    connect(updateFolderAction, SIGNAL(triggered()), this, SLOT(updateCurrentFolder()));
+    connect(updateCurrentFolderAction, &QAction::triggered, this, &LibraryWindow::updateCurrentFolder);
+    connect(updateFolderAction, &QAction::triggered, this, &LibraryWindow::updateCurrentFolder);
 
     //lists
-    connect(addReadingListAction, SIGNAL(triggered()), this, SLOT(addNewReadingList()));
-    connect(deleteReadingListAction, SIGNAL(triggered()), this, SLOT(deleteSelectedReadingList()));
-    connect(addLabelAction, SIGNAL(triggered()), this, SLOT(showAddNewLabelDialog()));
-    connect(renameListAction, SIGNAL(triggered()), this, SLOT(showRenameCurrentList()));
+    connect(addReadingListAction, &QAction::triggered, this, &LibraryWindow::addNewReadingList);
+    connect(deleteReadingListAction, &QAction::triggered, this, &LibraryWindow::deleteSelectedReadingList);
+    connect(addLabelAction, &QAction::triggered, this, &LibraryWindow::showAddNewLabelDialog);
+    connect(renameListAction, &QAction::triggered, this, &LibraryWindow::showRenameCurrentList);
 
     connect(listsModel, SIGNAL(addComicsToFavorites(QList<qulonglong>)), comicsModel, SLOT(addComicsToFavorites(QList<qulonglong>)));
     connect(listsModel, SIGNAL(addComicsToLabel(QList<qulonglong>, qulonglong)), comicsModel, SLOT(addComicsToLabel(QList<qulonglong>, qulonglong)));
     connect(listsModel, SIGNAL(addComicsToReadingList(QList<qulonglong>, qulonglong)), comicsModel, SLOT(addComicsToReadingList(QList<qulonglong>, qulonglong)));
     //--
 
-    connect(addToFavoritesAction, SIGNAL(triggered()), this, SLOT(addSelectedComicsToFavorites()));
+    connect(addToFavoritesAction, &QAction::triggered, this, &LibraryWindow::addSelectedComicsToFavorites);
 
     //save covers
-    connect(saveCoversToAction, SIGNAL(triggered()), this, SLOT(saveSelectedCoversTo()));
+    connect(saveCoversToAction, &QAction::triggered, this, &LibraryWindow::saveSelectedCoversTo);
 
     //upgrade library
-    connect(this, SIGNAL(libraryUpgraded(QString)), this, SLOT(loadLibrary(QString)), Qt::QueuedConnection);
-    connect(this, SIGNAL(errorUpgradingLibrary(QString)), this, SLOT(showErrorUpgradingLibrary(QString)), Qt::QueuedConnection);
+    connect(this, &LibraryWindow::libraryUpgraded, this, &LibraryWindow::loadLibrary, Qt::QueuedConnection);
+    connect(this, &LibraryWindow::errorUpgradingLibrary, this, &LibraryWindow::showErrorUpgradingLibrary, Qt::QueuedConnection);
 }
 
 void LibraryWindow::showErrorUpgradingLibrary(const QString &path)
@@ -1453,7 +1457,7 @@ void LibraryWindow::moveAndImportComicsToFolder(const QList<QPair<QString, QStri
 
 void LibraryWindow::processComicFiles(ComicFilesManager *comicFilesManager, QProgressDialog *progressDialog)
 {
-    connect(comicFilesManager, SIGNAL(progress(int)), progressDialog, SLOT(setValue(int)));
+    connect(comicFilesManager, &ComicFilesManager::progress, progressDialog, &QProgressDialog::setValue);
 
     QThread *thread = NULL;
 
@@ -1461,15 +1465,15 @@ void LibraryWindow::processComicFiles(ComicFilesManager *comicFilesManager, QPro
 
     comicFilesManager->moveToThread(thread);
 
-    connect(progressDialog, SIGNAL(canceled()), comicFilesManager, SLOT(cancel()), Qt::DirectConnection);
+    connect(progressDialog, &QProgressDialog::canceled, comicFilesManager, &ComicFilesManager::cancel, Qt::DirectConnection);
 
-    connect(thread, SIGNAL(started()), comicFilesManager, SLOT(process()));
-    connect(comicFilesManager, SIGNAL(success(QModelIndex)), this, SLOT(updateCopyMoveFolderDestination(QModelIndex)));
-    connect(comicFilesManager, SIGNAL(finished()), thread, SLOT(quit()));
-    connect(comicFilesManager, SIGNAL(finished()), comicFilesManager, SLOT(deleteLater()));
-    connect(comicFilesManager, SIGNAL(finished()), progressDialog, SLOT(close()));
-    connect(comicFilesManager, SIGNAL(finished()), progressDialog, SLOT(deleteLater()));
-    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    connect(thread, &QThread::started, comicFilesManager, &ComicFilesManager::process);
+    connect(comicFilesManager, &ComicFilesManager::success, this, &LibraryWindow::updateCopyMoveFolderDestination);
+    connect(comicFilesManager, &ComicFilesManager::finished, thread, &QThread::quit);
+    connect(comicFilesManager, &ComicFilesManager::finished, comicFilesManager, &QObject::deleteLater);
+    connect(comicFilesManager, &ComicFilesManager::finished, progressDialog, &QWidget::close);
+    connect(comicFilesManager, &ComicFilesManager::finished, progressDialog, &QObject::deleteLater);
+    connect(thread, &QThread::finished, thread, &QObject::deleteLater);
 
     if (thread != NULL)
         thread->start();
@@ -1593,9 +1597,9 @@ void LibraryWindow::deleteSelectedFolder()
                 const auto thread = new QThread(this);
                 moveAndConnectRemoverToThread(remover, thread);
 
-                connect(remover, SIGNAL(remove(QModelIndex)), foldersModel, SLOT(deleteFolder(QModelIndex)));
-                connect(remover, SIGNAL(removeError()), this, SLOT(errorDeletingFolder()));
-                connect(remover, SIGNAL(finished()), navigationController, SLOT(reselectCurrentFolder()));
+                connect(remover, &FoldersRemover::remove, foldersModel, &FolderModel::deleteFolder);
+                connect(remover, &FoldersRemover::removeError, this, &LibraryWindow::errorDeletingFolder);
+                connect(remover, &FoldersRemover::finished, navigationController, &YACReaderNavigationController::reselectCurrentFolder);
 
                 thread->start();
             }
@@ -1768,7 +1772,7 @@ void LibraryWindow::setupAddToSubmenu(QMenu &menu)
 
         menu.addAction(action);
 
-        connect(action, SIGNAL(triggered()), this, SLOT(onAddComicsToLabel()));
+        connect(action, &QAction::triggered, this, &LibraryWindow::onAddComicsToLabel);
     }
 }
 
@@ -1940,7 +1944,7 @@ void LibraryWindow::openLastCreated()
     selectedLibrary->setCurrentIndex(selectedLibrary->findText(_lastAdded));
     libraries.save();
 
-    connect(selectedLibrary, SIGNAL(currentIndexChanged(QString)), this, SLOT(loadLibrary(QString)));
+    connect(selectedLibrary, &YACReaderLibraryListWidget::currentIndexChanged, this, &LibraryWindow::loadLibrary);
 
     loadLibrary(_lastAdded);
 }
@@ -2573,13 +2577,13 @@ void LibraryWindow::deleteComicsFromDisk()
 
         comicsModel->startTransaction();
 
-        connect(remover, SIGNAL(remove(int)), comicsModel, SLOT(remove(int)));
-        connect(remover, SIGNAL(removeError()), this, SLOT(setRemoveError()));
-        connect(remover, SIGNAL(finished()), comicsModel, SLOT(finishTransaction()));
-        connect(remover, SIGNAL(removedItemsFromFolder(qulonglong)), foldersModel, SLOT(updateFolderChildrenInfo(qulonglong)));
+        connect(remover, &ComicsRemover::remove, comicsModel, &ComicModel::remove);
+        connect(remover, &ComicsRemover::removeError, this, &LibraryWindow::setRemoveError);
+        connect(remover, &ComicsRemover::finished, comicsModel, &ComicModel::finishTransaction);
+        connect(remover, &ComicsRemover::removedItemsFromFolder, foldersModel, &FolderModel::updateFolderChildrenInfo);
 
-        connect(remover, SIGNAL(finished()), this, SLOT(checkEmptyFolder()));
-        connect(remover, SIGNAL(finished()), this, SLOT(checkRemoveError()));
+        connect(remover, &ComicsRemover::finished, this, &LibraryWindow::checkEmptyFolder);
+        connect(remover, &ComicsRemover::finished, this, &LibraryWindow::checkRemoveError);
 
         thread->start();
     }

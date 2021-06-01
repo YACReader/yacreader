@@ -72,7 +72,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     auto apiKeyBox = new QGroupBox(tr("Comic Vine API key"));
     apiKeyBox->setLayout(apiKeyLayout);
 
-    connect(apiKeyButton, SIGNAL(clicked()), this, SLOT(editApiKey()));
+    connect(apiKeyButton, &QAbstractButton::clicked, this, &OptionsDialog::editApiKey);
 
     //grid view background config
     useBackgroundImageCheck = new QCheckBox(tr("Enable background image"));
@@ -115,9 +115,9 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     gridViewLayout->addWidget(continueReadingGroup);
     gridViewLayout->addStretch();
 
-    connect(useBackgroundImageCheck, SIGNAL(clicked(bool)), this, SLOT(useBackgroundImageCheckClicked(bool)));
-    connect(backgroundImageOpacitySlider, SIGNAL(valueChanged(int)), this, SLOT(backgroundImageOpacitySliderChanged(int)));
-    connect(backgroundImageBlurRadiusSlider, SIGNAL(valueChanged(int)), this, SLOT(backgroundImageBlurRadiusSliderChanged(int)));
+    connect(useBackgroundImageCheck, &QAbstractButton::clicked, this, &OptionsDialog::useBackgroundImageCheckClicked);
+    connect(backgroundImageOpacitySlider, &QAbstractSlider::valueChanged, this, &OptionsDialog::backgroundImageOpacitySliderChanged);
+    connect(backgroundImageBlurRadiusSlider, &QAbstractSlider::valueChanged, this, &OptionsDialog::backgroundImageBlurRadiusSliderChanged);
     connect(useCurrentComicCoverCheck, &QCheckBox::clicked, this, &OptionsDialog::useCurrentComicCoverCheckClicked);
     connect(resetButton, &QPushButton::clicked, this, &OptionsDialog::resetToDefaults);
     //end grid view background config

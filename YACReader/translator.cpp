@@ -157,9 +157,9 @@ YACReaderTranslator::YACReaderTranslator(QWidget *parent)
 
     show();
 
-    connect(searchButton, SIGNAL(pressed()), this, SLOT(translate()));
-    connect(speakButton, SIGNAL(pressed()), this, SLOT(play()));
-    connect(clearButton, SIGNAL(pressed()), this, SLOT(clear()));
+    connect(searchButton, &QAbstractButton::pressed, this, &YACReaderTranslator::translate);
+    connect(speakButton, &QAbstractButton::pressed, this, &YACReaderTranslator::play);
+    connect(clearButton, &QAbstractButton::pressed, this, &YACReaderTranslator::clear);
 
     //multimedia/phonon
 #if QT_VERSION >= 0x050000
@@ -191,16 +191,16 @@ void YACReaderTranslator::translate()
     QString to = this->to->itemData(this->to->currentIndex()).toString();
 
     TranslationLoader *translationLoader = new TranslationLoader(text, from, to);
-    connect(translationLoader, SIGNAL(requestFinished(QString)), this, SLOT(setTranslation(QString)));
-    connect(translationLoader, SIGNAL(error()), this, SLOT(error()));
-    connect(translationLoader, SIGNAL(timeOut()), this, SLOT(error()));
-    connect(translationLoader, SIGNAL(finished()), translationLoader, SLOT(deleteLater()));
+    connect(translationLoader, &TranslationLoader::requestFinished, this, &YACReaderTranslator::setTranslation);
+    connect(translationLoader, &TranslationLoader::error, this, &YACReaderTranslator::error);
+    connect(translationLoader, &TranslationLoader::timeOut, this, &YACReaderTranslator::error);
+    connect(translationLoader, &QThread::finished, translationLoader, &QObject::deleteLater);
 
     TextToSpeachLoader *tts = new TextToSpeachLoader(text, from);
-    connect(tts, SIGNAL(requestFinished(QUrl)), this, SLOT(setSpeak(QUrl)));
-    connect(tts, SIGNAL(error()), this, SLOT(error()));
-    connect(tts, SIGNAL(timeOut()), this, SLOT(error()));
-    connect(tts, SIGNAL(finished()), tts, SLOT(deleteLater()));
+    connect(tts, &TextToSpeachLoader::requestFinished, this, &YACReaderTranslator::setSpeak);
+    connect(tts, &TextToSpeachLoader::error, this, &YACReaderTranslator::error);
+    connect(tts, &TextToSpeachLoader::timeOut, this, &YACReaderTranslator::error);
+    connect(tts, &QThread::finished, tts, &QObject::deleteLater);
 
     translationLoader->start();
     tts->start();
@@ -348,8 +348,8 @@ void TranslationLoader::run()
     QTimer tT;
 
     tT.setSingleShot(true);
-    connect(&tT, SIGNAL(timeout()), &q, SLOT(quit()));
-    connect(&manager, SIGNAL(finished(QNetworkReply *)), &q, SLOT(quit()));
+    connect(&tT, &QTimer::timeout, &q, &QEventLoop::quit);
+    connect(&manager, &QNetworkAccessManager::finished, &q, &QEventLoop::quit);
 
     QString url = "http://api.microsofttranslator.com/V2/Ajax.svc/Translate?appid=%1&from=%2&to=%3&text=%4&contentType=text/plain";
     url = url.arg(APPID).arg(from).arg(to).arg(text);
@@ -391,8 +391,8 @@ void TextToSpeachLoader::run()
     QTimer tT;
 
     tT.setSingleShot(true);
-    connect(&tT, SIGNAL(timeout()), &q, SLOT(quit()));
-    connect(&manager, SIGNAL(finished(QNetworkReply *)), &q, SLOT(quit()));
+    connect(&tT, &QTimer::timeout, &q, &QEventLoop::quit);
+    connect(&manager, &QNetworkAccessManager::finished, &q, &QEventLoop::quit);
 
     QString url = "http://api.microsofttranslator.com/V2/Ajax.svc/Speak?appid=%1&language=%2&text=%3&contentType=text/plain";
     url = url.arg(APPID).arg(language).arg(text);

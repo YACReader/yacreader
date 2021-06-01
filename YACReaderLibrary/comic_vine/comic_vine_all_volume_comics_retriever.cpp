@@ -20,10 +20,10 @@ void ComicVineAllVolumeComicsRetriever::getAllVolumeComics()
 void ComicVineAllVolumeComicsRetriever::getAllVolumeComics(int range)
 {
     HttpWorker *search = new HttpWorker(volumeURLString.arg(range));
-    connect(search, SIGNAL(dataReady(const QByteArray &)), this, SLOT(appendVolumeComicsInfo(const QByteArray &)));
-    connect(search, SIGNAL(timeout()), this, SIGNAL(timeOut()));
-    connect(search, SIGNAL(timeout()), this, SIGNAL(finished()));
-    connect(search, SIGNAL(finished()), search, SLOT(deleteLater()));
+    connect(search, &HttpWorker::dataReady, this, &ComicVineAllVolumeComicsRetriever::appendVolumeComicsInfo);
+    connect(search, &HttpWorker::timeout, this, &ComicVineAllVolumeComicsRetriever::timeOut);
+    connect(search, &HttpWorker::timeout, this, &ComicVineAllVolumeComicsRetriever::finished);
+    connect(search, &QThread::finished, search, &QObject::deleteLater);
     search->get();
 }
 

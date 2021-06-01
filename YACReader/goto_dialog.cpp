@@ -21,9 +21,9 @@ void GoToDialog::setupUI()
     textLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
     accept = new QPushButton(tr("Go To"));
-    connect(accept, SIGNAL(clicked()), this, SLOT(goTo()));
+    connect(accept, &QAbstractButton::clicked, this, &GoToDialog::goTo);
     cancel = new QPushButton(tr("Cancel"));
-    connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
+    connect(cancel, &QAbstractButton::clicked, this, &QWidget::close);
 
     auto topLayout = new QHBoxLayout;
 

@@ -16,22 +16,22 @@ void AddLibraryDialog::setupUI()
     textLabel = new QLabel(tr("Comics folder : "));
     path = new QLineEdit;
     textLabel->setBuddy(path);
-    connect(path, SIGNAL(textChanged(QString)), this, SLOT(pathSetted(QString)));
+    connect(path, &QLineEdit::textChanged, this, &AddLibraryDialog::pathSetted);
 
     nameLabel = new QLabel(tr("Library name : "));
     nameEdit = new QLineEdit;
     nameLabel->setBuddy(nameEdit);
-    connect(nameEdit, SIGNAL(textChanged(QString)), this, SLOT(nameSetted(QString)));
+    connect(nameEdit, &QLineEdit::textChanged, this, &AddLibraryDialog::nameSetted);
 
     accept = new QPushButton(tr("Add"));
     accept->setDisabled(true);
-    connect(accept, SIGNAL(clicked()), this, SLOT(add()));
+    connect(accept, &QAbstractButton::clicked, this, &AddLibraryDialog::add);
 
     cancel = new QPushButton(tr("Cancel"));
     connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
 
     find = new QPushButton(QIcon(":/images/find_folder.png"), "");
-    connect(find, SIGNAL(clicked()), this, SLOT(findPath()));
+    connect(find, &QAbstractButton::clicked, this, &AddLibraryDialog::findPath);
 
     auto content = new QGridLayout;
 

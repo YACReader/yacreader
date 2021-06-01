@@ -29,7 +29,7 @@ GoToFlow::GoToFlow(QWidget *parent, FlowType flowType)
     : GoToFlowWidget(parent), ready(false)
 {
     updateTimer = new QTimer;
-    connect(updateTimer, SIGNAL(timeout()), this, SLOT(updateImageData()));
+    connect(updateTimer, &QTimer::timeout, this, &GoToFlow::updateImageData);
 
     worker = new PageLoader(&mutexGoToFlow);
 
@@ -38,13 +38,13 @@ GoToFlow::GoToFlow(QWidget *parent, FlowType flowType)
     imageSize = Configuration::getConfiguration().getGotoSlideSize();
 
     flow->setSlideSize(imageSize);
-    connect(flow, SIGNAL(centerIndexChanged(int)), this, SLOT(setPageNumber(int)));
-    connect(flow, SIGNAL(selected(unsigned int)), this, SIGNAL(goToPage(unsigned int)));
+    connect(flow, &PictureFlow::centerIndexChanged, this, &GoToFlowWidget::setPageNumber);
+    connect(flow, &YACReaderFlow::selected, this, &GoToFlow::goToPage);
     connect(flow, &PictureFlow::centerIndexChanged, this, &GoToFlow::preload);
     connect(flow, &PictureFlow::centerIndexChangedSilent, this, &GoToFlow::preload);
 
     connect(toolBar, SIGNAL(goTo(unsigned int)), this, SIGNAL(goToPage(unsigned int)));
-    connect(toolBar, SIGNAL(setCenter(unsigned int)), flow, SLOT(showSlide(unsigned int)));
+    connect(toolBar, &GoToFlowToolBar::setCenter, flow, &PictureFlow::showSlide);
 
     mainLayout->addWidget(flow);
     toolBar->raise();

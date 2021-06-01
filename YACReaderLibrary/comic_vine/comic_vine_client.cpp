@@ -64,9 +64,9 @@ ComicVineClient::~ComicVineClient()
 void ComicVineClient::search(const QString &query, int page)
 {
     HttpWorker *search = new HttpWorker(QString(CV_SEARCH).replace(CV_WEB_ADDRESS, baseURL).replace(CV_API_KEY, settings->value(COMIC_VINE_API_KEY, CV_API_KEY_DEFAULT).toString()).arg(query).arg(page));
-    connect(search, SIGNAL(dataReady(const QByteArray &)), this, SLOT(proccessVolumesSearchData(const QByteArray &)));
-    connect(search, SIGNAL(timeout()), this, SIGNAL(timeOut()));
-    connect(search, SIGNAL(finished()), search, SLOT(deleteLater()));
+    connect(search, &HttpWorker::dataReady, this, &ComicVineClient::proccessVolumesSearchData);
+    connect(search, &HttpWorker::timeout, this, &ComicVineClient::timeOut);
+    connect(search, &QThread::finished, search, &QObject::deleteLater);
     search->get();
 }
 //CV_SEARCH result
@@ -102,18 +102,18 @@ void ComicVineClient::proccessComicDetailData(const QByteArray &data)
 void ComicVineClient::getSeriesDetail(const QString &id)
 {
     HttpWorker *search = new HttpWorker(QString(CV_SERIES_DETAIL).replace(CV_WEB_ADDRESS, baseURL).replace(CV_API_KEY, settings->value(COMIC_VINE_API_KEY, CV_API_KEY_DEFAULT).toString()).arg(id));
-    connect(search, SIGNAL(dataReady(const QByteArray &)), this, SLOT(proccessSeriesDetailData(const QByteArray &)));
-    connect(search, SIGNAL(timeout()), this, SIGNAL(timeOut()));
-    connect(search, SIGNAL(finished()), search, SLOT(deleteLater()));
+    connect(search, &HttpWorker::dataReady, this, &ComicVineClient::proccessSeriesDetailData);
+    connect(search, &HttpWorker::timeout, this, &ComicVineClient::timeOut);
+    connect(search, &QThread::finished, search, &QObject::deleteLater);
     search->get();
 }
 
 void ComicVineClient::getSeriesCover(const QString &url)
 {
     auto search = new HttpWorker(url);
-    connect(search, SIGNAL(dataReady(const QByteArray &)), this, SIGNAL(seriesCover(const QByteArray &)));
-    connect(search, SIGNAL(timeout()), this, SIGNAL(timeOut())); //TODO
-    connect(search, SIGNAL(finished()), search, SLOT(deleteLater()));
+    connect(search, &HttpWorker::dataReady, this, &ComicVineClient::seriesCover);
+    connect(search, &HttpWorker::timeout, this, &ComicVineClient::timeOut); //TODO
+    connect(search, &QThread::finished, search, &QObject::deleteLater);
     search->get();
 }
 
@@ -121,9 +121,9 @@ void ComicVineClient::getSeriesCover(const QString &url)
 void ComicVineClient::getVolumeComicsInfo(const QString &idVolume, int page)
 {
     HttpWorker *search = new HttpWorker(QString(CV_COMICS_INFO).replace(CV_WEB_ADDRESS, baseURL).replace(CV_API_KEY, settings->value(COMIC_VINE_API_KEY, CV_API_KEY_DEFAULT).toString()).arg(idVolume).arg((page - 1) * 100)); //page doesn't work for search, using offset instead
-    connect(search, SIGNAL(dataReady(const QByteArray &)), this, SLOT(processVolumeComicsInfo(const QByteArray &)));
-    connect(search, SIGNAL(timeout()), this, SIGNAL(timeOut())); //TODO
-    connect(search, SIGNAL(finished()), search, SLOT(deleteLater()));
+    connect(search, &HttpWorker::dataReady, this, &ComicVineClient::processVolumeComicsInfo);
+    connect(search, &HttpWorker::timeout, this, &ComicVineClient::timeOut); //TODO
+    connect(search, &QThread::finished, search, &QObject::deleteLater);
     search->get();
 }
 
@@ -170,9 +170,9 @@ void ComicVineClient::getComicDetailAsync(const QString &id)
 {
     HttpWorker *search = new HttpWorker(QString(CV_COMIC_DETAIL).replace(CV_WEB_ADDRESS, baseURL).replace(CV_API_KEY, settings->value(COMIC_VINE_API_KEY, CV_API_KEY_DEFAULT).toString()).arg(id));
 
-    connect(search, SIGNAL(dataReady(const QByteArray &)), this, SLOT(proccessComicDetailData(const QByteArray &)));
-    connect(search, SIGNAL(timeout()), this, SIGNAL(timeOut()));
-    connect(search, SIGNAL(finished()), search, SLOT(deleteLater()));
+    connect(search, &HttpWorker::dataReady, this, &ComicVineClient::proccessComicDetailData);
+    connect(search, &HttpWorker::timeout, this, &ComicVineClient::timeOut);
+    connect(search, &QThread::finished, search, &QObject::deleteLater);
     search->get();
 }
 
@@ -197,9 +197,9 @@ QByteArray ComicVineClient::getStoryArcDetail(const QString &id, bool &outError,
 void ComicVineClient::getComicCover(const QString &url)
 {
     auto search = new HttpWorker(url);
-    connect(search, SIGNAL(dataReady(const QByteArray &)), this, SIGNAL(comicCover(QByteArray)));
-    connect(search, SIGNAL(timeout()), this, SIGNAL(timeOut())); //TODO
-    connect(search, SIGNAL(finished()), search, SLOT(deleteLater()));
+    connect(search, &HttpWorker::dataReady, this, &ComicVineClient::comicCover);
+    connect(search, &HttpWorker::timeout, this, &ComicVineClient::timeOut); //TODO
+    connect(search, &QThread::finished, search, &QObject::deleteLater);
     search->get();
 }
 

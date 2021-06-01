@@ -120,8 +120,8 @@ void PropertiesDialog::createCoverBox()
     //busyIndicator->move((280-busyIndicator->width())/2,(444-busyIndicator->height()-28)/2);
     //busyIndicator->hide();
 
-    connect(showPreviousCoverPageButton, SIGNAL(clicked()), this, SLOT(loadPreviousCover()));
-    connect(showNextCoverPageButton, SIGNAL(clicked()), this, SLOT(loadNextCover()));
+    connect(showPreviousCoverPageButton, &QAbstractButton::clicked, this, &PropertiesDialog::loadPreviousCover);
+    connect(showNextCoverPageButton, &QAbstractButton::clicked, this, &PropertiesDialog::loadNextCover);
 }
 
 QFrame *createLine()
@@ -299,8 +299,8 @@ void PropertiesDialog::createButtonBox()
     //rotateWidgetsButton = buttonBox->addButton(tr("Rotate &Widgets"),QDialogButtonBox::ActionRole);
 
     //connect(rotateWidgetsButton, SIGNAL(clicked()), this, SLOT(rotateWidgets()));
-    connect(closeButton, SIGNAL(clicked()), this, SLOT(close()));
-    connect(saveButton, SIGNAL(clicked()), this, SLOT(save()));
+    connect(closeButton, &QAbstractButton::clicked, this, &QWidget::close);
+    connect(saveButton, &QAbstractButton::clicked, this, &PropertiesDialog::save);
 }
 
 QImage blurred(const QImage &image, const QRect &rect, int radius, bool alphaOnly = false)

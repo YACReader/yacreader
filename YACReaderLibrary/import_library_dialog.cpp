@@ -17,7 +17,7 @@ void ImportLibraryDialog::setupUI()
     nameLabel = new QLabel(tr("Library Name : "));
     nameEdit = new QLineEdit;
     nameLabel->setBuddy(nameEdit);
-    connect(nameEdit, SIGNAL(textChanged(QString)), this, SLOT(nameEntered()));
+    connect(nameEdit, &QLineEdit::textChanged, this, &ImportLibraryDialog::nameEntered);
 
     textLabel = new QLabel(tr("Package location : "));
     path = new QLineEdit;
@@ -29,17 +29,17 @@ void ImportLibraryDialog::setupUI()
 
     accept = new QPushButton(tr("Unpack"));
     accept->setDisabled(true);
-    connect(accept, SIGNAL(clicked()), this, SLOT(add()));
+    connect(accept, &QAbstractButton::clicked, this, &ImportLibraryDialog::add);
 
     cancel = new QPushButton(tr("Cancel"));
     connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
     //connect(cancel,SIGNAL(clicked()),this,SIGNAL(rejected()));
 
     find = new QPushButton(QIcon(":/images/find_folder.png"), "");
-    connect(find, SIGNAL(clicked()), this, SLOT(findPath()));
+    connect(find, &QAbstractButton::clicked, this, &ImportLibraryDialog::findPath);
 
     findDest = new QPushButton(QIcon(":/images/find_folder.png"), "");
-    connect(findDest, SIGNAL(clicked()), this, SLOT(findDestination()));
+    connect(findDest, &QAbstractButton::clicked, this, &ImportLibraryDialog::findDestination);
 
     auto content = new QGridLayout;
 

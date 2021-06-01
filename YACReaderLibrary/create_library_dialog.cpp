@@ -17,23 +17,23 @@ void CreateLibraryDialog::setupUI()
     textLabel = new QLabel(tr("Comics folder : "));
     path = new QLineEdit;
     textLabel->setBuddy(path);
-    connect(path, SIGNAL(textChanged(QString)), this, SLOT(pathSetted(QString)));
+    connect(path, &QLineEdit::textChanged, this, &CreateLibraryDialog::pathSetted);
 
     nameLabel = new QLabel(tr("Library Name : "));
     nameEdit = new QLineEdit;
     nameLabel->setBuddy(nameEdit);
-    connect(nameEdit, SIGNAL(textChanged(QString)), this, SLOT(nameSetted(QString)));
+    connect(nameEdit, &QLineEdit::textChanged, this, &CreateLibraryDialog::nameSetted);
 
     accept = new QPushButton(tr("Create"));
     accept->setDisabled(true);
     connect(accept, SIGNAL(clicked()), this, SLOT(create()));
 
     cancel = new QPushButton(tr("Cancel"));
-    connect(cancel, SIGNAL(clicked()), this, SIGNAL(cancelCreate()));
+    connect(cancel, &QAbstractButton::clicked, this, &CreateLibraryDialog::cancelCreate);
     connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
 
     find = new QPushButton(QIcon(":/images/find_folder.png"), "");
-    connect(find, SIGNAL(clicked()), this, SLOT(findPath()));
+    connect(find, &QAbstractButton::clicked, this, &CreateLibraryDialog::findPath);
 
     auto content = new QGridLayout;
 
@@ -160,7 +160,7 @@ UpdateLibraryDialog::UpdateLibraryDialog(QWidget *parent)
     bottom->addStretch();
     bottom->addWidget(cancel = new QPushButton(tr("Cancel")));
 
-    connect(cancel, SIGNAL(clicked()), this, SIGNAL(cancelUpdate()));
+    connect(cancel, &QAbstractButton::clicked, this, &UpdateLibraryDialog::cancelUpdate);
     connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
 
     mainLayout->addStretch();

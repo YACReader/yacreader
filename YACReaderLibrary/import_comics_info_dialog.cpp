@@ -19,14 +19,14 @@ ImportComicsInfoDialog::ImportComicsInfoDialog(QWidget *parent)
 
     accept = new QPushButton(tr("Import"));
     accept->setDisabled(true);
-    connect(accept, SIGNAL(clicked()), this, SLOT(import()));
+    connect(accept, &QAbstractButton::clicked, this, &ImportComicsInfoDialog::import);
 
     cancel = new QPushButton(tr("Cancel"));
     connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
     //connect(cancel,SIGNAL(clicked()),this,SIGNAL(rejected()));
 
     find = new QPushButton(QIcon(":/images/find_folder.png"), "");
-    connect(find, SIGNAL(clicked()), this, SLOT(findPath()));
+    connect(find, &QAbstractButton::clicked, this, &ImportComicsInfoDialog::findPath);
 
     auto libraryLayout = new QHBoxLayout;
 
@@ -40,7 +40,7 @@ ImportComicsInfoDialog::ImportComicsInfoDialog(QWidget *parent)
     progressBar->setMaximum(0);
     progressBar->setTextVisible(false);
     progressBar->hide();
-    connect(accept, SIGNAL(clicked()), progressBar, SLOT(show()));
+    connect(accept, &QAbstractButton::clicked, progressBar, &QWidget::show);
 
     auto bottomLayout = new QHBoxLayout;
     bottomLayout->addStretch();
@@ -86,7 +86,7 @@ void ImportComicsInfoDialog::import()
     importer->source = path->text();
     importer->dest = dest;
     connect(importer, SIGNAL(finished()), this, SLOT(close()));
-    connect(importer, SIGNAL(finished()), this, SLOT(hide()));
+    connect(importer, &QThread::finished, this, &QWidget::hide);
     importer->start();
 }
 

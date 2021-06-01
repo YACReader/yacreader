@@ -106,17 +106,17 @@ void ComicVineDialog::doStackedWidgets()
 
 void ComicVineDialog::doConnections()
 {
-    connect(closeButton, SIGNAL(clicked()), this, SLOT(close()));
-    connect(nextButton, SIGNAL(clicked()), this, SLOT(goNext()));
-    connect(backButton, SIGNAL(clicked()), this, SLOT(goBack()));
-    connect(searchButton, SIGNAL(clicked()), this, SLOT(search()));
-    connect(skipButton, SIGNAL(clicked()), this, SLOT(goToNextComic()));
+    connect(closeButton, &QAbstractButton::clicked, this, &QWidget::close);
+    connect(nextButton, &QAbstractButton::clicked, this, &ComicVineDialog::goNext);
+    connect(backButton, &QAbstractButton::clicked, this, &ComicVineDialog::goBack);
+    connect(searchButton, &QAbstractButton::clicked, this, &ComicVineDialog::search);
+    connect(skipButton, &QAbstractButton::clicked, this, &ComicVineDialog::goToNextComic);
 
-    connect(selectVolumeWidget, SIGNAL(loadPage(QString, int)), this, SLOT(searchVolume(QString, int)));
-    connect(selectComicWidget, SIGNAL(loadPage(QString, int)), this, SLOT(getVolumeComicsInfo(QString, int)));
-    connect(sortVolumeComicsWidget, SIGNAL(loadPage(QString, int)), this, SLOT(getVolumeComicsInfo(QString, int)));
+    connect(selectVolumeWidget, &ScraperSelector::loadPage, this, &ComicVineDialog::searchVolume);
+    connect(selectComicWidget, &ScraperSelector::loadPage, this, &ComicVineDialog::getVolumeComicsInfo);
+    connect(sortVolumeComicsWidget, &ScraperSelector::loadPage, this, &ComicVineDialog::getVolumeComicsInfo);
 
-    connect(this, SIGNAL(accepted()), this, SLOT(close()), Qt::QueuedConnection);
+    connect(this, &QDialog::accepted, this, &QWidget::close, Qt::QueuedConnection);
 }
 
 void ComicVineDialog::goNext()
@@ -749,9 +749,9 @@ void ComicVineDialog::searchVolume(const QString &v, int page)
     currentVolumeSearchString = v;
 
     auto comicVineClient = new ComicVineClient;
-    connect(comicVineClient, SIGNAL(searchResult(QString)), this, SLOT(debugClientResults(QString)));
-    connect(comicVineClient, SIGNAL(timeOut()), this, SLOT(queryTimeOut()));
-    connect(comicVineClient, SIGNAL(finished()), comicVineClient, SLOT(deleteLater()));
+    connect(comicVineClient, &ComicVineClient::searchResult, this, &ComicVineDialog::debugClientResults);
+    connect(comicVineClient, &ComicVineClient::timeOut, this, &ComicVineDialog::queryTimeOut);
+    connect(comicVineClient, &ComicVineClient::finished, comicVineClient, &QObject::deleteLater);
     comicVineClient->search(v, page);
 
     status = SearchingVolume;
@@ -765,11 +765,11 @@ void ComicVineDialog::getVolumeComicsInfo(const QString &vID, int /* page */)
 
     auto comicVineClient = new ComicVineClient;
     if (mode == Volume)
-        connect(comicVineClient, SIGNAL(volumeComicsInfo(QString)), this, SLOT(showSortVolumeComics(QString)));
+        connect(comicVineClient, &ComicVineClient::volumeComicsInfo, this, &ComicVineDialog::showSortVolumeComics);
     else
-        connect(comicVineClient, SIGNAL(volumeComicsInfo(QString)), this, SLOT(showSelectComic(QString)));
-    connect(comicVineClient, SIGNAL(timeOut()), this, SLOT(queryTimeOut()));
-    connect(comicVineClient, SIGNAL(finished()), comicVineClient, SLOT(deleteLater()));
+        connect(comicVineClient, &ComicVineClient::volumeComicsInfo, this, &ComicVineDialog::showSelectComic);
+    connect(comicVineClient, &ComicVineClient::timeOut, this, &ComicVineDialog::queryTimeOut);
+    connect(comicVineClient, &ComicVineClient::finished, comicVineClient, &QObject::deleteLater);
 
     QLOG_TRACE() << vID;
 

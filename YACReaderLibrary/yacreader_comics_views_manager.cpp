@@ -31,7 +31,7 @@ YACReaderComicsViewsManager::YACReaderComicsViewsManager(QSettings *settings, Li
 
     case Grid:
         comicsView = gridComicsView = new GridComicsView();
-        connect(libraryWindow->optionsDialog, SIGNAL(optionsChanged()), gridComicsView, SLOT(updateBackgroundConfig()));
+        connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::optionsChanged, gridComicsView, &GridComicsView::updateBackgroundConfig);
         comicsViewStatus = Grid;
         break;
 
@@ -114,8 +114,8 @@ void YACReaderComicsViewsManager::showNoSearchResultsView()
 void YACReaderComicsViewsManager::toggleComicsView()
 {
     if (comicsViewStack->currentWidget() == comicsView) {
-        QTimer::singleShot(0, this, SLOT(showComicsViewTransition()));
-        QTimer::singleShot(100, this, SLOT(_toggleComicsView()));
+        QTimer::singleShot(0, this, &YACReaderComicsViewsManager::showComicsViewTransition);
+        QTimer::singleShot(100, this, &YACReaderComicsViewsManager::_toggleComicsView);
     } else {
         _toggleComicsView();
     }
@@ -130,28 +130,28 @@ void YACReaderComicsViewsManager::focusComicsViewViaShortcut()
 
 void YACReaderComicsViewsManager::disconnectComicsViewConnections(ComicsView *widget)
 {
-    disconnect(widget, SIGNAL(comicRated(int, QModelIndex)), libraryWindow->comicsModel, SLOT(updateRating(int, QModelIndex)));
-    disconnect(libraryWindow->showHideMarksAction, SIGNAL(toggled(bool)), widget, SLOT(setShowMarks(bool)));
-    disconnect(widget, SIGNAL(selected(unsigned int)), libraryWindow, SLOT(openComic()));
-    disconnect(widget, SIGNAL(openComic(ComicDB)), libraryWindow, SLOT(openComic(ComicDB)));
-    disconnect(libraryWindow->selectAllComicsAction, SIGNAL(triggered()), widget, SLOT(selectAll()));
+    disconnect(widget, &ComicsView::comicRated, libraryWindow->comicsModel, &ComicModel::updateRating);
+    disconnect(libraryWindow->showHideMarksAction, &QAction::toggled, widget, &ComicsView::setShowMarks);
+    disconnect(widget, &ComicsView::selected, libraryWindow, QOverload<>::of(&LibraryWindow::openComic));
+    disconnect(widget, &ComicsView::openComic, libraryWindow, QOverload<const ComicDB &, const ComicModel::Mode>::of(&LibraryWindow::openComic));
+    disconnect(libraryWindow->selectAllComicsAction, &QAction::triggered, widget, &ComicsView::selectAll);
     disconnect(comicsView, SIGNAL(copyComicsToCurrentFolder(QList<QPair<QString, QString>>)), libraryWindow, SLOT(copyAndImportComicsToCurrentFolder(QList<QPair<QString, QString>>)));
     disconnect(comicsView, SIGNAL(moveComicsToCurrentFolder(QList<QPair<QString, QString>>)), libraryWindow, SLOT(moveAndImportComicsToCurrentFolder(QList<QPair<QString, QString>>)));
-    disconnect(comicsView, SIGNAL(customContextMenuViewRequested(QPoint)), libraryWindow, SLOT(showComicsViewContextMenu(QPoint)));
-    disconnect(comicsView, SIGNAL(customContextMenuItemRequested(QPoint)), libraryWindow, SLOT(showComicsItemContextMenu(QPoint)));
+    disconnect(comicsView, &ComicsView::customContextMenuViewRequested, libraryWindow, &LibraryWindow::showComicsViewContextMenu);
+    disconnect(comicsView, &ComicsView::customContextMenuItemRequested, libraryWindow, &LibraryWindow::showComicsItemContextMenu);
 }
 
 void YACReaderComicsViewsManager::doComicsViewConnections()
 {
-    connect(comicsView, SIGNAL(comicRated(int, QModelIndex)), libraryWindow->comicsModel, SLOT(updateRating(int, QModelIndex)));
-    connect(libraryWindow->showHideMarksAction, SIGNAL(toggled(bool)), comicsView, SLOT(setShowMarks(bool)));
-    connect(comicsView, SIGNAL(selected(unsigned int)), libraryWindow, SLOT(openComic()));
-    connect(comicsView, SIGNAL(openComic(const ComicDB &, const ComicModel::Mode)), libraryWindow, SLOT(openComic(const ComicDB &, const ComicModel::Mode)));
+    connect(comicsView, &ComicsView::comicRated, libraryWindow->comicsModel, &ComicModel::updateRating);
+    connect(libraryWindow->showHideMarksAction, &QAction::toggled, comicsView, &ComicsView::setShowMarks);
+    connect(comicsView, &ComicsView::selected, libraryWindow, QOverload<>::of(&LibraryWindow::openComic));
+    connect(comicsView, &ComicsView::openComic, libraryWindow, QOverload<const ComicDB &, const ComicModel::Mode>::of(&LibraryWindow::openComic));
 
-    connect(libraryWindow->selectAllComicsAction, SIGNAL(triggered()), comicsView, SLOT(selectAll()));
+    connect(libraryWindow->selectAllComicsAction, &QAction::triggered, comicsView, &ComicsView::selectAll);
 
-    connect(comicsView, SIGNAL(customContextMenuViewRequested(QPoint)), libraryWindow, SLOT(showComicsViewContextMenu(QPoint)));
-    connect(comicsView, SIGNAL(customContextMenuItemRequested(QPoint)), libraryWindow, SLOT(showComicsItemContextMenu(QPoint)));
+    connect(comicsView, &ComicsView::customContextMenuViewRequested, libraryWindow, &LibraryWindow::showComicsViewContextMenu);
+    connect(comicsView, &ComicsView::customContextMenuItemRequested, libraryWindow, &LibraryWindow::showComicsItemContextMenu);
     //Drops
     connect(comicsView, SIGNAL(copyComicsToCurrentFolder(QList<QPair<QString, QString>>)), libraryWindow, SLOT(copyAndImportComicsToCurrentFolder(QList<QPair<QString, QString>>)));
     connect(comicsView, SIGNAL(moveComicsToCurrentFolder(QList<QPair<QString, QString>>)), libraryWindow, SLOT(moveAndImportComicsToCurrentFolder(QList<QPair<QString, QString>>)));
@@ -200,7 +200,7 @@ void YACReaderComicsViewsManager::_toggleComicsView()
             gridComicsView = new GridComicsView();
 
         switchToComicsView(classicComicsView, gridComicsView);
-        connect(libraryWindow->optionsDialog, SIGNAL(optionsChanged()), gridComicsView, SLOT(updateBackgroundConfig()));
+        connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::optionsChanged, gridComicsView, &GridComicsView::updateBackgroundConfig);
         comicsViewStatus = Grid;
 
         break;

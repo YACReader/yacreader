@@ -57,7 +57,7 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
     centerButton->setStyleSheet(centerButtonCSS);
     centerButton->setFixedSize(26, 50);
     centerButton->setAttribute(Qt::WA_LayoutUsesWidgetRect, true);
-    connect(centerButton, SIGNAL(clicked()), this, SLOT(centerSlide()));
+    connect(centerButton, &QAbstractButton::clicked, this, &GoToFlowToolBar::centerSlide);
 
     QString goToButtonCSS = "QPushButton {background-image: url(:/images/imgGoToSlide.png); width: 100%; height:100%; background-repeat: none; border: none;} "
                             "QPushButton:focus { border: none; outline: none;}"

@@ -195,7 +195,7 @@ ImportWidget::ImportWidget(QWidget *parent)
                               "  QToolButton:checked {background:url(\":/images/hiddenCovers.png\"); border:none;}");
     hideButton->setCheckable(true);
 
-    connect(hideButton, SIGNAL(toggled(bool)), this, SLOT(showCovers(bool)));
+    connect(hideButton, &QAbstractButton::toggled, this, &ImportWidget::showCovers);
 
     layout->addWidget(coversLabel, 0, Qt::AlignHCenter);
     layout->addWidget(coversViewContainer);
@@ -203,7 +203,7 @@ ImportWidget::ImportWidget(QWidget *parent)
     layout->addWidget(currentComicLabel, 0, Qt::AlignHCenter);
     layout->setContentsMargins(0, layout->contentsMargins().top(), 0, layout->contentsMargins().bottom());
 
-    connect(stop, SIGNAL(clicked()), this, SIGNAL(stop()));
+    connect(stop, &QAbstractButton::clicked, this, &ImportWidget::stop);
     //connect(stop,SIGNAL(clicked()),this,SLOT(addCoverTest()));
 
     previousWidth = 0;
