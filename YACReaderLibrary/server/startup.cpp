@@ -54,8 +54,7 @@ void Startup::start(quint16 port)
     templatePath = QFileInfo(QCoreApplication::applicationDirPath(), baseTemplatePath).absoluteFilePath();
 #endif
 
-    if (templateSettings->value("path").isNull())
-        templateSettings->setValue("path", templatePath);
+    templateSettings->setValue("path", templatePath);
 
     Static::templateLoader = new TemplateCache(templateSettings, app);
 
@@ -85,8 +84,7 @@ void Startup::start(quint16 port)
     docroot = QFileInfo(QCoreApplication::applicationDirPath(), basedocroot).absoluteFilePath();
 #endif
 
-    if (fileSettings->value("path").isNull())
-        fileSettings->setValue("path", docroot);
+    fileSettings->setValue("path", docroot);
 
     Static::staticFileController = new StaticFileController(fileSettings, app);
 
