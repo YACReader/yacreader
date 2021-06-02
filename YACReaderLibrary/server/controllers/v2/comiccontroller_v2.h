@@ -5,10 +5,6 @@
 #include "httpresponse.h"
 #include "httprequesthandler.h"
 
-#include <QThread>
-class Comic;
-class QString;
-
 class ComicControllerV2 : public stefanfrings::HttpRequestHandler
 {
     Q_OBJECT

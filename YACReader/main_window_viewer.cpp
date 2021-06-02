@@ -851,11 +851,12 @@ void MainWindowViewer::open(QString path, ComicDB &comic, QList<ComicDB> &siblin
     optionsDialog->setFilters(currentComicDB.info.brightness, currentComicDB.info.contrast, currentComicDB.info.gamma);
 }
 
-void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId)
+void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId, OpenComicSource source)
 {
     currentDirectory = path;
 
     this->libraryId = libraryId;
+    this->source = source;
 
     enableActions();
 
@@ -863,7 +864,7 @@ void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId)
     YACReaderLocalClient client;
     int tries = 1;
     bool success = false;
-    while (!(success = client.requestComicInfo(libraryId, currentComicDB, siblingComics)) && tries != 0)
+    while (!(success = client.requestComicInfo(libraryId, currentComicDB, siblingComics, source)) && tries != 0)
         tries--;
 
     if (success) {

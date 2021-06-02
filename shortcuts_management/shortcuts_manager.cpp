@@ -27,6 +27,7 @@ void ShortcutsManager::initDefaultShorcuts()
     defaultShorcuts.insert(COLAPSE_ALL_NODES_ACTION_YL, Qt::Key_Minus);
     defaultShorcuts.insert(OPTIONS_ACTION_YL, Qt::Key_C);
     defaultShorcuts.insert(SERVER_CONFIG_ACTION_YL, Qt::Key_S);
+    defaultShorcuts.insert(QUIT_ACTION_YL, Qt::CTRL | Qt::Key_Q);
     defaultShorcuts.insert(TOGGLE_COMICS_VIEW_ACTION_YL, Qt::Key_V);
 
     //COMMANDS (used in keypressevent)

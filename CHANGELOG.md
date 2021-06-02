@@ -4,6 +4,12 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ## WIP
 
+## 9.8.1
+### YACReaderLibrary
+* Fix "reading lists" reading order on YACReader. Now YACReader is able to open the right comics in the right order.
+### Server
+* Fix "reading lists" reading order on YACReader for iOS. Now YACReader for iOS is able to open the right comics in the right order (ios app 3.15.0 or newer is needed).
+
 ## 9.8.0
 ### YACReader
 * Add support for full manga mode.

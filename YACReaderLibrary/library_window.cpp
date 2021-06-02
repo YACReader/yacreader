@@ -86,6 +86,8 @@
 
 #include "whats_new_controller.h"
 
+#include "library_comic_opener.h"
+
 #include "QsLog.h"
 
 #ifdef Q_OS_WIN
@@ -394,7 +396,8 @@ void LibraryWindow::setUpShortcutsManagement()
                                                  << helpAboutAction
                                                  << optionsAction
                                                  << serverConfigAction
-                                                 << showEditShortcutsAction);
+                                                 << showEditShortcutsAction
+                                                 << quitAction);
 
     allActions << tmpList;
 
@@ -749,6 +752,13 @@ void LibraryWindow::createActions()
     showEditShortcutsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_EDIT_SHORTCUTS_ACTION_YL));
     showEditShortcutsAction->setShortcutContext(Qt::ApplicationShortcut);
     addAction(showEditShortcutsAction);
+
+    quitAction = new QAction(tr("&Quit"), this);
+    quitAction->setIcon(QIcon(":/images/viewer_toolbar/close.png"));
+    quitAction->setData(QUIT_ACTION_YL);
+    quitAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(QUIT_ACTION_YL));
+    // TODO: is `quitAction->setMenuRole(QAction::QuitRole);` useful on macOS?
+    addAction(quitAction);
 
     updateFolderAction = new QAction(tr("Update folder"), this);
     updateFolderAction->setIcon(QIcon(":/images/menus_icons/updateLibraryIcon.png"));
@@ -1176,6 +1186,8 @@ void LibraryWindow::createConnections()
     connect(focusComicsViewAction, &QAction::triggered, comicsViewsManager, &YACReaderComicsViewsManager::focusComicsViewViaShortcut);
 
     connect(showEditShortcutsAction, SIGNAL(triggered()), editShortcutsDialog, SLOT(show()));
+
+    connect(quitAction, &QAction::triggered, this, &LibraryWindow::closeApp);
 
     //update folders (partial updates)
     connect(updateCurrentFolderAction, SIGNAL(triggered()), this, SLOT(updateCurrentFolder()));
@@ -1825,37 +1837,27 @@ void LibraryWindow::checkEmptyFolder()
     }
 }
 
-void LibraryWindow::openComic(const ComicDB &comic)
+void LibraryWindow::openComic()
 {
     if (!importedCovers) {
-        //TODO generate IDS for libraries...
-        quint64 libraryId = libraries.getId(selectedLibrary->currentText());
-        bool yacreaderFound = false;
+        auto libraryId = libraries.getId(selectedLibrary->currentText());
 
-#ifdef Q_OS_MACOS
-        QStringList possiblePaths { QDir::cleanPath(QCoreApplication::applicationDirPath() + "/../../../") };
-        possiblePaths += QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation);
+        auto comic = comicsModel->getComic(comicsViewsManager->comicsView->currentIndex());
+        auto mode = comicsModel->getMode();
 
-        for (auto &&ypath : possiblePaths) {
-            QString yacreaderPath = QDir::cleanPath(ypath + "/YACReader.app");
-            if (QFileInfo(yacreaderPath).exists()) {
-                yacreaderFound = true;
-                QStringList parameters { "-n", yacreaderPath, "--args", currentPath(), QString("--comicId=%1").arg(comic.id), QString("--libraryId=%1").arg(libraryId) };
-                QProcess::startDetached("open", parameters);
-                break;
-            }
+        OpenComicSource::Source source;
+
+        if (mode == ComicModel::ReadingList) {
+            source = OpenComicSource::Source::ReadingList;
+        } else if (mode == ComicModel::Reading) {
+            //TODO check where the comic was opened from the last time it was read
+            source = OpenComicSource::Source::Folder;
+        } else {
+            source = OpenComicSource::Source::Folder;
         }
-#endif
 
-#ifdef Q_OS_WIN
-        QStringList parameters { currentPath(), QString("--comicId=%1").arg(comic.id), QString("--libraryId=%1").arg(libraryId) };
-        yacreaderFound = QProcess::startDetached(QDir::cleanPath(QCoreApplication::applicationDirPath() + "/YACReader.exe"), parameters);
-#endif
+        auto yacreaderFound = YACReader::openComic(comic, libraryId, currentPath(), OpenComicSource { source, comicsModel->getSourceId() });
 
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
-        QStringList parameters { currentPath(), QString("--comicId=%1").arg(comic.id), QString("--libraryId=%1").arg(libraryId) };
-        yacreaderFound = QProcess::startDetached(QStringLiteral("YACReader"), parameters);
-#endif
         if (!yacreaderFound) {
 #ifdef Q_OS_WIN
             QMessageBox::critical(this, tr("YACReader not found"), tr("YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary."));
@@ -1863,14 +1865,6 @@ void LibraryWindow::openComic(const ComicDB &comic)
             QMessageBox::critical(this, tr("YACReader not found"), tr("YACReader not found. There might be a problem with your YACReader installation."));
 #endif
         }
-    }
-}
-
-void LibraryWindow::openComic()
-{
-    if (!importedCovers) {
-        ComicDB comic = comicsModel->getComic(comicsViewsManager->comicsView->currentIndex());
-        openComic(comic);
     }
 }
 

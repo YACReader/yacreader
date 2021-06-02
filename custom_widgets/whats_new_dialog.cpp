@@ -58,11 +58,13 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
                   "   &#8226; New `manga` field added to comics and folders to tag content as manga, any content added to a manga folder will become manga automatically.<br/>"
                   "   &#8226; Support for HTML in comic synopsis, this fixes the synopsis when it comes from Comic Vine with HTML tags.<br/>"
                   "   &#8226; Improve keyboard navigation in Comic Vine dialog. Enter will trigger next or search and Backspace will go back to the previous section.<br/>"
+                  "   &#8226; Fixed opening comics from readings lists, now YACReader will follow the right order and it will open the right comics in the list. (new in 9.8.1)<br/>"
                   "<br/>"
                   "<span style=\"font-weight:600\">Server</span><br/>"
                   "   &#8226; New `manga` field is sent to YACReader for iOS, so comics tagged as manga will be recognized as such when reading remotely or importing comics.<br/>"
+                  "   &#8226; Fixed opening comics from readings lists, now YACReader for iOS will follow the right order and it will open the right comics in the list, it needs YACReader for iOS 3.15.0 or newer. (new in 9.8.1).<br/>"
                   "<br/>"
-                  "I hope you enjoy the new update. Please, if you like YACReader consider to become a patron in <a href=\"https://www.patreon.com/yacreader\" style=\"color:#E8B800;\">Patreon</a> or donate some money using <a href=\"https://www.paypal.com/donate/?token=xi5MT7fEzaKBbx1-CKNgRHKr3vPp7zjaCc8Ic4VUIxHln58eHfDqdO2K0wlubfxNeFK9IWUKSaB54RhB&locale.x=US\" style=\"color:#E8B800;\">Pay-Pal</a> and help keeping the project alive. Remember that there is an iOS version available in the <a href=\"https://apps.apple.com/app/id635717885\" style=\"color:#E8B800;\">Apple App Store</a>.");
+                  "I hope you enjoy the new update. Please, if you like YACReader consider to become a patron in <a href=\"https://www.patreon.com/yacreader\" style=\"color:#E8B800;\">Patreon</a> or donate some money using <a href=\"https://www.paypal.com/donate?business=5TAMNQCDDMVP8&item_name=Support+YACReader\" style=\"color:#E8B800;\">Pay-Pal</a> and help keeping the project alive. Remember that there is an iOS version available in the <a href=\"https://apps.apple.com/app/id635717885\" style=\"color:#E8B800;\">Apple App Store</a>.");
     QFont textLabelFont("Arial", 15, QFont::Light);
     text->setFont(textLabelFont);
     text->setStyleSheet("padding:51px;"
