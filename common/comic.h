@@ -92,6 +92,7 @@ public slots:
     void updateBookmarkImage(int);
     void setPageLoaded(int page);
     void invalidate();
+    virtual void process() {};
 
 signals:
     void invalidated();

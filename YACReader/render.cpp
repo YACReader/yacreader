@@ -751,7 +751,7 @@ void Render::startLoad()
     connect(comic, &Comic::imagesLoaded, thread, &QThread::quit, Qt::QueuedConnection);
     connect(comic, SIGNAL(destroyed()), thread, SLOT(quit()), Qt::QueuedConnection);
     connect(comic, &Comic::invalidated, thread, &QThread::quit, Qt::QueuedConnection);
-    connect(thread, SIGNAL(started()), comic, SLOT(process()));
+    connect(thread, &QThread::started, comic, &Comic::process);
     connect(thread, &QThread::finished, thread, &QObject::deleteLater);
 
     if (thread != nullptr)
