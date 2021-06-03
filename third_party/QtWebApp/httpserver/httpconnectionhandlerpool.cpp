@@ -18,7 +18,7 @@ HttpConnectionHandlerPool::HttpConnectionHandlerPool(const QSettings *settings, 
     this->sslConfiguration=NULL;
     loadSslConfig();
     cleanupTimer.start(settings->value("cleanupInterval",1000).toInt());
-    connect(&cleanupTimer, SIGNAL(timeout()), SLOT(cleanup()));
+    connect(&cleanupTimer, &QTimer::timeout, this, &HttpConnectionHandlerPool::cleanup);
 }
 
 

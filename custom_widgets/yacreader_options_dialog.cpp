@@ -37,73 +37,73 @@ YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget *parent)
     shortcutsBox = new QGroupBox(tr("Shortcuts"));
     shortcutsBox->setLayout(shortcutsLayout);
 
-    connect(shortcutsButton, SIGNAL(clicked()), this, SIGNAL(editShortcuts()));
+    connect(shortcutsButton, &QAbstractButton::clicked, this, &YACReaderOptionsDialog::editShortcuts);
 
-    connect(accept, SIGNAL(clicked()), this, SLOT(saveOptions()));
+    connect(accept, &QAbstractButton::clicked, this, &YACReaderOptionsDialog::saveOptions);
     connect(cancel, SIGNAL(clicked()), this, SLOT(restoreOptions())); //TODO fix this
-    connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
+    connect(cancel, &QAbstractButton::clicked, this, &QWidget::close);
 #ifndef NO_OPENGL
     useGL = new QCheckBox(tr("Use hardware acceleration (restart needed)"));
-    connect(useGL, SIGNAL(stateChanged(int)), this, SLOT(saveUseGL(int)));
+    connect(useGL, &QCheckBox::stateChanged, this, &YACReaderOptionsDialog::saveUseGL);
 #endif
 #ifdef FORCE_ANGLE
     useGL->setHidden(true);
 #endif
     //sw CONNECTIONS
-    connect(sw->radio1, SIGNAL(toggled(bool)), this, SLOT(setClassicConfigSW()));
-    connect(sw->radio2, SIGNAL(toggled(bool)), this, SLOT(setStripeConfigSW()));
-    connect(sw->radio3, SIGNAL(toggled(bool)), this, SLOT(setOverlappedStripeConfigSW()));
+    connect(sw->radio1, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::setClassicConfigSW);
+    connect(sw->radio2, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::setStripeConfigSW);
+    connect(sw->radio3, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::setOverlappedStripeConfigSW);
 #ifndef NO_OPENGL
     //gl CONNECTIONS
-    connect(gl->radioClassic, SIGNAL(toggled(bool)), this, SLOT(setClassicConfig()));
-    connect(gl->radioStripe, SIGNAL(toggled(bool)), this, SLOT(setStripeConfig()));
-    connect(gl->radioOver, SIGNAL(toggled(bool)), this, SLOT(setOverlappedStripeConfig()));
-    connect(gl->radionModern, SIGNAL(toggled(bool)), this, SLOT(setModernConfig()));
-    connect(gl->radioDown, SIGNAL(toggled(bool)), this, SLOT(setRouletteConfig()));
+    connect(gl->radioClassic, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::setClassicConfig);
+    connect(gl->radioStripe, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::setStripeConfig);
+    connect(gl->radioOver, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::setOverlappedStripeConfig);
+    connect(gl->radionModern, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::setModernConfig);
+    connect(gl->radioDown, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::setRouletteConfig);
 
-    connect(gl->radioClassic, SIGNAL(toggled(bool)), this, SIGNAL(optionsChanged()));
-    connect(gl->radioStripe, SIGNAL(toggled(bool)), this, SIGNAL(optionsChanged()));
-    connect(gl->radioOver, SIGNAL(toggled(bool)), this, SIGNAL(optionsChanged()));
-    connect(gl->radionModern, SIGNAL(toggled(bool)), this, SIGNAL(optionsChanged()));
-    connect(gl->radioDown, SIGNAL(toggled(bool)), this, SIGNAL(optionsChanged()));
+    connect(gl->radioClassic, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::optionsChanged);
+    connect(gl->radioStripe, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::optionsChanged);
+    connect(gl->radioOver, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::optionsChanged);
+    connect(gl->radionModern, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::optionsChanged);
+    connect(gl->radioDown, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::optionsChanged);
 
-    connect(gl->xRotation, SIGNAL(valueChanged(int)), this, SLOT(saveXRotation(int)));
-    connect(gl->xRotation, SIGNAL(valueChanged(int)), this, SIGNAL(optionsChanged()));
+    connect(gl->xRotation, &YACReaderSpinSliderWidget::valueChanged, this, &YACReaderOptionsDialog::saveXRotation);
+    connect(gl->xRotation, &YACReaderSpinSliderWidget::valueChanged, this, &YACReaderOptionsDialog::optionsChanged);
 
-    connect(gl->yPosition, SIGNAL(valueChanged(int)), this, SLOT(saveYPosition(int)));
-    connect(gl->yPosition, SIGNAL(valueChanged(int)), this, SIGNAL(optionsChanged()));
+    connect(gl->yPosition, &YACReaderSpinSliderWidget::valueChanged, this, &YACReaderOptionsDialog::saveYPosition);
+    connect(gl->yPosition, &YACReaderSpinSliderWidget::valueChanged, this, &YACReaderOptionsDialog::optionsChanged);
 
-    connect(gl->coverDistance, SIGNAL(valueChanged(int)), this, SLOT(saveCoverDistance(int)));
-    connect(gl->coverDistance, SIGNAL(valueChanged(int)), this, SIGNAL(optionsChanged()));
+    connect(gl->coverDistance, &YACReaderSpinSliderWidget::valueChanged, this, &YACReaderOptionsDialog::saveCoverDistance);
+    connect(gl->coverDistance, &YACReaderSpinSliderWidget::valueChanged, this, &YACReaderOptionsDialog::optionsChanged);
 
-    connect(gl->centralDistance, SIGNAL(valueChanged(int)), this, SLOT(saveCentralDistance(int)));
-    connect(gl->centralDistance, SIGNAL(valueChanged(int)), this, SIGNAL(optionsChanged()));
+    connect(gl->centralDistance, &YACReaderSpinSliderWidget::valueChanged, this, &YACReaderOptionsDialog::saveCentralDistance);
+    connect(gl->centralDistance, &YACReaderSpinSliderWidget::valueChanged, this, &YACReaderOptionsDialog::optionsChanged);
 
-    connect(gl->zoomLevel, SIGNAL(valueChanged(int)), this, SLOT(saveZoomLevel(int)));
-    connect(gl->zoomLevel, SIGNAL(valueChanged(int)), this, SIGNAL(optionsChanged()));
+    connect(gl->zoomLevel, &YACReaderSpinSliderWidget::valueChanged, this, &YACReaderOptionsDialog::saveZoomLevel);
+    connect(gl->zoomLevel, &YACReaderSpinSliderWidget::valueChanged, this, &YACReaderOptionsDialog::optionsChanged);
 
-    connect(gl->yCoverOffset, SIGNAL(valueChanged(int)), this, SLOT(saveYCoverOffset(int)));
-    connect(gl->yCoverOffset, SIGNAL(valueChanged(int)), this, SIGNAL(optionsChanged()));
+    connect(gl->yCoverOffset, &YACReaderSpinSliderWidget::valueChanged, this, &YACReaderOptionsDialog::saveYCoverOffset);
+    connect(gl->yCoverOffset, &YACReaderSpinSliderWidget::valueChanged, this, &YACReaderOptionsDialog::optionsChanged);
 
-    connect(gl->zCoverOffset, SIGNAL(valueChanged(int)), this, SLOT(saveZCoverOffset(int)));
-    connect(gl->zCoverOffset, SIGNAL(valueChanged(int)), this, SIGNAL(optionsChanged()));
+    connect(gl->zCoverOffset, &YACReaderSpinSliderWidget::valueChanged, this, &YACReaderOptionsDialog::saveZCoverOffset);
+    connect(gl->zCoverOffset, &YACReaderSpinSliderWidget::valueChanged, this, &YACReaderOptionsDialog::optionsChanged);
 
-    connect(gl->coverRotation, SIGNAL(valueChanged(int)), this, SLOT(saveCoverRotation(int)));
-    connect(gl->coverRotation, SIGNAL(valueChanged(int)), this, SIGNAL(optionsChanged()));
+    connect(gl->coverRotation, &YACReaderSpinSliderWidget::valueChanged, this, &YACReaderOptionsDialog::saveCoverRotation);
+    connect(gl->coverRotation, &YACReaderSpinSliderWidget::valueChanged, this, &YACReaderOptionsDialog::optionsChanged);
 
-    connect(gl->fadeOutDist, SIGNAL(valueChanged(int)), this, SLOT(saveFadeOutDist(int)));
-    connect(gl->fadeOutDist, SIGNAL(valueChanged(int)), this, SIGNAL(optionsChanged()));
+    connect(gl->fadeOutDist, &YACReaderSpinSliderWidget::valueChanged, this, &YACReaderOptionsDialog::saveFadeOutDist);
+    connect(gl->fadeOutDist, &YACReaderSpinSliderWidget::valueChanged, this, &YACReaderOptionsDialog::optionsChanged);
 
-    connect(gl->lightStrength, SIGNAL(valueChanged(int)), this, SLOT(saveLightStrength(int)));
-    connect(gl->lightStrength, SIGNAL(valueChanged(int)), this, SIGNAL(optionsChanged()));
+    connect(gl->lightStrength, &YACReaderSpinSliderWidget::valueChanged, this, &YACReaderOptionsDialog::saveLightStrength);
+    connect(gl->lightStrength, &YACReaderSpinSliderWidget::valueChanged, this, &YACReaderOptionsDialog::optionsChanged);
 
-    connect(gl->maxAngle, SIGNAL(valueChanged(int)), this, SLOT(saveMaxAngle(int)));
-    connect(gl->maxAngle, SIGNAL(valueChanged(int)), this, SIGNAL(optionsChanged()));
+    connect(gl->maxAngle, &YACReaderSpinSliderWidget::valueChanged, this, &YACReaderOptionsDialog::saveMaxAngle);
+    connect(gl->maxAngle, &YACReaderSpinSliderWidget::valueChanged, this, &YACReaderOptionsDialog::optionsChanged);
 
-    connect(gl->performanceSlider, SIGNAL(valueChanged(int)), this, SLOT(savePerformance(int)));
-    connect(gl->performanceSlider, SIGNAL(valueChanged(int)), this, SIGNAL(optionsChanged()));
+    connect(gl->performanceSlider, &QAbstractSlider::valueChanged, this, &YACReaderOptionsDialog::savePerformance);
+    connect(gl->performanceSlider, &QAbstractSlider::valueChanged, this, &YACReaderOptionsDialog::optionsChanged);
 
-    connect(gl->vSyncCheck, SIGNAL(stateChanged(int)), this, SLOT(saveUseVSync(int)));
+    connect(gl->vSyncCheck, &QCheckBox::stateChanged, this, &YACReaderOptionsDialog::saveUseVSync);
 #endif
 }
 

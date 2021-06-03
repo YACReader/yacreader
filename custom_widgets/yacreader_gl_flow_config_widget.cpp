@@ -75,7 +75,7 @@ YACReaderGLFlowConfigWidget::YACReaderGLFlowConfigWidget(QWidget *parent /* = 0 
 
     showAdvancedOptions = new QPushButton(tr("Show advanced settings"));
     showAdvancedOptions->setCheckable(true);
-    connect(showAdvancedOptions, SIGNAL(toggled(bool)), this, SLOT(avancedOptionToogled(bool)));
+    connect(showAdvancedOptions, &QAbstractButton::toggled, this, &YACReaderGLFlowConfigWidget::avancedOptionToogled);
 
     vbox->addWidget(showAdvancedOptions, 0, Qt::AlignRight);
 

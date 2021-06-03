@@ -42,7 +42,7 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QStrin
     options->setFixedWidth(18);
     options->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     options->setStyleSheet("QToolButton {border:none;}");
-    connect(options, SIGNAL(clicked()), this, SIGNAL(showOptions()));
+    connect(options, &QAbstractButton::clicked, this, &YACReaderLibraryItemWidget::showOptions);
     /*up = new QToolButton(this);
 	up->setIcon(QIcon(":/images/libraryUp.png"));
 	up->setHidden(true);

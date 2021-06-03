@@ -126,7 +126,7 @@ Comic::~Comic()
 //-----------------------------------------------------------------------------
 void Comic::setup()
 {
-    connect(this, SIGNAL(pageChanged(int)), this, SLOT(checkIsBookmark(int)));
+    connect(this, &Comic::pageChanged, this, &Comic::checkIsBookmark);
     connect(this, SIGNAL(imageLoaded(int)), this, SLOT(updateBookmarkImage(int)));
     connect(this, SIGNAL(imageLoaded(int)), this, SLOT(setPageLoaded(int)));
 

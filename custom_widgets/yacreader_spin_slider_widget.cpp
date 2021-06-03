@@ -23,12 +23,12 @@ YACReaderSpinSliderWidget::YACReaderSpinSliderWidget(QWidget *parent, bool strec
     }
 
     connect(spinBox, SIGNAL(valueChanged(int)), slider, SLOT(setValue(int)));
-    connect(slider, SIGNAL(valueChanged(int)), spinBox, SLOT(setValue(int)));
+    connect(slider, &QAbstractSlider::valueChanged, spinBox, &QSpinBox::setValue);
 
-    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(valueWillChange(int)));
+    connect(slider, &QAbstractSlider::valueChanged, this, &YACReaderSpinSliderWidget::valueWillChange);
     connect(spinBox, SIGNAL(valueChanged(int)), this, SLOT(valueWillChangeFromSpinBox(int)));
 
-    connect(slider, SIGNAL(sliderReleased()), this, SLOT(sliderRelease()));
+    connect(slider, &QAbstractSlider::sliderReleased, this, &YACReaderSpinSliderWidget::sliderRelease);
 
     setLayout(layout);
 }

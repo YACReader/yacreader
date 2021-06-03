@@ -88,7 +88,7 @@ void YACReaderTreeView::dragMoveEvent(QDragMoveEvent *event)
     QModelIndex underMouse = indexAt(event->pos());
     if (underMouse.isValid()) {
         expandPos = event->pos();
-        connect(&expandTimer, SIGNAL(timeout()), this, SLOT(expandCurrent()));
+        connect(&expandTimer, &QTimer::timeout, this, &YACReaderTreeView::expandCurrent);
         expandTimer.setSingleShot(true);
         expandTimer.start(500);
     }

@@ -32,10 +32,10 @@ HttpConnectionHandler::HttpConnectionHandler(const QSettings *settings, HttpRequ
     socket->moveToThread(thread);
 
     // Connect signals
-    connect(socket, SIGNAL(readyRead()), SLOT(read()));
-    connect(socket, SIGNAL(disconnected()), SLOT(disconnected()));
-    connect(&readTimer, SIGNAL(timeout()), SLOT(readTimeout()));
-    connect(thread, SIGNAL(finished()), this, SLOT(thread_done()));
+    connect(socket, &QIODevice::readyRead, this, &HttpConnectionHandler::read);
+    connect(socket, &QAbstractSocket::disconnected, this, &HttpConnectionHandler::disconnected);
+    connect(&readTimer, &QTimer::timeout, this, &HttpConnectionHandler::readTimeout);
+    connect(thread, &QThread::finished, this, &HttpConnectionHandler::thread_done);
 
     qDebug("HttpConnectionHandler (%p): constructed", static_cast<void*>(this));    
 }
