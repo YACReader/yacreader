@@ -146,7 +146,7 @@ void YACReaderComicsViewsManager::doComicsViewConnections()
     connect(comicsView, SIGNAL(comicRated(int, QModelIndex)), libraryWindow->comicsModel, SLOT(updateRating(int, QModelIndex)));
     connect(libraryWindow->showHideMarksAction, SIGNAL(toggled(bool)), comicsView, SLOT(setShowMarks(bool)));
     connect(comicsView, SIGNAL(selected(unsigned int)), libraryWindow, SLOT(openComic()));
-    connect(comicsView, SIGNAL(openComic(ComicDB)), libraryWindow, SLOT(openComic(ComicDB)));
+    connect(comicsView, SIGNAL(openComic()), libraryWindow, SLOT(openComic()));
 
     connect(libraryWindow->selectAllComicsAction, SIGNAL(triggered()), comicsView, SLOT(selectAll()));
 

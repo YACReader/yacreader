@@ -398,7 +398,7 @@ void GridComicsView::selectIndex(int index)
 
 void GridComicsView::triggerOpenCurrentComic()
 {
-    emit openComic(currentComic);
+    emit openComic();
 }
 
 void GridComicsView::rate(int index, int rating)
