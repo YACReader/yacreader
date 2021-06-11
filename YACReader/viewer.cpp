@@ -172,19 +172,17 @@ void Viewer::createConnections()
     connect(bd, &BookmarksDialog::goToPage, this, &Viewer::goTo);
 
     //render
-    connect(render, SIGNAL(errorOpening()), this, SLOT(resetContent()));
-    connect(render, SIGNAL(errorOpening()), this, SLOT(showMessageErrorOpening()));
-    connect(render, SIGNAL(errorOpening(QString)), this, SLOT(showMessageErrorOpening(QString)));
+    connect(render, QOverload<>::of(&Render::errorOpening), this, &Viewer::resetContent);
+    connect(render, QOverload<>::of(&Render::errorOpening), this, QOverload<>::of(&Viewer::showMessageErrorOpening));
+    connect(render, QOverload<QString>::of(&Render::errorOpening), this, QOverload<QString>::of(&Viewer::showMessageErrorOpening));
     connect(render, &Render::crcError, this, &Viewer::processCRCError);
-    connect(render, SIGNAL(numPages(unsigned int)), goToFlow, SLOT(setNumSlides(unsigned int)));
-    connect(render, SIGNAL(numPages(unsigned int)), goToDialog, SLOT(setNumPages(unsigned int)));
-    //connect(render,SIGNAL(numPages(unsigned int)),this,SLOT(updateInformation()));
-    connect(render, SIGNAL(imageLoaded(int, QByteArray)), goToFlow, SLOT(setImageReady(int, QByteArray)));
+    connect(render, QOverload<unsigned int>::of(&Render::numPages), goToFlow, &GoToFlowWidget::setNumSlides);
+    connect(render, QOverload<unsigned int>::of(&Render::numPages), goToDialog, &GoToDialog::setNumPages);
+    connect(render, QOverload<int, const QByteArray &>::of(&Render::imageLoaded), goToFlow, &GoToFlowWidget::setImageReady);
     connect(render, &Render::currentPageReady, this, &Viewer::updatePage);
     connect(render, &Render::processingPage, this, &Viewer::setLoadingMessage);
     connect(render, &Render::currentPageIsBookmark, this, &Viewer::pageIsBookmark);
     connect(render, &Render::pageChanged, this, &Viewer::updateInformation);
-    //connect(render,SIGNAL(bookmarksLoaded(Bookmarks)),this,SLOT(setBookmarks(Bookmarks)));
 
     connect(render, &Render::isLast, this, &Viewer::showIsLastMessage);
     connect(render, &Render::isCover, this, &Viewer::showIsCoverMessage);

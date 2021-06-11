@@ -66,8 +66,8 @@ void ComicControllerV2::service(HttpRequest &request, HttpResponse &response)
 
         comicFile->moveToThread(thread);
 
-        connect(comicFile, SIGNAL(errorOpening()), thread, SLOT(quit()));
-        connect(comicFile, SIGNAL(errorOpening(QString)), thread, SLOT(quit()));
+        connect(comicFile, QOverload<>::of(&Comic::errorOpening), thread, &QThread::quit);
+        connect(comicFile, QOverload<QString>::of(&Comic::errorOpening), thread, &QThread::quit);
         connect(comicFile, &Comic::imagesLoaded, thread, &QThread::quit);
         connect(thread, &QThread::started, comicFile, &Comic::process);
         connect(thread, &QThread::finished, thread, &QObject::deleteLater);

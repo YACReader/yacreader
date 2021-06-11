@@ -710,16 +710,16 @@ void Render::createComic(const QString &path)
         return;
     }
 
-    connect(comic, SIGNAL(errorOpening()), this, SIGNAL(errorOpening()), Qt::QueuedConnection);
-    connect(comic, SIGNAL(errorOpening(QString)), this, SIGNAL(errorOpening(QString)), Qt::QueuedConnection);
+    connect(comic, QOverload<>::of(&Comic::errorOpening), this, QOverload<>::of(&Render::errorOpening), Qt::QueuedConnection);
+    connect(comic, QOverload<QString>::of(&Comic::errorOpening), this, QOverload<QString>::of(&Render::errorOpening), Qt::QueuedConnection);
     connect(comic, &Comic::crcErrorFound, this, &Render::crcError, Qt::QueuedConnection);
-    connect(comic, SIGNAL(errorOpening()), this, SLOT(reset()), Qt::QueuedConnection);
-    connect(comic, SIGNAL(imageLoaded(int)), this, SLOT(pageRawDataReady(int)), Qt::QueuedConnection);
-    connect(comic, SIGNAL(imageLoaded(int)), this, SIGNAL(imageLoaded(int)), Qt::QueuedConnection);
+    connect(comic, QOverload<>::of(&Comic::errorOpening), this, &Render::reset, Qt::QueuedConnection);
+    connect(comic, QOverload<int>::of(&Comic::imageLoaded), this, &Render::pageRawDataReady, Qt::QueuedConnection);
+    connect(comic, QOverload<int>::of(&Comic::imageLoaded), this, QOverload<int>::of(&Render::imageLoaded), Qt::QueuedConnection);
     connect(comic, &Comic::openAt, this, &Render::renderAt, Qt::QueuedConnection);
-    connect(comic, SIGNAL(numPages(unsigned int)), this, SIGNAL(numPages(unsigned int)), Qt::QueuedConnection);
-    connect(comic, SIGNAL(numPages(unsigned int)), this, SLOT(setNumPages(unsigned int)), Qt::QueuedConnection);
-    connect(comic, SIGNAL(imageLoaded(int, QByteArray)), this, SIGNAL(imageLoaded(int, QByteArray)), Qt::QueuedConnection);
+    connect(comic, QOverload<unsigned int>::of(&Comic::numPages), this, QOverload<unsigned int>::of(&Render::numPages), Qt::QueuedConnection);
+    connect(comic, QOverload<unsigned int>::of(&Comic::numPages), this, QOverload<unsigned int>::of(&Render::setNumPages), Qt::QueuedConnection);
+    connect(comic, QOverload<int, const QByteArray &>::of(&Comic::imageLoaded), this, QOverload<int, const QByteArray &>::of(&Render::imageLoaded), Qt::QueuedConnection);
     connect(comic, &Comic::isBookmark, this, &Render::currentPageIsBookmark, Qt::QueuedConnection);
 
     connect(comic, &Comic::bookmarksUpdated, this, &Render::bookmarksUpdated, Qt::QueuedConnection);
@@ -746,10 +746,10 @@ void Render::startLoad()
 
     comic->moveToThread(thread);
 
-    connect(comic, SIGNAL(errorOpening()), thread, SLOT(quit()), Qt::QueuedConnection);
-    connect(comic, SIGNAL(errorOpening(QString)), thread, SLOT(quit()), Qt::QueuedConnection);
+    connect(comic, QOverload<>::of(&Comic::errorOpening), thread, &QThread::quit, Qt::QueuedConnection);
+    connect(comic, QOverload<QString>::of(&Comic::errorOpening), thread, &QThread::quit, Qt::QueuedConnection);
     connect(comic, &Comic::imagesLoaded, thread, &QThread::quit, Qt::QueuedConnection);
-    connect(comic, SIGNAL(destroyed()), thread, SLOT(quit()), Qt::QueuedConnection);
+    connect(comic, &Comic::destroyed, thread, &QThread::quit, Qt::QueuedConnection);
     connect(comic, &Comic::invalidated, thread, &QThread::quit, Qt::QueuedConnection);
     connect(thread, &QThread::started, comic, &Comic::process);
     connect(thread, &QThread::finished, thread, &QObject::deleteLater);

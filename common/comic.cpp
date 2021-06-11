@@ -127,8 +127,8 @@ Comic::~Comic()
 void Comic::setup()
 {
     connect(this, &Comic::pageChanged, this, &Comic::checkIsBookmark);
-    connect(this, SIGNAL(imageLoaded(int)), this, SLOT(updateBookmarkImage(int)));
-    connect(this, SIGNAL(imageLoaded(int)), this, SLOT(setPageLoaded(int)));
+    connect(this, QOverload<int>::of(&Comic::imageLoaded), this, &Comic::updateBookmarkImage);
+    connect(this, QOverload<int>::of(&Comic::imageLoaded), this, &Comic::setPageLoaded);
 
     auto l = [&]() { _errorOpening = true; };
 
