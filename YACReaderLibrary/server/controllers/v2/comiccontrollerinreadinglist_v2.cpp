@@ -83,10 +83,16 @@ void ComicControllerInReadingListV2::service(HttpRequest &request, HttpResponse 
             }
         }
         if (found) {
-            if (i > 0)
-                response.write(QString("previousComic:%1\r\n").arg(siblings.at(i - 1).id).toUtf8());
-            if (i < siblings.length() - 1)
-                response.write(QString("nextComic:%1\r\n").arg(siblings.at(i + 1).id).toUtf8());
+            if (i > 0) {
+                ComicDB previousComic = siblings.at(i - 1);
+                response.write(QString("previousComic:%1\r\n").arg(previousComic.id).toUtf8());
+                response.write(QString("previousComicHash:%1\r\n").arg(previousComic.info.hash).toUtf8());
+            }
+            if (i < siblings.length() - 1) {
+                ComicDB nextComic = siblings.at(i + 1);
+                response.write(QString("nextComic:%1\r\n").arg(nextComic.id).toUtf8());
+                response.write(QString("nextComicHash:%1\r\n").arg(nextComic.info.hash).toUtf8());
+            }
         } else {
             //ERROR
         }
