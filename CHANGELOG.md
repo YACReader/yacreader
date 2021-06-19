@@ -4,6 +4,13 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ## WIP
 
+## 9.8.2
+### YACReaderLibrary
+* Fix opening comics from the continue reading banner.
+* Make available next/prev comic covers in the iOS app while reading. (ios app 3.16.1 needed)
+### Server
+* Make available next/prev comic covers in the iOS app while reading. (ios app 3.16.1 needed)
+
 ## 9.8.1
 ### YACReaderLibrary
 * Fix "reading lists" reading order on YACReader. Now YACReader is able to open the right comics in the right order.
