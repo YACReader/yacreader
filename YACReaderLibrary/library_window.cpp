@@ -94,6 +94,20 @@
 #include <shellapi.h>
 #endif
 
+namespace {
+template<class Remover>
+void moveAndConnectRemoverToThread(Remover *remover, QThread *thread)
+{
+    Q_ASSERT(remover);
+    Q_ASSERT(thread);
+    remover->moveToThread(thread);
+    QObject::connect(thread, &QThread::started, remover, &Remover::process);
+    QObject::connect(remover, &Remover::finished, remover, &QObject::deleteLater);
+    QObject::connect(remover, &Remover::finished, thread, &QThread::quit);
+    QObject::connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+}
+}
+
 using namespace YACReader;
 
 LibraryWindow::LibraryWindow()
@@ -1576,22 +1590,14 @@ void LibraryWindow::deleteSelectedFolder()
                 paths << folderPath;
 
                 auto remover = new FoldersRemover(indexList, paths);
+                const auto thread = new QThread(this);
+                moveAndConnectRemoverToThread(remover, thread);
 
-                QThread *thread = NULL;
-
-                thread = new QThread(this);
-
-                remover->moveToThread(thread);
-
-                connect(thread, SIGNAL(started()), remover, SLOT(process()));
                 connect(remover, SIGNAL(remove(QModelIndex)), foldersModel, SLOT(deleteFolder(QModelIndex)));
                 connect(remover, SIGNAL(removeError()), this, SLOT(errorDeletingFolder()));
                 connect(remover, SIGNAL(finished()), navigationController, SLOT(reselectCurrentFolder()));
-                connect(remover, SIGNAL(finished()), remover, SLOT(deleteLater()));
-                connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
-                if (thread != NULL)
-                    thread->start();
+                thread->start();
             }
         }
     }
@@ -1840,31 +1846,37 @@ void LibraryWindow::checkEmptyFolder()
 void LibraryWindow::openComic()
 {
     if (!importedCovers) {
-        auto libraryId = libraries.getId(selectedLibrary->currentText());
 
         auto comic = comicsModel->getComic(comicsViewsManager->comicsView->currentIndex());
         auto mode = comicsModel->getMode();
 
-        OpenComicSource::Source source;
+        openComic(comic, mode);
+    }
+}
 
-        if (mode == ComicModel::ReadingList) {
-            source = OpenComicSource::Source::ReadingList;
-        } else if (mode == ComicModel::Reading) {
-            //TODO check where the comic was opened from the last time it was read
-            source = OpenComicSource::Source::Folder;
-        } else {
-            source = OpenComicSource::Source::Folder;
-        }
+void LibraryWindow::openComic(const ComicDB &comic, const ComicModel::Mode mode)
+{
+    auto libraryId = libraries.getId(selectedLibrary->currentText());
 
-        auto yacreaderFound = YACReader::openComic(comic, libraryId, currentPath(), OpenComicSource { source, comicsModel->getSourceId() });
+    OpenComicSource::Source source;
 
-        if (!yacreaderFound) {
+    if (mode == ComicModel::ReadingList) {
+        source = OpenComicSource::Source::ReadingList;
+    } else if (mode == ComicModel::Reading) {
+        //TODO check where the comic was opened from the last time it was read
+        source = OpenComicSource::Source::Folder;
+    } else {
+        source = OpenComicSource::Source::Folder;
+    }
+
+    auto yacreaderFound = YACReader::openComic(comic, libraryId, currentPath(), OpenComicSource { source, comicsModel->getSourceId() });
+
+    if (!yacreaderFound) {
 #ifdef Q_OS_WIN
-            QMessageBox::critical(this, tr("YACReader not found"), tr("YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary."));
+        QMessageBox::critical(this, tr("YACReader not found"), tr("YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary."));
 #else
-            QMessageBox::critical(this, tr("YACReader not found"), tr("YACReader not found. There might be a problem with your YACReader installation."));
+        QMessageBox::critical(this, tr("YACReader not found"), tr("YACReader not found. There might be a problem with your YACReader installation."));
 #endif
-        }
     }
 }
 
@@ -2556,28 +2568,20 @@ void LibraryWindow::deleteComicsFromDisk()
         }
 
         auto remover = new ComicsRemover(indexList, paths, comics.at(0).parentId);
-        QThread *thread = NULL;
-
-        thread = new QThread(this);
-
-        remover->moveToThread(thread);
+        const auto thread = new QThread(this);
+        moveAndConnectRemoverToThread(remover, thread);
 
         comicsModel->startTransaction();
 
-        connect(thread, SIGNAL(started()), remover, SLOT(process()));
         connect(remover, SIGNAL(remove(int)), comicsModel, SLOT(remove(int)));
         connect(remover, SIGNAL(removeError()), this, SLOT(setRemoveError()));
-        connect(remover, SIGNAL(finished()), comicsModel, SLOT(finishTransaction()));
         connect(remover, SIGNAL(finished()), comicsModel, SLOT(finishTransaction()));
         connect(remover, SIGNAL(removedItemsFromFolder(qulonglong)), foldersModel, SLOT(updateFolderChildrenInfo(qulonglong)));
 
         connect(remover, SIGNAL(finished()), this, SLOT(checkEmptyFolder()));
         connect(remover, SIGNAL(finished()), this, SLOT(checkRemoveError()));
-        connect(remover, SIGNAL(finished()), remover, SLOT(deleteLater()));
-        connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
-        if (thread != NULL)
-            thread->start();
+        thread->start();
     }
 }
 

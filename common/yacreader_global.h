@@ -4,7 +4,7 @@
 #include <QStandardPaths>
 #include <QDataStream>
 
-#define VERSION "9.8.1"
+#define VERSION "9.8.2"
 
 #define REMOTE_BROWSE_PERFORMANCE_WORKAROUND "REMOTE_BROWSE_PERFORMANCE_WORKAROUND"
 

@@ -13,6 +13,8 @@
 #include "comic_query_result_processor.h"
 #include "folder_query_result_processor.h"
 
+#include "comic_model.h"
+
 #include <future>
 #include <memory>
 
@@ -77,7 +79,6 @@ class YACReaderHistoryController;
 class EmptyLabelWidget;
 class EmptySpecialListWidget;
 class EmptyReadingListWidget;
-class YACReaderComicsViewsManager;
 
 namespace YACReader {
 class TrayIconController;
@@ -315,6 +316,7 @@ public slots:
     void selectSubfolder(const QModelIndex &mi, int child);
     void checkEmptyFolder();
     void openComic();
+    void openComic(const ComicDB &comic, const ComicModel::Mode mode);
     void createLibrary();
     void create(QString source, QString dest, QString name);
     void showAddLibrary();
