@@ -38,7 +38,7 @@ public slots:
 
 signals:
     void selected(unsigned int);
-    void openComic();
+    void openComic(const ComicDB &comic, const ComicModel::Mode mode);
     void comicRated(int, QModelIndex);
 
     //Context menus

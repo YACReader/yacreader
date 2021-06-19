@@ -398,7 +398,11 @@ void GridComicsView::selectIndex(int index)
 
 void GridComicsView::triggerOpenCurrentComic()
 {
-    emit openComic();
+    if (model == nullptr) {
+        return;
+    }
+
+    emit openComic(currentComic, model->getMode());
 }
 
 void GridComicsView::rate(int index, int rating)

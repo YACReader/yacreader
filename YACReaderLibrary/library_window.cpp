@@ -1840,31 +1840,37 @@ void LibraryWindow::checkEmptyFolder()
 void LibraryWindow::openComic()
 {
     if (!importedCovers) {
-        auto libraryId = libraries.getId(selectedLibrary->currentText());
 
         auto comic = comicsModel->getComic(comicsViewsManager->comicsView->currentIndex());
         auto mode = comicsModel->getMode();
 
-        OpenComicSource::Source source;
+        openComic(comic, mode);
+    }
+}
 
-        if (mode == ComicModel::ReadingList) {
-            source = OpenComicSource::Source::ReadingList;
-        } else if (mode == ComicModel::Reading) {
-            //TODO check where the comic was opened from the last time it was read
-            source = OpenComicSource::Source::Folder;
-        } else {
-            source = OpenComicSource::Source::Folder;
-        }
+void LibraryWindow::openComic(const ComicDB &comic, const ComicModel::Mode mode)
+{
+    auto libraryId = libraries.getId(selectedLibrary->currentText());
 
-        auto yacreaderFound = YACReader::openComic(comic, libraryId, currentPath(), OpenComicSource { source, comicsModel->getSourceId() });
+    OpenComicSource::Source source;
 
-        if (!yacreaderFound) {
+    if (mode == ComicModel::ReadingList) {
+        source = OpenComicSource::Source::ReadingList;
+    } else if (mode == ComicModel::Reading) {
+        //TODO check where the comic was opened from the last time it was read
+        source = OpenComicSource::Source::Folder;
+    } else {
+        source = OpenComicSource::Source::Folder;
+    }
+
+    auto yacreaderFound = YACReader::openComic(comic, libraryId, currentPath(), OpenComicSource { source, comicsModel->getSourceId() });
+
+    if (!yacreaderFound) {
 #ifdef Q_OS_WIN
-            QMessageBox::critical(this, tr("YACReader not found"), tr("YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary."));
+        QMessageBox::critical(this, tr("YACReader not found"), tr("YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary."));
 #else
-            QMessageBox::critical(this, tr("YACReader not found"), tr("YACReader not found. There might be a problem with your YACReader installation."));
+        QMessageBox::critical(this, tr("YACReader not found"), tr("YACReader not found. There might be a problem with your YACReader installation."));
 #endif
-        }
     }
 }
 
