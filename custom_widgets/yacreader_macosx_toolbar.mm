@@ -188,7 +188,7 @@ void YACReaderMacOSXToolbar::addAction(QAction *action)
     QMacToolBarItem *toolBarItem = addItem(action->icon(), action->text());
     if (action->data().toString() == TOGGLE_COMICS_VIEW_ACTION_YL)
         viewSelector = toolBarItem;
-    connect(toolBarItem, SIGNAL(activated()), action, SIGNAL(triggered()));
+    connect(toolBarItem, &QMacToolBarItem::activated, action, [=] { emit action->triggered(); });
 
     NSToolbarItem *nativeItem = toolBarItem->nativeToolBarItem();
     actions.insert(QString::fromNSString(nativeItem.itemIdentifier), action);
@@ -287,7 +287,7 @@ QAction *YACReaderMacOSXToolbar::addFitToWidthSlider(QAction *attachToAction)
 
     QAction *action = new QAction("", attachToAction->parent());
 
-    connect(toolBarItem, SIGNAL(activated()), action, SIGNAL(triggered()));
+    connect(toolBarItem, &QMacToolBarItem::activated, action, [=] { emit action->triggered(); });
 
     return action;
 }
@@ -359,8 +359,8 @@ MacToolBarItemWrapper::MacToolBarItemWrapper(QAction *action, QMacToolBarItem *t
     : action(action), toolbaritem(toolbaritem)
 {
     if (action->isCheckable()) {
-        connect(action, SIGNAL(toggled(bool)), this, SLOT(actionToggled(bool)));
-        connect(toolbaritem, SIGNAL(activated()), action, SLOT(toggle()));
+        connect(action, &QAction::toggled, this, &MacToolBarItemWrapper::actionToggled);
+        connect(toolbaritem, &QMacToolBarItem::activated, action, &QAction::toggle);
         updateIcon(action->isChecked());
     }
 }

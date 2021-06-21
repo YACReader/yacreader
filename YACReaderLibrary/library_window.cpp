@@ -2176,8 +2176,8 @@ void LibraryWindow::toNormal()
     auto timer = new QTimer();
     timer->setSingleShot(true);
     timer->start();
-    connect(timer, SIGNAL(timeout()), libraryToolBar, SLOT(show()));
-    connect(timer, SIGNAL(timeout()), timer, SLOT(deleteLater()));
+    connect(timer, &QTimer::timeout, libraryToolBar, &YACReaderMacOSXToolbar::show);
+    connect(timer, &QTimer::timeout, timer, &QTimer::deleteLater);
 #else
     libraryToolBar->show();
 #endif
