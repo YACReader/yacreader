@@ -32,7 +32,7 @@ void ImportLibraryDialog::setupUI()
     connect(accept, &QAbstractButton::clicked, this, &ImportLibraryDialog::add);
 
     cancel = new QPushButton(tr("Cancel"));
-    connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
+    connect(cancel, &QAbstractButton::clicked, this, &ImportLibraryDialog::close);
     //connect(cancel,SIGNAL(clicked()),this,SIGNAL(rejected()));
 
     find = new QPushButton(QIcon(":/images/find_folder.png"), "");

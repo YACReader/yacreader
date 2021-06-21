@@ -40,7 +40,7 @@ YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget *parent)
     connect(shortcutsButton, &QAbstractButton::clicked, this, &YACReaderOptionsDialog::editShortcuts);
 
     connect(accept, &QAbstractButton::clicked, this, &YACReaderOptionsDialog::saveOptions);
-    connect(cancel, SIGNAL(clicked()), this, SLOT(restoreOptions())); //TODO fix this
+    connect(cancel, &QAbstractButton::clicked, this, QOverload<>::of(&YACReaderOptionsDialog::restoreOptions));
     connect(cancel, &QAbstractButton::clicked, this, &QWidget::close);
 #ifndef NO_OPENGL
     useGL = new QCheckBox(tr("Use hardware acceleration (restart needed)"));

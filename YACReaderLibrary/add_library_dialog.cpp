@@ -28,7 +28,7 @@ void AddLibraryDialog::setupUI()
     connect(accept, &QAbstractButton::clicked, this, &AddLibraryDialog::add);
 
     cancel = new QPushButton(tr("Cancel"));
-    connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
+    connect(cancel, &QPushButton::close, this, &AddLibraryDialog::close);
 
     find = new QPushButton(QIcon(":/images/find_folder.png"), "");
     connect(find, &QAbstractButton::clicked, this, &AddLibraryDialog::findPath);

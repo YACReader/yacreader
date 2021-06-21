@@ -22,7 +22,7 @@ ImportComicsInfoDialog::ImportComicsInfoDialog(QWidget *parent)
     connect(accept, &QAbstractButton::clicked, this, &ImportComicsInfoDialog::import);
 
     cancel = new QPushButton(tr("Cancel"));
-    connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
+    connect(cancel, &QAbstractButton::clicked, this, &ImportComicsInfoDialog::close);
     //connect(cancel,SIGNAL(clicked()),this,SIGNAL(rejected()));
 
     find = new QPushButton(QIcon(":/images/find_folder.png"), "");
@@ -85,7 +85,7 @@ void ImportComicsInfoDialog::import()
     auto importer = new Importer();
     importer->source = path->text();
     importer->dest = dest;
-    connect(importer, SIGNAL(finished()), this, SLOT(close()));
+    connect(importer, &QThread::finished, this, &ImportComicsInfoDialog::close);
     connect(importer, &QThread::finished, this, &QWidget::hide);
     importer->start();
 }

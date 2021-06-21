@@ -26,11 +26,11 @@ void CreateLibraryDialog::setupUI()
 
     accept = new QPushButton(tr("Create"));
     accept->setDisabled(true);
-    connect(accept, SIGNAL(clicked()), this, SLOT(create()));
+    connect(accept, &QAbstractButton::clicked, this, &CreateLibraryDialog::create);
 
     cancel = new QPushButton(tr("Cancel"));
     connect(cancel, &QAbstractButton::clicked, this, &CreateLibraryDialog::cancelCreate);
-    connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
+    connect(cancel, &QAbstractButton::clicked, this, &CreateLibraryDialog::close);
 
     find = new QPushButton(QIcon(":/images/find_folder.png"), "");
     connect(find, &QAbstractButton::clicked, this, &CreateLibraryDialog::findPath);
@@ -161,7 +161,7 @@ UpdateLibraryDialog::UpdateLibraryDialog(QWidget *parent)
     bottom->addWidget(cancel = new QPushButton(tr("Cancel")));
 
     connect(cancel, &QAbstractButton::clicked, this, &UpdateLibraryDialog::cancelUpdate);
-    connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
+    connect(cancel, &QAbstractButton::clicked, this, &UpdateLibraryDialog::close);
 
     mainLayout->addStretch();
 

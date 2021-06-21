@@ -20,7 +20,7 @@ ExportComicsInfoDialog::ExportComicsInfoDialog(QWidget *parent)
     connect(accept, &QAbstractButton::clicked, this, &ExportComicsInfoDialog::exportComicsInfo);
 
     cancel = new QPushButton(tr("Cancel"));
-    connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
+    connect(cancel, &QAbstractButton::clicked, this, &ExportComicsInfoDialog::close);
     connect(cancel, &QAbstractButton::clicked, this, &QDialog::rejected);
 
     find = new QPushButton(QIcon(":/images/find_folder.png"), "");

@@ -22,10 +22,9 @@ void RenameLibraryDialog::setupUI()
     connect(accept, &QAbstractButton::clicked, this, &RenameLibraryDialog::rename);
 
     cancel = new QPushButton(tr("Cancel"));
-    connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
+    connect(cancel, &QAbstractButton::clicked, this, &RenameLibraryDialog::close);
 
     auto nameLayout = new QHBoxLayout;
-
     nameLayout->addWidget(newNameLabel);
     nameLayout->addWidget(newNameEdit);
 
