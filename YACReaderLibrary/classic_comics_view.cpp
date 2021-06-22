@@ -135,8 +135,9 @@ void ClassicComicsView::setModel(ComicModel *model)
     } else {
         connect(model, &QAbstractItemModel::dataChanged, this, &ClassicComicsView::applyModelChanges, Qt::UniqueConnection);
         connect(model, &QAbstractItemModel::rowsRemoved, this, &ClassicComicsView::removeItemsFromFlow, Qt::UniqueConnection);
-        connect(model, SIGNAL(resortedIndexes(QList<int>)), comicFlow, SLOT(resortCovers(QList<int>)), Qt::UniqueConnection);
-        connect(model, SIGNAL(newSelectedIndex(QModelIndex)), this, SLOT(setCurrentIndex(QModelIndex)), Qt::UniqueConnection);
+        //TODO: Missing method resortCovers?
+        connect(model, &ComicModel::resortedIndexes, comicFlow, &ComicFlowWidget::resortCovers, Qt::UniqueConnection);
+        connect(model, &ComicModel::newSelectedIndex, this, &ClassicComicsView::setCurrentIndex, Qt::UniqueConnection);
 
         tableView->setModel(model);
         if (model->rowCount() > 0)

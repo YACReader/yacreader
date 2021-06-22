@@ -59,9 +59,8 @@ YACReaderComicsViewsManager::YACReaderComicsViewsManager(QSettings *settings, Li
     comicsViewStack->setCurrentWidget(comicsView);
 
     //connections
-
-    connect(emptyFolderWidget, SIGNAL(copyComicsToCurrentFolder(QList<QPair<QString, QString>>)), libraryWindow, SLOT(copyAndImportComicsToCurrentFolder(QList<QPair<QString, QString>>)));
-    connect(emptyFolderWidget, SIGNAL(moveComicsToCurrentFolder(QList<QPair<QString, QString>>)), libraryWindow, SLOT(moveAndImportComicsToCurrentFolder(QList<QPair<QString, QString>>)));
+    connect(emptyFolderWidget, &EmptyFolderWidget::copyComicsToCurrentFolder, libraryWindow, &LibraryWindow::copyAndImportComicsToCurrentFolder);
+    connect(emptyFolderWidget, &EmptyFolderWidget::moveComicsToCurrentFolder, libraryWindow, &LibraryWindow::moveAndImportComicsToCurrentFolder);
 }
 
 QWidget *YACReaderComicsViewsManager::containerWidget()
@@ -135,8 +134,8 @@ void YACReaderComicsViewsManager::disconnectComicsViewConnections(ComicsView *wi
     disconnect(widget, &ComicsView::selected, libraryWindow, QOverload<>::of(&LibraryWindow::openComic));
     disconnect(widget, &ComicsView::openComic, libraryWindow, QOverload<const ComicDB &, const ComicModel::Mode>::of(&LibraryWindow::openComic));
     disconnect(libraryWindow->selectAllComicsAction, &QAction::triggered, widget, &ComicsView::selectAll);
-    disconnect(comicsView, SIGNAL(copyComicsToCurrentFolder(QList<QPair<QString, QString>>)), libraryWindow, SLOT(copyAndImportComicsToCurrentFolder(QList<QPair<QString, QString>>)));
-    disconnect(comicsView, SIGNAL(moveComicsToCurrentFolder(QList<QPair<QString, QString>>)), libraryWindow, SLOT(moveAndImportComicsToCurrentFolder(QList<QPair<QString, QString>>)));
+    disconnect(comicsView, &ComicsView::copyComicsToCurrentFolder, libraryWindow, &LibraryWindow::copyAndImportComicsToCurrentFolder);
+    disconnect(comicsView, &ComicsView::moveComicsToCurrentFolder, libraryWindow, &LibraryWindow::moveAndImportComicsToCurrentFolder);
     disconnect(comicsView, &ComicsView::customContextMenuViewRequested, libraryWindow, &LibraryWindow::showComicsViewContextMenu);
     disconnect(comicsView, &ComicsView::customContextMenuItemRequested, libraryWindow, &LibraryWindow::showComicsItemContextMenu);
 }
@@ -153,8 +152,8 @@ void YACReaderComicsViewsManager::doComicsViewConnections()
     connect(comicsView, &ComicsView::customContextMenuViewRequested, libraryWindow, &LibraryWindow::showComicsViewContextMenu);
     connect(comicsView, &ComicsView::customContextMenuItemRequested, libraryWindow, &LibraryWindow::showComicsItemContextMenu);
     //Drops
-    connect(comicsView, SIGNAL(copyComicsToCurrentFolder(QList<QPair<QString, QString>>)), libraryWindow, SLOT(copyAndImportComicsToCurrentFolder(QList<QPair<QString, QString>>)));
-    connect(comicsView, SIGNAL(moveComicsToCurrentFolder(QList<QPair<QString, QString>>)), libraryWindow, SLOT(moveAndImportComicsToCurrentFolder(QList<QPair<QString, QString>>)));
+    connect(comicsView, &ComicsView::copyComicsToCurrentFolder, libraryWindow, &LibraryWindow::copyAndImportComicsToCurrentFolder);
+    connect(comicsView, &ComicsView::moveComicsToCurrentFolder, libraryWindow, &LibraryWindow::moveAndImportComicsToCurrentFolder);
 }
 
 void YACReaderComicsViewsManager::switchToComicsView(ComicsView *from, ComicsView *to)
