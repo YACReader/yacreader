@@ -152,7 +152,7 @@ Viewer::~Viewer()
 void Viewer::createConnections()
 {
     //magnifyingGlass (update mg after a background change
-    connect(this, SIGNAL(backgroundChanges()), mglass, SLOT(updateImage()));
+    connect(this, &Viewer::backgroundChanges, mglass, QOverload<>::of(&MagnifyingGlass::updateImage));
 
     //goToDialog
     connect(goToDialog, &GoToDialog::goToPage, this, &Viewer::goTo);

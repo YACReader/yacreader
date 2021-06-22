@@ -213,7 +213,7 @@ void MainWindowViewer::createActions()
     openAction->setToolTip(tr("Open a comic"));
     openAction->setData(OPEN_ACTION_Y);
     openAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_ACTION_Y));
-    connect(openAction, SIGNAL(triggered()), this, SLOT(open()));
+    connect(openAction, &QAction::triggered, this, QOverload<>::of(&MainWindowViewer::open));
 
 #ifdef Q_OS_MAC
     newInstanceAction = new QAction(tr("New instance"), this);
@@ -438,7 +438,7 @@ void MainWindowViewer::createActions()
     optionsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPTIONS_ACTION_Y));
     optionsAction->setIcon(QIcon(":/images/viewer_toolbar/options.png"));
 
-    connect(optionsAction, SIGNAL(triggered()), optionsDialog, SLOT(show()));
+    connect(optionsAction, &QAction::triggered, optionsDialog, &OptionsDialog::show);
 
     helpAboutAction = new QAction(tr("Help"), this);
     helpAboutAction->setToolTip(tr("Help, About YACReader"));

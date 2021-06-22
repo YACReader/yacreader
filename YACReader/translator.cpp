@@ -13,6 +13,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include "translator.h"
+#include "viewer.h"
 
 #include "yacreader_busy_widget.h"
 
@@ -33,7 +34,7 @@
 
 #define APPID "417CEAD93449502CC3C9B69FED26C54118E62BCC"
 
-YACReaderTranslator::YACReaderTranslator(QWidget *parent)
+YACReaderTranslator::YACReaderTranslator(Viewer *parent)
     : QWidget(parent), drag(false)
 {
     QString scrollBarStyle = "QScrollBar:vertical { border: none; background: #404040; width: 7px; margin: 0 3px 0 0; }"
@@ -68,7 +69,7 @@ YACReaderTranslator::YACReaderTranslator(QWidget *parent)
     titleBar->addWidget(close);
     titleBar->setContentsMargins(0, 0, 0, 0);
     titleBar->setSpacing(0);
-    connect(close, SIGNAL(clicked()), this->parent(), SLOT(animateHideTranslator()));
+    connect(close, &QAbstractButton::clicked, parent, &Viewer::animateHideTranslator);
 
     layout->addLayout(titleBar);
 
