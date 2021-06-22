@@ -43,7 +43,7 @@ GoToFlow::GoToFlow(QWidget *parent, FlowType flowType)
     connect(flow, &PictureFlow::centerIndexChanged, this, &GoToFlow::preload);
     connect(flow, &PictureFlow::centerIndexChangedSilent, this, &GoToFlow::preload);
 
-    connect(toolBar, SIGNAL(goTo(unsigned int)), this, SIGNAL(goToPage(unsigned int)));
+    connect(toolBar, &GoToFlowToolBar::goToPage, this, &GoToFlow::goToPage);
     connect(toolBar, &GoToFlowToolBar::setCenter, flow, &PictureFlow::showSlide);
 
     mainLayout->addWidget(flow);

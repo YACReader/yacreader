@@ -24,7 +24,7 @@ GoToFlowGL::GoToFlowGL(QWidget *parent, FlowType flowType)
     connect(flow, &YACReaderFlowGL::centerIndexChanged, this, &GoToFlowWidget::setPageNumber);
     connect(flow, &YACReaderFlowGL::selected, this, &GoToFlowGL::goToPage);
 
-    connect(toolBar, SIGNAL(goTo(unsigned int)), this, SIGNAL(goToPage(unsigned int)));
+    connect(toolBar, &GoToFlowToolBar::goToPage, this, &GoToFlowGL::goToPage);
     connect(toolBar, &GoToFlowToolBar::setCenter, flow, &YACReaderFlowGL::setCenterIndex);
 
     mainLayout->addWidget(flow);

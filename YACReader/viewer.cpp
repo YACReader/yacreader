@@ -158,7 +158,7 @@ void Viewer::createConnections()
     connect(goToDialog, &GoToDialog::goToPage, this, &Viewer::goTo);
 
     //goToFlow goTo
-    connect(goToFlow, SIGNAL(goToPage(unsigned int)), this, SLOT(goTo(unsigned int)));
+    connect(goToFlow, &GoToFlowWidget::goToPage, this, &Viewer::goTo);
 
     //current time
     auto t = new QTimer(this);

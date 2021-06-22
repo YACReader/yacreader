@@ -31,6 +31,8 @@ public slots:
     virtual void updateSize();
     virtual void updateConfig(QSettings *settings);
     virtual void setFlowRightToLeft(bool b) = 0;
+signals:
+    void goToPage(unsigned int);
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
