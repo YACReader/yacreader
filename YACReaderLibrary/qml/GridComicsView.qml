@@ -130,7 +130,7 @@ Rectangle {
                         rightMargin  : commonBorder ? -commonBorderWidth : -rBorderwidth
                     }
 
-                    border.color: (Qt.platform.os === "osx") ? selectedBorderColor : "#ffcc00"
+                    border.color: (dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index) ? (Qt.platform.os === "osx" ? selectedBorderColor : "#ffcc00") : "#996600"
                     border.width: 3
 
                     opacity: (dummyValue || !dummyValue) && (comicsSelectionHelper.isSelectedIndex(index) || mouseArea.containsMouse) ? 1 : 0
