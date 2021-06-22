@@ -12,6 +12,7 @@
 #include "pdf_comic.h"
 #endif //NO_PDF
 class ComicDB;
+class QThread;
 //#define EXTENSIONS << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp" Comic::getSupportedImageFormats()
 //#define EXTENSIONS_LITERAL << ".jpg" << ".jpeg" << ".png" << ".gif" << ".tiff" << ".tif" << ".bmp" //Comic::getSupportedImageLiteralFormats()
 class Comic : public QObject
@@ -52,7 +53,7 @@ public:
     //Constructors
     Comic();
     Comic(const QString &pathFile, int atPage = -1);
-    ~Comic();
+    ~Comic() override;
     void setup();
     //Load pages from file
     virtual bool load(const QString &path, int atPage = -1) = 0;
@@ -83,6 +84,8 @@ public:
     static QList<QString> findValidComicFiles(const QList<QUrl> &list);
     static QList<QString> findValidComicFilesInFolder(const QString &path);
 
+    void moveAndConnectToThread(QThread *thread);
+
 public slots:
     void loadFinished();
     void setBookmark();
@@ -93,9 +96,10 @@ public slots:
     void setPageLoaded(int page);
     void invalidate();
 
+    virtual void process() = 0;
+
 signals:
     void invalidated();
-    void destroyed();
     void imagesLoaded();
     void imageLoaded(int index);
     void imageLoaded(int index, const QByteArray &image);
@@ -121,39 +125,34 @@ private:
 public:
     FileComic();
     FileComic(const QString &path, int atPage = -1);
-    ~FileComic();
-    virtual bool load(const QString &path, int atPage = -1);
-    virtual bool load(const QString &path, const ComicDB &comic);
+    ~FileComic() override;
+    bool load(const QString &path, int atPage = -1) final;
+    bool load(const QString &path, const ComicDB &comic) final;
     static QList<QString> filter(const QList<QString> &src);
 
     //ExtractDelegate
-    void fileExtracted(int index, const QByteArray &rawData);
-    void crcError(int index);
-    void unknownError(int index);
-    bool isCancelled();
+    void fileExtracted(int index, const QByteArray &rawData) override;
+    void crcError(int index) override;
+    void unknownError(int index) override;
+    bool isCancelled() override;
 
 public slots:
 
-    void process();
+    void process() override;
 };
 
 class FolderComic : public Comic
 {
     Q_OBJECT
 
-private:
-    //void run();
-
 public:
     FolderComic();
     FolderComic(const QString &path, int atPage = -1);
-    ~FolderComic();
 
-    virtual bool load(const QString &path, int atPage = -1);
+    bool load(const QString &path, int atPage = -1) final;
 
 public slots:
-
-    void process();
+    void process() override;
 };
 
 #ifndef NO_PDF
@@ -171,19 +170,16 @@ private:
     Poppler::Document *pdfComic;
 #endif
     void renderPage(int page);
-    //void run();
 
 public:
     PDFComic();
     PDFComic(const QString &path, int atPage = -1);
-    ~PDFComic();
 
-    virtual bool load(const QString &path, int atPage = -1);
-    virtual bool load(const QString &path, const ComicDB &comic);
+    bool load(const QString &path, int atPage = -1) final;
+    bool load(const QString &path, const ComicDB &comic) final;
 
 public slots:
-
-    void process();
+    void process() override;
 };
 #endif //NO_PDF
 class FactoryComic

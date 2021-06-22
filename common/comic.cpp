@@ -3,6 +3,7 @@
 #include <QPixmap>
 #include <QRegExp>
 #include <QString>
+#include <QThread>
 #include <algorithm>
 #include <QDir>
 #include <QFileInfoList>
@@ -120,7 +121,6 @@ Comic::Comic(const QString &pathFile, int atPage)
 //-----------------------------------------------------------------------------
 Comic::~Comic()
 {
-    emit destroyed();
     delete bm;
 }
 //-----------------------------------------------------------------------------
@@ -338,6 +338,23 @@ QList<QString> Comic::findValidComicFilesInFolder(const QString &path)
         }
     }
     return validComicFiles;
+}
+
+void Comic::moveAndConnectToThread(QThread *thread)
+{
+    Q_ASSERT(thread);
+    moveToThread(thread);
+
+    void (Comic::*errorOpening0)() = &Comic::errorOpening;
+    void (Comic::*errorOpening1)(QString) = &Comic::errorOpening;
+
+    connect(this, errorOpening0, thread, &QThread::quit, Qt::QueuedConnection);
+    connect(this, errorOpening1, thread, &QThread::quit, Qt::QueuedConnection);
+    connect(this, &Comic::imagesLoaded, thread, &QThread::quit, Qt::QueuedConnection);
+    connect(this, &Comic::invalidated, thread, &QThread::quit, Qt::QueuedConnection);
+
+    connect(thread, &QThread::started, this, &Comic::process);
+    connect(thread, &QThread::finished, thread, &QObject::deleteLater);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -652,10 +669,6 @@ FolderComic::FolderComic(const QString &path, int atPage)
     load(path, atPage);
 }
 
-FolderComic::~FolderComic()
-{
-}
-
 bool FolderComic::load(const QString &path, int atPage)
 {
     _path = path;
@@ -746,10 +759,6 @@ PDFComic::PDFComic(const QString &path, int atPage)
     : Comic(path, atPage)
 {
     load(path, atPage);
-}
-
-PDFComic::~PDFComic()
-{
 }
 
 bool PDFComic::load(const QString &path, int atPage)
