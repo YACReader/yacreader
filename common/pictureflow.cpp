@@ -778,7 +778,7 @@ QImage *PictureFlowSoftwareRenderer::surface(int slideIndex)
 		  {
 			  for(int i = iInit-(j-jInit); i < iInit; i ++)
 			  {
-				  
+
 				  painter.drawPoint(i,j);
 			  }
 		  }*/
@@ -986,7 +986,7 @@ PictureFlow::PictureFlow(QWidget *parent, FlowType flowType)
     d->animator->state = d->state;
     QObject::connect(&d->animator->animateTimer, &QTimer::timeout, this, &PictureFlow::updateAnimation);
 
-    QObject::connect(&d->triggerTimer, SIGNAL(timeout()), this, SLOT(render()));
+    QObject::connect(&d->triggerTimer, &QTimer::timeout, this, QOverload<>::of(&PictureFlow::render));
 
 #ifdef PICTUREFLOW_QT4
     setAttribute(Qt::WA_StaticContents, true);
