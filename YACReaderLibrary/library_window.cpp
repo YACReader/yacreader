@@ -1540,6 +1540,8 @@ void LibraryWindow::enableNeededActions()
 
 void LibraryWindow::addFolderToCurrentIndex()
 {
+    exitSearchMode(); // Creating a folder in search mode is broken => exit it.
+
     QModelIndex currentIndex = getCurrentFolderIndex();
 
     bool ok;
@@ -2675,4 +2677,13 @@ void LibraryWindow::updateComicsView(quint64 libraryId, const ComicDB &comic)
         comicsModel->reload(comic);
         comicsViewsManager->updateCurrentComicView();
     }
+}
+
+bool LibraryWindow::exitSearchMode()
+{
+    if (status != LibraryWindow::Searching)
+        return false;
+    searchEdit->clearText();
+    clearSearchFilter();
+    return true;
 }
