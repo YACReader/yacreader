@@ -1067,13 +1067,13 @@ void LibraryWindow::createConnections()
     //connect(foldersView, SIGNAL(clicked(QModelIndex)), historyController, SLOT(updateHistory(QModelIndex)));
 
     //libraryCreator connections
-    connect(createLibraryDialog, SIGNAL(createLibrary(QString, QString, QString)), this, SLOT(create(QString, QString, QString)));
+    connect(createLibraryDialog, &CreateLibraryDialog::createLibrary, this, QOverload<QString, QString, QString>::of(&LibraryWindow::create));
     connect(createLibraryDialog, &CreateLibraryDialog::libraryExists, this, &LibraryWindow::libraryAlreadyExists);
     connect(importComicsInfoDialog, &QDialog::finished, this, &LibraryWindow::reloadCurrentLibrary);
 
     //connect(libraryCreator,SIGNAL(coverExtracted(QString)),createLibraryDialog,SLOT(showCurrentFile(QString)));
     //connect(libraryCreator,SIGNAL(coverExtracted(QString)),updateLibraryDialog,SLOT(showCurrentFile(QString)));
-    connect(libraryCreator, SIGNAL(finished()), this, SLOT(showRootWidget()));
+    connect(libraryCreator, &LibraryCreator::finished, this, &LibraryWindow::showRootWidget);
     connect(libraryCreator, &LibraryCreator::updated, this, &LibraryWindow::reloadCurrentLibrary);
     connect(libraryCreator, &LibraryCreator::created, this, &LibraryWindow::openLastCreated);
     //connect(libraryCreator,SIGNAL(updatedCurrentFolder()), this, SLOT(showRootWidget()));
@@ -1089,7 +1089,7 @@ void LibraryWindow::createConnections()
     //packageManager connections
     connect(exportLibraryDialog, &ExportLibraryDialog::exportPath, this, &LibraryWindow::exportLibrary);
     connect(exportLibraryDialog, &QDialog::rejected, packageManager, &PackageManager::cancel);
-    connect(packageManager, SIGNAL(exported()), exportLibraryDialog, SLOT(close()));
+    connect(packageManager, &PackageManager::exported, exportLibraryDialog, &ExportLibraryDialog::close);
     connect(importLibraryDialog, &ImportLibraryDialog::unpackCLC, this, &LibraryWindow::importLibrary);
     connect(importLibraryDialog, &QDialog::rejected, packageManager, &PackageManager::cancel);
     connect(importLibraryDialog, &QDialog::rejected, this, &LibraryWindow::deleteCurrentLibrary);
@@ -1114,13 +1114,15 @@ void LibraryWindow::createConnections()
     //connect(foldersView, SIGNAL(clicked(QModelIndex)), this, SLOT(loadCovers(QModelIndex)));
 
     //drops in folders view
-    connect(foldersView, SIGNAL(copyComicsToFolder(QList<QPair<QString, QString>>, QModelIndex)), this, SLOT(copyAndImportComicsToFolder(QList<QPair<QString, QString>>, QModelIndex)));
-    connect(foldersView, SIGNAL(moveComicsToFolder(QList<QPair<QString, QString>>, QModelIndex)), this, SLOT(moveAndImportComicsToFolder(QList<QPair<QString, QString>>, QModelIndex)));
+    connect(foldersView, QOverload<QList<QPair<QString, QString>>, QModelIndex>::of(&YACReaderFoldersView::copyComicsToFolder),
+            this, &LibraryWindow::copyAndImportComicsToFolder);
+    connect(foldersView, QOverload<QList<QPair<QString, QString>>, QModelIndex>::of(&YACReaderFoldersView::moveComicsToFolder),
+            this, &LibraryWindow::moveAndImportComicsToFolder);
     connect(foldersView, &QWidget::customContextMenuRequested, this, &LibraryWindow::showFoldersContextMenu);
 
     //actions
     connect(createLibraryAction, &QAction::triggered, this, &LibraryWindow::createLibrary);
-    connect(exportLibraryAction, &QAction::triggered, exportLibraryDialog, &QDialog::open);
+    connect(exportLibraryAction, &QAction::triggered, exportLibraryDialog, &ExportLibraryDialog::open);
     connect(importLibraryAction, &QAction::triggered, this, &LibraryWindow::importLibraryPackage);
 
     connect(openLibraryAction, &QAction::triggered, this, &LibraryWindow::showAddLibrary);
@@ -1217,9 +1219,9 @@ void LibraryWindow::createConnections()
     connect(addLabelAction, &QAction::triggered, this, &LibraryWindow::showAddNewLabelDialog);
     connect(renameListAction, &QAction::triggered, this, &LibraryWindow::showRenameCurrentList);
 
-    connect(listsModel, SIGNAL(addComicsToFavorites(QList<qulonglong>)), comicsModel, SLOT(addComicsToFavorites(QList<qulonglong>)));
-    connect(listsModel, SIGNAL(addComicsToLabel(QList<qulonglong>, qulonglong)), comicsModel, SLOT(addComicsToLabel(QList<qulonglong>, qulonglong)));
-    connect(listsModel, SIGNAL(addComicsToReadingList(QList<qulonglong>, qulonglong)), comicsModel, SLOT(addComicsToReadingList(QList<qulonglong>, qulonglong)));
+    connect(listsModel, &ReadingListModel::addComicsToFavorites, comicsModel, QOverload<const QList<qulonglong> &>::of(&ComicModel::addComicsToFavorites));
+    connect(listsModel, &ReadingListModel::addComicsToLabel, comicsModel, QOverload<const QList<qulonglong> &, qulonglong>::of(&ComicModel::addComicsToLabel));
+    connect(listsModel, &ReadingListModel::addComicsToReadingList, comicsModel, QOverload<const QList<qulonglong> &, qulonglong>::of(&ComicModel::addComicsToReadingList));
     //--
 
     connect(addToFavoritesAction, &QAction::triggered, this, &LibraryWindow::addSelectedComicsToFavorites);

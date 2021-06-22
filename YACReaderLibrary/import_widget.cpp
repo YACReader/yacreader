@@ -59,14 +59,14 @@ YACReaderActivityIndicatorWidget::YACReaderActivityIndicatorWidget(QWidget *pare
     auto effect = new QGraphicsOpacityEffect();
     //effect->setOpacity(1.0);
 
-    QPropertyAnimation *animation = new QPropertyAnimation(effect, "opacity");
+    auto *animation = new QPropertyAnimation(effect, "opacity", this);
 
     animation->setDuration(1000);
     animation->setStartValue(1);
     animation->setEndValue(0);
     //animation->setEasingCurve(QEasingCurve::InQuint);
 
-    QPropertyAnimation *animation2 = new QPropertyAnimation(effect, "opacity");
+    auto *animation2 = new QPropertyAnimation(effect, "opacity", this);
 
     animation2->setDuration(1000);
     animation2->setStartValue(0);
@@ -75,8 +75,8 @@ YACReaderActivityIndicatorWidget::YACReaderActivityIndicatorWidget(QWidget *pare
 
     glow->setGraphicsEffect(effect);
 
-    connect(animation, SIGNAL(finished()), animation2, SLOT(start()));
-    connect(animation2, SIGNAL(finished()), animation, SLOT(start()));
+    connect(animation, &QPropertyAnimation::finished, animation2, [=] { animation2->start(); });
+    connect(animation2, &QPropertyAnimation::finished, animation, [=] { animation->start(); });
 
     animation->start();
 }

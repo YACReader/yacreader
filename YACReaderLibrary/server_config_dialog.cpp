@@ -117,7 +117,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     portLabel->setStyleSheet("QLabel {color:#575757; font-size:18px; font-family: Arial;}");
 
     ip = new QComboBox(this);
-    connect(ip, SIGNAL(activated(const QString &)), this, SLOT(regenerateQR(const QString &)));
+    connect(ip, QOverload<const QString &>::of(&QComboBox::activated), this, &ServerConfigDialog::regenerateQR);
 
     ip->setFixedWidth(200);
     ip->move(332, 153);
