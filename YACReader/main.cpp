@@ -98,6 +98,12 @@ int main(int argc, char *argv[])
 #else
     QApplication app(argc, argv);
 #endif
+    // Prevent SIGPIPE, then "ICE default IO error handler doing an exit(), pid = <PID>, errno = 32"
+    // crash on X11 when the first event loop starts at least 60 seconds after a Qt application
+    // launch. This can happen during a Debug launch of YACReader from Qt Creator if Qt debug
+    // symbols are installed in the system or a breakpoint is hit before any event loop is entered.
+    // This is a workaround for QTBUG-58709.
+    QCoreApplication::processEvents();
 
 #ifdef FORCE_ANGLE
     app.setAttribute(Qt::AA_UseOpenGLES);
