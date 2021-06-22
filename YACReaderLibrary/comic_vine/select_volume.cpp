@@ -53,7 +53,9 @@ SelectVolume::SelectVolume(QWidget *parent)
     tableVolumes->horizontalHeader()->setClickable(true);
 #endif
     //tableVolumes->horizontalHeader()->setSortIndicatorShown(false);
-    connect(tableVolumes->horizontalHeader(), SIGNAL(sectionClicked(int)), tableVolumes, SLOT(sortByColumn(int)));
+    connect(tableVolumes->horizontalHeader(), &QHeaderView::sectionClicked,
+            [=](int index) { tableVolumes->horizontalHeader()->sortIndicatorSection() == index ? tableVolumes->sortByColumn(index, tableVolumes->horizontalHeader()->sortIndicatorOrder() == Qt::AscendingOrder ? Qt::DescendingOrder : Qt::AscendingOrder)
+                                                                                               : tableVolumes->sortByColumn(index, Qt::AscendingOrder); });
     //connections
     connect(tableVolumes, &QAbstractItemView::clicked, this, &SelectVolume::loadVolumeInfo);
 

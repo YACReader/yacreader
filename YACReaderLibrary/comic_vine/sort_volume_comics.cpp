@@ -134,11 +134,11 @@ void SortVolumeComics::synchronizeScroll(int pos)
     QScrollBar *tableFilesScrollBar = tableFiles->verticalScrollBar();
 
     if (senderObject == tableVolumeComicsScrollBar) {
-        disconnect(tableFilesScrollBar, SIGNAL(valueChanged(int)), this, 0);
+        disconnect(tableFilesScrollBar, &QAbstractSlider::valueChanged, this, nullptr);
         tableFilesScrollBar->setValue(pos);
         connect(tableFilesScrollBar, &QAbstractSlider::valueChanged, this, &SortVolumeComics::synchronizeScroll);
     } else {
-        disconnect(tableVolumeComicsScrollBar, SIGNAL(valueChanged(int)), this, 0);
+        disconnect(tableVolumeComicsScrollBar, &QAbstractSlider::valueChanged, this, nullptr);
         tableVolumeComicsScrollBar->setValue(pos);
         connect(tableVolumeComicsScrollBar, &QAbstractSlider::valueChanged, this, &SortVolumeComics::synchronizeScroll);
     }
