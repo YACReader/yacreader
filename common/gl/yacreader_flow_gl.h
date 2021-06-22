@@ -122,9 +122,9 @@ protected:
     QOpenGLTexture *defaultTexture = nullptr;
     QOpenGLTexture *markTexture = nullptr;
     QOpenGLTexture *readingTexture = nullptr;
-    void initializeGL();
-    void paintGL();
-    void timerEvent(QTimerEvent *);
+    void initializeGL() override;
+    void paintGL() override;
+    void timerEvent(QTimerEvent *) override;
 
     //number of Covers
     int numObjects;
@@ -172,11 +172,11 @@ protected:
 
 public:
     /*Constructor*/
-    YACReaderFlowGL(QWidget *parent = 0, struct Preset p = pressetYACReaderFlowDownConfig);
-    virtual ~YACReaderFlowGL();
+    explicit YACReaderFlowGL(QWidget *parent = nullptr, struct Preset p = pressetYACReaderFlowDownConfig);
+    ~YACReaderFlowGL() override;
 
     //size;
-    QSize minimumSizeHint() const;
+    QSize minimumSizeHint() const override;
     //QSize sizeHint() const;
 
     /*functions*/
@@ -267,11 +267,11 @@ public slots:
 
     //void paintEvent(QPaintEvent *event);
     QVector3D getPlaneIntersection(int x, int y, YACReader3DImage plane);
-    void mouseDoubleClickEvent(QMouseEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void wheelEvent(QWheelEvent *event);
-    void keyPressEvent(QKeyEvent *event);
-    void resizeGL(int width, int height);
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
+    void resizeGL(int width, int height) override;
     friend class ImageLoaderGL;
     friend class ImageLoaderByteArrayGL;
 
@@ -283,10 +283,10 @@ signals:
 class YACReaderComicFlowGL : public YACReaderFlowGL
 {
 public:
-    YACReaderComicFlowGL(QWidget *parent = 0, struct Preset p = defaultYACReaderFlowConfig);
+    explicit YACReaderComicFlowGL(QWidget *parent = nullptr, struct Preset p = defaultYACReaderFlowConfig);
     void setImagePaths(QStringList paths);
-    void updateImageData();
-    void remove(int item);
+    void updateImageData() override;
+    void remove(int item) override;
     void resortCovers(QList<int> newOrder);
     friend class ImageLoaderGL;
 
@@ -300,9 +300,9 @@ protected:
 class YACReaderPageFlowGL : public YACReaderFlowGL
 {
 public:
-    YACReaderPageFlowGL(QWidget *parent = 0, struct Preset p = defaultYACReaderFlowConfig);
-    ~YACReaderPageFlowGL();
-    void updateImageData();
+    explicit YACReaderPageFlowGL(QWidget *parent = nullptr, struct Preset p = defaultYACReaderFlowConfig);
+    ~YACReaderPageFlowGL() override;
+    void updateImageData() override;
     void populate(int n);
     QVector<bool> imagesReady;
     QVector<QByteArray> rawImages;

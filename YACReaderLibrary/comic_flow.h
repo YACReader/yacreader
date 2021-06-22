@@ -7,7 +7,6 @@
 #include <QImage>
 #include <QString>
 #include <QTimer>
-#include <QWheelEvent>
 
 #include <memory>
 
@@ -18,7 +17,7 @@ class ComicFlow : public YACReaderFlow
 {
     Q_OBJECT
 public:
-    ComicFlow(QWidget *parent = nullptr, FlowType flowType = CoverFlowLike);
+    explicit ComicFlow(QWidget *parent = nullptr, FlowType flowType = CoverFlowLike);
     ~ComicFlow() override;
 
     void setImagePaths(const QStringList &paths);
@@ -41,7 +40,6 @@ private:
     int workerIndex;
     QTimer updateTimer;
     std::unique_ptr<WorkerThread<QImage>> worker;
-    virtual void wheelEvent(QWheelEvent *event);
 };
 
 #endif

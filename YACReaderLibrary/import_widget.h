@@ -1,6 +1,7 @@
 #ifndef IMPORT_WIDGET_H
 #define IMPORT_WIDGET_H
 
+#include <QElapsedTimer>
 #include <QtWidgets>
 
 class ImportWidget : public QWidget
@@ -36,7 +37,7 @@ private:
 
     int previousWidth;
     bool updatingCovers;
-    QElapsedTimer *elapsedTimer;
+    QElapsedTimer elapsedTimer;
     quint64 i;
 
     QToolButton *hideButton;

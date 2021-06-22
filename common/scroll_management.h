@@ -1,7 +1,7 @@
 #ifndef SCROLLMANAGAMENT_H
 #define SCROLLMANAGAMENT_H
 
-#include <QTime>
+#include <QElapsedTimer>
 #include <QWheelEvent>
 
 class ScrollManagement
@@ -14,11 +14,12 @@ public:
     };
 
     ScrollManagement();
-    ScrollManagement::Movement getMovement(QWheelEvent *event);
+    ScrollManagement::Movement getMovement(QWheelEvent *event,
+                                           Qt::Orientations orientations = Qt::Horizontal | Qt::Vertical);
     ~ScrollManagement();
 
 private:
-    QTime *wheelTimer;
+    QElapsedTimer wheelTimer;
     int wheelAccumulator;
 };
 

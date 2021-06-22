@@ -103,15 +103,6 @@ void ComicFlow::keyPressEvent(QKeyEvent *event)
     PictureFlow::keyPressEvent(event);
 }
 
-void ComicFlow::wheelEvent(QWheelEvent *event)
-{
-    if (event->delta() < 0)
-        showNext();
-    else
-        showPrevious();
-    event->accept();
-}
-
 void ComicFlow::removeSlide(int cover)
 {
     imageFiles.removeAt(cover);

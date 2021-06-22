@@ -193,15 +193,6 @@ void GoToFlow::updateImageData()
     updateTimer->stop();
 }
 
-void GoToFlow::wheelEvent(QWheelEvent *event)
-{
-    if (event->delta() < 0)
-        flow->showNext();
-    else
-        flow->showPrevious();
-    event->accept();
-}
-
 void GoToFlow::setFlowType(FlowType flowType)
 {
     flow->setFlowType(flowType);

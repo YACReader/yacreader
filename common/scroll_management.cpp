@@ -1,35 +1,48 @@
 #include "scroll_management.h"
 
+namespace {
+int orientedDelta(const QPoint &delta, Qt::Orientations orientations)
+{
+    int result = 0;
+    if (orientations & Qt::Horizontal)
+        result += delta.x();
+    if (orientations & Qt::Vertical)
+        result += delta.y();
+    return result;
+}
+}
+
 ScrollManagement::ScrollManagement()
 {
-    wheelTimer = new QTime();
-    wheelTimer->start();
+    wheelTimer.start();
     wheelAccumulator = 0;
 }
 
-ScrollManagement::Movement ScrollManagement::getMovement(QWheelEvent *event)
+ScrollManagement::Movement ScrollManagement::getMovement(QWheelEvent *event, Qt::Orientations orientations)
 {
     /*QLOG_DEBUG() << "WheelEvent angle delta : " << event->angleDelta();
     QLOG_DEBUG() << "WheelEvent pixel delta : " << event->pixelDelta();*/
 
-    int tooFast = 1;
-    int timeThrottle = 16;
-    int minimumMove = 70;
+    constexpr int tooFast = 1;
+    constexpr int timeThrottle = 16;
+    constexpr int minimumMove = 70;
+
+    const auto elapsedMs = wheelTimer.elapsed();
 
     //avoid any events overflood
-    if ((wheelTimer->elapsed() < tooFast)) {
+    if (elapsedMs < tooFast) {
         event->setAccepted(true);
         return None;
     }
 
+    const auto delta = orientedDelta(event->angleDelta(), orientations);
     // Accumulate the delta
-    if ((event->delta() < 0) != (wheelAccumulator < 0)) //different sign means change in direction
+    if ((delta < 0) != (wheelAccumulator < 0)) //different sign means change in direction
         wheelAccumulator = 0;
-
-    wheelAccumulator += event->delta();
+    wheelAccumulator += delta;
 
     //Do not process events too fast
-    if ((wheelTimer->elapsed() < timeThrottle)) {
+    if (elapsedMs < timeThrottle) {
         event->setAccepted(true);
         return None;
     }
@@ -49,7 +62,7 @@ ScrollManagement::Movement ScrollManagement::getMovement(QWheelEvent *event)
     event->accept();
     //Clean up
     wheelAccumulator = 0;
-    wheelTimer->restart();
+    wheelTimer.start();
 
     return m;
 }

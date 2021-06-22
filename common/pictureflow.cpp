@@ -96,6 +96,8 @@
 #define flush flushX
 #endif
 
+#include <QElapsedTimer>
+
 // for fixed-point arithmetic, we need minimum 32-bit long
 // long long (64-bit) might be useful for multiplication and division
 typedef long PFreal;
@@ -1278,10 +1280,10 @@ void PictureFlow::resizeEvent(QResizeEvent *event)
     d->animator->start(centerIndex());
     QWidget::resizeEvent(event);
 }
-#include <QTime>
+
 void PictureFlow::updateAnimation() //bucle principal
 {
-    QTime now;
+    QElapsedTimer now;
     now.start();
     bool frameSkiped = false;
 
