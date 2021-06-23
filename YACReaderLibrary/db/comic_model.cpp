@@ -18,8 +18,6 @@
 ComicModel::ComicModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
-    connect(this, SIGNAL(beforeReset()), this, SIGNAL(modelAboutToBeReset()));
-    connect(this, SIGNAL(reset()), this, SIGNAL(modelReset()));
 }
 
 ComicModel::ComicModel(QSqlQuery &sqlquery, QObject *parent)
