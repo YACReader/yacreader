@@ -73,6 +73,6 @@ NoLibrariesWidget::NoLibrariesWidget(QWidget *parent)
     layout->addSpacing(150);
     layout->addStretch();
 
-    connect(createButton, SIGNAL(clicked()), this, SIGNAL(createNewLibrary()));
-    connect(addButton, SIGNAL(clicked()), this, SIGNAL(addExistingLibrary()));
+    connect(createButton, &QAbstractButton::clicked, this, &NoLibrariesWidget::createNewLibrary);
+    connect(addButton, &QAbstractButton::clicked, this, &NoLibrariesWidget::addExistingLibrary);
 }

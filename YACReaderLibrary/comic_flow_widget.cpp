@@ -10,8 +10,8 @@ ComicFlowWidgetSW::ComicFlowWidgetSW(QWidget *parent)
 {
     flow = new ComicFlow(parent);
 
-    connect(flow, SIGNAL(centerIndexChanged(int)), this, SIGNAL(centerIndexChanged(int)));
-    connect(flow, SIGNAL(selected(unsigned int)), this, SIGNAL(selected(unsigned int)));
+    connect(flow, &PictureFlow::centerIndexChanged, this, &ComicFlowWidget::centerIndexChanged);
+    connect(flow, &YACReaderFlow::selected, this, &ComicFlowWidget::selected);
 
     auto l = new QVBoxLayout;
     l->addWidget(flow);
@@ -155,8 +155,8 @@ ComicFlowWidgetGL::ComicFlowWidgetGL(QWidget *parent)
 {
     flow = new YACReaderComicFlowGL(parent);
 
-    connect(flow, SIGNAL(centerIndexChanged(int)), this, SIGNAL(centerIndexChanged(int)));
-    connect(flow, SIGNAL(selected(unsigned int)), this, SIGNAL(selected(unsigned int)));
+    connect(flow, &YACReaderFlowGL::centerIndexChanged, this, &ComicFlowWidget::centerIndexChanged);
+    connect(flow, &YACReaderFlowGL::selected, this, &ComicFlowWidget::selected);
 
     auto l = new QVBoxLayout;
     l->addWidget(flow);

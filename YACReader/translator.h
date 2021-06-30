@@ -13,6 +13,7 @@ class YACReaderBusyWidget;
 #include <QWidget>
 #include <QThread>
 #include <QUrl>
+#include "viewer.h"
 
 #if QT_VERSION >= 0x050000
 class QMediaPlayer;
@@ -25,7 +26,7 @@ class YACReaderTranslator : public QWidget
 {
     Q_OBJECT
 public:
-    YACReaderTranslator(QWidget *parent = nullptr);
+    YACReaderTranslator(Viewer *parent = nullptr);
     ~YACReaderTranslator() override;
 
 public slots:

@@ -25,8 +25,8 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
     clearButton->setCursor(Qt::ArrowCursor);
     clearButton->setStyleSheet("QToolButton { border: none; padding: 0px; }");
     clearButton->hide();
-    connect(clearButton, SIGNAL(clicked()), this, SLOT(clear()));
-    connect(this, SIGNAL(textChanged(const QString &)), this, SLOT(updateCloseButton(const QString &)));
+    connect(clearButton, &QAbstractButton::clicked, this, &QLineEdit::clear);
+    connect(this, &QLineEdit::textChanged, this, &YACReaderSearchLineEdit::updateCloseButton);
     int frameWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
 #ifdef Q_OS_MAC
     setStyleSheet(QString("QLineEdit {border-top:1px solid #9F9F9F; border-bottom:1px solid #ACACAC; border-right:1px solid #ACACAC; border-left:1px solid #ACACAC; border-radius: 10px; background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #CACACA, stop: 0.15 #FFFFFF); padding-left: %1px; padding-right: %2px; padding-bottom: 1px; margin-bottom: 1px;} ").arg(searchLabel->sizeHint().width() + frameWidth + 6).arg(clearButton->sizeHint().width() + frameWidth + 2));
@@ -67,14 +67,14 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
     setValidator(validator);
     setCompleter(modifiersCompleter);
 
-    connect(this, SIGNAL(textChanged(QString)), this, SLOT(processText(QString)));
+    connect(this, &QLineEdit::textChanged, this, &YACReaderSearchLineEdit::processText);
 }
 
 void YACReaderSearchLineEdit::clearText()
 {
-    disconnect(this, SIGNAL(textChanged(QString)), this, SLOT(processText(QString)));
+    disconnect(this, &QLineEdit::textChanged, this, &YACReaderSearchLineEdit::processText);
     clear();
-    connect(this, SIGNAL(textChanged(QString)), this, SLOT(processText(QString)));
+    connect(this, &QLineEdit::textChanged, this, &YACReaderSearchLineEdit::processText);
 }
 
 //modifiers are not returned

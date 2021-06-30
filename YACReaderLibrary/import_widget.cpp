@@ -59,14 +59,14 @@ YACReaderActivityIndicatorWidget::YACReaderActivityIndicatorWidget(QWidget *pare
     auto effect = new QGraphicsOpacityEffect();
     //effect->setOpacity(1.0);
 
-    QPropertyAnimation *animation = new QPropertyAnimation(effect, "opacity");
+    auto *animation = new QPropertyAnimation(effect, "opacity", this);
 
     animation->setDuration(1000);
     animation->setStartValue(1);
     animation->setEndValue(0);
     //animation->setEasingCurve(QEasingCurve::InQuint);
 
-    QPropertyAnimation *animation2 = new QPropertyAnimation(effect, "opacity");
+    auto *animation2 = new QPropertyAnimation(effect, "opacity", this);
 
     animation2->setDuration(1000);
     animation2->setStartValue(0);
@@ -75,8 +75,8 @@ YACReaderActivityIndicatorWidget::YACReaderActivityIndicatorWidget(QWidget *pare
 
     glow->setGraphicsEffect(effect);
 
-    connect(animation, SIGNAL(finished()), animation2, SLOT(start()));
-    connect(animation2, SIGNAL(finished()), animation, SLOT(start()));
+    connect(animation, &QPropertyAnimation::finished, animation2, [=] { animation2->start(); });
+    connect(animation2, &QPropertyAnimation::finished, animation, [=] { animation->start(); });
 
     animation->start();
 }
@@ -195,7 +195,7 @@ ImportWidget::ImportWidget(QWidget *parent)
                               "  QToolButton:checked {background:url(\":/images/hiddenCovers.png\"); border:none;}");
     hideButton->setCheckable(true);
 
-    connect(hideButton, SIGNAL(toggled(bool)), this, SLOT(showCovers(bool)));
+    connect(hideButton, &QAbstractButton::toggled, this, &ImportWidget::showCovers);
 
     layout->addWidget(coversLabel, 0, Qt::AlignHCenter);
     layout->addWidget(coversViewContainer);
@@ -203,7 +203,7 @@ ImportWidget::ImportWidget(QWidget *parent)
     layout->addWidget(currentComicLabel, 0, Qt::AlignHCenter);
     layout->setContentsMargins(0, layout->contentsMargins().top(), 0, layout->contentsMargins().bottom());
 
-    connect(stop, SIGNAL(clicked()), this, SIGNAL(stop()));
+    connect(stop, &QAbstractButton::clicked, this, &ImportWidget::stop);
     //connect(stop,SIGNAL(clicked()),this,SLOT(addCoverTest()));
 
     previousWidth = 0;

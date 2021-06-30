@@ -64,15 +64,15 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
         tableView->horizontalHeader()->restoreState(settings->value(COMICS_VIEW_HEADERS).toByteArray());
 
     //connections---------------------------------------------
-    connect(tableView, SIGNAL(clicked(QModelIndex)), this, SLOT(centerComicFlow(QModelIndex)));
-    connect(tableView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(selectedComicForOpening(QModelIndex)));
-    connect(comicFlow, SIGNAL(centerIndexChanged(int)), this, SLOT(updateTableView(int)));
-    connect(tableView, SIGNAL(comicRated(int, QModelIndex)), this, SIGNAL(comicRated(int, QModelIndex)));
-    connect(comicFlow, SIGNAL(selected(uint)), this, SIGNAL(selected(uint)));
-    connect(tableView->horizontalHeader(), SIGNAL(sectionMoved(int, int, int)), this, SLOT(saveTableHeadersStatus()));
-    connect(tableView->horizontalHeader(), SIGNAL(sectionResized(int, int, int)), this, SLOT(saveTableHeadersStatus()));
-    connect(comicFlow, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(requestedViewContextMenu(QPoint)));
-    connect(tableView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(requestedItemContextMenu(QPoint)));
+    connect(tableView, &QAbstractItemView::clicked, this, &ClassicComicsView::centerComicFlow);
+    connect(tableView, &QAbstractItemView::doubleClicked, this, &ClassicComicsView::selectedComicForOpening);
+    connect(comicFlow, &ComicFlowWidget::centerIndexChanged, this, &ClassicComicsView::updateTableView);
+    connect(tableView, &YACReaderTableView::comicRated, this, &ComicsView::comicRated);
+    connect(comicFlow, &ComicFlowWidget::selected, this, &ComicsView::selected);
+    connect(tableView->horizontalHeader(), &QHeaderView::sectionMoved, this, &ClassicComicsView::saveTableHeadersStatus);
+    connect(tableView->horizontalHeader(), &QHeaderView::sectionResized, this, &ClassicComicsView::saveTableHeadersStatus);
+    connect(comicFlow, &QWidget::customContextMenuRequested, this, &ClassicComicsView::requestedViewContextMenu);
+    connect(tableView, &QWidget::customContextMenuRequested, this, &ClassicComicsView::requestedItemContextMenu);
     layout->addWidget(sVertical);
     setLayout(layout);
 
@@ -94,7 +94,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     hideFlowViewAction->setCheckable(true);
     hideFlowViewAction->setChecked(false);
 
-    connect(hideFlowViewAction, SIGNAL(toggled(bool)), this, SLOT(hideComicFlow(bool)));
+    connect(hideFlowViewAction, &QAction::toggled, this, &ClassicComicsView::hideComicFlow);
 }
 
 void ClassicComicsView::hideComicFlow(bool hide)
@@ -133,10 +133,11 @@ void ClassicComicsView::setModel(ComicModel *model)
     if (model == NULL) {
         comicFlow->clear();
     } else {
-        connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex, QVector<int>)), this, SLOT(applyModelChanges(QModelIndex, QModelIndex, QVector<int>)), Qt::UniqueConnection);
-        connect(model, SIGNAL(rowsRemoved(QModelIndex, int, int)), this, SLOT(removeItemsFromFlow(QModelIndex, int, int)), Qt::UniqueConnection);
-        connect(model, SIGNAL(resortedIndexes(QList<int>)), comicFlow, SLOT(resortCovers(QList<int>)), Qt::UniqueConnection);
-        connect(model, SIGNAL(newSelectedIndex(QModelIndex)), this, SLOT(setCurrentIndex(QModelIndex)), Qt::UniqueConnection);
+        connect(model, &QAbstractItemModel::dataChanged, this, &ClassicComicsView::applyModelChanges, Qt::UniqueConnection);
+        connect(model, &QAbstractItemModel::rowsRemoved, this, &ClassicComicsView::removeItemsFromFlow, Qt::UniqueConnection);
+        //TODO: Missing method resortCovers?
+        connect(model, &ComicModel::resortedIndexes, comicFlow, &ComicFlowWidget::resortCovers, Qt::UniqueConnection);
+        connect(model, &ComicModel::newSelectedIndex, this, &ClassicComicsView::setCurrentIndex, Qt::UniqueConnection);
 
         tableView->setModel(model);
         if (model->rowCount() > 0)

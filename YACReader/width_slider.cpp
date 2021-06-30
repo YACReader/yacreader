@@ -11,7 +11,7 @@ YACReaderSliderAction::YACReaderSliderAction(QWidget *parent)
     widget = new YACReaderSlider();
     setDefaultWidget(widget);
 
-    connect(widget, SIGNAL(zoomRatioChanged(int)), this, SIGNAL(zoomRatioChanged(int)));
+    connect(widget, &YACReaderSlider::zoomRatioChanged, this, &YACReaderSliderAction::zoomRatioChanged);
 }
 
 void YACReaderSliderAction::updateText(int value)

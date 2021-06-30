@@ -7,10 +7,10 @@ ComicFlow::ComicFlow(QWidget *parent, FlowType flowType)
     : YACReaderFlow(parent, flowType), worker(new WorkerThread<QImage>)
 {
     resetWorkerIndex();
-    connect(&updateTimer, SIGNAL(timeout()), this, SLOT(updateImageData()));
+    connect(&updateTimer, &QTimer::timeout, this, &ComicFlow::updateImageData);
 
-    connect(this, SIGNAL(centerIndexChanged(int)), this, SLOT(preload()));
-    connect(this, SIGNAL(centerIndexChangedSilent(int)), this, SLOT(preload()));
+    connect(this, &PictureFlow::centerIndexChanged, this, &ComicFlow::preload);
+    connect(this, &PictureFlow::centerIndexChangedSilent, this, &ComicFlow::preload);
 
     setReflectionEffect(PlainReflection);
 }

@@ -160,8 +160,6 @@ private:
     qulonglong sourceId;
 
 signals:
-    void beforeReset();
-    void reset();
     void isEmpty();
     void searchNumResults(int);
     void resortedIndexes(QList<int>);

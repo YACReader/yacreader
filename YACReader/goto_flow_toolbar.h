@@ -34,7 +34,7 @@ public slots:
     void updateOptions();
 signals:
     void setCenter(unsigned int);
-    void goTo(unsigned int);
+    void goToPage(unsigned int);
 };
 
 #endif

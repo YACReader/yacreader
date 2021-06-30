@@ -213,7 +213,7 @@ void GridComicsView::createCoverSizeSliderWidget()
     coverSizeSliderWidget->setLayout(horizontalLayout);
     //TODO add shortcuts (ctrl-+ and ctrl-- for zooming in out, + ctrl-0 for reseting the zoom)
 
-    connect(coverSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(setCoversSize(int)));
+    connect(coverSizeSlider, &QAbstractSlider::valueChanged, this, &GridComicsView::setCoversSize);
 
     int coverSize = settings->value(COMICS_GRID_COVER_SIZES, YACREADER_MIN_COVER_WIDTH).toInt();
 
@@ -277,7 +277,7 @@ void GridComicsView::setModel(ComicModel *model)
 
     //If the currentComicView was hidden before showing it sometimes the scroll view doesn't show it
     //this is a hacky solution...
-    QTimer::singleShot(0, this, SLOT(resetScroll()));
+    QTimer::singleShot(0, this, &GridComicsView::resetScroll);
 }
 
 void GridComicsView::updateBackgroundConfig()

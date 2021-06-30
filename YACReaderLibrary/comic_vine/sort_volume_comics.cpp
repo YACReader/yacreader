@@ -32,8 +32,8 @@ SortVolumeComics::SortVolumeComics(QWidget *parent)
     //moveDownButtonIL = new ScrapperToolButton(ScrapperToolButton::RIGHT);
     //moveDownButtonIL->setIcon(QIcon(":/images/comic_vine/rowDown.png"));
 
-    connect(moveUpButtonCL, SIGNAL(clicked()), this, SLOT(moveUpCL()));
-    connect(moveDownButtonCL, SIGNAL(clicked()), this, SLOT(moveDownCL()));
+    connect(moveUpButtonCL, &QAbstractButton::clicked, this, &SortVolumeComics::moveUpCL);
+    connect(moveDownButtonCL, &QAbstractButton::clicked, this, &SortVolumeComics::moveDownCL);
     //connect(moveUpButtonIL,SIGNAL(clicked()),this,SLOT(moveUpIL()));
     //connect(moveUpButtonIL,SIGNAL(clicked()),this,SLOT(moveDownIL()));
 
@@ -49,8 +49,8 @@ SortVolumeComics::SortVolumeComics(QWidget *parent)
 
     //content->addWidget(tableVolumes,0,Qt::AlignRight|Qt::AlignTop);
 
-    connect(tableVolumeComics->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(synchronizeScroll(int)));
-    connect(tableFiles->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(synchronizeScroll(int)));
+    connect(tableVolumeComics->verticalScrollBar(), &QAbstractSlider::valueChanged, this, &SortVolumeComics::synchronizeScroll);
+    connect(tableFiles->verticalScrollBar(), &QAbstractSlider::valueChanged, this, &SortVolumeComics::synchronizeScroll);
 
     //connect(tableVolumeComics, SIGNAL(pressed(QModelIndex)), tableFiles, SLOT(setCurrentIndex(QModelIndex)));
     //connect(tableFiles, SIGNAL(pressed(QModelIndex)), tableVolumeComics, SLOT(setCurrentIndex(QModelIndex)));
@@ -93,8 +93,8 @@ SortVolumeComics::SortVolumeComics(QWidget *parent)
     tableFiles->addAction(restoreAllItems);
     //tableFiles->addAction(restoreItems);
 
-    connect(removeItemFromList, SIGNAL(triggered()), this, SLOT(removeSelectedComics()));
-    connect(restoreAllItems, SIGNAL(triggered()), this, SLOT(restoreAllComics()));
+    connect(removeItemFromList, &QAction::triggered, this, &SortVolumeComics::removeSelectedComics);
+    connect(restoreAllItems, &QAction::triggered, this, &SortVolumeComics::restoreAllComics);
     //connect(restoreItems,SIGNAL(triggered()),this,SLOT(showRemovedComicsSelector()));
 }
 
@@ -134,13 +134,13 @@ void SortVolumeComics::synchronizeScroll(int pos)
     QScrollBar *tableFilesScrollBar = tableFiles->verticalScrollBar();
 
     if (senderObject == tableVolumeComicsScrollBar) {
-        disconnect(tableFilesScrollBar, SIGNAL(valueChanged(int)), this, 0);
+        disconnect(tableFilesScrollBar, &QAbstractSlider::valueChanged, this, nullptr);
         tableFilesScrollBar->setValue(pos);
-        connect(tableFilesScrollBar, SIGNAL(valueChanged(int)), this, SLOT(synchronizeScroll(int)));
+        connect(tableFilesScrollBar, &QAbstractSlider::valueChanged, this, &SortVolumeComics::synchronizeScroll);
     } else {
-        disconnect(tableVolumeComicsScrollBar, SIGNAL(valueChanged(int)), this, 0);
+        disconnect(tableVolumeComicsScrollBar, &QAbstractSlider::valueChanged, this, nullptr);
         tableVolumeComicsScrollBar->setValue(pos);
-        connect(tableVolumeComicsScrollBar, SIGNAL(valueChanged(int)), this, SLOT(synchronizeScroll(int)));
+        connect(tableVolumeComicsScrollBar, &QAbstractSlider::valueChanged, this, &SortVolumeComics::synchronizeScroll);
     }
 }
 

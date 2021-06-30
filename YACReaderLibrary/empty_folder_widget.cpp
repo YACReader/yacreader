@@ -125,7 +125,7 @@ EmptyFolderWidget::EmptyFolderWidget(QWidget *parent)
 
     setAcceptDrops(true);
 
-    connect(foldersView, SIGNAL(clicked(QModelIndex)), this, SLOT(onItemClicked(QModelIndex)));
+    connect(foldersView, &QAbstractItemView::clicked, this, &EmptyFolderWidget::onItemClicked);
 }
 
 void EmptyFolderWidget::setSubfolders(const QModelIndex &mi, const QStringList &foldersNames)

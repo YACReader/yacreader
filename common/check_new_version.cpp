@@ -15,7 +15,7 @@
 HttpVersionChecker::HttpVersionChecker()
     : HttpWorker("https://raw.githubusercontent.com/YACReader/yacreader/master/common/yacreader_global.h")
 {
-    connect(this, SIGNAL(dataReady(const QByteArray &)), this, SLOT(checkNewVersion(const QByteArray &)));
+    connect(this, &HttpVersionChecker::dataReady, this, QOverload<const QByteArray &>::of(&HttpVersionChecker::checkNewVersion));
 }
 
 void HttpVersionChecker::checkNewVersion(const QByteArray &data)

@@ -102,10 +102,6 @@ private:
     QMap<unsigned long long int, FolderItem *> items; //relación entre folders
 
     QString _databasePath;
-
-signals:
-    void beforeReset();
-    void reset();
 };
 
 #endif

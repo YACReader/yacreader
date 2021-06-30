@@ -24,7 +24,7 @@ YACReaderLocalServer::YACReaderLocalServer(QObject *parent)
         QLOG_ERROR() << "Unable to create local server";
     }
 
-    connect(localServer, SIGNAL(newConnection()), this, SLOT(sendResponse()));
+    connect(localServer, &QLocalServer::newConnection, this, &YACReaderLocalServer::sendResponse);
 }
 
 bool YACReaderLocalServer::isListening()
@@ -47,8 +47,8 @@ void YACReaderLocalServer::sendResponse()
     auto worker = new YACReaderClientConnectionWorker(clientConnection);
     if (worker != 0) {
         clientConnection->moveToThread(worker);
-        connect(worker, SIGNAL(comicUpdated(quint64, ComicDB)), this, SIGNAL(comicUpdated(quint64, ComicDB)));
-        connect(worker, SIGNAL(finished()), worker, SLOT(deleteLater()));
+        connect(worker, &YACReaderClientConnectionWorker::comicUpdated, this, &YACReaderLocalServer::comicUpdated);
+        connect(worker, &QThread::finished, worker, &QObject::deleteLater);
         worker->start();
     }
 

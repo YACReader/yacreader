@@ -69,7 +69,7 @@ BookmarksDialog::BookmarksDialog(QWidget *parent)
 
     cancel = new QPushButton(tr("Close"));
     cancel->setFlat(true);
-    connect(cancel, SIGNAL(clicked()), this, SLOT(hide()));
+    connect(cancel, &QAbstractButton::clicked, this, &QWidget::hide);
     buttons->addStretch();
     buttons->addWidget(cancel);
 

@@ -53,9 +53,11 @@ SelectVolume::SelectVolume(QWidget *parent)
     tableVolumes->horizontalHeader()->setClickable(true);
 #endif
     //tableVolumes->horizontalHeader()->setSortIndicatorShown(false);
-    connect(tableVolumes->horizontalHeader(), SIGNAL(sectionClicked(int)), tableVolumes, SLOT(sortByColumn(int)));
+    connect(tableVolumes->horizontalHeader(), &QHeaderView::sectionClicked,
+            [=](int index) { tableVolumes->horizontalHeader()->sortIndicatorSection() == index ? tableVolumes->sortByColumn(index, tableVolumes->horizontalHeader()->sortIndicatorOrder() == Qt::AscendingOrder ? Qt::DescendingOrder : Qt::AscendingOrder)
+                                                                                               : tableVolumes->sortByColumn(index, Qt::AscendingOrder); });
     //connections
-    connect(tableVolumes, SIGNAL(clicked(QModelIndex)), this, SLOT(loadVolumeInfo(QModelIndex)));
+    connect(tableVolumes, &QAbstractItemView::clicked, this, &SelectVolume::loadVolumeInfo);
 
     paginator->setCustomLabel(tr("volumes"));
 
@@ -122,13 +124,13 @@ void SelectVolume::loadVolumeInfo(const QModelIndex &omi)
     detailLabel->setAltText(loadingStyle.arg(tr("loading description")));
 
     auto comicVineClient = new ComicVineClient;
-    connect(comicVineClient, SIGNAL(seriesCover(const QByteArray &)), this, SLOT(setCover(const QByteArray &)));
-    connect(comicVineClient, SIGNAL(finished()), comicVineClient, SLOT(deleteLater()));
+    connect(comicVineClient, &ComicVineClient::seriesCover, this, &SelectVolume::setCover);
+    connect(comicVineClient, &ComicVineClient::finished, comicVineClient, &QObject::deleteLater);
     comicVineClient->getSeriesCover(coverURL);
 
     auto comicVineClient2 = new ComicVineClient;
-    connect(comicVineClient2, SIGNAL(seriesDetail(QString)), this, SLOT(setDescription(QString)));
-    connect(comicVineClient2, SIGNAL(finished()), comicVineClient2, SLOT(deleteLater()));
+    connect(comicVineClient2, &ComicVineClient::seriesDetail, this, &SelectVolume::setDescription);
+    connect(comicVineClient2, &ComicVineClient::finished, comicVineClient2, &QObject::deleteLater);
     comicVineClient2->getSeriesDetail(id);
 }
 

@@ -13,7 +13,7 @@ QWidget *EditShortcutItemDelegate::createEditor(QWidget *parent, const QStyleOpt
     Q_UNUSED(index);
 
     KeySequenceLineEdit *editor = new KeySequenceLineEdit(parent);
-    connect(editor, SIGNAL(editingFinished()), this, SLOT(closeShortcutEditor()));
+    connect(editor, &QLineEdit::editingFinished, this, &EditShortcutItemDelegate::closeShortcutEditor);
     return editor;
 }
 
@@ -76,8 +76,8 @@ KeySequenceLineEdit::KeySequenceLineEdit(QWidget *parent)
     acceptButton->setCursor(Qt::ArrowCursor);
     acceptButton->setStyleSheet(buttonsStyle);
 
-    connect(clearButton, SIGNAL(clicked()), this, SLOT(clear()));
-    connect(acceptButton, SIGNAL(clicked()), this, SIGNAL(editingFinished()));
+    connect(clearButton, &QAbstractButton::clicked, this, &QLineEdit::clear);
+    connect(acceptButton, &QAbstractButton::clicked, this, &QLineEdit::editingFinished);
 }
 
 void KeySequenceLineEdit::resizeEvent(QResizeEvent *e)

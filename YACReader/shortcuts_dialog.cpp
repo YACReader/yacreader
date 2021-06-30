@@ -18,7 +18,7 @@ ShortcutsDialog::ShortcutsDialog(QWidget *parent)
     auto mainLayout = new QVBoxLayout;
 
     close = new QPushButton(tr("Close"));
-    connect(close, SIGNAL(clicked()), this, SLOT(close()));
+    connect(close, &QAbstractButton::clicked, this, &QWidget::close);
 
     auto bottomLayout = new QHBoxLayout;
     bottomLayout->addStretch();

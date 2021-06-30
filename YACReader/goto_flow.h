@@ -63,9 +63,6 @@ public slots:
     void setFlowType(FlowType flowType) override;
     void updateConfig(QSettings *settings) override;
     void setFlowRightToLeft(bool b) override;
-
-signals:
-    void goToPage(unsigned int page);
 };
 
 //-----------------------------------------------------------------------------

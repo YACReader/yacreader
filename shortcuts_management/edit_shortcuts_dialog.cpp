@@ -57,9 +57,9 @@ EditShortcutsDialog::EditShortcutsDialog(QWidget *parent)
                                       "QTableView::item:selected {outline: 0px; border: 0px;}"
                                       "");*/
 
-    connect(resetButton, SIGNAL(clicked()), this, SLOT(resetToDefaults()));
-    connect(actionsGroupsListView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)), this, SLOT(loadShortcuts(QModelIndex, QModelIndex))); //clicked(QModelIndex) doesn't work :S
-    connect(actionsModel, SIGNAL(conflict(QString)), this, SLOT(processConflict(QString)));
+    connect(resetButton, &QAbstractButton::clicked, this, &EditShortcutsDialog::resetToDefaults);
+    connect(actionsGroupsListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &EditShortcutsDialog::loadShortcuts); //clicked(QModelIndex) doesn't work :S
+    connect(actionsModel, &ActionsShortcutsModel::conflict, this, &EditShortcutsDialog::processConflict);
 
 #ifdef Q_OS_MAC
     setFixedSize(760, 500);

@@ -53,7 +53,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     path->addWidget(pathFindButton = new QPushButton(QIcon(":/images/find_folder.png"), ""));
     pathBox->setLayout(path);
 
-    connect(pathFindButton, SIGNAL(clicked()), this, SLOT(findFolder()));
+    connect(pathFindButton, &QAbstractButton::clicked, this, &OptionsDialog::findFolder);
 
     auto colorSelection = new QHBoxLayout;
     backgroundColor = new QLabel();
@@ -63,7 +63,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     backgroundColor->setAutoFillBackground(true);
 
     colorDialog = new QColorDialog(Qt::red, this);
-    connect(colorDialog, SIGNAL(colorSelected(QColor)), this, SLOT(updateColor(QColor)));
+    connect(colorDialog, &QColorDialog::colorSelected, this, &OptionsDialog::updateColor);
 
     QGroupBox *colorBox = new QGroupBox(tr("Background color"));
     //backgroundColor->setMinimumWidth(100);
@@ -72,26 +72,26 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     colorSelection->setStretchFactor(backgroundColor, 1);
     colorSelection->setStretchFactor(selectBackgroundColorButton, 0);
     //colorSelection->addStretch();
-    connect(selectBackgroundColorButton, SIGNAL(clicked()), colorDialog, SLOT(show()));
+    connect(selectBackgroundColorButton, &QAbstractButton::clicked, colorDialog, &QWidget::show);
     colorBox->setLayout(colorSelection);
 
     brightnessS = new YACReaderSpinSliderWidget(this, true);
     brightnessS->setRange(0, 100);
     //brightnessS->setText(tr("Brightness"));
     brightnessS->setTracking(false);
-    connect(brightnessS, SIGNAL(valueChanged(int)), this, SLOT(brightnessChanged(int)));
+    connect(brightnessS, &YACReaderSpinSliderWidget::valueChanged, this, &OptionsDialog::brightnessChanged);
 
     contrastS = new YACReaderSpinSliderWidget(this, true);
     contrastS->setRange(0, 250);
     //contrastS->setText(tr("Contrast"));
     contrastS->setTracking(false);
-    connect(contrastS, SIGNAL(valueChanged(int)), this, SLOT(contrastChanged(int)));
+    connect(contrastS, &YACReaderSpinSliderWidget::valueChanged, this, &OptionsDialog::contrastChanged);
 
     gammaS = new YACReaderSpinSliderWidget(this, true);
     gammaS->setRange(0, 250);
     //gammaS->setText(tr("Gamma"));
     gammaS->setTracking(false);
-    connect(gammaS, SIGNAL(valueChanged(int)), this, SLOT(gammaChanged(int)));
+    connect(gammaS, &YACReaderSpinSliderWidget::valueChanged, this, &OptionsDialog::gammaChanged);
     //connect(brightnessS,SIGNAL(valueChanged(int)),this,SIGNAL(changedOptions()));
 
     quickNavi = new QCheckBox(tr("Quick Navigation Mode"));
@@ -126,7 +126,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     layoutImage->addWidget(contrastS, 1, 1);
     layoutImage->addWidget(gammaS, 2, 1);
     QPushButton *pushButton = new QPushButton(tr("Reset"));
-    connect(pushButton, SIGNAL(pressed()), this, SLOT(resetImageConfig()));
+    connect(pushButton, &QAbstractButton::pressed, this, &OptionsDialog::resetImageConfig);
     layoutImage->addWidget(pushButton, 3, 0);
     layoutImage->setColumnStretch(1, 1);
 

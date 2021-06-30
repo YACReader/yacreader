@@ -21,7 +21,7 @@ void YACReaderLibraryListWidget::addItem(QString name, QString path)
     QVBoxLayout *mainLayout = dynamic_cast<QVBoxLayout *>(layout());
 
     YACReaderLibraryItemWidget *library = new YACReaderLibraryItemWidget(name, path, this);
-    connect(library, SIGNAL(showOptions()), this, SLOT(showContextMenu()));
+    connect(library, &YACReaderLibraryItemWidget::showOptions, this, &YACReaderLibraryListWidget::showContextMenu);
     QList<YACReaderLibraryItemWidget *>::iterator itr;
     int i = 0;
     for (itr = librariesList.begin(); itr != librariesList.end() && !naturalSortLessThanCI(name, (*itr)->name); itr++)

@@ -9,9 +9,9 @@ OnStartFlowSelectionDialog::OnStartFlowSelectionDialog(QWidget *parent)
 {
     setModal(true);
     QPushButton *acceptHW = new QPushButton(this);
-    connect(acceptHW, SIGNAL(clicked()), this, SLOT(accept()));
+    connect(acceptHW, &QAbstractButton::clicked, this, &QDialog::accept);
     QPushButton *rejectHW = new QPushButton(this); //and use SW flow
-    connect(rejectHW, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(rejectHW, &QAbstractButton::clicked, this, &QDialog::reject);
 
     acceptHW->setGeometry(90, 165, 110, 118);
     acceptHW->setFlat(true);

@@ -47,9 +47,9 @@ AddLabelDialog::AddLabelDialog(QWidget *parent)
     setLayout(layout);
 
     //connections
-    connect(edit, SIGNAL(textChanged(QString)), this, SLOT(validateName(QString)));
-    connect(cancelButton, SIGNAL(clicked()), this, SLOT(close()));
-    connect(acceptButton, SIGNAL(clicked()), this, SLOT(accept()));
+    connect(edit, &QLineEdit::textChanged, this, &AddLabelDialog::validateName);
+    connect(cancelButton, &QAbstractButton::clicked, this, &QWidget::close);
+    connect(acceptButton, &QAbstractButton::clicked, this, &QDialog::accept);
 }
 
 YACReader::LabelColors AddLabelDialog::selectedColor()

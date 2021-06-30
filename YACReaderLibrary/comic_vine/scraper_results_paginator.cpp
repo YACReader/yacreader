@@ -24,8 +24,8 @@ ScraperResultsPaginator::ScraperResultsPaginator(QWidget *parent)
     previousPage->setIconSize(pp.size());
     previousPage->setIcon(pp);
 
-    connect(nextPage, SIGNAL(clicked()), this, SIGNAL(loadNextPage()));
-    connect(previousPage, SIGNAL(clicked()), this, SIGNAL(loadPreviousPage()));
+    connect(nextPage, &QAbstractButton::clicked, this, &ScraperResultsPaginator::loadNextPage);
+    connect(previousPage, &QAbstractButton::clicked, this, &ScraperResultsPaginator::loadPreviousPage);
 
     numElements = new QLabel(tr("Number of volumes found : %1"));
     numElements->setStyleSheet(labelStylesheet);

@@ -82,8 +82,9 @@ InfoComicsView::InfoComicsView(QWidget *parent)
     flow = rootObject->findChild<QObject *>("flow");
     list = rootObject->findChild<QObject *>("list");
 
-    connect(flow, SIGNAL(currentCoverChanged(int)), this, SLOT(updateInfoForIndex(int)));
-    connect(flow, SIGNAL(currentCoverChanged(int)), this, SLOT(setCurrentIndex(int)));
+    // QML signals only work with old style signal slot syntax
+    connect(flow, SIGNAL(currentCoverChanged(int)), this, SLOT(updateInfoForIndex(int))); // clazy:exclude=old-style-connect
+    connect(flow, SIGNAL(currentCoverChanged(int)), this, SLOT(setCurrentIndex(int))); // clazy:exclude=old-style-connect
 
     selectionHelper = new YACReaderComicsSelectionHelper(this);
     comicInfoHelper = new YACReaderComicInfoHelper(this);

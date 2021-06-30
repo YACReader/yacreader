@@ -100,7 +100,7 @@ void YACReaderTitledToolBar::addAction(QAction *action)
     pb->setIcon(action->icon());
     pb->addAction(action);
 
-    connect(pb, SIGNAL(clicked(bool)), action, SIGNAL(triggered(bool)));
+    connect(pb, &QPushButton::clicked, action, &QAction::triggered);
 
     mainLayout->addWidget(pb);
 #else
