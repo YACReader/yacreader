@@ -109,8 +109,10 @@ void GoToFlowToolBar::setTop(int numPages)
 
 void GoToFlowToolBar::goTo()
 {
-    if (edit->text().toInt() != 0)
-        emit(goTo(edit->text().toInt() - 1));
+    unsigned int page = edit->text().toInt();
+    if (page >= 1 && page <= v->top()) {
+        emit(goTo(page - 1));
+    }
 }
 
 void GoToFlowToolBar::centerSlide()
