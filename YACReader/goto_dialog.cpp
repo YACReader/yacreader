@@ -60,12 +60,10 @@ void GoToDialog::setupUI()
 void GoToDialog::goTo()
 {
     unsigned int page = pageNumber->text().toInt();
-    pageNumber->clear();
-
-    if (page >= 1)
+    if (page >= 1 && page <= v->top()) {
         emit(goToPage(page - 1));
-
-    close();
+        close();
+    }
 }
 
 void GoToDialog::setNumPages(unsigned int numPages)
