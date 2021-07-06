@@ -33,6 +33,7 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
             "}");
 
     connect(slider, &QSlider::valueChanged, this, [&](int v) { emit(setCenter(v)); });
+    connect(slider, &QSlider::valueChanged, this, [=](int v) { emit(setPage(v)); });
 
     pageHint = new QLabel("<b>" + tr("Page : ") + "</b>", this);
     v = new QIntValidator(this);
