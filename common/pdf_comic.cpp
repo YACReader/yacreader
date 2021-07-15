@@ -76,7 +76,7 @@ void PdfiumComic::closeComic()
     FPDF_CloseDocument(doc);
 }
 
-unsigned int PdfiumComic::numPages()
+int PdfiumComic::numPages()
 {
     if (doc) {
         QMutexLocker locker(&pdfmutex);

@@ -32,7 +32,7 @@ void PageControllerV2::service(HttpRequest &request, HttpResponse &response)
 
     QStringList pathElements = path.split('/');
     qulonglong comicId = pathElements.at(5).toULongLong();
-    unsigned int page = pathElements.at(7).toUInt();
+    const int page = pathElements.at(7).toInt();
 
     Comic *comicFile;
     qulonglong currentComicId;

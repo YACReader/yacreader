@@ -39,7 +39,7 @@ void MacOSXPDFComic::closeComic()
     //CGPDFDocumentRelease((CGPDFDocumentRef)document);
 }
 
-unsigned int MacOSXPDFComic::numPages()
+int MacOSXPDFComic::numPages()
 {
     return (int)CGPDFDocumentGetNumberOfPages((CGPDFDocumentRef)document);
 }

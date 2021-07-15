@@ -68,7 +68,7 @@ void GoToDialog::goTo()
     close();
 }
 
-void GoToDialog::setNumPages(unsigned int numPages)
+void GoToDialog::setNumPages(int numPages)
 {
     numPagesLabel->setText(tr("Total pages : ") + QString::number(numPages));
     v->setTop(numPages);

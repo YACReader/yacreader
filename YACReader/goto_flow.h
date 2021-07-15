@@ -58,7 +58,7 @@ private slots:
 public slots:
     void centerSlide(int slide) override;
     void reset() override;
-    void setNumSlides(unsigned int slides) override;
+    void setNumSlides(int slides) override;
     void setImageReady(int index, const QByteArray &image) override;
     void setFlowType(FlowType flowType) override;
     void updateConfig(QSettings *settings) override;

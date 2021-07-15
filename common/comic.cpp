@@ -165,10 +165,10 @@ int Comic::previousPage()
     return _index;
 }
 //-----------------------------------------------------------------------------
-void Comic::setIndex(unsigned int index)
+void Comic::setIndex(int index)
 {
     int previousIndex = _index;
-    if (static_cast<int>(index) < _pages.size() - 1) {
+    if (index < _pages.size() - 1) {
         _index = index;
     } else {
         _index = _pages.size() - 1;
@@ -587,7 +587,7 @@ void FileComic::process()
     _loadedPages = QVector<bool>(_fileNames.size(), false);
 
     emit pageChanged(0); // this indicates new comic, index=0
-    emit numPages(_pages.size());
+    emit numPagesChanged(_pages.size());
     _loaded = true;
 
     _cfi = 0;
@@ -704,7 +704,7 @@ void FolderComic::process()
         emit(openAt(_index));
 
         emit pageChanged(0); // this indicates new comic, index=0
-        emit numPages(_pages.size());
+        emit numPagesChanged(_pages.size());
         _loaded = true;
 
         int count = 0;
@@ -830,7 +830,7 @@ void PDFComic::process()
 
     int nPages = pdfComic->numPages();
     emit pageChanged(0); // this indicates new comic, index=0
-    emit numPages(nPages);
+    emit numPagesChanged(nPages);
     _loaded = true;
     //QMessageBox::critical(NULL,QString("%1").arg(nPages),tr("Invalid PDF file"));
 

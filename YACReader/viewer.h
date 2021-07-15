@@ -103,7 +103,6 @@ public slots:
     void updateFilters(int brightness, int contrast, int gamma);
     void showIsCoverMessage();
     void showIsLastMessage();
-    int getCurrentPageNumber();
     void updateZoomRatio(int ratio);
     bool getIsMangaMode();
 
@@ -182,7 +181,8 @@ public:
     //Comic * getComic(){return comic;}
     const BookmarksDialog *getBookmarksDialog() { return bd; }
     //returns the current index starting in 1 [1,nPages]
-    unsigned int getIndex();
+    int getIndex() const;
+    int getCurrentPageNumber() const;
     void updateComic(ComicDB &comic);
 signals:
     void backgroundChanges();

@@ -14,7 +14,7 @@ public:
     ~MacOSXPDFComic();
     bool openComic(const QString &path);
     void closeComic();
-    unsigned int numPages();
+    int numPages();
     QImage getPage(const int page);
     //void releaseLastPageData();
 
@@ -33,7 +33,7 @@ public:
     ~PdfiumComic();
     bool openComic(const QString &path);
     void closeComic();
-    unsigned int numPages();
+    int numPages();
     QImage getPage(const int page);
 
 private:

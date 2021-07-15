@@ -21,7 +21,7 @@ public:
     void reset() override;
     void centerSlide(int slide) override;
     void setFlowType(FlowType flowType) override;
-    void setNumSlides(unsigned int slides) override;
+    void setNumSlides(int slides) override;
     void setImageReady(int index, const QByteArray &image) override;
 
     void updateConfig(QSettings *settings);

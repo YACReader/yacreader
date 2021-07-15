@@ -96,7 +96,7 @@ void GoToFlow::centerSlide(int slide)
     }
 }
 
-void GoToFlow::setNumSlides(unsigned int slides)
+void GoToFlow::setNumSlides(int slides)
 {
     //	numPagesLabel->setText(tr("Total pages : ")+QString::number(slides));
     //	numPagesLabel->adjustSize();
@@ -120,7 +120,7 @@ void GoToFlow::setNumSlides(unsigned int slides)
     worker->reset();
 
     flow->clear();
-    for (unsigned int i = 0; i < slides; i++)
+    for (int i = 0; i < slides; ++i)
         flow->addSlide(QImage());
     flow->setCenterIndex(0);
 }
