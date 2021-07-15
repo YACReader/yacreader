@@ -1136,10 +1136,10 @@ void LibraryWindow::createConnections()
     connect(importComicsInfoAction, SIGNAL(triggered()), this, SLOT(showImportComicsInfo()));
 
     //properties & config
-    connect(propertiesDialog, SIGNAL(accepted()), navigationController, SLOT(reselectCurrentSource()));
+    connect(propertiesDialog, &QDialog::accepted, this, &LibraryWindow::reloadComicsView);
 
     //comic vine
-    connect(comicVineDialog, SIGNAL(accepted()), navigationController, SLOT(reselectCurrentSource()), Qt::QueuedConnection);
+    connect(comicVineDialog, &QDialog::accepted, this, &LibraryWindow::reloadComicsView, Qt::QueuedConnection);
 
     connect(updateLibraryAction, SIGNAL(triggered()), this, SLOT(updateLibrary()));
     connect(renameLibraryAction, SIGNAL(triggered()), this, SLOT(renameLibrary()));
@@ -1519,6 +1519,14 @@ void LibraryWindow::reloadAfterCopyMove(const QModelIndex &mi)
     enableNeededActions();
 }
 
+void LibraryWindow::reloadComicsView()
+{
+    if (status == LibraryWindow::Searching)
+        setSearchFilter(lastSearchModifiers, lastSearchFilter);
+    else
+        navigationController->loadPreviousStatus(YACReaderNavigationController::LoadScope::ComicsView);
+}
+
 QModelIndex LibraryWindow::getCurrentFolderIndex()
 {
     if (foldersView->selectionModel()->selectedRows().length() > 0)
@@ -1839,7 +1847,7 @@ void LibraryWindow::checkEmptyFolder()
             toggleFullScreenAction->setEnabled(true);
 #endif
         if (comicsModel->rowCount() == 0)
-            navigationController->reselectCurrentFolder();
+            reloadComicsView();
     }
 }
 
@@ -2183,12 +2191,14 @@ void LibraryWindow::toNormal()
 
 void LibraryWindow::setSearchFilter(const YACReader::SearchModifiers modifier, QString filter)
 {
+    lastSearchModifiers = modifier;
+    lastSearchFilter = filter;
     if (!filter.isEmpty()) {
         folderQueryResultProcessor->createModelData(modifier, filter, true);
         comicQueryResultProcessor.createModelData(modifier, filter, foldersModel->getDatabase());
     } else if (status == LibraryWindow::Searching) { //if no searching, then ignore this
         clearSearchFilter();
-        navigationController->loadPreviousStatus();
+        navigationController->loadPreviousStatus(YACReaderNavigationController::LoadScope::ComicsViewAndSideBar);
     }
 }
 
@@ -2313,7 +2323,7 @@ void LibraryWindow::asignNumbers()
     qint64 edited = comicsModel->asignNumbers(indexList, startingNumber);
 
     //TODO add resorting without reloading
-    navigationController->loadFolderInfo(foldersModelProxy->mapToSource(foldersView->currentIndex()));
+    reloadComicsView();
 
     const QModelIndex &mi = comicsModel->getIndexFromId(edited);
     if (mi.isValid()) {
@@ -2540,11 +2550,14 @@ QModelIndexList LibraryWindow::getSelectedComics()
 
 void LibraryWindow::deleteComics()
 {
-    //TODO
-    if (!listsView->selectionModel()->selectedRows().isEmpty()) {
-        deleteComicsFromList();
-    } else {
+    switch (currentSourceType()) {
+    case YACReaderLibrarySourceContainer::None:
+    case YACReaderLibrarySourceContainer::Folder:
         deleteComicsFromDisk();
+        break;
+    case YACReaderLibrarySourceContainer::List:
+        deleteComicsFromList();
+        break;
     }
 }
 
@@ -2675,4 +2688,14 @@ void LibraryWindow::updateComicsView(quint64 libraryId, const ComicDB &comic)
         comicsModel->reload(comic);
         comicsViewsManager->updateCurrentComicView();
     }
+}
+
+YACReaderLibrarySourceContainer::SourceType LibraryWindow::currentSourceType() const
+{
+    if (status == LibraryWindow::Searching)
+        return YACReaderLibrarySourceContainer::None;
+    auto type = historyController->currentSourceContainer().getType();
+    Q_ASSERT_X(type != YACReaderLibrarySourceContainer::None, Q_FUNC_INFO,
+               "History controller does not store search states.");
+    return type;
 }

@@ -12,7 +12,12 @@ class YACReaderNavigationController : public QObject
 public:
     explicit YACReaderNavigationController(LibraryWindow *parent, YACReaderComicsViewsManager *comicsViewsManager);
 
-signals:
+    enum class LoadScope {
+        ComicsView,
+        ComicsViewAndSideBar
+    };
+    void loadPreviousStatus(LoadScope scope);
+    void loadIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer, LoadScope scope);
 
 public slots:
     //info origins
@@ -22,12 +27,8 @@ public slots:
     //reading lists
     void selectedList(const QModelIndex &mi);
     void reselectCurrentList();
-
-    void reselectCurrentSource();
-
     //history navigation
     void selectedIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer);
-    void loadIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer);
     //empty subfolder
     void selectSubfolder(const QModelIndex &sourceMI, int child);
 
@@ -38,8 +39,6 @@ public slots:
     void loadSpecialListInfo(const QModelIndex &modelIndex);
     void loadLabelInfo(const QModelIndex &modelIndex);
     void loadReadingListInfo(const QModelIndex &modelIndex);
-
-    void loadPreviousStatus();
 
 private:
     void setupConnections();

@@ -61,11 +61,6 @@ void YACReaderHistoryController::updateHistory(const YACReaderLibrarySourceConta
     emit(enabledForward(false));
 }
 
-YACReaderLibrarySourceContainer YACReaderHistoryController::lastSourceContainer()
-{
-    return history.last();
-}
-
 YACReaderLibrarySourceContainer YACReaderHistoryController::currentSourceContainer()
 {
     return history.at(currentFolderNavigation);

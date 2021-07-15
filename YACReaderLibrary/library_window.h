@@ -9,6 +9,7 @@
 #include "yacreader_global_gui.h"
 #include "yacreader_libraries.h"
 
+#include "yacreader_history_controller.h"
 #include "yacreader_navigation_controller.h"
 #include "comic_query_result_processor.h"
 #include "folder_query_result_processor.h"
@@ -75,7 +76,6 @@ class QProgressDialog;
 class ReadingListModel;
 class ReadingListModelProxy;
 class YACReaderReadingListsView;
-class YACReaderHistoryController;
 class EmptyLabelWidget;
 class EmptySpecialListWidget;
 class EmptyReadingListWidget;
@@ -392,6 +392,7 @@ public slots:
     void updateFolder(const QModelIndex &miFolder);
     QProgressDialog *newProgressDialog(const QString &label, int maxValue);
     void reloadAfterCopyMove(const QModelIndex &mi);
+    void reloadComicsView();
     QModelIndex getCurrentFolderIndex();
     void enableNeededActions();
     void addFolderToCurrentIndex();
@@ -417,6 +418,12 @@ public slots:
     void afterLaunchTasks();
 
 private:
+    //! @return The type of the current source container or SourceType::None if search mode is active.
+    YACReaderLibrarySourceContainer::SourceType currentSourceType() const;
+
+    YACReader::SearchModifiers lastSearchModifiers;
+    QString lastSearchFilter;
+
     //fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
     Qt::WindowFlags previousWindowFlags;
     QPoint previousPos;

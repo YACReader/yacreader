@@ -49,7 +49,6 @@ public slots:
     void backward();
     void forward();
     void updateHistory(const YACReaderLibrarySourceContainer &source);
-    YACReaderLibrarySourceContainer lastSourceContainer();
     YACReaderLibrarySourceContainer currentSourceContainer();
 
 protected:
