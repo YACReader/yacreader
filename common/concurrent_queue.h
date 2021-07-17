@@ -6,126 +6,48 @@
 #include <functional>
 #include <condition_variable>
 #include <queue>
+#include <vector>
 
 namespace YACReader {
+//! All functions in this class are thread-safe in the Qt documentation sense.
 class ConcurrentQueue
 {
 public:
-    explicit ConcurrentQueue(int threadCount)
-        : jobsLeft(0),
-          bailout(false)
-    {
-        threads = std::vector<std::thread>(threadCount);
-        for (int index = 0; index < threadCount; ++index) {
-            threads[index] = std::thread([this] {
-                this->nextJob();
-            });
-        }
-    }
+    //! @brief Creates and starts executing @p threadCount worker threads.
+    //! @note ConcurrentQueue is unable to execute jobs if @p threadCount == 0.
+    explicit ConcurrentQueue(std::size_t threadCount);
 
-    ~ConcurrentQueue()
-    {
-        joinAll();
-    }
+    //! Cancels all jobs that have not been picked up by worker threads yet,
+    //! waits for all worker threads to complete their jobs and joins them.
+    ~ConcurrentQueue();
 
-    void enqueue(std::function<void(void)> job)
-    {
-        {
-            std::lock_guard<std::mutex> lock(queueMutex);
-            _queue.emplace(job);
-        }
+    using Job = std::function<void()>;
 
-        {
-            std::lock_guard<std::mutex> lock(jobsLeftMutex);
-            ++jobsLeft;
-        }
+    //! @brief Adds @p job to the queue.
+    //! @note A worker thread may start executing @p job immediately if it is idle.
+    //! Worker threads start executing jobs in the same order as they are enqueued.
+    void enqueue(Job job);
 
-        jobAvailableVar.notify_one();
-    }
+    //! @brief Cancels all jobs that have not been picked up by worker threads yet.
+    //! @return The number of jobs that were canceled.
+    std::size_t cancelPending();
 
-    void cancellPending()
-    {
-        std::unique_lock<std::mutex> lockQueue(queueMutex);
-        std::unique_lock<std::mutex> lockJobsLeft(jobsLeftMutex);
-        _queue = std::queue<std::function<void(void)>>();
-        jobsLeft = 0;
-    }
-
-    void waitAll()
-    {
-        std::unique_lock<std::mutex> lock(jobsLeftMutex);
-        if (jobsLeft > 0) {
-            _waitVar.wait(lock, [this] {
-                return jobsLeft == 0;
-            });
-        }
-    }
+    //! @brief Blocks the current thread until all enqueued jobs are completed.
+    void waitAll() const;
 
 private:
+    //! @invariant all worker threads are joinable until the destructor is called.
     std::vector<std::thread> threads;
-    std::queue<std::function<void(void)>> _queue;
-    int jobsLeft;
-    bool bailout;
+    std::queue<Job> _queue;
+    std::size_t jobsLeft = 0; //!< @invariant jobsLeft >= _queue.size()
+    bool bailout = false; //!< @invariant is false until the destructor is called.
     std::condition_variable jobAvailableVar;
-    std::condition_variable _waitVar;
-    std::mutex jobsLeftMutex;
+    mutable std::condition_variable _waitVar;
+    mutable std::mutex jobsLeftMutex;
     std::mutex queueMutex;
 
-    void nextJob()
-    {
-        while (true) {
-            std::function<void(void)> job;
-
-            {
-                std::unique_lock<std::mutex> lock(queueMutex);
-
-                if (bailout) {
-                    return;
-                }
-
-                jobAvailableVar.wait(lock, [this] {
-                    return _queue.size() > 0 || bailout;
-                });
-
-                if (bailout) {
-                    return;
-                }
-
-                job = _queue.front();
-                _queue.pop();
-            }
-
-            job();
-
-            {
-                std::lock_guard<std::mutex> lock(jobsLeftMutex);
-                --jobsLeft;
-            }
-
-            _waitVar.notify_one();
-        }
-    }
-
-    void joinAll()
-    {
-        {
-            std::lock_guard<std::mutex> lock(queueMutex);
-
-            if (bailout) {
-                return;
-            }
-
-            bailout = true;
-        }
-
-        jobAvailableVar.notify_all();
-
-        for (auto &x : threads) {
-            if (x.joinable()) {
-                x.join();
-            }
-        }
-    }
+    void nextJob();
+    void finalizeJobs(std::size_t count);
 };
 
 }

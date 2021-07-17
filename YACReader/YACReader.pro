@@ -6,7 +6,7 @@ QMAKE_TARGET_BUNDLE_PREFIX = "com.yacreader"
 DEPENDPATH += . \
     release
 
-DEFINES += NOMINMAX YACREADER
+DEFINES += YACREADER
 
 #load default build flags
 include (../config.pri)

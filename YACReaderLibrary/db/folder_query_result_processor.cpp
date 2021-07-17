@@ -22,7 +22,7 @@ YACReader::FolderQueryResultProcessor::FolderQueryResultProcessor(FolderModel *m
 
 void YACReader::FolderQueryResultProcessor::createModelData(const YACReader::SearchModifiers modifier, const QString &filter, bool includeComics)
 {
-    querySearchQueue.cancellPending();
+    querySearchQueue.cancelPending();
 
     querySearchQueue.enqueue([=] {
         QString connectionName = "";
