@@ -4,6 +4,17 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ## WIP
 
+### YACReaderLibrary
+* Ensure that comic info exports use .ydb as file suffix
+
+### YACReader
+* Show error when opening bad open recent entries
+* GoTo page: Fix segfault when entering page numbers greater than comic's page count
+  (toolbar and page flow)
+* Initialize GotoFlow on current page, not cover
+* Quick navigation mode: Fix page index error when using both mouse and keyboard for navigation
+* Remove obsolete double page mode debug messages
+
 ## 9.8.2
 ### YACReaderLibrary
 * Fix opening comics from the continue reading banner.
