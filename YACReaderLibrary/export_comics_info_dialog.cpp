@@ -65,7 +65,7 @@ void ExportComicsInfoDialog::findPath()
 {
     QString s = QFileDialog::getSaveFileName(this, tr("Destination database name"), ".", "*.ydb");
     if (!s.isEmpty()) {
-        path->setText(s);
+        path->setText(s.endsWith(".ydb") ? s : s + ".ydb");
         accept->setEnabled(true);
     }
 }

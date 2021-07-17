@@ -33,6 +33,7 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
             "}");
 
     connect(slider, &QSlider::valueChanged, this, [&](int v) { emit(setCenter(v)); });
+    connect(slider, &QSlider::valueChanged, this, [=](int v) { emit(setPage(v)); });
 
     pageHint = new QLabel("<b>" + tr("Page : ") + "</b>", this);
     v = new QIntValidator(this);
@@ -109,8 +110,10 @@ void GoToFlowToolBar::setTop(int numPages)
 
 void GoToFlowToolBar::goTo()
 {
-    if (edit->text().toInt() != 0)
-        emit(goTo(edit->text().toInt() - 1));
+    unsigned int page = edit->text().toInt();
+    if (page >= 1 && page <= v->top()) {
+        emit(goTo(page - 1));
+    }
 }
 
 void GoToFlowToolBar::centerSlide()

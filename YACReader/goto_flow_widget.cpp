@@ -11,7 +11,7 @@
 GoToFlowWidget::GoToFlowWidget(QWidget *parent)
     : QWidget(parent)
 {
-    mainLayout = new QVBoxLayout;
+    mainLayout = new QVBoxLayout(this);
     mainLayout->setMargin(0);
     mainLayout->setSpacing(0);
 
@@ -22,11 +22,7 @@ GoToFlowWidget::GoToFlowWidget(QWidget *parent)
     //toolBar->installEventFilter(this);
 }
 
-GoToFlowWidget::~GoToFlowWidget()
-{
-    delete toolBar;
-    delete mainLayout;
-}
+GoToFlowWidget::~GoToFlowWidget() { }
 
 void GoToFlowWidget::setPageNumber(int page)
 {
