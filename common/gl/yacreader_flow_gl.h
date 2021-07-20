@@ -36,8 +36,6 @@ struct YACReader3DImage {
     float width;
     float height;
 
-    int index;
-
     YACReader3DVector current;
     YACReader3DVector animEnd;
 };
@@ -112,7 +110,7 @@ protected:
     void calcVector(YACReader3DVector &vector, int pos);
     //returns true if the animation is finished for Current
     bool animate(YACReader3DVector &currentVector, YACReader3DVector &toVector);
-    void drawCover(const YACReader3DImage &image);
+    void drawCover(int index);
 
     void udpatePerspective(int width, int height);
 
@@ -194,9 +192,7 @@ public:
     //updates the coverflow
     void updatePositions();
     //inserts a new item to the coverflow
-    //if item is set to a value > -1 it updates a already set value
-    //otherwise a new entry is set
-    void insert(char *name, QOpenGLTexture *texture, float x, float y, int item = -1);
+    void insert(const char *name, QOpenGLTexture *texture, float x, float y);
     //removes a item
     virtual void remove(int item);
     //replaces the texture of the item 'item' with Tex
