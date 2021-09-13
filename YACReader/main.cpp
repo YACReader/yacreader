@@ -89,6 +89,13 @@ int main(int argc, char *argv[])
 {
     qInstallMessageHandler(messageHandler);
 
+    static const char ENV_VAR_QT_DEVICE_PIXEL_RATIO[] = "QT_DEVICE_PIXEL_RATIO";
+    if (!qEnvironmentVariableIsSet(ENV_VAR_QT_DEVICE_PIXEL_RATIO) && !qEnvironmentVariableIsSet("QT_AUTO_SCREEN_SCALE_FACTOR") && !qEnvironmentVariableIsSet("QT_SCALE_FACTOR") && !qEnvironmentVariableIsSet("QT_SCREEN_SCALE_FACTORS")) {
+        QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    }
+
+    QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+
 #if defined(_MSC_VER) && defined(_DEBUG)
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
@@ -105,7 +112,7 @@ int main(int argc, char *argv[])
 
     app.setApplicationName("YACReader");
     app.setOrganizationName("YACReader");
-    app.setAttribute(Qt::AA_UseHighDpiPixmaps);
+
     if (QIcon::hasThemeIcon("YACReader")) {
         app.setWindowIcon(QIcon::fromTheme("YACReader"));
     }
