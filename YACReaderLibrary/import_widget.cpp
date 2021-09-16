@@ -12,8 +12,6 @@
 #include <QTimeLine>
 //TODO: is QGLWidget needed here???
 //#include <QGLWidget>
-#include <QTimer>
-#include <QElapsedTimer>
 #include <QToolButton>
 #include <QResizeEvent>
 
@@ -208,8 +206,7 @@ ImportWidget::ImportWidget(QWidget *parent)
 
     previousWidth = 0;
     updatingCovers = false;
-    elapsedTimer = new QElapsedTimer();
-    elapsedTimer->start();
+    elapsedTimer.start();
 }
 
 void ImportWidget::newComic(const QString &path, const QString &coverPath)
@@ -219,10 +216,11 @@ void ImportWidget::newComic(const QString &path, const QString &coverPath)
 
     currentComicLabel->setText("<font color=\"#565959\">" + path + "</font>");
 
-    if (((elapsedTimer->elapsed() >= 1100) || ((previousWidth < coversView->width()) && (elapsedTimer->elapsed() >= 500))) && scrollAnimation->state() != QAbstractAnimation::Running) //todo elapsed time
+    const auto elapsedMs = elapsedTimer.elapsed();
+    if ((elapsedMs >= 1100 || (previousWidth < coversView->width() && elapsedMs >= 500)) && scrollAnimation->state() != QAbstractAnimation::Running) //todo elapsed time
     {
         updatingCovers = true;
-        elapsedTimer->start();
+        elapsedTimer.start();
 
         QPixmap p(coverPath);
         p = p.scaledToHeight(300, Qt::SmoothTransformation);

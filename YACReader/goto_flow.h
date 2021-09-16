@@ -31,7 +31,7 @@ class GoToFlow : public GoToFlowWidget
 {
     Q_OBJECT
 public:
-    GoToFlow(QWidget *parent = nullptr, FlowType flowType = CoverFlowLike);
+    explicit GoToFlow(QWidget *parent = nullptr, FlowType flowType = CoverFlowLike);
     ~GoToFlow() override;
     bool ready; //comic is ready for read.
 private:
@@ -47,7 +47,6 @@ private:
     QVector<QByteArray> rawImages;
     QTimer *updateTimer;
     PageLoader *worker;
-    void wheelEvent(QWheelEvent *event) override;
     QMutex mutexGoToFlow;
 
 private slots:

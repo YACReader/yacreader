@@ -141,31 +141,34 @@ void MagnifyingGlass::updateImage()
 }
 void MagnifyingGlass::wheelEvent(QWheelEvent *event)
 {
+    // TODO: consider handling horizontal scrolling differently.
+    const auto delta = event->angleDelta().x() + event->angleDelta().y();
+    const bool grow = delta < 0;
     switch (event->modifiers()) {
     //size
     case Qt::NoModifier:
-        if (event->delta() < 0)
+        if (grow)
             sizeUp();
         else
             sizeDown();
         break;
     //size height
     case Qt::ControlModifier:
-        if (event->delta() < 0)
+        if (grow)
             heightUp();
         else
             heightDown();
         break;
     //size width
     case Qt::AltModifier:
-        if (event->delta() < 0)
+        if (grow)
             widthUp();
         else
             widthDown();
         break;
     //zoom level
     case Qt::ShiftModifier:
-        if (event->delta() < 0)
+        if (grow)
             zoomIn();
         else
             zoomOut();

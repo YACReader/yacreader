@@ -691,14 +691,18 @@ static void animateScroll(QPropertyAnimation &scroller, const QScrollBar &scroll
 void Viewer::wheelEvent(QWheelEvent *event)
 {
     if (render->hasLoadedComic()) {
-        if (event->orientation() == Qt::Horizontal) {
-            animateScroll(*horizontalScroller, *horizontalScrollBar(), event->delta());
-            return;
+        const auto delta = event->angleDelta();
+        const auto verticalDelta = delta.y();
+
+        if (delta.x() != 0) {
+            animateScroll(*horizontalScroller, *horizontalScrollBar(), delta.x());
+            if (verticalDelta == 0)
+                return; // Pure horizontal scrolling => don't try to handle vertical delta.
         }
 
-        if ((event->delta() < 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->maximum())) {
+        if (verticalDelta < 0 && verticalScrollBar()->sliderPosition() == verticalScrollBar()->maximum()) {
             if (wheelStop) {
-                if (getMovement(event) == Forward) {
+                if (getMovement(event, Qt::Vertical) == Forward) {
                     next();
                     verticalScroller->stop();
                     event->accept();
@@ -708,9 +712,9 @@ void Viewer::wheelEvent(QWheelEvent *event)
             } else
                 wheelStop = true;
         } else {
-            if ((event->delta() > 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->minimum())) {
+            if (verticalDelta > 0 && verticalScrollBar()->sliderPosition() == verticalScrollBar()->minimum()) {
                 if (wheelStop) {
-                    if (getMovement(event) == Backward) {
+                    if (getMovement(event, Qt::Vertical) == Backward) {
                         prev();
                         verticalScroller->stop();
                         event->accept();
@@ -722,7 +726,7 @@ void Viewer::wheelEvent(QWheelEvent *event)
             }
         }
 
-        animateScroll(*verticalScroller, *verticalScrollBar(), event->delta());
+        animateScroll(*verticalScroller, *verticalScrollBar(), verticalDelta);
     }
 }
 

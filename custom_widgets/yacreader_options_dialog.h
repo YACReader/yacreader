@@ -31,7 +31,7 @@ protected:
     QSettings *previousSettings;
 
 public:
-    YACReaderOptionsDialog(QWidget *parent);
+    explicit YACReaderOptionsDialog(QWidget *parent);
 public slots:
     virtual void restoreOptions(QSettings *settings);
     virtual void restoreOptions();
