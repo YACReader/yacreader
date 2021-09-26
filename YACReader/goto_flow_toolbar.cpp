@@ -112,7 +112,7 @@ void GoToFlowToolBar::goTo()
 {
     unsigned int page = edit->text().toInt();
     if (page >= 1 && page <= v->top()) {
-        emit(goTo(page - 1));
+        emit(goToPage(page - 1));
     }
 }
 
