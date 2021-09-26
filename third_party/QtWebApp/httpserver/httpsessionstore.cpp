@@ -13,7 +13,7 @@ HttpSessionStore::HttpSessionStore(const QSettings *settings, QObject* parent)
     :QObject(parent)
 {
     this->settings=settings;
-    connect(&cleanupTimer,SIGNAL(timeout()),this,SLOT(sessionTimerEvent()));
+    connect(&cleanupTimer,&QTimer::timeout,this,&HttpSessionStore::sessionTimerEvent);
     cleanupTimer.start(60000);
     cookieName=settings->value("cookieName","sessionid").toByteArray();
     expirationTime=settings->value("expirationTime",3600000).toInt();

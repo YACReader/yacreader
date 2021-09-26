@@ -115,9 +115,9 @@ Viewer::Viewer(QWidget *parent)
 
     //animations
     verticalScroller = new QPropertyAnimation(verticalScrollBar(), "sliderPosition");
-    connect(verticalScroller, SIGNAL(valueChanged(const QVariant &)), this, SIGNAL(backgroundChanges()));
+    connect(verticalScroller, &QVariantAnimation::valueChanged, this, &Viewer::backgroundChanges);
     horizontalScroller = new QPropertyAnimation(horizontalScrollBar(), "sliderPosition");
-    connect(horizontalScroller, SIGNAL(valueChanged(const QVariant &)), this, SIGNAL(backgroundChanges()));
+    connect(horizontalScroller, &QVariantAnimation::valueChanged, this, &Viewer::backgroundChanges);
     groupScroller = new QParallelAnimationGroup();
     groupScroller->addAnimation(verticalScroller);
     groupScroller->addAnimation(horizontalScroller);
@@ -152,44 +152,42 @@ Viewer::~Viewer()
 void Viewer::createConnections()
 {
     //magnifyingGlass (update mg after a background change
-    connect(this, SIGNAL(backgroundChanges()), mglass, SLOT(updateImage()));
+    connect(this, &Viewer::backgroundChanges, mglass, QOverload<>::of(&MagnifyingGlass::updateImage));
 
     //goToDialog
-    connect(goToDialog, SIGNAL(goToPage(unsigned int)), this, SLOT(goTo(unsigned int)));
+    connect(goToDialog, &GoToDialog::goToPage, this, &Viewer::goTo);
 
     //goToFlow goTo
-    connect(goToFlow, SIGNAL(goToPage(unsigned int)), this, SLOT(goTo(unsigned int)));
+    connect(goToFlow, &GoToFlowWidget::goToPage, this, &Viewer::goTo);
 
     //current time
     auto t = new QTimer(this);
-    connect(t, SIGNAL(timeout()), this, SLOT(updateInformation()));
+    connect(t, &QTimer::timeout, this, &Viewer::updateInformation);
     t->start(1000);
 
     //hide cursor
-    connect(hideCursorTimer, SIGNAL(timeout()), this, SLOT(hideCursor()));
+    connect(hideCursorTimer, &QTimer::timeout, this, &Viewer::hideCursor);
 
     //bookmarks
-    connect(bd, SIGNAL(goToPage(unsigned int)), this, SLOT(goTo(unsigned int)));
+    connect(bd, &BookmarksDialog::goToPage, this, &Viewer::goTo);
 
     //render
-    connect(render, SIGNAL(errorOpening()), this, SLOT(resetContent()));
-    connect(render, SIGNAL(errorOpening()), this, SLOT(showMessageErrorOpening()));
-    connect(render, SIGNAL(errorOpening(QString)), this, SLOT(showMessageErrorOpening(QString)));
-    connect(render, SIGNAL(crcError(QString)), this, SLOT(processCRCError(QString)));
-    connect(render, SIGNAL(numPages(unsigned int)), goToFlow, SLOT(setNumSlides(unsigned int)));
-    connect(render, SIGNAL(numPages(unsigned int)), goToDialog, SLOT(setNumPages(unsigned int)));
-    //connect(render,SIGNAL(numPages(unsigned int)),this,SLOT(updateInformation()));
-    connect(render, SIGNAL(imageLoaded(int, QByteArray)), goToFlow, SLOT(setImageReady(int, QByteArray)));
-    connect(render, SIGNAL(currentPageReady()), this, SLOT(updatePage()));
-    connect(render, SIGNAL(processingPage()), this, SLOT(setLoadingMessage()));
-    connect(render, SIGNAL(currentPageIsBookmark(bool)), this, SIGNAL(pageIsBookmark(bool)));
-    connect(render, SIGNAL(pageChanged(int)), this, SLOT(updateInformation()));
-    //connect(render,SIGNAL(bookmarksLoaded(Bookmarks)),this,SLOT(setBookmarks(Bookmarks)));
+    connect(render, QOverload<>::of(&Render::errorOpening), this, &Viewer::resetContent);
+    connect(render, QOverload<>::of(&Render::errorOpening), this, QOverload<>::of(&Viewer::showMessageErrorOpening));
+    connect(render, QOverload<QString>::of(&Render::errorOpening), this, QOverload<QString>::of(&Viewer::showMessageErrorOpening));
+    connect(render, &Render::crcError, this, &Viewer::processCRCError);
+    connect(render, QOverload<unsigned int>::of(&Render::numPages), goToFlow, &GoToFlowWidget::setNumSlides);
+    connect(render, QOverload<unsigned int>::of(&Render::numPages), goToDialog, &GoToDialog::setNumPages);
+    connect(render, QOverload<int, const QByteArray &>::of(&Render::imageLoaded), goToFlow, &GoToFlowWidget::setImageReady);
+    connect(render, &Render::currentPageReady, this, &Viewer::updatePage);
+    connect(render, &Render::processingPage, this, &Viewer::setLoadingMessage);
+    connect(render, &Render::currentPageIsBookmark, this, &Viewer::pageIsBookmark);
+    connect(render, &Render::pageChanged, this, &Viewer::updateInformation);
 
-    connect(render, SIGNAL(isLast()), this, SLOT(showIsLastMessage()));
-    connect(render, SIGNAL(isCover()), this, SLOT(showIsCoverMessage()));
+    connect(render, &Render::isLast, this, &Viewer::showIsLastMessage);
+    connect(render, &Render::isCover, this, &Viewer::showIsCoverMessage);
 
-    connect(render, SIGNAL(bookmarksUpdated()), this, SLOT(setBookmarks()));
+    connect(render, &Render::bookmarksUpdated, this, &Viewer::setBookmarks);
 }
 
 //Deprecated
@@ -841,8 +839,8 @@ void Viewer::showGoToFlow()
 void Viewer::animateShowGoToFlow()
 {
     if (goToFlow->isHidden() && showGoToFlowAnimation->state() != QPropertyAnimation::Running) {
-        disconnect(showGoToFlowAnimation, SIGNAL(finished()), goToFlow, SLOT(hide()));
-        connect(showGoToFlowAnimation, SIGNAL(finished()), this, SLOT(moveCursoToGoToFlow()));
+        disconnect(showGoToFlowAnimation, &QAbstractAnimation::finished, goToFlow, &QWidget::hide);
+        connect(showGoToFlowAnimation, &QAbstractAnimation::finished, this, &Viewer::moveCursoToGoToFlow);
         showGoToFlowAnimation->setStartValue(QPoint((width() - goToFlow->width()) / 2, height() - 10));
         showGoToFlowAnimation->setEndValue(QPoint((width() - goToFlow->width()) / 2, height() - goToFlow->height()));
         showGoToFlowAnimation->start();
@@ -856,8 +854,8 @@ void Viewer::animateShowGoToFlow()
 void Viewer::animateHideGoToFlow()
 {
     if (goToFlow->isVisible() && showGoToFlowAnimation->state() != QPropertyAnimation::Running) {
-        connect(showGoToFlowAnimation, SIGNAL(finished()), goToFlow, SLOT(hide()));
-        disconnect(showGoToFlowAnimation, SIGNAL(finished()), this, SLOT(moveCursoToGoToFlow()));
+        connect(showGoToFlowAnimation, &QAbstractAnimation::finished, goToFlow, &QWidget::hide);
+        disconnect(showGoToFlowAnimation, &QAbstractAnimation::finished, this, &Viewer::moveCursoToGoToFlow);
         showGoToFlowAnimation->setStartValue(QPoint((width() - goToFlow->width()) / 2, height() - goToFlow->height()));
         showGoToFlowAnimation->setEndValue(QPoint((width() - goToFlow->width()) / 2, height()));
         showGoToFlowAnimation->start();
@@ -1018,7 +1016,7 @@ void Viewer::updateBackgroundColor(const QColor &color)
 void Viewer::animateShowTranslator()
 {
     if (translator->isHidden() && translatorAnimation->state() != QPropertyAnimation::Running) {
-        disconnect(translatorAnimation, SIGNAL(finished()), translator, SLOT(hide()));
+        disconnect(translatorAnimation, &QAbstractAnimation::finished, translator, &QWidget::hide);
         if (translatorXPos == -10000)
             translatorXPos = (width() - translator->width()) / 2;
         int x = qMax(0, qMin(translatorXPos, width() - translator->width()));
@@ -1036,7 +1034,7 @@ void Viewer::animateShowTranslator()
 void Viewer::animateHideTranslator()
 {
     if (translator->isVisible() && translatorAnimation->state() != QPropertyAnimation::Running) {
-        connect(translatorAnimation, SIGNAL(finished()), translator, SLOT(hide()));
+        connect(translatorAnimation, &QAbstractAnimation::finished, translator, &QWidget::hide);
         translatorAnimation->setStartValue(QPoint(translatorXPos = translator->pos().x(), translator->pos().y()));
         if ((translator->width() / 2) + translator->pos().x() <= width() / 2)
             translatorAnimation->setEndValue(QPoint(-translator->width(), translator->pos().y()));

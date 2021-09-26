@@ -778,7 +778,7 @@ QImage *PictureFlowSoftwareRenderer::surface(int slideIndex)
 		  {
 			  for(int i = iInit-(j-jInit); i < iInit; i ++)
 			  {
-				  
+
 				  painter.drawPoint(i,j);
 			  }
 		  }*/
@@ -984,9 +984,9 @@ PictureFlow::PictureFlow(QWidget *parent, FlowType flowType)
 
     d->animator = new PictureFlowAnimator;
     d->animator->state = d->state;
-    QObject::connect(&d->animator->animateTimer, SIGNAL(timeout()), this, SLOT(updateAnimation()));
+    QObject::connect(&d->animator->animateTimer, &QTimer::timeout, this, &PictureFlow::updateAnimation);
 
-    QObject::connect(&d->triggerTimer, SIGNAL(timeout()), this, SLOT(render()));
+    QObject::connect(&d->triggerTimer, &QTimer::timeout, this, QOverload<>::of(&PictureFlow::render));
 
 #ifdef PICTUREFLOW_QT4
     setAttribute(Qt::WA_StaticContents, true);
@@ -1299,9 +1299,9 @@ void PictureFlow::updateAnimation() //bucle principal
     if (d->animator->animating == true) {
         int difference = 10 - now.elapsed();
         if (difference >= 0 && !frameSkiped)
-            QTimer::singleShot(difference, this, SLOT(updateAnimation()));
+            QTimer::singleShot(difference, this, &PictureFlow::updateAnimation);
         else {
-            QTimer::singleShot(0, this, SLOT(updateAnimation()));
+            QTimer::singleShot(0, this, &PictureFlow::updateAnimation);
             if (!frameSkiped)
                 framesSkip = -((difference - 10) / 10);
         }

@@ -44,8 +44,8 @@ void HttpWorker::run()
     QTimer tT;
 
     tT.setSingleShot(true);
-    connect(&tT, SIGNAL(timeout()), &q, SLOT(quit()));
-    connect(&manager, SIGNAL(finished(QNetworkReply *)), &q, SLOT(quit()));
+    connect(&tT, &QTimer::timeout, &q, &QEventLoop::quit);
+    connect(&manager, &QNetworkAccessManager::finished, &q, &QEventLoop::quit);
     QNetworkReply *reply = manager.get(QNetworkRequest(url));
 
     tT.start(5000); // 5s timeout

@@ -19,7 +19,7 @@ NotificationsLabelWidget::NotificationsLabelWidget(QWidget *parent)
     anim->setEndValue(0.0);
     anim->setEasingCurve(QEasingCurve::InExpo);
 
-    connect(anim, SIGNAL(finished()), this, SLOT(hide()));
+    connect(anim, &QAbstractAnimation::finished, this, &QWidget::hide);
 
     textLabel = new QLabel(this);
     textLabel->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);

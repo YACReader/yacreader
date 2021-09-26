@@ -252,7 +252,7 @@ int main(int argc, char **argv)
 
     auto mw = new LibraryWindow();
 
-    mw->connect(localServer, SIGNAL(comicUpdated(quint64, const ComicDB &)), mw, SLOT(updateComicsView(quint64, const ComicDB &)), Qt::QueuedConnection);
+    mw->connect(localServer, &YACReaderLocalServer::comicUpdated, mw, &LibraryWindow::updateComicsView, Qt::QueuedConnection);
 
     //connections to localServer
 

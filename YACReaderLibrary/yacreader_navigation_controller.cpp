@@ -269,11 +269,11 @@ void YACReaderNavigationController::loadPreviousStatus()
 
 void YACReaderNavigationController::setupConnections()
 {
-    connect(libraryWindow->foldersView, SIGNAL(clicked(QModelIndex)), this, SLOT(selectedFolder(QModelIndex)));
-    connect(libraryWindow->listsView, SIGNAL(clicked(QModelIndex)), this, SLOT(selectedList(QModelIndex)));
-    connect(libraryWindow->historyController, SIGNAL(modelIndexSelected(YACReaderLibrarySourceContainer)), this, SLOT(selectedIndexFromHistory(YACReaderLibrarySourceContainer)));
-    connect(comicsViewsManager->emptyFolderWidget, SIGNAL(subfolderSelected(QModelIndex, int)), this, SLOT(selectSubfolder(QModelIndex, int)));
-    connect(libraryWindow->comicsModel, SIGNAL(isEmpty()), this, SLOT(reselectCurrentSource()));
+    connect(libraryWindow->foldersView, &QAbstractItemView::clicked, this, &YACReaderNavigationController::selectedFolder);
+    connect(libraryWindow->listsView, &QAbstractItemView::clicked, this, &YACReaderNavigationController::selectedList);
+    connect(libraryWindow->historyController, &YACReaderHistoryController::modelIndexSelected, this, &YACReaderNavigationController::selectedIndexFromHistory);
+    connect(comicsViewsManager->emptyFolderWidget, &EmptyFolderWidget::subfolderSelected, this, &YACReaderNavigationController::selectSubfolder);
+    connect(libraryWindow->comicsModel, &ComicModel::isEmpty, this, &YACReaderNavigationController::reselectCurrentSource);
 }
 
 qulonglong YACReaderNavigationController::folderModelIndexToID(const QModelIndex &mi)

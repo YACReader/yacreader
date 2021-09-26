@@ -56,8 +56,6 @@ void drawMacOSXFinishedFolderIcon()
 FolderModel::FolderModel(QObject *parent)
     : QAbstractItemModel(parent), rootItem(0)
 {
-    connect(this, SIGNAL(beforeReset()), this, SIGNAL(modelAboutToBeReset()));
-    connect(this, SIGNAL(reset()), this, SIGNAL(modelReset()));
 }
 
 FolderModel::FolderModel(QSqlQuery &sqlquery, QObject *parent)

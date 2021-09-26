@@ -35,7 +35,7 @@ BusyIndicator::BusyIndicator(QWidget *parent)
     fillColor = palette().color(QPalette::WindowText);
 
     timer.setInterval(16);
-    connect(&timer, SIGNAL(timeout()), this, SLOT(rotate()));
+    connect(&timer, &QTimer::timeout, this, &BusyIndicator::rotate);
     timer.start();
 }
 

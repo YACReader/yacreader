@@ -23,14 +23,14 @@ ApiKeyDialog::ApiKeyDialog(QWidget *parent)
     info->setOpenExternalLinks(true);
     edit = new QLineEdit();
     edit->setPlaceholderText(tr("Paste here your Comic Vine API key"));
-    connect(edit, SIGNAL(textChanged(QString)), this, SLOT(enableAccept(QString)));
+    connect(edit, &QLineEdit::textChanged, this, &ApiKeyDialog::enableAccept);
 
     acceptButton = new QPushButton(tr("Accept"));
     acceptButton->setDisabled(true);
-    connect(acceptButton, SIGNAL(clicked()), this, SLOT(saveApiKey()));
+    connect(acceptButton, &QAbstractButton::clicked, this, &ApiKeyDialog::saveApiKey);
 
     cancelButton = new QPushButton(tr("Cancel"));
-    connect(cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(cancelButton, &QAbstractButton::clicked, this, &QDialog::reject);
 
     layout->addWidget(info);
     layout->addWidget(edit);

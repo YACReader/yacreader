@@ -27,9 +27,6 @@ public:
     void updateConfig(QSettings *settings);
     void setFlowRightToLeft(bool b) override;
 
-signals:
-    void goToPage(unsigned int page);
-
 private:
     YACReaderPageFlowGL *flow;
     void keyPressEvent(QKeyEvent *event) override;

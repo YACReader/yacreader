@@ -271,10 +271,10 @@ QWidget *YACReaderRatingDelegate::createEditor(QWidget *parent,
     Q_UNUSED(option)
     Q_UNUSED(index)
     StarEditor *editor = new StarEditor(parent);
-    connect(editor, SIGNAL(editingFinished()),
-            this, SLOT(sendCloseEditor()));
-    connect(editor, SIGNAL(commitData()),
-            this, SLOT(sendCommitData()));
+    connect(editor, &StarEditor::editingFinished,
+            this, &YACReaderRatingDelegate::sendCloseEditor);
+    connect(editor, &StarEditor::commitData,
+            this, &YACReaderRatingDelegate::sendCommitData);
     return editor;
 }
 

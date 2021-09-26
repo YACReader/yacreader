@@ -117,7 +117,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     portLabel->setStyleSheet("QLabel {color:#575757; font-size:18px; font-family: Arial;}");
 
     ip = new QComboBox(this);
-    connect(ip, SIGNAL(activated(const QString &)), this, SLOT(regenerateQR(const QString &)));
+    connect(ip, QOverload<const QString &>::of(&QComboBox::activated), this, &ServerConfigDialog::regenerateQR);
 
     ip->setFixedWidth(200);
     ip->move(332, 153);
@@ -139,7 +139,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     portWidget->setLayout(portWidgetLayout);
     portWidget->move(332, 244);
     //accept->move(514,149);
-    connect(accept, SIGNAL(pressed()), this, SLOT(updatePort()));
+    connect(accept, &QAbstractButton::pressed, this, &ServerConfigDialog::updatePort);
     //END FORM-----------------------------------------------------------------
 
     check = new QCheckBox(this);
@@ -174,8 +174,8 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
 
     settings->endGroup();
 
-    connect(check, SIGNAL(stateChanged(int)), this, SLOT(enableServer(int)));
-    connect(performanceWorkaroundCheck, SIGNAL(stateChanged(int)), this, SLOT(enableperformanceWorkaround(int)));
+    connect(check, &QCheckBox::stateChanged, this, &ServerConfigDialog::enableServer);
+    connect(performanceWorkaroundCheck, &QCheckBox::stateChanged, this, &ServerConfigDialog::enableperformanceWorkaround);
 }
 
 void ServerConfigDialog::enableServer(int status)

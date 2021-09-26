@@ -48,7 +48,7 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
     //edit->resize(QSize(54,50));
     edit->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
     //edit->setAutoFillBackground(false);
-    connect(edit, SIGNAL(returnPressed()), this, SLOT(goTo()));
+    connect(edit, &QLineEdit::returnPressed, this, &GoToFlowToolBar::goTo);
 
     QString centerButtonCSS = "QPushButton {background-image: url(:/images/imgCenterSlide.png); width: 100%; height:100%; background-repeat: none; border: none;} "
                               "QPushButton:focus { border: none; outline: none;}"
@@ -58,7 +58,7 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
     centerButton->setStyleSheet(centerButtonCSS);
     centerButton->setFixedSize(26, 50);
     centerButton->setAttribute(Qt::WA_LayoutUsesWidgetRect, true);
-    connect(centerButton, SIGNAL(clicked()), this, SLOT(centerSlide()));
+    connect(centerButton, &QAbstractButton::clicked, this, &GoToFlowToolBar::centerSlide);
 
     QString goToButtonCSS = "QPushButton {background-image: url(:/images/imgGoToSlide.png); width: 100%; height:100%; background-repeat: none; border: none;} "
                             "QPushButton:focus { border: none; outline: none;}"
@@ -69,7 +69,7 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
     goToButton->setFixedSize(32, 50);
     goToButton->setAttribute(Qt::WA_LayoutUsesWidgetRect, true);
 
-    connect(goToButton, SIGNAL(clicked()), this, SLOT(goTo()));
+    connect(goToButton, &QPushButton::clicked, this, &GoToFlowToolBar::goTo);
 
     normalLayout->setMargin(0);
     normalLayout->setSpacing(0);
@@ -112,7 +112,7 @@ void GoToFlowToolBar::goTo()
 {
     unsigned int page = edit->text().toInt();
     if (page >= 1 && page <= v->top()) {
-        emit(goTo(page - 1));
+        emit(goToPage(page - 1));
     }
 }
 
