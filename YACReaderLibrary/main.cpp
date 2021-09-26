@@ -119,6 +119,14 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 int main(int argc, char **argv)
 {
     qInstallMessageHandler(messageHandler);
+
+    static const char ENV_VAR_QT_DEVICE_PIXEL_RATIO[] = "QT_DEVICE_PIXEL_RATIO";
+    if (!qEnvironmentVariableIsSet(ENV_VAR_QT_DEVICE_PIXEL_RATIO) && !qEnvironmentVariableIsSet("QT_AUTO_SCREEN_SCALE_FACTOR") && !qEnvironmentVariableIsSet("QT_SCALE_FACTOR") && !qEnvironmentVariableIsSet("QT_SCREEN_SCALE_FACTORS")) {
+        QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    }
+
+    QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+
     QApplication app(argc, argv);
 
 #ifdef FORCE_ANGLE
@@ -128,7 +136,6 @@ int main(int argc, char **argv)
     app.setApplicationName("YACReaderLibrary");
     app.setOrganizationName("YACReader");
     app.setApplicationVersion(VERSION);
-    app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 
     // Set window icon according to Freedesktop icon specification
     // This is mostly relevant for Linux and other Unix systems

@@ -810,6 +810,9 @@ void MainWindowViewer::openComicFromRecentAction(QAction *action)
         } else if (info1.isDir()) {
             openFolderFromPath(action->data().toString());
         }
+    } else {
+        viewer->resetContent();
+        viewer->showMessageErrorOpening();
     }
 }
 

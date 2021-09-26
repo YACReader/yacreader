@@ -587,9 +587,6 @@ bool Render::nextPageIsDoublePage()
 
 bool Render::previousPageIsDoublePage()
 {
-    qWarning("Previous page is doublepage!");
-    qWarning("%d", currentIndex);
-    qWarning("%d", currentPageBufferedIndex);
     if (currentIndex == 2 && Configuration::getConfiguration().getSettings()->value(COVER_IS_SP, true).toBool()) {
         return false;
     }

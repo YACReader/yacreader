@@ -844,9 +844,9 @@ void Viewer::animateShowGoToFlow()
         showGoToFlowAnimation->setStartValue(QPoint((width() - goToFlow->width()) / 2, height() - 10));
         showGoToFlowAnimation->setEndValue(QPoint((width() - goToFlow->width()) / 2, height() - goToFlow->height()));
         showGoToFlowAnimation->start();
-        goToFlow->centerSlide(render->getIndex());
-        goToFlow->setPageNumber(render->getIndex());
         goToFlow->show();
+        goToFlow->setPageNumber(render->getIndex());
+        goToFlow->centerSlide(render->getIndex());
         goToFlow->setFocus(Qt::OtherFocusReason);
     }
 }
