@@ -69,6 +69,11 @@ public:
     QVariant coverArtist; //string
 
     QVariant date; //string
+
+    QVariant day;
+    QVariant month;
+    QVariant year;
+
     QVariant publisher; //string
     QVariant format; //string
     QVariant color; //bool
@@ -177,6 +182,9 @@ public:
     Q_PROPERTY(QVariant coverArtist MEMBER coverArtist CONSTANT)
 
     Q_PROPERTY(QVariant date MEMBER date CONSTANT)
+    Q_PROPERTY(QVariant day MEMBER day CONSTANT)
+    Q_PROPERTY(QVariant month MEMBER month CONSTANT)
+    Q_PROPERTY(QVariant year MEMBER year CONSTANT)
     Q_PROPERTY(QVariant publisher MEMBER publisher CONSTANT)
     Q_PROPERTY(QVariant format MEMBER format CONSTANT)
     Q_PROPERTY(QVariant color MEMBER color CONSTANT)
