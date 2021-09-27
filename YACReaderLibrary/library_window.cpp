@@ -1035,7 +1035,7 @@ void LibraryWindow::createMenus()
     libraryMenu->addAction(removeLibraryAction);
     libraryMenu->addSeparator();
 
-    libraryMenu->addAction(rescanLibraryForXMLInfo);
+    libraryMenu->addAction(rescanLibraryForXMLInfoAction);
     libraryMenu->addSeparator();
 
     libraryMenu->addAction(exportComicsInfoAction);
