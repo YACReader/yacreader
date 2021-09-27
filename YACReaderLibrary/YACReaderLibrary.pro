@@ -78,6 +78,7 @@ HEADERS += comic_flow.h \
   db/comic_query_result_processor.h \
   db/folder_query_result_processor.h \
   db/query_lexer.h \
+  initial_comic_info_extractor.h \
   library_comic_opener.h \
   library_creator.h \
   library_window.h \
@@ -116,6 +117,8 @@ HEADERS += comic_flow.h \
   no_libraries_widget.h \
   import_widget.h \
   trayicon_controller.h \
+  xml_info_library_scanner.h \
+  xml_info_parser.h \
   yacreader_local_server.h \
   yacreader_main_toolbar.h \
   comics_remover.h \
@@ -157,6 +160,7 @@ SOURCES += comic_flow.cpp \
     db/comic_query_result_processor.cpp \
     db/folder_query_result_processor.cpp \
     db/query_lexer.cpp \
+    initial_comic_info_extractor.cpp \
     library_comic_opener.cpp \
     library_creator.cpp \
     library_window.cpp \
@@ -191,6 +195,8 @@ SOURCES += comic_flow.cpp \
     no_libraries_widget.cpp \
     import_widget.cpp \
     trayicon_controller.cpp \
+    xml_info_library_scanner.cpp \
+    xml_info_parser.cpp \
     yacreader_local_server.cpp \
     yacreader_main_toolbar.cpp \
     comics_remover.cpp \
