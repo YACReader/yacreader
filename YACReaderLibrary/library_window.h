@@ -82,6 +82,7 @@ class EmptyReadingListWidget;
 
 namespace YACReader {
 class TrayIconController;
+class XMLInfoLibraryScanner;
 }
 
 #include "comic_db.h"
@@ -103,6 +104,7 @@ public:
     ImportComicsInfoDialog *importComicsInfoDialog;
     AddLibraryDialog *addLibraryDialog;
     LibraryCreator *libraryCreator;
+    XMLInfoLibraryScanner *xmlInfoLibraryScanner;
     HelpAboutDialog *had;
     RenameLibraryDialog *renameLibraryDialog;
     PropertiesDialog *propertiesDialog;
@@ -162,6 +164,8 @@ public:
 
     QAction *exportLibraryAction;
     QAction *importLibraryAction;
+
+    QAction *rescanLibraryForXMLInfoAction;
 
     QAction *updateLibraryAction;
     QAction *removeLibraryAction;
@@ -338,9 +342,11 @@ public slots:
     void deleteCurrentLibrary();
     void removeLibrary();
     void renameLibrary();
+    void rescanLibraryForXMLInfo();
     void rename(QString newName);
     void cancelCreating();
     void stopLibraryCreator();
+    void stopXMLScanning();
     void setRootIndex();
     void toggleFullScreen();
     void toNormal();
@@ -391,6 +397,7 @@ public slots:
     void updateCurrentFolder();
     void updateFolder(const QModelIndex &miFolder);
     QProgressDialog *newProgressDialog(const QString &label, int maxValue);
+    void reloadCurrentFolderComicsContent();
     void reloadAfterCopyMove(const QModelIndex &mi);
     QModelIndex getCurrentFolderIndex();
     void enableNeededActions();
