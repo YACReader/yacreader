@@ -364,6 +364,18 @@ void ImportWidget::setUpgradeLook()
     hideButton->setVisible(false);
 }
 
+void ImportWidget::setXMLScanLook()
+{
+    iconLabel->setPixmap(QPixmap(":/images/updatingIcon.png"));
+    text->setText("<font color=\"#495252\">" + tr("Scanning the library") + "</font>");
+    textDescription->setText("<font color=\"#565959\">" + tr("<p>Current library is being scanned for legacy XML metadata information.</p><p>This is only needed once, and only if the library was crated with YACReaderLibrary 9.8.2 or earlier.</p>") + "</font>");
+
+    stopButton->setVisible(true);
+    coversLabel->setVisible(false);
+    coversViewContainer->setVisible(false);
+    hideButton->setVisible(false);
+}
+
 void ImportWidget::clearScene()
 {
 }

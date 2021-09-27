@@ -20,6 +20,7 @@ public slots:
     void setImportLook();
     void setUpdateLook();
     void setUpgradeLook();
+    void setXMLScanLook();
     void showCovers(bool hide);
 
 private:
