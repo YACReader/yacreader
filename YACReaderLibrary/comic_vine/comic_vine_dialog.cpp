@@ -538,7 +538,7 @@ ComicDB ComicVineDialog::parseComicInfo(ComicDB &comic, const QString &json, int
             comic.info.coverArtist = coverArtist;
         }
 
-        if (result.contains("cover_date") && !result.value("conver_date").isNull()) {
+        if (result.contains("cover_date") && !result.value("cover_date").isNull()) {
             QString date = result.value("cover_date").toString();
 
             QStringList tempList = date.split("-");
