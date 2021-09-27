@@ -33,6 +33,7 @@
 #include "comic_db.h"
 #include "library_creator.h"
 #include "package_manager.h"
+#include "xml_info_library_scanner.h"
 #include "comic_flow_widget.h"
 #include "create_library_dialog.h"
 #include "rename_library_dialog.h"
@@ -167,6 +168,7 @@ void LibraryWindow::setupUI()
 
     libraryCreator = new LibraryCreator();
     packageManager = new PackageManager();
+    xmlInfoLibraryScanner = new XMLInfoLibraryScanner();
 
     historyController = new YACReaderHistoryController(this);
 
@@ -425,7 +427,8 @@ void LibraryWindow::setUpShortcutsManagement()
                                                  << importLibraryAction
                                                  << updateLibraryAction
                                                  << renameLibraryAction
-                                                 << removeLibraryAction);
+                                                 << removeLibraryAction
+                                                 << rescanLibraryForXMLInfoAction);
 
     allActions << tmpList;
 
@@ -531,6 +534,11 @@ void LibraryWindow::createActions()
     removeLibraryAction->setData(REMOVE_LIBRARY_ACTION_YL);
     removeLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(REMOVE_LIBRARY_ACTION_YL));
     removeLibraryAction->setIcon(QIcon(":/images/menus_icons/removeLibraryIcon.png"));
+
+    rescanLibraryForXMLInfoAction = new QAction(tr("Rescan library for XML info"), this);
+    rescanLibraryForXMLInfoAction->setToolTip(tr("Tries to find XML info embedded in comic files. You only need to do this if the library was created with 9.8.2 or earlier versions or if you are using third party software to embed XML info in the files."));
+    rescanLibraryForXMLInfoAction->setData(RESCAN_LIBRARY_XML_INFO_ACTION_YL);
+    rescanLibraryForXMLInfoAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RESCAN_LIBRARY_XML_INFO_ACTION_YL));
 
     openComicAction = new QAction(tr("Open current comic"), this);
     openComicAction->setToolTip(tr("Open current comic on YACReader"));
@@ -868,6 +876,7 @@ void LibraryWindow::disableLibrariesActions(bool disabled)
     exportComicsInfoAction->setDisabled(disabled);
     importComicsInfoAction->setDisabled(disabled);
     exportLibraryAction->setDisabled(disabled);
+    rescanLibraryForXMLInfoAction->setDisabled(disabled);
     //importLibraryAction->setDisabled(disabled);
 }
 
@@ -877,6 +886,7 @@ void LibraryWindow::disableNoUpdatedLibrariesActions(bool disabled)
     exportComicsInfoAction->setDisabled(disabled);
     importComicsInfoAction->setDisabled(disabled);
     exportLibraryAction->setDisabled(disabled);
+    rescanLibraryForXMLInfoAction->setDisabled(disabled);
 }
 
 void LibraryWindow::disableFoldersActions(bool disabled)
@@ -1001,6 +1011,9 @@ void LibraryWindow::createMenus()
     selectedLibrary->addAction(removeLibraryAction);
     YACReader::addSperator(selectedLibrary);
 
+    selectedLibrary->addAction(rescanLibraryForXMLInfoAction);
+    YACReader::addSperator(selectedLibrary);
+
     selectedLibrary->addAction(exportComicsInfoAction);
     selectedLibrary->addAction(importComicsInfoAction);
     YACReader::addSperator(selectedLibrary);
@@ -1020,6 +1033,9 @@ void LibraryWindow::createMenus()
     libraryMenu->addAction(updateLibraryAction);
     libraryMenu->addAction(renameLibraryAction);
     libraryMenu->addAction(removeLibraryAction);
+    libraryMenu->addSeparator();
+
+    libraryMenu->addAction(rescanLibraryForXMLInfoAction);
     libraryMenu->addSeparator();
 
     libraryMenu->addAction(exportComicsInfoAction);
@@ -1083,8 +1099,13 @@ void LibraryWindow::createConnections()
     connect(libraryCreator, &LibraryCreator::failedCreatingDB, this, &LibraryWindow::manageCreatingError);
     connect(libraryCreator, SIGNAL(failedUpdatingDB(QString)), this, SLOT(manageUpdatingError(QString))); //TODO: implement failedUpdatingDB
 
+    connect(xmlInfoLibraryScanner, &QThread::finished, this, &LibraryWindow::showRootWidget);
+    connect(xmlInfoLibraryScanner, &QThread::finished, this, &LibraryWindow::reloadCurrentFolderComicsContent);
+    connect(xmlInfoLibraryScanner, &XMLInfoLibraryScanner::comicScanned, importWidget, &ImportWidget::newComic);
+
     //new import widget
     connect(importWidget, &ImportWidget::stop, this, &LibraryWindow::stopLibraryCreator);
+    connect(importWidget, &ImportWidget::stop, this, &LibraryWindow::stopXMLScanning);
 
     //packageManager connections
     connect(exportLibraryDialog, &ExportLibraryDialog::exportPath, this, &LibraryWindow::exportLibrary);
@@ -1147,6 +1168,7 @@ void LibraryWindow::createConnections()
     connect(renameLibraryAction, &QAction::triggered, this, &LibraryWindow::renameLibrary);
     //connect(deleteLibraryAction,SIGNAL(triggered()),this,SLOT(deleteLibrary()));
     connect(removeLibraryAction, &QAction::triggered, this, &LibraryWindow::removeLibrary);
+    connect(rescanLibraryForXMLInfoAction, &QAction::triggered, this, &LibraryWindow::rescanLibraryForXMLInfo);
     connect(openComicAction, &QAction::triggered, this, QOverload<>::of(&LibraryWindow::openComic));
     connect(helpAboutAction, &QAction::triggered, had, &QWidget::show);
     connect(addFolderAction, &QAction::triggered, this, &LibraryWindow::addFolderToCurrentIndex);
@@ -1298,12 +1320,13 @@ void LibraryWindow::loadLibrary(const QString &name)
 
                 d.setCurrent(libraries.getPath(name));
                 d.setFilter(QDir::AllDirs | QDir::Files | QDir::Hidden | QDir::NoSymLinks | QDir::NoDotAndDotDot);
-                if (d.count() <= 1) //librería de sólo lectura
+                if (d.count() <= 1) //read only library
                 {
-                    //QMessageBox::critical(NULL,QString::number(d.count()),QString::number(d.count()));
                     disableLibrariesActions(false);
                     updateLibraryAction->setDisabled(true);
                     openContainingFolderAction->setDisabled(true);
+                    rescanLibraryForXMLInfoAction->setDisabled(true);
+
                     disableComicsActions(true);
 #ifndef Q_OS_MAC
                     toggleFullScreenAction->setEnabled(true);
@@ -1512,6 +1535,13 @@ QProgressDialog *LibraryWindow::newProgressDialog(const QString &label, int maxV
     progressDialog->setMinimumWidth(350);
     progressDialog->show();
     return progressDialog;
+}
+
+void LibraryWindow::reloadCurrentFolderComicsContent()
+{
+    navigationController->loadFolderInfo(getCurrentFolderIndex());
+
+    enableNeededActions();
 }
 
 void LibraryWindow::reloadAfterCopyMove(const QModelIndex &mi)
@@ -2076,6 +2106,18 @@ void LibraryWindow::rename(QString newName) //TODO replace
     //selectedLibrary->setCurrentIndex(selectedLibrary->findText(newName));
 }
 
+void LibraryWindow::rescanLibraryForXMLInfo()
+{
+    importWidget->setXMLScanLook();
+    showImportingWidget();
+
+    QString currentLibrary = selectedLibrary->currentText();
+    QString path = libraries.getPath(currentLibrary);
+    _lastAdded = currentLibrary;
+
+    xmlInfoLibraryScanner->scanLibrary(path, path + "/.yacreaderlibrary");
+}
+
 void LibraryWindow::cancelCreating()
 {
     stopLibraryCreator();
@@ -2085,6 +2127,12 @@ void LibraryWindow::stopLibraryCreator()
 {
     libraryCreator->stop();
     libraryCreator->wait();
+}
+
+void LibraryWindow::stopXMLScanning()
+{
+    xmlInfoLibraryScanner->stop();
+    xmlInfoLibraryScanner->wait();
 }
 
 void LibraryWindow::setRootIndex()

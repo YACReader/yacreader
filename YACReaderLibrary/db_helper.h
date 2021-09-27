@@ -53,7 +53,7 @@ public:
     static void deleteComicsFromReadingList(const QList<ComicDB> &comicsList, qulonglong readingListId, QSqlDatabase &db);
     //inserts
     static qulonglong insert(Folder *folder, QSqlDatabase &db);
-    static qulonglong insert(ComicDB *comic, QSqlDatabase &db);
+    static qulonglong insert(ComicDB *comic, QSqlDatabase &db, bool insertAllInfo);
     static qulonglong insertLabel(const QString &name, YACReader::LabelColors color, QSqlDatabase &db);
     static qulonglong insertReadingList(const QString &name, QSqlDatabase &db);
     static qulonglong insertReadingSubList(const QString &name, qulonglong parentId, int ordering, QSqlDatabase &db);

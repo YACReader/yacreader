@@ -1154,7 +1154,7 @@ qulonglong DBHelper::insert(Folder *folder, QSqlDatabase &db)
     return query.lastInsertId().toULongLong();
 }
 
-qulonglong DBHelper::insert(ComicDB *comic, QSqlDatabase &db)
+qulonglong DBHelper::insert(ComicDB *comic, QSqlDatabase &db, bool insertAllInfo)
 {
     if (!comic->info.existOnDb) {
         QSqlQuery comicInfoInsert(db);
@@ -1167,6 +1167,10 @@ qulonglong DBHelper::insert(ComicDB *comic, QSqlDatabase &db)
         comicInfoInsert.exec();
         comic->info.id = comicInfoInsert.lastInsertId().toULongLong();
         comic->_hasCover = false;
+
+        if (insertAllInfo) {
+            DBHelper::update(&(comic->info), db); //TODO use insert to insert all the info values, the common binding need to be extracted and shared between update and insert
+        }
     } else
         comic->_hasCover = true;
 

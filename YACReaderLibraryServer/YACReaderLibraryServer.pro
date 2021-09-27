@@ -44,6 +44,8 @@ HEADERS += ../YACReaderLibrary/library_creator.h \
            ../YACReaderLibrary/db_helper.h \
            ../YACReaderLibrary/db/data_base_management.h \
            ../YACReaderLibrary/db/reading_list.h \
+           ../YACReaderLibrary/initial_comic_info_extractor.h \
+           ../YACReaderLibrary/xml_info_parser.h \
            ../common/comic_db.h \
            ../common/folder.h \
            ../common/library_item.h \
@@ -67,6 +69,8 @@ SOURCES += ../YACReaderLibrary/library_creator.cpp \
            ../YACReaderLibrary/db_helper.cpp \
            ../YACReaderLibrary/db/data_base_management.cpp \
            ../YACReaderLibrary/db/reading_list.cpp \
+           ../YACReaderLibrary/initial_comic_info_extractor.cpp \
+           ../YACReaderLibrary/xml_info_parser.cpp \
            ../common/comic_db.cpp \
            ../common/folder.cpp \
            ../common/library_item.cpp \

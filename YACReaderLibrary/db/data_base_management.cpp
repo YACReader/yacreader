@@ -1,11 +1,13 @@
 #include "data_base_management.h"
 
 #include <QtCore>
-#include "library_creator.h"
+#include "initial_comic_info_extractor.h"
 #include "check_new_version.h"
 #include "db_helper.h"
 
 #include "QsLog.h"
+
+using namespace YACReader;
 
 static QString fields = "title ,"
 
@@ -156,7 +158,7 @@ bool DataBaseManagement::createTables(QSqlDatabase &database)
                                "publisher TEXT,"
                                "format TEXT,"
                                "color BOOLEAN,"
-                               "ageRating BOOLEAN,"
+                               "ageRating BOOLEAN," //this is actually a string (TEXT), funny thing is that the current implementation works
 
                                "synopsis TEXT,"
                                "characters TEXT,"
@@ -543,8 +545,8 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
                 QString basePath = QString(dest).remove("/.yacreaderlibrary/library.ydb");
                 QString path = basePath + getComic.record().value("path").toString();
                 int coverPage = getComic.record().value("coverPage").toInt();
-                ThumbnailCreator tc(path, basePath + "/.yacreaderlibrary/covers/" + hash + ".jpg", coverPage);
-                tc.create();
+                InitialComicInfoExtractor ie(path, basePath + "/.yacreaderlibrary/covers/" + hash + ".jpg", coverPage);
+                ie.extract();
             }
         }
         sourceDBconnection = sourceDB.connectionName();

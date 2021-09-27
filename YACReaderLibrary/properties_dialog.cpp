@@ -1,7 +1,7 @@
 #include "properties_dialog.h"
 
 #include "data_base_management.h"
-#include "library_creator.h"
+#include "initial_comic_info_extractor.h"
 #include "yacreader_field_edit.h"
 #include "yacreader_field_plain_text_edit.h"
 #include "db_helper.h"
@@ -21,6 +21,8 @@
 #include <QToolButton>
 #include <QPushButton>
 #include <QMessageBox>
+
+using namespace YACReader;
 
 PropertiesDialog::PropertiesDialog(QWidget *parent)
     : QDialog(parent)
@@ -734,12 +736,12 @@ void PropertiesDialog::save()
     if (comics.count() == 1) {
         if (coverChanged) // && coverPageEdit->text().toInt() != *comics[0].info.coverPage)
         {
-            ThumbnailCreator tc(basePath + comics[0].path, basePath + "/.yacreaderlibrary/covers/" + comics[0].info.hash + ".jpg", comics[0].info.coverPage.toInt());
-            tc.create();
+            InitialComicInfoExtractor ie(basePath + comics[0].path, basePath + "/.yacreaderlibrary/covers/" + comics[0].info.hash + ".jpg", comics[0].info.coverPage.toInt());
+            ie.extract();
 
-            if (tc.getOriginalCoverSize().second > 0) {
-                comics[0].info.originalCoverSize = QString("%1x%2").arg(tc.getOriginalCoverSize().first).arg(tc.getOriginalCoverSize().second);
-                comics[0].info.coverSizeRatio = static_cast<float>(tc.getOriginalCoverSize().first) / tc.getOriginalCoverSize().second;
+            if (ie.getOriginalCoverSize().second > 0) {
+                comics[0].info.originalCoverSize = QString("%1x%2").arg(ie.getOriginalCoverSize().first).arg(ie.getOriginalCoverSize().second);
+                comics[0].info.coverSizeRatio = static_cast<float>(ie.getOriginalCoverSize().first) / ie.getOriginalCoverSize().second;
             }
         }
     }
@@ -831,9 +833,9 @@ void PropertiesDialog::loadNextCover()
     if (current < comics.at(0).info.numPages.toInt()) {
         updateCoverPageNumberLabel(current + 1);
 
-        ThumbnailCreator tc(basePath + comics[0].path, "", current + 1);
-        tc.create();
-        setCover(tc.getCover());
+        InitialComicInfoExtractor ie(basePath + comics[0].path, "", current + 1);
+        ie.extract();
+        setCover(ie.getCover());
         repaint();
 
         if ((current + 1) == comics.at(0).info.numPages.toInt()) {
@@ -854,9 +856,9 @@ void PropertiesDialog::loadPreviousCover()
     int current = coverPageNumberLabel->text().toInt();
     if (current != 1) {
         updateCoverPageNumberLabel(current - 1);
-        ThumbnailCreator tc(basePath + comics[0].path, "", current - 1);
-        tc.create();
-        setCover(tc.getCover());
+        InitialComicInfoExtractor ie(basePath + comics[0].path, "", current - 1);
+        ie.extract();
+        setCover(ie.getCover());
         repaint();
 
         if ((current - 1) == 1) {
