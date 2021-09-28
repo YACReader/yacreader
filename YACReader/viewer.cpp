@@ -695,7 +695,7 @@ void Viewer::wheelEvent(QWheelEvent *event)
         }
 
         if ((event->delta() < 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->maximum())) {
-            if (wheelStop) {
+            if (wheelStop || verticalScrollBar()->maximum() == verticalScrollBar()->minimum()) {
                 if (getMovement(event) == Forward) {
                     next();
                     verticalScroller->stop();
@@ -707,7 +707,7 @@ void Viewer::wheelEvent(QWheelEvent *event)
                 wheelStop = true;
         } else {
             if ((event->delta() > 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->minimum())) {
-                if (wheelStop) {
+                if (wheelStop || verticalScrollBar()->maximum() == verticalScrollBar()->minimum()) {
                     if (getMovement(event) == Backward) {
                         prev();
                         verticalScroller->stop();
