@@ -937,8 +937,8 @@ bool is_double_page(const QString &pageName, const QString &commonPrefix, const 
             return false;
         }
 
-        int leftPageNumber = pageNumbersSubString.left(pageNumbersSubString.length() / 2).toInt();
-        int rightPageNumber = pageNumbersSubString.mid(pageNumbersSubString.length() / 2).toInt();
+        int leftPageNumber = pageNumbersSubString.leftRef(pageNumbersSubString.length() / 2).toInt();
+        int rightPageNumber = pageNumbersSubString.midRef(pageNumbersSubString.length() / 2).toInt();
 
         if (leftPageNumber == 0 || rightPageNumber == 0) {
             return false;
