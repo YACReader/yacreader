@@ -994,7 +994,8 @@ QString get_most_common_prefix(const QList<QString> &pageNames)
 
     uint maxFrequency = 0;
     QString common_prefix = "";
-    foreach (QString key, frequency.keys()) {
+    auto keys = frequency.keys();
+    for (QString &key : keys) {
         if (maxFrequency < frequency.value(key)) {
             maxFrequency = frequency.value(key);
             common_prefix = key;
