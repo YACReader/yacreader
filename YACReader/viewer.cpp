@@ -763,8 +763,8 @@ void Viewer::mouseMoveEvent(QMouseEvent *event)
         if (drag) {
             int currentPosY = verticalScrollBar()->sliderPosition();
             int currentPosX = horizontalScrollBar()->sliderPosition();
-            verticalScrollBar()->setSliderPosition(currentPosY = currentPosY + (yDragOrigin - event->y()));
-            horizontalScrollBar()->setSliderPosition(currentPosX = currentPosX + (xDragOrigin - event->x()));
+            verticalScrollBar()->setSliderPosition(currentPosY + (yDragOrigin - event->y()));
+            horizontalScrollBar()->setSliderPosition(currentPosX + (xDragOrigin - event->x()));
             yDragOrigin = event->y();
             xDragOrigin = event->x();
         }
