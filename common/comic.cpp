@@ -27,7 +27,7 @@ QStringList Comic::getSupportedImageFormats()
 {
     QList<QByteArray> supportedImageFormats = QImageReader::supportedImageFormats();
     QStringList supportedImageFormatStrings;
-    for (QByteArray item : supportedImageFormats) {
+    for (QByteArray &item : supportedImageFormats) {
         supportedImageFormatStrings.append(QString::fromLocal8Bit("*." + item));
     }
     return supportedImageFormatStrings;
@@ -37,7 +37,7 @@ QStringList Comic::getSupportedImageLiteralFormats()
 {
     QList<QByteArray> supportedImageFormats = QImageReader::supportedImageFormats();
     QStringList supportedImageFormatStrings;
-    for (QByteArray item : supportedImageFormats) {
+    for (QByteArray &item : supportedImageFormats) {
         supportedImageFormatStrings.append(QString::fromLocal8Bit(item));
     }
     return supportedImageFormatStrings;

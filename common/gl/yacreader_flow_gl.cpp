@@ -1276,7 +1276,7 @@ YACReaderPageFlowGL::~YACReaderPageFlowGL()
 
     makeCurrent();
 
-    for (auto image : images) {
+    for (auto &image : images) {
         if (image.texture != defaultTexture) {
             if (image.texture->isCreated()) {
                 image.texture->destroy();
