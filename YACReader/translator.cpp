@@ -51,7 +51,7 @@ YACReaderTranslator::YACReaderTranslator(Viewer *parent)
     this->setAutoFillBackground(true);
     this->setBackgroundRole(QPalette::Window);
     QPalette p(this->palette());
-    p.setColor(QPalette::Window, QColor("#404040"));
+    p.setColor(QPalette::Window, QColor(0x404040));
     this->setPalette(p);
 
     auto layout = new QVBoxLayout(this);

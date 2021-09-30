@@ -47,7 +47,7 @@ void NotificationsLabelWidget::paintEvent(QPaintEvent *)
     QPainterPath path;
     path.addRoundedRect(QRectF(0, 0, width(), height()), 5.0, 5.0);
     painter.setPen(Qt::NoPen);
-    painter.fillPath(path, QColor("#BB000000"));
+    painter.fillPath(path, QColor(0xBB000000));
     painter.drawPath(path);
 }
 

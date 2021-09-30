@@ -79,7 +79,7 @@ void YACReaderSlider::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
-    painter.fillRect(0, 0, width(), height(), QColor("#BB000000"));
+    painter.fillRect(0, 0, width(), height(), QColor(0xBB000000));
 }
 
 void YACReaderSlider::show()

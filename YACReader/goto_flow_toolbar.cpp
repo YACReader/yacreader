@@ -93,7 +93,7 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
 void GoToFlowToolBar::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    painter.fillRect(0, 0, width(), height(), QColor("#99000000"));
+    painter.fillRect(0, 0, width(), height(), QColor(0x99000000));
 }
 
 void GoToFlowToolBar::setPage(int pageNumber)
