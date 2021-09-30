@@ -61,7 +61,7 @@ void GoToDialog::goTo()
 {
     unsigned int page = pageNumber->text().toInt();
     if (page >= 1 && page <= v->top()) {
-        emit(goToPage(page - 1));
+        emit goToPage(page - 1);
         close();
     }
 }

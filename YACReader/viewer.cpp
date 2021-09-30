@@ -318,7 +318,7 @@ void Viewer::updatePage()
     if (currentPage->isNull())
         setPageUnavailableMessage();
     else
-        emit(pageAvailable(true));
+        emit pageAvailable(true);
 
     emit backgroundChanges();
 
@@ -955,7 +955,7 @@ void Viewer::setLoadingMessage()
         hideMagnifyingGlass();
         restoreMagnifyingGlass = true;
     }
-    emit(pageAvailable(false));
+    emit pageAvailable(false);
     configureContent(tr("Loading...please wait!"));
 }
 
@@ -965,7 +965,7 @@ void Viewer::setPageUnavailableMessage()
         hideMagnifyingGlass();
         restoreMagnifyingGlass = true;
     }
-    emit(pageAvailable(false));
+    emit pageAvailable(false);
     configureContent(tr("Page not available!"));
 }
 
@@ -1107,7 +1107,7 @@ void Viewer::showIsCoverMessage()
         shouldOpenPrevious = true;
     } else {
         shouldOpenPrevious = false;
-        emit(openPreviousComic());
+        emit openPreviousComic();
     }
 
     shouldOpenNext = false; // single page comic
@@ -1121,7 +1121,7 @@ void Viewer::showIsLastMessage()
         shouldOpenNext = true;
     } else {
         shouldOpenNext = false;
-        emit(openNextComic());
+        emit openNextComic();
     }
 
     shouldOpenPrevious = false; // single page comic

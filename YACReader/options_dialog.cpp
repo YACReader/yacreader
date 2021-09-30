@@ -140,7 +140,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     connect(scaleCheckbox, &QCheckBox::clicked,
             [=](bool checked) {
                 Configuration::getConfiguration().setEnlargeImages(checked);
-                emit(changedImageOptions());
+                emit changedImageOptions();
             });
 
     scaleLayout->addWidget(scaleCheckbox);
@@ -153,7 +153,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     connect(coverSPCheckBox, &QCheckBox::clicked,
             [=](bool checked) {
                 settings->setValue(COVER_IS_SP, checked);
-                emit(changedImageOptions());
+                emit changedImageOptions();
             });
 
     doublePageBoxLayout->addWidget(coverSPCheckBox);
@@ -262,7 +262,7 @@ void OptionsDialog::updateColor(const QColor &color)
 
     settings->setValue(BACKGROUND_COLOR, color);
 
-    emit(changedOptions());
+    emit changedOptions();
 }
 
 void OptionsDialog::brightnessChanged(int value)

@@ -368,11 +368,11 @@ void TranslationLoader::run()
             utf8 = utf8.remove(utf8.count() - 1, 1);
 
             QString translated(utf8);
-            emit(requestFinished(translated));
+            emit requestFinished(translated);
         } else
-            emit(error());
+            emit error();
     } else {
-        emit(timeOut());
+        emit timeOut();
     }
 }
 
@@ -411,10 +411,10 @@ void TextToSpeachLoader::run()
             utf8 = utf8.remove(utf8.count() - 1, 1);
             utf8 = utf8.replace("\\", "");
 
-            emit(requestFinished(QUrl(utf8)));
+            emit requestFinished(QUrl(utf8));
         } else
-            emit(error());
+            emit error();
     } else {
-        emit(timeOut());
+        emit timeOut();
     }
 }

@@ -604,7 +604,7 @@ void FileComic::process()
     }
 
     _index = _firstPage;
-    emit(openAt(_index));
+    emit openAt(_index);
 
     int sectionIndex;
     QList<QVector<quint32>> sections = getSections(sectionIndex);
@@ -701,7 +701,7 @@ void FolderComic::process()
 
         _index = _firstPage;
 
-        emit(openAt(_index));
+        emit openAt(_index);
 
         emit pageChanged(0); // this indicates new comic, index=0
         emit numPages(_pages.size());
@@ -847,7 +847,7 @@ void PDFComic::process()
     }
 
     _index = _firstPage;
-    emit(openAt(_index));
+    emit openAt(_index);
 
     // buffer index to avoid race conditions
     int buffered_index = _index;

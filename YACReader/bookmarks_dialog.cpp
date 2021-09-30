@@ -133,7 +133,7 @@ bool BookmarksDialog::eventFilter(QObject *obj, QEvent *event)
 {
     if (event->type() == QEvent::MouseButtonPress) {
         if (obj == images.at(0)) {
-            emit(goToPage(lastPage));
+            emit goToPage(lastPage);
             close();
             event->accept();
         }
@@ -142,7 +142,7 @@ bool BookmarksDialog::eventFilter(QObject *obj, QEvent *event)
                 bool b;
                 int page = pages.at(i)->text().toInt(&b) - 1;
                 if (b) {
-                    emit(goToPage(page));
+                    emit goToPage(page);
                     close();
                 }
                 event->accept();
