@@ -27,7 +27,6 @@ bool HttpVersionChecker::checkNewVersion(QString sourceContent)
 {
     QRegExp rx("#define VERSION \"([0-9]+).([0-9]+).([0-9]+)\"");
 
-    int index = 0;
     bool newVersion = false;
     bool sameVersion = true;
     // bool currentVersionIsNewer = false;
@@ -37,7 +36,7 @@ bool HttpVersionChecker::checkNewVersion(QString sourceContent)
     QString version(VERSION);
 #endif
     QStringList sl = version.split(".");
-    if ((index = rx.indexIn(sourceContent)) != -1) {
+    if (rx.indexIn(sourceContent) != -1) {
         int length = qMin(sl.size(), (rx.cap(4) != "") ? 4 : 3);
         for (int i = 0; i < length; i++) {
             if (rx.cap(i + 1).toInt() < sl.at(i).toInt()) {
