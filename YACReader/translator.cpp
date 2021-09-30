@@ -353,7 +353,7 @@ void TranslationLoader::run()
     connect(&manager, &QNetworkAccessManager::finished, &q, &QEventLoop::quit);
 
     QString url = "http://api.microsofttranslator.com/V2/Ajax.svc/Translate?appid=%1&from=%2&to=%3&text=%4&contentType=text/plain";
-    url = url.arg(APPID).arg(from).arg(to).arg(text);
+    url = url.arg(APPID, from, to, text);
 
     QNetworkReply *reply = manager.get(QNetworkRequest(QUrl(url)));
 
@@ -396,7 +396,7 @@ void TextToSpeachLoader::run()
     connect(&manager, &QNetworkAccessManager::finished, &q, &QEventLoop::quit);
 
     QString url = "http://api.microsofttranslator.com/V2/Ajax.svc/Speak?appid=%1&language=%2&text=%3&contentType=text/plain";
-    url = url.arg(APPID).arg(language).arg(text);
+    url = url.arg(APPID, language, text);
 
     QNetworkReply *reply = manager.get(QNetworkRequest(QUrl(url)));
 
