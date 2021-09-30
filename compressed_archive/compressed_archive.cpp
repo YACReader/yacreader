@@ -376,6 +376,8 @@ CompressedArchive::CompressedArchive(const QString &filePath, QObject *parent)
                 isDir = VARIANT_BOOLToBool(prop.boolVal);
             else if (prop.vt == VT_EMPTY)
                 isDir = false;
+            else
+                continue;
 
             if (!isDir) {
                 szInterface->archive->GetProperty(i, kpidPath, &prop);
