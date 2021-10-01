@@ -2,6 +2,7 @@
 #define WIDTH_SLIDER_H
 
 #include <QWidgetAction>
+#include <QWidget>
 
 class QLabel;
 class QSlider;
