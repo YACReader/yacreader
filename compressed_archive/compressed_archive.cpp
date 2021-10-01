@@ -206,11 +206,11 @@ CompressedArchive::CompressedArchive(const QString &filePath, QObject *parent)
             // GUID uuid = supportedFileFormats[i];
             // qDebug() << "trying : " << uuid << endl;
             if (szInterface->createObjectFunc(&supportedFileFormats[i], &IID_InArchive, (void **)&szInterface->archive) == S_OK) {
-                // qDebug() << "Can not open archive file : " + filePath << endl;
+                // qDebug() << "Can not open archive file : " + filePath << Qt::endl;
 
                 if (szInterface->archive->Open(file, 0, openCallback) == S_OK) {
                     valid = formatFound = true;
-                    qDebug() << "Opened archive file : " + filePath << endl;
+                    qDebug() << "Opened archive file : " + filePath << Qt::endl;
                     setupFilesNames();
                     return;
                 }
@@ -218,7 +218,7 @@ CompressedArchive::CompressedArchive(const QString &filePath, QObject *parent)
 
 #ifdef Q_OS_WIN
             if (!formatFound) {
-                qDebug() << "Can not open archive" << endl;
+                qDebug() << "Can not open archive" << Qt::endl;
             }
         }
     }
@@ -258,7 +258,7 @@ CompressedArchive::CompressedArchive(const QString &filePath, QObject *parent)
             qDebug() << "Error opening rar file :" + filePath;
             return;
         }
-        // qDebug() << "Can not open archive file : " + filePath << endl;
+        // qDebug() << "Can not open archive file : " + filePath << Qt::endl;
 
         if (szInterface->archive->Open(file, 0, openCallback) == S_OK) {
             valid = formatFound = true;
@@ -311,7 +311,7 @@ CompressedArchive::CompressedArchive(const QString &filePath, QObject *parent)
             }
 #endif
             if (!rarLib->load()) {
-                qDebug() << "Error Loading Rar.so : " + rarLib->errorString() << endl;
+                qDebug() << "Error Loading Rar.so : " + rarLib->errorString() << Qt::endl;
                 QCoreApplication::exit(700); // TODO yacreader_global can't be used here, it is GUI dependant, YACReader::SevenZNotFound
                 return false;
             }
@@ -328,34 +328,34 @@ CompressedArchive::CompressedArchive(const QString &filePath, QObject *parent)
 #endif
         }
         if (!sevenzLib->load()) {
-            qDebug() << "Error Loading 7z.dll : " + sevenzLib->errorString() << endl;
+            qDebug() << "Error Loading 7z.dll : " + sevenzLib->errorString() << Qt::endl;
             QCoreApplication::exit(700); // TODO yacreader_global can't be used here, it is GUI dependant, YACReader::SevenZNotFound
             return false;
         } else {
-            qDebug() << "Loading functions" << endl;
+            qDebug() << "Loading functions" << Qt::endl;
 
             if ((szInterface->createObjectFunc = (CreateObjectFunc)sevenzLib->resolve("CreateObject")) == 0)
-                qDebug() << "fail loading function : CreateObject" << endl;
+                qDebug() << "fail loading function : CreateObject" << Qt::endl;
             if ((szInterface->getMethodPropertyFunc = (GetMethodPropertyFunc)sevenzLib->resolve("GetMethodProperty")) == 0)
-                qDebug() << "fail loading function : GetMethodProperty" << endl;
+                qDebug() << "fail loading function : GetMethodProperty" << Qt::endl;
             if ((szInterface->getNumberOfMethodsFunc = (GetNumberOfMethodsFunc)sevenzLib->resolve("GetNumberOfMethods")) == 0)
-                qDebug() << "fail loading function : GetNumberOfMethods" << endl;
+                qDebug() << "fail loading function : GetNumberOfMethods" << Qt::endl;
             if ((szInterface->getNumberOfFormatsFunc = (GetNumberOfFormatsFunc)sevenzLib->resolve("GetNumberOfFormats")) == 0)
-                qDebug() << "fail loading function : GetNumberOfFormats" << endl;
+                qDebug() << "fail loading function : GetNumberOfFormats" << Qt::endl;
             if ((szInterface->getHandlerPropertyFunc = (GetHandlerPropertyFunc)sevenzLib->resolve("GetHandlerProperty")) == 0)
-                qDebug() << "fail loading function : GetHandlerProperty" << endl;
+                qDebug() << "fail loading function : GetHandlerProperty" << Qt::endl;
             if ((szInterface->getHandlerPropertyFunc2 = (GetHandlerPropertyFunc2)sevenzLib->resolve("GetHandlerProperty2")) == 0)
-                qDebug() << "fail loading function : GetHandlerProperty2" << endl;
+                qDebug() << "fail loading function : GetHandlerProperty2" << Qt::endl;
             if ((szInterface->setLargePageModeFunc = (SetLargePageModeFunc)sevenzLib->resolve("SetLargePageMode")) == 0)
-                qDebug() << "fail loading function : SetLargePageMode" << endl;
+                qDebug() << "fail loading function : SetLargePageMode" << Qt::endl;
 
 #ifdef Q_OS_UNIX
             if ((szInterface->createObjectFuncRar = (CreateObjectFunc)rarLib->resolve("CreateObject")) == 0)
-                qDebug() << "fail loading function (rar) : CreateObject" << endl;
+                qDebug() << "fail loading function (rar) : CreateObject" << Qt::endl;
             if ((szInterface->getMethodPropertyFuncRar = (GetMethodPropertyFunc)rarLib->resolve("GetMethodProperty")) == 0)
-                qDebug() << "fail loading function (rar) : GetMethodProperty" << endl;
+                qDebug() << "fail loading function (rar) : GetMethodProperty" << Qt::endl;
             if ((szInterface->getNumberOfMethodsFuncRar = (GetNumberOfMethodsFunc)rarLib->resolve("GetNumberOfMethods")) == 0)
-                qDebug() << "fail loading function (rar) : GetNumberOfMethods" << endl;
+                qDebug() << "fail loading function (rar) : GetNumberOfMethods" << Qt::endl;
 #endif
         }
 
@@ -445,7 +445,7 @@ CompressedArchive::CompressedArchive(const QString &filePath, QObject *parent)
         else
             result = szInterface->archive->Extract(currentIndexes.data(), currentIndexes.count(), false, extractCallback);
         if (result != S_OK) {
-            qDebug() << "Extract Error" << endl;
+            qDebug() << "Extract Error" << Qt::endl;
         }
 
         return extractCallbackSpec->allFiles;
@@ -468,7 +468,7 @@ CompressedArchive::CompressedArchive(const QString &filePath, QObject *parent)
 
             HRESULT result = szInterface->archive->Extract(indices, 1, false, extractCallback);
             if (result != S_OK) {
-                qDebug() << "Extract Error" << endl;
+                qDebug() << "Extract Error" << Qt::endl;
             }
 
             return QByteArray((char *)extractCallbackSpec->data, extractCallbackSpec->newFileSize);
