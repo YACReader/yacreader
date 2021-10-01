@@ -252,9 +252,9 @@ public slots:
 
     // interface with yacreaderlibrary, compatibility
     void setShowMarks(bool value);
-    void setMarks(QVector<YACReaderComicReadStatus> marks);
+    void setMarks(QVector<YACReader::YACReaderComicReadStatus> marks);
     void setMarkImage(QImage &image);
-    void markSlide(int index, YACReaderComicReadStatus status);
+    void markSlide(int index, YACReader::YACReaderComicReadStatus status);
     void unmarkSlide(int index);
     void setSlideSize(QSize size);
     void clear();

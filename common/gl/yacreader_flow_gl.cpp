@@ -950,7 +950,7 @@ void YACReaderFlowGL::setShowMarks(bool value)
 
     showMarks = value;
 }
-void YACReaderFlowGL::setMarks(QVector<YACReaderComicReadStatus> marks)
+void YACReaderFlowGL::setMarks(QVector<YACReader::YACReaderComicReadStatus> marks)
 {
     startAnimationTimer();
 
@@ -963,7 +963,7 @@ void YACReaderFlowGL::setMarkImage(QImage &image)
     // deleteTexture(markTexture);
     // markTexture = bindTexture(image,GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
 }
-void YACReaderFlowGL::markSlide(int index, YACReaderComicReadStatus status)
+void YACReaderFlowGL::markSlide(int index, YACReader::YACReaderComicReadStatus status)
 {
     startAnimationTimer();
 
