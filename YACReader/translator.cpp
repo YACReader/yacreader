@@ -20,7 +20,6 @@
 #include <QFile>
 #include <QPoint>
 #include <QWidget>
-#include <QTextCodec>
 #include <QLabel>
 #include <QTextEdit>
 #include <QComboBox>
