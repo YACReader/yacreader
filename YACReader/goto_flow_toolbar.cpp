@@ -71,7 +71,7 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
 
     connect(goToButton, &QPushButton::clicked, this, &GoToFlowToolBar::goTo);
 
-    normalLayout->setMargin(0);
+    normalLayout->setContentsMargins(0, 0, 0, 0);
     normalLayout->setSpacing(0);
     normalLayout->addStretch();
     normalLayout->addWidget(pageHint);

@@ -14,7 +14,7 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
     scrollArea->setContentsMargins(0, 0, 0, 0);
 
     auto mainLayout = new QVBoxLayout(this);
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     auto contentLayout = new QGridLayout();
 
     auto content = new QFrame();

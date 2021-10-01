@@ -7,7 +7,7 @@ NotificationsLabelWidget::NotificationsLabelWidget(QWidget *parent)
 {
     auto layout = new QVBoxLayout;
     layout->setSpacing(0);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     setAttribute(Qt::WA_LayoutUsesWidgetRect, true);
     effect = new QGraphicsOpacityEffect(this);
