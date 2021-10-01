@@ -2,9 +2,17 @@
 #ifndef __YACREADER_FLOW_GL_H
 #define __YACREADER_FLOW_GL_H
 
+#include <QtGlobal>
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QtOpenGLWidgets/QOpenGLWidget>
+#include <QtOpenGL/QOpenGLTexture>
+#else
 #include <QOpenGLWidget>
-#include <QOpenGLFunctions>
 #include <QOpenGLTexture>
+#endif
+
+#include <QOpenGLFunctions>
 #include <QtWidgets>
 
 #include "pictureflow.h" //TODO mover los tipos de flow de sitio
