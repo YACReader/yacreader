@@ -9,6 +9,7 @@
 #include <QTimer>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QRegExp>
 
 #define PREVIOUS_VERSION_TESTING "6.0.0"
 
