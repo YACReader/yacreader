@@ -142,7 +142,7 @@ void BookmarksList::deleteOldest(int num)
 {
     Q_UNUSED(num)
     QString comic;
-    QDateTime date(QDate(10000, 1, 1)); // TODO MAX_DATE??
+    auto date = QDate().endOfDay();
     for (QMap<QString, Bookmark>::const_iterator itr = list.constBegin(); itr != list.constEnd(); itr++) {
         if (itr->added < date) {
             comic = itr.key();
