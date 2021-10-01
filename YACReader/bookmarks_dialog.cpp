@@ -90,7 +90,7 @@ BookmarksDialog::BookmarksDialog(QWidget *parent)
 
     QPalette Pal(palette());
     // set black background
-    Pal.setColor(QPalette::Background, QColor(0x454545));
+    Pal.setColor(QPalette::Window, QColor(0x454545));
     this->setAutoFillBackground(true);
     this->setPalette(Pal);
 
