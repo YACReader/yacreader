@@ -858,7 +858,7 @@ void MainWindowViewer::open(QString path, ComicDB &comic, QList<ComicDB> &siblin
     optionsDialog->setFilters(currentComicDB.info.brightness, currentComicDB.info.contrast, currentComicDB.info.gamma);
 }
 
-void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId, OpenComicSource source)
+void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId, YACReader::OpenComicSource source)
 {
     currentDirectory = path;
 
