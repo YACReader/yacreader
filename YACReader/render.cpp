@@ -348,7 +348,7 @@ void PageRender::run()
     QImage img;
     img.loadFromData(data);
     if (degrees > 0) {
-        QMatrix m;
+        QTransform m;
         m.rotate(degrees);
         img = img.transformed(m, Qt::SmoothTransformation);
     }
