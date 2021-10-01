@@ -202,7 +202,7 @@ void GoToFlow::wheelEvent(QWheelEvent *event)
     event->accept();
 }
 
-void GoToFlow::setFlowType(FlowType flowType)
+void GoToFlow::setFlowType(YACReader::FlowType flowType)
 {
     flow->setFlowType(flowType);
 }
