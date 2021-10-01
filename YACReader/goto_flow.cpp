@@ -195,7 +195,7 @@ void GoToFlow::updateImageData()
 
 void GoToFlow::wheelEvent(QWheelEvent *event)
 {
-    if (event->pixelDelta().y() < 0)
+    if (event->angleDelta().y() < 0)
         flow->showNext();
     else
         flow->showPrevious();
