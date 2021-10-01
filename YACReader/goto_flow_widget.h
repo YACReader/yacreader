@@ -25,7 +25,7 @@ public slots:
     virtual void reset() = 0;
     virtual void centerSlide(int slide) = 0;
     virtual void setPageNumber(int page);
-    virtual void setFlowType(FlowType flowType) = 0;
+    virtual void setFlowType(YACReader::FlowType flowType) = 0;
     virtual void setNumSlides(unsigned int slides) = 0;
     virtual void setImageReady(int index, const QByteArray &image) = 0;
     virtual void updateSize();
