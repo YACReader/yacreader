@@ -35,10 +35,6 @@ defineTest(minQtVersion) {
   error(YACReader requires Qt 5.9 or newer but $$[QT_VERSION] was detected)
 }
 
-minQtVersion(6, 0, 0) {
-  error(YACReader does not support building with Qt6 (yet))
-}
-
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x050900
 DEFINES += QT_DEPRECATED_WARNINGS
 

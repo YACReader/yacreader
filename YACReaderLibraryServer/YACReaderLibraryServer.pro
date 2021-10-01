@@ -37,6 +37,8 @@ unix:haiku {
 CONFIG -= flat
 QT += core sql network
 
+greaterThan(QT_MAJOR_VERSION, 5): QT += core5compat
+
 # Source files
 HEADERS += ../YACReaderLibrary/library_creator.h \
            ../YACReaderLibrary/package_manager.h \

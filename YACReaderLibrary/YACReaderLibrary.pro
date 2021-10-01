@@ -71,6 +71,8 @@ macx {
 CONFIG -= flat
 QT += sql network widgets svg
 
+greaterThan(QT_MAJOR_VERSION, 5): QT += openglwidgets core5compat
+
 # Input
 HEADERS += comic_flow.h \
   ../common/concurrent_queue.h \
