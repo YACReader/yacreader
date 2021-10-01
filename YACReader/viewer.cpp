@@ -689,12 +689,12 @@ static void animateScroll(QPropertyAnimation &scroller, const QScrollBar &scroll
 void Viewer::wheelEvent(QWheelEvent *event)
 {
     if (render->hasLoadedComic()) {
-        if (event->orientation() == Qt::Horizontal) {
-            animateScroll(*horizontalScroller, *horizontalScrollBar(), event->delta());
+        if (event->pixelDelta().x() != 0) {
+            animateScroll(*horizontalScroller, *horizontalScrollBar(), event->pixelDelta().x());
             return;
         }
 
-        if ((event->delta() < 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->maximum())) {
+        if ((event->pixelDelta().y() < 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->maximum())) {
             if (wheelStop || verticalScrollBar()->maximum() == verticalScrollBar()->minimum()) {
                 if (getMovement(event) == Forward) {
                     next();
@@ -706,7 +706,7 @@ void Viewer::wheelEvent(QWheelEvent *event)
             } else
                 wheelStop = true;
         } else {
-            if ((event->delta() > 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->minimum())) {
+            if ((event->pixelDelta().y() > 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->minimum())) {
                 if (wheelStop || verticalScrollBar()->maximum() == verticalScrollBar()->minimum()) {
                     if (getMovement(event) == Backward) {
                         prev();
@@ -720,7 +720,7 @@ void Viewer::wheelEvent(QWheelEvent *event)
             }
         }
 
-        animateScroll(*verticalScroller, *verticalScrollBar(), event->delta());
+        animateScroll(*verticalScroller, *verticalScrollBar(), event->pixelDelta().y());
     }
 }
 

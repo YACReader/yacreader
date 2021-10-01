@@ -144,28 +144,28 @@ void MagnifyingGlass::wheelEvent(QWheelEvent *event)
     switch (event->modifiers()) {
     // size
     case Qt::NoModifier:
-        if (event->delta() < 0)
+        if (event->pixelDelta().y() < 0)
             sizeUp();
         else
             sizeDown();
         break;
     // size height
     case Qt::ControlModifier:
-        if (event->delta() < 0)
+        if (event->pixelDelta().y() < 0)
             heightUp();
         else
             heightDown();
         break;
     // size width
     case Qt::AltModifier:
-        if (event->delta() < 0)
+        if (event->pixelDelta().y() < 0)
             widthUp();
         else
             widthDown();
         break;
     // zoom level
     case Qt::ShiftModifier:
-        if (event->delta() < 0)
+        if (event->pixelDelta().y() < 0)
             zoomIn();
         else
             zoomOut();
