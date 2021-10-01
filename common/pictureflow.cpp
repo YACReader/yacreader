@@ -1338,7 +1338,7 @@ void PictureFlow::setMarkImage(const QImage &m)
     d->state->mark = m;
 }
 
-void PictureFlow::markSlide(int index, YACReaderComicReadStatus readStatus)
+void PictureFlow::markSlide(int index, YACReader::YACReaderComicReadStatus readStatus)
 {
     if (index < d->state->marks.size())
         d->state->marks[index] = readStatus;
@@ -1356,7 +1356,7 @@ void PictureFlow::unmarkSlide(int index)
         d->state->marks[index] = YACReader::Unread;
 }
 
-void PictureFlow::setMarks(const QVector<YACReaderComicReadStatus> &m)
+void PictureFlow::setMarks(const QVector<YACReader::YACReaderComicReadStatus> &m)
 {
     d->state->marks = m;
     updateMarks();
