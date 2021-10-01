@@ -352,7 +352,7 @@ FileComic::FileComic()
 FileComic::FileComic(const QString &path, int atPage)
     : Comic(path, atPage)
 {
-    load(path, atPage);
+    FileComic::load(path, atPage);
 }
 
 FileComic::~FileComic()
@@ -649,7 +649,7 @@ FolderComic::FolderComic()
 FolderComic::FolderComic(const QString &path, int atPage)
     : Comic(path, atPage)
 {
-    load(path, atPage);
+    FolderComic::load(path, atPage);
 }
 
 FolderComic::~FolderComic()
@@ -745,7 +745,7 @@ PDFComic::PDFComic()
 PDFComic::PDFComic(const QString &path, int atPage)
     : Comic(path, atPage)
 {
-    load(path, atPage);
+    PDFComic::load(path, atPage);
 }
 
 PDFComic::~PDFComic()
