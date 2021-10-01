@@ -143,7 +143,6 @@ YACReaderTranslator::YACReaderTranslator(Viewer *parent)
 
     resize(400, 479);
 
-    layout->setMargin(0);
     layout->setContentsMargins(18, 12, 18, 12);
     setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
