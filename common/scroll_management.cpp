@@ -2,7 +2,7 @@
 
 ScrollManagement::ScrollManagement()
 {
-    wheelTimer = new QTime();
+    wheelTimer = new QElapsedTimer();
     wheelTimer->start();
     wheelAccumulator = 0;
 }
