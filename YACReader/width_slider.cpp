@@ -55,7 +55,7 @@ YACReaderSlider::YACReaderSlider(QWidget *parent)
     pLayout->addWidget(resetButton, 1, Qt::AlignHCenter | Qt::AlignBottom);
     pLayout->setSpacing(elementsSpacing);
 
-    pLayout->setMargin(0);
+    pLayout->setContentsMargins(0, 0, 0, 0);
 
     setLayout(pLayout);
     setAutoFillBackground(false);
