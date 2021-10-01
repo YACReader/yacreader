@@ -1,7 +1,7 @@
 #include "comic.h"
 
 #include <QPixmap>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QString>
 #include <algorithm>
 #include <QDir>
@@ -1002,8 +1002,8 @@ QString get_most_common_prefix(const QList<QString> &pageNames)
         }
     }
 
-    QRegExp allNumberRegExp("\\d+");
-    if (allNumberRegExp.exactMatch(common_prefix)) {
+    QRegularExpression allNumberRegExp(QRegularExpression::anchoredPattern("\\d+"));
+    if (allNumberRegExp.match(common_prefix).hasMatch()) {
         return "";
     }
 
