@@ -3,9 +3,9 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QFrame>
 #include <QImage>
+#include <QScreen>
 
 #include "bookmarks.h"
 
@@ -32,7 +32,12 @@ BookmarksDialog::BookmarksDialog(QWidget *parent)
         label->setStyleSheet(labelsStyle);
     }
 
-    int heightDesktopResolution = QApplication::desktop()->screenGeometry().height();
+    QScreen *screen = parent != nullptr ? parent->window()->screen() : nullptr;
+    if (screen == nullptr) {
+        screen = QApplication::screens().constFirst();
+    }
+
+    int heightDesktopResolution = screen != nullptr ? screen->size().height() : 600;
     int height, width;
     height = heightDesktopResolution * 0.50;
     width = height * 0.65;

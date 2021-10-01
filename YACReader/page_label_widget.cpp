@@ -9,10 +9,15 @@ PageLabelWidget::PageLabelWidget(QWidget *parent)
     animation->setDuration(150);
     animation->setEndValue(QPoint((parent->geometry().size().width() - this->width()), -this->height()));
 
-    int verticalRes = QApplication::desktop()->screenGeometry().height();
+    QScreen *screen = parent != nullptr ? parent->window()->screen() : nullptr;
+    if (screen == nullptr) {
+        screen = QApplication::screens().constFirst();
+    }
+
+    int verticalRes = screen != nullptr ? screen->size().height() : 600;
 
     auto layout = new QHBoxLayout;
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     setContentsMargins(0, 0, 0, 0);
 
     QSize labelSize;

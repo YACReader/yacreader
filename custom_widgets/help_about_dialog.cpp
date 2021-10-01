@@ -7,7 +7,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QTextCodec>
-#include <QDesktopWidget>
+#include <QScreen>
 
 #include "yacreader_global.h"
 
@@ -31,7 +31,15 @@ HelpAboutDialog::HelpAboutDialog(QWidget *parent)
     layout->setContentsMargins(1, 3, 1, 1);
 
     setLayout(layout);
-    resize(500, QApplication::desktop()->availableGeometry().height() * 0.83);
+
+    QScreen *screen = parent != nullptr ? parent->window()->screen() : nullptr;
+    if (screen == nullptr) {
+        screen = QApplication::screens().constFirst();
+    }
+
+    int heightDesktopResolution = screen != nullptr ? screen->size().height() : 600;
+
+    resize(500, heightDesktopResolution * 0.83);
 }
 
 HelpAboutDialog::~HelpAboutDialog()

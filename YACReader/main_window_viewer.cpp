@@ -26,7 +26,6 @@
 #include <algorithm>
 #include <QApplication>
 #include <QCoreApplication>
-#include <QDesktopWidget>
 #include <QToolButton>
 #include <QMenu>
 #include <QFileDialog>
@@ -146,8 +145,13 @@ void MainWindowViewer::setupUI()
     connect(viewer, &Viewer::openPreviousComic, this, &MainWindowViewer::openPreviousComic);
 
     setCentralWidget(viewer);
-    int heightDesktopResolution = QApplication::desktop()->screenGeometry().height();
-    int widthDesktopResolution = QApplication::desktop()->screenGeometry().width();
+    QScreen *screen = window()->screen();
+    if (screen == nullptr) {
+        screen = QApplication::screens().constFirst();
+    }
+
+    int heightDesktopResolution = screen != nullptr ? screen->size().height() : 600;
+    int widthDesktopResolution = screen != nullptr ? screen->size().height() : 1024;
     int height, width;
     height = static_cast<int>(heightDesktopResolution * 0.84);
     width = static_cast<int>(height * 0.70);
