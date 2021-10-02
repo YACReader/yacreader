@@ -1002,7 +1002,7 @@ QString get_most_common_prefix(const QList<QString> &pageNames)
         }
     }
 
-    QRegularExpression allNumberRegExp(QRegularExpression::anchoredPattern("\\d+"));
+    QRegularExpression allNumberRegExp("\\A\\d+\\z");
     if (allNumberRegExp.match(common_prefix).hasMatch()) {
         return "";
     }
