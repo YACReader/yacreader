@@ -773,9 +773,13 @@ void Viewer::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-const QPixmap *Viewer::pixmap()
+const QPixmap Viewer::pixmap()
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     return content->pixmap();
+#else
+    return *(content->pixmap());
+#endif
 }
 
 void Viewer::magnifyingGlassSwitch()

@@ -978,9 +978,10 @@ void MainWindowViewer::saveImage()
     if (!pathFile.isEmpty()) {
         QFileInfo fi(pathFile);
         currentDirectoryImgDest = fi.absolutePath();
-        const QPixmap *p = viewer->pixmap();
-        if (p != nullptr)
-            p->save(pathFile);
+        const QPixmap p = viewer->pixmap();
+        if (!p.isNull()) {
+            p.save(pathFile);
+        }
     }
 }
 

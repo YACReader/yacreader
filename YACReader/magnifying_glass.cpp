@@ -38,9 +38,9 @@ void MagnifyingGlass::updateImage(int x, int y)
     int zoomHeight = static_cast<int>(height() * zoomLevel);
     auto p = (Viewer *)parent();
     int currentPos = p->verticalScrollBar()->sliderPosition();
-    const QPixmap *image = p->pixmap();
-    int iWidth = image->width();
-    int iHeight = image->height();
+    const QPixmap image = p->pixmap();
+    int iWidth = image.width();
+    int iHeight = image.height();
     float wFactor = static_cast<float>(iWidth) / p->widget()->width();
     float hFactor = static_cast<float>(iHeight) / p->widget()->height();
     zoomWidth *= wFactor;
@@ -67,12 +67,12 @@ void MagnifyingGlass::updateImage(int x, int y)
             outImage = true;
         }
 
-        if (xp + zoomWidth >= image->width()) {
-            zw -= xp + zw - image->width();
+        if (xp + zoomWidth >= image.width()) {
+            zw -= xp + zw - image.width();
             outImage = true;
         }
-        if (yp + zoomHeight >= image->height()) {
-            zh -= yp + zh - image->height();
+        if (yp + zoomHeight >= image.height()) {
+            zh -= yp + zh - image.height();
             outImage = true;
         }
         if (outImage) {
@@ -81,11 +81,11 @@ void MagnifyingGlass::updateImage(int x, int y)
             img.fill(Configuration::getConfiguration().getBackgroundColor());
             if (zw > 0 && zh > 0) {
                 QPainter painter(&img);
-                painter.drawPixmap(xOffset, yOffset, image->copy(xp, yp, zw, zh));
+                painter.drawPixmap(xOffset, yOffset, image.copy(xp, yp, zw, zh));
             }
             setPixmap(QPixmap().fromImage(img));
         } else
-            setPixmap(image->copy(xp, yp, zoomWidth, zoomHeight));
+            setPixmap(image.copy(xp, yp, zoomWidth, zoomHeight));
     } else {
         int xp = static_cast<int>(((x - p->widget()->pos().x()) * wFactor) - zoomWidth / 2);
         int yp = static_cast<int>((y + currentPos) * hFactor - zoomHeight / 2);
@@ -108,12 +108,12 @@ void MagnifyingGlass::updateImage(int x, int y)
             outImage = true;
         }
 
-        if (xp + zoomWidth >= image->width()) {
-            zw -= xp + zw - image->width();
+        if (xp + zoomWidth >= image.width()) {
+            zw -= xp + zw - image.width();
             outImage = true;
         }
-        if (yp + zoomHeight >= image->height()) {
-            zh -= yp + zh - image->height();
+        if (yp + zoomHeight >= image.height()) {
+            zh -= yp + zh - image.height();
             outImage = true;
         }
         if (outImage) {
@@ -122,11 +122,11 @@ void MagnifyingGlass::updateImage(int x, int y)
             img.fill(Configuration::getConfiguration().getBackgroundColor());
             if (zw > 0 && zh > 0) {
                 QPainter painter(&img);
-                painter.drawPixmap(xOffset, yOffset, image->copy(xp, yp, zw, zh));
+                painter.drawPixmap(xOffset, yOffset, image.copy(xp, yp, zw, zh));
             }
             setPixmap(QPixmap().fromImage(img));
         } else
-            setPixmap(image->copy(xp, yp, zoomWidth, zoomHeight));
+            setPixmap(image.copy(xp, yp, zoomWidth, zoomHeight));
     }
     move(static_cast<int>(x - float(width()) / 2), static_cast<int>(y - float(height()) / 2));
 }
