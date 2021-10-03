@@ -6,7 +6,10 @@
 #include <QPixmap>
 #include <QFile>
 #include <QTextStream>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QTextCodec>
+#endif
 
 ShortcutsDialog::ShortcutsDialog(QWidget *parent)
     : QDialog(parent) //,Qt::FramelessWindowHint)
@@ -44,7 +47,13 @@ ShortcutsDialog::ShortcutsDialog(QWidget *parent)
     QFile f(":/files/shortcuts.html");
     f.open(QIODevice::ReadOnly);
     QTextStream txtS(&f);
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    txtS.setEncoding(QStringConverter::Utf8);
+#else
     txtS.setCodec(QTextCodec::codecForName("UTF-8"));
+#endif
+
     QString content = txtS.readAll();
 
     f.close();

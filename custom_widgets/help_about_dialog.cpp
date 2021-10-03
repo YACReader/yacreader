@@ -6,8 +6,11 @@
 #include <QApplication>
 #include <QFile>
 #include <QTextStream>
-#include <QTextCodec>
 #include <QScreen>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QTextCodec>
+#endif
 
 #include "yacreader_global.h"
 
@@ -80,7 +83,11 @@ QString HelpAboutDialog::fileToString(const QString &path)
     f.open(QIODevice::ReadOnly);
     QTextStream txtS(&f);
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    txtS.setEncoding(QStringConverter::Utf8);
+#else
     txtS.setCodec(QTextCodec::codecForName("UTF-8"));
+#endif
 
     QString content = txtS.readAll();
     f.close();
