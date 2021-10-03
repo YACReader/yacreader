@@ -287,26 +287,14 @@ void YACReaderTranslator::populateCombos()
 
 void YACReaderTranslator::play()
 {
-    // QMessageBox::question(this,"xxx",ttsSource.toString());
-#if QT_VERSION >= 0x050000
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    player->setSource(ttsSource);
+#else
     player->setMedia(ttsSource);
+#endif
+
     player->play();
-
-#else
-    MediaSource src(ttsSource);
-    src.setAutoDelete(true);
-    music->setCurrentSource(src);
-    music->play();
-#endif
-}
-
-YACReaderTranslator::~YACReaderTranslator()
-{
-#if QT_VERSION >= 0x050000
-#else
-    delete music;
-#endif
 }
 
 void YACReaderTranslator::mousePressEvent(QMouseEvent *event)
