@@ -2,7 +2,7 @@
 # default values if they're not set on build time
 # for a more detailed description, see INSTALL.TXT
 
-CONFIG += c++11
+CONFIG += c++17
 
 unix:QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
 win32:QMAKE_CXXFLAGS_RELEASE += /DNDEBUG
@@ -31,11 +31,11 @@ defineTest(minQtVersion) {
   return(false)
 }
 
-!minQtVersion(5, 9, 0) {
-  error(YACReader requires Qt 5.9 or newer but $$[QT_VERSION] was detected)
+!minQtVersion(5, 15, 0) {
+  error(YACReader requires Qt 5.15 or newer but $$[QT_VERSION] was detected)
 }
 
-DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x050900
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x050F00
 DEFINES += QT_DEPRECATED_WARNINGS
 
 # reduce log pollution
