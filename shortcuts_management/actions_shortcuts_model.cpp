@@ -2,6 +2,7 @@
 #include "shortcuts_manager.h"
 
 #include <QAction>
+#include <QBrush>
 
 ActionsShortcutsModel::ActionsShortcutsModel(QObject *parent)
     : QAbstractItemModel(parent)
