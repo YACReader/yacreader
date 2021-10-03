@@ -114,7 +114,7 @@ bool tryValues(QXmlStreamReader &reader, ComicInfo &info)
         }
     }
 
-    if (reader.name() == "BlackAndWhite") {
+    if (reader.name() == QString("BlackAndWhite")) {
         auto string = reader.readElementText();
         if (isValidText(string)) {
             if (string == "Yes") {
@@ -127,7 +127,7 @@ bool tryValues(QXmlStreamReader &reader, ComicInfo &info)
         return true;
     }
 
-    if (reader.name() == "Manga") {
+    if (reader.name() == QString("Manga")) {
         auto string = reader.readElementText();
         if (isValidText(string)) {
             if (string == "Yes" || string == "YesAndRightToLeft") {
@@ -140,7 +140,7 @@ bool tryValues(QXmlStreamReader &reader, ComicInfo &info)
         return true;
     }
 
-    if (reader.name() == "Web") {
+    if (reader.name() == QString("Web")) {
         auto string = reader.readElementText();
         if (isValidText(string)) {
             auto comicVineId = string.split("-").last().replace("/", "");
@@ -168,7 +168,7 @@ bool YACReader::parseXMLIntoInfo(const QByteArray &xmlRawData, ComicInfo &info)
         if (tryValues(reader, info)) {
             someDataWasParsed = true;
         } else {
-            if (reader.name() != "ComicInfo") {
+            if (reader.name() != QString("ComicInfo")) {
                 reader.skipCurrentElement();
             }
         }
