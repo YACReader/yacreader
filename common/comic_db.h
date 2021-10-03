@@ -253,7 +253,7 @@ public:
     Q_PROPERTY(ComicInfo info MEMBER info)
 
     ComicDB &operator=(const ComicDB &other);
-    bool operator==(const ComicDB &other) { return id == other.id; }
+    bool operator==(const ComicDB &other) const { return id == other.id; }
 
     friend QDataStream &operator<<(QDataStream &, const ComicDB &);
     friend QDataStream &operator>>(QDataStream &, ComicDB &);
