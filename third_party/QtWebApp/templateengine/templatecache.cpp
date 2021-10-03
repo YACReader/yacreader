@@ -10,7 +10,8 @@ TemplateCache::TemplateCache(const QSettings* settings, QObject* parent)
 {
     cache.setMaxCost(settings->value("cacheSize","1000000").toInt());
     cacheTimeout=settings->value("cacheTime","60000").toInt();
-    qDebug("TemplateCache: timeout=%i, size=%i",cacheTimeout,cache.maxCost());
+    long int cacheMaxCost=(long int)cache.maxCost();
+    qDebug("TemplateCache: timeout=%i, size=%li",cacheTimeout,cacheMaxCost);
 }
 
 QString TemplateCache::tryFile(const QString localizedName)

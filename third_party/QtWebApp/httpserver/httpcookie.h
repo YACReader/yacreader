@@ -13,9 +13,8 @@
 namespace stefanfrings {
 
 /**
-  HTTP cookie as defined in RFC 2109. This class can also parse
-  RFC 2965 cookies, but skips fields that are not defined in RFC
-  2109.
+  HTTP cookie as defined in RFC 2109.
+  Supports some additional attributes of RFC6265bis.
 */
 
 class DECLSPEC HttpCookie
@@ -35,11 +34,13 @@ public:
       @param domain Optional domain for that the cookie will be sent. Defaults to the current domain
       @param secure If true, the cookie will be sent by the browser to the server only on secure connections
       @param httpOnly If true, the browser does not allow client-side scripts to access the cookie
+      @param sameSite Declare if the cookie can only be read by the same site, which is a stronger
+             restriction than the domain. Allowed values: "Lax" and "Strict".
     */
     HttpCookie(const QByteArray name, const QByteArray value, const int maxAge,
                const QByteArray path="/", const QByteArray comment=QByteArray(),
                const QByteArray domain=QByteArray(), const bool secure=false,
-               const bool httpOnly=false);
+               const bool httpOnly=false, const QByteArray sameSite=QByteArray());
 
     /**
       Create a cookie from a string.
@@ -77,8 +78,14 @@ public:
     /** Set secure mode, so that the cookie will be sent by the browser to the server only on secure connections */
     void setSecure(const bool secure);
 
-    /** Set HTTP-only mode, so that he browser does not allow client-side scripts to access the cookie */
+    /** Set HTTP-only mode, so that the browser does not allow client-side scripts to access the cookie */
     void setHttpOnly(const bool httpOnly);
+
+    /**
+     * Set same-site mode, so that the browser does not allow other web sites to access the cookie.
+     * Allowed values: "Lax" and "Strict".
+     */
+    void setSameSite(const QByteArray sameSite);
 
     /** Get the name of this cookie */
     QByteArray getName() const;
@@ -104,6 +111,9 @@ public:
     /** Get the HTTP-only flag of this cookie */
     bool getHttpOnly() const;
 
+    /** Get the same-site flag of this cookie */
+    QByteArray getSameSite() const;
+
     /** Returns always 1 */
     int getVersion() const;
 
@@ -117,6 +127,7 @@ private:
     QByteArray path;
     bool secure;
     bool httpOnly;
+    QByteArray sameSite;
     int version;
 
 };
