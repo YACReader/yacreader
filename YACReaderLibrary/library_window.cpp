@@ -6,14 +6,12 @@
 #include <QSplitter>
 #include <QLabel>
 #include <QDir>
-#include <QDirModel>
 #include <QHeaderView>
 #include <QProcess>
 #include <QtCore>
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QFileIconProvider>
-#include <QMatrix>
 #include <QSettings>
 #include <QHeaderView>
 
