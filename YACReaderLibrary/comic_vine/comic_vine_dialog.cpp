@@ -533,14 +533,14 @@ ComicDB ComicVineDialog::parseComicInfo(ComicDB &comic, const QString &json, int
         comic.info.volume = result.value("volume").toMap().value("name");
 
         if (result.contains("person_credits") && !result.value("person_credits").isNull()) {
-            QMap<QString, QString> authors = getAuthors(result.value("person_credits"));
+            auto authors = getAuthors(result.value("person_credits"));
 
-            QString writer = QStringList(authors.values("writer")).join("\n");
-            QString penciller = QStringList(authors.values("penciller")).join("\n");
-            QString inker = QStringList(authors.values("inker")).join("\n");
-            QString colorist = QStringList(authors.values("colorist")).join("\n");
-            QString letterer = QStringList(authors.values("letterer")).join("\n");
-            QString coverArtist = QStringList(authors.values("cover")).join("\n");
+            QString writer = authors.values("writer").join("\n");
+            QString penciller = authors.values("penciller").join("\n");
+            QString inker = authors.values("inker").join("\n");
+            QString colorist = authors.values("colorist").join("\n");
+            QString letterer = authors.values("letterer").join("\n");
+            QString coverArtist = authors.values("cover").join("\n");
 
             comic.info.writer = writer;
             comic.info.penciller = penciller;
@@ -612,9 +612,9 @@ QString ComicVineDialog::getCharacters(const QVariant &json_characters)
     return (characters.isEmpty()) ? "" : (characters.join("\n") + "\n");
 }
 
-QMap<QString, QString> ComicVineDialog::getAuthors(const QVariant &json_authors)
+QMultiMap<QString, QString> ComicVineDialog::getAuthors(const QVariant &json_authors)
 {
-    QMap<QString, QString> authors;
+    QMultiMap<QString, QString> authors;
 
     QListIterator<QVariant> it(json_authors.toList());
     QVariantMap resultsValue;
@@ -626,17 +626,17 @@ QMap<QString, QString> ComicVineDialog::getAuthors(const QVariant &json_authors)
         QStringList roles = resultsValue.value("role").toString().split(",");
         foreach (QString role, roles) {
             if (role.trimmed() == "writer")
-                authors.insertMulti("writer", authorName);
+                authors.insert("writer", authorName);
             else if (role.trimmed() == "inker")
-                authors.insertMulti("inker", authorName);
+                authors.insert("inker", authorName);
             else if (role.trimmed() == "penciler" || role.trimmed() == "penciller")
-                authors.insertMulti("penciller", authorName);
+                authors.insert("penciller", authorName);
             else if (role.trimmed() == "colorist")
-                authors.insertMulti("colorist", authorName);
+                authors.insert("colorist", authorName);
             else if (role.trimmed() == "letterer")
-                authors.insertMulti("letterer", authorName);
+                authors.insert("letterer", authorName);
             else if (role.trimmed() == "cover")
-                authors.insertMulti("cover", authorName);
+                authors.insert("cover", authorName);
         }
     }
 

@@ -64,7 +64,7 @@ protected slots:
 
 private:
     QString getCharacters(const QVariant &json_characters);
-    QMap<QString, QString> getAuthors(const QVariant &json_authors);
+    QMultiMap<QString, QString> getAuthors(const QVariant &json_authors);
     QPair<QString, QString> getFirstStoryArcIdAndName(const QVariant &json_story_arcs);
     QPair<QString, QString> getArcNumberAndArcCount(const QString &storyArcId, const QString &comicId);
 
