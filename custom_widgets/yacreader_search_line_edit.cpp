@@ -4,8 +4,6 @@
 #include <QStyle>
 #include <QLabel>
 
-#include <QRegExpValidator>
-
 #include "QsLog.h"
 
 YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
@@ -47,26 +45,6 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
     setAttribute(Qt::WA_MacShowFocusRect, false);
     setPlaceholderText(tr("type to search"));
 
-    // search modifiers
-    modifiers << "[read]"
-              << "[unread]"; //<< "[author]";
-    modifiersCompleter = new QCompleter(modifiers);
-
-    QString regExpString;
-    foreach (QString modifier, modifiers) {
-        regExpString = regExpString + modifier.replace("[", "\\[").replace("]", "\\]") + ".*|";
-    }
-
-    regExpString = regExpString + "[^\\[].*";
-
-    QLOG_TRACE() << regExpString;
-
-    QRegExp regExp(regExpString);
-    QValidator *validator = new QRegExpValidator(regExp, this);
-
-    setValidator(validator);
-    setCompleter(modifiersCompleter);
-
     connect(this, &QLineEdit::textChanged, this, &YACReaderSearchLineEdit::processText);
 }
 
@@ -77,13 +55,9 @@ void YACReaderSearchLineEdit::clearText()
     connect(this, &QLineEdit::textChanged, this, &YACReaderSearchLineEdit::processText);
 }
 
-// modifiers are not returned
 const QString YACReaderSearchLineEdit::text()
 {
-    QString text = QLineEdit::text();
-
-    QRegExp regExp("\\[.*\\]");
-    return text.remove(regExp).trimmed();
+    return QLineEdit::text();
 }
 
 void YACReaderSearchLineEdit::resizeEvent(QResizeEvent *)
@@ -115,26 +89,5 @@ void YACReaderSearchLineEdit::updateCloseButton(const QString &text)
 
 void YACReaderSearchLineEdit::processText(const QString &text)
 {
-
-    QRegExp regExp("(\\[.*\\])(.*)");
-    if (text.startsWith("[")) {
-        if (regExp.exactMatch(text)) // avoid search while the modifiers are being written
-        {
-            QString modifier = regExp.cap(1);
-            QString searchText = regExp.cap(2).trimmed();
-
-            int indexOfModifier = modifiers.indexOf(modifier);
-            if (indexOfModifier != -1) {
-                QLOG_TRACE() << "modifier : " << modifier << "text : " << searchText;
-                emit filterChanged(static_cast<YACReader::SearchModifiers>(indexOfModifier + 1), searchText); // TODO, do not use on indexOF
-            } else {
-                QLOG_ERROR() << "invalid modifier : " << modifier;
-            }
-        }
-
-        QLOG_TRACE() << "full text :" << text << " : " << regExp.indexIn(text);
-    } else {
-        QLOG_TRACE() << "NoModifiers : " << text;
-        emit filterChanged(YACReader::NoModifiers, text);
-    }
+    emit filterChanged(YACReader::NoModifiers, text);
 }
