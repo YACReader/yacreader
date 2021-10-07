@@ -151,13 +151,23 @@ void ComicVineDialog::goNext()
         QList<QPair<ComicDB, QString>> matchingInfo = sortVolumeComicsWidget->getMatchingInfo();
         int count = selectVolumeWidget->getSelectedVolumeNumIssues();
         QString publisher = selectVolumeWidget->getSelectedVolumePublisher();
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        QtConcurrent::run(&ComicVineDialog::getComicsInfo, this, matchingInfo, count, publisher);
+#else
         QtConcurrent::run(this, &ComicVineDialog::getComicsInfo, matchingInfo, count, publisher);
+#endif
+
     } else if (content->currentWidget() == selectComicWidget) {
         showLoading();
         QString comicId = selectComicWidget->getSelectedComicId();
         int count = selectVolumeWidget->getSelectedVolumeNumIssues();
         QString publisher = selectVolumeWidget->getSelectedVolumePublisher();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        QtConcurrent::run(&ComicVineDialog::getComicInfo, this, comicId, count, publisher);
+#else
         QtConcurrent::run(this, &ComicVineDialog::getComicInfo, comicId, count, publisher);
+#endif
     }
 }
 
