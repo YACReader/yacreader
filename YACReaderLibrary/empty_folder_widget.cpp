@@ -47,7 +47,7 @@ public:
 
         QRect textRect = option.rect;
 
-        textRect.setLeft(std::max(0, (option.rect.size().width() - fm.width(text)) / 2));
+        textRect.setLeft(std::max(0, (option.rect.size().width() - fm.horizontalAdvance(text)) / 2));
 
         painter->drawText(textRect, text);
 
@@ -62,7 +62,7 @@ public:
         QFontMetrics fm(option.font);
         QString text = qvariant_cast<QString>(index.data(Qt::DisplayRole));
 
-        return QSize(fm.width(text), fm.height());
+        return QSize(fm.horizontalAdvance(text), fm.height());
     }
 };
 
