@@ -25,7 +25,7 @@ ComicFlowWidgetSW::ComicFlowWidgetSW(QWidget *parent)
     setPalette(Pal);
 
     // config
-    QMatrix m;
+    QTransform m;
     m.rotate(-90);
     m.scale(-1, 1);
     QImage image(":/images/setRead.png");
