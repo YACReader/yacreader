@@ -144,7 +144,7 @@ ImportWidget::ImportWidget(QWidget *parent)
     coversViewLayout->addWidget(topDecorator, 0);
     coversViewLayout->addWidget(coversView, 1);
     coversViewLayout->addWidget(bottomDecorator, 0);
-    coversViewLayout->setMargin(0);
+    coversViewLayout->setContentsMargins(0, 0, 0, 0);
     coversViewLayout->setSpacing(0);
 
     QPushButton *stop = new QPushButton(tr("stop"));
@@ -169,7 +169,7 @@ ImportWidget::ImportWidget(QWidget *parent)
     topLayout->addSpacing(30);
     topLayout->addLayout(textLayout, 1);
     topLayout->addStretch();
-    topLayout->setMargin(0);
+    topLayout->setContentsMargins(0, 0, 0, 0);
 
     topWidget->setLayout(topLayout);
 
