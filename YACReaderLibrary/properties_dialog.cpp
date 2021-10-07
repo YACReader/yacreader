@@ -9,7 +9,6 @@
 
 #include <QHBoxLayout>
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QSizePolicy>
 #include <QFormLayout>
 #include <QCheckBox>
@@ -51,8 +50,13 @@ PropertiesDialog::PropertiesDialog(QWidget *parent)
     mainWidget->setLayout(mainLayout);
     mainLayout->setSizeConstraint(QLayout::SetMinimumSize);
 
-    int heightDesktopResolution = QApplication::desktop()->screenGeometry().height();
-    int widthDesktopResolution = QApplication::desktop()->screenGeometry().width();
+    QScreen *screen = parent != nullptr ? parent->window()->screen() : nullptr;
+    if (screen == nullptr) {
+        screen = QApplication::screens().constFirst();
+    }
+
+    int heightDesktopResolution = screen->geometry().height();
+    int widthDesktopResolution = screen->geometry().width();
     int sHeight, sWidth;
     sHeight = static_cast<int>(heightDesktopResolution * 0.65);
     sWidth = static_cast<int>(sHeight * 1.4);
