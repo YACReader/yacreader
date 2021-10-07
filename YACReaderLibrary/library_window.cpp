@@ -455,8 +455,6 @@ void LibraryWindow::doModels()
     // lists
     listsModel = new ReadingListModel(this);
     listsModelProxy = new ReadingListModelProxy(this);
-
-    // setSearchFilter(YACReader::NoModifiers, ""); //clear search filter
 }
 
 void LibraryWindow::createActions()
