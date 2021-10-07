@@ -8,11 +8,7 @@
 #include <QTableView>
 #include <QVBoxLayout>
 #include <QtWidgets>
-#if QT_VERSION >= 0x050000
 #include <QtConcurrent/QtConcurrentRun>
-#else
-#include <QtConcurrentRun>
-#endif
 #include "data_base_management.h"
 #include <QJsonDocument>
 #include <QJsonParseError>
