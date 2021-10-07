@@ -209,8 +209,14 @@ void ComicVineDialog::setComics(const QList<ComicDB> &comics)
 
 QSize ComicVineDialog::sizeHint() const
 {
-    int heightDesktopResolution = QApplication::desktop()->screenGeometry().height();
-    int widthDesktopResolution = QApplication::desktop()->screenGeometry().width();
+    QScreen *screen = window()->screen();
+    if (screen == nullptr) {
+        screen = QApplication::screens().constFirst();
+    }
+
+    int heightDesktopResolution = screen->geometry().height();
+    int widthDesktopResolution = screen->geometry().width();
+
     int height, width;
     height = qMax(529, static_cast<int>(heightDesktopResolution * 0.5));
     width = height * 1.65;
