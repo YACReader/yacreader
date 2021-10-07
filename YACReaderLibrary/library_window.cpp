@@ -2377,7 +2377,7 @@ void LibraryWindow::asignNumbers()
 void LibraryWindow::openContainingFolderComic()
 {
     QModelIndex modelIndex = comicsViewsManager->comicsView->currentIndex();
-    QFileInfo file = QDir::cleanPath(currentPath() + comicsModel->getComicPath(modelIndex));
+    QFileInfo file(QDir::cleanPath(currentPath() + comicsModel->getComicPath(modelIndex)));
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
     QString path = file.absolutePath();
     QDesktopServices::openUrl(QUrl("file:///" + path, QUrl::TolerantMode));
