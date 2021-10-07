@@ -31,6 +31,8 @@ public:
     void setComics(const QList<ComicDB> &comics);
     QSize sizeHint() const override;
     QSize minimumSizeHint() const override;
+    void getComicsInfo(QList<QPair<ComicDB, QString>> &matchingInfo, int count, const QString &publisher);
+    void getComicInfo(const QString &comicId, int count, const QString &publisher);
 
 signals:
 
@@ -56,8 +58,6 @@ protected slots:
     void showSelectComic(const QString &json);
     void showSortVolumeComics(const QString &json);
     void queryTimeOut();
-    void getComicsInfo(QList<QPair<ComicDB, QString>> &matchingInfo, int count, const QString &publisher);
-    void getComicInfo(const QString &comicId, int count, const QString &publisher);
     ComicDB parseComicInfo(ComicDB &comic, const QString &json, int count, const QString &publisher);
     void setLoadingMessage(const QString &message);
     void goToNextComic();
