@@ -114,7 +114,7 @@ EmptyFolderWidget::EmptyFolderWidget(QWidget *parent)
     layout->addSpacing(12);
     layout->addWidget(foldersView, 1);
     layout->addStretch();
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
 
     setContentsMargins(0, 0, 0, 0);

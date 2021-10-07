@@ -135,7 +135,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     auto portWidgetLayout = new QHBoxLayout(this);
     portWidgetLayout->addWidget(port);
     portWidgetLayout->addWidget(accept);
-    portWidgetLayout->setMargin(0);
+    portWidgetLayout->setContentsMargins(0, 0, 0, 0);
     portWidget->setLayout(portWidgetLayout);
     portWidget->move(332, 244);
     // accept->move(514,149);

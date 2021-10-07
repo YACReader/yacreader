@@ -9,7 +9,7 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QStrin
     : QWidget(parent), name(n), path(p), isSelected(false)
 {
     QHBoxLayout *mainLayout = new QHBoxLayout;
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
 
     // installEventFilter(this);

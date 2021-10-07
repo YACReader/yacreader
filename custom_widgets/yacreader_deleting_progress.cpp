@@ -46,7 +46,7 @@ YACReaderDeletingProgress::YACReaderDeletingProgress(QWidget *parent)
     contentLayout->addWidget(button, 0, Qt::AlignHCenter);
     contentLayout->addSpacing(18);
 
-    contentLayout->setMargin(0);
+    contentLayout->setContentsMargins(0, 0, 0, 0);
 
     setLayout(contentLayout);
 

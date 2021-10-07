@@ -48,7 +48,7 @@ YACReaderActivityIndicatorWidget::YACReaderActivityIndicatorWidget(QWidget *pare
 
     setLayout(layout);
 
-    layout->setMargin(4);
+    layout->setContentsMargins(4, 4, 4, 4);
     layout->setSpacing(0);
 
     // setFixedHeight(3);

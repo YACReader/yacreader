@@ -52,7 +52,7 @@ NoLibrariesWidget::NoLibrariesWidget(QWidget *parent)
     topLayout->addSpacing(30);
     topLayout->addLayout(textLayout, 1);
     topLayout->addStretch();
-    topLayout->setMargin(0);
+    topLayout->setContentsMargins(0, 0, 0, 0);
 
     topWidget->setLayout(topLayout);
 

@@ -60,7 +60,7 @@ YACReaderTitledToolBar::YACReaderTitledToolBar(const QString &title, QWidget *pa
     : QWidget(parent)
 {
     QHBoxLayout *mainLayout = new QHBoxLayout;
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
 
     QString styleSheet = "QWidget {border:0px;}";

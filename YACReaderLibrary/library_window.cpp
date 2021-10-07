@@ -285,7 +285,7 @@ void LibraryWindow::doLayout()
     rightLayout->addWidget(libraryToolBar);
     rightLayout->addWidget(comicsViewsManager->containerWidget());
 
-    rightLayout->setMargin(0);
+    rightLayout->setContentsMargins(0, 0, 0, 0);
     rightLayout->setSpacing(0);
 
     QWidget *rightWidget = new QWidget();
