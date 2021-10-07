@@ -364,7 +364,7 @@ void ClassicComicsView::setupSearchingIcon()
     searchingIcon->setLayout(h);
 
     QPalette pal(searchingIcon->palette());
-    pal.setColor(QPalette::Background, Qt::black);
+    pal.setColor(QPalette::Window, Qt::black);
     searchingIcon->setAutoFillBackground(true);
     searchingIcon->setPalette(pal);
 

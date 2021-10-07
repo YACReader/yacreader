@@ -87,7 +87,7 @@ ImportWidget::ImportWidget(QWidget *parent)
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     QPalette p(palette());
-    p.setColor(QPalette::Background, QColor(250, 250, 250));
+    p.setColor(QPalette::Window, QColor(250, 250, 250));
     setAutoFillBackground(true);
     setPalette(p);
 
