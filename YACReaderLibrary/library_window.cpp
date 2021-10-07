@@ -1582,7 +1582,7 @@ void LibraryWindow::addFolderToCurrentIndex()
                                                   "", &ok);
 
     // chars not supported in a folder's name: / \ : * ? " < > |
-    QRegExp invalidChars("\\/\\:\\*\\?\\\"\\<\\>\\|\\\\"); // TODO this regexp is not properly written
+    QRegularExpression invalidChars("\\/\\:\\*\\?\\\"\\<\\>\\|\\\\"); // TODO this regexp is not properly written
     bool isValid = !newFolderName.contains(invalidChars);
 
     if (ok && !newFolderName.isEmpty() && isValid) {
