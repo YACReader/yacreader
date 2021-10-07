@@ -166,7 +166,7 @@ ComicFlowWidgetGL::ComicFlowWidgetGL(QWidget *parent)
     // TODO eleminar "padding"
     QPalette Pal(palette());
     // set black background
-    Pal.setColor(QPalette::Background, Qt::black);
+    Pal.setColor(QPalette::Window, Qt::black);
     setAutoFillBackground(true);
     setPalette(Pal);
 }
