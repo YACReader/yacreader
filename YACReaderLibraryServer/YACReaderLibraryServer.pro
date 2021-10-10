@@ -18,8 +18,10 @@ include(../dependencies/pdf_backend.pri)
 
 win32 {
   LIBS += -loleaut32 -lole32 -lshell32 -luser32
-  QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
-  QMAKE_LFLAGS_RELEASE += /LTCG
+  msvc {
+    QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
+    QMAKE_LFLAGS_RELEASE += /LTCG
+  }
   CONFIG -= embed_manifest_exe
 }
 

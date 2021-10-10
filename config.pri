@@ -5,7 +5,8 @@
 CONFIG += c++11
 
 unix:QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
-win32:QMAKE_CXXFLAGS_RELEASE += /DNDEBUG
+mingw:QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
+win32:msvc:QMAKE_CXXFLAGS_RELEASE += /DNDEBUG
 
 # check Qt version
 defineTest(minQtVersion) {
