@@ -311,8 +311,6 @@ isEmpty(DATADIR) {
   DATADIR = $$PREFIX/share
 }
 
-DEFINES += "LIBDIR=\\\"$$LIBDIR\\\""  "DATADIR=\\\"$$DATADIR\\\""
-
 DEFINES += "LIBDIR=\\\"$$LIBDIR\\\""  "DATADIR=\\\"$$DATADIR\\\"" "BINDIR=\\\"$$BINDIR\\\""
 
 #MAKE INSTALL
