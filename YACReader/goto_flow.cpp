@@ -19,6 +19,7 @@
 #include <QWaitCondition>
 #include <QObject>
 #include <QEvent>
+#include <QKeyEvent>
 #include <QLabel>
 
 #include "yacreader_flow.h"
