@@ -21,7 +21,7 @@
 #include "QsLogDest.h"
 
 using namespace QsLogging;
-//Returns false in case of a parse error (unknown option or missing value); returns true otherwise.
+// Returns false in case of a parse error (unknown option or missing value); returns true otherwise.
 
 void logSystemAndConfig()
 {
@@ -94,7 +94,7 @@ int main(int argc, char **argv)
 
     QTextStream qout(stdout);
 
-    //general help
+    // general help
     QTranslator translator;
     QString sufix = QLocale::system().name();
 
@@ -193,7 +193,7 @@ int main(int argc, char **argv)
         QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/" + QCoreApplication::applicationName() + ".ini", QSettings::IniFormat);
         settings->beginGroup("libraryConfig");
 
-        //server
+        // server
         Startup *s = new Startup();
         if (parser.isSet("port")) {
             bool valid;
@@ -212,7 +212,7 @@ int main(int argc, char **argv)
 
         QLOG_INFO() << "Running on port" << s->getPort();
 
-        //Update libraries to new versions
+        // Update libraries to new versions
         LibrariesUpdater updater;
         updater.updateIfNeeded();
 
@@ -222,7 +222,7 @@ int main(int argc, char **argv)
 
         QLOG_INFO() << "YACReaderLibrary closed with exit code :" << ret;
 
-        //shutdown
+        // shutdown
         s->stop();
         delete s;
         localServer->close();
@@ -332,7 +332,7 @@ int main(int argc, char **argv)
         delete settings;
         return 0;
 
-    } else //error
+    } else // error
     {
         parser.process(app);
         parser.showHelp();

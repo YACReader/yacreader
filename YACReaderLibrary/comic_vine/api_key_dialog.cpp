@@ -15,7 +15,7 @@ ApiKeyDialog::ApiKeyDialog(QWidget *parent)
     auto layout = new QVBoxLayout;
     auto buttonsLayout = new QHBoxLayout;
 
-    settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+    settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
     settings->beginGroup("ComicVine");
 
     QLabel *info = new QLabel(tr("Before you can connect to Comic Vine, you need your own API key. Please, get one free <a href=\"http://www.comicvine.com/api/\">here</a>"));
@@ -57,7 +57,7 @@ ApiKeyDialog::~ApiKeyDialog()
 
 void ApiKeyDialog::enableAccept(const QString &text)
 {
-    //TODO key validation
+    // TODO key validation
     acceptButton->setEnabled(!text.isEmpty());
 }
 

@@ -27,7 +27,7 @@ void Bookmarks::setBookmark(int index, const QImage &page)
             bookmarks.remove(latestBookmarks.back());
             latestBookmarks.pop_back();
         }
-    } else //udate de pixmap;
+    } else // udate de pixmap;
     {
         bookmarks[index] = page;
     }
@@ -142,7 +142,7 @@ void BookmarksList::deleteOldest(int num)
 {
     Q_UNUSED(num)
     QString comic;
-    QDateTime date(QDate(10000, 1, 1)); //TODO MAX_DATE??
+    QDateTime date(QDate(10000, 1, 1)); // TODO MAX_DATE??
     for (QMap<QString, Bookmark>::const_iterator itr = list.begin(); itr != list.end(); itr++) {
         if (itr->added < date) {
             comic = itr.key();
@@ -159,6 +159,6 @@ void BookmarksList::add(const QString &comicID, const Bookmark &b)
 
 BookmarksList::Bookmark BookmarksList::get(const QString &comicID)
 {
-    //if(list.contains(comicID)
+    // if(list.contains(comicID)
     return list.value(comicID);
 }

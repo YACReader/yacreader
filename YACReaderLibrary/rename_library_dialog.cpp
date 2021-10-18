@@ -53,7 +53,7 @@ void RenameLibraryDialog::setupUI()
 
 void RenameLibraryDialog::rename()
 {
-    //accept->setEnabled(false);
+    // accept->setEnabled(false);
     emit(renameLibrary(newNameEdit->text()));
 }
 
@@ -68,6 +68,6 @@ void RenameLibraryDialog::nameSetted(const QString &text)
 void RenameLibraryDialog::close()
 {
     newNameEdit->clear();
-    //accept->setEnabled(false);
+    // accept->setEnabled(false);
     QDialog::close();
 }

@@ -140,14 +140,14 @@ void LibraryWindow::afterLaunchTasks()
 
 void LibraryWindow::createSettings()
 {
-    settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+    settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
     settings->beginGroup("libraryConfig");
 }
 
 void LibraryWindow::setupOpenglSetting()
 {
 #ifndef NO_OPENGL
-    //FLOW-----------------------------------------------------------------------
+    // FLOW-----------------------------------------------------------------------
     //---------------------------------------------------------------------------
 
     OpenGLChecker openGLChecker;
@@ -188,11 +188,11 @@ void LibraryWindow::setupUI()
 
     setMinimumSize(800, 480);
 
-    //restore
+    // restore
     if (settings->contains(MAIN_WINDOW_GEOMETRY))
         restoreGeometry(settings->value(MAIN_WINDOW_GEOMETRY).toByteArray());
     else
-        //if(settings->value(USE_OPEN_GL).toBool() == false)
+        // if(settings->value(USE_OPEN_GL).toBool() == false)
         showMaximized();
 
     trayIconController = new TrayIconController(settings, this);
@@ -218,15 +218,15 @@ void LibraryWindow::setupUI()
 
 void LibraryWindow::doLayout()
 {
-    //LAYOUT ELEMENTS------------------------------------------------------------
-    auto sHorizontal = new QSplitter(Qt::Horizontal); //spliter principal
+    // LAYOUT ELEMENTS------------------------------------------------------------
+    auto sHorizontal = new QSplitter(Qt::Horizontal); // spliter principal
 #ifdef Q_OS_MAC
     sHorizontal->setStyleSheet("QSplitter::handle{image:none;background-color:#B8B8B8;} QSplitter::handle:vertical {height:1px;}");
 #else
     sHorizontal->setStyleSheet("QSplitter::handle:vertical {height:4px;}");
 #endif
 
-    //TOOLBARS-------------------------------------------------------------------
+    // TOOLBARS-------------------------------------------------------------------
     //---------------------------------------------------------------------------
     editInfoToolBar = new QToolBar();
     editInfoToolBar->setStyleSheet("QToolBar {border: none;}");
@@ -237,14 +237,14 @@ void LibraryWindow::doLayout()
     libraryToolBar = new YACReaderMainToolBar(this);
 #endif
 
-    //FOLDERS FILTER-------------------------------------------------------------
+    // FOLDERS FILTER-------------------------------------------------------------
     //---------------------------------------------------------------------------
 #ifndef Q_OS_MAC
-    //in MacOSX the searchEdit is created using the toolbar wrapper
+    // in MacOSX the searchEdit is created using the toolbar wrapper
     searchEdit = new YACReaderSearchLineEdit();
 #endif
 
-    //SIDEBAR--------------------------------------------------------------------
+    // SIDEBAR--------------------------------------------------------------------
     //---------------------------------------------------------------------------
     sideBar = new YACReaderSideBar;
 
@@ -268,14 +268,14 @@ void LibraryWindow::doLayout()
     foldersTitle->addAction(colapseAllNodesAction);
 
     readingListsTitle->addAction(addReadingListAction);
-    //readingListsTitle->addSepartor();
+    // readingListsTitle->addSepartor();
     readingListsTitle->addAction(addLabelAction);
-    //readingListsTitle->addSepartor();
+    // readingListsTitle->addSepartor();
     readingListsTitle->addAction(renameListAction);
     readingListsTitle->addAction(deleteReadingListAction);
     readingListsTitle->addSpacing(3);
 
-    //FINAL LAYOUT-------------------------------------------------------------
+    // FINAL LAYOUT-------------------------------------------------------------
 
     comicsViewsManager = new YACReaderComicsViewsManager(settings, this);
 
@@ -301,9 +301,9 @@ void LibraryWindow::doLayout()
     mainWidget = new QStackedWidget(this);
     mainWidget->addWidget(sHorizontal);
     setCentralWidget(mainWidget);
-    //FINAL LAYOUT-------------------------------------------------------------
+    // FINAL LAYOUT-------------------------------------------------------------
 
-    //OTHER----------------------------------------------------------------------
+    // OTHER----------------------------------------------------------------------
     //---------------------------------------------------------------------------
     noLibrariesWidget = new NoLibrariesWidget();
     mainWidget->addWidget(noLibrariesWidget);
@@ -314,7 +314,7 @@ void LibraryWindow::doLayout()
     connect(noLibrariesWidget, &NoLibrariesWidget::createNewLibrary, this, &LibraryWindow::createLibrary);
     connect(noLibrariesWidget, &NoLibrariesWidget::addExistingLibrary, this, &LibraryWindow::showAddLibrary);
 
-    //collapsible disabled in macosx (only temporaly)
+    // collapsible disabled in macosx (only temporaly)
 #ifdef Q_OS_MAC
     sHorizontal->setCollapsible(0, false);
 #endif
@@ -341,7 +341,7 @@ void LibraryWindow::doDialogs()
     serverConfigDialog = new ServerConfigDialog(this);
 #endif
 
-    had = new HelpAboutDialog(this); //TODO load data.
+    had = new HelpAboutDialog(this); // TODO load data.
     QString sufix = QLocale::system().name();
     if (QFile(":/files/about_" + sufix + ".html").exists())
         had->loadAboutInformation(":/files/about_" + sufix + ".html");
@@ -395,7 +395,7 @@ void LibraryWindow::setUpShortcutsManagement()
                                                  << updateCurrentFolderAction);
     allActions << tmpList;
 
-    editShortcutsDialog->addActionsGroup("Lists", QIcon(":/images/shortcuts_group_folders.png"), //TODO change icon
+    editShortcutsDialog->addActionsGroup("Lists", QIcon(":/images/shortcuts_group_folders.png"), // TODO change icon
                                          tmpList = QList<QAction *>()
                                                  << addReadingListAction
                                                  << deleteReadingListAction
@@ -447,18 +447,18 @@ void LibraryWindow::setUpShortcutsManagement()
 
 void LibraryWindow::doModels()
 {
-    //folders
+    // folders
     foldersModel = new FolderModel(this);
     foldersModelProxy = new FolderModelProxy(this);
     folderQueryResultProcessor.reset(new FolderQueryResultProcessor(foldersModel));
-    //foldersModelProxy->setSourceModel(foldersModel);
-    //comics
+    // foldersModelProxy->setSourceModel(foldersModel);
+    // comics
     comicsModel = new ComicModel(this);
-    //lists
+    // lists
     listsModel = new ReadingListModel(this);
     listsModelProxy = new ReadingListModelProxy(this);
 
-    //setSearchFilter(YACReader::NoModifiers, ""); //clear search filter
+    // setSearchFilter(YACReader::NoModifiers, ""); //clear search filter
 }
 
 void LibraryWindow::createActions()
@@ -466,7 +466,7 @@ void LibraryWindow::createActions()
     backAction = new QAction(this);
     QIcon icoBackButton;
     icoBackButton.addFile(":/images/main_toolbar/back.png", QSize(), QIcon::Normal);
-    //icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back_disabled.png"), QIcon::Disabled);
+    // icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back_disabled.png"), QIcon::Disabled);
     backAction->setData(BACK_ACTION_YL);
     backAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(BACK_ACTION_YL));
     backAction->setIcon(icoBackButton);
@@ -475,7 +475,7 @@ void LibraryWindow::createActions()
     forwardAction = new QAction(this);
     QIcon icoFordwardButton;
     icoFordwardButton.addFile(":/images/main_toolbar/forward.png", QSize(), QIcon::Normal);
-    //icoFordwardButton.addPixmap(QPixmap(":/images/main_toolbar/forward_disabled.png"), QIcon::Disabled);
+    // icoFordwardButton.addPixmap(QPixmap(":/images/main_toolbar/forward_disabled.png"), QIcon::Disabled);
     forwardAction->setData(FORWARD_ACTION_YL);
     forwardAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(FORWARD_ACTION_YL));
     forwardAction->setIcon(icoFordwardButton);
@@ -667,7 +667,7 @@ void LibraryWindow::createActions()
     toggleComicsViewAction->setData(TOGGLE_COMICS_VIEW_ACTION_YL);
     toggleComicsViewAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_COMICS_VIEW_ACTION_YL));
     toggleComicsViewAction->setIcon(icoViewsButton);
-    //socialAction = new QAction(this);
+    // socialAction = new QAction(this);
 
     //----
 
@@ -720,7 +720,7 @@ void LibraryWindow::createActions()
     resetComicRatingAction->setData(RESET_COMIC_RATING_ACTION_YL);
     resetComicRatingAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RESET_COMIC_RATING_ACTION_YL));
 
-    //Edit comics actions------------------------------------------------------
+    // Edit comics actions------------------------------------------------------
     selectAllComicsAction = new QAction(this);
     selectAllComicsAction->setText(tr("Select all comics"));
     selectAllComicsAction->setData(SELECT_ALL_COMICS_ACTION_YL);
@@ -823,7 +823,7 @@ void LibraryWindow::createActions()
     addToFavoritesAction->setToolTip(tr("Add selected comics to favorites list"));
     addToFavoritesAction->setIcon(QIcon(":/images/lists/default_1.png"));
 
-    //actions not asigned to any widget
+    // actions not asigned to any widget
     this->addAction(saveCoversToAction);
     this->addAction(openContainingFolderAction);
     this->addAction(updateCurrentFolderAction);
@@ -838,16 +838,16 @@ void LibraryWindow::createActions()
     this->addAction(toggleFullScreenAction);
 #endif
 
-    //disable actions
+    // disable actions
     disableAllActions();
 }
 void LibraryWindow::disableComicsActions(bool disabled)
 {
-    //if there aren't comics, no fullscreen option will be available
+    // if there aren't comics, no fullscreen option will be available
 #ifndef Q_OS_MAC
     toggleFullScreenAction->setDisabled(disabled);
 #endif
-    //edit toolbar
+    // edit toolbar
     openComicAction->setDisabled(disabled);
     editSelectedComicsAction->setDisabled(disabled);
     selectAllComicsAction->setDisabled(disabled);
@@ -856,11 +856,11 @@ void LibraryWindow::disableComicsActions(bool disabled)
     setAsNonReadAction->setDisabled(disabled);
     setNormalAction->setDisabled(disabled);
     setMangaAction->setDisabled(disabled);
-    //setAllAsReadAction->setDisabled(disabled);
-    //setAllAsNonReadAction->setDisabled(disabled);
+    // setAllAsReadAction->setDisabled(disabled);
+    // setAllAsNonReadAction->setDisabled(disabled);
     showHideMarksAction->setDisabled(disabled);
     deleteComicsAction->setDisabled(disabled);
-    //context menu
+    // context menu
     openContainingFolderComicAction->setDisabled(disabled);
     resetComicRatingAction->setDisabled(disabled);
 
@@ -877,7 +877,7 @@ void LibraryWindow::disableLibrariesActions(bool disabled)
     importComicsInfoAction->setDisabled(disabled);
     exportLibraryAction->setDisabled(disabled);
     rescanLibraryForXMLInfoAction->setDisabled(disabled);
-    //importLibraryAction->setDisabled(disabled);
+    // importLibraryAction->setDisabled(disabled);
 }
 
 void LibraryWindow::disableNoUpdatedLibrariesActions(bool disabled)
@@ -911,7 +911,7 @@ void LibraryWindow::createToolBars()
 {
 
 #ifdef Q_OS_MAC
-    //libraryToolBar->setIconSize(QSize(16,16)); //TODO make icon size dynamic
+    // libraryToolBar->setIconSize(QSize(16,16)); //TODO make icon size dynamic
 
     libraryToolBar->addAction(backAction);
     libraryToolBar->addAction(forwardAction);
@@ -933,12 +933,12 @@ void LibraryWindow::createToolBars()
 
     libraryToolBar->addStretch();
 
-    //Native toolbar search edit
-    //libraryToolBar->addWidget(searchEdit);
+    // Native toolbar search edit
+    // libraryToolBar->addWidget(searchEdit);
     searchEdit = libraryToolBar->addSearchEdit();
-    //connect(libraryToolBar,SIGNAL(searchTextChanged(YACReader::SearchModifiers,QString)),this,SLOT(setSearchFilter(YACReader::SearchModifiers, QString)));
+    // connect(libraryToolBar,SIGNAL(searchTextChanged(YACReader::SearchModifiers,QString)),this,SLOT(setSearchFilter(YACReader::SearchModifiers, QString)));
 
-    //libraryToolBar->setMovable(false);
+    // libraryToolBar->setMovable(false);
 
     libraryToolBar->attachToWindow(this->windowHandle());
 
@@ -967,9 +967,9 @@ void LibraryWindow::createToolBars()
     editInfoToolBar->addSeparator();
 
     editInfoToolBar->addAction(setAsReadAction);
-    //editInfoToolBar->addAction(setAllAsReadAction);
+    // editInfoToolBar->addAction(setAllAsReadAction);
     editInfoToolBar->addAction(setAsNonReadAction);
-    //editInfoToolBar->addAction(setAllAsNonReadAction);
+    // editInfoToolBar->addAction(setAllAsNonReadAction);
 
     editInfoToolBar->addAction(showHideMarksAction);
 
@@ -1021,13 +1021,13 @@ void LibraryWindow::createMenus()
     selectedLibrary->addAction(exportLibraryAction);
     selectedLibrary->addAction(importLibraryAction);
 
-//MacOSX app menus
+// MacOSX app menus
 #ifdef Q_OS_MACX
     QMenuBar *menu = this->menuBar();
-    //about / preferences
-    //TODO
+    // about / preferences
+    // TODO
 
-    //library
+    // library
     QMenu *libraryMenu = new QMenu(tr("Library"));
 
     libraryMenu->addAction(updateLibraryAction);
@@ -1046,7 +1046,7 @@ void LibraryWindow::createMenus()
     libraryMenu->addAction(exportLibraryAction);
     libraryMenu->addAction(importLibraryAction);
 
-    //folder
+    // folder
     QMenu *folderMenu = new QMenu(tr("Folder"));
     folderMenu->addAction(openContainingFolderAction);
     folderMenu->addAction(updateFolderAction);
@@ -1060,7 +1060,7 @@ void LibraryWindow::createMenus()
     foldersView->addAction(setFolderAsMangaAction);
     foldersView->addAction(setFolderAsNormalAction);
 
-    //comic
+    // comic
     QMenu *comicMenu = new QMenu(tr("Comic"));
     comicMenu->addAction(openContainingFolderComicAction);
     comicMenu->addSeparator();
@@ -1074,40 +1074,40 @@ void LibraryWindow::createMenus()
 
 void LibraryWindow::createConnections()
 {
-    //history navigation
+    // history navigation
     connect(backAction, &QAction::triggered, historyController, &YACReaderHistoryController::backward);
     connect(forwardAction, &QAction::triggered, historyController, &YACReaderHistoryController::forward);
     //--
     connect(historyController, &YACReaderHistoryController::enabledBackward, backAction, &QAction::setEnabled);
     connect(historyController, &YACReaderHistoryController::enabledForward, forwardAction, &QAction::setEnabled);
-    //connect(foldersView, SIGNAL(clicked(QModelIndex)), historyController, SLOT(updateHistory(QModelIndex)));
+    // connect(foldersView, SIGNAL(clicked(QModelIndex)), historyController, SLOT(updateHistory(QModelIndex)));
 
-    //libraryCreator connections
+    // libraryCreator connections
     connect(createLibraryDialog, &CreateLibraryDialog::createLibrary, this, QOverload<QString, QString, QString>::of(&LibraryWindow::create));
     connect(createLibraryDialog, &CreateLibraryDialog::libraryExists, this, &LibraryWindow::libraryAlreadyExists);
     connect(importComicsInfoDialog, &QDialog::finished, this, &LibraryWindow::reloadCurrentLibrary);
 
-    //connect(libraryCreator,SIGNAL(coverExtracted(QString)),createLibraryDialog,SLOT(showCurrentFile(QString)));
-    //connect(libraryCreator,SIGNAL(coverExtracted(QString)),updateLibraryDialog,SLOT(showCurrentFile(QString)));
+    // connect(libraryCreator,SIGNAL(coverExtracted(QString)),createLibraryDialog,SLOT(showCurrentFile(QString)));
+    // connect(libraryCreator,SIGNAL(coverExtracted(QString)),updateLibraryDialog,SLOT(showCurrentFile(QString)));
     connect(libraryCreator, &LibraryCreator::finished, this, &LibraryWindow::showRootWidget);
     connect(libraryCreator, &LibraryCreator::updated, this, &LibraryWindow::reloadCurrentLibrary);
     connect(libraryCreator, &LibraryCreator::created, this, &LibraryWindow::openLastCreated);
-    //connect(libraryCreator,SIGNAL(updatedCurrentFolder()), this, SLOT(showRootWidget()));
+    // connect(libraryCreator,SIGNAL(updatedCurrentFolder()), this, SLOT(showRootWidget()));
     connect(libraryCreator, &LibraryCreator::updatedCurrentFolder, this, &LibraryWindow::reloadAfterCopyMove);
     connect(libraryCreator, &LibraryCreator::comicAdded, importWidget, &ImportWidget::newComic);
-    //libraryCreator errors
+    // libraryCreator errors
     connect(libraryCreator, &LibraryCreator::failedCreatingDB, this, &LibraryWindow::manageCreatingError);
-    connect(libraryCreator, SIGNAL(failedUpdatingDB(QString)), this, SLOT(manageUpdatingError(QString))); //TODO: implement failedUpdatingDB
+    connect(libraryCreator, SIGNAL(failedUpdatingDB(QString)), this, SLOT(manageUpdatingError(QString))); // TODO: implement failedUpdatingDB
 
     connect(xmlInfoLibraryScanner, &QThread::finished, this, &LibraryWindow::showRootWidget);
     connect(xmlInfoLibraryScanner, &QThread::finished, this, &LibraryWindow::reloadCurrentFolderComicsContent);
     connect(xmlInfoLibraryScanner, &XMLInfoLibraryScanner::comicScanned, importWidget, &ImportWidget::newComic);
 
-    //new import widget
+    // new import widget
     connect(importWidget, &ImportWidget::stop, this, &LibraryWindow::stopLibraryCreator);
     connect(importWidget, &ImportWidget::stop, this, &LibraryWindow::stopXMLScanning);
 
-    //packageManager connections
+    // packageManager connections
     connect(exportLibraryDialog, &ExportLibraryDialog::exportPath, this, &LibraryWindow::exportLibrary);
     connect(exportLibraryDialog, &QDialog::rejected, packageManager, &PackageManager::cancel);
     connect(packageManager, &PackageManager::exported, exportLibraryDialog, &ExportLibraryDialog::close);
@@ -1118,30 +1118,30 @@ void LibraryWindow::createConnections()
     connect(packageManager, &PackageManager::imported, importLibraryDialog, &QWidget::hide);
     connect(packageManager, &PackageManager::imported, this, &LibraryWindow::openLastCreated);
 
-    //create and update dialogs
+    // create and update dialogs
     connect(createLibraryDialog, &CreateLibraryDialog::cancelCreate, this, &LibraryWindow::cancelCreating);
 
-    //open existing library from dialog.
+    // open existing library from dialog.
     connect(addLibraryDialog, &AddLibraryDialog::addLibrary, this, &LibraryWindow::openLibrary);
 
-    //load library when selected library changes
+    // load library when selected library changes
     connect(selectedLibrary, &YACReaderLibraryListWidget::currentIndexChanged, this, &LibraryWindow::loadLibrary);
 
-    //rename library dialog
+    // rename library dialog
     connect(renameLibraryDialog, &RenameLibraryDialog::renameLibrary, this, &LibraryWindow::rename);
 
-    //navigations between view modes (tree,list and flow)
-    //TODO connect(foldersView, SIGNAL(pressed(QModelIndex)), this, SLOT(updateFoldersViewConextMenu(QModelIndex)));
-    //connect(foldersView, SIGNAL(clicked(QModelIndex)), this, SLOT(loadCovers(QModelIndex)));
+    // navigations between view modes (tree,list and flow)
+    // TODO connect(foldersView, SIGNAL(pressed(QModelIndex)), this, SLOT(updateFoldersViewConextMenu(QModelIndex)));
+    // connect(foldersView, SIGNAL(clicked(QModelIndex)), this, SLOT(loadCovers(QModelIndex)));
 
-    //drops in folders view
+    // drops in folders view
     connect(foldersView, QOverload<QList<QPair<QString, QString>>, QModelIndex>::of(&YACReaderFoldersView::copyComicsToFolder),
             this, &LibraryWindow::copyAndImportComicsToFolder);
     connect(foldersView, QOverload<QList<QPair<QString, QString>>, QModelIndex>::of(&YACReaderFoldersView::moveComicsToFolder),
             this, &LibraryWindow::moveAndImportComicsToFolder);
     connect(foldersView, &QWidget::customContextMenuRequested, this, &LibraryWindow::showFoldersContextMenu);
 
-    //actions
+    // actions
     connect(createLibraryAction, &QAction::triggered, this, &LibraryWindow::createLibrary);
     connect(exportLibraryAction, &QAction::triggered, exportLibraryDialog, &ExportLibraryDialog::open);
     connect(importLibraryAction, &QAction::triggered, this, &LibraryWindow::importLibraryPackage);
@@ -1151,22 +1151,22 @@ void LibraryWindow::createConnections()
     connect(setAsNonReadAction, &QAction::triggered, this, &LibraryWindow::setCurrentComicUnreaded);
     connect(setNormalAction, &QAction::triggered, this, &LibraryWindow::setSelectedComicsAsNormal);
     connect(setMangaAction, &QAction::triggered, this, &LibraryWindow::setSelectedComicsAsManga);
-    //connect(setAllAsReadAction,SIGNAL(triggered()),this,SLOT(setComicsReaded()));
-    //connect(setAllAsNonReadAction,SIGNAL(triggered()),this,SLOT(setComicsUnreaded()));
+    // connect(setAllAsReadAction,SIGNAL(triggered()),this,SLOT(setComicsReaded()));
+    // connect(setAllAsNonReadAction,SIGNAL(triggered()),this,SLOT(setComicsUnreaded()));
 
-    //comicsInfoManagement
+    // comicsInfoManagement
     connect(exportComicsInfoAction, &QAction::triggered, this, &LibraryWindow::showExportComicsInfo);
     connect(importComicsInfoAction, &QAction::triggered, this, &LibraryWindow::showImportComicsInfo);
 
-    //properties & config
+    // properties & config
     connect(propertiesDialog, &QDialog::accepted, navigationController, &YACReaderNavigationController::reselectCurrentSource);
 
-    //comic vine
+    // comic vine
     connect(comicVineDialog, &QDialog::accepted, navigationController, &YACReaderNavigationController::reselectCurrentSource, Qt::QueuedConnection);
 
     connect(updateLibraryAction, &QAction::triggered, this, &LibraryWindow::updateLibrary);
     connect(renameLibraryAction, &QAction::triggered, this, &LibraryWindow::renameLibrary);
-    //connect(deleteLibraryAction,SIGNAL(triggered()),this,SLOT(deleteLibrary()));
+    // connect(deleteLibraryAction,SIGNAL(triggered()),this,SLOT(deleteLibrary()));
     connect(removeLibraryAction, &QAction::triggered, this, &LibraryWindow::removeLibrary);
     connect(rescanLibraryForXMLInfoAction, &QAction::triggered, this, &LibraryWindow::rescanLibraryForXMLInfo);
     connect(openComicAction, &QAction::triggered, this, QOverload<>::of(&LibraryWindow::openComic));
@@ -1187,7 +1187,7 @@ void LibraryWindow::createConnections()
     connect(optionsDialog, &YACReaderOptionsDialog::optionsChanged, this, &LibraryWindow::reloadOptions);
     connect(optionsDialog, &YACReaderOptionsDialog::editShortcuts, editShortcutsDialog, &QWidget::show);
 
-//Search filter
+// Search filter
 #ifdef Q_OS_MAC
     connect(searchEdit, &YACReaderMacOSXSearchLineEdit::filterChanged, this, &LibraryWindow::setSearchFilter);
 #else
@@ -1196,7 +1196,7 @@ void LibraryWindow::createConnections()
     connect(&comicQueryResultProcessor, &ComicQueryResultProcessor::newData, this, &LibraryWindow::setComicSearchFilterData);
     connect(folderQueryResultProcessor.get(), &FolderQueryResultProcessor::newData, this, &LibraryWindow::setFolderSearchFilterData);
 
-    //ContextMenus
+    // ContextMenus
     connect(openContainingFolderComicAction, &QAction::triggered, this, &LibraryWindow::openContainingFolderComic);
     connect(setFolderAsNotCompletedAction, &QAction::triggered, this, &LibraryWindow::setFolderAsNotCompleted);
     connect(setFolderAsCompletedAction, &QAction::triggered, this, &LibraryWindow::setFolderAsCompleted);
@@ -1208,9 +1208,9 @@ void LibraryWindow::createConnections()
 
     connect(resetComicRatingAction, &QAction::triggered, this, &LibraryWindow::resetComicRating);
 
-    //connect(dm,SIGNAL(directoryLoaded(QString)),foldersView,SLOT(expandAll()));
-    //connect(dm,SIGNAL(directoryLoaded(QString)),this,SLOT(updateFoldersView(QString)));
-    //Comicts edition
+    // connect(dm,SIGNAL(directoryLoaded(QString)),foldersView,SLOT(expandAll()));
+    // connect(dm,SIGNAL(directoryLoaded(QString)),this,SLOT(updateFoldersView(QString)));
+    // Comicts edition
     connect(editSelectedComicsAction, &QAction::triggered, this, &LibraryWindow::showProperties);
     connect(asignOrderAction, &QAction::triggered, this, &LibraryWindow::asignNumbers);
 
@@ -1218,11 +1218,11 @@ void LibraryWindow::createConnections()
 
     connect(getInfoAction, &QAction::triggered, this, &LibraryWindow::showComicVineScraper);
 
-    //connect(socialAction,SIGNAL(triggered()),this,SLOT(showSocial()));
+    // connect(socialAction,SIGNAL(triggered()),this,SLOT(showSocial()));
 
-    //connect(comicsModel,SIGNAL(isEmpty()),this,SLOT(showEmptyFolderView()));
-    //connect(comicsModel,SIGNAL(searchNumResults(int)),this,SLOT(checkSearchNumResults(int)));
-    //connect(emptyFolderWidget,SIGNAL(subfolderSelected(QModelIndex,int)),this,SLOT(selectSubfolder(QModelIndex,int)));
+    // connect(comicsModel,SIGNAL(isEmpty()),this,SLOT(showEmptyFolderView()));
+    // connect(comicsModel,SIGNAL(searchNumResults(int)),this,SLOT(checkSearchNumResults(int)));
+    // connect(emptyFolderWidget,SIGNAL(subfolderSelected(QModelIndex,int)),this,SLOT(selectSubfolder(QModelIndex,int)));
 
     connect(focusSearchLineAction, &QAction::triggered, searchEdit, [this] { searchEdit->setFocus(Qt::ShortcutFocusReason); });
     connect(focusComicsViewAction, &QAction::triggered, comicsViewsManager, &YACReaderComicsViewsManager::focusComicsViewViaShortcut);
@@ -1231,11 +1231,11 @@ void LibraryWindow::createConnections()
 
     connect(quitAction, &QAction::triggered, this, &LibraryWindow::closeApp);
 
-    //update folders (partial updates)
+    // update folders (partial updates)
     connect(updateCurrentFolderAction, &QAction::triggered, this, &LibraryWindow::updateCurrentFolder);
     connect(updateFolderAction, &QAction::triggered, this, &LibraryWindow::updateCurrentFolder);
 
-    //lists
+    // lists
     connect(addReadingListAction, &QAction::triggered, this, &LibraryWindow::addNewReadingList);
     connect(deleteReadingListAction, &QAction::triggered, this, &LibraryWindow::deleteSelectedReadingList);
     connect(addLabelAction, &QAction::triggered, this, &LibraryWindow::showAddNewLabelDialog);
@@ -1248,10 +1248,10 @@ void LibraryWindow::createConnections()
 
     connect(addToFavoritesAction, &QAction::triggered, this, &LibraryWindow::addSelectedComicsToFavorites);
 
-    //save covers
+    // save covers
     connect(saveCoversToAction, &QAction::triggered, this, &LibraryWindow::saveSelectedCoversTo);
 
-    //upgrade library
+    // upgrade library
     connect(this, &LibraryWindow::libraryUpgraded, this, &LibraryWindow::loadLibrary, Qt::QueuedConnection);
     connect(this, &LibraryWindow::errorUpgradingLibrary, this, &LibraryWindow::showErrorUpgradingLibrary, Qt::QueuedConnection);
 }
@@ -1263,15 +1263,15 @@ void LibraryWindow::showErrorUpgradingLibrary(const QString &path)
 
 void LibraryWindow::loadLibrary(const QString &name)
 {
-    if (!libraries.isEmpty()) //si hay bibliotecas...
+    if (!libraries.isEmpty()) // si hay bibliotecas...
     {
         historyController->clear();
 
         showRootWidget();
         QString path = libraries.getPath(name) + "/.yacreaderlibrary";
-        QDir d; //TODO change this by static methods (utils class?? with delTree for example)
+        QDir d; // TODO change this by static methods (utils class?? with delTree for example)
         QString dbVersion;
-        if (d.exists(path) && d.exists(path + "/library.ydb") && (dbVersion = DataBaseManagement::checkValidDB(path + "/library.ydb")) != "") //si existe en disco la biblioteca seleccionada, y es válida..
+        if (d.exists(path) && d.exists(path + "/library.ydb") && (dbVersion = DataBaseManagement::checkValidDB(path + "/library.ydb")) != "") // si existe en disco la biblioteca seleccionada, y es válida..
         {
             int comparation = DataBaseManagement::compareVersions(dbVersion, VERSION);
 
@@ -1295,19 +1295,19 @@ void LibraryWindow::loadLibrary(const QString &name)
                     comicsViewsManager->comicsView->setModel(NULL);
                     foldersView->setModel(NULL);
                     listsView->setModel(NULL);
-                    disableAllActions(); //TODO comprobar que se deben deshabilitar
-                    //será possible renombrar y borrar estas bibliotecas
+                    disableAllActions(); // TODO comprobar que se deben deshabilitar
+                    // será possible renombrar y borrar estas bibliotecas
                     renameLibraryAction->setEnabled(true);
                     removeLibraryAction->setEnabled(true);
                 }
             }
 
-            if (comparation == 0) //en caso de que la versión se igual que la actual
+            if (comparation == 0) // en caso de que la versión se igual que la actual
             {
                 foldersModel->setupModelData(path);
                 foldersModelProxy->setSourceModel(foldersModel);
                 foldersView->setModel(foldersModelProxy);
-                foldersView->setCurrentIndex(QModelIndex()); //why is this necesary?? by default it seems that returns an arbitrary index.
+                foldersView->setCurrentIndex(QModelIndex()); // why is this necesary?? by default it seems that returns an arbitrary index.
 
                 listsModel->setupReadingListsData(path);
                 listsModelProxy->setSourceModel(listsModel);
@@ -1320,7 +1320,7 @@ void LibraryWindow::loadLibrary(const QString &name)
 
                 d.setCurrent(libraries.getPath(name));
                 d.setFilter(QDir::AllDirs | QDir::Files | QDir::Hidden | QDir::NoSymLinks | QDir::NoDotAndDotDot);
-                if (d.count() <= 1) //read only library
+                if (d.count() <= 1) // read only library
                 {
                     disableLibrariesActions(false);
                     updateLibraryAction->setDisabled(true);
@@ -1333,7 +1333,7 @@ void LibraryWindow::loadLibrary(const QString &name)
 #endif
 
                     importedCovers = true;
-                } else //librería normal abierta
+                } else // librería normal abierta
                 {
                     disableLibrariesActions(false);
                     importedCovers = false;
@@ -1350,8 +1350,8 @@ void LibraryWindow::loadLibrary(const QString &name)
                 comicsViewsManager->comicsView->setModel(NULL);
                 foldersView->setModel(NULL);
                 listsView->setModel(NULL);
-                disableAllActions(); //TODO comprobar que se deben deshabilitar
-                //será possible renombrar y borrar estas bibliotecas
+                disableAllActions(); // TODO comprobar que se deben deshabilitar
+                // será possible renombrar y borrar estas bibliotecas
                 renameLibraryAction->setEnabled(true);
                 removeLibraryAction->setEnabled(true);
             }
@@ -1359,25 +1359,25 @@ void LibraryWindow::loadLibrary(const QString &name)
             comicsViewsManager->comicsView->setModel(NULL);
             foldersView->setModel(NULL);
             listsView->setModel(NULL);
-            disableAllActions(); //TODO comprobar que se deben deshabilitar
+            disableAllActions(); // TODO comprobar que se deben deshabilitar
 
-            //si la librería no existe en disco, se ofrece al usuario la posibiliad de eliminarla
+            // si la librería no existe en disco, se ofrece al usuario la posibiliad de eliminarla
             if (!d.exists(path)) {
                 QString currentLibrary = selectedLibrary->currentText();
                 if (QMessageBox::question(this, tr("Library not available"), tr("Library '%1' is no longer available. Do you want to remove it?").arg(currentLibrary), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
                     deleteCurrentLibrary();
                 }
-                //será possible renombrar y borrar estas bibliotecas
+                // será possible renombrar y borrar estas bibliotecas
                 renameLibraryAction->setEnabled(true);
                 removeLibraryAction->setEnabled(true);
 
-            } else //si existe el path, puede ser que la librería sea alguna versión pre-5.0 ó que esté corrupta o que no haya drivers sql
+            } else // si existe el path, puede ser que la librería sea alguna versión pre-5.0 ó que esté corrupta o que no haya drivers sql
             {
 
                 if (d.exists(path + "/library.ydb")) {
                     QSqlDatabase db = DataBaseManagement::loadDatabase(path);
                     manageOpeningLibraryError(db.lastError().databaseText() + "-" + db.lastError().driverText());
-                    //será possible renombrar y borrar estas bibliotecas
+                    // será possible renombrar y borrar estas bibliotecas
                     renameLibraryAction->setEnabled(true);
                     removeLibraryAction->setEnabled(true);
                 } else {
@@ -1386,17 +1386,17 @@ void LibraryWindow::loadLibrary(const QString &name)
                     if (QMessageBox::question(this, tr("Old library"), tr("Library '%1' has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?").arg(currentLibrary), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
                         QDir d(path + "/.yacreaderlibrary");
                         d.removeRecursively();
-                        //d.rmdir(path+"/.yacreaderlibrary");
+                        // d.rmdir(path+"/.yacreaderlibrary");
                         createLibraryDialog->setDataAndStart(currentLibrary, path);
-                        //create(path,path+"/.yacreaderlibrary",currentLibrary);
+                        // create(path,path+"/.yacreaderlibrary",currentLibrary);
                     }
-                    //será possible renombrar y borrar estas bibliotecas
+                    // será possible renombrar y borrar estas bibliotecas
                     renameLibraryAction->setEnabled(true);
                     removeLibraryAction->setEnabled(true);
                 }
             }
         }
-    } else //en caso de que no exista ninguna biblioteca se desactivan los botones pertinentes
+    } else // en caso de que no exista ninguna biblioteca se desactivan los botones pertinentes
     {
         disableAllActions();
         showNoLibrariesWidget();
@@ -1583,8 +1583,8 @@ void LibraryWindow::addFolderToCurrentIndex()
                                                   tr("Folder name:"), QLineEdit::Normal,
                                                   "", &ok);
 
-    //chars not supported in a folder's name: / \ : * ? " < > |
-    QRegExp invalidChars("\\/\\:\\*\\?\\\"\\<\\>\\|\\\\"); //TODO this regexp is not properly written
+    // chars not supported in a folder's name: / \ : * ? " < > |
+    QRegExp invalidChars("\\/\\:\\*\\?\\\"\\<\\>\\|\\\\"); // TODO this regexp is not properly written
     bool isValid = !newFolderName.contains(invalidChars);
 
     if (ok && !newFolderName.isEmpty() && isValid) {
@@ -1596,7 +1596,7 @@ void LibraryWindow::addFolderToCurrentIndex()
             foldersView->setCurrentIndex(foldersModelProxy->mapFromSource(newIndex));
             navigationController->loadFolderInfo(newIndex);
             historyController->updateHistory(YACReaderLibrarySourceContainer(newIndex, YACReaderLibrarySourceContainer::Folder));
-            //a new folder is always an empty folder
+            // a new folder is always an empty folder
             comicsViewsManager->showEmptyFolderView();
         }
     }
@@ -1618,7 +1618,7 @@ void LibraryWindow::deleteSelectedFolder()
             int ret = QMessageBox::question(this, tr("Delete folder"), tr("The selected folder and all its contents will be deleted from your disk. Are you sure?") + "\n\nFolder : " + folderPath, QMessageBox::Yes, QMessageBox::No);
 
             if (ret == QMessageBox::Yes) {
-                //no folders multiselection by now
+                // no folders multiselection by now
                 QModelIndexList indexList;
                 indexList << currentIndex;
 
@@ -1658,9 +1658,9 @@ void LibraryWindow::addNewReadingList()
                                                     "", &ok);
         if (ok) {
             if (selectedLists.isEmpty() || !listsModel->isReadingList(sourceMI))
-                listsModel->addReadingList(newListName); //top level
+                listsModel->addReadingList(newListName); // top level
             else {
-                listsModel->addReadingListAt(newListName, sourceMI); //sublist
+                listsModel->addReadingListAt(newListName, sourceMI); // sublist
             }
         }
     }
@@ -1694,7 +1694,7 @@ void LibraryWindow::showAddNewLabelDialog()
     }
 }
 
-//TODO implement editors in treeview
+// TODO implement editors in treeview
 void LibraryWindow::showRenameCurrentList()
 {
     QModelIndexList selectedLists = listsView->selectionModel()->selectedIndexes();
@@ -1862,8 +1862,8 @@ void LibraryWindow::selectSubfolder(const QModelIndex &mi, int child)
     navigationController->selectedFolder(dest);
 }
 
-//this methods is only using after deleting comics
-//TODO broken window :)
+// this methods is only using after deleting comics
+// TODO broken window :)
 void LibraryWindow::checkEmptyFolder()
 {
     if (comicsModel->rowCount() > 0 && !importedCovers) {
@@ -1899,7 +1899,7 @@ void LibraryWindow::openComic(const ComicDB &comic, const ComicModel::Mode mode)
     if (mode == ComicModel::ReadingList) {
         source = OpenComicSource::Source::ReadingList;
     } else if (mode == ComicModel::Reading) {
-        //TODO check where the comic was opened from the last time it was read
+        // TODO check where the comic was opened from the last time it was read
         source = OpenComicSource::Source::Folder;
     } else {
         source = OpenComicSource::Source::Folder;
@@ -1990,9 +1990,9 @@ void LibraryWindow::showAddLibrary()
 void LibraryWindow::openLibrary(QString path, QString name)
 {
     if (!libraries.contains(name)) {
-        //TODO: fix bug, /a/b/c/.yacreaderlibrary/d/e
+        // TODO: fix bug, /a/b/c/.yacreaderlibrary/d/e
         path.remove("/.yacreaderlibrary");
-        QDir d; //TODO change this by static methods (utils class?? with delTree for example)
+        QDir d; // TODO change this by static methods (utils class?? with delTree for example)
         if (d.exists(path + "/.yacreaderlibrary")) {
             _lastAdded = name;
             _sourceLastAdded = path;
@@ -2034,12 +2034,12 @@ void LibraryWindow::deleteCurrentLibrary()
     QString path = libraries.getPath(selectedLibrary->currentText());
     libraries.remove(selectedLibrary->currentText());
     selectedLibrary->removeItem(selectedLibrary->currentIndex());
-    //selectedLibrary->setCurrentIndex(0);
+    // selectedLibrary->setCurrentIndex(0);
     path = path + "/.yacreaderlibrary";
 
     QDir d(path);
     d.removeRecursively();
-    if (libraries.isEmpty()) //no more libraries available.
+    if (libraries.isEmpty()) // no more libraries available.
     {
         comicsViewsManager->comicsView->setModel(NULL);
         foldersView->setModel(NULL);
@@ -2062,8 +2062,8 @@ void LibraryWindow::removeLibrary()
     if (ret == QMessageBox::Yes) {
         libraries.remove(currentLibrary);
         selectedLibrary->removeItem(selectedLibrary->currentIndex());
-        //selectedLibrary->setCurrentIndex(0);
-        if (libraries.isEmpty()) //no more libraries available.
+        // selectedLibrary->setCurrentIndex(0);
+        if (libraries.isEmpty()) // no more libraries available.
         {
             comicsViewsManager->comicsView->setModel(NULL);
             foldersView->setModel(NULL);
@@ -2083,14 +2083,14 @@ void LibraryWindow::renameLibrary()
     renameLibraryDialog->open();
 }
 
-void LibraryWindow::rename(QString newName) //TODO replace
+void LibraryWindow::rename(QString newName) // TODO replace
 {
     QString currentLibrary = selectedLibrary->currentText();
     if (newName != currentLibrary) {
         if (!libraries.contains(newName)) {
             libraries.rename(currentLibrary, newName);
-            //selectedLibrary->removeItem(selectedLibrary->currentIndex());
-            //libraries.addLibrary(newName,path);
+            // selectedLibrary->removeItem(selectedLibrary->currentIndex());
+            // libraries.addLibrary(newName,path);
             selectedLibrary->renameCurrentLibrary(newName);
             libraries.save();
             renameLibraryDialog->close();
@@ -2103,7 +2103,7 @@ void LibraryWindow::rename(QString newName) //TODO replace
         }
     } else
         renameLibraryDialog->close();
-    //selectedLibrary->setCurrentIndex(selectedLibrary->findText(newName));
+    // selectedLibrary->setCurrentIndex(selectedLibrary->findText(newName));
 }
 
 void LibraryWindow::rescanLibraryForXMLInfo()
@@ -2139,7 +2139,7 @@ void LibraryWindow::setRootIndex()
 {
     if (!libraries.isEmpty()) {
         QString path = libraries.getPath(selectedLibrary->currentText()) + "/.yacreaderlibrary";
-        QDir d; //TODO change this by static methods (utils class?? with delTree for example)
+        QDir d; // TODO change this by static methods (utils class?? with delTree for example)
         if (d.exists(path)) {
             navigationController->selectedFolder(QModelIndex());
         } else {
@@ -2156,7 +2156,7 @@ void LibraryWindow::toggleFullScreen()
     fullscreen = !fullscreen;
 }
 
-#ifdef Q_OS_WIN //fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
+#ifdef Q_OS_WIN // fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
 void LibraryWindow::toFullScreen()
 {
     fromMaximized = this->isMaximized();
@@ -2240,7 +2240,7 @@ void LibraryWindow::setSearchFilter(const YACReader::SearchModifiers modifier, Q
     if (!filter.isEmpty()) {
         folderQueryResultProcessor->createModelData(modifier, filter, true);
         comicQueryResultProcessor.createModelData(modifier, filter, foldersModel->getDatabase());
-    } else if (status == LibraryWindow::Searching) { //if no searching, then ignore this
+    } else if (status == LibraryWindow::Searching) { // if no searching, then ignore this
         clearSearchFilter();
         navigationController->loadPreviousStatus();
     }
@@ -2252,7 +2252,7 @@ void LibraryWindow::setComicSearchFilterData(QList<ComicItem *> *data, const QSt
 
     comicsModel->setModelData(data, databasePath);
     comicsViewsManager->comicsView->enableFilterMode(true);
-    comicsViewsManager->comicsView->setModel(comicsModel); //TODO, columns are messed up after ResetModel some times, this shouldn't be necesary
+    comicsViewsManager->comicsView->setModel(comicsModel); // TODO, columns are messed up after ResetModel some times, this shouldn't be necesary
 
     if (comicsModel->rowCount() == 0) {
         comicsViewsManager->showNoSearchResultsView();
@@ -2283,7 +2283,7 @@ void LibraryWindow::showProperties()
 
     QList<ComicDB> comics = comicsModel->getComics(indexList);
     ComicDB c = comics[0];
-    _comicIdEdited = c.id; //static_cast<TableItem*>(indexList[0].internalPointer())->data(4).toULongLong();
+    _comicIdEdited = c.id; // static_cast<TableItem*>(indexList[0].internalPointer())->data(4).toULongLong();
 
     propertiesDialog->databasePath = foldersModel->getDatabase();
     propertiesDialog->basePath = currentPath();
@@ -2294,7 +2294,7 @@ void LibraryWindow::showProperties()
 
 void LibraryWindow::showComicVineScraper()
 {
-    QSettings s(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+    QSettings s(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
     s.beginGroup("ComicVine");
 
     if (!s.contains(COMIC_VINE_API_KEY)) {
@@ -2302,13 +2302,13 @@ void LibraryWindow::showComicVineScraper()
         d.exec();
     }
 
-    //check if the api key was inserted
+    // check if the api key was inserted
     if (s.contains(COMIC_VINE_API_KEY)) {
         QModelIndexList indexList = getSelectedComics();
 
         QList<ComicDB> comics = comicsModel->getComics(indexList);
         ComicDB c = comics[0];
-        _comicIdEdited = c.id; //static_cast<TableItem*>(indexList[0].internalPointer())->data(4).toULongLong();
+        _comicIdEdited = c.id; // static_cast<TableItem*>(indexList[0].internalPointer())->data(4).toULongLong();
 
         comicVineDialog->databasePath = foldersModel->getDatabase();
         comicVineDialog->basePath = currentPath();
@@ -2366,7 +2366,7 @@ void LibraryWindow::asignNumbers()
     }
     qint64 edited = comicsModel->asignNumbers(indexList, startingNumber);
 
-    //TODO add resorting without reloading
+    // TODO add resorting without reloading
     navigationController->loadFolderInfo(foldersModelProxy->mapToSource(foldersView->currentIndex()));
 
     const QModelIndex &mi = comicsModel->getIndexFromId(edited);
@@ -2419,25 +2419,25 @@ void LibraryWindow::openContainingFolder()
 
 void LibraryWindow::setFolderAsNotCompleted()
 {
-    //foldersModel->updateFolderCompletedStatus(foldersView->selectionModel()->selectedRows(),false);
+    // foldersModel->updateFolderCompletedStatus(foldersView->selectionModel()->selectedRows(),false);
     foldersModel->updateFolderCompletedStatus(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()), false);
 }
 
 void LibraryWindow::setFolderAsCompleted()
 {
-    //foldersModel->updateFolderCompletedStatus(foldersView->selectionModel()->selectedRows(),true);
+    // foldersModel->updateFolderCompletedStatus(foldersView->selectionModel()->selectedRows(),true);
     foldersModel->updateFolderCompletedStatus(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()), true);
 }
 
 void LibraryWindow::setFolderAsRead()
 {
-    //foldersModel->updateFolderFinishedStatus(foldersView->selectionModel()->selectedRows(),true);
+    // foldersModel->updateFolderFinishedStatus(foldersView->selectionModel()->selectedRows(),true);
     foldersModel->updateFolderFinishedStatus(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()), true);
 }
 
 void LibraryWindow::setFolderAsUnread()
 {
-    //foldersModel->updateFolderFinishedStatus(foldersView->selectionModel()->selectedRows(),false);
+    // foldersModel->updateFolderFinishedStatus(foldersView->selectionModel()->selectedRows(),false);
     foldersModel->updateFolderFinishedStatus(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()), false);
 }
 
@@ -2579,8 +2579,8 @@ bool lessThanModelIndexRow(const QModelIndex &m1, const QModelIndex &m2)
 
 QModelIndexList LibraryWindow::getSelectedComics()
 {
-    //se fuerza a que haya almenos una fila seleccionada TODO comprobar se se puede forzar a la tabla a que lo haga automáticamente
-    //avoid selection.count()==0 forcing selection in comicsView
+    // se fuerza a que haya almenos una fila seleccionada TODO comprobar se se puede forzar a la tabla a que lo haga automáticamente
+    // avoid selection.count()==0 forcing selection in comicsView
     QModelIndexList selection = comicsViewsManager->comicsView->selectionModel()->selectedRows();
     QLOG_TRACE() << "selection count " << selection.length();
     std::sort(selection.begin(), selection.end(), lessThanModelIndexRow);
@@ -2594,7 +2594,7 @@ QModelIndexList LibraryWindow::getSelectedComics()
 
 void LibraryWindow::deleteComics()
 {
-    //TODO
+    // TODO
     if (!listsView->selectionModel()->selectedRows().isEmpty()) {
         deleteComicsFromList();
     } else {
@@ -2678,7 +2678,7 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
     bool isManga = sourceMI.data(FolderModel::MangaRole).toBool();
 
     QMenu menu;
-    //QMenu * folderMenu = new QMenu(tr("Folder"));
+    // QMenu * folderMenu = new QMenu(tr("Folder"));
     menu.addAction(openContainingFolderAction);
     menu.addAction(updateFolderAction);
     menu.addSeparator(); //-------------------------------

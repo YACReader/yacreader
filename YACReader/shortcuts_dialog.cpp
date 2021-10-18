@@ -32,7 +32,7 @@ ShortcutsDialog::ShortcutsDialog(QWidget *parent)
     //"<p><b>General functions:</b><hr/><b>O</b> : Open comic<br/><b>Esc</b> : Exit</p>"
     shortcuts->setReadOnly(true);
     shortcutsLayout->addWidget(shortcuts);
-    //shortcutsLayout->addWidget(shortcuts2);
+    // shortcutsLayout->addWidget(shortcuts2);
     shortcutsLayout->setSpacing(0);
     mainLayout->addLayout(shortcutsLayout);
     mainLayout->addLayout(bottomLayout);

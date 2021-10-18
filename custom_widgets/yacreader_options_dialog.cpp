@@ -49,12 +49,12 @@ YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget *parent)
 #ifdef FORCE_ANGLE
     useGL->setHidden(true);
 #endif
-    //sw CONNECTIONS
+    // sw CONNECTIONS
     connect(sw->radio1, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::setClassicConfigSW);
     connect(sw->radio2, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::setStripeConfigSW);
     connect(sw->radio3, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::setOverlappedStripeConfigSW);
 #ifndef NO_OPENGL
-    //gl CONNECTIONS
+    // gl CONNECTIONS
     connect(gl->radioClassic, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::setClassicConfig);
     connect(gl->radioStripe, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::setStripeConfig);
     connect(gl->radioOver, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::setOverlappedStripeConfig);
@@ -219,7 +219,7 @@ void YACReaderOptionsDialog::restoreOptions(QSettings *settings)
 {
     this->settings = settings;
 
-    //FLOW CONFIG
+    // FLOW CONFIG
 #ifndef NO_OPENGL
     if (settings->contains(USE_OPEN_GL) && settings->value(USE_OPEN_GL).toInt() == Qt::Checked) {
         sw->setVisible(false);
@@ -304,7 +304,7 @@ void YACReaderOptionsDialog::restoreOptions(QSettings *settings)
         return;
     }
 
-    //END FLOW CONFIG
+    // END FLOW CONFIG
 #endif
 }
 

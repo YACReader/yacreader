@@ -33,11 +33,11 @@ class GoToFlow : public GoToFlowWidget
 public:
     GoToFlow(QWidget *parent = nullptr, FlowType flowType = CoverFlowLike);
     ~GoToFlow() override;
-    bool ready; //comic is ready for read.
+    bool ready; // comic is ready for read.
 private:
     YACReaderFlow *flow;
     void keyPressEvent(QKeyEvent *event) override;
-    //Comic * comic;
+    // Comic * comic;
     QSize imageSize;
 
     QVector<bool> imagesLoaded;
@@ -66,7 +66,7 @@ public slots:
 };
 
 //-----------------------------------------------------------------------------
-//PageLoader
+// PageLoader
 //-----------------------------------------------------------------------------
 class PageLoader : public QThread
 {

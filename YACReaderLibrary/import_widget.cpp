@@ -10,7 +10,7 @@
 #include <QScrollBar>
 #include <QGraphicsItemAnimation>
 #include <QTimeLine>
-//TODO: is QGLWidget needed here???
+// TODO: is QGLWidget needed here???
 //#include <QGLWidget>
 #include <QTimer>
 #include <QElapsedTimer>
@@ -51,27 +51,27 @@ YACReaderActivityIndicatorWidget::YACReaderActivityIndicatorWidget(QWidget *pare
     layout->setMargin(4);
     layout->setSpacing(0);
 
-    //setFixedHeight(3);
-    //resize(579,3);
+    // setFixedHeight(3);
+    // resize(579,3);
     glow->setGeometry(4, 4, glowLine.width(), glowLine.height());
-    //normal->setGeometry(0,1,579,1);
+    // normal->setGeometry(0,1,579,1);
 
     auto effect = new QGraphicsOpacityEffect();
-    //effect->setOpacity(1.0);
+    // effect->setOpacity(1.0);
 
     auto *animation = new QPropertyAnimation(effect, "opacity", this);
 
     animation->setDuration(1000);
     animation->setStartValue(1);
     animation->setEndValue(0);
-    //animation->setEasingCurve(QEasingCurve::InQuint);
+    // animation->setEasingCurve(QEasingCurve::InQuint);
 
     auto *animation2 = new QPropertyAnimation(effect, "opacity", this);
 
     animation2->setDuration(1000);
     animation2->setStartValue(0);
     animation2->setEndValue(1);
-    //animation2->setEasingCurve(QEasingCurve::InQuint);
+    // animation2->setEasingCurve(QEasingCurve::InQuint);
 
     glow->setGraphicsEffect(effect);
 
@@ -96,8 +96,8 @@ ImportWidget::ImportWidget(QWidget *parent)
     iconLabel->setPixmap(icon);
 
     /*QPixmap line(":/images/noLibrariesLine.png");
-	QLabel * lineLabel = new QLabel();
-	lineLabel->setPixmap(line);*/
+        QLabel * lineLabel = new QLabel();
+        lineLabel->setPixmap(line);*/
 
     auto activityIndicator = new YACReaderActivityIndicatorWidget();
 
@@ -115,7 +115,7 @@ ImportWidget::ImportWidget(QWidget *parent)
     coversViewContainer->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Maximum);
 
     coversView = new QGraphicsView();
-    //coversView->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
+    // coversView->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
     coversView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     coversView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     coversView->setMaximumHeight(300);
@@ -199,12 +199,12 @@ ImportWidget::ImportWidget(QWidget *parent)
 
     layout->addWidget(coversLabel, 0, Qt::AlignHCenter);
     layout->addWidget(coversViewContainer);
-    //layout->addStretch();
+    // layout->addStretch();
     layout->addWidget(currentComicLabel, 0, Qt::AlignHCenter);
     layout->setContentsMargins(0, layout->contentsMargins().top(), 0, layout->contentsMargins().bottom());
 
     connect(stop, &QAbstractButton::clicked, this, &ImportWidget::stop);
-    //connect(stop,SIGNAL(clicked()),this,SLOT(addCoverTest()));
+    // connect(stop,SIGNAL(clicked()),this,SLOT(addCoverTest()));
 
     previousWidth = 0;
     updatingCovers = false;
@@ -219,7 +219,7 @@ void ImportWidget::newComic(const QString &path, const QString &coverPath)
 
     currentComicLabel->setText("<font color=\"#565959\">" + path + "</font>");
 
-    if (((elapsedTimer->elapsed() >= 1100) || ((previousWidth < coversView->width()) && (elapsedTimer->elapsed() >= 500))) && scrollAnimation->state() != QAbstractAnimation::Running) //todo elapsed time
+    if (((elapsedTimer->elapsed() >= 1100) || ((previousWidth < coversView->width()) && (elapsedTimer->elapsed() >= 500))) && scrollAnimation->state() != QAbstractAnimation::Running) // todo elapsed time
     {
         updatingCovers = true;
         elapsedTimer->start();
@@ -236,7 +236,7 @@ void ImportWidget::newComic(const QString &path, const QString &coverPath)
         foreach (QGraphicsItem *itemToRemove, coversScene->items()) {
             auto last = dynamic_cast<QGraphicsPixmapItem *>(itemToRemove);
 
-            if ((last->pos().x() + last->pixmap().width()) < coversView->horizontalScrollBar()->value()) //TODO check this
+            if ((last->pos().x() + last->pixmap().width()) < coversView->horizontalScrollBar()->value()) // TODO check this
             {
                 coversScene->removeItem(last);
                 delete last;
@@ -307,7 +307,7 @@ void ImportWidget::clear()
 {
     previousWidth = 0;
 
-    //nos aseguramos de que las animaciones han finalizado antes de borrar
+    // nos aseguramos de que las animaciones han finalizado antes de borrar
     QList<QGraphicsItem *> all = coversScene->items();
     for (int i = 0; i < all.size(); i++) {
         QGraphicsItem *gi = all[i];

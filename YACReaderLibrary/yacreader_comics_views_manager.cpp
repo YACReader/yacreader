@@ -58,7 +58,7 @@ YACReaderComicsViewsManager::YACReaderComicsViewsManager(QSettings *settings, Li
 
     comicsViewStack->setCurrentWidget(comicsView);
 
-    //connections
+    // connections
     connect(emptyFolderWidget, &EmptyFolderWidget::copyComicsToCurrentFolder, libraryWindow, &LibraryWindow::copyAndImportComicsToCurrentFolder);
     connect(emptyFolderWidget, &EmptyFolderWidget::moveComicsToCurrentFolder, libraryWindow, &LibraryWindow::moveAndImportComicsToCurrentFolder);
 }
@@ -79,8 +79,8 @@ void YACReaderComicsViewsManager::showComicsView()
 {
     comicsViewStack->setCurrentWidget(comicsView);
 
-    //BUG, ugly workaround for glitch when QOpenGLWidget (flow) is used just after any other widget in the views stack
-    //Somehow QOpenGLWidget is messing with the rendering of the side bar (wrong buffer swapping)
+    // BUG, ugly workaround for glitch when QOpenGLWidget (flow) is used just after any other widget in the views stack
+    // Somehow QOpenGLWidget is messing with the rendering of the side bar (wrong buffer swapping)
     libraryWindow->sideBar->update();
 }
 
@@ -109,7 +109,7 @@ void YACReaderComicsViewsManager::showNoSearchResultsView()
     comicsViewStack->setCurrentWidget(noSearchResultsWidget);
 }
 
-//TODO recover the current comics selection and restore it in the destination
+// TODO recover the current comics selection and restore it in the destination
 void YACReaderComicsViewsManager::toggleComicsView()
 {
     if (comicsViewStack->currentWidget() == comicsView) {
@@ -125,7 +125,7 @@ void YACReaderComicsViewsManager::focusComicsViewViaShortcut()
     comicsView->focusComicsNavigation(Qt::ShortcutFocusReason);
 }
 
-//PROTECTED
+// PROTECTED
 
 void YACReaderComicsViewsManager::disconnectComicsViewConnections(ComicsView *widget)
 {
@@ -151,14 +151,14 @@ void YACReaderComicsViewsManager::doComicsViewConnections()
 
     connect(comicsView, &ComicsView::customContextMenuViewRequested, libraryWindow, &LibraryWindow::showComicsViewContextMenu);
     connect(comicsView, &ComicsView::customContextMenuItemRequested, libraryWindow, &LibraryWindow::showComicsItemContextMenu);
-    //Drops
+    // Drops
     connect(comicsView, &ComicsView::copyComicsToCurrentFolder, libraryWindow, &LibraryWindow::copyAndImportComicsToCurrentFolder);
     connect(comicsView, &ComicsView::moveComicsToCurrentFolder, libraryWindow, &LibraryWindow::moveAndImportComicsToCurrentFolder);
 }
 
 void YACReaderComicsViewsManager::switchToComicsView(ComicsView *from, ComicsView *to)
 {
-    //setup views
+    // setup views
     disconnectComicsViewConnections(from);
     from->close();
 
@@ -170,9 +170,9 @@ void YACReaderComicsViewsManager::switchToComicsView(ComicsView *from, ComicsVie
     comicsViewStack->removeWidget(from);
     comicsViewStack->addWidget(comicsView);
 
-    //delete from; No need to delete the previews view, because all views are going to be kept in memory
+    // delete from; No need to delete the previews view, because all views are going to be kept in memory
 
-    //load content into current view
+    // load content into current view
     libraryWindow->loadCoversFromCurrentModel();
 
     if (!libraryWindow->searchEdit->text().isEmpty()) {

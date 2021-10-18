@@ -18,8 +18,8 @@
 
 #include <algorithm>
 
-//192.168 (most comon local subnet for ips are always put first)
-//IPs are sorted using natoral sorting
+// 192.168 (most comon local subnet for ips are always put first)
+// IPs are sorted using natoral sorting
 bool ipComparator(const QString &ip1, const QString &ip2)
 {
     if (ip1.startsWith("192.168") && ip2.startsWith("192.168"))
@@ -61,13 +61,13 @@ QList<QString> addresses()
                 char addressBuffer[INET_ADDRSTRLEN];
                 inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
                 localAddreses.push_back(QString(addressBuffer));
-                //printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer);
+                // printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer);
             } else if (ifa->ifa_addr->sa_family == AF_INET6) { // check it is IP6
                 // is a valid IP6 Address
                 tmpAddrPtr = &((struct sockaddr_in6 *)ifa->ifa_addr)->sin6_addr;
                 char addressBuffer[INET6_ADDRSTRLEN];
                 inet_ntop(AF_INET6, tmpAddrPtr, addressBuffer, INET6_ADDRSTRLEN);
-                //printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer);
+                // printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer);
             }
         }
     }
@@ -94,7 +94,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     title1->setStyleSheet("QLabel {color:#474747; font-size:30px; font-family: Arial;}");
 
     QLabel *qrMessage = new QLabel(tr("Scan it!"), this);
-    qrMessage->move(135, 388); //373,627);
+    qrMessage->move(135, 388); // 373,627);
     qrMessage->setStyleSheet("QLabel {color:#A3A3A3; font-size:18px; font-family: Arial;}");
     qrMessage->setWordWrap(true);
     qrMessage->setFixedWidth(200);
@@ -106,7 +106,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     propaganda->setFixedWidth(590);*/
     propaganda->setOpenExternalLinks(true);
 
-    //FORM---------------------------------------------------------------------
+    // FORM---------------------------------------------------------------------
 
     QLabel *ipLabel = new QLabel(tr("Choose an IP address"), this);
     ipLabel->move(332, 117);
@@ -124,10 +124,10 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
 
     port = new QLineEdit("8080", this);
     port->setReadOnly(false);
-    //port->setFixedWidth(100);
-    //port->move(332, 244);
+    // port->setFixedWidth(100);
+    // port->move(332, 244);
 
-    //port->move(520,110);
+    // port->move(520,110);
     QValidator *validator = new QIntValidator(1024, 65535, this);
     port->setValidator(validator);
 
@@ -138,9 +138,9 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     portWidgetLayout->setMargin(0);
     portWidget->setLayout(portWidgetLayout);
     portWidget->move(332, 244);
-    //accept->move(514,149);
+    // accept->move(514,149);
     connect(accept, &QAbstractButton::pressed, this, &ServerConfigDialog::updatePort);
-    //END FORM-----------------------------------------------------------------
+    // END FORM-----------------------------------------------------------------
 
     check = new QCheckBox(this);
     check->move(332, 314);
@@ -161,7 +161,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
 
     this->setFixedSize(image.size());
 
-    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
     settings->beginGroup("libraryConfig");
 
     if (settings->value(SERVER_ON, true).toBool()) {
@@ -180,7 +180,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
 
 void ServerConfigDialog::enableServer(int status)
 {
-    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
     settings->beginGroup("libraryConfig");
 
     if (status == Qt::Checked) {
@@ -199,7 +199,7 @@ void ServerConfigDialog::enableServer(int status)
 
 void ServerConfigDialog::enableperformanceWorkaround(int status)
 {
-    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
     settings->beginGroup("libraryConfig");
 
     if (status == Qt::Checked) {
@@ -286,7 +286,7 @@ void ServerConfigDialog::regenerateQR(const QString &ip)
 void ServerConfigDialog::updatePort()
 {
 
-    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
     settings->beginGroup("listener");
     settings->setValue("port", port->text().toInt());
     settings->endGroup();

@@ -127,4 +127,4 @@ QImage PdfiumComic::getPage(const int page)
     FPDF_ClosePage(pdfpage);
     return image;
 }
-#endif //USE_PDFIUM
+#endif // USE_PDFIUM

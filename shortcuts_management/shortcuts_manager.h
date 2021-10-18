@@ -8,14 +8,14 @@
 
 class QAction;
 
-//QAction: used setData() and data() for storing (userData) an identifier for each QAction. This value is ussed in QSettings
+// QAction: used setData() and data() for storing (userData) an identifier for each QAction. This value is ussed in QSettings
 
 class ShortcutsManager
 {
 private:
     ShortcutsManager();
     QMap<QString, QKeySequence> defaultShorcuts;
-    QList<QAction *> actions; //all actions registered, used for checking conflicts
+    QList<QAction *> actions; // all actions registered, used for checking conflicts
 
     void initDefaultShorcuts();
 
@@ -33,7 +33,7 @@ public:
     bool checkConflicts(const QKeySequence &shortcut, const QAction *dest);
 };
 
-//ACTION NAMES YACReaderLibrary
+// ACTION NAMES YACReaderLibrary
 #define BACK_ACTION_YL "BACK_ACTION_YL"
 #define FORWARD_ACTION_YL "FORWARD_ACTION_YL"
 #define CREATE_LIBRARY_ACTION_YL "CREATE_LIBRARY_ACTION_YL"
@@ -89,9 +89,9 @@ public:
 #define RENAME_LIST_ACTION_YL "RENAME_LIST_ACTION_YL"
 #define ADD_TO_FAVORITES_ACTION_YL "ADD_TO_FAVORITES_ACTION_YL"
 #define SAVE_COVERS_TO_ACTION_YL "SAVE_COVERS_TO_ACTION_YL"
-//COMMANDS YACReaderLibrary
+// COMMANDS YACReaderLibrary
 
-//ACTION NAMES YACReader
+// ACTION NAMES YACReader
 #define OPEN_ACTION_Y "OPEN_ACTION_Y"
 #define NEW_INSTANCE_ACTION_Y "NEW_INSTANCE_ACTION_Y"
 #define OPEN_FOLDER_ACTION_Y "OPEN_FOLDER_ACTION_Y"
@@ -123,15 +123,15 @@ public:
 #define SHOW_EDIT_SHORTCUTS_ACTION_Y "SHOW_EDIT_SHORTCUTS_ACTION_Y"
 #define OPEN_LATEST_COMIC_Y "OPEN_LATEST_COMIC_Y"
 
-//COMMANDS YACReader
-//main_viewer_window
+// COMMANDS YACReader
+// main_viewer_window
 #define TOGGLE_FULL_SCREEN_ACTION_Y "TOGGLE_FULL_SCREEN_ACTION_Y"
 #define TOGGLE_TOOL_BARS_ACTION_Y "TOGGLE_TOOL_BARS_ACTION_Y"
 #define CHANGE_FIT_ACTION_Y "CHANGE_FIT_ACTION_Y"
 #define ZOOM_PLUS_ACTION_Y "ZOOM_PLUS_ACTION_Y"
 #define ZOOM_MINUS_ACTION_Y "ZOOM_MINUS_ACTION_Y"
 #define RESET_ZOOM_ACTION_Y "RESET_ZOOM_ACTION_Y"
-//viewer
+// viewer
 #define AUTO_SCROLL_FORWARD_ACTION_Y "AUTO_SCROLL_FORWARD_ACTION_Y"
 #define AUTO_SCROLL_BACKWARD_ACTION_Y "AUTO_SCROLL_BACKWARD_ACTION_Y"
 #define AUTO_SCROLL_FORWARD_VERTICAL_FIRST_ACTION_Y "AUTO_SCROLL_FORWARD_VERTICAL_FIRST_ACTION_Y"
@@ -144,7 +144,7 @@ public:
 #define MOVE_RIGHT_ACTION_Y "MOVE_RIGHT_ACTION_Y"
 #define GO_TO_FIRST_PAGE_ACTION_Y "GO_TO_FIRST_PAGE_ACTION_Y"
 #define GO_TO_LAST_PAGE_ACTION_Y "GO_TO_LAST_PAGE_ACTION_Y"
-//mglass
+// mglass
 #define SIZE_UP_MGLASS_ACTION_Y "SIZE_UP_MGLASS_ACTION_Y"
 #define SIZE_DOWN_MGLASS_ACTION_Y "SIZE_DOWN_MGLASS_ACTION_Y"
 #define ZOOM_IN_MGLASS_ACTION_Y "ZOOM_IN_MGLASS_ACTION_Y"

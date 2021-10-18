@@ -19,7 +19,7 @@ GoToFlowWidget::GoToFlowWidget(QWidget *parent)
 
     setLayout(mainLayout);
 
-    //toolBar->installEventFilter(this);
+    // toolBar->installEventFilter(this);
 }
 
 GoToFlowWidget::~GoToFlowWidget() { }
@@ -65,14 +65,14 @@ void GoToFlowWidget::updateSize()
 
 /*bool GoToFlowWidget::eventFilter(QObject * target, QEvent * event)
 {
-	if(event->type() == QEvent::KeyPress)
-	{
-		QKeyEvent * e = static_cast<QKeyEvent *>(event);
-		if(e->key()==Qt::Key_S || e->key() == Qt::Key_Space)
-		{
-			this->keyPressEvent(e);
-			return true;
-		}
-	}
-	return QWidget::eventFilter(target,event);
+        if(event->type() == QEvent::KeyPress)
+        {
+                QKeyEvent * e = static_cast<QKeyEvent *>(event);
+                if(e->key()==Qt::Key_S || e->key() == Qt::Key_Space)
+                {
+                        this->keyPressEvent(e);
+                        return true;
+                }
+        }
+        return QWidget::eventFilter(target,event);
 }*/

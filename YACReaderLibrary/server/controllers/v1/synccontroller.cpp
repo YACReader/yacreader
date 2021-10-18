@@ -38,10 +38,10 @@ void SyncController::service(HttpRequest &request, HttpResponse &response)
 
                 ComicInfo info;
                 info.currentPage = currentPage;
-                info.hash = hash; //TODO remove the hash check and add UUIDs for libraries
+                info.hash = hash; // TODO remove the hash check and add UUIDs for libraries
                 info.id = comicId;
 
-                //Client 2.1+ version
+                // Client 2.1+ version
                 if (comicInfoProgress.length() > 4) {
                     currentRating = comicInfoProgress.at(4).toInt();
                     info.rating = currentRating;

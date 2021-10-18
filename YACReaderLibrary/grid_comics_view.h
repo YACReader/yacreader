@@ -36,7 +36,7 @@ public:
     void focusComicsNavigation(Qt::FocusReason reason) override;
 
 public slots:
-    //ComicsView
+    // ComicsView
     void setShowMarks(bool show) override;
     void selectAll() override;
     void selectIndex(int index) override;
@@ -48,24 +48,24 @@ public slots:
 
 protected slots:
     void setCurrentIndex(int index);
-    //QML - double clicked item
+    // QML - double clicked item
     void selectedItem(int index);
 
-    //QML - rating
+    // QML - rating
     void rate(int index, int rating);
-    //QML - dragManager
+    // QML - dragManager
     void startDrag();
-    //QML - dropManager
+    // QML - dropManager
     bool canDropUrls(const QList<QUrl> &urls, Qt::DropAction action);
     bool canDropFormats(const QString &formats);
     void droppedFiles(const QList<QUrl> &urls, Qt::DropAction action);
     void droppedComicsForResortingAt(const QString &data, int index);
-    //QML - context menu
+    // QML - context menu
     void requestedContextMenu(const QPoint &point);
 
     void setCoversSize(int width);
 
-    void dummyUpdater(); //TODO remove this
+    void dummyUpdater(); // TODO remove this
 
     void setCurrentComicIfNeeded();
 

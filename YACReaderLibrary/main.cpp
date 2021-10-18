@@ -29,7 +29,7 @@
 
 #define PICTUREFLOW_QT4 1
 
-//Server interface
+// Server interface
 Startup *s;
 
 using namespace QsLogging;
@@ -226,7 +226,7 @@ int main(int argc, char **argv)
 
     logSystemAndConfig();
 
-    if (YACReaderLocalServer::isRunning()) //only a single instance of YACReaderLibrary is allowed
+    if (YACReaderLocalServer::isRunning()) // only a single instance of YACReaderLibrary is allowed
     {
         QLOG_WARN() << "another instance of YACReaderLibrary is running";
 #ifdef Q_OS_WIN
@@ -254,7 +254,7 @@ int main(int argc, char **argv)
 
     mw->connect(localServer, &YACReaderLocalServer::comicUpdated, mw, &LibraryWindow::updateComicsView, Qt::QueuedConnection);
 
-    //connections to localServer
+    // connections to localServer
 
     // start as tray
     if (!settings->value(START_TO_TRAY, false).toBool() || !settings->value(CLOSE_TO_TRAY, false).toBool()) {
@@ -272,7 +272,7 @@ int main(int argc, char **argv)
 
     YACReader::exitCheck(ret);
 
-    //shutdown
+    // shutdown
     s->stop();
     delete s;
     localServer->close();

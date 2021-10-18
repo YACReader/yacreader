@@ -25,7 +25,7 @@ void LibrariesUpdater::updateIfNeeded()
             if (comparation < 0) {
                 bool updated = DataBaseManagement::updateToCurrentVersion(path);
                 if (!updated) {
-                    //TODO log error
+                    // TODO log error
                 }
             }
         }

@@ -53,7 +53,7 @@ public:
 
         painter->restore();
 
-        //TODO add mouse hover style ??
+        // TODO add mouse hover style ??
     }
 
     QSize sizeHint(const QStyleOptionViewItem &option,
@@ -146,7 +146,7 @@ void EmptyFolderWidget::onItemClicked(const QModelIndex &mi)
     emit subfolderSelected(parent, mi.row());
 }
 
-//TODO remove repeated code in drag & drop support....
+// TODO remove repeated code in drag & drop support....
 void EmptyFolderWidget::dragEnterEvent(QDragEnterEvent *event)
 {
     QList<QUrl> urlList;
@@ -155,7 +155,7 @@ void EmptyFolderWidget::dragEnterEvent(QDragEnterEvent *event)
         urlList = event->mimeData()->urls();
         QString currentPath;
         foreach (QUrl url, urlList) {
-            //comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
+            // comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
             currentPath = url.toLocalFile();
             if (Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir()) {
                 event->acceptProposedAction();

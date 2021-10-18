@@ -9,7 +9,7 @@ YACReaderReadingListsView::YACReaderReadingListsView(QWidget *parent)
     setItemDelegate(new YACReaderReadingListsViewItemDeletegate(this));
     setUniformRowHeights(false);
 
-    //enabling internal drag&drop
+    // enabling internal drag&drop
     setDragDropMode(QAbstractItemView::DragDrop);
 }
 

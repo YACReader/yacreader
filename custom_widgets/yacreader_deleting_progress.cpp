@@ -81,19 +81,19 @@ void YACReaderDeletingProgress::paintEvent(QPaintEvent *event)
 
     QPainter painter(this);
 
-    //corners
+    // corners
     painter.drawPixmap(0, 0, pL);
     painter.drawPixmap(this->width() - borderRight, 0, pR);
     painter.drawPixmap(0, this->height() - pBL.height(), pBL);
     painter.drawPixmap(this->width() - pBR.width(), this->height() - borderBottom, pBR);
 
-    //middle
+    // middle
     painter.drawPixmap(borderRight, 0, width, borderTop, pM);
     painter.drawPixmap(0, borderTop, borderLeft, height, pLM);
     painter.drawPixmap(width + borderLeft, borderTop, borderRight, height, pRM);
     painter.drawPixmap(pBR.width(), height + borderTop, this->width() - pBR.width() - pBL.width(), pBR.height(), pBM);
 
-    //center
+    // center
     painter.fillRect(borderLeft, borderTop, width, height, QColor("#FAFAFA"));
 
     QWidget::paintEvent(event);

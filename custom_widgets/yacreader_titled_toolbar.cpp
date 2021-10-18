@@ -71,7 +71,7 @@ YACReaderTitledToolBar::YACReaderTitledToolBar(const QString &title, QWidget *pa
 #ifdef Q_OS_MAC
     QString nameLabelStyleSheet = "QLabel {padding:0 0 0 10px; margin:0px; font-size:11px; font-weight:bold;}";
     nameLabel->setColor(QColor("#808080"));
-    //nameLabel->setDropShadowColor(QColor("#F9FAFB"));
+    // nameLabel->setDropShadowColor(QColor("#F9FAFB"));
 #else
     QString nameLabelStyleSheet = "QLabel {padding:0 0 0 10px; margin:0px; font-size:11px; font-weight:bold;}";
     nameLabel->setColor(QColor("#BDBFBF"));
@@ -93,7 +93,7 @@ void YACReaderTitledToolBar::addAction(QAction *action)
 {
     QHBoxLayout *mainLayout = dynamic_cast<QHBoxLayout *>(layout());
 
-//fix for QToolButton and retina support in OSX
+// fix for QToolButton and retina support in OSX
 #ifdef Q_OS_MAC
     QPushButton *pb = new QPushButton(this);
     pb->setCursor(QCursor(Qt::ArrowCursor));
@@ -109,7 +109,7 @@ void YACReaderTitledToolBar::addAction(QAction *action)
     tb->setDefaultAction(action);
     tb->setIconSize(QSize(16, 16));
     tb->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    //tb->setStyleSheet("QToolButton:hover {background-color:#C5C5C5;}");
+    // tb->setStyleSheet("QToolButton:hover {background-color:#C5C5C5;}");
 
     mainLayout->addWidget(tb);
 #endif

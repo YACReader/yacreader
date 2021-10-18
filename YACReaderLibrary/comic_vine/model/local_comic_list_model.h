@@ -13,7 +13,7 @@ public:
 
     void load(QList<ComicDB> &comics);
 
-    //QAbstractItemModel methods
+    // QAbstractItemModel methods
     QModelIndex parent(const QModelIndex &index) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent) const override;

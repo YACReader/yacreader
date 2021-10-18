@@ -27,7 +27,7 @@ FolderController::FolderController() { }
 
 void FolderController::service(HttpRequest &request, HttpResponse &response)
 {
-    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
     settings->beginGroup("libraryConfig");
 
     bool showlessInfoPerFolder = settings->value(REMOTE_BROWSE_PERFORMANCE_WORKAROUND, false).toBool();
@@ -38,8 +38,8 @@ void FolderController::service(HttpRequest &request, HttpResponse &response)
     response.setHeader("Content-Type", "text/html; charset=utf-8");
     response.setHeader("Connection", "close");
 
-    //QString y = session.get("xxx").toString();
-    //response.writeText(QString("session xxx : %1 <br/>").arg(y));
+    // QString y = session.get("xxx").toString();
+    // response.writeText(QString("session xxx : %1 <br/>").arg(y));
 
     Template t = Static::templateLoader->getTemplate("folder", request.getHeader("Accept-Language"));
     t.enableWarnings();
@@ -70,14 +70,14 @@ void FolderController::service(HttpRequest &request, HttpResponse &response)
     QList<LibraryItem *> folderContent = DBHelper::getFolderSubfoldersFromLibrary(libraryId, folderId);
     QList<LibraryItem *> folderComics = DBHelper::getFolderComicsFromLibrary(libraryId, folderId);
 
-    //response.writeText(libraryName);
+    // response.writeText(libraryName);
 
     folderContent.append(folderComics);
 
     std::sort(folderContent.begin(), folderContent.end(), LibraryItemSorter());
     folderComics.clear();
 
-    //qulonglong backId = DBHelper::getParentFromComicFolderId(libraryName,folderId);
+    // qulonglong backId = DBHelper::getParentFromComicFolderId(libraryName,folderId);
 
     int page = 0;
     QByteArray p = request.getParameter("page");
@@ -85,8 +85,8 @@ void FolderController::service(HttpRequest &request, HttpResponse &response)
         page = p.toInt();
 
     // /comicIdi/pagei/comicIdj/pagej/....../comicIdn/pagen
-    //QString currentPath = session.get("currentPath").toString();
-    //QStringList pathSize = currentPath.split("/").last().toInt;
+    // QString currentPath = session.get("currentPath").toString();
+    // QStringList pathSize = currentPath.split("/").last().toInt;
 
     bool fromUp = false;
 
@@ -94,7 +94,7 @@ void FolderController::service(HttpRequest &request, HttpResponse &response)
     if (map.contains("up"))
         fromUp = true;
 
-    //int upPage = 0;
+    // int upPage = 0;
 
     if (folderId == 1) {
         ySession->clearNavigationPath();
@@ -103,7 +103,7 @@ void FolderController::service(HttpRequest &request, HttpResponse &response)
     } else {
         if (fromUp)
             ySession->popNavigationItem();
-        else //drill down or direct access
+        else // drill down or direct access
         {
             QStack<QPair<qulonglong, quint32>> path = ySession->getNavigationPath();
             bool found = false;
@@ -135,13 +135,13 @@ void FolderController::service(HttpRequest &request, HttpResponse &response)
     int elementsPerPage = 24;
 
     int numFolders = folderContent.length();
-    //int numComics = folderComics.length();
+    // int numComics = folderComics.length();
     int totalLength = folderContent.length() + folderComics.length();
 
     //	int numFolderPages = numFolders / elementsPerPage + ((numFolders%elementsPerPage)>0?1:0);
     int numPages = totalLength / elementsPerPage + ((totalLength % elementsPerPage) > 0 ? 1 : 0);
 
-    //response.writeText(QString("Number of pages : %1 <br/>").arg(numPages));
+    // response.writeText(QString("Number of pages : %1 <br/>").arg(numPages));
 
     if (page < 0)
         page = 0;
@@ -151,7 +151,7 @@ void FolderController::service(HttpRequest &request, HttpResponse &response)
     int indexCurrentPage = page * elementsPerPage;
     int numFoldersAtCurrentPage = qMax(0, qMin(numFolders - indexCurrentPage, elementsPerPage));
 
-    //PATH
+    // PATH
     QStack<QPair<qulonglong, quint32>> foldersPath = ySession->getNavigationPath();
     t.setVariable(QString("library.name"), libraryName);
     t.setVariable(QString("library.url"), QString("/library/%1/folder/1").arg(libraryId));
@@ -184,8 +184,8 @@ void FolderController::service(HttpRequest &request, HttpResponse &response)
                 t.setVariable(QString("element%1.browse").arg(i), QString("<a class =\"browseButton\" href=\"%1\">BROWSE</a>").arg(QString("/library/%1/folder/%2").arg(libraryId).arg(item->id)));
                 t.setVariable(QString("element%1.cover.browse").arg(i), QString("<a href=\"%1\">").arg(QString("/library/%1/folder/%2").arg(libraryId).arg(item->id)));
                 t.setVariable(QString("element%1.cover.browse.end").arg(i), "</a>");
-                //t.setVariable(QString("element%1.url").arg(i),"/library/"+libraryName+"/folder/"+QString("%1").arg(folderContent.at(i + (page*10))->id));
-                //t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/folder/"+QString("%1/info").arg(folderContent.at(i + (page*elementsPerPage))->id));
+                // t.setVariable(QString("element%1.url").arg(i),"/library/"+libraryName+"/folder/"+QString("%1").arg(folderContent.at(i + (page*10))->id));
+                // t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/folder/"+QString("%1/info").arg(folderContent.at(i + (page*elementsPerPage))->id));
 
                 t.setVariable(QString("element%1.download").arg(i), QString("<a onclick=\"this.innerHTML='IMPORTING';this.className='importedButton';\" class =\"importButton\" href=\"%1\">IMPORT</a>").arg("/library/" + QString::number(libraryId) + "/folder/" + QString("%1/info").arg(folderContent.at(i + (page * elementsPerPage))->id)));
                 t.setVariable(QString("element%1.read").arg(i), "");
@@ -197,7 +197,7 @@ void FolderController::service(HttpRequest &request, HttpResponse &response)
                 t.setVariable(QString("element%1.class").arg(i), "cover");
                 const ComicDB *comic = (ComicDB *)item;
                 t.setVariable(QString("element%1.browse").arg(i), "");
-                //t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/comic/"+QString("%1").arg(comic->id));
+                // t.setVariable(QString("element%1.downloadurl").arg(i),"/library/"+libraryName+"/comic/"+QString("%1").arg(comic->id));
                 if (!ySession->isComicOnDevice(comic->info.hash) && !ySession->isComicDownloaded(comic->info.hash))
                     t.setVariable(QString("element%1.download").arg(i), QString("<a onclick=\"this.innerHTML='IMPORTING';this.className='importedButton';\" class =\"importButton\" href=\"%1\">IMPORT</a>").arg("/library/" + QString::number(libraryId) + "/comic/" + QString("%1").arg(comic->id)));
                 else if (ySession->isComicOnDevice(comic->info.hash))
@@ -205,7 +205,7 @@ void FolderController::service(HttpRequest &request, HttpResponse &response)
                 else
                     t.setVariable(QString("element%1.download").arg(i), QString("<div class=\"importedButton\">IMPORTING</div>"));
 
-                //t.setVariable(QString("element%1.image.url").arg(i),"/images/f.png");
+                // t.setVariable(QString("element%1.image.url").arg(i),"/images/f.png");
 
                 t.setVariable(QString("element%1.read").arg(i), QString("<a class =\"readButton\" href=\"%1\">READ</a>").arg("/library/" + QString::number(libraryId) + "/comic/" + QString("%1").arg(comic->id) + "/remote"));
 
@@ -242,12 +242,12 @@ void FolderController::service(HttpRequest &request, HttpResponse &response)
         int xyz = 1;
         for (QList<LibraryItem *>::const_iterator itr = folderContent.constBegin(); itr != folderContent.constEnd(); itr++) {
             firstChar = QString((*itr)->name[0]).toUpper();
-            firstChar = firstChar.normalized(QString::NormalizationForm_D).at(0); //TODO _D or _KD??
+            firstChar = firstChar.normalized(QString::NormalizationForm_D).at(0); // TODO _D or _KD??
             bool ok;
             /*int dec = */ firstChar.toInt(&ok, 10);
             if (ok)
                 firstChar = "#";
-            //response.writeText(QString("%1 - %2 <br />").arg((*itr)->name).arg(xyz));
+            // response.writeText(QString("%1 - %2 <br />").arg((*itr)->name).arg(xyz));
             if (indexCount.contains(firstChar))
                 indexCount.insert(firstChar, indexCount.value(firstChar) + 1);
             else
@@ -266,7 +266,7 @@ void FolderController::service(HttpRequest &request, HttpResponse &response)
             int count = 0;
             int indexPage = 0;
             for (QList<QString>::const_iterator itr = index.constBegin(); itr != index.constEnd(); itr++) {
-                //response.writeText(QString("%1 - %2 <br />").arg(*itr).arg(count));
+                // response.writeText(QString("%1 - %2 <br />").arg(*itr).arg(count));
                 t.setVariable(QString("index%1.indexname").arg(i), *itr);
                 t.setVariable(QString("index%1.url").arg(i), QString("/library/%1/folder/%2?page=%3").arg(libraryId).arg(folderId).arg(indexPage));
                 i++;

@@ -37,7 +37,7 @@ SelectVolume::SelectVolume(QWidget *parent)
     auto left = new QVBoxLayout;
     auto content = new QGridLayout;
 
-    //widgets
+    // widgets
     cover = new QLabel();
     cover->setScaledContents(true);
     cover->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
@@ -52,11 +52,11 @@ SelectVolume::SelectVolume(QWidget *parent)
 #else
     tableVolumes->horizontalHeader()->setClickable(true);
 #endif
-    //tableVolumes->horizontalHeader()->setSortIndicatorShown(false);
+    // tableVolumes->horizontalHeader()->setSortIndicatorShown(false);
     connect(tableVolumes->horizontalHeader(), &QHeaderView::sectionClicked,
             [=](int index) { tableVolumes->horizontalHeader()->sortIndicatorSection() == index ? tableVolumes->sortByColumn(index, tableVolumes->horizontalHeader()->sortIndicatorOrder() == Qt::AscendingOrder ? Qt::DescendingOrder : Qt::AscendingOrder)
                                                                                                : tableVolumes->sortByColumn(index, Qt::AscendingOrder); });
-    //connections
+    // connections
     connect(tableVolumes, &QAbstractItemView::clicked, this, &SelectVolume::loadVolumeInfo);
 
     paginator->setCustomLabel(tr("volumes"));
@@ -89,7 +89,7 @@ void SelectVolume::load(const QString &json, const QString &searchString)
 {
     auto tempM = new VolumesModel();
     tempM->load(json);
-    //tableVolumes->setModel(tempM);
+    // tableVolumes->setModel(tempM);
 
     proxyModel->setSourceModel(tempM);
     tableVolumes->setModel(proxyModel);

@@ -110,16 +110,16 @@ public:
     PropertiesDialog *propertiesDialog;
     ComicVineDialog *comicVineDialog;
     EditShortcutsDialog *editShortcutsDialog;
-    //YACReaderSocialDialog * socialDialog;
+    // YACReaderSocialDialog * socialDialog;
     bool fullscreen;
-    bool importedCovers; //if true, the library is read only (not updates,open comic or properties)
+    bool importedCovers; // if true, the library is read only (not updates,open comic or properties)
     bool fromMaximized;
 
     PackageManager *packageManager;
 
     QSize slideSizeW;
     QSize slideSizeF;
-    //search filter
+    // search filter
 #ifdef Q_OS_MAC
     YACReaderMacOSXSearchLineEdit *searchEdit;
 #else
@@ -141,7 +141,7 @@ public:
     ComicModel *comicsModel;
     ReadingListModel *listsModel;
     ReadingListModelProxy *listsModelProxy;
-    //QStringList paths;
+    // QStringList paths;
     YACReaderLibraries libraries;
 
     QStackedWidget *mainWidget;
@@ -177,9 +177,9 @@ public:
     QAction *optionsAction;
     QAction *serverConfigAction;
     QAction *toggleComicsViewAction;
-    //QAction * socialAction;
+    // QAction * socialAction;
 
-    //tree actions
+    // tree actions
     QAction *addFolderAction;
     QAction *deleteFolderAction;
     //--
@@ -205,13 +205,13 @@ public:
     QAction *setMangaAction;
     QAction *setNormalAction;
 
-    //QAction * setAllAsReadAction;
-    //QAction * setAllAsNonReadAction;
+    // QAction * setAllAsReadAction;
+    // QAction * setAllAsNonReadAction;
     QAction *showHideMarksAction;
-    QAction *getInfoAction; //comic vine
+    QAction *getInfoAction; // comic vine
     QAction *resetComicRatingAction;
 
-    //edit info actions
+    // edit info actions
     QAction *selectAllComicsAction;
     QAction *editSelectedComicsAction;
     QAction *asignOrderAction;
@@ -228,7 +228,7 @@ public:
     QAction *updateFolderAction;
     QAction *updateCurrentFolderAction;
 
-    //reading lists actions
+    // reading lists actions
     QAction *addReadingListAction;
     QAction *deleteReadingListAction;
     QAction *addLabelAction;
@@ -255,9 +255,9 @@ public:
     QString _lastAdded;
     QString _sourceLastAdded;
 
-    //QModelIndex _rootIndex;
-    //QModelIndex _rootIndexCV;
-    //QModelIndex updateDestination;
+    // QModelIndex _rootIndex;
+    // QModelIndex _rootIndexCV;
+    // QModelIndex updateDestination;
 
     quint64 _comicIdEdited;
 
@@ -280,29 +280,29 @@ public:
     void setUpShortcutsManagement();
     void doModels();
 
-    //ACTIONS MANAGEMENT
+    // ACTIONS MANAGEMENT
     void disableComicsActions(bool disabled);
     void disableLibrariesActions(bool disabled);
     void disableNoUpdatedLibrariesActions(bool disabled);
     void disableFoldersActions(bool disabled);
 
     void disableAllActions();
-    //void disableActions();
-    //void enableActions();
-    //void enableLibraryActions();
+    // void disableActions();
+    // void enableActions();
+    // void enableLibraryActions();
 
     QString currentPath();
     QString currentFolderPath();
 
-    //settings
+    // settings
     QSettings *settings;
 
-    //navigation backward and forward
+    // navigation backward and forward
     YACReaderHistoryController *historyController;
 
     bool removeError;
 
-    //QTBUG-41883
+    // QTBUG-41883
     QSize _size;
     QPoint _pos;
 
@@ -330,7 +330,7 @@ public slots:
     void reloadCurrentLibrary();
     void openLastCreated();
     void updateLibrary();
-    //void deleteLibrary();
+    // void deleteLibrary();
     void openContainingFolder();
     void setFolderAsNotCompleted();
     void setFolderAsCompleted();
@@ -377,7 +377,7 @@ public slots:
     void deleteComics();
     void deleteComicsFromDisk();
     void deleteComicsFromList();
-    //void showSocial();
+    // void showSocial();
     void showFoldersContextMenu(const QPoint &point);
     void libraryAlreadyExists(const QString &name);
     void importLibraryPackage();
@@ -393,7 +393,7 @@ public slots:
     void copyAndImportComicsToFolder(const QList<QPair<QString, QString>> &comics, const QModelIndex &miFolder);
     void moveAndImportComicsToFolder(const QList<QPair<QString, QString>> &comics, const QModelIndex &miFolder);
     void processComicFiles(ComicFilesManager *comicFilesManager, QProgressDialog *progressDialog);
-    void updateCopyMoveFolderDestination(const QModelIndex &mi); //imports new comics from the current folder
+    void updateCopyMoveFolderDestination(const QModelIndex &mi); // imports new comics from the current folder
     void updateCurrentFolder();
     void updateFolder(const QModelIndex &miFolder);
     QProgressDialog *newProgressDialog(const QString &label, int maxValue);
@@ -424,7 +424,7 @@ public slots:
     void afterLaunchTasks();
 
 private:
-    //fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
+    // fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
     Qt::WindowFlags previousWindowFlags;
     QPoint previousPos;
     QSize previousSize;

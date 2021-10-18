@@ -56,12 +56,12 @@ void LibraryCreator::updateFolder(const QString &source, const QString &target, 
     relativeFolderPath = relativeFolderPath.remove(QDir::cleanPath(source));
 
     if (relativeFolderPath.startsWith("/")) {
-        relativeFolderPath = relativeFolderPath.remove(0, 1); //remove firts '/'
+        relativeFolderPath = relativeFolderPath.remove(0, 1); // remove firts '/'
     }
 
     QStringList folders;
 
-    if (!relativeFolderPath.isEmpty()) //updating root
+    if (!relativeFolderPath.isEmpty()) // updating root
     {
         folders = relativeFolderPath.split('/');
     }
@@ -95,7 +95,7 @@ void LibraryCreator::processLibrary(const QString &source, const QString &target
     _source = source;
     _target = target;
     if (DataBaseManagement::checkValidDB(target + "/library.ydb") == "") {
-        //se limpia el directorio ./yacreaderlibrary
+        // se limpia el directorio ./yacreaderlibrary
         QDir d(target);
         d.removeRecursively();
         _mode = CREATOR;
@@ -109,7 +109,7 @@ void LibraryCreator::run()
 {
     stopRunning = false;
 #ifndef use_unarr
-//check for 7z lib
+// check for 7z lib
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
     QLibrary *sevenzLib = new QLibrary(QString(LIBDIR) + "/p7zip/7z.so");
 #else
@@ -127,11 +127,11 @@ void LibraryCreator::run()
         QLOG_INFO() << "Starting to create new library ( " << _source << "," << _target << ")";
         _currentPathFolders.clear();
         _currentPathFolders.append(Folder(1, 1, "root", "/"));
-        //se crean los directorios .yacreaderlibrary y .yacreaderlibrary/covers
+        // se crean los directorios .yacreaderlibrary y .yacreaderlibrary/covers
         QDir dir;
         dir.mkpath(_target + "/covers");
 
-        //se crea la base de datos .yacreaderlibrary/library.ydb
+        // se crea la base de datos .yacreaderlibrary/library.ydb
         {
             auto _database = DataBaseManagement::createDatabase("library", _target); //
             _databaseConnection = _database.connectionName();
@@ -145,7 +145,7 @@ void LibraryCreator::run()
 
             /*QSqlQuery pragma("PRAGMA foreign_keys = ON",_database);*/
             _database.transaction();
-            //se crea la librería
+            // se crea la librería
             create(QDir(_source));
 
             DBHelper::updateChildrenInfo(_database);
@@ -196,7 +196,7 @@ void LibraryCreator::run()
 
         QSqlDatabase::removeDatabase(_databaseConnection);
 
-        //si estabamos en modo creación, se está añadiendo una librería que ya existía y se ha actualizado antes de añadirse.
+        // si estabamos en modo creación, se está añadiendo una librería que ya existía y se ha actualizado antes de añadirse.
         if (!partialUpdate) {
             if (!creation) {
                 emit(updated());
@@ -206,11 +206,11 @@ void LibraryCreator::run()
         }
         QLOG_INFO() << "Update library END";
     }
-    //msleep(100);//TODO try to solve the problem with the udpate dialog (ya no se usa más...)
+    // msleep(100);//TODO try to solve the problem with the udpate dialog (ya no se usa más...)
     if (partialUpdate) {
         emit updatedCurrentFolder(folderDestinationModelIndex);
         emit finished();
-    } else //TODO check this part!!
+    } else // TODO check this part!!
         emit finished();
     creation = false;
 }
@@ -221,7 +221,7 @@ void LibraryCreator::stop()
     stopRunning = true;
 }
 
-//retorna el id del ultimo de los folders
+// retorna el id del ultimo de los folders
 qulonglong LibraryCreator::insertFolders()
 {
     auto _database = QSqlDatabase::database(_databaseConnection);
@@ -232,7 +232,7 @@ qulonglong LibraryCreator::insertFolders()
         if (!(i->knownId)) {
             i->setFather(currentId);
             i->setManga(currentParent.isManga());
-            currentId = DBHelper::insert(&(*i), _database); //insertFolder(currentId,*i);
+            currentId = DBHelper::insert(&(*i), _database); // insertFolder(currentId,*i);
             i->setId(currentId);
         } else {
             currentId = i->id;
@@ -266,10 +266,10 @@ void LibraryCreator::create(QDir dir)
 #endif
         if (fileInfo.isDir()) {
             QLOG_TRACE() << "Parsing folder" << fileInfo.canonicalPath();
-            //se añade al path actual el folder, aún no se sabe si habrá que añadirlo a la base de datos
+            // se añade al path actual el folder, aún no se sabe si habrá que añadirlo a la base de datos
             _currentPathFolders.append(Folder(fileInfo.fileName(), relativePath));
             create(QDir(fileInfo.absoluteFilePath()));
-            //una vez importada la información del folder, se retira del path actual ya que no volverá a ser visitado
+            // una vez importada la información del folder, se retira del path actual ya que no volverá a ser visitado
             _currentPathFolders.pop_back();
         } else {
             QLOG_TRACE() << "Parsing file" << fileInfo.filePath();
@@ -286,14 +286,14 @@ bool LibraryCreator::checkCover(const QString &hash)
 void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &fileInfo)
 {
     auto _database = QSqlDatabase::database(_databaseConnection);
-    //Se calcula el hash del cómic
+    // Se calcula el hash del cómic
 
     QCryptographicHash crypto(QCryptographicHash::Sha1);
     QFile file(fileInfo.absoluteFilePath());
     file.open(QFile::ReadOnly);
     crypto.addData(file.read(524288));
     file.close();
-    //hash Sha1 del primer 0.5MB + filesize
+    // hash Sha1 del primer 0.5MB + filesize
     QString hash = QString(crypto.result().toHex().constData()) + QString::number(fileInfo.size());
     ComicDB comic = DBHelper::loadComic(fileInfo.fileName(), relativePath, hash, _database);
     int numPages = 0;
@@ -312,7 +312,7 @@ void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
     }
 
     if (numPages > 0 || exists) {
-        //en este punto sabemos que todos los folders que hay en _currentPath, deberían estar añadidos a la base de datos
+        // en este punto sabemos que todos los folders que hay en _currentPath, deberían estar añadidos a la base de datos
         insertFolders();
 
         bool parsed = YACReader::parseXMLIntoInfo(ie.getXMLInfoRawData(), comic.info);
@@ -333,8 +333,8 @@ void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
 void LibraryCreator::update(QDir dirS)
 {
     auto _database = QSqlDatabase::database(_databaseConnection);
-    //QLOG_TRACE() << "Updating" << dirS.absolutePath();
-    //QLOG_TRACE() << "Getting info from dir" << dirS.absolutePath();
+    // QLOG_TRACE() << "Updating" << dirS.absolutePath();
+    // QLOG_TRACE() << "Getting info from dir" << dirS.absolutePath();
     dirS.setNameFilters(_nameFilter);
     dirS.setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
     dirS.setSorting(QDir::Name | QDir::IgnoreCase | QDir::LocaleAware);
@@ -349,30 +349,30 @@ void LibraryCreator::update(QDir dirS)
     QFileInfoList listS;
     listS.append(listSFolders);
     listS.append(listSFiles);
-    //QLOG_DEBUG() << "---------------------------------------------------------";
-    //foreach(QFileInfo info,listS)
+    // QLOG_DEBUG() << "---------------------------------------------------------";
+    // foreach(QFileInfo info,listS)
     //	QLOG_DEBUG() << info.fileName();
 
-    //QLOG_TRACE() << "END Getting info from dir" << dirS.absolutePath();
+    // QLOG_TRACE() << "END Getting info from dir" << dirS.absolutePath();
 
-    //QLOG_TRACE() << "Getting info from DB" << dirS.absolutePath();
+    // QLOG_TRACE() << "Getting info from DB" << dirS.absolutePath();
     QList<LibraryItem *> folders = DBHelper::getFoldersFromParent(_currentPathFolders.last().id, _database);
     QList<LibraryItem *> comics = DBHelper::getComicsFromParent(_currentPathFolders.last().id, _database);
-    //QLOG_TRACE() << "END Getting info from DB" << dirS.absolutePath();
+    // QLOG_TRACE() << "END Getting info from DB" << dirS.absolutePath();
 
     QList<LibraryItem *> listD;
     std::sort(folders.begin(), folders.end(), naturalSortLessThanCILibraryItem);
     std::sort(comics.begin(), comics.end(), naturalSortLessThanCILibraryItem);
     listD.append(folders);
     listD.append(comics);
-    //QLOG_DEBUG() << "---------------------------------------------------------";
-    //foreach(LibraryItem * info,listD)
+    // QLOG_DEBUG() << "---------------------------------------------------------";
+    // foreach(LibraryItem * info,listD)
     //	QLOG_DEBUG() << info->name;
-    //QLOG_DEBUG() << "---------------------------------------------------------";
+    // QLOG_DEBUG() << "---------------------------------------------------------";
     int lenghtS = listS.size();
     int lenghtD = listD.size();
-    //QLOG_DEBUG() << "S len" << lenghtS << "D len" << lenghtD;
-    //QLOG_DEBUG() << "---------------------------------------------------------";
+    // QLOG_DEBUG() << "S len" << lenghtS << "D len" << lenghtD;
+    // QLOG_DEBUG() << "---------------------------------------------------------";
 
     bool updated;
     int i, j;
@@ -380,10 +380,10 @@ void LibraryCreator::update(QDir dirS)
         if (stopRunning)
             return;
         updated = false;
-        if (i >= lenghtS) //finished source files/dirs
+        if (i >= lenghtS) // finished source files/dirs
         {
-            //QLOG_WARN() << "finished source files/dirs" << dirS.absolutePath();
-            //delete listD //from j
+            // QLOG_WARN() << "finished source files/dirs" << dirS.absolutePath();
+            // delete listD //from j
             for (; j < lenghtD; j++) {
                 if (stopRunning)
                     return;
@@ -391,15 +391,15 @@ void LibraryCreator::update(QDir dirS)
             }
             updated = true;
         }
-        if (j >= lenghtD) //finished library files/dirs
+        if (j >= lenghtD) // finished library files/dirs
         {
-            //QLOG_WARN() << "finished library files/dirs" << dirS.absolutePath();
-            //create listS //from i
+            // QLOG_WARN() << "finished library files/dirs" << dirS.absolutePath();
+            // create listS //from i
             for (; i < lenghtS; i++) {
                 if (stopRunning)
                     return;
                 QFileInfo fileInfoS = listS.at(i);
-                if (fileInfoS.isDir()) //create folder
+                if (fileInfoS.isDir()) // create folder
                 {
 #ifdef Q_OS_MAC
                     QStringList src = _source.split("/");
@@ -412,10 +412,10 @@ void LibraryCreator::update(QDir dirS)
 #else
                     QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
 #endif
-                    _currentPathFolders.append(Folder(fileInfoS.fileName(), path)); //folder actual no está en la BD
+                    _currentPathFolders.append(Folder(fileInfoS.fileName(), path)); // folder actual no está en la BD
                     create(QDir(fileInfoS.absoluteFilePath()));
                     _currentPathFolders.pop_back();
-                } else //create comic
+                } else // create comic
                 {
 #ifdef Q_OS_MAC
                     QStringList src = _source.split("/");
@@ -437,23 +437,23 @@ void LibraryCreator::update(QDir dirS)
         if (!updated) {
             QFileInfo fileInfoS = listS.at(i);
             LibraryItem *fileInfoD = listD.at(j);
-            QString nameS = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(QDir::cleanPath(fileInfoS.absolutePath())); //remove source
+            QString nameS = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(QDir::cleanPath(fileInfoS.absolutePath())); // remove source
             QString nameD = "/" + fileInfoD->name;
 
             int comparation = QString::localeAwareCompare(nameS, nameD);
             if (fileInfoS.isDir() && fileInfoD->isDir())
-                if (comparation == 0) //same folder, update
+                if (comparation == 0) // same folder, update
                 {
-                    _currentPathFolders.append(*static_cast<Folder *>(fileInfoD)); //fileInfoD conoce su padre y su id
+                    _currentPathFolders.append(*static_cast<Folder *>(fileInfoD)); // fileInfoD conoce su padre y su id
                     update(QDir(fileInfoS.absoluteFilePath()));
                     _currentPathFolders.pop_back();
                     i++;
                     j++;
-                } else if (comparation < 0) //nameS doesn't exist on DB
+                } else if (comparation < 0) // nameS doesn't exist on DB
                 {
 
                     if (nameS != "/.yacreaderlibrary") {
-                        //QLOG_WARN() << "dir source < dest" << nameS << nameD;
+                        // QLOG_WARN() << "dir source < dest" << nameS << nameD;
 #ifdef Q_OS_MAC
                         QStringList src = _source.split("/");
                         QString filePath = fileInfoS.absoluteFilePath();
@@ -470,82 +470,82 @@ void LibraryCreator::update(QDir dirS)
                         _currentPathFolders.pop_back();
                     }
                     i++;
-                } else //nameD no longer available on Source folder...
+                } else // nameD no longer available on Source folder...
                 {
                     if (nameS != "/.yacreaderlibrary") {
-                        //QLOG_WARN() << "dir source > dest" << nameS << nameD;
+                        // QLOG_WARN() << "dir source > dest" << nameS << nameD;
                         DBHelper::removeFromDB(fileInfoD, _database);
                         j++;
                     } else
-                        i++; //skip library directory
+                        i++; // skip library directory
                 }
             else // one of them(or both) is a file
-                    if (fileInfoS.isDir()) //this folder doesn't exist on library
-            {
-                if (nameS != "/.yacreaderlibrary") //skip .yacreaderlibrary folder
+                if (fileInfoS.isDir()) // this folder doesn't exist on library
                 {
-                    //QLOG_WARN() << "one of them(or both) is a file" << nameS << nameD;
-#ifdef Q_OS_MAC
-                    QStringList src = _source.split("/");
-                    QString filePath = fileInfoS.absoluteFilePath();
-                    QStringList fp = filePath.split("/");
-                    for (int i = 0; i < src.count(); i++) {
-                        fp.removeFirst();
-                    }
-                    QString path = "/" + fp.join("/");
-#else
-                    QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
-#endif
-                    _currentPathFolders.append(Folder(fileInfoS.fileName(), path));
-                    create(QDir(fileInfoS.absoluteFilePath()));
-                    _currentPathFolders.pop_back();
-                }
-                i++;
-            } else if (fileInfoD->isDir()) //delete this folder from library
-            {
-                DBHelper::removeFromDB(fileInfoD, _database);
-                j++;
-            } else //both are files  //BUG on windows (no case sensitive)
-            {
-                //nameD.remove(nameD.size()-4,4);
-                int comparation = QString::localeAwareCompare(nameS, nameD);
-                if (comparation < 0) //create new thumbnail
-                {
-#ifdef Q_OS_MAC
-                    QStringList src = _source.split("/");
-                    QString filePath = fileInfoS.absoluteFilePath();
-                    QStringList fp = filePath.split("/");
-                    for (int i = 0; i < src.count(); i++) {
-                        fp.removeFirst();
-                    }
-                    QString path = "/" + fp.join("/");
-#else
-                    QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
-#endif
-                    insertComic(path, fileInfoS);
-                    i++;
-                } else {
-                    if (comparation > 0) //delete thumbnail
+                    if (nameS != "/.yacreaderlibrary") // skip .yacreaderlibrary folder
                     {
-                        DBHelper::removeFromDB(fileInfoD, _database);
-                        j++;
-                    } else //same file
-                    {
-                        if (fileInfoS.isFile() && !fileInfoD->isDir()) {
-                            //TODO comprobar fechas + tamaño
-                            //if(fileInfoS.lastModified()>fileInfoD.lastModified())
-                            //{
-                            //	dirD.mkpath(_target+(QDir::cleanPath(fileInfoS.absolutePath()).remove(_source)));
-                            //	emit(coverExtracted(QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source)));
-                            //	ThumbnailCreator tc(QDir::cleanPath(fileInfoS.absoluteFilePath()),_target+(QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source))+".jpg");
-                            //	tc.create();
-                            //}
+                        // QLOG_WARN() << "one of them(or both) is a file" << nameS << nameD;
+#ifdef Q_OS_MAC
+                        QStringList src = _source.split("/");
+                        QString filePath = fileInfoS.absoluteFilePath();
+                        QStringList fp = filePath.split("/");
+                        for (int i = 0; i < src.count(); i++) {
+                            fp.removeFirst();
                         }
+                        QString path = "/" + fp.join("/");
+#else
+                        QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
+#endif
+                        _currentPathFolders.append(Folder(fileInfoS.fileName(), path));
+                        create(QDir(fileInfoS.absoluteFilePath()));
+                        _currentPathFolders.pop_back();
+                    }
+                    i++;
+                } else if (fileInfoD->isDir()) // delete this folder from library
+                {
+                    DBHelper::removeFromDB(fileInfoD, _database);
+                    j++;
+                } else // both are files  //BUG on windows (no case sensitive)
+                {
+                    // nameD.remove(nameD.size()-4,4);
+                    int comparation = QString::localeAwareCompare(nameS, nameD);
+                    if (comparation < 0) // create new thumbnail
+                    {
+#ifdef Q_OS_MAC
+                        QStringList src = _source.split("/");
+                        QString filePath = fileInfoS.absoluteFilePath();
+                        QStringList fp = filePath.split("/");
+                        for (int i = 0; i < src.count(); i++) {
+                            fp.removeFirst();
+                        }
+                        QString path = "/" + fp.join("/");
+#else
+                        QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
+#endif
+                        insertComic(path, fileInfoS);
                         i++;
-                        j++;
+                    } else {
+                        if (comparation > 0) // delete thumbnail
+                        {
+                            DBHelper::removeFromDB(fileInfoD, _database);
+                            j++;
+                        } else // same file
+                        {
+                            if (fileInfoS.isFile() && !fileInfoD->isDir()) {
+                                // TODO comprobar fechas + tamaño
+                                // if(fileInfoS.lastModified()>fileInfoD.lastModified())
+                                //{
+                                //	dirD.mkpath(_target+(QDir::cleanPath(fileInfoS.absolutePath()).remove(_source)));
+                                //	emit(coverExtracted(QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source)));
+                                //	ThumbnailCreator tc(QDir::cleanPath(fileInfoS.absoluteFilePath()),_target+(QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source))+".jpg");
+                                //	tc.create();
+                                // }
+                            }
+                            i++;
+                            j++;
+                        }
                     }
                 }
-            }
         }
     }
 }

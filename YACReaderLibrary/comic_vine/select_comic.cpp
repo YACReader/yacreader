@@ -23,7 +23,7 @@ SelectComic::SelectComic(QWidget *parent)
     auto left = new QVBoxLayout;
     auto content = new QGridLayout;
 
-    //widgets
+    // widgets
     cover = new QLabel();
     cover->setScaledContents(true);
     cover->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
@@ -32,7 +32,7 @@ SelectComic::SelectComic(QWidget *parent)
     detailLabel = new ScraperScrollLabel(this);
 
     tableComics = new ScraperTableView(this);
-    //connections
+    // connections
     connect(tableComics, &QAbstractItemView::clicked, this, &SelectComic::loadComicInfo);
 
     paginator->setCustomLabel(tr("comics"));

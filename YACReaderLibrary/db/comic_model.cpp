@@ -12,7 +12,7 @@
 #include "query_parser.h"
 #include "reading_list_model.h"
 
-//ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read
+// ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read
 #include "QsLog.h"
 
 ComicModel::ComicModel(QObject *parent)
@@ -51,7 +51,7 @@ bool ComicModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, i
     return data->formats().contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat);
 }
 
-//TODO: optimize this method (seriously)
+// TODO: optimize this method (seriously)
 bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
 
@@ -78,7 +78,7 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
     std::sort(currentIndexes.begin(), currentIndexes.end());
     QList<ComicItem *> resortedData;
 
-    if (currentIndexes.contains(row)) //no resorting
+    if (currentIndexes.contains(row)) // no resorting
         return false;
 
     ComicItem *destinationItem;
@@ -147,7 +147,7 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
         }
     }
 
-    //TODO fix selection
+    // TODO fix selection
     QList<qulonglong> allComicIds;
     foreach (ComicItem *item, _data) {
         allComicIds << item->data(Id).toULongLong();
@@ -172,7 +172,7 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
     }
     QSqlDatabase::removeDatabase(connectionName);
 
-    //endMoveRows();
+    // endMoveRows();
 
     emit resortedIndexes(newSorting);
     int destSelectedIndex = row < 0 ? _data.length() : row;
@@ -192,8 +192,8 @@ bool ComicModel::canBeResorted()
 
 QMimeData *ComicModel::mimeData(const QModelIndexList &indexes) const
 {
-    //custom model data
-    //application/yacreader-comics-ids + list of ids in a QByteArray
+    // custom model data
+    // application/yacreader-comics-ids + list of ids in a QByteArray
     QList<qulonglong> ids;
     foreach (QModelIndex index, indexes) {
         QLOG_DEBUG() << "dragging : " << index.data(IdRole).toULongLong();
@@ -202,7 +202,7 @@ QMimeData *ComicModel::mimeData(const QModelIndexList &indexes) const
 
     QByteArray data;
     QDataStream out(&data, QIODevice::WriteOnly);
-    out << ids; //serialize the list of identifiers
+    out << ids; // serialize the list of identifiers
 
     auto mimeData = new QMimeData();
     mimeData->setData(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat, data);
@@ -246,17 +246,17 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     /*if (index.column() == TableModel::Rating && role == Qt::DecorationRole)
-	{
-		TableItem *item = static_cast<TableItem*>(index.internalPointer());
-		return QPixmap(QString(":/images/rating%1.png").arg(item->data(index.column()).toInt()));
-	}*/
+        {
+                TableItem *item = static_cast<TableItem*>(index.internalPointer());
+                return QPixmap(QString(":/images/rating%1.png").arg(item->data(index.column()).toInt()));
+        }*/
 
     if (role == Qt::DecorationRole) {
         return QVariant();
     }
 
     if (role == Qt::TextAlignmentRole) {
-        switch (index.column()) //TODO obtener esto de la query
+        switch (index.column()) // TODO obtener esto de la query
         {
         case ComicModel::Number:
             return QVariant(Qt::AlignRight | Qt::AlignVCenter);
@@ -271,8 +271,8 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
         }
     }
 
-    //TODO check here if any view is asking for TableModel::Roles
-    //these roles will be used from QML/GridView
+    // TODO check here if any view is asking for TableModel::Roles
+    // these roles will be used from QML/GridView
 
     auto item = static_cast<ComicItem *>(index.internalPointer());
 
@@ -326,7 +326,7 @@ QVariant ComicModel::headerData(int section, Qt::Orientation orientation,
                                 int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-        switch (section) //TODO obtener esto de la query
+        switch (section) // TODO obtener esto de la query
         {
         case ComicModel::Number:
             return QVariant(QString("#"));
@@ -348,7 +348,7 @@ QVariant ComicModel::headerData(int section, Qt::Orientation orientation,
     }
 
     if (orientation == Qt::Horizontal && role == Qt::TextAlignmentRole) {
-        switch (section) //TODO obtener esto de la query
+        switch (section) // TODO obtener esto de la query
         {
         case ComicModel::Number:
             return QVariant(Qt::AlignRight | Qt::AlignVCenter);
@@ -514,7 +514,7 @@ void ComicModel::setupReadingListModelData(unsigned long long parentReadingList,
         while (subfolders.next())
             ids << subfolders.record().value(0).toULongLong();
 
-        enableResorting = ids.length() == 1; //only resorting if no sublists exist
+        enableResorting = ids.length() == 1; // only resorting if no sublists exist
 
         foreach (qulonglong id, ids) {
             QSqlQuery selectQuery(db);
@@ -526,7 +526,7 @@ void ComicModel::setupReadingListModelData(unsigned long long parentReadingList,
             selectQuery.bindValue(":parentReadingList", id);
             selectQuery.exec();
 
-            //TODO, extra information is needed (resorting)
+            // TODO, extra information is needed (resorting)
             QList<ComicItem *> tempData = _data;
             _data.clear();
 
@@ -649,7 +649,7 @@ void ComicModel::setupModelData(QSqlQuery &sqlquery)
     });
 }
 
-//comics are sorted by "ordering", the sorting is done in the sql query
+// comics are sorted by "ordering", the sorting is done in the sql query
 void ComicModel::setupModelDataForList(QSqlQuery &sqlquery)
 {
     int numColumns = sqlquery.record().count();
@@ -707,7 +707,7 @@ QVector<YACReaderComicReadStatus> ComicModel::getReadList()
     }
     return readList;
 }
-//TODO untested, this method is no longer used
+// TODO untested, this method is no longer used
 QVector<YACReaderComicReadStatus> ComicModel::setAllComicsRead(YACReaderComicReadStatus read)
 {
     return setComicsRead(persistentIndexList(), read);
@@ -742,7 +742,7 @@ QList<ComicDB> ComicModel::getComics(QList<QModelIndex> list)
     }
     return comics;
 }
-//TODO
+// TODO
 QVector<YACReaderComicReadStatus> ComicModel::setComicsRead(QList<QModelIndex> list, YACReaderComicReadStatus read)
 {
     QString connectionName = "";
@@ -832,7 +832,7 @@ QModelIndex ComicModel::getIndexFromId(quint64 id)
     return index(i, 0);
 }
 
-//TODO completely inefficiently
+// TODO completely inefficiently
 QList<QModelIndex> ComicModel::getIndexesFromIds(const QList<qulonglong> &comicIds)
 {
     QList<QModelIndex> comicsIndexes;
@@ -1083,7 +1083,7 @@ void ComicModel::updateRating(int rating, QModelIndex mi)
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-        //TODO optimize update
+        // TODO optimize update
 
         comic.info.rating = rating;
         _data[mi.row()]->setData(ComicModel::Rating, rating);

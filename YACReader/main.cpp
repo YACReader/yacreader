@@ -189,7 +189,7 @@ int main(int argc, char *argv[])
         if (parser.isSet(readingListId)) {
             source = OpenComicSource { OpenComicSource::ReadingList, parser.value(readingListId).toULongLong() };
         } else {
-            source = OpenComicSource { OpenComicSource::Folder, 33 }; //Folder is not needed to get the comic information, the comid id points to a unique comic
+            source = OpenComicSource { OpenComicSource::Folder, 33 }; // Folder is not needed to get the comic information, the comid id points to a unique comic
         }
 
         mwv->open(arglist.at(0), parser.value(comicId).toULongLong(), parser.value(libraryId).toULongLong(), source);
@@ -204,7 +204,7 @@ int main(int argc, char *argv[])
     int ret = app.exec();
     delete mwv;
 
-    //Configuration::getConfiguration().save();
+    // Configuration::getConfiguration().save();
     YACReader::exitCheck(ret);
 #ifdef Q_OS_WIN
     logger.shutDownLoggerThread();

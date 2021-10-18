@@ -15,8 +15,8 @@ public:
     QVariant data(int column) const;
     void setData(int column, const QVariant &value);
     int row() const;
-    //unsigned long long int id; //TODO sustituir por una clase adecuada
-    //Comic comic;
+    // unsigned long long int id; //TODO sustituir por una clase adecuada
+    // Comic comic;
 private:
     QList<QVariant> itemData;
 };

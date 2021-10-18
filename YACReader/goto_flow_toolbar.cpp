@@ -7,7 +7,7 @@
 GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
     : QStackedWidget(parent)
 {
-    //elementos interactivos
+    // elementos interactivos
     auto normal = new QWidget(this); // container widget
     auto quickNavi = new QWidget(this); // container widget
     addWidget(normal);
@@ -44,17 +44,17 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
     edit->setStyleSheet("QLineEdit {border: 1px solid #77000000; background: #55000000; color: white; padding: 3px 5px 5px 5px; margin: 13px 5px 12px 5px; font-weight:bold}");
     edit->setFixedSize(54, 50);
     edit->setAttribute(Qt::WA_MacShowFocusRect, false);
-    //edit->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
-    //edit->resize(QSize(54,50));
+    // edit->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
+    // edit->resize(QSize(54,50));
     edit->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-    //edit->setAutoFillBackground(false);
+    // edit->setAutoFillBackground(false);
     connect(edit, &QLineEdit::returnPressed, this, &GoToFlowToolBar::goTo);
 
     QString centerButtonCSS = "QPushButton {background-image: url(:/images/imgCenterSlide.png); width: 100%; height:100%; background-repeat: none; border: none;} "
                               "QPushButton:focus { border: none; outline: none;}"
                               "QPushButton:pressed  {background-image: url(:/images/imgCenterSlidePressed.png); width: 100%; height:100%; background-repeat: none; border: none;} ";
     centerButton = new QPushButton(this);
-    //centerButton->setIcon(QIcon(":/images/center.png"));
+    // centerButton->setIcon(QIcon(":/images/center.png"));
     centerButton->setStyleSheet(centerButtonCSS);
     centerButton->setFixedSize(26, 50);
     centerButton->setAttribute(Qt::WA_LayoutUsesWidgetRect, true);
@@ -64,7 +64,7 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
                             "QPushButton:focus { border: none; outline: none;}"
                             "QPushButton:pressed  {background-image: url(:/images/imgGoToSlidePressed.png); width: 100%; height:100%; background-repeat: none; border: none;} ";
     goToButton = new QPushButton(this);
-    //goToButton->setIcon(QIcon(":/images/goto.png"));
+    // goToButton->setIcon(QIcon(":/images/goto.png"));
     goToButton->setStyleSheet(goToButtonCSS);
     goToButton->setFixedSize(32, 50);
     goToButton->setAttribute(Qt::WA_LayoutUsesWidgetRect, true);

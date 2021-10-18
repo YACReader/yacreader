@@ -36,7 +36,7 @@ QList<QPair<QString, QString>> ComicFilesManager::getDroppedFiles(const QList<QU
     foreach (QUrl url, urls) {
         currentPath = url.toLocalFile();
         if (currentPath.endsWith('/'))
-            currentPath = currentPath.remove(currentPath.length() - 1, 1); //QTBUG-35896 QUrl.toLocalFile inconsistency.
+            currentPath = currentPath.remove(currentPath.length() - 1, 1); // QTBUG-35896 QUrl.toLocalFile inconsistency.
         if (Comic::fileIsComic(currentPath))
             dropedFiles << QPair<QString, QString>(currentPath, "/");
         else {
@@ -71,7 +71,7 @@ void ComicFilesManager::process()
                 emit success(folderDestinationModelIndex);
             emit finished();
 
-            return; //TODO rollback?
+            return; // TODO rollback?
         }
 
         QFileInfo info(source.first);
@@ -81,7 +81,7 @@ void ComicFilesManager::process()
         if (QFile::copy(source.first, QDir::cleanPath(destPath + '/' + info.fileName()))) {
             successProcesingFiles = true;
             if (move) {
-                QFile::remove(source.first); //TODO: remove the whole path....
+                QFile::remove(source.first); // TODO: remove the whole path....
             }
         }
 

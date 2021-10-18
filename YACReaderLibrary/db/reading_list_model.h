@@ -28,7 +28,7 @@ class ReadingListModel : public QAbstractItemModel
 public:
     explicit ReadingListModel(QObject *parent = nullptr);
 
-    //QAbstractItemModel methods
+    // QAbstractItemModel methods
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role) const override;
@@ -42,10 +42,10 @@ public:
     bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) override;
     QMimeData *mimeData(const QModelIndexList &indexes) const override;
 
-    //Convenience methods
+    // Convenience methods
     void setupReadingListsData(QString path);
     void addNewLabel(const QString &name, YACReader::LabelColors color);
-    void addReadingList(const QString &name); //top level reading list
+    void addReadingList(const QString &name); // top level reading list
     void addReadingListAt(const QString &name, const QModelIndex &mi);
     bool isEditable(const QModelIndex &mi);
     bool isReadingList(const QModelIndex &mi);
@@ -96,17 +96,17 @@ private:
 
     bool dropComics(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
     bool dropSublist(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
-    //Special lists
+    // Special lists
     QList<SpecialListItem *> specialLists;
 
-    //Label
+    // Label
     QList<LabelItem *> labels;
 
-    //Reading lists
+    // Reading lists
     ReadingListItem *rootItem; //
-    QMap<unsigned long long int, ReadingListItem *> items; //lists relationship
+    QMap<unsigned long long int, ReadingListItem *> items; // lists relationship
 
-    //separators
+    // separators
     ReadingListSeparatorItem *separator1;
     ReadingListSeparatorItem *separator2;
 

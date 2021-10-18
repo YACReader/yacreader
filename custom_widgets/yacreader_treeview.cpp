@@ -7,7 +7,7 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent)
     setDragDropMode(QAbstractItemView::DropOnly);
     setItemsExpandable(true);
 
-    //setDragEnabled(true);
+    // setDragEnabled(true);
     /*viewport()->setAcceptDrops(true);
     setDropIndicatorShown(true);*/
 
@@ -84,7 +84,7 @@ void YACReaderTreeView::dragMoveEvent(QDragMoveEvent *event)
 {
     QTreeView::dragMoveEvent(event);
 
-    //fix for drop auto expand
+    // fix for drop auto expand
     QModelIndex underMouse = indexAt(event->pos());
     if (underMouse.isValid()) {
         expandPos = event->pos();
@@ -92,7 +92,7 @@ void YACReaderTreeView::dragMoveEvent(QDragMoveEvent *event)
         expandTimer.setSingleShot(true);
         expandTimer.start(500);
     }
-    //force mouse hover decoration, TODO why the event loop is not working here?
+    // force mouse hover decoration, TODO why the event loop is not working here?
     if (!t.isActive()) {
         t.setSingleShot(true);
         t.setInterval(50);

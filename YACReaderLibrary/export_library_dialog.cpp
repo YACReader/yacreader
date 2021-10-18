@@ -28,7 +28,7 @@ ExportLibraryDialog::ExportLibraryDialog(QWidget *parent)
     libraryLayout->addWidget(textLabel);
     libraryLayout->addWidget(path);
     libraryLayout->addWidget(find);
-    libraryLayout->setStretchFactor(find, 0); //TODO
+    libraryLayout->setStretchFactor(find, 0); // TODO
 
     auto bottomLayout = new QHBoxLayout;
     bottomLayout->addStretch();

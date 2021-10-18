@@ -45,7 +45,7 @@ EditShortcutsDialog::EditShortcutsDialog(QWidget *parent)
     actionsTableView->setModel(actionsModel);
     actionsTableView->setColumnWidth(0, 30);
     actionsTableView->setColumnWidth(1, 360);
-    //actionsTableView->horizontalHeader()->sectionResizeMode(QHeaderView::Custom);
+    // actionsTableView->horizontalHeader()->sectionResizeMode(QHeaderView::Custom);
     actionsTableView->horizontalHeader()->setStretchLastSection(true);
     actionsTableView->setSelectionBehavior(QAbstractItemView::SelectRows);
     actionsTableView->setShowGrid(false);
@@ -58,13 +58,13 @@ EditShortcutsDialog::EditShortcutsDialog(QWidget *parent)
                                       "");*/
 
     connect(resetButton, &QAbstractButton::clicked, this, &EditShortcutsDialog::resetToDefaults);
-    connect(actionsGroupsListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &EditShortcutsDialog::loadShortcuts); //clicked(QModelIndex) doesn't work :S
+    connect(actionsGroupsListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &EditShortcutsDialog::loadShortcuts); // clicked(QModelIndex) doesn't work :S
     connect(actionsModel, &ActionsShortcutsModel::conflict, this, &EditShortcutsDialog::processConflict);
 
 #ifdef Q_OS_MAC
     setFixedSize(760, 500);
 #else
-    setFixedSize(804, 500); //extra width for modifiers
+    setFixedSize(804, 500); // extra width for modifiers
 #endif
     setWindowTitle(tr("Shortcuts settings"));
 
@@ -74,7 +74,7 @@ EditShortcutsDialog::EditShortcutsDialog(QWidget *parent)
 void EditShortcutsDialog::addActionsGroup(const QString &name, const QIcon &ico, QList<QAction *> &group)
 {
     groupsModel->addActionsGroup(ActionsGroup(name, ico, group));
-    if (actionsTableView->model()->rowCount() == 0) //first group added
+    if (actionsTableView->model()->rowCount() == 0) // first group added
         actionsGroupsListView->selectionModel()->select(groupsModel->index(0, 0), QItemSelectionModel::Select);
 }
 

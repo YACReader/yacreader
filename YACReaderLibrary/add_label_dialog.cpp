@@ -32,7 +32,7 @@ AddLabelDialog::AddLabelDialog(QWidget *parent)
 
     setMinimumHeight(340);
 
-    //buttons
+    // buttons
     acceptButton = new QPushButton(tr("accept"), this);
     cancelButton = new QPushButton(tr("cancel"), this);
 
@@ -46,7 +46,7 @@ AddLabelDialog::AddLabelDialog(QWidget *parent)
 
     setLayout(layout);
 
-    //connections
+    // connections
     connect(edit, &QLineEdit::textChanged, this, &AddLabelDialog::validateName);
     connect(cancelButton, &QAbstractButton::clicked, this, &QWidget::close);
     connect(acceptButton, &QAbstractButton::clicked, this, &QDialog::accept);

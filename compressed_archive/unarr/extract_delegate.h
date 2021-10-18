@@ -12,4 +12,4 @@ public:
     virtual bool isCancelled() = 0;
 };
 
-#endif //EXTRACT_DELEGATE_H
+#endif // EXTRACT_DELEGATE_H

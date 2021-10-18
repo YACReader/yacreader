@@ -23,7 +23,7 @@ ImportComicsInfoDialog::ImportComicsInfoDialog(QWidget *parent)
 
     cancel = new QPushButton(tr("Cancel"));
     connect(cancel, &QAbstractButton::clicked, this, &ImportComicsInfoDialog::close);
-    //connect(cancel,SIGNAL(clicked()),this,SIGNAL(rejected()));
+    // connect(cancel,SIGNAL(clicked()),this,SIGNAL(rejected()));
 
     find = new QPushButton(QIcon(":/images/find_folder.png"), "");
     connect(find, &QAbstractButton::clicked, this, &ImportComicsInfoDialog::findPath);
@@ -33,7 +33,7 @@ ImportComicsInfoDialog::ImportComicsInfoDialog(QWidget *parent)
     libraryLayout->addWidget(textLabel);
     libraryLayout->addWidget(path);
     libraryLayout->addWidget(find);
-    libraryLayout->setStretchFactor(find, 0); //TODO
+    libraryLayout->setStretchFactor(find, 0); // TODO
 
     progressBar = new QProgressBar(this);
     progressBar->setMinimum(0);

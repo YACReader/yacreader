@@ -102,7 +102,7 @@ void YACReaderLibraries::load()
         QByteArray data = settings.value(LIBRARIES).toByteArray();
         QDataStream in(&data, QIODevice::ReadOnly);
         in >> libraries;
-    } else //only for compatibility with old versions (<7.0)
+    } else // only for compatibility with old versions (<7.0)
     {
         QFile f(QCoreApplication::applicationDirPath() + "/libraries.yacr");
         f.open(QIODevice::ReadOnly);

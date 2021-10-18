@@ -78,29 +78,29 @@ public slots:
     void toggleFitToWidthSlider();
 
     /*void viewComic();
-		void prev();
-		void next();
-		void updatePage();*/
+                void prev();
+                void next();
+                void updatePage();*/
 
 private:
-    //!State
+    //! State
     bool fullscreen;
     bool toolbars;
     bool alwaysOnTop;
     bool fromMaximized;
 
-    //QTBUG-41883
+    // QTBUG-41883
     QSize _size;
     QPoint _pos;
 
     QString currentDirectory;
     QString currentDirectoryImgDest;
-    //!Widgets
+    //! Widgets
     Viewer *viewer;
-    //GoToDialog * goToDialog;
+    // GoToDialog * goToDialog;
     OptionsDialog *optionsDialog;
     HelpAboutDialog *had;
-    //ShortcutsDialog * shortcutsDialog;
+    // ShortcutsDialog * shortcutsDialog;
     EditShortcutsDialog *editShortcutsDialog;
 
     //! ToolBars
@@ -113,7 +113,7 @@ private:
     //! Actions
     QAction *openAction;
 #ifdef Q_OS_MAC
-    QAction *newInstanceAction; //needed in macos
+    QAction *newInstanceAction; // needed in macos
 #endif
     QAction *openFolderAction;
     QAction *openLatestComicAction;
@@ -166,7 +166,7 @@ private:
 
     //! Manejadores de evento:
     void keyPressEvent(QKeyEvent *event) override;
-    //void resizeEvent(QResizeEvent * event);
+    // void resizeEvent(QResizeEvent * event);
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void dropEvent(QDropEvent *event) override;
     void dragEnterEvent(QDragEnterEvent *event) override;
@@ -180,7 +180,7 @@ private:
     quint64 libraryId;
     OpenComicSource source;
 
-    //fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
+    // fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
     Qt::WindowFlags previousWindowFlags;
     QPoint previousPos;
     QSize previousSize;

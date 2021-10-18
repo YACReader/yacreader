@@ -62,7 +62,7 @@ void YACReader::ComicQueryResultProcessor::createModelData(const YACReader::Sear
                     break;
                 }
                 selectQuery.prepare(queryString.c_str());
-                selectQuery.bindValue(":limit", 500); //TODO, load this value from settings
+                selectQuery.bindValue(":limit", 500); // TODO, load this value from settings
                 result.bindValues(selectQuery);
 
                 selectQuery.exec();
@@ -71,8 +71,8 @@ void YACReader::ComicQueryResultProcessor::createModelData(const YACReader::Sear
 
                 emit newData(data, databasePath);
             } catch (const std::exception &e) {
-                //Do nothing, uncomplete search string will end here and it is part of how the QueryParser works
-                //I don't like the idea of using exceptions for this though
+                // Do nothing, uncomplete search string will end here and it is part of how the QueryParser works
+                // I don't like the idea of using exceptions for this though
             }
 
             connectionName = db.connectionName();

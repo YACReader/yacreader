@@ -19,9 +19,9 @@ ReadingListModel::ReadingListModel(QObject *parent)
 
 int ReadingListModel::rowCount(const QModelIndex &parent) const
 {
-    if (!parent.isValid()) //TOP
+    if (!parent.isValid()) // TOP
     {
-        int separatorsCount = 2; //labels.isEmpty()?1:2;
+        int separatorsCount = 2; // labels.isEmpty()?1:2;
         return specialLists.count() + labels.count() + rootItem->childCount() + separatorsCount;
     } else {
         auto item = static_cast<ListItem *>(parent.internalPointer());
@@ -108,7 +108,7 @@ Qt::ItemFlags ReadingListModel::flags(const QModelIndex &index) const
         return {};
 
     if (typeid(*item) == typeid(ReadingListItem) && static_cast<ReadingListItem *>(item)->parent->getId() != 0)
-        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled; //only sublists are dragable
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled; // only sublists are dragable
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled;
 }
@@ -127,7 +127,7 @@ QModelIndex ReadingListModel::index(int row, int column, const QModelIndex &pare
         return QModelIndex();
 
     if (!parent.isValid()) {
-        int separatorsCount = 2; //labels.isEmpty()?1:2;
+        int separatorsCount = 2; // labels.isEmpty()?1:2;
 
         if (rowIsSpecialList(row, parent))
             return createIndex(row, column, specialLists.at(row));
@@ -145,12 +145,12 @@ QModelIndex ReadingListModel::index(int row, int column, const QModelIndex &pare
         if (rowIsReadingList(row, parent))
             return createIndex(row, column, rootItem->child(row - (specialLists.count() + labels.count() + separatorsCount)));
 
-    } else //sublist
+    } else // sublist
     {
         ReadingListItem *parentItem;
 
         if (!parent.isValid())
-            parentItem = rootItem; //this should be impossible
+            parentItem = rootItem; // this should be impossible
         else
             parentItem = static_cast<ReadingListItem *>(parent.internalPointer());
 
@@ -191,12 +191,12 @@ bool ReadingListModel::canDropMimeData(const QMimeData *data, Qt::DropAction act
     if (row == -1)
         return false;
 
-    if (!parent.isValid()) //top level items
+    if (!parent.isValid()) // top level items
     {
-        if (row == -1) //no list
+        if (row == -1) // no list
             return false;
 
-        if (row == 1) //reading is just an smart list
+        if (row == 1) // reading is just an smart list
             return false;
 
         if (rowIsSeparator(row, parent))
@@ -214,7 +214,7 @@ bool ReadingListModel::canDropMimeData(const QMimeData *data, Qt::DropAction act
             QList<QPair<int, int>> sublistsRows;
             QByteArray rawData = data->data(YACReader::YACReaderLibrarSubReadingListMimeDataFormat);
             QDataStream in(&rawData, QIODevice::ReadOnly);
-            in >> sublistsRows; //deserialize the list of indentifiers
+            in >> sublistsRows; // deserialize the list of indentifiers
             if (parent.row() != sublistsRows.at(0).second)
                 return false;
             return data->formats().contains(YACReader::YACReaderLibrarSubReadingListMimeDataFormat);
@@ -255,7 +255,7 @@ bool ReadingListModel::dropComics(const QMimeData *data, Qt::DropAction action, 
     parentDest = dest.parent();
 
     if (rowIsSpecialList(dest.row(), parentDest)) {
-        if (dest.row() == 0) //add to favorites
+        if (dest.row() == 0) // add to favorites
         {
             QLOG_DEBUG() << "-------addComicsToFavorites : " << comicIds << " to " << dest.data(IDRole).toULongLong();
             emit addComicsToFavorites(comicIds);
@@ -286,7 +286,7 @@ bool ReadingListModel::dropSublist(const QMimeData *data, Qt::DropAction action,
     QList<QPair<int, int>> sublistsRows;
     QByteArray rawData = data->data(YACReader::YACReaderLibrarSubReadingListMimeDataFormat);
     QDataStream in(&rawData, QIODevice::ReadOnly);
-    in >> sublistsRows; //deserialize the list of indentifiers
+    in >> sublistsRows; // deserialize the list of indentifiers
 
     QLOG_DEBUG() << "dropped : " << sublistsRows;
 
@@ -303,7 +303,7 @@ bool ReadingListModel::dropSublist(const QMimeData *data, Qt::DropAction action,
     if (sourceRow == destRow)
         return false;
 
-    //beginMoveRows(destParent,sourceRow,sourceRow,destParent,destRow);
+    // beginMoveRows(destParent,sourceRow,sourceRow,destParent,destRow);
 
     auto parentItem = static_cast<ReadingListItem *>(destParent.internalPointer());
     ReadingListItem *child = parentItem->child(sourceRow);
@@ -311,7 +311,7 @@ bool ReadingListModel::dropSublist(const QMimeData *data, Qt::DropAction action,
     parentItem->appendChild(child, destRow);
 
     reorderingChildren(parentItem->children());
-    //endMoveRows();
+    // endMoveRows();
 
     return true;
 }
@@ -322,7 +322,7 @@ QMimeData *ReadingListModel::mimeData(const QModelIndexList &indexes) const
 
     if (indexes.length() == 0) {
         QLOG_ERROR() << "mimeData requested: indexes is empty";
-        return new QMimeData(); //TODO what happens if 0 is returned?
+        return new QMimeData(); // TODO what happens if 0 is returned?
     }
 
     if (indexes.length() > 1) {
@@ -337,7 +337,7 @@ QMimeData *ReadingListModel::mimeData(const QModelIndexList &indexes) const
 
     QByteArray data;
     QDataStream out(&data, QIODevice::WriteOnly);
-    out << rows; //serialize the list of identifiers
+    out << rows; // serialize the list of identifiers
 
     auto mimeData = new QMimeData();
     mimeData->setData(YACReader::YACReaderLibrarSubReadingListMimeDataFormat, data);
@@ -354,17 +354,17 @@ void ReadingListModel::setupReadingListsData(QString path)
     _databasePath = path;
     QSqlDatabase db = DataBaseManagement::loadDatabase(path);
 
-    //setup special lists
+    // setup special lists
     specialLists = setupSpecialLists(db);
 
-    //separator--------------------------------------------
+    // separator--------------------------------------------
 
-    //setup labels
+    // setup labels
     setupLabels(db);
 
-    //separator--------------------------------------------
+    // separator--------------------------------------------
 
-    //setup reading list
+    // setup reading list
     setupReadingLists(db);
 
     endResetModel();
@@ -391,7 +391,7 @@ void ReadingListModel::addReadingList(const QString &name)
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-        beginInsertRows(QModelIndex(), 0, 0); //TODO calculate the right coordinates before inserting
+        beginInsertRows(QModelIndex(), 0, 0); // TODO calculate the right coordinates before inserting
 
         qulonglong id = DBHelper::insertReadingList(name, db);
         ReadingListItem *newItem;
@@ -416,7 +416,7 @@ void ReadingListModel::addReadingListAt(const QString &name, const QModelIndex &
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-        beginInsertRows(mi, 0, 0); //TODO calculate the right coordinates before inserting
+        beginInsertRows(mi, 0, 0); // TODO calculate the right coordinates before inserting
 
         auto readingListParent = static_cast<ReadingListItem *>(mi.internalPointer());
         qulonglong id = DBHelper::insertReadingSubList(name, mi.data(IDRole).toULongLong(), readingListParent->childCount(), db);
@@ -488,8 +488,8 @@ void ReadingListModel::rename(const QModelIndex &mi, const QString &name)
             DBHelper::renameList(item->getId(), name, db);
 
             if (rli->parent->getId() != 0) {
-                //TODO
-                //move row depending on the name
+                // TODO
+                // move row depending on the name
             } else
                 emit dataChanged(index(mi.row(), 0), index(mi.row(), 0));
         } else if (typeid(*item) == typeid(LabelItem)) {
@@ -609,7 +609,7 @@ QList<SpecialListItem *> ReadingListModel::setupSpecialLists(QSqlDatabase &db)
                                     << selectQuery.value(id));
     }
 
-    //Reading after Favorites, Why? Because I want to :P
+    // Reading after Favorites, Why? Because I want to :P
     list.insert(1, new SpecialListItem(QList<QVariant>() << "Reading" << 0));
 
     return list;
@@ -634,7 +634,7 @@ void ReadingListModel::setupLabels(QSqlDatabase &db)
                                        << selectQuery.value(ordering)));
     }
 
-    //TEST
+    // TEST
 
     //    INSERT INTO label (name, color, ordering) VALUES ("Oh Oh", "red", 1);
     //    INSERT INTO label (name, color, ordering) VALUES ("lalala", "orange", 2);
@@ -652,18 +652,18 @@ void ReadingListModel::setupLabels(QSqlDatabase &db)
 
 void ReadingListModel::setupReadingLists(QSqlDatabase &db)
 {
-    //setup root item
+    // setup root item
     rootItem = new ReadingListItem(QList<QVariant>() << "ROOT" << 0 << true << false);
 
     QSqlQuery selectQuery("select * from reading_list order by parentId IS NULL DESC", db);
 
-    //setup reading lists
+    // setup reading lists
     setupReadingListsData(selectQuery, rootItem);
 
-    //TEST
-    //    ReadingListItem * node1;
-    //    rootItem->appendChild(node1 = new ReadingListItem(QList<QVariant>() /*<< 0*/ << "My reading list" << "atr"));
-    //    rootItem->appendChild(new ReadingListItem(QList<QVariant>() /*<< 0*/ << "X timeline" << "atr"));
+    // TEST
+    //     ReadingListItem * node1;
+    //     rootItem->appendChild(node1 = new ReadingListItem(QList<QVariant>() /*<< 0*/ << "My reading list" << "atr"));
+    //     rootItem->appendChild(new ReadingListItem(QList<QVariant>() /*<< 0*/ << "X timeline" << "atr"));
 
     //    node1->appendChild(new ReadingListItem(QList<QVariant>() /*<< 0*/ << "sublist" << "atr",node1));
 }
@@ -679,7 +679,7 @@ int ReadingListModel::addLabelIntoList(LabelItem *item)
             i++;
 
         if (i < labels.count()) {
-            if (labels.at(i)->colorid() == item->colorid()) //sort by name
+            if (labels.at(i)->colorid() == item->colorid()) // sort by name
             {
                 while (i < labels.count() && labels.at(i)->colorid() == item->colorid() && naturalSortLessThanCI(labels.at(i)->name(), item->name()))
                     i++;
@@ -720,7 +720,7 @@ void ReadingListModel::reorderingChildren(QList<ReadingListItem *> children)
 bool ReadingListModel::rowIsSpecialList(int row, const QModelIndex &parent) const
 {
     if (parent.isValid())
-        return false; //by now no sublists in special list
+        return false; // by now no sublists in special list
 
     if (row >= 0 && row < specialLists.count())
         return true;
@@ -731,7 +731,7 @@ bool ReadingListModel::rowIsSpecialList(int row, const QModelIndex &parent) cons
 bool ReadingListModel::rowIsLabel(int row, const QModelIndex &parent) const
 {
     if (parent.isValid())
-        return false; //by now no sublists in labels
+        return false; // by now no sublists in labels
 
     if (row > specialLists.count() && row <= specialLists.count() + labels.count())
         return true;
@@ -742,7 +742,7 @@ bool ReadingListModel::rowIsLabel(int row, const QModelIndex &parent) const
 bool ReadingListModel::rowIsReadingList(int row, const QModelIndex &parent) const
 {
     if (parent.isValid())
-        return true; //only lists with sublists
+        return true; // only lists with sublists
 
     int separatorsCount = labels.isEmpty() ? 1 : 2;
 
@@ -755,7 +755,7 @@ bool ReadingListModel::rowIsReadingList(int row, const QModelIndex &parent) cons
 bool ReadingListModel::rowIsSeparator(int row, const QModelIndex &parent) const
 {
     if (parent.isValid())
-        return false; //only separators at top level
+        return false; // only separators at top level
 
     if (row == specialLists.count())
         return true;

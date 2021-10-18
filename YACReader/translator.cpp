@@ -56,7 +56,7 @@ YACReaderTranslator::YACReaderTranslator(Viewer *parent)
 
     auto layout = new QVBoxLayout(this);
 
-    //TITLE BAR
+    // TITLE BAR
     auto titleBar = new QHBoxLayout();
     auto close = new QPushButton(QIcon(QPixmap(":/images/close.png")), "");
     close->setFlat(true);
@@ -73,7 +73,7 @@ YACReaderTranslator::YACReaderTranslator(Viewer *parent)
 
     layout->addLayout(titleBar);
 
-    //INPUT TEXT
+    // INPUT TEXT
     text = new QTextEdit(this);
     text->setMinimumHeight(110);
     text->setMaximumHeight(110);
@@ -81,7 +81,7 @@ YACReaderTranslator::YACReaderTranslator(Viewer *parent)
     layout->addWidget(text);
     text->setStyleSheet("QTextEdit{border:none;background:#2a2a2a;color:white; font-size:12px; padding:6px;}" + scrollBarStyle);
 
-    //COMBOBOXES
+    // COMBOBOXES
     auto combos = new QHBoxLayout();
     from = new QComboBox(this);
     to = new QComboBox(this);
@@ -112,7 +112,7 @@ YACReaderTranslator::YACReaderTranslator(Viewer *parent)
     layout->addSpacing(12);
     layout->addLayout(combos);
 
-    //RESULTS
+    // RESULTS
     auto resultsTitleLayout = new QHBoxLayout();
     resultsTitle = new QLabel(tr("Translation"));
     resultsTitle->setStyleSheet("QLabel {font-family:Arial;font-size:14px;color:#e3e3e3;}");
@@ -136,7 +136,7 @@ YACReaderTranslator::YACReaderTranslator(Viewer *parent)
 
     layout->addStretch();
 
-    //CLEAR BUTTON
+    // CLEAR BUTTON
     clearButton = new QPushButton(tr("clear"));
     layout->addWidget(clearButton, 0, Qt::AlignRight);
     clearButton->setMinimumWidth(95);
@@ -162,7 +162,7 @@ YACReaderTranslator::YACReaderTranslator(Viewer *parent)
     connect(speakButton, &QAbstractButton::pressed, this, &YACReaderTranslator::play);
     connect(clearButton, &QAbstractButton::pressed, this, &YACReaderTranslator::clear);
 
-    //multimedia/phonon
+    // multimedia/phonon
 #if QT_VERSION >= 0x050000
     player = new QMediaPlayer;
 #else
@@ -289,7 +289,7 @@ void YACReaderTranslator::populateCombos()
 
 void YACReaderTranslator::play()
 {
-    //QMessageBox::question(this,"xxx",ttsSource.toString());
+    // QMessageBox::question(this,"xxx",ttsSource.toString());
 #if QT_VERSION >= 0x050000
 
     player->setMedia(ttsSource);

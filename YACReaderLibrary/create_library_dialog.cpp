@@ -37,22 +37,22 @@ void CreateLibraryDialog::setupUI()
 
     auto content = new QGridLayout;
 
-    //QHBoxLayout *nameLayout = new QHBoxLayout;
+    // QHBoxLayout *nameLayout = new QHBoxLayout;
 
     content->addWidget(nameLabel, 0, 0);
     content->addWidget(nameEdit, 0, 1);
 
-    //QHBoxLayout *libraryLayout = new QHBoxLayout;
+    // QHBoxLayout *libraryLayout = new QHBoxLayout;
 
     content->addWidget(textLabel, 1, 0);
     content->addWidget(path, 1, 1);
     content->addWidget(find, 1, 2);
-    content->setColumnMinimumWidth(2, 0); //TODO
+    content->setColumnMinimumWidth(2, 0); // TODO
 
     auto bottomLayout = new QHBoxLayout;
     bottomLayout->addWidget(message = new QLabel(tr("Create a library could take several minutes. You can stop the process and update the library later for completing the task.")));
     message->setWordWrap(true);
-    //message->hide();
+    // message->hide();
     bottomLayout->addStretch();
     bottomLayout->addWidget(accept);
     bottomLayout->addWidget(cancel);

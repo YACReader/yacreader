@@ -19,7 +19,7 @@ class SelectComic;
 class SelectVolume;
 class SortVolumeComics;
 
-//TODO this should use a QStateMachine
+// TODO this should use a QStateMachine
 //----------------------------------------
 class ComicVineDialog : public QDialog
 {
@@ -41,7 +41,7 @@ protected slots:
     void goNext();
     void goBack();
     void debugClientResults(const QString &string);
-    //show widget methods
+    // show widget methods
     void showSeriesQuestion();
     void showSearchSingleComic();
     void showSearchVolume();
@@ -71,9 +71,9 @@ private:
     void toggleSkipButton();
 
     enum ScraperMode {
-        SingleComic, //the scraper has been opened for a single comic
-        Volume, //the scraper is trying to get comics info for a whole volume
-        SingleComicInList //the scraper has been opened for a list of unrelated comics
+        SingleComic, // the scraper has been opened for a single comic
+        Volume, // the scraper is trying to get comics info for a whole volume
+        SingleComicInList // the scraper has been opened for a list of unrelated comics
     };
 
     enum ScraperStatus {
@@ -100,7 +100,7 @@ private:
     QPushButton *searchButton;
     QPushButton *closeButton;
 
-    //stacked widgets
+    // stacked widgets
     QStackedWidget *content;
 
     QWidget *infoNotFound;

@@ -7,7 +7,7 @@
 YACReaderDarkMenu::YACReaderDarkMenu(QWidget *parent)
     : QMenu(parent)
 {
-    //solid color: #454545
+    // solid color: #454545
     QString style = "QMenu {background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6B6B6B, stop: 1 #424242); "
                     "border-left: 1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #BCBCBC, stop: 1 #4C4C4C);"
                     "border-right: 1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #BCBCBC, stop: 1 #4C4C4C);"
@@ -22,17 +22,17 @@ YACReaderDarkMenu::YACReaderDarkMenu(QWidget *parent)
     setStyleSheet(style);
 
     /*
-	QPixmap p(":/images/icon.png");
-	QLabel * l = new QLabel();
-	l->setPixmap(p);
-	l->move(0,-10);
+        QPixmap p(":/images/icon.png");
+        QLabel * l = new QLabel();
+        l->setPixmap(p);
+        l->move(0,-10);
 
-	//test
-	YACReaderDarkMenu * customMenu = new YACReaderDarkMenu(this);
-	customMenu->addAction(toggleFullScreenAction);
-	customMenu->addAction(createLibraryAction);
-	customMenu->addSeparator();
-	customMenu->addAction(openComicAction);
-	customMenu->show();
-	*/
+        //test
+        YACReaderDarkMenu * customMenu = new YACReaderDarkMenu(this);
+        customMenu->addAction(toggleFullScreenAction);
+        customMenu->addAction(createLibraryAction);
+        customMenu->addSeparator();
+        customMenu->addAction(openComicAction);
+        customMenu->show();
+        */
 }

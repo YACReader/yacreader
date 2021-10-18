@@ -15,8 +15,8 @@ public:
 
 signals:
     void searchResult(QString);
-    void seriesDetail(QString); //JSON
-    void comicDetail(QString); //JSON
+    void seriesDetail(QString); // JSON
+    void comicDetail(QString); // JSON
     void seriesCover(const QByteArray &);
     void comicCover(const QByteArray &);
     void volumeComicsInfo(QString);

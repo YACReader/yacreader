@@ -20,12 +20,12 @@ HelpAboutDialog::HelpAboutDialog(QWidget *parent)
 
     tabWidget->addTab(aboutText = new QTextBrowser(), tr("About"));
     aboutText->setOpenExternalLinks(true);
-    //aboutText->setFont(QFont("Comic Sans MS", 10)); //purisa
+    // aboutText->setFont(QFont("Comic Sans MS", 10)); //purisa
     tabWidget->addTab(helpText = new QTextBrowser(), tr("Help"));
     helpText->setOpenExternalLinks(true);
-    //helpText->setFont(QFont("Comic Sans MS", 10));
-    //helpText->setDisabled(true);
-    //tabWidget->addTab(,"About Qt");
+    // helpText->setFont(QFont("Comic Sans MS", 10));
+    // helpText->setDisabled(true);
+    // tabWidget->addTab(,"About Qt");
 
     layout->addWidget(tabWidget);
     layout->setContentsMargins(1, 3, 1, 1);

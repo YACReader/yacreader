@@ -52,11 +52,11 @@ void EditShortcutItemDelegate::closeShortcutEditor()
     emit closeEditor(static_cast<QWidget *>(sender()), QAbstractItemDelegate::NoHint);
 }
 
-//TODO uncoment commented code for enabling concatenated shortcuts
+// TODO uncoment commented code for enabling concatenated shortcuts
 KeySequenceLineEdit::KeySequenceLineEdit(QWidget *parent)
     : QLineEdit(parent) //,numKeys(0)
 {
-    //keys[0] = keys[1] = keys[2] = keys[3] = 0;
+    // keys[0] = keys[1] = keys[2] = keys[3] = 0;
     setAlignment(Qt::AlignRight);
 
     QPixmap clearPixmap(":/images/clear_shortcut.png");
@@ -83,10 +83,10 @@ KeySequenceLineEdit::KeySequenceLineEdit(QWidget *parent)
 void KeySequenceLineEdit::resizeEvent(QResizeEvent *e)
 {
     QSize szClear = clearButton->sizeHint();
-    //int frameWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
+    // int frameWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
     int leftMargin = style()->pixelMetric(QStyle::PM_LayoutLeftMargin);
-    //int topMargin = style()->pixelMetric(QStyle::PM_LayoutTopMargin);
-    clearButton->move(0 + leftMargin, (e->size().height() - 19) / 2); //16 is the icon height+1blank pixel
+    // int topMargin = style()->pixelMetric(QStyle::PM_LayoutTopMargin);
+    clearButton->move(0 + leftMargin, (e->size().height() - 19) / 2); // 16 is the icon height+1blank pixel
 
     acceptButton->move(leftMargin + szClear.width(), (e->size().height() - 19) / 2);
 }
@@ -95,7 +95,7 @@ void KeySequenceLineEdit::keyPressEvent(QKeyEvent *e)
 {
     int key = e->key();
 
-    //if ( numKeys > 3 ||
+    // if ( numKeys > 3 ||
     if (key == Qt::Key_Control ||
         key == Qt::Key_Shift ||
         key == Qt::Key_Meta ||
@@ -120,7 +120,7 @@ void KeySequenceLineEdit::keyPressEvent(QKeyEvent *e)
         default:
             break;
     }*/
-    //numKeys++;
+    // numKeys++;
     QKeySequence keySequence = QKeySequence(key);
     setText(keySequence.toString(QKeySequence::NativeText));
     e->accept();

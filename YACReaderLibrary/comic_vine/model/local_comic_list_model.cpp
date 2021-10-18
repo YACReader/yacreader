@@ -13,7 +13,7 @@ void LocalComicListModel::load(QList<ComicDB> &comics)
 QModelIndex LocalComicListModel::parent(const QModelIndex &index) const
 {
     Q_UNUSED(index)
-    return QModelIndex(); //no parent
+    return QModelIndex(); // no parent
 }
 
 int LocalComicListModel::rowCount(const QModelIndex &parent) const
@@ -40,7 +40,7 @@ QVariant LocalComicListModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
     if (role == Qt::TextAlignmentRole) {
-        //TODO
+        // TODO
     }
 
     if (role != Qt::DisplayRole)
@@ -48,10 +48,10 @@ QVariant LocalComicListModel::data(const QModelIndex &index, int role) const
 
     int row = index.row();
 
-    //if(row < _data.count())
+    // if(row < _data.count())
     return _data[row].getFileName();
-    //else
-    //return QVariant();
+    // else
+    // return QVariant();
 }
 
 Qt::ItemFlags LocalComicListModel::flags(const QModelIndex &index) const

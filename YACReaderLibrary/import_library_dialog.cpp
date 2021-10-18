@@ -33,7 +33,7 @@ void ImportLibraryDialog::setupUI()
 
     cancel = new QPushButton(tr("Cancel"));
     connect(cancel, &QAbstractButton::clicked, this, &ImportLibraryDialog::close);
-    //connect(cancel,SIGNAL(clicked()),this,SIGNAL(rejected()));
+    // connect(cancel,SIGNAL(clicked()),this,SIGNAL(rejected()));
 
     find = new QPushButton(QIcon(":/images/find_folder.png"), "");
     connect(find, &QAbstractButton::clicked, this, &ImportLibraryDialog::findPath);
@@ -49,12 +49,12 @@ void ImportLibraryDialog::setupUI()
     content->addWidget(textLabel, 1, 0);
     content->addWidget(path, 1, 1);
     content->addWidget(find, 1, 2);
-    content->setColumnStretch(2, 0); //TODO
+    content->setColumnStretch(2, 0); // TODO
 
     content->addWidget(destLabel, 2, 0);
     content->addWidget(destPath, 2, 1);
     content->addWidget(findDest, 2, 2);
-    //destLayout->setStretchFactor(findDest,0); //TODO
+    // destLayout->setStretchFactor(findDest,0); //TODO
 
     auto bottomLayout = new QHBoxLayout;
     bottomLayout->addStretch();
@@ -69,7 +69,7 @@ void ImportLibraryDialog::setupUI()
 
     auto mainLayout = new QVBoxLayout;
     mainLayout->addLayout(content);
-    //mainLayout->addWidget(progress = new QLabel());
+    // mainLayout->addWidget(progress = new QLabel());
     mainLayout->addStretch();
     mainLayout->addWidget(progressBar);
     mainLayout->addLayout(bottomLayout);

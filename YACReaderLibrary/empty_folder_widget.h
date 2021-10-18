@@ -13,7 +13,7 @@ public:
 signals:
     void subfolderSelected(QModelIndex, int);
 
-    //Drops
+    // Drops
     void copyComicsToCurrentFolder(QList<QPair<QString, QString>>);
     void moveComicsToCurrentFolder(QList<QPair<QString, QString>>);
 
@@ -26,7 +26,7 @@ protected:
     QStringListModel *subfoldersModel;
     QString backgroundColor;
 
-    //Drop to import
+    // Drop to import
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dropEvent(QDropEvent *event) override;
 };

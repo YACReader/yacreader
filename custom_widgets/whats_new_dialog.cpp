@@ -85,7 +85,7 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
 
     mainLayout->addWidget(scrollArea);
 
-    //containerLayout->addWidget(content);
+    // containerLayout->addWidget(content);
     scrollArea->setWidget(content);
     scrollArea->setWidgetResizable(true);
 

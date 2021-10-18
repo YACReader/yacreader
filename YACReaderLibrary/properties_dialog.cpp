@@ -38,11 +38,11 @@ PropertiesDialog::PropertiesDialog(QWidget *parent)
     createTabBar();
 
     mainLayout = new QGridLayout;
-    //mainLayout->addWidget(coverBox,0,0);
+    // mainLayout->addWidget(coverBox,0,0);
     mainLayout->addWidget(tabBar, 0, 1);
     mainLayout->setColumnStretch(1, 1);
     /*mainLayout->addWidget(authorsBox,1,1);
-	mainLayout->addWidget(publishingBox,2,1);*/
+        mainLayout->addWidget(publishingBox,2,1);*/
     mainLayout->addWidget(buttonBox, 1, 1, Qt::AlignBottom);
 
     mainWidget = new QWidget(this);
@@ -56,7 +56,7 @@ PropertiesDialog::PropertiesDialog(QWidget *parent)
     int sHeight, sWidth;
     sHeight = static_cast<int>(heightDesktopResolution * 0.65);
     sWidth = static_cast<int>(sHeight * 1.4);
-    //setCover(QPixmap(":/images/notCover.png"));
+    // setCover(QPixmap(":/images/notCover.png"));
 
     this->move(QPoint((widthDesktopResolution - sWidth) / 2, ((heightDesktopResolution - sHeight) - 40) / 2));
     setModal(true);
@@ -118,9 +118,9 @@ void PropertiesDialog::createCoverBox()
     coverBox->move(0, 444 - 28);
     layout->setContentsMargins(5, 4, 5, 0);
 
-    //busyIndicator = new YACReaderBusyWidget(this);
-    //busyIndicator->move((280-busyIndicator->width())/2,(444-busyIndicator->height()-28)/2);
-    //busyIndicator->hide();
+    // busyIndicator = new YACReaderBusyWidget(this);
+    // busyIndicator->move((280-busyIndicator->width())/2,(444-busyIndicator->height()-28)/2);
+    // busyIndicator->hide();
 
     connect(showPreviousCoverPageButton, &QAbstractButton::clicked, this, &PropertiesDialog::loadPreviousCover);
     connect(showNextCoverPageButton, &QAbstractButton::clicked, this, &PropertiesDialog::loadNextCover);
@@ -130,7 +130,7 @@ QFrame *createLine()
 {
     QFrame *line = new QFrame();
     line->setObjectName(QString::fromUtf8("line"));
-    //line->setGeometry(QRect(320, 150, 118, 3));
+    // line->setGeometry(QRect(320, 150, 118, 3));
     line->setFrameShape(QFrame::HLine);
     line->setFrameShadow(QFrame::Sunken);
 
@@ -144,7 +144,7 @@ void PropertiesDialog::createGeneralInfoBox()
     auto generalInfoLayout = new QFormLayout;
 
     generalInfoLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
-    //generalInfoLayout->setRowWrapPolicy(QFormLayout::WrapAllRows);
+    // generalInfoLayout->setRowWrapPolicy(QFormLayout::WrapAllRows);
     generalInfoLayout->addRow(tr("Title:"), title = new YACReaderFieldEdit());
 
     auto number = new QHBoxLayout;
@@ -159,7 +159,7 @@ void PropertiesDialog::createGeneralInfoBox()
     countEdit->setValidator(&countValidator);
     number->addStretch(1);
     /*generalInfoLayout->addRow(tr("&Issue number:"), );
-	generalInfoLayout->addRow(tr("&Bis:"), );*/
+        generalInfoLayout->addRow(tr("&Bis:"), );*/
     generalInfoLayout->addRow(tr("Issue number:"), number);
 
     generalInfoLayout->addRow(tr("Volume:"), volumeEdit = new YACReaderFieldEdit());
@@ -181,8 +181,8 @@ void PropertiesDialog::createGeneralInfoBox()
 
     generalInfoLayout->addRow(tr("Size:"), size = new QLabel("size"));
 
-    //generalInfoLayout->addRow(tr("Comic Vine link:"), comicVineLink = new QLabel("..."));
-    //generalInfoLayout->addRow(bottom);
+    // generalInfoLayout->addRow(tr("Comic Vine link:"), comicVineLink = new QLabel("..."));
+    // generalInfoLayout->addRow(bottom);
 
     auto main = new QVBoxLayout;
     main->addLayout(generalInfoLayout);
@@ -199,7 +199,7 @@ void PropertiesDialog::createAuthorsBox()
 
     auto authorsLayout = new QVBoxLayout;
 
-    //authorsLayout->setRowWrapPolicy(QFormLayout::WrapAllRows);
+    // authorsLayout->setRowWrapPolicy(QFormLayout::WrapAllRows);
     auto h1 = new QHBoxLayout;
     auto vl1 = new QVBoxLayout;
     auto vr1 = new QVBoxLayout;
@@ -209,8 +209,8 @@ void PropertiesDialog::createAuthorsBox()
     vr1->addWidget(new QLabel(tr("Penciller(s):")));
     vr1->addWidget(penciller = new YACReaderFieldPlainTextEdit());
     h1->addLayout(vr1);
-    //authorsLayout->addRow(tr("Writer(s):"), new YACReaderFieldPlainTextEdit());
-    //authorsLayout->addRow(tr("Penciller(s):"), new YACReaderFieldPlainTextEdit());
+    // authorsLayout->addRow(tr("Writer(s):"), new YACReaderFieldPlainTextEdit());
+    // authorsLayout->addRow(tr("Penciller(s):"), new YACReaderFieldPlainTextEdit());
     auto h2 = new QHBoxLayout;
     auto vl2 = new QVBoxLayout;
     auto vr2 = new QVBoxLayout;
@@ -221,8 +221,8 @@ void PropertiesDialog::createAuthorsBox()
     vr2->addWidget(colorist = new YACReaderFieldPlainTextEdit());
     h2->addLayout(vr2);
 
-    //authorsLayout->addRow(tr("Inker(s):"), new YACReaderFieldPlainTextEdit());
-    //authorsLayout->addRow(tr("Colorist(s):"), new YACReaderFieldPlainTextEdit());
+    // authorsLayout->addRow(tr("Inker(s):"), new YACReaderFieldPlainTextEdit());
+    // authorsLayout->addRow(tr("Colorist(s):"), new YACReaderFieldPlainTextEdit());
 
     auto h3 = new QHBoxLayout;
     auto vl3 = new QVBoxLayout;
@@ -233,8 +233,8 @@ void PropertiesDialog::createAuthorsBox()
     vr3->addWidget(new QLabel(tr("Cover Artist(s):")));
     vr3->addWidget(coverArtist = new YACReaderFieldPlainTextEdit());
     h3->addLayout(vr3);
-    //authorsLayout->addRow(tr("Letterer(es):"), new YACReaderFieldPlainTextEdit());
-    //authorsLayout->addRow(tr("Cover Artist(s):"), new YACReaderFieldPlainTextEdit());
+    // authorsLayout->addRow(tr("Letterer(es):"), new YACReaderFieldPlainTextEdit());
+    // authorsLayout->addRow(tr("Cover Artist(s):"), new YACReaderFieldPlainTextEdit());
 
     authorsLayout->addLayout(h1);
     authorsLayout->addLayout(h2);
@@ -298,9 +298,9 @@ void PropertiesDialog::createButtonBox()
 
     closeButton = buttonBox->addButton(QDialogButtonBox::Close);
     saveButton = buttonBox->addButton(QDialogButtonBox::Save);
-    //rotateWidgetsButton = buttonBox->addButton(tr("Rotate &Widgets"),QDialogButtonBox::ActionRole);
+    // rotateWidgetsButton = buttonBox->addButton(tr("Rotate &Widgets"),QDialogButtonBox::ActionRole);
 
-    //connect(rotateWidgetsButton, SIGNAL(clicked()), this, SLOT(rotateWidgets()));
+    // connect(rotateWidgetsButton, SIGNAL(clicked()), this, SLOT(rotateWidgets()));
     connect(closeButton, &QAbstractButton::clicked, this, &QWidget::close);
     connect(saveButton, &QAbstractButton::clicked, this, &PropertiesDialog::save);
 }
@@ -414,7 +414,7 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
         }
     }
     /*if(comic.info.numPages != NULL)
-	numPagesEdit->setText(QString::number(*comic.info.numPages));*/
+        numPagesEdit->setText(QString::number(*comic.info.numPages));*/
 
     if (!comic.info.number.isNull())
         numberEdit->setText(comic.info.number.toString());
@@ -607,7 +607,7 @@ void PropertiesDialog::save()
 {
     QList<ComicDB>::iterator itr;
     for (itr = comics.begin(); itr != comics.end(); itr++) {
-        //Comic & comic = comics[0];
+        // Comic & comic = comics[0];
         bool edited = false;
 
         if (title->isModified()) {
@@ -622,7 +622,7 @@ void PropertiesDialog::save()
             }
 
         /*if(comic.info.numPages != NULL)
-		numPagesEdit->setText(QString::number(*comic.info.numPages));*/
+                numPagesEdit->setText(QString::number(*comic.info.numPages));*/
         if (comics.size() == 1)
             if (numberEdit->isModified()) {
                 if (numberEdit->text().isEmpty())
@@ -814,8 +814,8 @@ void PropertiesDialog::paintEvent(QPaintEvent *event)
 
     p.drawPixmap(0, 0, coverImage);
 
-    //QPixmap shadow(":/images/social_dialog/shadow.png");
-    //p.drawPixmap(280-shadow.width(),0,shadow.width(),444,shadow);
+    // QPixmap shadow(":/images/social_dialog/shadow.png");
+    // p.drawPixmap(280-shadow.width(),0,shadow.width(),444,shadow);
     p.drawLine(279, 0, 279, 444);
     if (comics.length() == 1)
         p.fillRect(0, 444 - 28, 280, 28, QColor(0, 0, 0, 153));
@@ -843,7 +843,7 @@ void PropertiesDialog::loadNextCover()
         }
 
         showPreviousCoverPageButton->setEnabled(true);
-        //busyIndicator->show();
+        // busyIndicator->show();
         if (current + 1 != comics.at(0).info.coverPage)
             coverChanged = true;
         else
@@ -866,7 +866,7 @@ void PropertiesDialog::loadPreviousCover()
         }
 
         showNextCoverPageButton->setEnabled(true);
-        //busyIndicator->show();
+        // busyIndicator->show();
         if (current - 1 != comics.at(0).info.coverPage.toInt())
             coverChanged = true;
         else

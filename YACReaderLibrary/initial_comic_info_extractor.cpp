@@ -18,7 +18,7 @@ InitialComicInfoExtractor::InitialComicInfoExtractor(QString fileSource, QString
 void InitialComicInfoExtractor::extract()
 {
     QFileInfo fi(_fileSource);
-    if (!fi.exists()) //TODO: error file not found.
+    if (!fi.exists()) // TODO: error file not found.
     {
         _cover.load(":/images/notCover.png");
         QLOG_WARN() << "Extracting cover: file not found " << _fileSource;
@@ -30,9 +30,9 @@ void InitialComicInfoExtractor::extract()
         MacOSXPDFComic *pdfComic = new MacOSXPDFComic();
         if (!pdfComic->openComic(_fileSource)) {
             delete pdfComic;
-            //QImage p;
-            //p.load(":/images/notCover.png");
-            //p.save(_target);
+            // QImage p;
+            // p.load(":/images/notCover.png");
+            // p.save(_target);
             return;
         }
 #elif defined USE_PDFIUM
@@ -47,15 +47,15 @@ void InitialComicInfoExtractor::extract()
 
         if (!pdfComic) {
             QLOG_WARN() << "Extracting cover: unable to open PDF file " << _fileSource;
-            //delete pdfComic; //TODO check if the delete is needed
+            // delete pdfComic; //TODO check if the delete is needed
             pdfComic = 0;
-            //QImage p;
-            //p.load(":/images/notCover.png");
-            //p.save(_target);
+            // QImage p;
+            // p.load(":/images/notCover.png");
+            // p.save(_target);
             return;
         }
 #if !defined USE_PDFKIT && !defined USE_PDFIUM
-        //poppler only, not mac
+        // poppler only, not mac
         if (pdfComic->isLocked()) {
             QLOG_WARN() << "Extracting cover: unable to open PDF file " << _fileSource;
             delete pdfComic;
@@ -65,7 +65,7 @@ void InitialComicInfoExtractor::extract()
         _numPages = pdfComic->numPages();
         if (_numPages >= _coverPage) {
 #if defined Q_OS_MAC || defined USE_PDFIUM
-            QImage p = pdfComic->getPage(_coverPage - 1); //TODO check if the page is valid
+            QImage p = pdfComic->getPage(_coverPage - 1); // TODO check if the page is valid
 #else
             QImage p = pdfComic->page(_coverPage - 1)->renderToImage(72, 72);
 #endif //
@@ -73,7 +73,7 @@ void InitialComicInfoExtractor::extract()
             _coverSize = QPair<int, int>(p.width(), p.height());
             if (_target != "") {
                 QImage scaled;
-                if (p.width() > p.height()) //landscape??
+                if (p.width() > p.height()) // landscape??
                 {
                     scaled = p.scaledToWidth(640, Qt::SmoothTransformation);
                 } else {
@@ -82,15 +82,15 @@ void InitialComicInfoExtractor::extract()
                 scaled.save(_target, 0, 75);
             } else if (_target != "") {
                 QLOG_WARN() << "Extracting cover: requested cover index greater than numPages " << _fileSource;
-                //QImage p;
-                //p.load(":/images/notCover.png");
-                //p.save(_target);
+                // QImage p;
+                // p.load(":/images/notCover.png");
+                // p.save(_target);
             }
             delete pdfComic;
         }
         return;
     }
-#endif //NO_PDF
+#endif // NO_PDF
 
     if (crash) {
         return;
@@ -108,7 +108,7 @@ void InitialComicInfoExtractor::extract()
 
     QList<QString> order = archive.getFileNames();
 
-    //Try to find embeded XML info (ComicRack or ComicTagger)
+    // Try to find embeded XML info (ComicRack or ComicTagger)
 
     auto infoIndex = 0;
     for (auto &fileName : order) {
@@ -126,7 +126,7 @@ void InitialComicInfoExtractor::extract()
         return;
     }
 
-    //se filtran para obtener sólo los formatos soportados
+    // se filtran para obtener sólo los formatos soportados
     QList<QString> fileNames = FileComic::filter(order);
     _numPages = fileNames.size();
     if (_numPages == 0) {
@@ -152,7 +152,7 @@ void InitialComicInfoExtractor::extract()
             if (p.loadFromData(archive.getRawDataAtIndex(index))) {
                 _coverSize = QPair<int, int>(p.width(), p.height());
                 QImage scaled;
-                if (p.width() > p.height()) //landscape??
+                if (p.width() > p.height()) // landscape??
                 {
                     scaled = p.scaledToWidth(640, Qt::SmoothTransformation);
                 } else {
@@ -161,8 +161,8 @@ void InitialComicInfoExtractor::extract()
                 scaled.save(_target, 0, 75);
             } else {
                 QLOG_WARN() << "Extracting cover: unable to load image from extracted cover " << _fileSource;
-                //p.load(":/images/notCover.png");
-                //p.save(_target);
+                // p.load(":/images/notCover.png");
+                // p.save(_target);
             }
         }
     }

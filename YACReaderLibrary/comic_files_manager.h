@@ -6,7 +6,7 @@
 #include <QPair>
 #include <QModelIndex>
 
-//this class is intended to work in background, just use moveToThread and process to start working
+// this class is intended to work in background, just use moveToThread and process to start working
 class ComicFilesManager : public QObject
 {
     Q_OBJECT
@@ -19,7 +19,7 @@ signals:
     void currentComic(QString);
     void progress(int);
     void finished();
-    void success(QModelIndex); //at least one comics has been copied or moved
+    void success(QModelIndex); // at least one comics has been copied or moved
 public slots:
     void process();
     void cancel();

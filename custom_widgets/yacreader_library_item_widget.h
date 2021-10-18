@@ -24,7 +24,7 @@ signals:
 public slots:
     void showUpDownButtons(bool show);
 
-    //bool eventFilter(QObject *object, QEvent *event);
+    // bool eventFilter(QObject *object, QEvent *event);
     void select();
     void deselect();
     void setName(const QString &name);

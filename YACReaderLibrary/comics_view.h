@@ -41,18 +41,18 @@ signals:
     void openComic(const ComicDB &comic, const ComicModel::Mode mode);
     void comicRated(int, QModelIndex);
 
-    //Context menus
+    // Context menus
     void customContextMenuViewRequested(QPoint);
     void customContextMenuItemRequested(QPoint);
 
-    //Drops
+    // Drops
     void copyComicsToCurrentFolder(QList<QPair<QString, QString>>);
     void moveComicsToCurrentFolder(QList<QPair<QString, QString>>);
 
 protected:
     ComicModel *model;
 
-    //Drop to import
+    // Drop to import
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dropEvent(QDropEvent *event) override;
 

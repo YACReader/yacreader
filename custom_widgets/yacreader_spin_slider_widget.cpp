@@ -88,5 +88,5 @@ QSize YACReaderSpinSliderWidget::minimumSizeHint() const
 void YACReaderSpinSliderWidget::setTracking(bool b)
 {
     tracking = b;
-    //slider->setTracking(b);
+    // slider->setTracking(b);
 }

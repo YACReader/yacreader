@@ -103,7 +103,7 @@ public:
     void updateConfig(QSettings *settings) override;
     void remove(int cover) override;
     void resortCovers(QList<int> newOrder) override;
-    //public slots:
+    // public slots:
     //	void setCF_RX(int value);
     //	//the Y Rotation of the Coverflow
     //	void setCF_RY(int value);

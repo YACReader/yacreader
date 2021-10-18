@@ -30,7 +30,7 @@ bool HttpVersionChecker::checkNewVersion(QString sourceContent)
     int index = 0;
     bool newVersion = false;
     bool sameVersion = true;
-    //bool currentVersionIsNewer = false;
+    // bool currentVersionIsNewer = false;
 #ifdef QT_DEBUG
     QString version(PREVIOUS_VERSION_TESTING);
 #else

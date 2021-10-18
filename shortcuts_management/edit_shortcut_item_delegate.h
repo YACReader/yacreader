@@ -14,8 +14,8 @@ public:
     explicit KeySequenceLineEdit(QWidget *parent = 0);
 
 protected:
-    //int numKeys;
-    //int keys[4];
+    // int numKeys;
+    // int keys[4];
     void keyPressEvent(QKeyEvent *);
     int translateModifiers(Qt::KeyboardModifiers state, const QString &text);
     void resizeEvent(QResizeEvent *);

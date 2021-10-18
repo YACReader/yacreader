@@ -47,7 +47,7 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
     setAttribute(Qt::WA_MacShowFocusRect, false);
     setPlaceholderText(tr("type to search"));
 
-    //search modifiers
+    // search modifiers
     modifiers << "[read]"
               << "[unread]"; //<< "[author]";
     modifiersCompleter = new QCompleter(modifiers);
@@ -77,7 +77,7 @@ void YACReaderSearchLineEdit::clearText()
     connect(this, &QLineEdit::textChanged, this, &YACReaderSearchLineEdit::processText);
 }
 
-//modifiers are not returned
+// modifiers are not returned
 const QString YACReaderSearchLineEdit::text()
 {
     QString text = QLineEdit::text();
@@ -118,7 +118,7 @@ void YACReaderSearchLineEdit::processText(const QString &text)
 
     QRegExp regExp("(\\[.*\\])(.*)");
     if (text.startsWith("[")) {
-        if (regExp.exactMatch(text)) //avoid search while the modifiers are being written
+        if (regExp.exactMatch(text)) // avoid search while the modifiers are being written
         {
             QString modifier = regExp.cap(1);
             QString searchText = regExp.cap(2).trimmed();
@@ -126,7 +126,7 @@ void YACReaderSearchLineEdit::processText(const QString &text)
             int indexOfModifier = modifiers.indexOf(modifier);
             if (indexOfModifier != -1) {
                 QLOG_TRACE() << "modifier : " << modifier << "text : " << searchText;
-                emit filterChanged(static_cast<YACReader::SearchModifiers>(indexOfModifier + 1), searchText); //TODO, do not use on indexOF
+                emit filterChanged(static_cast<YACReader::SearchModifiers>(indexOfModifier + 1), searchText); // TODO, do not use on indexOF
             } else {
                 QLOG_ERROR() << "invalid modifier : " << modifier;
             }

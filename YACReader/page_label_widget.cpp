@@ -50,7 +50,7 @@ void PageLabelWidget::show()
         }
 
         QWidget::show();
-        //connect(animation,SIGNAL(finished()),this,SLOT(QWidget::hide()));
+        // connect(animation,SIGNAL(finished()),this,SLOT(QWidget::hide()));
         animation->disconnect();
 
         animation->setStartValue(QPoint((parent->geometry().size().width() - this->width()), -this->height()));
@@ -66,7 +66,7 @@ void PageLabelWidget::hide()
         if (parent == nullptr) {
             return;
         }
-        //connect(animation,SIGNAL(finished()),this,SLOT(setHidden()));
+        // connect(animation,SIGNAL(finished()),this,SLOT(setHidden()));
         animation->setStartValue(QPoint((parent->geometry().size().width() - this->width()), 0));
         animation->setEndValue(QPoint((parent->geometry().size().width() - this->width()), -this->height()));
         animation->start();

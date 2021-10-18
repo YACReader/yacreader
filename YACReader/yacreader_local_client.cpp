@@ -13,16 +13,16 @@ YACReaderLocalClient::YACReaderLocalClient(QObject *parent)
 {
     localSocket = new QLocalSocket(this);
 
-    //connect(localSocket, SIGNAL(readyRead()), this, SLOT(readMessage()));
+    // connect(localSocket, SIGNAL(readyRead()), this, SLOT(readMessage()));
 
     /*connect(socket, SIGNAL(error(QLocalSocket::LocalSocketError)),
-			this, SLOT(displayError(QLocalSocket::LocalSocketError)));*/
+                        this, SLOT(displayError(QLocalSocket::LocalSocketError)));*/
 }
 YACReaderLocalClient::~YACReaderLocalClient()
 {
     delete localSocket;
 }
-//información de comic recibida...
+// información de comic recibida...
 void YACReaderLocalClient::readMessage()
 {
 }
@@ -49,7 +49,7 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB &comic, Q
         while (written != block.size() && tries < 200) {
             written += localSocket->write(block);
             localSocket->flush();
-            if (written == previousWritten) //no bytes were written
+            if (written == previousWritten) // no bytes were written
                 tries++;
             previousWritten = written;
         }
@@ -61,7 +61,7 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB &comic, Q
 
         localSocket->waitForBytesWritten(2000);
 
-        //QByteArray data;
+        // QByteArray data;
         tries = 0;
         int dataAvailable = 0;
         QByteArray packageSize;
@@ -70,7 +70,7 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB &comic, Q
             packageSize.append(localSocket->read(sizeof(quint32) - packageSize.size()));
             localSocket->waitForReadyRead(100);
             if (dataAvailable == packageSize.size()) {
-                tries++; //TODO apply 'tries' fix
+                tries++; // TODO apply 'tries' fix
             }
             dataAvailable = packageSize.size();
         }
@@ -79,7 +79,7 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB &comic, Q
             QLOG_ERROR() << "Requesting Comic Info : unable to read package size";
             return false;
         }
-        QDataStream sizeStream(packageSize); //localSocket->read(sizeof(quint32)));
+        QDataStream sizeStream(packageSize); // localSocket->read(sizeof(quint32)));
         sizeStream.setVersion(QDataStream::Qt_4_8);
         quint32 totalSize = 0;
         sizeStream >> totalSize;
@@ -119,7 +119,7 @@ bool YACReaderLocalClient::sendComicInfo(quint64 libraryId, ComicDB &comic)
 {
     localSocket->connectToServer(YACREADERLIBRARY_GUID);
     if (localSocket->isOpen()) {
-        //QLOG_INFO() << "Connection opened for sending ComicInfo";
+        // QLOG_INFO() << "Connection opened for sending ComicInfo";
         QByteArray block;
         QDataStream out(&block, QIODevice::WriteOnly);
         out.setVersion(QDataStream::Qt_4_8);
@@ -141,7 +141,7 @@ bool YACReaderLocalClient::sendComicInfo(quint64 libraryId, ComicDB &comic)
         }
         localSocket->waitForBytesWritten(2000);
         localSocket->close();
-        //QLOG_INFO() << QString("Sending Comic Info : writen data (%1,%2)").arg(written).arg(block.size());
+        // QLOG_INFO() << QString("Sending Comic Info : writen data (%1,%2)").arg(written).arg(block.size());
         if (tries == 100 && written != block.size()) {
             emit finished();
             QLOG_ERROR() << QString("Sending Comic Info : unable to write data (%1,%2)").arg(written).arg(block.size());
@@ -160,7 +160,7 @@ bool YACReaderLocalClient::sendComicInfo(quint64 libraryId, ComicDB &comic, qulo
 {
     localSocket->connectToServer(YACREADERLIBRARY_GUID);
     if (localSocket->isOpen()) {
-        //QLOG_INFO() << "Connection opened for sending ComicInfo";
+        // QLOG_INFO() << "Connection opened for sending ComicInfo";
         QByteArray block;
         QDataStream out(&block, QIODevice::WriteOnly);
         out.setVersion(QDataStream::Qt_4_8);
@@ -183,7 +183,7 @@ bool YACReaderLocalClient::sendComicInfo(quint64 libraryId, ComicDB &comic, qulo
         }
         localSocket->waitForBytesWritten(2000);
         localSocket->close();
-        //QLOG_INFO() << QString("Sending Comic Info : writen data (%1,%2)").arg(written).arg(block.size());
+        // QLOG_INFO() << QString("Sending Comic Info : writen data (%1,%2)").arg(written).arg(block.size());
         if (tries == 100 && written != block.size()) {
             emit finished();
             QLOG_ERROR() << QString("Sending Comic Info : unable to write data (%1,%2)").arg(written).arg(block.size());

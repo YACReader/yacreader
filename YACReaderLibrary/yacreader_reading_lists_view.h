@@ -12,7 +12,7 @@ public:
     explicit YACReaderReadingListsView(QWidget *parent = nullptr);
 
 protected:
-    //Drop to import & internal Drag&Drop for resorting
+    // Drop to import & internal Drag&Drop for resorting
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dragMoveEvent(QDragMoveEvent *event) override;
     void dropEvent(QDropEvent *event) override;

@@ -29,8 +29,8 @@ void YACReaderLibraryListWidget::addItem(QString name, QString path)
 
     librariesList.insert(itr, library);
 
-    //connect(library,SIGNAL(selected(QString,QString)),this,SIGNAL(librarySelected(QString,QString)));
-    //connect(library,SIGNAL(selected(QString,QString)),this,SLOT(updateLibraries(QString,QString)));
+    // connect(library,SIGNAL(selected(QString,QString)),this,SIGNAL(librarySelected(QString,QString)));
+    // connect(library,SIGNAL(selected(QString,QString)),this,SLOT(updateLibraries(QString,QString)));
 
     mainLayout->insertWidget(i, library);
 }

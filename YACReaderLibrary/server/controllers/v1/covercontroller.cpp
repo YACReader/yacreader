@@ -19,7 +19,7 @@ void CoverController::service(HttpRequest &request, HttpResponse &response)
 
     response.setHeader("Content-Type", "image/jpeg");
     response.setHeader("Connection", "close");
-    //response.setHeader("Content-Type", "plain/text; charset=ISO-8859-1");
+    // response.setHeader("Content-Type", "plain/text; charset=ISO-8859-1");
 
     YACReaderLibraries libraries = DBHelper::getLibraries();
 
@@ -30,12 +30,12 @@ void CoverController::service(HttpRequest &request, HttpResponse &response)
 
     bool folderCover = request.getParameter("folderCover").length() > 0;
 
-    //response.writeText(path+"<br/>");
-    //response.writeText(libraryName+"<br/>");
-    //response.writeText(libraries.value(libraryName)+"/.yacreaderlibrary/covers/"+fileName+"<br/>");
+    // response.writeText(path+"<br/>");
+    // response.writeText(libraryName+"<br/>");
+    // response.writeText(libraries.value(libraryName)+"/.yacreaderlibrary/covers/"+fileName+"<br/>");
 
-    //QFile file(libraries.value(libraryName)+"/.yacreaderlibrary/covers/"+fileName);
-    //if (file.exists()) {
+    // QFile file(libraries.value(libraryName)+"/.yacreaderlibrary/covers/"+fileName);
+    // if (file.exists()) {
     //	if (file.open(QIODevice::ReadOnly))
     //	{
     //		qDebug("StaticFileController: Open file %s",qPrintable(file.fileName()));
@@ -81,7 +81,7 @@ void CoverController::service(HttpRequest &request, HttpResponse &response)
         destImg.save(&buffer, "JPG");
         response.write(ba, true);
     }
-    //DONE else, hay que devolver un 404
+    // DONE else, hay que devolver un 404
     else {
         response.setStatus(404, "not found");
         response.write("404 not found", true);

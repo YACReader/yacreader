@@ -12,7 +12,7 @@
 #include <QSqlQuery>
 #include <QSqlDatabase>
 
-//Copy/pasted from "folder_model.cpp"
+// Copy/pasted from "folder_model.cpp"
 #define ROOT 1
 
 YACReader::FolderQueryResultProcessor::FolderQueryResultProcessor(FolderModel *model)
@@ -29,7 +29,7 @@ void YACReader::FolderQueryResultProcessor::createModelData(const YACReader::Sea
         {
             QSqlDatabase db = DataBaseManagement::loadDatabase(model->getDatabase());
 
-            QSqlQuery selectQuery(db); //TODO check
+            QSqlQuery selectQuery(db); // TODO check
             if (!includeComics) {
                 selectQuery.prepare("select * from folder where id <> 1 and upper(name) like upper(:filter) order by parentId,name ");
                 selectQuery.bindValue(":filter", "%%" + filter + "%%");
@@ -70,8 +70,8 @@ void YACReader::FolderQueryResultProcessor::createModelData(const YACReader::Sea
 
                     setupFilteredModelData(selectQuery);
                 } catch (const std::exception &e) {
-                    //Do nothing, uncomplete search string will end here and it is part of how the QueryParser works
-                    //I don't like the idea of using exceptions for this though
+                    // Do nothing, uncomplete search string will end here and it is part of how the QueryParser works
+                    // I don't like the idea of using exceptions for this though
                 }
             }
 
@@ -86,7 +86,7 @@ void YACReader::FolderQueryResultProcessor::setupFilteredModelData(QSqlQuery &sq
 {
     FolderItem *rootItem = 0;
 
-    //inicializar el nodo ra�z
+    // inicializar el nodo ra�z
     QList<QVariant> rootData;
     rootData << "root";
     rootItem = new FolderItem(rootData);
@@ -97,7 +97,7 @@ void YACReader::FolderQueryResultProcessor::setupFilteredModelData(QSqlQuery &sq
 
     QMap<unsigned long long int, FolderItem *> *filteredItems = new QMap<unsigned long long int, FolderItem *>();
 
-    //add tree root node
+    // add tree root node
     filteredItems->insert(parent->id, parent);
 
     QSqlRecord record = sqlquery.record();
@@ -108,8 +108,8 @@ void YACReader::FolderQueryResultProcessor::setupFilteredModelData(QSqlQuery &sq
     int completed = record.indexOf("completed");
     int parentIdIndex = record.indexOf("parentId");
 
-    while (sqlquery.next()) { //se procesan todos los folders que cumplen con el filtro
-        //datos de la base de datos
+    while (sqlquery.next()) { // se procesan todos los folders que cumplen con el filtro
+        // datos de la base de datos
         QList<QVariant> data;
 
         data << sqlquery.value(name).toString();
@@ -120,52 +120,52 @@ void YACReader::FolderQueryResultProcessor::setupFilteredModelData(QSqlQuery &sq
         auto item = new FolderItem(data);
         item->id = sqlquery.value(0).toULongLong();
 
-        //id del padre
+        // id del padre
         quint64 parentId = sqlquery.value(parentIdIndex).toULongLong();
 
-        //se a�ade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
+        // se a�ade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
         if (!filteredItems->contains(item->id))
             filteredItems->insert(item->id, item);
 
-        //es necesario conocer las coordenadas de origen para poder realizar scroll autom�tico en la vista
+        // es necesario conocer las coordenadas de origen para poder realizar scroll autom�tico en la vista
         item->originalItem = model->items.value(item->id);
 
-        //si el padre ya existe en el modelo, el item se a�ade como hijo
+        // si el padre ya existe en el modelo, el item se a�ade como hijo
         if (filteredItems->contains(parentId))
             filteredItems->value(parentId)->appendChild(item);
-        else //si el padre a�n no se ha a�adido, hay que a�adirlo a �l y todos los padres hasta el nodo ra�z
+        else // si el padre a�n no se ha a�adido, hay que a�adirlo a �l y todos los padres hasta el nodo ra�z
         {
-            //comprobamos con esta variable si el �ltimo de los padres (antes del nodo ra�z) ya exist�a en el modelo
+            // comprobamos con esta variable si el �ltimo de los padres (antes del nodo ra�z) ya exist�a en el modelo
             bool parentPreviousInserted = false;
 
-            //mientras no se alcance el nodo ra�z se procesan todos los padres (de abajo a arriba)
+            // mientras no se alcance el nodo ra�z se procesan todos los padres (de abajo a arriba)
             while (parentId != ROOT) {
-                //el padre no estaba en el modelo filtrado, as� que se rescata del modelo original
+                // el padre no estaba en el modelo filtrado, as� que se rescata del modelo original
                 FolderItem *parentItem = model->items.value(parentId);
-                //se debe crear un nuevo nodo (para no compartir los hijos con el nodo original)
-                FolderItem *newparentItem = new FolderItem(parentItem->getData()); //padre que se a�adir� a la estructura de directorios filtrados
+                // se debe crear un nuevo nodo (para no compartir los hijos con el nodo original)
+                FolderItem *newparentItem = new FolderItem(parentItem->getData()); // padre que se a�adir� a la estructura de directorios filtrados
                 newparentItem->id = parentId;
 
                 newparentItem->originalItem = parentItem;
 
-                //si el modelo contiene al padre, se a�ade el item actual como hijo
+                // si el modelo contiene al padre, se a�ade el item actual como hijo
                 if (filteredItems->contains(parentId)) {
                     filteredItems->value(parentId)->appendChild(item);
                     parentPreviousInserted = true;
                 }
-                //sino se registra el nodo para poder encontrarlo con posterioridad y se a�ade el item actual como hijo
+                // sino se registra el nodo para poder encontrarlo con posterioridad y se a�ade el item actual como hijo
                 else {
                     newparentItem->appendChild(item);
                     filteredItems->insert(newparentItem->id, newparentItem);
                     parentPreviousInserted = false;
                 }
 
-                //variables de control del bucle, se avanza hacia el nodo padre
+                // variables de control del bucle, se avanza hacia el nodo padre
                 item = newparentItem;
                 parentId = parentItem->parentItem->id;
             }
 
-            //si el nodo es hijo de 1 y no hab�a sido previamente insertado como hijo, se a�ade como tal
+            // si el nodo es hijo de 1 y no hab�a sido previamente insertado como hijo, se a�ade como tal
             if (!parentPreviousInserted) {
                 filteredItems->value(ROOT)->appendChild(item);
             } else {

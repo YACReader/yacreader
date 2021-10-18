@@ -25,14 +25,14 @@ void PageController::service(HttpRequest &request, HttpResponse &response)
     QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
     bool remote = path.endsWith("remote");
 
-    //QByteArray path2=request.getPath();
-    //qDebug("PageController: request to -> %s ",path2.data());
+    // QByteArray path2=request.getPath();
+    // qDebug("PageController: request to -> %s ",path2.data());
 
     QStringList pathElements = path.split('/');
     qulonglong comicId = pathElements.at(4).toULongLong();
     unsigned int page = pathElements.at(6).toUInt();
 
-    //qDebug("lib name : %s",pathElements.at(2).data());
+    // qDebug("lib name : %s",pathElements.at(2).data());
 
     Comic *comicFile;
     qulonglong currentComicId;
@@ -49,7 +49,7 @@ void PageController::service(HttpRequest &request, HttpResponse &response)
     if (currentComicId != 0 && !QPointer<Comic>(comicFile).isNull()) {
         if (comicId == currentComicId && page < comicFile->numPages()) {
             if (comicFile->pageIsLoaded(page)) {
-                //qDebug("PageController: La página estaba cargada -> %s ",path.data());
+                // qDebug("PageController: La página estaba cargada -> %s ",path.data());
                 response.setHeader("Content-Type", "image/jpeg");
                 response.setHeader("Transfer-Encoding", "chunked");
                 QByteArray pageData = comicFile->getRawPage(page);
@@ -59,22 +59,22 @@ void PageController::service(HttpRequest &request, HttpResponse &response)
                     int len = data.readRawData(buffer, 4096);
                     response.write(QByteArray(buffer, len));
                 }
-                //response.write(pageData,true);
+                // response.write(pageData,true);
                 response.write(QByteArray(), true);
             } else {
-                //qDebug("PageController: La página NO estaba cargada 404 -> %s ",path.data());
-                response.setStatus(404, "not found"); //TODO qué mensaje enviar
+                // qDebug("PageController: La página NO estaba cargada 404 -> %s ",path.data());
+                response.setStatus(404, "not found"); // TODO qué mensaje enviar
                 response.write("404 not found", true);
             }
         } else {
             if (comicId != currentComicId) {
-                //delete comicFile;
+                // delete comicFile;
                 if (remote)
                     ySession->dismissCurrentRemoteComic();
                 else
                     ySession->dismissCurrentComic();
             }
-            response.setStatus(404, "not found"); //TODO qué mensaje enviar
+            response.setStatus(404, "not found"); // TODO qué mensaje enviar
             response.write("404 not found", true);
         }
     } else {
@@ -82,5 +82,5 @@ void PageController::service(HttpRequest &request, HttpResponse &response)
         response.write("404 not found", true);
     }
 
-    //response.write(t.toLatin1(),true);
+    // response.write(t.toLatin1(),true);
 }

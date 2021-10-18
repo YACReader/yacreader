@@ -9,10 +9,10 @@ class VolumesModel : public JSONModel
 public:
     explicit VolumesModel(QObject *parent = nullptr);
     virtual ~VolumesModel();
-    //receive a valid json with a list of volumes
+    // receive a valid json with a list of volumes
     void load(const QString &json) override;
 
-    //QAbstractItemModel methods
+    // QAbstractItemModel methods
     QModelIndex parent(const QModelIndex &index) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent) const override;

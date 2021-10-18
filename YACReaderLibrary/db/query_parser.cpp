@@ -113,7 +113,7 @@ std::string QueryParser::token(bool advance)
 
     auto lexeme = currentToken.lexeme();
 
-    auto res = (tokenType() == Token::Type::quotedWord) ? currentToken.lexeme().substr(1, lexeme.size() - 2) : lexeme; //TODO process quotedWordDiferently?
+    auto res = (tokenType() == Token::Type::quotedWord) ? currentToken.lexeme().substr(1, lexeme.size() - 2) : lexeme; // TODO process quotedWordDiferently?
     if (advance) {
         this->advance();
     }

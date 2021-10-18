@@ -9,12 +9,12 @@
 
 using namespace std;
 
-//This program uses PROTOS Genome Test Suite c10-archive [0] for testing the CompressedArchive wrapper files support
-//It tests the following formats: RAR, ZIP, TAR
-//Arter downloading c10-archive-r1.iso, open it and full extract RAR_TAR.BZ2, ZIP_TAR.BZ2, TAR_TAR.BZ2 files into a folder
-//This program takes the path to that folder as an argument
+// This program uses PROTOS Genome Test Suite c10-archive [0] for testing the CompressedArchive wrapper files support
+// It tests the following formats: RAR, ZIP, TAR
+// Arter downloading c10-archive-r1.iso, open it and full extract RAR_TAR.BZ2, ZIP_TAR.BZ2, TAR_TAR.BZ2 files into a folder
+// This program takes the path to that folder as an argument
 //
-// [0] https://www.ee.oulu.fi/research/ouspg/PROTOS_Test-Suite_c10-archive#Download
+//  [0] https://www.ee.oulu.fi/research/ouspg/PROTOS_Test-Suite_c10-archive#Download
 //
 int main(int argc, char *argv[])
 {
@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    //QCoreApplication app(argc, argv);
+    // QCoreApplication app(argc, argv);
 
     QString s(argv[1]);
 
@@ -77,5 +77,5 @@ int main(int argc, char *argv[])
     cout << "Total time : " << timer.elapsed() / 1000 << "s" << endl;
     cout << endl;
 
-    //return app.exec();
+    // return app.exec();
 }

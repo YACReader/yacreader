@@ -36,7 +36,7 @@ signals:
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
-    //bool eventFilter(QObject *, QEvent *);
+    // bool eventFilter(QObject *, QEvent *);
 };
 
 #endif

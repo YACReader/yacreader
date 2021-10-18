@@ -35,12 +35,12 @@ class PictureFlowPrivate;
 using namespace YACReader;
 
 /*!
-  Class PictureFlow implements an image show widget with animation effect 
-  like Apple's CoverFlow (in iTunes and iPod). Images are arranged in form 
-  of slides, one main slide is shown at the center with few slides on 
-  the left and right sides of the center slide. When the next or previous 
-  slide is brought to the front, the whole slides flow to the right or 
-  the right with smooth animation effect; until the new slide is finally 
+  Class PictureFlow implements an image show widget with animation effect
+  like Apple's CoverFlow (in iTunes and iPod). Images are arranged in form
+  of slides, one main slide is shown at the center with few slides on
+  the left and right sides of the center slide. When the next or previous
+  slide is brought to the front, the whole slides flow to the right or
+  the right with smooth animation effect; until the new slide is finally
   placed at the center.
 
  */
@@ -150,7 +150,7 @@ public slots:
     void setSlide(int index, const QPixmap &pixmap);
 
     /*!
-    Sets slide to be shown in the middle of the viewport. No animation 
+    Sets slide to be shown in the middle of the viewport. No animation
     effect will be produced, unlike using showSlide.
   */
     void setCenterIndex(int index);

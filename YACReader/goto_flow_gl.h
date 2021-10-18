@@ -31,7 +31,7 @@ private:
     YACReaderPageFlowGL *flow;
     void keyPressEvent(QKeyEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
-    //Comic * comic;
+    // Comic * comic;
     QSize imageSize;
 };
 

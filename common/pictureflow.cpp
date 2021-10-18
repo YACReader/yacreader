@@ -369,7 +369,7 @@ void PictureFlowAnimator::start(int slide)
     if (!animateTimer.isActive() && state) {
         step = (target < state->centerSlide.slideIndex) ? -1 : 1;
         animateTimer.setSingleShot(true);
-        animateTimer.start(30); //TODO comprobar rendimiento, originalmente era 30
+        animateTimer.start(30); // TODO comprobar rendimiento, originalmente era 30
         animating = true;
     }
 }
@@ -386,17 +386,17 @@ void PictureFlowAnimator::stop(int slide)
 void PictureFlowAnimator::update()
 {
     /*if(!animateTimer.isActive())
-	return;*/
+        return;*/
     if (step == 0)
         return;
     if (!state)
         return;
 
-    int speed = 16384 / 4; //TODO comprobar rendimiento, originalmente era /4
+    int speed = 16384 / 4; // TODO comprobar rendimiento, originalmente era /4
 
 #if 1
     // deaccelerate when approaching the target
-    const int max = 2 * 65536; //TODO cambiado de 2 * a 4 * comprobar rendimiento
+    const int max = 2 * 65536; // TODO cambiado de 2 * a 4 * comprobar rendimiento
 
     int fi = frame;
     fi -= (target << 16);
@@ -590,7 +590,7 @@ void PictureFlowSoftwareRenderer::init()
     int wh = size.height();
     int w = (ww + 1) / 2;
     int h = (wh + 1) / 2;
-    if (h < 10) //TODO a partir de qué h es seguro??
+    if (h < 10) // TODO a partir de qué h es seguro??
         return;
 
 #ifdef PICTUREFLOW_QT4
@@ -670,7 +670,7 @@ static QImage *prepareSurface(const QImage *slideImage, int w, int h, QRgb bgcol
     // because we process one column at a time
     // (and much better and faster to work row-wise, i.e in one scanline)
     int lhof = (h - psh);
-    //int lwof = (w-psw)/2;
+    // int lwof = (w-psw)/2;
     for (int x = 0; x < psw; x++)
         for (int y = 0; y < psh; y++)
 
@@ -765,8 +765,8 @@ QImage *PictureFlowSoftwareRenderer::surface(int slideIndex)
                     return surfaceCache[key];
 
     QImage *sr = prepareSurface(img, state->slideWidth, state->slideHeight, bgcolor, state->reflectionEffect);
-    //check if this slide must be marked
-    //if(marks[slideIndex])
+    // check if this slide must be marked
+    // if(marks[slideIndex])
     if (state->showMarks) {
         if (state->marks[slideIndex]) {
             QPainter painter(sr);
@@ -775,13 +775,13 @@ QImage *PictureFlowSoftwareRenderer::surface(int slideIndex)
             int jInit = sh * 4 / 5;
             int iInit = state->slideHeight + state->slideHeight / 3;
             /*for(int j = jInit; j < sh; j ++)
-		  {
-			  for(int i = iInit-(j-jInit); i < iInit; i ++)
-			  {
+                  {
+                          for(int i = iInit-(j-jInit); i < iInit; i ++)
+                          {
 
-				  painter.drawPoint(i,j);
-			  }
-		  }*/
+                                  painter.drawPoint(i,j);
+                          }
+                  }*/
             painter.drawImage(QRect(iInit - (sh - jInit), jInit, sh - jInit, sh - jInit), state->mark);
         }
     }
@@ -1221,8 +1221,8 @@ void PictureFlow::keyPressEvent(QKeyEvent *event)
 {
     if ((event->key() == Qt::Key_Left && !(d->state->flowRightToLeft)) || (event->key() == Qt::Key_Right && d->state->flowRightToLeft)) {
         /*if(event->modifiers() == Qt::ControlModifier)
-	  showSlide(centerIndex()-10);
-	else*/
+          showSlide(centerIndex()-10);
+        else*/
         showPrevious();
         event->accept();
         return;
@@ -1230,15 +1230,15 @@ void PictureFlow::keyPressEvent(QKeyEvent *event)
 
     if ((event->key() == Qt::Key_Right && !(d->state->flowRightToLeft)) || (event->key() == Qt::Key_Left && d->state->flowRightToLeft)) {
         /*if(event->modifiers() == Qt::ControlModifier)
-	  showSlide(centerIndex()+10);
-	else*/
+          showSlide(centerIndex()+10);
+        else*/
         showNext();
         event->accept();
         return;
     }
 
     if (event->key() == Qt::Key_Up) {
-        //TODO emit selected signal
+        // TODO emit selected signal
         return;
     }
 
@@ -1257,7 +1257,7 @@ void PictureFlow::mousePressEvent(QMouseEvent *event, int slideWidth)
     else if ((event->x() < (width() - slideWidth) / 2 && !(d->state->flowRightToLeft)) || (event->x() > (width() + slideWidth) / 2 && d->state->flowRightToLeft))
         showPrevious();
 
-    //else (centered slide space)
+    // else (centered slide space)
 }
 
 void PictureFlow::paintEvent(QPaintEvent *event)
@@ -1279,7 +1279,7 @@ void PictureFlow::resizeEvent(QResizeEvent *event)
     QWidget::resizeEvent(event);
 }
 #include <QTime>
-void PictureFlow::updateAnimation() //bucle principal
+void PictureFlow::updateAnimation() // bucle principal
 {
     QTime now;
     now.start();
@@ -1288,7 +1288,7 @@ void PictureFlow::updateAnimation() //bucle principal
     int old_center = d->state->centerIndex;
     d->animator->update();
     if (framesSkip == 0)
-        render(); //triggerRender();
+        render(); // triggerRender();
     else {
         framesSkip--;
         frameSkiped = true;

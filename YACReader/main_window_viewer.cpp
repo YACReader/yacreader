@@ -40,33 +40,33 @@
 class MacToolBarSeparator : public QWidget
 {
 public:
-	MacToolBarSeparator(QWidget * parent =0)
-		:QWidget(parent)
-	{
-		setFixedWidth(2);
-	}
+        MacToolBarSeparator(QWidget * parent =0)
+                :QWidget(parent)
+        {
+                setFixedWidth(2);
+        }
 
-	void paintEvent(QPaintEvent *event)
-	{
-		Q_UNUSED(event);
-		QPainter painter(this);
+        void paintEvent(QPaintEvent *event)
+        {
+                Q_UNUSED(event);
+                QPainter painter(this);
 
-		QLinearGradient lG(0,0,0,height());
+                QLinearGradient lG(0,0,0,height());
 
-		lG.setColorAt(0,QColor(128,128,128,0));
-		lG.setColorAt(0.5,QColor(128,128,128,255));
-		lG.setColorAt(1,QColor(128,128,128,0));
+                lG.setColorAt(0,QColor(128,128,128,0));
+                lG.setColorAt(0.5,QColor(128,128,128,255));
+                lG.setColorAt(1,QColor(128,128,128,0));
 
-		painter.fillRect(0,0,1,height(),lG);
+                painter.fillRect(0,0,1,height(),lG);
 
-		QLinearGradient lG2(1,0,1,height());
+                QLinearGradient lG2(1,0,1,height());
 
-		lG2.setColorAt(0,QColor(220,220,220,0));
-		lG2.setColorAt(0.5,QColor(220,220,220,255));
-		lG2.setColorAt(1,QColor(220,220,220,0));
+                lG2.setColorAt(0,QColor(220,220,220,0));
+                lG2.setColorAt(0.5,QColor(220,220,220,255));
+                lG2.setColorAt(1,QColor(220,220,220,0));
 
-		painter.fillRect(1,0,1,height(),lG2);
-	}
+                painter.fillRect(1,0,1,height(),lG2);
+        }
 };
 #endif*/
 
@@ -91,7 +91,7 @@ MainWindowViewer::~MainWindowViewer()
     delete viewer;
     delete had;
 
-    //delete sliderAction;
+    // delete sliderAction;
     delete openAction;
     delete openFolderAction;
     delete openLatestComicAction;
@@ -136,13 +136,13 @@ void MainWindowViewer::loadConfiguration()
 
 void MainWindowViewer::setupUI()
 {
-    //setUnifiedTitleAndToolBarOnMac(true);
+    // setUnifiedTitleAndToolBarOnMac(true);
 
     viewer = new Viewer(this);
     connect(viewer, &Viewer::reset, this, &MainWindowViewer::processReset);
-    //detected end of comic
+    // detected end of comic
     connect(viewer, &Viewer::openNextComic, this, &MainWindowViewer::openNextComic);
-    //detected start of comic
+    // detected start of comic
     connect(viewer, &Viewer::openPreviousComic, this, &MainWindowViewer::openPreviousComic);
 
     setCentralWidget(viewer);
@@ -157,7 +157,7 @@ void MainWindowViewer::setupUI()
         resize(QSize(width, height));
     }
 
-    had = new HelpAboutDialog(this); //TODO load data
+    had = new HelpAboutDialog(this); // TODO load data
 
     had->loadAboutInformation(":/files/about.html");
     had->loadHelp(":/files/helpYACReader.html");
@@ -169,7 +169,7 @@ void MainWindowViewer::setupUI()
     connect(optionsDialog, &OptionsDialog::changedImageOptions, viewer, &Viewer::updatePage);
 
     optionsDialog->restoreOptions(settings);
-    //shortcutsDialog = new ShortcutsDialog(this);
+    // shortcutsDialog = new ShortcutsDialog(this);
     editShortcutsDialog = new EditShortcutsDialog(this);
     connect(optionsDialog, &YACReaderOptionsDialog::editShortcuts, editShortcutsDialog, &QWidget::show);
 
@@ -184,10 +184,10 @@ void MainWindowViewer::setupUI()
 
     viewer->setFocusPolicy(Qt::StrongFocus);
 
-    //if(Configuration::getConfiguration().getAlwaysOnTop())
+    // if(Configuration::getConfiguration().getAlwaysOnTop())
     //{
     //	setWindowFlags(this->windowFlags() | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
-    //}
+    // }
 
     previousWindowFlags = windowFlags();
     previousPos = pos();
@@ -249,7 +249,7 @@ void MainWindowViewer::createActions()
     connect(openLatestComicAction, &QAction::triggered, this, &MainWindowViewer::openLatestComic);
 
     QAction *recentFileAction = nullptr;
-    //TODO: Replace limit with a configurable value
+    // TODO: Replace limit with a configurable value
     for (int i = 0; i < Configuration::getConfiguration().getOpenRecentSize(); i++) {
         recentFileAction = new QAction(this);
         recentFileAction->setVisible(false);
@@ -305,10 +305,10 @@ void MainWindowViewer::createActions()
 
     adjustHeightAction = new QAction(tr("Fit Height"), this);
     adjustHeightAction->setIcon(QIcon(":/images/viewer_toolbar/toHeight.png"));
-    //adjustWidth->setCheckable(true);
+    // adjustWidth->setCheckable(true);
     adjustHeightAction->setDisabled(true);
     adjustHeightAction->setToolTip(tr("Fit image to height"));
-    //adjustWidth->setIcon(QIcon(":/images/fitWidth.png"));
+    // adjustWidth->setIcon(QIcon(":/images/fitWidth.png"));
     adjustHeightAction->setData(ADJUST_HEIGHT_ACTION_Y);
     adjustHeightAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADJUST_HEIGHT_ACTION_Y));
     adjustHeightAction->setCheckable(true);
@@ -316,10 +316,10 @@ void MainWindowViewer::createActions()
 
     adjustWidthAction = new QAction(tr("Fit Width"), this);
     adjustWidthAction->setIcon(QIcon(":/images/viewer_toolbar/toWidth.png"));
-    //adjustWidth->setCheckable(true);
+    // adjustWidth->setCheckable(true);
     adjustWidthAction->setDisabled(true);
     adjustWidthAction->setToolTip(tr("Fit image to width"));
-    //adjustWidth->setIcon(QIcon(":/images/fitWidth.png"));
+    // adjustWidth->setIcon(QIcon(":/images/fitWidth.png"));
     adjustWidthAction->setData(ADJUST_WIDTH_ACTION_Y);
     adjustWidthAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADJUST_WIDTH_ACTION_Y));
     adjustWidthAction->setCheckable(true);
@@ -342,7 +342,7 @@ void MainWindowViewer::createActions()
     fitToPageAction->setCheckable(true);
     connect(fitToPageAction, &QAction::triggered, this, &MainWindowViewer::fitToPageSwitch);
 
-    //fit modes have to be exclusive and checkable
+    // fit modes have to be exclusive and checkable
     auto fitModes = new QActionGroup(this);
     fitModes->addAction(adjustHeightAction);
     fitModes->addAction(adjustWidthAction);
@@ -412,7 +412,7 @@ void MainWindowViewer::createActions()
     doublePageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(DOUBLE_PAGE_ACTION_Y));
     connect(doublePageAction, &QAction::triggered, viewer, &Viewer::doublePageSwitch);
 
-    //inversed pictures mode
+    // inversed pictures mode
     doubleMangaPageAction = new QAction(tr("Double page manga mode"), this);
     doubleMangaPageAction->setToolTip(tr("Reverse reading order in double page mode"));
     doubleMangaPageAction->setIcon(QIcon(":/images/viewer_toolbar/doubleMangaPage.png"));
@@ -479,7 +479,7 @@ void MainWindowViewer::createActions()
     showShorcutsAction->setIcon(QIcon(":/images/viewer_toolbar/shortcuts.png"));
     showShorcutsAction->setData(SHOW_SHORCUTS_ACTION_Y);
     showShorcutsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_SHORCUTS_ACTION_Y));
-    //connect(showShorcutsAction, SIGNAL(triggered()),shortcutsDialog,SLOT(show()));
+    // connect(showShorcutsAction, SIGNAL(triggered()),shortcutsDialog,SLOT(show()));
     connect(showShorcutsAction, &QAction::triggered, editShortcutsDialog, &QWidget::show);
 
     showInfoAction = new QAction(tr("Show Info"), this);
@@ -497,13 +497,13 @@ void MainWindowViewer::createActions()
 
     showDictionaryAction = new QAction(tr("Show Dictionary"), this);
     showDictionaryAction->setIcon(QIcon(":/images/viewer_toolbar/translator.png"));
-    //showDictionaryAction->setCheckable(true);
+    // showDictionaryAction->setCheckable(true);
     showDictionaryAction->setDisabled(true);
     showDictionaryAction->setData(SHOW_DICTIONARY_ACTION_Y);
     showDictionaryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_DICTIONARY_ACTION_Y));
     connect(showDictionaryAction, &QAction::triggered, viewer, &Viewer::translatorSwitch);
 
-    //deprecated
+    // deprecated
     alwaysOnTopAction = new QAction(tr("Always on top"), this);
     alwaysOnTopAction->setIcon(QIcon(":/images/alwaysOnTop.png"));
     alwaysOnTopAction->setCheckable(true);
@@ -535,7 +535,7 @@ void MainWindowViewer::createToolBars()
 #endif
 
 #ifdef Q_OS_MAC
-    //comicToolBar->setIconSize(QSize(16,16));
+    // comicToolBar->setIconSize(QSize(16,16));
 #else
     comicToolBar->setIconSize(QSize(18, 18));
     comicToolBar->setStyleSheet("QToolBar{border:none;}");
@@ -617,7 +617,7 @@ void MainWindowViewer::createToolBars()
     comicToolBar->addAction(showShorcutsAction);
     comicToolBar->addAction(optionsAction);
     comicToolBar->addAction(helpAboutAction);
-    //comicToolBar->addAction(closeAction);
+    // comicToolBar->addAction(closeAction);
 
 #ifndef Q_OS_MAC
     comicToolBar->setMovable(false);
@@ -668,13 +668,13 @@ void MainWindowViewer::createToolBars()
 
     viewer->setContextMenuPolicy(Qt::ActionsContextMenu);
 
-    //MacOSX app menus
+    // MacOSX app menus
 #ifdef Q_OS_MAC
     auto menuBar = this->menuBar();
-    //about / preferences
-    //TODO
+    // about / preferences
+    // TODO
 
-    //file
+    // file
     auto fileMenu = new QMenu(tr("File"));
 
     fileMenu->addAction(newInstanceAction);
@@ -741,14 +741,14 @@ void MainWindowViewer::createToolBars()
     menuBar->addMenu(windowMenu);
     menuBar->addMenu(helpMenu);
 
-    //tool bar
-    //QMenu * toolbarMenu = new QMenu(tr("Toolbar"));
-    //toolbarMenu->addAction();
-    //TODO
+    // tool bar
+    // QMenu * toolbarMenu = new QMenu(tr("Toolbar"));
+    // toolbarMenu->addAction();
+    // TODO
 
-    //menu->addMenu(toolbarMenu);
+    // menu->addMenu(toolbarMenu);
 
-    //attach toolbar
+    // attach toolbar
 
     comicToolBar->attachToWindow(this->windowHandle());
 
@@ -759,7 +759,7 @@ void MainWindowViewer::refreshRecentFilesActionList()
 {
     QStringList recentFilePaths = Configuration::getConfiguration().openRecentList();
 
-    //TODO: Replace limit with something configurable
+    // TODO: Replace limit with something configurable
     int iteration = (recentFilePaths.size() < Configuration::getConfiguration().getOpenRecentSize())
             ? recentFilePaths.size()
             : Configuration::getConfiguration().getOpenRecentSize();
@@ -876,7 +876,7 @@ void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId, Open
     } else {
         isClient = false;
         QMessageBox::information(this, "Connection Error", "Unable to connect to YACReaderLibrary");
-        //error
+        // error
     }
 
     optionsDialog->setFilters(currentComicDB.info.brightness, currentComicDB.info.contrast, currentComicDB.info.gamma);
@@ -886,11 +886,11 @@ void MainWindowViewer::openComicFromPath(QString pathFile)
 {
     doubleMangaPageAction->setChecked(Configuration::getConfiguration().getDoubleMangaPage());
     openComic(pathFile);
-    isClient = false; //this method is used for direct openings
+    isClient = false; // this method is used for direct openings
     updatePrevNextActions(!previousComicPath.isEmpty(), !nextComicPath.isEmpty());
 }
 
-//isClient shouldn't be modified when a siblinig comic is opened
+// isClient shouldn't be modified when a siblinig comic is opened
 void MainWindowViewer::openSiblingComic(QString pathFile)
 {
     openComic(pathFile);
@@ -923,7 +923,7 @@ void MainWindowViewer::openFolder()
 
 void MainWindowViewer::openFolderFromPath(QString pathDir)
 {
-    currentDirectory = pathDir; //TODO ??
+    currentDirectory = pathDir; // TODO ??
     QFileInfo fi(pathDir);
     getSiblingComics(fi.absolutePath(), fi.fileName());
 
@@ -938,7 +938,7 @@ void MainWindowViewer::openFolderFromPath(QString pathDir)
 
 void MainWindowViewer::openFolderFromPath(QString pathDir, QString atFileName)
 {
-    currentDirectory = pathDir; //TODO ??
+    currentDirectory = pathDir; // TODO ??
     QFileInfo fi(pathDir);
     getSiblingComics(fi.absolutePath(), fi.fileName());
 
@@ -988,7 +988,7 @@ void MainWindowViewer::enableActions()
     adjustHeightAction->setDisabled(false);
     adjustWidthAction->setDisabled(false);
     goToPageAction->setDisabled(false);
-    //alwaysOnTopAction->setDisabled(false);
+    // alwaysOnTopAction->setDisabled(false);
     leftRotationAction->setDisabled(false);
     rightRotationAction->setDisabled(false);
     showMagnifyingGlassAction->setDisabled(false);
@@ -1001,9 +1001,9 @@ void MainWindowViewer::enableActions()
     increasePageZoomAction->setDisabled(false);
     decreasePageZoomAction->setDisabled(false);
     resetZoomAction->setDisabled(false);
-    //setBookmark->setDisabled(false);
+    // setBookmark->setDisabled(false);
     showBookmarksAction->setDisabled(false);
-    showInfoAction->setDisabled(false); //TODO enable goTo and showInfo (or update) when numPages emited
+    showInfoAction->setDisabled(false); // TODO enable goTo and showInfo (or update) when numPages emited
     showDictionaryAction->setDisabled(false);
     showFlowAction->setDisabled(false);
 
@@ -1020,7 +1020,7 @@ void MainWindowViewer::disableActions()
     adjustHeightAction->setDisabled(true);
     adjustWidthAction->setDisabled(true);
     goToPageAction->setDisabled(true);
-    //alwaysOnTopAction->setDisabled(true);
+    // alwaysOnTopAction->setDisabled(true);
     leftRotationAction->setDisabled(true);
     rightRotationAction->setDisabled(true);
     showMagnifyingGlassAction->setDisabled(true);
@@ -1034,7 +1034,7 @@ void MainWindowViewer::disableActions()
     resetZoomAction->setDisabled(true);
     setBookmarkAction->setDisabled(true);
     showBookmarksAction->setDisabled(true);
-    showInfoAction->setDisabled(true); //TODO enable goTo and showInfo (or update) when numPages emited
+    showInfoAction->setDisabled(true); // TODO enable goTo and showInfo (or update) when numPages emited
     openComicOnTheLeftAction->setDisabled(true);
     openComicOnTheRightAction->setDisabled(true);
     showDictionaryAction->setDisabled(true);
@@ -1043,7 +1043,7 @@ void MainWindowViewer::disableActions()
 
 void MainWindowViewer::keyPressEvent(QKeyEvent *event)
 {
-    //TODO remove unused keys
+    // TODO remove unused keys
     int _key = event->key();
     Qt::KeyboardModifiers modifiers = event->modifiers();
 
@@ -1083,7 +1083,7 @@ void MainWindowViewer::toggleFullScreen()
     Configuration::getConfiguration().setFullScreen(fullscreen = !fullscreen);
 }
 
-#ifdef Q_OS_WIN //fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
+#ifdef Q_OS_WIN // fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
 
 void MainWindowViewer::toFullScreen()
 {
@@ -1091,7 +1091,7 @@ void MainWindowViewer::toFullScreen()
 
     hideToolBars();
     viewer->hide();
-    viewer->fullscreen = true; //TODO, change by the right use of windowState();
+    viewer->fullscreen = true; // TODO, change by the right use of windowState();
 
     previousWindowFlags = windowFlags();
     previousPos = pos();
@@ -1114,10 +1114,10 @@ void MainWindowViewer::toFullScreen()
 
 void MainWindowViewer::toNormal()
 {
-    //show all
+    // show all
     viewer->hide();
-    viewer->fullscreen = false; //TODO, change by the right use of windowState();
-    //viewer->hideMagnifyingGlass();
+    viewer->fullscreen = false; // TODO, change by the right use of windowState();
+    // viewer->hideMagnifyingGlass();
 
     setWindowFlags(previousWindowFlags);
     move(previousPos);
@@ -1141,7 +1141,7 @@ void MainWindowViewer::toFullScreen()
 
     hideToolBars();
     viewer->hide();
-    viewer->fullscreen = true; //TODO, change by the right use of windowState();
+    viewer->fullscreen = true; // TODO, change by the right use of windowState();
     setWindowState(Qt::WindowFullScreen);
     viewer->show();
     if (viewer->magnifyingGlassIsVisible())
@@ -1150,10 +1150,10 @@ void MainWindowViewer::toFullScreen()
 
 void MainWindowViewer::toNormal()
 {
-    //show all
+    // show all
     viewer->hide();
-    viewer->fullscreen = false; //TODO, change by the right use of windowState();
-    //viewer->hideMagnifyingGlass();
+    viewer->fullscreen = false; // TODO, change by the right use of windowState();
+    // viewer->hideMagnifyingGlass();
     if (fromMaximized)
         showMaximized();
     else
@@ -1178,7 +1178,7 @@ void MainWindowViewer::toggleToolBars()
 }
 void MainWindowViewer::hideToolBars()
 {
-    //hide all
+    // hide all
     this->comicToolBar->hide();
     toolbars = false;
 }
@@ -1203,11 +1203,11 @@ void MainWindowViewer::fitToHeight()
 
 void MainWindowViewer::toggleWidthHeight()
 {
-    //Only switch to "Fit to height" when we're in "Fit to width"
+    // Only switch to "Fit to height" when we're in "Fit to width"
     if (Configuration::getConfiguration().getFitMode() == YACReader::FitMode::ToWidth) {
         adjustHeightAction->trigger();
     }
-    //Default to "Fit to width" in all other cases
+    // Default to "Fit to width" in all other cases
     else {
         adjustWidthAction->trigger();
     }
@@ -1246,7 +1246,7 @@ void MainWindowViewer::processReset()
 
 void MainWindowViewer::setUpShortcutsManagement()
 {
-    //actions holder
+    // actions holder
     auto orphanActions = new QObject;
 
     QList<QAction *> allActions;
@@ -1262,7 +1262,7 @@ void MainWindowViewer::setUpShortcutsManagement()
 
     allActions << tmpList;
 
-    //keys without actions (General)
+    // keys without actions (General)
     QAction *toggleFullScreenAction = new QAction(tr("Toggle fullscreen mode"), orphanActions);
     toggleFullScreenAction->setData(TOGGLE_FULL_SCREEN_ACTION_Y);
     toggleFullScreenAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_FULL_SCREEN_ACTION_Y));
@@ -1290,7 +1290,7 @@ void MainWindowViewer::setUpShortcutsManagement()
 
     allActions << tmpList;
 
-    //keys without actions (MGlass)
+    // keys without actions (MGlass)
     auto sizeUpMglassAction = new QAction(tr("Size up magnifying glass"), orphanActions);
     sizeUpMglassAction->setData(SIZE_UP_MGLASS_ACTION_Y);
     sizeUpMglassAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SIZE_UP_MGLASS_ACTION_Y));
@@ -1317,7 +1317,7 @@ void MainWindowViewer::setUpShortcutsManagement()
 
     allActions << tmpList;
 
-    //keys without actions
+    // keys without actions
     auto toggleFitToScreenAction = new QAction(tr("Toggle between fit to width and fit to height"), orphanActions);
     toggleFitToScreenAction->setData(CHANGE_FIT_ACTION_Y);
     toggleFitToScreenAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(CHANGE_FIT_ACTION_Y));
@@ -1489,7 +1489,7 @@ void MainWindowViewer::openPreviousComic()
         if (currentIndex == -1)
             return;
         if (currentIndex - 1 >= 0 && currentIndex - 1 < siblingComics.count()) {
-            siblingComics[currentIndex] = currentComicDB; //updated
+            siblingComics[currentIndex] = currentComicDB; // updated
             currentComicDB = siblingComics.at(currentIndex - 1);
             open(currentDirectory + currentComicDB.path, currentComicDB, siblingComics);
         }
@@ -1509,7 +1509,7 @@ void MainWindowViewer::openNextComic()
         if (currentIndex == -1)
             return;
         if (currentIndex + 1 > 0 && currentIndex + 1 < siblingComics.count()) {
-            siblingComics[currentIndex] = currentComicDB; //updated
+            siblingComics[currentIndex] = currentComicDB; // updated
             currentComicDB = siblingComics.at(currentIndex + 1);
             open(currentDirectory + currentComicDB.path, currentComicDB, siblingComics);
         }
@@ -1567,26 +1567,26 @@ void MainWindowViewer::getSiblingComics(QString path, QString currentComic)
     QStringList list = d.entryList();
     std::sort(list.begin(), list.end(), naturalSortLessThanCI);
     int index = list.indexOf(currentComic);
-    if (index == -1) //comic not found
+    if (index == -1) // comic not found
     {
         /*QFile f(QCoreApplication::applicationDirPath()+"/errorLog.txt");
-			if(!f.open(QIODevice::WriteOnly))
-			{
-				QMessageBox::critical(NULL,tr("Saving error log file...."),tr("There was a problem saving YACReader error log file. Please, check if you have enough permissions in the YACReader root folder."));
-			}
-			else
-			{
-			QTextStream txtS(&f);
-			txtS << "METHOD : MainWindowViewer::getSiblingComics" << '\n';
-			txtS << "ERROR : current comic not found in its own path" << '\n';
-			txtS << path << '\n';
-			txtS << currentComic << '\n';
-			txtS << "Comic list count : " + list.count() << '\n';
-			foreach(QString s, list){
-				txtS << s << '\n';
-			}
-			f.close();
-		}*/
+                        if(!f.open(QIODevice::WriteOnly))
+                        {
+                                QMessageBox::critical(NULL,tr("Saving error log file...."),tr("There was a problem saving YACReader error log file. Please, check if you have enough permissions in the YACReader root folder."));
+                        }
+                        else
+                        {
+                        QTextStream txtS(&f);
+                        txtS << "METHOD : MainWindowViewer::getSiblingComics" << '\n';
+                        txtS << "ERROR : current comic not found in its own path" << '\n';
+                        txtS << path << '\n';
+                        txtS << currentComic << '\n';
+                        txtS << "Comic list count : " + list.count() << '\n';
+                        foreach(QString s, list){
+                                txtS << s << '\n';
+                        }
+                        f.close();
+                }*/
     }
 
     previousComicPath = nextComicPath = "";
@@ -1615,7 +1615,7 @@ void MainWindowViewer::dropEvent(QDropEvent *event)
             info.setFile(fName); // information about file
             if (info.isFile()) {
                 QStringList imageSuffixs = Comic::getSupportedImageLiteralFormats();
-                if (imageSuffixs.contains(info.suffix())) //image dropped
+                if (imageSuffixs.contains(info.suffix())) // image dropped
                     openFolderFromPath(info.absoluteDir().absolutePath(), info.fileName());
                 else
                     openComicFromPath(fName); // if is file, setText
@@ -1640,7 +1640,7 @@ void MainWindowViewer::dragEnterEvent(QDragEnterEvent *event)
 void MainWindowViewer::alwaysOnTopSwitch()
 {
     if (!Configuration::getConfiguration().getAlwaysOnTop()) {
-        setWindowFlags(this->windowFlags() | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint); //always on top
+        setWindowFlags(this->windowFlags() | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint); // always on top
         show();
     } else {
         setWindowFlags(this->windowFlags() ^ (Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));

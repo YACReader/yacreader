@@ -15,7 +15,7 @@ class YACReaderFieldEdit;
 class YACReaderFieldPlainTextEdit;
 class QDialogButtonBox;
 class QCheckBox;
-//class YACReaderBusyWidget;
+// class YACReaderBusyWidget;
 class QToolButton;
 
 #include "comic_db.h"
@@ -25,7 +25,7 @@ class PropertiesDialog : public QDialog
     Q_OBJECT
 private:
     QWidget *mainWidget;
-    //YACReaderBusyWidget * busyIndicator;
+    // YACReaderBusyWidget * busyIndicator;
 
     QGridLayout *mainLayout;
 
@@ -132,7 +132,7 @@ public slots:
     void setComics(QList<ComicDB> comics);
     void updateComics();
     void save();
-    //Deprecated
+    // Deprecated
     void setCover(const QPixmap &cover);
     void setMultipleCover();
     void setFilename(const QString &name);

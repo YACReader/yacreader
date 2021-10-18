@@ -45,10 +45,10 @@ Viewer::Viewer(QWidget *parent)
     translatorAnimation->setDuration(150);
     translatorXPos = -10000;
     translator->move(-translator->width(), 10);
-    //current comic page
+    // current comic page
     content = new QLabel(this);
     configureContent(tr("Press 'O' to open comic."));
-    //scroll area configuration
+    // scroll area configuration
     setBackgroundRole(QPalette::Dark);
     setWidget(content);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -71,7 +71,7 @@ Viewer::Viewer(QWidget *parent)
 
     QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReader.ini", QSettings::IniFormat);
 
-    //CONFIG GOTO_FLOW--------------------------------------------------------
+    // CONFIG GOTO_FLOW--------------------------------------------------------
 #ifndef NO_OPENGL
 
     OpenGLChecker openGLChecker;
@@ -113,7 +113,7 @@ Viewer::Viewer(QWidget *parent)
 
     setMouseTracking(true);
 
-    //animations
+    // animations
     verticalScroller = new QPropertyAnimation(verticalScrollBar(), "sliderPosition");
     connect(verticalScroller, &QVariantAnimation::valueChanged, this, &Viewer::backgroundChanges);
     horizontalScroller = new QPropertyAnimation(horizontalScrollBar(), "sliderPosition");
@@ -151,27 +151,27 @@ Viewer::~Viewer()
 
 void Viewer::createConnections()
 {
-    //magnifyingGlass (update mg after a background change
+    // magnifyingGlass (update mg after a background change
     connect(this, &Viewer::backgroundChanges, mglass, QOverload<>::of(&MagnifyingGlass::updateImage));
 
-    //goToDialog
+    // goToDialog
     connect(goToDialog, &GoToDialog::goToPage, this, &Viewer::goTo);
 
-    //goToFlow goTo
+    // goToFlow goTo
     connect(goToFlow, &GoToFlowWidget::goToPage, this, &Viewer::goTo);
 
-    //current time
+    // current time
     auto t = new QTimer(this);
     connect(t, &QTimer::timeout, this, &Viewer::updateInformation);
     t->start(1000);
 
-    //hide cursor
+    // hide cursor
     connect(hideCursorTimer, &QTimer::timeout, this, &Viewer::hideCursor);
 
-    //bookmarks
+    // bookmarks
     connect(bd, &BookmarksDialog::goToPage, this, &Viewer::goTo);
 
-    //render
+    // render
     connect(render, QOverload<>::of(&Render::errorOpening), this, &Viewer::resetContent);
     connect(render, QOverload<>::of(&Render::errorOpening), this, QOverload<>::of(&Viewer::showMessageErrorOpening));
     connect(render, QOverload<QString>::of(&Render::errorOpening), this, QOverload<QString>::of(&Viewer::showMessageErrorOpening));
@@ -190,16 +190,16 @@ void Viewer::createConnections()
     connect(render, &Render::bookmarksUpdated, this, &Viewer::setBookmarks);
 }
 
-//Deprecated
+// Deprecated
 void Viewer::prepareForOpening()
 {
     if (render->hasLoadedComic())
         save();
-    //bd->setBookmarks(*bm);
+    // bd->setBookmarks(*bm);
 
     goToFlow->reset();
 
-    //render->update();
+    // render->update();
 
     verticalScrollBar()->setSliderPosition(verticalScrollBar()->minimum());
 
@@ -225,7 +225,7 @@ void Viewer::open(QString pathFile, const ComicDB &comic)
 void Viewer::showMessageErrorOpening()
 {
     QMessageBox::critical(this, tr("Not found"), tr("Comic not found"));
-    //resetContent(); --> not needed
+    // resetContent(); --> not needed
 }
 
 void Viewer::showMessageErrorOpening(QString message)
@@ -286,7 +286,7 @@ void Viewer::showGoToDialog()
 }
 void Viewer::goTo(unsigned int page)
 {
-    direction = 1; //in "go to" direction is always fordward
+    direction = 1; // in "go to" direction is always fordward
     render->goTo(page);
 }
 
@@ -330,7 +330,7 @@ void Viewer::updatePage()
 
 void Viewer::updateContentSize()
 {
-    //there is an image to resize
+    // there is an image to resize
     if (currentPage != nullptr && !currentPage->isNull()) {
         QSize pagefit = currentPage->size();
         bool stretchImages = Configuration::getConfiguration().getEnlargeImages();
@@ -350,7 +350,7 @@ void Viewer::updateContentSize()
             }
             pagefit.scale(0, height(), Qt::KeepAspectRatioByExpanding);
             break;
-            //if everything fails showing the full page is a good idea
+            // if everything fails showing the full page is a good idea
         case YACReader::FitMode::FullPage:
         default:
             pagefit.scale(size(), Qt::KeepAspectRatio);
@@ -360,11 +360,11 @@ void Viewer::updateContentSize()
         if (zoom != 100) {
             pagefit.scale(floor(pagefit.width() * zoom / 100.0f), 0, Qt::KeepAspectRatioByExpanding);
         }
-        //apply scaling
+        // apply scaling
         content->resize(pagefit);
 
-        //TODO: updtateContentSize should only scale the pixmap once
-        if (devicePixelRatio() > 1) //only in retina display
+        // TODO: updtateContentSize should only scale the pixmap once
+        if (devicePixelRatio() > 1) // only in retina display
         {
             QPixmap page = currentPage->scaled(content->width() * devicePixelRatio(), content->height() * devicePixelRatio(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
             page.setDevicePixelRatio(devicePixelRatio());
@@ -373,7 +373,7 @@ void Viewer::updateContentSize()
 
         emit backgroundChanges();
     }
-    content->update(); //TODO, it shouldn't be neccesary
+    content->update(); // TODO, it shouldn't be neccesary
 }
 
 void Viewer::increaseZoomFactor()
@@ -399,13 +399,13 @@ void Viewer::decreaseZoomFactor()
 
 int Viewer::getZoomFactor()
 {
-    //this function is a placeholder for future refactoring work
+    // this function is a placeholder for future refactoring work
     return zoom;
 }
 
 void Viewer::setZoomFactor(int z)
 {
-    //this function is mostly used to reset the zoom after a fitmode switch
+    // this function is mostly used to reset the zoom after a fitmode switch
     if (z > 500)
         zoom = 500;
     else if (z < 30)
@@ -592,8 +592,8 @@ void Viewer::keyPressEvent(QKeyEvent *event)
 
         QKeySequence key(_key);
         /*if(goToFlow->isVisible() && event->key()!=Qt::Key_S)
-			QCoreApplication::sendEvent(goToFlow,event);
-		else*/
+                        QCoreApplication::sendEvent(goToFlow,event);
+                else*/
 
         if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_ACTION_Y)) {
             posByStep = height() / numScrollSteps;
@@ -746,9 +746,9 @@ void Viewer::mouseMoveEvent(QMouseEvent *event)
             if (Configuration::getConfiguration().getDisableShowOnMouseOver() == false) {
                 if (goToFlow->isVisible()) {
                     QPoint gtfPos = goToFlow->mapFrom(this, event->pos());
-                    if (gtfPos.y() < 0 || gtfPos.x() < 0 || gtfPos.x() > goToFlow->width()) //TODO this extra check is for Mavericks (mouseMove over goToFlowGL seems to be broken)
+                    if (gtfPos.y() < 0 || gtfPos.x() < 0 || gtfPos.x() > goToFlow->width()) // TODO this extra check is for Mavericks (mouseMove over goToFlowGL seems to be broken)
                         animateHideGoToFlow();
-                    //goToFlow->hide();
+                    // goToFlow->hide();
                 } else {
                     int umbral = (width() - goToFlow->width()) / 2;
                     if ((event->y() > height() - 15) && (event->x() > umbral) && (event->x() < width() - umbral)) {
@@ -802,10 +802,10 @@ void Viewer::hideMagnifyingGlass()
 void Viewer::informationSwitch()
 {
     information ? informationLabel->hide() : informationLabel->show();
-    //informationLabel->move(QPoint((width()-informationLabel->width())/2,0));
+    // informationLabel->move(QPoint((width()-informationLabel->width())/2,0));
     information = !information;
     Configuration::getConfiguration().setShowInformation(information);
-    //TODO it shouldn't be neccesary
+    // TODO it shouldn't be neccesary
     informationLabel->adjustSize();
     informationLabel->update();
 }
@@ -815,7 +815,7 @@ void Viewer::updateInformation()
     if (render->hasLoadedComic()) {
         informationLabel->setText(render->getCurrentPagesInformation() + " - " + QTime::currentTime().toString("HH:mm"));
         informationLabel->adjustSize();
-        informationLabel->update(); //TODO it shouldn't be neccesary
+        informationLabel->update(); // TODO it shouldn't be neccesary
     }
 }
 
@@ -871,7 +871,7 @@ void Viewer::moveCursoToGoToFlow()
         return;
     }
 
-    //Move cursor to goToFlow widget on show (this avoid hide when mouse is moved)
+    // Move cursor to goToFlow widget on show (this avoid hide when mouse is moved)
     int y = goToFlow->pos().y();
     int x1 = goToFlow->pos().x();
     int x2 = x1 + goToFlow->width();
@@ -899,14 +899,14 @@ void Viewer::rotateRight()
     render->rotateRight();
 }
 
-//TODO
+// TODO
 void Viewer::setBookmark(bool set)
 {
     render->setBookmark();
-    if (set) //add bookmark
+    if (set) // add bookmark
     {
         render->setBookmark();
-    } else //remove bookmark
+    } else // remove bookmark
     {
         render->removeBookmark();
     }
@@ -979,7 +979,7 @@ void Viewer::configureContent(QString msg)
     content->setFont(QFont("courier new", 12));
     content->adjustSize();
     setFocus(Qt::ShortcutFocusReason);
-    //emit showingText();
+    // emit showingText();
 }
 
 void Viewer::hideCursor()
@@ -1083,7 +1083,7 @@ void Viewer::updateConfig(QSettings *settings)
     setPalette(palette);
 }
 
-//deprecated
+// deprecated
 void Viewer::updateImageOptions()
 {
     render->reload();
@@ -1110,7 +1110,7 @@ void Viewer::showIsCoverMessage()
         emit(openPreviousComic());
     }
 
-    shouldOpenNext = false; //single page comic
+    shouldOpenNext = false; // single page comic
 }
 
 void Viewer::showIsLastMessage()
@@ -1124,7 +1124,7 @@ void Viewer::showIsLastMessage()
         emit(openNextComic());
     }
 
-    shouldOpenPrevious = false; //single page comic
+    shouldOpenPrevious = false; // single page comic
 }
 
 unsigned int Viewer::getIndex()
@@ -1140,7 +1140,7 @@ int Viewer::getCurrentPageNumber()
 void Viewer::updateComic(ComicDB &comic)
 {
     if (render->hasLoadedComic()) {
-        //set currentPage
+        // set currentPage
         if (!doublePage || (doublePage && render->currentPageIsDoublePage() == false)) {
             comic.info.currentPage = render->getIndex() + 1;
         } else {
@@ -1148,7 +1148,7 @@ void Viewer::updateComic(ComicDB &comic)
                 comic.info.currentPage = std::min(render->numPages(), render->getIndex() + 1);
             }
         }
-        //set bookmarks
+        // set bookmarks
         Bookmarks *boomarks = render->getBookmarks();
         QList<int> boomarksList = boomarks->getBookmarkPages();
         int numBookmarks = boomarksList.size();
@@ -1158,8 +1158,8 @@ void Viewer::updateComic(ComicDB &comic)
             comic.info.bookmark2 = boomarksList[1];
         if (numBookmarks > 2)
             comic.info.bookmark3 = boomarksList[2];
-        //set filters
-        //TODO: avoid use settings for this...
+        // set filters
+        // TODO: avoid use settings for this...
         QSettings settings(YACReader::getSettingsPath() + "/YACReader.ini", QSettings::IniFormat);
         int brightness = settings.value(BRIGHTNESS, 0).toInt();
         int contrast = settings.value(CONTRAST, 100).toInt();

@@ -14,20 +14,20 @@
 #include "yacreader_comic_info_helper.h"
 #include "current_comic_view_helper.h"
 
-//values relative to visible cells
+// values relative to visible cells
 const unsigned int YACREADER_MIN_GRID_ZOOM_WIDTH = 156;
 const unsigned int YACREADER_MAX_GRID_ZOOM_WIDTH = 312;
 
-//GridView cells
+// GridView cells
 const unsigned int YACREADER_MIN_CELL_CUSTOM_HEIGHT = 295;
 const unsigned int YACREADER_MIN_CELL_CUSTOM_WIDTH = 185;
 
-//Covers
+// Covers
 const unsigned int YACREADER_MAX_COVER_HEIGHT = 236;
 const unsigned int YACREADER_MIN_COVER_WIDTH = YACREADER_MIN_GRID_ZOOM_WIDTH;
 
-//visible cells (realCell in qml), grid cells size is used to create faux inner margings
-const unsigned int YACREADER_MIN_ITEM_HEIGHT = YACREADER_MAX_COVER_HEIGHT + 51; //51 is the height of the bottom rectangle used for title and other info
+// visible cells (realCell in qml), grid cells size is used to create faux inner margings
+const unsigned int YACREADER_MIN_ITEM_HEIGHT = YACREADER_MAX_COVER_HEIGHT + 51; // 51 is the height of the bottom rectangle used for title and other info
 const unsigned int YACREADER_MIN_ITEM_WIDTH = YACREADER_MIN_COVER_WIDTH;
 
 GridComicsView::GridComicsView(QWidget *parent)
@@ -50,7 +50,7 @@ GridComicsView::GridComicsView(QWidget *parent)
                 }
             });
 
-    //view->setFocusPolicy(Qt::TabFocus);
+    // view->setFocusPolicy(Qt::TabFocus);
 
     selectionHelper = new YACReaderComicsSelectionHelper(this);
     connect(selectionHelper, &YACReaderComicsSelectionHelper::selectionChanged, this, &GridComicsView::dummyUpdater);
@@ -74,12 +74,12 @@ GridComicsView::GridComicsView(QWidget *parent)
         ctxt->setContextProperty("borderColor", "#DBDBDB");
         ctxt->setContextProperty("titleColor", "#121212");
         ctxt->setContextProperty("textColor", "#636363");
-        //fonts settings
+        // fonts settings
         ctxt->setContextProperty("fontSize", 11);
         ctxt->setContextProperty("fontFamily", QApplication::font().family());
         ctxt->setContextProperty("fontSpacing", 0.5);
 
-        //info - copy/pasted from info_comics_view TODO create helpers for setting the UI config
+        // info - copy/pasted from info_comics_view TODO create helpers for setting the UI config
         ctxt->setContextProperty("infoBackgroundColor", "#FFFFFF");
         ctxt->setContextProperty("topShadow", QUrl());
         ctxt->setContextProperty("infoShadow", "info-shadow-light.png");
@@ -105,7 +105,7 @@ GridComicsView::GridComicsView(QWidget *parent)
         ctxt->setContextProperty("titleColor", "#FFFFFF");
         ctxt->setContextProperty("textColor", "#A8A8A8");
         ctxt->setContextProperty("dropShadow", false);
-        //fonts settings
+        // fonts settings
         int fontSize = QApplication::font().pointSize();
         if (fontSize == -1)
             fontSize = QApplication::font().pixelSize();
@@ -113,7 +113,7 @@ GridComicsView::GridComicsView(QWidget *parent)
         ctxt->setContextProperty("fontFamily", QApplication::font().family());
         ctxt->setContextProperty("fontSpacing", 0.5);
 
-        //info - copy/pasted from info_comics_view TODO create helpers for setting the UI config
+        // info - copy/pasted from info_comics_view TODO create helpers for setting the UI config
         ctxt->setContextProperty("infoBackgroundColor", "#2E2E2E");
         ctxt->setContextProperty("topShadow", "info-top-shadow.png");
         ctxt->setContextProperty("infoShadow", "info-shadow.png");
@@ -172,7 +172,7 @@ GridComicsView::GridComicsView(QWidget *parent)
     showInfoAction->setChecked(showInfo);
     connect(showInfoAction, &QAction::toggled, this, &GridComicsView::showInfo);
 
-    setShowMarks(true); //TODO save this in settings
+    setShowMarks(true); // TODO save this in settings
 
     auto l = new QVBoxLayout;
     l->addWidget(view);
@@ -211,7 +211,7 @@ void GridComicsView::createCoverSizeSliderWidget()
     horizontalLayout->setMargin(0);
 
     coverSizeSliderWidget->setLayout(horizontalLayout);
-    //TODO add shortcuts (ctrl-+ and ctrl-- for zooming in out, + ctrl-0 for reseting the zoom)
+    // TODO add shortcuts (ctrl-+ and ctrl-- for zooming in out, + ctrl-0 for reseting the zoom)
 
     connect(coverSizeSlider, &QAbstractSlider::valueChanged, this, &GridComicsView::setCoversSize);
 
@@ -275,8 +275,8 @@ void GridComicsView::setModel(ComicModel *model)
             updateInfoForIndex(0);
     }
 
-    //If the currentComicView was hidden before showing it sometimes the scroll view doesn't show it
-    //this is a hacky solution...
+    // If the currentComicView was hidden before showing it sometimes the scroll view doesn't show it
+    // this is a hacky solution...
     QTimer::singleShot(0, this, &GridComicsView::resetScroll);
 }
 
@@ -287,7 +287,7 @@ void GridComicsView::updateBackgroundConfig()
 
     QQmlContext *ctxt = view->rootContext();
 
-    //backgroun image configuration
+    // backgroun image configuration
     bool useBackgroundImage = settings->value(USE_BACKGROUND_IMAGE_IN_GRID_VIEW, true).toBool();
 
     if (useBackgroundImage && this->model->rowCount() > 0) {
@@ -467,7 +467,7 @@ void GridComicsView::setCurrentComicIfNeeded()
         ctxt->setContextProperty("currentComic", &currentComic);
         ctxt->setContextProperty("currentComicInfo", &(currentComic.info));
         ctxt->setContextProperty("showCurrentComic", false);
-        //ctxt->setContextProperty("currentComic", nullptr);
+        // ctxt->setContextProperty("currentComic", nullptr);
     }
 }
 
@@ -505,7 +505,7 @@ void GridComicsView::startDrag()
 {
     auto drag = new QDrag(this);
     drag->setMimeData(model->mimeData(selectionHelper->selectedRows()));
-    drag->setPixmap(QPixmap(":/images/comics_view_toolbar/openInYACReader.png")); //TODO add better image
+    drag->setPixmap(QPixmap(":/images/comics_view_toolbar/openInYACReader.png")); // TODO add better image
 
     /*Qt::DropAction dropAction =*/drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
 }
@@ -515,7 +515,7 @@ bool GridComicsView::canDropUrls(const QList<QUrl> &urls, Qt::DropAction action)
     if (action == Qt::CopyAction) {
         QString currentPath;
         foreach (QUrl url, urls) {
-            //comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
+            // comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
             currentPath = url.toLocalFile();
             if (Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir())
                 return true;
@@ -531,7 +531,7 @@ bool GridComicsView::canDropFormats(const QString &formats)
 
 void GridComicsView::droppedFiles(const QList<QUrl> &urls, Qt::DropAction action)
 {
-    bool validAction = action == Qt::CopyAction; //TODO add move
+    bool validAction = action == Qt::CopyAction; // TODO add move
 
     if (validAction) {
         QList<QPair<QString, QString>> droppedFiles = ComicFilesManager::getDroppedFiles(urls);
@@ -577,7 +577,7 @@ void GridComicsView::closeEvent(QCloseEvent *event)
     event->accept();
     ComicsView::closeEvent(event);
 
-    //save settings
+    // save settings
     settings->setValue(COMICS_GRID_COVER_SIZES, coverSizeSlider->value());
     settings->setValue(COMICS_GRID_SHOW_INFO, showInfoAction->isChecked());
     settings->setValue(COMICS_GRID_INFO_WIDTH, infoWidth);

@@ -29,7 +29,7 @@ InfoComicsView::InfoComicsView(QWidget *parent)
                 }
             });
 
-    //container->setFocusPolicy(Qt::StrongFocus);
+    // container->setFocusPolicy(Qt::StrongFocus);
 
     QQmlContext *ctxt = view->rootContext();
 
@@ -230,7 +230,7 @@ bool InfoComicsView::canDropUrls(const QList<QUrl> &urls, Qt::DropAction action)
     if (action == Qt::CopyAction) {
         QString currentPath;
         foreach (QUrl url, urls) {
-            //comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
+            // comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
             currentPath = url.toLocalFile();
             if (Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir())
                 return true;
@@ -241,7 +241,7 @@ bool InfoComicsView::canDropUrls(const QList<QUrl> &urls, Qt::DropAction action)
 
 void InfoComicsView::droppedFiles(const QList<QUrl> &urls, Qt::DropAction action)
 {
-    bool validAction = action == Qt::CopyAction; //TODO add move
+    bool validAction = action == Qt::CopyAction; // TODO add move
 
     if (validAction) {
         QList<QPair<QString, QString>> droppedFiles = ComicFilesManager::getDroppedFiles(urls);

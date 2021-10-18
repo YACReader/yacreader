@@ -33,7 +33,7 @@ void MagnifyingGlass::mouseMoveEvent(QMouseEvent *event)
 
 void MagnifyingGlass::updateImage(int x, int y)
 {
-    //image section augmented
+    // image section augmented
     int zoomWidth = static_cast<int>(width() * zoomLevel);
     int zoomHeight = static_cast<int>(height() * zoomLevel);
     auto p = (Viewer *)parent();
@@ -52,7 +52,7 @@ void MagnifyingGlass::updateImage(int x, int y)
         int yOffset = 0;
         int zw = zoomWidth;
         int zh = zoomHeight;
-        //int wOffset,hOffset=0;
+        // int wOffset,hOffset=0;
         bool outImage = false;
         if (xp < 0) {
             xOffset = -xp;
@@ -93,7 +93,7 @@ void MagnifyingGlass::updateImage(int x, int y)
         int yOffset = 0;
         int zw = zoomWidth;
         int zh = zoomHeight;
-        //int wOffset,hOffset=0;
+        // int wOffset,hOffset=0;
         bool outImage = false;
         if (xp < 0) {
             xOffset = -xp;
@@ -142,28 +142,28 @@ void MagnifyingGlass::updateImage()
 void MagnifyingGlass::wheelEvent(QWheelEvent *event)
 {
     switch (event->modifiers()) {
-    //size
+    // size
     case Qt::NoModifier:
         if (event->delta() < 0)
             sizeUp();
         else
             sizeDown();
         break;
-    //size height
+    // size height
     case Qt::ControlModifier:
         if (event->delta() < 0)
             heightUp();
         else
             heightDown();
         break;
-    //size width
+    // size width
     case Qt::AltModifier:
         if (event->delta() < 0)
             widthUp();
         else
             widthDown();
         break;
-    //zoom level
+    // zoom level
     case Qt::ShiftModifier:
         if (event->delta() < 0)
             zoomIn();

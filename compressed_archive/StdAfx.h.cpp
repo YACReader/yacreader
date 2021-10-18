@@ -1,4 +1,4 @@
-/*-------------------------------------------------------------------- 
+/*--------------------------------------------------------------------
 *
 * Due to issues with the dependencies checker within the IDE, it
 * sometimes fails to recompile the PCH file, if we force the IDE to

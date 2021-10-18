@@ -10,7 +10,7 @@ OnStartFlowSelectionDialog::OnStartFlowSelectionDialog(QWidget *parent)
     setModal(true);
     QPushButton *acceptHW = new QPushButton(this);
     connect(acceptHW, &QAbstractButton::clicked, this, &QDialog::accept);
-    QPushButton *rejectHW = new QPushButton(this); //and use SW flow
+    QPushButton *rejectHW = new QPushButton(this); // and use SW flow
     connect(rejectHW, &QAbstractButton::clicked, this, &QDialog::reject);
 
     acceptHW->setGeometry(90, 165, 110, 118);
@@ -25,18 +25,18 @@ OnStartFlowSelectionDialog::OnStartFlowSelectionDialog(QWidget *parent)
     QLocale::Language language = locale.language();
 
     /*if(language == QLocale::Spanish)
-		paletteHW.setBrush(acceptHW->backgroundRole(), QBrush(QImage(":/images/useNewFlowButton_es.png")));
-	else
-		paletteHW.setBrush(acceptHW->backgroundRole(), QBrush(QImage(":/images/useNewFlowButton.png")));*/
+                paletteHW.setBrush(acceptHW->backgroundRole(), QBrush(QImage(":/images/useNewFlowButton_es.png")));
+        else
+                paletteHW.setBrush(acceptHW->backgroundRole(), QBrush(QImage(":/images/useNewFlowButton.png")));*/
 
     paletteHW.setBrush(acceptHW->backgroundRole(), QBrush(QImage(":/images/nonexxx.png")));
     acceptHW->setPalette(paletteHW);
     QPalette paletteSW;
     paletteSW.setBrush(rejectHW->backgroundRole(), QBrush(QImage(":/images/nonexxx.png")));
     rejectHW->setPalette(paletteSW);
-    //QHBoxLayout * layout = new QHBoxLayout;
-    //layout->addWidget(acceptHW);
-    //layout->addWidget(rejectHW);
+    // QHBoxLayout * layout = new QHBoxLayout;
+    // layout->addWidget(acceptHW);
+    // layout->addWidget(rejectHW);
 
     QPalette palette;
     if (language == QLocale::Spanish)
@@ -46,7 +46,7 @@ OnStartFlowSelectionDialog::OnStartFlowSelectionDialog(QWidget *parent)
 
     setPalette(palette);
 
-    //setLayout(layout);
+    // setLayout(layout);
 
     resize(664, 371);
 }

@@ -74,7 +74,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 
     connect(apiKeyButton, &QAbstractButton::clicked, this, &OptionsDialog::editApiKey);
 
-    //grid view background config
+    // grid view background config
     useBackgroundImageCheck = new QCheckBox(tr("Enable background image"));
 
     opacityLabel = new QLabel(tr("Opacity level"));
@@ -120,7 +120,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     connect(backgroundImageBlurRadiusSlider, &QAbstractSlider::valueChanged, this, &OptionsDialog::backgroundImageBlurRadiusSliderChanged);
     connect(useCurrentComicCoverCheck, &QCheckBox::clicked, this, &OptionsDialog::useCurrentComicCoverCheckClicked);
     connect(resetButton, &QPushButton::clicked, this, &OptionsDialog::resetToDefaults);
-    //end grid view background config
+    // end grid view background config
 
     connect(displayContinueReadingBannerCheck, &QCheckBox::clicked, this, [this]() {
         this->settings->setValue(DISPLAY_CONTINUE_READING_IN_GRID_VIEW, this->displayContinueReadingBannerCheck->isChecked());
@@ -150,8 +150,8 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     layout->addWidget(tabWidget);
     layout->addLayout(buttons);
     setLayout(layout);
-    //restoreOptions(settings); //load options
-    //resize(200,0);
+    // restoreOptions(settings); //load options
+    // resize(200,0);
     setModal(true);
     setWindowTitle(tr("Options"));
 

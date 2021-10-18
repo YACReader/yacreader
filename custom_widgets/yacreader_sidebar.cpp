@@ -15,10 +15,10 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
 {
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
 
-    settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+    settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
     settings->beginGroup("libraryConfig");
 
-    //widgets
+    // widgets
     foldersView = new YACReaderFoldersView;
     readingListsView = new YACReaderReadingListsView;
     selectedLibrary = new YACReaderLibraryListWidget;
@@ -49,12 +49,12 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
     selectedLibrary->setAttribute(Qt::WA_MacShowFocusRect, false);
     selectedLibrary->setFocusPolicy(Qt::NoFocus);
 
-    //layout
+    // layout
     QVBoxLayout *l = new QVBoxLayout;
 
     l->setContentsMargins(0, 0, 0, 0);
 
-    //LIBRARIES-------------------------------------------------------
+    // LIBRARIES-------------------------------------------------------
 #ifndef Q_OS_MAC
     l->addSpacing(5);
 #endif
@@ -74,22 +74,22 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
     l->addSpacing(6);
 #endif
 
-    //END LIBRARIES---------------------------------------------------
+    // END LIBRARIES---------------------------------------------------
 
-    //FOLDERS---------------------------------------------------------
+    // FOLDERS---------------------------------------------------------
     QWidget *foldersContainer = new QWidget(this);
     QVBoxLayout *foldersLayout = new QVBoxLayout;
     foldersLayout->setContentsMargins(0, 0, 0, 0);
     foldersLayout->setSpacing(0);
 
 #ifndef Q_OS_MAC
-    //foldersLayout->addSpacing(6);
+    // foldersLayout->addSpacing(6);
 
-    //foldersLayout->addSpacing(5);
+    // foldersLayout->addSpacing(5);
     foldersLayout->addWidget(new YACReaderSideBarSeparator(this));
     foldersLayout->addSpacing(4);
 #else
-    //foldersLayout->addSpacing(6);
+    // foldersLayout->addSpacing(6);
 #endif
 
     foldersLayout->addWidget(foldersTitle);
@@ -105,9 +105,9 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
 
     foldersContainer->setLayout(foldersLayout);
     splitter->addWidget(foldersContainer);
-    //END FOLDERS------------------------------------------------------
+    // END FOLDERS------------------------------------------------------
 
-    //READING LISTS----------------------------------------------------
+    // READING LISTS----------------------------------------------------
     splitter->addWidget(readingListsView);
 
     QVBoxLayout *readingListsHeaderLayout = new QVBoxLayout;
@@ -115,13 +115,13 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
     readingListsHeaderLayout->setSpacing(0);
 
 #ifndef Q_OS_MAC
-    //readingListsHeaderLayout->addSpacing(6);
+    // readingListsHeaderLayout->addSpacing(6);
 
-    //readingListsHeaderLayout->addSpacing(5);
+    // readingListsHeaderLayout->addSpacing(5);
     readingListsHeaderLayout->addWidget(new YACReaderSideBarSeparator(this));
     readingListsHeaderLayout->addSpacing(4);
 #else
-    //readingListsHeaderLayout->addSpacing(6);
+    // readingListsHeaderLayout->addSpacing(6);
 #endif
 
     readingListsHeaderLayout->addWidget(readingListsTitle);
@@ -132,12 +132,12 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
     readingListsHeaderLayout->addSpacing(4);
 #endif
 
-    //readingListsLayout->addWidget(readingListsView);
+    // readingListsLayout->addWidget(readingListsView);
     readingListsHeaderLayout->addStretch();
     QSplitterHandle *handle = splitter->handle(1);
-    //handle->setCursor(QCursor(Qt::ArrowCursor));
+    // handle->setCursor(QCursor(Qt::ArrowCursor));
     handle->setLayout(readingListsHeaderLayout);
-    //END READING LISTS------------------------------------------------
+    // END READING LISTS------------------------------------------------
 
     l->addWidget(splitter);
     l->setSpacing(0);
@@ -160,16 +160,16 @@ void YACReaderSideBar::paintEvent(QPaintEvent *event)
     QPainter painter(this);
 
     painter.fillRect(0, 0, width(), height(), QColor("#454545"));
-    //QWidget::paintEvent(event);
+    // QWidget::paintEvent(event);
 #endif
 
-    //QPixmap shadow(":/images/side_bar/shadow.png");
-    //painter.drawPixmap(width()-shadow.width(),0,shadow.width(),height(),shadow);
+    // QPixmap shadow(":/images/side_bar/shadow.png");
+    // painter.drawPixmap(width()-shadow.width(),0,shadow.width(),height(),shadow);
 
     //   painter.setRenderHint(QPainter::Antialiasing);
     // painter.drawLine(rect().topLeft(), rect().bottomRight());
 
-    //QWidget::paintEvent(event);
+    // QWidget::paintEvent(event);
 }
 
 void YACReaderSideBar::closeEvent(QCloseEvent *event)

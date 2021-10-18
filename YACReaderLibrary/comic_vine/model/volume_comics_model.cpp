@@ -54,7 +54,7 @@ void VolumeComicsModel::load(const QString &json)
 QModelIndex VolumeComicsModel::parent(const QModelIndex &index) const
 {
     Q_UNUSED(index)
-    return QModelIndex(); //no parent
+    return QModelIndex(); // no parent
 }
 
 int VolumeComicsModel::rowCount(const QModelIndex &parent) const
@@ -84,7 +84,7 @@ QVariant VolumeComicsModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
     if (role == Qt::TextAlignmentRole) {
-        switch (column) //TODO obtener esto de la query
+        switch (column) // TODO obtener esto de la query
         {
         case ISSUE:
             return QVariant(Qt::AlignRight | Qt::AlignVCenter);
@@ -112,7 +112,7 @@ Qt::ItemFlags VolumeComicsModel::flags(const QModelIndex &index) const
 QVariant VolumeComicsModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-        switch (section) //TODO obtener esto de la query
+        switch (section) // TODO obtener esto de la query
         {
         case ISSUE:
             return QVariant(QString("issue"));
@@ -122,7 +122,7 @@ QVariant VolumeComicsModel::headerData(int section, Qt::Orientation orientation,
     }
 
     if (orientation == Qt::Horizontal && role == Qt::TextAlignmentRole) {
-        switch (section) //TODO obtener esto de la query
+        switch (section) // TODO obtener esto de la query
         {
         case ISSUE:
             return QVariant(Qt::AlignRight | Qt::AlignVCenter);

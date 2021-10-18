@@ -9,7 +9,7 @@ void YACReaderHistoryController::clear()
 {
     currentFolderNavigation = 0;
     history.clear();
-    history.append(YACReaderLibrarySourceContainer(QModelIndex(), YACReaderLibrarySourceContainer::Folder)); //root folder is always the first item
+    history.append(YACReaderLibrarySourceContainer(QModelIndex(), YACReaderLibrarySourceContainer::Folder)); // root folder is always the first item
 
     emit(enabledBackward(false));
     emit(enabledForward(false));
@@ -41,7 +41,7 @@ void YACReaderHistoryController::forward()
 
 void YACReaderHistoryController::updateHistory(const YACReaderLibrarySourceContainer &source)
 {
-    //remove history from current index
+    // remove history from current index
     if (!source.sourceModelIndex.isValid() && history.count() == 1)
         return;
 

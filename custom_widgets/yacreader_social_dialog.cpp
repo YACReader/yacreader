@@ -16,8 +16,8 @@ YACReaderSocialDialog::YACReaderSocialDialog(QWidget *parent)
     : QWidget(parent)
 {
 
-    //setWindowFlags(Qt::Window | Qt::Dialog | Qt::FramelessWindowHint);
-    //setModal(true);
+    // setWindowFlags(Qt::Window | Qt::Dialog | Qt::FramelessWindowHint);
+    // setModal(true);
 
     QToolButton *close = new QToolButton(this);
     close->setIcon(QIcon(":/images/social_dialog/close.png"));
@@ -90,11 +90,11 @@ void YACReaderSocialDialog::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
 
-    //center
+    // center
     painter.fillRect(169, 0, 291, 369, QColor("#F0F0F0"));
     painter.fillRect(169, 96, 291, 155, QColor("#FFFFFF"));
 
-    //QPixmap cover = QPixmap("c:/temp/6.jpg").scaledToHeight(369,Qt::SmoothTransformation);
+    // QPixmap cover = QPixmap("c:/temp/6.jpg").scaledToHeight(369,Qt::SmoothTransformation);
     painter.drawPixmap(0, 0, 169, 369, cover, 0, 0, (169 * cover.height()) / 369, cover.height());
 
     QPixmap shadow(":/images/social_dialog/shadow.png");

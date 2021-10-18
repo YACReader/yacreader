@@ -90,7 +90,7 @@ void GoToFlow::centerSlide(int slide)
         flow->setCenterIndex(slide);
         if (ready) // load images if pages are loaded.
         {
-            //worker->reset(); //BUG FIXED : image didn't load if worker was working
+            // worker->reset(); //BUG FIXED : image didn't load if worker was working
             preload();
         }
     }
@@ -129,9 +129,9 @@ void GoToFlow::reset()
 {
     updateTimer->stop();
     /*imagesLoaded.clear();
-	numImagesLoaded = 0;
-	imagesReady.clear();
-	rawImages.clear();*/
+        numImagesLoaded = 0;
+        imagesReady.clear();
+        rawImages.clear();*/
     ready = false;
 }
 
@@ -145,7 +145,7 @@ void GoToFlow::setImageReady(int index, const QByteArray &image)
 void GoToFlow::preload()
 {
     if (numImagesLoaded < imagesLoaded.size())
-        updateTimer->start(30); //TODO comprobar rendimiento, antes era 70
+        updateTimer->start(30); // TODO comprobar rendimiento, antes era 70
 }
 
 void GoToFlow::updateImageData()
@@ -162,7 +162,7 @@ void GoToFlow::updateImageData()
             imagesSetted[idx] = true;
             numImagesLoaded++;
             rawImages[idx].clear();
-            ; //release memory
+            ; // release memory
             imagesLoaded[idx] = true;
         }
     }
@@ -180,7 +180,7 @@ void GoToFlow::updateImageData()
     for (int c = 0; c < 2 * COUNT + 1; c++) {
         int i = indexes[c];
         if ((i >= 0) && (i < flow->slideCount()))
-            if (!imagesLoaded[i] && imagesReady[i]) //slide(i).isNull())
+            if (!imagesLoaded[i] && imagesReady[i]) // slide(i).isNull())
             {
                 // schedule thumbnail generation
 
@@ -223,7 +223,7 @@ void GoToFlow::setFlowRightToLeft(bool b)
 }
 
 //-----------------------------------------------------------------------------
-//PageLoader
+// PageLoader
 //-----------------------------------------------------------------------------
 
 PageLoader::PageLoader(QMutex *m)
@@ -233,8 +233,8 @@ PageLoader::PageLoader(QMutex *m)
 
 PageLoader::~PageLoader()
 {
-    //TODO this destructor never runs. If it is ever called, it will hang, because
-    //the implementation is broken due to the absolutely endless loop in run().
+    // TODO this destructor never runs. If it is ever called, it will hang, because
+    // the implementation is broken due to the absolutely endless loop in run().
     mutex->lock();
     condition.wakeOne();
     mutex->unlock();
@@ -250,7 +250,7 @@ void PageLoader::generate(int index, QSize size, const QByteArray &rImage)
 {
     mutex->lock();
     this->idx = index;
-    //this->img = QImage();
+    // this->img = QImage();
     this->size = size;
     this->rawImage = rImage;
     mutex->unlock();
@@ -272,7 +272,7 @@ void PageLoader::run()
         // copy necessary data
         mutex->lock();
         this->working = true;
-        //int idx = this->idx;
+        // int idx = this->idx;
 
         QImage image;
         image.loadFromData(this->rawImage);

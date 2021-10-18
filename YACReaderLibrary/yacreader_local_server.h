@@ -24,7 +24,7 @@ public slots:
     void close();
 
 private:
-    //void run();
+    // void run();
     QLocalServer *localServer;
 };
 
@@ -39,7 +39,7 @@ signals:
 
 private:
     static QMutex dbMutex;
-    //static int count;
+    // static int count;
     void run();
 
     void getComicInfo(quint64 libraryId, ComicDB &comic, QList<ComicDB> &siblings);

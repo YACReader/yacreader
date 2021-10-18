@@ -29,7 +29,7 @@ void XMLInfoLibraryScanner::scanLibrary(const QString &source, const QString &ta
 void XMLInfoLibraryScanner::run()
 {
 #ifndef use_unarr
-//check for 7z lib
+// check for 7z lib
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
     QLibrary *sevenzLib = new QLibrary(QString(LIBDIR) + "/p7zip/7z.so");
 #else
@@ -58,7 +58,7 @@ void XMLInfoLibraryScanner::run()
         QSqlRecord record = comicsInfo.record();
 
         int id = record.indexOf("id");
-        //int parentIdIndex = record.indexOf("parentId");
+        // int parentIdIndex = record.indexOf("parentId");
         int fileNameIndex = record.indexOf("fileName");
         int pathIndex = record.indexOf("path");
 

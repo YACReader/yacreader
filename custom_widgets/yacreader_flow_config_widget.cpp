@@ -41,7 +41,7 @@ YACReaderFlowConfigWidget::YACReaderFlowConfigWidget(QWidget *parent)
     opt3->addWidget(lOpt3);
     vbox->addLayout(opt3);
 
-    //vbox->addStretch(1);
+    // vbox->addStretch(1);
     groupBox->setLayout(vbox);
 
     layout->addWidget(groupBox);

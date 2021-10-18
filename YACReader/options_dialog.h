@@ -20,7 +20,7 @@ public:
     OptionsDialog(QWidget *parent = nullptr);
 
 private:
-    //QLabel * pathLabel;
+    // QLabel * pathLabel;
     QLineEdit *pathEdit;
     QPushButton *pathFindButton;
     QCheckBox *quickNavi;
@@ -32,11 +32,11 @@ private:
 
     QLabel *zoomLevel;
 
-    //QLabel * slideSizeLabel;
+    // QLabel * slideSizeLabel;
     QSlider *slideSize;
 
-    //QLabel * fitToWidthRatioLabel;
-    //QSlider * fitToWidthRatioS;
+    // QLabel * fitToWidthRatioLabel;
+    // QSlider * fitToWidthRatioS;
 
     QLabel *backgroundColor;
     QPushButton *selectBackgroundColorButton;
@@ -54,7 +54,7 @@ public slots:
     void restoreOptions(QSettings *settings) override;
     void findFolder();
     void updateColor(const QColor &color);
-    //void fitToWidthRatio(int value);
+    // void fitToWidthRatio(int value);
     void brightnessChanged(int value);
     void contrastChanged(int value);
     void gammaChanged(int value);
@@ -66,7 +66,7 @@ signals:
     void changedOptions();
     void changedImageOptions();
     void changedFilters(int brightness, int contrast, int gamma);
-    //void fitToWidthRatioChanged(float ratio);
+    // void fitToWidthRatioChanged(float ratio);
 };
 
 #endif

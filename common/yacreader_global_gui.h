@@ -96,7 +96,7 @@ enum FitMode {
     ToHeight = 0x02,
     FullRes = 0x03,
     FullPage = 0x04 //,
-    //Text=0x05
+    // Text=0x05
 };
 
 enum LibraryUITheme {

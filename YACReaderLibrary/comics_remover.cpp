@@ -50,7 +50,7 @@ void FoldersRemover::process()
         QModelIndex mi = i.previous();
         currentFolderPath = i2.previous();
         QDir d(currentFolderPath);
-        if (d.removeRecursively() || !d.exists()) //the folder is in the DB but no in the drive...
+        if (d.removeRecursively() || !d.exists()) // the folder is in the DB but no in the drive...
             emit remove(mi);
         else
             emit removeError();

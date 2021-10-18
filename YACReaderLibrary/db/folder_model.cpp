@@ -61,14 +61,14 @@ FolderModel::FolderModel(QObject *parent)
 FolderModel::FolderModel(QSqlQuery &sqlquery, QObject *parent)
     : QAbstractItemModel(parent), rootItem(0)
 {
-    //lo m�s probable es que el nodo ra�z no necesite tener informaci�n
+    // lo m�s probable es que el nodo ra�z no necesite tener informaci�n
     QList<QVariant> rootData;
-    rootData << "root"; //id 0, padre 0, title "root" (el id, y el id del padre van a ir en la clase TreeItem)
+    rootData << "root"; // id 0, padre 0, title "root" (el id, y el id del padre van a ir en la clase TreeItem)
     rootItem = new FolderItem(rootData);
     rootItem->id = ROOT;
     rootItem->parentItem = 0;
     setupModelData(sqlquery, rootItem);
-    //sqlquery.finish();
+    // sqlquery.finish();
 }
 
 FolderModel::~FolderModel()
@@ -208,20 +208,20 @@ void FolderModel::setupModelData(QString path)
 {
     beginResetModel();
     if (rootItem != 0)
-        delete rootItem; //TODO comprobar que se libera bien la memoria
+        delete rootItem; // TODO comprobar que se libera bien la memoria
 
     rootItem = 0;
 
-    //inicializar el nodo ra�z
+    // inicializar el nodo ra�z
     QList<QVariant> rootData;
-    rootData << "root"; //id 0, padre 0, title "root" (el id, y el id del padre van a ir en la clase TreeItem)
+    rootData << "root"; // id 0, padre 0, title "root" (el id, y el id del padre van a ir en la clase TreeItem)
     rootItem = new FolderItem(rootData);
     rootItem->id = ROOT;
     rootItem->parentItem = 0;
 
-    //cargar la base de datos
+    // cargar la base de datos
     _databasePath = path;
-    //crear la consulta
+    // crear la consulta
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(path);
@@ -230,17 +230,17 @@ void FolderModel::setupModelData(QString path)
         setupModelData(selectQuery, rootItem);
         connectionName = db.connectionName();
     }
-    //selectQuery.finish();
+    // selectQuery.finish();
     QSqlDatabase::removeDatabase(connectionName);
     endResetModel();
 }
 
 void FolderModel::setupModelData(QSqlQuery &sqlquery, FolderItem *parent)
 {
-    //64 bits para la primary key, es decir la misma precisi�n que soporta sqlit 2^64
-    //el diccionario permitir� encontrar cualquier nodo del �rbol r�pidamente, de forma que a�adir un hijo a un padre sea O(1)
+    // 64 bits para la primary key, es decir la misma precisi�n que soporta sqlit 2^64
+    // el diccionario permitir� encontrar cualquier nodo del �rbol r�pidamente, de forma que a�adir un hijo a un padre sea O(1)
     items.clear();
-    //se a�ade el nodo 0
+    // se a�ade el nodo 0
     items.insert(parent->id, parent);
 
     QSqlRecord record = sqlquery.record();
@@ -264,11 +264,11 @@ void FolderModel::setupModelData(QSqlQuery &sqlquery, FolderItem *parent)
         auto item = new FolderItem(data);
 
         item->id = sqlquery.value(id).toULongLong();
-        //la inserci�n de hijos se hace de forma ordenada
+        // la inserci�n de hijos se hace de forma ordenada
         FolderItem *parent = items.value(sqlquery.value(parentId).toULongLong());
-        //if(parent !=0) //TODO if parent==0 the parent of item was removed from the DB and delete on cascade didn't work, ERROR.
+        // if(parent !=0) //TODO if parent==0 the parent of item was removed from the DB and delete on cascade didn't work, ERROR.
         parent->appendChild(item);
-        //se a�ade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
+        // se a�ade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
         items.insert(item->id, item);
     }
 }
@@ -298,11 +298,11 @@ void FolderModel::updateFolderModelData(QSqlQuery &sqlquery, FolderItem *parent)
         auto item = new FolderItem(data);
 
         item->id = sqlquery.value(id).toULongLong();
-        //la inserci�n de hijos se hace de forma ordenada
+        // la inserci�n de hijos se hace de forma ordenada
         FolderItem *parent = items.value(sqlquery.value(parentId).toULongLong());
-        if (parent != 0) //TODO if parent==0 the parent of item was removed from the DB and delete on cascade didn't work, ERROR.
+        if (parent != 0) // TODO if parent==0 the parent of item was removed from the DB and delete on cascade didn't work, ERROR.
             parent->appendChild(item);
-        //se a�ade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
+        // se a�ade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
         items.insert(item->id, item);
     }
 }
@@ -314,7 +314,7 @@ QString FolderModel::getDatabase()
 
 QString FolderModel::getFolderPath(const QModelIndex &folder)
 {
-    if (!folder.isValid()) //root folder
+    if (!folder.isValid()) // root folder
         return "/";
     return static_cast<FolderItem *>(folder.internalPointer())->data(FolderModel::Path).toString();
 }
@@ -425,7 +425,7 @@ void FolderModel::fetchMoreFromDB(const QModelIndex &parent)
     else
         item = rootItem;
 
-    //Remove all children
+    // Remove all children
     if (item->childCount() > 0) {
         beginRemoveRows(parent, 0, item->childCount() - 1);
         item->clearChildren();
@@ -453,14 +453,14 @@ void FolderModel::fetchMoreFromDB(const QModelIndex &parent)
                 selectQuery.exec();
 
                 if (!firstLevelUpdated) {
-                    //NO size support
+                    // NO size support
                     int numResults = 0;
                     while (selectQuery.next())
                         numResults++;
 
                     if (!selectQuery.seek(-1))
                         selectQuery.exec();
-                    //END no size support
+                    // END no size support
 
                     beginInsertRows(parent, 0, numResults - 1);
                 }
@@ -513,17 +513,17 @@ QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QMod
     QList<QVariant> data;
     data << newFolder.name;
     data << newFolder.path;
-    data << false; //finished
-    data << true; //completed
+    data << false; // finished
+    data << true; // completed
     data << newFolder.isManga();
 
     auto item = new FolderItem(data);
     item->id = newFolder.id;
 
-    beginInsertRows(parent, 0, 0); //TODO calculate the destRow before inserting the new child
+    beginInsertRows(parent, 0, 0); // TODO calculate the destRow before inserting the new child
 
     parentItem->appendChild(item);
-    destRow = parentItem->children().indexOf(item); //TODO optimize this, appendChild should return the index of the new item
+    destRow = parentItem->children().indexOf(item); // TODO optimize this, appendChild should return the index of the new item
     items.insert(item->id, item);
 
     endInsertRows();
@@ -566,7 +566,7 @@ void FolderModel::updateFolderChildrenInfo(qulonglong folderId)
     QSqlDatabase::removeDatabase(connectionName);
 }
 
-//PROXY
+// PROXY
 
 FolderModelProxy::FolderModelProxy(QObject *parent)
     : QSortFilterProxyModel(parent), rootItem(0), filterEnabled(false)
@@ -600,7 +600,7 @@ void FolderModelProxy::setFilterData(QMap<unsigned long long, FolderItem *> *fil
     beginResetModel();
 
     if (rootItem != 0)
-        delete rootItem; //TODO comprobar que se libera bien la memoria
+        delete rootItem; // TODO comprobar que se libera bien la memoria
 
     rootItem = root;
 

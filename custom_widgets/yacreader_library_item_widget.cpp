@@ -12,7 +12,7 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QStrin
     mainLayout->setMargin(0);
     mainLayout->setSpacing(0);
 
-    //installEventFilter(this);
+    // installEventFilter(this);
 
     QPixmap iconPixmap(":/images/sidebar/libraryIcon.png");
     icon = new QLabel(this);
@@ -22,8 +22,8 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QStrin
 
     options = new QToolButton(this);
 #ifdef Q_OS_MAC
-    //TODO fix this crazy hack for having a propper retina icon for the options
-    //this hack has been perpetrated using Qt 5.5.0
+    // TODO fix this crazy hack for having a propper retina icon for the options
+    // this hack has been perpetrated using Qt 5.5.0
     QString sourceOptionsImage;
     if (devicePixelRatio() > 1)
         sourceOptionsImage = ":/images/sidebar/libraryOptions@2x.png";
@@ -44,23 +44,23 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QStrin
     options->setStyleSheet("QToolButton {border:none;}");
     connect(options, &QAbstractButton::clicked, this, &YACReaderLibraryItemWidget::showOptions);
     /*up = new QToolButton(this);
-	up->setIcon(QIcon(":/images/libraryUp.png"));
-	up->setHidden(true);
-	up->setFixedWidth(18);
-	up->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Minimum);
+        up->setIcon(QIcon(":/images/libraryUp.png"));
+        up->setHidden(true);
+        up->setFixedWidth(18);
+        up->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Minimum);
 
-	down = new QToolButton(this);
-	down->setIcon(QIcon(":/images/libraryDown.png"));
-	down->setHidden(true);
-	down->setFixedWidth(18);
-	down->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Minimum);*/
+        down = new QToolButton(this);
+        down->setIcon(QIcon(":/images/libraryDown.png"));
+        down->setHidden(true);
+        down->setFixedWidth(18);
+        down->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Minimum);*/
 
     mainLayout->addWidget(icon);
     mainLayout->addWidget(nameLabel, Qt::AlignLeft);
     mainLayout->addStretch();
     mainLayout->addWidget(options);
     /*mainLayout->addWidget(up);
-	mainLayout->addWidget(down);*/
+        mainLayout->addWidget(down);*/
 
     setLayout(mainLayout);
 #ifndef Q_OS_MAC
@@ -85,39 +85,39 @@ void YACReaderLibraryItemWidget::showUpDownButtons(bool show)
 
 /*
 bool YACReaderLibraryItemWidget::eventFilter(QObject *object, QEvent *event){
-	if(!isSelected && object==this && (event->type()==QEvent::Enter))
-	{
-		QString styleSheet = "background-color:#5E5E5E; border-top: 1px solid #5E5E5E;border-bottom: 1px solid #5E5E5E; ";
-		setStyleSheet(styleSheet);
+        if(!isSelected && object==this && (event->type()==QEvent::Enter))
+        {
+                QString styleSheet = "background-color:#5E5E5E; border-top: 1px solid #5E5E5E;border-bottom: 1px solid #5E5E5E; ";
+                setStyleSheet(styleSheet);
 
-		up->setHidden(false);
-		down->setHidden(false);
-		options->setHidden(false);
+                up->setHidden(false);
+                down->setHidden(false);
+                options->setHidden(false);
 
-		return true;
-	}
-	if(!isSelected && object==this && (event->type()==QEvent::Leave))
-	{
-		QString styleSheet = "background-color:#454545; border-top: 1px solid #454545;border-bottom: 1px solid #454545;";
-		setStyleSheet(styleSheet);
+                return true;
+        }
+        if(!isSelected && object==this && (event->type()==QEvent::Leave))
+        {
+                QString styleSheet = "background-color:#454545; border-top: 1px solid #454545;border-bottom: 1px solid #454545;";
+                setStyleSheet(styleSheet);
 
-		up->setHidden(true);
-		down->setHidden(true);
-		options->setHidden(true);
+                up->setHidden(true);
+                down->setHidden(true);
+                options->setHidden(true);
 
-		return true;
-	}
+                return true;
+        }
 
-	if(object==this && (event->type()==QEvent::MouseButtonRelease))
-	{
-		QString styleSheet = "background-color:#2E2E2E; border-top: 1px solid #1F1F1F;border-bottom: 1px solid #636363; padding-top:1px; padding-bottom:1px;";
-		setStyleSheet(styleSheet);
-		emit(selected(name,path));
-		isSelected = true;
-		return true;
-	}
+        if(object==this && (event->type()==QEvent::MouseButtonRelease))
+        {
+                QString styleSheet = "background-color:#2E2E2E; border-top: 1px solid #1F1F1F;border-bottom: 1px solid #636363; padding-top:1px; padding-bottom:1px;";
+                setStyleSheet(styleSheet);
+                emit(selected(name,path));
+                isSelected = true;
+                return true;
+        }
 
-	return false;
+        return false;
 }*/
 
 void YACReaderLibraryItemWidget::deselect()
@@ -135,7 +135,7 @@ void YACReaderLibraryItemWidget::deselect()
     icon->setPixmap(iconPixmap);
 
     /*up->setHidden(true);
-	down->setHidden(true);*/
+        down->setHidden(true);*/
     options->setHidden(true);
 
     isSelected = false;
@@ -144,7 +144,7 @@ void YACReaderLibraryItemWidget::deselect()
 void YACReaderLibraryItemWidget::select()
 {
 #ifdef Q_OS_MAC
-    //QString styleSheet ="color: white; background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6BAFE4, stop: 1 #3984D2); border-top: 2px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #5EA3DF, stop: 1 #73B8EA); border-left:none;border-right:none;border-bottom:1px solid #3577C2;";
+    // QString styleSheet ="color: white; background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6BAFE4, stop: 1 #3984D2); border-top: 2px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #5EA3DF, stop: 1 #73B8EA); border-left:none;border-right:none;border-bottom:1px solid #3577C2;";
     QString styleSheet = "color: white; background-color:#91c4f4; border-bottom:1px solid #91c4f4;";
 #else
     QString styleSheet = "color: white; background-color:#2E2E2E; font-weight:bold;";

@@ -9,7 +9,7 @@ class QResizeEvent;
 class QPaintEvent;
 class QHBoxLayout;
 
-//TODO create methods for adding actions, separators and sctreches dynimically
+// TODO create methods for adding actions, separators and sctreches dynimically
 class YACReaderMainToolBar : public QWidget
 {
     Q_OBJECT

@@ -36,7 +36,7 @@ class Viewer : public QScrollArea, public ScrollManagement
 {
     Q_OBJECT
 public:
-    bool fullscreen; //TODO, change by the right use of windowState();
+    bool fullscreen; // TODO, change by the right use of windowState();
 public slots:
     void increaseZoomFactor();
     void decreaseZoomFactor();
@@ -98,7 +98,7 @@ public slots:
     void showMessageErrorOpening(QString);
     void processCRCError(QString message);
     void setBookmarks();
-    //deprecated
+    // deprecated
     void updateImageOptions();
     void updateFilters(int brightness, int contrast, int gamma);
     void showIsCoverMessage();
@@ -115,7 +115,7 @@ private:
     int zoom;
 
     PageLabelWidget *informationLabel;
-    //QTimer * scroller;
+    // QTimer * scroller;
     QPropertyAnimation *verticalScroller;
     QPropertyAnimation *horizontalScroller;
     QParallelAnimationGroup *groupScroller;
@@ -124,9 +124,9 @@ private:
     GoToFlowWidget *goToFlow;
     QPropertyAnimation *showGoToFlowAnimation;
     GoToDialog *goToDialog;
-    //!Image properties
-    //! Comic
-    //Comic * comic;
+    //! Image properties
+    //!  Comic
+    // Comic * comic;
     int index;
     QPixmap *currentPage;
     BookmarksDialog *bd;
@@ -137,7 +137,7 @@ private:
     bool drag;
     int numScrollSteps;
 
-    //!Widgets
+    //! Widgets
     QLabel *content;
 
     YACReaderTranslator *translator;
@@ -153,7 +153,7 @@ private:
     bool shouldOpenPrevious;
 
 private:
-    //!Magnifying glass
+    //! Magnifying glass
     MagnifyingGlass *mglass;
     bool magnifyingGlassShowed;
     bool restoreMagnifyingGlass;
@@ -166,7 +166,7 @@ private:
 
     void moveAction(const QKeySequence &key);
 
-    //!ZigzagScroll
+    //! ZigzagScroll
     enum scrollDirection { UP,
                            DOWN,
                            LEFT,
@@ -179,9 +179,9 @@ public:
     Viewer(QWidget *parent = nullptr);
     ~Viewer();
     const QPixmap *pixmap();
-    //Comic * getComic(){return comic;}
+    // Comic * getComic(){return comic;}
     const BookmarksDialog *getBookmarksDialog() { return bd; }
-    //returns the current index starting in 1 [1,nPages]
+    // returns the current index starting in 1 [1,nPages]
     unsigned int getIndex();
     void updateComic(ComicDB &comic);
 signals:

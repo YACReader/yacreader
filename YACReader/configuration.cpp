@@ -22,7 +22,7 @@ void Configuration::load(QSettings *settings)
 {
     this->settings = settings;
 
-    //TODO set defaults
+    // TODO set defaults
     if (!settings->contains(PATH))
         settings->setValue(PATH, ".");
     if (!settings->contains(GO_TO_FLOW_SIZE))
@@ -53,7 +53,7 @@ void Configuration::updateOpenRecentList(QString path)
     QStringList list = openRecentList();
     list.removeAll(path);
     list.prepend(path);
-    //TODO: Make list lenght configurable
+    // TODO: Make list lenght configurable
     while (list.length() > getOpenRecentSize()) {
         list.removeLast();
     }

@@ -36,7 +36,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     auto layoutImage = new QGridLayout();
 
     QGroupBox *slideSizeBox = new QGroupBox(tr("\"Go to flow\" size"));
-    //slideSizeLabel = new QLabel(,this);
+    // slideSizeLabel = new QLabel(,this);
     slideSize = new QSlider(this);
     slideSize->setMinimum(125);
     slideSize->setMaximum(350);
@@ -66,33 +66,33 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     connect(colorDialog, &QColorDialog::colorSelected, this, &OptionsDialog::updateColor);
 
     QGroupBox *colorBox = new QGroupBox(tr("Background color"));
-    //backgroundColor->setMinimumWidth(100);
+    // backgroundColor->setMinimumWidth(100);
     colorSelection->addWidget(backgroundColor);
     colorSelection->addWidget(selectBackgroundColorButton = new QPushButton(tr("Choose")));
     colorSelection->setStretchFactor(backgroundColor, 1);
     colorSelection->setStretchFactor(selectBackgroundColorButton, 0);
-    //colorSelection->addStretch();
+    // colorSelection->addStretch();
     connect(selectBackgroundColorButton, &QAbstractButton::clicked, colorDialog, &QWidget::show);
     colorBox->setLayout(colorSelection);
 
     brightnessS = new YACReaderSpinSliderWidget(this, true);
     brightnessS->setRange(0, 100);
-    //brightnessS->setText(tr("Brightness"));
+    // brightnessS->setText(tr("Brightness"));
     brightnessS->setTracking(false);
     connect(brightnessS, &YACReaderSpinSliderWidget::valueChanged, this, &OptionsDialog::brightnessChanged);
 
     contrastS = new YACReaderSpinSliderWidget(this, true);
     contrastS->setRange(0, 250);
-    //contrastS->setText(tr("Contrast"));
+    // contrastS->setText(tr("Contrast"));
     contrastS->setTracking(false);
     connect(contrastS, &YACReaderSpinSliderWidget::valueChanged, this, &OptionsDialog::contrastChanged);
 
     gammaS = new YACReaderSpinSliderWidget(this, true);
     gammaS->setRange(0, 250);
-    //gammaS->setText(tr("Gamma"));
+    // gammaS->setText(tr("Gamma"));
     gammaS->setTracking(false);
     connect(gammaS, &YACReaderSpinSliderWidget::valueChanged, this, &OptionsDialog::gammaChanged);
-    //connect(brightnessS,SIGNAL(valueChanged(int)),this,SIGNAL(changedOptions()));
+    // connect(brightnessS,SIGNAL(valueChanged(int)),this,SIGNAL(changedOptions()));
 
     quickNavi = new QCheckBox(tr("Quick Navigation Mode"));
     disableShowOnMouseOver = new QCheckBox(tr("Disable mouse over activation"));
@@ -105,7 +105,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 
     layoutGeneral->addWidget(pathBox);
     layoutGeneral->addWidget(slideSizeBox);
-    //layoutGeneral->addWidget(fitBox);
+    // layoutGeneral->addWidget(fitBox);
     layoutGeneral->addWidget(colorBox);
     layoutGeneral->addWidget(shortcutsBox);
     layoutGeneral->addStretch();
@@ -174,12 +174,12 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 
     setLayout(layout);
 
-    //disable vSyncCheck
+    // disable vSyncCheck
 #ifndef NO_OPENGL
     gl->vSyncCheck->hide();
 #endif
-    //restoreOptions(); //load options
-    //resize(400,0);
+    // restoreOptions(); //load options
+    // resize(400,0);
     setModal(true);
     setWindowTitle(tr("Options"));
 
@@ -209,7 +209,7 @@ void OptionsDialog::saveOptions()
     settings->setValue(PATH, pathEdit->text());
 
     settings->setValue(BACKGROUND_COLOR, colorDialog->currentColor());
-    //settings->setValue(FIT_TO_WIDTH_RATIO,fitToWidthRatioS->sliderPosition()/100.0);
+    // settings->setValue(FIT_TO_WIDTH_RATIO,fitToWidthRatioS->sliderPosition()/100.0);
     settings->setValue(QUICK_NAVI_MODE, quickNavi->isChecked());
     settings->setValue(DISABLE_MOUSE_OVER_GOTO_FLOW, disableShowOnMouseOver->isChecked());
 
@@ -239,7 +239,7 @@ void OptionsDialog::restoreOptions(QSettings *settings)
     pathEdit->setText(settings->value(PATH).toString());
 
     updateColor(settings->value(BACKGROUND_COLOR).value<QColor>());
-    //fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
+    // fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
 
     quickNavi->setChecked(settings->value(QUICK_NAVI_MODE).toBool());
     disableShowOnMouseOver->setChecked(settings->value(DISABLE_MOUSE_OVER_GOTO_FLOW).toBool());
@@ -270,7 +270,7 @@ void OptionsDialog::brightnessChanged(int value)
     QSettings settings(YACReader::getSettingsPath() + "/YACReader.ini", QSettings::IniFormat);
     settings.setValue(BRIGHTNESS, value);
     emit changedFilters(brightnessS->getValue(), contrastS->getValue(), gammaS->getValue());
-    //emit(changedImageOptions());
+    // emit(changedImageOptions());
 }
 
 void OptionsDialog::contrastChanged(int value)
@@ -278,7 +278,7 @@ void OptionsDialog::contrastChanged(int value)
     QSettings settings(YACReader::getSettingsPath() + "/YACReader.ini", QSettings::IniFormat);
     settings.setValue(CONTRAST, value);
     emit changedFilters(brightnessS->getValue(), contrastS->getValue(), gammaS->getValue());
-    ///emit(changedImageOptions());
+    /// emit(changedImageOptions());
 }
 
 void OptionsDialog::gammaChanged(int value)
@@ -286,7 +286,7 @@ void OptionsDialog::gammaChanged(int value)
     QSettings settings(YACReader::getSettingsPath() + "/YACReader.ini", QSettings::IniFormat);
     settings.setValue(GAMMA, value);
     emit changedFilters(brightnessS->getValue(), contrastS->getValue(), gammaS->getValue());
-    //emit(changedImageOptions());
+    // emit(changedImageOptions());
 }
 
 void OptionsDialog::resetImageConfig()
@@ -299,16 +299,16 @@ void OptionsDialog::resetImageConfig()
     settings.setValue(CONTRAST, 100);
     settings.setValue(GAMMA, 100);
     emit changedFilters(brightnessS->getValue(), contrastS->getValue(), gammaS->getValue());
-    //emit(changedImageOptions());
+    // emit(changedImageOptions());
 }
 
 void OptionsDialog::show()
 {
-    //TODO solucionar el tema de las settings, esto sólo debería aparecer en una única línea de código
+    // TODO solucionar el tema de las settings, esto sólo debería aparecer en una única línea de código
     QSettings *s = new QSettings(YACReader::getSettingsPath() + "/YACReader.ini", QSettings::IniFormat);
-    //fitToWidthRatioS->disconnect();
-    //fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
-    //connect(fitToWidthRatioS,SIGNAL(valueChanged(int)),this,SLOT(fitToWidthRatio(int)));
+    // fitToWidthRatioS->disconnect();
+    // fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
+    // connect(fitToWidthRatioS,SIGNAL(valueChanged(int)),this,SLOT(fitToWidthRatio(int)));
     QDialog::show();
     delete s;
 }
