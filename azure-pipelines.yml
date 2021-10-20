@@ -35,7 +35,7 @@ jobs:
   - script: |
       sudo add-apt-repository 'deb http://download.opensuse.org/repositories/home:/selmf/xUbuntu_18.04/ /'
       wget -qO - 'http://archive.neon.kde.org/public.key' | sudo apt-key add -
-      sudo apt-add-repository http://archive.neon.kde.org/unstable
+      sudo apt-add-repository http://archive.neon.kde.org/dev
       sudo apt-get update --allow-insecure-repositories
       sudo apt-get install -y --allow-unauthenticated qt5-default qt5-qmake \
       qtbase5-dev qtmultimedia5-dev libpoppler-qt5-dev \
