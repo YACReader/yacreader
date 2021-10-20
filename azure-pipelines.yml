@@ -30,7 +30,7 @@ jobs:
 - job: Linux
   dependsOn: CodeFormatValidation
   pool:
-    vmImage: 'ubuntu-18.04'
+    vmImage: 'ubuntu-20.04'
   steps:
   - script: |
       sudo add-apt-repository 'deb http://download.opensuse.org/repositories/home:/selmf/xUbuntu_18.04/ /'
@@ -131,7 +131,7 @@ jobs:
     variables:
     - group: artifactory
     pool:
-      vmImage: 'ubuntu-18.04'
+      vmImage: 'ubuntu-20.04'
     steps:
       - task: DownloadPipelineArtifact@2
         inputs:
@@ -159,7 +159,7 @@ jobs:
     variables:
     - group: github-releases
     pool:
-      vmImage: 'ubuntu-18.04'
+      vmImage: 'ubuntu-20.04'
     steps:
     - task: DownloadPipelineArtifact@2
       inputs:
