@@ -36,9 +36,6 @@ defineTest(minQtVersion) {
   error(YACReader requires Qt 5.15 or newer but $$[QT_VERSION] was detected)
 }
 
-DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x050F00
-DEFINES += QT_DEPRECATED_WARNINGS
-
 # reduce log pollution
 CONFIG += silent
 
@@ -81,3 +78,11 @@ unix:!macx:!CONFIG(poppler):!CONFIG(pdfium):!CONFIG(no_pdf) {
 macx:!CONFIG(pdfkit):!CONFIG(pdfium):!CONFIG(no_pdf) {
   CONFIG += pdfkit
 }
+
+!CONFIG(poppler) {
+    DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x050F00
+} else {
+    DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x050900
+}
+
+DEFINES += QT_DEPRECATED_WARNINGS
