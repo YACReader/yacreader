@@ -39,7 +39,7 @@ jobs:
       sudo apt-get update --allow-insecure-repositories
       sudo apt-get install -y --allow-unauthenticated qt5-default qt5-qmake \
       qtbase5-dev qtmultimedia5-dev libpoppler-qt5-dev \
-      libqt5opengl5-dev libunarr-dev qtdeclarative5-dev libqt5svg5-dev
+      libqt5opengl5-dev libunarr-dev qtdeclarative5-dev libqt5svg5-dev qtquickcontrols2-5-dev
     displayName: 'Install dependencies'
   - script: |
       cd $(Build.SourcesDirectory)
