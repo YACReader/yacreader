@@ -318,7 +318,7 @@ void Viewer::updatePage()
     if (currentPage->isNull())
         setPageUnavailableMessage();
     else
-        emit(pageAvailable(true));
+        emit pageAvailable(true);
 
     emit backgroundChanges();
 
@@ -688,13 +688,15 @@ static void animateScroll(QPropertyAnimation &scroller, const QScrollBar &scroll
 
 void Viewer::wheelEvent(QWheelEvent *event)
 {
+    auto delta = event->angleDelta();
+
     if (render->hasLoadedComic()) {
-        if (event->orientation() == Qt::Horizontal) {
-            animateScroll(*horizontalScroller, *horizontalScrollBar(), event->delta());
+        if (delta.x() != 0) {
+            animateScroll(*horizontalScroller, *horizontalScrollBar(), delta.x());
             return;
         }
 
-        if ((event->delta() < 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->maximum())) {
+        if ((delta.y() < 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->maximum())) {
             if (wheelStop || verticalScrollBar()->maximum() == verticalScrollBar()->minimum()) {
                 if (getMovement(event) == Forward) {
                     next();
@@ -706,7 +708,7 @@ void Viewer::wheelEvent(QWheelEvent *event)
             } else
                 wheelStop = true;
         } else {
-            if ((event->delta() > 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->minimum())) {
+            if ((delta.y() > 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->minimum())) {
                 if (wheelStop || verticalScrollBar()->maximum() == verticalScrollBar()->minimum()) {
                     if (getMovement(event) == Backward) {
                         prev();
@@ -720,7 +722,7 @@ void Viewer::wheelEvent(QWheelEvent *event)
             }
         }
 
-        animateScroll(*verticalScroller, *verticalScrollBar(), event->delta());
+        animateScroll(*verticalScroller, *verticalScrollBar(), delta.y());
     }
 }
 
@@ -763,17 +765,21 @@ void Viewer::mouseMoveEvent(QMouseEvent *event)
         if (drag) {
             int currentPosY = verticalScrollBar()->sliderPosition();
             int currentPosX = horizontalScrollBar()->sliderPosition();
-            verticalScrollBar()->setSliderPosition(currentPosY = currentPosY + (yDragOrigin - event->y()));
-            horizontalScrollBar()->setSliderPosition(currentPosX = currentPosX + (xDragOrigin - event->x()));
+            verticalScrollBar()->setSliderPosition(currentPosY + (yDragOrigin - event->y()));
+            horizontalScrollBar()->setSliderPosition(currentPosX + (xDragOrigin - event->x()));
             yDragOrigin = event->y();
             xDragOrigin = event->x();
         }
     }
 }
 
-const QPixmap *Viewer::pixmap()
+const QPixmap Viewer::pixmap()
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     return content->pixmap();
+#else
+    return content->pixmap(Qt::ReturnByValue);
+#endif
 }
 
 void Viewer::magnifyingGlassSwitch()
@@ -955,7 +961,7 @@ void Viewer::setLoadingMessage()
         hideMagnifyingGlass();
         restoreMagnifyingGlass = true;
     }
-    emit(pageAvailable(false));
+    emit pageAvailable(false);
     configureContent(tr("Loading...please wait!"));
 }
 
@@ -965,7 +971,7 @@ void Viewer::setPageUnavailableMessage()
         hideMagnifyingGlass();
         restoreMagnifyingGlass = true;
     }
-    emit(pageAvailable(false));
+    emit pageAvailable(false);
     configureContent(tr("Page not available!"));
 }
 
@@ -1107,7 +1113,7 @@ void Viewer::showIsCoverMessage()
         shouldOpenPrevious = true;
     } else {
         shouldOpenPrevious = false;
-        emit(openPreviousComic());
+        emit openPreviousComic();
     }
 
     shouldOpenNext = false; // single page comic
@@ -1121,7 +1127,7 @@ void Viewer::showIsLastMessage()
         shouldOpenNext = true;
     } else {
         shouldOpenNext = false;
-        emit(openNextComic());
+        emit openNextComic();
     }
 
     shouldOpenPrevious = false; // single page comic

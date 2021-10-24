@@ -70,6 +70,8 @@ macx {
 
 QT += network widgets core multimedia svg
 
+greaterThan(QT_MAJOR_VERSION, 5): QT += openglwidgets core5compat
+
 #CONFIG += release
 CONFIG -= flat
 

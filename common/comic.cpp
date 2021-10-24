@@ -1,7 +1,7 @@
 #include "comic.h"
 
 #include <QPixmap>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QString>
 #include <algorithm>
 #include <QDir>
@@ -27,7 +27,7 @@ QStringList Comic::getSupportedImageFormats()
 {
     QList<QByteArray> supportedImageFormats = QImageReader::supportedImageFormats();
     QStringList supportedImageFormatStrings;
-    for (QByteArray item : supportedImageFormats) {
+    for (QByteArray &item : supportedImageFormats) {
         supportedImageFormatStrings.append(QString::fromLocal8Bit("*." + item));
     }
     return supportedImageFormatStrings;
@@ -37,7 +37,7 @@ QStringList Comic::getSupportedImageLiteralFormats()
 {
     QList<QByteArray> supportedImageFormats = QImageReader::supportedImageFormats();
     QStringList supportedImageFormatStrings;
-    for (QByteArray item : supportedImageFormats) {
+    for (QByteArray &item : supportedImageFormats) {
         supportedImageFormatStrings.append(QString::fromLocal8Bit(item));
     }
     return supportedImageFormatStrings;
@@ -352,7 +352,7 @@ FileComic::FileComic()
 FileComic::FileComic(const QString &path, int atPage)
     : Comic(path, atPage)
 {
-    load(path, atPage);
+    FileComic::load(path, atPage);
 }
 
 FileComic::~FileComic()
@@ -604,7 +604,7 @@ void FileComic::process()
     }
 
     _index = _firstPage;
-    emit(openAt(_index));
+    emit openAt(_index);
 
     int sectionIndex;
     QList<QVector<quint32>> sections = getSections(sectionIndex);
@@ -649,7 +649,7 @@ FolderComic::FolderComic()
 FolderComic::FolderComic(const QString &path, int atPage)
     : Comic(path, atPage)
 {
-    load(path, atPage);
+    FolderComic::load(path, atPage);
 }
 
 FolderComic::~FolderComic()
@@ -701,7 +701,7 @@ void FolderComic::process()
 
         _index = _firstPage;
 
-        emit(openAt(_index));
+        emit openAt(_index);
 
         emit pageChanged(0); // this indicates new comic, index=0
         emit numPages(_pages.size());
@@ -745,7 +745,7 @@ PDFComic::PDFComic()
 PDFComic::PDFComic(const QString &path, int atPage)
     : Comic(path, atPage)
 {
-    load(path, atPage);
+    PDFComic::load(path, atPage);
 }
 
 PDFComic::~PDFComic()
@@ -847,7 +847,7 @@ void PDFComic::process()
     }
 
     _index = _firstPage;
-    emit(openAt(_index));
+    emit openAt(_index);
 
     // buffer index to avoid race conditions
     int buffered_index = _index;
@@ -994,15 +994,16 @@ QString get_most_common_prefix(const QList<QString> &pageNames)
 
     uint maxFrequency = 0;
     QString common_prefix = "";
-    foreach (QString key, frequency.keys()) {
+    auto keys = frequency.keys();
+    for (QString &key : keys) {
         if (maxFrequency < frequency.value(key)) {
             maxFrequency = frequency.value(key);
             common_prefix = key;
         }
     }
 
-    QRegExp allNumberRegExp("\\d+");
-    if (allNumberRegExp.exactMatch(common_prefix)) {
+    QRegularExpression allNumberRegExp("\\A\\d+\\z");
+    if (allNumberRegExp.match(common_prefix).hasMatch()) {
         return "";
     }
 

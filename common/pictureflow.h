@@ -187,21 +187,21 @@ public slots:
   */
     void triggerRender();
 
-    void setFlowType(FlowType flowType);
+    void setFlowType(YACReader::FlowType flowType);
 
     void setMarkImage(const QImage &mark);
 
-    void markSlide(int index, YACReaderComicReadStatus readStatus = Read);
+    void markSlide(int index, YACReader::YACReaderComicReadStatus readStatus = Read);
 
     void updateMarks();
 
     void unmarkSlide(int index);
 
-    void setMarks(const QVector<YACReaderComicReadStatus> &marks);
+    void setMarks(const QVector<YACReader::YACReaderComicReadStatus> &marks);
 
     void setShowMarks(bool enable);
 
-    QVector<YACReaderComicReadStatus> getMarks();
+    QVector<YACReader::YACReaderComicReadStatus> getMarks();
 
     void resortCovers(QList<int> newOrder);
 

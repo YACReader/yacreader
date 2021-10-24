@@ -3,6 +3,7 @@
 
 #include <QStandardPaths>
 #include <QDataStream>
+#include <QMetaType>
 
 #define VERSION "9.8.2"
 

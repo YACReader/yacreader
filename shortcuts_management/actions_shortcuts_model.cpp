@@ -2,6 +2,7 @@
 #include "shortcuts_manager.h"
 
 #include <QAction>
+#include <QBrush>
 
 ActionsShortcutsModel::ActionsShortcutsModel(QObject *parent)
     : QAbstractItemModel(parent)
@@ -59,7 +60,7 @@ QVariant ActionsShortcutsModel::data(const QModelIndex &index, int role) const
     }
 
     if (role == Qt::ForegroundRole && index.column() == KEYS && actions[index.row()]->shortcut().isEmpty())
-        return QBrush(QColor("#AAAAAA"));
+        return QBrush(QColor(0xAAAAAA));
 
     if (role != Qt::DisplayRole)
         return QVariant();

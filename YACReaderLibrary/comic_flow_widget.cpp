@@ -20,12 +20,12 @@ ComicFlowWidgetSW::ComicFlowWidgetSW(QWidget *parent)
     // TODO eleminar "padding"
     QPalette Pal(palette());
     // set black background
-    Pal.setColor(QPalette::Background, Qt::black);
+    Pal.setColor(QPalette::Window, Qt::black);
     setAutoFillBackground(true);
     setPalette(Pal);
 
     // config
-    QMatrix m;
+    QTransform m;
     m.rotate(-90);
     m.scale(-1, 1);
     QImage image(":/images/setRead.png");
@@ -166,7 +166,7 @@ ComicFlowWidgetGL::ComicFlowWidgetGL(QWidget *parent)
     // TODO eleminar "padding"
     QPalette Pal(palette());
     // set black background
-    Pal.setColor(QPalette::Background, Qt::black);
+    Pal.setColor(QPalette::Window, Qt::black);
     setAutoFillBackground(true);
     setPalette(Pal);
 }

@@ -6,8 +6,11 @@
 #include <QApplication>
 #include <QFile>
 #include <QTextStream>
+#include <QScreen>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QTextCodec>
-#include <QDesktopWidget>
+#endif
 
 #include "yacreader_global.h"
 
@@ -31,7 +34,15 @@ HelpAboutDialog::HelpAboutDialog(QWidget *parent)
     layout->setContentsMargins(1, 3, 1, 1);
 
     setLayout(layout);
-    resize(500, QApplication::desktop()->availableGeometry().height() * 0.83);
+
+    QScreen *screen = parent != nullptr ? parent->window()->screen() : nullptr;
+    if (screen == nullptr) {
+        screen = QApplication::screens().constFirst();
+    }
+
+    int heightDesktopResolution = screen != nullptr ? screen->size().height() : 600;
+
+    resize(500, heightDesktopResolution * 0.83);
 }
 
 HelpAboutDialog::~HelpAboutDialog()
@@ -56,7 +67,7 @@ void HelpAboutDialog::loadAboutInformation(const QString &path)
     buildNumber = BUILD_NUMBER;
 #endif
 
-    aboutText->setHtml(fileToString(path).arg(VERSION).arg(buildNumber));
+    aboutText->setHtml(fileToString(path).arg(VERSION, buildNumber));
     aboutText->moveCursor(QTextCursor::Start);
 }
 
@@ -72,7 +83,11 @@ QString HelpAboutDialog::fileToString(const QString &path)
     f.open(QIODevice::ReadOnly);
     QTextStream txtS(&f);
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    txtS.setEncoding(QStringConverter::Utf8);
+#else
     txtS.setCodec(QTextCodec::codecForName("UTF-8"));
+#endif
 
     QString content = txtS.readAll();
     f.close();

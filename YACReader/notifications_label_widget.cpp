@@ -7,7 +7,7 @@ NotificationsLabelWidget::NotificationsLabelWidget(QWidget *parent)
 {
     auto layout = new QVBoxLayout;
     layout->setSpacing(0);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     setAttribute(Qt::WA_LayoutUsesWidgetRect, true);
     effect = new QGraphicsOpacityEffect(this);
@@ -47,7 +47,7 @@ void NotificationsLabelWidget::paintEvent(QPaintEvent *)
     QPainterPath path;
     path.addRoundedRect(QRectF(0, 0, width(), height()), 5.0, 5.0);
     painter.setPen(Qt::NoPen);
-    painter.fillPath(path, QColor("#BB000000"));
+    painter.fillPath(path, QColor(0xBB000000));
     painter.drawPath(path);
 }
 

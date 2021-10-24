@@ -48,6 +48,8 @@
 
 #include "QsLog.h"
 
+#include <QRegExp>
+
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpRequestHandler;
 using stefanfrings::HttpResponse;

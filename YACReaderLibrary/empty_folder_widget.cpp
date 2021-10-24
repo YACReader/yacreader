@@ -47,7 +47,7 @@ public:
 
         QRect textRect = option.rect;
 
-        textRect.setLeft(std::max(0, (option.rect.size().width() - fm.width(text)) / 2));
+        textRect.setLeft(std::max(0, (option.rect.size().width() - fm.horizontalAdvance(text)) / 2));
 
         painter->drawText(textRect, text);
 
@@ -62,7 +62,7 @@ public:
         QFontMetrics fm(option.font);
         QString text = qvariant_cast<QString>(index.data(Qt::DisplayRole));
 
-        return QSize(fm.width(text), fm.height());
+        return QSize(fm.horizontalAdvance(text), fm.height());
     }
 };
 
@@ -114,7 +114,7 @@ EmptyFolderWidget::EmptyFolderWidget(QWidget *parent)
     layout->addSpacing(12);
     layout->addWidget(foldersView, 1);
     layout->addStretch();
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
 
     setContentsMargins(0, 0, 0, 0);

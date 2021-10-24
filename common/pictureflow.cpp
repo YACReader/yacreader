@@ -26,6 +26,8 @@
 
 #include "pictureflow.h"
 
+#include <QElapsedTimer>
+
 // detect Qt version
 #if QT_VERSION >= 0x040000
 #define PICTUREFLOW_QT4
@@ -1281,8 +1283,8 @@ void PictureFlow::resizeEvent(QResizeEvent *event)
 #include <QTime>
 void PictureFlow::updateAnimation() // bucle principal
 {
-    QTime now;
-    now.start();
+    QElapsedTimer timer;
+    timer.start();
     bool frameSkiped = false;
 
     int old_center = d->state->centerIndex;
@@ -1297,7 +1299,7 @@ void PictureFlow::updateAnimation() // bucle principal
     if (d->state->centerIndex != old_center)
         emit centerIndexChangedSilent(d->state->centerIndex);
     if (d->animator->animating == true) {
-        int difference = 10 - now.elapsed();
+        int difference = 10 - timer.elapsed();
         if (difference >= 0 && !frameSkiped)
             QTimer::singleShot(difference, this, &PictureFlow::updateAnimation);
         else {
@@ -1338,7 +1340,7 @@ void PictureFlow::setMarkImage(const QImage &m)
     d->state->mark = m;
 }
 
-void PictureFlow::markSlide(int index, YACReaderComicReadStatus readStatus)
+void PictureFlow::markSlide(int index, YACReader::YACReaderComicReadStatus readStatus)
 {
     if (index < d->state->marks.size())
         d->state->marks[index] = readStatus;
@@ -1356,7 +1358,7 @@ void PictureFlow::unmarkSlide(int index)
         d->state->marks[index] = YACReader::Unread;
 }
 
-void PictureFlow::setMarks(const QVector<YACReaderComicReadStatus> &m)
+void PictureFlow::setMarks(const QVector<YACReader::YACReaderComicReadStatus> &m)
 {
     d->state->marks = m;
     updateMarks();

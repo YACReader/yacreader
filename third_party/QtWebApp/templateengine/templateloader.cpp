@@ -9,6 +9,12 @@
 #include <QStringList>
 #include <QDir>
 #include <QSet>
+#include <QTextStream>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    #include <QRegularExpression>
+#else
+    #include <QRegExp>
+#endif
 
 using namespace stefanfrings;
 
@@ -35,8 +41,8 @@ TemplateLoader::TemplateLoader(const QSettings *settings, QObject *parent)
     else
     {
        textCodec=QTextCodec::codecForName(encoding.toLocal8Bit());
-   }
-   qDebug("TemplateLoader: path=%s, codec=%s",qPrintable(templatePath),textCodec->name().data());
+    }
+    qDebug("TemplateLoader: path=%s, codec=%s",qPrintable(templatePath),qPrintable(encoding));
 }
 
 TemplateLoader::~TemplateLoader()
@@ -67,13 +73,23 @@ QString TemplateLoader::tryFile(QString localizedName)
 Template TemplateLoader::getTemplate(QString templateName, QString locales)
 {
     QSet<QString> tried; // used to suppress duplicate attempts
-    QStringList locs=locales.split(',',QString::SkipEmptyParts);
+
+    #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+        QStringList locs=locales.split(',',Qt::SkipEmptyParts);
+    #else
+        QStringList locs=locales.split(',',QString::SkipEmptyParts);
+    #endif
 
     // Search for exact match
     foreach (QString loc,locs)
     {
-        loc.replace(QRegExp(";.*"),"");
+        #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+            loc.replace(QRegularExpression(";.*"),"");
+        #else
+            loc.replace(QRegExp(";.*"),"");
+        #endif
         loc.replace('-','_');
+
         QString localizedName=templateName+"-"+loc.trimmed();
         if (!tried.contains(localizedName))
         {
@@ -88,7 +104,11 @@ Template TemplateLoader::getTemplate(QString templateName, QString locales)
     // Search for correct language but any country
     foreach (QString loc,locs)
     {
-        loc.replace(QRegExp("[;_-].*"),"");
+        #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+            loc.replace(QRegularExpression("[;_-].*"),"");
+        #else
+            loc.replace(QRegExp("[;_-].*"),"");
+        #endif
         QString localizedName=templateName+"-"+loc.trimmed();
         if (!tried.contains(localizedName))
         {

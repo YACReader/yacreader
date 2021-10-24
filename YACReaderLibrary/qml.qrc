@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>qml/GridComicsView.qml</file>
-        <file>qml/YACReaderScrollView.qml</file>
         <file>qml/tick.png</file>
         <file>qml/reading.png</file>
         <file>qml/star_menu.png</file>
@@ -27,6 +26,5 @@
         <file>qml/InfoTick.qml</file>
         <file>qml/InfoFavorites.qml</file>
         <file>qml/InfoRating.qml</file>
-        <file>qml/YACReaderScrollViewStyle.qml</file>
     </qresource>
 </RCC>

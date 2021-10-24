@@ -50,7 +50,7 @@ YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent)
     fullscreenButton->setStyleSheet(qToolButtonStyleSheet);
     fullscreenButton->setIconSize(QSize(24, 24));
 
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
 
     mainLayout->addSpacing(12);

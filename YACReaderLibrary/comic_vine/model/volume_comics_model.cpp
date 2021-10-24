@@ -105,7 +105,7 @@ QVariant VolumeComicsModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags VolumeComicsModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return nullptr;
+        return Qt::NoItemFlags;
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 

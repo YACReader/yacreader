@@ -482,7 +482,8 @@ void HttpRequest::parseMultiPartFile()
                         parameters.insert(fieldName,fileName);
                         qDebug("HttpRequest: set parameter %s=%s",fieldName.data(),fileName.data());
                         uploadedFiles.insert(fieldName,uploadedFile);
-                        qDebug("HttpRequest: uploaded file size is %lli",uploadedFile->size());
+                        long int fileSize=(long int) uploadedFile->size();
+                        qDebug("HttpRequest: uploaded file size is %li",fileSize);
                     }
                     else
                     {

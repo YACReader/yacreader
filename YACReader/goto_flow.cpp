@@ -195,14 +195,14 @@ void GoToFlow::updateImageData()
 
 void GoToFlow::wheelEvent(QWheelEvent *event)
 {
-    if (event->delta() < 0)
+    if (event->angleDelta().y() < 0)
         flow->showNext();
     else
         flow->showPrevious();
     event->accept();
 }
 
-void GoToFlow::setFlowType(FlowType flowType)
+void GoToFlow::setFlowType(YACReader::FlowType flowType)
 {
     flow->setFlowType(flowType);
 }

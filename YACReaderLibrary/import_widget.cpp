@@ -48,7 +48,7 @@ YACReaderActivityIndicatorWidget::YACReaderActivityIndicatorWidget(QWidget *pare
 
     setLayout(layout);
 
-    layout->setMargin(4);
+    layout->setContentsMargins(4, 4, 4, 4);
     layout->setSpacing(0);
 
     // setFixedHeight(3);
@@ -87,7 +87,7 @@ ImportWidget::ImportWidget(QWidget *parent)
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     QPalette p(palette());
-    p.setColor(QPalette::Background, QColor(250, 250, 250));
+    p.setColor(QPalette::Window, QColor(250, 250, 250));
     setAutoFillBackground(true);
     setPalette(p);
 
@@ -144,7 +144,7 @@ ImportWidget::ImportWidget(QWidget *parent)
     coversViewLayout->addWidget(topDecorator, 0);
     coversViewLayout->addWidget(coversView, 1);
     coversViewLayout->addWidget(bottomDecorator, 0);
-    coversViewLayout->setMargin(0);
+    coversViewLayout->setContentsMargins(0, 0, 0, 0);
     coversViewLayout->setSpacing(0);
 
     QPushButton *stop = new QPushButton(tr("stop"));
@@ -169,7 +169,7 @@ ImportWidget::ImportWidget(QWidget *parent)
     topLayout->addSpacing(30);
     topLayout->addLayout(textLayout, 1);
     topLayout->addStretch();
-    topLayout->setMargin(0);
+    topLayout->setContentsMargins(0, 0, 0, 0);
 
     topWidget->setLayout(topLayout);
 

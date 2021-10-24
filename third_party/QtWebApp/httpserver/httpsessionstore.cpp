@@ -13,7 +13,7 @@ HttpSessionStore::HttpSessionStore(const QSettings *settings, QObject* parent)
     :QObject(parent)
 {
     this->settings=settings;
-    connect(&cleanupTimer,&QTimer::timeout,this,&HttpSessionStore::sessionTimerEvent);
+    connect(&cleanupTimer,SIGNAL(timeout()),this,SLOT(sessionTimerEvent()));
     cleanupTimer.start(60000);
     cookieName=settings->value("cookieName","sessionid").toByteArray();
     expirationTime=settings->value("expirationTime",3600000).toInt();
@@ -64,7 +64,8 @@ HttpSession HttpSessionStore::getSession(HttpRequest& request, HttpResponse& res
             QByteArray cookiePath=settings->value("cookiePath").toByteArray();
             QByteArray cookieComment=settings->value("cookieComment").toByteArray();
             QByteArray cookieDomain=settings->value("cookieDomain").toByteArray();
-            response.setCookie(HttpCookie(cookieName,session.getId(),expirationTime/1000,cookiePath,cookieComment,cookieDomain));
+            response.setCookie(HttpCookie(cookieName,session.getId(),expirationTime/1000,
+                                          cookiePath,cookieComment,cookieDomain,false,false,"Lax"));
             session.setLastAccess();
             return session;
         }
@@ -79,7 +80,8 @@ HttpSession HttpSessionStore::getSession(HttpRequest& request, HttpResponse& res
         HttpSession session(true);
         qDebug("HttpSessionStore: create new session with ID %s",session.getId().data());
         sessions.insert(session.getId(),session);
-        response.setCookie(HttpCookie(cookieName,session.getId(),expirationTime/1000,cookiePath,cookieComment,cookieDomain));
+        response.setCookie(HttpCookie(cookieName,session.getId(),expirationTime/1000,
+                                      cookiePath,cookieComment,cookieDomain,false,false,"Lax"));
         mutex.unlock();
         return session;
     }
@@ -111,6 +113,7 @@ void HttpSessionStore::sessionTimerEvent()
         if (now-lastAccess>expirationTime)
         {
             qDebug("HttpSessionStore: session %s expired",session.getId().data());
+            emit sessionDeleted(session.getId());
             sessions.erase(prev);
         }
     }
@@ -122,6 +125,7 @@ void HttpSessionStore::sessionTimerEvent()
 void HttpSessionStore::removeSession(HttpSession session)
 {
     mutex.lock();
+    emit sessionDeleted(session.getId());
     sessions.remove(session.getId());
     mutex.unlock();
 }

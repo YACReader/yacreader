@@ -137,10 +137,10 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     auto scaleBox = new QGroupBox(tr("Fit options"));
     auto scaleLayout = new QVBoxLayout();
     scaleCheckbox = new QCheckBox(tr("Enlarge images to fit width/height"));
-    connect(scaleCheckbox, &QCheckBox::clicked,
+    connect(scaleCheckbox, &QCheckBox::clicked, scaleCheckbox,
             [=](bool checked) {
                 Configuration::getConfiguration().setEnlargeImages(checked);
-                emit(changedImageOptions());
+                emit changedImageOptions();
             });
 
     scaleLayout->addWidget(scaleCheckbox);
@@ -150,10 +150,10 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     auto doublePageBox = new QGroupBox(tr("Double Page options"));
     auto doublePageBoxLayout = new QVBoxLayout();
     coverSPCheckBox = new QCheckBox(tr("Show covers as single page"));
-    connect(coverSPCheckBox, &QCheckBox::clicked,
+    connect(coverSPCheckBox, &QCheckBox::clicked, coverSPCheckBox,
             [=](bool checked) {
                 settings->setValue(COVER_IS_SP, checked);
-                emit(changedImageOptions());
+                emit changedImageOptions();
             });
 
     doublePageBoxLayout->addWidget(coverSPCheckBox);
@@ -262,7 +262,7 @@ void OptionsDialog::updateColor(const QColor &color)
 
     settings->setValue(BACKGROUND_COLOR, color);
 
-    emit(changedOptions());
+    emit changedOptions();
 }
 
 void OptionsDialog::brightnessChanged(int value)

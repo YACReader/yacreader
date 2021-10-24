@@ -30,14 +30,16 @@ jobs:
 - job: Linux
   dependsOn: CodeFormatValidation
   pool:
-    vmImage: 'ubuntu-18.04'
+    vmImage: 'ubuntu-20.04'
   steps:
   - script: |
       sudo add-apt-repository 'deb http://download.opensuse.org/repositories/home:/selmf/xUbuntu_18.04/ /'
+      wget -qO - 'http://archive.neon.kde.org/public.key' | sudo apt-key add -
+      sudo apt-add-repository http://archive.neon.kde.org/dev/unstable
       sudo apt-get update --allow-insecure-repositories
       sudo apt-get install -y --allow-unauthenticated qt5-default qt5-qmake \
       qtbase5-dev qtmultimedia5-dev libpoppler-qt5-dev \
-      libqt5opengl5-dev libunarr-dev qtdeclarative5-dev libqt5svg5-dev
+      libqt5opengl5-dev libunarr-dev qtdeclarative5-dev libqt5svg5-dev qtquickcontrols2-5-dev
     displayName: 'Install dependencies'
   - script: |
       cd $(Build.SourcesDirectory)
@@ -131,7 +133,7 @@ jobs:
     variables:
     - group: artifactory
     pool:
-      vmImage: 'ubuntu-18.04'
+      vmImage: 'ubuntu-20.04'
     steps:
       - task: DownloadPipelineArtifact@2
         inputs:
@@ -159,7 +161,7 @@ jobs:
     variables:
     - group: github-releases
     pool:
-      vmImage: 'ubuntu-18.04'
+      vmImage: 'ubuntu-20.04'
     steps:
     - task: DownloadPipelineArtifact@2
       inputs:

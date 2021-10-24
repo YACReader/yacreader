@@ -123,8 +123,8 @@ public:
     FileComic();
     FileComic(const QString &path, int atPage = -1);
     ~FileComic();
-    virtual bool load(const QString &path, int atPage = -1);
-    virtual bool load(const QString &path, const ComicDB &comic);
+    bool load(const QString &path, int atPage = -1);
+    bool load(const QString &path, const ComicDB &comic);
     static QList<QString> filter(const QList<QString> &src);
 
     // ExtractDelegate
@@ -150,7 +150,7 @@ public:
     FolderComic(const QString &path, int atPage = -1);
     ~FolderComic();
 
-    virtual bool load(const QString &path, int atPage = -1);
+    bool load(const QString &path, int atPage = -1);
 
 public slots:
 
@@ -179,8 +179,8 @@ public:
     PDFComic(const QString &path, int atPage = -1);
     ~PDFComic();
 
-    virtual bool load(const QString &path, int atPage = -1);
-    virtual bool load(const QString &path, const ComicDB &comic);
+    bool load(const QString &path, int atPage = -1);
+    bool load(const QString &path, const ComicDB &comic);
 
 public slots:
 

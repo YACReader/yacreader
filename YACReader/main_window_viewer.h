@@ -35,7 +35,7 @@ class MainWindowViewer : public QMainWindow
 public slots:
     void open();
     void open(QString path, ComicDB &comic, QList<ComicDB> &siblings);
-    void open(QString path, qint64 comicId, qint64 libraryId, OpenComicSource source);
+    void open(QString path, qint64 comicId, qint64 libraryId, YACReader::OpenComicSource source);
     void openFolder();
     void openRecent();
     void openLatestComic();

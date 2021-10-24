@@ -24,7 +24,7 @@ public:
     void setNumSlides(unsigned int slides) override;
     void setImageReady(int index, const QByteArray &image) override;
 
-    void updateConfig(QSettings *settings);
+    void updateConfig(QSettings *settings) override;
     void setFlowRightToLeft(bool b) override;
 
 private:

@@ -6,14 +6,12 @@
 #include <QSplitter>
 #include <QLabel>
 #include <QDir>
-#include <QDirModel>
 #include <QHeaderView>
 #include <QProcess>
 #include <QtCore>
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QFileIconProvider>
-#include <QMatrix>
 #include <QSettings>
 #include <QHeaderView>
 
@@ -285,7 +283,7 @@ void LibraryWindow::doLayout()
     rightLayout->addWidget(libraryToolBar);
     rightLayout->addWidget(comicsViewsManager->containerWidget());
 
-    rightLayout->setMargin(0);
+    rightLayout->setContentsMargins(0, 0, 0, 0);
     rightLayout->setSpacing(0);
 
     QWidget *rightWidget = new QWidget();
@@ -457,8 +455,6 @@ void LibraryWindow::doModels()
     // lists
     listsModel = new ReadingListModel(this);
     listsModelProxy = new ReadingListModelProxy(this);
-
-    // setSearchFilter(YACReader::NoModifiers, ""); //clear search filter
 }
 
 void LibraryWindow::createActions()
@@ -1584,7 +1580,7 @@ void LibraryWindow::addFolderToCurrentIndex()
                                                   "", &ok);
 
     // chars not supported in a folder's name: / \ : * ? " < > |
-    QRegExp invalidChars("\\/\\:\\*\\?\\\"\\<\\>\\|\\\\"); // TODO this regexp is not properly written
+    QRegularExpression invalidChars("\\/\\:\\*\\?\\\"\\<\\>\\|\\\\"); // TODO this regexp is not properly written
     bool isValid = !newFolderName.contains(invalidChars);
 
     if (ok && !newFolderName.isEmpty() && isValid) {
@@ -2379,7 +2375,7 @@ void LibraryWindow::asignNumbers()
 void LibraryWindow::openContainingFolderComic()
 {
     QModelIndex modelIndex = comicsViewsManager->comicsView->currentIndex();
-    QFileInfo file = QDir::cleanPath(currentPath() + comicsModel->getComicPath(modelIndex));
+    QFileInfo file(QDir::cleanPath(currentPath() + comicsModel->getComicPath(modelIndex)));
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
     QString path = file.absolutePath();
     QDesktopServices::openUrl(QUrl("file:///" + path, QUrl::TolerantMode));

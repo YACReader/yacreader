@@ -2,11 +2,11 @@
 #define YACREADER_LOCAL_CLIENT_H
 
 #include "yacreader_global.h"
+#include "comic_db.h"
 
 #include <QObject>
 
 class QLocalSocket;
-class ComicDB;
 
 class YACReaderLocalClient : public QObject
 {

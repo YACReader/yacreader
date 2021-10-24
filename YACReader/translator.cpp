@@ -20,7 +20,6 @@
 #include <QFile>
 #include <QPoint>
 #include <QWidget>
-#include <QTextCodec>
 #include <QLabel>
 #include <QTextEdit>
 #include <QComboBox>
@@ -51,7 +50,7 @@ YACReaderTranslator::YACReaderTranslator(Viewer *parent)
     this->setAutoFillBackground(true);
     this->setBackgroundRole(QPalette::Window);
     QPalette p(this->palette());
-    p.setColor(QPalette::Window, QColor("#404040"));
+    p.setColor(QPalette::Window, QColor(0x404040));
     this->setPalette(p);
 
     auto layout = new QVBoxLayout(this);
@@ -144,7 +143,6 @@ YACReaderTranslator::YACReaderTranslator(Viewer *parent)
 
     resize(400, 479);
 
-    layout->setMargin(0);
     layout->setContentsMargins(18, 12, 18, 12);
     setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
@@ -289,26 +287,14 @@ void YACReaderTranslator::populateCombos()
 
 void YACReaderTranslator::play()
 {
-    // QMessageBox::question(this,"xxx",ttsSource.toString());
-#if QT_VERSION >= 0x050000
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    player->setSource(ttsSource);
+#else
     player->setMedia(ttsSource);
+#endif
+
     player->play();
-
-#else
-    MediaSource src(ttsSource);
-    src.setAutoDelete(true);
-    music->setCurrentSource(src);
-    music->play();
-#endif
-}
-
-YACReaderTranslator::~YACReaderTranslator()
-{
-#if QT_VERSION >= 0x050000
-#else
-    delete music;
-#endif
 }
 
 void YACReaderTranslator::mousePressEvent(QMouseEvent *event)
@@ -353,7 +339,7 @@ void TranslationLoader::run()
     connect(&manager, &QNetworkAccessManager::finished, &q, &QEventLoop::quit);
 
     QString url = "http://api.microsofttranslator.com/V2/Ajax.svc/Translate?appid=%1&from=%2&to=%3&text=%4&contentType=text/plain";
-    url = url.arg(APPID).arg(from).arg(to).arg(text);
+    url = url.arg(APPID, from, to, text);
 
     QNetworkReply *reply = manager.get(QNetworkRequest(QUrl(url)));
 
@@ -368,11 +354,11 @@ void TranslationLoader::run()
             utf8 = utf8.remove(utf8.count() - 1, 1);
 
             QString translated(utf8);
-            emit(requestFinished(translated));
+            emit requestFinished(translated);
         } else
-            emit(error());
+            emit error();
     } else {
-        emit(timeOut());
+        emit timeOut();
     }
 }
 
@@ -396,7 +382,7 @@ void TextToSpeachLoader::run()
     connect(&manager, &QNetworkAccessManager::finished, &q, &QEventLoop::quit);
 
     QString url = "http://api.microsofttranslator.com/V2/Ajax.svc/Speak?appid=%1&language=%2&text=%3&contentType=text/plain";
-    url = url.arg(APPID).arg(language).arg(text);
+    url = url.arg(APPID, language, text);
 
     QNetworkReply *reply = manager.get(QNetworkRequest(QUrl(url)));
 
@@ -411,10 +397,10 @@ void TextToSpeachLoader::run()
             utf8 = utf8.remove(utf8.count() - 1, 1);
             utf8 = utf8.replace("\\", "");
 
-            emit(requestFinished(QUrl(utf8)));
+            emit requestFinished(QUrl(utf8));
         } else
-            emit(error());
+            emit error();
     } else {
-        emit(timeOut());
+        emit timeOut();
     }
 }

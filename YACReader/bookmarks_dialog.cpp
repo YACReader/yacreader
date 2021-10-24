@@ -3,9 +3,9 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QFrame>
 #include <QImage>
+#include <QScreen>
 
 #include "bookmarks.h"
 
@@ -32,7 +32,12 @@ BookmarksDialog::BookmarksDialog(QWidget *parent)
         label->setStyleSheet(labelsStyle);
     }
 
-    int heightDesktopResolution = QApplication::desktop()->screenGeometry().height();
+    QScreen *screen = parent != nullptr ? parent->window()->screen() : nullptr;
+    if (screen == nullptr) {
+        screen = QApplication::screens().constFirst();
+    }
+
+    int heightDesktopResolution = screen != nullptr ? screen->size().height() : 600;
     int height, width;
     height = heightDesktopResolution * 0.50;
     width = height * 0.65;
@@ -85,7 +90,7 @@ BookmarksDialog::BookmarksDialog(QWidget *parent)
 
     QPalette Pal(palette());
     // set black background
-    Pal.setColor(QPalette::Background, QColor("#454545"));
+    Pal.setColor(QPalette::Window, QColor(0x454545));
     this->setAutoFillBackground(true);
     this->setPalette(Pal);
 
@@ -133,7 +138,7 @@ bool BookmarksDialog::eventFilter(QObject *obj, QEvent *event)
 {
     if (event->type() == QEvent::MouseButtonPress) {
         if (obj == images.at(0)) {
-            emit(goToPage(lastPage));
+            emit goToPage(lastPage);
             close();
             event->accept();
         }
@@ -142,7 +147,7 @@ bool BookmarksDialog::eventFilter(QObject *obj, QEvent *event)
                 bool b;
                 int page = pages.at(i)->text().toInt(&b) - 1;
                 if (b) {
-                    emit(goToPage(page));
+                    emit goToPage(page);
                     close();
                 }
                 event->accept();

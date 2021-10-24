@@ -105,7 +105,7 @@ void ComicFlow::keyPressEvent(QKeyEvent *event)
 
 void ComicFlow::wheelEvent(QWheelEvent *event)
 {
-    if (event->delta() < 0)
+    if (event->angleDelta().y() < 0)
         showNext();
     else
         showPrevious();

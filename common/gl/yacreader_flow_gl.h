@@ -2,9 +2,17 @@
 #ifndef __YACREADER_FLOW_GL_H
 #define __YACREADER_FLOW_GL_H
 
+#include <QtGlobal>
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QtOpenGLWidgets/QOpenGLWidget>
+#include <QtOpenGL/QOpenGLTexture>
+#else
 #include <QOpenGLWidget>
-#include <QOpenGLFunctions>
 #include <QOpenGLTexture>
+#endif
+
+#include <QOpenGLFunctions>
 #include <QtWidgets>
 
 #include "pictureflow.h" //TODO mover los tipos de flow de sitio
@@ -252,9 +260,9 @@ public slots:
 
     // interface with yacreaderlibrary, compatibility
     void setShowMarks(bool value);
-    void setMarks(QVector<YACReaderComicReadStatus> marks);
+    void setMarks(QVector<YACReader::YACReaderComicReadStatus> marks);
     void setMarkImage(QImage &image);
-    void markSlide(int index, YACReaderComicReadStatus status);
+    void markSlide(int index, YACReader::YACReaderComicReadStatus status);
     void unmarkSlide(int index);
     void setSlideSize(QSize size);
     void clear();

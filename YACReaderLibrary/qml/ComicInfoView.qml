@@ -1,15 +1,13 @@
-import QtQuick 2.6
+import QtQuick 2.15
 
-import QtQuick.Controls 1.4
-import QtQuick.Layouts 1.2
-
-import QtGraphicalEffects 1.0
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.12
 
 import com.yacreader.ComicInfo 1.0
 import com.yacreader.ComicDB 1.0
 
-Rectangle {
 
+Rectangle {
     color : "transparent"
     id: mainContainer
 

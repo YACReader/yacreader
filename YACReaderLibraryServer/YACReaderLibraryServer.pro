@@ -16,6 +16,8 @@ DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY
 include(headless_config.pri)
 include(../dependencies/pdf_backend.pri)
 
+greaterThan(QT_MAJOR_VERSION, 5): QT += core5compat
+
 win32 {
   LIBS += -loleaut32 -lole32 -lshell32 -luser32
   QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
@@ -36,6 +38,8 @@ unix:haiku {
 #CONFIG += release
 CONFIG -= flat
 QT += core sql network
+
+greaterThan(QT_MAJOR_VERSION, 5): QT += core5compat
 
 # Source files
 HEADERS += ../YACReaderLibrary/library_creator.h \

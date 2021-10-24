@@ -37,7 +37,7 @@ void XMLInfoLibraryScanner::run()
 #endif
 
     if (!sevenzLib->load()) {
-        QLOG_ERROR() << "Loading 7z.dll : " + sevenzLib->errorString() << endl;
+        QLOG_ERROR() << "Loading 7z.dll : " + sevenzLib->errorString() << Qt::endl;
         QCoreApplication::exit(YACReader::SevenZNotFound);
         exit();
     }

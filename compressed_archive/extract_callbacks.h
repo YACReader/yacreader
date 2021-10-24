@@ -309,7 +309,7 @@ STDMETHODIMP YCArchiveExtractCallback::CryptoGetTextPassword(BSTR *password)
         // You can ask real password here from user
         // Password = GetPassword(OutStream);
         // PasswordIsDefined = true;
-        qDebug() << "Password is not defined" << endl;
+        qDebug() << "Password is not defined" << Qt::endl;
         return E_ABORT;
     }
     return StringToBstr(Password, password);

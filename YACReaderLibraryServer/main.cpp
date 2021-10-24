@@ -119,7 +119,7 @@ int main(int argc, char **argv)
 
     if (parser.isSet(versionOption)) {
         qout << "YACReaderLibraryServer"
-             << " " << VERSION << endl;
+             << " " << VERSION << Qt::endl;
 
         return 0;
     }
@@ -199,7 +199,7 @@ int main(int argc, char **argv)
             bool valid;
             qint32 port = parser.value("port").toInt(&valid);
             if (!valid || port < 1 || port > 65535) {
-                qout << "Error: " << parser.value("port") << " is not a valid port" << endl;
+                qout << "Error: " << parser.value("port") << " is not a valid port" << Qt::endl;
                 parser.showHelp();
                 return 0;
             } else {
@@ -304,7 +304,7 @@ int main(int argc, char **argv)
 
         YACReaderLibraries libraries = DBHelper::getLibraries();
         for (QString libraryName : libraries.getNames())
-            qout << libraryName << " : " << libraries.getPath(libraryName) << endl;
+            qout << libraryName << " : " << libraries.getPath(libraryName) << Qt::endl;
 
         return 0;
     } else if (command == "set-port") {

@@ -31,8 +31,6 @@ private slots:
 private:
     QToolButton *clearButton;
     QLabel *searchLabel;
-    QCompleter *modifiersCompleter;
-    QStringList modifiers;
 };
 
 #endif // YACREADER_SEARCH_LINE_EDIT_H

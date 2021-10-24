@@ -76,7 +76,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     layout->addWidget(sVertical);
     setLayout(layout);
 
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
 #ifdef Q_OS_MAC
     sVertical->setCollapsible(1, false);
@@ -364,7 +364,7 @@ void ClassicComicsView::setupSearchingIcon()
     searchingIcon->setLayout(h);
 
     QPalette pal(searchingIcon->palette());
-    pal.setColor(QPalette::Background, Qt::black);
+    pal.setColor(QPalette::Window, Qt::black);
     searchingIcon->setAutoFillBackground(true);
     searchingIcon->setPalette(pal);
 

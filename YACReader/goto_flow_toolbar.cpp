@@ -32,8 +32,8 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
             "  border-radius: 1px;"
             "}");
 
-    connect(slider, &QSlider::valueChanged, this, [&](int v) { emit(setCenter(v)); });
-    connect(slider, &QSlider::valueChanged, this, [=](int v) { emit(setPage(v)); });
+    connect(slider, &QSlider::valueChanged, this, &GoToFlowToolBar::setCenter);
+    connect(slider, &QSlider::valueChanged, this, &GoToFlowToolBar::setPage);
 
     pageHint = new QLabel("<b>" + tr("Page : ") + "</b>", this);
     v = new QIntValidator(this);
@@ -71,7 +71,7 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
 
     connect(goToButton, &QPushButton::clicked, this, &GoToFlowToolBar::goTo);
 
-    normalLayout->setMargin(0);
+    normalLayout->setContentsMargins(0, 0, 0, 0);
     normalLayout->setSpacing(0);
     normalLayout->addStretch();
     normalLayout->addWidget(pageHint);
@@ -93,7 +93,7 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
 void GoToFlowToolBar::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    painter.fillRect(0, 0, width(), height(), QColor("#99000000"));
+    painter.fillRect(0, 0, width(), height(), QColor(0x99000000));
 }
 
 void GoToFlowToolBar::setPage(int pageNumber)
@@ -112,14 +112,14 @@ void GoToFlowToolBar::goTo()
 {
     unsigned int page = edit->text().toInt();
     if (page >= 1 && page <= v->top()) {
-        emit(goToPage(page - 1));
+        emit goToPage(page - 1);
     }
 }
 
 void GoToFlowToolBar::centerSlide()
 {
     if (edit->text().toInt() != 0)
-        emit(setCenter(edit->text().toInt() - 1));
+        emit setCenter(edit->text().toInt() - 1);
 }
 
 void GoToFlowToolBar::updateOptions()

@@ -8,11 +8,7 @@
 #include <QTableView>
 #include <QVBoxLayout>
 #include <QtWidgets>
-#if QT_VERSION >= 0x050000
 #include <QtConcurrent/QtConcurrentRun>
-#else
-#include <QtConcurrentRun>
-#endif
 #include "data_base_management.h"
 #include <QJsonDocument>
 #include <QJsonParseError>
@@ -155,13 +151,23 @@ void ComicVineDialog::goNext()
         QList<QPair<ComicDB, QString>> matchingInfo = sortVolumeComicsWidget->getMatchingInfo();
         int count = selectVolumeWidget->getSelectedVolumeNumIssues();
         QString publisher = selectVolumeWidget->getSelectedVolumePublisher();
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        QtConcurrent::run(&ComicVineDialog::getComicsInfo, this, matchingInfo, count, publisher);
+#else
         QtConcurrent::run(this, &ComicVineDialog::getComicsInfo, matchingInfo, count, publisher);
+#endif
+
     } else if (content->currentWidget() == selectComicWidget) {
         showLoading();
         QString comicId = selectComicWidget->getSelectedComicId();
         int count = selectVolumeWidget->getSelectedVolumeNumIssues();
         QString publisher = selectVolumeWidget->getSelectedVolumePublisher();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        QtConcurrent::run(&ComicVineDialog::getComicInfo, this, comicId, count, publisher);
+#else
         QtConcurrent::run(this, &ComicVineDialog::getComicInfo, comicId, count, publisher);
+#endif
     }
 }
 
@@ -203,8 +209,14 @@ void ComicVineDialog::setComics(const QList<ComicDB> &comics)
 
 QSize ComicVineDialog::sizeHint() const
 {
-    int heightDesktopResolution = QApplication::desktop()->screenGeometry().height();
-    int widthDesktopResolution = QApplication::desktop()->screenGeometry().width();
+    QScreen *screen = window()->screen();
+    if (screen == nullptr) {
+        screen = QApplication::screens().constFirst();
+    }
+
+    int heightDesktopResolution = screen->geometry().height();
+    int widthDesktopResolution = screen->geometry().width();
+
     int height, width;
     height = qMax(529, static_cast<int>(heightDesktopResolution * 0.5));
     width = height * 1.65;
@@ -521,14 +533,14 @@ ComicDB ComicVineDialog::parseComicInfo(ComicDB &comic, const QString &json, int
         comic.info.volume = result.value("volume").toMap().value("name");
 
         if (result.contains("person_credits") && !result.value("person_credits").isNull()) {
-            QMap<QString, QString> authors = getAuthors(result.value("person_credits"));
+            auto authors = getAuthors(result.value("person_credits"));
 
-            QString writer = QStringList(authors.values("writer")).join("\n");
-            QString penciller = QStringList(authors.values("penciller")).join("\n");
-            QString inker = QStringList(authors.values("inker")).join("\n");
-            QString colorist = QStringList(authors.values("colorist")).join("\n");
-            QString letterer = QStringList(authors.values("letterer")).join("\n");
-            QString coverArtist = QStringList(authors.values("cover")).join("\n");
+            QString writer = authors.values("writer").join("\n");
+            QString penciller = authors.values("penciller").join("\n");
+            QString inker = authors.values("inker").join("\n");
+            QString colorist = authors.values("colorist").join("\n");
+            QString letterer = authors.values("letterer").join("\n");
+            QString coverArtist = authors.values("cover").join("\n");
 
             comic.info.writer = writer;
             comic.info.penciller = penciller;
@@ -600,9 +612,9 @@ QString ComicVineDialog::getCharacters(const QVariant &json_characters)
     return (characters.isEmpty()) ? "" : (characters.join("\n") + "\n");
 }
 
-QMap<QString, QString> ComicVineDialog::getAuthors(const QVariant &json_authors)
+QMultiMap<QString, QString> ComicVineDialog::getAuthors(const QVariant &json_authors)
 {
-    QMap<QString, QString> authors;
+    QMultiMap<QString, QString> authors;
 
     QListIterator<QVariant> it(json_authors.toList());
     QVariantMap resultsValue;
@@ -614,17 +626,17 @@ QMap<QString, QString> ComicVineDialog::getAuthors(const QVariant &json_authors)
         QStringList roles = resultsValue.value("role").toString().split(",");
         foreach (QString role, roles) {
             if (role.trimmed() == "writer")
-                authors.insertMulti("writer", authorName);
+                authors.insert("writer", authorName);
             else if (role.trimmed() == "inker")
-                authors.insertMulti("inker", authorName);
+                authors.insert("inker", authorName);
             else if (role.trimmed() == "penciler" || role.trimmed() == "penciller")
-                authors.insertMulti("penciller", authorName);
+                authors.insert("penciller", authorName);
             else if (role.trimmed() == "colorist")
-                authors.insertMulti("colorist", authorName);
+                authors.insert("colorist", authorName);
             else if (role.trimmed() == "letterer")
-                authors.insertMulti("letterer", authorName);
+                authors.insert("letterer", authorName);
             else if (role.trimmed() == "cover")
-                authors.insertMulti("cover", authorName);
+                authors.insert("cover", authorName);
         }
     }
 

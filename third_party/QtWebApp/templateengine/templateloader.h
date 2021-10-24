@@ -8,8 +8,8 @@
 
 #include <QString>
 #include <QSettings>
-#include <QTextCodec>
 #include <QMutex>
+#include <QTextCodec>
 #include "templateglobal.h"
 #include "template.h"
 

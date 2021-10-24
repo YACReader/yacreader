@@ -57,7 +57,7 @@ QVariant LocalComicListModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags LocalComicListModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return nullptr;
+        return Qt::NoItemFlags;
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
@@ -144,7 +144,7 @@ void LocalComicListModel::moveSelectionUp(const QList<QModelIndex> &selectedInde
     beginMoveRows(mi.parent(), sourceRow, sourceLastRow, mi.parent(), destRow);
 
     for (int i = sourceRow; i <= sourceLastRow; i++)
-        _data.swap(i, i - 1);
+        _data.swapItemsAt(i, i - 1);
 
     endMoveRows();
 }
@@ -163,7 +163,7 @@ void LocalComicListModel::moveSelectionDown(const QList<QModelIndex> &selectedIn
     beginMoveRows(mi.parent(), sourceRow, sourceLastRow, mi.parent(), destRow + 1);
 
     for (int i = sourceLastRow; i >= sourceRow; i--)
-        _data.swap(i, i + 1);
+        _data.swapItemsAt(i, i + 1);
 
     endMoveRows();
 }

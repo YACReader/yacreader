@@ -136,7 +136,7 @@ void YACReaderOptionsDialog::saveFlowParameters()
 
 void YACReaderOptionsDialog::saveOptions()
 {
-    emit(optionsChanged());
+    emit optionsChanged();
     close();
 }
 

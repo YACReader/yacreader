@@ -1,6 +1,27 @@
 Dont forget to update the release number also in
 QtWebApp.pro and httpserver/httpglobal.cpp.
 
+1.8.3
+21.03.2021
+The minLevel for logging can now be configured as string:
+DEBUG/ALL=0, INFO=4, WARNING=1, ERROR/CRITICAL=2, FATAL=3
+Info messages are now positioned between DEBUG and WARNING.
+I also added an example for HTTP Basic authorization.
+
+1.8.2
+08.03.2021
+Fix threadId not printed in log file.
+
+1.8.1
+07.02.2021
+Add Cookie attribute "SameSite". 
+SessionStore does now emit a signal when a session expires.
+
+1.8.0
+06.02.2021
+Fix compatibility issues to Qt 4.7 and 6.0.
+Removed qtservice, use the Non-Sucking Service Manager (https://nssm.cc/) instead.
+
 1.7.11
 28.12.2019
 Fix Http Headers are not properly received if the two characters of

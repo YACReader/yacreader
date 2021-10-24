@@ -24,7 +24,7 @@ AddLabelDialog::AddLabelDialog(QWidget *parent)
     list->addItem(new QListWidgetItem(QIcon(":/images/lists/label_light.png"), tr("light")));
     list->addItem(new QListWidgetItem(QIcon(":/images/lists/label_dark.png"), tr("dark")));
 
-    QColor backgroundColor = this->palette().background().color();
+    QColor backgroundColor = this->palette().window().color();
     list->setStyleSheet(QString("QListWidget {border : none; background-color: rgb(%1,%2,%3);}").arg(backgroundColor.red()).arg(backgroundColor.green()).arg(backgroundColor.blue()));
     list->setMinimumHeight(225);
 

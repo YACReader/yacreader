@@ -178,7 +178,7 @@ private:
 public:
     Viewer(QWidget *parent = nullptr);
     ~Viewer();
-    const QPixmap *pixmap();
+    const QPixmap pixmap();
     // Comic * getComic(){return comic;}
     const BookmarksDialog *getBookmarksDialog() { return bd; }
     // returns the current index starting in 1 [1,nPages]

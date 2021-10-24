@@ -11,7 +11,7 @@ YACReaderLibraryListWidget::YACReaderLibraryListWidget(QWidget *parent)
 {
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setSpacing(0);
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
 
     this->setLayout(mainLayout);
 }

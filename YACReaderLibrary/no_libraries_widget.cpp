@@ -11,7 +11,7 @@ NoLibrariesWidget::NoLibrariesWidget(QWidget *parent)
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     QPalette p(palette());
-    p.setColor(QPalette::Background, QColor(250, 250, 250));
+    p.setColor(QPalette::Window, QColor(250, 250, 250));
     setAutoFillBackground(true);
     setPalette(p);
 
@@ -52,7 +52,7 @@ NoLibrariesWidget::NoLibrariesWidget(QWidget *parent)
     topLayout->addSpacing(30);
     topLayout->addLayout(textLayout, 1);
     topLayout->addStretch();
-    topLayout->setMargin(0);
+    topLayout->setContentsMargins(0, 0, 0, 0);
 
     topWidget->setLayout(topLayout);
 
