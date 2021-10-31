@@ -6,7 +6,7 @@ CONFIG(pdfium) {
   message(Using pdfium.)
   DEFINES += "USE_PDFIUM"
   SOURCES += ../common/pdf_comic.cpp
-  win32 {
+  msvc {
     INCLUDEPATH += $$PWD/pdfium/win/public
     contains(QMAKE_TARGET.arch, x86_64): {
       LIBS += -L$$PWD/pdfium/win/x64 -lpdfium
@@ -14,7 +14,7 @@ CONFIG(pdfium) {
       LIBS += -L$$PWD/pdfium/win/x86 -lpdfium
     }
   }
-  unix {
+  unix|mingw {
     macx {
       LIBS += -L$$PWD/pdfium/macx/bin -lpdfium
       INCLUDEPATH += $$PWD/pdfium/macx/include
@@ -43,7 +43,7 @@ CONFIG(pdfkit) {
 }
 
 CONFIG(poppler) {
-  win32 {
+  msvc {
     contains(QMAKE_TARGET.arch, x86_64): {
     error ("We currently don't ship precompiled poppler libraries for 64 bit builds on Windows")
     }
@@ -54,7 +54,7 @@ CONFIG(poppler) {
     LIBS += -L$$PWD/poppler/bin
     LIBS += -L$$PWD/poppler/dependencies/bin
   }
-  unix:!macx {
+  if(unix|mingw):!macx {
     !contains(QT_CONFIG, no-pkg-config):packagesExist(poppler-qt5) {
       message("Using system provided installation of poppler-qt5 found by pkg-config.")
       CONFIG += link_pkgconfig
