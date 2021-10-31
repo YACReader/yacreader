@@ -6,7 +6,7 @@ HEADERS += $$PWD/extract_delegate.h \
 
 SOURCES += $$PWD/compressed_archive.cpp
 
-unix:!macx:!contains(QT_CONFIG, no-pkg-config):packagesExist(libunarr) {
+if(mingw|unix):!macx:!contains(QT_CONFIG, no-pkg-config):packagesExist(libunarr) {
   message(Using system provided unarr installation found by pkg-config.)
   CONFIG += link_pkgconfig
   PKGCONFIG += libunarr
