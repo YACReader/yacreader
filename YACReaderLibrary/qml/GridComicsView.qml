@@ -5,9 +5,6 @@ import QtQuick.Layouts 1.12
 
 import QtGraphicalEffects 1.0
 
-
-import Qt.labs.animation 1.0
-
 import com.yacreader.ComicModel 1.0
 
 import com.yacreader.ComicInfo 1.0
