@@ -71,7 +71,8 @@ public:
 
     enum TypeSpecialList {
         Reading,
-        Favorites
+        Favorites,
+        All
     };
 
 signals:

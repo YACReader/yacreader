@@ -110,6 +110,9 @@ void YACReaderNavigationController::loadSpecialListInfo(const QModelIndex &model
     case ReadingListModel::Reading:
         libraryWindow->comicsModel->setupReadingModelData(libraryWindow->foldersModel->getDatabase());
         break;
+    case ReadingListModel::All:
+        libraryWindow->comicsModel->setupAllModelData(libraryWindow->foldersModel->getDatabase());
+        break;
     }
 
     comicsViewsManager->comicsView->setModel(libraryWindow->comicsModel);
@@ -127,6 +130,10 @@ void YACReaderNavigationController::loadSpecialListInfo(const QModelIndex &model
         case ReadingListModel::Reading:
             comicsViewsManager->emptySpecialList->setPixmap(QPixmap(":/images/empty_current_readings.png"));
             comicsViewsManager->emptySpecialList->setText(tr("You are not reading anything yet, come on!!"));
+            break;
+        case ReadingListModel::All:
+            comicsViewsManager->emptySpecialList->setPixmap(QPixmap(":/images/empty_folder.png"));
+            comicsViewsManager->emptySpecialList->setText(tr("Empty Library"));
             break;
         }
 

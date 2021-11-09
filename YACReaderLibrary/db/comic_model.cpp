@@ -597,6 +597,33 @@ void ComicModel::setupReadingModelData(const QString &databasePath)
     endResetModel();
 }
 
+void ComicModel::setupAllModelData(const QString &databasePath)
+{
+    enableResorting = false;
+    mode = Reading; // TODO: Investigate if this mode can be used
+    sourceId = -1;
+
+    beginResetModel();
+    qDeleteAll(_data);
+    _data.clear();
+
+    _databasePath = databasePath;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+        QSqlQuery selectQuery(db);
+        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
+                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                            "ORDER BY ci.lastTimeOpened DESC");
+        selectQuery.exec();
+
+        setupModelDataForList(selectQuery);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+    endResetModel();
+}
+
 void ComicModel::setModelData(QList<ComicItem *> *data, const QString &databasePath)
 {
     _databasePath = databasePath;
@@ -1007,6 +1034,7 @@ void ComicModel::deleteComicsFromSpecialList(const QList<QModelIndex> &comicsLis
 {
     auto type = (ReadingListModel::TypeSpecialList)specialListId;
 
+    // TODO: Check if it should support "All" path
     switch (type) {
     case ReadingListModel::TypeSpecialList::Reading:
         deleteComicsFromReading(comicsList);
