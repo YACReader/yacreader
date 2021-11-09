@@ -1034,13 +1034,14 @@ void ComicModel::deleteComicsFromSpecialList(const QList<QModelIndex> &comicsLis
 {
     auto type = (ReadingListModel::TypeSpecialList)specialListId;
 
-    // TODO: Check if it should support "All" path
     switch (type) {
     case ReadingListModel::TypeSpecialList::Reading:
         deleteComicsFromReading(comicsList);
         break;
     case ReadingListModel::TypeSpecialList::Favorites:
         deleteComicsFromFavorites(comicsList);
+        break;
+    case ReadingListModel::TypeSpecialList::All:
         break;
     }
 }
