@@ -13,6 +13,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Remove obsolete double page mode debug messages
 * Support HDPI screens.
 * Use one wheel mouse step per page in full page mode.
+* Add updated MIME types to .desktop file for .cbz and .cbr
 
 ### YACReaderLibrary
 * Support HDPI screens.

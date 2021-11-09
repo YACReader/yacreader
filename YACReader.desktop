@@ -8,6 +8,6 @@ Terminal=false
 Type=Application
 StartupNotify=true
 Categories=Graphics;Viewer;
-MimeType=application/x-cbz;application/x-cbr;application/x-cbt;application/x-cb7;application/x-pdf;application/x-zip;application/x-rar;application/x-7z;inode/directory;
+MimeType=application/vnd.comicbook+zip;application/vnd.comicbook-rar;application/x-cbz;application/x-cbr;application/x-cbt;application/x-cb7;application/x-pdf;application/x-zip;application/x-rar;application/x-7z;inode/directory;
 Keywords=comic;viewer;pdf;reader;
 X-Desktop-File-Install-Version=0.22
