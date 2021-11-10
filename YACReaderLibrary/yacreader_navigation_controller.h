@@ -17,6 +17,7 @@ signals:
 public slots:
     // info origins
     // folders view
+    void selectAllFolders();
     void selectedFolder(const QModelIndex &mi);
     void reselectCurrentFolder();
     // reading lists

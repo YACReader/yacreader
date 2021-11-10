@@ -262,6 +262,7 @@ void LibraryWindow::doLayout()
     foldersTitle->addAction(deleteFolderAction);
     foldersTitle->addSepartor();
     foldersTitle->addAction(setRootIndexAction);
+    foldersTitle->addAction(selectAllFoldersAction);
     foldersTitle->addAction(expandAllNodesAction);
     foldersTitle->addAction(colapseAllNodesAction);
 
@@ -383,6 +384,7 @@ void LibraryWindow::setUpShortcutsManagement()
                                                  << setRootIndexAction
                                                  << expandAllNodesAction
                                                  << colapseAllNodesAction
+                                                 << selectAllFoldersAction
                                                  << openContainingFolderAction
                                                  << setFolderAsNotCompletedAction
                                                  << setFolderAsCompletedAction
@@ -632,6 +634,12 @@ void LibraryWindow::createActions()
     colapseAllNodesAction->setData(COLAPSE_ALL_NODES_ACTION_YL);
     colapseAllNodesAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(COLAPSE_ALL_NODES_ACTION_YL));
     colapseAllNodesAction->setIcon(QIcon(":/images/sidebar/colapse.png"));
+
+    selectAllFoldersAction = new QAction(this);
+    selectAllFoldersAction->setData(SELECT_ALL_FOLDERS_ACTION_YL);
+    selectAllFoldersAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SELECT_ALL_FOLDERS_ACTION_YL));
+    selectAllFoldersAction->setToolTip(tr("Select all folders"));
+    selectAllFoldersAction->setIcon(QIcon(":/images/sidebar/setRoot.png")); // TODO: Change the icon
 
     optionsAction = new QAction(this);
     optionsAction->setToolTip(tr("Show options dialog"));
@@ -1170,6 +1178,8 @@ void LibraryWindow::createConnections()
     connect(addFolderAction, &QAction::triggered, this, &LibraryWindow::addFolderToCurrentIndex);
     connect(deleteFolderAction, &QAction::triggered, this, &LibraryWindow::deleteSelectedFolder);
     connect(setRootIndexAction, &QAction::triggered, this, &LibraryWindow::setRootIndex);
+    connect(selectAllFoldersAction, &QAction::triggered, this, &LibraryWindow::selectAllFolders);
+
     connect(expandAllNodesAction, &QAction::triggered, foldersView, &QTreeView::expandAll);
     connect(colapseAllNodesAction, &QAction::triggered, foldersView, &QTreeView::collapseAll);
 #ifndef Q_OS_MAC
@@ -1531,6 +1541,21 @@ QProgressDialog *LibraryWindow::newProgressDialog(const QString &label, int maxV
     progressDialog->setMinimumWidth(350);
     progressDialog->show();
     return progressDialog;
+}
+
+void LibraryWindow::selectAllFolders()
+{
+    if (!libraries.isEmpty()) {
+        QString path = libraries.getPath(selectedLibrary->currentText()) + "/.yacreaderlibrary";
+        QDir d; // TODO change this by static methods (utils class?? with delTree for example)
+
+        if (d.exists(path)) {
+            // navigationController->selectedFolder(QModelIndex()); // TODO: Check if necessary
+            navigationController->selectAllFolders();
+        } else {
+            comicsViewsManager->comicsView->setModel(NULL);
+        }
+    }
 }
 
 void LibraryWindow::reloadCurrentFolderComicsContent()

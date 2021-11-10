@@ -432,6 +432,33 @@ QStringList ComicModel::getPaths(const QString &_source)
     return paths;
 }
 
+void ComicModel::setupAllFoldersModelData(const QString &databasePath)
+{
+    enableResorting = false;
+    mode = Folder;
+    sourceId = -1;
+
+    beginResetModel();
+    qDeleteAll(_data);
+    _data.clear();
+
+    _databasePath = databasePath;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+        QSqlQuery selectQuery(db);
+        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
+                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                            "ORDER BY c.path");
+        selectQuery.exec();
+
+        setupModelDataForList(selectQuery);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+    endResetModel();
+}
+
 void ComicModel::setupFolderModelData(unsigned long long int folderId, const QString &databasePath)
 {
     enableResorting = false;

@@ -83,6 +83,7 @@ public:
     QMimeData *mimeData(const QModelIndexList &indexes) const override;
     QStringList mimeTypes() const override;
 
+    void setupAllFoldersModelData(const QString &databasePath);
     void setupFolderModelData(unsigned long long int parentFolder, const QString &databasePath);
     void setupLabelModelData(unsigned long long int parentLabel, const QString &databasePath);
     void setupReadingListModelData(unsigned long long int parentReadingList, const QString &databasePath);

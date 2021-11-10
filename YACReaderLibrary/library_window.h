@@ -186,6 +186,7 @@ public:
     QAction *setRootIndexAction;
     QAction *expandAllNodesAction;
     QAction *colapseAllNodesAction;
+    QAction *selectAllFoldersAction;
 
     QAction *openContainingFolderAction;
     QAction *saveCoversToAction;
@@ -398,6 +399,7 @@ public slots:
     void updateFolder(const QModelIndex &miFolder);
     QProgressDialog *newProgressDialog(const QString &label, int maxValue);
     void reloadCurrentFolderComicsContent();
+    void selectAllFolders();
     void reloadAfterCopyMove(const QModelIndex &mi);
     QModelIndex getCurrentFolderIndex();
     void enableNeededActions();

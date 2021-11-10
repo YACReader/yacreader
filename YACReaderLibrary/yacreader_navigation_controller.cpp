@@ -26,6 +26,34 @@ YACReaderNavigationController::YACReaderNavigationController(LibraryWindow *pare
     setupConnections();
 }
 
+void YACReaderNavigationController::selectAllFolders()
+{
+    // Reset search
+    if (libraryWindow->status == LibraryWindow::Searching) {
+        libraryWindow->searchEdit->clearText();
+        libraryWindow->clearSearchFilter();
+        libraryWindow->foldersView->setCurrentIndex(QModelIndex());
+    }
+
+    // select all folders
+    libraryWindow->comicsModel->setupAllFoldersModelData(libraryWindow->foldersModel->getDatabase());
+
+    // configure views
+    if (libraryWindow->comicsModel->rowCount() > 0) {
+        // updateView
+        comicsViewsManager->comicsView->setModel(libraryWindow->comicsModel);
+        comicsViewsManager->showComicsView();
+        libraryWindow->disableComicsActions(false);
+    } else {
+        // showEmptyFolder
+        loadEmptyFolderInfo(QModelIndex());
+        comicsViewsManager->showEmptyFolderView();
+        libraryWindow->disableComicsActions(true);
+    }
+
+    libraryWindow->listsView->clearSelection();
+}
+
 void YACReaderNavigationController::selectedFolder(const QModelIndex &mi)
 {
     // A proxy is used
