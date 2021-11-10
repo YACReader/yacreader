@@ -23,6 +23,7 @@ void ShortcutsManager::initDefaultShorcuts()
     defaultShorcuts.insert(TOGGLE_FULL_SCREEN_ACTION_YL, Qt::Key_F);
     defaultShorcuts.insert(HELP_ABOUT_ACTION_YL, Qt::Key_F1);
     defaultShorcuts.insert(SET_ROOT_INDEX_ACTION_YL, Qt::Key_0);
+    defaultShorcuts.insert(SELECT_ALL_FOLDERS_ACTION_YL, Qt::Key_1);
     defaultShorcuts.insert(EXPAND_ALL_NODES_ACTION_YL, Qt::Key_Plus);
     defaultShorcuts.insert(COLAPSE_ALL_NODES_ACTION_YL, Qt::Key_Minus);
     defaultShorcuts.insert(OPTIONS_ACTION_YL, Qt::Key_C);
