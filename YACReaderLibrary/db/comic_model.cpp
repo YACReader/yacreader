@@ -600,7 +600,7 @@ void ComicModel::setupReadingModelData(const QString &databasePath)
 void ComicModel::setupAllModelData(const QString &databasePath)
 {
     enableResorting = false;
-    mode = Reading; // TODO: Investigate if this mode can be used
+    mode = Folder;
     sourceId = -1;
 
     beginResetModel();
@@ -613,8 +613,7 @@ void ComicModel::setupAllModelData(const QString &databasePath)
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         QSqlQuery selectQuery(db);
         selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
-                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                            "ORDER BY ci.lastTimeOpened DESC");
+                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id)");
         selectQuery.exec();
 
         setupModelDataForList(selectQuery);

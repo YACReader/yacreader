@@ -612,7 +612,7 @@ QList<SpecialListItem *> ReadingListModel::setupSpecialLists(QSqlDatabase &db)
     // Reading after Favorites, Why? Because I want to :P
     list.insert(1, new SpecialListItem(QList<QVariant>() << "Reading" << 0));
 
-    list.insert(2, new SpecialListItem(QList<QVariant>() << "All" << 0));
+    list.insert(2, new SpecialListItem(QList<QVariant>() << "All" << 2));
 
     return list;
 }
