@@ -23,6 +23,7 @@
         <file>../images/clearSearch.png</file>
         <file alias="images/lists/default_0.png">../images/lists/default_0_osx.png</file>
         <file alias="images/lists/default_1.png">../images/lists/default_1_osx.png</file>
+        <file alias="images/lists/default_2.png">../images/lists/default_2_osx.png</file>
         <file alias="images/lists/label_blue.png">../images/lists/label_blue_osx.png</file>
         <file alias="images/lists/label_cyan.png">../images/lists/label_cyan_osx.png</file>
         <file alias="images/lists/label_dark.png">../images/lists/label_dark_osx.png</file>
@@ -39,6 +40,7 @@
         <file alias="images/empty_reading_list.png">../images/empty_reading_list_osx.png</file>
         <file alias="images/lists/default_0@2x.png">../images/lists/default_0_osx@2x.png</file>
         <file alias="images/lists/default_1@2x.png">../images/lists/default_1_osx@2x.png</file>
+        <file alias="images/lists/default_2@2x.png">../images/lists/default_2_osx@2x.png</file>
         <file alias="images/lists/label_blue@2x.png">../images/lists/label_blue_osx@2x.png</file>
         <file alias="images/lists/label_cyan@2x.png">../images/lists/label_cyan_osx@2x.png</file>
         <file alias="images/lists/label_dark@2x.png">../images/lists/label_dark_osx@2x.png</file>
