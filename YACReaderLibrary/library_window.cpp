@@ -639,7 +639,7 @@ void LibraryWindow::createActions()
     selectAllFoldersAction->setData(SELECT_ALL_FOLDERS_ACTION_YL);
     selectAllFoldersAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SELECT_ALL_FOLDERS_ACTION_YL));
     selectAllFoldersAction->setToolTip(tr("Select all folders"));
-    selectAllFoldersAction->setIcon(QIcon(":/images/sidebar/setRoot.png")); // TODO: Change the icon
+    selectAllFoldersAction->setIcon(QIcon(":/images/sidebar/libraryIcon.png"));
 
     optionsAction = new QAction(this);
     optionsAction->setToolTip(tr("Show options dialog"));
@@ -1550,11 +1550,12 @@ void LibraryWindow::selectAllFolders()
         QDir d; // TODO change this by static methods (utils class?? with delTree for example)
 
         if (d.exists(path)) {
-            // navigationController->selectedFolder(QModelIndex()); // TODO: Check if necessary
             navigationController->selectAllFolders();
         } else {
             comicsViewsManager->comicsView->setModel(NULL);
         }
+
+        foldersView->selectionModel()->clear();
     }
 }
 
