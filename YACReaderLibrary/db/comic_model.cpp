@@ -613,7 +613,8 @@ void ComicModel::setupAllModelData(const QString &databasePath)
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         QSqlQuery selectQuery(db);
         selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
-                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id)");
+                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                            "ORDER BY c.path");
         selectQuery.exec();
 
         setupModelDataForList(selectQuery);
