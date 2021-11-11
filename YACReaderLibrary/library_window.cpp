@@ -262,6 +262,7 @@ void LibraryWindow::doLayout()
     foldersTitle->addAction(deleteFolderAction);
     foldersTitle->addSepartor();
     foldersTitle->addAction(setRootIndexAction);
+    foldersTitle->addAction(selectAllFoldersAction);
     foldersTitle->addAction(expandAllNodesAction);
     foldersTitle->addAction(colapseAllNodesAction);
 
@@ -638,7 +639,7 @@ void LibraryWindow::createActions()
     selectAllFoldersAction->setData(SELECT_ALL_FOLDERS_ACTION_YL);
     selectAllFoldersAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SELECT_ALL_FOLDERS_ACTION_YL));
     selectAllFoldersAction->setToolTip(tr("Select all folders"));
-    selectAllFoldersAction->setIcon(QIcon(":/images/sidebar/setRoot.png"));
+    selectAllFoldersAction->setIcon(QIcon(":/images/sidebar/alFolders.png"));
 
     optionsAction = new QAction(this);
     optionsAction->setToolTip(tr("Show options dialog"));

@@ -54,6 +54,7 @@
         <file alias="images/lists/list@2x.png">../images/lists/list_osx@2x.png</file>
         <file alias="images/sidebar/libraryIcon.png">../images/sidebar/libraryIcon_osx.png</file>
         <file alias="images/sidebar/setRoot.png">../images/sidebar/setRoot_osx.png</file>
+        <file alias="images/sidebar/allFolders.png">../images/sidebar/allFolders_osx.png</file>
         <file alias="images/sidebar/expand.png">../images/sidebar/expand_osx.png</file>
         <file alias="images/sidebar/colapse.png">../images/sidebar/colapse_osx.png</file>
         <file alias="images/sidebar/newLibraryIcon.png">../images/sidebar/newLibraryIcon_osx.png</file>
@@ -63,6 +64,7 @@
         <file alias="images/sidebar/addLabelIcon.png">../images/sidebar/addLabelIcon_osx.png</file>
         <file alias="images/sidebar/renameListIcon.png">../images/sidebar/renameListIcon_osx.png</file>
         <file alias="images/sidebar/setRoot@2x.png">../images/sidebar/setRoot_osx@2x.png</file>
+        <file alias="images/sidebar/allFolders@2x.png">../images/sidebar/allFolders_osx@2x.png</file>
         <file alias="images/sidebar/expand@2x.png">../images/sidebar/expand_osx@2x.png</file>
         <file alias="images/sidebar/colapse@2x.png">../images/sidebar/colapse_osx@2x.png</file>
         <file alias="images/sidebar/newLibraryIcon@2x.png">../images/sidebar/newLibraryIcon_osx@2x.png</file>
