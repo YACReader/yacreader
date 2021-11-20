@@ -28,7 +28,7 @@ void XMLInfoLibraryScanner::scanLibrary(const QString &source, const QString &ta
 
 void XMLInfoLibraryScanner::run()
 {
-#ifndef use_unarr
+#if !defined use_unarr && !defined use_libarchive
 // check for 7z lib
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
     QLibrary *sevenzLib = new QLibrary(QString(LIBDIR) + "/p7zip/7z.so");

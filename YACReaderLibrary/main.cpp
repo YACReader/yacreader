@@ -7,7 +7,7 @@
 #include <QDir>
 #include <QSysInfo>
 #include <QFileInfo>
-#ifndef use_unarr
+#if !defined use_unarr && !defined use_libarchive
 #include <QLibrary>
 #endif
 #include <QCommandLineParser>
@@ -40,7 +40,7 @@ void logSystemAndConfig()
     QLOG_INFO() << "OS:" << QSysInfo::prettyProductName() << "Version: " << QSysInfo::productVersion();
     QLOG_INFO() << "Kernel:" << QSysInfo::kernelType() << QSysInfo::kernelVersion() << "Architecture:" << QSysInfo::currentCpuArchitecture();
 
-#ifndef use_unarr
+#if !defined use_unarr && !defined use_libarchive
 #ifdef Q_OS_WIN
     if (QLibrary::isLibrary(QApplication::applicationDirPath() + "/utils/7z.dll"))
 #elif defined Q_OS_UNIX && !defined Q_OS_MAC
@@ -51,6 +51,8 @@ void logSystemAndConfig()
         QLOG_INFO() << "7z : found";
     else
         QLOG_ERROR() << "7z : not found";
+#elif defined use_libarchive
+    QLOG_INFO() << "using libarchive decompression backend";
 #else // use_unarr
     QLOG_INFO() << "using unarr decompression backend";
 #endif // use_unarr

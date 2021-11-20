@@ -15,11 +15,12 @@ win32 {
     CONFIG -= embed_manifest_exe
 }
 
-!CONFIG(unarr){
-    include(../../compressed_archive/wrapper.pri)
+CONFIG(7zip) {
+include(../../compressed_archive/wrapper.pri)
+} else:CONFIG(unarr) {
+include(../../compressed_archive/unarr/unarr-wrapper.pri)
+} else:CONFIG(libarchive) {
+include(../../compressed_archive/libarchive/libarchive-wrapper.pri)
 } else {
-    include(../../compressed_archive/unarr/unarr-wrapper.pri)
+include(../../compressed_archive/wrapper.pri)
 }
-
-
-

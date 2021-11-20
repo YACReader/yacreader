@@ -94,10 +94,13 @@ SOURCES += ../YACReaderLibrary/library_creator.cpp \
            libraries_updater.cpp
 
 include(../YACReaderLibrary/server/server.pri)
+
 CONFIG(7zip) {
 include(../compressed_archive/wrapper.pri)
 } else:CONFIG(unarr) {
 include(../compressed_archive/unarr/unarr-wrapper.pri)
+} else:CONFIG(libarchive) {
+include(../compressed_archive/libarchive/libarchive-wrapper.pri)
 } else {
   error(No compression backend specified. Did you mess with the build system?)
 }

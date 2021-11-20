@@ -56,7 +56,7 @@ CONFIG(no_opengl) {
 }
 
 # default value for comic archive decompression backend
-unix:!macx:!CONFIG(unarr):!CONFIG(7zip) {
+unix:!macx:!CONFIG(unarr):!CONFIG(7zip):!CONFIG(libarchive) {
   CONFIG += unarr
 }
 
