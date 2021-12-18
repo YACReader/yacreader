@@ -151,6 +151,7 @@ jobs:
         gitHubConnection: yacreader-releases
         repositoryName: YACReader/yacreader-dev-builds
         title: $(VERSION)
+        target: '25313e3d4d03fcbe44d3943db23bc03bbd1a5205'
         tagSource: 'manual'
         tag: $(VERSION)
         addChangeLog: false
