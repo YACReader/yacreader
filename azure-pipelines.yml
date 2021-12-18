@@ -131,24 +131,29 @@ jobs:
     - Windows_x64
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'), true)
     variables:
-    - group: artifactory
+    - group: github-releases
     pool:
       vmImage: 'ubuntu-20.04'
     steps:
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          buildType: 'current'
-          targetPath: $(Build.SourcesDirectory)/dev_bin
-      - script: |
-          ls -lah $(Build.SourcesDirectory)/dev_bin/**/*.*
-      - task: cURLUploader@2
-        inputs:
-          files: '$(Build.SourcesDirectory)/dev_bin/**/*.*'
-          authType: 'userAndPass'
-          username: $(username)
-          password: $(pass)
-          remotePath: ''
-          url: https://yacreader.jfrog.io/artifactory/yacreader/$(Build.BuildNumber)/
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'current'
+        targetPath: $(Build.ArtifactStagingDirectory)
+    - script: |
+        find $(Build.ArtifactStagingDirectory) -name '*.*' -exec cp {} $(Build.ArtifactStagingDirectory) \;
+      displayName: 'flatten artifact staging directory'
+    - script: |
+        VERSION="$(Build.BuildNumber)"
+        echo "##vso[task.setvariable variable=VERSION]$VERSION"
+      displayName: 'Version'
+    - task: GitHubRelease@0
+      inputs:
+        gitHubConnection: yacreader-releases
+        repositoryName: yacreader-dev-builds
+        title: $(VERSION)
+        tagSource: 'manual'
+        tag: $(VERSION)
+        addChangeLog: false
 
 - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
   - job: Release
