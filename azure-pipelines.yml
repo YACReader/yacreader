@@ -3,16 +3,30 @@ trigger:
 - master
 - develop
 
+
+
 variables:
   is_original_repo: ${{ and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}
   is_fork: ${{ not(and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop')))) }}
 
+
+
 jobs:
+
+#
+# Initialization
+#
+
 - job: Initialization
   pool:
     vmImage: 'vs2017-win2016'
   steps:
   - template: azure-pipelines-build-number.yml
+
+#
+# CodeFormatValidation
+#
+
 - job: CodeFormatValidation
   dependsOn: Initialization
   pool:
@@ -27,6 +41,11 @@ jobs:
       git diff $(Build.SourceVersion)
       if [ "$(git diff $(Build.SourceVersion))" != "" ]; then exit 1; fi
     displayName: 'clang-format'
+
+#
+# Linux
+#
+
 - job: Linux
   dependsOn: CodeFormatValidation
   pool:
@@ -62,6 +81,11 @@ jobs:
     inputs:
       path: $(Build.ArtifactStagingDirectory)
       artifactName: src $(Build.BuildNumber) tarball
+
+#
+# MacOS
+#
+
 - job: MacOS
   dependsOn: CodeFormatValidation
   variables:
@@ -101,6 +125,11 @@ jobs:
     inputs:
       path: $(Build.ArtifactStagingDirectory)
       artifactName: Macos $(Build.BuildNumber) dmg
+
+#
+# Windows x64
+#
+
 - template: azure-pipelines-windows-template.yml
   parameters:
     name: Windows_x64
@@ -111,6 +140,11 @@ jobs:
     vc_redist_url: 'https://aka.ms/vs/16/release/vc_redist.x64.exe'
     vc_redist_file_name: 'vc_redist.x64.exe'
     vc_vars: 'vcvars64.bat'
+
+#
+# Windows x86
+#
+
 - template: azure-pipelines-windows-template.yml
   parameters:
     name: Windows_x86
@@ -121,6 +155,10 @@ jobs:
     vc_redist_url: 'https://aka.ms/vs/16/release/vc_redist.x86.exe'
     vc_redist_file_name: 'vc_redist.x86.exe'
     vc_vars: 'vcvars32.bat'
+
+#
+# Dev builds publication
+#
 
 - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
   - job: PublishDevBuilds
@@ -155,6 +193,10 @@ jobs:
         tagSource: 'manual'
         tag: $(VERSION)
         addChangeLog: false
+
+#
+# Release builds publication
+#
 
 - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
   - job: Release
