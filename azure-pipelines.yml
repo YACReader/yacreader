@@ -143,7 +143,7 @@ jobs:
         find $(Build.ArtifactStagingDirectory) -name '*.*' -exec cp {} $(Build.ArtifactStagingDirectory) \;
       displayName: 'flatten artifact staging directory'
     - script: |
-        VERSION="$(Build.BuildNumber)"
+        VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' ).$(Build.BuildNumber)"
         echo "##vso[task.setvariable variable=VERSION]$VERSION"
       displayName: 'Version'
     - task: GitHubRelease@0
