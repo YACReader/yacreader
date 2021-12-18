@@ -149,7 +149,7 @@ jobs:
     - task: GitHubRelease@0
       inputs:
         gitHubConnection: yacreader-releases
-        repositoryName: yacreader-dev-builds
+        repositoryName: YACReader/yacreader-dev-builds
         title: $(VERSION)
         tagSource: 'manual'
         tag: $(VERSION)
