@@ -69,7 +69,7 @@ PropertiesDialog::PropertiesDialog(QWidget *parent)
     mainWidget->move(280, 0);
 }
 
-QSize PropertiesDialog::sizeHint()
+QSize PropertiesDialog::sizeHint() const
 {
     return QSize(750, 444);
 }

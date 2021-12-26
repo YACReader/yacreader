@@ -125,7 +125,7 @@ public:
     // TODO: this non-const member function hides rather than overrides
     // QWidget::sizeHint(). But the function cannot be simply removed as it is used
     // in our constructor. Will have to investigate and decide how to fix this.
-    QSize sizeHint();
+    QSize sizeHint() const override;
     void paintEvent(QPaintEvent *event) override;
 
 public slots:
