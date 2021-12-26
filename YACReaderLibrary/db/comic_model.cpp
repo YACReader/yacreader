@@ -245,12 +245,6 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    /*if (index.column() == TableModel::Rating && role == Qt::DecorationRole)
-        {
-                TableItem *item = static_cast<TableItem*>(index.internalPointer());
-                return QPixmap(QString(":/images/rating%1.png").arg(item->data(index.column()).toInt()));
-        }*/
-
     if (role == Qt::DecorationRole) {
         return QVariant();
     }
