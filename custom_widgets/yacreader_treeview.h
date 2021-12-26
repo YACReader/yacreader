@@ -8,17 +8,17 @@ class YACReaderTreeView : public QTreeView
     Q_OBJECT
 public:
     explicit YACReaderTreeView(QWidget *parent = 0);
-    void mousePressEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
 protected slots:
     // fix for drop auto expand
     void expandCurrent();
 
 protected:
     // Drop to import
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dragLeaveEvent(QDragLeaveEvent *event);
-    void dragMoveEvent(QDragMoveEvent *event);
-    void dropEvent(QDropEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dragLeaveEvent(QDragLeaveEvent *event) override;
+    void dragMoveEvent(QDragMoveEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
 
     // fix for drop auto expand
     QTimer expandTimer;
