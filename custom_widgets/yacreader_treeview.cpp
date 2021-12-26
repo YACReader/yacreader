@@ -107,3 +107,10 @@ void YACReaderTreeView::dropEvent(QDropEvent *event)
 
     QTreeView::dropEvent(event);
 }
+
+void YACReaderTreeView::currentChanged(const QModelIndex &current, const QModelIndex &previous)
+{
+    QTreeView::currentChanged(current, previous);
+
+    emit currentIndexChanged(current);
+}
