@@ -34,7 +34,8 @@ public:
         IsBis = 9,
         CurrentPage = 10,
         Rating = 11,
-        HasBeenOpened = 12
+        HasBeenOpened = 12,
+        PublicationDate = 13,
     };
 
     enum Roles {
@@ -51,8 +52,8 @@ public:
         CurrentPageRole,
         RatingRole,
         HasBeenOpenedRole,
-        CoverPathRole
-
+        CoverPathRole,
+        PublicationDateRole,
     };
 
     enum Mode {
@@ -158,6 +159,7 @@ private:
     bool enableResorting;
     Mode mode;
     qulonglong sourceId;
+    QString localizedDate(const QString &dbDate) const;
 
 signals:
     void isEmpty();

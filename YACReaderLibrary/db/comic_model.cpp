@@ -236,6 +236,7 @@ QHash<int, QByteArray> ComicModel::roleNames() const
     roles[RatingRole] = "rating";
     roles[HasBeenOpenedRole] = "has_been_opened";
     roles[CoverPathRole] = "cover_path";
+    roles[PublicationDate] = "date";
 
     return roles;
 }
@@ -290,6 +291,8 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
         return item->data(ComicModel::HasBeenOpened);
     else if (role == IdRole)
         return item->data(Id);
+    else if (role == PublicationDateRole)
+        return QVariant(localizedDate(item->data(PublicationDate).toString()));
 
     if (role != Qt::DisplayRole)
         return QVariant();
@@ -303,6 +306,10 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
 
     if (index.column() == ComicModel::Rating)
         return QVariant();
+
+    if (index.column() == ComicModel::PublicationDate) {
+        return QVariant(localizedDate(item->data(PublicationDate).toString()));
+    }
 
     return item->data(index.column());
 }
@@ -336,6 +343,8 @@ QVariant ComicModel::headerData(int section, Qt::Orientation orientation,
             return QVariant(QString(tr("Read")));
         case ComicModel::CurrentPage:
             return QVariant(QString(tr("Current Page")));
+        case ComicModel::PublicationDate:
+            return QVariant(QString(tr("Publication Date")));
         case ComicModel::Rating:
             return QVariant(QString(tr("Rating")));
         }
@@ -441,7 +450,7 @@ void ComicModel::setupFolderModelData(unsigned long long int folderId, const QSt
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
+        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened,ci.date "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                             "WHERE c.parentId = :parentId");
         selectQuery.bindValue(":parentId", folderId);
@@ -468,7 +477,7 @@ void ComicModel::setupLabelModelData(unsigned long long parentLabel, const QStri
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
+        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened,ci.date "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                             "INNER JOIN comic_label cl ON (c.id == cl.comic_id) "
                             "WHERE cl.label_id = :parentLabelId "
@@ -512,7 +521,7 @@ void ComicModel::setupReadingListModelData(unsigned long long parentReadingList,
 
         foreach (qulonglong id, ids) {
             QSqlQuery selectQuery(db);
-            selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
+            selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened,ci.date "
                                 "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                                 "INNER JOIN comic_reading_list crl ON (c.id == crl.comic_id) "
                                 "WHERE crl.reading_list_id = :parentReadingList "
@@ -549,7 +558,7 @@ void ComicModel::setupFavoritesModelData(const QString &databasePath)
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
+        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened,ci.date "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                             "INNER JOIN comic_default_reading_list cdrl ON (c.id == cdrl.comic_id) "
                             "WHERE cdrl.default_reading_list_id = :parentDefaultListId "
@@ -578,7 +587,7 @@ void ComicModel::setupReadingModelData(const QString &databasePath)
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
+        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened,ci.date "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                             "WHERE ci.hasBeenOpened = 1 AND ci.read = 0 "
                             "ORDER BY ci.lastTimeOpened DESC");
@@ -1087,4 +1096,34 @@ void ComicModel::updateRating(int rating, QModelIndex mi)
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
+}
+
+QString ComicModel::localizedDate(const QString &dbDate) const
+{
+    auto dateComponents = dbDate.split("/");
+
+    if (dateComponents.length() == 3) {
+        auto dayString = dateComponents[0];
+        auto monthString = dateComponents[1];
+        auto yearString = dateComponents[2];
+
+        auto hasDay = !dayString.isEmpty();
+        auto hasMonth = !monthString.isEmpty();
+        auto hasYear = !yearString.isEmpty();
+
+        auto day = hasDay ? dayString.toInt() : 1;
+        auto month = hasMonth ? monthString.toInt() : 1;
+        auto year = hasYear ? yearString.toInt() : 1;
+
+        auto locale = QLocale();
+        auto date = QDate(year, month, day);
+        auto dateTime = QDateTime();
+        dateTime.setDate(date);
+
+        if (hasDay && hasMonth && hasYear) {
+            return locale.toString(dateTime, locale.dateFormat(QLocale::ShortFormat));
+        }
+    }
+
+    return dbDate; // TODO
 }

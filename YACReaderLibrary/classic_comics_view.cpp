@@ -162,6 +162,7 @@ void ClassicComicsView::setModel(ComicModel *model)
         tableView->horizontalHeader()->showSection(ComicModel::Hash); // Size is part of the Hash...TODO add Columns::Size to Columns
         tableView->horizontalHeader()->showSection(ComicModel::ReadColumn);
         tableView->horizontalHeader()->showSection(ComicModel::CurrentPage);
+        tableView->horizontalHeader()->showSection(ComicModel::PublicationDate);
         tableView->horizontalHeader()->showSection(ComicModel::Rating);
         //}
 
