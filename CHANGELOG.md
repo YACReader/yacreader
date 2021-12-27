@@ -18,7 +18,10 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ### YACReaderLibrary
 * Support HDPI screens.
 * Support import legacy XML info in comic files.
-* Ensure that comic info exports use .ydb as file suffix
+* Ensure that comic info exports use .ydb as file suffix.
+* Enable arrow keys navigation in the folders tree view.
+* Add `Publication Date` column to the comics table view.
+* Use a scale effect in the comics grids on mouse over.
 
 ## 9.8.2
 ### YACReaderLibrary
