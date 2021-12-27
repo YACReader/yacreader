@@ -59,6 +59,12 @@ Rectangle {
             height: grid.cellHeight
             color: "#00000000"
 
+            scale: mouseArea.containsMouse ? 1.025 : 1
+
+            Behavior on scale {
+                NumberAnimation { duration: 90 }
+            }
+
             DropShadow {
                 anchors.fill: realCell
                 horizontalOffset: 0
@@ -131,7 +137,7 @@ Rectangle {
                     border.color: (Qt.platform.os === "osx") ? selectedBorderColor : "#ffcc00"
                     border.width: 3
 
-                    opacity: (dummyValue || !dummyValue) && (comicsSelectionHelper.isSelectedIndex(index) || mouseArea.containsMouse) ? 1 : 0
+                    opacity: (dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index) ? 1 : 0
 
                     Behavior on opacity {
                         NumberAnimation { duration: 300 }
