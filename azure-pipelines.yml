@@ -142,6 +142,21 @@ jobs:
     vc_vars: 'vcvars64.bat'
 
 #
+# Windows x64 qt6
+#
+
+- template: azure-pipelines-windows-template-qt6.yml
+  parameters:
+    name: Windows_x64_qt6
+    architecture: 'x64'
+    qt_version: '6.2.2'
+    qt_spec: 'msvc2019_64'
+    qt_aqt_spec: 'win64_msvc2019_64'
+    vc_redist_url: 'https://aka.ms/vs/16/release/vc_redist.x64.exe'
+    vc_redist_file_name: 'vc_redist.x64.exe'
+    vc_vars: 'vcvars64.bat'
+
+#
 # Windows x86
 #
 
@@ -167,6 +182,7 @@ jobs:
     - MacOS
     - Windows_x86
     - Windows_x64
+    - Windows_x64_qt6
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'), true)
     variables:
     - group: github-releases
@@ -205,6 +221,7 @@ jobs:
     - MacOS
     - Windows_x86
     - Windows_x64
+    - Windows_x64_qt6
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
     - group: github-releases
