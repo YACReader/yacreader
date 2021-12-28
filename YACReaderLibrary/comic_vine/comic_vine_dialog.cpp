@@ -439,7 +439,7 @@ void ComicVineDialog::queryTimeOut()
     }
 }
 
-void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString>> &matchingInfo, int count, const QString &publisher)
+void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString>> matchingInfo, int count, const QString &publisher)
 {
     QPair<ComicDB, QString> p;
     QList<ComicDB> comics;
