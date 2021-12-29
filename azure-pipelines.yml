@@ -101,7 +101,8 @@ jobs:
       brew install node
       brew link --overwrite node
       npm install -g appdmg
-      wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/p7zip_16.02_src_all.tar.bz2?raw=true" -P $(Build.SourcesDirectory)/compressed_archive
+      mkdir $(Build.SourcesDirectory)\compressed_archive
+      wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/p7zip_16.02_src_all.tar.bz2?raw=true" -O $(Build.SourcesDirectory)/compressed_archive/p7zip_16.02_src_all.tar.bz2
       tar xjf $(Build.SourcesDirectory)/compressed_archive/p7zip_16.02_src_all.tar.bz2 -C $(Build.SourcesDirectory)/compressed_archive
       mv $(Build.SourcesDirectory)/compressed_archive/p7zip_16.02 $(Build.SourcesDirectory)/compressed_archive/libp7zip
     displayName: 'Install dependencies'
