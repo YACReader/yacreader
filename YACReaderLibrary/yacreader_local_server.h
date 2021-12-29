@@ -40,7 +40,7 @@ signals:
 private:
     static QMutex dbMutex;
     // static int count;
-    void run();
+    void run() override;
 
     void getComicInfo(quint64 libraryId, ComicDB &comic, QList<ComicDB> &siblings);
     void getComicInfoFromReadingList(quint64 libraryId, unsigned long long readingListId, ComicDB &comic, QList<ComicDB> &siblings);

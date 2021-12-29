@@ -41,7 +41,7 @@ private:
     int workerIndex;
     QTimer updateTimer;
     std::unique_ptr<WorkerThread<QImage>> worker;
-    virtual void wheelEvent(QWheelEvent *event);
+    virtual void wheelEvent(QWheelEvent *event) override;
 };
 
 #endif
