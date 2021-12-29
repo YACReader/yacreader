@@ -145,7 +145,7 @@
 {
     NSTextField *textField = [notification object];
     NSLog(@"%@", [textField stringValue]);
-    Q_EMIT mylineedit->filterChanged(YACReader::NoModifiers, QString::fromNSString([textField stringValue]));
+    Q_EMIT mylineedit->filterChanged(QString::fromNSString([textField stringValue]));
 }
 
 @end
@@ -336,7 +336,7 @@ QString YACReaderMacOSXSearchLineEdit::text()
 void YACReaderMacOSXSearchLineEdit::clear()
 {
     [((NSTextField *)nstextfield) setStringValue:@""];
-    emit filterChanged(YACReader::NoModifiers, "");
+    emit filterChanged("");
 }
 
 void YACReaderMacOSXSearchLineEdit::clearText()

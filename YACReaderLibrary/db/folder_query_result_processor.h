@@ -19,7 +19,7 @@ public:
     FolderQueryResultProcessor(FolderModel *model);
 
 public slots:
-    void createModelData(const SearchModifiers modifier, const QString &filter, bool includeComics);
+    void createModelData(const QString &filter, bool includeComics);
 
 signals:
     void newData(QMap<unsigned long long int, FolderItem *> *filteredItems, FolderItem *root);

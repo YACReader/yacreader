@@ -20,7 +20,7 @@ YACReader::FolderQueryResultProcessor::FolderQueryResultProcessor(FolderModel *m
 {
 }
 
-void YACReader::FolderQueryResultProcessor::createModelData(const YACReader::SearchModifiers modifier, const QString &filter, bool includeComics)
+void YACReader::FolderQueryResultProcessor::createModelData(const QString &filter, bool includeComics)
 {
     querySearchQueue.cancelPending();
 
@@ -43,30 +43,12 @@ void YACReader::FolderQueryResultProcessor::createModelData(const YACReader::Sea
                     auto result = parser.parse(filter.toStdString());
                     result.buildSqlString(queryString);
 
-                    switch (modifier) {
-                    case YACReader::NoModifiers:
-                        queryString += " AND f.id <> 1 ORDER BY f.parentId,f.name";
-                        break;
-
-                    case YACReader::OnlyRead:
-                        queryString += " AND f.id <> 1 AND ci.read = 1 ORDER BY f.parentId,f.name";
-                        break;
-
-                    case YACReader::OnlyUnread:
-                        queryString += " AND f.id <> 1 AND ci.read = 0 ORDER BY f.parentId,f.name";
-                        break;
-
-                    default:
-                        queryString += " AND f.id <> 1 ORDER BY f.parentId,f.name";
-                        QLOG_ERROR() << "not implemented";
-                        break;
-                    }
+                    queryString += " AND f.id <> 1 ORDER BY f.parentId,f.name";
 
                     selectQuery.prepare(queryString.c_str());
                     result.bindValues(selectQuery);
 
                     selectQuery.exec();
-                    QLOG_DEBUG() << selectQuery.lastError() << "--";
 
                     setupFilteredModelData(selectQuery);
                 } catch (const std::exception &e) {

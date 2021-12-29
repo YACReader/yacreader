@@ -351,7 +351,7 @@ public slots:
     void toggleFullScreen();
     void toNormal();
     void toFullScreen();
-    void setSearchFilter(const YACReader::SearchModifiers modifier, QString filter);
+    void setSearchFilter(QString filter);
     void setComicSearchFilterData(QList<ComicItem *> *, const QString &);
     void setFolderSearchFilterData(QMap<unsigned long long int, FolderItem *> *filteredItems, FolderItem *root);
     void clearSearchFilter();

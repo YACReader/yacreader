@@ -35,12 +35,6 @@ enum YACReaderErrors {
     SevenZNotFound = 700
 };
 
-enum SearchModifiers {
-    NoModifiers = 0,
-    OnlyRead,
-    OnlyUnread
-};
-
 enum LabelColors {
     YRed = 1,
     YOrange,

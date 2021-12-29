@@ -2233,11 +2233,11 @@ void LibraryWindow::toNormal()
 
 #endif
 
-void LibraryWindow::setSearchFilter(const YACReader::SearchModifiers modifier, QString filter)
+void LibraryWindow::setSearchFilter(QString filter)
 {
     if (!filter.isEmpty()) {
-        folderQueryResultProcessor->createModelData(modifier, filter, true);
-        comicQueryResultProcessor.createModelData(modifier, filter, foldersModel->getDatabase());
+        folderQueryResultProcessor->createModelData(filter, true);
+        comicQueryResultProcessor.createModelData(filter, foldersModel->getDatabase());
     } else if (status == LibraryWindow::Searching) { // if no searching, then ignore this
         clearSearchFilter();
         navigationController->loadPreviousStatus();

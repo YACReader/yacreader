@@ -30,8 +30,6 @@ protected:
     QMap<unsigned long long int, FolderItem *> filteredItems; // relación entre folders
 
     bool filterEnabled;
-
-    YACReader::SearchModifiers modifier;
 };
 
 class FolderModel : public QAbstractItemModel

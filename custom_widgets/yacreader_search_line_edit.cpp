@@ -89,5 +89,5 @@ void YACReaderSearchLineEdit::updateCloseButton(const QString &text)
 
 void YACReaderSearchLineEdit::processText(const QString &text)
 {
-    emit filterChanged(YACReader::NoModifiers, text);
+    emit filterChanged(text);
 }

@@ -27,7 +27,7 @@ private:
 
 signals:
     // convenience signal for YACReaderLibrary search edit
-    void filterChanged(YACReader::SearchModifiers, QString);
+    void filterChanged(QString);
 };
 
 class MacToolBarItemWrapper : public QObject

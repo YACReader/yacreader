@@ -22,7 +22,7 @@ protected:
     void resizeEvent(QResizeEvent *);
 
 signals:
-    void filterChanged(const YACReader::SearchModifiers, QString);
+    void filterChanged(QString);
 
 private slots:
     void updateCloseButton(const QString &text);
