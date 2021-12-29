@@ -72,6 +72,9 @@ jobs:
       qmake CONFIG+="unarr" $DEFINES_VAR
       make
     displayName: 'Build'
+  - script: |
+      make check TESTARGS="-maxwarnings 100000"
+    displayName: 'Run tests'
   - task: CopyFiles@2
     inputs:
       sourceFolder: $(Build.SourcesDirectory)/tarball
@@ -118,6 +121,11 @@ jobs:
       SKIP_CODESIGN="$(tr [A-Z] [a-z] <<< "$IS_FORK")"
       ./compileOSX.sh $VERSION $(Build.BuildNumber) $SKIP_CODESIGN
     displayName: 'Build'
+  - script: |
+      cd $(Build.SourcesDirectory)/tests
+      qmake
+      make check TESTARGS="-maxwarnings 100000"
+    displayName: 'Build and run tests'
   - task: CopyFiles@2
     inputs:
       contents: '*.dmg'

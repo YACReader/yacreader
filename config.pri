@@ -5,6 +5,8 @@
 CONFIG += c++17
 win32:QMAKE_CXXFLAGS += /std:c++17 #enable c++17 explicitly in msvc
 
+DEFINES += NOMINMAX
+
 if(unix|mingw):QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
 win32:msvc:QMAKE_CXXFLAGS_RELEASE += /DNDEBUG
 

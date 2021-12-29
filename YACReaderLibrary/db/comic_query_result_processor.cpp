@@ -16,7 +16,7 @@ YACReader::ComicQueryResultProcessor::ComicQueryResultProcessor()
 
 void YACReader::ComicQueryResultProcessor::createModelData(const YACReader::SearchModifiers modifier, const QString &filter, const QString &databasePath)
 {
-    querySearchQueue.cancellPending();
+    querySearchQueue.cancelPending();
 
     querySearchQueue.enqueue([=] {
         QString connectionName = "";

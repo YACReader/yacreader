@@ -33,6 +33,11 @@ jobs:
       qmake CONFIG+="7zip" %DEFINES_VAR%
       nmake
     displayName: 'Build'
+  - script: |
+      call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\${{ parameters.vc_vars }}"
+      set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
+      nmake check TESTARGS="-maxwarnings 100000"
+    displayName: 'Run tests'
 #  - script: |
 #      set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
 #      cd $(Build.SourcesDirectory)\ci\win
