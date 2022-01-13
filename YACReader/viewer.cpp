@@ -364,10 +364,10 @@ void Viewer::updateContentSize()
         content->resize(pagefit);
 
         // TODO: updtateContentSize should only scale the pixmap once
-        if (devicePixelRatio() > 1) // only in retina display
+        if (devicePixelRatioF() > 1) // only in HDPI displays
         {
-            QPixmap page = currentPage->scaled(content->width() * devicePixelRatio(), content->height() * devicePixelRatio(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-            page.setDevicePixelRatio(devicePixelRatio());
+            QPixmap page = currentPage->scaled(content->width() * devicePixelRatioF(), content->height() * devicePixelRatioF(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+            page.setDevicePixelRatio(devicePixelRatioF());
             content->setPixmap(page);
         }
 
@@ -1069,9 +1069,9 @@ void Viewer::mousePressEvent(QMouseEvent *event)
 void Viewer::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
-    drag = false;
-    setCursor(Qt::OpenHandCursor);
-    event->accept();
+        drag = false;
+        setCursor(Qt::OpenHandCursor);
+        event->accept();
         return;
     }
 
