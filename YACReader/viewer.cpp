@@ -1062,14 +1062,30 @@ void Viewer::mousePressEvent(QMouseEvent *event)
         xDragOrigin = event->x();
         setCursor(Qt::ClosedHandCursor);
         event->accept();
+        return;
     }
 }
 
 void Viewer::mouseReleaseEvent(QMouseEvent *event)
 {
+    if (event->button() == Qt::LeftButton) {
     drag = false;
     setCursor(Qt::OpenHandCursor);
     event->accept();
+        return;
+    }
+
+    if (event->button() == Qt::ForwardButton) {
+        right();
+        event->accept();
+        return;
+    }
+
+    if (event->button() == Qt::BackButton) {
+        left();
+        event->accept();
+        return;
+    }
 }
 
 void Viewer::updateZoomRatio(int ratio)
