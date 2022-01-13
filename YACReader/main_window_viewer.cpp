@@ -1078,8 +1078,10 @@ void MainWindowViewer::keyPressEvent(QKeyEvent *event)
 
 void MainWindowViewer::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    toggleFullScreen();
-    event->accept();
+    if (event->button() == Qt::LeftButton) {
+        toggleFullScreen();
+        event->accept();
+    }
 }
 
 void MainWindowViewer::toggleFullScreen()
