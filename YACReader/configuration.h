@@ -81,6 +81,8 @@ public:
     void setNumDaysBetweenVersionChecks(int days) { return settings->setValue(NUM_DAYS_BETWEEN_VERSION_CHECKS, days); }
     bool getQuickNaviMode() { return settings->value(QUICK_NAVI_MODE).toBool(); }
     bool getDisableShowOnMouseOver() { return settings->value(DISABLE_MOUSE_OVER_GOTO_FLOW).toBool(); }
+    bool getDoNotTurnPageOnScroll() { return settings->value(DO_NOT_TURN_PAGE_ON_SCROLL, false).toBool(); }
+    bool getUseSingleScrollStepToTurnPage() { return settings->value(USE_SINGLE_SCROLL_STEP_TO_TURN_PAGE, false).toBool(); }
 };
 
 #endif

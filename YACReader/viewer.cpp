@@ -696,8 +696,11 @@ void Viewer::wheelEvent(QWheelEvent *event)
             return;
         }
 
-        if ((delta.y() < 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->maximum())) {
-            if (wheelStop || verticalScrollBar()->maximum() == verticalScrollBar()->minimum()) {
+        auto turnPageOnScroll = !Configuration::getConfiguration().getDoNotTurnPageOnScroll();
+        auto getUseSingleScrollStepToTurnPage = Configuration::getConfiguration().getUseSingleScrollStepToTurnPage();
+
+        if ((delta.y() < 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->maximum()) && turnPageOnScroll) {
+            if (wheelStop || getUseSingleScrollStepToTurnPage || verticalScrollBar()->maximum() == verticalScrollBar()->minimum()) {
                 if (getMovement(event) == Forward) {
                     next();
                     verticalScroller->stop();
@@ -708,8 +711,8 @@ void Viewer::wheelEvent(QWheelEvent *event)
             } else
                 wheelStop = true;
         } else {
-            if ((delta.y() > 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->minimum())) {
-                if (wheelStop || verticalScrollBar()->maximum() == verticalScrollBar()->minimum()) {
+            if ((delta.y() > 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->minimum()) && turnPageOnScroll) {
+                if (wheelStop || getUseSingleScrollStepToTurnPage || verticalScrollBar()->maximum() == verticalScrollBar()->minimum()) {
                     if (getMovement(event) == Backward) {
                         prev();
                         verticalScroller->stop();

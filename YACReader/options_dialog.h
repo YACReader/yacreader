@@ -41,6 +41,9 @@ private:
     QLabel *backgroundColor;
     QPushButton *selectBackgroundColorButton;
 
+    QCheckBox *doNotTurnPageOnScroll;
+    QCheckBox *useSingleScrollStepToTurnPage;
+
     QColorDialog *colorDialog;
 
     YACReaderSpinSliderWidget *brightnessS;
