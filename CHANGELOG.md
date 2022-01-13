@@ -14,6 +14,8 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Support HDPI screens.
 * Use one wheel mouse step per page in full page mode.
 * Add updated MIME types to .desktop file for .cbz and .cbr
+* Add settings to control page turning behaviour on scroll.
+* Make forward and backward buttons in a mouse turn pages.
 
 ### YACReaderLibrary
 * Support HDPI screens.
