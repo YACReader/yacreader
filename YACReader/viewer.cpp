@@ -981,7 +981,7 @@ void Viewer::setPageUnavailableMessage()
 void Viewer::configureContent(QString msg)
 {
     content->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    if (!(devicePixelRatio() > 1))
+    if (!(devicePixelRatioF() > 1))
         content->setScaledContents(true);
     content->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
     content->setText(msg);

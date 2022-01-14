@@ -25,12 +25,12 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QStrin
     // TODO fix this crazy hack for having a propper retina icon for the options
     // this hack has been perpetrated using Qt 5.5.0
     QString sourceOptionsImage;
-    if (devicePixelRatio() > 1)
+    if (devicePixelRatioF() > 1)
         sourceOptionsImage = ":/images/sidebar/libraryOptions@2x.png";
     else
         sourceOptionsImage = ":/images/sidebar/libraryOptions.png";
     QPixmap iconOptionsPixmap(sourceOptionsImage);
-    iconOptionsPixmap.setDevicePixelRatio(devicePixelRatio());
+    iconOptionsPixmap.setDevicePixelRatio(devicePixelRatioF());
     QLabel *helperLabel = new QLabel(options);
     helperLabel->move(4, 2);
     helperLabel->setFixedSize(14, 14);

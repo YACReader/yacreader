@@ -267,12 +267,12 @@ void ServerConfigDialog::generateQR(const QString &serverAddress)
     if (image.isNull()) {
         qrCode->setText(tr("Could not load libqrencode."));
     } else {
-        image = image.scaled(qrCode->size() * devicePixelRatio());
+        image = image.scaled(qrCode->size() * devicePixelRatioF());
 
         QPixmap pMask(image.size());
         pMask.fill(QColor(66, 66, 66));
         pMask.setMask(image.createMaskFromColor(Qt::white));
-        pMask.setDevicePixelRatio(devicePixelRatio());
+        pMask.setDevicePixelRatio(devicePixelRatioF());
 
         qrCode->setPixmap(pMask);
     }

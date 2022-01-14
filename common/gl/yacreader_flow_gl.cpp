@@ -342,7 +342,7 @@ void YACReaderFlowGL::paintGL()
 
 void YACReaderFlowGL::resizeGL(int width, int height)
 {
-    float pixelRatio = devicePixelRatio();
+    float pixelRatio = devicePixelRatioF();
     fontSize = (width + height) * 0.010 * pixelRatio;
     if (fontSize < 10)
         fontSize = 10;
@@ -356,7 +356,7 @@ void YACReaderFlowGL::resizeGL(int width, int height)
 
 void YACReaderFlowGL::udpatePerspective(int width, int height)
 {
-    float pixelRatio = devicePixelRatio();
+    float pixelRatio = devicePixelRatioF();
     glViewport(0, 0, width * pixelRatio, height * pixelRatio);
 
     glMatrixMode(GL_PROJECTION);
@@ -1101,8 +1101,8 @@ QVector3D YACReaderFlowGL::getPlaneIntersection(int x, int y, YACReader3DImage p
     doneCurrent();
 
     // create the picking ray
-    QVector3D ray_origin(x * devicePixelRatio(), y * devicePixelRatio(), 0);
-    QVector3D ray_end(x * devicePixelRatio(), y * devicePixelRatio(), 1.0);
+    QVector3D ray_origin(x * devicePixelRatioF(), y * devicePixelRatioF(), 0);
+    QVector3D ray_end(x * devicePixelRatioF(), y * devicePixelRatioF(), 1.0);
 
     // TODO: These should be cached in the class
 
