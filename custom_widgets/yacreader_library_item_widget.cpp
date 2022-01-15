@@ -21,9 +21,12 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QStrin
     nameLabel = new QLabel(name, this);
 
     options = new QToolButton(this);
-#ifdef Q_OS_MAC
-    // TODO fix this crazy hack for having a propper retina icon for the options
-    // this hack has been perpetrated using Qt 5.5.0
+
+    // TODO fix this crazy hack for having a propper retina icon for the options, this is still a problem in 2022
+    // 1.- QPixmap won't pick the right @2x asset
+    // 2.- Using QToolButton::setIcon(QIcon(":/images/sidebar/libraryOptions.png")) will pick the right asset and then QToolButton will fail to set the right image size, it will use a image size twice bigger
+    // 3.- Using a QAction + QToolButton doesn't fix the problem either
+    // 4.- SVG support is also buggy QTBUG-96553
     QString sourceOptionsImage;
     if (devicePixelRatioF() > 1)
         sourceOptionsImage = ":/images/sidebar/libraryOptions@2x.png";
@@ -32,15 +35,12 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QStrin
     QPixmap iconOptionsPixmap(sourceOptionsImage);
     iconOptionsPixmap.setDevicePixelRatio(devicePixelRatioF());
     QLabel *helperLabel = new QLabel(options);
-    helperLabel->move(4, 2);
+    helperLabel->move(4, 3);
     helperLabel->setFixedSize(14, 14);
     helperLabel->setPixmap(iconOptionsPixmap);
-#else
-    options->setIcon(QIcon(":/images/sidebar/libraryOptions.png"));
-#endif
+
     options->setHidden(true);
-    options->setFixedWidth(18);
-    options->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+    options->setIconSize(QSize(18, 18));
     options->setStyleSheet("QToolButton {border:none;}");
     connect(options, &QAbstractButton::clicked, this, &YACReaderLibraryItemWidget::showOptions);
     /*up = new QToolButton(this);
@@ -56,9 +56,8 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QStrin
         down->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Minimum);*/
 
     mainLayout->addWidget(icon);
-    mainLayout->addWidget(nameLabel, Qt::AlignLeft);
-    mainLayout->addStretch();
-    mainLayout->addWidget(options);
+    mainLayout->addWidget(nameLabel, 1, Qt::AlignLeft);
+    mainLayout->addWidget(options, Qt::AlignCenter);
     /*mainLayout->addWidget(up);
         mainLayout->addWidget(down);*/
 
@@ -75,6 +74,7 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QStrin
     nameLabel->setStyleSheet(nameLabelStyleSheet);
 
     setMinimumHeight(20);
+    setAttribute(Qt::WA_StyledBackground, true);
 }
 
 void YACReaderLibraryItemWidget::showUpDownButtons(bool show)
