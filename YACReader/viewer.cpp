@@ -22,6 +22,8 @@
 
 #include <QFile>
 
+#include <QsLog.h>
+
 Viewer::Viewer(QWidget *parent)
     : QScrollArea(parent),
       fullscreen(false),
@@ -362,6 +364,8 @@ void Viewer::updateContentSize()
         }
         // apply scaling
         content->resize(pagefit);
+
+        QLOG_INFO() << "Device pixel ratio used while rendering: " << devicePixelRatioF();
 
         // TODO: updtateContentSize should only scale the pixmap once
         if (devicePixelRatioF() > 1) // only in HDPI displays
