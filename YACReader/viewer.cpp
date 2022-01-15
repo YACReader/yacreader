@@ -12,7 +12,6 @@
 #include "render.h"
 #include "goto_dialog.h"
 #include "translator.h"
-#include "onstart_flow_selection_dialog.h"
 #include "page_label_widget.h"
 #include "notifications_label_widget.h"
 #include "comic_db.h"
@@ -364,8 +363,6 @@ void Viewer::updateContentSize()
         }
         // apply scaling
         content->resize(pagefit);
-
-        QLOG_INFO() << "Device pixel ratio used while rendering: " << devicePixelRatioF();
 
         // TODO: updtateContentSize should only scale the pixmap once
         if (devicePixelRatioF() > 1) // only in HDPI displays

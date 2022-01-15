@@ -116,7 +116,6 @@ HEADERS += comic_flow.h \
   ../common/qnaturalsorting.h \
   ../common/yacreader_global.h \
   ../common/yacreader_global_gui.h \
-  ../common/onstart_flow_selection_dialog.h \
   ../common/pdf_comic.h \
   no_libraries_widget.h \
   import_widget.h \
@@ -196,7 +195,6 @@ SOURCES += comic_flow.cpp \
     ../common/pictureflow.cpp \
     ../common/custom_widgets.cpp \
     ../common/qnaturalsorting.cpp \
-    ../common/onstart_flow_selection_dialog.cpp \
     no_libraries_widget.cpp \
     import_widget.cpp \
     trayicon_controller.cpp \
