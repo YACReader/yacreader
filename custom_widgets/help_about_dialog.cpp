@@ -1,5 +1,6 @@
 #include "help_about_dialog.h"
 
+#include <QtCore>
 #include <QVBoxLayout>
 #include <QTabWidget>
 #include <QTextBrowser>
@@ -26,6 +27,8 @@ HelpAboutDialog::HelpAboutDialog(QWidget *parent)
     // aboutText->setFont(QFont("Comic Sans MS", 10)); //purisa
     tabWidget->addTab(helpText = new QTextBrowser(), tr("Help"));
     helpText->setOpenExternalLinks(true);
+
+    tabWidget->addTab(systemInfoText = new QTextBrowser(), tr("System info"));
     // helpText->setFont(QFont("Comic Sans MS", 10));
     // helpText->setDisabled(true);
     // tabWidget->addTab(,"About Qt");
@@ -43,13 +46,8 @@ HelpAboutDialog::HelpAboutDialog(QWidget *parent)
     int heightDesktopResolution = screen != nullptr ? screen->size().height() : 600;
 
     resize(500, heightDesktopResolution * 0.83);
-}
 
-HelpAboutDialog::~HelpAboutDialog()
-{
-    delete aboutText;
-    delete helpText;
-    delete tabWidget;
+    loadSystemInfo();
 }
 
 HelpAboutDialog::HelpAboutDialog(const QString &pathAbout, const QString &pathHelp, QWidget *parent)
@@ -93,4 +91,55 @@ QString HelpAboutDialog::fileToString(const QString &path)
     f.close();
 
     return content;
+}
+
+void HelpAboutDialog::loadSystemInfo()
+{
+    QString text;
+
+    text.append("SYSTEM INFORMATION\n");
+    text.append(QString("Build ABI: %1\n").arg(QSysInfo::buildAbi()));
+    text.append(QString("build CPU architecture: %1\n").arg(QSysInfo::buildCpuArchitecture()));
+    text.append(QString("CPU architecture: %1\n").arg(QSysInfo::currentCpuArchitecture()));
+    text.append(QString("Kernel type: %1\n").arg(QSysInfo::kernelType()));
+    text.append(QString("Kernel version: %1\n").arg(QSysInfo::kernelVersion()));
+    text.append(QString("Product info: %1\n").arg(QSysInfo::prettyProductName()));
+
+    //    QProcess systemInfoProcess;
+    //    QString tempOutput;
+
+    //    if (QSysInfo::kernelType() == "winnt") {
+    //        QString cpuname = "wmic cpu get name";
+    //        systemInfoProcess.start("cmd", QList<QString>() << "/C" << cpuname);
+    //        systemInfoProcess.waitForFinished();
+    //        tempOutput = QString(systemInfoProcess.readAllStandardOutput()).replace("\n", " ");
+    //        text.append(QString("CPU: %1\n").arg(tempOutput));
+    //    }
+
+    //    if (QSysInfo::kernelType() == "linux") {
+    //        QString cpuname = "cat /proc/cpuinfo | grep 'model name' | uniq";
+    //        systemInfoProcess.start("bash", QList<QString>() << "-c" << cpuname);
+    //        systemInfoProcess.waitForFinished();
+    //        tempOutput = systemInfoProcess.readAllStandardOutput();
+    //        text.append(QString("CPU: %1\n").arg(tempOutput));
+    //    }
+
+    text.append("\nGRAPHIC INFORMATION\n");
+    text.append(QString("Screen pixel ratio: %1\n").arg(devicePixelRatioF()));
+
+    //    if (QSysInfo::kernelType() == "winnt") {
+    //        QString gpu = "wmic PATH Win32_videocontroller get VideoProcessor";
+    //        systemInfoProcess.start("cmd", QList<QString>() << "/C" << gpu);
+    //        systemInfoProcess.waitForFinished();
+    //        tempOutput = systemInfoProcess.readAllStandardOutput();
+    //        text.append(QString("GPU: %1\n").arg(tempOutput));
+
+    //        QString gpuram = "wmic PATH Win32_VideoController get AdapterRAM";
+    //        systemInfoProcess.start("cmd", QList<QString>() << "/C" << gpuram);
+    //        systemInfoProcess.waitForFinished();
+    //        tempOutput = systemInfoProcess.readAllStandardOutput();
+    //        text.append(QString("GPU RAM: %1\n").arg(tempOutput));
+    //    }
+
+    systemInfoText->setText(text);
 }
