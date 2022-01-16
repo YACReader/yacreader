@@ -4,7 +4,6 @@
 #include <QScrollArea>
 #include <QToolBar>
 #include <QAction>
-#include <QKeyEvent>
 #include <QMouseEvent>
 #include <QCloseEvent>
 #include <QSettings>
@@ -46,6 +45,7 @@ public slots:
     void showToolBars();
     void enableActions();
     void disableActions();
+    void disablePreviousNextComicActions();
     void toggleFullScreen();
     void toFullScreen();
     void toNormal();
@@ -60,7 +60,6 @@ public slots:
     void openComic(QString pathFile);
     void openFolderFromPath(QString pathDir);
     void openFolderFromPath(QString pathFile, QString atFileName);
-    void alwaysOnTopSwitch();
     void adjustToFullSizeSwitch();
     void fitToPageSwitch();
     void resetZoomLevel();
@@ -86,7 +85,6 @@ private:
     //! State
     bool fullscreen;
     bool toolbars;
-    bool alwaysOnTop;
     bool fromMaximized;
 
     // QTBUG-41883
@@ -140,7 +138,6 @@ private:
     QAction *doubleMangaPageAction;
     QAction *showShorcutsAction;
     QAction *showDictionaryAction;
-    QAction *alwaysOnTopAction;
     QAction *adjustToFullSizeAction;
     QAction *fitToPageAction;
     QAction *resetZoomAction;
@@ -151,6 +148,9 @@ private:
 
     QAction *showEditShortcutsAction;
 
+    QList<QAction *> mglassActions;
+    QList<QAction *> loadedComicActions;
+
     YACReaderSlider *zoomSliderAction;
 
     HttpVersionChecker *versionChecker;
@@ -159,13 +159,16 @@ private:
     //! Método que inicializa el interfaz.
     void setupUI();
     void createActions();
+    QAction *addActionWithShortcut(const QString &text, const QString &shortcutKey);
     void createToolBars();
     void refreshRecentFilesActionList();
     void clearRecentFiles();
     void getSiblingComics(QString path, QString currentComic);
+    void setActionsEnabled(bool enabled);
+    void setMglassActionsEnabled(bool enabled);
+    void setLoadedComicActionsEnabled(bool enabled);
 
     //! Manejadores de evento:
-    void keyPressEvent(QKeyEvent *event) override;
     // void resizeEvent(QResizeEvent * event);
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void dropEvent(QDropEvent *event) override;

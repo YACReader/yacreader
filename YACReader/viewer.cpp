@@ -20,6 +20,7 @@
 #include "opengl_checker.h"
 
 #include <QFile>
+#include <QKeyEvent>
 
 #include <QsLog.h>
 
@@ -34,10 +35,9 @@ Viewer::Viewer(QWidget *parent)
       wheelStop(false),
       direction(1),
       drag(false),
-      numScrollSteps(22),
       shouldOpenNext(false),
       shouldOpenPrevious(false),
-      magnifyingGlassShowed(false),
+      magnifyingGlassShown(false),
       restoreMagnifyingGlass(false)
 {
     translator = new YACReaderTranslator(this);
@@ -155,6 +155,11 @@ void Viewer::createConnections()
     // magnifyingGlass (update mg after a background change
     connect(this, &Viewer::backgroundChanges, mglass, QOverload<>::of(&MagnifyingGlass::updateImage));
 
+    connect(this, &Viewer::magnifyingGlassSizeUp, mglass, &MagnifyingGlass::sizeUp);
+    connect(this, &Viewer::magnifyingGlassSizeDown, mglass, &MagnifyingGlass::sizeDown);
+    connect(this, &Viewer::magnifyingGlassZoomIn, mglass, &MagnifyingGlass::zoomIn);
+    connect(this, &Viewer::magnifyingGlassZoomOut, mglass, &MagnifyingGlass::zoomOut);
+
     // goToDialog
     connect(goToDialog, &GoToDialog::goToPage, this, &Viewer::goTo);
 
@@ -179,6 +184,7 @@ void Viewer::createConnections()
     connect(render, &Render::crcError, this, &Viewer::processCRCError);
     connect(render, QOverload<unsigned int>::of(&Render::numPages), goToFlow, &GoToFlowWidget::setNumSlides);
     connect(render, QOverload<unsigned int>::of(&Render::numPages), goToDialog, &GoToDialog::setNumPages);
+    connect(render, qOverload<unsigned int>(&Render::numPages), this, &Viewer::comicLoaded);
     connect(render, QOverload<int, const QByteArray &>::of(&Render::imageLoaded), goToFlow, &GoToFlowWidget::setImageReady);
     connect(render, &Render::currentPageReady, this, &Viewer::updatePage);
     connect(render, &Render::processingPage, this, &Viewer::setLoadingMessage);
@@ -284,6 +290,14 @@ void Viewer::prev()
 void Viewer::showGoToDialog()
 {
     goToDialog->open();
+}
+void Viewer::goToFirstPage()
+{
+    goTo(0);
+}
+void Viewer::goToLastPage()
+{
+    goTo(this->render->numPages() - 1);
 }
 void Viewer::goTo(unsigned int page)
 {
@@ -457,6 +471,18 @@ void Viewer::scrollUp()
     }
 }
 
+void Viewer::scrollForward()
+{
+    nextPos = verticalScrollBar()->sliderPosition() + verticalScrollStep();
+    scrollDown();
+}
+
+void Viewer::scrollBackward()
+{
+    nextPos = verticalScrollBar()->sliderPosition() - verticalScrollStep();
+    scrollUp();
+}
+
 void Viewer::scrollForwardHorizontalFirst()
 {
     if (!doubleMangaPage) {
@@ -493,6 +519,18 @@ void Viewer::scrollBackwardVerticalFirst()
     }
 }
 
+static constexpr auto relativeScrollStep = 0.80;
+
+int Viewer::verticalScrollStep() const
+{
+    return static_cast<int>(height() * relativeScrollStep);
+}
+
+int Viewer::horizontalScrollStep() const
+{
+    return static_cast<int>(width() * relativeScrollStep);
+}
+
 bool Viewer::isEdge(scrollDirection d)
 {
     if (d == UP)
@@ -510,15 +548,15 @@ void Viewer::scrollZigzag(scrollDirection d1, scrollDirection d2, bool forward)
     if (!isEdge(d1)) {
         if (d1 == UP)
             scrollTo(horizontalScrollBar()->sliderPosition(),
-                     verticalScrollBar()->sliderPosition() - static_cast<int>((height() * 0.80)));
+                     verticalScrollBar()->sliderPosition() - verticalScrollStep());
         else if (d1 == DOWN)
             scrollTo(horizontalScrollBar()->sliderPosition(),
-                     verticalScrollBar()->sliderPosition() + static_cast<int>((height() * 0.80)));
+                     verticalScrollBar()->sliderPosition() + verticalScrollStep());
         else if (d1 == LEFT)
-            scrollTo(horizontalScrollBar()->sliderPosition() - static_cast<int>((width() * 0.80)),
+            scrollTo(horizontalScrollBar()->sliderPosition() - horizontalScrollStep(),
                      verticalScrollBar()->sliderPosition());
         else // d1 == RIGHT
-            scrollTo(horizontalScrollBar()->sliderPosition() + static_cast<int>((width() * 0.80)),
+            scrollTo(horizontalScrollBar()->sliderPosition() + horizontalScrollStep(),
                      verticalScrollBar()->sliderPosition());
     } else if (!isEdge(d2)) {
         int x = 0;
@@ -534,13 +572,13 @@ void Viewer::scrollZigzag(scrollDirection d1, scrollDirection d2, bool forward)
             x = horizontalScrollBar()->minimum();
 
         if (d2 == UP)
-            y = std::max(verticalScrollBar()->sliderPosition() - static_cast<int>((height() * 0.80)), verticalScrollBar()->minimum());
+            y = std::max(verticalScrollBar()->sliderPosition() - verticalScrollStep(), verticalScrollBar()->minimum());
         else if (d2 == DOWN)
-            y = std::min(verticalScrollBar()->sliderPosition() + static_cast<int>((height() * 0.80)), verticalScrollBar()->maximum());
+            y = std::min(verticalScrollBar()->sliderPosition() + verticalScrollStep(), verticalScrollBar()->maximum());
         else if (d2 == LEFT)
-            x = std::max(horizontalScrollBar()->sliderPosition() - static_cast<int>((width() * 0.80)), horizontalScrollBar()->minimum());
+            x = std::max(horizontalScrollBar()->sliderPosition() - horizontalScrollStep(), horizontalScrollBar()->minimum());
         else // d2 == RIGHT
-            x = std::min(horizontalScrollBar()->sliderPosition() + static_cast<int>((width() * 0.80)), horizontalScrollBar()->maximum());
+            x = std::min(horizontalScrollBar()->sliderPosition() + horizontalScrollStep(), horizontalScrollBar()->maximum());
 
         scrollTo(x, y);
     } else {
@@ -576,99 +614,11 @@ void Viewer::scrollTo(int x, int y)
     emit backgroundChanges();
 }
 
-void Viewer::keyPressEvent(QKeyEvent *event)
+void Viewer::moveView(Qt::Key directionKey)
 {
-    if (render->hasLoadedComic()) {
-        int _key = event->key();
-        Qt::KeyboardModifiers modifiers = event->modifiers();
-
-        if (modifiers & Qt::ShiftModifier)
-            _key |= Qt::SHIFT;
-        if (modifiers & Qt::ControlModifier)
-            _key |= Qt::CTRL;
-        if (modifiers & Qt::MetaModifier)
-            _key |= Qt::META;
-        if (modifiers & Qt::AltModifier)
-            _key |= Qt::ALT;
-
-        QKeySequence key(_key);
-        /*if(goToFlow->isVisible() && event->key()!=Qt::Key_S)
-                        QCoreApplication::sendEvent(goToFlow,event);
-                else*/
-
-        if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_ACTION_Y)) {
-            posByStep = height() / numScrollSteps;
-            nextPos = verticalScrollBar()->sliderPosition() + static_cast<int>((height() * 0.80));
-            scrollDown();
-        }
-
-        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_ACTION_Y)) {
-            posByStep = height() / numScrollSteps;
-            nextPos = verticalScrollBar()->sliderPosition() - static_cast<int>((height() * 0.80));
-            scrollUp();
-        }
-
-        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_HORIZONTAL_FIRST_ACTION_Y)) {
-            scrollForwardHorizontalFirst();
-        }
-
-        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_HORIZONTAL_FIRST_ACTION_Y)) {
-            scrollBackwardHorizontalFirst();
-        }
-
-        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_FORWARD_VERTICAL_FIRST_ACTION_Y)) {
-            scrollForwardVerticalFirst();
-        }
-
-        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(AUTO_SCROLL_BACKWARD_VERTICAL_FIRST_ACTION_Y)) {
-            scrollBackwardVerticalFirst();
-        }
-
-        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_DOWN_ACTION_Y) ||
-                 key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_UP_ACTION_Y) ||
-                 key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_LEFT_ACTION_Y) ||
-                 key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_RIGHT_ACTION_Y)) {
-            moveAction(key);
-            emit backgroundChanges();
-        }
-
-        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(GO_TO_FIRST_PAGE_ACTION_Y)) {
-            goTo(0);
-        }
-
-        else if (key == ShortcutsManager::getShortcutsManager().getShortcut(GO_TO_LAST_PAGE_ACTION_Y)) {
-            goTo(this->render->numPages() - 1);
-        }
-
-        else
-            QAbstractScrollArea::keyPressEvent(event);
-
-        if (mglass->isVisible() && (key == ShortcutsManager::getShortcutsManager().getShortcut(SIZE_UP_MGLASS_ACTION_Y) || key == ShortcutsManager::getShortcutsManager().getShortcut(SIZE_DOWN_MGLASS_ACTION_Y) || key == ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_IN_MGLASS_ACTION_Y) || key == ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_OUT_MGLASS_ACTION_Y))) {
-            QCoreApplication::sendEvent(mglass, event);
-        }
-
-    } else
-        QAbstractScrollArea::keyPressEvent(event);
-}
-
-void Viewer::moveAction(const QKeySequence &key)
-{
-    int _key = 0;
-
-    if (key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_DOWN_ACTION_Y))
-        _key = Qt::Key_Down;
-
-    else if (key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_UP_ACTION_Y))
-        _key = Qt::Key_Up;
-
-    else if (key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_LEFT_ACTION_Y))
-        _key = Qt::Key_Left;
-
-    else if (key == ShortcutsManager::getShortcutsManager().getShortcut(MOVE_RIGHT_ACTION_Y))
-        _key = Qt::Key_Right;
-
-    QKeyEvent _event = QKeyEvent(QEvent::KeyPress, _key, Qt::NoModifier);
-    QAbstractScrollArea::keyPressEvent(&_event);
+    QKeyEvent event(QEvent::KeyPress, directionKey, Qt::NoModifier);
+    QAbstractScrollArea::keyPressEvent(&event);
+    emit backgroundChanges();
 }
 
 static void animateScroll(QPropertyAnimation &scroller, const QScrollBar &scrollBar, int delta)
@@ -744,7 +694,7 @@ void Viewer::mouseMoveEvent(QMouseEvent *event)
     showCursor();
     hideCursorTimer->start(2500);
 
-    if (magnifyingGlassShowed)
+    if (magnifyingGlassShown)
         mglass->move(static_cast<int>(event->x() - float(mglass->width()) / 2), static_cast<int>(event->y() - float(mglass->height()) / 2));
 
     if (render->hasLoadedComic()) {
@@ -777,7 +727,7 @@ void Viewer::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-const QPixmap Viewer::pixmap()
+QPixmap Viewer::pixmap() const
 {
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     return content->pixmap();
@@ -788,7 +738,7 @@ const QPixmap Viewer::pixmap()
 
 void Viewer::magnifyingGlassSwitch()
 {
-    magnifyingGlassShowed ? hideMagnifyingGlass() : showMagnifyingGlass();
+    magnifyingGlassShown ? hideMagnifyingGlass() : showMagnifyingGlass();
 }
 
 void Viewer::showMagnifyingGlass()
@@ -799,14 +749,22 @@ void Viewer::showMagnifyingGlass()
         mglass->move(static_cast<int>(p.x() - float(mglass->width()) / 2), static_cast<int>(p.y() - float(mglass->height()) / 2));
         mglass->show();
         mglass->updateImage(mglass->x() + mglass->width() / 2, mglass->y() + mglass->height() / 2);
-        magnifyingGlassShowed = true;
+        setMagnifyingGlassShown(true);
     }
 }
 
 void Viewer::hideMagnifyingGlass()
 {
     mglass->hide();
-    magnifyingGlassShowed = false;
+    setMagnifyingGlassShown(false);
+}
+
+void Viewer::setMagnifyingGlassShown(bool shown)
+{
+    if (magnifyingGlassShown != shown) {
+        magnifyingGlassShown = shown;
+        emit magnifyingGlassVisibilityChanged(magnifyingGlassShown);
+    }
 }
 
 void Viewer::informationSwitch()
@@ -961,7 +919,7 @@ void Viewer::resetContent()
 
 void Viewer::setLoadingMessage()
 {
-    if (magnifyingGlassShowed) {
+    if (magnifyingGlassShown) {
         hideMagnifyingGlass();
         restoreMagnifyingGlass = true;
     }
@@ -971,7 +929,7 @@ void Viewer::setLoadingMessage()
 
 void Viewer::setPageUnavailableMessage()
 {
-    if (magnifyingGlassShowed) {
+    if (magnifyingGlassShown) {
         hideMagnifyingGlass();
         restoreMagnifyingGlass = true;
     }

@@ -36,7 +36,7 @@ void MagnifyingGlass::updateImage(int x, int y)
     // image section augmented
     int zoomWidth = static_cast<int>(width() * zoomLevel);
     int zoomHeight = static_cast<int>(height() * zoomLevel);
-    auto p = (Viewer *)parent();
+    auto *const p = qobject_cast<const Viewer *>(parentWidget());
     int currentPos = p->verticalScrollBar()->sliderPosition();
     const QPixmap image = p->pixmap();
     int iWidth = image.width();
@@ -170,101 +170,113 @@ void MagnifyingGlass::wheelEvent(QWheelEvent *event)
         else
             zoomOut();
         break;
+    default:
+        break; // Never propagate a wheel event to the parent widget, even if we ignore it.
     }
-    updateImage();
     event->setAccepted(true);
 }
 void MagnifyingGlass::zoomIn()
 {
-    if (zoomLevel > 0.2f)
+    if (zoomLevel > 0.2f) {
         zoomLevel -= 0.025f;
+        updateImage();
+    }
 }
 
 void MagnifyingGlass::zoomOut()
 {
-    if (zoomLevel < 0.9f)
+    if (zoomLevel < 0.9f) {
         zoomLevel += 0.025f;
+        updateImage();
+    }
 }
 
 void MagnifyingGlass::sizeUp()
 {
-    auto p = (Viewer *)parent();
-    if (width() < (p->width() * 0.90f))
-        resize(width() + 30, height() + 15);
+    auto w = width();
+    auto h = height();
+    if (growWidth(w) | growHeight(h)) // bitwise OR prevents short-circuiting
+        resizeAndUpdate(w, h);
 }
 
 void MagnifyingGlass::sizeDown()
 {
-    if (width() > 175)
-        resize(width() - 30, height() - 15);
+    auto w = width();
+    auto h = height();
+    if (shrinkWidth(w) | shrinkHeight(h)) // bitwise OR prevents short-circuiting
+        resizeAndUpdate(w, h);
 }
 
 void MagnifyingGlass::heightUp()
 {
-    auto p = (Viewer *)parent();
-    if (height() < (p->height() * 0.90f))
-        resize(width(), height() + 15);
+    auto h = height();
+    if (growHeight(h))
+        resizeAndUpdate(width(), h);
 }
 
 void MagnifyingGlass::heightDown()
 {
-    if (height() > 80)
-        resize(width(), height() - 15);
+    auto h = height();
+    if (shrinkHeight(h))
+        resizeAndUpdate(width(), h);
 }
 
 void MagnifyingGlass::widthUp()
 {
-    auto p = (Viewer *)parent();
-    if (width() < (p->width() * 0.90f))
-        resize(width() + 30, height());
+    auto w = width();
+    if (growWidth(w))
+        resizeAndUpdate(w, height());
 }
 
 void MagnifyingGlass::widthDown()
 {
-    if (width() > 175)
-        resize(width() - 30, height());
+    auto w = width();
+    if (shrinkWidth(w))
+        resizeAndUpdate(w, height());
 }
 
-void MagnifyingGlass::keyPressEvent(QKeyEvent *event)
+void MagnifyingGlass::resizeAndUpdate(int w, int h)
 {
-    bool validKey = false;
+    resize(w, h);
+    updateImage();
+}
 
-    int _key = event->key();
-    Qt::KeyboardModifiers modifiers = event->modifiers();
+static constexpr auto maxRelativeDimension = 0.9;
+static constexpr auto widthStep = 30;
+static constexpr auto heightStep = 15;
 
-    if (modifiers & Qt::ShiftModifier)
-        _key |= Qt::SHIFT;
-    if (modifiers & Qt::ControlModifier)
-        _key |= Qt::CTRL;
-    if (modifiers & Qt::MetaModifier)
-        _key |= Qt::META;
-    if (modifiers & Qt::AltModifier)
-        _key |= Qt::ALT;
+bool MagnifyingGlass::growWidth(int &w) const
+{
+    const auto maxWidth = parentWidget()->width() * maxRelativeDimension;
+    if (w >= maxWidth)
+        return false;
+    w += widthStep;
+    return true;
+}
 
-    QKeySequence key(_key);
+bool MagnifyingGlass::shrinkWidth(int &w) const
+{
+    constexpr auto minWidth = 175;
+    if (w <= minWidth)
+        return false;
+    w -= widthStep;
+    return true;
+}
 
-    if (key == ShortcutsManager::getShortcutsManager().getShortcut(SIZE_UP_MGLASS_ACTION_Y)) {
-        sizeUp();
-        validKey = true;
-    }
+bool MagnifyingGlass::growHeight(int &h) const
+{
+    const auto maxHeight = parentWidget()->height() * maxRelativeDimension;
+    if (h >= maxHeight)
+        return false;
+    h += heightStep;
+    return true;
+}
 
-    else if (key == ShortcutsManager::getShortcutsManager().getShortcut(SIZE_DOWN_MGLASS_ACTION_Y)) {
-        sizeDown();
-        validKey = true;
-    }
-
-    else if (key == ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_IN_MGLASS_ACTION_Y)) {
-        zoomIn();
-        validKey = true;
-    }
-
-    else if (key == ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_OUT_MGLASS_ACTION_Y)) {
-        zoomOut();
-        validKey = true;
-    }
-
-    if (validKey) {
-        updateImage();
-        event->setAccepted(true);
-    }
+bool MagnifyingGlass::shrinkHeight(int &h) const
+{
+    constexpr auto minHeight = 80;
+    if (h <= minHeight)
+        return false;
+    h -= heightStep;
+    return true;
 }
