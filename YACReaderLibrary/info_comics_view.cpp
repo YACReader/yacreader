@@ -149,8 +149,7 @@ void InfoComicsView::setCurrentIndex(const QModelIndex &index)
 {
     QQmlProperty(list, "currentIndex").write(index.row());
 
-    selectionHelper->clear();
-    selectionHelper->selectIndex(index.row());
+    setCurrentIndex(index.row());
 }
 
 void InfoComicsView::setCurrentIndex(int index)
