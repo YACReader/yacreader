@@ -65,17 +65,6 @@ Rectangle {
                 NumberAnimation { duration: 90 }
             }
 
-            DropShadow {
-                anchors.fill: realCell
-                horizontalOffset: 0
-                verticalOffset: 0
-                radius: 8.0
-                samples: 17
-                color: "#FF000000"
-                source: realCell
-                visible: (Qt.platform.os === "osx") ? false : true;
-            }
-
             Rectangle {
                 id: realCell
 
@@ -261,6 +250,17 @@ Rectangle {
                         }
                     }
                 }
+            }
+
+            DropShadow {
+                anchors.fill: realCell
+                horizontalOffset: 0
+                verticalOffset: 0
+                radius: 8.0
+                samples: 17
+                color: "#FF000000"
+                source: realCell
+                visible: (Qt.platform.os === "osx") ? false : true;
             }
 
             /**/
