@@ -90,7 +90,7 @@ GridComicsView::GridComicsView(QWidget *parent)
         ctxt->setContextProperty("borderColor", "#121212");
         ctxt->setContextProperty("titleColor", "#FFFFFF");
         ctxt->setContextProperty("textColor", "#A8A8A8");
-        ctxt->setContextProperty("dropShadow", false);
+        ctxt->setContextProperty("dropShadow", QVariant(false));
         // fonts settings
         int fontSize = QApplication::font().pointSize();
         if (fontSize == -1)
@@ -127,7 +127,7 @@ GridComicsView::GridComicsView(QWidget *parent)
     ctxt->setContextProperty("backgroundImage", QUrl());
     ctxt->setContextProperty("backgroundBlurOpacity", 0.0);
     ctxt->setContextProperty("backgroundBlurRadius", 0.0);
-    ctxt->setContextProperty("backgroundBlurVisible", false);
+    ctxt->setContextProperty("backgroundBlurVisible", QVariant(false));
 
     auto model = new ComicModel();
     selectionHelper->setModel(model);
@@ -290,7 +290,7 @@ void GridComicsView::updateBackgroundConfig()
         ctxt->setContextProperty("backgroundImage", QUrl());
         ctxt->setContextProperty("backgroundBlurOpacity", 0.0);
         ctxt->setContextProperty("backgroundBlurRadius", 0.0);
-        ctxt->setContextProperty("backgroundBlurVisible", false);
+        ctxt->setContextProperty("backgroundBlurVisible", QVariant(false));
     }
 
 #ifdef Q_OS_MAC
@@ -365,7 +365,7 @@ void GridComicsView::enableFilterMode(bool enabled)
     QQmlContext *ctxt = view->rootContext();
 
     if (enabled) {
-        ctxt->setContextProperty("showCurrentComic", false);
+        ctxt->setContextProperty("showCurrentComic", QVariant(false));
         ctxt->setContextProperty("currentComic", nullptr);
     } else {
         setCurrentComicIfNeeded();
@@ -448,11 +448,11 @@ void GridComicsView::setCurrentComicIfNeeded()
     if (showCurrentComic) {
         ctxt->setContextProperty("currentComic", &currentComic);
         ctxt->setContextProperty("currentComicInfo", &(currentComic.info));
-        ctxt->setContextProperty("showCurrentComic", true);
+        ctxt->setContextProperty("showCurrentComic", QVariant(true));
     } else {
         ctxt->setContextProperty("currentComic", &currentComic);
         ctxt->setContextProperty("currentComicInfo", &(currentComic.info));
-        ctxt->setContextProperty("showCurrentComic", false);
+        ctxt->setContextProperty("showCurrentComic", QVariant(false));
         // ctxt->setContextProperty("currentComic", nullptr);
     }
 }
