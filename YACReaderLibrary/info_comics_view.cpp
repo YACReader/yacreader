@@ -89,7 +89,7 @@ InfoComicsView::InfoComicsView(QWidget *parent)
 
     setShowMarks(true);
 
-    QLOG_TRACE() << "GridComicsView";
+    QLOG_TRACE() << "InfoComicsView";
 }
 
 InfoComicsView::~InfoComicsView()
