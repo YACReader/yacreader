@@ -36,20 +36,6 @@ GridComicsView::GridComicsView(QWidget *parent)
     settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat, this);
     settings->beginGroup("libraryConfig");
 
-    qmlRegisterType<ComicModel>("com.yacreader.ComicModel", 1, 0, "ComicModel");
-    qmlRegisterType<ComicDB>("com.yacreader.ComicDB", 1, 0, "ComicDB");
-    qmlRegisterType<ComicInfo>("com.yacreader.ComicInfo", 1, 0, "ComicInfo");
-
-    view = new QQuickWidget(this);
-    view->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    connect(
-            view, &QQuickWidget::statusChanged,
-            [=](QQuickWidget::Status status) {
-                if (status == QQuickWidget::Error) {
-                    QLOG_ERROR() << view->errors();
-                }
-            });
-
     // view->setFocusPolicy(Qt::TabFocus);
 
     selectionHelper = new YACReaderComicsSelectionHelper(this);

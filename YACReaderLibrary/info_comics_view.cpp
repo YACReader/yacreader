@@ -15,19 +15,6 @@
 InfoComicsView::InfoComicsView(QWidget *parent)
     : ComicsView(parent)
 {
-    qmlRegisterType<ComicModel>("com.yacreader.ComicModel", 1, 0, "ComicModel");
-    qmlRegisterType<ComicDB>("com.yacreader.ComicDB", 1, 0, "ComicDB");
-    qmlRegisterType<ComicInfo>("com.yacreader.ComicInfo", 1, 0, "ComicInfo");
-
-    view = new QQuickWidget();
-    view->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    connect(
-            view, &QQuickWidget::statusChanged,
-            [=](QQuickWidget::Status status) {
-                if (status == QQuickWidget::Error) {
-                    QLOG_ERROR() << view->errors();
-                }
-            });
 
     // container->setFocusPolicy(Qt::StrongFocus);
 
