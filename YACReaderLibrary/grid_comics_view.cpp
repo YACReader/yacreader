@@ -145,6 +145,14 @@ GridComicsView::GridComicsView(QWidget *parent)
     bool showInfo = settings->value(COMICS_GRID_SHOW_INFO, false).toBool();
     ctxt->setContextProperty("showInfo", showInfo);
 
+    auto comicDB = new ComicDB();
+    auto comicInfo = &(comicDB->info);
+    ctxt->setContextProperty("currentComic", comicDB);
+    ctxt->setContextProperty("currentComicInfo", comicInfo);
+    ctxt->setContextProperty("showCurrentComic", QVariant(false));
+
+    updateCoversSizeInContext(YACREADER_MIN_COVER_WIDTH, ctxt);
+
     view->setSource(QUrl("qrc:/qml/GridComicsView.qml"));
 
     auto rootObject = dynamic_cast<QObject *>(view->rootObject());
