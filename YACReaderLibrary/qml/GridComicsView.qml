@@ -177,7 +177,7 @@ Rectangle {
                         }
                     }
 
-                    onPressed: {
+                    onPressed: mouse => {
                         var ci = grid.currentIndex; //save current index
 
                         /*if(mouse.button != Qt.RightButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
@@ -250,7 +250,7 @@ Rectangle {
 
                     }
 
-                    onReleased: {
+                    onReleased: mouse => {
                         if(mouse.button === Qt.LeftButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
                         {
                             if(comicsSelectionHelper.isSelectedIndex(index))
