@@ -6,7 +6,7 @@ import QtGraphicalEffects 1.0
 import com.yacreader.ComicModel 1.0
 
 Rectangle {
-    id: main
+    id: mainFlowContainer
 
     property url backgroundImageURL;
 
@@ -179,7 +179,7 @@ Rectangle {
 
                         if(mouse.button === Qt.RightButton) // context menu is requested
                         {
-                            var coordinates = main.mapFromItem(coverElement,mouseX,mouseY)
+                            var coordinates = mainFlowContainer.mapFromItem(coverElement,mouseX,mouseY)
                             contextMenuHelper.requestedContextMenu(Qt.point(coordinates.x,coordinates.y));
                         }
 
