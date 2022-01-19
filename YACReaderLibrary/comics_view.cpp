@@ -25,6 +25,15 @@ ComicsView::ComicsView(QWidget *parent)
                 }
             });
 
+    auto comicDB = new ComicDB();
+    auto comicInfo = &(comicDB->info);
+    QQmlContext *ctxt = view->rootContext();
+
+    ctxt->setContextProperty("comic", comicDB);
+    ctxt->setContextProperty("comicInfo", comicInfo);
+
+    ctxt->setContextProperty("comic_info_index", 0);
+
     setAcceptDrops(true);
 }
 
