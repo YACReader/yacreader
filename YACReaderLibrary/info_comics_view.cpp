@@ -13,7 +13,7 @@
 #include "QsLog.h"
 
 InfoComicsView::InfoComicsView(QWidget *parent)
-    : ComicsView(parent)
+    : ComicsView(parent), flow(nullptr), list(nullptr)
 {
 
     // container->setFocusPolicy(Qt::StrongFocus);
