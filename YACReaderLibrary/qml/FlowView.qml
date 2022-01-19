@@ -54,7 +54,7 @@ Rectangle {
 
     MouseArea {
         anchors.fill : list
-        onWheel: {
+        onWheel: wheel => {
 
             if(list.moving)
                 return;
@@ -96,10 +96,11 @@ Rectangle {
 
         highlightMoveDuration: 250
 
-        onCurrentIndexChanged: {
-            if (currentIndex !== -1)
-                currentCoverChanged(currentIndex);
+        onCurrentIndexChanged: currentIndex => {
+                                   if (list.currentIndex !== -1) {
+                                       mainFlowContainer.currentCoverChanged(list.currentIndex);
         }
+                               }
 
         delegate: Component {
 
@@ -173,7 +174,7 @@ Rectangle {
                         currentIndexHelper.selectedItem(index);
                     }
 
-                    onReleased: {
+                    onReleased: mouse => {
                         list.currentIndex = index;
 
                         if(mouse.button === Qt.RightButton) // context menu is requested
@@ -189,7 +190,7 @@ Rectangle {
         }
 
         focus: true
-        Keys.onPressed: {
+        Keys.onPressed: event => {
 
             if (event.modifiers & Qt.ControlModifier || event.modifiers & Qt.ShiftModifier)
                 return;
