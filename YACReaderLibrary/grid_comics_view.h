@@ -10,6 +10,7 @@
 class QAbstractListModel;
 class QItemSelectionModel;
 class QQuickWidget;
+class QQmlContext;
 
 class YACReaderToolBarStretch;
 class YACReaderComicsSelectionHelper;
@@ -64,6 +65,7 @@ protected slots:
     void requestedContextMenu(const QPoint &point);
 
     void setCoversSize(int width);
+    void updateCoversSizeInContext(int width, QQmlContext *ctxt);
 
     void dummyUpdater(); // TODO remove this
 

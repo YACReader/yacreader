@@ -417,6 +417,11 @@ void GridComicsView::setCoversSize(int width)
                                   Q_ARG(QVariant, cellCustomWidth));
     }
 
+    updateCoversSizeInContext(width, ctxt);
+}
+
+void GridComicsView::updateCoversSizeInContext(int width, QQmlContext *ctxt)
+{
     int cellBottomMarging = 8 * (1 + 2 * (1 - (float(YACREADER_MAX_GRID_ZOOM_WIDTH - width) / (YACREADER_MAX_GRID_ZOOM_WIDTH - YACREADER_MIN_GRID_ZOOM_WIDTH))));
 
     ctxt->setContextProperty("cellCustomHeight", ((width * YACREADER_MAX_COVER_HEIGHT) / YACREADER_MIN_COVER_WIDTH) + 51 + cellBottomMarging);
