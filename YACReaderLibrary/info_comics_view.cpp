@@ -142,7 +142,9 @@ void InfoComicsView::setModel(ComicModel *model)
 
 void InfoComicsView::setCurrentIndex(const QModelIndex &index)
 {
+    if (list != nullptr) {
     QQmlProperty(list, "currentIndex").write(index.row());
+    }
 
     setCurrentIndex(index.row());
 }
