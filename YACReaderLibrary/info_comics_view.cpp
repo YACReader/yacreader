@@ -63,6 +63,9 @@ InfoComicsView::InfoComicsView(QWidget *parent)
         ctxt->setContextProperty("readTickCheckedColor", "#E84852");
     }
 
+    ctxt->setContextProperty("backgroundImage", QUrl());
+    ctxt->setContextProperty("comicsList", new ComicModel());
+
     view->setSource(QUrl("qrc:/qml/InfoComicsView.qml"));
 
     auto rootObject = dynamic_cast<QObject *>(view->rootObject());
