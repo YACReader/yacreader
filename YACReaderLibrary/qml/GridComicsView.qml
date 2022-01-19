@@ -481,7 +481,7 @@ Rectangle {
                         anchors.bottomMargin: 15
                         anchors.rightMargin: 15
                         horizontalAlignment: Image.AlignLeft
-                        anchors {horizontalCenter: parent.horizontalCenter; top: realCell.top; topMargin: 0}
+                        anchors {horizontalCenter: parent.horizontalCenter; top: parent.top; topMargin: 0}
                         source: comicsList.getCoverUrlPathForComicHash(currentComicInfo.hash.toString())
                         fillMode: Image.PreserveAspectFit
                         smooth: true
