@@ -16,6 +16,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add updated MIME types to .desktop file for .cbz and .cbr
 * Add settings to control page turning behaviour on scroll.
 * Make forward and backward buttons in a mouse turn pages.
+* Add system info to the help/about dialog to help reporting bugs.
 
 ### YACReaderLibrary
 * Support HDPI screens.
@@ -24,6 +25,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Enable arrow keys navigation in the folders tree view.
 * Add `Publication Date` column to the comics table view.
 * Use a scale effect in the comics grids on mouse over.
+* Add system info to the help/about dialog to help reporting bugs.
 
 ## 9.8.2
 ### YACReaderLibrary
