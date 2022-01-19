@@ -377,11 +377,11 @@ Rectangle {
 
                     id: ratingConextMenu
 
-                    Action { text: "1"; enabled: true; icon.source:"star_menu.png"; onTriggered: comicRatingHelper.rate(index,1) }
-                    Action { text: "2"; enabled: true; icon.source:"star_menu.png"; onTriggered: comicRatingHelper.rate(index,2) }
-                    Action { text: "3"; enabled: true; icon.source:"star_menu.png"; onTriggered: comicRatingHelper.rate(index,3) }
-                    Action { text: "4"; enabled: true; icon.source:"star_menu.png"; onTriggered: comicRatingHelper.rate(index,4) }
-                    Action { text: "5"; enabled: true; icon.source:"star_menu.png"; onTriggered: comicRatingHelper.rate(index,5) }
+                    Action { text: "1"; enabled: true; onTriggered: comicRatingHelper.rate(index,1) }
+                    Action { text: "2"; enabled: true; onTriggered: comicRatingHelper.rate(index,2) }
+                    Action { text: "3"; enabled: true; onTriggered: comicRatingHelper.rate(index,3) }
+                    Action { text: "4"; enabled: true; onTriggered: comicRatingHelper.rate(index,4) }
+                    Action { text: "5"; enabled: true; onTriggered: comicRatingHelper.rate(index,5) }
 
                     delegate: MenuItem {
                         implicitHeight: 30
