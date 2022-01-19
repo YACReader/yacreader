@@ -49,7 +49,7 @@ Rectangle {
                     x: 27
                     y: 5
 
-                    read: comicInfo.read
+                    read: comicInfo ? comicInfo.read ?? false : false
 
                     onReadChangedByUser: {
                         comicInfo.read = read;
@@ -82,7 +82,7 @@ Rectangle {
                 InfoTick {
                     Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
 
-                    read: comicInfo.read
+                    read: comicInfo ? comicInfo.read ?? false : false
 
                     onReadChangedByUser: {
                         comicInfo.read = read;
@@ -99,7 +99,7 @@ Rectangle {
                     Layout.rightMargin: 17
                     Layout.alignment: Qt.AlignTop
 
-                    active: comicInfo.isFavorite
+                    active: comicInfo ? comicInfo.isFavorite ?? false : false
 
                     onActiveChangedByUser: {
                         if(active)
@@ -114,7 +114,7 @@ Rectangle {
                 InfoRating {
                     Layout.alignment: Qt.AlignTop
                     Layout.rightMargin: 30
-                    rating: comicInfo.rating
+                    rating: comicInfo ? comicInfo.rating ?? 0 : 0
 
                     onRatingChangedByUser: {
                         comicInfo.rating = rating;
@@ -140,7 +140,7 @@ Rectangle {
                     font.pixelSize: mainContainer.compact ? 18 : 21;
                     wrapMode: Text.WordWrap
 
-                    text: comic.getTitleIncludingNumber()
+                    text: comic ? comic.getTitleIncludingNumber() ?? "" : ""
                 }
 
                 RowLayout
@@ -155,7 +155,7 @@ Rectangle {
                         Layout.rightMargin: 17
                         Layout.alignment: Qt.AlignTop
 
-                        active: comicInfo.isFavorite
+                        active: comicInfo ? comicInfo.isFavorite ?? false : false
 
                         onActiveChangedByUser: {
                             if(active)
@@ -170,7 +170,7 @@ Rectangle {
                     InfoRating {
                         Layout.alignment: Qt.AlignTop
                         Layout.rightMargin: 30
-                        rating: comicInfo.rating
+                        rating: comicInfo ? comicInfo.rating ?? 0 : 0
 
                         onRatingChangedByUser: {
                             comicInfo.rating = rating;
@@ -188,45 +188,45 @@ Rectangle {
                     id: volume
                     color: infoColor
                     font: mainContainer.infoFont
-                    text: comicInfo.volume
+                    text: comicInfo ? comicInfo.volume ?? "" : ""
                     rightPadding: 20
-                    visible: comicInfo.volume
+                    visible: comicInfo ? comicInfo.volume ?? false : false
                 }
 
                 Text {
                     id: numbering
                     color: infoColor
                     font: mainContainer.infoFont
-                    text: comicInfo.number + "/" + comicInfo.count
+                    text: (comicInfo ? comicInfo.number ?? "" : "") + "/" + (comicInfo ? comicInfo.count ?? "" : "")
                     rightPadding: 20
-                    visible : comicInfo.number
+                    visible : comicInfo ? comicInfo.number ?? false : false
                 }
 
                 Text {
                     id: genre
                     color: infoColor
                     font: mainContainer.infoFont
-                    text: comicInfo.genere
+                    text: comicInfo ? comicInfo.genere ?? "" : ""
                     rightPadding: 20
-                    visible: comicInfo.genere
+                    visible: comicInfo ? comicInfo.genere ?? false : false
                 }
 
                 Text {
                     id: date
                     color: infoColor
                     font: mainContainer.infoFont
-                    text: comicInfo.date
+                    text: comicInfo ? comicInfo.date ?? "" : ""
                     rightPadding: 20
-                    visible: comicInfo.date
+                    visible: comicInfo ? comicInfo.date ?? false : false
                 }
 
                 Text {
                     id: pages
                     color: infoColor
                     font: mainContainer.infoFont
-                    text: comicInfo.numPages + " pages"
+                    text: comicInfo ? comicInfo.numPages ?? "" : "" + " pages"
                     rightPadding: 20
-                    visible: comicInfo.numPages
+                    visible: comicInfo ? comicInfo.numPages ?? false : false
                 }
 
                 Text {
@@ -234,11 +234,11 @@ Rectangle {
                     font: mainContainer.infoFont
                     color: "#ffcc00"
                     text: "Show in Comic Vine"
-                    visible: comicInfo.comicVineID
+                    visible: comicInfo ? comicInfo.comicVineID ?? false : false
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            Qt.openUrlExternally("http://www.comicvine.com/comic/4000-%1/".arg(comicInfo.comicVineID));
+                            Qt.openUrlExternally("http://www.comicvine.com/comic/4000-%1/".arg(comicInfo ? comicInfo.comicVineID ?? "" : ""));
                         }
                     }
                 }
@@ -261,8 +261,8 @@ Rectangle {
                             color: #FFCB00;
                             text-decoration:none;
                         }
-                    </style></head><body>' + comicInfo.synopsis + '</body></html>'
-                visible: comicInfo.synopsis
+                    </style></head><body>' + (comicInfo ? comicInfo.synopsis ?? "" : "") + '</body></html>'
+                visible: comicInfo ? comicInfo.synopsis ?? false : false
                 textFormat: Text.RichText
             }
 
@@ -278,12 +278,12 @@ Rectangle {
 
                 text: qsTr("Authors")
 
-                visible: comicInfo.getWriters().length +
-                         comicInfo.getPencillers().length +
-                         comicInfo.getInkers().length +
-                         comicInfo.getColorists().length +
-                         comicInfo.getLetterers().length +
-                         comicInfo.getCoverArtists().length > 0
+                visible: comicInfo ? (comicInfo.getWriters().length +
+                                      comicInfo.getPencillers().length +
+                                      comicInfo.getInkers().length +
+                                      comicInfo.getColorists().length +
+                                      comicInfo.getLetterers().length +
+                                      comicInfo.getCoverArtists().length > 0) : false
             }
 
             Flow {
@@ -291,14 +291,14 @@ Rectangle {
                 spacing: 20
                 Repeater {
                     id: writers
-                    model: comicInfo.getWriters().length
+                    model: comicInfo ? comicInfo.getWriters().length : null
                     Column{
                         Text {
                             color: infoTitleColor
                             font.family: "Arial"
                             font.pixelSize: 15
 
-                            text: comicInfo.getWriters()[index]
+                            text: comicInfo ? comicInfo.getWriters()[index] : ""
                         }
 
                         Text {
@@ -313,14 +313,14 @@ Rectangle {
 
                 Repeater {
                     id: pencilllers
-                    model: comicInfo.getPencillers().length
+                    model: comicInfo ? comicInfo.getPencillers().length : null
                     Column{
                         Text {
                             color: infoTitleColor
                             font.family: "Arial"
                             font.pixelSize: 15
 
-                            text: comicInfo.getPencillers()[index]
+                            text: comicInfo ? comicInfo.getPencillers()[index] : ""
                         }
 
                         Text {
@@ -335,14 +335,14 @@ Rectangle {
 
                 Repeater {
                     id: inkers
-                    model: comicInfo.getInkers().length
+                    model: comicInfo ? comicInfo.getInkers().length : null
                     Column{
                         Text {
                             color: infoTitleColor
                             font.family: "Arial"
                             font.pixelSize: 15
 
-                            text: comicInfo.getInkers()[index]
+                            text: comicInfo ? comicInfo.getInkers()[index] : ""
                         }
 
                         Text {
@@ -357,14 +357,14 @@ Rectangle {
 
                 Repeater {
                     id: colorist
-                    model: comicInfo.getColorists().length
+                    model: comicInfo ? comicInfo.getColorists().length : null
                     Column{
                         Text {
                             color: infoTitleColor
                             font.family: "Arial"
                             font.pixelSize: 15
 
-                            text: comicInfo.getColorists()[index]
+                            text: comicInfo ? comicInfo.getColorists()[index] : ""
                         }
 
                         Text {
@@ -379,14 +379,14 @@ Rectangle {
 
                 Repeater {
                     id: letterers
-                    model: comicInfo.getLetterers().length
+                    model: comicInfo ? comicInfo.getLetterers().length : null
                     Column{
                         Text {
                             color: infoTitleColor
                             font.family: "Arial"
                             font.pixelSize: 15
 
-                            text: comicInfo.getLetterers()[index]
+                            text: comicInfo ? comicInfo.getLetterers()[index] : ""
                         }
 
                         Text {
@@ -401,14 +401,14 @@ Rectangle {
 
                 Repeater {
                     id: cover_artist
-                    model: comicInfo.getCoverArtists().length
+                    model: comicInfo ? comicInfo.getCoverArtists().length : ""
                     Column{
                         Text {
                             color: infoTitleColor
                             font.family: "Arial"
                             font.pixelSize: 15
 
-                            text: comicInfo.getCoverArtists()[index]
+                            text: comicInfo ? comicInfo.getCoverArtists()[index] : ""
                         }
 
                         Text {
@@ -447,9 +447,9 @@ Rectangle {
                     font.family: "Arial"
                     font.pixelSize: 15
 
-                    text: comicInfo.publisher
+                    text: comicInfo ? comicInfo.publisher ?? "" : ""
 
-                    visible: comicInfo.publisher
+                    visible: comicInfo ? comicInfo.publisher ?? false : false
                 }
 
                 Text {
@@ -459,9 +459,9 @@ Rectangle {
                     font.family: "Arial"
                     font.pixelSize: 15
 
-                    text: comicInfo.format
+                    text: comicInfo ? comicInfo.format ?? "" : ""
 
-                    visible: comicInfo.format
+                    visible: comicInfo ? comicInfo.format ?? false : false
                 }
 
                 Text {
@@ -471,9 +471,9 @@ Rectangle {
                     font.family: "Arial"
                     font.pixelSize: 15
 
-                    text: comicInfo.color ? qsTr("color") : qsTr("b/w")
+                    text: (comicInfo ? comicInfo.color : false) ? qsTr("color") : qsTr("b/w")
 
-                    visible: comicInfo.color
+                    visible: comicInfo ? comicInfo.color ?? false : false
                 }
 
                 Text {
@@ -483,9 +483,9 @@ Rectangle {
                     font.family: "Arial"
                     font.pixelSize: 15
 
-                    text: comicInfo.ageRating
+                    text: comicInfo ? comicInfo.ageRating ?? "" : ""
 
-                    visible: comicInfo.ageRating
+                    visible: comicInfo ? comicInfo.ageRating ?? false : false
                 }
             }
 
@@ -501,7 +501,7 @@ Rectangle {
 
                 text: qsTr("Characters")
 
-                visible: comicInfo.getCharacters().length > 0
+                visible: comicInfo ? comicInfo.getCharacters().length > 0 : false
             }
 
             Flow {
@@ -509,14 +509,14 @@ Rectangle {
                 spacing: 20
                 Repeater {
                     id: characters
-                    model: comicInfo.getCharacters().length
+                    model: comicInfo ? comicInfo.getCharacters().length : null
 
                     Text {
                         color: infoTitleColor
                         font.family: "Arial"
                         font.pixelSize: 15
 
-                        text: comicInfo.getCharacters()[index]
+                        text: comicInfo ? comicInfo.getCharacters()[index] : ""
                     }
                 }
             }

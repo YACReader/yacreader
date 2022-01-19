@@ -637,8 +637,8 @@ Rectangle {
                                     color: #FFCB00;
                                     text-decoration:none;
                                 }
-                                </style></head><body>' + currentComicInfo.synopsis + '</body></html>'
-                                visible: currentComicInfo.synopsis
+                                </style></head><body>' + currentComicInfo.synopsis ?? "" + '</body></html>'
+                                visible: currentComicInfo.synopsis ?? false
                                 textFormat: Text.RichText
                             }
                         }
