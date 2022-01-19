@@ -89,11 +89,6 @@ InfoComicsView::InfoComicsView(QWidget *parent)
 
     setShowMarks(true);
 
-    // QQuickWidget requires rendering into OpenGL framebuffer objects
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-    view->quickWindow()->setGraphicsApi(QSGRendererInterface::OpenGL);
-#endif
-
     QLOG_TRACE() << "GridComicsView";
 }
 
