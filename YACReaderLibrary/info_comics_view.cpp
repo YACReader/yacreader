@@ -68,14 +68,6 @@ InfoComicsView::InfoComicsView(QWidget *parent)
 
     view->setSource(QUrl("qrc:/qml/InfoComicsView.qml"));
 
-    auto rootObject = dynamic_cast<QObject *>(view->rootObject());
-    flow = rootObject->findChild<QObject *>("flow");
-    list = rootObject->findChild<QObject *>("list");
-
-    // QML signals only work with old style signal slot syntax
-    connect(flow, SIGNAL(currentCoverChanged(int)), this, SLOT(updateInfoForIndex(int))); // clazy:exclude=old-style-connect
-    connect(flow, SIGNAL(currentCoverChanged(int)), this, SLOT(setCurrentIndex(int))); // clazy:exclude=old-style-connect
-
     selectionHelper = new YACReaderComicsSelectionHelper(this);
     comicInfoHelper = new YACReaderComicInfoHelper(this);
 
@@ -138,12 +130,28 @@ void InfoComicsView::setModel(ComicModel *model)
         setCurrentIndex(model->index(0, 0));
         updateInfoForIndex(0);
     }
+
+    if (flow != nullptr) {
+        flow->disconnect();
+    }
+
+    if (list != nullptr) {
+        list->disconnect();
+    }
+
+    auto rootObject = dynamic_cast<QQuickItem *>(view->rootObject());
+    flow = rootObject->findChild<QQuickItem *>("flow", Qt::FindChildrenRecursively);
+    list = rootObject->findChild<QQuickItem *>("list", Qt::FindChildrenRecursively);
+
+    // QML signals only work with old style signal slot syntax
+    connect(flow, SIGNAL(currentCoverChanged(int)), this, SLOT(updateInfoForIndex(int))); // clazy:exclude=old-style-connect
+    connect(flow, SIGNAL(currentCoverChanged(int)), this, SLOT(setCurrentIndex(int))); // clazy:exclude=old-style-connect
 }
 
 void InfoComicsView::setCurrentIndex(const QModelIndex &index)
 {
     if (list != nullptr) {
-    QQmlProperty(list, "currentIndex").write(index.row());
+        QQmlProperty(list, "currentIndex").write(index.row());
     }
 
     setCurrentIndex(index.row());
