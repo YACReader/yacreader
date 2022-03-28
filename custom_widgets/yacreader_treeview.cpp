@@ -1,7 +1,7 @@
 #include "yacreader_treeview.h"
 
 YACReaderTreeView::YACReaderTreeView(QWidget *parent)
-    : QTreeView(parent)
+    : QTreeView(parent), clicking(false)
 {
     setAcceptDrops(true);
     setDragDropMode(QAbstractItemView::DropOnly);
@@ -54,6 +54,8 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent)
 
 void YACReaderTreeView::mousePressEvent(QMouseEvent *event)
 {
+    clicking = true;
+
     QTreeView::mousePressEvent(event);
 
     QModelIndex destinationIndex = indexAt(event->pos());
@@ -61,6 +63,13 @@ void YACReaderTreeView::mousePressEvent(QMouseEvent *event)
     if (!destinationIndex.isValid() && event->button() == Qt::LeftButton) {
         clearSelection();
     }
+}
+
+void YACReaderTreeView::mouseReleaseEvent(QMouseEvent *event)
+{
+    QTreeView::mouseReleaseEvent(event);
+
+    clicking = false;
 }
 
 void YACReaderTreeView::expandCurrent()
@@ -112,5 +121,10 @@ void YACReaderTreeView::currentChanged(const QModelIndex &current, const QModelI
 {
     QTreeView::currentChanged(current, previous);
 
-    emit currentIndexChanged(current);
+    // This is a custom signal emitted to ensure that we know when an item in the tree view is selected (e.g. when keyboard navigation is used)
+    // By default Qt calls currentChanged while the left mouse button is pressed down an you move the mouse around,
+    // this causes troubles when the tree view is showing a filtered model and the model changes under the mouse cursor (e.g. after clicking on an item when the view is showing search results)
+    // so this view filters `currentIndexChanged` calls when the mouse is being pressed down.
+    if (!clicking)
+        emit currentIndexChanged(current);
 }

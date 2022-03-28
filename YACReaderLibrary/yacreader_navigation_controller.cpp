@@ -263,6 +263,7 @@ void YACReaderNavigationController::loadPreviousStatus()
 void YACReaderNavigationController::setupConnections()
 {
     connect(libraryWindow->foldersView, &YACReaderTreeView::currentIndexChanged, this, &YACReaderNavigationController::selectedFolder);
+    connect(libraryWindow->foldersView, &YACReaderTreeView::clicked, this, &YACReaderNavigationController::selectedFolder);
     connect(libraryWindow->listsView, &QAbstractItemView::clicked, this, &YACReaderNavigationController::selectedList);
     connect(libraryWindow->historyController, &YACReaderHistoryController::modelIndexSelected, this, &YACReaderNavigationController::selectedIndexFromHistory);
     connect(comicsViewsManager->emptyFolderWidget, &EmptyFolderWidget::subfolderSelected, this, &YACReaderNavigationController::selectSubfolder);

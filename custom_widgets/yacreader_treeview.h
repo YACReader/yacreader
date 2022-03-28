@@ -9,6 +9,7 @@ class YACReaderTreeView : public QTreeView
 public:
     explicit YACReaderTreeView(QWidget *parent = 0);
     void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 signals:
     void currentIndexChanged(const QModelIndex &);
 protected slots:
@@ -28,6 +29,7 @@ protected:
     QTimer expandTimer;
     QTimer t;
     QPoint expandPos;
+    boolean clicking;
 };
 
 #endif // YACREADER_TREEVIEW_H
