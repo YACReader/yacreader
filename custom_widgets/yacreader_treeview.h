@@ -29,7 +29,7 @@ protected:
     QTimer expandTimer;
     QTimer t;
     QPoint expandPos;
-    boolean clicking;
+    bool clicking;
 };
 
 #endif // YACREADER_TREEVIEW_H
