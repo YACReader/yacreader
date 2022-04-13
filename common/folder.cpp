@@ -3,6 +3,7 @@
 Folder::Folder()
     : knownParent(false),
       knownId(false),
+      manga(false),
       numChildren(-1)
 {
 }
@@ -10,6 +11,7 @@ Folder::Folder()
 Folder::Folder(qulonglong folderId, qulonglong parentId, const QString &folderName, const QString &folderPath)
     : knownParent(true),
       knownId(true),
+      manga(false),
       numChildren(-1)
 {
     this->id = folderId;
