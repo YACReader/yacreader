@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+    <id>com.yacreader.YACReader</id>
+    <metadata_license>FSFAP</metadata_license>
+    <project_license>GPL-3.0-only</project_license>
+    <name>YACReader</name>
+    <developer_name>Luis Ángel San Martín Rodríguez</developer_name>
+    <summary>Yet another comic reader</summary>
+    <description>
+        <p>
+            Read, browse and manage your comics collection.
+            All you need to enjoy your digital comics.
+        </p>
+        <p>
+            Browse your comics collections using beautiful, customizable and smooth "comic flow" transitions.
+        </p>
+        <p>Features:</p>
+        <ul>
+            <li>File support: YACReader supports a wide variety of comic files and image types. rar, zip, cbr, cbz, tar, pdf, 7z and cb7, jpeg, gif, png, tiff and bmp.</li>
+            <li>Configure your reading: Image rotation, double page mode, full size view, fullscreen mode, customizable background color, custom page fitting mode, bookmarks, resume reading, eye candy 'go to' and more.</li>
+            <li>Image improvements: Bring to life your old comics with the image adjustments available in the reading mode. Use the brightness, contrast and gamma sliders and enjoy the new vibrant colors.</li>
+            <li>Track your readings: YACReaderLibrary organizes your comics and keeps track of your reading progress and your collections' status.</li>
+            <li>Tags (comic vine): Download your comics' information from Comic Vine. Title, number, volumen, authors and more.</li>
+            <li>Search: Find your comics quickly using the built-in search engine. No matter how big is your collection, YACReaderLibrary will find anything instantly.</li>
+        </ul>
+    </description>
+    <categories>
+        <category>Graphics</category>
+        <category>Office</category>
+        <category>Viewer</category>
+    </categories>
+    <launchable type="desktop-id">com.yacreader.YACReader.desktop</launchable>
+    <launchable type="desktop-id">com.yacreader.YACReader.YACReaderLibrary.desktop</launchable>
+    <screenshots>
+        <screenshot type="default">
+            <caption>YACReader &amp; YACReaderLibrary</caption>
+            <image>https://www.yacreader.com/images/features/phoca_thumb_l_ss3b.jpg</image>
+        </screenshot>
+        <screenshot>
+            <caption>Properties</caption>
+            <image>https://www.yacreader.com/images/features/phoca_thumb_l_properties.jpg</image>
+        </screenshot>
+    </screenshots>
+    <url type="homepage">https://www.yacreader.com/</url>
+    <url type="bugtracker">https://github.com/YACReader/yacreader/issues</url>
+    <url type="faq">https://www.yacreader.com/support</url>
+    <url type="help">https://www.yacreader.com/support</url>
+    <url type="donation">https://www.yacreader.com/donation-why</url>
+    <url type="contact">https://www.yacreader.com/contact</url>
+    <provides>
+        <mediatype>application/x-cbz</mediatype>
+        <mediatype>application/x-cbr</mediatype>
+        <mediatype>application/x-cbt</mediatype>
+        <mediatype>application/x-cb7</mediatype>
+        <mediatype>application/x-pdf</mediatype>
+        <mediatype>application/x-zip</mediatype>
+        <mediatype>application/x-rar</mediatype>
+        <mediatype>application/x-7z</mediatype>
+        <mediatype>inode/directory</mediatype>
+        <mediatype>application/vnd.comicbook-rar</mediatype>
+        <mediatype>application/vnd.comicbook+zip</mediatype>
+        <mediatype>application/pdf</mediatype>
+        <mediatype>application/vnd.rar</mediatype>
+        <mediatype>application/x-7z-compressed</mediatype>
+        <mediatype>application/zip</mediatype>
+        <binary>YACReader</binary>
+        <binary>YACReaderLibrary</binary>
+        <binary>YACReaderLibraryServer</binary>
+    </provides>
+    <releases>
+        <release version="9.8.2.2106204" date="2021-06-20">
+            <description>
+                <p>YACReaderLibrary</p>
+                <ul>
+                    <li>Fix opening comics from the continue reading banner.</li>
+                    <li>Make available next/prev comic covers in the iOS app while reading. (ios app 3.16.1 needed)</li>
+                </ul>
+                <p>Server</p>
+                <ul>
+                    <li>Make available next/prev comic covers in the iOS app while reading. (ios app 3.16.1 needed)</li>
+                </ul>
+            </description>
+        </release>
+    </releases>
+</component>
