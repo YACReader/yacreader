@@ -5,7 +5,7 @@
 #include <QDataStream>
 #include <QMetaType>
 
-#define VERSION "9.8.2"
+#define VERSION "9.9.0"
 
 #define REMOTE_BROWSE_PERFORMANCE_WORKAROUND "REMOTE_BROWSE_PERFORMANCE_WORKAROUND"
 
