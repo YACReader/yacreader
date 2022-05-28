@@ -120,10 +120,16 @@ void Bookmarks::save()
 void BookmarksList::load()
 {
     QFile f(YACReader::getSettingsPath() + "/bookmarks.yacr");
-    if (f.open(QIODevice::ReadOnly)) {
-        QDataStream dataS(&f);
-        dataS >> list;
+    try {
+        if (f.open(QIODevice::ReadOnly)) {
+            QDataStream dataS(&f);
+            dataS >> list;
+            f.close();
+        }
+    } catch (const std::exception &e) {
         f.close();
+
+        f.remove();
     }
 }
 
