@@ -49,12 +49,10 @@ modules:
     modules:
       - name: unarr
         buildsystem: cmake
-        config-opts:
-          - -DENABLE_7Z=ON
         sources:
           - type: git
             url: https://github.com/selmf/unarr.git
-            commit: e6fb85e8cdd1b1f9086e6e42be8d385f44136faa
+            commit: cf4deedfdd2b815ae2ad0f24cfda72c3d8083d14
       - name: pdfium
         buildsystem: simple
         build-commands:
@@ -77,7 +75,7 @@ modules:
           # Build
           - gn --root=pdfium gen pdfium/out/Release --args="is_clang=false use_sysroot=false is_debug=false symbol_level=0 pdf_enable_v8=false pdf_enable_xfa=false treat_warnings_as_errors=false use_system_libjpeg=true use_system_zlib=true pdf_bundle_freetype=false use_system_freetype=true use_system_lcms2=true use_system_libpng=true use_custom_libcxx=false pdf_is_standalone=true use_system_libopenjpeg2=true is_component_build=true use_gold=false"
           - ninja -C pdfium/out/Release pdfium
-          - sed -e 's/@VERSION@/4896/g' -e 's#^\s*prefix\s*=.*$#prefix='"$FLATPAK_DEST"'#' -i libpdfium.pc
+          - sed -e 's/@VERSION@/5005/g' -e 's#^\s*prefix\s*=.*$#prefix='"$FLATPAK_DEST"'#' -i libpdfium.pc
           # Install
           - install -D -m644 pdfium/LICENSE "$FLATPAK_DEST/share/licenses/pdfium/LICENSE"
           - install -D pdfium/public/*.h --target-directory="$FLATPAK_DEST/include/pdfium"
@@ -89,18 +87,18 @@ modules:
           - type: git
             url: https://pdfium.googlesource.com/pdfium
             # curl 'https://omahaproxy.appspot.com/linux?channel=stable' | cut -d'.' -f 3
-            branch: chromium/4896
-            commit: 2fcb5025f65abf3f9446b3935ac3186a59a7dc90
+            branch: chromium/5005
+            commit: 62ad9af8a9f9494645b659674b64bb51775cde05
             dest: pdfium
           - type: git
             url: https://chromium.googlesource.com/chromium/src/build.git
             # awk '/build_revision/ {print substr($2,2,40)}' pdfium/DEPS
-            commit: 893ac785aa454dcf84dcc26af1a410095c1d4fa2
+            commit: ee10d9605d3bc45e72defd25ce97562e80693655
             dest: pdfium/build
           - type: git
             url: https://chromium.googlesource.com/chromium/src/third_party/abseil-cpp
             # awk '/abseil_revision/ {print substr($2,2,40)}' pdfium/DEPS
-            branch: 9ffdb583473a319b3920c752badde40f91ffd609
+            branch: a13888fac08a45c938255c7d9d59b1640f1940e0
             dest: pdfium/third_party/abseil-cpp
           - type: file
             url: https://chromium.googlesource.com/chromium/src/+/master/tools/generate_shim_headers/generate_shim_headers.py?format=TEXT
