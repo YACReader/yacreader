@@ -139,5 +139,7 @@
 	</array>
 	<key>NSRequiresAquaSystemAppearance</key>
 	<true/>
+	<key>NSSupportsAutomaticGraphicsSwitching</key>
+	<true/>
 </dict>
 </plist>
