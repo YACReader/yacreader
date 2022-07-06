@@ -26,14 +26,13 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
     QPixmap headerImage(":/images/whats_new/whatsnew_header.svg");
     headerImageLabel->setPixmap(headerImage);
     headerImageLabel->setFixedSize(headerImage.size());
-    headerImageLabel->move(50, 20);
 
     auto headerLabel = new QLabel();
     headerLabel->setText("What's New in\nYACReader");
     QFont headerLabelFont("Arial", 34, QFont::ExtraBold);
     headerLabel->setFont(headerLabelFont);
     headerLabel->setAlignment(Qt::AlignCenter);
-    headerLabel->setStyleSheet("padding:18px 0 0 0;"
+    headerLabel->setStyleSheet("padding: 18px 0 0 0;"
                                "background-color:transparent;"
                                "color:#0A0A0A;");
 
@@ -76,11 +75,12 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
     text->setWordWrap(true);
     text->setOpenExternalLinks(true);
 
-    contentLayout->addWidget(headerImageLabel, 0, 0, Qt::AlignTop | Qt::AlignHCenter);
-    contentLayout->addWidget(headerLabel, 0, 0, Qt::AlignTop | Qt::AlignHCenter);
-    contentLayout->addWidget(versionLabel, 1, 0, Qt::AlignTop | Qt::AlignHCenter);
-    contentLayout->addWidget(text, 2, 0, Qt::AlignTop);
-    contentLayout->setRowStretch(2, 1);
+    contentLayout->addItem(new QSpacerItem(0, 50), 0, 0);
+    contentLayout->addWidget(headerImageLabel, 1, 0, Qt::AlignTop | Qt::AlignHCenter);
+    contentLayout->addWidget(headerLabel, 1, 0, Qt::AlignTop | Qt::AlignHCenter);
+    contentLayout->addWidget(versionLabel, 2, 0, Qt::AlignTop | Qt::AlignHCenter);
+    contentLayout->addWidget(text, 3, 0, Qt::AlignTop);
+    contentLayout->setRowStretch(3, 1);
     content->setLayout(contentLayout);
 
     mainLayout->addWidget(scrollArea);

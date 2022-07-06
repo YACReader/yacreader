@@ -11,7 +11,7 @@ YACReader::RoundedCornersDialog::RoundedCornersDialog(QWidget *parent)
 
 void YACReader::RoundedCornersDialog::paintEvent(QPaintEvent *)
 {
-    qreal radius = 36.0; // desired radius in absolute pixels
+    qreal radius = 14.0; // desired radius in absolute pixels
 
     if (!(windowFlags() & Qt::FramelessWindowHint) && !testAttribute(Qt::WA_TranslucentBackground))
         return; // nothing to do
