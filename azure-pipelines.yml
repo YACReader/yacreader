@@ -49,7 +49,7 @@ jobs:
 - job: Linux
   dependsOn: CodeFormatValidation
   pool:
-    vmImage: 'ubuntu-20.04'
+    vmImage: 'ubuntu-22.04'
   steps:
   - script: |
       sudo add-apt-repository 'deb http://download.opensuse.org/repositories/home:/selmf/xUbuntu_18.04/ /'
