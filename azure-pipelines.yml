@@ -53,7 +53,7 @@ jobs:
   steps:
   - script: |
       sudo apt-get update
-      sudo apt-get install -y qt5-default qt5-qmake \
+      sudo apt-get install -y qtchooser qtbase5-dev-tools qt5-qmake \
       qtbase5-dev qtmultimedia5-dev libpoppler-qt5-dev \
       libqt5opengl5-dev libunarr-dev qtdeclarative5-dev libqt5svg5-dev qtquickcontrols2-5-dev
     displayName: 'Install dependencies'
