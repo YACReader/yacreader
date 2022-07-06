@@ -17,6 +17,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add settings to control page turning behaviour on scroll.
 * Make forward and backward buttons in a mouse turn pages.
 * Add system info to the help/about dialog to help reporting bugs.
+* Don't crash if bookmarks get corrupt for some reason.
 
 ### YACReaderLibrary
 * Support HDPI screens.
@@ -26,6 +27,8 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add `Publication Date` column to the comics table view.
 * Use a scale effect in the comics grids on mouse over.
 * Add system info to the help/about dialog to help reporting bugs.
+* Fix selection when clicking on a folder in search mode.
+* Fix defaul value for manga/comic mode in folders.
 
 ## 9.8.2
 ### YACReaderLibrary
