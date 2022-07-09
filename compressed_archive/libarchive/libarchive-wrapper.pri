@@ -8,6 +8,12 @@ SOURCES += $$PWD/compressed_archive.cpp
 
 if(mingw|unix):!contains(QT_CONFIG, no-pkg-config):packagesExist(libarchive) {
   message(Using system provided libarchive installation found by pkg-config.)
+  !system(pkg-config --atleast-version=3.6.0 libarchive) {
+    LIBARCHIVE_WARNING = "libarchive < 3.6.0 found. Older versions of libarchive DO NOT SUPPORT RARv4 files. This is probably not what you want"
+    warning($$LIBARCHIVE_WARNING)
+    message($$LIBARCHIVE_WARNING)
+  }
+
   CONFIG += link_pkgconfig
   PKGCONFIG += libarchive
   DEFINES += use_libarchive
