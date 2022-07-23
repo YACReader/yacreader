@@ -16,7 +16,6 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add updated MIME types to .desktop file for .cbz and .cbr
 * Add settings to control page turning behaviour on scroll.
 * Make forward and backward buttons in a mouse turn pages.
-* Make forward and backward buttons in a mouse turn pages.
 * Don't crash if bookmarks get corrupt for some reason.
 * Magnifying glass fixes and improvements.
 * Shorcuts customization fixes.

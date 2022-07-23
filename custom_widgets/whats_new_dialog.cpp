@@ -58,7 +58,6 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
                   "   &#8226; (Linux) Add updated MIME types to .desktop file for .cbz and .cbr.<br/>"
                   "   &#8226; New settings to control page turning behaviour on scroll.<br/>"
                   "   &#8226; Make forward and backward buttons in a mouse turn pages.<br/>"
-                  "   &#8226; Make forward and backward buttons in a mouse turn pages.<br/>"
                   "   &#8226; Don't crash if bookmarks get corrupt for some reason.<br/>"
                   "   &#8226; Magnifying glass fixes and improvements.<br/>"
                   "<br/>"
