@@ -19,7 +19,7 @@ jobs:
 
 - job: Initialization
   pool:
-    vmImage: 'vs2017-win2016'
+    vmImage: 'windows-2019'
   steps:
   - template: azure-pipelines-build-number.yml
 
