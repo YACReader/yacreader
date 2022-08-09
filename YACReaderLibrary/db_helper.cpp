@@ -387,7 +387,7 @@ QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulongl
             if (getFullComicInfoFields) {
                 params = "*";
             } else {
-                params = "c.id,c.parentId,c.fileName,c.path,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read,ci.coverSizeRatio";
+                params = "c.id,c.parentId,c.fileName,c.path,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read,ci.coverSizeRatio,ci.number";
             }
 
             selectQuery.prepare("SELECT " + params + " "
@@ -427,6 +427,7 @@ QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulongl
                     comic.info.hash = selectQuery.value(7).toString();
                     comic.info.read = selectQuery.value(8).toBool();
                     comic.info.coverSizeRatio = selectQuery.value(9).toFloat();
+                    comic.info.number = selectQuery.value(9).toInt();
                 }
 
                 list.append(comic);
