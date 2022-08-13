@@ -615,7 +615,8 @@ void PropertiesDialog::save()
         bool edited = false;
 
         if (title->isModified()) {
-            itr->info.title = title->text();
+            auto titleString = title->text();
+            itr->info.title = titleString.isEmpty() ? QVariant() : title->text();
             edited = true;
         }
 
