@@ -123,13 +123,7 @@ void ComicVineDialog::goNext()
             QString volumeSearchString = comics[0].getParentFolderName();
             mode = Volume;
 
-            if (volumeSearchString.isEmpty())
-                showSearchVolume();
-            else {
-                status = AutoSearching;
-                showLoading(tr("Looking for volume..."));
-                searchVolume(volumeSearchString);
-            }
+            showSearchVolume(volumeSearchString);
         } else {
             status = AutoSearching;
             mode = SingleComicInList;
@@ -340,8 +334,10 @@ void ComicVineDialog::showSearchSingleComic()
     toggleSkipButton();
 }
 
-void ComicVineDialog::showSearchVolume()
+void ComicVineDialog::showSearchVolume(const QString &volume)
 {
+    searchVolumeWidget->setVolumeInfo(volume);
+
     status = AskingForInfo;
     content->setCurrentWidget(searchVolumeWidget);
     backButton->setHidden(true);

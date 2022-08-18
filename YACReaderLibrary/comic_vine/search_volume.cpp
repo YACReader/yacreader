@@ -30,7 +30,12 @@ void SearchVolume::clean()
     volumeEdit->clear();
 }
 
-QString SearchVolume::getVolumeInfo()
+void SearchVolume::setVolumeInfo(const QString &volume)
+{
+    volumeEdit->setText(volume);
+}
+
+QString SearchVolume::getVolumeInfo() const
 {
     return volumeEdit->text();
 }

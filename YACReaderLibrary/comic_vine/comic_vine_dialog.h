@@ -46,7 +46,7 @@ protected slots:
     // show widget methods
     void showSeriesQuestion();
     void showSearchSingleComic();
-    void showSearchVolume();
+    void showSearchVolume(const QString &volume = "");
     void showLoading(const QString &message = "");
     void search();
     void searchVolume(const QString &v, int page = 1);
