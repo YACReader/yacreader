@@ -11,6 +11,7 @@ class QSortFilterProxyModel;
 
 class ScraperScrollLabel;
 class ScraperTableView;
+class ScraperLineEdit;
 
 class SelectVolume : public ScraperSelector
 {
@@ -18,6 +19,7 @@ class SelectVolume : public ScraperSelector
 public:
     SelectVolume(QWidget *parent = nullptr);
     void load(const QString &json, const QString &searchString) override;
+    void clearFilter();
     virtual ~SelectVolume();
 
 public slots:
@@ -34,6 +36,7 @@ private:
     ScraperTableView *tableVolumes;
     VolumesModel *model;
     QSortFilterProxyModel *proxyModel;
+    ScraperLineEdit *filterEdit;
 };
 
 #endif // SELECT_VOLUME_H

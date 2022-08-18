@@ -39,6 +39,13 @@ ComicVineDialog::ComicVineDialog(QWidget *parent)
     doConnections();
 }
 
+void ComicVineDialog::closeEvent(QCloseEvent *event)
+{
+    QDialog::closeEvent(event);
+
+    clearState();
+}
+
 void ComicVineDialog::doLayout()
 {
     setStyleSheet(""
@@ -117,6 +124,8 @@ void ComicVineDialog::doConnections()
 
 void ComicVineDialog::goNext()
 {
+    clearState();
+
     //
     if (content->currentWidget() == seriesQuestionWidget) {
         if (seriesQuestionWidget->getYes()) {
@@ -167,6 +176,8 @@ void ComicVineDialog::goNext()
 
 void ComicVineDialog::goBack()
 {
+    clearState();
+
     switch (status) {
     case SelectingSeries:
         if (mode == Volume)
@@ -720,6 +731,11 @@ void ComicVineDialog::goToNextComic()
     ComicDB comic = comics[currentIndex];
     QString title = comic.getTitleOrFileName();
     titleHeader->setSubTitle(tr("comic %1 of %2 - %3").arg(currentIndex + 1).arg(comics.length()).arg(title));
+}
+
+void ComicVineDialog::clearState()
+{
+    selectVolumeWidget->clearFilter();
 }
 
 void ComicVineDialog::showLoading(const QString &message)

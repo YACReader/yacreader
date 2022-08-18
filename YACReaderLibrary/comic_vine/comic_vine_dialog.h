@@ -33,7 +33,7 @@ public:
     QSize minimumSizeHint() const override;
     void getComicsInfo(QList<QPair<ComicDB, QString>> matchingInfo, int count, const QString &publisher);
     void getComicInfo(const QString &comicId, int count, const QString &publisher);
-
+    void closeEvent(QCloseEvent *event) override;
 signals:
 
 public slots:
@@ -63,6 +63,7 @@ protected slots:
     void goToNextComic();
 
 private:
+    void clearState();
     QString getCharacters(const QVariant &json_characters);
     QMultiMap<QString, QString> getAuthors(const QVariant &json_authors);
     QPair<QString, QString> getFirstStoryArcIdAndName(const QVariant &json_story_arcs);

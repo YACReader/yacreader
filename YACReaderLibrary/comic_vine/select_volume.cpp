@@ -12,8 +12,10 @@
 #include <QSortFilterProxyModel>
 #include <QToolButton>
 #include <QVBoxLayout>
+#include <QAction>
 
 #include "scraper_tableview.h"
+#include "scraper_lineedit.h"
 
 #include "volumes_model.h"
 #include "comic_vine_client.h"
@@ -26,6 +28,7 @@ SelectVolume::SelectVolume(QWidget *parent)
     : ScraperSelector(parent), model(0)
 {
     proxyModel = new QSortFilterProxyModel;
+    proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 
     QString labelStylesheet = "QLabel {color:white; font-size:12px;font-family:Arial;}";
 
@@ -36,6 +39,7 @@ SelectVolume::SelectVolume(QWidget *parent)
     QWidget *leftWidget = new QWidget;
     auto left = new QVBoxLayout;
     auto content = new QGridLayout;
+    auto top = new QHBoxLayout;
 
     // widgets
     cover = new QLabel();
@@ -47,12 +51,14 @@ SelectVolume::SelectVolume(QWidget *parent)
 
     tableVolumes = new ScraperTableView();
     tableVolumes->setSortingEnabled(true);
-#if QT_VERSION >= 0x050000
     tableVolumes->horizontalHeader()->setSectionsClickable(true);
-#else
-    tableVolumes->horizontalHeader()->setClickable(true);
-#endif
-    // tableVolumes->horizontalHeader()->setSortIndicatorShown(false);
+
+    filterEdit = new ScraperLineEdit(tr("Filter:"));
+    filterEdit->setMaximumWidth(200);
+    filterEdit->setClearButtonEnabled(true);
+
+    connect(filterEdit, &QLineEdit::textChanged, proxyModel, &QSortFilterProxyModel::setFilterFixedString);
+
     connect(tableVolumes->horizontalHeader(), &QHeaderView::sectionClicked,
             [=](int index) { tableVolumes->horizontalHeader()->sortIndicatorSection() == index ? tableVolumes->sortByColumn(index, tableVolumes->horizontalHeader()->sortIndicatorOrder() == Qt::AscendingOrder ? Qt::DescendingOrder : Qt::AscendingOrder)
                                                                                                : tableVolumes->sortByColumn(index, Qt::AscendingOrder); });
@@ -60,6 +66,10 @@ SelectVolume::SelectVolume(QWidget *parent)
     connect(tableVolumes, &QAbstractItemView::clicked, this, &SelectVolume::loadVolumeInfo);
 
     paginator->setCustomLabel(tr("volumes"));
+
+    top->addWidget(label);
+    top->addStretch();
+    top->addWidget(filterEdit);
 
     left->addWidget(cover);
     left->addWidget(detailLabel, 1);
@@ -76,7 +86,7 @@ SelectVolume::SelectVolume(QWidget *parent)
     content->setRowStretch(0, 1);
 
     l->addSpacing(15);
-    l->addWidget(label);
+    l->addLayout(top);
     l->addSpacing(5);
     l->addLayout(content);
 
@@ -109,6 +119,11 @@ void SelectVolume::load(const QString &json, const QString &searchString)
     tableVolumes->setColumnWidth(0, 350);
 
     ScraperSelector::load(json, searchString);
+}
+
+void SelectVolume::clearFilter()
+{
+    filterEdit->clear();
 }
 
 SelectVolume::~SelectVolume() { }
