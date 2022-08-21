@@ -130,13 +130,19 @@ SelectVolume::~SelectVolume() { }
 
 void SelectVolume::loadVolumeInfo(const QModelIndex &omi)
 {
+    QString msgStyle = "<font color='#AAAAAA'>%1</font>";
+
     QModelIndex mi = proxyModel->mapToSource(omi);
+    if (!mi.isValid()) {
+        cover->clear();
+        detailLabel->setAltText(msgStyle.arg(tr("Nothing found, clear the filter if any.")));
+        return;
+    }
     QString coverURL = model->getCoverURL(mi);
     QString id = model->getVolumeId(mi);
 
-    QString loadingStyle = "<font color='#AAAAAA'>%1</font>";
-    cover->setText(loadingStyle.arg(tr("loading cover")));
-    detailLabel->setAltText(loadingStyle.arg(tr("loading description")));
+    cover->setText(msgStyle.arg(tr("loading cover")));
+    detailLabel->setAltText(msgStyle.arg(tr("loading description")));
 
     auto comicVineClient = new ComicVineClient;
     connect(comicVineClient, &ComicVineClient::seriesCover, this, &SelectVolume::setCover);
