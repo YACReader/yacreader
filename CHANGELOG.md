@@ -31,6 +31,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fix selection when clicking on a folder in search mode.
 * Fix defaul value for manga/comic mode in folders.
 * Add an edit for filtering series results returned by Comic Vine.
+* Support editing comics tags sequentially without leaving the edit dialog.
 
 ## 9.8.2
 ### YACReaderLibrary
