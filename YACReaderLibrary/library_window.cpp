@@ -2284,7 +2284,14 @@ void LibraryWindow::showProperties()
 
     propertiesDialog->databasePath = foldersModel->getDatabase();
     propertiesDialog->basePath = currentPath();
-    propertiesDialog->setComics(comics);
+
+    if (indexList.length() > 1) { // edit common properties
+        propertiesDialog->setComics(comics);
+    } else {
+        auto allComics = comicsModel->getAllComics();
+        int index = allComics.indexOf(c);
+        propertiesDialog->setComicsForSequentialEditing(index, comicsModel->getAllComics());
+    }
 
     propertiesDialog->show();
 }

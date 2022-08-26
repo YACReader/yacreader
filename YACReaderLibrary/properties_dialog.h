@@ -91,6 +91,8 @@ private:
     QDialogButtonBox *buttonBox;
     QPushButton *closeButton;
     QPushButton *saveButton;
+    QPushButton *nextButton;
+    QPushButton *previousButton;
     QPushButton *restoreButton; //??
 
     QPixmap coverImage;
@@ -111,11 +113,16 @@ private:
     void setDisableUniqueValues(bool disabled);
 
     QList<ComicDB> comics;
+    int currentComicIndex;
     void closeEvent(QCloseEvent *e) override;
     void updateCoverPageNumberLabel(int n);
+    void loadComic(ComicDB &comic);
+    void updateButtons();
 
+    bool sequentialEditing;
     bool coverChanged;
     float coverSizeRatio;
+    bool updated;
     QString originalCoverSize;
 
 public:
@@ -130,8 +137,12 @@ public:
 
 public slots:
     void setComics(QList<ComicDB> comics);
+    void setComicsForSequentialEditing(int currentComicIndex, QList<ComicDB> comics);
     void updateComics();
     void save();
+    void saveAndOpenPrevious();
+    void saveAndOpenNext();
+    void saveAndClose();
     // Deprecated
     void setCover(const QPixmap &cover);
     void setMultipleCover();
@@ -140,5 +151,6 @@ public slots:
     void setSize(float size);
     void loadNextCover();
     void loadPreviousCover();
+    bool close();
 };
 #endif

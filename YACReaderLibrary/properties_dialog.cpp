@@ -24,7 +24,7 @@
 using namespace YACReader;
 
 PropertiesDialog::PropertiesDialog(QWidget *parent)
-    : QDialog(parent)
+    : QDialog(parent), updated(false)
 {
 
     createCoverBox();
@@ -302,11 +302,13 @@ void PropertiesDialog::createButtonBox()
 
     closeButton = buttonBox->addButton(QDialogButtonBox::Close);
     saveButton = buttonBox->addButton(QDialogButtonBox::Save);
-    // rotateWidgetsButton = buttonBox->addButton(tr("Rotate &Widgets"),QDialogButtonBox::ActionRole);
+    previousButton = buttonBox->addButton("<", QDialogButtonBox::ButtonRole::NoRole);
+    nextButton = buttonBox->addButton(">", QDialogButtonBox::ButtonRole::NoRole);
 
-    // connect(rotateWidgetsButton, SIGNAL(clicked()), this, SLOT(rotateWidgets()));
-    connect(closeButton, &QAbstractButton::clicked, this, &QWidget::close);
-    connect(saveButton, &QAbstractButton::clicked, this, &PropertiesDialog::save);
+    connect(closeButton, &QAbstractButton::clicked, this, &PropertiesDialog::close);
+    connect(saveButton, &QAbstractButton::clicked, this, &PropertiesDialog::saveAndClose);
+    connect(previousButton, &QAbstractButton::clicked, this, &PropertiesDialog::saveAndOpenPrevious);
+    connect(nextButton, &QAbstractButton::clicked, this, &PropertiesDialog::saveAndOpenNext);
 }
 
 QImage blurred(const QImage &image, const QRect &rect, int radius, bool alphaOnly = false)
@@ -377,12 +379,8 @@ QImage blurred(const QImage &image, const QRect &rect, int radius, bool alphaOnl
     return result;
 }
 
-void PropertiesDialog::setComics(QList<ComicDB> comics)
+void PropertiesDialog::loadComic(ComicDB &comic)
 {
-    this->comics = comics;
-
-    ComicDB comic = comics.at(0);
-
     if (!comic.info.title.isNull())
         title->setText(comic.info.title.toString());
     if (!comic.info.comicVineID.isNull()) {
@@ -391,7 +389,7 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
     } else
         comicVineLink->setHidden(true);
 
-    if (comics.length() == 1 && !comic.info.coverPage.isNull()) {
+    if (!comic.info.coverPage.isNull()) {
         coverPageEdit->setText(comic.info.coverPage.toString());
         coverPageValidator.setRange(1, comic.info.numPages.toInt());
         coverPageEdit->setValidator(&coverPageValidator);
@@ -411,7 +409,7 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
         coverChanged = false;
         coverBox->show();
 
-        if (!QFileInfo(basePath + comics[0].path).exists()) {
+        if (!QFileInfo(basePath + comic.path).exists()) {
             QMessageBox::warning(this, tr("Not found"), tr("Comic not found. You should update your library."));
             showPreviousCoverPageButton->setDisabled(true);
             showNextCoverPageButton->setDisabled(true);
@@ -485,6 +483,36 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
     if (!comic.info.notes.isNull())
         notes->setPlainText(comic.info.notes.toString());
 
+    this->setWindowTitle(tr("Edit comic information"));
+    setCover(comic.info.getCover(basePath));
+}
+
+void PropertiesDialog::updateButtons()
+{
+    if (sequentialEditing) {
+        previousButton->setDisabled(currentComicIndex == 0);
+        nextButton->setDisabled(currentComicIndex == comics.length() - 1);
+        previousButton->setHidden(false);
+        nextButton->setHidden(false);
+    } else {
+        previousButton->setHidden(true);
+        nextButton->setHidden(true);
+    }
+}
+
+void PropertiesDialog::setComics(QList<ComicDB> comics)
+{
+    updated = false;
+    sequentialEditing = false;
+
+    this->comics = comics;
+
+    ComicDB comic = comics[0];
+
+    loadComic(comic);
+
+    updateButtons();
+
     if (comics.length() > 1) {
         coverBox->hide();
 
@@ -555,10 +583,20 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
             if (itr->info.notes.isNull() || itr->info.notes.toString() != notes->toPlainText())
                 notes->clear();
         }
-    } else {
-        this->setWindowTitle(tr("Edit comic information"));
-        setCover(comic.info.getCover(basePath));
     }
+}
+
+void PropertiesDialog::setComicsForSequentialEditing(int currentComicIndex, QList<ComicDB> comics)
+{
+    updated = false;
+    sequentialEditing = true;
+
+    this->comics = comics;
+    this->currentComicIndex = currentComicIndex;
+
+    loadComic(comics[currentComicIndex]);
+
+    updateButtons();
 }
 
 void PropertiesDialog::updateComics()
@@ -569,9 +607,13 @@ void PropertiesDialog::updateComics()
         db.open();
         db.transaction();
         QList<ComicDB>::iterator itr;
-        for (itr = comics.begin(); itr != comics.end(); itr++) {
-            if (itr->info.edited)
+        QList<ComicDB>::iterator begin = sequentialEditing ? comics.begin() + currentComicIndex : comics.begin();
+        QList<ComicDB>::iterator end = sequentialEditing ? comics.begin() + currentComicIndex + 1 : comics.end();
+        for (itr = begin; itr != end; itr++) {
+            if (itr->info.edited) {
                 DBHelper::update(&(itr->info), db);
+                updated = true;
+            }
         }
         db.commit();
         connectionName = db.connectionName();
@@ -610,8 +652,9 @@ void PropertiesDialog::setSize(float sizeFloat)
 void PropertiesDialog::save()
 {
     QList<ComicDB>::iterator itr;
-    for (itr = comics.begin(); itr != comics.end(); itr++) {
-        // Comic & comic = comics[0];
+    QList<ComicDB>::iterator begin = sequentialEditing ? comics.begin() + currentComicIndex : comics.begin();
+    QList<ComicDB>::iterator end = sequentialEditing ? comics.begin() + currentComicIndex + 1 : comics.end();
+    for (itr = begin; itr != end; itr++) {
         bool edited = false;
 
         if (title->isModified()) {
@@ -620,15 +663,15 @@ void PropertiesDialog::save()
             edited = true;
         }
 
-        if (comics.size() == 1)
+        if (sequentialEditing)
             if (coverChanged) {
-                itr->info.coverPage = coverPageNumberLabel->text();
+                itr->info.coverPage = coverPageNumberLabel->text().toInt();
                 edited = true;
             }
 
         /*if(comic.info.numPages != NULL)
                 numPagesEdit->setText(QString::number(*comic.info.numPages));*/
-        if (comics.size() == 1)
+        if (sequentialEditing)
             if (numberEdit->isModified()) {
                 if (numberEdit->text().isEmpty())
                     itr->info.number = QVariant();
@@ -636,7 +679,7 @@ void PropertiesDialog::save()
                     itr->info.number = numberEdit->text();
                 edited = true;
             }
-        if (comics.size() == 1)
+        if (sequentialEditing)
             if (!itr->info.isBis.isNull() || isBisCheck->isChecked()) {
                 itr->info.isBis = isBisCheck->isChecked();
                 edited = true;
@@ -655,7 +698,7 @@ void PropertiesDialog::save()
             itr->info.storyArc = storyArcEdit->text();
             edited = true;
         }
-        if (comics.size() == 1)
+        if (sequentialEditing)
             if (arcNumberEdit->isModified() && !arcNumberEdit->text().isEmpty()) {
                 itr->info.arcNumber = arcNumberEdit->text();
                 edited = true;
@@ -738,23 +781,61 @@ void PropertiesDialog::save()
         itr->info.edited = edited;
     }
 
-    if (comics.count() == 1) {
-        if (coverChanged) // && coverPageEdit->text().toInt() != *comics[0].info.coverPage)
-        {
-            InitialComicInfoExtractor ie(basePath + comics[0].path, basePath + "/.yacreaderlibrary/covers/" + comics[0].info.hash + ".jpg", comics[0].info.coverPage.toInt());
+    if (sequentialEditing) {
+        if (coverChanged) {
+            InitialComicInfoExtractor ie(basePath + comics[currentComicIndex].path, basePath + "/.yacreaderlibrary/covers/" + comics[currentComicIndex].info.hash + ".jpg", comics[currentComicIndex].info.coverPage.toInt());
             ie.extract();
 
             if (ie.getOriginalCoverSize().second > 0) {
-                comics[0].info.originalCoverSize = QString("%1x%2").arg(ie.getOriginalCoverSize().first).arg(ie.getOriginalCoverSize().second);
-                comics[0].info.coverSizeRatio = static_cast<float>(ie.getOriginalCoverSize().first) / ie.getOriginalCoverSize().second;
+                comics[currentComicIndex].info.originalCoverSize = QString("%1x%2").arg(ie.getOriginalCoverSize().first).arg(ie.getOriginalCoverSize().second);
+                comics[currentComicIndex].info.coverSizeRatio = static_cast<float>(ie.getOriginalCoverSize().first) / ie.getOriginalCoverSize().second;
             }
         }
     }
+}
+
+void PropertiesDialog::saveAndOpenPrevious()
+{
+    save();
+
+    updateComics();
+
+    coverChanged = false;
+
+    currentComicIndex--;
+
+    loadComic(comics[currentComicIndex]);
+
+    updateButtons();
+
+    repaint();
+}
+
+void PropertiesDialog::saveAndOpenNext()
+{
+    save();
+
+    updateComics();
+
+    coverChanged = false;
+
+    currentComicIndex++;
+
+    loadComic(comics[currentComicIndex]);
+
+    updateButtons();
+
+    repaint();
+}
+
+void PropertiesDialog::saveAndClose()
+{
+    save();
 
     updateComics();
 
     close();
-    emit(accepted());
+    emit accepted();
 }
 
 void PropertiesDialog::setDisableUniqueValues(bool disabled)
@@ -822,7 +903,7 @@ void PropertiesDialog::paintEvent(QPaintEvent *event)
     // QPixmap shadow(":/images/social_dialog/shadow.png");
     // p.drawPixmap(280-shadow.width(),0,shadow.width(),444,shadow);
     p.drawLine(279, 0, 279, 444);
-    if (comics.length() == 1)
+    if (sequentialEditing)
         p.fillRect(0, 444 - 28, 280, 28, QColor(0, 0, 0, 153));
 }
 
@@ -835,21 +916,21 @@ void PropertiesDialog::updateCoverPageNumberLabel(int n)
 void PropertiesDialog::loadNextCover()
 {
     int current = coverPageNumberLabel->text().toInt();
-    if (current < comics.at(0).info.numPages.toInt()) {
+    if (current < comics[currentComicIndex].info.numPages.toInt()) {
         updateCoverPageNumberLabel(current + 1);
 
-        InitialComicInfoExtractor ie(basePath + comics[0].path, "", current + 1);
+        InitialComicInfoExtractor ie(basePath + comics[currentComicIndex].path, "", current + 1);
         ie.extract();
         setCover(ie.getCover());
         repaint();
 
-        if ((current + 1) == comics.at(0).info.numPages.toInt()) {
+        if ((current + 1) == comics[currentComicIndex].info.numPages.toInt()) {
             showNextCoverPageButton->setDisabled(true);
         }
 
         showPreviousCoverPageButton->setEnabled(true);
         // busyIndicator->show();
-        if (current + 1 != comics.at(0).info.coverPage)
+        if (current + 1 != comics[currentComicIndex].info.coverPage)
             coverChanged = true;
         else
             coverChanged = false;
@@ -861,7 +942,7 @@ void PropertiesDialog::loadPreviousCover()
     int current = coverPageNumberLabel->text().toInt();
     if (current != 1) {
         updateCoverPageNumberLabel(current - 1);
-        InitialComicInfoExtractor ie(basePath + comics[0].path, "", current - 1);
+        InitialComicInfoExtractor ie(basePath + comics[currentComicIndex].path, "", current - 1);
         ie.extract();
         setCover(ie.getCover());
         repaint();
@@ -872,9 +953,18 @@ void PropertiesDialog::loadPreviousCover()
 
         showNextCoverPageButton->setEnabled(true);
         // busyIndicator->show();
-        if (current - 1 != comics.at(0).info.coverPage.toInt())
+        if (current - 1 != comics[currentComicIndex].info.coverPage.toInt())
             coverChanged = true;
         else
             coverChanged = false;
     }
+}
+
+bool PropertiesDialog::close()
+{
+    if (updated) {
+        emit accepted();
+    }
+
+    return QDialog::close();
 }
