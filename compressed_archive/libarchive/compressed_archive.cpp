@@ -73,7 +73,7 @@ bool CompressedArchive::archive_seek(quint32 index)
         return true;
     }
 
-    // libarchive uses a streaming architecture so we cannot read files after our current position.
+    // libarchive uses a streaming architecture so we cannot read files before our current position.
     // because of this, when we need to seek to an index before our current position,
     // we must reopen the archive.
     if (idx > index) {
