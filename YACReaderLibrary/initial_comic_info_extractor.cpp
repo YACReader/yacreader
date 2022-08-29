@@ -72,14 +72,7 @@ void InitialComicInfoExtractor::extract()
             _cover = p;
             _coverSize = QPair<int, int>(p.width(), p.height());
             if (_target != "") {
-                QImage scaled;
-                if (p.width() > p.height()) // landscape??
-                {
-                    scaled = p.scaledToWidth(640, Qt::SmoothTransformation);
-                } else {
-                    scaled = p.scaledToWidth(480, Qt::SmoothTransformation);
-                }
-                scaled.save(_target, 0, 75);
+                saveCover(_target, p);
             } else if (_target != "") {
                 QLOG_WARN() << "Extracting cover: requested cover index greater than numPages " << _fileSource;
                 // QImage p;
@@ -151,14 +144,7 @@ void InitialComicInfoExtractor::extract()
             QImage p;
             if (p.loadFromData(archive.getRawDataAtIndex(index))) {
                 _coverSize = QPair<int, int>(p.width(), p.height());
-                QImage scaled;
-                if (p.width() > p.height()) // landscape??
-                {
-                    scaled = p.scaledToWidth(640, Qt::SmoothTransformation);
-                } else {
-                    scaled = p.scaledToWidth(480, Qt::SmoothTransformation);
-                }
-                scaled.save(_target, 0, 75);
+                saveCover(_target, p);
             } else {
                 QLOG_WARN() << "Extracting cover: unable to load image from extracted cover " << _fileSource;
                 // p.load(":/images/notCover.png");
@@ -171,4 +157,21 @@ void InitialComicInfoExtractor::extract()
 QByteArray InitialComicInfoExtractor::getXMLInfoRawData()
 {
     return _xmlInfoData;
+}
+
+void InitialComicInfoExtractor::saveCover(const QString &path, const QImage &cover)
+{
+    QImage scaled;
+    if (cover.width() > cover.height()) {
+        scaled = cover.scaledToWidth(640, Qt::SmoothTransformation);
+    } else {
+        auto aspectRatio = static_cast<double>(cover.width()) / static_cast<double>(cover.height());
+        auto maxAllowedAspectRatio = 0.5;
+        if (aspectRatio < maxAllowedAspectRatio) { // cover is too tall, e.g. webtoon
+            scaled = cover.scaledToHeight(960, Qt::SmoothTransformation);
+        } else {
+            scaled = cover.scaledToWidth(480, Qt::SmoothTransformation);
+        }
+    }
+    scaled.save(_target, 0, 75);
 }

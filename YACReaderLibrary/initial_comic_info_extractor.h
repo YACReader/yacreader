@@ -21,6 +21,7 @@ private:
     int _coverPage;
     static bool crash;
     QByteArray _xmlInfoData;
+    void saveCover(const QString &path, const QImage &cover);
 
 public slots:
     void extract();
