@@ -66,7 +66,8 @@ public:
     static void update(ComicInfo *comicInfo, QSqlDatabase &db);
     static void updateRead(ComicInfo *comicInfo, QSqlDatabase &db);
     static void update(const Folder &folder, QSqlDatabase &db);
-    static void updateChildrenInfo(qulonglong folderId, QSqlDatabase &db);
+    static void propagateFolderUpdatesToParent(const Folder &folder, QSqlDatabase &db);
+    static Folder updateChildrenInfo(qulonglong folderId, QSqlDatabase &db);
     static void updateChildrenInfo(QSqlDatabase &db);
     static void updateProgress(qulonglong libraryId, const ComicInfo &comicInfo);
     static void setComicAsReading(qulonglong libraryId, const ComicInfo &comicInfo);

@@ -185,9 +185,10 @@ void LibraryCreator::run()
                 update(QDir(_source));
             }
 
-            if (partialUpdate)
-                DBHelper::updateChildrenInfo(folderDestinationModelIndex.data(FolderModel::IdRole).toULongLong(), _database);
-            else
+            if (partialUpdate) {
+                auto folder = DBHelper::updateChildrenInfo(folderDestinationModelIndex.data(FolderModel::IdRole).toULongLong(), _database);
+                DBHelper::propagateFolderUpdatesToParent(folder, _database);
+            } else
                 DBHelper::updateChildrenInfo(_database);
 
             _database.commit();
