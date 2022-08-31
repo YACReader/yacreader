@@ -156,13 +156,16 @@ SOURCES +=  ../common/comic.cpp \
 }
 
 include(../custom_widgets/custom_widgets_yacreader.pri)
-CONFIG(7zip){
+
+CONFIG(7zip) {
 include(../compressed_archive/wrapper.pri)
-} else:CONFIG(unarr){
+} else:CONFIG(unarr) {
 include(../compressed_archive/unarr/unarr-wrapper.pri)
+} else:CONFIG(libarchive) {
+include(../compressed_archive/libarchive/libarchive-wrapper.pri)
 } else {
   error(No compression backend specified. Did you mess with the build system?)
-  }
+}
 include(../shortcuts_management/shortcuts_management.pri)
 
 RESOURCES += yacreader_images.qrc \
