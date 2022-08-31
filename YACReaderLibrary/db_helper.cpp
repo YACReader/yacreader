@@ -727,8 +727,57 @@ void DBHelper::update(const Folder &folder, QSqlDatabase &db)
     updateFolderInfo.exec();
 }
 
-void DBHelper::updateChildrenInfo(const Folder &folder, QSqlDatabase &db)
+void DBHelper::propagateFolderUpdatesToParent(const Folder &folder, QSqlDatabase &db)
 {
+    auto currentParentId = folder.parentId;
+    auto currentId = folder.id;
+    while (currentParentId != 1) {
+        auto f = loadFolder(currentParentId, db);
+        currentParentId = f.parentId;
+        currentId = f.id;
+    }
+
+    if (currentId != folder.id) {
+        updateChildrenInfo(currentId, db);
+    }
+}
+
+Folder DBHelper::updateChildrenInfo(qulonglong folderId, QSqlDatabase &db)
+{
+    auto folder = loadFolder(folderId, db);
+    QList<LibraryItem *> subitems;
+    QList<LibraryItem *> subfolders = DBHelper::getFoldersFromParent(folderId, db, false);
+    QList<LibraryItem *> comics = DBHelper::getComicsFromParent(folderId, db, false);
+
+    QList<LibraryItem *> updatedSubfolders;
+    for (auto sf : subfolders) {
+        updatedSubfolders.append(new Folder(updateChildrenInfo(static_cast<Folder *>(sf)->id, db)));
+    }
+
+    subitems.append(updatedSubfolders);
+    subitems.append(comics);
+
+    std::sort(subitems.begin(), subitems.end(), naturalSortLessThanCILibraryItem);
+
+    QString coverHash = "";
+    for (auto item : subitems) {
+        if (item->isDir()) {
+            auto f = static_cast<Folder *>(item);
+            auto firstChildHash = f->getFirstChildHash();
+            if (!firstChildHash.isEmpty()) {
+                coverHash = firstChildHash;
+                break;
+            }
+        } else {
+            auto c = static_cast<ComicDB *>(item);
+            coverHash = c->info.hash;
+            break;
+        }
+    }
+
+    folder.setNumChildren(subfolders.count() + comics.count());
+    folder.setFirstChildHash(coverHash);
+
     QSqlQuery updateFolderInfo(db);
     updateFolderInfo.prepare("UPDATE folder SET "
                              "numChildren = :numChildren, "
@@ -736,39 +785,30 @@ void DBHelper::updateChildrenInfo(const Folder &folder, QSqlDatabase &db)
                              "WHERE id = :id ");
     updateFolderInfo.bindValue(":numChildren", folder.getNumChildren());
     updateFolderInfo.bindValue(":firstChildHash", folder.getFirstChildHash());
-    updateFolderInfo.bindValue(":id", folder.id);
-    updateFolderInfo.exec();
-}
-
-void DBHelper::updateChildrenInfo(qulonglong folderId, QSqlDatabase &db)
-{
-    QList<LibraryItem *> subfolders = DBHelper::getFoldersFromParent(folderId, db, false);
-    QList<LibraryItem *> comics = DBHelper::getComicsFromParent(folderId, db, true);
-
-    ComicDB *firstComic = NULL;
-    if (comics.count() > 0)
-        firstComic = static_cast<ComicDB *>(comics.first());
-
-    QSqlQuery updateFolderInfo(db);
-    updateFolderInfo.prepare("UPDATE folder SET "
-                             "numChildren = :numChildren, "
-                             "firstChildHash = :firstChildHash "
-                             "WHERE id = :id ");
-    updateFolderInfo.bindValue(":numChildren", subfolders.count() + comics.count());
-    updateFolderInfo.bindValue(":firstChildHash", firstComic != NULL ? firstComic->info.hash : "");
     updateFolderInfo.bindValue(":id", folderId);
     updateFolderInfo.exec();
+
+    qDeleteAll(subfolders);
+    qDeleteAll(updatedSubfolders);
+    qDeleteAll(comics);
+
+    return folder;
 }
 
 void DBHelper::updateChildrenInfo(QSqlDatabase &db)
 {
+    QElapsedTimer timer;
+    timer.start();
+
     QSqlQuery selectQuery(db); // TODO check
-    selectQuery.prepare("SELECT id FROM folder");
+    selectQuery.prepare("SELECT id FROM folder f WHERE f.parentId = 1");
     selectQuery.exec();
 
     while (selectQuery.next()) {
         DBHelper::updateChildrenInfo(selectQuery.value(0).toULongLong(), db);
     }
+
+    qDebug() << timer.elapsed();
 }
 
 void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)

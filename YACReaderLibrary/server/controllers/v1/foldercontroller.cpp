@@ -308,5 +308,7 @@ void FolderController::service(HttpRequest &request, HttpResponse &response)
     t.setVariable("page", QString("%1").arg(page + 1));
     t.setVariable("pages", QString("%1").arg(numPages));
 
+    qDeleteAll(folderContent);
+
     response.write(t.toUtf8(), true);
 }

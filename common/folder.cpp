@@ -34,6 +34,9 @@ Folder &Folder::operator=(const Folder &other)
     this->finished = other.finished;
     this->completed = other.completed;
     this->manga = other.manga;
+    this->numChildren = other.numChildren;
+    this->firstChildHash = other.firstChildHash;
+    this->customImage = other.customImage;
 
     return *this;
 }

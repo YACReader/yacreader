@@ -547,7 +547,8 @@ void FolderModel::deleteFolder(const QModelIndex &mi)
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
         DBHelper::removeFromDB(&f, db);
-        DBHelper::updateChildrenInfo(item->parent()->id, db);
+        auto folder = DBHelper::updateChildrenInfo(item->parent()->id, db);
+        DBHelper::propagateFolderUpdatesToParent(folder, db);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
@@ -560,7 +561,8 @@ void FolderModel::updateFolderChildrenInfo(qulonglong folderId)
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-        DBHelper::updateChildrenInfo(folderId, db);
+        auto folder = DBHelper::updateChildrenInfo(folderId, db);
+        DBHelper::propagateFolderUpdatesToParent(folder, db);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
