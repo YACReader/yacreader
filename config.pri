@@ -60,11 +60,11 @@ unix:!macx:!CONFIG(unarr):!CONFIG(7zip):!CONFIG(libarchive) {
   CONFIG += unarr
 }
 
-win32:!CONFIG(unarr):!CONFIG(7zip) {
+win32:!CONFIG(unarr):!CONFIG(7zip):!CONFIG(libarchive) {
   CONFIG += 7zip
 }
 
-macx:!CONFIG(unarr):!CONFIG(7zip) {
+macx:!CONFIG(unarr):!CONFIG(7zip):!CONFIG(libarchive) {
   CONFIG += 7zip
 }
 
