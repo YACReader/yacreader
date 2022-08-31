@@ -199,9 +199,9 @@ void LibraryCreator::run()
         // si estabamos en modo creación, se está añadiendo una librería que ya existía y se ha actualizado antes de añadirse.
         if (!partialUpdate) {
             if (!creation) {
-                emit(updated());
+                emit updated();
             } else {
-                emit(created());
+                emit created();
             }
         }
         QLOG_INFO() << "Update library END";
