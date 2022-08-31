@@ -727,19 +727,6 @@ void DBHelper::update(const Folder &folder, QSqlDatabase &db)
     updateFolderInfo.exec();
 }
 
-void DBHelper::updateChildrenInfo(const Folder &folder, QSqlDatabase &db)
-{
-    QSqlQuery updateFolderInfo(db);
-    updateFolderInfo.prepare("UPDATE folder SET "
-                             "numChildren = :numChildren, "
-                             "firstChildHash = :firstChildHash "
-                             "WHERE id = :id ");
-    updateFolderInfo.bindValue(":numChildren", folder.getNumChildren());
-    updateFolderInfo.bindValue(":firstChildHash", folder.getFirstChildHash());
-    updateFolderInfo.bindValue(":id", folder.id);
-    updateFolderInfo.exec();
-}
-
 void DBHelper::updateChildrenInfo(qulonglong folderId, QSqlDatabase &db)
 {
     QList<LibraryItem *> subfolders = DBHelper::getFoldersFromParent(folderId, db, false);
