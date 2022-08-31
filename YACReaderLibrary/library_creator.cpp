@@ -377,16 +377,20 @@ void LibraryCreator::update(QDir dirS)
     bool updated;
     int i, j;
     for (i = 0, j = 0; (i < lenghtS) || (j < lenghtD);) {
-        if (stopRunning)
+        if (stopRunning) {
+            qDeleteAll(listD);
             return;
+        }
         updated = false;
         if (i >= lenghtS) // finished source files/dirs
         {
             // QLOG_WARN() << "finished source files/dirs" << dirS.absolutePath();
             // delete listD //from j
             for (; j < lenghtD; j++) {
-                if (stopRunning)
+                if (stopRunning) {
+                    qDeleteAll(listD);
                     return;
+                }
                 DBHelper::removeFromDB(listD.at(j), (_database));
             }
             updated = true;
@@ -396,8 +400,10 @@ void LibraryCreator::update(QDir dirS)
             // QLOG_WARN() << "finished library files/dirs" << dirS.absolutePath();
             // create listS //from i
             for (; i < lenghtS; i++) {
-                if (stopRunning)
+                if (stopRunning) {
+                    qDeleteAll(listD);
                     return;
+                }
                 QFileInfo fileInfoS = listS.at(i);
                 if (fileInfoS.isDir()) // create folder
                 {
@@ -548,4 +554,6 @@ void LibraryCreator::update(QDir dirS)
                 }
         }
     }
+
+    qDeleteAll(listD);
 }
