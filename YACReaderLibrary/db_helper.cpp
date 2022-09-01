@@ -797,9 +797,6 @@ Folder DBHelper::updateChildrenInfo(qulonglong folderId, QSqlDatabase &db)
 
 void DBHelper::updateChildrenInfo(QSqlDatabase &db)
 {
-    QElapsedTimer timer;
-    timer.start();
-
     QSqlQuery selectQuery(db); // TODO check
     selectQuery.prepare("SELECT id FROM folder f WHERE f.parentId = 1");
     selectQuery.exec();
@@ -807,8 +804,6 @@ void DBHelper::updateChildrenInfo(QSqlDatabase &db)
     while (selectQuery.next()) {
         DBHelper::updateChildrenInfo(selectQuery.value(0).toULongLong(), db);
     }
-
-    qDebug() << timer.elapsed();
 }
 
 void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
