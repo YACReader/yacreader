@@ -599,6 +599,8 @@ ComicDB ComicVineDialog::parseComicInfo(ComicDB &comic, const QString &json, int
         comic.info.count = count;
 
         comic.info.publisher = publisher;
+
+        comic.info.edited = true;
     }
 
     return comic;
