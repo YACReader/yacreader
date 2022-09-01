@@ -9,7 +9,7 @@
 
 using namespace YACReader;
 
-static QString fields = "title ,"
+static QString fields = "title,"
 
                         "coverPage,"
                         "numPages,"
@@ -42,9 +42,29 @@ static QString fields = "title ,"
                         "characters,"
                         "notes,"
 
+                        "hash,"
+                        "edited,"
+                        "read,"
+
                         "comicVineID,"
 
-                        "hash";
+                        "hasBeenOpened,"
+                        "rating,"
+                        "currentPage,"
+                        "bookmark1,"
+                        "bookmark2,"
+                        "bookmark3,"
+                        "brightness,"
+                        "contrast,"
+                        "gamma,"
+                        // new 7.1 fields
+                        "comicVineID,"
+                        // new 9.5 fields
+                        "lastTimeOpened,"
+                        //"coverSizeRatio," cover may have changed since the info was exported...
+                        //"originalCoverSize," // h/w
+                        // new 9.8 fields
+                        "manga";
 
 DataBaseManagement::DataBaseManagement()
     : QObject(), dataBasesList()
@@ -344,10 +364,11 @@ void DataBaseManagement::exportComicsInfo(QString source, QString dest)
         QSqlQuery query("INSERT INTO dest.db_info (version) "
                         "VALUES ('" VERSION "')",
                         destDB);
+        query.exec();
 
         QSqlQuery exportData(destDB);
-        exportData.prepare("create table dest.comic_info as select " + fields +
-                           " from source.comic_info where source.comic_info.edited = 1");
+        exportData.prepare("CREATE TABLE dest.comic_info AS SELECT " + fields +
+                           " FROM source.comic_info WHERE source.comic_info.edited = 1 OR source.comic_info.comicVineID IS NOT NULL");
         exportData.exec();
         connectionName = destDB.connectionName();
     }
@@ -409,21 +430,38 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
                            "format = :format,"
                            "color = :color,"
                            "ageRating = :ageRating,"
-                           "manga = :manga"
 
                            "synopsis = :synopsis,"
                            "characters = :characters,"
                            "notes = :notes,"
 
+                           "read = :read,"
                            "edited = :edited,"
+                           // new 7.0 fields
+                           "hasBeenOpened = :hasBeenOpened,"
 
+                           "currentPage = :currentPage,"
+                           "bookmark1 = :bookmark1,"
+                           "bookmark2 = :bookmark2,"
+                           "bookmark3 = :bookmark3,"
+                           "brightness = :brightness,"
+                           "contrast = :contrast, "
+                           "gamma = :gamma,"
+                           "rating = :rating,"
+
+                           // new 7.1 fields
                            "comicVineID = :comicVineID,"
 
+                           // new 9.5 fields
                            "lastTimeOpened = :lastTimeOpened,"
 
-                           "coverSizeRatio = :coverSizeRatio,"
-                           "originalCoverSize = :originalCoverSize"
+                           //"coverSizeRatio = :coverSizeRatio,"
+                           //"originalCoverSize = :originalCoverSize,"
+                           //--
 
+                           // new 9.8 fields
+                           "manga = :manga"
+                           //--
                            " WHERE hash = :hash ");
 
             QSqlQuery insert(destDB);
@@ -561,48 +599,62 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 // TODO fix these bindings
 void DataBaseManagement::bindValuesFromRecord(const QSqlRecord &record, QSqlQuery &query)
 {
-    bindString("title", record, query);
+    bindValue("title", record, query);
 
-    bindInt("coverPage", record, query);
-    bindInt("numPages", record, query);
+    bindValue("coverPage", record, query);
+    bindValue("numPages", record, query);
 
-    bindInt("number", record, query);
-    bindInt("isBis", record, query);
-    bindInt("count", record, query);
+    bindValue("number", record, query);
+    bindValue("isBis", record, query);
+    bindValue("count", record, query);
 
-    bindString("volume", record, query);
-    bindString("storyArc", record, query);
-    bindInt("arcNumber", record, query);
-    bindInt("arcCount", record, query);
+    bindValue("volume", record, query);
+    bindValue("storyArc", record, query);
+    bindValue("arcNumber", record, query);
+    bindValue("arcCount", record, query);
 
-    bindString("genere", record, query);
+    bindValue("genere", record, query);
 
-    bindString("writer", record, query);
-    bindString("penciller", record, query);
-    bindString("inker", record, query);
-    bindString("colorist", record, query);
-    bindString("letterer", record, query);
-    bindString("coverArtist", record, query);
+    bindValue("writer", record, query);
+    bindValue("penciller", record, query);
+    bindValue("inker", record, query);
+    bindValue("colorist", record, query);
+    bindValue("letterer", record, query);
+    bindValue("coverArtist", record, query);
 
-    bindString("date", record, query);
-    bindString("publisher", record, query);
-    bindString("format", record, query);
-    bindInt("color", record, query);
-    bindString("ageRating", record, query);
-    bindInt("manga", record, query);
+    bindValue("date", record, query);
+    bindValue("publisher", record, query);
+    bindValue("format", record, query);
+    bindValue("color", record, query);
+    bindValue("ageRating", record, query);
+    bindValue("manga", record, query);
 
-    bindString("synopsis", record, query);
-    bindString("characters", record, query);
-    bindString("notes", record, query);
+    bindValue("synopsis", record, query);
+    bindValue("characters", record, query);
+    bindValue("notes", record, query);
 
-    bindString("comicVineID", record, query);
+    bindValue("read", record, query);
+    bindValue("edited", record, query);
 
-    bindString("lastTimeOpened", record, query);
+    bindValue("hasBeenOpened", record, query);
+    bindValue("currentPage", record, query);
+    bindValue("publisher", record, query);
+    bindValue("bookmark1", record, query);
+    bindValue("bookmark2", record, query);
+    bindValue("bookmark3", record, query);
+    bindValue("brightness", record, query);
+    bindValue("contrast", record, query);
+    bindValue("gamma", record, query);
+    bindValue("rating", record, query);
 
-    bindDouble("coverSizeRatio", record, query);
-    bindString("originalCoverSize", record, query);
+    bindValue("comicVineID", record, query);
 
-    bindString("hash", record, query);
+    bindValue("lastTimeOpened", record, query);
+
+    bindValue("coverSizeRatio", record, query);
+    bindValue("originalCoverSize", record, query);
+
+    bindValue("hash", record, query);
 }
 
 bool DataBaseManagement::addColumns(const QString &tableName, const QStringList &columnDefs, const QSqlDatabase &db)
@@ -638,23 +690,10 @@ bool DataBaseManagement::addConstraint(const QString &tableName, const QString &
     return returnValue;
 }
 
-void DataBaseManagement::bindString(const QString &name, const QSqlRecord &record, QSqlQuery &query)
+void DataBaseManagement::bindValue(const QString &name, const QSqlRecord &record, QSqlQuery &query)
 {
     if (!record.value(name).isNull()) {
-        query.bindValue(":" + name, record.value(name).toString());
-    }
-}
-void DataBaseManagement::bindInt(const QString &name, const QSqlRecord &record, QSqlQuery &query)
-{
-    if (!record.value(name).isNull()) {
-        query.bindValue(":" + name, record.value(name).toInt());
-    }
-}
-
-void DataBaseManagement::bindDouble(const QString &name, const QSqlRecord &record, QSqlQuery &query)
-{
-    if (!record.value(name).isNull()) {
-        query.bindValue(":" + name, record.value(name).toDouble());
+        query.bindValue(":" + name, record.value(name));
     }
 }
 
