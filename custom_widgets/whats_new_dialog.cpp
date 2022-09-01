@@ -71,7 +71,11 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
                   "   &#8226; Add system info to the help/about dialog to help reporting bugs.<br/>"
                   "   &#8226; Fix defaul value for manga/comic mode in folders.<br/>"
                   "   &#8226; Add an edit for filtering series results returned by Comic Vine.<br/>"
-                  "   &#8226; Support editing comics tags sequentially without leaving the edit dialog"
+                  "   &#8226; Support editing comics tags sequentially without leaving the edit dialog.<br/>"
+                  "   &#8226; Fix export/import comics info.<br/>"
+                  "<br/>"
+                  "<span style=\"font-weight:600\">Server</span><br/>"
+                  "   &#8226; Always serve a cover image to the iOS client for any folder that has content (requeries a library content update). <br/>"
                   "<br/>"
                   "I hope you enjoy the new update. Please, if you like YACReader consider to become a patron in <a href=\"https://www.patreon.com/yacreader\" style=\"color:#E8B800;\">Patreon</a> or donate some money using <a href=\"https://www.paypal.com/donate?business=5TAMNQCDDMVP8&item_name=Support+YACReader\" style=\"color:#E8B800;\">Pay-Pal</a> and help keeping the project alive. Remember that there is an iOS version available in the <a href=\"https://apps.apple.com/app/id635717885\" style=\"color:#E8B800;\">Apple App Store</a>.");
     QFont textLabelFont("Arial", 15, QFont::Light);

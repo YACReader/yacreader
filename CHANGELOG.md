@@ -32,6 +32,10 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fix defaul value for manga/comic mode in folders.
 * Add an edit for filtering series results returned by Comic Vine.
 * Support editing comics tags sequentially without leaving the edit dialog.
+* Fix export/import comics info.
+
+### Server
+* Always serve a cover image to the iOS client for any folder that has content (requeries a library content update).
 
 ## 9.8.2
 ### YACReaderLibrary
