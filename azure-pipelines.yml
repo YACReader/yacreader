@@ -30,7 +30,7 @@ jobs:
 - job: CodeFormatValidation
   dependsOn: Initialization
   pool:
-    vmImage: 'macOS-10.15'
+    vmImage: 'macOS-latest'
   steps:
   - script: |
       brew install clang-format
