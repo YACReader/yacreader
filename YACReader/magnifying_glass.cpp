@@ -157,8 +157,8 @@ void MagnifyingGlass::wheelEvent(QWheelEvent *event)
             heightDown();
         break;
     // size width
-    case Qt::AltModifier:
-        if (event->angleDelta().y() < 0)
+    case Qt::AltModifier: // alt modifier can actually modify the behavior of the event delta, so let's check both x & y
+        if (event->angleDelta().y() < 0 || event->angleDelta().x() < 0)
             widthUp();
         else
             widthDown();
