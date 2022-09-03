@@ -19,7 +19,7 @@ class HttpListener;
 class Startup
 {
 private:
-    //QTcpServer
+    // QTcpServer
     stefanfrings::HttpListener *listener;
 
 public:

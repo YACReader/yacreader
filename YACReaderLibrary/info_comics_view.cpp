@@ -13,23 +13,10 @@
 #include "QsLog.h"
 
 InfoComicsView::InfoComicsView(QWidget *parent)
-    : ComicsView(parent)
+    : ComicsView(parent), flow(nullptr), list(nullptr)
 {
-    qmlRegisterType<ComicModel>("com.yacreader.ComicModel", 1, 0, "ComicModel");
-    qmlRegisterType<ComicDB>("com.yacreader.ComicDB", 1, 0, "ComicDB");
-    qmlRegisterType<ComicInfo>("com.yacreader.ComicInfo", 1, 0, "ComicInfo");
 
-    view = new QQuickWidget();
-    view->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    connect(
-            view, &QQuickWidget::statusChanged,
-            [=](QQuickWidget::Status status) {
-                if (status == QQuickWidget::Error) {
-                    QLOG_ERROR() << view->errors();
-                }
-            });
-
-    //container->setFocusPolicy(Qt::StrongFocus);
+    // container->setFocusPolicy(Qt::StrongFocus);
 
     QQmlContext *ctxt = view->rootContext();
 
@@ -76,14 +63,10 @@ InfoComicsView::InfoComicsView(QWidget *parent)
         ctxt->setContextProperty("readTickCheckedColor", "#E84852");
     }
 
+    ctxt->setContextProperty("backgroundImage", QUrl());
+    ctxt->setContextProperty("comicsList", new ComicModel());
+
     view->setSource(QUrl("qrc:/qml/InfoComicsView.qml"));
-
-    auto rootObject = dynamic_cast<QObject *>(view->rootObject());
-    flow = rootObject->findChild<QObject *>("flow");
-    list = rootObject->findChild<QObject *>("list");
-
-    connect(flow, SIGNAL(currentCoverChanged(int)), this, SLOT(updateInfoForIndex(int)));
-    connect(flow, SIGNAL(currentCoverChanged(int)), this, SLOT(setCurrentIndex(int)));
 
     selectionHelper = new YACReaderComicsSelectionHelper(this);
     comicInfoHelper = new YACReaderComicInfoHelper(this);
@@ -98,7 +81,7 @@ InfoComicsView::InfoComicsView(QWidget *parent)
 
     setShowMarks(true);
 
-    QLOG_TRACE() << "GridComicsView";
+    QLOG_TRACE() << "InfoComicsView";
 }
 
 InfoComicsView::~InfoComicsView()
@@ -147,14 +130,31 @@ void InfoComicsView::setModel(ComicModel *model)
         setCurrentIndex(model->index(0, 0));
         updateInfoForIndex(0);
     }
+
+    if (flow != nullptr) {
+        flow->disconnect();
+    }
+
+    if (list != nullptr) {
+        list->disconnect();
+    }
+
+    auto rootObject = dynamic_cast<QQuickItem *>(view->rootObject());
+    flow = rootObject->findChild<QQuickItem *>("flow", Qt::FindChildrenRecursively);
+    list = rootObject->findChild<QQuickItem *>("list", Qt::FindChildrenRecursively);
+
+    // QML signals only work with old style signal slot syntax
+    connect(flow, SIGNAL(currentCoverChanged(int)), this, SLOT(updateInfoForIndex(int))); // clazy:exclude=old-style-connect
+    connect(flow, SIGNAL(currentCoverChanged(int)), this, SLOT(setCurrentIndex(int))); // clazy:exclude=old-style-connect
 }
 
 void InfoComicsView::setCurrentIndex(const QModelIndex &index)
 {
-    QQmlProperty(list, "currentIndex").write(index.row());
+    if (list != nullptr) {
+        QQmlProperty(list, "currentIndex").write(index.row());
+    }
 
-    selectionHelper->clear();
-    selectionHelper->selectIndex(index.row());
+    setCurrentIndex(index.row());
 }
 
 void InfoComicsView::setCurrentIndex(int index)
@@ -229,7 +229,7 @@ bool InfoComicsView::canDropUrls(const QList<QUrl> &urls, Qt::DropAction action)
     if (action == Qt::CopyAction) {
         QString currentPath;
         foreach (QUrl url, urls) {
-            //comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
+            // comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
             currentPath = url.toLocalFile();
             if (Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir())
                 return true;
@@ -240,7 +240,7 @@ bool InfoComicsView::canDropUrls(const QList<QUrl> &urls, Qt::DropAction action)
 
 void InfoComicsView::droppedFiles(const QList<QUrl> &urls, Qt::DropAction action)
 {
-    bool validAction = action == Qt::CopyAction; //TODO add move
+    bool validAction = action == Qt::CopyAction; // TODO add move
 
     if (validAction) {
         QList<QPair<QString, QString>> droppedFiles = ComicFilesManager::getDroppedFiles(urls);

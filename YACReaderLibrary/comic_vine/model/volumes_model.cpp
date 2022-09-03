@@ -10,7 +10,7 @@ VolumesModel::VolumesModel(QObject *parent)
 
 VolumesModel::~VolumesModel()
 {
-    //std::for_each(_data.begin(), _data.end(), [](QList<QString> * ptr) { delete ptr; });
+    // std::for_each(_data.begin(), _data.end(), [](QList<QString> * ptr) { delete ptr; });
 }
 
 void VolumesModel::load(const QString &json)
@@ -23,7 +23,7 @@ void VolumesModel::load(const QString &json)
         return;
     }
 
-    int numResults = sc.value("number_of_total_results").toInt(); //fix to weird behaviour using hasNext
+    int numResults = sc.value("number_of_total_results").toInt(); // fix to weird behaviour using hasNext
     QListIterator<QVariant> it(sc.value("results").toList());
     bool test;
     QVariantMap resultsValue;
@@ -48,7 +48,7 @@ void VolumesModel::load(const QString &json)
 QModelIndex VolumesModel::parent(const QModelIndex &index) const
 {
     Q_UNUSED(index)
-    return QModelIndex(); //no parent
+    return QModelIndex(); // no parent
 }
 
 int VolumesModel::rowCount(const QModelIndex &parent) const
@@ -102,7 +102,7 @@ QVariant VolumesModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags VolumesModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return nullptr;
+        return Qt::NoItemFlags;
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
@@ -110,7 +110,7 @@ QVariant VolumesModel::headerData(int section, Qt::Orientation orientation, int 
 {
 
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-        switch (section) //TODO obtener esto de la query
+        switch (section) // TODO obtener esto de la query
         {
         case SERIES:
             return QVariant(QString("series"));
@@ -124,7 +124,7 @@ QVariant VolumesModel::headerData(int section, Qt::Orientation orientation, int 
     }
 
     if (orientation == Qt::Horizontal && role == Qt::TextAlignmentRole) {
-        switch (section) //TODO obtener esto de la query
+        switch (section) // TODO obtener esto de la query
         {
         case YEAR:
             return QVariant(Qt::AlignRight | Qt::AlignVCenter);

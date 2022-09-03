@@ -11,22 +11,18 @@
 GoToFlowWidget::GoToFlowWidget(QWidget *parent)
     : QWidget(parent)
 {
-    mainLayout = new QVBoxLayout;
-    mainLayout->setMargin(0);
+    mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
 
     toolBar = new GoToFlowToolBar(this);
 
     setLayout(mainLayout);
 
-    //toolBar->installEventFilter(this);
+    // toolBar->installEventFilter(this);
 }
 
-GoToFlowWidget::~GoToFlowWidget()
-{
-    delete toolBar;
-    delete mainLayout;
-}
+GoToFlowWidget::~GoToFlowWidget() { }
 
 void GoToFlowWidget::setPageNumber(int page)
 {
@@ -69,14 +65,14 @@ void GoToFlowWidget::updateSize()
 
 /*bool GoToFlowWidget::eventFilter(QObject * target, QEvent * event)
 {
-	if(event->type() == QEvent::KeyPress)
-	{
-		QKeyEvent * e = static_cast<QKeyEvent *>(event);
-		if(e->key()==Qt::Key_S || e->key() == Qt::Key_Space)
-		{
-			this->keyPressEvent(e);
-			return true;
-		}
-	}
-	return QWidget::eventFilter(target,event);
+        if(event->type() == QEvent::KeyPress)
+        {
+                QKeyEvent * e = static_cast<QKeyEvent *>(event);
+                if(e->key()==Qt::Key_S || e->key() == Qt::Key_Space)
+                {
+                        this->keyPressEvent(e);
+                        return true;
+                }
+        }
+        return QWidget::eventFilter(target,event);
 }*/

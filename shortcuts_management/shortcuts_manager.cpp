@@ -12,7 +12,7 @@ ShortcutsManager::ShortcutsManager()
 void ShortcutsManager::initDefaultShorcuts()
 {
 #ifdef YACREADER_LIBRARY
-    //ACTIONS
+    // ACTIONS
     defaultShorcuts.insert(FOCUS_SEARCH_LINE_ACTION_YL, Qt::CTRL | Qt::Key_F);
     defaultShorcuts.insert(CREATE_LIBRARY_ACTION_YL, Qt::Key_A);
     defaultShorcuts.insert(OPEN_LIBRARY_ACTION_YL, Qt::Key_O);
@@ -30,7 +30,7 @@ void ShortcutsManager::initDefaultShorcuts()
     defaultShorcuts.insert(QUIT_ACTION_YL, Qt::CTRL | Qt::Key_Q);
     defaultShorcuts.insert(TOGGLE_COMICS_VIEW_ACTION_YL, Qt::Key_V);
 
-    //COMMANDS (used in keypressevent)
+    // COMMANDS (used in keypressevent)
 #else
     defaultShorcuts.insert(OPEN_ACTION_Y, Qt::Key_O);
     defaultShorcuts.insert(OPEN_LATEST_COMIC_Y, Qt::CTRL | Qt::Key_R);
@@ -52,25 +52,24 @@ void ShortcutsManager::initDefaultShorcuts()
     defaultShorcuts.insert(SHOW_INFO_ACTION_Y, Qt::Key_I);
     defaultShorcuts.insert(CLOSE_ACTION_Y, Qt::Key_Escape);
     defaultShorcuts.insert(SHOW_DICTIONARY_ACTION_Y, Qt::Key_T);
-    defaultShorcuts.insert(ALWAYS_ON_TOP_ACTION_Y, Qt::Key_Q); //deprecated
     defaultShorcuts.insert(ADJUST_TO_FULL_SIZE_ACTION_Y, Qt::Key_W);
     defaultShorcuts.insert(SHOW_FLOW_ACTION_Y, Qt::Key_S);
     defaultShorcuts.insert(ZOOM_PLUS_ACTION_Y, Qt::Key_Plus);
     defaultShorcuts.insert(ZOOM_MINUS_ACTION_Y, Qt::Key_Minus);
     defaultShorcuts.insert(RESET_ZOOM_ACTION_Y, Qt::CTRL | Qt::Key_0);
 
-    //main_window_viewer
+    // main_window_viewer
     defaultShorcuts.insert(TOGGLE_FULL_SCREEN_ACTION_Y, Qt::Key_F);
     defaultShorcuts.insert(TOGGLE_TOOL_BARS_ACTION_Y, Qt::Key_H);
     defaultShorcuts.insert(CHANGE_FIT_ACTION_Y, Qt::Key_A);
-    //viewer
+    // viewer
     defaultShorcuts.insert(AUTO_SCROLL_FORWARD_ACTION_Y, Qt::Key_Space);
     defaultShorcuts.insert(AUTO_SCROLL_BACKWARD_ACTION_Y, Qt::Key_B);
     defaultShorcuts.insert(MOVE_DOWN_ACTION_Y, Qt::Key_Down);
     defaultShorcuts.insert(MOVE_UP_ACTION_Y, Qt::Key_Up);
     defaultShorcuts.insert(GO_TO_FIRST_PAGE_ACTION_Y, Qt::Key_Home);
     defaultShorcuts.insert(GO_TO_LAST_PAGE_ACTION_Y, Qt::Key_End);
-    //mglass
+    // mglass
     defaultShorcuts.insert(SIZE_UP_MGLASS_ACTION_Y, Qt::Key_Plus);
     defaultShorcuts.insert(SIZE_DOWN_MGLASS_ACTION_Y, Qt::Key_Minus);
     defaultShorcuts.insert(ZOOM_IN_MGLASS_ACTION_Y, Qt::Key_Asterisk);
@@ -85,7 +84,7 @@ void ShortcutsManager::initDefaultShorcuts()
 
 void ShortcutsManager::resetToDefaults()
 {
-    //TODO reset to defaults
+    // TODO reset to defaults
 }
 
 QString ShortcutsManager::getShortcut(const QString &name)
@@ -125,7 +124,7 @@ bool ShortcutsManager::checkConflicts(const QKeySequence &shortcut, const QActio
         return false;
 
     foreach (QAction *action, actions) {
-        if (action != dest) //if the same shortcut is setted there is no conflict
+        if (action != dest) // if the same shortcut is setted there is no conflict
             if (action->shortcut() == shortcut)
                 return true;
     }

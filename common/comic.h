@@ -10,7 +10,7 @@
 #include "bookmarks.h"
 #ifndef NO_PDF
 #include "pdf_comic.h"
-#endif //NO_PDF
+#endif // NO_PDF
 class ComicDB;
 //#define EXTENSIONS << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp" Comic::getSupportedImageFormats()
 //#define EXTENSIONS_LITERAL << ".jpg" << ".jpeg" << ".png" << ".gif" << ".tiff" << ".tif" << ".bmp" //Comic::getSupportedImageLiteralFormats()
@@ -19,10 +19,10 @@ class Comic : public QObject
     Q_OBJECT
 
 protected:
-    //Comic pages, one QPixmap for each file.
+    // Comic pages, one QPixmap for each file.
     QVector<QByteArray> _pages;
     QVector<bool> _loadedPages;
-    //QVector<uint> _sizes;
+    // QVector<uint> _sizes;
     QStringList _fileNames;
     QMap<QString, int> _newOrder;
     QList<QString> _order;
@@ -32,7 +32,7 @@ protected:
 
     int _cfi;
 
-    //open the comic at this point
+    // open the comic at this point
     int _firstPage;
 
     bool _isPDF;
@@ -49,31 +49,31 @@ public:
 
     Bookmarks *bm;
 
-    //Constructors
+    // Constructors
     Comic();
     Comic(const QString &pathFile, int atPage = -1);
     ~Comic();
     void setup();
-    //Load pages from file
+    // Load pages from file
     virtual bool load(const QString &path, int atPage = -1) = 0;
     virtual bool load(const QString &path, const ComicDB &comic);
 
     /*void loadFromFile(const QString & pathFile);
-		void loadFromDir(const QString & pathDir);
-		void loadFromPDF(const QString & pathPDF);*/
+                void loadFromDir(const QString & pathDir);
+                void loadFromPDF(const QString & pathPDF);*/
     int nextPage();
     int previousPage();
     void setIndex(unsigned int index);
     unsigned int getIndex() { return _index; };
     unsigned int numPages() { return _pages.size(); }
-    //QPixmap * currentPage();
+    // QPixmap * currentPage();
     bool loaded();
-    //QPixmap * operator[](unsigned int index);
+    // QPixmap * operator[](unsigned int index);
     QVector<QByteArray> *getRawData() { return &_pages; }
     QByteArray getRawPage(int page);
     bool pageIsLoaded(int page);
 
-    //check if the comic has failed loading
+    // check if the comic has failed loading
     bool hasBeenAnErrorOpening();
 
     static QStringList getSupportedImageFormats();
@@ -92,6 +92,7 @@ public slots:
     void updateBookmarkImage(int);
     void setPageLoaded(int page);
     void invalidate();
+    virtual void process() {};
 
 signals:
     void invalidated();
@@ -122,11 +123,11 @@ public:
     FileComic();
     FileComic(const QString &path, int atPage = -1);
     ~FileComic();
-    virtual bool load(const QString &path, int atPage = -1);
-    virtual bool load(const QString &path, const ComicDB &comic);
+    bool load(const QString &path, int atPage = -1);
+    bool load(const QString &path, const ComicDB &comic);
     static QList<QString> filter(const QList<QString> &src);
 
-    //ExtractDelegate
+    // ExtractDelegate
     void fileExtracted(int index, const QByteArray &rawData);
     void crcError(int index);
     void unknownError(int index);
@@ -142,14 +143,14 @@ class FolderComic : public Comic
     Q_OBJECT
 
 private:
-    //void run();
+    // void run();
 
 public:
     FolderComic();
     FolderComic(const QString &path, int atPage = -1);
     ~FolderComic();
 
-    virtual bool load(const QString &path, int atPage = -1);
+    bool load(const QString &path, int atPage = -1);
 
 public slots:
 
@@ -162,7 +163,7 @@ class PDFComic : public Comic
     Q_OBJECT
 
 private:
-//pdf
+// pdf
 #if defined Q_OS_MAC && defined USE_PDFKIT
     MacOSXPDFComic *pdfComic;
 #elif defined USE_PDFIUM
@@ -171,21 +172,21 @@ private:
     Poppler::Document *pdfComic;
 #endif
     void renderPage(int page);
-    //void run();
+    // void run();
 
 public:
     PDFComic();
     PDFComic(const QString &path, int atPage = -1);
     ~PDFComic();
 
-    virtual bool load(const QString &path, int atPage = -1);
-    virtual bool load(const QString &path, const ComicDB &comic);
+    bool load(const QString &path, int atPage = -1);
+    bool load(const QString &path, const ComicDB &comic);
 
 public slots:
 
     void process();
 };
-#endif //NO_PDF
+#endif // NO_PDF
 class FactoryComic
 {
 public:

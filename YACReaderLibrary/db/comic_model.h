@@ -34,7 +34,8 @@ public:
         IsBis = 9,
         CurrentPage = 10,
         Rating = 11,
-        HasBeenOpened = 12
+        HasBeenOpened = 12,
+        PublicationDate = 13,
     };
 
     enum Roles {
@@ -51,8 +52,8 @@ public:
         CurrentPageRole,
         RatingRole,
         HasBeenOpenedRole,
-        CoverPathRole
-
+        CoverPathRole,
+        PublicationDateRole,
     };
 
     enum Mode {
@@ -89,25 +90,25 @@ public:
     void setupFavoritesModelData(const QString &databasePath);
     void setupReadingModelData(const QString &databasePath);
 
-    //Métodos de conveniencia
+    // Métodos de conveniencia
     QStringList getPaths(const QString &_source);
     QString getComicPath(QModelIndex mi);
     QString getCurrentPath() { return QString(_databasePath).remove("/.yacreaderlibrary"); }
     ComicDB getComic(const QModelIndex &mi); //--> para la edición
-    //ComicDB getComic(int row);
+    // ComicDB getComic(int row);
     QVector<YACReaderComicReadStatus> getReadList();
     QVector<YACReaderComicReadStatus> setAllComicsRead(YACReaderComicReadStatus readStatus);
     QList<ComicDB> getComics(QList<QModelIndex> list); //--> recupera la información común a los comics seleccionados
     QList<ComicDB> getAllComics();
     QModelIndex getIndexFromId(quint64 id);
     QList<QModelIndex> getIndexesFromIds(const QList<qulonglong> &comicIds);
-    //setcomicInfo(QModelIndex & mi); --> inserta en la base datos
-    //setComicInfoForAllComics(); --> inserta la información común a todos los cómics de una sola vez.
-    //setComicInfoForSelectedComis(QList<QModelIndex> list); -->inserta la información común para los comics seleccionados
+    // setcomicInfo(QModelIndex & mi); --> inserta en la base datos
+    // setComicInfoForAllComics(); --> inserta la información común a todos los cómics de una sola vez.
+    // setComicInfoForSelectedComis(QList<QModelIndex> list); -->inserta la información común para los comics seleccionados
     QVector<YACReaderComicReadStatus> setComicsRead(QList<QModelIndex> list, YACReaderComicReadStatus read);
     void setComicsManga(QList<QModelIndex> list, bool isManga);
     qint64 asignNumbers(QList<QModelIndex> list, int startingNumber);
-    //void remove(ComicDB * comic, int row);
+    // void remove(ComicDB * comic, int row);
     void removeInTransaction(int row);
     void reload(const ComicDB &comic);
     void resetComicRating(const QModelIndex &mi);
@@ -158,10 +159,9 @@ private:
     bool enableResorting;
     Mode mode;
     qulonglong sourceId;
+    QString localizedDate(const QString &dbDate) const;
 
 signals:
-    void beforeReset();
-    void reset();
     void isEmpty();
     void searchNumResults(int);
     void resortedIndexes(QList<int>);

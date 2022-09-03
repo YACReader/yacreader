@@ -82,9 +82,9 @@ QJsonObject YACReaderServerDataHelper::readingListToJSON(const qulonglong librar
     json["library_id"] = QString::number(libraryId);
     json["reading_list_name"] = readingList.getName();
 
-    //TODO
-    //json["num_children"] = readingList.getNumChildren();
-    //json["first_comic_hash"] = readingList.getFirstChildHash();
+    // TODO
+    // json["num_children"] = readingList.getNumChildren();
+    // json["first_comic_hash"] = readingList.getFirstChildHash();
 
     return json;
 }
@@ -99,8 +99,8 @@ QJsonObject YACReaderServerDataHelper::labelToJSON(const qulonglong libraryId, c
     json["label_name"] = label.getName();
     json["color_id"] = label.getColorID();
 
-    //TODO
-    //json["num_children"] = label.getNumChildren();
+    // TODO
+    // json["num_children"] = label.getNumChildren();
 
     return json;
 }

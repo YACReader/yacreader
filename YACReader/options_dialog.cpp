@@ -22,21 +22,26 @@
 OptionsDialog::OptionsDialog(QWidget *parent)
     : YACReaderOptionsDialog(parent)
 {
-
     auto tabWidget = new QTabWidget();
 
     auto layout = new QVBoxLayout(this);
 
+    // GENERAL -------------------------------------------
+
     QWidget *pageGeneral = new QWidget();
-    QWidget *pageFlow = new QWidget();
-    QWidget *pageImage = new QWidget();
     auto layoutGeneral = new QVBoxLayout();
-    auto layoutFlow = new QVBoxLayout();
-    auto layoutImageV = new QVBoxLayout();
-    auto layoutImage = new QGridLayout();
+
+    QGroupBox *pathBox = new QGroupBox(tr("My comics path"));
+
+    auto path = new QHBoxLayout();
+    path->addWidget(pathEdit = new QLineEdit());
+    path->addWidget(pathFindButton = new QPushButton(QIcon(":/images/find_folder.png"), ""));
+    pathBox->setLayout(path);
+
+    connect(pathFindButton, &QAbstractButton::clicked, this, &OptionsDialog::findFolder);
 
     QGroupBox *slideSizeBox = new QGroupBox(tr("\"Go to flow\" size"));
-    //slideSizeLabel = new QLabel(,this);
+    // slideSizeLabel = new QLabel(,this);
     slideSize = new QSlider(this);
     slideSize->setMinimum(125);
     slideSize->setMaximum(350);
@@ -46,15 +51,6 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     slideLayout->addWidget(slideSize);
     slideSizeBox->setLayout(slideLayout);
 
-    QGroupBox *pathBox = new QGroupBox(tr("My comics path"));
-
-    auto path = new QHBoxLayout();
-    path->addWidget(pathEdit = new QLineEdit());
-    path->addWidget(pathFindButton = new QPushButton(QIcon(":/images/find_folder.png"), ""));
-    pathBox->setLayout(path);
-
-    connect(pathFindButton, SIGNAL(clicked()), this, SLOT(findFolder()));
-
     auto colorSelection = new QHBoxLayout;
     backgroundColor = new QLabel();
     QPalette pal = backgroundColor->palette();
@@ -63,52 +59,46 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     backgroundColor->setAutoFillBackground(true);
 
     colorDialog = new QColorDialog(Qt::red, this);
-    connect(colorDialog, SIGNAL(colorSelected(QColor)), this, SLOT(updateColor(QColor)));
+    connect(colorDialog, &QColorDialog::colorSelected, this, &OptionsDialog::updateColor);
 
     QGroupBox *colorBox = new QGroupBox(tr("Background color"));
-    //backgroundColor->setMinimumWidth(100);
+    // backgroundColor->setMinimumWidth(100);
     colorSelection->addWidget(backgroundColor);
     colorSelection->addWidget(selectBackgroundColorButton = new QPushButton(tr("Choose")));
     colorSelection->setStretchFactor(backgroundColor, 1);
     colorSelection->setStretchFactor(selectBackgroundColorButton, 0);
-    //colorSelection->addStretch();
-    connect(selectBackgroundColorButton, SIGNAL(clicked()), colorDialog, SLOT(show()));
+    // colorSelection->addStretch();
+    connect(selectBackgroundColorButton, &QAbstractButton::clicked, colorDialog, &QWidget::show);
     colorBox->setLayout(colorSelection);
 
-    brightnessS = new YACReaderSpinSliderWidget(this, true);
-    brightnessS->setRange(0, 100);
-    //brightnessS->setText(tr("Brightness"));
-    brightnessS->setTracking(false);
-    connect(brightnessS, SIGNAL(valueChanged(int)), this, SLOT(brightnessChanged(int)));
+    auto scrollBox = new QGroupBox(tr("Scroll behaviour"));
+    auto scrollLayout = new QVBoxLayout;
 
-    contrastS = new YACReaderSpinSliderWidget(this, true);
-    contrastS->setRange(0, 250);
-    //contrastS->setText(tr("Contrast"));
-    contrastS->setTracking(false);
-    connect(contrastS, SIGNAL(valueChanged(int)), this, SLOT(contrastChanged(int)));
+    doNotTurnPageOnScroll = new QCheckBox(tr("Do not turn page using scroll"));
+    useSingleScrollStepToTurnPage = new QCheckBox(tr("Use single scroll step to turn page"));
 
-    gammaS = new YACReaderSpinSliderWidget(this, true);
-    gammaS->setRange(0, 250);
-    //gammaS->setText(tr("Gamma"));
-    gammaS->setTracking(false);
-    connect(gammaS, SIGNAL(valueChanged(int)), this, SLOT(gammaChanged(int)));
-    //connect(brightnessS,SIGNAL(valueChanged(int)),this,SIGNAL(changedOptions()));
+    scrollLayout->addWidget(doNotTurnPageOnScroll);
+    scrollLayout->addWidget(useSingleScrollStepToTurnPage);
 
-    quickNavi = new QCheckBox(tr("Quick Navigation Mode"));
-    disableShowOnMouseOver = new QCheckBox(tr("Disable mouse over activation"));
-
-    auto buttons = new QHBoxLayout();
-    buttons->addStretch();
-    buttons->addWidget(new QLabel(tr("Restart is needed")));
-    buttons->addWidget(accept);
-    buttons->addWidget(cancel);
+    scrollBox->setLayout(scrollLayout);
 
     layoutGeneral->addWidget(pathBox);
     layoutGeneral->addWidget(slideSizeBox);
-    //layoutGeneral->addWidget(fitBox);
+    // layoutGeneral->addWidget(fitBox);
     layoutGeneral->addWidget(colorBox);
+    layoutGeneral->addWidget(scrollBox);
     layoutGeneral->addWidget(shortcutsBox);
     layoutGeneral->addStretch();
+
+    // GENERAL END ---------------------------------------
+
+    // PAGE FLOW -----------------------------------------
+
+    QWidget *pageFlow = new QWidget();
+    auto layoutFlow = new QVBoxLayout();
+
+    quickNavi = new QCheckBox(tr("Quick Navigation Mode"));
+    disableShowOnMouseOver = new QCheckBox(tr("Disable mouse over activation"));
 
     layoutFlow->addWidget(sw);
 #ifndef NO_OPENGL
@@ -119,6 +109,38 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     layoutFlow->addWidget(disableShowOnMouseOver);
     layoutFlow->addStretch();
 
+    // disable vSyncCheck
+#ifndef NO_OPENGL
+    gl->vSyncCheck->hide();
+#endif
+
+    // PAGE FLOW END -------------------------------------
+
+    // IMAGE ADJUSTMENTS ---------------------------------
+
+    QWidget *pageImage = new QWidget();
+    auto layoutImageV = new QVBoxLayout();
+    auto layoutImage = new QGridLayout();
+
+    brightnessS = new YACReaderSpinSliderWidget(this, true);
+    brightnessS->setRange(0, 100);
+    // brightnessS->setText(tr("Brightness"));
+    brightnessS->setTracking(false);
+    connect(brightnessS, &YACReaderSpinSliderWidget::valueChanged, this, &OptionsDialog::brightnessChanged);
+
+    contrastS = new YACReaderSpinSliderWidget(this, true);
+    contrastS->setRange(0, 250);
+    // contrastS->setText(tr("Contrast"));
+    contrastS->setTracking(false);
+    connect(contrastS, &YACReaderSpinSliderWidget::valueChanged, this, &OptionsDialog::contrastChanged);
+
+    gammaS = new YACReaderSpinSliderWidget(this, true);
+    gammaS->setRange(0, 250);
+    // gammaS->setText(tr("Gamma"));
+    gammaS->setTracking(false);
+    connect(gammaS, &YACReaderSpinSliderWidget::valueChanged, this, &OptionsDialog::gammaChanged);
+    // connect(brightnessS,SIGNAL(valueChanged(int)),this,SIGNAL(changedOptions()));
+
     layoutImage->addWidget(new QLabel(tr("Brightness")), 0, 0);
     layoutImage->addWidget(new QLabel(tr("Contrast")), 1, 0);
     layoutImage->addWidget(new QLabel(tr("Gamma")), 2, 0);
@@ -126,7 +148,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     layoutImage->addWidget(contrastS, 1, 1);
     layoutImage->addWidget(gammaS, 2, 1);
     QPushButton *pushButton = new QPushButton(tr("Reset"));
-    connect(pushButton, SIGNAL(pressed()), this, SLOT(resetImageConfig()));
+    connect(pushButton, &QAbstractButton::pressed, this, &OptionsDialog::resetImageConfig);
     layoutImage->addWidget(pushButton, 3, 0);
     layoutImage->setColumnStretch(1, 1);
 
@@ -137,10 +159,10 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     auto scaleBox = new QGroupBox(tr("Fit options"));
     auto scaleLayout = new QVBoxLayout();
     scaleCheckbox = new QCheckBox(tr("Enlarge images to fit width/height"));
-    connect(scaleCheckbox, &QCheckBox::clicked,
+    connect(scaleCheckbox, &QCheckBox::clicked, scaleCheckbox,
             [=](bool checked) {
                 Configuration::getConfiguration().setEnlargeImages(checked);
-                emit(changedImageOptions());
+                emit changedImageOptions();
             });
 
     scaleLayout->addWidget(scaleCheckbox);
@@ -150,16 +172,18 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     auto doublePageBox = new QGroupBox(tr("Double Page options"));
     auto doublePageBoxLayout = new QVBoxLayout();
     coverSPCheckBox = new QCheckBox(tr("Show covers as single page"));
-    connect(coverSPCheckBox, &QCheckBox::clicked,
+    connect(coverSPCheckBox, &QCheckBox::clicked, coverSPCheckBox,
             [=](bool checked) {
                 settings->setValue(COVER_IS_SP, checked);
-                emit(changedImageOptions());
+                emit changedImageOptions();
             });
 
     doublePageBoxLayout->addWidget(coverSPCheckBox);
     doublePageBox->setLayout(doublePageBoxLayout);
     layoutImageV->addWidget(doublePageBox);
     layoutImageV->addStretch();
+
+    // IMAGE ADJUSTMENTS END -----------------------------
 
     pageGeneral->setLayout(layoutGeneral);
     pageFlow->setLayout(layoutFlow);
@@ -170,16 +194,17 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     tabWidget->addTab(pageImage, tr("Image adjustment"));
 
     layout->addWidget(tabWidget);
+
+    auto buttons = new QHBoxLayout();
+    buttons->addStretch();
+    buttons->addWidget(new QLabel(tr("Restart is needed")));
+    buttons->addWidget(accept);
+    buttons->addWidget(cancel);
+
     layout->addLayout(buttons);
 
     setLayout(layout);
 
-    //disable vSyncCheck
-#ifndef NO_OPENGL
-    gl->vSyncCheck->hide();
-#endif
-    //restoreOptions(); //load options
-    //resize(400,0);
     setModal(true);
     setWindowTitle(tr("Options"));
 
@@ -196,7 +221,6 @@ void OptionsDialog::findFolder()
 
 void OptionsDialog::saveOptions()
 {
-
     settings->setValue(GO_TO_FLOW_SIZE, QSize(static_cast<int>(slideSize->sliderPosition() / SLIDE_ASPECT_RATIO), slideSize->sliderPosition()));
 
     if (sw->radio1->isChecked())
@@ -209,9 +233,12 @@ void OptionsDialog::saveOptions()
     settings->setValue(PATH, pathEdit->text());
 
     settings->setValue(BACKGROUND_COLOR, colorDialog->currentColor());
-    //settings->setValue(FIT_TO_WIDTH_RATIO,fitToWidthRatioS->sliderPosition()/100.0);
+    // settings->setValue(FIT_TO_WIDTH_RATIO,fitToWidthRatioS->sliderPosition()/100.0);
     settings->setValue(QUICK_NAVI_MODE, quickNavi->isChecked());
     settings->setValue(DISABLE_MOUSE_OVER_GOTO_FLOW, disableShowOnMouseOver->isChecked());
+
+    settings->setValue(DO_NOT_TURN_PAGE_ON_SCROLL, doNotTurnPageOnScroll->isChecked());
+    settings->setValue(USE_SINGLE_SCROLL_STEP_TO_TURN_PAGE, useSingleScrollStepToTurnPage->isChecked());
 
     YACReaderOptionsDialog::saveOptions();
 }
@@ -239,7 +266,7 @@ void OptionsDialog::restoreOptions(QSettings *settings)
     pathEdit->setText(settings->value(PATH).toString());
 
     updateColor(settings->value(BACKGROUND_COLOR).value<QColor>());
-    //fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
+    // fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
 
     quickNavi->setChecked(settings->value(QUICK_NAVI_MODE).toBool());
     disableShowOnMouseOver->setChecked(settings->value(DISABLE_MOUSE_OVER_GOTO_FLOW).toBool());
@@ -250,6 +277,9 @@ void OptionsDialog::restoreOptions(QSettings *settings)
 
     scaleCheckbox->setChecked(settings->value(ENLARGE_IMAGES, true).toBool());
     coverSPCheckBox->setChecked(settings->value(COVER_IS_SP, true).toBool());
+
+    doNotTurnPageOnScroll->setChecked(settings->value(DO_NOT_TURN_PAGE_ON_SCROLL, false).toBool());
+    useSingleScrollStepToTurnPage->setChecked(settings->value(USE_SINGLE_SCROLL_STEP_TO_TURN_PAGE, false).toBool());
 }
 
 void OptionsDialog::updateColor(const QColor &color)
@@ -262,7 +292,7 @@ void OptionsDialog::updateColor(const QColor &color)
 
     settings->setValue(BACKGROUND_COLOR, color);
 
-    emit(changedOptions());
+    emit changedOptions();
 }
 
 void OptionsDialog::brightnessChanged(int value)
@@ -270,7 +300,7 @@ void OptionsDialog::brightnessChanged(int value)
     QSettings settings(YACReader::getSettingsPath() + "/YACReader.ini", QSettings::IniFormat);
     settings.setValue(BRIGHTNESS, value);
     emit changedFilters(brightnessS->getValue(), contrastS->getValue(), gammaS->getValue());
-    //emit(changedImageOptions());
+    // emit(changedImageOptions());
 }
 
 void OptionsDialog::contrastChanged(int value)
@@ -278,7 +308,7 @@ void OptionsDialog::contrastChanged(int value)
     QSettings settings(YACReader::getSettingsPath() + "/YACReader.ini", QSettings::IniFormat);
     settings.setValue(CONTRAST, value);
     emit changedFilters(brightnessS->getValue(), contrastS->getValue(), gammaS->getValue());
-    ///emit(changedImageOptions());
+    /// emit(changedImageOptions());
 }
 
 void OptionsDialog::gammaChanged(int value)
@@ -286,7 +316,7 @@ void OptionsDialog::gammaChanged(int value)
     QSettings settings(YACReader::getSettingsPath() + "/YACReader.ini", QSettings::IniFormat);
     settings.setValue(GAMMA, value);
     emit changedFilters(brightnessS->getValue(), contrastS->getValue(), gammaS->getValue());
-    //emit(changedImageOptions());
+    // emit(changedImageOptions());
 }
 
 void OptionsDialog::resetImageConfig()
@@ -299,16 +329,16 @@ void OptionsDialog::resetImageConfig()
     settings.setValue(CONTRAST, 100);
     settings.setValue(GAMMA, 100);
     emit changedFilters(brightnessS->getValue(), contrastS->getValue(), gammaS->getValue());
-    //emit(changedImageOptions());
+    // emit(changedImageOptions());
 }
 
 void OptionsDialog::show()
 {
-    //TODO solucionar el tema de las settings, esto sólo debería aparecer en una única línea de código
+    // TODO solucionar el tema de las settings, esto sólo debería aparecer en una única línea de código
     QSettings *s = new QSettings(YACReader::getSettingsPath() + "/YACReader.ini", QSettings::IniFormat);
-    //fitToWidthRatioS->disconnect();
-    //fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
-    //connect(fitToWidthRatioS,SIGNAL(valueChanged(int)),this,SLOT(fitToWidthRatio(int)));
+    // fitToWidthRatioS->disconnect();
+    // fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
+    // connect(fitToWidthRatioS,SIGNAL(valueChanged(int)),this,SLOT(fitToWidthRatio(int)));
     QDialog::show();
     delete s;
 }

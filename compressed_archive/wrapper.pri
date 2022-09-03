@@ -2,20 +2,22 @@ INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
 win32 {
-!exists (../compressed_archive/lib7zip) {
-	error(You\'ll need 7zip source code to compile YACReader. \
-	Please check the compressed_archive folder for further instructions.)
+exists (../compressed_archive/lib7zip) {
+    message(Using 7zip)
+} else {
+    error(You\'ll need 7zip source code to compile YACReader. \
+          Please check the compressed_archive folder for further instructions.)
 }
 }
 
 unix {
 exists (../compressed_archive/libp7zip) {
-	message(Found p7zip source code...)
-        #this is probably only needed in macos
-	system(patch -N -p0 -i libp7zip.patch)
+    message(Found p7zip source code...)
+    #this is probably only needed in macos
+    system(patch -N -p0 -i libp7zip.patch)
 } else {
-	error(You\'ll need 7zip source code to compile YACReader. \
-	Please check the compressed_archive folder for further instructions.)
+    error(You\'ll need 7zip source code to compile YACReader. \
+          Please check the compressed_archive folder for further instructions.)
 }
 }
 

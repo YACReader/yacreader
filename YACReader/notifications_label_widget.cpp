@@ -7,7 +7,7 @@ NotificationsLabelWidget::NotificationsLabelWidget(QWidget *parent)
 {
     auto layout = new QVBoxLayout;
     layout->setSpacing(0);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     setAttribute(Qt::WA_LayoutUsesWidgetRect, true);
     effect = new QGraphicsOpacityEffect(this);
@@ -19,7 +19,7 @@ NotificationsLabelWidget::NotificationsLabelWidget(QWidget *parent)
     anim->setEndValue(0.0);
     anim->setEasingCurve(QEasingCurve::InExpo);
 
-    connect(anim, SIGNAL(finished()), this, SLOT(hide()));
+    connect(anim, &QAbstractAnimation::finished, this, &QWidget::hide);
 
     textLabel = new QLabel(this);
     textLabel->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
@@ -28,7 +28,7 @@ NotificationsLabelWidget::NotificationsLabelWidget(QWidget *parent)
 
     textLabel->setFixedSize(200, 120);
 
-    //TODO check if the effects still be broken in OSX yet
+    // TODO check if the effects still be broken in OSX yet
 #ifndef Q_OS_MAC
     this->setGraphicsEffect(effect);
 #endif
@@ -47,7 +47,7 @@ void NotificationsLabelWidget::paintEvent(QPaintEvent *)
     QPainterPath path;
     path.addRoundedRect(QRectF(0, 0, width(), height()), 5.0, 5.0);
     painter.setPen(Qt::NoPen);
-    painter.fillPath(path, QColor("#BB000000"));
+    painter.fillPath(path, QColor(0xBB000000));
     painter.drawPath(path);
 }
 

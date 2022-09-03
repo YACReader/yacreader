@@ -134,12 +134,12 @@ ReadingListItem::ReadingListItem(const QList<QVariant> &data, ReadingListItem *p
 QIcon ReadingListItem::getIcon() const
 {
     if (parent->getId() == 0)
-        return YACReader::noHighlightedIcon(":/images/lists/list.png"); //top level list
+        return YACReader::noHighlightedIcon(":/images/lists/list.png"); // top level list
     else
 #ifdef Q_OS_MAC
         return QFileIconProvider().icon(QFileIconProvider::Folder);
 #else
-        return YACReader::noHighlightedIcon(":/images/sidebar/folder.png"); //sublist
+        return YACReader::noHighlightedIcon(":/images/sidebar/folder.png"); // sublist
 #endif
 }
 
@@ -153,7 +153,7 @@ ReadingListItem *ReadingListItem::child(int row)
     return childItems.at(row);
 }
 
-//items are sorted by order
+// items are sorted by order
 void ReadingListItem::appendChild(ReadingListItem *item)
 {
     item->parent = this;
@@ -161,7 +161,7 @@ void ReadingListItem::appendChild(ReadingListItem *item)
     if (childItems.isEmpty())
         childItems.append(item);
     else {
-        if (item->parent->getId() == 0) //sort by name, top level child
+        if (item->parent->getId() == 0) // sort by name, top level child
         {
             int i = 0;
             while (i < childItems.length() && naturalSortLessThanCI(childItems.at(i)->name(), item->name()))

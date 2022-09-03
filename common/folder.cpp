@@ -3,6 +3,7 @@
 Folder::Folder()
     : knownParent(false),
       knownId(false),
+      manga(false),
       numChildren(-1)
 {
 }
@@ -10,6 +11,7 @@ Folder::Folder()
 Folder::Folder(qulonglong folderId, qulonglong parentId, const QString &folderName, const QString &folderPath)
     : knownParent(true),
       knownId(true),
+      manga(false),
       numChildren(-1)
 {
     this->id = folderId;
@@ -32,6 +34,9 @@ Folder &Folder::operator=(const Folder &other)
     this->finished = other.finished;
     this->completed = other.completed;
     this->manga = other.manga;
+    this->numChildren = other.numChildren;
+    this->firstChildHash = other.firstChildHash;
+    this->customImage = other.customImage;
 
     return *this;
 }

@@ -18,7 +18,7 @@ public:
     ComicQueryResultProcessor();
 
 public slots:
-    void createModelData(const SearchModifiers modifier, const QString &filter, const QString &databasePath);
+    void createModelData(const QString &filter, const QString &databasePath);
 signals:
     void newData(QList<ComicItem *> *, const QString &);
 

@@ -10,7 +10,6 @@
         <file>../images/comic_vine/rowDown.png</file>
         <file>../images/comic_vine/rowUp.png</file>
         <file>../images/comic_vine/upArrow.png</file>
-        <file>../images/comicFolder.png</file>
         <file>../images/comics_view_toolbar/asignNumber.png</file>
         <file>../images/comics_view_toolbar/asignNumber@2x.png</file>
         <file>../images/comics_view_toolbar/big_size_grid_zoom.png</file>
@@ -41,8 +40,6 @@
         <file>../images/comics_view_toolbar/setManga@2x.png</file>
         <file>../images/comics_view_toolbar/setNormal.png</file>
         <file>../images/comics_view_toolbar/setNormal@2x.png</file>
-        <file>../images/coversPackage.png</file>
-        <file>../images/db.png</file>
         <file>../images/defaultCover.png</file>
         <file>../images/edit.png</file>
         <file>../images/empty_current_readings.png</file>
@@ -60,14 +57,13 @@
         <file>../images/flow5.png</file>
         <file>../images/glowLine.png</file>
         <file>../images/hiddenCovers.png</file>
-        <file>../images/icon.png</file>
+        <file>../images/icon-new.svg</file>
         <file>../images/iconLibrary.png</file>
         <file>../images/importBottomCoversDecoration.png</file>
         <file>../images/importComicsInfo.png</file>
         <file>../images/importingIcon.png</file>
         <file>../images/importLibrary.png</file>
         <file>../images/importTopCoversDecoration.png</file>
-        <file>../images/iphoneConfig.png</file>
         <file>../images/main_toolbar/divider.png</file>
         <file>../images/menus_icons/editIcon.png</file>
         <file>../images/menus_icons/editIcon@2x.png</file>
@@ -90,15 +86,12 @@
         <file>../images/noLibrariesIcon.png</file>
         <file>../images/noLibrariesLine.png</file>
         <file>../images/notCover.png</file>
-        <file>../images/onStartFlowSelection.png</file>
-        <file>../images/onStartFlowSelection_es.png</file>
         <file>../images/openLibrary.png</file>
         <file>../images/previousCoverPage.png</file>
         <file>../images/readingRibbon.png</file>
         <file>../images/readRibbon.png</file>
         <file>../images/searching_icon.png</file>
         <file>../images/serverConfigBackground.png</file>
-        <file>../images/setRead.png</file>
         <file>../images/shortcuts_group_comics.png</file>
         <file>../images/shortcuts_group_folders.png</file>
         <file>../images/shortcuts_group_general.png</file>
@@ -120,8 +113,6 @@
         <file>../images/sidebar/libraryOptions.png</file>
         <file>../images/sidebar/libraryOptions@2x.png</file>
         <file>../images/updatingIcon.png</file>
-        <file>../images/useNewFlowButton.png</file>
-        <file>../images/useOldFlowButton.png</file>
         <file>../images/custom_dialog/custom_close_button.svg</file>
         <file>../images/whats_new/whatsnew_header.svg</file>
     </qresource>

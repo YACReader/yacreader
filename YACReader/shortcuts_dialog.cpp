@@ -6,7 +6,10 @@
 #include <QPixmap>
 #include <QFile>
 #include <QTextStream>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QTextCodec>
+#endif
 
 ShortcutsDialog::ShortcutsDialog(QWidget *parent)
     : QDialog(parent) //,Qt::FramelessWindowHint)
@@ -18,7 +21,7 @@ ShortcutsDialog::ShortcutsDialog(QWidget *parent)
     auto mainLayout = new QVBoxLayout;
 
     close = new QPushButton(tr("Close"));
-    connect(close, SIGNAL(clicked()), this, SLOT(close()));
+    connect(close, &QAbstractButton::clicked, this, &QWidget::close);
 
     auto bottomLayout = new QHBoxLayout;
     bottomLayout->addStretch();
@@ -32,7 +35,7 @@ ShortcutsDialog::ShortcutsDialog(QWidget *parent)
     //"<p><b>General functions:</b><hr/><b>O</b> : Open comic<br/><b>Esc</b> : Exit</p>"
     shortcuts->setReadOnly(true);
     shortcutsLayout->addWidget(shortcuts);
-    //shortcutsLayout->addWidget(shortcuts2);
+    // shortcutsLayout->addWidget(shortcuts2);
     shortcutsLayout->setSpacing(0);
     mainLayout->addLayout(shortcutsLayout);
     mainLayout->addLayout(bottomLayout);
@@ -44,7 +47,13 @@ ShortcutsDialog::ShortcutsDialog(QWidget *parent)
     QFile f(":/files/shortcuts.html");
     f.open(QIODevice::ReadOnly);
     QTextStream txtS(&f);
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    txtS.setEncoding(QStringConverter::Utf8);
+#else
     txtS.setCodec(QTextCodec::codecForName("UTF-8"));
+#endif
+
     QString content = txtS.readAll();
 
     f.close();

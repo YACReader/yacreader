@@ -12,7 +12,7 @@ public:
     explicit YACReaderReadingListsView(QWidget *parent = nullptr);
 
 protected:
-    //Drop to import & internal Drag&Drop for resorting
+    // Drop to import & internal Drag&Drop for resorting
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dragMoveEvent(QDragMoveEvent *event) override;
     void dropEvent(QDropEvent *event) override;
@@ -24,7 +24,7 @@ class YACReaderReadingListsViewItemDeletegate : public QStyledItemDelegate
 public:
     explicit YACReaderReadingListsViewItemDeletegate(QObject *parent = nullptr);
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
-    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 };
 
 #endif // YACREADER_READING_LISTS_VIEW_H

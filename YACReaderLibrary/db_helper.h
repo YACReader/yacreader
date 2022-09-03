@@ -20,7 +20,7 @@ class ReadingList;
 class DBHelper
 {
 public:
-    //server
+    // server
     static YACReaderLibraries getLibraries();
     static QList<LibraryItem *> getFolderSubfoldersFromLibrary(qulonglong libraryId, qulonglong folderId);
     static QList<LibraryItem *> getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId);
@@ -39,35 +39,35 @@ public:
     static QList<ReadingList> getReadingLists(qulonglong libraryId);
     static QList<ComicDB> getReadingListFullContent(qulonglong libraryId, qulonglong readingListId, bool getFullComicInfoFields = false);
 
-    //objects management
-    //deletes
+    // objects management
+    // deletes
     static void removeFromDB(LibraryItem *item, QSqlDatabase &db);
     static void removeFromDB(Folder *folder, QSqlDatabase &db);
     static void removeFromDB(ComicDB *comic, QSqlDatabase &db);
     static void removeLabelFromDB(qulonglong id, QSqlDatabase &db);
     static void removeListFromDB(qulonglong id, QSqlDatabase &db);
-    //logic deletes
+    // logic deletes
     static void deleteComicsFromFavorites(const QList<ComicDB> &comicsList, QSqlDatabase &db);
     static void deleteComicsFromReading(const QList<ComicDB> &comicsList, QSqlDatabase &db);
     static void deleteComicsFromLabel(const QList<ComicDB> &comicsList, qulonglong labelId, QSqlDatabase &db);
     static void deleteComicsFromReadingList(const QList<ComicDB> &comicsList, qulonglong readingListId, QSqlDatabase &db);
-    //inserts
+    // inserts
     static qulonglong insert(Folder *folder, QSqlDatabase &db);
-    static qulonglong insert(ComicDB *comic, QSqlDatabase &db);
+    static qulonglong insert(ComicDB *comic, QSqlDatabase &db, bool insertAllInfo);
     static qulonglong insertLabel(const QString &name, YACReader::LabelColors color, QSqlDatabase &db);
     static qulonglong insertReadingList(const QString &name, QSqlDatabase &db);
     static qulonglong insertReadingSubList(const QString &name, qulonglong parentId, int ordering, QSqlDatabase &db);
     static void insertComicsInFavorites(const QList<ComicDB> &comicsList, QSqlDatabase &db);
     static void insertComicsInLabel(const QList<ComicDB> &comicsList, qulonglong labelId, QSqlDatabase &db);
     static void insertComicsInReadingList(const QList<ComicDB> &comicsList, qulonglong readingListId, QSqlDatabase &db);
-    //updates
+    // updates
     static void update(qulonglong libraryId, ComicInfo &comicInfo);
     static void update(ComicDB *comics, QSqlDatabase &db);
     static void update(ComicInfo *comicInfo, QSqlDatabase &db);
     static void updateRead(ComicInfo *comicInfo, QSqlDatabase &db);
     static void update(const Folder &folder, QSqlDatabase &db);
-    static void updateChildrenInfo(const Folder &folder, QSqlDatabase &db);
-    static void updateChildrenInfo(qulonglong folderId, QSqlDatabase &db);
+    static void propagateFolderUpdatesToParent(const Folder &folder, QSqlDatabase &db);
+    static Folder updateChildrenInfo(qulonglong folderId, QSqlDatabase &db);
     static void updateChildrenInfo(QSqlDatabase &db);
     static void updateProgress(qulonglong libraryId, const ComicInfo &comicInfo);
     static void setComicAsReading(qulonglong libraryId, const ComicInfo &comicInfo);
@@ -90,7 +90,7 @@ public:
 
     static void updateFolderTreeManga(qulonglong id, QSqlDatabase &db, bool manga);
 
-    //load
+    // load
     static Folder loadFolder(qulonglong id, QSqlDatabase &db);
     static Folder loadFolder(const QString &folderName, qulonglong parentId, QSqlDatabase &db);
     static ComicDB loadComic(qulonglong id, QSqlDatabase &db);
@@ -98,7 +98,7 @@ public:
     static ComicInfo loadComicInfo(QString hash, QSqlDatabase &db);
     static ComicInfo getComicInfoFromQuery(QSqlQuery &query, const QString &idKey = "id");
     static QList<QString> loadSubfoldersNames(qulonglong folderId, QSqlDatabase &db);
-    //queries
+    // queries
     static bool isFavoriteComic(qulonglong id, QSqlDatabase &db);
 };
 

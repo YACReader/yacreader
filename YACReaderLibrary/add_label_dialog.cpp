@@ -24,7 +24,7 @@ AddLabelDialog::AddLabelDialog(QWidget *parent)
     list->addItem(new QListWidgetItem(QIcon(":/images/lists/label_light.png"), tr("light")));
     list->addItem(new QListWidgetItem(QIcon(":/images/lists/label_dark.png"), tr("dark")));
 
-    QColor backgroundColor = this->palette().background().color();
+    QColor backgroundColor = this->palette().window().color();
     list->setStyleSheet(QString("QListWidget {border : none; background-color: rgb(%1,%2,%3);}").arg(backgroundColor.red()).arg(backgroundColor.green()).arg(backgroundColor.blue()));
     list->setMinimumHeight(225);
 
@@ -32,7 +32,7 @@ AddLabelDialog::AddLabelDialog(QWidget *parent)
 
     setMinimumHeight(340);
 
-    //buttons
+    // buttons
     acceptButton = new QPushButton(tr("accept"), this);
     cancelButton = new QPushButton(tr("cancel"), this);
 
@@ -46,10 +46,10 @@ AddLabelDialog::AddLabelDialog(QWidget *parent)
 
     setLayout(layout);
 
-    //connections
-    connect(edit, SIGNAL(textChanged(QString)), this, SLOT(validateName(QString)));
-    connect(cancelButton, SIGNAL(clicked()), this, SLOT(close()));
-    connect(acceptButton, SIGNAL(clicked()), this, SLOT(accept()));
+    // connections
+    connect(edit, &QLineEdit::textChanged, this, &AddLabelDialog::validateName);
+    connect(cancelButton, &QAbstractButton::clicked, this, &QWidget::close);
+    connect(acceptButton, &QAbstractButton::clicked, this, &QDialog::accept);
 }
 
 YACReader::LabelColors AddLabelDialog::selectedColor()

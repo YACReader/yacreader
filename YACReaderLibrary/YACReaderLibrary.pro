@@ -12,7 +12,7 @@ INCLUDEPATH += . \
               ./comic_vine \
               ./comic_vine/model
 
-DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY
+DEFINES += SERVER_RELEASE YACREADER_LIBRARY
 
 # load default build flags
 include (../config.pri)
@@ -38,8 +38,10 @@ win32 {
         LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -luser32
     }
 
-    QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
-    QMAKE_LFLAGS_RELEASE += /LTCG
+    msvc {
+        QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
+        QMAKE_LFLAGS_RELEASE += /LTCG
+    }
     CONFIG -= embed_manifest_exe
 }
 
@@ -69,7 +71,9 @@ macx {
 
 #CONFIG += release
 CONFIG -= flat
-QT += sql network widgets svg
+QT += sql network widgets svg quickcontrols2
+
+greaterThan(QT_MAJOR_VERSION, 5): QT += openglwidgets core5compat
 
 # Input
 HEADERS += comic_flow.h \
@@ -78,6 +82,7 @@ HEADERS += comic_flow.h \
   db/comic_query_result_processor.h \
   db/folder_query_result_processor.h \
   db/query_lexer.h \
+  initial_comic_info_extractor.h \
   library_comic_opener.h \
   library_creator.h \
   library_window.h \
@@ -111,11 +116,12 @@ HEADERS += comic_flow.h \
   ../common/qnaturalsorting.h \
   ../common/yacreader_global.h \
   ../common/yacreader_global_gui.h \
-  ../common/onstart_flow_selection_dialog.h \
   ../common/pdf_comic.h \
   no_libraries_widget.h \
   import_widget.h \
   trayicon_controller.h \
+  xml_info_library_scanner.h \
+  xml_info_parser.h \
   yacreader_local_server.h \
   yacreader_main_toolbar.h \
   comics_remover.h \
@@ -153,10 +159,12 @@ HEADERS += comic_flow.h \
 }
 
 SOURCES += comic_flow.cpp \
+    ../common/concurrent_queue.cpp \
     create_library_dialog.cpp \
     db/comic_query_result_processor.cpp \
     db/folder_query_result_processor.cpp \
     db/query_lexer.cpp \
+    initial_comic_info_extractor.cpp \
     library_comic_opener.cpp \
     library_creator.cpp \
     library_window.cpp \
@@ -187,10 +195,11 @@ SOURCES += comic_flow.cpp \
     ../common/pictureflow.cpp \
     ../common/custom_widgets.cpp \
     ../common/qnaturalsorting.cpp \
-    ../common/onstart_flow_selection_dialog.cpp \
     no_libraries_widget.cpp \
     import_widget.cpp \
     trayicon_controller.cpp \
+    xml_info_library_scanner.cpp \
+    xml_info_parser.cpp \
     yacreader_local_server.cpp \
     yacreader_main_toolbar.cpp \
     comics_remover.cpp \
@@ -241,6 +250,8 @@ CONFIG(7zip){
 include(../compressed_archive/wrapper.pri)
 } else:CONFIG(unarr) {
 include(../compressed_archive/unarr/unarr-wrapper.pri)
+} else:CONFIG(libarchive) {
+include(../compressed_archive/libarchive/libarchive-wrapper.pri)
 } else {
   error(No compression backend specified. Did you mess with the build system?)
 }
@@ -268,7 +279,9 @@ TRANSLATIONS =   yacreaderlibrary_es.ts \
                 yacreaderlibrary_nl.ts \
                 yacreaderlibrary_tr.ts \
                 yacreaderlibrary_de.ts \
-                yacreaderlibrary_zh.ts \
+                yacreaderlibrary_zh_CN.ts \
+                yacreaderlibrary_zh_TW.ts \
+                yacreaderlibrary_zh_HK.ts \
                 yacreaderlibrary_it.ts \
                 yacreaderlibrary_source.ts
 
@@ -300,8 +313,6 @@ isEmpty(LIBDIR) {
 isEmpty(DATADIR) {
   DATADIR = $$PREFIX/share
 }
-
-DEFINES += "LIBDIR=\\\"$$LIBDIR\\\""  "DATADIR=\\\"$$DATADIR\\\""
 
 DEFINES += "LIBDIR=\\\"$$LIBDIR\\\""  "DATADIR=\\\"$$DATADIR\\\"" "BINDIR=\\\"$$BINDIR\\\""
 

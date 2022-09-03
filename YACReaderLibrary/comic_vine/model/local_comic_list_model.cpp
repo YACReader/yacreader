@@ -13,7 +13,7 @@ void LocalComicListModel::load(QList<ComicDB> &comics)
 QModelIndex LocalComicListModel::parent(const QModelIndex &index) const
 {
     Q_UNUSED(index)
-    return QModelIndex(); //no parent
+    return QModelIndex(); // no parent
 }
 
 int LocalComicListModel::rowCount(const QModelIndex &parent) const
@@ -40,7 +40,7 @@ QVariant LocalComicListModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
     if (role == Qt::TextAlignmentRole) {
-        //TODO
+        // TODO
     }
 
     if (role != Qt::DisplayRole)
@@ -48,16 +48,16 @@ QVariant LocalComicListModel::data(const QModelIndex &index, int role) const
 
     int row = index.row();
 
-    //if(row < _data.count())
+    // if(row < _data.count())
     return _data[row].getFileName();
-    //else
-    //return QVariant();
+    // else
+    // return QVariant();
 }
 
 Qt::ItemFlags LocalComicListModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return nullptr;
+        return Qt::NoItemFlags;
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
@@ -144,7 +144,7 @@ void LocalComicListModel::moveSelectionUp(const QList<QModelIndex> &selectedInde
     beginMoveRows(mi.parent(), sourceRow, sourceLastRow, mi.parent(), destRow);
 
     for (int i = sourceRow; i <= sourceLastRow; i++)
-        _data.swap(i, i - 1);
+        _data.swapItemsAt(i, i - 1);
 
     endMoveRows();
 }
@@ -163,7 +163,7 @@ void LocalComicListModel::moveSelectionDown(const QList<QModelIndex> &selectedIn
     beginMoveRows(mi.parent(), sourceRow, sourceLastRow, mi.parent(), destRow + 1);
 
     for (int i = sourceLastRow; i >= sourceRow; i--)
-        _data.swap(i, i + 1);
+        _data.swapItemsAt(i, i + 1);
 
     endMoveRows();
 }

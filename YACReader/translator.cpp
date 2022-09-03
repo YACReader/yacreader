@@ -13,13 +13,13 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include "translator.h"
+#include "viewer.h"
 
 #include "yacreader_busy_widget.h"
 
 #include <QFile>
 #include <QPoint>
 #include <QWidget>
-#include <QTextCodec>
 #include <QLabel>
 #include <QTextEdit>
 #include <QComboBox>
@@ -33,7 +33,7 @@
 
 #define APPID "417CEAD93449502CC3C9B69FED26C54118E62BCC"
 
-YACReaderTranslator::YACReaderTranslator(QWidget *parent)
+YACReaderTranslator::YACReaderTranslator(Viewer *parent)
     : QWidget(parent), drag(false)
 {
     QString scrollBarStyle = "QScrollBar:vertical { border: none; background: #404040; width: 7px; margin: 0 3px 0 0; }"
@@ -50,12 +50,12 @@ YACReaderTranslator::YACReaderTranslator(QWidget *parent)
     this->setAutoFillBackground(true);
     this->setBackgroundRole(QPalette::Window);
     QPalette p(this->palette());
-    p.setColor(QPalette::Window, QColor("#404040"));
+    p.setColor(QPalette::Window, QColor(0x404040));
     this->setPalette(p);
 
     auto layout = new QVBoxLayout(this);
 
-    //TITLE BAR
+    // TITLE BAR
     auto titleBar = new QHBoxLayout();
     auto close = new QPushButton(QIcon(QPixmap(":/images/close.png")), "");
     close->setFlat(true);
@@ -68,11 +68,11 @@ YACReaderTranslator::YACReaderTranslator(QWidget *parent)
     titleBar->addWidget(close);
     titleBar->setContentsMargins(0, 0, 0, 0);
     titleBar->setSpacing(0);
-    connect(close, SIGNAL(clicked()), this->parent(), SLOT(animateHideTranslator()));
+    connect(close, &QAbstractButton::clicked, parent, &Viewer::animateHideTranslator);
 
     layout->addLayout(titleBar);
 
-    //INPUT TEXT
+    // INPUT TEXT
     text = new QTextEdit(this);
     text->setMinimumHeight(110);
     text->setMaximumHeight(110);
@@ -80,7 +80,7 @@ YACReaderTranslator::YACReaderTranslator(QWidget *parent)
     layout->addWidget(text);
     text->setStyleSheet("QTextEdit{border:none;background:#2a2a2a;color:white; font-size:12px; padding:6px;}" + scrollBarStyle);
 
-    //COMBOBOXES
+    // COMBOBOXES
     auto combos = new QHBoxLayout();
     from = new QComboBox(this);
     to = new QComboBox(this);
@@ -111,7 +111,7 @@ YACReaderTranslator::YACReaderTranslator(QWidget *parent)
     layout->addSpacing(12);
     layout->addLayout(combos);
 
-    //RESULTS
+    // RESULTS
     auto resultsTitleLayout = new QHBoxLayout();
     resultsTitle = new QLabel(tr("Translation"));
     resultsTitle->setStyleSheet("QLabel {font-family:Arial;font-size:14px;color:#e3e3e3;}");
@@ -135,7 +135,7 @@ YACReaderTranslator::YACReaderTranslator(QWidget *parent)
 
     layout->addStretch();
 
-    //CLEAR BUTTON
+    // CLEAR BUTTON
     clearButton = new QPushButton(tr("clear"));
     layout->addWidget(clearButton, 0, Qt::AlignRight);
     clearButton->setMinimumWidth(95);
@@ -143,7 +143,6 @@ YACReaderTranslator::YACReaderTranslator(QWidget *parent)
 
     resize(400, 479);
 
-    layout->setMargin(0);
     layout->setContentsMargins(18, 12, 18, 12);
     setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
@@ -157,11 +156,11 @@ YACReaderTranslator::YACReaderTranslator(QWidget *parent)
 
     show();
 
-    connect(searchButton, SIGNAL(pressed()), this, SLOT(translate()));
-    connect(speakButton, SIGNAL(pressed()), this, SLOT(play()));
-    connect(clearButton, SIGNAL(pressed()), this, SLOT(clear()));
+    connect(searchButton, &QAbstractButton::pressed, this, &YACReaderTranslator::translate);
+    connect(speakButton, &QAbstractButton::pressed, this, &YACReaderTranslator::play);
+    connect(clearButton, &QAbstractButton::pressed, this, &YACReaderTranslator::clear);
 
-    //multimedia/phonon
+    // multimedia/phonon
 #if QT_VERSION >= 0x050000
     player = new QMediaPlayer;
 #else
@@ -191,16 +190,16 @@ void YACReaderTranslator::translate()
     QString to = this->to->itemData(this->to->currentIndex()).toString();
 
     TranslationLoader *translationLoader = new TranslationLoader(text, from, to);
-    connect(translationLoader, SIGNAL(requestFinished(QString)), this, SLOT(setTranslation(QString)));
-    connect(translationLoader, SIGNAL(error()), this, SLOT(error()));
-    connect(translationLoader, SIGNAL(timeOut()), this, SLOT(error()));
-    connect(translationLoader, SIGNAL(finished()), translationLoader, SLOT(deleteLater()));
+    connect(translationLoader, &TranslationLoader::requestFinished, this, &YACReaderTranslator::setTranslation);
+    connect(translationLoader, &TranslationLoader::error, this, &YACReaderTranslator::error);
+    connect(translationLoader, &TranslationLoader::timeOut, this, &YACReaderTranslator::error);
+    connect(translationLoader, &QThread::finished, translationLoader, &QObject::deleteLater);
 
     TextToSpeachLoader *tts = new TextToSpeachLoader(text, from);
-    connect(tts, SIGNAL(requestFinished(QUrl)), this, SLOT(setSpeak(QUrl)));
-    connect(tts, SIGNAL(error()), this, SLOT(error()));
-    connect(tts, SIGNAL(timeOut()), this, SLOT(error()));
-    connect(tts, SIGNAL(finished()), tts, SLOT(deleteLater()));
+    connect(tts, &TextToSpeachLoader::requestFinished, this, &YACReaderTranslator::setSpeak);
+    connect(tts, &TextToSpeachLoader::error, this, &YACReaderTranslator::error);
+    connect(tts, &TextToSpeachLoader::timeOut, this, &YACReaderTranslator::error);
+    connect(tts, &QThread::finished, tts, &QObject::deleteLater);
 
     translationLoader->start();
     tts->start();
@@ -288,26 +287,14 @@ void YACReaderTranslator::populateCombos()
 
 void YACReaderTranslator::play()
 {
-    //QMessageBox::question(this,"xxx",ttsSource.toString());
-#if QT_VERSION >= 0x050000
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    player->setSource(ttsSource);
+#else
     player->setMedia(ttsSource);
+#endif
+
     player->play();
-
-#else
-    MediaSource src(ttsSource);
-    src.setAutoDelete(true);
-    music->setCurrentSource(src);
-    music->play();
-#endif
-}
-
-YACReaderTranslator::~YACReaderTranslator()
-{
-#if QT_VERSION >= 0x050000
-#else
-    delete music;
-#endif
 }
 
 void YACReaderTranslator::mousePressEvent(QMouseEvent *event)
@@ -348,11 +335,11 @@ void TranslationLoader::run()
     QTimer tT;
 
     tT.setSingleShot(true);
-    connect(&tT, SIGNAL(timeout()), &q, SLOT(quit()));
-    connect(&manager, SIGNAL(finished(QNetworkReply *)), &q, SLOT(quit()));
+    connect(&tT, &QTimer::timeout, &q, &QEventLoop::quit);
+    connect(&manager, &QNetworkAccessManager::finished, &q, &QEventLoop::quit);
 
     QString url = "http://api.microsofttranslator.com/V2/Ajax.svc/Translate?appid=%1&from=%2&to=%3&text=%4&contentType=text/plain";
-    url = url.arg(APPID).arg(from).arg(to).arg(text);
+    url = url.arg(APPID, from, to, text);
 
     QNetworkReply *reply = manager.get(QNetworkRequest(QUrl(url)));
 
@@ -367,11 +354,11 @@ void TranslationLoader::run()
             utf8 = utf8.remove(utf8.count() - 1, 1);
 
             QString translated(utf8);
-            emit(requestFinished(translated));
+            emit requestFinished(translated);
         } else
-            emit(error());
+            emit error();
     } else {
-        emit(timeOut());
+        emit timeOut();
     }
 }
 
@@ -391,11 +378,11 @@ void TextToSpeachLoader::run()
     QTimer tT;
 
     tT.setSingleShot(true);
-    connect(&tT, SIGNAL(timeout()), &q, SLOT(quit()));
-    connect(&manager, SIGNAL(finished(QNetworkReply *)), &q, SLOT(quit()));
+    connect(&tT, &QTimer::timeout, &q, &QEventLoop::quit);
+    connect(&manager, &QNetworkAccessManager::finished, &q, &QEventLoop::quit);
 
     QString url = "http://api.microsofttranslator.com/V2/Ajax.svc/Speak?appid=%1&language=%2&text=%3&contentType=text/plain";
-    url = url.arg(APPID).arg(language).arg(text);
+    url = url.arg(APPID, language, text);
 
     QNetworkReply *reply = manager.get(QNetworkRequest(QUrl(url)));
 
@@ -410,10 +397,10 @@ void TextToSpeachLoader::run()
             utf8 = utf8.remove(utf8.count() - 1, 1);
             utf8 = utf8.replace("\\", "");
 
-            emit(requestFinished(QUrl(utf8)));
+            emit requestFinished(QUrl(utf8));
         } else
-            emit(error());
+            emit error();
     } else {
-        emit(timeOut());
+        emit timeOut();
     }
 }

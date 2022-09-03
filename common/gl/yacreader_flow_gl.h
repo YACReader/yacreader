@@ -1,10 +1,18 @@
-//OpenGL Coverflow API by J.Roth
+// OpenGL Coverflow API by J.Roth
 #ifndef __YACREADER_FLOW_GL_H
 #define __YACREADER_FLOW_GL_H
 
+#include <QtGlobal>
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QtOpenGLWidgets/QOpenGLWidget>
+#include <QtOpenGL/QOpenGLTexture>
+#else
 #include <QOpenGLWidget>
-#include <QOpenGLFunctions>
 #include <QOpenGLTexture>
+#endif
+
+#include <QOpenGLFunctions>
 #include <QtWidgets>
 
 #include "pictureflow.h" //TODO mover los tipos de flow de sitio
@@ -20,7 +28,7 @@ enum Performance {
     ultraHigh
 };
 
-//Cover Vector
+// Cover Vector
 struct YACReader3DVector {
     float x;
     float y;
@@ -28,10 +36,10 @@ struct YACReader3DVector {
     float rot;
 };
 
-//the image/texture info struct
+// the image/texture info struct
 struct YACReader3DImage {
     QOpenGLTexture *texture;
-    //char name[256];
+    // char name[256];
 
     float width;
     float height;
@@ -44,47 +52,47 @@ struct YACReader3DImage {
 
 struct Preset {
     /*** Animation Settings ***/
-    //sets the speed of the animation
+    // sets the speed of the animation
     float animationStep;
-    //sets the acceleration of the animation
+    // sets the acceleration of the animation
     float animationSpeedUp;
-    //sets the maximum speed of the animation
+    // sets the maximum speed of the animation
     float animationStepMax;
-    //sets the distance of view
+    // sets the distance of view
     float animationFadeOutDist;
-    //sets the rotation increasion
+    // sets the rotation increasion
     float preRotation;
-    //sets the light strenght on rotation
+    // sets the light strenght on rotation
     float viewRotateLightStrenght;
-    //sets the speed of the rotation
+    // sets the speed of the rotation
     float viewRotateAdd;
-    //sets the speed of reversing the rotation
+    // sets the speed of reversing the rotation
     float viewRotateSub;
-    //sets the maximum view angle
+    // sets the maximum view angle
     float viewAngle;
 
     /*** Position Configuration ***/
-    //the X Position of the Coverflow
+    // the X Position of the Coverflow
     float cfX;
-    //the Y Position of the Coverflow
+    // the Y Position of the Coverflow
     float cfY;
-    //the Z Position of the Coverflow
+    // the Z Position of the Coverflow
     float cfZ;
-    //the X Rotation of the Coverflow
+    // the X Rotation of the Coverflow
     float cfRX;
-    //the Y Rotation of the Coverflow
+    // the Y Rotation of the Coverflow
     float cfRY;
-    //the Z Rotation of the Coverflow
+    // the Z Rotation of the Coverflow
     float cfRZ;
-    //sets the rotation of each cover
+    // sets the rotation of each cover
     float rotation;
-    //sets the distance between the covers
+    // sets the distance between the covers
     float xDistance;
-    //sets the distance between the centered and the non centered covers
+    // sets the distance between the centered and the non centered covers
     float centerDistance;
-    //sets the pushback amount
+    // sets the pushback amount
     float zDistance;
-    //sets the elevation amount
+    // sets the elevation amount
     float yDistance;
 
     float zoom;
@@ -110,7 +118,7 @@ protected:
     /*functions*/
     void calcPos(YACReader3DImage &image, int pos);
     void calcVector(YACReader3DVector &vector, int pos);
-    //returns true if the animation is finished for Current
+    // returns true if the animation is finished for Current
     bool animate(YACReader3DVector &currentVector, YACReader3DVector &toVector);
     void drawCover(const YACReader3DImage &image);
 
@@ -126,7 +134,7 @@ protected:
     void paintGL();
     void timerEvent(QTimerEvent *);
 
-    //number of Covers
+    // number of Covers
     int numObjects;
     int lazyPopulateObjects;
     bool showMarks;
@@ -143,25 +151,25 @@ protected:
     /*** Animation Settings ***/
     Preset config;
 
-    //sets/returns the curent selected cover
+    // sets/returns the curent selected cover
     int currentSelected;
 
-    //defines the position of the centered cover
+    // defines the position of the centered cover
     YACReader3DVector centerPos;
 
     /*** Style ***/
-    //sets the amount of shading of the covers in the back (0-1)
+    // sets the amount of shading of the covers in the back (0-1)
     float shadingTop;
     float shadingBottom;
 
-    //sets the reflection strenght (0-1)
+    // sets the reflection strenght (0-1)
     float reflectionUp;
     float reflectionBottom;
 
     /*** System info ***/
     float viewRotate;
 
-    //sets the updateInterval in ms
+    // sets the updateInterval in ms
     static int updateInterval;
 
     // sets flow direction right-to-left (manga mode)
@@ -175,55 +183,55 @@ public:
     YACReaderFlowGL(QWidget *parent = 0, struct Preset p = pressetYACReaderFlowDownConfig);
     virtual ~YACReaderFlowGL();
 
-    //size;
+    // size;
     QSize minimumSizeHint() const;
-    //QSize sizeHint() const;
+    // QSize sizeHint() const;
 
     /*functions*/
 
-    //if called it moves the coverflow to the left
+    // if called it moves the coverflow to the left
     void showPrevious();
-    //if called it moves the coverflow to the right
+    // if called it moves the coverflow to the right
     void showNext();
-    //go to
+    // go to
     void setCurrentIndex(int pos);
-    //must be called whenever the coverflow animation is stopped
+    // must be called whenever the coverflow animation is stopped
     void cleanupAnimation();
-    //Draws the coverflow
+    // Draws the coverflow
     void draw();
-    //updates the coverflow
+    // updates the coverflow
     void updatePositions();
-    //inserts a new item to the coverflow
-    //if item is set to a value > -1 it updates a already set value
-    //otherwise a new entry is set
+    // inserts a new item to the coverflow
+    // if item is set to a value > -1 it updates a already set value
+    // otherwise a new entry is set
     void insert(char *name, QOpenGLTexture *texture, float x, float y, int item = -1);
-    //removes a item
+    // removes a item
     virtual void remove(int item);
-    //replaces the texture of the item 'item' with Tex
+    // replaces the texture of the item 'item' with Tex
     void replace(char *name, QOpenGLTexture *texture, float x, float y, int item);
-    //create n covers with the default nu
+    // create n covers with the default nu
     void populate(int n);
     /*Info*/
-    //retuns the YACReader3DImage Struct of the current selected item
-    //to read title or textures
+    // retuns the YACReader3DImage Struct of the current selected item
+    // to read title or textures
     YACReader3DImage getCurrentSelected();
 
 public slots:
     void setCF_RX(int value);
-    //the Y Rotation of the Coverflow
+    // the Y Rotation of the Coverflow
     void setCF_RY(int value);
-    //the Z Rotation of the Coverflow
+    // the Z Rotation of the Coverflow
     void setCF_RZ(int value);
 
-    //perspective
+    // perspective
     void setZoom(int zoom);
 
     void setRotation(int angle);
-    //sets the distance between the covers
+    // sets the distance between the covers
     void setX_Distance(int distance);
-    //sets the distance between the centered and the non centered covers
+    // sets the distance between the centered and the non centered covers
     void setCenter_Distance(int distance);
-    //sets the pushback amount
+    // sets the pushback amount
     void setZ_Distance(int distance);
 
     void setCF_Y(int value);
@@ -250,11 +258,11 @@ public slots:
     void reset();
     void reload();
 
-    //interface with yacreaderlibrary, compatibility
+    // interface with yacreaderlibrary, compatibility
     void setShowMarks(bool value);
-    void setMarks(QVector<YACReaderComicReadStatus> marks);
+    void setMarks(QVector<YACReader::YACReaderComicReadStatus> marks);
     void setMarkImage(QImage &image);
-    void markSlide(int index, YACReaderComicReadStatus status);
+    void markSlide(int index, YACReader::YACReaderComicReadStatus status);
     void unmarkSlide(int index);
     void setSlideSize(QSize size);
     void clear();
@@ -262,10 +270,10 @@ public slots:
     void showSlide(int index);
     int centerIndex();
     void updateMarks();
-    //void setFlowType(PictureFlow::FlowType flowType);
+    // void setFlowType(PictureFlow::FlowType flowType);
     void render();
 
-    //void paintEvent(QPaintEvent *event);
+    // void paintEvent(QPaintEvent *event);
     QVector3D getPlaneIntersection(int x, int y, YACReader3DImage plane);
     void mouseDoubleClickEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);

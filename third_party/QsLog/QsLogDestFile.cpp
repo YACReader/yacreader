@@ -24,11 +24,14 @@
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "QsLogDestFile.h"
-#include <QTextCodec>
 #include <QDateTime>
 #include <QString>
 #include <QtGlobal>
 #include <iostream>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QTextCodec>
+#endif
 
 const int QsLogging::SizeRotationStrategy::MaxBackupCount = 10;
 
@@ -148,8 +151,14 @@ QsLogging::FileDestination::FileDestination(const QString& filePath, RotationStr
     if (!mFile.open(QFile::WriteOnly | QFile::Text | mRotationStrategy->recommendedOpenModeFlag())) {
         std::cerr << "QsLog: could not open log file " << qPrintable(filePath);
     }
+
     mOutputStream.setDevice(&mFile);
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    mOutputStream.setEncoding(QStringConverter::Utf8);
+#else
     mOutputStream.setCodec(QTextCodec::codecForName("UTF-8"));
+#endif
 
     mRotationStrategy->setInitialInfo(mFile);
 }
@@ -167,10 +176,14 @@ void QsLogging::FileDestination::write(const LogMessage& message)
         }
         mRotationStrategy->setInitialInfo(mFile);
         mOutputStream.setDevice(&mFile);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        mOutputStream.setEncoding(QStringConverter::Utf8);
+#else
         mOutputStream.setCodec(QTextCodec::codecForName("UTF-8"));
+#endif
     }
 
-    mOutputStream << utf8Message << endl;
+    mOutputStream << utf8Message << Qt::endl;
     mOutputStream.flush();
 }
 

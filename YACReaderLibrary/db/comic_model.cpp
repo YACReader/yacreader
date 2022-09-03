@@ -12,14 +12,12 @@
 #include "query_parser.h"
 #include "reading_list_model.h"
 
-//ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read
+// ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read
 #include "QsLog.h"
 
 ComicModel::ComicModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
-    connect(this, SIGNAL(beforeReset()), this, SIGNAL(modelAboutToBeReset()));
-    connect(this, SIGNAL(reset()), this, SIGNAL(modelReset()));
 }
 
 ComicModel::ComicModel(QSqlQuery &sqlquery, QObject *parent)
@@ -53,7 +51,7 @@ bool ComicModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, i
     return data->formats().contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat);
 }
 
-//TODO: optimize this method (seriously)
+// TODO: optimize this method (seriously)
 bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
 
@@ -80,7 +78,7 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
     std::sort(currentIndexes.begin(), currentIndexes.end());
     QList<ComicItem *> resortedData;
 
-    if (currentIndexes.contains(row)) //no resorting
+    if (currentIndexes.contains(row)) // no resorting
         return false;
 
     ComicItem *destinationItem;
@@ -149,7 +147,7 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
         }
     }
 
-    //TODO fix selection
+    // TODO fix selection
     QList<qulonglong> allComicIds;
     foreach (ComicItem *item, _data) {
         allComicIds << item->data(Id).toULongLong();
@@ -174,7 +172,7 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
     }
     QSqlDatabase::removeDatabase(connectionName);
 
-    //endMoveRows();
+    // endMoveRows();
 
     emit resortedIndexes(newSorting);
     int destSelectedIndex = row < 0 ? _data.length() : row;
@@ -194,8 +192,8 @@ bool ComicModel::canBeResorted()
 
 QMimeData *ComicModel::mimeData(const QModelIndexList &indexes) const
 {
-    //custom model data
-    //application/yacreader-comics-ids + list of ids in a QByteArray
+    // custom model data
+    // application/yacreader-comics-ids + list of ids in a QByteArray
     QList<qulonglong> ids;
     foreach (QModelIndex index, indexes) {
         QLOG_DEBUG() << "dragging : " << index.data(IdRole).toULongLong();
@@ -204,7 +202,7 @@ QMimeData *ComicModel::mimeData(const QModelIndexList &indexes) const
 
     QByteArray data;
     QDataStream out(&data, QIODevice::WriteOnly);
-    out << ids; //serialize the list of identifiers
+    out << ids; // serialize the list of identifiers
 
     auto mimeData = new QMimeData();
     mimeData->setData(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat, data);
@@ -238,6 +236,7 @@ QHash<int, QByteArray> ComicModel::roleNames() const
     roles[RatingRole] = "rating";
     roles[HasBeenOpenedRole] = "has_been_opened";
     roles[CoverPathRole] = "cover_path";
+    roles[PublicationDate] = "date";
 
     return roles;
 }
@@ -247,18 +246,12 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    /*if (index.column() == TableModel::Rating && role == Qt::DecorationRole)
-	{
-		TableItem *item = static_cast<TableItem*>(index.internalPointer());
-		return QPixmap(QString(":/images/rating%1.png").arg(item->data(index.column()).toInt()));
-	}*/
-
     if (role == Qt::DecorationRole) {
         return QVariant();
     }
 
     if (role == Qt::TextAlignmentRole) {
-        switch (index.column()) //TODO obtener esto de la query
+        switch (index.column()) // TODO obtener esto de la query
         {
         case ComicModel::Number:
             return QVariant(Qt::AlignRight | Qt::AlignVCenter);
@@ -273,8 +266,8 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
         }
     }
 
-    //TODO check here if any view is asking for TableModel::Roles
-    //these roles will be used from QML/GridView
+    // TODO check here if any view is asking for TableModel::Roles
+    // these roles will be used from QML/GridView
 
     auto item = static_cast<ComicItem *>(index.internalPointer());
 
@@ -298,6 +291,8 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
         return item->data(ComicModel::HasBeenOpened);
     else if (role == IdRole)
         return item->data(Id);
+    else if (role == PublicationDateRole)
+        return QVariant(localizedDate(item->data(PublicationDate).toString()));
 
     if (role != Qt::DisplayRole)
         return QVariant();
@@ -311,6 +306,10 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
 
     if (index.column() == ComicModel::Rating)
         return QVariant();
+
+    if (index.column() == ComicModel::PublicationDate) {
+        return QVariant(localizedDate(item->data(PublicationDate).toString()));
+    }
 
     return item->data(index.column());
 }
@@ -328,7 +327,7 @@ QVariant ComicModel::headerData(int section, Qt::Orientation orientation,
                                 int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-        switch (section) //TODO obtener esto de la query
+        switch (section) // TODO obtener esto de la query
         {
         case ComicModel::Number:
             return QVariant(QString("#"));
@@ -344,13 +343,15 @@ QVariant ComicModel::headerData(int section, Qt::Orientation orientation,
             return QVariant(QString(tr("Read")));
         case ComicModel::CurrentPage:
             return QVariant(QString(tr("Current Page")));
+        case ComicModel::PublicationDate:
+            return QVariant(QString(tr("Publication Date")));
         case ComicModel::Rating:
             return QVariant(QString(tr("Rating")));
         }
     }
 
     if (orientation == Qt::Horizontal && role == Qt::TextAlignmentRole) {
-        switch (section) //TODO obtener esto de la query
+        switch (section) // TODO obtener esto de la query
         {
         case ComicModel::Number:
             return QVariant(Qt::AlignRight | Qt::AlignVCenter);
@@ -449,7 +450,7 @@ void ComicModel::setupFolderModelData(unsigned long long int folderId, const QSt
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
+        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened,ci.date "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                             "WHERE c.parentId = :parentId");
         selectQuery.bindValue(":parentId", folderId);
@@ -476,7 +477,7 @@ void ComicModel::setupLabelModelData(unsigned long long parentLabel, const QStri
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
+        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened,ci.date "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                             "INNER JOIN comic_label cl ON (c.id == cl.comic_id) "
                             "WHERE cl.label_id = :parentLabelId "
@@ -516,11 +517,11 @@ void ComicModel::setupReadingListModelData(unsigned long long parentReadingList,
         while (subfolders.next())
             ids << subfolders.record().value(0).toULongLong();
 
-        enableResorting = ids.length() == 1; //only resorting if no sublists exist
+        enableResorting = ids.length() == 1; // only resorting if no sublists exist
 
         foreach (qulonglong id, ids) {
             QSqlQuery selectQuery(db);
-            selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
+            selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened,ci.date "
                                 "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                                 "INNER JOIN comic_reading_list crl ON (c.id == crl.comic_id) "
                                 "WHERE crl.reading_list_id = :parentReadingList "
@@ -528,7 +529,7 @@ void ComicModel::setupReadingListModelData(unsigned long long parentReadingList,
             selectQuery.bindValue(":parentReadingList", id);
             selectQuery.exec();
 
-            //TODO, extra information is needed (resorting)
+            // TODO, extra information is needed (resorting)
             QList<ComicItem *> tempData = _data;
             _data.clear();
 
@@ -557,7 +558,7 @@ void ComicModel::setupFavoritesModelData(const QString &databasePath)
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
+        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened,ci.date "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                             "INNER JOIN comic_default_reading_list cdrl ON (c.id == cdrl.comic_id) "
                             "WHERE cdrl.default_reading_list_id = :parentDefaultListId "
@@ -586,7 +587,7 @@ void ComicModel::setupReadingModelData(const QString &databasePath)
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
+        selectQuery.prepare("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened,ci.date "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                             "WHERE ci.hasBeenOpened = 1 AND ci.read = 0 "
                             "ORDER BY ci.lastTimeOpened DESC");
@@ -651,7 +652,7 @@ void ComicModel::setupModelData(QSqlQuery &sqlquery)
     });
 }
 
-//comics are sorted by "ordering", the sorting is done in the sql query
+// comics are sorted by "ordering", the sorting is done in the sql query
 void ComicModel::setupModelDataForList(QSqlQuery &sqlquery)
 {
     int numColumns = sqlquery.record().count();
@@ -709,7 +710,7 @@ QVector<YACReaderComicReadStatus> ComicModel::getReadList()
     }
     return readList;
 }
-//TODO untested, this method is no longer used
+// TODO untested, this method is no longer used
 QVector<YACReaderComicReadStatus> ComicModel::setAllComicsRead(YACReaderComicReadStatus read)
 {
     return setComicsRead(persistentIndexList(), read);
@@ -744,7 +745,7 @@ QList<ComicDB> ComicModel::getComics(QList<QModelIndex> list)
     }
     return comics;
 }
-//TODO
+// TODO
 QVector<YACReaderComicReadStatus> ComicModel::setComicsRead(QList<QModelIndex> list, YACReaderComicReadStatus read)
 {
     QString connectionName = "";
@@ -834,7 +835,7 @@ QModelIndex ComicModel::getIndexFromId(quint64 id)
     return index(i, 0);
 }
 
-//TODO completely inefficiently
+// TODO completely inefficiently
 QList<QModelIndex> ComicModel::getIndexesFromIds(const QList<qulonglong> &comicIds)
 {
     QList<QModelIndex> comicsIndexes;
@@ -1085,7 +1086,7 @@ void ComicModel::updateRating(int rating, QModelIndex mi)
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-        //TODO optimize update
+        // TODO optimize update
 
         comic.info.rating = rating;
         _data[mi.row()]->setData(ComicModel::Rating, rating);
@@ -1095,4 +1096,34 @@ void ComicModel::updateRating(int rating, QModelIndex mi)
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
+}
+
+QString ComicModel::localizedDate(const QString &dbDate) const
+{
+    auto dateComponents = dbDate.split("/");
+
+    if (dateComponents.length() == 3) {
+        auto dayString = dateComponents[0];
+        auto monthString = dateComponents[1];
+        auto yearString = dateComponents[2];
+
+        auto hasDay = !dayString.isEmpty();
+        auto hasMonth = !monthString.isEmpty();
+        auto hasYear = !yearString.isEmpty();
+
+        auto day = hasDay ? dayString.toInt() : 1;
+        auto month = hasMonth ? monthString.toInt() : 1;
+        auto year = hasYear ? yearString.toInt() : 1;
+
+        auto locale = QLocale();
+        auto date = QDate(year, month, day);
+        auto dateTime = QDateTime();
+        dateTime.setDate(date);
+
+        if (hasDay && hasMonth && hasYear) {
+            return locale.toString(dateTime, locale.dateFormat(QLocale::ShortFormat));
+        }
+    }
+
+    return dbDate; // TODO
 }

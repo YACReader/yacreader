@@ -11,7 +11,7 @@ YACReaderSliderAction::YACReaderSliderAction(QWidget *parent)
     widget = new YACReaderSlider();
     setDefaultWidget(widget);
 
-    connect(widget, SIGNAL(zoomRatioChanged(int)), this, SIGNAL(zoomRatioChanged(int)));
+    connect(widget, &YACReaderSlider::zoomRatioChanged, this, &YACReaderSliderAction::zoomRatioChanged);
 }
 
 void YACReaderSliderAction::updateText(int value)
@@ -55,7 +55,7 @@ YACReaderSlider::YACReaderSlider(QWidget *parent)
     pLayout->addWidget(resetButton, 1, Qt::AlignHCenter | Qt::AlignBottom);
     pLayout->setSpacing(elementsSpacing);
 
-    pLayout->setMargin(0);
+    pLayout->setContentsMargins(0, 0, 0, 0);
 
     setLayout(pLayout);
     setAutoFillBackground(false);
@@ -79,7 +79,7 @@ void YACReaderSlider::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
-    painter.fillRect(0, 0, width(), height(), QColor("#BB000000"));
+    painter.fillRect(0, 0, width(), height(), QColor(0xBB000000));
 }
 
 void YACReaderSlider::show()

@@ -53,7 +53,7 @@ void PageControllerV2::service(HttpRequest &request, HttpResponse &response)
     }
 
     if (comicFile->hasBeenAnErrorOpening()) {
-        //delete comicFile;
+        // delete comicFile;
         if (remote)
             ySession->dismissCurrentRemoteComic();
         else
@@ -87,7 +87,7 @@ void PageControllerV2::service(HttpRequest &request, HttpResponse &response)
                 }
             } else {
                 if (comicId != currentComicId) {
-                    //delete comicFile;
+                    // delete comicFile;
                     if (remote)
                         ySession->dismissCurrentRemoteComic();
                     else

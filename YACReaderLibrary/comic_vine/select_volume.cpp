@@ -12,8 +12,10 @@
 #include <QSortFilterProxyModel>
 #include <QToolButton>
 #include <QVBoxLayout>
+#include <QAction>
 
 #include "scraper_tableview.h"
+#include "scraper_lineedit.h"
 
 #include "volumes_model.h"
 #include "comic_vine_client.h"
@@ -26,6 +28,7 @@ SelectVolume::SelectVolume(QWidget *parent)
     : ScraperSelector(parent), model(0)
 {
     proxyModel = new QSortFilterProxyModel;
+    proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 
     QString labelStylesheet = "QLabel {color:white; font-size:12px;font-family:Arial;}";
 
@@ -36,8 +39,9 @@ SelectVolume::SelectVolume(QWidget *parent)
     QWidget *leftWidget = new QWidget;
     auto left = new QVBoxLayout;
     auto content = new QGridLayout;
+    auto top = new QHBoxLayout;
 
-    //widgets
+    // widgets
     cover = new QLabel();
     cover->setScaledContents(true);
     cover->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
@@ -47,17 +51,25 @@ SelectVolume::SelectVolume(QWidget *parent)
 
     tableVolumes = new ScraperTableView();
     tableVolumes->setSortingEnabled(true);
-#if QT_VERSION >= 0x050000
     tableVolumes->horizontalHeader()->setSectionsClickable(true);
-#else
-    tableVolumes->horizontalHeader()->setClickable(true);
-#endif
-    //tableVolumes->horizontalHeader()->setSortIndicatorShown(false);
-    connect(tableVolumes->horizontalHeader(), SIGNAL(sectionClicked(int)), tableVolumes, SLOT(sortByColumn(int)));
-    //connections
-    connect(tableVolumes, SIGNAL(clicked(QModelIndex)), this, SLOT(loadVolumeInfo(QModelIndex)));
+
+    filterEdit = new ScraperLineEdit(tr("Filter:"));
+    filterEdit->setMaximumWidth(200);
+    filterEdit->setClearButtonEnabled(true);
+
+    connect(filterEdit, &QLineEdit::textChanged, proxyModel, &QSortFilterProxyModel::setFilterFixedString);
+
+    connect(tableVolumes->horizontalHeader(), &QHeaderView::sectionClicked,
+            [=](int index) { tableVolumes->horizontalHeader()->sortIndicatorSection() == index ? tableVolumes->sortByColumn(index, tableVolumes->horizontalHeader()->sortIndicatorOrder() == Qt::AscendingOrder ? Qt::DescendingOrder : Qt::AscendingOrder)
+                                                                                               : tableVolumes->sortByColumn(index, Qt::AscendingOrder); });
+    // connections
+    connect(tableVolumes, &QAbstractItemView::clicked, this, &SelectVolume::loadVolumeInfo);
 
     paginator->setCustomLabel(tr("volumes"));
+
+    top->addWidget(label);
+    top->addStretch();
+    top->addWidget(filterEdit);
 
     left->addWidget(cover);
     left->addWidget(detailLabel, 1);
@@ -74,7 +86,7 @@ SelectVolume::SelectVolume(QWidget *parent)
     content->setRowStretch(0, 1);
 
     l->addSpacing(15);
-    l->addWidget(label);
+    l->addLayout(top);
     l->addSpacing(5);
     l->addLayout(content);
 
@@ -87,7 +99,7 @@ void SelectVolume::load(const QString &json, const QString &searchString)
 {
     auto tempM = new VolumesModel();
     tempM->load(json);
-    //tableVolumes->setModel(tempM);
+    // tableVolumes->setModel(tempM);
 
     proxyModel->setSourceModel(tempM);
     tableVolumes->setModel(proxyModel);
@@ -109,26 +121,37 @@ void SelectVolume::load(const QString &json, const QString &searchString)
     ScraperSelector::load(json, searchString);
 }
 
+void SelectVolume::clearFilter()
+{
+    filterEdit->clear();
+}
+
 SelectVolume::~SelectVolume() { }
 
 void SelectVolume::loadVolumeInfo(const QModelIndex &omi)
 {
+    QString msgStyle = "<font color='#AAAAAA'>%1</font>";
+
     QModelIndex mi = proxyModel->mapToSource(omi);
+    if (!mi.isValid()) {
+        cover->clear();
+        detailLabel->setAltText(msgStyle.arg(tr("Nothing found, clear the filter if any.")));
+        return;
+    }
     QString coverURL = model->getCoverURL(mi);
     QString id = model->getVolumeId(mi);
 
-    QString loadingStyle = "<font color='#AAAAAA'>%1</font>";
-    cover->setText(loadingStyle.arg(tr("loading cover")));
-    detailLabel->setAltText(loadingStyle.arg(tr("loading description")));
+    cover->setText(msgStyle.arg(tr("loading cover")));
+    detailLabel->setAltText(msgStyle.arg(tr("loading description")));
 
     auto comicVineClient = new ComicVineClient;
-    connect(comicVineClient, SIGNAL(seriesCover(const QByteArray &)), this, SLOT(setCover(const QByteArray &)));
-    connect(comicVineClient, SIGNAL(finished()), comicVineClient, SLOT(deleteLater()));
+    connect(comicVineClient, &ComicVineClient::seriesCover, this, &SelectVolume::setCover);
+    connect(comicVineClient, &ComicVineClient::finished, comicVineClient, &QObject::deleteLater);
     comicVineClient->getSeriesCover(coverURL);
 
     auto comicVineClient2 = new ComicVineClient;
-    connect(comicVineClient2, SIGNAL(seriesDetail(QString)), this, SLOT(setDescription(QString)));
-    connect(comicVineClient2, SIGNAL(finished()), comicVineClient2, SLOT(deleteLater()));
+    connect(comicVineClient2, &ComicVineClient::seriesDetail, this, &SelectVolume::setDescription);
+    connect(comicVineClient2, &ComicVineClient::finished, comicVineClient2, &QObject::deleteLater);
     comicVineClient2->getSeriesDetail(id);
 }
 

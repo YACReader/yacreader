@@ -24,7 +24,7 @@ void YACReaderFoldersView::dragEnterEvent(QDragEnterEvent *event)
         urlList = event->mimeData()->urls();
         QString currentPath;
         foreach (QUrl url, urlList) {
-            //comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
+            // comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
             currentPath = url.toLocalFile();
             if (Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir()) {
                 event->acceptProposedAction();

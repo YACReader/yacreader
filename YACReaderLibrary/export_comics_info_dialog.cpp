@@ -17,21 +17,21 @@ ExportComicsInfoDialog::ExportComicsInfoDialog(QWidget *parent)
 
     accept = new QPushButton(tr("Create"));
     accept->setDisabled(true);
-    connect(accept, SIGNAL(clicked()), this, SLOT(exportComicsInfo()));
+    connect(accept, &QAbstractButton::clicked, this, &ExportComicsInfoDialog::exportComicsInfo);
 
     cancel = new QPushButton(tr("Cancel"));
-    connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
-    connect(cancel, SIGNAL(clicked()), this, SIGNAL(rejected()));
+    connect(cancel, &QAbstractButton::clicked, this, &ExportComicsInfoDialog::close);
+    connect(cancel, &QAbstractButton::clicked, this, &QDialog::rejected);
 
     find = new QPushButton(QIcon(":/images/find_folder.png"), "");
-    connect(find, SIGNAL(clicked()), this, SLOT(findPath()));
+    connect(find, &QAbstractButton::clicked, this, &ExportComicsInfoDialog::findPath);
 
     auto libraryLayout = new QHBoxLayout;
 
     libraryLayout->addWidget(textLabel);
     libraryLayout->addWidget(path);
     libraryLayout->addWidget(find);
-    libraryLayout->setStretchFactor(find, 0); //TODO
+    libraryLayout->setStretchFactor(find, 0); // TODO
 
     auto bottomLayout = new QHBoxLayout;
     bottomLayout->addStretch();
@@ -65,7 +65,7 @@ void ExportComicsInfoDialog::findPath()
 {
     QString s = QFileDialog::getSaveFileName(this, tr("Destination database name"), ".", "*.ydb");
     if (!s.isEmpty()) {
-        path->setText(s);
+        path->setText(s.endsWith(".ydb") ? s : s + ".ydb");
         accept->setEnabled(true);
     }
 }

@@ -21,7 +21,8 @@ jobs:
       dir C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin
       choco install -y wget
       choco install innosetup
-      wget "https://sourceforge.net/projects/sevenzip/files/7-Zip/18.05/7z1805-src.7z" -P $(Build.SourcesDirectory)\compressed_archive
+      mkdir $(Build.SourcesDirectory)\compressed_archive
+      wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/7z1805-src.7z?raw=true" -O $(Build.SourcesDirectory)\compressed_archive\7z1805-src.7z
       7z x $(Build.SourcesDirectory)\compressed_archive\7z1805-src.7z -o$(Build.SourcesDirectory)\compressed_archive\lib7zip
       wget "${{ parameters.vc_redist_url }}" -O $(Build.SourcesDirectory)\${{ parameters.vc_redist_file_name }}
     displayName: 'Install dependencies'
@@ -32,6 +33,11 @@ jobs:
       qmake CONFIG+="7zip" %DEFINES_VAR%
       nmake
     displayName: 'Build'
+  - script: |
+      call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\${{ parameters.vc_vars }}"
+      set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
+      nmake check TESTARGS="-maxwarnings 100000"
+    displayName: 'Run tests'
   - script: |
       set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
       cd $(Build.SourcesDirectory)\ci\win

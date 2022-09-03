@@ -9,10 +9,10 @@ using stefanfrings::HttpSessionStore;
 YACReaderHttpSessionStore::YACReaderHttpSessionStore(HttpSessionStore *sessionStore, QObject *parent)
     : QObject(parent), sessionStore(sessionStore)
 {
-    //sessions are no longer http sessions in v2, we need another mechanism for cleaning
+    // sessions are no longer http sessions in v2, we need another mechanism for cleaning
 
-    //connect(&cleanupTimer,SIGNAL(timeout()),this,SLOT(sessionTimerEvent()));
-    //cleanupTimer.start(60000);
+    // connect(&cleanupTimer,SIGNAL(timeout()),this,SLOT(sessionTimerEvent()));
+    // cleanupTimer.start(60000);
 }
 
 void YACReaderHttpSessionStore::addYACReaderHttpSession(const QByteArray &httpSessionId, YACReaderHttpSession *yacreaderHttpSession)
@@ -31,7 +31,7 @@ YACReaderHttpSession *YACReaderHttpSessionStore::getYACReaderSessionHttpSession(
 
 void YACReaderHttpSessionStore::sessionTimerEvent()
 {
-    //sessions are no longer http sessions in v2, we are using a token, so sessionStore->getSession(id).isNull() is always true.
+    // sessions are no longer http sessions in v2, we are using a token, so sessionStore->getSession(id).isNull() is always true.
     /*QMutexLocker locker(&mutex);
     for(const QByteArray &id : sessions.keys())
     {

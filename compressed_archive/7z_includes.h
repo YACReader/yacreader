@@ -1,7 +1,7 @@
 #ifndef _7Z_INCLUDES_H
 #define _7Z_INCLUDES_H
 
-//WIN includes
+// WIN includes
 #ifdef Q_OS_WIN
 extern "C" {
 #include "lib7zip/C/Alloc.h"
@@ -29,7 +29,7 @@ extern "C" {
 #include "lib7zip/CPP/7zip/Common/StreamUtils.h"
 
 #else
-//POSIX includes
+// POSIX includes
 
 extern "C" {
 #include "libp7zip/C/Alloc.h"
@@ -41,8 +41,8 @@ extern "C" {
 #include "libp7zip/CPP/Common/Common.h"
 #include "libp7zip/CPP/Common/MyCom.h"
 
-//macos
-//typedef int BOOL; ---> typedef signed char BOOL;
+// macos
+// typedef int BOOL; ---> typedef signed char BOOL;
 #include "libp7zip/CPP/include_windows/windows.h"
 #include "libp7zip/CPP/include_windows/basetyps.h"
 #include "libp7zip/CPP/include_windows/tchar.h"

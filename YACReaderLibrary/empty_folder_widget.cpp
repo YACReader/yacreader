@@ -47,13 +47,13 @@ public:
 
         QRect textRect = option.rect;
 
-        textRect.setLeft(std::max(0, (option.rect.size().width() - fm.width(text)) / 2));
+        textRect.setLeft(std::max(0, (option.rect.size().width() - fm.horizontalAdvance(text)) / 2));
 
         painter->drawText(textRect, text);
 
         painter->restore();
 
-        //TODO add mouse hover style ??
+        // TODO add mouse hover style ??
     }
 
     QSize sizeHint(const QStyleOptionViewItem &option,
@@ -62,7 +62,7 @@ public:
         QFontMetrics fm(option.font);
         QString text = qvariant_cast<QString>(index.data(Qt::DisplayRole));
 
-        return QSize(fm.width(text), fm.height());
+        return QSize(fm.horizontalAdvance(text), fm.height());
     }
 };
 
@@ -114,7 +114,7 @@ EmptyFolderWidget::EmptyFolderWidget(QWidget *parent)
     layout->addSpacing(12);
     layout->addWidget(foldersView, 1);
     layout->addStretch();
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
 
     setContentsMargins(0, 0, 0, 0);
@@ -125,7 +125,7 @@ EmptyFolderWidget::EmptyFolderWidget(QWidget *parent)
 
     setAcceptDrops(true);
 
-    connect(foldersView, SIGNAL(clicked(QModelIndex)), this, SLOT(onItemClicked(QModelIndex)));
+    connect(foldersView, &QAbstractItemView::clicked, this, &EmptyFolderWidget::onItemClicked);
 }
 
 void EmptyFolderWidget::setSubfolders(const QModelIndex &mi, const QStringList &foldersNames)
@@ -146,7 +146,7 @@ void EmptyFolderWidget::onItemClicked(const QModelIndex &mi)
     emit subfolderSelected(parent, mi.row());
 }
 
-//TODO remove repeated code in drag & drop support....
+// TODO remove repeated code in drag & drop support....
 void EmptyFolderWidget::dragEnterEvent(QDragEnterEvent *event)
 {
     QList<QUrl> urlList;
@@ -155,7 +155,7 @@ void EmptyFolderWidget::dragEnterEvent(QDragEnterEvent *event)
         urlList = event->mimeData()->urls();
         QString currentPath;
         foreach (QUrl url, urlList) {
-            //comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
+            // comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
             currentPath = url.toLocalFile();
             if (Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir()) {
                 event->acceptProposedAction();

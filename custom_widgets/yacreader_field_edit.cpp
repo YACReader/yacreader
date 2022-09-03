@@ -10,7 +10,7 @@ YACReaderFieldEdit::YACReaderFieldEdit(QWidget *parent)
     setModified(false);
     restore = new QAction(tr("Restore to default"), this);
     this->addAction(restore);
-    //this->setContextMenuPolicy(Qt::ActionsContextMenu);
+    // this->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
 void YACReaderFieldEdit::focusInEvent(QFocusEvent *e)

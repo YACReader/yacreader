@@ -45,7 +45,7 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
 
                     ComicInfo info;
                     info.currentPage = currentPage;
-                    info.hash = hash; //TODO remove the hash check and add UUIDs for libraries
+                    info.hash = hash; // TODO remove the hash check and add UUIDs for libraries
                     info.id = comicId;
 
                     currentRating = comicInfoProgress.at(4).toInt();
@@ -95,7 +95,7 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
 
         response.write(output.toJson(QJsonDocument::Compact), true);
 
-        //TODO does it make sense to send these back? The source is not YACReaderLibrary...
+        // TODO does it make sense to send these back? The source is not YACReaderLibrary...
         DBHelper::updateFromRemoteClientWithHash(comicsWithNoLibrary);
 
     } else {

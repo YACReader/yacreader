@@ -43,7 +43,6 @@ public:
     */
     HttpSession& operator= (const HttpSession& other);
 
-
     /**
       Destructor. Detaches from the shared data.
     */
@@ -54,7 +53,7 @@ public:
 
     /**
       Null sessions cannot store data. All calls to set() and remove() 
-      do not have any effect.This method is thread safe.
+      do not have any effect. This method is thread safe.
     */
     bool isNull() const;
 

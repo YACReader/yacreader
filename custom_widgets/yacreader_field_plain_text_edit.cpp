@@ -9,7 +9,7 @@ YACReaderFieldPlainTextEdit::YACReaderFieldPlainTextEdit(QWidget *parent)
     setPlainText(tr("Click to overwrite"));
     restore = new QAction(tr("Restore to default"), this);
     this->addAction(restore);
-    //this->setContextMenuPolicy(Qt::ActionsContextMenu);
+    // this->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
 void YACReaderFieldPlainTextEdit::focusInEvent(QFocusEvent *e)
@@ -26,14 +26,14 @@ void YACReaderFieldPlainTextEdit::focusInEvent(QFocusEvent *e)
 void YACReaderFieldPlainTextEdit::focusOutEvent(QFocusEvent *e)
 {
     /*if (e->reason() == Qt::MouseFocusReason  || e->reason() == Qt::TabFocusReason)
-	{
-		if(toPlainText().isEmpty())
-		{
-			setPlainText(tr("Click to overwrite"));
-			document()->setModified(false);
-		}
-	}
-	*/
+        {
+                if(toPlainText().isEmpty())
+                {
+                        setPlainText(tr("Click to overwrite"));
+                        document()->setModified(false);
+                }
+        }
+        */
     QPlainTextEdit::focusOutEvent(e);
 }
 

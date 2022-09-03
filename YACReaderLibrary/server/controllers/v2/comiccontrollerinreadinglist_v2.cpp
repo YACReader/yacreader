@@ -53,11 +53,11 @@ void ComicControllerInReadingListV2::service(HttpRequest &request, HttpResponse 
 
         comicFile->moveToThread(thread);
 
-        connect(comicFile, SIGNAL(errorOpening()), thread, SLOT(quit()));
-        connect(comicFile, SIGNAL(errorOpening(QString)), thread, SLOT(quit()));
-        connect(comicFile, SIGNAL(imagesLoaded()), thread, SLOT(quit()));
-        connect(thread, SIGNAL(started()), comicFile, SLOT(process()));
-        connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+        connect(comicFile, QOverload<>::of(&Comic::errorOpening), thread, &QThread::quit);
+        connect(comicFile, QOverload<QString>::of(&Comic::errorOpening), thread, &QThread::quit);
+        connect(comicFile, &Comic::imagesLoaded, thread, &QThread::quit);
+        connect(thread, &QThread::started, comicFile, &Comic::process);
+        connect(thread, &QThread::finished, thread, &QObject::deleteLater);
 
         comicFile->load(libraries.getPath(libraryId) + comic.path);
 
@@ -68,7 +68,7 @@ void ComicControllerInReadingListV2::service(HttpRequest &request, HttpResponse 
         ySession->setCurrentRemoteComic(comic.id, comicFile);
 
         response.setHeader("Content-Type", "text/plain; charset=utf-8");
-        //TODO this field is not used by the client!
+        // TODO this field is not used by the client!
         response.write(QString("library:%1\r\n").arg(libraryName).toUtf8());
         response.write(QString("libraryId:%1\r\n").arg(libraryId).toUtf8());
 
@@ -94,14 +94,14 @@ void ComicControllerInReadingListV2::service(HttpRequest &request, HttpResponse 
                 response.write(QString("nextComicHash:%1\r\n").arg(nextComic.info.hash).toUtf8());
             }
         } else {
-            //ERROR
+            // ERROR
         }
 
         response.write(comic.toTXT().toUtf8(), true);
     } else {
-        //delete comicFile;
+        // delete comicFile;
         response.setStatus(404, "not found");
         response.write("404 not found", true);
     }
-    //response.write(t.toLatin1(),true);
+    // response.write(t.toLatin1(),true);
 }

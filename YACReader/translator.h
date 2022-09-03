@@ -13,20 +13,15 @@ class YACReaderBusyWidget;
 #include <QWidget>
 #include <QThread>
 #include <QUrl>
+#include "viewer.h"
 
-#if QT_VERSION >= 0x050000
 class QMediaPlayer;
-#else
-#include <Phonon/MediaObject>
-using namespace Phonon;
-#endif
 
 class YACReaderTranslator : public QWidget
 {
     Q_OBJECT
 public:
-    YACReaderTranslator(QWidget *parent = nullptr);
-    ~YACReaderTranslator() override;
+    YACReaderTranslator(Viewer *parent = nullptr);
 
 public slots:
     void play();
@@ -49,11 +44,7 @@ protected:
     QPoint click;
 
 private:
-#if QT_VERSION >= 0x050000
     QMediaPlayer *player;
-#else
-    MediaObject *music;
-#endif
 
     QTextEdit *text;
     QComboBox *from;

@@ -15,7 +15,7 @@ ApiKeyDialog::ApiKeyDialog(QWidget *parent)
     auto layout = new QVBoxLayout;
     auto buttonsLayout = new QHBoxLayout;
 
-    settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+    settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
     settings->beginGroup("ComicVine");
 
     QLabel *info = new QLabel(tr("Before you can connect to Comic Vine, you need your own API key. Please, get one free <a href=\"http://www.comicvine.com/api/\">here</a>"));
@@ -23,14 +23,14 @@ ApiKeyDialog::ApiKeyDialog(QWidget *parent)
     info->setOpenExternalLinks(true);
     edit = new QLineEdit();
     edit->setPlaceholderText(tr("Paste here your Comic Vine API key"));
-    connect(edit, SIGNAL(textChanged(QString)), this, SLOT(enableAccept(QString)));
+    connect(edit, &QLineEdit::textChanged, this, &ApiKeyDialog::enableAccept);
 
     acceptButton = new QPushButton(tr("Accept"));
     acceptButton->setDisabled(true);
-    connect(acceptButton, SIGNAL(clicked()), this, SLOT(saveApiKey()));
+    connect(acceptButton, &QAbstractButton::clicked, this, &ApiKeyDialog::saveApiKey);
 
     cancelButton = new QPushButton(tr("Cancel"));
-    connect(cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(cancelButton, &QAbstractButton::clicked, this, &QDialog::reject);
 
     layout->addWidget(info);
     layout->addWidget(edit);
@@ -57,7 +57,7 @@ ApiKeyDialog::~ApiKeyDialog()
 
 void ApiKeyDialog::enableAccept(const QString &text)
 {
-    //TODO key validation
+    // TODO key validation
     acceptButton->setEnabled(!text.isEmpty());
 }
 

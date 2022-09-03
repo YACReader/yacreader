@@ -22,7 +22,7 @@ void Configuration::load(QSettings *settings)
 {
     this->settings = settings;
 
-    //TODO set defaults
+    // TODO set defaults
     if (!settings->contains(PATH))
         settings->setValue(PATH, ".");
     if (!settings->contains(GO_TO_FLOW_SIZE))
@@ -41,8 +41,6 @@ void Configuration::load(QSettings *settings)
         settings->setValue(DOUBLE_PAGE, false);
     if (!settings->contains(BACKGROUND_COLOR))
         settings->setValue(BACKGROUND_COLOR, QColor(40, 40, 40));
-    if (!settings->contains(ALWAYS_ON_TOP))
-        settings->setValue(ALWAYS_ON_TOP, false);
     if (!settings->contains(SHOW_TOOLBARS))
         settings->setValue(SHOW_TOOLBARS, true);
     if (!settings->contains(QUICK_NAVI_MODE))
@@ -53,7 +51,7 @@ void Configuration::updateOpenRecentList(QString path)
     QStringList list = openRecentList();
     list.removeAll(path);
     list.prepend(path);
-    //TODO: Make list lenght configurable
+    // TODO: Make list lenght configurable
     while (list.length() > getOpenRecentSize()) {
         list.removeLast();
     }

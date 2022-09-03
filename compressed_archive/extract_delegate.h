@@ -11,4 +11,4 @@ public:
     virtual void unknownError(int index) = 0;
 };
 
-#endif //EXTRACT_DELEGATE_H
+#endif // EXTRACT_DELEGATE_H

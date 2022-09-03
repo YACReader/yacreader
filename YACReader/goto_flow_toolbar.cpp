@@ -7,7 +7,7 @@
 GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
     : QStackedWidget(parent)
 {
-    //elementos interactivos
+    // elementos interactivos
     auto normal = new QWidget(this); // container widget
     auto quickNavi = new QWidget(this); // container widget
     addWidget(normal);
@@ -32,7 +32,8 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
             "  border-radius: 1px;"
             "}");
 
-    connect(slider, &QSlider::valueChanged, this, [&](int v) { emit(setCenter(v)); });
+    connect(slider, &QSlider::valueChanged, this, &GoToFlowToolBar::setCenter);
+    connect(slider, &QSlider::valueChanged, this, &GoToFlowToolBar::setPage);
 
     pageHint = new QLabel("<b>" + tr("Page : ") + "</b>", this);
     v = new QIntValidator(this);
@@ -43,34 +44,34 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
     edit->setStyleSheet("QLineEdit {border: 1px solid #77000000; background: #55000000; color: white; padding: 3px 5px 5px 5px; margin: 13px 5px 12px 5px; font-weight:bold}");
     edit->setFixedSize(54, 50);
     edit->setAttribute(Qt::WA_MacShowFocusRect, false);
-    //edit->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
-    //edit->resize(QSize(54,50));
+    // edit->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
+    // edit->resize(QSize(54,50));
     edit->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-    //edit->setAutoFillBackground(false);
-    connect(edit, SIGNAL(returnPressed()), this, SLOT(goTo()));
+    // edit->setAutoFillBackground(false);
+    connect(edit, &QLineEdit::returnPressed, this, &GoToFlowToolBar::goTo);
 
     QString centerButtonCSS = "QPushButton {background-image: url(:/images/imgCenterSlide.png); width: 100%; height:100%; background-repeat: none; border: none;} "
                               "QPushButton:focus { border: none; outline: none;}"
                               "QPushButton:pressed  {background-image: url(:/images/imgCenterSlidePressed.png); width: 100%; height:100%; background-repeat: none; border: none;} ";
     centerButton = new QPushButton(this);
-    //centerButton->setIcon(QIcon(":/images/center.png"));
+    // centerButton->setIcon(QIcon(":/images/center.png"));
     centerButton->setStyleSheet(centerButtonCSS);
     centerButton->setFixedSize(26, 50);
     centerButton->setAttribute(Qt::WA_LayoutUsesWidgetRect, true);
-    connect(centerButton, SIGNAL(clicked()), this, SLOT(centerSlide()));
+    connect(centerButton, &QAbstractButton::clicked, this, &GoToFlowToolBar::centerSlide);
 
     QString goToButtonCSS = "QPushButton {background-image: url(:/images/imgGoToSlide.png); width: 100%; height:100%; background-repeat: none; border: none;} "
                             "QPushButton:focus { border: none; outline: none;}"
                             "QPushButton:pressed  {background-image: url(:/images/imgGoToSlidePressed.png); width: 100%; height:100%; background-repeat: none; border: none;} ";
     goToButton = new QPushButton(this);
-    //goToButton->setIcon(QIcon(":/images/goto.png"));
+    // goToButton->setIcon(QIcon(":/images/goto.png"));
     goToButton->setStyleSheet(goToButtonCSS);
     goToButton->setFixedSize(32, 50);
     goToButton->setAttribute(Qt::WA_LayoutUsesWidgetRect, true);
 
-    connect(goToButton, SIGNAL(clicked()), this, SLOT(goTo()));
+    connect(goToButton, &QPushButton::clicked, this, &GoToFlowToolBar::goTo);
 
-    normalLayout->setMargin(0);
+    normalLayout->setContentsMargins(0, 0, 0, 0);
     normalLayout->setSpacing(0);
     normalLayout->addStretch();
     normalLayout->addWidget(pageHint);
@@ -92,7 +93,7 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
 void GoToFlowToolBar::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    painter.fillRect(0, 0, width(), height(), QColor("#99000000"));
+    painter.fillRect(0, 0, width(), height(), QColor(0x99000000));
 }
 
 void GoToFlowToolBar::setPage(int pageNumber)
@@ -109,14 +110,16 @@ void GoToFlowToolBar::setTop(int numPages)
 
 void GoToFlowToolBar::goTo()
 {
-    if (edit->text().toInt() != 0)
-        emit(goTo(edit->text().toInt() - 1));
+    unsigned int page = edit->text().toInt();
+    if (page >= 1 && page <= v->top()) {
+        emit goToPage(page - 1);
+    }
 }
 
 void GoToFlowToolBar::centerSlide()
 {
     if (edit->text().toInt() != 0)
-        emit(setCenter(edit->text().toInt() - 1));
+        emit setCenter(edit->text().toInt() - 1);
 }
 
 void GoToFlowToolBar::updateOptions()

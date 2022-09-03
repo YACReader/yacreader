@@ -13,11 +13,11 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
 {
     auto layout = new QHBoxLayout;
 
-    settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); //TODO unificar la creación del fichero de config con el servidor
+    settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
     settings->beginGroup("libraryConfig");
-    //FLOW-----------------------------------------------------------------------
+    // FLOW-----------------------------------------------------------------------
     //---------------------------------------------------------------------------
-//FORCE_ANGLE is not used here, because ComicFlowWidgetGL will use OpenGL ES in the future
+// FORCE_ANGLE is not used here, because ComicFlowWidgetGL will use OpenGL ES in the future
 #ifndef NO_OPENGL
     if ((settings->value(USE_OPEN_GL).toBool() == true))
         comicFlow = new ComicFlowWidgetGL(0);
@@ -35,8 +35,8 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
 
     comicFlow->setContextMenuPolicy(Qt::CustomContextMenu);
 
-    //layout-----------------------------------------------
-    sVertical = new QSplitter(Qt::Vertical); //spliter derecha
+    // layout-----------------------------------------------
+    sVertical = new QSplitter(Qt::Vertical); // spliter derecha
 
     stack = new QStackedWidget;
     stack->addWidget(comicFlow);
@@ -48,7 +48,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     auto comicsLayout = new QVBoxLayout;
     comicsLayout->setSpacing(0);
     comicsLayout->setContentsMargins(0, 0, 0, 0);
-    //TODO ComicsView:(set toolbar) comicsLayout->addWidget(editInfoToolBar);
+    // TODO ComicsView:(set toolbar) comicsLayout->addWidget(editInfoToolBar);
 
     tableView = new YACReaderTableView;
     tableView->verticalHeader()->hide();
@@ -59,24 +59,24 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
 
     tableView->setContextMenuPolicy(Qt::CustomContextMenu);
 
-    //config--------------------------------------------------
+    // config--------------------------------------------------
     if (settings->contains(COMICS_VIEW_HEADERS))
         tableView->horizontalHeader()->restoreState(settings->value(COMICS_VIEW_HEADERS).toByteArray());
 
-    //connections---------------------------------------------
-    connect(tableView, SIGNAL(clicked(QModelIndex)), this, SLOT(centerComicFlow(QModelIndex)));
-    connect(tableView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(selectedComicForOpening(QModelIndex)));
-    connect(comicFlow, SIGNAL(centerIndexChanged(int)), this, SLOT(updateTableView(int)));
-    connect(tableView, SIGNAL(comicRated(int, QModelIndex)), this, SIGNAL(comicRated(int, QModelIndex)));
-    connect(comicFlow, SIGNAL(selected(uint)), this, SIGNAL(selected(uint)));
-    connect(tableView->horizontalHeader(), SIGNAL(sectionMoved(int, int, int)), this, SLOT(saveTableHeadersStatus()));
-    connect(tableView->horizontalHeader(), SIGNAL(sectionResized(int, int, int)), this, SLOT(saveTableHeadersStatus()));
-    connect(comicFlow, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(requestedViewContextMenu(QPoint)));
-    connect(tableView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(requestedItemContextMenu(QPoint)));
+    // connections---------------------------------------------
+    connect(tableView, &QAbstractItemView::clicked, this, &ClassicComicsView::centerComicFlow);
+    connect(tableView, &QAbstractItemView::doubleClicked, this, &ClassicComicsView::selectedComicForOpening);
+    connect(comicFlow, &ComicFlowWidget::centerIndexChanged, this, &ClassicComicsView::updateTableView);
+    connect(tableView, &YACReaderTableView::comicRated, this, &ComicsView::comicRated);
+    connect(comicFlow, &ComicFlowWidget::selected, this, &ComicsView::selected);
+    connect(tableView->horizontalHeader(), &QHeaderView::sectionMoved, this, &ClassicComicsView::saveTableHeadersStatus);
+    connect(tableView->horizontalHeader(), &QHeaderView::sectionResized, this, &ClassicComicsView::saveTableHeadersStatus);
+    connect(comicFlow, &QWidget::customContextMenuRequested, this, &ClassicComicsView::requestedViewContextMenu);
+    connect(tableView, &QWidget::customContextMenuRequested, this, &ClassicComicsView::requestedItemContextMenu);
     layout->addWidget(sVertical);
     setLayout(layout);
 
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
 #ifdef Q_OS_MAC
     sVertical->setCollapsible(1, false);
@@ -85,7 +85,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     if (settings->contains(COMICS_VIEW_FLOW_SPLITTER_STATUS))
         sVertical->restoreState(settings->value(COMICS_VIEW_FLOW_SPLITTER_STATUS).toByteArray());
 
-    //hide flow widgets
+    // hide flow widgets
     hideFlowViewAction = new QAction(this);
     hideFlowViewAction->setText(tr("Hide comic flow"));
     hideFlowViewAction->setData(HIDE_COMIC_VIEW_ACTION_YL);
@@ -94,7 +94,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     hideFlowViewAction->setCheckable(true);
     hideFlowViewAction->setChecked(false);
 
-    connect(hideFlowViewAction, SIGNAL(toggled(bool)), this, SLOT(hideComicFlow(bool)));
+    connect(hideFlowViewAction, &QAction::toggled, this, &ClassicComicsView::hideComicFlow);
 }
 
 void ClassicComicsView::hideComicFlow(bool hide)
@@ -114,7 +114,7 @@ void ClassicComicsView::hideComicFlow(bool hide)
     }
 }
 
-//the toolbar has to be populated
+// the toolbar has to be populated
 void ClassicComicsView::setToolBar(QToolBar *toolBar)
 {
     static_cast<QVBoxLayout *>(comics->layout())->insertWidget(0, toolBar);
@@ -133,10 +133,11 @@ void ClassicComicsView::setModel(ComicModel *model)
     if (model == NULL) {
         comicFlow->clear();
     } else {
-        connect(model, SIGNAL(dataChanged(QModelIndex, QModelIndex, QVector<int>)), this, SLOT(applyModelChanges(QModelIndex, QModelIndex, QVector<int>)), Qt::UniqueConnection);
-        connect(model, SIGNAL(rowsRemoved(QModelIndex, int, int)), this, SLOT(removeItemsFromFlow(QModelIndex, int, int)), Qt::UniqueConnection);
-        connect(model, SIGNAL(resortedIndexes(QList<int>)), comicFlow, SLOT(resortCovers(QList<int>)), Qt::UniqueConnection);
-        connect(model, SIGNAL(newSelectedIndex(QModelIndex)), this, SLOT(setCurrentIndex(QModelIndex)), Qt::UniqueConnection);
+        connect(model, &QAbstractItemModel::dataChanged, this, &ClassicComicsView::applyModelChanges, Qt::UniqueConnection);
+        connect(model, &QAbstractItemModel::rowsRemoved, this, &ClassicComicsView::removeItemsFromFlow, Qt::UniqueConnection);
+        // TODO: Missing method resortCovers?
+        connect(model, &ComicModel::resortedIndexes, comicFlow, &ComicFlowWidget::resortCovers, Qt::UniqueConnection);
+        connect(model, &ComicModel::newSelectedIndex, this, &ClassicComicsView::setCurrentIndex, Qt::UniqueConnection);
 
         tableView->setModel(model);
         if (model->rowCount() > 0)
@@ -148,7 +149,7 @@ void ClassicComicsView::setModel(ComicModel *model)
 #else
         tableView->horizontalHeader()->setMovable(true);
 #endif
-        //TODO parametrizar la configuración de las columnas
+        // TODO parametrizar la configuración de las columnas
         /*if(!settings->contains(COMICS_VIEW_HEADERS))
         {*/
         for (int i = 0; i < tableView->horizontalHeader()->count(); i++)
@@ -158,20 +159,21 @@ void ClassicComicsView::setModel(ComicModel *model)
         tableView->horizontalHeader()->showSection(ComicModel::Title);
         tableView->horizontalHeader()->showSection(ComicModel::FileName);
         tableView->horizontalHeader()->showSection(ComicModel::NumPages);
-        tableView->horizontalHeader()->showSection(ComicModel::Hash); //Size is part of the Hash...TODO add Columns::Size to Columns
+        tableView->horizontalHeader()->showSection(ComicModel::Hash); // Size is part of the Hash...TODO add Columns::Size to Columns
         tableView->horizontalHeader()->showSection(ComicModel::ReadColumn);
         tableView->horizontalHeader()->showSection(ComicModel::CurrentPage);
+        tableView->horizontalHeader()->showSection(ComicModel::PublicationDate);
         tableView->horizontalHeader()->showSection(ComicModel::Rating);
         //}
 
-        //debido a un bug, qt4 no es capaz de ajustar el ancho teniendo en cuenta todas la filas (no sólo las visibles)
-        //así que se ecala la primera vez y después se deja el control al usuario.
-        //if(!settings->contains(COMICS_VIEW_HEADERS))
+        // debido a un bug, qt4 no es capaz de ajustar el ancho teniendo en cuenta todas la filas (no sólo las visibles)
+        // así que se ecala la primera vez y después se deja el control al usuario.
+        // if(!settings->contains(COMICS_VIEW_HEADERS))
 
-        QStringList paths = model->getPaths(model->getCurrentPath()); //TODO ComicsView: get currentpath from somewhere currentPath());
+        QStringList paths = model->getPaths(model->getCurrentPath()); // TODO ComicsView: get currentpath from somewhere currentPath());
         comicFlow->setImagePaths(paths);
         comicFlow->setMarks(model->getReadList());
-        //comicFlow->setFocus(Qt::OtherFocusReason);
+        // comicFlow->setFocus(Qt::OtherFocusReason);
 
         if (settings->contains(COMICS_VIEW_HEADERS))
             tableView->horizontalHeader()->restoreState(settings->value(COMICS_VIEW_HEADERS).toByteArray());
@@ -211,7 +213,7 @@ void ClassicComicsView::toFullScreen()
     comicFlow->setCenterIndex(comicFlow->centerIndex());
     comics->hide();
 
-    //showFullScreen() //parent windows
+    // showFullScreen() //parent windows
 
     comicFlow->show();
     comicFlow->setFocus(Qt::OtherFocusReason);
@@ -245,7 +247,7 @@ void ClassicComicsView::enableFilterMode(bool enabled)
         previousSplitterStatus.clear();
     }
 
-    //sVertical->setCollapsible(0,!enabled);
+    // sVertical->setCollapsible(0,!enabled);
     searching = enabled;
 }
 
@@ -363,7 +365,7 @@ void ClassicComicsView::setupSearchingIcon()
     searchingIcon->setLayout(h);
 
     QPalette pal(searchingIcon->palette());
-    pal.setColor(QPalette::Background, Qt::black);
+    pal.setColor(QPalette::Window, Qt::black);
     searchingIcon->setAutoFillBackground(true);
     searchingIcon->setPalette(pal);
 

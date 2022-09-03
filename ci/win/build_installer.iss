@@ -3,6 +3,8 @@ DefaultGroupName=YACReader
 LanguageDetectionMethod=locale
 AppName=YACReader
 AppVerName=YACReader v{#VERSION}.{#BUILD_NUMBER}
+AppVersion={#VERSION}.{#BUILD_NUMBER}
+VersionInfoVersion={#VERSION}
 DefaultDirName={pf}\YACReader
 OutputBaseFilename=YACReader-v{#VERSION}.{#BUILD_NUMBER}-win{#PLATFORM}-{#COMPRESSED_ARCHIVE_BACKEND}
 LicenseFile=COPYING.txt
@@ -44,6 +46,9 @@ Source: Qt5Widgets.dll; DestDir: {app}
 Source: Qt5QuickWidgets.dll; DestDir: {app}
 Source: Qt5QmlModels.dll; DestDir: {app}
 Source: Qt5QmlWorkerScript.dll; DestDir: {app}
+Source: Qt5QuickControls2.dll; DestDir: {app}
+Source: Qt5QuickTemplates2.dll; DestDir: {app}
+Source: Qt5RemoteObjects.dll; DestDir: {app}
 
 ;Qt Angle
 Source: D3Dcompiler_47.dll; DestDir: {app}
@@ -107,6 +112,10 @@ LaunchYACReaderLibrary=Start YACreaderLibrary after finishing installation
 LaunchYACReader=Start YACreader after finishing installation
 
 [Run]
+Filename: {tmp}\vc_redist.{#PLATFORM}.exe; \
+Parameters: "/uninstall /quiet /norestart"; \
+StatusMsg: "Uninstalling VC++ Redistributables..."
+
 Filename: {tmp}\vc_redist.{#PLATFORM}.exe; \
 Parameters: "/install /quiet /norestart"; \
 StatusMsg: "Installing VC++ Redistributables..."

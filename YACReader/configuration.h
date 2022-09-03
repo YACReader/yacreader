@@ -41,11 +41,11 @@ public:
     float getZoomLevel() { return settings->value(ZOOM_LEVEL).toFloat(); }
     void setZoomLevel(float zl) { settings->setValue(ZOOM_LEVEL, zl); }
 
-    //Unified enum based fitmode
+    // Unified enum based fitmode
     YACReader::FitMode getFitMode() { return static_cast<YACReader::FitMode>(settings->value(FITMODE, YACReader::FitMode::FullPage).toInt()); }
     void setFitMode(YACReader::FitMode fitMode) { settings->setValue(FITMODE, static_cast<int>(fitMode)); }
 
-    //openRecent
+    // openRecent
     int getOpenRecentSize() { return settings->value("recentSize", 25).toInt(); }
     QStringList openRecentList() { return settings->value("recentFiles").toStringList(); }
     void updateOpenRecentList(QString path);
@@ -69,8 +69,6 @@ public:
 
     QColor getBackgroundColor() { return settings->value(BACKGROUND_COLOR).value<QColor>(); }
     void setBackgroundColor(const QColor &color) { settings->value(BACKGROUND_COLOR, color); }
-    bool getAlwaysOnTop() { return settings->value(ALWAYS_ON_TOP).toBool(); }
-    void setAlwaysOnTop(bool b) { settings->setValue(ALWAYS_ON_TOP, b); }
     bool getShowToolbars() { return settings->value(SHOW_TOOLBARS).toBool(); }
     void setShowToolbars(bool b) { settings->setValue(SHOW_TOOLBARS, b); }
     bool getShowInformation() { return settings->value(SHOW_INFO, false).toBool(); }
@@ -81,6 +79,8 @@ public:
     void setNumDaysBetweenVersionChecks(int days) { return settings->setValue(NUM_DAYS_BETWEEN_VERSION_CHECKS, days); }
     bool getQuickNaviMode() { return settings->value(QUICK_NAVI_MODE).toBool(); }
     bool getDisableShowOnMouseOver() { return settings->value(DISABLE_MOUSE_OVER_GOTO_FLOW).toBool(); }
+    bool getDoNotTurnPageOnScroll() { return settings->value(DO_NOT_TURN_PAGE_ON_SCROLL, false).toBool(); }
+    bool getUseSingleScrollStepToTurnPage() { return settings->value(USE_SINGLE_SCROLL_STEP_TO_TURN_PAGE, false).toBool(); }
 };
 
 #endif

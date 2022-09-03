@@ -48,6 +48,8 @@
 
 #include "QsLog.h"
 
+#include <QRegExp>
+
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpRequestHandler;
 using stefanfrings::HttpResponse;
@@ -63,7 +65,7 @@ void RequestMapper::loadSessionV1(HttpRequest &request, HttpResponse &response)
     QMutexLocker locker(&mutex);
 
     HttpSession session = Static::sessionStore->getSession(request, response);
-    if (session.contains("ySession")) //session is already alive check if it is needed to update comics
+    if (session.contains("ySession")) // session is already alive check if it is needed to update comics
     {
         auto ySession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(session.getId());
 
@@ -98,7 +100,7 @@ void RequestMapper::loadSessionV1(HttpRequest &request, HttpResponse &response)
         session.set("ySession", "ok");
 
         QString postData = QString::fromUtf8(request.getBody());
-        //response.writeText(postData);
+        // response.writeText(postData);
 
         QList<QString> data = postData.split("\n");
 
@@ -120,7 +122,7 @@ void RequestMapper::loadSessionV1(HttpRequest &request, HttpResponse &response)
                     ySession->setComicOnDevice(hash);
                 }
             }
-        } else //values by default, only for debug purposes.
+        } else // values by default, only for debug purposes.
         {
             ySession->setDeviceType("ipad");
             ySession->setDisplayType("@2x");
@@ -140,7 +142,7 @@ void RequestMapper::loadSessionV2(HttpRequest &request, HttpResponse & /* respon
 
     auto yRecoveredSession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(token);
 
-    if (yRecoveredSession == nullptr) //session is already alive check if it is needed to update comics
+    if (yRecoveredSession == nullptr) // session is already alive check if it is needed to update comics
     {
         auto ySession = new YACReaderHttpSession(this);
 
@@ -166,39 +168,39 @@ void RequestMapper::serviceV1(HttpRequest &request, HttpResponse &response)
 {
     QByteArray path = request.getPath();
 
-    QRegExp folder("/library/.+/folder/[0-9]+/?"); //get comic content
-    QRegExp folderInfo("/library/.+/folder/[0-9]+/info/?"); //get folder info
-    QRegExp comicDownloadInfo("/library/.+/comic/[0-9]+/?"); //get comic info (basic/download info)
-    QRegExp comicFullInfo("/library/.+/comic/[0-9]+/info/?"); //get comic info (full info)
-    QRegExp comicOpen("/library/.+/comic/[0-9]+/remote/?"); //the server will open for reading the comic
-    QRegExp comicUpdate("/library/.+/comic/[0-9]+/update/?"); //get comic info
-    QRegExp comicClose("/library/.+/comic/[0-9]+/close/?"); //the server will close the comic and free memory
-    QRegExp cover("/library/.+/cover/[0-9a-f]+.jpg"); //get comic cover (navigation)
-    QRegExp comicPage("/library/.+/comic/[0-9]+/page/[0-9]+/?"); //get comic page
-    QRegExp comicPageRemote("/library/.+/comic/[0-9]+/page/[0-9]+/remote?"); //get comic page (remote reading)
+    QRegExp folder("/library/.+/folder/[0-9]+/?"); // get comic content
+    QRegExp folderInfo("/library/.+/folder/[0-9]+/info/?"); // get folder info
+    QRegExp comicDownloadInfo("/library/.+/comic/[0-9]+/?"); // get comic info (basic/download info)
+    QRegExp comicFullInfo("/library/.+/comic/[0-9]+/info/?"); // get comic info (full info)
+    QRegExp comicOpen("/library/.+/comic/[0-9]+/remote/?"); // the server will open for reading the comic
+    QRegExp comicUpdate("/library/.+/comic/[0-9]+/update/?"); // get comic info
+    QRegExp comicClose("/library/.+/comic/[0-9]+/close/?"); // the server will close the comic and free memory
+    QRegExp cover("/library/.+/cover/[0-9a-f]+.jpg"); // get comic cover (navigation)
+    QRegExp comicPage("/library/.+/comic/[0-9]+/page/[0-9]+/?"); // get comic page
+    QRegExp comicPageRemote("/library/.+/comic/[0-9]+/page/[0-9]+/remote?"); // get comic page (remote reading)
 
     QRegExp sync("/sync");
 
-    QRegExp library("/library/([0-9]+)/.+"); //permite verificar que la biblioteca solicitada existe
+    QRegExp library("/library/([0-9]+)/.+"); // permite verificar que la biblioteca solicitada existe
 
     path = QUrl::fromPercentEncoding(path).toUtf8();
 
-    if (!sync.exactMatch(path)) //no session is needed for syncback info, until security will be added
+    if (!sync.exactMatch(path)) // no session is needed for syncback info, until security will be added
         loadSessionV1(request, response);
 
-    //primera petición, se ha hecho un post, se sirven las bibliotecas si la seguridad mediante login no está habilitada
-    if (path == "/") //Don't send data to the server using '/' !!!!
+    // primera petición, se ha hecho un post, se sirven las bibliotecas si la seguridad mediante login no está habilitada
+    if (path == "/") // Don't send data to the server using '/' !!!!
     {
         LibrariesController().service(request, response);
     } else {
         if (sync.exactMatch(path))
             SyncController().service(request, response);
         else {
-            //se comprueba que la sesión sea la correcta con el fin de evitar accesos no autorizados
+            // se comprueba que la sesión sea la correcta con el fin de evitar accesos no autorizados
             HttpSession session = Static::sessionStore->getSession(request, response, false);
             if (!session.isNull() && session.contains("ySession")) {
                 if (library.indexIn(path) != -1 && DBHelper::getLibraries().contains(library.cap(1).toInt())) {
-                    //listar el contenido del folder
+                    // listar el contenido del folder
                     if (folder.exactMatch(path)) {
                         FolderController().service(request, response);
                     } else if (folderInfo.exactMatch(path)) {
@@ -207,7 +209,7 @@ void RequestMapper::serviceV1(HttpRequest &request, HttpResponse &response)
                         CoverController().service(request, response);
                     } else if (comicDownloadInfo.exactMatch(path)) {
                         ComicDownloadInfoController().service(request, response);
-                    } else if (comicFullInfo.exactMatch(path) || comicOpen.exactMatch(path)) //start download or start remote reading
+                    } else if (comicFullInfo.exactMatch(path) || comicOpen.exactMatch(path)) // start download or start remote reading
                     {
                         ComicController().service(request, response);
                     } else if (comicPage.exactMatch(path) || comicPageRemote.exactMatch(path)) {
@@ -216,10 +218,10 @@ void RequestMapper::serviceV1(HttpRequest &request, HttpResponse &response)
                         UpdateComicController().service(request, response);
                     }
                 } else {
-                    //response.writeText(library.cap(1));
+                    // response.writeText(library.cap(1));
                     Static::staticFileController->service(request, response);
                 }
-            } else //acceso no autorizado, redirección
+            } else // acceso no autorizado, redirección
             {
                 ErrorController(300).service(request, response);
             }
@@ -231,17 +233,17 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
 {
     QByteArray path = request.getPath();
 
-    QRegExp folderInfo("/v2/library/.+/folder/[0-9]+/info/?"); //get folder info
-    QRegExp comicDownloadInfo("/v2/library/.+/comic/[0-9]+/info/?"); //get comic info (full download info)
-    QRegExp comicOpenForDownloading("/v2/library/.+/comic/[0-9]+/?"); //get comic info (full info + opening)
-    QRegExp comicOpenForRemoteReading("/v2/library/.+/comic/[0-9]+/remote/?"); //the server will open for reading the comic
-    QRegExp comicOpenForRemoteReadingInAReadingList("/v2/library/.+/reading_list/[0-9]+/comic/[0-9]+/remote/?"); //the server will open for reading the comic
-    QRegExp comicFullInfo("/v2/library/.+/comic/[0-9]+/fullinfo/?"); //get comic info
-    QRegExp comicUpdate("/v2/library/.+/comic/[0-9]+/update/?"); //get comic info
-    QRegExp comicClose("/v2/library/.+/comic/[0-9]+/close/?"); //the server will close the comic and free memory
-    QRegExp cover("/v2/library/.+/cover/[0-9a-f]+.jpg"); //get comic cover (navigation)
-    QRegExp comicPage("/v2/library/.+/comic/[0-9]+/page/[0-9]+/?"); //get comic page
-    QRegExp comicPageRemote("/v2/library/.+/comic/[0-9]+/page/[0-9]+/remote?"); //get comic page (remote reading)
+    QRegExp folderInfo("/v2/library/.+/folder/[0-9]+/info/?"); // get folder info
+    QRegExp comicDownloadInfo("/v2/library/.+/comic/[0-9]+/info/?"); // get comic info (full download info)
+    QRegExp comicOpenForDownloading("/v2/library/.+/comic/[0-9]+/?"); // get comic info (full info + opening)
+    QRegExp comicOpenForRemoteReading("/v2/library/.+/comic/[0-9]+/remote/?"); // the server will open for reading the comic
+    QRegExp comicOpenForRemoteReadingInAReadingList("/v2/library/.+/reading_list/[0-9]+/comic/[0-9]+/remote/?"); // the server will open for reading the comic
+    QRegExp comicFullInfo("/v2/library/.+/comic/[0-9]+/fullinfo/?"); // get comic info
+    QRegExp comicUpdate("/v2/library/.+/comic/[0-9]+/update/?"); // get comic info
+    QRegExp comicClose("/v2/library/.+/comic/[0-9]+/close/?"); // the server will close the comic and free memory
+    QRegExp cover("/v2/library/.+/cover/[0-9a-f]+.jpg"); // get comic cover (navigation)
+    QRegExp comicPage("/v2/library/.+/comic/[0-9]+/page/[0-9]+/?"); // get comic page
+    QRegExp comicPageRemote("/v2/library/.+/comic/[0-9]+/page/[0-9]+/remote?"); // get comic page (remote reading)
     QRegExp serverVersion("/v2/version/?");
     QRegExp folderContent("/v2/library/.+/folder/[0-9]+/content/?");
     QRegExp favs("/v2/library/.+/favs/?");
@@ -255,15 +257,15 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
 
     QRegExp sync("/v2/sync");
 
-    QRegExp library("/v2/library/([0-9]+)/.+"); //permite verificar que la biblioteca solicitada existe
+    QRegExp library("/v2/library/([0-9]+)/.+"); // permite verificar que la biblioteca solicitada existe
 
     path = QUrl::fromPercentEncoding(path).toUtf8();
 
-    if (!sync.exactMatch(path)) //no session is needed for syncback info, until security will be added
+    if (!sync.exactMatch(path)) // no session is needed for syncback info, until security will be added
         loadSessionV2(request, response);
 
-    //primera petición, se ha hecho un post, se sirven las bibliotecas si la seguridad mediante login no está habilitada
-    if (path == "/v2/libraries") //Don't send data to the server using '/' !!!!
+    // primera petición, se ha hecho un post, se sirven las bibliotecas si la seguridad mediante login no está habilitada
+    if (path == "/v2/libraries") // Don't send data to the server using '/' !!!!
     {
         LibrariesControllerV2().service(request, response);
     } else {
@@ -281,7 +283,7 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
                     ComicDownloadInfoControllerV2().service(request, response);
                 } else if (comicOpenForRemoteReadingInAReadingList.exactMatch(path)) {
                     ComicControllerInReadingListV2().service(request, response);
-                } else if (comicOpenForDownloading.exactMatch(path) || comicOpenForRemoteReading.exactMatch(path)) { //start download or start remote reading
+                } else if (comicOpenForDownloading.exactMatch(path) || comicOpenForRemoteReading.exactMatch(path)) { // start download or start remote reading
                     ComicControllerV2().service(request, response);
                 } else if (comicFullInfo.exactMatch(path)) {
                     ComicFullinfoController_v2().service(request, response);
@@ -309,7 +311,7 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
                     TagInfoControllerV2().service(request, response);
                 }
             } else {
-                //response.writeText(library.cap(1));
+                // response.writeText(library.cap(1));
                 Static::staticFileController->service(request, response);
             }
         }

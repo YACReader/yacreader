@@ -27,11 +27,9 @@ public:
 
 protected:
     FolderItem *rootItem;
-    QMap<unsigned long long int, FolderItem *> filteredItems; //relación entre folders
+    QMap<unsigned long long int, FolderItem *> filteredItems; // relación entre folders
 
     bool filterEnabled;
-
-    YACReader::SearchModifiers modifier;
 };
 
 class FolderModel : public QAbstractItemModel
@@ -46,7 +44,7 @@ public:
     explicit FolderModel(QSqlQuery &sqlquery, QObject *parent = nullptr);
     ~FolderModel() override;
 
-    //QAbstractItemModel methods
+    // QAbstractItemModel methods
     QVariant data(const QModelIndex &index, int role) const override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
     QVariant headerData(int section, Qt::Orientation orientation,
@@ -57,13 +55,13 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    //Convenience methods
+    // Convenience methods
     void setupModelData(QString path);
     QString getDatabase();
     QString getFolderPath(const QModelIndex &folder);
-    //QModelIndex indexFromItem(FolderItem * item, int column);
+    // QModelIndex indexFromItem(FolderItem * item, int column);
 
-    //bool isFilterEnabled(){return filterEnabled;};
+    // bool isFilterEnabled(){return filterEnabled;};
 
     void updateFolderCompletedStatus(const QModelIndexList &list, bool status);
     void updateFolderFinishedStatus(const QModelIndexList &list, bool status);
@@ -81,7 +79,7 @@ public:
         Finished = 2,
         Completed = 3,
         Manga = 4
-    }; //id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, name TEXT NOT NULL, path TEXT NOT NULL
+    }; // id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, name TEXT NOT NULL, path TEXT NOT NULL
 
     enum Roles {
         FinishedRole = Qt::UserRole + 1,
@@ -98,14 +96,10 @@ private:
     void setupModelData(QSqlQuery &sqlquery, FolderItem *parent);
     void updateFolderModelData(QSqlQuery &sqlquery, FolderItem *parent);
 
-    FolderItem *rootItem; //el árbol
-    QMap<unsigned long long int, FolderItem *> items; //relación entre folders
+    FolderItem *rootItem; // el árbol
+    QMap<unsigned long long int, FolderItem *> items; // relación entre folders
 
     QString _databasePath;
-
-signals:
-    void beforeReset();
-    void reset();
 };
 
 #endif

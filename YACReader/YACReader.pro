@@ -6,7 +6,7 @@ QMAKE_TARGET_BUNDLE_PREFIX = "com.yacreader"
 DEPENDPATH += . \
     release
 
-DEFINES += NOMINMAX YACREADER
+DEFINES += YACREADER
 
 #load default build flags
 include (../config.pri)
@@ -57,8 +57,10 @@ win32 {
         LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -luser32
     }
 
-    QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
-    QMAKE_LFLAGS_RELEASE += /LTCG
+    msvc {
+        QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
+        QMAKE_LFLAGS_RELEASE += /LTCG
+    }
     CONFIG -= embed_manifest_exe
 }
 
@@ -69,6 +71,8 @@ macx {
 }
 
 QT += network widgets core multimedia svg
+
+greaterThan(QT_MAJOR_VERSION, 5): QT += openglwidgets core5compat
 
 #CONFIG += release
 CONFIG -= flat
@@ -98,7 +102,6 @@ HEADERS +=  ../common/comic.h \
             ../common/qnaturalsorting.h \
             ../common/yacreader_global.h \
             ../common/yacreader_global_gui.h \
-            ../common/onstart_flow_selection_dialog.h \
             ../common/comic_db.h \
             ../common/folder.h \
             ../common/library_item.h \
@@ -136,7 +139,6 @@ SOURCES +=  ../common/comic.cpp \
             ../common/custom_widgets.cpp \
             ../common/check_new_version.cpp \
             ../common/qnaturalsorting.cpp \
-            ../common/onstart_flow_selection_dialog.cpp \
             ../common/comic_db.cpp \
             ../common/folder.cpp \
             ../common/library_item.cpp \
@@ -154,13 +156,16 @@ SOURCES +=  ../common/comic.cpp \
 }
 
 include(../custom_widgets/custom_widgets_yacreader.pri)
-CONFIG(7zip){
+
+CONFIG(7zip) {
 include(../compressed_archive/wrapper.pri)
-} else:CONFIG(unarr){
+} else:CONFIG(unarr) {
 include(../compressed_archive/unarr/unarr-wrapper.pri)
+} else:CONFIG(libarchive) {
+include(../compressed_archive/libarchive/libarchive-wrapper.pri)
 } else {
   error(No compression backend specified. Did you mess with the build system?)
-  }
+}
 include(../shortcuts_management/shortcuts_management.pri)
 
 RESOURCES += yacreader_images.qrc \
@@ -186,7 +191,9 @@ TRANSLATIONS =    yacreader_es.ts \
                   yacreader_nl.ts \
                   yacreader_tr.ts \
                   yacreader_de.ts \
-                  yacreader_zh.ts \
+                  yacreader_zh_CN.ts \
+                  yacreader_zh_TW.ts \
+                  yacreader_zh_HK.ts \
                   yacreader_it.ts \
                   yacreader_source.ts
 

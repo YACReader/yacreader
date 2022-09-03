@@ -4,7 +4,6 @@
 #include <QScrollArea>
 #include <QToolBar>
 #include <QAction>
-#include <QKeyEvent>
 #include <QMouseEvent>
 #include <QCloseEvent>
 #include <QSettings>
@@ -35,7 +34,7 @@ class MainWindowViewer : public QMainWindow
 public slots:
     void open();
     void open(QString path, ComicDB &comic, QList<ComicDB> &siblings);
-    void open(QString path, qint64 comicId, qint64 libraryId, OpenComicSource source);
+    void open(QString path, qint64 comicId, qint64 libraryId, YACReader::OpenComicSource source);
     void openFolder();
     void openRecent();
     void openLatestComic();
@@ -46,6 +45,7 @@ public slots:
     void showToolBars();
     void enableActions();
     void disableActions();
+    void disablePreviousNextComicActions();
     void toggleFullScreen();
     void toFullScreen();
     void toNormal();
@@ -60,7 +60,6 @@ public slots:
     void openComic(QString pathFile);
     void openFolderFromPath(QString pathDir);
     void openFolderFromPath(QString pathFile, QString atFileName);
-    void alwaysOnTopSwitch();
     void adjustToFullSizeSwitch();
     void fitToPageSwitch();
     void resetZoomLevel();
@@ -78,29 +77,28 @@ public slots:
     void toggleFitToWidthSlider();
 
     /*void viewComic();
-		void prev();
-		void next();
-		void updatePage();*/
+                void prev();
+                void next();
+                void updatePage();*/
 
 private:
-    //!State
+    //! State
     bool fullscreen;
     bool toolbars;
-    bool alwaysOnTop;
     bool fromMaximized;
 
-    //QTBUG-41883
+    // QTBUG-41883
     QSize _size;
     QPoint _pos;
 
     QString currentDirectory;
     QString currentDirectoryImgDest;
-    //!Widgets
+    //! Widgets
     Viewer *viewer;
-    //GoToDialog * goToDialog;
+    // GoToDialog * goToDialog;
     OptionsDialog *optionsDialog;
     HelpAboutDialog *had;
-    //ShortcutsDialog * shortcutsDialog;
+    // ShortcutsDialog * shortcutsDialog;
     EditShortcutsDialog *editShortcutsDialog;
 
     //! ToolBars
@@ -113,7 +111,7 @@ private:
     //! Actions
     QAction *openAction;
 #ifdef Q_OS_MAC
-    QAction *newInstanceAction; //needed in macos
+    QAction *newInstanceAction; // needed in macos
 #endif
     QAction *openFolderAction;
     QAction *openLatestComicAction;
@@ -140,7 +138,6 @@ private:
     QAction *doubleMangaPageAction;
     QAction *showShorcutsAction;
     QAction *showDictionaryAction;
-    QAction *alwaysOnTopAction;
     QAction *adjustToFullSizeAction;
     QAction *fitToPageAction;
     QAction *resetZoomAction;
@@ -151,6 +148,9 @@ private:
 
     QAction *showEditShortcutsAction;
 
+    QList<QAction *> mglassActions;
+    QList<QAction *> loadedComicActions;
+
     YACReaderSlider *zoomSliderAction;
 
     HttpVersionChecker *versionChecker;
@@ -159,14 +159,17 @@ private:
     //! Método que inicializa el interfaz.
     void setupUI();
     void createActions();
+    QAction *addActionWithShortcut(const QString &text, const QString &shortcutKey);
     void createToolBars();
     void refreshRecentFilesActionList();
     void clearRecentFiles();
     void getSiblingComics(QString path, QString currentComic);
+    void setActionsEnabled(bool enabled);
+    void setMglassActionsEnabled(bool enabled);
+    void setLoadedComicActionsEnabled(bool enabled);
 
     //! Manejadores de evento:
-    void keyPressEvent(QKeyEvent *event) override;
-    //void resizeEvent(QResizeEvent * event);
+    // void resizeEvent(QResizeEvent * event);
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void dropEvent(QDropEvent *event) override;
     void dragEnterEvent(QDragEnterEvent *event) override;
@@ -180,7 +183,7 @@ private:
     quint64 libraryId;
     OpenComicSource source;
 
-    //fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
+    // fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
     Qt::WindowFlags previousWindowFlags;
     QPoint previousPos;
     QSize previousSize;

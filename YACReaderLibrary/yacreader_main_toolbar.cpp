@@ -14,7 +14,7 @@ YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent)
     mainLayout = new QHBoxLayout;
 
     currentFolder = new QLabel(this);
-    //currentFolder->setAlignment(Qt::AlignCenter);
+    // currentFolder->setAlignment(Qt::AlignCenter);
     currentFolder->setStyleSheet(" QLabel {color:#404040; font-size:22px; font-weight:bold;}");
 
     QFont f = currentFolder->font();
@@ -50,7 +50,7 @@ YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent)
     fullscreenButton->setStyleSheet(qToolButtonStyleSheet);
     fullscreenButton->setIconSize(QSize(24, 24));
 
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
 
     mainLayout->addSpacing(12);
@@ -97,7 +97,7 @@ void YACReaderMainToolBar::paintEvent(QPaintEvent *event)
 
 void YACReaderMainToolBar::resizeEvent(QResizeEvent *event)
 {
-    //210px x 2 = 420px
+    // 210px x 2 = 420px
     int freeWidth = event->size().width() - 420;
     int maxLabelWidth = freeWidth >= 0 ? freeWidth : 0;
     currentFolder->setMaximumWidth(maxLabelWidth);

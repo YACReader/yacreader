@@ -22,7 +22,7 @@ public:
     ~ComicFlow() override;
 
     void setImagePaths(const QStringList &paths);
-    //bool eventFilter(QObject *target, QEvent *event);
+    // bool eventFilter(QObject *target, QEvent *event);
     void keyPressEvent(QKeyEvent *event) override;
     void removeSlide(int cover);
     void resortCovers(QList<int> newOrder);
@@ -41,7 +41,7 @@ private:
     int workerIndex;
     QTimer updateTimer;
     std::unique_ptr<WorkerThread<QImage>> worker;
-    virtual void wheelEvent(QWheelEvent *event);
+    virtual void wheelEvent(QWheelEvent *event) override;
 };
 
 #endif

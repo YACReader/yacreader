@@ -2,10 +2,13 @@
 # default values if they're not set on build time
 # for a more detailed description, see INSTALL.TXT
 
-CONFIG += c++11
+CONFIG += c++17
+win32:QMAKE_CXXFLAGS += /std:c++17 #enable c++17 explicitly in msvc
 
-unix:QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
-win32:QMAKE_CXXFLAGS_RELEASE += /DNDEBUG
+DEFINES += NOMINMAX
+
+if(unix|mingw):QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
+win32:msvc:QMAKE_CXXFLAGS_RELEASE += /DNDEBUG
 
 # check Qt version
 defineTest(minQtVersion) {
@@ -31,16 +34,9 @@ defineTest(minQtVersion) {
   return(false)
 }
 
-!minQtVersion(5, 9, 0) {
-  error(YACReader requires Qt 5.9 or newer but $$[QT_VERSION] was detected)
+!minQtVersion(5, 15, 0) {
+  error(YACReader requires Qt 5.15 or newer but $$[QT_VERSION] was detected)
 }
-
-minQtVersion(6, 0, 0) {
-  error(YACReader does not support building with Qt6 (yet))
-}
-
-DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x050900
-DEFINES += QT_DEPRECATED_WARNINGS
 
 # reduce log pollution
 CONFIG += silent
@@ -60,15 +56,15 @@ CONFIG(no_opengl) {
 }
 
 # default value for comic archive decompression backend
-unix:!macx:!CONFIG(unarr):!CONFIG(7zip) {
+unix:!macx:!CONFIG(unarr):!CONFIG(7zip):!CONFIG(libarchive) {
   CONFIG += unarr
 }
 
-win32:!CONFIG(unarr):!CONFIG(7zip) {
+win32:!CONFIG(unarr):!CONFIG(7zip):!CONFIG(libarchive) {
   CONFIG += 7zip
 }
 
-macx:!CONFIG(unarr):!CONFIG(7zip) {
+macx:!CONFIG(unarr):!CONFIG(7zip):!CONFIG(libarchive) {
   CONFIG += 7zip
 }
 
@@ -84,3 +80,11 @@ unix:!macx:!CONFIG(poppler):!CONFIG(pdfium):!CONFIG(no_pdf) {
 macx:!CONFIG(pdfkit):!CONFIG(pdfium):!CONFIG(no_pdf) {
   CONFIG += pdfkit
 }
+
+!CONFIG(poppler) {
+    DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x050F00
+} else {
+    DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x050900
+}
+
+DEFINES += QT_DEPRECATED_WARNINGS

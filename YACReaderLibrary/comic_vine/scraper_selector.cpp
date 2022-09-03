@@ -4,8 +4,8 @@ ScraperSelector::ScraperSelector(QWidget *parent)
     : QWidget(parent)
 {
     paginator = new ScraperResultsPaginator;
-    connect(paginator, SIGNAL(loadNextPage()), this, SLOT(loadNextPage()));
-    connect(paginator, SIGNAL(loadPreviousPage()), this, SLOT(loadPreviousPage()));
+    connect(paginator, &ScraperResultsPaginator::loadNextPage, this, &ScraperSelector::loadNextPage);
+    connect(paginator, &ScraperResultsPaginator::loadPreviousPage, this, &ScraperSelector::loadPreviousPage);
 }
 
 void ScraperSelector::load(const QString &json, const QString &searchString)

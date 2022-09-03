@@ -9,25 +9,14 @@
 
 #include "QsLog.h"
 
-QString getLastExecutedQuery(const QSqlQuery &query)
-{
-    QString str = query.lastQuery();
-    QMapIterator<QString, QVariant> it(query.boundValues());
-    while (it.hasNext()) {
-        it.next();
-        str.replace(it.key(), it.value().toString());
-    }
-    return str;
-}
-
 YACReader::ComicQueryResultProcessor::ComicQueryResultProcessor()
     : querySearchQueue(1)
 {
 }
 
-void YACReader::ComicQueryResultProcessor::createModelData(const YACReader::SearchModifiers modifier, const QString &filter, const QString &databasePath)
+void YACReader::ComicQueryResultProcessor::createModelData(const QString &filter, const QString &databasePath)
 {
-    querySearchQueue.cancellPending();
+    querySearchQueue.cancelPending();
 
     querySearchQueue.enqueue([=] {
         QString connectionName = "";
@@ -43,26 +32,10 @@ void YACReader::ComicQueryResultProcessor::createModelData(const YACReader::Sear
                 auto result = parser.parse(filter.toStdString());
                 result.buildSqlString(queryString);
 
-                switch (modifier) {
-                case YACReader::NoModifiers:
-                    queryString += " LIMIT :limit";
-                    break;
+                queryString += " LIMIT :limit";
 
-                case YACReader::OnlyRead:
-                    queryString += " AND ci.read = 1 LIMIT :limit";
-                    break;
-
-                case YACReader::OnlyUnread:
-                    queryString += " AND ci.read = 0 LIMIT :limit";
-                    break;
-
-                default:
-                    queryString += " LIMIT :limit";
-                    QLOG_ERROR() << "not implemented";
-                    break;
-                }
                 selectQuery.prepare(queryString.c_str());
-                selectQuery.bindValue(":limit", 500); //TODO, load this value from settings
+                selectQuery.bindValue(":limit", 500); // TODO, load this value from settings
                 result.bindValues(selectQuery);
 
                 selectQuery.exec();
@@ -71,8 +44,8 @@ void YACReader::ComicQueryResultProcessor::createModelData(const YACReader::Sear
 
                 emit newData(data, databasePath);
             } catch (const std::exception &e) {
-                //Do nothing, uncomplete search string will end here and it is part of how the QueryParser works
-                //I don't like the idea of using exceptions for this though
+                // Do nothing, uncomplete search string will end here and it is part of how the QueryParser works
+                // I don't like the idea of using exceptions for this though
             }
 
             connectionName = db.connectionName();

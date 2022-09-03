@@ -66,7 +66,7 @@ Token QueryLexer::quotedWord()
         return Token(Token::Type::quotedWord, input.substr(start, index - start));
     }
 
-    //This should be a lexical error, but the grammar doesn't support it
+    // This should be a lexical error, but the grammar doesn't support it
     return Token(Token::Type::eof);
 }
 

@@ -12,12 +12,12 @@ public:
     explicit YACReaderFoldersView(QWidget *parent = nullptr);
 
 signals:
-    //Drops
+    // Drops
     void copyComicsToFolder(QList<QPair<QString, QString>>, QModelIndex);
     void moveComicsToFolder(QList<QPair<QString, QString>>, QModelIndex);
 
 protected:
-    //Drop to import
+    // Drop to import
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dragLeaveEvent(QDragLeaveEvent *event) override;
     void dragMoveEvent(QDragMoveEvent *event) override;

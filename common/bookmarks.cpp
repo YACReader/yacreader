@@ -27,7 +27,7 @@ void Bookmarks::setBookmark(int index, const QImage &page)
             bookmarks.remove(latestBookmarks.back());
             latestBookmarks.pop_back();
         }
-    } else //udate de pixmap;
+    } else // udate de pixmap;
     {
         bookmarks[index] = page;
     }
@@ -120,10 +120,16 @@ void Bookmarks::save()
 void BookmarksList::load()
 {
     QFile f(YACReader::getSettingsPath() + "/bookmarks.yacr");
-    if (f.open(QIODevice::ReadOnly)) {
-        QDataStream dataS(&f);
-        dataS >> list;
+    try {
+        if (f.open(QIODevice::ReadOnly)) {
+            QDataStream dataS(&f);
+            dataS >> list;
+            f.close();
+        }
+    } catch (const std::exception &e) {
         f.close();
+
+        f.remove();
     }
 }
 
@@ -142,8 +148,8 @@ void BookmarksList::deleteOldest(int num)
 {
     Q_UNUSED(num)
     QString comic;
-    QDateTime date(QDate(10000, 1, 1)); //TODO MAX_DATE??
-    for (QMap<QString, Bookmark>::const_iterator itr = list.begin(); itr != list.end(); itr++) {
+    auto date = QDate().endOfDay();
+    for (QMap<QString, Bookmark>::const_iterator itr = list.constBegin(); itr != list.constEnd(); itr++) {
         if (itr->added < date) {
             comic = itr.key();
             date = itr->added;
@@ -159,6 +165,6 @@ void BookmarksList::add(const QString &comicID, const Bookmark &b)
 
 BookmarksList::Bookmark BookmarksList::get(const QString &comicID)
 {
-    //if(list.contains(comicID)
+    // if(list.contains(comicID)
     return list.value(comicID);
 }

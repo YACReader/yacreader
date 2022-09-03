@@ -10,24 +10,24 @@ SearchSingleComic::SearchSingleComic(QWidget *parent)
     : QWidget(parent)
 {
 
-    //QLabel * label = new QLabel(tr("Please provide some additional information. At least one field is needed."));
+    // QLabel * label = new QLabel(tr("Please provide some additional information. At least one field is needed."));
     QLabel *label = new QLabel(tr("Please provide some additional information."));
     label->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
 
-    //titleEdit = new ScraperLineEdit(tr("Title:"));
-    //numberEdit = new ScraperLineEdit(tr("Number:"));
+    // titleEdit = new ScraperLineEdit(tr("Title:"));
+    // numberEdit = new ScraperLineEdit(tr("Number:"));
     volumeEdit = new ScraperLineEdit(tr("Series:"));
 
-    //numberEdit->setMaximumWidth(126);
+    // numberEdit->setMaximumWidth(126);
 
     auto l = new QVBoxLayout;
-    //QHBoxLayout * hl = new QHBoxLayout;
-    //hl->addWidget(titleEdit);
-    //hl->addWidget(numberEdit);
+    // QHBoxLayout * hl = new QHBoxLayout;
+    // hl->addWidget(titleEdit);
+    // hl->addWidget(numberEdit);
 
     l->addSpacing(35);
     l->addWidget(label);
-    //l->addLayout(hl);
+    // l->addLayout(hl);
     l->addWidget(volumeEdit);
     l->addStretch();
 
@@ -43,16 +43,16 @@ QString SearchSingleComic::getVolumeInfo()
 
 QString SearchSingleComic::getComicInfo()
 {
-    //return titleEdit->text();
+    // return titleEdit->text();
     return "";
 }
 
 int SearchSingleComic::getComicNumber()
 {
-    //QString numberText = numberEdit->text();
-    //if(numberText.isEmpty())
+    // QString numberText = numberEdit->text();
+    // if(numberText.isEmpty())
     //	return -1;
-    //return numberText.toInt();
+    // return numberText.toInt();
     return 0;
 }
 

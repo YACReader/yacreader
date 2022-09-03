@@ -109,20 +109,20 @@ signals:
 
 /*class DoublePageRender : public PageRender
 {
-	Q_OBJECT
+        Q_OBJECT
 public:
-		DoublePageRender(Render * render, int firstPage, const QByteArray & firstPageData,const QByteArray & secondPageData, QImage * page,unsigned int degrees=0, QVector<ImageFilter *> filters = QVector<ImageFilter *>());
+                DoublePageRender(Render * render, int firstPage, const QByteArray & firstPageData,const QByteArray & secondPageData, QImage * page,unsigned int degrees=0, QVector<ImageFilter *> filters = QVector<ImageFilter *>());
 private:
-	int numPage;
-	QByteArray data;
-	QByteArray data2;
-		QImage * page;
-	unsigned int degrees;
-	QVector<ImageFilter *> filters;
-	void run();
-	Render * render;
+        int numPage;
+        QByteArray data;
+        QByteArray data2;
+                QImage * page;
+        unsigned int degrees;
+        QVector<ImageFilter *> filters;
+        void run();
+        Render * render;
 signals:
-	void pageReady(int);
+        void pageReady(int);
 
 };
 */
@@ -179,7 +179,7 @@ public slots:
     void reload();
     void updateFilters(int brightness, int contrast, int gamma);
     Bookmarks *getBookmarks();
-    //sets the firt page to render
+    // sets the firt page to render
     void renderAt(int page);
 
 signals:
@@ -205,7 +205,7 @@ private:
     bool doubleMangaPage;
     int previousIndex;
     int currentIndex;
-    //QPixmap * currentPage;
+    // QPixmap * currentPage;
     int currentPageBufferedIndex;
     int numLeftPages;
     int numRightPages;

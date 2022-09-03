@@ -21,9 +21,9 @@ void GoToDialog::setupUI()
     textLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
     accept = new QPushButton(tr("Go To"));
-    connect(accept, SIGNAL(clicked()), this, SLOT(goTo()));
+    connect(accept, &QAbstractButton::clicked, this, &GoToDialog::goTo);
     cancel = new QPushButton(tr("Cancel"));
-    connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
+    connect(cancel, &QAbstractButton::clicked, this, &QWidget::close);
 
     auto topLayout = new QHBoxLayout;
 
@@ -60,12 +60,10 @@ void GoToDialog::setupUI()
 void GoToDialog::goTo()
 {
     unsigned int page = pageNumber->text().toInt();
-    pageNumber->clear();
-
-    if (page >= 1)
-        emit(goToPage(page - 1));
-
-    close();
+    if (page >= 1 && page <= v->top()) {
+        emit goToPage(page - 1);
+        close();
+    }
 }
 
 void GoToDialog::setNumPages(unsigned int numPages)

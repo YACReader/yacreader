@@ -32,25 +32,25 @@ private:
     void processLibrary(const QString &source, const QString &target);
     enum Mode { CREATOR,
                 UPDATER };
-    //atributos "globales" durante el proceso de creación y actualización
+    // atributos "globales" durante el proceso de creación y actualización
     enum Mode _mode;
     QString _source;
     QString _target;
-    QString _sourceFolder; //used for partial updates
+    QString _sourceFolder; // used for partial updates
     QStringList _nameFilter;
     QString _databaseConnection;
-    QList<Folder> _currentPathFolders; //lista de folders en el orden en el que están siendo explorados, el último es el folder actual
-    //recursive method
+    QList<Folder> _currentPathFolders; // lista de folders en el orden en el que están siendo explorados, el último es el folder actual
+    // recursive method
     void create(QDir currentDirectory);
     void update(QDir currentDirectory);
     void run() override;
-    qulonglong insertFolders(); //devuelve el id del último folder añadido (último en la ruta)
+    qulonglong insertFolders(); // devuelve el id del último folder añadido (último en la ruta)
     bool checkCover(const QString &hash);
     void insertComic(const QString &relativePath, const QFileInfo &fileInfo);
-    //qulonglong insertFolder(qulonglong parentId,const Folder & folder);
-    //qulonglong insertComic(const Comic & comic);
+    // qulonglong insertFolder(qulonglong parentId,const Folder & folder);
+    // qulonglong insertComic(const Comic & comic);
     bool stopRunning;
-    //LibraryCreator está en modo creación si creation == true;
+    // LibraryCreator está en modo creación si creation == true;
     bool creation;
     bool partialUpdate;
     QModelIndex folderDestinationModelIndex;
@@ -65,32 +65,6 @@ signals:
     void failedCreatingDB(QString);
     void failedOpeningDB(QString);
     void updatedCurrentFolder(QModelIndex);
-};
-
-class ThumbnailCreator : public QObject
-{
-    Q_OBJECT
-
-public:
-    ThumbnailCreator(QString fileSource, QString target = "", int coverPage = 1);
-
-private:
-    QString _fileSource;
-    QString _target;
-    QString _currentName;
-    int _numPages;
-    QPair<int, int> _coverSize;
-    QImage _cover;
-    int _coverPage;
-    static bool crash;
-
-public slots:
-    void create();
-    int getNumPages() { return _numPages; }
-    QPixmap getCover() { return QPixmap::fromImage(_cover); }
-    QPair<int, int> getOriginalCoverSize() { return _coverSize; }
-signals:
-    void openingError(QProcess::ProcessError error);
 };
 
 #endif

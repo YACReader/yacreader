@@ -62,6 +62,11 @@ cp -R release/languages YACReader.app/Contents/MacOS/
 cp -R release/languages YACReaderLibrary.app/Contents/MacOS/
 cp -R release/languages YACReaderLibraryServer.app/Contents/MacOS/
 
+/usr/libexec/PlistBuddy -c "Add :CFBundleVersion string ${BUILD_NUMBER}" YACReader.app/Contents/Info.plist
+/usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string ${VERSION}" YACReader.app/Contents/Info.plist
+/usr/libexec/PlistBuddy -c "Add :CFBundleVersion string ${BUILD_NUMBER}" YACReaderLibrary.app/Contents/Info.plist
+/usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string ${VERSION}" YACReaderLibrary.app/Contents/Info.plist
+
 if [ "$SKIP_CODESIGN" = false ]; then
 	./signapps.sh
 fi

@@ -99,8 +99,8 @@ private:
     bool manga;
 
     qint32 numChildren; //-1 for unknown number of children
-    QString firstChildHash; //empty for unknown first child
-    QString customImage; //empty for none custom image
+    QString firstChildHash; // empty for unknown first child
+    QString customImage; // empty for none custom image
 };
 
 #endif

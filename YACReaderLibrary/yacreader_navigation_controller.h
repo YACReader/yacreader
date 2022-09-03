@@ -15,20 +15,20 @@ public:
 signals:
 
 public slots:
-    //info origins
-    //folders view
+    // info origins
+    // folders view
     void selectedFolder(const QModelIndex &mi);
     void reselectCurrentFolder();
-    //reading lists
+    // reading lists
     void selectedList(const QModelIndex &mi);
     void reselectCurrentList();
 
     void reselectCurrentSource();
 
-    //history navigation
+    // history navigation
     void selectedIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer);
     void loadIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer);
-    //empty subfolder
+    // empty subfolder
     void selectSubfolder(const QModelIndex &sourceMI, int child);
 
     void loadEmptyFolderInfo(const QModelIndex &modelIndex);
@@ -46,7 +46,7 @@ private:
     LibraryWindow *libraryWindow;
     YACReaderComicsViewsManager *comicsViewsManager;
 
-    //convenience methods
+    // convenience methods
     qulonglong folderModelIndexToID(const QModelIndex &mi);
 };
 

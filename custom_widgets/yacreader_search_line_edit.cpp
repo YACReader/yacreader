@@ -4,8 +4,6 @@
 #include <QStyle>
 #include <QLabel>
 
-#include <QRegExpValidator>
-
 #include "QsLog.h"
 
 YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
@@ -25,8 +23,8 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
     clearButton->setCursor(Qt::ArrowCursor);
     clearButton->setStyleSheet("QToolButton { border: none; padding: 0px; }");
     clearButton->hide();
-    connect(clearButton, SIGNAL(clicked()), this, SLOT(clear()));
-    connect(this, SIGNAL(textChanged(const QString &)), this, SLOT(updateCloseButton(const QString &)));
+    connect(clearButton, &QAbstractButton::clicked, this, &QLineEdit::clear);
+    connect(this, &QLineEdit::textChanged, this, &YACReaderSearchLineEdit::updateCloseButton);
     int frameWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
 #ifdef Q_OS_MAC
     setStyleSheet(QString("QLineEdit {border-top:1px solid #9F9F9F; border-bottom:1px solid #ACACAC; border-right:1px solid #ACACAC; border-left:1px solid #ACACAC; border-radius: 10px; background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #CACACA, stop: 0.15 #FFFFFF); padding-left: %1px; padding-right: %2px; padding-bottom: 1px; margin-bottom: 1px;} ").arg(searchLabel->sizeHint().width() + frameWidth + 6).arg(clearButton->sizeHint().width() + frameWidth + 2));
@@ -47,43 +45,19 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
     setAttribute(Qt::WA_MacShowFocusRect, false);
     setPlaceholderText(tr("type to search"));
 
-    //search modifiers
-    modifiers << "[read]"
-              << "[unread]"; //<< "[author]";
-    modifiersCompleter = new QCompleter(modifiers);
-
-    QString regExpString;
-    foreach (QString modifier, modifiers) {
-        regExpString = regExpString + modifier.replace("[", "\\[").replace("]", "\\]") + ".*|";
-    }
-
-    regExpString = regExpString + "[^\\[].*";
-
-    QLOG_TRACE() << regExpString;
-
-    QRegExp regExp(regExpString);
-    QValidator *validator = new QRegExpValidator(regExp, this);
-
-    setValidator(validator);
-    setCompleter(modifiersCompleter);
-
-    connect(this, SIGNAL(textChanged(QString)), this, SLOT(processText(QString)));
+    connect(this, &QLineEdit::textChanged, this, &YACReaderSearchLineEdit::processText);
 }
 
 void YACReaderSearchLineEdit::clearText()
 {
-    disconnect(this, SIGNAL(textChanged(QString)), this, SLOT(processText(QString)));
+    disconnect(this, &QLineEdit::textChanged, this, &YACReaderSearchLineEdit::processText);
     clear();
-    connect(this, SIGNAL(textChanged(QString)), this, SLOT(processText(QString)));
+    connect(this, &QLineEdit::textChanged, this, &YACReaderSearchLineEdit::processText);
 }
 
-//modifiers are not returned
 const QString YACReaderSearchLineEdit::text()
 {
-    QString text = QLineEdit::text();
-
-    QRegExp regExp("\\[.*\\]");
-    return text.remove(regExp).trimmed();
+    return QLineEdit::text();
 }
 
 void YACReaderSearchLineEdit::resizeEvent(QResizeEvent *)
@@ -115,26 +89,5 @@ void YACReaderSearchLineEdit::updateCloseButton(const QString &text)
 
 void YACReaderSearchLineEdit::processText(const QString &text)
 {
-
-    QRegExp regExp("(\\[.*\\])(.*)");
-    if (text.startsWith("[")) {
-        if (regExp.exactMatch(text)) //avoid search while the modifiers are being written
-        {
-            QString modifier = regExp.cap(1);
-            QString searchText = regExp.cap(2).trimmed();
-
-            int indexOfModifier = modifiers.indexOf(modifier);
-            if (indexOfModifier != -1) {
-                QLOG_TRACE() << "modifier : " << modifier << "text : " << searchText;
-                emit filterChanged(static_cast<YACReader::SearchModifiers>(indexOfModifier + 1), searchText); //TODO, do not use on indexOF
-            } else {
-                QLOG_ERROR() << "invalid modifier : " << modifier;
-            }
-        }
-
-        QLOG_TRACE() << "full text :" << text << " : " << regExp.indexIn(text);
-    } else {
-        QLOG_TRACE() << "NoModifiers : " << text;
-        emit filterChanged(YACReader::NoModifiers, text);
-    }
+    emit filterChanged(text);
 }

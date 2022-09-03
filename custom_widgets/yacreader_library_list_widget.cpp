@@ -11,7 +11,7 @@ YACReaderLibraryListWidget::YACReaderLibraryListWidget(QWidget *parent)
 {
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setSpacing(0);
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
 
     this->setLayout(mainLayout);
 }
@@ -21,7 +21,7 @@ void YACReaderLibraryListWidget::addItem(QString name, QString path)
     QVBoxLayout *mainLayout = dynamic_cast<QVBoxLayout *>(layout());
 
     YACReaderLibraryItemWidget *library = new YACReaderLibraryItemWidget(name, path, this);
-    connect(library, SIGNAL(showOptions()), this, SLOT(showContextMenu()));
+    connect(library, &YACReaderLibraryItemWidget::showOptions, this, &YACReaderLibraryListWidget::showContextMenu);
     QList<YACReaderLibraryItemWidget *>::iterator itr;
     int i = 0;
     for (itr = librariesList.begin(); itr != librariesList.end() && !naturalSortLessThanCI(name, (*itr)->name); itr++)
@@ -29,8 +29,8 @@ void YACReaderLibraryListWidget::addItem(QString name, QString path)
 
     librariesList.insert(itr, library);
 
-    //connect(library,SIGNAL(selected(QString,QString)),this,SIGNAL(librarySelected(QString,QString)));
-    //connect(library,SIGNAL(selected(QString,QString)),this,SLOT(updateLibraries(QString,QString)));
+    // connect(library,SIGNAL(selected(QString,QString)),this,SIGNAL(librarySelected(QString,QString)));
+    // connect(library,SIGNAL(selected(QString,QString)),this,SLOT(updateLibraries(QString,QString)));
 
     mainLayout->insertWidget(i, library);
 }

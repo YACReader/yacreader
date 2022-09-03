@@ -14,7 +14,7 @@
 using namespace YACReader;
 
 QMutex YACReaderClientConnectionWorker::dbMutex;
-//int YACReaderClientConnectionWorker::count = 0;
+// int YACReaderClientConnectionWorker::count = 0;
 YACReaderLocalServer::YACReaderLocalServer(QObject *parent)
     : QObject(parent)
 {
@@ -24,7 +24,7 @@ YACReaderLocalServer::YACReaderLocalServer(QObject *parent)
         QLOG_ERROR() << "Unable to create local server";
     }
 
-    connect(localServer, SIGNAL(newConnection()), this, SLOT(sendResponse()));
+    connect(localServer, &QLocalServer::newConnection, this, &YACReaderLocalServer::sendResponse);
 }
 
 bool YACReaderLocalServer::isListening()
@@ -34,27 +34,27 @@ bool YACReaderLocalServer::isListening()
 
 /*void YACReaderLocalServer::run()
 {
-	while(1)
-		exec();
+        while(1)
+                exec();
 }*/
 
 void YACReaderLocalServer::sendResponse()
 {
     QLocalSocket *clientConnection = localServer->nextPendingConnection();
-    //connect(clientConnection, SIGNAL(disconnected()),clientConnection, SLOT(deleteLater()));
+    // connect(clientConnection, SIGNAL(disconnected()),clientConnection, SLOT(deleteLater()));
     clientConnection->setParent(0);
 
     auto worker = new YACReaderClientConnectionWorker(clientConnection);
     if (worker != 0) {
         clientConnection->moveToThread(worker);
-        connect(worker, SIGNAL(comicUpdated(quint64, ComicDB)), this, SIGNAL(comicUpdated(quint64, ComicDB)));
-        connect(worker, SIGNAL(finished()), worker, SLOT(deleteLater()));
+        connect(worker, &YACReaderClientConnectionWorker::comicUpdated, this, &YACReaderLocalServer::comicUpdated);
+        connect(worker, &QThread::finished, worker, &QObject::deleteLater);
         worker->start();
     }
 
     QLOG_TRACE() << "connection incoming";
-    //clientConnection->waitForBytesWritten();*/
-    //clientConnection->disconnectFromServer();
+    // clientConnection->waitForBytesWritten();*/
+    // clientConnection->disconnectFromServer();
 }
 
 bool YACReaderLocalServer::isRunning()
@@ -85,13 +85,13 @@ YACReaderClientConnectionWorker::~YACReaderClientConnectionWorker()
 void YACReaderClientConnectionWorker::run()
 {
     /*{
-	QFile f(QString("c:/temp/thread%1.txt").arg(count));
-	f.open(QIODevice::Append);
-	QTextStream out(&f);
-	out << QString("Thread%1 starts").arg(count) << endl;
-	f.close();
-	}
-	uint t1 = QDateTime::currentMSecsSinceEpoch();*/
+        QFile f(QString("c:/temp/thread%1.txt").arg(count));
+        f.open(QIODevice::Append);
+        QTextStream out(&f);
+        out << QString("Thread%1 starts").arg(count) << endl;
+        f.close();
+        }
+        uint t1 = QDateTime::currentMSecsSinceEpoch();*/
 
     quint64 libraryId;
     ComicDB comic;
@@ -126,7 +126,7 @@ void YACReaderClientConnectionWorker::run()
         data.append(clientConnection->readAll());
         if ((quint32)data.length() < totalSize)
             clientConnection->waitForReadyRead(100);
-        if (dataRead == data.length()) //no bytes were read
+        if (dataRead == data.length()) // no bytes were read
             tries++;
         dataRead = data.length();
     }
@@ -202,14 +202,14 @@ void YACReaderClientConnectionWorker::run()
     clientConnection->waitForDisconnected();
     clientConnection->deleteLater();
     /*count++;
-	uint t2 = QDateTime::currentMSecsSinceEpoch();
-	{
-	QFile f(QString("c:/temp/thread%1.txt").arg(count));
-	f.open(QIODevice::Append);
-	QTextStream out(&f);
-	out << QString("Thread%1 ends : time - %2").arg(count).arg(t2-t1) << endl;
-	f.close();
-	}*/
+        uint t2 = QDateTime::currentMSecsSinceEpoch();
+        {
+        QFile f(QString("c:/temp/thread%1.txt").arg(count));
+        f.open(QIODevice::Append);
+        QTextStream out(&f);
+        out << QString("Thread%1 ends : time - %2").arg(count).arg(t2-t1) << endl;
+        f.close();
+        }*/
 }
 
 void YACReaderClientConnectionWorker::getComicInfo(quint64 libraryId, ComicDB &comic, QList<ComicDB> &siblings)

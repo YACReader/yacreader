@@ -14,21 +14,21 @@ ExportLibraryDialog::ExportLibraryDialog(QWidget *parent)
 
     accept = new QPushButton(tr("Create"));
     accept->setDisabled(true);
-    connect(accept, SIGNAL(clicked()), this, SLOT(exportLibrary()));
+    connect(accept, &QAbstractButton::clicked, this, &ExportLibraryDialog::exportLibrary);
 
     cancel = new QPushButton(tr("Cancel"));
-    connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
-    connect(cancel, SIGNAL(clicked()), this, SIGNAL(rejected()));
+    connect(cancel, &QAbstractButton::clicked, this, &ExportLibraryDialog::close);
+    connect(cancel, &QAbstractButton::clicked, this, &QDialog::rejected);
 
     find = new QPushButton(QIcon(":/images/find_folder.png"), "");
-    connect(find, SIGNAL(clicked()), this, SLOT(findPath()));
+    connect(find, &QAbstractButton::clicked, this, &ExportLibraryDialog::findPath);
 
     auto libraryLayout = new QHBoxLayout;
 
     libraryLayout->addWidget(textLabel);
     libraryLayout->addWidget(path);
     libraryLayout->addWidget(find);
-    libraryLayout->setStretchFactor(find, 0); //TODO
+    libraryLayout->setStretchFactor(find, 0); // TODO
 
     auto bottomLayout = new QHBoxLayout;
     bottomLayout->addStretch();

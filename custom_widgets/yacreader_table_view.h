@@ -43,7 +43,7 @@ private:
     QModelIndex currentIndexEditing;
     QWidget *myeditor;
 
-    //drag from here
+    // drag from here
     QPoint startDragPos;
 };
 

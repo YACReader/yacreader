@@ -3,9 +3,9 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QFrame>
 #include <QImage>
+#include <QScreen>
 
 #include "bookmarks.h"
 
@@ -14,12 +14,12 @@ BookmarksDialog::BookmarksDialog(QWidget *parent)
 {
     setModal(true);
 
-    //animation = new QPropertyAnimation(this,"windowOpacity");
-    //animation->setDuration(150);
+    // animation = new QPropertyAnimation(this,"windowOpacity");
+    // animation->setDuration(150);
 
     auto layout = new QHBoxLayout();
 
-    //bookmarks
+    // bookmarks
     auto bookmarksL = new QGridLayout();
 
     pages.push_back(new QLabel(tr("Lastest Page")));
@@ -32,7 +32,12 @@ BookmarksDialog::BookmarksDialog(QWidget *parent)
         label->setStyleSheet(labelsStyle);
     }
 
-    int heightDesktopResolution = QApplication::desktop()->screenGeometry().height();
+    QScreen *screen = parent != nullptr ? parent->window()->screen() : nullptr;
+    if (screen == nullptr) {
+        screen = QApplication::screens().constFirst();
+    }
+
+    int heightDesktopResolution = screen != nullptr ? screen->size().height() : 600;
     int height, width;
     height = heightDesktopResolution * 0.50;
     width = height * 0.65;
@@ -43,7 +48,7 @@ BookmarksDialog::BookmarksDialog(QWidget *parent)
         QLabel *l = new QLabel();
         l->setFixedSize(coverSize);
         l->setScaledContents(false);
-        //l->setPixmap(QPixmap(":/images/notCover.png"));
+        // l->setPixmap(QPixmap(":/images/notCover.png"));
         l->installEventFilter(this);
         images.push_back(l);
     }
@@ -54,7 +59,7 @@ BookmarksDialog::BookmarksDialog(QWidget *parent)
     for (int i = 0; i < 3; i++)
         bookmarksL->addWidget(images.at(i + 1), 1, i, Qt::AlignCenter);
 
-    //last page
+    // last page
     auto lp = new QGridLayout();
     lp->addWidget(pages.at(0), 0, 0, Qt::AlignCenter);
     lp->addWidget(images.at(0), 1, 0, Qt::AlignCenter);
@@ -69,7 +74,7 @@ BookmarksDialog::BookmarksDialog(QWidget *parent)
 
     cancel = new QPushButton(tr("Close"));
     cancel->setFlat(true);
-    connect(cancel, SIGNAL(clicked()), this, SLOT(hide()));
+    connect(cancel, &QAbstractButton::clicked, this, &QWidget::hide);
     buttons->addStretch();
     buttons->addWidget(cancel);
 
@@ -85,7 +90,7 @@ BookmarksDialog::BookmarksDialog(QWidget *parent)
 
     QPalette Pal(palette());
     // set black background
-    Pal.setColor(QPalette::Background, QColor("#454545"));
+    Pal.setColor(QPalette::Window, QColor(0x454545));
     this->setAutoFillBackground(true);
     this->setPalette(Pal);
 
@@ -133,7 +138,7 @@ bool BookmarksDialog::eventFilter(QObject *obj, QEvent *event)
 {
     if (event->type() == QEvent::MouseButtonPress) {
         if (obj == images.at(0)) {
-            emit(goToPage(lastPage));
+            emit goToPage(lastPage);
             close();
             event->accept();
         }
@@ -142,7 +147,7 @@ bool BookmarksDialog::eventFilter(QObject *obj, QEvent *event)
                 bool b;
                 int page = pages.at(i)->text().toInt(&b) - 1;
                 if (b) {
-                    emit(goToPage(page));
+                    emit goToPage(page);
                     close();
                 }
                 event->accept();
@@ -161,17 +166,17 @@ void BookmarksDialog::keyPressEvent(QKeyEvent *event)
 /*
 void BookmarksDialog::show()
 {
-		QDialog::show();
-		disconnect(animation,SIGNAL(finished()),this,SLOT(close()));
-		animation->setStartValue(0);
-		animation->setEndValue(1);
-		animation->start();
+                QDialog::show();
+                disconnect(animation,SIGNAL(finished()),this,SLOT(close()));
+                animation->setStartValue(0);
+                animation->setEndValue(1);
+                animation->start();
 }
 
 void BookmarksDialog::hide()
 {
-		connect(animation,SIGNAL(finished()),this,SLOT(close()));
-		animation->setStartValue(1);
-		animation->setEndValue(0);
-		animation->start();
+                connect(animation,SIGNAL(finished()),this,SLOT(close()));
+                animation->setStartValue(1);
+                animation->setEndValue(0);
+                animation->start();
 }*/

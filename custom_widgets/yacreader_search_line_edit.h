@@ -15,14 +15,14 @@ class YACReaderSearchLineEdit : public QLineEdit
 
 public:
     YACReaderSearchLineEdit(QWidget *parent = 0);
-    void clearText(); //no signal emited;
+    void clearText(); // no signal emited;
     const QString text();
 
 protected:
     void resizeEvent(QResizeEvent *);
 
 signals:
-    void filterChanged(const YACReader::SearchModifiers, QString);
+    void filterChanged(QString);
 
 private slots:
     void updateCloseButton(const QString &text);
@@ -31,8 +31,6 @@ private slots:
 private:
     QToolButton *clearButton;
     QLabel *searchLabel;
-    QCompleter *modifiersCompleter;
-    QStringList modifiers;
 };
 
 #endif // YACREADER_SEARCH_LINE_EDIT_H

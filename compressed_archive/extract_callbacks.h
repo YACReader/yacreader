@@ -105,7 +105,7 @@ void YCArchiveExtractCallback::Init(IInArchive *archiveHandler, const UString &d
 {
     NumErrors = 0;
     _archiveHandler = archiveHandler;
-    directoryPath; //unused
+    directoryPath; // unused
 }
 
 STDMETHODIMP YCArchiveExtractCallback::SetTotal(UInt64 /* size */)
@@ -145,9 +145,9 @@ STDMETHODIMP YCArchiveExtractCallback::GetStream(UInt32 index,
         _filePath = fullPath;
     }
 
-    askExtractMode; //unused
-    //if (askExtractMode != NArchive::NExtract::NAskMode::kExtract)
-    //return S_OK;
+    askExtractMode; // unused
+    // if (askExtractMode != NArchive::NExtract::NAskMode::kExtract)
+    // return S_OK;
 
     {
         // Get Attrib
@@ -184,7 +184,7 @@ STDMETHODIMP YCArchiveExtractCallback::GetStream(UInt32 index,
         }
     }
 
-    //se necesita conocer el tama?o del archivo para poder reservar suficiente memoria
+    // se necesita conocer el tama?o del archivo para poder reservar suficiente memoria
     bool newFileSizeDefined;
     {
         // Get Size
@@ -195,7 +195,7 @@ STDMETHODIMP YCArchiveExtractCallback::GetStream(UInt32 index,
             ConvertPropVariantToUInt64(prop, newFileSize);
     }
 
-    //No hay que crear ning?n fichero, ni directorios intermedios
+    // No hay que crear ning?n fichero, ni directorios intermedios
     /*{
     // Create folders for file
     int slashPos = _filePath.ReverseFind(WCHAR_PATH_SEPARATOR);
@@ -207,7 +207,7 @@ STDMETHODIMP YCArchiveExtractCallback::GetStream(UInt32 index,
   _diskFilePath = fullProcessedPath;
   */
     if (_processedFileInfo.isDir) {
-        //NFile::NDirectory::CreateComplexDirectory(fullProcessedPath);
+        // NFile::NDirectory::CreateComplexDirectory(fullProcessedPath);
     } else {
         /*NFile::NFind::CFileInfoW fi;
       if (fi.Find(fullProcessedPath))
@@ -244,7 +244,7 @@ STDMETHODIMP YCArchiveExtractCallback::PrepareOperation(Int32 askExtractMode)
     case NArchive::NExtract::NAskMode::kTest:  qDebug() <<(kTestingString); break;
     case NArchive::NExtract::NAskMode::kSkip:  qDebug() <<(kSkippingString); break;
   };*/
-    //qDebug() << _filePath;
+    // qDebug() << _filePath;
     return S_OK;
 }
 
@@ -299,7 +299,7 @@ STDMETHODIMP YCArchiveExtractCallback::SetOperationResult(Int32 operationResult)
   _outFileStream.Release();
   if (_extractMode && _processedFileInfo.AttribDefined)
     NFile::NDirectory::MySetFileAttributes(_diskFilePath, _processedFileInfo.Attrib);*/
-    //qDebug() << endl;
+    // qDebug() << endl;
     return S_OK;
 }
 
@@ -309,7 +309,7 @@ STDMETHODIMP YCArchiveExtractCallback::CryptoGetTextPassword(BSTR *password)
         // You can ask real password here from user
         // Password = GetPassword(OutStream);
         // PasswordIsDefined = true;
-        qDebug() << "Password is not defined" << endl;
+        qDebug() << "Password is not defined" << Qt::endl;
         return E_ABORT;
     }
     return StringToBstr(Password, password);

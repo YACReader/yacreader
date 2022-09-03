@@ -1,8 +1,6 @@
-import QtQuick 2.5
+import QtQuick 2.15
 
-import QtQuick.Controls 1.2
-import QtGraphicalEffects 1.0
-import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls 2.15
 
 import com.yacreader.ComicModel 1.0
 
@@ -59,39 +57,49 @@ Rectangle {
         y: flow.height + flow.additionalBottomSpace - 6
         height: parent.height - y
 
+        clip: true
+
         color: infoBackgroundColor
 
-        ScrollView {
-            __wheelAreaScrollSpeed: 75
+        Flickable{
+            id: infoFlickable
             anchors.fill: parent
             anchors.margins: 0
 
-            horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+            contentWidth: infoView.width
+            contentHeight: infoView.height
 
-            style: ScrollViewStyle {
-                transientScrollBars: false
-                incrementControl: Item {}
-                decrementControl: Item {}
-                handle: Item {
-                    implicitWidth: 10
+            WheelHandler {
+                onWheel: {
+                    if (infoFlickable.contentHeight <= infoFlickable.height) {
+                        return;
+                    }
+
+                    var newValue =  Math.min((infoFlickable.contentHeight - infoFlickable.height), (Math.max(infoFlickable.originY , infoFlickable.contentY - event.angleDelta.y)));
+                    infoFlickable.contentY = newValue;
+                }
+            }
+
+            ScrollBar.vertical: ScrollBar {
+                visible: infoFlickable.contentHeight > infoFlickable.height
+
+                contentItem: Item {
+                    implicitWidth: 12
                     implicitHeight: 26
                     Rectangle {
                         color: "#424246"
                         anchors.fill: parent
                         anchors.topMargin: 6
-                        anchors.leftMargin: 4
+                        anchors.leftMargin: 5
                         anchors.rightMargin: 4
                         anchors.bottomMargin: 6
+                        radius: 2
                     }
-                }
-
-                scrollBarBackground: Item {
-                    implicitWidth: 14
-                    implicitHeight: 26
                 }
             }
 
             ComicInfoView {
+                id: infoView
                 width: info_container.width - 14
             }
         }

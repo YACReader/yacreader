@@ -10,16 +10,20 @@ INCLUDEPATH += ../YACReaderLibrary \
                 ../YACReaderLibrary/server \
                 ../YACReaderLibrary/db
 
-DEFINES += SERVER_RELEASE NOMINMAX YACREADER_LIBRARY
+DEFINES += SERVER_RELEASE YACREADER_LIBRARY
 # load default build flags
 # do a basic dependency check
 include(headless_config.pri)
 include(../dependencies/pdf_backend.pri)
 
+greaterThan(QT_MAJOR_VERSION, 5): QT += core5compat
+
 win32 {
   LIBS += -loleaut32 -lole32 -lshell32 -luser32
-  QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
-  QMAKE_LFLAGS_RELEASE += /LTCG
+  msvc {
+    QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
+    QMAKE_LFLAGS_RELEASE += /LTCG
+  }
   CONFIG -= embed_manifest_exe
 }
 
@@ -37,6 +41,8 @@ unix:haiku {
 CONFIG -= flat
 QT += core sql network
 
+greaterThan(QT_MAJOR_VERSION, 5): QT += core5compat
+
 # Source files
 HEADERS += ../YACReaderLibrary/library_creator.h \
            ../YACReaderLibrary/package_manager.h \
@@ -44,6 +50,8 @@ HEADERS += ../YACReaderLibrary/library_creator.h \
            ../YACReaderLibrary/db_helper.h \
            ../YACReaderLibrary/db/data_base_management.h \
            ../YACReaderLibrary/db/reading_list.h \
+           ../YACReaderLibrary/initial_comic_info_extractor.h \
+           ../YACReaderLibrary/xml_info_parser.h \
            ../common/comic_db.h \
            ../common/folder.h \
            ../common/library_item.h \
@@ -67,6 +75,8 @@ SOURCES += ../YACReaderLibrary/library_creator.cpp \
            ../YACReaderLibrary/db_helper.cpp \
            ../YACReaderLibrary/db/data_base_management.cpp \
            ../YACReaderLibrary/db/reading_list.cpp \
+           ../YACReaderLibrary/initial_comic_info_extractor.cpp \
+           ../YACReaderLibrary/xml_info_parser.cpp \
            ../common/comic_db.cpp \
            ../common/folder.cpp \
            ../common/library_item.cpp \
@@ -84,10 +94,13 @@ SOURCES += ../YACReaderLibrary/library_creator.cpp \
            libraries_updater.cpp
 
 include(../YACReaderLibrary/server/server.pri)
+
 CONFIG(7zip) {
 include(../compressed_archive/wrapper.pri)
 } else:CONFIG(unarr) {
 include(../compressed_archive/unarr/unarr-wrapper.pri)
+} else:CONFIG(libarchive) {
+include(../compressed_archive/libarchive/libarchive-wrapper.pri)
 } else {
   error(No compression backend specified. Did you mess with the build system?)
 }
@@ -100,6 +113,9 @@ TRANSLATIONS =  yacreaderlibraryserver_es.ts \
                 yacreaderlibraryserver_nl.ts \
                 yacreaderlibraryserver_tr.ts \
                 yacreaderlibraryserver_de.ts \
+                yacreaderlibraryserver_zh_CN.ts \
+                yacreaderlibraryserver_zh_TW.ts \
+                yacreaderlibraryserver_zh_HK.ts \
                 yacreaderlibraryserver_source.ts
 
 RESOURCES += images.qrc

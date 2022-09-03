@@ -28,7 +28,7 @@ HttpConnectionHandler::HttpConnectionHandler(const QSettings *settings, HttpRequ
     readTimer.setSingleShot(true);
 
     // Create TCP or SSL socket
-    createSocket();    
+    createSocket();
     socket->moveToThread(thread);
 
     // Connect signals
@@ -37,7 +37,7 @@ HttpConnectionHandler::HttpConnectionHandler(const QSettings *settings, HttpRequ
     connect(&readTimer, SIGNAL(timeout()), SLOT(readTimeout()));
     connect(thread, SIGNAL(finished()), this, SLOT(thread_done()));
 
-    qDebug("HttpConnectionHandler (%p): constructed", static_cast<void*>(this));    
+    qDebug("HttpConnectionHandler (%p): constructed", static_cast<void*>(this));
 }
 
 

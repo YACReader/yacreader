@@ -10,7 +10,7 @@
 #include <QScrollBar>
 #include <QGraphicsItemAnimation>
 #include <QTimeLine>
-//TODO: is QGLWidget needed here???
+// TODO: is QGLWidget needed here???
 //#include <QGLWidget>
 #include <QTimer>
 #include <QElapsedTimer>
@@ -48,35 +48,35 @@ YACReaderActivityIndicatorWidget::YACReaderActivityIndicatorWidget(QWidget *pare
 
     setLayout(layout);
 
-    layout->setMargin(4);
+    layout->setContentsMargins(4, 4, 4, 4);
     layout->setSpacing(0);
 
-    //setFixedHeight(3);
-    //resize(579,3);
+    // setFixedHeight(3);
+    // resize(579,3);
     glow->setGeometry(4, 4, glowLine.width(), glowLine.height());
-    //normal->setGeometry(0,1,579,1);
+    // normal->setGeometry(0,1,579,1);
 
     auto effect = new QGraphicsOpacityEffect();
-    //effect->setOpacity(1.0);
+    // effect->setOpacity(1.0);
 
-    QPropertyAnimation *animation = new QPropertyAnimation(effect, "opacity");
+    auto *animation = new QPropertyAnimation(effect, "opacity", this);
 
     animation->setDuration(1000);
     animation->setStartValue(1);
     animation->setEndValue(0);
-    //animation->setEasingCurve(QEasingCurve::InQuint);
+    // animation->setEasingCurve(QEasingCurve::InQuint);
 
-    QPropertyAnimation *animation2 = new QPropertyAnimation(effect, "opacity");
+    auto *animation2 = new QPropertyAnimation(effect, "opacity", this);
 
     animation2->setDuration(1000);
     animation2->setStartValue(0);
     animation2->setEndValue(1);
-    //animation2->setEasingCurve(QEasingCurve::InQuint);
+    // animation2->setEasingCurve(QEasingCurve::InQuint);
 
     glow->setGraphicsEffect(effect);
 
-    connect(animation, SIGNAL(finished()), animation2, SLOT(start()));
-    connect(animation2, SIGNAL(finished()), animation, SLOT(start()));
+    connect(animation, &QPropertyAnimation::finished, animation2, [=] { animation2->start(); });
+    connect(animation2, &QPropertyAnimation::finished, animation, [=] { animation->start(); });
 
     animation->start();
 }
@@ -87,7 +87,7 @@ ImportWidget::ImportWidget(QWidget *parent)
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     QPalette p(palette());
-    p.setColor(QPalette::Background, QColor(250, 250, 250));
+    p.setColor(QPalette::Window, QColor(250, 250, 250));
     setAutoFillBackground(true);
     setPalette(p);
 
@@ -96,8 +96,8 @@ ImportWidget::ImportWidget(QWidget *parent)
     iconLabel->setPixmap(icon);
 
     /*QPixmap line(":/images/noLibrariesLine.png");
-	QLabel * lineLabel = new QLabel();
-	lineLabel->setPixmap(line);*/
+        QLabel * lineLabel = new QLabel();
+        lineLabel->setPixmap(line);*/
 
     auto activityIndicator = new YACReaderActivityIndicatorWidget();
 
@@ -115,7 +115,7 @@ ImportWidget::ImportWidget(QWidget *parent)
     coversViewContainer->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Maximum);
 
     coversView = new QGraphicsView();
-    //coversView->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
+    // coversView->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
     coversView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     coversView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     coversView->setMaximumHeight(300);
@@ -144,7 +144,7 @@ ImportWidget::ImportWidget(QWidget *parent)
     coversViewLayout->addWidget(topDecorator, 0);
     coversViewLayout->addWidget(coversView, 1);
     coversViewLayout->addWidget(bottomDecorator, 0);
-    coversViewLayout->setMargin(0);
+    coversViewLayout->setContentsMargins(0, 0, 0, 0);
     coversViewLayout->setSpacing(0);
 
     QPushButton *stop = new QPushButton(tr("stop"));
@@ -169,7 +169,7 @@ ImportWidget::ImportWidget(QWidget *parent)
     topLayout->addSpacing(30);
     topLayout->addLayout(textLayout, 1);
     topLayout->addStretch();
-    topLayout->setMargin(0);
+    topLayout->setContentsMargins(0, 0, 0, 0);
 
     topWidget->setLayout(topLayout);
 
@@ -195,16 +195,16 @@ ImportWidget::ImportWidget(QWidget *parent)
                               "  QToolButton:checked {background:url(\":/images/hiddenCovers.png\"); border:none;}");
     hideButton->setCheckable(true);
 
-    connect(hideButton, SIGNAL(toggled(bool)), this, SLOT(showCovers(bool)));
+    connect(hideButton, &QAbstractButton::toggled, this, &ImportWidget::showCovers);
 
     layout->addWidget(coversLabel, 0, Qt::AlignHCenter);
     layout->addWidget(coversViewContainer);
-    //layout->addStretch();
+    // layout->addStretch();
     layout->addWidget(currentComicLabel, 0, Qt::AlignHCenter);
     layout->setContentsMargins(0, layout->contentsMargins().top(), 0, layout->contentsMargins().bottom());
 
-    connect(stop, SIGNAL(clicked()), this, SIGNAL(stop()));
-    //connect(stop,SIGNAL(clicked()),this,SLOT(addCoverTest()));
+    connect(stop, &QAbstractButton::clicked, this, &ImportWidget::stop);
+    // connect(stop,SIGNAL(clicked()),this,SLOT(addCoverTest()));
 
     previousWidth = 0;
     updatingCovers = false;
@@ -219,7 +219,7 @@ void ImportWidget::newComic(const QString &path, const QString &coverPath)
 
     currentComicLabel->setText("<font color=\"#565959\">" + path + "</font>");
 
-    if (((elapsedTimer->elapsed() >= 1100) || ((previousWidth < coversView->width()) && (elapsedTimer->elapsed() >= 500))) && scrollAnimation->state() != QAbstractAnimation::Running) //todo elapsed time
+    if (((elapsedTimer->elapsed() >= 1100) || ((previousWidth < coversView->width()) && (elapsedTimer->elapsed() >= 500))) && scrollAnimation->state() != QAbstractAnimation::Running) // todo elapsed time
     {
         updatingCovers = true;
         elapsedTimer->start();
@@ -236,7 +236,7 @@ void ImportWidget::newComic(const QString &path, const QString &coverPath)
         foreach (QGraphicsItem *itemToRemove, coversScene->items()) {
             auto last = dynamic_cast<QGraphicsPixmapItem *>(itemToRemove);
 
-            if ((last->pos().x() + last->pixmap().width()) < coversView->horizontalScrollBar()->value()) //TODO check this
+            if ((last->pos().x() + last->pixmap().width()) < coversView->horizontalScrollBar()->value()) // TODO check this
             {
                 coversScene->removeItem(last);
                 delete last;
@@ -307,7 +307,7 @@ void ImportWidget::clear()
 {
     previousWidth = 0;
 
-    //nos aseguramos de que las animaciones han finalizado antes de borrar
+    // nos aseguramos de que las animaciones han finalizado antes de borrar
     QList<QGraphicsItem *> all = coversScene->items();
     for (int i = 0; i < all.size(); i++) {
         QGraphicsItem *gi = all[i];
@@ -359,6 +359,18 @@ void ImportWidget::setUpgradeLook()
     textDescription->setText("<font color=\"#565959\">" + tr("<p>The current library is being upgraded, please wait.</p>") + "</font>");
 
     stopButton->setVisible(false);
+    coversLabel->setVisible(false);
+    coversViewContainer->setVisible(false);
+    hideButton->setVisible(false);
+}
+
+void ImportWidget::setXMLScanLook()
+{
+    iconLabel->setPixmap(QPixmap(":/images/updatingIcon.png"));
+    text->setText("<font color=\"#495252\">" + tr("Scanning the library") + "</font>");
+    textDescription->setText("<font color=\"#565959\">" + tr("<p>Current library is being scanned for legacy XML metadata information.</p><p>This is only needed once, and only if the library was crated with YACReaderLibrary 9.8.2 or earlier.</p>") + "</font>");
+
+    stopButton->setVisible(true);
     coversLabel->setVisible(false);
     coversViewContainer->setVisible(false);
     hideButton->setVisible(false);

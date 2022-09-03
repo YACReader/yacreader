@@ -24,7 +24,7 @@ public:
     bool operator==(const ComicInfo &other) { return id == other.id; }
     bool operator!=(const ComicInfo &other) { return id != other.id; }
 
-    //mandatory fields
+    // mandatory fields
     qulonglong id;
     bool read;
     bool edited;
@@ -35,7 +35,7 @@ public:
 
     bool hasBeenOpened;
 
-    //viewer
+    // viewer
     int currentPage;
     int bookmark1;
     int bookmark2;
@@ -45,47 +45,52 @@ public:
     int gamma;
     //-----------------
 
-    QVariant title; //string
+    QVariant title; // string
 
-    QVariant coverPage; //int
-    QVariant numPages; //int
+    QVariant coverPage; // int
+    QVariant numPages; // int
 
-    QVariant number; //int
-    QVariant isBis; //bool
-    QVariant count; //int
+    QVariant number; // int
+    QVariant isBis; // bool
+    QVariant count; // int
 
-    QVariant volume; //string
-    QVariant storyArc; //string
-    QVariant arcNumber; //int
-    QVariant arcCount; //int
+    QVariant volume; // string
+    QVariant storyArc; // string
+    QVariant arcNumber; // int
+    QVariant arcCount; // int
 
-    QVariant genere; //string
+    QVariant genere; // string
 
-    QVariant writer; //string
-    QVariant penciller; //string
-    QVariant inker; //string
-    QVariant colorist; //string
-    QVariant letterer; //string
-    QVariant coverArtist; //string
+    QVariant writer; // string
+    QVariant penciller; // string
+    QVariant inker; // string
+    QVariant colorist; // string
+    QVariant letterer; // string
+    QVariant coverArtist; // string
 
-    QVariant date; //string
-    QVariant publisher; //string
-    QVariant format; //string
-    QVariant color; //bool
-    QVariant ageRating; //string
-    QVariant manga; //bool
+    QVariant date; // string
 
-    QVariant synopsis; //string
-    QVariant characters; //string
-    QVariant notes; //string
+    QVariant day;
+    QVariant month;
+    QVariant year;
 
-    QVariant comicVineID; //string
+    QVariant publisher; // string
+    QVariant format; // string
+    QVariant color; // bool
+    QVariant ageRating; // string
+    QVariant manga; // bool
+
+    QVariant synopsis; // string
+    QVariant characters; // string
+    QVariant notes; // string
+
+    QVariant comicVineID; // string
 
     QImage cover;
 
-    QVariant lastTimeOpened; //integer/date
-    QVariant coverSizeRatio; //h/w
-    QVariant originalCoverSize; //string "WxH"
+    QVariant lastTimeOpened; // integer/date
+    QVariant coverSizeRatio; // h/w
+    QVariant originalCoverSize; // string "WxH"
 
     /*void setTitle(QVariant value);
 
@@ -177,6 +182,9 @@ public:
     Q_PROPERTY(QVariant coverArtist MEMBER coverArtist CONSTANT)
 
     Q_PROPERTY(QVariant date MEMBER date CONSTANT)
+    Q_PROPERTY(QVariant day MEMBER day CONSTANT)
+    Q_PROPERTY(QVariant month MEMBER month CONSTANT)
+    Q_PROPERTY(QVariant year MEMBER year CONSTANT)
     Q_PROPERTY(QVariant publisher MEMBER publisher CONSTANT)
     Q_PROPERTY(QVariant format MEMBER format CONSTANT)
     Q_PROPERTY(QVariant color MEMBER color CONSTANT)
@@ -200,7 +208,7 @@ public:
     bool isFavorite;
     Q_PROPERTY(bool isFavorite MEMBER isFavorite WRITE setFavorite NOTIFY favoriteChanged)
 
-    //setters, used in QML only by now
+    // setters, used in QML only by now
     void setRead(bool r);
     void setRating(int r);
     void setFavorite(bool f);
@@ -225,16 +233,16 @@ public:
 
     bool hasCover() { return _hasCover; }
 
-    //return comic file name
+    // return comic file name
     QString getFileName() const;
 
-    //returns comic title if it isn't null or empty, in other case returns fileName
+    // returns comic title if it isn't null or empty, in other case returns fileName
     Q_INVOKABLE QString getTitleOrFileName() const;
 
-    //returns parent folder name
+    // returns parent folder name
     QString getParentFolderName() const;
 
-    //return the size of the file in bytes
+    // return the size of the file in bytes
     Q_INVOKABLE qulonglong getFileSize() const;
 
     Q_INVOKABLE QString getTitleIncludingNumber() const;
@@ -245,7 +253,7 @@ public:
     Q_PROPERTY(ComicInfo info MEMBER info)
 
     ComicDB &operator=(const ComicDB &other);
-    bool operator==(const ComicDB &other) { return id == other.id; }
+    bool operator==(const ComicDB &other) const { return id == other.id; }
 
     friend QDataStream &operator<<(QDataStream &, const ComicDB &);
     friend QDataStream &operator>>(QDataStream &, ComicDB &);

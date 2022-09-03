@@ -18,12 +18,13 @@ private:
 
 public:
     YACReaderSpinSliderWidget(QWidget *parent = 0, bool strechableSlider = false);
+    QSize minimumSizeHint() const;
+
 public slots:
     void setRange(int lowValue, int topValue, int step = 1);
     void setValue(int value);
     void setText(const QString &text);
     int getValue();
-    QSize minimumSizeHint() const;
     void setTracking(bool b);
     void valueWillChange(int);
     void valueWillChangeFromSpinBox(int);

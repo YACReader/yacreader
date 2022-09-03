@@ -15,7 +15,7 @@ class YACReaderFieldEdit;
 class YACReaderFieldPlainTextEdit;
 class QDialogButtonBox;
 class QCheckBox;
-//class YACReaderBusyWidget;
+// class YACReaderBusyWidget;
 class QToolButton;
 
 #include "comic_db.h"
@@ -25,7 +25,7 @@ class PropertiesDialog : public QDialog
     Q_OBJECT
 private:
     QWidget *mainWidget;
-    //YACReaderBusyWidget * busyIndicator;
+    // YACReaderBusyWidget * busyIndicator;
 
     QGridLayout *mainLayout;
 
@@ -91,6 +91,8 @@ private:
     QDialogButtonBox *buttonBox;
     QPushButton *closeButton;
     QPushButton *saveButton;
+    QPushButton *nextButton;
+    QPushButton *previousButton;
     QPushButton *restoreButton; //??
 
     QPixmap coverImage;
@@ -111,11 +113,16 @@ private:
     void setDisableUniqueValues(bool disabled);
 
     QList<ComicDB> comics;
+    int currentComicIndex;
     void closeEvent(QCloseEvent *e) override;
     void updateCoverPageNumberLabel(int n);
+    void loadComic(ComicDB &comic);
+    void updateButtons();
 
+    bool sequentialEditing;
     bool coverChanged;
     float coverSizeRatio;
+    bool updated;
     QString originalCoverSize;
 
 public:
@@ -125,14 +132,18 @@ public:
     // TODO: this non-const member function hides rather than overrides
     // QWidget::sizeHint(). But the function cannot be simply removed as it is used
     // in our constructor. Will have to investigate and decide how to fix this.
-    QSize sizeHint();
+    QSize sizeHint() const override;
     void paintEvent(QPaintEvent *event) override;
 
 public slots:
     void setComics(QList<ComicDB> comics);
+    void setComicsForSequentialEditing(int currentComicIndex, QList<ComicDB> comics);
     void updateComics();
     void save();
-    //Deprecated
+    void saveAndOpenPrevious();
+    void saveAndOpenNext();
+    void saveAndClose();
+    // Deprecated
     void setCover(const QPixmap &cover);
     void setMultipleCover();
     void setFilename(const QString &name);
@@ -140,5 +151,6 @@ public slots:
     void setSize(float size);
     void loadNextCover();
     void loadPreviousCover();
+    bool close();
 };
 #endif

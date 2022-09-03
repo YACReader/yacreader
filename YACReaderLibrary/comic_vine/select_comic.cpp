@@ -23,7 +23,7 @@ SelectComic::SelectComic(QWidget *parent)
     auto left = new QVBoxLayout;
     auto content = new QGridLayout;
 
-    //widgets
+    // widgets
     cover = new QLabel();
     cover->setScaledContents(true);
     cover->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
@@ -32,8 +32,8 @@ SelectComic::SelectComic(QWidget *parent)
     detailLabel = new ScraperScrollLabel(this);
 
     tableComics = new ScraperTableView(this);
-    //connections
-    connect(tableComics, SIGNAL(clicked(QModelIndex)), this, SLOT(loadComicInfo(QModelIndex)));
+    // connections
+    connect(tableComics, &QAbstractItemView::clicked, this, &SelectComic::loadComicInfo);
 
     paginator->setCustomLabel(tr("comics"));
 
@@ -95,13 +95,13 @@ void SelectComic::loadComicInfo(const QModelIndex &mi)
     detailLabel->setAltText(loadingStyle.arg(tr("loading description")));
 
     auto comicVineClient = new ComicVineClient;
-    connect(comicVineClient, SIGNAL(comicCover(const QByteArray &)), this, SLOT(setCover(const QByteArray &)));
-    connect(comicVineClient, SIGNAL(finished()), comicVineClient, SLOT(deleteLater()));
+    connect(comicVineClient, &ComicVineClient::comicCover, this, &SelectComic::setCover);
+    connect(comicVineClient, &ComicVineClient::finished, comicVineClient, &QObject::deleteLater);
     comicVineClient->getComicCover(coverURL);
 
     auto comicVineClient2 = new ComicVineClient;
-    connect(comicVineClient2, SIGNAL(comicDetail(QString)), this, SLOT(setDescription(QString)));
-    connect(comicVineClient2, SIGNAL(finished()), comicVineClient2, SLOT(deleteLater()));
+    connect(comicVineClient2, &ComicVineClient::comicDetail, this, &SelectComic::setDescription);
+    connect(comicVineClient2, &ComicVineClient::finished, comicVineClient2, &QObject::deleteLater);
     comicVineClient2->getComicDetailAsync(id);
 }
 

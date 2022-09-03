@@ -72,9 +72,9 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     auto apiKeyBox = new QGroupBox(tr("Comic Vine API key"));
     apiKeyBox->setLayout(apiKeyLayout);
 
-    connect(apiKeyButton, SIGNAL(clicked()), this, SLOT(editApiKey()));
+    connect(apiKeyButton, &QAbstractButton::clicked, this, &OptionsDialog::editApiKey);
 
-    //grid view background config
+    // grid view background config
     useBackgroundImageCheck = new QCheckBox(tr("Enable background image"));
 
     opacityLabel = new QLabel(tr("Opacity level"));
@@ -115,12 +115,12 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     gridViewLayout->addWidget(continueReadingGroup);
     gridViewLayout->addStretch();
 
-    connect(useBackgroundImageCheck, SIGNAL(clicked(bool)), this, SLOT(useBackgroundImageCheckClicked(bool)));
-    connect(backgroundImageOpacitySlider, SIGNAL(valueChanged(int)), this, SLOT(backgroundImageOpacitySliderChanged(int)));
-    connect(backgroundImageBlurRadiusSlider, SIGNAL(valueChanged(int)), this, SLOT(backgroundImageBlurRadiusSliderChanged(int)));
+    connect(useBackgroundImageCheck, &QAbstractButton::clicked, this, &OptionsDialog::useBackgroundImageCheckClicked);
+    connect(backgroundImageOpacitySlider, &QAbstractSlider::valueChanged, this, &OptionsDialog::backgroundImageOpacitySliderChanged);
+    connect(backgroundImageBlurRadiusSlider, &QAbstractSlider::valueChanged, this, &OptionsDialog::backgroundImageBlurRadiusSliderChanged);
     connect(useCurrentComicCoverCheck, &QCheckBox::clicked, this, &OptionsDialog::useCurrentComicCoverCheckClicked);
     connect(resetButton, &QPushButton::clicked, this, &OptionsDialog::resetToDefaults);
-    //end grid view background config
+    // end grid view background config
 
     connect(displayContinueReadingBannerCheck, &QCheckBox::clicked, this, [this]() {
         this->settings->setValue(DISPLAY_CONTINUE_READING_IN_GRID_VIEW, this->displayContinueReadingBannerCheck->isChecked());
@@ -150,8 +150,8 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     layout->addWidget(tabWidget);
     layout->addLayout(buttons);
     setLayout(layout);
-    //restoreOptions(settings); //load options
-    //resize(200,0);
+    // restoreOptions(settings); //load options
+    // resize(200,0);
     setModal(true);
     setWindowTitle(tr("Options"));
 

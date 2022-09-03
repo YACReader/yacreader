@@ -7,7 +7,7 @@
 #include <QDir>
 #include <QSysInfo>
 #include <QFileInfo>
-#ifndef use_unarr
+#if !defined use_unarr && !defined use_libarchive
 #include <QLibrary>
 #endif
 #include <QCommandLineParser>
@@ -29,7 +29,7 @@
 
 #define PICTUREFLOW_QT4 1
 
-//Server interface
+// Server interface
 Startup *s;
 
 using namespace QsLogging;
@@ -40,7 +40,7 @@ void logSystemAndConfig()
     QLOG_INFO() << "OS:" << QSysInfo::prettyProductName() << "Version: " << QSysInfo::productVersion();
     QLOG_INFO() << "Kernel:" << QSysInfo::kernelType() << QSysInfo::kernelVersion() << "Architecture:" << QSysInfo::currentCpuArchitecture();
 
-#ifndef use_unarr
+#if !defined use_unarr && !defined use_libarchive
 #ifdef Q_OS_WIN
     if (QLibrary::isLibrary(QApplication::applicationDirPath() + "/utils/7z.dll"))
 #elif defined Q_OS_UNIX && !defined Q_OS_MAC
@@ -51,6 +51,8 @@ void logSystemAndConfig()
         QLOG_INFO() << "7z : found";
     else
         QLOG_ERROR() << "7z : not found";
+#elif defined use_libarchive
+    QLOG_INFO() << "using libarchive decompression backend";
 #else // use_unarr
     QLOG_INFO() << "using unarr decompression backend";
 #endif // use_unarr
@@ -119,6 +121,15 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 int main(int argc, char **argv)
 {
     qInstallMessageHandler(messageHandler);
+
+    static const char ENV_VAR_QT_DEVICE_PIXEL_RATIO[] = "QT_DEVICE_PIXEL_RATIO";
+    if (!qEnvironmentVariableIsSet(ENV_VAR_QT_DEVICE_PIXEL_RATIO) && !qEnvironmentVariableIsSet("QT_AUTO_SCREEN_SCALE_FACTOR") && !qEnvironmentVariableIsSet("QT_SCALE_FACTOR") && !qEnvironmentVariableIsSet("QT_SCREEN_SCALE_FACTORS")) {
+        QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    }
+
+    QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+    QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+
     QApplication app(argc, argv);
 
 #ifdef FORCE_ANGLE
@@ -128,7 +139,6 @@ int main(int argc, char **argv)
     app.setApplicationName("YACReaderLibrary");
     app.setOrganizationName("YACReader");
     app.setApplicationVersion(VERSION);
-    app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 
     // Set window icon according to Freedesktop icon specification
     // This is mostly relevant for Linux and other Unix systems
@@ -219,7 +229,7 @@ int main(int argc, char **argv)
 
     logSystemAndConfig();
 
-    if (YACReaderLocalServer::isRunning()) //only a single instance of YACReaderLibrary is allowed
+    if (YACReaderLocalServer::isRunning()) // only a single instance of YACReaderLibrary is allowed
     {
         QLOG_WARN() << "another instance of YACReaderLibrary is running";
 #ifdef Q_OS_WIN
@@ -245,9 +255,9 @@ int main(int argc, char **argv)
 
     auto mw = new LibraryWindow();
 
-    mw->connect(localServer, SIGNAL(comicUpdated(quint64, const ComicDB &)), mw, SLOT(updateComicsView(quint64, const ComicDB &)), Qt::QueuedConnection);
+    mw->connect(localServer, &YACReaderLocalServer::comicUpdated, mw, &LibraryWindow::updateComicsView, Qt::QueuedConnection);
 
-    //connections to localServer
+    // connections to localServer
 
     // start as tray
     if (!settings->value(START_TO_TRAY, false).toBool() || !settings->value(CLOSE_TO_TRAY, false).toBool()) {
@@ -265,7 +275,7 @@ int main(int argc, char **argv)
 
     YACReader::exitCheck(ret);
 
-    //shutdown
+    // shutdown
     s->stop();
     delete s;
     localServer->close();

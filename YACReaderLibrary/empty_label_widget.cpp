@@ -7,7 +7,7 @@ EmptyLabelWidget::EmptyLabelWidget(QWidget *parent)
 
     iconLabel->setPixmap(QPixmap(":/images/empty_label.png"));
 
-    //titleLabel->setText(tr("This label doesn't contain comics yet") + QString("<p style='color:rgb(150,150,150);font-size:14px;font-weight:normal;'>%1</p>").arg(tr("Drag and drop folders and comics here")));
+    // titleLabel->setText(tr("This label doesn't contain comics yet") + QString("<p style='color:rgb(150,150,150);font-size:14px;font-weight:normal;'>%1</p>").arg(tr("Drag and drop folders and comics here")));
     titleLabel->setText(tr("This label doesn't contain comics yet"));
 }
 

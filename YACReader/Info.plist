@@ -8,8 +8,6 @@
 	<string>YACReader.icns</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
-	<key>CFBundleGetInfoString</key>
-	<string>YACReader</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleExecutable</key>
@@ -140,6 +138,8 @@
 		</dict>
 	</array>
 	<key>NSRequiresAquaSystemAppearance</key>
+	<true/>
+	<key>NSSupportsAutomaticGraphicsSwitching</key>
 	<true/>
 </dict>
 </plist>

@@ -11,8 +11,7 @@ YACReader::RoundedCornersDialog::RoundedCornersDialog(QWidget *parent)
 
 void YACReader::RoundedCornersDialog::paintEvent(QPaintEvent *)
 {
-    qreal radius = 36.0; // desired radius in absolute pixels
-    qreal borderWidth = 0.0;
+    qreal radius = 14.0; // desired radius in absolute pixels
 
     if (!(windowFlags() & Qt::FramelessWindowHint) && !testAttribute(Qt::WA_TranslucentBackground))
         return; // nothing to do
@@ -22,8 +21,7 @@ void YACReader::RoundedCornersDialog::paintEvent(QPaintEvent *)
 
     // Paint thyself.
     QRectF rect(QPointF(0, 0), size());
-    // Check for a border size.
-    qreal penWidth = borderWidth;
+
     p.setPen(Qt::NoPen);
 
     // Set the brush from palette role.

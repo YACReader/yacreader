@@ -28,7 +28,7 @@ public slots:
     bool save();
 
 private:
-    //name <id,path>
+    // name <id,path>
     QMap<QString, QPair<int, QString>> libraries;
 };
 

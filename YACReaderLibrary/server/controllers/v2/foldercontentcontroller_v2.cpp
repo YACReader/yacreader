@@ -63,6 +63,8 @@ void FolderContentControllerV2::serviceContent(const int &library, const qulongl
         }
     }
 
+    qDeleteAll(folderContent);
+
     QJsonDocument output(items);
 
     response.write(output.toJson(QJsonDocument::Compact));

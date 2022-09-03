@@ -17,7 +17,7 @@ class YACReaderGLFlowConfigWidget : public QWidget
 public:
     YACReaderGLFlowConfigWidget(QWidget *parent = 0);
 
-    //GL.........................
+    // GL.........................
     QRadioButton *radioClassic;
     QRadioButton *radioStripe;
     QRadioButton *radioOver;

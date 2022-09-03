@@ -17,42 +17,42 @@ void CreateLibraryDialog::setupUI()
     textLabel = new QLabel(tr("Comics folder : "));
     path = new QLineEdit;
     textLabel->setBuddy(path);
-    connect(path, SIGNAL(textChanged(QString)), this, SLOT(pathSetted(QString)));
+    connect(path, &QLineEdit::textChanged, this, &CreateLibraryDialog::pathSetted);
 
     nameLabel = new QLabel(tr("Library Name : "));
     nameEdit = new QLineEdit;
     nameLabel->setBuddy(nameEdit);
-    connect(nameEdit, SIGNAL(textChanged(QString)), this, SLOT(nameSetted(QString)));
+    connect(nameEdit, &QLineEdit::textChanged, this, &CreateLibraryDialog::nameSetted);
 
     accept = new QPushButton(tr("Create"));
     accept->setDisabled(true);
-    connect(accept, SIGNAL(clicked()), this, SLOT(create()));
+    connect(accept, &QAbstractButton::clicked, this, &CreateLibraryDialog::create);
 
     cancel = new QPushButton(tr("Cancel"));
-    connect(cancel, SIGNAL(clicked()), this, SIGNAL(cancelCreate()));
-    connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
+    connect(cancel, &QAbstractButton::clicked, this, &CreateLibraryDialog::cancelCreate);
+    connect(cancel, &QAbstractButton::clicked, this, &CreateLibraryDialog::close);
 
     find = new QPushButton(QIcon(":/images/find_folder.png"), "");
-    connect(find, SIGNAL(clicked()), this, SLOT(findPath()));
+    connect(find, &QAbstractButton::clicked, this, &CreateLibraryDialog::findPath);
 
     auto content = new QGridLayout;
 
-    //QHBoxLayout *nameLayout = new QHBoxLayout;
+    // QHBoxLayout *nameLayout = new QHBoxLayout;
 
     content->addWidget(nameLabel, 0, 0);
     content->addWidget(nameEdit, 0, 1);
 
-    //QHBoxLayout *libraryLayout = new QHBoxLayout;
+    // QHBoxLayout *libraryLayout = new QHBoxLayout;
 
     content->addWidget(textLabel, 1, 0);
     content->addWidget(path, 1, 1);
     content->addWidget(find, 1, 2);
-    content->setColumnMinimumWidth(2, 0); //TODO
+    content->setColumnMinimumWidth(2, 0); // TODO
 
     auto bottomLayout = new QHBoxLayout;
     bottomLayout->addWidget(message = new QLabel(tr("Create a library could take several minutes. You can stop the process and update the library later for completing the task.")));
     message->setWordWrap(true);
-    //message->hide();
+    // message->hide();
     bottomLayout->addStretch();
     bottomLayout->addWidget(accept);
     bottomLayout->addWidget(cancel);
@@ -160,8 +160,8 @@ UpdateLibraryDialog::UpdateLibraryDialog(QWidget *parent)
     bottom->addStretch();
     bottom->addWidget(cancel = new QPushButton(tr("Cancel")));
 
-    connect(cancel, SIGNAL(clicked()), this, SIGNAL(cancelUpdate()));
-    connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
+    connect(cancel, &QAbstractButton::clicked, this, &UpdateLibraryDialog::cancelUpdate);
+    connect(cancel, &QAbstractButton::clicked, this, &UpdateLibraryDialog::close);
 
     mainLayout->addStretch();
 

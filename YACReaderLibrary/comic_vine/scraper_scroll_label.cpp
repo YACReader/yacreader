@@ -29,7 +29,7 @@ ScraperScrollLabel::ScraperScrollLabel(QWidget *parent)
             "QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-down.png') center top no-repeat;}"
             "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical, QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {background: none; }");
 
-    connect(textLabel, SIGNAL(linkActivated(QString)), this, SLOT(openLink(QString)));
+    connect(textLabel, &QLabel::linkActivated, this, &ScraperScrollLabel::openLink);
 }
 
 void ScraperScrollLabel::setAltText(const QString &text)

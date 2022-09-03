@@ -7,10 +7,10 @@ ComicFlow::ComicFlow(QWidget *parent, FlowType flowType)
     : YACReaderFlow(parent, flowType), worker(new WorkerThread<QImage>)
 {
     resetWorkerIndex();
-    connect(&updateTimer, SIGNAL(timeout()), this, SLOT(updateImageData()));
+    connect(&updateTimer, &QTimer::timeout, this, &ComicFlow::updateImageData);
 
-    connect(this, SIGNAL(centerIndexChanged(int)), this, SLOT(preload()));
-    connect(this, SIGNAL(centerIndexChangedSilent(int)), this, SLOT(preload()));
+    connect(this, &PictureFlow::centerIndexChanged, this, &ComicFlow::preload);
+    connect(this, &PictureFlow::centerIndexChangedSilent, this, &ComicFlow::preload);
 
     setReflectionEffect(PlainReflection);
 }
@@ -30,7 +30,7 @@ void ComicFlow::setImagePaths(const QStringList &paths)
     imagesSetted.fill(false, imageFiles.size());
 
     // populate with empty images
-    QImage img; //TODO remove
+    QImage img; // TODO remove
     QString s;
     for (int i = 0; i < (int)imageFiles.size(); i++) {
         addSlide(img);
@@ -49,7 +49,7 @@ void ComicFlow::setImagePaths(const QStringList &paths)
 void ComicFlow::preload()
 {
     if (numImagesLoaded < imagesLoaded.size())
-        updateTimer.start(30); //TODO comprobar rendimiento, originalmente era 70
+        updateTimer.start(30); // TODO comprobar rendimiento, originalmente era 70
 }
 
 void ComicFlow::updateImageData()
@@ -83,7 +83,7 @@ void ComicFlow::updateImageData()
     for (int c = 0; c < 2 * COUNT + 1; c++) {
         int i = indexes[c];
         if ((i >= 0) && (i < slideCount()))
-            if (!imagesLoaded[i]) //slide(i).isNull())
+            if (!imagesLoaded[i]) // slide(i).isNull())
             {
                 // schedule thumbnail generation
                 QString fname = imageFiles[i];
@@ -105,7 +105,7 @@ void ComicFlow::keyPressEvent(QKeyEvent *event)
 
 void ComicFlow::wheelEvent(QWheelEvent *event)
 {
-    if (event->delta() < 0)
+    if (event->angleDelta().y() < 0)
         showNext();
     else
         showPrevious();

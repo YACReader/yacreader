@@ -19,6 +19,7 @@
 #include <QWaitCondition>
 #include <QObject>
 #include <QEvent>
+#include <QKeyEvent>
 #include <QLabel>
 
 #include "yacreader_flow.h"
@@ -29,7 +30,7 @@ GoToFlow::GoToFlow(QWidget *parent, FlowType flowType)
     : GoToFlowWidget(parent), ready(false)
 {
     updateTimer = new QTimer;
-    connect(updateTimer, SIGNAL(timeout()), this, SLOT(updateImageData()));
+    connect(updateTimer, &QTimer::timeout, this, &GoToFlow::updateImageData);
 
     worker = new PageLoader(&mutexGoToFlow);
 
@@ -38,13 +39,13 @@ GoToFlow::GoToFlow(QWidget *parent, FlowType flowType)
     imageSize = Configuration::getConfiguration().getGotoSlideSize();
 
     flow->setSlideSize(imageSize);
-    connect(flow, SIGNAL(centerIndexChanged(int)), this, SLOT(setPageNumber(int)));
-    connect(flow, SIGNAL(selected(unsigned int)), this, SIGNAL(goToPage(unsigned int)));
+    connect(flow, &PictureFlow::centerIndexChanged, this, &GoToFlowWidget::setPageNumber);
+    connect(flow, &YACReaderFlow::selected, this, &GoToFlow::goToPage);
     connect(flow, &PictureFlow::centerIndexChanged, this, &GoToFlow::preload);
     connect(flow, &PictureFlow::centerIndexChangedSilent, this, &GoToFlow::preload);
 
-    connect(toolBar, SIGNAL(goTo(unsigned int)), this, SIGNAL(goToPage(unsigned int)));
-    connect(toolBar, SIGNAL(setCenter(unsigned int)), flow, SLOT(showSlide(unsigned int)));
+    connect(toolBar, &GoToFlowToolBar::goToPage, this, &GoToFlow::goToPage);
+    connect(toolBar, &GoToFlowToolBar::setCenter, flow, &PictureFlow::showSlide);
 
     mainLayout->addWidget(flow);
     toolBar->raise();
@@ -90,7 +91,7 @@ void GoToFlow::centerSlide(int slide)
         flow->setCenterIndex(slide);
         if (ready) // load images if pages are loaded.
         {
-            //worker->reset(); //BUG FIXED : image didn't load if worker was working
+            // worker->reset(); //BUG FIXED : image didn't load if worker was working
             preload();
         }
     }
@@ -129,9 +130,9 @@ void GoToFlow::reset()
 {
     updateTimer->stop();
     /*imagesLoaded.clear();
-	numImagesLoaded = 0;
-	imagesReady.clear();
-	rawImages.clear();*/
+        numImagesLoaded = 0;
+        imagesReady.clear();
+        rawImages.clear();*/
     ready = false;
 }
 
@@ -145,7 +146,7 @@ void GoToFlow::setImageReady(int index, const QByteArray &image)
 void GoToFlow::preload()
 {
     if (numImagesLoaded < imagesLoaded.size())
-        updateTimer->start(30); //TODO comprobar rendimiento, antes era 70
+        updateTimer->start(30); // TODO comprobar rendimiento, antes era 70
 }
 
 void GoToFlow::updateImageData()
@@ -162,7 +163,7 @@ void GoToFlow::updateImageData()
             imagesSetted[idx] = true;
             numImagesLoaded++;
             rawImages[idx].clear();
-            ; //release memory
+            ; // release memory
             imagesLoaded[idx] = true;
         }
     }
@@ -180,7 +181,7 @@ void GoToFlow::updateImageData()
     for (int c = 0; c < 2 * COUNT + 1; c++) {
         int i = indexes[c];
         if ((i >= 0) && (i < flow->slideCount()))
-            if (!imagesLoaded[i] && imagesReady[i]) //slide(i).isNull())
+            if (!imagesLoaded[i] && imagesReady[i]) // slide(i).isNull())
             {
                 // schedule thumbnail generation
 
@@ -195,14 +196,14 @@ void GoToFlow::updateImageData()
 
 void GoToFlow::wheelEvent(QWheelEvent *event)
 {
-    if (event->delta() < 0)
+    if (event->angleDelta().y() < 0)
         flow->showNext();
     else
         flow->showPrevious();
     event->accept();
 }
 
-void GoToFlow::setFlowType(FlowType flowType)
+void GoToFlow::setFlowType(YACReader::FlowType flowType)
 {
     flow->setFlowType(flowType);
 }
@@ -223,7 +224,7 @@ void GoToFlow::setFlowRightToLeft(bool b)
 }
 
 //-----------------------------------------------------------------------------
-//PageLoader
+// PageLoader
 //-----------------------------------------------------------------------------
 
 PageLoader::PageLoader(QMutex *m)
@@ -233,8 +234,8 @@ PageLoader::PageLoader(QMutex *m)
 
 PageLoader::~PageLoader()
 {
-    //TODO this destructor never runs. If it is ever called, it will hang, because
-    //the implementation is broken due to the absolutely endless loop in run().
+    // TODO this destructor never runs. If it is ever called, it will hang, because
+    // the implementation is broken due to the absolutely endless loop in run().
     mutex->lock();
     condition.wakeOne();
     mutex->unlock();
@@ -250,7 +251,7 @@ void PageLoader::generate(int index, QSize size, const QByteArray &rImage)
 {
     mutex->lock();
     this->idx = index;
-    //this->img = QImage();
+    // this->img = QImage();
     this->size = size;
     this->rawImage = rImage;
     mutex->unlock();
@@ -272,7 +273,7 @@ void PageLoader::run()
         // copy necessary data
         mutex->lock();
         this->working = true;
-        //int idx = this->idx;
+        // int idx = this->idx;
 
         QImage image;
         image.loadFromData(this->rawImage);

@@ -52,10 +52,10 @@ class Bookmarks : public QObject
 
 protected:
     QString comicPath;
-    //bookmarks setted by the user
+    // bookmarks setted by the user
     QMap<int, QImage> bookmarks;
     QList<int> latestBookmarks;
-    //last page readed
+    // last page readed
     int lastPageIndex;
     QImage lastPage;
     BookmarksList list;

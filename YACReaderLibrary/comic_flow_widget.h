@@ -56,7 +56,7 @@ public:
     void setImagePaths(QStringList paths) override;
     void setCenterIndex(int index) override;
     void showSlide(int index) override;
-    int centerIndex();
+    int centerIndex() override;
     void updateMarks() override;
     void setFlowType(FlowType flowType) override;
     void render() override;
@@ -70,7 +70,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
-    QSize minimumSizeHint() const;
+    QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
     QSize slideSizeW;
     QSize slideSizeF;
@@ -96,14 +96,14 @@ public:
     void setImagePaths(QStringList paths) override;
     void setCenterIndex(int index) override;
     void showSlide(int index) override;
-    int centerIndex();
+    int centerIndex() override;
     void updateMarks() override;
     void setFlowType(FlowType flowType) override;
     void render() override;
     void updateConfig(QSettings *settings) override;
     void remove(int cover) override;
     void resortCovers(QList<int> newOrder) override;
-    //public slots:
+    // public slots:
     //	void setCF_RX(int value);
     //	//the Y Rotation of the Coverflow
     //	void setCF_RY(int value);

@@ -33,7 +33,7 @@ NoSearchResultsWidget::NoSearchResultsWidget(QWidget *parent)
     layout->addSpacing(30);
     layout->addWidget(titleLabel);
     layout->addStretch();
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
 
     setContentsMargins(0, 0, 0, 0);

@@ -11,6 +11,35 @@
 ComicsView::ComicsView(QWidget *parent)
     : QWidget(parent), model(nullptr), comicDB(nullptr)
 {
+    qmlRegisterType<ComicModel>("com.yacreader.ComicModel", 1, 0, "ComicModel");
+    qmlRegisterType<ComicDB>("com.yacreader.ComicDB", 1, 0, "ComicDB");
+    qmlRegisterType<ComicInfo>("com.yacreader.ComicInfo", 1, 0, "ComicInfo");
+
+    view = new QQuickWidget();
+
+    // QQuickWidget requires rendering into OpenGL framebuffer objects
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    view->quickWindow()->setGraphicsApi(QSGRendererInterface::OpenGL);
+#endif
+
+    view->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    connect(
+            view, &QQuickWidget::statusChanged,
+            [=](QQuickWidget::Status status) {
+                if (status == QQuickWidget::Error) {
+                    QLOG_ERROR() << view->errors();
+                }
+            });
+
+    auto comicDB = new ComicDB();
+    auto comicInfo = &(comicDB->info);
+    QQmlContext *ctxt = view->rootContext();
+
+    ctxt->setContextProperty("comic", comicDB);
+    ctxt->setContextProperty("comicInfo", comicInfo);
+
+    ctxt->setContextProperty("comic_info_index", 0);
+
     setAcceptDrops(true);
 }
 
@@ -48,7 +77,7 @@ void ComicsView::dragEnterEvent(QDragEnterEvent *event)
             urlList = event->mimeData()->urls();
             QString currentPath;
             foreach (QUrl url, urlList) {
-                //comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
+                // comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
                 currentPath = url.toLocalFile();
                 if (Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir()) {
                     event->acceptProposedAction();

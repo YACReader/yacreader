@@ -22,13 +22,13 @@ YACReaderSpinSliderWidget::YACReaderSpinSliderWidget(QWidget *parent, bool strec
         layout->setStretchFactor(label, 0.15);
     }
 
-    connect(spinBox, SIGNAL(valueChanged(int)), slider, SLOT(setValue(int)));
-    connect(slider, SIGNAL(valueChanged(int)), spinBox, SLOT(setValue(int)));
+    connect(spinBox, QOverload<int>::of(&QSpinBox::valueChanged), slider, &QAbstractSlider::setValue);
+    connect(slider, &QAbstractSlider::valueChanged, spinBox, &QSpinBox::setValue);
 
-    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(valueWillChange(int)));
-    connect(spinBox, SIGNAL(valueChanged(int)), this, SLOT(valueWillChangeFromSpinBox(int)));
+    connect(slider, &QAbstractSlider::valueChanged, this, &YACReaderSpinSliderWidget::valueWillChange);
+    connect(spinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &YACReaderSpinSliderWidget::valueWillChangeFromSpinBox);
 
-    connect(slider, SIGNAL(sliderReleased()), this, SLOT(sliderRelease()));
+    connect(slider, &QAbstractSlider::sliderReleased, this, &YACReaderSpinSliderWidget::sliderRelease);
 
     setLayout(layout);
 }
@@ -65,9 +65,9 @@ void YACReaderSpinSliderWidget::setRange(int lowValue, int topValue, int step)
 
 void YACReaderSpinSliderWidget::setValue(int value)
 {
-    disconnect(spinBox, SIGNAL(valueChanged(int)), this, SLOT(valueWillChange(int)));
+    disconnect(spinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &YACReaderSpinSliderWidget::setValue);
     spinBox->setValue(value);
-    connect(spinBox, SIGNAL(valueChanged(int)), this, SLOT(valueWillChange(int)));
+    connect(spinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &YACReaderSpinSliderWidget::valueWillChange);
 }
 
 void YACReaderSpinSliderWidget::setText(const QString &text)
@@ -88,5 +88,5 @@ QSize YACReaderSpinSliderWidget::minimumSizeHint() const
 void YACReaderSpinSliderWidget::setTracking(bool b)
 {
     tracking = b;
-    //slider->setTracking(b);
+    // slider->setTracking(b);
 }

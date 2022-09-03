@@ -9,22 +9,23 @@ class VolumeComicsModel : public JSONModel
 public:
     explicit VolumeComicsModel(QObject *parent = nullptr);
     void load(const QString &json) override;
-    //void load(const QStringList & jsonList);
+    // void load(const QStringList & jsonList);
 
     QModelIndex parent(const QModelIndex &index) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent) const override;
-    QVariant data(const QModelIndex &index, int role) const;
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+    QVariant data(const QModelIndex &index, int role) const override;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const override;
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
-signals:
 
-public slots:
     QString getComicId(const QModelIndex &index) const;
     QString getComicId(int row) const;
     QString getCoverURL(const QModelIndex &index) const;
+signals:
+
+public slots:
     void addExtraRows(int numRows);
 
 private:

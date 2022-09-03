@@ -27,15 +27,15 @@ SortVolumeComics::SortVolumeComics(QWidget *parent)
     moveDownButtonCL = new ScrapperToolButton(ScrapperToolButton::RIGHT);
     moveDownButtonCL->setIcon(QIcon(":/images/comic_vine/rowDown.png"));
     moveDownButtonCL->setAutoRepeat(true);
-    //moveUpButtonIL = new ScrapperToolButton(ScrapperToolButton::LEFT);
-    //moveUpButtonIL->setIcon(QIcon(":/images/comic_vine/rowUp.png"));
-    //moveDownButtonIL = new ScrapperToolButton(ScrapperToolButton::RIGHT);
-    //moveDownButtonIL->setIcon(QIcon(":/images/comic_vine/rowDown.png"));
+    // moveUpButtonIL = new ScrapperToolButton(ScrapperToolButton::LEFT);
+    // moveUpButtonIL->setIcon(QIcon(":/images/comic_vine/rowUp.png"));
+    // moveDownButtonIL = new ScrapperToolButton(ScrapperToolButton::RIGHT);
+    // moveDownButtonIL->setIcon(QIcon(":/images/comic_vine/rowDown.png"));
 
-    connect(moveUpButtonCL, SIGNAL(clicked()), this, SLOT(moveUpCL()));
-    connect(moveDownButtonCL, SIGNAL(clicked()), this, SLOT(moveDownCL()));
-    //connect(moveUpButtonIL,SIGNAL(clicked()),this,SLOT(moveUpIL()));
-    //connect(moveUpButtonIL,SIGNAL(clicked()),this,SLOT(moveDownIL()));
+    connect(moveUpButtonCL, &QAbstractButton::clicked, this, &SortVolumeComics::moveUpCL);
+    connect(moveDownButtonCL, &QAbstractButton::clicked, this, &SortVolumeComics::moveDownCL);
+    // connect(moveUpButtonIL,SIGNAL(clicked()),this,SLOT(moveUpIL()));
+    // connect(moveUpButtonIL,SIGNAL(clicked()),this,SLOT(moveDownIL()));
 
     auto l = new QVBoxLayout;
     auto content = new QGridLayout;
@@ -47,13 +47,13 @@ SortVolumeComics::SortVolumeComics(QWidget *parent)
     tableFiles->setSelectionBehavior(QAbstractItemView::SelectRows);
     tableFiles->setSelectionMode(QAbstractItemView::ContiguousSelection);
 
-    //content->addWidget(tableVolumes,0,Qt::AlignRight|Qt::AlignTop);
+    // content->addWidget(tableVolumes,0,Qt::AlignRight|Qt::AlignTop);
 
-    connect(tableVolumeComics->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(synchronizeScroll(int)));
-    connect(tableFiles->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(synchronizeScroll(int)));
+    connect(tableVolumeComics->verticalScrollBar(), &QAbstractSlider::valueChanged, this, &SortVolumeComics::synchronizeScroll);
+    connect(tableFiles->verticalScrollBar(), &QAbstractSlider::valueChanged, this, &SortVolumeComics::synchronizeScroll);
 
-    //connect(tableVolumeComics, SIGNAL(pressed(QModelIndex)), tableFiles, SLOT(setCurrentIndex(QModelIndex)));
-    //connect(tableFiles, SIGNAL(pressed(QModelIndex)), tableVolumeComics, SLOT(setCurrentIndex(QModelIndex)));
+    // connect(tableVolumeComics, SIGNAL(pressed(QModelIndex)), tableFiles, SLOT(setCurrentIndex(QModelIndex)));
+    // connect(tableFiles, SIGNAL(pressed(QModelIndex)), tableVolumeComics, SLOT(setCurrentIndex(QModelIndex)));
 
     paginator->setCustomLabel(tr("issues"));
     paginator->setMinimumWidth(422);
@@ -83,24 +83,24 @@ SortVolumeComics::SortVolumeComics(QWidget *parent)
     setLayout(l);
     setContentsMargins(0, 0, 0, 0);
 
-    //rows actions
+    // rows actions
     QAction *removeItemFromList = new QAction(tr("remove selected comics"), this);
     QAction *restoreAllItems = new QAction(tr("restore all removed comics"), this);
-    //QAction * restoreItems = new QAction(tr("restore removed comics"),this);
+    // QAction * restoreItems = new QAction(tr("restore removed comics"),this);
 
     tableFiles->setContextMenuPolicy(Qt::ActionsContextMenu);
     tableFiles->addAction(removeItemFromList);
     tableFiles->addAction(restoreAllItems);
-    //tableFiles->addAction(restoreItems);
+    // tableFiles->addAction(restoreItems);
 
-    connect(removeItemFromList, SIGNAL(triggered()), this, SLOT(removeSelectedComics()));
-    connect(restoreAllItems, SIGNAL(triggered()), this, SLOT(restoreAllComics()));
-    //connect(restoreItems,SIGNAL(triggered()),this,SLOT(showRemovedComicsSelector()));
+    connect(removeItemFromList, &QAction::triggered, this, &SortVolumeComics::removeSelectedComics);
+    connect(restoreAllItems, &QAction::triggered, this, &SortVolumeComics::restoreAllComics);
+    // connect(restoreItems,SIGNAL(triggered()),this,SLOT(showRemovedComicsSelector()));
 }
 
 void SortVolumeComics::setData(QList<ComicDB> &comics, const QString &json, const QString &vID)
 {
-    //set up models
+    // set up models
     localComicsModel = new LocalComicListModel;
     localComicsModel->load(comics);
 
@@ -127,20 +127,20 @@ void SortVolumeComics::synchronizeScroll(int pos)
 {
     void *senderObject = sender();
 
-    if (senderObject == 0) //invalid call
+    if (senderObject == 0) // invalid call
         return;
 
     QScrollBar *tableVolumeComicsScrollBar = tableVolumeComics->verticalScrollBar();
     QScrollBar *tableFilesScrollBar = tableFiles->verticalScrollBar();
 
     if (senderObject == tableVolumeComicsScrollBar) {
-        disconnect(tableFilesScrollBar, SIGNAL(valueChanged(int)), this, 0);
+        disconnect(tableFilesScrollBar, &QAbstractSlider::valueChanged, this, nullptr);
         tableFilesScrollBar->setValue(pos);
-        connect(tableFilesScrollBar, SIGNAL(valueChanged(int)), this, SLOT(synchronizeScroll(int)));
+        connect(tableFilesScrollBar, &QAbstractSlider::valueChanged, this, &SortVolumeComics::synchronizeScroll);
     } else {
-        disconnect(tableVolumeComicsScrollBar, SIGNAL(valueChanged(int)), this, 0);
+        disconnect(tableVolumeComicsScrollBar, &QAbstractSlider::valueChanged, this, nullptr);
         tableVolumeComicsScrollBar->setValue(pos);
-        connect(tableVolumeComicsScrollBar, SIGNAL(valueChanged(int)), this, SLOT(synchronizeScroll(int)));
+        connect(tableVolumeComicsScrollBar, &QAbstractSlider::valueChanged, this, &SortVolumeComics::synchronizeScroll);
     }
 }
 
@@ -203,7 +203,7 @@ QList<QPair<ComicDB, QString>> SortVolumeComics::getMatchingInfo()
     QString id;
     foreach (ComicDB c, comicList) {
         id = volumeComicsModel->getComicId(index);
-        if (!c.getFileName().isEmpty() && !id.isEmpty()) //there is a valid comic, and valid comic ID
+        if (!c.getFileName().isEmpty() && !id.isEmpty()) // there is a valid comic, and valid comic ID
         {
             l.push_back(QPair<ComicDB, QString>(c, id));
         }

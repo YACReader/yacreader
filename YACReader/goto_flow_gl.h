@@ -24,17 +24,14 @@ public:
     void setNumSlides(unsigned int slides) override;
     void setImageReady(int index, const QByteArray &image) override;
 
-    void updateConfig(QSettings *settings);
+    void updateConfig(QSettings *settings) override;
     void setFlowRightToLeft(bool b) override;
-
-signals:
-    void goToPage(unsigned int page);
 
 private:
     YACReaderPageFlowGL *flow;
     void keyPressEvent(QKeyEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
-    //Comic * comic;
+    // Comic * comic;
     QSize imageSize;
 };
 

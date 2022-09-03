@@ -22,7 +22,7 @@ void FolderItem::appendChild(FolderItem *item)
         childItems.append(item);
     else {
         FolderItem *last = childItems.back();
-        QString nameLast = last->data(1).toString(); //TODO usar info name si est� disponible, sino el nombre del fichero.....
+        QString nameLast = last->data(1).toString(); // TODO usar info name si est� disponible, sino el nombre del fichero.....
         QString nameCurrent = item->data(1).toString();
         QList<FolderItem *>::iterator i;
         i = childItems.end();
@@ -31,13 +31,13 @@ void FolderItem::appendChild(FolderItem *item)
             i--;
             nameLast = (*i)->data(1).toString();
         }
-        if (!naturalSortLessThanCI(nameCurrent, nameLast)) //si se ha encontrado un elemento menor que current, se inserta justo despu�s
+        if (!naturalSortLessThanCI(nameCurrent, nameLast)) // si se ha encontrado un elemento menor que current, se inserta justo despu�s
             childItems.insert(++i, item);
         else
             childItems.insert(i, item);
     }
 
-    //childItems.append(item);
+    // childItems.append(item);
 }
 
 FolderItem *FolderItem::child(int row)

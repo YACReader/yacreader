@@ -10,22 +10,22 @@ ComicFlowWidgetSW::ComicFlowWidgetSW(QWidget *parent)
 {
     flow = new ComicFlow(parent);
 
-    connect(flow, SIGNAL(centerIndexChanged(int)), this, SIGNAL(centerIndexChanged(int)));
-    connect(flow, SIGNAL(selected(unsigned int)), this, SIGNAL(selected(unsigned int)));
+    connect(flow, &PictureFlow::centerIndexChanged, this, &ComicFlowWidget::centerIndexChanged);
+    connect(flow, &YACReaderFlow::selected, this, &ComicFlowWidget::selected);
 
     auto l = new QVBoxLayout;
     l->addWidget(flow);
     setLayout(l);
 
-    //TODO eleminar "padding"
+    // TODO eleminar "padding"
     QPalette Pal(palette());
     // set black background
-    Pal.setColor(QPalette::Background, Qt::black);
+    Pal.setColor(QPalette::Window, Qt::black);
     setAutoFillBackground(true);
     setPalette(Pal);
 
-    //config
-    QMatrix m;
+    // config
+    QTransform m;
     m.rotate(-90);
     m.scale(-1, 1);
     QImage image(":/images/setRead.png");
@@ -146,7 +146,7 @@ void ComicFlowWidgetSW::resortCovers(QList<int> newOrder)
 #ifndef NO_OPENGL
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
-///OpenGL ComicFlow
+/// OpenGL ComicFlow
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
@@ -155,18 +155,18 @@ ComicFlowWidgetGL::ComicFlowWidgetGL(QWidget *parent)
 {
     flow = new YACReaderComicFlowGL(parent);
 
-    connect(flow, SIGNAL(centerIndexChanged(int)), this, SIGNAL(centerIndexChanged(int)));
-    connect(flow, SIGNAL(selected(unsigned int)), this, SIGNAL(selected(unsigned int)));
+    connect(flow, &YACReaderFlowGL::centerIndexChanged, this, &ComicFlowWidget::centerIndexChanged);
+    connect(flow, &YACReaderFlowGL::selected, this, &ComicFlowWidget::selected);
 
     auto l = new QVBoxLayout;
     l->addWidget(flow);
     l->setContentsMargins(0, 0, 0, 0);
     setLayout(l);
 
-    //TODO eleminar "padding"
+    // TODO eleminar "padding"
     QPalette Pal(palette());
     // set black background
-    Pal.setColor(QPalette::Background, Qt::black);
+    Pal.setColor(QPalette::Window, Qt::black);
     setAutoFillBackground(true);
     setPalette(Pal);
 }
@@ -249,7 +249,7 @@ void ComicFlowWidgetGL::keyPressEvent(QKeyEvent *event)
 }
 void ComicFlowWidgetGL::paintEvent(QPaintEvent *event)
 {
-    //flow->paintEvent(event);
+    // flow->paintEvent(event);
     ComicFlowWidget::paintEvent(event);
 }
 void ComicFlowWidgetGL::mousePressEvent(QMouseEvent *event)
@@ -308,7 +308,7 @@ void ComicFlowWidgetGL::updateConfig(QSettings *settings)
         return;
     }
 
-    //custom config
+    // custom config
 
     flow->setCF_RX(settings->value(X_ROTATION).toInt());
     flow->setCF_Y(settings->value(Y_POSITION).toInt());
@@ -323,7 +323,7 @@ void ComicFlowWidgetGL::updateConfig(QSettings *settings)
     flow->setMaxAngle(settings->value(MAX_ANGLE).toInt());
 
     /*	flow->setVisibility(settings->value("visibilityDistance").toInt());
-	flow->setLightStrenght(settings->value("lightStrength").toInt())*/
+        flow->setLightStrenght(settings->value("lightStrength").toInt())*/
     ;
 }
 
@@ -337,14 +337,14 @@ void ComicFlowWidgetGL::resortCovers(QList<int> newOrder)
     flow->resortCovers(newOrder);
 }
 #endif
-//void ComicFlowWidgetGL::setCF_RX(int value){				flow->setCF_RX(value);}
-//void ComicFlowWidgetGL::setCF_RY(int value){				flow->setCF_RY(value);}
-//void ComicFlowWidgetGL::setCF_RZ(int value){				flow->setCF_RZ(value);}
-//void ComicFlowWidgetGL::setZoom(int zoom){					flow->setZoom(zoom);}
-//void ComicFlowWidgetGL::setRotation(int angle){				flow->setRotation(angle);}
-//void ComicFlowWidgetGL::setX_Distance(int distance){		flow->setX_Distance(distance);}
-//void ComicFlowWidgetGL::setCenter_Distance(int distance){	flow->setCenter_Distance(distance);}
-//void ComicFlowWidgetGL::setZ_Distance(int distance){		flow->setZ_Distance(distance);}
-//void ComicFlowWidgetGL::setCF_Y(int value){					flow->setCF_Y(value);}
-//void ComicFlowWidgetGL::setY_Distance(int value){			flow->setY_Distance(value);}
-//void ComicFlowWidgetGL::setPreset(const Preset & p){		flow->setPreset(p);}
+// void ComicFlowWidgetGL::setCF_RX(int value){				flow->setCF_RX(value);}
+// void ComicFlowWidgetGL::setCF_RY(int value){				flow->setCF_RY(value);}
+// void ComicFlowWidgetGL::setCF_RZ(int value){				flow->setCF_RZ(value);}
+// void ComicFlowWidgetGL::setZoom(int zoom){					flow->setZoom(zoom);}
+// void ComicFlowWidgetGL::setRotation(int angle){				flow->setRotation(angle);}
+// void ComicFlowWidgetGL::setX_Distance(int distance){		flow->setX_Distance(distance);}
+// void ComicFlowWidgetGL::setCenter_Distance(int distance){	flow->setCenter_Distance(distance);}
+// void ComicFlowWidgetGL::setZ_Distance(int distance){		flow->setZ_Distance(distance);}
+// void ComicFlowWidgetGL::setCF_Y(int value){					flow->setCF_Y(value);}
+// void ComicFlowWidgetGL::setY_Distance(int value){			flow->setY_Distance(value);}
+// void ComicFlowWidgetGL::setPreset(const Preset & p){		flow->setPreset(p);}

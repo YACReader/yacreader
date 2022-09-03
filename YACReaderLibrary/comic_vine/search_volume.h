@@ -11,8 +11,9 @@ class SearchVolume : public QWidget
 public:
     SearchVolume(QWidget *parent = nullptr);
     void clean();
+    void setVolumeInfo(const QString &volume);
 public slots:
-    QString getVolumeInfo();
+    QString getVolumeInfo() const;
 
 private:
     ScraperLineEdit *volumeEdit;

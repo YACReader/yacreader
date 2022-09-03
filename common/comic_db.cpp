@@ -4,7 +4,7 @@
 #include <QFileInfo>
 
 //-----------------------------------------------------------------------------
-//COMIC------------------------------------------------------------------------
+// COMIC------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 ComicDB::ComicDB()
 {
@@ -24,21 +24,21 @@ QString ComicDB::toTXT()
 {
     QString txt;
 
-    //Legacy info
+    // Legacy info
     txt.append(QString("comicid:%1\r\n").arg(id));
     txt.append(QString("hash:%1\r\n").arg(info.hash));
     txt.append(QString("path:%1\r\n").arg(path));
     txt.append(QString("numpages:%1\r\n").arg(info.numPages.toString()));
 
-    //new 7.0
+    // new 7.0
     txt.append(QString("rating:%1\r\n").arg(info.rating));
     txt.append(QString("currentPage:%1\r\n").arg(info.currentPage));
     txt.append(QString("contrast:%1\r\n").arg(info.contrast));
 
-    //send read status, at some point downloads have to migrate to use comicfullinfocontroller
+    // send read status, at some point downloads have to migrate to use comicfullinfocontroller
     txt.append(QString("read:%1\r\n").arg(info.read ? 1 : 0));
 
-    //Informaci�n general
+    // Informaci�n general
     if (!info.coverPage.isNull())
         txt.append(QString("coverPage:%1\r\n").arg(info.coverPage.toString()));
 
@@ -69,7 +69,7 @@ QString ComicDB::toTXT()
     if (!info.genere.isNull())
         txt.append(QString("genere:%1\r\n").arg(info.genere.toString()));
 
-    //Autores
+    // Autores
     if (!info.writer.isNull())
         txt.append(QString("writer:%1\r\n").arg(info.writer.toString()));
 
@@ -87,7 +87,7 @@ QString ComicDB::toTXT()
 
     if (!info.coverArtist.isNull())
         txt.append(QString("coverArtist:%1\r\n").arg(info.coverArtist.toString()));
-    //Publicaci�n
+    // Publicaci�n
     if (!info.date.isNull())
         txt.append(QString("date:%1\r\n").arg(info.date.toString()));
 
@@ -105,7 +105,7 @@ QString ComicDB::toTXT()
 
     if (!info.manga.isNull())
         txt.append(QString("manga:%1\r\n").arg(info.manga.toString()));
-    //Argumento
+    // Argumento
     if (!info.synopsis.isNull())
         txt.append(QString("synopsis:%1\r\n").arg(info.synopsis.toString()));
 
@@ -156,7 +156,7 @@ QString ComicDB::getParentFolderName() const
 
 qulonglong ComicDB::getFileSize() const
 {
-    //the size is encoded in the hash after the SHA-1
+    // the size is encoded in the hash after the SHA-1
     return info.hash.right(info.hash.length() - 40).toLongLong();
 }
 
@@ -170,10 +170,12 @@ QString ComicDB::getTitleIncludingNumber() const
 }
 
 //-----------------------------------------------------------------------------
-//COMIC_INFO-------------------------------------------------------------------
+// COMIC_INFO-------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 ComicInfo::ComicInfo()
-    : existOnDb(false),
+    : read(false),
+      edited(false),
+      existOnDb(false),
       rating(0),
       hasBeenOpened(false),
       currentPage(1),
@@ -195,7 +197,7 @@ ComicInfo::ComicInfo(const ComicInfo &comicInfo)
 ComicInfo::~ComicInfo()
 {
 }
-//the default operator= should work
+// the default operator= should work
 ComicInfo &ComicInfo::operator=(const ComicInfo &comicInfo)
 {
     hash = comicInfo.hash;
@@ -250,130 +252,130 @@ ComicInfo &ComicInfo::operator=(const ComicInfo &comicInfo)
     return *this;
 }
 
-//set fields
+// set fields
 /*
 void ComicInfo::setTitle(QString value)
 {
-	setValue(title,value);
+        setValue(title,value);
 }
 
 void ComicInfo::setCoverPage(int value)
 {
-	setValue(coverPage,value);
+        setValue(coverPage,value);
 }
 void ComicInfo::setNumPages(int value)
 {
-	setValue(numPages,value);
+        setValue(numPages,value);
 }
 
 void ComicInfo::setNumber(int value)
 {
-	setValue(number,value);
+        setValue(number,value);
 }
 
 void ComicInfo::setIsBis(bool value)
 {
-	setValue(isBis,value);
+        setValue(isBis,value);
 }
 
 void ComicInfo::setCount(int value)
 {
-	setValue(count,value);
+        setValue(count,value);
 }
 
 void ComicInfo::setVolume(QString value)
 {
-	setValue(volume,value);
+        setValue(volume,value);
 }
 
 void ComicInfo::setStoryArc(QString value)
 {
-	setValue(storyArc,value);
+        setValue(storyArc,value);
 }
 
 void ComicInfo::setArcNumber(int value)
 {
-	setValue(arcNumber,value);
+        setValue(arcNumber,value);
 }
 
 void ComicInfo::setArcCount(int value)
 {
-	setValue(arcCount,value);
+        setValue(arcCount,value);
 }
 
 void ComicInfo::setGenere(QString value)
 {
-	setValue(genere,value);
+        setValue(genere,value);
 }
 
 void ComicInfo::setWriter(QString value)
 {
-	setValue(writer,value);
+        setValue(writer,value);
 }
 
-void ComicInfo::setPenciller(QString value)	
+void ComicInfo::setPenciller(QString value)
 {
-	setValue(penciller,value);
+        setValue(penciller,value);
 }
 
 void ComicInfo::setInker(QString value)
 {
-	setValue(inker,value);
+        setValue(inker,value);
 }
 
 void ComicInfo::setColorist(QString value)
 {
-	setValue(colorist,value);
+        setValue(colorist,value);
 }
 
 void ComicInfo::setLetterer(QString value)
 {
-	setValue(letterer,value);
+        setValue(letterer,value);
 }
 
 void ComicInfo::setCoverArtist(QString value)
 {
-	setValue(coverArtist,value);
+        setValue(coverArtist,value);
 }
 
 void ComicInfo::setDate(QString value)
 {
-	setValue(date,value);
+        setValue(date,value);
 }
 
 void ComicInfo::setPublisher(QString value)
 {
-	setValue(publisher,value);
+        setValue(publisher,value);
 }
 
 void ComicInfo::setFormat(QString value)
 {
-	setValue(format,value);
+        setValue(format,value);
 }
 
 void ComicInfo::setColor(bool value)
 {
-	setValue(color,value);
+        setValue(color,value);
 }
 
 void ComicInfo::setAgeRating(QString value)
 {
-	setValue(ageRating,value);
+        setValue(ageRating,value);
 }
 
 void ComicInfo::setSynopsis(QString value)
 {
-	setValue(synopsis,value);
+        setValue(synopsis,value);
 }
 
 void ComicInfo::setCharacters(QString value)
 {
-	setValue(characters,value);
+        setValue(characters,value);
 }
 
 void ComicInfo::setNotes(QString value)
 {
-	setValue(notes,value);
+        setValue(notes,value);
 }*/
 
 QPixmap ComicInfo::getCover(const QString &basePath)

@@ -8,7 +8,6 @@
 #include <QTimer>
 #include <QLabel>
 #include <QPixmap>
-#include <QKeyEvent>
 #include <QResizeEvent>
 #include <QWheelEvent>
 #include <QMouseEvent>
@@ -36,7 +35,7 @@ class Viewer : public QScrollArea, public ScrollManagement
 {
     Q_OBJECT
 public:
-    bool fullscreen; //TODO, change by the right use of windowState();
+    bool fullscreen; // TODO, change by the right use of windowState();
 public slots:
     void increaseZoomFactor();
     void decreaseZoomFactor();
@@ -51,6 +50,8 @@ public slots:
     void left();
     void right();
     void showGoToDialog();
+    void goToFirstPage();
+    void goToLastPage();
     void goTo(unsigned int page);
     void updatePage();
     void updateContentSize();
@@ -58,6 +59,8 @@ public slots:
     void updateOptions();
     void scrollDown();
     void scrollUp();
+    void scrollForward();
+    void scrollBackward();
     void scrollForwardHorizontalFirst();
     void scrollBackwardHorizontalFirst();
     void scrollForwardVerticalFirst();
@@ -74,7 +77,7 @@ public slots:
     void animateHideGoToFlow();
     void rotateLeft();
     void rotateRight();
-    bool magnifyingGlassIsVisible() { return magnifyingGlassShowed; }
+    bool magnifyingGlassIsVisible() const { return magnifyingGlassShown; }
     void setBookmark(bool);
     void save();
     void doublePageSwitch();
@@ -98,7 +101,7 @@ public slots:
     void showMessageErrorOpening(QString);
     void processCRCError(QString message);
     void setBookmarks();
-    //deprecated
+    // deprecated
     void updateImageOptions();
     void updateFilters(int brightness, int contrast, int gamma);
     void showIsCoverMessage();
@@ -115,18 +118,17 @@ private:
     int zoom;
 
     PageLabelWidget *informationLabel;
-    //QTimer * scroller;
+    // QTimer * scroller;
     QPropertyAnimation *verticalScroller;
     QPropertyAnimation *horizontalScroller;
     QParallelAnimationGroup *groupScroller;
-    int posByStep;
     int nextPos;
     GoToFlowWidget *goToFlow;
     QPropertyAnimation *showGoToFlowAnimation;
     GoToDialog *goToDialog;
-    //!Image properties
-    //! Comic
-    //Comic * comic;
+    //! Image properties
+    //!  Comic
+    // Comic * comic;
     int index;
     QPixmap *currentPage;
     BookmarksDialog *bd;
@@ -135,9 +137,8 @@ private:
     QTimer *hideCursorTimer;
     int direction;
     bool drag;
-    int numScrollSteps;
 
-    //!Widgets
+    //! Widgets
     QLabel *content;
 
     YACReaderTranslator *translator;
@@ -153,20 +154,21 @@ private:
     bool shouldOpenPrevious;
 
 private:
-    //!Magnifying glass
+    //! Magnifying glass
     MagnifyingGlass *mglass;
-    bool magnifyingGlassShowed;
+    bool magnifyingGlassShown;
     bool restoreMagnifyingGlass;
+    void setMagnifyingGlassShown(bool shown);
 
     //! Manejadores de evento:
-    void keyPressEvent(QKeyEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
 
-    void moveAction(const QKeySequence &key);
+    int verticalScrollStep() const;
+    int horizontalScrollStep() const;
 
-    //!ZigzagScroll
+    //! ZigzagScroll
     enum scrollDirection { UP,
                            DOWN,
                            LEFT,
@@ -178,20 +180,30 @@ private:
 public:
     Viewer(QWidget *parent = nullptr);
     ~Viewer();
-    const QPixmap *pixmap();
-    //Comic * getComic(){return comic;}
+    QPixmap pixmap() const;
+    // Comic * getComic(){return comic;}
     const BookmarksDialog *getBookmarksDialog() { return bd; }
-    //returns the current index starting in 1 [1,nPages]
+    // returns the current index starting in 1 [1,nPages]
     unsigned int getIndex();
     void updateComic(ComicDB &comic);
+    void moveView(Qt::Key directionKey);
+
 signals:
     void backgroundChanges();
     void pageAvailable(bool);
     void pageIsBookmark(bool);
+    void comicLoaded();
     void reset();
     void openNextComic();
     void openPreviousComic();
     void zoomUpdated(int);
+    void magnifyingGlassVisibilityChanged(bool visible);
+
+    // The following signals are emitted by users of this class and propagated to mglass.
+    void magnifyingGlassSizeUp();
+    void magnifyingGlassSizeDown();
+    void magnifyingGlassZoomIn();
+    void magnifyingGlassZoomOut();
 };
 
 #endif

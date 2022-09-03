@@ -151,8 +151,8 @@ QImage MeanNoiseReductionFilter::setFilter(const QImage &image)
                 }
             }
             result.setPixel(i, j, QColor(r / neighborghoodSize, g / neighborghoodSize, b / neighborghoodSize).rgb());
-            //qDebug((QString::number(redChannel.at(4))+" "+QString::number(greenChannel.at(4))+" "+QString::number(blueChannel.at(4))).toAscii());
-            //qDebug((QString::number(redChannel.size())+" "+QString::number(greenChannel.size())+" "+QString::number(blueChannel.size())).toAscii());
+            // qDebug((QString::number(redChannel.at(4))+" "+QString::number(greenChannel.at(4))+" "+QString::number(blueChannel.at(4))).toAscii());
+            // qDebug((QString::number(redChannel.size())+" "+QString::number(greenChannel.size())+" "+QString::number(blueChannel.size())).toAscii());
         }
     }
     return result;
@@ -213,15 +213,15 @@ BrightnessFilter::BrightnessFilter(int l)
 QImage BrightnessFilter::setFilter(const QImage &image)
 {
     /*int width = image.width();
-	int height = image.height();
-	QImage result(width,height,image.format());
+        int height = image.height();
+        QImage result(width,height,image.format());
 
-	for(int j=0;j<height;j++){
-		for(int i=0;i<width;i++){
-			result.setPixel(i,j,QColor(image.pixel(i,j)).light(level).rgb());
-		}
-	}
-	return result;*/
+        for(int j=0;j<height;j++){
+                for(int i=0;i<width;i++){
+                        result.setPixel(i,j,QColor(image.pixel(i,j)).light(level).rgb());
+                }
+        }
+        return result;*/
     if (level == -1) {
         QSettings settings(YACReader::getSettingsPath() + "/YACReader.ini", QSettings::IniFormat);
         return changeBrightness(image, settings.value(BRIGHTNESS, 0).toInt());
@@ -242,61 +242,61 @@ ContrastFilter::ContrastFilter(int l)
 QImage ContrastFilter::setFilter(const QImage &image)
 {
     /*int width = image.width();
-	int height = image.height();
-	QImage result(width,height,image.format());
+        int height = image.height();
+        QImage result(width,height,image.format());
 
-	int min,max,v;
-	min = 0;
-	max = 255;
-	int sum = 0;
+        int min,max,v;
+        min = 0;
+        max = 255;
+        int sum = 0;
 
-	QVector<int> hist(256,0);
+        QVector<int> hist(256,0);
 
-	for(int j=0;j<height;j++){
-		for(int i=0;i<width;i++){
-			hist[QColor(image.pixel(i,j)).lightness()]++;
-			sum++;
-		}
-	}
+        for(int j=0;j<height;j++){
+                for(int i=0;i<width;i++){
+                        hist[QColor(image.pixel(i,j)).lightness()]++;
+                        sum++;
+                }
+        }
 
-	long double count = sum;
-	long double new_count = 0.0;
-	long double percentage,next_percentage;
+        long double count = sum;
+        long double new_count = 0.0;
+        long double percentage,next_percentage;
 
-	for (int i = 0; i < 254; i++)
-	{
-		new_count += hist[i];
-		percentage = new_count/count;
-		next_percentage = (new_count+hist[i+1])/count;
-		if(fabs (percentage - 0.006) < fabs (next_percentage - 0.006))
-		{
-			min = i+1;
-			break;
-		}
-	}
+        for (int i = 0; i < 254; i++)
+        {
+                new_count += hist[i];
+                percentage = new_count/count;
+                next_percentage = (new_count+hist[i+1])/count;
+                if(fabs (percentage - 0.006) < fabs (next_percentage - 0.006))
+                {
+                        min = i+1;
+                        break;
+                }
+        }
 
-	new_count=0.0;
-	for (int i = 255; i > 1; i--)
-	{
-		new_count += hist[i];
-		percentage = new_count/count;
-		next_percentage = (new_count+hist[i-1])/count;
-		if(fabs (percentage - 0.006) < fabs (next_percentage - 0.006))
-		{
-			max = i-1;
-			break;
-		}
-	}
-	QColor c;
-	int range = max - min;
-	for(int j=0;j<height;j++){
-		for(int i=0;i<width;i++){
-			c = QColor(image.pixel(i,j));
-			result.setPixel(i,j,c.light(((c.lightness()-min)/range*1.0)*255).rgb());
-		}
-	}
+        new_count=0.0;
+        for (int i = 255; i > 1; i--)
+        {
+                new_count += hist[i];
+                percentage = new_count/count;
+                next_percentage = (new_count+hist[i-1])/count;
+                if(fabs (percentage - 0.006) < fabs (next_percentage - 0.006))
+                {
+                        max = i-1;
+                        break;
+                }
+        }
+        QColor c;
+        int range = max - min;
+        for(int j=0;j<height;j++){
+                for(int i=0;i<width;i++){
+                        c = QColor(image.pixel(i,j));
+                        result.setPixel(i,j,c.light(((c.lightness()-min)/range*1.0)*255).rgb());
+                }
+        }
 
-	return result;*/
+        return result;*/
     if (level == -1) {
         QSettings settings(YACReader::getSettingsPath() + "/YACReader.ini", QSettings::IniFormat);
         return changeContrast(image, settings.value(CONTRAST, 100).toInt());
@@ -348,7 +348,7 @@ void PageRender::run()
     QImage img;
     img.loadFromData(data);
     if (degrees > 0) {
-        QMatrix m;
+        QTransform m;
         m.rotate(degrees);
         img = img.transformed(m, Qt::SmoothTransformation);
     }
@@ -393,13 +393,13 @@ Render::~Render()
                 delete pr;
         }
 
-    //TODO move to share_ptr
+    // TODO move to share_ptr
     foreach (ImageFilter *filter, filters)
         delete filter;
 }
-//Este método se encarga de forzar el renderizado de las páginas.
-//Actualiza el buffer según es necesario.
-//si la pagina actual no está renderizada, se lanza un hilo que la renderize (double or single page mode) y se emite una señal que indica que se está renderizando.
+// Este método se encarga de forzar el renderizado de las páginas.
+// Actualiza el buffer según es necesario.
+// si la pagina actual no está renderizada, se lanza un hilo que la renderize (double or single page mode) y se emite una señal que indica que se está renderizando.
 void Render::render()
 {
     updateBuffer();
@@ -408,29 +408,29 @@ void Render::render()
             if (pagesReady[currentIndex]) {
                 pageRenders[currentPageBufferedIndex] = new PageRender(this, currentIndex, comic->getRawData()->at(currentIndex), buffer[currentPageBufferedIndex], imageRotation, filters);
             } else
-                //las páginas no están listas, y se están cargando en el cómic
-                emit processingPage(); //para evitar confusiones esta señal debería llamarse de otra forma
+                // las páginas no están listas, y se están cargando en el cómic
+                emit processingPage(); // para evitar confusiones esta señal debería llamarse de otra forma
 
-            //si se ha creado un hilo para renderizar la página actual, se arranca
+            // si se ha creado un hilo para renderizar la página actual, se arranca
             if (pageRenders[currentPageBufferedIndex] != 0) {
-                //se conecta la señal pageReady del hilo, con el SLOT prepareAvailablePage
-                connect(pageRenders[currentPageBufferedIndex], SIGNAL(pageReady(int)), this, SLOT(prepareAvailablePage(int)));
-                //se emite la señal de procesando, debido a que los hilos se arrancan aquí
+                // se conecta la señal pageReady del hilo, con el SLOT prepareAvailablePage
+                connect(pageRenders[currentPageBufferedIndex], &PageRender::pageReady, this, &Render::prepareAvailablePage);
+                // se emite la señal de procesando, debido a que los hilos se arrancan aquí
                 if (filters.size() > 0)
                     emit processingPage();
                 pageRenders[currentPageBufferedIndex]->start();
                 pageRenders[currentPageBufferedIndex]->setPriority(QThread::TimeCriticalPriority);
             } else
-                //en qué caso sería necesario hacer esto??? //TODO: IMPORTANTE, puede que no sea necesario.
+                // en qué caso sería necesario hacer esto??? //TODO: IMPORTANTE, puede que no sea necesario.
                 emit processingPage();
         } else
-            //no hay ninguna página lista para ser renderizada, es necesario esperar.
+            // no hay ninguna página lista para ser renderizada, es necesario esperar.
             emit processingPage();
     } else
     // la página actual está lista
     {
-        //emit currentPageReady();
-        //make prepareAvailablePage the only function that emits currentPageReady()
+        // emit currentPageReady();
+        // make prepareAvailablePage the only function that emits currentPageReady()
         prepareAvailablePage(currentIndex);
     }
     fillBuffer();
@@ -567,7 +567,7 @@ bool Render::currentPageIsDoublePage()
 
 bool Render::nextPageIsDoublePage()
 {
-    //this function is not used right now
+    // this function is not used right now
     if (buffer[currentPageBufferedIndex + 2]->isNull() || buffer[currentPageBufferedIndex + 3]->isNull()) {
         return false;
     }
@@ -587,9 +587,6 @@ bool Render::nextPageIsDoublePage()
 
 bool Render::previousPageIsDoublePage()
 {
-    qWarning("Previous page is doublepage!");
-    qWarning("%d", currentIndex);
-    qWarning("%d", currentPageBufferedIndex);
     if (currentIndex == 2 && Configuration::getConfiguration().getSettings()->value(COVER_IS_SP, true).toBool()) {
         return false;
     }
@@ -632,7 +629,7 @@ void Render::prepareAvailablePage(int page)
             emit currentPageReady();
         }
     } else {
-        //check for last page in double page mode
+        // check for last page in double page mode
         if ((currentIndex == page) && (currentIndex + 1) >= (int)comic->numPages()) {
             emit currentPageReady();
         } else if ((currentIndex == page && !buffer[currentPageBufferedIndex + 1]->isNull()) ||
@@ -661,7 +658,7 @@ void Render::load(const QString &path, int atPage)
 //-----------------------------------------------------------------------------
 void Render::load(const QString &path, const ComicDB &comicDB)
 {
-    //TODO prepare filters
+    // TODO prepare filters
     for (int i = 0; i < filters.count(); i++) {
         if (typeid(*filters[i]) == typeid(BrightnessFilter)) {
             if (comicDB.info.brightness == -1)
@@ -703,29 +700,29 @@ void Render::createComic(const QString &path)
     }
     comic = FactoryComic::newComic(path);
 
-    if (comic == nullptr) //archivo no encontrado o no válido
+    if (comic == nullptr) // archivo no encontrado o no válido
     {
         emit errorOpening();
         reset();
         return;
     }
 
-    connect(comic, SIGNAL(errorOpening()), this, SIGNAL(errorOpening()), Qt::QueuedConnection);
-    connect(comic, SIGNAL(errorOpening(QString)), this, SIGNAL(errorOpening(QString)), Qt::QueuedConnection);
-    connect(comic, SIGNAL(crcErrorFound(QString)), this, SIGNAL(crcError(QString)), Qt::QueuedConnection);
-    connect(comic, SIGNAL(errorOpening()), this, SLOT(reset()), Qt::QueuedConnection);
-    connect(comic, SIGNAL(imageLoaded(int)), this, SLOT(pageRawDataReady(int)), Qt::QueuedConnection);
-    connect(comic, SIGNAL(imageLoaded(int)), this, SIGNAL(imageLoaded(int)), Qt::QueuedConnection);
-    connect(comic, SIGNAL(openAt(int)), this, SLOT(renderAt(int)), Qt::QueuedConnection);
-    connect(comic, SIGNAL(numPages(unsigned int)), this, SIGNAL(numPages(unsigned int)), Qt::QueuedConnection);
-    connect(comic, SIGNAL(numPages(unsigned int)), this, SLOT(setNumPages(unsigned int)), Qt::QueuedConnection);
-    connect(comic, SIGNAL(imageLoaded(int, QByteArray)), this, SIGNAL(imageLoaded(int, QByteArray)), Qt::QueuedConnection);
-    connect(comic, SIGNAL(isBookmark(bool)), this, SIGNAL(currentPageIsBookmark(bool)), Qt::QueuedConnection);
+    connect(comic, QOverload<>::of(&Comic::errorOpening), this, QOverload<>::of(&Render::errorOpening), Qt::QueuedConnection);
+    connect(comic, QOverload<QString>::of(&Comic::errorOpening), this, QOverload<QString>::of(&Render::errorOpening), Qt::QueuedConnection);
+    connect(comic, &Comic::crcErrorFound, this, &Render::crcError, Qt::QueuedConnection);
+    connect(comic, QOverload<>::of(&Comic::errorOpening), this, &Render::reset, Qt::QueuedConnection);
+    connect(comic, QOverload<int>::of(&Comic::imageLoaded), this, &Render::pageRawDataReady, Qt::QueuedConnection);
+    connect(comic, QOverload<int>::of(&Comic::imageLoaded), this, QOverload<int>::of(&Render::imageLoaded), Qt::QueuedConnection);
+    connect(comic, &Comic::openAt, this, &Render::renderAt, Qt::QueuedConnection);
+    connect(comic, QOverload<unsigned int>::of(&Comic::numPages), this, QOverload<unsigned int>::of(&Render::numPages), Qt::QueuedConnection);
+    connect(comic, QOverload<unsigned int>::of(&Comic::numPages), this, QOverload<unsigned int>::of(&Render::setNumPages), Qt::QueuedConnection);
+    connect(comic, QOverload<int, const QByteArray &>::of(&Comic::imageLoaded), this, QOverload<int, const QByteArray &>::of(&Render::imageLoaded), Qt::QueuedConnection);
+    connect(comic, &Comic::isBookmark, this, &Render::currentPageIsBookmark, Qt::QueuedConnection);
 
-    connect(comic, SIGNAL(bookmarksUpdated()), this, SIGNAL(bookmarksUpdated()), Qt::QueuedConnection);
+    connect(comic, &Comic::bookmarksUpdated, this, &Render::bookmarksUpdated, Qt::QueuedConnection);
 
-    //connect(comic,SIGNAL(isLast()),this,SIGNAL(isLast()));
-    //connect(comic,SIGNAL(isCover()),this,SIGNAL(isCover()));
+    // connect(comic,SIGNAL(isLast()),this,SIGNAL(isLast()));
+    // connect(comic,SIGNAL(isCover()),this,SIGNAL(isCover()));
 
     pagesReady.clear();
 }
@@ -746,13 +743,13 @@ void Render::startLoad()
 
     comic->moveToThread(thread);
 
-    connect(comic, SIGNAL(errorOpening()), thread, SLOT(quit()), Qt::QueuedConnection);
-    connect(comic, SIGNAL(errorOpening(QString)), thread, SLOT(quit()), Qt::QueuedConnection);
-    connect(comic, SIGNAL(imagesLoaded()), thread, SLOT(quit()), Qt::QueuedConnection);
-    connect(comic, SIGNAL(destroyed()), thread, SLOT(quit()), Qt::QueuedConnection);
-    connect(comic, SIGNAL(invalidated()), thread, SLOT(quit()), Qt::QueuedConnection);
-    connect(thread, SIGNAL(started()), comic, SLOT(process()));
-    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    connect(comic, QOverload<>::of(&Comic::errorOpening), thread, &QThread::quit, Qt::QueuedConnection);
+    connect(comic, QOverload<QString>::of(&Comic::errorOpening), thread, &QThread::quit, Qt::QueuedConnection);
+    connect(comic, &Comic::imagesLoaded, thread, &QThread::quit, Qt::QueuedConnection);
+    connect(comic, &Comic::destroyed, thread, &QThread::quit, Qt::QueuedConnection);
+    connect(comic, &Comic::invalidated, thread, &QThread::quit, Qt::QueuedConnection);
+    connect(thread, &QThread::started, comic, &Comic::process);
+    connect(thread, &QThread::finished, thread, &QObject::deleteLater);
 
     if (thread != nullptr)
         thread->start();
@@ -773,13 +770,13 @@ void Render::reset()
     loadedComic = false;
     invalidate();
 }
-//si se solicita la siguiente página, se calcula cuál debe ser en función de si se lee en modo a doble página o no.
-//la página sólo se renderiza, si realmente ha cambiado.
+// si se solicita la siguiente página, se calcula cuál debe ser en función de si se lee en modo a doble página o no.
+// la página sólo se renderiza, si realmente ha cambiado.
 void Render::nextPage()
 {
-    int nextPage; //indica cuál será la próxima página
+    int nextPage; // indica cuál será la próxima página
     nextPage = comic->nextPage();
-    //se fuerza renderizado si la página ha cambiado
+    // se fuerza renderizado si la página ha cambiado
     if (currentIndex != nextPage) {
         previousIndex = currentIndex;
         currentIndex = nextPage;
@@ -808,14 +805,14 @@ void Render::nextDoublePage()
     }
 }
 
-//si se solicita la página anterior, se calcula cuál debe ser en función de si se lee en modo a doble página o no.
-//la página sólo se renderiza, si realmente ha cambiado.
+// si se solicita la página anterior, se calcula cuál debe ser en función de si se lee en modo a doble página o no.
+// la página sólo se renderiza, si realmente ha cambiado.
 void Render::previousPage()
 {
-    int previousPage; //indica cuál será la próxima página
+    int previousPage; // indica cuál será la próxima página
     previousPage = comic->previousPage();
 
-    //se fuerza renderizado si la página ha cambiado
+    // se fuerza renderizado si la página ha cambiado
     if (currentIndex != previousPage) {
         previousIndex = currentIndex;
         currentIndex = previousPage;
@@ -828,7 +825,7 @@ void Render::previousPage()
 
 void Render::previousDoublePage()
 {
-    int previousPage; //indica cuál será la próxima página
+    int previousPage; // indica cuál será la próxima página
     previousPage = qMax(currentIndex - 2, 0);
     if (currentIndex != previousPage) {
         comic->setIndex(previousPage);
@@ -870,7 +867,7 @@ void Render::pageRawDataReady(int page)
         for (int i = 0; i < pagesEmited.size(); i++) {
             if (pagesEmited.at(i) >= pagesReady.size()) {
                 pagesEmited.clear();
-                return; //Oooops, something went wrong
+                return; // Oooops, something went wrong
             }
 
             pagesReady[pagesEmited.at(i)] = true;
@@ -887,7 +884,7 @@ void Render::pageRawDataReady(int page)
     }
 }
 
-//sólo se renderiza la página, si ha habido un cambio de página
+// sólo se renderiza la página, si ha habido un cambio de página
 void Render::goTo(int index)
 {
 
@@ -914,19 +911,19 @@ void Render::rotateLeft()
     reload();
 }
 
-//Actualiza el buffer, añadiendo las imágenes (vacías) necesarias para su posterior renderizado y
-//eliminado aquellas que ya no sean necesarias. También libera los hilos (no estoy seguro de que sea responsabilidad suya)
-//Calcula el número de nuevas páginas que hay que buferear y si debe hacerlo por la izquierda o la derecha (según sea el sentido de la lectura)
+// Actualiza el buffer, añadiendo las imágenes (vacías) necesarias para su posterior renderizado y
+// eliminado aquellas que ya no sean necesarias. También libera los hilos (no estoy seguro de que sea responsabilidad suya)
+// Calcula el número de nuevas páginas que hay que buferear y si debe hacerlo por la izquierda o la derecha (según sea el sentido de la lectura)
 void Render::updateBuffer()
 {
     QMutexLocker locker(&mutex);
     int windowSize = currentIndex - previousIndex;
 
-    if (windowSize > 0) //add pages to right pages and remove on the left
+    if (windowSize > 0) // add pages to right pages and remove on the left
     {
         windowSize = qMin(windowSize, buffer.size());
         for (int i = 0; i < windowSize; i++) {
-            //renders
+            // renders
             PageRender *pr = pageRenders.front();
             pageRenders.pop_front();
             if (pr != nullptr) {
@@ -935,20 +932,20 @@ void Render::updateBuffer()
             }
             pageRenders.push_back(0);
 
-            //images
+            // images
 
             if (buffer.front() != 0)
                 delete buffer.front();
             buffer.pop_front();
             buffer.push_back(new QImage());
         }
-    } else //add pages to left pages and remove on the right
+    } else // add pages to left pages and remove on the right
     {
         if (windowSize < 0) {
             windowSize = -windowSize;
             windowSize = qMin(windowSize, buffer.size());
             for (int i = 0; i < windowSize; i++) {
-                //renders
+                // renders
                 PageRender *pr = pageRenders.back();
                 pageRenders.pop_back();
                 if (pr != nullptr) {
@@ -957,7 +954,7 @@ void Render::updateBuffer()
                 }
                 pageRenders.push_front(0);
 
-                //images
+                // images
                 buffer.push_front(new QImage());
                 QImage *p = buffer.back();
                 if (p != nullptr)
@@ -980,10 +977,10 @@ void Render::fillBuffer()
             buffer[currentPageBufferedIndex + i]->isNull() &&
             i <= numRightPages &&
             pageRenders[currentPageBufferedIndex + i] == 0 &&
-            pagesReady[currentIndex + i]) //preload next pages
+            pagesReady[currentIndex + i]) // preload next pages
         {
             pageRenders[currentPageBufferedIndex + i] = new PageRender(this, currentIndex + i, comic->getRawData()->at(currentIndex + i), buffer[currentPageBufferedIndex + i], imageRotation, filters);
-            connect(pageRenders[currentPageBufferedIndex + i], SIGNAL(pageReady(int)), this, SLOT(prepareAvailablePage(int)));
+            connect(pageRenders[currentPageBufferedIndex + i], &PageRender::pageReady, this, &Render::prepareAvailablePage);
             pageRenders[currentPageBufferedIndex + i]->start();
         }
 
@@ -991,17 +988,17 @@ void Render::fillBuffer()
             buffer[currentPageBufferedIndex - i]->isNull() &&
             i <= numLeftPages &&
             pageRenders[currentPageBufferedIndex - i] == 0 &&
-            pagesReady[currentIndex - i]) //preload previous pages
+            pagesReady[currentIndex - i]) // preload previous pages
         {
             pageRenders[currentPageBufferedIndex - i] = new PageRender(this, currentIndex - i, comic->getRawData()->at(currentIndex - i), buffer[currentPageBufferedIndex - i], imageRotation, filters);
-            connect(pageRenders[currentPageBufferedIndex - i], SIGNAL(pageReady(int)), this, SLOT(prepareAvailablePage(int)));
+            connect(pageRenders[currentPageBufferedIndex - i], &PageRender::pageReady, this, &Render::prepareAvailablePage);
             pageRenders[currentPageBufferedIndex - i]->start();
         }
     }
 }
 
-//Método que debe ser llamado cada vez que la estructura del buffer se vuelve inconsistente con el modo de lectura actual.
-//se terminan todos los hilos en ejecución y se libera la memoria (de hilos e imágenes)
+// Método que debe ser llamado cada vez que la estructura del buffer se vuelve inconsistente con el modo de lectura actual.
+// se terminan todos los hilos en ejecución y se libera la memoria (de hilos e imágenes)
 void Render::invalidate()
 {
     for (int i = 0; i < pageRenders.size(); i++) {
@@ -1022,7 +1019,7 @@ void Render::doublePageSwitch()
 {
     doublePage = !doublePage;
     if (comic) {
-        //invalidate();
+        // invalidate();
         update();
     }
 }
@@ -1031,7 +1028,7 @@ void Render::setManga(bool manga)
 {
     doubleMangaPage = manga;
     if (comic && doublePage) {
-        //invalidate();
+        // invalidate();
         update();
     }
 }
@@ -1040,7 +1037,7 @@ void Render::doubleMangaPageSwitch()
 {
     doubleMangaPage = !doubleMangaPage;
     if (comic && doublePage) {
-        //invalidate();
+        // invalidate();
         update();
     }
 }

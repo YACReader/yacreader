@@ -1,7 +1,7 @@
 #include "comic.h"
 
 #include <QPixmap>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QString>
 #include <algorithm>
 #include <QDir>
@@ -27,7 +27,7 @@ QStringList Comic::getSupportedImageFormats()
 {
     QList<QByteArray> supportedImageFormats = QImageReader::supportedImageFormats();
     QStringList supportedImageFormatStrings;
-    for (QByteArray item : supportedImageFormats) {
+    for (QByteArray &item : supportedImageFormats) {
         supportedImageFormatStrings.append(QString::fromLocal8Bit("*." + item));
     }
     return supportedImageFormatStrings;
@@ -37,7 +37,7 @@ QStringList Comic::getSupportedImageLiteralFormats()
 {
     QList<QByteArray> supportedImageFormats = QImageReader::supportedImageFormats();
     QStringList supportedImageFormatStrings;
-    for (QByteArray item : supportedImageFormats) {
+    for (QByteArray &item : supportedImageFormats) {
         supportedImageFormatStrings.append(QString::fromLocal8Bit(item));
     }
     return supportedImageFormatStrings;
@@ -96,14 +96,14 @@ const QStringList LiteralComicArchiveExtensions = QStringList() << "cbr"
                                                                 << "7z"
                                                                 << "cb7"
                                                                 << "cbt";
-#endif //use_unarr
+#endif // use_unarr
 #ifndef NO_PDF
 const QStringList Comic::comicExtensions = QStringList() << ComicArchiveExtensions << "*.pdf";
 const QStringList Comic::literalComicExtensions = QStringList() << LiteralComicArchiveExtensions << "pdf";
 #else
 const QStringList Comic::comicExtensions = ComicArchiveExtensions;
 const QStringList Comic::literalComicExtensions = LiteralComicArchiveExtensions;
-#endif //NO_PDF
+#endif // NO_PDF
 
 //-----------------------------------------------------------------------------
 Comic::Comic()
@@ -126,9 +126,9 @@ Comic::~Comic()
 //-----------------------------------------------------------------------------
 void Comic::setup()
 {
-    connect(this, SIGNAL(pageChanged(int)), this, SLOT(checkIsBookmark(int)));
-    connect(this, SIGNAL(imageLoaded(int)), this, SLOT(updateBookmarkImage(int)));
-    connect(this, SIGNAL(imageLoaded(int)), this, SLOT(setPageLoaded(int)));
+    connect(this, &Comic::pageChanged, this, &Comic::checkIsBookmark);
+    connect(this, QOverload<int>::of(&Comic::imageLoaded), this, &Comic::updateBookmarkImage);
+    connect(this, QOverload<int>::of(&Comic::imageLoaded), this, &Comic::setPageLoaded);
 
     auto l = [&]() { _errorOpening = true; };
 
@@ -181,16 +181,16 @@ void Comic::setIndex(unsigned int index)
 //-----------------------------------------------------------------------------
 /*QPixmap * Comic::currentPage()
 {
-	QPixmap * p = new QPixmap();
-	p->loadFromData(_pages[_index]);
-	return p;
+        QPixmap * p = new QPixmap();
+        p->loadFromData(_pages[_index]);
+        return p;
 }
 //-----------------------------------------------------------------------------
 QPixmap * Comic::operator[](unsigned int index)
 {
-	QPixmap * p = new QPixmap();
-	p->loadFromData(_pages[index]);
-	return p;
+        QPixmap * p = new QPixmap();
+        p->loadFromData(_pages[index]);
+        return p;
 }*/
 bool Comic::load(const QString &path, const ComicDB &comic)
 {
@@ -214,14 +214,14 @@ void Comic::setBookmark()
     QImage p;
     p.loadFromData(_pages[_index]);
     bm->setBookmark(_index, p);
-    //emit bookmarksLoaded(*bm);
+    // emit bookmarksLoaded(*bm);
     emit bookmarksUpdated();
 }
 //-----------------------------------------------------------------------------
 void Comic::removeBookmark()
 {
     bm->removeBookmark(_index);
-    //emit bookmarksLoaded(*bm);
+    // emit bookmarksLoaded(*bm);
     emit bookmarksUpdated();
 }
 //-----------------------------------------------------------------------------
@@ -249,14 +249,14 @@ void Comic::updateBookmarkImage(int index)
         p.loadFromData(_pages[index]);
         bm->setBookmark(index, p);
         emit bookmarksUpdated();
-        //emit bookmarksLoaded(*bm);
+        // emit bookmarksLoaded(*bm);
     }
     if (bm->getLastPage() == index) {
         QImage p;
         p.loadFromData(_pages[index]);
         bm->setLastPage(index, p);
         emit bookmarksUpdated();
-        //emit bookmarksLoaded(*bm);
+        // emit bookmarksLoaded(*bm);
     }
 }
 //-----------------------------------------------------------------------------
@@ -332,7 +332,7 @@ QList<QString> Comic::findValidComicFilesInFolder(const QString &path)
     foreach (QFileInfo info, folderContent) {
         currentPath = info.absoluteFilePath();
         if (info.isDir()) {
-            validComicFiles << findValidComicFilesInFolder(currentPath); //find comics recursively
+            validComicFiles << findValidComicFilesInFolder(currentPath); // find comics recursively
         } else if (Comic::fileIsComic(currentPath)) {
             validComicFiles << currentPath;
         }
@@ -352,7 +352,7 @@ FileComic::FileComic()
 FileComic::FileComic(const QString &path, int atPage)
     : Comic(path, atPage)
 {
-    load(path, atPage);
+    FileComic::load(path, atPage);
 }
 
 FileComic::~FileComic()
@@ -374,14 +374,14 @@ bool FileComic::load(const QString &path, int atPage)
             emit bookmarksUpdated();
         }
         _firstPage = atPage;
-        //emit bookmarksLoaded(*bm);
+        // emit bookmarksLoaded(*bm);
 
         _path = QDir::cleanPath(path);
-        //load files size
+        // load files size
 
         return true;
     } else {
-        //QMessageBox::critical(NULL,tr("Not found"),tr("Comic not found")+" : " + path);
+        // QMessageBox::critical(NULL,tr("Not found"),tr("Comic not found")+" : " + path);
         emit errorOpening();
         return false;
     }
@@ -401,7 +401,7 @@ bool FileComic::load(const QString &path, const ComicDB &comic)
         _path = QDir::cleanPath(path);
         return true;
     } else {
-        //QMessageBox::critical(NULL,tr("Not found"),tr("Comic not found")+" : " + path);
+        // QMessageBox::critical(NULL,tr("Not found"),tr("Comic not found")+" : " + path);
         moveToThread(QCoreApplication::instance()->thread());
         emit errorOpening();
         return false;
@@ -432,15 +432,15 @@ QList<QString> FileComic::filter(const QList<QString> &src)
     return filtered;
 }
 
-//DELEGATE methods
+// DELEGATE methods
 void FileComic::fileExtracted(int index, const QByteArray &rawData)
 {
     /*QFile f("c:/temp/out2.txt");
-	f.open(QIODevice::Append);
-	QTextStream out(&f);*/
+        f.open(QIODevice::Append);
+        QTextStream out(&f);*/
     int sortedIndex = _fileNames.indexOf(_order.at(index));
-    //out << sortedIndex << " , ";
-    //f.close();
+    // out << sortedIndex << " , ";
+    // f.close();
     if (sortedIndex == -1) {
         return;
     }
@@ -454,12 +454,12 @@ void FileComic::crcError(int index)
     emit crcErrorFound(tr("CRC error on page (%1): some of the pages will not be displayed correctly").arg(index + 1));
 }
 
-//TODO: comprobar que si se produce uno de estos errores, la carga del c�mic es irrecuperable
+// TODO: comprobar que si se produce uno de estos errores, la carga del c�mic es irrecuperable
 void FileComic::unknownError(int index)
 {
     Q_UNUSED(index)
     emit errorOpening(tr("Unknown error opening the file"));
-    //emit errorOpening();
+    // emit errorOpening();
 }
 
 bool FileComic::isCancelled()
@@ -489,11 +489,11 @@ QList<QVector<quint32>> FileComic::getSections(int &sectionIndex)
             realIdx = i;
         }
         if (previous <= i) {
-            //out << "idx : " << i << endl;
+            // out << "idx : " << i << endl;
             section.append(i);
             previous = i;
         } else {
-            if (sectionIndex == sectionCount) //found
+            if (sectionIndex == sectionCount) // found
             {
                 if (section.indexOf(realIdx) != 0) {
                     QVector<quint32> section1;
@@ -508,7 +508,7 @@ QList<QVector<quint32>> FileComic::getSections(int &sectionIndex)
                     sectionIndex++;
                     sections.append(section1);
                     sections.append(section2);
-                    //out << "SPLIT" << endl;
+                    // out << "SPLIT" << endl;
                 } else {
                     sections.append(section);
                 }
@@ -516,9 +516,9 @@ QList<QVector<quint32>> FileComic::getSections(int &sectionIndex)
                 sections.append(section);
             }
             section = QVector<quint32>();
-            //out << "---------------" << endl;
+            // out << "---------------" << endl;
             section.append(i);
-            //out << "idx : " << i << endl;
+            // out << "idx : " << i << endl;
             previous = i;
             sectionCount++;
         }
@@ -526,7 +526,7 @@ QList<QVector<quint32>> FileComic::getSections(int &sectionIndex)
         idx++;
     }
 
-    if (sectionIndex == sectionCount) //found
+    if (sectionIndex == sectionCount) // found
     {
         if (section.indexOf(realIdx) != 0) {
             QVector<quint32> section1;
@@ -541,7 +541,7 @@ QList<QVector<quint32>> FileComic::getSections(int &sectionIndex)
             sectionIndex++;
             sections.append(section1);
             sections.append(section2);
-            //out << "SPLIT" << endl;
+            // out << "SPLIT" << endl;
 
         } else {
             sections.append(section);
@@ -550,7 +550,7 @@ QList<QVector<quint32>> FileComic::getSections(int &sectionIndex)
         sections.append(section);
     }
 
-    //out << "se han encontrado : " << sections.count() << " sectionIndex : " << sectionIndex << endl;
+    // out << "se han encontrado : " << sections.count() << " sectionIndex : " << sectionIndex << endl;
     return sections;
 }
 
@@ -569,18 +569,18 @@ void FileComic::process()
         return;
     }
 
-    //se filtran para obtener s�lo los formatos soportados
+    // se filtran para obtener s�lo los formatos soportados
     _order = archive.getFileNames();
     _fileNames = filter(_order);
 
     if (_fileNames.size() == 0) {
-        //QMessageBox::critical(NULL,tr("File error"),tr("File not found or not images in file"));
+        // QMessageBox::critical(NULL,tr("File error"),tr("File not found or not images in file"));
         moveToThread(QCoreApplication::instance()->thread());
         emit errorOpening();
         return;
     }
 
-    //TODO, cambiar por listas
+    // TODO, cambiar por listas
     //_order = _fileNames;
 
     _pages.resize(_fileNames.size());
@@ -592,7 +592,7 @@ void FileComic::process()
 
     _cfi = 0;
 
-    //TODO, add a setting for choosing the type of page sorting used.
+    // TODO, add a setting for choosing the type of page sorting used.
     comic_pages_sort(_fileNames, YACReaderHeuristicSorting);
 
     if (_firstPage == -1) {
@@ -604,7 +604,7 @@ void FileComic::process()
     }
 
     _index = _firstPage;
-    emit(openAt(_index));
+    emit openAt(_index);
 
     int sectionIndex;
     QList<QVector<quint32>> sections = getSections(sectionIndex);
@@ -623,16 +623,16 @@ void FileComic::process()
         }
         archive.getAllData(sections.at(i), this);
     }
-    //archive.getAllData(QVector<quint32>(),this);
+    // archive.getAllData(QVector<quint32>(),this);
     /*
-	foreach(QString name,_fileNames)
-	{
-		index = _order.indexOf(name);
-		sortedIndex = _fileNames.indexOf(name);
-		_pages[sortedIndex] = allData.at(index);
-		emit imageLoaded(sortedIndex);
-		emit imageLoaded(sortedIndex,_pages[sortedIndex]);
-	}*/
+        foreach(QString name,_fileNames)
+        {
+                index = _order.indexOf(name);
+                sortedIndex = _fileNames.indexOf(name);
+                _pages[sortedIndex] = allData.at(index);
+                emit imageLoaded(sortedIndex);
+                emit imageLoaded(sortedIndex,_pages[sortedIndex]);
+        }*/
     moveToThread(QCoreApplication::instance()->thread());
     emit imagesLoaded();
 }
@@ -649,7 +649,7 @@ FolderComic::FolderComic()
 FolderComic::FolderComic(const QString &path, int atPage)
     : Comic(path, atPage)
 {
-    load(path, atPage);
+    FolderComic::load(path, atPage);
 }
 
 FolderComic::~FolderComic()
@@ -664,7 +664,7 @@ bool FolderComic::load(const QString &path, int atPage)
         emit bookmarksUpdated();
     }
     _firstPage = atPage;
-    //emit bookmarksLoaded(*bm);
+    // emit bookmarksLoaded(*bm);
     return true;
 }
 
@@ -674,10 +674,10 @@ void FolderComic::process()
 
     d.setNameFilters(getSupportedImageFormats());
     d.setFilter(QDir::Files | QDir::NoDotAndDotDot);
-    //d.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware);
+    // d.setSorting(QDir::Name|QDir::IgnoreCase|QDir::LocaleAware);
     QFileInfoList list = d.entryInfoList();
 
-    //don't fix double page files sorting, because the user can see how the SO sorts the files in the folder.
+    // don't fix double page files sorting, because the user can see how the SO sorts the files in the folder.
     std::sort(list.begin(), list.end(), naturalSortLessThanCIFileInfo);
 
     int nPages = list.size();
@@ -686,8 +686,8 @@ void FolderComic::process()
     _loadedPages = QVector<bool>(nPages, false);
 
     if (nPages == 0) {
-        //TODO emitir este mensaje en otro sitio
-        //QMessageBox::critical(NULL,QObject::tr("No images found"),QObject::tr("There are not images on the selected folder"));
+        // TODO emitir este mensaje en otro sitio
+        // QMessageBox::critical(NULL,QObject::tr("No images found"),QObject::tr("There are not images on the selected folder"));
         moveToThread(QCoreApplication::instance()->thread());
         emit errorOpening();
     } else {
@@ -701,7 +701,7 @@ void FolderComic::process()
 
         _index = _firstPage;
 
-        emit(openAt(_index));
+        emit openAt(_index);
 
         emit pageChanged(0); // this indicates new comic, index=0
         emit numPages(_pages.size());
@@ -745,7 +745,7 @@ PDFComic::PDFComic()
 PDFComic::PDFComic(const QString &path, int atPage)
     : Comic(path, atPage)
 {
-    load(path, atPage);
+    PDFComic::load(path, atPage);
 }
 
 PDFComic::~PDFComic()
@@ -763,7 +763,7 @@ bool PDFComic::load(const QString &path, int atPage)
             emit bookmarksUpdated();
         }
         _firstPage = atPage;
-        //emit bookmarksLoaded(*bm);
+        // emit bookmarksLoaded(*bm);
         return true;
     } else {
         moveToThread(QCoreApplication::instance()->thread());
@@ -786,7 +786,7 @@ bool PDFComic::load(const QString &path, const ComicDB &comic)
         _path = QDir::cleanPath(path);
         return true;
     } else {
-        //QMessageBox::critical(NULL,tr("Not found"),tr("Comic not found")+" : " + path);
+        // QMessageBox::critical(NULL,tr("Not found"),tr("Comic not found")+" : " + path);
         moveToThread(QCoreApplication::instance()->thread());
         emit errorOpening();
         return false;
@@ -812,8 +812,8 @@ void PDFComic::process()
 #else
     pdfComic = Poppler::Document::load(_path);
     if (!pdfComic) {
-        //delete pdfComic;
-        //pdfComic = 0;
+        // delete pdfComic;
+        // pdfComic = 0;
         moveToThread(QCoreApplication::instance()->thread());
         emit errorOpening();
         return;
@@ -824,7 +824,7 @@ void PDFComic::process()
         return;
     }
 
-    //pdfComic->setRenderHint(Poppler::Document::Antialiasing, true);
+    // pdfComic->setRenderHint(Poppler::Document::Antialiasing, true);
     pdfComic->setRenderHint(Poppler::Document::TextAntialiasing, true);
 #endif
 
@@ -832,7 +832,7 @@ void PDFComic::process()
     emit pageChanged(0); // this indicates new comic, index=0
     emit numPages(nPages);
     _loaded = true;
-    //QMessageBox::critical(NULL,QString("%1").arg(nPages),tr("Invalid PDF file"));
+    // QMessageBox::critical(NULL,QString("%1").arg(nPages),tr("Invalid PDF file"));
 
     _pages.clear();
     _pages.resize(nPages);
@@ -847,9 +847,9 @@ void PDFComic::process()
     }
 
     _index = _firstPage;
-    emit(openAt(_index));
+    emit openAt(_index);
 
-    //buffer index to avoid race conditions
+    // buffer index to avoid race conditions
     int buffered_index = _index;
     for (int i = buffered_index; i < nPages; i++) {
         if (_invalidated) {
@@ -897,7 +897,7 @@ void PDFComic::renderPage(int page)
     }
 }
 
-#endif //NO_PDF
+#endif // NO_PDF
 
 Comic *FactoryComic::newComic(const QString &path)
 {
@@ -977,9 +977,9 @@ QString get_most_common_prefix(const QList<QString> &pageNames)
         /*
         else if(pos > currentPrefixLenght)
         {
-		frequency.insert(pageNames.at(i-1).left(currentPrefixLenght), currentPrefixCount - 1);
-		currentPrefixLenght = pos;
-		currentPrefixCount = 2;
+                frequency.insert(pageNames.at(i-1).left(currentPrefixLenght), currentPrefixCount - 1);
+                currentPrefixLenght = pos;
+                currentPrefixCount = 2;
         }*/
         else if (pos == 0) {
             frequency.insert(previous.left(currentPrefixLenght), currentPrefixCount);
@@ -994,19 +994,20 @@ QString get_most_common_prefix(const QList<QString> &pageNames)
 
     uint maxFrequency = 0;
     QString common_prefix = "";
-    foreach (QString key, frequency.keys()) {
+    auto keys = frequency.keys();
+    for (QString &key : keys) {
         if (maxFrequency < frequency.value(key)) {
             maxFrequency = frequency.value(key);
             common_prefix = key;
         }
     }
 
-    QRegExp allNumberRegExp("\\d+");
-    if (allNumberRegExp.exactMatch(common_prefix)) {
+    QRegularExpression allNumberRegExp("\\A\\d+\\z");
+    if (allNumberRegExp.match(common_prefix).hasMatch()) {
         return "";
     }
 
-    if (maxFrequency < pageNames.length() * 0.60) //the most common tipe of image file should a proper page, so we can asume that the common_prefix should be in, at least, the 60% of the pages
+    if (maxFrequency < pageNames.length() * 0.60) // the most common tipe of image file should a proper page, so we can asume that the common_prefix should be in, at least, the 60% of the pages
     {
         return "";
     }
@@ -1031,7 +1032,7 @@ void get_double_pages(const QList<QString> &pageNames, QList<QString> &singlePag
 
 QList<QString> merge_pages(QList<QString> &singlePageNames, QList<QString> &doublePageNames)
 {
-    //NOTE: this implementation doesn't differ from std::merge using a custom comparator, but it can be easily tweaked if merging requeries an additional heuristic behaviour
+    // NOTE: this implementation doesn't differ from std::merge using a custom comparator, but it can be easily tweaked if merging requeries an additional heuristic behaviour
     QList<QString> pageNames;
 
     int i = 0;

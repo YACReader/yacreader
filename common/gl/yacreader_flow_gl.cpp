@@ -11,182 +11,182 @@
 int YACReaderFlowGL::updateInterval = 16;
 
 struct Preset defaultYACReaderFlowConfig = {
-    0.08f, //Animation_step sets the speed of the animation
-    1.5f, //Animation_speedup sets the acceleration of the animation
-    0.1f, //Animation_step_max sets the maximum speed of the animation
-    3.f, //Animation_Fade_out_dis sets the distance of view
+    0.08f, // Animation_step sets the speed of the animation
+    1.5f, // Animation_speedup sets the acceleration of the animation
+    0.1f, // Animation_step_max sets the maximum speed of the animation
+    3.f, // Animation_Fade_out_dis sets the distance of view
 
-    1.5f, //pre_rotation sets the rotation increasion
-    3.f, //View_rotate_light_strenght sets the light strenght on rotation
-    0.01f, //View_rotate_add sets the speed of the rotation
-    0.02f, //View_rotate_sub sets the speed of reversing the rotation
-    20.f, //View_angle sets the maximum view angle
+    1.5f, // pre_rotation sets the rotation increasion
+    3.f, // View_rotate_light_strenght sets the light strenght on rotation
+    0.01f, // View_rotate_add sets the speed of the rotation
+    0.02f, // View_rotate_sub sets the speed of reversing the rotation
+    20.f, // View_angle sets the maximum view angle
 
-    0.f, //CF_X the X Position of the Coverflow
-    0.f, //CF_Y the Y Position of the Coverflow
-    -8.f, //CF_Z the Z Position of the Coverflow
+    0.f, // CF_X the X Position of the Coverflow
+    0.f, // CF_Y the Y Position of the Coverflow
+    -8.f, // CF_Z the Z Position of the Coverflow
 
-    15.f, //CF_RX the X Rotation of the Coverflow
-    0.f, //CF_RY the Y Rotation of the Coverflow
-    0.f, //CF_RZ the Z Rotation of the Coverflow
+    15.f, // CF_RX the X Rotation of the Coverflow
+    0.f, // CF_RY the Y Rotation of the Coverflow
+    0.f, // CF_RZ the Z Rotation of the Coverflow
 
-    -50.f, //Rotation sets the rotation of each cover
-    0.18f, //X_Distance sets the distance between the covers
-    1.f, //Center_Distance sets the distance between the centered and the non centered covers
-    0.1f, //Z_Distance sets the pushback amount
-    0.0f, //Y_Distance sets the elevation amount
+    -50.f, // Rotation sets the rotation of each cover
+    0.18f, // X_Distance sets the distance between the covers
+    1.f, // Center_Distance sets the distance between the centered and the non centered covers
+    0.1f, // Z_Distance sets the pushback amount
+    0.0f, // Y_Distance sets the elevation amount
 
-    30.f //zoom level
+    30.f // zoom level
 
 };
 
 struct Preset presetYACReaderFlowClassicConfig = {
-    0.08f, //Animation_step sets the speed of the animation
-    1.5f, //Animation_speedup sets the acceleration of the animation
-    0.1f, //Animation_step_max sets the maximum speed of the animation
-    2.f, //Animation_Fade_out_dis sets the distance of view
+    0.08f, // Animation_step sets the speed of the animation
+    1.5f, // Animation_speedup sets the acceleration of the animation
+    0.1f, // Animation_step_max sets the maximum speed of the animation
+    2.f, // Animation_Fade_out_dis sets the distance of view
 
-    1.5f, //pre_rotation sets the rotation increasion
-    3.f, //View_rotate_light_strenght sets the light strenght on rotation
-    0.08f, //View_rotate_add sets the speed of the rotation
-    0.08f, //View_rotate_sub sets the speed of reversing the rotation
-    30.f, //View_angle sets the maximum view angle
+    1.5f, // pre_rotation sets the rotation increasion
+    3.f, // View_rotate_light_strenght sets the light strenght on rotation
+    0.08f, // View_rotate_add sets the speed of the rotation
+    0.08f, // View_rotate_sub sets the speed of reversing the rotation
+    30.f, // View_angle sets the maximum view angle
 
-    0.f, //CF_X the X Position of the Coverflow
-    -0.2f, //CF_Y the Y Position of the Coverflow
-    -7.f, //CF_Z the Z Position of the Coverflow
+    0.f, // CF_X the X Position of the Coverflow
+    -0.2f, // CF_Y the Y Position of the Coverflow
+    -7.f, // CF_Z the Z Position of the Coverflow
 
-    0.f, //CF_RX the X Rotation of the Coverflow
-    0.f, //CF_RY the Y Rotation of the Coverflow
-    0.f, //CF_RZ the Z Rotation of the Coverflow
+    0.f, // CF_RX the X Rotation of the Coverflow
+    0.f, // CF_RY the Y Rotation of the Coverflow
+    0.f, // CF_RZ the Z Rotation of the Coverflow
 
-    -40.f, //Rotation sets the rotation of each cover
-    0.18f, //X_Distance sets the distance between the covers
-    1.f, //Center_Distance sets the distance between the centered and the non centered covers
-    0.1f, //Z_Distance sets the pushback amount
-    0.0f, //Y_Distance sets the elevation amount
+    -40.f, // Rotation sets the rotation of each cover
+    0.18f, // X_Distance sets the distance between the covers
+    1.f, // Center_Distance sets the distance between the centered and the non centered covers
+    0.1f, // Z_Distance sets the pushback amount
+    0.0f, // Y_Distance sets the elevation amount
 
-    22.f //zoom level
+    22.f // zoom level
 
 };
 
 struct Preset presetYACReaderFlowStripeConfig = {
-    0.08f, //Animation_step sets the speed of the animation
-    1.5f, //Animation_speedup sets the acceleration of the animation
-    0.1f, //Animation_step_max sets the maximum speed of the animation
-    6.f, //Animation_Fade_out_dis sets the distance of view
+    0.08f, // Animation_step sets the speed of the animation
+    1.5f, // Animation_speedup sets the acceleration of the animation
+    0.1f, // Animation_step_max sets the maximum speed of the animation
+    6.f, // Animation_Fade_out_dis sets the distance of view
 
-    1.5f, //pre_rotation sets the rotation increasion
-    4.f, //View_rotate_light_strenght sets the light strenght on rotation
-    0.08f, //View_rotate_add sets the speed of the rotation
-    0.08f, //View_rotate_sub sets the speed of reversing the rotation
-    30.f, //View_angle sets the maximum view angle
+    1.5f, // pre_rotation sets the rotation increasion
+    4.f, // View_rotate_light_strenght sets the light strenght on rotation
+    0.08f, // View_rotate_add sets the speed of the rotation
+    0.08f, // View_rotate_sub sets the speed of reversing the rotation
+    30.f, // View_angle sets the maximum view angle
 
-    0.f, //CF_X the X Position of the Coverflow
-    -0.2f, //CF_Y the Y Position of the Coverflow
-    -7.f, //CF_Z the Z Position of the Coverflow
+    0.f, // CF_X the X Position of the Coverflow
+    -0.2f, // CF_Y the Y Position of the Coverflow
+    -7.f, // CF_Z the Z Position of the Coverflow
 
-    0.f, //CF_RX the X Rotation of the Coverflow
-    0.f, //CF_RY the Y Rotation of the Coverflow
-    0.f, //CF_RZ the Z Rotation of the Coverflow
+    0.f, // CF_RX the X Rotation of the Coverflow
+    0.f, // CF_RY the Y Rotation of the Coverflow
+    0.f, // CF_RZ the Z Rotation of the Coverflow
 
-    0.f, //Rotation sets the rotation of each cover
-    1.1f, //X_Distance sets the distance between the covers
-    0.2f, //Center_Distance sets the distance between the centered and the non centered covers
-    0.01f, //Z_Distance sets the pushback amount
-    0.0f, //Y_Distance sets the elevation amount
+    0.f, // Rotation sets the rotation of each cover
+    1.1f, // X_Distance sets the distance between the covers
+    0.2f, // Center_Distance sets the distance between the centered and the non centered covers
+    0.01f, // Z_Distance sets the pushback amount
+    0.0f, // Y_Distance sets the elevation amount
 
-    22.f //zoom level
+    22.f // zoom level
 
 };
 
 struct Preset presetYACReaderFlowOverlappedStripeConfig = {
-    0.08f, //Animation_step sets the speed of the animation
-    1.5f, //Animation_speedup sets the acceleration of the animation
-    0.1f, //Animation_step_max sets the maximum speed of the animation
-    2.f, //Animation_Fade_out_dis sets the distance of view
+    0.08f, // Animation_step sets the speed of the animation
+    1.5f, // Animation_speedup sets the acceleration of the animation
+    0.1f, // Animation_step_max sets the maximum speed of the animation
+    2.f, // Animation_Fade_out_dis sets the distance of view
 
-    1.5f, //pre_rotation sets the rotation increasion
-    3.f, //View_rotate_light_strenght sets the light strenght on rotation
-    0.08f, //View_rotate_add sets the speed of the rotation
-    0.08f, //View_rotate_sub sets the speed of reversing the rotation
-    30.f, //View_angle sets the maximum view angle
+    1.5f, // pre_rotation sets the rotation increasion
+    3.f, // View_rotate_light_strenght sets the light strenght on rotation
+    0.08f, // View_rotate_add sets the speed of the rotation
+    0.08f, // View_rotate_sub sets the speed of reversing the rotation
+    30.f, // View_angle sets the maximum view angle
 
-    0.f, //CF_X the X Position of the Coverflow
-    -0.2f, //CF_Y the Y Position of the Coverflow
-    -7.f, //CF_Z the Z Position of the Coverflow
+    0.f, // CF_X the X Position of the Coverflow
+    -0.2f, // CF_Y the Y Position of the Coverflow
+    -7.f, // CF_Z the Z Position of the Coverflow
 
-    0.f, //CF_RX the X Rotation of the Coverflow
-    0.f, //CF_RY the Y Rotation of the Coverflow
-    0.f, //CF_RZ the Z Rotation of the Coverflow
+    0.f, // CF_RX the X Rotation of the Coverflow
+    0.f, // CF_RY the Y Rotation of the Coverflow
+    0.f, // CF_RZ the Z Rotation of the Coverflow
 
-    0.f, //Rotation sets the rotation of each cover
-    0.18f, //X_Distance sets the distance between the covers
-    1.f, //Center_Distance sets the distance between the centered and the non centered covers
-    0.1f, //Z_Distance sets the pushback amount
-    0.0f, //Y_Distance sets the elevation amount
+    0.f, // Rotation sets the rotation of each cover
+    0.18f, // X_Distance sets the distance between the covers
+    1.f, // Center_Distance sets the distance between the centered and the non centered covers
+    0.1f, // Z_Distance sets the pushback amount
+    0.0f, // Y_Distance sets the elevation amount
 
-    22.f //zoom level
+    22.f // zoom level
 
 };
 
 struct Preset pressetYACReaderFlowUpConfig = {
-    0.08f, //Animation_step sets the speed of the animation
-    1.5f, //Animation_speedup sets the acceleration of the animation
-    0.1f, //Animation_step_max sets the maximum speed of the animation
-    2.5f, //Animation_Fade_out_dis sets the distance of view
+    0.08f, // Animation_step sets the speed of the animation
+    1.5f, // Animation_speedup sets the acceleration of the animation
+    0.1f, // Animation_step_max sets the maximum speed of the animation
+    2.5f, // Animation_Fade_out_dis sets the distance of view
 
-    1.5f, //pre_rotation sets the rotation increasion
-    3.f, //View_rotate_light_strenght sets the light strenght on rotation
-    0.08f, //View_rotate_add sets the speed of the rotation
-    0.08f, //View_rotate_sub sets the speed of reversing the rotation
-    5.f, //View_angle sets the maximum view angle
+    1.5f, // pre_rotation sets the rotation increasion
+    3.f, // View_rotate_light_strenght sets the light strenght on rotation
+    0.08f, // View_rotate_add sets the speed of the rotation
+    0.08f, // View_rotate_sub sets the speed of reversing the rotation
+    5.f, // View_angle sets the maximum view angle
 
-    0.f, //CF_X the X Position of the Coverflow
-    -0.2f, //CF_Y the Y Position of the Coverflow
-    -7.f, //CF_Z the Z Position of the Coverflow
+    0.f, // CF_X the X Position of the Coverflow
+    -0.2f, // CF_Y the Y Position of the Coverflow
+    -7.f, // CF_Z the Z Position of the Coverflow
 
-    0.f, //CF_RX the X Rotation of the Coverflow
-    0.f, //CF_RY the Y Rotation of the Coverflow
-    0.f, //CF_RZ the Z Rotation of the Coverflow
+    0.f, // CF_RX the X Rotation of the Coverflow
+    0.f, // CF_RY the Y Rotation of the Coverflow
+    0.f, // CF_RZ the Z Rotation of the Coverflow
 
-    -50.f, //Rotation sets the rotation of each cover
-    0.18f, //X_Distance sets the distance between the covers
-    1.f, //Center_Distance sets the distance between the centered and the non centered covers
-    0.1f, //Z_Distance sets the pushback amount
-    -0.1f, //Y_Distance sets the elevation amount
+    -50.f, // Rotation sets the rotation of each cover
+    0.18f, // X_Distance sets the distance between the covers
+    1.f, // Center_Distance sets the distance between the centered and the non centered covers
+    0.1f, // Z_Distance sets the pushback amount
+    -0.1f, // Y_Distance sets the elevation amount
 
-    22.f //zoom level
+    22.f // zoom level
 
 };
 
 struct Preset pressetYACReaderFlowDownConfig = {
-    0.08f, //Animation_step sets the speed of the animation
-    1.5f, //Animation_speedup sets the acceleration of the animation
-    0.1f, //Animation_step_max sets the maximum speed of the animation
-    2.5f, //Animation_Fade_out_dis sets the distance of view
+    0.08f, // Animation_step sets the speed of the animation
+    1.5f, // Animation_speedup sets the acceleration of the animation
+    0.1f, // Animation_step_max sets the maximum speed of the animation
+    2.5f, // Animation_Fade_out_dis sets the distance of view
 
-    1.5f, //pre_rotation sets the rotation increasion
-    3.f, //View_rotate_light_strenght sets the light strenght on rotation
-    0.08f, //View_rotate_add sets the speed of the rotation
-    0.08f, //View_rotate_sub sets the speed of reversing the rotation
-    5.f, //View_angle sets the maximum view angle
+    1.5f, // pre_rotation sets the rotation increasion
+    3.f, // View_rotate_light_strenght sets the light strenght on rotation
+    0.08f, // View_rotate_add sets the speed of the rotation
+    0.08f, // View_rotate_sub sets the speed of reversing the rotation
+    5.f, // View_angle sets the maximum view angle
 
-    0.f, //CF_X the X Position of the Coverflow
-    -0.2f, //CF_Y the Y Position of the Coverflow
-    -7.f, //CF_Z the Z Position of the Coverflow
+    0.f, // CF_X the X Position of the Coverflow
+    -0.2f, // CF_Y the Y Position of the Coverflow
+    -7.f, // CF_Z the Z Position of the Coverflow
 
-    0.f, //CF_RX the X Rotation of the Coverflow
-    0.f, //CF_RY the Y Rotation of the Coverflow
-    0.f, //CF_RZ the Z Rotation of the Coverflow
+    0.f, // CF_RX the X Rotation of the Coverflow
+    0.f, // CF_RY the Y Rotation of the Coverflow
+    0.f, // CF_RZ the Z Rotation of the Coverflow
 
-    -50.f, //Rotation sets the rotation of each cover
-    0.18f, //X_Distance sets the distance between the covers
-    1.f, //Center_Distance sets the distance between the centered and the non centered covers
-    0.1f, //Z_Distance sets the pushback amount
-    0.1f, //Y_Distance sets the elevation amount
+    -50.f, // Rotation sets the rotation of each cover
+    0.18f, // X_Distance sets the distance between the covers
+    1.f, // Center_Distance sets the distance between the centered and the non centered covers
+    0.1f, // Z_Distance sets the pushback amount
+    0.1f, // Y_Distance sets the elevation amount
 
-    22.f //zoom level
+    22.f // zoom level
 };
 /*Constructor*/
 YACReaderFlowGL::YACReaderFlowGL(QWidget *parent, struct Preset p)
@@ -210,23 +210,23 @@ YACReaderFlowGL::YACReaderFlowGL(QWidget *parent, struct Preset p)
 
     /*** System variables ***/
     numObjects = 0;
-    //CFImage Dummy;
+    // CFImage Dummy;
     viewRotate = 0.f;
     viewRotateActive = 0;
     stepBackup = config.animationStep / config.animationSpeedUp;
 
     /*QTimer * timer = new QTimer();
-	connect(timer, SIGNAL(timeout()), this, SLOT(updateImageData()));
-	timer->start(70);
-	*/
+        connect(timer, SIGNAL(timeout()), this, SLOT(updateImageData()));
+        timer->start(70);
+        */
 
     /*loader = new WidgetLoader(0,this);
-	loader->flow = this;
-	QThread * loaderThread = new QThread(parent);
+        loader->flow = this;
+        QThread * loaderThread = new QThread(parent);
 
-	loader->moveToThread(loaderThread);
+        loader->moveToThread(loaderThread);
 
-	loaderThread->start();*/
+        loaderThread->start();*/
 
     QSurfaceFormat f = format();
 
@@ -243,8 +243,8 @@ void YACReaderFlowGL::timerEvent(QTimerEvent *event)
     if (timerId == event->timerId())
         update();
 
-    //if(!worker->isRunning())
-    //worker->start();
+    // if(!worker->isRunning())
+    // worker->start();
 }
 
 void YACReaderFlowGL::startAnimationTimer()
@@ -272,7 +272,7 @@ QSize YACReaderFlowGL::minimumSizeHint() const
 
 /*QSize YACReaderFlowGL::sizeHint() const
 {
-	return QSize(320, 200);
+        return QSize(320, 200);
 }*/
 
 void YACReaderFlowGL::initializeGL()
@@ -342,12 +342,12 @@ void YACReaderFlowGL::paintGL()
 
 void YACReaderFlowGL::resizeGL(int width, int height)
 {
-    float pixelRatio = devicePixelRatio();
+    float pixelRatio = devicePixelRatioF();
     fontSize = (width + height) * 0.010 * pixelRatio;
     if (fontSize < 10)
         fontSize = 10;
 
-    //int side = qMin(width, height);
+    // int side = qMin(width, height);
     udpatePerspective(width, height);
 
     if (numObjects > 0)
@@ -356,7 +356,7 @@ void YACReaderFlowGL::resizeGL(int width, int height)
 
 void YACReaderFlowGL::udpatePerspective(int width, int height)
 {
-    float pixelRatio = devicePixelRatio();
+    float pixelRatio = devicePixelRatioF();
     glViewport(0, 0, width * pixelRatio, height * pixelRatio);
 
     glMatrixMode(GL_PROJECTION);
@@ -411,7 +411,7 @@ bool YACReaderFlowGL::animate(YACReader3DVector &currentVector, YACReader3DVecto
     if (fabs(rotDiff) < 0.01 && fabs(xDiff) < 0.001 && fabs(yDiff) < 0.001 && fabs(zDiff) < 0.001)
         return true;
 
-    //calculate and apply positions
+    // calculate and apply positions
     currentVector.x = currentVector.x + (xDiff)*config.animationStep;
     currentVector.y = currentVector.y + (yDiff)*config.animationStep;
     currentVector.z = currentVector.z + (zDiff)*config.animationStep;
@@ -429,7 +429,7 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage &image)
     float w = image.width;
     float h = image.height;
 
-    //fadeout
+    // fadeout
     float opacity = 1 - 1 / (config.animationFadeOutDist + config.viewRotateLightStrenght * fabs(viewRotate)) * fabs(0 - image.current.x);
 
     glLoadIdentity();
@@ -446,7 +446,7 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage &image)
     glEnable(GL_TEXTURE_2D);
     image.texture->bind();
 
-    //calculate shading
+    // calculate shading
     float LShading = ((config.rotation != 0) ? ((image.current.rot < 0) ? 1 - 1 / config.rotation * image.current.rot : 1) : 1);
     float RShading = ((config.rotation != 0) ? ((image.current.rot > 0) ? 1 - 1 / (config.rotation * -1) * image.current.rot : 1) : 1);
     float LUP = shadingTop + (1 - shadingTop) * LShading;
@@ -455,50 +455,50 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage &image)
     float RDOWN = shadingBottom + (1 - shadingBottom) * RShading;
     ;
 
-    //DrawCover
+    // DrawCover
     glBegin(GL_QUADS);
 
-    //esquina inferior izquierda
+    // esquina inferior izquierda
     glColor4f(LDOWN * opacity, LDOWN * opacity, LDOWN * opacity, 1);
     glTexCoord2f(0.0f, 1.0f);
     glVertex3f(w / 2.f * -1.f, -0.5f, 0.f);
 
-    //esquina inferior derecha
+    // esquina inferior derecha
     glColor4f(RDOWN * opacity, RDOWN * opacity, RDOWN * opacity, 1);
     glTexCoord2f(1.0f, 1.0f);
     glVertex3f(w / 2.f, -0.5f, 0.f);
 
-    //esquina superior derecha
+    // esquina superior derecha
     glColor4f(RUP * opacity, RUP * opacity, RUP * opacity, 1);
     glTexCoord2f(1.0f, 0.0f);
     glVertex3f(w / 2.f, -0.5f + h, 0.f);
 
-    //esquina superior izquierda
+    // esquina superior izquierda
     glColor4f(LUP * opacity, LUP * opacity, LUP * opacity, 1);
     glTexCoord2f(0.0f, 0.0f);
     glVertex3f(w / 2.f * -1.f, -0.5f + h, 0.f);
 
     glEnd();
 
-    //Draw reflection
+    // Draw reflection
     glBegin(GL_QUADS);
 
-    //esquina inferior izquierda
+    // esquina inferior izquierda
     glColor4f(LUP * opacity * reflectionUp / 2, LUP * opacity * reflectionUp / 2, LUP * opacity * reflectionUp / 2, 1);
     glTexCoord2f(0.0f, 0.0f);
     glVertex3f(w / 2.f * -1.f, -0.5f - h, 0.f);
 
-    //esquina inferior derecha
+    // esquina inferior derecha
     glColor4f(RUP * opacity * reflectionUp / 2, RUP * opacity * reflectionUp / 2, RUP * opacity * reflectionUp / 2, 1);
     glTexCoord2f(1.0f, 0.0f);
     glVertex3f(w / 2.f, -0.5f - h, 0.f);
 
-    //esquina superior derecha
+    // esquina superior derecha
     glColor4f(RDOWN * opacity / 3, RDOWN * opacity / 3, RDOWN * opacity / 3, 1);
     glTexCoord2f(1.0f, 1.0f);
     glVertex3f(w / 2.f, -0.5f, 0.f);
 
-    //esquina superior izquierda
+    // esquina superior izquierda
     glColor4f(LDOWN * opacity / 3, LDOWN * opacity / 3, LDOWN * opacity / 3, 1);
     glTexCoord2f(0.0f, 1.0f);
     glVertex3f(w / 2.f * -1.f, -0.5f, 0.f);
@@ -514,22 +514,22 @@ void YACReaderFlowGL::drawCover(const YACReader3DImage &image)
             readingTexture->bind();
         glBegin(GL_QUADS);
 
-        //esquina inferior izquierda
+        // esquina inferior izquierda
         glColor4f(RUP * opacity, RUP * opacity, RUP * opacity, 1);
         glTexCoord2f(0.0f, 1.0f);
         glVertex3f(w / 2.f - 0.2, -0.688f + h, 0.001f);
 
-        //esquina inferior derecha
+        // esquina inferior derecha
         glColor4f(RUP * opacity, RUP * opacity, RUP * opacity, 1);
         glTexCoord2f(1.0f, 1.0f);
         glVertex3f(w / 2.f - 0.05, -0.688f + h, 0.001f);
 
-        //esquina superior derecha
+        // esquina superior derecha
         glColor4f(RUP * opacity, RUP * opacity, RUP * opacity, 1);
         glTexCoord2f(1.0f, 0.0f);
         glVertex3f(w / 2.f - 0.05, -0.488f + h, 0.001f);
 
-        //esquina superior izquierda
+        // esquina superior izquierda
         glColor4f(RUP * opacity, RUP * opacity, RUP * opacity, 1);
         glTexCoord2f(0.0f, 0.0f);
         glVertex3f(w / 2.f - 0.2, -0.488f + h, 0.001f);
@@ -553,21 +553,21 @@ void YACReaderFlowGL::draw()
     int CS = currentSelected;
     int count;
 
-    //Draw right Covers
+    // Draw right Covers
     for (count = numObjects - 1; count > -1; count--) {
         if (count > CS) {
             drawCover(images[count]);
         }
     }
 
-    //Draw left Covers
+    // Draw left Covers
     for (count = 0; count < numObjects - 1; count++) {
         if (count < CS) {
             drawCover(images[count]);
         }
     }
 
-    //Draw Center Cover
+    // Draw Center Cover
     drawCover(images[CS]);
 }
 
@@ -650,15 +650,15 @@ void YACReaderFlowGL::updatePositions()
             stopAnimation = false;
     }
 
-    //slowly reset view angle
+    // slowly reset view angle
     if (!viewRotateActive) {
         viewRotate += (0 - viewRotate) * config.viewRotateSub;
     }
 
-    if (fabs(images[currentSelected].current.x - images[currentSelected].animEnd.x) < 1) //viewRotate < 0.2)
+    if (fabs(images[currentSelected].current.x - images[currentSelected].animEnd.x) < 1) // viewRotate < 0.2)
     {
         cleanupAnimation();
-        if (updateCount >= 0) //TODO parametrizar
+        if (updateCount >= 0) // TODO parametrizar
         {
 
             updateCount = 0;
@@ -677,7 +677,7 @@ void YACReaderFlowGL::insert(char *name, QOpenGLTexture *texture, float x, float
     startAnimationTimer();
 
     Q_UNUSED(name)
-    //set a new entry
+    // set a new entry
     if (item == -1) {
         images.push_back(YACReader3DImage());
 
@@ -692,7 +692,7 @@ void YACReaderFlowGL::insert(char *name, QOpenGLTexture *texture, float x, float
     images[item].width = x;
     images[item].height = y;
     images[item].index = item;
-    //strcpy(cfImages[item].name,name);
+    // strcpy(cfImages[item].name,name);
 }
 
 void YACReaderFlowGL::remove(int item)
@@ -705,7 +705,7 @@ void YACReaderFlowGL::remove(int item)
     loaded.remove(item);
     marks.remove(item);
 
-    //reposition current selection
+    // reposition current selection
     if (item <= currentSelected && currentSelected != 0) {
         currentSelected--;
     }
@@ -758,17 +758,17 @@ void YACReaderFlowGL::populate(int n)
     }
 
     /*
-	for(int i = 0;i<n;i++){
-		QPixmap img = QPixmap(QString("./cover%1.jpg").arg(i+1));
-		GLuint cover = bindTexture(img, GL_TEXTURE_2D);
-		float y = 0.5 * (float(img.height())/img.width());
-		Insert("cover", cover, x, y);
-	}*/
+        for(int i = 0;i<n;i++){
+                QPixmap img = QPixmap(QString("./cover%1.jpg").arg(i+1));
+                GLuint cover = bindTexture(img, GL_TEXTURE_2D);
+                float y = 0.5 * (float(img.height())/img.width());
+                Insert("cover", cover, x, y);
+        }*/
 
     loaded = QVector<bool>(n, false);
-    //marks = QVector<bool>(n,false);
+    // marks = QVector<bool>(n,false);
 
-    //worker->start();
+    // worker->start();
 }
 
 void YACReaderFlowGL::reset()
@@ -803,7 +803,7 @@ void YACReaderFlowGL::reload()
     populate(n);
 }
 
-//slots
+// slots
 void YACReaderFlowGL::setCF_RX(int value)
 {
     startAnimationTimer();
@@ -845,21 +845,21 @@ void YACReaderFlowGL::setRotation(int angle)
 
     config.rotation = -angle;
 }
-//sets the distance between the covers
+// sets the distance between the covers
 void YACReaderFlowGL::setX_Distance(int distance)
 {
     startAnimationTimer();
 
     config.xDistance = distance / 100.0;
 }
-//sets the distance between the centered and the non centered covers
+// sets the distance between the centered and the non centered covers
 void YACReaderFlowGL::setCenter_Distance(int distance)
 {
     startAnimationTimer();
 
     config.centerDistance = distance / 100.0;
 }
-//sets the pushback amount
+// sets the pushback amount
 void YACReaderFlowGL::setZ_Distance(int distance)
 {
     startAnimationTimer();
@@ -950,7 +950,7 @@ void YACReaderFlowGL::setShowMarks(bool value)
 
     showMarks = value;
 }
-void YACReaderFlowGL::setMarks(QVector<YACReaderComicReadStatus> marks)
+void YACReaderFlowGL::setMarks(QVector<YACReader::YACReaderComicReadStatus> marks)
 {
     startAnimationTimer();
 
@@ -959,11 +959,11 @@ void YACReaderFlowGL::setMarks(QVector<YACReaderComicReadStatus> marks)
 void YACReaderFlowGL::setMarkImage(QImage &image)
 {
     Q_UNUSED(image);
-    //qué pasa la primera vez??
-    //deleteTexture(markTexture);
-    //markTexture = bindTexture(image,GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
+    // qué pasa la primera vez??
+    // deleteTexture(markTexture);
+    // markTexture = bindTexture(image,GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
 }
-void YACReaderFlowGL::markSlide(int index, YACReaderComicReadStatus status)
+void YACReaderFlowGL::markSlide(int index, YACReader::YACReaderComicReadStatus status)
 {
     startAnimationTimer();
 
@@ -978,7 +978,7 @@ void YACReaderFlowGL::unmarkSlide(int index)
 void YACReaderFlowGL::setSlideSize(QSize size)
 {
     Q_UNUSED(size);
-    //TODO calcular el tamaño del widget
+    // TODO calcular el tamaño del widget
 }
 void YACReaderFlowGL::clear()
 {
@@ -999,15 +999,15 @@ int YACReaderFlowGL::centerIndex()
 }
 void YACReaderFlowGL::updateMarks()
 {
-    //do nothing
+    // do nothing
 }
 /*void YACReaderFlowGL::setFlowType(FlowType flowType)
 {
-	//TODO esperar a que se reimplemente flowtype
+        //TODO esperar a que se reimplemente flowtype
 }*/
 void YACReaderFlowGL::render()
 {
-    //do nothing
+    // do nothing
 }
 
 void YACReaderFlowGL::setFlowRightToLeft(bool b)
@@ -1015,7 +1015,7 @@ void YACReaderFlowGL::setFlowRightToLeft(bool b)
     flowRightToLeft = b;
 }
 
-//EVENTOS
+// EVENTOS
 
 void YACReaderFlowGL::wheelEvent(QWheelEvent *event)
 {
@@ -1055,7 +1055,7 @@ void YACReaderFlowGL::keyPressEvent(QKeyEvent *event)
     }
 
     if (event->key() == Qt::Key_Up) {
-        //emit selected(centerIndex());
+        // emit selected(centerIndex());
         return;
     }
 
@@ -1100,9 +1100,9 @@ QVector3D YACReaderFlowGL::getPlaneIntersection(int x, int y, YACReader3DImage p
     glGetFloatv(GL_PROJECTION_MATRIX, m_projection.data());
     doneCurrent();
 
-    //create the picking ray
-    QVector3D ray_origin(x * devicePixelRatio(), y * devicePixelRatio(), 0);
-    QVector3D ray_end(x * devicePixelRatio(), y * devicePixelRatio(), 1.0);
+    // create the picking ray
+    QVector3D ray_origin(x * devicePixelRatioF(), y * devicePixelRatioF(), 0);
+    QVector3D ray_end(x * devicePixelRatioF(), y * devicePixelRatioF(), 1.0);
 
     // TODO: These should be cached in the class
 
@@ -1111,19 +1111,19 @@ QVector3D YACReaderFlowGL::getPlaneIntersection(int x, int y, YACReader3DImage p
 
     QVector3D ray_vector = ray_end - ray_origin;
 
-    //calculate the plane vectors
+    // calculate the plane vectors
     QVector3D plane_origin((plane.width / 2) * -1, -0.5, 0);
     QVector3D plane_vektor_1 = QVector3D(plane.width / 2, -0.5, 0) - plane_origin;
     QVector3D plane_vektor_2 = QVector3D((plane.width / 2) * -1, -0.5 * plane.height, 0) - plane_origin;
 
-    //get the intersection using Cramer's rule. We only x for the line, not the plane
+    // get the intersection using Cramer's rule. We only x for the line, not the plane
     double intersection_LES_determinant = ((plane_vektor_1.x() * plane_vektor_2.y() * (-1) * ray_vector.z()) + (plane_vektor_2.x() * (-1) * ray_vector.y() * plane_vektor_1.z()) + ((-1) * ray_vector.x() * plane_vektor_1.y() * plane_vektor_2.z()) - ((-1) * ray_vector.x() * plane_vektor_2.y() * plane_vektor_1.z()) - (plane_vektor_1.x() * (-1) * ray_vector.y() * plane_vektor_2.z()) - (plane_vektor_2.x() * plane_vektor_1.y() * (-1) * ray_vector.z()));
 
     QVector3D det = ray_origin - plane_origin;
 
     double intersection_ray_determinant = ((plane_vektor_1.x() * plane_vektor_2.y() * det.z()) + (plane_vektor_2.x() * det.y() * plane_vektor_1.z()) + (det.x() * plane_vektor_1.y() * plane_vektor_2.z()) - (det.x() * plane_vektor_2.y() * plane_vektor_1.z()) - (plane_vektor_1.x() * det.y() * plane_vektor_2.z()) - (plane_vektor_2.x() * plane_vektor_1.y() * det.z()));
 
-    //return the intersection point
+    // return the intersection point
     return ray_origin + ray_vector * (intersection_ray_determinant / intersection_LES_determinant);
 }
 
@@ -1143,7 +1143,7 @@ void YACReaderComicFlowGL::setImagePaths(QStringList paths)
         YACReaderFlowGL::populate(paths.size());
     lazyPopulateObjects = paths.size();
     this->paths = paths;
-    //numObjects = paths.size();
+    // numObjects = paths.size();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1206,14 +1206,14 @@ void YACReaderComicFlowGL::updateImageData()
     for (int c = 0; c < 2 * count + 1; c++) {
         int i = indexes[c];
         if ((i >= 0) && (i < numObjects))
-            if (!loaded[i]) //slide(i).isNull())
+            if (!loaded[i]) // slide(i).isNull())
             {
-                //loader->loadTexture(i);
-                //loaded[i]=true;
-                // schedule thumbnail generation
+                // loader->loadTexture(i);
+                // loaded[i]=true;
+                //  schedule thumbnail generation
                 if (paths.size() > 0) {
                     QString fname = paths.at(i);
-                    //loaded[i]=true;
+                    // loaded[i]=true;
 
                     worker->generate(i, fname);
                 }
@@ -1238,7 +1238,7 @@ void YACReaderComicFlowGL::remove(int item)
 void YACReaderComicFlowGL::resortCovers(QList<int> newOrder)
 {
     worker->lock();
-    worker->reset(); //is this necesary?
+    worker->reset(); // is this necesary?
     startAnimationTimer();
     QList<QString> pathsNew;
     QVector<bool> loadedNew;
@@ -1276,7 +1276,7 @@ YACReaderPageFlowGL::~YACReaderPageFlowGL()
 
     makeCurrent();
 
-    for (auto image : images) {
+    for (auto &image : images) {
         if (image.texture != defaultTexture) {
             if (image.texture->isCreated()) {
                 image.texture->destroy();
@@ -1358,7 +1358,7 @@ void YACReaderPageFlowGL::updateImageData()
         if ((i >= 0) && (i < numObjects))
             if (rawImages.size() > 0)
 
-                if (!loaded[i] && imagesReady[i]) //slide(i).isNull())
+                if (!loaded[i] && imagesReady[i]) // slide(i).isNull())
                 {
                     worker->generate(i, rawImages.at(i));
 
@@ -1378,11 +1378,11 @@ void YACReaderPageFlowGL::populate(int n)
     lazyPopulateObjects = n;
     imagesReady = QVector<bool>(n, false);
     rawImages = QVector<QByteArray>(n);
-    imagesSetted = QVector<bool>(n, false); //puede sobrar
+    imagesSetted = QVector<bool>(n, false); // puede sobrar
 }
 
 //-----------------------------------------------------------------------------
-//ImageLoader
+// ImageLoader
 //-----------------------------------------------------------------------------
 QImage ImageLoaderGL::loadImage(const QString &fileName)
 {
@@ -1403,7 +1403,7 @@ QImage ImageLoaderGL::loadImage(const QString &fileName)
         image = image.scaledToWidth(320, Qt::SmoothTransformation);
         break;
     case ultraHigh:
-        break; //no scaling in ultraHigh
+        break; // no scaling in ultraHigh
     }
 
     return image;
@@ -1487,7 +1487,7 @@ QImage ImageLoaderGL::result()
 }
 
 //-----------------------------------------------------------------------------
-//ImageLoader
+// ImageLoader
 //-----------------------------------------------------------------------------
 QImage ImageLoaderByteArrayGL::loadImage(const QByteArray &raw)
 {

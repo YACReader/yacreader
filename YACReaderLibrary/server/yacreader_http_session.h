@@ -21,19 +21,19 @@ public:
     QSet<QString> getDownloadedComics();
     void clearComics();
 
-    //current comic (import)
+    // current comic (import)
     qulonglong getCurrentComicId();
     Comic *getCurrentComic();
     void dismissCurrentComic();
     void setCurrentComic(qulonglong id, Comic *comic);
 
-    //current comic (read)
+    // current comic (read)
     qulonglong getCurrentRemoteComicId();
     Comic *getCurrentRemoteComic();
     void dismissCurrentRemoteComic();
     void setCurrentRemoteComic(qulonglong id, Comic *comic);
 
-    //device identification
+    // device identification
     QString getDeviceType();
     QString getDisplayType();
     void setDeviceType(const QString &device);
@@ -45,7 +45,7 @@ public:
     void pushNavigationItem(const QPair<qulonglong, quint32> &item);
     void updateTopItem(const QPair<qulonglong, quint32> &item);
 
-    //TODO replace QPair by a custom class for storing folderId, page and folderName(save some DB accesses)
+    // TODO replace QPair by a custom class for storing folderId, page and folderName(save some DB accesses)
     QStack<QPair<qulonglong, quint32>> getNavigationPath();
 
 signals:

@@ -101,7 +101,7 @@ void ConsoleUILibraryCreator::addExistingLibrary(const QString &name, const QStr
 
 void ConsoleUILibraryCreator::removeLibrary(const QString &name)
 {
-    //TODO add error handling
+    // TODO add error handling
     YACReaderLibraries yacreaderLibraries;
     yacreaderLibraries.load();
     if (!yacreaderLibraries.contains(name)) {

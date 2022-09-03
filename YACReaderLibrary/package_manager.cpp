@@ -13,12 +13,13 @@ void PackageManager::createPackage(const QString &libraryPath, const QString &de
                << "-y"
                << "-ttar" << dest + ".clc" << libraryPath;
     _7z = new QProcess();
+    // TODO: Missing slot for openingError!!!
     connect(_7z, SIGNAL(error(QProcess::ProcessError)), this, SLOT(openingError(QProcess::ProcessError)));
-    connect(_7z, SIGNAL(finished(int, QProcess::ExitStatus)), this, SIGNAL(exported()));
+    connect(_7z, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, &PackageManager::exported);
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
-    _7z->start("7z", attributes); //TODO: use 7z.so
+    _7z->start("7z", attributes); // TODO: use 7z.so
 #else
-    _7z->start(QCoreApplication::applicationDirPath() + "/utils/7zip", attributes); //TODO: use 7z.dll
+    _7z->start(QCoreApplication::applicationDirPath() + "/utils/7zip", attributes); // TODO: use 7z.dll
 #endif
 }
 
@@ -33,9 +34,9 @@ void PackageManager::extractPackage(const QString &packagePath, const QString &d
     connect(_7z, SIGNAL(error(QProcess::ProcessError)), this, SLOT(openingError(QProcess::ProcessError)));
     connect(_7z, SIGNAL(finished(int, QProcess::ExitStatus)), this, SIGNAL(imported()));
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
-    _7z->start("7z", attributes); //TODO: use 7z.so
+    _7z->start("7z", attributes); // TODO: use 7z.so
 #else
-    _7z->start(QCoreApplication::applicationDirPath() + "/utils/7zip", attributes); //TODO: use 7z.dll
+    _7z->start(QCoreApplication::applicationDirPath() + "/utils/7zip", attributes); // TODO: use 7z.dll
 #endif
 }
 
@@ -45,9 +46,9 @@ void PackageManager::cancel()
         _7z->disconnect();
         _7z->kill();
         if (creating) {
-            //TODO remove dest+".clc"
+            // TODO remove dest+".clc"
         } else {
-            //TODO fixed: is done by libraryWindow
+            // TODO fixed: is done by libraryWindow
         }
     }
 }

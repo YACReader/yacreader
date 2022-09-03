@@ -77,7 +77,8 @@ void HttpConnectionHandlerPool::cleanup()
             {
                 delete handler;
                 pool.removeOne(handler);
-                qDebug("HttpConnectionHandlerPool: Removed connection handler (%p), pool size is now %i",handler,pool.size());
+                long int poolSize=(long int)pool.size();
+                qDebug("HttpConnectionHandlerPool: Removed connection handler (%p), pool size is now %li",handler,poolSize);
                 break; // remove only one handler in each interval
             }
         }
@@ -140,7 +141,7 @@ void HttpConnectionHandlerPool::loadSslConfig()
             sslConfiguration->setLocalCertificate(certificate);
             sslConfiguration->setPrivateKey(sslKey);
             sslConfiguration->setPeerVerifyMode(QSslSocket::VerifyNone);
-            sslConfiguration->setProtocol(QSsl::TlsV1SslV3);
+            sslConfiguration->setProtocol(QSsl::AnyProtocol);
 
             qDebug("HttpConnectionHandlerPool: SSL settings loaded");
          #endif
