@@ -74,6 +74,7 @@ void GoToDialog::setNumPages(unsigned int numPages)
 
 void GoToDialog::open()
 {
+    pageNumber->clear();
     pageNumber->setFocus();
     QDialog::open();
 }
