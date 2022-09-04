@@ -707,8 +707,7 @@ Rectangle {
             currentIndex: 0
             cacheBuffer: 0
 
-            //disable flickable behaviour
-            interactive: false
+            interactive: true
 
             move: Transition {
                 NumberAnimation { properties: "x,y"; duration: 250 }

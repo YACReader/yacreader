@@ -2,7 +2,18 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
-## WIP
+## 9.9.1
+
+### YACReader
+* Fix "go to" dialog not clearing the page number between runs.
+* Fix scroll behavior in "go to flow" view (macos).
+
+### YACReaderLibrary
+* Fix scroll behavior in "cover flow" view (macos).
+* Fix grid view unable to scroll in some systems.
+
+
+## 9.9.0
 
 ### YACReader
 * Show error when opening bad open recent entries
