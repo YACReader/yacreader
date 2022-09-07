@@ -294,7 +294,11 @@ HEADERS += grid_comics_view.h \
 SOURCES += grid_comics_view.cpp \
            comics_view_transition.cpp
 
-RESOURCES += qml.qrc
+greaterThan(QT_MAJOR_VERSION, 5) {
+    RESOURCES += qml6.qrc
+} else {
+    RESOURCES += qml.qrc
+}
 win32:RESOURCES += qml_win.qrc
 unix:!macx:RESOURCES += qml_win.qrc
 macx:RESOURCES += qml_osx.qrc

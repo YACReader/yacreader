@@ -3,7 +3,7 @@
 # for a more detailed description, see INSTALL.TXT
 
 CONFIG += c++17
-win32:QMAKE_CXXFLAGS += /std:c++17 #enable c++17 explicitly in msvc
+win32:QMAKE_CXXFLAGS += /std:c++17 /Zc:__cplusplus /permissive- #enable c++17 explicitly in msvc
 
 DEFINES += NOMINMAX
 
