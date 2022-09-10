@@ -167,7 +167,7 @@ jobs:
       VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
       echo "Trying to know if we are in a forked repo: $IS_FORK"
       SKIP_CODESIGN="$(tr [A-Z] [a-z] <<< "$IS_FORK")"
-      ./compileOSX.sh $VERSION $(Build.BuildNumber) $SKIP_CODESIGN
+      ./compileOSX.sh $VERSION $(Build.BuildNumber) $SKIP_CODESIGN Qt5
     displayName: 'Build'
   - script: |
       cd $(Build.SourcesDirectory)/tests
