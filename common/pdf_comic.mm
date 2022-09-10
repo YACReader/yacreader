@@ -1,5 +1,9 @@
 #include "pdf_comic.h"
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#undef __OBJC_BOOL_IS_BOOL
+#endif
+
 #import <AppKit/AppKit.h>
 #import <Foundation/Foundation.h>
 #import <ApplicationServices/ApplicationServices.h>
