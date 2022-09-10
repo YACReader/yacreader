@@ -96,7 +96,6 @@ jobs:
   steps:
   - script: |
       brew install qt
-#      brew link qt --force
       brew install create-dmg
       brew install node
       brew link --overwrite node
