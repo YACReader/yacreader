@@ -155,7 +155,7 @@ jobs:
   parameters:
     name: Windows_x64_qt6
     architecture: 'x64'
-    qt_version: '6.2.2'
+    qt_version: '6.3.1'
     qt_spec: 'msvc2019_64'
     qt_aqt_spec: 'win64_msvc2019_64'
     vc_redist_url: 'https://aka.ms/vs/16/release/vc_redist.x64.exe'
