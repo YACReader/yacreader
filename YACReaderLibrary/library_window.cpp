@@ -922,9 +922,6 @@ void LibraryWindow::createToolBars()
     libraryToolBar->addSpace(10);
 
     libraryToolBar->addAction(toggleComicsViewAction);
-#ifndef Q_OS_MAC
-    libraryToolBar->addAction(toggleFullScreenAction);
-#endif
 
     libraryToolBar->addStretch();
 
@@ -935,7 +932,7 @@ void LibraryWindow::createToolBars()
 
     // libraryToolBar->setMovable(false);
 
-    libraryToolBar->attachToWindow(this->windowHandle());
+    libraryToolBar->attachToWindow(this);
 
 #else
     libraryToolBar->backButton->setDefaultAction(backAction);
