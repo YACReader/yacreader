@@ -1,11 +1,13 @@
 #! /bin/bash
 set -e
 
-VERSION=${1:-"9.5.0"}
+VERSION=${1:-"9.9.1"}
 
 BUILD_NUMBER=${2:-"0"}
 
 SKIP_CODESIGN=${3:-false}
+
+QT_VERSION=${4:-""}
 
 if [ "$4" == "clean" ]; then
 ./cleanOSX.sh
@@ -74,7 +76,7 @@ fi
 echo "Preparing apps for release, Done."
 
 echo "Copying to destination folder"
-dest="YACReader-$VERSION.$BUILD_NUMBER MacOSX-Intel"
+dest="YACReader-$VERSION.$BUILD_NUMBER MacOSX-Intel$QT_VERSION"
 mkdir -p "$dest"
 cp -R YACReader.app "${dest}/YACReader.app"
 cp -R YACReaderLibrary.app "${dest}/YACReaderLibrary.app"
