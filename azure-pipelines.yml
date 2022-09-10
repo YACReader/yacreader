@@ -95,7 +95,8 @@ jobs:
     vmImage: 'macOS-latest'
   steps:
   - script: |
-      brew install qt
+      pip install aqtinstall
+      python -m aqt install 6.3.1 mac desktop -m qt5compat qtmultimedia
       brew install create-dmg
       brew install node
       brew link --overwrite node
