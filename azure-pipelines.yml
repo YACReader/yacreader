@@ -97,6 +97,7 @@ jobs:
   - script: |
       pip3 install aqtinstall
       python3 -m aqt install 6.3.1 mac desktop -m qt5compat qtmultimedia
+      echo '##vso[task.prependpath]$(Build.SourcesDirectory)/6.3.1/macos/bin'
       brew install create-dmg
       brew install node
       brew link --overwrite node
@@ -112,7 +113,6 @@ jobs:
         certSecureFile: 'developerID_application.p12'
         certPwd: $(P12Password)
   - script: |
-      export PATH=$(Build.SourcesDirectory)/6.3.1/macos/bin:$PATH
       cd $(Build.SourcesDirectory)
       VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
       echo "Trying to know if we are in a forked repo: $IS_FORK"
