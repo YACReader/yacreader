@@ -83,7 +83,7 @@ jobs:
       artifactName: src $(Build.BuildNumber) tarball
 
 #
-# MacOS
+# MacOS qt6
 #
 
 - job: MacOS_qt6
@@ -132,7 +132,11 @@ jobs:
       path: $(Build.ArtifactStagingDirectory)
       artifactName: Macos qt6 $(Build.BuildNumber) dmg
 
-      - job: MacOS
+#
+# MacOS
+#
+
+- job: MacOS
   dependsOn: CodeFormatValidation
   variables:
   - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
