@@ -112,6 +112,7 @@ jobs:
         certSecureFile: 'developerID_application.p12'
         certPwd: $(P12Password)
   - script: |
+      export PATH=$PATH:/Users/runner/work/1/s/6.3.1/macos/bin/
       cd $(Build.SourcesDirectory)
       VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
       echo "Trying to know if we are in a forked repo: $IS_FORK"
