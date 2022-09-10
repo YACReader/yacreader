@@ -65,9 +65,11 @@ win32 {
 }
 
 macx {
-    QT += macextras gui-private
+    QT += gui-private
     CONFIG += objective_c
     LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
+
+    lessThan(QT_MAJOR_VERSION, 6): QT += macextras
 }
 
 QT += network widgets core multimedia svg
