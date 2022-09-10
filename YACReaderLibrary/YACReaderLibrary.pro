@@ -66,7 +66,8 @@ CONFIG(force_angle) {
 macx {
   LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
   CONFIG += objective_c
-  QT += macextras gui-private
+  QT += gui-private
+  lessThan(QT_MAJOR_VERSION, 6): QT += macextras
 }
 
 #CONFIG += release
