@@ -86,7 +86,7 @@ jobs:
 # Linux qt6
 #
 
-- job: Linux qt6
+- job: Linux_qt6
   dependsOn: CodeFormatValidation
   pool:
     vmImage: 'ubuntu-22.04'
