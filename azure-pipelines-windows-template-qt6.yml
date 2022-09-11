@@ -38,20 +38,20 @@ jobs:
       set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
       nmake check TESTARGS="-maxwarnings 100000"
     displayName: 'Run tests'
-#  - script: |
-#      set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
-#      cd $(Build.SourcesDirectory)\ci\win
-#      .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber)
-#    displayName: 'Create installer'
-#  - task: CopyFiles@2
-#    inputs:
-#      sourceFolder: $(Build.SourcesDirectory)\ci\win\Output\
-#      contents: '*'
-#      targetFolder: $(Build.ArtifactStagingDirectory)
-#  - task: PublishPipelineArtifact@1
-#    inputs:
-#      path: $(Build.ArtifactStagingDirectory)
-#      artifactName: Windows ${{ parameters.architecture }} $(Build.BuildNumber) 7z Installer
+  - script: |
+      set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
+      cd $(Build.SourcesDirectory)\ci\win
+      .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber) qt6
+    displayName: 'Create installer'
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: $(Build.SourcesDirectory)\ci\win\Output\
+      contents: '*'
+      targetFolder: $(Build.ArtifactStagingDirectory)
+  - task: PublishPipelineArtifact@1
+    inputs:
+      path: $(Build.ArtifactStagingDirectory)
+      artifactName: Windows ${{ parameters.architecture }} $(Build.BuildNumber) 7z Qt6 Installer
 
 
 

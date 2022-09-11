@@ -58,6 +58,10 @@ if "%1"=="x86" (
 	type copy_build_installer.iss > build_installer.iss
 )
 
-iscc /DVERSION=%VERSION% /DPLATFORM=%1 /DCOMPRESSED_ARCHIVE_BACKEND=%2 /DBUILD_NUMBER=%3 build_installer.iss || exit /b
+if "%4"=="qt6" (
+	iscc /DVERSION=%VERSION% /DPLATFORM=%1 /DCOMPRESSED_ARCHIVE_BACKEND=%2 /DBUILD_NUMBER=%3 build_installer_qt6.iss || exit /b
+) else (
+	iscc /DVERSION=%VERSION% /DPLATFORM=%1 /DCOMPRESSED_ARCHIVE_BACKEND=%2 /DBUILD_NUMBER=%3 build_installer.iss || exit /b
+)
 
 cd ..
