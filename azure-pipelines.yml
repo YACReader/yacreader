@@ -100,6 +100,7 @@ jobs:
   - script: |
       export DEFINES_VAR=DEFINES+\=\"BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\"\"
       qmake CONFIG+="unarr no_pdf" $DEFINES_VAR
+      qmake -v
       make
     displayName: 'Build'
   - script: |
