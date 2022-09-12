@@ -98,6 +98,7 @@ jobs:
       libqt6opengl6-dev libunarr-dev qt6-declarative-dev libqt6svg6-dev
     displayName: 'Install dependencies'
   - script: |
+      qtchooser -list-versions
       export DEFINES_VAR=DEFINES+\=\"BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\"\"
       qmake CONFIG+="unarr no_pdf" $DEFINES_VAR
       qmake -v
