@@ -83,6 +83,83 @@ jobs:
       artifactName: src $(Build.BuildNumber) tarball
 
 #
+# Linux qt6
+#
+
+- job: Linux_qt6
+  dependsOn: CodeFormatValidation
+  pool:
+    vmImage: 'ubuntu-22.04'
+  steps:
+  - script: |
+      sudo apt-get update
+      sudo apt-get install -y qtchooser qt6-tools-dev qt6-base-dev-tools qmake6 qmake6-bin \
+      qt6-base-dev qt6-multimedia-dev qt6-tools-dev-tools libgl-dev \
+      libqt6opengl6-dev libunarr-dev qt6-declarative-dev libqt6svg6-dev libqt6core5compat6-dev
+    displayName: 'Install dependencies'
+  - script: |
+      qtchooser -list-versions
+      export DEFINES_VAR=DEFINES+\=\"BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\"\"
+      qmake6 CONFIG+="unarr no_pdf" $DEFINES_VAR
+      qmake6 -v
+      make
+    displayName: 'Build'
+  - script: |
+      make check TESTARGS="-maxwarnings 100000"
+    displayName: 'Run tests'
+
+#
+# MacOS qt6
+#
+
+- job: MacOS_qt6
+  dependsOn: CodeFormatValidation
+  variables:
+  - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
+    - group: macos-codesign
+  pool:
+    vmImage: 'macOS-latest'
+  steps:
+  - script: |
+      pip3 install aqtinstall
+      python3 -m aqt install 6.3.1 mac desktop -m qt5compat qtmultimedia
+      echo '##vso[task.prependpath]$(Build.SourcesDirectory)/6.3.1/macos/bin'
+      brew install create-dmg
+      brew install node
+      brew link --overwrite node
+      npm install -g appdmg
+      mkdir $(Build.SourcesDirectory)\compressed_archive
+      wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/p7zip_16.02_src_all.tar.bz2?raw=true" -O $(Build.SourcesDirectory)/compressed_archive/p7zip_16.02_src_all.tar.bz2
+      tar xjf $(Build.SourcesDirectory)/compressed_archive/p7zip_16.02_src_all.tar.bz2 -C $(Build.SourcesDirectory)/compressed_archive
+      mv $(Build.SourcesDirectory)/compressed_archive/p7zip_16.02 $(Build.SourcesDirectory)/compressed_archive/libp7zip
+    displayName: 'Install dependencies'
+  - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
+    - task: InstallAppleCertificate@2
+      inputs:
+        certSecureFile: 'developerID_application.p12'
+        certPwd: $(P12Password)
+  - script: |
+      cd $(Build.SourcesDirectory)
+      VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
+      echo "Trying to know if we are in a forked repo: $IS_FORK"
+      SKIP_CODESIGN="$(tr [A-Z] [a-z] <<< "$IS_FORK")"
+      ./compileOSX.sh $VERSION $(Build.BuildNumber) $SKIP_CODESIGN Qt6
+    displayName: 'Build'
+  - script: |
+      cd $(Build.SourcesDirectory)/tests
+      qmake
+      make check TESTARGS="-maxwarnings 100000"
+    displayName: 'Build and run tests'
+  - task: CopyFiles@2
+    inputs:
+      contents: '*.dmg'
+      targetFolder: $(Build.ArtifactStagingDirectory)
+  - task: PublishPipelineArtifact@1
+    inputs:
+      path: $(Build.ArtifactStagingDirectory)
+      artifactName: Macos qt6 $(Build.BuildNumber) dmg
+
+#
 # MacOS
 #
 
@@ -116,7 +193,7 @@ jobs:
       VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
       echo "Trying to know if we are in a forked repo: $IS_FORK"
       SKIP_CODESIGN="$(tr [A-Z] [a-z] <<< "$IS_FORK")"
-      ./compileOSX.sh $VERSION $(Build.BuildNumber) $SKIP_CODESIGN
+      ./compileOSX.sh $VERSION $(Build.BuildNumber) $SKIP_CODESIGN Qt5
     displayName: 'Build'
   - script: |
       cd $(Build.SourcesDirectory)/tests
@@ -155,7 +232,7 @@ jobs:
   parameters:
     name: Windows_x64_qt6
     architecture: 'x64'
-    qt_version: '6.2.2'
+    qt_version: '6.3.1'
     qt_spec: 'msvc2019_64'
     qt_aqt_spec: 'win64_msvc2019_64'
     vc_redist_url: 'https://aka.ms/vs/16/release/vc_redist.x64.exe'
@@ -186,6 +263,7 @@ jobs:
     dependsOn:
     - Linux
     - MacOS
+    - MacOS_qt6
     - Windows_x86
     - Windows_x64
     - Windows_x64_qt6

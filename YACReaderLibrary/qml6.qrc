@@ -1,0 +1,30 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="qml/GridComicsView.qml">qml/GridComicsView6.qml</file>
+        <file alias="qml/FlowView.qml">qml/FlowView6.qml</file>
+        <file alias="qml/InfoTick.qml">qml/InfoTick6.qml</file>
+        <file alias="qml/InfoFavorites.qml">qml/InfoFavorites6.qml</file>
+        <file alias="qml/InfoRating.qml">qml/InfoRating6.qml</file>
+        <file>qml/InfoComicsView.qml</file>
+        <file>qml/tick.png</file>
+        <file>qml/reading.png</file>
+        <file>qml/star_menu.png</file>
+        <file>qml/star_menu@2x.png</file>
+        <file>qml/info-indicator.png</file>
+        <file>qml/info-shadow.png</file>
+        <file>qml/info-indicator-light.png</file>
+        <file>qml/info-shadow-light.png</file>
+        <file>qml/info-indicator-light@2x.png</file>
+        <file>qml/info-shadow-light@2x.png</file>
+        <file>qml/info-top-shadow.png</file>
+        <file>qml/ComicInfoView.qml</file>
+        <file>qml/info-favorites.png</file>
+        <file>qml/info-favorites@2x.png</file>
+        <file>qml/info-rating.png</file>
+        <file>qml/info-rating@2x.png</file>
+        <file>qml/info-tag.png</file>
+        <file>qml/info-tag@2x.png</file>
+        <file>qml/info-tick.png</file>
+        <file>qml/info-tick@2x.png</file>
+    </qresource>
+</RCC>

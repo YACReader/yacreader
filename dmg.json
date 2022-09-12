@@ -1,50 +1,49 @@
 {
-  "title": "YACReader-#VERSION#.#BUILD_NUMBER#",
-  "icon": "icon.icns",
-  "background": "background.png",
-  "window": {
-    "size": {
-      "width": 600,
-      "height": 403
-    }
-  },
-  "icon-size": 128,
-  "contents": [
-    {
-      "x": 485,
-      "y": 90,
-      "type": "link",
-      "path": "/Applications"
+    "title": "YACReader-#VERSION#.#BUILD_NUMBER##QT_VERSION#",
+    "icon": "icon.icns",
+    "background": "background.png",
+    "window": {
+        "size": {
+            "width": 600,
+            "height": 403
+        }
     },
-    {
-      "x": 80,
-      "y": 90,
-      "type": "file",
-      "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-Intel/YACReader.app"
-    },
-    {
-      "x": 235,
-      "y": 90,
-      "type": "file",
-      "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-Intel/YACReaderLibrary.app"
-    },
-    {
-      "x": 470,
-      "y": 295,
-      "type": "file",
-      "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-Intel/YACReaderLibraryServer"
-    },
-    {
-      "x": 120,
-      "y": 295,
-      "type": "file",
-      "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-Intel/README.md"
-    },
-    {
-      "x": 290,
-      "y": 295,
-      "type": "file",
-      "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-Intel/COPYING.txt"
-    }
-  ]
+    "icon-size": 128,
+    "contents": [{
+            "x": 485,
+            "y": 90,
+            "type": "link",
+            "path": "/Applications"
+        },
+        {
+            "x": 80,
+            "y": 90,
+            "type": "file",
+            "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-Intel #QT_VERSION#/YACReader.app"
+        },
+        {
+            "x": 235,
+            "y": 90,
+            "type": "file",
+            "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-Intel #QT_VERSION#/YACReaderLibrary.app"
+        },
+        {
+            "x": 470,
+            "y": 295,
+            "type": "file",
+            "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-Intel #QT_VERSION#/YACReaderLibraryServer"
+        },
+        {
+            "x": 120,
+            "y": 295,
+            "type": "file",
+            "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-Intel #QT_VERSION#/README.md"
+        },
+        {
+            "x": 290,
+            "y": 295,
+            "type": "file",
+            "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-Intel #QT_VERSION#/COPYING.txt"
+        }
+    ]
 }

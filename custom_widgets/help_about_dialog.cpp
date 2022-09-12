@@ -1,5 +1,7 @@
 #include "help_about_dialog.h"
 
+#include "opengl_checker.h"
+
 #include <QtCore>
 #include <QVBoxLayout>
 #include <QTabWidget>
@@ -98,6 +100,7 @@ void HelpAboutDialog::loadSystemInfo()
     QString text;
 
     text.append("SYSTEM INFORMATION\n");
+    text.append(QString("Qt version: %1\n").arg(qVersion()));
     text.append(QString("Build ABI: %1\n").arg(QSysInfo::buildAbi()));
     text.append(QString("build CPU architecture: %1\n").arg(QSysInfo::buildCpuArchitecture()));
     text.append(QString("CPU architecture: %1\n").arg(QSysInfo::currentCpuArchitecture()));
@@ -124,8 +127,10 @@ void HelpAboutDialog::loadSystemInfo()
     //        text.append(QString("CPU: %1\n").arg(tempOutput));
     //    }
 
+    auto openGLChecker = OpenGLChecker();
     text.append("\nGRAPHIC INFORMATION\n");
     text.append(QString("Screen pixel ratio: %1\n").arg(devicePixelRatioF()));
+    text.append(QString("OpenGL version: %1\n").arg(openGLChecker.textVersionDescription()));
 
     //    if (QSysInfo::kernelType() == "winnt") {
     //        QString gpu = "wmic PATH Win32_videocontroller get VideoProcessor";
