@@ -94,12 +94,12 @@ jobs:
   - script: |
       sudo apt-get update
       sudo apt-get install -y qtchooser qt6-base-dev-tools qmake6 \
-      qt6-base-dev qt6-multimedia-dev libpoppler-qt6-dev \
-      libqt6opengl6-dev libunarr-dev qt6-declarative-dev libqt6svg6-dev libqt6quickcontrols2-6-dev
+      qt6-base-dev qt6-multimedia-dev \
+      libqt6opengl6-dev libunarr-dev qt6-declarative-dev libqt6svg6-dev
     displayName: 'Install dependencies'
   - script: |
       export DEFINES_VAR=DEFINES+\=\"BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\"\"
-      qmake CONFIG+="unarr" $DEFINES_VAR
+      qmake CONFIG+="unarr no_pdf" $DEFINES_VAR
       make
     displayName: 'Build'
   - script: |
