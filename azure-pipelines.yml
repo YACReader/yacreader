@@ -100,8 +100,8 @@ jobs:
   - script: |
       qtchooser -list-versions
       export DEFINES_VAR=DEFINES+\=\"BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\"\"
-      qmake CONFIG+="unarr no_pdf" $DEFINES_VAR
-      qmake -v
+      qmake6 CONFIG+="unarr no_pdf" $DEFINES_VAR
+      qmake6 -v
       make
     displayName: 'Build'
   - script: |
