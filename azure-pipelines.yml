@@ -303,6 +303,7 @@ jobs:
     dependsOn:
     - Linux
     - MacOS
+    - MacOS_qt6
     - Windows_x86
     - Windows_x64
     - Windows_x64_qt6
