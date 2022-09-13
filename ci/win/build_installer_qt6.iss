@@ -34,6 +34,7 @@ Root: HKCR; Subkey: YACReader Data Base (ydb)\DefaultIcon; ValueType: string; Va
 
 [Files]
 ;Qt Frameworks
+Source: Qt6Widgets.dll; DestDir: {app}
 Source: Qt6Core.dll; DestDir: {app}
 Source: Qt6Core5Compat.dll; DestDir: {app}
 Source: Qt6Gui.dll; DestDir: {app}
@@ -59,11 +60,11 @@ Source: Qt6QuickTemplates2.dll; DestDir: {app}
 Source: Qt6QuickWidgets.dll; DestDir: {app}
 Source: Qt6Sql.dll; DestDir: {app}
 Source: Qt6Svg.dll; DestDir: {app}
-Source: Qt6Widgets.dll; DestDir: {app}
+
 
 ;Qt Angle
-Source: D3Dcompiler_47.dll; DestDir: {app}
 Source: opengl32sw.dll; DestDir: {app}
+Source: D3Dcompiler_47.dll; DestDir: {app}
 
 ;Qt QML
 Source: QtQml\*; DestDir: {app}\QtQml\; Flags: recursesubdirs
