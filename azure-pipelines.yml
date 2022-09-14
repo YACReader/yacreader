@@ -150,6 +150,13 @@ jobs:
       qmake
       make check TESTARGS="-maxwarnings 100000"
     displayName: 'Build and run tests'
+  - script: |
+      SKIP_CODESIGN="$(tr [A-Z] [a-z] <<< "$IS_FORK")"
+      if [ "$SKIP_CODESIGN" = false ]; then
+        xcrun notarytool submit *.dmg --apple-id $(AppleId) --team-id $(TeamId) --password $(AppPassword) --wait
+        xcrun stapler staple *.dmg
+      fi
+    displayName: 'Notarize'
   - task: CopyFiles@2
     inputs:
       contents: '*.dmg'
@@ -200,6 +207,13 @@ jobs:
       qmake
       make check TESTARGS="-maxwarnings 100000"
     displayName: 'Build and run tests'
+  - script: |
+      SKIP_CODESIGN="$(tr [A-Z] [a-z] <<< "$IS_FORK")"
+      if [ "$SKIP_CODESIGN" = false ]; then
+        xcrun notarytool submit *.dmg --apple-id $(AppleId) --team-id $(TeamId) --password $(AppPassword) --wait
+        xcrun stapler staple *.dmg
+      fi
+    displayName: 'Notarize'
   - task: CopyFiles@2
     inputs:
       contents: '*.dmg'
