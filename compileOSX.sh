@@ -89,11 +89,11 @@ cp README.md "${dest}/"
 
 if [ "$SKIP_CODESIGN" = false ]; then
 	echo "Signing apps"
-	codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" "./${dest}/YACReader.app"
-	codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" "./${dest}/YACReaderLibrary.app"
-	codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" "./${dest}/YACReaderLibraryServer"
-	codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" "./${dest}/COPYING.txt"
-	codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" "./${dest}/README.md"
+	codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" --options runtime "./${dest}/YACReader.app"
+	codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" --options runtime "./${dest}/YACReaderLibrary.app"
+	codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" --options runtime "./${dest}/YACReaderLibraryServer"
+	codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" --options runtime "./${dest}/COPYING.txt"
+	codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" --options runtime "./${dest}/README.md"
 fi
 
 echo "Creating dmg package"
@@ -105,7 +105,7 @@ appdmg dmg.json "$dest.dmg"
 
 if [ "$SKIP_CODESIGN" = false ]; then
 	echo "Signing dmg"
-	codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" "./${dest}.dmg"
+	codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" --options runtime "./${dest}.dmg"
 fi
 
 echo "Done!"
