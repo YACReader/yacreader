@@ -87,6 +87,15 @@ cp -R YACReaderLibraryServer.app "${dest}/YACReaderLibraryServer"
 cp COPYING.txt "${dest}/"
 cp README.md "${dest}/"
 
+if [ "$SKIP_CODESIGN" = false ]; then
+	echo "Signing apps"
+	codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" "./${dest}/YACReader.app"
+	codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" "./${dest}/YACReaderLibrary.app"
+	codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" "./${dest}/YACReaderLibraryServer.app"
+	codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" "./${dest}/COPYING.txt"
+	codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" "./${dest}/README.md"
+fi
+
 echo "Creating dmg package"
 
 sed -i'' -e "s/#VERSION#/$VERSION/g" dmg.json
