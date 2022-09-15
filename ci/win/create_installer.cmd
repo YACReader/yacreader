@@ -66,6 +66,6 @@ if "%4"=="qt6" (
 )
 echo "iscc done!"
 
-signtool.exe sign /f %5 /p %6 ..\Output\*.exe
+"C:\Program Files (x86)\Windows Kits\10\bin\x86\signtool.exe" sign /f %5 /p %6 ..\Output\*.exe || exit /b
 
 cd ..
