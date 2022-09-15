@@ -66,6 +66,4 @@ if "%4"=="qt6" (
 )
 echo "iscc done!"
 
-"C:\Program Files (x86)\Microsoft SDKs\ClickOnce\SignTool\SignTool.exe" sign /f %5 /p %6 ..\Output\*.exe || exit /b
-
 cd ..
