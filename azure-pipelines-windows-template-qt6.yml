@@ -43,14 +43,14 @@ jobs:
     displayName: 'Run tests'
   - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
     - task: DownloadSecureFile@1
-      name: pdxFile
+      name: pfxFile
       displayName: 'Get the pfx file certificate'
       inputs:
-        secureFile: 'certificate.pdx'
+        secureFile: 'certificate.pfx'
   - script: |
       set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
       cd $(Build.SourcesDirectory)\ci\win
-      .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber) qt6 $(pdxFile) $(pdxPassword)
+      .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber) qt5 $(pfxFile.secureFilePath)  $(pdxPassword)
     displayName: 'Create installer'
   - task: CopyFiles@2
     inputs:
