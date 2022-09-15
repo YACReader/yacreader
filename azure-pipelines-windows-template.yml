@@ -11,6 +11,9 @@ parameters:
 jobs:
 - job: ${{ parameters.name }}
   dependsOn: CodeFormatValidation
+  variables:
+  - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
+    - group: windows-codesign
   pool:
     vmImage: 'windows-2019'
   steps:
@@ -38,10 +41,16 @@ jobs:
       set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
       nmake check TESTARGS="-maxwarnings 100000"
     displayName: 'Run tests'
+  - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
+    - task: DownloadSecureFile@1
+      name: pdxFile
+      displayName: 'Get the pfx file certificate'
+      inputs:
+        secureFile: 'certificate.pdx'
   - script: |
       set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
       cd $(Build.SourcesDirectory)\ci\win
-      .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber)
+      .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber) qt5 $(pdxFile) $(pdxPassword)
     displayName: 'Create installer'
   - task: CopyFiles@2
     inputs:

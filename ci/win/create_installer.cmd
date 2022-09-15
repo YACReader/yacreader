@@ -59,9 +59,9 @@ if "%1"=="x86" (
 )
 
 if "%4"=="qt6" (
-	iscc /DVERSION=%VERSION% /DPLATFORM=%1 /DCOMPRESSED_ARCHIVE_BACKEND=%2 /DBUILD_NUMBER=%3 build_installer_qt6.iss || exit /b
+	iscc /DVERSION=%VERSION% /DPLATFORM=%1 /DCOMPRESSED_ARCHIVE_BACKEND=%2 /DBUILD_NUMBER=%3 build_installer_qt6.iss "/Ssigntool=signtool.exe sign /f %5 /p %6 $f" || exit /b
 ) else (
-	iscc /DVERSION=%VERSION% /DPLATFORM=%1 /DCOMPRESSED_ARCHIVE_BACKEND=%2 /DBUILD_NUMBER=%3 build_installer.iss || exit /b
+	iscc /DVERSION=%VERSION% /DPLATFORM=%1 /DCOMPRESSED_ARCHIVE_BACKEND=%2 /DBUILD_NUMBER=%3 build_installer.iss "/Ssigntool=signtool.exe sign /f %5 /p %6 $f" || exit /b
 )
 
 cd ..
