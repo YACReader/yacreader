@@ -122,7 +122,7 @@ jobs:
   steps:
   - script: |
       pip3 install aqtinstall
-      python3 -m aqt install 6.3.1 mac desktop -m qt5compat qtmultimedia
+      python3 -m aqt install 6.3.1 mac desktop -m qt5compat qtmultimedia qtimageformats
       echo '##vso[task.prependpath]$(Build.SourcesDirectory)/6.3.1/macos/bin'
       brew install create-dmg
       brew install node
