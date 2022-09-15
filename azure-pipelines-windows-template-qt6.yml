@@ -50,7 +50,7 @@ jobs:
   - script: |
       set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
       cd $(Build.SourcesDirectory)\ci\win
-      .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber) qt6 $(Agent.TempDirectory)\certificate.pfx $($env:PASSWORD)
+      .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber) qt6 $(Agent.TempDirectory)\certificate.pfx %PASSWORD%
     env:
       PASSWORD: $(pfxPassword)
     displayName: 'Create installer'
