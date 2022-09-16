@@ -51,7 +51,7 @@ jobs:
       set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
       cd $(Build.SourcesDirectory)\ci\win
       .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber) qt5
-      "C:\Program Files (x86)\Microsoft SDKs\ClickOnce\SignTool\SignTool.exe" sign /f $(pfxFile.secureFilePath) /p $(pfxPassword) ..\Output\*.exe
+      "C:\Program Files (x86)\Microsoft SDKs\ClickOnce\SignTool\SignTool.exe" sign /f $(Agent.TempDirectory)\certificate.pfx /p $(pfxPassword) ..\Output\*.exe
     displayName: 'Create installer'
   - task: CopyFiles@2
     inputs:
