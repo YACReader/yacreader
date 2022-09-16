@@ -1186,6 +1186,8 @@ void LibraryWindow::createConnections()
     connect(searchEdit, &YACReaderSearchLineEdit::filterChanged, this, &LibraryWindow::setSearchFilter);
 #endif
     connect(&comicQueryResultProcessor, &ComicQueryResultProcessor::newData, this, &LibraryWindow::setComicSearchFilterData);
+    qRegisterMetaType<FolderItem *>("FolderItem *");
+    qRegisterMetaType<QMap<unsigned long long int, FolderItem *> *>("QMap<unsigned long long int, FolderItem *> *");
     connect(folderQueryResultProcessor.get(), &FolderQueryResultProcessor::newData, this, &LibraryWindow::setFolderSearchFilterData);
 
     // ContextMenus
