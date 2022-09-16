@@ -15,6 +15,9 @@ SetupIconFile=setup.ico
 UninstallDisplayIcon=uninstall.ico
 ArchitecturesInstallIn64BitMode=x64
 ArchitecturesAllowed=x64
+#if CODE_SIGN == "true"
+  SignTool=signtool
+#endif
 
 [Registry]
 Root: HKCR; SubKey: .cbz; ValueType: string; ValueData: Comic Book (zip); Flags: uninsdeletekey; Tasks: File_association

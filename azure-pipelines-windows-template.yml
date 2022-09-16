@@ -11,6 +11,9 @@ parameters:
 jobs:
 - job: ${{ parameters.name }}
   dependsOn: CodeFormatValidation
+  variables:
+  - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(contains(variables['Build.SourceBranch'], 'merge'), eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
+    - group: windows-codesign
   pool:
     vmImage: 'windows-2019'
   steps:
@@ -38,11 +41,26 @@ jobs:
       set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
       nmake check TESTARGS="-maxwarnings 100000"
     displayName: 'Run tests'
-  - script: |
-      set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
-      cd $(Build.SourcesDirectory)\ci\win
-      .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber)
-    displayName: 'Create installer'
+  - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(contains(variables['Build.SourceBranch'], 'merge'), eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
+    - task: DownloadSecureFile@1
+      name: pfxFile
+      displayName: 'Get the pfx file certificate'
+      inputs:
+        secureFile: 'certificate.pfx'
+  - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(contains(variables['Build.SourceBranch'], 'merge'), eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
+    - script: |
+        set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
+        cd $(Build.SourcesDirectory)\ci\win
+        .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber) qt5 $(pfxFile.secureFilePath) %PASSWORD%
+      env:
+        PASSWORD: $(pfxPassword)
+      displayName: 'Create installer'
+  - ${{ else }}:
+    - script: |
+        set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
+        cd $(Build.SourcesDirectory)\ci\win
+        .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber) qt5
+      displayName: 'Create installer'
   - task: CopyFiles@2
     inputs:
       sourceFolder: $(Build.SourcesDirectory)\ci\win\Output\
