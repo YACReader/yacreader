@@ -59,10 +59,18 @@ if "%1"=="x86" (
 )
 
 echo "iscc start"
-if "%4"=="qt6" (
-	iscc /DVERSION=%VERSION% /DPLATFORM=%1 /DCOMPRESSED_ARCHIVE_BACKEND=%2 /DBUILD_NUMBER=%3 build_installer_qt6.iss "/Ssigntool=$qC:\Program Files (x86)\Microsoft SDKs\ClickOnce\SignTool\SignTool.exe$q sign /f %5 /p %6 $f" || exit /b
+if "%~5" == "" (
+	if "%4"=="qt6" (
+		iscc /DVERSION=%VERSION% /DPLATFORM=%1 /DCOMPRESSED_ARCHIVE_BACKEND=%2 /DBUILD_NUMBER=%3 /DCODE_SIGN=false build_installer_qt6.iss || exit /b
+	) else (
+		iscc /DVERSION=%VERSION% /DPLATFORM=%1 /DCOMPRESSED_ARCHIVE_BACKEND=%2 /DBUILD_NUMBER=%3 /DCODE_SIGN=false build_installer.iss || exit /b
+	)
 ) else (
-	iscc /DVERSION=%VERSION% /DPLATFORM=%1 /DCOMPRESSED_ARCHIVE_BACKEND=%2 /DBUILD_NUMBER=%3 build_installer.iss "/Ssigntool=$qC:\Program Files (x86)\Microsoft SDKs\ClickOnce\SignTool\SignTool.exe$q sign /f %5 /p %6 $f" || exit /b
+	if "%4"=="qt6" (
+		iscc /DVERSION=%VERSION% /DPLATFORM=%1 /DCOMPRESSED_ARCHIVE_BACKEND=%2 /DBUILD_NUMBER=%3 /DCODE_SIGN=true build_installer_qt6.iss "/Ssigntool=$qC:\Program Files (x86)\Microsoft SDKs\ClickOnce\SignTool\SignTool.exe$q sign /f %5 /p %6 $f" || exit /b
+	) else (
+		iscc /DVERSION=%VERSION% /DPLATFORM=%1 /DCOMPRESSED_ARCHIVE_BACKEND=%2 /DBUILD_NUMBER=%3 /DCODE_SIGN=true build_installer.iss "/Ssigntool=$qC:\Program Files (x86)\Microsoft SDKs\ClickOnce\SignTool\SignTool.exe$q sign /f %5 /p %6 $f" || exit /b
+	)	
 )
 echo "iscc done!"
 
