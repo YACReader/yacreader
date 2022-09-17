@@ -12,14 +12,25 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
     clearButton = new QToolButton(this);
     searchLabel = new QLabel(this);
 
-    QPixmap pixmap(":/images/clearSearch.png");
-    QPixmap pixmapIcon(":/images/iconSearch.png");
+    QPixmap clearIcon;
+    QPixmap searchIcon;
+
+    clearIcon.setDevicePixelRatio(devicePixelRatioF());
+    searchIcon.setDevicePixelRatio(devicePixelRatioF());
+
+    if (devicePixelRatioF() > 1) {
+        clearIcon.load(":/images/clearSearch@2x.png");
+        searchIcon.load(":/images/iconSearch@2x.png");
+    } else {
+        clearIcon.load(":/images/clearSearch.png");
+        searchIcon.load(":/images/iconSearch.png");
+    }
 
     searchLabel->setStyleSheet("QLabel { border: none; padding: 0px; }");
-    searchLabel->setPixmap(pixmapIcon);
+    searchLabel->setPixmap(searchIcon);
 
-    clearButton->setIcon(QIcon(pixmap));
-    clearButton->setIconSize(pixmap.size());
+    clearButton->setIcon(QIcon(clearIcon));
+    clearButton->setIconSize(QSize(14, 14));
     clearButton->setCursor(Qt::ArrowCursor);
     clearButton->setStyleSheet("QToolButton { border: none; padding: 0px; }");
     clearButton->hide();
