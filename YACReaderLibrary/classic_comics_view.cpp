@@ -364,10 +364,7 @@ void ClassicComicsView::setupSearchingIcon()
     h->addWidget(l, 0, Qt::AlignCenter);
     searchingIcon->setLayout(h);
 
-    QPalette pal(searchingIcon->palette());
-    pal.setColor(QPalette::Window, Qt::black);
-    searchingIcon->setAutoFillBackground(true);
-    searchingIcon->setPalette(pal);
+    searchingIcon->setStyleSheet(QString("QWidget {border : none; background-color: #000000;}"));
 
     hideSearchingIcon();
 }
