@@ -19,8 +19,12 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
     searchIcon.setDevicePixelRatio(devicePixelRatioF());
 
     if (devicePixelRatioF() > 1) {
-        clearIcon.load(":/images/clearSearch@2x.png");
-        searchIcon.load(":/images/iconSearch@2x.png");
+        if (!clearIcon.load(":/images/clearSearch@2x.png")) {
+            clearIcon.load(":/images/clearSearch.png");
+        }
+        if (!searchIcon.load(":/images/iconSearch@2x.png")) {
+            searchIcon.load(":/images/iconSearch.png");
+        }
     } else {
         clearIcon.load(":/images/clearSearch.png");
         searchIcon.load(":/images/iconSearch.png");
@@ -30,7 +34,13 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
     searchLabel->setPixmap(searchIcon);
 
     clearButton->setIcon(QIcon(clearIcon));
+
+#ifdef Q_OS_MAC
     clearButton->setIconSize(QSize(14, 14));
+#else
+    clearButton->setIconSize(QSize(12, 12));
+#endif
+
     clearButton->setCursor(Qt::ArrowCursor);
     clearButton->setStyleSheet("QToolButton { border: none; padding: 0px; }");
     clearButton->hide();
