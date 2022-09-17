@@ -68,6 +68,63 @@
         <binary>YACReaderLibraryServer</binary>
     </provides>
     <releases>
+        <release version="9.9.1.2209046" date="2022-09-04">
+            <description>
+                <p>YACReader</p>
+                <ul>
+                    <li>Fix "go to" dialog not clearing the page number between runs.</li>
+                    <li>scroll behavior in "go to flow" view (macos).</li>
+                </ul>
+                <p>YACReaderLibrary</p>
+                <ul>
+                    <li>Fix scroll behavior in "cover flow" view (macos).</li>
+                    <li>grid view unable to scroll in some systems.</li>
+                </ul>
+            </description>
+        </release>
+
+        <release version="9.9.0.2209032" date="2022-09-03">
+            <description>
+                <p>YACReader</p>
+                <ul>
+                    <li>Show error when opening bad open recent entries</li>
+                    <li>GoTo page: Fix segfault when entering page numbers greater than comic's page count
+                    (toolbar and page flow)</li>
+                    <li>Initialize GotoFlow on current page, not cover</li>
+                    <li>navigation mode: Fix page index error when using both mouse and keyboard for navigation</li>
+                    <li>Remove obsolete double page mode debug messages</li>
+                    <li>Support HDPI screens.</li>
+                    <li>Use one wheel mouse step per page in full page mode.</li>
+                    <li>Add updated MIME types to .desktop file for .cbz and .cbr</li>
+                    <li>Add settings to control page turning behaviour on scroll.</li>
+                    <li>Make forward and backward buttons in a mouse turn pages.</li>
+                    <li>Don't crash if bookmarks get corrupt for some reason.</li>
+                    <li>Magnifying glass fixes and improvements.</li>
+                    <li>Shorcuts customization fixes.</li>
+                </ul>
+
+                <p>YACReaderLibrary</p>
+                <ul>
+                    <li>Support HDPI screens.</li>
+                    <li>Support import legacy XML info in comic files.</li>
+                    <li>Ensure that comic info exports use .ydb as file suffix.</li>
+                    <li>Enable arrow keys navigation in the folders tree view.</li>
+                    <li>Add Publication Date column to the comics table view.</li>
+                    <li>Use a scale effect in the comics grids on mouse over.</li>
+                    <li>Add system info to the help/about dialog to help reporting bugs.</li>
+                    <li>Fix selection when clicking on a folder in search mode.</li>
+                    <li>Fix defaul value for manga/comic mode in folders.</li>
+                    <li>Add an edit for filtering series results returned by Comic Vine.</li>
+                    <li>Support editing comics tags sequentially without leaving the edit dialog.</li>
+                    <li>Fix export/import comics info.</li>
+                </ul>
+                <p>Server</p>
+                <ul>
+                    <li>Always serve a cover image to the iOS client for any folder that has content (requeries a library content update).</li>
+                </ul>
+
+            </description>
+        </release>
         <release version="9.8.2.2106204" date="2021-06-20">
             <description>
                 <p>YACReaderLibrary</p>

@@ -1,6 +1,6 @@
 app-id: com.yacreader.YACReader
 runtime: org.kde.Platform
-runtime-version: "5.15-21.08"
+runtime-version: "5.15-22.08"
 sdk: org.kde.Sdk
 command: YACReader
 finish-args:
@@ -42,8 +42,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/YACReader/yacreader.git
-        tag: 9.8.2.2106204
-        commit: 7394944dccd1ee1f9dd8247e878f6ff8a055b7b8
+        tag: 9.9.1
       - type: file
         path: com.yacreader.YACReader.appdata.xml
     modules:
@@ -87,18 +86,17 @@ modules:
           - type: git
             url: https://pdfium.googlesource.com/pdfium
             # curl 'https://omahaproxy.appspot.com/linux?channel=stable' | cut -d'.' -f 3
-            branch: chromium/5005
-            commit: 62ad9af8a9f9494645b659674b64bb51775cde05
+            branch: chromium/5195
             dest: pdfium
           - type: git
             url: https://chromium.googlesource.com/chromium/src/build.git
             # awk '/build_revision/ {print substr($2,2,40)}' pdfium/DEPS
-            commit: ee10d9605d3bc45e72defd25ce97562e80693655
+            commit: 26f8da34750ac3bccf683ed5f70d86f21c54b22b
             dest: pdfium/build
           - type: git
             url: https://chromium.googlesource.com/chromium/src/third_party/abseil-cpp
             # awk '/abseil_revision/ {print substr($2,2,40)}' pdfium/DEPS
-            branch: a13888fac08a45c938255c7d9d59b1640f1940e0
+            commit: 62a4d6866aeeca02036c510b2f3f286084dd62af
             dest: pdfium/third_party/abseil-cpp
           - type: file
             url: https://chromium.googlesource.com/chromium/src/+/master/tools/generate_shim_headers/generate_shim_headers.py?format=TEXT
@@ -122,5 +120,5 @@ modules:
             sources:
               - type: git
                 url: https://gn.googlesource.com/gn
-                commit: 80a40b07305373617eba2d5878d353532af77da3
+                commit: b4851eb2062f76a880c07f7fa0d12913beb6d79e
                 disable-shallow-clone: true
