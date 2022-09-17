@@ -87,6 +87,7 @@ void YACReaderMainToolBar::setSearchWidget(QWidget *w)
 {
     addWideDivider();
     mainLayout->addWidget(w, 0, Qt::AlignVCenter);
+    mainLayout->addSpacing(6);
 }
 
 void YACReaderMainToolBar::paintEvent(QPaintEvent *event)
