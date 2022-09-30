@@ -619,23 +619,6 @@ Rectangle {
 
                             ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
-                            ScrollBar.vertical: ScrollBar {
-                                visible: true
-                                contentItem: Item {
-                                    implicitWidth: 12
-                                    implicitHeight: 26
-                                    Rectangle {
-                                        color: "#424246"
-                                        anchors.fill: parent
-                                        anchors.topMargin: 6
-                                        anchors.leftMargin: 5
-                                        anchors.rightMargin: 4
-                                        anchors.bottomMargin: 6
-                                        radius: 2
-                                    }
-                                }
-                            }
-
                             contentItem: currentComicInfoSinopsis
 
                             id: synopsisScroller
