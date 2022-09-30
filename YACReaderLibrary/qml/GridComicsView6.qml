@@ -755,17 +755,6 @@ Rectangle {
                grid.cellWidth = cWidth + Math.floor(rest / wholeCells);
            }
 
-           WheelHandler {
-               onWheel: {
-                   if (grid.contentHeight <= grid.height) {
-                       return;
-                   }
-
-                   var newValue =  Math.min((grid.contentHeight - grid.height - (showCurrentComic ? 270 : 20)), (Math.max(grid.originY , grid.contentY - event.angleDelta.y)));
-                   grid.contentY = newValue;
-               }
-           }
-
            ScrollBar.vertical: ScrollBar {
                visible: grid.contentHeight > grid.height
 
