@@ -619,6 +619,7 @@ Rectangle {
 
                             ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
+                            contentWidth: -1
                             contentItem: currentComicInfoSinopsis
 
                             id: synopsisScroller
