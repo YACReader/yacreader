@@ -48,6 +48,8 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
     auto text = new QLabel();
     text->setText("New release with the following updates:<br/>"
                   "<br/>"
+                  "9.9.2 includes notarized builds for macos and codesigned builds for windows. It also gets new builds using Qt6.<br/>"
+                  "<br/>"
                   "<span style=\"font-weight:600\">YACReader</span><br/>"
                   "   &#8226; Show error when opening bad open recent entries.<br/>"
                   "   &#8226; GoTo page: Fix segfault when entering page numbers greater than comic's page count(toolbar and page flow).<br/>"
@@ -73,6 +75,9 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
                   "   &#8226; Add an edit for filtering series results returned by Comic Vine.<br/>"
                   "   &#8226; Support editing comics tags sequentially without leaving the edit dialog.<br/>"
                   "   &#8226; Fix export/import comics info.<br/>"
+                  "   &#8226; Fix potential infinite loop/crash on library updates (NEW in 9.9.2).<br/>"
+                  "   &#8226; Fix comic properties dialog sizing (NEW in 9.9.2).<br/>"
+                  "   &#8226; Fixes and stability improvements, specially in Qt6 builds (NEW in 9.9.2).<br/>"
                   "<br/>"
                   "<span style=\"font-weight:600\">Server</span><br/>"
                   "   &#8226; Always serve a cover image to the iOS client for any folder that has content (requeries a library content update). <br/>"

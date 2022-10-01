@@ -2,6 +2,19 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## 9.9.2
+
+### General
+* New builds using Qt6.
+* macos builds are notarized.
+* Windows builds are codesigned.
+
+### YACReaderLibrary
+* Fix potential infinite loop/crash on library updates.
+* Fix comic properties dialog sizing.
+* Fixes and stability improvements.
+
+
 ## 9.9.1
 
 ### YACReader
