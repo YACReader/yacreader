@@ -13,6 +13,8 @@ exists (../compressed_archive/lib7zip) {
 unix {
 exists (../compressed_archive/libp7zip) {
     message(Found p7zip source code...)
+    #this is probably only needed in macos
+    system(patch -N -p0 -i libp7zip.patch)
 } else {
     error(You\'ll need 7zip source code to compile YACReader. \
           Please check the compressed_archive folder for further instructions.)
