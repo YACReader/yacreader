@@ -1,5 +1,10 @@
 #include "yacreader_macosx_toolbar.h"
+#include "QtWidgets/qmainwindow.h"
 
+#include <QtGlobal>
+#include <QtWidgets>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QWidget>
 #include <QMacNativeWidget>
 #include <qmacfunctions.h>
@@ -298,6 +303,11 @@ void YACReaderMacOSXToolbar::updateViewSelectorIcon(const QIcon &icon)
         viewSelector->setIcon(icon);
 }
 
+void YACReaderMacOSXToolbar::attachToWindow(QMainWindow *window)
+{
+    QMacToolBar::attachToWindow(window->windowHandle());
+}
+
 YACReaderMacOSXSearchLineEdit::YACReaderMacOSXSearchLineEdit()
     : QObject()
 {
@@ -386,3 +396,108 @@ void MacToolBarItemWrapper::updateIcon(bool enabled)
     } else
         toolbaritem->setIcon(action->icon());
 }
+#else
+
+#ifdef YACREADER_LIBRARY
+
+YACReaderMacOSXToolbar::YACReaderMacOSXToolbar(QWidget *parent)
+    : YACReaderMainToolBar(parent)
+{
+    backButton->setIconSize(QSize(24, 24));
+    forwardButton->setIconSize(QSize(24, 24));
+    settingsButton->setIconSize(QSize(24, 24));
+    serverButton->setIconSize(QSize(24, 24));
+    helpButton->setIconSize(QSize(24, 24));
+    toggleComicsViewButton->setIconSize(QSize(24, 24));
+}
+
+QSize YACReaderMacOSXToolbar::sizeHint() const
+{
+    return QSize(400, 36);
+}
+
+void YACReaderMacOSXToolbar::addAction(QAction *action)
+{
+    if (backButton->defaultAction() == nullptr) {
+        backButton->setDefaultAction(action);
+        return;
+    }
+    if (forwardButton->defaultAction() == nullptr) {
+        forwardButton->setDefaultAction(action);
+        return;
+    }
+    if (settingsButton->defaultAction() == nullptr) {
+        settingsButton->setDefaultAction(action);
+        return;
+    }
+    if (serverButton->defaultAction() == nullptr) {
+        serverButton->setDefaultAction(action);
+        return;
+    }
+    if (helpButton->defaultAction() == nullptr) {
+        helpButton->setDefaultAction(action);
+        return;
+    }
+    if (toggleComicsViewButton->defaultAction() == nullptr) {
+        toggleComicsViewButton->setDefaultAction(action);
+        return;
+    }
+}
+
+void YACReaderMacOSXToolbar::addSpace(int size)
+{
+}
+
+void YACReaderMacOSXToolbar::addStretch()
+{
+}
+
+YACReaderMacOSXSearchLineEdit *YACReaderMacOSXToolbar::addSearchEdit()
+{
+    auto search = new YACReaderMacOSXSearchLineEdit();
+
+    setSearchWidget(search);
+
+    return search;
+}
+
+void YACReaderMacOSXToolbar::updateViewSelectorIcon(const QIcon &icon)
+{
+}
+
+void YACReaderMacOSXToolbar::attachToWindow(QMainWindow *window)
+{
+    auto toolbar = new QToolBar();
+
+    toolbar->addWidget(this);
+    toolbar->setMovable(false);
+
+    window->addToolBar(toolbar);
+}
+
+void YACReaderMacOSXToolbar::paintEvent(QPaintEvent *)
+{
+}
+
+#else
+
+YACReaderMacOSXToolbar::YACReaderMacOSXToolbar(QWidget *parent)
+    : QToolBar(parent)
+{
+    setMovable(false);
+    setIconSize(QSize(24, 24));
+}
+
+void YACReaderMacOSXToolbar::attachToWindow(QMainWindow *window)
+{
+    window->setUnifiedTitleAndToolBarOnMac(true);
+    window->addToolBar(this);
+}
+
+void YACReaderMacOSXToolbar::addStretch()
+{
+}
+
+#endif
+
+#endif

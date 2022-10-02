@@ -731,7 +731,7 @@ void MainWindowViewer::createToolBars()
 
     // attach toolbar
 
-    comicToolBar->attachToWindow(this->windowHandle());
+    comicToolBar->attachToWindow(this);
 
 #endif
 }

@@ -606,13 +606,7 @@ void FolderModelProxy::setFilterData(QMap<unsigned long long, FolderItem *> *fil
 
     rootItem = root;
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    QMap<unsigned long long, FolderItem *>::iterator i;
-    for (i = filteredItems->begin(); i != filteredItems->end(); ++i)
-        this->filteredItems.insert(i.key(), i.value());
-#else
     this->filteredItems.insert(*filteredItems);
-#endif
 
     endResetModel();
 

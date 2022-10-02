@@ -922,9 +922,6 @@ void LibraryWindow::createToolBars()
     libraryToolBar->addSpace(10);
 
     libraryToolBar->addAction(toggleComicsViewAction);
-#ifndef Q_OS_MAC
-    libraryToolBar->addAction(toggleFullScreenAction);
-#endif
 
     libraryToolBar->addStretch();
 
@@ -935,7 +932,7 @@ void LibraryWindow::createToolBars()
 
     // libraryToolBar->setMovable(false);
 
-    libraryToolBar->attachToWindow(this->windowHandle());
+    libraryToolBar->attachToWindow(this);
 
 #else
     libraryToolBar->backButton->setDefaultAction(backAction);
@@ -1189,6 +1186,8 @@ void LibraryWindow::createConnections()
     connect(searchEdit, &YACReaderSearchLineEdit::filterChanged, this, &LibraryWindow::setSearchFilter);
 #endif
     connect(&comicQueryResultProcessor, &ComicQueryResultProcessor::newData, this, &LibraryWindow::setComicSearchFilterData);
+    qRegisterMetaType<FolderItem *>("FolderItem *");
+    qRegisterMetaType<QMap<unsigned long long int, FolderItem *> *>("QMap<unsigned long long int, FolderItem *> *");
     connect(folderQueryResultProcessor.get(), &FolderQueryResultProcessor::newData, this, &LibraryWindow::setFolderSearchFilterData);
 
     // ContextMenus

@@ -731,7 +731,7 @@ void DBHelper::propagateFolderUpdatesToParent(const Folder &folder, QSqlDatabase
 {
     auto currentParentId = folder.parentId;
     auto currentId = folder.id;
-    while (currentParentId != 1) {
+    while (currentParentId != 1 && currentParentId != 0) { // currentParentId is 0 if `folder` is the root folder
         auto f = loadFolder(currentParentId, db);
         currentParentId = f.parentId;
         currentId = f.id;

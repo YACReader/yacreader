@@ -20,7 +20,9 @@
         <file alias="images/empty_folder.png">../images/empty_folder_osx.png</file>
         <file alias="images/empty_search.png">../images/empty_search_osx.png</file>
         <file>../images/iconSearch.png</file>
+        <file>../images/iconSearch@2x.png</file>
         <file>../images/clearSearch.png</file>
+        <file>../images/clearSearch@2x.png</file>
         <file alias="images/lists/default_0.png">../images/lists/default_0_osx.png</file>
         <file alias="images/lists/default_1.png">../images/lists/default_1_osx.png</file>
         <file alias="images/lists/label_blue.png">../images/lists/label_blue_osx.png</file>

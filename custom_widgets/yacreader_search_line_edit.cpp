@@ -12,14 +12,35 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
     clearButton = new QToolButton(this);
     searchLabel = new QLabel(this);
 
-    QPixmap pixmap(":/images/clearSearch.png");
-    QPixmap pixmapIcon(":/images/iconSearch.png");
+    QPixmap clearIcon;
+    QPixmap searchIcon;
+
+    clearIcon.setDevicePixelRatio(devicePixelRatioF());
+    searchIcon.setDevicePixelRatio(devicePixelRatioF());
+
+    if (devicePixelRatioF() > 1) {
+        if (!clearIcon.load(":/images/clearSearch@2x.png")) {
+            clearIcon.load(":/images/clearSearch.png");
+        }
+        if (!searchIcon.load(":/images/iconSearch@2x.png")) {
+            searchIcon.load(":/images/iconSearch.png");
+        }
+    } else {
+        clearIcon.load(":/images/clearSearch.png");
+        searchIcon.load(":/images/iconSearch.png");
+    }
 
     searchLabel->setStyleSheet("QLabel { border: none; padding: 0px; }");
-    searchLabel->setPixmap(pixmapIcon);
+    searchLabel->setPixmap(searchIcon);
 
-    clearButton->setIcon(QIcon(pixmap));
-    clearButton->setIconSize(pixmap.size());
+    clearButton->setIcon(QIcon(clearIcon));
+
+#ifdef Q_OS_MAC
+    clearButton->setIconSize(QSize(14, 14));
+#else
+    clearButton->setIconSize(QSize(12, 12));
+#endif
+
     clearButton->setCursor(Qt::ArrowCursor);
     clearButton->setStyleSheet("QToolButton { border: none; padding: 0px; }");
     clearButton->hide();
@@ -27,7 +48,7 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
     connect(this, &QLineEdit::textChanged, this, &YACReaderSearchLineEdit::updateCloseButton);
     int frameWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
 #ifdef Q_OS_MAC
-    setStyleSheet(QString("QLineEdit {border-top:1px solid #9F9F9F; border-bottom:1px solid #ACACAC; border-right:1px solid #ACACAC; border-left:1px solid #ACACAC; border-radius: 10px; background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #CACACA, stop: 0.15 #FFFFFF); padding-left: %1px; padding-right: %2px; padding-bottom: 1px; margin-bottom: 1px;} ").arg(searchLabel->sizeHint().width() + frameWidth + 6).arg(clearButton->sizeHint().width() + frameWidth + 2));
+    setStyleSheet(QString("QLineEdit {border-top:1px solid #9F9F9F; border-bottom:1px solid #ACACAC; border-right:1px solid #ACACAC; border-left:1px solid #ACACAC; border-radius: 4px; background-color:#EEEEEE; padding-left: %1px; padding-right: %2px; padding-bottom: 1px; margin-bottom: 1px;} ").arg(searchLabel->sizeHint().width() + frameWidth + 6).arg(clearButton->sizeHint().width() + frameWidth + 2));
 #else
     setStyleSheet(QString("QLineEdit {color: #ABABAB; border:none; border-radius: 4px; background-color:#404040; padding-left: %1px; padding-right: %2px; padding-bottom: 1px; margin-right: 9px;} ").arg(searchLabel->sizeHint().width() + frameWidth + 6 + 5).arg(clearButton->sizeHint().width() + frameWidth + 2));
 #endif
@@ -37,6 +58,7 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
 
 #ifdef Q_OS_MAC
     setMaximumWidth(212);
+    setFixedHeight(26);
 #else
     setMaximumWidth(255);
     setFixedHeight(26);

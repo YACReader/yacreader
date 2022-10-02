@@ -1,8 +1,11 @@
 #ifndef YACREADER_MACOSX_TOOLBAR_H
 #define YACREADER_MACOSX_TOOLBAR_H
 
+#include <QtGlobal>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QMacToolBar>
 #include <QtWidgets>
+#include <QMainWindow>
 
 #include "yacreader_global.h"
 
@@ -70,6 +73,8 @@ public:
     // convenience method for switching the icon of the view selector
     void updateViewSelectorIcon(const QIcon &icon);
 
+    void attachToWindow(QMainWindow *window);
+
 signals:
 
 public slots:
@@ -80,5 +85,48 @@ protected:
     bool yosemite;
     QMacToolBarItem *viewSelector;
 };
+#else
+
+#ifdef YACREADER_LIBRARY
+
+#include "yacreader_main_toolbar.h"
+#include "yacreader_search_line_edit.h"
+#include <QMainWindow>
+
+class YACReaderMacOSXSearchLineEdit : public YACReaderSearchLineEdit
+{
+};
+
+class YACReaderMacOSXToolbar : public YACReaderMainToolBar
+{
+public:
+    explicit YACReaderMacOSXToolbar(QWidget *parent = 0);
+    QSize sizeHint() const override;
+    void addAction(QAction *action);
+    void addSpace(int size); // size in points
+    void addStretch();
+    YACReaderMacOSXSearchLineEdit *addSearchEdit();
+    void updateViewSelectorIcon(const QIcon &icon);
+    void attachToWindow(QMainWindow *window);
+
+private:
+    void paintEvent(QPaintEvent *) override;
+};
+
+#else
+
+#include <QtWidgets>
+
+class YACReaderMacOSXToolbar : public QToolBar
+{
+public:
+    explicit YACReaderMacOSXToolbar(QWidget *parent = 0);
+    void attachToWindow(QMainWindow *window);
+    void addStretch();
+};
+
+#endif
+
+#endif
 
 #endif // YACREADER_MACOSX_TOOLBAR_H

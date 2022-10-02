@@ -36,8 +36,8 @@ void YACReaderNavigationController::selectedFolder(const QModelIndex &mi)
 
     // when a folder is selected the search mode has to be reset
     if (libraryWindow->exitSearchMode()) {
-        libraryWindow->foldersView->scrollTo(mi, QAbstractItemView::PositionAtTop);
-        libraryWindow->foldersView->setCurrentIndex(mi);
+        libraryWindow->foldersView->scrollTo(modelIndex, QAbstractItemView::PositionAtTop);
+        libraryWindow->foldersView->setCurrentIndex(modelIndex);
     }
 
     loadFolderInfo(modelIndex);

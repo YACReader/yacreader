@@ -331,7 +331,7 @@ void YACReaderFlowGL::paintGL()
 
     QFont font = painter.font();
     font.setFamily("Arial");
-    font.setPixelSize(fontSize);
+    font.setPointSize(fontSize);
     painter.setFont(font);
 
     painter.setPen(QColor(76, 76, 76));
@@ -342,8 +342,7 @@ void YACReaderFlowGL::paintGL()
 
 void YACReaderFlowGL::resizeGL(int width, int height)
 {
-    float pixelRatio = devicePixelRatioF();
-    fontSize = (width + height) * 0.010 * pixelRatio;
+    fontSize = (width + height) * 0.010;
     if (fontSize < 10)
         fontSize = 10;
 

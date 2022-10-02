@@ -6,7 +6,7 @@ AppVerName=YACReader v{#VERSION}.{#BUILD_NUMBER}
 AppVersion={#VERSION}.{#BUILD_NUMBER}
 VersionInfoVersion={#VERSION}
 DefaultDirName={pf}\YACReader
-OutputBaseFilename=YACReader-v{#VERSION}.{#BUILD_NUMBER}-win{#PLATFORM}-{#COMPRESSED_ARCHIVE_BACKEND}
+OutputBaseFilename=YACReader-v{#VERSION}.{#BUILD_NUMBER}-win{#PLATFORM}-{#COMPRESSED_ARCHIVE_BACKEND}-qt6
 LicenseFile=COPYING.txt
 AlwaysUsePersonalGroup=true
 OutputDir=..\Output
@@ -37,47 +37,56 @@ Root: HKCR; Subkey: YACReader Data Base (ydb)\DefaultIcon; ValueType: string; Va
 
 [Files]
 ;Qt Frameworks
-Source: Qt5Core.dll; DestDir: {app}
-Source: Qt5Gui.dll; DestDir: {app}
-Source: Qt5Multimedia.dll; DestDir: {app}
-Source: Qt5Network.dll; DestDir: {app}
-Source: Qt5Qml.dll; DestDir: {app}
-Source: Qt5Quick.dll; DestDir: {app}
-Source: Qt5Sql.dll; DestDir: {app}
-Source: Qt5Svg.dll; DestDir: {app}
-Source: Qt5Widgets.dll; DestDir: {app}
-Source: Qt5QuickWidgets.dll; DestDir: {app}
-Source: Qt5QmlModels.dll; DestDir: {app}
-Source: Qt5QmlWorkerScript.dll; DestDir: {app}
-Source: Qt5QuickControls2.dll; DestDir: {app}
-Source: Qt5QuickTemplates2.dll; DestDir: {app}
-Source: Qt5RemoteObjects.dll; DestDir: {app}
+Source: Qt6Widgets.dll; DestDir: {app}
+Source: Qt6Core.dll; DestDir: {app}
+Source: Qt6Core5Compat.dll; DestDir: {app}
+Source: Qt6Gui.dll; DestDir: {app}
+Source: Qt6Multimedia.dll; DestDir: {app}
+Source: Qt6Network.dll; DestDir: {app}
+Source: Qt6OpenGL.dll; DestDir: {app}
+Source: Qt6OpenGLWidgets.dll; DestDir: {app}
+Source: Qt6Qml.dll; DestDir: {app}
+Source: Qt6QmlLocalStorage.dll; DestDir: {app}
+Source: Qt6QmlModels.dll; DestDir: {app}
+Source: Qt6QmlWorkerScript.dll; DestDir: {app}
+Source: Qt6QmlXmlListModel.dll; DestDir: {app}
+Source: Qt6Quick.dll; DestDir: {app}
+Source: Qt6QuickControls2.dll; DestDir: {app}
+Source: Qt6QuickControls2Impl.dll; DestDir: {app}
+Source: Qt6QuickDialogs2.dll; DestDir: {app}
+Source: Qt6QuickDialogs2QuickImpl.dll; DestDir: {app}
+Source: Qt6QuickDialogs2Utils.dll; DestDir: {app}
+Source: Qt6QuickLayouts.dll; DestDir: {app}
+Source: Qt6QuickParticles.dll; DestDir: {app}
+Source: Qt6QuickShapes.dll; DestDir: {app}
+Source: Qt6QuickTemplates2.dll; DestDir: {app}
+Source: Qt6QuickWidgets.dll; DestDir: {app}
+Source: Qt6Sql.dll; DestDir: {app}
+Source: Qt6Svg.dll; DestDir: {app}
+
 
 ;Qt Angle
-Source: D3Dcompiler_47.dll; DestDir: {app}
-Source: libEGL.dll; DestDir: {app}
-Source: libGLESV2.dll; DestDir: {app}
 Source: opengl32sw.dll; DestDir: {app}
+Source: D3Dcompiler_47.dll; DestDir: {app}
 
 ;Qt QML
 Source: QtQml\*; DestDir: {app}\QtQml\; Flags: recursesubdirs
 Source: QtQuick\*; DestDir: {app}\QtQuick\; Flags: recursesubdirs
-Source: QtQuick.2\*; DestDir: {app}\QtQuick.2\; Flags: recursesubdirs
-Source: QtGraphicalEffects\*; DestDir: {app}\QtGraphicalEffects\; Flags: recursesubdirs
+
+;Qt5 Compat
+Source: Qt5Compat\*; DestDir: {app}\Qt5Compat\; Flags: recursesubdirs
 
 ;Qt PlugIns
-Source:audio\*;  DestDir: {app}\audio\
-Source:bearer\*;  DestDir: {app}\bearer\
 Source:iconengines\*;  DestDir: {app}\iconengines\
 Source:imageformats\*;  DestDir: {app}\imageformats\
-Source:mediaservice\*;  DestDir: {app}\mediaservice\
+Source:networkinformation\*;  DestDir: {app}\networkinformation\
 Source:platforms\*;  DestDir: {app}\platforms\
-Source:playlistformats\*;  DestDir: {app}\playlistformats\     
-Source:qmltooling\*;  DestDir: {app}\qmltooling\          
-Source:scenegraph\*;  DestDir: {app}\scenegraph\                         
+Source:qmltooling\*;  DestDir: {app}\qmltooling\   
 Source:sqldrivers\qsqlite.dll;  DestDir: {app}\sqldrivers\
+Source:styles\*;  DestDir: {app}\styles\
+Source:tls\*;  DestDir: {app}\tls\
 Source:translations\*;  DestDir: {app}\translations\    
-Source:styles\*;  DestDir: {app}\styles\            
+            
 
 ;Libs
 Source: pdfium.dll; DestDir: {app}
@@ -92,7 +101,7 @@ Source: "vc_redist.{#PLATFORM}.exe"; DestDir: {tmp}; Flags: deleteafterinstall
 Source: utils\7z.dll; DestDir: {app}\utils\
 
 ;Bin
-Source: YACReader.exe; DestDir: {app}; Permissions: everyone-full
+Source: YACReader.exe; DestDir: {app}; Permissions: everyone-full;
 Source: YACReaderLibrary.exe; DestDir: {app}; Permissions: everyone-full; Tasks:
 Source: YACReaderLibraryServer.exe; DestDir: {app}; Permissions: everyone-full; Tasks:
  

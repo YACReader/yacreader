@@ -11,13 +11,16 @@ parameters:
 jobs:
 - job: ${{ parameters.name }}
   dependsOn: CodeFormatValidation
+  variables:
+  - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
+    - group: windows-codesign
   pool:
     vmImage: 'windows-2019'
   steps:
   - script: |
       pip install aqtinstall
       mkdir C:\Qt
-      python -m aqt install -O c:\Qt ${{ parameters.qt_version }} windows desktop ${{ parameters.qt_aqt_spec }} -m qt5compat qtmultimedia
+      python -m aqt install -O c:\Qt ${{ parameters.qt_version }} windows desktop ${{ parameters.qt_aqt_spec }} -m qt5compat qtmultimedia qtimageformats
       dir C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin
       choco install -y wget
       choco install innosetup
@@ -38,20 +41,35 @@ jobs:
       set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
       nmake check TESTARGS="-maxwarnings 100000"
     displayName: 'Run tests'
-#  - script: |
-#      set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
-#      cd $(Build.SourcesDirectory)\ci\win
-#      .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber)
-#    displayName: 'Create installer'
-#  - task: CopyFiles@2
-#    inputs:
-#      sourceFolder: $(Build.SourcesDirectory)\ci\win\Output\
-#      contents: '*'
-#      targetFolder: $(Build.ArtifactStagingDirectory)
-#  - task: PublishPipelineArtifact@1
-#    inputs:
-#      path: $(Build.ArtifactStagingDirectory)
-#      artifactName: Windows ${{ parameters.architecture }} $(Build.BuildNumber) 7z Installer
+  - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
+    - task: DownloadSecureFile@1
+      name: pfxFile
+      displayName: 'Get the pfx file certificate'
+      inputs:
+        secureFile: 'certificate.pfx'
+  - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
+    - script: |
+        set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
+        cd $(Build.SourcesDirectory)\ci\win
+        .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber) qt6 $(pfxFile.secureFilePath) %PASSWORD%
+      env:
+        PASSWORD: $(pfxPassword)
+      displayName: 'Create installer'
+  - ${{ else }}:
+    - script: |
+        set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
+        cd $(Build.SourcesDirectory)\ci\win
+        .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber) qt6
+      displayName: 'Create installer'
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: $(Build.SourcesDirectory)\ci\win\Output\
+      contents: '*'
+      targetFolder: $(Build.ArtifactStagingDirectory)
+  - task: PublishPipelineArtifact@1
+    inputs:
+      path: $(Build.ArtifactStagingDirectory)
+      artifactName: Windows ${{ parameters.architecture }} $(Build.BuildNumber) 7z Qt6 Installer
 
 
 
