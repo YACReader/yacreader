@@ -70,3 +70,6 @@ The base and target branch for any PR should always be `develop`.
 
 ## Donations
 YACReader is free but it needs money to keep being alive, so please, if you like YACReader, visit the home page and make a donation.
+
+## Hacktoberfest
+If you are interested in YACReader, please contact me so we can discuss your next steps.
