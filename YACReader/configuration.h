@@ -1,3 +1,4 @@
+//code starts from here
 #ifndef __CONFIGURATION_H
 #define __CONFIGURATION_H
 #include <QByteArray>
