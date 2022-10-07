@@ -21,6 +21,8 @@ This software has been developed by Luis Ángel San Martín Rodríguez
 ### Official releases:
 [https://github.com/YACReader/yacreader/releases](https://github.com/YACReader/yacreader/releases)
 
+[<img src="https://flathub.org/assets/badges/flathub-badge-en.png" width="100"/>](https://flathub.org/apps/details/com.yacreader.YACReader)
+
 ### As a package:
 
 [![Packaging status](https://repology.org/badge/vertical-allrepos/yacreader.svg)](https://repology.org/metapackage/yacreader)
