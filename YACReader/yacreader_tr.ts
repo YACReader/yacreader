@@ -5,7 +5,7 @@
     <name>ActionsShortcutsModel</name>
     <message>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiçbiri</translation>
     </message>
 </context>
 <context>
@@ -31,23 +31,23 @@
     <name>EditShortcutsDialog</name>
     <message>
         <source>Restore defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Varsayılarları geri yükle</translation>
     </message>
     <message>
         <source>To change a shortcut, double click in the key combination and type the new keys.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bir kısayolu değiştirmek için tuş kombinasyonuna çift tıklayın ve yeni tuşları girin.</translation>
     </message>
     <message>
         <source>Shortcuts settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Kısayol oyarları</translation>
     </message>
     <message>
         <source>Shortcut in use</source>
-        <translation type="unfinished"></translation>
+        <translation>Kısayol kullanımda</translation>
     </message>
     <message>
         <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%1&quot; kısayolu bir başka işleve zaten atanmış</translation>
     </message>
 </context>
 <context>
@@ -58,15 +58,15 @@
     </message>
     <message>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
-        <translation type="unfinished"></translation>
+        <translation>(%1). sayfada CRC hatası : bazı sayfalar düzgün görüntülenmeyecek</translation>
     </message>
     <message>
         <source>Unknown error opening the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya açılırken bilinmeyen hata</translation>
     </message>
     <message>
         <source>Format not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Biçim desteklenmiyor</translation>
     </message>
 </context>
 <context>
@@ -81,7 +81,7 @@
     </message>
     <message>
         <source>Total pages : </source>
-        <translation>Toplam sayfa:</translation>
+        <translation>Toplam sayfa: </translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -89,7 +89,7 @@
     </message>
     <message>
         <source>Page : </source>
-        <translation>Sayfa :</translation>
+        <translation>Sayfa : </translation>
     </message>
 </context>
 <context>
@@ -114,31 +114,31 @@
     <name>LogWindow</name>
     <message>
         <source>Log window</source>
-        <translation type="unfinished"></translation>
+        <translation>Günlük penceresi</translation>
     </message>
     <message>
         <source>&amp;Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Duraklat</translation>
     </message>
     <message>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kaydet</translation>
     </message>
     <message>
         <source>C&amp;lear</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Temizle</translation>
     </message>
     <message>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kopyala</translation>
     </message>
     <message>
         <source>Level:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>&amp;Auto scroll</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Otomatik kaydır</translation>
     </message>
 </context>
 <context>
@@ -261,7 +261,7 @@
     </message>
     <message>
         <source>Show keyboard shortcuts</source>
-        <translation>Kılavye kısayollarını göster</translation>
+        <translation>Klavye kısayollarını göster</translation>
     </message>
     <message>
         <source>There is a new version available</source>
@@ -341,183 +341,183 @@
     </message>
     <message>
         <source>New instance</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeni örnek</translation>
     </message>
     <message>
         <source>Open latest comic</source>
-        <translation type="unfinished"></translation>
+        <translation>En son çizgi romanı aç</translation>
     </message>
     <message>
         <source>Open the latest comic opened in the previous reading session</source>
-        <translation type="unfinished"></translation>
+        <translation>Önceki okuma oturumunda açılan en son çizgi romanı aç</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Temizle</translation>
     </message>
     <message>
         <source>Clear open recent list</source>
-        <translation type="unfinished"></translation>
+        <translation>Son açılanlar listesini temizle</translation>
     </message>
     <message>
         <source>Fit Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Yüksekliğe Sığdır</translation>
     </message>
     <message>
         <source>Fit to page</source>
-        <translation type="unfinished"></translation>
+        <translation>Sayfaya sığdır</translation>
     </message>
     <message>
         <source>Reset zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Yakınlaştırmayı sıfırla</translation>
     </message>
     <message>
         <source>Show zoom slider</source>
-        <translation type="unfinished"></translation>
+        <translation>Yakınlaştırma çubuğunu göster</translation>
     </message>
     <message>
         <source>Zoom+</source>
-        <translation type="unfinished"></translation>
+        <translation>Yakınlaştır</translation>
     </message>
     <message>
         <source>Zoom-</source>
-        <translation type="unfinished"></translation>
+        <translation>Uzaklaştır</translation>
     </message>
     <message>
         <source>Double page manga mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Çift sayfa manga kipi</translation>
     </message>
     <message>
         <source>Reverse reading order in double page mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Çift sayfa kipinde ters okuma sırası</translation>
     </message>
     <message>
         <source>Edit shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Kısayolları düzenle</translation>
     </message>
     <message>
         <source>Open recent</source>
-        <translation type="unfinished"></translation>
+        <translation>Son dosyaları aç</translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Düzen</translation>
     </message>
     <message>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Görünüm</translation>
     </message>
     <message>
         <source>Go</source>
-        <translation type="unfinished"></translation>
+        <translation>Git</translation>
     </message>
     <message>
         <source>Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Pencere</translation>
     </message>
     <message>
         <source>Comics</source>
-        <translation type="unfinished"></translation>
+        <translation>Çizgi Roman</translation>
     </message>
     <message>
         <source>Toggle fullscreen mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Tam ekran kipini aç/kapat</translation>
     </message>
     <message>
         <source>Hide/show toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Araç çubuğunu göster/gizle</translation>
     </message>
     <message>
         <source>Size up magnifying glass</source>
-        <translation type="unfinished"></translation>
+        <translation>Büyüteci büyüt</translation>
     </message>
     <message>
         <source>Size down magnifying glass</source>
-        <translation type="unfinished"></translation>
+        <translation>Büyüteci küçült</translation>
     </message>
     <message>
         <source>Zoom in magnifying glass</source>
-        <translation type="unfinished"></translation>
+        <translation>Büyüteci yakınlaştır</translation>
     </message>
     <message>
         <source>Zoom out magnifying glass</source>
-        <translation type="unfinished"></translation>
+        <translation>Büyüteci uzaklaştır</translation>
     </message>
     <message>
         <source>Magnifiying glass</source>
-        <translation type="unfinished"></translation>
+        <translation>Büyüteç</translation>
     </message>
     <message>
         <source>Toggle between fit to width and fit to height</source>
-        <translation type="unfinished"></translation>
+        <translation>Genişliğe sığdır ile yüksekliğe sığdır arasında geçiş yap</translation>
     </message>
     <message>
         <source>Page adjustement</source>
-        <translation type="unfinished"></translation>
+        <translation>Sayfa ayarı</translation>
     </message>
     <message>
         <source>Autoscroll down</source>
-        <translation type="unfinished"></translation>
+        <translation>Otomatik aşağı kaydır</translation>
     </message>
     <message>
         <source>Autoscroll up</source>
-        <translation type="unfinished"></translation>
+        <translation>Otomatik yukarı kaydır</translation>
     </message>
     <message>
         <source>Autoscroll forward, horizontal first</source>
-        <translation type="unfinished"></translation>
+        <translation>Otomatik ileri kaydır, önce yatay</translation>
     </message>
     <message>
         <source>Autoscroll backward, horizontal first</source>
-        <translation type="unfinished"></translation>
+        <translation>Otomatik geri kaydır, önce yatay</translation>
     </message>
     <message>
         <source>Autoscroll forward, vertical first</source>
-        <translation type="unfinished"></translation>
+        <translation>Otomatik ileri kaydır, önce dikey</translation>
     </message>
     <message>
         <source>Autoscroll backward, vertical first</source>
-        <translation type="unfinished"></translation>
+        <translation>Otomatik geri kaydır, önce dikey</translation>
     </message>
     <message>
         <source>Move down</source>
-        <translation type="unfinished"></translation>
+        <translation>Aşağı git</translation>
     </message>
     <message>
         <source>Move up</source>
-        <translation type="unfinished"></translation>
+        <translation>Yukarı git</translation>
     </message>
     <message>
         <source>Move left</source>
-        <translation type="unfinished"></translation>
+        <translation>Sola git</translation>
     </message>
     <message>
         <source>Move right</source>
-        <translation type="unfinished"></translation>
+        <translation>Sağa git</translation>
     </message>
     <message>
         <source>Go to the first page</source>
-        <translation type="unfinished"></translation>
+        <translation>İlk sayfaya git</translation>
     </message>
     <message>
         <source>Go to the last page</source>
-        <translation type="unfinished"></translation>
+        <translation>En son sayfaya git</translation>
     </message>
     <message>
         <source>Reading</source>
-        <translation type="unfinished"></translation>
+        <translation>Okuma</translation>
     </message>
     <message>
         <source>Remind me in 14 days</source>
-        <translation type="unfinished"></translation>
+        <translation>14 gün içinde hatırlat</translation>
     </message>
     <message>
         <source>Not now</source>
-        <translation type="unfinished"></translation>
+        <translation>Şimdi değil</translation>
     </message>
 </context>
 <context>
@@ -584,96 +584,96 @@
     </message>
     <message>
         <source>Quick Navigation Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Hızlı Gezinti Kipi</translation>
     </message>
     <message>
         <source>Disable mouse over activation</source>
-        <translation type="unfinished"></translation>
+        <translation>Etkinleştirme üzerinde fareyi devre dışı bırak</translation>
     </message>
     <message>
         <source>Fit options</source>
-        <translation type="unfinished"></translation>
+        <translation>Sığdırma seçenekleri</translation>
     </message>
     <message>
         <source>Enlarge images to fit width/height</source>
-        <translation type="unfinished"></translation>
+        <translation>Genişliğe/yüksekliği sığmaları için resimleri genişlet</translation>
     </message>
     <message>
         <source>Double Page options</source>
-        <translation type="unfinished"></translation>
+        <translation>Çift Sayfa seçenekleri</translation>
     </message>
     <message>
         <source>Show covers as single page</source>
-        <translation type="unfinished"></translation>
+        <translation>Kapakları tek sayfa olarak göster</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <source>7z lib not found</source>
-        <translation type="unfinished"></translation>
+        <translation>7z lib bulunamadı</translation>
     </message>
     <message>
         <source>unable to load 7z lib from ./utils</source>
-        <translation type="unfinished"></translation>
+        <translation>./utils içinden 7z lib yüklenemedi</translation>
     </message>
     <message>
         <source>Trace</source>
-        <translation type="unfinished"></translation>
+        <translation>İz</translation>
     </message>
     <message>
         <source>Debug</source>
-        <translation type="unfinished"></translation>
+        <translation>Hata ayıkla</translation>
     </message>
     <message>
         <source>Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilgi</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Uyarı</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Hata</translation>
     </message>
     <message>
         <source>Fatal</source>
-        <translation type="unfinished"></translation>
+        <translation>Ölümcül</translation>
     </message>
 </context>
 <context>
     <name>QsLogging::LogWindowModel</name>
     <message>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Süre</translation>
     </message>
     <message>
         <source>Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Düzey</translation>
     </message>
     <message>
         <source>Message</source>
-        <translation type="unfinished"></translation>
+        <translation>Mesaj</translation>
     </message>
 </context>
 <context>
     <name>QsLogging::Window</name>
     <message>
         <source>&amp;Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Duraklat</translation>
     </message>
     <message>
         <source>&amp;Resume</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sürdür</translation>
     </message>
     <message>
         <source>Save log</source>
-        <translation type="unfinished"></translation>
+        <translation>Günlük kaydet</translation>
     </message>
     <message>
         <source>Log file (*.log)</source>
-        <translation type="unfinished"></translation>
+        <translation>Günlük dosyası (*.log)</translation>
     </message>
 </context>
 <context>
@@ -688,7 +688,7 @@
     </message>
     <message>
         <source>Keyboard Shortcuts</source>
-        <translation>Kılavye Kısayolları</translation>
+        <translation>Klavye Kısayolları</translation>
     </message>
 </context>
 <context>
@@ -719,22 +719,22 @@
     </message>
     <message>
         <source>Error opening comic</source>
-        <translation type="unfinished"></translation>
+        <translation>Çizgi roman açılırken hata</translation>
     </message>
     <message>
         <source>CRC Error</source>
-        <translation type="unfinished"></translation>
+        <translation>CRC Hatası</translation>
     </message>
     <message>
         <source>Page not available!</source>
-        <translation type="unfinished"></translation>
+        <translation>Sayfa bulunamadı!</translation>
     </message>
 </context>
 <context>
     <name>YACReader::WhatsNewDialog</name>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Kapat</translation>
+        <translation>Kapat</translation>
     </message>
 </context>
 <context>
@@ -850,7 +850,7 @@
     </message>
     <message>
         <source>Cover gap</source>
-        <translation>Kapak </translation>
+        <translation>Kapak boşluğu</translation>
     </message>
     <message>
         <source>High Performance</source>
@@ -889,11 +889,11 @@
     </message>
     <message>
         <source>Edit shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Kısayolları düzenle</translation>
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Kısayollar</translation>
     </message>
 </context>
 <context>
@@ -907,19 +907,19 @@
     <name>YACReaderTranslator</name>
     <message>
         <source>YACReader translator</source>
-        <translation type="unfinished"></translation>
+        <translation>YACReader çevirmeni</translation>
     </message>
     <message>
         <source>Translation</source>
-        <translation type="unfinished"></translation>
+        <translation>Çeviri</translation>
     </message>
     <message>
         <source>clear</source>
-        <translation type="unfinished"></translation>
+        <translation>temizle</translation>
     </message>
     <message>
         <source>Service not available</source>
-        <translation type="unfinished"></translation>
+        <translation>Servis kullanılamıyor</translation>
     </message>
 </context>
 </TS>
