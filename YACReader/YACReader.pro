@@ -196,8 +196,11 @@ TRANSLATIONS =    yacreader_es.ts \
                   yacreader_zh_CN.ts \
                   yacreader_zh_TW.ts \
                   yacreader_zh_HK.ts \
-                  yacreader_it.ts \
-                  yacreader_source.ts
+                  yacreader_it.ts
+#                  yacreader_source.ts
+
+LRELEASE_DIR = ../release/languages/
+CONFIG += lrelease
 
 unix:!macx {
 # set install prefix if it's empty

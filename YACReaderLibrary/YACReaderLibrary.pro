@@ -283,8 +283,11 @@ TRANSLATIONS =   yacreaderlibrary_es.ts \
                 yacreaderlibrary_zh_CN.ts \
                 yacreaderlibrary_zh_TW.ts \
                 yacreaderlibrary_zh_HK.ts \
-                yacreaderlibrary_it.ts \
-                yacreaderlibrary_source.ts
+                yacreaderlibrary_it.ts
+#                yacreaderlibrary_source.ts
+
+LRELEASE_DIR = ../release/languages/
+CONFIG += lrelease
 
 #QML/GridView
 QT += quick qml quickwidgets
