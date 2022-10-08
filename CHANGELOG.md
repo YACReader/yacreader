@@ -2,6 +2,10 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## WIP
+
+### YACReaderLibrary
+* Update QtWebApp webserver to v1.8.6
 ## 9.9.2
 
 ### General

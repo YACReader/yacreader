@@ -7,9 +7,7 @@ Project homepage:  http://stefanfrings.de/qtwebapp/index-en.html
 Tutorial:          http://stefanfrings.de/qtwebapp/tutorial/index.html
 API doc:           http://stefanfrings.de/qtwebapp/api/index.html
 
-In Qt 6.0 or newer, you must install the optional "core5compat" component.
-This package contains the QTextCodec class which is needed to decode template files.
-It supports a lot more encodings, for example ISO-8859-15 with the EUR symbol.
+In Qt 6.x you must install the "Qt5Compat" libraries.
 
 Demo1 shows how to use the library by including the source code into your
 project, the preferred method.

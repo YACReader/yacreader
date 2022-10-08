@@ -20,5 +20,9 @@
     #define DECLSPEC
 #endif
 
+#if __cplusplus < 201103L
+    #define nullptr 0
+#endif
+
 #endif // TEMPLATEGLOBAL_H
 

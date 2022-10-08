@@ -23,5 +23,9 @@
 /** Get the library version number */
 DECLSPEC const char* getQtWebAppLibVersion();
 
+#if __cplusplus < 201103L
+    #define nullptr 0
+#endif
+
 #endif // HTTPGLOBAL_H
 
