@@ -44,7 +44,10 @@ namespace stefanfrings {
   </pre></code>
   <p>
   The readTimeout value defines the maximum time to wait for a complete HTTP request.
-  @see HttpRequest for description of config settings maxRequestSize and maxMultiPartSize.
+  <p>
+  MaxRequestSize is the maximum size of a HTTP request. In case of
+  multipart/form-data requests (also known as file-upload), the maximum
+  size of the body must not exceed maxMultiPartSize.
 */
 class DECLSPEC HttpConnectionHandler : public QObject {
     Q_OBJECT

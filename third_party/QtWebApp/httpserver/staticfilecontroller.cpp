@@ -53,7 +53,7 @@ void StaticFileController::service(HttpRequest &request, HttpResponse &response)
         qDebug("StaticFileController: Cache hit for %s",path.data());
         setContentType(filename,response);
         response.setHeader("Cache-Control","max-age="+QByteArray::number(maxAge/1000));
-        response.write(document);
+        response.write(document,true);
     }
     else
     {
@@ -80,6 +80,7 @@ void StaticFileController::service(HttpRequest &request, HttpResponse &response)
         {
             setContentType(path,response);
             response.setHeader("Cache-Control","max-age="+QByteArray::number(maxAge/1000));
+            response.setHeader("Content-Length",QByteArray::number(file.size()));
             if (file.size()<=maxCachedFileSize)
             {
                 // Return the file content and store it also in the cache

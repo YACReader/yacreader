@@ -24,21 +24,34 @@ namespace stefanfrings {
   <code><pre>
   ;host=192.168.0.100
   port=8080
+
+  readTimeout=60000
+  maxRequestSize=16000
+  maxMultiPartSize=1000000
+
   minThreads=1
   maxThreads=10
   cleanupInterval=1000
-  readTimeout=60000
-  ;sslKeyFile=ssl/my.key
-  ;sslCertFile=ssl/my.cert
-  maxRequestSize=16000
-  maxMultiPartSize=1000000
+
+  ;sslKeyFile=ssl/server.key
+  ;sslCertFile=ssl/server.crt
+  ;caCertFile=ssl/ca.crt
+  ;verifyPeer=false
   </pre></code>
-  The optional host parameter binds the listener to one network interface.
-  The listener handles all network interfaces if no host is configured.
-  The port number specifies the incoming TCP port that this listener listens to.
-  @see HttpConnectionHandlerPool for description of config settings minThreads, maxThreads, cleanupInterval and ssl settings
-  @see HttpConnectionHandler for description of the readTimeout
-  @see HttpRequest for description of config settings maxRequestSize and maxMultiPartSize
+  The optional host parameter binds the listener to a specific network interface,
+  otherwise the server accepts connections from any network interface on the given port.
+  <p>
+  The readTimeout value defines the maximum time to wait for a complete HTTP request.
+  <p>
+  MaxRequestSize is the maximum size of a HTTP request. In case of
+  multipart/form-data requests (also known as file-upload), the maximum
+  size of the body must not exceed maxMultiPartSize.
+  <p>
+  After server start, the size of the thread pool is always 0. Threads
+  are started on demand when requests come in. The cleanup timer reduces
+  the number of idle threads slowly by closing one thread in each interval.
+  But the configured minimum number of threads are kept running.
+  @see HttpConnectionHandlerPool for description of the optional ssl settings
 */
 
 class DECLSPEC HttpListener : public QTcpServer {
