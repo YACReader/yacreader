@@ -5,7 +5,7 @@
     <name>ActionsShortcutsModel</name>
     <message>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiçbiri</translation>
     </message>
 </context>
 <context>
@@ -16,63 +16,63 @@
     </message>
     <message>
         <source>Label name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiket adı:</translation>
     </message>
     <message>
         <source>Choose a color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Renk seçiniz:</translation>
     </message>
     <message>
         <source>red</source>
-        <translation type="unfinished"></translation>
+        <translation>kırmızı</translation>
     </message>
     <message>
         <source>orange</source>
-        <translation type="unfinished"></translation>
+        <translation>turuncu</translation>
     </message>
     <message>
         <source>yellow</source>
-        <translation type="unfinished"></translation>
+        <translation>sarı</translation>
     </message>
     <message>
         <source>green</source>
-        <translation type="unfinished"></translation>
+        <translation>yeşil</translation>
     </message>
     <message>
         <source>cyan</source>
-        <translation type="unfinished"></translation>
+        <translation>camgöbeği</translation>
     </message>
     <message>
         <source>blue</source>
-        <translation type="unfinished"></translation>
+        <translation>mavi</translation>
     </message>
     <message>
         <source>violet</source>
-        <translation type="unfinished"></translation>
+        <translation>menekşe</translation>
     </message>
     <message>
         <source>purple</source>
-        <translation type="unfinished"></translation>
+        <translation>mor</translation>
     </message>
     <message>
         <source>pink</source>
-        <translation type="unfinished"></translation>
+        <translation>pembe</translation>
     </message>
     <message>
         <source>white</source>
-        <translation type="unfinished"></translation>
+        <translation>beyaz</translation>
     </message>
     <message>
         <source>light</source>
-        <translation type="unfinished"></translation>
+        <translation>açık</translation>
     </message>
     <message>
         <source>dark</source>
-        <translation type="unfinished"></translation>
+        <translation>koyu</translation>
     </message>
     <message>
         <source>accept</source>
-        <translation type="unfinished"></translation>
+        <translation>kabul et</translation>
     </message>
 </context>
 <context>
@@ -91,11 +91,11 @@
     </message>
     <message>
         <source>Comics folder : </source>
-        <translation>Çizfi roman dosyası :</translation>
+        <translation>Çizgi roman klasörü : </translation>
     </message>
     <message>
         <source>Library name : </source>
-        <translation type="unfinished"></translation>
+        <translation>Kütüphane adı : </translation>
     </message>
 </context>
 <context>
@@ -106,15 +106,15 @@
     </message>
     <message>
         <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Comic Vine&apos;a bağlanmadan önce kendi API anahtarınıza ihtiyacınız var. Lütfen &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;buradan&lt;/a&gt; ücretsiz bir tane edinin</translation>
     </message>
     <message>
         <source>Paste here your Comic Vine API key</source>
-        <translation type="unfinished"></translation>
+        <translation>Comic Vine API anahtarınızı buraya yapıştırın</translation>
     </message>
     <message>
         <source>Accept</source>
-        <translation type="unfinished"></translation>
+        <translation>Kabul et</translation>
     </message>
 </context>
 <context>
@@ -132,43 +132,43 @@
     </message>
     <message>
         <source>writer</source>
-        <translation type="unfinished"></translation>
+        <translation>yazar</translation>
     </message>
     <message>
         <source>penciller</source>
-        <translation type="unfinished"></translation>
+        <translation>kalemci</translation>
     </message>
     <message>
         <source>inker</source>
-        <translation type="unfinished"></translation>
+        <translation>mürekkepçi</translation>
     </message>
     <message>
         <source>colorist</source>
-        <translation type="unfinished"></translation>
+        <translation>renklendiren</translation>
     </message>
     <message>
         <source>letterer</source>
-        <translation type="unfinished"></translation>
+        <translation>metinlendiren</translation>
     </message>
     <message>
         <source>cover artist</source>
-        <translation type="unfinished"></translation>
+        <translation>kapak sanatçısı</translation>
     </message>
     <message>
         <source>Publisher</source>
-        <translation type="unfinished"></translation>
+        <translation>Yayıncı</translation>
     </message>
     <message>
         <source>color</source>
-        <translation type="unfinished"></translation>
+        <translation>renk</translation>
     </message>
     <message>
         <source>b/w</source>
-        <translation type="unfinished"></translation>
+        <translation>s/b</translation>
     </message>
     <message>
         <source>Characters</source>
-        <translation type="unfinished"></translation>
+        <translation>Karakterler</translation>
     </message>
 </context>
 <context>
@@ -203,62 +203,62 @@
     </message>
     <message>
         <source>Current Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Geçreli Sayfa</translation>
     </message>
     <message>
         <source>Rating</source>
-        <translation type="unfinished"></translation>
+        <translation>Reyting</translation>
     </message>
 </context>
 <context>
     <name>ComicVineDialog</name>
     <message>
         <source>skip</source>
-        <translation type="unfinished"></translation>
+        <translation>geç</translation>
     </message>
     <message>
         <source>back</source>
-        <translation type="unfinished"></translation>
+        <translation>geri</translation>
     </message>
     <message>
         <source>next</source>
-        <translation type="unfinished"></translation>
+        <translation>sonraki</translation>
     </message>
     <message>
         <source>search</source>
-        <translation type="unfinished"></translation>
+        <translation>ara</translation>
     </message>
     <message>
         <source>close</source>
-        <translation type="unfinished"></translation>
+        <translation>kapat</translation>
     </message>
     <message>
         <source>Looking for volume...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sayılar aranıyor...</translation>
     </message>
     <message>
         <source>comic %1 of %2 - %3</source>
-        <translation type="unfinished"></translation>
+        <translation>çizgi roman %1 / %2 - %3</translation>
     </message>
     <message>
         <source>%1 comics selected</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 çizgi roman seçildi</translation>
     </message>
     <message>
         <source>Error connecting to ComicVine</source>
-        <translation type="unfinished"></translation>
+        <translation>ComicVine sitesine bağlanılırken hata</translation>
     </message>
     <message>
         <source>Retrieving tags for : %1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 için etiketler alınıyor</translation>
     </message>
     <message>
         <source>Retrieving volume info...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sayı bilgileri alınıyor...</translation>
     </message>
     <message>
         <source>Looking for comic...</source>
-        <translation type="unfinished"></translation>
+        <translation>Çizgi romanlar aranıyor...</translation>
     </message>
 </context>
 <context>
@@ -285,11 +285,11 @@
     </message>
     <message>
         <source>Comics folder : </source>
-        <translation>Çizgi dosyası:</translation>
+        <translation>Çizgi roman klasörü : </translation>
     </message>
     <message>
         <source>Library Name : </source>
-        <translation>Kütüphane adı:</translation>
+        <translation>Kütüphane Adı : </translation>
     </message>
     <message>
         <source>Path not found</source>
@@ -300,52 +300,52 @@
     <name>EditShortcutsDialog</name>
     <message>
         <source>Restore defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Varsayılanları geri yükle</translation>
     </message>
     <message>
         <source>To change a shortcut, double click in the key combination and type the new keys.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bir kısayolu değiştirmek için tuş kombinasyonuna çift tıklayın ve yeni tuşları girin.</translation>
     </message>
     <message>
         <source>Shortcuts settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Kısayol ayarları</translation>
     </message>
     <message>
         <source>Shortcut in use</source>
-        <translation type="unfinished"></translation>
+        <translation>Kısayol kullanımda</translation>
     </message>
     <message>
         <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%1&quot; kısayalou zaten başka bir işlev tarafından kullanılıyor</translation>
     </message>
 </context>
 <context>
     <name>EmptyFolderWidget</name>
     <message>
         <source>Subfolders in this folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Bu klasörde alt klasörler</translation>
     </message>
     <message>
         <source>Empty folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Boş klasör</translation>
     </message>
     <message>
         <source>Drag and drop folders and comics here</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasörleri ve çizgi romanları sürükleyip buraya bırakın</translation>
     </message>
 </context>
 <context>
     <name>EmptyLabelWidget</name>
     <message>
         <source>This label doesn&apos;t contain comics yet</source>
-        <translation type="unfinished"></translation>
+        <translation>Bu etiket henüz çizgi roman içermiyor</translation>
     </message>
 </context>
 <context>
     <name>EmptyReadingListWidget</name>
     <message>
         <source>This reading list does not contain any comics yet</source>
-        <translation type="unfinished"></translation>
+        <translation>Bu okuma listesi henüz çizgi roman içermiyor</translation>
     </message>
 </context>
 <context>
@@ -395,7 +395,7 @@
     </message>
     <message>
         <source>Output folder : </source>
-        <translation>Çıkış klasörü:</translation>
+        <translation>Çıktı klasörü : </translation>
     </message>
     <message>
         <source>Problem found while writing</source>
@@ -418,22 +418,22 @@
     </message>
     <message>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
-        <translation type="unfinished"></translation>
+        <translation>CRC hatası, sayfada (%1): bazı sayfalar düzgün görüntülenmeyecek</translation>
     </message>
     <message>
         <source>Unknown error opening the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya açılırken bilinmeyen hata</translation>
     </message>
     <message>
         <source>Format not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya biçimi desteklenmiyor</translation>
     </message>
 </context>
 <context>
     <name>GridComicsView</name>
     <message>
         <source>Show info</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilgi göster</translation>
     </message>
 </context>
 <context>
@@ -459,7 +459,7 @@
     </message>
     <message>
         <source>Info database location : </source>
-        <translation>Bilgi konumu :</translation>
+        <translation>Bilgi veritabanı konumu : </translation>
     </message>
     <message>
         <source>Import comics info</source>
@@ -467,15 +467,14 @@
     </message>
     <message>
         <source>Comics info file (*.ydb)</source>
-        <translation>
-Çizgi Roman  bilgileri (*.ydb)</translation>
+        <translation>Çizgi roman bilgi dosyası (*.ydb)</translation>
     </message>
 </context>
 <context>
     <name>ImportLibraryDialog</name>
     <message>
         <source>Destination folder : </source>
-        <translation>Hedef klasör:</translation>
+        <translation>Hedef klasör : </translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -491,15 +490,15 @@
     </message>
     <message>
         <source>Package location : </source>
-        <translation>Paket konumu:</translation>
+        <translation>Paket konumu : </translation>
     </message>
     <message>
         <source>Library Name : </source>
-        <translation>Kütüphane Adı :</translation>
+        <translation>Kütüphane Adı : </translation>
     </message>
     <message>
         <source>Extract a catalog</source>
-        <translation>Catalog&apos;a çıkart</translation>
+        <translation>Katalog ayıkla</translation>
     </message>
 </context>
 <context>
@@ -530,11 +529,11 @@
     </message>
     <message>
         <source>Upgrading the library</source>
-        <translation type="unfinished"></translation>
+        <translation>Kütüphane güncelleniyor</translation>
     </message>
     <message>
         <source>&lt;p&gt;The current library is being upgraded, please wait.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Mevcut kütüphane güncelleniyor, lütfen bekleyin.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -758,7 +757,7 @@
     </message>
     <message>
         <source> library?</source>
-        <translation>kütüphane?</translation>
+        <translation> kütüphane?</translation>
     </message>
     <message>
         <source>Are you sure?</source>
@@ -766,219 +765,219 @@
     </message>
     <message>
         <source>Save selected covers to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen kapakları şuraya kaydet...</translation>
     </message>
     <message>
         <source>Save covers of the selected comics as JPG files</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen çizgi romanların kapaklarını JPG dosyaları olarak kaydet</translation>
     </message>
     <message>
         <source>Set as manga</source>
-        <translation type="unfinished"></translation>
+        <translation>Manga olarak ayarla</translation>
     </message>
     <message>
         <source>Set issue as manga</source>
-        <translation type="unfinished"></translation>
+        <translation>Sayıyı manga olarak ayarla</translation>
     </message>
     <message>
         <source>Set as normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Normal olarak ayarla</translation>
     </message>
     <message>
         <source>Set issue as normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Sayıyı normal olarak ayarla</translation>
     </message>
     <message>
         <source>Show or hide read marks</source>
-        <translation type="unfinished"></translation>
+        <translation>Okundu işaretlerini göster yada gizle</translation>
     </message>
     <message>
         <source>Add new folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeni klasör ekle</translation>
     </message>
     <message>
         <source>Add new folder to the current library</source>
-        <translation type="unfinished"></translation>
+        <translation>Geçerli kitaplığa yeni klasör ekle</translation>
     </message>
     <message>
         <source>Delete folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasörü sil</translation>
     </message>
     <message>
         <source>Delete current folder from disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Geçerli klasörü diskten sil</translation>
     </message>
     <message>
         <source>Collapse all nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Tüm düğümleri kapat</translation>
     </message>
     <message>
         <source>Change between comics views</source>
-        <translation type="unfinished"></translation>
+        <translation>Çizgi roman görünümleri arasında değiştir</translation>
     </message>
     <message>
         <source>Set as uncompleted</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamamlanmamış olarak ayarla</translation>
     </message>
     <message>
         <source>Set as completed</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamamlanmış olarak ayarla</translation>
     </message>
     <message>
         <source>Set as comic</source>
-        <translation type="unfinished"></translation>
+        <translation>Çizgi roman olarak ayarla</translation>
     </message>
     <message>
         <source>Reset comic rating</source>
-        <translation type="unfinished"></translation>
+        <translation>Çizgi roman reytingini sıfırla</translation>
     </message>
     <message>
         <source>Assign current order to comics</source>
-        <translation type="unfinished"></translation>
+        <translation>Geçerli sırayı çizgi romanlara ata</translation>
     </message>
     <message>
         <source>Download tags from Comic Vine</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiketleri Comic Vine sitesinden indir</translation>
     </message>
     <message>
         <source>Edit shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Kısayolları düzenle</translation>
     </message>
     <message>
         <source>Update folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasörü güncelle</translation>
     </message>
     <message>
         <source>Update current folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Geçerli klasörü güncelle</translation>
     </message>
     <message>
         <source>Add new reading list</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeni okuma listesi ekle</translation>
     </message>
     <message>
         <source>Add a new reading list to the current library</source>
-        <translation type="unfinished"></translation>
+        <translation>Geçerli kitaplığa yeni bir okuma listesi ekle</translation>
     </message>
     <message>
         <source>Remove reading list</source>
-        <translation type="unfinished"></translation>
+        <translation>Okuma listesini kaldır</translation>
     </message>
     <message>
         <source>Remove current reading list from the library</source>
-        <translation type="unfinished"></translation>
+        <translation>Geçerli okuma listesini kütüphaneden kaldır</translation>
     </message>
     <message>
         <source>Add new label</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeni etiket ekle</translation>
     </message>
     <message>
         <source>Add a new label to this library</source>
-        <translation type="unfinished"></translation>
+        <translation>Bu kitaplığa yeni bir etiket ekle</translation>
     </message>
     <message>
         <source>Rename selected list</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen listeyi yeniden adlandır</translation>
     </message>
     <message>
         <source>Rename any selected labels or lists</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen etiketleri ya da listeleri yeniden adlandır</translation>
     </message>
     <message>
         <source>Add to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Şuraya ekle...</translation>
     </message>
     <message>
         <source>Favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Favoriler</translation>
     </message>
     <message>
         <source>Add selected comics to favorites list</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen çizgi romanları favoriler listesine ekle</translation>
     </message>
     <message>
         <source>Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasör</translation>
     </message>
     <message>
         <source>Comic</source>
-        <translation type="unfinished"></translation>
+        <translation>Çizgi roman</translation>
     </message>
     <message>
         <source>Upgrade failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Yükseltme başarısız oldu</translation>
     </message>
     <message>
         <source>There were errors during library upgrade in: </source>
-        <translation type="unfinished"></translation>
+        <translation>Kütüphane yükseltmesi sırasında hatalar oluştu: </translation>
     </message>
     <message>
         <source>Copying comics...</source>
-        <translation type="unfinished"></translation>
+        <translation>Çizgi romanlar kopyalanıyor...</translation>
     </message>
     <message>
         <source>Moving comics...</source>
-        <translation type="unfinished"></translation>
+        <translation>Çizgi romanlar taşınıyor...</translation>
     </message>
     <message>
         <source>Folder name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasör adı:</translation>
     </message>
     <message>
         <source>No folder selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiçbir klasör seçilmedi</translation>
     </message>
     <message>
         <source>Please, select a folder first</source>
-        <translation type="unfinished"></translation>
+        <translation>Lütfen, önce bir klasör seçiniz</translation>
     </message>
     <message>
         <source>Error in path</source>
-        <translation type="unfinished"></translation>
+        <translation>Yolda hata</translation>
     </message>
     <message>
         <source>There was an error accessing the folder&apos;s path</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasörün yoluna erişilirken hata oluştu</translation>
     </message>
     <message>
         <source>The selected folder and all its contents will be deleted from your disk. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen klasör ve tüm içeriği diskinizden silinecek. Emin misin?</translation>
     </message>
     <message>
         <source>Unable to delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Silinemedi</translation>
     </message>
     <message>
         <source>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files.</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçili klasörleri silmeye çalışırken bir sorun oluştu. Lütfen yazma izinlerini kontrol edin ve herhangi bir uygulamanın bu klasörleri veya içerdiği dosyalardan herhangi birini kullandığından emin olun.</translation>
     </message>
     <message>
         <source>Add new reading lists</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeni okuma listeleri ekle</translation>
     </message>
     <message>
         <source>List name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Liste adı:</translation>
     </message>
     <message>
         <source>Delete list/label</source>
-        <translation type="unfinished"></translation>
+        <translation>Listeyi/Etiketi sil</translation>
     </message>
     <message>
         <source>The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen öğe silinecek, çizgi romanlarınız veya klasörleriniz diskinizden SİLİNMEYECEKTİR. Emin misin?</translation>
     </message>
     <message>
         <source>Rename list name</source>
-        <translation type="unfinished"></translation>
+        <translation>Listeyi yeniden adlandır</translation>
     </message>
     <message>
         <source>Save covers</source>
-        <translation type="unfinished"></translation>
+        <translation>Kapakları kaydet</translation>
     </message>
     <message>
         <source>You are adding too many libraries.</source>
-        <translation type="unfinished"></translation>
+        <translation>Çok fazla kütüphane ekliyorsunuz.</translation>
     </message>
     <message>
         <source>You are adding too many libraries.
@@ -986,77 +985,81 @@
 You probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.
 
 YACReaderLibrary will not stop you from creating more libraries but you should keep the number of libraries low.</source>
-        <translation type="unfinished"></translation>
+        <translation>Çok fazla kütüphane ekliyorsunuz.
+
+Muhtemelen üst düzey çizgi roman klasörünüzde yalnızca bir kütüphaneye ihtiyacınız vardır, sol kenar çubuğundaki klasörler bölümünü kullanarak herhangi bir alt klasöre göz atabilirsiniz.
+
+YACReaderLibrary daha fazla kütüphane oluşturmanıza engel olmaz ancak kütüphane sayısını düşük tutmalısınız.</translation>
     </message>
     <message>
         <source>YACReader not found</source>
-        <translation type="unfinished"></translation>
+        <translation>YACReader bulunamadı</translation>
     </message>
     <message>
         <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
-        <translation type="unfinished"></translation>
+        <translation>YACReader bulunamadı. YACReader, YACReaderLibrary ile aynı klasöre kurulmalıdır.</translation>
     </message>
     <message>
         <source>YACReader not found. There might be a problem with your YACReader installation.</source>
-        <translation type="unfinished"></translation>
+        <translation>YACReader bulunamadı. YACReader kurulumunuzda bir sorun olabilir.</translation>
     </message>
     <message>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen çizgi romanlar silinmeye çalışılırken bir sorun oluştu. Lütfen seçilen dosyalarda veya klasörleri içeren yazma izinlerini kontrol edin.</translation>
     </message>
     <message>
         <source>Assign comics numbers</source>
-        <translation type="unfinished"></translation>
+        <translation>Çizgi roman numaraları ata</translation>
     </message>
     <message>
         <source>Assign numbers starting in:</source>
-        <translation type="unfinished"></translation>
+        <translation>Şunlardan başlayarak numaralar ata:</translation>
     </message>
     <message>
         <source>Remove comics</source>
-        <translation type="unfinished"></translation>
+        <translation>Çizgi romanları kaldır</translation>
     </message>
     <message>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Çizgi romanlar yalnızca mevcut etiketten/listeden silinecektir. Emin misin?</translation>
     </message>
 </context>
 <context>
     <name>LocalComicListModel</name>
     <message>
         <source>file name</source>
-        <translation type="unfinished"></translation>
+        <translation>dosya adı</translation>
     </message>
 </context>
 <context>
     <name>LogWindow</name>
     <message>
         <source>Log window</source>
-        <translation type="unfinished"></translation>
+        <translation>Günlük penceresi</translation>
     </message>
     <message>
         <source>&amp;Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Duraklak</translation>
     </message>
     <message>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kaydet</translation>
     </message>
     <message>
         <source>C&amp;lear</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Temizle</translation>
     </message>
     <message>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kopyala</translation>
     </message>
     <message>
         <source>Level:</source>
-        <translation type="unfinished"></translation>
+        <translation>Düzey:</translation>
     </message>
     <message>
         <source>&amp;Auto scroll</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Otomatik kaydır</translation>
     </message>
 </context>
 <context>
@@ -1086,67 +1089,67 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
     </message>
     <message>
         <source>Tray icon settings (experimental)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tepsi simgesi ayarları (deneysel)</translation>
     </message>
     <message>
         <source>Close to tray</source>
-        <translation type="unfinished"></translation>
+        <translation>Tepsiyi kapat</translation>
     </message>
     <message>
         <source>Start into the system tray</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistem tepsisinde başlat</translation>
     </message>
     <message>
         <source>Edit Comic Vine API key</source>
-        <translation type="unfinished"></translation>
+        <translation>Comic Vine API anahtarını düzenle</translation>
     </message>
     <message>
         <source>Comic Vine API key</source>
-        <translation type="unfinished"></translation>
+        <translation>Comic Vine API anahtarı</translation>
     </message>
     <message>
         <source>Enable background image</source>
-        <translation type="unfinished"></translation>
+        <translation>Arka plan resmini etkinleştir</translation>
     </message>
     <message>
         <source>Opacity level</source>
-        <translation type="unfinished"></translation>
+        <translation>Matlık düzeyi</translation>
     </message>
     <message>
         <source>Blur level</source>
-        <translation type="unfinished"></translation>
+        <translation>Bulanıklık düzeyi</translation>
     </message>
     <message>
         <source>Use selected comic cover as background</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen çizgi roman kapanığı arka plan olarak kullan</translation>
     </message>
     <message>
         <source>Restore defautls</source>
-        <translation type="unfinished"></translation>
+        <translation>Varsayılanları geri yükle</translation>
     </message>
     <message>
         <source>Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Arka plan</translation>
     </message>
     <message>
         <source>Display continue reading banner</source>
-        <translation type="unfinished"></translation>
+        <translation>Okuma devam et bannerını göster</translation>
     </message>
     <message>
         <source>Continue reading</source>
-        <translation type="unfinished"></translation>
+        <translation>Okumaya devam et</translation>
     </message>
     <message>
         <source>Comic Flow</source>
-        <translation type="unfinished"></translation>
+        <translation>Çizgi Roman Akışı</translation>
     </message>
     <message>
         <source>Grid view</source>
-        <translation type="unfinished"></translation>
+        <translation>Izgara görünümü</translation>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Genel</translation>
     </message>
 </context>
 <context>
@@ -1281,84 +1284,84 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
     </message>
     <message>
         <source>Genre:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tür:</translation>
     </message>
     <message>
         <source>Manga:</source>
-        <translation type="unfinished"></translation>
+        <translation>Manga:</translation>
     </message>
     <message>
         <source>Comic Vine link: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; view &lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Comic Vine bağlantısı: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; görüntüle &lt;/a&gt;</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <source>7z lib not found</source>
-        <translation type="unfinished"></translation>
+        <translation>7z lib bulunamadı</translation>
     </message>
     <message>
         <source>unable to load 7z lib from ./utils</source>
-        <translation type="unfinished"></translation>
+        <translation>./utils&apos;den 7z lib yüklenemiyor</translation>
     </message>
     <message>
         <source>Trace</source>
-        <translation type="unfinished"></translation>
+        <translation>İz</translation>
     </message>
     <message>
         <source>Debug</source>
-        <translation type="unfinished"></translation>
+        <translation>Hata ayıklama</translation>
     </message>
     <message>
         <source>Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilgi</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Uyarı</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Hata</translation>
     </message>
     <message>
         <source>Fatal</source>
-        <translation type="unfinished"></translation>
+        <translation>Ölümcül</translation>
     </message>
 </context>
 <context>
     <name>QsLogging::LogWindowModel</name>
     <message>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Süre</translation>
     </message>
     <message>
         <source>Level</source>
-        <translation type="unfinished"></translation>
+        <translation>Düzel</translation>
     </message>
     <message>
         <source>Message</source>
-        <translation type="unfinished"></translation>
+        <translation>Mesaj</translation>
     </message>
 </context>
 <context>
     <name>QsLogging::Window</name>
     <message>
         <source>&amp;Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Duraklak</translation>
     </message>
     <message>
         <source>&amp;Resume</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sürdür</translation>
     </message>
     <message>
         <source>Save log</source>
-        <translation type="unfinished"></translation>
+        <translation>Günlük tut</translation>
     </message>
     <message>
         <source>Log file (*.log)</source>
-        <translation type="unfinished"></translation>
+        <translation>Günlük dosyası (*.log)</translation>
     </message>
 </context>
 <context>
@@ -1377,90 +1380,90 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
     </message>
     <message>
         <source>New Library Name : </source>
-        <translation>Yeni Kütüphane Adı :</translation>
+        <translation>Yeni Kütüphane Adı : </translation>
     </message>
 </context>
 <context>
     <name>ScraperResultsPaginator</name>
     <message>
         <source>Number of volumes found : %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Bulunan bölüm sayısı: %1</translation>
     </message>
     <message>
         <source>page %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>sayfa %1 / %2</translation>
     </message>
     <message>
         <source>Number of %1 found : %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Sayı %1, bulunan : %2</translation>
     </message>
 </context>
 <context>
     <name>SearchSingleComic</name>
     <message>
         <source>Please provide some additional information.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lütfen bazı ek bilgiler sağlayın.</translation>
     </message>
     <message>
         <source>Series:</source>
-        <translation type="unfinished"></translation>
+        <translation>Seriler:</translation>
     </message>
 </context>
 <context>
     <name>SearchVolume</name>
     <message>
         <source>Please provide some additional information.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lütfen bazı ek bilgiler sağlayın.</translation>
     </message>
     <message>
         <source>Series:</source>
-        <translation type="unfinished"></translation>
+        <translation>Seriler:</translation>
     </message>
 </context>
 <context>
     <name>SelectComic</name>
     <message>
         <source>Please, select the right comic info.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lütfen, doğru çizgi roman bilgisini seçin.</translation>
     </message>
     <message>
         <source>comics</source>
-        <translation type="unfinished"></translation>
+        <translation>çizgi roman</translation>
     </message>
     <message>
         <source>loading cover</source>
-        <translation type="unfinished"></translation>
+        <translation>kapak yükleniyor</translation>
     </message>
     <message>
         <source>loading description</source>
-        <translation type="unfinished"></translation>
+        <translation>açıklama yükleniyor</translation>
     </message>
     <message>
         <source>description unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>açıklama bulunamadı</translation>
     </message>
 </context>
 <context>
     <name>SelectVolume</name>
     <message>
         <source>Please, select the right series for your comic.</source>
-        <translation type="unfinished"></translation>
+        <translation>Çizgi romanınız için doğru seriyi seçin.</translation>
     </message>
     <message>
         <source>volumes</source>
-        <translation type="unfinished"></translation>
+        <translation>sayı</translation>
     </message>
     <message>
         <source>loading cover</source>
-        <translation type="unfinished"></translation>
+        <translation>kapak yükleniyor</translation>
     </message>
     <message>
         <source>loading description</source>
-        <translation type="unfinished"></translation>
+        <translation>açıklama yükleniyor</translation>
     </message>
     <message>
         <source>description unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>açıklama bulunamadı</translation>
     </message>
 </context>
 <context>
@@ -1475,7 +1478,7 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
     </message>
     <message>
         <source>You are trying to get information for various comics at once, are they part of the same series?</source>
-        <translation type="unfinished"></translation>
+        <translation>Aynı anda çeşitli çizgi romanlar için bilgi almaya çalışıyorsunuz, bunlar aynı serinin parçası mı?</translation>
     </message>
 </context>
 <context>
@@ -1494,58 +1497,59 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
     </message>
     <message>
         <source>Server connectivity information</source>
-        <translation type="unfinished"></translation>
+        <translation>Sunucu bağlantı bilgileri</translation>
     </message>
     <message>
         <source>Scan it!</source>
-        <translation type="unfinished"></translation>
+        <translation>Tara!</translation>
     </message>
     <message>
         <source>YACReader is available for iOS devices. &lt;a href=&apos;http://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt; Discover it! &lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>YACReader, iOS cihazlar için kullanılabilir. &lt;a href=&apos;http://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt; Keşfedin! &lt;/a&gt;</translation>
     </message>
     <message>
         <source>Choose an IP address</source>
-        <translation type="unfinished"></translation>
+        <translation>IP adresi seçin</translation>
     </message>
     <message>
         <source>display less information about folders in the browser
 to improve the performance</source>
-        <translation type="unfinished"></translation>
+        <translation>tarayıcıda klasörler hakkında daha az bilgi göster
+performansı iyileştirmek için</translation>
     </message>
     <message>
         <source>Could not load libqrencode.</source>
-        <translation type="unfinished"></translation>
+        <translation>libqrencode yüklenemedi.</translation>
     </message>
 </context>
 <context>
     <name>SortVolumeComics</name>
     <message>
         <source>Please, sort the list of comics on the left until it matches the comics&apos; information.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lütfen, çizgi romanların bilgileriyle eşleşene kadar soldaki çizgi roman listesini sıralayın.</translation>
     </message>
     <message>
         <source>sort comics to match comic information</source>
-        <translation type="unfinished"></translation>
+        <translation>çizgi roman bilgilerini eşleştirmek için çizgi romanları sıralayın</translation>
     </message>
     <message>
         <source>issues</source>
-        <translation type="unfinished"></translation>
+        <translation>sayı</translation>
     </message>
     <message>
         <source>remove selected comics</source>
-        <translation type="unfinished"></translation>
+        <translation>seçilen çizgi romanları kaldır</translation>
     </message>
     <message>
         <source>restore all removed comics</source>
-        <translation type="unfinished"></translation>
+        <translation>tüm seçilen çizgi romanları geri yükle</translation>
     </message>
 </context>
 <context>
     <name>TitleHeader</name>
     <message>
         <source>SEARCH</source>
-        <translation type="unfinished"></translation>
+        <translation>ARA</translation>
     </message>
 </context>
 <context>
@@ -1567,48 +1571,48 @@ to improve the performance</source>
     <name>VolumeComicsModel</name>
     <message>
         <source>title</source>
-        <translation type="unfinished"></translation>
+        <translation>başlık</translation>
     </message>
 </context>
 <context>
     <name>VolumesModel</name>
     <message>
         <source>year</source>
-        <translation type="unfinished"></translation>
+        <translation>yıl</translation>
     </message>
     <message>
         <source>issues</source>
-        <translation type="unfinished"></translation>
+        <translation>sayı</translation>
     </message>
     <message>
         <source>publisher</source>
-        <translation type="unfinished"></translation>
+        <translation>yayıncı</translation>
     </message>
 </context>
 <context>
     <name>YACReader::TrayIconController</name>
     <message>
         <source>&amp;Restore</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Geri Yükle</translation>
     </message>
     <message>
         <source>&amp;Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Çıkış</translation>
     </message>
     <message>
         <source>Systray</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistem tepsisi</translation>
     </message>
     <message>
         <source>YACReaderLibrary will keep running in the system tray. To terminate the program, choose &lt;b&gt;Quit&lt;/b&gt; in the context menu of the system tray icon.</source>
-        <translation type="unfinished"></translation>
+        <translation>YACReaderLibrary sistem tepsisinde çalışmaya devam edecektir. Programı sonlandırmak için sistem tepsisi simgesinin bağlam menüsünden &lt;b&gt;Çık&lt;/b&gt;&apos;ı seçin.</translation>
     </message>
 </context>
 <context>
     <name>YACReader::WhatsNewDialog</name>
     <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Kapat</translation>
     </message>
 </context>
 <context>
@@ -1735,7 +1739,7 @@ to improve the performance</source>
     </message>
     <message>
         <source>Cover gap</source>
-        <translation>Kapak </translation>
+        <translation>Kapak boşluğu</translation>
     </message>
     <message>
         <source>High Performance</source>
@@ -1762,11 +1766,11 @@ to improve the performance</source>
     <name>YACReaderNavigationController</name>
     <message>
         <source>No favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Favoriler boş</translation>
     </message>
     <message>
         <source>You are not reading anything yet, come on!!</source>
-        <translation type="unfinished"></translation>
+        <translation>Henüz bir şey okumuyorsun, hadi ama!</translation>
     </message>
 </context>
 <context>
@@ -1785,18 +1789,18 @@ to improve the performance</source>
     </message>
     <message>
         <source>Edit shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Kısayolları düzenle</translation>
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Kısayollar</translation>
     </message>
 </context>
 <context>
     <name>YACReaderSearchLineEdit</name>
     <message>
         <source>type to search</source>
-        <translation type="unfinished"></translation>
+        <translation>aramak için yazınız</translation>
     </message>
 </context>
 <context>
@@ -1811,19 +1815,19 @@ to improve the performance</source>
     </message>
     <message>
         <source>Libraries</source>
-        <translation type="unfinished"></translation>
+        <translation>Kütüphaneler</translation>
     </message>
     <message>
         <source>Folders</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasör</translation>
     </message>
     <message>
         <source>Reading Lists</source>
-        <translation type="unfinished"></translation>
+        <translation>Okuma Listeleri</translation>
     </message>
     <message>
         <source>READING LISTS</source>
-        <translation type="unfinished"></translation>
+        <translation>OKUMA LİSTELERİ</translation>
     </message>
 </context>
 </TS>
