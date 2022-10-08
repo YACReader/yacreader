@@ -54,7 +54,7 @@ jobs:
   - script: |
       sudo apt-get update
       sudo apt-get install -y qtchooser qtbase5-dev-tools qt5-qmake \
-      qtbase5-dev qtmultimedia5-dev libpoppler-qt5-dev qttools5-dev-tools\
+      qtbase5-dev qtmultimedia5-dev libpoppler-qt5-dev qttools5-dev-tools \
       libqt5opengl5-dev libunarr-dev qtdeclarative5-dev libqt5svg5-dev qtquickcontrols2-5-dev
     displayName: 'Install dependencies'
   - script: |
