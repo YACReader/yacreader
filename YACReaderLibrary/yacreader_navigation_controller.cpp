@@ -11,7 +11,7 @@
 #include "folder_model.h"
 #include "reading_list_model.h"
 #include "comics_view.h"
-#include "empty_folder_widget.h"
+#include "folder_content_view.h"
 #include "yacreader_search_line_edit.h"
 #include "yacreader_global.h"
 #include "empty_label_widget.h"
@@ -249,9 +249,18 @@ void YACReaderNavigationController::selectSubfolder(const QModelIndex &sourceMIP
 
 void YACReaderNavigationController::loadEmptyFolderInfo(const QModelIndex &modelIndex)
 {
-    QStringList subfolders;
-    subfolders = libraryWindow->foldersModel->getSubfoldersNames(modelIndex);
-    comicsViewsManager->emptyFolderWidget->setSubfolders(modelIndex, subfolders);
+    auto readingComicsModel = new ComicModel();
+
+    auto isRoot = !modelIndex.isValid();
+
+    if (isRoot) {
+        readingComicsModel->setupReadingModelData(libraryWindow->foldersModel->getDatabase());
+    }
+
+    comicsViewsManager->folderContentView->setContinueReadingModel(readingComicsModel);
+
+    auto subFolderModel = libraryWindow->foldersModel->getSubfoldersModel(modelIndex);
+    comicsViewsManager->folderContentView->setModel(modelIndex, subFolderModel);
 }
 
 void YACReaderNavigationController::loadPreviousStatus()
@@ -266,7 +275,10 @@ void YACReaderNavigationController::setupConnections()
     connect(libraryWindow->foldersView, &YACReaderTreeView::clicked, this, &YACReaderNavigationController::selectedFolder);
     connect(libraryWindow->listsView, &QAbstractItemView::clicked, this, &YACReaderNavigationController::selectedList);
     connect(libraryWindow->historyController, &YACReaderHistoryController::modelIndexSelected, this, &YACReaderNavigationController::selectedIndexFromHistory);
-    connect(comicsViewsManager->emptyFolderWidget, &EmptyFolderWidget::subfolderSelected, this, &YACReaderNavigationController::selectSubfolder);
+    connect(comicsViewsManager->folderContentView, &FolderContentView::subfolderSelected, this, &YACReaderNavigationController::selectSubfolder);
+    connect(comicsViewsManager->folderContentView, &FolderContentView::openComic, libraryWindow, QOverload<const ComicDB &, const ComicModel::Mode>::of(&LibraryWindow::openComic));
+    connect(comicsViewsManager->folderContentView, &FolderContentView::openFolderContextMenu, libraryWindow, &LibraryWindow::showGridFoldersContextMenu);
+    connect(comicsViewsManager->folderContentView, &FolderContentView::openContinueReadingComicContextMenu, libraryWindow, &LibraryWindow::showContinueReadingContextMenu);
     connect(libraryWindow->comicsModel, &ComicModel::isEmpty, this, &YACReaderNavigationController::reselectCurrentSource);
 }
 

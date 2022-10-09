@@ -14,6 +14,8 @@
 #include "folder_query_result_processor.h"
 
 #include "comic_model.h"
+#include "comic_db.h"
+#include "folder.h"
 
 #include <future>
 #include <memory>
@@ -379,6 +381,8 @@ public slots:
     void deleteComicsFromList();
     // void showSocial();
     void showFoldersContextMenu(const QPoint &point);
+    void showGridFoldersContextMenu(QPoint point, Folder folder);
+    void showContinueReadingContextMenu(QPoint point, ComicDB comic);
     void libraryAlreadyExists(const QString &name);
     void importLibraryPackage();
     void updateComicsView(quint64 libraryId, const ComicDB &comic);

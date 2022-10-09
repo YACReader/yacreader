@@ -6,7 +6,7 @@
 #include "grid_comics_view.h"
 #include "info_comics_view.h"
 #include "comics_view_transition.h"
-#include "empty_folder_widget.h"
+#include "folder_content_view.h"
 #include "empty_label_widget.h"
 #include "empty_special_list.h"
 #include "empty_reading_list_widget.h"
@@ -48,7 +48,7 @@ YACReaderComicsViewsManager::YACReaderComicsViewsManager(QSettings *settings, Li
     doComicsViewConnections();
 
     comicsViewStack->addWidget(comicsViewTransition = new ComicsViewTransition());
-    comicsViewStack->addWidget(emptyFolderWidget = new EmptyFolderWidget());
+    comicsViewStack->addWidget(folderContentView = new FolderContentView());
     comicsViewStack->addWidget(emptyLabelWidget = new EmptyLabelWidget());
     comicsViewStack->addWidget(emptySpecialList = new EmptySpecialListWidget());
     comicsViewStack->addWidget(emptyReadingList = new EmptyReadingListWidget());
@@ -59,8 +59,8 @@ YACReaderComicsViewsManager::YACReaderComicsViewsManager(QSettings *settings, Li
     comicsViewStack->setCurrentWidget(comicsView);
 
     // connections
-    connect(emptyFolderWidget, &EmptyFolderWidget::copyComicsToCurrentFolder, libraryWindow, &LibraryWindow::copyAndImportComicsToCurrentFolder);
-    connect(emptyFolderWidget, &EmptyFolderWidget::moveComicsToCurrentFolder, libraryWindow, &LibraryWindow::moveAndImportComicsToCurrentFolder);
+    connect(folderContentView, &FolderContentView::copyComicsToCurrentFolder, libraryWindow, &LibraryWindow::copyAndImportComicsToCurrentFolder);
+    connect(folderContentView, &FolderContentView::moveComicsToCurrentFolder, libraryWindow, &LibraryWindow::moveAndImportComicsToCurrentFolder);
 }
 
 QWidget *YACReaderComicsViewsManager::containerWidget()
@@ -86,7 +86,7 @@ void YACReaderComicsViewsManager::showComicsView()
 
 void YACReaderComicsViewsManager::showEmptyFolderView()
 {
-    comicsViewStack->setCurrentWidget(emptyFolderWidget);
+    comicsViewStack->setCurrentWidget(folderContentView);
 }
 
 void YACReaderComicsViewsManager::showEmptyLabelView()

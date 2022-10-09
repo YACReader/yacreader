@@ -79,6 +79,7 @@
 #include "opengl_checker.h"
 
 #include "yacreader_comics_views_manager.h"
+#include "folder_content_view.h"
 
 #include "trayicon_controller.h"
 
@@ -1544,7 +1545,7 @@ void LibraryWindow::reloadAfterCopyMove(const QModelIndex &mi)
         navigationController->loadFolderInfo(mi);
     }
 
-    foldersModel->fetchMoreFromDB(mi);
+    foldersModel->reload();
 
     enableNeededActions();
 }
@@ -1783,6 +1784,87 @@ void LibraryWindow::showComicsItemContextMenu(const QPoint &point)
     menu.exec(comicsViewsManager->comicsView->mapToGlobal(point));
 }
 
+void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
+{
+    QMenu menu;
+
+    auto openContainingFolderAction = new QAction();
+    openContainingFolderAction->setText(tr("Open folder..."));
+    openContainingFolderAction->setIcon(QIcon(":/images/menus_icons/open.png"));
+
+    auto updateFolderAction = new QAction(tr("Update folder"), this);
+    updateFolderAction->setIcon(QIcon(":/images/menus_icons/updateLibraryIcon.png"));
+
+    auto setFolderAsNotCompletedAction = new QAction();
+    setFolderAsNotCompletedAction->setText(tr("Set as uncompleted"));
+
+    auto setFolderAsCompletedAction = new QAction();
+    setFolderAsCompletedAction->setText(tr("Set as completed"));
+
+    auto setFolderAsReadAction = new QAction();
+    setFolderAsReadAction->setText(tr("Set as read"));
+
+    auto setFolderAsUnreadAction = new QAction();
+    setFolderAsUnreadAction->setText(tr("Set as unread"));
+
+    auto setFolderAsMangaAction = new QAction();
+    setFolderAsMangaAction->setText(tr("Set as manga"));
+
+    auto setFolderAsNormalAction = new QAction();
+    setFolderAsNormalAction->setText(tr("Set as comic"));
+
+    menu.addAction(openContainingFolderAction);
+    menu.addAction(updateFolderAction);
+    menu.addSeparator();
+    if (folder.isCompleted())
+        menu.addAction(setFolderAsNotCompletedAction);
+    else
+        menu.addAction(setFolderAsCompletedAction);
+    menu.addSeparator();
+    if (folder.isFinished())
+        menu.addAction(setFolderAsUnreadAction);
+    else
+        menu.addAction(setFolderAsReadAction);
+    menu.addSeparator();
+    if (folder.isManga())
+        menu.addAction(setFolderAsNormalAction);
+    else
+        menu.addAction(setFolderAsMangaAction);
+
+    // TODO update the subfolder model loaded in folderContentView
+    connect(openContainingFolderAction, &QAction::triggered, this, [=]() {
+        QDesktopServices::openUrl(QUrl("file:///" + QDir::cleanPath(currentPath() + "/" + folder.path), QUrl::TolerantMode));
+    });
+    connect(updateFolderAction, &QAction::triggered, this, [=]() {
+        updateFolder(foldersModel->getIndexFromFolder(folder));
+    });
+    connect(setFolderAsNotCompletedAction, &QAction::triggered, this, [=]() {
+        foldersModel->updateFolderCompletedStatus(QModelIndexList() << foldersModel->getIndexFromFolder(folder), false);
+    });
+    connect(setFolderAsCompletedAction, &QAction::triggered, this, [=]() {
+        foldersModel->updateFolderCompletedStatus(QModelIndexList() << foldersModel->getIndexFromFolder(folder), true);
+    });
+    connect(setFolderAsReadAction, &QAction::triggered, this, [=]() {
+        foldersModel->updateFolderFinishedStatus(QModelIndexList() << foldersModel->getIndexFromFolder(folder), true);
+    });
+    connect(setFolderAsUnreadAction, &QAction::triggered, this, [=]() {
+        foldersModel->updateFolderFinishedStatus(QModelIndexList() << foldersModel->getIndexFromFolder(folder), false);
+    });
+    connect(setFolderAsMangaAction, &QAction::triggered, this, [=]() {
+        foldersModel->updateFolderManga(QModelIndexList() << foldersModel->getIndexFromFolder(folder), true);
+    });
+    connect(setFolderAsNormalAction, &QAction::triggered, this, [=]() {
+        foldersModel->updateFolderManga(QModelIndexList() << foldersModel->getIndexFromFolder(folder), false);
+    });
+
+    menu.exec(comicsViewsManager->folderContentView->mapToGlobal(point));
+}
+
+void LibraryWindow::showContinueReadingContextMenu(QPoint point, ComicDB comic)
+{
+    qDebug() << "openContinueReadingComicContextMenu" << comic.name;
+}
+
 void LibraryWindow::setupAddToSubmenu(QMenu &menu)
 {
     menu.addAction(addToFavoritesAction);
@@ -1832,7 +1914,7 @@ void LibraryWindow::saveSelectedCoversTo()
     if (!folderPath.isEmpty()) {
         QModelIndexList comics = getSelectedComics();
         foreach (QModelIndex comic, comics) {
-            QString origin = comic.data(ComicModel::CoverPathRole).toString().remove("file:///");
+            QString origin = comic.data(ComicModel::CoverPathRole).toString().remove("file:///").remove("file:");
             QString destination = QDir(folderPath).filePath(comic.data(ComicModel::FileNameRole).toString() + ".jpg");
 
             QLOG_DEBUG() << "From : " << origin;
