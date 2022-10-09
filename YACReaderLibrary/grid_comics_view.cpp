@@ -478,6 +478,15 @@ void GridComicsView::resetScroll()
     QMetaObject::invokeMethod(scrollView, "scrollToOrigin");
 }
 
+void GridComicsView::showEvent(QShowEvent *event)
+{
+    ComicsView::showEvent(event);
+    int coverSize = settings->value(COMICS_GRID_COVER_SIZES, YACREADER_MIN_COVER_WIDTH).toInt();
+
+    coverSizeSlider->setValue(coverSize);
+    setCoversSize(coverSize);
+}
+
 QByteArray GridComicsView::getMimeDataFromSelection()
 {
     QByteArray data;

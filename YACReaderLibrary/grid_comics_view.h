@@ -73,6 +73,8 @@ protected slots:
 
     void resetScroll();
 
+    virtual void showEvent(QShowEvent *event) override;
+
 signals:
     void onScrollToOrigin();
 
