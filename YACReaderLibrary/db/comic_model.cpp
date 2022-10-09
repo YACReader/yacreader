@@ -1,6 +1,7 @@
 
 #include <QtGui>
 #include <QtDebug>
+#include <QStringBuilder>
 #include <limits>
 
 #include "comic_item.h"
@@ -237,6 +238,7 @@ QHash<int, QByteArray> ComicModel::roleNames() const
     roles[HasBeenOpenedRole] = "has_been_opened";
     roles[CoverPathRole] = "cover_path";
     roles[PublicationDate] = "date";
+    roles[ReadableTitle] = "readable_title";
 
     return roles;
 }
@@ -275,7 +277,13 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
         return item->data(Number);
     else if (role == TitleRole)
         return item->data(Title).isNull() ? item->data(FileName) : item->data(Title);
-    else if (role == FileNameRole)
+    else if (role == ReadableTitle) {
+        QString title;
+        if (!item->data(Number).isNull()) {
+            title = title % "#" % item->data(Number).toString() % " ";
+        }
+        return QVariant(title % (item->data(Title).isNull() ? item->data(FileName).toString() : item->data(Title).toString()));
+    } else if (role == FileNameRole)
         return item->data(FileName);
     else if (role == RatingRole)
         return item->data(Rating);
