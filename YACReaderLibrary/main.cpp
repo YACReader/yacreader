@@ -171,13 +171,13 @@ int main(int argc, char **argv)
 #endif
     app.installTranslator(&translator);
 
-    QTranslator viewerTranslator;
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
-    viewerTranslator.load(QString(DATADIR) + "/yacreader/languages/yacreader_" + sufix);
-#else
-    viewerTranslator.load(QCoreApplication::applicationDirPath() + "/languages/yacreader_" + sufix);
-#endif
-    app.installTranslator(&viewerTranslator);
+    /*QTranslator viewerTranslator;
+    #if defined Q_OS_UNIX && !defined Q_OS_MAC
+        viewerTranslator.load(QString(DATADIR) + "/yacreader/languages/yacreader_" + sufix);
+    #else
+        viewerTranslator.load(QCoreApplication::applicationDirPath() + "/languages/yacreader_" + sufix);
+    #endif
+        app.installTranslator(&viewerTranslator);*/
 
     qRegisterMetaType<ComicDB>("ComicDB");
 
