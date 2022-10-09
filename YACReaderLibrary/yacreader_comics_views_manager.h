@@ -12,7 +12,7 @@ class ClassicComicsView;
 class GridComicsView;
 class InfoComicsView;
 class ComicsViewTransition;
-class EmptyFolderWidget;
+class FolderContentView;
 class EmptyLabelWidget;
 class EmptySpecialListWidget;
 class EmptyReadingListWidget;
@@ -20,6 +20,7 @@ class NoSearchResultsWidget;
 
 using namespace YACReader;
 
+// TODO rename to YACReaderContentViewsManager
 class YACReaderComicsViewsManager : public QObject
 {
     Q_OBJECT
@@ -32,7 +33,7 @@ public:
 
     ComicsViewTransition *comicsViewTransition;
 
-    EmptyFolderWidget *emptyFolderWidget;
+    FolderContentView *folderContentView;
     EmptyLabelWidget *emptyLabelWidget;
     EmptySpecialListWidget *emptySpecialList;
     EmptyReadingListWidget *emptyReadingList;

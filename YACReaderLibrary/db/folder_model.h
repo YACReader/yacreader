@@ -7,9 +7,11 @@
 #include <QVariant>
 #include <QSqlQuery>
 #include <QSqlDatabase>
+#include <QUrl>
 
-#include "yacreader_global.h"
+#include "folder.h"
 #include "folder_query_result_processor.h"
+#include "yacreader_global.h"
 
 class FolderItem;
 
@@ -54,8 +56,10 @@ public:
     QModelIndex parent(const QModelIndex &index) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+    QHash<int, QByteArray> roleNames() const override;
 
     // Convenience methods
+    void reload();
     void setupModelData(QString path);
     QString getDatabase();
     QString getFolderPath(const QModelIndex &folder);
@@ -68,31 +72,44 @@ public:
     void updateFolderManga(const QModelIndexList &list, bool manga);
 
     QStringList getSubfoldersNames(const QModelIndex &mi);
+    FolderModel *getSubfoldersModel(const QModelIndex &mi);
+
+    Folder getFolder(const QModelIndex &mi);
+    QModelIndex getIndexFromFolder(const Folder &folder, const QModelIndex &parent = QModelIndex());
 
     void fetchMoreFromDB(const QModelIndex &parent);
 
     QModelIndex addFolderAtParent(const QString &folderName, const QModelIndex &parent);
+
+    Q_INVOKABLE QUrl getCoverUrlPathForComicHash(const QString &hash) const;
 
     enum Columns {
         Name = 0,
         Path = 1,
         Finished = 2,
         Completed = 3,
-        Manga = 4
+        Manga = 4,
+        FirstChildHash = 5
     }; // id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, name TEXT NOT NULL, path TEXT NOT NULL
 
     enum Roles {
         FinishedRole = Qt::UserRole + 1,
         CompletedRole,
         IdRole,
-        MangaRole
+        MangaRole,
+        CoverPathRole,
+        FolderName,
     };
+
+    bool isSubfolder;
 
 public slots:
     void deleteFolder(const QModelIndex &mi);
     void updateFolderChildrenInfo(qulonglong folderId);
 
 private:
+    void fullSetup(QSqlQuery &sqlquery, FolderItem *parent);
+
     void setupModelData(QSqlQuery &sqlquery, FolderItem *parent);
     void updateFolderModelData(QSqlQuery &sqlquery, FolderItem *parent);
 

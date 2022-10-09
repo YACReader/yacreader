@@ -14,22 +14,6 @@
 #include "yacreader_comic_info_helper.h"
 #include "current_comic_view_helper.h"
 
-// values relative to visible cells
-const unsigned int YACREADER_MIN_GRID_ZOOM_WIDTH = 156;
-const unsigned int YACREADER_MAX_GRID_ZOOM_WIDTH = 312;
-
-// GridView cells
-const unsigned int YACREADER_MIN_CELL_CUSTOM_HEIGHT = 295;
-const unsigned int YACREADER_MIN_CELL_CUSTOM_WIDTH = 185;
-
-// Covers
-const unsigned int YACREADER_MAX_COVER_HEIGHT = 236;
-const unsigned int YACREADER_MIN_COVER_WIDTH = YACREADER_MIN_GRID_ZOOM_WIDTH;
-
-// visible cells (realCell in qml), grid cells size is used to create faux inner margings
-const unsigned int YACREADER_MIN_ITEM_HEIGHT = YACREADER_MAX_COVER_HEIGHT + 51; // 51 is the height of the bottom rectangle used for title and other info
-const unsigned int YACREADER_MIN_ITEM_WIDTH = YACREADER_MIN_COVER_WIDTH;
-
 GridComicsView::GridComicsView(QWidget *parent)
     : ComicsView(parent), filterEnabled(false)
 {
@@ -422,6 +406,8 @@ void GridComicsView::setCoversSize(int width)
     }
 
     updateCoversSizeInContext(width, ctxt);
+
+    settings->setValue(COMICS_GRID_COVER_SIZES, coverSizeSlider->value());
 }
 
 void GridComicsView::updateCoversSizeInContext(int width, QQmlContext *ctxt)
@@ -476,6 +462,15 @@ void GridComicsView::resetScroll()
     auto scrollView = rootObject->findChild<QObject *>("topScrollView", Qt::FindChildrenRecursively);
 
     QMetaObject::invokeMethod(scrollView, "scrollToOrigin");
+}
+
+void GridComicsView::showEvent(QShowEvent *event)
+{
+    ComicsView::showEvent(event);
+    int coverSize = settings->value(COMICS_GRID_COVER_SIZES, YACREADER_MIN_COVER_WIDTH).toInt();
+
+    coverSizeSlider->setValue(coverSize);
+    setCoversSize(coverSize);
 }
 
 QByteArray GridComicsView::getMimeDataFromSelection()

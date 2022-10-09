@@ -54,6 +54,7 @@ public:
         HasBeenOpenedRole,
         CoverPathRole,
         PublicationDateRole,
+        ReadableTitle,
     };
 
     enum Mode {

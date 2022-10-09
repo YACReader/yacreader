@@ -13,6 +13,7 @@ public:
 
     Folder();
     Folder(qulonglong folderId, qulonglong parentId, const QString &folderName, const QString &folderPath);
+    Folder(qulonglong folderId, qulonglong parentId, const QString &folderName, const QString &folderPath, bool completed, bool finished, bool manga);
     Folder(const QString &folderName, const QString &folderPath);
     Folder(const Folder &folder);
     Folder &operator=(const Folder &other);
@@ -94,8 +95,8 @@ public:
     }
 
 private:
-    bool finished;
-    bool completed;
+    bool finished; // finished means read, the user has read all the content in this folder
+    bool completed; // completed means the folder has all the content, e.g. a series got its final issue and the user has collected all of them
     bool manga;
 
     qint32 numChildren; //-1 for unknown number of children
