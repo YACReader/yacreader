@@ -54,26 +54,26 @@ void drawMacOSXFinishedFolderIcon()
 #define ROOT 1
 
 FolderModel::FolderModel(QObject *parent)
-    : QAbstractItemModel(parent), rootItem(0)
+    : QAbstractItemModel(parent), isSubfolder(false), rootItem(nullptr)
 {
 }
 
 FolderModel::FolderModel(QSqlQuery &sqlquery, QObject *parent)
-    : QAbstractItemModel(parent), rootItem(0)
+    : QAbstractItemModel(parent), isSubfolder(false), rootItem(nullptr)
 {
     // lo m�s probable es que el nodo ra�z no necesite tener informaci�n
     QList<QVariant> rootData;
     rootData << "root"; // id 0, padre 0, title "root" (el id, y el id del padre van a ir en la clase TreeItem)
     rootItem = new FolderItem(rootData);
     rootItem->id = ROOT;
-    rootItem->parentItem = 0;
+    rootItem->parentItem = nullptr;
     setupModelData(sqlquery, rootItem);
     // sqlquery.finish();
 }
 
 FolderModel::~FolderModel()
 {
-    if (rootItem != 0)
+    if (rootItem != nullptr)
         delete rootItem;
 }
 
@@ -81,8 +81,31 @@ int FolderModel::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return static_cast<FolderItem *>(parent.internalPointer())->columnCount();
-    else
+    else {
+        if (rootItem == nullptr) {
+            return 0;
+        }
         return rootItem->columnCount();
+    }
+}
+
+QHash<int, QByteArray> FolderModel::roleNames() const
+{
+    QHash<int, QByteArray> roles;
+
+    roles[FinishedRole] = "is_finished";
+    roles[CompletedRole] = "is_completed";
+    roles[IdRole] = "id";
+    roles[MangaRole] = "is_manga";
+    roles[CoverPathRole] = "cover_path";
+    roles[FolderName] = "name";
+
+    return roles;
+}
+
+void FolderModel::reload()
+{
+    setupModelData(_databasePath);
 }
 
 QVariant FolderModel::data(const QModelIndex &index, int role) const
@@ -121,6 +144,10 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
 #endif
     }
 
+    if (role == FolderModel::FolderName) {
+        return item->data(FolderModel::Name);
+    }
+
     if (role == FolderModel::CompletedRole)
         return item->data(FolderModel::Completed);
 
@@ -132,6 +159,9 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
 
     if (role == FolderModel::IdRole)
         return item->id;
+
+    if (role == FolderModel::CoverPathRole)
+        return getCoverUrlPathForComicHash(item->data(FirstChildHash).toString());
 
     if (role != Qt::DisplayRole)
         return QVariant();
@@ -150,6 +180,10 @@ Qt::ItemFlags FolderModel::flags(const QModelIndex &index) const
 QVariant FolderModel::headerData(int section, Qt::Orientation orientation,
                                  int role) const
 {
+    if (rootItem == nullptr) {
+        return QVariant();
+    }
+
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
         return rootItem->data(section);
 
@@ -196,10 +230,14 @@ int FolderModel::rowCount(const QModelIndex &parent) const
     if (parent.column() > 0)
         return 0;
 
-    if (!parent.isValid())
+    if (!parent.isValid()) {
+        if (rootItem == nullptr) {
+            return 0;
+        }
         parentItem = rootItem;
-    else
+    } else {
         parentItem = static_cast<FolderItem *>(parent.internalPointer());
+    }
 
     return parentItem->childCount();
 }
@@ -207,17 +245,17 @@ int FolderModel::rowCount(const QModelIndex &parent) const
 void FolderModel::setupModelData(QString path)
 {
     beginResetModel();
-    if (rootItem != 0)
+    if (rootItem != nullptr)
         delete rootItem; // TODO comprobar que se libera bien la memoria
 
-    rootItem = 0;
+    rootItem = nullptr;
 
     // inicializar el nodo ra�z
     QList<QVariant> rootData;
     rootData << "root"; // id 0, padre 0, title "root" (el id, y el id del padre van a ir en la clase TreeItem)
     rootItem = new FolderItem(rootData);
     rootItem->id = ROOT;
-    rootItem->parentItem = 0;
+    rootItem->parentItem = nullptr;
 
     // cargar la base de datos
     _databasePath = path;
@@ -233,6 +271,13 @@ void FolderModel::setupModelData(QString path)
     // selectQuery.finish();
     QSqlDatabase::removeDatabase(connectionName);
     endResetModel();
+}
+
+void FolderModel::fullSetup(QSqlQuery &sqlquery, FolderItem *parent)
+{
+    rootItem = parent;
+
+    setupModelData(sqlquery, parent);
 }
 
 void FolderModel::setupModelData(QSqlQuery &sqlquery, FolderItem *parent)
@@ -252,6 +297,7 @@ void FolderModel::setupModelData(QSqlQuery &sqlquery, FolderItem *parent)
     int manga = record.indexOf("manga");
     int id = record.indexOf("id");
     int parentId = record.indexOf("parentId");
+    int firstChildHash = record.indexOf("firstChildHash");
 
     while (sqlquery.next()) {
         QList<QVariant> data;
@@ -261,6 +307,7 @@ void FolderModel::setupModelData(QSqlQuery &sqlquery, FolderItem *parent)
         data << sqlquery.value(finished).toBool();
         data << sqlquery.value(completed).toBool();
         data << sqlquery.value(manga).toBool();
+        data << sqlquery.value(firstChildHash).toString();
         auto item = new FolderItem(data);
 
         item->id = sqlquery.value(id).toULongLong();
@@ -286,6 +333,7 @@ void FolderModel::updateFolderModelData(QSqlQuery &sqlquery, FolderItem *parent)
     int manga = record.indexOf("manga");
     int id = record.indexOf("id");
     int parentId = record.indexOf("parentId");
+    int firstChildHash = record.indexOf("firstChildHash");
 
     while (sqlquery.next()) {
         QList<QVariant> data;
@@ -295,6 +343,7 @@ void FolderModel::updateFolderModelData(QSqlQuery &sqlquery, FolderItem *parent)
         data << sqlquery.value(finished).toBool();
         data << sqlquery.value(completed).toBool();
         data << sqlquery.value(manga).toBool();
+        data << sqlquery.value(firstChildHash).toString();
         auto item = new FolderItem(data);
 
         item->id = sqlquery.value(id).toULongLong();
@@ -338,7 +387,7 @@ void FolderModel::updateFolderCompletedStatus(const QModelIndexList &list, bool 
     }
     QSqlDatabase::removeDatabase(connectionName);
 
-    emit dataChanged(index(list.first().row(), FolderModel::Name), index(list.last().row(), FolderModel::Completed));
+    emit dataChanged(index(list.first().row(), FolderModel::Name), index(list.last().row(), FolderModel::FirstChildHash));
 }
 
 void FolderModel::updateFolderFinishedStatus(const QModelIndexList &list, bool status)
@@ -360,7 +409,7 @@ void FolderModel::updateFolderFinishedStatus(const QModelIndexList &list, bool s
     }
     QSqlDatabase::removeDatabase(connectionName);
 
-    emit dataChanged(index(list.first().row(), FolderModel::Name), index(list.last().row(), FolderModel::Completed));
+    emit dataChanged(index(list.first().row(), FolderModel::Name), index(list.last().row(), FolderModel::FirstChildHash));
 }
 
 void FolderModel::updateFolderManga(const QModelIndexList &list, bool manga)
@@ -390,7 +439,7 @@ void FolderModel::updateFolderManga(const QModelIndexList &list, bool manga)
     }
     QSqlDatabase::removeDatabase(connectionName);
 
-    emit dataChanged(index(list.first().row(), FolderModel::Name), index(list.last().row(), FolderModel::Manga));
+    emit dataChanged(index(list.first().row(), FolderModel::Name), index(list.last().row(), FolderModel::FirstChildHash));
 }
 
 QStringList FolderModel::getSubfoldersNames(const QModelIndex &mi)
@@ -415,6 +464,97 @@ QStringList FolderModel::getSubfoldersNames(const QModelIndex &mi)
 
     std::sort(result.begin(), result.end(), naturalSortLessThanCI);
     return result;
+}
+
+FolderModel *FolderModel::getSubfoldersModel(const QModelIndex &mi)
+{
+    qulonglong id = 1;
+    FolderItem *parent = nullptr;
+    if (mi.isValid()) {
+        auto item = static_cast<FolderItem *>(mi.internalPointer());
+        parent = new FolderItem(item->getData(), item->parent());
+        id = parent->id = item->id;
+    }
+
+    if (id == 1) {
+        if (parent != nullptr) {
+            delete parent;
+        }
+        return this;
+    }
+
+    auto model = new FolderModel();
+
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+
+        QSqlQuery selectQuery(db); // TODO check
+        selectQuery.prepare("SELECT * FROM folder WHERE parentId = :parentId and id <> 1");
+        selectQuery.bindValue(":parentId", id);
+        selectQuery.exec();
+
+        if (parent != nullptr) {
+            model->fullSetup(selectQuery, parent);
+        }
+
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    model->_databasePath = _databasePath;
+
+    model->isSubfolder = true;
+
+    return model;
+}
+
+Folder FolderModel::getFolder(const QModelIndex &mi)
+{
+    auto folderItem = static_cast<FolderItem *>(mi.internalPointer());
+    auto name = folderItem->data(FolderModel::Name).toString();
+    auto parentItem = folderItem->parent();
+    auto folder = Folder(folderItem->id,
+                         parentItem->id,
+                         name,
+                         folderItem->parent()->data(Columns::Path).toString() + "/" + name,
+                         folderItem->data(Columns::Completed).toBool(),
+                         folderItem->data(Columns::Finished).toBool(),
+                         folderItem->data(Columns::Manga).toBool());
+
+    return folder;
+}
+
+QModelIndex FolderModel::getIndexFromFolder(const Folder &folder, const QModelIndex &parent)
+{
+    if (rootItem == nullptr) {
+        return QModelIndex();
+    }
+
+    auto numRows = rowCount(parent);
+    for (auto i = 0; i < numRows; i++) {
+        auto modelIndex = index(i, 0, parent);
+
+        if (modelIndex.isValid()) {
+            auto folderItem = static_cast<FolderItem *>(modelIndex.internalPointer());
+
+            if (folderItem->id == folder.id) {
+                return modelIndex;
+            }
+
+            auto childModelIndex = getIndexFromFolder(folder, modelIndex);
+
+            if (childModelIndex.isValid()) {
+                auto folderItem = static_cast<FolderItem *>(childModelIndex.internalPointer());
+
+                if (folderItem->id == folder.id) {
+                    return childModelIndex;
+                }
+            }
+        }
+    }
+
+    return QModelIndex();
 }
 
 void FolderModel::fetchMoreFromDB(const QModelIndex &parent)
@@ -529,6 +669,11 @@ QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QMod
     endInsertRows();
 
     return index(destRow, 0, parent);
+}
+
+QUrl FolderModel::getCoverUrlPathForComicHash(const QString &hash) const
+{
+    return QUrl("file:" + _databasePath + "/covers/" + hash + ".jpg");
 }
 
 void FolderModel::deleteFolder(const QModelIndex &mi)
