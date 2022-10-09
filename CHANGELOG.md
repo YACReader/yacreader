@@ -6,6 +6,8 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ### YACReaderLibrary
 * Update QtWebApp webserver to v1.8.6
+* New folder content view that replaces the old `subfolders in this folder` view shown when folders don't have direct comics.
+
 ## 9.9.2
 
 ### General
