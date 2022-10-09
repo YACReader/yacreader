@@ -164,11 +164,10 @@ int main(int argc, char **argv)
     logger.addDestination(std::move(fileDestination));
 
     QTranslator translator;
-    QString sufix = QLocale::system().name();
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
-    translator.load(QString(DATADIR) + "/yacreader/languages/yacreaderlibrary_" + sufix);
+    translator.load(QLocale(), "yacreaderlibrary", "_", QString(DATADIR) + "/yacreader/languages");
 #else
-    translator.load(QCoreApplication::applicationDirPath() + "/languages/yacreaderlibrary_" + sufix);
+    translator.load(QLocale(), "yacreaderlibrary", "_", "languages");
 #endif
     app.installTranslator(&translator);
 
