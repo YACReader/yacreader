@@ -80,7 +80,7 @@ FolderContentView::FolderContentView(QWidget *parent)
 #endif
 
     if (theme == Light) {
-        ctxt->setContextProperty("continueReadingBackgroundColor", "#DDDDDD");
+        ctxt->setContextProperty("continueReadingBackgroundColor", "#E8E8E8");
         ctxt->setContextProperty("continueReadingColor", "#000000");
 
         ctxt->setContextProperty("backgroundColor", "#F6F6F6");
