@@ -10,7 +10,6 @@ class QPushButton;
 class QSlider;
 class QPushButton;
 class QRadioButton;
-class QColorDialog;
 class YACReaderSpinSliderWidget;
 
 class OptionsDialog : public YACReaderOptionsDialog
@@ -44,18 +43,18 @@ private:
     QCheckBox *doNotTurnPageOnScroll;
     QCheckBox *useSingleScrollStepToTurnPage;
 
-    QColorDialog *colorDialog;
-
     YACReaderSpinSliderWidget *brightnessS;
 
     YACReaderSpinSliderWidget *contrastS;
 
     YACReaderSpinSliderWidget *gammaS;
 
+    QColor currentColor;
 public slots:
     void saveOptions() override;
     void restoreOptions(QSettings *settings) override;
     void findFolder();
+    void showColorDialog();
     void updateColor(const QColor &color);
     // void fitToWidthRatio(int value);
     void brightnessChanged(int value);

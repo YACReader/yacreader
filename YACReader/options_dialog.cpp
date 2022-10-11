@@ -58,9 +58,6 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     backgroundColor->setPalette(pal);
     backgroundColor->setAutoFillBackground(true);
 
-    colorDialog = new QColorDialog(Qt::red, this);
-    connect(colorDialog, &QColorDialog::colorSelected, this, &OptionsDialog::updateColor);
-
     QGroupBox *colorBox = new QGroupBox(tr("Background color"));
     // backgroundColor->setMinimumWidth(100);
     colorSelection->addWidget(backgroundColor);
@@ -68,7 +65,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     colorSelection->setStretchFactor(backgroundColor, 1);
     colorSelection->setStretchFactor(selectBackgroundColorButton, 0);
     // colorSelection->addStretch();
-    connect(selectBackgroundColorButton, &QAbstractButton::clicked, colorDialog, &QWidget::show);
+    connect(selectBackgroundColorButton, &QAbstractButton::clicked, this, &OptionsDialog::showColorDialog);
     colorBox->setLayout(colorSelection);
 
     auto scrollBox = new QGroupBox(tr("Scroll behaviour"));
@@ -219,6 +216,12 @@ void OptionsDialog::findFolder()
     }
 }
 
+void OptionsDialog::showColorDialog()
+{
+    auto color = QColorDialog::getColor(currentColor, this);
+    updateColor(color);
+}
+
 void OptionsDialog::saveOptions()
 {
     settings->setValue(GO_TO_FLOW_SIZE, QSize(static_cast<int>(slideSize->sliderPosition() / SLIDE_ASPECT_RATIO), slideSize->sliderPosition()));
@@ -232,7 +235,7 @@ void OptionsDialog::saveOptions()
 
     settings->setValue(PATH, pathEdit->text());
 
-    settings->setValue(BACKGROUND_COLOR, colorDialog->currentColor());
+    settings->setValue(BACKGROUND_COLOR, currentColor);
     // settings->setValue(FIT_TO_WIDTH_RATIO,fitToWidthRatioS->sliderPosition()/100.0);
     settings->setValue(QUICK_NAVI_MODE, quickNavi->isChecked());
     settings->setValue(DISABLE_MOUSE_OVER_GOTO_FLOW, disableShowOnMouseOver->isChecked());
@@ -288,7 +291,7 @@ void OptionsDialog::updateColor(const QColor &color)
     pal.setColor(backgroundColor->backgroundRole(), color);
     backgroundColor->setPalette(pal);
     backgroundColor->setAutoFillBackground(true);
-    colorDialog->setCurrentColor(color);
+    currentColor = color;
 
     settings->setValue(BACKGROUND_COLOR, color);
 
