@@ -45,6 +45,7 @@ Makefile*
 *.xcworkspace*
 *xcshareddata*
 *.swp
+*.qm
 
 # Qt unit tests
 target_wrapper.*
