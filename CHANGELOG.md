@@ -4,9 +4,13 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ## WIP
 
+### YACReader
+* Fixed color selection dialog appearing as a subwindow in macos.
+
 ### YACReaderLibrary
 * Update QtWebApp webserver to v1.8.6
 * New folder content view that replaces the old `subfolders in this folder` view shown when folders don't have direct comics.
+* Fixed going forward history navigation.
 
 ## 9.9.2
 
