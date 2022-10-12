@@ -222,7 +222,10 @@ void YACReaderNavigationController::loadIndexFromHistory(const YACReaderLibraryS
     case YACReaderLibrarySourceContainer::Folder: {
         QModelIndex mi = libraryWindow->foldersModelProxy->mapFromSource(sourceMI);
         libraryWindow->foldersView->scrollTo(mi, QAbstractItemView::PositionAtTop);
+        // currentIndexChanged is about to be emited, but we don't want it to end in YACReaderHistoryController::updateHistory
+        disconnect(libraryWindow->foldersView, &YACReaderTreeView::currentIndexChanged, this, &YACReaderNavigationController::selectedFolder);
         libraryWindow->foldersView->setCurrentIndex(mi);
+        connect(libraryWindow->foldersView, &YACReaderTreeView::currentIndexChanged, this, &YACReaderNavigationController::selectedFolder);
         loadFolderInfo(sourceMI);
         break;
     }
