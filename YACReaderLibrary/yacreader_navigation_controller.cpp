@@ -271,6 +271,7 @@ void YACReaderNavigationController::loadPreviousStatus()
 
 void YACReaderNavigationController::setupConnections()
 {
+    // we need YACReaderTreeView::currentIndexChanged to be able to navigate the folders tree using the keyboard cursors
     connect(libraryWindow->foldersView, &YACReaderTreeView::currentIndexChanged, this, &YACReaderNavigationController::selectedFolder);
     connect(libraryWindow->foldersView, &YACReaderTreeView::clicked, this, &YACReaderNavigationController::selectedFolder);
     connect(libraryWindow->listsView, &QAbstractItemView::clicked, this, &YACReaderNavigationController::selectedList);
