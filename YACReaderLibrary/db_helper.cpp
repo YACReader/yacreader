@@ -745,33 +745,27 @@ void DBHelper::propagateFolderUpdatesToParent(const Folder &folder, QSqlDatabase
 Folder DBHelper::updateChildrenInfo(qulonglong folderId, QSqlDatabase &db)
 {
     auto folder = loadFolder(folderId, db);
-    QList<LibraryItem *> subitems;
-    QList<LibraryItem *> subfolders = DBHelper::getFoldersFromParent(folderId, db, false);
-    QList<LibraryItem *> comics = DBHelper::getComicsFromParent(folderId, db, false);
+    QList<LibraryItem *> subfolders = DBHelper::getFoldersFromParent(folderId, db, true);
+    QList<LibraryItem *> comics = DBHelper::getComicsFromParent(folderId, db, true);
 
     QList<LibraryItem *> updatedSubfolders;
     for (auto sf : subfolders) {
         updatedSubfolders.append(new Folder(updateChildrenInfo(static_cast<Folder *>(sf)->id, db)));
     }
 
-    subitems.append(updatedSubfolders);
-    subitems.append(comics);
-
-    std::sort(subitems.begin(), subitems.end(), naturalSortLessThanCILibraryItem);
-
     QString coverHash = "";
-    for (auto item : subitems) {
-        if (item->isDir()) {
+
+    if (!comics.isEmpty()) {
+        auto c = static_cast<ComicDB *>(comics[0]);
+        coverHash = c->info.hash;
+    } else {
+        for (auto item : subfolders) {
             auto f = static_cast<Folder *>(item);
             auto firstChildHash = f->getFirstChildHash();
             if (!firstChildHash.isEmpty()) {
                 coverHash = firstChildHash;
                 break;
             }
-        } else {
-            auto c = static_cast<ComicDB *>(item);
-            coverHash = c->info.hash;
-            break;
         }
     }
 
