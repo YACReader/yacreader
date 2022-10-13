@@ -89,6 +89,9 @@
 
 #include "QsLog.h"
 
+#include "yacreader_http_server.h"
+extern YACReaderHttpServer *httpServer;
+
 #ifdef Q_OS_WIN
 #include <shellapi.h>
 #endif
@@ -2595,8 +2598,7 @@ void LibraryWindow::showImportComicsInfo()
     importComicsInfoDialog->dest = currentPath() + "/.yacreaderlibrary/library.ydb";
     importComicsInfoDialog->open();
 }
-#include "yacreader_http_server.h"
-extern YACReaderHttpServer *httpServer;
+
 void LibraryWindow::closeEvent(QCloseEvent *event)
 {
     if (!trayIconController->handleCloseToTrayIcon(event)) {
