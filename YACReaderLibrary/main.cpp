@@ -30,7 +30,7 @@
 #define PICTUREFLOW_QT4 1
 
 // Server interface
-YACReaderHttpServer *s;
+YACReaderHttpServer *httpServer;
 
 using namespace QsLogging;
 
@@ -244,10 +244,10 @@ int main(int argc, char **argv)
     QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat);
     settings->beginGroup("libraryConfig");
 
-    s = new YACReaderHttpServer();
+    httpServer = new YACReaderHttpServer();
 
     if (settings->value(SERVER_ON, true).toBool()) {
-        s->start();
+        httpServer->start();
     }
 #endif
 
@@ -276,8 +276,8 @@ int main(int argc, char **argv)
     YACReader::exitCheck(ret);
 
     // shutdown
-    s->stop();
-    delete s;
+    httpServer->stop();
+    delete httpServer;
     localServer->close();
     delete localServer;
     delete mw;

@@ -194,7 +194,7 @@ int main(int argc, char **argv)
         settings->beginGroup("libraryConfig");
 
         // server
-        YACReaderHttpServer *s = new YACReaderHttpServer();
+        YACReaderHttpServer *httpServer = new YACReaderHttpServer();
         if (parser.isSet("port")) {
             bool valid;
             qint32 port = parser.value("port").toInt(&valid);
@@ -203,14 +203,14 @@ int main(int argc, char **argv)
                 parser.showHelp();
                 return 0;
             } else {
-                s->start(port);
+                httpServer->start(port);
             }
 
         } else {
-            s->start();
+            httpServer->start();
         }
 
-        QLOG_INFO() << "Running on port" << s->getPort();
+        QLOG_INFO() << "Running on port" << httpServer->getPort();
 
         // Update libraries to new versions
         LibrariesUpdater updater;
@@ -223,8 +223,8 @@ int main(int argc, char **argv)
         QLOG_INFO() << "YACReaderLibrary closed with exit code :" << ret;
 
         // shutdown
-        s->stop();
-        delete s;
+        httpServer->stop();
+        delete httpServer;
         localServer->close();
         delete localServer;
 #ifdef Q_OS_WIN

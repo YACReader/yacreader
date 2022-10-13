@@ -2596,7 +2596,7 @@ void LibraryWindow::showImportComicsInfo()
     importComicsInfoDialog->open();
 }
 #include "yacreader_http_server.h"
-extern YACReaderHttpServer *s;
+extern YACReaderHttpServer *httpServer;
 void LibraryWindow::closeEvent(QCloseEvent *event)
 {
     if (!trayIconController->handleCloseToTrayIcon(event)) {
@@ -2607,7 +2607,7 @@ void LibraryWindow::closeEvent(QCloseEvent *event)
 
 void LibraryWindow::prepareToCloseApp()
 {
-    s->stop();
+    httpServer->stop();
     settings->setValue(MAIN_WINDOW_GEOMETRY, saveGeometry());
 
     contentViewsManager->comicsView->close();
