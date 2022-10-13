@@ -4,7 +4,7 @@
 */
 
 #include "static.h"
-#include "startup.h"
+#include "yacreader_http_server.h"
 //#include "dualfilelogger.h"
 #include "httplistener.h"
 #include "requestmapper.h"
@@ -32,7 +32,7 @@ using stefanfrings::HttpSessionStore;
 using stefanfrings::StaticFileController;
 using stefanfrings::TemplateCache;
 
-void Startup::start(quint16 port)
+void YACReaderHttpServer::start(quint16 port)
 {
     // Initialize the core application
     QCoreApplication *app = QCoreApplication::instance();
@@ -146,7 +146,7 @@ void Startup::start(quint16 port)
     }
 }
 
-void Startup::stop()
+void YACReaderHttpServer::stop()
 {
     qDebug("ServiceHelper: Service has been stopped");
     // QCoreApplication destroys all objects that have been created in start().
@@ -157,12 +157,12 @@ void Startup::stop()
     }
 }
 
-Startup::Startup()
+YACReaderHttpServer::YACReaderHttpServer()
     : listener(nullptr)
 {
 }
 
-QString Startup::getPort()
+QString YACReaderHttpServer::getPort()
 {
     return QString("%1").arg(listener->serverPort());
 }

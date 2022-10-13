@@ -10,8 +10,8 @@ DEPENDPATH += $$PWD/controllers/v2
 
 HEADERS += \
     $$PWD/static.h \
-    $$PWD/startup.h \
     $$PWD/requestmapper.h \
+    $$PWD/yacreader_http_server.h \
     $$PWD/yacreader_http_session.h \
     $$PWD/yacreader_http_session_store.h \
     $$PWD/yacreader_server_data_helper.h \
@@ -52,8 +52,8 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/static.cpp \
-    $$PWD/startup.cpp \
     $$PWD/requestmapper.cpp \
+    $$PWD/yacreader_http_server.cpp \
     $$PWD/yacreader_http_session.cpp \
     $$PWD/yacreader_http_session_store.cpp \
     $$PWD/yacreader_server_data_helper.cpp \

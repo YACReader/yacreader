@@ -11,7 +11,7 @@
 #include <QBitmap>
 #include <QPainter>
 
-#include "startup.h"
+#include "yacreader_http_server.h"
 #include "yacreader_global_gui.h"
 
 #include "qnaturalsorting.h"
@@ -78,7 +78,7 @@ QList<QString> addresses()
 
 #endif
 
-extern Startup *s;
+extern YACReaderHttpServer *s;
 
 ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     : QDialog(parent)

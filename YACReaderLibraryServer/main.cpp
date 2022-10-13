@@ -6,7 +6,7 @@
 
 #include "comic_db.h"
 #include "db_helper.h"
-#include "startup.h"
+#include "yacreader_http_server.h"
 #include "yacreader_global.h"
 #include "yacreader_libraries.h"
 #include "yacreader_local_server.h"
@@ -194,7 +194,7 @@ int main(int argc, char **argv)
         settings->beginGroup("libraryConfig");
 
         // server
-        Startup *s = new Startup();
+        YACReaderHttpServer *s = new YACReaderHttpServer();
         if (parser.isSet("port")) {
             bool valid;
             qint32 port = parser.value("port").toInt(&valid);

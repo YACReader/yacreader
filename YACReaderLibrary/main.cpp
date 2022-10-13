@@ -13,7 +13,7 @@
 #include <QCommandLineParser>
 
 #include "yacreader_global.h"
-#include "startup.h"
+#include "yacreader_http_server.h"
 #include "yacreader_local_server.h"
 #include "comic_db.h"
 #include "db_helper.h"
@@ -30,7 +30,7 @@
 #define PICTUREFLOW_QT4 1
 
 // Server interface
-Startup *s;
+YACReaderHttpServer *s;
 
 using namespace QsLogging;
 
@@ -244,7 +244,7 @@ int main(int argc, char **argv)
     QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat);
     settings->beginGroup("libraryConfig");
 
-    s = new Startup();
+    s = new YACReaderHttpServer();
 
     if (settings->value(SERVER_ON, true).toBool()) {
         s->start();

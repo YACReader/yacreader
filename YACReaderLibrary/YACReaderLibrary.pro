@@ -79,6 +79,7 @@ greaterThan(QT_MAJOR_VERSION, 5): QT += openglwidgets core5compat
 # Input
 HEADERS += comic_flow.h \
   ../common/concurrent_queue.h \
+  content_views_updater.h \
   create_library_dialog.h \
   db/comic_query_result_processor.h \
   db/folder_query_result_processor.h \
@@ -162,6 +163,7 @@ HEADERS += comic_flow.h \
 
 SOURCES += comic_flow.cpp \
     ../common/concurrent_queue.cpp \
+    content_views_updater.cpp \
     create_library_dialog.cpp \
     db/comic_query_result_processor.cpp \
     db/folder_query_result_processor.cpp \

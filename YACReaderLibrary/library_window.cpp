@@ -2595,8 +2595,8 @@ void LibraryWindow::showImportComicsInfo()
     importComicsInfoDialog->dest = currentPath() + "/.yacreaderlibrary/library.ydb";
     importComicsInfoDialog->open();
 }
-#include "startup.h"
-extern Startup *s;
+#include "yacreader_http_server.h"
+extern YACReaderHttpServer *s;
 void LibraryWindow::closeEvent(QCloseEvent *event)
 {
     if (!trayIconController->handleCloseToTrayIcon(event)) {
