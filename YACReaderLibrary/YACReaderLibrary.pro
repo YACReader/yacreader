@@ -124,6 +124,7 @@ HEADERS += comic_flow.h \
   trayicon_controller.h \
   xml_info_library_scanner.h \
   xml_info_parser.h \
+  yacreader_content_views_manager.h \
   yacreader_local_server.h \
   yacreader_main_toolbar.h \
   comics_remover.h \
@@ -148,7 +149,6 @@ HEADERS += comic_flow.h \
   empty_reading_list_widget.h \
   ../common/scroll_management.h \
   ../common/opengl_checker.h \
-  yacreader_comics_views_manager.h \
   info_comics_view.h \
   yacreader_comics_selection_helper.h \
   yacreader_comic_info_helper.h \
@@ -203,6 +203,7 @@ SOURCES += comic_flow.cpp \
     trayicon_controller.cpp \
     xml_info_library_scanner.cpp \
     xml_info_parser.cpp \
+    yacreader_content_views_manager.cpp \
     yacreader_local_server.cpp \
     yacreader_main_toolbar.cpp \
     comics_remover.cpp \
@@ -229,7 +230,6 @@ SOURCES += comic_flow.cpp \
     empty_reading_list_widget.cpp \
     ../common/scroll_management.cpp \
     ../common/opengl_checker.cpp \
-    yacreader_comics_views_manager.cpp \
     info_comics_view.cpp \
     yacreader_comics_selection_helper.cpp \
     yacreader_comic_info_helper.cpp\

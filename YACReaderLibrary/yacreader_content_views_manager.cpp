@@ -1,4 +1,4 @@
-#include "yacreader_comics_views_manager.h"
+#include "yacreader_content_views_manager.h"
 
 #include "library_window.h"
 
@@ -18,7 +18,7 @@
 #include "yacreader_search_line_edit.h"
 #include "options_dialog.h"
 
-YACReaderComicsViewsManager::YACReaderComicsViewsManager(QSettings *settings, LibraryWindow *parent)
+YACReaderContentViewsManager::YACReaderContentViewsManager(QSettings *settings, LibraryWindow *parent)
     : QObject(parent), libraryWindow(parent), classicComicsView(nullptr), gridComicsView(nullptr), infoComicsView(nullptr)
 {
     comicsViewStack = new QStackedWidget();
@@ -63,19 +63,19 @@ YACReaderComicsViewsManager::YACReaderComicsViewsManager(QSettings *settings, Li
     connect(folderContentView, &FolderContentView::moveComicsToCurrentFolder, libraryWindow, &LibraryWindow::moveAndImportComicsToCurrentFolder);
 }
 
-QWidget *YACReaderComicsViewsManager::containerWidget()
+QWidget *YACReaderContentViewsManager::containerWidget()
 {
     return comicsViewStack;
 }
 
-void YACReaderComicsViewsManager::updateCurrentComicView()
+void YACReaderContentViewsManager::updateCurrentComicView()
 {
     if (comicsViewStack->currentWidget() == comicsView) {
         comicsView->updateCurrentComicView();
     }
 }
 
-void YACReaderComicsViewsManager::showComicsView()
+void YACReaderContentViewsManager::showComicsView()
 {
     comicsViewStack->setCurrentWidget(comicsView);
 
@@ -84,50 +84,50 @@ void YACReaderComicsViewsManager::showComicsView()
     libraryWindow->sideBar->update();
 }
 
-void YACReaderComicsViewsManager::showEmptyFolderView()
+void YACReaderContentViewsManager::showEmptyFolderView()
 {
     comicsViewStack->setCurrentWidget(folderContentView);
 }
 
-void YACReaderComicsViewsManager::showEmptyLabelView()
+void YACReaderContentViewsManager::showEmptyLabelView()
 {
     comicsViewStack->setCurrentWidget(emptyLabelWidget);
 }
 
-void YACReaderComicsViewsManager::showEmptySpecialList()
+void YACReaderContentViewsManager::showEmptySpecialList()
 {
     comicsViewStack->setCurrentWidget(emptySpecialList);
 }
 
-void YACReaderComicsViewsManager::showEmptyReadingListWidget()
+void YACReaderContentViewsManager::showEmptyReadingListWidget()
 {
     comicsViewStack->setCurrentWidget(emptyReadingList);
 }
 
-void YACReaderComicsViewsManager::showNoSearchResultsView()
+void YACReaderContentViewsManager::showNoSearchResultsView()
 {
     comicsViewStack->setCurrentWidget(noSearchResultsWidget);
 }
 
 // TODO recover the current comics selection and restore it in the destination
-void YACReaderComicsViewsManager::toggleComicsView()
+void YACReaderContentViewsManager::toggleComicsView()
 {
     if (comicsViewStack->currentWidget() == comicsView) {
-        QTimer::singleShot(0, this, &YACReaderComicsViewsManager::showComicsViewTransition);
-        QTimer::singleShot(100, this, &YACReaderComicsViewsManager::_toggleComicsView);
+        QTimer::singleShot(0, this, &YACReaderContentViewsManager::showComicsViewTransition);
+        QTimer::singleShot(100, this, &YACReaderContentViewsManager::_toggleComicsView);
     } else {
         _toggleComicsView();
     }
 }
 
-void YACReaderComicsViewsManager::focusComicsViewViaShortcut()
+void YACReaderContentViewsManager::focusComicsViewViaShortcut()
 {
     comicsView->focusComicsNavigation(Qt::ShortcutFocusReason);
 }
 
 // PROTECTED
 
-void YACReaderComicsViewsManager::disconnectComicsViewConnections(ComicsView *widget)
+void YACReaderContentViewsManager::disconnectComicsViewConnections(ComicsView *widget)
 {
     disconnect(widget, &ComicsView::comicRated, libraryWindow->comicsModel, &ComicModel::updateRating);
     disconnect(libraryWindow->showHideMarksAction, &QAction::toggled, widget, &ComicsView::setShowMarks);
@@ -140,7 +140,7 @@ void YACReaderComicsViewsManager::disconnectComicsViewConnections(ComicsView *wi
     disconnect(comicsView, &ComicsView::customContextMenuItemRequested, libraryWindow, &LibraryWindow::showComicsItemContextMenu);
 }
 
-void YACReaderComicsViewsManager::doComicsViewConnections()
+void YACReaderContentViewsManager::doComicsViewConnections()
 {
     connect(comicsView, &ComicsView::comicRated, libraryWindow->comicsModel, &ComicModel::updateRating);
     connect(libraryWindow->showHideMarksAction, &QAction::toggled, comicsView, &ComicsView::setShowMarks);
@@ -156,7 +156,7 @@ void YACReaderComicsViewsManager::doComicsViewConnections()
     connect(comicsView, &ComicsView::moveComicsToCurrentFolder, libraryWindow, &LibraryWindow::moveAndImportComicsToCurrentFolder);
 }
 
-void YACReaderComicsViewsManager::switchToComicsView(ComicsView *from, ComicsView *to)
+void YACReaderContentViewsManager::switchToComicsView(ComicsView *from, ComicsView *to)
 {
     // setup views
     disconnectComicsViewConnections(from);
@@ -180,12 +180,12 @@ void YACReaderComicsViewsManager::switchToComicsView(ComicsView *from, ComicsVie
     }
 }
 
-void YACReaderComicsViewsManager::showComicsViewTransition()
+void YACReaderContentViewsManager::showComicsViewTransition()
 {
     comicsViewStack->setCurrentWidget(comicsViewTransition);
 }
 
-void YACReaderComicsViewsManager::_toggleComicsView()
+void YACReaderContentViewsManager::_toggleComicsView()
 {
     switch (comicsViewStatus) {
     case Flow: {

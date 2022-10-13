@@ -78,7 +78,7 @@
 #include "reading_list_item.h"
 #include "opengl_checker.h"
 
-#include "yacreader_comics_views_manager.h"
+#include "yacreader_content_views_manager.h"
 #include "folder_content_view.h"
 
 #include "trayicon_controller.h"
@@ -275,7 +275,7 @@ void LibraryWindow::doLayout()
 
     // FINAL LAYOUT-------------------------------------------------------------
 
-    comicsViewsManager = new YACReaderComicsViewsManager(settings, this);
+    comicsViewsManager = new YACReaderContentViewsManager(settings, this);
 
     sHorizontal->addWidget(sideBar);
 #ifndef Q_OS_MAC
@@ -1172,7 +1172,7 @@ void LibraryWindow::createConnections()
 #ifndef Q_OS_MAC
     connect(toggleFullScreenAction, &QAction::triggered, this, &LibraryWindow::toggleFullScreen);
 #endif
-    connect(toggleComicsViewAction, &QAction::triggered, comicsViewsManager, &YACReaderComicsViewsManager::toggleComicsView);
+    connect(toggleComicsViewAction, &QAction::triggered, comicsViewsManager, &YACReaderContentViewsManager::toggleComicsView);
     connect(optionsAction, &QAction::triggered, optionsDialog, &QWidget::show);
 #ifdef SERVER_RELEASE
     connect(serverConfigAction, &QAction::triggered, serverConfigDialog, &QWidget::show);
@@ -1220,7 +1220,7 @@ void LibraryWindow::createConnections()
     // connect(emptyFolderWidget,SIGNAL(subfolderSelected(QModelIndex,int)),this,SLOT(selectSubfolder(QModelIndex,int)));
 
     connect(focusSearchLineAction, &QAction::triggered, searchEdit, [this] { searchEdit->setFocus(Qt::ShortcutFocusReason); });
-    connect(focusComicsViewAction, &QAction::triggered, comicsViewsManager, &YACReaderComicsViewsManager::focusComicsViewViaShortcut);
+    connect(focusComicsViewAction, &QAction::triggered, comicsViewsManager, &YACReaderContentViewsManager::focusComicsViewViaShortcut);
 
     connect(showEditShortcutsAction, &QAction::triggered, editShortcutsDialog, &QWidget::show);
 

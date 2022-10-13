@@ -16,11 +16,11 @@
 #include "yacreader_global.h"
 #include "empty_label_widget.h"
 #include "empty_special_list.h"
-#include "yacreader_comics_views_manager.h"
+#include "yacreader_content_views_manager.h"
 
 #include "QsLog.h"
 
-YACReaderNavigationController::YACReaderNavigationController(LibraryWindow *parent, YACReaderComicsViewsManager *comicsViewsManager)
+YACReaderNavigationController::YACReaderNavigationController(LibraryWindow *parent, YACReaderContentViewsManager *comicsViewsManager)
     : QObject(parent), libraryWindow(parent), comicsViewsManager(comicsViewsManager)
 {
     setupConnections();

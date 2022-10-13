@@ -133,7 +133,7 @@ public:
     //-------------
 
     YACReaderNavigationController *navigationController;
-    YACReaderComicsViewsManager *comicsViewsManager;
+    YACReaderContentViewsManager *comicsViewsManager;
 
     YACReaderFoldersView *foldersView;
     YACReaderReadingListsView *listsView;

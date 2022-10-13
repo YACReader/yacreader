@@ -20,12 +20,11 @@ class NoSearchResultsWidget;
 
 using namespace YACReader;
 
-// TODO rename to YACReaderContentViewsManager
-class YACReaderComicsViewsManager : public QObject
+class YACReaderContentViewsManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit YACReaderComicsViewsManager(QSettings *settings, LibraryWindow *parent = nullptr);
+    explicit YACReaderContentViewsManager(QSettings *settings, LibraryWindow *parent = nullptr);
 
     QWidget *containerWidget();
 
