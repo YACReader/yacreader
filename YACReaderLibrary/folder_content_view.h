@@ -23,6 +23,7 @@ public:
     void setModel(const QModelIndex &parent, FolderModel *model);
     void setContinueReadingModel(ComicModel *model);
 
+    FolderModel *currentFolderModel() { return folderModel; }
 signals:
     void subfolderSelected(QModelIndex, int);
     void openComic(const ComicDB &comic, const ComicModel::Mode mode);

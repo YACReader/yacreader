@@ -1831,6 +1831,8 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
     else
         menu.addAction(setFolderAsMangaAction);
 
+    auto subfolderModel = comicsViewsManager->folderContentView->currentFolderModel();
+
     // TODO update the subfolder model loaded in folderContentView
     connect(openContainingFolderAction, &QAction::triggered, this, [=]() {
         QDesktopServices::openUrl(QUrl("file:///" + QDir::cleanPath(currentPath() + "/" + folder.path), QUrl::TolerantMode));
@@ -1840,21 +1842,27 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
     });
     connect(setFolderAsNotCompletedAction, &QAction::triggered, this, [=]() {
         foldersModel->updateFolderCompletedStatus(QModelIndexList() << foldersModel->getIndexFromFolder(folder), false);
+        subfolderModel->updateFolderCompletedStatus(QModelIndexList() << subfolderModel->getIndexFromFolder(folder), false);
     });
     connect(setFolderAsCompletedAction, &QAction::triggered, this, [=]() {
         foldersModel->updateFolderCompletedStatus(QModelIndexList() << foldersModel->getIndexFromFolder(folder), true);
+        subfolderModel->updateFolderCompletedStatus(QModelIndexList() << subfolderModel->getIndexFromFolder(folder), true);
     });
     connect(setFolderAsReadAction, &QAction::triggered, this, [=]() {
         foldersModel->updateFolderFinishedStatus(QModelIndexList() << foldersModel->getIndexFromFolder(folder), true);
+        subfolderModel->updateFolderFinishedStatus(QModelIndexList() << subfolderModel->getIndexFromFolder(folder), true);
     });
     connect(setFolderAsUnreadAction, &QAction::triggered, this, [=]() {
         foldersModel->updateFolderFinishedStatus(QModelIndexList() << foldersModel->getIndexFromFolder(folder), false);
+        subfolderModel->updateFolderFinishedStatus(QModelIndexList() << subfolderModel->getIndexFromFolder(folder), false);
     });
     connect(setFolderAsMangaAction, &QAction::triggered, this, [=]() {
         foldersModel->updateFolderManga(QModelIndexList() << foldersModel->getIndexFromFolder(folder), true);
+        subfolderModel->updateFolderManga(QModelIndexList() << subfolderModel->getIndexFromFolder(folder), true);
     });
     connect(setFolderAsNormalAction, &QAction::triggered, this, [=]() {
         foldersModel->updateFolderManga(QModelIndexList() << foldersModel->getIndexFromFolder(folder), false);
+        subfolderModel->updateFolderManga(QModelIndexList() << subfolderModel->getIndexFromFolder(folder), false);
     });
 
     menu.exec(comicsViewsManager->folderContentView->mapToGlobal(point));

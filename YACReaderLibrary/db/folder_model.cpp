@@ -378,9 +378,11 @@ void FolderModel::updateFolderCompletedStatus(const QModelIndexList &list, bool 
             auto item = static_cast<FolderItem *>(mi.internalPointer());
             item->setData(FolderModel::Completed, status);
 
-            Folder f = DBHelper::loadFolder(item->id, db);
-            f.setCompleted(status);
-            DBHelper::update(f, db);
+            if (!isSubfolder) {
+                Folder f = DBHelper::loadFolder(item->id, db);
+                f.setCompleted(status);
+                DBHelper::update(f, db);
+            }
         }
         db.commit();
         connectionName = db.connectionName();
@@ -400,9 +402,11 @@ void FolderModel::updateFolderFinishedStatus(const QModelIndexList &list, bool s
             auto item = static_cast<FolderItem *>(mi.internalPointer());
             item->setData(FolderModel::Finished, status);
 
-            Folder f = DBHelper::loadFolder(item->id, db);
-            f.setFinished(status);
-            DBHelper::update(f, db);
+            if (!isSubfolder) {
+                Folder f = DBHelper::loadFolder(item->id, db);
+                f.setFinished(status);
+                DBHelper::update(f, db);
+            }
         }
         db.commit();
         connectionName = db.connectionName();
@@ -432,7 +436,9 @@ void FolderModel::updateFolderManga(const QModelIndexList &list, bool manga)
 
             setManga(item, manga);
 
-            DBHelper::updateFolderTreeManga(item->id, db, manga);
+            if (!isSubfolder) {
+                DBHelper::updateFolderTreeManga(item->id, db, manga);
+            }
         }
         db.commit();
         connectionName = db.connectionName();
