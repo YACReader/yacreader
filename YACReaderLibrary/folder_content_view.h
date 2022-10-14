@@ -22,6 +22,7 @@ public:
     explicit FolderContentView(QWidget *parent = nullptr);
     void setModel(const QModelIndex &parent, FolderModel *model);
     void setContinueReadingModel(ComicModel *model);
+    void reloadContinueReadingModel();
 
     FolderModel *currentFolderModel() { return folderModel; }
 signals:

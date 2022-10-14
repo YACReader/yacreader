@@ -198,6 +198,13 @@ void FolderContentView::setContinueReadingModel(ComicModel *model)
     }
 }
 
+void FolderContentView::reloadContinueReadingModel()
+{
+    if (!folderModel->isSubfolder) {
+        comicModel->reloadContinueReading();
+    }
+}
+
 void FolderContentView::openFolder(int index)
 {
     emit subfolderSelected(this->parent, index);
