@@ -75,6 +75,13 @@ void YACReaderContentViewsManager::updateCurrentComicView()
     }
 }
 
+void YACReaderContentViewsManager::updateContinueReadingView()
+{
+    if (comicsViewStack->currentWidget() == folderContentView) {
+        folderContentView->reloadContinueReadingModel();
+    }
+}
+
 void YACReaderContentViewsManager::showComicsView()
 {
     comicsViewStack->setCurrentWidget(comicsView);

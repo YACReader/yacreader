@@ -40,6 +40,7 @@ public:
     NoSearchResultsWidget *noSearchResultsWidget;
 
     void updateCurrentComicView();
+    void updateContinueReadingView();
 
 protected:
     QStackedWidget *comicsViewStack;
