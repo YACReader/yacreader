@@ -2818,7 +2818,7 @@ void LibraryWindow::importLibraryPackage()
     importLibraryDialog->open(libraries);
 }
 
-void LibraryWindow::updateComicsView(quint64 libraryId, const ComicDB &comic)
+void LibraryWindow::updateViewsOnComicUpdate(quint64 libraryId, const ComicDB &comic)
 {
     if (libraryId == (quint64)libraries.getId(selectedLibrary->currentText())) {
         comicsModel->reload(comic);

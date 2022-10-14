@@ -255,7 +255,7 @@ int main(int argc, char **argv)
 
     auto mw = new LibraryWindow();
 
-    mw->connect(localServer, &YACReaderLocalServer::comicUpdated, mw, &LibraryWindow::updateComicsView, Qt::QueuedConnection);
+    mw->connect(localServer, &YACReaderLocalServer::comicUpdated, mw, &LibraryWindow::updateViewsOnComicUpdate, Qt::QueuedConnection);
 
     // connections to localServer
 
