@@ -1,5 +1,5 @@
-#ifndef YACREADERCOMICSVIEWSMANAGER_H
-#define YACREADERCOMICSVIEWSMANAGER_H
+#ifndef YACREADERCONTENTVIEWSMANAGER_H
+#define YACREADERCONTENTVIEWSMANAGER_H
 
 #include <QtWidgets>
 
@@ -74,4 +74,4 @@ protected slots:
     void switchToComicsView(ComicsView *from, ComicsView *to);
 };
 
-#endif // COMICSVIEWSMANAGER_H
+#endif // YACREADERCONTENTVIEWSMANAGER_H

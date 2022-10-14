@@ -294,7 +294,7 @@ void LibraryWindow::doLayout()
 
     sHorizontal->addWidget(rightWidget);
 #else
-    sHorizontal->addWidget(comicsViewsManager->containerWidget());
+    sHorizontal->addWidget(contentViewsManager->containerWidget());
 #endif
 
     sHorizontal->setStretchFactor(0, 0);
@@ -2295,7 +2295,7 @@ void LibraryWindow::toFullScreen()
     sideBar->hide();
     libraryToolBar->hide();
 
-    comicsViewsManager->comicsView->toFullScreen();
+    contentViewsManager->comicsView->toFullScreen();
 
     showFullScreen();
 }
@@ -2304,7 +2304,7 @@ void LibraryWindow::toNormal()
 {
     sideBar->show();
 
-    comicsViewsManager->comicsView->toNormal();
+    contentViewsManager->comicsView->toNormal();
 
     if (fromMaximized)
         showMaximized();
