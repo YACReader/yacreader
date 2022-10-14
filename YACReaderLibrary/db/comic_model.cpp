@@ -883,6 +883,11 @@ void ComicModel::removeInTransaction(int row)
     endRemoveRows();
 }
 
+void ComicModel::reloadContinueReading()
+{
+    setupReadingModelData(_databasePath);
+}
+
 void ComicModel::remove(int row)
 {
     removeInTransaction(row);
