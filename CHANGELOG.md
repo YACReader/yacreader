@@ -13,6 +13,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fixed going forward history navigation.
 * Continue Reading view that it is shown for the root folder.
 * UI gets updated when YACReaderLibrary gets updates from YACReader or YACReader for iOS.
+* Linux: Add fallback for dynamically loading libqrencode on distros that don't provide unversioned library symlinks
 
 ## 9.9.2
 
