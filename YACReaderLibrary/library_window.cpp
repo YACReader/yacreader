@@ -2812,6 +2812,7 @@ void LibraryWindow::importLibraryPackage()
 
 void LibraryWindow::updateViewsOnClientSync()
 {
+    comicsModel->reload();
     contentViewsManager->updateCurrentComicView();
     contentViewsManager->updateContinueReadingView();
 }

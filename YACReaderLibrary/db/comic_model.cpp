@@ -896,6 +896,27 @@ void ComicModel::reloadContinueReading()
     setupReadingModelData(_databasePath);
 }
 
+void ComicModel::reload()
+{
+    switch (mode) {
+    case Folder:
+        setupFolderModelData(sourceId, _databasePath);
+        break;
+    case Favorites:
+        setupFavoritesModelData(_databasePath);
+        break;
+    case Reading:
+        setupReadingModelData(_databasePath);
+        break;
+    case Label:
+        setupLabelModelData(sourceId, _databasePath);
+        break;
+    case ReadingList:
+        setupReadingListModelData(sourceId, _databasePath);
+        break;
+    }
+}
+
 void ComicModel::remove(int row)
 {
     removeInTransaction(row);

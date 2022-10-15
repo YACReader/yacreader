@@ -112,6 +112,7 @@ public:
     // void remove(ComicDB * comic, int row);
     void removeInTransaction(int row);
     void reloadContinueReading();
+    void reload();
     void reload(const ComicDB &comic);
     void resetComicRating(const QModelIndex &mi);
 
