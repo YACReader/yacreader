@@ -143,7 +143,8 @@ ComicDB DBHelper::getComicInfo(qulonglong libraryId, qulonglong id)
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
 
-        comic = DBHelper::loadComic(id, db);
+        bool found;
+        comic = DBHelper::loadComic(id, db, found);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
@@ -807,7 +808,8 @@ void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
 
-        ComicDB comic = DBHelper::loadComic(comicInfo.id, db);
+        bool found;
+        ComicDB comic = DBHelper::loadComic(comicInfo.id, db, found);
         comic.info.currentPage = comicInfo.currentPage;
         comic.info.hasBeenOpened = comicInfo.currentPage > 0 || comic.info.hasBeenOpened;
         comic.info.read = comic.info.read || comic.info.currentPage == comic.info.numPages;
@@ -827,7 +829,8 @@ void DBHelper::setComicAsReading(qulonglong libraryId, const ComicInfo &comicInf
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
 
-        ComicDB comic = DBHelper::loadComic(comicInfo.id, db);
+        bool found;
+        ComicDB comic = DBHelper::loadComic(comicInfo.id, db, found);
         comic.info.hasBeenOpened = true;
         comic.info.read = comic.info.read || comic.info.currentPage == comic.info.numPages;
 
@@ -866,7 +869,8 @@ void DBHelper::updateFromRemoteClient(qulonglong libraryId, const ComicInfo &com
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
 
-        ComicDB comic = DBHelper::loadComic(comicInfo.id, db);
+        bool found;
+        ComicDB comic = DBHelper::loadComic(comicInfo.id, db, found);
 
         if (comic.info.hash == comicInfo.hash) {
             if (comicInfo.currentPage > 0) {
@@ -956,7 +960,8 @@ QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qul
                                     " WHERE id = :id ");
 
             foreach (ComicInfo comicInfo, comics[libraryId]) {
-                ComicDB comic = DBHelper::loadComic(comicInfo.id, db);
+                bool found;
+                ComicDB comic = DBHelper::loadComic(comicInfo.id, db, found);
 
                 if (comic.info.hash == comicInfo.hash) {
                     bool isMoreRecent = false;
@@ -1626,7 +1631,7 @@ Folder DBHelper::loadFolder(const QString &folderName, qulonglong parentId, QSql
     return folder;
 }
 
-ComicDB DBHelper::loadComic(qulonglong id, QSqlDatabase &db)
+ComicDB DBHelper::loadComic(qulonglong id, QSqlDatabase &db, bool &found)
 {
     ComicDB comic;
 
@@ -1648,6 +1653,9 @@ ComicDB DBHelper::loadComic(qulonglong id, QSqlDatabase &db)
         comic.name = selectQuery.value(name).toString();
         comic.path = selectQuery.value(path).toString();
         comic.info = DBHelper::loadComicInfo(selectQuery.value(hash).toString(), db);
+        found = true;
+    } else {
+        found = false;
     }
 
     return comic;
