@@ -59,7 +59,7 @@ public slots:
     void focusComicsViewViaShortcut();
 
     void showComicsView();
-    void showEmptyFolderView();
+    void showFolderContentView();
     void showEmptyLabelView();
     void showEmptySpecialList();
     void showEmptyReadingListWidget();

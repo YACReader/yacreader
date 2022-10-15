@@ -91,7 +91,7 @@ void YACReaderContentViewsManager::showComicsView()
     libraryWindow->sideBar->update();
 }
 
-void YACReaderContentViewsManager::showEmptyFolderView()
+void YACReaderContentViewsManager::showFolderContentView()
 {
     comicsViewStack->setCurrentWidget(folderContentView);
 }

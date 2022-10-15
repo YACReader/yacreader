@@ -67,7 +67,7 @@ void YACReaderNavigationController::loadFolderInfo(const QModelIndex &modelIndex
     } else {
         // showEmptyFolder
         loadEmptyFolderInfo(modelIndex);
-        contentViewsManager->showEmptyFolderView();
+        contentViewsManager->showFolderContentView();
         libraryWindow->disableComicsActions(true);
     }
 
