@@ -1597,7 +1597,7 @@ void LibraryWindow::addFolderToCurrentIndex()
             navigationController->loadFolderInfo(newIndex);
             historyController->updateHistory(YACReaderLibrarySourceContainer(newIndex, YACReaderLibrarySourceContainer::Folder));
             // a new folder is always an empty folder
-            contentViewsManager->showEmptyFolderView();
+            contentViewsManager->showFolderContentView();
         }
     }
 }
