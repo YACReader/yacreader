@@ -20,6 +20,7 @@ public:
     QString getPort();
 
 signals:
+    void clientSync();
     void comicUpdated(qulonglong libraryId, qulonglong comicId);
 
 private:

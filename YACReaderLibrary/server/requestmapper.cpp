@@ -273,6 +273,7 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
             VersionController().service(request, response);
         } else if (sync.exactMatch(path)) {
             SyncControllerV2().service(request, response);
+            emit clientSync();
         } else {
             if (library.indexIn(path) != -1 && DBHelper::getLibraries().contains(library.cap(1).toInt())) {
                 if (folderInfo.exactMatch(path)) {

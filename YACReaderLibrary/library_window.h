@@ -385,6 +385,7 @@ public slots:
     void showContinueReadingContextMenu(QPoint point, ComicDB comic);
     void libraryAlreadyExists(const QString &name);
     void importLibraryPackage();
+    void updateViewsOnClientSync();
     void updateViewsOnComicUpdateWithId(quint64 libraryId, quint64 comicId);
     void updateViewsOnComicUpdate(quint64 libraryId, const ComicDB &comic);
     void showComicVineScraper();

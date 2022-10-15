@@ -141,6 +141,7 @@ void YACReaderHttpServer::start(quint16 port)
     listener = new HttpListener(listenerSettings, requestMapper, app);
 
     connect(requestMapper, &RequestMapper::comicUpdated, this, &YACReaderHttpServer::comicUpdated);
+    connect(requestMapper, &RequestMapper::clientSync, this, &YACReaderHttpServer::clientSync);
 
     if (listener->isListening()) {
         qDebug("ServiceHelper: Service has started");

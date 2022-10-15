@@ -21,6 +21,7 @@ public:
     void loadSessionV2(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
 
 signals:
+    void clientSync();
     void comicUpdated(qulonglong libraryId, qulonglong comicId);
 
 private:

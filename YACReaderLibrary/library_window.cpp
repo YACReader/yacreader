@@ -2818,6 +2818,12 @@ void LibraryWindow::importLibraryPackage()
     importLibraryDialog->open(libraries);
 }
 
+void LibraryWindow::updateViewsOnClientSync()
+{
+    contentViewsManager->updateCurrentComicView();
+    contentViewsManager->updateContinueReadingView();
+}
+
 void LibraryWindow::updateViewsOnComicUpdateWithId(quint64 libraryId, quint64 comicId)
 {
     if (libraryId == (quint64)libraries.getId(selectedLibrary->currentText())) {
