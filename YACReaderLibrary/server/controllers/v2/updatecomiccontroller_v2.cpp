@@ -44,7 +44,12 @@ void UpdateComicControllerV2::service(HttpRequest &request, HttpResponse &respon
                 DBHelper::setComicAsReading(libraryId, info);
             }
         }
+
+        error = false;
+        updatedLibraryId = libraryId;
+        updatedComicId = comicId;
     } else {
+        error = true;
         response.setStatus(412, "No comic info received");
         response.write("", true);
         return;

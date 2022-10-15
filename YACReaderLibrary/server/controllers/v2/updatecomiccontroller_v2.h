@@ -15,6 +15,10 @@ public:
 
     /** Generates the response */
     void service(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response) override;
+
+    bool error;
+    qulonglong updatedLibraryId;
+    qulonglong updatedComicId;
 };
 
 #endif // UPDATECOMICCONTROLLER_H
