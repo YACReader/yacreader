@@ -20,6 +20,9 @@ public:
     void loadSessionV1(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
     void loadSessionV2(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
 
+signals:
+    void comicUpdated(qulonglong libraryId, qulonglong comicId);
+
 private:
     void serviceV1(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
     void serviceV2(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);

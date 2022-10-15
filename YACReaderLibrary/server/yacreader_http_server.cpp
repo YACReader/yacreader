@@ -137,7 +137,10 @@ void YACReaderHttpServer::start(quint16 port)
         testServer.close();
     }
 
-    listener = new HttpListener(listenerSettings, new RequestMapper(app), app);
+    auto requestMapper = new RequestMapper(app);
+    listener = new HttpListener(listenerSettings, requestMapper, app);
+
+    connect(requestMapper, &RequestMapper::comicUpdated, this, &YACReaderHttpServer::comicUpdated);
 
     if (listener->isListening()) {
         qDebug("ServiceHelper: Service has started");
@@ -158,7 +161,7 @@ void YACReaderHttpServer::stop()
 }
 
 YACReaderHttpServer::YACReaderHttpServer()
-    : listener(nullptr)
+    : QObject(nullptr), listener(nullptr)
 {
 }
 

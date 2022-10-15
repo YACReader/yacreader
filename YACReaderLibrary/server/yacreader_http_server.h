@@ -1,17 +1,16 @@
 #ifndef YACREADER_HTTP_SERVER_H
 #define YACREADER_HTTP_SERVER_H
 
+#include <QObject>
 #include <QString>
 
 namespace stefanfrings {
 class HttpListener;
 }
 
-class YACReaderHttpServer
+class YACReaderHttpServer : public QObject
 {
-private:
-    stefanfrings::HttpListener *listener;
-
+    Q_OBJECT
 public:
     YACReaderHttpServer();
 
@@ -20,7 +19,11 @@ public:
 
     QString getPort();
 
-protected:
+signals:
+    void comicUpdated(qulonglong libraryId, qulonglong comicId);
+
+private:
+    stefanfrings::HttpListener *listener;
 };
 
 #endif // YACREADER_HTTP_SERVER_H

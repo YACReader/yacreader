@@ -290,7 +290,12 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
                 } else if (comicPage.exactMatch(path) || comicPageRemote.exactMatch(path)) {
                     PageControllerV2().service(request, response);
                 } else if (comicUpdate.exactMatch(path)) {
-                    UpdateComicControllerV2().service(request, response);
+                    auto updateController = UpdateComicControllerV2();
+                    updateController.service(request, response);
+
+                    if (!updateController.error) {
+                        emit comicUpdated(updateController.updatedLibraryId, updateController.updatedComicId);
+                    }
                 } else if (folderContent.exactMatch(path)) {
                     FolderContentControllerV2().service(request, response);
                 } else if (tags.exactMatch(path)) {
