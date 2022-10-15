@@ -11,6 +11,8 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Update QtWebApp webserver to v1.8.6
 * New folder content view that replaces the old `subfolders in this folder` view shown when folders don't have direct comics.
 * Fixed going forward history navigation.
+* Continue Reading view that it is shown for the root folder.
+* UI gets updated when YACReaderLibrary gets updates from YACReader or YACReader for iOS.
 
 ## 9.9.2
 
