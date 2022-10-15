@@ -79,6 +79,22 @@ void YACReaderContentViewsManager::updateContinueReadingView()
     }
 }
 
+void YACReaderContentViewsManager::toFullscreen()
+{
+    if (comicsViewStack->currentWidget() == comicsView) {
+        comicsView->toFullScreen();
+        return;
+    }
+}
+
+void YACReaderContentViewsManager::toNormal()
+{
+    if (comicsViewStack->currentWidget() == comicsView) {
+        comicsView->toNormal();
+        return;
+    }
+}
+
 void YACReaderContentViewsManager::showComicsView()
 {
     comicsViewStack->setCurrentWidget(comicsView);

@@ -42,6 +42,9 @@ public:
     void updateCurrentComicView();
     void updateContinueReadingView();
 
+    void toFullscreen();
+    void toNormal();
+
 protected:
     QStackedWidget *comicsViewStack;
     LibraryWindow *libraryWindow;

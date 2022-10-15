@@ -2259,7 +2259,7 @@ void LibraryWindow::toFullScreen()
     setGeometry(r);
     show();
 
-    contentViewsManager->comicsView->toFullScreen();
+    contentViewsManager->toFullscreen();
 }
 
 void LibraryWindow::toNormal()
@@ -2275,7 +2275,7 @@ void LibraryWindow::toNormal()
     if (fromMaximized)
         showMaximized();
 
-    contentViewsManager->comicsView->toNormal();
+    contentViewsManager->toNormal();
 }
 
 #else
@@ -2287,7 +2287,7 @@ void LibraryWindow::toFullScreen()
     sideBar->hide();
     libraryToolBar->hide();
 
-    contentViewsManager->comicsView->toFullScreen();
+    contentViewsManager->toFullScreen();
 
     showFullScreen();
 }
@@ -2296,7 +2296,7 @@ void LibraryWindow::toNormal()
 {
     sideBar->show();
 
-    contentViewsManager->comicsView->toNormal();
+    contentViewsManager->toNormal();
 
     if (fromMaximized)
         showMaximized();
