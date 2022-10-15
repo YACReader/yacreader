@@ -2287,7 +2287,7 @@ void LibraryWindow::toFullScreen()
     sideBar->hide();
     libraryToolBar->hide();
 
-    contentViewsManager->toFullScreen();
+    contentViewsManager->toFullscreen();
 
     showFullScreen();
 }
