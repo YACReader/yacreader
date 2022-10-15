@@ -256,7 +256,7 @@ int main(int argc, char **argv)
     auto mw = new LibraryWindow();
 
     mw->connect(localServer, &YACReaderLocalServer::comicUpdated, mw, &LibraryWindow::updateViewsOnComicUpdate, Qt::QueuedConnection);
-
+    mw->connect(httpServer, &YACReaderHttpServer::comicUpdated, mw, &LibraryWindow::updateViewsOnComicUpdateWithId, Qt::QueuedConnection);
     // connections to localServer
 
     // start as tray

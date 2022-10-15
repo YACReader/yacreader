@@ -2818,6 +2818,29 @@ void LibraryWindow::importLibraryPackage()
     importLibraryDialog->open(libraries);
 }
 
+void LibraryWindow::updateViewsOnComicUpdateWithId(quint64 libraryId, quint64 comicId)
+{
+    if (libraryId == (quint64)libraries.getId(selectedLibrary->currentText())) {
+        auto path = libraries.getPath(libraryId);
+        if (path.isEmpty()) {
+            return;
+        }
+        QString connectionName = "";
+        {
+            QSqlDatabase db = DataBaseManagement::loadDatabase(path + "/.yacreaderlibrary");
+            bool found;
+            auto comic = DBHelper::loadComic(comicId, db, found);
+            if (found) {
+                updateViewsOnComicUpdate(libraryId, comic);
+            }
+
+            qDebug() << db.lastError();
+            connectionName = db.connectionName();
+        }
+        QSqlDatabase::removeDatabase(connectionName);
+    }
+}
+
 void LibraryWindow::updateViewsOnComicUpdate(quint64 libraryId, const ComicDB &comic)
 {
     if (libraryId == (quint64)libraries.getId(selectedLibrary->currentText())) {
