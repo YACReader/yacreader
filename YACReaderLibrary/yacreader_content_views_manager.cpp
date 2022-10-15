@@ -29,20 +29,17 @@ YACReaderContentViewsManager::YACReaderContentViewsManager(QSettings *settings, 
         comicsViewStatus = Flow;
         break;
 
-    case Grid:
-        comicsView = gridComicsView = new GridComicsView();
-        connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::optionsChanged, gridComicsView, &GridComicsView::updateBackgroundConfig);
-        comicsViewStatus = Grid;
-        break;
-
     case Info:
         comicsView = infoComicsView = new InfoComicsView();
         comicsViewStatus = Info;
         break;
 
+    case Grid:
     default:
-        comicsView = classicComicsView = new ClassicComicsView();
-        comicsViewStatus = Flow;
+        comicsView = gridComicsView = new GridComicsView();
+        connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::optionsChanged, gridComicsView, &GridComicsView::updateBackgroundConfig);
+        comicsViewStatus = Grid;
+        break;
     }
 
     doComicsViewConnections();
