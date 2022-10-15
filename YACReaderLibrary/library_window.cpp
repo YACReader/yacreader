@@ -1206,8 +1206,6 @@ void LibraryWindow::createConnections()
 
     connect(resetComicRatingAction, &QAction::triggered, this, &LibraryWindow::resetComicRating);
 
-    // connect(dm,SIGNAL(directoryLoaded(QString)),foldersView,SLOT(expandAll()));
-    // connect(dm,SIGNAL(directoryLoaded(QString)),this,SLOT(updateFoldersView(QString)));
     // Comicts edition
     connect(editSelectedComicsAction, &QAction::triggered, this, &LibraryWindow::showProperties);
     connect(asignOrderAction, &QAction::triggered, this, &LibraryWindow::asignNumbers);
@@ -1215,12 +1213,6 @@ void LibraryWindow::createConnections()
     connect(deleteComicsAction, &QAction::triggered, this, &LibraryWindow::deleteComics);
 
     connect(getInfoAction, &QAction::triggered, this, &LibraryWindow::showComicVineScraper);
-
-    // connect(socialAction,SIGNAL(triggered()),this,SLOT(showSocial()));
-
-    // connect(comicsModel,SIGNAL(isEmpty()),this,SLOT(showEmptyFolderView()));
-    // connect(comicsModel,SIGNAL(searchNumResults(int)),this,SLOT(checkSearchNumResults(int)));
-    // connect(emptyFolderWidget,SIGNAL(subfolderSelected(QModelIndex,int)),this,SLOT(selectSubfolder(QModelIndex,int)));
 
     connect(focusSearchLineAction, &QAction::triggered, searchEdit, [this] { searchEdit->setFocus(Qt::ShortcutFocusReason); });
     connect(focusComicsViewAction, &QAction::triggered, contentViewsManager, &YACReaderContentViewsManager::focusComicsViewViaShortcut);
