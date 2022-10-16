@@ -285,8 +285,8 @@ TRANSLATIONS =   yacreaderlibrary_es.ts \
                 yacreaderlibrary_zh_CN.ts \
                 yacreaderlibrary_zh_TW.ts \
                 yacreaderlibrary_zh_HK.ts \
-                yacreaderlibrary_it.ts
-#                yacreaderlibrary_source.ts
+                yacreaderlibrary_it.ts \
+                yacreaderlibrary_en.ts
 
 CONFIG += lrelease
 

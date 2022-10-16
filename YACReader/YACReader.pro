@@ -196,8 +196,8 @@ TRANSLATIONS =    yacreader_es.ts \
                   yacreader_zh_CN.ts \
                   yacreader_zh_TW.ts \
                   yacreader_zh_HK.ts \
-                  yacreader_it.ts
-#                  yacreader_source.ts
+                  yacreader_it.ts \
+                  yacreader_en.ts
 
 CONFIG += lrelease
 
