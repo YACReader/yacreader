@@ -196,11 +196,29 @@ TRANSLATIONS =    yacreader_es.ts \
                   yacreader_zh_CN.ts \
                   yacreader_zh_TW.ts \
                   yacreader_zh_HK.ts \
-                  yacreader_it.ts
-#                  yacreader_source.ts
+                  yacreader_it.ts \
+                  yacreader_en.ts
 
-LRELEASE_DIR = ../release/languages/
 CONFIG += lrelease
+
+win32 {
+    CONFIG(release, debug|release) {
+        SOURCE_QM_DIR = $$OUT_PWD/release/*.qm
+    }
+    CONFIG(debug, debug|release) {
+        SOURCE_QM_DIR = $$OUT_PWD/debug/*.qm
+    }
+
+    DEPLOYMENT_OUT_QM_DIR = ../release/languages/
+    OUT_QM_DIR = $${DESTDIR}/languages/
+
+    QMAKE_POST_LINK += $(MKDIR) $$shell_path($${OUT_QM_DIR}) 2> NULL & \
+                       $(COPY) $$shell_path($${SOURCE_QM_DIR}) $$shell_path($${OUT_QM_DIR}) & \
+                       $(MKDIR) $$shell_path($${DEPLOYMENT_OUT_QM_DIR}) 2> NULL & \
+                       $(COPY) $$shell_path($${SOURCE_QM_DIR}) $$shell_path($${DEPLOYMENT_OUT_QM_DIR})
+} else {
+    LRELEASE_DIR = ../release/languages/
+}
 
 unix:!macx {
 # set install prefix if it's empty
