@@ -199,7 +199,6 @@ TRANSLATIONS =    yacreader_es.ts \
                   yacreader_it.ts
 #                  yacreader_source.ts
 
-LRELEASE_DIR = ../release/languages/
 CONFIG += lrelease
 
 win32 {
@@ -217,6 +216,8 @@ win32 {
                        $(COPY) $$shell_path($${SOURCE_QM_DIR}) $$shell_path($${OUT_QM_DIR}) & \
                        $(MKDIR) $$shell_path($${DEPLOYMENT_OUT_QM_DIR}) 2> NULL & \
                        $(COPY) $$shell_path($${SOURCE_QM_DIR}) $$shell_path($${DEPLOYMENT_OUT_QM_DIR})
+} else {
+    LRELEASE_DIR = ../release/languages/
 }
 
 unix:!macx {
