@@ -7,8 +7,6 @@ CONFIG += c++17
 win32 {
     #enable c++17 explicitly in msvc
     QMAKE_CXXFLAGS += /std:c++17 /Zc:__cplusplus /permissive-
-    CONFIG -= debug_and_release
-    !CONFIG(Release):!CONFIG(Debug):CONFIG += Release
 }
 
 DEFINES += NOMINMAX
