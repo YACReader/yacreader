@@ -656,7 +656,7 @@
     </message>
     <message>
         <source>Library &apos;%1&apos; has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
-        <translation>Bibliothek &apos;%1&apos; wurde mit einer älteren Version von YACREader erstellt. Sie muss neu erzeugt werden. Wollen Sie die Bibliothek jetzt erzeugen?</translation>
+        <translation>Bibliothek &apos;%1&apos; wurde mit einer älteren Version von YACReader erstellt. Sie muss neu erzeugt werden. Wollen Sie die Bibliothek jetzt erzeugen?</translation>
     </message>
     <message>
         <source>Pack covers</source>
