@@ -1864,7 +1864,27 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
 
 void LibraryWindow::showContinueReadingContextMenu(QPoint point, ComicDB comic)
 {
-    qDebug() << "openContinueReadingComicContextMenu" << comic.name;
+    QMenu menu;
+
+    auto setAsUnReadAction = new QAction();
+    setAsUnReadAction->setText(tr("Set as unread"));
+    setAsUnReadAction->setIcon(QIcon(":/images/comics_view_toolbar/setUnread.png"));
+
+    menu.addAction(setAsUnReadAction);
+
+    connect(setAsUnReadAction, &QAction::triggered, this, [=]() {
+        auto libraryId = libraries.getId(selectedLibrary->currentText());
+        auto info = comic.info;
+        info.setRead(false);
+        info.currentPage = 1;
+        info.hasBeenOpened = false;
+        info.lastTimeOpened = QVariant();
+        DBHelper::update(libraryId, info);
+
+        contentViewsManager->folderContentView->reloadContinueReadingModel();
+    });
+
+    menu.exec(contentViewsManager->folderContentView->mapToGlobal(point));
 }
 
 void LibraryWindow::setupAddToSubmenu(QMenu &menu)
