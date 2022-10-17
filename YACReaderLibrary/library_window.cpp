@@ -1828,7 +1828,6 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
 
     auto subfolderModel = contentViewsManager->folderContentView->currentFolderModel();
 
-    // TODO update the subfolder model loaded in folderContentView
     connect(openContainingFolderAction, &QAction::triggered, this, [=]() {
         QDesktopServices::openUrl(QUrl("file:///" + QDir::cleanPath(currentPath() + "/" + folder.path), QUrl::TolerantMode));
     });
