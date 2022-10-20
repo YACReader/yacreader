@@ -41,28 +41,17 @@
 
 QString addExtensionToIconPath(const QString &path)
 {
-#ifdef Q_OS_MAC
-    return path + ".png";
-#else
+
     return path + ".svg";
-#endif
 }
 
 QString addExtensionToIconPathInToolbar(const QString &path)
 {
-#ifdef Q_OS_MAC
-    return path + ".png";
-#else
     return path + "_18x18.svg";
-#endif
 }
 
-QAction *actionWithCustomIcon(const QIcon &icon, const QAction *action)
+QAction *actionWithCustomIcon(const QIcon &icon, QAction *action)
 {
-
-#ifdef Q_OS_MAC
-    return action;
-#else
     auto a = new QAction(icon, action->text());
 
     a->setEnabled(action->isEnabled());
@@ -76,7 +65,6 @@ QAction *actionWithCustomIcon(const QIcon &icon, const QAction *action)
     QObject::connect(action, &QAction::toggled, a, &QAction::setChecked);
 
     return a;
-#endif
 }
 
 MainWindowViewer::MainWindowViewer()
@@ -522,16 +510,15 @@ void MainWindowViewer::createToolBars()
     comicToolBar = addToolBar(tr("&File"));
 #endif
 
-#ifdef Q_OS_MAC
-    // comicToolBar->setIconSize(QSize(16,16));
-#else
     comicToolBar->setIconSize(QSize(18, 18));
+
+#ifndef Q_OS_MAC
     comicToolBar->setStyleSheet("QToolBar{border:none;}");
 #endif
 
 #ifdef Q_OS_MAC
-    comicToolBar->addAction(openAction);
-    comicToolBar->addAction(openFolderAction);
+    comicToolBar->addAction(actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/open")), openAction));
+    comicToolBar->addAction(actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/openFolder")), openFolderAction));
 #else
     auto recentmenu = new QMenu(tr("Open recent"));
     recentmenu->addActions(recentFilesActionList);
