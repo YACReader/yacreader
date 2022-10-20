@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
-        <file>../images/accept_shortcut.png</file>
-        <file>../images/clear_shortcut.png</file>
+        <file>../images/accept_shortcut.svg</file>
+        <file>../images/clear_shortcut.svg</file>
         <file>../images/comic_vine/downArrow.png</file>
         <file>../images/comic_vine/nextPage.png</file>
         <file>../images/comic_vine/previousPage.png</file>
@@ -92,14 +92,14 @@
         <file>../images/readRibbon.png</file>
         <file>../images/searching_icon.png</file>
         <file>../images/serverConfigBackground.png</file>
-        <file>../images/shortcuts_group_comics.png</file>
-        <file>../images/shortcuts_group_folders.png</file>
-        <file>../images/shortcuts_group_general.png</file>
-        <file>../images/shortcuts_group_libraries.png</file>
-        <file>../images/shortcuts_group_mglass.png</file>
-        <file>../images/shortcuts_group_page.png</file>
-        <file>../images/shortcuts_group_reading.png</file>
-        <file>../images/shortcuts_group_visualization.png</file>
+        <file>../images/shortcuts_group_comics.svg</file>
+        <file>../images/shortcuts_group_folders.svg</file>
+        <file>../images/shortcuts_group_general.svg</file>
+        <file>../images/shortcuts_group_libraries.svg</file>
+        <file>../images/shortcuts_group_mglass.svg</file>
+        <file>../images/shortcuts_group_page.svg</file>
+        <file>../images/shortcuts_group_reading.svg</file>
+        <file>../images/shortcuts_group_visualization.svg</file>
         <file>../images/shownCovers.png</file>
         <file>../images/sidebar/branch-closed.png</file>
         <file>../images/sidebar/branch-open.png</file>

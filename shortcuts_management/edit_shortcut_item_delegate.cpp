@@ -59,20 +59,17 @@ KeySequenceLineEdit::KeySequenceLineEdit(QWidget *parent)
     // keys[0] = keys[1] = keys[2] = keys[3] = 0;
     setAlignment(Qt::AlignRight);
 
-    QPixmap clearPixmap(":/images/clear_shortcut.png");
-    QPixmap acceptPixmap(":/images/accept_shortcut.png");
-
     clearButton = new QToolButton(this);
     acceptButton = new QToolButton(this);
     QString buttonsStyle = "QToolButton { border: none; padding: 0px; }";
 
-    clearButton->setIcon(QIcon(clearPixmap));
-    clearButton->setIconSize(clearPixmap.size());
+    clearButton->setIcon(QIcon(":/images/clear_shortcut.svg"));
+    clearButton->setIconSize(QSize(15, 15));
     clearButton->setCursor(Qt::ArrowCursor);
     clearButton->setStyleSheet(buttonsStyle);
 
-    acceptButton->setIcon(QIcon(acceptPixmap));
-    acceptButton->setIconSize(acceptPixmap.size());
+    acceptButton->setIcon(QIcon(":/images/accept_shortcut.svg"));
+    acceptButton->setIconSize(QSize(15, 15));
     acceptButton->setCursor(Qt::ArrowCursor);
     acceptButton->setStyleSheet(buttonsStyle);
 

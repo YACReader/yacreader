@@ -361,7 +361,7 @@ void LibraryWindow::setUpShortcutsManagement()
     QList<QAction *> allActions;
     QList<QAction *> tmpList;
 
-    editShortcutsDialog->addActionsGroup("Comics", QIcon(":/images/shortcuts_group_comics.png"),
+    editShortcutsDialog->addActionsGroup("Comics", QIcon(":/images/shortcuts_group_comics.svg"),
                                          tmpList = QList<QAction *>()
                                                  << openComicAction
                                                  << saveCoversToAction
@@ -379,7 +379,7 @@ void LibraryWindow::setUpShortcutsManagement()
 
     allActions << tmpList;
 
-    editShortcutsDialog->addActionsGroup("Folders", QIcon(":/images/shortcuts_group_folders.png"),
+    editShortcutsDialog->addActionsGroup("Folders", QIcon(":/images/shortcuts_group_folders.svg"),
                                          tmpList = QList<QAction *>()
                                                  << addFolderAction
                                                  << deleteFolderAction
@@ -396,7 +396,7 @@ void LibraryWindow::setUpShortcutsManagement()
                                                  << updateCurrentFolderAction);
     allActions << tmpList;
 
-    editShortcutsDialog->addActionsGroup("Lists", QIcon(":/images/shortcuts_group_folders.png"), // TODO change icon
+    editShortcutsDialog->addActionsGroup("Lists", QIcon(":/images/shortcuts_group_folders.svg"), // TODO change icon
                                          tmpList = QList<QAction *>()
                                                  << addReadingListAction
                                                  << deleteReadingListAction
@@ -404,7 +404,7 @@ void LibraryWindow::setUpShortcutsManagement()
                                                  << renameListAction);
     allActions << tmpList;
 
-    editShortcutsDialog->addActionsGroup("General", QIcon(":/images/shortcuts_group_general.png"),
+    editShortcutsDialog->addActionsGroup("General", QIcon(":/images/shortcuts_group_general.svg"),
                                          tmpList = QList<QAction *>()
                                                  << backAction
                                                  << forwardAction
@@ -418,7 +418,7 @@ void LibraryWindow::setUpShortcutsManagement()
 
     allActions << tmpList;
 
-    editShortcutsDialog->addActionsGroup("Libraries", QIcon(":/images/shortcuts_group_libraries.png"),
+    editShortcutsDialog->addActionsGroup("Libraries", QIcon(":/images/shortcuts_group_libraries.svg"),
                                          tmpList = QList<QAction *>()
                                                  << createLibraryAction
                                                  << openLibraryAction
@@ -433,7 +433,7 @@ void LibraryWindow::setUpShortcutsManagement()
 
     allActions << tmpList;
 
-    editShortcutsDialog->addActionsGroup("Visualization", QIcon(":/images/shortcuts_group_visualization.png"),
+    editShortcutsDialog->addActionsGroup("Visualization", QIcon(":/images/shortcuts_group_visualization.svg"),
                                          tmpList = QList<QAction *>()
                                                  << showHideMarksAction
 #ifndef Q_OS_MAC
