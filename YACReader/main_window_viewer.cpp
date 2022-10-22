@@ -36,37 +36,6 @@
 #include <QDate>
 #include <QMenuBar>
 
-// TODO there are no SVG assets in macos yet
-// we need two sets of icons, one for the toolbar and one for the context menu because of this bug (QTBUG-96553): https://bugreports.qt.io/browse/QTBUG-96553
-
-QString addExtensionToIconPath(const QString &path)
-{
-
-    return path + ".svg";
-}
-
-QString addExtensionToIconPathInToolbar(const QString &path)
-{
-    return path + "_18x18.svg";
-}
-
-QAction *actionWithCustomIcon(const QIcon &icon, QAction *action)
-{
-    auto a = new QAction(icon, action->text());
-
-    a->setEnabled(action->isEnabled());
-    a->setCheckable(action->isCheckable());
-
-    a->setChecked(action->isChecked());
-
-    QObject::connect(a, &QAction::triggered, action, &QAction::triggered);
-    QObject::connect(action, &QAction::enabledChanged, a, &QAction::setEnabled);
-    QObject::connect(a, &QAction::toggled, action, &QAction::setChecked);
-    QObject::connect(action, &QAction::toggled, a, &QAction::setChecked);
-
-    return a;
-}
-
 MainWindowViewer::MainWindowViewer()
     : QMainWindow(), fullscreen(false), toolbars(true), currentDirectory("."), currentDirectoryImgDest("."), isClient(false)
 {
