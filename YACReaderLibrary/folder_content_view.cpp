@@ -45,11 +45,11 @@ FolderContentView::FolderContentView(QWidget *parent)
 
     auto horizontalLayout = new QHBoxLayout();
     QLabel *smallLabel = new QLabel();
-    smallLabel->setPixmap(QPixmap(":/images/comics_view_toolbar/small_size_grid_zoom.png"));
+    smallLabel->setPixmap(hdpiPixmap(":/images/comics_view_toolbar/small_size_grid_zoom.svg", QSize(18, 18)));
     horizontalLayout->addWidget(smallLabel);
     horizontalLayout->addWidget(coverSizeSlider, 0, Qt::AlignVCenter);
     QLabel *bigLabel = new QLabel();
-    bigLabel->setPixmap(QPixmap(":/images/comics_view_toolbar/big_size_grid_zoom.png"));
+    bigLabel->setPixmap(hdpiPixmap(":/images/comics_view_toolbar/big_size_grid_zoom.svg", QSize(18, 18)));
     horizontalLayout->addWidget(bigLabel);
     horizontalLayout->addSpacing(10);
     horizontalLayout->setContentsMargins(0, 0, 0, 0);
