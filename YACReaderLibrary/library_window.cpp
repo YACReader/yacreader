@@ -464,7 +464,7 @@ void LibraryWindow::createActions()
 {
     backAction = new QAction(this);
     QIcon icoBackButton;
-    icoBackButton.addFile(":/images/main_toolbar/back.png", QSize(), QIcon::Normal);
+    icoBackButton.addFile(addExtensionToIconPath(":/images/main_toolbar/back"), QSize(), QIcon::Normal);
     // icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back_disabled.png"), QIcon::Disabled);
     backAction->setData(BACK_ACTION_YL);
     backAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(BACK_ACTION_YL));
@@ -473,7 +473,7 @@ void LibraryWindow::createActions()
 
     forwardAction = new QAction(this);
     QIcon icoFordwardButton;
-    icoFordwardButton.addFile(":/images/main_toolbar/forward.png", QSize(), QIcon::Normal);
+    icoFordwardButton.addFile(addExtensionToIconPath(":/images/main_toolbar/forward"), QSize(), QIcon::Normal);
     // icoFordwardButton.addPixmap(QPixmap(":/images/main_toolbar/forward_disabled.png"), QIcon::Disabled);
     forwardAction->setData(FORWARD_ACTION_YL);
     forwardAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(FORWARD_ACTION_YL));
@@ -595,7 +595,7 @@ void LibraryWindow::createActions()
     toggleFullScreenAction->setData(TOGGLE_FULL_SCREEN_ACTION_YL);
     toggleFullScreenAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_FULL_SCREEN_ACTION_YL));
     QIcon icoFullscreenButton;
-    icoFullscreenButton.addPixmap(QPixmap(":/images/main_toolbar/fullscreen.png"), QIcon::Normal);
+    icoFullscreenButton.addFile(addExtensionToIconPath(":/images/main_toolbar/fullscreen"), QSize(), QIcon::Normal);
     toggleFullScreenAction->setIcon(icoFullscreenButton);
 #endif
     helpAboutAction = new QAction(this);
@@ -603,7 +603,7 @@ void LibraryWindow::createActions()
     helpAboutAction->setData(HELP_ABOUT_ACTION_YL);
     helpAboutAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(HELP_ABOUT_ACTION_YL));
     QIcon icoHelpButton;
-    icoHelpButton.addFile(":/images/main_toolbar/help.png", QSize(), QIcon::Normal);
+    icoHelpButton.addFile(addExtensionToIconPath(":/images/main_toolbar/help"), QSize(), QIcon::Normal);
     helpAboutAction->setIcon(icoHelpButton);
 
     addFolderAction = new QAction(tr("Add new folder"), this);
@@ -641,7 +641,7 @@ void LibraryWindow::createActions()
     optionsAction->setData(OPTIONS_ACTION_YL);
     optionsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPTIONS_ACTION_YL));
     QIcon icoSettingsButton;
-    icoSettingsButton.addFile(":/images/main_toolbar/settings.png", QSize(), QIcon::Normal);
+    icoSettingsButton.addFile(addExtensionToIconPath(":/images/main_toolbar/settings"), QSize(), QIcon::Normal);
     optionsAction->setIcon(icoSettingsButton);
 
     serverConfigAction = new QAction(this);
@@ -649,7 +649,7 @@ void LibraryWindow::createActions()
     serverConfigAction->setData(SERVER_CONFIG_ACTION_YL);
     serverConfigAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SERVER_CONFIG_ACTION_YL));
     QIcon icoServerButton;
-    icoServerButton.addFile(":/images/main_toolbar/server.png", QSize(), QIcon::Normal);
+    icoServerButton.addFile(addExtensionToIconPath(":/images/main_toolbar/server"), QSize(), QIcon::Normal);
     serverConfigAction->setIcon(icoServerButton);
 
     toggleComicsViewAction = new QAction(tr("Change between comics views"), this);
@@ -657,11 +657,11 @@ void LibraryWindow::createActions()
     QIcon icoViewsButton;
 
     if (!settings->contains(COMICS_VIEW_STATUS) || settings->value(COMICS_VIEW_STATUS) == Flow)
-        icoViewsButton.addFile(":/images/main_toolbar/grid.png", QSize(), QIcon::Normal);
+        icoViewsButton.addFile(addExtensionToIconPath(":/images/main_toolbar/grid"), QSize(), QIcon::Normal);
     else if (settings->value(COMICS_VIEW_STATUS) == Grid)
-        icoViewsButton.addFile(":/images/main_toolbar/info.png", QSize(), QIcon::Normal);
+        icoViewsButton.addFile(addExtensionToIconPath(":/images/main_toolbar/info"), QSize(), QIcon::Normal);
     else
-        icoViewsButton.addFile(":/images/main_toolbar/flow.png", QSize(), QIcon::Normal);
+        icoViewsButton.addFile(addExtensionToIconPath(":/images/main_toolbar/flow"), QSize(), QIcon::Normal);
 
     toggleComicsViewAction->setData(TOGGLE_COMICS_VIEW_ACTION_YL);
     toggleComicsViewAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_COMICS_VIEW_ACTION_YL));
@@ -775,7 +775,7 @@ void LibraryWindow::createActions()
     addAction(showEditShortcutsAction);
 
     quitAction = new QAction(tr("&Quit"), this);
-    quitAction->setIcon(QIcon(":/images/viewer_toolbar/close.png"));
+    quitAction->setIcon(QIcon(":/images/viewer_toolbar/close.svg"));
     quitAction->setData(QUIT_ACTION_YL);
     quitAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(QUIT_ACTION_YL));
     // TODO: is `quitAction->setMenuRole(QAction::QuitRole);` useful on macOS?
