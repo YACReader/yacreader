@@ -87,3 +87,8 @@ QAction *YACReader::actionWithCustomIcon(const QIcon &icon, QAction *action)
 
     return a;
 }
+
+QPixmap YACReader::hdpiPixmap(const QString &file, QSize size)
+{
+    return QIcon(file).pixmap(size);
+}
