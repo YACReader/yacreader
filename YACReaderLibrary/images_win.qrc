@@ -23,8 +23,8 @@
         <file>../images/sidebar/renameListIcon.svg</file>
         <file>../images/empty_folder.png</file>
         <file>../images/empty_search.png</file>
-        <file alias="images/iconSearch.png">../images/iconSearchNew.png</file>
-        <file alias="images/clearSearch.png">../images/clearSearchNew.png</file>
+        <file alias="images/iconSearch.svg">../images/iconSearchNew.svg</file>
+        <file alias="images/clearSearch.svg">../images/clearSearchNew.svg</file>
         <file>../images/empty_reading_list.png</file>
         <file>../images/viewer_toolbar/close.svg</file>
         <file>icon.ico</file>

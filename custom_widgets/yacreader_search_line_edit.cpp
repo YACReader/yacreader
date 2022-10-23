@@ -1,4 +1,5 @@
 #include "yacreader_search_line_edit.h"
+#include "yacreader_global_gui.h"
 
 #include <QToolButton>
 #include <QStyle>
@@ -12,6 +13,7 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
     clearButton = new QToolButton(this);
     searchLabel = new QLabel(this);
 
+#ifdef Q_OS_MAC
     QPixmap clearIcon;
     QPixmap searchIcon;
 
@@ -29,6 +31,10 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
         clearIcon.load(":/images/clearSearch.png");
         searchIcon.load(":/images/iconSearch.png");
     }
+#else
+    QPixmap clearIcon = YACReader::hdpiPixmap(":/images/clearSearch.svg", QSize(15, 15));
+    QPixmap searchIcon = YACReader::hdpiPixmap(":/images/iconSearch.svg", QSize(15, 15));
+#endif
 
     searchLabel->setStyleSheet("QLabel { border: none; padding: 0px; }");
     searchLabel->setPixmap(searchIcon);
