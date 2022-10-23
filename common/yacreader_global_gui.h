@@ -110,6 +110,10 @@ QAction *createSeparator();
 QIcon noHighlightedIcon(const QString &path);
 void colorize(QImage &img, QColor &col);
 QList<qulonglong> mimeDataToComicsIds(const QMimeData *data);
+QString addExtensionToIconPath(const QString &path);
+QString addExtensionToIconPathInToolbar(const QString &path);
+QAction *actionWithCustomIcon(const QIcon &icon, QAction *action);
+QPixmap hdpiPixmap(const QString &file, QSize size);
 
 }
 #endif

@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
-        <file>../images/accept_shortcut.png</file>
-        <file>../images/clear_shortcut.png</file>
+        <file>../images/accept_shortcut.svg</file>
+        <file>../images/clear_shortcut.svg</file>
         <file>../images/comic_vine/downArrow.png</file>
         <file>../images/comic_vine/nextPage.png</file>
         <file>../images/comic_vine/previousPage.png</file>
@@ -10,36 +10,21 @@
         <file>../images/comic_vine/rowDown.png</file>
         <file>../images/comic_vine/rowUp.png</file>
         <file>../images/comic_vine/upArrow.png</file>
-        <file>../images/comics_view_toolbar/asignNumber.png</file>
-        <file>../images/comics_view_toolbar/asignNumber@2x.png</file>
-        <file>../images/comics_view_toolbar/big_size_grid_zoom.png</file>
-        <file>../images/comics_view_toolbar/big_size_grid_zoom@2x.png</file>
-        <file>../images/comics_view_toolbar/editComic.png</file>
-        <file>../images/comics_view_toolbar/editComic@2x.png</file>
-        <file>../images/comics_view_toolbar/getInfo.png</file>
-        <file>../images/comics_view_toolbar/getInfo@2x.png</file>
-        <file>../images/comics_view_toolbar/hideComicFlow.png</file>
-        <file>../images/comics_view_toolbar/hideComicFlow@2x.png</file>
-        <file>../images/comics_view_toolbar/openInYACReader.png</file>
-        <file>../images/comics_view_toolbar/openInYACReader@2x.png</file>
-        <file>../images/comics_view_toolbar/selectAll.png</file>
-        <file>../images/comics_view_toolbar/selectAll@2x.png</file>
-        <file>../images/comics_view_toolbar/setReadButton.png</file>
-        <file>../images/comics_view_toolbar/setReadButton@2x.png</file>
-        <file>../images/comics_view_toolbar/setUnread.png</file>
-        <file>../images/comics_view_toolbar/setUnread@2x.png</file>
-        <file>../images/comics_view_toolbar/showMarks.png</file>
-        <file>../images/comics_view_toolbar/showMarks@2x.png</file>
-        <file>../images/comics_view_toolbar/small_size_grid_zoom.png</file>
-        <file>../images/comics_view_toolbar/small_size_grid_zoom@2x.png</file>
-        <file>../images/comics_view_toolbar/trash.png</file>
-        <file>../images/comics_view_toolbar/trash@2x.png</file>
-        <file>../images/comics_view_toolbar/show_comic_info.png</file>
-        <file>../images/comics_view_toolbar/show_comic_info@2x.png</file>
-        <file>../images/comics_view_toolbar/setManga.png</file>
-        <file>../images/comics_view_toolbar/setManga@2x.png</file>
-        <file>../images/comics_view_toolbar/setNormal.png</file>
-        <file>../images/comics_view_toolbar/setNormal@2x.png</file>
+        <file>../images/comics_view_toolbar/asignNumber.svg</file>
+        <file>../images/comics_view_toolbar/big_size_grid_zoom.svg</file>
+        <file>../images/comics_view_toolbar/editComic.svg</file>
+        <file>../images/comics_view_toolbar/getInfo.svg</file>
+        <file>../images/comics_view_toolbar/hideComicFlow.svg</file>
+        <file>../images/comics_view_toolbar/openInYACReader.svg</file>
+        <file>../images/comics_view_toolbar/selectAll.svg</file>
+        <file>../images/comics_view_toolbar/setReadButton.svg</file>
+        <file>../images/comics_view_toolbar/setUnread.svg</file>
+        <file>../images/comics_view_toolbar/showMarks.svg</file>
+        <file>../images/comics_view_toolbar/small_size_grid_zoom.svg</file>
+        <file>../images/comics_view_toolbar/trash.svg</file>
+        <file>../images/comics_view_toolbar/show_comic_info.svg</file>
+        <file>../images/comics_view_toolbar/setManga.svg</file>
+        <file>../images/comics_view_toolbar/setNormal.svg</file>
         <file>../images/defaultCover.png</file>
         <file>../images/edit.png</file>
         <file>../images/empty_current_readings.png</file>
@@ -64,23 +49,16 @@
         <file>../images/importingIcon.png</file>
         <file>../images/importLibrary.png</file>
         <file>../images/importTopCoversDecoration.png</file>
-        <file>../images/main_toolbar/divider.png</file>
-        <file>../images/menus_icons/editIcon.png</file>
-        <file>../images/menus_icons/editIcon@2x.png</file>
-        <file>../images/menus_icons/exportComicsInfoIcon.png</file>
-        <file>../images/menus_icons/exportComicsInfoIcon@2x.png</file>
-        <file>../images/menus_icons/exportLibraryIcon.png</file>
-        <file>../images/menus_icons/exportLibraryIcon@2x.png</file>
-        <file>../images/menus_icons/importComicsInfoIcon.png</file>
-        <file>../images/menus_icons/importComicsInfoIcon@2x.png</file>
-        <file>../images/menus_icons/importLibraryIcon.png</file>
-        <file>../images/menus_icons/importLibraryIcon@2x.png</file>
-        <file>../images/menus_icons/open.png</file>
-        <file>../images/menus_icons/open@2x.png</file>
-        <file>../images/menus_icons/removeLibraryIcon.png</file>
-        <file>../images/menus_icons/removeLibraryIcon@2x.png</file>
-        <file>../images/menus_icons/updateLibraryIcon.png</file>
-        <file>../images/menus_icons/updateLibraryIcon@2x.png</file>
+        <file>../images/main_toolbar/divider.svg</file>
+        <file>../images/menus_icons/editIcon.svg</file>
+        <file>../images/menus_icons/exportComicsInfoIcon.svg</file>
+        <file>../images/menus_icons/exportLibraryIcon.svg</file>
+        <file>../images/menus_icons/importComicsInfoIcon.svg</file>
+        <file>../images/menus_icons/importLibraryIcon.svg</file>
+        <file>../images/menus_icons/removeLibraryIcon.svg</file>
+        <file>../images/menus_icons/updateLibraryIcon.svg</file>
+        <file>../images/menus_icons/open_containing_folder.svg</file>
+        <file>../images/menus_icons/update_current_folder.svg</file>
         <file>../images/new.png</file>
         <file>../images/nextCoverPage.png</file>
         <file>../images/noLibrariesIcon.png</file>
@@ -92,28 +70,43 @@
         <file>../images/readRibbon.png</file>
         <file>../images/searching_icon.png</file>
         <file>../images/serverConfigBackground.png</file>
-        <file>../images/shortcuts_group_comics.png</file>
-        <file>../images/shortcuts_group_folders.png</file>
-        <file>../images/shortcuts_group_general.png</file>
-        <file>../images/shortcuts_group_libraries.png</file>
-        <file>../images/shortcuts_group_mglass.png</file>
-        <file>../images/shortcuts_group_page.png</file>
-        <file>../images/shortcuts_group_reading.png</file>
-        <file>../images/shortcuts_group_visualization.png</file>
+        <file>../images/shortcuts_group_comics.svg</file>
+        <file>../images/shortcuts_group_folders.svg</file>
+        <file>../images/shortcuts_group_general.svg</file>
+        <file>../images/shortcuts_group_libraries.svg</file>
+        <file>../images/shortcuts_group_mglass.svg</file>
+        <file>../images/shortcuts_group_page.svg</file>
+        <file>../images/shortcuts_group_reading.svg</file>
+        <file>../images/shortcuts_group_visualization.svg</file>
         <file>../images/shownCovers.png</file>
-        <file>../images/sidebar/branch-closed.png</file>
-        <file>../images/sidebar/branch-open.png</file>
+        <file>../images/sidebar/branch-closed.svg</file>
+        <file>../images/sidebar/branch-open.svg</file>
         <file>../images/sidebar/collapsed_branch_osx.png</file>
         <file>../images/sidebar/collapsed_branch_selected.png</file>
         <file>../images/sidebar/expanded_branch_osx.png</file>
         <file>../images/sidebar/expanded_branch_selected.png</file>
-        <file>../images/sidebar/folder.png</file>
-        <file>../images/sidebar/folder_finished.png</file>
-        <file>../images/sidebar/libraryIconSelected.png</file>
-        <file>../images/sidebar/libraryOptions.png</file>
-        <file>../images/sidebar/libraryOptions@2x.png</file>
+        <file>../images/sidebar/folder.svg</file>
+        <file>../images/sidebar/folder_finished.svg</file>
+        <file>../images/sidebar/libraryIconSelected.svg</file>
+        <file>../images/sidebar/libraryOptions.svg</file>
         <file>../images/updatingIcon.png</file>
         <file>../images/custom_dialog/custom_close_button.svg</file>
         <file>../images/whats_new/whatsnew_header.svg</file>
+
+        <file>../images/lists/default_0.svg</file>
+        <file>../images/lists/default_1.svg</file>
+        <file>../images/lists/label_blue.svg</file>
+        <file>../images/lists/label_cyan.svg</file>
+        <file>../images/lists/label_dark.svg</file>
+        <file>../images/lists/label_green.svg</file>
+        <file>../images/lists/label_light.svg</file>
+        <file>../images/lists/label_orange.svg</file>
+        <file>../images/lists/label_pink.svg</file>
+        <file>../images/lists/label_purple.svg</file>
+        <file>../images/lists/label_red.svg</file>
+        <file>../images/lists/label_violet.svg</file>
+        <file>../images/lists/label_white.svg</file>
+        <file>../images/lists/label_yellow.svg</file>
+        <file>../images/lists/list.svg</file>
     </qresource>
 </RCC>

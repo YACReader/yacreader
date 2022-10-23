@@ -171,11 +171,7 @@ include(../compressed_archive/libarchive/libarchive-wrapper.pri)
 include(../shortcuts_management/shortcuts_management.pri)
 
 RESOURCES += yacreader_images.qrc \
-    yacreader_files.qrc
-
-win32:RESOURCES += yacreader_images_win.qrc
-unix:!macx:RESOURCES += yacreader_images_win.qrc
-macx:RESOURCES += yacreader_images_osx.qrc
+             yacreader_files.qrc
 
 include(../third_party/QsLog/QsLog.pri)
 

@@ -57,7 +57,7 @@ YACReaderTranslator::YACReaderTranslator(Viewer *parent)
 
     // TITLE BAR
     auto titleBar = new QHBoxLayout();
-    auto close = new QPushButton(QIcon(QPixmap(":/images/close.png")), "");
+    auto close = new QPushButton(QIcon(":/images/close.svg"), "");
     close->setFlat(true);
     auto title = new QLabel(tr("YACReader translator"));
     title->setStyleSheet("QLabel {font-size:18px; font-family:Arial; color:white;}");

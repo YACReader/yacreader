@@ -116,7 +116,7 @@ void YACReaderMainToolBar::resizeEvent(QResizeEvent *event)
 
 void YACReaderMainToolBar::addDivider()
 {
-    QPixmap img(":/images/main_toolbar/divider.png");
+    QPixmap img(":/images/main_toolbar/divider.svg");
     QLabel *divider = new QLabel();
     divider->setPixmap(img);
 

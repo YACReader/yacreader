@@ -145,7 +145,7 @@ GridComicsView::GridComicsView(QWidget *parent)
     QQmlProperty(infoContainer, "width").write(settings->value(COMICS_GRID_INFO_WIDTH, 350));
 
     showInfoAction = new QAction(tr("Show info"), this);
-    showInfoAction->setIcon(QIcon(":/images/comics_view_toolbar/show_comic_info.png"));
+    showInfoAction->setIcon(QIcon(":/images/comics_view_toolbar/show_comic_info.svg"));
     showInfoAction->setCheckable(true);
     showInfoAction->setChecked(showInfo);
     connect(showInfoAction, &QAction::toggled, this, &GridComicsView::showInfo);
@@ -179,11 +179,11 @@ void GridComicsView::createCoverSizeSliderWidget()
 
     auto horizontalLayout = new QHBoxLayout();
     QLabel *smallLabel = new QLabel();
-    smallLabel->setPixmap(QPixmap(":/images/comics_view_toolbar/small_size_grid_zoom.png"));
+    smallLabel->setPixmap(hdpiPixmap(":/images/comics_view_toolbar/small_size_grid_zoom.svg", QSize(18, 18)));
     horizontalLayout->addWidget(smallLabel);
     horizontalLayout->addWidget(coverSizeSlider, 0, Qt::AlignVCenter);
     QLabel *bigLabel = new QLabel();
-    bigLabel->setPixmap(QPixmap(":/images/comics_view_toolbar/big_size_grid_zoom.png"));
+    bigLabel->setPixmap(hdpiPixmap(":/images/comics_view_toolbar/big_size_grid_zoom.svg", QSize(18, 18)));
     horizontalLayout->addWidget(bigLabel);
     horizontalLayout->addSpacing(10);
     horizontalLayout->setContentsMargins(0, 0, 0, 0);
@@ -499,7 +499,7 @@ void GridComicsView::startDrag()
 {
     auto drag = new QDrag(this);
     drag->setMimeData(model->mimeData(selectionHelper->selectedRows()));
-    drag->setPixmap(QPixmap(":/images/comics_view_toolbar/openInYACReader.png")); // TODO add better image
+    drag->setPixmap(hdpiPixmap(":/images/comics_view_toolbar/openInYACReader.svg", QSize(18, 18))); // TODO add better image
 
     /*Qt::DropAction dropAction =*/drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
 }

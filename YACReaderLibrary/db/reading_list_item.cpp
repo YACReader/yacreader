@@ -36,7 +36,7 @@ QIcon SpecialListItem::getIcon() const
 {
     if (itemData.count() > Id) {
         QString id = itemData.at(Id).toString();
-        return YACReader::noHighlightedIcon(QString(":/images/lists/default_%1.png").arg(id));
+        return YACReader::noHighlightedIcon(QString(":/images/lists/default_%1.svg").arg(id));
     }
 
     QLOG_WARN() << "Icon for SpecialListItem not available";
@@ -76,7 +76,7 @@ QIcon LabelItem::getIcon() const
 {
     if (itemData.count() > Color) {
         QString color = itemData.at(Color).toString();
-        return YACReader::noHighlightedIcon(QString(":/images/lists/label_%1.png").arg(color).toLower());
+        return YACReader::noHighlightedIcon(QString(":/images/lists/label_%1.svg").arg(color).toLower());
     }
 
     QLOG_WARN() << "Icon for label item not available";
@@ -127,19 +127,19 @@ qulonglong LabelItem::getId() const
 //------------------------------------------------------
 
 ReadingListItem::ReadingListItem(const QList<QVariant> &data, ReadingListItem *p)
-    : ListItem(data), parent(p)
+    : ListItem(data), parent(p), list(YACReader::noHighlightedIcon(":/images/lists/list.svg")), folder(YACReader::noHighlightedIcon(":/images/sidebar/folder.svg"))
 {
 }
 
 QIcon ReadingListItem::getIcon() const
 {
     if (parent->getId() == 0)
-        return YACReader::noHighlightedIcon(":/images/lists/list.png"); // top level list
+        return list; // top level list
     else
 #ifdef Q_OS_MAC
         return QFileIconProvider().icon(QFileIconProvider::Folder);
 #else
-        return YACReader::noHighlightedIcon(":/images/sidebar/folder.png"); // sublist
+        return folder; // sublist
 #endif
 }
 
