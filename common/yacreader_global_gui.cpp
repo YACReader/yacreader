@@ -82,7 +82,13 @@ QAction *YACReader::actionWithCustomIcon(const QIcon &icon, QAction *action)
     a->setChecked(action->isChecked());
 
     QObject::connect(a, &QAction::triggered, action, &QAction::triggered);
-    QObject::connect(action, &QAction::enabledChanged, a, &QAction::setEnabled);
+
+    QObject::connect(action, &QAction::changed, action, [=]() {
+        a->setEnabled(action->isEnabled());
+        a->setCheckable(action->isCheckable());
+
+        a->setChecked(action->isChecked());
+    });
     QObject::connect(a, &QAction::toggled, action, &QAction::setChecked);
     QObject::connect(action, &QAction::toggled, a, &QAction::setChecked);
 
