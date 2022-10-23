@@ -131,7 +131,7 @@
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="33"/>
         <source>System info</source>
-        <translation type="unfinished"></translation>
+        <translation>Systeminformationen</translation>
     </message>
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="27"/>
@@ -641,17 +641,17 @@
     <message>
         <location filename="options_dialog.cpp" line="71"/>
         <source>Scroll behaviour</source>
-        <translation type="unfinished"></translation>
+        <translation>Scroll verhalten</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="74"/>
         <source>Do not turn page using scroll</source>
-        <translation type="unfinished"></translation>
+        <translation>Blättere nicht mit Scrollen um</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="75"/>
         <source>Use single scroll step to turn page</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwenden Sie einen einzigen Bildlaufschritt, um die Seite umzublättern</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="98"/>
@@ -1090,7 +1090,7 @@
     <message>
         <location filename="main_window_viewer.cpp" line="476"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Nah dran</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="482"/>
@@ -1105,7 +1105,7 @@
     <message>
         <location filename="main_window_viewer.cpp" line="495"/>
         <source>Edit shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Verknüpfungen bearbeiten</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="515"/>
