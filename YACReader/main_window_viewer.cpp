@@ -475,14 +475,16 @@ void MainWindowViewer::createToolBars()
 {
 #ifdef Q_OS_MAC
     comicToolBar = new YACReaderMacOSXToolbar(this);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    comicToolBar->setIconSize(QSize(18, 18));
+#endif
 #else
     comicToolBar = addToolBar(tr("&File"));
 #endif
 
-    comicToolBar->setIconSize(QSize(18, 18));
-
 #ifndef Q_OS_MAC
     comicToolBar->setStyleSheet("QToolBar{border:none;}");
+    comicToolBar->setIconSize(QSize(18, 18));
 #endif
 
 #ifdef Q_OS_MAC
