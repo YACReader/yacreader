@@ -303,6 +303,13 @@ QrEncoder::QrEncoder()
     QLibrary encoder(QCoreApplication::applicationDirPath() + "/utils/libqrencode.dylib");
 #else
     QLibrary encoder("qrencode");
+#ifdef Q_OS_UNIX
+    encoder.load();
+    // Fallback - this loads libqrencode.4.x.x.so when libqrencode.so is not available
+    if (!encoder.isLoaded()) {
+        encoder.setFileNameAndVersion("qrencode", 4);
+    }
+#endif
 #endif
     QRcode_encodeString8bit = (_QRcode_encodeString8bit)encoder.resolve("QRcode_encodeString8bit");
     QRcode_free = (_QRcode_free)encoder.resolve("QRcode_free");
