@@ -10,51 +10,50 @@
 
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;
-//using stefanfrings::HttpSession;
+// using stefanfrings::HttpSession;
 using stefanfrings::Template;
 
-StatusPageController::StatusPageController() {}
+StatusPageController::StatusPageController() { }
 
 void StatusPageController::service(HttpRequest &request, HttpResponse &response)
 {
     response.setHeader("Content-Type", "text/html; charset=utf-8");
     response.setHeader("Connection", "close");
 
-    Template StatusPage = Template(QStringLiteral(
-        "<!DOCTYPE html>\n"
-        "<html>\n"
-        "<head>\n"
-        "<title>YACReaderLibrary Server</title>\n"
-        "</head>\n"
-        "<body>\n\n"
-        "<center>\n"
-        "<img src='/images/webui/YACLibraryServer.svg' width=15%>\n"
-        "<h1>YACReaderLibraryServer is up and running.</h1>\n"
-        "<p>YACReader {yr.version}<p>\n"
-        "<p>Server {server.version}<p>\n"
-        "<p>OS:\t{os.name} {os.version}</p>\n"
-        "<p>Port:\t{os.port}</p>\n"
-        "<table>\n"
-        "<thead>\n"
-        "<tr>\n"
-        "<th>Library</th>\n"
-        "<th>Path</th>\n"
-        "</tr>\n"
-        "</thead>\n"
-        "{loop Library}"
-        "<tr>\n"
-        "<td>{Library.Name}</td>\n"
-        "<td>{Library.Path}</td>\n"
-        "<tr>\n"
-        "{end Library}"
-        "</p>\n"
-        "</center>\n"
-        "</body>\n"
-        "</html>\n"
-        ),
+    Template StatusPage = Template(
+            QStringLiteral(
+                    "<!DOCTYPE html>\n"
+                    "<html>\n"
+                    "<head>\n"
+                    "<title>YACReaderLibrary Server</title>\n"
+                    "</head>\n"
+                    "<body>\n\n"
+                    "<center>\n"
+                    "<img src='/images/webui/YACLibraryServer.svg' width=15%>\n"
+                    "<h1>YACReaderLibraryServer is up and running.</h1>\n"
+                    "<p>YACReader {yr.version}<p>\n"
+                    "<p>Server {server.version}<p>\n"
+                    "<p>OS:\t{os.name} {os.version}</p>\n"
+                    "<p>Port:\t{os.port}</p>\n"
+                    "<table>\n"
+                    "<thead>\n"
+                    "<tr>\n"
+                    "<th>Library</th>\n"
+                    "<th>Path</th>\n"
+                    "</tr>\n"
+                    "</thead>\n"
+                    "{loop Library}"
+                    "<tr>\n"
+                    "<td>{Library.Name}</td>\n"
+                    "<td>{Library.Path}</td>\n"
+                    "<tr>\n"
+                    "{end Library}"
+                    "</p>\n"
+                    "</center>\n"
+                    "</body>\n"
+                    "</html>\n"),
 
-        "StatusPage"
-    );
+            "StatusPage");
 
     StatusPage.enableWarnings();
 
@@ -74,8 +73,7 @@ void StatusPageController::service(HttpRequest &request, HttpResponse &response)
 
     // Fill template
     StatusPage.loop("Library", num_libs);
-    for (size_t i = 0; i < num_libs; i++)
-    {
+    for (size_t i = 0; i < num_libs; i++) {
         StatusPage.setVariable(QString("Library%1.Name").arg(i), library_names.at(i));
         StatusPage.setVariable(QString("Library%1.Path").arg(i), libraries.getPath(library_names.at(i)));
     }

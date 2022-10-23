@@ -10,7 +10,7 @@ class StatusPageController : public stefanfrings::HttpRequestHandler
     Q_OBJECT
     Q_DISABLE_COPY(StatusPageController);
 
-    public:
+public:
     StatusPageController();
 
     void service(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response) override;
