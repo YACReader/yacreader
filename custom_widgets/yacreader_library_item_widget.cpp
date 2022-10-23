@@ -26,7 +26,7 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QStrin
 
     options = new QToolButton(this);
 
-    QPixmap iconOptionsPixmap = hdpiPixmap(addExtensionToIconPath(":/images/sidebar/libraryOptions"), QSize(8, 8));
+    QPixmap iconOptionsPixmap = hdpiPixmap(":/images/sidebar/libraryOptions.svg", QSize(8, 8));
     iconOptionsPixmap.setDevicePixelRatio(devicePixelRatioF());
     QLabel *helperLabel = new QLabel(options);
     helperLabel->move(4, 3);
@@ -147,7 +147,7 @@ void YACReaderLibraryItemWidget::select()
 
     options->setHidden(false);
 
-    QPixmap iconPixmap = hdpiPixmap(addExtensionToIconPath(":/images/sidebar/libraryIconSelected"), QSize(16, 16));
+    QPixmap iconPixmap = hdpiPixmap(":/images/sidebar/libraryIconSelected.svg", QSize(16, 16));
     icon->setPixmap(iconPixmap);
 
     isSelected = true;
