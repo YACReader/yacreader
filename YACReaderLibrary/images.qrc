@@ -86,19 +86,34 @@
         <file>../images/shortcuts_group_reading.svg</file>
         <file>../images/shortcuts_group_visualization.svg</file>
         <file>../images/shownCovers.png</file>
-        <file>../images/sidebar/branch-closed.png</file>
-        <file>../images/sidebar/branch-open.png</file>
+        <file>../images/sidebar/branch-closed.svg</file>
+        <file>../images/sidebar/branch-open.svg</file>
         <file>../images/sidebar/collapsed_branch_osx.png</file>
         <file>../images/sidebar/collapsed_branch_selected.png</file>
         <file>../images/sidebar/expanded_branch_osx.png</file>
         <file>../images/sidebar/expanded_branch_selected.png</file>
-        <file>../images/sidebar/folder.png</file>
-        <file>../images/sidebar/folder_finished.png</file>
-        <file>../images/sidebar/libraryIconSelected.png</file>
-        <file>../images/sidebar/libraryOptions.png</file>
-        <file>../images/sidebar/libraryOptions@2x.png</file>
+        <file>../images/sidebar/folder.svg</file>
+        <file>../images/sidebar/folder_finished.svg</file>
+        <file>../images/sidebar/libraryIconSelected.svg</file>
+        <file>../images/sidebar/libraryOptions.svg</file>
         <file>../images/updatingIcon.png</file>
         <file>../images/custom_dialog/custom_close_button.svg</file>
         <file>../images/whats_new/whatsnew_header.svg</file>
+
+        <file>../images/lists/default_0.svg</file>
+        <file>../images/lists/default_1.svg</file>
+        <file>../images/lists/label_blue.svg</file>
+        <file>../images/lists/label_cyan.svg</file>
+        <file>../images/lists/label_dark.svg</file>
+        <file>../images/lists/label_green.svg</file>
+        <file>../images/lists/label_light.svg</file>
+        <file>../images/lists/label_orange.svg</file>
+        <file>../images/lists/label_pink.svg</file>
+        <file>../images/lists/label_purple.svg</file>
+        <file>../images/lists/label_red.svg</file>
+        <file>../images/lists/label_violet.svg</file>
+        <file>../images/lists/label_white.svg</file>
+        <file>../images/lists/label_yellow.svg</file>
+        <file>../images/lists/list.svg</file>
     </qresource>
 </RCC>

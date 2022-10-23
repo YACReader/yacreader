@@ -8,6 +8,7 @@
 #include <QSqlQuery>
 #include <QSqlDatabase>
 #include <QUrl>
+#include <QIcon>
 
 #include "folder.h"
 #include "folder_query_result_processor.h"
@@ -117,6 +118,9 @@ private:
     QMap<unsigned long long int, FolderItem *> items; // relación entre folders
 
     QString _databasePath;
+
+    QIcon folderIcon;
+    QIcon folderFinishedIcon;
 };
 
 #endif

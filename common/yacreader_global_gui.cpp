@@ -21,9 +21,10 @@ QAction *YACReader::createSeparator()
 
 QIcon YACReader::noHighlightedIcon(const QString &path)
 {
-    QPixmap p(path);
+    QPixmap sp(path);
+    QPixmap p = hdpiPixmap(path, sp.size());
 
-    QIcon icon; //(path);
+    QIcon icon;
     icon.addFile(path, p.size(), QIcon::Normal);
     icon.addFile(path, p.size(), QIcon::Selected);
     return icon;

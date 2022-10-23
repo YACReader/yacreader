@@ -54,7 +54,7 @@ void drawMacOSXFinishedFolderIcon()
 #define ROOT 1
 
 FolderModel::FolderModel(QObject *parent)
-    : QAbstractItemModel(parent), isSubfolder(false), rootItem(nullptr)
+    : QAbstractItemModel(parent), isSubfolder(false), rootItem(nullptr), folderIcon(YACReader::noHighlightedIcon(":/images/sidebar/folder.svg")), folderFinishedIcon(YACReader::noHighlightedIcon(":/images/sidebar/folder_finished.svg"))
 {
 }
 
@@ -138,9 +138,9 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
         }
 #else
         if (item->data(FolderModel::Finished).toBool())
-            return QVariant(YACReader::noHighlightedIcon(":/images/sidebar/folder_finished.png"));
+            return QVariant(folderFinishedIcon);
         else
-            return QVariant(YACReader::noHighlightedIcon(":/images/sidebar/folder.png"));
+            return QVariant(folderIcon);
 #endif
     }
 
