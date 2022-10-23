@@ -496,43 +496,43 @@ void LibraryWindow::createActions()
     exportComicsInfoAction->setToolTip(tr("Export comics info"));
     exportComicsInfoAction->setData(EXPORT_COMICS_INFO_ACTION_YL);
     exportComicsInfoAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(EXPORT_COMICS_INFO_ACTION_YL));
-    exportComicsInfoAction->setIcon(QIcon(":/images/menus_icons/exportComicsInfoIcon.png"));
+    exportComicsInfoAction->setIcon(QIcon(":/images/menus_icons/exportComicsInfoIcon.svg"));
 
     importComicsInfoAction = new QAction(tr("Import comics info"), this);
     importComicsInfoAction->setToolTip(tr("Import comics info"));
     importComicsInfoAction->setData(IMPORT_COMICS_INFO_ACTION_YL);
     importComicsInfoAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(IMPORT_COMICS_INFO_ACTION_YL));
-    importComicsInfoAction->setIcon(QIcon(":/images/menus_icons/importComicsInfoIcon.png"));
+    importComicsInfoAction->setIcon(QIcon(":/images/menus_icons/importComicsInfoIcon.svg"));
 
     exportLibraryAction = new QAction(tr("Pack covers"), this);
     exportLibraryAction->setToolTip(tr("Pack the covers of the selected library"));
     exportLibraryAction->setData(EXPORT_LIBRARY_ACTION_YL);
     exportLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(EXPORT_LIBRARY_ACTION_YL));
-    exportLibraryAction->setIcon(QIcon(":/images/menus_icons/exportLibraryIcon.png"));
+    exportLibraryAction->setIcon(QIcon(":/images/menus_icons/exportLibraryIcon.svg"));
 
     importLibraryAction = new QAction(tr("Unpack covers"), this);
     importLibraryAction->setToolTip(tr("Unpack a catalog"));
     importLibraryAction->setData(IMPORT_LIBRARY_ACTION_YL);
     importLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(IMPORT_LIBRARY_ACTION_YL));
-    importLibraryAction->setIcon(QIcon(":/images/menus_icons/importLibraryIcon.png"));
+    importLibraryAction->setIcon(QIcon(":/images/menus_icons/importLibraryIcon.svg"));
 
     updateLibraryAction = new QAction(tr("Update library"), this);
     updateLibraryAction->setToolTip(tr("Update current library"));
     updateLibraryAction->setData(UPDATE_LIBRARY_ACTION_YL);
     updateLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(UPDATE_LIBRARY_ACTION_YL));
-    updateLibraryAction->setIcon(QIcon(":/images/menus_icons/updateLibraryIcon.png"));
+    updateLibraryAction->setIcon(QIcon(":/images/menus_icons/updateLibraryIcon.svg"));
 
     renameLibraryAction = new QAction(tr("Rename library"), this);
     renameLibraryAction->setToolTip(tr("Rename current library"));
     renameLibraryAction->setData(RENAME_LIBRARY_ACTION_YL);
     renameLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RENAME_LIBRARY_ACTION_YL));
-    renameLibraryAction->setIcon(QIcon(":/images/menus_icons/editIcon.png"));
+    renameLibraryAction->setIcon(QIcon(":/images/menus_icons/editIcon.svg"));
 
     removeLibraryAction = new QAction(tr("Remove library"), this);
     removeLibraryAction->setToolTip(tr("Remove current library from your collection"));
     removeLibraryAction->setData(REMOVE_LIBRARY_ACTION_YL);
     removeLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(REMOVE_LIBRARY_ACTION_YL));
-    removeLibraryAction->setIcon(QIcon(":/images/menus_icons/removeLibraryIcon.png"));
+    removeLibraryAction->setIcon(QIcon(":/images/menus_icons/removeLibraryIcon.svg"));
 
     rescanLibraryForXMLInfoAction = new QAction(tr("Rescan library for XML info"), this);
     rescanLibraryForXMLInfoAction->setToolTip(tr("Tries to find XML info embedded in comic files. You only need to do this if the library was created with 9.8.2 or earlier versions or if you are using third party software to embed XML info in the files."));
@@ -674,7 +674,7 @@ void LibraryWindow::createActions()
     openContainingFolderAction->setText(tr("Open folder..."));
     openContainingFolderAction->setData(OPEN_CONTAINING_FOLDER_ACTION_YL);
     openContainingFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_CONTAINING_FOLDER_ACTION_YL));
-    openContainingFolderAction->setIcon(QIcon(":/images/menus_icons/open.png"));
+    openContainingFolderAction->setIcon(QIcon(":/images/menus_icons/open_containing_folder.svg"));
 
     setFolderAsNotCompletedAction = new QAction(this);
     setFolderAsNotCompletedAction->setText(tr("Set as uncompleted"));
@@ -712,7 +712,7 @@ void LibraryWindow::createActions()
     openContainingFolderComicAction->setText(tr("Open containing folder..."));
     openContainingFolderComicAction->setData(OPEN_CONTAINING_FOLDER_COMIC_ACTION_YL);
     openContainingFolderComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_CONTAINING_FOLDER_COMIC_ACTION_YL));
-    openContainingFolderComicAction->setIcon(QIcon(":/images/menus_icons/open.png"));
+    openContainingFolderComicAction->setIcon(QIcon(":/images/menus_icons/open_containing_folder.svg"));
 
     resetComicRatingAction = new QAction(this);
     resetComicRatingAction->setText(tr("Reset comic rating"));
@@ -782,12 +782,12 @@ void LibraryWindow::createActions()
     addAction(quitAction);
 
     updateFolderAction = new QAction(tr("Update folder"), this);
-    updateFolderAction->setIcon(QIcon(":/images/menus_icons/updateLibraryIcon.png"));
+    updateFolderAction->setIcon(QIcon(":/images/menus_icons/update_current_folder.svg"));
 
     updateCurrentFolderAction = new QAction(tr("Update current folder"), this);
     updateCurrentFolderAction->setData(UPDATE_CURRENT_FOLDER_ACTION_YL);
     updateCurrentFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(UPDATE_CURRENT_FOLDER_ACTION_YL));
-    updateCurrentFolderAction->setIcon(QIcon(":/images/menus_icons/updateLibraryIcon.png"));
+    updateCurrentFolderAction->setIcon(QIcon(":/images/menus_icons/update_current_folder.svg"));
 
     addReadingListAction = new QAction(tr("Add new reading list"), this);
     addReadingListAction->setData(ADD_READING_LIST_ACTION_YL);
@@ -1785,10 +1785,10 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
 
     auto openContainingFolderAction = new QAction();
     openContainingFolderAction->setText(tr("Open folder..."));
-    openContainingFolderAction->setIcon(QIcon(":/images/menus_icons/open.png"));
+    openContainingFolderAction->setIcon(QIcon(":/images/menus_icons/open_containing_folder.svg"));
 
     auto updateFolderAction = new QAction(tr("Update folder"), this);
-    updateFolderAction->setIcon(QIcon(":/images/menus_icons/updateLibraryIcon.png"));
+    updateFolderAction->setIcon(QIcon(":/images/menus_icons/update_current_folder.svg"));
 
     auto setFolderAsNotCompletedAction = new QAction();
     setFolderAsNotCompletedAction->setText(tr("Set as uncompleted"));

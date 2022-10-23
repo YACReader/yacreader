@@ -50,22 +50,15 @@
         <file>../images/importLibrary.png</file>
         <file>../images/importTopCoversDecoration.png</file>
         <file>../images/main_toolbar/divider.svg</file>
-        <file>../images/menus_icons/editIcon.png</file>
-        <file>../images/menus_icons/editIcon@2x.png</file>
-        <file>../images/menus_icons/exportComicsInfoIcon.png</file>
-        <file>../images/menus_icons/exportComicsInfoIcon@2x.png</file>
-        <file>../images/menus_icons/exportLibraryIcon.png</file>
-        <file>../images/menus_icons/exportLibraryIcon@2x.png</file>
-        <file>../images/menus_icons/importComicsInfoIcon.png</file>
-        <file>../images/menus_icons/importComicsInfoIcon@2x.png</file>
-        <file>../images/menus_icons/importLibraryIcon.png</file>
-        <file>../images/menus_icons/importLibraryIcon@2x.png</file>
-        <file>../images/menus_icons/open.png</file>
-        <file>../images/menus_icons/open@2x.png</file>
-        <file>../images/menus_icons/removeLibraryIcon.png</file>
-        <file>../images/menus_icons/removeLibraryIcon@2x.png</file>
-        <file>../images/menus_icons/updateLibraryIcon.png</file>
-        <file>../images/menus_icons/updateLibraryIcon@2x.png</file>
+        <file>../images/menus_icons/editIcon.svg</file>
+        <file>../images/menus_icons/exportComicsInfoIcon.svg</file>
+        <file>../images/menus_icons/exportLibraryIcon.svg</file>
+        <file>../images/menus_icons/importComicsInfoIcon.svg</file>
+        <file>../images/menus_icons/importLibraryIcon.svg</file>
+        <file>../images/menus_icons/removeLibraryIcon.svg</file>
+        <file>../images/menus_icons/updateLibraryIcon.svg</file>
+        <file>../images/menus_icons/open_containing_folder.svg</file>
+        <file>../images/menus_icons/update_current_folder.svg</file>
         <file>../images/new.png</file>
         <file>../images/nextCoverPage.png</file>
         <file>../images/noLibrariesIcon.png</file>
