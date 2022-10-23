@@ -53,8 +53,8 @@ void YACReaderHttpServer::start(quint16 port)
 #else
     templatePath = QFileInfo(QCoreApplication::applicationDirPath(), baseTemplatePath).absoluteFilePath();
 #endif
-
-    templateSettings->setValue("path", templatePath);
+    if (!templateSettings->contains("path"))
+        templateSettings->setValue("path", templatePath);
 
     Static::templateLoader = new TemplateCache(templateSettings, app);
 
@@ -84,7 +84,8 @@ void YACReaderHttpServer::start(quint16 port)
     docroot = QFileInfo(QCoreApplication::applicationDirPath(), basedocroot).absoluteFilePath();
 #endif
 
-    fileSettings->setValue("path", docroot);
+    if (!fileSettings->contains("path"))
+        fileSettings->setValue("path", docroot);
 
     Static::staticFileController = new StaticFileController(fileSettings, app);
 
