@@ -41,6 +41,8 @@
 #include "controllers/v2/comicfullinfocontroller_v2.h"
 #include "controllers/v2/comiccontrollerinreadinglist_v2.h"
 
+#include "controllers/webui/statuspagecontroller.h"
+
 #include "db_helper.h"
 #include "yacreader_libraries.h"
 
@@ -157,11 +159,20 @@ void RequestMapper::service(HttpRequest &request, HttpResponse &response)
     QLOG_TRACE() << "RequestMapper: path=" << path.data();
     QLOG_TRACE() << "X-Request-Id: " << request.getHeader("x-request-id");
 
-    if (path.startsWith("/v2")) {
+    // Browsers ask for text/html
+    if (path.startsWith("/webui"))
+    {
+        serviceWebUI(request, response);
+    } else if (path.startsWith("/v2")) {
         serviceV2(request, response);
     } else {
         serviceV1(request, response);
     }
+}
+
+void RequestMapper::serviceWebUI(HttpRequest &request, HttpResponse &response)
+{
+    StatusPageController().service(request, response);
 }
 
 void RequestMapper::serviceV1(HttpRequest &request, HttpResponse &response)
