@@ -760,7 +760,7 @@ Folder DBHelper::updateChildrenInfo(qulonglong folderId, QSqlDatabase &db)
         auto c = static_cast<ComicDB *>(comics[0]);
         coverHash = c->info.hash;
     } else {
-        for (auto item : subfolders) {
+        for (auto item : updatedSubfolders) {
             auto f = static_cast<Folder *>(item);
             auto firstChildHash = f->getFirstChildHash();
             if (!firstChildHash.isEmpty()) {
