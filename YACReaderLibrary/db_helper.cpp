@@ -793,7 +793,7 @@ Folder DBHelper::updateChildrenInfo(qulonglong folderId, QSqlDatabase &db)
 void DBHelper::updateChildrenInfo(QSqlDatabase &db)
 {
     QSqlQuery selectQuery(db); // TODO check
-    selectQuery.prepare("SELECT id FROM folder f WHERE f.parentId = 1");
+    selectQuery.prepare("SELECT id FROM folder f WHERE f.parentId = 1 AND f.id <> 1");
     selectQuery.exec();
 
     while (selectQuery.next()) {
