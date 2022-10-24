@@ -2714,6 +2714,16 @@ QModelIndexList LibraryWindow::getSelectedComics()
 
 void LibraryWindow::deleteMetadataFromSelectedComics()
 {
+    QModelIndexList indexList = getSelectedComics();
+    QList<ComicDB> comics = comicsModel->getComics(indexList);
+
+    for (auto &comic : comics) {
+        comic.info.deleteMetadata();
+    }
+
+    DBHelper::updateComicsInfo(comics, foldersModel->getDatabase());
+
+    comicsModel->reload();
 }
 
 void LibraryWindow::deleteComics()
