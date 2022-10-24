@@ -27,6 +27,7 @@ signals:
 private:
     void serviceV1(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
     void serviceV2(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
+    void serviceWebUI(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
 
     static QMutex mutex;
 };
