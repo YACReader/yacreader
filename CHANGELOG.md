@@ -15,6 +15,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * UI gets updated when YACReaderLibrary gets updates from YACReader or YACReader for iOS.
 * Linux: Add fallback for dynamically loading libqrencode on distros that don't provide unversioned library symlinks
 
+### Server
+* Add webui status page (reachable by navigating to server::port/webui)
+
 ## 9.9.2
 
 ### General
