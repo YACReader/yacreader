@@ -82,6 +82,7 @@ public:
     static void reasignOrderToComicsInFavorites(QList<qulonglong> comicIds, QSqlDatabase &db);
     static void reasignOrderToComicsInLabel(qulonglong labelId, QList<qulonglong> comicIds, QSqlDatabase &db);
     static void reasignOrderToComicsInReadingList(qulonglong readingListId, QList<qulonglong> comicIds, QSqlDatabase &db);
+    static void updateComicsInfo(QList<ComicDB> &comics, const QString &databasePath);
 
     static QList<LibraryItem *> getFoldersFromParent(qulonglong parentId, QSqlDatabase &db, bool sort = true);
     static QList<ComicDB> getSortedComicsFromParent(qulonglong parentId, QSqlDatabase &db);

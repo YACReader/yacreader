@@ -1175,6 +1175,22 @@ void DBHelper::reasignOrderToComicsInReadingList(qulonglong readingListId, QList
     db.commit();
 }
 
+void DBHelper::updateComicsInfo(QList<ComicDB> &comics, const QString &databasePath)
+{
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+        db.open();
+        db.transaction();
+        foreach (ComicDB comic, comics) {
+            DBHelper::update(&(comic.info), db);
+        }
+        db.commit();
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+}
+
 // inserts
 qulonglong DBHelper::insert(Folder *folder, QSqlDatabase &db)
 {

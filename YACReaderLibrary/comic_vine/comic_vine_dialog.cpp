@@ -466,18 +466,8 @@ void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString>> matchingInfo,
 
         setLoadingMessage(tr("Retrieving tags for : %1").arg(p.first.getFileName()));
     }
-    QString connectionName = "";
-    {
-        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
-        db.open();
-        db.transaction();
-        foreach (ComicDB comic, comics) {
-            DBHelper::update(&(comic.info), db);
-        }
-        db.commit();
-        connectionName = db.connectionName();
-    }
-    QSqlDatabase::removeDatabase(connectionName);
+
+    DBHelper::updateComicsInfo(comics, databasePath);
 
     emit accepted();
 }
