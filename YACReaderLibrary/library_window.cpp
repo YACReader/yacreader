@@ -374,6 +374,7 @@ void LibraryWindow::setUpShortcutsManagement()
                                                  << selectAllComicsAction
                                                  << editSelectedComicsAction
                                                  << asignOrderAction
+                                                 << deleteMetadataAction
                                                  << deleteComicsAction
                                                  << getInfoAction);
 
@@ -750,6 +751,11 @@ void LibraryWindow::createActions()
     deleteComicsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(DELETE_COMICS_ACTION_YL));
     deleteComicsAction->setIcon(QIcon(":/images/comics_view_toolbar/trash.svg"));
 
+    deleteMetadataAction = new QAction(this);
+    deleteMetadataAction->setText(tr("Delete metadata from selected comics"));
+    deleteMetadataAction->setData(DELETE_METADATA_FROM_COMICS_ACTION_YL);
+    deleteMetadataAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(DELETE_METADATA_FROM_COMICS_ACTION_YL));
+
     getInfoAction = new QAction(this);
     getInfoAction->setData(GET_INFO_ACTION_YL);
     getInfoAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(GET_INFO_ACTION_YL));
@@ -833,6 +839,7 @@ void LibraryWindow::createActions()
     this->addAction(setFolderAsUnreadAction);
     this->addAction(setFolderAsMangaAction);
     this->addAction(setFolderAsNormalAction);
+    this->addAction(deleteMetadataAction);
 #ifndef Q_OS_MAC
     this->addAction(toggleFullScreenAction);
 #endif
@@ -858,6 +865,7 @@ void LibraryWindow::disableComicsActions(bool disabled)
     // setAllAsReadAction->setDisabled(disabled);
     // setAllAsNonReadAction->setDisabled(disabled);
     showHideMarksAction->setDisabled(disabled);
+    deleteMetadataAction->setDisabled(disabled);
     deleteComicsAction->setDisabled(disabled);
     // context menu
     openContainingFolderComicAction->setDisabled(disabled);
@@ -1209,6 +1217,8 @@ void LibraryWindow::createConnections()
     // Comicts edition
     connect(editSelectedComicsAction, &QAction::triggered, this, &LibraryWindow::showProperties);
     connect(asignOrderAction, &QAction::triggered, this, &LibraryWindow::asignNumbers);
+
+    connect(deleteMetadataAction, &QAction::triggered, this, &LibraryWindow::deleteMetadataFromSelectedComics);
 
     connect(deleteComicsAction, &QAction::triggered, this, &LibraryWindow::deleteComics);
 
@@ -1734,6 +1744,8 @@ void LibraryWindow::showComicsViewContextMenu(const QPoint &point)
     menu.addAction(setNormalAction);
     menu.addAction(setMangaAction);
     menu.addSeparator();
+    menu.addAction(deleteMetadataAction);
+    menu.addSeparator();
     menu.addAction(deleteComicsAction);
     menu.addSeparator();
     menu.addAction(addToMenuAction);
@@ -1769,6 +1781,8 @@ void LibraryWindow::showComicsItemContextMenu(const QPoint &point)
     menu.addSeparator();
     menu.addAction(setNormalAction);
     menu.addAction(setMangaAction);
+    menu.addSeparator();
+    menu.addAction(deleteMetadataAction);
     menu.addSeparator();
     menu.addAction(deleteComicsAction);
     menu.addSeparator();
@@ -2696,6 +2710,10 @@ QModelIndexList LibraryWindow::getSelectedComics()
         selection = contentViewsManager->comicsView->selectionModel()->selectedRows();
     }
     return selection;
+}
+
+void LibraryWindow::deleteMetadataFromSelectedComics()
+{
 }
 
 void LibraryWindow::deleteComics()

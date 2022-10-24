@@ -219,6 +219,7 @@ public:
     QAction *asignOrderAction;
     QAction *forceCoverExtractedAction;
     QAction *deleteComicsAction;
+    QAction *deleteMetadataAction;
 
     QAction *focusSearchLineAction;
     QAction *focusComicsViewAction;
@@ -376,6 +377,7 @@ public slots:
     void manageUpdatingError(const QString &error);
     void manageOpeningLibraryError(const QString &error);
     QModelIndexList getSelectedComics();
+    void deleteMetadataFromSelectedComics();
     void deleteComics();
     void deleteComicsFromDisk();
     void deleteComicsFromList();
