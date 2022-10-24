@@ -159,11 +159,10 @@ void RequestMapper::service(HttpRequest &request, HttpResponse &response)
     QLOG_TRACE() << "RequestMapper: path=" << path.data();
     QLOG_TRACE() << "X-Request-Id: " << request.getHeader("x-request-id");
 
-    // Browsers ask for text/html
-    if (path.startsWith("/webui")) {
-        serviceWebUI(request, response);
-    } else if (path.startsWith("/v2")) {
+    if (path.startsWith("/v2")) {
         serviceV2(request, response);
+    } else if (path.startsWith("/webui")) {
+        serviceWebUI(request, response);
     } else {
         serviceV1(request, response);
     }
