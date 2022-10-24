@@ -1547,10 +1547,14 @@ void LibraryWindow::reloadCurrentFolderComicsContent()
 void LibraryWindow::reloadAfterCopyMove(const QModelIndex &mi)
 {
     if (getCurrentFolderIndex() == mi) {
-        navigationController->loadFolderInfo(mi);
-    }
+        auto item = static_cast<FolderItem *>(mi.internalPointer());
+        auto id = item->id;
+        foldersModel->reload(mi);
+        auto newMi = foldersModel->index(id);
 
-    foldersModel->reload();
+        foldersView->setCurrentIndex(foldersModelProxy->mapFromSource(newMi));
+        navigationController->loadFolderInfo(newMi);
+    }
 
     enableNeededActions();
 }
@@ -2076,6 +2080,7 @@ void LibraryWindow::create(QString source, QString dest, QString name)
 
 void LibraryWindow::reloadCurrentLibrary()
 {
+    qDebug() << "reloadCurrentLibrary";
     loadLibrary(selectedLibrary->currentText());
 }
 

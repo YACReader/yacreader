@@ -108,6 +108,12 @@ void FolderModel::reload()
     setupModelData(_databasePath);
 }
 
+void FolderModel::reload(const QModelIndex &index)
+{
+    // TODO: reload just the content under index for better efficiency
+    setupModelData(_databasePath);
+}
+
 QVariant FolderModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
@@ -155,10 +161,9 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
         return item->data(FolderModel::Finished);
 
     if (role == FolderModel::MangaRole)
-        return item->data(FolderModel::Manga);
+        return item->data(FolderModel::Manga)
 
-    if (role == FolderModel::IdRole)
-        return item->id;
+                if (role == FolderModel::IdRole) return item->id;
 
     if (role == FolderModel::CoverPathRole)
         return getCoverUrlPathForComicHash(item->data(FirstChildHash).toString());
@@ -208,6 +213,39 @@ QModelIndex FolderModel::index(int row, int column, const QModelIndex &parent)
         return createIndex(row, column, childItem);
     else
         return QModelIndex();
+}
+
+void iterate(const QModelIndex &index,
+             const QAbstractItemModel *model,
+             const std::function<boolean(const QModelIndex &)> &iteration)
+{
+    if (index.isValid()) {
+        auto continueIterating = iteration(index);
+        if (!continueIterating) {
+            return;
+        }
+    }
+    if ((index.flags() & Qt::ItemNeverHasChildren) || !model->hasChildren(index))
+        return;
+    auto rows = model->rowCount(index);
+    for (int i = 0; i < rows; ++i)
+        iterate(model->index(i, 0, index), model, iteration);
+}
+
+QModelIndex FolderModel::index(qulonglong folderId) const
+{
+    QModelIndex index;
+    iterate(QModelIndex(), this, [&](const QModelIndex &idx) {
+        auto item = static_cast<FolderItem *>(idx.internalPointer());
+        if (item->id == folderId) {
+            index = idx;
+            return false;
+        }
+
+        return true;
+    });
+
+    return index;
 }
 
 QModelIndex FolderModel::parent(const QModelIndex &index) const

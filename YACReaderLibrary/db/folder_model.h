@@ -54,6 +54,7 @@ public:
                         int role = Qt::DisplayRole) const override;
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const override;
+    QModelIndex index(qulonglong folderId) const;
     QModelIndex parent(const QModelIndex &index) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -61,6 +62,7 @@ public:
 
     // Convenience methods
     void reload();
+    void reload(const QModelIndex &index);
     void setupModelData(QString path);
     QString getDatabase();
     QString getFolderPath(const QModelIndex &folder);
