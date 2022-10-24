@@ -197,6 +197,50 @@ ComicInfo::ComicInfo(const ComicInfo &comicInfo)
 ComicInfo::~ComicInfo()
 {
 }
+
+void ComicInfo::deleteMetadata()
+{
+    title = QVariant();
+
+    coverPage = QVariant();
+    numPages = QVariant();
+
+    number = QVariant();
+    isBis = QVariant();
+    count = QVariant();
+
+    volume = QVariant();
+    storyArc = QVariant();
+    arcNumber = QVariant();
+    arcCount = QVariant();
+
+    genere = QVariant();
+
+    writer = QVariant();
+    penciller = QVariant();
+    inker = QVariant();
+    colorist = QVariant();
+    letterer = QVariant();
+    coverArtist = QVariant();
+
+    date = QVariant();
+
+    day = QVariant();
+    month = QVariant();
+    year = QVariant();
+
+    publisher = QVariant();
+    format = QVariant();
+    color = QVariant();
+    ageRating = QVariant();
+    manga = QVariant();
+
+    synopsis = QVariant();
+    characters = QVariant();
+    notes = QVariant();
+
+    comicVineID = QVariant();
+}
 // the default operator= should work
 ComicInfo &ComicInfo::operator=(const ComicInfo &comicInfo)
 {
