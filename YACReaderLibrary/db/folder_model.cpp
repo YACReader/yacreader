@@ -161,9 +161,10 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
         return item->data(FolderModel::Finished);
 
     if (role == FolderModel::MangaRole)
-        return item->data(FolderModel::Manga)
+        return item->data(FolderModel::Manga);
 
-                if (role == FolderModel::IdRole) return item->id;
+    if (role == FolderModel::IdRole)
+        return item->id;
 
     if (role == FolderModel::CoverPathRole)
         return getCoverUrlPathForComicHash(item->data(FirstChildHash).toString());
