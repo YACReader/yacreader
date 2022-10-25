@@ -237,6 +237,10 @@ QModelIndex FolderModel::index(qulonglong folderId) const
 {
     QModelIndex index;
     iterate(QModelIndex(), this, [&](const QModelIndex &idx) {
+        if (index.isValid()) {
+            return false;
+        }
+
         auto item = static_cast<FolderItem *>(idx.internalPointer());
         if (item->id == folderId) {
             index = idx;
