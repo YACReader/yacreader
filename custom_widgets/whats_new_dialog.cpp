@@ -50,12 +50,16 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
                   "<br/>"
                   "<span style=\"font-weight:600\">YACReader</span><br/>"
                   "   &#8226; Fixed color selection dialog appearing as a subwindow in macos.<br/>"
+                  "   &#8226; Better support for HDPI screens (SVG icons).<br/>"
                   "<br/>"
                   "<span style=\"font-weight:600\">YACReaderLibrary</span><br/>"
-                  "   &#8226; New folder content view that replaces the old `subfolders in this folder` view shown when folders don't have direct comics.<br/>"
+                  "   &#8226; New folder content view that replaces the old `subfolders in this folder` view shown when folders don't have direct comics. You may need to update your libraries to make folders display properly.<br/>"
                   "   &#8226; Continue Reading view that it is shown for the root folder.<br/>"
                   "   &#8226; UI gets updated when YACReaderLibrary gets updates from YACReader or YACReader for iOS.<br/>"
                   "   &#8226; Fixed going forward history navigation.<br/>"
+                  "   &#8226; Fixed selected folder restoration after folder updates.<br/>"
+                  "   &#8226; Add option to delete metadata from comics.<br/>"
+                  "   &#8226; Better support for HDPI screens (SVG icons).<br/>"
                   "<br/>"
                   "I hope you enjoy the new update. Please, if you like YACReader consider to become a patron in <a href=\"https://www.patreon.com/yacreader\" style=\"color:#E8B800;\">Patreon</a> or donate some money using <a href=\"https://www.paypal.com/donate?business=5TAMNQCDDMVP8&item_name=Support+YACReader\" style=\"color:#E8B800;\">Pay-Pal</a> and help keeping the project alive. Remember that there is an iOS version available in the <a href=\"https://apps.apple.com/app/id635717885\" style=\"color:#E8B800;\">Apple App Store</a>.");
     QFont textLabelFont("Arial", 15, QFont::Light);
