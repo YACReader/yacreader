@@ -218,7 +218,7 @@ QModelIndex FolderModel::index(int row, int column, const QModelIndex &parent)
 
 void iterate(const QModelIndex &index,
              const QAbstractItemModel *model,
-             const std::function<boolean(const QModelIndex &)> &iteration)
+             const std::function<bool(const QModelIndex &)> &iteration)
 {
     if (index.isValid()) {
         auto continueIterating = iteration(index);
