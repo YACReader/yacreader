@@ -17,6 +17,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Linux: Add fallback for dynamically loading libqrencode on distros that don't provide unversioned library symlinks
 * Fixed selected folder restoration after folder updates.
 * Better support for HDPI screens (SVG icons).
+* Add option to delete metadata from comics.
 
 ### Server
 * Add webui status page (reachable by navigating to server::port/webui)
