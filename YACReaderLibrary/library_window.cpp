@@ -167,7 +167,7 @@ void LibraryWindow::setupUI()
 
     setUnifiedTitleAndToolBarOnMac(true);
 
-    libraryCreator = new LibraryCreator();
+    libraryCreator = new LibraryCreator(settings);
     packageManager = new PackageManager();
     xmlInfoLibraryScanner = new XMLInfoLibraryScanner();
 

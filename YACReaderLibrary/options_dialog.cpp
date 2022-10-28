@@ -50,13 +50,13 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     trayIconCheckbox = new QCheckBox(tr("Close to tray"));
     startToTrayCheckbox = new QCheckBox(tr("Start into the system tray"));
 
-    connect(trayIconCheckbox, &QCheckBox::clicked,
+    connect(trayIconCheckbox, &QCheckBox::clicked, this,
             [=](bool checked) {
                 settings->setValue(CLOSE_TO_TRAY, checked);
                 startToTrayCheckbox->setEnabled(checked);
                 emit optionsChanged();
             });
-    connect(startToTrayCheckbox, &QCheckBox::clicked,
+    connect(startToTrayCheckbox, &QCheckBox::clicked, this,
             [=](bool checked) {
                 settings->setValue(START_TO_TRAY, checked);
             });
@@ -73,6 +73,18 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     apiKeyBox->setLayout(apiKeyLayout);
 
     connect(apiKeyButton, &QAbstractButton::clicked, this, &OptionsDialog::editApiKey);
+
+    auto comicInfoXMLBox = new QGroupBox(tr("ComicInfo.xml legacy support"));
+
+    comicInfoXMLCheckbox = new QCheckBox(tr("Import metada from ComicInfo.xml when adding new comics"));
+    connect(comicInfoXMLCheckbox, &QCheckBox::clicked, this,
+            [=](bool checked) {
+                settings->setValue(IMPORT_COMIC_INFO_XML_METADATA, checked);
+            });
+
+    auto comicInfoXMLBoxLayout = new QVBoxLayout();
+    comicInfoXMLBoxLayout->addWidget(comicInfoXMLCheckbox);
+    comicInfoXMLBox->setLayout(comicInfoXMLBoxLayout);
 
     // grid view background config
     useBackgroundImageCheck = new QCheckBox(tr("Enable background image"));
@@ -139,6 +151,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     generalLayout->addWidget(trayIconBox);
     generalLayout->addWidget(shortcutsBox);
     generalLayout->addWidget(apiKeyBox);
+    generalLayout->addWidget(comicInfoXMLBox);
     generalLayout->addStretch();
 
     tabWidget->addTab(generalW, tr("General"));
@@ -171,6 +184,8 @@ void OptionsDialog::restoreOptions(QSettings *settings)
     trayIconCheckbox->setChecked(settings->value(CLOSE_TO_TRAY, false).toBool());
     startToTrayCheckbox->setChecked(settings->value(START_TO_TRAY, false).toBool());
     startToTrayCheckbox->setEnabled(trayIconCheckbox->isChecked());
+
+    comicInfoXMLCheckbox->setChecked(settings->value(IMPORT_COMIC_INFO_XML_METADATA, false).toBool());
 
     bool useBackgroundImage = settings->value(USE_BACKGROUND_IMAGE_IN_GRID_VIEW, true).toBool();
 

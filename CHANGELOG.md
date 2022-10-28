@@ -18,6 +18,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fixed selected folder restoration after folder updates.
 * Better support for HDPI screens (SVG icons).
 * Add option to delete metadata from comics.
+* Importing ComicInfo.XML is now optional and disabled by default, you can change the behavior in Settings -> General.
 
 ### Server
 * Add webui status page (reachable by navigating to server::port/webui)

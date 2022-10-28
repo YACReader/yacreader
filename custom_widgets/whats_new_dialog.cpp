@@ -60,6 +60,9 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
                   "   &#8226; Fixed selected folder restoration after folder updates.<br/>"
                   "   &#8226; Add option to delete metadata from comics.<br/>"
                   "   &#8226; Better support for HDPI screens (SVG icons).<br/>"
+                  "   &#8226; Importing ComicInfo.XML is now optional, you can change the behavior in Settings -> General.<br/>"
+                  "<br/>"
+                  "NOTE: Importing metadata from ComicInfo.XML in now disabled by default, if you want you can enable it Settings -> General.<br/>"
                   "<br/>"
                   "I hope you enjoy the new update. Please, if you like YACReader consider to become a patron in <a href=\"https://www.patreon.com/yacreader\" style=\"color:#E8B800;\">Patreon</a> or donate some money using <a href=\"https://www.paypal.com/donate?business=5TAMNQCDDMVP8&item_name=Support+YACReader\" style=\"color:#E8B800;\">Pay-Pal</a> and help keeping the project alive. Remember that there is an iOS version available in the <a href=\"https://apps.apple.com/app/id635717885\" style=\"color:#E8B800;\">Apple App Store</a>.");
     QFont textLabelFont("Arial", 15, QFont::Light);

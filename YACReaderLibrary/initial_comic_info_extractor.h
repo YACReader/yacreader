@@ -9,7 +9,7 @@ class InitialComicInfoExtractor : public QObject
     Q_OBJECT
 
 public:
-    InitialComicInfoExtractor(QString fileSource, QString target = "", int coverPage = 1);
+    InitialComicInfoExtractor(QString fileSource, QString target = "", int coverPage = 1, bool getXMLMetadata = false);
 
 private:
     QString _fileSource;
@@ -19,6 +19,7 @@ private:
     QPair<int, int> _coverSize;
     QImage _cover;
     int _coverPage;
+    int getXMLMetadata;
     static bool crash;
     QByteArray _xmlInfoData;
     void saveCover(const QString &path, const QImage &cover);
