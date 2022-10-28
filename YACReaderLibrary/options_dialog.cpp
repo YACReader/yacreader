@@ -141,11 +141,11 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     generalLayout->addWidget(apiKeyBox);
     generalLayout->addStretch();
 
+    tabWidget->addTab(generalW, tr("General"));
     tabWidget->addTab(comicFlowW, tr("Comic Flow"));
 #ifndef NO_OPENGL
     tabWidget->addTab(gridViewW, tr("Grid view"));
 #endif
-    tabWidget->addTab(generalW, tr("General"));
 
     layout->addWidget(tabWidget);
     layout->addLayout(buttons);
