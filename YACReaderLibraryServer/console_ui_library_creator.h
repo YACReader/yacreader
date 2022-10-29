@@ -7,7 +7,7 @@ class ConsoleUILibraryCreator : public QObject
 {
     Q_OBJECT
 public:
-    explicit ConsoleUILibraryCreator(QObject *parent = 0);
+    explicit ConsoleUILibraryCreator(QSettings *settings, QObject *parent = 0);
     void createLibrary(const QString &name, const QString &path);
     void updateLibrary(const QString &path);
     void addExistingLibrary(const QString &name, const QString &path);
@@ -15,6 +15,7 @@ public:
 
 private:
     uint numComicsProcessed;
+    QSettings *settings;
 signals:
 
 public slots:

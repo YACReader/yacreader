@@ -124,6 +124,9 @@ int main(int argc, char **argv)
         return 0;
     }
 
+    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/" + QCoreApplication::applicationName() + ".ini", QSettings::IniFormat);
+    settings->beginGroup("libraryConfig");
+
     if (command == "start") {
         parser.clearPositionalArguments();
         parser.addPositionalArgument("start", "Start YACReaderLibraryServer");
@@ -190,9 +193,6 @@ int main(int argc, char **argv)
 
         QLOG_INFO() << "YACReaderLibrary starting";
 
-        QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/" + QCoreApplication::applicationName() + ".ini", QSettings::IniFormat);
-        settings->beginGroup("libraryConfig");
-
         // server
         YACReaderHttpServer *httpServer = new YACReaderHttpServer();
         if (parser.isSet("port")) {
@@ -244,7 +244,7 @@ int main(int argc, char **argv)
             return 0;
         }
 
-        ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator;
+        ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator(settings);
         libraryCreatorUI->createLibrary(args.at(1), args.at(2));
 
         return 0;
@@ -260,7 +260,7 @@ int main(int argc, char **argv)
             return 0;
         }
 
-        ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator;
+        ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator(settings);
         libraryCreatorUI->updateLibrary(args.at(1));
 
         return 0;
@@ -277,7 +277,7 @@ int main(int argc, char **argv)
             return 0;
         }
 
-        ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator;
+        ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator(settings);
         libraryCreatorUI->addExistingLibrary(args.at(1), args.at(2));
 
         return 0;
@@ -293,7 +293,7 @@ int main(int argc, char **argv)
             return 0;
         }
 
-        ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator;
+        ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator(settings);
         libraryCreatorUI->removeLibrary(args.at(1));
 
         return 0;
