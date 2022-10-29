@@ -61,6 +61,7 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
                   "   &#8226; Add option to delete metadata from comics.<br/>"
                   "   &#8226; Better support for HDPI screens (SVG icons).<br/>"
                   "   &#8226; Importing ComicInfo.XML is now optional, you can change the behavior in Settings -> General.<br/>"
+                  "   &#8226; Add option to scan XML metadata from all the comics in a folder.<br/>"
                   "<br/>"
                   "NOTE: Importing metadata from ComicInfo.XML in now disabled by default, if you want you can enable it Settings -> General.<br/>"
                   "<br/>"
