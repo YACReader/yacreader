@@ -18,8 +18,6 @@
 #include "pdf_comic.h"
 #include "yacreader_global.h"
 
-#include "yacreader_global_gui.h"
-
 #include "QsLog.h"
 
 #include <algorithm>
