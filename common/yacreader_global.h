@@ -4,6 +4,7 @@
 #include <QStandardPaths>
 #include <QDataStream>
 #include <QMetaType>
+#include <QAbstractItemModel>
 
 #define VERSION "9.10.0"
 
@@ -67,6 +68,10 @@ QDataStream &operator>>(QDataStream &stream, OpenComicSource &source);
 QString getSettingsPath();
 QString colorToName(LabelColors colors);
 QString labelColorToRGBString(LabelColors color);
+
+void iterate(const QModelIndex &index,
+             const QAbstractItemModel *model,
+             const std::function<bool(const QModelIndex &)> &iteration);
 
 }
 

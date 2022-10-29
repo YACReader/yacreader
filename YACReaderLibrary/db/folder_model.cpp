@@ -216,27 +216,10 @@ QModelIndex FolderModel::index(int row, int column, const QModelIndex &parent)
         return QModelIndex();
 }
 
-void iterate(const QModelIndex &index,
-             const QAbstractItemModel *model,
-             const std::function<bool(const QModelIndex &)> &iteration)
-{
-    if (index.isValid()) {
-        auto continueIterating = iteration(index);
-        if (!continueIterating) {
-            return;
-        }
-    }
-    if ((index.flags() & Qt::ItemNeverHasChildren) || !model->hasChildren(index))
-        return;
-    auto rows = model->rowCount(index);
-    for (int i = 0; i < rows; ++i)
-        iterate(model->index(i, 0, index), model, iteration);
-}
-
 QModelIndex FolderModel::index(qulonglong folderId) const
 {
     QModelIndex index;
-    iterate(QModelIndex(), this, [&](const QModelIndex &idx) {
+    YACReader::iterate(QModelIndex(), this, [&](const QModelIndex &idx) {
         if (index.isValid()) {
             return false;
         }
