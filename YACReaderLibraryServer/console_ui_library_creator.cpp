@@ -6,7 +6,7 @@
 #include "yacreader_libraries.h"
 
 ConsoleUILibraryCreator::ConsoleUILibraryCreator(QSettings *settings, QObject *parent)
-    : QObject(parent),  numComicsProcessed(0), settings(settings)
+    : QObject(parent), numComicsProcessed(0), settings(settings)
 {
 }
 
