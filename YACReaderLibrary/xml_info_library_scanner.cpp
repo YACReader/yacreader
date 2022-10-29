@@ -6,6 +6,7 @@
 #include "initial_comic_info_extractor.h"
 #include "xml_info_parser.h"
 #include "yacreader_global.h"
+#include "folder_item.h"
 
 #include "QsLog.h"
 
@@ -22,6 +23,21 @@ void XMLInfoLibraryScanner::scanLibrary(const QString &source, const QString &ta
     this->target = target;
 
     this->stopRunning = false;
+
+    partialUpdate = false;
+
+    start();
+}
+
+void XMLInfoLibraryScanner::scanFolder(const QString &source, const QString &target, const QString &folder, const QModelIndex &dest)
+{
+    this->source = source;
+    this->target = target;
+
+    this->stopRunning = false;
+
+    partialUpdate = true;
+    folderDestinationModelIndex = dest;
 
     start();
 }
@@ -52,36 +68,29 @@ void XMLInfoLibraryScanner::run()
 
         database.transaction();
 
-        QSqlQuery comicsInfo("SELECT * FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id)", database);
-        comicsInfo.exec();
+        if (!partialUpdate) {
+            QSqlQuery comicsInfo("SELECT * FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id)", database);
+            comicsInfo.exec();
 
-        QSqlRecord record = comicsInfo.record();
+            updateFromSQLQuery(database, comicsInfo);
+        } else {
+            if (folderDestinationModelIndex.isValid()) {
+                YACReader::iterate(folderDestinationModelIndex, folderDestinationModelIndex.model(), [&](const QModelIndex &idx) {
+                    if (stopRunning) {
+                        return false;
+                    }
 
-        int id = record.indexOf("id");
-        // int parentIdIndex = record.indexOf("parentId");
-        int fileNameIndex = record.indexOf("fileName");
-        int pathIndex = record.indexOf("path");
+                    auto item = static_cast<FolderItem *>(idx.internalPointer());
 
-        while (comicsInfo.next()) {
-            if (this->stopRunning) {
-                break;
-            }
-            /* currentItem.id = selectQuery.value(id).toULongLong();
-            currentItem.parentId = parentId; //selectQuery.value(parentId).toULongLong();
-            currentItem.name = selectQuery.value(fileName).toString(); */
-            auto fileName = comicsInfo.value(fileNameIndex).toString();
-            auto path = comicsInfo.value(pathIndex).toString();
+                    QSqlQuery comicsInfo(database);
+                    comicsInfo.prepare("SELECT * FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE c.parentId = :parentId");
+                    comicsInfo.bindValue(":parentId", item->id);
+                    comicsInfo.exec();
 
-            emit comicScanned(path, fileName);
+                    updateFromSQLQuery(database, comicsInfo);
 
-            auto info = DBHelper::getComicInfoFromQuery(comicsInfo, "comicInfoId");
-
-            InitialComicInfoExtractor ie(QDir::cleanPath(this->source + path), "None");
-
-            ie.extract();
-
-            if (parseXMLIntoInfo(ie.getXMLInfoRawData(), info)) {
-                DBHelper::update(&info, database);
+                    return true;
+                });
             }
         }
 
@@ -95,4 +104,34 @@ void XMLInfoLibraryScanner::run()
 void XMLInfoLibraryScanner::stop()
 {
     stopRunning = true;
+}
+
+void XMLInfoLibraryScanner::updateFromSQLQuery(QSqlDatabase &db, QSqlQuery &query)
+{
+    QSqlRecord record = query.record();
+
+    int id = record.indexOf("id");
+    // int parentIdIndex = record.indexOf("parentId");
+    int fileNameIndex = record.indexOf("fileName");
+    int pathIndex = record.indexOf("path");
+
+    while (query.next()) {
+        if (this->stopRunning) {
+            break;
+        }
+        auto fileName = query.value(fileNameIndex).toString();
+        auto path = query.value(pathIndex).toString();
+
+        emit comicScanned(path, fileName);
+
+        auto info = DBHelper::getComicInfoFromQuery(query, "comicInfoId");
+
+        InitialComicInfoExtractor ie(QDir::cleanPath(this->source + path), "None", info.coverPage.toInt(), true);
+
+        ie.extract();
+
+        if (parseXMLIntoInfo(ie.getXMLInfoRawData(), info)) {
+            DBHelper::update(&info, db);
+        }
+    }
 }
