@@ -230,6 +230,7 @@ public:
 
     QAction *updateFolderAction;
     QAction *updateCurrentFolderAction;
+    QAction *rescanXMLFromCurrentFolderAction;
 
     // reading lists actions
     QAction *addReadingListAction;
@@ -346,6 +347,8 @@ public slots:
     void removeLibrary();
     void renameLibrary();
     void rescanLibraryForXMLInfo();
+    void rescanCurrentFolderForXMLInfo();
+    void rescanFolderForXMLInfo(QModelIndex modelIndex);
     void rename(QString newName);
     void cancelCreating();
     void stopLibraryCreator();

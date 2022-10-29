@@ -394,7 +394,8 @@ void LibraryWindow::setUpShortcutsManagement()
                                                  << setFolderAsUnreadAction
                                                  << setFolderAsMangaAction
                                                  << setFolderAsNormalAction
-                                                 << updateCurrentFolderAction);
+                                                 << updateCurrentFolderAction
+                                                 << rescanXMLFromCurrentFolderAction);
     allActions << tmpList;
 
     editShortcutsDialog->addActionsGroup("Lists", QIcon(":/images/shortcuts_group_folders.svg"), // TODO change icon
@@ -795,6 +796,10 @@ void LibraryWindow::createActions()
     updateCurrentFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(UPDATE_CURRENT_FOLDER_ACTION_YL));
     updateCurrentFolderAction->setIcon(QIcon(":/images/menus_icons/update_current_folder.svg"));
 
+    rescanXMLFromCurrentFolderAction = new QAction(tr("Scan legacy XML metadata"), this);
+    rescanXMLFromCurrentFolderAction->setData(SCAN_XML_FROM_CURRENT_FOLDER_ACTION_YL);
+    rescanXMLFromCurrentFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SCAN_XML_FROM_CURRENT_FOLDER_ACTION_YL));
+
     addReadingListAction = new QAction(tr("Add new reading list"), this);
     addReadingListAction->setData(ADD_READING_LIST_ACTION_YL);
     addReadingListAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_READING_LIST_ACTION_YL));
@@ -840,6 +845,7 @@ void LibraryWindow::createActions()
     this->addAction(setFolderAsMangaAction);
     this->addAction(setFolderAsNormalAction);
     this->addAction(deleteMetadataAction);
+    this->addAction(rescanXMLFromCurrentFolderAction);
 #ifndef Q_OS_MAC
     this->addAction(toggleFullScreenAction);
 #endif
@@ -905,6 +911,7 @@ void LibraryWindow::disableFoldersActions(bool disabled)
     openContainingFolderAction->setDisabled(disabled);
 
     updateFolderAction->setDisabled(disabled);
+    rescanXMLFromCurrentFolderAction->setDisabled(disabled);
 }
 
 void LibraryWindow::disableAllActions()
@@ -1054,6 +1061,8 @@ void LibraryWindow::createMenus()
     QMenu *folderMenu = new QMenu(tr("Folder"));
     folderMenu->addAction(openContainingFolderAction);
     folderMenu->addAction(updateFolderAction);
+    folderMenu->addSeparator();
+    folderMenu->addAction(rescanXMLFromCurrentFolderAction);
     folderMenu->addSeparator();
     folderMenu->addAction(setFolderAsNotCompletedAction);
     folderMenu->addAction(setFolderAsCompletedAction);
@@ -1234,6 +1243,8 @@ void LibraryWindow::createConnections()
     // update folders (partial updates)
     connect(updateCurrentFolderAction, &QAction::triggered, this, &LibraryWindow::updateCurrentFolder);
     connect(updateFolderAction, &QAction::triggered, this, &LibraryWindow::updateCurrentFolder);
+
+    connect(rescanXMLFromCurrentFolderAction, &QAction::triggered, this, &LibraryWindow::rescanCurrentFolderForXMLInfo);
 
     // lists
     connect(addReadingListAction, &QAction::triggered, this, &LibraryWindow::addNewReadingList);
@@ -1808,6 +1819,8 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
     auto updateFolderAction = new QAction(tr("Update folder"), this);
     updateFolderAction->setIcon(QIcon(":/images/menus_icons/update_current_folder.svg"));
 
+    auto rescanLibraryForXMLInfoAction = new QAction(tr("Rescan library for XML info"), this);
+
     auto setFolderAsNotCompletedAction = new QAction();
     setFolderAsNotCompletedAction->setText(tr("Set as uncompleted"));
 
@@ -1828,6 +1841,8 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
 
     menu.addAction(openContainingFolderAction);
     menu.addAction(updateFolderAction);
+    menu.addSeparator();
+    menu.addAction(rescanLibraryForXMLInfoAction);
     menu.addSeparator();
     if (folder.isCompleted())
         menu.addAction(setFolderAsNotCompletedAction);
@@ -1851,6 +1866,9 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
     });
     connect(updateFolderAction, &QAction::triggered, this, [=]() {
         updateFolder(foldersModel->getIndexFromFolder(folder));
+    });
+    connect(rescanLibraryForXMLInfoAction, &QAction::triggered, this, [=]() {
+        rescanFolderForXMLInfo(foldersModel->getIndexFromFolder(folder));
     });
     connect(setFolderAsNotCompletedAction, &QAction::triggered, this, [=]() {
         foldersModel->updateFolderCompletedStatus(QModelIndexList() << foldersModel->getIndexFromFolder(folder), false);
@@ -2235,6 +2253,23 @@ void LibraryWindow::rescanLibraryForXMLInfo()
     _lastAdded = currentLibrary;
 
     xmlInfoLibraryScanner->scanLibrary(path, path + "/.yacreaderlibrary");
+}
+
+void LibraryWindow::rescanCurrentFolderForXMLInfo()
+{
+    rescanFolderForXMLInfo(getCurrentFolderIndex());
+}
+
+void LibraryWindow::rescanFolderForXMLInfo(QModelIndex modelIndex)
+{
+    importWidget->setXMLScanLook();
+    showImportingWidget();
+
+    QString currentLibrary = selectedLibrary->currentText();
+    QString path = libraries.getPath(currentLibrary);
+    _lastAdded = currentLibrary;
+
+    xmlInfoLibraryScanner->scanFolder(path, path + "/.yacreaderlibrary", QDir::cleanPath(currentPath() + foldersModel->getFolderPath(modelIndex)), modelIndex);
 }
 
 void LibraryWindow::cancelCreating()
@@ -2820,6 +2855,8 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
     // QMenu * folderMenu = new QMenu(tr("Folder"));
     menu.addAction(openContainingFolderAction);
     menu.addAction(updateFolderAction);
+    menu.addSeparator(); //-------------------------------
+    menu.addAction(rescanXMLFromCurrentFolderAction);
     menu.addSeparator(); //-------------------------------
     if (isCompleted)
         menu.addAction(setFolderAsNotCompletedAction);
