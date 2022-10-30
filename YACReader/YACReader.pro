@@ -171,11 +171,7 @@ include(../compressed_archive/libarchive/libarchive-wrapper.pri)
 include(../shortcuts_management/shortcuts_management.pri)
 
 RESOURCES += yacreader_images.qrc \
-    yacreader_files.qrc
-
-win32:RESOURCES += yacreader_images_win.qrc
-unix:!macx:RESOURCES += yacreader_images_win.qrc
-macx:RESOURCES += yacreader_images_osx.qrc
+             yacreader_files.qrc
 
 include(../third_party/QsLog/QsLog.pri)
 
@@ -197,7 +193,28 @@ TRANSLATIONS =    yacreader_es.ts \
                   yacreader_zh_TW.ts \
                   yacreader_zh_HK.ts \
                   yacreader_it.ts \
-                  yacreader_source.ts
+                  yacreader_en.ts
+
+CONFIG += lrelease
+
+win32 {
+    CONFIG(release, debug|release) {
+        SOURCE_QM_DIR = $$OUT_PWD/release/*.qm
+    }
+    CONFIG(debug, debug|release) {
+        SOURCE_QM_DIR = $$OUT_PWD/debug/*.qm
+    }
+
+    DEPLOYMENT_OUT_QM_DIR = ../release/languages/
+    OUT_QM_DIR = $${DESTDIR}/languages/
+
+    QMAKE_POST_LINK += $(MKDIR) $$shell_path($${OUT_QM_DIR}) 2> NULL & \
+                       $(COPY) $$shell_path($${SOURCE_QM_DIR}) $$shell_path($${OUT_QM_DIR}) & \
+                       $(MKDIR) $$shell_path($${DEPLOYMENT_OUT_QM_DIR}) 2> NULL & \
+                       $(COPY) $$shell_path($${SOURCE_QM_DIR}) $$shell_path($${DEPLOYMENT_OUT_QM_DIR})
+} else {
+    LRELEASE_DIR = ../release/languages/
+}
 
 unix:!macx {
 # set install prefix if it's empty

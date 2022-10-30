@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file alias="qml/GridComicsView.qml">qml/GridComicsView6.qml</file>
+        <file alias="qml/FolderContentView.qml">qml/FolderContentView6.qml</file>
         <file alias="qml/FlowView.qml">qml/FlowView6.qml</file>
         <file alias="qml/InfoTick.qml">qml/InfoTick6.qml</file>
         <file alias="qml/InfoFavorites.qml">qml/InfoFavorites6.qml</file>

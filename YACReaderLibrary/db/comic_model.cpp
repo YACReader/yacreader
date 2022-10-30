@@ -1,6 +1,7 @@
 
 #include <QtGui>
 #include <QtDebug>
+#include <QStringBuilder>
 #include <limits>
 
 #include "comic_item.h"
@@ -237,6 +238,7 @@ QHash<int, QByteArray> ComicModel::roleNames() const
     roles[HasBeenOpenedRole] = "has_been_opened";
     roles[CoverPathRole] = "cover_path";
     roles[PublicationDate] = "date";
+    roles[ReadableTitle] = "readable_title";
 
     return roles;
 }
@@ -275,7 +277,13 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
         return item->data(Number);
     else if (role == TitleRole)
         return item->data(Title).isNull() ? item->data(FileName) : item->data(Title);
-    else if (role == FileNameRole)
+    else if (role == ReadableTitle) {
+        QString title;
+        if (!item->data(Number).isNull()) {
+            title = title % "#" % item->data(Number).toString() % " ";
+        }
+        return QVariant(title % (item->data(Title).isNull() ? item->data(FileName).toString() : item->data(Title).toString()));
+    } else if (role == FileNameRole)
         return item->data(FileName);
     else if (role == RatingRole)
         return item->data(Rating);
@@ -672,7 +680,8 @@ ComicDB ComicModel::getComic(const QModelIndex &mi)
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-        c = DBHelper::loadComic(_data.at(mi.row())->data(ComicModel::Id).toULongLong(), db);
+        bool found;
+        c = DBHelper::loadComic(_data.at(mi.row())->data(ComicModel::Id).toULongLong(), db, found);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
@@ -686,7 +695,8 @@ ComicDB ComicModel::_getComic(const QModelIndex &mi)
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-        c = DBHelper::loadComic(_data.at(mi.row())->data(ComicModel::Id).toULongLong(), db);
+        bool found;
+        c = DBHelper::loadComic(_data.at(mi.row())->data(ComicModel::Id).toULongLong(), db, found);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
@@ -726,7 +736,8 @@ QList<ComicDB> ComicModel::getAllComics()
 
         int numComics = _data.count();
         for (int i = 0; i < numComics; i++) {
-            comics.append(DBHelper::loadComic(_data.value(i)->data(ComicModel::Id).toULongLong(), db));
+            bool found;
+            comics.append(DBHelper::loadComic(_data.value(i)->data(ComicModel::Id).toULongLong(), db, found));
         }
 
         db.commit();
@@ -755,7 +766,8 @@ QVector<YACReaderComicReadStatus> ComicModel::setComicsRead(QList<QModelIndex> l
         foreach (QModelIndex mi, list) {
             if (read == YACReader::Read) {
                 _data.value(mi.row())->setData(ComicModel::ReadColumn, QVariant(true));
-                ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(ComicModel::Id).toULongLong(), db);
+                bool found;
+                ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(ComicModel::Id).toULongLong(), db, found);
                 c.info.read = true;
                 DBHelper::update(&(c.info), db);
             }
@@ -763,7 +775,8 @@ QVector<YACReaderComicReadStatus> ComicModel::setComicsRead(QList<QModelIndex> l
                 _data.value(mi.row())->setData(ComicModel::ReadColumn, QVariant(false));
                 _data.value(mi.row())->setData(ComicModel::CurrentPage, QVariant(1));
                 _data.value(mi.row())->setData(ComicModel::HasBeenOpened, QVariant(false));
-                ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(ComicModel::Id).toULongLong(), db);
+                bool found;
+                ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(ComicModel::Id).toULongLong(), db, found);
                 c.info.read = false;
                 c.info.currentPage = 1;
                 c.info.hasBeenOpened = false;
@@ -788,7 +801,8 @@ void ComicModel::setComicsManga(QList<QModelIndex> list, bool isManga)
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
         db.transaction();
         foreach (QModelIndex mi, list) {
-            ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(ComicModel::Id).toULongLong(), db);
+            bool found;
+            ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(ComicModel::Id).toULongLong(), db, found);
             c.info.manga = isManga;
             DBHelper::update(&(c.info), db);
         }
@@ -808,7 +822,8 @@ qint64 ComicModel::asignNumbers(QList<QModelIndex> list, int startingNumber)
         idFirst = _data.value(list[0].row())->data(ComicModel::Id).toULongLong();
         int i = 0;
         foreach (QModelIndex mi, list) {
-            ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(ComicModel::Id).toULongLong(), db);
+            bool found;
+            ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(ComicModel::Id).toULongLong(), db, found);
             c.info.number = startingNumber + i;
             c.info.edited = true;
             DBHelper::update(&(c.info), db);
@@ -864,7 +879,8 @@ void ComicModel::finishTransaction()
 void ComicModel::removeInTransaction(int row)
 {
     auto dbTransaction = QSqlDatabase::database(_databaseConnection);
-    ComicDB c = DBHelper::loadComic(_data.at(row)->data(ComicModel::Id).toULongLong(), dbTransaction);
+    bool found;
+    ComicDB c = DBHelper::loadComic(_data.at(row)->data(ComicModel::Id).toULongLong(), dbTransaction, found);
 
     DBHelper::removeFromDB(&c, dbTransaction);
     beginRemoveRows(QModelIndex(), row, row);
@@ -873,6 +889,32 @@ void ComicModel::removeInTransaction(int row)
     _data.removeAt(row);
 
     endRemoveRows();
+}
+
+void ComicModel::reloadContinueReading()
+{
+    setupReadingModelData(_databasePath);
+}
+
+void ComicModel::reload()
+{
+    switch (mode) {
+    case Folder:
+        setupFolderModelData(sourceId, _databasePath);
+        break;
+    case Favorites:
+        setupFavoritesModelData(_databasePath);
+        break;
+    case Reading:
+        setupReadingModelData(_databasePath);
+        break;
+    case Label:
+        setupLabelModelData(sourceId, _databasePath);
+        break;
+    case ReadingList:
+        setupReadingListModelData(sourceId, _databasePath);
+        break;
+    }
 }
 
 void ComicModel::remove(int row)

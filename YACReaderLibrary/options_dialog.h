@@ -37,6 +37,7 @@ private:
     QCheckBox *displayContinueReadingBannerCheck;
     QCheckBox *trayIconCheckbox;
     QCheckBox *startToTrayCheckbox;
+    QCheckBox *comicInfoXMLCheckbox;
 };
 
 #endif

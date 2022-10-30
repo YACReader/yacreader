@@ -13,6 +13,7 @@
 #include "QsLog.h"
 
 #include "comic_item.h"
+#include "yacreader_global_gui.h"
 
 YACReaderTableView::YACReaderTableView(QWidget *parent)
     : QTableView(parent), showDelete(false), editing(false), myeditor(0)
@@ -146,7 +147,7 @@ void YACReaderTableView::performDrag()
     QLOG_DEBUG() << "performDrag";
     QDrag *drag = new QDrag(this);
     drag->setMimeData(model()->mimeData(selectionModel()->selectedRows()));
-    drag->setPixmap(QPixmap(":/images/comics_view_toolbar/openInYACReader.png")); // TODO add better image
+    drag->setPixmap(YACReader::hdpiPixmap(":/images/comics_view_toolbar/openInYACReader.svg", QSize(18, 18))); // TODO add better image
 
     /*Qt::DropAction dropAction =*/drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
 }

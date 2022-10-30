@@ -10,8 +10,8 @@ DEPENDPATH += $$PWD/controllers/v2
 
 HEADERS += \
     $$PWD/static.h \
-    $$PWD/startup.h \
     $$PWD/requestmapper.h \
+    $$PWD/yacreader_http_server.h \
     $$PWD/yacreader_http_session.h \
     $$PWD/yacreader_http_session_store.h \
     $$PWD/yacreader_server_data_helper.h \
@@ -47,13 +47,15 @@ HEADERS += \
     $$PWD/controllers/v2/comicfullinfocontroller_v2.h \
     $$PWD/controllers/v2/readinglistinfocontroller_v2.h \
     $$PWD/controllers/v2/taginfocontroller_v2.h \
-    $$PWD/controllers/v2/comiccontrollerinreadinglist_v2.h
+    $$PWD/controllers/v2/comiccontrollerinreadinglist_v2.h\
+    #Browser
+    $$PWD/controllers/webui/statuspagecontroller.h
 
 
 SOURCES += \
     $$PWD/static.cpp \
-    $$PWD/startup.cpp \
     $$PWD/requestmapper.cpp \
+    $$PWD/yacreader_http_server.cpp \
     $$PWD/yacreader_http_session.cpp \
     $$PWD/yacreader_http_session_store.cpp \
     $$PWD/yacreader_server_data_helper.cpp \
@@ -89,7 +91,9 @@ SOURCES += \
     $$PWD/controllers/v2/comicfullinfocontroller_v2.cpp \
     $$PWD/controllers/v2/readinglistinfocontroller_v2.cpp \
     $$PWD/controllers/v2/taginfocontroller_v2.cpp \
-    $$PWD/controllers/v2/comiccontrollerinreadinglist_v2.cpp
+    $$PWD/controllers/v2/comiccontrollerinreadinglist_v2.cpp \
+    #WebUI
+    $$PWD/controllers/webui/statuspagecontroller.cpp
 
 include(../../third_party/QtWebApp/httpserver/httpserver.pri)
 include(../../third_party/QtWebApp/templateengine/templateengine.pri)

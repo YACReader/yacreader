@@ -20,6 +20,20 @@ Folder::Folder(qulonglong folderId, qulonglong parentId, const QString &folderNa
     this->path = folderPath;
 }
 
+Folder::Folder(qulonglong folderId, qulonglong parentId, const QString &folderName, const QString &folderPath, bool completed, bool finished, bool manga)
+    : knownParent(true),
+      knownId(true),
+      numChildren(-1)
+{
+    this->id = folderId;
+    this->parentId = parentId;
+    this->name = folderName;
+    this->path = folderPath;
+    this->completed = completed;
+    this->finished = finished;
+    this->manga = manga;
+}
+
 Folder::Folder(const Folder &folder)
 {
     operator=(folder);

@@ -4,10 +4,12 @@
 #include <QStandardPaths>
 #include <QDataStream>
 #include <QMetaType>
+#include <QAbstractItemModel>
 
-#define VERSION "9.9.2"
+#define VERSION "9.10.0"
 
 #define REMOTE_BROWSE_PERFORMANCE_WORKAROUND "REMOTE_BROWSE_PERFORMANCE_WORKAROUND"
+#define IMPORT_COMIC_INFO_XML_METADATA "IMPORT_COMIC_INFO_XML_METADATA"
 
 #define NUM_DAYS_BETWEEN_VERSION_CHECKS "NUM_DAYS_BETWEEN_VERSION_CHECKS"
 #define LAST_VERSION_CHECK "LAST_VERSION_CHECK"
@@ -66,6 +68,10 @@ QDataStream &operator>>(QDataStream &stream, OpenComicSource &source);
 QString getSettingsPath();
 QString colorToName(LabelColors colors);
 QString labelColorToRGBString(LabelColors color);
+
+void iterate(const QModelIndex &index,
+             const QAbstractItemModel *model,
+             const std::function<bool(const QModelIndex &)> &iteration);
 
 }
 

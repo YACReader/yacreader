@@ -10,8 +10,8 @@ using namespace YACReader;
 
 bool InitialComicInfoExtractor::crash = false;
 
-InitialComicInfoExtractor::InitialComicInfoExtractor(QString fileSource, QString target, int coverPage)
-    : _fileSource(fileSource), _target(target), _numPages(0), _coverPage(coverPage), _xmlInfoData()
+InitialComicInfoExtractor::InitialComicInfoExtractor(QString fileSource, QString target, int coverPage, bool getXMLMetadata)
+    : _fileSource(fileSource), _target(target), _numPages(0), _coverPage(coverPage), getXMLMetadata(getXMLMetadata), _xmlInfoData()
 {
 }
 
@@ -101,16 +101,17 @@ void InitialComicInfoExtractor::extract()
 
     QList<QString> order = archive.getFileNames();
 
-    // Try to find embeded XML info (ComicRack or ComicTagger)
+    if (getXMLMetadata) {
+        // Try to find embeded XML info (ComicRack or ComicTagger)
+        auto infoIndex = 0;
+        for (auto &fileName : order) {
+            if (fileName.endsWith(".xml", Qt::CaseInsensitive)) {
+                _xmlInfoData = archive.getRawDataAtIndex(infoIndex);
+                break;
+            }
 
-    auto infoIndex = 0;
-    for (auto &fileName : order) {
-        if (fileName.endsWith(".xml", Qt::CaseInsensitive)) {
-            _xmlInfoData = archive.getRawDataAtIndex(infoIndex);
-            break;
+            infoIndex++;
         }
-
-        infoIndex++;
     }
 
     //--------------------------

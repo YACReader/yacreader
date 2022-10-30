@@ -5,8 +5,8 @@
 #include "library_creator.h"
 #include "yacreader_libraries.h"
 
-ConsoleUILibraryCreator::ConsoleUILibraryCreator(QObject *parent)
-    : QObject(parent), numComicsProcessed(0)
+ConsoleUILibraryCreator::ConsoleUILibraryCreator(QSettings *settings, QObject *parent)
+    : QObject(parent), numComicsProcessed(0), settings(settings)
 {
 }
 
@@ -19,7 +19,7 @@ void ConsoleUILibraryCreator::createLibrary(const QString &name, const QString &
     }
 
     QEventLoop eventLoop;
-    LibraryCreator *libraryCreator = new LibraryCreator();
+    LibraryCreator *libraryCreator = new LibraryCreator(settings);
     QString cleanPath = QDir::cleanPath(pathDir.absolutePath());
 
     YACReaderLibraries yacreaderLibraries;
@@ -56,7 +56,7 @@ void ConsoleUILibraryCreator::updateLibrary(const QString &path)
     }
 
     QEventLoop eventLoop;
-    LibraryCreator *libraryCreator = new LibraryCreator();
+    LibraryCreator *libraryCreator = new LibraryCreator(settings);
     QString cleanPath = QDir::cleanPath(pathDir.absolutePath());
 
     libraryCreator->updateLibrary(cleanPath, QDir::cleanPath(pathDir.absolutePath() + "/.yacreaderlibrary"));

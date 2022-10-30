@@ -21,6 +21,8 @@ This software has been developed by Luis Ángel San Martín Rodríguez
 ### Official releases:
 [https://github.com/YACReader/yacreader/releases](https://github.com/YACReader/yacreader/releases)
 
+[<img src="https://flathub.org/assets/badges/flathub-badge-en.png" width="100"/>](https://flathub.org/apps/details/com.yacreader.YACReader)
+
 ### As a package:
 
 [![Packaging status](https://repology.org/badge/vertical-allrepos/yacreader.svg)](https://repology.org/metapackage/yacreader)
@@ -47,20 +49,20 @@ If you need help or have any suggestion, please, send me an e-mail.
 ## Contributing
 If you are interested in contributing to the project the first step should be to contact me so we can plan together the best approach, you can send an e-mail or just open an issue in this repo. For small bug fixes it is usually ok to open a PR directly.
 
-Contributions are not restricted to code, you can help the project by bringing new UI/UX ideas, designing new assets, writing manuals or tutorials, translating the apps, etc. If you are interested in DevOps, YACReader uses Azure Pipelines for CI/CD, any improvements in that area are welcome. Testing pre-releases is also really appreciated.
+Contributions are not restricted to coding; you can help the project by bringing new UI/UX ideas, designing new assets, writing manuals or tutorials, translating the apps, etc. If you are interested in DevOps, YACReader uses Azure Pipelines for CI/CD, any improvements in that area are welcome. Testing pre-releases is also really appreciated.
 
 #### Dev Setup
-YACReader is developed in *c++/Qt*, so the first thing you need to do is to install a *C++* compiler or environment that supports at least *C++17* and *Qt*. In *Windows* I use *Visual Studio Community Edition 2019* as build system and in *macos* I use Xcode, but I do all the coding using *QtCreator*. The project is adding support to *Qt6* and it alreaady compiles under it but it is not ready to ship, so you need to make sure that everything works in both *Qt5* and *Qt6*, you only need to install *Qt5* for now and *CI* will check that everything builds with *Qt6*.
+YACReader is developed in *c++/Qt*, so the first thing you need to do is to install a *C++* compiler or environment that supports at least *C++17* and *Qt*. In *Windows* I use *Visual Studio Community Edition 2019* as build system and in *macos* I use Xcode, but I do all the coding using *QtCreator*. The project is adding support to *Qt6* and it already compiles under it but it is not ready to ship, so you need to make sure that everything works in both *Qt5* and *Qt6*, you only need to install *Qt5* for now and *CI* will check that everything builds with *Qt6*.
 
 The repo includes binaries for the dependencies needed for *Windows* (MSVC compiler) and *macos* (clang) but you need to configure *7zip/p7zip* dependency manually, please take a look at *compressed_archive/README_7zip.txt*.
 
-##### Running and debuging
-YACReader needs to find its dependencies at runtime, make sure that *Qt* binaries are in your *PATH* and the third party binaries are next to the executable. The best way to make sure you have all the thirdparty binaries in place is to check YACReader installation and copying the binaries in your output folder.
+##### Running and debugging
+YACReader needs to find its dependencies at runtime, make sure that *Qt* binaries are in your *PATH* and the third-party binaries are next to the executable. The best way to make sure you have all the third-party binaries in place is to check YACReader installation and copy the binaries in your output folder.
 
-If you have the time and the energy, please open a PR with a script that automatizes any of these manual proceses.
+If you have the time and the energy, please open a PR with a script that automatizes any of these manual processes.
 
 #### Code Format
-YACReader uses `clang-format` to ensure a common style and avoid deviances from it. CI checks this and will fail if the correct format is not used. `clang-format` needs to be called recursively in all the folders because some of them have the own `.clang-format` file, mainly to exclude changing the format in third-party libraries which are included in the source code. I recommend to configure your development tools to use `clang-format`, you can try to use it manually, but please, do it always before committing changes. I recommend using QtCreator configured properly, you can find a tutorial [here]( https://www.vikingsoftware.com/using-clang-format-with-qtcreator/).
+YACReader uses `clang-format` to ensure a common style and avoid deviances from it. CI checks this and will fail if the correct format is not used. `clang-format` needs to be called recursively in all the folders because some of them have their own `.clang-format` file, mainly to exclude changing the format in third-party libraries which are included in the source code. I recommend configuring your development tools to use `clang-format`, you can try to use it manually, but please, do it always before committing changes. I recommend using QtCreator configured properly, you can find a tutorial [here]( https://www.vikingsoftware.com/using-clang-format-with-qtcreator/).
 
 #### CI/CD
 Any PR will be validated through CI, and it will not be merged if CI fails.
@@ -70,3 +72,6 @@ The base and target branch for any PR should always be `develop`.
 
 ## Donations
 YACReader is free but it needs money to keep being alive, so please, if you like YACReader, visit the home page and make a donation.
+
+## Hacktoberfest
+If you are interested in YACReader, please contact me so we can discuss your next steps.

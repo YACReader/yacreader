@@ -4,13 +4,13 @@
 #include <QObject>
 class LibraryWindow;
 class YACReaderLibrarySourceContainer;
-class YACReaderComicsViewsManager;
+class YACReaderContentViewsManager;
 
 class YACReaderNavigationController : public QObject
 {
     Q_OBJECT
 public:
-    explicit YACReaderNavigationController(LibraryWindow *parent, YACReaderComicsViewsManager *comicsViewsManager);
+    explicit YACReaderNavigationController(LibraryWindow *parent, YACReaderContentViewsManager *contentViewsManager);
 
 signals:
 
@@ -44,7 +44,7 @@ public slots:
 private:
     void setupConnections();
     LibraryWindow *libraryWindow;
-    YACReaderComicsViewsManager *comicsViewsManager;
+    YACReaderContentViewsManager *contentViewsManager;
 
     // convenience methods
     qulonglong folderModelIndexToID(const QModelIndex &mi);

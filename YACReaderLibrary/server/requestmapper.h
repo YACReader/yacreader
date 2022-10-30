@@ -20,9 +20,14 @@ public:
     void loadSessionV1(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
     void loadSessionV2(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
 
+signals:
+    void clientSync();
+    void comicUpdated(qulonglong libraryId, qulonglong comicId);
+
 private:
     void serviceV1(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
     void serviceV2(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
+    void serviceWebUI(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
 
     static QMutex mutex;
 };

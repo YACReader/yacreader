@@ -2,6 +2,7 @@
 #define XMLINFOLIBRARYSCANNER_H
 
 #include <QtCore>
+#include <QSqlQuery>
 
 namespace YACReader {
 
@@ -11,6 +12,7 @@ class XMLInfoLibraryScanner : public QThread
 public:
     XMLInfoLibraryScanner();
     void scanLibrary(const QString &source, const QString &target);
+    void scanFolder(const QString &source, const QString &target, const QString &folder, const QModelIndex &dest);
 
 protected:
     void run() override;
@@ -25,6 +27,10 @@ private:
     QString source;
     QString target;
     bool stopRunning;
+    bool partialUpdate;
+    QModelIndex folderDestinationModelIndex;
+
+    void updateFromSQLQuery(QSqlDatabase &db, QSqlQuery &query);
 };
 
 }

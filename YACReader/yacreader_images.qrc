@@ -9,7 +9,7 @@
     <file>../images/flow4.png</file>
     <file>../images/flow5.png</file>
     <file>../images/notCover.png</file>
-    <file>../images/close.png</file>
+    <file>../images/close.svg</file>
     <file>../images/up.png</file>
     <file>../images/down.png</file>
     <file>../images/imgCenterSlide.png</file>
@@ -21,17 +21,71 @@
     <file>../images/dropDownArrow.png</file>
     <file>../images/translatorSearch.png</file>
     <file>../images/speaker.png</file>
-    <file>../images/clear_shortcut.png</file>
-    <file>../images/accept_shortcut.png</file>
-    <file>../images/shortcuts_group_comics.png</file>
-    <file>../images/shortcuts_group_folders.png</file>
-    <file>../images/shortcuts_group_general.png</file>
-    <file>../images/shortcuts_group_libraries.png</file>
-    <file>../images/shortcuts_group_mglass.png</file>
-    <file>../images/shortcuts_group_page.png</file>
-    <file>../images/shortcuts_group_reading.png</file>
-    <file>../images/shortcuts_group_visualization.png</file>
+    <file>../images/clear_shortcut.svg</file>
+    <file>../images/accept_shortcut.svg</file>
+    <file>../images/shortcuts_group_comics.svg</file>
+    <file>../images/shortcuts_group_folders.svg</file>
+    <file>../images/shortcuts_group_general.svg</file>
+    <file>../images/shortcuts_group_libraries.svg</file>
+    <file>../images/shortcuts_group_mglass.svg</file>
+    <file>../images/shortcuts_group_page.svg</file>
+    <file>../images/shortcuts_group_reading.svg</file>
+    <file>../images/shortcuts_group_visualization.svg</file>
     <file>../images/custom_dialog/custom_close_button.svg</file>
     <file>../images/whats_new/whatsnew_header.svg</file>
+    <file>../images/viewer_toolbar/bookmark.svg</file>
+    <file>../images/viewer_toolbar/close.svg</file>
+    <file>../images/viewer_toolbar/doublePage.svg</file>
+    <file>../images/viewer_toolbar/doubleMangaPage.svg</file>
+    <file>../images/viewer_toolbar/fitToPage.svg</file>
+    <file>../images/viewer_toolbar/flow.svg</file>
+    <file>../images/viewer_toolbar/full.svg</file>
+    <file>../images/viewer_toolbar/goto.svg</file>
+    <file>../images/viewer_toolbar/help.svg</file>
+    <file>../images/viewer_toolbar/info.svg</file>
+    <file>../images/viewer_toolbar/magnifyingGlass.svg</file>
+    <file>../images/viewer_toolbar/next.svg</file>
+    <file>../images/viewer_toolbar/open.svg</file>
+    <file>../images/viewer_toolbar/openFolder.svg</file>
+    <file>../images/viewer_toolbar/openNext.svg</file>
+    <file>../images/viewer_toolbar/openPrevious.svg</file>
+    <file>../images/viewer_toolbar/options.svg</file>
+    <file>../images/viewer_toolbar/previous.svg</file>
+    <file>../images/viewer_toolbar/rotateL.svg</file>
+    <file>../images/viewer_toolbar/rotateR.svg</file>
+    <file>../images/viewer_toolbar/save.svg</file>
+    <file>../images/viewer_toolbar/shortcuts.svg</file>
+    <file>../images/viewer_toolbar/showBookmarks.svg</file>
+    <file>../images/viewer_toolbar/toHeight.svg</file>
+    <file>../images/viewer_toolbar/toWidth.svg</file>
+    <file>../images/viewer_toolbar/translator.svg</file>
+    <file>../images/viewer_toolbar/zoom.svg</file>
+    <file>../images/viewer_toolbar/bookmark_18x18.svg</file>
+    <file>../images/viewer_toolbar/close_18x18.svg</file>
+    <file>../images/viewer_toolbar/doublePage_18x18.svg</file>
+    <file>../images/viewer_toolbar/doubleMangaPage_18x18.svg</file>
+    <file>../images/viewer_toolbar/fitToPage_18x18.svg</file>
+    <file>../images/viewer_toolbar/flow_18x18.svg</file>
+    <file>../images/viewer_toolbar/full_18x18.svg</file>
+    <file>../images/viewer_toolbar/goto_18x18.svg</file>
+    <file>../images/viewer_toolbar/help_18x18.svg</file>
+    <file>../images/viewer_toolbar/info_18x18.svg</file>
+    <file>../images/viewer_toolbar/magnifyingGlass_18x18.svg</file>
+    <file>../images/viewer_toolbar/next_18x18.svg</file>
+    <file>../images/viewer_toolbar/open_18x18.svg</file>
+    <file>../images/viewer_toolbar/openFolder_18x18.svg</file>
+    <file>../images/viewer_toolbar/openNext_18x18.svg</file>
+    <file>../images/viewer_toolbar/openPrevious_18x18.svg</file>
+    <file>../images/viewer_toolbar/options_18x18.svg</file>
+    <file>../images/viewer_toolbar/previous_18x18.svg</file>
+    <file>../images/viewer_toolbar/rotateL_18x18.svg</file>
+    <file>../images/viewer_toolbar/rotateR_18x18.svg</file>
+    <file>../images/viewer_toolbar/save_18x18.svg</file>
+    <file>../images/viewer_toolbar/shortcuts_18x18.svg</file>
+    <file>../images/viewer_toolbar/showBookmarks_18x18.svg</file>
+    <file>../images/viewer_toolbar/toHeight_18x18.svg</file>
+    <file>../images/viewer_toolbar/toWidth_18x18.svg</file>
+    <file>../images/viewer_toolbar/translator_18x18.svg</file>
+    <file>../images/viewer_toolbar/zoom_18x18.svg</file>
   </qresource>
 </RCC>

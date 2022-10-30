@@ -1,9 +1,13 @@
 #include "yacreader_library_item_widget.h"
 
+#include "yacreader_global_gui.h"
+
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QToolButton>
 #include <QMouseEvent>
+
+using namespace YACReader;
 
 YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QString p /*ath*/, QWidget *parent)
     : QWidget(parent), name(n), path(p), isSelected(false)
@@ -14,7 +18,7 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QStrin
 
     // installEventFilter(this);
 
-    QPixmap iconPixmap(":/images/sidebar/libraryIcon.png");
+    QPixmap iconPixmap = hdpiPixmap(addExtensionToIconPath(":/images/sidebar/libraryIcon"), QSize(16, 16));
     icon = new QLabel(this);
     icon->setPixmap(iconPixmap);
 
@@ -22,17 +26,7 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QStrin
 
     options = new QToolButton(this);
 
-    // TODO fix this crazy hack for having a propper retina icon for the options, this is still a problem in 2022
-    // 1.- QPixmap won't pick the right @2x asset
-    // 2.- Using QToolButton::setIcon(QIcon(":/images/sidebar/libraryOptions.png")) will pick the right asset and then QToolButton will fail to set the right image size, it will use a image size twice bigger
-    // 3.- Using a QAction + QToolButton doesn't fix the problem either
-    // 4.- SVG support is also buggy QTBUG-96553
-    QString sourceOptionsImage;
-    if (devicePixelRatioF() > 1)
-        sourceOptionsImage = ":/images/sidebar/libraryOptions@2x.png";
-    else
-        sourceOptionsImage = ":/images/sidebar/libraryOptions.png";
-    QPixmap iconOptionsPixmap(sourceOptionsImage);
+    QPixmap iconOptionsPixmap = hdpiPixmap(":/images/sidebar/libraryOptions.svg", QSize(8, 8));
     iconOptionsPixmap.setDevicePixelRatio(devicePixelRatioF());
     QLabel *helperLabel = new QLabel(options);
     helperLabel->move(4, 3);
@@ -131,7 +125,7 @@ void YACReaderLibraryItemWidget::deselect()
     setStyleSheet(styleSheet);
 #endif
 
-    QPixmap iconPixmap(":/images/sidebar/libraryIcon.png");
+    QPixmap iconPixmap = hdpiPixmap(addExtensionToIconPath(":/images/sidebar/libraryIcon"), QSize(16, 16));
     icon->setPixmap(iconPixmap);
 
     /*up->setHidden(true);
@@ -153,7 +147,7 @@ void YACReaderLibraryItemWidget::select()
 
     options->setHidden(false);
 
-    QPixmap iconPixmap(":/images/sidebar/libraryIconSelected.png");
+    QPixmap iconPixmap = hdpiPixmap(":/images/sidebar/libraryIconSelected.svg", QSize(16, 16));
     icon->setPixmap(iconPixmap);
 
     isSelected = true;

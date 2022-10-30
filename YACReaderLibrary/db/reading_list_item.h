@@ -82,6 +82,9 @@ public:
 private:
     QList<ReadingListItem *> childItems;
 
+    QIcon list;
+    QIcon folder;
+
     enum DataIndexes {
         Name,
         Id,

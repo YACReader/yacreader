@@ -11,17 +11,17 @@
 #include "folder_model.h"
 #include "reading_list_model.h"
 #include "comics_view.h"
-#include "empty_folder_widget.h"
+#include "folder_content_view.h"
 #include "yacreader_search_line_edit.h"
 #include "yacreader_global.h"
 #include "empty_label_widget.h"
 #include "empty_special_list.h"
-#include "yacreader_comics_views_manager.h"
+#include "yacreader_content_views_manager.h"
 
 #include "QsLog.h"
 
-YACReaderNavigationController::YACReaderNavigationController(LibraryWindow *parent, YACReaderComicsViewsManager *comicsViewsManager)
-    : QObject(parent), libraryWindow(parent), comicsViewsManager(comicsViewsManager)
+YACReaderNavigationController::YACReaderNavigationController(LibraryWindow *parent, YACReaderContentViewsManager *contentViewsManager)
+    : QObject(parent), libraryWindow(parent), contentViewsManager(contentViewsManager)
 {
     setupConnections();
 }
@@ -61,13 +61,13 @@ void YACReaderNavigationController::loadFolderInfo(const QModelIndex &modelIndex
     // configure views
     if (libraryWindow->comicsModel->rowCount() > 0) {
         // updateView
-        comicsViewsManager->comicsView->setModel(libraryWindow->comicsModel);
-        comicsViewsManager->showComicsView();
+        contentViewsManager->comicsView->setModel(libraryWindow->comicsModel);
+        contentViewsManager->showComicsView();
         libraryWindow->disableComicsActions(false);
     } else {
         // showEmptyFolder
         loadEmptyFolderInfo(modelIndex);
-        comicsViewsManager->showEmptyFolderView();
+        contentViewsManager->showFolderContentView();
         libraryWindow->disableComicsActions(true);
     }
 
@@ -110,25 +110,25 @@ void YACReaderNavigationController::loadSpecialListInfo(const QModelIndex &model
         break;
     }
 
-    comicsViewsManager->comicsView->setModel(libraryWindow->comicsModel);
+    contentViewsManager->comicsView->setModel(libraryWindow->comicsModel);
 
     if (libraryWindow->comicsModel->rowCount() > 0) {
-        comicsViewsManager->showComicsView();
+        contentViewsManager->showComicsView();
         libraryWindow->disableComicsActions(false);
     } else {
         // setup empty special list widget
         switch (type) {
         case ReadingListModel::Favorites:
-            comicsViewsManager->emptySpecialList->setPixmap(QPixmap(":/images/empty_favorites.png"));
-            comicsViewsManager->emptySpecialList->setText(tr("No favorites"));
+            contentViewsManager->emptySpecialList->setPixmap(QPixmap(":/images/empty_favorites.png"));
+            contentViewsManager->emptySpecialList->setText(tr("No favorites"));
             break;
         case ReadingListModel::Reading:
-            comicsViewsManager->emptySpecialList->setPixmap(QPixmap(":/images/empty_current_readings.png"));
-            comicsViewsManager->emptySpecialList->setText(tr("You are not reading anything yet, come on!!"));
+            contentViewsManager->emptySpecialList->setPixmap(QPixmap(":/images/empty_current_readings.png"));
+            contentViewsManager->emptySpecialList->setText(tr("You are not reading anything yet, come on!!"));
             break;
         }
 
-        comicsViewsManager->showEmptySpecialList();
+        contentViewsManager->showEmptySpecialList();
         libraryWindow->disableComicsActions(true);
     }
 }
@@ -138,18 +138,18 @@ void YACReaderNavigationController::loadLabelInfo(const QModelIndex &modelIndex)
     qulonglong id = modelIndex.data(ReadingListModel::IDRole).toULongLong();
     // check comics in label with id = id
     libraryWindow->comicsModel->setupLabelModelData(id, libraryWindow->foldersModel->getDatabase());
-    comicsViewsManager->comicsView->setModel(libraryWindow->comicsModel);
+    contentViewsManager->comicsView->setModel(libraryWindow->comicsModel);
 
     // configure views
     if (libraryWindow->comicsModel->rowCount() > 0) {
         // updateView
-        comicsViewsManager->showComicsView();
+        contentViewsManager->showComicsView();
         libraryWindow->disableComicsActions(false);
     } else {
         // showEmptyFolder
         // loadEmptyLabelInfo(); //there is no info in an empty label by now, TODO design something
-        comicsViewsManager->emptyLabelWidget->setColor((YACReader::LabelColors)modelIndex.data(ReadingListModel::LabelColorRole).toInt());
-        comicsViewsManager->showEmptyLabelView();
+        contentViewsManager->emptyLabelWidget->setColor((YACReader::LabelColors)modelIndex.data(ReadingListModel::LabelColorRole).toInt());
+        contentViewsManager->showEmptyLabelView();
         libraryWindow->disableComicsActions(true);
     }
 }
@@ -159,15 +159,15 @@ void YACReaderNavigationController::loadReadingListInfo(const QModelIndex &model
     qulonglong id = modelIndex.data(ReadingListModel::IDRole).toULongLong();
     // check comics in label with id = id
     libraryWindow->comicsModel->setupReadingListModelData(id, libraryWindow->foldersModel->getDatabase());
-    comicsViewsManager->comicsView->setModel(libraryWindow->comicsModel);
+    contentViewsManager->comicsView->setModel(libraryWindow->comicsModel);
 
     // configure views
     if (libraryWindow->comicsModel->rowCount() > 0) {
         // updateView
-        comicsViewsManager->showComicsView();
+        contentViewsManager->showComicsView();
         libraryWindow->disableComicsActions(false);
     } else {
-        comicsViewsManager->showEmptyReadingListWidget();
+        contentViewsManager->showEmptyReadingListWidget();
         libraryWindow->disableComicsActions(true);
     }
 }
@@ -222,7 +222,10 @@ void YACReaderNavigationController::loadIndexFromHistory(const YACReaderLibraryS
     case YACReaderLibrarySourceContainer::Folder: {
         QModelIndex mi = libraryWindow->foldersModelProxy->mapFromSource(sourceMI);
         libraryWindow->foldersView->scrollTo(mi, QAbstractItemView::PositionAtTop);
+        // currentIndexChanged is about to be emited, but we don't want it to end in YACReaderHistoryController::updateHistory
+        disconnect(libraryWindow->foldersView, &YACReaderTreeView::currentIndexChanged, this, &YACReaderNavigationController::selectedFolder);
         libraryWindow->foldersView->setCurrentIndex(mi);
+        connect(libraryWindow->foldersView, &YACReaderTreeView::currentIndexChanged, this, &YACReaderNavigationController::selectedFolder);
         loadFolderInfo(sourceMI);
         break;
     }
@@ -249,9 +252,18 @@ void YACReaderNavigationController::selectSubfolder(const QModelIndex &sourceMIP
 
 void YACReaderNavigationController::loadEmptyFolderInfo(const QModelIndex &modelIndex)
 {
-    QStringList subfolders;
-    subfolders = libraryWindow->foldersModel->getSubfoldersNames(modelIndex);
-    comicsViewsManager->emptyFolderWidget->setSubfolders(modelIndex, subfolders);
+    auto readingComicsModel = new ComicModel();
+
+    auto isRoot = !modelIndex.isValid();
+
+    if (isRoot) {
+        readingComicsModel->setupReadingModelData(libraryWindow->foldersModel->getDatabase());
+    }
+
+    contentViewsManager->folderContentView->setContinueReadingModel(readingComicsModel);
+
+    auto subFolderModel = libraryWindow->foldersModel->getSubfoldersModel(modelIndex);
+    contentViewsManager->folderContentView->setModel(modelIndex, subFolderModel);
 }
 
 void YACReaderNavigationController::loadPreviousStatus()
@@ -262,11 +274,15 @@ void YACReaderNavigationController::loadPreviousStatus()
 
 void YACReaderNavigationController::setupConnections()
 {
+    // we need YACReaderTreeView::currentIndexChanged to be able to navigate the folders tree using the keyboard cursors
     connect(libraryWindow->foldersView, &YACReaderTreeView::currentIndexChanged, this, &YACReaderNavigationController::selectedFolder);
     connect(libraryWindow->foldersView, &YACReaderTreeView::clicked, this, &YACReaderNavigationController::selectedFolder);
     connect(libraryWindow->listsView, &QAbstractItemView::clicked, this, &YACReaderNavigationController::selectedList);
     connect(libraryWindow->historyController, &YACReaderHistoryController::modelIndexSelected, this, &YACReaderNavigationController::selectedIndexFromHistory);
-    connect(comicsViewsManager->emptyFolderWidget, &EmptyFolderWidget::subfolderSelected, this, &YACReaderNavigationController::selectSubfolder);
+    connect(contentViewsManager->folderContentView, &FolderContentView::subfolderSelected, this, &YACReaderNavigationController::selectSubfolder);
+    connect(contentViewsManager->folderContentView, &FolderContentView::openComic, libraryWindow, QOverload<const ComicDB &, const ComicModel::Mode>::of(&LibraryWindow::openComic));
+    connect(contentViewsManager->folderContentView, &FolderContentView::openFolderContextMenu, libraryWindow, &LibraryWindow::showGridFoldersContextMenu);
+    connect(contentViewsManager->folderContentView, &FolderContentView::openContinueReadingComicContextMenu, libraryWindow, &LibraryWindow::showContinueReadingContextMenu);
     connect(libraryWindow->comicsModel, &ComicModel::isEmpty, this, &YACReaderNavigationController::reselectCurrentSource);
 }
 

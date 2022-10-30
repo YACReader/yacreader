@@ -19,6 +19,8 @@ public:
     ComicInfo(const ComicInfo &comicInfo);
     ~ComicInfo();
 
+    void deleteMetadata();
+
     ComicInfo &operator=(const ComicInfo &comicInfo);
 
     bool operator==(const ComicInfo &other) { return id == other.id; }

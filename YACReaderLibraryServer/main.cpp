@@ -6,7 +6,7 @@
 
 #include "comic_db.h"
 #include "db_helper.h"
-#include "startup.h"
+#include "yacreader_http_server.h"
 #include "yacreader_global.h"
 #include "yacreader_libraries.h"
 #include "yacreader_local_server.h"
@@ -124,6 +124,9 @@ int main(int argc, char **argv)
         return 0;
     }
 
+    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/" + QCoreApplication::applicationName() + ".ini", QSettings::IniFormat);
+    settings->beginGroup("libraryConfig");
+
     if (command == "start") {
         parser.clearPositionalArguments();
         parser.addPositionalArgument("start", "Start YACReaderLibraryServer");
@@ -190,11 +193,8 @@ int main(int argc, char **argv)
 
         QLOG_INFO() << "YACReaderLibrary starting";
 
-        QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/" + QCoreApplication::applicationName() + ".ini", QSettings::IniFormat);
-        settings->beginGroup("libraryConfig");
-
         // server
-        Startup *s = new Startup();
+        YACReaderHttpServer *httpServer = new YACReaderHttpServer();
         if (parser.isSet("port")) {
             bool valid;
             qint32 port = parser.value("port").toInt(&valid);
@@ -203,14 +203,14 @@ int main(int argc, char **argv)
                 parser.showHelp();
                 return 0;
             } else {
-                s->start(port);
+                httpServer->start(port);
             }
 
         } else {
-            s->start();
+            httpServer->start();
         }
 
-        QLOG_INFO() << "Running on port" << s->getPort();
+        QLOG_INFO() << "Running on port" << httpServer->getPort();
 
         // Update libraries to new versions
         LibrariesUpdater updater;
@@ -223,8 +223,8 @@ int main(int argc, char **argv)
         QLOG_INFO() << "YACReaderLibrary closed with exit code :" << ret;
 
         // shutdown
-        s->stop();
-        delete s;
+        httpServer->stop();
+        delete httpServer;
         localServer->close();
         delete localServer;
 #ifdef Q_OS_WIN
@@ -244,7 +244,7 @@ int main(int argc, char **argv)
             return 0;
         }
 
-        ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator;
+        ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator(settings);
         libraryCreatorUI->createLibrary(args.at(1), args.at(2));
 
         return 0;
@@ -260,7 +260,7 @@ int main(int argc, char **argv)
             return 0;
         }
 
-        ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator;
+        ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator(settings);
         libraryCreatorUI->updateLibrary(args.at(1));
 
         return 0;
@@ -277,7 +277,7 @@ int main(int argc, char **argv)
             return 0;
         }
 
-        ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator;
+        ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator(settings);
         libraryCreatorUI->addExistingLibrary(args.at(1), args.at(2));
 
         return 0;
@@ -293,7 +293,7 @@ int main(int argc, char **argv)
             return 0;
         }
 
-        ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator;
+        ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator(settings);
         libraryCreatorUI->removeLibrary(args.at(1));
 
         return 0;

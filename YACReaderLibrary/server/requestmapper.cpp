@@ -41,6 +41,8 @@
 #include "controllers/v2/comicfullinfocontroller_v2.h"
 #include "controllers/v2/comiccontrollerinreadinglist_v2.h"
 
+#include "controllers/webui/statuspagecontroller.h"
+
 #include "db_helper.h"
 #include "yacreader_libraries.h"
 
@@ -159,9 +161,16 @@ void RequestMapper::service(HttpRequest &request, HttpResponse &response)
 
     if (path.startsWith("/v2")) {
         serviceV2(request, response);
+    } else if (path.startsWith("/webui")) {
+        serviceWebUI(request, response);
     } else {
         serviceV1(request, response);
     }
+}
+
+void RequestMapper::serviceWebUI(HttpRequest &request, HttpResponse &response)
+{
+    StatusPageController().service(request, response);
 }
 
 void RequestMapper::serviceV1(HttpRequest &request, HttpResponse &response)
@@ -273,6 +282,7 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
             VersionController().service(request, response);
         } else if (sync.exactMatch(path)) {
             SyncControllerV2().service(request, response);
+            emit clientSync();
         } else {
             if (library.indexIn(path) != -1 && DBHelper::getLibraries().contains(library.cap(1).toInt())) {
                 if (folderInfo.exactMatch(path)) {
@@ -290,7 +300,12 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
                 } else if (comicPage.exactMatch(path) || comicPageRemote.exactMatch(path)) {
                     PageControllerV2().service(request, response);
                 } else if (comicUpdate.exactMatch(path)) {
-                    UpdateComicControllerV2().service(request, response);
+                    auto updateController = UpdateComicControllerV2();
+                    updateController.service(request, response);
+
+                    if (!updateController.error) {
+                        emit comicUpdated(updateController.updatedLibraryId, updateController.updatedComicId);
+                    }
                 } else if (folderContent.exactMatch(path)) {
                     FolderContentControllerV2().service(request, response);
                 } else if (tags.exactMatch(path)) {

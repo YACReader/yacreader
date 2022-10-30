@@ -11,7 +11,7 @@
 #include <QBitmap>
 #include <QPainter>
 
-#include "startup.h"
+#include "yacreader_http_server.h"
 #include "yacreader_global_gui.h"
 
 #include "qnaturalsorting.h"
@@ -78,7 +78,7 @@ QList<QString> addresses()
 
 #endif
 
-extern Startup *s;
+extern YACReaderHttpServer *httpServer;
 
 ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     : QDialog(parent)
@@ -184,11 +184,11 @@ void ServerConfigDialog::enableServer(int status)
     settings->beginGroup("libraryConfig");
 
     if (status == Qt::Checked) {
-        s->start();
+        httpServer->start();
         this->generateQR();
         settings->setValue(SERVER_ON, true);
     } else {
-        s->stop();
+        httpServer->stop();
         qrCode->setPixmap(QPixmap());
         ip->clear();
         port->setText("");
@@ -247,14 +247,14 @@ void ServerConfigDialog::generateQR()
 
     if (otherAddresses.length() > 0 || !dir.isEmpty()) {
         if (!dir.isEmpty()) {
-            generateQR(dir + ":" + s->getPort());
+            generateQR(dir + ":" + httpServer->getPort());
 
             ip->addItem(dir);
         } else {
-            generateQR(otherAddresses.first() + ":" + s->getPort());
+            generateQR(otherAddresses.first() + ":" + httpServer->getPort());
         }
         ip->addItems(otherAddresses);
-        port->setText(s->getPort());
+        port->setText(httpServer->getPort());
     }
 }
 
@@ -280,7 +280,7 @@ void ServerConfigDialog::generateQR(const QString &serverAddress)
 
 void ServerConfigDialog::regenerateQR(const QString &ip)
 {
-    generateQR(ip + ":" + s->getPort());
+    generateQR(ip + ":" + httpServer->getPort());
 }
 
 void ServerConfigDialog::updatePort()
@@ -291,8 +291,8 @@ void ServerConfigDialog::updatePort()
     settings->setValue("port", port->text().toInt());
     settings->endGroup();
 
-    s->stop();
-    s->start();
+    httpServer->stop();
+    httpServer->start();
 
     generateQR(ip->currentText() + ":" + port->text());
 }
@@ -303,6 +303,13 @@ QrEncoder::QrEncoder()
     QLibrary encoder(QCoreApplication::applicationDirPath() + "/utils/libqrencode.dylib");
 #else
     QLibrary encoder("qrencode");
+#ifdef Q_OS_UNIX
+    encoder.load();
+    // Fallback - this loads libqrencode.4.x.x.so when libqrencode.so is not available
+    if (!encoder.isLoaded()) {
+        encoder.setFileNameAndVersion("qrencode", 4);
+    }
+#endif
 #endif
     QRcode_encodeString8bit = (_QRcode_encodeString8bit)encoder.resolve("QRcode_encodeString8bit");
     QRcode_free = (_QRcode_free)encoder.resolve("QRcode_free");

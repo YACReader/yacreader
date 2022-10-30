@@ -26,8 +26,8 @@ using namespace std;
 using namespace YACReader;
 
 //--------------------------------------------------------------------------------
-LibraryCreator::LibraryCreator()
-    : creation(false), partialUpdate(false)
+LibraryCreator::LibraryCreator(QSettings *settings)
+    : creation(false), partialUpdate(false), settings(settings)
 {
     _nameFilter << Comic::comicExtensions;
 }
@@ -301,7 +301,7 @@ void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
     QPair<int, int> originalCoverSize = { 0, 0 };
     bool exists = checkCover(hash);
 
-    YACReader::InitialComicInfoExtractor ie(QDir::cleanPath(fileInfo.absoluteFilePath()), _target + "/covers/" + hash + ".jpg", comic.info.coverPage.toInt());
+    YACReader::InitialComicInfoExtractor ie(QDir::cleanPath(fileInfo.absoluteFilePath()), _target + "/covers/" + hash + ".jpg", comic.info.coverPage.toInt(), settings->value(IMPORT_COMIC_INFO_XML_METADATA, false).toBool());
 
     if (!(comic.hasCover() && exists)) {
         ie.extract();

@@ -143,7 +143,8 @@ ComicDB DBHelper::getComicInfo(qulonglong libraryId, qulonglong id)
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
 
-        comic = DBHelper::loadComic(id, db);
+        bool found;
+        comic = DBHelper::loadComic(id, db, found);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
@@ -745,33 +746,27 @@ void DBHelper::propagateFolderUpdatesToParent(const Folder &folder, QSqlDatabase
 Folder DBHelper::updateChildrenInfo(qulonglong folderId, QSqlDatabase &db)
 {
     auto folder = loadFolder(folderId, db);
-    QList<LibraryItem *> subitems;
-    QList<LibraryItem *> subfolders = DBHelper::getFoldersFromParent(folderId, db, false);
-    QList<LibraryItem *> comics = DBHelper::getComicsFromParent(folderId, db, false);
+    QList<LibraryItem *> subfolders = DBHelper::getFoldersFromParent(folderId, db, true);
+    QList<LibraryItem *> comics = DBHelper::getComicsFromParent(folderId, db, true);
 
     QList<LibraryItem *> updatedSubfolders;
     for (auto sf : subfolders) {
         updatedSubfolders.append(new Folder(updateChildrenInfo(static_cast<Folder *>(sf)->id, db)));
     }
 
-    subitems.append(updatedSubfolders);
-    subitems.append(comics);
-
-    std::sort(subitems.begin(), subitems.end(), naturalSortLessThanCILibraryItem);
-
     QString coverHash = "";
-    for (auto item : subitems) {
-        if (item->isDir()) {
+
+    if (!comics.isEmpty()) {
+        auto c = static_cast<ComicDB *>(comics[0]);
+        coverHash = c->info.hash;
+    } else {
+        for (auto item : updatedSubfolders) {
             auto f = static_cast<Folder *>(item);
             auto firstChildHash = f->getFirstChildHash();
             if (!firstChildHash.isEmpty()) {
                 coverHash = firstChildHash;
                 break;
             }
-        } else {
-            auto c = static_cast<ComicDB *>(item);
-            coverHash = c->info.hash;
-            break;
         }
     }
 
@@ -798,7 +793,7 @@ Folder DBHelper::updateChildrenInfo(qulonglong folderId, QSqlDatabase &db)
 void DBHelper::updateChildrenInfo(QSqlDatabase &db)
 {
     QSqlQuery selectQuery(db); // TODO check
-    selectQuery.prepare("SELECT id FROM folder f WHERE f.parentId = 1");
+    selectQuery.prepare("SELECT id FROM folder f WHERE f.parentId = 1 AND f.id <> 1");
     selectQuery.exec();
 
     while (selectQuery.next()) {
@@ -813,7 +808,8 @@ void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
 
-        ComicDB comic = DBHelper::loadComic(comicInfo.id, db);
+        bool found;
+        ComicDB comic = DBHelper::loadComic(comicInfo.id, db, found);
         comic.info.currentPage = comicInfo.currentPage;
         comic.info.hasBeenOpened = comicInfo.currentPage > 0 || comic.info.hasBeenOpened;
         comic.info.read = comic.info.read || comic.info.currentPage == comic.info.numPages;
@@ -833,7 +829,8 @@ void DBHelper::setComicAsReading(qulonglong libraryId, const ComicInfo &comicInf
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
 
-        ComicDB comic = DBHelper::loadComic(comicInfo.id, db);
+        bool found;
+        ComicDB comic = DBHelper::loadComic(comicInfo.id, db, found);
         comic.info.hasBeenOpened = true;
         comic.info.read = comic.info.read || comic.info.currentPage == comic.info.numPages;
 
@@ -872,7 +869,8 @@ void DBHelper::updateFromRemoteClient(qulonglong libraryId, const ComicInfo &com
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
 
-        ComicDB comic = DBHelper::loadComic(comicInfo.id, db);
+        bool found;
+        ComicDB comic = DBHelper::loadComic(comicInfo.id, db, found);
 
         if (comic.info.hash == comicInfo.hash) {
             if (comicInfo.currentPage > 0) {
@@ -962,7 +960,8 @@ QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qul
                                     " WHERE id = :id ");
 
             foreach (ComicInfo comicInfo, comics[libraryId]) {
-                ComicDB comic = DBHelper::loadComic(comicInfo.id, db);
+                bool found;
+                ComicDB comic = DBHelper::loadComic(comicInfo.id, db, found);
 
                 if (comic.info.hash == comicInfo.hash) {
                     bool isMoreRecent = false;
@@ -1174,6 +1173,22 @@ void DBHelper::reasignOrderToComicsInReadingList(qulonglong readingListId, QList
     }
 
     db.commit();
+}
+
+void DBHelper::updateComicsInfo(QList<ComicDB> &comics, const QString &databasePath)
+{
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+        db.open();
+        db.transaction();
+        foreach (ComicDB comic, comics) {
+            DBHelper::update(&(comic.info), db);
+        }
+        db.commit();
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 // inserts
@@ -1632,7 +1647,7 @@ Folder DBHelper::loadFolder(const QString &folderName, qulonglong parentId, QSql
     return folder;
 }
 
-ComicDB DBHelper::loadComic(qulonglong id, QSqlDatabase &db)
+ComicDB DBHelper::loadComic(qulonglong id, QSqlDatabase &db, bool &found)
 {
     ComicDB comic;
 
@@ -1654,6 +1669,9 @@ ComicDB DBHelper::loadComic(qulonglong id, QSqlDatabase &db)
         comic.name = selectQuery.value(name).toString();
         comic.path = selectQuery.value(path).toString();
         comic.info = DBHelper::loadComicInfo(selectQuery.value(hash).toString(), db);
+        found = true;
+    } else {
+        found = false;
     }
 
     return comic;

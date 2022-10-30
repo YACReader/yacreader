@@ -16,6 +16,22 @@ class YACReaderToolBarStretch;
 class YACReaderComicsSelectionHelper;
 class YACReaderComicInfoHelper;
 
+// values relative to visible cells
+const unsigned int YACREADER_MIN_GRID_ZOOM_WIDTH = 156;
+const unsigned int YACREADER_MAX_GRID_ZOOM_WIDTH = 312;
+
+// GridView cells
+const unsigned int YACREADER_MIN_CELL_CUSTOM_HEIGHT = 295;
+const unsigned int YACREADER_MIN_CELL_CUSTOM_WIDTH = 185;
+
+// Covers
+const unsigned int YACREADER_MAX_COVER_HEIGHT = 236;
+const unsigned int YACREADER_MIN_COVER_WIDTH = YACREADER_MIN_GRID_ZOOM_WIDTH;
+
+// visible cells (realCell in qml), grid cells size is used to create faux inner margings
+const unsigned int YACREADER_MIN_ITEM_HEIGHT = YACREADER_MAX_COVER_HEIGHT + 51; // 51 is the height of the bottom rectangle used for title and other info
+const unsigned int YACREADER_MIN_ITEM_WIDTH = YACREADER_MIN_COVER_WIDTH;
+
 class GridComicsView : public ComicsView
 {
     Q_OBJECT
@@ -72,6 +88,8 @@ protected slots:
     void setCurrentComicIfNeeded();
 
     void resetScroll();
+
+    virtual void showEvent(QShowEvent *event) override;
 
 signals:
     void onScrollToOrigin();

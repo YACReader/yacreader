@@ -14,22 +14,6 @@
 #include "yacreader_comic_info_helper.h"
 #include "current_comic_view_helper.h"
 
-// values relative to visible cells
-const unsigned int YACREADER_MIN_GRID_ZOOM_WIDTH = 156;
-const unsigned int YACREADER_MAX_GRID_ZOOM_WIDTH = 312;
-
-// GridView cells
-const unsigned int YACREADER_MIN_CELL_CUSTOM_HEIGHT = 295;
-const unsigned int YACREADER_MIN_CELL_CUSTOM_WIDTH = 185;
-
-// Covers
-const unsigned int YACREADER_MAX_COVER_HEIGHT = 236;
-const unsigned int YACREADER_MIN_COVER_WIDTH = YACREADER_MIN_GRID_ZOOM_WIDTH;
-
-// visible cells (realCell in qml), grid cells size is used to create faux inner margings
-const unsigned int YACREADER_MIN_ITEM_HEIGHT = YACREADER_MAX_COVER_HEIGHT + 51; // 51 is the height of the bottom rectangle used for title and other info
-const unsigned int YACREADER_MIN_ITEM_WIDTH = YACREADER_MIN_COVER_WIDTH;
-
 GridComicsView::GridComicsView(QWidget *parent)
     : ComicsView(parent), filterEnabled(false)
 {
@@ -161,7 +145,7 @@ GridComicsView::GridComicsView(QWidget *parent)
     QQmlProperty(infoContainer, "width").write(settings->value(COMICS_GRID_INFO_WIDTH, 350));
 
     showInfoAction = new QAction(tr("Show info"), this);
-    showInfoAction->setIcon(QIcon(":/images/comics_view_toolbar/show_comic_info.png"));
+    showInfoAction->setIcon(QIcon(":/images/comics_view_toolbar/show_comic_info.svg"));
     showInfoAction->setCheckable(true);
     showInfoAction->setChecked(showInfo);
     connect(showInfoAction, &QAction::toggled, this, &GridComicsView::showInfo);
@@ -195,11 +179,11 @@ void GridComicsView::createCoverSizeSliderWidget()
 
     auto horizontalLayout = new QHBoxLayout();
     QLabel *smallLabel = new QLabel();
-    smallLabel->setPixmap(QPixmap(":/images/comics_view_toolbar/small_size_grid_zoom.png"));
+    smallLabel->setPixmap(hdpiPixmap(":/images/comics_view_toolbar/small_size_grid_zoom.svg", QSize(18, 18)));
     horizontalLayout->addWidget(smallLabel);
     horizontalLayout->addWidget(coverSizeSlider, 0, Qt::AlignVCenter);
     QLabel *bigLabel = new QLabel();
-    bigLabel->setPixmap(QPixmap(":/images/comics_view_toolbar/big_size_grid_zoom.png"));
+    bigLabel->setPixmap(hdpiPixmap(":/images/comics_view_toolbar/big_size_grid_zoom.svg", QSize(18, 18)));
     horizontalLayout->addWidget(bigLabel);
     horizontalLayout->addSpacing(10);
     horizontalLayout->setContentsMargins(0, 0, 0, 0);
@@ -422,6 +406,8 @@ void GridComicsView::setCoversSize(int width)
     }
 
     updateCoversSizeInContext(width, ctxt);
+
+    settings->setValue(COMICS_GRID_COVER_SIZES, coverSizeSlider->value());
 }
 
 void GridComicsView::updateCoversSizeInContext(int width, QQmlContext *ctxt)
@@ -478,6 +464,15 @@ void GridComicsView::resetScroll()
     QMetaObject::invokeMethod(scrollView, "scrollToOrigin");
 }
 
+void GridComicsView::showEvent(QShowEvent *event)
+{
+    ComicsView::showEvent(event);
+    int coverSize = settings->value(COMICS_GRID_COVER_SIZES, YACREADER_MIN_COVER_WIDTH).toInt();
+
+    coverSizeSlider->setValue(coverSize);
+    setCoversSize(coverSize);
+}
+
 QByteArray GridComicsView::getMimeDataFromSelection()
 {
     QByteArray data;
@@ -504,7 +499,7 @@ void GridComicsView::startDrag()
 {
     auto drag = new QDrag(this);
     drag->setMimeData(model->mimeData(selectionHelper->selectedRows()));
-    drag->setPixmap(QPixmap(":/images/comics_view_toolbar/openInYACReader.png")); // TODO add better image
+    drag->setPixmap(hdpiPixmap(":/images/comics_view_toolbar/openInYACReader.svg", QSize(18, 18))); // TODO add better image
 
     /*Qt::DropAction dropAction =*/drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
 }

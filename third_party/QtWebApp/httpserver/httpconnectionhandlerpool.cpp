@@ -92,6 +92,9 @@ void HttpConnectionHandlerPool::loadSslConfig()
     // If certificate and key files are configured, then load them
     QString sslKeyFileName=settings->value("sslKeyFile","").toString();
     QString sslCertFileName=settings->value("sslCertFile","").toString();
+    QString caCertFileName=settings->value("caCertFile","").toString();
+    bool verifyPeer=settings->value("verifyPeer","false").toBool();
+
     if (!sslKeyFileName.isEmpty() && !sslCertFileName.isEmpty())
     {
         #ifdef QT_NO_SSL
@@ -107,6 +110,7 @@ void HttpConnectionHandlerPool::loadSslConfig()
             {
                 sslKeyFileName=QFileInfo(configFile.absolutePath(),sslKeyFileName).absoluteFilePath();
             }
+
             #ifdef Q_OS_WIN32
                 if (QDir::isRelativePath(sslCertFileName) && settings->format()!=QSettings::NativeFormat)
             #else
@@ -138,10 +142,51 @@ void HttpConnectionHandlerPool::loadSslConfig()
 
             // Create the SSL configuration
             sslConfiguration=new QSslConfiguration();
+            sslConfiguration->setProtocol(QSsl::AnyProtocol);
             sslConfiguration->setLocalCertificate(certificate);
             sslConfiguration->setPrivateKey(sslKey);
-            sslConfiguration->setPeerVerifyMode(QSslSocket::VerifyNone);
-            sslConfiguration->setProtocol(QSsl::AnyProtocol);
+
+            // We can optionally use a CA certificate to validate the HTTP clients
+            if (!caCertFileName.isEmpty())
+            {
+                #if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+                    qCritical("HttpConnectionHandlerPool: Using a caCertFile requires Qt 5.15 or newer");
+                #else
+
+                    // Convert relative fileName to absolute, based on the directory of the config file.
+                    #ifdef Q_OS_WIN32
+                        if (QDir::isRelativePath(caCertFileName) && settings->format()!=QSettings::NativeFormat)
+                    #else
+                        if (QDir::isRelativePath(caCertFileName))
+                    #endif
+                    {
+                        caCertFileName=QFileInfo(configFile.absolutePath(),caCertFileName).absoluteFilePath();
+                    }
+
+                    // Load the CA cert file
+                    QFile caCertFile(caCertFileName);
+                    if (!caCertFile.open(QIODevice::ReadOnly))
+                    {
+                        qCritical("HttpConnectionHandlerPool: cannot open caCertFile %s", qPrintable(caCertFileName));
+                        return;
+                    }
+                    QSslCertificate caCertificate(&caCertFile, QSsl::Pem);
+                    caCertFile.close();
+
+                    // Configure SSL
+                    sslConfiguration->addCaCertificate(caCertificate);
+                #endif
+            }
+
+            // Enable or disable verification of the HTTP client
+            if (verifyPeer)
+            {
+                sslConfiguration->setPeerVerifyMode(QSslSocket::VerifyPeer);
+            }
+            else
+            {
+                sslConfiguration->setPeerVerifyMode(QSslSocket::VerifyNone);
+            }
 
             qDebug("HttpConnectionHandlerPool: SSL settings loaded");
          #endif

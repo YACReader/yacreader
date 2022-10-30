@@ -13,7 +13,7 @@
 #include <QCommandLineParser>
 
 #include "yacreader_global.h"
-#include "startup.h"
+#include "yacreader_http_server.h"
 #include "yacreader_local_server.h"
 #include "comic_db.h"
 #include "db_helper.h"
@@ -30,7 +30,7 @@
 #define PICTUREFLOW_QT4 1
 
 // Server interface
-Startup *s;
+YACReaderHttpServer *httpServer;
 
 using namespace QsLogging;
 
@@ -164,21 +164,20 @@ int main(int argc, char **argv)
     logger.addDestination(std::move(fileDestination));
 
     QTranslator translator;
-    QString sufix = QLocale::system().name();
 #if defined Q_OS_UNIX && !defined Q_OS_MAC
-    translator.load(QString(DATADIR) + "/yacreader/languages/yacreaderlibrary_" + sufix);
+    translator.load(QLocale(), "yacreaderlibrary", "_", QString(DATADIR) + "/yacreader/languages");
 #else
-    translator.load(QCoreApplication::applicationDirPath() + "/languages/yacreaderlibrary_" + sufix);
+    translator.load(QLocale(), "yacreaderlibrary", "_", "languages");
 #endif
     app.installTranslator(&translator);
 
-    QTranslator viewerTranslator;
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
-    viewerTranslator.load(QString(DATADIR) + "/yacreader/languages/yacreader_" + sufix);
-#else
-    viewerTranslator.load(QCoreApplication::applicationDirPath() + "/languages/yacreader_" + sufix);
-#endif
-    app.installTranslator(&viewerTranslator);
+    /*QTranslator viewerTranslator;
+    #if defined Q_OS_UNIX && !defined Q_OS_MAC
+        viewerTranslator.load(QString(DATADIR) + "/yacreader/languages/yacreader_" + sufix);
+    #else
+        viewerTranslator.load(QCoreApplication::applicationDirPath() + "/languages/yacreader_" + sufix);
+    #endif
+        app.installTranslator(&viewerTranslator);*/
 
     qRegisterMetaType<ComicDB>("ComicDB");
 
@@ -244,10 +243,10 @@ int main(int argc, char **argv)
     QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat);
     settings->beginGroup("libraryConfig");
 
-    s = new Startup();
+    httpServer = new YACReaderHttpServer();
 
     if (settings->value(SERVER_ON, true).toBool()) {
-        s->start();
+        httpServer->start();
     }
 #endif
 
@@ -255,8 +254,9 @@ int main(int argc, char **argv)
 
     auto mw = new LibraryWindow();
 
-    mw->connect(localServer, &YACReaderLocalServer::comicUpdated, mw, &LibraryWindow::updateComicsView, Qt::QueuedConnection);
-
+    mw->connect(localServer, &YACReaderLocalServer::comicUpdated, mw, &LibraryWindow::updateViewsOnComicUpdate, Qt::QueuedConnection);
+    mw->connect(httpServer, &YACReaderHttpServer::comicUpdated, mw, &LibraryWindow::updateViewsOnComicUpdateWithId, Qt::QueuedConnection);
+    mw->connect(httpServer, &YACReaderHttpServer::clientSync, mw, &LibraryWindow::updateViewsOnClientSync, Qt::QueuedConnection);
     // connections to localServer
 
     // start as tray
@@ -276,8 +276,8 @@ int main(int argc, char **argv)
     YACReader::exitCheck(ret);
 
     // shutdown
-    s->stop();
-    delete s;
+    httpServer->stop();
+    delete httpServer;
     localServer->close();
     delete localServer;
     delete mw;

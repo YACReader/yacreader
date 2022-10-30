@@ -22,7 +22,7 @@ class LibraryCreator : public QThread
 {
     Q_OBJECT
 public:
-    LibraryCreator();
+    LibraryCreator(QSettings *settings);
     void createLibrary(const QString &source, const QString &target);
     void updateLibrary(const QString &source, const QString &target);
     void updateFolder(const QString &source, const QString &target, const QString &folder, const QModelIndex &dest);
@@ -54,6 +54,7 @@ private:
     bool creation;
     bool partialUpdate;
     QModelIndex folderDestinationModelIndex;
+    QSettings *settings;
 
 signals:
     void finished();

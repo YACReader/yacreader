@@ -54,6 +54,7 @@ public:
         HasBeenOpenedRole,
         CoverPathRole,
         PublicationDateRole,
+        ReadableTitle,
     };
 
     enum Mode {
@@ -110,6 +111,8 @@ public:
     qint64 asignNumbers(QList<QModelIndex> list, int startingNumber);
     // void remove(ComicDB * comic, int row);
     void removeInTransaction(int row);
+    void reloadContinueReading();
+    void reload();
     void reload(const ComicDB &comic);
     void resetComicRating(const QModelIndex &mi);
 

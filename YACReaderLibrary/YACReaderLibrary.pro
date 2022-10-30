@@ -83,6 +83,7 @@ HEADERS += comic_flow.h \
   db/comic_query_result_processor.h \
   db/folder_query_result_processor.h \
   db/query_lexer.h \
+  folder_content_view.h \
   initial_comic_info_extractor.h \
   library_comic_opener.h \
   library_creator.h \
@@ -123,6 +124,7 @@ HEADERS += comic_flow.h \
   trayicon_controller.h \
   xml_info_library_scanner.h \
   xml_info_parser.h \
+  yacreader_content_views_manager.h \
   yacreader_local_server.h \
   yacreader_main_toolbar.h \
   comics_remover.h \
@@ -147,7 +149,6 @@ HEADERS += comic_flow.h \
   empty_reading_list_widget.h \
   ../common/scroll_management.h \
   ../common/opengl_checker.h \
-  yacreader_comics_views_manager.h \
   info_comics_view.h \
   yacreader_comics_selection_helper.h \
   yacreader_comic_info_helper.h \
@@ -165,6 +166,7 @@ SOURCES += comic_flow.cpp \
     db/comic_query_result_processor.cpp \
     db/folder_query_result_processor.cpp \
     db/query_lexer.cpp \
+    folder_content_view.cpp \
     initial_comic_info_extractor.cpp \
     library_comic_opener.cpp \
     library_creator.cpp \
@@ -201,6 +203,7 @@ SOURCES += comic_flow.cpp \
     trayicon_controller.cpp \
     xml_info_library_scanner.cpp \
     xml_info_parser.cpp \
+    yacreader_content_views_manager.cpp \
     yacreader_local_server.cpp \
     yacreader_main_toolbar.cpp \
     comics_remover.cpp \
@@ -227,7 +230,6 @@ SOURCES += comic_flow.cpp \
     empty_reading_list_widget.cpp \
     ../common/scroll_management.cpp \
     ../common/opengl_checker.cpp \
-    yacreader_comics_views_manager.cpp \
     info_comics_view.cpp \
     yacreader_comics_selection_helper.cpp \
     yacreader_comic_info_helper.cpp\
@@ -284,7 +286,28 @@ TRANSLATIONS =   yacreaderlibrary_es.ts \
                 yacreaderlibrary_zh_TW.ts \
                 yacreaderlibrary_zh_HK.ts \
                 yacreaderlibrary_it.ts \
-                yacreaderlibrary_source.ts
+                yacreaderlibrary_en.ts
+
+CONFIG += lrelease
+
+win32 {
+    CONFIG(release, debug|release) {
+        SOURCE_QM_DIR = $$OUT_PWD/release/*.qm
+    }
+    CONFIG(debug, debug|release) {
+        SOURCE_QM_DIR = $$OUT_PWD/debug/*.qm
+    }
+
+    DEPLOYMENT_OUT_QM_DIR = ../release/languages/
+    OUT_QM_DIR = $${DESTDIR}/languages/
+
+    QMAKE_POST_LINK += $(MKDIR) $$shell_path($${OUT_QM_DIR}) 2> NULL & \
+                       $(COPY) $$shell_path($${SOURCE_QM_DIR}) $$shell_path($${OUT_QM_DIR}) & \
+                       $(MKDIR) $$shell_path($${DEPLOYMENT_OUT_QM_DIR}) 2> NULL & \
+                       $(COPY) $$shell_path($${SOURCE_QM_DIR}) $$shell_path($${DEPLOYMENT_OUT_QM_DIR})
+} else {
+    LRELEASE_DIR = ../release/languages/
+}
 
 #QML/GridView
 QT += quick qml quickwidgets
