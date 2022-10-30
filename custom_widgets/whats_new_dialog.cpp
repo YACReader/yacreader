@@ -63,6 +63,9 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
                   "   &#8226; Importing ComicInfo.XML is now optional, you can change the behavior in Settings -> General.<br/>"
                   "   &#8226; Add option to scan XML metadata from all the comics in a folder.<br/>"
                   "<br/>"
+                  "<span style=\"font-weight:600\">Server</span><br/>"
+                  "   &#8226; New webui status page (reachable by navigating to server::port/webui).<br/>"
+                  "<br/>"
                   "NOTE: Importing metadata from ComicInfo.XML in now disabled by default, if you want you can enable it Settings -> General.<br/>"
                   "<br/>"
                   "I hope you enjoy the new update. Please, if you like YACReader consider to become a patron in <a href=\"https://www.patreon.com/yacreader\" style=\"color:#E8B800;\">Patreon</a> or donate some money using <a href=\"https://www.paypal.com/donate?business=5TAMNQCDDMVP8&item_name=Support+YACReader\" style=\"color:#E8B800;\">Pay-Pal</a> and help keeping the project alive. Remember that there is an iOS version available in the <a href=\"https://apps.apple.com/app/id635717885\" style=\"color:#E8B800;\">Apple App Store</a>.");
