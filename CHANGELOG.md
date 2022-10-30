@@ -2,7 +2,7 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
-## WIP
+## 9.10
 
 ### YACReader
 * Fixed color selection dialog appearing as a subwindow in macos.
