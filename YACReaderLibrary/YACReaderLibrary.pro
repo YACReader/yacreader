@@ -307,6 +307,7 @@ win32 {
                        $(COPY) $$shell_path($${SOURCE_QM_DIR}) $$shell_path($${DEPLOYMENT_OUT_QM_DIR})
 } else {
     LRELEASE_DIR = ../release/languages/
+    QM_FILES_INSTALL_PATH = $$DATADIR/yacreader/languages
 }
 
 #QML/GridView
@@ -328,24 +329,11 @@ unix:!macx:RESOURCES += qml_win.qrc
 macx:RESOURCES += qml_osx.qrc
 
 unix:!macx {
-#set install prefix if it's empty
-isEmpty(PREFIX) {
-  PREFIX = /usr
-}
-isEmpty(BINDIR) {
-  BINDIR = $$PREFIX/bin
-}
-isEmpty(LIBDIR) {
-  LIBDIR = $$PREFIX/lib
-}
-isEmpty(DATADIR) {
-  DATADIR = $$PREFIX/share
-}
 
 DEFINES += "LIBDIR=\\\"$$LIBDIR\\\""  "DATADIR=\\\"$$DATADIR\\\"" "BINDIR=\\\"$$BINDIR\\\""
 
 #MAKE INSTALL
-INSTALLS += bin icon desktop server translation manpage
+INSTALLS += bin icon desktop server manpage
 
 bin.path = $$BINDIR
 isEmpty(DESTDIR) {
@@ -362,9 +350,6 @@ icon.files = ../YACReaderLibrary.svg
 
 desktop.path = $$DATADIR/applications
 desktop.files = ../YACReaderLibrary.desktop
-
-translation.path = $$DATADIR/yacreader/languages
-translation.files = ../release/languages/yacreaderlibrary_*
 
 manpage.path = $$DATADIR/man/man1
 manpage.files = ../YACReaderLibrary.1

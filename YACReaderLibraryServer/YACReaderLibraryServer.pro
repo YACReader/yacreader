@@ -130,13 +130,6 @@ contains(QMAKE_TARGET.arch, x86_64) {
 
 unix:!macx {
 #set install prefix if it's empty
-isEmpty(PREFIX) {
-  PREFIX = /usr
-}
-
-BINDIR = $$PREFIX/bin
-LIBDIR = $$PREFIX/lib
-DATADIR = $$PREFIX/share
 
 DEFINES += "LIBDIR=\\\"$$LIBDIR\\\""  "DATADIR=\\\"$$DATADIR\\\"" "BINDIR=\\\"$$BINDIR\\\""
 
@@ -150,7 +143,7 @@ DEFINES += "LIBDIR=\\\"$$LIBDIR\\\""  "DATADIR=\\\"$$DATADIR\\\"" "BINDIR=\\\"$$
 }
 
 CONFIG(server_standalone) {
-  INSTALLS += bin server translation systemd
+  INSTALLS += bin server systemd
 }
 else:CONFIG(server_bundled) {
   INSTALLS += bin systemd
@@ -168,9 +161,6 @@ server.files = ../release/server
 
 systemd.path = $$LIBDIR/systemd/user
 systemd.files = yacreaderlibraryserver.service
-
-translation.path = $$DATADIR/yacreader/languages
-translation.files = ../release/languages/yacreaderlibrary_*
 
 # TODO: We need a manpage for yaclibserver
 #manpage.path = $$DATADIR/man/man1

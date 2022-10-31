@@ -214,28 +214,16 @@ win32 {
                        $(COPY) $$shell_path($${SOURCE_QM_DIR}) $$shell_path($${DEPLOYMENT_OUT_QM_DIR})
 } else {
     LRELEASE_DIR = ../release/languages/
+    QM_FILES_INSTALL_PATH = $$DATADIR/yacreader/languages
 }
 
 unix:!macx {
-# set install prefix if it's empty
-isEmpty(PREFIX) {
-  PREFIX = /usr
-}
-isEmpty(BINDIR) {
-  BINDIR = $$PREFIX/bin
-}
-isEmpty(LIBDIR) {
-  LIBDIR = $$PREFIX/lib
-}
-isEmpty(DATADIR) {
-  DATADIR = $$PREFIX/share
-}
 
 DEFINES += "LIBDIR=\\\"$$LIBDIR\\\""  "DATADIR=\\\"$$DATADIR\\\""
 
 #MAKE INSTALL
 
-INSTALLS += bin docs icon desktop translation manpage
+INSTALLS += bin docs icon desktop manpage
 
 bin.path = $$BINDIR
 isEmpty(DESTDIR) {
@@ -255,9 +243,6 @@ icon.files = ../YACReader.svg
 
 desktop.path = $$DATADIR/applications
 desktop.files = ../YACReader.desktop
-
-translation.path = $$DATADIR/yacreader/languages
-translation.files = ../release/languages/yacreader_*
 
 manpage.path = $$DATADIR/man/man1
 manpage.files = ../YACReader.1
