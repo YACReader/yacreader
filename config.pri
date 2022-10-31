@@ -93,4 +93,20 @@ macx:!CONFIG(pdfkit):!CONFIG(pdfium):!CONFIG(no_pdf) {
     DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x050900
 }
 
+unix:!macx {
+# set install prefix if it's empty
+isEmpty(PREFIX) {
+  PREFIX = /usr
+}
+isEmpty(BINDIR) {
+  BINDIR = $$PREFIX/bin
+}
+isEmpty(LIBDIR) {
+  LIBDIR = $$PREFIX/lib
+}
+isEmpty(DATADIR) {
+  DATADIR = $$PREFIX/share
+}
+}
+
 DEFINES += QT_DEPRECATED_WARNINGS
