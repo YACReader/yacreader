@@ -20,73 +20,73 @@ SplitView {
         color: info_container.color
     }
 
-Rectangle {
-    id: main
-    clip: true
+    Rectangle {
+        id: main
+        clip: true
 
-    Image {
-        id: backgroundImg
-        anchors.fill: parent
-        source: backgroundImage
-        fillMode: Image.PreserveAspectCrop
-        smooth: true
-        mipmap: true
-        asynchronous : true
-        cache: false //TODO clear cache only when it is needed
-        opacity: 0
-        visible: false
-    }
+        Image {
+            id: backgroundImg
+            anchors.fill: parent
+            source: backgroundImage
+            fillMode: Image.PreserveAspectCrop
+            smooth: true
+            mipmap: true
+            asynchronous : true
+            cache: false //TODO clear cache only when it is needed
+            opacity: 0
+            visible: false
+        }
 
-    FastBlur {
-        anchors.fill: backgroundImg
-        source: backgroundImg
-        radius: backgroundBlurRadius
-        opacity: backgroundBlurOpacity
-        visible: backgroundBlurVisible
-    }
+        FastBlur {
+            anchors.fill: backgroundImg
+            source: backgroundImg
+            radius: backgroundBlurRadius
+            opacity: backgroundBlurOpacity
+            visible: backgroundBlurVisible
+        }
 
-    color: backgroundColor
-    width: parent.width - (info_container.visible ? info_container.width : 0)
-    SplitView.fillWidth: true
-    SplitView.minimumWidth: coverWidth + 100
-    height: parent.height
-    anchors.margins: 0
+        color: backgroundColor
+        width: parent.width - (info_container.visible ? info_container.width : 0)
+        SplitView.fillWidth: true
+        SplitView.minimumWidth: coverWidth + 100
+        height: parent.height
+        anchors.margins: 0
 
-    Component {
-        id: appDelegate
-        Rectangle
-        {
-            id: cell
-            width: grid.cellWidth
-            height: grid.cellHeight
-            color: "#00000000"
+        Component {
+            id: appDelegate
+            Rectangle
+            {
+                id: cell
+                width: grid.cellWidth
+                height: grid.cellHeight
+                color: "#00000000"
 
-            scale: mouseArea.containsMouse ? 1.025 : 1
+                scale: mouseArea.containsMouse ? 1.025 : 1
 
-            Behavior on scale {
-                NumberAnimation { duration: 90 }
-            }
+                Behavior on scale {
+                    NumberAnimation { duration: 90 }
+                }
 
-            DropShadow {
-                anchors.fill: realCell
-                transparentBorder: true
-                horizontalOffset: 0
-                verticalOffset: 0
-                radius: 10.0
-                //samples: 17
-                color: "#FF000000"
-                source: realCell
-                visible: (Qt.platform.os === "osx") ? false : true;
-            }
+                DropShadow {
+                    anchors.fill: realCell
+                    transparentBorder: true
+                    horizontalOffset: 0
+                    verticalOffset: 0
+                    radius: 10.0
+                    //samples: 17
+                    color: "#FF000000"
+                    source: realCell
+                    visible: (Qt.platform.os === "osx") ? false : true;
+                }
 
-            Rectangle {
-                id: realCell
+                Rectangle {
+                    id: realCell
 
-                property int position : 0
-                property bool dragging: false;
-                Drag.active: mouseArea.drag.active
-                Drag.hotSpot.x: 32
-                Drag.hotSpot.y: 32
+                    property int position : 0
+                    property bool dragging: false;
+                    Drag.active: mouseArea.drag.active
+                    Drag.hotSpot.x: 32
+                    Drag.hotSpot.y: 32
                     Drag.dragType: Drag.Automatic
                     //Drag.mimeData: { "x": 1 }
                     Drag.proposedAction: Qt.CopyAction
@@ -397,267 +397,227 @@ Rectangle {
                     id: comicRating
                     anchors {bottom: realCell.bottom; right: ratingImage.left; margins: 4}
                     text: rating>0?rating:"-"
-                color: textColor
+                    color: textColor
+                }
             }
         }
-    }
 
-    Rectangle {
-        id: scrollView
-        objectName: "topScrollView"
-        anchors.fill: parent
-        anchors.margins: 0
-        children: grid
-
-        color: "transparent"
-
-        function scrollToOrigin() {
-            grid.contentY = grid.originY
-            grid.contentX = grid.originX
-        }
-
-        DropArea {
+        Rectangle {
+            id: scrollView
+            objectName: "topScrollView"
             anchors.fill: parent
+            anchors.margins: 0
+            children: grid
 
-            onEntered: {
-                if(drag.hasUrls)
-                {
-                    if(dropManager.canDropUrls(drag.urls, drag.action))
-                    {
-                        drag.accepted = true;
-                    }else
-                        drag.accepted = false;
-                }
-                else if (dropManager.canDropFormats(drag.formats)) {
-                    drag.accepted = true;
-                } else
-                    drag.accepted = false;
+            color: "transparent"
+
+            function scrollToOrigin() {
+                grid.contentY = grid.originY
+                grid.contentX = grid.originX
             }
 
-            onDropped: {
-                if(drop.hasUrls && dropManager.canDropUrls(drop.urls, drop.action))
-                {
-                    dropManager.droppedFiles(drop.urls, drop.action);
-                }
-                else{
-                    if (dropManager.canDropFormats(drop.formats))
-                    {
-                        var destItem = grid.itemAt(drop.x,drop.y + grid.contentY);
-                        var destLocalX = grid.mapToItem(destItem,drop.x,drop.y + grid.contentY).x
-                        var realIndex = grid.indexAt(drop.x,drop.y + grid.contentY);
-
-                        if(realIndex === -1)
-                            realIndex = grid.count - 1;
-
-                        var destIndex = destLocalX < (grid.cellWidth / 2) ? realIndex : realIndex + 1;
-                        dropManager.droppedComicsForResortingAt(drop.getDataAsString(), destIndex);
-                    }
-                }
-            }
-        }
-
-        property Component currentComicView: Component {
-            id: currentComicView
-            Rectangle {
-                id: currentComicViewTopView
-                color: "#00000000"
-
-                height: showCurrentComic ? 270 : 20
-
+            property Component currentComicView: Component {
+                id: currentComicView
                 Rectangle {
-                    color: (Qt.platform.os === "osx") ? "#88FFFFFF" : "#88000000"
+                    id: currentComicViewTopView
+                    color: "#00000000"
 
-                    id: currentComicVisualView
+                    height: showCurrentComic ? 270 : 20
 
-                    width: main.width
-                    height: 250
+                    Rectangle {
+                        color: (Qt.platform.os === "osx") ? "#88FFFFFF" : "#88000000"
 
-                    visible: showCurrentComic
+                        id: currentComicVisualView
 
-                    //cover
-                    Image {
-                        id: currentCoverElement
-                        anchors.fill: parent
+                        width: main.width
+                        height: 250
 
-                        anchors.leftMargin: 15
-                        anchors.topMargin: 15
-                        anchors.bottomMargin: 15
-                        anchors.rightMargin: 15
-                        horizontalAlignment: Image.AlignLeft
-                        anchors {horizontalCenter: parent.horizontalCenter; top: parent.top; topMargin: 0}
-                        source: comicsList.getCoverUrlPathForComicHash(currentComicInfo.hash.toString())
-                        fillMode: Image.PreserveAspectFit
-                        smooth: true
-                        mipmap: true
-                        asynchronous : true
-                        cache: false //TODO clear cache only when it is needed
-                    }
+                        visible: showCurrentComic
 
-                    DropShadow {
-                        anchors.fill: currentCoverElement
-                        horizontalOffset: 0
-                        verticalOffset: 0
-                        radius: 8.0
-                        transparentBorder: true
-                        //samples: 17
-                        color: "#FF000000"
-                        source: currentCoverElement
-                        visible: (Qt.platform.os === "osx") ? false : true;
-                    }
+                        //cover
+                        Image {
+                            id: currentCoverElement
+                            anchors.fill: parent
 
-                    ColumnLayout
-                    {
-                        id: currentComicInfoView
-
-                        x: currentCoverElement.anchors.rightMargin + currentCoverElement.paintedWidth + currentCoverElement.anchors.rightMargin
-                        //y: currentCoverElement.anchors.topMargin
-
-                        anchors.top: currentCoverElement.top
-                        anchors.right: parent.right
-                        anchors.left: readButton.left
-
-                        spacing: 9
-
-                        Text {
-                            Layout.topMargin: 7
-                            Layout.fillWidth: true
-                            Layout.rightMargin: 20
-
-                            Layout.alignment: Qt.AlignTop | Qt.AlignLeft
-
-                            id: currentComicInfoTitleView
-
-                            color: infoTitleColor
-                            font.family: "Arial"
-                            font.bold: true
-                            font.pixelSize: 21
-                            wrapMode: Text.WordWrap
-
-                            text: currentComic.getTitleIncludingNumber()
+                            anchors.leftMargin: 15
+                            anchors.topMargin: 15
+                            anchors.bottomMargin: 15
+                            anchors.rightMargin: 15
+                            horizontalAlignment: Image.AlignLeft
+                            anchors {horizontalCenter: parent.horizontalCenter; top: parent.top; topMargin: 0}
+                            source: comicsList.getCoverUrlPathForComicHash(currentComicInfo.hash.toString())
+                            fillMode: Image.PreserveAspectFit
+                            smooth: true
+                            mipmap: true
+                            asynchronous : true
+                            cache: false //TODO clear cache only when it is needed
                         }
 
-                        Flow {
-                            spacing: 0
-                            Layout.alignment: Qt.AlignTop | Qt.AlignLeft
-                            Layout.fillWidth: true
-                            Layout.fillHeight: false
+                        DropShadow {
+                            anchors.fill: currentCoverElement
+                            horizontalOffset: 0
+                            verticalOffset: 0
+                            radius: 8.0
+                            transparentBorder: true
+                            //samples: 17
+                            color: "#FF000000"
+                            source: currentCoverElement
+                            visible: (Qt.platform.os === "osx") ? false : true;
+                        }
 
-                            id: currentComicDetailsFlowView
-                            property font infoFont: Qt.font({
-                                                                family: "Arial",
-                                                                pixelSize: 14
-                                                            });
-                            property string infoFlowTextColor: infoTextColor
+                        ColumnLayout
+                        {
+                            id: currentComicInfoView
+
+                            x: currentCoverElement.anchors.rightMargin + currentCoverElement.paintedWidth + currentCoverElement.anchors.rightMargin
+                            //y: currentCoverElement.anchors.topMargin
+
+                            anchors.top: currentCoverElement.top
+                            anchors.right: parent.right
+                            anchors.left: readButton.left
+
+                            spacing: 9
 
                             Text {
-                                id: currentComicInfoVolume
-                                color: currentComicDetailsFlowView.infoFlowTextColor
-                                font: currentComicDetailsFlowView.infoFont
-                                text: currentComicInfo.volume ? currentComicInfo.volume : ""
-                                rightPadding: 20
-                                visible: currentComicInfo.volume ? true : false
+                                Layout.topMargin: 7
+                                Layout.fillWidth: true
+                                Layout.rightMargin: 20
+
+                                Layout.alignment: Qt.AlignTop | Qt.AlignLeft
+
+                                id: currentComicInfoTitleView
+
+                                color: infoTitleColor
+                                font.family: "Arial"
+                                font.bold: true
+                                font.pixelSize: 21
+                                wrapMode: Text.WordWrap
+
+                                text: currentComic.getTitleIncludingNumber()
                             }
 
-                            Text {
-                                id: currentComicInfoNumbering
-                                color: currentComicDetailsFlowView.infoFlowTextColor
-                                font: currentComicDetailsFlowView.infoFont
-                                text: currentComicInfo.number + "/" + currentComicInfo.count
-                                rightPadding: 20
-                                visible : currentComicInfo.number ? true : false
-                            }
+                            Flow {
+                                spacing: 0
+                                Layout.alignment: Qt.AlignTop | Qt.AlignLeft
+                                Layout.fillWidth: true
+                                Layout.fillHeight: false
 
-                            Text {
-                                id: currentComicInfoGenre
-                                color: currentComicDetailsFlowView.infoFlowTextColor
-                                font: currentComicDetailsFlowView.infoFont
-                                text: currentComicInfo.genere ? currentComicInfo.genere : ""
-                                rightPadding: 20
-                                visible: currentComicInfo.genere ? true : false
-                            }
+                                id: currentComicDetailsFlowView
+                                property font infoFont: Qt.font({
+                                                                    family: "Arial",
+                                                                    pixelSize: 14
+                                                                });
+                                property string infoFlowTextColor: infoTextColor
 
-                            Text {
-                                id: currentComicInfoDate
-                                color: currentComicDetailsFlowView.infoFlowTextColor
-                                font: currentComicDetailsFlowView.infoFont
-                                text: currentComicInfo.date ? currentComicInfo.date : ""
-                                rightPadding: 20
-                                visible: currentComicInfo.date ? true : false
-                            }
+                                Text {
+                                    id: currentComicInfoVolume
+                                    color: currentComicDetailsFlowView.infoFlowTextColor
+                                    font: currentComicDetailsFlowView.infoFont
+                                    text: currentComicInfo.volume ? currentComicInfo.volume : ""
+                                    rightPadding: 20
+                                    visible: currentComicInfo.volume ? true : false
+                                }
 
-                            Text {
-                                id: currentComicInfoPages
-                                color: currentComicDetailsFlowView.infoFlowTextColor
-                                font: currentComicDetailsFlowView.infoFont
-                                text: (currentComicInfo.numPages ? currentComicInfo.numPages : "") + " pages"
-                                rightPadding: 20
-                                visible: currentComicInfo.numPages ? true : false
-                            }
+                                Text {
+                                    id: currentComicInfoNumbering
+                                    color: currentComicDetailsFlowView.infoFlowTextColor
+                                    font: currentComicDetailsFlowView.infoFont
+                                    text: currentComicInfo.number + "/" + currentComicInfo.count
+                                    rightPadding: 20
+                                    visible : currentComicInfo.number ? true : false
+                                }
 
-                            Text {
-                                id: currentComicInfoShowInComicVine
-                                font: currentComicDetailsFlowView.infoFont
-                                color: "#ffcc00"
-                                text: "Show in Comic Vine"
-                                visible: currentComicInfo.comicVineID ? true : false
-                                MouseArea {
-                                    anchors.fill: parent
-                                    onClicked: {
-                                        Qt.openUrlExternally("http://www.comicvine.com/comic/4000-%1/".arg(comicInfo.comicVineID));
+                                Text {
+                                    id: currentComicInfoGenre
+                                    color: currentComicDetailsFlowView.infoFlowTextColor
+                                    font: currentComicDetailsFlowView.infoFont
+                                    text: currentComicInfo.genere ? currentComicInfo.genere : ""
+                                    rightPadding: 20
+                                    visible: currentComicInfo.genere ? true : false
+                                }
+
+                                Text {
+                                    id: currentComicInfoDate
+                                    color: currentComicDetailsFlowView.infoFlowTextColor
+                                    font: currentComicDetailsFlowView.infoFont
+                                    text: currentComicInfo.date ? currentComicInfo.date : ""
+                                    rightPadding: 20
+                                    visible: currentComicInfo.date ? true : false
+                                }
+
+                                Text {
+                                    id: currentComicInfoPages
+                                    color: currentComicDetailsFlowView.infoFlowTextColor
+                                    font: currentComicDetailsFlowView.infoFont
+                                    text: (currentComicInfo.numPages ? currentComicInfo.numPages : "") + " pages"
+                                    rightPadding: 20
+                                    visible: currentComicInfo.numPages ? true : false
+                                }
+
+                                Text {
+                                    id: currentComicInfoShowInComicVine
+                                    font: currentComicDetailsFlowView.infoFont
+                                    color: "#ffcc00"
+                                    text: "Show in Comic Vine"
+                                    visible: currentComicInfo.comicVineID ? true : false
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        onClicked: {
+                                            Qt.openUrlExternally("http://www.comicvine.com/comic/4000-%1/".arg(comicInfo.comicVineID));
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                        ScrollView {
-                            Layout.topMargin: 6
-                            Layout.rightMargin: 30
-                            Layout.bottomMargin: 5
-                            Layout.fillWidth: true
-                            Layout.maximumHeight: (currentComicVisualView.height * 0.32)
-                            Layout.maximumWidth: 960
-
-                            ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
-
-                            contentWidth: -1
-                            contentItem: currentComicInfoSinopsis
-
-                            id: synopsisScroller
-
-                            clip: true
-
-                            Text {
+                            ScrollView {
+                                Layout.topMargin: 6
+                                Layout.rightMargin: 30
+                                Layout.bottomMargin: 5
+                                Layout.fillWidth: true
+                                Layout.maximumHeight: (currentComicVisualView.height * 0.32)
                                 Layout.maximumWidth: 960
 
-                                width: synopsisScroller.width
+                                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
-                                id: currentComicInfoSinopsis
-                                color: infoTitleColor
-                                font.family: "Arial"
-                                font.pixelSize: 14
-                                wrapMode: Text.WordWrap
+                                contentWidth: -1
+                                contentItem: currentComicInfoSinopsis
 
-                                text: '<html><head><style>
+                                id: synopsisScroller
+
+                                clip: true
+
+                                Text {
+                                    Layout.maximumWidth: 960
+
+                                    width: synopsisScroller.width
+
+                                    id: currentComicInfoSinopsis
+                                    color: infoTitleColor
+                                    font.family: "Arial"
+                                    font.pixelSize: 14
+                                    wrapMode: Text.WordWrap
+
+                                    text: '<html><head><style>
                                 a {
                                     color: #FFCB00;
                                     text-decoration:none;
                                 }
                                 </style></head><body>' + currentComicInfo.synopsis ?? "" + '</body></html>'
-                                visible: currentComicInfo.synopsis ?? false
-                                textFormat: Text.RichText
+                                    visible: currentComicInfo.synopsis ?? false
+                                                                          textFormat: Text.RichText
+                                }
                             }
                         }
-                    }
 
-                    Button {
-                        containmentMask: null
-                        text: "Read"
-                        id: readButton
-                        x: currentCoverElement.anchors.rightMargin + currentCoverElement.paintedWidth + currentCoverElement.anchors.rightMargin
-                        anchors.bottom: currentCoverElement.bottom
-                        anchors.bottomMargin: 15
+                        Button {
+                            containmentMask: null
+                            text: "Read"
+                            id: readButton
+                            x: currentCoverElement.anchors.rightMargin + currentCoverElement.paintedWidth + currentCoverElement.anchors.rightMargin
+                            anchors.bottom: currentCoverElement.bottom
+                            anchors.bottomMargin: 15
 
-                        onClicked: comicOpener.triggerOpenCurrentComic()
+                            onClicked: comicOpener.triggerOpenCurrentComic()
                             background: Rectangle {
                                 implicitWidth: 100
                                 implicitHeight: 30
@@ -677,203 +637,243 @@ Rectangle {
                                 color: "white"
                                 text: readButton.text
                             }
+                        }
+
+
+                        DropShadow {
+                            anchors.fill: readButton
+                            transparentBorder: true
+                            horizontalOffset: 0
+                            verticalOffset: 0
+                            radius: 8.0
+                            //samples: 17
+                            color: "#AA000000"
+                            source: readButton
+                            visible: ((Qt.platform.os === "osx") ? false : true) && !readButton.pressed
+                        }
+                    }
+                }
+            }
+
+            GridView {
+                id:grid
+                objectName: "grid"
+                anchors.fill: parent
+                cellHeight: cellCustomHeight
+                header: currentComicView
+                focus: true
+                model: comicsList
+                delegate: appDelegate
+                anchors.topMargin: 0
+                anchors.bottomMargin: 10
+                anchors.leftMargin: 0
+                anchors.rightMargin: 0
+                pixelAligned: true
+                highlightFollowsCurrentItem: true
+
+                currentIndex: 0
+                cacheBuffer: 0
+
+                interactive: true
+
+                move: Transition {
+                    NumberAnimation { properties: "x,y"; duration: 250 }
+                }
+
+                moveDisplaced: Transition {
+                    NumberAnimation { properties: "x,y"; duration: 250 }
+                }
+
+                remove: Transition {
+                    ParallelAnimation {
+                        NumberAnimation { property: "opacity"; to: 0; duration: 250 }
+
+                    }
+                }
+
+                removeDisplaced: Transition {
+                    NumberAnimation { properties: "x,y"; duration: 250 }
+                }
+
+
+
+                displaced: Transition {
+                    NumberAnimation { properties: "x,y"; duration: 250 }
+                }
+
+                function numCellsPerRow() {
+                    return Math.floor(width / cellCustomWidth);
+                }
+
+                onWidthChanged: {
+                    calculateCellWidths(cellCustomWidth);
+                }
+
+                function calculateCellWidths(cWidth) {
+                    var wholeCells = Math.floor(width / cWidth);
+                    var rest = width - (cWidth * wholeCells)
+
+                    grid.cellWidth = cWidth + Math.floor(rest / wholeCells);
+                }
+
+                WheelHandler {
+                    onWheel: {
+                        if (grid.contentHeight <= grid.height) {
+                            return;
+                        }
+
+                        var newValue =  Math.min((grid.contentHeight - grid.height - (showCurrentComic ? 270 : 20)), (Math.max(grid.originY , grid.contentY - event.angleDelta.y)));
+                        grid.contentY = newValue;
+                    }
+                }
+
+                ScrollBar.vertical: ScrollBar {
+                    visible: grid.contentHeight > grid.height
+
+                    contentItem: Item {
+                        implicitWidth: 12
+                        implicitHeight: 26
+                        Rectangle {
+                            color: "#88424242"
+                            anchors.fill: parent
+                            anchors.topMargin: 6
+                            anchors.leftMargin: 3
+                            anchors.rightMargin: 2
+                            anchors.bottomMargin: 6
+                            border.color: "#AA313131"
+                            border.width: 1
+                            radius: 3.5
+                        }
+                    }
+                }
+
+                Keys.onPressed: {
+                    if (event.modifiers & Qt.ControlModifier || event.modifiers & Qt.ShiftModifier) {
+                        event.accepted = true
+                        return;
                     }
 
-
-                    DropShadow {
-                        anchors.fill: readButton
-                        transparentBorder: true
-                        horizontalOffset: 0
-                        verticalOffset: 0
-                        radius: 8.0
-                        //samples: 17
-                        color: "#AA000000"
-                        source: readButton
-                        visible: ((Qt.platform.os === "osx") ? false : true) && !readButton.pressed
+                    var numCells = grid.numCellsPerRow();
+                    var ci = 0;
+                    if (event.key === Qt.Key_Right) {
+                        ci = Math.min(grid.currentIndex+1,grid.count - 1);
                     }
-                }
-            }
-        }
+                    else if (event.key === Qt.Key_Left) {
+                        ci = Math.max(0,grid.currentIndex-1);
+                    }
+                    else if (event.key === Qt.Key_Up) {
+                        ci = Math.max(0,grid.currentIndex-numCells);
+                    }
+                    else if (event.key === Qt.Key_Down) {
+                        ci = Math.min(grid.currentIndex+numCells,grid.count - 1);
+                    } else {
+                        return;
+                    }
 
-        GridView {
-            id:grid
-            objectName: "grid"
-            anchors.fill: parent
-            cellHeight: cellCustomHeight
-            header: currentComicView
-            focus: true
-            model: comicsList
-            delegate: appDelegate
-            anchors.topMargin: 0
-            anchors.bottomMargin: 10
-            anchors.leftMargin: 0
-            anchors.rightMargin: 0
-            pixelAligned: true
-            highlightFollowsCurrentItem: true
-
-            currentIndex: 0
-            cacheBuffer: 0
-
-            interactive: true
-
-            move: Transition {
-                NumberAnimation { properties: "x,y"; duration: 250 }
-            }
-
-            moveDisplaced: Transition {
-                NumberAnimation { properties: "x,y"; duration: 250 }
-            }
-
-            remove: Transition {
-                ParallelAnimation {
-                    NumberAnimation { property: "opacity"; to: 0; duration: 250 }
-
-                }
-            }
-
-            removeDisplaced: Transition {
-                NumberAnimation { properties: "x,y"; duration: 250 }
-            }
-
-
-
-            displaced: Transition {
-                NumberAnimation { properties: "x,y"; duration: 250 }
-            }
-
-            function numCellsPerRow() {
-                return Math.floor(width / cellCustomWidth);
-            }
-
-           onWidthChanged: {
-                calculateCellWidths(cellCustomWidth);
-            }
-
-           function calculateCellWidths(cWidth) {
-               var wholeCells = Math.floor(width / cWidth);
-               var rest = width - (cWidth * wholeCells)
-
-               grid.cellWidth = cWidth + Math.floor(rest / wholeCells);
-           }
-
-           WheelHandler {
-               onWheel: {
-                   if (grid.contentHeight <= grid.height) {
-                       return;
-                   }
-
-                   var newValue =  Math.min((grid.contentHeight - grid.height - (showCurrentComic ? 270 : 20)), (Math.max(grid.originY , grid.contentY - event.angleDelta.y)));
-                   grid.contentY = newValue;
-               }
-           }
-
-           ScrollBar.vertical: ScrollBar {
-               visible: grid.contentHeight > grid.height
-
-               contentItem: Item {
-                   implicitWidth: 12
-                   implicitHeight: 26
-                   Rectangle {
-                       color: "#88424242"
-                       anchors.fill: parent
-                       anchors.topMargin: 6
-                       anchors.leftMargin: 3
-                       anchors.rightMargin: 2
-                       anchors.bottomMargin: 6
-                       border.color: "#AA313131"
-                       border.width: 1
-                       radius: 3.5
-                   }
-               }
-           }
-
-           Keys.onPressed: {
-               if (event.modifiers & Qt.ControlModifier || event.modifiers & Qt.ShiftModifier) {
-                   event.accepted = true
-                   return;
-               }
-
-               var numCells = grid.numCellsPerRow();
-               var ci = 0;
-               if (event.key === Qt.Key_Right) {
-                   ci = Math.min(grid.currentIndex+1,grid.count - 1);
-               }
-               else if (event.key === Qt.Key_Left) {
-                   ci = Math.max(0,grid.currentIndex-1);
-               }
-               else if (event.key === Qt.Key_Up) {
-                   ci = Math.max(0,grid.currentIndex-numCells);
-               }
-               else if (event.key === Qt.Key_Down) {
-                   ci = Math.min(grid.currentIndex+numCells,grid.count - 1);
-               } else {
-                   return;
-               }
-
-               event.accepted = true;
-               grid.currentIndex = -1
-               comicsSelectionHelper.clear();
-               currentIndexHelper.setCurrentIndex(ci);
-               grid.currentIndex = ci;
-           }
-        }
-    }
-}
-
-Rectangle {
-    id: info_container
-    objectName: "infoContainer"
-    SplitView.preferredWidth: 350
-    SplitView.minimumWidth: 350
-    SplitView.maximumWidth: 960
-    height: parent.height
-
-    color: infoBackgroundColor
-
-    visible: showInfo
-
-    Flickable{
-        id: infoFlickable
-        anchors.fill: parent
-        anchors.margins: 0
-
-        contentWidth: infoView.width
-        contentHeight: infoView.height
-
-        ComicInfoView {
-            id: infoView
-            width: info_container.width
-        }
-
-        WheelHandler {
-            onWheel: {
-                if (infoFlickable.contentHeight <= infoFlickable.height) {
-                    return;
+                    event.accepted = true;
+                    grid.currentIndex = -1
+                    comicsSelectionHelper.clear();
+                    currentIndexHelper.setCurrentIndex(ci);
+                    grid.currentIndex = ci;
                 }
 
-                var newValue =  Math.min((infoFlickable.contentHeight - infoFlickable.height), (Math.max(infoFlickable.originY , infoFlickable.contentY - event.angleDelta.y)));
-                infoFlickable.contentY = newValue;
-            }
-        }
-
-        ScrollBar.vertical: ScrollBar {
-            visible: infoFlickable.contentHeight > infoFlickable.height
-
-            contentItem: Item {
-                implicitWidth: 12
-                implicitHeight: 26
-                Rectangle {
-                    color: "#424246"
+                DropArea {
                     anchors.fill: parent
-                    anchors.topMargin: 6
-                    anchors.leftMargin: 5
-                    anchors.rightMargin: 4
-                    anchors.bottomMargin: 6
-                    radius: 2
+
+                    onEntered: drag => {
+                                   if(drag.hasUrls)
+                                   {
+                                       if(dropManager.canDropUrls(drag.urls, drag.action))
+                                       {
+                                           drag.accepted = true;
+                                       }else
+                                       drag.accepted = false;
+                                   }
+                                   else if (dropManager.canDropFormats(drag.formats)) {
+                                       drag.accepted = true;
+                                   } else
+                                   drag.accepted = false;
+                               }
+
+                    onDropped: drop => {
+                                   if(drop.hasUrls && dropManager.canDropUrls(drop.urls, drop.action))
+                                   {
+                                       dropManager.droppedFiles(drop.urls, drop.action);
+                                   }
+                                   else{
+                                       if (dropManager.canDropFormats(drop.formats))
+                                       {
+                                           var destItem = grid.itemAt(drop.x,drop.y + grid.contentY);
+                                           var destLocalX = grid.mapToItem(destItem,drop.x,drop.y + grid.contentY).x
+                                           var realIndex = grid.indexAt(drop.x,drop.y + grid.contentY);
+
+                                           if(realIndex === -1)
+                                           realIndex = grid.count - 1;
+
+                                           var destIndex = destLocalX < (grid.cellWidth / 2) ? realIndex : realIndex + 1;
+                                           dropManager.droppedComicsForResortingAt("", destIndex);
+                                       }
+                                   }
+                               }
                 }
             }
         }
     }
 
-}
+    Rectangle {
+        id: info_container
+        objectName: "infoContainer"
+        SplitView.preferredWidth: 350
+        SplitView.minimumWidth: 350
+        SplitView.maximumWidth: 960
+        height: parent.height
+
+        color: infoBackgroundColor
+
+        visible: showInfo
+
+        Flickable{
+            id: infoFlickable
+            anchors.fill: parent
+            anchors.margins: 0
+
+            contentWidth: infoView.width
+            contentHeight: infoView.height
+
+            ComicInfoView {
+                id: infoView
+                width: info_container.width
+            }
+
+            WheelHandler {
+                onWheel: {
+                    if (infoFlickable.contentHeight <= infoFlickable.height) {
+                        return;
+                    }
+
+                    var newValue =  Math.min((infoFlickable.contentHeight - infoFlickable.height), (Math.max(infoFlickable.originY , infoFlickable.contentY - event.angleDelta.y)));
+                    infoFlickable.contentY = newValue;
+                }
+            }
+
+            ScrollBar.vertical: ScrollBar {
+                visible: infoFlickable.contentHeight > infoFlickable.height
+
+                contentItem: Item {
+                    implicitWidth: 12
+                    implicitHeight: 26
+                    Rectangle {
+                        color: "#424246"
+                        anchors.fill: parent
+                        anchors.topMargin: 6
+                        anchors.leftMargin: 5
+                        anchors.rightMargin: 4
+                        anchors.bottomMargin: 6
+                        radius: 2
+                    }
+                }
+            }
+        }
+
+    }
 }
