@@ -139,6 +139,29 @@ void LibraryWindow::afterLaunchTasks()
     }
 }
 
+bool LibraryWindow::eventFilter(QObject *object, QEvent *event)
+{
+    if (this->isActiveWindow()) {
+        if (event->type() == QEvent::MouseButtonRelease) {
+            auto mouseEvent = static_cast<QMouseEvent *>(event);
+
+            if (mouseEvent->button() == Qt::ForwardButton) {
+                forwardAction->trigger();
+                event->accept();
+                return true;
+            }
+
+            if (mouseEvent->button() == Qt::BackButton) {
+                backAction->trigger();
+                event->accept();
+                return true;
+            }
+        }
+    }
+
+    return QMainWindow::eventFilter(object, event);
+}
+
 void LibraryWindow::createSettings()
 {
     settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor

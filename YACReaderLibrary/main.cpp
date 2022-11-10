@@ -269,6 +269,8 @@ int main(int argc, char **argv)
     }
 #endif
 
+    app.installEventFilter(mw);
+
     int ret = app.exec();
 
     QLOG_INFO() << "YACReaderLibrary closed with exit code :" << ret;
