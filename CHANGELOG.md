@@ -8,6 +8,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fixed drag&drop in the comics grid view.
 * Detect back/forward mouse buttons to move back and forward through the browsing history.
 
+### All apps
+* Run logger in a dedicated thread to avoid segfaults at application shutdown
+
 ## 9.10
 
 ### YACReader
