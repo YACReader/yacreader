@@ -4,6 +4,8 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ## WIP
 
+### YACReader
+*Fix segfault (or worse) when exiting YACReader while processing a comic
 ### YACReaderLibrary
 * Fixed drag&drop in the comics grid view.
 * Detect back/forward mouse buttons to move back and forward through the browsing history.

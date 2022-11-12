@@ -890,8 +890,10 @@ void PDFComic::renderPage(int page)
 #endif
         QByteArray ba;
         QBuffer buf(&ba);
+        buf.open(QIODevice::WriteOnly);
         img.save(&buf, "jpg", 96);
         _pages[page] = ba;
+        buf.close();
         emit imageLoaded(page);
         emit imageLoaded(page, _pages[page]);
     }
