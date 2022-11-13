@@ -808,8 +808,13 @@ void PDFComic::process()
         return;
     }
 #else
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    pdfComic = Poppler::Document::load(_path);
+#else
     auto _pdfComic = Poppler::Document::load(_path);
     pdfComic = std::unique_ptr<Poppler::Document>(_pdfComic);
+#endif
 
     if (!pdfComic) {
         moveToThread(QCoreApplication::instance()->thread());
@@ -877,7 +882,7 @@ void PDFComic::renderPage(int page)
     QImage img = pdfComic->getPage(page);
     if (!img.isNull()) {
 #else
-    std::unique_ptr<Poppler::Page> pdfpage (pdfComic->page(page));
+    std::unique_ptr<Poppler::Page> pdfpage(pdfComic->page(page));
     if (pdfpage) {
         QImage img = pdfpage->renderToImage(150, 150);
 #endif

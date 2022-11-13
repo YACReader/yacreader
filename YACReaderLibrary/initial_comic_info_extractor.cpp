@@ -27,7 +27,7 @@ void InitialComicInfoExtractor::extract()
 #ifndef NO_PDF
     if (fi.suffix().compare("pdf", Qt::CaseInsensitive) == 0) {
 #if defined Q_OS_MAC && defined USE_PDFKIT
-       auto pdfComic = std::make_unique<MacOSXPDFComic>();
+        auto pdfComic = std::make_unique<MacOSXPDFComic>();
         if (!pdfComic->openComic(_fileSource)) {
             return;
         }
@@ -64,7 +64,6 @@ void InitialComicInfoExtractor::extract()
                 saveCover(_target, p);
             } else if (_target != "") {
                 QLOG_WARN() << "Extracting cover: requested cover index greater than numPages " << _fileSource;
-
             }
         }
         return;

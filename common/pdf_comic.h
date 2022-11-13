@@ -5,6 +5,7 @@
 #include <QImage>
 #include <QFile>
 #include <QMutex>
+#include <QtGlobal>
 
 #if defined Q_OS_MAC && defined USE_PDFKIT
 class MacOSXPDFComic
@@ -45,6 +46,10 @@ private:
     QFile pdfFile;
 };
 #else
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <poppler-qt6.h>
+#else
 #include "poppler-qt5.h"
+#endif // QT_VERSION
 #endif // Q_OS_MAC
 #endif // PDF_COMIC_H

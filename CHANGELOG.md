@@ -12,6 +12,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ### All apps
 * Run logger in a dedicated thread to avoid segfaults at application shutdown
+* Add support for poppler-qt6 pdf backend
 
 ## 9.10
 

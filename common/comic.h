@@ -12,7 +12,7 @@
 #include "pdf_comic.h"
 #endif // NO_PDF
 class ComicDB;
-//#define EXTENSIONS << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp" Comic::getSupportedImageFormats()
+
 //#define EXTENSIONS_LITERAL << ".jpg" << ".jpeg" << ".png" << ".gif" << ".tiff" << ".tif" << ".bmp" //Comic::getSupportedImageLiteralFormats()
 class Comic : public QObject
 {
@@ -172,6 +172,7 @@ private:
     std::unique_ptr<Poppler::Document> pdfComic;
 #endif
     void renderPage(int page);
+
     // void run();
 
 public:

@@ -55,18 +55,31 @@ CONFIG(poppler) {
     LIBS += -L$$PWD/poppler/dependencies/bin
   }
   if(unix|mingw):!macx {
-    !contains(QT_CONFIG, no-pkg-config):packagesExist(poppler-qt5) {
-      message("Using system provided installation of poppler-qt5 found by pkg-config.")
-      CONFIG += link_pkgconfig
-      PKGCONFIG += poppler-qt5
-    } else:!macx:exists(/usr/include/poppler/qt5) {
-      message("Using system provided installation of poppler-qt5.")
-      INCLUDEPATH  += /usr/include/poppler/qt5
-      LIBS += -lpoppler-qt5
+    greaterThan (QT_MAJOR_VERSION, 5) {
+      !contains(QT_CONFIG, no-pkg-config):packagesExist(poppler-qt6) {
+        message("Using system provided installation of poppler-qt6 found by pkg-config.")
+        CONFIG += link_pkgconfig
+        PKGCONFIG += poppler-qt6
+      } else:!macx:exists(/usr/include/poppler/qt6) {
+        message("Using system provided installation of poppler-qt6.")
+        INCLUDEPATH  += /usr/include/poppler/qt6
+        LIBS += -lpoppler-qt6
+      } else {
+        error("Could not find poppler-qt6")
+      }
     } else {
-      error("Could not find poppler-qt5")
+      !contains(QT_CONFIG, no-pkg-config):packagesExist(poppler-qt5) {
+        message("Using system provided installation of poppler-qt5 found by pkg-config.")
+        CONFIG += link_pkgconfig
+        PKGCONFIG += poppler-qt5
+      } else:!macx:exists(/usr/include/poppler/qt5) {
+        message("Using system provided installation of poppler-qt5.")
+        INCLUDEPATH  += /usr/include/poppler/qt5
+        LIBS += -lpoppler-qt5
+      } else {
+        error("Could not find poppler-qt5")
+      }
     }
-
   }
   unix:macx {
     error (Poppler backend is currently not supported on macOS)
