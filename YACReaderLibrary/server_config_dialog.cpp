@@ -167,8 +167,13 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     if (settings->value(SERVER_ON, true).toBool()) {
         check->setChecked(true);
         generateQR();
-    } else
+    } else {
+        ip->setDisabled(true);
+        port->setDisabled(true);
+        accept->setDisabled(true);
+
         check->setChecked(false);
+    }
 
     performanceWorkaroundCheck->setChecked(settings->value(REMOTE_BROWSE_PERFORMANCE_WORKAROUND, false).toBool());
 
@@ -184,14 +189,18 @@ void ServerConfigDialog::enableServer(int status)
     settings->beginGroup("libraryConfig");
 
     if (status == Qt::Checked) {
+        ip->setDisabled(false);
+        port->setDisabled(false);
+        accept->setDisabled(false);
         httpServer->start();
         this->generateQR();
         settings->setValue(SERVER_ON, true);
     } else {
         httpServer->stop();
         qrCode->setPixmap(QPixmap());
-        ip->clear();
-        port->setText("");
+        ip->setDisabled(true);
+        port->setDisabled(true);
+        accept->setDisabled(true);
         settings->setValue(SERVER_ON, false);
     }
     settings->endGroup();
