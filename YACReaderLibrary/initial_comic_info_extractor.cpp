@@ -41,7 +41,7 @@ void InitialComicInfoExtractor::extract()
         auto pdfComic = Poppler::Document::load(_fileSource);
 #else
         auto _pdfComic = Poppler::Document::load(_fileSource);
-        pdfComic = std::unique_ptr<Poppler::Document>(_pdfComic);
+        auto pdfComic = std::unique_ptr<Poppler::Document>(_pdfComic);
 #endif
 #endif
         if (!pdfComic) {
