@@ -27,38 +27,31 @@ void InitialComicInfoExtractor::extract()
 #ifndef NO_PDF
     if (fi.suffix().compare("pdf", Qt::CaseInsensitive) == 0) {
 #if defined Q_OS_MAC && defined USE_PDFKIT
-        MacOSXPDFComic *pdfComic = new MacOSXPDFComic();
+        auto pdfComic = std::make_unique<MacOSXPDFComic>();
         if (!pdfComic->openComic(_fileSource)) {
-            delete pdfComic;
-            // QImage p;
-            // p.load(":/images/notCover.png");
-            // p.save(_target);
             return;
         }
 #elif defined USE_PDFIUM
-        auto pdfComic = new PdfiumComic();
+        auto pdfComic = std::make_unique<PdfiumComic>();
         if (!pdfComic->openComic(_fileSource)) {
-            delete pdfComic;
             return;
         }
 #else
-        Poppler::Document *pdfComic = Poppler::Document::load(_fileSource);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        auto pdfComic = Poppler::Document::load(_fileSource);
+#else
+        auto _pdfComic = Poppler::Document::load(_fileSource);
+        auto pdfComic = std::unique_ptr<Poppler::Document>(_pdfComic);
 #endif
-
+#endif
         if (!pdfComic) {
             QLOG_WARN() << "Extracting cover: unable to open PDF file " << _fileSource;
-            // delete pdfComic; //TODO check if the delete is needed
-            pdfComic = 0;
-            // QImage p;
-            // p.load(":/images/notCover.png");
-            // p.save(_target);
             return;
         }
 #if !defined USE_PDFKIT && !defined USE_PDFIUM
         // poppler only, not mac
         if (pdfComic->isLocked()) {
             QLOG_WARN() << "Extracting cover: unable to open PDF file " << _fileSource;
-            delete pdfComic;
             return;
         }
 #endif
@@ -75,11 +68,7 @@ void InitialComicInfoExtractor::extract()
                 saveCover(_target, p);
             } else if (_target != "") {
                 QLOG_WARN() << "Extracting cover: requested cover index greater than numPages " << _fileSource;
-                // QImage p;
-                // p.load(":/images/notCover.png");
-                // p.save(_target);
             }
-            delete pdfComic;
         }
         return;
     }
