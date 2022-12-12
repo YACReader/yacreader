@@ -3,6 +3,7 @@
 #include <QSysInfo>
 #include <QDir>
 #include <QCommandLineParser>
+#include <QImageReader>
 
 #include "comic_db.h"
 #include "db_helper.h"
@@ -80,6 +81,8 @@ int main(int argc, char **argv)
     qInstallMessageHandler(messageHandler);
 
     QCoreApplication app(argc, argv);
+
+    QImageReader::setAllocationLimit(0);
 
     app.setApplicationName("YACReaderLibrary");
     app.setOrganizationName("YACReader");

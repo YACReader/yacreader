@@ -11,6 +11,7 @@
 #include <QLibrary>
 #endif
 #include <QCommandLineParser>
+#include <QImageReader>
 
 #include "yacreader_global.h"
 #include "yacreader_http_server.h"
@@ -129,6 +130,8 @@ int main(int argc, char **argv)
 
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+
+    QImageReader::setAllocationLimit(0);
 
     QApplication app(argc, argv);
 
