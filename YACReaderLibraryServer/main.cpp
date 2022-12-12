@@ -1,4 +1,4 @@
-//#include <QtCore>
+// #include <QtCore>
 #include <QCoreApplication>
 #include <QSysInfo>
 #include <QDir>

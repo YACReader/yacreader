@@ -59,7 +59,7 @@
 
 #include "comic_vine_dialog.h"
 #include "api_key_dialog.h"
-//#include "yacreader_social_dialog.h"
+// #include "yacreader_social_dialog.h"
 
 #include "comics_view.h"
 
