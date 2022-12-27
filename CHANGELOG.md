@@ -5,7 +5,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ## WIP
 
 ### YACReader
-*Fix segfault (or worse) when exiting YACReader while processing a comic
+* Fix segfault (or worse) when exiting YACReader while processing a comic
+* Fix last read page calculation in double page mode.
+
 ### YACReaderLibrary
 * Fixed drag&drop in the comics grid view.
 * Detect back/forward mouse buttons to move back and forward through the browsing history.
@@ -13,6 +15,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ### All apps
 * Run logger in a dedicated thread to avoid segfaults at application shutdown
 * Add support for poppler-qt6 pdf backend
+* Remove image allocation limit.
 
 ## 9.10
 
