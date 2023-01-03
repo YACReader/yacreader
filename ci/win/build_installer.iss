@@ -116,10 +116,6 @@ LaunchYACReader=Start YACreader after finishing installation
 
 [Run]
 Filename: {tmp}\vc_redist.{#PLATFORM}.exe; \
-Parameters: "/uninstall /quiet /norestart"; \
-StatusMsg: "Uninstalling VC++ Redistributables..."
-
-Filename: {tmp}\vc_redist.{#PLATFORM}.exe; \
 Parameters: "/install /quiet /norestart"; \
 StatusMsg: "Installing VC++ Redistributables..."
 
