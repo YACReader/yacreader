@@ -11,7 +11,7 @@
 #include <QGraphicsItemAnimation>
 #include <QTimeLine>
 // TODO: is QGLWidget needed here???
-//#include <QGLWidget>
+// #include <QGLWidget>
 #include <QTimer>
 #include <QElapsedTimer>
 #include <QToolButton>

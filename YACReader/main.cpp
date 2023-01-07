@@ -2,6 +2,7 @@
 #include <QDir>
 #include <QTranslator>
 #include <QCommandLineParser>
+#include <QImageReader>
 
 #include "main_window_viewer.h"
 #include "configuration.h"
@@ -96,6 +97,10 @@ int main(int argc, char *argv[])
 
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    QImageReader::setAllocationLimit(0);
+#endif
 
 #if defined(_MSC_VER) && defined(_DEBUG)
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);

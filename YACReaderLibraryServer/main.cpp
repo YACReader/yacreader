@@ -1,8 +1,9 @@
-//#include <QtCore>
+// #include <QtCore>
 #include <QCoreApplication>
 #include <QSysInfo>
 #include <QDir>
 #include <QCommandLineParser>
+#include <QImageReader>
 
 #include "comic_db.h"
 #include "db_helper.h"
@@ -80,6 +81,10 @@ int main(int argc, char **argv)
     qInstallMessageHandler(messageHandler);
 
     QCoreApplication app(argc, argv);
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    QImageReader::setAllocationLimit(0);
+#endif
 
     app.setApplicationName("YACReaderLibrary");
     app.setOrganizationName("YACReader");

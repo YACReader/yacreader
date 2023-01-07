@@ -12,8 +12,8 @@
 #include "pdf_comic.h"
 #endif // NO_PDF
 class ComicDB;
-//#define EXTENSIONS << "*.jpg" << "*.jpeg" << "*.png" << "*.gif" << "*.tiff" << "*.tif" << "*.bmp" Comic::getSupportedImageFormats()
-//#define EXTENSIONS_LITERAL << ".jpg" << ".jpeg" << ".png" << ".gif" << ".tiff" << ".tif" << ".bmp" //Comic::getSupportedImageLiteralFormats()
+
+// #define EXTENSIONS_LITERAL << ".jpg" << ".jpeg" << ".png" << ".gif" << ".tiff" << ".tif" << ".bmp" //Comic::getSupportedImageLiteralFormats()
 class Comic : public QObject
 {
     Q_OBJECT
@@ -165,13 +165,14 @@ class PDFComic : public Comic
 private:
 // pdf
 #if defined Q_OS_MAC && defined USE_PDFKIT
-    MacOSXPDFComic *pdfComic;
+    std::unique_ptr<MacOSXPDFComic> pdfComic;
 #elif defined USE_PDFIUM
-    PdfiumComic *pdfComic;
+    std::unique_ptr<PdfiumComic> pdfComic;
 #else
-    Poppler::Document *pdfComic;
+    std::unique_ptr<Poppler::Document> pdfComic;
 #endif
     void renderPage(int page);
+
     // void run();
 
 public:

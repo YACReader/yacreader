@@ -234,7 +234,7 @@ jobs:
     qt_version: '5.15.2'
     qt_spec: 'msvc2019_64'
     qt_aqt_spec: 'win64_msvc2019_64'
-    vc_redist_url: 'https://aka.ms/vs/16/release/vc_redist.x64.exe'
+    vc_redist_url: 'https://aka.ms/vs/17/release/vc_redist.x64.exe'
     vc_redist_file_name: 'vc_redist.x64.exe'
     vc_vars: 'vcvars64.bat'
 
@@ -249,7 +249,7 @@ jobs:
     qt_version: '6.3.1'
     qt_spec: 'msvc2019_64'
     qt_aqt_spec: 'win64_msvc2019_64'
-    vc_redist_url: 'https://aka.ms/vs/16/release/vc_redist.x64.exe'
+    vc_redist_url: 'https://aka.ms/vs/17/release/vc_redist.x64.exe'
     vc_redist_file_name: 'vc_redist.x64.exe'
     vc_vars: 'vcvars64.bat'
 
@@ -264,7 +264,7 @@ jobs:
     qt_version: '5.15.2'
     qt_spec: 'msvc2019'
     qt_aqt_spec: 'win32_msvc2019'
-    vc_redist_url: 'https://aka.ms/vs/16/release/vc_redist.x86.exe'
+    vc_redist_url: 'https://aka.ms/vs/17/release/vc_redist.x86.exe'
     vc_redist_file_name: 'vc_redist.x86.exe'
     vc_vars: 'vcvars32.bat'
 

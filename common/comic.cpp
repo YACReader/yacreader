@@ -796,24 +796,27 @@ bool PDFComic::load(const QString &path, const ComicDB &comic)
 void PDFComic::process()
 {
 #if defined Q_OS_MAC && defined USE_PDFKIT
-    pdfComic = new MacOSXPDFComic();
+    pdfComic = std::make_unique<MacOSXPDFComic>();
     if (!pdfComic->openComic(_path)) {
-        delete pdfComic;
         emit errorOpening();
         return;
     }
 #elif defined USE_PDFIUM
-    pdfComic = new PdfiumComic();
+    pdfComic = std::make_unique<PdfiumComic>();
     if (!pdfComic->openComic(_path)) {
-        delete pdfComic;
         emit errorOpening();
         return;
     }
 #else
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     pdfComic = Poppler::Document::load(_path);
+#else
+    auto _pdfComic = Poppler::Document::load(_path);
+    pdfComic = std::unique_ptr<Poppler::Document>(_pdfComic);
+#endif
+
     if (!pdfComic) {
-        // delete pdfComic;
-        // pdfComic = 0;
         moveToThread(QCoreApplication::instance()->thread());
         emit errorOpening();
         return;
@@ -824,7 +827,6 @@ void PDFComic::process()
         return;
     }
 
-    // pdfComic->setRenderHint(Poppler::Document::Antialiasing, true);
     pdfComic->setRenderHint(Poppler::Document::TextAntialiasing, true);
 #endif
 
@@ -853,7 +855,6 @@ void PDFComic::process()
     int buffered_index = _index;
     for (int i = buffered_index; i < nPages; i++) {
         if (_invalidated) {
-            delete pdfComic;
             moveToThread(QCoreApplication::instance()->thread());
             return;
         }
@@ -862,14 +863,12 @@ void PDFComic::process()
     }
     for (int i = 0; i < buffered_index; i++) {
         if (_invalidated) {
-            delete pdfComic;
             moveToThread(QCoreApplication::instance()->thread());
             return;
         }
         renderPage(i);
     }
 
-    delete pdfComic;
     moveToThread(QCoreApplication::instance()->thread());
     emit imagesLoaded();
 }
@@ -883,15 +882,16 @@ void PDFComic::renderPage(int page)
     QImage img = pdfComic->getPage(page);
     if (!img.isNull()) {
 #else
-    Poppler::Page *pdfpage = pdfComic->page(page);
+    std::unique_ptr<Poppler::Page> pdfpage(pdfComic->page(page));
     if (pdfpage) {
         QImage img = pdfpage->renderToImage(150, 150);
-        delete pdfpage;
 #endif
         QByteArray ba;
         QBuffer buf(&ba);
+        buf.open(QIODevice::WriteOnly);
         img.save(&buf, "jpg", 96);
         _pages[page] = ba;
+        buf.close();
         emit imageLoaded(page);
         emit imageLoaded(page, _pages[page]);
     }

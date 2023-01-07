@@ -11,6 +11,7 @@
 #include <QLibrary>
 #endif
 #include <QCommandLineParser>
+#include <QImageReader>
 
 #include "yacreader_global.h"
 #include "yacreader_http_server.h"
@@ -129,6 +130,10 @@ int main(int argc, char **argv)
 
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    QImageReader::setAllocationLimit(0);
+#endif
 
     QApplication app(argc, argv);
 
@@ -268,6 +273,8 @@ int main(int argc, char **argv)
         OSXHideDockIcon();
     }
 #endif
+
+    app.installEventFilter(mw);
 
     int ret = app.exec();
 

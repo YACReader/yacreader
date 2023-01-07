@@ -59,7 +59,7 @@
 
 #include "comic_vine_dialog.h"
 #include "api_key_dialog.h"
-//#include "yacreader_social_dialog.h"
+// #include "yacreader_social_dialog.h"
 
 #include "comics_view.h"
 
@@ -137,6 +137,29 @@ void LibraryWindow::afterLaunchTasks()
         WhatsNewController whatsNewController;
         whatsNewController.showWhatsNewIfNeeded(this);
     }
+}
+
+bool LibraryWindow::eventFilter(QObject *object, QEvent *event)
+{
+    if (this->isActiveWindow()) {
+        if (event->type() == QEvent::MouseButtonRelease) {
+            auto mouseEvent = static_cast<QMouseEvent *>(event);
+
+            if (mouseEvent->button() == Qt::ForwardButton) {
+                forwardAction->trigger();
+                event->accept();
+                return true;
+            }
+
+            if (mouseEvent->button() == Qt::BackButton) {
+                backAction->trigger();
+                event->accept();
+                return true;
+            }
+        }
+    }
+
+    return QMainWindow::eventFilter(object, event);
 }
 
 void LibraryWindow::createSettings()

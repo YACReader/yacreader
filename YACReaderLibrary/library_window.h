@@ -434,6 +434,8 @@ public slots:
 
     void afterLaunchTasks();
 
+    bool eventFilter(QObject *object, QEvent *event) override;
+
 private:
     //! @brief Exits search mode if it is active.
     //! @return true If the search mode was active when this function was called.
