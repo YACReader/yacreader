@@ -2,7 +2,7 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
-## WIP
+## 9.11
 
 ### YACReader
 * Fix segfault (or worse) when exiting YACReader while processing a comic.
