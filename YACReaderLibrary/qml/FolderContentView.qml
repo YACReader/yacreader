@@ -428,7 +428,7 @@ Rectangle {
                                  return;
                              }
 
-                             var newValue =  Math.min((grid.contentHeight - grid.height - (true ? main.continuReadingHeight : main.topContentMargin)), (Math.max(grid.originY , grid.contentY - event.angleDelta.y)));
+                             var newValue =  Math.min((grid.contentHeight - grid.height + grid.originY), (Math.max(grid.originY , grid.contentY - event.angleDelta.y)));
                              grid.contentY = newValue;
                          }
             }

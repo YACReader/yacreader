@@ -715,7 +715,7 @@ SplitView {
                             return;
                         }
 
-                        var newValue =  Math.min((grid.contentHeight - grid.height - (showCurrentComic ? 270 : 20)), (Math.max(grid.originY , grid.contentY - event.angleDelta.y)));
+                        var newValue =  Math.min((grid.contentHeight - grid.height + grid.originY), (Math.max(grid.originY , grid.contentY - event.angleDelta.y)));
                         grid.contentY = newValue;
                     }
                 }
