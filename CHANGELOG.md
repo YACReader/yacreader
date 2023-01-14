@@ -2,6 +2,11 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## WIP
+
+### YACReaderLibrary
+* Fix scroll in grid views when using Qt6 builds.
+
 ## 9.11
 
 ### YACReader
