@@ -203,7 +203,6 @@ void ComicInfo::deleteMetadata()
     title = QVariant();
 
     coverPage = QVariant();
-    numPages = QVariant();
 
     number = QVariant();
     isBis = QVariant();
