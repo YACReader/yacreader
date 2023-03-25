@@ -10,11 +10,13 @@
 #include <QFormLayout>
 #include <QBitmap>
 #include <QPainter>
+#include <QPixmap>
 
 #include "yacreader_http_server.h"
 #include "yacreader_global_gui.h"
 
 #include "qnaturalsorting.h"
+#include "qrcodegen.hpp"
 
 #include <algorithm>
 
@@ -271,20 +273,31 @@ void ServerConfigDialog::generateQR(const QString &serverAddress)
 {
     qrCode->clear();
 
-    QrEncoder encoder;
-    QBitmap image = encoder.encode(serverAddress);
-    if (image.isNull()) {
-        qrCode->setText(tr("Could not load libqrencode."));
-    } else {
-        image = image.scaled(qrCode->size() * devicePixelRatioF());
+    qrcodegen::QrCode code = qrcodegen::QrCode::encodeText(
+            serverAddress.toLocal8Bit(),
+            qrcodegen::QrCode::Ecc::LOW);
 
-        QPixmap pMask(image.size());
-        pMask.fill(QColor(66, 66, 66));
-        pMask.setMask(image.createMaskFromColor(Qt::white));
-        pMask.setDevicePixelRatio(devicePixelRatioF());
-
-        qrCode->setPixmap(pMask);
+    QBitmap image(code.getSize(), code.getSize());
+    image.fill();
+    QPainter painter;
+    painter.begin(&image);
+    for (int x = 0; x < code.getSize(); x++) {
+        for (int y = 0; y < code.getSize(); y++) {
+            if (code.getModule(x, y)) {
+                painter.drawPoint(x, y);
+            }
+        }
     }
+    painter.end();
+
+    image = image.scaled(qrCode->size() * devicePixelRatioF());
+
+    QPixmap pMask(image.size());
+    pMask.fill(QColor(66, 66, 66));
+    pMask.setMask(image.createMaskFromColor(Qt::white));
+    pMask.setDevicePixelRatio(devicePixelRatioF());
+
+    qrCode->setPixmap(pMask);
 }
 
 void ServerConfigDialog::regenerateQR(const QString &ip)
@@ -304,47 +317,4 @@ void ServerConfigDialog::updatePort()
     httpServer->start();
 
     generateQR(ip->currentText() + ":" + port->text());
-}
-
-QrEncoder::QrEncoder()
-{
-#ifdef Q_OS_MACOS
-    QLibrary encoder(QCoreApplication::applicationDirPath() + "/utils/libqrencode.dylib");
-#else
-    QLibrary encoder("qrencode");
-#ifdef Q_OS_UNIX
-    encoder.load();
-    // Fallback - this loads libqrencode.4.x.x.so when libqrencode.so is not available
-    if (!encoder.isLoaded()) {
-        encoder.setFileNameAndVersion("qrencode", 4);
-    }
-#endif
-#endif
-    QRcode_encodeString8bit = (_QRcode_encodeString8bit)encoder.resolve("QRcode_encodeString8bit");
-    QRcode_free = (_QRcode_free)encoder.resolve("QRcode_free");
-}
-
-QBitmap QrEncoder::encode(const QString &string)
-{
-    if (!QRcode_encodeString8bit) {
-        return QBitmap();
-    }
-    QRcode *code;
-    code = QRcode_encodeString8bit(string.toUtf8().data(), 0, 0);
-    QBitmap result(code->width, code->width);
-    result.fill();
-    /* convert to QBitmap */
-    QPainter painter;
-    painter.begin(&result);
-    unsigned char *pointer = code->data;
-    for (int x = 0; x < code->width; x++) {
-        for (int y = 0; y < code->width; y++) {
-            if ((*pointer++ & 0x1) == 1) {
-                painter.drawPoint(x, y);
-            }
-        }
-    }
-    painter.end();
-    QRcode_free(code);
-    return result;
 }

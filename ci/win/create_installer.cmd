@@ -37,7 +37,6 @@ IF "%2"=="7z" (
 
 mkdir openssl
 
-copy %src_path%\dependencies\qrencode\win\%1\qrencode.dll .
 copy %src_path%\dependencies\pdfium\win\%1\pdfium.dll .
 copy %src_path%\dependencies\openssl\win\%1\* .\openssl\
 
@@ -70,7 +69,7 @@ if "%~5" == "" (
 		iscc /DVERSION=%VERSION% /DPLATFORM=%1 /DCOMPRESSED_ARCHIVE_BACKEND=%2 /DBUILD_NUMBER=%3 /DCODE_SIGN=true build_installer_qt6.iss "/Ssigntool=$qC:\Program Files (x86)\Microsoft SDKs\ClickOnce\SignTool\SignTool.exe$q sign /f %5 /p %6 $f" || exit /b
 	) else (
 		iscc /DVERSION=%VERSION% /DPLATFORM=%1 /DCOMPRESSED_ARCHIVE_BACKEND=%2 /DBUILD_NUMBER=%3 /DCODE_SIGN=true build_installer.iss "/Ssigntool=$qC:\Program Files (x86)\Microsoft SDKs\ClickOnce\SignTool\SignTool.exe$q sign /f %5 /p %6 $f" || exit /b
-	)	
+	)
 )
 echo "iscc done!"
 
