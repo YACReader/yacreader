@@ -262,6 +262,7 @@ include(../compressed_archive/libarchive/libarchive-wrapper.pri)
 include(./comic_vine/comic_vine.pri)
 include(../third_party/QsLog/QsLog.pri)
 include(../shortcuts_management/shortcuts_management.pri)
+include(../third_party/QrCode/QrCode.pri)
 
 RESOURCES += images.qrc files.qrc
 win32:RESOURCES += images_win.qrc

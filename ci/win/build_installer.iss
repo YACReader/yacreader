@@ -72,16 +72,15 @@ Source:iconengines\*;  DestDir: {app}\iconengines\
 Source:imageformats\*;  DestDir: {app}\imageformats\
 Source:mediaservice\*;  DestDir: {app}\mediaservice\
 Source:platforms\*;  DestDir: {app}\platforms\
-Source:playlistformats\*;  DestDir: {app}\playlistformats\     
-Source:qmltooling\*;  DestDir: {app}\qmltooling\          
-Source:scenegraph\*;  DestDir: {app}\scenegraph\                         
+Source:playlistformats\*;  DestDir: {app}\playlistformats\
+Source:qmltooling\*;  DestDir: {app}\qmltooling\
+Source:scenegraph\*;  DestDir: {app}\scenegraph\
 Source:sqldrivers\qsqlite.dll;  DestDir: {app}\sqldrivers\
-Source:translations\*;  DestDir: {app}\translations\    
-Source:styles\*;  DestDir: {app}\styles\            
+Source:translations\*;  DestDir: {app}\translations\
+Source:styles\*;  DestDir: {app}\styles\
 
 ;Libs
 Source: pdfium.dll; DestDir: {app}
-Source: qrencode.dll; DestDir: {app}
 Source: openssl\*; DestDir: {app}
 
 ;vcredist
@@ -95,7 +94,7 @@ Source: utils\7z.dll; DestDir: {app}\utils\
 Source: YACReader.exe; DestDir: {app}; Permissions: everyone-full
 Source: YACReaderLibrary.exe; DestDir: {app}; Permissions: everyone-full; Tasks:
 Source: YACReaderLibraryServer.exe; DestDir: {app}; Permissions: everyone-full; Tasks:
- 
+
 ;License
 Source: README.md; DestDir: {app}; Flags: isreadme
 Source: COPYING.txt; DestDir: {app}
@@ -149,7 +148,7 @@ procedure InitializeWizard();
 begin
 
   URLLabel := TNewStaticText.Create(WizardForm);
-  URLLabel.Caption:='Make a DONATION/Haz una DONACIÓN';
+  URLLabel.Caption:='Make a DONATION/Haz una DONACIï¿½N';
   URLLabel.Cursor:=crHand;
   URLLabel.OnClick:=@URLLabelOnClick;
   URLLabel.Parent:=WizardForm;
