@@ -1,8 +1,3 @@
-/**
-  @file
-  @author Stefan Frings
-*/
-
 #include "requestmapper.h"
 #include "static.h"
 #include "staticfilecontroller.h"
