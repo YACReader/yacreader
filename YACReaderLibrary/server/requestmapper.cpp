@@ -21,7 +21,6 @@
 #include "controllers/v2/folderinfocontroller_v2.h"
 #include "controllers/v2/pagecontroller_v2.h"
 #include "controllers/v2/updatecomiccontroller_v2.h"
-#include "controllers/v2/errorcontroller_v2.h"
 #include "controllers/v2/comicdownloadinfocontroller_v2.h"
 #include "controllers/v2/synccontroller_v2.h"
 #include "controllers/v2/foldercontentcontroller_v2.h"
