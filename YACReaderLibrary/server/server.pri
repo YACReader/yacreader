@@ -9,6 +9,7 @@ DEPENDPATH += $$PWD/controllers/v2
 
 
 HEADERS += \
+    $$PWD/controllers/v2/searchcontroller_v2.h \
     $$PWD/static.h \
     $$PWD/requestmapper.h \
     $$PWD/yacreader_http_server.h \
@@ -53,6 +54,7 @@ HEADERS += \
 
 
 SOURCES += \
+    $$PWD/controllers/v2/searchcontroller_v2.cpp \
     $$PWD/static.cpp \
     $$PWD/requestmapper.cpp \
     $$PWD/yacreader_http_server.cpp \

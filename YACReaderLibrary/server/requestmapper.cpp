@@ -34,6 +34,7 @@
 #include "controllers/v2/readinglistinfocontroller_v2.h"
 #include "controllers/v2/comicfullinfocontroller_v2.h"
 #include "controllers/v2/comiccontrollerinreadinglist_v2.h"
+#include "controllers/v2/searchcontroller_v2.h"
 
 #include "controllers/webui/statuspagecontroller.h"
 
@@ -257,6 +258,7 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
     QRegExp readingLists("/v2/library/.+/reading_lists/?");
     QRegExp readingListContent("/v2/library/.+/reading_list/[0-9]+/content/?");
     QRegExp readingListInfo("/v2/library/.+/reading_list/[0-9]+/info/?");
+    QRegExp search("/v2/library/.+/search/?");
 
     QRegExp sync("/v2/sync");
 
@@ -318,6 +320,8 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
                     ReadingListInfoControllerV2().service(request, response);
                 } else if (tagInfo.exactMatch(path)) {
                     TagInfoControllerV2().service(request, response);
+                } else if (search.exactMatch(path)) {
+                    SearchController().service(request, response);
                 }
             } else {
                 // response.writeText(library.cap(1));
