@@ -12,11 +12,6 @@ DEFINES += YACREADER
 include (../config.pri)
 include (../dependencies/pdf_backend.pri)
 
-unix:haiku {
-  DEFINES += _BSD_SOURCE
-  LIBS    += -lnetwork -lbsd
-}
-
 CONFIG(force_angle) {
     contains(QMAKE_TARGET.arch, x86_64) {
       Release:DESTDIR = ../release64_angle

@@ -18,11 +18,6 @@ DEFINES += SERVER_RELEASE YACREADER_LIBRARY
 include (../config.pri)
 include (../dependencies/pdf_backend.pri)
 
-unix:haiku {
-  DEFINES += _BSD_SOURCE
-  LIBS    += -lnetwork -lbsd
-}
-
 INCLUDEPATH += ../common/gl
 
 # there are two builds for Windows, Desktop OpenGL based and ANGLE OpenGL ES based

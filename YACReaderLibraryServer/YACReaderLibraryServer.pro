@@ -15,6 +15,7 @@ DEFINES += SERVER_RELEASE YACREADER_LIBRARY
 # do a basic dependency check
 include(headless_config.pri)
 include(../dependencies/pdf_backend.pri)
+include(../third_party/QrCode/QrCode.pri)
 
 greaterThan(QT_MAJOR_VERSION, 5): QT += core5compat
 
@@ -30,11 +31,6 @@ win32 {
 macx {
   LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
   CONFIG += objective_c
-}
-
-unix:haiku {
-  DEFINES += _BSD_SOURCE
-  LIBS    += -lnetwork -lbsd
 }
 
 #CONFIG += release
