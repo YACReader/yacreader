@@ -63,7 +63,7 @@ HEADERS += ../YACReaderLibrary/library_creator.h \
            ../YACReaderLibrary/comic_files_manager.h \
            console_ui_library_creator.h \
            libraries_updater.h \
-           ../YACReaderLibrary/ip_config_helper.h
+           ../YACReaderLibrary/ip_config_helper.h \
            ../YACReaderLibrary/db/query_lexer.h \
            ../YACReaderLibrary/db/query_parser.h \
            ../YACReaderLibrary/db/search_query.h
@@ -92,7 +92,7 @@ SOURCES += ../YACReaderLibrary/library_creator.cpp \
            console_ui_library_creator.cpp \
            main.cpp \
            libraries_updater.cpp \
-           ../YACReaderLibrary/ip_config_helper.cpp
+           ../YACReaderLibrary/ip_config_helper.cpp \
            ../YACReaderLibrary/db/query_lexer.cpp \
            ../YACReaderLibrary/db/query_parser.cpp \
            ../YACReaderLibrary/db/search_query.cpp \
