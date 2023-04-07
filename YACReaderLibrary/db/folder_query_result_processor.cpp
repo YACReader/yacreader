@@ -1,13 +1,9 @@
 #include "folder_query_result_processor.h"
 
 #include "folder_item.h"
-#include "qnaturalsorting.h"
-#include "yacreader_global_gui.h"
-#include "query_parser.h"
 #include "folder_model.h"
 #include "data_base_management.h"
-
-#include "QsLog.h"
+#include "search_query.h"
 
 #include <QSqlQuery>
 #include <QSqlDatabase>
@@ -20,7 +16,7 @@ YACReader::FolderQueryResultProcessor::FolderQueryResultProcessor(FolderModel *m
 {
 }
 
-void YACReader::FolderQueryResultProcessor::createModelData(const QString &filter, bool includeComics)
+void YACReader::FolderQueryResultProcessor::createModelData(const QString &filter)
 {
     querySearchQueue.cancelPending();
 
@@ -28,33 +24,13 @@ void YACReader::FolderQueryResultProcessor::createModelData(const QString &filte
         QString connectionName = "";
         {
             QSqlDatabase db = DataBaseManagement::loadDatabase(model->getDatabase());
+            try {
+                auto query = foldersSearchQuery(db, filter);
 
-            QSqlQuery selectQuery(db); // TODO check
-            if (!includeComics) {
-                selectQuery.prepare("select * from folder where id <> 1 and upper(name) like upper(:filter) order by parentId,name ");
-                selectQuery.bindValue(":filter", "%%" + filter + "%%");
-            } else {
-                std::string queryString("SELECT DISTINCT f.id, f.parentId, f.name, f.path, f.finished, f.completed "
-                                        "FROM folder f LEFT JOIN comic c ON (f.id = c.parentId) "
-                                        "INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE ");
-
-                try {
-                    QueryParser parser;
-                    auto result = parser.parse(filter.toStdString());
-                    result.buildSqlString(queryString);
-
-                    queryString += " AND f.id <> 1 ORDER BY f.parentId,f.name";
-
-                    selectQuery.prepare(queryString.c_str());
-                    result.bindValues(selectQuery);
-
-                    selectQuery.exec();
-
-                    setupFilteredModelData(selectQuery);
-                } catch (const std::exception &e) {
-                    // Do nothing, uncomplete search string will end here and it is part of how the QueryParser works
-                    // I don't like the idea of using exceptions for this though
-                }
+                setupFilteredModelData(query);
+            } catch (const std::exception &e) {
+                // Do nothing, uncomplete search string will end here and it is part of how the QueryParser works
+                // I don't like the idea of using exceptions for this though
             }
 
             connectionName = db.connectionName();

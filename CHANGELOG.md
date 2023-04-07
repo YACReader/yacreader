@@ -8,6 +8,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fix scroll in grid views when using Qt6 builds.
 * Fix deleting metadata from comics also deleted the number of pages info.
 
+### Server
+* New search API that exposes the search engine.
+
 ## 9.11
 
 ### YACReader

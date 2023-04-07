@@ -2415,7 +2415,7 @@ void LibraryWindow::toNormal()
 void LibraryWindow::setSearchFilter(QString filter)
 {
     if (!filter.isEmpty()) {
-        folderQueryResultProcessor->createModelData(filter, true);
+        folderQueryResultProcessor->createModelData(filter);
         comicQueryResultProcessor.createModelData(filter, foldersModel->getDatabase());
     } else if (status == LibraryWindow::Searching) { // if no searching, then ignore this
         clearSearchFilter();

@@ -4,10 +4,7 @@
 #include "comic_model.h"
 #include "data_base_management.h"
 #include "qnaturalsorting.h"
-#include "db_helper.h"
-#include "query_parser.h"
-
-#include "QsLog.h"
+#include "search_query.h"
 
 YACReader::ComicQueryResultProcessor::ComicQueryResultProcessor()
     : querySearchQueue(1)
@@ -22,25 +19,10 @@ void YACReader::ComicQueryResultProcessor::createModelData(const QString &filter
         QString connectionName = "";
         {
             QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
-            QSqlQuery selectQuery(db);
-
-            std::string queryString("SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened "
-                                    "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) LEFT JOIN folder f ON (f.id == c.parentId) WHERE ");
-
             try {
-                QueryParser parser;
-                auto result = parser.parse(filter.toStdString());
-                result.buildSqlString(queryString);
+                auto query = comicsSearchQuery(db, filter);
 
-                queryString += " LIMIT :limit";
-
-                selectQuery.prepare(queryString.c_str());
-                selectQuery.bindValue(":limit", 500); // TODO, load this value from settings
-                result.bindValues(selectQuery);
-
-                selectQuery.exec();
-
-                auto data = modelData(selectQuery);
+                auto data = modelData(query);
 
                 emit newData(data, databasePath);
             } catch (const std::exception &e) {

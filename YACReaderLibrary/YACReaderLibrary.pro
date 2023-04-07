@@ -83,6 +83,7 @@ HEADERS += comic_flow.h \
   db/comic_query_result_processor.h \
   db/folder_query_result_processor.h \
   db/query_lexer.h \
+  db/search_query.h \
   folder_content_view.h \
   initial_comic_info_extractor.h \
   library_comic_opener.h \
@@ -166,6 +167,7 @@ SOURCES += comic_flow.cpp \
     db/comic_query_result_processor.cpp \
     db/folder_query_result_processor.cpp \
     db/query_lexer.cpp \
+    db/search_query.cpp \
     folder_content_view.cpp \
     initial_comic_info_extractor.cpp \
     library_comic_opener.cpp \

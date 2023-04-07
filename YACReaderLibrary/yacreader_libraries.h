@@ -13,6 +13,7 @@ public:
     QList<QString> getNames();
     QString getPath(const QString &name);
     QString getPath(int id);
+    QString getDBPath(int id);
     QString getName(int id);
     bool isEmpty();
     bool contains(const QString &name);
