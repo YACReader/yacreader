@@ -58,6 +58,10 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
 
     port = new QLineEdit("8080", this);
     port->setReadOnly(false);
+
+    connect(port, &QLineEdit::textChanged, this, [=](const QString &portValue) {
+        accept->setEnabled(!portValue.isEmpty());
+    });
     // port->setFixedWidth(100);
     // port->move(332, 244);
 
