@@ -1,84 +1,16 @@
-#include "server_config_dialog.h"
-#include <QCoreApplication>
 #include <QGridLayout>
-#include <QNetworkInterface>
-#include <QHostInfo>
-#include <QHostAddress>
 #include <QSettings>
 #include <QPalette>
-#include <QIntValidator>
-#include <QFormLayout>
 #include <QBitmap>
 #include <QPainter>
 #include <QPixmap>
 
+#include "server_config_dialog.h"
 #include "yacreader_http_server.h"
 #include "yacreader_global_gui.h"
 
-#include "qnaturalsorting.h"
+#include "ip_config_helper.h"
 #include "qrcodegen.hpp"
-
-#include <algorithm>
-
-// 192.168 (most comon local subnet for ips are always put first)
-// IPs are sorted using natoral sorting
-bool ipComparator(const QString &ip1, const QString &ip2)
-{
-    if (ip1.startsWith("192.168") && ip2.startsWith("192.168"))
-        return naturalSortLessThanCI(ip1, ip2);
-
-    if (ip1.startsWith("192.168"))
-        return true;
-
-    if (ip2.startsWith("192.168"))
-        return false;
-
-    return naturalSortLessThanCI(ip1, ip2);
-}
-
-#ifndef Q_OS_WIN32
-
-#include <sys/types.h>
-#include <ifaddrs.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <string.h>
-#include <arpa/inet.h>
-
-QList<QString> addresses()
-{
-    struct ifaddrs *ifAddrStruct = NULL;
-    struct ifaddrs *ifa = NULL;
-    void *tmpAddrPtr = NULL;
-
-    QList<QString> localAddreses;
-
-    getifaddrs(&ifAddrStruct);
-
-    for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next) {
-        if (ifa->ifa_addr) {
-            if (ifa->ifa_addr->sa_family == AF_INET) { // check it is IP4
-                // is a valid IP4 Address
-                tmpAddrPtr = &((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
-                char addressBuffer[INET_ADDRSTRLEN];
-                inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
-                localAddreses.push_back(QString(addressBuffer));
-                // printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer);
-            } else if (ifa->ifa_addr->sa_family == AF_INET6) { // check it is IP6
-                // is a valid IP6 Address
-                tmpAddrPtr = &((struct sockaddr_in6 *)ifa->ifa_addr)->sin6_addr;
-                char addressBuffer[INET6_ADDRSTRLEN];
-                inet_ntop(AF_INET6, tmpAddrPtr, addressBuffer, INET6_ADDRSTRLEN);
-                // printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer);
-            }
-        }
-    }
-    if (ifAddrStruct != NULL)
-        freeifaddrs(ifAddrStruct);
-    return localAddreses;
-}
-
-#endif
 
 extern YACReaderHttpServer *httpServer;
 
@@ -224,47 +156,11 @@ void ServerConfigDialog::enableperformanceWorkaround(int status)
 void ServerConfigDialog::generateQR()
 {
     ip->clear();
-    QString dir;
 
-#ifdef Q_OS_WIN32
-    QList<QHostAddress> list = QHostInfo::fromName(QHostInfo::localHostName()).addresses();
-
-    QList<QString> otherAddresses;
-    foreach (QHostAddress add, list) {
-        QString tmp = add.toString();
-        if (tmp.contains(".") && !tmp.startsWith("127")) {
-            otherAddresses.push_back(tmp);
-        }
-    }
-
-#else
-    QList<QString> list = addresses();
-
-    QList<QString> otherAddresses;
-    foreach (QString add, list) {
-        QString tmp = add;
-        if (tmp.contains(".") && !tmp.startsWith("127")) {
-            otherAddresses.push_back(tmp);
-        }
-    }
-#endif
-
-    std::sort(otherAddresses.begin(), otherAddresses.end(), ipComparator);
-
-    if (!otherAddresses.isEmpty()) {
-        dir = otherAddresses.first();
-        otherAddresses.pop_front();
-    }
-
-    if (otherAddresses.length() > 0 || !dir.isEmpty()) {
-        if (!dir.isEmpty()) {
-            generateQR(dir + ":" + httpServer->getPort());
-
-            ip->addItem(dir);
-        } else {
-            generateQR(otherAddresses.first() + ":" + httpServer->getPort());
-        }
-        ip->addItems(otherAddresses);
+    auto addresses = getIpAddresses();
+    if (addresses.length() > 0) {
+        generateQR(addresses.first() + ":" + httpServer->getPort());
+        ip->addItems(addresses);
         port->setText(httpServer->getPort());
     }
 }

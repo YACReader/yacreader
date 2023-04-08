@@ -18,11 +18,6 @@ DEFINES += SERVER_RELEASE YACREADER_LIBRARY
 include (../config.pri)
 include (../dependencies/pdf_backend.pri)
 
-unix:haiku {
-  DEFINES += _BSD_SOURCE
-  LIBS    += -lnetwork -lbsd
-}
-
 INCLUDEPATH += ../common/gl
 
 # there are two builds for Windows, Desktop OpenGL based and ANGLE OpenGL ES based
@@ -155,7 +150,8 @@ HEADERS += comic_flow.h \
   yacreader_comic_info_helper.h \
   db/reading_list.h \
   db/query_parser.h \
-  current_comic_view_helper.h
+  current_comic_view_helper.h \
+  ip_config_helper.h
 
 !CONFIG(no_opengl) {
         HEADERS += ../common/gl/yacreader_flow_gl.h
@@ -237,7 +233,8 @@ SOURCES += comic_flow.cpp \
     yacreader_comic_info_helper.cpp\
     db/reading_list.cpp \
     current_comic_view_helper.cpp \
-    db/query_parser.cpp
+    db/query_parser.cpp \
+    ip_config_helper.cpp
 
 !CONFIG(no_opengl) {
     SOURCES += ../common/gl/yacreader_flow_gl.cpp
