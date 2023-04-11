@@ -47,7 +47,7 @@ void SearchController::serviceSearch(int libraryId, const QString &query, stefan
 
         // comics
         try {
-            auto sqlQuery = foldersSearchQuery(db, query);
+            auto sqlQuery = comicsSearchQuery(db, query);
             getComics(libraryId, sqlQuery, results);
         } catch (const std::exception &e) {
         }
@@ -71,7 +71,7 @@ void SearchController::getFolders(int libraryId, QSqlQuery &sqlQuery, QJsonArray
         folder["library_id"] = QString::number(libraryId);
         folder["folder_name"] = sqlQuery.value("name").toString();
         folder["num_children"] = sqlQuery.value("numChildren").toInt();
-        folder["first_comic_hash"] = sqlQuery.value("firstChildHash").toInt();
+        folder["first_comic_hash"] = sqlQuery.value("firstChildHash").toString();
 
         items.append(folder);
     }
@@ -87,7 +87,7 @@ void SearchController::getComics(int libraryId, QSqlQuery &sqlQuery, QJsonArray 
         json["library_id"] = QString::number(libraryId);
         json["file_name"] = sqlQuery.value("fileName").toString();
         auto hash = sqlQuery.value("hash").toString();
-        json["file_size"] = hash.right(hash.length() - 40).toLongLong();
+        json["file_size"] = hash.right(hash.length() - 40);
         json["hash"] = hash;
         json["current_page"] = sqlQuery.value("currentPage").toInt();
         json["num_pages"] = sqlQuery.value("numPages").toInt();
