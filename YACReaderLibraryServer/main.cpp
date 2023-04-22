@@ -80,9 +80,9 @@ void printServerInfo(YACReaderHttpServer *httpServer)
         for (int x = -border - 1; x < code.getSize() + border + 1; x++) {
             QRCodeString.append((code.getModule(x, y) && code.getModule(x, y + 1))
                                         ? " "
-                                        : code.getModule(x, y + 1) ? "\u2580"
-                                        : code.getModule(x, y)     ? "\u2584"
-                                                                   : "\u2588");
+                                        : code.getModule(x, y + 1) ? u8"\u2580"
+                                        : code.getModule(x, y)     ? u8"\u2584"
+                                                                   : u8"\u2588");
         }
         QLOG_INFO() << QRCodeString;
     }
