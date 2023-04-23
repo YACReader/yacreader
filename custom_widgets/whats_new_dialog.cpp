@@ -46,24 +46,24 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
                                 "color:#858585;");
 
     auto text = new QLabel();
-    text->setText("A small update with a bunch of fixes:<br/>"
-                  "<br/>"
-                  "<span style=\"font-weight:600\">YACReader</span><br/>"
-                  "   &#8226; Fix crash when exiting YACReader while it is processing a comic.<br/>"
-                  "   &#8226; Fix last read page calculation in double page mode.<br/>"
+    text->setText("Update to add support for remote search through the server:<br/>"
                   "<br/>"
                   "<span style=\"font-weight:600\">YACReaderLibrary</span><br/>"
-                  "   &#8226; Fix drag&drop in the comics grid view.<br/>"
-                  "   &#8226; Detect back/forward mouse buttons to move back and forward through the browsing history.<br/>"
-                  "   &#8226; Fix crash when disabling the server.<br/>"
+                  "   &#8226; Fix scroll in grid views when using Qt6 builds.<br/>"
+                  "   &#8226; Fix deleting metadata from comics, it also deleted the number of pages info.<br/>"
+                  "   &#8226; Do not accept empty values for the server port in the server settings dialog.<br/>"
+                  "   &#8226; New way of generating QR codes.<br/>"
                   "<br/>"
-                  "<span style=\"font-weight:600\">All apps</span><br/>"
-                  "   &#8226; Add support for poppler-qt6 pdf backend (only relevat if you are building YACReader yourself).<br/>"
-                  "   &#8226; Remove image allocation limit in Qt6.<br/>"
+                  "<span style=\"font-weight:600\">YACReaderLibraryServer</span><br/>"
+                  "   &#8226; Print scannable QR code at server start.<br/>"
                   "<br/>"
-                  "NOTE: Importing metadata from ComicInfo.XML in now disabled by default, if you want you can enable it Settings -> General.<br/>"
+                  "<span style=\"font-weight:600\">Server</span><br/>"
+                  "   &#8226; New search API that exposes the search engine. This will be used by the upcoming updates for the iOS & Android apps.<br/>"
                   "<br/>"
-                  "I hope you enjoy the new update. Please, if you like YACReader consider to become a patron in <a href=\"https://www.patreon.com/yacreader\" style=\"color:#E8B800;\">Patreon</a> or donate some money using <a href=\"https://www.paypal.com/donate?business=5TAMNQCDDMVP8&item_name=Support+YACReader\" style=\"color:#E8B800;\">Pay-Pal</a> and help keeping the project alive. Remember that there is an iOS version available in the <a href=\"https://apps.apple.com/app/id635717885\" style=\"color:#E8B800;\">Apple App Store</a>.");
+                  "I hope you enjoy the new update. Please, if you like YACReader consider to become a patron in <a href=\"https://www.patreon.com/yacreader\" style=\"color:#E8B800;\">Patreon</a> "
+                  "or donate some money using <a href=\"https://www.paypal.com/donate?business=5TAMNQCDDMVP8&item_name=Support+YACReader\" style=\"color:#E8B800;\">Pay-Pal</a> and help keeping the project alive. "
+                  "Remember that there is an iOS version available in the <a href=\"https://apps.apple.com/app/id635717885\" style=\"color:#E8B800;\">Apple App Store</a>, "
+                  "and there is a brand new app for Android that you can get on the <a href=\"https://play.google.com/store/apps/details?id=com.yacreader.yacreader\" style=\"color:#E8B800;\">Google Play Store</a>.");
     QFont textLabelFont("Arial", 15, QFont::Light);
     text->setFont(textLabelFont);
     text->setStyleSheet("padding:51px;"

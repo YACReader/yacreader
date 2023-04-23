@@ -14,13 +14,9 @@ enter their respective subfolders and run the commands from there.
 
 The headless version of YACReaderLibrary is located in the YACReaderLibraryServer
 folder. To build it, enter the folder and run the commands described above.
-
-Note: If your system has multiple versions of Qt, you need to make sure you are
-using qmake for Qt5
-
 ## Build dependencies:
 
-- Qt >= 5.9 with the following modules:
+- Qt >= 5.15 with the following modules:
 	- declarative
 	- quickcontrols
 	- sql
@@ -31,7 +27,6 @@ using qmake for Qt5
 	- network
 - Backends for pdf rendering (optional) and file
   decompression (see below)
-- qrencode for QR code generation (optional)
 
 Not all dependencies are needed at build time. For example the qml components in
 YACReaderLibrary (GridView, InfoView) will only show a white page if the

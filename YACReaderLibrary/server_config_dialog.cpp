@@ -1,82 +1,16 @@
-#include "server_config_dialog.h"
-#include <QCoreApplication>
 #include <QGridLayout>
-#include <QNetworkInterface>
-#include <QHostInfo>
-#include <QHostAddress>
 #include <QSettings>
 #include <QPalette>
-#include <QIntValidator>
-#include <QFormLayout>
 #include <QBitmap>
 #include <QPainter>
+#include <QPixmap>
 
+#include "server_config_dialog.h"
 #include "yacreader_http_server.h"
 #include "yacreader_global_gui.h"
 
-#include "qnaturalsorting.h"
-
-#include <algorithm>
-
-// 192.168 (most comon local subnet for ips are always put first)
-// IPs are sorted using natoral sorting
-bool ipComparator(const QString &ip1, const QString &ip2)
-{
-    if (ip1.startsWith("192.168") && ip2.startsWith("192.168"))
-        return naturalSortLessThanCI(ip1, ip2);
-
-    if (ip1.startsWith("192.168"))
-        return true;
-
-    if (ip2.startsWith("192.168"))
-        return false;
-
-    return naturalSortLessThanCI(ip1, ip2);
-}
-
-#ifndef Q_OS_WIN32
-
-#include <sys/types.h>
-#include <ifaddrs.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <string.h>
-#include <arpa/inet.h>
-
-QList<QString> addresses()
-{
-    struct ifaddrs *ifAddrStruct = NULL;
-    struct ifaddrs *ifa = NULL;
-    void *tmpAddrPtr = NULL;
-
-    QList<QString> localAddreses;
-
-    getifaddrs(&ifAddrStruct);
-
-    for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next) {
-        if (ifa->ifa_addr) {
-            if (ifa->ifa_addr->sa_family == AF_INET) { // check it is IP4
-                // is a valid IP4 Address
-                tmpAddrPtr = &((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
-                char addressBuffer[INET_ADDRSTRLEN];
-                inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
-                localAddreses.push_back(QString(addressBuffer));
-                // printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer);
-            } else if (ifa->ifa_addr->sa_family == AF_INET6) { // check it is IP6
-                // is a valid IP6 Address
-                tmpAddrPtr = &((struct sockaddr_in6 *)ifa->ifa_addr)->sin6_addr;
-                char addressBuffer[INET6_ADDRSTRLEN];
-                inet_ntop(AF_INET6, tmpAddrPtr, addressBuffer, INET6_ADDRSTRLEN);
-                // printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer);
-            }
-        }
-    }
-    if (ifAddrStruct != NULL)
-        freeifaddrs(ifAddrStruct);
-    return localAddreses;
-}
-
-#endif
+#include "ip_config_helper.h"
+#include "qrcodegen.hpp"
 
 extern YACReaderHttpServer *httpServer;
 
@@ -124,6 +58,10 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
 
     port = new QLineEdit("8080", this);
     port->setReadOnly(false);
+
+    connect(port, &QLineEdit::textChanged, this, [=](const QString &portValue) {
+        accept->setEnabled(!portValue.isEmpty());
+    });
     // port->setFixedWidth(100);
     // port->move(332, 244);
 
@@ -222,47 +160,11 @@ void ServerConfigDialog::enableperformanceWorkaround(int status)
 void ServerConfigDialog::generateQR()
 {
     ip->clear();
-    QString dir;
 
-#ifdef Q_OS_WIN32
-    QList<QHostAddress> list = QHostInfo::fromName(QHostInfo::localHostName()).addresses();
-
-    QList<QString> otherAddresses;
-    foreach (QHostAddress add, list) {
-        QString tmp = add.toString();
-        if (tmp.contains(".") && !tmp.startsWith("127")) {
-            otherAddresses.push_back(tmp);
-        }
-    }
-
-#else
-    QList<QString> list = addresses();
-
-    QList<QString> otherAddresses;
-    foreach (QString add, list) {
-        QString tmp = add;
-        if (tmp.contains(".") && !tmp.startsWith("127")) {
-            otherAddresses.push_back(tmp);
-        }
-    }
-#endif
-
-    std::sort(otherAddresses.begin(), otherAddresses.end(), ipComparator);
-
-    if (!otherAddresses.isEmpty()) {
-        dir = otherAddresses.first();
-        otherAddresses.pop_front();
-    }
-
-    if (otherAddresses.length() > 0 || !dir.isEmpty()) {
-        if (!dir.isEmpty()) {
-            generateQR(dir + ":" + httpServer->getPort());
-
-            ip->addItem(dir);
-        } else {
-            generateQR(otherAddresses.first() + ":" + httpServer->getPort());
-        }
-        ip->addItems(otherAddresses);
+    auto addresses = getIpAddresses();
+    if (addresses.length() > 0) {
+        generateQR(addresses.first() + ":" + httpServer->getPort());
+        ip->addItems(addresses);
         port->setText(httpServer->getPort());
     }
 }
@@ -271,20 +173,31 @@ void ServerConfigDialog::generateQR(const QString &serverAddress)
 {
     qrCode->clear();
 
-    QrEncoder encoder;
-    QBitmap image = encoder.encode(serverAddress);
-    if (image.isNull()) {
-        qrCode->setText(tr("Could not load libqrencode."));
-    } else {
-        image = image.scaled(qrCode->size() * devicePixelRatioF());
+    qrcodegen::QrCode code = qrcodegen::QrCode::encodeText(
+            serverAddress.toLocal8Bit(),
+            qrcodegen::QrCode::Ecc::LOW);
 
-        QPixmap pMask(image.size());
-        pMask.fill(QColor(66, 66, 66));
-        pMask.setMask(image.createMaskFromColor(Qt::white));
-        pMask.setDevicePixelRatio(devicePixelRatioF());
-
-        qrCode->setPixmap(pMask);
+    QBitmap image(code.getSize(), code.getSize());
+    image.fill();
+    QPainter painter;
+    painter.begin(&image);
+    for (int x = 0; x < code.getSize(); x++) {
+        for (int y = 0; y < code.getSize(); y++) {
+            if (code.getModule(x, y)) {
+                painter.drawPoint(x, y);
+            }
+        }
     }
+    painter.end();
+
+    image = image.scaled(qrCode->size() * devicePixelRatioF());
+
+    QPixmap pMask(image.size());
+    pMask.fill(QColor(66, 66, 66));
+    pMask.setMask(image.createMaskFromColor(Qt::white));
+    pMask.setDevicePixelRatio(devicePixelRatioF());
+
+    qrCode->setPixmap(pMask);
 }
 
 void ServerConfigDialog::regenerateQR(const QString &ip)
@@ -304,47 +217,4 @@ void ServerConfigDialog::updatePort()
     httpServer->start();
 
     generateQR(ip->currentText() + ":" + port->text());
-}
-
-QrEncoder::QrEncoder()
-{
-#ifdef Q_OS_MACOS
-    QLibrary encoder(QCoreApplication::applicationDirPath() + "/utils/libqrencode.dylib");
-#else
-    QLibrary encoder("qrencode");
-#ifdef Q_OS_UNIX
-    encoder.load();
-    // Fallback - this loads libqrencode.4.x.x.so when libqrencode.so is not available
-    if (!encoder.isLoaded()) {
-        encoder.setFileNameAndVersion("qrencode", 4);
-    }
-#endif
-#endif
-    QRcode_encodeString8bit = (_QRcode_encodeString8bit)encoder.resolve("QRcode_encodeString8bit");
-    QRcode_free = (_QRcode_free)encoder.resolve("QRcode_free");
-}
-
-QBitmap QrEncoder::encode(const QString &string)
-{
-    if (!QRcode_encodeString8bit) {
-        return QBitmap();
-    }
-    QRcode *code;
-    code = QRcode_encodeString8bit(string.toUtf8().data(), 0, 0);
-    QBitmap result(code->width, code->width);
-    result.fill();
-    /* convert to QBitmap */
-    QPainter painter;
-    painter.begin(&result);
-    unsigned char *pointer = code->data;
-    for (int x = 0; x < code->width; x++) {
-        for (int y = 0; y < code->width; y++) {
-            if ((*pointer++ & 0x1) == 1) {
-                painter.drawPoint(x, y);
-            }
-        }
-    }
-    painter.end();
-    QRcode_free(code);
-    return result;
 }

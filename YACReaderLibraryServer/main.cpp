@@ -1,4 +1,3 @@
-// #include <QtCore>
 #include <QCoreApplication>
 #include <QSysInfo>
 #include <QDir>
@@ -20,6 +19,8 @@
 
 #include "QsLog.h"
 #include "QsLogDest.h"
+#include "qrcodegen.hpp"
+#include "ip_config_helper.h"
 
 using namespace QsLogging;
 // Returns false in case of a parse error (unknown option or missing value); returns true otherwise.
@@ -29,17 +30,6 @@ void logSystemAndConfig()
     QLOG_INFO() << "---------- System & configuration ----------";
     QLOG_INFO() << "OS:" << QSysInfo::prettyProductName() << "Version: " << QSysInfo::productVersion();
     QLOG_INFO() << "Kernel:" << QSysInfo::kernelType() << QSysInfo::kernelVersion() << "Architecture:" << QSysInfo::currentCpuArchitecture();
-    /* TODO: qrencode could be helpfull for showing a qr code in the web client for client devices
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
-    if(QFileInfo(QString(BINDIR)+"/qrencode").exists())
-#else
-    if(QFileInfo(QCoreApplication::applicationDirPath()+"/utils/qrencode.exe").exists() || QFileInfo("./util/qrencode").exists())
-#endif
-        QLOG_INFO() << "qrencode : found";
-    else
-        QLOG_INFO() << "qrencode : not found";
-        */
-
     QLOG_INFO() << "Libraries: " << DBHelper::getLibraries().getLibraries();
     QLOG_INFO() << "--------------------------------------------";
 }
@@ -73,6 +63,31 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
         QLOG_FATAL() << localMsg.constData();
         break;
     }
+    }
+}
+
+void printServerInfo(YACReaderHttpServer *httpServer)
+{
+    auto addresses = getIpAddresses();
+    QLOG_INFO() << "Running on" << addresses.first() + ":" + httpServer->getPort().toLocal8Bit() << "\n";
+
+    qrcodegen::QrCode code = qrcodegen::QrCode::encodeText(
+            (addresses.first() + ":" + httpServer->getPort()).toLocal8Bit(),
+            qrcodegen::QrCode::Ecc::LOW);
+    int border = 4;
+    for (int y = -border; y < code.getSize() + border; y += 2) {
+        QString QRCodeString;
+        for (int x = -border - 1; x < code.getSize() + border + 1; x++) {
+            QRCodeString.append((code.getModule(x, y) && code.getModule(x, y + 1))
+                                        ? " "
+                                        : code.getModule(x, y + 1) ? u8"\u2580"
+                                        : code.getModule(x, y)     ? u8"\u2584"
+                                                                   : u8"\u2588");
+        }
+        QLOG_INFO() << QRCodeString;
+    }
+    if (addresses.length() > 1) {
+        QLOG_INFO() << addresses.length() - 1 << "more network interfaces detected";
     }
 }
 
@@ -215,7 +230,7 @@ int main(int argc, char **argv)
             httpServer->start();
         }
 
-        QLOG_INFO() << "Running on port" << httpServer->getPort();
+        printServerInfo(httpServer);
 
         // Update libraries to new versions
         LibrariesUpdater updater;

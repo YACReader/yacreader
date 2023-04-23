@@ -29,6 +29,11 @@ QString YACReaderLibraries::getPath(int id)
     return "";
 }
 
+QString YACReaderLibraries::getDBPath(int id)
+{
+    return getPath(id) + "/.yacreaderlibrary";
+}
+
 QString YACReaderLibraries::getName(int id)
 {
     foreach (QString name, libraries.keys())

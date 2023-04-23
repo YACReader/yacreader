@@ -18,11 +18,6 @@ DEFINES += SERVER_RELEASE YACREADER_LIBRARY
 include (../config.pri)
 include (../dependencies/pdf_backend.pri)
 
-unix:haiku {
-  DEFINES += _BSD_SOURCE
-  LIBS    += -lnetwork -lbsd
-}
-
 INCLUDEPATH += ../common/gl
 
 # there are two builds for Windows, Desktop OpenGL based and ANGLE OpenGL ES based
@@ -83,6 +78,7 @@ HEADERS += comic_flow.h \
   db/comic_query_result_processor.h \
   db/folder_query_result_processor.h \
   db/query_lexer.h \
+  db/search_query.h \
   folder_content_view.h \
   initial_comic_info_extractor.h \
   library_comic_opener.h \
@@ -154,7 +150,8 @@ HEADERS += comic_flow.h \
   yacreader_comic_info_helper.h \
   db/reading_list.h \
   db/query_parser.h \
-  current_comic_view_helper.h
+  current_comic_view_helper.h \
+  ip_config_helper.h
 
 !CONFIG(no_opengl) {
         HEADERS += ../common/gl/yacreader_flow_gl.h
@@ -166,6 +163,7 @@ SOURCES += comic_flow.cpp \
     db/comic_query_result_processor.cpp \
     db/folder_query_result_processor.cpp \
     db/query_lexer.cpp \
+    db/search_query.cpp \
     folder_content_view.cpp \
     initial_comic_info_extractor.cpp \
     library_comic_opener.cpp \
@@ -235,7 +233,8 @@ SOURCES += comic_flow.cpp \
     yacreader_comic_info_helper.cpp\
     db/reading_list.cpp \
     current_comic_view_helper.cpp \
-    db/query_parser.cpp
+    db/query_parser.cpp \
+    ip_config_helper.cpp
 
 !CONFIG(no_opengl) {
     SOURCES += ../common/gl/yacreader_flow_gl.cpp
@@ -262,6 +261,7 @@ include(../compressed_archive/libarchive/libarchive-wrapper.pri)
 include(./comic_vine/comic_vine.pri)
 include(../third_party/QsLog/QsLog.pri)
 include(../shortcuts_management/shortcuts_management.pri)
+include(../third_party/QrCode/QrCode.pri)
 
 RESOURCES += images.qrc files.qrc
 win32:RESOURCES += images_win.qrc

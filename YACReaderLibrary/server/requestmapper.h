@@ -1,8 +1,3 @@
-/**
-  @file
-  @author Stefan Frings
-*/
-
 #ifndef REQUESTMAPPER_H
 #define REQUESTMAPPER_H
 

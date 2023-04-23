@@ -15,6 +15,7 @@ DEFINES += SERVER_RELEASE YACREADER_LIBRARY
 # do a basic dependency check
 include(headless_config.pri)
 include(../dependencies/pdf_backend.pri)
+include(../third_party/QrCode/QrCode.pri)
 
 greaterThan(QT_MAJOR_VERSION, 5): QT += core5compat
 
@@ -30,11 +31,6 @@ win32 {
 macx {
   LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
   CONFIG += objective_c
-}
-
-unix:haiku {
-  DEFINES += _BSD_SOURCE
-  LIBS    += -lnetwork -lbsd
 }
 
 #CONFIG += release
@@ -66,7 +62,11 @@ HEADERS += ../YACReaderLibrary/library_creator.h \
            ../YACReaderLibrary/yacreader_libraries.h \
            ../YACReaderLibrary/comic_files_manager.h \
            console_ui_library_creator.h \
-           libraries_updater.h
+           libraries_updater.h \
+           ../YACReaderLibrary/ip_config_helper.h \
+           ../YACReaderLibrary/db/query_lexer.h \
+           ../YACReaderLibrary/db/query_parser.h \
+           ../YACReaderLibrary/db/search_query.h
 
 
 SOURCES += ../YACReaderLibrary/library_creator.cpp \
@@ -91,7 +91,11 @@ SOURCES += ../YACReaderLibrary/library_creator.cpp \
            ../YACReaderLibrary/comic_files_manager.cpp \
            console_ui_library_creator.cpp \
            main.cpp \
-           libraries_updater.cpp
+           libraries_updater.cpp \
+           ../YACReaderLibrary/ip_config_helper.cpp \
+           ../YACReaderLibrary/db/query_lexer.cpp \
+           ../YACReaderLibrary/db/query_parser.cpp \
+           ../YACReaderLibrary/db/search_query.cpp \
 
 include(../YACReaderLibrary/server/server.pri)
 

@@ -31,17 +31,18 @@
 #include <cstdio>
 void QsDebugOutput::output( const QString& message )
 {
-   fprintf(stderr, "%s\n", qPrintable(message));
-   fflush(stderr);
+    fprintf(stderr, "%s\n", qPrintable(message));
+    fflush(stderr);
 }
 #elif defined(Q_OS_WIN)
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include <Windows.h>
 void QsDebugOutput::output( const QString& message )
 {
-   OutputDebugStringW(reinterpret_cast<const WCHAR*>(message.utf16()));
-   OutputDebugStringW(L"\n");
+    WriteConsoleW(GetStdHandle(STD_ERROR_HANDLE), message.utf16(), message.size(), NULL, NULL);
+    WriteConsoleW(GetStdHandle(STD_ERROR_HANDLE), L"\n", 1, NULL, NULL);
 }
+
 #endif
 
 const char* const QsLogging::DebugOutputDestination::Type = "console";

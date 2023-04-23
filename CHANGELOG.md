@@ -4,6 +4,20 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ## WIP
 
+## 9.12
+
+### YACReaderLibrary
+* Fix scroll in grid views when using Qt6 builds.
+* Fix deleting metadata from comics also deleted the number of pages info.
+* Use https://github.com/nayuki/QR-Code-generator instead of libqrencode for QR code generation.
+* Do not accept empty values for the server port in the server settings dialog.
+
+### Server
+* New search API that exposes the search engine.
+* Print scannable QR code at server start
+
+## 9.11
+
 ### YACReader
 * Fix segfault (or worse) when exiting YACReader while processing a comic.
 * Fix last read page calculation in double page mode.

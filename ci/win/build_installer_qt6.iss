@@ -81,16 +81,15 @@ Source:iconengines\*;  DestDir: {app}\iconengines\
 Source:imageformats\*;  DestDir: {app}\imageformats\
 Source:networkinformation\*;  DestDir: {app}\networkinformation\
 Source:platforms\*;  DestDir: {app}\platforms\
-Source:qmltooling\*;  DestDir: {app}\qmltooling\   
+Source:qmltooling\*;  DestDir: {app}\qmltooling\
 Source:sqldrivers\qsqlite.dll;  DestDir: {app}\sqldrivers\
 Source:styles\*;  DestDir: {app}\styles\
 Source:tls\*;  DestDir: {app}\tls\
-Source:translations\*;  DestDir: {app}\translations\    
-            
+Source:translations\*;  DestDir: {app}\translations\
+
 
 ;Libs
 Source: pdfium.dll; DestDir: {app}
-Source: qrencode.dll; DestDir: {app}
 Source: openssl\*; DestDir: {app}
 
 ;vcredist
@@ -104,7 +103,7 @@ Source: utils\7z.dll; DestDir: {app}\utils\
 Source: YACReader.exe; DestDir: {app}; Permissions: everyone-full;
 Source: YACReaderLibrary.exe; DestDir: {app}; Permissions: everyone-full; Tasks:
 Source: YACReaderLibraryServer.exe; DestDir: {app}; Permissions: everyone-full; Tasks:
- 
+
 ;License
 Source: README.md; DestDir: {app}; Flags: isreadme
 Source: COPYING.txt; DestDir: {app}
@@ -158,7 +157,7 @@ procedure InitializeWizard();
 begin
 
   URLLabel := TNewStaticText.Create(WizardForm);
-  URLLabel.Caption:='Make a DONATION/Haz una DONACIÓN';
+  URLLabel.Caption:='Make a DONATION/Haz una DONACIï¿½N';
   URLLabel.Cursor:=crHand;
   URLLabel.OnClick:=@URLLabelOnClick;
   URLLabel.Parent:=WizardForm;

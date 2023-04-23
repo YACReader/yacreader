@@ -9,6 +9,9 @@
 #include <vector>
 #include <list>
 
+#define SEARCH_FOLDERS_QUERY "SELECT DISTINCT f.id, f.parentId, f.name, f.path, f.finished, f.completed, f.numChildren, f.firstChildHash FROM folder f LEFT JOIN comic c ON (f.id = c.parentId) INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE "
+#define SEARCH_COMICS_QUERY "SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened,ci.coverSizeRatio,ci.lastTimeOpened,ci.manga FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) LEFT JOIN folder f ON (f.id == c.parentId) WHERE "
+
 /**
  * This class is used to generate an SQL query string from a search expression,
  * with a syntax very similar to that used by the Google search engine.
