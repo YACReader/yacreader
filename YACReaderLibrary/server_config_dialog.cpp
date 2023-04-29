@@ -36,8 +36,6 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     QLabel *propaganda = new QLabel(tr("YACReader is available for iOS devices. <a href='http://ios.yacreader.com' style='color:rgb(193, 148, 65)'> Discover it! </a>"), this);
     propaganda->move(332, 505);
     propaganda->setStyleSheet("QLabel {color:#4D4D4D; font-size:13px; font-family: Arial; font-style: italic;}");
-    /*propaganda->setWordWrap(true);
-    propaganda->setFixedWidth(590);*/
     propaganda->setOpenExternalLinks(true);
 
     // FORM---------------------------------------------------------------------
@@ -62,10 +60,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     connect(port, &QLineEdit::textChanged, this, [=](const QString &portValue) {
         accept->setEnabled(!portValue.isEmpty());
     });
-    // port->setFixedWidth(100);
-    // port->move(332, 244);
 
-    // port->move(520,110);
     QValidator *validator = new QIntValidator(1024, 65535, this);
     port->setValidator(validator);
 
@@ -76,7 +71,6 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     portWidgetLayout->setContentsMargins(0, 0, 0, 0);
     portWidget->setLayout(portWidgetLayout);
     portWidget->move(332, 244);
-    // accept->move(514,149);
     connect(accept, &QAbstractButton::pressed, this, &ServerConfigDialog::updatePort);
     // END FORM-----------------------------------------------------------------
 
@@ -85,7 +79,6 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     check->setText(tr("enable the server"));
     check->setStyleSheet("QCheckBox {color:#262626; font-size:13px; font-family: Arial;}");
 
-    // set black background
     QPalette palette;
     QImage image(":/images/serverConfigBackground.png");
     palette.setBrush(this->backgroundRole(), QBrush(image));
@@ -193,7 +186,6 @@ void ServerConfigDialog::regenerateQR(const QString &ip)
 
 void ServerConfigDialog::updatePort()
 {
-
     QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
     settings->beginGroup("listener");
     settings->setValue("port", port->text().toInt());
