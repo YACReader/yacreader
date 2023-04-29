@@ -33,7 +33,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     qrMessage->setWordWrap(true);
     qrMessage->setFixedWidth(200);
 
-    QLabel *propaganda = new QLabel(tr("YACReader is available for iOS devices. <a href='http://ios.yacreader.com' style='color:rgb(193, 148, 65)'> Discover it! </a>"), this);
+    QLabel *propaganda = new QLabel(tr("YACReader is available for iOS and Android devices.<br/>Discover it for <a href='https://ios.yacreader.com' style='color:rgb(193, 148, 65)'>iOS</a> or <a href='https://android.yacreader.com' style='color:rgb(193, 148, 65)'>Android</a>."), this);
     propaganda->move(332, 505);
     propaganda->setStyleSheet("QLabel {color:#4D4D4D; font-size:13px; font-family: Arial; font-style: italic;}");
     propaganda->setOpenExternalLinks(true);
@@ -72,6 +72,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     portWidget->setLayout(portWidgetLayout);
     portWidget->move(332, 244);
     connect(accept, &QAbstractButton::pressed, this, &ServerConfigDialog::updatePort);
+
     // END FORM-----------------------------------------------------------------
 
     check = new QCheckBox(this);
