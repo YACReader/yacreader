@@ -7,7 +7,6 @@
 #include "check_new_version.h"
 #include "comic.h"
 #include "bookmarks_dialog.h"
-#include "shortcuts_dialog.h"
 #include "width_slider.h"
 #include "qnaturalsorting.h"
 #include "help_about_dialog.h"
