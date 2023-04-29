@@ -86,7 +86,6 @@ HEADERS +=  ../common/comic.h \
             ../common/bookmarks.h \
             bookmarks_dialog.h \
             render.h \
-            shortcuts_dialog.h \
             translator.h \
             goto_flow_widget.h \
             page_label_widget.h \
@@ -125,7 +124,6 @@ SOURCES +=  ../common/comic.cpp \
             ../common/bookmarks.cpp \
             bookmarks_dialog.cpp \
             render.cpp \
-            shortcuts_dialog.cpp \
             translator.cpp \
             goto_flow_widget.cpp \
             page_label_widget.cpp \
