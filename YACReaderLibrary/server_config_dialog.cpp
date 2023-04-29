@@ -113,6 +113,13 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     connect(check, &QCheckBox::stateChanged, this, &ServerConfigDialog::enableServer);
 }
 
+void ServerConfigDialog::showEvent(QShowEvent *event)
+{
+    QDialog::showEvent(event);
+
+    generateQR();
+}
+
 void ServerConfigDialog::enableServer(int status)
 {
     QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor

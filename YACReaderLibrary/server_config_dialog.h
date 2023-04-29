@@ -13,6 +13,7 @@ class ServerConfigDialog : public QDialog
     Q_OBJECT
 public:
     ServerConfigDialog(QWidget *parent = 0);
+    void showEvent(QShowEvent *event) override;
 
 private:
     QComboBox *ip;
