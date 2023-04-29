@@ -30,8 +30,6 @@ void FolderController::service(HttpRequest &request, HttpResponse &response)
     QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
     settings->beginGroup("libraryConfig");
 
-    bool showlessInfoPerFolder = settings->value(REMOTE_BROWSE_PERFORMANCE_WORKAROUND, false).toBool();
-
     HttpSession session = Static::sessionStore->getSession(request, response, false);
     YACReaderHttpSession *ySession = Static::yacreaderSessionStore->getYACReaderSessionHttpSession(session.getId());
 
@@ -170,16 +168,12 @@ void FolderController::service(HttpRequest &request, HttpResponse &response)
             if (item->isDir()) {
                 t.setVariable(QString("element%1.class").arg(i), "folder");
 
-                if (showlessInfoPerFolder) {
+                QList<LibraryItem *> children = DBHelper::getFolderComicsFromLibrary(libraryId, item->id);
+                if (children.length() > 0) {
+                    const ComicDB *comic = static_cast<ComicDB *>(children.at(0));
+                    t.setVariable(QString("element%1.image.url").arg(i), QString("/library/%1/cover/%2.jpg?folderCover=true").arg(libraryId).arg(comic->info.hash));
+                } else
                     t.setVariable(QString("element%1.image.url").arg(i), "/images/f.png");
-                } else {
-                    QList<LibraryItem *> children = DBHelper::getFolderComicsFromLibrary(libraryId, item->id);
-                    if (children.length() > 0) {
-                        const ComicDB *comic = static_cast<ComicDB *>(children.at(0));
-                        t.setVariable(QString("element%1.image.url").arg(i), QString("/library/%1/cover/%2.jpg?folderCover=true").arg(libraryId).arg(comic->info.hash));
-                    } else
-                        t.setVariable(QString("element%1.image.url").arg(i), "/images/f.png");
-                }
 
                 t.setVariable(QString("element%1.browse").arg(i), QString("<a class =\"browseButton\" href=\"%1\">BROWSE</a>").arg(QString("/library/%1/folder/%2").arg(libraryId).arg(item->id)));
                 t.setVariable(QString("element%1.cover.browse").arg(i), QString("<a href=\"%1\">").arg(QString("/library/%1/folder/%2").arg(libraryId).arg(item->id)));

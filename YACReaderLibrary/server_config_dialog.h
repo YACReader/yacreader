@@ -19,7 +19,6 @@ private:
     QLineEdit *port;
 
     QCheckBox *check;
-    QCheckBox *performanceWorkaroundCheck;
 
     QPushButton *close;
     QPushButton *accept;
@@ -30,7 +29,6 @@ public slots:
     void generateQR(const QString &serverAddress);
     void regenerateQR(const QString &ip);
     void enableServer(int status);
-    void enableperformanceWorkaround(int status);
     void updatePort();
 signals:
     void portChanged(QString port);
