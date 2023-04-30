@@ -20,6 +20,7 @@
 #include <QEvent>
 #include <QKeyEvent>
 #include <QLabel>
+#include <QTimer>
 
 #include "yacreader_flow.h"
 
