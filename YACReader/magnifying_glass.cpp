@@ -1,7 +1,6 @@
 #include "magnifying_glass.h"
 #include "viewer.h"
 #include "configuration.h"
-#include "shortcuts_manager.h"
 
 #include <QScrollBar>
 

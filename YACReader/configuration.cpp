@@ -7,7 +7,6 @@
 #include <QStringList>
 #include <QMessageBox>
 
-#include "yacreader_global.h"
 
 Configuration::Configuration()
 {

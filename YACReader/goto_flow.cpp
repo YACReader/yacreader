@@ -1,6 +1,5 @@
 #include "goto_flow.h"
 #include "configuration.h"
-#include "comic.h"
 
 #include <QVBoxLayout>
 #include <QSize>
