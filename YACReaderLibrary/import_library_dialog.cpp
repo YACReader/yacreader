@@ -97,9 +97,9 @@ void ImportLibraryDialog::add()
     if (!libraries.contains(nameEdit->text())) {
         accept->setEnabled(false);
         progressBar->show();
-        emit(unpackCLC(QDir::cleanPath(path->text()), QDir::cleanPath(destPath->text()), nameEdit->text()));
+        emit unpackCLC(QDir::cleanPath(path->text()), QDir::cleanPath(destPath->text()), nameEdit->text());
     } else {
-        emit(libraryExists(nameEdit->text()));
+        emit libraryExists(nameEdit->text());
     }
 }
 

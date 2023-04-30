@@ -59,7 +59,7 @@ SelectVolume::SelectVolume(QWidget *parent)
 
     connect(filterEdit, &QLineEdit::textChanged, proxyModel, &QSortFilterProxyModel::setFilterFixedString);
 
-    connect(tableVolumes->horizontalHeader(), &QHeaderView::sectionClicked,
+    connect(tableVolumes->horizontalHeader(), &QHeaderView::sectionClicked, this,
             [=](int index) { tableVolumes->horizontalHeader()->sortIndicatorSection() == index ? tableVolumes->sortByColumn(index, tableVolumes->horizontalHeader()->sortIndicatorOrder() == Qt::AscendingOrder ? Qt::DescendingOrder : Qt::AscendingOrder)
                                                                                                : tableVolumes->sortByColumn(index, Qt::AscendingOrder); });
     // connections

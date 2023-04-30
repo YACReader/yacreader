@@ -154,7 +154,7 @@ void LibraryCreator::run()
             _database.close();
         }
         QSqlDatabase::removeDatabase(_databaseConnection);
-        emit(created());
+        emit created();
         QLOG_INFO() << "Create library END";
     } else {
         QLOG_INFO() << "Starting to update folder" << _sourceFolder << "in library ( " << _source << "," << _target << ")";
@@ -308,7 +308,7 @@ void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
         numPages = ie.getNumPages();
         originalCoverSize = ie.getOriginalCoverSize();
         if (numPages > 0) {
-            emit(comicAdded(relativePath, _target + "/covers/" + hash + ".jpg"));
+            emit comicAdded(relativePath, _target + "/covers/" + hash + ".jpg");
         }
     }
 

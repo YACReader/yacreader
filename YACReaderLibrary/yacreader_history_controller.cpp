@@ -11,32 +11,32 @@ void YACReaderHistoryController::clear()
     history.clear();
     history.append(YACReaderLibrarySourceContainer(QModelIndex(), YACReaderLibrarySourceContainer::Folder)); // root folder is always the first item
 
-    emit(enabledBackward(false));
-    emit(enabledForward(false));
+    emit enabledBackward(false);
+    emit enabledForward(false);
 }
 
 void YACReaderHistoryController::backward()
 {
     if (currentFolderNavigation > 0) {
         currentFolderNavigation--;
-        emit(modelIndexSelected(history.at(currentFolderNavigation)));
-        emit(enabledForward(true));
+        emit modelIndexSelected(history.at(currentFolderNavigation));
+        emit enabledForward(true);
     }
 
     if (currentFolderNavigation == 0)
-        emit(enabledBackward(false));
+        emit enabledBackward(false);
 }
 
 void YACReaderHistoryController::forward()
 {
     if (currentFolderNavigation < history.count() - 1) {
         currentFolderNavigation++;
-        emit(modelIndexSelected(history.at(currentFolderNavigation)));
-        emit(enabledBackward(true));
+        emit modelIndexSelected(history.at(currentFolderNavigation));
+        emit enabledBackward(true);
     }
 
     if (currentFolderNavigation == history.count() - 1)
-        emit(enabledForward(false));
+        emit enabledForward(false);
 }
 
 void YACReaderHistoryController::updateHistory(const YACReaderLibrarySourceContainer &source)
@@ -54,11 +54,11 @@ void YACReaderHistoryController::updateHistory(const YACReaderLibrarySourceConta
     if (source != history.at(currentFolderNavigation)) {
         history.append(source);
 
-        emit(enabledBackward(true));
+        emit enabledBackward(true);
         currentFolderNavigation++;
     }
 
-    emit(enabledForward(false));
+    emit enabledForward(false);
 }
 
 YACReaderLibrarySourceContainer YACReaderHistoryController::lastSourceContainer()

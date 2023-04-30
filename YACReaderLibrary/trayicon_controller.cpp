@@ -36,7 +36,7 @@ TrayIconController::TrayIconController(QSettings *settings, LibraryWindow *windo
 #endif
     }
 
-    connect(&trayIcon, &QSystemTrayIcon::activated,
+    connect(&trayIcon, &QSystemTrayIcon::activated, this,
             [=](QSystemTrayIcon::ActivationReason reason) {
 #ifdef Q_OS_LINUX
                 auto expectedReason = QSystemTrayIcon::Trigger;
