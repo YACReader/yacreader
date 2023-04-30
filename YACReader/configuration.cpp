@@ -7,7 +7,6 @@
 #include <QStringList>
 #include <QMessageBox>
 
-
 Configuration::Configuration()
 {
 }
