@@ -178,7 +178,7 @@ bool DataBaseManagement::createTables(QSqlDatabase &database)
                                "publisher TEXT,"
                                "format TEXT,"
                                "color BOOLEAN,"
-                               "ageRating BOOLEAN," // this is actually a string (TEXT), funny thing is that the current implementation works
+                               "ageRating TEXT,"
 
                                "synopsis TEXT,"
                                "characters TEXT,"
