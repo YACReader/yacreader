@@ -197,8 +197,12 @@ public:
     //--
     QAction *setFolderAsReadAction;
     QAction *setFolderAsUnreadAction;
+    //--
     QAction *setFolderAsMangaAction;
     QAction *setFolderAsNormalAction;
+    QAction *setFolderAsWesternMangaAction;
+    QAction *setFolderAsWebComicAction;
+    QAction *setFolderAsYonkomaAction;
 
     QAction *openContainingFolderComicAction;
     QAction *setAsReadAction;
@@ -206,6 +210,9 @@ public:
 
     QAction *setMangaAction;
     QAction *setNormalAction;
+    QAction *setWesternMangaAction;
+    QAction *setWebComicAction;
+    QAction *setYonkomaAction;
 
     // QAction * setAllAsReadAction;
     // QAction * setAllAsNonReadAction;
@@ -340,8 +347,7 @@ public slots:
     void setFolderAsCompleted();
     void setFolderAsRead();
     void setFolderAsUnread();
-    void setFolderAsManga();
-    void setFolderAsNormal();
+    void setFolderType(FileType type);
     void openContainingFolderComic();
     void deleteCurrentLibrary();
     void removeLibrary();
@@ -368,8 +374,7 @@ public slots:
     void setCurrentComicsStatusReaded(YACReaderComicReadStatus readStatus);
     void setCurrentComicReaded();
     void setCurrentComicUnreaded();
-    void setSelectedComicsAsNormal();
-    void setSelectedComicsAsManga();
+    void setSelectedComicsType(FileType type);
     void showExportComicsInfo();
     void showImportComicsInfo();
     void asignNumbers();

@@ -31,7 +31,6 @@
 #include "library_creator.h"
 #include "package_manager.h"
 #include "xml_info_library_scanner.h"
-#include "comic_flow_widget.h"
 #include "create_library_dialog.h"
 #include "rename_library_dialog.h"
 #include "properties_dialog.h"
@@ -44,10 +43,7 @@
 #include "help_about_dialog.h"
 #include "server_config_dialog.h"
 #include "comic_model.h"
-#include "yacreader_tool_bar_stretch.h"
-#include "yacreader_table_view.h"
 
-#include "yacreader_dark_menu.h"
 #include "yacreader_titled_toolbar.h"
 #include "yacreader_main_toolbar.h"
 
@@ -587,17 +583,34 @@ void LibraryWindow::createActions()
     setAsNonReadAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_NON_READ_ACTION_YL));
     setAsNonReadAction->setIcon(QIcon(":/images/comics_view_toolbar/setUnread.svg"));
 
-    setMangaAction = new QAction(tr("Set as manga"), this);
+    setMangaAction = new QAction(tr("manga"), this);
     setMangaAction->setToolTip(tr("Set issue as manga"));
     setMangaAction->setData(SET_AS_MANGA_ACTION_YL);
     setMangaAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_MANGA_ACTION_YL));
     setMangaAction->setIcon(QIcon(":/images/comics_view_toolbar/setManga.svg"));
 
-    setNormalAction = new QAction(tr("Set as normal"), this);
+    setNormalAction = new QAction(tr("comic"), this);
     setNormalAction->setToolTip(tr("Set issue as normal"));
     setNormalAction->setData(SET_AS_NORMAL_ACTION_YL);
     setNormalAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_NORMAL_ACTION_YL));
     setNormalAction->setIcon(QIcon(":/images/comics_view_toolbar/setNormal.svg"));
+
+    setWesternMangaAction = new QAction(tr("western manga"), this);
+    setWesternMangaAction->setToolTip(tr("Set issue as western manga"));
+    setWesternMangaAction->setData(SET_AS_WESTERN_MANGA_ACTION_YL);
+    setWesternMangaAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_WESTERN_MANGA_ACTION_YL));
+    // setWesternMangaAction->setIcon(QIcon(":/images/comics_view_toolbar/setWesternManga.svg"));
+
+    setWebComicAction = new QAction(tr("web comic"), this);
+    setWebComicAction->setToolTip(tr("Set issue as web comic"));
+    setWebComicAction->setData(SET_AS_WEB_COMIC_ACTION_YL);
+    setWebComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_WEB_COMIC_ACTION_YL));
+    // setWebComicAction->setIcon(QIcon(":/images/comics_view_toolbar/setWebComic.svg"));
+
+    setYonkomaAction = new QAction(tr("yonkoma"), this);
+    setYonkomaAction->setToolTip(tr("Set issue as yonkoma"));
+    setYonkomaAction->setData(SET_AS_YONKOMA_ACTION_YL);
+    setYonkomaAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_YONKOMA_ACTION_YL));
 
     /*setAllAsReadAction = new QAction(tr("Set all as read"),this);
         setAllAsReadAction->setToolTip(tr("Set all comics as read"));
@@ -722,14 +735,29 @@ void LibraryWindow::createActions()
     setFolderAsUnreadAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_FOLDER_AS_UNREAD_ACTION_YL));
 
     setFolderAsMangaAction = new QAction(this);
-    setFolderAsMangaAction->setText(tr("Set as manga"));
+    setFolderAsMangaAction->setText(tr("manga"));
     setFolderAsMangaAction->setData(SET_FOLDER_AS_MANGA_ACTION_YL);
     setFolderAsMangaAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_FOLDER_AS_MANGA_ACTION_YL));
 
     setFolderAsNormalAction = new QAction(this);
-    setFolderAsNormalAction->setText(tr("Set as comic"));
+    setFolderAsNormalAction->setText(tr("comic"));
     setFolderAsNormalAction->setData(SET_FOLDER_AS_NORMAL_ACTION_YL);
     setFolderAsNormalAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_FOLDER_AS_NORMAL_ACTION_YL));
+
+    setFolderAsWesternMangaAction = new QAction(this);
+    setFolderAsWesternMangaAction->setText(tr("western manga (left to right)"));
+    setFolderAsWesternMangaAction->setData(SET_FOLDER_AS_WESTERN_MANGA_ACTION_YL);
+    setFolderAsWesternMangaAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_FOLDER_AS_WESTERN_MANGA_ACTION_YL));
+
+    setFolderAsWebComicAction = new QAction(this);
+    setFolderAsWebComicAction->setText(tr("web comic"));
+    setFolderAsWebComicAction->setData(SET_FOLDER_AS_WEB_COMIC_ACTION_YL);
+    setFolderAsWebComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_FOLDER_AS_WEB_COMIC_ACTION_YL));
+
+    setFolderAsYonkomaAction = new QAction(this);
+    setFolderAsYonkomaAction->setText(tr("yonkoma"));
+    setFolderAsYonkomaAction->setData(SET_FOLDER_AS_YONKOMA_ACTION_YL);
+    setFolderAsYonkomaAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_FOLDER_AS_YONKOMA_ACTION_YL));
 
     //----
 
@@ -867,6 +895,9 @@ void LibraryWindow::createActions()
     this->addAction(setFolderAsUnreadAction);
     this->addAction(setFolderAsMangaAction);
     this->addAction(setFolderAsNormalAction);
+    this->addAction(setFolderAsWesternMangaAction);
+    this->addAction(setFolderAsWebComicAction);
+    this->addAction(setFolderAsYonkomaAction);
     this->addAction(deleteMetadataAction);
     this->addAction(rescanXMLFromCurrentFolderAction);
 #ifndef Q_OS_MAC
@@ -891,6 +922,9 @@ void LibraryWindow::disableComicsActions(bool disabled)
     setAsNonReadAction->setDisabled(disabled);
     setNormalAction->setDisabled(disabled);
     setMangaAction->setDisabled(disabled);
+    setWebComicAction->setDisabled(disabled);
+    setWesternMangaAction->setDisabled(disabled);
+    setYonkomaAction->setDisabled(disabled);
     // setAllAsReadAction->setDisabled(disabled);
     // setAllAsNonReadAction->setDisabled(disabled);
     showHideMarksAction->setDisabled(disabled);
@@ -1009,8 +1043,15 @@ void LibraryWindow::createToolBars()
 
     editInfoToolBar->addSeparator();
 
-    editInfoToolBar->addAction(setNormalAction);
-    editInfoToolBar->addAction(setMangaAction);
+    auto setTypeToolButton = new QToolButton();
+    setTypeToolButton->addAction(setNormalAction);
+    setTypeToolButton->addAction(setMangaAction);
+    setTypeToolButton->addAction(setWesternMangaAction);
+    setTypeToolButton->addAction(setWebComicAction);
+    setTypeToolButton->addAction(setYonkomaAction);
+    setTypeToolButton->setPopupMode(QToolButton::InstantPopup);
+    setTypeToolButton->setDefaultAction(setNormalAction);
+    editInfoToolBar->addWidget(setTypeToolButton);
 
     editInfoToolBar->addSeparator();
 
@@ -1037,8 +1078,11 @@ void LibraryWindow::createMenus()
     foldersView->addAction(setFolderAsUnreadAction);
     YACReader::addSperator(foldersView);
 
-    foldersView->addAction(setFolderAsMangaAction);
     foldersView->addAction(setFolderAsNormalAction);
+    foldersView->addAction(setFolderAsMangaAction);
+    foldersView->addAction(setFolderAsWesternMangaAction);
+    foldersView->addAction(setFolderAsWebComicAction);
+    foldersView->addAction(setFolderAsYonkomaAction);
 
     selectedLibrary->addAction(updateLibraryAction);
     selectedLibrary->addAction(renameLibraryAction);
@@ -1093,8 +1137,11 @@ void LibraryWindow::createMenus()
     folderMenu->addAction(setFolderAsReadAction);
     folderMenu->addAction(setFolderAsUnreadAction);
     folderMenu->addSeparator();
-    foldersView->addAction(setFolderAsMangaAction);
     foldersView->addAction(setFolderAsNormalAction);
+    foldersView->addAction(setFolderAsMangaAction);
+    foldersView->addAction(setFolderAsWesternMangaAction);
+    foldersView->addAction(setFolderAsWebComicAction);
+    foldersView->addAction(setFolderAsYonkomaAction);
 
     // comic
     QMenu *comicMenu = new QMenu(tr("Comic"));
@@ -1185,10 +1232,22 @@ void LibraryWindow::createConnections()
     connect(openLibraryAction, &QAction::triggered, this, &LibraryWindow::showAddLibrary);
     connect(setAsReadAction, &QAction::triggered, this, &LibraryWindow::setCurrentComicReaded);
     connect(setAsNonReadAction, &QAction::triggered, this, &LibraryWindow::setCurrentComicUnreaded);
-    connect(setNormalAction, &QAction::triggered, this, &LibraryWindow::setSelectedComicsAsNormal);
-    connect(setMangaAction, &QAction::triggered, this, &LibraryWindow::setSelectedComicsAsManga);
-    // connect(setAllAsReadAction,SIGNAL(triggered()),this,SLOT(setComicsReaded()));
-    // connect(setAllAsNonReadAction,SIGNAL(triggered()),this,SLOT(setComicsUnreaded()));
+
+    connect(setNormalAction, &QAction::triggered, this, [=]() {
+        setSelectedComicsType(FileType::Comic);
+    });
+    connect(setMangaAction, &QAction::triggered, this, [=]() {
+        setSelectedComicsType(FileType::Manga);
+    });
+    connect(setWesternMangaAction, &QAction::triggered, this, [=]() {
+        setSelectedComicsType(FileType::WesternManga);
+    });
+    connect(setWebComicAction, &QAction::triggered, this, [=]() {
+        setSelectedComicsType(FileType::WebComic);
+    });
+    connect(setYonkomaAction, &QAction::triggered, this, [=]() {
+        setSelectedComicsType(FileType::Yonkoma);
+    });
 
     // comicsInfoManagement
     connect(exportComicsInfoAction, &QAction::triggered, this, &LibraryWindow::showExportComicsInfo);
@@ -1241,8 +1300,22 @@ void LibraryWindow::createConnections()
     connect(setFolderAsReadAction, &QAction::triggered, this, &LibraryWindow::setFolderAsRead);
     connect(setFolderAsUnreadAction, &QAction::triggered, this, &LibraryWindow::setFolderAsUnread);
     connect(openContainingFolderAction, &QAction::triggered, this, &LibraryWindow::openContainingFolder);
-    connect(setFolderAsMangaAction, &QAction::triggered, this, &LibraryWindow::setFolderAsManga);
-    connect(setFolderAsNormalAction, &QAction::triggered, this, &LibraryWindow::setFolderAsNormal);
+
+    connect(setFolderAsMangaAction, &QAction::triggered, this, [=]() {
+        setFolderType(FileType::Manga);
+    });
+    connect(setFolderAsNormalAction, &QAction::triggered, this, [=]() {
+        setFolderType(FileType::Comic);
+    });
+    connect(setFolderAsWesternMangaAction, &QAction::triggered, this, [=]() {
+        setFolderType(FileType::WesternManga);
+    });
+    connect(setFolderAsWebComicAction, &QAction::triggered, this, [=]() {
+        setFolderType(FileType::WebComic);
+    });
+    connect(setFolderAsYonkomaAction, &QAction::triggered, this, [=]() {
+        setFolderType(FileType::Yonkoma);
+    });
 
     connect(resetComicRatingAction, &QAction::triggered, this, &LibraryWindow::resetComicRating);
 
@@ -1779,8 +1852,13 @@ void LibraryWindow::showComicsViewContextMenu(const QPoint &point)
     menu.addAction(setAsReadAction);
     menu.addAction(setAsNonReadAction);
     menu.addSeparator();
-    menu.addAction(setNormalAction);
-    menu.addAction(setMangaAction);
+    auto typeMenu = new QMenu(tr("Set type"));
+    menu.addMenu(typeMenu);
+    typeMenu->addAction(setNormalAction);
+    typeMenu->addAction(setMangaAction);
+    typeMenu->addAction(setWesternMangaAction);
+    typeMenu->addAction(setWebComicAction);
+    typeMenu->addAction(setYonkomaAction);
     menu.addSeparator();
     menu.addAction(deleteMetadataAction);
     menu.addSeparator();
@@ -1817,8 +1895,13 @@ void LibraryWindow::showComicsItemContextMenu(const QPoint &point)
     menu.addAction(setAsReadAction);
     menu.addAction(setAsNonReadAction);
     menu.addSeparator();
-    menu.addAction(setNormalAction);
-    menu.addAction(setMangaAction);
+    auto typeMenu = new QMenu(tr("Set type"));
+    menu.addMenu(typeMenu);
+    typeMenu->addAction(setNormalAction);
+    typeMenu->addAction(setMangaAction);
+    typeMenu->addAction(setWesternMangaAction);
+    typeMenu->addAction(setWebComicAction);
+    typeMenu->addAction(setYonkomaAction);
     menu.addSeparator();
     menu.addAction(deleteMetadataAction);
     menu.addSeparator();
@@ -1857,30 +1940,43 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
     setFolderAsUnreadAction->setText(tr("Set as unread"));
 
     auto setFolderAsMangaAction = new QAction();
-    setFolderAsMangaAction->setText(tr("Set as manga"));
+    setFolderAsMangaAction->setText(tr("manga"));
 
     auto setFolderAsNormalAction = new QAction();
-    setFolderAsNormalAction->setText(tr("Set as comic"));
+    setFolderAsNormalAction->setText(tr("comic"));
+
+    auto setFolderAsWesternMangaAction = new QAction();
+    setFolderAsMangaAction->setText(tr("manga (or left to right)"));
+
+    auto setFolderAsWebComicAction = new QAction();
+    setFolderAsNormalAction->setText(tr("web comic"));
+
+    auto setFolderAs4KomaAction = new QAction();
+    setFolderAsMangaAction->setText(tr("4koma (or top to botom"));
 
     menu.addAction(openContainingFolderAction);
     menu.addAction(updateFolderAction);
     menu.addSeparator();
     menu.addAction(rescanLibraryForXMLInfoAction);
     menu.addSeparator();
-    if (folder.isCompleted())
+    if (folder.completed)
         menu.addAction(setFolderAsNotCompletedAction);
     else
         menu.addAction(setFolderAsCompletedAction);
     menu.addSeparator();
-    if (folder.isFinished())
+    if (folder.finished)
         menu.addAction(setFolderAsUnreadAction);
     else
         menu.addAction(setFolderAsReadAction);
     menu.addSeparator();
-    if (folder.isManga())
-        menu.addAction(setFolderAsNormalAction);
-    else
-        menu.addAction(setFolderAsMangaAction);
+
+    auto typeMenu = new QMenu(tr("Set type"));
+    menu.addMenu(typeMenu);
+    typeMenu->addAction(setFolderAsNormalAction);
+    typeMenu->addAction(setFolderAsMangaAction);
+    typeMenu->addAction(setFolderAsWesternMangaAction);
+    typeMenu->addAction(setFolderAsWebComicAction);
+    typeMenu->addAction(setFolderAs4KomaAction);
 
     auto subfolderModel = contentViewsManager->folderContentView->currentFolderModel();
 
@@ -1910,12 +2006,24 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
         subfolderModel->updateFolderFinishedStatus(QModelIndexList() << subfolderModel->getIndexFromFolder(folder), false);
     });
     connect(setFolderAsMangaAction, &QAction::triggered, this, [=]() {
-        foldersModel->updateFolderManga(QModelIndexList() << foldersModel->getIndexFromFolder(folder), true);
-        subfolderModel->updateFolderManga(QModelIndexList() << subfolderModel->getIndexFromFolder(folder), true);
+        foldersModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::Manga);
+        subfolderModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::Manga);
     });
     connect(setFolderAsNormalAction, &QAction::triggered, this, [=]() {
-        foldersModel->updateFolderManga(QModelIndexList() << foldersModel->getIndexFromFolder(folder), false);
-        subfolderModel->updateFolderManga(QModelIndexList() << subfolderModel->getIndexFromFolder(folder), false);
+        foldersModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::Comic);
+        subfolderModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::Comic);
+    });
+    connect(setFolderAsWesternMangaAction, &QAction::triggered, this, [=]() {
+        foldersModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::WesternManga);
+        subfolderModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::WesternManga);
+    });
+    connect(setFolderAsWebComicAction, &QAction::triggered, this, [=]() {
+        foldersModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::WebComic);
+        subfolderModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::WebComic);
+    });
+    connect(setFolderAs4KomaAction, &QAction::triggered, this, [=]() {
+        foldersModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::Yonkoma);
+        subfolderModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::Yonkoma);
     });
 
     menu.exec(contentViewsManager->folderContentView->mapToGlobal(point));
@@ -2091,14 +2199,9 @@ void LibraryWindow::setCurrentComicUnreaded()
     this->setCurrentComicsStatusReaded(YACReader::Unread);
 }
 
-void LibraryWindow::setSelectedComicsAsNormal()
+void LibraryWindow::setSelectedComicsType(FileType type)
 {
-    comicsModel->setComicsManga(getSelectedComics(), false);
-}
-
-void LibraryWindow::setSelectedComicsAsManga()
-{
-    comicsModel->setComicsManga(getSelectedComics(), true);
+    comicsModel->setComicsType(getSelectedComics(), type);
 }
 
 void LibraryWindow::createLibrary()
@@ -2109,7 +2212,7 @@ void LibraryWindow::createLibrary()
 
 void LibraryWindow::create(QString source, QString dest, QString name)
 {
-    QLOG_INFO() << QString("About to create a library from '%1' to '%2' with name '%3'").arg(source).arg(dest).arg(name);
+    QLOG_INFO() << QString("About to create a library from '%1' to '%2' with name '%3'").arg(source, dest, name);
     libraryCreator->createLibrary(source, dest);
     libraryCreator->start();
     _lastAdded = name;
@@ -2625,14 +2728,9 @@ void LibraryWindow::setFolderAsUnread()
     foldersModel->updateFolderFinishedStatus(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()), false);
 }
 
-void LibraryWindow::setFolderAsManga()
+void LibraryWindow::setFolderType(FileType type)
 {
-    foldersModel->updateFolderManga(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()), true);
-}
-
-void LibraryWindow::setFolderAsNormal()
-{
-    foldersModel->updateFolderManga(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()), false);
+    foldersModel->updateFolderType(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()), type);
 }
 
 void LibraryWindow::exportLibrary(QString destPath)
@@ -2872,10 +2970,9 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
 
     bool isCompleted = sourceMI.data(FolderModel::CompletedRole).toBool();
     bool isRead = sourceMI.data(FolderModel::FinishedRole).toBool();
-    bool isManga = sourceMI.data(FolderModel::MangaRole).toBool();
 
     QMenu menu;
-    // QMenu * folderMenu = new QMenu(tr("Folder"));
+
     menu.addAction(openContainingFolderAction);
     menu.addAction(updateFolderAction);
     menu.addSeparator(); //-------------------------------
@@ -2891,10 +2988,13 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
     else
         menu.addAction(setFolderAsReadAction);
     menu.addSeparator(); //-------------------------------
-    if (isManga)
-        menu.addAction(setFolderAsNormalAction);
-    else
-        menu.addAction(setFolderAsMangaAction);
+    auto typeMenu = new QMenu(tr("Set type"));
+    menu.addMenu(typeMenu);
+    typeMenu->addAction(setFolderAsNormalAction);
+    typeMenu->addAction(setFolderAsMangaAction);
+    typeMenu->addAction(setFolderAsWesternMangaAction);
+    typeMenu->addAction(setFolderAsWebComicAction);
+    typeMenu->addAction(setFolderAsYonkomaAction);
 
     menu.exec(foldersView->mapToGlobal(point));
 }

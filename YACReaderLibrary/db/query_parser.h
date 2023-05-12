@@ -85,7 +85,8 @@ private:
                            date,
                            folder,
                            booleanFolder,
-                           filename };
+                           filename,
+                           enumField };
     static FieldType fieldType(const std::string &str);
 
     static std::string join(const QStringList &strings, const std::string &delim);

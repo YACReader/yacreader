@@ -1575,7 +1575,7 @@ void MainWindowViewer::sendComic()
     auto client = new YACReaderLocalClient;
 
     connect(client, &YACReaderLocalClient::finished, client, &YACReaderLocalClient::deleteLater);
-    currentComicDB.info.lastTimeOpened = QDateTime::currentMSecsSinceEpoch() / 1000;
+    currentComicDB.info.lastTimeOpened = QDateTime::currentSecsSinceEpoch();
 
     viewer->updateComic(currentComicDB);
 

@@ -6,7 +6,7 @@
 #include <QMetaType>
 #include <QAbstractItemModel>
 
-#define VERSION "9.12.0"
+#define VERSION "9.13.0"
 
 #define IMPORT_COMIC_INFO_XML_METADATA "IMPORT_COMIC_INFO_XML_METADATA"
 
@@ -51,6 +51,14 @@ enum LabelColors {
     YDark
 };
 
+enum class FileType : int {
+    Comic = 0,
+    Manga,
+    WesternManga,
+    WebComic, // continuous vertical reading
+    Yonkoma, // 4Koma
+};
+
 struct OpenComicSource {
     enum Source {
         Folder = 0,
@@ -76,5 +84,6 @@ void iterate(const QModelIndex &index,
 
 Q_DECLARE_METATYPE(YACReader::OpenComicSource::Source)
 Q_DECLARE_METATYPE(YACReader::OpenComicSource)
+Q_DECLARE_METATYPE(YACReader::FileType)
 
 #endif
