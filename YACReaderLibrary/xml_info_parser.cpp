@@ -59,7 +59,7 @@ void consolidateDate(ComicInfo &info)
 
     auto year = info.year.isNull() ? 0 : info.year.toInt();
     auto month = info.month.isNull() ? 1 : info.month.toInt();
-    auto day = info.date.isNull() ? 1 : info.date.toInt();
+    auto day = info.day.isNull() ? 1 : info.day.toInt();
 
     info.date = QString("%1/%2/%3").arg(day).arg(month).arg(year);
 }
