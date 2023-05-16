@@ -118,6 +118,8 @@ public:
     Q_INVOKABLE QStringList getColorists();
     Q_INVOKABLE QStringList getLetterers();
     Q_INVOKABLE QStringList getCoverArtists();
+    Q_INVOKABLE QStringList getEditors();
+    Q_INVOKABLE QStringList getImprint();
 
     Q_INVOKABLE QStringList getCharacters();
 
@@ -125,6 +127,11 @@ public:
     Q_INVOKABLE QStringList getLocations();
 
     Q_INVOKABLE QStringList getTags();
+
+    Q_INVOKABLE QString getTypeString();
+
+    Q_INVOKABLE QString getStoryArcInfoString();
+    Q_INVOKABLE QString getAlternateSeriesString();
 
     friend QDataStream &operator<<(QDataStream &stream, const ComicInfo &comicInfo);
 
@@ -252,6 +259,7 @@ public:
     Q_INVOKABLE qulonglong getFileSize() const;
 
     Q_INVOKABLE QString getTitleIncludingNumber() const;
+    Q_INVOKABLE QString getInfoTitle() const;
 
     QString toTXT();
 

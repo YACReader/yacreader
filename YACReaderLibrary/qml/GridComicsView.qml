@@ -524,6 +524,33 @@ SplitView {
                                 }
 
                                 Text {
+                                    id: currentComicInfoArc
+                                    color: currentComicDetailsFlowView.infoFlowTextColor
+                                    font: currentComicDetailsFlowView.infoFont
+                                    text: currentComicInfo.getStoryArcInfoString()
+                                    rightPadding: 20
+                                    visible : currentComicInfo.getStoryArcInfoString().length > 0
+                                }
+
+                                Text {
+                                    id: currentComicInfoAlternate
+                                    color: currentComicDetailsFlowView.infoFlowTextColor
+                                    font: currentComicDetailsFlowView.infoFont
+                                    text: currentComicInfo.getAlternateSeriesString()
+                                    rightPadding: 20
+                                    visible : currentComicInfo.getStoryArcInfoString().length > 0
+                                }
+
+                                Text {
+                                    id: currentComicInfoSeriesGroup
+                                    color: currentComicDetailsFlowView.infoFlowTextColor
+                                    font: currentComicDetailsFlowView.infoFont
+                                    text: currentComicInfo.seriesGroup ? currentComicInfo.seriesGroup : ""
+                                    rightPadding: 20
+                                    visible: currentComicInfo.seriesGroup ? true : false
+                                }
+
+                                Text {
                                     id: currentComicInfoGenre
                                     color: currentComicDetailsFlowView.infoFlowTextColor
                                     font: currentComicDetailsFlowView.infoFont

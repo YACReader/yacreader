@@ -1,5 +1,7 @@
 #include "comic_db.h"
 
+#include "yacreader_global.h"
+
 #include <QVariant>
 #include <QFileInfo>
 
@@ -212,6 +214,35 @@ QString ComicDB::getTitleIncludingNumber() const
     }
 
     return getTitleOrFileName();
+}
+
+QString ComicDB::getInfoTitle() const
+{
+    if (!info.number.isNull() && !info.title.isNull() && !info.series.isNull())
+        return "#" + info.number.toString() + " - " + info.title.toString() + " (" + info.series.toString() + ")";
+
+    if (!info.title.isNull() && !info.series.isNull())
+        return info.title.toString() + " (" + info.series.toString() + ")";
+
+    if (!info.number.isNull() && !info.title.isNull())
+        return "#" + info.number.toString() + " - " + info.title.toString();
+
+    if (!info.number.isNull() && !info.series.isNull())
+        return "#" + info.number.toString() + " - " + info.series.toString();
+
+    if (!info.number.isNull())
+        return "#" + info.number.toString() + " - " + getTitleOrFileName();
+
+    if (!info.title.isNull() && !info.series.isNull())
+        return info.title.toString() + " (" + info.series.toString() + ")";
+
+    if (!info.title.isNull())
+        return info.title.toString();
+
+    if (!info.series.isNull())
+        return info.series.toString();
+
+    return QFileInfo(path).fileName();
 }
 
 //-----------------------------------------------------------------------------
@@ -436,6 +467,24 @@ QStringList ComicInfo::getCoverArtists()
     return QStringList();
 }
 
+QStringList ComicInfo::getEditors()
+{
+    if (editor.toString().length() > 0) {
+        return editor.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList ComicInfo::getImprint()
+{
+    if (imprint.toString().length() > 0) {
+        return imprint.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
 QStringList ComicInfo::getCharacters()
 {
     if (characters.toString().length() > 0) {
@@ -470,6 +519,48 @@ QStringList ComicInfo::getTags()
     }
 
     return QStringList();
+}
+
+QString ComicInfo::getTypeString()
+{
+    switch (type.value<YACReader::FileType>()) {
+    case YACReader::FileType::Comic:
+        return "Comic";
+    case YACReader::FileType::Manga:
+        return "Manga";
+    case YACReader::FileType::WesternManga:
+        return "Western Manga";
+    case YACReader::FileType::WebComic:
+        return "Web Comic";
+    case YACReader::FileType::Yonkoma:
+        return "4-Koma";
+    }
+}
+
+QString ComicInfo::getStoryArcInfoString()
+{
+    if (arcNumber.toString().length() > 0 && arcCount.toString().length() > 0 && storyArc.toString().length() > 0) {
+        return "(" + arcNumber.toString() + "/" + arcCount.toString() + ") " + storyArc.toString();
+    }
+
+    if (arcNumber.toString().length() > 0 && storyArc.toString().length() > 0) {
+        return "(" + arcNumber.toString() + ") " + storyArc.toString();
+    }
+
+    return storyArc.toString().length() > 0 ? storyArc.toString() : "";
+}
+
+QString ComicInfo::getAlternateSeriesString()
+{
+    if (alternateNumber.toString().length() > 0 && alternateCount.toString().length() > 0 && alternateSeries.toString().length() > 0) {
+        return "(" + alternateNumber.toString() + "/" + alternateCount.toString() + ") " + alternateSeries.toString();
+    }
+
+    if (alternateNumber.toString().length() > 0 && alternateSeries.toString().length() > 0) {
+        return "(" + alternateNumber.toString() + ") " + alternateSeries.toString();
+    }
+
+    return alternateSeries.toString().length() > 0 ? alternateSeries.toString() : "";
 }
 
 void ComicInfo::setRead(bool r)
