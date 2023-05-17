@@ -1658,6 +1658,7 @@ void DBHelper::readFolderFromQuery(Folder &folder, QSqlQuery &query)
 {
     QSqlRecord record = query.record();
 
+    int id = record.indexOf("id");
     int parentId = record.indexOf("parentId");
     int name = record.indexOf("name");
     int path = record.indexOf("path");
@@ -1672,6 +1673,7 @@ void DBHelper::readFolderFromQuery(Folder &folder, QSqlQuery &query)
     int updated = record.indexOf("updated");
 
     if (query.next()) {
+        folder.id = query.value(id).toULongLong();
         folder.parentId = query.value(parentId).toULongLong();
         folder.name = query.value(name).toString();
         folder.path = query.value(path).toString();
