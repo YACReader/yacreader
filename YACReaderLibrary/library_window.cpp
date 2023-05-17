@@ -1655,12 +1655,18 @@ void LibraryWindow::reloadAfterCopyMove(const QModelIndex &mi)
 {
     if (getCurrentFolderIndex() == mi) {
         auto item = static_cast<FolderItem *>(mi.internalPointer());
-        auto id = item->id;
-        foldersModel->reload(mi);
-        auto newMi = foldersModel->index(id);
 
-        foldersView->setCurrentIndex(foldersModelProxy->mapFromSource(newMi));
-        navigationController->loadFolderInfo(newMi);
+        if (item == nullptr) {
+            foldersModel->reload();
+            navigationController->loadFolderInfo(QModelIndex());
+        } else {
+            auto id = item->id;
+            foldersModel->reload(mi);
+            auto newMi = foldersModel->index(id);
+
+            foldersView->setCurrentIndex(foldersModelProxy->mapFromSource(newMi));
+            navigationController->loadFolderInfo(newMi);
+        }
     }
 
     enableNeededActions();
