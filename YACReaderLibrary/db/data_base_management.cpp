@@ -108,9 +108,11 @@ QSqlDatabase DataBaseManagement::createDatabase(QString dest)
         // pragma.finish();
         DataBaseManagement::createTables(db);
 
-        QSqlQuery query("INSERT INTO folder (parentId, name, path) "
-                        "VALUES (1,'root', '/')",
-                        db);
+        QSqlQuery insertRootQuery(db);
+        insertRootQuery.prepare("INSERT INTO folder (parentId, name, path, added) "
+                                "VALUES (1, 'root', '/', :added)");
+        insertRootQuery.bindValue(":added", QDateTime::currentSecsSinceEpoch());
+        insertRootQuery.exec();
     }
 
     return db;
