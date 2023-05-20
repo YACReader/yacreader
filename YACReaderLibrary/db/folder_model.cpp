@@ -98,7 +98,7 @@ QHash<int, QByteArray> FolderModel::roleNames() const
     roles[NumChildrenRole] = "num_children";
     roles[TypeRole] = "type";
     roles[AddedRole] = "added";
-    roles[UpdatedRole] = "type";
+    roles[UpdatedRole] = "updated";
 
     return roles;
 }
