@@ -337,7 +337,7 @@ Rectangle {
 
                 text: qsTr("Main character or team")
 
-                visible: comicInfo ? comicInfo.mainCharacterOrTeam.length > 0 : false
+                visible: comicInfo && comicInfo.mainCharacterOrTeam ? comicInfo.mainCharacterOrTeam.length > 0 : false
             }
 
             Text {
@@ -345,9 +345,9 @@ Rectangle {
                 font.family: "Arial"
                 font.pixelSize: 15
 
-                text: comicInfo ? comicInfo.mainCharacterOrTeam : ""
+                text: comicInfo && comicInfo.mainCharacterOrTeam ? comicInfo.mainCharacterOrTeam : ""
 
-                visible: comicInfo ? comicInfo.mainCharacterOrTeam.length > 0 : false
+                visible: comicInfo && comicInfo.mainCharacterOrTeam ? comicInfo.mainCharacterOrTeam.length > 0 : false
             }
 
             Text {
@@ -691,9 +691,9 @@ Rectangle {
                     font.family: "Arial"
                     font.pixelSize: 15
 
-                    text: comicInfo ? comicInfo.languageISO : ""
+                    text: comicInfo && comicInfo.languageISO ? comicInfo.languageISO : ""
 
-                    visible: comicInfo ? comicInfo.languageISO.length > 0 : false
+                    visible: comicInfo && comicInfo.languageISO ? comicInfo.languageISO.length > 0 ?? false : false
                 }
 
                 Text {
