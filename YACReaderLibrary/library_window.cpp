@@ -1,5 +1,4 @@
 #include "library_window.h"
-#include "custom_widgets.h"
 #include "folder_item.h"
 
 #include <QHBoxLayout>
@@ -43,6 +42,7 @@
 #include "help_about_dialog.h"
 #include "server_config_dialog.h"
 #include "comic_model.h"
+#include "yacreader_tool_bar_stretch.h"
 
 #include "yacreader_titled_toolbar.h"
 #include "yacreader_main_toolbar.h"
@@ -82,6 +82,8 @@
 #include "whats_new_controller.h"
 
 #include "library_comic_opener.h"
+
+#include "recent_visibility_coordinator.h"
 
 #include "QsLog.h"
 
@@ -200,6 +202,8 @@ void LibraryWindow::setupUI()
     createToolBars();
     createMenus();
 
+    setupCoordinators();
+
     navigationController = new YACReaderNavigationController(this, contentViewsManager);
 
     createConnections();
@@ -217,24 +221,6 @@ void LibraryWindow::setupUI()
 
     trayIconController = new TrayIconController(settings, this);
 }
-
-/*void LibraryWindow::changeEvent(QEvent *event)
-{
-    QMainWindow::changeEvent(event);
-
-    if (event->type() == QEvent::WindowStateChange && isMinimized() &&
-        trayIcon.isVisible()) {
-#ifdef Q_OS_MACOS
-        OSXHideDockIcon();
-#endif
-        hide();
-    } else if (event->type() == QEvent::WindowStateChange) {
-#ifdef Q_OS_MACOS
-        OSXShowDockIcon();
-#endif
-        show();
-    }
-}*/
 
 void LibraryWindow::doLayout()
 {
@@ -457,6 +443,7 @@ void LibraryWindow::setUpShortcutsManagement()
     editShortcutsDialog->addActionsGroup("Visualization", QIcon(":/images/shortcuts_group_visualization.svg"),
                                          tmpList = QList<QAction *>()
                                                  << showHideMarksAction
+                                                 << toogleShowRecentIndicatorAction
 #ifndef Q_OS_MAC
                                                  << toggleFullScreenAction
 #endif
@@ -479,6 +466,11 @@ void LibraryWindow::doModels()
     // lists
     listsModel = new ReadingListModel(this);
     listsModelProxy = new ReadingListModelProxy(this);
+}
+
+void LibraryWindow::setupCoordinators()
+{
+    recentVisibilityCoordinator = new RecentVisibilityCoordinator(settings, foldersModel, contentViewsManager->folderContentView, comicsModel);
 }
 
 void LibraryWindow::createActions()
@@ -612,14 +604,6 @@ void LibraryWindow::createActions()
     setYonkomaAction->setData(SET_AS_YONKOMA_ACTION_YL);
     setYonkomaAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_YONKOMA_ACTION_YL));
 
-    /*setAllAsReadAction = new QAction(tr("Set all as read"),this);
-        setAllAsReadAction->setToolTip(tr("Set all comics as read"));
-        setAllAsReadAction->setIcon(QIcon(":/images/comics_view_toolbar/setAllRead.png"));
-
-        setAllAsNonReadAction = new QAction(tr("Set all as unread"),this);
-        setAllAsNonReadAction->setToolTip(tr("Set all comics as unread"));
-        setAllAsNonReadAction->setIcon(QIcon(":/images/comics_view_toolbar/setAllUnread.png"));*/
-
     showHideMarksAction = new QAction(tr("Show/Hide marks"), this);
     showHideMarksAction->setToolTip(tr("Show or hide read marks"));
     showHideMarksAction->setData(SHOW_HIDE_MARKS_ACTION_YL);
@@ -627,6 +611,15 @@ void LibraryWindow::createActions()
     showHideMarksAction->setCheckable(true);
     showHideMarksAction->setIcon(QIcon(":/images/comics_view_toolbar/showMarks.svg"));
     showHideMarksAction->setChecked(true);
+
+    toogleShowRecentIndicatorAction = new QAction(tr("Show/Hide recent indicator"), this);
+    toogleShowRecentIndicatorAction->setToolTip(tr("Show or hide recent indicator"));
+    toogleShowRecentIndicatorAction->setData(SHOW_HIDE_RECENT_INDICATOR_ACTION_YL);
+    toogleShowRecentIndicatorAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_HIDE_RECENT_INDICATOR_ACTION_YL));
+    toogleShowRecentIndicatorAction->setCheckable(true);
+    toogleShowRecentIndicatorAction->setIcon(QIcon(":/images/comics_view_toolbar/showRecentIndicator.svg"));
+    toogleShowRecentIndicatorAction->setChecked(settings->value(DISPLAY_RECENTLY_INDICATOR, true).toBool());
+
 #ifndef Q_OS_MAC
     toggleFullScreenAction = new QAction(tr("Fullscreen mode on/off"), this);
     toggleFullScreenAction->setToolTip(tr("Fullscreen mode on/off"));
@@ -1035,9 +1028,7 @@ void LibraryWindow::createToolBars()
     editInfoToolBar->addSeparator();
 
     editInfoToolBar->addAction(setAsReadAction);
-    // editInfoToolBar->addAction(setAllAsReadAction);
     editInfoToolBar->addAction(setAsNonReadAction);
-    // editInfoToolBar->addAction(setAllAsNonReadAction);
 
     editInfoToolBar->addAction(showHideMarksAction);
 
@@ -1056,6 +1047,11 @@ void LibraryWindow::createToolBars()
     editInfoToolBar->addSeparator();
 
     editInfoToolBar->addAction(deleteComicsAction);
+
+    auto toolBarStretch = new YACReaderToolBarStretch(this);
+    editInfoToolBar->addWidget(toolBarStretch);
+
+    editInfoToolBar->addAction(toogleShowRecentIndicatorAction);
 
     contentViewsManager->comicsView->setToolBar(editInfoToolBar);
 }
@@ -1361,6 +1357,8 @@ void LibraryWindow::createConnections()
     // upgrade library
     connect(this, &LibraryWindow::libraryUpgraded, this, &LibraryWindow::loadLibrary, Qt::QueuedConnection);
     connect(this, &LibraryWindow::errorUpgradingLibrary, this, &LibraryWindow::showErrorUpgradingLibrary, Qt::QueuedConnection);
+
+    connect(toogleShowRecentIndicatorAction, &QAction::toggled, recentVisibilityCoordinator, &RecentVisibilityCoordinator::toggleVisibility);
 }
 
 void LibraryWindow::showErrorUpgradingLibrary(const QString &path)

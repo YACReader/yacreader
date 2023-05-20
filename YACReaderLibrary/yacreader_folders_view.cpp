@@ -91,4 +91,25 @@ void YACReaderFoldersViewItemDeletegate::paint(QPainter *painter, const QStyleOp
     }
 
     QStyledItemDelegate::paint(painter, option, index);
+
+    auto showRecent = index.data(FolderModel::ShowRecentRole).toBool();
+
+    if (showRecent) {
+        auto now = QDateTime::currentSecsSinceEpoch();
+        auto added = index.data(FolderModel::AddedRole).toLongLong();
+        auto updated = index.data(FolderModel::UpdatedRole).toLongLong();
+        auto dayInSeconds = 86400;
+
+        if (now - added < dayInSeconds || now - updated < dayInSeconds) {
+            painter->save();
+#ifdef Q_OS_MAC
+            painter->setBrush(QBrush(QColor(85, 95, 127)));
+#else
+            painter->setBrush(QBrush(QColor(237, 197, 24)));
+#endif
+            painter->setPen(QPen(QBrush(), 0));
+            painter->drawEllipse(option.rect.x() + 13, option.rect.y() + 2, 7, 7);
+            painter->restore();
+        }
+    }
 }

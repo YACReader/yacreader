@@ -59,6 +59,7 @@ public:
         ReadableTitle,
         AddedRole,
         TypeRole,
+        ShowRecentRole,
     };
 
     enum Mode {
@@ -139,6 +140,8 @@ public:
     ComicModel::Mode getMode() { return mode; }
     unsigned long long int getSourceId() { return sourceId; }
 
+    void setShowRecent(bool visible);
+
     QHash<int, QByteArray> roleNames() const override;
 
 public slots:
@@ -167,6 +170,8 @@ private:
     Mode mode;
     qulonglong sourceId;
     QString localizedDate(const QString &dbDate) const;
+
+    bool showRecent;
 
 signals:
     void isEmpty();

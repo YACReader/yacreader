@@ -120,9 +120,7 @@ void ClassicComicsView::setToolBar(QToolBar *toolBar)
     static_cast<QVBoxLayout *>(comics->layout())->insertWidget(0, toolBar);
     this->toolbar = toolBar;
 
-    toolBarStretch = new YACReaderToolBarStretch(this);
-
-    toolBarStretchAction = toolBar->addWidget(toolBarStretch);
+    startSeparatorAction = toolBar->addSeparator();
     toolBar->addAction(hideFlowViewAction);
 }
 
@@ -343,7 +341,7 @@ void ClassicComicsView::removeItemsFromFlow(const QModelIndex &parent, int from,
 
 void ClassicComicsView::closeEvent(QCloseEvent *event)
 {
-    toolbar->removeAction(toolBarStretchAction);
+    toolbar->removeAction(startSeparatorAction);
     toolbar->removeAction(hideFlowViewAction);
 
     saveTableHeadersStatus();

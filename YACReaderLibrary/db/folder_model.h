@@ -81,6 +81,8 @@ public:
 
     Q_INVOKABLE QUrl getCoverUrlPathForComicHash(const QString &hash) const;
 
+    void setShowRecent(bool showRecent);
+
     enum Columns {
         Name = 0,
         Path,
@@ -106,6 +108,7 @@ public:
         TypeRole,
         AddedRole,
         UpdatedRole,
+        ShowRecentRole,
     };
 
     bool isSubfolder;
@@ -125,6 +128,8 @@ private:
 
     QIcon folderIcon;
     QIcon folderFinishedIcon;
+
+    bool showRecent;
 };
 
 #endif

@@ -52,12 +52,12 @@ void drawMacOSXFinishedFolderIcon()
 #define ROOT 1
 
 FolderModel::FolderModel(QObject *parent)
-    : QAbstractItemModel(parent), isSubfolder(false), rootItem(nullptr), folderIcon(YACReader::noHighlightedIcon(":/images/sidebar/folder.svg")), folderFinishedIcon(YACReader::noHighlightedIcon(":/images/sidebar/folder_finished.svg"))
+    : QAbstractItemModel(parent), isSubfolder(false), rootItem(nullptr), folderIcon(YACReader::noHighlightedIcon(":/images/sidebar/folder.svg")), folderFinishedIcon(YACReader::noHighlightedIcon(":/images/sidebar/folder_finished.svg")), showRecent(false)
 {
 }
 
 FolderModel::FolderModel(QSqlQuery &sqlquery, QObject *parent)
-    : QAbstractItemModel(parent), isSubfolder(false), rootItem(nullptr)
+    : QAbstractItemModel(parent), isSubfolder(false), rootItem(nullptr), showRecent(false)
 {
     QList<QVariant> rootData;
     rootData << "root"; // id 1, parent 1, title "root"
@@ -99,6 +99,7 @@ QHash<int, QByteArray> FolderModel::roleNames() const
     roles[TypeRole] = "type";
     roles[AddedRole] = "added";
     roles[UpdatedRole] = "updated";
+    roles[ShowRecentRole] = "show_recent";
 
     return roles;
 }
@@ -181,6 +182,9 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
     if (role == FolderModel::UpdatedRole)
         return item->data(Updated);
 
+    if (role == FolderModel::ShowRecentRole)
+        return showRecent;
+
     if (role != Qt::DisplayRole)
         return QVariant();
 
@@ -195,7 +199,8 @@ Qt::ItemFlags FolderModel::flags(const QModelIndex &index) const
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled;
 }
 
-QVariant FolderModel::headerData(int section, Qt::Orientation orientation,
+QVariant FolderModel::headerData(int section,
+                                 Qt::Orientation orientation,
                                  int role) const
 {
     if (rootItem == nullptr) {
@@ -401,7 +406,7 @@ void FolderModel::updateFolderCompletedStatus(const QModelIndexList &list, bool 
     }
     QSqlDatabase::removeDatabase(connectionName);
 
-    emit dataChanged(index(list.first().row(), FolderModel::Name), index(list.last().row(), FolderModel::FirstChildHash));
+    emit dataChanged(index(list.first().row(), FolderModel::Name), index(list.last().row(), FolderModel::Updated));
 }
 
 void FolderModel::updateFolderFinishedStatus(const QModelIndexList &list, bool status)
@@ -638,6 +643,16 @@ QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QMod
 QUrl FolderModel::getCoverUrlPathForComicHash(const QString &hash) const
 {
     return QUrl("file:" + _databasePath + "/covers/" + hash + ".jpg");
+}
+
+void FolderModel::setShowRecent(bool showRecent)
+{
+    if (this->showRecent == showRecent)
+        return;
+
+    this->showRecent = showRecent;
+
+    emit dataChanged(index(0, 0), index(rowCount() - 1, 0), { FolderModel::ShowRecentRole });
 }
 
 void FolderModel::deleteFolder(const QModelIndex &mi)

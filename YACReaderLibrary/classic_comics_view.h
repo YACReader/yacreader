@@ -54,8 +54,6 @@ protected slots:
 
 private:
     YACReaderTableView *tableView;
-    YACReaderToolBarStretch *toolBarStretch;
-    QAction *toolBarStretchAction;
     QToolBar *toolbar;
     QWidget *comics;
     QSplitter *sVertical;
@@ -63,6 +61,7 @@ private:
     QSettings *settings;
     void closeEvent(QCloseEvent *event) override;
     QAction *hideFlowViewAction;
+    QAction *startSeparatorAction;
 
     QStackedWidget *stack;
 

@@ -17,12 +17,13 @@
 #include "QsLog.h"
 
 ComicModel::ComicModel(QObject *parent)
-    : QAbstractItemModel(parent)
+    : QAbstractItemModel(parent), showRecent(false)
+
 {
 }
 
 ComicModel::ComicModel(QSqlQuery &sqlquery, QObject *parent)
-    : QAbstractItemModel(parent)
+    : QAbstractItemModel(parent), showRecent(false)
 {
     setupModelData(sqlquery);
 }
@@ -239,7 +240,9 @@ QHash<int, QByteArray> ComicModel::roleNames() const
     roles[CoverPathRole] = "cover_path";
     roles[PublicationDate] = "date";
     roles[ReadableTitle] = "readable_title";
-    roles[Added] = "added_date";
+    roles[AddedRole] = "added_date";
+    roles[TypeRole] = "type";
+    roles[ShowRecentRole] = "show_recent";
 
     return roles;
 }
@@ -306,6 +309,8 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
         return item->data(Added);
     else if (role == TypeRole)
         return item->data(Type);
+    else if (role == ShowRecentRole)
+        return showRecent;
 
     if (role != Qt::DisplayRole)
         return QVariant();
@@ -1127,6 +1132,16 @@ bool ComicModel::isFavorite(const QModelIndex &index)
     QSqlDatabase::removeDatabase(connectionName);
 
     return isFavorite;
+}
+
+void ComicModel::setShowRecent(bool showRecent)
+{
+    if (this->showRecent == showRecent)
+        return;
+
+    this->showRecent = showRecent;
+
+    emit dataChanged(index(0, 0), index(rowCount() - 1, 0), { ComicModel::ShowRecentRole });
 }
 
 void ComicModel::updateRating(int rating, QModelIndex mi)
