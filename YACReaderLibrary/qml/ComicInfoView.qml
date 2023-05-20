@@ -531,7 +531,7 @@ Rectangle {
 
                 Repeater {
                     id: letterers
-                    model: comicInfo ? comicInfo.getLetterers().length : nul
+                    model: comicInfo ? comicInfo.getLetterers().length : null
                     Column{
                         Text {
                             color: infoTitleColor
