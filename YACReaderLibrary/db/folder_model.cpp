@@ -52,12 +52,12 @@ void drawMacOSXFinishedFolderIcon()
 #define ROOT 1
 
 FolderModel::FolderModel(QObject *parent)
-    : QAbstractItemModel(parent), isSubfolder(false), rootItem(nullptr), folderIcon(YACReader::noHighlightedIcon(":/images/sidebar/folder.svg")), folderFinishedIcon(YACReader::noHighlightedIcon(":/images/sidebar/folder_finished.svg")), showRecent(false)
+    : QAbstractItemModel(parent), isSubfolder(false), rootItem(nullptr), folderIcon(YACReader::noHighlightedIcon(":/images/sidebar/folder.svg")), folderFinishedIcon(YACReader::noHighlightedIcon(":/images/sidebar/folder_finished.svg")), showRecent(false), recentDays(1)
 {
 }
 
 FolderModel::FolderModel(QSqlQuery &sqlquery, QObject *parent)
-    : QAbstractItemModel(parent), isSubfolder(false), rootItem(nullptr), showRecent(false)
+    : QAbstractItemModel(parent), isSubfolder(false), rootItem(nullptr), showRecent(false), recentDays(1)
 {
     QList<QVariant> rootData;
     rootData << "root"; // id 1, parent 1, title "root"
@@ -100,6 +100,7 @@ QHash<int, QByteArray> FolderModel::roleNames() const
     roles[AddedRole] = "added";
     roles[UpdatedRole] = "updated";
     roles[ShowRecentRole] = "show_recent";
+    roles[RecentRangeRole] = "recent_range";
 
     return roles;
 }
@@ -184,6 +185,9 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
 
     if (role == FolderModel::ShowRecentRole)
         return showRecent;
+
+    if (role == FolderModel::RecentRangeRole)
+        return recentDays * 86400;
 
     if (role != Qt::DisplayRole)
         return QVariant();
@@ -653,6 +657,16 @@ void FolderModel::setShowRecent(bool showRecent)
     this->showRecent = showRecent;
 
     emit dataChanged(index(0, 0), index(rowCount() - 1, 0), { FolderModel::ShowRecentRole });
+}
+
+void FolderModel::setRecentRange(int days)
+{
+    if (this->recentDays == days)
+        return;
+
+    this->recentDays = days;
+
+    emit dataChanged(index(0, 0), index(rowCount() - 1, 0), { FolderModel::RecentRangeRole });
 }
 
 void FolderModel::deleteFolder(const QModelIndex &mi)

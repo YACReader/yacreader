@@ -212,6 +212,11 @@ void FolderContentView::setShowRecent(bool visible)
     folderModel->setShowRecent(visible);
 }
 
+void FolderContentView::setRecentRange(int days)
+{
+    folderModel->setRecentRange(days);
+}
+
 void FolderContentView::openFolder(int index)
 {
     emit subfolderSelected(this->parent, index);

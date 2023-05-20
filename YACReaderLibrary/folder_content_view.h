@@ -24,6 +24,7 @@ public:
     void setContinueReadingModel(ComicModel *model);
     void reloadContinueReadingModel();
     void setShowRecent(bool visible);
+    void setRecentRange(int days);
 
     FolderModel *currentFolderModel() { return folderModel; }
 signals:

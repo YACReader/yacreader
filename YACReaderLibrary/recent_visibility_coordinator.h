@@ -16,7 +16,7 @@ public:
 
 public slots:
     void toggleVisibility(bool visibility);
-    void setTimeRangeInDays(int days);
+    void updateTimeRange();
 
 private:
     QSettings *settings;

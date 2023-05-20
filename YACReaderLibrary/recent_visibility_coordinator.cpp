@@ -7,6 +7,7 @@ RecentVisibilityCoordinator::RecentVisibilityCoordinator(QSettings *settings, Fo
     : QObject(), settings(settings), folderModel(folderModel), folderContentView(folderContentView), comicModel(comicModel)
 {
     updateVisibility();
+    updateTimeRange();
 }
 
 void RecentVisibilityCoordinator::toggleVisibility(bool visibility)
@@ -16,8 +17,12 @@ void RecentVisibilityCoordinator::toggleVisibility(bool visibility)
     updateVisibility();
 }
 
-void RecentVisibilityCoordinator::setTimeRangeInDays(int days)
+void RecentVisibilityCoordinator::updateTimeRange()
 {
+    auto days = settings->value(NUM_DAYS_TO_CONSIDER_RECENT, 1).toInt();
+    folderModel->setRecentRange(days);
+    folderContentView->setRecentRange(days);
+    comicModel->setRecentRange(days);
 }
 
 void RecentVisibilityCoordinator::updateVisibility()

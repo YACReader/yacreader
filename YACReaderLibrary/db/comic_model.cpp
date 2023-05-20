@@ -17,13 +17,13 @@
 #include "QsLog.h"
 
 ComicModel::ComicModel(QObject *parent)
-    : QAbstractItemModel(parent), showRecent(false)
+    : QAbstractItemModel(parent), showRecent(false), recentDays(1)
 
 {
 }
 
 ComicModel::ComicModel(QSqlQuery &sqlquery, QObject *parent)
-    : QAbstractItemModel(parent), showRecent(false)
+    : QAbstractItemModel(parent), showRecent(false), recentDays(1)
 {
     setupModelData(sqlquery);
 }
@@ -243,6 +243,7 @@ QHash<int, QByteArray> ComicModel::roleNames() const
     roles[AddedRole] = "added_date";
     roles[TypeRole] = "type";
     roles[ShowRecentRole] = "show_recent";
+    roles[RecentRangeRole] = "recent_range";
 
     return roles;
 }
@@ -311,6 +312,8 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
         return item->data(Type);
     else if (role == ShowRecentRole)
         return showRecent;
+    else if (role == ComicModel::RecentRangeRole)
+        return recentDays * 86400;
 
     if (role != Qt::DisplayRole)
         return QVariant();
@@ -1142,6 +1145,16 @@ void ComicModel::setShowRecent(bool showRecent)
     this->showRecent = showRecent;
 
     emit dataChanged(index(0, 0), index(rowCount() - 1, 0), { ComicModel::ShowRecentRole });
+}
+
+void ComicModel::setRecentRange(int days)
+{
+    if (this->recentDays == days)
+        return;
+
+    this->recentDays = days;
+
+    emit dataChanged(index(0, 0), index(rowCount() - 1, 0), { ComicModel::RecentRangeRole });
 }
 
 void ComicModel::updateRating(int rating, QModelIndex mi)

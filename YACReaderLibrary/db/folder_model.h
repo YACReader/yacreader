@@ -82,6 +82,7 @@ public:
     Q_INVOKABLE QUrl getCoverUrlPathForComicHash(const QString &hash) const;
 
     void setShowRecent(bool showRecent);
+    void setRecentRange(int days);
 
     enum Columns {
         Name = 0,
@@ -109,6 +110,7 @@ public:
         AddedRole,
         UpdatedRole,
         ShowRecentRole,
+        RecentRangeRole,
     };
 
     bool isSubfolder;
@@ -130,6 +132,7 @@ private:
     QIcon folderFinishedIcon;
 
     bool showRecent;
+    qlonglong recentDays;
 };
 
 #endif

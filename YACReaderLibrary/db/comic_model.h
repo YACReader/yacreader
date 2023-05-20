@@ -60,6 +60,7 @@ public:
         AddedRole,
         TypeRole,
         ShowRecentRole,
+        RecentRangeRole,
     };
 
     enum Mode {
@@ -141,6 +142,7 @@ public:
     unsigned long long int getSourceId() { return sourceId; }
 
     void setShowRecent(bool visible);
+    void setRecentRange(int days);
 
     QHash<int, QByteArray> roleNames() const override;
 
@@ -172,6 +174,7 @@ private:
     QString localizedDate(const QString &dbDate) const;
 
     bool showRecent;
+    qlonglong recentDays;
 
 signals:
     void isEmpty();

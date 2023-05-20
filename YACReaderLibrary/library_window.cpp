@@ -2756,6 +2756,8 @@ void LibraryWindow::reloadOptions()
     contentViewsManager->comicsView->updateConfig(settings);
 
     trayIconController->updateIconVisibility();
+
+    recentVisibilityCoordinator->updateTimeRange();
 }
 
 QString LibraryWindow::currentPath()

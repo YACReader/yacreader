@@ -287,7 +287,7 @@ SplitView {
                     radius: 5
                     anchors { left: coverElement.left; top: coverElement.top; topMargin: 5; leftMargin: 5; }
                     color: "#FFFFCC00"
-                    visible: (((new Date() / 1000) - added_date) < 86400) && show_recent
+                    visible: (((new Date() / 1000) - added_date) < recent_range) && show_recent
                 }
 
                 //border
