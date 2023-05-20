@@ -1232,13 +1232,16 @@ void DBHelper::updateComicsInfo(QList<ComicDB> &comics, const QString &databaseP
 // inserts
 qulonglong DBHelper::insert(Folder *folder, QSqlDatabase &db)
 {
+    auto added = QDateTime::currentSecsSinceEpoch();
+    folder->added = added;
+
     QSqlQuery query(db);
     query.prepare("INSERT INTO folder (parentId, name, path, added) "
                   "VALUES (:parentId, :name, :path, :added)");
     query.bindValue(":parentId", folder->parentId);
     query.bindValue(":name", folder->name);
     query.bindValue(":path", folder->path);
-    query.bindValue(":added", QDateTime::currentSecsSinceEpoch());
+    query.bindValue(":added", added);
     query.exec();
 
     return query.lastInsertId().toULongLong();
