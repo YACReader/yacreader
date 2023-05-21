@@ -1176,7 +1176,7 @@ void LibraryWindow::createConnections()
     connect(libraryCreator, &LibraryCreator::comicAdded, importWidget, &ImportWidget::newComic);
     // libraryCreator errors
     connect(libraryCreator, &LibraryCreator::failedCreatingDB, this, &LibraryWindow::manageCreatingError);
-    connect(libraryCreator, SIGNAL(failedUpdatingDB(QString)), this, SLOT(manageUpdatingError(QString))); // TODO: implement failedUpdatingDB
+    // connect(libraryCreator, SIGNAL(failedUpdatingDB(QString)), this, SLOT(manageUpdatingError(QString))); // TODO: implement failedUpdatingDB
 
     connect(xmlInfoLibraryScanner, &QThread::finished, this, &LibraryWindow::showRootWidget);
     connect(xmlInfoLibraryScanner, &QThread::finished, this, &LibraryWindow::reloadCurrentFolderComicsContent);
