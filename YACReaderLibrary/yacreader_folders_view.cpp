@@ -102,6 +102,7 @@ void YACReaderFoldersViewItemDeletegate::paint(QPainter *painter, const QStyleOp
 
         if (now - added < daysInSeconds || now - updated < daysInSeconds) {
             painter->save();
+            painter->setRenderHint(QPainter::Antialiasing);
 #ifdef Q_OS_MAC
             painter->setBrush(QBrush(QColor(85, 95, 127)));
 #else
