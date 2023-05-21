@@ -59,6 +59,8 @@ FolderContentView::FolderContentView(QAction *toogleRecentVisibilityAction, QWid
     connect(coverSizeSlider, &QAbstractSlider::valueChanged, this, &FolderContentView::setCoversSize);
 
     toolbar = new QToolBar();
+    toolbar->setStyleSheet("QToolBar {border: none;}");
+    toolbar->setIconSize(QSize(18, 18));
     toolbar->addWidget(new YACReaderToolBarStretch);
     toolbar->addAction(toogleRecentVisibilityAction);
     toolbar->addSeparator();
