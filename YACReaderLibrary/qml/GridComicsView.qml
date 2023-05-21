@@ -499,8 +499,7 @@ SplitView {
                                 font.pixelSize: 21
                                 wrapMode: Text.WordWrap
 
-                                text: currentComic.getTitleIncludingNumber()
-                            }
+                                text: currentComic ? currentComic.getTitleIncludingNumber() : ""                            }
 
                             Flow {
                                 spacing: 0
