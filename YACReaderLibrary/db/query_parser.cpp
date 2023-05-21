@@ -15,7 +15,7 @@ const std::map<QueryParser::FieldType, std::vector<std::string>> QueryParser::fi
     { FieldType::date, { "date", "added", "lastTimeOpened" } },
     { FieldType::filename, { "filename" } },
     { FieldType::folder, { "folder" } },
-    { FieldType::booleanFolder, { "completed", "finished" } }, // TODO_METADTA include new folder fields, e.g. type
+    { FieldType::booleanFolder, { "completed", "finished" } },
     { FieldType::enumField, { "type" } },
     { FieldType::enumFieldFolder, { "foldertype" } }
 };
@@ -23,9 +23,6 @@ const std::map<QueryParser::FieldType, std::vector<std::string>> QueryParser::fi
 int QueryParser::TreeNode::buildSqlString(std::string &sqlString, int bindPosition) const
 {
     // TODO: add some semantic checks, not all operators apply to all fields
-
-    // TODO: add support for == for an exact comparison
-    // TODO: try to add support for <,>,<=,>= for number, even if it's a string now maybe it can be done
     if (t == "expression") {
         ++bindPosition;
         if (toLower(children[0].t) == "all") {
