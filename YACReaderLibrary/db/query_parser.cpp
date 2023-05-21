@@ -8,19 +8,25 @@
 #include <QsLog.h>
 
 const std::map<QueryParser::FieldType, std::vector<std::string>> QueryParser::fieldNames {
-    { FieldType::numeric, { "numpages", "count", "arccount", "alternateCount" } },
+    // TODO_METADATA support dates
+    { FieldType::numeric, { "numpages", "count", "arccount", "alternateCount", "rating" } },
     { FieldType::text, { "number", "arcnumber", "title", "volume", "storyarc", "genere", "writer", "penciller", "inker", "colorist", "letterer", "coverartist", "publisher", "format", "agerating", "synopsis", "characters", "notes", "editor", "imprint", "teams", "locations", "series", "alternateSeries", "alternateNumber", "languageISO", "seriesGroup", "mainCharacterOrTeam", "review", "tags" } },
-    { FieldType::boolean, { "isbis", "color", "read" } },
+    { FieldType::boolean, { "color", "read", "edited", "hasBeenOpened" } },
     { FieldType::date, { "date", "added", "lastTimeOpened" } },
     { FieldType::filename, { "filename" } },
     { FieldType::folder, { "folder" } },
     { FieldType::booleanFolder, { "completed", "finished" } }, // TODO_METADTA include new folder fields, e.g. type
-    { FieldType::enumField, { "type" } }
+    { FieldType::enumField, { "type" } },
+    { FieldType::enumFieldFolder, { "foldertype" } }
 };
 
 int QueryParser::TreeNode::buildSqlString(std::string &sqlString, int bindPosition) const
 {
-    if (t == "token") {
+    // TODO: add some semantic checks, not all operators apply to all fields
+
+    // TODO: add support for == for an exact comparison
+    // TODO: try to add support for <,>,<=,>= for number, even if it's a string now maybe it can be done
+    if (t == "expression") {
         ++bindPosition;
         if (toLower(children[0].t) == "all") {
             sqlString += "(";
@@ -29,7 +35,15 @@ int QueryParser::TreeNode::buildSqlString(std::string &sqlString, int bindPositi
             }
             sqlString += "UPPER(c.filename) LIKE UPPER(:bindPosition" + std::to_string(bindPosition) + ") OR ";
             sqlString += "UPPER(f.name) LIKE UPPER(:bindPosition" + std::to_string(bindPosition) + ")) ";
-        } else if (isIn(fieldType(children[0].t), { FieldType::numeric, FieldType::boolean, FieldType::enumField })) {
+        } else if (isIn(fieldType(children[0].t), { FieldType::numeric })) {
+            std::string sqlOperator;
+            if (expOperator == ":" || expOperator == "=" || expOperator == "==") {
+                sqlOperator = "=";
+            } else {
+                sqlOperator = expOperator;
+            }
+            sqlString += "ci." + children[0].t + " " + sqlOperator + " :bindPosition" + std::to_string(bindPosition) + " ";
+        } else if (isIn(fieldType(children[0].t), { FieldType::boolean, FieldType::enumField })) {
             sqlString += "ci." + children[0].t + " = :bindPosition" + std::to_string(bindPosition) + " ";
         } else if (fieldType(children[0].t) == FieldType::filename) {
             sqlString += "(UPPER(c." + children[0].t + ") LIKE UPPER(:bindPosition" + std::to_string(bindPosition) + ")) ";
@@ -37,8 +51,23 @@ int QueryParser::TreeNode::buildSqlString(std::string &sqlString, int bindPositi
             sqlString += "(UPPER(f.name) LIKE UPPER(:bindPosition" + std::to_string(bindPosition) + ")) ";
         } else if (fieldType(children[0].t) == FieldType::booleanFolder) {
             sqlString += "f." + children[0].t + " = :bindPosition" + std::to_string(bindPosition) + " ";
+        } else if (fieldType(children[0].t) == FieldType::enumFieldFolder) {
+            if (children[0].t == "foldertype") {
+                sqlString += "f.type = :bindPosition" + std::to_string(bindPosition) + " ";
+            } else {
+                sqlString += "f." + children[0].t + " = :bindPosition" + std::to_string(bindPosition) + " ";
+            }
         } else {
-            sqlString += "(UPPER(ci." + children[0].t + ") LIKE UPPER(:bindPosition" + std::to_string(bindPosition) + ")) ";
+            if (expOperator == "=" || expOperator == ":" || expOperator == "") {
+                sqlString += "(UPPER(ci." + children[0].t + ") LIKE UPPER(:bindPosition" + std::to_string(bindPosition) + ")) ";
+            } else {
+                if (expOperator == "==") {
+                    sqlString += "(UPPER(ci." + children[0].t + ") = UPPER(:bindPosition" + std::to_string(bindPosition) + ")) ";
+                } else {
+                    // support for <,>,<=,>= in text fields makes sense for number, arcNumber, alternateNumber, but (TODO) the syntax won't prevent other fields from using this operators
+                    sqlString += "(CAST(ci." + children[0].t + " as REAL) " + expOperator + " CAST(:bindPosition" + std::to_string(bindPosition) + " as REAL)) ";
+                }
+            }
         }
     } else if (t == "not") {
         sqlString += "(NOT ";
@@ -57,7 +86,7 @@ int QueryParser::TreeNode::buildSqlString(std::string &sqlString, int bindPositi
 
 int QueryParser::TreeNode::bindValues(QSqlQuery &selectQuery, int bindPosition) const
 {
-    if (t == "token") {
+    if (t == "expression") {
         std::string bind_string(":bindPosition" + std::to_string(++bindPosition));
         if (isIn(fieldType(children[0].t), { FieldType::numeric })) {
             selectQuery.bindValue(QString::fromStdString(bind_string), std::stoi(children[1].t));
@@ -70,10 +99,10 @@ int QueryParser::TreeNode::bindValues(QSqlQuery &selectQuery, int bindPosition) 
             } else {
                 selectQuery.bindValue(QString::fromStdString(bind_string), std::stoi(value));
             }
-        } else if ((isIn(fieldType(children[0].t), { FieldType::enumField }))) {
+        } else if ((isIn(fieldType(children[0].t), { FieldType::enumField, FieldType::enumFieldFolder }))) {
             auto enumType = children[0].t;
             auto value = toLower(children[1].t);
-            if (enumType == "type") {
+            if (enumType == "type" || enumType == "foldertype") {
                 if (value == "comic") {
                     selectQuery.bindValue(QString::fromStdString(bind_string), 0);
                 } else if (value == "manga") {
@@ -89,7 +118,11 @@ int QueryParser::TreeNode::bindValues(QSqlQuery &selectQuery, int bindPosition) 
                 selectQuery.bindValue(QString::fromStdString(bind_string), std::stoi(children[1].t));
             }
         } else {
-            selectQuery.bindValue(QString::fromStdString(bind_string), QString::fromStdString("%%" + children[1].t + "%%"));
+            if (expOperator == "=" || expOperator == ":" || expOperator == "") {
+                selectQuery.bindValue(QString::fromStdString(bind_string), QString::fromStdString("%%" + children[1].t + "%%"));
+            } else {
+                selectQuery.bindValue(QString::fromStdString(bind_string), QString::fromStdString(children[1].t));
+            }
         }
     } else if (t == "not") {
         bindPosition = children[0].bindValues(selectQuery, bindPosition);
@@ -172,6 +205,16 @@ void QueryParser::advance()
     currentToken = lexer.next();
 }
 
+bool QueryParser::isOperatorToken(Token::Type type)
+{
+    return type == Token::Type::equal ||
+            type == Token::Type::exactEqual ||
+            type == Token::Type::minor ||
+            type == Token::Type::minorOrEqual ||
+            type == Token::Type::major ||
+            type == Token::Type::majorOrEqual;
+}
+
 QueryParser::FieldType QueryParser::fieldType(const std::string &str)
 {
     for (const auto &names : fieldNames) {
@@ -244,26 +287,39 @@ QueryParser::TreeNode QueryParser::locationExpression()
     if (!isIn(tokenType(), { Token::Type::word, Token::Type::quotedWord })) {
         throw std::invalid_argument("Invalid syntax. Expected a lookup name or a word");
     }
+
+    return expression();
+}
+
+QueryParser::TreeNode QueryParser::expression()
+{
+    if (tokenType() == Token::Type::word) {
+        auto left = token(true);
+        if (isOperatorToken(tokenType())) {
+            auto expOperator = token(true);
+            if (tokenType() != Token::Type::word && tokenType() != Token::Type::quotedWord) {
+                throw std::invalid_argument("missing right operand");
+            }
+            auto right = token(true);
+
+            return TreeNode("expression", { TreeNode(toLower(left), {}), TreeNode(right, {}) }, expOperator);
+        } else {
+            return TreeNode("expression", { TreeNode("all", {}), TreeNode(left, {}) });
+        }
+    }
+
     return baseToken();
 }
 
 QueryParser::TreeNode QueryParser::baseToken()
 {
     if (tokenType() == Token::Type::quotedWord) {
-        return TreeNode("token", { TreeNode("all", {}), TreeNode(token(true), {}) });
+        return TreeNode("expression", { TreeNode("all", {}), TreeNode(token(true), {}) });
     }
 
-    // TODO ":" should come from the lexer as a token
-    auto words(split(token(true), ':'));
-
-    if (words.size() > 1 && fieldType(words[0].toStdString()) != FieldType::unknown) {
-        auto loc(toLower(words[0].toStdString()));
-        words.erase(words.begin());
-        if (words.size() == 1 && tokenType() == Token::Type::quotedWord) {
-            return TreeNode("token", { TreeNode(loc, {}), TreeNode(token(true), {}) });
-        }
-        return TreeNode("token", { TreeNode(loc, {}), TreeNode(join(words, ":"), {}) });
+    if (tokenType() == Token::Type::word) {
+        return TreeNode("expression", { TreeNode("all", {}), TreeNode(token(true), {}) });
     }
 
-    return TreeNode("token", { TreeNode("all", {}), TreeNode(join(words, ":"), {}) });
+    return TreeNode("expression", { TreeNode("all", {}), TreeNode(token(true), {}) });
 }
