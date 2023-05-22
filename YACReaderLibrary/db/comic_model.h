@@ -31,11 +31,13 @@ public:
         Path = 6,
         Hash = 7,
         ReadColumn = 8,
-        IsBis = 9,
+        IsBis = 9, // TODO_METADATA: Remove this column
         CurrentPage = 10,
         Rating = 11,
         HasBeenOpened = 12,
         PublicationDate = 13,
+        Added = 14,
+        Type = 15,
     };
 
     enum Roles {
@@ -55,6 +57,10 @@ public:
         CoverPathRole,
         PublicationDateRole,
         ReadableTitle,
+        AddedRole,
+        TypeRole,
+        ShowRecentRole,
+        RecentRangeRole,
     };
 
     enum Mode {
@@ -107,7 +113,7 @@ public:
     // setComicInfoForAllComics(); --> inserta la información común a todos los cómics de una sola vez.
     // setComicInfoForSelectedComis(QList<QModelIndex> list); -->inserta la información común para los comics seleccionados
     QVector<YACReaderComicReadStatus> setComicsRead(QList<QModelIndex> list, YACReaderComicReadStatus read);
-    void setComicsManga(QList<QModelIndex> list, bool isManga);
+    void setComicsType(QList<QModelIndex> list, FileType type);
     qint64 asignNumbers(QList<QModelIndex> list, int startingNumber);
     // void remove(ComicDB * comic, int row);
     void removeInTransaction(int row);
@@ -134,6 +140,9 @@ public:
 
     ComicModel::Mode getMode() { return mode; }
     unsigned long long int getSourceId() { return sourceId; }
+
+    void setShowRecent(bool visible);
+    void setRecentRange(int days);
 
     QHash<int, QByteArray> roleNames() const override;
 
@@ -163,6 +172,9 @@ private:
     Mode mode;
     qulonglong sourceId;
     QString localizedDate(const QString &dbDate) const;
+
+    bool showRecent;
+    qlonglong recentDays;
 
 signals:
     void isEmpty();

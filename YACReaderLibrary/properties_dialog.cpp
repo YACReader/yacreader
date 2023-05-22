@@ -31,6 +31,7 @@ PropertiesDialog::PropertiesDialog(QWidget *parent)
     createPublishingBox();
     createButtonBox();
     createPlotBox();
+    createNotesBox(); // review, notes, tags
 
     createTabBar();
     auto rootLayout = new QGridLayout;
@@ -80,9 +81,10 @@ void PropertiesDialog::createTabBar()
 {
     tabBar = new QTabWidget;
     tabBar->addTab(generalInfoBox, tr("General info"));
+    tabBar->addTab(plotBox, tr("Plot"));
     tabBar->addTab(authorsBox, tr("Authors"));
     tabBar->addTab(publishingBox, tr("Publishing"));
-    tabBar->addTab(plotBox, tr("Plot"));
+    tabBar->addTab(notesBox, tr("Notes"));
 }
 
 void PropertiesDialog::createCoverBox()
@@ -140,37 +142,43 @@ void PropertiesDialog::createGeneralInfoBox()
 
     generalInfoLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     generalInfoLayout->setRowWrapPolicy(QFormLayout::WrapAllRows);
+    generalInfoLayout->addRow(tr("Series:"), series = new YACReaderFieldEdit());
     generalInfoLayout->addRow(tr("Title:"), title = new YACReaderFieldEdit());
 
     auto number = new QHBoxLayout;
     number->addWidget(numberEdit = new YACReaderFieldEdit());
-    numberValidator.setBottom(0);
-    numberEdit->setValidator(&numberValidator);
-    number->addWidget(new QLabel("Bis:"));
-    number->addWidget(isBisCheck = new QCheckBox());
     number->addWidget(new QLabel(tr("of:")));
     number->addWidget(countEdit = new YACReaderFieldEdit());
     countValidator.setBottom(0);
     countEdit->setValidator(&countValidator);
     number->addStretch(1);
-    /*generalInfoLayout->addRow(tr("&Issue number:"), );
-        generalInfoLayout->addRow(tr("&Bis:"), );*/
     generalInfoLayout->addRow(tr("Issue number:"), number);
 
     generalInfoLayout->addRow(tr("Volume:"), volumeEdit = new YACReaderFieldEdit());
 
     auto arc = new QHBoxLayout;
-    arc->addWidget(storyArcEdit = new YACReaderFieldEdit());
+    arc->addWidget(storyArcEdit = new YACReaderFieldEdit(), 1);
+    storyArcEdit->setMinimumWidth(200);
     arc->addWidget(new QLabel(tr("Arc number:")));
     arc->addWidget(arcNumberEdit = new YACReaderFieldEdit());
-    arcNumberValidator.setBottom(0);
-    arcNumberEdit->setValidator(&arcNumberValidator);
     arc->addWidget(new QLabel(tr("of:")));
     arc->addWidget(arcCountEdit = new YACReaderFieldEdit());
     arcCountValidator.setBottom(0);
     arcCountEdit->setValidator(&arcCountValidator);
-    arc->addStretch(1);
     generalInfoLayout->addRow(tr("Story arc:"), arc);
+
+    auto alternate = new QHBoxLayout;
+    alternate->addWidget(alternateSeriesEdit = new YACReaderFieldEdit(), 1);
+    alternateSeriesEdit->setMinimumWidth(200);
+    alternate->addWidget(new QLabel(tr("alt. number:")));
+    alternate->addWidget(alternateNumberEdit = new YACReaderFieldEdit());
+    alternate->addWidget(new QLabel(tr("of:")));
+    alternate->addWidget(alternateCountEdit = new YACReaderFieldEdit());
+    arcCountValidator.setBottom(0);
+    alternateCountEdit->setValidator(&arcCountValidator);
+    generalInfoLayout->addRow(tr("Alternate series:"), alternate);
+
+    generalInfoLayout->addRow(tr("Series Group:"), seriesGroupEdit = new YACReaderFieldEdit());
 
     generalInfoLayout->addRow(tr("Genre:"), genereEdit = new YACReaderFieldEdit());
 
@@ -221,9 +229,20 @@ void PropertiesDialog::createAuthorsBox()
     vr3->addWidget(coverArtist = new YACReaderFieldPlainTextEdit());
     h3->addLayout(vr3);
 
+    auto h4 = new QHBoxLayout;
+    auto vl4 = new QVBoxLayout;
+    auto vr4 = new QVBoxLayout;
+    vl4->addWidget(new QLabel(tr("Editor(s):")));
+    vl4->addWidget(editor = new YACReaderFieldPlainTextEdit());
+    h4->addLayout(vl4);
+    vr4->addWidget(new QLabel(tr("Imprint:")));
+    vr4->addWidget(imprint = new YACReaderFieldPlainTextEdit());
+    h4->addLayout(vr4);
+
     authorsLayout->addLayout(h1);
     authorsLayout->addLayout(h2);
     authorsLayout->addLayout(h3);
+    authorsLayout->addLayout(h4);
     authorsLayout->addStretch(1);
     authorsBox->setLayout(authorsLayout);
 }
@@ -257,7 +276,16 @@ void PropertiesDialog::createPublishingBox()
     publishingLayout->addRow(tr("Format:"), formatEdit = new YACReaderFieldEdit());
     publishingLayout->addRow(tr("Color/BW:"), colorCheck = new QCheckBox());
     publishingLayout->addRow(tr("Age rating:"), ageRatingEdit = new YACReaderFieldEdit());
-    publishingLayout->addRow(tr("Manga:"), mangaCheck = new QCheckBox());
+    publishingLayout->addRow(tr("Type:"), typeCombo = new QComboBox());
+    publishingLayout->addRow(tr("Language (ISO):"), languageEdit = new YACReaderFieldEdit());
+
+    typeCombo->addItem("Comic");
+    typeCombo->addItem("Manga");
+    typeCombo->addItem("Western Manga");
+    typeCombo->addItem("Web Comic");
+    typeCombo->addItem("4koma");
+
+    typeCombo->setCurrentIndex(-1);
 
     publishingBox->setLayout(publishingLayout);
 }
@@ -266,15 +294,59 @@ void PropertiesDialog::createPlotBox()
 {
     plotBox = new QWidget;
 
-    auto plotLayout = new QFormLayout;
-    plotLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+    auto plotLayout = new QVBoxLayout;
 
-    plotLayout->setRowWrapPolicy(QFormLayout::WrapAllRows);
-    plotLayout->addRow(tr("Synopsis:"), synopsis = new YACReaderFieldPlainTextEdit());
-    plotLayout->addRow(tr("Characters:"), characters = new YACReaderFieldPlainTextEdit());
-    plotLayout->addRow(tr("Notes:"), notes = new YACReaderFieldPlainTextEdit());
+    auto h1 = new QHBoxLayout;
+    auto vl1 = new QVBoxLayout;
+    vl1->addWidget(new QLabel(tr("Synopsis:")));
+    vl1->addWidget(synopsis = new YACReaderFieldPlainTextEdit());
+    h1->addLayout(vl1);
+
+    auto h2 = new QHBoxLayout;
+    auto vl2 = new QVBoxLayout;
+    auto vr2 = new QVBoxLayout;
+    vl2->addWidget(new QLabel(tr("Characters:")));
+    vl2->addWidget(characters = new YACReaderFieldPlainTextEdit());
+    h2->addLayout(vl2);
+    vr2->addWidget(new QLabel(tr("Teams:")));
+    vr2->addWidget(teams = new YACReaderFieldPlainTextEdit());
+    h2->addLayout(vr2);
+
+    auto h3 = new QHBoxLayout;
+    auto vl3 = new QVBoxLayout;
+    vl3->addWidget(new QLabel(tr("Locations:")));
+    vl3->addWidget(locations = new YACReaderFieldPlainTextEdit());
+    h3->addLayout(vl3);
+
+    auto h4 = new QHBoxLayout;
+    auto vl4 = new QVBoxLayout;
+    vl4->addWidget(new QLabel(tr("Main character or team:")));
+    vl4->addWidget(mainCharacterOrTeamEdit = new YACReaderFieldEdit());
+    h4->addLayout(vl4);
+
+    plotLayout->addLayout(h1);
+    plotLayout->addLayout(h2);
+    plotLayout->addLayout(h3);
+    plotLayout->addLayout(h4);
+    plotLayout->addStretch(1);
 
     plotBox->setLayout(plotLayout);
+}
+
+void PropertiesDialog::createNotesBox()
+{
+    notesBox = new QWidget;
+
+    auto notesLayout = new QFormLayout;
+    notesLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+
+    notesLayout->setRowWrapPolicy(QFormLayout::WrapAllRows);
+
+    notesLayout->addRow(tr("Review:"), review = new YACReaderFieldPlainTextEdit());
+    notesLayout->addRow(tr("Notes:"), notes = new YACReaderFieldPlainTextEdit());
+    notesLayout->addRow(tr("Tags:"), tags = new YACReaderFieldPlainTextEdit());
+
+    notesBox->setLayout(notesLayout);
 }
 
 void PropertiesDialog::createButtonBox()
@@ -362,6 +434,8 @@ QImage blurred(const QImage &image, const QRect &rect, int radius, bool alphaOnl
 
 void PropertiesDialog::loadComic(ComicDB &comic)
 {
+    if (!comic.info.series.isNull())
+        series->setText(comic.info.series.toString());
     if (!comic.info.title.isNull())
         title->setText(comic.info.title.toString());
     if (!comic.info.comicVineID.isNull()) {
@@ -401,8 +475,6 @@ void PropertiesDialog::loadComic(ComicDB &comic)
 
     if (!comic.info.number.isNull())
         numberEdit->setText(comic.info.number.toString());
-    if (!comic.info.isBis.isNull())
-        isBisCheck->setChecked(comic.info.isBis.toBool());
     if (!comic.info.count.isNull())
         countEdit->setText(comic.info.count.toString());
 
@@ -414,6 +486,14 @@ void PropertiesDialog::loadComic(ComicDB &comic)
         arcNumberEdit->setText(comic.info.arcNumber.toString());
     if (!comic.info.arcCount.isNull())
         arcCountEdit->setText(comic.info.arcCount.toString());
+    if (!comic.info.alternateSeries.isNull())
+        alternateSeriesEdit->setText(comic.info.alternateSeries.toString());
+    if (!comic.info.alternateNumber.isNull())
+        alternateNumberEdit->setText(comic.info.alternateNumber.toString());
+    if (!comic.info.alternateCount.isNull())
+        alternateCountEdit->setText(comic.info.alternateCount.toString());
+    if (!comic.info.seriesGroup.isNull())
+        seriesGroupEdit->setText(comic.info.seriesGroup.toString());
 
     if (!comic.info.genere.isNull())
         genereEdit->setText(comic.info.genere.toString());
@@ -430,6 +510,10 @@ void PropertiesDialog::loadComic(ComicDB &comic)
         letterer->setPlainText(comic.info.letterer.toString());
     if (!comic.info.coverArtist.isNull())
         coverArtist->setPlainText(comic.info.coverArtist.toString());
+    if (!comic.info.editor.isNull())
+        editor->setPlainText(comic.info.editor.toString());
+    if (!comic.info.imprint.isNull())
+        imprint->setPlainText(comic.info.imprint.toString());
 
     size->setText(QString::number(comic.info.hash.right(comic.info.hash.length() - 40).toInt() / 1024.0 / 1024.0, 'f', 2) + "Mb");
 
@@ -452,7 +536,10 @@ void PropertiesDialog::loadComic(ComicDB &comic)
     else
         colorCheck->setCheckState(Qt::PartiallyChecked);
 
-    mangaCheck->setChecked(comic.info.manga.toBool());
+    typeCombo->setCurrentIndex(comic.info.type.toInt());
+
+    if (!comic.info.languageISO.isNull())
+        languageEdit->setText(comic.info.languageISO.toString());
 
     if (!comic.info.ageRating.isNull())
         ageRatingEdit->setText(comic.info.ageRating.toString());
@@ -461,8 +548,19 @@ void PropertiesDialog::loadComic(ComicDB &comic)
         synopsis->setPlainText(comic.info.synopsis.toString());
     if (!comic.info.characters.isNull())
         characters->setPlainText(comic.info.characters.toString());
+    if (!comic.info.teams.isNull())
+        teams->setPlainText(comic.info.teams.toString());
+    if (!comic.info.locations.isNull())
+        locations->setPlainText(comic.info.locations.toString());
+    if (!comic.info.mainCharacterOrTeam.isNull())
+        mainCharacterOrTeamEdit->setText(comic.info.mainCharacterOrTeam.toString());
+
+    if (!comic.info.review.isNull())
+        review->setPlainText(comic.info.review.toString());
     if (!comic.info.notes.isNull())
         notes->setPlainText(comic.info.notes.toString());
+    if (!comic.info.tags.isNull())
+        tags->setPlainText(comic.info.tags.toString());
 
     this->setWindowTitle(tr("Edit comic information"));
     setCover(comic.info.getCover(basePath));
@@ -503,6 +601,9 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
 
         QList<ComicDB>::iterator itr;
         for (itr = ++comics.begin(); itr != comics.end(); itr++) {
+            if (itr->info.series.isNull() || itr->info.series.toString() != series->text())
+                series->clear();
+
             if (itr->info.title.isNull() || itr->info.title.toString() != title->text())
                 title->clear();
 
@@ -516,8 +617,15 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
             if (itr->info.arcCount.isNull() || itr->info.arcCount.toString() != storyArcEdit->text())
                 arcCountEdit->clear();
 
+            if (itr->info.alternateSeries.isNull() || itr->info.alternateSeries.toString() != alternateSeriesEdit->text())
+                alternateSeriesEdit->clear();
+            if (itr->info.alternateCount.isNull() || itr->info.alternateCount.toString() != alternateCountEdit->text())
+                alternateCountEdit->clear();
+
             if (itr->info.genere.isNull() || itr->info.genere.toString() != genereEdit->text())
                 genereEdit->clear();
+            if (itr->info.seriesGroup.isNull() || itr->info.seriesGroup.toString() != seriesGroupEdit->text())
+                seriesGroupEdit->clear();
 
             if (itr->info.writer.isNull() || itr->info.writer.toString() != writer->toPlainText())
                 writer->clear();
@@ -531,6 +639,10 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
                 letterer->clear();
             if (itr->info.coverArtist.isNull() || itr->info.coverArtist.toString() != coverArtist->toPlainText())
                 coverArtist->clear();
+            if (itr->info.editor.isNull() || itr->info.editor.toString() != editor->toPlainText())
+                editor->clear();
+            if (itr->info.imprint.isNull() || itr->info.imprint.toString() != imprint->toPlainText())
+                imprint->clear();
 
             if (itr->info.date.isNull()) {
                 dayEdit->clear();
@@ -552,8 +664,16 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
                 formatEdit->clear();
             if (itr->info.color.isNull() || itr->info.color.toBool() != colorCheck->isChecked())
                 colorCheck->setCheckState(Qt::PartiallyChecked);
-            if (itr->info.manga.toBool() != colorCheck->isChecked())
-                mangaCheck->setCheckState(Qt::PartiallyChecked);
+
+            if (itr->info.type.toInt() != typeCombo->currentIndex()) {
+                typeCombo->setCurrentIndex(-1);
+            } else {
+                typeCombo->setCurrentIndex(itr->info.type.toInt());
+            }
+
+            if (itr->info.languageISO.toString() != languageEdit->text())
+                languageEdit->clear();
+
             if (itr->info.ageRating.isNull() || itr->info.ageRating.toString() != ageRatingEdit->text())
                 ageRatingEdit->clear();
 
@@ -561,8 +681,19 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
                 synopsis->clear();
             if (itr->info.characters.isNull() || itr->info.characters.toString() != characters->toPlainText())
                 characters->clear();
+            if (itr->info.teams.isNull() || itr->info.teams.toString() != teams->toPlainText())
+                teams->clear();
+            if (itr->info.locations.isNull() || itr->info.locations.toString() != locations->toPlainText())
+                locations->clear();
+            if (itr->info.mainCharacterOrTeam.isNull() || itr->info.mainCharacterOrTeam.toString() != mainCharacterOrTeamEdit->text())
+                mainCharacterOrTeamEdit->clear();
+
+            if (itr->info.review.isNull() || itr->info.review.toString() != review->toPlainText())
+                review->clear();
             if (itr->info.notes.isNull() || itr->info.notes.toString() != notes->toPlainText())
                 notes->clear();
+            if (itr->info.tags.isNull() || itr->info.tags.toString() != tags->toPlainText())
+                tags->clear();
         }
     }
 }
@@ -615,7 +746,7 @@ void PropertiesDialog::setMultipleCover()
 
 void PropertiesDialog::setCover(const QPixmap &coverI)
 {
-    coverImage = coverI.scaledToHeight(444, Qt::SmoothTransformation);
+    coverImage = coverI.scaledToHeight(575, Qt::SmoothTransformation);
 
     cover->setPixmap(coverImage);
 }
@@ -642,6 +773,12 @@ void PropertiesDialog::save()
     for (itr = begin; itr != end; itr++) {
         bool edited = false;
 
+        if (series->isModified()) {
+            auto seriesString = series->text();
+            itr->info.series = seriesString.isEmpty() ? QVariant() : series->text();
+            edited = true;
+        }
+
         if (title->isModified()) {
             auto titleString = title->text();
             itr->info.title = titleString.isEmpty() ? QVariant() : title->text();
@@ -654,19 +791,12 @@ void PropertiesDialog::save()
                 edited = true;
             }
 
-        /*if(comic.info.numPages != NULL)
-                numPagesEdit->setText(QString::number(*comic.info.numPages));*/
         if (sequentialEditing)
             if (numberEdit->isModified()) {
                 if (numberEdit->text().isEmpty())
                     itr->info.number = QVariant();
                 else
                     itr->info.number = numberEdit->text();
-                edited = true;
-            }
-        if (sequentialEditing)
-            if (!itr->info.isBis.isNull() || isBisCheck->isChecked()) {
-                itr->info.isBis = isBisCheck->isChecked();
                 edited = true;
             }
 
@@ -690,6 +820,23 @@ void PropertiesDialog::save()
             }
         if (arcCountEdit->isModified()) {
             itr->info.arcCount = arcCountEdit->text();
+            edited = true;
+        }
+
+        if (alternateSeriesEdit->isModified()) {
+            itr->info.alternateSeries = alternateSeriesEdit->text();
+            edited = true;
+        }
+
+        if (sequentialEditing) {
+            if (alternateNumberEdit->isModified()) {
+                itr->info.alternateNumber = alternateNumberEdit->text();
+                edited = true;
+            }
+        }
+
+        if (alternateCountEdit->isModified()) {
+            itr->info.alternateCount = alternateCountEdit->text();
             edited = true;
         }
 
@@ -722,6 +869,14 @@ void PropertiesDialog::save()
             itr->info.coverArtist = coverArtist->toPlainText();
             edited = true;
         }
+        if (editor->document()->isModified()) {
+            itr->info.editor = editor->toPlainText();
+            edited = true;
+        }
+        if (imprint->document()->isModified()) {
+            itr->info.imprint = imprint->toPlainText();
+            edited = true;
+        }
 
         if (dayEdit->isModified() || monthEdit->isModified() || yearEdit->isModified()) {
             itr->info.date = dayEdit->text() + "/" + monthEdit->text() + "/" + yearEdit->text();
@@ -740,8 +895,13 @@ void PropertiesDialog::save()
             edited = true;
         }
 
-        if (mangaCheck->checkState() != Qt::PartiallyChecked) {
-            itr->info.manga = mangaCheck->isChecked();
+        if (typeCombo->currentIndex() != -1 && itr->info.type.toInt() != typeCombo->currentIndex()) {
+            itr->info.type = typeCombo->currentIndex();
+            edited = true;
+        }
+
+        if (languageEdit->isModified()) {
+            itr->info.languageISO = languageEdit->text();
             edited = true;
         }
 
@@ -754,12 +914,38 @@ void PropertiesDialog::save()
             itr->info.synopsis = synopsis->toPlainText();
             edited = true;
         }
+
         if (characters->document()->isModified()) {
             itr->info.characters = characters->toPlainText();
             edited = true;
         }
+        if (locations->document()->isModified()) {
+            itr->info.locations = locations->toPlainText();
+            edited = true;
+        }
+        if (teams->document()->isModified()) {
+            itr->info.teams = teams->toPlainText();
+            edited = true;
+        }
+        if (mainCharacterOrTeamEdit->isModified()) {
+            itr->info.mainCharacterOrTeam = mainCharacterOrTeamEdit->text();
+            edited = true;
+        }
+        if (seriesGroupEdit->isModified()) {
+            itr->info.seriesGroup = seriesGroupEdit->text();
+            edited = true;
+        }
+
+        if (review->document()->isModified()) {
+            itr->info.review = review->toPlainText();
+            edited = true;
+        }
         if (notes->document()->isModified()) {
             itr->info.notes = notes->toPlainText();
+            edited = true;
+        }
+        if (tags->document()->isModified()) {
+            itr->info.tags = tags->toPlainText();
             edited = true;
         }
 
@@ -829,10 +1015,10 @@ void PropertiesDialog::setDisableUniqueValues(bool disabled)
     coverPageEdit->clear();
     numberEdit->setDisabled(disabled);
     numberEdit->clear();
-    isBisCheck->setDisabled(disabled);
-    isBisCheck->setChecked(false);
     arcNumberEdit->setDisabled(disabled);
     arcNumberEdit->clear();
+    alternateNumberEdit->setDisabled(disabled);
+    alternateNumberEdit->clear();
 }
 
 void PropertiesDialog::closeEvent(QCloseEvent *e)
@@ -841,9 +1027,7 @@ void PropertiesDialog::closeEvent(QCloseEvent *e)
     title->clear();
     title->setModified(false);
     coverPageEdit->clear();
-    //			numPagesEdit->setText(QString::number(*comic.info.numPages));
     numberEdit->clear();
-    isBisCheck->setChecked(false);
     countEdit->clear();
     volumeEdit->clear();
     storyArcEdit->clear();
@@ -862,11 +1046,26 @@ void PropertiesDialog::closeEvent(QCloseEvent *e)
     publisherEdit->clear();
     formatEdit->clear();
     colorCheck->setCheckState(Qt::PartiallyChecked);
-    mangaCheck->setChecked(false);
     ageRatingEdit->clear();
     synopsis->clear();
     characters->clear();
     notes->clear();
+
+    // 9.13 fields
+    typeCombo->setCurrentIndex(-1);
+    editor->clear();
+    imprint->clear();
+    teams->clear();
+    locations->clear();
+    series->clear();
+    alternateSeriesEdit->clear();
+    alternateNumberEdit->clear();
+    alternateCountEdit->clear();
+    languageEdit->clear();
+    seriesGroupEdit->clear();
+    mainCharacterOrTeamEdit->clear();
+    review->clear();
+    tags->clear();
 
     setDisableUniqueValues(false);
 

@@ -17,6 +17,14 @@ Token QueryLexer::next()
     case '(':
     case ')':
         return single(Token::Type::opcode);
+    case ':':
+        return single(Token::Type::equal);
+    case '=':
+        return equal();
+    case '<':
+        return minor();
+    case '>':
+        return major();
     case '"':
         return quotedWord();
     default:
@@ -44,7 +52,7 @@ Token QueryLexer::word()
     auto start = index;
     get();
     auto current = peek();
-    while (current != '\0' && !isSpace(current) && current != '"' && current != '(' && current != ')') {
+    while (current != '\0' && !isSpace(current) && current != '"' && current != '(' && current != ')' && current != ':' && current != '=' && current != '<' && current != '>') {
         get();
         current = peek();
     }
@@ -68,6 +76,45 @@ Token QueryLexer::quotedWord()
 
     // This should be a lexical error, but the grammar doesn't support it
     return Token(Token::Type::eof);
+}
+
+Token QueryLexer::minor()
+{
+    auto start = index;
+    get();
+    auto current = peek();
+    if (current == '=') {
+        get();
+        return Token(Token::Type::minorOrEqual, input.substr(start, index - start));
+    }
+
+    return Token(Token::Type::minor, input.substr(start, index - start));
+}
+
+Token QueryLexer::major()
+{
+    auto start = index;
+    get();
+    auto current = peek();
+    if (current == '=') {
+        get();
+        return Token(Token::Type::majorOrEqual, input.substr(start, index - start));
+    }
+
+    return Token(Token::Type::major, input.substr(start, index - start));
+}
+
+Token QueryLexer::equal()
+{
+    auto start = index;
+    get();
+    auto current = peek();
+    if (current == '=') {
+        get();
+        return Token(Token::Type::exactEqual, input.substr(start, index - start));
+    }
+
+    return Token(Token::Type::equal, input.substr(start, index - start));
 }
 
 bool QueryLexer::isSpace(char c)

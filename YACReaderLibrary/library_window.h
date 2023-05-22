@@ -81,6 +81,7 @@ class YACReaderHistoryController;
 class EmptyLabelWidget;
 class EmptySpecialListWidget;
 class EmptyReadingListWidget;
+class RecentVisibilityCoordinator;
 
 namespace YACReader {
 class TrayIconController;
@@ -197,8 +198,12 @@ public:
     //--
     QAction *setFolderAsReadAction;
     QAction *setFolderAsUnreadAction;
+    //--
     QAction *setFolderAsMangaAction;
     QAction *setFolderAsNormalAction;
+    QAction *setFolderAsWesternMangaAction;
+    QAction *setFolderAsWebComicAction;
+    QAction *setFolderAsYonkomaAction;
 
     QAction *openContainingFolderComicAction;
     QAction *setAsReadAction;
@@ -206,12 +211,15 @@ public:
 
     QAction *setMangaAction;
     QAction *setNormalAction;
+    QAction *setWesternMangaAction;
+    QAction *setWebComicAction;
+    QAction *setYonkomaAction;
 
-    // QAction * setAllAsReadAction;
-    // QAction * setAllAsNonReadAction;
     QAction *showHideMarksAction;
     QAction *getInfoAction; // comic vine
     QAction *resetComicRatingAction;
+
+    QAction *toogleShowRecentIndicatorAction;
 
     // edit info actions
     QAction *selectAllComicsAction;
@@ -259,10 +267,6 @@ public:
     QString _lastAdded;
     QString _sourceLastAdded;
 
-    // QModelIndex _rootIndex;
-    // QModelIndex _rootIndexCV;
-    // QModelIndex updateDestination;
-
     quint64 _comicIdEdited;
 
     enum NavigationStatus {
@@ -283,6 +287,7 @@ public:
     void doDialogs();
     void setUpShortcutsManagement();
     void doModels();
+    void setupCoordinators();
 
     // ACTIONS MANAGEMENT
     void disableComicsActions(bool disabled);
@@ -291,9 +296,6 @@ public:
     void disableFoldersActions(bool disabled);
 
     void disableAllActions();
-    // void disableActions();
-    // void enableActions();
-    // void enableLibraryActions();
 
     QString currentPath();
     QString currentFolderPath();
@@ -340,8 +342,7 @@ public slots:
     void setFolderAsCompleted();
     void setFolderAsRead();
     void setFolderAsUnread();
-    void setFolderAsManga();
-    void setFolderAsNormal();
+    void setFolderType(FileType type);
     void openContainingFolderComic();
     void deleteCurrentLibrary();
     void removeLibrary();
@@ -368,8 +369,7 @@ public slots:
     void setCurrentComicsStatusReaded(YACReaderComicReadStatus readStatus);
     void setCurrentComicReaded();
     void setCurrentComicUnreaded();
-    void setSelectedComicsAsNormal();
-    void setSelectedComicsAsManga();
+    void setSelectedComicsType(FileType type);
     void showExportComicsInfo();
     void showImportComicsInfo();
     void asignNumbers();
@@ -450,6 +450,8 @@ private:
     TrayIconController *trayIconController;
     ComicQueryResultProcessor comicQueryResultProcessor;
     std::unique_ptr<FolderQueryResultProcessor> folderQueryResultProcessor;
+
+    RecentVisibilityCoordinator *recentVisibilityCoordinator;
 };
 
 #endif

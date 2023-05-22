@@ -97,13 +97,12 @@ signals:
 private:
     QSettings *settings;
     QToolBar *toolbar;
-    YACReaderToolBarStretch *toolBarStretch;
-    QAction *toolBarStretchAction;
     QWidget *coverSizeSliderWidget;
     QSlider *coverSizeSlider;
     QAction *coverSizeSliderAction;
     QAction *showInfoAction;
     QAction *showInfoSeparatorAction;
+    QAction *startSeparatorAction;
 
     bool filterEnabled;
 

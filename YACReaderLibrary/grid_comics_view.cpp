@@ -170,7 +170,6 @@ GridComicsView::~GridComicsView()
 
 void GridComicsView::createCoverSizeSliderWidget()
 {
-    toolBarStretch = new YACReaderToolBarStretch(this);
     coverSizeSliderWidget = new QWidget(this);
     coverSizeSliderWidget->setFixedWidth(200);
     coverSizeSlider = new QSlider();
@@ -206,7 +205,7 @@ void GridComicsView::setToolBar(QToolBar *toolBar)
 
     createCoverSizeSliderWidget();
 
-    toolBarStretchAction = toolBar->addWidget(toolBarStretch);
+    startSeparatorAction = toolBar->addSeparator();
     toolBar->addAction(showInfoAction);
     showInfoSeparatorAction = toolBar->addSeparator();
     coverSizeSliderAction = toolBar->addWidget(coverSizeSliderWidget);
@@ -553,7 +552,7 @@ void GridComicsView::setShowMarks(bool show)
 
 void GridComicsView::closeEvent(QCloseEvent *event)
 {
-    toolbar->removeAction(toolBarStretchAction);
+    toolbar->removeAction(startSeparatorAction);
     toolbar->removeAction(showInfoAction);
     toolbar->removeAction(showInfoSeparatorAction);
     toolbar->removeAction(coverSizeSliderAction);

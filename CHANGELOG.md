@@ -6,6 +6,12 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ### YACReaderLibrary
 * Avoid showing stale information in the server config dialog by updating the connection information when the dialog is opened.
+* Add new metadata support, it improves compatibility with ComicInfo.xml
+* Add support for showing a "recently added/updated" indicator.
+* Improved comic metadata dialog.
+* Add textual tags support that can be queried through the search engine.
+* Make = in the search engine work as : does.
+* Add new operators to the search engine: exact match ==, <, >, <=, >=.
 
 ## 9.12
 

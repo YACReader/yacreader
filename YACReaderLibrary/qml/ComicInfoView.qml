@@ -140,7 +140,7 @@ Rectangle {
                     font.pixelSize: mainContainer.compact ? 18 : 21;
                     wrapMode: Text.WordWrap
 
-                    text: comic ? comic.getTitleIncludingNumber() ?? "" : ""
+                    text: comic ? comic.getInfoTitle() ?? "" : ""
                 }
 
                 RowLayout
@@ -200,6 +200,33 @@ Rectangle {
                     text: (comicInfo ? comicInfo.number ?? "" : "") + "/" + (comicInfo ? comicInfo.count ?? "" : "")
                     rightPadding: 20
                     visible : comicInfo ? comicInfo.number ?? false : false
+                }
+
+                Text {
+                    id: arc
+                    color: infoColor
+                    font: mainContainer.infoFont
+                    text: comicInfo ? comicInfo.getStoryArcInfoString() : ""
+                    rightPadding: 20
+                    visible : comicInfo ? comicInfo.getStoryArcInfoString().length : false
+                }
+
+                Text {
+                    id: alternate
+                    color: infoColor
+                    font: mainContainer.infoFont
+                    text: comicInfo ? comicInfo.getAlternateSeriesString() : ""
+                    rightPadding: 20
+                    visible : comicInfo ? comicInfo.getAlternateSeriesString().length : false
+                }
+
+                Text {
+                    id: seriesGroup
+                    color: infoColor
+                    font: mainContainer.infoFont
+                    text: comicInfo ? comicInfo.seriesGroup ?? "" : ""
+                    rightPadding: 20
+                    visible: comicInfo ? comicInfo.seriesGroup ?? false : false
                 }
 
                 Text {
@@ -270,6 +297,129 @@ Rectangle {
                 Layout.topMargin: 25
                 Layout.bottomMargin: 5
 
+                id: characters_title
+                color: infoTitleColor
+                font.family: "Arial"
+                font.pixelSize: 18
+                font.bold: true
+
+                text: qsTr("Characters")
+
+                visible: comicInfo ? comicInfo.getCharacters().length > 0 : false
+            }
+
+            Flow {
+                Layout.fillWidth: true
+                spacing: 20
+                Repeater {
+                    id: characters
+                    model: comicInfo ? comicInfo.getCharacters().length : null
+
+                    Text {
+                        color: infoTitleColor
+                        font.family: "Arial"
+                        font.pixelSize: 15
+
+                        text: comicInfo ? comicInfo.getCharacters()[index] : ""
+                    }
+                }
+            }
+
+            Text {
+                Layout.topMargin: 25
+                Layout.bottomMargin: 5
+
+                id: main_character_or_team_title
+                color: infoTitleColor
+                font.family: "Arial"
+                font.pixelSize: 18
+                font.bold: true
+
+                text: qsTr("Main character or team")
+
+                visible: comicInfo && comicInfo.mainCharacterOrTeam ? comicInfo.mainCharacterOrTeam.length > 0 : false
+            }
+
+            Text {
+                color: infoTitleColor
+                font.family: "Arial"
+                font.pixelSize: 15
+
+                text: comicInfo && comicInfo.mainCharacterOrTeam ? comicInfo.mainCharacterOrTeam : ""
+
+                visible: comicInfo && comicInfo.mainCharacterOrTeam ? comicInfo.mainCharacterOrTeam.length > 0 : false
+            }
+
+            Text {
+                Layout.topMargin: 25
+                Layout.bottomMargin: 5
+
+                id: teams_title
+                color: infoTitleColor
+                font.family: "Arial"
+                font.pixelSize: 18
+                font.bold: true
+
+                text: qsTr("Teams")
+
+                visible: comicInfo ? comicInfo.getTeams().length > 0 : false
+            }
+
+
+
+            Flow {
+                Layout.fillWidth: true
+                spacing: 20
+                Repeater {
+                    id: teams
+                    model: comicInfo ? comicInfo.getTeams().length : null
+
+                    Text {
+                        color: infoTitleColor
+                        font.family: "Arial"
+                        font.pixelSize: 15
+
+                        text: comicInfo ? comicInfo.getTeams()[index] : ""
+                    }
+                }
+            }
+
+            Text {
+                Layout.topMargin: 25
+                Layout.bottomMargin: 5
+
+                id: locations_title
+                color: infoTitleColor
+                font.family: "Arial"
+                font.pixelSize: 18
+                font.bold: true
+
+                text: qsTr("Locations")
+
+                visible: comicInfo ? comicInfo.getLocations().length > 0 : false
+            }
+
+            Flow {
+                Layout.fillWidth: true
+                spacing: 20
+                Repeater {
+                    id: locations
+                    model: comicInfo ? comicInfo.getLocations().length : null
+
+                    Text {
+                        color: infoTitleColor
+                        font.family: "Arial"
+                        font.pixelSize: 15
+
+                        text: comicInfo ? comicInfo.getLocations()[index] : ""
+                    }
+                }
+            }
+
+            Text {
+                Layout.topMargin: 25
+                Layout.bottomMargin: 5
+
                 id: authors_title
                 color: infoTitleColor
                 font.family: "Arial"
@@ -283,7 +433,9 @@ Rectangle {
                                       comicInfo.getInkers().length +
                                       comicInfo.getColorists().length +
                                       comicInfo.getLetterers().length +
-                                      comicInfo.getCoverArtists().length > 0) : false
+                                      comicInfo.getCoverArtists().length +
+                                      comicInfo.getEditors().length +
+                                      comicInfo.getImprint().length > 0) : false
             }
 
             Flow {
@@ -401,7 +553,7 @@ Rectangle {
 
                 Repeater {
                     id: cover_artist
-                    model: comicInfo ? comicInfo.getCoverArtists().length : ""
+                    model: comicInfo ? comicInfo.getCoverArtists().length : null
                     Column{
                         Text {
                             color: infoTitleColor
@@ -417,6 +569,50 @@ Rectangle {
                             font.pixelSize: 13
                             font.italic: true
                             text: qsTr("cover artist")
+                        }
+                    }
+                }
+
+                Repeater {
+                    id: editors
+                    model: comicInfo ? comicInfo.getEditors().length : null
+                    Column{
+                        Text {
+                            color: infoTitleColor
+                            font.family: "Arial"
+                            font.pixelSize: 15
+
+                            text: comicInfo ? comicInfo.getEditors()[index] : ""
+                        }
+
+                        Text {
+                            color: infoTextColor
+                            font.family: "Arial"
+                            font.pixelSize: 13
+                            font.italic: true
+                            text: qsTr("editor")
+                        }
+                    }
+                }
+
+                Repeater {
+                    id: imprint
+                    model: comicInfo ? comicInfo.getImprint().length : null
+                    Column{
+                        Text {
+                            color: infoTitleColor
+                            font.family: "Arial"
+                            font.pixelSize: 15
+
+                            text: comicInfo ? comicInfo.getImprint()[index] : ""
+                        }
+
+                        Text {
+                            color: infoTextColor
+                            font.family: "Arial"
+                            font.pixelSize: 13
+                            font.italic: true
+                            text: qsTr("imprint")
                         }
                     }
                 }
@@ -465,6 +661,18 @@ Rectangle {
                 }
 
                 Text {
+                    id: type
+
+                    color: infoTitleColor
+                    font.family: "Arial"
+                    font.pixelSize: 15
+
+                    text: comicInfo ? comicInfo.getTypeString() : ""
+
+                    visible: comicInfo ? comicInfo.getTypeString() : false
+                }
+
+                Text {
                     id: color
 
                     color: infoTitleColor
@@ -477,6 +685,18 @@ Rectangle {
                 }
 
                 Text {
+                    id: language
+
+                    color: infoTitleColor
+                    font.family: "Arial"
+                    font.pixelSize: 15
+
+                    text: comicInfo && comicInfo.languageISO ? comicInfo.languageISO : ""
+
+                    visible: comicInfo && comicInfo.languageISO ? comicInfo.languageISO.length > 0 ?? false : false
+                }
+
+                Text {
                     id: age_rating
 
                     color: infoTitleColor
@@ -486,38 +706,6 @@ Rectangle {
                     text: comicInfo ? comicInfo.ageRating ?? "" : ""
 
                     visible: comicInfo ? comicInfo.ageRating ?? false : false
-                }
-            }
-
-            Text {
-                Layout.topMargin: 25
-                Layout.bottomMargin: 5
-
-                id: characters_title
-                color: infoTitleColor
-                font.family: "Arial"
-                font.pixelSize: 18
-                font.bold: true
-
-                text: qsTr("Characters")
-
-                visible: comicInfo ? comicInfo.getCharacters().length > 0 : false
-            }
-
-            Flow {
-                Layout.fillWidth: true
-                spacing: 20
-                Repeater {
-                    id: characters
-                    model: comicInfo ? comicInfo.getCharacters().length : null
-
-                    Text {
-                        color: infoTitleColor
-                        font.family: "Arial"
-                        font.pixelSize: 15
-
-                        text: comicInfo ? comicInfo.getCharacters()[index] : ""
-                    }
                 }
             }
         }

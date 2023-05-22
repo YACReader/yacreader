@@ -1,5 +1,7 @@
 #include "xml_info_parser.h"
 
+#include "yacreader_global.h"
+
 #include <QtCore>
 
 bool isValidText(const QString &string)
@@ -57,7 +59,7 @@ void consolidateDate(ComicInfo &info)
 
     auto year = info.year.isNull() ? 0 : info.year.toInt();
     auto month = info.month.isNull() ? 1 : info.month.toInt();
-    auto day = info.date.isNull() ? 1 : info.date.toInt();
+    auto day = info.day.isNull() ? 1 : info.day.toInt();
 
     info.date = QString("%1/%2/%3").arg(day).arg(month).arg(year);
 }
@@ -65,6 +67,7 @@ void consolidateDate(ComicInfo &info)
 bool tryValues(QXmlStreamReader &reader, ComicInfo &info)
 {
     std::map<QString, QVariant &> stringValues = {
+        { "Number", info.number },
         { "Title", info.title },
         { "Volume", info.volume },
         { "StoryArc", info.storyArc },
@@ -74,16 +77,23 @@ bool tryValues(QXmlStreamReader &reader, ComicInfo &info)
         { "AgeRating", info.ageRating },
         { "Summary", info.synopsis },
         { "Notes", info.notes },
+        { "Editor", info.editor },
+        { "Imprint", info.imprint },
+        { "Series", info.series },
+        { "AlternateSeries", info.alternateSeries },
+        { "AlternateNumber", info.alternateNumber },
+        { "LanguageISO", info.languageISO },
+        { "SeriesGroup", info.seriesGroup },
+        { "MainCharacterOrTeam", info.mainCharacterOrTeam },
+        { "Review", info.review },
     };
 
     std::map<QString, QVariant &> forcedNumbers = {
-        { "Number", info.number },
         { "Count", info.count },
-        { "AlternateNumber", info.arcNumber },
-        { "AlternateCount", info.arcCount },
+        { "AlternateCount", info.alternateCount },
         { "Day", info.day },
         { "Month", info.month },
-        { "Year", info.year }
+        { "Year", info.year },
     };
 
     std::map<QString, QVariant &> multiValuedStrings = {
@@ -93,7 +103,9 @@ bool tryValues(QXmlStreamReader &reader, ComicInfo &info)
         { "Colorist", info.colorist },
         { "Letterer", info.letterer },
         { "CoverArtist", info.coverArtist },
-        { "Characters", info.characters }
+        { "Characters", info.characters },
+        { "Teams", info.teams },
+        { "Locations", info.locations }
     };
 
     for (auto &pair : stringValues) {
@@ -130,16 +142,17 @@ bool tryValues(QXmlStreamReader &reader, ComicInfo &info)
     if (reader.name() == QString("Manga")) {
         auto string = reader.readElementText();
         if (isValidText(string)) {
-            if (string == "Yes" || string == "YesAndRightToLeft") {
-                info.manga = true;
+            if (string == "Yes" || string == "YesAndRightToLeft") { // there was a breaking change in ComicInfo 2.0, Yes means now WesterManga reading style, but old info stills means manga
+                info.type = QVariant::fromValue(YACReader::FileType::Manga);
             } else if (string == "No") {
-                info.manga = false;
+                info.type = QVariant::fromValue(YACReader::FileType::Comic);
             }
         }
 
         return true;
     }
 
+    // TODO, check if the url is actually a comic vine link
     if (reader.name() == QString("Web")) {
         auto string = reader.readElementText();
         if (isValidText(string)) {
@@ -166,7 +179,7 @@ bool YACReader::parseXMLIntoInfo(const QByteArray &xmlRawData, ComicInfo &info)
 
     while (reader.readNextStartElement()) {
         if (tryValues(reader, info)) {
-            someDataWasParsed = true;
+            someDataWasParsed = true | someDataWasParsed;
         } else {
             if (reader.name() != QString("ComicInfo")) {
                 reader.skipCurrentElement();

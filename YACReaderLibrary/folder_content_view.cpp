@@ -13,7 +13,7 @@
 
 using namespace YACReader;
 
-FolderContentView::FolderContentView(QWidget *parent)
+FolderContentView::FolderContentView(QAction *toogleRecentVisibilityAction, QWidget *parent)
     : QWidget { parent }, parent(QModelIndex()), comicModel(new ComicModel()), folderModel(new FolderModel())
 {
     qmlRegisterType<FolderModel>("com.yacreader.FolderModel", 1, 0, "FolderModel");
@@ -59,7 +59,11 @@ FolderContentView::FolderContentView(QWidget *parent)
     connect(coverSizeSlider, &QAbstractSlider::valueChanged, this, &FolderContentView::setCoversSize);
 
     toolbar = new QToolBar();
+    toolbar->setStyleSheet("QToolBar {border: none;}");
+    toolbar->setIconSize(QSize(18, 18));
     toolbar->addWidget(new YACReaderToolBarStretch);
+    toolbar->addAction(toogleRecentVisibilityAction);
+    toolbar->addSeparator();
     toolbar->addWidget(coverSizeSliderWidget);
 
     auto l = new QVBoxLayout;
@@ -203,6 +207,16 @@ void FolderContentView::reloadContinueReadingModel()
     if (!folderModel->isSubfolder) {
         comicModel->reloadContinueReading();
     }
+}
+
+void FolderContentView::setShowRecent(bool visible)
+{
+    folderModel->setShowRecent(visible);
+}
+
+void FolderContentView::setRecentRange(int days)
+{
+    folderModel->setRecentRange(days);
 }
 
 void FolderContentView::openFolder(int index)

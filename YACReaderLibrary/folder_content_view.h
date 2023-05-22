@@ -19,10 +19,12 @@ class FolderContentView : public QWidget
 {
     Q_OBJECT
 public:
-    explicit FolderContentView(QWidget *parent = nullptr);
+    explicit FolderContentView(QAction *toogleRecentVisibilityAction, QWidget *parent = nullptr);
     void setModel(const QModelIndex &parent, FolderModel *model);
     void setContinueReadingModel(ComicModel *model);
     void reloadContinueReadingModel();
+    void setShowRecent(bool visible);
+    void setRecentRange(int days);
 
     FolderModel *currentFolderModel() { return folderModel; }
 signals:

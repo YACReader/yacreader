@@ -283,6 +283,16 @@ SplitView {
 
                 }
 
+                //is new
+                Rectangle {
+                    width: 10
+                    height: 10
+                    radius: 5
+                    anchors { left: coverElement.left; top: coverElement.top; topMargin: 5; leftMargin: 5; }
+                    color: "#FFFFCC00"
+                    visible: (((new Date() / 1000) - added_date) < recent_range) && show_recent
+                }
+
                 //border
                 Rectangle {
                     width: coverElement.width
@@ -493,7 +503,7 @@ SplitView {
                                 font.pixelSize: 21
                                 wrapMode: Text.WordWrap
 
-                                text: currentComic.getTitleIncludingNumber()
+                                text: currentComic?.getTitleIncludingNumber() ?? ""
                             }
 
                             Flow {
@@ -525,6 +535,33 @@ SplitView {
                                     text: currentComicInfo.number + "/" + currentComicInfo.count
                                     rightPadding: 20
                                     visible : currentComicInfo.number ? true : false
+                                }
+
+                                Text {
+                                    id: currentComicInfoArc
+                                    color: currentComicDetailsFlowView.infoFlowTextColor
+                                    font: currentComicDetailsFlowView.infoFont
+                                    text: currentComicInfo.getStoryArcInfoString()
+                                    rightPadding: 20
+                                    visible : currentComicInfo.getStoryArcInfoString().length > 0
+                                }
+
+                                Text {
+                                    id: currentComicInfoAlternate
+                                    color: currentComicDetailsFlowView.infoFlowTextColor
+                                    font: currentComicDetailsFlowView.infoFont
+                                    text: currentComicInfo.getAlternateSeriesString()
+                                    rightPadding: 20
+                                    visible : currentComicInfo.getStoryArcInfoString().length > 0
+                                }
+
+                                Text {
+                                    id: currentComicInfoSeriesGroup
+                                    color: currentComicDetailsFlowView.infoFlowTextColor
+                                    font: currentComicDetailsFlowView.infoFont
+                                    text: currentComicInfo.seriesGroup ? currentComicInfo.seriesGroup : ""
+                                    rightPadding: 20
+                                    visible: currentComicInfo.seriesGroup ? true : false
                                 }
 
                                 Text {

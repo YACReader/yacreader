@@ -45,7 +45,7 @@ YACReaderContentViewsManager::YACReaderContentViewsManager(QSettings *settings, 
     doComicsViewConnections();
 
     comicsViewStack->addWidget(comicsViewTransition = new ComicsViewTransition());
-    comicsViewStack->addWidget(folderContentView = new FolderContentView());
+    comicsViewStack->addWidget(folderContentView = new FolderContentView(parent->toogleShowRecentIndicatorAction));
     comicsViewStack->addWidget(emptyLabelWidget = new EmptyLabelWidget());
     comicsViewStack->addWidget(emptySpecialList = new EmptySpecialListWidget());
     comicsViewStack->addWidget(emptyReadingList = new EmptyReadingListWidget());

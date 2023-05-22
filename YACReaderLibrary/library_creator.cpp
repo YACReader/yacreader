@@ -232,7 +232,8 @@ qulonglong LibraryCreator::insertFolders()
     for (i = _currentPathFolders.begin(); i != _currentPathFolders.end(); ++i) {
         if (!(i->knownId)) {
             i->setFather(currentId);
-            i->setManga(currentParent.isManga());
+            i->manga = currentParent.manga;
+            i->type = currentParent.type;
             currentId = DBHelper::insert(&(*i), _database); // insertFolder(currentId,*i);
             i->setId(currentId);
         } else {
@@ -325,7 +326,8 @@ void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
         }
 
         comic.parentId = _currentPathFolders.last().id;
-        comic.info.manga = _currentPathFolders.last().isManga();
+        comic.info.manga = _currentPathFolders.last().manga;
+        comic.info.type = QVariant::fromValue(_currentPathFolders.last().type); // TODO_METADATA test this
 
         DBHelper::insert(&comic, _database, parsed);
     }
@@ -539,14 +541,24 @@ void LibraryCreator::update(QDir dirS)
                         } else // same file
                         {
                             if (fileInfoS.isFile() && !fileInfoD->isDir()) {
-                                // TODO comprobar fechas + tamaño
-                                // if(fileInfoS.lastModified()>fileInfoD.lastModified())
-                                //{
-                                //	dirD.mkpath(_target+(QDir::cleanPath(fileInfoS.absolutePath()).remove(_source)));
-                                //	emit(coverExtracted(QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source)));
-                                //	ThumbnailCreator tc(QDir::cleanPath(fileInfoS.absoluteFilePath()),_target+(QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source))+".jpg");
-                                //	tc.create();
-                                // }
+                                // TODO_METADATA use added,
+                                // if added < modified, do something
+
+                                // copy metadata to avoid loosing it if the imported comics doesn't have it.
+
+                                //                                DBHelper::removeFromDB(fileInfoD, _database);
+                                // #ifdef Q_OS_MAC
+                                //                                QStringList src = _source.split("/");
+                                //                                QString filePath = fileInfoS.absoluteFilePath();
+                                //                                QStringList fp = filePath.split("/");
+                                //                                for (int i = 0; i < src.count(); i++) {
+                                //                                    fp.removeFirst();
+                                //                                }
+                                //                                QString path = "/" + fp.join("/");
+                                // #else
+                                //                                QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
+                                // #endif
+                                //                                insertComic(path, fileInfoS);
                             }
                             i++;
                             j++;

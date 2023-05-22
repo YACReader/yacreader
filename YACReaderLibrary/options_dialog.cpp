@@ -86,6 +86,18 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     comicInfoXMLBoxLayout->addWidget(comicInfoXMLCheckbox);
     comicInfoXMLBox->setLayout(comicInfoXMLBoxLayout);
 
+    auto recentlyAddedBox = new QGroupBox(tr("Consider 'recent' items added or updated since X days ago"));
+    recentIntervalSlider = new QSlider(Qt::Horizontal);
+    recentIntervalSlider->setRange(1, 30);
+    auto recentlyAddedLayout = new QHBoxLayout();
+    numDaysLabel = new QLabel();
+    numDaysLabel->setMidLineWidth(50);
+    recentlyAddedLayout->addWidget(numDaysLabel);
+    recentlyAddedLayout->addWidget(recentIntervalSlider);
+    recentlyAddedBox->setLayout(recentlyAddedLayout);
+
+    connect(recentIntervalSlider, &QAbstractSlider::valueChanged, this, &OptionsDialog::numDaysToConsiderRecentChanged);
+
     // grid view background config
     useBackgroundImageCheck = new QCheckBox(tr("Enable background image"));
 
@@ -152,6 +164,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     generalLayout->addWidget(shortcutsBox);
     generalLayout->addWidget(apiKeyBox);
     generalLayout->addWidget(comicInfoXMLBox);
+    generalLayout->addWidget(recentlyAddedBox);
     generalLayout->addStretch();
 
     tabWidget->addTab(generalW, tr("General"));
@@ -163,8 +176,6 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     layout->addWidget(tabWidget);
     layout->addLayout(buttons);
     setLayout(layout);
-    // restoreOptions(settings); //load options
-    // resize(200,0);
     setModal(true);
     setWindowTitle(tr("Options"));
 
@@ -186,6 +197,8 @@ void OptionsDialog::restoreOptions(QSettings *settings)
     startToTrayCheckbox->setEnabled(trayIconCheckbox->isChecked());
 
     comicInfoXMLCheckbox->setChecked(settings->value(IMPORT_COMIC_INFO_XML_METADATA, false).toBool());
+
+    recentIntervalSlider->setValue(settings->value(NUM_DAYS_TO_CONSIDER_RECENT, 1).toInt());
 
     bool useBackgroundImage = settings->value(USE_BACKGROUND_IMAGE_IN_GRID_VIEW, true).toBool();
 
@@ -233,6 +246,15 @@ void OptionsDialog::backgroundImageBlurRadiusSliderChanged(int value)
 void OptionsDialog::useCurrentComicCoverCheckClicked(bool checked)
 {
     settings->setValue(USE_SELECTED_COMIC_COVER_AS_BACKGROUND_IMAGE_IN_GRID_VIEW, checked);
+
+    emit optionsChanged();
+}
+
+void OptionsDialog::numDaysToConsiderRecentChanged(int value)
+{
+    settings->setValue(NUM_DAYS_TO_CONSIDER_RECENT, value);
+
+    numDaysLabel->setText(QString("%1").arg(value));
 
     emit optionsChanged();
 }
