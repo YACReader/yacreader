@@ -30,7 +30,8 @@ CONFIG(force_angle) {
     }
 }
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    viewer_gesture_handler.cpp
 
 INCLUDEPATH += ../common \
                ../custom_widgets
@@ -90,6 +91,7 @@ HEADERS +=  ../common/comic.h \
             goto_flow_widget.h \
             page_label_widget.h \
             goto_flow_toolbar.h \
+            viewer_gesture_handler.h \
             width_slider.h \
             notifications_label_widget.h \
             ../common/pictureflow.h \

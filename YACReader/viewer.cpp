@@ -16,11 +16,13 @@
 #include "notifications_label_widget.h"
 #include "comic_db.h"
 #include "shortcuts_manager.h"
+#include "viewer_gesture_handler.h"
 
 #include "opengl_checker.h"
 
 #include <QFile>
 #include <QKeyEvent>
+#include <QEvent>
 
 #include <QsLog.h>
 
@@ -40,6 +42,9 @@ Viewer::Viewer(QWidget *parent)
       magnifyingGlassShown(false),
       restoreMagnifyingGlass(false)
 {
+    viewerGestureHandler = new ViewerGestureHandler(this);
+    viewerGestureHandler->setupGestureHandler(this);
+
     translator = new YACReaderTranslator(this);
     translator->hide();
     translatorAnimation = new QPropertyAnimation(translator, "pos");
@@ -725,6 +730,15 @@ void Viewer::mouseMoveEvent(QMouseEvent *event)
             xDragOrigin = event->x();
         }
     }
+}
+
+bool Viewer::event(QEvent *event)
+{
+    if (viewerGestureHandler->handleEvent(event)) {
+        return true;
+    }
+
+    return QScrollArea::event(event);
 }
 
 QPixmap Viewer::pixmap() const

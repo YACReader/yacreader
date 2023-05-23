@@ -30,6 +30,7 @@ class GoToFlowWidget;
 class Bookmarks;
 class PageLabelWidget;
 class NotificationsLabelWidget;
+class ViewerGestureHandler;
 
 class Viewer : public QScrollArea, public ScrollManagement
 {
@@ -153,6 +154,8 @@ private:
     bool shouldOpenNext;
     bool shouldOpenPrevious;
 
+    ViewerGestureHandler *viewerGestureHandler;
+
 private:
     //! Magnifying glass
     MagnifyingGlass *mglass;
@@ -164,6 +167,7 @@ private:
     void resizeEvent(QResizeEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
+    bool event(QEvent *event) override;
 
     int verticalScrollStep() const;
     int horizontalScrollStep() const;

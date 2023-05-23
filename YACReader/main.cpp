@@ -88,7 +88,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 
 int main(int argc, char *argv[])
 {
-    qInstallMessageHandler(messageHandler);
+    // qInstallMessageHandler(messageHandler);
 
     static const char ENV_VAR_QT_DEVICE_PIXEL_RATIO[] = "QT_DEVICE_PIXEL_RATIO";
     if (!qEnvironmentVariableIsSet(ENV_VAR_QT_DEVICE_PIXEL_RATIO) && !qEnvironmentVariableIsSet("QT_AUTO_SCREEN_SCALE_FACTOR") && !qEnvironmentVariableIsSet("QT_SCALE_FACTOR") && !qEnvironmentVariableIsSet("QT_SCREEN_SCALE_FACTORS")) {
@@ -97,6 +97,7 @@ int main(int argc, char *argv[])
 
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+    QApplication::setAttribute(Qt::AA_SynthesizeTouchForUnhandledMouseEvents, true);
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QImageReader::setAllocationLimit(0);
