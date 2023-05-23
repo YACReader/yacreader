@@ -20,7 +20,7 @@
 #include <future>
 #include <memory>
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
 #include "yacreader_macosx_toolbar.h"
 #endif
 
@@ -123,7 +123,7 @@ public:
     QSize slideSizeW;
     QSize slideSizeF;
     // search filter
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     YACReaderMacOSXSearchLineEdit *searchEdit;
 #else
     YACReaderSearchLineEdit *searchEdit;
@@ -249,7 +249,7 @@ public:
     QAction *addToMenuAction;
     QAction *addToFavoritesAction;
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     YACReaderMacOSXToolbar *libraryToolBar;
 #else
     YACReaderMainToolBar *libraryToolBar;

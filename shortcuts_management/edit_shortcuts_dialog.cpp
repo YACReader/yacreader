@@ -61,7 +61,7 @@ EditShortcutsDialog::EditShortcutsDialog(QWidget *parent)
     connect(actionsGroupsListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &EditShortcutsDialog::loadShortcuts); // clicked(QModelIndex) doesn't work :S
     connect(actionsModel, &ActionsShortcutsModel::conflict, this, &EditShortcutsDialog::processConflict);
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     setFixedSize(760, 500);
 #else
     setFixedSize(804, 500); // extra width for modifiers

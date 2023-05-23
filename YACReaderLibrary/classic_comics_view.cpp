@@ -78,7 +78,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
 
     layout->setContentsMargins(0, 0, 0, 0);
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     sVertical->setCollapsible(1, false);
 #endif
 

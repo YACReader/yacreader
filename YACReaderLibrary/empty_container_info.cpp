@@ -3,7 +3,7 @@
 EmptyContainerInfo::EmptyContainerInfo(QWidget *parent)
     : QWidget(parent), iconLabel(new QLabel()), titleLabel(new QLabel())
 {
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     backgroundColor = "#FFFFFF";
     titleLabel->setStyleSheet("QLabel {color:#888888; font-size:24px;font-family:Arial;font-weight:bold;}");
 #else

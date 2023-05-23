@@ -212,7 +212,7 @@ void YACReaderContentViewsManager::_toggleComicsView()
         QIcon icoViewsButton;
         icoViewsButton.addFile(addExtensionToIconPath(":/images/main_toolbar/info"), QSize(), QIcon::Normal);
         libraryWindow->toggleComicsViewAction->setIcon(icoViewsButton);
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
 #endif
         if (gridComicsView == nullptr)
@@ -229,7 +229,7 @@ void YACReaderContentViewsManager::_toggleComicsView()
         QIcon icoViewsButton;
         icoViewsButton.addFile(addExtensionToIconPath(":/images/main_toolbar/flow"), QSize(), QIcon::Normal);
         libraryWindow->toggleComicsViewAction->setIcon(icoViewsButton);
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
 #endif
         if (infoComicsView == nullptr)
@@ -245,7 +245,7 @@ void YACReaderContentViewsManager::_toggleComicsView()
         QIcon icoViewsButton;
         icoViewsButton.addFile(addExtensionToIconPath(":/images/main_toolbar/grid"), QSize(), QIcon::Normal);
         libraryWindow->toggleComicsViewAction->setIcon(icoViewsButton);
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
 #endif
         if (classicComicsView == nullptr)

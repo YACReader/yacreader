@@ -19,6 +19,10 @@
 
 #define MAX_LIBRARIES_WARNING_NUM 10
 
+#ifdef Q_OS_MAC
+#define Y_MAC_UI
+#endif
+
 namespace YACReader {
 
 enum YACReaderIPCMessages {

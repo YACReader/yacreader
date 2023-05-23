@@ -21,7 +21,7 @@ InfoComicsView::InfoComicsView(QWidget *parent)
     QQmlContext *ctxt = view->rootContext();
 
     LibraryUITheme theme;
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     theme = Light;
 #else
     theme = Dark;

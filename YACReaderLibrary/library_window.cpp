@@ -226,7 +226,7 @@ void LibraryWindow::doLayout()
 {
     // LAYOUT ELEMENTS------------------------------------------------------------
     auto sHorizontal = new QSplitter(Qt::Horizontal); // spliter principal
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     sHorizontal->setStyleSheet("QSplitter::handle{image:none;background-color:#B8B8B8;} QSplitter::handle:vertical {height:1px;}");
 #else
     sHorizontal->setStyleSheet("QSplitter::handle:vertical {height:4px;}");
@@ -237,7 +237,7 @@ void LibraryWindow::doLayout()
     editInfoToolBar = new QToolBar();
     editInfoToolBar->setStyleSheet("QToolBar {border: none;}");
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     libraryToolBar = new YACReaderMacOSXToolbar(this);
 #else
     libraryToolBar = new YACReaderMainToolBar(this);
@@ -245,7 +245,7 @@ void LibraryWindow::doLayout()
 
     // FOLDERS FILTER-------------------------------------------------------------
     //---------------------------------------------------------------------------
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     // in MacOSX the searchEdit is created using the toolbar wrapper
     searchEdit = new YACReaderSearchLineEdit();
 #endif
@@ -286,7 +286,7 @@ void LibraryWindow::doLayout()
     contentViewsManager = new YACReaderContentViewsManager(settings, this);
 
     sHorizontal->addWidget(sideBar);
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     QVBoxLayout *rightLayout = new QVBoxLayout;
     rightLayout->addWidget(libraryToolBar);
     rightLayout->addWidget(contentViewsManager->containerWidget());
@@ -321,7 +321,7 @@ void LibraryWindow::doLayout()
     connect(noLibrariesWidget, &NoLibrariesWidget::addExistingLibrary, this, &LibraryWindow::showAddLibrary);
 
     // collapsible disabled in macosx (only temporaly)
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     sHorizontal->setCollapsible(0, false);
 #endif
 }
@@ -445,7 +445,7 @@ void LibraryWindow::setUpShortcutsManagement()
                                                  << showHideMarksAction
                                                  << toogleShowRecentIndicatorAction
 #ifndef Q_OS_MAC
-                                                 << toggleFullScreenAction
+                                                 << toggleFullScreenAction // Think about what to do in macos if the default theme is used
 #endif
                                                  << toggleComicsViewAction);
 
@@ -974,7 +974,7 @@ void LibraryWindow::disableAllActions()
 void LibraryWindow::createToolBars()
 {
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     // libraryToolBar->setIconSize(QSize(16,16)); //TODO make icon size dynamic
 
     libraryToolBar->addAction(backAction);
@@ -1096,7 +1096,7 @@ void LibraryWindow::createMenus()
     selectedLibrary->addAction(importLibraryAction);
 
 // MacOSX app menus
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MAC
     QMenuBar *menu = this->menuBar();
     // about / preferences
     // TODO
@@ -1279,7 +1279,7 @@ void LibraryWindow::createConnections()
     connect(optionsDialog, &YACReaderOptionsDialog::editShortcuts, editShortcutsDialog, &QWidget::show);
 
 // Search filter
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     connect(searchEdit, &YACReaderMacOSXSearchLineEdit::filterChanged, this, &LibraryWindow::setSearchFilter);
 #else
     connect(searchEdit, &YACReaderSearchLineEdit::filterChanged, this, &LibraryWindow::setSearchFilter);
@@ -2092,7 +2092,7 @@ void LibraryWindow::onAddComicsToLabel()
 
 void LibraryWindow::setToolbarTitle(const QModelIndex &modelIndex)
 {
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     if (!modelIndex.isValid())
         libraryToolBar->setCurrentFolderName(selectedLibrary->currentText());
     else
@@ -2361,7 +2361,7 @@ void LibraryWindow::rename(QString newName) // TODO replace
             selectedLibrary->renameCurrentLibrary(newName);
             libraries.save();
             renameLibraryDialog->close();
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
             if (!foldersModelProxy->mapToSource(foldersView->currentIndex()).isValid())
                 libraryToolBar->setCurrentFolderName(selectedLibrary->currentText());
 #endif
@@ -2506,7 +2506,7 @@ void LibraryWindow::toNormal()
     else
         showNormal();
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     auto timer = new QTimer();
     timer->setSingleShot(true);
     timer->start();
@@ -2826,7 +2826,7 @@ void LibraryWindow::showNoLibrariesWidget()
 
 void LibraryWindow::showRootWidget()
 {
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     libraryToolBar->setDisabled(false);
 #endif
     searchEdit->setEnabled(true);
@@ -2837,7 +2837,7 @@ void LibraryWindow::showImportingWidget()
 {
     disableAllActions();
     importWidget->clear();
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     libraryToolBar->setDisabled(true);
 #endif
     searchEdit->setDisabled(true);

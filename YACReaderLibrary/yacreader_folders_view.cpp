@@ -80,7 +80,7 @@ void YACReaderFoldersViewItemDeletegate::paint(QPainter *painter, const QStyleOp
 {
     if (!index.data(FolderModel::CompletedRole).toBool()) {
         painter->save();
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
         painter->setBrush(QBrush(QColor(85, 95, 127)));
 #else
         painter->setBrush(QBrush(QColor(237, 197, 24)));
@@ -103,7 +103,7 @@ void YACReaderFoldersViewItemDeletegate::paint(QPainter *painter, const QStyleOp
         if (now - added < daysInSeconds || now - updated < daysInSeconds) {
             painter->save();
             painter->setRenderHint(QPainter::Antialiasing);
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
             painter->setBrush(QBrush(QColor(85, 95, 127)));
 #else
             painter->setBrush(QBrush(QColor(237, 197, 24)));

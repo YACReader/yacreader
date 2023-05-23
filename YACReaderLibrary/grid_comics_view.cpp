@@ -30,7 +30,7 @@ GridComicsView::GridComicsView(QWidget *parent)
     QQmlContext *ctxt = view->rootContext();
 
     LibraryUITheme theme;
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     theme = Light;
 #else
     theme = Dark;
@@ -101,12 +101,6 @@ GridComicsView::GridComicsView(QWidget *parent)
         ctxt->setContextProperty("readTickUncheckedColor", "#1C1C1C");
         ctxt->setContextProperty("readTickCheckedColor", "#E84852");
     }
-
-#ifdef Q_OS_MAC
-
-#else
-
-#endif
 
     ctxt->setContextProperty("backgroundImage", QUrl());
     ctxt->setContextProperty("backgroundBlurOpacity", 0.0);
@@ -284,7 +278,7 @@ void GridComicsView::updateBackgroundConfig()
         ctxt->setContextProperty("backgroundBlurVisible", QVariant(false));
     }
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     ctxt->setContextProperty("cellColor", useBackgroundImage ? "#99FFFFFF" : "#FFFFFF");
     ctxt->setContextProperty("selectedColor", "#FFFFFF");
 #else
