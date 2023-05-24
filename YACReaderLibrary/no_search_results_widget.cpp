@@ -1,5 +1,7 @@
 #include "no_search_results_widget.h"
 
+#include "yacreader_global.h"
+
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPainter>

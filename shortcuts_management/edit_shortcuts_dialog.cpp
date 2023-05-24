@@ -1,5 +1,7 @@
 #include "edit_shortcuts_dialog.h"
 
+#include "yacreader_global.h"
+
 #include "actions_groups_model.h"
 #include "actions_shortcuts_model.h"
 #include "edit_shortcut_item_delegate.h"

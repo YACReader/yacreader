@@ -1,5 +1,6 @@
 #include "library_window.h"
-#include "folder_item.h"
+
+#include "yacreader_global.h"
 
 #include <QHBoxLayout>
 #include <QSplitter>
@@ -20,8 +21,8 @@
 #include <thread>
 #include <future>
 
+#include "folder_item.h"
 #include "data_base_management.h"
-#include "yacreader_global.h"
 #include "no_libraries_widget.h"
 #include "import_widget.h"
 

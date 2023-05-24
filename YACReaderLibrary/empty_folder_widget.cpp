@@ -1,5 +1,7 @@
 #include "empty_folder_widget.h"
 
+#include "yacreader_global.h"
+
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QListView>

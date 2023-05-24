@@ -8,12 +8,13 @@
 #include <QCloseEvent>
 #include <QSettings>
 
+#include "yacreader_global.h"
+
 #ifdef Y_MAC_UI
 #include "yacreader_macosx_toolbar.h"
 #endif
 
 #include "comic_db.h"
-#include "yacreader_global.h"
 
 class Comic;
 class Viewer;

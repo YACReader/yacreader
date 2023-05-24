@@ -1,5 +1,7 @@
 #include "info_comics_view.h"
 
+#include "yacreader_global.h"
+
 #include <QtQuick>
 #include <QQuickWidget>
 

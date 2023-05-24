@@ -2,6 +2,7 @@
 
 #include "folder_model.h"
 #include "grid_comics_view.h"
+#include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 #include "yacreader_tool_bar_stretch.h"
 

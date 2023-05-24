@@ -1,5 +1,7 @@
 #include "yacreader_titled_toolbar.h"
 
+#include "yacreader_global.h"
+
 #include <QAction>
 #include <QHBoxLayout>
 #include <QLabel>

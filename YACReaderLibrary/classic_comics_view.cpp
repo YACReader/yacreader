@@ -1,5 +1,7 @@
 #include "classic_comics_view.h"
 
+#include "yacreader_global.h"
+
 #include "QStackedWidget"
 
 #include "comic_flow_widget.h"

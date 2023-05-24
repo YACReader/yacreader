@@ -6,6 +6,7 @@
 #include <QModelIndex>
 #include <QFileInfo>
 
+#include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 #include "yacreader_libraries.h"
 

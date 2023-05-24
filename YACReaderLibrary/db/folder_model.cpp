@@ -5,6 +5,8 @@
 #include "folder.h"
 #include "db_helper.h"
 #include "qnaturalsorting.h"
+
+#include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 
 #include <QtGui>

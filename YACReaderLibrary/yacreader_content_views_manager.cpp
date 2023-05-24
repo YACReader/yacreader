@@ -1,5 +1,7 @@
 #include "yacreader_content_views_manager.h"
 
+#include "yacreader_global.h"
+
 #include "library_window.h"
 
 #include "classic_comics_view.h"

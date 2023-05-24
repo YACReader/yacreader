@@ -1,4 +1,6 @@
 #include "yacreader_search_line_edit.h"
+
+#include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 
 #include <QToolButton>

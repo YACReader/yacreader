@@ -1,5 +1,8 @@
 #include "yacreader_table_view.h"
 
+#include "yacreader_global.h"
+#include "yacreader_global_gui.h"
+
 #include <QHeaderView>
 #include <QResizeEvent>
 #include <QPropertyAnimation>
@@ -13,7 +16,6 @@
 #include "QsLog.h"
 
 #include "comic_item.h"
-#include "yacreader_global_gui.h"
 
 YACReaderTableView::YACReaderTableView(QWidget *parent)
     : QTableView(parent), showDelete(false), editing(false), myeditor(0)
