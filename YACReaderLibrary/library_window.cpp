@@ -1010,7 +1010,9 @@ void LibraryWindow::createToolBars()
     libraryToolBar->serverButton->setDefaultAction(serverConfigAction);
     libraryToolBar->helpButton->setDefaultAction(helpAboutAction);
     libraryToolBar->toggleComicsViewButton->setDefaultAction(toggleComicsViewAction);
+#ifndef Q_OS_MAC
     libraryToolBar->fullscreenButton->setDefaultAction(toggleFullScreenAction);
+#endif
     libraryToolBar->setSearchWidget(searchEdit);
 #endif
 
