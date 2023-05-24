@@ -66,6 +66,8 @@ GridComicsView::GridComicsView(QWidget *parent)
 
         ctxt->setContextProperty("readTickUncheckedColor", "#DEDEDE");
         ctxt->setContextProperty("readTickCheckedColor", "#E84852");
+
+        ctxt->setContextProperty("currentComicBackgroundColor", "#88FFFFFF");
     } else {
         ctxt->setContextProperty("backgroundColor", "#2A2A2A");
         ctxt->setContextProperty("cellColor", "#212121");
@@ -100,6 +102,8 @@ GridComicsView::GridComicsView(QWidget *parent)
 
         ctxt->setContextProperty("readTickUncheckedColor", "#1C1C1C");
         ctxt->setContextProperty("readTickCheckedColor", "#E84852");
+
+        ctxt->setContextProperty("currentComicBackgroundColor", "#88000000");
     }
 
     ctxt->setContextProperty("backgroundImage", QUrl());
