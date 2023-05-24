@@ -46,6 +46,8 @@ InfoComicsView::InfoComicsView(QWidget *parent)
 
         ctxt->setContextProperty("readTickUncheckedColor", "#DEDEDE");
         ctxt->setContextProperty("readTickCheckedColor", "#E84852");
+
+        ctxt->setContextProperty("showDropShadow", QVariant(false));
     } else {
         ctxt->setContextProperty("infoBackgroundColor", "#2E2E2E");
         ctxt->setContextProperty("topShadow", "info-top-shadow.png");
@@ -63,6 +65,8 @@ InfoComicsView::InfoComicsView(QWidget *parent)
 
         ctxt->setContextProperty("readTickUncheckedColor", "#1C1C1C");
         ctxt->setContextProperty("readTickCheckedColor", "#E84852");
+
+        ctxt->setContextProperty("showDropShadow", QVariant(true));
     }
 
     ctxt->setContextProperty("backgroundImage", QUrl());
