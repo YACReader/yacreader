@@ -44,6 +44,7 @@ GridComicsView::GridComicsView(QWidget *parent)
         ctxt->setContextProperty("borderColor", "#DBDBDB");
         ctxt->setContextProperty("titleColor", "#121212");
         ctxt->setContextProperty("textColor", "#636363");
+        ctxt->setContextProperty("showDropShadow", QVariant(false));
         // fonts settings
         ctxt->setContextProperty("fontSize", 11);
         ctxt->setContextProperty("fontFamily", QApplication::font().family());
@@ -76,7 +77,7 @@ GridComicsView::GridComicsView(QWidget *parent)
         ctxt->setContextProperty("borderColor", "#121212");
         ctxt->setContextProperty("titleColor", "#FFFFFF");
         ctxt->setContextProperty("textColor", "#A8A8A8");
-        ctxt->setContextProperty("dropShadow", QVariant(false));
+        ctxt->setContextProperty("showDropShadow", QVariant(true));
         // fonts settings
         int fontSize = QApplication::font().pointSize();
         if (fontSize == -1)

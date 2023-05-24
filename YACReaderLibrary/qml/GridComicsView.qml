@@ -73,7 +73,7 @@ SplitView {
                     samples: 17
                     color: "#FF000000"
                     source: realCell
-                    visible: (Qt.platform.os === "osx") ? false : true;
+                    visible: showDropShadow;
                 }
 
                 Rectangle {
@@ -468,7 +468,7 @@ SplitView {
                             samples: 17
                             color: "#FF000000"
                             source: currentCoverElement
-                            visible: (Qt.platform.os === "osx") ? false : true;
+                            visible: showDropShadow;
                         }
 
                         ColumnLayout
@@ -678,7 +678,7 @@ SplitView {
                             samples: 17
                             color: "#AA000000"
                             source: readButton
-                            visible: ((Qt.platform.os === "osx") ? false : true) && !readButton.pressed
+                            visible: showDropShadow && !readButton.pressed
                         }
                     }
                 }
