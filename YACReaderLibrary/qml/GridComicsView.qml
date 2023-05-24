@@ -134,7 +134,7 @@ SplitView {
                             rightMargin  : commonBorder ? -commonBorderWidth : -rBorderwidth
                         }
 
-                        border.color: (Qt.platform.os === "osx") ? selectedBorderColor : "#ffcc00"
+                        border.color: selectedBorderColor
                         border.width: 3
 
                         opacity: (dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index) ? 1 : 0
