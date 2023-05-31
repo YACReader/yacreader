@@ -8,17 +8,36 @@
 #include <QsLog.h>
 
 const std::map<QueryParser::FieldType, std::vector<std::string>> QueryParser::fieldNames {
-    // TODO_METADATA support dates
     { FieldType::numeric, { "numpages", "count", "arccount", "alternateCount", "rating" } },
-    { FieldType::text, { "number", "arcnumber", "title", "volume", "storyarc", "genere", "writer", "penciller", "inker", "colorist", "letterer", "coverartist", "publisher", "format", "agerating", "synopsis", "characters", "notes", "editor", "imprint", "teams", "locations", "series", "alternateSeries", "alternateNumber", "languageISO", "seriesGroup", "mainCharacterOrTeam", "review", "tags" } },
+    { FieldType::text, { "date", "number", "arcnumber", "title", "volume", "storyarc", "genere", "writer", "penciller", "inker", "colorist", "letterer", "coverartist", "publisher", "format", "agerating", "synopsis", "characters", "notes", "editor", "imprint", "teams", "locations", "series", "alternateSeries", "alternateNumber", "languageISO", "seriesGroup", "mainCharacterOrTeam", "review", "tags" } },
     { FieldType::boolean, { "color", "read", "edited", "hasBeenOpened" } },
-    { FieldType::date, { "date", "added", "lastTimeOpened" } },
+    { FieldType::date, { "added", "lastTimeOpened" } },
+    { FieldType::dateFolder, { "added", "updated" } },
     { FieldType::filename, { "filename" } },
     { FieldType::folder, { "folder" } },
     { FieldType::booleanFolder, { "completed", "finished" } },
     { FieldType::enumField, { "type" } },
     { FieldType::enumFieldFolder, { "foldertype" } }
 };
+
+std::string operatorToSQLOperator(const std::string &expOperator)
+{
+    if (expOperator == ":" || expOperator == "=" || expOperator == "==") {
+        return "=";
+    } else {
+        return expOperator;
+    }
+}
+
+// this parses N days to date N days ago for now
+std::string parseDate(const std::string &dateString, const std::string &expOperator)
+{
+    // TODO_METADATA add semantics so different formats and meanings are supported,
+    auto now = QDateTime::currentSecsSinceEpoch();
+    auto date = now - stoi(dateString) * 86400;
+
+    return std::to_string(date);
+}
 
 int QueryParser::TreeNode::buildSqlString(std::string &sqlString, int bindPosition) const
 {
@@ -32,14 +51,10 @@ int QueryParser::TreeNode::buildSqlString(std::string &sqlString, int bindPositi
             }
             sqlString += "UPPER(c.filename) LIKE UPPER(:bindPosition" + std::to_string(bindPosition) + ") OR ";
             sqlString += "UPPER(f.name) LIKE UPPER(:bindPosition" + std::to_string(bindPosition) + ")) ";
-        } else if (isIn(fieldType(children[0].t), { FieldType::numeric })) {
-            std::string sqlOperator;
-            if (expOperator == ":" || expOperator == "=" || expOperator == "==") {
-                sqlOperator = "=";
-            } else {
-                sqlOperator = expOperator;
-            }
-            sqlString += "ci." + children[0].t + " " + sqlOperator + " :bindPosition" + std::to_string(bindPosition) + " ";
+        } else if (isIn(fieldType(children[0].t), { FieldType::numeric, FieldType::date })) {
+            sqlString += "ci." + children[0].t + " " + operatorToSQLOperator(expOperator) + " :bindPosition" + std::to_string(bindPosition) + " ";
+        } else if (isIn(fieldType(children[0].t), { FieldType::dateFolder })) {
+            sqlString += "f." + children[0].t + " " + operatorToSQLOperator(expOperator) + " :bindPosition" + std::to_string(bindPosition) + " ";
         } else if (isIn(fieldType(children[0].t), { FieldType::boolean, FieldType::enumField })) {
             sqlString += "ci." + children[0].t + " = :bindPosition" + std::to_string(bindPosition) + " ";
         } else if (fieldType(children[0].t) == FieldType::filename) {
@@ -114,6 +129,8 @@ int QueryParser::TreeNode::bindValues(QSqlQuery &selectQuery, int bindPosition) 
             } else {
                 selectQuery.bindValue(QString::fromStdString(bind_string), std::stoi(children[1].t));
             }
+        } else if ((isIn(fieldType(children[0].t), { FieldType::date, FieldType::dateFolder }))) {
+            selectQuery.bindValue(QString::fromStdString(bind_string), QString::fromStdString(parseDate(children[1].t, expOperator)));
         } else {
             if (expOperator == "=" || expOperator == ":" || expOperator == "") {
                 selectQuery.bindValue(QString::fromStdString(bind_string), QString::fromStdString("%%" + children[1].t + "%%"));

@@ -88,6 +88,7 @@ private:
                            text,
                            boolean,
                            date,
+                           dateFolder,
                            folder,
                            booleanFolder,
                            filename,
