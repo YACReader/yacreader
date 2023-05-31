@@ -4,6 +4,8 @@ import QtQuick.Controls 2.15
 
 import com.yacreader.ComicModel 1.0
 
+import QtQuick.Controls.Basic
+
 Rectangle {
     id: main
 
