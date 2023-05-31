@@ -136,7 +136,7 @@ QIcon ReadingListItem::getIcon() const
     if (parent->getId() == 0)
         return list; // top level list
     else
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
         return QFileIconProvider().icon(QFileIconProvider::Folder);
 #else
         return folder; // sublist

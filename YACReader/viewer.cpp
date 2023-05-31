@@ -952,7 +952,7 @@ void Viewer::configureContent(QString msg)
 
 void Viewer::hideCursor()
 {
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MAC // TODO_Y_MAC_UI isn't BlankCursor supported in macos?
     setCursor(QCursor(QBitmap(1, 1), QBitmap(1, 1)));
 #else
     setCursor(Qt::BlankCursor);

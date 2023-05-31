@@ -1,5 +1,7 @@
 #include "empty_folder_widget.h"
 
+#include "yacreader_global.h"
+
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QListView>
@@ -77,7 +79,7 @@ EmptyFolderWidget::EmptyFolderWidget(QWidget *parent)
     foldersView = new QListView();
     foldersView->setAttribute(Qt::WA_MacShowFocusRect, false);
     foldersView->setItemDelegate(new ListviewDelegate);
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     foldersView->setStyleSheet("QListView {background-color:transparent; border: none; color:#959595; outline:0; font-size: 18px; show-decoration-selected: 0; margin:0}"
                                "QListView::item:selected {background-color: #EFEFEF; color:#CCCCCC;}"
                                "QListView::item:hover {background-color:#F4F4F8; color:#757575; }"

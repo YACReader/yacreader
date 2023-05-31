@@ -1,5 +1,8 @@
 #include "yacreader_table_view.h"
 
+#include "yacreader_global.h"
+#include "yacreader_global_gui.h"
+
 #include <QHeaderView>
 #include <QResizeEvent>
 #include <QPropertyAnimation>
@@ -13,7 +16,6 @@
 #include "QsLog.h"
 
 #include "comic_item.h"
-#include "yacreader_global_gui.h"
 
 YACReaderTableView::YACReaderTableView(QWidget *parent)
     : QTableView(parent), showDelete(false), editing(false), myeditor(0)
@@ -24,7 +26,7 @@ YACReaderTableView::YACReaderTableView(QWidget *parent)
                   "QTableCornerButton::section {background-color:#F5F5F5; border:none; border-bottom:1px solid #B8BDC4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #D1D1D1, stop: 1 #B8BDC4);}"
                   "QTableView::item {outline: 0px; border-bottom: 1px solid #DFDFDF;border-top: 1px solid #FEFEFE; padding-bottom:1px; color:#252626;}"
                   "QTableView {border-top:1px solid #B8B8B8;border-bottom:none;border-left:1px solid #B8B8B8;border-right:none;}"
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
                   "QTableView {border-top:1px solid #B8B8B8;border-bottom:none;border-left:none;border-right:none;}"
                   "QTableView::item:selected {outline: 0px; border-bottom: 1px solid #3875D7;border-top: 1px solid #3875D7; padding-bottom:1px; background-color: #3875D7; color: #FFFFFF; }"
 

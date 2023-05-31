@@ -2,6 +2,7 @@
 
 #include "folder_model.h"
 #include "grid_comics_view.h"
+#include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 #include "yacreader_tool_bar_stretch.h"
 
@@ -77,7 +78,7 @@ FolderContentView::FolderContentView(QAction *toogleRecentVisibilityAction, QWid
     QQmlContext *ctxt = view->rootContext();
 
     LibraryUITheme theme;
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     theme = Light;
 #else
     theme = Dark;

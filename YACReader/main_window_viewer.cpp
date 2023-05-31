@@ -472,7 +472,7 @@ QAction *MainWindowViewer::addActionWithShortcut(const QString &text, const QStr
 
 void MainWindowViewer::createToolBars()
 {
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     comicToolBar = new YACReaderMacOSXToolbar(this);
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     comicToolBar->setIconSize(QSize(18, 18));
@@ -481,12 +481,12 @@ void MainWindowViewer::createToolBars()
     comicToolBar = addToolBar(tr("&File"));
 #endif
 
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     comicToolBar->setStyleSheet("QToolBar{border:none;}");
     comicToolBar->setIconSize(QSize(18, 18));
 #endif
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     comicToolBar->addAction(actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/open")), openAction));
     comicToolBar->addAction(actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/openFolder")), openFolderAction));
 #else
@@ -564,7 +564,7 @@ void MainWindowViewer::createToolBars()
     comicToolBar->addAction(actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/flow")), showFlowAction));
     comicToolBar->addAction(actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/info")), showInfoAction));
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     comicToolBar->addStretch();
 #else
     comicToolBar->addWidget(new YACReaderToolBarStretch());
@@ -574,7 +574,7 @@ void MainWindowViewer::createToolBars()
     comicToolBar->addAction(actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/options")), optionsAction));
     comicToolBar->addAction(actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/help")), helpAboutAction));
 
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     comicToolBar->setMovable(false);
 #endif
 
@@ -1061,7 +1061,7 @@ void MainWindowViewer::toggleToolBars()
     toolbars ? hideToolBars() : showToolBars();
 
     Configuration::getConfiguration().setShowToolbars(toolbars);
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     comicToolBar->setMovable(false);
 #endif
 }
@@ -1289,7 +1289,7 @@ void MainWindowViewer::toggleFitToWidthSlider()
 {
     int y;
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     y = 0;
 #else
     y = this->comicToolBar->frameSize().height();

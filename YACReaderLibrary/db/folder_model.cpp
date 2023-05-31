@@ -5,13 +5,15 @@
 #include "folder.h"
 #include "db_helper.h"
 #include "qnaturalsorting.h"
+
+#include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 
 #include <QtGui>
 
 #include <algorithm>
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
 #include <QFileIconProvider>
 QIcon finishedFolderIcon;
 void drawMacOSXFinishedFolderIcon()
@@ -134,7 +136,7 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
     }
 
     if (role == Qt::DecorationRole) {
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
         if (item->data(FolderModel::Finished).toBool()) {
             if (finishedFolderIcon.isNull()) {
                 drawMacOSXFinishedFolderIcon();

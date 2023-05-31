@@ -1,5 +1,7 @@
 #include "no_search_results_widget.h"
 
+#include "yacreader_global.h"
+
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPainter>
@@ -7,7 +9,7 @@
 NoSearchResultsWidget::NoSearchResultsWidget(QWidget *parent)
     : QWidget(parent)
 {
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     backgroundColor = "#FFFFFF";
 #else
     backgroundColor = "#2A2A2A";
@@ -22,7 +24,7 @@ NoSearchResultsWidget::NoSearchResultsWidget(QWidget *parent)
     titleLabel = new QLabel("No results");
     titleLabel->setAlignment(Qt::AlignCenter);
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     titleLabel->setStyleSheet("QLabel {color:#888888; font-size:24px;font-family:Arial;font-weight:bold;}");
 #else
     titleLabel->setStyleSheet("QLabel {color:#CCCCCC; font-size:24px;font-family:Arial;font-weight:bold;}");

@@ -1,5 +1,7 @@
 #include "yacreader_treeview.h"
 
+#include "yacreader_global.h"
+
 YACReaderTreeView::YACReaderTreeView(QWidget *parent)
     : QTreeView(parent), clicking(false)
 {
@@ -18,7 +20,7 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent)
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setAttribute(Qt::WA_MacShowFocusRect, false);
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
 
     setStyleSheet("QTreeView {background-color:transparent; border: none;}"
                   "QTreeView::item:selected {background-color:#91c4f4; border-top: 1px solid #91c4f4; border-left:none;border-right:none;border-bottom:1px solid #91c4f4;}"

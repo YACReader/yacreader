@@ -1,4 +1,6 @@
 #include "yacreader_search_line_edit.h"
+
+#include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 
 #include <QToolButton>
@@ -13,7 +15,7 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
     clearButton = new QToolButton(this);
     searchLabel = new QLabel(this);
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     QPixmap clearIcon;
     QPixmap searchIcon;
 
@@ -41,7 +43,7 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
 
     clearButton->setIcon(QIcon(clearIcon));
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     clearButton->setIconSize(QSize(14, 14));
 #else
     clearButton->setIconSize(QSize(12, 12));
@@ -53,7 +55,7 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
     connect(clearButton, &QAbstractButton::clicked, this, &QLineEdit::clear);
     connect(this, &QLineEdit::textChanged, this, &YACReaderSearchLineEdit::updateCloseButton);
     int frameWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     setStyleSheet(QString("QLineEdit {border-top:1px solid #9F9F9F; border-bottom:1px solid #ACACAC; border-right:1px solid #ACACAC; border-left:1px solid #ACACAC; border-radius: 4px; background-color:#EEEEEE; padding-left: %1px; padding-right: %2px; padding-bottom: 1px; margin-bottom: 1px;} ").arg(searchLabel->sizeHint().width() + frameWidth + 6).arg(clearButton->sizeHint().width() + frameWidth + 2));
 #else
     setStyleSheet(QString("QLineEdit {color: #ABABAB; border:none; border-radius: 4px; background-color:#404040; padding-left: %1px; padding-right: %2px; padding-bottom: 1px; margin-right: 9px;} ").arg(searchLabel->sizeHint().width() + frameWidth + 6 + 5).arg(clearButton->sizeHint().width() + frameWidth + 2));
@@ -62,7 +64,7 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
     setMinimumSize(qMax(msz.width(), clearButton->sizeHint().height() + frameWidth * 2 + 2),
                    qMax(msz.height(), clearButton->sizeHint().height() + frameWidth * 2 + 2));
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     setMaximumWidth(212);
     setFixedHeight(26);
 #else
@@ -90,7 +92,7 @@ const QString YACReaderSearchLineEdit::text()
 
 void YACReaderSearchLineEdit::resizeEvent(QResizeEvent *)
 {
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     QSize sz = clearButton->sizeHint();
     int frameWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
     clearButton->move(rect().right() - frameWidth - sz.width(),
