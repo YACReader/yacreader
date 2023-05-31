@@ -1471,7 +1471,7 @@ void LibraryWindow::loadLibrary(const QString &name)
 
             // si la librería no existe en disco, se ofrece al usuario la posibiliad de eliminarla
             if (!d.exists(path)) {
-                QString currentLibrary = selectedLibrary->currentText();
+                QString currentLibrary = selectedLibrary->currentText() + " -> " + libraries.getPath(name);
                 if (QMessageBox::question(this, tr("Library not available"), tr("Library '%1' is no longer available. Do you want to remove it?").arg(currentLibrary), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
                     deleteCurrentLibrary();
                 }
