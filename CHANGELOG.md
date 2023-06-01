@@ -12,6 +12,12 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add textual tags support that can be queried through the search engine.
 * Make = in the search engine work as : does.
 * Add new operators to the search engine: exact match ==, <, >, <=, >=.
+* Support filtering by since/before dates in the search engine. e.g. `added > 7` means recent content added since 7 days ago, and `added < 30` means content added before the last 30 days.
+* Show the full library path in the dialog shown to warn about missing libraries.
+* Fix scroll bar in the info comics view in Qt6 builds.
+
+### All Apps
+* New icons for macos.
 
 ## 9.12
 
