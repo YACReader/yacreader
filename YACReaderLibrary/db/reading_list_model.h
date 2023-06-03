@@ -114,4 +114,6 @@ private:
     QString _databasePath;
 };
 
+Q_DECLARE_METATYPE(ReadingListModel::TypeSpecialList)
+
 #endif // READING_LIST_MODEL_H
