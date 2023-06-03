@@ -95,6 +95,8 @@ extern YACReaderHttpServer *httpServer;
 #include <shellapi.h>
 #endif
 
+#include <KDSignalThrottler.h>
+
 namespace {
 template<class Remover>
 void moveAndConnectRemoverToThread(Remover *remover, QThread *thread)
@@ -1281,11 +1283,20 @@ void LibraryWindow::createConnections()
     connect(optionsDialog, &YACReaderOptionsDialog::optionsChanged, this, &LibraryWindow::reloadOptions);
     connect(optionsDialog, &YACReaderOptionsDialog::editShortcuts, editShortcutsDialog, &QWidget::show);
 
+    auto searchDebouncer = new KDToolBox::KDSignalDebouncer(this);
+    searchDebouncer->setTimeout(400);
+
 // Search filter
 #ifdef Y_MAC_UI
-    connect(searchEdit, &YACReaderMacOSXSearchLineEdit::filterChanged, this, &LibraryWindow::setSearchFilter);
+    connect(searchEdit, &YACReaderMacOSXSearchLineEdit::textChanged, searchDebouncer, &KDToolBox::KDSignalThrottler::throttle);
+    connect(searchDebouncer, &KDToolBox::KDSignalThrottler::triggered, this, [=] {
+        setSearchFilter(searchEdit->text());
+    });
 #else
-    connect(searchEdit, &YACReaderSearchLineEdit::filterChanged, this, &LibraryWindow::setSearchFilter);
+    connect(searchEdit, &YACReaderSearchLineEdit::textChanged, searchDebouncer, &KDToolBox::KDSignalThrottler::throttle);
+    connect(searchDebouncer, &KDToolBox::KDSignalThrottler::triggered, this, [=] {
+        setSearchFilter(searchEdit->text());
+    });
 #endif
     connect(&comicQueryResultProcessor, &ComicQueryResultProcessor::newData, this, &LibraryWindow::setComicSearchFilterData);
     qRegisterMetaType<FolderItem *>("FolderItem *");
