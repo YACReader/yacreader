@@ -623,6 +623,36 @@ void ComicModel::setupReadingModelData(const QString &databasePath)
     endResetModel();
 }
 
+void ComicModel::setupRecentModelData(const QString &databasePath)
+{
+    enableResorting = false;
+    mode = Recent;
+    sourceId = -1;
+
+    beginResetModel();
+    qDeleteAll(_data);
+    _data.clear();
+
+    _databasePath = databasePath;
+
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+        QSqlQuery selectQuery(db);
+        selectQuery.prepare("SELECT " COMIC_MODEL_QUERY_FIELDS " "
+                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                            "WHERE ci.added > :limit "
+                            "ORDER BY ci.added DESC");
+        selectQuery.bindValue(":limit", QDateTime::currentDateTime().addDays(-recentDays).toSecsSinceEpoch());
+        selectQuery.exec();
+
+        setupModelDataForList(selectQuery);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+    endResetModel();
+}
+
 void ComicModel::setModelData(QList<ComicItem *> *data, const QString &databasePath)
 {
     _databasePath = databasePath;
@@ -923,6 +953,9 @@ void ComicModel::reload()
     case Reading:
         setupReadingModelData(_databasePath);
         break;
+    case Recent:
+        setupRecentModelData(_databasePath);
+        break;
     case Label:
         setupLabelModelData(sourceId, _databasePath);
         break;
@@ -1155,6 +1188,9 @@ void ComicModel::setRecentRange(int days)
     this->recentDays = days;
 
     emit dataChanged(index(0, 0), index(rowCount() - 1, 0), { ComicModel::RecentRangeRole });
+
+    if (mode == ComicModel::Recent)
+        reload();
 }
 
 void ComicModel::updateRating(int rating, QModelIndex mi)

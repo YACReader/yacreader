@@ -82,7 +82,7 @@ QVariant ReadingListModel::data(const QModelIndex &index, int role) const
 
     if (role == ReadingListModel::SpecialListTypeRole && typeid(*item) == typeid(SpecialListItem)) {
         auto specialListItem = static_cast<SpecialListItem *>(item);
-        return QVariant(specialListItem->getType());
+        return QVariant::fromValue(specialListItem->getType());
     }
 
     if (typeid(*item) == typeid(ReadingListSeparatorItem))
@@ -196,7 +196,10 @@ bool ReadingListModel::canDropMimeData(const QMimeData *data, Qt::DropAction act
         if (row == -1) // no list
             return false;
 
-        if (row == 1) // reading is just an smart list
+        if (row == 1) // reading is just a smart list
+            return false;
+
+        if (row == 2) // recent is just a smart list
             return false;
 
         if (rowIsSeparator(row, parent))
@@ -609,8 +612,8 @@ QList<SpecialListItem *> ReadingListModel::setupSpecialLists(QSqlDatabase &db)
                                     << selectQuery.value(id));
     }
 
-    // Reading after Favorites, Why? Because I want to :P
     list.insert(1, new SpecialListItem(QList<QVariant>() << "Reading" << 0));
+    list.insert(2, new SpecialListItem(QList<QVariant>() << "Recent" << 2));
 
     return list;
 }

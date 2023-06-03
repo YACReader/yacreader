@@ -7,7 +7,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ### YACReaderLibrary
 * Avoid showing stale information in the server config dialog by updating the connection information when the dialog is opened.
 * Add new metadata support, it improves compatibility with ComicInfo.xml
-* Add support for showing a "recently added/updated" indicator.
+* Add support for showing a "recently added/updated" indicator. The number of days to consider something recent can be configured in the settings.
 * Improved comic metadata dialog.
 * Add textual tags support that can be queried through the search engine.
 * Make = in the search engine work as : does.
@@ -15,6 +15,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Support filtering by since/before dates in the search engine. e.g. `added > 7` means recent content added since 7 days ago, and `added < 30` means content added before the last 30 days.
 * Show the full library path in the dialog shown to warn about missing libraries.
 * Fix scroll bar in the info comics view in Qt6 builds.
+* New `Recent` smart list, it will show recent comics added.
 
 ### All Apps
 * New icons for macos.

@@ -67,6 +67,7 @@ public:
         Folder,
         Favorites,
         Reading,
+        Recent,
         Label,
         ReadingList
     };
@@ -96,6 +97,7 @@ public:
     void setupReadingListModelData(unsigned long long int parentReadingList, const QString &databasePath);
     void setupFavoritesModelData(const QString &databasePath);
     void setupReadingModelData(const QString &databasePath);
+    void setupRecentModelData(const QString &databasePath);
 
     // Métodos de conveniencia
     QStringList getPaths(const QString &_source);

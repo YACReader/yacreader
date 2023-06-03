@@ -69,9 +69,10 @@ public:
         Separator
     };
 
-    enum TypeSpecialList {
-        Reading,
-        Favorites
+    enum class TypeSpecialList : int {
+        Reading = 0,
+        Favorites,
+        Recent,
     };
 
 signals:

@@ -102,11 +102,14 @@ void YACReaderNavigationController::loadSpecialListInfo(const QModelIndex &model
     ReadingListModel::TypeSpecialList type = (ReadingListModel::TypeSpecialList)modelIndex.data(ReadingListModel::SpecialListTypeRole).toInt();
 
     switch (type) {
-    case ReadingListModel::Favorites:
+    case ReadingListModel::TypeSpecialList::Favorites:
         libraryWindow->comicsModel->setupFavoritesModelData(libraryWindow->foldersModel->getDatabase());
         break;
-    case ReadingListModel::Reading:
+    case ReadingListModel::TypeSpecialList::Reading:
         libraryWindow->comicsModel->setupReadingModelData(libraryWindow->foldersModel->getDatabase());
+        break;
+    case ReadingListModel::TypeSpecialList::Recent:
+        libraryWindow->comicsModel->setupRecentModelData(libraryWindow->foldersModel->getDatabase());
         break;
     }
 
@@ -118,13 +121,17 @@ void YACReaderNavigationController::loadSpecialListInfo(const QModelIndex &model
     } else {
         // setup empty special list widget
         switch (type) {
-        case ReadingListModel::Favorites:
+        case ReadingListModel::TypeSpecialList::Favorites:
             contentViewsManager->emptySpecialList->setPixmap(QPixmap(":/images/empty_favorites.png"));
             contentViewsManager->emptySpecialList->setText(tr("No favorites"));
             break;
-        case ReadingListModel::Reading:
+        case ReadingListModel::TypeSpecialList::Reading:
             contentViewsManager->emptySpecialList->setPixmap(QPixmap(":/images/empty_current_readings.png"));
             contentViewsManager->emptySpecialList->setText(tr("You are not reading anything yet, come on!!"));
+            break;
+        case ReadingListModel::TypeSpecialList::Recent:
+            contentViewsManager->emptySpecialList->setPixmap(QPixmap());
+            contentViewsManager->emptySpecialList->setText(tr("There are no recent comics!"));
             break;
         }
 
