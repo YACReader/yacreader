@@ -1288,12 +1288,12 @@ void LibraryWindow::createConnections()
 
 // Search filter
 #ifdef Y_MAC_UI
-    connect(searchEdit, &YACReaderMacOSXSearchLineEdit::textChanged, searchDebouncer, &KDToolBox::KDSignalThrottler::throttle);
+    connect(searchEdit, &YACReaderMacOSXSearchLineEdit::filterChanged, searchDebouncer, &KDToolBox::KDSignalThrottler::throttle);
     connect(searchDebouncer, &KDToolBox::KDSignalThrottler::triggered, this, [=] {
         setSearchFilter(searchEdit->text());
     });
 #else
-    connect(searchEdit, &YACReaderSearchLineEdit::textChanged, searchDebouncer, &KDToolBox::KDSignalThrottler::throttle);
+    connect(searchEdit, &YACReaderSearchLineEdit::filterChanged, searchDebouncer, &KDToolBox::KDSignalThrottler::throttle);
     connect(searchDebouncer, &KDToolBox::KDSignalThrottler::triggered, this, [=] {
         setSearchFilter(searchEdit->text());
     });
