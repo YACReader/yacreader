@@ -187,7 +187,7 @@ void MainWindowViewer::createActions()
     openAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_ACTION_Y));
     connect(openAction, &QAction::triggered, this, QOverload<>::of(&MainWindowViewer::open));
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     newInstanceAction = new QAction(tr("New instance"), this);
     newInstanceAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(NEW_INSTANCE_ACTION_Y));
     connect(newInstanceAction, &QAction::triggered,
@@ -624,7 +624,7 @@ void MainWindowViewer::createToolBars()
     viewer->setContextMenuPolicy(Qt::ActionsContextMenu);
 
     // MacOSX app menus
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     auto menuBar = this->menuBar();
     // about / preferences
     // TODO
@@ -939,7 +939,7 @@ void MainWindowViewer::saveImage()
 void MainWindowViewer::enableActions()
 {
     setActionsEnabled(true);
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     activateWindow();
     raise();
 #endif
@@ -1158,7 +1158,7 @@ void MainWindowViewer::setUpShortcutsManagement()
                                                  << toggleFullScreenAction
                                                  << toggleToolbarsAction
                                                  << showEditShortcutsAction
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
                                                  << newInstanceAction
 #endif
     );

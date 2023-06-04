@@ -110,7 +110,7 @@ void LibraryCreator::run()
     stopRunning = false;
 #if !defined use_unarr && !defined use_libarchive
 // check for 7z lib
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
+#if defined Q_OS_UNIX && !defined Q_OS_MACOS
     QLibrary *sevenzLib = new QLibrary(QString(LIBDIR) + "/p7zip/7z.so");
 #else
     QLibrary *sevenzLib = new QLibrary(QCoreApplication::applicationDirPath() + "/utils/7z");
@@ -255,7 +255,7 @@ void LibraryCreator::create(QDir dir)
             return;
         QFileInfo fileInfo = list.at(i);
         QString fileName = fileInfo.fileName();
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
         QStringList src = _source.split("/");
         QString filePath = fileInfo.absoluteFilePath();
         QStringList fp = filePath.split("/");
@@ -410,7 +410,7 @@ void LibraryCreator::update(QDir dirS)
                 QFileInfo fileInfoS = listS.at(i);
                 if (fileInfoS.isDir()) // create folder
                 {
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
                     QStringList src = _source.split("/");
                     QString filePath = fileInfoS.absoluteFilePath();
                     QStringList fp = filePath.split("/");
@@ -426,7 +426,7 @@ void LibraryCreator::update(QDir dirS)
                     _currentPathFolders.pop_back();
                 } else // create comic
                 {
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
                     QStringList src = _source.split("/");
                     QString filePath = fileInfoS.absoluteFilePath();
                     QStringList fp = filePath.split("/");
@@ -463,7 +463,7 @@ void LibraryCreator::update(QDir dirS)
 
                     if (nameS != "/.yacreaderlibrary") {
                         // QLOG_WARN() << "dir source < dest" << nameS << nameD;
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
                         QStringList src = _source.split("/");
                         QString filePath = fileInfoS.absoluteFilePath();
                         QStringList fp = filePath.split("/");
@@ -494,7 +494,7 @@ void LibraryCreator::update(QDir dirS)
                     if (nameS != "/.yacreaderlibrary") // skip .yacreaderlibrary folder
                     {
                         // QLOG_WARN() << "one of them(or both) is a file" << nameS << nameD;
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
                         QStringList src = _source.split("/");
                         QString filePath = fileInfoS.absoluteFilePath();
                         QStringList fp = filePath.split("/");
@@ -520,7 +520,7 @@ void LibraryCreator::update(QDir dirS)
                     int comparation = QString::localeAwareCompare(nameS, nameD);
                     if (comparation < 0) // create new thumbnail
                     {
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
                         QStringList src = _source.split("/");
                         QString filePath = fileInfoS.absoluteFilePath();
                         QStringList fp = filePath.split("/");
@@ -547,7 +547,7 @@ void LibraryCreator::update(QDir dirS)
                                 // copy metadata to avoid loosing it if the imported comics doesn't have it.
 
                                 //                                DBHelper::removeFromDB(fileInfoD, _database);
-                                // #ifdef Q_OS_MAC
+                                // #ifdef Q_OS_MACOS
                                 //                                QStringList src = _source.split("/");
                                 //                                QString filePath = fileInfoS.absoluteFilePath();
                                 //                                QStringList fp = filePath.split("/");

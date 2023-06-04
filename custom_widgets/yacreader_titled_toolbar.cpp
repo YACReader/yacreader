@@ -96,7 +96,7 @@ void YACReaderTitledToolBar::addAction(QAction *action)
     QHBoxLayout *mainLayout = dynamic_cast<QHBoxLayout *>(layout());
 
 // fix for QToolButton and retina support in OSX
-#ifdef Q_OS_MAC // TODO_Y_MAC_UI
+#ifdef Q_OS_MACOS // TODO_Y_MAC_UI
     QPushButton *pb = new QPushButton(this);
     pb->setCursor(QCursor(Qt::ArrowCursor));
     pb->setIcon(action->icon());

@@ -795,7 +795,7 @@ bool PDFComic::load(const QString &path, const ComicDB &comic)
 
 void PDFComic::process()
 {
-#if defined Q_OS_MAC && defined USE_PDFKIT
+#if defined Q_OS_MACOS && defined USE_PDFKIT
     pdfComic = std::make_unique<MacOSXPDFComic>();
     if (!pdfComic->openComic(_path)) {
         emit errorOpening();
@@ -875,7 +875,7 @@ void PDFComic::process()
 
 void PDFComic::renderPage(int page)
 {
-#if defined Q_OS_MAC && defined USE_PDFKIT
+#if defined Q_OS_MACOS && defined USE_PDFKIT
     QImage img = pdfComic->getPage(page);
     if (!img.isNull()) {
 #elif defined USE_PDFIUM

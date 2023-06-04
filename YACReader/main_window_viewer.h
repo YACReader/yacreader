@@ -111,7 +111,7 @@ private:
 
     //! Actions
     QAction *openAction;
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     QAction *newInstanceAction; // needed in macos
 #endif
     QAction *openFolderAction;

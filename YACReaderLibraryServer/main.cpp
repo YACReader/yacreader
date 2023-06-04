@@ -118,7 +118,7 @@ int main(int argc, char **argv)
     QTranslator translator;
     QString sufix = QLocale::system().name();
 
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
+#if defined Q_OS_UNIX && !defined Q_OS_MACOS
     translator.load(QString(DATADIR) + "/yacreader/languages/yacreaderlibrary_" + sufix);
 #else
     translator.load(QCoreApplication::applicationDirPath() + "/languages/yacreaderlibrary_" + sufix);
@@ -181,7 +181,7 @@ int main(int argc, char **argv)
 
         QTranslator translator;
         QString sufix = QLocale::system().name();
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
+#if defined Q_OS_UNIX && !defined Q_OS_MACOS
         translator.load(QString(DATADIR) + "/yacreader/languages/yacreaderlibrary_" + sufix);
 #else
         translator.load(QCoreApplication::applicationDirPath() + "/languages/yacreaderlibrary_" + sufix);
@@ -189,7 +189,7 @@ int main(int argc, char **argv)
         app.installTranslator(&translator);
 
         QTranslator viewerTranslator;
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
+#if defined Q_OS_UNIX && !defined Q_OS_MACOS
         viewerTranslator.load(QString(DATADIR) + "/yacreader/languages/yacreader_" + sufix);
 #else
         viewerTranslator.load(QCoreApplication::applicationDirPath() + "/languages/yacreader_" + sufix);

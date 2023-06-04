@@ -175,7 +175,7 @@ public:
     QAction *removeLibraryAction;
     QAction *helpAboutAction;
     QAction *renameLibraryAction;
-#ifndef Q_OS_MAC
+#ifndef Q_OS_MACOS
     QAction *toggleFullScreenAction;
 #endif
     QAction *optionsAction;

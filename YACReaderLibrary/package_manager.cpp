@@ -16,7 +16,7 @@ void PackageManager::createPackage(const QString &libraryPath, const QString &de
     // TODO: Missing slot for openingError!!!
     connect(_7z, SIGNAL(error(QProcess::ProcessError)), this, SLOT(openingError(QProcess::ProcessError)));
     connect(_7z, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, &PackageManager::exported);
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
+#if defined Q_OS_UNIX && !defined Q_OS_MACOS
     _7z->start("7z", attributes); // TODO: use 7z.so
 #else
     _7z->start(QCoreApplication::applicationDirPath() + "/utils/7zip", attributes); // TODO: use 7z.dll
@@ -33,7 +33,7 @@ void PackageManager::extractPackage(const QString &packagePath, const QString &d
     _7z = new QProcess();
     connect(_7z, SIGNAL(error(QProcess::ProcessError)), this, SLOT(openingError(QProcess::ProcessError)));
     connect(_7z, SIGNAL(finished(int, QProcess::ExitStatus)), this, SIGNAL(imported()));
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
+#if defined Q_OS_UNIX && !defined Q_OS_MACOS
     _7z->start("7z", attributes); // TODO: use 7z.so
 #else
     _7z->start(QCoreApplication::applicationDirPath() + "/utils/7zip", attributes); // TODO: use 7z.dll

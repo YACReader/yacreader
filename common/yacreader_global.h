@@ -19,7 +19,7 @@
 
 #define MAX_LIBRARIES_WARNING_NUM 10
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
 #define Y_MAC_UI
 #endif
 

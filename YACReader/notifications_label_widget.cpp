@@ -29,7 +29,7 @@ NotificationsLabelWidget::NotificationsLabelWidget(QWidget *parent)
     textLabel->setFixedSize(200, 120);
 
     // TODO check if the effects are still broken in OSX
-#ifndef Q_OS_MAC
+#ifndef Q_OS_MACOS
     this->setGraphicsEffect(effect);
 #endif
 

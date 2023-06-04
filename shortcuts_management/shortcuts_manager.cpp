@@ -75,7 +75,7 @@ void ShortcutsManager::initDefaultShorcuts()
     defaultShorcuts.insert(ZOOM_IN_MGLASS_ACTION_Y, Qt::Key_Asterisk);
     defaultShorcuts.insert(ZOOM_OUT_MGLASS_ACTION_Y, Qt::Key_Underscore);
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     defaultShorcuts.insert(NEW_INSTANCE_ACTION_Y, Qt::Key_N);
 #endif
 

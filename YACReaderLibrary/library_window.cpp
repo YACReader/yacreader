@@ -447,7 +447,7 @@ void LibraryWindow::setUpShortcutsManagement()
                                          tmpList = QList<QAction *>()
                                                  << showHideMarksAction
                                                  << toogleShowRecentIndicatorAction
-#ifndef Q_OS_MAC
+#ifndef Q_OS_MACOS
                                                  << toggleFullScreenAction // Think about what to do in macos if the default theme is used
 #endif
                                                  << toggleComicsViewAction);
@@ -623,7 +623,7 @@ void LibraryWindow::createActions()
     toogleShowRecentIndicatorAction->setIcon(QIcon(":/images/comics_view_toolbar/showRecentIndicator.svg"));
     toogleShowRecentIndicatorAction->setChecked(settings->value(DISPLAY_RECENTLY_INDICATOR, true).toBool());
 
-#ifndef Q_OS_MAC
+#ifndef Q_OS_MACOS
     toggleFullScreenAction = new QAction(tr("Fullscreen mode on/off"), this);
     toggleFullScreenAction->setToolTip(tr("Fullscreen mode on/off"));
     toggleFullScreenAction->setData(TOGGLE_FULL_SCREEN_ACTION_YL);
@@ -896,7 +896,7 @@ void LibraryWindow::createActions()
     this->addAction(setFolderAsYonkomaAction);
     this->addAction(deleteMetadataAction);
     this->addAction(rescanXMLFromCurrentFolderAction);
-#ifndef Q_OS_MAC
+#ifndef Q_OS_MACOS
     this->addAction(toggleFullScreenAction);
 #endif
 
@@ -906,7 +906,7 @@ void LibraryWindow::createActions()
 void LibraryWindow::disableComicsActions(bool disabled)
 {
     // if there aren't comics, no fullscreen option will be available
-#ifndef Q_OS_MAC
+#ifndef Q_OS_MACOS
     toggleFullScreenAction->setDisabled(disabled);
 #endif
     // edit toolbar
@@ -1013,7 +1013,7 @@ void LibraryWindow::createToolBars()
     libraryToolBar->serverButton->setDefaultAction(serverConfigAction);
     libraryToolBar->helpButton->setDefaultAction(helpAboutAction);
     libraryToolBar->toggleComicsViewButton->setDefaultAction(toggleComicsViewAction);
-#ifndef Q_OS_MAC
+#ifndef Q_OS_MACOS
     libraryToolBar->fullscreenButton->setDefaultAction(toggleFullScreenAction);
 #endif
     libraryToolBar->setSearchWidget(searchEdit);
@@ -1101,7 +1101,7 @@ void LibraryWindow::createMenus()
     selectedLibrary->addAction(importLibraryAction);
 
 // MacOSX app menus
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     QMenuBar *menu = this->menuBar();
     // about / preferences
     // TODO
@@ -1272,7 +1272,7 @@ void LibraryWindow::createConnections()
     connect(setRootIndexAction, &QAction::triggered, this, &LibraryWindow::setRootIndex);
     connect(expandAllNodesAction, &QAction::triggered, foldersView, &QTreeView::expandAll);
     connect(colapseAllNodesAction, &QAction::triggered, foldersView, &QTreeView::collapseAll);
-#ifndef Q_OS_MAC
+#ifndef Q_OS_MACOS
     connect(toggleFullScreenAction, &QAction::triggered, this, &LibraryWindow::toggleFullScreen);
 #endif
     connect(toggleComicsViewAction, &QAction::triggered, contentViewsManager, &YACReaderContentViewsManager::toggleComicsView);
@@ -1447,7 +1447,7 @@ void LibraryWindow::loadLibrary(const QString &name)
                     rescanLibraryForXMLInfoAction->setDisabled(true);
 
                     disableComicsActions(true);
-#ifndef Q_OS_MAC
+#ifndef Q_OS_MACOS
                     toggleFullScreenAction->setEnabled(true);
 #endif
 
@@ -1886,7 +1886,7 @@ void LibraryWindow::showComicsViewContextMenu(const QPoint &point)
     QMenu subMenu;
     setupAddToSubmenu(subMenu);
 
-#ifndef Q_OS_MAC
+#ifndef Q_OS_MACOS
     menu.addSeparator();
     menu.addAction(toggleFullScreenAction);
 #endif
@@ -2155,7 +2155,7 @@ void LibraryWindow::checkEmptyFolder()
         disableComicsActions(false);
     } else {
         disableComicsActions(true);
-#ifndef Q_OS_MAC
+#ifndef Q_OS_MACOS
         if (comicsModel->rowCount() > 0)
             toggleFullScreenAction->setEnabled(true);
 #endif
@@ -2685,12 +2685,12 @@ void LibraryWindow::openContainingFolderComic()
 {
     QModelIndex modelIndex = contentViewsManager->comicsView->currentIndex();
     QFileInfo file(QDir::cleanPath(currentPath() + comicsModel->getComicPath(modelIndex)));
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
+#if defined Q_OS_UNIX && !defined Q_OS_MACOS
     QString path = file.absolutePath();
     QDesktopServices::openUrl(QUrl("file:///" + path, QUrl::TolerantMode));
 #endif
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     QString filePath = file.absoluteFilePath();
     QStringList args;
     args << "-e";

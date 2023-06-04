@@ -299,7 +299,7 @@ CompressedArchive::CompressedArchive(const QString &filePath, QObject *parent)
         //  fix2: rename 7z.so to 7z.dylib
         if (sevenzLib == 0) {
 #if defined Q_OS_UNIX
-#if defined Q_OS_MAC
+#if defined Q_OS_MACOS
             rarLib = new QLibrary(QCoreApplication::applicationDirPath() + "/utils/Codecs/Rar");
 #else
             // check if a yacreader specific version of p7zip exists on the system
@@ -316,7 +316,7 @@ CompressedArchive::CompressedArchive(const QString &filePath, QObject *parent)
                 return false;
             }
 #endif
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
+#if defined Q_OS_UNIX && !defined Q_OS_MACOS
             QFileInfo sevenzlibrary(QString(LIBDIR) + "/yacreader/7z.so");
             if (sevenzlibrary.exists()) {
                 sevenzLib = new QLibrary(sevenzlibrary.absoluteFilePath());
