@@ -47,6 +47,7 @@ private:
     qulonglong insertFolders(); // devuelve el id del último folder añadido (último en la ruta)
     bool checkCover(const QString &hash);
     void insertComic(const QString &relativePath, const QFileInfo &fileInfo);
+    void replaceComic(const QString &relativePath, const QFileInfo &fileInfo, ComicDB *comic);
     // qulonglong insertFolder(qulonglong parentId,const Folder & folder);
     // qulonglong insertComic(const Comic & comic);
     bool stopRunning;

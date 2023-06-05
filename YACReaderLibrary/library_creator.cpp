@@ -285,18 +285,23 @@ bool LibraryCreator::checkCover(const QString &hash)
     return QFile::exists(_target + "/covers/" + hash + ".jpg");
 }
 
-void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &fileInfo)
+QString pseudoHash(const QFileInfo &fileInfo)
 {
-    auto _database = QSqlDatabase::database(_databaseConnection);
-    // Se calcula el hash del cómic
-
     QCryptographicHash crypto(QCryptographicHash::Sha1);
     QFile file(fileInfo.absoluteFilePath());
     file.open(QFile::ReadOnly);
     crypto.addData(file.read(524288));
     file.close();
     // hash Sha1 del primer 0.5MB + filesize
-    QString hash = QString(crypto.result().toHex().constData()) + QString::number(fileInfo.size());
+    return QString(crypto.result().toHex().constData()) + QString::number(fileInfo.size());
+}
+
+void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &fileInfo)
+{
+    auto _database = QSqlDatabase::database(_databaseConnection);
+
+    QString hash = pseudoHash(fileInfo);
+
     ComicDB comic = DBHelper::loadComic(fileInfo.fileName(), relativePath, hash, _database);
     int numPages = 0;
     QPair<int, int> originalCoverSize = { 0, 0 };
@@ -331,6 +336,37 @@ void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
 
         DBHelper::insert(&comic, _database, parsed);
     }
+}
+
+void LibraryCreator::replaceComic(const QString &relativePath, const QFileInfo &fileInfo, ComicDB *comic)
+{
+    QLOG_INFO() << "Replacing comic" << relativePath;
+
+    auto _database = QSqlDatabase::database(_databaseConnection);
+
+    DBHelper::removeFromDB(comic, _database);
+    insertComic(relativePath, fileInfo);
+
+    QString hash = pseudoHash(fileInfo);
+
+    ComicDB insertedComic = DBHelper::loadComic(fileInfo.fileName(), relativePath, hash, _database);
+
+    auto numPages = insertedComic.info.numPages;
+    auto coverSize = insertedComic.info.originalCoverSize;
+    auto coverRatio = insertedComic.info.coverSizeRatio;
+    auto id = insertedComic.info.id;
+    auto added = insertedComic.info.added;
+
+    insertedComic.info = comic->info;
+
+    insertedComic.info.numPages = numPages;
+    insertedComic.info.originalCoverSize = coverSize;
+    insertedComic.info.coverSizeRatio = coverRatio;
+    insertedComic.info.id = id;
+    insertedComic.info.coverPage = 0;
+    insertedComic.info.added = QDateTime::currentSecsSinceEpoch(); // when replacing a comic, added needs to be later than modified to avoid tagging this file as modified
+
+    DBHelper::update(&(insertedComic.info), _database);
 }
 
 void LibraryCreator::update(QDir dirS)
@@ -541,24 +577,24 @@ void LibraryCreator::update(QDir dirS)
                         } else // same file
                         {
                             if (fileInfoS.isFile() && !fileInfoD->isDir()) {
-                                // TODO_METADATA use added,
-                                // if added < modified, do something
+                                auto comicDB = static_cast<ComicDB *>(fileInfoD);
+                                auto lastModified = fileInfoS.lastModified().toSecsSinceEpoch();
+                                auto added = comicDB->info.added.toULongLong();
 
-                                // copy metadata to avoid loosing it if the imported comics doesn't have it.
-
-                                //                                DBHelper::removeFromDB(fileInfoD, _database);
-                                // #ifdef Q_OS_MACOS
-                                //                                QStringList src = _source.split("/");
-                                //                                QString filePath = fileInfoS.absoluteFilePath();
-                                //                                QStringList fp = filePath.split("/");
-                                //                                for (int i = 0; i < src.count(); i++) {
-                                //                                    fp.removeFirst();
-                                //                                }
-                                //                                QString path = "/" + fp.join("/");
-                                // #else
-                                //                                QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
-                                // #endif
-                                //                                insertComic(path, fileInfoS);
+                                if (added > 0 && added < lastModified) {
+#ifdef Q_OS_MACOS
+                                    QStringList src = _source.split("/");
+                                    QString filePath = fileInfoS.absoluteFilePath();
+                                    QStringList fp = filePath.split("/");
+                                    for (int i = 0; i < src.count(); i++) {
+                                        fp.removeFirst();
+                                    }
+                                    QString path = "/" + fp.join("/");
+#else
+                                    QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
+#endif
+                                    replaceComic(path, fileInfoS, comicDB);
+                                }
                             }
                             i++;
                             j++;
