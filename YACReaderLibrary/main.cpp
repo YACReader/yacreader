@@ -21,7 +21,7 @@
 #include "yacreader_libraries.h"
 #include "exit_check.h"
 #include "opengl_checker.h"
-#ifdef Q_OS_MACOSOS
+#ifdef Q_OS_MACOS
 #include "trayhandler.h"
 #endif
 
@@ -268,7 +268,7 @@ int main(int argc, char **argv)
     if (!settings->value(START_TO_TRAY, false).toBool() || !settings->value(CLOSE_TO_TRAY, false).toBool()) {
         mw->show();
     }
-#ifdef Q_OS_MACOSOS
+#ifdef Q_OS_MACOS
     else {
         OSXHideDockIcon();
     }

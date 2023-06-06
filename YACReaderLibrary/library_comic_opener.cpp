@@ -18,7 +18,7 @@ bool YACReader::openComic(const ComicDB &comic,
         labelParam = QString("--readingListId=%1").arg(source.sourceId);
     }
 
-#ifdef Q_OS_MACOSOS
+#ifdef Q_OS_MACOS
     QStringList possiblePaths { QDir::cleanPath(QCoreApplication::applicationDirPath() + "/../../../") };
     possiblePaths += QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation);
 

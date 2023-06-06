@@ -7,7 +7,7 @@
 #include <QtWidgets>
 #include <QMessageBox>
 
-#ifdef Q_OS_MACOSOS
+#ifdef Q_OS_MACOS
 #include "trayhandler.h"
 #endif
 
@@ -26,7 +26,7 @@ TrayIconController::TrayIconController(QSettings *settings, LibraryWindow *windo
 #ifdef Q_OS_WIN
         trayIcon.setIcon(QIcon(":/icon.ico"));
 #else
-#ifdef Q_OS_MACOSOS
+#ifdef Q_OS_MACOS
         auto icon = QIcon(":/macostrayicon.svg");
         icon.setIsMask(true);
         trayIcon.setIcon(icon);
@@ -69,7 +69,7 @@ void TrayIconController::updateIconVisibility()
 
 bool TrayIconController::handleCloseToTrayIcon(QCloseEvent *event)
 {
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
     if (!event->spontaneous() || !window->isVisible()) {
         return false;
     }
@@ -83,7 +83,7 @@ bool TrayIconController::handleCloseToTrayIcon(QCloseEvent *event)
                                         "of the system tray icon."));
             settings->setValue(CLOSE_TO_TRAY_NOTIFIED, true);
         }
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
         OSXHideDockIcon();
 #endif
         window->hide();
@@ -96,7 +96,7 @@ bool TrayIconController::handleCloseToTrayIcon(QCloseEvent *event)
 
 void TrayIconController::showWindow()
 {
-#ifdef Q_OS_MACOSOS
+#ifdef Q_OS_MACOS
     OSXShowDockIcon();
     window->showNormal();
 #else
