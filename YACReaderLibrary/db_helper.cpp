@@ -753,6 +753,18 @@ void DBHelper::updateRead(ComicInfo *comicInfo, QSqlDatabase &db)
     updateComicInfo.exec();
 }
 
+void DBHelper::updateAdded(ComicInfo *comicInfo, QSqlDatabase &db)
+{
+    QSqlQuery updateComicInfo(db);
+    updateComicInfo.prepare("UPDATE comic_info SET "
+                            "added = :added"
+                            " WHERE id = :id ");
+
+    updateComicInfo.bindValue(":added", comicInfo->added);
+    updateComicInfo.bindValue(":id", comicInfo->id);
+    updateComicInfo.exec();
+}
+
 void DBHelper::update(const Folder &folder, QSqlDatabase &db)
 {
     QSqlQuery updateFolderInfo(db);

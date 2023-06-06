@@ -594,6 +594,11 @@ void LibraryCreator::update(QDir dirS)
                                     QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
 #endif
                                     replaceComic(path, fileInfoS, comicDB);
+                                } else if (added == 0) { // this file was added before `added` existed on the db, `added` will be updated to match the modified date so future modifications can be detected.
+                                    if (lastModified > 0) {
+                                        comicDB->info.added = lastModified;
+                                        DBHelper::updateAdded(&(comicDB->info), _database);
+                                    }
                                 }
                             }
                             i++;
