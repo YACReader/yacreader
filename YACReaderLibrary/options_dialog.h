@@ -41,6 +41,7 @@ private:
     QCheckBox *comicInfoXMLCheckbox;
     QSlider *recentIntervalSlider;
     QLabel *numDaysLabel;
+    QCheckBox *compareModifiedDateWhenUpdatingLibrariesCheck;
 };
 
 #endif

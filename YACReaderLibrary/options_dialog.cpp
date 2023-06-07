@@ -98,6 +98,18 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 
     connect(recentIntervalSlider, &QAbstractSlider::valueChanged, this, &OptionsDialog::numDaysToConsiderRecentChanged);
 
+    auto libraryUpdatesBox = new QGroupBox(tr("Library update"));
+
+    compareModifiedDateWhenUpdatingLibrariesCheck = new QCheckBox(tr("Compare the modified date of files when updating a library"));
+    connect(compareModifiedDateWhenUpdatingLibrariesCheck, &QCheckBox::clicked, this,
+            [=](bool checked) {
+                settings->setValue(COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES, checked);
+            });
+
+    auto libraryUpdatesBoxLayout = new QVBoxLayout();
+    libraryUpdatesBoxLayout->addWidget(compareModifiedDateWhenUpdatingLibrariesCheck);
+    libraryUpdatesBox->setLayout(libraryUpdatesBoxLayout);
+
     // grid view background config
     useBackgroundImageCheck = new QCheckBox(tr("Enable background image"));
 
@@ -165,6 +177,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     generalLayout->addWidget(apiKeyBox);
     generalLayout->addWidget(comicInfoXMLBox);
     generalLayout->addWidget(recentlyAddedBox);
+    generalLayout->addWidget(libraryUpdatesBox);
     generalLayout->addStretch();
 
     tabWidget->addTab(generalW, tr("General"));
@@ -199,6 +212,8 @@ void OptionsDialog::restoreOptions(QSettings *settings)
     comicInfoXMLCheckbox->setChecked(settings->value(IMPORT_COMIC_INFO_XML_METADATA, false).toBool());
 
     recentIntervalSlider->setValue(settings->value(NUM_DAYS_TO_CONSIDER_RECENT, 1).toInt());
+
+    compareModifiedDateWhenUpdatingLibrariesCheck->setChecked(settings->value(COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES, false).toBool());
 
     bool useBackgroundImage = settings->value(USE_BACKGROUND_IMAGE_IN_GRID_VIEW, true).toBool();
 
