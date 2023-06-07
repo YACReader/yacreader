@@ -340,8 +340,6 @@ void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
 
 void LibraryCreator::replaceComic(const QString &relativePath, const QFileInfo &fileInfo, ComicDB *comic)
 {
-    QLOG_INFO() << "Replacing comic" << relativePath;
-
     auto _database = QSqlDatabase::database(_databaseConnection);
 
     DBHelper::removeFromDB(comic, _database);
@@ -355,7 +353,6 @@ void LibraryCreator::replaceComic(const QString &relativePath, const QFileInfo &
     auto coverSize = insertedComic.info.originalCoverSize;
     auto coverRatio = insertedComic.info.coverSizeRatio;
     auto id = insertedComic.info.id;
-    auto added = insertedComic.info.added;
 
     insertedComic.info = comic->info;
 
@@ -364,7 +361,7 @@ void LibraryCreator::replaceComic(const QString &relativePath, const QFileInfo &
     insertedComic.info.coverSizeRatio = coverRatio;
     insertedComic.info.id = id;
     insertedComic.info.coverPage = 0;
-    insertedComic.info.added = QDateTime::currentSecsSinceEpoch(); // when replacing a comic, added needs to be later than modified to avoid tagging this file as modified
+    insertedComic.info.added = fileInfo.lastModified().toSecsSinceEpoch();
 
     DBHelper::update(&(insertedComic.info), _database);
 }
@@ -594,6 +591,7 @@ void LibraryCreator::update(QDir dirS)
                                     QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
 #endif
                                     replaceComic(path, fileInfoS, comicDB);
+                                    QLOG_INFO() << "Repaced" << QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source) << " last modified:  " << fileInfoS.lastModified() << " added: " << QDateTime::fromSecsSinceEpoch(added);
                                 } else if (added == 0) { // this file was added before `added` existed on the db, `added` will be updated to match the modified date so future modifications can be detected.
                                     if (lastModified > 0) {
                                         comicDB->info.added = lastModified;
