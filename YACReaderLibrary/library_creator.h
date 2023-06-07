@@ -56,6 +56,7 @@ private:
     bool partialUpdate;
     QModelIndex folderDestinationModelIndex;
     QSettings *settings;
+    bool checkModifiedDatesOnUpdate;
 
 signals:
     void finished();

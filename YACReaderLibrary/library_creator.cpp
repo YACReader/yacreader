@@ -40,12 +40,14 @@ void LibraryCreator::createLibrary(const QString &source, const QString &target)
 
 void LibraryCreator::updateLibrary(const QString &source, const QString &target)
 {
+    checkModifiedDatesOnUpdate = settings->value(COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES, false).toBool();
     partialUpdate = false;
     processLibrary(source, target);
 }
 
 void LibraryCreator::updateFolder(const QString &source, const QString &target, const QString &sourceFolder, const QModelIndex &dest)
 {
+    checkModifiedDatesOnUpdate = settings->value(COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES, false).toBool();
     partialUpdate = true;
     folderDestinationModelIndex = dest;
 
@@ -571,14 +573,17 @@ void LibraryCreator::update(QDir dirS)
                         {
                             DBHelper::removeFromDB(fileInfoD, _database);
                             j++;
-                        } else // same file
+                        } else // file with the same name
                         {
                             if (fileInfoS.isFile() && !fileInfoD->isDir()) {
                                 auto comicDB = static_cast<ComicDB *>(fileInfoD);
                                 auto lastModified = fileInfoS.lastModified().toSecsSinceEpoch();
                                 auto added = comicDB->info.added.toULongLong();
 
-                                if (added > 0 && added < lastModified) {
+                                auto sizeHasChanged = comicDB->getFileSize() != fileInfoS.size();
+                                auto hasBeenModified = added > 0 && added < lastModified && checkModifiedDatesOnUpdate;
+
+                                if (sizeHasChanged || hasBeenModified) {
 #ifdef Q_OS_MACOS
                                     QStringList src = _source.split("/");
                                     QString filePath = fileInfoS.absoluteFilePath();
