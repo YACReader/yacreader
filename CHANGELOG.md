@@ -16,6 +16,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Show the full library path in the dialog shown to warn about missing libraries.
 * Fix scroll bar in the info comics view in Qt6 builds.
 * New `Recent` smart list, it will show recent comics added.
+* Try to detect changed files with the same name on libraries updates, there is also a new setting to decide if the modified date of a file should be used as an indicator to know if the file has been changed since it was added (disabled by default).
 
 ### All Apps
 * New icons for macos.
