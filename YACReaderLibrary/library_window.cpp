@@ -168,11 +168,13 @@ bool LibraryWindow::eventFilter(QObject *object, QEvent *event)
             return QMainWindow::eventFilter(object, event);
         }
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         auto keyCombination = keySequence[0];
 
         if (keyCombination.keyboardModifiers() != Qt::NoModifier) {
             return QMainWindow::eventFilter(object, event);
         }
+#endif
 
         auto string = keySequence.toString();
 
