@@ -160,6 +160,32 @@ bool LibraryWindow::eventFilter(QObject *object, QEvent *event)
         }
     }
 
+    if (this->foldersView->hasFocus() && event->type() == QEvent::Shortcut) {
+        auto shortcutEvent = static_cast<QShortcutEvent *>(event);
+        auto keySequence = shortcutEvent->key();
+
+        if (keySequence.count() > 1) {
+            return QMainWindow::eventFilter(object, event);
+        }
+
+        auto keyCombination = keySequence[0];
+
+        if (keyCombination.keyboardModifiers() != Qt::NoModifier) {
+            return QMainWindow::eventFilter(object, event);
+        }
+
+        auto string = keySequence.toString();
+
+        if (string.size() > 1) {
+            return QMainWindow::eventFilter(object, event);
+        }
+
+        event->ignore();
+
+        foldersView->keyboardSearch(keySequence.toString());
+        return true;
+    }
+
     return QMainWindow::eventFilter(object, event);
 }
 
