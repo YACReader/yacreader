@@ -798,8 +798,12 @@ void MainWindowViewer::open(QString path, ComicDB &comic, QList<ComicDB> &siblin
     else
         setWindowTitle("YACReader - " + fi.fileName());
 
-    viewer->setMangaWithoutStoringSetting(comic.info.manga.toBool());
-    doubleMangaPageAction->setChecked(comic.info.manga.toBool());
+    auto type = comic.info.type.value<YACReader::FileType>();
+    // TODO: support comic.info.type by adjusting the scrolling and double page mode behaviour depending on the actual type, for now type is mapped to manga mode
+    auto isManga = type == YACReader::FileType::Manga;
+
+    viewer->setMangaWithoutStoringSetting(isManga);
+    doubleMangaPageAction->setChecked(isManga);
 
     viewer->open(path, comic);
     enableActions();
