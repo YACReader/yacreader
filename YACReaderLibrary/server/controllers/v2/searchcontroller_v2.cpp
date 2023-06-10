@@ -96,7 +96,9 @@ void SearchController::getComics(int libraryId, QSqlQuery &sqlQuery, QJsonArray 
         json["title"] = sqlQuery.value("title").toString();
         json["number"] = sqlQuery.value("number").toInt();
         json["last_time_opened"] = sqlQuery.value("lastTimeOpened").toLongLong();
-        json["manga"] = sqlQuery.value("manga").toBool();
+        auto typeVariant = sqlQuery.value("type");
+        auto type = typeVariant.value<YACReader::FileType>();
+        json["manga"] = type == YACReader::FileType::Manga; // legacy, kept for compatibility with old clients
 
         items.append(json);
     }
