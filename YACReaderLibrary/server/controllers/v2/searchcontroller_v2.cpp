@@ -99,6 +99,7 @@ void SearchController::getComics(int libraryId, QSqlQuery &sqlQuery, QJsonArray 
         auto typeVariant = sqlQuery.value("type");
         auto type = typeVariant.value<YACReader::FileType>();
         json["manga"] = type == YACReader::FileType::Manga; // legacy, kept for compatibility with old clients
+        json["file_type"] = typeVariant.toInt(); // 9.13
 
         items.append(json);
     }
