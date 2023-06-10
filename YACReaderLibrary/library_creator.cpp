@@ -234,7 +234,6 @@ qulonglong LibraryCreator::insertFolders()
     for (i = _currentPathFolders.begin(); i != _currentPathFolders.end(); ++i) {
         if (!(i->knownId)) {
             i->setFather(currentId);
-            i->manga = currentParent.manga;
             i->type = currentParent.type;
             currentId = DBHelper::insert(&(*i), _database); // insertFolder(currentId,*i);
             i->setId(currentId);
@@ -333,7 +332,6 @@ void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
         }
 
         comic.parentId = _currentPathFolders.last().id;
-        comic.info.manga = _currentPathFolders.last().manga;
         comic.info.type = QVariant::fromValue(_currentPathFolders.last().type); // TODO_METADATA test this
 
         DBHelper::insert(&comic, _database, parsed);

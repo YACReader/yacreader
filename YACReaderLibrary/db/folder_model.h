@@ -89,7 +89,6 @@ public:
         Path,
         Finished,
         Completed,
-        Manga, // deprecated
         NumChildren,
         FirstChildHash,
         CustomImage,
@@ -102,7 +101,6 @@ public:
         FinishedRole = Qt::UserRole + 1,
         CompletedRole,
         IdRole,
-        MangaRole, // deprecated
         CoverPathRole,
         FolderNameRole,
         NumChildrenRole,

@@ -14,7 +14,6 @@ public:
 
     bool finished; // finished means read, the user has read all the content in this folder
     bool completed; // completed means the folder has all the content, e.g. a series got its final issue and the user has collected all of them
-    [[deprecated("use type instead")]] bool manga;
 
     qint32 numChildren; //-1 for unknown number of children
     QString firstChildHash; // empty for unknown first child
@@ -32,7 +31,6 @@ public:
            const QString &folderPath,
            bool completed,
            bool finished,
-           bool manga,
            int numChildren,
            const QString &firstChildHash,
            const QString &customImage,

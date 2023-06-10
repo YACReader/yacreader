@@ -64,7 +64,7 @@ static QString fields = "title,"
                         //"coverSizeRatio," cover may have changed since the info was exported...
                         //"originalCoverSize," // h/w
                         // new 9.8 fields
-                        "manga,"
+                        // "manga," //removed in 9.13
                         // new 9.13 fields
                         "added,"
                         "type,"
@@ -315,7 +315,7 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
                                                    "name TEXT NOT NULL, "
                                                    "finished BOOLEAN DEFAULT 0, "
                                                    "completed BOOLEAN DEFAULT 1, "
-                                                   "manga BOOLEAN DEFAULT 0, "
+                                                   "manga BOOLEAN DEFAULT 0, " // TODO never used, replace with `type`
                                                    "FOREIGN KEY(parentId) REFERENCES reading_list(id) ON DELETE CASCADE)");
 
         QSqlQuery queryIndexReadingList(database);
@@ -485,7 +485,7 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
                            //--
 
                            // new 9.8 fields
-                           "manga = :manga,"
+                           // "manga = :manga," //removed in 9.13
 
                            // new 9.13 fields
                            "added = :added,"
@@ -539,7 +539,6 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
                            "comicVineID,"
                            "lastTimeOpened,"
                            "coverSizeRatio,"
-                           "manga,"
                            "added,"
                            "type,"
                            "editor,"
@@ -582,7 +581,6 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
                            ":format,"
                            ":color,"
                            ":ageRating,"
-                           ":manga,"
 
                            ":synopsis,"
                            ":characters,"
@@ -597,7 +595,6 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
                            ":coverSizeRatio,"
                            ":originalCoverSize,"
 
-                           ":manga,"
                            ":added,"
                            ":type,"
                            ":editor,"
@@ -704,7 +701,6 @@ void DataBaseManagement::bindValuesFromRecord(const QSqlRecord &record, QSqlQuer
     bindValue("format", record, query);
     bindValue("color", record, query);
     bindValue("ageRating", record, query);
-    bindValue("manga", record, query);
 
     bindValue("synopsis", record, query);
     bindValue("characters", record, query);

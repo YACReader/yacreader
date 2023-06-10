@@ -637,7 +637,7 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
                             //--
 
                             // new 9.8 fields
-                            "manga = :manga,"
+                            // "manga = :manga," removed in 9.13
                             //--
 
                             // new 9.13 fields
@@ -688,7 +688,6 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
     updateComicInfo.bindValue(":format", comicInfo->format);
     updateComicInfo.bindValue(":color", comicInfo->color);
     updateComicInfo.bindValue(":ageRating", comicInfo->ageRating);
-    updateComicInfo.bindValue(":manga", comicInfo->manga);
 
     updateComicInfo.bindValue(":synopsis", comicInfo->synopsis);
     updateComicInfo.bindValue(":characters", comicInfo->characters);
@@ -1426,7 +1425,6 @@ QList<LibraryItem *> DBHelper::getFoldersFromParent(qulonglong parentId, QSqlDat
     int path = record.indexOf("path");
     int finished = record.indexOf("finished");
     int completed = record.indexOf("completed");
-    int manga = record.indexOf("manga");
     int id = record.indexOf("id");
     int numChildren = record.indexOf("numChildren");
     int firstChildHash = record.indexOf("firstChildHash");
@@ -1447,7 +1445,6 @@ QList<LibraryItem *> DBHelper::getFoldersFromParent(qulonglong parentId, QSqlDat
         }
         currentItem->firstChildHash = selectQuery.value(firstChildHash).toString();
         currentItem->customImage = selectQuery.value(customImage).toString();
-        currentItem->manga = selectQuery.value(manga).toBool();
         currentItem->type = selectQuery.value(type).value<YACReader::FileType>();
         currentItem->added = selectQuery.value(added).toLongLong();
         currentItem->updated = selectQuery.value(updated).toLongLong();
@@ -1679,7 +1676,6 @@ void DBHelper::readFolderFromQuery(Folder &folder, QSqlQuery &query)
     int path = record.indexOf("path");
     int finished = record.indexOf("finished");
     int completed = record.indexOf("completed");
-    int manga = record.indexOf("manga");
     int numChildren = record.indexOf("numChildren");
     int firstChildHash = record.indexOf("firstChildHash");
     int customImage = record.indexOf("customImage");
@@ -1706,7 +1702,7 @@ void DBHelper::readFolderFromQuery(Folder &folder, QSqlQuery &query)
         folder.customImage = query.value(customImage).toString();
 
         // new 9.8
-        folder.manga = query.value(manga).toBool();
+        // folder.manga = query.value(manga).toBool(); //removed in 9.13
 
         // new 9.13
         folder.type = query.value(type).value<YACReader::FileType>();
@@ -1831,7 +1827,6 @@ ComicInfo DBHelper::getComicInfoFromQuery(QSqlQuery &query, const QString &idKey
     int format = record.indexOf("format");
     int color = record.indexOf("color");
     int ageRating = record.indexOf("ageRating");
-    int manga = record.indexOf("manga");
 
     int synopsis = record.indexOf("synopsis");
     int characters = record.indexOf("characters");
@@ -1921,7 +1916,7 @@ ComicInfo DBHelper::getComicInfoFromQuery(QSqlQuery &query, const QString &idKey
     //--
 
     // new 9.8 fields
-    comicInfo.manga = query.value(manga);
+    // comicInfo.manga = query.value(manga); // removed in 9.13
     //--
 
     // new 9.13 fields

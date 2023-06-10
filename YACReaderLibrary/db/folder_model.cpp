@@ -94,7 +94,6 @@ QHash<int, QByteArray> FolderModel::roleNames() const
     roles[FinishedRole] = "is_finished";
     roles[CompletedRole] = "is_completed";
     roles[IdRole] = "id";
-    roles[MangaRole] = "is_manga";
     roles[CoverPathRole] = "cover_path";
     roles[FolderNameRole] = "name";
     roles[NumChildrenRole] = "num_children";
@@ -163,9 +162,6 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
 
     if (role == FolderModel::FinishedRole)
         return item->data(FolderModel::Finished);
-
-    if (role == FolderModel::MangaRole)
-        return item->data(FolderModel::Manga);
 
     if (role == FolderModel::IdRole)
         return item->id;
@@ -343,7 +339,6 @@ void FolderModel::setupModelData(QSqlQuery &sqlquery, FolderItem *parent)
     int path = record.indexOf("path");
     int finished = record.indexOf("finished");
     int completed = record.indexOf("completed");
-    int manga = record.indexOf("manga");
     int id = record.indexOf("id");
     int parentId = record.indexOf("parentId");
     int numChildren = record.indexOf("numChildren");
@@ -360,7 +355,6 @@ void FolderModel::setupModelData(QSqlQuery &sqlquery, FolderItem *parent)
         data << sqlquery.value(path);
         data << sqlquery.value(finished);
         data << sqlquery.value(completed);
-        data << sqlquery.value(manga);
         data << sqlquery.value(numChildren);
         data << sqlquery.value(firstChildHash);
         data << sqlquery.value(customImage);
@@ -549,7 +543,6 @@ Folder FolderModel::getFolder(const QModelIndex &mi)
                          folderItem->parent()->data(Columns::Path).toString() + "/" + name,
                          folderItem->data(Columns::Completed).toBool(),
                          folderItem->data(Columns::Finished).toBool(),
-                         folderItem->data(Columns::Manga).toBool(),
                          folderItem->data(Columns::NumChildren).toInt(),
                          folderItem->data(Columns::FirstChildHash).toString(),
                          folderItem->data(Columns::CustomImage).toString(),
@@ -605,7 +598,6 @@ QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QMod
     newFolder.name = folderName;
     newFolder.parentId = parentItem->id;
     newFolder.path = parentItem->data(Columns::Path).toString() + "/" + folderName;
-    newFolder.manga = parentItem->data(Columns::Manga).toBool();
     newFolder.type = parentItem->data(Columns::Type).value<YACReader::FileType>();
 
     QString connectionName = "";
@@ -624,7 +616,6 @@ QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QMod
     data << newFolder.path;
     data << false; // finished
     data << true; // completed
-    data << newFolder.manga;
     data << 0; // numChildren
     data << QVariant(); // first child hash, new folder is empty
     data << QVariant(); // custom cover

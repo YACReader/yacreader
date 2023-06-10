@@ -80,7 +80,6 @@ public:
     QVariant format; // string
     QVariant color; // bool
     QVariant ageRating; // string
-    [[deprecated("use type instead")]] QVariant manga; // bool
 
     QVariant synopsis; // string
     QVariant characters; // string
@@ -186,7 +185,6 @@ public:
     Q_PROPERTY(QVariant format MEMBER format CONSTANT)
     Q_PROPERTY(QVariant color MEMBER color CONSTANT)
     Q_PROPERTY(QVariant ageRating MEMBER ageRating CONSTANT)
-    Q_PROPERTY(QVariant manga MEMBER manga CONSTANT)
 
     Q_PROPERTY(QVariant synopsis MEMBER synopsis CONSTANT)
     Q_PROPERTY(QVariant characters MEMBER characters CONSTANT)
