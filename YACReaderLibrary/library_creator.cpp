@@ -351,6 +351,14 @@ void LibraryCreator::replaceComic(const QString &relativePath, const QFileInfo &
 
     ComicDB insertedComic = DBHelper::loadComic(fileInfo.fileName(), relativePath, hash, _database);
 
+    if (!insertedComic.info.existOnDb) {
+        return;
+    }
+
+    if (insertedComic.info.coverSizeRatio.isNull()) {
+        return;
+    }
+
     auto numPages = insertedComic.info.numPages;
     auto coverSize = insertedComic.info.originalCoverSize;
     auto coverRatio = insertedComic.info.coverSizeRatio;
