@@ -13,6 +13,9 @@ bool InitialComicInfoExtractor::crash = false;
 InitialComicInfoExtractor::InitialComicInfoExtractor(QString fileSource, QString target, int coverPage, bool getXMLMetadata)
     : _fileSource(fileSource), _target(target), _numPages(0), _coverPage(coverPage), getXMLMetadata(getXMLMetadata), _xmlInfoData()
 {
+    if (coverPage <= 0) {
+        _coverPage = 1;
+    }
 }
 
 void InitialComicInfoExtractor::extract()
