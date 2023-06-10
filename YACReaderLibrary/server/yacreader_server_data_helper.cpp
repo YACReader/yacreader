@@ -113,6 +113,9 @@ QJsonObject YACReaderServerDataHelper::fullComicToJSON(const qulonglong libraryI
     json["main_character_or_team"] = comic.info.mainCharacterOrTeam.toString();
     json["review"] = comic.info.review.toString();
     json["tags"] = comic.info.tags.toString();
+    auto type = comic.info.type.value<YACReader::FileType>();
+    json["manga"] = type == YACReader::FileType::Manga; // legacy, kept for compatibility with old clients
+    json["file_type"] = comic.info.type.toInt(); // 9.13
 
     return json;
 }
