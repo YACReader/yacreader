@@ -72,6 +72,13 @@ void SearchController::getFolders(int libraryId, QSqlQuery &sqlQuery, QJsonArray
         folder["folder_name"] = sqlQuery.value("name").toString();
         folder["num_children"] = sqlQuery.value("numChildren").toInt();
         folder["first_comic_hash"] = sqlQuery.value("firstChildHash").toString();
+        // 9.13
+        folder["finished"] = sqlQuery.value("finished").toBool();
+        folder["completed"] = sqlQuery.value("completed").toBool();
+        folder["custom_image"] = sqlQuery.value("customImage").toString();
+        folder["file_type"] = sqlQuery.value("type").toInt();
+        folder["added"] = sqlQuery.value("added").toLongLong();
+        folder["updated"] = sqlQuery.value("updated").toLongLong();
 
         items.append(folder);
     }
