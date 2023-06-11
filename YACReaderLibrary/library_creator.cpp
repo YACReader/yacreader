@@ -368,7 +368,7 @@ void LibraryCreator::replaceComic(const QString &relativePath, const QFileInfo &
     insertedComic.info.originalCoverSize = coverSize;
     insertedComic.info.coverSizeRatio = coverRatio;
     insertedComic.info.id = id;
-    insertedComic.info.coverPage = 0;
+    insertedComic.info.coverPage = 1;
     insertedComic.info.added = fileInfo.lastModified().toSecsSinceEpoch();
 
     DBHelper::update(&(insertedComic.info), _database);
