@@ -88,7 +88,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
 
     this->setFixedSize(image.size());
 
-    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
+    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat);
     settings->beginGroup("libraryConfig");
 
     if (settings->value(SERVER_ON, true).toBool()) {
@@ -116,7 +116,7 @@ void ServerConfigDialog::showEvent(QShowEvent *event)
 
 void ServerConfigDialog::enableServer(int status)
 {
-    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
+    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat);
     settings->beginGroup("libraryConfig");
 
     if (status == Qt::Checked) {
@@ -139,6 +139,9 @@ void ServerConfigDialog::enableServer(int status)
 
 void ServerConfigDialog::generateQR()
 {
+    if (!httpServer->isRunning())
+        return;
+
     ip->clear();
 
     auto addresses = getIpAddresses();
