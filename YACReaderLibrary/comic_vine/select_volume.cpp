@@ -58,7 +58,7 @@ SelectVolume::SelectVolume(QWidget *parent)
     filterEdit->setClearButtonEnabled(true);
 
     connect(filterEdit, &QLineEdit::textChanged, proxyModel, &QSortFilterProxyModel::setFilterFixedString);
-    connect(tableVolumes->horizontalHeader(), &QHeaderView::sortIndicatorChanged, tableVolumes, &QTableView::sortByColumn);
+    connect(tableVolumes->horizontalHeader(), qOverload<int, Qt::SortOrder>(&QHeaderView::sortIndicatorChanged), tableVolumes, qOverload<int, Qt::SortOrder>(&QTableView::sortByColumn));
     connect(tableVolumes, &QAbstractItemView::clicked, this, &SelectVolume::loadVolumeInfo);
 
     paginator->setCustomLabel(tr("volumes"));
