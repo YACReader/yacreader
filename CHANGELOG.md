@@ -19,6 +19,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Try to detect changed files with the same name on libraries updates, there is also a new setting to decide if the modified date of a file should be used as an indicator to know if the file has been changed since it was added (disabled by default).
 * Fix alphanumeric navigation in the folders tree view. Shortcuts were interfering the default behaviour, now some shortcuts will be ignored if the folders tree has the focus.
 * Fix sorting in the Comic Vine series selection dialog.
+* Fix getting only distinct rows when querying folders through the search engine.
 
 ### All Apps
 * New icons for macos.
